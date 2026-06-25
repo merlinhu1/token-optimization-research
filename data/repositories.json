@@ -1,0 +1,2256 @@
+{
+  "schema_version": 1,
+  "repositories": [
+    {
+      "id": "BlackFoil__claude-token-saver-mcp",
+      "name": "claude-token-saver-mcp",
+      "url": "https://github.com/BlackFoil/claude-token-saver-mcp",
+      "kind": "agent-runtime-or-routing",
+      "source_scope": "`direct`",
+      "catalog_section": "Agent runtimes, routing, and workflow orchestration",
+      "summary": "Routes routine generation, tests, summaries, and simple refactors from Claude Code to local Ollama models, with cloud fallback and a cost dashboard.",
+      "mechanism": "Routes routine generation, tests, summaries, and simple refactors from Claude Code to local Ollama models, with cloud fallback and a cost dashboard.",
+      "technique_ids": [
+        "T09-model-routing-cache-economics"
+      ],
+      "technique_coverage": [],
+      "evidence_label": "`documented-mechanism`",
+      "reported_result": "No independently reviewed benchmark; README estimates savings from offloading a portion of routine requests.",
+      "main_caveat": "This reduces premium cloud-token use, not necessarily total tokens or compute; local-model quality varies by task.",
+      "sources": [
+        "sources/seed-catalogs/AI-Coding-Token-Savers-Catalog-Revised.md",
+        "https://github.com/BlackFoil/claude-token-saver-mcp"
+      ],
+      "reviewed_at": "2026-06-25",
+      "review_depth": "seed-catalog",
+      "status": "normalized-from-seed"
+    },
+    {
+      "id": "csabakecskemeti__cc_token_saver_mcp",
+      "name": "cc_token_saver_mcp",
+      "url": "https://github.com/csabakecskemeti/cc_token_saver_mcp",
+      "kind": "agent-runtime-or-routing",
+      "source_scope": "`direct`",
+      "catalog_section": "Agent runtimes, routing, and workflow orchestration",
+      "summary": "A small MCP server that exposes a local OpenAI-compatible model for simple Claude Code tasks while retaining Claude for complex coordination.",
+      "mechanism": "A small MCP server that exposes a local OpenAI-compatible model for simple Claude Code tasks while retaining Claude for complex coordination.",
+      "technique_ids": [
+        "T09-model-routing-cache-economics"
+      ],
+      "technique_coverage": [],
+      "evidence_label": "`documented-mechanism`",
+      "reported_result": "No quantified benchmark was reviewed.",
+      "main_caveat": "Experimental and narrowly documented; routing quality depends on Claude choosing the local tools appropriately.",
+      "sources": [
+        "sources/seed-catalogs/AI-Coding-Token-Savers-Catalog-Revised.md",
+        "https://github.com/csabakecskemeti/cc_token_saver_mcp"
+      ],
+      "reviewed_at": "2026-06-25",
+      "review_depth": "seed-catalog",
+      "status": "normalized-from-seed"
+    },
+    {
+      "id": "get-vix__vix",
+      "name": "vix",
+      "url": "https://github.com/get-vix/vix",
+      "kind": "agent-runtime-or-routing",
+      "source_scope": "`direct`",
+      "catalog_section": "Agent runtimes, routing, and workflow orchestration",
+      "summary": "A coding agent that reuses prompt cache across phases with stem agents and exposes a Tree-sitter virtual filesystem containing minified code.",
+      "mechanism": "A coding agent that reuses prompt cache across phases with stem agents and exposes a Tree-sitter virtual filesystem containing minified code.",
+      "technique_ids": [
+        "T09-model-routing-cache-economics"
+      ],
+      "technique_coverage": [],
+      "evidence_label": "`reproducible-maintainer-benchmark`",
+      "reported_result": "Maintainer reports 20–50% fewer code-reading tokens and a seven-task cost comparison of $6.64 versus $12.44 for Claude Code, with transcripts published.",
+      "main_caveat": "The maintainers explicitly call the benchmark observational rather than scientific; one task was slightly more expensive.",
+      "sources": [
+        "sources/seed-catalogs/AI-Coding-Token-Savers-Catalog-Revised.md",
+        "https://github.com/get-vix/vix"
+      ],
+      "reviewed_at": "2026-06-25",
+      "review_depth": "seed-catalog",
+      "status": "normalized-from-seed"
+    },
+    {
+      "id": "HoangP8__tokless",
+      "name": "tokless",
+      "url": "https://github.com/HoangP8/tokless",
+      "kind": "bundle",
+      "source_scope": "`adjacent`",
+      "catalog_section": "Agent runtimes, routing, and workflow orchestration",
+      "summary": "A cross-platform installer and lifecycle manager that wires RTK, Caveman, CodeGraph, and Context Mode into several coding agents as a preselected token-saving stack.",
+      "mechanism": "A cross-platform installer and lifecycle manager that wires RTK, Caveman, CodeGraph, and Context Mode into several coding agents as a preselected token-saving stack.",
+      "technique_ids": [],
+      "technique_coverage": [],
+      "evidence_label": "`documented-mechanism`",
+      "reported_result": "No independent aggregate benchmark is supplied; the README repeats component-level examples from the bundled projects.",
+      "main_caveat": "It adds no new compression algorithm and inherits the compatibility, licensing, overlap, and benchmark limitations of four separate tools; stack-level attribution is difficult.",
+      "sources": [
+        "sources/seed-catalogs/AI-Coding-Token-Savers-Catalog-Revised.md",
+        "https://github.com/HoangP8/tokless"
+      ],
+      "reviewed_at": "2026-06-25",
+      "review_depth": "seed-catalog",
+      "status": "normalized-from-seed"
+    },
+    {
+      "id": "JuliusBrussee__cavekit",
+      "name": "cavekit",
+      "url": "https://github.com/JuliusBrussee/cavekit",
+      "kind": "bundle",
+      "source_scope": "`direct`",
+      "catalog_section": "Agent runtimes, routing, and workflow orchestration",
+      "summary": "A compressed spec-driven Claude Code workflow using one durable SPEC.md, right-sized ceremony, no subagents in the current version, and compact caveman encoding for persistent task state.",
+      "mechanism": "A compressed spec-driven Claude Code workflow using one durable SPEC.md, right-sized ceremony, no subagents in the current version, and compact caveman encoding for persistent task state.",
+      "technique_ids": [],
+      "technique_coverage": [],
+      "evidence_label": "`maintainer-measurement`",
+      "reported_result": "Maintainer reports all nine skill descriptions consume about 1.1K context tokens, described as 16× lighter than spec-kit, and caveman-encoded prose is roughly 75% smaller.",
+      "main_caveat": "The comparison is configuration-level, not an end-to-end task benchmark; a durable spec can still become stale or add overhead on small changes.",
+      "sources": [
+        "sources/seed-catalogs/AI-Coding-Token-Savers-Catalog-Revised.md",
+        "https://github.com/JuliusBrussee/cavekit"
+      ],
+      "reviewed_at": "2026-06-25",
+      "review_depth": "seed-catalog",
+      "status": "normalized-from-seed"
+    },
+    {
+      "id": "JuliusBrussee__caveman-code",
+      "name": "caveman-code",
+      "url": "https://github.com/JuliusBrussee/caveman-code",
+      "kind": "agent-runtime-or-routing",
+      "source_scope": "`direct`",
+      "catalog_section": "Agent runtimes, routing, and workflow orchestration",
+      "summary": "A replacement terminal coding agent with terse replies, per-tool output budgets, read deduplication, optional RTK integration, repository maps, model-role splitting, and persistent memory.",
+      "mechanism": "A replacement terminal coding agent with terse replies, per-tool output budgets, read deduplication, optional RTK integration, repository maps, model-role splitting, and persistent memory.",
+      "technique_ids": [
+        "T09-model-routing-cache-economics"
+      ],
+      "technique_coverage": [],
+      "evidence_label": "`reproducible-maintainer-benchmark`",
+      "reported_result": "On a published 25-task MicroBench using GPT-5.5 xhigh, the maintainer reports 524K fresh tokens versus Codex's 1.01M, with 14/25 tasks passing versus 15/25 for Codex.",
+      "main_caveat": "It is a replacement agent rather than a drop-in layer; the comparison is maintainer-run, pass rates are low for both arms, and fresh-token accounting may not match provider bills under caching.",
+      "sources": [
+        "sources/seed-catalogs/AI-Coding-Token-Savers-Catalog-Revised.md",
+        "https://github.com/JuliusBrussee/caveman-code"
+      ],
+      "reviewed_at": "2026-06-25",
+      "review_depth": "seed-catalog",
+      "status": "normalized-from-seed"
+    },
+    {
+      "id": "ww-w-ai__claude-code-token-saver",
+      "name": "claude-code-token-saver",
+      "url": "https://github.com/ww-w-ai/claude-code-token-saver",
+      "kind": "agent-runtime-or-routing",
+      "source_scope": "`direct`",
+      "catalog_section": "Agent runtimes, routing, and workflow orchestration",
+      "summary": "Claude Code plugin with cache-expiry protection, subtask delegation, concise mode, session continuation, usage reporting, and lighter Git operations.",
+      "mechanism": "Claude Code plugin with cache-expiry protection, subtask delegation, concise mode, session continuation, usage reporting, and lighter Git operations.",
+      "technique_ids": [],
+      "technique_coverage": [],
+      "evidence_label": "`maintainer-claim`",
+      "reported_result": "README claims a measured 45% cost reduction.",
+      "main_caveat": "The reviewed README did not establish independent replication or a broad benchmark suite.",
+      "sources": [
+        "sources/seed-catalogs/AI-Coding-Token-Savers-Catalog-Revised.md",
+        "https://github.com/ww-w-ai/claude-code-token-saver"
+      ],
+      "reviewed_at": "2026-06-25",
+      "review_depth": "seed-catalog",
+      "status": "normalized-from-seed"
+    },
+    {
+      "id": "ajmalhassan__kevin-mode",
+      "name": "kevin-mode",
+      "url": "https://github.com/ajmalhassan/kevin-mode",
+      "kind": "technique-implementation",
+      "source_scope": "`direct`",
+      "catalog_section": "Behavioral output and code minimization",
+      "summary": "A Claude Code skill that removes action narration, repeated summaries, filler transitions, and obvious status updates while keeping code, questions, warnings, and non-obvious reasoning.",
+      "mechanism": "A Claude Code skill that removes action narration, repeated summaries, filler transitions, and obvious status updates while keeping code, questions, warnings, and non-obvious reasoning.",
+      "technique_ids": [
+        "T07-behavioral-output-compression"
+      ],
+      "technique_coverage": [],
+      "evidence_label": "`maintainer-projection`",
+      "reported_result": "Maintainer projects 35–45% lower net output, including 60–70% less prose and no reduction in code tokens.",
+      "main_caveat": "The figures are projections rather than a published measured benchmark, and the skill does not address input, reasoning, or tool-output tokens.",
+      "sources": [
+        "sources/seed-catalogs/AI-Coding-Token-Savers-Catalog-Revised.md",
+        "https://github.com/ajmalhassan/kevin-mode"
+      ],
+      "reviewed_at": "2026-06-25",
+      "review_depth": "seed-catalog",
+      "status": "normalized-from-seed"
+    },
+    {
+      "id": "bitclaw__oafish",
+      "name": "oafish",
+      "url": "https://github.com/bitclaw/oafish",
+      "kind": "technique-implementation",
+      "source_scope": "`direct`",
+      "catalog_section": "Behavioral output and code minimization",
+      "summary": "A cross-agent terse-response skill whose Claude Code hook also digests verbose Read, Bash, and MCP results before they fill context.",
+      "mechanism": "A cross-agent terse-response skill whose Claude Code hook also digests verbose Read, Bash, and MCP results before they fill context.",
+      "technique_ids": [
+        "T07-behavioral-output-compression"
+      ],
+      "technique_coverage": [],
+      "evidence_label": "`documented-mechanism`",
+      "reported_result": "README claims about 75% fewer output tokens and ships a live-model benchmark harness, but no completed aggregate benchmark results were reviewed.",
+      "main_caveat": "The headline is not supported by published aggregate results in the reviewed README; digesting tool outputs can omit diagnostics and should retain a raw fallback.",
+      "sources": [
+        "sources/seed-catalogs/AI-Coding-Token-Savers-Catalog-Revised.md",
+        "https://github.com/bitclaw/oafish"
+      ],
+      "reviewed_at": "2026-06-25",
+      "review_depth": "seed-catalog",
+      "status": "normalized-from-seed"
+    },
+    {
+      "id": "daviduuuul__whippet",
+      "name": "whippet",
+      "url": "https://github.com/daviduuuul/whippet",
+      "kind": "technique-implementation",
+      "source_scope": "`direct`",
+      "catalog_section": "Behavioral output and code minimization",
+      "summary": "A Claude Code minimal-code and safety discipline that prefers reuse, standard-library and native features, preserves validation and security, leaves runnable checks, and reports briefly.",
+      "mechanism": "A Claude Code minimal-code and safety discipline that prefers reuse, standard-library and native features, preserves validation and security, leaves runnable checks, and reports briefly.",
+      "technique_ids": [
+        "T08-artifact-code-minimization"
+      ],
+      "technique_coverage": [],
+      "evidence_label": "`maintainer-evaluation`",
+      "reported_result": "In a 13-task Opus 4.8 screen, the maintainer reports little code-size or dependency reduction versus baseline, but more persistent runnable checks and additional trust-boundary validation.",
+      "main_caveat": "The evaluation is small, one run per cell, and does not demonstrate token savings on the tested strong model; its value is primarily workflow discipline rather than proven cost reduction.",
+      "sources": [
+        "sources/seed-catalogs/AI-Coding-Token-Savers-Catalog-Revised.md",
+        "https://github.com/daviduuuul/whippet"
+      ],
+      "reviewed_at": "2026-06-25",
+      "review_depth": "seed-catalog",
+      "status": "normalized-from-seed"
+    },
+    {
+      "id": "DietrichGebert__ponytail",
+      "name": "ponytail",
+      "url": "https://github.com/DietrichGebert/ponytail",
+      "kind": "technique-implementation",
+      "source_scope": "`direct`",
+      "catalog_section": "Behavioral output and code minimization",
+      "summary": "A cross-agent minimal-code discipline that applies YAGNI, standard-library and native-feature preference, dependency reuse, and explicit safety exceptions before generating code.",
+      "mechanism": "A cross-agent minimal-code discipline that applies YAGNI, standard-library and native-feature preference, dependency reuse, and explicit safety exceptions before generating code.",
+      "technique_ids": [
+        "T08-artifact-code-minimization"
+      ],
+      "technique_coverage": [],
+      "evidence_label": "`reproducible-maintainer-benchmark`",
+      "reported_result": "On twelve feature tasks with Haiku 4.5 and four runs per arm, the maintainer reports 54% fewer added lines, 22% fewer total tokens, 20% lower cost, and 27% less time, with 100% safety on a separate adversarial tier.",
+      "main_caveat": "Results are model- and task-specific; gains concentrate in over-build traps and approach zero on irreducible work. The maintainer notes some reasoning models can spend more tokens under the discipline.",
+      "sources": [
+        "sources/seed-catalogs/AI-Coding-Token-Savers-Catalog-Revised.md",
+        "https://github.com/DietrichGebert/ponytail"
+      ],
+      "reviewed_at": "2026-06-25",
+      "review_depth": "seed-catalog",
+      "status": "normalized-from-seed"
+    },
+    {
+      "id": "JuliusBrussee__caveman",
+      "name": "caveman",
+      "url": "https://github.com/JuliusBrussee/caveman",
+      "kind": "technique-implementation",
+      "source_scope": "`direct`",
+      "catalog_section": "Behavioral output and code minimization",
+      "summary": "A cross-agent skill and plugin that suppresses filler, hedging, narration, and repeated summaries; companion commands also compress persistent instruction files and MCP descriptions.",
+      "mechanism": "A cross-agent skill and plugin that suppresses filler, hedging, narration, and repeated summaries; companion commands also compress persistent instruction files and MCP descriptions.",
+      "technique_ids": [
+        "T07-behavioral-output-compression"
+      ],
+      "technique_coverage": [],
+      "evidence_label": "`mixed-maintainer-and-external-evidence`",
+      "reported_result": "Maintainer reports an average 65% output-token reduction across ten prompts. Ponytail's separate agentic benchmark found Caveman used 7% more total tokens on twelve feature tasks despite producing less code.",
+      "main_caveat": "It primarily changes model output, not reasoning or tool-input tokens. Lower response verbosity may have little or negative effect on total-session cost when deliberation and tool use dominate.",
+      "sources": [
+        "sources/seed-catalogs/AI-Coding-Token-Savers-Catalog-Revised.md",
+        "https://github.com/JuliusBrussee/caveman"
+      ],
+      "reviewed_at": "2026-06-25",
+      "review_depth": "seed-catalog",
+      "status": "normalized-from-seed"
+    },
+    {
+      "id": "Kir93__scrooge-mode",
+      "name": "scrooge-mode",
+      "url": "https://github.com/Kir93/scrooge-mode",
+      "kind": "technique-implementation",
+      "source_scope": "`direct`",
+      "catalog_section": "Behavioral output and code minimization",
+      "summary": "A bilingual Korean/English output-compression skill with reinjection hooks, safety auto-clarity, token statistics, and language-specific terse registers.",
+      "mechanism": "A bilingual Korean/English output-compression skill with reinjection hooks, safety auto-clarity, token statistics, and language-specific terse registers.",
+      "technique_ids": [
+        "T07-behavioral-output-compression"
+      ],
+      "technique_coverage": [],
+      "evidence_label": "`reproducible-maintainer-benchmark`",
+      "reported_result": "Maintainer reports paired-median output reductions near 70% for Korean and 73% for English on Claude Opus 4.8, with held-out cross-checks near 71% and 68%.",
+      "main_caveat": "The main evaluation uses one run per prompt and replaces the normal Claude Code system prompt to isolate register effects; real sessions may differ and only output tokens are measured.",
+      "sources": [
+        "sources/seed-catalogs/AI-Coding-Token-Savers-Catalog-Revised.md",
+        "https://github.com/Kir93/scrooge-mode"
+      ],
+      "reviewed_at": "2026-06-25",
+      "review_depth": "seed-catalog",
+      "status": "normalized-from-seed"
+    },
+    {
+      "id": "o4f6bgpac3__concise",
+      "name": "concise",
+      "url": "https://github.com/o4f6bgpac3/concise",
+      "kind": "technique-implementation",
+      "source_scope": "`direct`",
+      "catalog_section": "Behavioral output and code minimization",
+      "summary": "A cross-agent response-style skill that removes filler and hedging while preserving conventional English grammar and allows one-turn elaboration before returning to concise mode.",
+      "mechanism": "A cross-agent response-style skill that removes filler and hedging while preserving conventional English grammar and allows one-turn elaboration before returning to concise mode.",
+      "technique_ids": [
+        "T07-behavioral-output-compression"
+      ],
+      "technique_coverage": [],
+      "evidence_label": "`maintainer-examples`",
+      "reported_result": "Maintainer claims roughly 60–70% fewer output tokens and provides before-and-after examples, but no reviewed task-level benchmark was found.",
+      "main_caveat": "The claim is output-only and example-based; it does not measure reasoning, tool calls, total session tokens, or answer-quality regressions.",
+      "sources": [
+        "sources/seed-catalogs/AI-Coding-Token-Savers-Catalog-Revised.md",
+        "https://github.com/o4f6bgpac3/concise"
+      ],
+      "reviewed_at": "2026-06-25",
+      "review_depth": "seed-catalog",
+      "status": "normalized-from-seed"
+    },
+    {
+      "id": "SUDARSHANCHAUDHARI__Bonsai",
+      "name": "Bonsai",
+      "url": "https://github.com/SUDARSHANCHAUDHARI/Bonsai",
+      "kind": "technique-implementation",
+      "source_scope": "`direct`",
+      "catalog_section": "Behavioral output and code minimization",
+      "summary": "A cross-agent YAGNI and minimal-code plugin that prefers existing, standard-library, native, and installed solutions and preserves safety-critical validation and accessibility.",
+      "mechanism": "A cross-agent YAGNI and minimal-code plugin that prefers existing, standard-library, native, and installed solutions and preserves safety-critical validation and accessibility.",
+      "technique_ids": [
+        "T08-artifact-code-minimization"
+      ],
+      "technique_coverage": [],
+      "evidence_label": "`documented-mechanism`",
+      "reported_result": "A correctness-gated benchmark harness is present, but the README states that paid benchmark numbers have not yet been published.",
+      "main_caveat": "No completed token, cost, or latency results were available during review; it is conceptually close to Ponytail and should be evaluated for incremental rather than duplicated value.",
+      "sources": [
+        "sources/seed-catalogs/AI-Coding-Token-Savers-Catalog-Revised.md",
+        "https://github.com/SUDARSHANCHAUDHARI/Bonsai"
+      ],
+      "reviewed_at": "2026-06-25",
+      "review_depth": "seed-catalog",
+      "status": "normalized-from-seed"
+    },
+    {
+      "id": "aeroxy__ast-bro",
+      "name": "ast-bro",
+      "url": "https://github.com/aeroxy/ast-bro",
+      "kind": "technique-implementation",
+      "source_scope": "`direct`",
+      "catalog_section": "Code retrieval and context selection",
+      "summary": "AST outlines, dependency/call graphs, semantic search, blast-radius analysis, token-budgeted context packs, and reversible log squeezing.",
+      "mechanism": "AST outlines, dependency/call graphs, semantic search, blast-radius analysis, token-budgeted context packs, and reversible log squeezing.",
+      "technique_ids": [
+        "T02-targeted-code-retrieval"
+      ],
+      "technique_coverage": [],
+      "evidence_label": "`maintainer-measurement`",
+      "reported_result": "Maintainer reports typical outline savings near 95% versus reading full files and bounded context packs for multi-hop analysis.",
+      "main_caveat": "Static analysis is language- and parser-dependent; generated context should not replace exact source inspection before edits.",
+      "sources": [
+        "sources/seed-catalogs/AI-Coding-Token-Savers-Catalog-Revised.md",
+        "https://github.com/aeroxy/ast-bro"
+      ],
+      "reviewed_at": "2026-06-25",
+      "review_depth": "seed-catalog",
+      "status": "normalized-from-seed"
+    },
+    {
+      "id": "Aider-AI__aider",
+      "name": "aider",
+      "url": "https://github.com/Aider-AI/aider",
+      "kind": "technique-implementation",
+      "source_scope": "`adjacent`",
+      "catalog_section": "Code retrieval and context selection",
+      "summary": "A coding agent with a repository map that summarizes the codebase so larger projects can be navigated without loading every file.",
+      "mechanism": "A coding agent with a repository map that summarizes the codebase so larger projects can be navigated without loading every file.",
+      "technique_ids": [
+        "T02-targeted-code-retrieval"
+      ],
+      "technique_coverage": [],
+      "evidence_label": "`documented-mechanism`",
+      "reported_result": "No token-saving percentage was reviewed in the repository README; the repo-map mechanism is explicitly designed for scalable context selection.",
+      "main_caveat": "A full coding agent rather than a drop-in optimization layer.",
+      "sources": [
+        "sources/seed-catalogs/AI-Coding-Token-Savers-Catalog-Revised.md",
+        "https://github.com/Aider-AI/aider"
+      ],
+      "reviewed_at": "2026-06-25",
+      "review_depth": "seed-catalog",
+      "status": "normalized-from-seed"
+    },
+    {
+      "id": "aovestdipaperino__tokensave",
+      "name": "tokensave",
+      "url": "https://github.com/aovestdipaperino/tokensave",
+      "kind": "bundle",
+      "source_scope": "`direct`",
+      "catalog_section": "Code retrieval and context selection",
+      "summary": "Builds a local semantic knowledge graph with symbol search, callers/callees, context bundles, impact analysis, and agent hooks that redirect wasteful reads.",
+      "mechanism": "Builds a local semantic knowledge graph with symbol search, callers/callees, context bundles, impact analysis, and agent hooks that redirect wasteful reads.",
+      "technique_ids": [],
+      "technique_coverage": [
+        "T02-targeted-code-retrieval"
+      ],
+      "evidence_label": "`documented-mechanism`",
+      "reported_result": "No single end-to-end reduction figure was reviewed; the project explicitly targets fewer file scans, tool calls, and context tokens.",
+      "main_caveat": "Large tool manifests and broad feature sets can create overhead unless the agent uses the compact paths consistently.",
+      "sources": [
+        "sources/seed-catalogs/AI-Coding-Token-Savers-Catalog-Revised.md",
+        "https://github.com/aovestdipaperino/tokensave"
+      ],
+      "reviewed_at": "2026-06-25",
+      "review_depth": "seed-catalog",
+      "status": "normalized-from-seed"
+    },
+    {
+      "id": "cocoindex-io__cocoindex-code",
+      "name": "cocoindex-code",
+      "url": "https://github.com/cocoindex-io/cocoindex-code",
+      "kind": "technique-implementation",
+      "source_scope": "`direct`",
+      "catalog_section": "Code retrieval and context selection",
+      "summary": "AST-based semantic code indexing and targeted search exposed through a CLI, skill, or MCP server.",
+      "mechanism": "AST-based semantic code indexing and targeted search exposed through a CLI, skill, or MCP server.",
+      "technique_ids": [
+        "T02-targeted-code-retrieval"
+      ],
+      "technique_coverage": [],
+      "evidence_label": "`maintainer-claim`",
+      "reported_result": "README advertises approximately 70% instant token savings from targeted semantic search.",
+      "main_caveat": "The reviewed README did not provide the full methodology behind the headline percentage.",
+      "sources": [
+        "sources/seed-catalogs/AI-Coding-Token-Savers-Catalog-Revised.md",
+        "https://github.com/cocoindex-io/cocoindex-code"
+      ],
+      "reviewed_at": "2026-06-25",
+      "review_depth": "seed-catalog",
+      "status": "normalized-from-seed"
+    },
+    {
+      "id": "safishamsi__graphify",
+      "name": "graphify",
+      "url": "https://github.com/safishamsi/graphify",
+      "kind": "technique-implementation",
+      "source_scope": "`direct`",
+      "catalog_section": "Code retrieval and context selection",
+      "summary": "Turns folders of code, database schemas, infrastructure, documents, images, and videos into a queryable knowledge graph for AI coding assistants.",
+      "mechanism": "Graphify is a Python CLI/skill package that builds `graphify-out/graph.json` from source/document corpora, installs host-specific agent skills/instructions, serves graph queries over MCP, and can keep graphs fresh via git hooks/watch/update paths. Source inspection supports a source-logic finding for mechanism and integration behavior, not measured token savings.",
+      "technique_ids": [
+        "T02-targeted-code-retrieval"
+      ],
+      "technique_coverage": [],
+      "evidence_label": "`source-logic`",
+      "reported_result": "GitHub repository metadata and README/package metadata describe Graphify as a queryable knowledge graph for code and adjacent project artifacts; no token-savings benchmark has been audited here yet.",
+      "main_caveat": "Source-code logic has been inspected for representative mechanism, integration, state, and failure behavior; benchmark-audit and reproduction evidence remain required before measured savings or deployment-grade recommendations.",
+      "sources": [
+        "https://github.com/safishamsi/graphify",
+        "https://api.github.com/repos/safishamsi/graphify",
+        "https://raw.githubusercontent.com/safishamsi/graphify/v8/README.md",
+        "https://raw.githubusercontent.com/safishamsi/graphify/v8/pyproject.toml",
+        "docs/tool-dossiers/safishamsi-graphify.md",
+        "sources/discovery/2026-06-29-graph-leads-a-source-logic.json"
+      ],
+      "reviewed_at": "2026-06-29",
+      "review_depth": "source-logic",
+      "status": "source-logic-reviewed"
+    },
+    {
+      "id": "colbymchenry__codegraph",
+      "name": "codegraph",
+      "url": "https://github.com/colbymchenry/codegraph",
+      "kind": "technique-implementation",
+      "source_scope": "`direct`",
+      "catalog_section": "Code retrieval and context selection",
+      "summary": "A local semantic code graph that lets agents query symbols, relationships, callers, and architecture instead of repeatedly scanning source with grep and full-file reads.",
+      "mechanism": "A local semantic code graph that lets agents query symbols, relationships, callers, and architecture instead of repeatedly scanning source with grep and full-file reads.",
+      "technique_ids": [
+        "T02-targeted-code-retrieval"
+      ],
+      "technique_coverage": [],
+      "evidence_label": "`reproducible-maintainer-benchmark`",
+      "reported_result": "Across seven open-source codebases, the maintainer reports median results of 47% fewer total tokens, 58% fewer tool calls, 22% less time, and 16% lower cost, using four runs per arm.",
+      "main_caveat": "The benchmark tests architecture questions rather than implementation tasks, is maintainer-run, and depends on graph accuracy and agent adoption of the MCP tools.",
+      "sources": [
+        "sources/seed-catalogs/AI-Coding-Token-Savers-Catalog-Revised.md",
+        "https://github.com/colbymchenry/codegraph"
+      ],
+      "reviewed_at": "2026-06-25",
+      "review_depth": "seed-catalog",
+      "status": "normalized-from-seed"
+    },
+    {
+      "id": "glommer__cachebro",
+      "name": "cachebro",
+      "url": "https://github.com/glommer/cachebro",
+      "kind": "technique-implementation",
+      "source_scope": "`direct`",
+      "catalog_section": "Code retrieval and context selection",
+      "summary": "Caches file reads and returns one-line unchanged notices or compact diffs on later reads instead of resending full files.",
+      "mechanism": "Caches file reads and returns one-line unchanged notices or compact diffs on later reads instead of resending full files.",
+      "technique_ids": [
+        "T02-targeted-code-retrieval"
+      ],
+      "technique_coverage": [],
+      "evidence_label": "`maintainer-benchmark`",
+      "reported_result": "Maintainer A/B test reports 26% fewer tokens on one refactoring task and about 24% over a three-task sequence.",
+      "main_caveat": "Benefits are highest in sessions that reread the same files; token estimation is character-based and approximate.",
+      "sources": [
+        "sources/seed-catalogs/AI-Coding-Token-Savers-Catalog-Revised.md",
+        "https://github.com/glommer/cachebro"
+      ],
+      "reviewed_at": "2026-06-25",
+      "review_depth": "seed-catalog",
+      "status": "normalized-from-seed"
+    },
+    {
+      "id": "mauriziofonte__toktoken",
+      "name": "toktoken",
+      "url": "https://github.com/mauriziofonte/toktoken",
+      "kind": "technique-implementation",
+      "source_scope": "`direct`",
+      "catalog_section": "Code retrieval and context selection",
+      "summary": "Indexes symbols and imports, supports targeted retrieval, outlines, dependency tracing, compact JSON, and token-budget-aware result slicing.",
+      "mechanism": "Indexes symbols and imports, supports targeted retrieval, outlines, dependency tracing, compact JSON, and token-budget-aware result slicing.",
+      "technique_ids": [
+        "T02-targeted-code-retrieval"
+      ],
+      "technique_coverage": [],
+      "evidence_label": "`maintainer-benchmark`",
+      "reported_result": "Maintainer examples on Redis and Linux report roughly 88–99% fewer tokens for targeted symbol retrieval than full-file reads.",
+      "main_caveat": "Depends on Universal Ctags plus custom parsers; static-call and import analysis can be incomplete in dynamic code.",
+      "sources": [
+        "sources/seed-catalogs/AI-Coding-Token-Savers-Catalog-Revised.md",
+        "https://github.com/mauriziofonte/toktoken"
+      ],
+      "reviewed_at": "2026-06-25",
+      "review_depth": "seed-catalog",
+      "status": "normalized-from-seed"
+    },
+    {
+      "id": "oraios__serena",
+      "name": "serena",
+      "url": "https://github.com/oraios/serena",
+      "kind": "technique-implementation",
+      "source_scope": "`adjacent`",
+      "catalog_section": "Code retrieval and context selection",
+      "summary": "Symbol-level retrieval, references, refactoring, editing, diagnostics, and memory via language servers or a JetBrains backend.",
+      "mechanism": "Symbol-level retrieval, references, refactoring, editing, diagnostics, and memory via language servers or a JetBrains backend.",
+      "technique_ids": [
+        "T02-targeted-code-retrieval"
+      ],
+      "technique_coverage": [],
+      "evidence_label": "`documented-mechanism`",
+      "reported_result": "README describes symbolic editing and retrieval as more token-efficient than full-file and search/replace workflows; no single token benchmark was reviewed.",
+      "main_caveat": "Primary goal is semantic IDE capability, not token reduction alone; efficiency varies with language-server quality and tool usage.",
+      "sources": [
+        "sources/seed-catalogs/AI-Coding-Token-Savers-Catalog-Revised.md",
+        "https://github.com/oraios/serena"
+      ],
+      "reviewed_at": "2026-06-25",
+      "review_depth": "seed-catalog",
+      "status": "normalized-from-seed"
+    },
+    {
+      "id": "tobi__qmd",
+      "name": "qmd",
+      "url": "https://github.com/tobi/qmd",
+      "kind": "technique-implementation",
+      "source_scope": "`adjacent`",
+      "catalog_section": "Code retrieval and context selection",
+      "summary": "Local BM25, vector, and reranked search over documentation and knowledge collections with line-bounded retrieval for agents.",
+      "mechanism": "Local BM25, vector, and reranked search over documentation and knowledge collections with line-bounded retrieval for agents.",
+      "technique_ids": [
+        "T02-targeted-code-retrieval"
+      ],
+      "technique_coverage": [],
+      "evidence_label": "`external-benchmark`",
+      "reported_result": "agentic-token-bench reports a 99.2% reduction on its pinned QMD retrieval tasks versus the raw artifacts.",
+      "main_caveat": "QMD is primarily for markup/documents; code support depends on what is indexed and how documents are prepared.",
+      "sources": [
+        "sources/seed-catalogs/AI-Coding-Token-Savers-Catalog-Revised.md",
+        "https://github.com/tobi/qmd"
+      ],
+      "reviewed_at": "2026-06-25",
+      "review_depth": "seed-catalog",
+      "status": "normalized-from-seed"
+    },
+    {
+      "id": "websines__codegraph-mcp",
+      "name": "codegraph-mcp",
+      "url": "https://github.com/websines/codegraph-mcp",
+      "kind": "technique-implementation",
+      "source_scope": "`direct`",
+      "catalog_section": "Code retrieval and context selection",
+      "summary": "Persistent code graph, session memory, learning, symbol navigation, and Bash-output compression in a Rust MCP server.",
+      "mechanism": "Persistent code graph, session memory, learning, symbol navigation, and Bash-output compression in a Rust MCP server.",
+      "technique_ids": [
+        "T02-targeted-code-retrieval"
+      ],
+      "technique_coverage": [],
+      "evidence_label": "`maintainer-benchmark`",
+      "reported_result": "Maintainer reports 23% fewer tokens on a multi-step refactoring task in compact mode and much larger per-query reductions.",
+      "main_caveat": "The README contains a stale clone command pointing at a different owner; compact-mode discipline materially affects results.",
+      "sources": [
+        "sources/seed-catalogs/AI-Coding-Token-Savers-Catalog-Revised.md",
+        "https://github.com/websines/codegraph-mcp"
+      ],
+      "reviewed_at": "2026-06-25",
+      "review_depth": "seed-catalog",
+      "status": "normalized-from-seed"
+    },
+    {
+      "id": "yuki-20__CornMCP",
+      "name": "CornMCP",
+      "url": "https://github.com/yuki-20/CornMCP",
+      "kind": "technique-implementation",
+      "source_scope": "`direct`",
+      "catalog_section": "Code retrieval and context selection",
+      "summary": "MCP code intelligence with AST queries, semantic memory, quality gates, multi-agent awareness, and token-savings analytics.",
+      "mechanism": "MCP code intelligence with AST queries, semantic memory, quality gates, multi-agent awareness, and token-savings analytics.",
+      "technique_ids": [
+        "T02-targeted-code-retrieval"
+      ],
+      "technique_coverage": [],
+      "evidence_label": "`documented-mechanism`",
+      "reported_result": "No quantified benchmark was reviewed; the documented design avoids full-file dumps and tracks estimated savings.",
+      "main_caveat": "A larger multi-service stack than single-purpose retrieval tools; operational overhead may outweigh benefits for small repositories.",
+      "sources": [
+        "sources/seed-catalogs/AI-Coding-Token-Savers-Catalog-Revised.md",
+        "https://github.com/yuki-20/CornMCP"
+      ],
+      "reviewed_at": "2026-06-25",
+      "review_depth": "seed-catalog",
+      "status": "normalized-from-seed"
+    },
+    {
+      "id": "chopratejas__headroom",
+      "name": "headroom",
+      "url": "https://github.com/chopratejas/headroom",
+      "kind": "technique-implementation",
+      "source_scope": "`direct`",
+      "catalog_section": "Context proxies and code-mode execution",
+      "summary": "A local context-compression library, proxy, agent wrapper, and MCP server that routes JSON, code, prose, logs, files, and history through specialized compressors while caching originals for retrieval.",
+      "mechanism": "A local context-compression library, proxy, agent wrapper, and MCP server that routes JSON, code, prose, logs, files, and history through specialized compressors while caching originals for retrieval.",
+      "technique_ids": [
+        "T05-prompt-history-context-compression"
+      ],
+      "technique_coverage": [],
+      "evidence_label": "`mixed-maintainer-and-external-evidence`",
+      "reported_result": "Maintainer benchmarks report 47–92% savings on several agent workloads. Tokbench independently verified 342K tokens removed on wire in an N=1 pilot, but the run still billed 43% more input than native because it took more turns.",
+      "main_caveat": "Verified per-request compression can be outweighed by longer execution paths. Compression fidelity, cache behavior, and total turns must be measured on the target workload; Tokbench replication was still pending.",
+      "sources": [
+        "sources/seed-catalogs/AI-Coding-Token-Savers-Catalog-Revised.md",
+        "https://github.com/chopratejas/headroom"
+      ],
+      "reviewed_at": "2026-06-25",
+      "review_depth": "seed-catalog",
+      "status": "normalized-from-seed"
+    },
+    {
+      "id": "npow__kompact",
+      "name": "kompact",
+      "url": "https://github.com/npow/kompact",
+      "kind": "technique-implementation",
+      "source_scope": "`direct`",
+      "catalog_section": "Context proxies and code-mode execution",
+      "summary": "A transparent LLM API proxy with schema, JSON, code, log, history, and cache-alignment transforms.",
+      "mechanism": "A transparent LLM API proxy with schema, JSON, code, log, history, and cache-alignment transforms.",
+      "technique_ids": [
+        "T05-prompt-history-context-compression"
+      ],
+      "technique_coverage": [],
+      "evidence_label": "`reproducible-maintainer-benchmark`",
+      "reported_result": "Maintainer reports 40–70% token-bill reduction, with BFCL and other dataset scripts included for compression and quality checks.",
+      "main_caveat": "Compression can alter tool schemas or code semantics; per-transform quality should be tested on the target workflow.",
+      "sources": [
+        "sources/seed-catalogs/AI-Coding-Token-Savers-Catalog-Revised.md",
+        "https://github.com/npow/kompact"
+      ],
+      "reviewed_at": "2026-06-25",
+      "review_depth": "seed-catalog",
+      "status": "normalized-from-seed"
+    },
+    {
+      "id": "portofcontext__pctx",
+      "name": "pctx",
+      "url": "https://github.com/portofcontext/pctx",
+      "kind": "technique-implementation",
+      "source_scope": "`direct`",
+      "catalog_section": "Context proxies and code-mode execution",
+      "summary": "Code Mode executes multi-tool MCP workflows inside a sandbox and returns only selected program output instead of placing every intermediate result in context.",
+      "mechanism": "Code Mode executes multi-tool MCP workflows inside a sandbox and returns only selected program output instead of placing every intermediate result in context.",
+      "technique_ids": [
+        "T04-execution-offload-code-mode"
+      ],
+      "technique_coverage": [],
+      "evidence_label": "`maintainer-example`",
+      "reported_result": "README demonstrates a 150k-to-2k token multi-step example, described as a 98.7% reduction.",
+      "main_caveat": "The headline result is a worked example, not a broad coding benchmark; generated sandbox code adds a security and correctness boundary.",
+      "sources": [
+        "sources/seed-catalogs/AI-Coding-Token-Savers-Catalog-Revised.md",
+        "https://github.com/portofcontext/pctx"
+      ],
+      "reviewed_at": "2026-06-25",
+      "review_depth": "seed-catalog",
+      "status": "normalized-from-seed"
+    },
+    {
+      "id": "ast-grep__ast-grep",
+      "name": "ast-grep",
+      "url": "https://github.com/ast-grep/ast-grep",
+      "kind": "primitive",
+      "source_scope": "`primitive`",
+      "catalog_section": "General-purpose CLI primitives",
+      "summary": "AST-aware structural search and rewriting that can return exact code matches without broad file reads.",
+      "mechanism": "AST-aware structural search and rewriting that can return exact code matches without broad file reads.",
+      "technique_ids": [
+        "T02-targeted-code-retrieval"
+      ],
+      "technique_coverage": [],
+      "evidence_label": "`external-benchmark`",
+      "reported_result": "agentic-token-bench reports 93.3% reduction on its pinned ast-grep tasks.",
+      "main_caveat": "Rules are syntax- and language-specific; incorrect patterns can miss relevant code or rewrite unintended nodes.",
+      "sources": [
+        "sources/seed-catalogs/AI-Coding-Token-Savers-Catalog-Revised.md",
+        "https://github.com/ast-grep/ast-grep"
+      ],
+      "reviewed_at": "2026-06-25",
+      "review_depth": "seed-catalog",
+      "status": "normalized-from-seed"
+    },
+    {
+      "id": "BurntSushi__ripgrep",
+      "name": "ripgrep",
+      "url": "https://github.com/BurntSushi/ripgrep",
+      "kind": "primitive",
+      "source_scope": "`primitive`",
+      "catalog_section": "General-purpose CLI primitives",
+      "summary": "Fast, selective text and file search that lets an agent retrieve matching paths or lines instead of reading entire directories.",
+      "mechanism": "Fast, selective text and file search that lets an agent retrieve matching paths or lines instead of reading entire directories.",
+      "technique_ids": [
+        "T02-targeted-code-retrieval"
+      ],
+      "technique_coverage": [],
+      "evidence_label": "`external-benchmark`",
+      "reported_result": "agentic-token-bench reports 95.4% reduction on its pinned ripgrep tasks.",
+      "main_caveat": "A general CLI, not an agent-aware optimizer; poor query construction can still produce large or misleading output.",
+      "sources": [
+        "sources/seed-catalogs/AI-Coding-Token-Savers-Catalog-Revised.md",
+        "https://github.com/BurntSushi/ripgrep"
+      ],
+      "reviewed_at": "2026-06-25",
+      "review_depth": "seed-catalog",
+      "status": "normalized-from-seed"
+    },
+    {
+      "id": "comby-tools__comby",
+      "name": "comby",
+      "url": "https://github.com/comby-tools/comby",
+      "kind": "primitive",
+      "source_scope": "`primitive`",
+      "catalog_section": "General-purpose CLI primitives",
+      "summary": "Language-aware structural search and replacement that can produce concise match or diff output for agents.",
+      "mechanism": "Language-aware structural search and replacement that can produce concise match or diff output for agents.",
+      "technique_ids": [
+        "T02-targeted-code-retrieval"
+      ],
+      "technique_coverage": [],
+      "evidence_label": "`external-benchmark`",
+      "reported_result": "agentic-token-bench reports 83.6% reduction on its pinned Comby tasks.",
+      "main_caveat": "A general transformation tool; token savings depend on agents using targeted templates instead of reading full files.",
+      "sources": [
+        "sources/seed-catalogs/AI-Coding-Token-Savers-Catalog-Revised.md",
+        "https://github.com/comby-tools/comby"
+      ],
+      "reviewed_at": "2026-06-25",
+      "review_depth": "seed-catalog",
+      "status": "normalized-from-seed"
+    },
+    {
+      "id": "facebookincubator__fastmod",
+      "name": "fastmod",
+      "url": "https://github.com/facebookincubator/fastmod",
+      "kind": "primitive",
+      "source_scope": "`primitive`",
+      "catalog_section": "General-purpose CLI primitives",
+      "summary": "Fast, interactive search-and-replace/codemod tool that can apply broad edits without sending every affected file through the model.",
+      "mechanism": "Fast, interactive search-and-replace/codemod tool that can apply broad edits without sending every affected file through the model.",
+      "technique_ids": [
+        "T02-targeted-code-retrieval"
+      ],
+      "technique_coverage": [],
+      "evidence_label": "`external-benchmark`",
+      "reported_result": "agentic-token-bench reports 65.1% reduction on its pinned fastmod tasks.",
+      "main_caveat": "Best for mechanically specified replacements; agents must still inspect semantic changes and tests.",
+      "sources": [
+        "sources/seed-catalogs/AI-Coding-Token-Savers-Catalog-Revised.md",
+        "https://github.com/facebookincubator/fastmod"
+      ],
+      "reviewed_at": "2026-06-25",
+      "review_depth": "seed-catalog",
+      "status": "normalized-from-seed"
+    },
+    {
+      "id": "JuliusBrussee__cavemem",
+      "name": "cavemem",
+      "url": "https://github.com/JuliusBrussee/cavemem",
+      "kind": "technique-implementation",
+      "source_scope": "`direct`",
+      "catalog_section": "Integrated context management and memory",
+      "summary": "Cross-agent local memory that captures session observations, deterministically compresses prose at rest, and exposes progressive search, timeline, and full-body retrieval through MCP.",
+      "mechanism": "Cross-agent local memory that captures session observations, deterministically compresses prose at rest, and exposes progressive search, timeline, and full-body retrieval through MCP.",
+      "technique_ids": [
+        "T06-persistent-memory-reinjection"
+      ],
+      "technique_coverage": [],
+      "evidence_label": "`maintainer-claim`",
+      "reported_result": "Maintainer reports roughly 75% fewer prose tokens in stored observations, with code blocks, paths, URLs, identifiers, and versions preserved.",
+      "main_caveat": "At-rest compression is not the same as provider-billed savings; memory capture, embeddings, retrieval quality, and reinjection policy determine the net effect.",
+      "sources": [
+        "sources/seed-catalogs/AI-Coding-Token-Savers-Catalog-Revised.md",
+        "https://github.com/JuliusBrussee/cavemem"
+      ],
+      "reviewed_at": "2026-06-25",
+      "review_depth": "seed-catalog",
+      "status": "normalized-from-seed"
+    },
+    {
+      "id": "Mibayy__token-savior",
+      "name": "token-savior",
+      "url": "https://github.com/Mibayy/token-savior",
+      "kind": "bundle",
+      "source_scope": "`direct`",
+      "catalog_section": "Integrated context management and memory",
+      "summary": "Combines symbol-level code navigation, persistent memory, compact MCP manifests, Bash command rewriting, and output compactors.",
+      "mechanism": "Combines symbol-level code navigation, persistent memory, compact MCP manifests, Bash command rewriting, and output compactors.",
+      "technique_ids": [],
+      "technique_coverage": [
+        "T01-terminal-tool-output-compression",
+        "T02-targeted-code-retrieval",
+        "T06-persistent-memory-reinjection"
+      ],
+      "evidence_label": "`reproducible-maintainer-benchmark`",
+      "reported_result": "Maintainer reports about 80% fewer active tokens per task on a 96-task tsbench run, with benchmark fixtures published separately.",
+      "main_caveat": "Results are maintainer-run and profile-dependent; the tool exposes many features that can add overhead when poorly configured.",
+      "sources": [
+        "sources/seed-catalogs/AI-Coding-Token-Savers-Catalog-Revised.md",
+        "https://github.com/Mibayy/token-savior"
+      ],
+      "reviewed_at": "2026-06-25",
+      "review_depth": "seed-catalog",
+      "status": "normalized-from-seed"
+    },
+    {
+      "id": "mksglu__context-mode",
+      "name": "context-mode",
+      "url": "https://github.com/mksglu/context-mode",
+      "kind": "technique-implementation",
+      "source_scope": "`direct`",
+      "catalog_section": "Integrated context management and memory",
+      "summary": "An MCP and hook layer that executes heavy analysis in sandboxes, indexes session events and large artifacts in SQLite/FTS5, and returns only selected results to the model context.",
+      "mechanism": "An MCP and hook layer that executes heavy analysis in sandboxes, indexes session events and large artifacts in SQLite/FTS5, and returns only selected results to the model context.",
+      "technique_ids": [
+        "T04-execution-offload-code-mode"
+      ],
+      "technique_coverage": [],
+      "evidence_label": "`maintainer-examples`",
+      "reported_result": "Maintainer examples report 315 KB reduced to 5.4 KB and 47 file reads totaling about 700 KB replaced by one 3.6 KB execution result.",
+      "main_caveat": "The examples are not a neutral end-to-end benchmark. Generated analysis code and routing rules introduce correctness and sandbox boundaries; the repository uses Elastic License 2.0 rather than an OSI-approved license.",
+      "sources": [
+        "sources/seed-catalogs/AI-Coding-Token-Savers-Catalog-Revised.md",
+        "https://github.com/mksglu/context-mode"
+      ],
+      "reviewed_at": "2026-06-25",
+      "review_depth": "seed-catalog",
+      "status": "normalized-from-seed"
+    },
+    {
+      "id": "yvgude__lean-ctx",
+      "name": "lean-ctx",
+      "url": "https://github.com/yvgude/lean-ctx",
+      "kind": "technique-implementation",
+      "source_scope": "`direct`",
+      "catalog_section": "Integrated context management and memory",
+      "summary": "A local Rust context-intelligence layer combining cached and AST-aware file reads, shell-output compression, adaptive routing, persistent memory, a code graph, budgets, and an auditable savings ledger.",
+      "mechanism": "A local Rust context-intelligence layer combining cached and AST-aware file reads, shell-output compression, adaptive routing, persistent memory, a code graph, budgets, and an auditable savings ledger.",
+      "technique_ids": [
+        "T01-terminal-tool-output-compression",
+        "T02-targeted-code-retrieval",
+        "T06-persistent-memory-reinjection"
+      ],
+      "technique_coverage": [],
+      "evidence_label": "`mixed-maintainer-and-external-evidence`",
+      "reported_result": "Maintainer reports 60–90% fewer tokens for reads and shell output and cached rereads near 13 tokens. In Tokbench's N=1 external pilot, provider-billed input was 38% above native in MCP mode and 59% above native with the default integration.",
+      "main_caveat": "The product covers many mechanisms, but end-to-end savings depend on whether agents actually use the optimized surfaces and whether additional tool calls increase total turns. The external benchmark is configuration-specific and single-run.",
+      "sources": [
+        "sources/seed-catalogs/AI-Coding-Token-Savers-Catalog-Revised.md",
+        "https://github.com/yvgude/lean-ctx"
+      ],
+      "reviewed_at": "2026-06-25",
+      "review_depth": "seed-catalog",
+      "status": "normalized-from-seed"
+    },
+    {
+      "id": "ccusage__ccusage",
+      "name": "ccusage",
+      "url": "https://github.com/ccusage/ccusage",
+      "kind": "measurement",
+      "source_scope": "`measurement`",
+      "catalog_section": "Measurement and benchmarks",
+      "summary": "Reads local coding-agent logs and reports token use, cache tokens, models, sessions, billing windows, and estimated costs.",
+      "mechanism": "Reads local coding-agent logs and reports token use, cache tokens, models, sessions, billing windows, and estimated costs.",
+      "technique_ids": [
+        "T11-measurement-observability"
+      ],
+      "technique_coverage": [],
+      "evidence_label": "`monitoring-tool`",
+      "reported_result": "No automatic saving mechanism; enables measurement and regression tracking across many coding agents.",
+      "main_caveat": "Cost estimates depend on pricing data and the completeness of local logs.",
+      "sources": [
+        "sources/seed-catalogs/AI-Coding-Token-Savers-Catalog-Revised.md",
+        "https://github.com/ccusage/ccusage"
+      ],
+      "reviewed_at": "2026-06-25",
+      "review_depth": "seed-catalog",
+      "status": "normalized-from-seed"
+    },
+    {
+      "id": "Entelligentsia__tokbench",
+      "name": "tokbench",
+      "url": "https://github.com/Entelligentsia/tokbench",
+      "kind": "benchmark",
+      "source_scope": "`measurement`",
+      "catalog_section": "Measurement and benchmarks",
+      "summary": "An independent, transcript-preserving benchmark for token-saving middleware that compares provider-billed usage, product self-metrics, latency, and quality on a long-running software-engineering workflow.",
+      "mechanism": "An independent, transcript-preserving benchmark for token-saving middleware that compares provider-billed usage, product self-metrics, latency, and quality on a long-running software-engineering workflow.",
+      "technique_ids": [
+        "T12-benchmark-evaluation-frameworks"
+      ],
+      "technique_coverage": [],
+      "evidence_label": "`external-pilot-benchmark`",
+      "reported_result": "Its N=1 pilot found all tested middleware arms billed more input tokens than native on a context-frugal harness, even though Headroom verifiably removed 342K tokens on wire; multi-run replication was pending.",
+      "main_caveat": "The harness author discloses product conflicts, the pilot uses one task and provider, and single-run total differences cannot establish general performance; its main value is methodology and counter-evidence.",
+      "sources": [
+        "sources/seed-catalogs/AI-Coding-Token-Savers-Catalog-Revised.md",
+        "https://github.com/Entelligentsia/tokbench"
+      ],
+      "reviewed_at": "2026-06-25",
+      "review_depth": "seed-catalog",
+      "status": "normalized-from-seed"
+    },
+    {
+      "id": "getsentry__abacus",
+      "name": "abacus",
+      "url": "https://github.com/getsentry/abacus",
+      "kind": "measurement",
+      "source_scope": "`measurement`",
+      "catalog_section": "Measurement and benchmarks",
+      "summary": "Team dashboard for AI coding-tool token consumption, cost, model breakdown, users, and provider synchronization.",
+      "mechanism": "Team dashboard for AI coding-tool token consumption, cost, model breakdown, users, and provider synchronization.",
+      "technique_ids": [
+        "T11-measurement-observability"
+      ],
+      "technique_coverage": [],
+      "evidence_label": "`monitoring-tool`",
+      "reported_result": "No automatic token reduction; intended for organizational visibility and policy decisions.",
+      "main_caveat": "Requires administrative APIs, a database, and access controls appropriate for team usage data.",
+      "sources": [
+        "sources/seed-catalogs/AI-Coding-Token-Savers-Catalog-Revised.md",
+        "https://github.com/getsentry/abacus"
+      ],
+      "reviewed_at": "2026-06-25",
+      "review_depth": "seed-catalog",
+      "status": "normalized-from-seed"
+    },
+    {
+      "id": "graykode__abtop",
+      "name": "abtop",
+      "url": "https://github.com/graykode/abtop",
+      "kind": "measurement",
+      "source_scope": "`measurement`",
+      "catalog_section": "Measurement and benchmarks",
+      "summary": "A read-only TUI for live coding-agent sessions, token usage, context-window fill, rate limits, child processes, and ports.",
+      "mechanism": "A read-only TUI for live coding-agent sessions, token usage, context-window fill, rate limits, child processes, and ports.",
+      "technique_ids": [
+        "T11-measurement-observability"
+      ],
+      "technique_coverage": [],
+      "evidence_label": "`monitoring-tool`",
+      "reported_result": "No automatic token reduction; provides live signals for deciding when to compact, stop, or reconfigure sessions.",
+      "main_caveat": "Monitoring by itself does not establish causality or reduce context.",
+      "sources": [
+        "sources/seed-catalogs/AI-Coding-Token-Savers-Catalog-Revised.md",
+        "https://github.com/graykode/abtop"
+      ],
+      "reviewed_at": "2026-06-25",
+      "review_depth": "seed-catalog",
+      "status": "normalized-from-seed"
+    },
+    {
+      "id": "Piebald-AI__splitrail",
+      "name": "splitrail",
+      "url": "https://github.com/Piebald-AI/splitrail",
+      "kind": "measurement",
+      "source_scope": "`measurement`",
+      "catalog_section": "Measurement and benchmarks",
+      "summary": "Cross-platform token-usage and cost tracker for multiple coding agents, with CLI, VS Code, cloud aggregation, and MCP query tools.",
+      "mechanism": "Cross-platform token-usage and cost tracker for multiple coding agents, with CLI, VS Code, cloud aggregation, and MCP query tools.",
+      "technique_ids": [
+        "T11-measurement-observability"
+      ],
+      "technique_coverage": [],
+      "evidence_label": "`monitoring-tool`",
+      "reported_result": "No automatic saving mechanism; supports comparative usage analysis across tools.",
+      "main_caveat": "Optional cloud upload changes the privacy model; keep auto-upload disabled when local-only handling is required.",
+      "sources": [
+        "sources/seed-catalogs/AI-Coding-Token-Savers-Catalog-Revised.md",
+        "https://github.com/Piebald-AI/splitrail"
+      ],
+      "reviewed_at": "2026-06-25",
+      "review_depth": "seed-catalog",
+      "status": "normalized-from-seed"
+    },
+    {
+      "id": "pmcfadin__agentic-token-bench",
+      "name": "agentic-token-bench",
+      "url": "https://github.com/pmcfadin/agentic-token-bench",
+      "kind": "benchmark",
+      "source_scope": "`measurement`",
+      "catalog_section": "Measurement and benchmarks",
+      "summary": "A deterministic benchmark and installer that measures before/after tokens and quality for CLI tools used in coding-agent workflows.",
+      "mechanism": "A deterministic benchmark and installer that measures before/after tokens and quality for CLI tools used in coding-agent workflows.",
+      "technique_ids": [
+        "T12-benchmark-evaluation-frameworks"
+      ],
+      "technique_coverage": [],
+      "evidence_label": "`benchmark-suite`",
+      "reported_result": "Pinned Cassandra tasks report 65.1–99.2% reductions for six tools, with exact validators and a second quality-retention layer.",
+      "main_caveat": "Task-level artifact reduction is not the same as end-to-end session savings; workloads and agent behavior differ.",
+      "sources": [
+        "sources/seed-catalogs/AI-Coding-Token-Savers-Catalog-Revised.md",
+        "https://github.com/pmcfadin/agentic-token-bench"
+      ],
+      "reviewed_at": "2026-06-25",
+      "review_depth": "seed-catalog",
+      "status": "normalized-from-seed"
+    },
+    {
+      "id": "tokentopapp__tokentop",
+      "name": "tokentop",
+      "url": "https://github.com/tokentopapp/tokentop",
+      "kind": "measurement",
+      "source_scope": "`measurement`",
+      "catalog_section": "Measurement and benchmarks",
+      "summary": "Real-time local dashboard for provider and coding-agent token use, burn rate, budgets, cache leverage, and project-level costs.",
+      "mechanism": "Real-time local dashboard for provider and coding-agent token use, burn rate, budgets, cache leverage, and project-level costs.",
+      "technique_ids": [
+        "T11-measurement-observability"
+      ],
+      "technique_coverage": [],
+      "evidence_label": "`monitoring-tool`",
+      "reported_result": "No automatic saving mechanism; supplies budget guardrails and efficiency diagnostics.",
+      "main_caveat": "Provider APIs and locally discovered credentials can expose sensitive metadata; review storage and access controls.",
+      "sources": [
+        "sources/seed-catalogs/AI-Coding-Token-Savers-Catalog-Revised.md",
+        "https://github.com/tokentopapp/tokentop"
+      ],
+      "reviewed_at": "2026-06-25",
+      "review_depth": "seed-catalog",
+      "status": "normalized-from-seed"
+    },
+    {
+      "id": "coderamp-labs__gitingest",
+      "name": "gitingest",
+      "url": "https://github.com/coderamp-labs/gitingest",
+      "kind": "adjacent",
+      "source_scope": "`adjacent`",
+      "catalog_section": "Repository packing",
+      "summary": "Turns a local or remote Git repository into a prompt-friendly digest with file-tree, size, and token statistics.",
+      "mechanism": "Turns a local or remote Git repository into a prompt-friendly digest with file-tree, size, and token statistics.",
+      "technique_ids": [
+        "T10-repository-packing-digests"
+      ],
+      "technique_coverage": [],
+      "evidence_label": "`documented-mechanism`",
+      "reported_result": "No compression benchmark was reviewed; its value is selective, reproducible repository ingestion and token accounting.",
+      "main_caveat": "A digest is not automatically minimal; users must exclude generated, vendored, secret, and irrelevant files.",
+      "sources": [
+        "sources/seed-catalogs/AI-Coding-Token-Savers-Catalog-Revised.md",
+        "https://github.com/coderamp-labs/gitingest"
+      ],
+      "reviewed_at": "2026-06-25",
+      "review_depth": "seed-catalog",
+      "status": "normalized-from-seed"
+    },
+    {
+      "id": "yamadashy__repomix",
+      "name": "repomix",
+      "url": "https://github.com/yamadashy/repomix",
+      "kind": "adjacent",
+      "source_scope": "`adjacent`",
+      "catalog_section": "Repository packing",
+      "summary": "Packs repositories into AI-friendly files with token counts, include/exclude controls, and Tree-sitter code compression.",
+      "mechanism": "Packs repositories into AI-friendly files with token counts, include/exclude controls, and Tree-sitter code compression.",
+      "technique_ids": [
+        "T10-repository-packing-digests"
+      ],
+      "technique_coverage": [],
+      "evidence_label": "`documented-mechanism`",
+      "reported_result": "No universal reduction percentage was reviewed; the --compress mode extracts key code elements to reduce token count.",
+      "main_caveat": "Packing an entire repository can increase context use; aggressive filtering and compression are essential.",
+      "sources": [
+        "sources/seed-catalogs/AI-Coding-Token-Savers-Catalog-Revised.md",
+        "https://github.com/yamadashy/repomix"
+      ],
+      "reviewed_at": "2026-06-25",
+      "review_depth": "seed-catalog",
+      "status": "normalized-from-seed"
+    },
+    {
+      "id": "ipa-lab__minified-state-in-context-agent",
+      "name": "minified-state-in-context-agent",
+      "url": "https://github.com/ipa-lab/minified-state-in-context-agent",
+      "kind": "research",
+      "source_scope": "`research`",
+      "catalog_section": "Research and prompt compression",
+      "summary": "Research implementation of a direct-solve SWE-bench agent that minifies codebase state and compares file-ranking encodings and repair outcomes.",
+      "mechanism": "Research implementation of a direct-solve SWE-bench agent that minifies codebase state and compares file-ranking encodings and repair outcomes.",
+      "technique_ids": [
+        "T05-prompt-history-context-compression"
+      ],
+      "technique_coverage": [],
+      "evidence_label": "`research-implementation`",
+      "reported_result": "The associated paper reports substantial input-token reduction but also a lower issue-resolution rate, illustrating the quality trade-off.",
+      "main_caveat": "A research prototype, not a production plugin; reproduce against the pinned datasets and models before drawing conclusions.",
+      "sources": [
+        "sources/seed-catalogs/AI-Coding-Token-Savers-Catalog-Revised.md",
+        "https://github.com/ipa-lab/minified-state-in-context-agent"
+      ],
+      "reviewed_at": "2026-06-25",
+      "review_depth": "seed-catalog",
+      "status": "normalized-from-seed"
+    },
+    {
+      "id": "JuliusBrussee__cavegemma",
+      "name": "cavegemma",
+      "url": "https://github.com/JuliusBrussee/cavegemma",
+      "kind": "research",
+      "source_scope": "`research`",
+      "catalog_section": "Research and prompt compression",
+      "summary": "A Gemma 4 31B QLoRA fine-tune that bakes terse technical output into model weights so no recurring brevity system prompt is required.",
+      "mechanism": "A Gemma 4 31B QLoRA fine-tune that bakes terse technical output into model weights so no recurring brevity system prompt is required.",
+      "technique_ids": [
+        "T07-behavioral-output-compression"
+      ],
+      "technique_coverage": [],
+      "evidence_label": "`research-implementation`",
+      "reported_result": "On a 193-pair holdout, the maintainer reports about 65% compression, 91–98% semantic similarity by category, and 96–100% exact preservation of source code fences.",
+      "main_caveat": "The evaluation is style and semantic-similarity oriented rather than a coding-task benchmark; a 31B model has substantial hardware requirements and Gemma license terms apply to the weights.",
+      "sources": [
+        "sources/seed-catalogs/AI-Coding-Token-Savers-Catalog-Revised.md",
+        "https://github.com/JuliusBrussee/cavegemma"
+      ],
+      "reviewed_at": "2026-06-25",
+      "review_depth": "seed-catalog",
+      "status": "normalized-from-seed"
+    },
+    {
+      "id": "microsoft__LLMLingua",
+      "name": "LLMLingua",
+      "url": "https://github.com/microsoft/LLMLingua",
+      "kind": "research",
+      "source_scope": "`research`",
+      "catalog_section": "Research and prompt compression",
+      "summary": "Model-based prompt compression that removes lower-importance tokens, with LLMLingua, LongLLMLingua, and LLMLingua-2 implementations.",
+      "mechanism": "Model-based prompt compression that removes lower-importance tokens, with LLMLingua, LongLLMLingua, and LLMLingua-2 implementations.",
+      "technique_ids": [
+        "T05-prompt-history-context-compression"
+      ],
+      "technique_coverage": [],
+      "evidence_label": "`peer-reviewed-research`",
+      "reported_result": "Project reports up to 20× compression in research settings, with task-dependent quality retention.",
+      "main_caveat": "Not coding-agent-specific; code, JSON, and tool schemas can be brittle under learned token deletion and require dedicated evaluation.",
+      "sources": [
+        "sources/seed-catalogs/AI-Coding-Token-Savers-Catalog-Revised.md",
+        "https://github.com/microsoft/LLMLingua"
+      ],
+      "reviewed_at": "2026-06-25",
+      "review_depth": "seed-catalog",
+      "status": "normalized-from-seed"
+    },
+    {
+      "id": "Sudhendra__compression-layer",
+      "name": "compression-layer",
+      "url": "https://github.com/Sudhendra/compression-layer",
+      "kind": "research",
+      "source_scope": "`research`",
+      "catalog_section": "Research and prompt compression",
+      "summary": "Trains small-model LoRA adapters to rewrite verbose context into shorter representations and evaluates downstream equivalence.",
+      "mechanism": "Trains small-model LoRA adapters to rewrite verbose context into shorter representations and evaluates downstream equivalence.",
+      "technique_ids": [
+        "T05-prompt-history-context-compression"
+      ],
+      "technique_coverage": [],
+      "evidence_label": "`research-evaluation`",
+      "reported_result": "Adapters reached roughly 35–39% output/input token ratios, but the published DS1000 results show large code-generation quality losses for aggressive learned compression.",
+      "main_caveat": "Useful as a cautionary benchmark: compression ratio alone is not evidence that coding quality is preserved.",
+      "sources": [
+        "sources/seed-catalogs/AI-Coding-Token-Savers-Catalog-Revised.md",
+        "https://github.com/Sudhendra/compression-layer"
+      ],
+      "reviewed_at": "2026-06-25",
+      "review_depth": "seed-catalog",
+      "status": "normalized-from-seed"
+    },
+    {
+      "id": "dean0x__skim",
+      "name": "skim",
+      "url": "https://github.com/dean0x/skim",
+      "kind": "technique-implementation",
+      "source_scope": "`direct`",
+      "catalog_section": "Terminal and tool-output compression",
+      "summary": "AST-aware code skimming plus command rewriting and compactors for test, build, lint, package-manager, and Git output.",
+      "mechanism": "AST-aware code skimming plus command rewriting and compactors for test, build, lint, package-manager, and Git output.",
+      "technique_ids": [
+        "T01-terminal-tool-output-compression"
+      ],
+      "technique_coverage": [],
+      "evidence_label": "`maintainer-benchmark`",
+      "reported_result": "Maintainer examples show code transformation modes ranging from light cleanup to roughly 90–95% reduction for signatures or types.",
+      "main_caveat": "Aggressive structural modes deliberately omit implementations and are unsuitable when exact behavior is required.",
+      "sources": [
+        "sources/seed-catalogs/AI-Coding-Token-Savers-Catalog-Revised.md",
+        "https://github.com/dean0x/skim"
+      ],
+      "reviewed_at": "2026-06-25",
+      "review_depth": "seed-catalog",
+      "status": "normalized-from-seed"
+    },
+    {
+      "id": "dPeluChe__trs",
+      "name": "trs",
+      "url": "https://github.com/dPeluChe/trs",
+      "kind": "technique-implementation",
+      "source_scope": "`direct`",
+      "catalog_section": "Terminal and tool-output compression",
+      "summary": "A native token-reducing shell that parses command output, rewrites supported commands, provides compact file/search tools, builds budgeted project digests, and can install an output-saver rules block.",
+      "mechanism": "A native token-reducing shell that parses command output, rewrites supported commands, provides compact file/search tools, builds budgeted project digests, and can install an output-saver rules block.",
+      "technique_ids": [
+        "T01-terminal-tool-output-compression"
+      ],
+      "technique_coverage": [],
+      "evidence_label": "`maintainer-measurement`",
+      "reported_result": "Maintainer examples report 76% reduction for git status, 90% for cargo clippy, and 99% for an all-passing cargo test output; unsupported commands receive generic cleanup.",
+      "main_caveat": "Examples are command-level reductions rather than an end-to-end coding-task benchmark, and parser coverage varies by command and platform.",
+      "sources": [
+        "sources/seed-catalogs/AI-Coding-Token-Savers-Catalog-Revised.md",
+        "https://github.com/dPeluChe/trs"
+      ],
+      "reviewed_at": "2026-06-25",
+      "review_depth": "seed-catalog",
+      "status": "normalized-from-seed"
+    },
+    {
+      "id": "ldomaradzki__xcsift",
+      "name": "xcsift",
+      "url": "https://github.com/ldomaradzki/xcsift",
+      "kind": "technique-implementation",
+      "source_scope": "`direct`",
+      "catalog_section": "Terminal and tool-output compression",
+      "summary": "Parses Xcode and Swift Package Manager build/test output into concise JSON, TOON, or GitHub Actions formats for coding agents.",
+      "mechanism": "Parses Xcode and Swift Package Manager build/test output into concise JSON, TOON, or GitHub Actions formats for coding agents.",
+      "technique_ids": [
+        "T01-terminal-tool-output-compression"
+      ],
+      "technique_coverage": [],
+      "evidence_label": "`maintainer-measurement`",
+      "reported_result": "Maintainer reports the TOON format uses roughly 30–60% fewer tokens than its JSON representation.",
+      "main_caveat": "Specialized for Swift/Xcode workflows and does not reduce source-code context itself.",
+      "sources": [
+        "sources/seed-catalogs/AI-Coding-Token-Savers-Catalog-Revised.md",
+        "https://github.com/ldomaradzki/xcsift"
+      ],
+      "reviewed_at": "2026-06-25",
+      "review_depth": "seed-catalog",
+      "status": "normalized-from-seed"
+    },
+    {
+      "id": "Pask00__mcp-trim",
+      "name": "mcp-trim",
+      "url": "https://github.com/Pask00/mcp-trim",
+      "kind": "technique-implementation",
+      "source_scope": "`direct`",
+      "catalog_section": "Terminal and tool-output compression",
+      "summary": "A Claude Code post-tool hook that strips unused fields from MCP JSON responses using explicit or learned keep-rules.",
+      "mechanism": "A Claude Code post-tool hook that strips unused fields from MCP JSON responses using explicit or learned keep-rules.",
+      "technique_ids": [
+        "T01-terminal-tool-output-compression"
+      ],
+      "technique_coverage": [],
+      "evidence_label": "`documented-mechanism`",
+      "reported_result": "README includes an auto-learning example estimating about 65% response-size savings for a GitHub MCP call.",
+      "main_caveat": "Incorrect field rules can remove information the agent later needs; rules should be reviewed and versioned.",
+      "sources": [
+        "sources/seed-catalogs/AI-Coding-Token-Savers-Catalog-Revised.md",
+        "https://github.com/Pask00/mcp-trim"
+      ],
+      "reviewed_at": "2026-06-25",
+      "review_depth": "seed-catalog",
+      "status": "normalized-from-seed"
+    },
+    {
+      "id": "rtk-ai__rtk",
+      "name": "rtk",
+      "url": "https://github.com/rtk-ai/rtk",
+      "kind": "technique-implementation",
+      "source_scope": "`direct`",
+      "catalog_section": "Terminal and tool-output compression",
+      "summary": "A Rust CLI proxy that filters and compresses shell, Git, test, build, package-manager, and other command output before it enters an agent context.",
+      "mechanism": "A Rust CLI proxy that filters and compresses shell, Git, test, build, package-manager, and other command output before it enters an agent context.",
+      "technique_ids": [
+        "T01-terminal-tool-output-compression"
+      ],
+      "technique_coverage": [],
+      "evidence_label": "`mixed-maintainer-and-external-evidence`",
+      "reported_result": "Maintainer reports roughly 60–90% reduction for supported command output. Tokbench independently observed 74.7% reduction on commands RTK touched, but those commands represented only about 2.5% of total spend in its N=1 pilot and the full run billed 27% more input tokens than native.",
+      "main_caveat": "Operation-level compression does not guarantee lower task-level billing; command coverage, turn count, prompt caching, and harness design determine the addressable surface. The external result is a single-run pilot.",
+      "sources": [
+        "sources/seed-catalogs/AI-Coding-Token-Savers-Catalog-Revised.md",
+        "https://github.com/rtk-ai/rtk"
+      ],
+      "reviewed_at": "2026-06-25",
+      "review_depth": "seed-catalog",
+      "status": "normalized-from-seed"
+    },
+    {
+      "id": "vincentkoc__tokenjuice",
+      "name": "tokenjuice",
+      "url": "https://github.com/vincentkoc/tokenjuice",
+      "kind": "technique-implementation",
+      "source_scope": "`direct`",
+      "catalog_section": "Terminal and tool-output compression",
+      "summary": "Deterministic, rule-driven compaction of noisy terminal output, with raw output available on demand and many agent-specific installers.",
+      "mechanism": "Deterministic, rule-driven compaction of noisy terminal output, with raw output available on demand and many agent-specific installers.",
+      "technique_ids": [
+        "T01-terminal-tool-output-compression"
+      ],
+      "technique_coverage": [],
+      "evidence_label": "`documented-mechanism`",
+      "reported_result": "No quantified end-to-end benchmark was reviewed; the README documents deterministic reducers and broad integrations.",
+      "main_caveat": "Reducer coverage varies by command and integration; inspect raw output when diagnostics are incomplete.",
+      "sources": [
+        "sources/seed-catalogs/AI-Coding-Token-Savers-Catalog-Revised.md",
+        "https://github.com/vincentkoc/tokenjuice"
+      ],
+      "reviewed_at": "2026-06-25",
+      "review_depth": "seed-catalog",
+      "status": "normalized-from-seed"
+    },
+    {
+      "id": "0xhimanshu__governor",
+      "name": "governor",
+      "url": "https://github.com/0xhimanshu/governor",
+      "kind": "bundle",
+      "summary": "Claude Code usage governor with compact output, context slimming, tool-output filtering, telemetry, drift guardrails.",
+      "mechanism": "Claude Code usage governor with compact output, context slimming, tool-output filtering, telemetry, drift guardrails.",
+      "technique_ids": [],
+      "technique_coverage": [
+        "T01-terminal-tool-output-compression"
+      ],
+      "evidence_label": "discovery-lead",
+      "reported_result": "Not yet reviewed beyond discovery metadata/search snippets.",
+      "main_caveat": "Needs README/source inspection before being treated as evidence.",
+      "sources": [
+        "sources/discovery/github-search-results.json",
+        "https://github.com/0xhimanshu/governor"
+      ],
+      "reviewed_at": "2026-06-25",
+      "review_depth": "discovery",
+      "status": "candidate",
+      "discovery_routes": [
+        "github-search"
+      ]
+    },
+    {
+      "id": "borhen68__TokenTamer",
+      "name": "TokenTamer",
+      "url": "https://github.com/borhen68/TokenTamer",
+      "kind": "technique-implementation",
+      "summary": "Drop-in proxy that compresses bloated code context in real time.",
+      "mechanism": "Drop-in proxy that compresses bloated code context in real time.",
+      "technique_ids": [
+        "T05-prompt-history-context-compression"
+      ],
+      "technique_coverage": [],
+      "evidence_label": "discovery-lead",
+      "reported_result": "Not yet reviewed beyond discovery metadata/search snippets.",
+      "main_caveat": "Needs README/source inspection before being treated as evidence.",
+      "sources": [
+        "sources/discovery/github-search-results.json",
+        "https://github.com/borhen68/TokenTamer"
+      ],
+      "reviewed_at": "2026-06-25",
+      "review_depth": "discovery",
+      "status": "candidate",
+      "discovery_routes": [
+        "github-search"
+      ]
+    },
+    {
+      "id": "Context-Engine-AI__Context-Engine",
+      "name": "Context-Engine",
+      "url": "https://github.com/Context-Engine-AI/Context-Engine",
+      "kind": "technique-implementation",
+      "summary": "MCP agentic context-compression suite.",
+      "mechanism": "MCP agentic context-compression suite.",
+      "technique_ids": [
+        "T05-prompt-history-context-compression"
+      ],
+      "technique_coverage": [],
+      "evidence_label": "discovery-lead",
+      "reported_result": "Not yet reviewed beyond discovery metadata/search snippets.",
+      "main_caveat": "Needs README/source inspection before being treated as evidence.",
+      "sources": [
+        "sources/discovery/github-search-results.json",
+        "https://github.com/Context-Engine-AI/Context-Engine"
+      ],
+      "reviewed_at": "2026-06-25",
+      "review_depth": "discovery",
+      "status": "candidate",
+      "discovery_routes": [
+        "github-search"
+      ]
+    },
+    {
+      "id": "decolua__9router",
+      "name": "9router",
+      "url": "https://github.com/decolua/9router",
+      "kind": "bundle",
+      "summary": "Gateway/router stack for Claude Code/Codex/Cursor/Cline/Copilot/Antigravity with RTK token-saving claims.",
+      "mechanism": "Gateway/router stack for Claude Code/Codex/Cursor/Cline/Copilot/Antigravity with RTK token-saving claims.",
+      "technique_ids": [],
+      "technique_coverage": [
+        "T09-model-routing-cache-economics"
+      ],
+      "evidence_label": "discovery-lead",
+      "reported_result": "Not yet reviewed beyond discovery metadata/search snippets.",
+      "main_caveat": "Needs README/source inspection before being treated as evidence.",
+      "sources": [
+        "sources/discovery/github-search-results.json",
+        "https://github.com/decolua/9router"
+      ],
+      "reviewed_at": "2026-06-25",
+      "review_depth": "discovery",
+      "status": "candidate",
+      "discovery_routes": [
+        "github-search"
+      ]
+    },
+    {
+      "id": "diegosouzapw__OmniRoute",
+      "name": "OmniRoute",
+      "url": "https://github.com/diegosouzapw/OmniRoute",
+      "kind": "bundle",
+      "summary": "Gateway/router for AI coding tools with RTK and Caveman stacked compression claims.",
+      "mechanism": "Gateway/router for AI coding tools with RTK and Caveman stacked compression claims.",
+      "technique_ids": [],
+      "technique_coverage": [
+        "T09-model-routing-cache-economics"
+      ],
+      "evidence_label": "discovery-lead",
+      "reported_result": "Not yet reviewed beyond discovery metadata/search snippets.",
+      "main_caveat": "Needs README/source inspection before being treated as evidence.",
+      "sources": [
+        "sources/discovery/github-search-results.json",
+        "https://github.com/diegosouzapw/OmniRoute"
+      ],
+      "reviewed_at": "2026-06-25",
+      "review_depth": "discovery",
+      "status": "candidate",
+      "discovery_routes": [
+        "github-search"
+      ]
+    },
+    {
+      "id": "edouard-claude__snip",
+      "name": "snip",
+      "url": "https://github.com/edouard-claude/snip",
+      "kind": "technique-implementation",
+      "summary": "Go CLI proxy with declarative YAML filters for Claude Code/Cursor/Copilot/Gemini command-output reduction.",
+      "mechanism": "Go CLI proxy with declarative YAML filters for Claude Code/Cursor/Copilot/Gemini command-output reduction.",
+      "technique_ids": [
+        "T01-terminal-tool-output-compression"
+      ],
+      "technique_coverage": [],
+      "evidence_label": "discovery-lead",
+      "reported_result": "Not yet reviewed beyond discovery metadata/search snippets.",
+      "main_caveat": "Needs README/source inspection before being treated as evidence.",
+      "sources": [
+        "sources/discovery/github-search-results.json",
+        "https://github.com/edouard-claude/snip"
+      ],
+      "reviewed_at": "2026-06-25",
+      "review_depth": "discovery",
+      "status": "candidate",
+      "discovery_routes": [
+        "github-search"
+      ]
+    },
+    {
+      "id": "fajarhide__omni",
+      "name": "omni",
+      "url": "https://github.com/fajarhide/omni",
+      "kind": "technique-implementation",
+      "summary": "Noise-canceling context and long-term memory for AI agents; targets terminal/context noise.",
+      "mechanism": "Noise-canceling context and long-term memory for AI agents; targets terminal/context noise.",
+      "technique_ids": [
+        "T06-persistent-memory-reinjection"
+      ],
+      "technique_coverage": [],
+      "evidence_label": "discovery-lead",
+      "reported_result": "Not yet reviewed beyond discovery metadata/search snippets.",
+      "main_caveat": "Needs README/source inspection before being treated as evidence.",
+      "sources": [
+        "sources/discovery/github-search-results.json",
+        "https://github.com/fajarhide/omni"
+      ],
+      "reviewed_at": "2026-06-25",
+      "review_depth": "discovery",
+      "status": "candidate",
+      "discovery_routes": [
+        "github-search"
+      ]
+    },
+    {
+      "id": "FreePeak__LeanKG",
+      "name": "LeanKG",
+      "url": "https://github.com/FreePeak/LeanKG",
+      "kind": "technique-implementation",
+      "summary": "Knowledge-graph/code-structure system marketed as lean coding context for agents.",
+      "mechanism": "Knowledge-graph/code-structure system marketed as lean coding context for agents.",
+      "technique_ids": [
+        "T02-targeted-code-retrieval"
+      ],
+      "technique_coverage": [],
+      "evidence_label": "discovery-lead",
+      "reported_result": "Not yet reviewed beyond discovery metadata/search snippets.",
+      "main_caveat": "Needs README/source inspection before being treated as evidence.",
+      "sources": [
+        "sources/discovery/github-search-results.json",
+        "https://github.com/FreePeak/LeanKG"
+      ],
+      "reviewed_at": "2026-06-25",
+      "review_depth": "discovery",
+      "status": "candidate",
+      "discovery_routes": [
+        "github-search"
+      ]
+    },
+    {
+      "id": "gglucass__headroom-desktop",
+      "name": "headroom-desktop",
+      "url": "https://github.com/gglucass/headroom-desktop",
+      "kind": "adjacent",
+      "summary": "Desktop product around Headroom-style compression for Claude Code and Codex usage.",
+      "mechanism": "Desktop product around Headroom-style compression for Claude Code and Codex usage.",
+      "technique_ids": [
+        "T05-prompt-history-context-compression"
+      ],
+      "technique_coverage": [],
+      "evidence_label": "discovery-lead",
+      "reported_result": "Not yet reviewed beyond discovery metadata/search snippets.",
+      "main_caveat": "Needs README/source inspection before being treated as evidence.",
+      "sources": [
+        "sources/discovery/github-search-results.json",
+        "https://github.com/gglucass/headroom-desktop"
+      ],
+      "reviewed_at": "2026-06-25",
+      "review_depth": "discovery",
+      "status": "candidate",
+      "discovery_routes": [
+        "github-search"
+      ]
+    },
+    {
+      "id": "hashgraph-online__awesome-ai-plugins",
+      "name": "awesome-ai-plugins",
+      "url": "https://github.com/hashgraph-online/awesome-ai-plugins",
+      "kind": "catalog",
+      "summary": "Curated plugin list for AI assistants including Claude Code and Codex; source for token-saving plugin leads.",
+      "mechanism": "Curated plugin list for AI assistants including Claude Code and Codex; source for token-saving plugin leads.",
+      "technique_ids": [],
+      "technique_coverage": [
+        "T12-benchmark-evaluation-frameworks"
+      ],
+      "evidence_label": "discovery-lead",
+      "reported_result": "Not yet reviewed beyond discovery metadata/search snippets.",
+      "main_caveat": "Needs README/source inspection before being treated as evidence.",
+      "sources": [
+        "sources/discovery/github-search-results.json",
+        "https://github.com/hashgraph-online/awesome-ai-plugins"
+      ],
+      "reviewed_at": "2026-06-25",
+      "review_depth": "discovery",
+      "status": "candidate",
+      "discovery_routes": [
+        "github-search"
+      ]
+    },
+    {
+      "id": "hashgraph-online__awesome-codex-plugins",
+      "name": "awesome-codex-plugins",
+      "url": "https://github.com/hashgraph-online/awesome-codex-plugins",
+      "kind": "catalog",
+      "summary": "Curated OpenAI Codex plugin/skill/resource list; includes token-saving and context plugins.",
+      "mechanism": "Curated OpenAI Codex plugin/skill/resource list; includes token-saving and context plugins.",
+      "technique_ids": [],
+      "technique_coverage": [
+        "T12-benchmark-evaluation-frameworks"
+      ],
+      "evidence_label": "discovery-lead",
+      "reported_result": "Not yet reviewed beyond discovery metadata/search snippets.",
+      "main_caveat": "Needs README/source inspection before being treated as evidence.",
+      "sources": [
+        "sources/discovery/github-search-results.json",
+        "https://github.com/hashgraph-online/awesome-codex-plugins"
+      ],
+      "reviewed_at": "2026-06-25",
+      "review_depth": "discovery",
+      "status": "candidate",
+      "discovery_routes": [
+        "github-search"
+      ]
+    },
+    {
+      "id": "jgravelle__jcodemunch-mcp",
+      "name": "jcodemunch-mcp",
+      "url": "https://github.com/jgravelle/jcodemunch-mcp",
+      "kind": "technique-implementation",
+      "summary": "Tree-sitter MCP for precise symbol-level GitHub code retrieval; advertises 95%+ code-exploration token cost cuts.",
+      "mechanism": "Tree-sitter MCP for precise symbol-level GitHub code retrieval; advertises 95%+ code-exploration token cost cuts.",
+      "technique_ids": [
+        "T02-targeted-code-retrieval"
+      ],
+      "technique_coverage": [],
+      "evidence_label": "discovery-lead",
+      "reported_result": "Not yet reviewed beyond discovery metadata/search snippets.",
+      "main_caveat": "Needs README/source inspection before being treated as evidence.",
+      "sources": [
+        "sources/discovery/github-search-results.json",
+        "https://github.com/jgravelle/jcodemunch-mcp"
+      ],
+      "reviewed_at": "2026-06-25",
+      "review_depth": "discovery",
+      "status": "candidate",
+      "discovery_routes": [
+        "github-search"
+      ]
+    },
+    {
+      "id": "juyterman1000__entroly",
+      "name": "entroly",
+      "url": "https://github.com/juyterman1000/entroly",
+      "kind": "agent-runtime-or-routing",
+      "summary": "Local proxy that compresses context, keeps provider caches hot, and verifies LLM output.",
+      "mechanism": "Local proxy that compresses context, keeps provider caches hot, and verifies LLM output.",
+      "technique_ids": [
+        "T09-model-routing-cache-economics"
+      ],
+      "technique_coverage": [],
+      "evidence_label": "discovery-lead",
+      "reported_result": "Not yet reviewed beyond discovery metadata/search snippets.",
+      "main_caveat": "Needs README/source inspection before being treated as evidence.",
+      "sources": [
+        "sources/discovery/github-search-results.json",
+        "https://github.com/juyterman1000/entroly"
+      ],
+      "reviewed_at": "2026-06-25",
+      "review_depth": "discovery",
+      "status": "candidate",
+      "discovery_routes": [
+        "github-search"
+      ]
+    },
+    {
+      "id": "lokikill123__codex-token-skills",
+      "name": "codex-token-skills",
+      "url": "https://github.com/lokikill123/codex-token-skills",
+      "kind": "bundle",
+      "summary": "Codex CLI token-saver and memory skills with prefix-cache optimization.",
+      "mechanism": "Codex CLI token-saver and memory skills with prefix-cache optimization.",
+      "technique_ids": [],
+      "technique_coverage": [
+        "T09-model-routing-cache-economics"
+      ],
+      "evidence_label": "discovery-lead",
+      "reported_result": "Not yet reviewed beyond discovery metadata/search snippets.",
+      "main_caveat": "Needs README/source inspection before being treated as evidence.",
+      "sources": [
+        "sources/discovery/github-search-results.json",
+        "https://github.com/lokikill123/codex-token-skills"
+      ],
+      "reviewed_at": "2026-06-25",
+      "review_depth": "discovery",
+      "status": "candidate",
+      "discovery_routes": [
+        "github-search"
+      ]
+    },
+    {
+      "id": "manojmallick__sigmap",
+      "name": "sigmap",
+      "url": "https://github.com/manojmallick/sigmap",
+      "kind": "technique-implementation",
+      "summary": "MCP/code-analysis tool advertising large token reduction for AI coding sessions across many languages.",
+      "mechanism": "MCP/code-analysis tool advertising large token reduction for AI coding sessions across many languages.",
+      "technique_ids": [
+        "T02-targeted-code-retrieval"
+      ],
+      "technique_coverage": [],
+      "evidence_label": "discovery-lead",
+      "reported_result": "Not yet reviewed beyond discovery metadata/search snippets.",
+      "main_caveat": "Needs README/source inspection before being treated as evidence.",
+      "sources": [
+        "sources/discovery/github-search-results.json",
+        "https://github.com/manojmallick/sigmap"
+      ],
+      "reviewed_at": "2026-06-25",
+      "review_depth": "discovery",
+      "status": "candidate",
+      "discovery_routes": [
+        "github-search"
+      ]
+    },
+    {
+      "id": "mex-memory__mex",
+      "name": "mex",
+      "url": "https://github.com/mex-memory/mex",
+      "kind": "technique-implementation",
+      "summary": "Persistent project memory for AI coding agents with structured scaffold and drift detection.",
+      "mechanism": "Persistent project memory for AI coding agents with structured scaffold and drift detection.",
+      "technique_ids": [
+        "T06-persistent-memory-reinjection"
+      ],
+      "technique_coverage": [],
+      "evidence_label": "discovery-lead",
+      "reported_result": "Not yet reviewed beyond discovery metadata/search snippets.",
+      "main_caveat": "Needs README/source inspection before being treated as evidence.",
+      "sources": [
+        "sources/discovery/github-search-results.json",
+        "https://github.com/mex-memory/mex"
+      ],
+      "reviewed_at": "2026-06-25",
+      "review_depth": "discovery",
+      "status": "candidate",
+      "discovery_routes": [
+        "github-search"
+      ]
+    },
+    {
+      "id": "NickCirv__engram",
+      "name": "engram",
+      "url": "https://github.com/NickCirv/engram",
+      "kind": "technique-implementation",
+      "summary": "Context spine for AI coding sessions across IDEs and agents.",
+      "mechanism": "Context spine for AI coding sessions across IDEs and agents.",
+      "technique_ids": [
+        "T06-persistent-memory-reinjection"
+      ],
+      "technique_coverage": [],
+      "evidence_label": "discovery-lead",
+      "reported_result": "Not yet reviewed beyond discovery metadata/search snippets.",
+      "main_caveat": "Needs README/source inspection before being treated as evidence.",
+      "sources": [
+        "sources/discovery/github-search-results.json",
+        "https://github.com/NickCirv/engram"
+      ],
+      "reviewed_at": "2026-06-25",
+      "review_depth": "discovery",
+      "status": "candidate",
+      "discovery_routes": [
+        "github-search"
+      ]
+    },
+    {
+      "id": "open-compress__claw-compactor",
+      "name": "claw-compactor",
+      "url": "https://github.com/open-compress/claw-compactor",
+      "kind": "technique-implementation",
+      "summary": "Multi-stage reversible/context-aware token compression with AST-aware code analysis and routing.",
+      "mechanism": "Multi-stage reversible/context-aware token compression with AST-aware code analysis and routing.",
+      "technique_ids": [
+        "T05-prompt-history-context-compression"
+      ],
+      "technique_coverage": [],
+      "evidence_label": "discovery-lead",
+      "reported_result": "Not yet reviewed beyond discovery metadata/search snippets.",
+      "main_caveat": "Needs README/source inspection before being treated as evidence.",
+      "sources": [
+        "sources/discovery/github-search-results.json",
+        "https://github.com/open-compress/claw-compactor"
+      ],
+      "reviewed_at": "2026-06-25",
+      "review_depth": "discovery",
+      "status": "candidate",
+      "discovery_routes": [
+        "github-search"
+      ]
+    },
+    {
+      "id": "ppgranger__token-saver",
+      "name": "token-saver",
+      "url": "https://github.com/ppgranger/token-saver",
+      "kind": "technique-implementation",
+      "summary": "Content-aware output compression for AI coding assistants with structural summaries for code and schema extraction.",
+      "mechanism": "Content-aware output compression for AI coding assistants with structural summaries for code and schema extraction.",
+      "technique_ids": [
+        "T05-prompt-history-context-compression"
+      ],
+      "technique_coverage": [],
+      "evidence_label": "discovery-lead",
+      "reported_result": "Not yet reviewed beyond discovery metadata/search snippets.",
+      "main_caveat": "Needs README/source inspection before being treated as evidence.",
+      "sources": [
+        "sources/discovery/github-search-results.json",
+        "https://github.com/ppgranger/token-saver"
+      ],
+      "reviewed_at": "2026-06-25",
+      "review_depth": "discovery",
+      "status": "candidate",
+      "discovery_routes": [
+        "github-search"
+      ]
+    },
+    {
+      "id": "rohitg00__awesome-claude-code-toolkit",
+      "name": "awesome-claude-code-toolkit",
+      "url": "https://github.com/rohitg00/awesome-claude-code-toolkit",
+      "kind": "catalog",
+      "summary": "Large Claude Code toolkit catalog containing many token/cost/context-management entries.",
+      "mechanism": "Large Claude Code toolkit catalog containing many token/cost/context-management entries.",
+      "technique_ids": [],
+      "technique_coverage": [
+        "T12-benchmark-evaluation-frameworks"
+      ],
+      "evidence_label": "discovery-lead",
+      "reported_result": "Not yet reviewed beyond discovery metadata/search snippets.",
+      "main_caveat": "Needs README/source inspection before being treated as evidence.",
+      "sources": [
+        "sources/discovery/github-search-results.json",
+        "https://github.com/rohitg00/awesome-claude-code-toolkit"
+      ],
+      "reviewed_at": "2026-06-25",
+      "review_depth": "discovery",
+      "status": "candidate",
+      "discovery_routes": [
+        "github-search"
+      ]
+    },
+    {
+      "id": "tirth8205__code-review-graph",
+      "name": "code-review-graph",
+      "url": "https://github.com/tirth8205/code-review-graph",
+      "kind": "technique-implementation",
+      "summary": "Local-first code intelligence graph for MCP/CLI with benchmarked context reductions on review tasks.",
+      "mechanism": "Local-first code intelligence graph for MCP/CLI with benchmarked context reductions on review tasks.",
+      "technique_ids": [
+        "T02-targeted-code-retrieval"
+      ],
+      "technique_coverage": [],
+      "evidence_label": "discovery-lead",
+      "reported_result": "Not yet reviewed beyond discovery metadata/search snippets.",
+      "main_caveat": "Needs README/source inspection before being treated as evidence.",
+      "sources": [
+        "sources/discovery/github-search-results.json",
+        "https://github.com/tirth8205/code-review-graph"
+      ],
+      "reviewed_at": "2026-06-25",
+      "review_depth": "discovery",
+      "status": "candidate",
+      "discovery_routes": [
+        "github-search"
+      ]
+    },
+    {
+      "id": "zdk__lowfat",
+      "name": "lowfat",
+      "url": "https://github.com/zdk/lowfat",
+      "kind": "technique-implementation",
+      "summary": "CLI that slims command output by stripping noise to save tokens.",
+      "mechanism": "CLI that slims command output by stripping noise to save tokens.",
+      "technique_ids": [
+        "T01-terminal-tool-output-compression"
+      ],
+      "technique_coverage": [],
+      "evidence_label": "discovery-lead",
+      "reported_result": "Not yet reviewed beyond discovery metadata/search snippets.",
+      "main_caveat": "Needs README/source inspection before being treated as evidence.",
+      "sources": [
+        "sources/discovery/github-search-results.json",
+        "https://github.com/zdk/lowfat"
+      ],
+      "reviewed_at": "2026-06-25",
+      "review_depth": "discovery",
+      "status": "candidate",
+      "discovery_routes": [
+        "github-topic-token-saving"
+      ]
+    },
+    {
+      "id": "zilliztech__claude-context",
+      "name": "claude-context",
+      "url": "https://github.com/zilliztech/claude-context",
+      "kind": "technique-implementation",
+      "summary": "Code search MCP for Claude Code; makes the entire codebase searchable context for coding agents.",
+      "mechanism": "Code search MCP for Claude Code; makes the entire codebase searchable context for coding agents.",
+      "technique_ids": [
+        "T02-targeted-code-retrieval"
+      ],
+      "technique_coverage": [],
+      "evidence_label": "discovery-lead",
+      "reported_result": "Not yet reviewed beyond discovery metadata/search snippets.",
+      "main_caveat": "Needs README/source inspection before being treated as evidence.",
+      "sources": [
+        "sources/discovery/github-search-results.json",
+        "https://github.com/zilliztech/claude-context"
+      ],
+      "reviewed_at": "2026-06-25",
+      "review_depth": "discovery",
+      "status": "candidate",
+      "discovery_routes": [
+        "github-search"
+      ]
+    },
+    {
+      "id": "egonex-ai__understand-anything",
+      "name": "Understand-Anything",
+      "url": "https://github.com/Egonex-AI/Understand-Anything",
+      "kind": "technique-implementation",
+      "source_scope": "`direct`",
+      "catalog_section": "Code retrieval and context selection",
+      "summary": "Turns code into an interactive knowledge graph for exploration, search, and question answering across Claude Code, Codex, Cursor, Copilot, Gemini CLI, and similar agents.",
+      "mechanism": "Understand-Anything is a skills/plugin workspace for generating and querying codebase knowledge graphs and dashboards. Source inspection confirms deterministic helper scripts for file enumeration and structural extraction, a core graph schema/sanitizer, Fuse-based search, prompt-context builders, and installer symlink behavior across agent hosts. Evidence is source-logic only; no benchmark-audit was performed.",
+      "technique_ids": [
+        "T02-targeted-code-retrieval"
+      ],
+      "technique_coverage": [],
+      "evidence_label": "`source-logic`",
+      "reported_result": "GitHub coverage audit found this repository with 68919 stars and repository metadata relevant to AI-agent knowledge graphs; claims have not been source-inspected here yet.",
+      "main_caveat": "Source-code logic has been inspected for representative mechanism, integration, state, and failure behavior; benchmark-audit and reproduction evidence remain required before measured savings or deployment-grade recommendations.",
+      "sources": [
+        "sources/discovery/2026-06-28-knowledge-graph-coverage-audit.json",
+        "https://github.com/Egonex-AI/Understand-Anything",
+        "docs/tool-dossiers/egonex-ai-understand-anything.md",
+        "sources/discovery/2026-06-29-graph-leads-a-source-logic.json"
+      ],
+      "reviewed_at": "2026-06-29",
+      "review_depth": "source-logic",
+      "status": "source-logic-reviewed"
+    },
+    {
+      "id": "swarmclawai__swarmvault",
+      "name": "swarmvault",
+      "url": "https://github.com/swarmclawai/swarmvault",
+      "kind": "technique-implementation",
+      "source_scope": "`direct`",
+      "catalog_section": "Persistent memory and knowledge bases",
+      "summary": "Local-first LLM wiki, knowledge graph builder, RAG knowledge base, and durable agent memory store for Claude Code, Codex, and OpenClaw-style workflows.",
+      "mechanism": "SwarmVault is a TypeScript workspace for ingesting sources into a local vault/wiki/graph, exposing graph/search/retrieval/memory workflows through CLI/MCP and an Obsidian plugin. Source inspection confirms SQLite FTS retrieval artifacts, graph query tools, token-estimation utilities, compile/query/search surfaces, MCP tools, and health/doctor repair behavior. This dossier does not establish measured token savings.",
+      "technique_ids": [
+        "T06-persistent-memory-reinjection"
+      ],
+      "technique_coverage": [],
+      "evidence_label": "`source-logic`",
+      "reported_result": "GitHub coverage audit found this repository with 589 stars and repository metadata relevant to AI-agent knowledge graphs; claims have not been source-inspected here yet.",
+      "main_caveat": "Source-code logic has been inspected for representative mechanism, integration, state, and failure behavior; benchmark-audit and reproduction evidence remain required before measured savings or deployment-grade recommendations.",
+      "sources": [
+        "sources/discovery/2026-06-28-knowledge-graph-coverage-audit.json",
+        "https://github.com/swarmclawai/swarmvault",
+        "docs/tool-dossiers/swarmclawai-swarmvault.md",
+        "sources/discovery/2026-06-29-graph-leads-a-source-logic.json"
+      ],
+      "reviewed_at": "2026-06-29",
+      "review_depth": "source-logic",
+      "status": "source-logic-reviewed"
+    },
+    {
+      "id": "catlog22__maestro-flow",
+      "name": "maestro-flow",
+      "url": "https://github.com/catlog22/maestro-flow",
+      "kind": "bundle",
+      "source_scope": "`direct`",
+      "catalog_section": "Agent runtimes, routing, and workflow orchestration",
+      "summary": "Intent-driven multi-agent development workflow orchestration with a self-reinforcing knowledge graph and visual dashboard for Claude Code, Gemini, Codex, and related agents.",
+      "mechanism": "Maestro Flow is a Node/TypeScript workflow orchestration CLI with MCP tools, graph/knowledge-graph features, context hooks, search daemon, and multi-agent coordination surfaces. Source inspection confirms lazy command loading, MCP tool registration, graph search/path/impact abstractions, prompt assembly with prior-step state, and context-budget/knowledge-graph injection logic. This is source-logic evidence only, not benchmark or reproduction evidence.",
+      "technique_ids": [],
+      "technique_coverage": [],
+      "evidence_label": "`source-logic`",
+      "reported_result": "GitHub coverage audit found this repository with 408 stars and repository metadata relevant to AI-agent knowledge graphs; claims have not been source-inspected here yet.",
+      "main_caveat": "Source-code logic has been inspected for representative mechanism, integration, state, and failure behavior; benchmark-audit and reproduction evidence remain required before measured savings or deployment-grade recommendations.",
+      "sources": [
+        "sources/discovery/2026-06-28-knowledge-graph-coverage-audit.json",
+        "https://github.com/catlog22/maestro-flow",
+        "docs/tool-dossiers/catlog22-maestro-flow.md",
+        "sources/discovery/2026-06-29-graph-leads-a-source-logic.json"
+      ],
+      "reviewed_at": "2026-06-29",
+      "review_depth": "source-logic",
+      "status": "source-logic-reviewed"
+    },
+    {
+      "id": "osovv__grace-marketplace",
+      "name": "grace-marketplace",
+      "url": "https://github.com/osovv/grace-marketplace",
+      "kind": "bundle",
+      "source_scope": "`direct`",
+      "catalog_section": "Agent skills and workflow orchestration",
+      "summary": "Graph-RAG Anchored Code Engineering skill marketplace for contract-driven AI code generation with semantic markup, knowledge graphs, and support for Claude Code, Codex CLI, and Kilo Code.",
+      "mechanism": "Grace Marketplace provides a Bun-powered `grace` CLI and packaged agent skills for GRACE project artifacts: semantic markup, module contracts, knowledge/development/verification XML, linting, status, and artifact queries. Source inspection confirms artifact parsing/query logic, governed-file lookup, lint checks for semantic markers and XML anti-patterns, and verification reference consistency checks. It is a governance/artifact navigation tool, not a measured token-saving tool at this evidence stage.",
+      "technique_ids": [],
+      "technique_coverage": [],
+      "evidence_label": "`source-logic`",
+      "reported_result": "GitHub coverage audit found this repository with 217 stars and repository metadata relevant to AI-agent knowledge graphs; claims have not been source-inspected here yet.",
+      "main_caveat": "Source-code logic has been inspected for representative mechanism, integration, state, and failure behavior; benchmark-audit and reproduction evidence remain required before measured savings or deployment-grade recommendations.",
+      "sources": [
+        "sources/discovery/2026-06-28-knowledge-graph-coverage-audit.json",
+        "https://github.com/osovv/grace-marketplace",
+        "docs/tool-dossiers/osovv-grace-marketplace.md",
+        "sources/discovery/2026-06-29-graph-leads-a-source-logic.json"
+      ],
+      "reviewed_at": "2026-06-29",
+      "review_depth": "source-logic",
+      "status": "source-logic-reviewed"
+    },
+    {
+      "id": "vbcherepanov__total-agent-memory",
+      "name": "total-agent-memory",
+      "url": "https://github.com/vbcherepanov/total-agent-memory",
+      "kind": "technique-implementation",
+      "source_scope": "`direct`",
+      "catalog_section": "Persistent memory and knowledge bases",
+      "summary": "Persistent memory for Claude Code and Codex CLI using auto-extracted knowledge graph, embeddings, visualization, and self-hosted/Ollama-optional deployment.",
+      "mechanism": "Total Agent Memory is a persistent-memory MCP server and hook/CLI package. Source inspection confirms it stores records in SQLite plus optional ChromaDB/embedding indexes, exposes memory save/search/update/export/graph/history tools over MCP, includes progressive-disclosure recall modes, and installs Claude/Codex/IDE integrations plus lifecycle hooks. Its token-saving logic is primarily selective recall, compact/index modes, filtering before storage, and nudges to save reusable knowledge rather than replaying long context.",
+      "technique_ids": [
+        "T06-persistent-memory-reinjection"
+      ],
+      "technique_coverage": [],
+      "evidence_label": "`source-logic`",
+      "reported_result": "GitHub coverage audit found this repository with 58 stars and repository metadata relevant to AI-agent knowledge graphs; claims have not been source-inspected here yet.",
+      "main_caveat": "Source-code logic has been inspected for representative mechanism, integration, state, and failure behavior; benchmark-audit and reproduction evidence remain required before measured savings or deployment-grade recommendations.",
+      "sources": [
+        "sources/discovery/2026-06-28-knowledge-graph-coverage-audit.json",
+        "https://github.com/vbcherepanov/total-agent-memory",
+        "docs/tool-dossiers/vbcherepanov-total-agent-memory.md",
+        "sources/discovery/2026-06-29-graph-leads-b-source-logic.json"
+      ],
+      "reviewed_at": "2026-06-29",
+      "review_depth": "source-logic",
+      "status": "source-logic-reviewed"
+    },
+    {
+      "id": "looptech-ai__understand-quickly",
+      "name": "understand-quickly",
+      "url": "https://github.com/looptech-ai/understand-quickly",
+      "kind": "catalog",
+      "source_scope": "`adjacent`",
+      "catalog_section": "Discovery and benchmark-adjacent registries",
+      "summary": "Public registry of code-knowledge graphs for AI agents; useful as a discovery source rather than an atomic token-saving technique.",
+      "mechanism": "Understand Quickly is a public registry and thin MCP surface for discovering externally generated code-knowledge graph JSON files. Source inspection shows it does not parse a local codebase itself; it validates/fetches graph URLs, aggregates registry-wide stats, exposes registry lookup/search tools over MCP, and offers a CLI to submit a repository graph entry. The token-saving premise is discovery/reuse of precomputed graph artifacts rather than local indexing or prompt compression.",
+      "technique_ids": [],
+      "technique_coverage": [],
+      "evidence_label": "`source-logic`",
+      "reported_result": "GitHub coverage audit found this repository with 40 stars and repository metadata relevant to AI-agent knowledge graphs; claims have not been source-inspected here yet.",
+      "main_caveat": "Source-code logic has been inspected for representative mechanism, integration, state, and failure behavior; benchmark-audit and reproduction evidence remain required before measured savings or deployment-grade recommendations.",
+      "sources": [
+        "sources/discovery/2026-06-28-knowledge-graph-coverage-audit.json",
+        "https://github.com/looptech-ai/understand-quickly",
+        "docs/tool-dossiers/looptech-ai-understand-quickly.md",
+        "sources/discovery/2026-06-29-graph-leads-b-source-logic.json"
+      ],
+      "reviewed_at": "2026-06-29",
+      "review_depth": "source-logic",
+      "status": "source-logic-reviewed"
+    },
+    {
+      "id": "jrollin__cartog",
+      "name": "cartog",
+      "url": "https://github.com/jrollin/cartog",
+      "kind": "technique-implementation",
+      "source_scope": "`direct`",
+      "catalog_section": "Code retrieval and context selection",
+      "summary": "Pre-indexed code knowledge graph using tree-sitter, RAG-enhanced queries, MCP server integration, and local/private storage.",
+      "mechanism": "Cartog is a Rust code-graph/indexing toolkit with CLI, MCP server, RAG search/context, LSP-assisted edge resolution, editor/Claude plugin integration, and SQLite-backed local state. Source inspection confirms it indexes source files with tree-sitter extractors, stores symbols/edges/content/embeddings, exposes graph-navigation and task-context MCP tools, and defaults MCP output to compact/token-bounded forms. It is a strong candidate as a local code-retrieval authority, not just a registry or README-level lead.",
+      "technique_ids": [
+        "T02-targeted-code-retrieval"
+      ],
+      "technique_coverage": [],
+      "evidence_label": "`source-logic`",
+      "reported_result": "GitHub coverage audit found this repository with 14 stars and repository metadata relevant to AI-agent knowledge graphs; claims have not been source-inspected here yet.",
+      "main_caveat": "Source-code logic has been inspected for representative mechanism, integration, state, and failure behavior; benchmark-audit and reproduction evidence remain required before measured savings or deployment-grade recommendations.",
+      "sources": [
+        "sources/discovery/2026-06-28-knowledge-graph-coverage-audit.json",
+        "https://github.com/jrollin/cartog",
+        "docs/tool-dossiers/jrollin-cartog.md",
+        "sources/discovery/2026-06-29-graph-leads-b-source-logic.json"
+      ],
+      "reviewed_at": "2026-06-29",
+      "review_depth": "source-logic",
+      "status": "source-logic-reviewed"
+    },
+    {
+      "id": "cognitx-leyton__codegraph",
+      "name": "codegraph",
+      "url": "https://github.com/cognitx-leyton/codegraph",
+      "kind": "technique-implementation",
+      "source_scope": "`direct`",
+      "catalog_section": "Code retrieval and context selection",
+      "summary": "Code knowledge graph for Claude Code and AI coding agents that indexes TypeScript, NestJS, and React into Neo4j for Cypher architecture queries.",
+      "mechanism": "CognitX CodeGraph is a Python/Neo4j code-knowledge-graph system for TypeScript/TSX and optional Python parsing. Source inspection confirms a Typer CLI, Docker/Neo4j scaffolding, tree-sitter parsers, import/cross-file resolver, Neo4j loader with constraints/indexes, git hooks for incremental reindexing, and a FastMCP stdio server with read-oriented graph query tools plus gated write tools. Its token-saving path is graph queries over indexed architecture instead of broad source reading; it requires Neo4j and up-front indexing.",
+      "technique_ids": [
+        "T02-targeted-code-retrieval"
+      ],
+      "technique_coverage": [],
+      "evidence_label": "`source-logic`",
+      "reported_result": "GitHub coverage audit found this repository with 10 stars and repository metadata relevant to AI-agent knowledge graphs; claims have not been source-inspected here yet.",
+      "main_caveat": "Source-code logic has been inspected for representative mechanism, integration, state, and failure behavior; benchmark-audit and reproduction evidence remain required before measured savings or deployment-grade recommendations.",
+      "sources": [
+        "sources/discovery/2026-06-28-knowledge-graph-coverage-audit.json",
+        "https://github.com/cognitx-leyton/codegraph",
+        "docs/tool-dossiers/cognitx-leyton-codegraph.md",
+        "sources/discovery/2026-06-29-graph-leads-b-source-logic.json"
+      ],
+      "reviewed_at": "2026-06-29",
+      "review_depth": "source-logic",
+      "status": "source-logic-reviewed"
+    },
+    {
+      "id": "onur-gokyildiz-bhi__codescope",
+      "name": "codescope",
+      "url": "https://github.com/onur-gokyildiz-bhi/codescope",
+      "kind": "technique-implementation",
+      "source_scope": "`direct`",
+      "catalog_section": "Code retrieval and context selection",
+      "summary": "GraphRAG for code with MCP tools, LSP bridge, local Rust implementation, and claimed cost reduction for Claude Code, Cursor, Codex, Zed, and VS Code.",
+      "mechanism": "Codescope is a Rust code-intelligence stack that parses supported project files, writes a SurrealDB-backed knowledge graph, and exposes graph/search/context tools through CLI, stdio MCP, HTTP MCP, web, LSP, and VS Code surfaces. Source logic shows explicit token-surface interventions: graph lookups instead of raw file reads/grep, context summaries injected into MCP instructions, large-output archiving with retrieval IDs, and optional output compaction.",
+      "technique_ids": [
+        "T02-targeted-code-retrieval"
+      ],
+      "technique_coverage": [],
+      "evidence_label": "`source-logic`",
+      "reported_result": "GitHub coverage audit found this repository with 21 stars and repository metadata relevant to AI-agent knowledge graphs; claims have not been source-inspected here yet.",
+      "main_caveat": "Source-code logic has been inspected for representative mechanism, integration, state, and failure behavior; benchmark-audit and reproduction evidence remain required before measured savings or deployment-grade recommendations.",
+      "sources": [
+        "sources/discovery/2026-06-28-knowledge-graph-coverage-audit.json",
+        "https://github.com/onur-gokyildiz-bhi/codescope",
+        "docs/tool-dossiers/onur-gokyildiz-bhi-codescope.md",
+        "sources/discovery/2026-06-29-graph-leads-c-source-logic.json"
+      ],
+      "reviewed_at": "2026-06-29",
+      "review_depth": "source-logic",
+      "status": "source-logic-reviewed"
+    },
+    {
+      "id": "iikarus__dragon-brain",
+      "name": "Dragon-Brain",
+      "url": "https://github.com/iikarus/Dragon-Brain",
+      "kind": "technique-implementation",
+      "source_scope": "`direct`",
+      "catalog_section": "Persistent memory and knowledge bases",
+      "summary": "Persistent long-term agent memory via MCP with FalkorDB knowledge graph, Qdrant vector search, embeddings, and multi-client support.",
+      "mechanism": "Dragon-Brain is an MCP-exposed persistent memory service rather than a source-code indexer. Source logic shows a Python FastMCP server that manages entities, relationships, observations, sessions, temporal queries, graph traversal, hybrid memory search, and token-budgeted context selection using FalkorDB, Qdrant, embeddings, FTS, and reranking components.",
+      "technique_ids": [
+        "T06-persistent-memory-reinjection"
+      ],
+      "technique_coverage": [],
+      "evidence_label": "`source-logic`",
+      "reported_result": "GitHub coverage audit found this repository with 50 stars and repository metadata relevant to AI-agent knowledge graphs; claims have not been source-inspected here yet.",
+      "main_caveat": "Source-code logic has been inspected for representative mechanism, integration, state, and failure behavior; benchmark-audit and reproduction evidence remain required before measured savings or deployment-grade recommendations.",
+      "sources": [
+        "sources/discovery/2026-06-28-knowledge-graph-coverage-audit.json",
+        "https://github.com/iikarus/Dragon-Brain",
+        "docs/tool-dossiers/iikarus-dragon-brain.md",
+        "sources/discovery/2026-06-29-graph-leads-c-source-logic.json"
+      ],
+      "reviewed_at": "2026-06-29",
+      "review_depth": "source-logic",
+      "status": "source-logic-reviewed"
+    },
+    {
+      "id": "stifler7__memex",
+      "name": "memex",
+      "url": "https://github.com/STiFLeR7/memex",
+      "kind": "technique-implementation",
+      "source_scope": "`direct`",
+      "catalog_section": "Persistent memory and knowledge bases",
+      "summary": "Persistent memory for AI coding agents via MCP using a bitemporal codebase knowledge graph served to Claude Code, Cursor, Gemini CLI, and other clients.",
+      "mechanism": "Memex is a Python MCP context-continuity system that watches repositories, extracts symbols and some call edges, writes structured and natural-language graph records through Graphiti/Neo4j, and serves compressed project/symbol/decision/problem/search briefings to coding agents. Source logic shows a broad memory-plus-code-context surface with explicit token budgets, temporal confidence, watcher/git-hook side effects, and Neo4j/Gemini dependencies.",
+      "technique_ids": [
+        "T06-persistent-memory-reinjection"
+      ],
+      "technique_coverage": [],
+      "evidence_label": "`source-logic`",
+      "reported_result": "GitHub coverage audit found this repository with 11 stars and repository metadata relevant to AI-agent knowledge graphs; claims have not been source-inspected here yet.",
+      "main_caveat": "Source-code logic has been inspected for representative mechanism, integration, state, and failure behavior; benchmark-audit and reproduction evidence remain required before measured savings or deployment-grade recommendations.",
+      "sources": [
+        "sources/discovery/2026-06-28-knowledge-graph-coverage-audit.json",
+        "https://github.com/STiFLeR7/memex",
+        "docs/tool-dossiers/stifler7-memex.md",
+        "sources/discovery/2026-06-29-graph-leads-c-source-logic.json"
+      ],
+      "reviewed_at": "2026-06-29",
+      "review_depth": "source-logic",
+      "status": "source-logic-reviewed"
+    },
+    {
+      "id": "ishandutta2007__code-knowledge-graph",
+      "name": "Code-Knowledge-Graph",
+      "url": "https://github.com/ishandutta2007/Code-Knowledge-Graph",
+      "kind": "technique-implementation",
+      "source_scope": "`direct`",
+      "catalog_section": "Code retrieval and context selection",
+      "summary": "Pre-indexed code knowledge graph for Claude Code, Codex, Cursor, OpenCode, and Hermes Agent with an explicit cost-saving claim in repository metadata.",
+      "mechanism": "Code-Knowledge-Graph is a small TypeScript MVP that scans TypeScript/JavaScript files, stores files and function/class/method symbols in SQLite, creates only file-to-symbol `contains` edges, and exposes two stdio MCP tools for symbol search and node details. Source logic shows useful lightweight indexing, but not a full call/dependency knowledge graph in the inspected commit.",
+      "technique_ids": [
+        "T02-targeted-code-retrieval"
+      ],
+      "technique_coverage": [],
+      "evidence_label": "`source-logic`",
+      "reported_result": "GitHub coverage audit found this repository with 11 stars and repository metadata relevant to AI-agent knowledge graphs; claims have not been source-inspected here yet.",
+      "main_caveat": "Source-code logic has been inspected for representative mechanism, integration, state, and failure behavior; benchmark-audit and reproduction evidence remain required before measured savings or deployment-grade recommendations.",
+      "sources": [
+        "sources/discovery/2026-06-28-knowledge-graph-coverage-audit.json",
+        "https://github.com/ishandutta2007/Code-Knowledge-Graph",
+        "docs/tool-dossiers/ishandutta2007-code-knowledge-graph.md",
+        "sources/discovery/2026-06-29-graph-leads-c-source-logic.json"
+      ],
+      "reviewed_at": "2026-06-29",
+      "review_depth": "source-logic",
+      "status": "source-logic-reviewed"
+    }
+  ]
+}

@@ -1,0 +1,152 @@
+{
+  "date_inspected": "2026-06-29",
+  "evidence_stage": "source-logic",
+  "method": "local shallow clone source inspection; README-only claims excluded from decision evidence; no benchmark-audit or reproduction performed",
+  "repos": [
+    {
+      "repo": "safishamsi/graphify",
+      "clone_path": "/tmp/token-leads-20260629/safishamsi__graphify",
+      "commit": "199061207f66",
+      "dossier": "docs/tool-dossiers/safishamsi-graphify.md",
+      "source_logic_reached": true,
+      "selected_source_files": [
+        "pyproject.toml",
+        "graphify/__main__.py",
+        "graphify/extract.py",
+        "graphify/build.py",
+        "graphify/serve.py",
+        "graphify/hooks.py",
+        "tests/test_query_cli.py",
+        "tests/test_serve.py",
+        "tests/test_hooks.py",
+        "tests/test_extract.py"
+      ],
+      "behavior_excerpts": [
+        "pyproject.toml defines console scripts graphify and graphify-mcp plus optional extras for MCP, watch, DB, provider, document, and video support.",
+        "__main__.py installs host-specific skills/instructions, exposes extract/query/watch/update/hook/global/benchmark commands, and computes project/global skill destinations per platform.",
+        "extract.py uses deterministic extractors, package/MCP manifest ingestion, and safe per-file failure handling that emits warnings instead of aborting the full run.",
+        "build.py normalizes source paths and node IDs, remaps legacy semantic IDs, validates extraction data, and deduplicates nodes/edges before graph construction.",
+        "serve.py loads graph JSON with file-extension and size-cap checks, then supports query scoring, IDF/trigram candidate lookup, BFS/DFS traversal, and context filtering.",
+        "hooks.py installs marked post-commit/post-checkout hooks that locate an importable graphify Python and run rebuild logic with timeout/resource guards.",
+        "Tests verify query context filtering, oversized graph rejection, MCP helper scoring/traversal, hook installation idempotence, and extractor ID/edge consistency."
+      ]
+    },
+    {
+      "repo": "Egonex-AI/Understand-Anything",
+      "clone_path": "/tmp/token-leads-20260629/Egonex-AI__Understand-Anything",
+      "commit": "54754a6f9705",
+      "dossier": "docs/tool-dossiers/egonex-ai-understand-anything.md",
+      "source_logic_reached": true,
+      "selected_source_files": [
+        "package.json",
+        "install.sh",
+        "understand-anything-plugin/package.json",
+        "understand-anything-plugin/src/index.ts",
+        "understand-anything-plugin/src/context-builder.ts",
+        "understand-anything-plugin/skills/understand/scan-project.mjs",
+        "understand-anything-plugin/skills/understand/extract-structure.mjs",
+        "understand-anything-plugin/packages/core/src/search.ts",
+        "understand-anything-plugin/packages/core/src/plugins/tree-sitter-plugin.ts",
+        "understand-anything-plugin/packages/core/src/schema.ts",
+        "understand-anything-plugin/src/__tests__/context-builder.test.ts"
+      ],
+      "behavior_excerpts": [
+        "install.sh clones or updates into ~/.understand-anything/repo, symlinks skills into host-specific skill directories, links ~/.understand-anything-plugin, and writes a dynamic Kiro agent config.",
+        "Plugin src/index.ts exports chat, diff, explain, onboarding, and context-builder APIs.",
+        "scan-project.mjs performs deterministic file enumeration, .understandignore filtering, language/category detection, line counting, and complexity estimation into JSON.",
+        "extract-structure.mjs initializes core TreeSitterPlugin and parser registry, reads batch files, emits functions/classes/exports/sections/definitions/call graph data, and degrades per file on failures.",
+        "SearchEngine uses Fuse over node name/tags/summary/languageNotes, ORs query tokens, supports type filters, and applies limits.",
+        "buildChatContext searches graph nodes, expands one hop through edges, gathers relevant layers, and renders markdown prompt context.",
+        "Schema code sanitizes graph fields and aliases common LLM-generated node/edge/complexity/direction variants."
+      ]
+    },
+    {
+      "repo": "swarmclawai/swarmvault",
+      "clone_path": "/tmp/token-leads-20260629/swarmclawai__swarmvault",
+      "commit": "4ce0c7cb545c",
+      "dossier": "docs/tool-dossiers/swarmclawai-swarmvault.md",
+      "source_logic_reached": true,
+      "selected_source_files": [
+        "package.json",
+        "packages/engine/src/index.ts",
+        "packages/engine/src/mcp.ts",
+        "packages/engine/src/vault.ts",
+        "packages/engine/src/retrieval.ts",
+        "packages/engine/src/search.ts",
+        "packages/engine/src/graph-tools.ts",
+        "packages/engine/src/token-estimation.ts",
+        "packages/obsidian-plugin/src/main.ts",
+        "packages/engine/test/retrieval.test.ts"
+      ],
+      "behavior_excerpts": [
+        "Engine index exports vault compile/query/search/read APIs, MCP server creation, graph tools, memory tasks, retrieval status/rebuild/doctor APIs, hooks, and provider config.",
+        "mcp.ts registers workspace, page search, retrieval status/rebuild/doctor, vault doctor, page/source, graph query/report/stats, and other graph/memory tools through the MCP SDK.",
+        "vault.ts orchestrates ingestion, analysis, graph construction/enrichment, page generation, search index rebuild, provider calls, memory pages, approvals, and promotion flows.",
+        "retrieval.ts computes graph hashes, writes a SQLite retrieval manifest, reports missing/stale graph/index/manifest state, and can rebuild/repair retrieval artifacts.",
+        "search.ts uses Node node:sqlite DatabaseSync and FTS5 over generated page title/body, adding source excerpts for source/module pages when manifests point to extracted text.",
+        "token-estimation.ts estimates LLM tokens with code/prose char heuristics and drops lower-priority pages to meet a max-token budget.",
+        "retrieval.test.ts verifies compile writes retrieval artifacts, search works through the new index path, doctor repairs missing indexes, and migration removes legacy search config."
+      ]
+    },
+    {
+      "repo": "catlog22/maestro-flow",
+      "clone_path": "/tmp/token-leads-20260629/catlog22__maestro-flow",
+      "commit": "6f1d8b6dc41d",
+      "dossier": "docs/tool-dossiers/catlog22-maestro-flow.md",
+      "source_logic_reached": true,
+      "selected_source_files": [
+        "package.json",
+        "src/cli.ts",
+        "src/mcp/server.ts",
+        "src/graph/facade.ts",
+        "src/graph/query.ts",
+        "src/hooks/context-budget.ts",
+        "src/hooks/kg-context-injector.ts",
+        "src/coordinator/prompt-assembler.ts",
+        "src/tools/read-many-files.ts",
+        "src/search/daemon.ts",
+        "src/coordinator/__tests__/prompt-assembler.test.ts"
+      ],
+      "behavior_excerpts": [
+        "package.json exposes maestro, maestro-mcp, maestro-statusline, and maestro-context-monitor bins, with workflows/chains/templates/skills included in package files.",
+        "cli.ts lazily imports only the requested command module and rejects bare intent text with platform-specific invocation guidance.",
+        "mcp/server.ts registers builtin tools via ToolRegistry, filters enabled tools from env/config, runs stdio transport, and starts a delegate channel relay.",
+        "GraphFacade detects SQLite, JSON, or no backend; SQLite enables query builder/traverser/manager operations while JSON fallback supports search/path/diff helpers.",
+        "context-budget.ts chooses full/reduced/minimal/skip spec injection based on remaining-context bridge metrics, truncating markdown or headings when low.",
+        "kg-context-injector.ts extracts prompt symbols/files, queries MaestroGraph for callers/callees/exports, and wraps bounded context up to 3072 chars.",
+        "search/daemon.ts keeps a WikiIndexer and embedding index warm behind localhost line-delimited JSON with daemon state and idle shutdown.",
+        "prompt-assembler tests cover argument resolution, command building, and previous-result context inclusion."
+      ]
+    },
+    {
+      "repo": "osovv/grace-marketplace",
+      "clone_path": "/tmp/token-leads-20260629/osovv__grace-marketplace",
+      "commit": "73f2b207cfcd",
+      "dossier": "docs/tool-dossiers/osovv-grace-marketplace.md",
+      "source_logic_reached": true,
+      "selected_source_files": [
+        "package.json",
+        "src/grace.ts",
+        "src/grace-file.ts",
+        "src/query/core.ts",
+        "src/lint/core.ts",
+        "src/verification/check-references.ts",
+        "src/grace-query.test.ts",
+        "src/grace-lint.test.ts",
+        "src/grace-status.test.ts",
+        "src/verification/check-references.test.ts"
+      ],
+      "behavior_excerpts": [
+        "package.json publishes a Bun-powered @osovv/grace-cli with bin grace and scripts for lint/status validation and marketplace checks.",
+        "grace.ts defines a citty CLI with file, lint, module, status, and verification subcommands.",
+        "grace-file.ts resolves a governed file from the artifact index and emits JSON or formatted text with optional contracts/blocks.",
+        "query/core.ts requires knowledge-graph, development-plan, and verification-plan XML docs; parses modules, graph entries, verifications, plan steps, and governed source files into an index.",
+        "findModules scores queries across module metadata, plan/graph purpose, dependencies, verification IDs, interface/annotation tags, file paths, and file purpose/scope.",
+        "findVerifications scores verification queries across IDs, module filters, priority, test files, module checks, scenarios, log markers, and trace assertions.",
+        "lint/core.ts checks required docs, semantic marker pairing/nesting, ID formats, generic XML anti-patterns, contract fields, language adapters, and verification test reference consistency.",
+        "check-references.ts ensures every declared test file is referenced by a module-check command, with cwd-prefix normalization for monorepos."
+      ]
+    }
+  ],
+  "unreached_source_logic": []
+}

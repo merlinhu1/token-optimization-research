@@ -1,0 +1,212 @@
+{
+  "generated_at": "2026-06-29",
+  "evidence_stage": "source-logic",
+  "method": "Representative implementation files were inspected from local shallow clones under /tmp/token-leads-20260629. README-only claims were excluded as decision evidence; benchmark/reproduction status is not asserted unless benchmark artifacts were inspected.",
+  "items": [
+    {
+      "repo": "vbcherepanov/total-agent-memory",
+      "url": "https://github.com/vbcherepanov/total-agent-memory",
+      "clone_path": "/tmp/token-leads-20260629/vbcherepanov__total-agent-memory",
+      "commit": "616d9a6f8b50",
+      "dossier": "docs/tool-dossiers/vbcherepanov-total-agent-memory.md",
+      "selected_source_files": [
+        "pyproject.toml",
+        "total_agent_memory/server.py",
+        "total_agent_memory/lookup.py",
+        "src/server.py",
+        "install.sh",
+        "hooks/post-tool-use.sh",
+        "hooks/user-prompt-submit.sh",
+        "tests/test_install_linux.py",
+        "tests/test_install_macos_hooks.py",
+        "tests/test_memory_nudge_hook.py"
+      ],
+      "behavior_excerpts": [
+        {
+          "path": "pyproject.toml",
+          "excerpt": "Console scripts expose total-agent-memory/tam MCP entrypoints and tam-lookup/lookup-memory; package data includes src sidecars so the wrapper can find src/server.py."
+        },
+        {
+          "path": "src/server.py",
+          "excerpt": "Store initializes SQLite WAL memory.db plus Chroma/embedding collections when available; MCP list_tools defines memory_recall, memory_save, memory_get, update/history/export/relation/tag and many higher-level memory tools."
+        },
+        {
+          "path": "src/server.py",
+          "excerpt": "memory_recall runs recall.search, optional enrichment and graph expansion, then applies progressive disclosure transforms for mode=index or mode=timeline."
+        },
+        {
+          "path": "src/server.py",
+          "excerpt": "save_knowledge creates an outbox intent, redacts private/secret content, optionally filters noisy CLI output, normalizes tags, applies quality/dedup logic, and invalidates caches on write."
+        },
+        {
+          "path": "total_agent_memory/lookup.py",
+          "excerpt": "tam-lookup opens the configured memory.db and searches FTS5 BM25 when present, falling back to LIKE, with JSON or bullet output."
+        },
+        {
+          "path": "hooks/post-tool-use.sh",
+          "excerpt": "PostToolUse hook tracks writes/edits/Bash/memory_save counts and emits MEMORY_NUDGE lines; deferred observation capture is opt-in via MEMORY_POST_TOOL_CAPTURE=1."
+        },
+        {
+          "path": "hooks/user-prompt-submit.sh",
+          "excerpt": "UserPromptSubmit hook caches JSON stdin and asynchronously saves prompt intents to memory.db when it exists, swallowing hook errors."
+        }
+      ]
+    },
+    {
+      "repo": "looptech-ai/understand-quickly",
+      "url": "https://github.com/looptech-ai/understand-quickly",
+      "clone_path": "/tmp/token-leads-20260629/looptech-ai__understand-quickly",
+      "commit": "6df261fcfa99",
+      "dossier": "docs/tool-dossiers/looptech-ai-understand-quickly.md",
+      "selected_source_files": [
+        "package.json",
+        "mcp/package.json",
+        "mcp/src/index.ts",
+        "mcp/src/registry.ts",
+        "mcp/src/tools/list-repos.ts",
+        "mcp/src/tools/get-graph.ts",
+        "mcp/src/tools/search-concepts.ts",
+        "mcp/src/tools/find-graph-for-repo.ts",
+        "scripts/validate.mjs",
+        "scripts/sync.mjs",
+        "scripts/aggregate.mjs",
+        "cli/bin/understand-quickly.mjs",
+        "cli/src/add.mjs",
+        "schemas/understand-anything@1.json"
+      ],
+      "behavior_excerpts": [
+        {
+          "path": "mcp/src/index.ts",
+          "excerpt": "Creates an MCP stdio server and registers list_repos, get_graph, search_concepts, and find_graph_for_repo as JSON-returning tools."
+        },
+        {
+          "path": "mcp/src/registry.ts",
+          "excerpt": "Loads registry.json and stats.json with 60s in-process TTL cache; registry 5xx can fall back to stale cache."
+        },
+        {
+          "path": "mcp/src/registry.ts",
+          "excerpt": "fetchGraph enforces HTTPS and rejects localhost/internal/private literal hosts before fetching graph_url."
+        },
+        {
+          "path": "mcp/src/tools/search-concepts.ts",
+          "excerpt": "Default concept search reads precomputed stats.json and caps matches/samples; id-scoped mode searches one graph; stats failures fall back to a five-entry fan-out."
+        },
+        {
+          "path": "scripts/validate.mjs",
+          "excerpt": "Ajv validates registry and per-format graph schemas, checks duplicate ids, retries network failures, and rejects oversized graph bodies."
+        },
+        {
+          "path": "scripts/sync.mjs",
+          "excerpt": "Sync updates each entry status by fetching graph_url, enforcing body limits, validating schema, deriving hashes/stats, and marking missing/invalid/oversize/transient states."
+        },
+        {
+          "path": "cli/src/add.mjs",
+          "excerpt": "CLI add flow detects repo id and graph files/formats, then prints a registry entry or opens issue/PR flows; it does not generate a local graph itself."
+        }
+      ]
+    },
+    {
+      "repo": "jrollin/cartog",
+      "url": "https://github.com/jrollin/cartog",
+      "clone_path": "/tmp/token-leads-20260629/jrollin__cartog",
+      "commit": "890d15b66b52",
+      "dossier": "docs/tool-dossiers/jrollin-cartog.md",
+      "selected_source_files": [
+        "Cargo.toml",
+        "crates/cartog/src/main.rs",
+        "crates/cartog/src/cli.rs",
+        "crates/cartog-mcp/src/lib.rs",
+        "crates/cartog-mcp/src/tools/index.rs",
+        "crates/cartog-mcp/src/tools/search.rs",
+        "crates/cartog-mcp/src/tools/graph.rs",
+        "crates/cartog-mcp/src/tools/rag.rs",
+        "crates/cartog-indexer/src/lib.rs",
+        "crates/cartog-db/src/store/queries.rs",
+        "crates/cartog-rag/src/search.rs",
+        "crates/cartog-rag/src/context.rs",
+        "skills/cartog/scripts/ensure_indexed.sh"
+      ],
+      "behavior_excerpts": [
+        {
+          "path": "crates/cartog/src/cli.rs",
+          "excerpt": "Global --json, --tokens, --compact, and --db flags plus commands for index, outline, search, refs, callees, impact, context, trace, deps, watch, init, ide/install, serve, and rag."
+        },
+        {
+          "path": "crates/cartog/src/main.rs",
+          "excerpt": "Resolves DB path from CLI/env/config/project root, refuses fresh index creation without config/existing DB/CARTOG_AUTO_INIT for write commands, then dispatches serve to MCP."
+        },
+        {
+          "path": "crates/cartog-indexer/src/lib.rs",
+          "excerpt": "Indexer walks candidates, detects language, reuses per-thread tree-sitter extractors, computes hashes/Merkle data, redacts symbol fields when configured, and writes only changed files."
+        },
+        {
+          "path": "crates/cartog-mcp/src/lib.rs",
+          "excerpt": "MCP compact mode defaults on, dropping heavy symbol fields and bounding rag_search bodies; response helpers cap output bytes and add narrowing hints when truncated."
+        },
+        {
+          "path": "crates/cartog-mcp/src/tools/rag.rs",
+          "excerpt": "cartog_rag_search uses hybrid FTS/vector search with snippet output; cartog_context fuses semantic seeds, one-hop neighbors, central symbols, and budgeted bodies."
+        },
+        {
+          "path": "crates/cartog-db/src/store/queries.rs",
+          "excerpt": "DB search escapes LIKE wildcards, ranks exact/prefix/substring matches and definitions ahead of variables/imports, and supports refs/callees/trace/impact query families."
+        },
+        {
+          "path": "skills/cartog/scripts/ensure_indexed.sh",
+          "excerpt": "SessionStart hook surfaces previous background errors, runs incremental cartog index in foreground, and backgrounds RAG setup/index/update work."
+        }
+      ]
+    },
+    {
+      "repo": "cognitx-leyton/codegraph",
+      "url": "https://github.com/cognitx-leyton/codegraph",
+      "clone_path": "/tmp/token-leads-20260629/cognitx-leyton__codegraph",
+      "commit": "ba5e0039b24d",
+      "dossier": "docs/tool-dossiers/cognitx-leyton-codegraph.md",
+      "selected_source_files": [
+        "codegraph/pyproject.toml",
+        "codegraph/codegraph/cli.py",
+        "codegraph/codegraph/mcp.py",
+        "codegraph/codegraph/parser.py",
+        "codegraph/codegraph/py_parser.py",
+        "codegraph/codegraph/resolver.py",
+        "codegraph/codegraph/loader.py",
+        "codegraph/codegraph/hooks.py",
+        "codegraph/codegraph/init.py",
+        "codegraph/tests/test_mcp.py",
+        "codegraph/tests/test_py_parser.py",
+        "codegraph/tests/test_benchmark.py"
+      ],
+      "behavior_excerpts": [
+        {
+          "path": "codegraph/pyproject.toml",
+          "excerpt": "Package installs codegraph CLI and codegraph-mcp console scripts; optional extras cover MCP, Python parser, watch, benchmark, analysis, docs, semantic, and transcription features."
+        },
+        {
+          "path": "codegraph/codegraph/cli.py",
+          "excerpt": "Typer CLI supports init, clone, index, query, wipe, stats, export, benchmark, hooks/install; index can run incremental --since/--update modes and auto-export/analyze/benchmark unless suppressed."
+        },
+        {
+          "path": "codegraph/codegraph/mcp.py",
+          "excerpt": "FastMCP server lazily opens Neo4j driver, uses READ_ACCESS sessions for read tools, validates interpolated limit/depth values, and exposes schema/package/class/function/call graph tools."
+        },
+        {
+          "path": "codegraph/codegraph/parser.py",
+          "excerpt": "TS/TSX parser extracts framework-aware nodes/edges for classes/functions/interfaces, NestJS decorators/endpoints, TypeORM columns, GraphQL operations, React hooks/components, and REST URLs."
+        },
+        {
+          "path": "codegraph/codegraph/py_parser.py",
+          "excerpt": "Optional Python parser emits the same ParseResult shape for files/classes/functions/methods/imports/decorators/routes and fails with a clear [python] extra error when unavailable."
+        },
+        {
+          "path": "codegraph/codegraph/loader.py",
+          "excerpt": "Neo4j loader creates uniqueness constraints and indexes, supports full/scoped wipe, and batches MERGE operations for graph nodes/relationships."
+        },
+        {
+          "path": "codegraph/codegraph/hooks.py",
+          "excerpt": "Git hooks append marked post-commit/post-checkout sections that run incremental codegraph index commands via a detected safe Python interpreter."
+        }
+      ]
+    }
+  ]
+}

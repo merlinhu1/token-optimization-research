@@ -1,0 +1,107 @@
+{
+  "created_at": "2026-06-29",
+  "evidence_stage": "source-logic",
+  "method": "local shallow clone source inspection; README-only claims excluded from decision evidence",
+  "repos": [
+    {
+      "repository": "onur-gokyildiz-bhi/codescope",
+      "clone_path": "/tmp/token-leads-20260629/onur-gokyildiz-bhi__codescope",
+      "commit": "d8e58d83e920",
+      "dossier_path": "docs/tool-dossiers/onur-gokyildiz-bhi-codescope.md",
+      "selected_source_files": [
+        "Cargo.toml",
+        "crates/cli/src/main.rs",
+        "crates/mcp-server/src/main.rs",
+        "crates/mcp-server/src/server.rs",
+        "crates/mcp-server/src/tools/mod.rs",
+        "crates/mcp-server/src/indexing.rs",
+        "crates/mcp-server/src/helpers.rs",
+        "crates/core/src/graph/builder.rs",
+        "crates/core/src/graph/query.rs",
+        "crates/core/src/parser/extractor.rs",
+        "crates/mcp-server/tests/graph_query_tests.rs",
+        "install.sh",
+        "vscode-extension/src/extension.ts"
+      ],
+      "behavior_excerpts": [
+        "Rust workspace includes core, mcp-server, cli, web, lsp, and e2e crates with SurrealDB, tree-sitter, MCP, fastembed, and notify dependencies.",
+        "MCP entrypoint supports stdio, HTTP daemon, background start/stop/status, and auto-index flags; daemon stores DB/PID/log state under ~/.codescope and serves web plus MCP under /mcp.",
+        "GraphRagServer merges many tool routers, keeps active project context, readiness-gates tools during indexing, injects token-saving MCP instructions, and stores large outputs in a bounded in-memory archive.",
+        "Indexing pipeline stages parse results before clearing DB tables, walks files with ignore/gitignore handling, parses in rayon, writes graph entities/relations, resolves calls, syncs git/conversations, embeds, and starts watchers.",
+        "GraphQuery exposes function search, callers/callees, file entities, raw query, stats, and explore with limits/timeouts; GraphBuilder batches UPSERT and relation insertion into SurrealDB.",
+        "Installer downloads release assets, installs binaries to ~/.local/bin or existing install dir, installs bundled surreal under ~/.codescope/bin, may stop running codescope processes, and may alter shell PATH in interactive mode."
+      ]
+    },
+    {
+      "repository": "iikarus/Dragon-Brain",
+      "clone_path": "/tmp/token-leads-20260629/iikarus__Dragon-Brain",
+      "commit": "8877153df6eb",
+      "dossier_path": "docs/tool-dossiers/iikarus-dragon-brain.md",
+      "selected_source_files": [
+        "pyproject.toml",
+        "src/claude_memory/server.py",
+        "src/claude_memory/tools.py",
+        "src/claude_memory/repository.py",
+        "src/claude_memory/search.py",
+        "src/claude_memory/vector_store.py",
+        "src/claude_memory/context_manager.py",
+        "tests/unit/test_server.py"
+      ],
+      "behavior_excerpts": [
+        "Package scripts dragon-brain and claude-memory launch claude_memory.server:main; dependencies include graphiti-core, FalkorDB, MCP, Qdrant, sentence-transformers, FastAPI, Redis, and Streamlit.",
+        "FastMCP server eagerly instantiates embedding, memory, clustering, and librarian services and registers tools for entity/relationship CRUD, observations, sessions, temporal queries, graph traversal, search, hologram, archive/prune, and stats.",
+        "MemoryService wires AsyncMemoryRepository, QdrantVectorStore, ontology, lock manager, query router, activation engine, FTS store, and reranker behind CRUD/search/temporal/analysis mixins.",
+        "FalkorDB repository handles node/edge/raw Cypher operations with retry; vector store lazily creates Qdrant collection, payload name index, cosine search, MMR, and ID retrieval scoring.",
+        "Search mixin supports neighbors, shortest path, cross-domain patterns, evolution, point-in-time vector queries, and knowledge-state diffs; ContextManager trims retrieved nodes under a heuristic token budget.",
+        "Inspected source shows persistent memory retrieval, not an automatic codebase parser/indexer; token-saving surface is recall of selected memory/session entities."
+      ]
+    },
+    {
+      "repository": "STiFLeR7/memex",
+      "clone_path": "/tmp/token-leads-20260629/STiFLeR7__memex",
+      "commit": "cf9b1833ab41",
+      "dossier_path": "docs/tool-dossiers/stifler7-memex.md",
+      "selected_source_files": [
+        "pyproject.toml",
+        "npm/bin/memex-mcp.js",
+        "memex/mcp_server/server.py",
+        "memex/mcp_server/tools_read.py",
+        "memex/mcp_server/queries.py",
+        "memex/graph/writer.py",
+        "memex/graph/schema.py",
+        "memex/extractor/treesitter.py",
+        "memex/watcher/daemon.py"
+      ],
+      "behavior_excerpts": [
+        "Python package memex-mcp exposes memex CLI; npm wrapper requires uv and delegates to uv tool run --from memex-mcp memex.",
+        "MCP server lists project/symbol/decision/problem/search/stale/write/explain/predict/context-briefing tools, validates config, checks Neo4j unless MEMEX_INTROSPECTION_ONLY=1, and supports stdio and HTTP transports.",
+        "Read tools assemble Markdown context from Neo4j/Graphiti queries and record approximate output-token telemetry; get_context_briefing uses priority sections and len/4 token budget truncation.",
+        "Tree-sitter extractor emits function/class symbols for multiple extensions and Python-only call-site edges; writer persists structured Symbol nodes and conservative CALLS edges before best-effort Graphiti episodes.",
+        "Watcher daemon writes PID files, installs git hooks, starts filesystem observers and commit pollers, launches initial lockfile indexing, and runs decay scheduling.",
+        "Schema defines write_policy defaults for locked/open/self node classes and associated write-policy errors."
+      ]
+    },
+    {
+      "repository": "ishandutta2007/Code-Knowledge-Graph",
+      "clone_path": "/tmp/token-leads-20260629/ishandutta2007__Code-Knowledge-Graph",
+      "commit": "1b1986717647",
+      "dossier_path": "docs/tool-dossiers/ishandutta2007-code-knowledge-graph.md",
+      "selected_source_files": [
+        "package.json",
+        "tsconfig.json",
+        "src/index.ts",
+        "src/indexer.ts",
+        "src/db.ts",
+        "src/mcp.ts"
+      ],
+      "behavior_excerpts": [
+        "npm scripts run ts-node ESM entrypoint for index, query, mcp, and build; dependencies are MCP SDK, sqlite/sqlite3, glob, ts-node, and TypeScript.",
+        "CLI index command opens .ckg-index.db in current working directory, clears nodes and edges, indexes target directory, and closes DB; query command does SELECT * FROM nodes WHERE name LIKE ?.",
+        "Indexer scans only **/*.{ts,js} excluding node_modules, dist, and .git; reads files fully; TypeScript AST extracts function, class, and method declarations with line ranges.",
+        "SQLite schema stores nodes with id/name/type/path/startLine/endLine/content and edges with from_id/to_id/type plus indexes on path/name.",
+        "MCP server exposes search_nodes and get_node_details over stdio; search is name LIKE with optional type filter; details return node row and children through contains edges.",
+        "No call/import/inheritance/dependency edges, incremental indexing, output compression, semantic search, or tests were present in inspected source."
+      ]
+    }
+  ]
+}

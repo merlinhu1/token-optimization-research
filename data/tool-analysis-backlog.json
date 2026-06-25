@@ -1,0 +1,533 @@
+{
+  "updated_at": "2026-06-28",
+  "purpose": "Persistent backlog for source-code-grounded token-saving tool analysis. Discovery leads are not decision evidence until representative source code logic has been inspected.",
+  "items": [
+    {
+      "tool": "rtk-ai/rtk",
+      "dossier": "docs/tool-dossiers/rtk-ai-rtk.md",
+      "priority": "high",
+      "next_tasks": [
+        "Inspect command matcher and passthrough source",
+        "Inspect Claude/Codex hook rewrite logic",
+        "Review tests for raw-output recovery and failure behavior"
+      ],
+      "current_stage": "source_logic",
+      "target_stage": "benchmark_audit"
+    },
+    {
+      "tool": "safishamsi/graphify",
+      "dossier": "docs/tool-dossiers/safishamsi-graphify.md",
+      "priority": "high",
+      "next_tasks": [
+        "Inspect `graphify/benchmark.py` and raw benchmark artifacts before citing any measured token reduction.",
+        "Run graphify on a fixed target workload and compare provider-billed usage against a no-graph baseline.",
+        "Review full MCP tool schema and host install/uninstall paths for the specific platform under consideration."
+      ],
+      "current_stage": "source_logic",
+      "target_stage": "benchmark_audit"
+    },
+    {
+      "tool": "colbymchenry/codegraph",
+      "dossier": "docs/tool-dossiers/colbymchenry-codegraph.md",
+      "priority": "high",
+      "next_tasks": [
+        "Inspect MCP schemas and output budget logic",
+        "Inspect index watcher and staleness banner implementation",
+        "Review evaluation tasks and scoring"
+      ],
+      "current_stage": "source_logic",
+      "target_stage": "benchmark_audit"
+    },
+    {
+      "tool": "DietrichGebert/ponytail",
+      "dossier": "docs/tool-dossiers/dietrichgebert-ponytail.md",
+      "priority": "high",
+      "next_tasks": [
+        "Inspect activation hooks and rules",
+        "Review benchmark harness and raw result files",
+        "Compare with Bonsai, Whippet, Caveman, scrooge-mode, concise"
+      ],
+      "current_stage": "source_logic",
+      "target_stage": "benchmark_audit"
+    },
+    {
+      "tool": "Mibayy/token-savior",
+      "dossier": "docs/tool-dossiers/mibayy-token-savior.md",
+      "priority": "high",
+      "next_tasks": [
+        "Inspect MCP server handlers",
+        "Inspect bash rewriter and capture hooks",
+        "Review benchmark datasets and token accounting"
+      ],
+      "current_stage": "source_logic",
+      "target_stage": "benchmark_audit"
+    },
+    {
+      "tool": "chopratejas/headroom",
+      "dossier": "docs/tool-dossiers/chopratejas-headroom.md",
+      "priority": "high",
+      "next_tasks": [
+        "Review agent-evals and token accounting",
+        "Review benchmark harness, task definitions, token accounting, and raw outputs",
+        "Run target-workload reproduction before deployment-grade recommendation"
+      ],
+      "current_stage": "source_logic",
+      "target_stage": "benchmark_audit"
+    },
+    {
+      "tool": "mksglu/context-mode",
+      "dossier": "docs/tool-dossiers/mksglu-context-mode.md",
+      "priority": "high",
+      "next_tasks": [
+        "Review benchmark examples/raw outputs",
+        "Test interaction with RTK/Headroom",
+        "Run target-workload reproduction before deployment-grade recommendation"
+      ],
+      "current_stage": "source_logic",
+      "target_stage": "benchmark_audit"
+    },
+    {
+      "tool": "HoangP8/tokless",
+      "dossier": "docs/tool-dossiers/hoangp8-tokless.md",
+      "priority": "medium",
+      "next_tasks": [
+        "Define explicit non-overlapping Tokless installation profiles",
+        "Review unwire cleanup for permissions, hooks, plugins, and indexes",
+        "Run clean-sandbox install/disable tests across supported agents"
+      ],
+      "current_stage": "source_logic",
+      "target_stage": "benchmark_audit"
+    },
+    {
+      "tool": "JuliusBrussee/caveman-code",
+      "dossier": "docs/tool-dossiers/juliusbrussee-caveman-code.md",
+      "priority": "medium",
+      "next_tasks": [
+        "Audit benchmark harnesses, raw outputs, and token verification logic",
+        "Reproduce replacement-agent comparison against ClawCodex and baseline agents",
+        "Inspect install/state cleanup and checkpoint/worktree behavior"
+      ],
+      "current_stage": "source_logic",
+      "target_stage": "benchmark_audit"
+    },
+    {
+      "tool": "JuliusBrussee/caveman",
+      "dossier": "docs/tool-dossiers/juliusbrussee-caveman.md",
+      "priority": "high",
+      "next_tasks": [
+        "Review benchmark harness/raw outputs",
+        "Compare against Ponytail, scrooge-mode, concise, no behavior layer",
+        "Run target-workload reproduction before deployment-grade recommendation"
+      ],
+      "current_stage": "source_logic",
+      "target_stage": "benchmark_audit"
+    },
+    {
+      "tool": "yamadashy/repomix",
+      "dossier": "docs/tool-dossiers/yamadashy-repomix.md",
+      "priority": "medium",
+      "next_tasks": [
+        "Compare against targeted retrieval tools",
+        "Review benchmark harness, task definitions, token accounting, and raw outputs",
+        "Run target-workload reproduction before deployment-grade recommendation"
+      ],
+      "current_stage": "source_logic",
+      "target_stage": "benchmark_audit"
+    },
+    {
+      "tool": "oraios/serena",
+      "dossier": "docs/tool-dossiers/oraios-serena.md",
+      "priority": "medium",
+      "next_tasks": [
+        "Compare against CodeGraph",
+        "Review benchmark harness, task definitions, token accounting, and raw outputs",
+        "Run target-workload reproduction before deployment-grade recommendation"
+      ],
+      "current_stage": "source_logic",
+      "target_stage": "benchmark_audit"
+    },
+    {
+      "tool": "thedotmack/claude-mem",
+      "dossier": "docs/tool-dossiers/thedotmack-claude-mem.md",
+      "priority": "high",
+      "next_tasks": [
+        "Review storage schema, retention, redaction, and multi-agent namespace isolation",
+        "Inspect summarization provider prompts and failure behavior",
+        "Benchmark future-session task success and billed-token effects",
+        "Run target-workload reproduction before deployment-grade recommendation"
+      ],
+      "current_stage": "source_logic",
+      "target_stage": "benchmark_audit"
+    },
+    {
+      "tool": "tirth8205/code-review-graph",
+      "dossier": "docs/tool-dossiers/tirth8205-code-review-graph.md",
+      "priority": "high",
+      "next_tasks": [
+        "Inspect daemon/index invalidation and workspace watcher behavior",
+        "Review benchmark corpora and expected outputs",
+        "Compare retrieval quality against CodeGraph, Serena, and jcodemunch on same tasks",
+        "Run target-workload reproduction before deployment-grade recommendation"
+      ],
+      "current_stage": "source_logic",
+      "target_stage": "benchmark_audit"
+    },
+    {
+      "tool": "coderamp-labs/gitingest",
+      "dossier": "docs/tool-dossiers/coderamp-labs-gitingest.md",
+      "priority": "medium",
+      "next_tasks": [
+        "Inspect include/exclude pattern edge cases and maximum-size behavior",
+        "Review server caching/S3 behavior and auth-token handling",
+        "Compare filtered digest use against targeted retrieval tools",
+        "Run target-workload reproduction before deployment-grade recommendation"
+      ],
+      "current_stage": "source_logic",
+      "target_stage": "benchmark_audit"
+    },
+    {
+      "tool": "zilliztech/claude-context",
+      "dossier": "docs/tool-dossiers/zilliztech-claude-context.md",
+      "priority": "high",
+      "next_tasks": [
+        "Inspect MCP handler schemas and default search result budgets",
+        "Review evaluation case studies and raw conversation logs",
+        "Test vector DB failure modes and index-clear/sync race behavior",
+        "Run target-workload reproduction before deployment-grade recommendation"
+      ],
+      "current_stage": "source_logic",
+      "target_stage": "benchmark_audit"
+    },
+    {
+      "tool": "yvgude/lean-ctx",
+      "dossier": "docs/tool-dossiers/yvgude-lean-ctx.md",
+      "priority": "high",
+      "next_tasks": [
+        "Map enabled tools in each agent integration",
+        "Inspect daemon state/cache boundaries and raw-output recovery paths",
+        "Run focused comparisons against narrower tools by surface",
+        "Run target-workload reproduction before deployment-grade recommendation"
+      ],
+      "current_stage": "source_logic",
+      "target_stage": "benchmark_audit"
+    },
+    {
+      "tool": "cocoindex-io/cocoindex-code",
+      "dossier": "docs/tool-dossiers/cocoindex-io-cocoindex-code.md",
+      "priority": "medium",
+      "next_tasks": [
+        "Inspect server tool schemas and result size controls",
+        "Review daemon lifecycle/index refresh tests",
+        "Benchmark semantic search and grep modes separately",
+        "Run target-workload reproduction before deployment-grade recommendation"
+      ],
+      "current_stage": "source_logic",
+      "target_stage": "benchmark_audit"
+    },
+    {
+      "tool": "open-compress/claw-compactor",
+      "dossier": "docs/tool-dossiers/open-compress-claw-compactor.md",
+      "priority": "medium",
+      "next_tasks": [
+        "Inspect Rewind store/retriever and hash collision/failure behavior",
+        "Review benchmark datasets and raw results",
+        "Test with exact line/error fidelity coding outputs",
+        "Run target-workload reproduction before deployment-grade recommendation"
+      ],
+      "current_stage": "source_logic",
+      "target_stage": "benchmark_audit"
+    },
+    {
+      "tool": "jgravelle/jcodemunch-mcp",
+      "dossier": "docs/tool-dossiers/jgravelle-jcodemunch-mcp.md",
+      "priority": "high",
+      "next_tasks": [
+        "Review registered tool list, output budgets, and schema encoders per tool",
+        "Inspect storage/index freshness and redaction behavior",
+        "Review benchmark harnesses and replay artifacts before ranking",
+        "Run target-workload reproduction before deployment-grade recommendation"
+      ],
+      "current_stage": "source_logic",
+      "target_stage": "benchmark_audit"
+    },
+    {
+      "tool": "mex-memory/mex",
+      "dossier": "docs/tool-dossiers/mex-memory-mex.md",
+      "priority": "high",
+      "next_tasks": [
+        "Inspect setup/install paths and generated tool configs",
+        "Review telemetry/privacy defaults",
+        "Measure task-restart token savings with and without scaffold context",
+        "Run target-workload reproduction before deployment-grade recommendation"
+      ],
+      "current_stage": "source_logic",
+      "target_stage": "benchmark_audit"
+    },
+    {
+      "tool": "JuliusBrussee/cavemem",
+      "dossier": "docs/tool-dossiers/juliusbrussee-cavemem.md",
+      "priority": "high",
+      "next_tasks": [
+        "Inspect core MemoryStore schema, compression format, and redaction behavior",
+        "Review eval corpus and compression benchmarks",
+        "Test multi-agent namespace separation and provider-billed savings",
+        "Run target-workload reproduction before deployment-grade recommendation"
+      ],
+      "current_stage": "source_logic",
+      "target_stage": "benchmark_audit"
+    },
+    {
+      "tool": "zdk/lowfat",
+      "dossier": "docs/tool-dossiers/zdk-lowfat.md",
+      "priority": "high",
+      "next_tasks": [
+        "Inspect built-in embedded filters and command coverage",
+        "Review raw-output retrieval/user workflow",
+        "Benchmark against RTK/TokenJuice/Snip on terminal-heavy tasks",
+        "Run target-workload reproduction before deployment-grade recommendation"
+      ],
+      "current_stage": "source_logic",
+      "target_stage": "benchmark_audit"
+    },
+    {
+      "tool": "manojmallick/sigmap",
+      "dossier": "docs/tool-dossiers/manojmallick-sigmap.md",
+      "priority": "high",
+      "next_tasks": [
+        "Inspect extraction dispatch and per-language parsers",
+        "Review benchmark reports/tasks and failure semantics",
+        "Compare retrieval output budgets against CodeGraph/Serena/jcodemunch",
+        "Run target-workload reproduction before deployment-grade recommendation"
+      ],
+      "current_stage": "source_logic",
+      "target_stage": "benchmark_audit"
+    },
+    {
+      "tool": "vincentkoc/tokenjuice",
+      "dossier": "docs/tool-dossiers/vincentkoc-tokenjuice.md",
+      "priority": "high",
+      "next_tasks": [
+        "Inspect generated rule catalog and safety/fallback behavior",
+        "Review bench script and fixture coverage",
+        "Test hook ordering against RTK/Snip/Claude Code native hooks",
+        "Run target-workload reproduction before deployment-grade recommendation"
+      ],
+      "current_stage": "source_logic",
+      "target_stage": "benchmark_audit"
+    },
+    {
+      "tool": "ldomaradzki/xcsift",
+      "dossier": "docs/tool-dossiers/ldomaradzki-xcsift.md",
+      "priority": "medium",
+      "next_tasks": [
+        "Review tests for all parser event types and TOON output",
+        "Test interaction with RTK/TokenJuice/Snip on xcodebuild commands",
+        "Measure provider-billed savings on iOS/macOS repair tasks",
+        "Run target-workload reproduction before deployment-grade recommendation"
+      ],
+      "current_stage": "source_logic",
+      "target_stage": "benchmark_audit"
+    },
+    {
+      "tool": "Context-Engine-AI/Context-Engine",
+      "dossier": "docs/tool-dossiers/context-engine-ai-context-engine.md",
+      "priority": "medium",
+      "next_tasks": [
+        "Locate runtime MCP/server repository or package if separate",
+        "Verify live tool schemas against implementation code before recommending",
+        "Keep excluded from runtime stacks until runtime code is inspected"
+      ],
+      "current_stage": "source_logic",
+      "target_stage": "source_logic"
+    },
+    {
+      "tool": "edouard-claude/snip",
+      "dossier": "docs/tool-dossiers/edouard-claude-snip.md",
+      "priority": "high",
+      "next_tasks": [
+        "Inspect filter YAML schema and representative filters",
+        "Review hook install/uninstall for Claude/Codex/Pi",
+        "Benchmark fidelity on test/build/log commands against RTK/Lowfat/TokenJuice",
+        "Run target-workload reproduction before deployment-grade recommendation"
+      ],
+      "current_stage": "source_logic",
+      "target_stage": "benchmark_audit"
+    },
+    {
+      "tool": "portofcontext/pctx",
+      "dossier": "docs/tool-dossiers/portofcontext-pctx.md",
+      "priority": "high",
+      "next_tasks": [
+        "Inspect runtime JS wrappers and Deno/type-check behavior",
+        "Review integration tests for output capture and diagnostic filtering",
+        "Benchmark token savings against Context-Mode on same MCP-heavy tasks",
+        "Run target-workload reproduction before deployment-grade recommendation"
+      ],
+      "current_stage": "source_logic",
+      "target_stage": "benchmark_audit"
+    },
+    {
+      "tool": "agentforce314/clawcodex",
+      "dossier": "docs/tool-dossiers/agentforce314-clawcodex.md",
+      "priority": "medium",
+      "next_tasks": [
+        "Inspect src.services.compact implementation files referenced by tests",
+        "Review tool execution, permission, MCP, and memory subsystems",
+        "Run independent task benchmark before ranking against add-on tool stacks",
+        "Run target-workload reproduction before deployment-grade recommendation"
+      ],
+      "current_stage": "source_logic",
+      "target_stage": "benchmark_audit"
+    },
+    {
+      "tool": "Egonex-AI/Understand-Anything",
+      "dossier": "docs/tool-dossiers/egonex-ai-understand-anything.md",
+      "priority": "high",
+      "next_tasks": [
+        "Run the scanner/extractor on a fixed fixture and inspect generated graph JSON.",
+        "Inspect dashboard aggregation/layout scripts only if dashboard performance claims become relevant.",
+        "Compare chat prompt context against full-source and other graph retrieval baselines with provider-billed accounting."
+      ],
+      "current_stage": "source_logic",
+      "target_stage": "benchmark_audit"
+    },
+    {
+      "tool": "swarmclawai/swarmvault",
+      "dossier": "docs/tool-dossiers/swarmclawai-swarmvault.md",
+      "priority": "medium",
+      "next_tasks": [
+        "Inspect CLI package entrypoints and install docs/scripts for exact deployment behavior.",
+        "Audit `benchmark.ts`, perf budgets, and any raw outputs before using benchmark wording.",
+        "Run a fixed source corpus through ingest/compile/search/query and measure provider-billed usage and answer quality."
+      ],
+      "current_stage": "source_logic",
+      "target_stage": "benchmark_audit"
+    },
+    {
+      "tool": "catlog22/maestro-flow",
+      "dossier": "docs/tool-dossiers/catlog22-maestro-flow.md",
+      "priority": "medium",
+      "next_tasks": [
+        "Inspect `src/commands/install.ts`, hook manager, and generated agent/skill mirrors for exact platform side effects.",
+        "Run a minimal workflow with statusline bridge metrics to observe actual injection tiers.",
+        "Compare a fixed task with/without Maestro orchestration using provider-billed accounting and quality gates."
+      ],
+      "current_stage": "source_logic",
+      "target_stage": "benchmark_audit"
+    },
+    {
+      "tool": "osovv/grace-marketplace",
+      "dossier": "docs/tool-dossiers/osovv-grace-marketplace.md",
+      "priority": "medium",
+      "next_tasks": [
+        "Inspect `grace-module.ts`, `grace-status.ts`, and `grace-verification.ts` subcommand behavior in more detail.",
+        "Run `grace lint/status/file/module/verification` on a sample GRACE project and capture exact outputs.",
+        "Review plugin/skill packaging files for host-specific side effects and uninstall/disable behavior."
+      ],
+      "current_stage": "source_logic",
+      "target_stage": "benchmark_audit"
+    },
+    {
+      "tool": "vbcherepanov/total-agent-memory",
+      "dossier": "docs/tool-dossiers/vbcherepanov-total-agent-memory.md",
+      "priority": "medium",
+      "next_tasks": [
+        "Audit installer end-to-end on one non-sensitive sandbox profile, including uninstall semantics.",
+        "Inspect `recall_modes.py`, `quality_gate.py`, `content_filter.py`, and migration SQL in detail.",
+        "Run benchmark-audit only if benchmark harness/tasks/raw outputs are available and tied to provider-billed accounting."
+      ],
+      "current_stage": "source_logic",
+      "target_stage": "benchmark_audit"
+    },
+    {
+      "tool": "looptech-ai/understand-quickly",
+      "dossier": "docs/tool-dossiers/looptech-ai-understand-quickly.md",
+      "priority": "medium",
+      "next_tasks": [
+        "Inspect `registry.json` entries and a sample graph payload for freshness/size/provenance.",
+        "Run source-logic follow-up on `sync.mjs` drift checks and `extract.mjs` stats extraction.",
+        "Do not advance to benchmark-audit unless task harnesses and raw outputs are present beyond registry validation."
+      ],
+      "current_stage": "source_logic",
+      "target_stage": "benchmark_audit"
+    },
+    {
+      "tool": "jrollin/cartog",
+      "dossier": "docs/tool-dossiers/jrollin-cartog.md",
+      "priority": "medium",
+      "next_tasks": [
+        "Inspect migration/schema tables and compact/byte-cap response code end-to-end.",
+        "Run a sandbox indexing smoke test on a small repo and verify `cartog_context`, `refs`, and stale-index warnings.",
+        "Audit benchmark harnesses only after locating task definitions, scoring, token accounting, and raw outputs."
+      ],
+      "current_stage": "source_logic",
+      "target_stage": "benchmark_audit"
+    },
+    {
+      "tool": "cognitx-leyton/codegraph",
+      "dossier": "docs/tool-dossiers/cognitx-leyton-codegraph.md",
+      "priority": "medium",
+      "next_tasks": [
+        "Inspect `benchmark.py`, `tests/test_benchmark.py`, and any raw `codegraph-out/benchmark.json` only if advancing to benchmark-audit.",
+        "Run a sandbox Neo4j/index smoke test and verify MCP read-only query behavior.",
+        "Inspect install/uninstall command implementations and MCP write-tool gating end-to-end."
+      ],
+      "current_stage": "source_logic",
+      "target_stage": "benchmark_audit"
+    },
+    {
+      "tool": "onur-gokyildiz-bhi/codescope",
+      "dossier": "docs/tool-dossiers/onur-gokyildiz-bhi-codescope.md",
+      "priority": "medium",
+      "next_tasks": [
+        "Run a bounded source-logic smoke test on a small fixture to verify index/search/MCP round trip.",
+        "Inspect all tool routers for overlapping behavior and side effects before stack inclusion.",
+        "Map `~/.codescope` state files, migration behavior, and daemon lifecycle for reproducibility."
+      ],
+      "current_stage": "source_logic",
+      "target_stage": "benchmark_audit"
+    },
+    {
+      "tool": "iikarus/Dragon-Brain",
+      "dossier": "docs/tool-dossiers/iikarus-dragon-brain.md",
+      "priority": "medium",
+      "next_tasks": [
+        "Inspect `repository_async.py`, `search_channels.py`, `router.py`, `reranker.py`, and CRUD mixins for deeper write/search semantics.",
+        "Run a local degraded-startup smoke test with mocked or absent backends to confirm failure behavior.",
+        "Map memory-write governance and deletion/archive behavior before combining with other memory tools."
+      ],
+      "current_stage": "source_logic",
+      "target_stage": "benchmark_audit"
+    },
+    {
+      "tool": "STiFLeR7/memex",
+      "dossier": "docs/tool-dossiers/stifler7-memex.md",
+      "priority": "medium",
+      "next_tasks": [
+        "Inspect `memex/cli.py`, `tools_write.py`, `git_hook.py`, `handlers.py`, and `graph/client.py` before any deployment recommendation.",
+        "Run a local introspection-only MCP tool-list smoke test and a Neo4j-backed fixture if services are available.",
+        "Map watcher side effects and uninstall/disable paths."
+      ],
+      "current_stage": "source_logic",
+      "target_stage": "benchmark_audit"
+    },
+    {
+      "tool": "ishandutta2007/Code-Knowledge-Graph",
+      "dossier": "docs/tool-dossiers/ishandutta2007-code-knowledge-graph.md",
+      "priority": "medium",
+      "next_tasks": [
+        "Run `npm run build` and a small JS/TS fixture index/query smoke test before any operational use.",
+        "Add or inspect tests if they exist outside the shallow clone.",
+        "Review generated DB size and output size behavior on a medium TypeScript repo."
+      ],
+      "current_stage": "source_logic",
+      "target_stage": "benchmark_audit"
+    }
+  ],
+  "evidence_stages": {
+    "lead": "Candidate lead only; not a dossier and not decision evidence.",
+    "source_logic": "Minimum dossier stage for decisions; representative implementation files and runtime logic have been inspected.",
+    "benchmark_audit": "Benchmark harness, task set, scoring, token accounting, raw outputs, and failure/exclusion semantics have been inspected.",
+    "reproduction": "Independent target-workload reproduction with provider-billed usage, pass rate, turn count, latency, and quality gates."
+  }
+}
