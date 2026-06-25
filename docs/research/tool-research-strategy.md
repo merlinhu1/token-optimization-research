@@ -43,6 +43,8 @@ A `source-logic` dossier must inspect representative source code logic beyond RE
 ## Coverage and recommendation policy
 
 - Reports must state the highest evidence stage reached for each recommended stack component.
+- A repository that does not provide auditable versioning for the inspected source is not a valid candidate for recommendation, stack construction, benchmark-audit, or reproduction until a pinned source snapshot is available.
+- Dossiers marked `unpinned-historical-inspection` may preserve historical notes, but they are candidate-ineligible until refreshed against an immutable commit.
 - A stack may be recommended provisionally before reproduction, but the report must label the recommendation as evidence-weighted rather than deployment-proven.
 - README-only and integration-only claims may describe leads but cannot be the basis for a qualified stack.
 - Before a report claims a candidate set is complete, primary, recommended, or representative, run a coverage audit using `docs/methodology/discovery-protocol.md` and preserve the query artifact under `sources/discovery/`.

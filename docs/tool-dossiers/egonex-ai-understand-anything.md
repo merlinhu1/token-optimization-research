@@ -5,6 +5,10 @@
 - Repository: `Egonex-AI/Understand-Anything`
 - URL: https://github.com/Egonex-AI/Understand-Anything
 - Version/ref inspected: local shallow clone `54754a6f9705`, 2026-06-29
+- Snapshot status: pinned-commit
+- Commit inspected: 54754a6f9705
+- Commit URL: https://github.com/Egonex-AI/Understand-Anything/commit/54754a6f9705
+- Source artifact path: `sources/discovery/2026-06-29-graph-leads-a-source-logic.json`
 - Date inspected: 2026-06-29
 - Evidence stage: source-logic (local source inspection of installer, plugin exports, project scanner, structural extractor, core search/schema/parser logic, and representative tests)
 - License: MIT (`package.json`)

@@ -6,6 +6,10 @@
 - URL: https://github.com/iikarus/Dragon-Brain
 - Local clone inspected: `/tmp/token-leads-20260629/iikarus__Dragon-Brain`
 - Version/ref inspected: local shallow clone commit `8877153df6eb`
+- Snapshot status: pinned-commit
+- Commit inspected: 8877153df6eb
+- Commit URL: https://github.com/iikarus/Dragon-Brain/commit/8877153df6eb
+- Source artifact path: `sources/discovery/2026-06-29-graph-leads-c-source-logic.json`
 - Date inspected: 2026-06-29
 - Evidence stage: source-logic
 - License observed in manifest: MIT

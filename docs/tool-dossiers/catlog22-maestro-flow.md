@@ -5,6 +5,10 @@
 - Repository: `catlog22/maestro-flow`
 - URL: https://github.com/catlog22/maestro-flow
 - Version/ref inspected: local shallow clone `6f1d8b6dc41d`, 2026-06-29
+- Snapshot status: pinned-commit
+- Commit inspected: 6f1d8b6dc41d
+- Commit URL: https://github.com/catlog22/maestro-flow/commit/6f1d8b6dc41d
+- Source artifact path: `sources/discovery/2026-06-29-graph-leads-a-source-logic.json`
 - Date inspected: 2026-06-29
 - Evidence stage: source-logic (local source inspection of package/CLI/MCP entrypoints, graph facade/query, hook context injection/budgeting, search daemon, file tools, coordinator prompt assembly, and tests)
 - License: MIT (`package.json`)

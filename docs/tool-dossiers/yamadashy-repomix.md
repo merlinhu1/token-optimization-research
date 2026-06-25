@@ -4,9 +4,13 @@
 
 - Repository: `yamadashy/repomix`
 - URL: https://github.com/yamadashy/repomix
-- Version/ref inspected: GitHub `HEAD` tree via API, 2026-06-26
-- Date inspected: 2026-06-26
-- Evidence stage: source-logic (representative packer, output, token counting, MCP, and security files inspected)
+- Version/ref inspected: local shallow clone `6873d5212227`, 2026-07-01
+- Snapshot status: pinned-commit
+- Commit inspected: 6873d5212227998a4de7395744acc1f2d894cc20
+- Commit URL: https://github.com/yamadashy/repomix/commit/6873d5212227998a4de7395744acc1f2d894cc20
+- Source artifact path: `sources/discovery/2026-07-01-pinned-dossier-refresh-source-structures.json`
+- Date inspected: 2026-07-01
+- Evidence stage: source-logic (fresh pinned shallow clone; representative source/config/test files inspected; benchmark-audit and reproduction still required for measured savings)
 - Stars at inspection: 26,583
 - Forks at inspection: 1,390
 - License: MIT
@@ -21,10 +25,10 @@ Repomix packs repository contents into AI-friendly context files. It can save to
 | Evidence type | Files/URLs inspected | Notes |
 |---|---|---|
 | Repository metadata | GitHub API repository metadata | Popularity and license signals only; not effectiveness evidence. |
-| Source tree | `sources/discovery/2026-06-26-five-more-tool-source-structures.json` | Used to identify installer, plugin, MCP, test, and benchmark paths beyond README. |
+| Source tree | `sources/discovery/2026-07-01-pinned-dossier-refresh-source-structures.json` | Used to identify installer, plugin, MCP, test, and benchmark paths beyond README. |
 | README/docs | README path identified when present. | README claims require source and benchmark follow-up. |
 | Installer/config/plugin files | Paths identified below. | Integration review started. |
-| Runtime source | Representative implementation files inspected; see code-detail section. | Source-behavior review has started and should continue across remaining modules. |
+| Runtime source | Representative implementation files inspected; see code-detail section. | Source-logic review is recorded for representative modules; uninspected modules remain benchmark-audit/reproduction follow-up. |
 | Tests/benchmarks | Representative tests or metrics files inspected where available. | Full benchmark-method review remains open. |
 
 ## Initial source-structure finding
@@ -76,7 +80,12 @@ Repository tree inspection found 1,141 files and 878 files matching integration,
 
 ## Code-detail inspection findings
 
-Evidence artifact: `sources/discovery/2026-06-26-five-more-tool-code-inspection.json`. The artifact contains raw GitHub file paths, byte sizes, SHA-256 prefixes, and behavior-line excerpts from the inspected implementation files.
+Evidence artifact: `sources/discovery/2026-07-01-pinned-dossier-refresh-code-inspection.json`.
+
+### Fresh pinned-source refresh
+
+The 2026-07-01 refresh pins the inspected source to `6873d5212227998a4de7395744acc1f2d894cc20` and records a fresh tree plus selected implementation excerpts in `sources/discovery/2026-07-01-pinned-dossier-refresh-source-structures.json` and `sources/discovery/2026-07-01-pinned-dossier-refresh-code-inspection.json`. Representative files captured for this refresh include `scripts/memory/src/memory-test.ts`, `scripts/memory/src/types.ts`, `src/cli/actions/defaultAction.ts`, `src/cli/actions/initAction.ts`, `src/cli/actions/mcpAction.ts`, `src/cli/actions/migrationAction.ts`. Treat benchmark, savings, and deployment claims below as source-logic only unless a benchmark-audit or reproduction artifact is explicitly cited.
+ The artifact contains raw GitHub file paths, byte sizes, SHA-256 prefixes, and behavior-line excerpts from the inspected implementation files.
 
 - `src/core/packager.ts` coordinates repository search, token-count cache loading, sort-data prefetch, file processing, and output production.
 - `src/core/output/outputGenerate.ts` renders outputs through style templates and computes file line counts and summaries for consolidated output.
@@ -96,7 +105,7 @@ Evidence artifact: `sources/discovery/2026-06-26-five-more-tool-code-inspection.
 - Primary intervention surface: Repository packing and optional compression/digest generation
 - Integration status: documented integration paths and/or source locations were identified, but exact runtime behavior has not yet been fully reviewed.
 - Disable/uninstall path: requires follow-up inspection of installer/plugin code and documentation.
-- Failure behavior if dependency is missing: requires source-logic inspection.
+- Failure behavior if dependency is missing: partially inspected in representative files; complete deployment failure-mode review remains open.
 
 ## Runtime behavior
 
@@ -111,15 +120,15 @@ Evidence artifact: `sources/discovery/2026-06-26-five-more-tool-code-inspection.
 ## Token-saving mechanism
 
 - Addressable token surface: Repository packing and optional compression/digest generation
-- Reduction method: identified at mechanism level; implementation details require source-logic inspection.
-- Quality-preservation mechanism: requires source and benchmark review.
+- Reduction method: identified from representative implementation files; full benchmark/reproduction review remains open.
+- Quality-preservation mechanism: partially identified from representative source where present; benchmark/reproduction review remains required.
 - Cases where savings may not translate to provider-billed reductions: depends on turn count, prompt caching, failure/retry behavior, and whether the tool changes agent workflow length.
 
 ## Benchmarks and claims
 
 | Claim | Source | Measurement scope | Reviewed method | Caveats |
 |---|---|---|---|---|
-| Token-saving or context-reduction claims exist or are implied by repository description/metadata. | Repository metadata and existing catalog records. | Varies by tool. | Not yet reviewed beyond source-tree and metadata inspection in this dossier. | Maintainer claims must not be treated as reproduced evidence. |
+| Token-saving or context-reduction claims exist or are implied by repository description/metadata. | Repository metadata, existing catalog records, and pinned source-logic refresh. | Varies by tool. | Reviewed at source-logic level through representative implementation files; not benchmark-audited or reproduced. | Maintainer claims must not be treated as reproduced evidence. |
 
 ## Compatibility notes
 

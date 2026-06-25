@@ -6,6 +6,10 @@
 - URL: https://github.com/jrollin/cartog
 - Local clone inspected: `/tmp/token-leads-20260629/jrollin__cartog`
 - Version/ref inspected: local shallow clone `890d15b66b52`, 2026-06-29
+- Snapshot status: pinned-commit
+- Commit inspected: 890d15b66b52
+- Commit URL: https://github.com/jrollin/cartog/commit/890d15b66b52
+- Source artifact path: `sources/discovery/2026-06-29-graph-leads-b-source-logic.json`
 - Date inspected: 2026-06-29
 - Evidence stage: source-logic (local shallow clone; representative Cargo workspace, CLI, MCP server/tools, indexer, database query layer, RAG search/context, LSP gate, plugin hooks, and tests inspected)
 

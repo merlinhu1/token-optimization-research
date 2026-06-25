@@ -4,9 +4,13 @@
 
 - Repository: `coderamp-labs/gitingest`
 - URL: https://github.com/coderamp-labs/gitingest
-- Version/ref inspected: GitHub `HEAD` tree and representative raw implementation files via API, 2026-06-26
-- Date inspected: 2026-06-26
-- Evidence stage: source-logic (representative implementation files inspected; benchmark/reproduction review remains open)
+- Version/ref inspected: local shallow clone `4e259a02fe72`, 2026-07-01
+- Snapshot status: pinned-commit
+- Commit inspected: 4e259a02fe72115bee538271622f1234a81c8e1a
+- Commit URL: https://github.com/coderamp-labs/gitingest/commit/4e259a02fe72115bee538271622f1234a81c8e1a
+- Source artifact path: `sources/discovery/2026-07-01-pinned-dossier-refresh-source-structures.json`
+- Date inspected: 2026-07-01
+- Evidence stage: source-logic (fresh pinned shallow clone; representative source/config/test files inspected; benchmark-audit and reproduction still required for measured savings)
 - Stars at inspection: 14,969
 - Forks at inspection: 1,117
 - License: MIT
@@ -21,8 +25,8 @@ Gitingest clones or reads a repository and emits a prompt-friendly tree/content 
 | Evidence type | Files/URLs inspected | Notes |
 |---|---|---|
 | Repository metadata | GitHub API repository metadata | Popularity and license signals only; not effectiveness evidence. |
-| Source tree | `sources/discovery/2026-06-26-eight-more-tool-source-structures.json` | Used to identify installer, plugin, MCP, test, benchmark, and runtime paths beyond README. |
-| Runtime source | `sources/discovery/2026-06-26-eight-more-tool-code-inspection.json` | Representative implementation files fetched from GitHub HEAD with SHA-256 prefixes and behavior excerpts. |
+| Source tree | `sources/discovery/2026-07-01-pinned-dossier-refresh-source-structures.json` | Used to identify installer, plugin, MCP, test, benchmark, and runtime paths beyond README. |
+| Runtime source | `sources/discovery/2026-07-01-pinned-dossier-refresh-code-inspection.json` | Representative implementation files fetched from GitHub HEAD with SHA-256 prefixes and behavior excerpts. |
 | README/docs | README path identified when present. | README claims are not used as behavior evidence. |
 | Tests/benchmarks | Paths identified where present. | Full benchmark-method review remains open. |
 
@@ -69,7 +73,12 @@ Repository tree inspection found 125 files and 90 files matching integration, so
 
 ## Code-detail inspection findings
 
-Evidence artifact: `sources/discovery/2026-06-26-eight-more-tool-code-inspection.json`.
+Evidence artifact: `sources/discovery/2026-07-01-pinned-dossier-refresh-code-inspection.json`.
+
+### Fresh pinned-source refresh
+
+The 2026-07-01 refresh pins the inspected source to `4e259a02fe72115bee538271622f1234a81c8e1a` and records a fresh tree plus selected implementation excerpts in `sources/discovery/2026-07-01-pinned-dossier-refresh-source-structures.json` and `sources/discovery/2026-07-01-pinned-dossier-refresh-code-inspection.json`. Representative files captured for this refresh include `src/gitingest/__init__.py`, `src/gitingest/__main__.py`, `src/gitingest/clone.py`, `src/gitingest/config.py`, `src/gitingest/entrypoint.py`, `src/gitingest/ingestion.py`. Treat benchmark, savings, and deployment claims below as source-logic only unless a benchmark-audit or reproduction artifact is explicitly cited.
+
 
 - `src/gitingest/ingestion.py` orchestrates codebase ingestion under configured max directory depth, max files, and total-size limits.
 - `src/gitingest/output_formatter.py` recursively formats directory/file nodes and uses `tiktoken` to estimate output token counts.

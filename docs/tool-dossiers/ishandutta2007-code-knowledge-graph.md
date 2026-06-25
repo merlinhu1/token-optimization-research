@@ -6,6 +6,10 @@
 - URL: https://github.com/ishandutta2007/Code-Knowledge-Graph
 - Local clone inspected: `/tmp/token-leads-20260629/ishandutta2007__Code-Knowledge-Graph`
 - Version/ref inspected: local shallow clone commit `1b1986717647`
+- Snapshot status: pinned-commit
+- Commit inspected: 1b1986717647
+- Commit URL: https://github.com/ishandutta2007/Code-Knowledge-Graph/commit/1b1986717647
+- Source artifact path: `sources/discovery/2026-06-29-graph-leads-c-source-logic.json`
 - Date inspected: 2026-06-29
 - Evidence stage: source-logic
 - License observed in manifest: ISC

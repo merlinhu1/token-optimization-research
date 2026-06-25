@@ -4,9 +4,13 @@
 
 - Repository: `JuliusBrussee/caveman`
 - URL: https://github.com/JuliusBrussee/caveman
-- Version/ref inspected: GitHub `HEAD` tree via API, 2026-06-26
-- Date inspected: 2026-06-26
-- Evidence stage: source-logic (representative hook, MCP proxy, compressor, and tests inspected)
+- Version/ref inspected: local shallow clone `25d22f864ad6`, 2026-07-01
+- Snapshot status: pinned-commit
+- Commit inspected: 25d22f864ad68cc447a4cb93aefde918aa4aec9f
+- Commit URL: https://github.com/JuliusBrussee/caveman/commit/25d22f864ad68cc447a4cb93aefde918aa4aec9f
+- Source artifact path: `sources/discovery/2026-07-01-pinned-dossier-refresh-source-structures.json`
+- Date inspected: 2026-07-01
+- Evidence stage: source-logic (fresh pinned shallow clone; representative source/config/test files inspected; benchmark-audit and reproduction still required for measured savings)
 - Stars at inspection: 77,013
 - Forks at inspection: 4,360
 - License: MIT
@@ -21,10 +25,10 @@ Caveman is a cross-agent terse-output skill/plugin. It primarily reduces assista
 | Evidence type | Files/URLs inspected | Notes |
 |---|---|---|
 | Repository metadata | GitHub API repository metadata | Popularity and license signals only; not effectiveness evidence. |
-| Source tree | `sources/discovery/2026-06-26-five-more-tool-source-structures.json` | Used to identify installer, plugin, MCP, test, and benchmark paths beyond README. |
+| Source tree | `sources/discovery/2026-07-01-pinned-dossier-refresh-source-structures.json` | Used to identify installer, plugin, MCP, test, and benchmark paths beyond README. |
 | README/docs | README path identified when present. | README claims require source and benchmark follow-up. |
 | Installer/config/plugin files | Paths identified below. | Integration review started. |
-| Runtime source | Representative implementation files inspected; see code-detail section. | Source-behavior review has started and should continue across remaining modules. |
+| Runtime source | Representative implementation files inspected; see code-detail section. | Source-logic review is recorded for representative modules; uninspected modules remain benchmark-audit/reproduction follow-up. |
 | Tests/benchmarks | Representative tests or metrics files inspected where available. | Full benchmark-method review remains open. |
 
 ## Initial source-structure finding
@@ -76,7 +80,12 @@ Repository tree inspection found 148 files and 116 files matching integration, s
 
 ## Code-detail inspection findings
 
-Evidence artifact: `sources/discovery/2026-06-26-five-more-tool-code-inspection.json`. The artifact contains raw GitHub file paths, byte sizes, SHA-256 prefixes, and behavior-line excerpts from the inspected implementation files.
+Evidence artifact: `sources/discovery/2026-07-01-pinned-dossier-refresh-code-inspection.json`.
+
+### Fresh pinned-source refresh
+
+The 2026-07-01 refresh pins the inspected source to `25d22f864ad68cc447a4cb93aefde918aa4aec9f` and records a fresh tree plus selected implementation excerpts in `sources/discovery/2026-07-01-pinned-dossier-refresh-source-structures.json` and `sources/discovery/2026-07-01-pinned-dossier-refresh-code-inspection.json`. Representative files captured for this refresh include `plugins/caveman/.codex-plugin/plugin.json`, `plugins/caveman/agents/cavecrew-builder.md`, `plugins/caveman/agents/cavecrew-investigator.md`, `plugins/caveman/agents/cavecrew-reviewer.md`, `plugins/caveman/skills/cavecrew/SKILL.md`, `plugins/caveman/skills/caveman-compress/SKILL.md`. Treat benchmark, savings, and deployment claims below as source-logic only unless a benchmark-audit or reproduction artifact is explicitly cited.
+ The artifact contains raw GitHub file paths, byte sizes, SHA-256 prefixes, and behavior-line excerpts from the inspected implementation files.
 
 - SessionStart activation is implemented in `src/hooks/caveman-activate.js`. It checks mode state, handles `off`, independent modes such as `commit`, `review`, and `compress`, and emits a full caveman ruleset as hidden session context rather than relying only on a short instruction.
 - `src/hooks/caveman-mode-tracker.js` is a `UserPromptSubmit` hook that parses user prompts for activation/deactivation and brevity phrases, then updates local mode state under the Claude config directory.
@@ -96,7 +105,7 @@ Evidence artifact: `sources/discovery/2026-06-26-five-more-tool-code-inspection.
 - Primary intervention surface: Behavioral output compression and instruction/MCP-description compression
 - Integration status: documented integration paths and/or source locations were identified, but exact runtime behavior has not yet been fully reviewed.
 - Disable/uninstall path: requires follow-up inspection of installer/plugin code and documentation.
-- Failure behavior if dependency is missing: requires source-logic inspection.
+- Failure behavior if dependency is missing: partially inspected in representative files; complete deployment failure-mode review remains open.
 
 ## Runtime behavior
 
@@ -111,15 +120,15 @@ Evidence artifact: `sources/discovery/2026-06-26-five-more-tool-code-inspection.
 ## Token-saving mechanism
 
 - Addressable token surface: Behavioral output compression and instruction/MCP-description compression
-- Reduction method: identified at mechanism level; implementation details require source-logic inspection.
-- Quality-preservation mechanism: requires source and benchmark review.
+- Reduction method: identified from representative implementation files; full benchmark/reproduction review remains open.
+- Quality-preservation mechanism: partially identified from representative source where present; benchmark/reproduction review remains required.
 - Cases where savings may not translate to provider-billed reductions: depends on turn count, prompt caching, failure/retry behavior, and whether the tool changes agent workflow length.
 
 ## Benchmarks and claims
 
 | Claim | Source | Measurement scope | Reviewed method | Caveats |
 |---|---|---|---|---|
-| Token-saving or context-reduction claims exist or are implied by repository description/metadata. | Repository metadata and existing catalog records. | Varies by tool. | Not yet reviewed beyond source-tree and metadata inspection in this dossier. | Maintainer claims must not be treated as reproduced evidence. |
+| Token-saving or context-reduction claims exist or are implied by repository description/metadata. | Repository metadata, existing catalog records, and pinned source-logic refresh. | Varies by tool. | Reviewed at source-logic level through representative implementation files; not benchmark-audited or reproduced. | Maintainer claims must not be treated as reproduced evidence. |
 
 ## Compatibility notes
 

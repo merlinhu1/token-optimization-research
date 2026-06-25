@@ -5,6 +5,10 @@
 - Repository: `Context-Engine-AI/Context-Engine`
 - URL: https://github.com/Context-Engine-AI/Context-Engine
 - Version/ref inspected: local shallow clone `b1dc3ef3ff4a`, 2026-06-26
+- Snapshot status: pinned-commit
+- Commit inspected: b1dc3ef3ff4a
+- Commit URL: https://github.com/Context-Engine-AI/Context-Engine/commit/b1dc3ef3ff4a
+- Source artifact path: `sources/discovery/2026-06-26-source-logic-uplift-source-structures.json`
 - Date inspected: 2026-06-26
 - Evidence stage: source-logic of inspected repository (local shallow clone; package/site/skill files inspected; no runtime MCP implementation found in this repository)
 

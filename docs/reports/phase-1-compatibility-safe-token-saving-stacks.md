@@ -346,7 +346,7 @@ The report prioritizes candidates that can be ablated cleanly: baseline, single-
 
 **Primary risks:** runtime differences confound stack effects; quality may fall if savings come from under-solving; benchmark settings may not generalize.
 
-**Phase 2 ablation:** native baseline, ClawCodex alone, Caveman Code alone on identical tasks.
+**Phase 2 ablation:** Codex no-MCP baseline, ClawCodex alone, Caveman Code alone on identical tasks.
 
 **Downgrade criteria:** verifier failure, lower quality score, more correction turns, or savings only from omitted work.
 
@@ -370,7 +370,7 @@ The report prioritizes candidates that can be ablated cleanly: baseline, single-
 
 | Variant | Components enabled | Purpose | Required metric |
 |---|---|---|---|
-| `baseline-native-agent` | Native agent workflow with no add-ons | Establish task-level provider-billed baseline | Billed tokens/cost, turns, tool calls, verifier, quality score, latency |
+| `baseline-codex-no-mcp` | Codex CLI workflow with native shell/edit/file operations and no MCP/token-saving add-ons | Establish task-level provider-billed practical-agent baseline | Billed tokens/cost, turns, native tool calls, verifier, quality score, latency |
 | `terminal-only` | One of RTK, Lowfat, Snip, TokenJuice, or xcsift for Apple logs | Select the terminal owner before multi-tool stacks | Compact/raw token delta, diagnostic fidelity, raw recovery |
 | `retrieval-only` | One of CodeGraph, Cartog, Graphify, Understand-Anything, Serena, SigMap, jcodemunch, Claude Context, CocoIndex Code, Code Review Graph, CognitX CodeGraph, Codescope, or SwarmVault | Isolate retrieval benefit and index overhead | Target localization, follow-up broad reads, billed tokens, index time |
 | `memory-only repeated-task` | One of Cavemem, Claude Mem, Total Agent Memory, Dragon-Brain, Memex, Token Savior memory, or LeanCTX memory | Test rediscovery reduction | Stale-context rate, repeated-task token delta, correctness |
@@ -378,7 +378,7 @@ The report prioritizes candidates that can be ablated cleanly: baseline, single-
 | `graph bakeoff` | Fixed terminal owner plus exactly one retrieval authority | Compare graph/RAG candidates without retrieval overlap | File/symbol hit rate, broad-read reduction, billed tokens |
 | `broad-owner comparator` | LeanCTX, Token Savior, Headroom, Claw Compactor, Codescope, SwarmVault, or Memex alone | Test whether single broad ownership beats narrow composition | Task-level savings, raw recovery, reset behavior |
 | `installer parity` | Manual profile versus Tokless-installed equivalent profile | Test setup reproducibility rather than token reduction | Generated config diff, install/disable/reset, same task metrics |
-| `replacement runtime` | Native baseline versus ClawCodex versus Caveman Code | Test alternative agent runtime trade-offs | Pass rate, billed cost, quality score, latency |
+| `replacement runtime` | Codex no-MCP baseline versus ClawCodex versus Caveman Code | Test alternative agent runtime trade-offs | Pass rate, billed cost, quality score, latency |
 | `Apple specialized` | xcsift alone, general compactor alone, xcsift+Serena | Test specialized versus general terminal compaction | Diagnostic fidelity, repair success, billed tokens |
 
 ## Compatibility exclusions
@@ -407,9 +407,9 @@ The report prioritizes candidates that can be ablated cleanly: baseline, single-
 | Graph/RAG onboarding or architecture questions | Graphify stack, Understand-Anything stack, Cartog stack, SwarmVault owner | Fixed terminal owner plus one retrieval authority |
 | Repeated tasks with project memory needs | Cartog + Total Agent Memory; Understand-Anything + Cavemem; Code Review Graph + Claude Mem | Same retrieval stack without memory |
 | Broad context ownership | LeanCTX alone; Token Savior alone; Codescope alone; Memex alone | Lower-intervention comparator |
-| Broad compression/proxy experiments | Headroom alone; Claw Compactor alone | Terminal-only compactor and native baseline |
+| Broad compression/proxy experiments | Headroom alone; Claw Compactor alone | Terminal-only compactor and Codex no-MCP baseline |
 | MCP-heavy tool execution | jcodemunch MCP + pctx + Caveman | jcodemunch-only and pctx-only variants |
-| Code review and PR repair | Code Review Graph + Claude Mem + Lowfat | Code Review Graph alone; native review baseline |
+| Code review and PR repair | Code Review Graph + Claude Mem + Lowfat | Code Review Graph alone; Codex no-MCP review baseline |
 | Apple/Xcode repair | xcsift + Serena + MEX | xcsift-only; general terminal compactor; xcsift+Serena |
 | Installer reproducibility | Tokless manual-parity profile; Maestro Flow orchestration profile | Equivalent manual configuration |
 | Replacement-agent trade-off | ClawCodex alone; Caveman Code alone | Native baseline with no add-ons |

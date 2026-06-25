@@ -4,9 +4,13 @@
 
 - Repository: `ldomaradzki/xcsift`
 - URL: https://github.com/ldomaradzki/xcsift
-- Version/ref inspected: GitHub `HEAD` API or local shallow clone plus representative implementation files, 2026-06-26
-- Date inspected: 2026-06-26
-- Evidence stage: source-logic (representative parser, coverage, CLI, and Claude Code installer files inspected)
+- Version/ref inspected: local shallow clone `0a4b1287bf1b`, 2026-07-01
+- Snapshot status: pinned-commit
+- Commit inspected: 0a4b1287bf1b698ef2bff0016ee583ed39ae6d77
+- Commit URL: https://github.com/ldomaradzki/xcsift/commit/0a4b1287bf1b698ef2bff0016ee583ed39ae6d77
+- Source artifact path: `sources/discovery/2026-07-01-pinned-dossier-refresh-source-structures.json`
+- Date inspected: 2026-07-01
+- Evidence stage: source-logic (fresh pinned shallow clone; representative source/config/test files inspected; benchmark-audit and reproduction still required for measured savings)
 - Stars at inspection: 444
 - Forks at inspection: 21
 - License: MIT
@@ -21,8 +25,8 @@ xcsift parses xcodebuild/SPM output and emits structured build, error, warning, 
 | Evidence type | Files/URLs inspected | Notes |
 |---|---|---|
 | Repository metadata | GitHub API where available; local shallow clone fallback for rate-limited repos | Popularity and license signals only; not effectiveness evidence. |
-| Source tree | `sources/discovery/2026-06-26-ten-more-tool-source-structures.json` | Used to identify source, hook, MCP, test, benchmark, and runtime paths beyond README. |
-| Runtime/source content | `sources/discovery/2026-06-26-ten-more-tool-code-inspection.json` | Representative files fetched from raw GitHub or read from local clones with SHA-256 prefixes and behavior excerpts. |
+| Source tree | `sources/discovery/2026-07-01-pinned-dossier-refresh-source-structures.json` | Used to identify source, hook, MCP, test, benchmark, and runtime paths beyond README. |
+| Runtime/source content | `sources/discovery/2026-07-01-pinned-dossier-refresh-code-inspection.json` | Representative files fetched from raw GitHub or read from local clones with SHA-256 prefixes and behavior excerpts. |
 | README/docs | README/docs paths identified when present. | README claims are not used as behavior evidence. |
 | Tests/benchmarks | Paths identified where present. | Full benchmark-method review remains open. |
 
@@ -66,7 +70,12 @@ Repository tree inspection found 63 files and 42 files matching integration, sou
 
 ## Code-detail inspection findings
 
-Evidence artifact: `sources/discovery/2026-06-26-ten-more-tool-code-inspection.json`.
+Evidence artifact: `sources/discovery/2026-07-01-pinned-dossier-refresh-code-inspection.json`.
+
+### Fresh pinned-source refresh
+
+The 2026-07-01 refresh pins the inspected source to `0a4b1287bf1b698ef2bff0016ee583ed39ae6d77` and records a fresh tree plus selected implementation excerpts in `sources/discovery/2026-07-01-pinned-dossier-refresh-source-structures.json` and `sources/discovery/2026-07-01-pinned-dossier-refresh-code-inspection.json`. Representative files captured for this refresh include `Sources/XCSiftCore/CoverageParser.swift`, `Sources/XCSiftCore/FileSystemProtocol.swift`, `Sources/XCSiftCore/LineParser.swift`, `Sources/XCSiftCore/Models.swift`, `Sources/XCSiftCore/OutputParser.swift`, `Sources/XCSiftCore/ShellRunnerProtocol.swift`. Treat benchmark, savings, and deployment claims below as source-logic only unless a benchmark-audit or reproduction artifact is explicitly cited.
+
 
 - `Sources/XCSiftCore/OutputParser.swift` accumulates/deduplicates errors, warnings, failed tests, linker errors, executables, timings, and build phases from complete build output.
 - `Sources/XCSiftCore/LineParser.swift` emits typed parse events for compiler errors, linker errors, tests, phases, dependencies, and ignored lines.
