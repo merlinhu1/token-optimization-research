@@ -1,7 +1,7 @@
 ---
 status: active
 truth_kind: engineering-contract
-last_reviewed: 2026-06-26
+last_reviewed: 2026-06-30
 ---
 
 # Evidence Stages
@@ -23,6 +23,7 @@ It does not own individual tool dossiers or raw source artifacts.
 - `AGENTS.md` names the active evidence-stage taxonomy.
 - Repository data files store tool and evaluation records that use the taxonomy.
 - The validator rejects retired evidence-stage terminology.
+- The validator requires tool dossiers to state whether their inspected source snapshot is pinned or historically unpinned.
 
 ## Product Truth Links
 
@@ -47,6 +48,10 @@ It does not own individual tool dossiers or raw source artifacts.
 - A lead is not decision evidence for stack recommendations.
 - `source-logic` is the minimum decision-bearing stage.
 - Source-logic requires inspected implementation behavior, not README claims alone.
+- Source-logic dossiers must record source snapshot metadata.
+- A pinned source-logic dossier records an immutable commit or commit prefix.
+- A historical GitHub `HEAD` inspection without a recorded commit must be marked `unpinned-historical-inspection` until refreshed.
+- A repository without auditable source versioning for the inspected source is not a valid candidate for recommendation, stack construction, benchmark-audit, or reproduction.
 - `benchmark-audit` requires benchmark harness, task, scoring, token accounting, and raw-output evidence to be inspected.
 - `reproduction` requires an independent target-workload run with provider-billed accounting and software-quality gates.
 - Report claims must name or imply only the evidence stage that has actually been reached.
@@ -57,6 +62,8 @@ It does not own individual tool dossiers or raw source artifacts.
 - Decision (2026-06-26): The repository uses four evidence stages: `lead`, `source-logic`, `benchmark-audit`, and `reproduction`.
 - Decision (2026-06-26): Source-logic is decision-bearing only for prioritization and stack-hypothesis formation.
 - Decision (2026-06-26): Benchmark and reproduction wording requires benchmark or reproduction artifacts.
+- Decision (2026-06-29): Tool dossiers distinguish pinned source snapshots from unpinned historical inspections; current upstream `HEAD` must not be substituted for an unrecorded historical commit.
+- Decision (2026-06-30): Candidate validity requires auditable source versioning; unpinned historical dossiers can remain as limitations or refresh targets, not recommended components.
 
 ## Rationale
 
@@ -83,4 +90,5 @@ Evidence stages keep polished research prose aligned with inspected or measured 
 - ../../../../data/repositories.json
 - ../../../../data/evaluations.json
 - ../../../../scripts/validate_repository.py
+- ../../../../scripts/audit_dossier_snapshots.py
 - ../../../../templates/tool-dossier.md

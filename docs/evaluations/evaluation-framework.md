@@ -41,15 +41,20 @@ A tool or stack can advance only one stage at a time. Maintainer benchmarks, ext
 Every reproduction run must record:
 
 - repository snapshot and fixture hash;
+- fixture scale (`large-project` for primary objective claims);
 - task ID and prompt hash;
-- baseline and treatment profile IDs;
+- baseline and treatment profile IDs from `data/evaluation-profiles.json`;
+- objective: `individual_tool_effectiveness` or `stack_effectiveness`;
 - agent, model, provider, temperature or deterministic settings when available;
 - maximum turns, time budget, and tool permissions;
 - enabled token-saving surfaces and explicitly disabled overlapping surfaces;
 - raw transcript and transformed artifacts;
 - validation commands and exact outputs;
 - provider usage source and pricing basis;
+- tool manifest and transcript-level tool-isolation audit result;
 - run exclusions with reason, not silent deletion.
+
+`data/evaluations.json` is append-only. Use one run record per baseline, individual-tool treatment, stack treatment, replacement-runtime treatment, or audit-only run. Use `experiment_group_id` to tie comparable runs together and `replicate_index` for accumulation.
 
 ## Interpretation rules
 
