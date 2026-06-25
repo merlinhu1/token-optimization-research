@@ -1,0 +1,62 @@
+{
+  "schema_version": 1,
+  "description": "Active public large-project fixtures for primary objective token-saving experiments. GitHub metadata was fetched via the GitHub REST API on 2026-07-01; commits were pinned with git ls-remote on 2026-07-01.",
+  "selection_policy": {
+    "include": "Large, active, public repositories with substantial software-engineering task surfaces and feasible subsystem-scoped verification.",
+    "exclude": "User-owned/local personal projects, toy fixtures, archived repositories, and projects where no bounded verifier can be frozen.",
+    "promotion_required": "Clone/pin a clean snapshot, freeze one task prompt, freeze setup/reset/verifier commands, and record blocker-free raw artifact paths before marking primary-objective.",
+    "active_fixture_count": "Two first-wave fixtures only: Django for Python and Terraform for Go. Other large repositories are intentionally not active experiments until this loop proves stable."
+  },
+  "candidates": [
+    {
+      "id": "large-django-django",
+      "github": "django/django",
+      "url": "https://github.com/django/django",
+      "language": "Python",
+      "size_kb": 280876,
+      "stars": 87922,
+      "forks": 33914,
+      "open_issues": 459,
+      "default_branch": "main",
+      "pushed_at": "2026-07-01T01:17:33Z",
+      "role": "tractable Python large-project candidate",
+      "why": "Large mature Python web framework with substantial tests and stable development workflow; good first primary fixture because setup is lighter than monorepo-scale frontend projects.",
+      "task_classes": [
+        "large-codebase-navigation",
+        "multi-file-refactor",
+        "build-repair"
+      ],
+      "surface": "retrieval-context",
+      "setup_policy": "Clone a pinned commit, create a venv, install test requirements for the selected subsystem only, and freeze exact commands before qualification.",
+      "verifier_policy": "Use a bounded Django test subset plus formatting/static checks relevant to the frozen task; do not run the full suite for every replicate unless the task requires it.",
+      "selection_status": "active-fixture",
+      "selected_reason": "First-wave fixture: large public project with bounded subsystem verifier suitable for repeated baseline/treatment runs.",
+      "pinned_commit": "54495840a6a8b09ec40c793495e6541a3c0d3d5b"
+    },
+    {
+      "id": "large-hashicorp-terraform",
+      "github": "hashicorp/terraform",
+      "url": "https://github.com/hashicorp/terraform",
+      "language": "Go",
+      "size_kb": 356400,
+      "stars": 48749,
+      "forks": 10379,
+      "open_issues": 1915,
+      "default_branch": "main",
+      "pushed_at": "2026-07-01T22:01:09Z",
+      "role": "tractable Go large-project candidate",
+      "why": "Large Go CLI/infrastructure codebase with typed compiler/test feedback; more tractable than Kubernetes while still complex enough for retrieval and stack tests.",
+      "task_classes": [
+        "large-codebase-navigation",
+        "multi-file-refactor",
+        "build-repair"
+      ],
+      "surface": "retrieval-context",
+      "setup_policy": "Clone a pinned commit and use Go test/build commands for a frozen package subset.",
+      "verifier_policy": "Use go test on the edited package and adjacent packages; record skipped integration requirements explicitly.",
+      "selection_status": "active-fixture",
+      "selected_reason": "First-wave fixture: large public project with bounded subsystem verifier suitable for repeated baseline/treatment runs.",
+      "pinned_commit": "8d3a8b76ecf1ead119c4fc5951e8f5130df1db90"
+    }
+  ]
+}

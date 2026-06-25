@@ -71,7 +71,7 @@ Minimum pass condition: expected target is returned within the token/tool-call b
 Use this for compatibility-safe stack candidates.
 
 1. Create `profile.md` listing each component, enabled surfaces, disabled overlapping surfaces, install commands, reset commands, and expected generated files.
-2. Run native baseline on the task.
+2. Run the relevant substrate baseline on the task, such as `baseline-codex-no-mcp` for additive Codex treatment experiments.
 3. Reset repository and agent state.
 4. Activate treatment profile.
 5. Run treatment with the same task prompt, model/provider, and turn budget.

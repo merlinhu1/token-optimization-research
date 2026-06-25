@@ -5,9 +5,15 @@
 - Repository:
 - URL:
 - Version/ref inspected:
+- Snapshot status: pinned-commit | unpinned-historical-inspection
+- Commit inspected:
+- Commit URL:
+- Source artifact path:
 - Date inspected:
 - Reviewer:
 - Evidence stage: lead | source-logic | benchmark-audit | reproduction
+
+Resolve moving refs such as GitHub `HEAD`, default branch names, tags that can be retargeted, or local working trees to an immutable commit SHA before writing source-logic claims. Use `Snapshot status: unpinned-historical-inspection` only for historical dossiers where the original pass did not record an immutable commit; do not backfill those with current upstream HEAD unless a fresh inspection is performed. Repositories that cannot provide auditable versioning for the inspected source are not valid candidates for recommendations, stack construction, benchmark-audit, or reproduction until refreshed against a pinned source snapshot.
 
 ## Summary
 

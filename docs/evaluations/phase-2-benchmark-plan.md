@@ -36,7 +36,7 @@ Run baselines, single-surface owners, and a broader set of source-logic stack hy
 
 | Profile ID | Stack/profile | Reason |
 |---|---|---|
-| `baseline-native-agent` | Native Claude/Codex-style workflow without token-saving add-ons | Required comparator. |
+| `baseline-codex-no-mcp` | Codex CLI substrate with native shell/edit/file operations but no MCP or token-saving add-ons. | Required practical-agent comparator for additive Codex treatment lanes. |
 | `lower-intervention-codegraph` | RTK + CodeGraph | Lower-intervention source-logic comparator. |
 | `lower-intervention-cartog` | RTK + Cartog | Local graph/RAG comparator against CodeGraph and Graphify. |
 | `graphify-retrieval` | Snip + Graphify + optional MEX | Source-logic graph retrieval hypothesis. |
@@ -75,13 +75,20 @@ Run baselines, single-surface owners, and a broader set of source-logic stack hy
 ## Run design
 
 1. Freeze repository fixture and task prompt.
-2. Run native baseline with usage capture enabled.
-3. Reset repository and tool state.
-4. Install or activate one treatment profile.
-5. Run the same task with the same model/provider where possible.
-6. Capture transcript, usage, tool logs, raw artifacts, transformed artifacts, and verifier output.
-7. Score software quality using the standard rubric.
-8. Record result in `data/evaluations.json` and store raw artifacts under `sources/evaluations/<evaluation-id>/`.
+2. Run the Codex no-MCP substrate baseline with usage capture enabled.
+3. Run reproduction evidence under the container backend; host runs are diagnostic-only unless explicitly labeled otherwise.
+4. Reset repository and tool state.
+5. Install or activate exactly one additive treatment profile on the same Codex substrate.
+6. For non-MCP terminal-binary treatments, expose the pinned binary only through lane-specific container mounts and verify the actual Codex login shell can resolve it before model execution.
+7. For index-backed or stateful tools, use the primary full-suite condition from the active profile, normally cold/optional.
+8. Mark warm-state optional variants as `calibration_only: true`; run those on a capped sentinel subset instead of the full suite unless the protocol explicitly promotes warm state to primary.
+9. For warm conditions, rebuild the task-local tool state after setup and before Codex starts; record warmup wall time/output separately from provider-token usage.
+10. Run the same task with the same model/provider where possible.
+11. Capture transcript, usage, tool logs, raw artifacts, transformed artifacts, container preflight, verifier output, and tool-state artifacts where applicable.
+12. Mount run artifact directories when the evaluated process writes artifacts such as `codex-last-message.txt`; missing artifact mounts are harness failures, not treatment results.
+13. If a rerun batch is killed to fix harness or isolation defects, discard its partial summary and rerun the full planned set from the beginning with `--no-skip-accepted`.
+14. Score software quality using the standard rubric.
+15. Record result in `data/evaluations.json` and store raw artifacts under `sources/evaluations/<evaluation-id>/`.
 
 ## Minimum acceptance criteria for a stack to advance
 
@@ -96,10 +103,14 @@ A stack can be described as Phase 2 positive only if:
 
 ## Immediate first experiments
 
-1. Run the first controlled batch: `baseline-native-agent`, `lower-intervention-codegraph`, `lower-intervention-cartog`, `graphify-retrieval`, and `sigmap-governance-artifact` on the same small coding or navigation task.
-2. Audit and reproduce one terminal-output compactor on a noisy failing-test fixture before selecting a default terminal owner.
-3. Run a retrieval bakeoff on a large-codebase navigation fixture with one fixed terminal owner and exactly one retrieval authority per run.
-4. Run repeated-task memory ablations for `cartog-memory`, `serena-cavemem-lightweight`, and `understand-anything-retrieval` with and without memory enabled.
-5. Run broad-owner comparators (`broad-context-owner`, `integrated-mcp-owner`, `codescope-owner`, `swarmvault-owner`, `broad-compression-owner`) as single owners before composing them with narrow tools.
-6. Run ClawCodex and Caveman Code on a separate replacement-agent fixture using the same verifier.
-7. Test Tokless, Maestro Flow, and Grace Marketplace on profiles or fixtures that match their actual orchestration/governance surfaces.
+The first evaluation batch is the concrete multi-fixture suite in `docs/evaluations/phase-2-experiment-suite-v1.md` and `sources/evaluations/phase-2-experiment-suite-v1/`. It replaces any single-fixture pilot as the default next action.
+
+1. Run the 10 Codex no-MCP substrate baselines across the fixture corpus before reporting treatment wins.
+2. Run terminal-output treatments on the terminal/build/recorded-Xcode strata before selecting any default terminal owner.
+3. Run retrieval treatments with exactly one retrieval authority per run; use cold/optional as the default full-suite condition unless a tool protocol names a different primary condition.
+4. Run warm-state optional retrieval calibration only when explicitly requested, with `--include-calibration` and a capped sentinel subset.
+5. Run memory ablations on the repeated ledger-convention fixture with explicit state-preserve and state-reset conditions.
+6. Run broad-owner and MCP/tool-trace profiles as single owners before composing them with narrow tools.
+7. Run installer/orchestrator validation against the profile-isolation fixture and treat generated config/cleanup failures as negative operational evidence.
+8. Run ClawCodex and Caveman Code on the replacement-runtime fixture using the same verifier as the Codex no-MCP baseline.
+9. Aggregate by stratum; do not publish a default-owner claim from a single fixture or a cold-only retrieval run.

@@ -43,6 +43,9 @@ REQUIRED_PATHS = [
     "data/compatibility-edges.json",
     "data/literature.json",
     "data/evaluations.json",
+    "data/evaluation-profiles.json",
+    "data/large-project-candidates.json",
+    "data/repository-fixtures.json",
     "data/tool-analysis-backlog.json",
     "docs/architecture.md",
     "docs/architecture/README.md",
@@ -54,9 +57,12 @@ REQUIRED_PATHS = [
     "docs/architecture/decision-records/0001-research-kernel.md",
     "docs/taxonomy/compatibility-taxonomy.md",
     "docs/evaluations/evaluation-framework.md",
+    "docs/evaluations/fixtures/README.md",
     "docs/evaluations/token-usage-and-quality-standards.md",
     "docs/evaluations/phase-2-benchmark-plan.md",
     "docs/evaluations/immediately-usable-flows.md",
+    "docs/evaluations/repository-fixture-framework.md",
+    "docs/evaluations/cumulative-result-schema.md",
     "docs/literature/literature-review.md",
     "docs/paper/research-paper-outline.md",
     "docs/reports/phase-1-compatibility-safe-token-saving-stacks.md",
@@ -102,17 +108,22 @@ REQUIRED_PATHS = [
     "sources/discovery/2026-06-26-final-lead-uplift-source-structures.json",
     "sources/discovery/2026-06-26-final-lead-uplift-code-inspection.json",
     "sources/discovery/2026-06-26-tokless-go-test.json",
+    "sources/discovery/2026-07-01-pinned-dossier-refresh-source-structures.json",
+    "sources/discovery/2026-07-01-pinned-dossier-refresh-code-inspection.json",
     "templates/repository-entry.md",
+    "templates/repository-fixture.md",
     "templates/technique-entry.md",
     "templates/claim-entry.md",
     "templates/evaluation-record.md",
     "templates/evaluation-task.md",
     "templates/evaluation-run-record.json",
+    "schemas/evaluation-run-record.schema.json",
     "templates/report.md",
     "templates/tool-dossier.md",
     "prompts/researcher.md",
     "prompts/evaluator.md",
     "prompts/paper-writer.md",
+    "scripts/audit_dossier_snapshots.py",
 ]
 
 SURFACE_IDS = {
@@ -126,6 +137,69 @@ SURFACE_IDS = {
     "artifact_policy_controller",
     "routing_authority",
 }
+
+FIXTURE_STATES = {
+    "candidate-fixture",
+    "qualified-fixture",
+    "baseline-run",
+    "treatment-ready",
+    "retired-fixture",
+}
+
+FIXTURE_TASK_CLASSES = {
+    "noisy-terminal-repair",
+    "build-repair",
+    "large-codebase-navigation",
+    "multi-file-refactor",
+    "memory-rediscovery",
+    "broad-owner-context",
+    "mcp-tool-heavy",
+    "apple-build-repair",
+    "replacement-runtime-comparison",
+}
+
+FIXTURE_TOKEN_WASTE_SURFACES = {
+    "terminal-output",
+    "build-output",
+    "retrieval-context",
+    "memory-rediscovery",
+    "broad-context-owner",
+    "mcp-tool-trace",
+    "apple-build-output",
+    "replacement-runtime",
+}
+
+FIXTURE_SCALES = {"synthetic-micro", "recorded-diagnostic", "large-project"}
+FIXTURE_EVALUATION_USES = {"calibration", "diagnostic-preservation", "primary-candidate", "primary-objective"}
+PROFILE_TYPES = {"control", "individual_tool", "tool_stack", "replacement_runtime", "installer_orchestrator", "comparator"}
+OBJECTIVES = {"individual_tool_effectiveness", "stack_effectiveness"}
+EVALUATION_RECORD_TYPES = {"run", "paired_comparison", "aggregate_summary"}
+EVALUATION_RUN_ROLES = {"baseline", "individual_tool_treatment", "stack_treatment", "replacement_runtime", "audit_only"}
+EVALUATION_STATUSES = {"planned", "running", "completed", "failed", "excluded", "superseded"}
+
+DOSSIER_SNAPSHOT_STATUSES = {
+    "pinned-commit",
+    "unpinned-historical-inspection",
+}
+
+DOSSIER_REQUIRED_SECTIONS = (
+    "## Identity",
+    "## Summary",
+    "## Evidence inventory",
+    "## Installation and integration behavior",
+    "## Runtime behavior",
+    "## Token-saving mechanism",
+    "## Compatibility notes",
+    "## Failure modes and limits",
+)
+
+DOSSIER_STALE_PHRASES = (
+    "not recorded during original pass",
+    "GitHub `HEAD` tree",
+    "Source-behavior review has started",
+    "requires source-logic inspection",
+    "Not yet reviewed beyond source-tree and metadata inspection in this dossier",
+)
 
 
 def run_truthmark(command: str, errors: list[str]) -> None:
@@ -165,6 +239,261 @@ def load_json(rel: str) -> dict:
         raise SystemExit(f"Invalid JSON in {rel}: {exc}") from exc
 
 
+def validate_repository_fixtures(fixture_doc: dict, errors: list[str]) -> None:
+    if fixture_doc.get("schema_version") != 1:
+        errors.append("data/repository-fixtures.json must use schema_version 1")
+
+    fixtures = fixture_doc.get("fixtures")
+    if not isinstance(fixtures, list):
+        errors.append("data/repository-fixtures.json must contain a fixtures list")
+        return
+
+    seen: set[str] = set()
+    kebab = re.compile(r"^[a-z0-9]+(?:-[a-z0-9]+)*$")
+    readiness_states = {"qualified-fixture", "baseline-run", "treatment-ready"}
+    required_list_fields = ("future_evaluation_lanes", "candidate_profiles", "blockers", "caveats")
+    for index, fixture in enumerate(fixtures):
+        if not isinstance(fixture, dict):
+            errors.append(f"fixture record at index {index} must be an object")
+            continue
+
+        fid = fixture.get("id")
+        if not fid:
+            errors.append(f"fixture record at index {index} missing id")
+            continue
+        if not kebab.match(fid):
+            errors.append(f"fixture {fid} id must be kebab-case")
+        if fid in seen:
+            errors.append(f"duplicate fixture id: {fid}")
+        seen.add(fid)
+
+        status = fixture.get("status")
+        if status not in FIXTURE_STATES:
+            errors.append(f"fixture {fid} has invalid status: {status}")
+
+        task_classes = fixture.get("task_classes")
+        if not isinstance(task_classes, list) or not task_classes:
+            errors.append(f"fixture {fid} must list at least one task class")
+        else:
+            for task_class in task_classes:
+                if task_class not in FIXTURE_TASK_CLASSES:
+                    errors.append(f"fixture {fid} has invalid task class: {task_class}")
+
+        primary_surface = fixture.get("primary_token_waste_surface")
+        if primary_surface not in FIXTURE_TOKEN_WASTE_SURFACES:
+            errors.append(f"fixture {fid} has invalid primary_token_waste_surface: {primary_surface}")
+
+        fixture_scale = fixture.get("fixture_scale")
+        if fixture_scale not in FIXTURE_SCALES:
+            errors.append(f"fixture {fid} has invalid fixture_scale: {fixture_scale}")
+        evaluation_use = fixture.get("evaluation_use")
+        if evaluation_use not in FIXTURE_EVALUATION_USES:
+            errors.append(f"fixture {fid} has invalid evaluation_use: {evaluation_use}")
+        if evaluation_use == "primary-objective" and fixture_scale != "large-project":
+            errors.append(f"fixture {fid} cannot be primary-objective unless fixture_scale is large-project")
+
+        artifact_paths = fixture.get("artifact_paths")
+        if not isinstance(artifact_paths, dict) or not artifact_paths.get("root"):
+            errors.append(f"fixture {fid} must define artifact_paths.root")
+
+        for key in required_list_fields:
+            if not isinstance(fixture.get(key), list):
+                errors.append(f"fixture {fid} must define {key} list")
+
+        repository = fixture.get("repository")
+        if not isinstance(repository, dict) or not (
+            repository.get("id") or repository.get("url") or repository.get("path")
+        ):
+            errors.append(f"fixture {fid} must define repository id, url, or path")
+
+        for key in ("setup", "reset", "verifier"):
+            value = fixture.get(key)
+            if not isinstance(value, dict):
+                errors.append(f"fixture {fid} must define {key} object")
+                continue
+            if not value.get("command") and not value.get("blocker"):
+                errors.append(f"fixture {fid} must define {key}.command or {key}.blocker")
+
+        snapshot = fixture.get("snapshot")
+        prompt = fixture.get("prompt")
+        if status in readiness_states:
+            if not isinstance(snapshot, dict) or not (
+                snapshot.get("commit") or snapshot.get("snapshot_policy")
+            ):
+                errors.append(
+                    f"fixture {fid} with status {status} must define snapshot.commit or snapshot.snapshot_policy"
+                )
+            if not isinstance(prompt, dict) or not (
+                prompt.get("path") or prompt.get("prompt_policy")
+            ):
+                errors.append(
+                    f"fixture {fid} with status {status} must define prompt.path or prompt.prompt_policy"
+                )
+            for key in ("setup", "reset", "verifier"):
+                value = fixture.get(key, {})
+                if not value.get("command"):
+                    errors.append(f"fixture {fid} with status {status} must define {key}.command")
+
+
+def validate_large_project_candidates(candidate_doc: dict, fixture_doc: dict, errors: list[str]) -> None:
+    if candidate_doc.get("schema_version") != 1:
+        errors.append("data/large-project-candidates.json must use schema_version 1")
+    candidates = candidate_doc.get("candidates")
+    if not isinstance(candidates, list) or not candidates:
+        errors.append("data/large-project-candidates.json must contain a non-empty candidates list")
+        return
+    fixture_ids = {fixture.get("id") for fixture in fixture_doc.get("fixtures", [])}
+    for candidate in candidates:
+        cid = candidate.get("id")
+        if not cid:
+            errors.append("large-project candidate missing id")
+            continue
+        if cid not in fixture_ids:
+            errors.append(f"large-project candidate {cid} is not represented in data/repository-fixtures.json")
+        for key in ("github", "url", "language", "size_kb", "default_branch", "setup_policy", "verifier_policy"):
+            if candidate.get(key) in (None, ""):
+                errors.append(f"large-project candidate {cid} missing {key}")
+
+
+def validate_evaluation_profiles(profile_doc: dict, fixture_doc: dict, errors: list[str]) -> set[str]:
+    if profile_doc.get("schema_version") != 1:
+        errors.append("data/evaluation-profiles.json must use schema_version 1")
+    profiles = profile_doc.get("profiles")
+    if not isinstance(profiles, list):
+        errors.append("data/evaluation-profiles.json must contain a profiles list")
+        return set()
+    fixture_profile_ids = {
+        profile_id
+        for fixture in fixture_doc.get("fixtures", [])
+        for profile_id in fixture.get("candidate_profiles", [])
+    }
+    seen: set[str] = set()
+    for index, profile in enumerate(profiles):
+        if not isinstance(profile, dict):
+            errors.append(f"profile record at index {index} must be an object")
+            continue
+        pid = profile.get("id")
+        if not pid:
+            errors.append(f"profile record at index {index} missing id")
+            continue
+        if pid in seen:
+            errors.append(f"duplicate evaluation profile id: {pid}")
+        seen.add(pid)
+        if profile.get("profile_type") not in PROFILE_TYPES:
+            errors.append(f"profile {pid} has invalid profile_type: {profile.get('profile_type')}")
+        if profile.get("objective_scope") not in OBJECTIVES | {"control"}:
+            errors.append(f"profile {pid} has invalid objective_scope: {profile.get('objective_scope')}")
+        for key in ("enabled_surfaces", "disabled_overlaps", "components"):
+            if not isinstance(profile.get(key), list):
+                errors.append(f"profile {pid} must define {key} list")
+        if profile.get("profile_type") == "tool_stack" and len(profile.get("components", [])) < 2:
+            errors.append(f"stack profile {pid} must list at least two components")
+        if not isinstance(profile.get("install"), dict) or not isinstance(profile.get("reset"), dict):
+            errors.append(f"profile {pid} must define install and reset objects")
+    missing = sorted(fixture_profile_ids - seen)
+    for pid in missing:
+        errors.append(f"fixture references unknown evaluation profile: {pid}")
+    return seen
+
+
+def validate_evaluations(evaluation_doc: dict, fixture_doc: dict, profile_ids: set[str], errors: list[str]) -> None:
+    if evaluation_doc.get("schema_version") != 3:
+        errors.append("data/evaluations.json must use schema_version 3")
+    objectives = set(evaluation_doc.get("primary_objectives", []))
+    if objectives != OBJECTIVES:
+        errors.append("data/evaluations.json must declare both primary objectives")
+    evaluations = evaluation_doc.get("evaluations")
+    if not isinstance(evaluations, list):
+        errors.append("data/evaluations.json must contain an evaluations list")
+        return
+    fixture_ids = {fixture.get("id") for fixture in fixture_doc.get("fixtures", [])}
+    seen: set[str] = set()
+    for index, ev in enumerate(evaluations):
+        if not isinstance(ev, dict):
+            errors.append(f"evaluation record at index {index} must be an object")
+            continue
+        eid = ev.get("evaluation_id") or ev.get("id")
+        if not eid:
+            errors.append(f"evaluation record at index {index} missing evaluation_id")
+            continue
+        if eid in seen:
+            errors.append(f"duplicate evaluation id: {eid}")
+        seen.add(eid)
+        if ev.get("record_type") not in EVALUATION_RECORD_TYPES:
+            errors.append(f"evaluation {eid} has invalid record_type: {ev.get('record_type')}")
+        if ev.get("objective") not in OBJECTIVES:
+            errors.append(f"evaluation {eid} has invalid objective: {ev.get('objective')}")
+        if ev.get("evidence_stage") not in {"benchmark_audit", "reproduction"}:
+            errors.append(f"evaluation {eid} has invalid evidence_stage: {ev.get('evidence_stage')}")
+        if ev.get("status") not in EVALUATION_STATUSES:
+            errors.append(f"evaluation {eid} has invalid status: {ev.get('status')}")
+        if ev.get("run_role") and ev.get("run_role") not in EVALUATION_RUN_ROLES:
+            errors.append(f"evaluation {eid} has invalid run_role: {ev.get('run_role')}")
+        target = ev.get("target", {})
+        if isinstance(target, dict) and target.get("fixture_id") and target.get("fixture_id") not in fixture_ids:
+            errors.append(f"evaluation {eid} references unknown fixture {target.get('fixture_id')}")
+        profile = ev.get("profile", {})
+        if isinstance(profile, dict) and profile.get("profile_id") and profile.get("profile_id") not in profile_ids:
+            errors.append(f"evaluation {eid} references unknown profile {profile.get('profile_id')}")
+        if ev.get("objective") in OBJECTIVES and ev.get("evidence_stage") == "reproduction":
+            if target.get("fixture_scale") != "large-project":
+                errors.append(f"evaluation {eid} reproduction objective must target a large-project fixture")
+
+
+
+def dossier_field(text: str, field: str) -> str | None:
+    match = re.search(rf"^- {re.escape(field)}:\s*(.*)$", text, re.MULTILINE)
+    return match.group(1).strip() if match else None
+
+
+def validate_tool_dossier_snapshots(errors: list[str]) -> None:
+    dossier_dir = ROOT / "docs" / "tool-dossiers"
+    commit_pattern = re.compile(r"[0-9a-f]{7,40}", re.IGNORECASE)
+    for path in sorted(dossier_dir.glob("*.md")):
+        if path.name == "README.md":
+            continue
+        rel = path.relative_to(ROOT)
+        text = path.read_text(encoding="utf-8")
+        version_ref = dossier_field(text, "Version/ref inspected")
+        snapshot_status = dossier_field(text, "Snapshot status")
+        commit = dossier_field(text, "Commit inspected")
+        source_artifact = dossier_field(text, "Source artifact path")
+        evidence_stage = dossier_field(text, "Evidence stage")
+
+        for section in DOSSIER_REQUIRED_SECTIONS:
+            if section not in text:
+                errors.append(f"{rel} missing required section {section}")
+        for stale_phrase in DOSSIER_STALE_PHRASES:
+            if stale_phrase in text:
+                errors.append(f"{rel} contains stale dossier-quality phrase: {stale_phrase}")
+
+        if not version_ref:
+            errors.append(f"{rel} missing Version/ref inspected")
+        if snapshot_status not in DOSSIER_SNAPSHOT_STATUSES:
+            errors.append(f"{rel} missing valid Snapshot status")
+            continue
+        if not source_artifact:
+            errors.append(f"{rel} missing Source artifact path")
+        else:
+            artifact_rel = source_artifact.strip().strip("`")
+            if not (ROOT / artifact_rel).exists():
+                errors.append(f"{rel} Source artifact path does not exist: {artifact_rel}")
+        if not evidence_stage or "source-logic" not in evidence_stage:
+            errors.append(f"{rel} must state source-logic-or-better Evidence stage")
+        if not re.search(r"benchmark-audit|reproduction", text, re.IGNORECASE):
+            errors.append(f"{rel} must include benchmark-audit or reproduction limitation/follow-up")
+
+        if snapshot_status == "pinned-commit":
+            normalized_commit = (commit or "").strip().strip("`")
+            if not commit_pattern.fullmatch(normalized_commit):
+                errors.append(f"{rel} has pinned-commit status but invalid Commit inspected")
+        elif snapshot_status == "unpinned-historical-inspection":
+            if commit != "not recorded during original pass":
+                errors.append(
+                    f"{rel} has unpinned-historical-inspection status but Commit inspected is not the required disclosure"
+                )
+
+
 def main() -> int:
     errors: list[str] = []
     for rel in REQUIRED_PATHS + LOCAL_SKILL_ARTIFACTS + TRUTHMARK_ARTIFACTS:
@@ -176,6 +505,9 @@ def main() -> int:
     compatibility_doc = load_json("data/compatibility-edges.json")
     literature_doc = load_json("data/literature.json")
     evaluations_doc = load_json("data/evaluations.json")
+    profiles_doc = load_json("data/evaluation-profiles.json")
+    large_candidates_doc = load_json("data/large-project-candidates.json")
+    fixtures_doc = load_json("data/repository-fixtures.json")
     backlog_doc = load_json("data/tool-analysis-backlog.json")
 
     technique_ids = {t.get("id") for t in techniques_doc.get("techniques", [])}
@@ -211,10 +543,11 @@ def main() -> int:
         if not edge.get("rationale"):
             errors.append(f"compatibility edge {source}->{target} missing rationale")
 
-    for ev in evaluations_doc.get("evaluations", []):
-        tid = ev.get("technique_id")
-        if tid and tid not in technique_ids:
-            errors.append(f"evaluation {ev.get('id')} references unknown technique {tid}")
+    validate_repository_fixtures(fixtures_doc, errors)
+    validate_large_project_candidates(large_candidates_doc, fixtures_doc, errors)
+    profile_ids = validate_evaluation_profiles(profiles_doc, fixtures_doc, errors)
+    validate_evaluations(evaluations_doc, fixtures_doc, profile_ids, errors)
+    validate_tool_dossier_snapshots(errors)
 
     for lit in literature_doc.get("literature", []):
         if not lit.get("id") or not lit.get("sources"):
@@ -246,12 +579,16 @@ def main() -> int:
         ROOT / "docs/tool-dossiers/README.md",
         ROOT / "docs/reports/phase-1-compatibility-safe-token-saving-stacks.md",
         ROOT / "docs/evaluations/evaluation-framework.md",
+        ROOT / "docs/evaluations/repository-fixture-framework.md",
+        ROOT / "docs/evaluations/cumulative-result-schema.md",
+        ROOT / "docs/evaluations/fixtures/README.md",
         ROOT / "docs/evaluations/token-usage-and-quality-standards.md",
         ROOT / "docs/evaluations/phase-2-benchmark-plan.md",
         ROOT / "docs/evaluations/immediately-usable-flows.md",
         ROOT / "docs/research/report-writing-and-methodology-skill-patterns.md",
         ROOT / "templates/report.md",
         ROOT / "templates/repository-entry.md",
+        ROOT / "templates/repository-fixture.md",
         ROOT / "templates/tool-dossier.md",
         ROOT / "prompts/researcher.md",
         ROOT / "prompts/paper-writer.md",
@@ -324,6 +661,9 @@ def main() -> int:
     print(f"- compatibility edges: {len(compatibility_doc.get('edges', []))}")
     print(f"- literature records: {len(literature_doc.get('literature', []))}")
     print(f"- evaluations: {len(evaluations_doc.get('evaluations', []))}")
+    print(f"- evaluation profiles: {len(profiles_doc.get('profiles', []))}")
+    print(f"- large-project candidates: {len(large_candidates_doc.get('candidates', []))}")
+    print(f"- repository fixtures: {len(fixtures_doc.get('fixtures', []))}")
     return 0
 
 

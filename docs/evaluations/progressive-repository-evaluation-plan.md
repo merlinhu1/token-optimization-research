@@ -58,7 +58,7 @@ Use stable, descriptive IDs that make partial work easy to find.
 - Change ID: `YYYY-MM-DD-<lane>-<target>`.
 - Evaluation ID: `<change-id>-<run-role>-rNN` for run evidence.
 - Task ID: `<task-class>-<short-fixture>-vNN`.
-- Profile ID: use existing Phase 2 profile IDs when possible, such as `baseline-native-agent`, `sigmap-governance-artifact`, or `replacement-caveman-code`.
+- Profile ID: use existing Phase 2 profile IDs when possible, such as `baseline-codex-no-mcp` for Codex substrate baselines, `sigmap-governance-artifact`, or `replacement-caveman-code`.
 
 Examples:
 
