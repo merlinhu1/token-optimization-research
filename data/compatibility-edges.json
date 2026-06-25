@@ -1,0 +1,50 @@
+{
+  "schema_version": 1,
+  "edges": [
+    {
+      "source_id": "T01-terminal-tool-output-compression",
+      "target_id": "terminal_output_owner",
+      "edge_type": "owns_surface",
+      "rationale": "Terminal-output compactors rewrite shell stdout/stderr before model ingestion.",
+      "confidence": "high",
+      "evidence": "architectural",
+      "notes": "Two command proxies need explicit ordering/gating."
+    },
+    {
+      "source_id": "T02-targeted-code-retrieval",
+      "target_id": "code_retrieval_authority",
+      "edge_type": "owns_surface",
+      "rationale": "Code retrieval tools decide what source context the agent sees.",
+      "confidence": "high",
+      "evidence": "architectural",
+      "notes": "Can stack with terminal compression but may conflict with whole-repo packing."
+    },
+    {
+      "source_id": "T10-repository-packing-digests",
+      "target_id": "T02-targeted-code-retrieval",
+      "edge_type": "requires_ordering",
+      "rationale": "Repo packs can duplicate or overwhelm targeted retrieval if used before a focused search path.",
+      "confidence": "medium",
+      "evidence": "architectural",
+      "notes": "Evaluate pack-first vs retrieval-first workflows."
+    },
+    {
+      "source_id": "T07-behavioral-output-compression",
+      "target_id": "output_style_controller",
+      "edge_type": "owns_surface",
+      "rationale": "Terse-output prompts control model response verbosity and style.",
+      "confidence": "high",
+      "evidence": "architectural",
+      "notes": "Multiple terse controllers can harm clarity."
+    },
+    {
+      "source_id": "T11-measurement-observability",
+      "target_id": "T01-terminal-tool-output-compression",
+      "edge_type": "stacks_with",
+      "rationale": "Measurement observes usage while terminal compression transforms command output.",
+      "confidence": "medium",
+      "evidence": "architectural",
+      "notes": "Measurement becomes an intervention only if it changes behavior."
+    }
+  ]
+}

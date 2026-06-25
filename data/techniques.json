@@ -1,0 +1,169 @@
+{
+  "schema_version": 1,
+  "techniques": [
+    {
+      "id": "T01-terminal-tool-output-compression",
+      "name": "Terminal/tool-output compression",
+      "category": "terminal_tool_output",
+      "intervention_surface": "shell stdout/stderr and command output before model context",
+      "compatibility_rule": "Do not double-wrap the same command stream with competing compactors.",
+      "example_repositories": [
+        "rtk-ai__rtk"
+      ],
+      "quality_risks": [
+        "lost diagnostics",
+        "over-truncation",
+        "unsupported command fallback"
+      ]
+    },
+    {
+      "id": "T02-targeted-code-retrieval",
+      "name": "Targeted code retrieval and representation",
+      "category": "code_retrieval",
+      "intervention_surface": "source reads, symbol queries, repo maps, AST outlines",
+      "compatibility_rule": "Choose one primary retrieval/index path per task to avoid duplicated context.",
+      "example_repositories": [
+        "colbymchenry__codegraph"
+      ],
+      "quality_risks": [
+        "stale index",
+        "missed dynamic behavior",
+        "false confidence from outlines"
+      ]
+    },
+    {
+      "id": "T03-mcp-api-response-shaping",
+      "name": "MCP/API response shaping",
+      "category": "tool_response_shaping",
+      "intervention_surface": "tool schemas and JSON/MCP responses",
+      "compatibility_rule": "Layering field trimmers can remove required fields; version rules carefully.",
+      "example_repositories": [],
+      "quality_risks": [
+        "schema breakage",
+        "missing fields",
+        "learned rule drift"
+      ]
+    },
+    {
+      "id": "T04-execution-offload-code-mode",
+      "name": "Execution offload / code-mode sandboxing",
+      "category": "execution_offload",
+      "intervention_surface": "multi-step tool workflows executed outside main context",
+      "compatibility_rule": "Stackable with retrieval/output tools, but generated code and sandbox summaries become trust boundaries.",
+      "example_repositories": [],
+      "quality_risks": [
+        "incorrect generated analysis",
+        "hidden intermediate errors",
+        "sandbox escape or permissions"
+      ]
+    },
+    {
+      "id": "T05-prompt-history-context-compression",
+      "name": "Prompt/history/context compression",
+      "category": "context_compression",
+      "intervention_surface": "conversation history, retrieved prose, logs, and prompts",
+      "compatibility_rule": "Avoid multiple lossy compressors rewriting the same facts without raw fallback.",
+      "example_repositories": [],
+      "quality_risks": [
+        "semantic loss",
+        "broken code or JSON",
+        "lost provenance"
+      ]
+    },
+    {
+      "id": "T06-persistent-memory-reinjection",
+      "name": "Persistent memory and reinjection",
+      "category": "memory",
+      "intervention_surface": "cross-session facts and task observations",
+      "compatibility_rule": "Multiple memory systems need one authority or deduplication policy.",
+      "example_repositories": [],
+      "quality_risks": [
+        "stale memory",
+        "over-injection",
+        "conflicting facts"
+      ]
+    },
+    {
+      "id": "T07-behavioral-output-compression",
+      "name": "Behavioral output compression",
+      "category": "output_style",
+      "intervention_surface": "model prose, narration, and status updates",
+      "compatibility_rule": "Use one style controller; multiple terse prompts can harm clarity.",
+      "example_repositories": [
+        "JuliusBrussee__caveman"
+      ],
+      "quality_risks": [
+        "under-explained decisions",
+        "missed warnings",
+        "user confusion"
+      ]
+    },
+    {
+      "id": "T08-artifact-code-minimization",
+      "name": "Artifact/code minimization",
+      "category": "artifact_minimization",
+      "intervention_surface": "generated source, docs, dependencies, and implementation scope",
+      "compatibility_rule": "Usually stackable; conflicts are policy/readability rather than technical.",
+      "example_repositories": [],
+      "quality_risks": [
+        "under-building",
+        "over-terse code",
+        "hidden safety exceptions"
+      ]
+    },
+    {
+      "id": "T09-model-routing-cache-economics",
+      "name": "Model routing and cache economics",
+      "category": "routing_cache",
+      "intervention_surface": "model/provider selection and prompt-cache alignment",
+      "compatibility_rule": "Can conflict with quality, privacy, and reproducibility policies.",
+      "example_repositories": [],
+      "quality_risks": [
+        "lower model quality",
+        "privacy exposure",
+        "cache accounting confusion"
+      ]
+    },
+    {
+      "id": "T10-repository-packing-digests",
+      "name": "Repository packing and digests",
+      "category": "repo_packing",
+      "intervention_surface": "whole-repository prompt packs and generated digests",
+      "compatibility_rule": "Can conflict with targeted retrieval by encouraging over-ingestion.",
+      "example_repositories": [],
+      "quality_risks": [
+        "including irrelevant files",
+        "secrets exposure",
+        "stale digest"
+      ]
+    },
+    {
+      "id": "T11-measurement-observability",
+      "name": "Measurement and observability",
+      "category": "measurement",
+      "intervention_surface": "usage/cost logs and dashboards",
+      "compatibility_rule": "Instrumentation is stackable; not a saving technique unless it changes behavior.",
+      "example_repositories": [],
+      "quality_risks": [
+        "privacy metadata",
+        "misestimated pricing",
+        "false causality"
+      ]
+    },
+    {
+      "id": "T12-benchmark-evaluation-frameworks",
+      "name": "Benchmark and evaluation frameworks",
+      "category": "evaluation",
+      "intervention_surface": "evaluation harnesses, validators, and token counters",
+      "compatibility_rule": "Not a saving technique; used to compare techniques.",
+      "example_repositories": [
+        "pmcfadin__agentic-token-bench"
+      ],
+      "quality_risks": [
+        "benchmark overfitting",
+        "scope mismatch",
+        "single-run noise"
+      ]
+    }
+  ]
+}

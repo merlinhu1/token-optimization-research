@@ -1,0 +1,66 @@
+{
+  "schema_version": 1,
+  "repositories": [
+    {
+      "id": "rtk-ai__rtk",
+      "name": "rtk",
+      "url": "https://github.com/rtk-ai/rtk",
+      "kind": "technique-implementation",
+      "summary": "Rust CLI proxy that filters and compresses command output before it enters agent context.",
+      "mechanism": "Command-level output rewriting and compaction.",
+      "technique_ids": [
+        "T01-terminal-tool-output-compression"
+      ],
+      "evidence_label": "mixed-maintainer-and-external-evidence",
+      "reported_result": "Maintainer reports roughly 60\u201390% command-output reduction; external pilots show operation-level savings may not reduce task-level billing.",
+      "main_caveat": "Command coverage and task-level turn count determine actual provider-billed savings.",
+      "sources": [
+        "https://github.com/rtk-ai/rtk"
+      ],
+      "reviewed_at": "2026-06-25",
+      "review_depth": "surface"
+    },
+    {
+      "id": "HoangP8__tokless",
+      "name": "tokless",
+      "url": "https://github.com/HoangP8/tokless",
+      "kind": "bundle",
+      "summary": "Installer for a token-saving stack across Claude Code, OpenCode, Codex, and Antigravity.",
+      "mechanism": "Bundles RTK, Caveman, CodeGraph, and Context-Mode style tools.",
+      "technique_ids": [],
+      "bundle_components": [
+        "rtk-ai__rtk",
+        "JuliusBrussee__caveman",
+        "colbymchenry__codegraph",
+        "mksglu__context-mode"
+      ],
+      "evidence_label": "documented-mechanism",
+      "reported_result": "Stack-level claims are inherited from components.",
+      "main_caveat": "Bundle is reference solution, not an atomic technique.",
+      "sources": [
+        "https://github.com/HoangP8/tokless"
+      ],
+      "reviewed_at": "2026-06-25",
+      "review_depth": "surface"
+    },
+    {
+      "id": "pmcfadin__agentic-token-bench",
+      "name": "agentic-token-bench",
+      "url": "https://github.com/pmcfadin/agentic-token-bench",
+      "kind": "benchmark",
+      "summary": "Benchmark and installer framework for measuring token-saving CLI tools in agentic coding workflows.",
+      "mechanism": "Runs deterministic before/after comparisons for selected CLI primitives and token-saving tools.",
+      "technique_ids": [
+        "T12-benchmark-evaluation-frameworks"
+      ],
+      "evidence_label": "benchmark-suite",
+      "reported_result": "README reports 65.1\u201399.2% reductions for six CLI tools on pinned Cassandra tasks.",
+      "main_caveat": "Task-level artifact reduction is not automatically end-to-end session savings.",
+      "sources": [
+        "https://github.com/pmcfadin/agentic-token-bench"
+      ],
+      "reviewed_at": "2026-06-25",
+      "review_depth": "moderate"
+    }
+  ]
+}
