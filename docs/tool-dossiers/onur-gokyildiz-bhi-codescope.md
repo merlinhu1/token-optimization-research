@@ -6,6 +6,10 @@
 - URL: https://github.com/onur-gokyildiz-bhi/codescope
 - Local clone inspected: `/tmp/token-leads-20260629/onur-gokyildiz-bhi__codescope`
 - Version/ref inspected: local shallow clone commit `d8e58d83e920`
+- Snapshot status: pinned-commit
+- Commit inspected: d8e58d83e920
+- Commit URL: https://github.com/onur-gokyildiz-bhi/codescope/commit/d8e58d83e920
+- Source artifact path: `sources/discovery/2026-06-29-graph-leads-c-source-logic.json`
 - Date inspected: 2026-06-29
 - Evidence stage: source-logic
 - License observed in manifest: MIT

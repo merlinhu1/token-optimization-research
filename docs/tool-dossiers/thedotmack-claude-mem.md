@@ -4,9 +4,13 @@
 
 - Repository: `thedotmack/claude-mem`
 - URL: https://github.com/thedotmack/claude-mem
-- Version/ref inspected: GitHub `HEAD` tree and representative raw implementation files via API, 2026-06-26
-- Date inspected: 2026-06-26
-- Evidence stage: source-logic (representative implementation files inspected; benchmark/reproduction review remains open)
+- Version/ref inspected: local shallow clone `cbdce2d676a9`, 2026-07-01
+- Snapshot status: pinned-commit
+- Commit inspected: cbdce2d676a9646b73dc236eebb53e4019870dcf
+- Commit URL: https://github.com/thedotmack/claude-mem/commit/cbdce2d676a9646b73dc236eebb53e4019870dcf
+- Source artifact path: `sources/discovery/2026-07-01-pinned-dossier-refresh-source-structures.json`
+- Date inspected: 2026-07-01
+- Evidence stage: source-logic (fresh pinned shallow clone; representative source/config/test files inspected; benchmark-audit and reproduction still required for measured savings)
 - Stars at inspection: 84,353
 - Forks at inspection: 7,275
 - License: Apache-2.0
@@ -21,8 +25,8 @@ Claude Mem captures agent session observations, summarizes/compresses them, and 
 | Evidence type | Files/URLs inspected | Notes |
 |---|---|---|
 | Repository metadata | GitHub API repository metadata | Popularity and license signals only; not effectiveness evidence. |
-| Source tree | `sources/discovery/2026-06-26-eight-more-tool-source-structures.json` | Used to identify installer, plugin, MCP, test, benchmark, and runtime paths beyond README. |
-| Runtime source | `sources/discovery/2026-06-26-eight-more-tool-code-inspection.json` | Representative implementation files fetched from GitHub HEAD with SHA-256 prefixes and behavior excerpts. |
+| Source tree | `sources/discovery/2026-07-01-pinned-dossier-refresh-source-structures.json` | Used to identify installer, plugin, MCP, test, benchmark, and runtime paths beyond README. |
+| Runtime source | `sources/discovery/2026-07-01-pinned-dossier-refresh-code-inspection.json` | Representative implementation files fetched from GitHub HEAD with SHA-256 prefixes and behavior excerpts. |
 | README/docs | README path identified when present. | README claims are not used as behavior evidence. |
 | Tests/benchmarks | Paths identified where present. | Full benchmark-method review remains open. |
 
@@ -69,7 +73,12 @@ Repository tree inspection found 889 files and 597 files matching integration, s
 
 ## Code-detail inspection findings
 
-Evidence artifact: `sources/discovery/2026-06-26-eight-more-tool-code-inspection.json`.
+Evidence artifact: `sources/discovery/2026-07-01-pinned-dossier-refresh-code-inspection.json`.
+
+### Fresh pinned-source refresh
+
+The 2026-07-01 refresh pins the inspected source to `cbdce2d676a9646b73dc236eebb53e4019870dcf` and records a fresh tree plus selected implementation excerpts in `sources/discovery/2026-07-01-pinned-dossier-refresh-source-structures.json` and `sources/discovery/2026-07-01-pinned-dossier-refresh-code-inspection.json`. Representative files captured for this refresh include `src/services/context-generator.ts`, `src/services/context/ContextBuilder.ts`, `src/services/context/ContextConfigLoader.ts`, `src/services/context/ObservationCompiler.ts`, `src/services/context/TokenCalculator.ts`, `src/services/context/formatters/AgentFormatter.ts`. Treat benchmark, savings, and deployment claims below as source-logic only unless a benchmark-audit or reproduction artifact is explicitly cited.
+
 
 - `src/services/context/ContextBuilder.ts` builds injected context from observations/summaries and computes token economics before rendering context output.
 - `src/services/context/ObservationCompiler.ts` queries observations and summaries from a session store, including multi-project observation retrieval and recorded discovery-token fields.

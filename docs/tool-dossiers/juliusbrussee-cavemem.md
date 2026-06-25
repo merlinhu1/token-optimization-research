@@ -4,9 +4,13 @@
 
 - Repository: `JuliusBrussee/cavemem`
 - URL: https://github.com/JuliusBrussee/cavemem
-- Version/ref inspected: GitHub `HEAD` API or local shallow clone plus representative implementation files, 2026-06-26
-- Date inspected: 2026-06-26
-- Evidence stage: source-logic (representative MCP, worker, search, compression, and hook files inspected)
+- Version/ref inspected: local shallow clone `1fe41e9c9f28`, 2026-07-01
+- Snapshot status: pinned-commit
+- Commit inspected: 1fe41e9c9f28380d3da9640f02812f8e5565839a
+- Commit URL: https://github.com/JuliusBrussee/cavemem/commit/1fe41e9c9f28380d3da9640f02812f8e5565839a
+- Source artifact path: `sources/discovery/2026-07-01-pinned-dossier-refresh-source-structures.json`
+- Date inspected: 2026-07-01
+- Evidence stage: source-logic (fresh pinned shallow clone; representative source/config/test files inspected; benchmark-audit and reproduction still required for measured savings)
 - Stars at inspection: 565
 - Forks at inspection: 49
 - License: MIT
@@ -21,8 +25,8 @@ Cavemem stores compressed observations for coding agents, backfills embeddings, 
 | Evidence type | Files/URLs inspected | Notes |
 |---|---|---|
 | Repository metadata | GitHub API where available; local shallow clone fallback for rate-limited repos | Popularity and license signals only; not effectiveness evidence. |
-| Source tree | `sources/discovery/2026-06-26-ten-more-tool-source-structures.json` | Used to identify source, hook, MCP, test, benchmark, and runtime paths beyond README. |
-| Runtime/source content | `sources/discovery/2026-06-26-ten-more-tool-code-inspection.json` | Representative files fetched from raw GitHub or read from local clones with SHA-256 prefixes and behavior excerpts. |
+| Source tree | `sources/discovery/2026-07-01-pinned-dossier-refresh-source-structures.json` | Used to identify source, hook, MCP, test, benchmark, and runtime paths beyond README. |
+| Runtime/source content | `sources/discovery/2026-07-01-pinned-dossier-refresh-code-inspection.json` | Representative files fetched from raw GitHub or read from local clones with SHA-256 prefixes and behavior excerpts. |
 | README/docs | README/docs paths identified when present. | README claims are not used as behavior evidence. |
 | Tests/benchmarks | Paths identified where present. | Full benchmark-method review remains open. |
 
@@ -66,7 +70,12 @@ Repository tree inspection found 161 files and 131 files matching integration, s
 
 ## Code-detail inspection findings
 
-Evidence artifact: `sources/discovery/2026-06-26-ten-more-tool-code-inspection.json`.
+Evidence artifact: `sources/discovery/2026-07-01-pinned-dossier-refresh-code-inspection.json`.
+
+### Fresh pinned-source refresh
+
+The 2026-07-01 refresh pins the inspected source to `1fe41e9c9f28380d3da9640f02812f8e5565839a` and records a fresh tree plus selected implementation excerpts in `sources/discovery/2026-07-01-pinned-dossier-refresh-source-structures.json` and `sources/discovery/2026-07-01-pinned-dossier-refresh-code-inspection.json`. Representative files captured for this refresh include `apps/cli/package.json`, `apps/cli/scripts/pack-release.mjs`, `apps/cli/scripts/prepack.mjs`, `apps/cli/src/commands/compress.ts`, `apps/cli/src/commands/config.ts`, `apps/cli/src/commands/doctor.ts`. Treat benchmark, savings, and deployment claims below as source-logic only unless a benchmark-audit or reproduction artifact is explicitly cited.
+
 
 - `apps/mcp-server/src/server.ts` exposes MCP stdio progressive-disclosure tools and lazily loads the embedder on first semantic search to keep handshake fast.
 - `apps/worker/src/embed-loop.ts` expands compressed text before embedding so semantic search matches human intent rather than compressed grammar.

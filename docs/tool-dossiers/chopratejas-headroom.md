@@ -4,9 +4,13 @@
 
 - Repository: `chopratejas/headroom`
 - URL: https://github.com/chopratejas/headroom
-- Version/ref inspected: GitHub `HEAD` tree via API, 2026-06-26
-- Date inspected: 2026-06-26
-- Evidence stage: source-logic (representative core pipeline, proxy, and savings metrics inspected)
+- Version/ref inspected: local shallow clone `715ed7d200cb`, 2026-07-01
+- Snapshot status: pinned-commit
+- Commit inspected: 715ed7d200cb62c43e6ee3976ce8d3aa639ccf9f
+- Commit URL: https://github.com/chopratejas/headroom/commit/715ed7d200cb62c43e6ee3976ce8d3aa639ccf9f
+- Source artifact path: `sources/discovery/2026-07-01-pinned-dossier-refresh-source-structures.json`
+- Date inspected: 2026-07-01
+- Evidence stage: source-logic (fresh pinned shallow clone; representative source/config/test files inspected; benchmark-audit and reproduction still required for measured savings)
 - Stars at inspection: 51,329
 - Forks at inspection: 3,642
 - License: Apache-2.0
@@ -21,10 +25,10 @@ Headroom is a broad compression layer for tool outputs, logs, files, RAG chunks,
 | Evidence type | Files/URLs inspected | Notes |
 |---|---|---|
 | Repository metadata | GitHub API repository metadata | Popularity and license signals only; not effectiveness evidence. |
-| Source tree | `sources/discovery/2026-06-26-five-more-tool-source-structures.json` | Used to identify installer, plugin, MCP, test, and benchmark paths beyond README. |
+| Source tree | `sources/discovery/2026-07-01-pinned-dossier-refresh-source-structures.json` | Used to identify installer, plugin, MCP, test, and benchmark paths beyond README. |
 | README/docs | README path identified when present. | README claims require source and benchmark follow-up. |
 | Installer/config/plugin files | Paths identified below. | Integration review started. |
-| Runtime source | Representative implementation files inspected; see code-detail section. | Source-behavior review has started and should continue across remaining modules. |
+| Runtime source | Representative implementation files inspected; see code-detail section. | Source-logic review is recorded for representative modules; uninspected modules remain benchmark-audit/reproduction follow-up. |
 | Tests/benchmarks | Representative tests or metrics files inspected where available. | Full benchmark-method review remains open. |
 
 ## Initial source-structure finding
@@ -76,7 +80,12 @@ Repository tree inspection found 3,427 files and 2,479 files matching integratio
 
 ## Code-detail inspection findings
 
-Evidence artifact: `sources/discovery/2026-06-26-five-more-tool-code-inspection.json`. The artifact contains raw GitHub file paths, byte sizes, SHA-256 prefixes, and behavior-line excerpts from the inspected implementation files.
+Evidence artifact: `sources/discovery/2026-07-01-pinned-dossier-refresh-code-inspection.json`.
+
+### Fresh pinned-source refresh
+
+The 2026-07-01 refresh pins the inspected source to `715ed7d200cb62c43e6ee3976ce8d3aa639ccf9f` and records a fresh tree plus selected implementation excerpts in `sources/discovery/2026-07-01-pinned-dossier-refresh-source-structures.json` and `sources/discovery/2026-07-01-pinned-dossier-refresh-code-inspection.json`. Representative files captured for this refresh include `Cargo.toml`, `REALIGNMENT/11-phase-I-test-infra.md`, `TESTING-copilot-subscription.md`, `agent-evals/README.md`, `agent-evals/pyproject.toml`, `agent-evals/src/agent_evals/__init__.py`. Treat benchmark, savings, and deployment claims below as source-logic only unless a benchmark-audit or reproduction artifact is explicitly cited.
+ The artifact contains raw GitHub file paths, byte sizes, SHA-256 prefixes, and behavior-line excerpts from the inspected implementation files.
 
 - `crates/headroom-core/src/transforms/pipeline/orchestrator.rs` implements a compression pipeline combining reformat and offload transforms, tracking `steps_applied`, `bytes_saved`, and `cache_keys`.
 - The orchestrator comments and code emphasize fail-open behavior: transform failures are recorded/skipped and the pipeline must return some output rather than panic inside a tool-call response path.
@@ -97,7 +106,7 @@ Evidence artifact: `sources/discovery/2026-06-26-five-more-tool-code-inspection.
 - Primary intervention surface: Broad context compression through library, proxy, agent wrapper, and MCP modes
 - Integration status: documented integration paths and/or source locations were identified, but exact runtime behavior has not yet been fully reviewed.
 - Disable/uninstall path: requires follow-up inspection of installer/plugin code and documentation.
-- Failure behavior if dependency is missing: requires source-logic inspection.
+- Failure behavior if dependency is missing: partially inspected in representative files; complete deployment failure-mode review remains open.
 
 ## Runtime behavior
 
@@ -112,15 +121,15 @@ Evidence artifact: `sources/discovery/2026-06-26-five-more-tool-code-inspection.
 ## Token-saving mechanism
 
 - Addressable token surface: Broad context compression through library, proxy, agent wrapper, and MCP modes
-- Reduction method: identified at mechanism level; implementation details require source-logic inspection.
-- Quality-preservation mechanism: requires source and benchmark review.
+- Reduction method: identified from representative implementation files; full benchmark/reproduction review remains open.
+- Quality-preservation mechanism: partially identified from representative source where present; benchmark/reproduction review remains required.
 - Cases where savings may not translate to provider-billed reductions: depends on turn count, prompt caching, failure/retry behavior, and whether the tool changes agent workflow length.
 
 ## Benchmarks and claims
 
 | Claim | Source | Measurement scope | Reviewed method | Caveats |
 |---|---|---|---|---|
-| Token-saving or context-reduction claims exist or are implied by repository description/metadata. | Repository metadata and existing catalog records. | Varies by tool. | Not yet reviewed beyond source-tree and metadata inspection in this dossier. | Maintainer claims must not be treated as reproduced evidence. |
+| Token-saving or context-reduction claims exist or are implied by repository description/metadata. | Repository metadata, existing catalog records, and pinned source-logic refresh. | Varies by tool. | Reviewed at source-logic level through representative implementation files; not benchmark-audited or reproduced. | Maintainer claims must not be treated as reproduced evidence. |
 
 ## Compatibility notes
 

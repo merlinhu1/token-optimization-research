@@ -5,6 +5,10 @@
 - Repository: `osovv/grace-marketplace`
 - URL: https://github.com/osovv/grace-marketplace
 - Version/ref inspected: local shallow clone `73f2b207cfcd`, 2026-06-29
+- Snapshot status: pinned-commit
+- Commit inspected: 73f2b207cfcd
+- Commit URL: https://github.com/osovv/grace-marketplace/commit/73f2b207cfcd
+- Source artifact path: `sources/discovery/2026-06-29-graph-leads-a-source-logic.json`
 - Date inspected: 2026-06-29
 - Evidence stage: source-logic (local source inspection of package/CLI entrypoints, query/indexing, lint, verification reference checks, file command, and representative tests)
 - License: MIT (`package.json`)

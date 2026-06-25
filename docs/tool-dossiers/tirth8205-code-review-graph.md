@@ -4,9 +4,13 @@
 
 - Repository: `tirth8205/code-review-graph`
 - URL: https://github.com/tirth8205/code-review-graph
-- Version/ref inspected: GitHub `HEAD` tree and representative raw implementation files via API, 2026-06-26
-- Date inspected: 2026-06-26
-- Evidence stage: source-logic (representative implementation files inspected; benchmark/reproduction review remains open)
+- Version/ref inspected: local shallow clone `b72413cbd34a`, 2026-07-01
+- Snapshot status: pinned-commit
+- Commit inspected: b72413cbd34a4ac08cc60dcdd42df1d02f3fc77d
+- Commit URL: https://github.com/tirth8205/code-review-graph/commit/b72413cbd34a4ac08cc60dcdd42df1d02f3fc77d
+- Source artifact path: `sources/discovery/2026-07-01-pinned-dossier-refresh-source-structures.json`
+- Date inspected: 2026-07-01
+- Evidence stage: source-logic (fresh pinned shallow clone; representative source/config/test files inspected; benchmark-audit and reproduction still required for measured savings)
 - Stars at inspection: 18,917
 - Forks at inspection: 2,030
 - License: MIT
@@ -21,8 +25,8 @@ Code Review Graph builds a local graph/index of code and changes so agents can r
 | Evidence type | Files/URLs inspected | Notes |
 |---|---|---|
 | Repository metadata | GitHub API repository metadata | Popularity and license signals only; not effectiveness evidence. |
-| Source tree | `sources/discovery/2026-06-26-eight-more-tool-source-structures.json` | Used to identify installer, plugin, MCP, test, benchmark, and runtime paths beyond README. |
-| Runtime source | `sources/discovery/2026-06-26-eight-more-tool-code-inspection.json` | Representative implementation files fetched from GitHub HEAD with SHA-256 prefixes and behavior excerpts. |
+| Source tree | `sources/discovery/2026-07-01-pinned-dossier-refresh-source-structures.json` | Used to identify installer, plugin, MCP, test, benchmark, and runtime paths beyond README. |
+| Runtime source | `sources/discovery/2026-07-01-pinned-dossier-refresh-code-inspection.json` | Representative implementation files fetched from GitHub HEAD with SHA-256 prefixes and behavior excerpts. |
 | README/docs | README path identified when present. | README claims are not used as behavior evidence. |
 | Tests/benchmarks | Paths identified where present. | Full benchmark-method review remains open. |
 
@@ -69,7 +73,12 @@ Repository tree inspection found 287 files and 227 files matching integration, s
 
 ## Code-detail inspection findings
 
-Evidence artifact: `sources/discovery/2026-06-26-eight-more-tool-code-inspection.json`.
+Evidence artifact: `sources/discovery/2026-07-01-pinned-dossier-refresh-code-inspection.json`.
+
+### Fresh pinned-source refresh
+
+The 2026-07-01 refresh pins the inspected source to `b72413cbd34a4ac08cc60dcdd42df1d02f3fc77d` and records a fresh tree plus selected implementation excerpts in `sources/discovery/2026-07-01-pinned-dossier-refresh-source-structures.json` and `sources/discovery/2026-07-01-pinned-dossier-refresh-code-inspection.json`. Representative files captured for this refresh include `code_review_graph/context_savings.py`, `code_review_graph/eval/__init__.py`, `code_review_graph/eval/benchmarks/__init__.py`, `code_review_graph/eval/benchmarks/agent_baseline.py`, `code_review_graph/eval/benchmarks/build_performance.py`, `code_review_graph/eval/benchmarks/flow_completeness.py`. Treat benchmark, savings, and deployment claims below as source-logic only unless a benchmark-audit or reproduction artifact is explicitly cited.
+
 
 - `code_review_graph/graph.py` implements SQLite-backed node/edge storage with indexes for file path, kind, qualified names, and source/target edge queries.
 - `code_review_graph/search.py` combines FTS5/BM25 and vector embeddings using reciprocal rank fusion, plus identifier extraction and kind/context boosting.

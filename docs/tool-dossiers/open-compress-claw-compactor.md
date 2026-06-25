@@ -4,9 +4,13 @@
 
 - Repository: `open-compress/claw-compactor`
 - URL: https://github.com/open-compress/claw-compactor
-- Version/ref inspected: GitHub `HEAD` tree and representative raw implementation files via API, 2026-06-26
-- Date inspected: 2026-06-26
-- Evidence stage: source-logic (representative implementation files inspected; benchmark/reproduction review remains open)
+- Version/ref inspected: local shallow clone `c1b936d40b11`, 2026-07-01
+- Snapshot status: pinned-commit
+- Commit inspected: c1b936d40b1145c7a257bd6e34a17994f467495f
+- Commit URL: https://github.com/open-compress/claw-compactor/commit/c1b936d40b1145c7a257bd6e34a17994f467495f
+- Source artifact path: `sources/discovery/2026-07-01-pinned-dossier-refresh-source-structures.json`
+- Date inspected: 2026-07-01
+- Evidence stage: source-logic (fresh pinned shallow clone; representative source/config/test files inspected; benchmark-audit and reproduction still required for measured savings)
 - Stars at inspection: 2,191
 - Forks at inspection: 209
 - License: MIT
@@ -21,8 +25,8 @@ Claw Compactor applies staged, content-aware compression to messages/tool result
 | Evidence type | Files/URLs inspected | Notes |
 |---|---|---|
 | Repository metadata | GitHub API repository metadata | Popularity and license signals only; not effectiveness evidence. |
-| Source tree | `sources/discovery/2026-06-26-eight-more-tool-source-structures.json` | Used to identify installer, plugin, MCP, test, benchmark, and runtime paths beyond README. |
-| Runtime source | `sources/discovery/2026-06-26-eight-more-tool-code-inspection.json` | Representative implementation files fetched from GitHub HEAD with SHA-256 prefixes and behavior excerpts. |
+| Source tree | `sources/discovery/2026-07-01-pinned-dossier-refresh-source-structures.json` | Used to identify installer, plugin, MCP, test, benchmark, and runtime paths beyond README. |
+| Runtime source | `sources/discovery/2026-07-01-pinned-dossier-refresh-code-inspection.json` | Representative implementation files fetched from GitHub HEAD with SHA-256 prefixes and behavior excerpts. |
 | README/docs | README path identified when present. | README claims are not used as behavior evidence. |
 | Tests/benchmarks | Paths identified where present. | Full benchmark-method review remains open. |
 
@@ -69,7 +73,12 @@ Repository tree inspection found 209 files and 151 files matching integration, s
 
 ## Code-detail inspection findings
 
-Evidence artifact: `sources/discovery/2026-06-26-eight-more-tool-code-inspection.json`.
+Evidence artifact: `sources/discovery/2026-07-01-pinned-dossier-refresh-code-inspection.json`.
+
+### Fresh pinned-source refresh
+
+The 2026-07-01 refresh pins the inspected source to `c1b936d40b1145c7a257bd6e34a17994f467495f` and records a fresh tree plus selected implementation excerpts in `sources/discovery/2026-07-01-pinned-dossier-refresh-source-structures.json` and `sources/discovery/2026-07-01-pinned-dossier-refresh-code-inspection.json`. Representative files captured for this refresh include `scripts/lib/fusion/__init__.py`, `scripts/lib/fusion/base.py`, `scripts/lib/fusion/cache_prefix.py`, `scripts/lib/fusion/compact_hooks.py`, `scripts/lib/fusion/content_detector.py`, `scripts/lib/fusion/content_stripper.py`. Treat benchmark, savings, and deployment claims below as source-logic only unless a benchmark-audit or reproduction artifact is explicitly cited.
+
 
 - `scripts/lib/fusion/pipeline.py` runs ordered compression stages sequentially, feeding each stage output into the next stage context.
 - `scripts/lib/fusion/engine.py` is the unified entry point for string/message compression and wires stages such as content detection, log/search/diff compression, structural collapse, and token optimization.

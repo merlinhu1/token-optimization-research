@@ -6,6 +6,10 @@
 - URL: https://github.com/STiFLeR7/memex
 - Local clone inspected: `/tmp/token-leads-20260629/STiFLeR7__memex`
 - Version/ref inspected: local shallow clone commit `cf9b1833ab41`
+- Snapshot status: pinned-commit
+- Commit inspected: cf9b1833ab41
+- Commit URL: https://github.com/STiFLeR7/memex/commit/cf9b1833ab41
+- Source artifact path: `sources/discovery/2026-06-29-graph-leads-c-source-logic.json`
 - Date inspected: 2026-06-29
 - Evidence stage: source-logic
 - License observed in manifest: MIT

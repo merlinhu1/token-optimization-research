@@ -4,9 +4,13 @@
 
 - Repository: `mksglu/context-mode`
 - URL: https://github.com/mksglu/context-mode
-- Version/ref inspected: GitHub `HEAD` tree via API, 2026-06-26
-- Date inspected: 2026-06-26
-- Evidence stage: source-logic (representative server, hooks, persistence, hook-config, and routing tests inspected)
+- Version/ref inspected: local shallow clone `3fbc6ea6569d`, 2026-07-01
+- Snapshot status: pinned-commit
+- Commit inspected: 3fbc6ea6569db1b1c6524d3543dc95f50bb5363a
+- Commit URL: https://github.com/mksglu/context-mode/commit/3fbc6ea6569db1b1c6524d3543dc95f50bb5363a
+- Source artifact path: `sources/discovery/2026-07-01-pinned-dossier-refresh-source-structures.json`
+- Date inspected: 2026-07-01
+- Evidence stage: source-logic (fresh pinned shallow clone; representative source/config/test files inspected; benchmark-audit and reproduction still required for measured savings)
 - Stars at inspection: 18,195
 - Forks at inspection: 1,277
 - License: NOASSERTION
@@ -21,10 +25,10 @@ Context-Mode moves large intermediate tool/MCP workflows outside the primary mod
 | Evidence type | Files/URLs inspected | Notes |
 |---|---|---|
 | Repository metadata | GitHub API repository metadata | Popularity and license signals only; not effectiveness evidence. |
-| Source tree | `sources/discovery/2026-06-26-five-more-tool-source-structures.json` | Used to identify installer, plugin, MCP, test, and benchmark paths beyond README. |
+| Source tree | `sources/discovery/2026-07-01-pinned-dossier-refresh-source-structures.json` | Used to identify installer, plugin, MCP, test, and benchmark paths beyond README. |
 | README/docs | README path identified when present. | README claims require source and benchmark follow-up. |
 | Installer/config/plugin files | Paths identified below. | Integration review started. |
-| Runtime source | Representative implementation files inspected; see code-detail section. | Source-behavior review has started and should continue across remaining modules. |
+| Runtime source | Representative implementation files inspected; see code-detail section. | Source-logic review is recorded for representative modules; uninspected modules remain benchmark-audit/reproduction follow-up. |
 | Tests/benchmarks | Representative tests or metrics files inspected where available. | Full benchmark-method review remains open. |
 
 ## Initial source-structure finding
@@ -76,7 +80,12 @@ Repository tree inspection found 572 files and 501 files matching integration, s
 
 ## Code-detail inspection findings
 
-Evidence artifact: `sources/discovery/2026-06-26-five-more-tool-code-inspection.json`. The artifact contains raw GitHub file paths, byte sizes, SHA-256 prefixes, and behavior-line excerpts from the inspected implementation files.
+Evidence artifact: `sources/discovery/2026-07-01-pinned-dossier-refresh-code-inspection.json`.
+
+### Fresh pinned-source refresh
+
+The 2026-07-01 refresh pins the inspected source to `3fbc6ea6569db1b1c6524d3543dc95f50bb5363a` and records a fresh tree plus selected implementation excerpts in `sources/discovery/2026-07-01-pinned-dossier-refresh-source-structures.json` and `sources/discovery/2026-07-01-pinned-dossier-refresh-code-inspection.json`. Representative files captured for this refresh include `BENCHMARK.md`, `configs/antigravity-cli/hooks.json`, `configs/antigravity-cli/hooks/hooks.json`, `configs/antigravity-cli/mcp_config.json`, `configs/antigravity-cli/plugin.json`, `configs/antigravity-cli/rules/context-mode.md`. Treat benchmark, savings, and deployment claims below as source-logic only unless a benchmark-audit or reproduction artifact is explicitly cited.
+ The artifact contains raw GitHub file paths, byte sizes, SHA-256 prefixes, and behavior-line excerpts from the inspected implementation files.
 
 - `src/server.ts` is a large MCP server integrating file-system access, subprocess execution, `PolyglotExecutor`, fetch cache, search schemas, session statistics, hook configuration, and result tracking.
 - `src/adapters/codex/hooks.ts` defines Codex hook event integration, including `PreToolUse`, `PostToolUse`, `PreCompact`, `SessionStart`, `SessionEnd`, and `Stop`, and routes external MCP tools through a matcher/body filter strategy.
@@ -96,7 +105,7 @@ Evidence artifact: `sources/discovery/2026-06-26-five-more-tool-code-inspection.
 - Primary intervention surface: Execution offload, MCP/tool sandboxing, result selection, and routing hooks
 - Integration status: documented integration paths and/or source locations were identified, but exact runtime behavior has not yet been fully reviewed.
 - Disable/uninstall path: requires follow-up inspection of installer/plugin code and documentation.
-- Failure behavior if dependency is missing: requires source-logic inspection.
+- Failure behavior if dependency is missing: partially inspected in representative files; complete deployment failure-mode review remains open.
 
 ## Runtime behavior
 
@@ -111,15 +120,15 @@ Evidence artifact: `sources/discovery/2026-06-26-five-more-tool-code-inspection.
 ## Token-saving mechanism
 
 - Addressable token surface: Execution offload, MCP/tool sandboxing, result selection, and routing hooks
-- Reduction method: identified at mechanism level; implementation details require source-logic inspection.
-- Quality-preservation mechanism: requires source and benchmark review.
+- Reduction method: identified from representative implementation files; full benchmark/reproduction review remains open.
+- Quality-preservation mechanism: partially identified from representative source where present; benchmark/reproduction review remains required.
 - Cases where savings may not translate to provider-billed reductions: depends on turn count, prompt caching, failure/retry behavior, and whether the tool changes agent workflow length.
 
 ## Benchmarks and claims
 
 | Claim | Source | Measurement scope | Reviewed method | Caveats |
 |---|---|---|---|---|
-| Token-saving or context-reduction claims exist or are implied by repository description/metadata. | Repository metadata and existing catalog records. | Varies by tool. | Not yet reviewed beyond source-tree and metadata inspection in this dossier. | Maintainer claims must not be treated as reproduced evidence. |
+| Token-saving or context-reduction claims exist or are implied by repository description/metadata. | Repository metadata, existing catalog records, and pinned source-logic refresh. | Varies by tool. | Reviewed at source-logic level through representative implementation files; not benchmark-audited or reproduced. | Maintainer claims must not be treated as reproduced evidence. |
 
 ## Compatibility notes
 

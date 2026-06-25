@@ -4,9 +4,13 @@
 
 - Repository: `cocoindex-io/cocoindex-code`
 - URL: https://github.com/cocoindex-io/cocoindex-code
-- Version/ref inspected: GitHub `HEAD` tree and representative raw implementation files via API, 2026-06-26
-- Date inspected: 2026-06-26
-- Evidence stage: source-logic (representative implementation files inspected; benchmark/reproduction review remains open)
+- Version/ref inspected: local shallow clone `7fe0e890ad58`, 2026-07-01
+- Snapshot status: pinned-commit
+- Commit inspected: 7fe0e890ad58da96e93c8c3f18b4060e8b6501db
+- Commit URL: https://github.com/cocoindex-io/cocoindex-code/commit/7fe0e890ad58da96e93c8c3f18b4060e8b6501db
+- Source artifact path: `sources/discovery/2026-07-01-pinned-dossier-refresh-source-structures.json`
+- Date inspected: 2026-07-01
+- Evidence stage: source-logic (fresh pinned shallow clone; representative source/config/test files inspected; benchmark-audit and reproduction still required for measured savings)
 - Stars at inspection: 2,245
 - Forks at inspection: 182
 - License: Apache-2.0
@@ -21,8 +25,8 @@ CocoIndex Code indexes code into chunks with embeddings and exposes semantic sea
 | Evidence type | Files/URLs inspected | Notes |
 |---|---|---|
 | Repository metadata | GitHub API repository metadata | Popularity and license signals only; not effectiveness evidence. |
-| Source tree | `sources/discovery/2026-06-26-eight-more-tool-source-structures.json` | Used to identify installer, plugin, MCP, test, benchmark, and runtime paths beyond README. |
-| Runtime source | `sources/discovery/2026-06-26-eight-more-tool-code-inspection.json` | Representative implementation files fetched from GitHub HEAD with SHA-256 prefixes and behavior excerpts. |
+| Source tree | `sources/discovery/2026-07-01-pinned-dossier-refresh-source-structures.json` | Used to identify installer, plugin, MCP, test, benchmark, and runtime paths beyond README. |
+| Runtime source | `sources/discovery/2026-07-01-pinned-dossier-refresh-code-inspection.json` | Representative implementation files fetched from GitHub HEAD with SHA-256 prefixes and behavior excerpts. |
 | README/docs | README path identified when present. | README claims are not used as behavior evidence. |
 | Tests/benchmarks | Paths identified where present. | Full benchmark-method review remains open. |
 
@@ -69,7 +73,12 @@ Repository tree inspection found 71 files and 48 files matching integration, sou
 
 ## Code-detail inspection findings
 
-Evidence artifact: `sources/discovery/2026-06-26-eight-more-tool-code-inspection.json`.
+Evidence artifact: `sources/discovery/2026-07-01-pinned-dossier-refresh-code-inspection.json`.
+
+### Fresh pinned-source refresh
+
+The 2026-07-01 refresh pins the inspected source to `7fe0e890ad58da96e93c8c3f18b4060e8b6501db` and records a fresh tree plus selected implementation excerpts in `sources/discovery/2026-07-01-pinned-dossier-refresh-source-structures.json` and `sources/discovery/2026-07-01-pinned-dossier-refresh-code-inspection.json`. Representative files captured for this refresh include `src/cocoindex_code/__init__.py`, `src/cocoindex_code/__main__.py`, `src/cocoindex_code/_daemon_paths.py`, `src/cocoindex_code/chunking.py`, `src/cocoindex_code/cli.py`, `src/cocoindex_code/client.py`. Treat benchmark, savings, and deployment claims below as source-logic only unless a benchmark-audit or reproduction artifact is explicitly cited.
+
 
 - `src/cocoindex_code/indexer.py` defines the indexing flow using local filesystem and SQLite connectors, recursive splitting, language detection, chunk IDs, and vec0 table definitions.
 - `src/cocoindex_code/server.py` implements a FastMCP server with typed models for code chunk search results and codebase understanding tools.

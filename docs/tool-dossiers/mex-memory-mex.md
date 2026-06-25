@@ -4,9 +4,13 @@
 
 - Repository: `mex-memory/mex`
 - URL: https://github.com/mex-memory/mex
-- Version/ref inspected: GitHub `HEAD` API or local shallow clone plus representative implementation files, 2026-06-26
-- Date inspected: 2026-06-26
-- Evidence stage: source-logic (representative CLI, drift, event, and heartbeat files inspected)
+- Version/ref inspected: local shallow clone `c341ee7301de`, 2026-07-01
+- Snapshot status: pinned-commit
+- Commit inspected: c341ee7301dea6f5990336f69fc84d9ceef2fa06
+- Commit URL: https://github.com/mex-memory/mex/commit/c341ee7301dea6f5990336f69fc84d9ceef2fa06
+- Source artifact path: `sources/discovery/2026-07-01-pinned-dossier-refresh-source-structures.json`
+- Date inspected: 2026-07-01
+- Evidence stage: source-logic (fresh pinned shallow clone; representative source/config/test files inspected; benchmark-audit and reproduction still required for measured savings)
 - Stars at inspection: 1,140
 - Forks at inspection: 65
 - License: MIT
@@ -21,8 +25,8 @@ MEX is a project-memory scaffold and drift-checking CLI for AI coding agents. It
 | Evidence type | Files/URLs inspected | Notes |
 |---|---|---|
 | Repository metadata | GitHub API where available; local shallow clone fallback for rate-limited repos | Popularity and license signals only; not effectiveness evidence. |
-| Source tree | `sources/discovery/2026-06-26-ten-more-tool-source-structures.json` | Used to identify source, hook, MCP, test, benchmark, and runtime paths beyond README. |
-| Runtime/source content | `sources/discovery/2026-06-26-ten-more-tool-code-inspection.json` | Representative files fetched from raw GitHub or read from local clones with SHA-256 prefixes and behavior excerpts. |
+| Source tree | `sources/discovery/2026-07-01-pinned-dossier-refresh-source-structures.json` | Used to identify source, hook, MCP, test, benchmark, and runtime paths beyond README. |
+| Runtime/source content | `sources/discovery/2026-07-01-pinned-dossier-refresh-code-inspection.json` | Representative files fetched from raw GitHub or read from local clones with SHA-256 prefixes and behavior excerpts. |
 | README/docs | README/docs paths identified when present. | README claims are not used as behavior evidence. |
 | Tests/benchmarks | Paths identified where present. | Full benchmark-method review remains open. |
 
@@ -66,7 +70,12 @@ Repository tree inspection found 137 files and 98 files matching integration, so
 
 ## Code-detail inspection findings
 
-Evidence artifact: `sources/discovery/2026-06-26-ten-more-tool-code-inspection.json`.
+Evidence artifact: `sources/discovery/2026-07-01-pinned-dossier-refresh-code-inspection.json`.
+
+### Fresh pinned-source refresh
+
+The 2026-07-01 refresh pins the inspected source to `c341ee7301dea6f5990336f69fc84d9ceef2fa06` and records a fresh tree plus selected implementation excerpts in `sources/discovery/2026-07-01-pinned-dossier-refresh-source-structures.json` and `sources/discovery/2026-07-01-pinned-dossier-refresh-code-inspection.json`. Representative files captured for this refresh include `src/cli-tools.ts`, `src/cli.ts`, `src/config.ts`, `src/doctor.ts`, `src/drift/checkers/broken-link.ts`, `src/drift/checkers/command.ts`. Treat benchmark, savings, and deployment claims below as source-logic only unless a benchmark-audit or reproduction artifact is explicitly cited.
+
 
 - `src/cli.ts` implements command parsing and loads/backfills scaffold identity while keeping config lookup mostly read-oriented for embedders.
 - `src/drift/index.ts` finds scaffold files, parses frontmatter claims, and runs multiple drift checkers over context files.

@@ -4,9 +4,13 @@
 
 - Repository: `jgravelle/jcodemunch-mcp`
 - URL: https://github.com/jgravelle/jcodemunch-mcp
-- Version/ref inspected: GitHub `HEAD` tree and representative raw implementation files via API, 2026-06-26
-- Date inspected: 2026-06-26
-- Evidence stage: source-logic (representative implementation files inspected; benchmark/reproduction review remains open)
+- Version/ref inspected: local shallow clone `bdebb6399f07`, 2026-07-01
+- Snapshot status: pinned-commit
+- Commit inspected: bdebb6399f07431d4b072582ff80f7639d8752c5
+- Commit URL: https://github.com/jgravelle/jcodemunch-mcp/commit/bdebb6399f07431d4b072582ff80f7639d8752c5
+- Source artifact path: `sources/discovery/2026-07-01-pinned-dossier-refresh-source-structures.json`
+- Date inspected: 2026-07-01
+- Evidence stage: source-logic (fresh pinned shallow clone; representative source/config/test files inspected; benchmark-audit and reproduction still required for measured savings)
 - Stars at inspection: 1,942
 - Forks at inspection: 300
 - License: NOASSERTION
@@ -21,8 +25,8 @@ jcodemunch MCP indexes code into symbol/context structures and exposes many MCP 
 | Evidence type | Files/URLs inspected | Notes |
 |---|---|---|
 | Repository metadata | GitHub API repository metadata | Popularity and license signals only; not effectiveness evidence. |
-| Source tree | `sources/discovery/2026-06-26-eight-more-tool-source-structures.json` | Used to identify installer, plugin, MCP, test, benchmark, and runtime paths beyond README. |
-| Runtime source | `sources/discovery/2026-06-26-eight-more-tool-code-inspection.json` | Representative implementation files fetched from GitHub HEAD with SHA-256 prefixes and behavior excerpts. |
+| Source tree | `sources/discovery/2026-07-01-pinned-dossier-refresh-source-structures.json` | Used to identify installer, plugin, MCP, test, benchmark, and runtime paths beyond README. |
+| Runtime source | `sources/discovery/2026-07-01-pinned-dossier-refresh-code-inspection.json` | Representative implementation files fetched from GitHub HEAD with SHA-256 prefixes and behavior excerpts. |
 | README/docs | README path identified when present. | README claims are not used as behavior evidence. |
 | Tests/benchmarks | Paths identified where present. | Full benchmark-method review remains open. |
 
@@ -69,7 +73,12 @@ Repository tree inspection found 626 files and 574 files matching integration, s
 
 ## Code-detail inspection findings
 
-Evidence artifact: `sources/discovery/2026-06-26-eight-more-tool-code-inspection.json`.
+Evidence artifact: `sources/discovery/2026-07-01-pinned-dossier-refresh-code-inspection.json`.
+
+### Fresh pinned-source refresh
+
+The 2026-07-01 refresh pins the inspected source to `bdebb6399f07431d4b072582ff80f7639d8752c5` and records a fresh tree plus selected implementation excerpts in `sources/discovery/2026-07-01-pinned-dossier-refresh-source-structures.json` and `sources/discovery/2026-07-01-pinned-dossier-refresh-code-inspection.json`. Representative files captured for this refresh include `src/jcodemunch_mcp/__init__.py`, `src/jcodemunch_mcp/__main__.py`, `src/jcodemunch_mcp/agent_selector.py`, `src/jcodemunch_mcp/cli/__init__.py`, `src/jcodemunch_mcp/cli/delivery.py`, `src/jcodemunch_mcp/cli/digest.py`. Treat benchmark, savings, and deployment claims below as source-logic only unless a benchmark-audit or reproduction artifact is explicitly cited.
+
 
 - `src/jcodemunch_mcp/server.py` implements the MCP server and lazily imports tool modules at dispatch time to reduce cold-start cost for sessions that do not need indexing-heavy tools.
 - `src/jcodemunch_mcp/tools/get_ranked_context.py` assembles best-K-token context for a query using token costs, compact fields, savings recording, and context-bundle helpers.
