@@ -1,0 +1,9 @@
+Restored the regression back to the pinned fixed behavior. The production diff is now clean against the fixed commit; only the pre-existing untracked `.venv/` remains.
+
+Verification passed with the local venv interpreter:
+
+```bash
+.venv/bin/python tests/runtests.py lookup.tests.LookupTests.test_exact_booleanfield lookup.tests.LookupTests.test_exact_booleanfield_annotation --verbosity 2
+```
+
+Both targeted tests passed. Note: `python` isn’t installed in this container, so I used `.venv/bin/python` for the same verifier.

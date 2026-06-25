@@ -1,0 +1,16 @@
+Restored the upstream production fix by reverting the seeded regression in:
+
+- [internal/configs/configload/loader.go](/opt/data/repos/token-optimization-research/sources/evaluations/large-projects/hashicorp-terraform/repo/internal/configs/configload/loader.go)
+- [internal/terraform/context_walk.go](/opt/data/repos/token-optimization-research/sources/evaluations/large-projects/hashicorp-terraform/repo/internal/terraform/context_walk.go)
+- [internal/terraform/graph_walk_context.go](/opt/data/repos/token-optimization-research/sources/evaluations/large-projects/hashicorp-terraform/repo/internal/terraform/graph_walk_context.go)
+
+The loader filesystem override is back, and graph walker shared caches are initialized eagerly during walker construction instead of lazily during `EvalContext`.
+
+Verifier passed:
+
+```text
+go test -race ./internal/command -run TestPlan_configLoaderRace -count=1
+ok github.com/hashicorp/terraform/internal/command 6.116s
+```
+
+`git status` is clean after the repair.
