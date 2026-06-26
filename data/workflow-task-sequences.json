@@ -1,0 +1,218 @@
+{
+  "schema_version": 1,
+  "description": "Ordered task sequences for primary continuous workflow simulation. Sequences reset before the session, feed model-facing task prompts one at a time, and preserve repository/tool/agent state between tasks.",
+  "state_policy_defaults": {
+    "reset_before_session": [
+      "repository working tree",
+      "profile home",
+      "tool indexes and caches",
+      "generated config",
+      "agent home",
+      "temporary directories"
+    ],
+    "persist_between_tasks": [
+      "repository working tree",
+      "tool indexes and caches",
+      "generated config",
+      "agent home",
+      "memory/state stores enabled by the active profile",
+      "run artifacts"
+    ]
+  },
+  "sequences": [
+    {
+      "id": "terraform-maintenance-sequence-v1",
+      "status": "active",
+      "fixture_id": "large-hashicorp-terraform",
+      "fixture_scale": "large-project",
+      "objective": "individual_tool_effectiveness",
+      "primary_metric": "cumulative provider-billed workflow tokens",
+      "reset_policy": "Reset once before the session; preserve repository, tool, index, cache, generated config, memory, and agent state between tasks.",
+      "conversion_note": "Executable shared-snapshot workflow: all five Terraform task regressions apply to commit e02391ad384c9c38f1d7f40b853c0d2297348094 and can run in one persistent session without repository reset between tasks.",
+      "tasks": [
+        {
+          "id": "terraform-38739-sensitive-policy-paths-regression",
+          "order": 1,
+          "prompt_path": "sources/evaluations/large-projects/hashicorp-terraform/tasks/terraform-38739-sensitive-policy-paths-regression/agent-prompt.txt",
+          "verifier_command": "sources/evaluations/large-projects/hashicorp-terraform/tasks/terraform-38739-sensitive-policy-paths-regression/verify.sh"
+        },
+        {
+          "id": "terraform-38745-config-parser-concurrency-regression",
+          "order": 2,
+          "prompt_path": "sources/evaluations/large-projects/hashicorp-terraform/tasks/terraform-38745-config-parser-concurrency-regression/agent-prompt.txt",
+          "verifier_command": "sources/evaluations/large-projects/hashicorp-terraform/tasks/terraform-38745-config-parser-concurrency-regression/verify.sh"
+        },
+        {
+          "id": "terraform-38747-config-loader-watchstop-race-regression",
+          "order": 3,
+          "prompt_path": "sources/evaluations/large-projects/hashicorp-terraform/tasks/terraform-38747-config-loader-watchstop-race-regression/agent-prompt.txt",
+          "verifier_command": "sources/evaluations/large-projects/hashicorp-terraform/tasks/terraform-38747-config-loader-watchstop-race-regression/verify.sh"
+        },
+        {
+          "id": "terraform-38775-policy-state-close-order-regression",
+          "order": 4,
+          "prompt_path": "sources/evaluations/large-projects/hashicorp-terraform/tasks/terraform-38775-policy-state-close-order-regression/agent-prompt.txt",
+          "verifier_command": "sources/evaluations/large-projects/hashicorp-terraform/tasks/terraform-38775-policy-state-close-order-regression/verify.sh"
+        },
+        {
+          "id": "terraform-38781-policy-callback-deferred-resources-regression",
+          "order": 5,
+          "prompt_path": "sources/evaluations/large-projects/hashicorp-terraform/tasks/terraform-38781-policy-callback-deferred-resources-regression/agent-prompt.txt",
+          "verifier_command": "sources/evaluations/large-projects/hashicorp-terraform/tasks/terraform-38781-policy-callback-deferred-resources-regression/verify.sh"
+        }
+      ],
+      "initial_snapshot": {
+        "commit": "e02391ad384c9c38f1d7f40b853c0d2297348094",
+        "upstream": "https://github.com/hashicorp/terraform.git"
+      },
+      "seed_patch_policy": "All five task seed-regression.patch files are compatible with this shared snapshot as standalone task seeds and as an ordered persistent workflow seed stack."
+    },
+    {
+      "id": "orchardcore-maintenance-sequence-v1",
+      "status": "active",
+      "fixture_id": "large-orchardcms-orchardcore",
+      "fixture_scale": "large-project",
+      "objective": "individual_tool_effectiveness",
+      "primary_metric": "cumulative provider-billed workflow tokens",
+      "reset_policy": "Reset once before the session; preserve repository, tool, index, cache, generated config, memory, and agent state between tasks.",
+      "conversion_note": "Executable shared-snapshot workflow: all five OrchardCore controlled regressions apply to commit 91cd8a4bfcaf9cb1388edef6867af2a0b5a0a000 and can run in one persistent session without repository reset between tasks. Start-state fail/fixed-state pass gates were checked for all five tasks.",
+      "initial_snapshot": {
+        "commit": "91cd8a4bfcaf9cb1388edef6867af2a0b5a0a000",
+        "upstream": "https://github.com/OrchardCMS/OrchardCore.git"
+      },
+      "tasks": [
+        {
+          "id": "orchard-base64-string-decode-regression",
+          "order": 1,
+          "prompt_path": "sources/evaluations/large-projects/orchardcms-orchardcore/tasks/orchard-base64-string-decode-regression/agent-prompt.txt",
+          "verifier_command": "sources/evaluations/large-projects/orchardcms-orchardcore/tasks/orchard-base64-string-decode-regression/verify.sh"
+        },
+        {
+          "id": "orchard-base64-stream-position-regression",
+          "order": 2,
+          "prompt_path": "sources/evaluations/large-projects/orchardcms-orchardcore/tasks/orchard-base64-stream-position-regression/agent-prompt.txt",
+          "verifier_command": "sources/evaluations/large-projects/orchardcms-orchardcore/tasks/orchard-base64-stream-position-regression/verify.sh"
+        },
+        {
+          "id": "orchard-email-address-validation-regression",
+          "order": 3,
+          "prompt_path": "sources/evaluations/large-projects/orchardcms-orchardcore/tasks/orchard-email-address-validation-regression/agent-prompt.txt",
+          "verifier_command": "sources/evaluations/large-projects/orchardcms-orchardcore/tasks/orchard-email-address-validation-regression/verify.sh"
+        },
+        {
+          "id": "orchard-json-array-merge-union-regression",
+          "order": 4,
+          "prompt_path": "sources/evaluations/large-projects/orchardcms-orchardcore/tasks/orchard-json-array-merge-union-regression/agent-prompt.txt",
+          "verifier_command": "sources/evaluations/large-projects/orchardcms-orchardcore/tasks/orchard-json-array-merge-union-regression/verify.sh"
+        },
+        {
+          "id": "orchard-result-success-state-regression",
+          "order": 5,
+          "prompt_path": "sources/evaluations/large-projects/orchardcms-orchardcore/tasks/orchard-result-success-state-regression/agent-prompt.txt",
+          "verifier_command": "sources/evaluations/large-projects/orchardcms-orchardcore/tasks/orchard-result-success-state-regression/verify.sh"
+        }
+      ],
+      "seed_patch_policy": "All five task seed-regression.patch files are controlled regressions with at least five changed production files per task. Supplemental source-invariant checks are allocated outside globally shared core files so ordered workflow seed patches stack cleanly on the shared snapshot.",
+      "complexity_note": "Complexity upgraded 2026-07-08: each task now uses multi-edit seeded regressions across paired OrchardCore infrastructure/resource/email/sanitization behaviors, with broader xUnit class verifiers and standalone seeded-fail/fixed-pass gates.",
+      "complexity_bar": "Each task seed patch touches at least five production files; standalone seeded-fail/fixed-pass gates and workflow prepare-only passed after stack-safe allocation."
+    },
+    {
+      "id": "fastify-maintenance-sequence-v1",
+      "status": "active",
+      "fixture_id": "medium-fastify-fastify",
+      "fixture_scale": "medium-project",
+      "objective": "individual_tool_effectiveness",
+      "primary_metric": "cumulative provider-billed workflow tokens",
+      "reset_policy": "Reset once before the session; preserve repository, tool, index, cache, generated config, memory, and agent state between tasks.",
+      "conversion_note": "Executable shared-snapshot workflow: all five Fastify controlled regressions apply to commit 94bcbcc6e2ef3b8e8f8e8797fe551ccbe7b942fd and can run in one persistent session without repository reset between tasks. Start-state fail/fixed-state pass gates were checked for all five tasks.",
+      "initial_snapshot": {
+        "commit": "94bcbcc6e2ef3b8e8f8e8797fe551ccbe7b942fd",
+        "upstream": "https://github.com/fastify/fastify.git"
+      },
+      "tasks": [
+        {
+          "id": "fastify-query-schema-alias-regression",
+          "order": 1,
+          "prompt_path": "sources/evaluations/medium-projects/fastify-fastify/tasks/fastify-query-schema-alias-regression/agent-prompt.txt",
+          "verifier_command": "sources/evaluations/medium-projects/fastify-fastify/tasks/fastify-query-schema-alias-regression/verify.sh"
+        },
+        {
+          "id": "fastify-response-2xx-serializer-regression",
+          "order": 2,
+          "prompt_path": "sources/evaluations/medium-projects/fastify-fastify/tasks/fastify-response-2xx-serializer-regression/agent-prompt.txt",
+          "verifier_command": "sources/evaluations/medium-projects/fastify-fastify/tasks/fastify-response-2xx-serializer-regression/verify.sh"
+        },
+        {
+          "id": "fastify-trust-proxy-last-header-regression",
+          "order": 3,
+          "prompt_path": "sources/evaluations/medium-projects/fastify-fastify/tasks/fastify-trust-proxy-last-header-regression/agent-prompt.txt",
+          "verifier_command": "sources/evaluations/medium-projects/fastify-fastify/tasks/fastify-trust-proxy-last-header-regression/verify.sh"
+        },
+        {
+          "id": "fastify-has-route-method-case-regression",
+          "order": 4,
+          "prompt_path": "sources/evaluations/medium-projects/fastify-fastify/tasks/fastify-has-route-method-case-regression/agent-prompt.txt",
+          "verifier_command": "sources/evaluations/medium-projects/fastify-fastify/tasks/fastify-has-route-method-case-regression/verify.sh"
+        },
+        {
+          "id": "fastify-reply-hijack-state-regression",
+          "order": 5,
+          "prompt_path": "sources/evaluations/medium-projects/fastify-fastify/tasks/fastify-reply-hijack-state-regression/agent-prompt.txt",
+          "verifier_command": "sources/evaluations/medium-projects/fastify-fastify/tasks/fastify-reply-hijack-state-regression/verify.sh"
+        }
+      ],
+      "seed_patch_policy": "All five task seed-regression.patch files are controlled regressions with at least five changed production files per task. Supplemental source-invariant checks are allocated outside globally shared core files so ordered workflow seed patches stack cleanly on the shared snapshot.",
+      "complexity_note": "Complexity upgraded 2026-07-08: each task now uses multi-edit seeded regressions across schema/serializer, proxy/request, routing/head, reply lifecycle, or parser behavior, with broader Node/custom verifiers and standalone seeded-fail/fixed-pass gates.",
+      "complexity_bar": "Each task seed patch touches at least five production files; standalone seeded-fail/fixed-pass gates and workflow prepare-only passed after stack-safe allocation."
+    },
+    {
+      "id": "beets-maintenance-sequence-v1",
+      "status": "active",
+      "fixture_id": "medium-beetbox-beets",
+      "fixture_scale": "medium-project",
+      "objective": "individual_tool_effectiveness",
+      "primary_metric": "cumulative provider-billed workflow tokens",
+      "reset_policy": "Reset once before the session; preserve repository, tool, index, cache, generated config, memory, and agent state between tasks.",
+      "conversion_note": "Executable shared-snapshot workflow: all five Beets controlled regressions apply to commit 8ddae794d30e9984be904f80459614155c6592d9 and can run in one persistent session without repository reset between tasks. Start-state fail/fixed-state pass gates were checked for all five tasks.",
+      "initial_snapshot": {
+        "commit": "8ddae794d30e9984be904f80459614155c6592d9",
+        "upstream": "https://github.com/beetbox/beets.git"
+      },
+      "tasks": [
+        {
+          "id": "beets-pathformats-query-key-regression",
+          "order": 1,
+          "prompt_path": "sources/evaluations/medium-projects/beetbox-beets/tasks/beets-pathformats-query-key-regression/agent-prompt.txt",
+          "verifier_command": "sources/evaluations/medium-projects/beetbox-beets/tasks/beets-pathformats-query-key-regression/verify.sh"
+        },
+        {
+          "id": "beets-hidden-dotfile-regression",
+          "order": 2,
+          "prompt_path": "sources/evaluations/medium-projects/beetbox-beets/tasks/beets-hidden-dotfile-regression/agent-prompt.txt",
+          "verifier_command": "sources/evaluations/medium-projects/beetbox-beets/tasks/beets-hidden-dotfile-regression/verify.sh"
+        },
+        {
+          "id": "beets-color-uncolorize-regression",
+          "order": 3,
+          "prompt_path": "sources/evaluations/medium-projects/beetbox-beets/tasks/beets-color-uncolorize-regression/agent-prompt.txt",
+          "verifier_command": "sources/evaluations/medium-projects/beetbox-beets/tasks/beets-color-uncolorize-regression/verify.sh"
+        },
+        {
+          "id": "beets-human-bytes-boundary-regression",
+          "order": 4,
+          "prompt_path": "sources/evaluations/medium-projects/beetbox-beets/tasks/beets-human-bytes-boundary-regression/agent-prompt.txt",
+          "verifier_command": "sources/evaluations/medium-projects/beetbox-beets/tasks/beets-human-bytes-boundary-regression/verify.sh"
+        },
+        {
+          "id": "beets-template-escape-character-regression",
+          "order": 5,
+          "prompt_path": "sources/evaluations/medium-projects/beetbox-beets/tasks/beets-template-escape-character-regression/agent-prompt.txt",
+          "verifier_command": "sources/evaluations/medium-projects/beetbox-beets/tasks/beets-template-escape-character-regression/verify.sh"
+        }
+      ],
+      "seed_patch_policy": "All five task seed-regression.patch files are controlled regressions with at least five changed production files per task. Supplemental source-invariant checks are allocated outside globally shared core files so ordered workflow seed patches stack cleanly on the shared snapshot.",
+      "complexity_note": "Complexity upgraded 2026-07-08: each task now uses multi-edit seeded regressions across paired Beets utility/config/path/template/pipeline behaviors, with broader pytest/custom verifiers and standalone seeded-fail/fixed-pass gates.",
+      "complexity_bar": "Each task seed patch touches at least five production files; standalone seeded-fail/fixed-pass gates and workflow prepare-only passed after stack-safe allocation."
+    }
+  ]
+}

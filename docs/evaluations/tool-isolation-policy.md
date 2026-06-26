@@ -16,7 +16,9 @@ A run is accepted only if all controls agree:
 
 ## Baseline profile
 
-`baseline-codex-no-mcp` is the Codex substrate baseline. This baseline is not model-only or tool-free: Codex native shell, plain file operations, git, edits, and verifier commands are allowed. It forbids MCP servers, retrieval/compression/memory/token-saving owners, global Codex instructions, hooks, skills/plugins, and warm indexes.
+`baseline-bare-codex` is the current Codex/OpenAI substrate baseline. This baseline is not model-only or tool-free: Codex native shell, plain file operations, git, edits, and verifier commands are allowed. It forbids MCP servers, retrieval/compression/memory/token-saving owners, global Codex instructions, hooks, skills/plugins, and warm indexes.
+
+Agent runtime and model choice are a separate dimension from the tool profile. Current accepted automation is `agent.runtime_id = codex-cli` with OpenAI/Codex usage extraction. A future Claude Opus lane must use its own runtime/model condition, for example `agent.runtime_id = claude-code` plus an Anthropic model condition in `data/evaluation-agent-runtimes.json`; it must not be executed through the Codex runner or merged into Codex/OpenAI tool-effect aggregates.
 
 ## Treatment profile
 
@@ -28,7 +30,7 @@ Installed tools do not contaminate a run merely by existing on disk. They contam
 
 For Codex-based runs, do not uninstall global tools to create a baseline. Instead launch Codex with a fresh lane-specific `CODEX_HOME`:
 
-- `baseline-codex-no-mcp`: minimal config, no MCP servers, no global `AGENTS.md`, no hooks, no skills/plugins, auth symlink only.
+- `baseline-bare-codex`: minimal config, no MCP servers, no global `AGENTS.md`, no hooks, no skills/plugins, auth symlink only.
 - Treatment lanes: generated config intentionally enables only the MCP/tool server declared by the active tool config, with run-local data/cache/index state.
 
 Current concrete tool configs include LeanCTX and CodeGraph; adding another tool requires a new tool-config entry with command, allowed audit terms, optional env/mounts, prompt guidance, and optional warmup hook.

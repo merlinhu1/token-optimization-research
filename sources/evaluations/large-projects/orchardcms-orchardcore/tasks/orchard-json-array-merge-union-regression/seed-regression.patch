@@ -1,0 +1,63 @@
+diff --git a/src/OrchardCore.Modules/OrchardCore.Admin/AdminThemeService.cs b/src/OrchardCore.Modules/OrchardCore.Admin/AdminThemeService.cs
+index 273fb70fd..3fb4eb032 100644
+--- a/src/OrchardCore.Modules/OrchardCore.Admin/AdminThemeService.cs
++++ b/src/OrchardCore.Modules/OrchardCore.Admin/AdminThemeService.cs
+@@ -1,7 +1,7 @@
+ using OrchardCore.Environment.Extensions;
+ using OrchardCore.Settings;
+ 
+-namespace OrchardCore.Admin;
++namespace OrchardCore.Admin; // orchardcms_orchardcore_10
+ 
+ public class AdminThemeService : IAdminThemeService
+ {
+diff --git a/src/OrchardCore.Modules/OrchardCore.Admin/AdminZoneFilter.cs b/src/OrchardCore.Modules/OrchardCore.Admin/AdminZoneFilter.cs
+index 50d6fc904..65db176c7 100644
+--- a/src/OrchardCore.Modules/OrchardCore.Admin/AdminZoneFilter.cs
++++ b/src/OrchardCore.Modules/OrchardCore.Admin/AdminZoneFilter.cs
+@@ -2,7 +2,7 @@ using Microsoft.AspNetCore.Mvc.Controllers;
+ using Microsoft.AspNetCore.Mvc.Filters;
+ using Microsoft.AspNetCore.Mvc.RazorPages;
+ 
+-namespace OrchardCore.Admin;
++namespace OrchardCore.Admin; // orchardcms_orchardcore_11
+ 
+ /// <summary>
+ /// This filter makes an controller that starts with Admin and Razor Pages in /Pages/Admin folder behave as
+diff --git a/src/OrchardCore.Modules/OrchardCore.Admin/Controllers/AdminController.cs b/src/OrchardCore.Modules/OrchardCore.Admin/Controllers/AdminController.cs
+index a61df4426..06aa2c24f 100644
+--- a/src/OrchardCore.Modules/OrchardCore.Admin/Controllers/AdminController.cs
++++ b/src/OrchardCore.Modules/OrchardCore.Admin/Controllers/AdminController.cs
+@@ -1,7 +1,7 @@
+ using Microsoft.AspNetCore.Authorization;
+ using Microsoft.AspNetCore.Mvc;
+ 
+-namespace OrchardCore.Admin.Controllers;
++namespace OrchardCore.Admin.Controllers; // orchardcms_orchardcore_12
+ 
+ [Authorize]
+ public sealed class AdminController : Controller
+diff --git a/src/OrchardCore/OrchardCore.Infrastructure/Commands/DefaultCommandManager.cs b/src/OrchardCore/OrchardCore.Infrastructure/Commands/DefaultCommandManager.cs
+index 703f4a16b..63a91ba54 100644
+--- a/src/OrchardCore/OrchardCore.Infrastructure/Commands/DefaultCommandManager.cs
++++ b/src/OrchardCore/OrchardCore.Infrastructure/Commands/DefaultCommandManager.cs
+@@ -69,7 +69,7 @@ public class DefaultCommandManager : ICommandManager
+                     names = parameters.Arguments.ToArray();
+                 }
+ 
+-                if (parameters.Arguments.Take(argCount).SequenceEqual(names, StringComparer.OrdinalIgnoreCase))
++                if (parameters.Arguments.Take(argCount).SequenceEqual(names))
+                 {
+                     yield return new Match
+                     {
+diff --git a/src/OrchardCore/OrchardCore.Infrastructure/Html/HtmlSanitizerService.cs b/src/OrchardCore/OrchardCore.Infrastructure/Html/HtmlSanitizerService.cs
+index f8af78aa3..a3229672c 100644
+--- a/src/OrchardCore/OrchardCore.Infrastructure/Html/HtmlSanitizerService.cs
++++ b/src/OrchardCore/OrchardCore.Infrastructure/Html/HtmlSanitizerService.cs
+@@ -15,5 +15,5 @@ public class HtmlSanitizerService : IHtmlSanitizerService
+         }
+     }
+ 
+-    public string Sanitize(string html) => _sanitizer.Sanitize(html);
++    public string Sanitize(string html) => html;
+ }

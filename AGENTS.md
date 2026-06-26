@@ -11,7 +11,7 @@ Use the repository evidence-stage model consistently:
 - `lead` — discovery/backlog only; not decision evidence.
 - `source-logic` — minimum decision-bearing stage based on source-code logic inspection.
 - `benchmark-audit` — benchmark harness/tasks/scoring/token accounting/raw outputs inspected.
-- `reproduction` — independent target-workload reproduction with provider-billed accounting and quality gates.
+- `reproduction` — independent continuous target-workload workflow simulation with provider-billed accounting and quality gates.
 
 Use `compatibility-safe` for stack framing; do not reintroduce retired stack-naming terminology.
 

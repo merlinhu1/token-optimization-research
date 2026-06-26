@@ -1,0 +1,13 @@
+You are repairing a multi-symptom regression in this project.
+
+Task: Restore query schema aliases and generic 2xx response serializers.
+
+The repository is already in a broken-start state. Multiple behavior points in the same feature area may be broken. Work only inside the fixture repository. Use the verifier below as the acceptance gate. Prefer the smallest maintainable production-code changes that restore the project behavior. Do not modify tests unless the acceptance test is demonstrably wrong.
+
+Details:
+Schema normalization must support query/querystring aliases while serializer lookup falls back from concrete 2xx responses to the generic 2xx schema.
+
+Verifier:
+node --test test/schema-feature.test.js test/schema-serialization.test.js
+
+Five-file complexity bar: this seeded start state changes at least five production files, and the verifier includes source-invariant checks for every supplemental file-level regression.

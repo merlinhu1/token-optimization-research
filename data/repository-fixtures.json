@@ -65,7 +65,7 @@
         "component-calibration"
       ],
       "candidate_profiles": [
-        "baseline-codex-no-mcp",
+        "baseline-bare-codex",
         "terminal-rtk",
         "terminal-lowfat",
         "terminal-snip",
@@ -115,7 +115,7 @@
         "component-calibration"
       ],
       "candidate_profiles": [
-        "baseline-codex-no-mcp",
+        "baseline-bare-codex",
         "terminal-rtk",
         "terminal-lowfat",
         "terminal-snip",
@@ -163,7 +163,7 @@
         "component-calibration"
       ],
       "candidate_profiles": [
-        "baseline-codex-no-mcp",
+        "baseline-bare-codex",
         "terminal-rtk",
         "terminal-lowfat",
         "terminal-snip",
@@ -261,7 +261,6 @@
         "component-calibration"
       ],
       "candidate_profiles": [
-        "terminal-xcsift",
         "terminal-rtk",
         "terminal-headroom"
       ],
@@ -322,7 +321,7 @@
         "stack-ablation-reproduction"
       ],
       "candidate_profiles": [
-        "baseline-codex-no-mcp",
+        "baseline-bare-codex",
         "retrieval-leanctx",
         "retrieval-serena",
         "terminal-rtk",
@@ -344,7 +343,7 @@
         "django-36492-sqlite-boolean-literal-regression"
       ],
       "active_profiles": [
-        "baseline-codex-no-mcp",
+        "baseline-bare-codex",
         "retrieval-leanctx"
       ]
     },
@@ -397,7 +396,7 @@
         "stack-ablation-reproduction"
       ],
       "candidate_profiles": [
-        "baseline-codex-no-mcp",
+        "baseline-bare-codex",
         "retrieval-leanctx",
         "retrieval-serena",
         "terminal-rtk",
@@ -419,15 +418,236 @@
         "terraform-38739-sensitive-policy-paths-regression"
       ],
       "active_profiles": [
-        "baseline-codex-no-mcp",
+        "baseline-bare-codex",
         "retrieval-leanctx"
       ]
+    },
+    {
+      "id": "large-orchardcms-orchardcore",
+      "status": "qualified-fixture",
+      "fixture_scale": "large-project",
+      "evaluation_use": "primary-candidate",
+      "repository": {
+        "url": "https://github.com/OrchardCMS/OrchardCore",
+        "id": "orchardcms__orchardcore",
+        "github": "OrchardCMS/OrchardCore",
+        "path": "sources/evaluations/large-projects/orchardcms-orchardcore/repo"
+      },
+      "snapshot": {
+        "commit": "91cd8a4bfcaf9cb1388edef6867af2a0b5a0a000",
+        "branch": "detached",
+        "snapshot_policy": "Pinned candidate qualification snapshot materialized by fixture setup.sh; not an active task seed snapshot until five tasks are qualified."
+      },
+      "task_classes": [
+        "multi-file-refactor",
+        "large-codebase-navigation",
+        "build-repair"
+      ],
+      "primary_token_waste_surface": "retrieval-context",
+      "setup": {
+        "command": "sources/evaluations/large-projects/orchardcms-orchardcore/setup.sh"
+      },
+      "reset": {
+        "command": "sources/evaluations/large-projects/orchardcms-orchardcore/reset.sh"
+      },
+      "verifier": {
+        "command": "sources/evaluations/large-projects/orchardcms-orchardcore/verify-smoke.sh"
+      },
+      "prompt": {
+        "prompt_policy": "Write five sanitized model-facing prompts after task mining; do not mark active before prompts and verifiers exist.",
+        "path": "sources/evaluations/large-projects/orchardcms-orchardcore/tasks/README.md"
+      },
+      "artifact_paths": {
+        "root": "sources/evaluations/large-projects/orchardcms-orchardcore/runs/"
+      },
+      "future_evaluation_lanes": [
+        "native-baseline-reproduction",
+        "individual-tool-reproduction",
+        "stack-ablation-reproduction"
+      ],
+      "candidate_profiles": [
+        "baseline-bare-codex",
+        "retrieval-leanctx",
+        "retrieval-serena",
+        "terminal-rtk",
+        "terminal-lowfat",
+        "serena-cavemem-lightweight",
+        "lower-intervention-codegraph"
+      ],
+      "blockers": [
+        "Host .NET SDK is installed under /opt/data/dotnet, but system ICU is missing; scripts use DOTNET_SYSTEM_GLOBALIZATION_INVARIANT=1 for CLI preflight. Full OrchardCore task qualification may require installing ICU or proving targeted tests pass invariant mode."
+      ],
+      "caveats": [
+        "Target matrix replacement for Django, not active objective evidence yet.",
+        "Avoid ASP.NET Core/runtime/Roslyn as too foundational for this slot."
+      ],
+      "tasks": [],
+      "setup_smoke": {
+        "command": "sources/evaluations/large-projects/orchardcms-orchardcore/verify-smoke.sh",
+        "evidence": "sources/evaluations/large-projects/orchardcms-orchardcore/runs/setup-smoke-20260708/verify-smoke.log",
+        "setup_evidence": "sources/evaluations/large-projects/orchardcms-orchardcore/runs/setup-smoke-20260708/setup.log",
+        "result": "passed",
+        "notes": "dotnet 10.0.200 installed under /opt/data/dotnet; smoke lists OrchardCore.Tests test cases under DOTNET_SYSTEM_GLOBALIZATION_INVARIANT=1."
+      },
+      "qualification_status": "active-reproduction-flow",
+      "workflow_sequence_id": "orchardcore-maintenance-sequence-v1",
+      "qualification_evidence": "All five task seed patches apply to the shared snapshot; standalone seeded-start fail and fixed-state pass verifier gates were run for every task."
+    },
+    {
+      "id": "medium-fastify-fastify",
+      "status": "qualified-fixture",
+      "fixture_scale": "medium-project",
+      "evaluation_use": "primary-candidate",
+      "repository": {
+        "url": "https://github.com/fastify/fastify",
+        "id": "fastify__fastify",
+        "github": "fastify/fastify",
+        "path": "sources/evaluations/medium-projects/fastify-fastify/repo"
+      },
+      "snapshot": {
+        "commit": "94bcbcc6e2ef3b8e8f8e8797fe551ccbe7b942fd",
+        "branch": "detached",
+        "snapshot_policy": "Pinned candidate qualification snapshot materialized by fixture setup.sh; not an active task seed snapshot until five tasks are qualified."
+      },
+      "task_classes": [
+        "multi-file-refactor",
+        "large-codebase-navigation",
+        "build-repair"
+      ],
+      "primary_token_waste_surface": "retrieval-context",
+      "setup": {
+        "command": "sources/evaluations/medium-projects/fastify-fastify/setup.sh"
+      },
+      "reset": {
+        "command": "sources/evaluations/medium-projects/fastify-fastify/reset.sh"
+      },
+      "verifier": {
+        "command": "sources/evaluations/medium-projects/fastify-fastify/verify-smoke.sh"
+      },
+      "prompt": {
+        "prompt_policy": "Write five sanitized model-facing prompts after task mining; do not mark active before prompts and verifiers exist.",
+        "path": "sources/evaluations/medium-projects/fastify-fastify/tasks/README.md"
+      },
+      "artifact_paths": {
+        "root": "sources/evaluations/medium-projects/fastify-fastify/runs/"
+      },
+      "future_evaluation_lanes": [
+        "native-baseline-reproduction",
+        "individual-tool-reproduction",
+        "stack-ablation-reproduction"
+      ],
+      "candidate_profiles": [
+        "baseline-bare-codex",
+        "retrieval-leanctx",
+        "retrieval-serena",
+        "terminal-rtk",
+        "terminal-lowfat",
+        "serena-cavemem-lightweight",
+        "lower-intervention-codegraph"
+      ],
+      "blockers": [],
+      "caveats": [
+        "Target matrix replacement for Flask, not active objective evidence yet."
+      ],
+      "tasks": [
+        "fastify-route-schema-regression",
+        "fastify-plugin-lifecycle-regression",
+        "fastify-reply-serialization-regression",
+        "fastify-hook-order-regression",
+        "fastify-error-handler-regression"
+      ],
+      "setup_smoke": {
+        "command": "sources/evaluations/medium-projects/fastify-fastify/verify-smoke.sh",
+        "evidence": "sources/evaluations/medium-projects/fastify-fastify/runs/setup-smoke-20260708/verify-smoke.log",
+        "setup_evidence": "sources/evaluations/medium-projects/fastify-fastify/runs/setup-smoke-20260708/setup.log",
+        "result": "passed",
+        "notes": "npm install completed; direct node --test smoke passed 27 schema-validation tests."
+      },
+      "qualification_status": "active-reproduction-flow",
+      "workflow_sequence_id": "fastify-maintenance-sequence-v1",
+      "qualification_evidence": "All five task seed patches apply to the shared snapshot; standalone seeded-start fail and fixed-state pass verifier gates were run for every task."
+    },
+    {
+      "id": "medium-beetbox-beets",
+      "status": "qualified-fixture",
+      "fixture_scale": "medium-project",
+      "evaluation_use": "primary-candidate",
+      "repository": {
+        "url": "https://github.com/beetbox/beets",
+        "id": "beetbox__beets",
+        "github": "beetbox/beets",
+        "path": "sources/evaluations/medium-projects/beetbox-beets/repo"
+      },
+      "snapshot": {
+        "commit": "8ddae794d30e9984be904f80459614155c6592d9",
+        "branch": "detached",
+        "snapshot_policy": "Pinned candidate qualification snapshot materialized by fixture setup.sh; not an active task seed snapshot until five tasks are qualified."
+      },
+      "task_classes": [
+        "multi-file-refactor",
+        "large-codebase-navigation",
+        "build-repair"
+      ],
+      "primary_token_waste_surface": "retrieval-context",
+      "setup": {
+        "command": "sources/evaluations/medium-projects/beetbox-beets/setup.sh"
+      },
+      "reset": {
+        "command": "sources/evaluations/medium-projects/beetbox-beets/reset.sh"
+      },
+      "verifier": {
+        "command": "sources/evaluations/medium-projects/beetbox-beets/verify-smoke.sh"
+      },
+      "prompt": {
+        "prompt_policy": "Write five sanitized model-facing prompts after task mining; do not mark active before prompts and verifiers exist.",
+        "path": "sources/evaluations/medium-projects/beetbox-beets/tasks/README.md"
+      },
+      "artifact_paths": {
+        "root": "sources/evaluations/medium-projects/beetbox-beets/runs/"
+      },
+      "future_evaluation_lanes": [
+        "native-baseline-reproduction",
+        "individual-tool-reproduction",
+        "stack-ablation-reproduction"
+      ],
+      "candidate_profiles": [
+        "baseline-bare-codex",
+        "retrieval-leanctx",
+        "retrieval-serena",
+        "terminal-rtk",
+        "terminal-lowfat",
+        "serena-cavemem-lightweight",
+        "lower-intervention-codegraph"
+      ],
+      "blockers": [],
+      "caveats": [
+        "Target matrix replacement for Requests, not active objective evidence yet.",
+        "Chosen to avoid foundational Python ecosystem projects."
+      ],
+      "tasks": [
+        "beets-cli-option-regression",
+        "beets-plugin-dispatch-regression",
+        "beets-metadata-normalization-regression",
+        "beets-import-state-regression",
+        "beets-query-filter-regression"
+      ],
+      "setup_smoke": {
+        "command": "sources/evaluations/medium-projects/beetbox-beets/verify-smoke.sh",
+        "evidence": "sources/evaluations/medium-projects/beetbox-beets/runs/setup-smoke-20260708/verify-smoke.log",
+        "setup_evidence": "sources/evaluations/medium-projects/beetbox-beets/runs/setup-smoke-20260708/setup.log",
+        "result": "passed",
+        "notes": "uv sync --group test completed; pytest smoke passed test/util/test_pathformats.py."
+      },
+      "qualification_status": "active-reproduction-flow",
+      "workflow_sequence_id": "beets-maintenance-sequence-v1",
+      "qualification_evidence": "All five task seed patches apply to the shared snapshot; standalone seeded-start fail and fixed-state pass verifier gates were run for every task."
     }
   ],
   "fixture_scales": [
     "synthetic-micro",
     "recorded-diagnostic",
-    "large-project"
+    "large-project",
+    "medium-project"
   ],
   "evaluation_uses": [
     "calibration",
@@ -436,8 +656,8 @@
     "primary-objective"
   ],
   "complex_project_policy": {
-    "primary_objective_claims_require": "large-project fixture_scale and reproduction evidence with provider-billed usage when available",
+    "primary_objective_claims_require": "large-project or medium-project fixture_scale and reproduction evidence with provider-billed usage when available; aggregate claims must stratify by fixture scale.",
     "small_fixture_use": "Retained synthetic/recorded fixtures are only calibration, diagnostic-preservation, or tool sanity-check evidence; they do not support primary objective claims about complex-project software engineering tasks.",
-    "candidate_selection": "Use the two first-wave public large fixtures, Django and Terraform. Do not use user-owned projects as primary fixtures unless explicitly requested."
+    "candidate_selection": "Target default four-flow matrix is large C# OrchardCore, large Go Terraform, medium TS/JS Fastify, and medium Python Beets. Existing Django, Flask, and Requests fixtures remain historical/qualified evidence until replacement task sequences are fully qualified; do not present replacement candidates as active reproduction flows before five prompts, seed regressions, and bounded verifiers exist."
   }
 }
