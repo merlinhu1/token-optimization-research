@@ -1,6 +1,6 @@
 # Sequential workflow runner manual
 
-This page is the human rerun recipe for continuous workflow evaluations.
+This page documents runner details. The maintained operator runbook is `docs/evaluations/workflow-evaluation-runbook.md`, rendered from the active workflow registries.
 
 ## What this runner does
 
@@ -45,15 +45,15 @@ Use this only to verify fixture construction, prompt sanitization, and seed-orig
 
 ```bash
 python3 scripts/run_codex_workflow_evaluation.py \
-  --sequence-id requests-maintenance-sequence-v1 \
+  --sequence-id terraform-maintenance-sequence-v1 \
   --profile-id baseline-bare-codex \
   --prepare-only \
   --skip-container-preflight \
   --skip-codex-preflight \
   --skip-dependency-install \
-  --session-id smoke-requests-sequential-runner
+  --session-id smoke-terraform-sequential-runner
 
-rm -rf sources/evaluations/workflow-sessions/smoke-requests-sequential-runner
+rm -rf sources/evaluations/workflow-sessions/smoke-terraform-sequential-runner
 ```
 
 Expected smoke properties:
@@ -68,7 +68,7 @@ Expected smoke properties:
 
 ```bash
 python3 scripts/run_codex_workflow_evaluation.py \
-  --sequence-id requests-maintenance-sequence-v1 \
+  --sequence-id terraform-maintenance-sequence-v1 \
   --profile-id baseline-bare-codex \
   --timeout-per-task 1800
 ```
@@ -77,7 +77,7 @@ Treatment lane:
 
 ```bash
 python3 scripts/run_codex_workflow_evaluation.py \
-  --sequence-id requests-maintenance-sequence-v1 \
+  --sequence-id terraform-maintenance-sequence-v1 \
   --profile-id retrieval-leanctx \
   --timeout-per-task 1800
 ```
@@ -87,14 +87,14 @@ python3 scripts/run_codex_workflow_evaluation.py \
 Preferred human rerun command:
 
 ```bash
-scripts/run_sequential_workflow_pair.sh requests-maintenance-sequence-v1
+scripts/run_sequential_workflow_pair.sh terraform-maintenance-sequence-v1
 ```
 
 With a different replicate or timeout:
 
 ```bash
 REPLICATE_INDEX=1 scripts/run_sequential_workflow_pair.sh \
-  flask-maintenance-sequence-v1 \
+  beets-maintenance-sequence-v1 \
   --timeout-per-task 2400
 ```
 
@@ -126,8 +126,8 @@ Smoke the parallel wrapper without model spend:
 
 ```bash
 scripts/run_sequential_workflow_matrix.py \
-  requests-maintenance-sequence-v1 \
-  flask-maintenance-sequence-v1 \
+  terraform-maintenance-sequence-v1 \
+  beets-maintenance-sequence-v1 \
   --max-parallel 2 \
   --prepare-only \
   --skip-container-preflight \
@@ -139,8 +139,8 @@ Run a real subset:
 
 ```bash
 scripts/run_sequential_workflow_matrix.py \
-  requests-maintenance-sequence-v1 \
-  flask-maintenance-sequence-v1 \
+  terraform-maintenance-sequence-v1 \
+  beets-maintenance-sequence-v1 \
   --max-parallel 2
 ```
 
@@ -154,12 +154,12 @@ Check live IDs with:
 python3 scripts/run_codex_workflow_evaluation.py --list-sequences
 ```
 
-Current active sequences are expected to include:
+Current active sequences are maintained in `docs/evaluations/workflow-evaluation-runbook.md` and are expected to include:
 
-- `django-maintenance-sequence-v1`
 - `terraform-maintenance-sequence-v1`
-- `requests-maintenance-sequence-v1`
-- `flask-maintenance-sequence-v1`
+- `orchardcore-maintenance-sequence-v1`
+- `fastify-maintenance-sequence-v1`
+- `beets-maintenance-sequence-v1`
 
 ## Artifacts to inspect
 
