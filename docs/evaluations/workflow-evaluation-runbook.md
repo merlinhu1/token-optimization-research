@@ -140,11 +140,11 @@ scripts/run_sequential_workflow_matrix.py \
 
 | Order | Task | Prompt | Verifier |
 |---:|---|---|---|
-| 1 | `terraform-38739-sensitive-policy-paths-regression` | `sources/evaluations/large-projects/hashicorp-terraform/tasks/terraform-38739-sensitive-policy-paths-regression/agent-prompt.txt` | `sources/evaluations/large-projects/hashicorp-terraform/tasks/terraform-38739-sensitive-policy-paths-regression/verify.sh` |
-| 2 | `terraform-38745-config-parser-concurrency-regression` | `sources/evaluations/large-projects/hashicorp-terraform/tasks/terraform-38745-config-parser-concurrency-regression/agent-prompt.txt` | `sources/evaluations/large-projects/hashicorp-terraform/tasks/terraform-38745-config-parser-concurrency-regression/verify.sh` |
-| 3 | `terraform-38747-config-loader-watchstop-race-regression` | `sources/evaluations/large-projects/hashicorp-terraform/tasks/terraform-38747-config-loader-watchstop-race-regression/agent-prompt.txt` | `sources/evaluations/large-projects/hashicorp-terraform/tasks/terraform-38747-config-loader-watchstop-race-regression/verify.sh` |
-| 4 | `terraform-38775-policy-state-close-order-regression` | `sources/evaluations/large-projects/hashicorp-terraform/tasks/terraform-38775-policy-state-close-order-regression/agent-prompt.txt` | `sources/evaluations/large-projects/hashicorp-terraform/tasks/terraform-38775-policy-state-close-order-regression/verify.sh` |
-| 5 | `terraform-38781-policy-callback-deferred-resources-regression` | `sources/evaluations/large-projects/hashicorp-terraform/tasks/terraform-38781-policy-callback-deferred-resources-regression/agent-prompt.txt` | `sources/evaluations/large-projects/hashicorp-terraform/tasks/terraform-38781-policy-callback-deferred-resources-regression/verify.sh` |
+| 1 | `terraform-38739-sensitive-policy-paths-regression` | `sources/evaluations/fixtures/large/hashicorp-terraform/tasks/terraform-38739-sensitive-policy-paths-regression/agent-prompt.txt` | `sources/evaluations/fixtures/large/hashicorp-terraform/tasks/terraform-38739-sensitive-policy-paths-regression/verify.sh` |
+| 2 | `terraform-38745-config-parser-concurrency-regression` | `sources/evaluations/fixtures/large/hashicorp-terraform/tasks/terraform-38745-config-parser-concurrency-regression/agent-prompt.txt` | `sources/evaluations/fixtures/large/hashicorp-terraform/tasks/terraform-38745-config-parser-concurrency-regression/verify.sh` |
+| 3 | `terraform-38747-config-loader-watchstop-race-regression` | `sources/evaluations/fixtures/large/hashicorp-terraform/tasks/terraform-38747-config-loader-watchstop-race-regression/agent-prompt.txt` | `sources/evaluations/fixtures/large/hashicorp-terraform/tasks/terraform-38747-config-loader-watchstop-race-regression/verify.sh` |
+| 4 | `terraform-38775-policy-state-close-order-regression` | `sources/evaluations/fixtures/large/hashicorp-terraform/tasks/terraform-38775-policy-state-close-order-regression/agent-prompt.txt` | `sources/evaluations/fixtures/large/hashicorp-terraform/tasks/terraform-38775-policy-state-close-order-regression/verify.sh` |
+| 5 | `terraform-38781-policy-callback-deferred-resources-regression` | `sources/evaluations/fixtures/large/hashicorp-terraform/tasks/terraform-38781-policy-callback-deferred-resources-regression/agent-prompt.txt` | `sources/evaluations/fixtures/large/hashicorp-terraform/tasks/terraform-38781-policy-callback-deferred-resources-regression/verify.sh` |
 
 ### `orchardcore-maintenance-sequence-v1`
 
@@ -154,11 +154,11 @@ scripts/run_sequential_workflow_matrix.py \
 
 | Order | Task | Prompt | Verifier |
 |---:|---|---|---|
-| 1 | `orchard-base64-string-decode-regression` | `sources/evaluations/large-projects/orchardcms-orchardcore/tasks/orchard-base64-string-decode-regression/agent-prompt.txt` | `sources/evaluations/large-projects/orchardcms-orchardcore/tasks/orchard-base64-string-decode-regression/verify.sh` |
-| 2 | `orchard-base64-stream-position-regression` | `sources/evaluations/large-projects/orchardcms-orchardcore/tasks/orchard-base64-stream-position-regression/agent-prompt.txt` | `sources/evaluations/large-projects/orchardcms-orchardcore/tasks/orchard-base64-stream-position-regression/verify.sh` |
-| 3 | `orchard-email-address-validation-regression` | `sources/evaluations/large-projects/orchardcms-orchardcore/tasks/orchard-email-address-validation-regression/agent-prompt.txt` | `sources/evaluations/large-projects/orchardcms-orchardcore/tasks/orchard-email-address-validation-regression/verify.sh` |
-| 4 | `orchard-json-array-merge-union-regression` | `sources/evaluations/large-projects/orchardcms-orchardcore/tasks/orchard-json-array-merge-union-regression/agent-prompt.txt` | `sources/evaluations/large-projects/orchardcms-orchardcore/tasks/orchard-json-array-merge-union-regression/verify.sh` |
-| 5 | `orchard-result-success-state-regression` | `sources/evaluations/large-projects/orchardcms-orchardcore/tasks/orchard-result-success-state-regression/agent-prompt.txt` | `sources/evaluations/large-projects/orchardcms-orchardcore/tasks/orchard-result-success-state-regression/verify.sh` |
+| 1 | `orchard-base64-string-decode-regression` | `sources/evaluations/fixtures/large/orchardcms-orchardcore/tasks/orchard-base64-string-decode-regression/agent-prompt.txt` | `sources/evaluations/fixtures/large/orchardcms-orchardcore/tasks/orchard-base64-string-decode-regression/verify.sh` |
+| 2 | `orchard-base64-stream-position-regression` | `sources/evaluations/fixtures/large/orchardcms-orchardcore/tasks/orchard-base64-stream-position-regression/agent-prompt.txt` | `sources/evaluations/fixtures/large/orchardcms-orchardcore/tasks/orchard-base64-stream-position-regression/verify.sh` |
+| 3 | `orchard-email-address-validation-regression` | `sources/evaluations/fixtures/large/orchardcms-orchardcore/tasks/orchard-email-address-validation-regression/agent-prompt.txt` | `sources/evaluations/fixtures/large/orchardcms-orchardcore/tasks/orchard-email-address-validation-regression/verify.sh` |
+| 4 | `orchard-json-array-merge-union-regression` | `sources/evaluations/fixtures/large/orchardcms-orchardcore/tasks/orchard-json-array-merge-union-regression/agent-prompt.txt` | `sources/evaluations/fixtures/large/orchardcms-orchardcore/tasks/orchard-json-array-merge-union-regression/verify.sh` |
+| 5 | `orchard-result-success-state-regression` | `sources/evaluations/fixtures/large/orchardcms-orchardcore/tasks/orchard-result-success-state-regression/agent-prompt.txt` | `sources/evaluations/fixtures/large/orchardcms-orchardcore/tasks/orchard-result-success-state-regression/verify.sh` |
 
 ### `fastify-maintenance-sequence-v1`
 
@@ -168,11 +168,11 @@ scripts/run_sequential_workflow_matrix.py \
 
 | Order | Task | Prompt | Verifier |
 |---:|---|---|---|
-| 1 | `fastify-query-schema-alias-regression` | `sources/evaluations/medium-projects/fastify-fastify/tasks/fastify-query-schema-alias-regression/agent-prompt.txt` | `sources/evaluations/medium-projects/fastify-fastify/tasks/fastify-query-schema-alias-regression/verify.sh` |
-| 2 | `fastify-response-2xx-serializer-regression` | `sources/evaluations/medium-projects/fastify-fastify/tasks/fastify-response-2xx-serializer-regression/agent-prompt.txt` | `sources/evaluations/medium-projects/fastify-fastify/tasks/fastify-response-2xx-serializer-regression/verify.sh` |
-| 3 | `fastify-trust-proxy-last-header-regression` | `sources/evaluations/medium-projects/fastify-fastify/tasks/fastify-trust-proxy-last-header-regression/agent-prompt.txt` | `sources/evaluations/medium-projects/fastify-fastify/tasks/fastify-trust-proxy-last-header-regression/verify.sh` |
-| 4 | `fastify-has-route-method-case-regression` | `sources/evaluations/medium-projects/fastify-fastify/tasks/fastify-has-route-method-case-regression/agent-prompt.txt` | `sources/evaluations/medium-projects/fastify-fastify/tasks/fastify-has-route-method-case-regression/verify.sh` |
-| 5 | `fastify-reply-hijack-state-regression` | `sources/evaluations/medium-projects/fastify-fastify/tasks/fastify-reply-hijack-state-regression/agent-prompt.txt` | `sources/evaluations/medium-projects/fastify-fastify/tasks/fastify-reply-hijack-state-regression/verify.sh` |
+| 1 | `fastify-query-schema-alias-regression` | `sources/evaluations/fixtures/medium/fastify-fastify/tasks/fastify-query-schema-alias-regression/agent-prompt.txt` | `sources/evaluations/fixtures/medium/fastify-fastify/tasks/fastify-query-schema-alias-regression/verify.sh` |
+| 2 | `fastify-response-2xx-serializer-regression` | `sources/evaluations/fixtures/medium/fastify-fastify/tasks/fastify-response-2xx-serializer-regression/agent-prompt.txt` | `sources/evaluations/fixtures/medium/fastify-fastify/tasks/fastify-response-2xx-serializer-regression/verify.sh` |
+| 3 | `fastify-trust-proxy-last-header-regression` | `sources/evaluations/fixtures/medium/fastify-fastify/tasks/fastify-trust-proxy-last-header-regression/agent-prompt.txt` | `sources/evaluations/fixtures/medium/fastify-fastify/tasks/fastify-trust-proxy-last-header-regression/verify.sh` |
+| 4 | `fastify-has-route-method-case-regression` | `sources/evaluations/fixtures/medium/fastify-fastify/tasks/fastify-has-route-method-case-regression/agent-prompt.txt` | `sources/evaluations/fixtures/medium/fastify-fastify/tasks/fastify-has-route-method-case-regression/verify.sh` |
+| 5 | `fastify-reply-hijack-state-regression` | `sources/evaluations/fixtures/medium/fastify-fastify/tasks/fastify-reply-hijack-state-regression/agent-prompt.txt` | `sources/evaluations/fixtures/medium/fastify-fastify/tasks/fastify-reply-hijack-state-regression/verify.sh` |
 
 ### `beets-maintenance-sequence-v1`
 
@@ -182,11 +182,11 @@ scripts/run_sequential_workflow_matrix.py \
 
 | Order | Task | Prompt | Verifier |
 |---:|---|---|---|
-| 1 | `beets-pathformats-query-key-regression` | `sources/evaluations/medium-projects/beetbox-beets/tasks/beets-pathformats-query-key-regression/agent-prompt.txt` | `sources/evaluations/medium-projects/beetbox-beets/tasks/beets-pathformats-query-key-regression/verify.sh` |
-| 2 | `beets-hidden-dotfile-regression` | `sources/evaluations/medium-projects/beetbox-beets/tasks/beets-hidden-dotfile-regression/agent-prompt.txt` | `sources/evaluations/medium-projects/beetbox-beets/tasks/beets-hidden-dotfile-regression/verify.sh` |
-| 3 | `beets-color-uncolorize-regression` | `sources/evaluations/medium-projects/beetbox-beets/tasks/beets-color-uncolorize-regression/agent-prompt.txt` | `sources/evaluations/medium-projects/beetbox-beets/tasks/beets-color-uncolorize-regression/verify.sh` |
-| 4 | `beets-human-bytes-boundary-regression` | `sources/evaluations/medium-projects/beetbox-beets/tasks/beets-human-bytes-boundary-regression/agent-prompt.txt` | `sources/evaluations/medium-projects/beetbox-beets/tasks/beets-human-bytes-boundary-regression/verify.sh` |
-| 5 | `beets-template-escape-character-regression` | `sources/evaluations/medium-projects/beetbox-beets/tasks/beets-template-escape-character-regression/agent-prompt.txt` | `sources/evaluations/medium-projects/beetbox-beets/tasks/beets-template-escape-character-regression/verify.sh` |
+| 1 | `beets-pathformats-query-key-regression` | `sources/evaluations/fixtures/medium/beetbox-beets/tasks/beets-pathformats-query-key-regression/agent-prompt.txt` | `sources/evaluations/fixtures/medium/beetbox-beets/tasks/beets-pathformats-query-key-regression/verify.sh` |
+| 2 | `beets-hidden-dotfile-regression` | `sources/evaluations/fixtures/medium/beetbox-beets/tasks/beets-hidden-dotfile-regression/agent-prompt.txt` | `sources/evaluations/fixtures/medium/beetbox-beets/tasks/beets-hidden-dotfile-regression/verify.sh` |
+| 3 | `beets-color-uncolorize-regression` | `sources/evaluations/fixtures/medium/beetbox-beets/tasks/beets-color-uncolorize-regression/agent-prompt.txt` | `sources/evaluations/fixtures/medium/beetbox-beets/tasks/beets-color-uncolorize-regression/verify.sh` |
+| 4 | `beets-human-bytes-boundary-regression` | `sources/evaluations/fixtures/medium/beetbox-beets/tasks/beets-human-bytes-boundary-regression/agent-prompt.txt` | `sources/evaluations/fixtures/medium/beetbox-beets/tasks/beets-human-bytes-boundary-regression/verify.sh` |
+| 5 | `beets-template-escape-character-regression` | `sources/evaluations/fixtures/medium/beetbox-beets/tasks/beets-template-escape-character-regression/agent-prompt.txt` | `sources/evaluations/fixtures/medium/beetbox-beets/tasks/beets-template-escape-character-regression/verify.sh` |
 
 ## Artifact contract
 

@@ -8,10 +8,22 @@ The compact registry is canonical for machine validation:
 data/repository-fixtures.json
 ```
 
+Active task sequences are canonical in:
+
+```text
+data/workflow-task-sequences.json
+```
+
 Use `templates/repository-fixture.md` for detailed fixture notes.
 
-Future progressive evaluation changes should reference fixture IDs from the registry in their `proposal.md` and `protocol.md`. Raw transcripts, provider usage, verifier output, environment records, and quality reviews belong under `sources/evaluations/<evaluation-id>/`, not in this directory.
+Raw fixture source material lives under `sources/evaluations/fixtures/`.
 
-The old generated calibration corpus under `sources/evaluations/fixture-corpus/v1/` is retired. The maintained evaluation architecture is the four-workflow matrix defined by `data/workflow-task-sequences.json`, `data/repository-fixtures.json`, and the workflow runner docs.
+Archived historical fixture evidence lives under `sources/evaluations/archive/` and is not active workflow architecture.
+
+Workflow-session evidence belongs under `sources/evaluations/workflow-sessions/<session-id>/` using the compact four-file artifact contract.
+
+The old generated calibration corpus under `sources/evaluations/fixture-corpus/v1/` is retired.
+
+The old hand-maintained Phase 2 experiment suite under `sources/evaluations/phase-2-experiment-suite-v1/` is retired.
 
 Fixture status is repository readiness only. It does not promote any tool or compatibility-safe stack to `benchmark-audit` or `reproduction`.

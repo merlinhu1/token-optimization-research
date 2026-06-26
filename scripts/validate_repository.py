@@ -36,8 +36,8 @@ TRUTHMARK_ARTIFACTS = [
 
 REQUIRED_PATHS = [
     "README.md",
-    "METHODOLOGY.md",
-    "RESEARCH_ROADMAP.md",
+    "docs/methodology/README.md",
+    "docs/research/roadmap.md",
     "data/repositories.json",
     "data/techniques.json",
     "data/compatibility-edges.json",
@@ -51,7 +51,6 @@ REQUIRED_PATHS = [
     "data/medium-project-candidates.json",
     "data/repository-fixtures.json",
     "data/tool-analysis-backlog.json",
-    "docs/architecture.md",
     "docs/architecture/README.md",
     "docs/architecture/research-system.md",
     "docs/architecture/domain-model.md",
@@ -60,6 +59,7 @@ REQUIRED_PATHS = [
     "docs/architecture/repository-layout.md",
     "docs/architecture/decision-records/0001-research-kernel.md",
     "docs/taxonomy/compatibility-taxonomy.md",
+    "docs/evaluations/README.md",
     "docs/evaluations/evaluation-framework.md",
     "docs/evaluations/fixtures/README.md",
     "docs/evaluations/token-usage-and-quality-standards.md",
@@ -103,6 +103,7 @@ REQUIRED_PATHS = [
     "docs/tool-dossiers/edouard-claude-snip.md",
     "docs/tool-dossiers/portofcontext-pctx.md",
     "docs/tool-dossiers/agentforce314-clawcodex.md",
+    "sources/evaluations/README.md",
     "sources/discovery/2026-06-26-five-more-tool-source-structures.json",
     "sources/discovery/2026-06-26-five-more-tool-code-inspection.json",
     "sources/discovery/2026-06-26-eight-more-tool-source-structures.json",
@@ -846,7 +847,7 @@ def main() -> int:
             errors.append(f"backlog item {item.get('tool')} lacks a dossier but is not lead-stage")
 
     active_text_paths = [
-        ROOT / "METHODOLOGY.md",
+        ROOT / "docs/methodology/README.md",
         ROOT / "docs/research/tool-research-strategy.md",
         ROOT / "docs/tool-dossiers/README.md",
         ROOT / "docs/reports/phase-1-compatibility-safe-token-saving-stacks.md",
