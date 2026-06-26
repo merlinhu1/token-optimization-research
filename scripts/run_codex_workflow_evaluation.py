@@ -565,6 +565,32 @@ def redact_auth_sync(run_dir: Path) -> None:
     redact_json_file(run_dir / "codex-home-manifest.json", {"source_auth_home"})
 
 
+def sync_copied_codex_auth_back(codex_home: Path, source_home: Path, run_dir: Path, stage: str) -> None:
+    """Persist refreshed copied Codex auth from the ephemeral Docker home.
+
+    Docker runs copy auth into the run-local Codex home instead of mounting the
+    controller account home. Codex may refresh that file during preflight or task
+    execution, so copy it back and leave only a redacted sync audit event.
+    """
+    auths = fixture.auth_candidates(source_home)
+    if not auths:
+        return
+    source_auth = auths[0]
+    copied_auth = codex_home / source_auth.name
+    event = {
+        "stage": stage,
+        "source_home": str(source_auth.parent),
+        "auth_link_name": source_auth.name,
+        "synced": False,
+    }
+    if copied_auth.exists():
+        shutil.copy2(copied_auth, source_auth)
+        os.chmod(source_auth, 0o600)
+        event["synced"] = True
+    with (run_dir / "codex-auth-sync.jsonl").open("a") as out:
+        out.write(json.dumps(event) + "\n")
+
+
 def remove_ephemeral_homes(run_dir: Path) -> None:
     for name in ["codex-homes"]:
         path = run_dir / name
@@ -789,7 +815,7 @@ def run_one(args: argparse.Namespace) -> dict[str, Any]:
             return {"session_id": session_id, "profile_id": profile_id, "accepted": False, "stage": "container-preflight", "run_dir": rel(run_dir), "container_preflight": container_preflight}
     if not args.skip_codex_preflight:
         preflight = fixture.preflight_codex(record, codex_home, profile_id, run_dir, backend="docker", docker_image=args.docker_image)
-        fixture.sync_copied_codex_auth_back(codex_home, args.source_codex_home, run_dir, "after-preflight")
+        sync_copied_codex_auth_back(codex_home, args.source_codex_home, run_dir, "after-preflight")
         redact_auth_sync(run_dir)
         if not preflight.get("passed"):
             return {"session_id": session_id, "profile_id": profile_id, "accepted": False, "stage": "codex-preflight", "run_dir": rel(run_dir), "preflight": preflight}
@@ -819,7 +845,7 @@ def run_one(args: argparse.Namespace) -> dict[str, Any]:
         last_message_path = run_dir / f"task-{order:02d}-codex-last-message.txt"
         code, thread_id = run_codex_task(record, profile_id, codex_home, run_dir, args.docker_image, prompt_path, events_path, last_message_path, timeout=args.timeout_per_task, thread_id=thread_id)
         codex_exit_codes.append(code)
-        fixture.sync_copied_codex_auth_back(codex_home, args.source_codex_home, run_dir, f"after-task-{order:02d}")
+        sync_copied_codex_auth_back(codex_home, args.source_codex_home, run_dir, f"after-task-{order:02d}")
         redact_auth_sync(run_dir)
         if code != 0:
             break
