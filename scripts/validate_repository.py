@@ -4,9 +4,35 @@ from __future__ import annotations
 
 import json
 import re
+import subprocess
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
+
+LOCAL_SKILL_ARTIFACTS = [
+    "AGENTS.md",
+    ".agents/skills/index.md",
+    ".agents/skills/benchmark-protocol-writer.md",
+    ".agents/skills/claim-evidence-auditor.md",
+    ".agents/skills/stack-ablation-planner.md",
+    ".agents/skills/practical-software-quality-reviewer.md",
+    ".agents/skills/scientific-report-reviewer.md",
+    ".agents/skills/citation-light-prior-art-mapper.md",
+    ".agents/skills/figure-table-planner.md",
+]
+
+TRUTHMARK_ARTIFACTS = [
+    ".truthmark/config.yml",
+    "docs/truthmark/routes/areas.md",
+    "docs/truthmark/routes/areas/research.md",
+    "docs/truthmark/engineering/research/evidence-stages.md",
+    "docs/truthmark/engineering/research/methodology.md",
+    "docs/truthmark/engineering/research/token-accounting.md",
+    "docs/truthmark/engineering/research/software-quality-gates.md",
+    "docs/truthmark/engineering/research/stack-compatibility.md",
+    "docs/truthmark/engineering/research/current-findings.md",
+    "docs/truthmark/engineering/research/agent-workflow.md",
+]
 
 REQUIRED_PATHS = [
     "README.md",
@@ -28,11 +54,15 @@ REQUIRED_PATHS = [
     "docs/architecture/decision-records/0001-research-kernel.md",
     "docs/taxonomy/compatibility-taxonomy.md",
     "docs/evaluations/evaluation-framework.md",
+    "docs/evaluations/token-usage-and-quality-standards.md",
+    "docs/evaluations/phase-2-benchmark-plan.md",
+    "docs/evaluations/immediately-usable-flows.md",
     "docs/literature/literature-review.md",
     "docs/paper/research-paper-outline.md",
     "docs/reports/phase-1-compatibility-safe-token-saving-stacks.md",
     "docs/standards/research-standards.md",
     "docs/research/tool-research-strategy.md",
+    "docs/research/report-writing-and-methodology-skill-patterns.md",
     "docs/tool-dossiers/README.md",
     "docs/tool-dossiers/rtk-ai-rtk.md",
     "docs/tool-dossiers/colbymchenry-codegraph.md",
@@ -76,6 +106,8 @@ REQUIRED_PATHS = [
     "templates/technique-entry.md",
     "templates/claim-entry.md",
     "templates/evaluation-record.md",
+    "templates/evaluation-task.md",
+    "templates/evaluation-run-record.json",
     "templates/report.md",
     "templates/tool-dossier.md",
     "prompts/researcher.md",
@@ -96,6 +128,35 @@ SURFACE_IDS = {
 }
 
 
+def run_truthmark(command: str, errors: list[str]) -> None:
+    try:
+        result = subprocess.run(
+            ["truthmark", command, "--json"],
+            cwd=ROOT,
+            text=True,
+            capture_output=True,
+            check=False,
+        )
+    except FileNotFoundError:
+        errors.append("truthmark CLI is required for repository validation")
+        return
+    if result.returncode not in (0, 1):
+        errors.append(f"truthmark {command} failed to run: {result.stderr.strip() or result.stdout.strip()}")
+        return
+    try:
+        payload = json.loads(result.stdout)
+    except json.JSONDecodeError as exc:
+        errors.append(f"truthmark {command} returned invalid JSON: {exc}")
+        return
+    error_diagnostics = [
+        d for d in payload.get("diagnostics", []) if d.get("severity") == "error"
+    ]
+    for diagnostic in error_diagnostics:
+        errors.append(
+            f"truthmark {command}: {diagnostic.get('file', '<unknown>')}: {diagnostic.get('message', '<no message>')}"
+        )
+
+
 def load_json(rel: str) -> dict:
     path = ROOT / rel
     try:
@@ -106,7 +167,7 @@ def load_json(rel: str) -> dict:
 
 def main() -> int:
     errors: list[str] = []
-    for rel in REQUIRED_PATHS:
+    for rel in REQUIRED_PATHS + LOCAL_SKILL_ARTIFACTS + TRUTHMARK_ARTIFACTS:
         if not (ROOT / rel).exists():
             errors.append(f"missing required path: {rel}")
 
@@ -184,6 +245,11 @@ def main() -> int:
         ROOT / "docs/research/tool-research-strategy.md",
         ROOT / "docs/tool-dossiers/README.md",
         ROOT / "docs/reports/phase-1-compatibility-safe-token-saving-stacks.md",
+        ROOT / "docs/evaluations/evaluation-framework.md",
+        ROOT / "docs/evaluations/token-usage-and-quality-standards.md",
+        ROOT / "docs/evaluations/phase-2-benchmark-plan.md",
+        ROOT / "docs/evaluations/immediately-usable-flows.md",
+        ROOT / "docs/research/report-writing-and-methodology-skill-patterns.md",
         ROOT / "templates/report.md",
         ROOT / "templates/repository-entry.md",
         ROOT / "templates/tool-dossier.md",
@@ -225,11 +291,32 @@ def main() -> int:
     if re.search(r"\|\s*`[^`]+`\s*\|\s*[0-9]\s*\|", report_text):
         errors.append("phase-1 report contains a numeric evidence-stage table row; use named stages")
 
+    run_truthmark("check", errors)
+    run_truthmark("index", errors)
+
     if errors:
         print("Validation failed:")
         for err in errors:
             print(f"- {err}")
         return 1
+
+    # Repo-local research skills should remain limited to the recommended set.
+    skill_dir = ROOT / ".agents" / "skills"
+    expected_skill_files = {
+        Path(p).name
+        for p in LOCAL_SKILL_ARTIFACTS
+        if p.startswith(".agents/skills/") and p.endswith(".md") and not p.endswith("index.md")
+    }
+    actual_skill_files = {p.name for p in skill_dir.glob("*.md") if p.name != "index.md"}
+    if actual_skill_files != expected_skill_files:
+        missing = sorted(expected_skill_files - actual_skill_files)
+        extra = sorted(actual_skill_files - expected_skill_files)
+        raise SystemExit(f"repo-local skill set mismatch; missing={missing}, extra={extra}")
+    agents_text = (ROOT / "AGENTS.md").read_text()
+    for rel in LOCAL_SKILL_ARTIFACTS:
+        if rel.startswith(".agents/skills/") and rel.endswith(".md") and not rel.endswith("index.md"):
+            if rel not in agents_text:
+                raise SystemExit(f"AGENTS.md does not reference local skill: {rel}")
 
     print("Validation passed")
     print(f"- techniques: {len(techniques_doc.get('techniques', []))}")

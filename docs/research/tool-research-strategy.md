@@ -45,7 +45,7 @@ A `source-logic` dossier must inspect representative source code logic beyond RE
 - Reports must state the highest evidence stage reached for each recommended stack component.
 - A stack may be recommended provisionally before reproduction, but the report must label the recommendation as evidence-weighted rather than deployment-proven.
 - README-only and integration-only claims may describe leads but cannot be the basis for a qualified stack.
-- In stack selection, use the term compatibility-safe directly: tools should not fight over the same hook, context surface, retrieval authority, memory authority, proxy, output channel, or state boundary. Do not label the report or stack category as conservative.
+- In stack selection, use the term compatibility-safe directly: tools should not fight over the same hook, context surface, retrieval authority, memory authority, proxy, output channel, or state boundary. Do not use ambiguous stack labels; use compatibility-safe terminology directly.
 - Local environment availability must not be used as evidence of external quality.
 - Maintainer benchmarks must be separated from independent reproductions.
 - If source-logic inspection cannot be completed in one session, keep the tool as a `lead` in the backlog rather than creating a decision-bearing dossier from shallow evidence.

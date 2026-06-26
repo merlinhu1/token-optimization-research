@@ -2,7 +2,7 @@
 
 **Date:** 2026-06-26
 **Repository:** `token-optimization-research`
-**Review status:** draft research report
+**Review status:** source-logic research report; benchmark-audit and reproduction pending
 **Scope:** compatibility-safe token-reduction stacks for AI coding agents, revised after expansion to 29 persistent source-logic tool dossiers.
 
 ## Executive summary
@@ -13,18 +13,18 @@ The earlier report over-concentrated on one repeated stack pattern: a terminal-o
 
 The primary diversified candidates are:
 
-| Stack candidate | Components | Primary use case | Review posture |
+| Stack candidate | Components | Primary use case | Evidence label |
 |---|---|---|---|
-| Source-grounded balanced add-on stack | `Lowfat + SigMap + MEX + Ponytail` | General coding sessions that need output compaction, targeted code navigation, project-memory discipline, and anti-overbuild guidance | source-logic dossiers for all components |
-| Lightweight hook-and-memory stack | `Snip + Serena + Cavemem` | Existing Claude/Codex-like workflows needing shell-output filtering, code intelligence, and compressed memory without broad proxy ownership | source-logic dossiers for all three tools |
-| Broad context-owner stack | `LeanCTX + Ponytail` | Teams willing to let one broad context layer own retrieval/read/shell/memory surfaces, with a separate artifact-minimization rule layer | source-logic dossiers for both components |
-| Apple build-repair stack | `xcsift + Serena + MEX` | Swift, iOS, macOS, and Xcode-heavy repair work | source-logic dossiers for all three tools |
-| MCP-heavy offload stack | `pctx + jcodemunch MCP + Caveman` | Workloads dominated by multi-step MCP/tool execution where intermediate traces should stay outside the main context | source-logic dossiers for all three tools |
-| Broad compression-owner stack | `Headroom + MEX` | Log, file, RAG, history, or tool-output compression where a single broad compression owner is preferred | source-logic dossiers for both tools |
-| Integrated MCP-owner option | `Token Savior MCP profile` | A single owner for retrieval, memory, and Bash compaction in MCP-compatible agents | source-logic dossier |
-| Replacement-agent evaluation lane | `ClawCodex` or `Caveman Code` replacement agents | Cases where replacing the coding agent is acceptable | source-logic dossiers for both replacement-agent candidates |
+| Source-grounded balanced add-on stack | `Lowfat + SigMap + MEX + Ponytail` | General coding sessions that need output compaction, targeted code navigation, project-memory discipline, and anti-overbuild guidance | source-grounded candidate |
+| Lightweight hook-and-memory stack | `Snip + Serena + Cavemem` | Existing Claude/Codex-like workflows needing shell-output filtering, code intelligence, and compressed memory without broad proxy ownership | source-grounded candidate |
+| Broad context-owner stack | `LeanCTX + Ponytail` | Teams willing to let one broad context layer own retrieval/read/shell/memory surfaces, with a separate artifact-minimization rule layer | source-grounded candidate |
+| Apple build-repair stack | `xcsift + Serena + MEX` | Swift, iOS, macOS, and Xcode-heavy repair work | source-grounded candidate |
+| MCP-heavy offload stack | `pctx + jcodemunch MCP + Caveman` | Workloads dominated by multi-step MCP/tool execution where intermediate traces should stay outside the main context | source-grounded candidate |
+| Broad compression-owner stack | `Headroom + MEX` | Log, file, RAG, history, or tool-output compression where a single broad compression owner is preferred | source-grounded candidate |
+| Integrated MCP-owner option | `Token Savior MCP profile` | A single owner for retrieval, memory, and Bash compaction in MCP-compatible agents | source-grounded candidate |
+| Replacement-agent evaluation lane | `ClawCodex` or `Caveman Code` replacement agents | Cases where replacing the coding agent is acceptable | source-grounded replacement-runtime lane |
 
-No stack in this report is deployment-grade. The current evidence is sufficient for research prioritization and compatibility planning, not procurement-grade claims. Benchmark and reproduction review remain required before asserting provider-billed token savings, pass-rate preservation, or total-cost reduction.
+No stack in this report is deployment-grade. The current evidence supports research prioritization, compatibility planning, and benchmark design. It does not support procurement-grade claims, deployment-grade recommendations, or provider-billed savings claims. Benchmark-audit and reproduction remain required before asserting cost reduction, pass-rate preservation, or total-cost reduction.
 
 ## Scope
 
@@ -44,14 +44,23 @@ Excluded:
 
 ## Methodology
 
-The assessment uses repository metadata, persistent tool dossiers, source-tree review, representative source-code logic inspection, and compatibility-surface analysis. README files and integration paths remain useful discovery inputs, but compatibility and stack claims are based on source-logic dossier evidence rather than README or integration claims alone.
+The assessment uses repository metadata, persistent tool dossiers, source-tree review, representative source-code logic inspection, and compatibility-surface analysis. README files and integration paths remain discovery inputs. Compatibility and stack claims are based on source-logic dossier evidence rather than README or integration claims alone.
+
+The report uses three decision labels:
+
+| Label | Meaning |
+|---|---|
+| `source-grounded candidate` | Component mechanisms and compatibility surfaces are supported by source-logic dossiers, but task-level impact is not reproduced. |
+| `benchmark-audit priority` | Existing tests, benchmarks, examples, or raw-output paths make the candidate ready for harness and result inspection. |
+| `reproduction candidate` | Candidate should be run against a baseline on frozen tasks with provider-billed usage and software-quality gates. |
+
 
 Principal evidence basis:
 
 - **Repository catalog and backlog:** normalized repository metadata, discovery status, dossier coverage, and evidence-stage tracking across the token-saving candidate set.
 - **Persistent tool dossiers:** 29 per-tool dossiers summarizing identity, integration surfaces, implementation behavior, compatibility notes, limits, and next review tasks.
 - **Source-structure review:** batch-level source-tree and integration-path inspection used to locate installers, hooks, plugins, MCP servers, indexes, tests, benchmarks, and runtime entry points.
-- **Source-logic inspection:** representative implementation files read for recommended and retained candidates, with raw provenance retained separately for audit but summarized through the dossiers in this report.
+- **source-logic inspection:** representative implementation files read for recommended and retained candidates, with raw provenance retained separately for audit but summarized through the dossiers in this report.
 - **Compatibility model:** surface-ownership analysis across terminal compaction, retrieval, memory, broad compression, execution offload, behavior control, artifact policy, repository packing, installer/orchestrator layers, and replacement runtimes.
 
 Detailed provenance ledgers are retained in the repository for reproducibility and audit, while the report cites their summarized conclusions through the dossier set and evidence-basis categories above.
@@ -72,6 +81,20 @@ Stack selection uses the following priorities. Percentages are decision weights 
 | Reputation and adoption signal | Stars, forks, and visibility as weak confidence signals after dossier creation | 5% |
 
 The low reputation weight is intentional. Popularity helped identify which tools deserved dossiers. Once dossiers exist, stack construction should primarily use compatibility, evidence quality, and workload fit.
+
+## Scientific interpretation standard
+
+The report treats each stack as a falsifiable hypothesis rather than as a proven recommendation.
+
+| Hypothesis type | Example falsification condition |
+|---|---|
+| Terminal-output compaction improves task cost | Provider-billed task tokens do not improve after turn count and cache effects are included. |
+| Retrieval reduces broad context reads | The agent still performs broad file reads or requires more tool calls than baseline to find the target. |
+| Memory reduces rediscovery | Memory reinjection introduces stale or duplicate context, or does not reduce rereads across repeated tasks. |
+| Broad compression improves efficiency | Request-level compression is offset by added correction turns, lost diagnostics, or proxy overhead. |
+| Replacement runtime improves cost-quality trade-off | The replacement runtime fails the same verifier, lowers quality score, or saves tokens only by under-solving the task. |
+
+Phase 2 must measure provider-billed task usage, deterministic verifier results, quality score, turn count, tool-call count, latency, and reset/reproducibility before any stack is promoted beyond source-grounded candidacy.
 
 ## Surface ownership model
 
@@ -108,7 +131,7 @@ Lowfat + SigMap + MEX + Ponytail
 
 **Evidence assessment:** Lowfat, SigMap, MEX, and Ponytail all have source-logic dossiers. The stack is recommended as a research candidate because it covers four different token-waste mechanisms without duplicating owners.
 
-**Caveats:** SigMap includes light session memory, so the stack should avoid turning MEX into a second automatic memory injector. Ponytail should be removed when behavior-rule risk is unacceptable or when implementation completeness is more important than minimality.
+**Caveats:** SigMap includes light session memory, so the stack should avoid turning MEX into a second automatic memory injector. Ponytail should be removed when behavior-rule risk is unacceptable or when implementation completeness is more important than minimality. The stack should be downgraded if multi-surface setup increases turns or if behavior control reduces implementation quality.
 
 ### 2. Lightweight hook-and-memory stack
 
@@ -128,7 +151,7 @@ Snip + Serena + Cavemem
 
 **Evidence assessment:** All three components have source-logic dossiers. The combination is not benchmarked end to end, but it is more evidence-grounded than a reputation-led RTK/CodeGraph default because each selected tool has representative implementation inspection in this repository.
 
-**Caveats:** Snip hook rewriting requires cautious handling of shell syntax and supported filter coverage. Cavemem can duplicate context if another memory system is active. Serena should be the only retrieval authority.
+**Caveats:** Snip hook rewriting requires cautious handling of shell syntax and supported filter coverage. Cavemem can duplicate context if another memory system is active. Serena should be the only retrieval authority. The stack should be downgraded if command filtering hides required diagnostics or memory reinjection causes stale-context corrections.
 
 ### 3. Broad context-owner stack
 
@@ -147,7 +170,7 @@ LeanCTX + Ponytail
 
 **Evidence assessment:** LeanCTX and Ponytail both have source-logic dossiers. This stack is useful when broad context ownership is acceptable and operational simplicity is preferable to combining several narrower tools.
 
-**Caveats:** LeanCTX's breadth is both its advantage and its compatibility risk. The exact enabled-tool set must be mapped before deployment. Ponytail may be omitted for a lower-behavior-change variant.
+**Caveats:** LeanCTX's breadth is both its advantage and its compatibility risk. The exact enabled-tool set must be mapped before deployment. Ponytail may be omitted for a lower-behavior-change variant. The stack should be downgraded if broad ownership adds more tool calls or billed tokens than it removes.
 
 ### 4. Apple platform build-repair stack
 
@@ -167,7 +190,7 @@ xcsift + Serena + MEX
 
 **Evidence assessment:** All three tools have source-logic dossiers. This is a workload-specific stack selected for mechanism fit, not popularity. It is more appropriate for Apple projects than a generic terminal compactor plus generic retrieval engine.
 
-**Caveats:** xcsift is domain-specific and consumes complete output in memory according to its parser comments. Rare linker, coverage, and build-system formats require fidelity tests.
+**Caveats:** xcsift is domain-specific and consumes complete output in memory according to its parser comments. Rare linker, coverage, and build-system formats require fidelity tests. The stack should be downgraded if transformed build output omits the failing target, diagnostic location, or actionable compiler/test message.
 
 ### 5. MCP-heavy offload stack
 
@@ -187,7 +210,7 @@ pctx + jcodemunch MCP + Caveman
 
 **Evidence assessment:** All three tools have source-logic dossiers. This stack explores a different mechanism mix than terminal-compactor-plus-retrieval stacks: it emphasizes offloaded execution, compact retrieval, and terse interaction.
 
-**Caveats:** pctx introduces sandbox/runtime trust boundaries and session state. Caveman can reduce visible prose without necessarily reducing total billed tokens if correction turns increase. jcodemunch should be benchmarked against other retrieval authorities on the same tasks.
+**Caveats:** pctx introduces sandbox/runtime trust boundaries and session state. Caveman can reduce visible prose without necessarily reducing total billed tokens if correction turns increase. jcodemunch should be benchmarked against other retrieval authorities on the same tasks. The stack should be downgraded if offloaded execution hides intermediate evidence needed for debugging or review.
 
 ### 6. Broad compression-owner stack
 
@@ -206,7 +229,7 @@ Headroom + MEX
 
 **Evidence assessment:** Both tools have source-logic dossiers. This stack is appropriate when broad compression is the target and when raw-content recovery is more important than command-specific shell filtering.
 
-**Caveats:** Prior pilot evidence in this repository indicates that request-level compression may not translate to provider-billed savings if more turns are required. End-to-end measurement is mandatory.
+**Caveats:** Prior pilot evidence in this repository indicates that request-level compression may not translate to provider-billed savings if more turns are required. End-to-end measurement is mandatory. The stack should be downgraded if raw recovery is needed frequently or if broad compression reduces diagnostic fidelity.
 
 ### 7. Integrated MCP-owner option
 
@@ -227,7 +250,7 @@ Token Savior MCP profile
 
 **Evidence assessment:** Token Savior now has a source-logic dossier covering representative MCP server, tool schema, compact operation, Bash rewrite, memory DB, query API, project indexer, and tests. It is retained as an integrated-owner candidate because the surface combination is coherent, not because of popularity.
 
-**Caveats:** benchmark-audit review remains required for MCP handler coverage, Bash rewrite effectiveness, capture hooks, benchmark data, and provider-billed end-to-end savings.
+**Caveats:** benchmark-audit review remains required for MCP handler coverage, Bash rewrite effectiveness, capture hooks, benchmark data, and provider-billed end-to-end savings. The profile should be downgraded if integrated ownership adds overhead on tasks that need only one of retrieval, memory, or Bash compaction.
 
 ### 8. Replacement-agent evaluation lane
 
@@ -316,8 +339,18 @@ Key limitations:
 
 ## Next review priorities
 
-1. Promote recommended stack candidates from source-logic to benchmark-audit by reviewing benchmark methods, raw outputs, token accounting, and failure semantics.
-2. Run comparative benchmark-audit reviews for terminal-output owners: RTK, Lowfat, Snip, TokenJuice, Headroom, and xcsift for Apple workloads.
-3. Run comparative retrieval reviews for Serena, SigMap, jcodemunch MCP, Claude Context, CocoIndex Code, Code Review Graph, and LeanCTX.
-4. Run replacement-agent benchmark-audit for ClawCodex and Caveman Code, including harness review, raw outputs, provider-billed token accounting, pass rate, latency, and implementation-quality scoring.
-5. Define and test Tokless installation profiles that reproduce only selected non-overlapping stack surfaces, then compare profile-installed behavior against manual installation.
+Phase 2 should begin with benchmark design and measurement standards, not more catalog expansion. The companion framework documents are:
+
+- `docs/evaluations/evaluation-framework.md`
+- `docs/evaluations/token-usage-and-quality-standards.md`
+- `docs/evaluations/phase-2-benchmark-plan.md`
+- `docs/evaluations/immediately-usable-flows.md`
+
+Immediate priorities:
+
+1. Promote selected components from source-logic to benchmark-audit by reviewing existing harnesses, raw outputs, token accounting, scoring, and failure semantics.
+2. Implement task fixtures and run records for provider-billed task usage, software quality, turn count, tool-call count, latency, and reset/reproducibility.
+3. Run comparative benchmark-audit reviews for terminal-output owners: RTK, Lowfat, Snip, TokenJuice, Headroom, and xcsift for Apple workloads.
+4. Run comparative retrieval reviews for Serena, SigMap, jcodemunch MCP, Claude Context, CocoIndex Code, Code Review Graph, and LeanCTX.
+5. Run replacement-agent benchmark-audit for ClawCodex and Caveman Code, including harness review, raw outputs, provider-billed token accounting, pass rate, latency, and implementation-quality scoring.
+6. Define and test Tokless installation profiles that reproduce only selected non-overlapping stack surfaces, then compare profile-installed behavior against manual installation.

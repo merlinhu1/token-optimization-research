@@ -107,7 +107,7 @@ A compatibility-safe stack has components that do not fight over the same hook, 
 
 ## Failure modes and limits
 
-- Hook rewriting must be conservative around shell syntax; missed/unverifiable constructs reduce coverage.
+- Hook rewriting must be cautious around shell syntax; missed or unverifiable constructs reduce coverage.
 - Filters can affect downstream pipe consumers if command boundaries are misidentified.
 - Audit logs are best-effort and not a full recovery path.
 

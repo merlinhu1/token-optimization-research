@@ -1,34 +1,34 @@
-# Research Roadmap
+# Research roadmap
 
-## Phase 1 — Catalog foundation
+## Phase 1 — Source-logic stack research
 
-- Import seed catalogs and candidate repositories.
-- Normalize repository records into `data/repositories.json`.
-- Add evidence labels and caveats for each record.
-- Maintain `docs/methodology/discovery-protocol.md` as discovery expands.
+Status: complete for the current candidate set.
 
-## Phase 2 — Compatibility taxonomy
+- Build the repository catalog and technique taxonomy.
+- Create persistent source-logic dossiers for important token-saving tools.
+- Define compatibility-safe stack candidates by surface ownership rather than popularity.
+- Publish the Phase 1 compatibility-safe stack report.
+- Keep `lead` entries out of stack recommendations until source-code logic is inspected.
 
-- Finalize technique categories by intervention surface.
-- Map each repository to one or more technique IDs.
-- Identify explicit conflicts and stackable combinations.
-- Keep bundles as bundle records with component references.
+## Phase 2 — Benchmark and evaluation framework
 
-## Phase 3 — Evaluation-method literature review
+Status: active next phase.
 
-- Survey prompt compression, context selection, retrieval evaluation, agent benchmarks, cost accounting, and quality-retention methods.
-- Populate `data/literature.json` and `docs/literature/literature-review.md`.
-- Extract reusable metrics and experimental controls.
+- Audit benchmark examples already present in cited repositories, including tokbench, agentic-token-bench, Token Savior tsbench, CodeGraph benchmarks, Caveman Code MicroBench, Ponytail task benchmarks, and terminal-output reducer examples.
+- Standardize token accounting around provider-billed task usage, cache effects, estimated artifact tokens, turn count, tool-call count, latency, and cost.
+- Standardize software-quality gates: deterministic verifiers, diagnostic preservation, diff quality, maintainability, safety, reviewability, and reset/reversibility.
+- Define immediately usable flows for benchmark-audit, terminal-output micro benchmarks, retrieval benchmarks, stack reproduction, replacement-agent comparison, and Tokless profile testing.
+- Promote selected dossiers from `source-logic` to `benchmark-audit` only after harness, scoring, token accounting, raw outputs, and failure semantics are inspected.
 
-## Phase 4 — Technique-level evaluations
+## Phase 3 — Controlled stack reproduction
 
-- Write one protocol per technique category.
-- Run small deterministic pilots first.
-- Add task-level and provider-billed accounting where available.
-- Publish negative results and quality regressions.
+- Run baseline and treatment profiles on frozen task fixtures.
+- Compare provider-billed task usage, pass rate, quality score, turns, tool calls, latency, and reset/reproducibility.
+- Keep failed and negative runs in `data/evaluations.json`.
+- Promote only reproduced findings toward deployment-grade recommendations.
 
-## Phase 5 — Research outputs
+## Phase 4 — Research outputs and standards
 
-- Produce paper drafts in `docs/paper/`.
-- Standardize prompts, schemas, evidence labels, and benchmark templates.
-- Version datasets and evaluation protocols with clear changelogs.
+- Publish Phase 2 and Phase 3 reports with measured results and limitations.
+- Update dossiers and standards based on benchmark-audit and reproduction findings.
+- Version datasets, task fixtures, evaluation protocols, and run records with clear changelogs.

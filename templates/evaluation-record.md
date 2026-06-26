@@ -1,35 +1,72 @@
-# Evaluation Record Template
+# Evaluation record template
 
 ## Identity
 
 - Evaluation ID:
-- Technique ID:
-- Repository/artifact under test:
+- Task ID:
+- Technique/tool/stack IDs:
+- Evidence stage: benchmark-audit | reproduction
+- Run role: baseline | treatment | audit-only
 - Date:
 - Operator:
 
 ## Setup
 
-- Agent/model:
-- Repository snapshot:
+- Agent/model/provider:
+- Repository fixture and commit:
 - Dataset/task:
-- Baseline command/path:
-- Treatment command/path:
+- Baseline profile:
+- Treatment profile:
+- Enabled surfaces:
+- Disabled overlapping surfaces:
+- Reset procedure:
 
-## Results
+## Token usage
+
+| Metric | Baseline | Treatment | Source/notes |
+|---|---:|---:|---|
+| Raw artifact tokens | | | |
+| Transformed artifact tokens | | | |
+| Fresh input tokens | | | |
+| Cached input tokens | | | |
+| Cache-write tokens | | | |
+| Output tokens | | | |
+| Reasoning tokens | | | |
+| Total provider tokens | | | |
+| Estimated cost | | | |
+
+## Agent behavior
 
 | Metric | Baseline | Treatment | Notes |
 |---|---:|---:|---|
-| Raw tokens | | | |
-| Reduced/fresh input tokens | | | |
-| Output tokens | | | |
-| Tool calls | | | |
 | Turns | | | |
-| Validator pass rate | | | |
-| Cost | | | |
+| Tool calls | | | |
+| Correction turns | | | |
+| Wall time | | | |
+| Raw-output recovery used | | | |
 
-## Conclusion
+## Software quality
+
+| Gate | Baseline | Treatment | Notes |
+|---|---|---|---|
+| Deterministic verifier | | | |
+| Static checks | | | |
+| Diagnostic preservation | | | |
+| Quality score | | | |
+| Critical failures | | | |
+
+## Interpretation
+
+- Accepted result:
+- Main uncertainty:
+- Falsification or downgrade condition:
 
 ## Raw artifacts
+
+- Transcript:
+- Provider usage:
+- Verifier output:
+- Quality review:
+- Raw/transformed artifacts:
 
 ## Caveats
