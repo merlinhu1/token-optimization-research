@@ -673,6 +673,34 @@ def validate_workflow_sessions(session_doc: dict, sequence_ids: set[str], fixtur
         if session.get("evidence_type") == "workflow-simulation" and session.get("evidence_stage") == "reproduction":
             if target.get("fixture_scale") not in {"large-project", "medium-project"}:
                 errors.append(f"workflow session {sid} reproduction must target a large-project or medium-project fixture")
+        artifacts = session.get("artifacts", {})
+        if isinstance(artifacts, dict) and artifacts.get("artifact_contract") == "compact-v1-four-files":
+            required = {"run_record", "final_diff", "evidence_bundle", "manifest"}
+            missing = sorted(required - set(artifacts))
+            if missing:
+                errors.append(f"workflow session {sid} compact artifacts missing keys: {', '.join(missing)}")
+            artifact_paths = []
+            for key in sorted(required):
+                value = artifacts.get(key)
+                if not isinstance(value, str) or not value:
+                    continue
+                path = Path(value)
+                if path.is_absolute() or ".." in path.parts:
+                    errors.append(f"workflow session {sid} compact artifact {key} must be repository-relative: {value}")
+                    continue
+                full = ROOT / path
+                artifact_paths.append(full)
+                if not full.exists():
+                    errors.append(f"workflow session {sid} compact artifact {key} does not exist: {value}")
+            roots = {path.parent for path in artifact_paths}
+            if len(roots) == 1:
+                root = next(iter(roots))
+                allowed_names = {"run.json", "changes.diff", "evidence.jsonl.gz", "manifest.sha256"}
+                actual_names = {path.name for path in root.iterdir() if path.is_file()}
+                if actual_names != allowed_names:
+                    errors.append(f"workflow session {sid} compact artifact directory must contain exactly {sorted(allowed_names)}; found {sorted(actual_names)}")
+            elif len(roots) > 1:
+                errors.append(f"workflow session {sid} compact artifacts must share one directory")
 
 
 def dossier_field(text: str, field: str) -> str | None:
