@@ -382,6 +382,7 @@ def codex_env(codex_home: Path, *, containerized: bool = False, cfg: dict[str, A
     path_entries = [
         "/opt/data/codex-cli/node_modules/.bin",
         "/opt/data/opt/go/bin",
+        "/opt/data/opt/uv",
         str(NODE_TOOLCHAIN_ROOT / "bin"),
     ]
     if cfg:
@@ -432,7 +433,9 @@ def docker_tool_mounts(cfg: dict[str, Any] | None = None) -> list[tuple[Path, Pa
     mounts: list[tuple[Path, Path, str]] = []
     path_texts = [
         "/opt/data/codex-cli",
+        "/opt/data/dotnet",
         "/opt/data/opt/go",
+        "/opt/data/opt/uv",
         str(NODE_TOOLCHAIN_ROOT),
     ]
     if cfg:
