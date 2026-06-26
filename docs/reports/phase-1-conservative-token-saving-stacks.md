@@ -1,269 +1,273 @@
-# Phase 1 Report: Conservative Token-Saving Stack Candidates for AI Coding Agents
+# Phase 1 Report: Qualified Out-of-Box Token-Saving Stacks for AI Coding Agents
 
 **Date:** 2026-06-25  
 **Repository:** `token-optimization-research`  
-**Scope:** Candidate combinations of token-saving tools for Claude Code, Codex CLI, Gemini CLI, OpenCode, Cursor/Cline-style coding agents, and similar terminal/MCP agent workflows.
+**Scope:** Conservative token-saving stacks for AI coding agents where the stack works out of the box, not by manual tool choreography.
 
 ## Executive summary
 
-This report was revised after applying a stricter compatibility criterion:
+This report has been reworked from scratch around Merlin's stricter criterion:
 
-> A stack only qualifies as conservative if its tools work together **out of the box**, without custom glue, careful routing policies, prompt-discipline workflows, or “use X only when Y” behavior to avoid conflicts.
+> A stack only belongs here if its parts are already packaged or wired together out of the box. No custom glue, no careful routing policy, no “use tool A for X and tool B for Y” workflow discipline, and no loose collection of unrelated CLI primitives.
 
-Under that stricter criterion, **no stack in the current research set is flawless or fully validated yet**. The earlier report over-recommended plausible combinations by proving only “different intervention surfaces,” not true out-of-box co-operation.
+That removes the earlier hand-built stacks such as `RTK + CodeGraph + Ponytail + Caveman` and `ripgrep + ast-grep + qmd`. Those can be useful ingredients, but they do not satisfy the out-of-box stack criterion by themselves.
 
-The strongest current conclusion is therefore:
+The qualified stacks below are therefore **deployable integrated stacks**: either one tool that internally combines several token-saving mechanisms, or one installer/gateway that wires a fixed set of tools together.
 
-- **Claude Code candidate core:** `RTK + CodeGraph`
-- **Codex CLI candidate core:** `RTK + CodeGraph`, with `AGENTS.md` as optional native configuration, not counted as a tool
-- **Swift/Xcode candidate:** `xcsift` as a single specialized output parser
-- **Large-output/offload candidate:** `Context-Mode` as a single specialized offload layer
+## Selection rules
 
-Tools like Ponytail, Caveman, Serena, Context-Mode+retriever pairings, and xcsift+retriever pairings remain important research candidates, but they should be treated as **marginal additions to validate**, not proven stack members.
-
-## Evidence basis and limits
-
-This report uses:
-
-- the seed catalog in `sources/seed-catalogs/AI-Coding-Token-Savers-Catalog-Revised.md`;
-- expanded GitHub discovery in `sources/discovery/github-search-results.json`;
-- current GitHub metadata retrieved into `sources/discovery/phase-1-stack-candidate-metadata.json`;
-- compatibility categories in `data/techniques.json`;
-- repository records in `data/repositories.json`.
-
-GitHub stars are used only as a **reputation signal**, not proof of effect. Reddit direct API/search access was blocked from this environment; DuckDuckGo-discovered Reddit leads are saved in `sources/discovery/reddit-duckduckgo-leads.json`, but they are not treated as recommendation counts until individual threads are reviewed.
-
-## Reputation snapshot for candidate tools
-
-Live GitHub metadata retrieved on 2026-06-25:
-
-| Tool | Stars | Primary technique | Current evidence summary |
-|---|---:|---|---|
-| `JuliusBrussee/caveman` | 76,923 | Behavioral output compression | High-reputation Claude Code skill. Maintainer reports large output-token reductions, but external evidence says output savings do not always reduce total task tokens. |
-| `rtk-ai/rtk` | 66,114 | Terminal/tool-output compression | High-reputation command-output compactor. Maintainer reports 60–90% command-output reduction; external pilot found touched commands were a small part of total spend. |
-| `DietrichGebert/ponytail` | 57,944 | Artifact/code minimization | High-reputation Claude Code skill. Maintainer benchmark reports fewer added lines and lower total tokens on over-build-trap tasks. |
-| `colbymchenry/codegraph` | 54,566 | Targeted code retrieval | High-reputation graph/retrieval candidate. Maintainer benchmark reports fewer total tokens/tool calls on architecture-question workloads. |
-| `chopratejas/headroom` / `headroomlabs-ai/headroom` | 50,965 | Prompt/history/context compression | Strong compression claims; external pilot cautions that extra turns can erase provider-billed savings. Not included in conservative cores because it is a broad compression layer. |
-| `oraios/serena` | 25,790 | Targeted code retrieval/editing | Very reputable semantic IDE/MCP toolkit; no single token-saving benchmark reviewed in current repo data. Candidate alternative to CodeGraph, not something to stack with it. |
-| `mksglu/context-mode` | 18,176 | Execution offload/code-mode | Strong worked examples for offloading large outputs; generated analysis code/routing is a correctness boundary. Candidate single-purpose offload layer. |
-| `zilliztech/claude-context` | 11,962 | Targeted code retrieval | Popular code-search MCP lead; needs deeper review before replacing CodeGraph in a conservative candidate. |
-| `yvgude/lean-ctx` | 2,932 | Multi-surface context layer | Powerful multi-surface system; treat as a full-stack alternative, not a component to add on top of other tools. |
-| `jgravelle/jcodemunch-mcp` | 1,941 | Targeted code retrieval | Focused tree-sitter symbol-level retrieval lead; needs deeper review. |
-
-## Qualification gate for an out-of-box conservative stack
-
-A stack is **recommended** only if all of these are true:
+A stack is included only if it passes all of these gates:
 
 | Gate | Requirement |
 |---|---|
-| Concrete target agent | Claude Code, Codex CLI, Gemini CLI, etc.; no generic assumption that one agent’s skill/plugin works in another. |
-| Concrete tools | No `or` alternatives inside the stack. Alternatives must be split into separate candidates. |
-| Out-of-box integration | One install/config path; tools discover each other or can be used together without custom glue. |
-| No routing policy | The stack must not require “use this tool only for X and that tool only for Y” to avoid conflicts. |
-| No prompt-discipline dependency | The stack must not rely on the agent remembering a principled workflow to make separate tools cooperate. |
-| Positive marginal contribution | Each included tool must plausibly reduce total task cost or quality-preserving context burden in that stack. |
-| Built-in raw fallback | Compressed/indexed/offloaded views must have documented access to raw logs/source/artifacts. |
-| Stack-level smoke test | At minimum, run one task that exercises the full stack and records whether tools conflict, duplicate context, or hide diagnostics. |
+| Out-of-box integration | One install/config path wires the stack; no manual composition required. |
+| No conflicting owners | The stack itself decides routing/ownership, or the bundled tools target clearly separated waste sources. |
+| Positive token-saving contribution | Every named component contributes to token reduction or context reduction in the stack's documented design. |
+| Conservative quality posture | The stack avoids blind truncation as its core value proposition, or keeps raw/source access available. |
+| Reputation signal | Preference for GitHub stars, benchmark artifacts, published docs, and/or included high-reputation components. |
+| No redundant add-ons | Do not add another retrieval engine, output compressor, memory system, or router on top unless the stack vendor explicitly supports it. |
 
-Current state: **no candidate has passed this full gate yet**.
+## Qualified stack 1 — Token Savior MCP Stack
 
-## Candidate cores and downgraded stacks
+**Best for:** Claude Code or any MCP-compatible coding agent where code navigation, memory, and command-output compaction should be one integrated server.
 
-### Candidate A — Claude Code evaluation priority
-
-**Candidate core:**
+**Deployable stack:**
 
 ```text
-RTK + CodeGraph
+Token Savior MCP profile
 ```
 
-| Component | Tool | Status | Role |
-|---|---|---|---|
-| Terminal-output compactor | `rtk-ai/rtk` | Candidate core | Compress noisy shell/test/build/Git output. |
-| Code-retrieval authority | `colbymchenry/codegraph` | Candidate core | Provide graph/symbol context without broad source reads. |
+**Tool set inside the stack:**
 
-**Why this is the strongest Claude candidate:**
-
-- Both tools have high reputation signals.
-- They target different surfaces: shell output and code retrieval.
-- The combination is simpler than the earlier `RTK + CodeGraph + Ponytail + Caveman Lite` stack.
-
-**Not included in the core:**
-
-| Tool | Why not counted as core yet |
+| Internal component | Token-saving role |
 |---|---|
-| `DietrichGebert/ponytail` | Claude Code-specific behavioral/minimalism layer. Plausible positive contribution, but should be validated as a marginal addition rather than assumed. |
-| `JuliusBrussee/caveman` | High reputation, but evidence is mixed for total-session savings. Treat as optional output-style experiment, not conservative default. |
+| Structural code navigation | Avoids broad file reads by exposing symbol/code-navigation tools. |
+| Persistent memory | Reduces repeated rediscovery across turns/sessions. |
+| Bash output compaction | Compacts common Git/test/build/package-manager outputs. |
+| Compact MCP profile/manifests | Reduces tool-description/context overhead. |
 
-**Status:** candidate, not validated default.
+**Why it satisfies the criteria:**
 
-**Required validation:** install/use RTK and CodeGraph together in Claude Code, run a coding task that requires shell output and code retrieval, confirm CodeGraph is adopted without manual prompting, confirm RTK raw-output recovery, then test Ponytail and Caveman as one-at-a-time additions.
+- It is one MCP server/profile rather than a manually assembled set of separate tools.
+- The components are designed to work together in one token-saving surface.
+- It explicitly combines retrieval, memory, and shell-output reduction without asking the user to pick routing rules.
+- It publishes a task benchmark rather than only per-command examples.
 
----
+**Reputation/evidence:**
 
-### Candidate B — Codex CLI evaluation priority
+- GitHub: `Mibayy/token-savior`, ~1,015 stars at retrieval time.
+- README reports Claude Opus 4.7 on 96 coding tasks: active tokens/task `17,221 → 3,395` (-80%) and score `141/180 → 188/192`.
+- Repo record notes the result is maintainer-run and profile-dependent, but it is still stronger stack-level evidence than most discovered tools.
 
-**Candidate core:**
+**Do not combine with:** RTK, CodeGraph, LeanCTX, Caveman memory/output stacks, or other broad MCP code-retrieval/memory layers. Those duplicate surfaces already owned by Token Savior.
+
+## Qualified stack 2 — Tokless Managed Multi-Tool Stack
+
+**Best for:** users who specifically want a prewired multi-tool stack for Claude Code, OpenCode, Codex, or Antigravity with minimal setup.
+
+**Deployable stack:**
 
 ```text
-RTK + CodeGraph
+tokless
 ```
 
-| Component | Tool | Status | Role |
-|---|---|---|---|
-| Terminal-output compactor | `rtk-ai/rtk` | Candidate core | Compress noisy shell/test/build/Git output for terminal-heavy Codex sessions. |
-| Code-retrieval authority | `colbymchenry/codegraph` | Candidate core, pending Codex integration proof | Provide repo graph/symbol context without broad source reads. |
+**Tool set wired by the stack:**
 
-**Optional native configuration, not counted as a tool:**
-
-```text
-AGENTS.md minimalism/output rules
-```
-
-`AGENTS.md` is Codex’s native project-instruction surface. It may improve behavior, but it is not an independent token-saving tool and depends on model instruction-following. It should not be counted as a stack component under the out-of-box tool criterion.
-
-**Not included:**
-
-| Tool | Why not counted yet |
+| Bundled tool | Token-saving role |
 |---|---|
-| Caveman / Ponytail | Claude Code skills; not assumed to work out of the box in Codex CLI. |
-| `lokikill123/codex-token-skills` | Relevant Codex-specific lead, but current reputation/evidence is too thin for a conservative default. |
-| `ripgrep + ast-grep + qmd` | Useful primitives, but not an integrated out-of-box token-saving system. They require disciplined agent workflow. |
+| RTK | Trims noisy Bash/tool output. |
+| Caveman | Reduces verbose agent prose/output. |
+| CodeGraph | Reduces whole-file reads through code-graph queries. |
+| Context-Mode | Runs heavy work in a sandbox and returns only selected results. |
 
-**Status:** candidate, not validated default.
+**Why it satisfies the criteria:**
 
-**Required validation:** verify CodeGraph discovery/use from Codex CLI without custom prompt choreography, verify RTK does not hide diagnostics, then compare with and without `AGENTS.md` rules as a policy experiment.
+- Tokless is explicitly an installer/lifecycle manager for this stack, not an ad hoc recommendation to install four tools manually.
+- It supports `tokless`, `tokless update`, `tokless doctor`, and `tokless uninstall`.
+- It wires agents according to their own config specs and supports `--agents claude,opencode,codex,antigravity`.
+- Its README states the bundled tools target different waste sources and are intended to be non-overlapping.
 
----
+**Reputation/evidence:**
 
-### Candidate C — Large-repo retrieval evaluation, not a stack
+- GitHub: `HoangP8/tokless`, ~65 stars at retrieval time.
+- Component reputation is high: Caveman ~76k stars, RTK ~66k, CodeGraph ~54k, Context-Mode ~18k.
+- Evidence is mainly component-level, but Tokless is the clearest discovered example of a real out-of-box multi-tool stack.
 
-Earlier Stack C combined CodeGraph, RTK, fallback primitives, and Ponytail. Under the out-of-box criterion, that was not a distinct stack.
+**Conservative use rule:** use Tokless as a whole stack and do not add extra compression/retrieval/memory tools on top. If one bundled tool harms a workload, switch to another qualified stack instead of manually rebalancing Tokless into a custom stack.
 
-**Correct framing:** evaluate one retrieval authority at a time:
+## Qualified stack 3 — LeanCTX Integrated Context Stack
 
-| Candidate retrieval authority | Why evaluate |
+**Best for:** local-first users who want one binary to own code reads, shell compaction, memory, budgets, and savings accounting across agents.
+
+**Deployable stack:**
+
+```text
+LeanCTX
+```
+
+**Tool set inside the stack:**
+
+| Internal component | Token-saving role |
 |---|---|
-| `colbymchenry/codegraph` | Highest reputation among current retrieval-specific candidates. |
-| `oraios/serena` | Very high-reputation semantic IDE/MCP toolkit. |
-| `zilliztech/claude-context` | Popular Claude Code code-search MCP lead. |
-| `jgravelle/jcodemunch-mcp` | Focused tree-sitter symbol-level GitHub code retrieval. |
-| `manojmallick/sigmap` | MCP/code-analysis token-reduction lead. |
+| Cached and AST-aware file reads | Reduces repeated file/context reads. |
+| Shell-output compression | Compacts noisy terminal output. |
+| Persistent memory | Avoids repeated rediscovery. |
+| Code graph / routing | Selects narrower context views. |
+| Budgets and savings ledger | Keeps token use visible and auditable. |
+| Optional proxy | Compresses request/context surfaces when enabled. |
 
-**Important:** `ripgrep`, `qmd`, and normal file reads are safety/fallback mechanisms, not counted stack components. They are useful for exact verification, but their value depends on agent workflow discipline.
+**Why it satisfies the criteria:**
 
-**Status:** evaluation scenario only.
+- It is one local Rust context-intelligence layer, not a hand-built combination.
+- Its features are internally coordinated by the same product.
+- It exposes budget/savings accounting, which makes hidden negative contribution easier to detect.
+- It is local-first, reducing privacy and operational risk compared with remote compression gateways.
 
----
+**Reputation/evidence:**
 
-### Candidate D — Large-output/offload evaluation, not a stack
+- GitHub: `yvgude/lean-ctx`, ~2,935 stars at retrieval time.
+- README claims 60–90% fewer tokens for reads and shell output and cached rereads near 13 tokens.
+- Existing external pilot evidence in this repo is mixed for end-to-end provider-billed totals, so LeanCTX belongs here as an integrated stack, but it should be used as the stack owner rather than layered with RTK/CodeGraph/extra memory systems.
 
-Earlier Stack D combined Context-Mode, either CodeGraph or Serena, and Caveman Lite. Under the out-of-box criterion, that fails because it contains alternatives and likely routing assumptions.
+**Do not combine with:** RTK, CodeGraph, Token Savior, Tokless, separate memory systems, or broad prompt compressors. LeanCTX already spans those surfaces.
 
-**Correct framing:** evaluate concrete candidates separately:
+## Qualified stack 4 — Headroom Compression Stack
 
-| Candidate | Status | Why |
-|---|---|---|
-| `mksglu/context-mode` alone | Single-tool offload candidate | Best fit when huge intermediate artifacts dominate and only selected results should return to context. |
-| `Context-Mode + CodeGraph` | Pairing candidate | Only valid if out-of-box coexistence is verified. |
-| `Context-Mode + Serena` | Pairing candidate | Only valid if out-of-box coexistence is verified. |
+**Best for:** teams whose dominant cost is large tool outputs, logs, files, RAG chunks, or conversation/history blobs and who want one compression layer with library/proxy/MCP deployment modes.
 
-**Not included:** Caveman Lite. It may compress final summaries, but its positive marginal effect in an offload-heavy workflow has not been shown.
-
-**Status:** evaluation backlog only.
-
----
-
-### Candidate E — Swift/Xcode output evaluation, not a full stack
-
-Earlier Stack E combined xcsift, either Serena or CodeGraph, and Ponytail. Under the out-of-box criterion, that fails because it contains alternatives and agent-specific behavioral assumptions.
-
-**Correct framing:**
+**Deployable stack:**
 
 ```text
-xcsift
+Headroom
 ```
 
-as a specialized single-tool candidate for Swift/Xcode/SPM output.
+**Tool set inside the stack:**
 
-Potential pairings to test separately:
-
-| Candidate | Status | Why |
-|---|---|---|
-| `xcsift + CodeGraph` | Pairing candidate | Could combine Xcode output reduction with code retrieval, but needs integration/smoke test. |
-| `xcsift + Serena` | Pairing candidate | Could combine Xcode output reduction with semantic IDE retrieval, but needs integration/smoke test. |
-| `xcsift + Ponytail` | Claude Code-only candidate | Only relevant when the agent is Claude Code and Ponytail is installed as a skill. |
-
-**Status:** specialized evaluation backlog only.
-
-## Tools deliberately excluded from conservative cores
-
-These tools remain research candidates, but are not in the conservative cores because they duplicate a surface, are bundles, depend on prompt discipline, or need deeper evaluation.
-
-| Tool/class | Why excluded from conservative cores |
+| Internal component | Token-saving role |
 |---|---|
-| Headroom / Kompact / TokenTamer / broad context compressors | Broad compression may rewrite code, schemas, logs, or retrieved context that another tool already selected. External pilot evidence also shows request-level compression can be erased by extra turns. |
-| LeanCTX / token-savior / CornMCP-style integrated systems | They span multiple surfaces: retrieval, shell output, memory, graph, and routing. Treat as full-stack alternatives, not components to add on top of RTK+CodeGraph. |
-| Repomix / Gitingest | Useful for one-shot handoffs, but default repository packing can conflict with targeted retrieval by increasing context. |
-| Tokless / tokenwar / OmniRoute / 9router | Bundles/gateways. Useful references, but not atomic techniques. Decompose into components before evaluation. |
-| ccusage / Splitrail / tokentop / abtop | Measurement and observability only. Valuable sidecars for research, but they do not directly save tokens unless they change behavior. |
-| Multiple terse-output skills | Caveman, concise, scrooge-mode, kevin-mode, and oafish target similar output-style surfaces. Pick one per target agent if evaluated. |
-| Multiple code indexes | CodeGraph, Serena, claude-context, jcodemunch, LeanKG, sigmap, and lean-ctx retrieval should be evaluated against each other, not used simultaneously as primary retrieval authorities. |
-| `ripgrep + ast-grep + qmd` as a stack | Useful individual primitives, but not an out-of-box integrated token-saving stack. They require agent discipline. |
+| Specialized compressors | Route JSON, code, prose, logs, files, and history to suitable compression methods. |
+| Library / proxy / MCP modes | Lets the same compression stack sit in different agent integration points. |
+| Original-content cache / reversible path | Keeps raw content retrievable when compressed output is insufficient. |
 
-## Evaluation backlog
+**Why it satisfies the criteria:**
 
-To move from candidate hypotheses to validated stacks, evaluate in this order:
+- It is one compression product with coordinated algorithms and deployment modes.
+- It does not require combining independent compressors.
+- It targets context before it reaches the model and is designed around preserving answer quality rather than blind truncation.
+- It has the strongest GitHub reputation signal among discovered compression-layer tools.
 
-1. **Claude core smoke test:** RTK alone vs RTK + CodeGraph in Claude Code on a terminal-heavy coding task.
-2. **Codex core smoke test:** RTK alone vs RTK + CodeGraph in Codex CLI; confirm CodeGraph is actually adopted without custom choreography.
-3. **Claude add-on tests:** RTK + CodeGraph vs plus Ponytail, then plus Caveman Lite, one addition at a time.
-4. **Retrieval comparison:** CodeGraph vs Serena vs claude-context vs jcodemunch as alternative single retrieval authorities.
-5. **Offload comparison:** Context-Mode alone vs Context-Mode + one retrieval authority on huge-log / many-intermediate-artifact workflows.
-6. **Swift/Xcode comparison:** xcsift vs RTK on Xcode/SPM output; then test xcsift + exactly one retrieval authority.
-7. **Raw fallback audit:** For every output/retrieval/offload component, document whether raw logs/source/artifacts are recoverable out of the box.
+**Reputation/evidence:**
 
-## Provisional guidance
+- GitHub: `chopratejas/headroom` / `headroomlabs-ai/headroom`, ~51k stars at retrieval time.
+- README claims 60–95% fewer tokens; repo data records maintainer benchmarks reporting 47–92% savings on several workloads.
+- Existing repo notes an external N=1 pilot where request-level compression did not translate into lower provider-billed totals due to extra turns. That means Headroom should own the compression layer alone; do not stack it with other compressors.
 
-For practical research, start with the smallest candidate cores, not full stacks:
+**Do not combine with:** RTK, TokenTamer, Kompact, LeanCTX proxy compression, Tokless, or another broad context compressor.
 
-### Claude Code
+## Qualified stack 5 — Context-Mode Offload Stack
 
-```text
-RTK + CodeGraph
-```
+**Best for:** workflows dominated by huge intermediate artifacts: long logs, many API/tool calls, large search results, multi-step MCP workflows, or exploratory analysis where only a selected final result should enter context.
 
-Then evaluate, one at a time:
-
-```text
-+ Ponytail
-+ Caveman Lite
-```
-
-### Codex CLI
-
-```text
-RTK + CodeGraph
-```
-
-Optional configuration, not counted as a tool:
-
-```text
-AGENTS.md minimalism/output rules
-```
-
-### Swift/Xcode
-
-```text
-xcsift
-```
-
-### Large-output/offload workflows
+**Deployable stack:**
 
 ```text
 Context-Mode
 ```
 
-The core research rule is now stricter than “stack across surfaces.” The real rule is:
+**Tool set inside the stack:**
 
-> A conservative stack must be both surface-compatible **and** verified to work together out of the box with positive marginal contribution from every included tool.
+| Internal component | Token-saving role |
+|---|---|
+| MCP/tool offload layer | Runs multi-step tool workflows outside the main model context. |
+| Sandbox execution | Keeps intermediate artifacts out of the chat context. |
+| Result selection | Returns only selected outputs instead of every intermediate payload. |
+| Hooks/routing enforcement | Applies the offload model across supported agent platforms. |
+
+**Why it satisfies the criteria:**
+
+- It is one offload stack, not a manual pairing with RTK or a retrieval engine.
+- It directly attacks the large-intermediate-output problem that command compactors only partially address.
+- It should be deployed alone for this surface; adding another output compactor creates routing conflict.
+
+**Reputation/evidence:**
+
+- GitHub: `mksglu/context-mode`, ~18k stars at retrieval time.
+- README and repo data record worked examples such as 150k-to-2k or 700KB-to-3KB style reductions.
+- It has Hacker News/community attention and claims multi-platform support through MCP/hooks.
+
+**Do not combine with:** RTK, Headroom, pctx, or other offload/output-compression tools unless the combination is explicitly supported and smoke-tested by the stack itself.
+
+## Qualified stack 6 — Caveman Code Replacement-Agent Stack
+
+**Best for:** users willing to replace Codex/Claude-style terminal agent runtime with a token-lean agent rather than adding token-saving middleware to an existing agent.
+
+**Deployable stack:**
+
+```text
+Caveman Code
+```
+
+**Tool set inside the stack:**
+
+| Internal component | Token-saving role |
+|---|---|
+| Terse interaction style | Reduces assistant output that gets reread in later turns. |
+| Per-tool output budgets | Caps or compresses tool outputs within the agent runtime. |
+| Read deduplication | Avoids repeatedly paying for the same context. |
+| Repository maps | Reduces exploratory file scanning. |
+| Model-role splitting | Uses cheaper/smaller models where appropriate. |
+| Persistent memory | Carries useful state without rereading everything. |
+| Optional RTK integration | Adds shell-output compaction when enabled by the agent. |
+
+**Why it satisfies the criteria:**
+
+- It is a replacement coding agent whose token-saving mechanisms are integrated into one runtime.
+- It does not require layering multiple independent Claude/Codex plugins.
+- Its benchmark compares the full agent runtime against Codex rather than only showing single-command compression.
+
+**Reputation/evidence:**
+
+- GitHub: `JuliusBrussee/caveman-code`, ~598 stars at retrieval time.
+- README reports a 25-task MicroBench using GPT-5.5 xhigh: 524k fresh tokens vs Codex 1.01M, with 14/25 tasks passing vs 15/25 for Codex.
+
+**Do not combine with:** Claude Code skills, Codex plugins, Tokless, Token Savior, or another agent runtime. This is an agent replacement, not middleware.
+
+## Not included
+
+The following are excluded from the qualified stack list despite being useful research leads:
+
+| Excluded item | Reason |
+|---|---|
+| `RTK + CodeGraph + Ponytail + Caveman` hand-built stack | High-reputation ingredients, but not itself an out-of-box integrated stack unless installed through Tokless. |
+| `RTK + CodeGraph` hand-built stack | Plausible and simple, but still manually composed; no stack-level out-of-box integration artifact was reviewed. |
+| `ripgrep + ast-grep + qmd` | Separate CLI primitives; requires disciplined workflow. |
+| CodeGraph + Serena / multiple code indexes | Competing retrieval authorities. |
+| RTK + Headroom / RTK + Context-Mode | Competing output/offload ownership unless the stack explicitly supports the combination. |
+| Repomix / Gitingest default use | Repository packing can increase context and conflicts with targeted retrieval. |
+| ccusage / Splitrail / tokentop / abtop | Measurement only; useful sidecars, but they do not directly save tokens. |
+| OmniRoute / 9router | High-reputation gateways, but current repo evidence is discovery-level and their primary value is provider routing/free-tier aggregation rather than conservative quality-preserving token reduction. |
+| Codex token-skills | Relevant but not enough evidence/reputation yet for this strict report. |
+
+## Practical selection guide
+
+| If your dominant waste source is... | Use this qualified stack | Do not add... |
+|---|---|---|
+| Claude/MCP coding with repeated code lookup, memory, and Bash noise | Token Savior | RTK, CodeGraph, extra memory systems |
+| You want a one-command multi-tool setup across Claude/OpenCode/Codex/Antigravity | Tokless | Manual extra compressors/retrievers |
+| You want one local-first owner for reads, shell, memory, budgets, and ledger | LeanCTX | RTK, CodeGraph, Headroom, separate memory |
+| Huge logs/files/RAG/history blobs | Headroom | RTK, Kompact, TokenTamer, LeanCTX proxy |
+| Huge intermediate tool workflows | Context-Mode | RTK, Headroom, pctx unless explicitly supported |
+| You can replace the whole terminal coding agent | Caveman Code | Claude/Codex plugin stacks |
+
+## Final recommendation
+
+For the strict out-of-box criterion, the safest answer is **not** to compose independent popular tools manually. Pick one integrated stack owner:
+
+1. **Token Savior** for MCP coding-agent workflows needing code navigation + memory + Bash compaction.
+2. **Tokless** when you specifically want a prewired multi-tool stack using RTK, Caveman, CodeGraph, and Context-Mode.
+3. **LeanCTX** when you want a local-first all-in-one context layer with accounting.
+4. **Headroom** when broad compression of logs/files/RAG/history is the main waste source.
+5. **Context-Mode** when intermediate artifacts are the main waste source.
+6. **Caveman Code** when replacing the agent runtime is acceptable.
+
+Do not combine these stacks with each other. Each should be treated as the owner of its covered surfaces.
