@@ -139,4 +139,3 @@ Compatibility-safe stack selection means the tools should not fight over the sam
 - [ ] Inspect project indexing and symbol lookup behavior.
 - [ ] Review tests for editing safety and failure behavior.
 - [ ] Compare against CodeGraph on architecture, implementation, and edit tasks.
-

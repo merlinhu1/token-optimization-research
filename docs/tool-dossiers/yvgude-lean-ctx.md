@@ -119,4 +119,3 @@ A compatibility-safe stack has components that do not fight over the same hook, 
 - [ ] Map which LeanCTX tools are enabled in each agent integration.
 - [ ] Inspect daemon state/cache boundaries and raw-output recovery paths.
 - [ ] Run focused comparisons against narrower tools by surface.
-

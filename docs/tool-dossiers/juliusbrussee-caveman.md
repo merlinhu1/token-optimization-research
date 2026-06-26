@@ -138,4 +138,3 @@ Compatibility-safe stack selection means the tools should not fight over the sam
 - [ ] Inspect activation and rules files for exact behavior changes.
 - [ ] Review benchmark harness and raw outputs for token accounting scope.
 - [ ] Compare against Ponytail, scrooge-mode, concise, and no behavior layer on identical tasks.
-

@@ -119,4 +119,3 @@ A compatibility-safe stack has components that do not fight over the same hook, 
 - [ ] Review storage schema, retention, redaction, and multi-agent namespace isolation.
 - [ ] Inspect summarization provider prompts and failure behavior.
 - [ ] Benchmark future-session task success and billed-token effects.
-

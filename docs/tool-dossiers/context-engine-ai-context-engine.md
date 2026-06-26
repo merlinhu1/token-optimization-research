@@ -96,4 +96,3 @@ A compatibility-safe stack has components that do not fight over the same hook, 
 - [ ] Locate the runtime MCP/server repository or package if separate.
 - [ ] Verify live tool schemas against the skill reference.
 - [ ] Only promote to Level 3 after reading actual retrieval/ranking/server code.
-

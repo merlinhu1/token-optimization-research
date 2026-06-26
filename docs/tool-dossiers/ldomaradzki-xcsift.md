@@ -116,4 +116,3 @@ A compatibility-safe stack has components that do not fight over the same hook, 
 - [ ] Review tests for all parser event types and TOON output.
 - [ ] Test interaction with RTK/TokenJuice/Snip on xcodebuild commands.
 - [ ] Measure provider-billed savings on iOS/macOS repair tasks.
-

@@ -116,4 +116,3 @@ A compatibility-safe stack has components that do not fight over the same hook, 
 - [ ] Inspect `src.services.compact` implementation files referenced by tests.
 - [ ] Review tool execution, permission, MCP, and memory subsystems.
 - [ ] Run independent task benchmark before ranking against add-on tool stacks.
-

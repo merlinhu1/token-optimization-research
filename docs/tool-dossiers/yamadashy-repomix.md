@@ -139,4 +139,3 @@ Compatibility-safe stack selection means the tools should not fight over the sam
 - [ ] Inspect ignore/filter/default include behavior.
 - [ ] Review token-counting or compression tests.
 - [ ] Compare against CodeGraph/Serena targeted retrieval for representative tasks.
-

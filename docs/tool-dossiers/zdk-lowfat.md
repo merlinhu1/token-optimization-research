@@ -116,4 +116,3 @@ A compatibility-safe stack has components that do not fight over the same hook, 
 - [ ] Inspect built-in embedded filters and command coverage.
 - [ ] Review raw-output retrieval/user workflow.
 - [ ] Benchmark against RTK/TokenJuice/Snip on terminal-heavy tasks.
-

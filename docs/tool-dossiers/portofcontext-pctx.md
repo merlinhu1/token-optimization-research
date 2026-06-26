@@ -116,4 +116,3 @@ A compatibility-safe stack has components that do not fight over the same hook, 
 - [ ] Inspect runtime JS wrappers and Deno/type-check behavior.
 - [ ] Review integration tests for output capture and diagnostic filtering.
 - [ ] Benchmark token savings against Context-Mode on the same MCP-heavy tasks.
-

@@ -139,4 +139,3 @@ Compatibility-safe stack selection means the tools should not fight over the sam
 - [ ] Inspect sandbox execution and result-selection source.
 - [ ] Review benchmark examples and raw outputs.
 - [ ] Test interaction with RTK/Headroom before stack recommendations.
-

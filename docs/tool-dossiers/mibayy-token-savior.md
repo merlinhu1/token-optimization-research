@@ -36,4 +36,3 @@ This dossier is not yet a deployment-grade recommendation. It records initial ev
 - [ ] Inspect bash rewriter fallback and raw-output capture behavior.
 - [ ] Review benchmark task definitions and token accounting.
 - [ ] Determine where memory and retrieval overlap with LeanCTX/Headroom.
-

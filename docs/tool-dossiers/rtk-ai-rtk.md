@@ -36,4 +36,3 @@ This dossier is not yet a deployment-grade recommendation. It records initial ev
 - [ ] Inspect hook rewrite behavior for Claude and Codex.
 - [ ] Verify whether full raw output is recoverable after compaction.
 - [ ] Review external tokbench counter-evidence and scope.
-

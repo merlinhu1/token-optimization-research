@@ -119,4 +119,3 @@ A compatibility-safe stack has components that do not fight over the same hook, 
 - [ ] Inspect include/exclude pattern edge cases and maximum-size behavior.
 - [ ] Review server caching/S3 behavior and auth-token handling.
 - [ ] Compare filtered digest use against targeted retrieval tools.
-

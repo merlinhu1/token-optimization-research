@@ -116,4 +116,3 @@ A compatibility-safe stack has components that do not fight over the same hook, 
 - [ ] Inspect setup/install paths and generated tool configs.
 - [ ] Review telemetry/privacy defaults.
 - [ ] Measure task-restart token savings with and without scaffold context.
-

@@ -119,4 +119,3 @@ A compatibility-safe stack has components that do not fight over the same hook, 
 - [ ] Inspect server tool schemas and result size controls.
 - [ ] Review daemon lifecycle/index refresh tests.
 - [ ] Benchmark semantic search and grep modes separately.
-

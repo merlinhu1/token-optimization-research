@@ -116,4 +116,3 @@ A compatibility-safe stack has components that do not fight over the same hook, 
 - [ ] Inspect filter YAML schema and representative filters.
 - [ ] Review hook install/uninstall for Claude/Codex/Pi.
 - [ ] Benchmark fidelity on test/build/log commands against RTK/Lowfat/TokenJuice.
-

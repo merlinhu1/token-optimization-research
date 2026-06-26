@@ -140,4 +140,3 @@ Compatibility-safe stack selection means the tools should not fight over the sam
 - [ ] Inspect provider wrapper/proxy behavior for Claude and Codex.
 - [ ] Review agent-evals and benchmark scoring/token accounting.
 - [ ] Check whether raw cache is local-only and how it is evicted.
-

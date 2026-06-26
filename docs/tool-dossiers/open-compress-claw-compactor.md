@@ -119,4 +119,3 @@ A compatibility-safe stack has components that do not fight over the same hook, 
 - [ ] Inspect Rewind store/retriever and hash collision/failure behavior.
 - [ ] Review benchmark datasets and raw results.
 - [ ] Test with coding-agent tool outputs that require exact line/error fidelity.
-

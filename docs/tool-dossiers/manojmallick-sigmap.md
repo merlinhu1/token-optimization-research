@@ -116,4 +116,3 @@ A compatibility-safe stack has components that do not fight over the same hook, 
 - [ ] Inspect extraction dispatch and per-language parsers.
 - [ ] Review benchmark reports/tasks and failure semantics.
 - [ ] Compare retrieval output budgets against CodeGraph/Serena/jcodemunch.
-

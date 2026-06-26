@@ -119,4 +119,3 @@ A compatibility-safe stack has components that do not fight over the same hook, 
 - [ ] Inspect MCP handler schemas and default search result budgets.
 - [ ] Review evaluation case studies and raw conversation logs.
 - [ ] Test vector DB failure modes and index-clear/sync race behavior.
-

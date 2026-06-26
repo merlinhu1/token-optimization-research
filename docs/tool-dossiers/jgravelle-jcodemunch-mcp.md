@@ -119,4 +119,3 @@ A compatibility-safe stack has components that do not fight over the same hook, 
 - [ ] Review registered tool list, output budgets, and schema encoders per tool.
 - [ ] Inspect storage/index freshness and redaction behavior.
 - [ ] Review benchmark harnesses and replay artifacts before ranking.
-

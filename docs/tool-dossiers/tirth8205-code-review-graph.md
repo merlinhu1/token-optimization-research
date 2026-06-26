@@ -119,4 +119,3 @@ A compatibility-safe stack has components that do not fight over the same hook, 
 - [ ] Inspect daemon/index invalidation and workspace watcher behavior.
 - [ ] Review benchmark corpora and expected outputs.
 - [ ] Compare retrieval quality against CodeGraph, Serena, and jcodemunch on same tasks.
-

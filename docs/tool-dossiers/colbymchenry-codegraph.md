@@ -36,4 +36,3 @@ This dossier is not yet a deployment-grade recommendation. It records initial ev
 - [ ] Inspect indexer and watcher staleness behavior.
 - [ ] Review benchmark task definitions and scoring.
 - [ ] Compare retrieval authority overlap with Serena and Token Savior.
-

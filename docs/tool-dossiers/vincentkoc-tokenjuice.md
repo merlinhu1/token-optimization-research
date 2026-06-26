@@ -116,4 +116,3 @@ A compatibility-safe stack has components that do not fight over the same hook, 
 - [ ] Inspect built-in generated rule catalog and safety/fallback behavior.
 - [ ] Review bench script and fixture coverage.
 - [ ] Test hook ordering against RTK/Snip/Claude Code native hooks.
-

@@ -36,4 +36,3 @@ This dossier is not yet a deployment-grade recommendation. It records initial ev
 - [ ] Inspect rules/instructions to identify safety exceptions and overconstraint risk.
 - [ ] Review benchmark harness and raw result files.
 - [ ] Compare with Bonsai, Whippet, Caveman, scrooge-mode, and concise using the same rubric.
-
