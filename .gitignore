@@ -7,8 +7,19 @@ __pycache__/
 scratch/
 *.tmp
 
-# Generated large-project fixture checkouts (materialized locally; do not commit)
+# Generated complex-project fixture checkouts (materialized locally; do not commit)
 sources/evaluations/large-projects/*/repo/
+sources/evaluations/medium-projects/*/repo/
+sources/evaluations/workflow-sessions/*/project/repo/
+sources/evaluations/workflow-sessions/*/codex-homes/
+
+# Generated evaluation run outputs and old per-profile planned-run matrices.
+# Current workflow runs are defined by data/workflow-task-sequences.json;
+# do not commit per-run logs, diffs, Codex homes, planned-run expansions,
+# or materialized workflow sessions.
+sources/evaluations/large-projects/*/runs/*/
+sources/evaluations/medium-projects/*/runs/*/
+sources/evaluations/workflow-sessions/*/
 
 # OS/editor
 .DS_Store

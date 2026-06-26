@@ -100,6 +100,7 @@
           "enum": [
             "synthetic-micro",
             "recorded-diagnostic",
+            "medium-project",
             "large-project"
           ]
         },
@@ -183,15 +184,60 @@
     "agent": {
       "type": "object",
       "required": [
+        "runtime_id",
+        "model_condition_id",
         "name",
         "version",
         "model",
         "provider",
+        "reasoning_effort",
         "temperature",
         "max_turns",
         "time_budget_seconds"
       ],
-      "properties": {}
+      "properties": {
+        "runtime_id": {
+          "type": "string",
+          "description": "Agent runtime identifier from data/evaluation-agent-runtimes.json, e.g. codex-cli or claude-code."
+        },
+        "model_condition_id": {
+          "type": "string",
+          "description": "Stable condition key combining runtime/provider/model/settings for aggregation and paired comparisons."
+        },
+        "name": {
+          "type": "string"
+        },
+        "version": {
+          "type": "string"
+        },
+        "model": {
+          "type": "string"
+        },
+        "provider": {
+          "type": "string"
+        },
+        "reasoning_effort": {
+          "type": ["string", "null"]
+        },
+        "temperature": {
+          "type": ["string", "number", "null"]
+        },
+        "context_window_tokens": {
+          "type": ["integer", "null"],
+          "minimum": 0
+        },
+        "usage_accounting": {
+          "type": "string"
+        },
+        "max_turns": {
+          "type": ["integer", "null"],
+          "minimum": 0
+        },
+        "time_budget_seconds": {
+          "type": ["integer", "null"],
+          "minimum": 0
+        }
+      }
     },
     "setup": {
       "type": "object",

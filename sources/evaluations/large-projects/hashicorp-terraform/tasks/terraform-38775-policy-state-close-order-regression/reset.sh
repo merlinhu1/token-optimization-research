@@ -3,7 +3,7 @@ set -euo pipefail
 TASK_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PROJECT_DIR="$(cd "$TASK_DIR/../.." && pwd)"
 REPO="$PROJECT_DIR/repo"
-COMMIT="afc607b675afef6995612fdff767fa65ecea681e"
+COMMIT="e02391ad384c9c38f1d7f40b853c0d2297348094"
 URL="https://github.com/hashicorp/terraform.git"
 
 GIT=(git --git-dir="$REPO/.git" --work-tree="$REPO")

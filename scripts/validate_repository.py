@@ -44,7 +44,11 @@ REQUIRED_PATHS = [
     "data/literature.json",
     "data/evaluations.json",
     "data/evaluation-profiles.json",
+    "data/evaluation-agent-runtimes.json",
+    "data/workflow-task-sequences.json",
+    "data/workflow-sessions.json",
     "data/large-project-candidates.json",
+    "data/medium-project-candidates.json",
     "data/repository-fixtures.json",
     "data/tool-analysis-backlog.json",
     "docs/architecture.md",
@@ -60,6 +64,7 @@ REQUIRED_PATHS = [
     "docs/evaluations/fixtures/README.md",
     "docs/evaluations/token-usage-and-quality-standards.md",
     "docs/evaluations/phase-2-benchmark-plan.md",
+    "docs/evaluations/continuous-workflow-simulation.md",
     "docs/evaluations/immediately-usable-flows.md",
     "docs/evaluations/repository-fixture-framework.md",
     "docs/evaluations/cumulative-result-schema.md",
@@ -117,7 +122,9 @@ REQUIRED_PATHS = [
     "templates/evaluation-record.md",
     "templates/evaluation-task.md",
     "templates/evaluation-run-record.json",
+    "templates/workflow-session-record.json",
     "schemas/evaluation-run-record.schema.json",
+    "schemas/workflow-session-record.schema.json",
     "templates/report.md",
     "templates/tool-dossier.md",
     "prompts/researcher.md",
@@ -169,13 +176,15 @@ FIXTURE_TOKEN_WASTE_SURFACES = {
     "replacement-runtime",
 }
 
-FIXTURE_SCALES = {"synthetic-micro", "recorded-diagnostic", "large-project"}
+FIXTURE_SCALES = {"synthetic-micro", "recorded-diagnostic", "medium-project", "large-project"}
 FIXTURE_EVALUATION_USES = {"calibration", "diagnostic-preservation", "primary-candidate", "primary-objective"}
 PROFILE_TYPES = {"control", "individual_tool", "tool_stack", "replacement_runtime", "installer_orchestrator", "comparator"}
 OBJECTIVES = {"individual_tool_effectiveness", "stack_effectiveness"}
 EVALUATION_RECORD_TYPES = {"run", "paired_comparison", "aggregate_summary"}
 EVALUATION_RUN_ROLES = {"baseline", "individual_tool_treatment", "stack_treatment", "replacement_runtime", "audit_only"}
 EVALUATION_STATUSES = {"planned", "running", "completed", "failed", "excluded", "superseded"}
+WORKFLOW_EVIDENCE_TYPES = {"workflow-simulation", "workflow-ablation", "sanity-check"}
+WORKFLOW_SESSION_ROLES = {"baseline", "individual_tool_treatment", "stack_treatment", "ablation", "sanity_check"}
 
 DOSSIER_SNAPSHOT_STATUSES = {
     "pinned-commit",
@@ -289,8 +298,8 @@ def validate_repository_fixtures(fixture_doc: dict, errors: list[str]) -> None:
         evaluation_use = fixture.get("evaluation_use")
         if evaluation_use not in FIXTURE_EVALUATION_USES:
             errors.append(f"fixture {fid} has invalid evaluation_use: {evaluation_use}")
-        if evaluation_use == "primary-objective" and fixture_scale != "large-project":
-            errors.append(f"fixture {fid} cannot be primary-objective unless fixture_scale is large-project")
+        if evaluation_use == "primary-objective" and fixture_scale not in {"large-project", "medium-project"}:
+            errors.append(f"fixture {fid} cannot be primary-objective unless fixture_scale is large-project or medium-project")
 
         artifact_paths = fixture.get("artifact_paths")
         if not isinstance(artifact_paths, dict) or not artifact_paths.get("root"):
@@ -355,6 +364,28 @@ def validate_large_project_candidates(candidate_doc: dict, fixture_doc: dict, er
                 errors.append(f"large-project candidate {cid} missing {key}")
 
 
+def validate_medium_project_candidates(candidate_doc: dict, fixture_doc: dict, errors: list[str]) -> None:
+    if candidate_doc.get("schema_version") != 1:
+        errors.append("data/medium-project-candidates.json must use schema_version 1")
+    candidates = candidate_doc.get("candidates")
+    if not isinstance(candidates, list) or not candidates:
+        errors.append("data/medium-project-candidates.json must contain a non-empty candidates list")
+        return
+    fixture_ids = {fixture.get("id") for fixture in fixture_doc.get("fixtures", [])}
+    for candidate in candidates:
+        cid = candidate.get("id")
+        if not cid:
+            errors.append("medium-project candidate missing id")
+            continue
+        if cid not in fixture_ids:
+            errors.append(f"medium-project candidate {cid} is not represented in data/repository-fixtures.json")
+        for key in ("github", "url", "language", "size_kb", "default_branch", "setup_policy", "verifier_policy"):
+            if candidate.get(key) in (None, ""):
+                errors.append(f"medium-project candidate {cid} missing {key}")
+        if not candidate.get("tasks"):
+            errors.append(f"medium-project candidate {cid} missing tasks")
+
+
 def validate_evaluation_profiles(profile_doc: dict, fixture_doc: dict, errors: list[str]) -> set[str]:
     if profile_doc.get("schema_version") != 1:
         errors.append("data/evaluation-profiles.json must use schema_version 1")
@@ -396,12 +427,62 @@ def validate_evaluation_profiles(profile_doc: dict, fixture_doc: dict, errors: l
     return seen
 
 
-def validate_evaluations(evaluation_doc: dict, fixture_doc: dict, profile_ids: set[str], errors: list[str]) -> None:
+def validate_agent_runtimes(runtime_doc: dict, errors: list[str]) -> tuple[set[str], set[str]]:
+    if runtime_doc.get("schema_version") != 1:
+        errors.append("data/evaluation-agent-runtimes.json must use schema_version 1")
+    runtimes = runtime_doc.get("agent_runtimes")
+    if not isinstance(runtimes, list) or not runtimes:
+        errors.append("data/evaluation-agent-runtimes.json must contain agent_runtimes")
+        runtimes = []
+    runtime_ids: set[str] = set()
+    for index, runtime in enumerate(runtimes):
+        if not isinstance(runtime, dict):
+            errors.append(f"agent runtime at index {index} must be an object")
+            continue
+        rid = runtime.get("id")
+        if not rid:
+            errors.append(f"agent runtime at index {index} missing id")
+            continue
+        if rid in runtime_ids:
+            errors.append(f"duplicate agent runtime id: {rid}")
+        runtime_ids.add(rid)
+        for key in ("status", "runner", "provider_family", "usage_extractor"):
+            if not runtime.get(key):
+                errors.append(f"agent runtime {rid} missing {key}")
+    conditions = runtime_doc.get("model_conditions")
+    if not isinstance(conditions, list) or not conditions:
+        errors.append("data/evaluation-agent-runtimes.json must contain model_conditions")
+        conditions = []
+    condition_ids: set[str] = set()
+    for index, condition in enumerate(conditions):
+        if not isinstance(condition, dict):
+            errors.append(f"model condition at index {index} must be an object")
+            continue
+        cid = condition.get("id")
+        if not cid:
+            errors.append(f"model condition at index {index} missing id")
+            continue
+        if cid in condition_ids:
+            errors.append(f"duplicate model condition id: {cid}")
+        condition_ids.add(cid)
+        runtime_id = condition.get("runtime_id")
+        if runtime_id not in runtime_ids:
+            errors.append(f"model condition {cid} references unknown runtime_id: {runtime_id}")
+        for key in ("provider", "model", "usage_accounting"):
+            if not condition.get(key):
+                errors.append(f"model condition {cid} missing {key}")
+    return runtime_ids, condition_ids
+
+
+def validate_evaluations(evaluation_doc: dict, fixture_doc: dict, profile_ids: set[str], runtime_ids: set[str], model_condition_ids: set[str], errors: list[str]) -> None:
     if evaluation_doc.get("schema_version") != 3:
         errors.append("data/evaluations.json must use schema_version 3")
     objectives = set(evaluation_doc.get("primary_objectives", []))
     if objectives != OBJECTIVES:
         errors.append("data/evaluations.json must declare both primary objectives")
+    required_model_keys = {"agent.runtime_id", "agent.provider", "agent.model", "agent.model_condition_id"}
+    if not required_model_keys.issubset(set(evaluation_doc.get("aggregation_keys", []))):
+        errors.append("data/evaluations.json aggregation_keys must include agent runtime/provider/model/model_condition_id")
     evaluations = evaluation_doc.get("evaluations")
     if not isinstance(evaluations, list):
         errors.append("data/evaluations.json must contain an evaluations list")
@@ -435,10 +516,163 @@ def validate_evaluations(evaluation_doc: dict, fixture_doc: dict, profile_ids: s
         profile = ev.get("profile", {})
         if isinstance(profile, dict) and profile.get("profile_id") and profile.get("profile_id") not in profile_ids:
             errors.append(f"evaluation {eid} references unknown profile {profile.get('profile_id')}")
+        agent = ev.get("agent", {})
+        if not isinstance(agent, dict):
+            errors.append(f"evaluation {eid} must define agent object")
+        else:
+            runtime_id = agent.get("runtime_id")
+            model_condition_id = agent.get("model_condition_id")
+            status = ev.get("status")
+            is_planned = status == "planned"
+            placeholders = ("bind at run start", "record at run start", "exact model id to bind")
+            def is_placeholder(value: object) -> bool:
+                text = str(value or "").lower()
+                return any(marker in text for marker in placeholders)
+            if runtime_id and runtime_id not in runtime_ids:
+                errors.append(f"evaluation {eid} references unknown agent.runtime_id {runtime_id}")
+            if model_condition_id and model_condition_id not in model_condition_ids:
+                errors.append(f"evaluation {eid} references unknown agent.model_condition_id {model_condition_id}")
+            for key in ("name", "model", "provider"):
+                if not agent.get(key):
+                    errors.append(f"evaluation {eid} missing agent.{key}")
+                elif not is_planned and is_placeholder(agent.get(key)):
+                    errors.append(f"evaluation {eid} has unbound agent.{key} after planning stage")
         if ev.get("objective") in OBJECTIVES and ev.get("evidence_stage") == "reproduction":
-            if target.get("fixture_scale") != "large-project":
-                errors.append(f"evaluation {eid} reproduction objective must target a large-project fixture")
+            if target.get("fixture_scale") not in {"large-project", "medium-project"}:
+                errors.append(f"evaluation {eid} reproduction objective must target a large-project or medium-project fixture")
 
+
+
+def validate_workflow_task_sequences(sequence_doc: dict, fixture_doc: dict, errors: list[str]) -> set[str]:
+    if sequence_doc.get("schema_version") != 1:
+        errors.append("data/workflow-task-sequences.json must use schema_version 1")
+    sequences = sequence_doc.get("sequences")
+    if not isinstance(sequences, list):
+        errors.append("data/workflow-task-sequences.json must contain a sequences list")
+        return set()
+    fixture_ids = {fixture.get("id") for fixture in fixture_doc.get("fixtures", [])}
+    sequence_ids: set[str] = set()
+    for index, sequence in enumerate(sequences):
+        if not isinstance(sequence, dict):
+            errors.append(f"workflow sequence at index {index} must be an object")
+            continue
+        sid = sequence.get("id")
+        if not sid:
+            errors.append(f"workflow sequence at index {index} missing id")
+            continue
+        if sid in sequence_ids:
+            errors.append(f"duplicate workflow sequence id: {sid}")
+        sequence_ids.add(sid)
+        if sequence.get("status") not in {"planned", "active", "retired"}:
+            errors.append(f"workflow sequence {sid} has invalid status: {sequence.get('status')}")
+        fixture_id = sequence.get("fixture_id")
+        if fixture_id not in fixture_ids:
+            errors.append(f"workflow sequence {sid} references unknown fixture {fixture_id}")
+        if sequence.get("objective") not in OBJECTIVES:
+            errors.append(f"workflow sequence {sid} has invalid objective: {sequence.get('objective')}")
+        if "cumulative provider-billed" not in str(sequence.get("primary_metric", "")):
+            errors.append(f"workflow sequence {sid} primary_metric must name cumulative provider-billed tokens")
+        tasks = sequence.get("tasks")
+        if not isinstance(tasks, list) or not tasks:
+            errors.append(f"workflow sequence {sid} must define a non-empty tasks list")
+            continue
+        orders = []
+        task_ids: set[str] = set()
+        for task in tasks:
+            if not isinstance(task, dict):
+                errors.append(f"workflow sequence {sid} contains non-object task")
+                continue
+            tid = task.get("id")
+            if not tid:
+                errors.append(f"workflow sequence {sid} has task missing id")
+            elif tid in task_ids:
+                errors.append(f"workflow sequence {sid} has duplicate task id {tid}")
+            else:
+                task_ids.add(tid)
+            order = task.get("order")
+            if not isinstance(order, int) or order < 1:
+                errors.append(f"workflow sequence {sid} task {tid} has invalid order {order}")
+            else:
+                orders.append(order)
+            prompt_path = task.get("prompt_path")
+            if prompt_path and not (ROOT / prompt_path).exists():
+                errors.append(f"workflow sequence {sid} task {tid} prompt_path does not exist: {prompt_path}")
+            verifier_command = task.get("verifier_command")
+            if not verifier_command:
+                errors.append(f"workflow sequence {sid} task {tid} missing verifier_command")
+        if orders and sorted(orders) != list(range(1, len(orders) + 1)):
+            errors.append(f"workflow sequence {sid} task orders must be contiguous starting at 1")
+    return sequence_ids
+
+
+def validate_workflow_sessions(session_doc: dict, sequence_ids: set[str], fixture_doc: dict, profile_ids: set[str], runtime_ids: set[str], model_condition_ids: set[str], errors: list[str]) -> None:
+    if session_doc.get("schema_version") != 1:
+        errors.append("data/workflow-sessions.json must use schema_version 1")
+    if session_doc.get("primary_metric") != "cumulative provider-billed workflow tokens":
+        errors.append("data/workflow-sessions.json primary_metric must be cumulative provider-billed workflow tokens")
+    sessions = session_doc.get("sessions")
+    if not isinstance(sessions, list):
+        errors.append("data/workflow-sessions.json must contain a sessions list")
+        return
+    fixture_ids = {fixture.get("id") for fixture in fixture_doc.get("fixtures", [])}
+    seen: set[str] = set()
+    for index, session in enumerate(sessions):
+        if not isinstance(session, dict):
+            errors.append(f"workflow session at index {index} must be an object")
+            continue
+        sid = session.get("session_id") or session.get("id")
+        if not sid:
+            errors.append(f"workflow session at index {index} missing session_id")
+            continue
+        if sid in seen:
+            errors.append(f"duplicate workflow session id: {sid}")
+        seen.add(sid)
+        if session.get("record_type") != "workflow_session":
+            errors.append(f"workflow session {sid} has invalid record_type: {session.get('record_type')}")
+        if session.get("evidence_type") not in WORKFLOW_EVIDENCE_TYPES:
+            errors.append(f"workflow session {sid} has invalid evidence_type: {session.get('evidence_type')}")
+        if session.get("objective") not in OBJECTIVES:
+            errors.append(f"workflow session {sid} has invalid objective: {session.get('objective')}")
+        if session.get("evidence_stage") not in {"benchmark_audit", "reproduction"}:
+            errors.append(f"workflow session {sid} has invalid evidence_stage: {session.get('evidence_stage')}")
+        if session.get("status") not in EVALUATION_STATUSES:
+            errors.append(f"workflow session {sid} has invalid status: {session.get('status')}")
+        if session.get("session_role") not in WORKFLOW_SESSION_ROLES:
+            errors.append(f"workflow session {sid} has invalid session_role: {session.get('session_role')}")
+        target = session.get("target", {})
+        if isinstance(target, dict) and target.get("fixture_id") and target.get("fixture_id") not in fixture_ids:
+            errors.append(f"workflow session {sid} references unknown fixture {target.get('fixture_id')}")
+        sequence = session.get("task_sequence", {})
+        if isinstance(sequence, dict) and sequence.get("sequence_id") and sequence.get("sequence_id") not in sequence_ids:
+            errors.append(f"workflow session {sid} references unknown sequence {sequence.get('sequence_id')}")
+        if session.get("status") == "completed" and session.get("evidence_type") == "workflow-simulation" and session.get("evidence_stage") == "reproduction":
+            prompt_delivery = sequence.get("prompt_delivery") if isinstance(sequence, dict) else None
+            if not isinstance(prompt_delivery, dict):
+                errors.append(f"workflow session {sid} must record task_sequence.prompt_delivery for completed workflow reproduction")
+            else:
+                if prompt_delivery.get("mode") != "sequential-one-task-at-a-time":
+                    errors.append(f"workflow session {sid} must use sequential-one-task-at-a-time prompt delivery")
+                if prompt_delivery.get("future_tasks_visible") is not False:
+                    errors.append(f"workflow session {sid} must hide future tasks during workflow reproduction")
+            leakage_controls = sequence.get("leakage_controls") if isinstance(sequence, dict) else None
+            if not isinstance(leakage_controls, dict) or leakage_controls.get("seed_origin_concealed") is not True:
+                errors.append(f"workflow session {sid} must record seed_origin_concealed leakage control for completed workflow reproduction")
+        profile = session.get("profile", {})
+        if isinstance(profile, dict) and profile.get("profile_id") and profile.get("profile_id") not in profile_ids:
+            errors.append(f"workflow session {sid} references unknown profile {profile.get('profile_id')}")
+        agent = session.get("agent", {})
+        if isinstance(agent, dict):
+            runtime_id = agent.get("runtime_id")
+            model_condition_id = agent.get("model_condition_id")
+            if runtime_id and runtime_id not in runtime_ids:
+                errors.append(f"workflow session {sid} references unknown agent.runtime_id {runtime_id}")
+            if model_condition_id and model_condition_id not in model_condition_ids:
+                errors.append(f"workflow session {sid} references unknown agent.model_condition_id {model_condition_id}")
+        elif session.get("status") != "planned":
+            errors.append(f"workflow session {sid} must define agent object")
+        if session.get("evidence_type") == "workflow-simulation" and session.get("evidence_stage") == "reproduction":
+            if target.get("fixture_scale") not in {"large-project", "medium-project"}:
+                errors.append(f"workflow session {sid} reproduction must target a large-project or medium-project fixture")
 
 
 def dossier_field(text: str, field: str) -> str | None:
@@ -505,8 +739,12 @@ def main() -> int:
     compatibility_doc = load_json("data/compatibility-edges.json")
     literature_doc = load_json("data/literature.json")
     evaluations_doc = load_json("data/evaluations.json")
+    workflow_sequences_doc = load_json("data/workflow-task-sequences.json")
+    workflow_sessions_doc = load_json("data/workflow-sessions.json")
     profiles_doc = load_json("data/evaluation-profiles.json")
+    agent_runtimes_doc = load_json("data/evaluation-agent-runtimes.json")
     large_candidates_doc = load_json("data/large-project-candidates.json")
+    medium_candidates_doc = load_json("data/medium-project-candidates.json")
     fixtures_doc = load_json("data/repository-fixtures.json")
     backlog_doc = load_json("data/tool-analysis-backlog.json")
 
@@ -545,8 +783,12 @@ def main() -> int:
 
     validate_repository_fixtures(fixtures_doc, errors)
     validate_large_project_candidates(large_candidates_doc, fixtures_doc, errors)
+    validate_medium_project_candidates(medium_candidates_doc, fixtures_doc, errors)
     profile_ids = validate_evaluation_profiles(profiles_doc, fixtures_doc, errors)
-    validate_evaluations(evaluations_doc, fixtures_doc, profile_ids, errors)
+    runtime_ids, model_condition_ids = validate_agent_runtimes(agent_runtimes_doc, errors)
+    validate_evaluations(evaluations_doc, fixtures_doc, profile_ids, runtime_ids, model_condition_ids, errors)
+    workflow_sequence_ids = validate_workflow_task_sequences(workflow_sequences_doc, fixtures_doc, errors)
+    validate_workflow_sessions(workflow_sessions_doc, workflow_sequence_ids, fixtures_doc, profile_ids, runtime_ids, model_condition_ids, errors)
     validate_tool_dossier_snapshots(errors)
 
     for lit in literature_doc.get("literature", []):
@@ -584,6 +826,7 @@ def main() -> int:
         ROOT / "docs/evaluations/fixtures/README.md",
         ROOT / "docs/evaluations/token-usage-and-quality-standards.md",
         ROOT / "docs/evaluations/phase-2-benchmark-plan.md",
+        ROOT / "docs/evaluations/continuous-workflow-simulation.md",
         ROOT / "docs/evaluations/immediately-usable-flows.md",
         ROOT / "docs/research/report-writing-and-methodology-skill-patterns.md",
         ROOT / "templates/report.md",
@@ -661,8 +904,13 @@ def main() -> int:
     print(f"- compatibility edges: {len(compatibility_doc.get('edges', []))}")
     print(f"- literature records: {len(literature_doc.get('literature', []))}")
     print(f"- evaluations: {len(evaluations_doc.get('evaluations', []))}")
+    print(f"- workflow task sequences: {len(workflow_sequences_doc.get('sequences', []))}")
+    print(f"- workflow sessions: {len(workflow_sessions_doc.get('sessions', []))}")
     print(f"- evaluation profiles: {len(profiles_doc.get('profiles', []))}")
+    print(f"- agent runtimes: {len(agent_runtimes_doc.get('agent_runtimes', []))}")
+    print(f"- model conditions: {len(agent_runtimes_doc.get('model_conditions', []))}")
     print(f"- large-project candidates: {len(large_candidates_doc.get('candidates', []))}")
+    print(f"- medium-project candidates: {len(medium_candidates_doc.get('candidates', []))}")
     print(f"- repository fixtures: {len(fixtures_doc.get('fixtures', []))}")
     return 0
 

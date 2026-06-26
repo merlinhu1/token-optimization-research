@@ -5,34 +5,10 @@
     "include": "Large, active, public repositories with substantial software-engineering task surfaces and feasible subsystem-scoped verification.",
     "exclude": "User-owned/local personal projects, toy fixtures, archived repositories, and projects where no bounded verifier can be frozen.",
     "promotion_required": "Clone/pin a clean snapshot, freeze one task prompt, freeze setup/reset/verifier commands, and record blocker-free raw artifact paths before marking primary-objective.",
-    "active_fixture_count": "Two first-wave fixtures only: Django for Python and Terraform for Go. Other large repositories are intentionally not active experiments until this loop proves stable."
+    "active_fixture_count": "Current qualified active fixture remains Terraform for Go. Target replacement matrix adds OrchardCore as the large C# candidate and demotes Django from the future default matrix once a five-task C# workflow is qualified.",
+    "target_matrix": "large C# OrchardCore plus large Go Terraform; avoid foundational/high-popularity platform projects such as ASP.NET Core/runtime/Roslyn for the C# slot."
   },
   "candidates": [
-    {
-      "id": "large-django-django",
-      "github": "django/django",
-      "url": "https://github.com/django/django",
-      "language": "Python",
-      "size_kb": 280876,
-      "stars": 87922,
-      "forks": 33914,
-      "open_issues": 459,
-      "default_branch": "main",
-      "pushed_at": "2026-07-01T01:17:33Z",
-      "role": "tractable Python large-project candidate",
-      "why": "Large mature Python web framework with substantial tests and stable development workflow; good first primary fixture because setup is lighter than monorepo-scale frontend projects.",
-      "task_classes": [
-        "large-codebase-navigation",
-        "multi-file-refactor",
-        "build-repair"
-      ],
-      "surface": "retrieval-context",
-      "setup_policy": "Clone a pinned commit, create a venv, install test requirements for the selected subsystem only, and freeze exact commands before qualification.",
-      "verifier_policy": "Use a bounded Django test subset plus formatting/static checks relevant to the frozen task; do not run the full suite for every replicate unless the task requires it.",
-      "selection_status": "active-fixture",
-      "selected_reason": "First-wave fixture: large public project with bounded subsystem verifier suitable for repeated baseline/treatment runs.",
-      "pinned_commit": "54495840a6a8b09ec40c793495e6541a3c0d3d5b"
-    },
     {
       "id": "large-hashicorp-terraform",
       "github": "hashicorp/terraform",
@@ -57,6 +33,33 @@
       "selection_status": "active-fixture",
       "selected_reason": "First-wave fixture: large public project with bounded subsystem verifier suitable for repeated baseline/treatment runs.",
       "pinned_commit": "8d3a8b76ecf1ead119c4fc5951e8f5130df1db90"
+    },
+    {
+      "id": "large-orchardcms-orchardcore",
+      "github": "OrchardCMS/OrchardCore",
+      "url": "https://github.com/OrchardCMS/OrchardCore",
+      "language": "C#",
+      "size_kb": 313973,
+      "stars": 8116,
+      "forks": 2579,
+      "open_issues": 834,
+      "default_branch": "main",
+      "pushed_at": "2026-07-08T02:06:06Z",
+      "role": "target large C# replacement fixture candidate",
+      "why": "Large active C# CMS/application framework with realistic module, routing, content, and service-layer task surfaces while avoiding foundational Microsoft platform repositories such as ASP.NET Core, runtime, or Roslyn.",
+      "task_classes": [
+        "large-codebase-navigation",
+        "multi-file-refactor",
+        "build-repair"
+      ],
+      "surface": "retrieval-context",
+      "setup_policy": "Install a pinned .NET SDK, clone a pinned commit, restore only the bounded solution/project subset needed for each task, and freeze exact build/test commands before qualification.",
+      "verifier_policy": "Use bounded dotnet test selectors on edited OrchardCore modules plus build checks for touched projects; do not run the full solution for every replicate unless the task requires it.",
+      "selection_status": "target-fixture-candidate",
+      "selected_reason": "Preferred large C# slot for the target matrix: substantial but not foundational, active, and likely to support bounded real maintenance tasks.",
+      "pinned_commit": "91cd8a4bfcaf9cb1388edef6867af2a0b5a0a000",
+      "qualification_status": "active-reproduction-flow",
+      "workflow_sequence_id": "orchardcore-maintenance-sequence-v1"
     }
   ]
 }

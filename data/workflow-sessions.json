@@ -1,0 +1,44 @@
+{
+  "schema_version": 1,
+  "description": "Append-only compact index of continuous workflow simulation session records. Raw evidence is local unless an explicitly accepted compact evidence bundle is committed.",
+  "primary_metric": "cumulative provider-billed workflow tokens",
+  "allowed_record_types": [
+    "workflow_session"
+  ],
+  "allowed_evidence_types": [
+    "workflow-simulation",
+    "workflow-ablation",
+    "sanity-check"
+  ],
+  "allowed_session_roles": [
+    "baseline",
+    "individual_tool_treatment",
+    "stack_treatment",
+    "ablation",
+    "sanity_check"
+  ],
+  "allowed_statuses": [
+    "planned",
+    "running",
+    "completed",
+    "failed",
+    "excluded",
+    "superseded"
+  ],
+  "aggregation_keys": [
+    "study_id",
+    "experiment_group_id",
+    "objective",
+    "target.fixture_id",
+    "task_sequence.sequence_id",
+    "profile.profile_id",
+    "session_role",
+    "replicate_index",
+    "agent.runtime_id",
+    "agent.provider",
+    "agent.model",
+    "agent.model_condition_id"
+  ],
+  "append_policy": "Add one immutable workflow_session record per executed baseline or treatment session. Completed workflow-simulation reproduction records must use sequential one-task-at-a-time prompt delivery and seed-origin concealment. Compare sessions only when task sequence, initial snapshot, runtime_id, provider, model, and model_condition_id are intentionally bound. Supersede rather than edit historical results except for path typo correction with rationale.",
+  "sessions": []
+}

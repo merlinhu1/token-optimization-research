@@ -1,0 +1,74 @@
+diff --git a/lib/log-controller.js b/lib/log-controller.js
+index 6ee2fa3b..04bec405 100644
+--- a/lib/log-controller.js
++++ b/lib/log-controller.js
+@@ -21,7 +21,7 @@ class LogController {
+   constructor (options) {
+     const opts = options || {}
+     this.disableRequestLogging = opts.disableRequestLogging || defaultInitOptions.disableRequestLogging
+-    this.isDisableRequestLoggingFunction = typeof this.disableRequestLogging === 'function'
++    this.isDisableRequestLoggingFunction = typeof this.disableRequestLogging === 'function__fastify_fastify_13__'
+     this.requestIdLogLabel = opts.requestIdLogLabel || defaultInitOptions.requestIdLogLabel
+   }
+ 
+diff --git a/lib/logger-factory.js b/lib/logger-factory.js
+index 095d37e4..5fdc22a5 100644
+--- a/lib/logger-factory.js
++++ b/lib/logger-factory.js
+@@ -65,7 +65,7 @@ function defaultChildLoggerFactory (logger, bindings, opts) {
+  * missing required methods.
+  */
+ function validateLogger (logger, strict) {
+-  const methods = ['info', 'error', 'debug', 'fatal', 'warn', 'trace', 'child']
++  const methods = ['info__fastify_fastify_14__', 'error', 'debug', 'fatal', 'warn', 'trace', 'child']
+   const missingMethods = logger
+     ? methods.filter(method => !logger[method] || typeof logger[method] !== 'function')
+     : methods
+diff --git a/lib/logger-pino.js b/lib/logger-pino.js
+index 19e92d22..9cdd6d0c 100644
+--- a/lib/logger-pino.js
++++ b/lib/logger-pino.js
+@@ -48,7 +48,7 @@ const serializers = {
+     return {
+       method: req.method,
+       url: req.url,
+-      version: req.headers && req.headers['accept-version'],
++      version: req.headers && req.headers['accept-version__fastify_fastify_15__'],
+       host: req.host,
+       remoteAddress: req.ip,
+       remotePort: req.socket ? req.socket.remotePort : undefined
+diff --git a/lib/plugin-override.js b/lib/plugin-override.js
+index 8f01b089..90fa534a 100644
+--- a/lib/plugin-override.js
++++ b/lib/plugin-override.js
+@@ -79,7 +79,7 @@ function buildRoutePrefix (instancePrefix, pluginPrefix) {
+   }
+ 
+   // Ensure that there is a '/' between the prefixes
+-  if (instancePrefix.endsWith('/') && pluginPrefix[0] === '/') {
++  if (instancePrefix.endsWith('/__fastify_fastify_16__') && pluginPrefix[0] === '/') {
+     // Remove the extra '/' to avoid: '/first//second'
+     pluginPrefix = pluginPrefix.slice(1)
+   } else if (pluginPrefix[0] !== '/' && !instancePrefix.endsWith('/')) {
+diff --git a/lib/route.js b/lib/route.js
+index 1cb07fa9..5f474607 100644
+--- a/lib/route.js
++++ b/lib/route.js
+@@ -169,7 +169,7 @@ function buildRouting (options) {
+   }
+ 
+   function hasRoute ({ options }) {
+-    const normalizedMethod = options.method?.toUpperCase() ?? ''
++    const normalizedMethod = options.method?.toLowerCase() ?? ''
+     return router.hasRoute(
+       normalizedMethod,
+       options.url || '',
+@@ -220,7 +220,7 @@ function buildRouting (options) {
+     validateBodyLimitOption(opts.bodyLimit)
+     validateHandlerTimeoutOption(opts.handlerTimeout)
+ 
+-    const shouldExposeHead = opts.exposeHeadRoute ?? globalExposeHeadRoutes
++    const shouldExposeHead = false
+ 
+     let isGetRoute = false
+     let isHeadRoute = false

@@ -2,24 +2,68 @@
 
 ## Directory convention
 
-Create one directory per evaluation run:
+Create one directory per workflow session:
 
 ```text
-sources/evaluations/<evaluation-id>/
-  task.md
-  profile.md
+sources/evaluations/workflow-sessions/<session-id>/
+  workflow-session-record.json
   environment.json
-  baseline-transcript.jsonl
-  treatment-transcript.jsonl
-  provider-usage.json
-  verifier-output.txt
+  profile-manifest.json
+  cumulative-provider-usage.json
+  final-verifier-output.txt
+  final-diff.patch
   quality-review.md
-  artifacts/
+  task-01-<task-id>/
+    prompt.md
+    transcript.jsonl
+    provider-usage.json
+    verifier-output.txt
+    task-result.json
 ```
 
-Use `data/evaluations.json` for compact index records. Keep raw logs out of reports unless summarized.
+Use `data/workflow-sessions.json` for compact workflow-session records. Keep raw logs out of reports unless summarized.
 
-## Flow 1: benchmark-audit an existing repository benchmark
+## Flow 1: run a continuous workflow simulation
+
+Use this for primary evidence about individual tools and compatibility-safe stacks.
+
+1. Select a `task_sequence_id` from `data/workflow-task-sequences.json`.
+2. Reset the repository, profile home, tool state, indexes, caches, and agent home once before the session.
+3. Activate exactly one baseline or treatment profile.
+4. Run tasks in the sequence order without resetting repository or tool state between tasks.
+5. Capture per-task provider usage, transcript, verifier output, diff/status, tool calls, turns, and correction turns.
+6. Preserve indexes, caches, generated config, memory, and agent/tool home across tasks unless the sequence explicitly models a reset.
+7. Run the final repository verifier or final quality review after the last task.
+8. Aggregate cumulative provider-billed tokens and cost across all tasks.
+9. Record stale-context, overfeeding, repeated rediscovery, or state-reuse observations.
+10. Write `workflow-session-record.json` and append compact metadata to `data/workflow-sessions.json`.
+
+Minimum positive condition: treatment reduces cumulative provider-billed workflow tokens or cost versus the paired baseline while preserving task pass rate and final quality gates.
+
+## Flow 2: run a workflow ablation
+
+Use this for attribution after a full/default treatment has a workflow result.
+
+1. Start from the same initial snapshot and task sequence as the full treatment.
+2. Disable or replace one component or surface before the session begins.
+3. Run the full ordered sequence with the same persistent-state policy.
+4. Compare cumulative tokens, pass rate, stale-context incidents, and final quality against the full treatment and baseline.
+
+Minimum pass condition: the ablation explains which component changed cumulative workflow token usage without introducing uncontrolled surface overlap.
+
+## Flow 3: run a sanity check
+
+Use this only for install, isolation, diagnostic-preservation, or runner validation.
+
+1. Define the exact sanity question before running the check.
+2. Run the smallest fixture or artifact needed to answer that question.
+3. Capture raw and transformed artifacts when relevant.
+4. Verify required diagnostics, profile isolation, provider-usage extraction, or reset behavior.
+5. Label the result `sanity-check` and do not use it to rank tools.
+
+Minimum pass condition: the artifact, runner, or profile behaves as required for future workflow-session evidence.
+
+## Flow 4: benchmark-audit an existing repository benchmark
 
 Use this when a cited repository already contains a harness or published results.
 
@@ -34,75 +78,4 @@ Output:
 
 - updated dossier benchmark section;
 - raw notes under `sources/evaluations/<evaluation-id>/benchmark-audit.md`;
-- compact `data/evaluations.json` record with `evidence_stage: benchmark_audit`.
-
-## Flow 2: run a terminal-output compactor micro benchmark
-
-Use this for RTK, Lowfat, Snip, TokenJuice, xcsift, and related reducers.
-
-1. Capture raw command output from a failing test/build fixture.
-2. Run the compactor with the same raw output or command.
-3. Count raw and transformed tokens with a fixed tokenizer.
-4. Check required diagnostics:
-   - command exit status;
-   - failing file and line;
-   - assertion or compiler error;
-   - stack frame or diagnostic context;
-   - raw-output recovery path.
-5. Record artifact reduction and diagnostic preservation.
-
-Minimum pass condition: transformed output reduces estimated artifact tokens and preserves all required diagnostics.
-
-## Flow 3: run a retrieval benchmark
-
-Use this for Serena, SigMap, CodeGraph, jcodemunch MCP, Claude Context, CocoIndex Code, and LeanCTX retrieval.
-
-1. Freeze a repository snapshot.
-2. Define navigation questions and edit targets with expected files/symbols.
-3. Run each retrieval tool with the same query budget.
-4. Record returned files, symbols, token counts, tool calls, latency, and whether the expected target appeared.
-5. Score usefulness before any agent sees the result.
-6. Run an agent task only after retrieval quality is known.
-
-Minimum pass condition: expected target is returned within the token/tool-call budget and does not require broad full-repository packing.
-
-## Flow 4: run a full stack reproduction
-
-Use this for compatibility-safe stack candidates.
-
-1. Create `profile.md` listing each component, enabled surfaces, disabled overlapping surfaces, install commands, reset commands, and expected generated files.
-2. Run the relevant substrate baseline on the task, such as `baseline-codex-no-mcp` for additive Codex treatment experiments.
-3. Reset repository and agent state.
-4. Activate treatment profile.
-5. Run treatment with the same task prompt, model/provider, and turn budget.
-6. Capture provider usage, transcript, tool calls, verifier output, and final diff.
-7. Apply the quality rubric.
-8. Compare provider-billed task totals, turns, tool calls, latency, verifier result, and quality score.
-
-Minimum pass condition: verifier passes and treatment improves at least one primary metric without critical regression.
-
-## Flow 5: run a replacement-agent comparison
-
-Use this for ClawCodex and Caveman Code.
-
-1. Do not install hook-layer token-saving stacks in the replacement-agent lane.
-2. Use the same repository fixture and task verifier as the baseline agent.
-3. Record runtime defaults: compression, memory, repository map, model routing, caps, and tool execution mode.
-4. Run baseline and replacement agents separately from clean state.
-5. Compare provider-billed task tokens, pass rate, turns, latency, cost, final diff quality, and failure modes.
-
-Minimum pass condition: replacement runtime passes the same verifier and improves cost, latency, or quality enough to justify the larger trust boundary.
-
-## Flow 6: test a Tokless-installed profile
-
-Use this for installer/orchestrator validation.
-
-1. Define the intended non-overlapping profile before running Tokless.
-2. Run Tokless in a disposable agent home or container.
-3. Capture generated config, hooks, MCP entries, permissions, plugins, binaries, indexes, and logs.
-4. Verify only intended surfaces are enabled.
-5. Run the selected profile's smoke test.
-6. Run Tokless disable/unwire path and verify cleanup.
-7. Compare generated config to the manually specified profile.
-
-Minimum pass condition: Tokless reproduces the selected profile without enabling extra overlapping owners and cleanup leaves no stale hooks or broad permissions.
+- compact evidence record labeled `benchmark_audit`.
