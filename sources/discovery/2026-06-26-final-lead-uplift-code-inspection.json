@@ -1,0 +1,2056 @@
+{
+  "generated_at": "2026-06-26",
+  "items": [
+    {
+      "repo": "HoangP8/tokless",
+      "url": "https://github.com/HoangP8/tokless",
+      "head": "769cd6dc84139425cba651167c26b76cc153f294",
+      "retrieved_at": "2026-06-26",
+      "evidence_stage": "source-logic",
+      "method": "Representative implementation files were read from local shallow clones. Excerpts identify runtime behavior, state, hook/MCP wiring, token/cost/accounting logic, and compatibility-relevant boundaries; this is source-logic inspection, not README-only or integration-only review.",
+      "inspected_files": [
+        {
+          "path": "cmd/tokless/main.go",
+          "bytes": 5051,
+          "sha256_prefix": "44c118b6f92ab880",
+          "line_count": 189,
+          "excerpts": [
+            {
+              "line": 48,
+              "text": "\t\t\"  \" + cy(\"tokless\") + \"              Install + wire everything (default; safe to re-run)\\n\" +"
+            },
+            {
+              "line": 51,
+              "text": "\t\t\"  \" + cy(\"tokless index\") + \"        Build per-project indexes (codegraph) in the current dir\\n\" +"
+            },
+            {
+              "line": 52,
+              "text": "\t\t\"  \" + cy(\"tokless uninstall\") + \"    Remove everything tokless ever touched\\n\\n\" +"
+            },
+            {
+              "line": 55,
+              "text": "\t\t\"  --tools <list>      Limit to a subset: rtk,caveman,codegraph,context-mode\\n\" +"
+            },
+            {
+              "line": 101,
+              "text": "\tif len(os.Args) >= 3 && os.Args[1] == \"run-mcp\" {"
+            },
+            {
+              "line": 102,
+              "text": "\t\treturn commands.RunMcp(os.Args[2:])"
+            },
+            {
+              "line": 104,
+              "text": "\tif len(os.Args) >= 3 && os.Args[1] == \"rtk-hook\" {"
+            },
+            {
+              "line": 107,
+              "text": "\t\t\treturn commands.RunRtkHook()"
+            },
+            {
+              "line": 109,
+              "text": "\t\t\treturn commands.RunRtkHookCodex()"
+            },
+            {
+              "line": 111,
+              "text": "\t\t\treturn commands.RunRtkHookClaude()"
+            },
+            {
+              "line": 114,
+              "text": "\tif len(os.Args) >= 4 && os.Args[1] == \"context-mode-hook\" && os.Args[2] == \"agy\" && os.Args[3] == \"preinvocation\" {"
+            },
+            {
+              "line": 117,
+              "text": "\tif len(os.Args) >= 4 && os.Args[1] == \"context-mode-hook\" && os.Args[2] == \"agy\" && os.Args[3] == \"pretooluse\" {"
+            },
+            {
+              "line": 120,
+              "text": "\tif len(os.Args) >= 3 && os.Args[1] == \"agy-hook\" && os.Args[2] == \"codegraph-index\" {"
+            },
+            {
+              "line": 121,
+              "text": "\t\treturn commands.RunCodegraphIndexHook()"
+            },
+            {
+              "line": 162,
+              "text": "\t\tDryRun:  p.bools[\"dry-run\"] || p.bools[\"dryrun\"],"
+            },
+            {
+              "line": 178,
+              "text": "\tcase \"uninstall\":"
+            }
+          ]
+        },
+        {
+          "path": "internal/core/core.go",
+          "bytes": 3012,
+          "sha256_prefix": "6ef4cbfd871a71f1",
+          "line_count": 119,
+          "excerpts": [
+            {
+              "line": 3,
+              "text": "// RunOpts carries per-call flags through install/wire/unwire."
+            },
+            {
+              "line": 5,
+              "text": "\tDryRun  bool"
+            },
+            {
+              "line": 29,
+              "text": "\tInstalled bool"
+            },
+            {
+              "line": 49,
+              "text": "// ToolManifest describes one tool and how it installs/wires per agent."
+            },
+            {
+              "line": 55,
+              "text": "\tInstallHint  string"
+            },
+            {
+              "line": 59,
+              "text": "\t// MinNodeMajor is the minimum Node.js major version required to install."
+            },
+            {
+              "line": 60,
+              "text": "\t// 0 = no constraint. context-mode needs Node 22+ (better-sqlite3 native + engines)."
+            },
+            {
+              "line": 62,
+              "text": "\tInstall      func(opts RunOpts) (bool, error)"
+            },
+            {
+              "line": 63,
+              "text": "\tWireFor      map[string]AgentFn"
+            },
+            {
+              "line": 64,
+              "text": "\tUnwireFor    map[string]AgentFn"
+            },
+            {
+              "line": 65,
+              "text": "\tVerifyFor    map[string]VerifyFn"
+            },
+            {
+              "line": 87,
+              "text": "// RegisterTool appends a tool, preserving registration order."
+            },
+            {
+              "line": 88,
+              "text": "func RegisterTool(t *ToolManifest) {"
+            }
+          ]
+        },
+        {
+          "path": "internal/commands/init.go",
+          "bytes": 6895,
+          "sha256_prefix": "a9be3fb95862117c",
+          "line_count": 260,
+          "excerpts": [
+            {
+              "line": 15,
+              "text": "\tDryRun  bool"
+            },
+            {
+              "line": 58,
+              "text": "\tif !opts.DryRun {"
+            },
+            {
+              "line": 64,
+              "text": "\tinstallLogs := map[string]string{}"
+            },
+            {
+              "line": 72,
+              "text": "\t\tinstalled := false"
+            },
+            {
+              "line": 74,
+              "text": "\t\t\tok, e := tool.Install(core.RunOpts{DryRun: opts.DryRun, Upgrade: opts.Upgrade, Report: report})"
+            },
+            {
+              "line": 75,
+              "text": "\t\t\tinstalled = ok"
+            },
+            {
+              "line": 81,
+              "text": "\t\t\tinstallLogs[tool.Label] = logs"
+            },
+            {
+              "line": 82,
+              "text": "\t\tcase !installed:"
+            },
+            {
+              "line": 83,
+              "text": "\t\t\ttoolBar.Fail(\"install failed\")"
+            },
+            {
+              "line": 84,
+              "text": "\t\t\tinstallLogs[tool.Label] = logs"
+            },
+            {
+              "line": 90,
+              "text": "\tprintFailureDetail(installLogs)"
+            },
+            {
+              "line": 92,
+              "text": "\tif !opts.DryRun {"
+            },
+            {
+              "line": 97,
+              "text": "\tinstalledIDs := map[string]bool{}"
+            },
+            {
+              "line": 100,
+              "text": "\t\tif d := a.Detect(); d.Installed {"
+            },
+            {
+              "line": 101,
+              "text": "\t\t\tinstalledIDs[a.ID] = true"
+            },
+            {
+              "line": 111,
+              "text": "\t\t// Non-interactive shell: can't prompt, so wire every installed agent"
+            }
+          ]
+        },
+        {
+          "path": "internal/commands/disable.go",
+          "bytes": 3981,
+          "sha256_prefix": "ca4e746b37b1b5c3",
+          "line_count": 153,
+          "excerpts": [
+            {
+              "line": 15,
+              "text": "func RunUninstall(opts InitOptions) int {"
+            },
+            {
+              "line": 16,
+              "text": "\treturn disableImpl(opts, true, \"Uninstalled\")"
+            },
+            {
+              "line": 25,
+              "text": "\t\tif a.Detect().Installed {"
+            },
+            {
+              "line": 59,
+              "text": "\t\t\t\tif unwire, ok := tool.UnwireFor[id]; ok && !opts.DryRun {"
+            },
+            {
+              "line": 60,
+              "text": "\t\t\t\t\t_, _ = unwire(core.RunOpts{DryRun: opts.DryRun})"
+            },
+            {
+              "line": 69,
+              "text": "\tif removeTools && !opts.DryRun && len(tools) == len(allTools) && len(agentIDs) == len(detected) {"
+            }
+          ]
+        },
+        {
+          "path": "internal/commands/index.go",
+          "bytes": 5326,
+          "sha256_prefix": "f848aee444344540",
+          "line_count": 245,
+          "excerpts": [
+            {
+              "line": 81,
+              "text": "\tro := core.RunOpts{DryRun: opts.DryRun, Agent: opts.Agent}"
+            },
+            {
+              "line": 86,
+              "text": "\t\t\t\tutil.L.Raw(\"  \" + util.C.Gray(\"\u2022 \") + t.Label + util.C.Gray(\"  not installed \u2014 run tokless first\"))"
+            },
+            {
+              "line": 124,
+              "text": "// RunCodegraphIndexHook handles `tokless agy-hook codegraph-index`."
+            },
+            {
+              "line": 125,
+              "text": "func RunCodegraphIndexHook() int {"
+            },
+            {
+              "line": 127,
+              "text": "\tdir := resolveHookProjectDirFromInput(input)"
+            },
+            {
+              "line": 131,
+              "text": "\tif util.Exists(filepath.Join(dir, \".codegraph\")) {"
+            },
+            {
+              "line": 132,
+              "text": "\t\tif bin := resolveCodegraphBin(); bin != \"\" {"
+            },
+            {
+              "line": 139,
+              "text": "\tif bin := resolveCodegraphBin(); bin == \"\" {"
+            },
+            {
+              "line": 149,
+              "text": "func resolveHookProjectDirFromInput(input []byte) string {"
+            },
+            {
+              "line": 165,
+              "text": "func resolveCodegraphBin() string {"
+            },
+            {
+              "line": 166,
+              "text": "\tif p := util.Which(\"codegraph\"); p != \"\" {"
+            },
+            {
+              "line": 167,
+              "text": "\t\tres := util.Run(\"codegraph\", []string{\"--version\"}, util.RunOptions{Capture: true})"
+            },
+            {
+              "line": 181,
+              "text": "\treturn util.Which(\"codegraph\")"
+            },
+            {
+              "line": 183,
+              "text": "func RunClaudeCodegraphSyncHook() int {"
+            },
+            {
+              "line": 194,
+              "text": "\tif !util.Exists(filepath.Join(dir, \".codegraph\")) {"
+            },
+            {
+              "line": 195,
+              "text": "\t\tif bin := resolveCodegraphBin(); bin != \"\" {"
+            }
+          ]
+        },
+        {
+          "path": "internal/commands/runmcp.go",
+          "bytes": 587,
+          "sha256_prefix": "7fe15c467a6ddfb9",
+          "line_count": 32,
+          "excerpts": [
+            {
+              "line": 12,
+              "text": "func RunMcp(argv []string) int {"
+            },
+            {
+              "line": 30,
+              "text": "\treturn handoffMcp(path, argv, os.Environ())"
+            }
+          ]
+        },
+        {
+          "path": "internal/tools/rtk.go",
+          "bytes": 11603,
+          "sha256_prefix": "c411ec8d46a0cb03",
+          "line_count": 422,
+          "excerpts": [
+            {
+              "line": 15,
+              "text": "func rtkAssetForThisPlatform() string {"
+            },
+            {
+              "line": 22,
+              "text": "\t\treturn \"rtk-\" + arch + \"-apple-darwin.tar.gz\""
+            },
+            {
+              "line": 25,
+              "text": "\t\t\treturn \"rtk-aarch64-unknown-linux-gnu.tar.gz\""
+            },
+            {
+              "line": 27,
+              "text": "\t\treturn \"rtk-x86_64-unknown-linux-musl.tar.gz\""
+            },
+            {
+              "line": 29,
+              "text": "\t\treturn \"rtk-\" + arch + \"-pc-windows-msvc.zip\""
+            },
+            {
+              "line": 34,
+              "text": "func rtkEnsureInstalled(opts core.RunOpts) (bool, error) {"
+            },
+            {
+              "line": 35,
+              "text": "\tif os.Getenv(\"TOKLESS_TEST\") == \"1\" {"
+            },
+            {
+              "line": 36,
+              "text": "\t\tshimDir := filepath.Join(os.TempDir(), \"tokless-test-rtk\")"
+            },
+            {
+              "line": 38,
+              "text": "\t\tshimPath := filepath.Join(shimDir, \"rtk\")"
+            },
+            {
+              "line": 54,
+              "text": "\tif p := util.ResolveRtkBin(); p != \"\" && !opts.Upgrade {"
+            },
+            {
+              "line": 55,
+              "text": "\t\topts.Reportf(\"already installed\", 1)"
+            },
+            {
+              "line": 58,
+              "text": "\tif opts.DryRun {"
+            },
+            {
+              "line": 60,
+              "text": "\t\t\tutil.L.Sub(\"[dry-run] would re-download latest rtk binary\")"
+            },
+            {
+              "line": 62,
+              "text": "\t\t\tutil.L.Sub(\"[dry-run] would download prebuilt rtk binary\")"
+            },
+            {
+              "line": 66,
+              "text": "\tif asset := rtkAssetForThisPlatform(); asset != \"\" && rtkInstallPrebuilt(asset, opts) {"
+            },
+            {
+              "line": 71,
+              "text": "\t\tr := util.Run(\"sh\", []string{\"-c\", \"curl -fsSL https://raw.githubusercontent.com/rtk-ai/rtk/master/install.sh | sh\"}, util.RunOptions{})"
+            }
+          ]
+        },
+        {
+          "path": "internal/tools/contextmode.go",
+          "bytes": 20574,
+          "sha256_prefix": "fbfffd5f61a28df1",
+          "line_count": 733,
+          "excerpts": [
+            {
+              "line": 14,
+              "text": "func ctxEnsureInstalled(opts core.RunOpts) (bool, error) {"
+            },
+            {
+              "line": 18,
+              "text": "\tif opts.DryRun {"
+            },
+            {
+              "line": 19,
+              "text": "\t\tutil.L.Sub(\"[dry-run] would: npm install -g context-mode@latest (cache-skew-resistant)\")"
+            },
+            {
+              "line": 23,
+              "text": "\tif util.Which(\"context-mode\") != \"\" && !opts.Upgrade {"
+            },
+            {
+              "line": 24,
+              "text": "\t\topts.Reportf(\"already installed\", 1)"
+            },
+            {
+              "line": 27,
+              "text": "\t// context-mode needs Node 22+ (better-sqlite3 native prebuild)."
+            },
+            {
+              "line": 30,
+              "text": "\t\t\tutil.L.Warn(\"Node.js v\" + strconv.Itoa(maj) + \" is too old for context-mode (need v\" + strconv.Itoa(contextModeMinNode) + \"+).\")"
+            },
+            {
+              "line": 32,
+              "text": "\t\t\t\tif !util.InstallNodeForTools() {"
+            },
+            {
+              "line": 33,
+              "text": "\t\t\t\t\tutil.L.Err(\"couldn't upgrade Node.js. context-mode needs v\" + strconv.Itoa(contextModeMinNode) + \"+.\")"
+            },
+            {
+              "line": 38,
+              "text": "\t\t\t\tutil.L.Sub(\"Skipping. context-mode may fail to install.\")"
+            },
+            {
+              "line": 42,
+              "text": "\topts.Reportf(\"npm install -g\", 0.4)"
+            },
+            {
+              "line": 43,
+              "text": "\tv, ok, _ := util.NpmGlobalInstall(\"context-mode\", \"latest\")"
+            },
+            {
+              "line": 45,
+              "text": "\t\tutil.L.Err(\"context-mode install failed across all strategies (npm + tarball fallback).\")"
+            },
+            {
+              "line": 53,
+              "text": "\tutil.L.Sub(util.C.Dim(\"context-mode @\" + v + \" installed\"))"
+            },
+            {
+              "line": 60,
+              "text": "\treturn entry == \"context-mode\" || strings.HasPrefix(entry, \"context-mode@\")"
+            },
+            {
+              "line": 66,
+              "text": "\tif opts.DryRun {"
+            }
+          ]
+        },
+        {
+          "path": "internal/tools/codegraph.go",
+          "bytes": 7398,
+          "sha256_prefix": "faadfac4b9e7a44e",
+          "line_count": 264,
+          "excerpts": [
+            {
+              "line": 14,
+              "text": "func codegraphEnsureInstalled(opts core.RunOpts) (bool, error) {"
+            },
+            {
+              "line": 18,
+              "text": "\t\tcgPath := filepath.Join(dest, \"codegraph\")"
+            },
+            {
+              "line": 32,
+              "text": "\tif util.Which(\"codegraph\") != \"\" && !opts.Upgrade {"
+            },
+            {
+              "line": 33,
+              "text": "\t\topts.Reportf(\"already installed\", 1)"
+            },
+            {
+              "line": 36,
+              "text": "\tif opts.DryRun {"
+            },
+            {
+              "line": 37,
+              "text": "\t\tutil.L.Sub(\"[dry-run] would install @colbymchenry/codegraph globally\")"
+            },
+            {
+              "line": 40,
+              "text": "\topts.Reportf(\"npm install -g\", 0.4)"
+            },
+            {
+              "line": 41,
+              "text": "\t_, ok, _ := util.NpmGlobalInstall(\"@colbymchenry/codegraph\", \"latest\")"
+            },
+            {
+              "line": 49,
+              "text": "\trealInstallOnce sync.Once"
+            },
+            {
+              "line": 50,
+              "text": "\trealInstallRes  bool"
+            },
+            {
+              "line": 53,
+              "text": "// callRealInstall runs `codegraph install` once, probing supported flags."
+            },
+            {
+              "line": 54,
+              "text": "func codegraphRealInstall(opts core.RunOpts) bool {"
+            },
+            {
+              "line": 55,
+              "text": "\tif opts.DryRun {"
+            },
+            {
+              "line": 56,
+              "text": "\t\tutil.L.Sub(\"[dry-run] would run: codegraph install --yes\")"
+            },
+            {
+              "line": 59,
+              "text": "\trealInstallOnce.Do(func() {"
+            },
+            {
+              "line": 60,
+              "text": "\t\thelp := util.Run(\"codegraph\", []string{\"install\", \"--help\"}, util.RunOptions{Capture: true})"
+            }
+          ]
+        },
+        {
+          "path": "internal/tools/caveman.go",
+          "bytes": 15378,
+          "sha256_prefix": "db97b22c1893c21f",
+          "line_count": 512,
+          "excerpts": [
+            {
+              "line": 13,
+              "text": "func cavemanExec(bin string, args []string, opts core.RunOpts, dryHint string, env ...string) (bool, error) {"
+            },
+            {
+              "line": 14,
+              "text": "\tif opts.DryRun {"
+            },
+            {
+              "line": 23,
+              "text": "\t\tutil.L.Err(\"caveman command failed: \" + clip(r.Stderr))"
+            },
+            {
+              "line": 29,
+              "text": "func cavemanOpencodeInstallEnv() []string {"
+            },
+            {
+              "line": 41,
+              "text": "func cavemanSkillsAddArgs(agent string) []string {"
+            },
+            {
+              "line": 42,
+              "text": "\treturn []string{\"-y\", \"skills\", \"add\", \"JuliusBrussee/caveman\", \"-a\", agent, \"-s\", \"*\", \"--yes\", \"-g\"}"
+            },
+            {
+              "line": 45,
+              "text": "func cavemanSkillsRemoveArgs(agent string) []string {"
+            },
+            {
+              "line": 46,
+              "text": "\targs := append([]string{\"-y\", \"skills\", \"remove\"}, cavemanSkillNames...)"
+            },
+            {
+              "line": 50,
+              "text": "func relocateCavemanSkills(dstDir string) {"
+            },
+            {
+              "line": 52,
+              "text": "\tfor _, name := range cavemanSkillNames {"
+            },
+            {
+              "line": 63,
+              "text": "func removeCavemanSkillCopies(dir string) {"
+            },
+            {
+              "line": 64,
+              "text": "\tfor _, name := range cavemanSkillNames {"
+            },
+            {
+              "line": 76,
+              "text": "func stampCavemanVersion() {"
+            },
+            {
+              "line": 77,
+              "text": "\tif v := util.LatestVersionFor(\"caveman\"); v != nil {"
+            },
+            {
+              "line": 78,
+              "text": "\t\tutil.StampCavemanVersion(*v)"
+            },
+            {
+              "line": 82,
+              "text": "const cavemanOpencodePluginRel = \"./plugins/caveman/plugin.js\""
+            }
+          ]
+        },
+        {
+          "path": "internal/agents/claude.go",
+          "bytes": 6064,
+          "sha256_prefix": "b2df740d0ebb07aa",
+          "line_count": 253,
+          "excerpts": [
+            {
+              "line": 13,
+              "text": "// ConfigureClaudeMcp writes/updates an MCP stdio entry under ~/.claude.json."
+            },
+            {
+              "line": 14,
+              "text": "func ConfigureClaudeMcp(toolID string) (changed bool, file string) {"
+            },
+            {
+              "line": 17,
+              "text": "\tAllowClaudeMcpTool(toolID)"
+            },
+            {
+              "line": 23,
+              "text": "\tservers := getOrCreateMap(cfg, \"mcpServers\")"
+            },
+            {
+              "line": 25,
+              "text": "\tvar spawn util.McpSpawn"
+            },
+            {
+              "line": 26,
+              "text": "\tif toolID == \"codegraph\" {"
+            },
+            {
+              "line": 27,
+              "text": "\t\tspawn = util.WrapAutoIndex(\"claude\", util.PickMcpSpawn(\"codegraph\", \"serve\", \"--mcp\"))"
+            },
+            {
+              "line": 29,
+              "text": "\t\tspawn = util.PickMcpSpawn(\"context-mode\")"
+            },
+            {
+              "line": 37,
+              "text": "\t\tif claudeMcpEqual(existing, desired) {"
+            },
+            {
+              "line": 46,
+              "text": "// AllowClaudeMcpTool auto-approves every tool of an MCP server."
+            },
+            {
+              "line": 47,
+              "text": "func AllowClaudeMcpTool(toolID string) {"
+            },
+            {
+              "line": 54,
+              "text": "\tperms := getOrCreateMap(cfg, \"permissions\")"
+            },
+            {
+              "line": 61,
+              "text": "\tentry := \"mcp__\" + toolID + \"__.*\""
+            },
+            {
+              "line": 69,
+              "text": "\tcfg.Set(\"permissions\", perms)"
+            },
+            {
+              "line": 73,
+              "text": "// AllowClaudeBashPattern adds a Bash(specifier) entry to permissions.allow."
+            },
+            {
+              "line": 81,
+              "text": "\tperms := getOrCreateMap(cfg, \"permissions\")"
+            }
+          ]
+        },
+        {
+          "path": "internal/agents/codex.go",
+          "bytes": 7311,
+          "sha256_prefix": "2eb1c38cec077cfc",
+          "line_count": 285,
+          "excerpts": [
+            {
+              "line": 16,
+              "text": "// ConfigureCodexMcp upserts a [mcp_servers.<tool>] block in config.toml."
+            },
+            {
+              "line": 17,
+              "text": "func ConfigureCodexMcp(toolID string) (changed bool, file string) {"
+            },
+            {
+              "line": 21,
+              "text": "\tvar spawn util.McpSpawn"
+            },
+            {
+              "line": 22,
+              "text": "\tif toolID == \"codegraph\" {"
+            },
+            {
+              "line": 23,
+              "text": "\t\tspawn = util.WrapAutoIndex(\"codex\", util.PickMcpSpawn(\"codegraph\", \"serve\", \"--mcp\"))"
+            },
+            {
+              "line": 25,
+              "text": "\t\tspawn = util.PickMcpSpawn(\"context-mode\")"
+            },
+            {
+              "line": 27,
+              "text": "\tblock := util.NewTomlBlock(\"mcp_servers.\" + toolID)"
+            },
+            {
+              "line": 40,
+              "text": "func CodexHasMcp(toolID string) bool {"
+            },
+            {
+              "line": 43,
+              "text": "\treturn util.HasBlock(raw, \"mcp_servers.\"+toolID)"
+            },
+            {
+              "line": 46,
+              "text": "// --- Codex rtk PreToolUse hook ---"
+            },
+            {
+              "line": 49,
+              "text": "\tcodexHookMatcher = \"Bash\""
+            },
+            {
+              "line": 50,
+              "text": "\tcodexHookTimeout = 10"
+            },
+            {
+              "line": 53,
+              "text": "func codexHooksFile() string {"
+            },
+            {
+              "line": 54,
+              "text": "\treturn filepath.Join(util.CodexPathsResolved().Dir, \"hooks.json\")"
+            },
+            {
+              "line": 57,
+              "text": "// codexHookCommand is the command Codex runs for every Bash tool call."
+            },
+            {
+              "line": 58,
+              "text": "func codexHookCommand() string {"
+            }
+          ]
+        },
+        {
+          "path": "internal/agents/opencode.go",
+          "bytes": 3363,
+          "sha256_prefix": "b3db9cd8a44ae8e3",
+          "line_count": 138,
+          "excerpts": [
+            {
+              "line": 11,
+              "text": "// ConfigureOpenCodeMcp writes/updates a local MCP entry in opencode config."
+            },
+            {
+              "line": 12,
+              "text": "func ConfigureOpenCodeMcp(toolID string) (changed bool, file string) {"
+            },
+            {
+              "line": 23,
+              "text": "\tmcp := getOrCreateMap(cfg, \"mcp\")"
+            },
+            {
+              "line": 25,
+              "text": "\tvar spawn util.McpSpawn"
+            },
+            {
+              "line": 26,
+              "text": "\tif toolID == \"codegraph\" {"
+            },
+            {
+              "line": 27,
+              "text": "\t\tspawn = util.WrapAutoIndex(\"opencode\", util.PickMcpSpawn(\"codegraph\", \"serve\", \"--mcp\"))"
+            },
+            {
+              "line": 29,
+              "text": "\t\tspawn = util.PickMcpSpawn(\"context-mode\")"
+            },
+            {
+              "line": 37,
+              "text": "\tif existing, ok := mcp.Get(toolID); ok {"
+            },
+            {
+              "line": 45,
+              "text": "\tmcp.Set(toolID, desired)"
+            },
+            {
+              "line": 50,
+              "text": "func RemoveOpenCodeMcp(toolID string) bool {"
+            },
+            {
+              "line": 60,
+              "text": "\tmcpV, ok := cfg.Get(\"mcp\")"
+            },
+            {
+              "line": 64,
+              "text": "\tmcp, ok := mcpV.(*util.OrderedMap)"
+            },
+            {
+              "line": 68,
+              "text": "\tif _, ok := mcp.Get(toolID); !ok {"
+            },
+            {
+              "line": 71,
+              "text": "\tmcp.Delete(toolID)"
+            },
+            {
+              "line": 113,
+              "text": "// opencodeDesktopPaths probes the OpenCode Desktop (Electron) install."
+            }
+          ]
+        },
+        {
+          "path": "internal/util/npminstall.go",
+          "bytes": 7289,
+          "sha256_prefix": "c0ff2a755bacc10a",
+          "line_count": 290,
+          "excerpts": [
+            {
+              "line": 16,
+              "text": "// npmRegistryBase returns the user's configured npm registry."
+            },
+            {
+              "line": 83,
+              "text": "var npmReadInstalled = func(pkg string) *string {"
+            },
+            {
+              "line": 84,
+              "text": "\treturn npmInstalledVersion(pkg)"
+            },
+            {
+              "line": 87,
+              "text": "// buildNpmAttempts orders install attempts strongest-first."
+            },
+            {
+              "line": 98,
+              "text": "\t\tappend([]string{\"install\", \"-g\", token}, online...),"
+            },
+            {
+              "line": 101,
+              "text": "\t\tattempts = append(attempts, append([]string{\"install\", \"-g\", tarball}, online...))"
+            },
+            {
+              "line": 103,
+              "text": "\tattempts = append(attempts, []string{\"install\", \"-g\", token})"
+            },
+            {
+              "line": 104,
+              "text": "\tattempts = append(attempts, append([]string{\"install\", \"-g\", token, \"--registry\", defaultRegistryURL}, online...))"
+            },
+            {
+              "line": 108,
+              "text": "func installSucceeded(target string, actual *string) (string, bool) {"
+            },
+            {
+              "line": 118,
+              "text": "// NpmGlobalInstall installs an npm package globally."
+            },
+            {
+              "line": 120,
+              "text": "func NpmGlobalInstall(pkg, spec string) (string, bool, error) {"
+            },
+            {
+              "line": 144,
+              "text": "\t\tactual := npmReadInstalled(pkg)"
+            },
+            {
+              "line": 145,
+              "text": "\t\tif v, good := installSucceeded(target, actual); good {"
+            },
+            {
+              "line": 149,
+              "text": "\t\tL.Debug(\"npm attempt \" + strconv.Itoa(i+1) + \" exit 0 but package not installed\")"
+            },
+            {
+              "line": 157,
+              "text": "\tif v, ok := npmUserPrefixInstall(pkg, token, cacheDir); ok {"
+            },
+            {
+              "line": 184,
+              "text": "func npmPrefixInstalledVersion(prefix, pkg string) *string {"
+            }
+          ]
+        },
+        {
+          "path": "internal/util/mcpspawn.go",
+          "bytes": 1727,
+          "sha256_prefix": "54b8034fa362f8e1",
+          "line_count": 73,
+          "excerpts": [
+            {
+              "line": 9,
+              "text": "// McpSpawn is the command shape written into an agent's MCP config entry."
+            },
+            {
+              "line": 10,
+              "text": "type McpSpawn struct {"
+            },
+            {
+              "line": 16,
+              "text": "\t\"context-mode\": \"context-mode\","
+            },
+            {
+              "line": 17,
+              "text": "\t\"codegraph\":    \"@colbymchenry/codegraph\","
+            },
+            {
+              "line": 20,
+              "text": "// PickMcpSpawn prefers a real binary on PATH, else falls back to npx --no-install."
+            },
+            {
+              "line": 21,
+              "text": "func PickMcpSpawn(bin string, extraArgs ...string) McpSpawn {"
+            },
+            {
+              "line": 26,
+              "text": "\t\treturn wrapCmdShim(McpSpawn{Command: spawnCommand(bin, p), Args: extraArgs})"
+            },
+            {
+              "line": 32,
+              "text": "\targs := append([]string{\"--no-install\", pkg}, extraArgs...)"
+            },
+            {
+              "line": 37,
+              "text": "\treturn wrapCmdShim(McpSpawn{Command: cmd, Args: args})"
+            },
+            {
+              "line": 48,
+              "text": "func wrapCmdShim(s McpSpawn) McpSpawn {"
+            },
+            {
+              "line": 60,
+              "text": "\treturn McpSpawn{Command: \"cmd\", Args: append([]string{\"/c\", p}, s.Args...)}"
+            },
+            {
+              "line": 63,
+              "text": "// WrapAutoIndex routes an MCP launch through `tokless run-mcp --agent <id>` so"
+            },
+            {
+              "line": 65,
+              "text": "func WrapAutoIndex(agent string, s McpSpawn) McpSpawn {"
+            },
+            {
+              "line": 70,
+              "text": "\targs := append([]string{\"run-mcp\", \"--agent\", agent, s.Command}, s.Args...)"
+            },
+            {
+              "line": 71,
+              "text": "\treturn McpSpawn{Command: self, Args: args}"
+            }
+          ]
+        },
+        {
+          "path": "internal/commands/init_integration_test.go",
+          "bytes": 14495,
+          "sha256_prefix": "feb7974d93f771f2",
+          "line_count": 386,
+          "excerpts": [
+            {
+              "line": 25,
+              "text": "\tt.Setenv(\"TOKLESS_TEST\", \"1\")"
+            },
+            {
+              "line": 40,
+              "text": "\tuserHook := `{\"hooks\":{\"PreToolUse\":[{\"matcher\":\"Bash\",\"hooks\":[{\"type\":\"command\",\"command\":\"/usr/bin/user-guard.py\",\"timeout\":20}]}]}}`"
+            },
+            {
+              "line": 41,
+              "text": "\tif err := os.WriteFile(filepath.Join(tempdir, \".codex\", \"hooks.json\"), []byte(userHook), 0644); err != nil {"
+            },
+            {
+              "line": 42,
+              "text": "\t\tt.Fatalf(\"failed to seed user hooks.json: %v\", err)"
+            },
+            {
+              "line": 83,
+              "text": "\t// 1. <home>/.claude.json contains \"codegraph\" and \"context-mode\""
+            },
+            {
+              "line": 90,
+              "text": "\tif !strings.Contains(claudeStr, \"codegraph\") {"
+            },
+            {
+              "line": 91,
+              "text": "\t\tt.Errorf(\".claude.json doesn't contain 'codegraph', got: %s\", claudeStr)"
+            },
+            {
+              "line": 93,
+              "text": "\tif !strings.Contains(claudeStr, \"context-mode\") {"
+            },
+            {
+              "line": 94,
+              "text": "\t\tt.Errorf(\".claude.json doesn't contain 'context-mode', got: %s\", claudeStr)"
+            },
+            {
+              "line": 97,
+              "text": "\t// 2. <home>/.config/opencode/opencode.jsonc contains \"context-mode\" and \"codegraph\""
+            },
+            {
+              "line": 104,
+              "text": "\tif !strings.Contains(opencodeStr, \"context-mode\") {"
+            },
+            {
+              "line": 105,
+              "text": "\t\tt.Errorf(\"opencode.jsonc doesn't contain 'context-mode', got: %s\", opencodeStr)"
+            },
+            {
+              "line": 107,
+              "text": "\tif !strings.Contains(opencodeStr, \"codegraph\") {"
+            },
+            {
+              "line": 108,
+              "text": "\t\tt.Errorf(\"opencode.jsonc doesn't contain 'codegraph', got: %s\", opencodeStr)"
+            },
+            {
+              "line": 111,
+              "text": "\t// 3. <home>/.codex/config.toml contains \"[mcp_servers.codegraph]\", \"[mcp_servers.context-mode]\", and \"[features]\""
+            },
+            {
+              "line": 118,
+              "text": "\tif !strings.Contains(codexConfigStr, \"[mcp_servers.codegraph]\") {"
+            }
+          ]
+        },
+        {
+          "path": "internal/core/registry_test.go",
+          "bytes": 1864,
+          "sha256_prefix": "0d19ec133c08c760",
+          "line_count": 79,
+          "excerpts": [
+            {
+              "line": 13,
+              "text": "\t\t\treturn Detection{Installed: true, Source: \"config\"}"
+            },
+            {
+              "line": 20,
+              "text": "\t\t\treturn Detection{Installed: false, Source: \"\"}"
+            },
+            {
+              "line": 35,
+              "text": "\tRegisterTool(t1)"
+            },
+            {
+              "line": 36,
+              "text": "\tRegisterTool(t2)"
+            },
+            {
+              "line": 7,
+              "text": "func TestRegisterAndList(t *testing.T) {"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "repo": "JuliusBrussee/caveman-code",
+      "url": "https://github.com/JuliusBrussee/caveman-code",
+      "head": "74d599aa7a6183d4192a088540be69261d0ea0e8",
+      "retrieved_at": "2026-06-26",
+      "evidence_stage": "source-logic",
+      "method": "Representative implementation files were read from local shallow clones. Excerpts identify runtime behavior, state, hook/MCP wiring, token/cost/accounting logic, and compatibility-relevant boundaries; this is source-logic inspection, not README-only or integration-only review.",
+      "inspected_files": [
+        {
+          "path": "packages/agent/src/agent.ts",
+          "bytes": 17608,
+          "sha256_prefix": "2b739efd37911714",
+          "line_count": 568,
+          "excerpts": [
+            {
+              "line": 13,
+              "text": "import type { ModelRouter } from \"./router.js\";"
+            },
+            {
+              "line": 40,
+              "text": "\ttotalTokens: 0,"
+            },
+            {
+              "line": 41,
+              "text": "\tcost: { input: 0, output: 0, cacheRead: 0, cacheWrite: 0, total: 0 },"
+            },
+            {
+              "line": 52,
+              "text": "\tcost: { input: 0, output: 0, cacheRead: 0, cacheWrite: 0 },"
+            },
+            {
+              "line": 54,
+              "text": "\tmaxTokens: 0,"
+            },
+            {
+              "line": 116,
+              "text": "\t/** Optional model router for resolving models per outbound LLM call. */"
+            },
+            {
+              "line": 117,
+              "text": "\trouter?: ModelRouter;"
+            },
+            {
+              "line": 118,
+              "text": "\t/** Current role for routing decisions. Required when router is set. */"
+            },
+            {
+              "line": 199,
+              "text": "\t/** Optional model router for resolving models per outbound LLM call. */"
+            },
+            {
+              "line": 200,
+              "text": "\tpublic router?: ModelRouter;"
+            },
+            {
+              "line": 201,
+              "text": "\t/** Current role for routing decisions. Required when router is set. */"
+            },
+            {
+              "line": 224,
+              "text": "\t\tthis.router = options.router;"
+            },
+            {
+              "line": 434,
+              "text": "\t\t\trouter: this.router,"
+            }
+          ]
+        },
+        {
+          "path": "packages/agent/src/agent-loop.ts",
+          "bytes": 17700,
+          "sha256_prefix": "239a38b9dc201475",
+          "line_count": 668,
+          "excerpts": [
+            {
+              "line": 116,
+              "text": "\tawait runLoop(currentContext, newMessages, config, signal, emit, streamFn);"
+            },
+            {
+              "line": 141,
+              "text": "\tawait runLoop(currentContext, newMessages, config, signal, emit, streamFn);"
+            },
+            {
+              "line": 155,
+              "text": "async function runLoop("
+            },
+            {
+              "line": 198,
+              "text": "\t\t\tconst message = await streamAssistantResponse(currentContext, config, signal, emit, streamFn);"
+            },
+            {
+              "line": 213,
+              "text": "\t\t\t\ttoolResults.push(...(await executeToolCalls(currentContext, message, config, signal, emit)));"
+            },
+            {
+              "line": 245,
+              "text": "async function streamAssistantResponse("
+            },
+            {
+              "line": 288,
+              "text": "\t// Resolve model via router if configured"
+            },
+            {
+              "line": 290,
+              "text": "\tif (config.router && config.role) {"
+            },
+            {
+              "line": 291,
+              "text": "\t\tconst decision = config.router.route({"
+            },
+            {
+              "line": 299,
+              "text": "\t// Resolve API key (important for expiring tokens)"
+            },
+            {
+              "line": 372,
+              "text": "async function executeToolCalls("
+            },
+            {
+              "line": 381,
+              "text": "\t\treturn executeToolCallsSequential(currentContext, assistantMessage, toolCalls, config, signal, emit);"
+            },
+            {
+              "line": 383,
+              "text": "\treturn executeToolCallsParallel(currentContext, assistantMessage, toolCalls, config, signal, emit);"
+            },
+            {
+              "line": 386,
+              "text": "async function executeToolCallsSequential("
+            },
+            {
+              "line": 426,
+              "text": "async function executeToolCallsParallel("
+            }
+          ]
+        },
+        {
+          "path": "packages/agent/src/router.ts",
+          "bytes": 2828,
+          "sha256_prefix": "391c3b7571402b7f",
+          "line_count": 100,
+          "excerpts": [
+            {
+              "line": 1,
+              "text": "// ModelRouter interface + deterministic default impl."
+            },
+            {
+              "line": 4,
+              "text": "// - ModelRouter is an interface. The agent loop calls it for every"
+            },
+            {
+              "line": 9,
+              "text": "// - Cost-aware downgrade: at 90% of session cap, non-plan roles fall to cheapTier."
+            },
+            {
+              "line": 24,
+              "text": "\t/** Running session cost in dollars. Used by cost-aware downgrade (T-131). */"
+            },
+            {
+              "line": 25,
+              "text": "\tsessionCostDollars?: number;"
+            },
+            {
+              "line": 30,
+              "text": "export interface ModelRouter {"
+            },
+            {
+              "line": 42,
+              "text": "\t/** Optional cheap-tier per role for cost-aware downgrade (T-131). */"
+            },
+            {
+              "line": 62,
+              "text": "export class DefaultModelRouter implements ModelRouter {"
+            },
+            {
+              "line": 68,
+              "text": "\t\t\tthrow new Error(`router: profile ${this.profile.name} has no role ${ctx.role}`);"
+            },
+            {
+              "line": 74,
+              "text": "\t\t\tctx.sessionCostDollars &&"
+            },
+            {
+              "line": 75,
+              "text": "\t\t\tctx.sessionCostDollars >= ctx.sessionCapDollars * 0.9"
+            },
+            {
+              "line": 94,
+              "text": "/** Test helper: in-memory router that always returns a fixed decision. */"
+            },
+            {
+              "line": 95,
+              "text": "export function fixedRouter(decision: RoutingDecision): ModelRouter {"
+            }
+          ]
+        },
+        {
+          "path": "packages/agent/src/proxy.ts",
+          "bytes": 9683,
+          "sha256_prefix": "87ededd4b045634b",
+          "line_count": 341,
+          "excerpts": [
+            {
+              "line": 102,
+              "text": "\t\t\t\ttotalTokens: 0,"
+            },
+            {
+              "line": 103,
+              "text": "\t\t\t\tcost: { input: 0, output: 0, cacheRead: 0, cacheWrite: 0, total: 0 },"
+            },
+            {
+              "line": 132,
+              "text": "\t\t\t\t\t\tmaxTokens: options.maxTokens,"
+            },
+            {
+              "line": 20,
+              "text": "class ProxyMessageEventStream extends EventStream<AssistantMessageEvent, AssistantMessage> {"
+            },
+            {
+              "line": 59,
+              "text": "export interface ProxyStreamOptions extends SimpleStreamOptions {"
+            },
+            {
+              "line": 85,
+              "text": "export function streamProxy(model: Model<any>, context: Context, options: ProxyStreamOptions): ProxyMessageEventStream {"
+            },
+            {
+              "line": 211,
+              "text": "function processProxyEvent("
+            }
+          ]
+        },
+        {
+          "path": "packages/agent/src/cost/caps.ts",
+          "bytes": 2646,
+          "sha256_prefix": "4094f8d41eaf2a85",
+          "line_count": 86,
+          "excerpts": [
+            {
+              "line": 1,
+              "text": "// T-083, T-084, T-085: per-turn + per-session cost caps."
+            },
+            {
+              "line": 3,
+              "text": "import type { CostEntry } from \"./types.js\";"
+            },
+            {
+              "line": 11,
+              "text": "\t| { type: \"cost_cap_turn\"; turn: number; dollars: number; cap: number }"
+            },
+            {
+              "line": 12,
+              "text": "\t| { type: \"cost_cap_session\"; dollars: number; cap: number };"
+            },
+            {
+              "line": 16,
+              "text": "export class CostCapTracker {"
+            },
+            {
+              "line": 31,
+              "text": "\t/** Called with the incremental cost of an LLM call mid-stream."
+            },
+            {
+              "line": 33,
+              "text": "\trecordIncremental(entry: Pick<CostEntry, \"turnIndex\" | \"dollarsEstimated\">): boolean {"
+            },
+            {
+              "line": 45,
+              "text": "\t\t\t\t\ttype: \"cost_cap_turn\","
+            },
+            {
+              "line": 56,
+              "text": "\t\t\t\tl({ type: \"cost_cap_session\", dollars: this.sessionTotal, cap: perSessionDollars });"
+            }
+          ]
+        },
+        {
+          "path": "packages/agent/src/cost/trace-writer.ts",
+          "bytes": 2356,
+          "sha256_prefix": "d644edf8f5b7fc38",
+          "line_count": 86,
+          "excerpts": [
+            {
+              "line": 10,
+              "text": "export interface TraceSink {"
+            },
+            {
+              "line": 18,
+              "text": "export interface InMemoryTraceSink extends TraceSink {"
+            },
+            {
+              "line": 27,
+              "text": "export function createInMemoryTraceSink(basename: string, rotateBytes = 1024 * 1024): InMemoryTraceSink {"
+            },
+            {
+              "line": 34,
+              "text": "\tfunction activeName(): string {"
+            },
+            {
+              "line": 71,
+              "text": "export class TraceEmitter {"
+            }
+          ]
+        },
+        {
+          "path": "packages/agent/src/compression/index.ts",
+          "bytes": 128,
+          "sha256_prefix": "1f81479b16569cd0",
+          "line_count": 5,
+          "excerpts": []
+        },
+        {
+          "path": "packages/agent/src/compression/fallback.ts",
+          "bytes": 1078,
+          "sha256_prefix": "142640144c0a88bb",
+          "line_count": 47,
+          "excerpts": [
+            {
+              "line": 1,
+              "text": "// T-117: emit compression_fallback trace event on model load/inference failure."
+            },
+            {
+              "line": 3,
+              "text": "import type { TraceEvent } from \"../cost/types.js\";"
+            },
+            {
+              "line": 5,
+              "text": "export interface CompressionFallbackReason {"
+            },
+            {
+              "line": 11,
+              "text": "export function compressionFallbackEvent("
+            },
+            {
+              "line": 12,
+              "text": "\treason: CompressionFallbackReason,"
+            },
+            {
+              "line": 18,
+              "text": "\t\ttype: \"compression_fallback\","
+            },
+            {
+              "line": 26,
+              "text": "/** Wrap a compression call; on throw, emit a fallback event and return"
+            },
+            {
+              "line": 28,
+              "text": "export interface SafeCompressResult<T> {"
+            },
+            {
+              "line": 30,
+              "text": "\tfallback?: CompressionFallbackReason;"
+            },
+            {
+              "line": 33,
+              "text": "export function safeCompress<T>(attempt: () => T, passthrough: T, middleware: string): SafeCompressResult<T> {"
+            }
+          ]
+        },
+        {
+          "path": "packages/agent/src/compression/llmlingua.ts",
+          "bytes": 9719,
+          "sha256_prefix": "3a66a51279277b73",
+          "line_count": 282,
+          "excerpts": [
+            {
+              "line": 9,
+              "text": "\ttype CompressionMiddleware,"
+            },
+            {
+              "line": 10,
+              "text": "\ttype CompressionOptions,"
+            },
+            {
+              "line": 11,
+              "text": "\ttype CompressionResult,"
+            },
+            {
+              "line": 12,
+              "text": "\testimateTokens,"
+            },
+            {
+              "line": 76,
+              "text": "export class LLMLinguaMiddleware implements CompressionMiddleware {"
+            },
+            {
+              "line": 91,
+              "text": "\tcompress(block: string, opts: CompressionOptions): CompressionResult {"
+            },
+            {
+              "line": 92,
+              "text": "\t\tconst inputTokens = estimateTokens(block);"
+            },
+            {
+              "line": 93,
+              "text": "\t\tif (inputTokens < opts.activationThreshold) {"
+            },
+            {
+              "line": 94,
+              "text": "\t\t\treturn passthrough(block, inputTokens);"
+            },
+            {
+              "line": 100,
+              "text": "\t\treturn result(compressed, inputTokens, this.useOnnx ? `${this.name}:onnx` : this.name);"
+            },
+            {
+              "line": 147,
+              "text": "\tasync compressAsync(block: string, opts: CompressionOptions): Promise<CompressionResult> {"
+            },
+            {
+              "line": 148,
+              "text": "\t\tconst inputTokens = estimateTokens(block);"
+            },
+            {
+              "line": 149,
+              "text": "\t\tif (inputTokens < opts.activationThreshold) {"
+            },
+            {
+              "line": 150,
+              "text": "\t\t\treturn passthrough(block, inputTokens);"
+            },
+            {
+              "line": 156,
+              "text": "\t\t\t\treturn result(compressed, inputTokens, `${this.name}:onnx`);"
+            },
+            {
+              "line": 159,
+              "text": "\t\t\t\treturn result(compressed, inputTokens, `${this.name}:fallback`);"
+            }
+          ]
+        },
+        {
+          "path": "packages/agent/src/memory/index.ts",
+          "bytes": 1186,
+          "sha256_prefix": "fd9304da88d11977",
+          "line_count": 31,
+          "excerpts": [
+            {
+              "line": 6,
+              "text": " *   - CavememProvider        default \u2014 wraps cavemem stdio MCP + `cavemem hook run`"
+            },
+            {
+              "line": 16,
+              "text": "export type { CavememExecResult, CavememHubLike, CavememProviderOptions } from \"./cavemem.js\";"
+            },
+            {
+              "line": 18,
+              "text": "\tCavememProvider,"
+            }
+          ]
+        },
+        {
+          "path": "packages/agent/src/memory/cavemem.ts",
+          "bytes": 14054,
+          "sha256_prefix": "c75b6fdfee263f24",
+          "line_count": 427,
+          "excerpts": [
+            {
+              "line": 2,
+              "text": " * CavememProvider \u2014 wraps the cavemem CLI + stdio MCP server (WS7)."
+            },
+            {
+              "line": 7,
+              "text": " *     compression pipeline; cave never re-implements it."
+            },
+            {
+              "line": 56,
+              "text": "export interface CavememProviderOptions {"
+            },
+            {
+              "line": 87,
+              "text": "export class CavememProvider implements MemoryProvider {"
+            },
+            {
+              "line": 99,
+              "text": "\tconstructor(options: CavememProviderOptions = {}) {"
+            },
+            {
+              "line": 192,
+              "text": "\t\t// pipeline still does the redaction + compression."
+            },
+            {
+              "line": 242,
+              "text": "\t\t\t\t`CavememProvider: no MCP hub registered. Pass {hub} or register the provider on the WS2 hub.`,"
+            },
+            {
+              "line": 250,
+              "text": "\t\t\t\t`CavememProvider: cavemem MCP server connect failed: ${err instanceof Error ? err.message : String(err)}`,"
+            }
+          ]
+        },
+        {
+          "path": "packages/agent/src/repomap/builder.ts",
+          "bytes": 4621,
+          "sha256_prefix": "ad37fc89a877d916",
+          "line_count": 139,
+          "excerpts": [
+            {
+              "line": 12,
+              "text": "import { estimateRenderTokens, type RepoMapStyle, renderRepomap } from \"./render.js\";"
+            },
+            {
+              "line": 32,
+              "text": "export interface BuildRepomapInput {"
+            },
+            {
+              "line": 35,
+              "text": "\t/** Total budget for the rendered map, in approximate tokens. */"
+            },
+            {
+              "line": 36,
+              "text": "\ttokenBudget: number;"
+            },
+            {
+              "line": 47,
+              "text": "export interface BuildRepomapResult {"
+            },
+            {
+              "line": 52,
+              "text": "\tusedTokens: number;"
+            },
+            {
+              "line": 88,
+              "text": "export async function buildRepomap(input: BuildRepomapInput): Promise<BuildRepomapResult> {"
+            },
+            {
+              "line": 111,
+              "text": "\tconst selected = selectWithinBudget(ranked, input.tokenBudget, (sym) => estimateRenderTokens(sym, style));"
+            },
+            {
+              "line": 115,
+              "text": "\tconst usedTokens = selected.reduce((s, r) => s + estimateRenderTokens(r.node, style), 0);"
+            },
+            {
+              "line": 117,
+              "text": "\treturn { rendered, graph, ranked, selected, usedTokens, parsed };"
+            },
+            {
+              "line": 127,
+              "text": " * Defaults: 1k tokens normally, 2k when no files in chat. Override either"
+            },
+            {
+              "line": 128,
+              "text": " * via the `--map-tokens` flag."
+            },
+            {
+              "line": 130,
+              "text": "export function dynamicMapTokens(opts: {"
+            }
+          ]
+        },
+        {
+          "path": "packages/agent/src/repomap/pagerank.ts",
+          "bytes": 5072,
+          "sha256_prefix": "fd9fe7fdb6ca16f4",
+          "line_count": 141,
+          "excerpts": [
+            {
+              "line": 124,
+              "text": "/** Select top-K symbols whose rendered budget fits `tokenBudget`."
+            },
+            {
+              "line": 128,
+              "text": "\ttokenBudget: number,"
+            },
+            {
+              "line": 134,
+              "text": "\t\tconst cost = estimate(item.node);"
+            },
+            {
+              "line": 135,
+              "text": "\t\tif (used + cost > tokenBudget) break;"
+            },
+            {
+              "line": 137,
+              "text": "\t\tused += cost;"
+            }
+          ]
+        },
+        {
+          "path": "packages/agent/src/bench/token-verifier.ts",
+          "bytes": 9655,
+          "sha256_prefix": "258aa29a3a57242e",
+          "line_count": 289,
+          "excerpts": [
+            {
+              "line": 5,
+              "text": "//   (a) tokenizerRecount \u2014 re-tokenize the captured transcript independently"
+            },
+            {
+              "line": 6,
+              "text": "//       (tiktoken for OpenAI models, Anthropic count_tokens endpoint for Claude"
+            },
+            {
+              "line": 10,
+              "text": "//   (b) usageApiQuery \u2014 query the provider Usage API for the run window and"
+            },
+            {
+              "line": 27,
+              "text": "export interface TokenizerRecountInput {"
+            },
+            {
+              "line": 31,
+              "text": "\t/** Bearer token for the Anthropic count_tokens endpoint. */"
+            },
+            {
+              "line": 35,
+              "text": "export interface UsageApiQueryInput {"
+            },
+            {
+              "line": 44,
+              "text": "\t/** Sum of input + output tokens reported by the verifier. */"
+            },
+            {
+              "line": 45,
+              "text": "\tverifiedTotalTokens: number;"
+            },
+            {
+              "line": 75,
+              "text": " * @param cliReportedTotal total tokens (input + output) reported by the CLI"
+            },
+            {
+              "line": 77,
+              "text": "export async function tokenizerRecount("
+            },
+            {
+              "line": 78,
+              "text": "\tinput: TokenizerRecountInput,"
+            },
+            {
+              "line": 82,
+              "text": "\tlet verifiedTotalTokens = 0;"
+            },
+            {
+              "line": 99,
+              "text": "\t\t\tverifiedTotalTokens = inputCount + outputCount;"
+            },
+            {
+              "line": 105,
+              "text": "\t\t// Anthropic: use the count_tokens endpoint. Send the transcript as"
+            },
+            {
+              "line": 108,
+              "text": "\t\t\tthrow new Error(\"Anthropic count_tokens requires anthropicApiKey\");"
+            },
+            {
+              "line": 119,
+              "text": "\t\tconst resp = await client.messages.countTokens({"
+            }
+          ]
+        },
+        {
+          "path": "packages/agent/src/bench/microbench-dataset.ts",
+          "bytes": 2332,
+          "sha256_prefix": "93a2115a5f82e946",
+          "line_count": 86,
+          "excerpts": [
+            {
+              "line": 7,
+              "text": "export interface MicroBenchTaskMeta {"
+            },
+            {
+              "line": 13,
+              "text": "export interface MicroBenchInstance extends BenchInstance {"
+            },
+            {
+              "line": 29,
+              "text": "export function loadMicroBenchTasks("
+            }
+          ]
+        },
+        {
+          "path": "research/evals/run-microbench.ts",
+          "bytes": 11403,
+          "sha256_prefix": "2e66ca90e910d821",
+          "line_count": 382,
+          "excerpts": [
+            {
+              "line": 15,
+              "text": " *   --cap <dollars>        Per-task cost cap (default: $0.50, env: CAVE_BENCH_INSTANCE_CAP_DOLLARS)"
+            },
+            {
+              "line": 38,
+              "text": "\tcreateAgentSession,"
+            },
+            {
+              "line": 149,
+              "text": "\tcost: number;"
+            },
+            {
+              "line": 151,
+              "text": "\ttokens: { input: number; output: number; cacheRead: number; cacheWrite: number };"
+            },
+            {
+              "line": 169,
+              "text": "\t\tsettingsManager.setCaveModeEnabled(true);"
+            },
+            {
+              "line": 170,
+              "text": "\t\tsettingsManager.setCaveModeIntensity(\"ultra\");"
+            },
+            {
+              "line": 171,
+              "text": "\t\tsettingsManager.setCaveModeToolCompression(true);"
+            },
+            {
+              "line": 172,
+              "text": "\t\tsettingsManager.setCaveModeMLCompression(true);"
+            },
+            {
+              "line": 174,
+              "text": "\t\tconst { session } = await createAgentSession({"
+            },
+            {
+              "line": 201,
+              "text": "\t\t\tcost: stats.cost,"
+            },
+            {
+              "line": 203,
+              "text": "\t\t\ttokens: {"
+            },
+            {
+              "line": 204,
+              "text": "\t\t\t\tinput: stats.tokens.input,"
+            },
+            {
+              "line": 205,
+              "text": "\t\t\t\toutput: stats.tokens.output,"
+            },
+            {
+              "line": 206,
+              "text": "\t\t\t\tcacheRead: stats.tokens.cacheRead,"
+            },
+            {
+              "line": 207,
+              "text": "\t\t\t\tcacheWrite: stats.tokens.cacheWrite,"
+            },
+            {
+              "line": 213,
+              "text": "\t\t\tcost: 0,"
+            }
+          ]
+        },
+        {
+          "path": "packages/coding-agent/src/core/sdk.ts",
+          "bytes": 13077,
+          "sha256_prefix": "eaa06b0d63ef34b6",
+          "line_count": 384,
+          "excerpts": [
+            {
+              "line": 42,
+              "text": "export interface CreateAgentSessionOptions {"
+            },
+            {
+              "line": 79,
+              "text": "/** Result from createAgentSession */"
+            },
+            {
+              "line": 80,
+              "text": "export interface CreateAgentSessionResult {"
+            },
+            {
+              "line": 142,
+              "text": " * const { session } = await createAgentSession();"
+            },
+            {
+              "line": 146,
+              "text": " * const { session } = await createAgentSession({"
+            },
+            {
+              "line": 152,
+              "text": " * const { session, modelFallbackMessage } = await createAgentSession({"
+            },
+            {
+              "line": 163,
+              "text": " * const { session } = await createAgentSession({"
+            },
+            {
+              "line": 171,
+              "text": "export async function createAgentSession(options: CreateAgentSessionOptions = {}): Promise<CreateAgentSessionResult> {"
+            }
+          ]
+        },
+        {
+          "path": "packages/coding-agent/src/core/session-manager.ts",
+          "bytes": 42898,
+          "sha256_prefix": "905e3e2d5eb43e78",
+          "line_count": 1421,
+          "excerpts": [
+            {
+              "line": 70,
+              "text": "\ttokensBefore: number;"
+            },
+            {
+              "line": 387,
+              "text": "\t\tmessages.push(createCompactionSummaryMessage(compaction.summary, compaction.tokensBefore, compaction.timestamp));"
+            },
+            {
+              "line": 872,
+              "text": "\t\ttokensBefore: number,"
+            },
+            {
+              "line": 883,
+              "text": "\t\t\ttokensBefore,"
+            },
+            {
+              "line": 27,
+              "text": "export const CURRENT_SESSION_VERSION = 3;"
+            },
+            {
+              "line": 29,
+              "text": "export interface SessionHeader {"
+            },
+            {
+              "line": 38,
+              "text": "export interface NewSessionOptions {"
+            },
+            {
+              "line": 43,
+              "text": "export interface SessionEntryBase {"
+            },
+            {
+              "line": 50,
+              "text": "export interface SessionMessageEntry extends SessionEntryBase {"
+            },
+            {
+              "line": 55,
+              "text": "export interface ThinkingLevelChangeEntry extends SessionEntryBase {"
+            },
+            {
+              "line": 60,
+              "text": "export interface ModelChangeEntry extends SessionEntryBase {"
+            },
+            {
+              "line": 66,
+              "text": "export interface CompactionEntry<T = unknown> extends SessionEntryBase {"
+            },
+            {
+              "line": 77,
+              "text": "export interface BranchSummaryEntry<T = unknown> extends SessionEntryBase {"
+            },
+            {
+              "line": 97,
+              "text": "export interface CustomEntry<T = unknown> extends SessionEntryBase {"
+            },
+            {
+              "line": 104,
+              "text": "export interface LabelEntry extends SessionEntryBase {"
+            },
+            {
+              "line": 111,
+              "text": "export interface SessionInfoEntry extends SessionEntryBase {"
+            }
+          ]
+        },
+        {
+          "path": "packages/coding-agent/src/core/settings-manager.ts",
+          "bytes": 41554,
+          "sha256_prefix": "128fe9ec6e099d49",
+          "line_count": 1334,
+          "excerpts": [
+            {
+              "line": 9,
+              "text": "\treserveTokens?: number; // default: 16384"
+            },
+            {
+              "line": 10,
+              "text": "\tkeepRecentTokens?: number; // default: 20000"
+            },
+            {
+              "line": 14,
+              "text": "\treserveTokens?: number; // default: 16384 (tokens reserved for prompt + LLM response)"
+            },
+            {
+              "line": 46,
+              "text": "export interface CaveModeSettings {"
+            },
+            {
+              "line": 49,
+              "text": "\ttoolCompression?: boolean; // default: true"
+            },
+            {
+              "line": 50,
+              "text": "\tmlCompression?: boolean; // default: false \u2014 enables LLMLingua-2 ONNX compression"
+            },
+            {
+              "line": 162,
+              "text": "\tcaveMode?: CaveModeSettings;"
+            },
+            {
+              "line": 766,
+              "text": "\tgetCompactionReserveTokens(): number {"
+            },
+            {
+              "line": 767,
+              "text": "\t\treturn this.settings.compaction?.reserveTokens ?? 16384;"
+            },
+            {
+              "line": 770,
+              "text": "\tgetCompactionKeepRecentTokens(): number {"
+            },
+            {
+              "line": 771,
+              "text": "\t\treturn this.settings.compaction?.keepRecentTokens ?? 20000;"
+            },
+            {
+              "line": 774,
+              "text": "\tgetCompactionSettings(): { enabled: boolean; reserveTokens: number; keepRecentTokens: number } {"
+            },
+            {
+              "line": 777,
+              "text": "\t\t\treserveTokens: this.getCompactionReserveTokens(),"
+            },
+            {
+              "line": 778,
+              "text": "\t\t\tkeepRecentTokens: this.getCompactionKeepRecentTokens(),"
+            },
+            {
+              "line": 782,
+              "text": "\tgetBranchSummarySettings(): { reserveTokens: number; skipPrompt: boolean } {"
+            },
+            {
+              "line": 784,
+              "text": "\t\t\treserveTokens: this.settings.branchSummary?.reserveTokens ?? 16384,"
+            }
+          ]
+        },
+        {
+          "path": "packages/agent/src/__tests__/bench.test.ts",
+          "bytes": 3275,
+          "sha256_prefix": "1813fc15ced49861",
+          "line_count": 106,
+          "excerpts": [
+            {
+              "line": 6,
+              "text": "\tbuildTokensVsResolvedSpec,"
+            },
+            {
+              "line": 36,
+              "text": "\tit(\"flags cost_cap_failure when instance exceeds cap\", async () => {"
+            },
+            {
+              "line": 47,
+              "text": "\t\texpect(results[0].cost_cap_failure).toBe(true);"
+            },
+            {
+              "line": 84,
+              "text": "\t\t{ name: \"cave\", inputTokensTotal: 100_000, outputTokensTotal: 10_000, resolvedCount: 30, totalInstances: 50 },"
+            },
+            {
+              "line": 85,
+              "text": "\t\t{ name: \"baseline\", inputTokensTotal: 300_000, outputTokensTotal: 20_000, resolvedCount: 28, totalInstances: 50 },"
+            },
+            {
+              "line": 88,
+              "text": "\tit(\"produces a tokens-vs-resolved plot spec\", () => {"
+            },
+            {
+              "line": 89,
+              "text": "\t\tconst spec = buildTokensVsResolvedSpec(systems);"
+            },
+            {
+              "line": 90,
+              "text": "\t\texpect(spec.title).toContain(\"Tokens\");"
+            },
+            {
+              "line": 96,
+              "text": "\t\tconst a = buildTokensVsResolvedSpec(systems);"
+            },
+            {
+              "line": 97,
+              "text": "\t\tconst b = buildTokensVsResolvedSpec(systems);"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

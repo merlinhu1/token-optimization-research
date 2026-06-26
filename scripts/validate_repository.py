@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+import re
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -66,6 +67,11 @@ REQUIRED_PATHS = [
     "sources/discovery/2026-06-26-eight-more-tool-code-inspection.json",
     "sources/discovery/2026-06-26-ten-more-tool-source-structures.json",
     "sources/discovery/2026-06-26-ten-more-tool-code-inspection.json",
+    "sources/discovery/2026-06-26-source-logic-uplift-source-structures.json",
+    "sources/discovery/2026-06-26-source-logic-uplift-code-inspection.json",
+    "sources/discovery/2026-06-26-final-lead-uplift-source-structures.json",
+    "sources/discovery/2026-06-26-final-lead-uplift-code-inspection.json",
+    "sources/discovery/2026-06-26-tokless-go-test.json",
     "templates/repository-entry.md",
     "templates/technique-entry.md",
     "templates/claim-entry.md",
@@ -109,6 +115,7 @@ def main() -> int:
     compatibility_doc = load_json("data/compatibility-edges.json")
     literature_doc = load_json("data/literature.json")
     evaluations_doc = load_json("data/evaluations.json")
+    backlog_doc = load_json("data/tool-analysis-backlog.json")
 
     technique_ids = {t.get("id") for t in techniques_doc.get("techniques", [])}
     if not technique_ids:
@@ -151,6 +158,72 @@ def main() -> int:
     for lit in literature_doc.get("literature", []):
         if not lit.get("id") or not lit.get("sources"):
             errors.append("literature record missing id or sources")
+
+    allowed_stages = {"lead", "source_logic", "benchmark_audit", "reproduction"}
+    retired_review_map_key = "review" + "_levels"
+    retired_current_key = "current" + "_level"
+    retired_target_key = "target" + "_level"
+    if retired_review_map_key in backlog_doc:
+        errors.append("tool-analysis backlog uses retired review-level map; use evidence_stages")
+    for item in backlog_doc.get("items", []):
+        if retired_current_key in item or retired_target_key in item:
+            errors.append(f"backlog item {item.get('tool')} uses retired numeric evidence-stage fields")
+        current_stage = item.get("current_stage")
+        target_stage = item.get("target_stage")
+        if current_stage not in allowed_stages:
+            errors.append(f"backlog item {item.get('tool')} has invalid current_stage: {current_stage}")
+        if target_stage not in allowed_stages:
+            errors.append(f"backlog item {item.get('tool')} has invalid target_stage: {target_stage}")
+        if item.get("dossier") and current_stage == "lead":
+            errors.append(f"backlog item {item.get('tool')} has a dossier but remains lead-stage")
+        if not item.get("dossier") and current_stage != "lead":
+            errors.append(f"backlog item {item.get('tool')} lacks a dossier but is not lead-stage")
+
+    active_text_paths = [
+        ROOT / "METHODOLOGY.md",
+        ROOT / "docs/research/tool-research-strategy.md",
+        ROOT / "docs/tool-dossiers/README.md",
+        ROOT / "docs/reports/phase-1-compatibility-safe-token-saving-stacks.md",
+        ROOT / "templates/report.md",
+        ROOT / "templates/repository-entry.md",
+        ROOT / "templates/tool-dossier.md",
+        ROOT / "prompts/researcher.md",
+        ROOT / "prompts/paper-writer.md",
+    ]
+    retired_patterns = [
+        r"Lev" + r"el [0-5]",
+        r"lev" + r"el [0-5]",
+        r"review " + r"level",
+        r"Review " + r"level",
+        r"dossier " + r"level",
+        r"Dossier " + r"level",
+        retired_current_key,
+        retired_target_key,
+        "source-" + "behavior",
+        "0-" + "discovery",
+        "1-" + "surface",
+        "2-" + "integration",
+        "3-" + "source",
+        "4-" + "benchmark",
+        "5-" + "reproduction",
+        "level" + "2-uplift",
+    ]
+    retired_terms = re.compile("|".join(retired_patterns))
+    for path in active_text_paths:
+        text = path.read_text(encoding="utf-8")
+        if retired_terms.search(text):
+            errors.append(f"{path.relative_to(ROOT)} contains retired dossier-stage terminology")
+
+    report_path = ROOT / "docs/reports/phase-1-compatibility-safe-token-saving-stacks.md"
+    report_text = report_path.read_text(encoding="utf-8")
+    if "Principal sources:" in report_text:
+        errors.append("phase-1 report uses ledger-style 'Principal sources' heading; use summarized evidence basis")
+    if "sources/discovery/" in report_text:
+        errors.append("phase-1 report body references discovery archive paths; summarize provenance instead")
+    if re.search(r"sources/discovery/20\d{2}-\d{2}-\d{2}-[^`\s)]*\.json", report_text):
+        errors.append("phase-1 report body lists raw discovery JSON artifacts; summarize provenance instead")
+    if re.search(r"\|\s*`[^`]+`\s*\|\s*[0-9]\s*\|", report_text):
+        errors.append("phase-1 report contains a numeric evidence-stage table row; use named stages")
 
     if errors:
         print("Validation failed:")

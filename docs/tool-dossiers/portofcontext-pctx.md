@@ -6,7 +6,7 @@
 - URL: https://github.com/portofcontext/pctx
 - Version/ref inspected: GitHub `HEAD` API or local shallow clone plus representative implementation files, 2026-06-26
 - Date inspected: 2026-06-26
-- Review level: 3-source-behavior (local shallow clone; representative MCP server, service, code mode, executor, and session routes inspected)
+- Evidence stage: source-logic (local shallow clone; representative MCP server, service, code mode, executor, and session routes inspected)
 - Stars at inspection: 264
 - Forks at inspection: None
 - License: UNKNOWN-local-clone

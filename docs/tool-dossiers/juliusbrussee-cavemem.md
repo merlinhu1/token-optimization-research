@@ -6,7 +6,7 @@
 - URL: https://github.com/JuliusBrussee/cavemem
 - Version/ref inspected: GitHub `HEAD` API or local shallow clone plus representative implementation files, 2026-06-26
 - Date inspected: 2026-06-26
-- Review level: 3-source-behavior (representative MCP, worker, search, compression, and hook files inspected)
+- Evidence stage: source-logic (representative MCP, worker, search, compression, and hook files inspected)
 - Stars at inspection: 565
 - Forks at inspection: 49
 - License: MIT

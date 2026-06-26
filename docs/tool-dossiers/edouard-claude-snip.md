@@ -6,7 +6,7 @@
 - URL: https://github.com/edouard-claude/snip
 - Version/ref inspected: GitHub `HEAD` API or local shallow clone plus representative implementation files, 2026-06-26
 - Date inspected: 2026-06-26
-- Review level: 3-source-behavior (local shallow clone; representative hook rewrite, transparent prefix, parser, and audit files inspected)
+- Evidence stage: source-logic (local shallow clone; representative hook rewrite, transparent prefix, parser, and audit files inspected)
 - Stars at inspection: 347
 - Forks at inspection: None
 - License: UNKNOWN-local-clone

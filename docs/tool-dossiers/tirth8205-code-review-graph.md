@@ -6,7 +6,7 @@
 - URL: https://github.com/tirth8205/code-review-graph
 - Version/ref inspected: GitHub `HEAD` tree and representative raw implementation files via API, 2026-06-26
 - Date inspected: 2026-06-26
-- Review level: 3-source-behavior (representative implementation files inspected; benchmark/reproduction review remains open)
+- Evidence stage: source-logic (representative implementation files inspected; benchmark/reproduction review remains open)
 - Stars at inspection: 18,917
 - Forks at inspection: 2,030
 - License: MIT

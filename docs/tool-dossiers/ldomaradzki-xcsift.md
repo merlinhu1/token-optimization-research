@@ -6,7 +6,7 @@
 - URL: https://github.com/ldomaradzki/xcsift
 - Version/ref inspected: GitHub `HEAD` API or local shallow clone plus representative implementation files, 2026-06-26
 - Date inspected: 2026-06-26
-- Review level: 3-source-behavior (representative parser, coverage, CLI, and Claude Code installer files inspected)
+- Evidence stage: source-logic (representative parser, coverage, CLI, and Claude Code installer files inspected)
 - Stars at inspection: 444
 - Forks at inspection: 21
 - License: MIT

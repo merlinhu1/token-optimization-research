@@ -6,7 +6,7 @@
 - URL: https://github.com/manojmallick/sigmap
 - Version/ref inspected: GitHub `HEAD` API or local shallow clone plus representative implementation files, 2026-06-26
 - Date inspected: 2026-06-26
-- Review level: 3-source-behavior (representative MCP, tools, ranker, graph, and session memory files inspected)
+- Evidence stage: source-logic (representative MCP, tools, ranker, graph, and session memory files inspected)
 - Stars at inspection: 530
 - Forks at inspection: 37
 - License: MIT

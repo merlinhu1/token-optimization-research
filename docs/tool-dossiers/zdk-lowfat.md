@@ -6,7 +6,7 @@
 - URL: https://github.com/zdk/lowfat
 - Version/ref inspected: GitHub `HEAD` API or local shallow clone plus representative implementation files, 2026-06-26
 - Date inspected: 2026-06-26
-- Review level: 3-source-behavior (representative compression, pipeline, runner, tee, and plugin files inspected)
+- Evidence stage: source-logic (representative compression, pipeline, runner, tee, and plugin files inspected)
 - Stars at inspection: 543
 - Forks at inspection: 17
 - License: Apache-2.0

@@ -6,7 +6,7 @@
 - URL: https://github.com/yamadashy/repomix
 - Version/ref inspected: GitHub `HEAD` tree via API, 2026-06-26
 - Date inspected: 2026-06-26
-- Review level: 3-source-behavior (representative packer, output, token counting, MCP, and security files inspected)
+- Evidence stage: source-logic (representative packer, output, token counting, MCP, and security files inspected)
 - Stars at inspection: 26,583
 - Forks at inspection: 1,390
 - License: MIT
@@ -96,7 +96,7 @@ Evidence artifact: `sources/discovery/2026-06-26-five-more-tool-code-inspection.
 - Primary intervention surface: Repository packing and optional compression/digest generation
 - Integration status: documented integration paths and/or source locations were identified, but exact runtime behavior has not yet been fully reviewed.
 - Disable/uninstall path: requires follow-up inspection of installer/plugin code and documentation.
-- Failure behavior if dependency is missing: requires source-behavior review.
+- Failure behavior if dependency is missing: requires source-logic inspection.
 
 ## Runtime behavior
 
@@ -111,7 +111,7 @@ Evidence artifact: `sources/discovery/2026-06-26-five-more-tool-code-inspection.
 ## Token-saving mechanism
 
 - Addressable token surface: Repository packing and optional compression/digest generation
-- Reduction method: identified at mechanism level; implementation details require source-behavior review.
+- Reduction method: identified at mechanism level; implementation details require source-logic inspection.
 - Quality-preservation mechanism: requires source and benchmark review.
 - Cases where savings may not translate to provider-billed reductions: depends on turn count, prompt caching, failure/retry behavior, and whether the tool changes agent workflow length.
 

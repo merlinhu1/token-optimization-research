@@ -56,17 +56,20 @@ Define what is included and excluded.
 
 ## Methodology
 
-Describe the evidence sources and evaluation method.
+Describe the evidence sources and evaluation method in publication-ready language. Summarize evidence classes; do not dump raw provenance ledgers or long artifact path lists into the report body.
 
-- Data files:
-- Source URLs or catalogs:
-- Direct inspections performed:
-- Tool dossiers consulted:
-- Review levels reached:
-- Ranking criteria:
-- Validation or reproduction performed:
+Recommended evidence-basis categories:
 
-README-only inspection is Level 1 evidence. Reports that make compatibility or recommendation claims should cite dossier review levels and should state when source-behavior, benchmark, or reproduction review is still incomplete.
+- Repository catalog and backlog:
+- Persistent tool dossiers:
+- Source-structure review:
+- Code-behavior inspection:
+- Benchmark or reproduction review:
+- Compatibility or evaluation model:
+
+Raw JSON ledgers, command logs, source-tree dumps, and code-inspection artifacts may remain in the repository for auditability, but professional reports should cite their summarized conclusions through dossier paths, methodology categories, or compact appendix references only when necessary.
+
+README-only inspection is discovery evidence only. Reports that make compatibility or recommendation claims should cite dossier evidence stages and should state when source-logic, benchmark-audit, or reproduction work is still incomplete.
 
 ## Evaluation criteria
 
@@ -114,9 +117,9 @@ State the recommendation in neutral terms. Distinguish primary, secondary, and l
 
 List gaps that could affect the conclusion.
 
-- Dossier review levels:
-- Source-behavior gaps:
-- Benchmark-method gaps:
+- Dossier evidence stages:
+- Source-logic gaps:
+- Benchmark-audit gaps:
 - Missing benchmark coverage:
 - Maintainer-claim caveats:
 - Environment-specific risks:

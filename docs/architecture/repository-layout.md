@@ -14,7 +14,7 @@
 | `docs/paper/` | Manuscript staging | Outlines, sections, figures | Canonical source data |
 | `docs/standards/` | Reporting standards | Naming, evidence labels, checklists | One-off notes |
 | `docs/research/` | Research methods | Tool research strategy and multi-pass review process | Tool-specific findings |
-| `docs/tool-dossiers/` | Persistent tool dossiers | Source-level tool findings, review levels, open questions | Short README summaries |
+| `docs/tool-dossiers/` | Persistent tool dossiers | Source-level tool findings, evidence stages, open questions | Short README summaries |
 | `templates/` | Entry and report templates | Repository, technique, claim, evaluation, and professional report templates | Filled canonical records and publication-ready reports |
 | `prompts/` | Agent prompts | Researcher/evaluator/writer prompts | Source evidence |
 | `scripts/` | Validation and utility scripts | Deterministic checks and transforms | Research conclusions |

@@ -6,7 +6,7 @@
 - URL: https://github.com/chopratejas/headroom
 - Version/ref inspected: GitHub `HEAD` tree via API, 2026-06-26
 - Date inspected: 2026-06-26
-- Review level: 3-source-behavior (representative core pipeline, proxy, and savings metrics inspected)
+- Evidence stage: source-logic (representative core pipeline, proxy, and savings metrics inspected)
 - Stars at inspection: 51,329
 - Forks at inspection: 3,642
 - License: Apache-2.0
@@ -97,7 +97,7 @@ Evidence artifact: `sources/discovery/2026-06-26-five-more-tool-code-inspection.
 - Primary intervention surface: Broad context compression through library, proxy, agent wrapper, and MCP modes
 - Integration status: documented integration paths and/or source locations were identified, but exact runtime behavior has not yet been fully reviewed.
 - Disable/uninstall path: requires follow-up inspection of installer/plugin code and documentation.
-- Failure behavior if dependency is missing: requires source-behavior review.
+- Failure behavior if dependency is missing: requires source-logic inspection.
 
 ## Runtime behavior
 
@@ -112,7 +112,7 @@ Evidence artifact: `sources/discovery/2026-06-26-five-more-tool-code-inspection.
 ## Token-saving mechanism
 
 - Addressable token surface: Broad context compression through library, proxy, agent wrapper, and MCP modes
-- Reduction method: identified at mechanism level; implementation details require source-behavior review.
+- Reduction method: identified at mechanism level; implementation details require source-logic inspection.
 - Quality-preservation mechanism: requires source and benchmark review.
 - Cases where savings may not translate to provider-billed reductions: depends on turn count, prompt caching, failure/retry behavior, and whether the tool changes agent workflow length.
 

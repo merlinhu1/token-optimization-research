@@ -6,7 +6,7 @@
 - URL: https://github.com/vincentkoc/tokenjuice
 - Version/ref inspected: GitHub `HEAD` API or local shallow clone plus representative implementation files, 2026-06-26
 - Date inspected: 2026-06-26
-- Review level: 3-source-behavior (representative reducer, command matcher, Bash compaction integration, rules, and Claude Code host files inspected)
+- Evidence stage: source-logic (representative reducer, command matcher, Bash compaction integration, rules, and Claude Code host files inspected)
 - Stars at inspection: 469
 - Forks at inspection: 48
 - License: MIT

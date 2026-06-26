@@ -1,24 +1,22 @@
 # Tool research strategy
 
-This repository uses a staged research process for token-saving tools. README inspection is only the entry point. A tool is not considered deeply reviewed until its integration code, runtime behavior, benchmark method, and failure modes have been inspected and recorded in a persistent dossier.
+This repository uses a source-code-first research process for token-saving tools. README inspection and integration-path discovery are lead generation only. A tool does not receive a decision-bearing dossier until representative source code logic, runtime behavior, and failure modes have been inspected and recorded.
 
-## Review levels
+## Evidence stages
 
-| Level | Name | Required evidence | Permitted use |
-|---:|---|---|---|
-| 0 | Discovery lead | Search result, catalog mention, or README headline. | Backlog only. Do not use in recommendations. |
-| 1 | Surface review | README plus repository metadata, license, supported agents, and claimed mechanism. | Candidate lists with explicit caveats. |
-| 2 | Integration review | Installer/config/plugin/hook files inspected; supported-agent paths mapped; uninstall/failure behavior checked. | Compatibility analysis and provisional stack placement. |
-| 3 | Source behavior review | Core implementation paths inspected; input/output transformations, state, caches, fallbacks, and safety boundaries mapped. | Qualified recommendation with implementation caveats. |
-| 4 | Benchmark review | Benchmark harness, tasks, scoring, token accounting, and raw outputs inspected; maintainer claims separated from independent evidence. | Evidence-weighted ranking. |
-| 5 | Reproduction review | A local or independent reproduction measures provider-billed tokens, turns, pass rate, latency, and quality on target workloads. | Deployment-grade recommendation. |
+| Stage | Required evidence | Permitted use |
+|---|---|---|
+| `lead` | Search result, catalog mention, README headline, repository metadata, or integration-path notes without source-logic interpretation. | Backlog and dossier planning only. Do not use in recommendations. |
+| `source-logic` | Representative implementation files inspected; input/output transformations, state, caches, fallbacks, safety boundaries, and compatibility implications mapped. | Minimum stage for qualified recommendations and stack decisions. |
+| `benchmark-audit` | Benchmark harness, tasks, scoring, token accounting, raw outputs, and maintainer/independent evidence boundaries inspected. | Evidence-weighted ranking. |
+| `reproduction` | Local or independent reproduction measures provider-billed tokens, turns, pass rate, latency, and quality on target workloads. | Deployment-grade recommendation. |
 
 ## Required dossier sections
 
 Each important tool gets a persistent dossier under `docs/tool-dossiers/`. The dossier records:
 
 - repository identity and version inspected;
-- exact review level reached;
+- exact evidence stage reached;
 - installation and integration entry points;
 - runtime behavior and intervention surfaces;
 - state, caches, hooks, subprocesses, and network behavior;
@@ -31,7 +29,7 @@ Dossiers are cumulative. A later pass should update the existing dossier rather 
 
 ## Source inspection requirements
 
-A Level 2 or higher review must inspect files beyond the README. Depending on tool type, inspect:
+A `source-logic` dossier must inspect representative source code logic beyond README and integration files. Depending on tool type, inspect:
 
 | Tool type | Files to inspect |
 |---|---|
@@ -44,13 +42,13 @@ A Level 2 or higher review must inspect files beyond the README. Depending on to
 
 ## Recommendation policy
 
-- Reports must state the highest review level reached for each recommended stack component.
-- A stack may be recommended provisionally before Level 5, but the report must label the recommendation as evidence-weighted rather than deployment-proven.
-- README-only claims may describe candidates but cannot be the main basis for a qualified stack.
+- Reports must state the highest evidence stage reached for each recommended stack component.
+- A stack may be recommended provisionally before reproduction, but the report must label the recommendation as evidence-weighted rather than deployment-proven.
+- README-only and integration-only claims may describe leads but cannot be the basis for a qualified stack.
 - In stack selection, use the term compatibility-safe directly: tools should not fight over the same hook, context surface, retrieval authority, memory authority, proxy, output channel, or state boundary. Do not label the report or stack category as conservative.
 - Local environment availability must not be used as evidence of external quality.
 - Maintainer benchmarks must be separated from independent reproductions.
-- If deep review cannot be completed in one session, add or update the dossier and backlog rather than collapsing the finding into a shallow summary.
+- If source-logic inspection cannot be completed in one session, keep the tool as a `lead` in the backlog rather than creating a decision-bearing dossier from shallow evidence.
 
 ## Minimum evidence for stack compatibility
 
@@ -61,4 +59,4 @@ A stack compatibility claim requires:
 3. failure-mode analysis for each hook/proxy/MCP/plugin boundary;
 4. uninstall/disable path for each component;
 5. at least one test or benchmark artifact reviewed for every behavior-changing component;
-6. explicit open questions if source or benchmark inspection is incomplete.
+6. explicit open questions if benchmark-audit or reproduction work is incomplete.

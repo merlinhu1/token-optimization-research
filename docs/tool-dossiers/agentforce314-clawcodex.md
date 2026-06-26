@@ -6,7 +6,7 @@
 - URL: https://github.com/agentforce314/clawcodex
 - Version/ref inspected: GitHub `HEAD` API or local shallow clone plus representative implementation files, 2026-06-26
 - Date inspected: 2026-06-26
-- Review level: 3-source-behavior (local shallow clone; representative token estimation, history, prefetch, cost, and compression-pipeline tests inspected)
+- Evidence stage: source-logic (local shallow clone; representative token estimation, history, prefetch, cost, and compression-pipeline tests inspected)
 - Stars at inspection: 653
 - Forks at inspection: None
 - License: UNKNOWN-local-clone

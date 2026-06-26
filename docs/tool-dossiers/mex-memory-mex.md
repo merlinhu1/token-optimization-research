@@ -6,7 +6,7 @@
 - URL: https://github.com/mex-memory/mex
 - Version/ref inspected: GitHub `HEAD` API or local shallow clone plus representative implementation files, 2026-06-26
 - Date inspected: 2026-06-26
-- Review level: 3-source-behavior (representative CLI, drift, event, and heartbeat files inspected)
+- Evidence stage: source-logic (representative CLI, drift, event, and heartbeat files inspected)
 - Stars at inspection: 1,140
 - Forks at inspection: 65
 - License: MIT

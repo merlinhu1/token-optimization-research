@@ -7,7 +7,7 @@
 - Version/ref inspected:
 - Date inspected:
 - Reviewer:
-- Review level: 0-discovery | 1-surface | 2-integration | 3-source-behavior | 4-benchmark | 5-reproduction
+- Evidence stage: lead | source-logic | benchmark-audit | reproduction
 
 ## Summary
 
