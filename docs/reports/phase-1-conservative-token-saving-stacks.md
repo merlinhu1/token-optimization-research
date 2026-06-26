@@ -14,7 +14,7 @@ This report now treats “out of the box” correctly:
 - The stack must not depend on the agent remembering a fragile workflow such as “use this search tool first, then this one, then this extractor.”
 - If a tool does not make a positive contribution for the stack, it is not included.
 
-The best conservative stacks from the current research are:
+The recommended conservative stacks from the current research are, ranked by current evidence and expected quality-preserving savings:
 
 | Rank | Stack | Target agent/workflow | Why it is included |
 |---:|---|---|---|
@@ -25,7 +25,7 @@ The best conservative stacks from the current research are:
 | 5 | **Tokless managed stack** | Claude Code, OpenCode, Codex, Antigravity | One-command packaged stack wiring RTK, Caveman, CodeGraph, and Context-Mode. More aggressive than stacks 1–2. |
 | 6 | **Context-Mode offload stack** | Large intermediate-output workflows | One integrated offload layer for huge tool/MCP workflows. |
 
-The practical default is **Stack 1 for Claude Code** or **Stack 2 for Codex CLI**.
+The practical default is **Stack 1 for Claude Code** or **Stack 2 for Codex CLI** when anti-overbuild behavior is desired. If behavior-changing rules are undesirable, use the lower-intervention `RTK + CodeGraph` variant and measure.
 
 ## Evidence basis
 
@@ -47,7 +47,8 @@ A valid stack can be analyst-constructed if every tool has a normal documented i
 |---|---|---|
 | Terminal/tool output | RTK, Token Savior Bash compaction, Headroom output compression, LeanCTX shell compression, Context-Mode offload, etc. | Multiple output compressors can hide diagnostics or double-compress. |
 | Code retrieval/index | CodeGraph, Serena, claude-context, jcodemunch, LeanCTX code graph, Token Savior navigation, etc. | Multiple retrieval authorities create duplicate context and inconsistent answers. |
-| Behavioral minimization | Ponytail, Caveman, scrooge-mode, concise, etc. | Multiple style/behavior controllers can fight over verbosity and safety. |
+| Behavioral output compression | Caveman, scrooge-mode, concise, etc. | Multiple terse/style controllers can fight over verbosity, clarity, and safety. |
+| Artifact/code minimization | Ponytail, Bonsai, Whippet, etc. | Multiple YAGNI/minimal-code rulesets can duplicate or over-constrain implementation choices; choose one unless a combined stack is documented and tested. |
 | Memory/reinjection | Token Savior memory, LeanCTX memory, Headroom memory, Cavemem, etc. | Multiple memories can duplicate or stale-inject facts. |
 | Offloaded execution | Context-Mode, pctx, Headroom proxy modes, etc. | Offload/routing layers should not be stacked unless explicitly integrated. |
 
@@ -72,13 +73,29 @@ RTK + CodeGraph + Ponytail
 - Ponytail is a Claude Code plugin/skill/ruleset for implementation discipline.
 - None is a second owner of the same surface: RTK does not index code, CodeGraph does not compress Bash output, and Ponytail does not intercept terminal output or provide a competing code index.
 
-### Why Caveman is not included
+### Behavioral/artifact layer choice
 
-Caveman is high-reputation, but it owns the behavioral/output-style surface. Ponytail already uses that surface for minimal implementation discipline. Adding Caveman may save visible prose, but it can also reduce explanation clarity and has mixed evidence for total-session savings. For “maximum savings with minimum quality sacrifice,” Ponytail is the better behavioral component.
+Ponytail is selected as the default artifact-minimization layer, not because it is locally installed, but because it has the strongest currently reviewed evidence for total-task savings among minimal-code candidates.
+
+| Candidate | Surface | Evidence summary | Conservative-stack conclusion |
+|---|---|---|---|
+| Ponytail | Artifact/code minimization | Reproducible maintainer benchmark: 54% fewer added lines, 22% fewer total tokens, 20% lower cost; caveat: model/task-specific. | Best-evidenced default if adding an anti-overbuild layer. |
+| Caveman | Behavioral output compression | High reputation and 65% output-token claim, but mixed total-session evidence; Ponytail benchmark found +7% total tokens on feature tasks. | Use instead when terse prose is the main goal; do not add by default without stack-level testing. |
+| scrooge-mode | Behavioral output compression | Strong output-token reductions in maintainer benchmark, but output-only and low-reputation/new. | Promising alternative for terse output, not top conservative default. |
+| concise | Behavioral output compression | Example-based 60–70% output-token claim; no task-level benchmark reviewed. | Insufficient evidence for top default. |
+| Bonsai | Artifact/code minimization | Similar YAGNI mechanism; benchmark harness exists but no published paid benchmark numbers. | Closest Ponytail substitute, but weaker evidence. |
+| Whippet | Artifact/code minimization | Maintainer evaluation did not demonstrate code-size/token savings on tested strong model. | Workflow-discipline candidate, not a savings default. |
+| No behavioral/artifact layer | None | Avoids behavior-rule risk but gives up a documented savings source. | Valid lowest-risk variant: `RTK + CodeGraph`. |
+
+### Why Caveman is not the default behavioral add-on
+
+Caveman is high-reputation and may reduce visible assistant prose, but it is primarily a T07 output-style controller, while Ponytail is a T08 artifact/code-minimization controller. Those surfaces are not identical. The conservative reason not to include both is that both steer model behavior and no combined `RTK + CodeGraph + Ponytail + Caveman` stack benchmark was reviewed. Caveman's evidence is also mixed for total-session savings: metadata records strong output-token claims but also Ponytail benchmark counter-evidence where Caveman used 7% more total tokens on feature tasks. Use Caveman, scrooge-mode, or concise when terse prose is the main goal; use Ponytail when reducing overbuilt artifacts is the goal.
 
 ### Expected profile
 
-This is the best conservative Claude Code stack: high-reputation tools, low overlap, no custom glue, and each component targets a different major token-waste source.
+This is the recommended balanced conservative Claude Code stack: high-reputation tools, low overlap, no custom glue, and each component targets a different major token-waste source. It is not a globally proven optimum; no reviewed benchmark tests the exact three-tool combination end to end.
+
+**Lower-intervention variant:** `RTK + CodeGraph` only. This avoids behavior-changing rules and is the safest default when implementation completeness, explanation clarity, or target-model interaction with Ponytail is uncertain. It also gives up Ponytail's documented anti-overbuild savings, so it should be treated as lower-risk but potentially lower-savings.
 
 ## Stack 2 — Codex CLI balanced conservative stack
 
@@ -104,11 +121,13 @@ RTK + CodeGraph + Ponytail
 
 ### Why AGENTS.md alone is not counted
 
-Codex-native `AGENTS.md` rules are useful, but they are configuration, not a tool. Ponytail is included instead because it has a documented Codex plugin path and lifecycle hooks.
+Codex-native `AGENTS.md` rules are useful, but they are configuration, not a tool. Ponytail is included instead because direct README review found a documented Codex plugin path and lifecycle hooks. Keep this contingent on the current Ponytail README/plugin marketplace; the summarized metadata is less explicit about Codex than the README text.
 
 ### Expected profile
 
-This is the best Codex-optimized conservative stack currently found: it uses the same proven surface separation as Stack 1, but with Codex-specific installation paths.
+This is the recommended balanced Codex-optimized conservative stack currently found: it uses the same surface separation as Stack 1, but with Codex-specific installation paths. It is not a globally proven optimum; no reviewed benchmark tests the exact three-tool combination end to end.
+
+**Lower-intervention variant:** `RTK + CodeGraph` only. This avoids behavior-changing rules and is the safest default when implementation completeness, explanation clarity, or target-model interaction with Ponytail is uncertain. It also gives up Ponytail's documented anti-overbuild savings, so it should be treated as lower-risk but potentially lower-savings.
 
 ## Stack 3 — Token Savior MCP integrated stack
 
@@ -261,7 +280,7 @@ Do not add Claude Code skills, Codex plugins, Tokless, Token Savior, or another 
 
 | Excluded combination | Actual reason |
 |---|---|
-| `RTK + CodeGraph + Ponytail + Caveman` | Caveman and Ponytail both own behavioral/output style. For minimum quality sacrifice, choose Ponytail; use Caveman only in Tokless or Caveman Code where the stack intentionally owns that style. |
+| `RTK + CodeGraph + Ponytail + Caveman` | Ponytail and Caveman are not identical surfaces: Ponytail is artifact/code minimization, while Caveman is behavioral output compression. The conservative exclusion reason is that both steer model behavior and no combined stack benchmark was reviewed; use only when deliberately accepting a more aggressive behavior-changing stack. |
 | `ripgrep + ast-grep + qmd` | These are separate CLI primitives, not an out-of-box integrated stack. They rely on agent workflow discipline. |
 | CodeGraph + Serena / multiple retrieval engines | Competing code-retrieval authorities. Pick one retrieval owner. |
 | RTK + Headroom | Competing output/context compression owners. Pick one compression owner. |
@@ -274,8 +293,8 @@ Do not add Claude Code skills, Codex plugins, Tokless, Token Savior, or another 
 
 | Situation | Use this stack |
 |---|---|
-| Claude Code, best balance of savings and quality | Stack 1: RTK + CodeGraph + Ponytail |
-| Codex CLI, best balance of savings and quality | Stack 2: RTK + CodeGraph + Ponytail |
+| Claude Code, recommended balance when anti-overbuild behavior is desired | Stack 1: RTK + CodeGraph + Ponytail; lower-intervention variant: RTK + CodeGraph |
+| Codex CLI, recommended balance when anti-overbuild behavior is desired | Stack 2: RTK + CodeGraph + Ponytail; lower-intervention variant: RTK + CodeGraph |
 | MCP coding agent where one server should own retrieval, memory, and Bash compaction | Stack 3: Token Savior |
 | Large logs/files/RAG/history/tool-output compression | Stack 4: Headroom |
 | One-command multi-tool setup across Claude/OpenCode/Codex/Antigravity | Stack 5: Tokless |
@@ -284,7 +303,7 @@ Do not add Claude Code skills, Codex plugins, Tokless, Token Savior, or another 
 
 ## Final recommendation
 
-For Merlin's criterion — conservative, out-of-box, compatible, positive contribution only — the top choices are:
+For Merlin's criterion — conservative, out-of-box, compatible, positive contribution only — the recommended balanced defaults are:
 
 1. **Claude Code:** `RTK + CodeGraph + Ponytail`
 2. **Codex CLI:** `RTK + CodeGraph + Ponytail`
@@ -292,3 +311,5 @@ For Merlin's criterion — conservative, out-of-box, compatible, positive contri
 4. **Broad compression alternative:** `Headroom`
 
 The important shift is that analyst-constructed stacks are allowed when the tools have documented native installs and separate surfaces. They do not need to be pre-packaged by a third party. What is not allowed is a loose bundle of primitives that only works if the agent follows a hand-authored workflow.
+
+These are not proven globally best stacks. They are the best-supported balanced candidates under current reviewed evidence. The main uncertainty is behavioral-layer transferability: Ponytail's evidence is maintainer-run and task/model-specific, and no combined `RTK + CodeGraph + Ponytail` benchmark has been reviewed.
