@@ -28,8 +28,9 @@ Detailed evidence remains in reports, dossiers, structured data, and evaluation 
 - Phase 1 established 42 source-logic dossiers and a compatibility-safe stack report.
 - As of 2026-07-01, all 42 tool dossiers have pinned source-snapshot metadata and pass dossier-quality validation.
 - The 2026-06-28 corrective knowledge-graph and agent-memory leads were promoted from `lead` to `source-logic` on 2026-06-29.
-- Phase 2 focuses on benchmark design, token-usage accounting, quality standards, immediately usable evaluation flows, and a broader source-logic stack hypothesis portfolio.
-- As of 2026-07-03, the evaluation setup retains 5 calibration/diagnostic fixtures, Django plus Terraform as active public large-project fixtures, and Flask plus Requests as active public medium-project fixtures.
+- Phase 2 focuses on persistent workflow simulation, provider-billed token accounting, quality standards, and a broader source-logic stack hypothesis portfolio.
+- As of 2026-07-08, the active default workflow matrix is Terraform, OrchardCore, Fastify, and Beets.
+- Django single-task evidence is archived as historical evidence outside the active workflow matrix.
 - Primary objective claims require reproduction run records on medium-project or large-project fixtures in the cumulative schema.
 - Stack findings are hypotheses until benchmark-audit or reproduction evidence exists; Phase 1 now routes multiple candidate stacks and comparators rather than selecting a single default stack.
 - Lead-stage backlog items are not decision evidence.
@@ -62,14 +63,14 @@ The detailed research corpus remains the evidence base.
 
 ## Maintenance Notes
 
-- Update this doc when `README.md`, `RESEARCH_ROADMAP.md`, or the Phase report changes the active research direction.
+- Update this doc when `README.md`, `docs/research/roadmap.md`, or the Phase report changes the active research direction.
 - Update this doc when a tool moves to a stronger evidence stage.
 - Keep durable findings aligned with `evidence-stages.md`.
 
 ## Source References
 
 - ../../../../README.md
-- ../../../../RESEARCH_ROADMAP.md
+- ../../../../docs/research/roadmap.md
 - ../../../../docs/reports/phase-1-compatibility-safe-token-saving-stacks.md
 - ../../../../data/repositories.json
 - ../../../../data/tool-analysis-backlog.json

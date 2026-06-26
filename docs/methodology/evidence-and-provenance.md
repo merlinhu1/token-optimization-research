@@ -2,7 +2,7 @@
 
 ## Evidence labels
 
-Use the evidence hierarchy in `METHODOLOGY.md`. Every quantitative claim must retain the author's scope and caveat.
+Use the evidence hierarchy in `docs/methodology/README.md`. Every quantitative claim must retain the author's scope and caveat.
 
 ## Provenance fields
 

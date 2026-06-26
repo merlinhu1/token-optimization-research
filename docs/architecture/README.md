@@ -45,3 +45,7 @@ Everything else is support structure. If a file does not help one of those trans
 3. **Claims preserve scope.** Command-level, request-level, session-level, provider-billed, output-only, and quality-gated claims are different evidence types.
 4. **Evaluations are technique-level first.** Bundle comparisons are secondary and only useful after component techniques are understood.
 5. **Paper text cites internal records.** The paper should cite repository IDs, claim IDs, technique IDs, evaluation IDs, and source URLs.
+
+## Layout contract
+
+The current directory ownership and archive policy are documented in [`repository-layout.md`](repository-layout.md).
