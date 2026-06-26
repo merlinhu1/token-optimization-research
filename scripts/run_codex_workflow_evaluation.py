@@ -11,6 +11,8 @@ from __future__ import annotations
 
 import argparse
 import datetime as dt
+import gzip
+import hashlib
 import json
 import os
 import re
@@ -29,6 +31,7 @@ DEFAULT_DOCKER_IMAGE = "token-eval-codex:latest"
 DEFAULT_SOURCE_CODEX_HOME = Path(os.environ.get("CODEX_HOME", "/opt/data/home/.codex"))
 DATE = dt.datetime.now(dt.UTC).date().isoformat()
 DATE_COMPACT = DATE.replace("-", "")
+COMPACT_ARTIFACT_NAMES = {"run.json", "changes.diff", "evidence.jsonl.gz", "manifest.sha256"}
 
 PROJECT_META: dict[str, dict[str, str]] = {
     "large-django-django": {
@@ -460,7 +463,7 @@ def capture_diff(record: dict[str, Any], run_dir: Path) -> None:
     repo = ROOT / record["target"]["repository_path"]
     run(["git", "status", "--short"], cwd=repo, stdout=run_dir / "git-status.txt", timeout=60)
     run(["git", "diff", "--stat"], cwd=repo, stdout=run_dir / "final-diffstat.txt", timeout=60)
-    run(["git", "diff"], cwd=repo, stdout=run_dir / "final.diff", timeout=120)
+    run(["git", "diff"], cwd=repo, stdout=run_dir / "changes.diff", timeout=120)
 
 
 def audit(record_path: Path, run_dir: Path) -> int:
@@ -473,6 +476,67 @@ def audit(record_path: Path, run_dir: Path) -> int:
         str(run_dir / "tool-isolation-audit.json"),
         *artifacts,
     ], stdout_path=run_dir / "tool-isolation-audit.txt", timeout=120).returncode
+
+
+def compact_artifacts(run_dir: Path) -> dict[str, str]:
+    return {
+        "artifact_contract": "compact-v1-four-files",
+        "run_record": rel(run_dir / "run.json"),
+        "final_diff": rel(run_dir / "changes.diff"),
+        "evidence_bundle": rel(run_dir / "evidence.jsonl.gz"),
+        "manifest": rel(run_dir / "manifest.sha256"),
+    }
+
+
+def evidence_source_files(run_dir: Path) -> list[Path]:
+    """Return text evidence to pack, excluding scratch checkouts/homes."""
+    files: list[Path] = []
+    for path in sorted(run_dir.rglob("*")):
+        if not path.is_file():
+            continue
+        rel_parts = path.relative_to(run_dir).parts
+        if not rel_parts or rel_parts[0] == "codex-homes":
+            continue
+        if rel_parts[0] == "project" and len(rel_parts) > 1 and rel_parts[1] == "repo":
+            continue
+        if len(rel_parts) == 1 and rel_parts[0] in COMPACT_ARTIFACT_NAMES:
+            continue
+        files.append(path)
+    return files
+
+
+def write_evidence_bundle(run_dir: Path) -> Path:
+    bundle = run_dir / "evidence.jsonl.gz"
+    with gzip.open(bundle, "wt", encoding="utf-8") as out:
+        for path in evidence_source_files(run_dir):
+            entry = {
+                "path": str(path.relative_to(run_dir)),
+                "content": path.read_text(errors="replace"),
+            }
+            out.write(json.dumps(entry, ensure_ascii=False) + "\n")
+    return bundle
+
+
+def write_manifest(run_dir: Path) -> Path:
+    manifest = run_dir / "manifest.sha256"
+    lines = []
+    for name in sorted(COMPACT_ARTIFACT_NAMES - {"manifest.sha256"}):
+        path = run_dir / name
+        digest = hashlib.sha256(path.read_bytes()).hexdigest()
+        lines.append(f"{digest}  {name}\n")
+    manifest.write_text("".join(lines))
+    return manifest
+
+
+def remove_noncompact_artifacts(run_dir: Path) -> None:
+    for path in list(run_dir.iterdir()):
+        if path.is_file() and path.name in COMPACT_ARTIFACT_NAMES:
+            continue
+        if path.is_dir():
+            chmod_tree(path)
+            shutil.rmtree(path)
+        else:
+            path.unlink()
 
 
 def redact_json_file(path: Path, keys: set[str]) -> None:
@@ -617,15 +681,7 @@ def workflow_session_record(
                 "forbidden_tool_hits": [],
             },
         },
-        "artifacts": {
-            "root": rel(run_dir) + "/",
-            "cumulative_provider_usage": rel(run_dir / "provider-usage.json"),
-            "final_verifier_output": rel(run_dir / "final-verifier-output.txt"),
-            "quality_review": "",
-            "final_diff": rel(run_dir / "final.diff"),
-            "task_artifacts": [result["verifier_output"] for result in verifier_results],
-            "task_prompts": [rel(path) for path in sorted((run_dir / "task-prompts").glob("task-*.md"))],
-        },
+        "artifacts": compact_artifacts(run_dir),
         "interpretation": {
             "accepted_for_objective": accepted,
             "comparison_baseline_session_id": "",
@@ -785,7 +841,7 @@ def run_one(args: argparse.Namespace) -> dict[str, Any]:
         "mode": "sequential-one-task-at-a-time",
         "future_tasks_visible": False,
         "codex_thread_id": thread_id,
-        "task_prompt_artifacts": [rel(prompt_dir / f"task-{int(task['order']):02d}.md") for task in ordered_tasks],
+        "task_prompt_evidence": rel(run_dir / "evidence.jsonl.gz"),
     }
     leakage_controls = {
         "seed_origin_concealed": not args.no_conceal_seed_origin,
@@ -818,16 +874,19 @@ def run_one(args: argparse.Namespace) -> dict[str, Any]:
         "per_task_results": verifier_results,
         "prompt_delivery": prompt_delivery,
         "leakage_controls": leakage_controls,
+        "artifacts": compact_artifacts(run_dir),
         "run_dir": rel(run_dir),
     }
-    (run_dir / "runner-summary.json").write_text(json.dumps(summary, indent=2) + "\n")
     session_record = workflow_session_record(seq, summary, run_dir, profile_id, codex_exit_codes, final_verifier_code, audit_code, usage, verifier_results, prompt_delivery=prompt_delivery, leakage_controls=leakage_controls)
     update_registry(session_record)
     comparison = write_comparison_if_ready(seq, study_id, args.replicate_index)
     if comparison:
         summary["comparison"] = comparison
-        (run_dir / "runner-summary.json").write_text(json.dumps(summary, indent=2) + "\n")
+    (run_dir / "run.json").write_text(json.dumps(summary, indent=2) + "\n")
+    write_evidence_bundle(run_dir)
     remove_ephemeral_homes(run_dir)
+    remove_noncompact_artifacts(run_dir)
+    write_manifest(run_dir)
     print(json.dumps(summary, indent=2), flush=True)
     return summary
 

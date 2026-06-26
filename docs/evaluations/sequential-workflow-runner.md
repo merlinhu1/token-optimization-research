@@ -163,20 +163,17 @@ Current active sequences are expected to include:
 
 ## Artifacts to inspect
 
-Each run writes:
+Each completed run keeps exactly four files in its session directory:
 
 ```text
 sources/evaluations/workflow-sessions/<session-id>/
-  runner-summary.json
-  provider-usage.json
-  codex-events.jsonl
-  task-prompts/task-01.md
-  task-01-codex-events.jsonl
-  verifier-task-01.txt
-  final-verifier-output.txt
-  final.diff
-  tool-isolation-audit.json
+  run.json              # summary, metadata, token usage, per-task verifier exits
+  changes.diff          # final code changes produced by the agent
+  evidence.jsonl.gz     # compressed raw stream: prompts, Codex events, logs, verifier output
+  manifest.sha256       # hashes for the other three files
 ```
+
+Do not commit materialized runtime state such as `project/`, `project/repo/`, `.venv/`, `__pycache__/`, `codex-homes/`, split task transcripts, or split verifier/setup logs. The runner may create those while executing, but successful runs compact them into `evidence.jsonl.gz` and remove the scratch tree before returning.
 
 The registry is updated at:
 

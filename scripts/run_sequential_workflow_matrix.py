@@ -158,8 +158,15 @@ def lane_session_records(checkout: Path, sequence_id: str, replicate_index: int)
 def copy_artifacts_for_sessions(checkout: Path, sessions: list[dict[str, Any]]) -> list[str]:
     copied: list[str] = []
     for session in sessions:
-        root = session.get("artifacts", {}).get("root") or ""
+        artifacts = session.get("artifacts", {}) if isinstance(session.get("artifacts"), dict) else {}
+        root = artifacts.get("root") or ""
         if not root:
+            for key in ("run_record", "evidence_bundle", "final_diff", "manifest"):
+                artifact_path = artifacts.get(key)
+                if artifact_path:
+                    root = str(Path(str(artifact_path)).parent)
+                    break
+        if not root or root == ".":
             continue
         rel = Path(root.rstrip("/"))
         if rel.is_absolute() or ".." in rel.parts:

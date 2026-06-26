@@ -57,20 +57,10 @@ The retained generated/recorded fixtures are sanity and diagnostic gates. The ca
 
 ```text
 sources/evaluations/workflow-sessions/<session-id>/
-  workflow-session-record.json
-  environment.json
-  profile-manifest.json
-  cumulative-provider-usage.json
-  final-git-status.txt
-  final-diff.patch
-  final-verifier-output.txt
-  quality-review.md
-  task-01-<task-id>/
-    prompt.md
-    transcript.jsonl
-    provider-usage.json
-    verifier-output.txt
-    task-result.json
+  run.json
+  changes.diff
+  evidence.jsonl.gz
+  manifest.sha256
 ```
 
-A compact copy of workflow-session metadata may be appended to `data/workflow-sessions.json`, but raw evidence remains in the session directory.
+A compact copy of workflow-session metadata is appended to `data/workflow-sessions.json`; recoverable raw evidence remains in the session directory inside `evidence.jsonl.gz`.
