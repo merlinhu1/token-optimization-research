@@ -1,0 +1,24 @@
+DEPRECATED: The legacy builder is deprecated and will be removed in a future release.
+            Install the buildx component to build images with BuildKit:
+            https://docs.docker.com/go/buildx/
+
+Sending build context to Docker daemon  185.6MB
+Step 1/6 : FROM ubuntu:24.04
+ ---> 4fbb8e6a8395
+Step 2/6 : ENV DEBIAN_FRONTEND=noninteractive     LANG=C.UTF-8     LC_ALL=C.UTF-8
+ ---> Using cache
+ ---> b48619833ba5
+Step 3/6 : RUN apt-get update     && apt-get install -y --no-install-recommends         bash         ca-certificates         coreutils         curl         file         git         jq         make         openssh-client         patch         procps         python3         python3-venv         python3-dev         sqlite3         build-essential         pkg-config         rsync         unzip         xz-utils         zstd     && rm -rf /var/lib/apt/lists/*
+ ---> Using cache
+ ---> bac01d9ad98a
+Step 4/6 : RUN useradd --create-home --shell /bin/bash eval     && mkdir -p /opt/data /workspace     && chown -R eval:eval /workspace
+ ---> Using cache
+ ---> 93db8b265f68
+Step 5/6 : WORKDIR /workspace
+ ---> Using cache
+ ---> 851cc64ccc7f
+Step 6/6 : USER eval
+ ---> Using cache
+ ---> 8e3971cfeb9d
+Successfully built 8e3971cfeb9d
+Successfully tagged token-eval-codex:latest

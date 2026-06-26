@@ -1,0 +1,14 @@
+Restored the upstream production behavior for the policy graph/state lifecycle regression. The seeded changes are fully reverted, so the working tree is clean.
+
+Verifier passed:
+
+```text
+ok  	github.com/hashicorp/terraform/internal/command
+ok  	github.com/hashicorp/terraform/internal/terraform
+```
+
+Command run:
+
+```bash
+go test ./internal/command ./internal/terraform -run "TestApply_PolicyResultsJSON_WithSavedPlan|TestApplyGraphBuilder_PolicyClient|TestPlanGraphBuilder_PolicyClient" -count=1
+```

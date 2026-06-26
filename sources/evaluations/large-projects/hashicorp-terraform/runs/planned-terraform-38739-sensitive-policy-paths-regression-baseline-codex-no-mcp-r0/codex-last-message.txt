@@ -1,0 +1,10 @@
+Restored the upstream production fix for policy sensitive path propagation. The seeded regressions in provider, module, and init policy wiring are back to using `policy.CtyToPolicyValue`, and provider policy evaluation now receives the marked config value so sensitive paths are extracted before sending raw attrs to the policy client.
+
+Verifier passed:
+
+```text
+go test ./internal/terraform -run TestContext2Apply_PolicyEvaluation_Full -count=1
+ok  	github.com/hashicorp/terraform/internal/terraform	0.033s
+```
+
+Working tree is clean.

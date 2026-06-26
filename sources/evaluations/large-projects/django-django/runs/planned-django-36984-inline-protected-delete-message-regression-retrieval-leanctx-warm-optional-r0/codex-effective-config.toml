@@ -1,0 +1,12 @@
+sandbox_mode = "danger-full-access"
+approval_policy = "never"
+
+[features]
+hooks = false
+
+[mcp_servers.lean-ctx]
+command = "/opt/data/bin/lean-ctx"
+args = []
+
+[mcp_servers.lean-ctx.env]
+LEAN_CTX_DATA_DIR = "/opt/data/eval-codex-homes/retrieval-leanctx-warm-optional/.config/lean-ctx"

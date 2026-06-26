@@ -1,0 +1,5 @@
+# Preserve raw benchmark evidence exactly as captured while avoiding whitespace
+# hygiene checks on stored terminal output and patch/diff artifacts.
+sources/evaluations/**/docker-build-output.txt -whitespace
+sources/evaluations/**/*.diff -whitespace
+sources/evaluations/**/*.patch -whitespace

@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "fixture_id": "py-noisy-unit-failure",
+  "created_at": "2026-07-01",
+  "materializer": "sources/evaluations/fixture-corpus/v1/materialize.py",
+  "verifier_command": "cd sources/evaluations/fixture-corpus/v1/py-noisy-unit-failure/repo && python3 -m unittest discover -s tests -v",
+  "required_artifacts": [
+    "transcript",
+    "provider-usage",
+    "verifier-output",
+    "quality-review"
+  ]
+}

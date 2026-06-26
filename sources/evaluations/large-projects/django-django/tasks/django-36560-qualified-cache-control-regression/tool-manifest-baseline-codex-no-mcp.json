@@ -1,0 +1,31 @@
+{
+  "schema_version": 1,
+  "profile_id": "baseline-codex-no-mcp",
+  "task_id": "django-36560-qualified-cache-control-regression",
+  "fixture_id": "large-django-django",
+  "allowed_token_saving_tools": [],
+  "forbidden_tools": [
+    "lean-ctx",
+    "mcp_lean_ctx",
+    "serena",
+    "rtk",
+    "lowfat",
+    "tokenjuice",
+    "repomix",
+    "mex",
+    "cavemem",
+    "cartog"
+  ],
+  "allowed_core_capabilities": [
+    "plain shell commands",
+    "plain file read/write/edit",
+    "git",
+    "language verifier command"
+  ],
+  "isolation_requirements": [
+    "Run in a fresh agent session/profile with only non-token-saving core tools enabled.",
+    "Do not expose lean-ctx MCP tools in baseline runs.",
+    "Do not use prebuilt indexes, memories, caches, or retrieval databases from previous runs.",
+    "Audit transcript before accepting the run."
+  ]
+}

@@ -1,0 +1,9 @@
+Implemented the regression repair by restoring the upstream production behavior for boolean exact lookup compilation across backend feature flags, shared conditional-expression handling, and Oracle lookup wrapping.
+
+Verification passed:
+
+```bash
+PYTHONPATH=. .venv/bin/python tests/runtests.py lookup.tests.LookupTests.test_exact_booleanfield lookup.tests.LookupTests.test_exact_booleanfield_annotation --verbosity 2
+```
+
+Both targeted tests passed. Note: `python` is not on PATH in this container, so I used `.venv/bin/python`. The only remaining untracked item is `.venv/`.

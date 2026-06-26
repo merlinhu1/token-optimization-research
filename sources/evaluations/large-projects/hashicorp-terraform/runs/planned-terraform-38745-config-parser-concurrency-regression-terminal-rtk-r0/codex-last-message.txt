@@ -1,0 +1,9 @@
+Restored the upstream parser concurrency fix. The working tree is now clean against the pinned fixed commit.
+
+Verified with:
+
+```bash
+go test -race ./internal/configs/configload ./internal/configs -run "TestLoaderSourcesConcurrentWithParserWrite|TestSourceBundleParserConcurrentLoadConfigDir|TestParserLoadConfigDirSuccess" -count=1
+```
+
+Result: `79 passed in 2 packages`.
