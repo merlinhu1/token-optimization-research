@@ -9,6 +9,9 @@
 # Extra arguments are passed through to scripts/run_codex_workflow_evaluation.py.
 set -euo pipefail
 
+# Keep repo-local validation available in non-login shells used by schedulers/agents.
+export PATH="/opt/data/bin:/opt/data/.local/bin:${PATH}"
+
 if [[ $# -lt 1 || "${1:-}" == "-h" || "${1:-}" == "--help" ]]; then
   cat <<'USAGE'
 Usage: scripts/run_sequential_workflow_pair.sh <sequence-id> [--treatment-profile <profile-id>] [runner options]
