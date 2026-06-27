@@ -113,7 +113,7 @@ The 2026-07-01 refresh pins the inspected source to `b72413cbd34a4ac08cc60dcdd42
 
 ## Compatibility notes
 
-Code retrieval/review context authority. It overlaps with CodeGraph, Serena, jcodemunch, claude-context, Token Savior retrieval, and LeanCTX graph/read tools.
+Code retrieval/review context authority. It overlaps with CodeGraph, Serena, jcodemunch, Token Savior retrieval, and LeanCTX graph/read tools.
 
 A compatibility-safe stack has components that do not fight over the same hook, context surface, retrieval authority, memory authority, proxy, output channel, behavior controller, artifact policy, or state boundary.
 

@@ -82,7 +82,7 @@ The report prioritizes candidates that can be ablated cleanly: baseline, single-
 | Surface | Candidate owners | Stack rule |
 |---|---|---|
 | Terminal/tool-output compaction | RTK, Lowfat, Snip, TokenJuice, xcsift, LeanCTX shell compression, Token Savior Bash compaction | Use one general owner. Use xcsift as a specialized Apple/Xcode owner only when a general shell compactor is not also filtering the same output. |
-| Code retrieval and indexing | CodeGraph, Cartog, Graphify, Understand-Anything, Serena, SigMap, Claude Context, jcodemunch MCP, CocoIndex Code, Code Review Graph, CognitX CodeGraph, Codescope, SwarmVault, Memex, LeanCTX retrieval, Token Savior retrieval | Use one primary current-source retrieval authority unless an explicit retrieval bakeoff is being run. |
+| Code retrieval and indexing | CodeGraph, Cartog, Graphify, Understand-Anything, Serena, SigMap, jcodemunch MCP, CocoIndex Code, Code Review Graph, CognitX CodeGraph, Codescope, SwarmVault, Memex, LeanCTX retrieval, Token Savior retrieval | Use one primary current-source retrieval authority unless an explicit retrieval bakeoff is being run. |
 | Memory and reinjection | Claude Mem, Cavemem, MEX, Total Agent Memory, Dragon-Brain, Memex, Token Savior memory, LeanCTX memory, SwarmVault memory | Use one automatic memory or reinjection authority. MEX can be used as a scaffold/governance layer only if it is not also acting as automatic memory reinjection. |
 | Broad context compression/proxy | Headroom, Claw Compactor, LeanCTX, Token Savior, Codescope, Memex | Evaluate broad owners alone or with non-overlapping policy layers. Do not combine broad compressors or broad context owners without disabled surfaces and raw-recovery checks. |
 | Execution offload/result selection | Context-Mode, pctx, Headroom proxy modes, Maestro Flow orchestration | Use one offload or orchestration owner per run. |
@@ -372,7 +372,7 @@ The report prioritizes candidates that can be ablated cleanly: baseline, single-
 |---|---|---|---|
 | `baseline-codex-no-mcp` | Codex CLI workflow with native shell/edit/file operations and no MCP/token-saving add-ons | Establish task-level provider-billed practical-agent baseline | Billed tokens/cost, turns, native tool calls, verifier, quality score, latency |
 | `terminal-only` | One of RTK, Lowfat, Snip, TokenJuice, or xcsift for Apple logs | Select the terminal owner before multi-tool stacks | Compact/raw token delta, diagnostic fidelity, raw recovery |
-| `retrieval-only` | One of CodeGraph, Cartog, Graphify, Understand-Anything, Serena, SigMap, jcodemunch, Claude Context, CocoIndex Code, Code Review Graph, CognitX CodeGraph, Codescope, or SwarmVault | Isolate retrieval benefit and index overhead | Target localization, follow-up broad reads, billed tokens, index time |
+| `retrieval-only` | One of CodeGraph, Cartog, Graphify, Understand-Anything, Serena, SigMap, jcodemunch, CocoIndex Code, Code Review Graph, CognitX CodeGraph, Codescope, or SwarmVault | Isolate retrieval benefit and index overhead | Target localization, follow-up broad reads, billed tokens, index time |
 | `memory-only repeated-task` | One of Cavemem, Claude Mem, Total Agent Memory, Dragon-Brain, Memex, Token Savior memory, or LeanCTX memory | Test rediscovery reduction | Stale-context rate, repeated-task token delta, correctness |
 | `lower-intervention comparator` | RTK + CodeGraph or RTK + Cartog | Compare simple non-overlapping stacks against broader owners | Same metrics as baseline plus component attribution |
 | `graph bakeoff` | Fixed terminal owner plus exactly one retrieval authority | Compare graph/RAG candidates without retrieval overlap | File/symbol hit rate, broad-read reduction, billed tokens |
@@ -429,7 +429,7 @@ The report prioritizes candidates that can be ablated cleanly: baseline, single-
 ## Next review priorities
 
 1. Run a terminal-owner bakeoff across RTK, Lowfat, Snip, TokenJuice, and xcsift on fixed noisy-output fixtures.
-2. Run a retrieval bakeoff with one fixed terminal owner and exactly one retrieval authority per run: CodeGraph, Cartog, Graphify, Understand-Anything, Serena, SigMap, jcodemunch, Claude Context, CocoIndex Code, Code Review Graph, CognitX CodeGraph, Codescope, and SwarmVault where workload-appropriate.
+2. Run a retrieval bakeoff with one fixed terminal owner and exactly one retrieval authority per run: CodeGraph, Cartog, Graphify, Understand-Anything, Serena, SigMap, jcodemunch, CocoIndex Code, Code Review Graph, CognitX CodeGraph, Codescope, and SwarmVault where workload-appropriate.
 3. Run repeated-task memory ablations for Cavemem, Claude Mem, Total Agent Memory, Dragon-Brain, Memex, Token Savior memory, and LeanCTX memory.
 4. Evaluate broad-owner candidates alone before composing them with narrow tools: LeanCTX, Token Savior, Headroom, Claw Compactor, Codescope, SwarmVault, and Memex.
 5. Evaluate installer/orchestrator tools for reproducible setup and surface discipline: Tokless, Maestro Flow, and Grace Marketplace.

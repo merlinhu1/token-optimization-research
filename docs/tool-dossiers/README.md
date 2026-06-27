@@ -30,7 +30,6 @@ All 42 current dossiers are at `source-logic` with pinned source-snapshot metada
 | thedotmack/claude-mem | `thedotmack-claude-mem.md` | source-logic | Persistent context capture, summarization, memory retrieval, and context reinjection |
 | tirth8205/code-review-graph | `tirth8205-code-review-graph.md` | source-logic | SQLite-backed code graph, hybrid search, and minimal review context assembly |
 | coderamp-labs/gitingest | `coderamp-labs-gitingest.md` | source-logic | Repository ingestion and prompt-friendly repository digest generation |
-| zilliztech/claude-context | `zilliztech-claude-context.md` | source-logic | MCP semantic code search backed by AST splitting, embeddings, and Milvus/Zilliz vector database |
 | yvgude/lean-ctx | `yvgude-lean-ctx.md` | source-logic | Broad context intelligence layer: compressed reads, search, shell compression, memory, code graph, and MCP tools |
 | cocoindex-io/cocoindex-code | `cocoindex-io-cocoindex-code.md` | source-logic | Embedded AST/vector code search CLI and MCP server |
 | open-compress/claw-compactor | `open-compress-claw-compactor.md` | source-logic | Multi-stage text/tool-result compression pipeline and proxy middleware |

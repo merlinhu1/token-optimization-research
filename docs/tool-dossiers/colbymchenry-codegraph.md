@@ -99,7 +99,7 @@ Evidence artifact: `sources/discovery/2026-06-26-source-logic-uplift-code-inspec
 
 ## Compatibility notes
 
-Code retrieval/indexing authority. It overlaps with Serena, SigMap, jcodemunch MCP, Claude Context, CocoIndex Code, Code Review Graph, LeanCTX retrieval, and Token Savior retrieval. Use one primary retrieval authority per stack.
+Code retrieval/indexing authority. It overlaps with Serena, SigMap, jcodemunch MCP, CocoIndex Code, Code Review Graph, LeanCTX retrieval, and Token Savior retrieval. Use one primary retrieval authority per stack.
 
 A compatibility-safe stack has components that do not fight over the same hook, context surface, retrieval authority, memory authority, proxy, output channel, behavior controller, artifact policy, or state boundary.
 
@@ -113,5 +113,5 @@ A compatibility-safe stack has components that do not fight over the same hook, 
 ## Open questions and next review tasks
 
 - [ ] Review MCP tool schemas and daemon lifecycle more deeply.
-- [ ] Run same-task retrieval comparisons against Serena, SigMap, jcodemunch, Claude Context, and LeanCTX.
+- [ ] Run same-task retrieval comparisons against Serena, SigMap, jcodemunch, and LeanCTX.
 - [ ] Inspect agent-eval benchmark raw outputs and scoring before ranking.

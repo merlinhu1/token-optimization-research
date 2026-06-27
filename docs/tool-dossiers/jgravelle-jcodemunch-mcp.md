@@ -113,7 +113,7 @@ The 2026-07-01 refresh pins the inspected source to `bdebb6399f07431d4b072582ff8
 
 ## Compatibility notes
 
-Large code retrieval/indexing authority. It overlaps with CodeGraph, Serena, claude-context, code-review-graph, CocoIndex Code, and LeanCTX graph/search tools.
+Large code retrieval/indexing authority. It overlaps with CodeGraph, Serena, code-review-graph, CocoIndex Code, and LeanCTX graph/search tools.
 
 A compatibility-safe stack has components that do not fight over the same hook, context surface, retrieval authority, memory authority, proxy, output channel, behavior controller, artifact policy, or state boundary.
 
