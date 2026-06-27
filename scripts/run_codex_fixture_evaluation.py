@@ -217,6 +217,19 @@ def active_tool_config(record: dict[str, Any], pid: str) -> dict[str, Any] | Non
     return TOOL_CONFIGS[ids[0]]
 
 
+def codex_model_args(record: dict[str, Any]) -> list[str]:
+    """Return Codex CLI args that bind the recorded model condition."""
+    agent = record.get("agent") or {}
+    args: list[str] = []
+    model = agent.get("model")
+    if model:
+        args.extend(["--model", str(model)])
+    reasoning_effort = agent.get("reasoning_effort")
+    if reasoning_effort:
+        args.extend(["--config", f"model_reasoning_effort={json.dumps(str(reasoning_effort))}"])
+    return args
+
+
 def tool_data_dir(codex_home: Path, cfg: dict[str, Any]) -> Path:
     return codex_home / ".config" / str(cfg["data_dir_name"])
 
