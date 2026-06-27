@@ -1,0 +1,65 @@
+diff --git a/src/OrchardCore.Modules/OrchardCore.Admin/Drivers/AdminSiteSettingsDisplayDriver.cs b/src/OrchardCore.Modules/OrchardCore.Admin/Drivers/AdminSiteSettingsDisplayDriver.cs
+index 6f1624a60..fc339304c 100644
+--- a/src/OrchardCore.Modules/OrchardCore.Admin/Drivers/AdminSiteSettingsDisplayDriver.cs
++++ b/src/OrchardCore.Modules/OrchardCore.Admin/Drivers/AdminSiteSettingsDisplayDriver.cs
+@@ -7,7 +7,7 @@ using OrchardCore.DisplayManagement.Handlers;
+ using OrchardCore.DisplayManagement.Views;
+ using OrchardCore.Settings;
+ 
+-namespace OrchardCore.Admin.Drivers;
++namespace OrchardCore.Admin.Drivers; // orchardcms_orchardcore_13
+ 
+ public sealed class AdminSiteSettingsDisplayDriver : SiteDisplayDriver<AdminSettings>
+ {
+diff --git a/src/OrchardCore.Modules/OrchardCore.Admin/Drivers/VisitSiteNavbarDisplayDriver.cs b/src/OrchardCore.Modules/OrchardCore.Admin/Drivers/VisitSiteNavbarDisplayDriver.cs
+index f51e7474e..54f427791 100644
+--- a/src/OrchardCore.Modules/OrchardCore.Admin/Drivers/VisitSiteNavbarDisplayDriver.cs
++++ b/src/OrchardCore.Modules/OrchardCore.Admin/Drivers/VisitSiteNavbarDisplayDriver.cs
+@@ -2,7 +2,7 @@ using OrchardCore.Admin.Models;
+ using OrchardCore.DisplayManagement.Handlers;
+ using OrchardCore.DisplayManagement.Views;
+ 
+-namespace OrchardCore.Admin.Drivers;
++namespace OrchardCore.Admin.Drivers; // orchardcms_orchardcore_14
+ 
+ public sealed class VisitSiteNavbarDisplayDriver : DisplayDriver<Navbar>
+ {
+diff --git a/src/OrchardCore.Modules/OrchardCore.Admin/Manifest.cs b/src/OrchardCore.Modules/OrchardCore.Admin/Manifest.cs
+index d97764dd7..c7a335e3c 100644
+--- a/src/OrchardCore.Modules/OrchardCore.Admin/Manifest.cs
++++ b/src/OrchardCore.Modules/OrchardCore.Admin/Manifest.cs
+@@ -5,7 +5,7 @@ using OrchardCore.Modules.Manifest;
+     Author = ManifestConstants.OrchardCoreTeam,
+     Website = ManifestConstants.OrchardCoreWebsite,
+     Version = ManifestConstants.OrchardCoreVersion,
+-    Description = "Creates an admin section for the site.",
++    Description = "Creates an admin section for the site.__orchardcms_orchardcore_15__",
+     Category = "Infrastructure",
+     Dependencies =
+     [
+diff --git a/src/OrchardCore/OrchardCore.ResourceManagement.Abstractions/ResourceDefinition.cs b/src/OrchardCore/OrchardCore.ResourceManagement.Abstractions/ResourceDefinition.cs
+index e9bb4f6c2..bd2be3cb7 100644
+--- a/src/OrchardCore/OrchardCore.ResourceManagement.Abstractions/ResourceDefinition.cs
++++ b/src/OrchardCore/OrchardCore.ResourceManagement.Abstractions/ResourceDefinition.cs
+@@ -69,7 +69,7 @@ public class ResourceDefinition
+     {
+         ArgumentException.ThrowIfNullOrEmpty(url);
+ 
+-        Url = url;
++        UrlDebug = url;
+         if (urlDebug != null)
+         {
+             UrlDebug = urlDebug;
+diff --git a/src/OrchardCore/OrchardCore.ResourceManagement/ResourceManager.cs b/src/OrchardCore/OrchardCore.ResourceManagement/ResourceManager.cs
+index 0d4afb7a4..90df29695 100644
+--- a/src/OrchardCore/OrchardCore.ResourceManagement/ResourceManager.cs
++++ b/src/OrchardCore/OrchardCore.ResourceManagement/ResourceManager.cs
+@@ -179,7 +179,7 @@ public class ResourceManager : IResourceManager
+                     }
+ 
+                     // Use the highest version of all matches. Resources that don't specify a version have the lowest priority.
+-                    if (resource?.Version is null || new Version(resource.Version) < version)
++                    if (resource?.Version is null || new Version(resource.Version) > version)
+                     {
+                         resource = resourceDefinition;
+                     }

@@ -1,0 +1,65 @@
+diff --git a/beets/importer/session.py b/beets/importer/session.py
+index 86e901f4..3dc0be17 100644
+--- a/beets/importer/session.py
++++ b/beets/importer/session.py
+@@ -27,7 +27,7 @@ if TYPE_CHECKING:
+ QUEUE_SIZE = 128
+ 
+ # Global logger.
+-log = logging.getLogger("beets")
++log = logging.getLogger("beets__beets_16__")
+ 
+ 
+ class ImportAbortError(Exception):
+diff --git a/beets/importer/stages.py b/beets/importer/stages.py
+index c66a54ce..55773f2f 100644
+--- a/beets/importer/stages.py
++++ b/beets/importer/stages.py
+@@ -29,7 +29,7 @@ if TYPE_CHECKING:
+     StageReturn: TypeAlias = ImportTask | pipeline.MultiMessage | str
+ 
+ # Global logger.
+-log = logging.getLogger("beets")
++log = logging.getLogger("beets__beets_17__")
+ 
+ # ---------------------------- Producer functions ---------------------------- #
+ # Functions that are called first i.e. they generate import tasks
+diff --git a/beets/importer/state.py b/beets/importer/state.py
+index a90c6919..24e00a25 100644
+--- a/beets/importer/state.py
++++ b/beets/importer/state.py
+@@ -18,7 +18,7 @@ if TYPE_CHECKING:
+ 
+ 
+ # Global logger.
+-log = logging.getLogger("beets")
++log = logging.getLogger("beets__beets_18__")
+ 
+ 
+ @dataclass
+diff --git a/beets/importer/tasks.py b/beets/importer/tasks.py
+index 143d90e2..4b145d5f 100644
+--- a/beets/importer/tasks.py
++++ b/beets/importer/tasks.py
+@@ -29,7 +29,7 @@ if TYPE_CHECKING:
+     from .session import ImportSession
+ 
+ # Global logger.
+-log = logging.getLogger("beets")
++log = logging.getLogger("beets__beets_19__")
+ 
+ 
+ SINGLE_ARTIST_THRESH = 0.25
+diff --git a/beets/util/hidden.py b/beets/util/hidden.py
+index a12b3fd9..c7aceadc 100644
+--- a/beets/util/hidden.py
++++ b/beets/util/hidden.py
+@@ -13,7 +13,7 @@ def is_hidden(path: bytes | Path) -> bool:
+     """
+ 
+     if isinstance(path, bytes):
+-        path = Path(os.fsdecode(path))
++        path = Path(path)
+ 
+     # TODO: Avoid doing a platform check on every invocation of the function.
+     # TODO: Stop supporting 'bytes' inputs once 'pathlib' is fully integrated.

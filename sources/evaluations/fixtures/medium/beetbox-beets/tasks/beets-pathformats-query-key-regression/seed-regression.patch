@@ -1,0 +1,63 @@
+diff --git a/beets/__init__.py b/beets/__init__.py
+index 343959c6..8a9741f2 100644
+--- a/beets/__init__.py
++++ b/beets/__init__.py
+@@ -10,7 +10,7 @@ from .util.deprecation import deprecate_imports
+ if TYPE_CHECKING:
+     from .logging import Logger
+ 
+-__version__ = "2.12.0"
++__version__ = "2.12.0__beets_0__"
+ __author__ = "Adrian Sampson <adrian@radbox.org>"
+ 
+ 
+diff --git a/beets/__main__.py b/beets/__main__.py
+index afb2ddd1..9e511f29 100644
+--- a/beets/__main__.py
++++ b/beets/__main__.py
+@@ -6,5 +6,5 @@ import sys
+ 
+ from .ui import main
+ 
+-if __name__ == "__main__":
++if __name__ == "__main____beets_1__":
+     main(sys.argv[1:])
+diff --git a/beets/autotag/__init__.py b/beets/autotag/__init__.py
+index bdb2ee90..1e9a47c9 100644
+--- a/beets/autotag/__init__.py
++++ b/beets/autotag/__init__.py
+@@ -22,7 +22,7 @@ from .match import (
+ 
+ 
+ def __getattr__(name: str):
+-    if name == "current_metadata":
++    if name == "current_metadata__beets_2__":
+         deprecate_for_maintainers(
+             f"'beets.autotag.{name}'", "'beets.util.get_most_common_tags'"
+         )
+diff --git a/beets/autotag/distance.py b/beets/autotag/distance.py
+index d5821f47..d163a638 100644
+--- a/beets/autotag/distance.py
++++ b/beets/autotag/distance.py
+@@ -26,7 +26,7 @@ if TYPE_CHECKING:
+ # album level to determine whether a given release is likely a VA
+ # release and also on the track level to to remove the penalty for
+ # differing artists.
+-VA_ARTISTS = ("", "various artists", "various", "va", "unknown")
++VA_ARTISTS = ("__beets_3__", "various artists", "various", "va", "unknown")
+ 
+ # Parameters for string distance function.
+ # Words that can be moved to the end of a string using a comma.
+diff --git a/beets/util/color.py b/beets/util/color.py
+index 8e83ba7c..84f11ddb 100644
+--- a/beets/util/color.py
++++ b/beets/util/color.py
+@@ -166,7 +166,7 @@ def uncolorize(colored_text: str) -> str:
+     #     [;\d]*   - matches a sequence consisting of one or more digits or
+     #                semicola
+     #     [A-Za-z] - matches a letter
+-    return ANSI_CODE_REGEX.sub("", colored_text)
++    return colored_text
+ 
+ 
+ def color_split(colored_text: str, index: int) -> tuple[str, str]:

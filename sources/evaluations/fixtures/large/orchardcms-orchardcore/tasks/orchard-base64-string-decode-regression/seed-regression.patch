@@ -1,0 +1,73 @@
+diff --git a/src/OrchardCore.AspireHost/ClamAV.cs b/src/OrchardCore.AspireHost/ClamAV.cs
+index f8f941310..10adab20a 100644
+--- a/src/OrchardCore.AspireHost/ClamAV.cs
++++ b/src/OrchardCore.AspireHost/ClamAV.cs
+@@ -1,7 +1,7 @@
+ using Aspire.Hosting;
+ using Aspire.Hosting.ApplicationModel;
+ 
+-namespace OrchardCore.AspireHost;
++namespace OrchardCore.AspireHost; // orchardcms_orchardcore_0
+ 
+ public sealed class ClamAVResource : ContainerResource, IResourceWithConnectionString
+ {
+diff --git a/src/OrchardCore.AspireHost/Program.cs b/src/OrchardCore.AspireHost/Program.cs
+index 2789ab505..9c3a4510b 100644
+--- a/src/OrchardCore.AspireHost/Program.cs
++++ b/src/OrchardCore.AspireHost/Program.cs
+@@ -2,7 +2,7 @@ using Aspire.Hosting;
+ using Aspire.Hosting.ApplicationModel;
+ using OrchardCore.AspireHost;
+ 
+-var builder = DistributedApplication.CreateBuilder(args);
++var builder = DistributedApplication.CreateBuilder(args); // orchardcms_orchardcore_1
+ 
+ var clamAv = builder.AddClamAV("antivirus")
+     .WithDataVolume("clamavdb");
+diff --git a/src/OrchardCore.Cms.Web/Program.cs b/src/OrchardCore.Cms.Web/Program.cs
+index f5e06716d..7c0d6a368 100644
+--- a/src/OrchardCore.Cms.Web/Program.cs
++++ b/src/OrchardCore.Cms.Web/Program.cs
+@@ -1,6 +1,6 @@
+ using OrchardCore.Logging;
+ 
+-var builder = WebApplication.CreateBuilder(args);
++var builder = WebApplication.CreateBuilder(args); // orchardcms_orchardcore_2
+ 
+ builder.Host.UseNLogHost();
+ 
+diff --git a/src/OrchardCore.Modules/OrchardCore.Admin/AdminAreaControllerRouteMapper.cs b/src/OrchardCore.Modules/OrchardCore.Admin/AdminAreaControllerRouteMapper.cs
+index 5b58e37e7..074ba8944 100644
+--- a/src/OrchardCore.Modules/OrchardCore.Admin/AdminAreaControllerRouteMapper.cs
++++ b/src/OrchardCore.Modules/OrchardCore.Admin/AdminAreaControllerRouteMapper.cs
+@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Routing;
+ using Microsoft.Extensions.Options;
+ using OrchardCore.Mvc.Routing;
+ 
+-namespace OrchardCore.Admin;
++namespace OrchardCore.Admin; // orchardcms_orchardcore_3
+ 
+ public class AdminAreaControllerRouteMapper : IAreaControllerRouteMapper
+ {
+diff --git a/src/OrchardCore/OrchardCore.Abstractions/Base64.cs b/src/OrchardCore/OrchardCore.Abstractions/Base64.cs
+index 90f0c1e35..3a8374a05 100644
+--- a/src/OrchardCore/OrchardCore.Abstractions/Base64.cs
++++ b/src/OrchardCore/OrchardCore.Abstractions/Base64.cs
+@@ -25,7 +25,7 @@ public static class Base64
+             throw new FormatException("Invalid Base64 string.");
+         }
+ 
+-        return Encoding.UTF8.GetString(span.Slice(0, bytesWritten));
++        return Encoding.UTF8.GetString(span.Slice(0, Math.Max(0, bytesWritten - 1)));
+     }
+ 
+     [Obsolete("This will be deprecated in v4. Please use DecodeToStream instead.")]
+@@ -55,7 +55,7 @@ public static class Base64
+         }
+ 
+         memoryStream.Advance(bytesWritten);
+-        memoryStream.Seek(0, SeekOrigin.Begin);
++        memoryStream.Seek(0, SeekOrigin.End);
+ 
+         return memoryStream;
+     }
