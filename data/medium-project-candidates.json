@@ -21,7 +21,7 @@
       "open_issues": 72,
       "default_branch": "main",
       "pushed_at": "2026-07-07T10:15:35Z",
-      "role": "target medium TypeScript/JavaScript fixture candidate",
+      "role": "primary medium TypeScript/JavaScript fixture",
       "why": "Active Node server framework with realistic routing, schema, plugin, hook, and reply-serialization behavior; good replacement for the Python Flask slot without using another Python web framework.",
       "task_classes": [
         "large-codebase-navigation",
@@ -31,17 +31,17 @@
       "surface": "retrieval-context",
       "setup_policy": "Clone a pinned commit, install Node dependencies with the repo-pinned package manager, apply seeded production regressions, and freeze targeted test commands. Current candidate scaffold provides setup/reset/smoke scripts at the fixture root.",
       "verifier_policy": "Use bounded npm/pnpm test selectors for affected Fastify subsystems and record any package-manager or Node-version constraints explicitly.",
-      "selection_status": "target-fixture-candidate",
-      "selected_reason": "Preferred medium TS/JS slot for the target matrix.",
+      "selection_status": "primary-fixture",
+      "selected_reason": "Primary medium TS/JS lane after five upstream-derived behavioral tasks passed qualification.",
       "pinned_task_commits": [
         "94bcbcc6e2ef3b8e8f8e8797fe551ccbe7b942fd"
       ],
       "tasks": [
-        "fastify-route-schema-regression",
-        "fastify-plugin-lifecycle-regression",
-        "fastify-reply-serialization-regression",
-        "fastify-hook-order-regression",
-        "fastify-error-handler-regression"
+        "fastify-log-controller-regression",
+        "fastify-max-param-length-regression",
+        "fastify-request-media-type-regression",
+        "fastify-content-type-semantics-regression",
+        "fastify-request-lifecycle-regression"
       ],
       "qualification_status": "active-reproduction-flow",
       "workflow_sequence_id": "fastify-maintenance-sequence-v1"
@@ -79,7 +79,7 @@
         "beets-import-state-regression",
         "beets-query-filter-regression"
       ],
-      "qualification_status": "active-reproduction-flow",
+      "qualification_status": "fixture-redesign-required",
       "workflow_sequence_id": "beets-maintenance-sequence-v1"
     }
   ]

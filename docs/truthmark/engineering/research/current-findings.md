@@ -1,7 +1,7 @@
 ---
 status: active
 truth_kind: engineering-behavior
-last_reviewed: 2026-07-03
+last_reviewed: 2026-07-09
 ---
 
 # Current Findings
@@ -29,7 +29,11 @@ Detailed evidence remains in reports, dossiers, structured data, and evaluation 
 - As of 2026-07-01, all 42 tool dossiers have pinned source-snapshot metadata and pass dossier-quality validation.
 - The 2026-06-28 corrective knowledge-graph and agent-memory leads were promoted from `lead` to `source-logic` on 2026-06-29.
 - Phase 2 focuses on persistent workflow simulation, provider-billed token accounting, quality standards, and a broader source-logic stack hypothesis portfolio.
-- As of 2026-07-08, the active default workflow matrix is Terraform, OrchardCore, Fastify, and Beets.
+- As of 2026-07-10, no workflow sequence is active; Terraform, OrchardCore, Fastify, and Beets remain planned candidates until their fixture-validity blockers are resolved.
+- The July 10 Fastify paid canary is failed operational evidence: task 1 saw future seeded regressions and the fixed snapshot remained reachable through Git history, so no RTK treatment was launched.
+- The repaired runner injects one regression at a time and replaces model-facing Git metadata with a verified parentless root before each task.
+- The July 8-9 Fastify and Terraform r0 workflow sessions are preserved but excluded from objective use because the old runner exposed future task and verifier assets through a writable run-directory mount.
+- Current r0 comparisons are historical single-run screening observations, not ranking or recommendation evidence.
 - Django single-task evidence is archived as historical evidence outside the active workflow matrix.
 - Primary objective claims require reproduction run records on medium-project or large-project fixtures in the cumulative schema.
 - Stack findings are hypotheses until benchmark-audit or reproduction evidence exists; Phase 1 now routes multiple candidate stacks and comparators rather than selecting a single default stack.

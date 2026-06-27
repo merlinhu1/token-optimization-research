@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "description": "Ordered task sequences for primary continuous workflow simulation. Sequences reset before the session, feed model-facing task prompts one at a time, and preserve repository/tool/agent state between tasks.",
+  "description": "Ordered task sequences for continuous workflow simulation. Sequences reset before the session, disclose prompts and inject regressions one task at a time, preserve source/tool/agent state between tasks, and re-root model-facing Git metadata to prevent answer leakage.",
   "state_policy_defaults": {
     "reset_before_session": [
       "repository working tree",
@@ -11,7 +11,7 @@
       "temporary directories"
     ],
     "persist_between_tasks": [
-      "repository working tree",
+      "repository source working tree; controller re-roots model-facing Git metadata before each task",
       "tool indexes and caches",
       "generated config",
       "agent home",
@@ -22,13 +22,17 @@
   "sequences": [
     {
       "id": "terraform-maintenance-sequence-v1",
-      "status": "active",
+      "status": "planned",
+      "acceptance_design": "behavioral",
+      "readiness_blockers": [
+        "Tasks touch only three or four production files and do not satisfy the primary workflow complexity floor."
+      ],
       "fixture_id": "large-hashicorp-terraform",
       "fixture_scale": "large-project",
       "objective": "individual_tool_effectiveness",
       "primary_metric": "cumulative provider-billed workflow tokens",
-      "reset_policy": "Reset once before the session; preserve repository, tool, index, cache, generated config, memory, and agent state between tasks.",
-      "conversion_note": "Executable shared-snapshot workflow: all five Terraform task regressions apply to commit e02391ad384c9c38f1d7f40b853c0d2297348094 and can run in one persistent session without repository reset between tasks.",
+      "reset_policy": "Reset once before the session; preserve source, tool, index, cache, generated config, memory, and agent state between tasks; inject only the current regression and re-root model-facing Git metadata before disclosure.",
+      "conversion_note": "Shared-snapshot candidate: the five Terraform regressions target commit e02391ad384c9c38f1d7f40b853c0d2297348094 and must be injected one task at a time while prior source fixes persist.",
       "tasks": [
         {
           "id": "terraform-38739-sensitive-policy-paths-regression",
@@ -65,17 +69,21 @@
         "commit": "e02391ad384c9c38f1d7f40b853c0d2297348094",
         "upstream": "https://github.com/hashicorp/terraform.git"
       },
-      "seed_patch_policy": "All five task seed-regression.patch files are compatible with this shared snapshot as standalone task seeds and as an ordered persistent workflow seed stack."
+      "seed_patch_policy": "Task seed patches target one shared snapshot but are controller-injected only when that task is disclosed; future regressions must remain absent from the model-facing tree."
     },
     {
       "id": "orchardcore-maintenance-sequence-v1",
-      "status": "active",
+      "status": "planned",
+      "acceptance_design": "requires-redesign",
+      "readiness_blockers": [
+        "Supplemental mutations are under-specified exact-source restoration checks rather than causally related behavioral acceptance."
+      ],
       "fixture_id": "large-orchardcms-orchardcore",
       "fixture_scale": "large-project",
       "objective": "individual_tool_effectiveness",
       "primary_metric": "cumulative provider-billed workflow tokens",
-      "reset_policy": "Reset once before the session; preserve repository, tool, index, cache, generated config, memory, and agent state between tasks.",
-      "conversion_note": "Executable shared-snapshot workflow: all five OrchardCore controlled regressions apply to commit 91cd8a4bfcaf9cb1388edef6867af2a0b5a0a000 and can run in one persistent session without repository reset between tasks. Start-state fail/fixed-state pass gates were checked for all five tasks.",
+      "reset_policy": "Reset once before the session; preserve source, tool, index, cache, generated config, memory, and agent state between tasks; inject only the current regression and re-root model-facing Git metadata before disclosure.",
+      "conversion_note": "Shared-snapshot candidate: five OrchardCore regressions target commit 91cd8a4bfcaf9cb1388edef6867af2a0b5a0a000, but the synthetic supplemental guards require behavioral redesign before activation.",
       "initial_snapshot": {
         "commit": "91cd8a4bfcaf9cb1388edef6867af2a0b5a0a000",
         "upstream": "https://github.com/OrchardCMS/OrchardCore.git"
@@ -112,68 +120,74 @@
           "verifier_command": "sources/evaluations/fixtures/large/orchardcms-orchardcore/tasks/orchard-result-success-state-regression/verify.sh"
         }
       ],
-      "seed_patch_policy": "All five task seed-regression.patch files are controlled regressions with at least five changed production files per task. Supplemental source-invariant checks are allocated outside globally shared core files so ordered workflow seed patches stack cleanly on the shared snapshot.",
-      "complexity_note": "Complexity upgraded 2026-07-08: each task now uses multi-edit seeded regressions across paired OrchardCore infrastructure/resource/email/sanitization behaviors, with broader xUnit class verifiers and standalone seeded-fail/fixed-pass gates.",
-      "complexity_bar": "Each task seed patch touches at least five production files; standalone seeded-fail/fixed-pass gates and workflow prepare-only passed after stack-safe allocation."
+      "seed_patch_policy": "Candidate-only: patches must be injected one task at a time, and supplemental exact-source mutations must be replaced with causally related behavior plus behavioral tests before activation.",
+      "complexity_note": "The 2026-07-08 five-file expansion mixed core behavior with unrelated exact-source sentinels; it is retained for audit only and is not a valid active task design.",
+      "complexity_bar": "Five production files were touched and mechanical seeded-fail/fixed-pass gates passed, but behavioral validity failed; redesign is required."
     },
     {
       "id": "fastify-maintenance-sequence-v1",
       "status": "active",
+      "acceptance_design": "behavioral",
+      "readiness_blockers": [],
       "fixture_id": "medium-fastify-fastify",
       "fixture_scale": "medium-project",
       "objective": "individual_tool_effectiveness",
       "primary_metric": "cumulative provider-billed workflow tokens",
-      "reset_policy": "Reset once before the session; preserve repository, tool, index, cache, generated config, memory, and agent state between tasks.",
-      "conversion_note": "Executable shared-snapshot workflow: all five Fastify controlled regressions apply to commit 94bcbcc6e2ef3b8e8f8e8797fe551ccbe7b942fd and can run in one persistent session without repository reset between tasks. Start-state fail/fixed-state pass gates were checked for all five tasks.",
+      "reset_policy": "Reset once before the session; preserve source, tool, index, cache, generated config, memory, and agent state between tasks; inject only the current regression and re-root model-facing Git metadata before disclosure.",
+      "conversion_note": "Primary shared-snapshot workflow: five causally related upstream-derived regressions target commit 94bcbcc6e2ef3b8e8f8e8797fe551ccbe7b942fd and are injected one at a time after the prior repair passes.",
       "initial_snapshot": {
         "commit": "94bcbcc6e2ef3b8e8f8e8797fe551ccbe7b942fd",
         "upstream": "https://github.com/fastify/fastify.git"
       },
       "tasks": [
         {
-          "id": "fastify-query-schema-alias-regression",
-          "order": 1,
-          "prompt_path": "sources/evaluations/fixtures/medium/fastify-fastify/tasks/fastify-query-schema-alias-regression/agent-prompt.txt",
-          "verifier_command": "sources/evaluations/fixtures/medium/fastify-fastify/tasks/fastify-query-schema-alias-regression/verify.sh"
-        },
-        {
-          "id": "fastify-response-2xx-serializer-regression",
-          "order": 2,
-          "prompt_path": "sources/evaluations/fixtures/medium/fastify-fastify/tasks/fastify-response-2xx-serializer-regression/agent-prompt.txt",
-          "verifier_command": "sources/evaluations/fixtures/medium/fastify-fastify/tasks/fastify-response-2xx-serializer-regression/verify.sh"
-        },
-        {
-          "id": "fastify-trust-proxy-last-header-regression",
-          "order": 3,
-          "prompt_path": "sources/evaluations/fixtures/medium/fastify-fastify/tasks/fastify-trust-proxy-last-header-regression/agent-prompt.txt",
-          "verifier_command": "sources/evaluations/fixtures/medium/fastify-fastify/tasks/fastify-trust-proxy-last-header-regression/verify.sh"
-        },
-        {
-          "id": "fastify-has-route-method-case-regression",
+          "id": "fastify-log-controller-regression",
           "order": 4,
-          "prompt_path": "sources/evaluations/fixtures/medium/fastify-fastify/tasks/fastify-has-route-method-case-regression/agent-prompt.txt",
-          "verifier_command": "sources/evaluations/fixtures/medium/fastify-fastify/tasks/fastify-has-route-method-case-regression/verify.sh"
+          "prompt_path": "sources/evaluations/fixtures/medium/fastify-fastify/tasks/fastify-log-controller-regression/agent-prompt.txt",
+          "verifier_command": "sources/evaluations/fixtures/medium/fastify-fastify/tasks/fastify-log-controller-regression/verify.sh"
         },
         {
-          "id": "fastify-reply-hijack-state-regression",
+          "id": "fastify-max-param-length-regression",
+          "order": 1,
+          "prompt_path": "sources/evaluations/fixtures/medium/fastify-fastify/tasks/fastify-max-param-length-regression/agent-prompt.txt",
+          "verifier_command": "sources/evaluations/fixtures/medium/fastify-fastify/tasks/fastify-max-param-length-regression/verify.sh"
+        },
+        {
+          "id": "fastify-request-media-type-regression",
+          "order": 3,
+          "prompt_path": "sources/evaluations/fixtures/medium/fastify-fastify/tasks/fastify-request-media-type-regression/agent-prompt.txt",
+          "verifier_command": "sources/evaluations/fixtures/medium/fastify-fastify/tasks/fastify-request-media-type-regression/verify.sh"
+        },
+        {
+          "id": "fastify-content-type-semantics-regression",
           "order": 5,
-          "prompt_path": "sources/evaluations/fixtures/medium/fastify-fastify/tasks/fastify-reply-hijack-state-regression/agent-prompt.txt",
-          "verifier_command": "sources/evaluations/fixtures/medium/fastify-fastify/tasks/fastify-reply-hijack-state-regression/verify.sh"
+          "prompt_path": "sources/evaluations/fixtures/medium/fastify-fastify/tasks/fastify-content-type-semantics-regression/agent-prompt.txt",
+          "verifier_command": "sources/evaluations/fixtures/medium/fastify-fastify/tasks/fastify-content-type-semantics-regression/verify.sh"
+        },
+        {
+          "id": "fastify-request-lifecycle-regression",
+          "order": 2,
+          "prompt_path": "sources/evaluations/fixtures/medium/fastify-fastify/tasks/fastify-request-lifecycle-regression/agent-prompt.txt",
+          "verifier_command": "sources/evaluations/fixtures/medium/fastify-fastify/tasks/fastify-request-lifecycle-regression/verify.sh"
         }
       ],
-      "seed_patch_policy": "All five task seed-regression.patch files are controlled regressions with at least five changed production files per task. Supplemental source-invariant checks are allocated outside globally shared core files so ordered workflow seed patches stack cleanly on the shared snapshot.",
-      "complexity_note": "Complexity upgraded 2026-07-08: each task now uses multi-edit seeded regressions across schema/serializer, proxy/request, routing/head, reply lifecycle, or parser behavior, with broader Node/custom verifiers and standalone seeded-fail/fixed-pass gates.",
-      "complexity_bar": "Each task seed patch touches at least five production files; standalone seeded-fail/fixed-pass gates and workflow prepare-only passed after stack-safe allocation."
+      "seed_patch_policy": "Controller-injected one task at a time; future seeds and all verifier assets remain outside the model-visible repository.",
+      "complexity_note": "Each task is reconstructed from a real upstream Fastify behavior or performance change and changes only its causally related production/type files.",
+      "complexity_bar": "Every task touches at least five production/type files and has behavioral seeded-fail/fixed-pass evidence on the pinned snapshot."
     },
     {
       "id": "beets-maintenance-sequence-v1",
-      "status": "active",
+      "status": "planned",
+      "acceptance_design": "requires-redesign",
+      "readiness_blockers": [
+        "Supplemental mutations are under-specified exact-source restoration checks rather than causally related behavioral acceptance."
+      ],
       "fixture_id": "medium-beetbox-beets",
       "fixture_scale": "medium-project",
       "objective": "individual_tool_effectiveness",
       "primary_metric": "cumulative provider-billed workflow tokens",
-      "reset_policy": "Reset once before the session; preserve repository, tool, index, cache, generated config, memory, and agent state between tasks.",
-      "conversion_note": "Executable shared-snapshot workflow: all five Beets controlled regressions apply to commit 8ddae794d30e9984be904f80459614155c6592d9 and can run in one persistent session without repository reset between tasks. Start-state fail/fixed-state pass gates were checked for all five tasks.",
+      "reset_policy": "Reset once before the session; preserve source, tool, index, cache, generated config, memory, and agent state between tasks; inject only the current regression and re-root model-facing Git metadata before disclosure.",
+      "conversion_note": "Shared-snapshot candidate: five Beets regressions target commit 8ddae794d30e9984be904f80459614155c6592d9, but the synthetic supplemental guards require behavioral redesign before activation.",
       "initial_snapshot": {
         "commit": "8ddae794d30e9984be904f80459614155c6592d9",
         "upstream": "https://github.com/beetbox/beets.git"
@@ -210,9 +224,9 @@
           "verifier_command": "sources/evaluations/fixtures/medium/beetbox-beets/tasks/beets-template-escape-character-regression/verify.sh"
         }
       ],
-      "seed_patch_policy": "All five task seed-regression.patch files are controlled regressions with at least five changed production files per task. Supplemental source-invariant checks are allocated outside globally shared core files so ordered workflow seed patches stack cleanly on the shared snapshot.",
-      "complexity_note": "Complexity upgraded 2026-07-08: each task now uses multi-edit seeded regressions across paired Beets utility/config/path/template/pipeline behaviors, with broader pytest/custom verifiers and standalone seeded-fail/fixed-pass gates.",
-      "complexity_bar": "Each task seed patch touches at least five production files; standalone seeded-fail/fixed-pass gates and workflow prepare-only passed after stack-safe allocation."
+      "seed_patch_policy": "Candidate-only: patches must be injected one task at a time, and supplemental exact-source mutations must be replaced with causally related behavior plus behavioral tests before activation.",
+      "complexity_note": "The 2026-07-08 five-file expansion mixed core behavior with unrelated exact-source sentinels; it is retained for audit only and is not a valid active task design.",
+      "complexity_bar": "Five production files were touched and mechanical seeded-fail/fixed-pass gates passed, but behavioral validity failed; redesign is required."
     }
   ]
 }
