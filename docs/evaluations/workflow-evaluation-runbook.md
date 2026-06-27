@@ -78,15 +78,30 @@ Treatment lane:
 python3 scripts/run_codex_workflow_evaluation.py \
   --sequence-id terraform-maintenance-sequence-v1 \
   --profile-id retrieval-leanctx \
+  --comparison-profile-id retrieval-leanctx \
   --timeout-per-task 1800
+```
+
+Supported Codex treatment profiles are listed by:
+
+```bash
+python3 scripts/run_codex_workflow_evaluation.py --list-sequences
 ```
 
 ## Running paired lanes
 
-Run the paired baseline plus LeanCTX lanes for one sequence:
+Run the paired baseline plus default LeanCTX lanes for one sequence:
 
 ```bash
 scripts/run_sequential_workflow_pair.sh terraform-maintenance-sequence-v1
+```
+
+Run a different supported treatment profile:
+
+```bash
+scripts/run_sequential_workflow_pair.sh \
+  terraform-maintenance-sequence-v1 \
+  --treatment-profile retrieval-codegraph
 ```
 
 Use a different replicate or timeout when needed:
@@ -124,6 +139,18 @@ scripts/run_sequential_workflow_matrix.py \
   terraform-maintenance-sequence-v1 \
   fastify-maintenance-sequence-v1 \
   --max-parallel 2 \
+  --prepare-only \
+  --skip-container-preflight \
+  --skip-codex-preflight \
+  --skip-dependency-install
+```
+
+Smoke a non-default treatment profile without model spend:
+
+```bash
+scripts/run_sequential_workflow_matrix.py \
+  fastify-maintenance-sequence-v1 \
+  --treatment-profile retrieval-codegraph \
   --prepare-only \
   --skip-container-preflight \
   --skip-codex-preflight \
