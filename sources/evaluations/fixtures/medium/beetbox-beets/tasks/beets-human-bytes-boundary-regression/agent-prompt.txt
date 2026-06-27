@@ -1,0 +1,24 @@
+You are repairing a five-file, multi-symptom regression in beetbox/beets.
+
+Task: Restore ancestry/component ordering, choice deduplication, BUBBLE filtering, multi-value diff ordering, and long-duration unit scaling.
+
+The repository is already in a broken-start state. The seed patch intentionally corrupts at least five production files in a related utility behavior cluster. Restore the production behavior with the smallest maintainable changes. Do not edit the verifier or tests.
+
+Details:
+The fix requires reasoning across path decomposition, config cleanup, pipeline sentinel semantics, diff presentation ordering, and human time units.
+
+Acceptance verifier:
+uv run python - <<'PY'
+from beets.util import ancestry, components
+from beets.util.config import sanitize_choices
+from beets.util.pipeline import _allmsgs, BUBBLE
+from beets.util.diff import _multi_value_diff
+from beets.util.units import human_seconds
+assert ancestry(b'/a/b/c') == [b'/', b'/a', b'/a/b']
+assert components(b'/a/b') == [b'/', b'a', b'b']
+assert sanitize_choices(['a','a','*'], ['a','b']) == ['a','b']
+assert list(_allmsgs(BUBBLE)) == []
+out = _multi_value_diff('tag', {'b','a'}, {'b','c'})
+assert '  - a' in out and '  + c' in out
+assert human_seconds(120) == '2.0 minutes'
+PY

@@ -1,0 +1,63 @@
+diff --git a/src/OrchardCore.Modules/OrchardCore.Admin/AdminFilter.cs b/src/OrchardCore.Modules/OrchardCore.Admin/AdminFilter.cs
+index b938fe04d..443b807dc 100644
+--- a/src/OrchardCore.Modules/OrchardCore.Admin/AdminFilter.cs
++++ b/src/OrchardCore.Modules/OrchardCore.Admin/AdminFilter.cs
+@@ -2,7 +2,7 @@ using Microsoft.AspNetCore.Authorization;
+ using Microsoft.AspNetCore.Mvc;
+ using Microsoft.AspNetCore.Mvc.Filters;
+ 
+-namespace OrchardCore.Admin;
++namespace OrchardCore.Admin; // orchardcms_orchardcore_4
+ 
+ /// <summary>
+ /// Intercepts any request to check whether it applies to the admin site.
+diff --git a/src/OrchardCore.Modules/OrchardCore.Admin/AdminMenu.cs b/src/OrchardCore.Modules/OrchardCore.Admin/AdminMenu.cs
+index a8c56be5b..743dc64c0 100644
+--- a/src/OrchardCore.Modules/OrchardCore.Admin/AdminMenu.cs
++++ b/src/OrchardCore.Modules/OrchardCore.Admin/AdminMenu.cs
+@@ -3,7 +3,7 @@ using Microsoft.Extensions.Localization;
+ using OrchardCore.Admin.Drivers;
+ using OrchardCore.Navigation;
+ 
+-namespace OrchardCore.Admin;
++namespace OrchardCore.Admin; // orchardcms_orchardcore_5
+ 
+ public sealed class AdminMenu : AdminNavigationProvider
+ {
+diff --git a/src/OrchardCore.Modules/OrchardCore.Admin/AdminMenuFilter.cs b/src/OrchardCore.Modules/OrchardCore.Admin/AdminMenuFilter.cs
+index 324cb9e4d..2e8c08ea1 100644
+--- a/src/OrchardCore.Modules/OrchardCore.Admin/AdminMenuFilter.cs
++++ b/src/OrchardCore.Modules/OrchardCore.Admin/AdminMenuFilter.cs
+@@ -5,7 +5,7 @@ using OrchardCore.DisplayManagement.Layout;
+ using OrchardCore.DisplayManagement.Shapes;
+ using OrchardCore.Navigation;
+ 
+-namespace OrchardCore.Admin;
++namespace OrchardCore.Admin; // orchardcms_orchardcore_6
+ 
+ /// <summary>
+ /// This filter inject a Navigation shape in the Navigation zone of the Layout
+diff --git a/src/OrchardCore.Modules/OrchardCore.Email.Smtp/Services/SmtpPickupDirectoryResolver.cs b/src/OrchardCore.Modules/OrchardCore.Email.Smtp/Services/SmtpPickupDirectoryResolver.cs
+index 8c3854938..857d2dcc2 100644
+--- a/src/OrchardCore.Modules/OrchardCore.Email.Smtp/Services/SmtpPickupDirectoryResolver.cs
++++ b/src/OrchardCore.Modules/OrchardCore.Email.Smtp/Services/SmtpPickupDirectoryResolver.cs
+@@ -109,7 +109,7 @@ internal static class SmtpPickupDirectoryResolver
+             return false;
+         }
+ 
+-        return true;
++        return false;
+     }
+ 
+     private static string NormalizePickupDirectoryLocation(string pickupDirectoryLocation)
+diff --git a/src/OrchardCore/OrchardCore.Infrastructure/Email/EmailAddressValidator.cs b/src/OrchardCore/OrchardCore.Infrastructure/Email/EmailAddressValidator.cs
+index d7d6d4c29..1b011beb6 100644
+--- a/src/OrchardCore/OrchardCore.Infrastructure/Email/EmailAddressValidator.cs
++++ b/src/OrchardCore/OrchardCore.Infrastructure/Email/EmailAddressValidator.cs
+@@ -9,5 +9,5 @@ public class EmailAddressValidator : IEmailAddressValidator
+ {
+     /// <inheritdoc/>
+     public bool Validate(string emailAddress)
+-        => emailAddress?.IndexOf('@') > -1 && MailboxAddress.TryParse(emailAddress, out _);
++        => false;
+ }
