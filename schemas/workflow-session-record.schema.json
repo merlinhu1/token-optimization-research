@@ -63,6 +63,87 @@
         "identity_policy": { "const": "frozen-protocol-and-replicate; execution date is metadata only" }
       }
     },
+    "frozen_protocol": {
+      "type": "object",
+      "required": ["protocol_id", "path", "sha256"],
+      "properties": {
+        "protocol_id": { "type": "string" },
+        "path": { "type": "string" },
+        "sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" }
+      }
+    },
+    "selected_execution": {
+      "type": "object",
+      "required": ["descriptor_sha256", "descriptor"],
+      "properties": {
+        "descriptor_sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+        "descriptor": { "type": "object" }
+      }
+    },
+    "docker_image_identity": {
+      "type": "object",
+      "required": ["image_ref", "image_id", "repo_digests"],
+      "properties": {
+        "image_ref": { "type": "string" },
+        "image_id": { "type": "string", "pattern": "^sha256:[a-f0-9]{64}$" },
+        "repo_digests": { "type": "array", "items": { "type": "string", "pattern": "^.+@sha256:[a-f0-9]{64}$" } },
+        "repo_tags": { "type": "array", "items": { "type": "string" } }
+      }
+    },
+    "tool_adapter_identity": {
+      "type": ["object", "null"],
+      "properties": {
+        "tool_id": { "type": ["string", "null"] },
+        "tool_manifest": { "type": "string" },
+        "tool_manifest_sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+        "tool_config": { "type": ["object", "null"] },
+        "tool_config_sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+        "tool_state": { "type": "string" },
+        "tool_use_policy": { "type": "string" },
+        "command_identity": {
+          "type": "object",
+          "required": ["kind", "command"],
+          "properties": {
+            "kind": { "type": "string" },
+            "command": { "type": "array", "items": { "type": "string" }, "minItems": 1 }
+          }
+        },
+        "binary_identity": {
+          "type": ["object", "null"],
+          "required": ["executable_token", "resolved_path", "realpath", "sha256", "metadata", "version"],
+          "properties": {
+            "executable_token": { "type": "string" },
+            "resolved_path": { "type": "string" },
+            "realpath": { "type": "string" },
+            "sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+            "metadata": {
+              "type": "object",
+              "required": ["size", "mode", "uid", "gid", "mtime_ns"],
+              "properties": {
+                "size": { "type": "integer", "minimum": 0 },
+                "mode": { "type": "string" },
+                "uid": { "type": "integer" },
+                "gid": { "type": "integer" },
+                "mtime_ns": { "type": "integer" }
+              }
+            },
+            "version": {
+              "type": "object",
+              "required": ["command", "captured"],
+              "properties": {
+                "command": { "type": "array", "items": { "type": "string" }, "minItems": 1 },
+                "captured": { "type": "boolean" },
+                "exit_code": { "type": "integer" },
+                "output": { "type": "string" },
+                "truncated": { "type": "boolean" },
+                "error": { "type": "string" }
+              }
+            }
+          }
+        },
+        "source_identity": { "type": "array", "items": { "type": "object" } }
+      }
+    },
     "date": { "type": "string" },
     "target": {
       "type": "object",
@@ -187,5 +268,23 @@
         "exclusion_reason": { "type": "string" }
       }
     }
-  }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "frozen_protocol": {
+            "properties": {
+              "protocol_id": { "pattern": "-v3$" }
+            },
+            "required": ["protocol_id"]
+          }
+        },
+        "required": ["frozen_protocol"]
+      },
+      "then": {
+        "required": ["frozen_protocol", "selected_execution", "docker_image_identity", "tool_adapter_identity"]
+      }
+    }
+  ]
 }

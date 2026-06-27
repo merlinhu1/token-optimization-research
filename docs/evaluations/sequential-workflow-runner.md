@@ -33,6 +33,8 @@ python3 scripts/run_codex_workflow_evaluation.py --list-sequences
 docker image inspect token-eval-codex:latest >/dev/null
 ```
 
+Frozen protocols and prepare preflights record the Dockerfile hash plus the inspected image ID and RepoDigests for `token-eval-codex:latest`. Runtime setup re-inspects the tag and rejects changed image IDs before provider spend.
+
 Codex auth is copied from the selected source Codex home into the isolated run home. Real evaluation runs must keep container, Codex, and dependency preflights enabled.
 
 ## No-model prepare gate
@@ -59,7 +61,7 @@ Each completed run keeps exactly four files in its session directory:
 
 ```text
 sources/evaluations/workflow-sessions/<session-id>/
-  run.json              # summary, metadata, token usage, per-task verifier exits
+  run.json              # summary, protocol/execution identity, metadata, token usage, per-task verifier exits
   changes.diff          # ordered task deltas, each relative to that task's concealed stage root
   evidence.jsonl.gz     # compressed raw stream: prompts, Codex events, logs, verifier output/integrity checks
   manifest.sha256       # hashes for the other three files

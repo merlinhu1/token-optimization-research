@@ -182,7 +182,7 @@ sources/evaluations/workflow-sessions/<session-id>/
 {artifact_lines}
 ```
 
-`run.json` contains metadata, provider usage, seed-delivery/concealment claims, and per-task verifier exits.
+`run.json` contains metadata, frozen protocol path/id/SHA-256, baseline pool fingerprint, selected-execution descriptor and hash, immutable Docker image identity, treatment tool adapter identity when applicable, provider usage, seed-delivery/concealment claims, and per-task verifier exits.
 
 `changes.diff` concatenates ordered task deltas, each relative to that task's concealed stage root.
 
