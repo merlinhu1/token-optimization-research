@@ -18,7 +18,7 @@ This repository is not a list of tips. It is organized around a research system:
 - Compatibility model: [`docs/architecture/compatibility-graph.md`](docs/architecture/compatibility-graph.md)
 - Research workflows: [`docs/architecture/workflows.md`](docs/architecture/workflows.md)
 - Evaluations index: [`docs/evaluations/README.md`](docs/evaluations/README.md)
-- Active workflow runbook: [`docs/evaluations/workflow-evaluation-runbook.md`](docs/evaluations/workflow-evaluation-runbook.md)
+- Workflow runbook and activation state: [`docs/evaluations/workflow-evaluation-runbook.md`](docs/evaluations/workflow-evaluation-runbook.md)
 - Token usage and quality standards: [`docs/evaluations/token-usage-and-quality-standards.md`](docs/evaluations/token-usage-and-quality-standards.md)
 - Methodology: [`docs/methodology/README.md`](docs/methodology/README.md)
 - Research roadmap: [`docs/research/roadmap.md`](docs/research/roadmap.md)
@@ -37,4 +37,4 @@ python3 scripts/validate_repository.py
 
 ## Current status
 
-Phase 1 established source-logic tool dossiers and a compatibility-safe stack report. The current active direction is Phase 2 workflow simulation: compare baseline and treatment profiles across the Terraform, OrchardCore, Fastify, and Beets workflow matrix with provider-billed token accounting and software-quality gates.
+Phase 1 established source-logic tool dossiers and a compatibility-safe stack report. Phase 2 workflow simulation is in framework and fixture repair: no sequence is active, and paid baseline/treatment comparison remains blocked until at least one candidate passes behavioral acceptance, lazy-seed, true-root concealment, and software-quality gates.

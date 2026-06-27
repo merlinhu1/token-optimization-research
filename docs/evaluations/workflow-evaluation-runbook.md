@@ -1,225 +1,84 @@
 # Workflow Evaluation Runbook
 
-This is the maintained human-facing runbook for the active four-workflow evaluation matrix.
+This generated runbook reflects current workflow-sequence readiness.
 
 It is rendered from `data/workflow-task-sequences.json` and `data/repository-fixtures.json` by `scripts/update_workflow_runbook.py`.
 
-Do not hand-edit active sequence tables in this file; update the machine registries first, then run:
+Do not hand-edit sequence status here. Update the registries, then run:
 
 ```bash
 python3 scripts/update_workflow_runbook.py
 python3 scripts/validate_repository.py
 ```
 
-## Canonical sources
-
-- Active sequences: `data/workflow-task-sequences.json`
-- Fixture contracts: `data/repository-fixtures.json`
-- Completed sessions: `data/workflow-sessions.json`
-- Single-sequence runner: `scripts/run_codex_workflow_evaluation.py`
-- Matrix runner: `scripts/run_sequential_workflow_matrix.py`
-- Artifact contract: `templates/workflow-session-record.json`
-
 ## Evidence boundary
 
-The primary evidence path is continuous workflow simulation.
+A valid workflow run materializes one prompt and injects one regression at a time. Future regressions, seed patches, task fixtures, verifier assets, controller Git objects, fixed parents, and prior-stage reflogs must remain outside the model-visible surface.
 
-Single-task isolated runs and tiny calibration fixtures are not the default matrix and do not support positive workflow-level claims.
+Every active task must use causally related behavioral acceptance. Unrelated exact-source restoration guards are not valid complexity.
 
-A positive reproduction claim needs a canonical shared baseline and treatment sessions on the same sequence, runtime, provider, model condition, prompt-disclosure policy, and verifier set.
-
-## Active four-workflow matrix
+## Active sequences
 
 | Sequence | Fixture | Scale | Snapshot | Tasks |
 |---|---|---|---|---:|
-| `terraform-maintenance-sequence-v1` | `large-hashicorp-terraform` | large-project | [`e02391ad384c`](https://github.com/hashicorp/terraform.git) | 5 |
-| `orchardcore-maintenance-sequence-v1` | `large-orchardcms-orchardcore` | large-project | [`91cd8a4bfcaf`](https://github.com/OrchardCMS/OrchardCore.git) | 5 |
 | `fastify-maintenance-sequence-v1` | `medium-fastify-fastify` | medium-project | [`94bcbcc6e2ef`](https://github.com/fastify/fastify.git) | 5 |
-| `beets-maintenance-sequence-v1` | `medium-beetbox-beets` | medium-project | [`8ddae794d30e`](https://github.com/beetbox/beets.git) | 5 |
 
-## Running a smoke prepare
+## Planned candidates and blockers
 
-Use `--prepare-only` to verify fixture construction, task prompt sanitization, and seed-origin concealment without spending model tokens.
+- `terraform-maintenance-sequence-v1`: Tasks touch only three or four production files and do not satisfy the primary workflow complexity floor.
+- `orchardcore-maintenance-sequence-v1`: Supplemental mutations are under-specified exact-source restoration checks rather than causally related behavioral acceptance.
+- `beets-maintenance-sequence-v1`: Supplemental mutations are under-specified exact-source restoration checks rather than causally related behavioral acceptance.
 
-```bash
-python3 scripts/run_codex_workflow_evaluation.py \
-  --sequence-id terraform-maintenance-sequence-v1 \
-  --profile-id baseline-bare-codex \
-  --prepare-only \
-  --skip-container-preflight \
-  --skip-codex-preflight \
-  --skip-dependency-install \
-  --session-id smoke-terraform-sequential-runner
+## Activation gate
 
-rm -rf sources/evaluations/workflow-sessions/smoke-terraform-sequential-runner
-```
+Before changing a sequence to `active`, require:
 
-Expected smoke properties:
+- at least five causally related production files per primary task, or explicit smoke/calibration scope;
+- behavioral seeded-fail/fixed-pass gates;
+- lazy one-task seed delivery with future regressions absent;
+- a parentless model-facing Git baseline with fixed and prior-stage commits inaccessible;
+- controller-only task, seed, verifier, and reference assets;
+- cumulative provider usage capture, verifier integrity, isolation, and software-quality review.
 
-- The generated task prompt for order 1 contains task 1 only.
-- Future task prompts are not visible before their turn.
-- The materialized repository has no upstream remote that reveals the fix.
-- The visible baseline commit is the workflow broken-start state.
-
-## Running one lane
-
-Baseline lane:
+A no-model prepare for a planned candidate is allowed:
 
 ```bash
-python3 scripts/run_codex_workflow_evaluation.py \
-  --sequence-id terraform-maintenance-sequence-v1 \
-  --profile-id baseline-bare-codex \
-  --timeout-per-task 1800
+SEQUENCE_ID=<planned-sequence-id>
+python3 scripts/run_codex_workflow_evaluation.py   --sequence-id "$SEQUENCE_ID"   --profile-id baseline-bare-codex   --prepare-only   --skip-container-preflight   --skip-codex-preflight   --skip-dependency-install
 ```
 
-Treatment lane:
+`prepare-verification.json` must show only task 1 seeded, future seeds absent, a clean true-root Git baseline, no fixed commit object, no prior reflog, and no model-visible seed or verifier assets.
+
+## Paid execution
+
+The active sequence list is non-empty. Freeze a protocol, run a no-model prepare, then run the canonical baseline first:
 
 ```bash
-python3 scripts/run_codex_workflow_evaluation.py \
-  --sequence-id terraform-maintenance-sequence-v1 \
-  --profile-id retrieval-leanctx \
-  --comparison-profile-id retrieval-leanctx \
-  --timeout-per-task 1800
+python3 scripts/run_codex_workflow_evaluation.py --sequence-id fastify-maintenance-sequence-v1 --prepare-only
+scripts/run_sequential_workflow_pair.sh fastify-maintenance-sequence-v1
 ```
 
-Supported Codex treatment profiles are listed by:
-
-```bash
-python3 scripts/run_codex_workflow_evaluation.py --list-sequences
-```
-
-## Running shared-baseline lanes
-
-Run the canonical baseline plus default LeanCTX lane for one sequence:
-
-```bash
-scripts/run_sequential_workflow_pair.sh terraform-maintenance-sequence-v1
-```
-
-Run a different supported treatment profile:
-
-```bash
-scripts/run_sequential_workflow_pair.sh \
-  terraform-maintenance-sequence-v1 \
-  --treatment-profile retrieval-codegraph
-```
-
-Use a different replicate or timeout when needed:
-
-```bash
-REPLICATE_INDEX=1 scripts/run_sequential_workflow_pair.sh \
-  beets-maintenance-sequence-v1 \
-  --timeout-per-task 2400
-```
-
-The helper reuses a completed canonical `baseline-bare-codex` session for the same sequence/date/replicate instead of rerunning a treatment-specific baseline. Set `FORCE_BASELINE_RERUN=1` only when intentionally replacing that canonical baseline.
-
-## Running the active matrix
-
-Dry-run the matrix plan:
-
-```bash
-scripts/run_sequential_workflow_matrix.py --dry-run
-```
-
-Run all active flows with the conservative default concurrency:
-
-```bash
-scripts/run_sequential_workflow_matrix.py
-```
-
-Run all four active flows concurrently only when provider quota and host resources allow it:
-
-```bash
-scripts/run_sequential_workflow_matrix.py --max-parallel 4
-```
-
-Smoke two flows without model spend:
-
-```bash
-scripts/run_sequential_workflow_matrix.py \
-  terraform-maintenance-sequence-v1 \
-  fastify-maintenance-sequence-v1 \
-  --max-parallel 2 \
-  --prepare-only \
-  --skip-container-preflight \
-  --skip-codex-preflight \
-  --skip-dependency-install
-```
-
-Smoke a non-default treatment profile without model spend:
-
-```bash
-scripts/run_sequential_workflow_matrix.py \
-  fastify-maintenance-sequence-v1 \
-  --treatment-profile retrieval-codegraph \
-  --prepare-only \
-  --skip-container-preflight \
-  --skip-codex-preflight \
-  --skip-dependency-install
-```
+Stop before treatment if the baseline fails any frozen gate.
 
 ## Active sequence details
-
-### `terraform-maintenance-sequence-v1`
-
-- Fixture: `large-hashicorp-terraform`
-- Primary metric: cumulative provider-billed workflow tokens
-- Reset policy: Reset once before the session; preserve repository, tool, index, cache, generated config, memory, and agent state between tasks.
-
-| Order | Task | Prompt | Verifier |
-|---:|---|---|---|
-| 1 | `terraform-38739-sensitive-policy-paths-regression` | `sources/evaluations/fixtures/large/hashicorp-terraform/tasks/terraform-38739-sensitive-policy-paths-regression/agent-prompt.txt` | `sources/evaluations/fixtures/large/hashicorp-terraform/tasks/terraform-38739-sensitive-policy-paths-regression/verify.sh` |
-| 2 | `terraform-38745-config-parser-concurrency-regression` | `sources/evaluations/fixtures/large/hashicorp-terraform/tasks/terraform-38745-config-parser-concurrency-regression/agent-prompt.txt` | `sources/evaluations/fixtures/large/hashicorp-terraform/tasks/terraform-38745-config-parser-concurrency-regression/verify.sh` |
-| 3 | `terraform-38747-config-loader-watchstop-race-regression` | `sources/evaluations/fixtures/large/hashicorp-terraform/tasks/terraform-38747-config-loader-watchstop-race-regression/agent-prompt.txt` | `sources/evaluations/fixtures/large/hashicorp-terraform/tasks/terraform-38747-config-loader-watchstop-race-regression/verify.sh` |
-| 4 | `terraform-38775-policy-state-close-order-regression` | `sources/evaluations/fixtures/large/hashicorp-terraform/tasks/terraform-38775-policy-state-close-order-regression/agent-prompt.txt` | `sources/evaluations/fixtures/large/hashicorp-terraform/tasks/terraform-38775-policy-state-close-order-regression/verify.sh` |
-| 5 | `terraform-38781-policy-callback-deferred-resources-regression` | `sources/evaluations/fixtures/large/hashicorp-terraform/tasks/terraform-38781-policy-callback-deferred-resources-regression/agent-prompt.txt` | `sources/evaluations/fixtures/large/hashicorp-terraform/tasks/terraform-38781-policy-callback-deferred-resources-regression/verify.sh` |
-
-### `orchardcore-maintenance-sequence-v1`
-
-- Fixture: `large-orchardcms-orchardcore`
-- Primary metric: cumulative provider-billed workflow tokens
-- Reset policy: Reset once before the session; preserve repository, tool, index, cache, generated config, memory, and agent state between tasks.
-
-| Order | Task | Prompt | Verifier |
-|---:|---|---|---|
-| 1 | `orchard-base64-string-decode-regression` | `sources/evaluations/fixtures/large/orchardcms-orchardcore/tasks/orchard-base64-string-decode-regression/agent-prompt.txt` | `sources/evaluations/fixtures/large/orchardcms-orchardcore/tasks/orchard-base64-string-decode-regression/verify.sh` |
-| 2 | `orchard-base64-stream-position-regression` | `sources/evaluations/fixtures/large/orchardcms-orchardcore/tasks/orchard-base64-stream-position-regression/agent-prompt.txt` | `sources/evaluations/fixtures/large/orchardcms-orchardcore/tasks/orchard-base64-stream-position-regression/verify.sh` |
-| 3 | `orchard-email-address-validation-regression` | `sources/evaluations/fixtures/large/orchardcms-orchardcore/tasks/orchard-email-address-validation-regression/agent-prompt.txt` | `sources/evaluations/fixtures/large/orchardcms-orchardcore/tasks/orchard-email-address-validation-regression/verify.sh` |
-| 4 | `orchard-json-array-merge-union-regression` | `sources/evaluations/fixtures/large/orchardcms-orchardcore/tasks/orchard-json-array-merge-union-regression/agent-prompt.txt` | `sources/evaluations/fixtures/large/orchardcms-orchardcore/tasks/orchard-json-array-merge-union-regression/verify.sh` |
-| 5 | `orchard-result-success-state-regression` | `sources/evaluations/fixtures/large/orchardcms-orchardcore/tasks/orchard-result-success-state-regression/agent-prompt.txt` | `sources/evaluations/fixtures/large/orchardcms-orchardcore/tasks/orchard-result-success-state-regression/verify.sh` |
 
 ### `fastify-maintenance-sequence-v1`
 
 - Fixture: `medium-fastify-fastify`
 - Primary metric: cumulative provider-billed workflow tokens
-- Reset policy: Reset once before the session; preserve repository, tool, index, cache, generated config, memory, and agent state between tasks.
+- Reset policy: Reset once before the session; preserve source, tool, index, cache, generated config, memory, and agent state between tasks; inject only the current regression and re-root model-facing Git metadata before disclosure.
 
 | Order | Task | Prompt | Verifier |
 |---:|---|---|---|
-| 1 | `fastify-query-schema-alias-regression` | `sources/evaluations/fixtures/medium/fastify-fastify/tasks/fastify-query-schema-alias-regression/agent-prompt.txt` | `sources/evaluations/fixtures/medium/fastify-fastify/tasks/fastify-query-schema-alias-regression/verify.sh` |
-| 2 | `fastify-response-2xx-serializer-regression` | `sources/evaluations/fixtures/medium/fastify-fastify/tasks/fastify-response-2xx-serializer-regression/agent-prompt.txt` | `sources/evaluations/fixtures/medium/fastify-fastify/tasks/fastify-response-2xx-serializer-regression/verify.sh` |
-| 3 | `fastify-trust-proxy-last-header-regression` | `sources/evaluations/fixtures/medium/fastify-fastify/tasks/fastify-trust-proxy-last-header-regression/agent-prompt.txt` | `sources/evaluations/fixtures/medium/fastify-fastify/tasks/fastify-trust-proxy-last-header-regression/verify.sh` |
-| 4 | `fastify-has-route-method-case-regression` | `sources/evaluations/fixtures/medium/fastify-fastify/tasks/fastify-has-route-method-case-regression/agent-prompt.txt` | `sources/evaluations/fixtures/medium/fastify-fastify/tasks/fastify-has-route-method-case-regression/verify.sh` |
-| 5 | `fastify-reply-hijack-state-regression` | `sources/evaluations/fixtures/medium/fastify-fastify/tasks/fastify-reply-hijack-state-regression/agent-prompt.txt` | `sources/evaluations/fixtures/medium/fastify-fastify/tasks/fastify-reply-hijack-state-regression/verify.sh` |
-
-### `beets-maintenance-sequence-v1`
-
-- Fixture: `medium-beetbox-beets`
-- Primary metric: cumulative provider-billed workflow tokens
-- Reset policy: Reset once before the session; preserve repository, tool, index, cache, generated config, memory, and agent state between tasks.
-
-| Order | Task | Prompt | Verifier |
-|---:|---|---|---|
-| 1 | `beets-pathformats-query-key-regression` | `sources/evaluations/fixtures/medium/beetbox-beets/tasks/beets-pathformats-query-key-regression/agent-prompt.txt` | `sources/evaluations/fixtures/medium/beetbox-beets/tasks/beets-pathformats-query-key-regression/verify.sh` |
-| 2 | `beets-hidden-dotfile-regression` | `sources/evaluations/fixtures/medium/beetbox-beets/tasks/beets-hidden-dotfile-regression/agent-prompt.txt` | `sources/evaluations/fixtures/medium/beetbox-beets/tasks/beets-hidden-dotfile-regression/verify.sh` |
-| 3 | `beets-color-uncolorize-regression` | `sources/evaluations/fixtures/medium/beetbox-beets/tasks/beets-color-uncolorize-regression/agent-prompt.txt` | `sources/evaluations/fixtures/medium/beetbox-beets/tasks/beets-color-uncolorize-regression/verify.sh` |
-| 4 | `beets-human-bytes-boundary-regression` | `sources/evaluations/fixtures/medium/beetbox-beets/tasks/beets-human-bytes-boundary-regression/agent-prompt.txt` | `sources/evaluations/fixtures/medium/beetbox-beets/tasks/beets-human-bytes-boundary-regression/verify.sh` |
-| 5 | `beets-template-escape-character-regression` | `sources/evaluations/fixtures/medium/beetbox-beets/tasks/beets-template-escape-character-regression/agent-prompt.txt` | `sources/evaluations/fixtures/medium/beetbox-beets/tasks/beets-template-escape-character-regression/verify.sh` |
+| 1 | `fastify-max-param-length-regression` | `sources/evaluations/fixtures/medium/fastify-fastify/tasks/fastify-max-param-length-regression/agent-prompt.txt` | `sources/evaluations/fixtures/medium/fastify-fastify/tasks/fastify-max-param-length-regression/verify.sh` |
+| 2 | `fastify-request-lifecycle-regression` | `sources/evaluations/fixtures/medium/fastify-fastify/tasks/fastify-request-lifecycle-regression/agent-prompt.txt` | `sources/evaluations/fixtures/medium/fastify-fastify/tasks/fastify-request-lifecycle-regression/verify.sh` |
+| 3 | `fastify-request-media-type-regression` | `sources/evaluations/fixtures/medium/fastify-fastify/tasks/fastify-request-media-type-regression/agent-prompt.txt` | `sources/evaluations/fixtures/medium/fastify-fastify/tasks/fastify-request-media-type-regression/verify.sh` |
+| 4 | `fastify-log-controller-regression` | `sources/evaluations/fixtures/medium/fastify-fastify/tasks/fastify-log-controller-regression/agent-prompt.txt` | `sources/evaluations/fixtures/medium/fastify-fastify/tasks/fastify-log-controller-regression/verify.sh` |
+| 5 | `fastify-content-type-semantics-regression` | `sources/evaluations/fixtures/medium/fastify-fastify/tasks/fastify-content-type-semantics-regression/agent-prompt.txt` | `sources/evaluations/fixtures/medium/fastify-fastify/tasks/fastify-content-type-semantics-regression/verify.sh` |
 
 ## Artifact contract
 
-Each completed session keeps exactly four files in its session directory:
+Each completed session keeps exactly four files:
 
 ```text
 sources/evaluations/workflow-sessions/<session-id>/
@@ -229,20 +88,20 @@ sources/evaluations/workflow-sessions/<session-id>/
   manifest.sha256
 ```
 
-`run.json` contains summary metadata, provider usage, and per-task verifier exits.
+`run.json` contains metadata, provider usage, seed-delivery/concealment claims, and per-task verifier exits.
 
-`changes.diff` contains the final code changes produced by the agent.
+`changes.diff` concatenates ordered task deltas, each relative to that task's concealed stage root.
 
-`evidence.jsonl.gz` contains recoverable raw streams such as prompts, Codex events, setup logs, verifier output, provider usage extraction, and tool-isolation audit output.
+`evidence.jsonl.gz` contains prompts, Codex events, setup logs, per-task deltas, seed-delivery and concealment reports, verifier output and integrity checks, provider-usage extraction, and tool-isolation audit output.
 
 `manifest.sha256` hashes the other three files.
 
-Do not commit materialized runtime state such as `project/`, `project/repo/`, `.venv/`, `__pycache__/`, `codex-homes/`, split task transcripts, or split verifier/setup logs.
+Controller Git objects, generated checkouts, dependency environments, Codex homes, caches, and split task artifacts are scratch state and must not remain beside the compact four files.
 
 ## Maintenance contract
 
-- Update `data/workflow-task-sequences.json` and `data/repository-fixtures.json` before updating this runbook.
-- Run `python3 scripts/update_workflow_runbook.py` after registry changes.
-- `python3 scripts/validate_repository.py` runs `scripts/update_workflow_runbook.py --check` and fails on drift.
-- Truth docs own durable claims; this runbook is the operator procedure generated from the current registries.
-- Retired calibration artifacts such as `sources/evaluations/fixture-corpus/v1/` and `sources/evaluations/phase-2-experiment-suite-v1/` should not reappear as active workflow architecture.
+- Session IDs and compact evidence are append-only.
+- Deterministic verifier success is an execution gate, not an automatic software-quality score.
+- Objective acceptance requires a recorded software-quality review.
+- `python3 scripts/validate_repository.py` checks generated-runbook drift.
+- Truth docs own durable claims; this runbook is generated operator procedure.

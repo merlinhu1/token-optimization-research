@@ -30,8 +30,8 @@
       "surface": "retrieval-context",
       "setup_policy": "Clone a pinned commit and use Go test/build commands for a frozen package subset.",
       "verifier_policy": "Use go test on the edited package and adjacent packages; record skipped integration requirements explicitly.",
-      "selection_status": "active-fixture",
-      "selected_reason": "First-wave fixture: large public project with bounded subsystem verifier suitable for repeated baseline/treatment runs.",
+      "selection_status": "target-fixture-candidate",
+      "selected_reason": "Candidate large Go fixture; workflow tasks require complexity redesign before reactivation.",
       "pinned_commit": "8d3a8b76ecf1ead119c4fc5951e8f5130df1db90"
     },
     {
@@ -56,9 +56,9 @@
       "setup_policy": "Install a pinned .NET SDK, clone a pinned commit, restore only the bounded solution/project subset needed for each task, and freeze exact build/test commands before qualification.",
       "verifier_policy": "Use bounded dotnet test selectors on edited OrchardCore modules plus build checks for touched projects; do not run the full solution for every replicate unless the task requires it.",
       "selection_status": "target-fixture-candidate",
-      "selected_reason": "Preferred large C# slot for the target matrix: substantial but not foundational, active, and likely to support bounded real maintenance tasks.",
+      "selected_reason": "Preferred large C# candidate slot, pending behavioral fixture redesign and requalification.",
       "pinned_commit": "91cd8a4bfcaf9cb1388edef6867af2a0b5a0a000",
-      "qualification_status": "active-reproduction-flow",
+      "qualification_status": "fixture-redesign-required",
       "workflow_sequence_id": "orchardcore-maintenance-sequence-v1"
     }
   ]

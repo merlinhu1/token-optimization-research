@@ -2,14 +2,14 @@
 
 This area holds human-facing evaluation protocols and operator guidance.
 
-## Canonical active workflow docs
+## Canonical workflow docs
 
-- `workflow-evaluation-runbook.md` — generated operator runbook for the active four-flow matrix.
+- `workflow-evaluation-runbook.md` — generated operator runbook; it must show no paid lanes while all sequences are planned.
 - `sequential-workflow-runner.md` — implementation notes for persistent multi-task workflow simulation.
 - `continuous-workflow-simulation.md` — protocol and artifact contract for cumulative workflow sessions.
 - `token-usage-and-quality-standards.md` — shared accounting and software-quality rules.
 
-The active matrix and runbook are generated from:
+Sequence status and the runbook are generated from:
 
 ```text
 data/workflow-task-sequences.json
