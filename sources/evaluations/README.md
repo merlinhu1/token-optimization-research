@@ -31,14 +31,6 @@ sources/evaluations/workflow-sessions/<session-id>/
 
 Do not commit materialized runtime state such as `project/`, `project/repo/`, profile homes, generated tool indexes, `.venv/`, or split setup/verifier logs.
 
-## Archive
+## Legacy evidence
 
-Historical evidence that is not part of the active matrix lives under:
-
-```text
-sources/evaluations/archive/
-  historical-fixtures/
-  single-task-reruns/
-```
-
-Archived files may support traceability or negative findings, but they do not define active workflow architecture and must not be used as positive reproduction evidence without requalification.
+Archived evaluation evidence was removed because it was produced with invalid task designs. Only compact workflow-session artifacts under `sources/evaluations/workflow-sessions/` are current evidence.

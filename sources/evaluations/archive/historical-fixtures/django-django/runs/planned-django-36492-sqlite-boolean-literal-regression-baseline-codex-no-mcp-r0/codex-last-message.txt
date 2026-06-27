@@ -1,9 +1,0 @@
-Restored the boolean exact lookup fix in production code. The seeded regression is gone, and the worktree is clean except for the pre-existing untracked `.venv/`.
-
-Verifier passed:
-
-```bash
-PYTHONPATH=. .venv/bin/python tests/runtests.py lookup.tests.LookupTests.test_exact_booleanfield lookup.tests.LookupTests.test_exact_booleanfield_annotation --verbosity 2
-```
-
-Result: 2 tests passed.

@@ -1,8 +1,0 @@
-Restored the admin inline deletion messaging behavior to the fixed upstream state. The tracked production files now have no diff against the pinned fixed commit.
-
-Verification:
-`PYTHONPATH=. .venv/bin/python tests/runtests.py admin_inlines.tests.TestInline.test_delete_protected_message_limits_number_of_objects_displayed admin_inlines.tests.TestInline.test_delete_protected_message_does_not_limit_small_amount_of_objects modeladmin.test_checks.DeleteConfirmationMaxObjectsCheckTests.test_inline_not_integer --verbosity 2`
-
-Result: 3 tests passed.
-
-Note: the exact verifier with `python` could not start because `python` is not on PATH in this container, so I used the repository’s `.venv/bin/python`. The only remaining untracked item is the pre-existing `.venv/`.

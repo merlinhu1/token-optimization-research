@@ -30,5 +30,5 @@ Planning docs are not operator runbooks. When they conflict with the generated r
 ## Source and evidence locations
 
 - Active fixture source material: `sources/evaluations/fixtures/`.
-- Archived historical evidence: `sources/evaluations/archive/`.
+- Legacy archived evaluation evidence was removed because its task design was invalid; use current workflow-session artifacts only.
 - Compact workflow-session evidence: `sources/evaluations/workflow-sessions/<session-id>/` when sessions are recorded.
