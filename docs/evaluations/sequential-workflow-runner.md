@@ -82,12 +82,20 @@ python3 scripts/run_codex_workflow_evaluation.py \
   --timeout-per-task 1800
 ```
 
-## Run the paired baseline plus LeanCTX lanes
+## Run the paired baseline plus treatment lanes
 
-Preferred human rerun command:
+Preferred human rerun command for the default LeanCTX treatment:
 
 ```bash
 scripts/run_sequential_workflow_pair.sh terraform-maintenance-sequence-v1
+```
+
+With a different supported treatment profile:
+
+```bash
+scripts/run_sequential_workflow_pair.sh \
+  terraform-maintenance-sequence-v1 \
+  --treatment-profile retrieval-codegraph
 ```
 
 With a different replicate or timeout:
@@ -141,6 +149,16 @@ Run a real subset:
 scripts/run_sequential_workflow_matrix.py \
   terraform-maintenance-sequence-v1 \
   beets-maintenance-sequence-v1 \
+  --max-parallel 2
+```
+
+Run a real subset with a non-default treatment profile:
+
+```bash
+scripts/run_sequential_workflow_matrix.py \
+  terraform-maintenance-sequence-v1 \
+  beets-maintenance-sequence-v1 \
+  --treatment-profile retrieval-codegraph \
   --max-parallel 2
 ```
 

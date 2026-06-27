@@ -28,6 +28,8 @@ Software-quality scoring is owned by `software-quality-gates.md`.
 - `docs/evaluations/workflow-evaluation-runbook.md` is the maintained human-facing runbook rendered from the workflow sequence and fixture registries.
 - `scripts/update_workflow_runbook.py` refreshes that runbook and provides a validator check so operator docs fail closed on registry drift.
 - `scripts/run_codex_fixture_evaluation.py` creates lane-specific Codex homes, isolates agent HOME/PYTHONUSERBASE/XDG/TMPDIR under that Codex home, captures preflight artifacts, runs Codex, extracts provider usage, verifies tasks, and invokes the isolation audit for Codex-based sanity or historical fixture evaluations.
+- `scripts/run_codex_workflow_evaluation.py` supports the Codex substrate baseline plus single-tool Codex treatment lanes for LeanCTX, CodeGraph, RTK, and Ponytail profiles.
+- `scripts/run_codex_workflow_evaluation.py` treats missing Codex thread IDs after a successful task as a workflow-continuity failure instead of silently starting later tasks in a fresh thread.
 - Non-MCP terminal-binary treatment lanes expose the active binary through lane-specific container mounts and require solve-shell availability checks in addition to runner preflight.
 - `scripts/run_codex_evaluation_batch.py` runs serial planned Codex fixture evaluations, skips already accepted runs by default, writes a machine-readable batch summary, and refuses direct multi-record batches unless `--allow-serial-batch` is explicitly passed.
 - `scripts/extract_codex_usage.py` normalizes Codex JSONL `turn.completed.usage` blocks into `provider-usage.json` records.
@@ -71,6 +73,7 @@ Software-quality scoring is owned by `software-quality-gates.md`.
 - Baseline run artifacts should use profile-specific manifests and avoid naming treatment tools except in external aggregate comparison records.
 - Treatment Codex workflow sessions are additive lanes on the same Codex substrate. They may expose only the tools named by the active profile and must use isolated tool data directories before the session begins.
 - Workflow sessions reset repository, tool, profile, and agent state before the session and preserve them between tasks unless the sequence explicitly models a user reset.
+- Accepted workflow sessions require a captured Codex thread ID before later tasks can resume the persistent session.
 - Index-using retrieval tools persist their indexes during the workflow session; index preparation is setup metadata, not a separate warm optional condition.
 - Percentage savings must be paired with absolute token and cost values when available.
 
@@ -86,6 +89,7 @@ Software-quality scoring is owned by `software-quality-gates.md`.
 - Decision (2026-07-07): Continuous workflow simulation is the primary Phase 2 evidence path; cumulative provider-billed workflow usage is the primary metric, and isolated task runs are sanity/debug evidence only.
 - Decision (2026-07-08): Completed workflow-session runs keep a compact four-file evidence bundle instead of committing materialized checkouts, virtualenvs, Codex homes, or split per-task logs.
 - Decision (2026-07-08): The human-facing workflow-evaluation runbook is maintained by rendering active registry data and validating the rendered file, rather than by hand-maintaining a parallel Phase 2 suite folder.
+- Decision (2026-07-08): Workflow evaluation supports multiple single-tool Codex treatment profiles, and missing persistent Codex thread IDs are acceptance failures.
 
 ## Rationale
 
