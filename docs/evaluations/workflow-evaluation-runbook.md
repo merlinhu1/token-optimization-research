@@ -25,8 +25,7 @@ Every active task must use causally related behavioral acceptance. Unrelated exa
 
 ## Planned candidates and blockers
 
-- `orchardcore-maintenance-sequence-v1`: Supplemental mutations are under-specified exact-source restoration checks rather than causally related behavioral acceptance.
-- `beets-maintenance-sequence-v1`: Supplemental mutations are under-specified exact-source restoration checks rather than causally related behavioral acceptance.
+_None._
 
 ## Activation gate
 
@@ -70,7 +69,7 @@ Stop before treatment if the baseline fails any frozen gate.
 | Order | Task | Prompt | Verifier |
 |---:|---|---|---|
 | 1 | `fastify-max-param-length-regression` | `sources/evaluations/fixtures/medium/fastify-fastify/tasks/fastify-max-param-length-regression/agent-prompt.txt` | `sources/evaluations/fixtures/medium/fastify-fastify/tasks/fastify-max-param-length-regression/verify.sh` |
-| 2 | `fastify-request-lifecycle-regression` | `sources/evaluations/fixtures/medium/fastify-fastify/tasks/fastify-request-lifecycle-regression/agent-prompt.txt` | `sources/evaluations/fixtures/medium/fastify-fastify/tasks/fastify-request-lifecycle-regression/verify.sh` |
+| 2 | `fastify-handler-timeout-regression` | `sources/evaluations/fixtures/medium/fastify-fastify/tasks/fastify-handler-timeout-regression/agent-prompt.txt` | `sources/evaluations/fixtures/medium/fastify-fastify/tasks/fastify-handler-timeout-regression/verify.sh` |
 | 3 | `fastify-request-media-type-regression` | `sources/evaluations/fixtures/medium/fastify-fastify/tasks/fastify-request-media-type-regression/agent-prompt.txt` | `sources/evaluations/fixtures/medium/fastify-fastify/tasks/fastify-request-media-type-regression/verify.sh` |
 | 4 | `fastify-log-controller-regression` | `sources/evaluations/fixtures/medium/fastify-fastify/tasks/fastify-log-controller-regression/agent-prompt.txt` | `sources/evaluations/fixtures/medium/fastify-fastify/tasks/fastify-log-controller-regression/verify.sh` |
 | 5 | `fastify-content-type-semantics-regression` | `sources/evaluations/fixtures/medium/fastify-fastify/tasks/fastify-content-type-semantics-regression/agent-prompt.txt` | `sources/evaluations/fixtures/medium/fastify-fastify/tasks/fastify-content-type-semantics-regression/verify.sh` |
@@ -87,7 +86,7 @@ sources/evaluations/workflow-sessions/<session-id>/
   manifest.sha256
 ```
 
-`run.json` contains metadata, provider usage, seed-delivery/concealment claims, and per-task verifier exits.
+`run.json` contains metadata, frozen protocol path/id/SHA-256, baseline pool fingerprint, selected-execution descriptor and hash, immutable Docker image identity, treatment tool adapter identity when applicable, provider usage, seed-delivery/concealment claims, and per-task verifier exits.
 
 `changes.diff` concatenates ordered task deltas, each relative to that task's concealed stage root.
 

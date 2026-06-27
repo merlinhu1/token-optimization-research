@@ -4,14 +4,9 @@
 
 The active research direction is Phase 2 workflow-simulation repair: qualify realistic persistent multi-task workflows before comparing profiles with cumulative provider-billed token usage and software-quality gates.
 
-No workflow sequence is currently active. The candidate matrix is:
+Fastify is the only current executable workflow suite. Terraform task assets were retired because they were below the five-production-file floor; Beets and OrchardCore task assets were retired because unrelated exact-source sentinels padded their scope. Beets and OrchardCore remain candidate metadata only.
 
-- Terraform: behavioral tasks below the five-production-file floor.
-- OrchardCore: synthetic exact-source supplemental checks require redesign.
-- Fastify: the paid canary exposed future-seed contamination and invalid exact-source acceptance.
-- Beets: synthetic exact-source supplemental checks require redesign.
-
-Django single-task evidence is archived as historical evidence outside the active workflow matrix.
+Fastify's checkout-generated qualification passes all production-task gates, including seeded-fail/fixed-pass execution, full fixed-state cumulative verification, ordered transitions, one accepted alternative-repair transition, asset concealment, and the five-production-file floor. No pool-matched accepted baseline exists for fingerprint `5ace7b956e83`; older fingerprints `57af3ace816f` and `79105d1b08a5` are historical/superseded and non-reusable. Do not publish token-savings claims from these sessions.
 
 ## Phase 1 — Source-logic stack research
 
@@ -27,7 +22,7 @@ Status: complete for the current candidate set.
 
 Status: active.
 
-- Keep blocked candidates `planned` until their readiness blockers are resolved and verified.
+- Keep non-production candidates out of authoritative sequences.
 - Require lazy one-task seed delivery, true-root Git concealment, and behavioral acceptance before activation.
 - Maintain fixture readiness in `data/repository-fixtures.json`.
 - Generate the human operator runbook with `scripts/update_workflow_runbook.py`.

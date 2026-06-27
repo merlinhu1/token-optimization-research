@@ -1,277 +1,52 @@
 {
   "schema_version": 1,
-  "description": "Repository fixture readiness registry for Phase 2 evaluation. Fixture status is repository-readiness evidence, not tool or stack evidence stage.",
-  "lifecycle_states": [
-    "candidate-fixture",
-    "qualified-fixture",
-    "baseline-run",
-    "treatment-ready",
-    "retired-fixture"
-  ],
-  "task_classes": [
-    "noisy-terminal-repair",
-    "build-repair",
-    "large-codebase-navigation",
-    "multi-file-refactor",
-    "memory-rediscovery",
-    "broad-owner-context",
-    "mcp-tool-heavy",
-    "apple-build-repair",
-    "replacement-runtime-comparison"
-  ],
-  "token_waste_surfaces": [
-    "terminal-output",
-    "build-output",
-    "retrieval-context",
-    "memory-rediscovery",
-    "broad-context-owner",
-    "mcp-tool-trace",
-    "apple-build-output",
-    "replacement-runtime"
-  ],
+  "description": "Repository fixture readiness registry. Candidate projects without executable assets remain in candidate metadata, not this registry.",
+  "lifecycle_states": ["candidate-fixture", "qualified-fixture", "baseline-run", "treatment-ready", "retired-fixture"],
+  "task_classes": ["noisy-terminal-repair", "build-repair", "large-codebase-navigation", "multi-file-refactor", "memory-rediscovery", "broad-owner-context", "mcp-tool-heavy", "apple-build-repair", "replacement-runtime-comparison"],
+  "token_waste_surfaces": ["terminal-output", "build-output", "retrieval-context", "memory-rediscovery", "broad-context-owner", "mcp-tool-trace", "apple-build-output", "replacement-runtime"],
   "fixtures": [
-    {
-      "id": "large-orchardcms-orchardcore",
-      "status": "candidate-fixture",
-      "fixture_scale": "large-project",
-      "evaluation_use": "primary-objective",
-      "repository": {
-        "url": "https://github.com/OrchardCMS/OrchardCore",
-        "id": "orchardcms__orchardcore",
-        "github": "OrchardCMS/OrchardCore",
-        "path": "sources/evaluations/fixtures/large/orchardcms-orchardcore/repo"
-      },
-      "snapshot": {
-        "commit": "91cd8a4bfcaf9cb1388edef6867af2a0b5a0a000",
-        "branch": "detached",
-        "snapshot_policy": "Pinned candidate snapshot; task seed patches are controller-injected lazily only after behavioral acceptance redesign."
-      },
-      "task_classes": [
-        "multi-file-refactor",
-        "large-codebase-navigation",
-        "build-repair"
-      ],
-      "primary_token_waste_surface": "retrieval-context",
-      "setup": {
-        "command": "sources/evaluations/fixtures/large/orchardcms-orchardcore/setup.sh"
-      },
-      "reset": {
-        "command": "sources/evaluations/fixtures/large/orchardcms-orchardcore/reset.sh"
-      },
-      "verifier": {
-        "command": "sources/evaluations/fixtures/large/orchardcms-orchardcore/verify-smoke.sh"
-      },
-      "prompt": {
-        "path": "sources/evaluations/fixtures/large/orchardcms-orchardcore/tasks/README.md",
-        "prompt_policy": "Candidate prompts are the five task agent-prompt.txt files listed by orchardcore-maintenance-sequence-v1 in data/workflow-task-sequences.json."
-      },
-      "artifact_paths": {
-        "root": "sources/evaluations/fixtures/large/orchardcms-orchardcore/runs/"
-      },
-      "future_evaluation_lanes": [
-        "native-baseline-reproduction",
-        "individual-tool-reproduction",
-        "stack-ablation-reproduction"
-      ],
-      "candidate_profiles": [
-        "baseline-bare-codex",
-        "retrieval-leanctx",
-        "retrieval-serena",
-        "terminal-rtk",
-        "terminal-lowfat",
-        "serena-cavemem-lightweight",
-        "lower-intervention-codegraph"
-      ],
-      "blockers": [
-        "Supplemental exact-source sentinel checks are not causally related behavioral acceptance; fixture redesign is required."
-      ],
-      "caveats": [
-        "Candidate large C# workflow; not active while acceptance is redesigned.",
-        "Host .NET SDK is installed under /opt/data/dotnet; scripts use DOTNET_SYSTEM_GLOBALIZATION_INVARIANT=1 for CLI preflight."
-      ],
-      "tasks": [
-        "orchard-base64-string-decode-regression",
-        "orchard-base64-stream-position-regression",
-        "orchard-email-address-validation-regression",
-        "orchard-json-array-merge-union-regression",
-        "orchard-result-success-state-regression"
-      ],
-      "setup_smoke": {
-        "command": "sources/evaluations/fixtures/large/orchardcms-orchardcore/verify-smoke.sh",
-        "evidence": "sources/evaluations/fixtures/large/orchardcms-orchardcore/runs/setup-smoke-20260708/verify-smoke.log",
-        "setup_evidence": "sources/evaluations/fixtures/large/orchardcms-orchardcore/runs/setup-smoke-20260708/setup.log",
-        "result": "passed",
-        "notes": "dotnet 10.0.200 installed under /opt/data/dotnet; smoke lists OrchardCore.Tests test cases under DOTNET_SYSTEM_GLOBALIZATION_INVARIANT=1."
-      },
-      "qualification_status": "fixture-redesign-required",
-      "workflow_sequence_id": "orchardcore-maintenance-sequence-v1",
-      "qualification_evidence": "Historical mechanical fail/pass gates are retained, but unrelated exact-source acceptance invalidates active use.",
-      "active_profiles": []
-    },
     {
       "id": "medium-fastify-fastify",
       "status": "qualified-fixture",
       "fixture_scale": "medium-project",
       "evaluation_use": "primary-objective",
-      "repository": {
-        "url": "https://github.com/fastify/fastify",
-        "id": "fastify__fastify",
-        "github": "fastify/fastify",
-        "path": "sources/evaluations/fixtures/medium/fastify-fastify/repo"
-      },
-      "snapshot": {
-        "commit": "94bcbcc6e2ef3b8e8f8e8797fe551ccbe7b942fd",
-        "branch": "detached",
-        "snapshot_policy": "Pinned active workflow snapshot; five upstream-derived seed patches are controller-injected one at a time after the prior task passes."
-      },
-      "task_classes": [
-        "multi-file-refactor",
-        "large-codebase-navigation",
-        "build-repair"
-      ],
+      "repository": {"url": "https://github.com/fastify/fastify", "id": "fastify__fastify", "github": "fastify/fastify", "path": "sources/evaluations/fixtures/medium/fastify-fastify/repo"},
+      "snapshot": {"commit": "94bcbcc6e2ef3b8e8f8e8797fe551ccbe7b942fd", "branch": "detached", "snapshot_policy": "Pinned active workflow snapshot; five upstream-derived seed patches are controller-injected one at a time."},
+      "task_classes": ["multi-file-refactor", "large-codebase-navigation", "build-repair"],
       "primary_token_waste_surface": "retrieval-context",
-      "setup": {
-        "command": "sources/evaluations/fixtures/medium/fastify-fastify/setup.sh"
-      },
-      "reset": {
-        "command": "sources/evaluations/fixtures/medium/fastify-fastify/reset.sh"
-      },
-      "verifier": {
-        "command": "sources/evaluations/fixtures/medium/fastify-fastify/verify-smoke.sh"
-      },
-      "prompt": {
-        "path": "sources/evaluations/fixtures/medium/fastify-fastify/tasks/README.md",
-        "prompt_policy": "Model-facing prompts are disclosed one at a time; verifier commands, seed patches, provenance docs, and future prompts remain controller-only."
-      },
-      "artifact_paths": {
-        "root": "sources/evaluations/fixtures/medium/fastify-fastify/runs/"
-      },
-      "future_evaluation_lanes": [
-        "native-baseline-reproduction",
-        "individual-tool-reproduction",
-        "stack-ablation-reproduction"
-      ],
-      "candidate_profiles": [
-        "baseline-bare-codex",
-        "retrieval-leanctx",
-        "retrieval-serena",
-        "terminal-rtk",
-        "terminal-lowfat",
-        "serena-cavemem-lightweight",
-        "lower-intervention-codegraph"
-      ],
+      "setup": {"command": "sources/evaluations/fixtures/medium/fastify-fastify/setup.sh"},
+      "reset": {"command": "sources/evaluations/fixtures/medium/fastify-fastify/reset.sh"},
+      "verifier": {"command": "sources/evaluations/fixtures/medium/fastify-fastify/verify-smoke.sh"},
+      "prompt": {"path": "sources/evaluations/fixtures/medium/fastify-fastify/tasks/README.md", "prompt_policy": "Prompts are disclosed one at a time; all acceptance assets remain controller-only."},
+      "artifact_paths": {"root": "execution-time scratch; non-recoverable after compact bundling"},
+      "future_evaluation_lanes": ["native-baseline-reproduction", "individual-tool-reproduction", "stack-ablation-reproduction"],
+      "candidate_profiles": ["baseline-bare-codex", "retrieval-leanctx", "retrieval-serena", "terminal-rtk", "terminal-lowfat", "serena-cavemem-lightweight", "lower-intervention-codegraph"],
       "blockers": [],
-      "caveats": [
-        "Primary medium TypeScript/JavaScript workflow; historical invalid Fastify sessions remain excluded from objective use."
-      ],
-      "tasks": [
-        "fastify-log-controller-regression",
-        "fastify-max-param-length-regression",
-        "fastify-request-media-type-regression",
-        "fastify-content-type-semantics-regression",
-        "fastify-request-lifecycle-regression"
-      ],
+      "caveats": ["Runner-enabled does not mean objective-accepted; each session still requires software-quality review."],
+      "tasks": ["fastify-max-param-length-regression", "fastify-handler-timeout-regression", "fastify-request-media-type-regression", "fastify-log-controller-regression", "fastify-content-type-semantics-regression"],
       "qualification_status": "active-reproduction-flow",
       "workflow_sequence_id": "fastify-maintenance-sequence-v1",
-      "qualification_evidence": "All five upstream-derived tasks pass on the fixed snapshot, fail after conflict-free seed application, touch at least five causally related production/type files, and pass lazy prepare-only delivery checks.",
-      "active_profiles": [
-        "baseline-bare-codex"
-      ]
+      "qualification_evidence": "sources/evaluations/fixtures/medium/fastify-fastify/qualification.json",
+      "active_profiles": ["baseline-bare-codex"]
     },
     {
-      "id": "medium-beetbox-beets",
-      "status": "candidate-fixture",
-      "fixture_scale": "medium-project",
-      "evaluation_use": "primary-objective",
-      "repository": {
-        "url": "https://github.com/beetbox/beets",
-        "id": "beetbox__beets",
-        "github": "beetbox/beets",
-        "path": "sources/evaluations/fixtures/medium/beetbox-beets/repo"
-      },
-      "snapshot": {
-        "commit": "8ddae794d30e9984be904f80459614155c6592d9",
-        "branch": "detached",
-        "snapshot_policy": "Pinned candidate snapshot; task seed patches are controller-injected lazily only after behavioral acceptance redesign."
-      },
-      "task_classes": [
-        "multi-file-refactor",
-        "large-codebase-navigation",
-        "build-repair"
-      ],
-      "primary_token_waste_surface": "retrieval-context",
-      "setup": {
-        "command": "sources/evaluations/fixtures/medium/beetbox-beets/setup.sh"
-      },
-      "reset": {
-        "command": "sources/evaluations/fixtures/medium/beetbox-beets/reset.sh"
-      },
-      "verifier": {
-        "command": "sources/evaluations/fixtures/medium/beetbox-beets/verify-smoke.sh"
-      },
-      "prompt": {
-        "path": "sources/evaluations/fixtures/medium/beetbox-beets/tasks/README.md",
-        "prompt_policy": "Candidate prompts are the five task agent-prompt.txt files listed by beets-maintenance-sequence-v1 in data/workflow-task-sequences.json."
-      },
-      "artifact_paths": {
-        "root": "sources/evaluations/fixtures/medium/beetbox-beets/runs/"
-      },
-      "future_evaluation_lanes": [
-        "native-baseline-reproduction",
-        "individual-tool-reproduction",
-        "stack-ablation-reproduction"
-      ],
-      "candidate_profiles": [
-        "baseline-bare-codex",
-        "retrieval-leanctx",
-        "retrieval-serena",
-        "terminal-rtk",
-        "terminal-lowfat",
-        "serena-cavemem-lightweight",
-        "lower-intervention-codegraph"
-      ],
-      "blockers": [
-        "Supplemental exact-source sentinel checks are not causally related behavioral acceptance; fixture redesign is required."
-      ],
-      "caveats": [
-        "Candidate medium Python workflow; not active while acceptance is redesigned.",
-        "Chosen to avoid foundational Python ecosystem projects."
-      ],
-      "tasks": [
-        "beets-pathformats-query-key-regression",
-        "beets-hidden-dotfile-regression",
-        "beets-color-uncolorize-regression",
-        "beets-human-bytes-boundary-regression",
-        "beets-template-escape-character-regression"
-      ],
-      "setup_smoke": {
-        "command": "sources/evaluations/fixtures/medium/beetbox-beets/verify-smoke.sh",
-        "evidence": "sources/evaluations/fixtures/medium/beetbox-beets/runs/setup-smoke-20260708/verify-smoke.log",
-        "setup_evidence": "sources/evaluations/fixtures/medium/beetbox-beets/runs/setup-smoke-20260708/setup.log",
-        "result": "passed",
-        "notes": "uv sync --group test completed; pytest smoke passed test/util/test_pathformats.py."
-      },
-      "qualification_status": "fixture-redesign-required",
-      "workflow_sequence_id": "beets-maintenance-sequence-v1",
-      "qualification_evidence": "Historical mechanical fail/pass gates are retained, but unrelated exact-source acceptance invalidates active use.",
-      "active_profiles": []
+      "id": "large-orchardcms-orchardcore", "status": "candidate-fixture", "fixture_scale": "large-project", "evaluation_use": "primary-candidate",
+      "repository": {"url": "https://github.com/OrchardCMS/OrchardCore", "id": "orchardcms__orchardcore"},
+      "task_classes": ["multi-file-refactor"], "primary_token_waste_surface": "retrieval-context",
+      "setup": {"blocker": "candidate metadata only; no runnable assets"}, "reset": {"blocker": "candidate metadata only; no runnable assets"}, "verifier": {"blocker": "candidate metadata only; no runnable assets"},
+      "artifact_paths": {"root": "none; candidate metadata only"}, "future_evaluation_lanes": [], "candidate_profiles": [],
+      "blockers": ["Invalid sentinel-padded task design was purged."], "caveats": ["Not evaluation-ready."], "active_profiles": []
+    },
+    {
+      "id": "medium-beetbox-beets", "status": "candidate-fixture", "fixture_scale": "medium-project", "evaluation_use": "primary-candidate",
+      "repository": {"url": "https://github.com/beetbox/beets", "id": "beetbox__beets"},
+      "task_classes": ["multi-file-refactor"], "primary_token_waste_surface": "retrieval-context",
+      "setup": {"blocker": "candidate metadata only; no runnable assets"}, "reset": {"blocker": "candidate metadata only; no runnable assets"}, "verifier": {"blocker": "candidate metadata only; no runnable assets"},
+      "artifact_paths": {"root": "none; candidate metadata only"}, "future_evaluation_lanes": [], "candidate_profiles": [],
+      "blockers": ["Invalid sentinel-padded task design was purged."], "caveats": ["Not evaluation-ready."], "active_profiles": []
     }
   ],
-  "fixture_scales": [
-    "synthetic-micro",
-    "recorded-diagnostic",
-    "large-project",
-    "medium-project"
-  ],
-  "evaluation_uses": [
-    "calibration",
-    "diagnostic-preservation",
-    "primary-candidate",
-    "primary-objective"
-  ],
-  "complex_project_policy": {
-    "primary_objective_claims_require": "large-project or medium-project fixture_scale and reproduction evidence with provider-billed usage when available; aggregate claims must stratify by fixture scale.",
-    "small_fixture_use": "Retained synthetic/recorded fixtures are only calibration, diagnostic-preservation, or tool sanity-check evidence; they do not support primary objective claims about complex-project software engineering tasks.",
-    "candidate_selection": "Candidate four-flow set is OrchardCore, Terraform, Fastify, and Beets, but no workflow is active until sequence and fixture readiness blockers are resolved. Django remains archived historical evidence."
-  }
+  "fixture_scales": ["synthetic-micro", "recorded-diagnostic", "large-project", "medium-project"],
+  "evaluation_uses": ["calibration", "diagnostic-preservation", "primary-candidate", "primary-objective"],
+  "complex_project_policy": {"primary_objective_claims_require": "medium-project or large-project reproduction evidence with provider-billed usage and software-quality gates", "small_fixture_use": "Calibration only", "candidate_selection": "Fastify is the only current executable workflow suite; other projects remain candidate metadata only."}
 }

@@ -4,16 +4,15 @@ This directory separates active workflow fixtures from archived evidence.
 
 ## Active fixtures
 
-Active and candidate repository fixtures live under:
+The active Fastify repository fixture lives under:
 
 ```text
 sources/evaluations/fixtures/
   container/Dockerfile
-  large/<project-id>/
-  medium/<project-id>/
+  medium/fastify-fastify/
 ```
 
-Each fixture directory owns setup/reset scripts, task prompts, seed patches, verifiers, and compact smoke evidence for that project.
+Candidate-only projects do not retain runnable task/setup/reset/verifier assets.
 
 The canonical active sequence list is `data/workflow-task-sequences.json`; fixture readiness metadata is `data/repository-fixtures.json`.
 
