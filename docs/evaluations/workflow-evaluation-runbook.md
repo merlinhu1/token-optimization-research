@@ -25,7 +25,6 @@ Every active task must use causally related behavioral acceptance. Unrelated exa
 
 ## Planned candidates and blockers
 
-- `terraform-maintenance-sequence-v1`: Tasks touch only three or four production files and do not satisfy the primary workflow complexity floor.
 - `orchardcore-maintenance-sequence-v1`: Supplemental mutations are under-specified exact-source restoration checks rather than causally related behavioral acceptance.
 - `beets-maintenance-sequence-v1`: Supplemental mutations are under-specified exact-source restoration checks rather than causally related behavioral acceptance.
 
