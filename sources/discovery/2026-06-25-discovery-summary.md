@@ -37,7 +37,6 @@
 
 ## New non-seed leads added
 
-- [zilliztech/claude-context](https://github.com/zilliztech/claude-context) — `technique-implementation`, tentative `T02-targeted-code-retrieval`: Code search MCP for Claude Code; makes the entire codebase searchable context for coding agents.
 - [jgravelle/jcodemunch-mcp](https://github.com/jgravelle/jcodemunch-mcp) — `technique-implementation`, tentative `T02-targeted-code-retrieval`: Tree-sitter MCP for precise symbol-level GitHub code retrieval; advertises 95%+ code-exploration token cost cuts.
 - [zdk/lowfat](https://github.com/zdk/lowfat) — `technique-implementation`, tentative `T01-terminal-tool-output-compression`: CLI that slims command output by stripping noise to save tokens.
 - [edouard-claude/snip](https://github.com/edouard-claude/snip) — `technique-implementation`, tentative `T01-terminal-tool-output-compression`: Go CLI proxy with declarative YAML filters for Claude Code/Cursor/Copilot/Gemini command-output reduction.

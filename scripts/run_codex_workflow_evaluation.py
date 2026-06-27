@@ -68,7 +68,17 @@ SUPPORTED_WORKFLOW_TOOL_PROFILES = {
     "retrieval-leanctx": "lean-ctx",
     "retrieval-codegraph": "codegraph",
     "lower-intervention-codegraph": "codegraph",
+    "retrieval-serena": "serena",
+    "retrieval-graphify": "graphify",
+    "retrieval-sigmap": "sigmap",
+    "retrieval-jcodemunch-mcp": "jcodemunch-mcp",
+    "integrated-token-savior": "token-savior",
+    "headroom-default-codex": "headroom",
     "terminal-rtk": "rtk",
+    "terminal-snip": "snip",
+    "terminal-lowfat": "lowfat",
+    "terminal-tokenjuice": "tokenjuice",
+    "behavior-caveman": "caveman",
     "artifact-ponytail": "ponytail",
 }
 
@@ -96,7 +106,7 @@ def build_profile_meta() -> dict[str, dict[str, Any]]:
             "enabled_surfaces": [str(cfg.get("surface", "token-saving-tool"))],
             "disabled_overlaps": ["all unlisted token-saving surfaces"],
             "allowed_terms": sorted({tool_id, *[str(term) for term in cfg.get("allowed_terms", [])]}),
-            "tool_state": "cold",
+            "tool_state": str(cfg.get("default_tool_state", "cold")),
             "tool_use_policy": "optional",
             "tool_id": tool_id,
         }
@@ -170,6 +180,36 @@ def load_sequence(sequence_id: str) -> dict[str, Any]:
 
 def active_sequence_ids() -> list[str]:
     return [seq["id"] for seq in sequence_doc().get("sequences", []) if seq.get("status") == "active"]
+
+
+def safe_profile_key(profile_id: str) -> str:
+    return profile_id.replace("_", "-")
+
+
+def canonical_baseline_session_id(project_id: str, replicate_index: int) -> str:
+    return f"{DATE_COMPACT}-{project_id}-baseline-bare-codex-sequential-workflow-r{replicate_index}"
+
+
+def canonical_baseline_group_id(project_id: str, replicate_index: int) -> str:
+    return f"{DATE_COMPACT}-{project_id}-canonical-baseline-sequential-workflow-r{replicate_index}"
+
+
+def treatment_experiment_group_id(project_id: str, treatment_profile_id: str, replicate_index: int) -> str:
+    return f"{DATE_COMPACT}-{project_id}-{safe_profile_key(treatment_profile_id)}-sequential-workflow-r{replicate_index}"
+
+
+def find_canonical_baseline_record(registry: dict[str, Any], seq: dict[str, Any], replicate_index: int) -> dict[str, Any] | None:
+    project_id = PROJECT_META[seq["fixture_id"]]["project_id"]
+    expected_session_id = canonical_baseline_session_id(project_id, replicate_index)
+    for session in registry.get("sessions", []):
+        if session.get("session_id") != expected_session_id:
+            continue
+        if session.get("session_role") != "baseline":
+            continue
+        if session.get("task_sequence", {}).get("sequence_id") != seq["id"]:
+            continue
+        return session
+    return None
 
 
 def task_alias(order: int) -> str:
@@ -438,14 +478,34 @@ def run_codex_task(
     cfg = fixture.active_tool_config(record, profile_id)
     repo = ROOT / record["target"]["repository_path"]
     if thread_id is None:
-        cmd = [*codex_base_cmd(record), "--sandbox", "danger-full-access", "--cd", str(repo), "--output-last-message", str(last_message_path), "-"]
+        codex_cmd = [*codex_base_cmd(record), "--sandbox", "danger-full-access", "--cd", str(repo), "--output-last-message", str(last_message_path), "-"]
     else:
-        cmd = ["codex", "exec", "resume", *fixture.codex_model_args(record), "--json", "--disable", "hooks", "--ignore-rules", "--output-last-message", str(last_message_path), thread_id, "-"]
+        codex_cmd = ["codex", "exec", "resume", *fixture.codex_model_args(record), "--json", "--disable", "hooks", "--ignore-rules", "--output-last-message", str(last_message_path), thread_id, "-"]
+    wrapper = (cfg or {}).get("codex_wrapper") if cfg else None
+    input_path_for_proc: Path | None = prompt_path
+    if wrapper:
+        assert cfg is not None
+        data_dir = fixture.tool_data_dir(codex_home, cfg)
+        wrapper_args = [
+            str(part).format(
+                repo=repo,
+                codex_home=codex_home,
+                tool_data_dir=data_dir,
+                repo_slug=repo.name.replace("-", "_"),
+            )
+            for part in wrapper.get("args", [])
+        ]
+        if codex_cmd and codex_cmd[-1] == "-":
+            codex_cmd = [*codex_cmd[:-1], prompt_path.read_text()]
+            input_path_for_proc = None
+        cmd = [str(wrapper["command"]), *wrapper_args, *codex_cmd[1:]]
+    else:
+        cmd = codex_cmd
     env = fixture.codex_env(codex_home, containerized=True, cfg=cfg)
     env.update(fixture.tool_env_for_record(record, profile_id, codex_home))
     mounts = fixture.container_mounts_for_record(record, codex_home, include_repo=True, cfg=cfg)
     fixture.add_mount(mounts, run_dir, mode="rw")
-    proc = fixture.run_backend(cmd, backend="docker", docker_image=docker_image, cwd=repo, env=env, stdout_path=output_path, input_path=prompt_path, timeout=timeout, mounts=mounts)
+    proc = fixture.run_backend(cmd, backend="docker", docker_image=docker_image, cwd=repo, env=env, stdout_path=output_path, input_path=input_path_for_proc, timeout=timeout, mounts=mounts)
     if thread_id is None and proc.returncode == 0:
         thread_id = extract_thread_id(output_path)
     return proc.returncode, thread_id
@@ -643,6 +703,7 @@ def workflow_session_record(
     *,
     prompt_delivery: dict[str, Any],
     leakage_controls: dict[str, Any],
+    comparison_baseline_session_id: str = "",
 ) -> dict[str, Any]:
     pmeta = PROFILE_META[profile_id]
     tasks_passed = sum(1 for result in verifier_results if result["verifier_exit_code"] == 0)
@@ -742,7 +803,7 @@ def workflow_session_record(
         "artifacts": compact_artifacts(run_dir),
         "interpretation": {
             "accepted_for_objective": accepted,
-            "comparison_baseline_session_id": "",
+            "comparison_baseline_session_id": comparison_baseline_session_id,
             "exclusion_reason": "" if accepted else f"codex_exit_codes={codex_exit_codes}; final_verifier_exit={final_verifier_code}; audit_exit={audit_code}; thread_continuity_errors={summary.get('thread_continuity_errors', [])}; usage_warnings={usage.get('warnings')}",
             "notes": "Accepted sequential workflow session." if accepted else "Sequential workflow session failed one or more acceptance gates; inspect raw artifacts.",
             "scope_note": "Full active workflow sequence; tasks disclosed one at a time.",
@@ -754,41 +815,62 @@ def update_registry(record: dict[str, Any]) -> None:
     path = ROOT / "data/workflow-sessions.json"
     doc = json.loads(path.read_text())
     sessions = [s for s in doc.get("sessions", []) if s.get("session_id") != record["session_id"]]
-    if record["session_role"] == "individual_tool_treatment":
-        baseline = next((s for s in sessions if s.get("experiment_group_id") == record["experiment_group_id"] and s.get("session_role") == "baseline"), None)
-        if baseline:
-            record["interpretation"]["comparison_baseline_session_id"] = baseline["session_id"]
     sessions.append(record)
     doc["sessions"] = sessions
     path.write_text(json.dumps(doc, indent=2) + "\n")
 
 
+def freshish_tokens(record: dict[str, Any]) -> int | float | None:
+    usage = record.get("cumulative_token_usage", {})
+    fresh = usage.get("fresh_input_tokens")
+    output = usage.get("output_tokens")
+    if isinstance(fresh, (int, float)) and isinstance(output, (int, float)):
+        return fresh + output
+    total = usage.get("total_provider_tokens")
+    cached = usage.get("cached_input_tokens")
+    if isinstance(total, (int, float)) and isinstance(cached, (int, float)):
+        return total - cached
+    return None
+
+
+def percent_delta(delta: int | float | None, baseline: int | float | None) -> float | None:
+    return (delta / baseline * 100) if delta is not None and baseline else None
+
+
 def write_comparison_if_ready(seq: dict[str, Any], study_id: str, replicate_index: int, treatment_profile_id: str) -> dict[str, Any] | None:
     registry = json.loads((ROOT / "data/workflow-sessions.json").read_text())
     project_id = PROJECT_META[seq["fixture_id"]]["project_id"]
-    comparison_key = treatment_profile_id.replace("_", "-")
-    group_id = f"{DATE_COMPACT}-{project_id}-{comparison_key}-sequential-workflow-r{replicate_index}"
+    comparison_key = safe_profile_key(treatment_profile_id)
+    group_id = treatment_experiment_group_id(project_id, treatment_profile_id, replicate_index)
+    baseline = find_canonical_baseline_record(registry, seq, replicate_index)
     sessions = [s for s in registry.get("sessions", []) if s.get("experiment_group_id") == group_id]
-    baseline = next((s for s in sessions if s.get("session_role") == "baseline"), None)
     treatment = next((s for s in sessions if s.get("profile", {}).get("profile_id") == treatment_profile_id), None)
     if not baseline or not treatment:
         return None
     b_tokens = baseline.get("cumulative_token_usage", {}).get("total_provider_tokens")
     t_tokens = treatment.get("cumulative_token_usage", {}).get("total_provider_tokens")
     delta = t_tokens - b_tokens if isinstance(b_tokens, (int, float)) and isinstance(t_tokens, (int, float)) else None
-    pct = (delta / b_tokens * 100) if delta is not None and b_tokens else None
+    b_freshish = freshish_tokens(baseline)
+    t_freshish = freshish_tokens(treatment)
+    freshish_delta = t_freshish - b_freshish if isinstance(b_freshish, (int, float)) and isinstance(t_freshish, (int, float)) else None
     comparison = {
-        "schema_version": 1,
+        "schema_version": 2,
         "comparison_id": f"{DATE_COMPACT}-{project_id}-baseline-vs-{comparison_key}-sequential-workflow-r{replicate_index}",
         "study_id": study_id,
         "experiment_group_id": group_id,
+        "comparison_design": "canonical-shared-baseline-v2",
+        "baseline_reuse_policy": "one canonical baseline-bare-codex session per fixture/date/replicate is shared by all treatment comparisons",
         "sequence_id": seq["id"],
         "baseline_session_id": baseline["session_id"],
         "treatment_session_id": treatment["session_id"],
         "baseline_total_provider_tokens": b_tokens,
         "treatment_total_provider_tokens": t_tokens,
         "delta_total_provider_tokens": delta,
-        "delta_percent": pct,
+        "delta_percent": percent_delta(delta, b_tokens),
+        "baseline_freshish_tokens": b_freshish,
+        "treatment_freshish_tokens": t_freshish,
+        "delta_freshish_tokens": freshish_delta,
+        "delta_freshish_percent": percent_delta(freshish_delta, b_freshish),
         "baseline_accepted": baseline.get("interpretation", {}).get("accepted_for_objective"),
         "treatment_accepted": treatment.get("interpretation", {}).get("accepted_for_objective"),
         "quality_gate": {
@@ -796,7 +878,7 @@ def write_comparison_if_ready(seq: dict[str, Any], study_id: str, replicate_inde
             "treatment_tasks_passed": treatment.get("software_quality", {}).get("tasks_passed"),
             "task_count": len(seq["tasks"]),
         },
-        "interpretation": f"Sequential prompt delivery: each task is disclosed only after the previous verifier passes. Positive token delta means {treatment_profile_id} used more Codex-reported provider tokens; negative means fewer.",
+        "interpretation": f"Sequential prompt delivery: each task is disclosed only after the previous verifier passes. Positive token deltas mean {treatment_profile_id} used more Codex-reported tokens than the shared canonical baseline; negative means fewer. Freshish tokens are fresh_input_tokens + output_tokens for a cache-adjusted secondary view.",
     }
     out = ROOT / "sources/evaluations/workflow-sessions" / f"{comparison['comparison_id']}.json"
     out.parent.mkdir(parents=True, exist_ok=True)
@@ -812,13 +894,15 @@ def run_one(args: argparse.Namespace) -> dict[str, Any]:
     if profile_id not in PROFILE_META:
         raise ValueError(f"No runner metadata for profile {profile_id}")
     project_id = PROJECT_META[seq["fixture_id"]]["project_id"]
-    profile_suffix = profile_id.replace("_", "-")
-    mode_suffix = "sequential"
-    session_id = args.session_id or f"{DATE_COMPACT}-{project_id}-{profile_suffix}-{mode_suffix}-workflow-r{args.replicate_index}"
+    profile_suffix = safe_profile_key(profile_id)
     study_id = args.study_id or "phase-2-sequential-workflow-v1"
-    comparison_profile_id = args.comparison_profile_id or (profile_id if profile_id != "baseline-bare-codex" else "retrieval-leanctx")
-    comparison_key = comparison_profile_id.replace("_", "-")
-    experiment_group_id = args.experiment_group_id or f"{DATE_COMPACT}-{project_id}-{comparison_key}-sequential-workflow-r{args.replicate_index}"
+    comparison_profile_id = args.comparison_profile_id or (profile_id if profile_id != "baseline-bare-codex" else "")
+    if profile_id == "baseline-bare-codex":
+        session_id = args.session_id or canonical_baseline_session_id(project_id, args.replicate_index)
+        experiment_group_id = args.experiment_group_id or canonical_baseline_group_id(project_id, args.replicate_index)
+    else:
+        session_id = args.session_id or f"{DATE_COMPACT}-{project_id}-{profile_suffix}-sequential-workflow-r{args.replicate_index}"
+        experiment_group_id = args.experiment_group_id or treatment_experiment_group_id(project_id, profile_id, args.replicate_index)
     run_dir = ROOT / "sources/evaluations/workflow-sessions" / session_id
     if run_dir.exists() and not args.keep_existing_run_dir:
         chmod_tree(run_dir)
@@ -859,6 +943,19 @@ def run_one(args: argparse.Namespace) -> dict[str, Any]:
         if deps_code != 0:
             capture_diff(record, run_dir)
             return {"session_id": session_id, "profile_id": profile_id, "accepted": False, "stage": "setup-deps", "setup_deps_exit_code": deps_code, "run_dir": rel(run_dir)}
+
+    warmup_code = fixture.prepare_profile_workspace(
+        record,
+        profile_id,
+        codex_home,
+        run_dir,
+        protocol,
+        backend="docker",
+        docker_image=args.docker_image,
+    )
+    if warmup_code != 0:
+        capture_diff(record, run_dir)
+        return {"session_id": session_id, "profile_id": profile_id, "accepted": False, "stage": "tool-warmup", "tool_warmup_exit_code": warmup_code, "run_dir": rel(run_dir)}
 
     ordered_tasks = sorted(seq["tasks"], key=lambda item: item["order"])
     for task in ordered_tasks:
@@ -945,9 +1042,28 @@ def run_one(args: argparse.Namespace) -> dict[str, Any]:
         "artifacts": compact_artifacts(run_dir),
         "run_dir": rel(run_dir),
     }
-    session_record = workflow_session_record(seq, summary, run_dir, profile_id, codex_exit_codes, final_verifier_code, audit_code, usage, verifier_results, prompt_delivery=prompt_delivery, leakage_controls=leakage_controls)
+    comparison_baseline_session_id = ""
+    if profile_id != "baseline-bare-codex":
+        registry = json.loads((ROOT / "data/workflow-sessions.json").read_text())
+        baseline_record = find_canonical_baseline_record(registry, seq, args.replicate_index)
+        if baseline_record:
+            comparison_baseline_session_id = baseline_record["session_id"]
+    session_record = workflow_session_record(
+        seq,
+        summary,
+        run_dir,
+        profile_id,
+        codex_exit_codes,
+        final_verifier_code,
+        audit_code,
+        usage,
+        verifier_results,
+        prompt_delivery=prompt_delivery,
+        leakage_controls=leakage_controls,
+        comparison_baseline_session_id=comparison_baseline_session_id,
+    )
     update_registry(session_record)
-    comparison = write_comparison_if_ready(seq, study_id, args.replicate_index, comparison_profile_id)
+    comparison = write_comparison_if_ready(seq, study_id, args.replicate_index, comparison_profile_id) if comparison_profile_id else None
     if comparison:
         summary["comparison"] = comparison
     (run_dir / "run.json").write_text(json.dumps(summary, indent=2) + "\n")
@@ -964,7 +1080,7 @@ def main(argv: list[str] | None = None) -> int:
         description=__doc__,
         epilog=(
             "Manual rerun guide: docs/evaluations/sequential-workflow-runner.md. "
-            "For a paired baseline+treatment rerun use: "
+            "For a shared-baseline+treatment rerun use: "
             "scripts/run_sequential_workflow_pair.sh <sequence-id>."
         ),
     )

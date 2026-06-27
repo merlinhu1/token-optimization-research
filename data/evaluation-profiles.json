@@ -275,6 +275,34 @@
       "notes": "Integrated MCP owner treatment."
     },
     {
+      "id": "integrated-token-savior",
+      "profile_type": "individual_tool",
+      "objective_scope": "individual_tool_effectiveness",
+      "status": "candidate-profile",
+      "enabled_surfaces": [
+        "integrated-mcp/retrieval-memory-compact-ops"
+      ],
+      "disabled_overlaps": [
+        "all unlisted surfaces",
+        "external host hooks",
+        "automatic memory injection"
+      ],
+      "components": [
+        {
+          "component_id": "token-savior",
+          "surface": "integrated-mcp/retrieval-memory-compact-ops",
+          "role": "individual_tool"
+        }
+      ],
+      "install": {
+        "policy": "Run Token Savior as the only MCP server in a fresh lane-specific Codex home. Use the local pinned wheel, optimized/thin schema profile, and repository-scoped PROJECT_ROOT/WORKSPACE_ROOTS. Do not enable host hooks or external memory injection in this lane."
+      },
+      "reset": {
+        "policy": "Delete the lane-specific Codex home and run-local tool data after each run; verify no stale index, hook, memory, cache, or generated profile survives into the next run."
+      },
+      "notes": "Token Savior integrated MCP treatment with hooks disabled; source-logic dossier: docs/tool-dossiers/mibayy-token-savior.md."
+    },
+    {
       "id": "lower-intervention-cartog",
       "profile_type": "comparator",
       "objective_scope": "individual_tool_effectiveness",
@@ -698,6 +726,32 @@
         "policy": "Record disable/uninstall commands and verify no stale index, hook, memory, cache, or generated profile survives into the next run."
       },
       "notes": "Serena retrieval/navigation treatment."
+    },
+    {
+      "id": "retrieval-jcodemunch-mcp",
+      "profile_type": "individual_tool",
+      "objective_scope": "individual_tool_effectiveness",
+      "status": "candidate-profile",
+      "enabled_surfaces": [
+        "retrieval-context"
+      ],
+      "disabled_overlaps": [
+        "all unlisted surfaces"
+      ],
+      "components": [
+        {
+          "component_id": "retrieval-jcodemunch-mcp",
+          "surface": "retrieval-context",
+          "role": "individual_tool"
+        }
+      ],
+      "install": {
+        "policy": "Record exact commands, versions, generated files, and environment variables in every run record before using this profile."
+      },
+      "reset": {
+        "policy": "Record disable/uninstall commands and verify no stale index, hook, memory, cache, or generated profile survives into the next run."
+      },
+      "notes": "jcodemunch MCP retrieval/indexing treatment."
     },
     {
       "id": "retrieval-sigmap",

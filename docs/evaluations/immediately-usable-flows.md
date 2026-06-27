@@ -29,7 +29,7 @@ Use this for primary evidence about individual tools and compatibility-safe stac
 9. Record stale-context, overfeeding, repeated rediscovery, or state-reuse observations.
 10. Write `run.json`, `changes.diff`, `evidence.jsonl.gz`, and `manifest.sha256`, then append compact metadata to `data/workflow-sessions.json`.
 
-Minimum positive condition: treatment reduces cumulative provider-billed workflow tokens or cost versus the paired baseline while preserving task pass rate and final quality gates.
+Minimum positive condition: treatment reduces cumulative provider-billed workflow tokens or cost versus the canonical shared baseline while preserving task pass rate and final quality gates.
 
 ## Flow 2: run a workflow ablation
 

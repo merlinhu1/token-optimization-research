@@ -416,6 +416,4174 @@
         "notes": "Accepted sequential workflow session.",
         "scope_note": "Full active workflow sequence; tasks disclosed one at a time."
       }
+    },
+    {
+      "schema_version": 1,
+      "session_id": "20260709-fastify-fastify-baseline-bare-codex-for-retrieval-codegraph-sequential-workflow-r0",
+      "record_type": "workflow_session",
+      "evidence_type": "workflow-simulation",
+      "study_id": "phase-2-sequential-workflow-v1",
+      "experiment_group_id": "20260709-fastify-fastify-retrieval-codegraph-sequential-workflow-r0",
+      "objective": "individual_tool_effectiveness",
+      "evidence_stage": "reproduction",
+      "status": "completed",
+      "session_role": "baseline",
+      "replicate_index": 0,
+      "date": "2026-07-09",
+      "target": {
+        "fixture_id": "medium-fastify-fastify",
+        "fixture_scale": "medium-project",
+        "project_id": "fastify-fastify",
+        "repository_path": "sources/evaluations/workflow-sessions/20260709-fastify-fastify-baseline-bare-codex-for-retrieval-codegraph-sequential-workflow-r0/project/repo",
+        "initial_snapshot": {
+          "commit": "94bcbcc6e2ef3b8e8f8e8797fe551ccbe7b942fd",
+          "branch": "detached",
+          "fixture_hash": ""
+        }
+      },
+      "task_sequence": {
+        "sequence_id": "fastify-maintenance-sequence-v1",
+        "task_ids": [
+          "fastify-query-schema-alias-regression",
+          "fastify-response-2xx-serializer-regression",
+          "fastify-trust-proxy-last-header-regression",
+          "fastify-has-route-method-case-regression",
+          "fastify-reply-hijack-state-regression"
+        ],
+        "reset_policy": "reset repository, profile home, tool state, indexes, caches, generated config, and agent home before the session; persist them between tasks",
+        "prompt_delivery": {
+          "mode": "sequential-one-task-at-a-time",
+          "future_tasks_visible": false,
+          "codex_thread_id": "019f451d-e18a-77e0-9fef-31cb4bdbfb67",
+          "task_prompt_evidence": "sources/evaluations/workflow-sessions/20260709-fastify-fastify-baseline-bare-codex-for-retrieval-codegraph-sequential-workflow-r0/evidence.jsonl.gz"
+        },
+        "leakage_controls": {
+          "seed_origin_concealed": true,
+          "task_directories_model_facing_aliases": true,
+          "model_prompts_sanitized": true,
+          "upstream_remote_removed_from_model_facing_repo": true,
+          "broken_start_committed_as_local_baseline": true,
+          "remaining_limitations": [
+            "Task semantics and verifier names may still be searchable if the model intentionally uses external network access.",
+            "Full prevention requires fixtures built from pre-fix bases plus hidden verifier tests rather than production-code reverse patches."
+          ]
+        }
+      },
+      "profile": {
+        "profile_id": "baseline-bare-codex",
+        "profile_type": "control",
+        "enabled_surfaces": [
+          "codex-native-shell-edit"
+        ],
+        "disabled_overlaps": [
+          "all token-saving surfaces"
+        ],
+        "component_ids": []
+      },
+      "agent": {
+        "runtime_id": "codex-cli",
+        "model_condition_id": "codex-openai-gpt-5-5-high",
+        "name": "Codex CLI",
+        "version": "codex-cli 0.142.5",
+        "provider": "openai",
+        "model": "gpt-5.5",
+        "reasoning_effort": "high",
+        "temperature": null,
+        "max_turns": null,
+        "time_budget_seconds": 9000
+      },
+      "state_policy": {
+        "reset_before_session": [
+          "repository working tree",
+          "profile home",
+          "tool indexes and caches",
+          "generated config",
+          "agent home",
+          "temporary directories"
+        ],
+        "persist_between_tasks": [
+          "repository working tree",
+          "tool indexes and caches",
+          "generated config",
+          "agent home",
+          "memory/state stores enabled by the active profile",
+          "run artifacts"
+        ]
+      },
+      "cumulative_token_usage": {
+        "measurement_source": "codex-jsonl-usage-events",
+        "fresh_input_tokens": 556400,
+        "cached_input_tokens": 13763456,
+        "cache_write_tokens": null,
+        "output_tokens": 70772,
+        "reasoning_tokens": 13125,
+        "total_provider_tokens": 14390628,
+        "estimated_cost_usd": null,
+        "tokens_per_accepted_task": 2878125.6,
+        "pricing_basis": "not computed; Codex-reported token volume, not billing-weighted cost"
+      },
+      "per_task_results": [
+        {
+          "task_id": "fastify-query-schema-alias-regression",
+          "task_alias": "task-01",
+          "order": 1,
+          "verifier_exit_code": 0,
+          "accepted": true,
+          "verifier_output": "sources/evaluations/workflow-sessions/20260709-fastify-fastify-baseline-bare-codex-for-retrieval-codegraph-sequential-workflow-r0/verifier-task-01.txt"
+        },
+        {
+          "task_id": "fastify-response-2xx-serializer-regression",
+          "task_alias": "task-02",
+          "order": 2,
+          "verifier_exit_code": 0,
+          "accepted": true,
+          "verifier_output": "sources/evaluations/workflow-sessions/20260709-fastify-fastify-baseline-bare-codex-for-retrieval-codegraph-sequential-workflow-r0/verifier-task-02.txt"
+        },
+        {
+          "task_id": "fastify-trust-proxy-last-header-regression",
+          "task_alias": "task-03",
+          "order": 3,
+          "verifier_exit_code": 0,
+          "accepted": true,
+          "verifier_output": "sources/evaluations/workflow-sessions/20260709-fastify-fastify-baseline-bare-codex-for-retrieval-codegraph-sequential-workflow-r0/verifier-task-03.txt"
+        },
+        {
+          "task_id": "fastify-has-route-method-case-regression",
+          "task_alias": "task-04",
+          "order": 4,
+          "verifier_exit_code": 0,
+          "accepted": true,
+          "verifier_output": "sources/evaluations/workflow-sessions/20260709-fastify-fastify-baseline-bare-codex-for-retrieval-codegraph-sequential-workflow-r0/verifier-task-04.txt"
+        },
+        {
+          "task_id": "fastify-reply-hijack-state-regression",
+          "task_alias": "task-05",
+          "order": 5,
+          "verifier_exit_code": 0,
+          "accepted": true,
+          "verifier_output": "sources/evaluations/workflow-sessions/20260709-fastify-fastify-baseline-bare-codex-for-retrieval-codegraph-sequential-workflow-r0/verifier-task-05.txt"
+        }
+      ],
+      "software_quality": {
+        "tasks_attempted": 5,
+        "tasks_passed": 5,
+        "final_verifier_command": "sources/evaluations/workflow-sessions/20260709-fastify-fastify-baseline-bare-codex-for-retrieval-codegraph-sequential-workflow-r0/verify-workflow.sh",
+        "final_verifier_passed": true,
+        "quality_score": 5,
+        "critical_failures": []
+      },
+      "state_observations": {
+        "stale_context_incidents": null,
+        "overfeeding_incidents": null,
+        "repeated_rediscovery_incidents": null,
+        "thread_continuity_errors": [],
+        "useful_state_reuse_notes": "Single persistent Codex thread resumed across one task prompt at a time."
+      },
+      "operational_reproducibility": {
+        "install_logged": true,
+        "pre_session_reset_verified": true,
+        "raw_artifacts_recoverable": true,
+        "state_leakage_outside_session_observed": false,
+        "tool_isolation_audit": {
+          "command": "python3 scripts/audit_tool_isolation.py --json-output ...",
+          "passed": true,
+          "forbidden_tool_hits": []
+        }
+      },
+      "artifacts": {
+        "artifact_contract": "compact-v1-four-files",
+        "run_record": "sources/evaluations/workflow-sessions/20260709-fastify-fastify-baseline-bare-codex-for-retrieval-codegraph-sequential-workflow-r0/run.json",
+        "final_diff": "sources/evaluations/workflow-sessions/20260709-fastify-fastify-baseline-bare-codex-for-retrieval-codegraph-sequential-workflow-r0/changes.diff",
+        "evidence_bundle": "sources/evaluations/workflow-sessions/20260709-fastify-fastify-baseline-bare-codex-for-retrieval-codegraph-sequential-workflow-r0/evidence.jsonl.gz",
+        "manifest": "sources/evaluations/workflow-sessions/20260709-fastify-fastify-baseline-bare-codex-for-retrieval-codegraph-sequential-workflow-r0/manifest.sha256"
+      },
+      "interpretation": {
+        "accepted_for_objective": true,
+        "comparison_baseline_session_id": "",
+        "exclusion_reason": "",
+        "notes": "Accepted sequential workflow session.",
+        "scope_note": "Full active workflow sequence; tasks disclosed one at a time."
+      }
+    },
+    {
+      "schema_version": 1,
+      "session_id": "20260709-fastify-fastify-retrieval-codegraph-sequential-workflow-r0",
+      "record_type": "workflow_session",
+      "evidence_type": "workflow-simulation",
+      "study_id": "phase-2-sequential-workflow-v1",
+      "experiment_group_id": "20260709-fastify-fastify-retrieval-codegraph-sequential-workflow-r0",
+      "objective": "individual_tool_effectiveness",
+      "evidence_stage": "reproduction",
+      "status": "completed",
+      "session_role": "individual_tool_treatment",
+      "replicate_index": 0,
+      "date": "2026-07-09",
+      "target": {
+        "fixture_id": "medium-fastify-fastify",
+        "fixture_scale": "medium-project",
+        "project_id": "fastify-fastify",
+        "repository_path": "sources/evaluations/workflow-sessions/20260709-fastify-fastify-retrieval-codegraph-sequential-workflow-r0/project/repo",
+        "initial_snapshot": {
+          "commit": "94bcbcc6e2ef3b8e8f8e8797fe551ccbe7b942fd",
+          "branch": "detached",
+          "fixture_hash": ""
+        }
+      },
+      "task_sequence": {
+        "sequence_id": "fastify-maintenance-sequence-v1",
+        "task_ids": [
+          "fastify-query-schema-alias-regression",
+          "fastify-response-2xx-serializer-regression",
+          "fastify-trust-proxy-last-header-regression",
+          "fastify-has-route-method-case-regression",
+          "fastify-reply-hijack-state-regression"
+        ],
+        "reset_policy": "reset repository, profile home, tool state, indexes, caches, generated config, and agent home before the session; persist them between tasks",
+        "prompt_delivery": {
+          "mode": "sequential-one-task-at-a-time",
+          "future_tasks_visible": false,
+          "codex_thread_id": "019f4525-5c82-76d0-ad84-f8e0949d2fce",
+          "task_prompt_evidence": "sources/evaluations/workflow-sessions/20260709-fastify-fastify-retrieval-codegraph-sequential-workflow-r0/evidence.jsonl.gz"
+        },
+        "leakage_controls": {
+          "seed_origin_concealed": true,
+          "task_directories_model_facing_aliases": true,
+          "model_prompts_sanitized": true,
+          "upstream_remote_removed_from_model_facing_repo": true,
+          "broken_start_committed_as_local_baseline": true,
+          "remaining_limitations": [
+            "Task semantics and verifier names may still be searchable if the model intentionally uses external network access.",
+            "Full prevention requires fixtures built from pre-fix bases plus hidden verifier tests rather than production-code reverse patches."
+          ]
+        }
+      },
+      "profile": {
+        "profile_id": "retrieval-codegraph",
+        "profile_type": "individual_tool",
+        "enabled_surfaces": [
+          "retrieval/context"
+        ],
+        "disabled_overlaps": [
+          "all unlisted token-saving surfaces"
+        ],
+        "component_ids": [
+          "codegraph"
+        ]
+      },
+      "agent": {
+        "runtime_id": "codex-cli",
+        "model_condition_id": "codex-openai-gpt-5-5-high",
+        "name": "Codex CLI",
+        "version": "codex-cli 0.142.5",
+        "provider": "openai",
+        "model": "gpt-5.5",
+        "reasoning_effort": "high",
+        "temperature": null,
+        "max_turns": null,
+        "time_budget_seconds": 9000
+      },
+      "state_policy": {
+        "reset_before_session": [
+          "repository working tree",
+          "profile home",
+          "tool indexes and caches",
+          "generated config",
+          "agent home",
+          "temporary directories"
+        ],
+        "persist_between_tasks": [
+          "repository working tree",
+          "tool indexes and caches",
+          "generated config",
+          "agent home",
+          "memory/state stores enabled by the active profile",
+          "run artifacts"
+        ]
+      },
+      "cumulative_token_usage": {
+        "measurement_source": "codex-jsonl-usage-events",
+        "fresh_input_tokens": 579626,
+        "cached_input_tokens": 18989952,
+        "cache_write_tokens": null,
+        "output_tokens": 63728,
+        "reasoning_tokens": 9970,
+        "total_provider_tokens": 19633306,
+        "estimated_cost_usd": null,
+        "tokens_per_accepted_task": 3926661.2,
+        "pricing_basis": "not computed; Codex-reported token volume, not billing-weighted cost"
+      },
+      "per_task_results": [
+        {
+          "task_id": "fastify-query-schema-alias-regression",
+          "task_alias": "task-01",
+          "order": 1,
+          "verifier_exit_code": 0,
+          "accepted": true,
+          "verifier_output": "sources/evaluations/workflow-sessions/20260709-fastify-fastify-retrieval-codegraph-sequential-workflow-r0/verifier-task-01.txt"
+        },
+        {
+          "task_id": "fastify-response-2xx-serializer-regression",
+          "task_alias": "task-02",
+          "order": 2,
+          "verifier_exit_code": 0,
+          "accepted": true,
+          "verifier_output": "sources/evaluations/workflow-sessions/20260709-fastify-fastify-retrieval-codegraph-sequential-workflow-r0/verifier-task-02.txt"
+        },
+        {
+          "task_id": "fastify-trust-proxy-last-header-regression",
+          "task_alias": "task-03",
+          "order": 3,
+          "verifier_exit_code": 0,
+          "accepted": true,
+          "verifier_output": "sources/evaluations/workflow-sessions/20260709-fastify-fastify-retrieval-codegraph-sequential-workflow-r0/verifier-task-03.txt"
+        },
+        {
+          "task_id": "fastify-has-route-method-case-regression",
+          "task_alias": "task-04",
+          "order": 4,
+          "verifier_exit_code": 0,
+          "accepted": true,
+          "verifier_output": "sources/evaluations/workflow-sessions/20260709-fastify-fastify-retrieval-codegraph-sequential-workflow-r0/verifier-task-04.txt"
+        },
+        {
+          "task_id": "fastify-reply-hijack-state-regression",
+          "task_alias": "task-05",
+          "order": 5,
+          "verifier_exit_code": 0,
+          "accepted": true,
+          "verifier_output": "sources/evaluations/workflow-sessions/20260709-fastify-fastify-retrieval-codegraph-sequential-workflow-r0/verifier-task-05.txt"
+        }
+      ],
+      "software_quality": {
+        "tasks_attempted": 5,
+        "tasks_passed": 5,
+        "final_verifier_command": "sources/evaluations/workflow-sessions/20260709-fastify-fastify-retrieval-codegraph-sequential-workflow-r0/verify-workflow.sh",
+        "final_verifier_passed": true,
+        "quality_score": 5,
+        "critical_failures": []
+      },
+      "state_observations": {
+        "stale_context_incidents": null,
+        "overfeeding_incidents": null,
+        "repeated_rediscovery_incidents": null,
+        "thread_continuity_errors": [],
+        "useful_state_reuse_notes": "Single persistent Codex thread resumed across one task prompt at a time."
+      },
+      "operational_reproducibility": {
+        "install_logged": true,
+        "pre_session_reset_verified": true,
+        "raw_artifacts_recoverable": true,
+        "state_leakage_outside_session_observed": false,
+        "tool_isolation_audit": {
+          "command": "python3 scripts/audit_tool_isolation.py --json-output ...",
+          "passed": true,
+          "forbidden_tool_hits": []
+        }
+      },
+      "artifacts": {
+        "artifact_contract": "compact-v1-four-files",
+        "run_record": "sources/evaluations/workflow-sessions/20260709-fastify-fastify-retrieval-codegraph-sequential-workflow-r0/run.json",
+        "final_diff": "sources/evaluations/workflow-sessions/20260709-fastify-fastify-retrieval-codegraph-sequential-workflow-r0/changes.diff",
+        "evidence_bundle": "sources/evaluations/workflow-sessions/20260709-fastify-fastify-retrieval-codegraph-sequential-workflow-r0/evidence.jsonl.gz",
+        "manifest": "sources/evaluations/workflow-sessions/20260709-fastify-fastify-retrieval-codegraph-sequential-workflow-r0/manifest.sha256"
+      },
+      "interpretation": {
+        "accepted_for_objective": true,
+        "comparison_baseline_session_id": "20260709-fastify-fastify-baseline-bare-codex-for-retrieval-codegraph-sequential-workflow-r0",
+        "exclusion_reason": "",
+        "notes": "Accepted sequential workflow session.",
+        "scope_note": "Full active workflow sequence; tasks disclosed one at a time."
+      }
+    },
+    {
+      "schema_version": 1,
+      "session_id": "20260709-fastify-fastify-baseline-bare-codex-for-retrieval-serena-sequential-workflow-r0",
+      "record_type": "workflow_session",
+      "evidence_type": "workflow-simulation",
+      "study_id": "phase-2-sequential-workflow-v1",
+      "experiment_group_id": "20260709-fastify-fastify-retrieval-serena-sequential-workflow-r0",
+      "objective": "individual_tool_effectiveness",
+      "evidence_stage": "reproduction",
+      "status": "completed",
+      "session_role": "baseline",
+      "replicate_index": 0,
+      "date": "2026-07-09",
+      "target": {
+        "fixture_id": "medium-fastify-fastify",
+        "fixture_scale": "medium-project",
+        "project_id": "fastify-fastify",
+        "repository_path": "sources/evaluations/workflow-sessions/20260709-fastify-fastify-baseline-bare-codex-for-retrieval-serena-sequential-workflow-r0/project/repo",
+        "initial_snapshot": {
+          "commit": "94bcbcc6e2ef3b8e8f8e8797fe551ccbe7b942fd",
+          "branch": "detached",
+          "fixture_hash": ""
+        }
+      },
+      "task_sequence": {
+        "sequence_id": "fastify-maintenance-sequence-v1",
+        "task_ids": [
+          "fastify-query-schema-alias-regression",
+          "fastify-response-2xx-serializer-regression",
+          "fastify-trust-proxy-last-header-regression",
+          "fastify-has-route-method-case-regression",
+          "fastify-reply-hijack-state-regression"
+        ],
+        "reset_policy": "reset repository, profile home, tool state, indexes, caches, generated config, and agent home before the session; persist them between tasks",
+        "prompt_delivery": {
+          "mode": "sequential-one-task-at-a-time",
+          "future_tasks_visible": false,
+          "codex_thread_id": "019f452e-1067-7bf0-9b5d-0eb9f7724753",
+          "task_prompt_evidence": "sources/evaluations/workflow-sessions/20260709-fastify-fastify-baseline-bare-codex-for-retrieval-serena-sequential-workflow-r0/evidence.jsonl.gz"
+        },
+        "leakage_controls": {
+          "seed_origin_concealed": true,
+          "task_directories_model_facing_aliases": true,
+          "model_prompts_sanitized": true,
+          "upstream_remote_removed_from_model_facing_repo": true,
+          "broken_start_committed_as_local_baseline": true,
+          "remaining_limitations": [
+            "Task semantics and verifier names may still be searchable if the model intentionally uses external network access.",
+            "Full prevention requires fixtures built from pre-fix bases plus hidden verifier tests rather than production-code reverse patches."
+          ]
+        }
+      },
+      "profile": {
+        "profile_id": "baseline-bare-codex",
+        "profile_type": "control",
+        "enabled_surfaces": [
+          "codex-native-shell-edit"
+        ],
+        "disabled_overlaps": [
+          "all token-saving surfaces"
+        ],
+        "component_ids": []
+      },
+      "agent": {
+        "runtime_id": "codex-cli",
+        "model_condition_id": "codex-openai-gpt-5-5-high",
+        "name": "Codex CLI",
+        "version": "codex-cli 0.142.5",
+        "provider": "openai",
+        "model": "gpt-5.5",
+        "reasoning_effort": "high",
+        "temperature": null,
+        "max_turns": null,
+        "time_budget_seconds": 9000
+      },
+      "state_policy": {
+        "reset_before_session": [
+          "repository working tree",
+          "profile home",
+          "tool indexes and caches",
+          "generated config",
+          "agent home",
+          "temporary directories"
+        ],
+        "persist_between_tasks": [
+          "repository working tree",
+          "tool indexes and caches",
+          "generated config",
+          "agent home",
+          "memory/state stores enabled by the active profile",
+          "run artifacts"
+        ]
+      },
+      "cumulative_token_usage": {
+        "measurement_source": "codex-jsonl-usage-events",
+        "fresh_input_tokens": 582054,
+        "cached_input_tokens": 14813312,
+        "cache_write_tokens": null,
+        "output_tokens": 70486,
+        "reasoning_tokens": 12669,
+        "total_provider_tokens": 15465852,
+        "estimated_cost_usd": null,
+        "tokens_per_accepted_task": 3093170.4,
+        "pricing_basis": "not computed; Codex-reported token volume, not billing-weighted cost"
+      },
+      "per_task_results": [
+        {
+          "task_id": "fastify-query-schema-alias-regression",
+          "task_alias": "task-01",
+          "order": 1,
+          "verifier_exit_code": 0,
+          "accepted": true,
+          "verifier_output": "sources/evaluations/workflow-sessions/20260709-fastify-fastify-baseline-bare-codex-for-retrieval-serena-sequential-workflow-r0/verifier-task-01.txt"
+        },
+        {
+          "task_id": "fastify-response-2xx-serializer-regression",
+          "task_alias": "task-02",
+          "order": 2,
+          "verifier_exit_code": 0,
+          "accepted": true,
+          "verifier_output": "sources/evaluations/workflow-sessions/20260709-fastify-fastify-baseline-bare-codex-for-retrieval-serena-sequential-workflow-r0/verifier-task-02.txt"
+        },
+        {
+          "task_id": "fastify-trust-proxy-last-header-regression",
+          "task_alias": "task-03",
+          "order": 3,
+          "verifier_exit_code": 0,
+          "accepted": true,
+          "verifier_output": "sources/evaluations/workflow-sessions/20260709-fastify-fastify-baseline-bare-codex-for-retrieval-serena-sequential-workflow-r0/verifier-task-03.txt"
+        },
+        {
+          "task_id": "fastify-has-route-method-case-regression",
+          "task_alias": "task-04",
+          "order": 4,
+          "verifier_exit_code": 0,
+          "accepted": true,
+          "verifier_output": "sources/evaluations/workflow-sessions/20260709-fastify-fastify-baseline-bare-codex-for-retrieval-serena-sequential-workflow-r0/verifier-task-04.txt"
+        },
+        {
+          "task_id": "fastify-reply-hijack-state-regression",
+          "task_alias": "task-05",
+          "order": 5,
+          "verifier_exit_code": 0,
+          "accepted": true,
+          "verifier_output": "sources/evaluations/workflow-sessions/20260709-fastify-fastify-baseline-bare-codex-for-retrieval-serena-sequential-workflow-r0/verifier-task-05.txt"
+        }
+      ],
+      "software_quality": {
+        "tasks_attempted": 5,
+        "tasks_passed": 5,
+        "final_verifier_command": "sources/evaluations/workflow-sessions/20260709-fastify-fastify-baseline-bare-codex-for-retrieval-serena-sequential-workflow-r0/verify-workflow.sh",
+        "final_verifier_passed": true,
+        "quality_score": 5,
+        "critical_failures": []
+      },
+      "state_observations": {
+        "stale_context_incidents": null,
+        "overfeeding_incidents": null,
+        "repeated_rediscovery_incidents": null,
+        "thread_continuity_errors": [],
+        "useful_state_reuse_notes": "Single persistent Codex thread resumed across one task prompt at a time."
+      },
+      "operational_reproducibility": {
+        "install_logged": true,
+        "pre_session_reset_verified": true,
+        "raw_artifacts_recoverable": true,
+        "state_leakage_outside_session_observed": false,
+        "tool_isolation_audit": {
+          "command": "python3 scripts/audit_tool_isolation.py --json-output ...",
+          "passed": true,
+          "forbidden_tool_hits": []
+        }
+      },
+      "artifacts": {
+        "artifact_contract": "compact-v1-four-files",
+        "run_record": "sources/evaluations/workflow-sessions/20260709-fastify-fastify-baseline-bare-codex-for-retrieval-serena-sequential-workflow-r0/run.json",
+        "final_diff": "sources/evaluations/workflow-sessions/20260709-fastify-fastify-baseline-bare-codex-for-retrieval-serena-sequential-workflow-r0/changes.diff",
+        "evidence_bundle": "sources/evaluations/workflow-sessions/20260709-fastify-fastify-baseline-bare-codex-for-retrieval-serena-sequential-workflow-r0/evidence.jsonl.gz",
+        "manifest": "sources/evaluations/workflow-sessions/20260709-fastify-fastify-baseline-bare-codex-for-retrieval-serena-sequential-workflow-r0/manifest.sha256"
+      },
+      "interpretation": {
+        "accepted_for_objective": true,
+        "comparison_baseline_session_id": "",
+        "exclusion_reason": "",
+        "notes": "Accepted sequential workflow session.",
+        "scope_note": "Full active workflow sequence; tasks disclosed one at a time."
+      }
+    },
+    {
+      "schema_version": 1,
+      "session_id": "20260709-fastify-fastify-retrieval-serena-sequential-workflow-r0",
+      "record_type": "workflow_session",
+      "evidence_type": "workflow-simulation",
+      "study_id": "phase-2-sequential-workflow-v1",
+      "experiment_group_id": "20260709-fastify-fastify-retrieval-serena-sequential-workflow-r0",
+      "objective": "individual_tool_effectiveness",
+      "evidence_stage": "reproduction",
+      "status": "completed",
+      "session_role": "individual_tool_treatment",
+      "replicate_index": 0,
+      "date": "2026-07-09",
+      "target": {
+        "fixture_id": "medium-fastify-fastify",
+        "fixture_scale": "medium-project",
+        "project_id": "fastify-fastify",
+        "repository_path": "sources/evaluations/workflow-sessions/20260709-fastify-fastify-retrieval-serena-sequential-workflow-r0/project/repo",
+        "initial_snapshot": {
+          "commit": "94bcbcc6e2ef3b8e8f8e8797fe551ccbe7b942fd",
+          "branch": "detached",
+          "fixture_hash": ""
+        }
+      },
+      "task_sequence": {
+        "sequence_id": "fastify-maintenance-sequence-v1",
+        "task_ids": [
+          "fastify-query-schema-alias-regression",
+          "fastify-response-2xx-serializer-regression",
+          "fastify-trust-proxy-last-header-regression",
+          "fastify-has-route-method-case-regression",
+          "fastify-reply-hijack-state-regression"
+        ],
+        "reset_policy": "reset repository, profile home, tool state, indexes, caches, generated config, and agent home before the session; persist them between tasks",
+        "prompt_delivery": {
+          "mode": "sequential-one-task-at-a-time",
+          "future_tasks_visible": false,
+          "codex_thread_id": "019f4536-8185-7253-b47a-7d98592f7883",
+          "task_prompt_evidence": "sources/evaluations/workflow-sessions/20260709-fastify-fastify-retrieval-serena-sequential-workflow-r0/evidence.jsonl.gz"
+        },
+        "leakage_controls": {
+          "seed_origin_concealed": true,
+          "task_directories_model_facing_aliases": true,
+          "model_prompts_sanitized": true,
+          "upstream_remote_removed_from_model_facing_repo": true,
+          "broken_start_committed_as_local_baseline": true,
+          "remaining_limitations": [
+            "Task semantics and verifier names may still be searchable if the model intentionally uses external network access.",
+            "Full prevention requires fixtures built from pre-fix bases plus hidden verifier tests rather than production-code reverse patches."
+          ]
+        }
+      },
+      "profile": {
+        "profile_id": "retrieval-serena",
+        "profile_type": "individual_tool",
+        "enabled_surfaces": [
+          "retrieval/context"
+        ],
+        "disabled_overlaps": [
+          "all unlisted token-saving surfaces"
+        ],
+        "component_ids": [
+          "serena"
+        ]
+      },
+      "agent": {
+        "runtime_id": "codex-cli",
+        "model_condition_id": "codex-openai-gpt-5-5-high",
+        "name": "Codex CLI",
+        "version": "codex-cli 0.142.5",
+        "provider": "openai",
+        "model": "gpt-5.5",
+        "reasoning_effort": "high",
+        "temperature": null,
+        "max_turns": null,
+        "time_budget_seconds": 9000
+      },
+      "state_policy": {
+        "reset_before_session": [
+          "repository working tree",
+          "profile home",
+          "tool indexes and caches",
+          "generated config",
+          "agent home",
+          "temporary directories"
+        ],
+        "persist_between_tasks": [
+          "repository working tree",
+          "tool indexes and caches",
+          "generated config",
+          "agent home",
+          "memory/state stores enabled by the active profile",
+          "run artifacts"
+        ]
+      },
+      "cumulative_token_usage": {
+        "measurement_source": "codex-jsonl-usage-events",
+        "fresh_input_tokens": 750104,
+        "cached_input_tokens": 17355392,
+        "cache_write_tokens": null,
+        "output_tokens": 74660,
+        "reasoning_tokens": 14610,
+        "total_provider_tokens": 18180156,
+        "estimated_cost_usd": null,
+        "tokens_per_accepted_task": 3636031.2,
+        "pricing_basis": "not computed; Codex-reported token volume, not billing-weighted cost"
+      },
+      "per_task_results": [
+        {
+          "task_id": "fastify-query-schema-alias-regression",
+          "task_alias": "task-01",
+          "order": 1,
+          "verifier_exit_code": 0,
+          "accepted": true,
+          "verifier_output": "sources/evaluations/workflow-sessions/20260709-fastify-fastify-retrieval-serena-sequential-workflow-r0/verifier-task-01.txt"
+        },
+        {
+          "task_id": "fastify-response-2xx-serializer-regression",
+          "task_alias": "task-02",
+          "order": 2,
+          "verifier_exit_code": 0,
+          "accepted": true,
+          "verifier_output": "sources/evaluations/workflow-sessions/20260709-fastify-fastify-retrieval-serena-sequential-workflow-r0/verifier-task-02.txt"
+        },
+        {
+          "task_id": "fastify-trust-proxy-last-header-regression",
+          "task_alias": "task-03",
+          "order": 3,
+          "verifier_exit_code": 0,
+          "accepted": true,
+          "verifier_output": "sources/evaluations/workflow-sessions/20260709-fastify-fastify-retrieval-serena-sequential-workflow-r0/verifier-task-03.txt"
+        },
+        {
+          "task_id": "fastify-has-route-method-case-regression",
+          "task_alias": "task-04",
+          "order": 4,
+          "verifier_exit_code": 0,
+          "accepted": true,
+          "verifier_output": "sources/evaluations/workflow-sessions/20260709-fastify-fastify-retrieval-serena-sequential-workflow-r0/verifier-task-04.txt"
+        },
+        {
+          "task_id": "fastify-reply-hijack-state-regression",
+          "task_alias": "task-05",
+          "order": 5,
+          "verifier_exit_code": 0,
+          "accepted": true,
+          "verifier_output": "sources/evaluations/workflow-sessions/20260709-fastify-fastify-retrieval-serena-sequential-workflow-r0/verifier-task-05.txt"
+        }
+      ],
+      "software_quality": {
+        "tasks_attempted": 5,
+        "tasks_passed": 5,
+        "final_verifier_command": "sources/evaluations/workflow-sessions/20260709-fastify-fastify-retrieval-serena-sequential-workflow-r0/verify-workflow.sh",
+        "final_verifier_passed": true,
+        "quality_score": 5,
+        "critical_failures": []
+      },
+      "state_observations": {
+        "stale_context_incidents": null,
+        "overfeeding_incidents": null,
+        "repeated_rediscovery_incidents": null,
+        "thread_continuity_errors": [],
+        "useful_state_reuse_notes": "Single persistent Codex thread resumed across one task prompt at a time."
+      },
+      "operational_reproducibility": {
+        "install_logged": true,
+        "pre_session_reset_verified": true,
+        "raw_artifacts_recoverable": true,
+        "state_leakage_outside_session_observed": false,
+        "tool_isolation_audit": {
+          "command": "python3 scripts/audit_tool_isolation.py --json-output ...",
+          "passed": true,
+          "forbidden_tool_hits": []
+        }
+      },
+      "artifacts": {
+        "artifact_contract": "compact-v1-four-files",
+        "run_record": "sources/evaluations/workflow-sessions/20260709-fastify-fastify-retrieval-serena-sequential-workflow-r0/run.json",
+        "final_diff": "sources/evaluations/workflow-sessions/20260709-fastify-fastify-retrieval-serena-sequential-workflow-r0/changes.diff",
+        "evidence_bundle": "sources/evaluations/workflow-sessions/20260709-fastify-fastify-retrieval-serena-sequential-workflow-r0/evidence.jsonl.gz",
+        "manifest": "sources/evaluations/workflow-sessions/20260709-fastify-fastify-retrieval-serena-sequential-workflow-r0/manifest.sha256"
+      },
+      "interpretation": {
+        "accepted_for_objective": true,
+        "comparison_baseline_session_id": "20260709-fastify-fastify-baseline-bare-codex-for-retrieval-serena-sequential-workflow-r0",
+        "exclusion_reason": "",
+        "notes": "Accepted sequential workflow session.",
+        "scope_note": "Full active workflow sequence; tasks disclosed one at a time."
+      }
+    },
+    {
+      "schema_version": 1,
+      "session_id": "20260709-fastify-fastify-baseline-bare-codex-for-integrated-token-savior-sequential-workflow-r0",
+      "record_type": "workflow_session",
+      "evidence_type": "workflow-simulation",
+      "study_id": "phase-2-sequential-workflow-v1",
+      "experiment_group_id": "20260709-fastify-fastify-integrated-token-savior-sequential-workflow-r0",
+      "objective": "individual_tool_effectiveness",
+      "evidence_stage": "reproduction",
+      "status": "completed",
+      "session_role": "baseline",
+      "replicate_index": 0,
+      "date": "2026-07-09",
+      "target": {
+        "fixture_id": "medium-fastify-fastify",
+        "fixture_scale": "medium-project",
+        "project_id": "fastify-fastify",
+        "repository_path": "sources/evaluations/workflow-sessions/20260709-fastify-fastify-baseline-bare-codex-for-integrated-token-savior-sequential-workflow-r0/project/repo",
+        "initial_snapshot": {
+          "commit": "94bcbcc6e2ef3b8e8f8e8797fe551ccbe7b942fd",
+          "branch": "detached",
+          "fixture_hash": ""
+        }
+      },
+      "task_sequence": {
+        "sequence_id": "fastify-maintenance-sequence-v1",
+        "task_ids": [
+          "fastify-query-schema-alias-regression",
+          "fastify-response-2xx-serializer-regression",
+          "fastify-trust-proxy-last-header-regression",
+          "fastify-has-route-method-case-regression",
+          "fastify-reply-hijack-state-regression"
+        ],
+        "reset_policy": "reset repository, profile home, tool state, indexes, caches, generated config, and agent home before the session; persist them between tasks",
+        "prompt_delivery": {
+          "mode": "sequential-one-task-at-a-time",
+          "future_tasks_visible": false,
+          "codex_thread_id": "019f454f-6415-7f00-8f3c-536e2e583aba",
+          "task_prompt_evidence": "sources/evaluations/workflow-sessions/20260709-fastify-fastify-baseline-bare-codex-for-integrated-token-savior-sequential-workflow-r0/evidence.jsonl.gz"
+        },
+        "leakage_controls": {
+          "seed_origin_concealed": true,
+          "task_directories_model_facing_aliases": true,
+          "model_prompts_sanitized": true,
+          "upstream_remote_removed_from_model_facing_repo": true,
+          "broken_start_committed_as_local_baseline": true,
+          "remaining_limitations": [
+            "Task semantics and verifier names may still be searchable if the model intentionally uses external network access.",
+            "Full prevention requires fixtures built from pre-fix bases plus hidden verifier tests rather than production-code reverse patches."
+          ]
+        }
+      },
+      "profile": {
+        "profile_id": "baseline-bare-codex",
+        "profile_type": "control",
+        "enabled_surfaces": [
+          "codex-native-shell-edit"
+        ],
+        "disabled_overlaps": [
+          "all token-saving surfaces"
+        ],
+        "component_ids": []
+      },
+      "agent": {
+        "runtime_id": "codex-cli",
+        "model_condition_id": "codex-openai-gpt-5-5-high",
+        "name": "Codex CLI",
+        "version": "codex-cli 0.142.5",
+        "provider": "openai",
+        "model": "gpt-5.5",
+        "reasoning_effort": "high",
+        "temperature": null,
+        "max_turns": null,
+        "time_budget_seconds": 9000
+      },
+      "state_policy": {
+        "reset_before_session": [
+          "repository working tree",
+          "profile home",
+          "tool indexes and caches",
+          "generated config",
+          "agent home",
+          "temporary directories"
+        ],
+        "persist_between_tasks": [
+          "repository working tree",
+          "tool indexes and caches",
+          "generated config",
+          "agent home",
+          "memory/state stores enabled by the active profile",
+          "run artifacts"
+        ]
+      },
+      "cumulative_token_usage": {
+        "measurement_source": "codex-jsonl-usage-events",
+        "fresh_input_tokens": 649256,
+        "cached_input_tokens": 15868672,
+        "cache_write_tokens": null,
+        "output_tokens": 69458,
+        "reasoning_tokens": 14049,
+        "total_provider_tokens": 16587386,
+        "estimated_cost_usd": null,
+        "tokens_per_accepted_task": 3317477.2,
+        "pricing_basis": "not computed; Codex-reported token volume, not billing-weighted cost"
+      },
+      "per_task_results": [
+        {
+          "task_id": "fastify-query-schema-alias-regression",
+          "task_alias": "task-01",
+          "order": 1,
+          "verifier_exit_code": 0,
+          "accepted": true,
+          "verifier_output": "sources/evaluations/workflow-sessions/20260709-fastify-fastify-baseline-bare-codex-for-integrated-token-savior-sequential-workflow-r0/verifier-task-01.txt"
+        },
+        {
+          "task_id": "fastify-response-2xx-serializer-regression",
+          "task_alias": "task-02",
+          "order": 2,
+          "verifier_exit_code": 0,
+          "accepted": true,
+          "verifier_output": "sources/evaluations/workflow-sessions/20260709-fastify-fastify-baseline-bare-codex-for-integrated-token-savior-sequential-workflow-r0/verifier-task-02.txt"
+        },
+        {
+          "task_id": "fastify-trust-proxy-last-header-regression",
+          "task_alias": "task-03",
+          "order": 3,
+          "verifier_exit_code": 0,
+          "accepted": true,
+          "verifier_output": "sources/evaluations/workflow-sessions/20260709-fastify-fastify-baseline-bare-codex-for-integrated-token-savior-sequential-workflow-r0/verifier-task-03.txt"
+        },
+        {
+          "task_id": "fastify-has-route-method-case-regression",
+          "task_alias": "task-04",
+          "order": 4,
+          "verifier_exit_code": 0,
+          "accepted": true,
+          "verifier_output": "sources/evaluations/workflow-sessions/20260709-fastify-fastify-baseline-bare-codex-for-integrated-token-savior-sequential-workflow-r0/verifier-task-04.txt"
+        },
+        {
+          "task_id": "fastify-reply-hijack-state-regression",
+          "task_alias": "task-05",
+          "order": 5,
+          "verifier_exit_code": 0,
+          "accepted": true,
+          "verifier_output": "sources/evaluations/workflow-sessions/20260709-fastify-fastify-baseline-bare-codex-for-integrated-token-savior-sequential-workflow-r0/verifier-task-05.txt"
+        }
+      ],
+      "software_quality": {
+        "tasks_attempted": 5,
+        "tasks_passed": 5,
+        "final_verifier_command": "sources/evaluations/workflow-sessions/20260709-fastify-fastify-baseline-bare-codex-for-integrated-token-savior-sequential-workflow-r0/verify-workflow.sh",
+        "final_verifier_passed": true,
+        "quality_score": 5,
+        "critical_failures": []
+      },
+      "state_observations": {
+        "stale_context_incidents": null,
+        "overfeeding_incidents": null,
+        "repeated_rediscovery_incidents": null,
+        "thread_continuity_errors": [],
+        "useful_state_reuse_notes": "Single persistent Codex thread resumed across one task prompt at a time."
+      },
+      "operational_reproducibility": {
+        "install_logged": true,
+        "pre_session_reset_verified": true,
+        "raw_artifacts_recoverable": true,
+        "state_leakage_outside_session_observed": false,
+        "tool_isolation_audit": {
+          "command": "python3 scripts/audit_tool_isolation.py --json-output ...",
+          "passed": true,
+          "forbidden_tool_hits": []
+        }
+      },
+      "artifacts": {
+        "artifact_contract": "compact-v1-four-files",
+        "run_record": "sources/evaluations/workflow-sessions/20260709-fastify-fastify-baseline-bare-codex-for-integrated-token-savior-sequential-workflow-r0/run.json",
+        "final_diff": "sources/evaluations/workflow-sessions/20260709-fastify-fastify-baseline-bare-codex-for-integrated-token-savior-sequential-workflow-r0/changes.diff",
+        "evidence_bundle": "sources/evaluations/workflow-sessions/20260709-fastify-fastify-baseline-bare-codex-for-integrated-token-savior-sequential-workflow-r0/evidence.jsonl.gz",
+        "manifest": "sources/evaluations/workflow-sessions/20260709-fastify-fastify-baseline-bare-codex-for-integrated-token-savior-sequential-workflow-r0/manifest.sha256"
+      },
+      "interpretation": {
+        "accepted_for_objective": true,
+        "comparison_baseline_session_id": "",
+        "exclusion_reason": "",
+        "notes": "Accepted sequential workflow session.",
+        "scope_note": "Full active workflow sequence; tasks disclosed one at a time."
+      }
+    },
+    {
+      "schema_version": 1,
+      "session_id": "20260709-fastify-fastify-integrated-token-savior-sequential-workflow-r0",
+      "record_type": "workflow_session",
+      "evidence_type": "workflow-simulation",
+      "study_id": "phase-2-sequential-workflow-v1",
+      "experiment_group_id": "20260709-fastify-fastify-integrated-token-savior-sequential-workflow-r0",
+      "objective": "individual_tool_effectiveness",
+      "evidence_stage": "reproduction",
+      "status": "completed",
+      "session_role": "individual_tool_treatment",
+      "replicate_index": 0,
+      "date": "2026-07-09",
+      "target": {
+        "fixture_id": "medium-fastify-fastify",
+        "fixture_scale": "medium-project",
+        "project_id": "fastify-fastify",
+        "repository_path": "sources/evaluations/workflow-sessions/20260709-fastify-fastify-integrated-token-savior-sequential-workflow-r0/project/repo",
+        "initial_snapshot": {
+          "commit": "94bcbcc6e2ef3b8e8f8e8797fe551ccbe7b942fd",
+          "branch": "detached",
+          "fixture_hash": ""
+        }
+      },
+      "task_sequence": {
+        "sequence_id": "fastify-maintenance-sequence-v1",
+        "task_ids": [
+          "fastify-query-schema-alias-regression",
+          "fastify-response-2xx-serializer-regression",
+          "fastify-trust-proxy-last-header-regression",
+          "fastify-has-route-method-case-regression",
+          "fastify-reply-hijack-state-regression"
+        ],
+        "reset_policy": "reset repository, profile home, tool state, indexes, caches, generated config, and agent home before the session; persist them between tasks",
+        "prompt_delivery": {
+          "mode": "sequential-one-task-at-a-time",
+          "future_tasks_visible": false,
+          "codex_thread_id": "019f4558-1ccd-7721-8da6-f8e14c0be0cc",
+          "task_prompt_evidence": "sources/evaluations/workflow-sessions/20260709-fastify-fastify-integrated-token-savior-sequential-workflow-r0/evidence.jsonl.gz"
+        },
+        "leakage_controls": {
+          "seed_origin_concealed": true,
+          "task_directories_model_facing_aliases": true,
+          "model_prompts_sanitized": true,
+          "upstream_remote_removed_from_model_facing_repo": true,
+          "broken_start_committed_as_local_baseline": true,
+          "remaining_limitations": [
+            "Task semantics and verifier names may still be searchable if the model intentionally uses external network access.",
+            "Full prevention requires fixtures built from pre-fix bases plus hidden verifier tests rather than production-code reverse patches."
+          ]
+        }
+      },
+      "profile": {
+        "profile_id": "integrated-token-savior",
+        "profile_type": "individual_tool",
+        "enabled_surfaces": [
+          "integrated-mcp/retrieval-memory-compact-ops"
+        ],
+        "disabled_overlaps": [
+          "all unlisted token-saving surfaces"
+        ],
+        "component_ids": [
+          "token-savior"
+        ]
+      },
+      "agent": {
+        "runtime_id": "codex-cli",
+        "model_condition_id": "codex-openai-gpt-5-5-high",
+        "name": "Codex CLI",
+        "version": "codex-cli 0.142.5",
+        "provider": "openai",
+        "model": "gpt-5.5",
+        "reasoning_effort": "high",
+        "temperature": null,
+        "max_turns": null,
+        "time_budget_seconds": 9000
+      },
+      "state_policy": {
+        "reset_before_session": [
+          "repository working tree",
+          "profile home",
+          "tool indexes and caches",
+          "generated config",
+          "agent home",
+          "temporary directories"
+        ],
+        "persist_between_tasks": [
+          "repository working tree",
+          "tool indexes and caches",
+          "generated config",
+          "agent home",
+          "memory/state stores enabled by the active profile",
+          "run artifacts"
+        ]
+      },
+      "cumulative_token_usage": {
+        "measurement_source": "codex-jsonl-usage-events",
+        "fresh_input_tokens": 386204,
+        "cached_input_tokens": 3343744,
+        "cache_write_tokens": null,
+        "output_tokens": 30646,
+        "reasoning_tokens": 6690,
+        "total_provider_tokens": 3760594,
+        "estimated_cost_usd": null,
+        "tokens_per_accepted_task": 752118.8,
+        "pricing_basis": "not computed; Codex-reported token volume, not billing-weighted cost"
+      },
+      "per_task_results": [
+        {
+          "task_id": "fastify-query-schema-alias-regression",
+          "task_alias": "task-01",
+          "order": 1,
+          "verifier_exit_code": 0,
+          "accepted": true,
+          "verifier_output": "sources/evaluations/workflow-sessions/20260709-fastify-fastify-integrated-token-savior-sequential-workflow-r0/verifier-task-01.txt"
+        },
+        {
+          "task_id": "fastify-response-2xx-serializer-regression",
+          "task_alias": "task-02",
+          "order": 2,
+          "verifier_exit_code": 0,
+          "accepted": true,
+          "verifier_output": "sources/evaluations/workflow-sessions/20260709-fastify-fastify-integrated-token-savior-sequential-workflow-r0/verifier-task-02.txt"
+        },
+        {
+          "task_id": "fastify-trust-proxy-last-header-regression",
+          "task_alias": "task-03",
+          "order": 3,
+          "verifier_exit_code": 0,
+          "accepted": true,
+          "verifier_output": "sources/evaluations/workflow-sessions/20260709-fastify-fastify-integrated-token-savior-sequential-workflow-r0/verifier-task-03.txt"
+        },
+        {
+          "task_id": "fastify-has-route-method-case-regression",
+          "task_alias": "task-04",
+          "order": 4,
+          "verifier_exit_code": 0,
+          "accepted": true,
+          "verifier_output": "sources/evaluations/workflow-sessions/20260709-fastify-fastify-integrated-token-savior-sequential-workflow-r0/verifier-task-04.txt"
+        },
+        {
+          "task_id": "fastify-reply-hijack-state-regression",
+          "task_alias": "task-05",
+          "order": 5,
+          "verifier_exit_code": 0,
+          "accepted": true,
+          "verifier_output": "sources/evaluations/workflow-sessions/20260709-fastify-fastify-integrated-token-savior-sequential-workflow-r0/verifier-task-05.txt"
+        }
+      ],
+      "software_quality": {
+        "tasks_attempted": 5,
+        "tasks_passed": 5,
+        "final_verifier_command": "sources/evaluations/workflow-sessions/20260709-fastify-fastify-integrated-token-savior-sequential-workflow-r0/verify-workflow.sh",
+        "final_verifier_passed": true,
+        "quality_score": 5,
+        "critical_failures": []
+      },
+      "state_observations": {
+        "stale_context_incidents": null,
+        "overfeeding_incidents": null,
+        "repeated_rediscovery_incidents": null,
+        "thread_continuity_errors": [],
+        "useful_state_reuse_notes": "Single persistent Codex thread resumed across one task prompt at a time."
+      },
+      "operational_reproducibility": {
+        "install_logged": true,
+        "pre_session_reset_verified": true,
+        "raw_artifacts_recoverable": true,
+        "state_leakage_outside_session_observed": false,
+        "tool_isolation_audit": {
+          "command": "python3 scripts/audit_tool_isolation.py --json-output ...",
+          "passed": true,
+          "forbidden_tool_hits": []
+        }
+      },
+      "artifacts": {
+        "artifact_contract": "compact-v1-four-files",
+        "run_record": "sources/evaluations/workflow-sessions/20260709-fastify-fastify-integrated-token-savior-sequential-workflow-r0/run.json",
+        "final_diff": "sources/evaluations/workflow-sessions/20260709-fastify-fastify-integrated-token-savior-sequential-workflow-r0/changes.diff",
+        "evidence_bundle": "sources/evaluations/workflow-sessions/20260709-fastify-fastify-integrated-token-savior-sequential-workflow-r0/evidence.jsonl.gz",
+        "manifest": "sources/evaluations/workflow-sessions/20260709-fastify-fastify-integrated-token-savior-sequential-workflow-r0/manifest.sha256"
+      },
+      "interpretation": {
+        "accepted_for_objective": true,
+        "comparison_baseline_session_id": "20260709-fastify-fastify-baseline-bare-codex-for-integrated-token-savior-sequential-workflow-r0",
+        "exclusion_reason": "",
+        "notes": "Accepted sequential workflow session.",
+        "scope_note": "Full active workflow sequence; tasks disclosed one at a time."
+      }
+    },
+    {
+      "schema_version": 1,
+      "session_id": "20260709-fastify-fastify-baseline-bare-codex-for-retrieval-graphify-sequential-workflow-r0",
+      "record_type": "workflow_session",
+      "evidence_type": "workflow-simulation",
+      "study_id": "phase-2-sequential-workflow-v1",
+      "experiment_group_id": "20260709-fastify-fastify-retrieval-graphify-sequential-workflow-r0",
+      "objective": "individual_tool_effectiveness",
+      "evidence_stage": "reproduction",
+      "status": "completed",
+      "session_role": "baseline",
+      "replicate_index": 0,
+      "date": "2026-07-09",
+      "target": {
+        "fixture_id": "medium-fastify-fastify",
+        "fixture_scale": "medium-project",
+        "project_id": "fastify-fastify",
+        "repository_path": "sources/evaluations/workflow-sessions/20260709-fastify-fastify-baseline-bare-codex-for-retrieval-graphify-sequential-workflow-r0/project/repo",
+        "initial_snapshot": {
+          "commit": "94bcbcc6e2ef3b8e8f8e8797fe551ccbe7b942fd",
+          "branch": "detached",
+          "fixture_hash": ""
+        }
+      },
+      "task_sequence": {
+        "sequence_id": "fastify-maintenance-sequence-v1",
+        "task_ids": [
+          "fastify-query-schema-alias-regression",
+          "fastify-response-2xx-serializer-regression",
+          "fastify-trust-proxy-last-header-regression",
+          "fastify-has-route-method-case-regression",
+          "fastify-reply-hijack-state-regression"
+        ],
+        "reset_policy": "reset repository, profile home, tool state, indexes, caches, generated config, and agent home before the session; persist them between tasks",
+        "prompt_delivery": {
+          "mode": "sequential-one-task-at-a-time",
+          "future_tasks_visible": false,
+          "codex_thread_id": "019f455c-f71a-7b33-931f-f458647850e6",
+          "task_prompt_evidence": "sources/evaluations/workflow-sessions/20260709-fastify-fastify-baseline-bare-codex-for-retrieval-graphify-sequential-workflow-r0/evidence.jsonl.gz"
+        },
+        "leakage_controls": {
+          "seed_origin_concealed": true,
+          "task_directories_model_facing_aliases": true,
+          "model_prompts_sanitized": true,
+          "upstream_remote_removed_from_model_facing_repo": true,
+          "broken_start_committed_as_local_baseline": true,
+          "remaining_limitations": [
+            "Task semantics and verifier names may still be searchable if the model intentionally uses external network access.",
+            "Full prevention requires fixtures built from pre-fix bases plus hidden verifier tests rather than production-code reverse patches."
+          ]
+        }
+      },
+      "profile": {
+        "profile_id": "baseline-bare-codex",
+        "profile_type": "control",
+        "enabled_surfaces": [
+          "codex-native-shell-edit"
+        ],
+        "disabled_overlaps": [
+          "all token-saving surfaces"
+        ],
+        "component_ids": []
+      },
+      "agent": {
+        "runtime_id": "codex-cli",
+        "model_condition_id": "codex-openai-gpt-5-5-high",
+        "name": "Codex CLI",
+        "version": "codex-cli 0.142.5",
+        "provider": "openai",
+        "model": "gpt-5.5",
+        "reasoning_effort": "high",
+        "temperature": null,
+        "max_turns": null,
+        "time_budget_seconds": 9000
+      },
+      "state_policy": {
+        "reset_before_session": [
+          "repository working tree",
+          "profile home",
+          "tool indexes and caches",
+          "generated config",
+          "agent home",
+          "temporary directories"
+        ],
+        "persist_between_tasks": [
+          "repository working tree",
+          "tool indexes and caches",
+          "generated config",
+          "agent home",
+          "memory/state stores enabled by the active profile",
+          "run artifacts"
+        ]
+      },
+      "cumulative_token_usage": {
+        "measurement_source": "codex-jsonl-usage-events",
+        "fresh_input_tokens": 628842,
+        "cached_input_tokens": 9895680,
+        "cache_write_tokens": null,
+        "output_tokens": 43871,
+        "reasoning_tokens": 5378,
+        "total_provider_tokens": 10568393,
+        "estimated_cost_usd": null,
+        "tokens_per_accepted_task": 2113678.6,
+        "pricing_basis": "not computed; Codex-reported token volume, not billing-weighted cost"
+      },
+      "per_task_results": [
+        {
+          "task_id": "fastify-query-schema-alias-regression",
+          "task_alias": "task-01",
+          "order": 1,
+          "verifier_exit_code": 0,
+          "accepted": true,
+          "verifier_output": "sources/evaluations/workflow-sessions/20260709-fastify-fastify-baseline-bare-codex-for-retrieval-graphify-sequential-workflow-r0/verifier-task-01.txt"
+        },
+        {
+          "task_id": "fastify-response-2xx-serializer-regression",
+          "task_alias": "task-02",
+          "order": 2,
+          "verifier_exit_code": 0,
+          "accepted": true,
+          "verifier_output": "sources/evaluations/workflow-sessions/20260709-fastify-fastify-baseline-bare-codex-for-retrieval-graphify-sequential-workflow-r0/verifier-task-02.txt"
+        },
+        {
+          "task_id": "fastify-trust-proxy-last-header-regression",
+          "task_alias": "task-03",
+          "order": 3,
+          "verifier_exit_code": 0,
+          "accepted": true,
+          "verifier_output": "sources/evaluations/workflow-sessions/20260709-fastify-fastify-baseline-bare-codex-for-retrieval-graphify-sequential-workflow-r0/verifier-task-03.txt"
+        },
+        {
+          "task_id": "fastify-has-route-method-case-regression",
+          "task_alias": "task-04",
+          "order": 4,
+          "verifier_exit_code": 0,
+          "accepted": true,
+          "verifier_output": "sources/evaluations/workflow-sessions/20260709-fastify-fastify-baseline-bare-codex-for-retrieval-graphify-sequential-workflow-r0/verifier-task-04.txt"
+        },
+        {
+          "task_id": "fastify-reply-hijack-state-regression",
+          "task_alias": "task-05",
+          "order": 5,
+          "verifier_exit_code": 0,
+          "accepted": true,
+          "verifier_output": "sources/evaluations/workflow-sessions/20260709-fastify-fastify-baseline-bare-codex-for-retrieval-graphify-sequential-workflow-r0/verifier-task-05.txt"
+        }
+      ],
+      "software_quality": {
+        "tasks_attempted": 5,
+        "tasks_passed": 5,
+        "final_verifier_command": "sources/evaluations/workflow-sessions/20260709-fastify-fastify-baseline-bare-codex-for-retrieval-graphify-sequential-workflow-r0/verify-workflow.sh",
+        "final_verifier_passed": true,
+        "quality_score": 5,
+        "critical_failures": []
+      },
+      "state_observations": {
+        "stale_context_incidents": null,
+        "overfeeding_incidents": null,
+        "repeated_rediscovery_incidents": null,
+        "thread_continuity_errors": [],
+        "useful_state_reuse_notes": "Single persistent Codex thread resumed across one task prompt at a time."
+      },
+      "operational_reproducibility": {
+        "install_logged": true,
+        "pre_session_reset_verified": true,
+        "raw_artifacts_recoverable": true,
+        "state_leakage_outside_session_observed": false,
+        "tool_isolation_audit": {
+          "command": "python3 scripts/audit_tool_isolation.py --json-output ...",
+          "passed": true,
+          "forbidden_tool_hits": []
+        }
+      },
+      "artifacts": {
+        "artifact_contract": "compact-v1-four-files",
+        "run_record": "sources/evaluations/workflow-sessions/20260709-fastify-fastify-baseline-bare-codex-for-retrieval-graphify-sequential-workflow-r0/run.json",
+        "final_diff": "sources/evaluations/workflow-sessions/20260709-fastify-fastify-baseline-bare-codex-for-retrieval-graphify-sequential-workflow-r0/changes.diff",
+        "evidence_bundle": "sources/evaluations/workflow-sessions/20260709-fastify-fastify-baseline-bare-codex-for-retrieval-graphify-sequential-workflow-r0/evidence.jsonl.gz",
+        "manifest": "sources/evaluations/workflow-sessions/20260709-fastify-fastify-baseline-bare-codex-for-retrieval-graphify-sequential-workflow-r0/manifest.sha256"
+      },
+      "interpretation": {
+        "accepted_for_objective": true,
+        "comparison_baseline_session_id": "",
+        "exclusion_reason": "",
+        "notes": "Accepted sequential workflow session.",
+        "scope_note": "Full active workflow sequence; tasks disclosed one at a time."
+      }
+    },
+    {
+      "schema_version": 1,
+      "session_id": "20260709-fastify-fastify-baseline-bare-codex-sequential-workflow-r0",
+      "record_type": "workflow_session",
+      "evidence_type": "workflow-simulation",
+      "study_id": "phase-2-sequential-workflow-v1",
+      "experiment_group_id": "20260709-fastify-fastify-canonical-baseline-sequential-workflow-r0",
+      "objective": "individual_tool_effectiveness",
+      "evidence_stage": "reproduction",
+      "status": "completed",
+      "session_role": "baseline",
+      "replicate_index": 0,
+      "date": "2026-07-09",
+      "target": {
+        "fixture_id": "medium-fastify-fastify",
+        "fixture_scale": "medium-project",
+        "project_id": "fastify-fastify",
+        "repository_path": "sources/evaluations/workflow-sessions/20260709-fastify-fastify-baseline-bare-codex-sequential-workflow-r0/project/repo",
+        "initial_snapshot": {
+          "commit": "94bcbcc6e2ef3b8e8f8e8797fe551ccbe7b942fd",
+          "branch": "detached",
+          "fixture_hash": ""
+        }
+      },
+      "task_sequence": {
+        "sequence_id": "fastify-maintenance-sequence-v1",
+        "task_ids": [
+          "fastify-query-schema-alias-regression",
+          "fastify-response-2xx-serializer-regression",
+          "fastify-trust-proxy-last-header-regression",
+          "fastify-has-route-method-case-regression",
+          "fastify-reply-hijack-state-regression"
+        ],
+        "reset_policy": "reset repository, profile home, tool state, indexes, caches, generated config, and agent home before the session; persist them between tasks",
+        "prompt_delivery": {
+          "mode": "sequential-one-task-at-a-time",
+          "future_tasks_visible": false,
+          "codex_thread_id": "019f4600-f622-7cd3-8658-0c252e63527e",
+          "task_prompt_evidence": "sources/evaluations/workflow-sessions/20260709-fastify-fastify-baseline-bare-codex-sequential-workflow-r0/evidence.jsonl.gz"
+        },
+        "leakage_controls": {
+          "seed_origin_concealed": true,
+          "task_directories_model_facing_aliases": true,
+          "model_prompts_sanitized": true,
+          "upstream_remote_removed_from_model_facing_repo": true,
+          "broken_start_committed_as_local_baseline": true,
+          "remaining_limitations": [
+            "Task semantics and verifier names may still be searchable if the model intentionally uses external network access.",
+            "Full prevention requires fixtures built from pre-fix bases plus hidden verifier tests rather than production-code reverse patches."
+          ]
+        }
+      },
+      "profile": {
+        "profile_id": "baseline-bare-codex",
+        "profile_type": "control",
+        "enabled_surfaces": [
+          "codex-native-shell-edit"
+        ],
+        "disabled_overlaps": [
+          "all token-saving surfaces"
+        ],
+        "component_ids": []
+      },
+      "agent": {
+        "runtime_id": "codex-cli",
+        "model_condition_id": "codex-openai-gpt-5-5-high",
+        "name": "Codex CLI",
+        "version": "codex-cli 0.142.5",
+        "provider": "openai",
+        "model": "gpt-5.5",
+        "reasoning_effort": "high",
+        "temperature": null,
+        "max_turns": null,
+        "time_budget_seconds": 9000
+      },
+      "state_policy": {
+        "reset_before_session": [
+          "repository working tree",
+          "profile home",
+          "tool indexes and caches",
+          "generated config",
+          "agent home",
+          "temporary directories"
+        ],
+        "persist_between_tasks": [
+          "repository working tree",
+          "tool indexes and caches",
+          "generated config",
+          "agent home",
+          "memory/state stores enabled by the active profile",
+          "run artifacts"
+        ]
+      },
+      "cumulative_token_usage": {
+        "measurement_source": "codex-jsonl-usage-events",
+        "fresh_input_tokens": 655059,
+        "cached_input_tokens": 19481728,
+        "cache_write_tokens": null,
+        "output_tokens": 67956,
+        "reasoning_tokens": 17551,
+        "total_provider_tokens": 20204743,
+        "estimated_cost_usd": null,
+        "tokens_per_accepted_task": 4040948.6,
+        "pricing_basis": "not computed; Codex-reported token volume, not billing-weighted cost"
+      },
+      "per_task_results": [
+        {
+          "task_id": "fastify-query-schema-alias-regression",
+          "task_alias": "task-01",
+          "order": 1,
+          "verifier_exit_code": 0,
+          "accepted": true,
+          "verifier_output": "sources/evaluations/workflow-sessions/20260709-fastify-fastify-baseline-bare-codex-sequential-workflow-r0/verifier-task-01.txt"
+        },
+        {
+          "task_id": "fastify-response-2xx-serializer-regression",
+          "task_alias": "task-02",
+          "order": 2,
+          "verifier_exit_code": 0,
+          "accepted": true,
+          "verifier_output": "sources/evaluations/workflow-sessions/20260709-fastify-fastify-baseline-bare-codex-sequential-workflow-r0/verifier-task-02.txt"
+        },
+        {
+          "task_id": "fastify-trust-proxy-last-header-regression",
+          "task_alias": "task-03",
+          "order": 3,
+          "verifier_exit_code": 0,
+          "accepted": true,
+          "verifier_output": "sources/evaluations/workflow-sessions/20260709-fastify-fastify-baseline-bare-codex-sequential-workflow-r0/verifier-task-03.txt"
+        },
+        {
+          "task_id": "fastify-has-route-method-case-regression",
+          "task_alias": "task-04",
+          "order": 4,
+          "verifier_exit_code": 0,
+          "accepted": true,
+          "verifier_output": "sources/evaluations/workflow-sessions/20260709-fastify-fastify-baseline-bare-codex-sequential-workflow-r0/verifier-task-04.txt"
+        },
+        {
+          "task_id": "fastify-reply-hijack-state-regression",
+          "task_alias": "task-05",
+          "order": 5,
+          "verifier_exit_code": 0,
+          "accepted": true,
+          "verifier_output": "sources/evaluations/workflow-sessions/20260709-fastify-fastify-baseline-bare-codex-sequential-workflow-r0/verifier-task-05.txt"
+        }
+      ],
+      "software_quality": {
+        "tasks_attempted": 5,
+        "tasks_passed": 5,
+        "final_verifier_command": "sources/evaluations/workflow-sessions/20260709-fastify-fastify-baseline-bare-codex-sequential-workflow-r0/verify-workflow.sh",
+        "final_verifier_passed": true,
+        "quality_score": 5,
+        "critical_failures": []
+      },
+      "state_observations": {
+        "stale_context_incidents": null,
+        "overfeeding_incidents": null,
+        "repeated_rediscovery_incidents": null,
+        "thread_continuity_errors": [],
+        "useful_state_reuse_notes": "Single persistent Codex thread resumed across one task prompt at a time."
+      },
+      "operational_reproducibility": {
+        "install_logged": true,
+        "pre_session_reset_verified": true,
+        "raw_artifacts_recoverable": true,
+        "state_leakage_outside_session_observed": false,
+        "tool_isolation_audit": {
+          "command": "python3 scripts/audit_tool_isolation.py --json-output ...",
+          "passed": true,
+          "forbidden_tool_hits": []
+        }
+      },
+      "artifacts": {
+        "artifact_contract": "compact-v1-four-files",
+        "run_record": "sources/evaluations/workflow-sessions/20260709-fastify-fastify-baseline-bare-codex-sequential-workflow-r0/run.json",
+        "final_diff": "sources/evaluations/workflow-sessions/20260709-fastify-fastify-baseline-bare-codex-sequential-workflow-r0/changes.diff",
+        "evidence_bundle": "sources/evaluations/workflow-sessions/20260709-fastify-fastify-baseline-bare-codex-sequential-workflow-r0/evidence.jsonl.gz",
+        "manifest": "sources/evaluations/workflow-sessions/20260709-fastify-fastify-baseline-bare-codex-sequential-workflow-r0/manifest.sha256"
+      },
+      "interpretation": {
+        "accepted_for_objective": true,
+        "comparison_baseline_session_id": "",
+        "exclusion_reason": "",
+        "notes": "Accepted sequential workflow session.",
+        "scope_note": "Full active workflow sequence; tasks disclosed one at a time."
+      }
+    },
+    {
+      "schema_version": 1,
+      "session_id": "20260709-fastify-fastify-headroom-default-codex-sequential-workflow-r0",
+      "record_type": "workflow_session",
+      "evidence_type": "workflow-simulation",
+      "study_id": "phase-2-sequential-workflow-v1",
+      "experiment_group_id": "20260709-fastify-fastify-headroom-default-codex-sequential-workflow-r0",
+      "objective": "individual_tool_effectiveness",
+      "evidence_stage": "reproduction",
+      "status": "completed",
+      "session_role": "individual_tool_treatment",
+      "replicate_index": 0,
+      "date": "2026-07-09",
+      "target": {
+        "fixture_id": "medium-fastify-fastify",
+        "fixture_scale": "medium-project",
+        "project_id": "fastify-fastify",
+        "repository_path": "sources/evaluations/workflow-sessions/20260709-fastify-fastify-headroom-default-codex-sequential-workflow-r0/project/repo",
+        "initial_snapshot": {
+          "commit": "94bcbcc6e2ef3b8e8f8e8797fe551ccbe7b942fd",
+          "branch": "detached",
+          "fixture_hash": ""
+        }
+      },
+      "task_sequence": {
+        "sequence_id": "fastify-maintenance-sequence-v1",
+        "task_ids": [
+          "fastify-query-schema-alias-regression",
+          "fastify-response-2xx-serializer-regression",
+          "fastify-trust-proxy-last-header-regression",
+          "fastify-has-route-method-case-regression",
+          "fastify-reply-hijack-state-regression"
+        ],
+        "reset_policy": "reset repository, profile home, tool state, indexes, caches, generated config, and agent home before the session; persist them between tasks",
+        "prompt_delivery": {
+          "mode": "sequential-one-task-at-a-time",
+          "future_tasks_visible": false,
+          "codex_thread_id": "019f4610-4b8f-75a1-8870-38fb02c92271",
+          "task_prompt_evidence": "sources/evaluations/workflow-sessions/20260709-fastify-fastify-headroom-default-codex-sequential-workflow-r0/evidence.jsonl.gz"
+        },
+        "leakage_controls": {
+          "seed_origin_concealed": true,
+          "task_directories_model_facing_aliases": true,
+          "model_prompts_sanitized": true,
+          "upstream_remote_removed_from_model_facing_repo": true,
+          "broken_start_committed_as_local_baseline": true,
+          "remaining_limitations": [
+            "Task semantics and verifier names may still be searchable if the model intentionally uses external network access.",
+            "Full prevention requires fixtures built from pre-fix bases plus hidden verifier tests rather than production-code reverse patches."
+          ]
+        }
+      },
+      "profile": {
+        "profile_id": "headroom-default-codex",
+        "profile_type": "individual_tool",
+        "enabled_surfaces": [
+          "broad-compression/proxy/codex-wrapper"
+        ],
+        "disabled_overlaps": [
+          "all unlisted token-saving surfaces"
+        ],
+        "component_ids": [
+          "headroom"
+        ]
+      },
+      "agent": {
+        "runtime_id": "codex-cli",
+        "model_condition_id": "codex-openai-gpt-5-5-high",
+        "name": "Codex CLI",
+        "version": "codex-cli 0.142.5",
+        "provider": "openai",
+        "model": "gpt-5.5",
+        "reasoning_effort": "high",
+        "temperature": null,
+        "max_turns": null,
+        "time_budget_seconds": 9000
+      },
+      "state_policy": {
+        "reset_before_session": [
+          "repository working tree",
+          "profile home",
+          "tool indexes and caches",
+          "generated config",
+          "agent home",
+          "temporary directories"
+        ],
+        "persist_between_tasks": [
+          "repository working tree",
+          "tool indexes and caches",
+          "generated config",
+          "agent home",
+          "memory/state stores enabled by the active profile",
+          "run artifacts"
+        ]
+      },
+      "cumulative_token_usage": {
+        "measurement_source": "codex-jsonl-usage-events",
+        "fresh_input_tokens": 943759,
+        "cached_input_tokens": 19627776,
+        "cache_write_tokens": null,
+        "output_tokens": 100477,
+        "reasoning_tokens": 27815,
+        "total_provider_tokens": 20672012,
+        "estimated_cost_usd": null,
+        "tokens_per_accepted_task": 4134402.4,
+        "pricing_basis": "not computed; Codex-reported token volume, not billing-weighted cost"
+      },
+      "per_task_results": [
+        {
+          "task_id": "fastify-query-schema-alias-regression",
+          "task_alias": "task-01",
+          "order": 1,
+          "verifier_exit_code": 0,
+          "accepted": true,
+          "verifier_output": "sources/evaluations/workflow-sessions/20260709-fastify-fastify-headroom-default-codex-sequential-workflow-r0/verifier-task-01.txt"
+        },
+        {
+          "task_id": "fastify-response-2xx-serializer-regression",
+          "task_alias": "task-02",
+          "order": 2,
+          "verifier_exit_code": 0,
+          "accepted": true,
+          "verifier_output": "sources/evaluations/workflow-sessions/20260709-fastify-fastify-headroom-default-codex-sequential-workflow-r0/verifier-task-02.txt"
+        },
+        {
+          "task_id": "fastify-trust-proxy-last-header-regression",
+          "task_alias": "task-03",
+          "order": 3,
+          "verifier_exit_code": 0,
+          "accepted": true,
+          "verifier_output": "sources/evaluations/workflow-sessions/20260709-fastify-fastify-headroom-default-codex-sequential-workflow-r0/verifier-task-03.txt"
+        },
+        {
+          "task_id": "fastify-has-route-method-case-regression",
+          "task_alias": "task-04",
+          "order": 4,
+          "verifier_exit_code": 0,
+          "accepted": true,
+          "verifier_output": "sources/evaluations/workflow-sessions/20260709-fastify-fastify-headroom-default-codex-sequential-workflow-r0/verifier-task-04.txt"
+        },
+        {
+          "task_id": "fastify-reply-hijack-state-regression",
+          "task_alias": "task-05",
+          "order": 5,
+          "verifier_exit_code": 0,
+          "accepted": true,
+          "verifier_output": "sources/evaluations/workflow-sessions/20260709-fastify-fastify-headroom-default-codex-sequential-workflow-r0/verifier-task-05.txt"
+        }
+      ],
+      "software_quality": {
+        "tasks_attempted": 5,
+        "tasks_passed": 5,
+        "final_verifier_command": "sources/evaluations/workflow-sessions/20260709-fastify-fastify-headroom-default-codex-sequential-workflow-r0/verify-workflow.sh",
+        "final_verifier_passed": true,
+        "quality_score": 5,
+        "critical_failures": []
+      },
+      "state_observations": {
+        "stale_context_incidents": null,
+        "overfeeding_incidents": null,
+        "repeated_rediscovery_incidents": null,
+        "thread_continuity_errors": [],
+        "useful_state_reuse_notes": "Single persistent Codex thread resumed across one task prompt at a time."
+      },
+      "operational_reproducibility": {
+        "install_logged": true,
+        "pre_session_reset_verified": true,
+        "raw_artifacts_recoverable": true,
+        "state_leakage_outside_session_observed": false,
+        "tool_isolation_audit": {
+          "command": "python3 scripts/audit_tool_isolation.py --json-output ...",
+          "passed": true,
+          "forbidden_tool_hits": []
+        }
+      },
+      "artifacts": {
+        "artifact_contract": "compact-v1-four-files",
+        "run_record": "sources/evaluations/workflow-sessions/20260709-fastify-fastify-headroom-default-codex-sequential-workflow-r0/run.json",
+        "final_diff": "sources/evaluations/workflow-sessions/20260709-fastify-fastify-headroom-default-codex-sequential-workflow-r0/changes.diff",
+        "evidence_bundle": "sources/evaluations/workflow-sessions/20260709-fastify-fastify-headroom-default-codex-sequential-workflow-r0/evidence.jsonl.gz",
+        "manifest": "sources/evaluations/workflow-sessions/20260709-fastify-fastify-headroom-default-codex-sequential-workflow-r0/manifest.sha256"
+      },
+      "interpretation": {
+        "accepted_for_objective": true,
+        "comparison_baseline_session_id": "20260709-fastify-fastify-baseline-bare-codex-sequential-workflow-r0",
+        "exclusion_reason": "",
+        "notes": "Accepted sequential workflow session.",
+        "scope_note": "Full active workflow sequence; tasks disclosed one at a time."
+      }
+    },
+    {
+      "schema_version": 1,
+      "session_id": "20260709-fastify-fastify-retrieval-sigmap-sequential-workflow-r0",
+      "record_type": "workflow_session",
+      "evidence_type": "workflow-simulation",
+      "study_id": "phase-2-sequential-workflow-v1",
+      "experiment_group_id": "20260709-fastify-fastify-retrieval-sigmap-sequential-workflow-r0",
+      "objective": "individual_tool_effectiveness",
+      "evidence_stage": "reproduction",
+      "status": "completed",
+      "session_role": "individual_tool_treatment",
+      "replicate_index": 0,
+      "date": "2026-07-09",
+      "target": {
+        "fixture_id": "medium-fastify-fastify",
+        "fixture_scale": "medium-project",
+        "project_id": "fastify-fastify",
+        "repository_path": "sources/evaluations/workflow-sessions/20260709-fastify-fastify-retrieval-sigmap-sequential-workflow-r0/project/repo",
+        "initial_snapshot": {
+          "commit": "94bcbcc6e2ef3b8e8f8e8797fe551ccbe7b942fd",
+          "branch": "detached",
+          "fixture_hash": ""
+        }
+      },
+      "task_sequence": {
+        "sequence_id": "fastify-maintenance-sequence-v1",
+        "task_ids": [
+          "fastify-query-schema-alias-regression",
+          "fastify-response-2xx-serializer-regression",
+          "fastify-trust-proxy-last-header-regression",
+          "fastify-has-route-method-case-regression",
+          "fastify-reply-hijack-state-regression"
+        ],
+        "reset_policy": "reset repository, profile home, tool state, indexes, caches, generated config, and agent home before the session; persist them between tasks",
+        "prompt_delivery": {
+          "mode": "sequential-one-task-at-a-time",
+          "future_tasks_visible": false,
+          "codex_thread_id": "019f462d-de23-7621-8641-b4ea7ca467b9",
+          "task_prompt_evidence": "sources/evaluations/workflow-sessions/20260709-fastify-fastify-retrieval-sigmap-sequential-workflow-r0/evidence.jsonl.gz"
+        },
+        "leakage_controls": {
+          "seed_origin_concealed": true,
+          "task_directories_model_facing_aliases": true,
+          "model_prompts_sanitized": true,
+          "upstream_remote_removed_from_model_facing_repo": true,
+          "broken_start_committed_as_local_baseline": true,
+          "remaining_limitations": [
+            "Task semantics and verifier names may still be searchable if the model intentionally uses external network access.",
+            "Full prevention requires fixtures built from pre-fix bases plus hidden verifier tests rather than production-code reverse patches."
+          ]
+        }
+      },
+      "profile": {
+        "profile_id": "retrieval-sigmap",
+        "profile_type": "individual_tool",
+        "enabled_surfaces": [
+          "retrieval/context"
+        ],
+        "disabled_overlaps": [
+          "all unlisted token-saving surfaces"
+        ],
+        "component_ids": [
+          "sigmap"
+        ]
+      },
+      "agent": {
+        "runtime_id": "codex-cli",
+        "model_condition_id": "codex-openai-gpt-5-5-high",
+        "name": "Codex CLI",
+        "version": "codex-cli 0.142.5",
+        "provider": "openai",
+        "model": "gpt-5.5",
+        "reasoning_effort": "high",
+        "temperature": null,
+        "max_turns": null,
+        "time_budget_seconds": 9000
+      },
+      "state_policy": {
+        "reset_before_session": [
+          "repository working tree",
+          "profile home",
+          "tool indexes and caches",
+          "generated config",
+          "agent home",
+          "temporary directories"
+        ],
+        "persist_between_tasks": [
+          "repository working tree",
+          "tool indexes and caches",
+          "generated config",
+          "agent home",
+          "memory/state stores enabled by the active profile",
+          "run artifacts"
+        ]
+      },
+      "cumulative_token_usage": {
+        "measurement_source": "codex-jsonl-usage-events",
+        "fresh_input_tokens": 704496,
+        "cached_input_tokens": 16992256,
+        "cache_write_tokens": null,
+        "output_tokens": 73533,
+        "reasoning_tokens": 18474,
+        "total_provider_tokens": 17770285,
+        "estimated_cost_usd": null,
+        "tokens_per_accepted_task": 3554057.0,
+        "pricing_basis": "not computed; Codex-reported token volume, not billing-weighted cost"
+      },
+      "per_task_results": [
+        {
+          "task_id": "fastify-query-schema-alias-regression",
+          "task_alias": "task-01",
+          "order": 1,
+          "verifier_exit_code": 0,
+          "accepted": true,
+          "verifier_output": "sources/evaluations/workflow-sessions/20260709-fastify-fastify-retrieval-sigmap-sequential-workflow-r0/verifier-task-01.txt"
+        },
+        {
+          "task_id": "fastify-response-2xx-serializer-regression",
+          "task_alias": "task-02",
+          "order": 2,
+          "verifier_exit_code": 0,
+          "accepted": true,
+          "verifier_output": "sources/evaluations/workflow-sessions/20260709-fastify-fastify-retrieval-sigmap-sequential-workflow-r0/verifier-task-02.txt"
+        },
+        {
+          "task_id": "fastify-trust-proxy-last-header-regression",
+          "task_alias": "task-03",
+          "order": 3,
+          "verifier_exit_code": 0,
+          "accepted": true,
+          "verifier_output": "sources/evaluations/workflow-sessions/20260709-fastify-fastify-retrieval-sigmap-sequential-workflow-r0/verifier-task-03.txt"
+        },
+        {
+          "task_id": "fastify-has-route-method-case-regression",
+          "task_alias": "task-04",
+          "order": 4,
+          "verifier_exit_code": 0,
+          "accepted": true,
+          "verifier_output": "sources/evaluations/workflow-sessions/20260709-fastify-fastify-retrieval-sigmap-sequential-workflow-r0/verifier-task-04.txt"
+        },
+        {
+          "task_id": "fastify-reply-hijack-state-regression",
+          "task_alias": "task-05",
+          "order": 5,
+          "verifier_exit_code": 0,
+          "accepted": true,
+          "verifier_output": "sources/evaluations/workflow-sessions/20260709-fastify-fastify-retrieval-sigmap-sequential-workflow-r0/verifier-task-05.txt"
+        }
+      ],
+      "software_quality": {
+        "tasks_attempted": 5,
+        "tasks_passed": 5,
+        "final_verifier_command": "sources/evaluations/workflow-sessions/20260709-fastify-fastify-retrieval-sigmap-sequential-workflow-r0/verify-workflow.sh",
+        "final_verifier_passed": true,
+        "quality_score": 5,
+        "critical_failures": []
+      },
+      "state_observations": {
+        "stale_context_incidents": null,
+        "overfeeding_incidents": null,
+        "repeated_rediscovery_incidents": null,
+        "thread_continuity_errors": [],
+        "useful_state_reuse_notes": "Single persistent Codex thread resumed across one task prompt at a time."
+      },
+      "operational_reproducibility": {
+        "install_logged": true,
+        "pre_session_reset_verified": true,
+        "raw_artifacts_recoverable": true,
+        "state_leakage_outside_session_observed": false,
+        "tool_isolation_audit": {
+          "command": "python3 scripts/audit_tool_isolation.py --json-output ...",
+          "passed": true,
+          "forbidden_tool_hits": []
+        }
+      },
+      "artifacts": {
+        "artifact_contract": "compact-v1-four-files",
+        "run_record": "sources/evaluations/workflow-sessions/20260709-fastify-fastify-retrieval-sigmap-sequential-workflow-r0/run.json",
+        "final_diff": "sources/evaluations/workflow-sessions/20260709-fastify-fastify-retrieval-sigmap-sequential-workflow-r0/changes.diff",
+        "evidence_bundle": "sources/evaluations/workflow-sessions/20260709-fastify-fastify-retrieval-sigmap-sequential-workflow-r0/evidence.jsonl.gz",
+        "manifest": "sources/evaluations/workflow-sessions/20260709-fastify-fastify-retrieval-sigmap-sequential-workflow-r0/manifest.sha256"
+      },
+      "interpretation": {
+        "accepted_for_objective": true,
+        "comparison_baseline_session_id": "20260709-fastify-fastify-baseline-bare-codex-sequential-workflow-r0",
+        "exclusion_reason": "",
+        "notes": "Accepted sequential workflow session.",
+        "scope_note": "Full active workflow sequence; tasks disclosed one at a time."
+      }
+    },
+    {
+      "schema_version": 1,
+      "session_id": "20260709-fastify-fastify-retrieval-jcodemunch-mcp-sequential-workflow-r0",
+      "record_type": "workflow_session",
+      "evidence_type": "workflow-simulation",
+      "study_id": "phase-2-sequential-workflow-v1",
+      "experiment_group_id": "20260709-fastify-fastify-retrieval-jcodemunch-mcp-sequential-workflow-r0",
+      "objective": "individual_tool_effectiveness",
+      "evidence_stage": "reproduction",
+      "status": "completed",
+      "session_role": "individual_tool_treatment",
+      "replicate_index": 0,
+      "date": "2026-07-09",
+      "target": {
+        "fixture_id": "medium-fastify-fastify",
+        "fixture_scale": "medium-project",
+        "project_id": "fastify-fastify",
+        "repository_path": "sources/evaluations/workflow-sessions/20260709-fastify-fastify-retrieval-jcodemunch-mcp-sequential-workflow-r0/project/repo",
+        "initial_snapshot": {
+          "commit": "94bcbcc6e2ef3b8e8f8e8797fe551ccbe7b942fd",
+          "branch": "detached",
+          "fixture_hash": ""
+        }
+      },
+      "task_sequence": {
+        "sequence_id": "fastify-maintenance-sequence-v1",
+        "task_ids": [
+          "fastify-query-schema-alias-regression",
+          "fastify-response-2xx-serializer-regression",
+          "fastify-trust-proxy-last-header-regression",
+          "fastify-has-route-method-case-regression",
+          "fastify-reply-hijack-state-regression"
+        ],
+        "reset_policy": "reset repository, profile home, tool state, indexes, caches, generated config, and agent home before the session; persist them between tasks",
+        "prompt_delivery": {
+          "mode": "sequential-one-task-at-a-time",
+          "future_tasks_visible": false,
+          "codex_thread_id": "019f4637-762a-7030-af55-ec6b9c7d7b30",
+          "task_prompt_evidence": "sources/evaluations/workflow-sessions/20260709-fastify-fastify-retrieval-jcodemunch-mcp-sequential-workflow-r0/evidence.jsonl.gz"
+        },
+        "leakage_controls": {
+          "seed_origin_concealed": true,
+          "task_directories_model_facing_aliases": true,
+          "model_prompts_sanitized": true,
+          "upstream_remote_removed_from_model_facing_repo": true,
+          "broken_start_committed_as_local_baseline": true,
+          "remaining_limitations": [
+            "Task semantics and verifier names may still be searchable if the model intentionally uses external network access.",
+            "Full prevention requires fixtures built from pre-fix bases plus hidden verifier tests rather than production-code reverse patches."
+          ]
+        }
+      },
+      "profile": {
+        "profile_id": "retrieval-jcodemunch-mcp",
+        "profile_type": "individual_tool",
+        "enabled_surfaces": [
+          "retrieval/context"
+        ],
+        "disabled_overlaps": [
+          "all unlisted token-saving surfaces"
+        ],
+        "component_ids": [
+          "jcodemunch-mcp"
+        ]
+      },
+      "agent": {
+        "runtime_id": "codex-cli",
+        "model_condition_id": "codex-openai-gpt-5-5-high",
+        "name": "Codex CLI",
+        "version": "codex-cli 0.142.5",
+        "provider": "openai",
+        "model": "gpt-5.5",
+        "reasoning_effort": "high",
+        "temperature": null,
+        "max_turns": null,
+        "time_budget_seconds": 9000
+      },
+      "state_policy": {
+        "reset_before_session": [
+          "repository working tree",
+          "profile home",
+          "tool indexes and caches",
+          "generated config",
+          "agent home",
+          "temporary directories"
+        ],
+        "persist_between_tasks": [
+          "repository working tree",
+          "tool indexes and caches",
+          "generated config",
+          "agent home",
+          "memory/state stores enabled by the active profile",
+          "run artifacts"
+        ]
+      },
+      "cumulative_token_usage": {
+        "measurement_source": "codex-jsonl-usage-events",
+        "fresh_input_tokens": 484331,
+        "cached_input_tokens": 10537216,
+        "cache_write_tokens": null,
+        "output_tokens": 65561,
+        "reasoning_tokens": 9705,
+        "total_provider_tokens": 11087108,
+        "estimated_cost_usd": null,
+        "tokens_per_accepted_task": 2217421.6,
+        "pricing_basis": "not computed; Codex-reported token volume, not billing-weighted cost"
+      },
+      "per_task_results": [
+        {
+          "task_id": "fastify-query-schema-alias-regression",
+          "task_alias": "task-01",
+          "order": 1,
+          "verifier_exit_code": 0,
+          "accepted": true,
+          "verifier_output": "sources/evaluations/workflow-sessions/20260709-fastify-fastify-retrieval-jcodemunch-mcp-sequential-workflow-r0/verifier-task-01.txt"
+        },
+        {
+          "task_id": "fastify-response-2xx-serializer-regression",
+          "task_alias": "task-02",
+          "order": 2,
+          "verifier_exit_code": 0,
+          "accepted": true,
+          "verifier_output": "sources/evaluations/workflow-sessions/20260709-fastify-fastify-retrieval-jcodemunch-mcp-sequential-workflow-r0/verifier-task-02.txt"
+        },
+        {
+          "task_id": "fastify-trust-proxy-last-header-regression",
+          "task_alias": "task-03",
+          "order": 3,
+          "verifier_exit_code": 0,
+          "accepted": true,
+          "verifier_output": "sources/evaluations/workflow-sessions/20260709-fastify-fastify-retrieval-jcodemunch-mcp-sequential-workflow-r0/verifier-task-03.txt"
+        },
+        {
+          "task_id": "fastify-has-route-method-case-regression",
+          "task_alias": "task-04",
+          "order": 4,
+          "verifier_exit_code": 0,
+          "accepted": true,
+          "verifier_output": "sources/evaluations/workflow-sessions/20260709-fastify-fastify-retrieval-jcodemunch-mcp-sequential-workflow-r0/verifier-task-04.txt"
+        },
+        {
+          "task_id": "fastify-reply-hijack-state-regression",
+          "task_alias": "task-05",
+          "order": 5,
+          "verifier_exit_code": 0,
+          "accepted": true,
+          "verifier_output": "sources/evaluations/workflow-sessions/20260709-fastify-fastify-retrieval-jcodemunch-mcp-sequential-workflow-r0/verifier-task-05.txt"
+        }
+      ],
+      "software_quality": {
+        "tasks_attempted": 5,
+        "tasks_passed": 5,
+        "final_verifier_command": "sources/evaluations/workflow-sessions/20260709-fastify-fastify-retrieval-jcodemunch-mcp-sequential-workflow-r0/verify-workflow.sh",
+        "final_verifier_passed": true,
+        "quality_score": 5,
+        "critical_failures": []
+      },
+      "state_observations": {
+        "stale_context_incidents": null,
+        "overfeeding_incidents": null,
+        "repeated_rediscovery_incidents": null,
+        "thread_continuity_errors": [],
+        "useful_state_reuse_notes": "Single persistent Codex thread resumed across one task prompt at a time."
+      },
+      "operational_reproducibility": {
+        "install_logged": true,
+        "pre_session_reset_verified": true,
+        "raw_artifacts_recoverable": true,
+        "state_leakage_outside_session_observed": false,
+        "tool_isolation_audit": {
+          "command": "python3 scripts/audit_tool_isolation.py --json-output ...",
+          "passed": true,
+          "forbidden_tool_hits": []
+        }
+      },
+      "artifacts": {
+        "artifact_contract": "compact-v1-four-files",
+        "run_record": "sources/evaluations/workflow-sessions/20260709-fastify-fastify-retrieval-jcodemunch-mcp-sequential-workflow-r0/run.json",
+        "final_diff": "sources/evaluations/workflow-sessions/20260709-fastify-fastify-retrieval-jcodemunch-mcp-sequential-workflow-r0/changes.diff",
+        "evidence_bundle": "sources/evaluations/workflow-sessions/20260709-fastify-fastify-retrieval-jcodemunch-mcp-sequential-workflow-r0/evidence.jsonl.gz",
+        "manifest": "sources/evaluations/workflow-sessions/20260709-fastify-fastify-retrieval-jcodemunch-mcp-sequential-workflow-r0/manifest.sha256"
+      },
+      "interpretation": {
+        "accepted_for_objective": true,
+        "comparison_baseline_session_id": "20260709-fastify-fastify-baseline-bare-codex-sequential-workflow-r0",
+        "exclusion_reason": "",
+        "notes": "Accepted sequential workflow session.",
+        "scope_note": "Full active workflow sequence; tasks disclosed one at a time."
+      }
+    },
+    {
+      "schema_version": 1,
+      "session_id": "20260709-fastify-fastify-terminal-snip-sequential-workflow-r0",
+      "record_type": "workflow_session",
+      "evidence_type": "workflow-simulation",
+      "study_id": "phase-2-sequential-workflow-v1",
+      "experiment_group_id": "20260709-fastify-fastify-terminal-snip-sequential-workflow-r0",
+      "objective": "individual_tool_effectiveness",
+      "evidence_stage": "reproduction",
+      "status": "completed",
+      "session_role": "individual_tool_treatment",
+      "replicate_index": 0,
+      "date": "2026-07-09",
+      "target": {
+        "fixture_id": "medium-fastify-fastify",
+        "fixture_scale": "medium-project",
+        "project_id": "fastify-fastify",
+        "repository_path": "sources/evaluations/workflow-sessions/20260709-fastify-fastify-terminal-snip-sequential-workflow-r0/project/repo",
+        "initial_snapshot": {
+          "commit": "94bcbcc6e2ef3b8e8f8e8797fe551ccbe7b942fd",
+          "branch": "detached",
+          "fixture_hash": ""
+        }
+      },
+      "task_sequence": {
+        "sequence_id": "fastify-maintenance-sequence-v1",
+        "task_ids": [
+          "fastify-query-schema-alias-regression",
+          "fastify-response-2xx-serializer-regression",
+          "fastify-trust-proxy-last-header-regression",
+          "fastify-has-route-method-case-regression",
+          "fastify-reply-hijack-state-regression"
+        ],
+        "reset_policy": "reset repository, profile home, tool state, indexes, caches, generated config, and agent home before the session; persist them between tasks",
+        "prompt_delivery": {
+          "mode": "sequential-one-task-at-a-time",
+          "future_tasks_visible": false,
+          "codex_thread_id": "019f463f-958d-7310-a6a0-795e06e8618a",
+          "task_prompt_evidence": "sources/evaluations/workflow-sessions/20260709-fastify-fastify-terminal-snip-sequential-workflow-r0/evidence.jsonl.gz"
+        },
+        "leakage_controls": {
+          "seed_origin_concealed": true,
+          "task_directories_model_facing_aliases": true,
+          "model_prompts_sanitized": true,
+          "upstream_remote_removed_from_model_facing_repo": true,
+          "broken_start_committed_as_local_baseline": true,
+          "remaining_limitations": [
+            "Task semantics and verifier names may still be searchable if the model intentionally uses external network access.",
+            "Full prevention requires fixtures built from pre-fix bases plus hidden verifier tests rather than production-code reverse patches."
+          ]
+        }
+      },
+      "profile": {
+        "profile_id": "terminal-snip",
+        "profile_type": "individual_tool",
+        "enabled_surfaces": [
+          "terminal/tool-output-compaction"
+        ],
+        "disabled_overlaps": [
+          "all unlisted token-saving surfaces"
+        ],
+        "component_ids": [
+          "snip"
+        ]
+      },
+      "agent": {
+        "runtime_id": "codex-cli",
+        "model_condition_id": "codex-openai-gpt-5-5-high",
+        "name": "Codex CLI",
+        "version": "codex-cli 0.142.5",
+        "provider": "openai",
+        "model": "gpt-5.5",
+        "reasoning_effort": "high",
+        "temperature": null,
+        "max_turns": null,
+        "time_budget_seconds": 9000
+      },
+      "state_policy": {
+        "reset_before_session": [
+          "repository working tree",
+          "profile home",
+          "tool indexes and caches",
+          "generated config",
+          "agent home",
+          "temporary directories"
+        ],
+        "persist_between_tasks": [
+          "repository working tree",
+          "tool indexes and caches",
+          "generated config",
+          "agent home",
+          "memory/state stores enabled by the active profile",
+          "run artifacts"
+        ]
+      },
+      "cumulative_token_usage": {
+        "measurement_source": "codex-jsonl-usage-events",
+        "fresh_input_tokens": 628344,
+        "cached_input_tokens": 14188032,
+        "cache_write_tokens": null,
+        "output_tokens": 67367,
+        "reasoning_tokens": 15015,
+        "total_provider_tokens": 14883743,
+        "estimated_cost_usd": null,
+        "tokens_per_accepted_task": 2976748.6,
+        "pricing_basis": "not computed; Codex-reported token volume, not billing-weighted cost"
+      },
+      "per_task_results": [
+        {
+          "task_id": "fastify-query-schema-alias-regression",
+          "task_alias": "task-01",
+          "order": 1,
+          "verifier_exit_code": 0,
+          "accepted": true,
+          "verifier_output": "sources/evaluations/workflow-sessions/20260709-fastify-fastify-terminal-snip-sequential-workflow-r0/verifier-task-01.txt"
+        },
+        {
+          "task_id": "fastify-response-2xx-serializer-regression",
+          "task_alias": "task-02",
+          "order": 2,
+          "verifier_exit_code": 0,
+          "accepted": true,
+          "verifier_output": "sources/evaluations/workflow-sessions/20260709-fastify-fastify-terminal-snip-sequential-workflow-r0/verifier-task-02.txt"
+        },
+        {
+          "task_id": "fastify-trust-proxy-last-header-regression",
+          "task_alias": "task-03",
+          "order": 3,
+          "verifier_exit_code": 0,
+          "accepted": true,
+          "verifier_output": "sources/evaluations/workflow-sessions/20260709-fastify-fastify-terminal-snip-sequential-workflow-r0/verifier-task-03.txt"
+        },
+        {
+          "task_id": "fastify-has-route-method-case-regression",
+          "task_alias": "task-04",
+          "order": 4,
+          "verifier_exit_code": 0,
+          "accepted": true,
+          "verifier_output": "sources/evaluations/workflow-sessions/20260709-fastify-fastify-terminal-snip-sequential-workflow-r0/verifier-task-04.txt"
+        },
+        {
+          "task_id": "fastify-reply-hijack-state-regression",
+          "task_alias": "task-05",
+          "order": 5,
+          "verifier_exit_code": 0,
+          "accepted": true,
+          "verifier_output": "sources/evaluations/workflow-sessions/20260709-fastify-fastify-terminal-snip-sequential-workflow-r0/verifier-task-05.txt"
+        }
+      ],
+      "software_quality": {
+        "tasks_attempted": 5,
+        "tasks_passed": 5,
+        "final_verifier_command": "sources/evaluations/workflow-sessions/20260709-fastify-fastify-terminal-snip-sequential-workflow-r0/verify-workflow.sh",
+        "final_verifier_passed": true,
+        "quality_score": 5,
+        "critical_failures": []
+      },
+      "state_observations": {
+        "stale_context_incidents": null,
+        "overfeeding_incidents": null,
+        "repeated_rediscovery_incidents": null,
+        "thread_continuity_errors": [],
+        "useful_state_reuse_notes": "Single persistent Codex thread resumed across one task prompt at a time."
+      },
+      "operational_reproducibility": {
+        "install_logged": true,
+        "pre_session_reset_verified": true,
+        "raw_artifacts_recoverable": true,
+        "state_leakage_outside_session_observed": false,
+        "tool_isolation_audit": {
+          "command": "python3 scripts/audit_tool_isolation.py --json-output ...",
+          "passed": true,
+          "forbidden_tool_hits": []
+        }
+      },
+      "artifacts": {
+        "artifact_contract": "compact-v1-four-files",
+        "run_record": "sources/evaluations/workflow-sessions/20260709-fastify-fastify-terminal-snip-sequential-workflow-r0/run.json",
+        "final_diff": "sources/evaluations/workflow-sessions/20260709-fastify-fastify-terminal-snip-sequential-workflow-r0/changes.diff",
+        "evidence_bundle": "sources/evaluations/workflow-sessions/20260709-fastify-fastify-terminal-snip-sequential-workflow-r0/evidence.jsonl.gz",
+        "manifest": "sources/evaluations/workflow-sessions/20260709-fastify-fastify-terminal-snip-sequential-workflow-r0/manifest.sha256"
+      },
+      "interpretation": {
+        "accepted_for_objective": true,
+        "comparison_baseline_session_id": "20260709-fastify-fastify-baseline-bare-codex-sequential-workflow-r0",
+        "exclusion_reason": "",
+        "notes": "Accepted sequential workflow session.",
+        "scope_note": "Full active workflow sequence; tasks disclosed one at a time."
+      }
+    },
+    {
+      "schema_version": 1,
+      "session_id": "20260709-fastify-fastify-terminal-rtk-sequential-workflow-r0",
+      "record_type": "workflow_session",
+      "evidence_type": "workflow-simulation",
+      "study_id": "phase-2-sequential-workflow-v1",
+      "experiment_group_id": "20260709-fastify-fastify-terminal-rtk-sequential-workflow-r0",
+      "objective": "individual_tool_effectiveness",
+      "evidence_stage": "reproduction",
+      "status": "completed",
+      "session_role": "individual_tool_treatment",
+      "replicate_index": 0,
+      "date": "2026-07-09",
+      "target": {
+        "fixture_id": "medium-fastify-fastify",
+        "fixture_scale": "medium-project",
+        "project_id": "fastify-fastify",
+        "repository_path": "sources/evaluations/workflow-sessions/20260709-fastify-fastify-terminal-rtk-sequential-workflow-r0/project/repo",
+        "initial_snapshot": {
+          "commit": "94bcbcc6e2ef3b8e8f8e8797fe551ccbe7b942fd",
+          "branch": "detached",
+          "fixture_hash": ""
+        }
+      },
+      "task_sequence": {
+        "sequence_id": "fastify-maintenance-sequence-v1",
+        "task_ids": [
+          "fastify-query-schema-alias-regression",
+          "fastify-response-2xx-serializer-regression",
+          "fastify-trust-proxy-last-header-regression",
+          "fastify-has-route-method-case-regression",
+          "fastify-reply-hijack-state-regression"
+        ],
+        "reset_policy": "reset repository, profile home, tool state, indexes, caches, generated config, and agent home before the session; persist them between tasks",
+        "prompt_delivery": {
+          "mode": "sequential-one-task-at-a-time",
+          "future_tasks_visible": false,
+          "codex_thread_id": "019f4655-faf6-7c13-be22-84ca7f4a155c",
+          "task_prompt_evidence": "sources/evaluations/workflow-sessions/20260709-fastify-fastify-terminal-rtk-sequential-workflow-r0/evidence.jsonl.gz"
+        },
+        "leakage_controls": {
+          "seed_origin_concealed": true,
+          "task_directories_model_facing_aliases": true,
+          "model_prompts_sanitized": true,
+          "upstream_remote_removed_from_model_facing_repo": true,
+          "broken_start_committed_as_local_baseline": true,
+          "remaining_limitations": [
+            "Task semantics and verifier names may still be searchable if the model intentionally uses external network access.",
+            "Full prevention requires fixtures built from pre-fix bases plus hidden verifier tests rather than production-code reverse patches."
+          ]
+        }
+      },
+      "profile": {
+        "profile_id": "terminal-rtk",
+        "profile_type": "individual_tool",
+        "enabled_surfaces": [
+          "terminal/tool-output-compaction"
+        ],
+        "disabled_overlaps": [
+          "all unlisted token-saving surfaces"
+        ],
+        "component_ids": [
+          "rtk"
+        ]
+      },
+      "agent": {
+        "runtime_id": "codex-cli",
+        "model_condition_id": "codex-openai-gpt-5-5-high",
+        "name": "Codex CLI",
+        "version": "codex-cli 0.142.5",
+        "provider": "openai",
+        "model": "gpt-5.5",
+        "reasoning_effort": "high",
+        "temperature": null,
+        "max_turns": null,
+        "time_budget_seconds": 18000
+      },
+      "state_policy": {
+        "reset_before_session": [
+          "repository working tree",
+          "profile home",
+          "tool indexes and caches",
+          "generated config",
+          "agent home",
+          "temporary directories"
+        ],
+        "persist_between_tasks": [
+          "repository working tree",
+          "tool indexes and caches",
+          "generated config",
+          "agent home",
+          "memory/state stores enabled by the active profile",
+          "run artifacts"
+        ]
+      },
+      "cumulative_token_usage": {
+        "measurement_source": "codex-jsonl-usage-events",
+        "fresh_input_tokens": 539016,
+        "cached_input_tokens": 4152192,
+        "cache_write_tokens": null,
+        "output_tokens": 38848,
+        "reasoning_tokens": 6169,
+        "total_provider_tokens": 4730056,
+        "estimated_cost_usd": null,
+        "tokens_per_accepted_task": 946011.2,
+        "pricing_basis": "not computed; Codex-reported token volume, not billing-weighted cost"
+      },
+      "per_task_results": [
+        {
+          "task_id": "fastify-query-schema-alias-regression",
+          "task_alias": "task-01",
+          "order": 1,
+          "verifier_exit_code": 0,
+          "accepted": true,
+          "verifier_output": "sources/evaluations/workflow-sessions/20260709-fastify-fastify-terminal-rtk-sequential-workflow-r0/verifier-task-01.txt"
+        },
+        {
+          "task_id": "fastify-response-2xx-serializer-regression",
+          "task_alias": "task-02",
+          "order": 2,
+          "verifier_exit_code": 0,
+          "accepted": true,
+          "verifier_output": "sources/evaluations/workflow-sessions/20260709-fastify-fastify-terminal-rtk-sequential-workflow-r0/verifier-task-02.txt"
+        },
+        {
+          "task_id": "fastify-trust-proxy-last-header-regression",
+          "task_alias": "task-03",
+          "order": 3,
+          "verifier_exit_code": 0,
+          "accepted": true,
+          "verifier_output": "sources/evaluations/workflow-sessions/20260709-fastify-fastify-terminal-rtk-sequential-workflow-r0/verifier-task-03.txt"
+        },
+        {
+          "task_id": "fastify-has-route-method-case-regression",
+          "task_alias": "task-04",
+          "order": 4,
+          "verifier_exit_code": 0,
+          "accepted": true,
+          "verifier_output": "sources/evaluations/workflow-sessions/20260709-fastify-fastify-terminal-rtk-sequential-workflow-r0/verifier-task-04.txt"
+        },
+        {
+          "task_id": "fastify-reply-hijack-state-regression",
+          "task_alias": "task-05",
+          "order": 5,
+          "verifier_exit_code": 0,
+          "accepted": true,
+          "verifier_output": "sources/evaluations/workflow-sessions/20260709-fastify-fastify-terminal-rtk-sequential-workflow-r0/verifier-task-05.txt"
+        }
+      ],
+      "software_quality": {
+        "tasks_attempted": 5,
+        "tasks_passed": 5,
+        "final_verifier_command": "sources/evaluations/workflow-sessions/20260709-fastify-fastify-terminal-rtk-sequential-workflow-r0/verify-workflow.sh",
+        "final_verifier_passed": true,
+        "quality_score": 5,
+        "critical_failures": []
+      },
+      "state_observations": {
+        "stale_context_incidents": null,
+        "overfeeding_incidents": null,
+        "repeated_rediscovery_incidents": null,
+        "thread_continuity_errors": [],
+        "useful_state_reuse_notes": "Single persistent Codex thread resumed across one task prompt at a time."
+      },
+      "operational_reproducibility": {
+        "install_logged": true,
+        "pre_session_reset_verified": true,
+        "raw_artifacts_recoverable": true,
+        "state_leakage_outside_session_observed": false,
+        "tool_isolation_audit": {
+          "command": "python3 scripts/audit_tool_isolation.py --json-output ...",
+          "passed": true,
+          "forbidden_tool_hits": []
+        }
+      },
+      "artifacts": {
+        "artifact_contract": "compact-v1-four-files",
+        "run_record": "sources/evaluations/workflow-sessions/20260709-fastify-fastify-terminal-rtk-sequential-workflow-r0/run.json",
+        "final_diff": "sources/evaluations/workflow-sessions/20260709-fastify-fastify-terminal-rtk-sequential-workflow-r0/changes.diff",
+        "evidence_bundle": "sources/evaluations/workflow-sessions/20260709-fastify-fastify-terminal-rtk-sequential-workflow-r0/evidence.jsonl.gz",
+        "manifest": "sources/evaluations/workflow-sessions/20260709-fastify-fastify-terminal-rtk-sequential-workflow-r0/manifest.sha256"
+      },
+      "interpretation": {
+        "accepted_for_objective": true,
+        "comparison_baseline_session_id": "20260709-fastify-fastify-baseline-bare-codex-sequential-workflow-r0",
+        "exclusion_reason": "",
+        "notes": "Accepted sequential workflow session.",
+        "scope_note": "Full active workflow sequence; tasks disclosed one at a time."
+      }
+    },
+    {
+      "schema_version": 1,
+      "session_id": "20260709-fastify-fastify-terminal-lowfat-sequential-workflow-r0",
+      "record_type": "workflow_session",
+      "evidence_type": "workflow-simulation",
+      "study_id": "phase-2-sequential-workflow-v1",
+      "experiment_group_id": "20260709-fastify-fastify-terminal-lowfat-sequential-workflow-r0",
+      "objective": "individual_tool_effectiveness",
+      "evidence_stage": "reproduction",
+      "status": "completed",
+      "session_role": "individual_tool_treatment",
+      "replicate_index": 0,
+      "date": "2026-07-09",
+      "target": {
+        "fixture_id": "medium-fastify-fastify",
+        "fixture_scale": "medium-project",
+        "project_id": "fastify-fastify",
+        "repository_path": "sources/evaluations/workflow-sessions/20260709-fastify-fastify-terminal-lowfat-sequential-workflow-r0/project/repo",
+        "initial_snapshot": {
+          "commit": "94bcbcc6e2ef3b8e8f8e8797fe551ccbe7b942fd",
+          "branch": "detached",
+          "fixture_hash": ""
+        }
+      },
+      "task_sequence": {
+        "sequence_id": "fastify-maintenance-sequence-v1",
+        "task_ids": [
+          "fastify-query-schema-alias-regression",
+          "fastify-response-2xx-serializer-regression",
+          "fastify-trust-proxy-last-header-regression",
+          "fastify-has-route-method-case-regression",
+          "fastify-reply-hijack-state-regression"
+        ],
+        "reset_policy": "reset repository, profile home, tool state, indexes, caches, generated config, and agent home before the session; persist them between tasks",
+        "prompt_delivery": {
+          "mode": "sequential-one-task-at-a-time",
+          "future_tasks_visible": false,
+          "codex_thread_id": "019f465a-7495-7163-bfdb-ac457ee11016",
+          "task_prompt_evidence": "sources/evaluations/workflow-sessions/20260709-fastify-fastify-terminal-lowfat-sequential-workflow-r0/evidence.jsonl.gz"
+        },
+        "leakage_controls": {
+          "seed_origin_concealed": true,
+          "task_directories_model_facing_aliases": true,
+          "model_prompts_sanitized": true,
+          "upstream_remote_removed_from_model_facing_repo": true,
+          "broken_start_committed_as_local_baseline": true,
+          "remaining_limitations": [
+            "Task semantics and verifier names may still be searchable if the model intentionally uses external network access.",
+            "Full prevention requires fixtures built from pre-fix bases plus hidden verifier tests rather than production-code reverse patches."
+          ]
+        }
+      },
+      "profile": {
+        "profile_id": "terminal-lowfat",
+        "profile_type": "individual_tool",
+        "enabled_surfaces": [
+          "terminal/tool-output-compaction"
+        ],
+        "disabled_overlaps": [
+          "all unlisted token-saving surfaces"
+        ],
+        "component_ids": [
+          "lowfat"
+        ]
+      },
+      "agent": {
+        "runtime_id": "codex-cli",
+        "model_condition_id": "codex-openai-gpt-5-5-high",
+        "name": "Codex CLI",
+        "version": "codex-cli 0.142.5",
+        "provider": "openai",
+        "model": "gpt-5.5",
+        "reasoning_effort": "high",
+        "temperature": null,
+        "max_turns": null,
+        "time_budget_seconds": 18000
+      },
+      "state_policy": {
+        "reset_before_session": [
+          "repository working tree",
+          "profile home",
+          "tool indexes and caches",
+          "generated config",
+          "agent home",
+          "temporary directories"
+        ],
+        "persist_between_tasks": [
+          "repository working tree",
+          "tool indexes and caches",
+          "generated config",
+          "agent home",
+          "memory/state stores enabled by the active profile",
+          "run artifacts"
+        ]
+      },
+      "cumulative_token_usage": {
+        "measurement_source": "codex-jsonl-usage-events",
+        "fresh_input_tokens": 480653,
+        "cached_input_tokens": 8697600,
+        "cache_write_tokens": null,
+        "output_tokens": 52392,
+        "reasoning_tokens": 13417,
+        "total_provider_tokens": 9230645,
+        "estimated_cost_usd": null,
+        "tokens_per_accepted_task": 1846129.0,
+        "pricing_basis": "not computed; Codex-reported token volume, not billing-weighted cost"
+      },
+      "per_task_results": [
+        {
+          "task_id": "fastify-query-schema-alias-regression",
+          "task_alias": "task-01",
+          "order": 1,
+          "verifier_exit_code": 0,
+          "accepted": true,
+          "verifier_output": "sources/evaluations/workflow-sessions/20260709-fastify-fastify-terminal-lowfat-sequential-workflow-r0/verifier-task-01.txt"
+        },
+        {
+          "task_id": "fastify-response-2xx-serializer-regression",
+          "task_alias": "task-02",
+          "order": 2,
+          "verifier_exit_code": 0,
+          "accepted": true,
+          "verifier_output": "sources/evaluations/workflow-sessions/20260709-fastify-fastify-terminal-lowfat-sequential-workflow-r0/verifier-task-02.txt"
+        },
+        {
+          "task_id": "fastify-trust-proxy-last-header-regression",
+          "task_alias": "task-03",
+          "order": 3,
+          "verifier_exit_code": 0,
+          "accepted": true,
+          "verifier_output": "sources/evaluations/workflow-sessions/20260709-fastify-fastify-terminal-lowfat-sequential-workflow-r0/verifier-task-03.txt"
+        },
+        {
+          "task_id": "fastify-has-route-method-case-regression",
+          "task_alias": "task-04",
+          "order": 4,
+          "verifier_exit_code": 0,
+          "accepted": true,
+          "verifier_output": "sources/evaluations/workflow-sessions/20260709-fastify-fastify-terminal-lowfat-sequential-workflow-r0/verifier-task-04.txt"
+        },
+        {
+          "task_id": "fastify-reply-hijack-state-regression",
+          "task_alias": "task-05",
+          "order": 5,
+          "verifier_exit_code": 0,
+          "accepted": true,
+          "verifier_output": "sources/evaluations/workflow-sessions/20260709-fastify-fastify-terminal-lowfat-sequential-workflow-r0/verifier-task-05.txt"
+        }
+      ],
+      "software_quality": {
+        "tasks_attempted": 5,
+        "tasks_passed": 5,
+        "final_verifier_command": "sources/evaluations/workflow-sessions/20260709-fastify-fastify-terminal-lowfat-sequential-workflow-r0/verify-workflow.sh",
+        "final_verifier_passed": true,
+        "quality_score": 5,
+        "critical_failures": []
+      },
+      "state_observations": {
+        "stale_context_incidents": null,
+        "overfeeding_incidents": null,
+        "repeated_rediscovery_incidents": null,
+        "thread_continuity_errors": [],
+        "useful_state_reuse_notes": "Single persistent Codex thread resumed across one task prompt at a time."
+      },
+      "operational_reproducibility": {
+        "install_logged": true,
+        "pre_session_reset_verified": true,
+        "raw_artifacts_recoverable": true,
+        "state_leakage_outside_session_observed": false,
+        "tool_isolation_audit": {
+          "command": "python3 scripts/audit_tool_isolation.py --json-output ...",
+          "passed": true,
+          "forbidden_tool_hits": []
+        }
+      },
+      "artifacts": {
+        "artifact_contract": "compact-v1-four-files",
+        "run_record": "sources/evaluations/workflow-sessions/20260709-fastify-fastify-terminal-lowfat-sequential-workflow-r0/run.json",
+        "final_diff": "sources/evaluations/workflow-sessions/20260709-fastify-fastify-terminal-lowfat-sequential-workflow-r0/changes.diff",
+        "evidence_bundle": "sources/evaluations/workflow-sessions/20260709-fastify-fastify-terminal-lowfat-sequential-workflow-r0/evidence.jsonl.gz",
+        "manifest": "sources/evaluations/workflow-sessions/20260709-fastify-fastify-terminal-lowfat-sequential-workflow-r0/manifest.sha256"
+      },
+      "interpretation": {
+        "accepted_for_objective": true,
+        "comparison_baseline_session_id": "20260709-fastify-fastify-baseline-bare-codex-sequential-workflow-r0",
+        "exclusion_reason": "",
+        "notes": "Accepted sequential workflow session.",
+        "scope_note": "Full active workflow sequence; tasks disclosed one at a time."
+      }
+    },
+    {
+      "schema_version": 1,
+      "session_id": "20260709-fastify-fastify-behavior-caveman-sequential-workflow-r0",
+      "record_type": "workflow_session",
+      "evidence_type": "workflow-simulation",
+      "study_id": "phase-2-sequential-workflow-v1",
+      "experiment_group_id": "20260709-fastify-fastify-behavior-caveman-sequential-workflow-r0",
+      "objective": "individual_tool_effectiveness",
+      "evidence_stage": "reproduction",
+      "status": "completed",
+      "session_role": "individual_tool_treatment",
+      "replicate_index": 0,
+      "date": "2026-07-09",
+      "target": {
+        "fixture_id": "medium-fastify-fastify",
+        "fixture_scale": "medium-project",
+        "project_id": "fastify-fastify",
+        "repository_path": "sources/evaluations/workflow-sessions/20260709-fastify-fastify-behavior-caveman-sequential-workflow-r0/project/repo",
+        "initial_snapshot": {
+          "commit": "94bcbcc6e2ef3b8e8f8e8797fe551ccbe7b942fd",
+          "branch": "detached",
+          "fixture_hash": ""
+        }
+      },
+      "task_sequence": {
+        "sequence_id": "fastify-maintenance-sequence-v1",
+        "task_ids": [
+          "fastify-query-schema-alias-regression",
+          "fastify-response-2xx-serializer-regression",
+          "fastify-trust-proxy-last-header-regression",
+          "fastify-has-route-method-case-regression",
+          "fastify-reply-hijack-state-regression"
+        ],
+        "reset_policy": "reset repository, profile home, tool state, indexes, caches, generated config, and agent home before the session; persist them between tasks",
+        "prompt_delivery": {
+          "mode": "sequential-one-task-at-a-time",
+          "future_tasks_visible": false,
+          "codex_thread_id": "019f4660-a752-74f2-89f1-ae90e1498d8d",
+          "task_prompt_evidence": "sources/evaluations/workflow-sessions/20260709-fastify-fastify-behavior-caveman-sequential-workflow-r0/evidence.jsonl.gz"
+        },
+        "leakage_controls": {
+          "seed_origin_concealed": true,
+          "task_directories_model_facing_aliases": true,
+          "model_prompts_sanitized": true,
+          "upstream_remote_removed_from_model_facing_repo": true,
+          "broken_start_committed_as_local_baseline": true,
+          "remaining_limitations": [
+            "Task semantics and verifier names may still be searchable if the model intentionally uses external network access.",
+            "Full prevention requires fixtures built from pre-fix bases plus hidden verifier tests rather than production-code reverse patches."
+          ]
+        }
+      },
+      "profile": {
+        "profile_id": "behavior-caveman",
+        "profile_type": "individual_tool",
+        "enabled_surfaces": [
+          "behavioral-output-compression/mcp-description-compression"
+        ],
+        "disabled_overlaps": [
+          "all unlisted token-saving surfaces"
+        ],
+        "component_ids": [
+          "caveman"
+        ]
+      },
+      "agent": {
+        "runtime_id": "codex-cli",
+        "model_condition_id": "codex-openai-gpt-5-5-high",
+        "name": "Codex CLI",
+        "version": "codex-cli 0.142.5",
+        "provider": "openai",
+        "model": "gpt-5.5",
+        "reasoning_effort": "high",
+        "temperature": null,
+        "max_turns": null,
+        "time_budget_seconds": 18000
+      },
+      "state_policy": {
+        "reset_before_session": [
+          "repository working tree",
+          "profile home",
+          "tool indexes and caches",
+          "generated config",
+          "agent home",
+          "temporary directories"
+        ],
+        "persist_between_tasks": [
+          "repository working tree",
+          "tool indexes and caches",
+          "generated config",
+          "agent home",
+          "memory/state stores enabled by the active profile",
+          "run artifacts"
+        ]
+      },
+      "cumulative_token_usage": {
+        "measurement_source": "codex-jsonl-usage-events",
+        "fresh_input_tokens": 599015,
+        "cached_input_tokens": 14669952,
+        "cache_write_tokens": null,
+        "output_tokens": 62320,
+        "reasoning_tokens": 10529,
+        "total_provider_tokens": 15331287,
+        "estimated_cost_usd": null,
+        "tokens_per_accepted_task": 3066257.4,
+        "pricing_basis": "not computed; Codex-reported token volume, not billing-weighted cost"
+      },
+      "per_task_results": [
+        {
+          "task_id": "fastify-query-schema-alias-regression",
+          "task_alias": "task-01",
+          "order": 1,
+          "verifier_exit_code": 0,
+          "accepted": true,
+          "verifier_output": "sources/evaluations/workflow-sessions/20260709-fastify-fastify-behavior-caveman-sequential-workflow-r0/verifier-task-01.txt"
+        },
+        {
+          "task_id": "fastify-response-2xx-serializer-regression",
+          "task_alias": "task-02",
+          "order": 2,
+          "verifier_exit_code": 0,
+          "accepted": true,
+          "verifier_output": "sources/evaluations/workflow-sessions/20260709-fastify-fastify-behavior-caveman-sequential-workflow-r0/verifier-task-02.txt"
+        },
+        {
+          "task_id": "fastify-trust-proxy-last-header-regression",
+          "task_alias": "task-03",
+          "order": 3,
+          "verifier_exit_code": 0,
+          "accepted": true,
+          "verifier_output": "sources/evaluations/workflow-sessions/20260709-fastify-fastify-behavior-caveman-sequential-workflow-r0/verifier-task-03.txt"
+        },
+        {
+          "task_id": "fastify-has-route-method-case-regression",
+          "task_alias": "task-04",
+          "order": 4,
+          "verifier_exit_code": 0,
+          "accepted": true,
+          "verifier_output": "sources/evaluations/workflow-sessions/20260709-fastify-fastify-behavior-caveman-sequential-workflow-r0/verifier-task-04.txt"
+        },
+        {
+          "task_id": "fastify-reply-hijack-state-regression",
+          "task_alias": "task-05",
+          "order": 5,
+          "verifier_exit_code": 0,
+          "accepted": true,
+          "verifier_output": "sources/evaluations/workflow-sessions/20260709-fastify-fastify-behavior-caveman-sequential-workflow-r0/verifier-task-05.txt"
+        }
+      ],
+      "software_quality": {
+        "tasks_attempted": 5,
+        "tasks_passed": 5,
+        "final_verifier_command": "sources/evaluations/workflow-sessions/20260709-fastify-fastify-behavior-caveman-sequential-workflow-r0/verify-workflow.sh",
+        "final_verifier_passed": true,
+        "quality_score": 5,
+        "critical_failures": []
+      },
+      "state_observations": {
+        "stale_context_incidents": null,
+        "overfeeding_incidents": null,
+        "repeated_rediscovery_incidents": null,
+        "thread_continuity_errors": [],
+        "useful_state_reuse_notes": "Single persistent Codex thread resumed across one task prompt at a time."
+      },
+      "operational_reproducibility": {
+        "install_logged": true,
+        "pre_session_reset_verified": true,
+        "raw_artifacts_recoverable": true,
+        "state_leakage_outside_session_observed": false,
+        "tool_isolation_audit": {
+          "command": "python3 scripts/audit_tool_isolation.py --json-output ...",
+          "passed": true,
+          "forbidden_tool_hits": []
+        }
+      },
+      "artifacts": {
+        "artifact_contract": "compact-v1-four-files",
+        "run_record": "sources/evaluations/workflow-sessions/20260709-fastify-fastify-behavior-caveman-sequential-workflow-r0/run.json",
+        "final_diff": "sources/evaluations/workflow-sessions/20260709-fastify-fastify-behavior-caveman-sequential-workflow-r0/changes.diff",
+        "evidence_bundle": "sources/evaluations/workflow-sessions/20260709-fastify-fastify-behavior-caveman-sequential-workflow-r0/evidence.jsonl.gz",
+        "manifest": "sources/evaluations/workflow-sessions/20260709-fastify-fastify-behavior-caveman-sequential-workflow-r0/manifest.sha256"
+      },
+      "interpretation": {
+        "accepted_for_objective": true,
+        "comparison_baseline_session_id": "20260709-fastify-fastify-baseline-bare-codex-sequential-workflow-r0",
+        "exclusion_reason": "",
+        "notes": "Accepted sequential workflow session.",
+        "scope_note": "Full active workflow sequence; tasks disclosed one at a time."
+      }
+    },
+    {
+      "schema_version": 1,
+      "session_id": "20260709-fastify-fastify-terminal-tokenjuice-sequential-workflow-r0",
+      "record_type": "workflow_session",
+      "evidence_type": "workflow-simulation",
+      "study_id": "phase-2-sequential-workflow-v1",
+      "experiment_group_id": "20260709-fastify-fastify-terminal-tokenjuice-sequential-workflow-r0",
+      "objective": "individual_tool_effectiveness",
+      "evidence_stage": "reproduction",
+      "status": "completed",
+      "session_role": "individual_tool_treatment",
+      "replicate_index": 0,
+      "date": "2026-07-09",
+      "target": {
+        "fixture_id": "medium-fastify-fastify",
+        "fixture_scale": "medium-project",
+        "project_id": "fastify-fastify",
+        "repository_path": "sources/evaluations/workflow-sessions/20260709-fastify-fastify-terminal-tokenjuice-sequential-workflow-r0/project/repo",
+        "initial_snapshot": {
+          "commit": "94bcbcc6e2ef3b8e8f8e8797fe551ccbe7b942fd",
+          "branch": "detached",
+          "fixture_hash": ""
+        }
+      },
+      "task_sequence": {
+        "sequence_id": "fastify-maintenance-sequence-v1",
+        "task_ids": [
+          "fastify-query-schema-alias-regression",
+          "fastify-response-2xx-serializer-regression",
+          "fastify-trust-proxy-last-header-regression",
+          "fastify-has-route-method-case-regression",
+          "fastify-reply-hijack-state-regression"
+        ],
+        "reset_policy": "reset repository, profile home, tool state, indexes, caches, generated config, and agent home before the session; persist them between tasks",
+        "prompt_delivery": {
+          "mode": "sequential-one-task-at-a-time",
+          "future_tasks_visible": false,
+          "codex_thread_id": "019f4668-6311-7b43-983c-42834b3dbcb1",
+          "task_prompt_evidence": "sources/evaluations/workflow-sessions/20260709-fastify-fastify-terminal-tokenjuice-sequential-workflow-r0/evidence.jsonl.gz"
+        },
+        "leakage_controls": {
+          "seed_origin_concealed": true,
+          "task_directories_model_facing_aliases": true,
+          "model_prompts_sanitized": true,
+          "upstream_remote_removed_from_model_facing_repo": true,
+          "broken_start_committed_as_local_baseline": true,
+          "remaining_limitations": [
+            "Task semantics and verifier names may still be searchable if the model intentionally uses external network access.",
+            "Full prevention requires fixtures built from pre-fix bases plus hidden verifier tests rather than production-code reverse patches."
+          ]
+        }
+      },
+      "profile": {
+        "profile_id": "terminal-tokenjuice",
+        "profile_type": "individual_tool",
+        "enabled_surfaces": [
+          "terminal/tool-output-compaction"
+        ],
+        "disabled_overlaps": [
+          "all unlisted token-saving surfaces"
+        ],
+        "component_ids": [
+          "tokenjuice"
+        ]
+      },
+      "agent": {
+        "runtime_id": "codex-cli",
+        "model_condition_id": "codex-openai-gpt-5-5-high",
+        "name": "Codex CLI",
+        "version": "codex-cli 0.142.5",
+        "provider": "openai",
+        "model": "gpt-5.5",
+        "reasoning_effort": "high",
+        "temperature": null,
+        "max_turns": null,
+        "time_budget_seconds": 18000
+      },
+      "state_policy": {
+        "reset_before_session": [
+          "repository working tree",
+          "profile home",
+          "tool indexes and caches",
+          "generated config",
+          "agent home",
+          "temporary directories"
+        ],
+        "persist_between_tasks": [
+          "repository working tree",
+          "tool indexes and caches",
+          "generated config",
+          "agent home",
+          "memory/state stores enabled by the active profile",
+          "run artifacts"
+        ]
+      },
+      "cumulative_token_usage": {
+        "measurement_source": "codex-jsonl-usage-events",
+        "fresh_input_tokens": 582033,
+        "cached_input_tokens": 12064512,
+        "cache_write_tokens": null,
+        "output_tokens": 57400,
+        "reasoning_tokens": 12760,
+        "total_provider_tokens": 12703945,
+        "estimated_cost_usd": null,
+        "tokens_per_accepted_task": 2540789.0,
+        "pricing_basis": "not computed; Codex-reported token volume, not billing-weighted cost"
+      },
+      "per_task_results": [
+        {
+          "task_id": "fastify-query-schema-alias-regression",
+          "task_alias": "task-01",
+          "order": 1,
+          "verifier_exit_code": 0,
+          "accepted": true,
+          "verifier_output": "sources/evaluations/workflow-sessions/20260709-fastify-fastify-terminal-tokenjuice-sequential-workflow-r0/verifier-task-01.txt"
+        },
+        {
+          "task_id": "fastify-response-2xx-serializer-regression",
+          "task_alias": "task-02",
+          "order": 2,
+          "verifier_exit_code": 0,
+          "accepted": true,
+          "verifier_output": "sources/evaluations/workflow-sessions/20260709-fastify-fastify-terminal-tokenjuice-sequential-workflow-r0/verifier-task-02.txt"
+        },
+        {
+          "task_id": "fastify-trust-proxy-last-header-regression",
+          "task_alias": "task-03",
+          "order": 3,
+          "verifier_exit_code": 0,
+          "accepted": true,
+          "verifier_output": "sources/evaluations/workflow-sessions/20260709-fastify-fastify-terminal-tokenjuice-sequential-workflow-r0/verifier-task-03.txt"
+        },
+        {
+          "task_id": "fastify-has-route-method-case-regression",
+          "task_alias": "task-04",
+          "order": 4,
+          "verifier_exit_code": 0,
+          "accepted": true,
+          "verifier_output": "sources/evaluations/workflow-sessions/20260709-fastify-fastify-terminal-tokenjuice-sequential-workflow-r0/verifier-task-04.txt"
+        },
+        {
+          "task_id": "fastify-reply-hijack-state-regression",
+          "task_alias": "task-05",
+          "order": 5,
+          "verifier_exit_code": 0,
+          "accepted": true,
+          "verifier_output": "sources/evaluations/workflow-sessions/20260709-fastify-fastify-terminal-tokenjuice-sequential-workflow-r0/verifier-task-05.txt"
+        }
+      ],
+      "software_quality": {
+        "tasks_attempted": 5,
+        "tasks_passed": 5,
+        "final_verifier_command": "sources/evaluations/workflow-sessions/20260709-fastify-fastify-terminal-tokenjuice-sequential-workflow-r0/verify-workflow.sh",
+        "final_verifier_passed": true,
+        "quality_score": 5,
+        "critical_failures": []
+      },
+      "state_observations": {
+        "stale_context_incidents": null,
+        "overfeeding_incidents": null,
+        "repeated_rediscovery_incidents": null,
+        "thread_continuity_errors": [],
+        "useful_state_reuse_notes": "Single persistent Codex thread resumed across one task prompt at a time."
+      },
+      "operational_reproducibility": {
+        "install_logged": true,
+        "pre_session_reset_verified": true,
+        "raw_artifacts_recoverable": true,
+        "state_leakage_outside_session_observed": false,
+        "tool_isolation_audit": {
+          "command": "python3 scripts/audit_tool_isolation.py --json-output ...",
+          "passed": true,
+          "forbidden_tool_hits": []
+        }
+      },
+      "artifacts": {
+        "artifact_contract": "compact-v1-four-files",
+        "run_record": "sources/evaluations/workflow-sessions/20260709-fastify-fastify-terminal-tokenjuice-sequential-workflow-r0/run.json",
+        "final_diff": "sources/evaluations/workflow-sessions/20260709-fastify-fastify-terminal-tokenjuice-sequential-workflow-r0/changes.diff",
+        "evidence_bundle": "sources/evaluations/workflow-sessions/20260709-fastify-fastify-terminal-tokenjuice-sequential-workflow-r0/evidence.jsonl.gz",
+        "manifest": "sources/evaluations/workflow-sessions/20260709-fastify-fastify-terminal-tokenjuice-sequential-workflow-r0/manifest.sha256"
+      },
+      "interpretation": {
+        "accepted_for_objective": true,
+        "comparison_baseline_session_id": "20260709-fastify-fastify-baseline-bare-codex-sequential-workflow-r0",
+        "exclusion_reason": "",
+        "notes": "Accepted sequential workflow session.",
+        "scope_note": "Full active workflow sequence; tasks disclosed one at a time."
+      }
+    },
+    {
+      "schema_version": 1,
+      "session_id": "20260709-hashicorp-terraform-baseline-bare-codex-sequential-workflow-r0",
+      "record_type": "workflow_session",
+      "evidence_type": "workflow-simulation",
+      "study_id": "phase-2-sequential-workflow-v1",
+      "experiment_group_id": "20260709-hashicorp-terraform-canonical-baseline-sequential-workflow-r0",
+      "objective": "individual_tool_effectiveness",
+      "evidence_stage": "reproduction",
+      "status": "completed",
+      "session_role": "baseline",
+      "replicate_index": 0,
+      "date": "2026-07-09",
+      "target": {
+        "fixture_id": "large-hashicorp-terraform",
+        "fixture_scale": "large-project",
+        "project_id": "hashicorp-terraform",
+        "repository_path": "sources/evaluations/workflow-sessions/20260709-hashicorp-terraform-baseline-bare-codex-sequential-workflow-r0/project/repo",
+        "initial_snapshot": {
+          "commit": "e02391ad384c9c38f1d7f40b853c0d2297348094",
+          "branch": "detached",
+          "fixture_hash": ""
+        }
+      },
+      "task_sequence": {
+        "sequence_id": "terraform-maintenance-sequence-v1",
+        "task_ids": [
+          "terraform-38739-sensitive-policy-paths-regression",
+          "terraform-38745-config-parser-concurrency-regression",
+          "terraform-38747-config-loader-watchstop-race-regression",
+          "terraform-38775-policy-state-close-order-regression",
+          "terraform-38781-policy-callback-deferred-resources-regression"
+        ],
+        "reset_policy": "reset repository, profile home, tool state, indexes, caches, generated config, and agent home before the session; persist them between tasks",
+        "prompt_delivery": {
+          "mode": "sequential-one-task-at-a-time",
+          "future_tasks_visible": false,
+          "codex_thread_id": "019f467c-a55d-78f0-ad6f-2c9d0eb6e56d",
+          "task_prompt_evidence": "sources/evaluations/workflow-sessions/20260709-hashicorp-terraform-baseline-bare-codex-sequential-workflow-r0/evidence.jsonl.gz"
+        },
+        "leakage_controls": {
+          "seed_origin_concealed": true,
+          "task_directories_model_facing_aliases": true,
+          "model_prompts_sanitized": true,
+          "upstream_remote_removed_from_model_facing_repo": true,
+          "broken_start_committed_as_local_baseline": true,
+          "remaining_limitations": [
+            "Task semantics and verifier names may still be searchable if the model intentionally uses external network access.",
+            "Full prevention requires fixtures built from pre-fix bases plus hidden verifier tests rather than production-code reverse patches."
+          ]
+        }
+      },
+      "profile": {
+        "profile_id": "baseline-bare-codex",
+        "profile_type": "control",
+        "enabled_surfaces": [
+          "codex-native-shell-edit"
+        ],
+        "disabled_overlaps": [
+          "all token-saving surfaces"
+        ],
+        "component_ids": []
+      },
+      "agent": {
+        "runtime_id": "codex-cli",
+        "model_condition_id": "codex-openai-gpt-5-5-high",
+        "name": "Codex CLI",
+        "version": "codex-cli 0.142.5",
+        "provider": "openai",
+        "model": "gpt-5.5",
+        "reasoning_effort": "high",
+        "temperature": null,
+        "max_turns": null,
+        "time_budget_seconds": 27000
+      },
+      "state_policy": {
+        "reset_before_session": [
+          "repository working tree",
+          "profile home",
+          "tool indexes and caches",
+          "generated config",
+          "agent home",
+          "temporary directories"
+        ],
+        "persist_between_tasks": [
+          "repository working tree",
+          "tool indexes and caches",
+          "generated config",
+          "agent home",
+          "memory/state stores enabled by the active profile",
+          "run artifacts"
+        ]
+      },
+      "cumulative_token_usage": {
+        "measurement_source": "codex-jsonl-usage-events",
+        "fresh_input_tokens": 847086,
+        "cached_input_tokens": 21326464,
+        "cache_write_tokens": null,
+        "output_tokens": 68525,
+        "reasoning_tokens": 15715,
+        "total_provider_tokens": 22242075,
+        "estimated_cost_usd": null,
+        "tokens_per_accepted_task": 4448415.0,
+        "pricing_basis": "not computed; Codex-reported token volume, not billing-weighted cost"
+      },
+      "per_task_results": [
+        {
+          "task_id": "terraform-38739-sensitive-policy-paths-regression",
+          "task_alias": "task-01",
+          "order": 1,
+          "verifier_exit_code": 0,
+          "accepted": true,
+          "verifier_output": "sources/evaluations/workflow-sessions/20260709-hashicorp-terraform-baseline-bare-codex-sequential-workflow-r0/verifier-task-01.txt"
+        },
+        {
+          "task_id": "terraform-38745-config-parser-concurrency-regression",
+          "task_alias": "task-02",
+          "order": 2,
+          "verifier_exit_code": 0,
+          "accepted": true,
+          "verifier_output": "sources/evaluations/workflow-sessions/20260709-hashicorp-terraform-baseline-bare-codex-sequential-workflow-r0/verifier-task-02.txt"
+        },
+        {
+          "task_id": "terraform-38747-config-loader-watchstop-race-regression",
+          "task_alias": "task-03",
+          "order": 3,
+          "verifier_exit_code": 0,
+          "accepted": true,
+          "verifier_output": "sources/evaluations/workflow-sessions/20260709-hashicorp-terraform-baseline-bare-codex-sequential-workflow-r0/verifier-task-03.txt"
+        },
+        {
+          "task_id": "terraform-38775-policy-state-close-order-regression",
+          "task_alias": "task-04",
+          "order": 4,
+          "verifier_exit_code": 0,
+          "accepted": true,
+          "verifier_output": "sources/evaluations/workflow-sessions/20260709-hashicorp-terraform-baseline-bare-codex-sequential-workflow-r0/verifier-task-04.txt"
+        },
+        {
+          "task_id": "terraform-38781-policy-callback-deferred-resources-regression",
+          "task_alias": "task-05",
+          "order": 5,
+          "verifier_exit_code": 0,
+          "accepted": true,
+          "verifier_output": "sources/evaluations/workflow-sessions/20260709-hashicorp-terraform-baseline-bare-codex-sequential-workflow-r0/verifier-task-05.txt"
+        }
+      ],
+      "software_quality": {
+        "tasks_attempted": 5,
+        "tasks_passed": 5,
+        "final_verifier_command": "sources/evaluations/workflow-sessions/20260709-hashicorp-terraform-baseline-bare-codex-sequential-workflow-r0/verify-workflow.sh",
+        "final_verifier_passed": true,
+        "quality_score": 5,
+        "critical_failures": []
+      },
+      "state_observations": {
+        "stale_context_incidents": null,
+        "overfeeding_incidents": null,
+        "repeated_rediscovery_incidents": null,
+        "thread_continuity_errors": [],
+        "useful_state_reuse_notes": "Single persistent Codex thread resumed across one task prompt at a time."
+      },
+      "operational_reproducibility": {
+        "install_logged": true,
+        "pre_session_reset_verified": true,
+        "raw_artifacts_recoverable": true,
+        "state_leakage_outside_session_observed": false,
+        "tool_isolation_audit": {
+          "command": "python3 scripts/audit_tool_isolation.py --json-output ...",
+          "passed": true,
+          "forbidden_tool_hits": []
+        }
+      },
+      "artifacts": {
+        "artifact_contract": "compact-v1-four-files",
+        "run_record": "sources/evaluations/workflow-sessions/20260709-hashicorp-terraform-baseline-bare-codex-sequential-workflow-r0/run.json",
+        "final_diff": "sources/evaluations/workflow-sessions/20260709-hashicorp-terraform-baseline-bare-codex-sequential-workflow-r0/changes.diff",
+        "evidence_bundle": "sources/evaluations/workflow-sessions/20260709-hashicorp-terraform-baseline-bare-codex-sequential-workflow-r0/evidence.jsonl.gz",
+        "manifest": "sources/evaluations/workflow-sessions/20260709-hashicorp-terraform-baseline-bare-codex-sequential-workflow-r0/manifest.sha256"
+      },
+      "interpretation": {
+        "accepted_for_objective": true,
+        "comparison_baseline_session_id": "",
+        "exclusion_reason": "",
+        "notes": "Accepted sequential workflow session.",
+        "scope_note": "Full active workflow sequence; tasks disclosed one at a time."
+      }
+    },
+    {
+      "schema_version": 1,
+      "session_id": "20260709-hashicorp-terraform-terminal-rtk-sequential-workflow-r0",
+      "record_type": "workflow_session",
+      "evidence_type": "workflow-simulation",
+      "study_id": "phase-2-sequential-workflow-v1",
+      "experiment_group_id": "20260709-hashicorp-terraform-terminal-rtk-sequential-workflow-r0",
+      "objective": "individual_tool_effectiveness",
+      "evidence_stage": "reproduction",
+      "status": "completed",
+      "session_role": "individual_tool_treatment",
+      "replicate_index": 0,
+      "date": "2026-07-09",
+      "target": {
+        "fixture_id": "large-hashicorp-terraform",
+        "fixture_scale": "large-project",
+        "project_id": "hashicorp-terraform",
+        "repository_path": "sources/evaluations/workflow-sessions/20260709-hashicorp-terraform-terminal-rtk-sequential-workflow-r0/project/repo",
+        "initial_snapshot": {
+          "commit": "e02391ad384c9c38f1d7f40b853c0d2297348094",
+          "branch": "detached",
+          "fixture_hash": ""
+        }
+      },
+      "task_sequence": {
+        "sequence_id": "terraform-maintenance-sequence-v1",
+        "task_ids": [
+          "terraform-38739-sensitive-policy-paths-regression",
+          "terraform-38745-config-parser-concurrency-regression",
+          "terraform-38747-config-loader-watchstop-race-regression",
+          "terraform-38775-policy-state-close-order-regression",
+          "terraform-38781-policy-callback-deferred-resources-regression"
+        ],
+        "reset_policy": "reset repository, profile home, tool state, indexes, caches, generated config, and agent home before the session; persist them between tasks",
+        "prompt_delivery": {
+          "mode": "sequential-one-task-at-a-time",
+          "future_tasks_visible": false,
+          "codex_thread_id": "019f4691-3998-7953-9a2d-960e1b3de911",
+          "task_prompt_evidence": "sources/evaluations/workflow-sessions/20260709-hashicorp-terraform-terminal-rtk-sequential-workflow-r0/evidence.jsonl.gz"
+        },
+        "leakage_controls": {
+          "seed_origin_concealed": true,
+          "task_directories_model_facing_aliases": true,
+          "model_prompts_sanitized": true,
+          "upstream_remote_removed_from_model_facing_repo": true,
+          "broken_start_committed_as_local_baseline": true,
+          "remaining_limitations": [
+            "Task semantics and verifier names may still be searchable if the model intentionally uses external network access.",
+            "Full prevention requires fixtures built from pre-fix bases plus hidden verifier tests rather than production-code reverse patches."
+          ]
+        }
+      },
+      "profile": {
+        "profile_id": "terminal-rtk",
+        "profile_type": "individual_tool",
+        "enabled_surfaces": [
+          "terminal/tool-output-compaction"
+        ],
+        "disabled_overlaps": [
+          "all unlisted token-saving surfaces"
+        ],
+        "component_ids": [
+          "rtk"
+        ]
+      },
+      "agent": {
+        "runtime_id": "codex-cli",
+        "model_condition_id": "codex-openai-gpt-5-5-high",
+        "name": "Codex CLI",
+        "version": "codex-cli 0.142.5",
+        "provider": "openai",
+        "model": "gpt-5.5",
+        "reasoning_effort": "high",
+        "temperature": null,
+        "max_turns": null,
+        "time_budget_seconds": 27000
+      },
+      "state_policy": {
+        "reset_before_session": [
+          "repository working tree",
+          "profile home",
+          "tool indexes and caches",
+          "generated config",
+          "agent home",
+          "temporary directories"
+        ],
+        "persist_between_tasks": [
+          "repository working tree",
+          "tool indexes and caches",
+          "generated config",
+          "agent home",
+          "memory/state stores enabled by the active profile",
+          "run artifacts"
+        ]
+      },
+      "cumulative_token_usage": {
+        "measurement_source": "codex-jsonl-usage-events",
+        "fresh_input_tokens": 869120,
+        "cached_input_tokens": 24634368,
+        "cache_write_tokens": null,
+        "output_tokens": 87828,
+        "reasoning_tokens": 14742,
+        "total_provider_tokens": 25591316,
+        "estimated_cost_usd": null,
+        "tokens_per_accepted_task": 5118263.2,
+        "pricing_basis": "not computed; Codex-reported token volume, not billing-weighted cost"
+      },
+      "per_task_results": [
+        {
+          "task_id": "terraform-38739-sensitive-policy-paths-regression",
+          "task_alias": "task-01",
+          "order": 1,
+          "verifier_exit_code": 0,
+          "accepted": true,
+          "verifier_output": "sources/evaluations/workflow-sessions/20260709-hashicorp-terraform-terminal-rtk-sequential-workflow-r0/verifier-task-01.txt"
+        },
+        {
+          "task_id": "terraform-38745-config-parser-concurrency-regression",
+          "task_alias": "task-02",
+          "order": 2,
+          "verifier_exit_code": 0,
+          "accepted": true,
+          "verifier_output": "sources/evaluations/workflow-sessions/20260709-hashicorp-terraform-terminal-rtk-sequential-workflow-r0/verifier-task-02.txt"
+        },
+        {
+          "task_id": "terraform-38747-config-loader-watchstop-race-regression",
+          "task_alias": "task-03",
+          "order": 3,
+          "verifier_exit_code": 0,
+          "accepted": true,
+          "verifier_output": "sources/evaluations/workflow-sessions/20260709-hashicorp-terraform-terminal-rtk-sequential-workflow-r0/verifier-task-03.txt"
+        },
+        {
+          "task_id": "terraform-38775-policy-state-close-order-regression",
+          "task_alias": "task-04",
+          "order": 4,
+          "verifier_exit_code": 0,
+          "accepted": true,
+          "verifier_output": "sources/evaluations/workflow-sessions/20260709-hashicorp-terraform-terminal-rtk-sequential-workflow-r0/verifier-task-04.txt"
+        },
+        {
+          "task_id": "terraform-38781-policy-callback-deferred-resources-regression",
+          "task_alias": "task-05",
+          "order": 5,
+          "verifier_exit_code": 0,
+          "accepted": true,
+          "verifier_output": "sources/evaluations/workflow-sessions/20260709-hashicorp-terraform-terminal-rtk-sequential-workflow-r0/verifier-task-05.txt"
+        }
+      ],
+      "software_quality": {
+        "tasks_attempted": 5,
+        "tasks_passed": 5,
+        "final_verifier_command": "sources/evaluations/workflow-sessions/20260709-hashicorp-terraform-terminal-rtk-sequential-workflow-r0/verify-workflow.sh",
+        "final_verifier_passed": true,
+        "quality_score": 5,
+        "critical_failures": []
+      },
+      "state_observations": {
+        "stale_context_incidents": null,
+        "overfeeding_incidents": null,
+        "repeated_rediscovery_incidents": null,
+        "thread_continuity_errors": [],
+        "useful_state_reuse_notes": "Single persistent Codex thread resumed across one task prompt at a time."
+      },
+      "operational_reproducibility": {
+        "install_logged": true,
+        "pre_session_reset_verified": true,
+        "raw_artifacts_recoverable": true,
+        "state_leakage_outside_session_observed": false,
+        "tool_isolation_audit": {
+          "command": "python3 scripts/audit_tool_isolation.py --json-output ...",
+          "passed": true,
+          "forbidden_tool_hits": []
+        }
+      },
+      "artifacts": {
+        "artifact_contract": "compact-v1-four-files",
+        "run_record": "sources/evaluations/workflow-sessions/20260709-hashicorp-terraform-terminal-rtk-sequential-workflow-r0/run.json",
+        "final_diff": "sources/evaluations/workflow-sessions/20260709-hashicorp-terraform-terminal-rtk-sequential-workflow-r0/changes.diff",
+        "evidence_bundle": "sources/evaluations/workflow-sessions/20260709-hashicorp-terraform-terminal-rtk-sequential-workflow-r0/evidence.jsonl.gz",
+        "manifest": "sources/evaluations/workflow-sessions/20260709-hashicorp-terraform-terminal-rtk-sequential-workflow-r0/manifest.sha256"
+      },
+      "interpretation": {
+        "accepted_for_objective": true,
+        "comparison_baseline_session_id": "20260709-hashicorp-terraform-baseline-bare-codex-sequential-workflow-r0",
+        "exclusion_reason": "",
+        "notes": "Accepted sequential workflow session.",
+        "scope_note": "Full active workflow sequence; tasks disclosed one at a time."
+      }
+    },
+    {
+      "schema_version": 1,
+      "session_id": "20260709-hashicorp-terraform-integrated-token-savior-sequential-workflow-r0",
+      "record_type": "workflow_session",
+      "evidence_type": "workflow-simulation",
+      "study_id": "phase-2-sequential-workflow-v1",
+      "experiment_group_id": "20260709-hashicorp-terraform-integrated-token-savior-sequential-workflow-r0",
+      "objective": "individual_tool_effectiveness",
+      "evidence_stage": "reproduction",
+      "status": "completed",
+      "session_role": "individual_tool_treatment",
+      "replicate_index": 0,
+      "date": "2026-07-09",
+      "target": {
+        "fixture_id": "large-hashicorp-terraform",
+        "fixture_scale": "large-project",
+        "project_id": "hashicorp-terraform",
+        "repository_path": "sources/evaluations/workflow-sessions/20260709-hashicorp-terraform-integrated-token-savior-sequential-workflow-r0/project/repo",
+        "initial_snapshot": {
+          "commit": "e02391ad384c9c38f1d7f40b853c0d2297348094",
+          "branch": "detached",
+          "fixture_hash": ""
+        }
+      },
+      "task_sequence": {
+        "sequence_id": "terraform-maintenance-sequence-v1",
+        "task_ids": [
+          "terraform-38739-sensitive-policy-paths-regression",
+          "terraform-38745-config-parser-concurrency-regression",
+          "terraform-38747-config-loader-watchstop-race-regression",
+          "terraform-38775-policy-state-close-order-regression",
+          "terraform-38781-policy-callback-deferred-resources-regression"
+        ],
+        "reset_policy": "reset repository, profile home, tool state, indexes, caches, generated config, and agent home before the session; persist them between tasks",
+        "prompt_delivery": {
+          "mode": "sequential-one-task-at-a-time",
+          "future_tasks_visible": false,
+          "codex_thread_id": "019f46a7-285b-7263-acb0-ed29fb0198b0",
+          "task_prompt_evidence": "sources/evaluations/workflow-sessions/20260709-hashicorp-terraform-integrated-token-savior-sequential-workflow-r0/evidence.jsonl.gz"
+        },
+        "leakage_controls": {
+          "seed_origin_concealed": true,
+          "task_directories_model_facing_aliases": true,
+          "model_prompts_sanitized": true,
+          "upstream_remote_removed_from_model_facing_repo": true,
+          "broken_start_committed_as_local_baseline": true,
+          "remaining_limitations": [
+            "Task semantics and verifier names may still be searchable if the model intentionally uses external network access.",
+            "Full prevention requires fixtures built from pre-fix bases plus hidden verifier tests rather than production-code reverse patches."
+          ]
+        }
+      },
+      "profile": {
+        "profile_id": "integrated-token-savior",
+        "profile_type": "individual_tool",
+        "enabled_surfaces": [
+          "integrated-mcp/retrieval-memory-compact-ops"
+        ],
+        "disabled_overlaps": [
+          "all unlisted token-saving surfaces"
+        ],
+        "component_ids": [
+          "token-savior"
+        ]
+      },
+      "agent": {
+        "runtime_id": "codex-cli",
+        "model_condition_id": "codex-openai-gpt-5-5-high",
+        "name": "Codex CLI",
+        "version": "codex-cli 0.142.5",
+        "provider": "openai",
+        "model": "gpt-5.5",
+        "reasoning_effort": "high",
+        "temperature": null,
+        "max_turns": null,
+        "time_budget_seconds": 27000
+      },
+      "state_policy": {
+        "reset_before_session": [
+          "repository working tree",
+          "profile home",
+          "tool indexes and caches",
+          "generated config",
+          "agent home",
+          "temporary directories"
+        ],
+        "persist_between_tasks": [
+          "repository working tree",
+          "tool indexes and caches",
+          "generated config",
+          "agent home",
+          "memory/state stores enabled by the active profile",
+          "run artifacts"
+        ]
+      },
+      "cumulative_token_usage": {
+        "measurement_source": "codex-jsonl-usage-events",
+        "fresh_input_tokens": 750239,
+        "cached_input_tokens": 28225280,
+        "cache_write_tokens": null,
+        "output_tokens": 84519,
+        "reasoning_tokens": 19377,
+        "total_provider_tokens": 29060038,
+        "estimated_cost_usd": null,
+        "tokens_per_accepted_task": 5812007.6,
+        "pricing_basis": "not computed; Codex-reported token volume, not billing-weighted cost"
+      },
+      "per_task_results": [
+        {
+          "task_id": "terraform-38739-sensitive-policy-paths-regression",
+          "task_alias": "task-01",
+          "order": 1,
+          "verifier_exit_code": 0,
+          "accepted": true,
+          "verifier_output": "sources/evaluations/workflow-sessions/20260709-hashicorp-terraform-integrated-token-savior-sequential-workflow-r0/verifier-task-01.txt"
+        },
+        {
+          "task_id": "terraform-38745-config-parser-concurrency-regression",
+          "task_alias": "task-02",
+          "order": 2,
+          "verifier_exit_code": 0,
+          "accepted": true,
+          "verifier_output": "sources/evaluations/workflow-sessions/20260709-hashicorp-terraform-integrated-token-savior-sequential-workflow-r0/verifier-task-02.txt"
+        },
+        {
+          "task_id": "terraform-38747-config-loader-watchstop-race-regression",
+          "task_alias": "task-03",
+          "order": 3,
+          "verifier_exit_code": 0,
+          "accepted": true,
+          "verifier_output": "sources/evaluations/workflow-sessions/20260709-hashicorp-terraform-integrated-token-savior-sequential-workflow-r0/verifier-task-03.txt"
+        },
+        {
+          "task_id": "terraform-38775-policy-state-close-order-regression",
+          "task_alias": "task-04",
+          "order": 4,
+          "verifier_exit_code": 0,
+          "accepted": true,
+          "verifier_output": "sources/evaluations/workflow-sessions/20260709-hashicorp-terraform-integrated-token-savior-sequential-workflow-r0/verifier-task-04.txt"
+        },
+        {
+          "task_id": "terraform-38781-policy-callback-deferred-resources-regression",
+          "task_alias": "task-05",
+          "order": 5,
+          "verifier_exit_code": 0,
+          "accepted": true,
+          "verifier_output": "sources/evaluations/workflow-sessions/20260709-hashicorp-terraform-integrated-token-savior-sequential-workflow-r0/verifier-task-05.txt"
+        }
+      ],
+      "software_quality": {
+        "tasks_attempted": 5,
+        "tasks_passed": 5,
+        "final_verifier_command": "sources/evaluations/workflow-sessions/20260709-hashicorp-terraform-integrated-token-savior-sequential-workflow-r0/verify-workflow.sh",
+        "final_verifier_passed": true,
+        "quality_score": 5,
+        "critical_failures": []
+      },
+      "state_observations": {
+        "stale_context_incidents": null,
+        "overfeeding_incidents": null,
+        "repeated_rediscovery_incidents": null,
+        "thread_continuity_errors": [],
+        "useful_state_reuse_notes": "Single persistent Codex thread resumed across one task prompt at a time."
+      },
+      "operational_reproducibility": {
+        "install_logged": true,
+        "pre_session_reset_verified": true,
+        "raw_artifacts_recoverable": true,
+        "state_leakage_outside_session_observed": false,
+        "tool_isolation_audit": {
+          "command": "python3 scripts/audit_tool_isolation.py --json-output ...",
+          "passed": true,
+          "forbidden_tool_hits": []
+        }
+      },
+      "artifacts": {
+        "artifact_contract": "compact-v1-four-files",
+        "run_record": "sources/evaluations/workflow-sessions/20260709-hashicorp-terraform-integrated-token-savior-sequential-workflow-r0/run.json",
+        "final_diff": "sources/evaluations/workflow-sessions/20260709-hashicorp-terraform-integrated-token-savior-sequential-workflow-r0/changes.diff",
+        "evidence_bundle": "sources/evaluations/workflow-sessions/20260709-hashicorp-terraform-integrated-token-savior-sequential-workflow-r0/evidence.jsonl.gz",
+        "manifest": "sources/evaluations/workflow-sessions/20260709-hashicorp-terraform-integrated-token-savior-sequential-workflow-r0/manifest.sha256"
+      },
+      "interpretation": {
+        "accepted_for_objective": true,
+        "comparison_baseline_session_id": "20260709-hashicorp-terraform-baseline-bare-codex-sequential-workflow-r0",
+        "exclusion_reason": "",
+        "notes": "Accepted sequential workflow session.",
+        "scope_note": "Full active workflow sequence; tasks disclosed one at a time."
+      }
+    },
+    {
+      "schema_version": 1,
+      "session_id": "20260709-hashicorp-terraform-retrieval-jcodemunch-mcp-sequential-workflow-r0",
+      "record_type": "workflow_session",
+      "evidence_type": "workflow-simulation",
+      "study_id": "phase-2-sequential-workflow-v1",
+      "experiment_group_id": "20260709-hashicorp-terraform-retrieval-jcodemunch-mcp-sequential-workflow-r0",
+      "objective": "individual_tool_effectiveness",
+      "evidence_stage": "reproduction",
+      "status": "completed",
+      "session_role": "individual_tool_treatment",
+      "replicate_index": 0,
+      "date": "2026-07-09",
+      "target": {
+        "fixture_id": "large-hashicorp-terraform",
+        "fixture_scale": "large-project",
+        "project_id": "hashicorp-terraform",
+        "repository_path": "sources/evaluations/workflow-sessions/20260709-hashicorp-terraform-retrieval-jcodemunch-mcp-sequential-workflow-r0/project/repo",
+        "initial_snapshot": {
+          "commit": "e02391ad384c9c38f1d7f40b853c0d2297348094",
+          "branch": "detached",
+          "fixture_hash": ""
+        }
+      },
+      "task_sequence": {
+        "sequence_id": "terraform-maintenance-sequence-v1",
+        "task_ids": [
+          "terraform-38739-sensitive-policy-paths-regression",
+          "terraform-38745-config-parser-concurrency-regression",
+          "terraform-38747-config-loader-watchstop-race-regression",
+          "terraform-38775-policy-state-close-order-regression",
+          "terraform-38781-policy-callback-deferred-resources-regression"
+        ],
+        "reset_policy": "reset repository, profile home, tool state, indexes, caches, generated config, and agent home before the session; persist them between tasks",
+        "prompt_delivery": {
+          "mode": "sequential-one-task-at-a-time",
+          "future_tasks_visible": false,
+          "codex_thread_id": "019f4745-22ea-7bd3-9994-c6c094622bc5",
+          "task_prompt_evidence": "sources/evaluations/workflow-sessions/20260709-hashicorp-terraform-retrieval-jcodemunch-mcp-sequential-workflow-r0/evidence.jsonl.gz"
+        },
+        "leakage_controls": {
+          "seed_origin_concealed": true,
+          "task_directories_model_facing_aliases": true,
+          "model_prompts_sanitized": true,
+          "upstream_remote_removed_from_model_facing_repo": true,
+          "broken_start_committed_as_local_baseline": true,
+          "remaining_limitations": [
+            "Task semantics and verifier names may still be searchable if the model intentionally uses external network access.",
+            "Full prevention requires fixtures built from pre-fix bases plus hidden verifier tests rather than production-code reverse patches."
+          ]
+        }
+      },
+      "profile": {
+        "profile_id": "retrieval-jcodemunch-mcp",
+        "profile_type": "individual_tool",
+        "enabled_surfaces": [
+          "retrieval/context"
+        ],
+        "disabled_overlaps": [
+          "all unlisted token-saving surfaces"
+        ],
+        "component_ids": [
+          "jcodemunch-mcp"
+        ]
+      },
+      "agent": {
+        "runtime_id": "codex-cli",
+        "model_condition_id": "codex-openai-gpt-5-5-high",
+        "name": "Codex CLI",
+        "version": "codex-cli 0.142.5",
+        "provider": "openai",
+        "model": "gpt-5.5",
+        "reasoning_effort": "high",
+        "temperature": null,
+        "max_turns": null,
+        "time_budget_seconds": 27000
+      },
+      "state_policy": {
+        "reset_before_session": [
+          "repository working tree",
+          "profile home",
+          "tool indexes and caches",
+          "generated config",
+          "agent home",
+          "temporary directories"
+        ],
+        "persist_between_tasks": [
+          "repository working tree",
+          "tool indexes and caches",
+          "generated config",
+          "agent home",
+          "memory/state stores enabled by the active profile",
+          "run artifacts"
+        ]
+      },
+      "cumulative_token_usage": {
+        "measurement_source": "codex-jsonl-usage-events",
+        "fresh_input_tokens": 1109712,
+        "cached_input_tokens": 24429056,
+        "cache_write_tokens": null,
+        "output_tokens": 92465,
+        "reasoning_tokens": 20051,
+        "total_provider_tokens": 25631233,
+        "estimated_cost_usd": null,
+        "tokens_per_accepted_task": 5126246.6,
+        "pricing_basis": "not computed; Codex-reported token volume, not billing-weighted cost"
+      },
+      "per_task_results": [
+        {
+          "task_id": "terraform-38739-sensitive-policy-paths-regression",
+          "task_alias": "task-01",
+          "order": 1,
+          "verifier_exit_code": 0,
+          "accepted": true,
+          "verifier_output": "sources/evaluations/workflow-sessions/20260709-hashicorp-terraform-retrieval-jcodemunch-mcp-sequential-workflow-r0/verifier-task-01.txt"
+        },
+        {
+          "task_id": "terraform-38745-config-parser-concurrency-regression",
+          "task_alias": "task-02",
+          "order": 2,
+          "verifier_exit_code": 0,
+          "accepted": true,
+          "verifier_output": "sources/evaluations/workflow-sessions/20260709-hashicorp-terraform-retrieval-jcodemunch-mcp-sequential-workflow-r0/verifier-task-02.txt"
+        },
+        {
+          "task_id": "terraform-38747-config-loader-watchstop-race-regression",
+          "task_alias": "task-03",
+          "order": 3,
+          "verifier_exit_code": 0,
+          "accepted": true,
+          "verifier_output": "sources/evaluations/workflow-sessions/20260709-hashicorp-terraform-retrieval-jcodemunch-mcp-sequential-workflow-r0/verifier-task-03.txt"
+        },
+        {
+          "task_id": "terraform-38775-policy-state-close-order-regression",
+          "task_alias": "task-04",
+          "order": 4,
+          "verifier_exit_code": 0,
+          "accepted": true,
+          "verifier_output": "sources/evaluations/workflow-sessions/20260709-hashicorp-terraform-retrieval-jcodemunch-mcp-sequential-workflow-r0/verifier-task-04.txt"
+        },
+        {
+          "task_id": "terraform-38781-policy-callback-deferred-resources-regression",
+          "task_alias": "task-05",
+          "order": 5,
+          "verifier_exit_code": 0,
+          "accepted": true,
+          "verifier_output": "sources/evaluations/workflow-sessions/20260709-hashicorp-terraform-retrieval-jcodemunch-mcp-sequential-workflow-r0/verifier-task-05.txt"
+        }
+      ],
+      "software_quality": {
+        "tasks_attempted": 5,
+        "tasks_passed": 5,
+        "final_verifier_command": "sources/evaluations/workflow-sessions/20260709-hashicorp-terraform-retrieval-jcodemunch-mcp-sequential-workflow-r0/verify-workflow.sh",
+        "final_verifier_passed": true,
+        "quality_score": 5,
+        "critical_failures": []
+      },
+      "state_observations": {
+        "stale_context_incidents": null,
+        "overfeeding_incidents": null,
+        "repeated_rediscovery_incidents": null,
+        "thread_continuity_errors": [],
+        "useful_state_reuse_notes": "Single persistent Codex thread resumed across one task prompt at a time."
+      },
+      "operational_reproducibility": {
+        "install_logged": true,
+        "pre_session_reset_verified": true,
+        "raw_artifacts_recoverable": true,
+        "state_leakage_outside_session_observed": false,
+        "tool_isolation_audit": {
+          "command": "python3 scripts/audit_tool_isolation.py --json-output ...",
+          "passed": true,
+          "forbidden_tool_hits": []
+        }
+      },
+      "artifacts": {
+        "artifact_contract": "compact-v1-four-files",
+        "run_record": "sources/evaluations/workflow-sessions/20260709-hashicorp-terraform-retrieval-jcodemunch-mcp-sequential-workflow-r0/run.json",
+        "final_diff": "sources/evaluations/workflow-sessions/20260709-hashicorp-terraform-retrieval-jcodemunch-mcp-sequential-workflow-r0/changes.diff",
+        "evidence_bundle": "sources/evaluations/workflow-sessions/20260709-hashicorp-terraform-retrieval-jcodemunch-mcp-sequential-workflow-r0/evidence.jsonl.gz",
+        "manifest": "sources/evaluations/workflow-sessions/20260709-hashicorp-terraform-retrieval-jcodemunch-mcp-sequential-workflow-r0/manifest.sha256"
+      },
+      "interpretation": {
+        "accepted_for_objective": true,
+        "comparison_baseline_session_id": "20260709-hashicorp-terraform-baseline-bare-codex-sequential-workflow-r0",
+        "exclusion_reason": "",
+        "notes": "Accepted sequential workflow session.",
+        "scope_note": "Full active workflow sequence; tasks disclosed one at a time."
+      }
+    },
+    {
+      "schema_version": 1,
+      "session_id": "20260709-fastify-fastify-retrieval-graphify-sequential-workflow-r0",
+      "record_type": "workflow_session",
+      "evidence_type": "workflow-simulation",
+      "study_id": "phase-2-sequential-workflow-v1",
+      "experiment_group_id": "20260709-fastify-fastify-retrieval-graphify-sequential-workflow-r0",
+      "objective": "individual_tool_effectiveness",
+      "evidence_stage": "reproduction",
+      "status": "completed",
+      "session_role": "individual_tool_treatment",
+      "replicate_index": 0,
+      "date": "2026-07-09",
+      "target": {
+        "fixture_id": "medium-fastify-fastify",
+        "fixture_scale": "medium-project",
+        "project_id": "fastify-fastify",
+        "repository_path": "sources/evaluations/workflow-sessions/20260709-fastify-fastify-retrieval-graphify-sequential-workflow-r0/project/repo",
+        "initial_snapshot": {
+          "commit": "94bcbcc6e2ef3b8e8f8e8797fe551ccbe7b942fd",
+          "branch": "detached",
+          "fixture_hash": ""
+        }
+      },
+      "task_sequence": {
+        "sequence_id": "fastify-maintenance-sequence-v1",
+        "task_ids": [
+          "fastify-query-schema-alias-regression",
+          "fastify-response-2xx-serializer-regression",
+          "fastify-trust-proxy-last-header-regression",
+          "fastify-has-route-method-case-regression",
+          "fastify-reply-hijack-state-regression"
+        ],
+        "reset_policy": "reset repository, profile home, tool state, indexes, caches, generated config, and agent home before the session; persist them between tasks",
+        "prompt_delivery": {
+          "mode": "sequential-one-task-at-a-time",
+          "future_tasks_visible": false,
+          "codex_thread_id": "019f476c-31a4-7742-8153-40e19ed45e04",
+          "task_prompt_evidence": "sources/evaluations/workflow-sessions/20260709-fastify-fastify-retrieval-graphify-sequential-workflow-r0/evidence.jsonl.gz"
+        },
+        "leakage_controls": {
+          "seed_origin_concealed": true,
+          "task_directories_model_facing_aliases": true,
+          "model_prompts_sanitized": true,
+          "upstream_remote_removed_from_model_facing_repo": true,
+          "broken_start_committed_as_local_baseline": true,
+          "remaining_limitations": [
+            "Task semantics and verifier names may still be searchable if the model intentionally uses external network access.",
+            "Full prevention requires fixtures built from pre-fix bases plus hidden verifier tests rather than production-code reverse patches."
+          ]
+        }
+      },
+      "profile": {
+        "profile_id": "retrieval-graphify",
+        "profile_type": "individual_tool",
+        "enabled_surfaces": [
+          "retrieval/context"
+        ],
+        "disabled_overlaps": [
+          "all unlisted token-saving surfaces"
+        ],
+        "component_ids": [
+          "graphify"
+        ]
+      },
+      "agent": {
+        "runtime_id": "codex-cli",
+        "model_condition_id": "codex-openai-gpt-5-5-high",
+        "name": "Codex CLI",
+        "version": "codex-cli 0.142.5",
+        "provider": "openai",
+        "model": "gpt-5.5",
+        "reasoning_effort": "high",
+        "temperature": null,
+        "max_turns": null,
+        "time_budget_seconds": 12000
+      },
+      "state_policy": {
+        "reset_before_session": [
+          "repository working tree",
+          "profile home",
+          "tool indexes and caches",
+          "generated config",
+          "agent home",
+          "temporary directories"
+        ],
+        "persist_between_tasks": [
+          "repository working tree",
+          "tool indexes and caches",
+          "generated config",
+          "agent home",
+          "memory/state stores enabled by the active profile",
+          "run artifacts"
+        ]
+      },
+      "cumulative_token_usage": {
+        "measurement_source": "codex-jsonl-usage-events",
+        "fresh_input_tokens": 491677,
+        "cached_input_tokens": 9876608,
+        "cache_write_tokens": null,
+        "output_tokens": 45909,
+        "reasoning_tokens": 8763,
+        "total_provider_tokens": 10414194,
+        "estimated_cost_usd": null,
+        "tokens_per_accepted_task": 2082838.8,
+        "pricing_basis": "not computed; Codex-reported token volume, not billing-weighted cost"
+      },
+      "per_task_results": [
+        {
+          "task_id": "fastify-query-schema-alias-regression",
+          "task_alias": "task-01",
+          "order": 1,
+          "verifier_exit_code": 0,
+          "accepted": true,
+          "verifier_output": "sources/evaluations/workflow-sessions/20260709-fastify-fastify-retrieval-graphify-sequential-workflow-r0/verifier-task-01.txt"
+        },
+        {
+          "task_id": "fastify-response-2xx-serializer-regression",
+          "task_alias": "task-02",
+          "order": 2,
+          "verifier_exit_code": 0,
+          "accepted": true,
+          "verifier_output": "sources/evaluations/workflow-sessions/20260709-fastify-fastify-retrieval-graphify-sequential-workflow-r0/verifier-task-02.txt"
+        },
+        {
+          "task_id": "fastify-trust-proxy-last-header-regression",
+          "task_alias": "task-03",
+          "order": 3,
+          "verifier_exit_code": 0,
+          "accepted": true,
+          "verifier_output": "sources/evaluations/workflow-sessions/20260709-fastify-fastify-retrieval-graphify-sequential-workflow-r0/verifier-task-03.txt"
+        },
+        {
+          "task_id": "fastify-has-route-method-case-regression",
+          "task_alias": "task-04",
+          "order": 4,
+          "verifier_exit_code": 0,
+          "accepted": true,
+          "verifier_output": "sources/evaluations/workflow-sessions/20260709-fastify-fastify-retrieval-graphify-sequential-workflow-r0/verifier-task-04.txt"
+        },
+        {
+          "task_id": "fastify-reply-hijack-state-regression",
+          "task_alias": "task-05",
+          "order": 5,
+          "verifier_exit_code": 0,
+          "accepted": true,
+          "verifier_output": "sources/evaluations/workflow-sessions/20260709-fastify-fastify-retrieval-graphify-sequential-workflow-r0/verifier-task-05.txt"
+        }
+      ],
+      "software_quality": {
+        "tasks_attempted": 5,
+        "tasks_passed": 5,
+        "final_verifier_command": "sources/evaluations/workflow-sessions/20260709-fastify-fastify-retrieval-graphify-sequential-workflow-r0/verify-workflow.sh",
+        "final_verifier_passed": true,
+        "quality_score": 5,
+        "critical_failures": []
+      },
+      "state_observations": {
+        "stale_context_incidents": null,
+        "overfeeding_incidents": null,
+        "repeated_rediscovery_incidents": null,
+        "thread_continuity_errors": [],
+        "useful_state_reuse_notes": "Single persistent Codex thread resumed across one task prompt at a time."
+      },
+      "operational_reproducibility": {
+        "install_logged": true,
+        "pre_session_reset_verified": true,
+        "raw_artifacts_recoverable": true,
+        "state_leakage_outside_session_observed": false,
+        "tool_isolation_audit": {
+          "command": "python3 scripts/audit_tool_isolation.py --json-output ...",
+          "passed": true,
+          "forbidden_tool_hits": []
+        }
+      },
+      "artifacts": {
+        "artifact_contract": "compact-v1-four-files",
+        "run_record": "sources/evaluations/workflow-sessions/20260709-fastify-fastify-retrieval-graphify-sequential-workflow-r0/run.json",
+        "final_diff": "sources/evaluations/workflow-sessions/20260709-fastify-fastify-retrieval-graphify-sequential-workflow-r0/changes.diff",
+        "evidence_bundle": "sources/evaluations/workflow-sessions/20260709-fastify-fastify-retrieval-graphify-sequential-workflow-r0/evidence.jsonl.gz",
+        "manifest": "sources/evaluations/workflow-sessions/20260709-fastify-fastify-retrieval-graphify-sequential-workflow-r0/manifest.sha256"
+      },
+      "interpretation": {
+        "accepted_for_objective": true,
+        "comparison_baseline_session_id": "20260709-fastify-fastify-baseline-bare-codex-sequential-workflow-r0",
+        "exclusion_reason": "",
+        "notes": "Accepted sequential workflow session.",
+        "scope_note": "Full active workflow sequence; tasks disclosed one at a time."
+      }
+    },
+    {
+      "schema_version": 1,
+      "session_id": "20260709-hashicorp-terraform-terminal-lowfat-sequential-workflow-r0",
+      "record_type": "workflow_session",
+      "evidence_type": "workflow-simulation",
+      "study_id": "phase-2-sequential-workflow-v1",
+      "experiment_group_id": "20260709-hashicorp-terraform-terminal-lowfat-sequential-workflow-r0",
+      "objective": "individual_tool_effectiveness",
+      "evidence_stage": "reproduction",
+      "status": "completed",
+      "session_role": "individual_tool_treatment",
+      "replicate_index": 0,
+      "date": "2026-07-09",
+      "target": {
+        "fixture_id": "large-hashicorp-terraform",
+        "fixture_scale": "large-project",
+        "project_id": "hashicorp-terraform",
+        "repository_path": "sources/evaluations/workflow-sessions/20260709-hashicorp-terraform-terminal-lowfat-sequential-workflow-r0/project/repo",
+        "initial_snapshot": {
+          "commit": "e02391ad384c9c38f1d7f40b853c0d2297348094",
+          "branch": "detached",
+          "fixture_hash": ""
+        }
+      },
+      "task_sequence": {
+        "sequence_id": "terraform-maintenance-sequence-v1",
+        "task_ids": [
+          "terraform-38739-sensitive-policy-paths-regression",
+          "terraform-38745-config-parser-concurrency-regression",
+          "terraform-38747-config-loader-watchstop-race-regression",
+          "terraform-38775-policy-state-close-order-regression",
+          "terraform-38781-policy-callback-deferred-resources-regression"
+        ],
+        "reset_policy": "reset repository, profile home, tool state, indexes, caches, generated config, and agent home before the session; persist them between tasks",
+        "prompt_delivery": {
+          "mode": "sequential-one-task-at-a-time",
+          "future_tasks_visible": false,
+          "codex_thread_id": "019f4772-3095-7d62-9a3d-ee9357eb2ec9",
+          "task_prompt_evidence": "sources/evaluations/workflow-sessions/20260709-hashicorp-terraform-terminal-lowfat-sequential-workflow-r0/evidence.jsonl.gz"
+        },
+        "leakage_controls": {
+          "seed_origin_concealed": true,
+          "task_directories_model_facing_aliases": true,
+          "model_prompts_sanitized": true,
+          "upstream_remote_removed_from_model_facing_repo": true,
+          "broken_start_committed_as_local_baseline": true,
+          "remaining_limitations": [
+            "Task semantics and verifier names may still be searchable if the model intentionally uses external network access.",
+            "Full prevention requires fixtures built from pre-fix bases plus hidden verifier tests rather than production-code reverse patches."
+          ]
+        }
+      },
+      "profile": {
+        "profile_id": "terminal-lowfat",
+        "profile_type": "individual_tool",
+        "enabled_surfaces": [
+          "terminal/tool-output-compaction"
+        ],
+        "disabled_overlaps": [
+          "all unlisted token-saving surfaces"
+        ],
+        "component_ids": [
+          "lowfat"
+        ]
+      },
+      "agent": {
+        "runtime_id": "codex-cli",
+        "model_condition_id": "codex-openai-gpt-5-5-high",
+        "name": "Codex CLI",
+        "version": "codex-cli 0.142.5",
+        "provider": "openai",
+        "model": "gpt-5.5",
+        "reasoning_effort": "high",
+        "temperature": null,
+        "max_turns": null,
+        "time_budget_seconds": 27000
+      },
+      "state_policy": {
+        "reset_before_session": [
+          "repository working tree",
+          "profile home",
+          "tool indexes and caches",
+          "generated config",
+          "agent home",
+          "temporary directories"
+        ],
+        "persist_between_tasks": [
+          "repository working tree",
+          "tool indexes and caches",
+          "generated config",
+          "agent home",
+          "memory/state stores enabled by the active profile",
+          "run artifacts"
+        ]
+      },
+      "cumulative_token_usage": {
+        "measurement_source": "codex-jsonl-usage-events",
+        "fresh_input_tokens": 673830,
+        "cached_input_tokens": 25293056,
+        "cache_write_tokens": null,
+        "output_tokens": 86123,
+        "reasoning_tokens": 17213,
+        "total_provider_tokens": 26053009,
+        "estimated_cost_usd": null,
+        "tokens_per_accepted_task": 5210601.8,
+        "pricing_basis": "not computed; Codex-reported token volume, not billing-weighted cost"
+      },
+      "per_task_results": [
+        {
+          "task_id": "terraform-38739-sensitive-policy-paths-regression",
+          "task_alias": "task-01",
+          "order": 1,
+          "verifier_exit_code": 0,
+          "accepted": true,
+          "verifier_output": "sources/evaluations/workflow-sessions/20260709-hashicorp-terraform-terminal-lowfat-sequential-workflow-r0/verifier-task-01.txt"
+        },
+        {
+          "task_id": "terraform-38745-config-parser-concurrency-regression",
+          "task_alias": "task-02",
+          "order": 2,
+          "verifier_exit_code": 0,
+          "accepted": true,
+          "verifier_output": "sources/evaluations/workflow-sessions/20260709-hashicorp-terraform-terminal-lowfat-sequential-workflow-r0/verifier-task-02.txt"
+        },
+        {
+          "task_id": "terraform-38747-config-loader-watchstop-race-regression",
+          "task_alias": "task-03",
+          "order": 3,
+          "verifier_exit_code": 0,
+          "accepted": true,
+          "verifier_output": "sources/evaluations/workflow-sessions/20260709-hashicorp-terraform-terminal-lowfat-sequential-workflow-r0/verifier-task-03.txt"
+        },
+        {
+          "task_id": "terraform-38775-policy-state-close-order-regression",
+          "task_alias": "task-04",
+          "order": 4,
+          "verifier_exit_code": 0,
+          "accepted": true,
+          "verifier_output": "sources/evaluations/workflow-sessions/20260709-hashicorp-terraform-terminal-lowfat-sequential-workflow-r0/verifier-task-04.txt"
+        },
+        {
+          "task_id": "terraform-38781-policy-callback-deferred-resources-regression",
+          "task_alias": "task-05",
+          "order": 5,
+          "verifier_exit_code": 0,
+          "accepted": true,
+          "verifier_output": "sources/evaluations/workflow-sessions/20260709-hashicorp-terraform-terminal-lowfat-sequential-workflow-r0/verifier-task-05.txt"
+        }
+      ],
+      "software_quality": {
+        "tasks_attempted": 5,
+        "tasks_passed": 5,
+        "final_verifier_command": "sources/evaluations/workflow-sessions/20260709-hashicorp-terraform-terminal-lowfat-sequential-workflow-r0/verify-workflow.sh",
+        "final_verifier_passed": true,
+        "quality_score": 5,
+        "critical_failures": []
+      },
+      "state_observations": {
+        "stale_context_incidents": null,
+        "overfeeding_incidents": null,
+        "repeated_rediscovery_incidents": null,
+        "thread_continuity_errors": [],
+        "useful_state_reuse_notes": "Single persistent Codex thread resumed across one task prompt at a time."
+      },
+      "operational_reproducibility": {
+        "install_logged": true,
+        "pre_session_reset_verified": true,
+        "raw_artifacts_recoverable": true,
+        "state_leakage_outside_session_observed": false,
+        "tool_isolation_audit": {
+          "command": "python3 scripts/audit_tool_isolation.py --json-output ...",
+          "passed": true,
+          "forbidden_tool_hits": []
+        }
+      },
+      "artifacts": {
+        "artifact_contract": "compact-v1-four-files",
+        "run_record": "sources/evaluations/workflow-sessions/20260709-hashicorp-terraform-terminal-lowfat-sequential-workflow-r0/run.json",
+        "final_diff": "sources/evaluations/workflow-sessions/20260709-hashicorp-terraform-terminal-lowfat-sequential-workflow-r0/changes.diff",
+        "evidence_bundle": "sources/evaluations/workflow-sessions/20260709-hashicorp-terraform-terminal-lowfat-sequential-workflow-r0/evidence.jsonl.gz",
+        "manifest": "sources/evaluations/workflow-sessions/20260709-hashicorp-terraform-terminal-lowfat-sequential-workflow-r0/manifest.sha256"
+      },
+      "interpretation": {
+        "accepted_for_objective": true,
+        "comparison_baseline_session_id": "20260709-hashicorp-terraform-baseline-bare-codex-sequential-workflow-r0",
+        "exclusion_reason": "",
+        "notes": "Accepted sequential workflow session.",
+        "scope_note": "Full active workflow sequence; tasks disclosed one at a time."
+      }
     }
   ]
 }

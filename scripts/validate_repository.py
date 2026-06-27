@@ -88,7 +88,6 @@ REQUIRED_PATHS = [
     "docs/tool-dossiers/thedotmack-claude-mem.md",
     "docs/tool-dossiers/tirth8205-code-review-graph.md",
     "docs/tool-dossiers/coderamp-labs-gitingest.md",
-    "docs/tool-dossiers/zilliztech-claude-context.md",
     "docs/tool-dossiers/yvgude-lean-ctx.md",
     "docs/tool-dossiers/cocoindex-io-cocoindex-code.md",
     "docs/tool-dossiers/open-compress-claw-compactor.md",
