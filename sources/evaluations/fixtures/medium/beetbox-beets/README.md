@@ -35,6 +35,6 @@ This smoke status proves the candidate checkout and dependency bootstrap are usa
 
 - Active sequence: `beets-maintenance-sequence-v1`
 - Runner command shape: `python3 scripts/run_codex_workflow_evaluation.py --sequence-id beets-maintenance-sequence-v1 --profile-id baseline-bare-codex`
-- Pair-run helper shape: `scripts/run_sequential_workflow_pair.sh beets-maintenance-sequence-v1`
+- Matrix command shape: `python3 scripts/run_sequential_workflow_matrix.py beets-maintenance-sequence-v1 --treatment-profile <profile-id>`
 
 The sequence is prepare-only verified through the workflow runner.

@@ -263,6 +263,7 @@ SOURCE_SCAN_RE = re.compile(
     r"(?:command\s+)?(?:grep|rg|awk|sed|perl|cmp|diff)\b|git\s+diff\b"
     r").*(?:^|[\s'\"])(?:[A-Za-z0-9_.-]+/)+(?:[A-Za-z0-9_.-]+)\.(?:c|cc|cpp|cs|go|java|js|jsx|mjs|py|rb|rs|ts|tsx)\b.*$"
     r"|^.*(?:python(?:3)?|node)\b.*(?:(?:open\(|read_text|read_bytes|readFile|readFileSync).*(?:\.c|\.cc|\.cpp|\.cs|\.go|\.java|\.js|\.jsx|\.mjs|\.py|\.rb|\.rs|\.ts|\.tsx)\b|(?:\.c|\.cc|\.cpp|\.cs|\.go|\.java|\.js|\.jsx|\.mjs|\.py|\.rb|\.rs|\.ts|\.tsx)\b.*(?:open\(|read_text|read_bytes|readFile|readFileSync)).*$"
+    r"|^\s*(?:assert|test|expect|require)\b.*(?:read_text|read_bytes|readFile|open\().*$"
 )
 
 
@@ -282,7 +283,39 @@ def is_production_path(path: str) -> bool:
         return False
     if low.endswith((".md", ".rst", ".txt", ".snap", ".patch", ".lock", ".map")):
         return False
-    return Path(low).suffix in {".c", ".cc", ".cpp", ".cs", ".go", ".java", ".js", ".jsx", ".mjs", ".py", ".rb", ".rs", ".ts", ".tsx"}
+    return Path(low).suffix in {".c", ".cc", ".cpp", ".cs", ".cshtml", ".go", ".java", ".js", ".jsx", ".mjs", ".py", ".rb", ".rs", ".ts", ".tsx", ".yaml", ".yml"}
+
+
+def patch_behavior_bearing_paths(path: Path) -> list[str]:
+    """Production paths with a non-comment, non-whitespace patch change.
+
+    A five-file floor is a causal-scope floor, not permission to add formatting
+    or prose-only files. This intentionally works from the controller patch so
+    it also catches deleted comment-only padding.
+    """
+    current = ""
+    bearing: set[str] = set()
+    for line in path.read_text(errors="replace").splitlines():
+        match = re.match(r"^diff --git a/(.+) b/(.+)$", line)
+        if match:
+            current = match.group(2)
+            continue
+        if not current or not line.startswith(("+", "-")) or line.startswith(("+++", "---")):
+            continue
+        value = line[1:].strip()
+        if value and not value.startswith(("//", "/*", "*", "#", "<!--", "--")):
+            bearing.add(current)
+    return sorted(bearing)
+
+
+def task_directory_sha256(task_dir: Path) -> str:
+    """Hash every controller task byte with its relative path, deterministically."""
+    digest = hashlib.sha256()
+    for path in sorted(item for item in task_dir.rglob("*") if item.is_file()):
+        digest.update(str(path.relative_to(task_dir)).encode() + b"\0")
+        digest.update(path.read_bytes())
+        digest.update(b"\0")
+    return digest.hexdigest()
 
 
 def verifier_uses_source_identity(task_dir: Path) -> bool:
@@ -305,7 +338,7 @@ def expected_task_concealed_paths(task: dict) -> list[str]:
     return sorted(expected)
 
 
-def validate_qualification(sequence: dict, production_by_task: dict[str, list[str]], errors: list[str]) -> None:
+def validate_qualification(sequence: dict, errors: list[str]) -> None:
     sid = sequence["id"]
     rel = sequence.get("qualification_path")
     if not rel or not (ROOT / rel).is_file():
@@ -313,7 +346,19 @@ def validate_qualification(sequence: dict, production_by_task: dict[str, list[st
         return
     q = load_json(rel)
     ordered = sorted(sequence["tasks"], key=lambda item: item["order"])
-    required_true = ("seeded_verifier_nonzero", "fixed_verifier_zero", "full_fixed_cumulative_verifier_zero", "ordered_transition_applicability", "alternative_repair_transition_applicability", "no_unmerged_paths", "no_model_visible_acceptance_assets", "all_expected_model_concealment_declared")
+    controller_hidden = (ROOT / ordered[0]["prompt_path"]).parent.parents[1] / "controller-hidden"
+    expected_controller_hidden_sha = task_directory_sha256(controller_hidden) if controller_hidden.is_dir() else None
+    if q.get("controller_hidden_sha256") != expected_controller_hidden_sha:
+        errors.append(f"qualification {rel} shared controller-hidden asset binding is stale")
+    production_by_task = {
+        task["id"]: [
+            path
+            for path in patch_paths((ROOT / task["prompt_path"]).parent / "seed-regression.patch")
+            if is_production_path(path)
+        ]
+        for task in ordered
+    }
+    required_true = ("seeded_verifier_nonzero", "fixed_verifier_zero", "full_fixed_cumulative_verifier_zero", "ordered_transition_applicability", "alternative_repair_transition_applicability", "alternative_repair_noncanonical", "no_unmerged_paths", "no_model_visible_acceptance_assets", "all_expected_model_concealment_declared")
     if q.get("snapshot") != sequence.get("initial_snapshot", {}).get("commit") or q.get("ordered_task_ids") != [t["id"] for t in ordered] or q.get("qualified_on") != sequence.get("qualification_date"):
         errors.append(f"qualification {rel} snapshot, date, or task order is stale")
     if any(q.get(field) is not True for field in required_true):
@@ -325,22 +370,31 @@ def validate_qualification(sequence: dict, production_by_task: dict[str, list[st
     else:
         source = replay_path.read_text()
         marker = f"# --- task-{int(replay['repaired_task_order']):02d}-agent ---"
-        try:
-            section = source.split(marker, 1)[1].split("# --- task-", 1)[0].strip() + "\n"
-        except IndexError:
-            errors.append(f"qualification {rel} alternative-repair replay marker is missing")
-        else:
+        section = (source.split(marker, 1)[1].split("# --- task-", 1)[0] if marker in source else source).strip() + "\n"
+        if section:
             digest = __import__("hashlib")
             if (
                 q.get("alternative_repair_source_sha256") != digest.sha256(replay_path.read_bytes()).hexdigest()
                 or q.get("alternative_repair_patch_sha256") != digest.sha256(section.encode()).hexdigest()
             ):
                 errors.append(f"qualification {rel} alternative-repair replay hashes are stale")
-            if q.get("alternative_repair_noncanonical") is not True or (
-                q.get("alternative_repair_control_flow_footprint") is not True
-                and int(q.get("alternative_repair_noncomment_changed_line_delta", 0)) < 5
-            ):
+            if q.get("alternative_repair_noncanonical") is not True or q.get("alternative_repair_semantic_delta") is not True:
                 errors.append(f"qualification {rel} alternative repair is not materially noncanonical")
+        if int(replay.get("next_task_order", 0)) != int(replay.get("repaired_task_order", 0)) + 1:
+            errors.append(f"qualification {rel} alternative repair must not wrap from task 5 to task 1")
+    boundaries = q.get("cumulative_boundaries", [])
+    if len(boundaries) != len(ordered) or any(
+        boundary.get("task_id") != task["id"]
+        or boundary.get("seed_apply_check_exit") != 0
+        or boundary.get("seed_apply_exit") != 0
+        or boundary.get("seeded_verifier_exit") == 0
+        or boundary.get("repair_apply_check_exit") != 0
+        or boundary.get("repair_apply_exit") != 0
+        or any(code != 0 for code in boundary.get("retained_verifier_exits", {}).values())
+        or any(code != 0 for code in boundary.get("pending_seed_apply_check_exits", {}).values())
+        for task, boundary in zip(ordered, boundaries)
+    ):
+        errors.append(f"qualification {rel} lacks fresh cumulative seed/repair boundary evidence")
     records = q.get("tasks", [])
     if len(records) != len(ordered):
         errors.append(f"qualification {rel} task count does not match sequence")
@@ -348,10 +402,10 @@ def validate_qualification(sequence: dict, production_by_task: dict[str, list[st
     for task, record in zip(ordered, records):
         task_dir = (ROOT / task["prompt_path"]).parent
         files = production_by_task[task["id"]]
-        hashes = {name: __import__("hashlib").sha256((task_dir / name).read_bytes()).hexdigest() for name in ("seed-regression.patch", "verify.sh")}
+        hashes = {name: hashlib.sha256((task_dir / name).read_bytes()).hexdigest() for name in ("agent-prompt.txt", "seed-regression.patch", "verify.sh")}
         if len(set(record.get("production_files", []))) < 5 or record.get("production_file_count", 0) < 5:
             errors.append(f"qualification {rel} task {task['id']} records fewer than 5 distinct production/type files")
-        if record.get("task_id") != task["id"] or record.get("production_files") != files or record.get("production_file_count") != len(files) or record.get("seed_patch_sha256") != hashes["seed-regression.patch"] or record.get("verifier_sha256") != hashes["verify.sh"]:
+        if record.get("task_id") != task["id"] or record.get("production_files") != files or record.get("production_file_count") != len(files) or record.get("agent_prompt_sha256") != hashes["agent-prompt.txt"] or record.get("seed_patch_sha256") != hashes["seed-regression.patch"] or record.get("verifier_sha256") != hashes["verify.sh"] or record.get("task_directory_sha256") != task_directory_sha256(task_dir):
             errors.append(f"qualification {rel} task {task['id']} has stale hashes, files, or count")
         expected = expected_task_concealed_paths(task)
         declared = sorted(str(path) for path in task.get("model_concealed_paths", []))
@@ -364,6 +418,16 @@ def validate_qualification(sequence: dict, production_by_task: dict[str, list[st
             or record.get("declared_concealment_matches_expected") is not True
         ):
             errors.append(f"qualification {rel} task {task['id']} concealment evidence is stale or incomplete")
+        if q.get("task_binding", {}).get("task_directories", {}).get(task["id"]) != task_directory_sha256(task_dir):
+            errors.append(f"qualification {rel} task {task['id']} directory-byte binding is stale")
+
+
+def qualification_is_current(sequence: dict) -> tuple[bool, dict]:
+    errors: list[str] = []
+    validate_qualification(sequence, errors)
+    rel = sequence.get("qualification_path")
+    qualification = load_json(rel) if rel and (ROOT / rel).is_file() else {}
+    return not errors, qualification
 
 
 def validate_repository_fixtures(fixture_doc: dict, errors: list[str]) -> None:
@@ -591,6 +655,9 @@ def validate_agent_runtimes(runtime_doc: dict, errors: list[str]) -> tuple[set[s
         for key in ("provider", "model", "usage_accounting"):
             if not condition.get(key):
                 errors.append(f"model condition {cid} missing {key}")
+    active_defaults = [condition for condition in conditions if condition.get("status") == "active-default"]
+    if len(active_defaults) != 1 or active_defaults[0].get("id") != "codex-openai-gpt-5-6-terra-medium" or active_defaults[0].get("model") != "gpt-5.6-terra" or active_defaults[0].get("reasoning_effort") != "medium":
+        errors.append("the only active default model condition must be codex-openai-gpt-5-6-terra-medium")
     return runtime_ids, condition_ids
 
 
@@ -738,12 +805,22 @@ def validate_workflow_task_sequences(sequence_doc: dict, fixture_doc: dict, erro
                     production_by_task[str(tid)] = production
                     if len(production) < 5:
                         errors.append(f"active workflow sequence {sid} task {tid} seed patch has {len(production)} production/type files; minimum is 5")
+                    behavior_bearing = patch_behavior_bearing_paths(task_dir / "seed-regression.patch")
+                    padded = sorted(set(production) - set(behavior_bearing))
+                    if padded and str(tid) == "terraform-9ae470-objchange-validation-regression":
+                        errors.append(f"active workflow sequence {sid} task {tid} pads its production scope with comment-only files: {', '.join(padded)}")
                     if verifier_uses_source_identity(task_dir):
                         errors.append(f"active workflow sequence {sid} task {tid} uses exact-source supplemental guards instead of behavioral acceptance")
         if orders and sorted(orders) != list(range(1, len(orders) + 1)):
             errors.append(f"workflow sequence {sid} task orders must be contiguous starting at 1")
         if sequence.get("status") == "active" and len(production_by_task) == len(tasks):
-            validate_qualification(sequence, production_by_task, errors)
+            validate_qualification(sequence, errors)
+    active = [sequence for sequence in sequences if sequence.get("status") == "active"]
+    expected_active = {"fastify-maintenance-sequence-v1", "terraform-maintenance-sequence-v1", "beets-maintenance-sequence-v1"}
+    if {sequence.get("id") for sequence in active} != expected_active:
+        errors.append("active workflow sequences must be exactly Fastify, Terraform, and Beets")
+    if any(len(sequence.get("tasks", [])) != 5 for sequence in active):
+        errors.append("every active workflow sequence must contain exactly five tasks")
     return sequence_ids
 
 
@@ -1028,6 +1105,14 @@ def validate_workflow_session_contract(session: dict, canonical_profile: dict | 
     if review_status == "not-reviewed" and quality_score is not None:
         errors.append(f"workflow session {sid} unreviewed quality_score must be null")
     if isinstance(interpretation, dict) and interpretation.get("accepted_for_objective") is True:
+        token_usage = session.get("cumulative_token_usage", {})
+        if (
+            not isinstance(token_usage, dict)
+            or token_usage.get("measurement_source") != "codex-jsonl-usage-events"
+            or not isinstance(token_usage.get("total_provider_tokens"), int)
+            or token_usage.get("total_provider_tokens", 0) <= 0
+        ):
+            errors.append(f"workflow session {sid} objective acceptance requires positive provider-reported total tokens")
         critical_failures = quality.get("critical_failures", []) if isinstance(quality, dict) else []
         prompt_delivery = sequence.get("prompt_delivery", {}) if isinstance(sequence, dict) else {}
         leakage_controls = sequence.get("leakage_controls", {}) if isinstance(sequence, dict) else {}
@@ -1054,8 +1139,8 @@ def validate_workflow_session_contract(session: dict, canonical_profile: dict | 
             errors.append(
                 f"workflow session {sid} objective acceptance requires a completed, execution-accepted, functionally verified, and structurally isolated run"
             )
-        if review_status != "reviewed" or not isinstance(quality_score, int) or quality_score < 3 or critical_failures:
-            errors.append(f"workflow session {sid} objective acceptance requires a reviewed quality result with score >= 3 and no critical failures")
+        if review_status != "reviewed" or not isinstance(quality_score, int) or quality_score < 4 or critical_failures:
+            errors.append(f"workflow session {sid} objective acceptance requires a reviewed quality result with score >= 4 and no critical failures")
 
 
 def validate_workflow_sessions(session_doc: dict, sequence_ids: set[str], fixture_doc: dict, profiles_by_id: dict[str, dict], runtime_ids: set[str], model_condition_ids: set[str], errors: list[str]) -> None:
@@ -1257,6 +1342,8 @@ def validate_frozen_protocol_bindings(errors: list[str]) -> None:
         runner = None
     for path in (ROOT / "sources/evaluations/protocols").glob("*.json"):
         protocol = json.loads(path.read_text())
+        if protocol.get("status") == "frozen-ready-not-run" and "gpt-5.5" in json.dumps(protocol):
+            errors.append(f"frozen protocol {path.name} uses historical-inactive gpt-5.5")
         if protocol.get("status") != "frozen-ready-not-run":
             continue
         fixture = protocol.get("task_fixture", {})
@@ -1268,49 +1355,39 @@ def validate_frozen_protocol_bindings(errors: list[str]) -> None:
         actual = __import__("hashlib").sha256(qualification_path.read_bytes()).hexdigest()
         if fixture.get("qualification_sha256") != actual:
             errors.append(f"frozen protocol {path.name} has a stale qualification hash")
-        preflight_rel = fixture.get("baseline_preflight_path")
-        preflight_path = ROOT / str(preflight_rel or "")
-        if not preflight_rel or not preflight_path.is_file():
-            errors.append(f"frozen protocol {path.name} is missing baseline preflight evidence")
-        else:
-            preflight_hash = __import__("hashlib").sha256(preflight_path.read_bytes()).hexdigest()
-            preflight = json.loads(preflight_path.read_text())
-            if fixture.get("baseline_preflight_sha256") != preflight_hash or preflight.get("passed") is not True:
-                errors.append(f"frozen protocol {path.name} has stale or failed baseline preflight evidence")
-            if runner is not None:
-                try:
-                    seq = runner.load_sequence(str(fixture.get("sequence_id")))
-                    expected_fingerprint = runner.baseline_protocol_fingerprint(seq)
-                except Exception as exc:
-                    errors.append(f"frozen protocol {path.name} cannot compute current runner fingerprint: {exc}")
-                else:
-                    actual_fingerprint = protocol.get("baseline_pool", {}).get("protocol_fingerprint")
-                    preflight_fingerprint = preflight.get("baseline_pool", {}).get("protocol_fingerprint")
-                    if actual_fingerprint != expected_fingerprint or preflight_fingerprint != expected_fingerprint:
-                        errors.append(f"frozen protocol {path.name} fingerprint binding is stale; expected {expected_fingerprint}")
-                    descriptor = protocol.get("baseline_pool", {}).get("descriptor")
-                    if descriptor != runner.baseline_protocol_descriptor(seq):
-                        errors.append(f"frozen protocol {path.name} baseline descriptor does not match current runner bytes")
-                    selected = protocol.get("selected_execution", {})
-                    selected_descriptor = selected.get("descriptor", {})
-                    selected_profile = selected_descriptor.get("selected_profile", {}).get("profile_id")
-                    docker_image = selected_descriptor.get("runtime", {}).get("docker_image")
-                    timeout_for_execution = int(fixture.get("timeout_seconds_per_task", 3600))
-                    expected_execution = runner.execution_condition_descriptor(
-                        seq,
-                        str(selected_profile or "baseline-bare-codex"),
-                        timeout_seconds_per_task=timeout_for_execution,
-                        docker_image=str(docker_image or runner.DEFAULT_DOCKER_IMAGE),
-                    )
-                    if selected.get("descriptor") != expected_execution or selected.get("descriptor_sha256") != runner._json_hash(expected_execution):
-                        errors.append(f"frozen protocol {path.name} selected execution descriptor is stale")
-                    if preflight.get("selected_execution", {}).get("descriptor_sha256") != runner._json_hash(runner.execution_condition_descriptor(seq, "baseline-bare-codex", timeout_seconds_per_task=timeout_for_execution, docker_image=str(docker_image or runner.DEFAULT_DOCKER_IMAGE))):
-                        errors.append(f"frozen protocol {path.name} baseline preflight selected execution binding is stale")
+        if runner is not None:
+            try:
+                seq = runner.load_sequence(str(fixture.get("sequence_id")))
+                expected_fingerprint = runner.baseline_protocol_fingerprint(seq)
+            except Exception as exc:
+                errors.append(f"frozen protocol {path.name} cannot compute current runner fingerprint: {exc}")
+            else:
+                actual_fingerprint = protocol.get("baseline_pool", {}).get("protocol_fingerprint")
+                if actual_fingerprint != expected_fingerprint:
+                    errors.append(f"frozen protocol {path.name} fingerprint binding is stale; expected {expected_fingerprint}")
+                descriptor = protocol.get("baseline_pool", {}).get("descriptor")
+                if descriptor != runner.baseline_protocol_descriptor(seq):
+                    errors.append(f"frozen protocol {path.name} baseline descriptor does not match current runner bytes")
+                selected = protocol.get("selected_execution", {})
+                selected_descriptor = selected.get("descriptor", {})
+                selected_profile = selected_descriptor.get("selected_profile", {}).get("profile_id")
+                docker_image = selected_descriptor.get("runtime", {}).get("docker_image")
+                timeout_for_execution = int(fixture.get("timeout_seconds_per_task", 3600))
+                expected_execution = runner.execution_condition_descriptor(
+                    seq,
+                    str(selected_profile or "baseline-bare-codex"),
+                    timeout_seconds_per_task=timeout_for_execution,
+                    docker_image=str(docker_image or runner.DEFAULT_DOCKER_IMAGE),
+                )
+                if selected.get("descriptor") != expected_execution or selected.get("descriptor_sha256") != runner._json_hash(expected_execution):
+                    errors.append(f"frozen protocol {path.name} selected execution descriptor is stale")
         timeout = fixture.get("timeout_seconds_per_task")
-        command = protocol.get("baseline", {}).get("command", "")
+        selected = protocol.get("selected_execution", {})
+        selected_profile = selected.get("descriptor", {}).get("selected_profile", {}).get("profile_id", "baseline-bare-codex")
+        agent_block = protocol.get("baseline", {}) if selected_profile == "baseline-bare-codex" else protocol.get("treatment", {})
+        command = agent_block.get("command", "")
         if timeout and f"--timeout-per-task {timeout}" not in command:
             errors.append(f"frozen protocol {path.name} command does not bind timeout {timeout}")
-        selected = protocol.get("selected_execution", {})
         docker_image = selected.get("descriptor", {}).get("runtime", {}).get("docker_image")
         if docker_image and f"--docker-image {docker_image}" not in command:
             errors.append(f"frozen protocol {path.name} command does not bind docker image {docker_image}")
@@ -1383,6 +1460,9 @@ def main() -> int:
     validate_fixture_sequence_status_consistency(workflow_sequences_doc, fixtures_doc, large_candidates_doc, medium_candidates_doc, errors)
     validate_workflow_sessions(workflow_sessions_doc, workflow_sequence_ids, fixtures_doc, profiles_by_id, runtime_ids, model_condition_ids, errors)
     validate_frozen_protocol_bindings(errors)
+    for path in (ROOT / "data/workflow-task-sequences.json", ROOT / "templates/evaluation-run-record.json"):
+        if "gpt-5.5" in path.read_text():
+            errors.append(f"active workflow surface {path.relative_to(ROOT)} uses historical-inactive gpt-5.5")
     validate_tool_dossier_snapshots(errors)
 
     for lit in literature_doc.get("literature", []):

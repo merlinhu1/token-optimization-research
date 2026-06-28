@@ -25,6 +25,13 @@ DEFAULT_CODEX_HOME_ROOT = Path("/opt/data/eval-codex-homes")
 DEFAULT_SOURCE_CODEX_HOME = Path("/opt/data/home/.codex")
 DEFAULT_DOCKER_IMAGE = "token-eval-codex:latest"
 DEFAULT_DOCKERFILE = ROOT / "sources" / "evaluations" / "fixtures" / "container" / "Dockerfile"
+CODEX_RUNTIME_ROOT = Path(os.environ.get(
+    "TOKEN_EVAL_CODEX_RUNTIME_ROOT",
+    "/opt/data/.local/lib/node_modules/@openai/codex",
+))
+CODEX_HOST_EXECUTABLE = Path(os.environ.get("TOKEN_EVAL_CODEX_EXECUTABLE", "/opt/data/.local/bin/codex"))
+CODEX_CONTAINER_RUNTIME_ROOT = Path("/opt/data/codex-runtime")
+CODEX_CONTAINER_BIN_ROOT = Path("/opt/data/codex-entry")
 FORBIDDEN_BASELINE_TERMS = [
     "lean-ctx",
     "mcp_lean_ctx",
@@ -737,8 +744,14 @@ def codex_env(codex_home: Path, *, containerized: bool = False, cfg: dict[str, A
     # Keep only the Codex wrapper and pinned language toolchains in PATH. Do not
     # expose broad host wrapper directories such as /opt/data/bin in baseline or
     # unrelated treatment lanes; they may contain other token-saving tools.
+    isolated_codex_bin = codex_home / "runtime-bin"
+    if not containerized:
+        isolated_codex_bin.mkdir(parents=True, exist_ok=True)
+        link = isolated_codex_bin / "codex"
+        if not link.exists():
+            link.symlink_to(CODEX_HOST_EXECUTABLE)
     path_entries = [
-        "/opt/data/codex-cli/node_modules/.bin",
+        str(CODEX_CONTAINER_BIN_ROOT if containerized else isolated_codex_bin),
         "/opt/data/opt/go/bin",
         "/opt/data/opt/uv",
         str(NODE_TOOLCHAIN_ROOT / "bin"),
@@ -791,8 +804,12 @@ def tool_env_for_record(record: dict[str, Any], pid: str, codex_home: Path) -> d
 
 def docker_tool_mounts(cfg: dict[str, Any] | None = None) -> list[tuple[Path, Path, str]]:
     mounts: list[tuple[Path, Path, str]] = []
+    if CODEX_RUNTIME_ROOT.exists():
+        mounts.append((CODEX_RUNTIME_ROOT, CODEX_CONTAINER_RUNTIME_ROOT, "ro"))
+    codex_wrapper = ROOT / "sources/evaluations/fixtures/container/codex-entrypoint.sh"
+    if codex_wrapper.exists():
+        mounts.append((codex_wrapper, CODEX_CONTAINER_BIN_ROOT / "codex", "ro"))
     path_texts = [
-        "/opt/data/codex-cli",
         "/opt/data/dotnet",
         "/opt/data/opt/go",
         "/opt/data/opt/uv",
@@ -912,7 +929,7 @@ def ensure_codex_native_binary_executable() -> None:
     the native executable can be spawned by the same UID inside the eval container
     before each smoke/preflight/solve invocation.
     """
-    codex_root = Path("/opt/data/codex-cli/node_modules")
+    codex_root = CODEX_RUNTIME_ROOT / "node_modules"
     if not codex_root.exists():
         return
     for binary in codex_root.glob("@openai/codex-*/vendor/*/bin/codex"):
