@@ -52,7 +52,7 @@ Token-accounting mechanics are owned by `token-accounting.md`.
 - Quality scoring should explain partial success and under-solving.
 - Deterministic verifier success does not assign an ordinal quality score.
 - Unreviewed runs keep `quality_score` null and remain ineligible for objective acceptance.
-- Objective acceptance requires a recorded review, score at least 3, and no critical failures.
+- Objective acceptance requires a recorded review, score at least 4, and no critical failures.
 
 ## Engineering Decisions
 

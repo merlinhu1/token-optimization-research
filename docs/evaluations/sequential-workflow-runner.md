@@ -18,11 +18,13 @@ The runner delivers task state and prompts sequentially:
 
 Future prompts and future regressions remain absent until their turn. The model container mounts the target repository and an isolated output directory, not the workflow run directory, task fixtures, seed patches, controller Git objects, or verifier scripts. The controller hashes verifier assets before execution and verifies both verifier integrity and true-root concealment before acceptance.
 
+The matrix takes a global production lock before provider-capable planning, publishes nothing from a failed lane, retains only bounded compact failure evidence, and removes disposable lane checkouts unless `--keep-lanes` is set.
+
 Do not use older all-tasks-visible or verifier-visible workflow artifacts for decision evidence.
 
 ## Activation and prerequisites
 
-Fastify is the active primary sequence after behavioral fixture qualification. `--list-sequences` may expose it, but provider-backed execution still requires an explicit frozen protocol and operator authorization; fixture validation uses `--prepare-only`.
+Fastify, Terraform, and Beets are the active primary sequences after behavioral fixture qualification. `--list-sequences` exposes all three, but provider-backed execution still requires an explicit frozen protocol and operator authorization; fixture validation uses `--prepare-only`.
 
 A sequence may return to `active` only after it has causally related multi-file behavior, behavioral acceptance tests, standalone seeded-fail/fixed-pass evidence, and a clean lazy-seed prepare smoke.
 
@@ -33,7 +35,7 @@ python3 scripts/run_codex_workflow_evaluation.py --list-sequences
 docker image inspect token-eval-codex:latest >/dev/null
 ```
 
-Frozen protocols and prepare preflights record the Dockerfile hash plus the inspected image ID and RepoDigests for `token-eval-codex:latest`. Runtime setup re-inspects the tag and rejects changed image IDs before provider spend.
+Frozen protocols directly bind the qualification hash, execution-harness hashes, Dockerfile hash, inspected image ID, and RepoDigests for `token-eval-codex:latest`. Runtime setup re-inspects the tag and rejects changed image IDs before provider spend. `scripts/refresh_workflow_contracts.py` refuses stale qualification evidence and never rewrites it.
 
 Codex auth is copied from the selected source Codex home into the isolated run home. Real evaluation runs must keep container, Codex, and dependency preflights enabled.
 
@@ -53,7 +55,7 @@ During a paid run, the controller captures each task delta, injects only the nex
 
 ## Paid execution gate
 
-Do not run a lane, pair, or matrix while `--list-sequences` is empty. After a sequence is reactivated, use the maintained commands in `docs/evaluations/workflow-evaluation-runbook.md`. The pair helper is review-gated: the first invocation runs only a missing baseline, the second can run treatment only after baseline quality score >= 4 with no critical failures and objective acceptance, and a final invocation writes/reuses the comparison only after the treatment receives the same review. Any failed execution, isolation, concealment, verifier-integrity, or quality gate stops the pair.
+Do not run a lane or matrix while `--list-sequences` is empty. After a sequence is reactivated, use the maintained commands in `docs/evaluations/workflow-evaluation-runbook.md`. The matrix runs one missing baseline per sequence and will not schedule treatments until that baseline has quality score >= 4, no critical failures, and objective acceptance. Treatment protocols are frozen separately for each profile. Any failed execution, isolation, concealment, verifier-integrity, or quality gate stops that lane.
 
 ## Artifacts to inspect
 
@@ -116,7 +118,7 @@ Do not publish copied Codex homes. The runner deletes `codex-homes/` and redacts
 
 ### Foreground timeout while manually wrapping commands
 
-Hermes foreground terminal calls cap at 600 seconds. Humans running from a normal shell can use longer shell sessions, but agent-driven long runs should use background execution or the pair script per lane.
+Hermes foreground terminal calls cap at 600 seconds. Humans running from a normal shell can use longer shell sessions, but agent-driven long runs should use background execution or the bounded-concurrency matrix.
 
 ## Validation after manual runs
 
@@ -142,4 +144,4 @@ A completed workflow-reproduction record is valid only if it records:
 }
 ```
 
-Seed-origin concealment must also be enabled. Deterministic verifier success records execution correctness only; objective acceptance remains false until `quality_review_status` is `reviewed`, `quality_score` is at least 3, and no critical failure is recorded.
+Seed-origin concealment must also be enabled. Deterministic verifier success records execution correctness only; objective acceptance remains false until `quality_review_status` is `reviewed`, `quality_score` is at least 4, and no critical failure is recorded.

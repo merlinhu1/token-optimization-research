@@ -22,6 +22,8 @@ Every active task must use causally related behavioral acceptance. Unrelated exa
 | Sequence | Fixture | Scale | Snapshot | Tasks |
 |---|---|---|---|---:|
 | `fastify-maintenance-sequence-v1` | `medium-fastify-fastify` | medium-project | [`94bcbcc6e2ef`](https://github.com/fastify/fastify.git) | 5 |
+| `terraform-maintenance-sequence-v1` | `large-hashicorp-terraform` | large-project | [`e02391ad384c`](https://github.com/hashicorp/terraform.git) | 5 |
+| `beets-maintenance-sequence-v1` | `medium-beetbox-beets` | medium-project | [`8ddae794d30e`](https://github.com/beetbox/beets.git) | 5 |
 
 ## Planned candidates and blockers
 
@@ -52,8 +54,8 @@ python3 scripts/run_codex_workflow_evaluation.py   --sequence-id "$SEQUENCE_ID" 
 The active sequence list is non-empty. Freeze a protocol, run a no-model prepare, then run the canonical baseline first:
 
 ```bash
-python3 scripts/run_codex_workflow_evaluation.py --sequence-id fastify-maintenance-sequence-v1 --prepare-only
-scripts/run_sequential_workflow_pair.sh fastify-maintenance-sequence-v1
+python3 scripts/run_sequential_workflow_matrix.py fastify-maintenance-sequence-v1 --prepare-only
+python3 scripts/run_sequential_workflow_matrix.py fastify-maintenance-sequence-v1 --treatment-profile <profile-id>
 ```
 
 Stop before treatment if the baseline fails any frozen gate.
@@ -73,6 +75,34 @@ Stop before treatment if the baseline fails any frozen gate.
 | 3 | `fastify-request-media-type-regression` | `sources/evaluations/fixtures/medium/fastify-fastify/tasks/fastify-request-media-type-regression/agent-prompt.txt` | `sources/evaluations/fixtures/medium/fastify-fastify/tasks/fastify-request-media-type-regression/verify.sh` |
 | 4 | `fastify-log-controller-regression` | `sources/evaluations/fixtures/medium/fastify-fastify/tasks/fastify-log-controller-regression/agent-prompt.txt` | `sources/evaluations/fixtures/medium/fastify-fastify/tasks/fastify-log-controller-regression/verify.sh` |
 | 5 | `fastify-content-type-semantics-regression` | `sources/evaluations/fixtures/medium/fastify-fastify/tasks/fastify-content-type-semantics-regression/agent-prompt.txt` | `sources/evaluations/fixtures/medium/fastify-fastify/tasks/fastify-content-type-semantics-regression/verify.sh` |
+
+### `terraform-maintenance-sequence-v1`
+
+- Fixture: `large-hashicorp-terraform`
+- Primary metric: cumulative provider-billed workflow tokens
+- Reset policy: Reset once before the session; preserve source, tool, index, cache, generated config, memory, and agent state between tasks; inject only the current regression and re-root model-facing Git metadata before disclosure.
+
+| Order | Task | Prompt | Verifier |
+|---:|---|---|---|
+| 1 | `terraform-161ffe-tracing-context-regression` | `sources/evaluations/fixtures/large/hashicorp-terraform/tasks/terraform-161ffe-tracing-context-regression/agent-prompt.txt` | `sources/evaluations/fixtures/large/hashicorp-terraform/tasks/terraform-161ffe-tracing-context-regression/verify.sh` |
+| 2 | `terraform-81053-invalid-workspace-name-regression` | `sources/evaluations/fixtures/large/hashicorp-terraform/tasks/terraform-81053-invalid-workspace-name-regression/agent-prompt.txt` | `sources/evaluations/fixtures/large/hashicorp-terraform/tasks/terraform-81053-invalid-workspace-name-regression/verify.sh` |
+| 3 | `terraform-520378-computed-block-capabilities-regression` | `sources/evaluations/fixtures/large/hashicorp-terraform/tasks/terraform-520378-computed-block-capabilities-regression/agent-prompt.txt` | `sources/evaluations/fixtures/large/hashicorp-terraform/tasks/terraform-520378-computed-block-capabilities-regression/verify.sh` |
+| 4 | `terraform-9ae470-objchange-validation-regression` | `sources/evaluations/fixtures/large/hashicorp-terraform/tasks/terraform-9ae470-objchange-validation-regression/agent-prompt.txt` | `sources/evaluations/fixtures/large/hashicorp-terraform/tasks/terraform-9ae470-objchange-validation-regression/verify.sh` |
+| 5 | `terraform-305dba-query-sensitive-paths-regression` | `sources/evaluations/fixtures/large/hashicorp-terraform/tasks/terraform-305dba-query-sensitive-paths-regression/agent-prompt.txt` | `sources/evaluations/fixtures/large/hashicorp-terraform/tasks/terraform-305dba-query-sensitive-paths-regression/verify.sh` |
+
+### `beets-maintenance-sequence-v1`
+
+- Fixture: `medium-beetbox-beets`
+- Primary metric: cumulative provider-billed workflow tokens
+- Reset policy: Reset once before the session; preserve source, tool, index, cache, generated config, memory, and agent state between tasks; inject only the current regression and re-root model-facing Git metadata before disclosure.
+
+| Order | Task | Prompt | Verifier |
+|---:|---|---|---|
+| 1 | `beets-import-duplicate-resolution-regression` | `sources/evaluations/fixtures/medium/beetbox-beets/tasks/beets-import-duplicate-resolution-regression/agent-prompt.txt` | `sources/evaluations/fixtures/medium/beetbox-beets/tasks/beets-import-duplicate-resolution-regression/verify.sh` |
+| 2 | `beets-multivalue-metadata-regression` | `sources/evaluations/fixtures/medium/beetbox-beets/tasks/beets-multivalue-metadata-regression/agent-prompt.txt` | `sources/evaluations/fixtures/medium/beetbox-beets/tasks/beets-multivalue-metadata-regression/verify.sh` |
+| 3 | `beets-path-format-config-regression` | `sources/evaluations/fixtures/medium/beetbox-beets/tasks/beets-path-format-config-regression/agent-prompt.txt` | `sources/evaluations/fixtures/medium/beetbox-beets/tasks/beets-path-format-config-regression/verify.sh` |
+| 4 | `beets-relative-path-portability-regression` | `sources/evaluations/fixtures/medium/beetbox-beets/tasks/beets-relative-path-portability-regression/agent-prompt.txt` | `sources/evaluations/fixtures/medium/beetbox-beets/tasks/beets-relative-path-portability-regression/verify.sh` |
+| 5 | `beets-tidal-metadata-sync-regression` | `sources/evaluations/fixtures/medium/beetbox-beets/tasks/beets-tidal-metadata-sync-regression/agent-prompt.txt` | `sources/evaluations/fixtures/medium/beetbox-beets/tasks/beets-tidal-metadata-sync-regression/verify.sh` |
 
 ## Artifact contract
 
