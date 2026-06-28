@@ -237,7 +237,7 @@ class ManifestAndProtocolContractTest(unittest.TestCase):
 
     def test_current_protocol_fingerprint_matches_runner(self) -> None:
         seq = runner.load_sequence(SEQUENCE_ID)
-        protocol = json.loads((ROOT / "sources/evaluations/protocols/fastify-production-gpt-5.6-terra-medium-v3.json").read_text())
+        protocol = json.loads((ROOT / "sources/evaluations/protocols/fastify-production-gpt-5.3-codex-spark-medium-v3.json").read_text())
         expected = runner.baseline_protocol_fingerprint(seq)
         self.assertEqual(protocol["baseline_pool"]["protocol_fingerprint"], expected)
         self.assertEqual(protocol["baseline_pool"]["descriptor"], runner.baseline_protocol_descriptor(seq))
@@ -257,7 +257,7 @@ class ManifestAndProtocolContractTest(unittest.TestCase):
     def test_protocol_timeout_mismatch_rejects(self) -> None:
         seq = runner.load_sequence(SEQUENCE_ID)
         args = mock.Mock(
-            protocol="sources/evaluations/protocols/fastify-production-gpt-5.6-terra-medium-v3.json",
+            protocol="sources/evaluations/protocols/fastify-production-gpt-5.3-codex-spark-medium-v3.json",
             prepare_only=False,
             no_provider=False,
             timeout_per_task=1,
@@ -269,7 +269,7 @@ class ManifestAndProtocolContractTest(unittest.TestCase):
     def test_protocol_docker_image_mismatch_rejects(self) -> None:
         seq = runner.load_sequence(SEQUENCE_ID)
         args = mock.Mock(
-            protocol="sources/evaluations/protocols/fastify-production-gpt-5.6-terra-medium-v3.json",
+            protocol="sources/evaluations/protocols/fastify-production-gpt-5.3-codex-spark-medium-v3.json",
             prepare_only=True,
             no_provider=True,
             timeout_per_task=3600,
@@ -281,7 +281,7 @@ class ManifestAndProtocolContractTest(unittest.TestCase):
     def test_baseline_protocol_cannot_validate_treatment(self) -> None:
         seq = runner.load_sequence(SEQUENCE_ID)
         args = mock.Mock(
-            protocol="sources/evaluations/protocols/fastify-production-gpt-5.6-terra-medium-v3.json",
+            protocol="sources/evaluations/protocols/fastify-production-gpt-5.3-codex-spark-medium-v3.json",
             prepare_only=True,
             no_provider=True,
             timeout_per_task=3600,
