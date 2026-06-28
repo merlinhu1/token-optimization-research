@@ -1202,12 +1202,10 @@ def preflight_codex(record: dict[str, Any], codex_home: Path, pid: str, run_dir:
     passed = mcp.returncode == 0 and command_probe.returncode == 0
     failure_reasons: list[str] = []
     warnings: list[str] = []
-    doctor_text = doctor_path.read_text(errors="replace") if doctor_path.exists() else ""
     if doctor.returncode != 0:
-        warnings.append(f"codex doctor exited {doctor.returncode}; inspect artifact before accepting run")
-    if re.search(r"✗\s+(auth|config|mcp)\b", doctor_text, re.IGNORECASE):
-        passed = False
-        failure_reasons.append("codex doctor reported auth/config/mcp failure")
+        warnings.append(
+            f"codex doctor exited {doctor.returncode}; preserve the diagnostic, but use the isolated MCP/config probes and task execution as gates"
+        )
     if mcp.returncode != 0:
         failure_reasons.append(f"codex mcp list exited {mcp.returncode}")
     if disallowed_mcp_hits or disallowed_config_hits:
