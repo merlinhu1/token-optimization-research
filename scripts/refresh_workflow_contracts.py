@@ -38,8 +38,8 @@ def protocol_id(seq: dict[str, Any], profile_id: str) -> str:
         "medium-beetbox-beets": "beetbox-beets",
     }[seq["fixture_id"]]
     if profile_id == "baseline-bare-codex":
-        return f"{lane}-production-gpt-5.3-codex-spark-medium-v3"
-    return f"{lane}-{runner.safe_profile_key(profile_id)}-production-gpt-5.3-codex-spark-medium-v3"
+        return f"{lane}-production-gpt-5.3-codex-spark-medium-v4"
+    return f"{lane}-{runner.safe_profile_key(profile_id)}-production-gpt-5.3-codex-spark-medium-v4"
 
 
 def frozen_protocol(

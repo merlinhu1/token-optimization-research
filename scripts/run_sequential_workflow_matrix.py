@@ -124,6 +124,11 @@ def rsync_checkout(source: Path, destination: Path) -> None:
 
 
 def find_protocol(root: Path, sequence_id: str, profile_id: str) -> Path:
+    sequences = load_json(root / "data/workflow-task-sequences.json").get("sequences", [])
+    active_sequence = next((item for item in sequences if item.get("id") == sequence_id), None)
+    if not isinstance(active_sequence, dict):
+        raise ValueError(f"unknown workflow sequence: {sequence_id}")
+    active_qualification = active_sequence.get("qualification_path")
     matches: list[Path] = []
     for path in (root / "sources/evaluations/protocols").glob("*.json"):
         protocol = load_json(path)
@@ -131,6 +136,7 @@ def find_protocol(root: Path, sequence_id: str, profile_id: str) -> Path:
         if (
             protocol.get("status") == "frozen-ready-not-run"
             and protocol.get("task_fixture", {}).get("sequence_id") == sequence_id
+            and protocol.get("task_fixture", {}).get("qualification_path") == active_qualification
             and selected.get("selected_profile", {}).get("profile_id") == profile_id
         ):
             matches.append(path)
