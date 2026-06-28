@@ -6,7 +6,7 @@ The active research direction is Phase 2 workflow-simulation repair: qualify rea
 
 Fastify, Terraform, and Beets are the three current production-qualified executable workflow suites. Each has five causally related tasks, controller-hidden acceptance assets, pinned source identity, and byte-bound qualification evidence.
 
-Fastify's checkout-generated qualification passes all production-task gates, including seeded-fail/fixed-pass execution, full fixed-state cumulative verification, ordered transitions, one accepted alternative-repair transition, asset concealment, and the five-production-file floor. No pool-matched accepted baseline exists for fingerprint `5ace7b956e83`; older fingerprints `57af3ace816f` and `79105d1b08a5` are historical/superseded and non-reusable. Do not publish token-savings claims from these sessions.
+Checkout-generated qualification for all three active suites proves a conflict-free composite broken start, every concealed task verifier failing on that composite state, the complete cumulative verifier passing on the fixed snapshot, asset concealment, and the production-file floor. No pool-matched accepted baseline exists for the active workflow contract; older fingerprints are historical/superseded and non-reusable. Do not publish token-savings claims from those sessions.
 
 ## Phase 1 — Source-logic stack research
 
@@ -23,7 +23,7 @@ Status: complete for the current candidate set.
 Status: active.
 
 - Keep non-production candidates out of authoritative sequences.
-- Require lazy one-task seed delivery, true-root Git concealment, and behavioral acceptance before activation.
+- Require qualified composite pre-seeding, sequential prompt disclosure, final-only concealed verification, true-root Git concealment, and behavioral acceptance before activation.
 - Maintain fixture readiness in `data/repository-fixtures.json`.
 - Generate the human operator runbook with `scripts/update_workflow_runbook.py`.
 - Run canonical shared-baseline and treatment workflow sessions with the same sequence, runtime, provider, model condition, prompt-disclosure policy, and verifier set.

@@ -36,7 +36,7 @@ Baseline and treatment sessions must start from the same initial snapshot and ru
 |---|---|---|
 | Workflow token layer | Does the profile reduce cumulative provider-billed tokens across the session? | fresh input, cached input, cache-write, output, reasoning if exposed, total provider tokens, cost, pricing basis. |
 | Workflow behavior layer | Does state persistence reduce rereads, repeated exploration, correction turns, or tool chatter? | per-task transcript, turn count, tool-call count, repeated-read notes, correction count. |
-| Software-quality layer | Does the resulting cumulative repo state remain correct, maintainable, safe, and minimal? | per-task verifiers, final verifier, final diff/status, quality rubric, reviewer notes. |
+| Software-quality layer | Does the resulting cumulative repo state remain correct, maintainable, safe, and minimal? | final concealed verifier suite, final diff/status, operational task checkpoints, quality rubric, reviewer notes. |
 | State-quality layer | Does accumulated state help rather than stale or overfeed context? | tool-state manifest, index/cache/memory changes, stale-context incidents, overfeeding incidents, reset/recovery notes. |
 | Operational layer | Is the profile installable, observable, and recoverable across a session? | install log, generated files, disable/reset path, environment metadata, failure log. |
 | Sanity layer | Do artifact-level reducers and runner hooks preserve required facts? | raw artifact, transformed artifact, diagnostic assertions, raw fallback path. |

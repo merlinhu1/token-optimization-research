@@ -18,97 +18,115 @@ SEQUENCE_ID = "fastify-maintenance-sequence-v1"
 
 
 class SeedDeliveryContractTest(unittest.TestCase):
-    def test_conflicted_three_way_seed_is_rejected(self) -> None:
-        with tempfile.TemporaryDirectory() as tmp:
-            repo = Path(tmp) / "repo"
-            repo.mkdir()
-            subprocess.run(["git", "init", "-q"], cwd=repo, check=True)
-            subprocess.run(["git", "config", "user.email", "fixture@example.invalid"], cwd=repo, check=True)
-            subprocess.run(["git", "config", "user.name", "Fixture Test"], cwd=repo, check=True)
-            source = repo / "value.txt"
-            source.write_text("base\n")
-            subprocess.run(["git", "add", "value.txt"], cwd=repo, check=True)
-            subprocess.run(["git", "commit", "-qm", "base"], cwd=repo, check=True)
-            source.write_text("seed\n")
-            patch = Path(tmp) / "seed.patch"
-            patch.write_text(subprocess.run(["git", "diff", "--full-index", "--binary"], cwd=repo, check=True, text=True, capture_output=True).stdout)
-            subprocess.run(["git", "reset", "--hard", "-q", "HEAD"], cwd=repo, check=True)
-            source.write_text("current\n")
-            subprocess.run(["git", "add", "value.txt"], cwd=repo, check=True)
-            subprocess.run(["git", "commit", "-qm", "diverged"], cwd=repo, check=True)
+    def create_repo(self, root: Path, content: str = "base\n") -> tuple[Path, Path]:
+        repo = root / "repo"
+        repo.mkdir()
+        subprocess.run(["git", "init", "-q"], cwd=repo, check=True)
+        subprocess.run(["git", "config", "user.email", "fixture@example.invalid"], cwd=repo, check=True)
+        subprocess.run(["git", "config", "user.name", "Fixture Test"], cwd=repo, check=True)
+        source = repo / "value.txt"
+        source.write_text(content)
+        subprocess.run(["git", "add", "value.txt"], cwd=repo, check=True)
+        subprocess.run(["git", "commit", "-qm", "base"], cwd=repo, check=True)
+        return repo, source
 
-            with self.assertRaisesRegex(RuntimeError, "seed patch"):
-                runner.apply_seed_patch(repo, patch, Path(tmp) / "apply.log")
+    def create_seed_patch(self, repo: Path, patch: Path) -> None:
+        patch.write_text(subprocess.run(["git", "diff", "--full-index", "--binary"], cwd=repo, check=True, text=True, capture_output=True).stdout)
+        subprocess.run(["git", "reset", "--hard", "-q", "HEAD"], cwd=repo, check=True)
 
-    def test_pending_seed_that_is_not_forward_applicable_rejects_stage(self) -> None:
-        states = iter([
-            {"forward_applicable": False, "reverse_applicable": True},
-            {"forward_applicable": False, "reverse_applicable": False},
-        ])
-        with tempfile.TemporaryDirectory() as tmp, mock.patch.object(
-            runner, "seed_patch_application_state", side_effect=lambda *_: next(states)
-        ):
-            result = runner.verify_seed_delivery_stage({}, Path(tmp), Path(tmp), 1, [2])
+    def test_active_qualifications_prove_composite_broken_start(self) -> None:
+        sequences = json.loads((ROOT / "data/workflow-task-sequences.json").read_text())["sequences"]
+        for sequence in sequences:
+            if sequence.get("status") != "active":
+                continue
+            qualification = json.loads((ROOT / sequence["qualification_path"]).read_text())
+            self.assertTrue(qualification["composite_seed_merge_zero"])
+            self.assertTrue(qualification["composite_seeded_verifiers_nonzero"])
+            self.assertTrue(qualification["full_fixed_cumulative_verifier_zero"])
+            self.assertTrue(qualification["composite_seed_diff_sha256"])
 
-        self.assertFalse(result["pending_seed_patches_forward_applicable"])
-        self.assertFalse(result["passed"])
-
-    def test_controller_assets_are_reported_if_copied_into_model_repo(self) -> None:
+    def test_composite_seed_merge_preserves_independent_regressions(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
-            repo = root / "repo"
-            controller = root / "tasks" / "task-01"
-            repo.mkdir(parents=True)
-            controller.mkdir(parents=True)
-            (controller / "verify.sh").write_text("secret verifier\n")
-            (repo / "verify.sh").write_text("secret verifier\n")
-            with mock.patch.object(runner, "seed_patch_application_state", return_value={"forward_applicable": True, "reverse_applicable": True}):
-                result = runner.verify_seed_delivery_stage({}, repo, root, 1, [])
-        self.assertFalse(result["passed"])
-        self.assertEqual(result["model_repo_seed_or_verifier_assets"], ["verify.sh"])
+            repo, source = self.create_repo(root, "first\nmiddle\nlast\n")
+            patches = []
+            for order, content in enumerate(("FIRST\nmiddle\nlast\n", "first\nmiddle\nLAST\n"), start=1):
+                source.write_text(content)
+                patch = root / f"seed-{order}.patch"
+                self.create_seed_patch(repo, patch)
+                patches.append(patch)
+            runner.apply_composite_seed_patches(repo, patches, root / "scratch", root / "merge.json")
+            self.assertEqual(source.read_text(), "FIRST\nmiddle\nLAST\n")
 
-    def test_declared_concealed_paths_are_rejected_if_present(self) -> None:
-        seq = {"tasks": [{"order": 1, "model_concealed_paths": ["test/handler-timeout.test.js"]}]}
-        with tempfile.TemporaryDirectory() as tmp, mock.patch.object(
-            runner, "seed_patch_application_state", return_value={"forward_applicable": True, "reverse_applicable": True}
-        ):
+    def test_composite_seed_merge_includes_added_files(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
-            repo = root / "repo"
-            controller = root / "tasks" / "task-01"
-            (repo / "test").mkdir(parents=True)
-            controller.mkdir(parents=True)
-            (controller / "seed-regression.patch").write_text("")
-            (repo / "test/handler-timeout.test.js").write_text("acceptance\n")
-            result = runner.verify_seed_delivery_stage(seq, repo, root, 1, [])
-        self.assertFalse(result["passed"])
-        self.assertEqual(result["model_concealed_paths_present"], ["test/handler-timeout.test.js"])
+            repo, _ = self.create_repo(root)
+            added = repo / "added.txt"
+            added.write_text("regression\n")
+            subprocess.run(["git", "add", "-N", "added.txt"], cwd=repo, check=True)
+            patch = root / "added.patch"
+            self.create_seed_patch(repo, patch)
+            self.assertFalse(added.exists())
+            runner.apply_composite_seed_patches(repo, [patch], root / "scratch", root / "merge.json")
+            self.assertEqual(added.read_text(), "regression\n")
+            self.assertEqual(json.loads((root / "merge.json").read_text())["patches"][0]["merged_paths"], ["added.txt"])
+
+    def test_conflicted_composite_seed_is_rejected(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            repo, source = self.create_repo(root)
+            patches = []
+            for order, content in enumerate(("first\n", "second\n"), start=1):
+                source.write_text(content)
+                patch = root / f"seed-{order}.patch"
+                self.create_seed_patch(repo, patch)
+                patches.append(patch)
+            with self.assertRaisesRegex(RuntimeError, "composite seed conflict"):
+                runner.apply_composite_seed_patches(repo, patches, root / "scratch", root / "merge.json")
 
 
 class VerifierContractTest(unittest.TestCase):
-    def test_repeated_verifier_outputs_are_stage_specific(self) -> None:
-        seq = {"tasks": [{"id": "a", "order": 1}, {"id": "b", "order": 2}]}
-        record = {"target": {"repository_path": "repo"}}
-        with tempfile.TemporaryDirectory() as tmp, mock.patch.object(runner.fixture, "run_backend") as run_backend:
-            root = Path(tmp)
-            (root / "repo").mkdir()
-            run_backend.return_value.returncode = 0
-            result = runner.run_one_verifier(seq, 2, record, root / "home", root, "image", stage_order=4)
-        self.assertTrue(result["verifier_output"].endswith("verifier-after-task-04-task-02.txt"))
-        self.assertTrue(str(run_backend.call_args.kwargs["stdout_path"]).endswith("verifier-after-task-04-task-02.txt"))
+    def test_final_verifier_runs_every_task_without_short_circuiting(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            script = runner.write_verifier({"tasks": [{"order": 1}, {"order": 2}, {"order": 3}]}, Path(tmp), Path(tmp) / "tasks").read_text()
+        self.assertNotIn("set -e", script)
+        self.assertEqual(script.count("if ! bash "), 3)
+        self.assertGreater(script.index('exit "$status"'), script.rfind("if ! bash "))
 
-    def test_completed_verifier_summary_is_json_serializable(self) -> None:
-        completed = [{"verifier_exit_code": 0, "task_id": "a"}]
-        result = runner.completed_verifier_summary(completed)
-        self.assertIsNot(result, completed[0])
-        self.assertEqual(result["completed_verifier_results"], completed)
-        json.dumps(result)
+    def test_warm_lane_contract_preseeds_all_regressions_and_verifies_once(self) -> None:
+        contract = runner.warm_lane_contract({"tasks": [{"order": 1}, {"order": 2}]})
+        self.assertEqual(contract["seed_delivery_mode"], "preseeded-composite")
+        self.assertTrue(contract["future_seed_regressions_visible"])
+        self.assertEqual(contract["controller_verification"], "final-only")
 
-    def test_any_completed_stage_verifier_failure_rejects_acceptance(self) -> None:
-        completed = [
-            {"verifier_exit_code": 0},
-            {"verifier_exit_code": 1},
-        ]
-        self.assertTrue(any(item["verifier_exit_code"] != 0 for item in completed))
+    def test_task_checkpoint_stops_only_on_operational_invalidity(self) -> None:
+        self.assertTrue(runner.task_checkpoint_allows_continue(codex_exit_code=0, thread_id="thread", verifier_integrity_passed=True))
+        self.assertFalse(runner.task_checkpoint_allows_continue(codex_exit_code=1, thread_id="thread", verifier_integrity_passed=True))
+
+    def test_task_prompts_never_claim_per_task_verification_or_seed_injection(self) -> None:
+        sequence = {"id": "unit", "tasks": [{"id": "first", "order": 1}, {"id": "second", "order": 2}]}
+        with tempfile.TemporaryDirectory() as tmp:
+            project = Path(tmp)
+            for order in (1, 2):
+                task_dir = runner.task_dir(project, order)
+                task_dir.mkdir(parents=True)
+                (task_dir / "agent-prompt.txt").write_text("Ticket text\n")
+            prompt = runner.task_prompt(sequence, "baseline-bare-codex", project, 1, first_task=True) + runner.task_prompt(sequence, "baseline-bare-codex", project, 2, first_task=False)
+        self.assertIn("composite broken start", prompt)
+        self.assertIn("concealed verification only after the final task prompt", prompt)
+        for retired in ("previous task verifier passed", "injected only the current regression", "until this verifier passes"):
+            self.assertNotIn(retired, prompt.lower())
+
+    def test_schema_discriminates_warm_and_legacy_protocols(self) -> None:
+        schema = json.loads((ROOT / "schemas/workflow-session-record.schema.json").read_text())
+        modes = {branch["properties"]["prompt_delivery"]["properties"]["seed_delivery_mode"]["const"] for branch in schema["properties"]["task_sequence"]["oneOf"]}
+        self.assertTrue({"lazy-one-task-at-a-time", "preseeded-composite"}.issubset(modes))
+
+    def test_functional_task_count_is_independent_of_audit_acceptance(self) -> None:
+        checkpoints = [{"order": 1}, {"order": 2}]
+        self.assertEqual(runner.functional_task_count(expected_tasks=2, task_checkpoints=checkpoints, final_verifier_code=0), 2)
+        self.assertEqual(runner.functional_task_count(expected_tasks=2, task_checkpoints=checkpoints, final_verifier_code=1), 0)
 
 
 class FastifyAcceptanceContractTest(unittest.TestCase):
@@ -244,7 +262,7 @@ class ManifestAndProtocolContractTest(unittest.TestCase):
 
     def test_current_protocol_fingerprint_matches_runner(self) -> None:
         seq = runner.load_sequence(SEQUENCE_ID)
-        protocol = json.loads((ROOT / "sources/evaluations/protocols/fastify-production-gpt-5.3-codex-spark-medium-v3.json").read_text())
+        protocol = json.loads((ROOT / "sources/evaluations/protocols/fastify-production-gpt-5.3-codex-spark-medium-v4.json").read_text())
         expected = runner.baseline_protocol_fingerprint(seq)
         self.assertEqual(protocol["baseline_pool"]["protocol_fingerprint"], expected)
         self.assertEqual(protocol["baseline_pool"]["descriptor"], runner.baseline_protocol_descriptor(seq))
@@ -264,7 +282,7 @@ class ManifestAndProtocolContractTest(unittest.TestCase):
     def test_protocol_timeout_mismatch_rejects(self) -> None:
         seq = runner.load_sequence(SEQUENCE_ID)
         args = mock.Mock(
-            protocol="sources/evaluations/protocols/fastify-production-gpt-5.3-codex-spark-medium-v3.json",
+            protocol="sources/evaluations/protocols/fastify-production-gpt-5.3-codex-spark-medium-v4.json",
             prepare_only=False,
             no_provider=False,
             timeout_per_task=1,
@@ -276,7 +294,7 @@ class ManifestAndProtocolContractTest(unittest.TestCase):
     def test_protocol_docker_image_mismatch_rejects(self) -> None:
         seq = runner.load_sequence(SEQUENCE_ID)
         args = mock.Mock(
-            protocol="sources/evaluations/protocols/fastify-production-gpt-5.3-codex-spark-medium-v3.json",
+            protocol="sources/evaluations/protocols/fastify-production-gpt-5.3-codex-spark-medium-v4.json",
             prepare_only=True,
             no_provider=True,
             timeout_per_task=3600,
@@ -288,7 +306,7 @@ class ManifestAndProtocolContractTest(unittest.TestCase):
     def test_baseline_protocol_cannot_validate_treatment(self) -> None:
         seq = runner.load_sequence(SEQUENCE_ID)
         args = mock.Mock(
-            protocol="sources/evaluations/protocols/fastify-production-gpt-5.3-codex-spark-medium-v3.json",
+            protocol="sources/evaluations/protocols/fastify-production-gpt-5.3-codex-spark-medium-v4.json",
             prepare_only=True,
             no_provider=True,
             timeout_per_task=3600,
@@ -431,13 +449,14 @@ class ManifestAndProtocolContractTest(unittest.TestCase):
                     "mode": "sequential-one-task-at-a-time",
                     "future_tasks_visible": False,
                     "future_prompts_materialized_lazily": True,
-                    "seed_delivery_mode": "lazy-one-task-at-a-time",
-                    "future_seed_regressions_visible": False,
+                    "seed_delivery_mode": "preseeded-composite",
+                    "future_seed_regressions_visible": True,
+                    "controller_verification": "final-only",
                 },
                 "leakage_controls": {
                     "seed_origin_concealed": True,
                     "seed_patches_model_visible": False,
-                    "git_baseline_true_root_per_task": True,
+                    "git_baseline_true_root_at_lane_start": True,
                     "fixed_snapshot_objects_model_visible": False,
                     "pre_seed_reflog_entries_visible": False,
                     "concealment_verification_passed": True,
