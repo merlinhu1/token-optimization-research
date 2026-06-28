@@ -1,0 +1,126 @@
+diff --git a/beets/importer/tasks.py b/beets/importer/tasks.py
+index 143d90e2..ea5ccb84 100644
+--- a/beets/importer/tasks.py
++++ b/beets/importer/tasks.py
+@@ -52,8 +52,6 @@ REIMPORT_FRESH_FIELDS_ITEM = [
+     "tidal_album_id",
+     "tidal_track_id",
+     "tidal_artist_id",
+-    "tidal_track_popularity",
+-    "tidal_album_popularity",
+     "tidal_updated",
+     "data_url",
+ ]
+diff --git a/beetsplug/tidal/__init__.py b/beetsplug/tidal/__init__.py
+index d16a8ca4..5aed5eab 100644
+--- a/beetsplug/tidal/__init__.py
++++ b/beetsplug/tidal/__init__.py
+@@ -45,14 +45,12 @@ class TidalPlugin(MetadataSourcePlugin):
+     item_types: ClassVar[dict[str, types.Type]] = {
+         "tidal_track_id": types.STRING,
+         "tidal_artist_id": types.STRING,
+-        "tidal_track_popularity": types.INTEGER,
+         "tidal_updated": types.DATE,
+     }
+ 
+     album_types: ClassVar[dict[str, types.Type]] = {
+         "tidal_album_id": types.STRING,
+         "tidal_artist_id": types.STRING,
+-        "tidal_album_popularity": types.INTEGER,
+         "tidal_updated": types.DATE,
+     }
+ 
+@@ -296,7 +294,7 @@ class TidalPlugin(MetadataSourcePlugin):
+         albums_doc = self.api.get_albums(
+             ids=list(filter(None, _ids)),
+             barcode_ids=barcode_ids,
+-            include=["items.artists", "artists", "coverArt"],
++            include=["items.artists", "artists"],
+         )
+         album_by_id: dict[str, TidalAlbum] = {
+             item["id"]: item
+@@ -373,7 +371,7 @@ class TidalPlugin(MetadataSourcePlugin):
+             artists_ids=artist_ids,
+             data_url=self._parse_data_url(album["attributes"]),
+             barcode=album["attributes"]["barcodeId"],
+-            cover_art_url=self._parse_artwork_url(album, artwork_by_id),
++            cover_art_url=None,
+             # Meta
+             album=self._parse_title(album["attributes"]),
+             tracks=track_infos,
+@@ -388,7 +386,7 @@ class TidalPlugin(MetadataSourcePlugin):
+             # Flexattrs
+             tidal_album_id=album["id"],
+             tidal_artist_id=artist_ids[0] if artist_ids else None,
+-            tidal_album_popularity=self._parse_popularity(album["attributes"]),
++            tidal_album_popularity=None,
+             tidal_updated=time.time(),
+         )
+ 
+@@ -431,7 +429,7 @@ class TidalPlugin(MetadataSourcePlugin):
+             # Flexattrs
+             tidal_track_id=track["id"],
+             tidal_artist_id=artist_ids[0] if artist_ids else None,
+-            tidal_track_popularity=self._parse_popularity(track["attributes"]),
++            tidal_track_popularity=None,
+             tidal_updated=time.time(),
+         )
+ 
+@@ -506,7 +504,7 @@ class TidalPlugin(MetadataSourcePlugin):
+ 
+     @staticmethod
+     def _parse_popularity(attributes: MediaAttributes) -> int:
+-        return round(attributes["popularity"] * 100)
++        return 0
+ 
+     def sync_item_popularity(
+         self, results: Results[Item], write: bool, force: bool = False
+diff --git a/beetsplug/tidal/api.py b/beetsplug/tidal/api.py
+index a892a502..7aa94eb5 100644
+--- a/beetsplug/tidal/api.py
++++ b/beetsplug/tidal/api.py
+@@ -102,7 +102,7 @@ class TidalAPI(RequestHandler):
+             doc = self.merge_multiresource_pagination(
+                 doc,
+                 self.get_paginated(
+-                    f"{API_BASE}/tracks", include, params=params
++                    f"{API_BASE}/tracks", [], params=params
+                 ),
+             )
+ 
+@@ -139,7 +139,7 @@ class TidalAPI(RequestHandler):
+             doc = self.merge_multiresource_pagination(
+                 doc,
+                 self.get_paginated(
+-                    f"{API_BASE}/albums", include, params=params
++                    f"{API_BASE}/albums", [], params=params
+                 ),
+             )
+ 
+diff --git a/beetsplug/tidal/api_types.py b/beetsplug/tidal/api_types.py
+index e8b63593..52cb46bd 100644
+--- a/beetsplug/tidal/api_types.py
++++ b/beetsplug/tidal/api_types.py
+@@ -58,7 +58,7 @@ class MediaAttributes(TypedDict):
+     title: str
+     explicit: bool
+     mediaTags: list[str]
+-    popularity: float
++    popularity: NotRequired[float]
+ 
+     accessType: NotRequired[Literal["PUBLIC", "UNLISTED", "PRIVATE"]]
+     copyright: NotRequired[Copyright]
+diff --git a/beetsplug/tidal/session.py b/beetsplug/tidal/session.py
+index 3ca9b999..b5c8b4a2 100644
+--- a/beetsplug/tidal/session.py
++++ b/beetsplug/tidal/session.py
+@@ -69,8 +69,7 @@ class TidalSession(OAuth2Session, TimeoutAndRetrySession):
+     def load_token(self) -> JSONDict | None:
+         """Load token from JSON file."""
+         if self.token_path.exists():
+-            with open(self.token_path) as f:
+-                return json.load(f)
++            return None
+         return None
+ 
+     def save_token(self, token: JSONDict) -> None:
