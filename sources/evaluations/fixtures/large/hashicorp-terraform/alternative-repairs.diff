@@ -1,0 +1,33 @@
+diff --git a/internal/command/views/json/query.go b/internal/command/views/json/query.go
+index c731dcd8ae..fbb3fbd89c 100644
+--- a/internal/command/views/json/query.go
++++ b/internal/command/views/json/query.go
+@@ -46,21 +46,19 @@ func NewQueryStart(addr addrs.AbsResourceInstance, inputConfig cty.Value, config
+ 	// We only want a unique set of attribute paths. A path
+ 	// can either be defined as sensitive by the provider or
+ 	// marked by configuration.
+-	uniquePaths := make(map[string]struct{})
++	uniquePaths := map[string]bool{}
++	remember := func(path string) {
++		uniquePaths[path] = true
++	}
+ 
+-	// Search for any marked sensitive paths, irrespective
+-	// of the schema
+ 	for _, pvm := range valPaths {
+ 		if _, ok := pvm.Marks[marks.Sensitive]; ok {
+-			uniquePaths[format.CtyPath(pvm.Path)] = struct{}{}
++			remember(format.CtyPath(pvm.Path))
+ 		}
+ 	}
+ 
+-	// Now let's loop through the resource schema defined by
+-	// the provider
+-	schemaPaths := configSchema.SensitivePaths(inputConfig, nil)
+-	for _, path := range schemaPaths {
+-		uniquePaths[format.CtyPath(path)] = struct{}{}
++	for _, path := range configSchema.SensitivePaths(inputConfig, nil) {
++		remember(format.CtyPath(path))
+ 	}
+ 
+ 	sensitiveAttributePaths := make([]string, 0, len(uniquePaths))
