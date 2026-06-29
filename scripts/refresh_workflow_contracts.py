@@ -19,7 +19,7 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 from scripts import run_codex_workflow_evaluation as runner
 
-DATE = "2026-07-12"
+DATE = "2026-07-13"
 
 
 def digest(path: Path) -> str:
@@ -37,9 +37,14 @@ def protocol_id(seq: dict[str, Any], profile_id: str) -> str:
         "large-hashicorp-terraform": "hashicorp-terraform",
         "medium-beetbox-beets": "beetbox-beets",
     }[seq["fixture_id"]]
+    if seq["id"].endswith("-v2"):
+        lane = f"{lane}-token-savings"
+        version = "v8"
+    else:
+        version = "v7"
     if profile_id == "baseline-bare-codex":
-        return f"{lane}-production-gpt-5.6-luna-xhigh-v7"
-    return f"{lane}-{runner.safe_profile_key(profile_id)}-production-gpt-5.6-luna-xhigh-v7"
+        return f"{lane}-production-gpt-5.6-luna-xhigh-{version}"
+    return f"{lane}-{runner.safe_profile_key(profile_id)}-production-gpt-5.6-luna-xhigh-{version}"
 
 
 def frozen_protocol(

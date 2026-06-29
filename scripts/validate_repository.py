@@ -796,11 +796,17 @@ def validate_workflow_task_sequences(sequence_doc: dict, fixture_doc: dict, erro
         if sequence.get("status") == "active" and len(production_by_task) == len(tasks):
             validate_qualification(sequence, errors)
     active = [sequence for sequence in sequences if sequence.get("status") == "active"]
-    expected_active = {"fastify-maintenance-sequence-v1", "terraform-maintenance-sequence-v1", "beets-maintenance-sequence-v1"}
-    if {sequence.get("id") for sequence in active} != expected_active:
-        errors.append("active workflow sequences must be exactly Fastify, Terraform, and Beets")
-    if any(len(sequence.get("tasks", [])) != 5 for sequence in active):
-        errors.append("every active workflow sequence must contain exactly five tasks")
+    expected_active = {
+        "fastify-maintenance-sequence-v1": 5,
+        "terraform-maintenance-sequence-v2": 3,
+        "beets-maintenance-sequence-v2": 4,
+    }
+    if {sequence.get("id") for sequence in active} != set(expected_active):
+        errors.append("active workflow sequences must be exactly Fastify v1, Terraform v2, and Beets v2")
+    for sequence in active:
+        expected_tasks = expected_active.get(sequence.get("id"))
+        if len(sequence.get("tasks", [])) != expected_tasks:
+            errors.append(f"active workflow sequence {sequence.get('id')} must contain exactly {expected_tasks} tasks")
     retired_contract_phrases = (
         "one task at a time",
         "alternative-repair",
@@ -1375,6 +1381,10 @@ def validate_frozen_protocol_bindings(errors: list[str]) -> None:
         if runner is not None:
             try:
                 seq = runner.load_sequence(str(fixture.get("sequence_id")))
+                if seq.get("status") != "active":
+                    # Retired sequences retain immutable historical protocols whose
+                    # descriptors intentionally bind the pre-retirement contract.
+                    continue
                 if qualification_rel != seq.get("qualification_path"):
                     # Immutable protocols bound to earlier qualification paths are
                     # historical contracts; current binding checks apply only to

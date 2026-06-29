@@ -88,6 +88,17 @@ def write_qualification_atomically(output: Path, payload: dict) -> None:
         raise
 
 
+def reset_tracked_checkout(checkout: Path, fixed_head: str) -> None:
+    """Discard tracked verifier side effects before composite qualification."""
+    subprocess.run(
+        ["git", "reset", "--hard", fixed_head],
+        cwd=checkout,
+        stdout=subprocess.DEVNULL,
+        stderr=subprocess.DEVNULL,
+        check=True,
+    )
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("sequence_id")
@@ -163,6 +174,12 @@ def main() -> int:
             "declared_concealment_matches_expected": task_concealed == expected_concealed,
             "model_concealed_absent": all(not (checkout / path).exists() for path in task_concealed),
         })
+
+    # Verifiers may leave tracked source artifacts or formatting changes behind.
+    # Re-root composite qualification at the exact fixed snapshot so the frozen
+    # composite hash matches provider-run seed delivery rather than verifier
+    # side effects from the individual task qualification loop above.
+    reset_tracked_checkout(checkout, workspace_head)
 
     composite_seed_merge_zero = False
     composite_seeded_verifiers_nonzero = False
