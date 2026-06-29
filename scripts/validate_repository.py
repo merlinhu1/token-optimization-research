@@ -799,10 +799,10 @@ def validate_workflow_task_sequences(sequence_doc: dict, fixture_doc: dict, erro
     expected_active = {
         "fastify-maintenance-sequence-v1": 5,
         "terraform-maintenance-sequence-v2": 3,
-        "beets-maintenance-sequence-v2": 4,
+        "beets-maintenance-sequence-v3": 1,
     }
     if {sequence.get("id") for sequence in active} != set(expected_active):
-        errors.append("active workflow sequences must be exactly Fastify v1, Terraform v2, and Beets v2")
+        errors.append("active workflow sequences must be exactly Fastify v1, Terraform v2, and Beets v3")
     for sequence in active:
         expected_tasks = expected_active.get(sequence.get("id"))
         if len(sequence.get("tasks", [])) != expected_tasks:
