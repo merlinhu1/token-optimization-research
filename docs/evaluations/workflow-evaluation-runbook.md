@@ -23,7 +23,7 @@ Every active task must use causally related behavioral acceptance. Unrelated exa
 |---|---|---|---|---:|
 | `fastify-maintenance-sequence-v1` | `medium-fastify-fastify` | medium-project | [`94bcbcc6e2ef`](https://github.com/fastify/fastify.git) | 5 |
 | `terraform-maintenance-sequence-v2` | `large-hashicorp-terraform` | large-project | [`e02391ad384c`](https://github.com/hashicorp/terraform.git) | 3 |
-| `beets-maintenance-sequence-v2` | `medium-beetbox-beets` | medium-project | [`8ddae794d30e`](https://github.com/beetbox/beets.git) | 4 |
+| `beets-maintenance-sequence-v3` | `medium-beetbox-beets` | medium-project | [`8ddae794d30e`](https://github.com/beetbox/beets.git) | 1 |
 
 ## Planned candidates and blockers
 
@@ -89,7 +89,7 @@ Stop before treatment if the baseline fails any frozen gate.
 | 2 | `terraform-520378-computed-block-capabilities-regression` | `sources/evaluations/fixtures/large/hashicorp-terraform/tasks/terraform-520378-computed-block-capabilities-regression/agent-prompt.txt` | `sources/evaluations/fixtures/large/hashicorp-terraform/tasks/terraform-520378-computed-block-capabilities-regression/verify.sh` |
 | 3 | `terraform-9ae470-objchange-validation-regression` | `sources/evaluations/fixtures/large/hashicorp-terraform/tasks/terraform-9ae470-objchange-validation-regression/agent-prompt.txt` | `sources/evaluations/fixtures/large/hashicorp-terraform/tasks/terraform-9ae470-objchange-validation-regression/verify.sh` |
 
-### `beets-maintenance-sequence-v2`
+### `beets-maintenance-sequence-v3`
 
 - Fixture: `medium-beetbox-beets`
 - Primary metric: cumulative provider-billed workflow tokens
@@ -97,10 +97,7 @@ Stop before treatment if the baseline fails any frozen gate.
 
 | Order | Task | Prompt | Verifier |
 |---:|---|---|---|
-| 1 | `beets-multivalue-metadata-regression` | `sources/evaluations/fixtures/medium/beetbox-beets/tasks/beets-multivalue-metadata-regression/agent-prompt.txt` | `sources/evaluations/fixtures/medium/beetbox-beets/tasks/beets-multivalue-metadata-regression/verify.sh` |
-| 2 | `beets-path-format-config-regression` | `sources/evaluations/fixtures/medium/beetbox-beets/tasks/beets-path-format-config-regression/agent-prompt.txt` | `sources/evaluations/fixtures/medium/beetbox-beets/tasks/beets-path-format-config-regression/verify.sh` |
-| 3 | `beets-relative-path-portability-regression` | `sources/evaluations/fixtures/medium/beetbox-beets/tasks/beets-relative-path-portability-regression/agent-prompt.txt` | `sources/evaluations/fixtures/medium/beetbox-beets/tasks/beets-relative-path-portability-regression/verify.sh` |
-| 4 | `beets-tidal-metadata-sync-regression` | `sources/evaluations/fixtures/medium/beetbox-beets/tasks/beets-tidal-metadata-sync-regression/agent-prompt.txt` | `sources/evaluations/fixtures/medium/beetbox-beets/tasks/beets-tidal-metadata-sync-regression/verify.sh` |
+| 1 | `beets-tidal-metadata-sync-regression` | `sources/evaluations/fixtures/medium/beetbox-beets/tasks/beets-tidal-metadata-sync-regression/agent-prompt.txt` | `sources/evaluations/fixtures/medium/beetbox-beets/tasks/beets-tidal-metadata-sync-regression/verify.sh` |
 
 ## Artifact contract
 
