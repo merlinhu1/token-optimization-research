@@ -1278,6 +1278,13 @@ def task_prompt(seq: dict[str, Any], profile_id: str, project: Path, order: int,
     return "\n".join(preface).rstrip() + "\n"
 
 
+def materialize_task_prompt(prompt_dir: Path, order: int, content: str) -> Path:
+    prompt_path = prompt_dir / f"task-{order:02d}.md"
+    prompt_path.parent.mkdir(parents=True, exist_ok=True)
+    prompt_path.write_text(content)
+    return prompt_path
+
+
 def write_verifier(seq: dict[str, Any], run_dir: Path, task_root: Path) -> Path:
     verifier = run_dir / "verify-workflow.sh"
     lines = ["#!/usr/bin/env bash", "set -uo pipefail", "status=0"]
@@ -2004,8 +2011,10 @@ def run_one(args: argparse.Namespace) -> dict[str, Any]:
     if args.prepare_only:
         first_task = ordered_tasks[0]
         first_order = int(first_task["order"])
-        (prompt_dir / f"task-{first_order:02d}.md").write_text(
-            task_prompt(seq, profile_id, run_dir, first_order, first_task=True)
+        materialize_task_prompt(
+            prompt_dir,
+            first_order,
+            task_prompt(seq, profile_id, run_dir, first_order, first_task=True),
         )
         prepare_verification = json.loads((run_dir / "prepare-verification.json").read_text())
         redact_auth_sync(run_dir)
@@ -2029,9 +2038,11 @@ def run_one(args: argparse.Namespace) -> dict[str, Any]:
     model_output_dir = model_output_directory(run_dir)
     for task in ordered_tasks:
         order = int(task["order"])
-        prompt_path = prompt_dir / f"task-{order:02d}.md"
-        prompt_path.parent.mkdir(parents=True, exist_ok=True)
-        prompt_path.write_text(task_prompt(seq, profile_id, run_dir, order, first_task=order == 1))
+        prompt_path = materialize_task_prompt(
+            prompt_dir,
+            order,
+            task_prompt(seq, profile_id, run_dir, order, first_task=order == 1),
+        )
         events_path = run_dir / f"task-{order:02d}-codex-events.jsonl"
         last_message_path = model_output_dir / f"task-{order:02d}-codex-last-message.txt"
         code, thread_id = run_codex_task(record, profile_id, codex_home, run_dir, args.docker_image, prompt_path, events_path, last_message_path, timeout=args.timeout_per_task, thread_id=thread_id)
