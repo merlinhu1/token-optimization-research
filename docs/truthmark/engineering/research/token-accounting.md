@@ -78,7 +78,7 @@ Software-quality scoring is owned by `software-quality-gates.md`.
 - Accepted workflow sessions require a captured Codex thread ID before later tasks can resume the persistent session.
 - Session IDs and compact evidence are immutable; reruns use a new replicate/session ID instead of replacing prior evidence.
 - A reviewed baseline is reusable only within its frozen protocol fingerprint and replicate. That fingerprint binds the fixture snapshot, prompt and verifier bytes, baseline substrate, agent/model condition, immutable Docker execution identity, and isolation policy; the execution date is metadata, not a baseline cache key.
-- New workflow evidence defaults to Codex CLI `gpt-5.3-codex-spark` at `medium` reasoning effort (`codex-openai-gpt-5-3-codex-spark-medium`). This is a protocol-bound model condition: changing it requires a new baseline pool.
+- New workflow evidence defaults to Codex CLI `gpt-5.6-terra` at `medium` reasoning effort (`codex-openai-gpt-5-6-terra-medium`). This is a protocol-bound model condition: changing it requires a new baseline pool.
 - Fastify, Terraform, and Beets are the three active production-qualified flows; each has exactly five tasks. Qualification binds controller task-directory bytes, prompt/seed/verifier bytes, pinned source, composite-seed failure, full-fixed cumulative success, and concealed-test evidence. Historical sessions with a different fixture fingerprint remain preserved but are ineligible for reuse or comparison.
 - New workflow artifact IDs begin with the short profile label, short project lane, and UTC run date, followed by the protocol fingerprint and replicate; the fingerprint, rather than the date-bearing name, determines reuse eligibility.
 - The matrix defaults to three concurrent lanes (`--max-parallel 3`). It runs distinct sequence lanes concurrently up to that cap; after a shared baseline is reviewed reusable, repeated `--treatment-profile` arguments run independent profile lanes concurrently; an unreviewed/missing baseline collapses those requests to one baseline-only lane to prevent duplicate spend.
@@ -103,7 +103,7 @@ Software-quality scoring is owned by `software-quality-gates.md`.
 - Decision (2026-07-09): Sequential disclosure is enforced by model mount boundaries, lazy prompt materialization, and verifier hashes rather than trusted metadata or prompt instructions.
 - Decision (2026-07-12): Primary token-tool evaluation uses one preseeded composite broken repository, sequential prompts, and persistent warm source/tool/agent state. Hidden controller verification runs once after the complete lane so correctness gates do not truncate or feed back into the measured workflow.
 - Decision (2026-07-09): The July 8-9 r0 workflow sessions are excluded from objective use because the old runner exposed the writable run directory; their raw token and execution artifacts remain historical audit evidence.
-- Decision (2026-07-11): Active workflows use one shared three-flow contract; new protocols bind Codex Spark medium, while prior Terra metadata and evidence remain historical-inactive.
+- Decision (2026-07-12): Active workflows use one shared three-flow contract; new protocols bind GPT-5.6 Terra medium. Spark protocols and evidence remain immutable historical contracts.
 
 ## Rationale
 
