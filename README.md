@@ -20,6 +20,7 @@ This repository is not a list of tips. It is organized around a research system:
 - Evaluation framework: [`docs/evaluations/evaluation-framework.md`](docs/evaluations/evaluation-framework.md)
 - Token usage and quality standards: [`docs/evaluations/token-usage-and-quality-standards.md`](docs/evaluations/token-usage-and-quality-standards.md)
 - Phase 2 benchmark plan: [`docs/evaluations/phase-2-benchmark-plan.md`](docs/evaluations/phase-2-benchmark-plan.md)
+- Progressive repository-level evaluation plan: [`docs/evaluations/progressive-repository-evaluation-plan.md`](docs/evaluations/progressive-repository-evaluation-plan.md)
 - Immediately usable evaluation flows: [`docs/evaluations/immediately-usable-flows.md`](docs/evaluations/immediately-usable-flows.md)
 - Research-reporting skill patterns: [`docs/research/report-writing-and-methodology-skill-patterns.md`](docs/research/report-writing-and-methodology-skill-patterns.md)
 - Repo-local agent instructions and skills: [`AGENTS.md`](AGENTS.md), [`.agents/skills/`](.agents/skills/)

@@ -1,7 +1,7 @@
 ---
 status: active
 truth_kind: engineering-contract
-last_reviewed: 2026-06-26
+last_reviewed: 2026-06-29
 ---
 
 # Token Accounting And Benchmark Protocols
@@ -21,6 +21,7 @@ Software-quality scoring is owned by `software-quality-gates.md`.
 ## Current Implementation Behavior
 
 - Phase 2 evaluation docs define benchmark planning and token-accounting standards.
+- Phase 2 includes a source-logic stack hypothesis portfolio with baselines, lower-intervention comparators, broad-owner comparators, installer/orchestrator reproducibility profiles, and replacement-agent lanes.
 - Evaluation templates define task and run-record artifacts.
 - `data/evaluations.json` is the structured evaluation registry.
 
@@ -57,6 +58,7 @@ Software-quality scoring is owned by `software-quality-gates.md`.
 - Decision (2026-06-26): Phase 2 emphasizes benchmark-audit readiness before controlled stack reproduction.
 - Decision (2026-06-26): Run records should separate provider-billed usage from estimates.
 - Decision (2026-06-26): A treatment does not win if it saves tokens by under-solving the task.
+- Decision (2026-06-29): Phase 2 profile roles such as comparator, broad-owner, installer, or replacement-runtime lane are not evidence stages; each component still carries `source-logic`, `benchmark-audit`, or `reproduction` status.
 
 ## Rationale
 

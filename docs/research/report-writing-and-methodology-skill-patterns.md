@@ -128,7 +128,7 @@ Recommended visuals:
 
 | Existing artifact | Improvement from these skills |
 |---|---|
-| `docs/reports/phase-1-compatibility-safe-token-saving-stacks.md` | Add claim-evidence and falsification discipline; keep recommendations source-grounded and not deployment-grade. |
+| `docs/reports/phase-1-compatibility-safe-token-saving-stacks.md` | Add claim-evidence and falsification discipline; keep stack hypotheses evidence-stage calibrated and not deployment-grade. |
 | `docs/evaluations/phase-2-benchmark-plan.md` | Use protocol-before-result, ablation planning, and benchmark configuration capture. |
 | `docs/evaluations/token-usage-and-quality-standards.md` | Add provider-billed task accounting and software-quality gates as hard acceptance criteria. |
 | `docs/evaluations/immediately-usable-flows.md` | Convert generic methodology into execution flows with artifacts and minimum pass conditions. |

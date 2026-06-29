@@ -40,11 +40,13 @@ A `source-logic` dossier must inspect representative source code logic beyond RE
 | Compression/proxy tool | compression pipeline, raw-content cache, retrieval path, provider transport, token accounting, quality checks. |
 | Replacement agent | agent loop, tool budget policy, memory, repository map, model routing, benchmarks, rollback behavior. |
 
-## Recommendation policy
+## Coverage and recommendation policy
 
 - Reports must state the highest evidence stage reached for each recommended stack component.
 - A stack may be recommended provisionally before reproduction, but the report must label the recommendation as evidence-weighted rather than deployment-proven.
 - README-only and integration-only claims may describe leads but cannot be the basis for a qualified stack.
+- Before a report claims a candidate set is complete, primary, recommended, or representative, run a coverage audit using `docs/methodology/discovery-protocol.md` and preserve the query artifact under `sources/discovery/`.
+- Stack selection must not be based only on the subset of tools already inspected. If high-signal leads remain at `lead`, either inspect them to `source-logic` before ranking or state that the ranking is coverage-limited.
 - In stack selection, use the term compatibility-safe directly: tools should not fight over the same hook, context surface, retrieval authority, memory authority, proxy, output channel, or state boundary. Do not use ambiguous stack labels; use compatibility-safe terminology directly.
 - Local environment availability must not be used as evidence of external quality.
 - Maintainer benchmarks must be separated from independent reproductions.

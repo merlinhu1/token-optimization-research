@@ -23,6 +23,8 @@ Benchmark protocol details, quality gates, and stack compatibility are owned by 
 - Reports use evidence stages from `AGENTS.md` and methodology docs.
 - Repo-local skills under `.agents/skills/` define the report-quality review workflow.
 - The repository validator checks structural files and retired terminology.
+- Discovery coverage audits are required before claiming a candidate set is complete, primary, recommended, or representative.
+- High-signal leads discovered by coverage audits stay visible in repository data and backlog even when they remain non-decision-bearing `lead` evidence.
 
 ## Product Truth Links
 
@@ -66,6 +68,7 @@ Write claims from evidence first, then polish prose.
 - Decision (2026-06-26): Practical software evidence has higher decision weight than citation volume.
 - Decision (2026-06-26): Research reports should summarize evidence classes instead of dumping raw provenance ledgers.
 - Decision (2026-06-26): Negative findings and exclusions are part of the research record.
+- Decision (2026-06-28): Discovery coverage is a separate quality gate from source inspection depth; high-signal leads must be visible before stack candidates are called complete or primary.
 
 ## Rationale
 

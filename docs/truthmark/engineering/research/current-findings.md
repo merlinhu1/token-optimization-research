@@ -1,7 +1,7 @@
 ---
 status: active
 truth_kind: engineering-behavior
-last_reviewed: 2026-06-26
+last_reviewed: 2026-06-29
 ---
 
 # Current Findings
@@ -25,9 +25,10 @@ Detailed evidence remains in reports, dossiers, structured data, and evaluation 
 ## Current Implementation Behavior
 
 - The repository is in Phase 2 readiness work.
-- Phase 1 established source-logic dossiers and a compatibility-safe stack report.
-- Phase 2 focuses on benchmark design, token-usage accounting, quality standards, and immediately usable evaluation flows.
-- Stack findings are hypotheses until benchmark-audit or reproduction evidence exists.
+- Phase 1 established 42 source-logic dossiers and a compatibility-safe stack report.
+- The 2026-06-28 corrective knowledge-graph and agent-memory leads were promoted from `lead` to `source-logic` on 2026-06-29.
+- Phase 2 focuses on benchmark design, token-usage accounting, quality standards, immediately usable evaluation flows, and a broader source-logic stack hypothesis portfolio.
+- Stack findings are hypotheses until benchmark-audit or reproduction evidence exists; Phase 1 now routes multiple candidate stacks and comparators rather than selecting a single default stack.
 - Lead-stage backlog items are not decision evidence.
 - Raw discovery and source-inspection artifacts remain provenance, not canonical conclusion prose.
 
@@ -42,6 +43,7 @@ Detailed evidence remains in reports, dossiers, structured data, and evaluation 
 
 - Decision (2026-06-26): This doc is the summary layer for durable current findings.
 - Decision (2026-06-26): It should not duplicate every report section or dossier claim.
+- Decision (2026-06-29): Corrective coverage leads can support report upgrades only after source-logic dossiers exist; they remain benchmark/reproduction hypotheses until measured.
 
 ## Rationale
 

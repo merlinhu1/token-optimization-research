@@ -1,7 +1,7 @@
 ---
 status: active
 truth_kind: engineering-architecture
-last_reviewed: 2026-06-26
+last_reviewed: 2026-06-29
 ---
 
 # Stack Compatibility
@@ -22,7 +22,7 @@ It does not store raw tool-source inspection notes.
 
 - The repository stores techniques in `data/techniques.json`.
 - The repository stores compatibility edges in `data/compatibility-edges.json`.
-- The Phase 1 report frames current stack hypotheses as compatibility-safe, not measured winners.
+- The Phase 1 report frames current stack hypotheses as compatibility-safe research candidates, not measured selections.
 
 ## Product Truth Links
 
@@ -75,7 +75,7 @@ Surface ownership makes stack design testable and reviewable.
 
 ## Non-Goals
 
-- This doc does not declare measured winners without benchmark-audit or reproduction evidence.
+- This doc does not declare measured selections without benchmark-audit or reproduction evidence.
 - This doc does not promote lead-stage tools into recommendations.
 - This doc does not replace individual tool dossiers.
 
