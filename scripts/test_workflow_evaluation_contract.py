@@ -8,6 +8,7 @@ import unittest
 from pathlib import Path
 from unittest import mock
 
+from scripts import generate_workflow_qualification as qualification
 from scripts import run_codex_workflow_evaluation as runner
 from scripts import run_sequential_workflow_matrix as matrix
 from scripts import validate_repository
@@ -33,6 +34,26 @@ class SeedDeliveryContractTest(unittest.TestCase):
     def create_seed_patch(self, repo: Path, patch: Path) -> None:
         patch.write_text(subprocess.run(["git", "diff", "--full-index", "--binary"], cwd=repo, check=True, text=True, capture_output=True).stdout)
         subprocess.run(["git", "reset", "--hard", "-q", "HEAD"], cwd=repo, check=True)
+
+    def test_qualification_reset_discards_tracked_verifier_side_effects(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            repo, source = self.create_repo(Path(tmp))
+            fixed_head = subprocess.run(
+                ["git", "rev-parse", "HEAD"], cwd=repo, check=True, text=True, capture_output=True
+            ).stdout.strip()
+            source.write_text("verifier changed tracked source\n")
+            qualification.reset_tracked_checkout(repo, fixed_head)
+            self.assertEqual(source.read_text(), "base\n")
+            self.assertEqual(
+                subprocess.run(
+                    ["git", "status", "--porcelain", "--untracked-files=no"],
+                    cwd=repo,
+                    check=True,
+                    text=True,
+                    capture_output=True,
+                ).stdout,
+                "",
+            )
 
     def test_active_qualifications_prove_composite_broken_start(self) -> None:
         sequences = json.loads((ROOT / "data/workflow-task-sequences.json").read_text())["sequences"]
@@ -390,16 +411,56 @@ class ManifestAndProtocolContractTest(unittest.TestCase):
         active = [item for item in registry["model_conditions"] if item["status"] == "active-default"]
         self.assertEqual([item["id"] for item in active], ["codex-openai-gpt-5-6-luna-xhigh"])
 
-    def test_active_sequences_bind_composite_v5_qualifications(self) -> None:
+    def test_active_sequences_use_token_savings_task_subsets(self) -> None:
+        self.assertEqual(
+            runner.active_sequence_ids(),
+            [
+                "fastify-maintenance-sequence-v1",
+                "terraform-maintenance-sequence-v2",
+                "beets-maintenance-sequence-v2",
+            ],
+        )
+        expected_tasks = {
+            "terraform-maintenance-sequence-v2": [
+                "terraform-161ffe-tracing-context-regression",
+                "terraform-520378-computed-block-capabilities-regression",
+                "terraform-9ae470-objchange-validation-regression",
+            ],
+            "beets-maintenance-sequence-v2": [
+                "beets-multivalue-metadata-regression",
+                "beets-path-format-config-regression",
+                "beets-relative-path-portability-regression",
+                "beets-tidal-metadata-sync-regression",
+            ],
+        }
+        for sequence_id, task_ids in expected_tasks.items():
+            sequence = runner.load_sequence(sequence_id)
+            self.assertEqual([task["id"] for task in sequence["tasks"]], task_ids)
+            self.assertEqual([task["order"] for task in sequence["tasks"]], list(range(1, len(task_ids) + 1)))
+        self.assertEqual(runner.load_sequence("terraform-maintenance-sequence-v1")["status"], "retired")
+        self.assertEqual(runner.load_sequence("beets-maintenance-sequence-v1")["status"], "retired")
+
+    def test_active_sequences_bind_current_qualifications(self) -> None:
+        expected = {
+            "fastify-maintenance-sequence-v1": "qualification-composite-v5.json",
+            "terraform-maintenance-sequence-v2": "qualification-composite-v6.json",
+            "beets-maintenance-sequence-v2": "qualification-composite-v6.json",
+        }
         for sequence_id in runner.active_sequence_ids():
-            self.assertTrue(runner.load_sequence(sequence_id)["qualification_path"].endswith("qualification-composite-v5.json"))
+            self.assertTrue(runner.load_sequence(sequence_id)["qualification_path"].endswith(expected[sequence_id]))
 
     def test_current_protocol_fingerprint_matches_runner(self) -> None:
-        seq = runner.load_sequence(SEQUENCE_ID)
-        protocol = json.loads((ROOT / "sources/evaluations/protocols/fastify-production-gpt-5.6-luna-xhigh-v7.json").read_text())
-        expected = runner.baseline_protocol_fingerprint(seq)
-        self.assertEqual(protocol["baseline_pool"]["protocol_fingerprint"], expected)
-        self.assertEqual(protocol["baseline_pool"]["descriptor"], runner.baseline_protocol_descriptor(seq))
+        cases = {
+            "fastify-maintenance-sequence-v1": "sources/evaluations/protocols/fastify-production-gpt-5.6-luna-xhigh-v7.json",
+            "terraform-maintenance-sequence-v2": "sources/evaluations/protocols/hashicorp-terraform-token-savings-production-gpt-5.6-luna-xhigh-v8.json",
+            "beets-maintenance-sequence-v2": "sources/evaluations/protocols/beetbox-beets-token-savings-production-gpt-5.6-luna-xhigh-v8.json",
+        }
+        for sequence_id, protocol_path in cases.items():
+            seq = runner.load_sequence(sequence_id)
+            protocol = json.loads((ROOT / protocol_path).read_text())
+            expected = runner.baseline_protocol_fingerprint(seq)
+            self.assertEqual(protocol["baseline_pool"]["protocol_fingerprint"], expected)
+            self.assertEqual(protocol["baseline_pool"]["descriptor"], runner.baseline_protocol_descriptor(seq))
 
     def test_protocol_is_required_before_setup_for_paid_run(self) -> None:
         seq = runner.load_sequence(SEQUENCE_ID)
