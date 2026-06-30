@@ -152,22 +152,20 @@
       "snapshot": {
         "commit": "8ddae794d30e9984be904f80459614155c6592d9",
         "branch": "detached",
-        "snapshot_policy": "Pinned active workflow snapshot; five upstream-derived seed patches are controller-injected one at a time."
+        "snapshot_policy": "Pinned active three-task production workflow snapshot; all regressions are controller-injected before sequential prompt disclosure."
       },
       "prompt": {
         "path": "sources/evaluations/fixtures/medium/beetbox-beets/tasks/README.md",
         "prompt_policy": "Prompts are disclosed one at a time; all acceptance assets remain controller-only."
       },
       "tasks": [
-        "beets-import-duplicate-resolution-regression",
-        "beets-multivalue-metadata-regression",
-        "beets-path-format-config-regression",
-        "beets-relative-path-portability-regression",
-        "beets-tidal-metadata-sync-regression"
+        "beets-path-format-core-regression",
+        "beets-multivalue-core-regression",
+        "beets-tidal-metadata-sync-regression-v2"
       ],
       "qualification_status": "active-reproduction-flow",
       "workflow_sequence_id": "beets-maintenance-sequence-v4",
-      "qualification_evidence": "sources/evaluations/fixtures/medium/beetbox-beets/qualification-composite-v6.json"
+      "qualification_evidence": "sources/evaluations/fixtures/medium/beetbox-beets/qualification-composite-v9.json"
     },
     {
       "id": "large-hashicorp-terraform",
@@ -226,10 +224,8 @@
       ],
       "tasks": [
         "terraform-161ffe-tracing-context-regression",
-        "terraform-81053-invalid-workspace-name-regression",
         "terraform-520378-computed-block-capabilities-regression",
-        "terraform-9ae470-objchange-validation-regression",
-        "terraform-305dba-query-sensitive-paths-regression"
+        "terraform-9ae470-objchange-validation-regression"
       ],
       "qualification_status": "active-reproduction-flow",
       "workflow_sequence_id": "terraform-maintenance-sequence-v2",

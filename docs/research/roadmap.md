@@ -4,9 +4,9 @@
 
 The active research direction is Phase 2 workflow-simulation repair: qualify realistic persistent multi-task workflows before comparing profiles with cumulative provider-billed token usage and software-quality gates.
 
-Fastify, Terraform, and Beets are the three current production-qualified executable workflow suites. Each has five causally related tasks, controller-hidden acceptance assets, pinned source identity, and byte-bound qualification evidence.
+Terraform and Beets are the two immediate production comparison workflows, with three tasks each. Fastify retains one current qualified reference contract but is excluded from this production pair. All three current contracts have controller-hidden acceptance assets, pinned source identity, and byte-bound qualification evidence.
 
-Checkout-generated qualification for all three active suites proves a conflict-free composite broken start, every concealed task verifier failing on that composite state, the complete cumulative verifier passing on the fixed snapshot, asset concealment, and the production-file floor. No pool-matched accepted baseline exists for the active workflow contract; older fingerprints are historical/superseded and non-reusable. Do not publish token-savings claims from those sessions.
+Checkout-generated qualification for both workflows proves a conflict-free composite broken start, every selected verifier failing on that broken state, the complete cumulative verifier passing on the fixed snapshot, asset concealment, and the production-file floor. Both have accepted, quality-reviewed, pool-matched bare baselines. The next priority is paired treatment execution; do not create another workflow or protocol version unless the production contract materially changes.
 
 ## Phase 1 — Source-logic stack research
 
@@ -36,7 +36,7 @@ Status: not complete.
 
 - Run baseline and treatment profiles on frozen active workflow sequences.
 - Compare provider-billed workflow usage, pass rate, quality score, turns, tool calls, latency, and reset/reproducibility.
-- Keep failed and negative workflow sessions in `data/workflow-sessions.json` or compact evidence bundles.
+- Keep accepted production sessions in the live registry; use Git history for rejected calibration attempts.
 - Promote only reproduced findings toward deployment-grade recommendations.
 
 ## Phase 4 — Research outputs and standards
