@@ -2069,6 +2069,743 @@
         "notes": "Execution and quality evidence remain valid for Terraform v2, but the validator/protocol fingerprint changed with the multi-task contract correction; rerun before paired treatment.",
         "scope_note": "Full warm-state lane; all regressions are preseeded, prompts are disclosed sequentially, and concealed verification runs only after the final prompt."
       }
+    },
+    {
+      "schema_version": 1,
+      "session_id": "baseline-beets-20260713-p-909ba23891fb-r0",
+      "record_type": "workflow_session",
+      "evidence_type": "workflow-simulation",
+      "study_id": "phase-2-sequential-workflow-v1",
+      "experiment_group_id": "beetbox-beets-canonical-baseline-909ba23891fb-sequential-workflow-r0",
+      "objective": "individual_tool_effectiveness",
+      "evidence_stage": "reproduction",
+      "status": "completed",
+      "session_role": "baseline",
+      "replicate_index": 0,
+      "frozen_protocol": {
+        "protocol_id": "beetbox-beets-token-savings-production-gpt-5.6-luna-xhigh-v10",
+        "path": "sources/evaluations/protocols/beetbox-beets-token-savings-production-gpt-5.6-luna-xhigh-v10.json",
+        "sha256": "6c06e2c4a737069609c96b7e92be5a3db2acbb3fbc89f7eb79ceeeaae4c25474"
+      },
+      "baseline_pool": {
+        "protocol_version": "baseline-pool-v1",
+        "protocol_fingerprint": "909ba23891fb",
+        "identity_policy": "frozen-protocol-and-replicate; execution date is metadata only"
+      },
+      "selected_execution": {
+        "descriptor_sha256": "7e4b58d917c2abaaa199f499fcbe136fcae4d0e161751ecc448aaf3cb44e0f95",
+        "descriptor": {
+          "version": "execution-condition-v1",
+          "sequence_id": "beets-maintenance-sequence-v4",
+          "execution_role": "baseline",
+          "selected_profile": {
+            "profile_id": "baseline-bare-codex",
+            "profile_type": "control",
+            "component_ids": [],
+            "enabled_surfaces": [
+              "codex-native-shell-edit"
+            ],
+            "disabled_overlaps": [
+              "all MCP servers",
+              "all token-saving surfaces",
+              "global Codex instructions",
+              "hooks",
+              "skills/plugins",
+              "warm indexes"
+            ],
+            "registry_entry_sha256": "ac6fe54b3c2150c70deb4e8c22a742e18e6f377ecbc25617053b55c557b6dea6",
+            "registry_entry": {
+              "id": "baseline-bare-codex",
+              "profile_type": "control",
+              "objective_scope": "control",
+              "status": "active-control",
+              "substrate": "codex-cli",
+              "enabled_surfaces": [
+                "codex-native-shell-edit"
+              ],
+              "disabled_overlaps": [
+                "all MCP servers",
+                "all token-saving surfaces",
+                "global Codex instructions",
+                "hooks",
+                "skills/plugins",
+                "warm indexes"
+              ],
+              "components": [],
+              "native_agent_tools_allowed": [
+                "shell_command_execution",
+                "file_editing",
+                "plain_file_read_search",
+                "git",
+                "verifier_commands"
+              ],
+              "forbidden_surfaces": [
+                "lean-ctx",
+                "codegraph",
+                "serena",
+                "rtk",
+                "lowfat",
+                "tokenjuice",
+                "repomix",
+                "mex",
+                "cavemem",
+                "cartog",
+                "all unlisted retrieval/compression/memory/token-saving tools"
+              ],
+              "install": {
+                "policy": "Run Codex from a fresh lane-specific CODEX_HOME with auth only, no MCP servers, no global instructions, no hooks, no skills/plugins, isolated HOME/PYTHONUSERBASE/XDG/TMPDIR, and a preflight artifact proving empty MCP config."
+              },
+              "reset": {
+                "policy": "Delete the lane-specific Codex home and run-local HOME/PYTHONUSERBASE/XDG/TMPDIR before each run; verify no stale indexes or generated profile files survive."
+              },
+              "notes": "Canonical Codex CLI no-MCP substrate baseline. Codex native shell/edit/file/git/verifier operations are allowed; MCP, retrieval, compression, memory, token-saving add-ons, global instructions, hooks, skills/plugins, and warm indexes are forbidden."
+            }
+          },
+          "tool_adapter": {
+            "tool_id": null,
+            "tool_manifest": "baseline-native-codex-tools",
+            "tool_config": null,
+            "binary_identity": null,
+            "source_identity": []
+          },
+          "runtime": {
+            "docker_image": "token-eval-codex:latest",
+            "docker_image_identity": {
+              "image_ref": "token-eval-codex:latest",
+              "image_id": "sha256:8e3971cfeb9d942802672adece69c4b5b3e7d527c887f9b90245798d2f5d4f67",
+              "repo_digests": [
+                "token-eval-codex@sha256:8e3971cfeb9d942802672adece69c4b5b3e7d527c887f9b90245798d2f5d4f67"
+              ],
+              "repo_tags": [
+                "token-eval-codex:latest"
+              ]
+            },
+            "dockerfile_path": "sources/evaluations/fixtures/container/Dockerfile",
+            "dockerfile_sha256": "b7b869849c77a1e49d7d53de5773a3e3b9ad143cbd99c5f170356427b0c28472",
+            "fixture_runner_path": "scripts/run_codex_fixture_evaluation.py",
+            "fixture_runner_sha256": "85f08be36a078c3b0337a1eaf85f97f92582acb7915e9a77e9b3a2de9c83f3fd",
+            "codex_entrypoint_path": "sources/evaluations/fixtures/container/codex-entrypoint.sh",
+            "codex_entrypoint_sha256": "8715fe37cb1fa3823f5f05493bc9681ce7ffc72126dfec4d64d448762c550c3c",
+            "timeout_seconds_per_task": 3600,
+            "isolation_policy": "fresh lane-specific Codex home/tool data; sequential one-task prompt delivery; concealed tests removed before model-visible root commit"
+          },
+          "dependencies": {
+            "command": "uv sync --group test",
+            "command_sha256": "e718e73048f88b906401006442fb858a4e9e4252f387df2c938eb41755762aa8",
+            "lockfiles": []
+          },
+          "agent_condition": {
+            "runtime_id": "codex-cli",
+            "provider": "openai",
+            "model": "gpt-5.6-luna",
+            "model_condition_id": "codex-openai-gpt-5-6-luna-xhigh",
+            "reasoning_effort": "xhigh",
+            "codex_version_condition": "captured-at-run-and-bound-to-record"
+          },
+          "isolation": {
+            "prompt_delivery": "sequential-one-task-at-a-time",
+            "seed_delivery_mode": "preseeded-composite",
+            "future_tasks_visible": false,
+            "future_seed_regressions_visible": true,
+            "controller_verification": "final-only",
+            "verifier_assets_model_visible": false,
+            "model_concealed_paths": [
+              "tasks/beets-tidal-metadata-sync-regression/verify.sh",
+              "test/autotag/test_hooks.py",
+              "test/plugins/test_tidal.py",
+              "test/test_library.py",
+              "test/ui/commands/test_modify.py"
+            ]
+          },
+          "baseline_pool_reference": {
+            "protocol_version": "baseline-pool-v1",
+            "protocol_fingerprint": "909ba23891fb",
+            "comparison_policy": "paired baseline and treatment must share this baseline pool fingerprint and replicate"
+          }
+        }
+      },
+      "docker_image_identity": {
+        "image_ref": "token-eval-codex:latest",
+        "image_id": "sha256:8e3971cfeb9d942802672adece69c4b5b3e7d527c887f9b90245798d2f5d4f67",
+        "repo_digests": [
+          "token-eval-codex@sha256:8e3971cfeb9d942802672adece69c4b5b3e7d527c887f9b90245798d2f5d4f67"
+        ],
+        "repo_tags": [
+          "token-eval-codex:latest"
+        ]
+      },
+      "tool_adapter_identity": null,
+      "date": "2026-07-13",
+      "target": {
+        "fixture_id": "medium-beetbox-beets",
+        "fixture_scale": "medium-project",
+        "project_id": "beetbox-beets",
+        "repository_path": "sources/evaluations/workflow-sessions/baseline-beets-20260713-p-909ba23891fb-r0/project/repo",
+        "initial_snapshot": {
+          "commit": "8ddae794d30e9984be904f80459614155c6592d9",
+          "branch": "detached",
+          "fixture_hash": ""
+        }
+      },
+      "task_sequence": {
+        "sequence_id": "beets-maintenance-sequence-v4",
+        "task_ids": [
+          "beets-path-format-core-regression",
+          "beets-multivalue-core-regression",
+          "beets-tidal-metadata-sync-regression"
+        ],
+        "reset_policy": "reset source checkout, profile home, tool state, indexes, caches, generated config, and agent home before the lane; preserve repository, thread, tool, index, cache, and agent state across every sequential prompt",
+        "prompt_delivery": {
+          "mode": "sequential-one-task-at-a-time",
+          "future_tasks_visible": false,
+          "future_prompts_materialized_lazily": true,
+          "seed_delivery_mode": "preseeded-composite",
+          "future_seed_regressions_visible": true,
+          "controller_verification": "final-only",
+          "codex_thread_id": "019f5b2a-23a0-79b1-b030-f6c6bb1c7b23",
+          "task_prompt_evidence": "sources/evaluations/workflow-sessions/baseline-beets-20260713-p-909ba23891fb-r0/evidence.jsonl.gz"
+        },
+        "leakage_controls": {
+          "seed_origin_concealed": true,
+          "seed_patches_model_visible": false,
+          "git_baseline_true_root_per_task": false,
+          "git_baseline_true_root_at_lane_start": true,
+          "fixed_snapshot_objects_model_visible": false,
+          "pre_seed_reflog_entries_visible": false,
+          "concealment_verification_passed": true,
+          "task_directories_model_visible": false,
+          "verifier_assets_model_visible": false,
+          "model_writable_surface": "target repository plus isolated model-output directory",
+          "verifier_integrity_passed": true,
+          "verifier_integrity_evidence": "sources/evaluations/workflow-sessions/baseline-beets-20260713-p-909ba23891fb-r0/evidence.jsonl.gz#verifier-integrity.json",
+          "model_prompts_sanitized": true,
+          "upstream_remote_removed_from_model_facing_repo": true,
+          "broken_start_committed_as_local_baseline": true,
+          "remaining_limitations": [
+            "Future regression code is present from lane start, while future prompts and concealed acceptance assets remain controller-only.",
+            "Task semantics and verifier names may still be searchable if the model intentionally uses external network access."
+          ]
+        }
+      },
+      "profile": {
+        "profile_id": "baseline-bare-codex",
+        "profile_type": "control",
+        "enabled_surfaces": [
+          "codex-native-shell-edit"
+        ],
+        "disabled_overlaps": [
+          "all MCP servers",
+          "all token-saving surfaces",
+          "global Codex instructions",
+          "hooks",
+          "skills/plugins",
+          "warm indexes"
+        ],
+        "component_ids": []
+      },
+      "agent": {
+        "runtime_id": "codex-cli",
+        "model_condition_id": "codex-openai-gpt-5-6-luna-xhigh",
+        "name": "Codex CLI",
+        "version": "codex-cli 0.144.0",
+        "provider": "openai",
+        "model": "gpt-5.6-luna",
+        "reasoning_effort": "xhigh",
+        "temperature": null,
+        "max_turns": null,
+        "time_budget_seconds": 10800
+      },
+      "state_policy": {
+        "reset_before_session": [
+          "repository working tree",
+          "profile home",
+          "tool indexes and caches",
+          "generated config",
+          "agent home",
+          "temporary directories"
+        ],
+        "persist_between_tasks": [
+          "repository source working tree and model-facing Git metadata from one composite broken-start root",
+          "tool indexes and caches",
+          "generated config",
+          "agent home",
+          "memory/state stores enabled by the active profile",
+          "run artifacts"
+        ]
+      },
+      "cumulative_token_usage": {
+        "measurement_source": "codex-jsonl-usage-events",
+        "fresh_input_tokens": 462940,
+        "cached_input_tokens": 8844288,
+        "cache_write_tokens": null,
+        "output_tokens": 68851,
+        "reasoning_tokens": 26877,
+        "total_provider_tokens": 9376079,
+        "estimated_cost_usd": null,
+        "tokens_per_accepted_task": 3125359.6666666665,
+        "pricing_basis": "not computed; Codex-reported token volume, not billing-weighted cost"
+      },
+      "per_task_results": [
+        {
+          "task_id": "beets-path-format-core-regression",
+          "task_alias": "task-01",
+          "order": 1,
+          "codex_exit_code": 0,
+          "controller_verification": "deferred-to-final",
+          "accepted": null,
+          "task_delta": "sources/evaluations/workflow-sessions/baseline-beets-20260713-p-909ba23891fb-r0/task-01-agent.diff",
+          "usage_events": "sources/evaluations/workflow-sessions/baseline-beets-20260713-p-909ba23891fb-r0/task-01-codex-events.jsonl",
+          "operational_retry_count": 0
+        },
+        {
+          "task_id": "beets-multivalue-core-regression",
+          "task_alias": "task-02",
+          "order": 2,
+          "codex_exit_code": 0,
+          "controller_verification": "deferred-to-final",
+          "accepted": null,
+          "task_delta": "sources/evaluations/workflow-sessions/baseline-beets-20260713-p-909ba23891fb-r0/task-02-agent.diff",
+          "usage_events": "sources/evaluations/workflow-sessions/baseline-beets-20260713-p-909ba23891fb-r0/task-02-codex-events.jsonl",
+          "operational_retry_count": 0
+        },
+        {
+          "task_id": "beets-tidal-metadata-sync-regression",
+          "task_alias": "task-03",
+          "order": 3,
+          "codex_exit_code": 0,
+          "controller_verification": "deferred-to-final",
+          "accepted": null,
+          "task_delta": "sources/evaluations/workflow-sessions/baseline-beets-20260713-p-909ba23891fb-r0/task-03-agent.diff",
+          "usage_events": "sources/evaluations/workflow-sessions/baseline-beets-20260713-p-909ba23891fb-r0/task-03-codex-events.jsonl",
+          "operational_retry_count": 0
+        }
+      ],
+      "software_quality": {
+        "tasks_attempted": 3,
+        "tasks_passed": 3,
+        "final_verifier_command": "sources/evaluations/workflow-sessions/baseline-beets-20260713-p-909ba23891fb-r0/verify-workflow.sh",
+        "final_verifier_passed": true,
+        "functional_verifier_passed": true,
+        "quality_review_status": "reviewed",
+        "quality_score": 0,
+        "critical_failures": [
+          "Declared Tidal cover-art behavior is incomplete: search_albums_by_ids does not request the coverArt relationship, so production API responses cannot populate artwork_by_id even though _parse_artwork_url is implemented.",
+          "The active Tidal prompt still stated final verification after five prompts although this lane contained three, so the frozen task contract was internally inconsistent."
+        ],
+        "reviewed_on": "2026-07-13",
+        "review_method": "practical-software-quality-reviewer",
+        "review_findings": [
+          "All three Codex turns and the existing concealed verifier passed.",
+          "Independent source review found a false-negative acceptance gap for the coverArt relationship include.",
+          "Execution evidence is retained, but the run is rejected for objective use and cannot seed treatment."
+        ]
+      },
+      "state_observations": {
+        "stale_context_incidents": null,
+        "overfeeding_incidents": null,
+        "repeated_rediscovery_incidents": null,
+        "thread_continuity_errors": [],
+        "useful_state_reuse_notes": "Single persistent Codex thread, composite repository, and source/tool/agent state across sequentially disclosed prompts."
+      },
+      "operational_reproducibility": {
+        "install_logged": true,
+        "pre_session_reset_verified": true,
+        "raw_artifacts_recoverable": true,
+        "state_leakage_outside_session_observed": false,
+        "tool_isolation_audit": {
+          "command": "python3 scripts/audit_tool_isolation.py --json-output ...",
+          "passed": true,
+          "forbidden_tool_hits": []
+        }
+      },
+      "artifacts": {
+        "artifact_contract": "compact-v1-four-files",
+        "run_record": "sources/evaluations/workflow-sessions/baseline-beets-20260713-p-909ba23891fb-r0/run.json",
+        "final_diff": "sources/evaluations/workflow-sessions/baseline-beets-20260713-p-909ba23891fb-r0/changes.diff",
+        "final_diff_basis": "ordered cumulative checkpoints plus final cumulative source diff from one composite root",
+        "evidence_bundle": "sources/evaluations/workflow-sessions/baseline-beets-20260713-p-909ba23891fb-r0/evidence.jsonl.gz",
+        "manifest": "sources/evaluations/workflow-sessions/baseline-beets-20260713-p-909ba23891fb-r0/manifest.sha256"
+      },
+      "interpretation": {
+        "accepted_for_execution": true,
+        "accepted_for_objective": false,
+        "claim_status": "rejected-software-quality-critical-failure",
+        "comparison_baseline_session_id": "",
+        "exclusion_reason": "tidal-cover-art-requirement-not-met",
+        "notes": "Execution verifier passed, but mandatory software-quality review found the declared cover-art contract incomplete; this baseline is not reusable.",
+        "scope_note": "Full warm-state lane; all regressions are preseeded, prompts are disclosed sequentially, and concealed verification runs only after the final prompt."
+      }
+    },
+    {
+      "schema_version": 1,
+      "session_id": "baseline-terraform-20260713-p-5b17c90c9943-r0",
+      "record_type": "workflow_session",
+      "evidence_type": "workflow-simulation",
+      "study_id": "phase-2-sequential-workflow-v1",
+      "experiment_group_id": "hashicorp-terraform-canonical-baseline-5b17c90c9943-sequential-workflow-r0",
+      "objective": "individual_tool_effectiveness",
+      "evidence_stage": "reproduction",
+      "status": "completed",
+      "session_role": "baseline",
+      "replicate_index": 0,
+      "frozen_protocol": {
+        "protocol_id": "hashicorp-terraform-token-savings-production-gpt-5.6-luna-xhigh-v8",
+        "path": "sources/evaluations/protocols/hashicorp-terraform-token-savings-production-gpt-5.6-luna-xhigh-v8.json",
+        "sha256": "7597e09394a8afce1b10ad5e5454ba48c5cc54c0115c30f397d3829ecf18d353"
+      },
+      "baseline_pool": {
+        "protocol_version": "baseline-pool-v1",
+        "protocol_fingerprint": "5b17c90c9943",
+        "identity_policy": "frozen-protocol-and-replicate; execution date is metadata only"
+      },
+      "selected_execution": {
+        "descriptor_sha256": "5707e2a47fe0aa22324772ac80620b440cc66aac518c6e53bf72fadc8b294e45",
+        "descriptor": {
+          "version": "execution-condition-v1",
+          "sequence_id": "terraform-maintenance-sequence-v2",
+          "execution_role": "baseline",
+          "selected_profile": {
+            "profile_id": "baseline-bare-codex",
+            "profile_type": "control",
+            "component_ids": [],
+            "enabled_surfaces": [
+              "codex-native-shell-edit"
+            ],
+            "disabled_overlaps": [
+              "all MCP servers",
+              "all token-saving surfaces",
+              "global Codex instructions",
+              "hooks",
+              "skills/plugins",
+              "warm indexes"
+            ],
+            "registry_entry_sha256": "ac6fe54b3c2150c70deb4e8c22a742e18e6f377ecbc25617053b55c557b6dea6",
+            "registry_entry": {
+              "id": "baseline-bare-codex",
+              "profile_type": "control",
+              "objective_scope": "control",
+              "status": "active-control",
+              "substrate": "codex-cli",
+              "enabled_surfaces": [
+                "codex-native-shell-edit"
+              ],
+              "disabled_overlaps": [
+                "all MCP servers",
+                "all token-saving surfaces",
+                "global Codex instructions",
+                "hooks",
+                "skills/plugins",
+                "warm indexes"
+              ],
+              "components": [],
+              "native_agent_tools_allowed": [
+                "shell_command_execution",
+                "file_editing",
+                "plain_file_read_search",
+                "git",
+                "verifier_commands"
+              ],
+              "forbidden_surfaces": [
+                "lean-ctx",
+                "codegraph",
+                "serena",
+                "rtk",
+                "lowfat",
+                "tokenjuice",
+                "repomix",
+                "mex",
+                "cavemem",
+                "cartog",
+                "all unlisted retrieval/compression/memory/token-saving tools"
+              ],
+              "install": {
+                "policy": "Run Codex from a fresh lane-specific CODEX_HOME with auth only, no MCP servers, no global instructions, no hooks, no skills/plugins, isolated HOME/PYTHONUSERBASE/XDG/TMPDIR, and a preflight artifact proving empty MCP config."
+              },
+              "reset": {
+                "policy": "Delete the lane-specific Codex home and run-local HOME/PYTHONUSERBASE/XDG/TMPDIR before each run; verify no stale indexes or generated profile files survive."
+              },
+              "notes": "Canonical Codex CLI no-MCP substrate baseline. Codex native shell/edit/file/git/verifier operations are allowed; MCP, retrieval, compression, memory, token-saving add-ons, global instructions, hooks, skills/plugins, and warm indexes are forbidden."
+            }
+          },
+          "tool_adapter": {
+            "tool_id": null,
+            "tool_manifest": "baseline-native-codex-tools",
+            "tool_config": null,
+            "binary_identity": null,
+            "source_identity": []
+          },
+          "runtime": {
+            "docker_image": "token-eval-codex:latest",
+            "docker_image_identity": {
+              "image_ref": "token-eval-codex:latest",
+              "image_id": "sha256:8e3971cfeb9d942802672adece69c4b5b3e7d527c887f9b90245798d2f5d4f67",
+              "repo_digests": [
+                "token-eval-codex@sha256:8e3971cfeb9d942802672adece69c4b5b3e7d527c887f9b90245798d2f5d4f67"
+              ],
+              "repo_tags": [
+                "token-eval-codex:latest"
+              ]
+            },
+            "dockerfile_path": "sources/evaluations/fixtures/container/Dockerfile",
+            "dockerfile_sha256": "b7b869849c77a1e49d7d53de5773a3e3b9ad143cbd99c5f170356427b0c28472",
+            "fixture_runner_path": "scripts/run_codex_fixture_evaluation.py",
+            "fixture_runner_sha256": "85f08be36a078c3b0337a1eaf85f97f92582acb7915e9a77e9b3a2de9c83f3fd",
+            "codex_entrypoint_path": "sources/evaluations/fixtures/container/codex-entrypoint.sh",
+            "codex_entrypoint_sha256": "8715fe37cb1fa3823f5f05493bc9681ce7ffc72126dfec4d64d448762c550c3c",
+            "timeout_seconds_per_task": 3600,
+            "isolation_policy": "fresh lane-specific Codex home/tool data; sequential one-task prompt delivery; concealed tests removed before model-visible root commit"
+          },
+          "dependencies": {
+            "command": "go mod download",
+            "command_sha256": "42a8263a643ccbe692d70752ffdd8cea328fc2d3190677df1485ee06f55b350a",
+            "lockfiles": []
+          },
+          "agent_condition": {
+            "runtime_id": "codex-cli",
+            "provider": "openai",
+            "model": "gpt-5.6-luna",
+            "model_condition_id": "codex-openai-gpt-5-6-luna-xhigh",
+            "reasoning_effort": "xhigh",
+            "codex_version_condition": "captured-at-run-and-bound-to-record"
+          },
+          "isolation": {
+            "prompt_delivery": "sequential-one-task-at-a-time",
+            "seed_delivery_mode": "preseeded-composite",
+            "future_tasks_visible": false,
+            "future_seed_regressions_visible": true,
+            "controller_verification": "final-only",
+            "verifier_assets_model_visible": false,
+            "model_concealed_paths": [
+              "internal/backend/backendrun/unparsed_value_test.go",
+              "internal/command/init2_test.go",
+              "internal/plans/objchange/compatible_test.go",
+              "internal/plans/objchange/plan_valid_test.go",
+              "internal/terraform/context_apply_policy_test.go",
+              "internal/terraform/context_plan_test.go"
+            ]
+          },
+          "baseline_pool_reference": {
+            "protocol_version": "baseline-pool-v1",
+            "protocol_fingerprint": "5b17c90c9943",
+            "comparison_policy": "paired baseline and treatment must share this baseline pool fingerprint and replicate"
+          }
+        }
+      },
+      "docker_image_identity": {
+        "image_ref": "token-eval-codex:latest",
+        "image_id": "sha256:8e3971cfeb9d942802672adece69c4b5b3e7d527c887f9b90245798d2f5d4f67",
+        "repo_digests": [
+          "token-eval-codex@sha256:8e3971cfeb9d942802672adece69c4b5b3e7d527c887f9b90245798d2f5d4f67"
+        ],
+        "repo_tags": [
+          "token-eval-codex:latest"
+        ]
+      },
+      "tool_adapter_identity": null,
+      "date": "2026-07-13",
+      "target": {
+        "fixture_id": "large-hashicorp-terraform",
+        "fixture_scale": "large-project",
+        "project_id": "hashicorp-terraform",
+        "repository_path": "sources/evaluations/workflow-sessions/baseline-terraform-20260713-p-5b17c90c9943-r0/project/repo",
+        "initial_snapshot": {
+          "commit": "e02391ad384c9c38f1d7f40b853c0d2297348094",
+          "branch": "detached",
+          "fixture_hash": ""
+        }
+      },
+      "task_sequence": {
+        "sequence_id": "terraform-maintenance-sequence-v2",
+        "task_ids": [
+          "terraform-161ffe-tracing-context-regression",
+          "terraform-520378-computed-block-capabilities-regression",
+          "terraform-9ae470-objchange-validation-regression"
+        ],
+        "reset_policy": "reset source checkout, profile home, tool state, indexes, caches, generated config, and agent home before the lane; preserve repository, thread, tool, index, cache, and agent state across every sequential prompt",
+        "prompt_delivery": {
+          "mode": "sequential-one-task-at-a-time",
+          "future_tasks_visible": false,
+          "future_prompts_materialized_lazily": true,
+          "seed_delivery_mode": "preseeded-composite",
+          "future_seed_regressions_visible": true,
+          "controller_verification": "final-only",
+          "codex_thread_id": "019f5b2a-b793-7981-9544-980dc10e64fb",
+          "task_prompt_evidence": "sources/evaluations/workflow-sessions/baseline-terraform-20260713-p-5b17c90c9943-r0/evidence.jsonl.gz"
+        },
+        "leakage_controls": {
+          "seed_origin_concealed": true,
+          "seed_patches_model_visible": false,
+          "git_baseline_true_root_per_task": false,
+          "git_baseline_true_root_at_lane_start": true,
+          "fixed_snapshot_objects_model_visible": false,
+          "pre_seed_reflog_entries_visible": false,
+          "concealment_verification_passed": true,
+          "task_directories_model_visible": false,
+          "verifier_assets_model_visible": false,
+          "model_writable_surface": "target repository plus isolated model-output directory",
+          "verifier_integrity_passed": true,
+          "verifier_integrity_evidence": "sources/evaluations/workflow-sessions/baseline-terraform-20260713-p-5b17c90c9943-r0/evidence.jsonl.gz#verifier-integrity.json",
+          "model_prompts_sanitized": true,
+          "upstream_remote_removed_from_model_facing_repo": true,
+          "broken_start_committed_as_local_baseline": true,
+          "remaining_limitations": [
+            "Future regression code is present from lane start, while future prompts and concealed acceptance assets remain controller-only.",
+            "Task semantics and verifier names may still be searchable if the model intentionally uses external network access."
+          ]
+        }
+      },
+      "profile": {
+        "profile_id": "baseline-bare-codex",
+        "profile_type": "control",
+        "enabled_surfaces": [
+          "codex-native-shell-edit"
+        ],
+        "disabled_overlaps": [
+          "all MCP servers",
+          "all token-saving surfaces",
+          "global Codex instructions",
+          "hooks",
+          "skills/plugins",
+          "warm indexes"
+        ],
+        "component_ids": []
+      },
+      "agent": {
+        "runtime_id": "codex-cli",
+        "model_condition_id": "codex-openai-gpt-5-6-luna-xhigh",
+        "name": "Codex CLI",
+        "version": "codex-cli 0.144.0",
+        "provider": "openai",
+        "model": "gpt-5.6-luna",
+        "reasoning_effort": "xhigh",
+        "temperature": null,
+        "max_turns": null,
+        "time_budget_seconds": 10800
+      },
+      "state_policy": {
+        "reset_before_session": [
+          "repository working tree",
+          "profile home",
+          "tool indexes and caches",
+          "generated config",
+          "agent home",
+          "temporary directories"
+        ],
+        "persist_between_tasks": [
+          "repository source working tree and model-facing Git metadata from one composite broken-start root",
+          "tool indexes and caches",
+          "generated config",
+          "agent home",
+          "memory/state stores enabled by the active profile",
+          "run artifacts"
+        ]
+      },
+      "cumulative_token_usage": {
+        "measurement_source": "codex-jsonl-usage-events",
+        "fresh_input_tokens": 623056,
+        "cached_input_tokens": 17304576,
+        "cache_write_tokens": null,
+        "output_tokens": 77030,
+        "reasoning_tokens": 35813,
+        "total_provider_tokens": 18004662,
+        "estimated_cost_usd": null,
+        "tokens_per_accepted_task": 6001554.0,
+        "pricing_basis": "not computed; Codex-reported token volume, not billing-weighted cost"
+      },
+      "per_task_results": [
+        {
+          "task_id": "terraform-161ffe-tracing-context-regression",
+          "task_alias": "task-01",
+          "order": 1,
+          "codex_exit_code": 0,
+          "controller_verification": "deferred-to-final",
+          "accepted": null,
+          "task_delta": "sources/evaluations/workflow-sessions/baseline-terraform-20260713-p-5b17c90c9943-r0/task-01-agent.diff",
+          "usage_events": "sources/evaluations/workflow-sessions/baseline-terraform-20260713-p-5b17c90c9943-r0/task-01-codex-events.jsonl",
+          "operational_retry_count": 0
+        },
+        {
+          "task_id": "terraform-520378-computed-block-capabilities-regression",
+          "task_alias": "task-02",
+          "order": 2,
+          "codex_exit_code": 0,
+          "controller_verification": "deferred-to-final",
+          "accepted": null,
+          "task_delta": "sources/evaluations/workflow-sessions/baseline-terraform-20260713-p-5b17c90c9943-r0/task-02-agent.diff",
+          "usage_events": "sources/evaluations/workflow-sessions/baseline-terraform-20260713-p-5b17c90c9943-r0/task-02-codex-events.jsonl",
+          "operational_retry_count": 0
+        },
+        {
+          "task_id": "terraform-9ae470-objchange-validation-regression",
+          "task_alias": "task-03",
+          "order": 3,
+          "codex_exit_code": 0,
+          "controller_verification": "deferred-to-final",
+          "accepted": null,
+          "task_delta": "sources/evaluations/workflow-sessions/baseline-terraform-20260713-p-5b17c90c9943-r0/task-03-agent.diff",
+          "usage_events": "sources/evaluations/workflow-sessions/baseline-terraform-20260713-p-5b17c90c9943-r0/task-03-codex-events.jsonl",
+          "operational_retry_count": 0
+        }
+      ],
+      "software_quality": {
+        "tasks_attempted": 3,
+        "tasks_passed": 3,
+        "final_verifier_command": "sources/evaluations/workflow-sessions/baseline-terraform-20260713-p-5b17c90c9943-r0/verify-workflow.sh",
+        "final_verifier_passed": true,
+        "functional_verifier_passed": true,
+        "quality_review_status": "reviewed",
+        "quality_score": 4,
+        "critical_failures": [],
+        "reviewed_on": "2026-07-13",
+        "review_method": "practical-software-quality-reviewer",
+        "review_findings": [
+          "All three turns and the final cumulative tracing, provider-capability, strict-variable, and const-only behavioral tests passed.",
+          "Final changes are gofmt-clean and preserve declared variable diagnostics.",
+          "Minor maintainability concerns remain: the obsolete mutable SetTracingContext API survives, capability construction is duplicated, and some added gRPC wrapper propagation lacks direct package tests.",
+          "Artifact checksums, tool isolation, and verifier integrity passed; no critical failure."
+        ],
+        "review_evidence": [
+          "sources/evaluations/workflow-sessions/baseline-terraform-20260713-p-5b17c90c9943-r0/run.json",
+          "sources/evaluations/workflow-sessions/baseline-terraform-20260713-p-5b17c90c9943-r0/changes.diff",
+          "sources/evaluations/workflow-sessions/baseline-terraform-20260713-p-5b17c90c9943-r0/evidence.jsonl.gz",
+          "sources/evaluations/workflow-sessions/baseline-terraform-20260713-p-5b17c90c9943-r0/manifest.sha256"
+        ]
+      },
+      "state_observations": {
+        "stale_context_incidents": null,
+        "overfeeding_incidents": null,
+        "repeated_rediscovery_incidents": null,
+        "thread_continuity_errors": [],
+        "useful_state_reuse_notes": "Single persistent Codex thread, composite repository, and source/tool/agent state across sequentially disclosed prompts."
+      },
+      "operational_reproducibility": {
+        "install_logged": true,
+        "pre_session_reset_verified": true,
+        "raw_artifacts_recoverable": true,
+        "state_leakage_outside_session_observed": false,
+        "tool_isolation_audit": {
+          "command": "python3 scripts/audit_tool_isolation.py --json-output ...",
+          "passed": true,
+          "forbidden_tool_hits": []
+        }
+      },
+      "artifacts": {
+        "artifact_contract": "compact-v1-four-files",
+        "run_record": "sources/evaluations/workflow-sessions/baseline-terraform-20260713-p-5b17c90c9943-r0/run.json",
+        "final_diff": "sources/evaluations/workflow-sessions/baseline-terraform-20260713-p-5b17c90c9943-r0/changes.diff",
+        "final_diff_basis": "ordered cumulative checkpoints plus final cumulative source diff from one composite root",
+        "evidence_bundle": "sources/evaluations/workflow-sessions/baseline-terraform-20260713-p-5b17c90c9943-r0/evidence.jsonl.gz",
+        "manifest": "sources/evaluations/workflow-sessions/baseline-terraform-20260713-p-5b17c90c9943-r0/manifest.sha256"
+      },
+      "interpretation": {
+        "accepted_for_execution": true,
+        "accepted_for_objective": true,
+        "claim_status": "accepted-baseline-ready-for-paired-treatment",
+        "comparison_baseline_session_id": "",
+        "exclusion_reason": "",
+        "notes": "Reviewed three-task Terraform v2 baseline is reusable for its frozen current-pool protocol; no treatment claim exists yet.",
+        "scope_note": "Full warm-state lane; all regressions are preseeded, prompts are disclosed sequentially, and concealed verification runs only after the final prompt."
+      }
     }
   ]
 }
