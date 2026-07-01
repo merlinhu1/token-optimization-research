@@ -1137,6 +1137,1435 @@
           "current_verifier_replay_output": "evidence.jsonl.gz#contract-replay/current-final-verifier-output.txt"
         }
       }
+    },
+    {
+      "schema_version": 1,
+      "session_id": "baseline-beets-20260713-p-7aaac4b8a309-r0",
+      "record_type": "workflow_session",
+      "evidence_type": "workflow-simulation",
+      "study_id": "phase-2-sequential-workflow-v1",
+      "experiment_group_id": "beetbox-beets-canonical-baseline-7aaac4b8a309-sequential-workflow-r0",
+      "objective": "individual_tool_effectiveness",
+      "evidence_stage": "reproduction",
+      "status": "completed",
+      "session_role": "baseline",
+      "replicate_index": 0,
+      "frozen_protocol": {
+        "protocol_id": "beetbox-beets-token-savings-production-gpt-5.6-luna-xhigh-v11",
+        "path": "sources/evaluations/protocols/beetbox-beets-token-savings-production-gpt-5.6-luna-xhigh-v11.json",
+        "sha256": "a3903a4996731dfe698b4624397a06c1450329dc137a31271fff4d314ae0eaa3"
+      },
+      "baseline_pool": {
+        "protocol_version": "baseline-pool-v1",
+        "protocol_fingerprint": "7aaac4b8a309",
+        "identity_policy": "frozen-protocol-and-replicate; execution date is metadata only"
+      },
+      "selected_execution": {
+        "descriptor_sha256": "1ba99eee54014582ed11269df442236a1ed8f254b72a836d7bea74df4c36cf72",
+        "descriptor": {
+          "version": "execution-condition-v1",
+          "sequence_id": "beets-maintenance-sequence-v4",
+          "execution_role": "baseline",
+          "selected_profile": {
+            "profile_id": "baseline-bare-codex",
+            "profile_type": "control",
+            "component_ids": [],
+            "enabled_surfaces": [
+              "codex-native-shell-edit"
+            ],
+            "disabled_overlaps": [
+              "all MCP servers",
+              "all token-saving surfaces",
+              "global Codex instructions",
+              "hooks",
+              "skills/plugins",
+              "warm indexes"
+            ],
+            "registry_entry_sha256": "ac6fe54b3c2150c70deb4e8c22a742e18e6f377ecbc25617053b55c557b6dea6",
+            "registry_entry": {
+              "id": "baseline-bare-codex",
+              "profile_type": "control",
+              "objective_scope": "control",
+              "status": "active-control",
+              "substrate": "codex-cli",
+              "enabled_surfaces": [
+                "codex-native-shell-edit"
+              ],
+              "disabled_overlaps": [
+                "all MCP servers",
+                "all token-saving surfaces",
+                "global Codex instructions",
+                "hooks",
+                "skills/plugins",
+                "warm indexes"
+              ],
+              "components": [],
+              "native_agent_tools_allowed": [
+                "shell_command_execution",
+                "file_editing",
+                "plain_file_read_search",
+                "git",
+                "verifier_commands"
+              ],
+              "forbidden_surfaces": [
+                "lean-ctx",
+                "codegraph",
+                "serena",
+                "rtk",
+                "lowfat",
+                "tokenjuice",
+                "repomix",
+                "mex",
+                "cavemem",
+                "cartog",
+                "all unlisted retrieval/compression/memory/token-saving tools"
+              ],
+              "install": {
+                "policy": "Run Codex from a fresh lane-specific CODEX_HOME with auth only, no MCP servers, no global instructions, no hooks, no skills/plugins, isolated HOME/PYTHONUSERBASE/XDG/TMPDIR, and a preflight artifact proving empty MCP config."
+              },
+              "reset": {
+                "policy": "Delete the lane-specific Codex home and run-local HOME/PYTHONUSERBASE/XDG/TMPDIR before each run; verify no stale indexes or generated profile files survive."
+              },
+              "notes": "Canonical Codex CLI no-MCP substrate baseline. Codex native shell/edit/file/git/verifier operations are allowed; MCP, retrieval, compression, memory, token-saving add-ons, global instructions, hooks, skills/plugins, and warm indexes are forbidden."
+            }
+          },
+          "tool_adapter": {
+            "tool_id": null,
+            "tool_manifest": "baseline-native-codex-tools",
+            "tool_config": null,
+            "binary_identity": null,
+            "source_identity": []
+          },
+          "runtime": {
+            "docker_image": "token-eval-codex:latest",
+            "docker_image_identity": {
+              "image_ref": "token-eval-codex:latest",
+              "image_id": "sha256:8e3971cfeb9d942802672adece69c4b5b3e7d527c887f9b90245798d2f5d4f67",
+              "repo_digests": [
+                "token-eval-codex@sha256:8e3971cfeb9d942802672adece69c4b5b3e7d527c887f9b90245798d2f5d4f67"
+              ],
+              "repo_tags": [
+                "token-eval-codex:latest"
+              ]
+            },
+            "dockerfile_path": "sources/evaluations/fixtures/container/Dockerfile",
+            "dockerfile_sha256": "b7b869849c77a1e49d7d53de5773a3e3b9ad143cbd99c5f170356427b0c28472",
+            "fixture_runner_path": "scripts/run_codex_fixture_evaluation.py",
+            "fixture_runner_sha256": "85f08be36a078c3b0337a1eaf85f97f92582acb7915e9a77e9b3a2de9c83f3fd",
+            "codex_entrypoint_path": "sources/evaluations/fixtures/container/codex-entrypoint.sh",
+            "codex_entrypoint_sha256": "8715fe37cb1fa3823f5f05493bc9681ce7ffc72126dfec4d64d448762c550c3c",
+            "timeout_seconds_per_task": 3600,
+            "isolation_policy": "fresh lane-specific Codex home/tool data; sequential one-task prompt delivery; concealed tests removed before model-visible root commit"
+          },
+          "dependencies": {
+            "command": "uv sync --group test",
+            "command_sha256": "e718e73048f88b906401006442fb858a4e9e4252f387df2c938eb41755762aa8",
+            "lockfiles": []
+          },
+          "agent_condition": {
+            "runtime_id": "codex-cli",
+            "provider": "openai",
+            "model": "gpt-5.6-luna",
+            "model_condition_id": "codex-openai-gpt-5-6-luna-xhigh",
+            "reasoning_effort": "xhigh",
+            "codex_version_condition": "captured-at-run-and-bound-to-record"
+          },
+          "isolation": {
+            "prompt_delivery": "sequential-one-task-at-a-time",
+            "seed_delivery_mode": "preseeded-composite",
+            "future_tasks_visible": false,
+            "future_seed_regressions_visible": true,
+            "controller_verification": "final-only",
+            "verifier_assets_model_visible": false,
+            "model_concealed_paths": [
+              "tasks/beets-tidal-metadata-sync-regression/verify.sh",
+              "test/autotag/test_hooks.py",
+              "test/plugins/test_tidal.py",
+              "test/test_library.py",
+              "test/ui/commands/test_modify.py"
+            ]
+          },
+          "baseline_pool_reference": {
+            "protocol_version": "baseline-pool-v1",
+            "protocol_fingerprint": "7aaac4b8a309",
+            "comparison_policy": "paired baseline and treatment must share this baseline pool fingerprint and replicate"
+          }
+        }
+      },
+      "docker_image_identity": {
+        "image_ref": "token-eval-codex:latest",
+        "image_id": "sha256:8e3971cfeb9d942802672adece69c4b5b3e7d527c887f9b90245798d2f5d4f67",
+        "repo_digests": [
+          "token-eval-codex@sha256:8e3971cfeb9d942802672adece69c4b5b3e7d527c887f9b90245798d2f5d4f67"
+        ],
+        "repo_tags": [
+          "token-eval-codex:latest"
+        ]
+      },
+      "tool_adapter_identity": null,
+      "date": "2026-07-13",
+      "target": {
+        "fixture_id": "medium-beetbox-beets",
+        "fixture_scale": "medium-project",
+        "project_id": "beetbox-beets",
+        "repository_path": "sources/evaluations/workflow-sessions/baseline-beets-20260713-p-7aaac4b8a309-r0/project/repo",
+        "initial_snapshot": {
+          "commit": "8ddae794d30e9984be904f80459614155c6592d9",
+          "branch": "detached",
+          "fixture_hash": ""
+        }
+      },
+      "task_sequence": {
+        "sequence_id": "beets-maintenance-sequence-v4",
+        "task_ids": [
+          "beets-path-format-core-regression",
+          "beets-multivalue-core-regression",
+          "beets-tidal-metadata-sync-regression-v2"
+        ],
+        "reset_policy": "reset source checkout, profile home, tool state, indexes, caches, generated config, and agent home before the lane; preserve repository, thread, tool, index, cache, and agent state across every sequential prompt",
+        "prompt_delivery": {
+          "mode": "sequential-one-task-at-a-time",
+          "future_tasks_visible": false,
+          "future_prompts_materialized_lazily": true,
+          "seed_delivery_mode": "preseeded-composite",
+          "future_seed_regressions_visible": true,
+          "controller_verification": "final-only",
+          "codex_thread_id": "019f5d06-67fc-7fe3-bde1-c9eb54ba28f4",
+          "task_prompt_evidence": "sources/evaluations/workflow-sessions/baseline-beets-20260713-p-7aaac4b8a309-r0/evidence.jsonl.gz"
+        },
+        "leakage_controls": {
+          "seed_origin_concealed": true,
+          "seed_patches_model_visible": false,
+          "git_baseline_true_root_per_task": false,
+          "git_baseline_true_root_at_lane_start": true,
+          "fixed_snapshot_objects_model_visible": false,
+          "pre_seed_reflog_entries_visible": false,
+          "concealment_verification_passed": true,
+          "task_directories_model_visible": false,
+          "verifier_assets_model_visible": false,
+          "model_writable_surface": "target repository plus isolated model-output directory",
+          "verifier_integrity_passed": true,
+          "verifier_integrity_evidence": "sources/evaluations/workflow-sessions/baseline-beets-20260713-p-7aaac4b8a309-r0/evidence.jsonl.gz#verifier-integrity.json",
+          "model_prompts_sanitized": true,
+          "upstream_remote_removed_from_model_facing_repo": true,
+          "broken_start_committed_as_local_baseline": true,
+          "remaining_limitations": [
+            "Future regression code is present from lane start, while future prompts and concealed acceptance assets remain controller-only.",
+            "Task semantics and verifier names may still be searchable if the model intentionally uses external network access."
+          ]
+        }
+      },
+      "profile": {
+        "profile_id": "baseline-bare-codex",
+        "profile_type": "control",
+        "enabled_surfaces": [
+          "codex-native-shell-edit"
+        ],
+        "disabled_overlaps": [
+          "all MCP servers",
+          "all token-saving surfaces",
+          "global Codex instructions",
+          "hooks",
+          "skills/plugins",
+          "warm indexes"
+        ],
+        "component_ids": []
+      },
+      "agent": {
+        "runtime_id": "codex-cli",
+        "model_condition_id": "codex-openai-gpt-5-6-luna-xhigh",
+        "name": "Codex CLI",
+        "version": "codex-cli 0.144.0",
+        "provider": "openai",
+        "model": "gpt-5.6-luna",
+        "reasoning_effort": "xhigh",
+        "temperature": null,
+        "max_turns": null,
+        "time_budget_seconds": 10800
+      },
+      "state_policy": {
+        "reset_before_session": [
+          "repository working tree",
+          "profile home",
+          "tool indexes and caches",
+          "generated config",
+          "agent home",
+          "temporary directories"
+        ],
+        "persist_between_tasks": [
+          "repository source working tree and model-facing Git metadata from one composite broken-start root",
+          "tool indexes and caches",
+          "generated config",
+          "agent home",
+          "memory/state stores enabled by the active profile",
+          "run artifacts"
+        ]
+      },
+      "cumulative_token_usage": {
+        "measurement_source": "codex-jsonl-usage-events",
+        "fresh_input_tokens": 387051,
+        "cached_input_tokens": 5954304,
+        "cache_write_tokens": null,
+        "output_tokens": 58869,
+        "reasoning_tokens": 26302,
+        "total_provider_tokens": 6400224,
+        "estimated_cost_usd": null,
+        "tokens_per_accepted_task": 2133408.0,
+        "pricing_basis": "not computed; Codex-reported token volume, not billing-weighted cost"
+      },
+      "per_task_results": [
+        {
+          "task_id": "beets-path-format-core-regression",
+          "task_alias": "task-01",
+          "order": 1,
+          "codex_exit_code": 0,
+          "controller_verification": "deferred-to-final",
+          "accepted": null,
+          "task_delta": "sources/evaluations/workflow-sessions/baseline-beets-20260713-p-7aaac4b8a309-r0/task-01-agent.diff",
+          "usage_events": "sources/evaluations/workflow-sessions/baseline-beets-20260713-p-7aaac4b8a309-r0/task-01-codex-events.jsonl",
+          "operational_retry_count": 0,
+          "agent_claimed_complete": true
+        },
+        {
+          "task_id": "beets-multivalue-core-regression",
+          "task_alias": "task-02",
+          "order": 2,
+          "codex_exit_code": 0,
+          "controller_verification": "deferred-to-final",
+          "accepted": null,
+          "task_delta": "sources/evaluations/workflow-sessions/baseline-beets-20260713-p-7aaac4b8a309-r0/task-02-agent.diff",
+          "usage_events": "sources/evaluations/workflow-sessions/baseline-beets-20260713-p-7aaac4b8a309-r0/task-02-codex-events.jsonl",
+          "operational_retry_count": 0,
+          "agent_claimed_complete": true
+        },
+        {
+          "task_id": "beets-tidal-metadata-sync-regression-v2",
+          "task_alias": "task-03",
+          "order": 3,
+          "codex_exit_code": 0,
+          "controller_verification": "deferred-to-final",
+          "accepted": null,
+          "task_delta": "sources/evaluations/workflow-sessions/baseline-beets-20260713-p-7aaac4b8a309-r0/task-03-agent.diff",
+          "usage_events": "sources/evaluations/workflow-sessions/baseline-beets-20260713-p-7aaac4b8a309-r0/task-03-codex-events.jsonl",
+          "operational_retry_count": 0,
+          "agent_claimed_complete": true
+        }
+      ],
+      "software_quality": {
+        "tasks_attempted": 3,
+        "tasks_passed": 3,
+        "final_verifier_command": "sources/evaluations/workflow-sessions/baseline-beets-20260713-p-7aaac4b8a309-r0/verify-workflow.sh",
+        "final_verifier_passed": true,
+        "functional_verifier_passed": true,
+        "quality_review_status": "reviewed",
+        "quality_score": 4,
+        "critical_failures": [],
+        "tasks_agent_claimed_complete": 3,
+        "reviewed_on": "2026-07-13",
+        "review_method": "manifest verification, concealed final verifier, source-diff review, and raw model-command audit",
+        "review_findings": [
+          "All three corrected concealed verifier surfaces pass, including required MediaAttributes.popularity.",
+          "Final diff restores the scoped production/type contract without modifying tests."
+        ]
+      },
+      "state_observations": {
+        "stale_context_incidents": null,
+        "overfeeding_incidents": null,
+        "repeated_rediscovery_incidents": null,
+        "thread_continuity_errors": [],
+        "useful_state_reuse_notes": "Single persistent Codex thread, composite repository, and source/tool/agent state across sequentially disclosed prompts."
+      },
+      "operational_reproducibility": {
+        "install_logged": true,
+        "pre_session_reset_verified": true,
+        "raw_artifacts_recoverable": true,
+        "state_leakage_outside_session_observed": false,
+        "tool_isolation_audit": {
+          "command": "python3 scripts/audit_tool_isolation.py --json-output ...",
+          "passed": true,
+          "forbidden_tool_hits": []
+        }
+      },
+      "artifacts": {
+        "artifact_contract": "compact-v1-four-files",
+        "run_record": "sources/evaluations/workflow-sessions/baseline-beets-20260713-p-7aaac4b8a309-r0/run.json",
+        "final_diff": "sources/evaluations/workflow-sessions/baseline-beets-20260713-p-7aaac4b8a309-r0/changes.diff",
+        "final_diff_basis": "ordered cumulative checkpoints plus final cumulative source diff from one composite root",
+        "evidence_bundle": "sources/evaluations/workflow-sessions/baseline-beets-20260713-p-7aaac4b8a309-r0/evidence.jsonl.gz",
+        "manifest": "sources/evaluations/workflow-sessions/baseline-beets-20260713-p-7aaac4b8a309-r0/manifest.sha256"
+      },
+      "interpretation": {
+        "accepted_for_execution": true,
+        "accepted_for_objective": true,
+        "claim_status": "accepted-baseline-ready-for-paired-treatment",
+        "comparison_baseline_session_id": "",
+        "exclusion_reason": "",
+        "notes": "Accepted after independent correctness, source-quality, and causal-exposure review.",
+        "scope_note": "Full warm-state lane; all regressions are preseeded, prompts are disclosed sequentially, and concealed verification runs only after the final prompt."
+      }
+    },
+    {
+      "schema_version": 1,
+      "session_id": "lowfat-terraform-20260713-p-5b17c90c9943-r0",
+      "record_type": "workflow_session",
+      "evidence_type": "workflow-simulation",
+      "study_id": "phase-2-sequential-workflow-v1",
+      "experiment_group_id": "hashicorp-terraform-terminal-lowfat-5b17c90c9943-sequential-workflow-r0",
+      "objective": "individual_tool_effectiveness",
+      "evidence_stage": "reproduction",
+      "status": "completed",
+      "session_role": "individual_tool_treatment",
+      "replicate_index": 0,
+      "frozen_protocol": {
+        "protocol_id": "hashicorp-terraform-token-savings-terminal-lowfat-production-gpt-5.6-luna-xhigh-v8",
+        "path": "sources/evaluations/protocols/hashicorp-terraform-token-savings-terminal-lowfat-production-gpt-5.6-luna-xhigh-v8.json",
+        "sha256": "789f523fb9fcbf6f875cc862a5e8ec52d22977fa51b4d36ed51d407976ec332b"
+      },
+      "baseline_pool": {
+        "protocol_version": "baseline-pool-v1",
+        "protocol_fingerprint": "5b17c90c9943",
+        "identity_policy": "frozen-protocol-and-replicate; execution date is metadata only"
+      },
+      "selected_execution": {
+        "descriptor_sha256": "92d3320c78132d024559fd891799aef8bf18f7e043c92835dff013a738cda423",
+        "descriptor": {
+          "version": "execution-condition-v1",
+          "sequence_id": "terraform-maintenance-sequence-v2",
+          "execution_role": "individual_tool_treatment",
+          "selected_profile": {
+            "profile_id": "terminal-lowfat",
+            "profile_type": "individual_tool",
+            "component_ids": [
+              "terminal-lowfat"
+            ],
+            "enabled_surfaces": [
+              "terminal-output"
+            ],
+            "disabled_overlaps": [
+              "all unlisted surfaces"
+            ],
+            "registry_entry_sha256": "5691d70c084aea9f554a09aff14afb8c47d8d16807940f866a8ed1f62800f248",
+            "registry_entry": {
+              "id": "terminal-lowfat",
+              "profile_type": "individual_tool",
+              "objective_scope": "individual_tool_effectiveness",
+              "status": "candidate-profile",
+              "enabled_surfaces": [
+                "terminal-output"
+              ],
+              "disabled_overlaps": [
+                "all unlisted surfaces"
+              ],
+              "components": [
+                {
+                  "component_id": "terminal-lowfat",
+                  "surface": "terminal-output",
+                  "role": "individual_tool"
+                }
+              ],
+              "install": {
+                "policy": "Record exact commands, versions, generated files, and environment variables in every run record before using this profile."
+              },
+              "reset": {
+                "policy": "Record disable/uninstall commands and verify no stale index, hook, memory, cache, or generated profile survives into the next run."
+              },
+              "evaluation_protocol": {
+                "tool_state": "cold-cli",
+                "tool_use_policy": "preferred",
+                "required_tool_invocations_per_workflow": 1,
+                "zero_use_disposition": "invalid-as-tool-effectiveness-evidence"
+              },
+              "notes": "Lowfat terminal/tool-output compaction. A valid tool-effectiveness run requires at least one model-initiated Lowfat command; zero-use exposure lanes are not Lowfat results."
+            }
+          },
+          "tool_adapter": {
+            "tool_id": "lowfat",
+            "tool_manifest": "scripts/run_codex_fixture_evaluation.py:TOOL_CONFIGS",
+            "tool_manifest_sha256": "85f08be36a078c3b0337a1eaf85f97f92582acb7915e9a77e9b3a2de9c83f3fd",
+            "tool_config": {
+              "display_name": "Lowfat",
+              "lane_name": "terminal-lowfat",
+              "surface": "terminal/tool-output-compaction",
+              "allowed_terms": [
+                "lowfat"
+              ],
+              "data_dir_name": "lowfat",
+              "executable": "/opt/data/tool-candidates/lowfat-bin/lowfat",
+              "path_entries": [
+                "/opt/data/tool-candidates/lowfat-bin"
+              ],
+              "mounts": [
+                "/opt/data/tool-candidates/lowfat",
+                "/opt/data/tool-candidates/lowfat-bin"
+              ],
+              "binary_mount_target": "/usr/local/bin/lowfat",
+              "env": {
+                "LOWFAT_TELEMETRY": "0"
+              },
+              "preflight_command": [
+                "lowfat",
+                "--version"
+              ],
+              "default_tool_state": "cold-cli",
+              "preferred_guidance": "Lowfat is available as a terminal/tool-output compaction proxy. Prefix eligible shell commands with `lowfat` (for example `lowfat git status`, `lowfat git diff`, `lowfat npm test`) unless full raw output is required for diagnosis; use raw commands when compaction would hide necessary detail.",
+              "optional_guidance": "Lowfat is available as an optional terminal/tool-output compaction proxy. Use `lowfat <command>` for git, test, build, and search commands when it is likely to reduce terminal output without hiding required diagnostics; otherwise use Codex native shell commands."
+            },
+            "tool_config_sha256": "806975d22c5cfb2b1020d12dcd4cac926289061478e02e83ef4eb7b8cafb3016",
+            "tool_state": "cold-cli",
+            "tool_use_policy": "preferred",
+            "command_identity": {
+              "kind": "preflight_command",
+              "command": [
+                "lowfat",
+                "--version"
+              ]
+            },
+            "binary_identity": {
+              "executable_token": "lowfat",
+              "resolved_path": "/opt/data/tool-candidates/lowfat-bin/lowfat",
+              "realpath": "/opt/data/tool-candidates/lowfat-bin/lowfat",
+              "sha256": "609e9e42d9f01b9b1c4203dc00197498c65a629453d07927cbd68cea83980558",
+              "metadata": {
+                "size": 7390512,
+                "mode": "-rwxr-xr-x",
+                "uid": 10000,
+                "gid": 10000,
+                "mtime_ns": 1781880431000000000
+              },
+              "version": {
+                "command": [
+                  "/opt/data/tool-candidates/lowfat-bin/lowfat",
+                  "--version"
+                ],
+                "captured": true,
+                "exit_code": 0,
+                "output": "lowfat 0.8.0",
+                "truncated": false
+              }
+            },
+            "source_identity": [
+              {
+                "path": "/opt/data/tool-candidates/lowfat",
+                "exists": true,
+                "kind": "directory",
+                "git_head": "b9f6f99d02e5774296305a591bfb13ef24548c38"
+              },
+              {
+                "path": "/opt/data/tool-candidates/lowfat-bin",
+                "exists": true,
+                "kind": "directory"
+              }
+            ]
+          },
+          "runtime": {
+            "docker_image": "token-eval-codex:latest",
+            "docker_image_identity": {
+              "image_ref": "token-eval-codex:latest",
+              "image_id": "sha256:8e3971cfeb9d942802672adece69c4b5b3e7d527c887f9b90245798d2f5d4f67",
+              "repo_digests": [
+                "token-eval-codex@sha256:8e3971cfeb9d942802672adece69c4b5b3e7d527c887f9b90245798d2f5d4f67"
+              ],
+              "repo_tags": [
+                "token-eval-codex:latest"
+              ]
+            },
+            "dockerfile_path": "sources/evaluations/fixtures/container/Dockerfile",
+            "dockerfile_sha256": "b7b869849c77a1e49d7d53de5773a3e3b9ad143cbd99c5f170356427b0c28472",
+            "fixture_runner_path": "scripts/run_codex_fixture_evaluation.py",
+            "fixture_runner_sha256": "85f08be36a078c3b0337a1eaf85f97f92582acb7915e9a77e9b3a2de9c83f3fd",
+            "codex_entrypoint_path": "sources/evaluations/fixtures/container/codex-entrypoint.sh",
+            "codex_entrypoint_sha256": "8715fe37cb1fa3823f5f05493bc9681ce7ffc72126dfec4d64d448762c550c3c",
+            "timeout_seconds_per_task": 3600,
+            "isolation_policy": "fresh lane-specific Codex home/tool data; sequential one-task prompt delivery; concealed tests removed before model-visible root commit"
+          },
+          "dependencies": {
+            "command": "go mod download",
+            "command_sha256": "42a8263a643ccbe692d70752ffdd8cea328fc2d3190677df1485ee06f55b350a",
+            "lockfiles": []
+          },
+          "agent_condition": {
+            "runtime_id": "codex-cli",
+            "provider": "openai",
+            "model": "gpt-5.6-luna",
+            "model_condition_id": "codex-openai-gpt-5-6-luna-xhigh",
+            "reasoning_effort": "xhigh",
+            "codex_version_condition": "captured-at-run-and-bound-to-record"
+          },
+          "isolation": {
+            "prompt_delivery": "sequential-one-task-at-a-time",
+            "seed_delivery_mode": "preseeded-composite",
+            "future_tasks_visible": false,
+            "future_seed_regressions_visible": true,
+            "controller_verification": "final-only",
+            "verifier_assets_model_visible": false,
+            "model_concealed_paths": [
+              "internal/backend/backendrun/unparsed_value_test.go",
+              "internal/command/init2_test.go",
+              "internal/plans/objchange/compatible_test.go",
+              "internal/plans/objchange/plan_valid_test.go",
+              "internal/terraform/context_apply_policy_test.go",
+              "internal/terraform/context_plan_test.go"
+            ]
+          },
+          "baseline_pool_reference": {
+            "protocol_version": "baseline-pool-v1",
+            "protocol_fingerprint": "5b17c90c9943",
+            "comparison_policy": "paired baseline and treatment must share this baseline pool fingerprint and replicate"
+          }
+        }
+      },
+      "docker_image_identity": {
+        "image_ref": "token-eval-codex:latest",
+        "image_id": "sha256:8e3971cfeb9d942802672adece69c4b5b3e7d527c887f9b90245798d2f5d4f67",
+        "repo_digests": [
+          "token-eval-codex@sha256:8e3971cfeb9d942802672adece69c4b5b3e7d527c887f9b90245798d2f5d4f67"
+        ],
+        "repo_tags": [
+          "token-eval-codex:latest"
+        ]
+      },
+      "tool_adapter_identity": {
+        "tool_id": "lowfat",
+        "tool_manifest": "scripts/run_codex_fixture_evaluation.py:TOOL_CONFIGS",
+        "tool_manifest_sha256": "85f08be36a078c3b0337a1eaf85f97f92582acb7915e9a77e9b3a2de9c83f3fd",
+        "tool_config": {
+          "display_name": "Lowfat",
+          "lane_name": "terminal-lowfat",
+          "surface": "terminal/tool-output-compaction",
+          "allowed_terms": [
+            "lowfat"
+          ],
+          "data_dir_name": "lowfat",
+          "executable": "/opt/data/tool-candidates/lowfat-bin/lowfat",
+          "path_entries": [
+            "/opt/data/tool-candidates/lowfat-bin"
+          ],
+          "mounts": [
+            "/opt/data/tool-candidates/lowfat",
+            "/opt/data/tool-candidates/lowfat-bin"
+          ],
+          "binary_mount_target": "/usr/local/bin/lowfat",
+          "env": {
+            "LOWFAT_TELEMETRY": "0"
+          },
+          "preflight_command": [
+            "lowfat",
+            "--version"
+          ],
+          "default_tool_state": "cold-cli",
+          "preferred_guidance": "Lowfat is available as a terminal/tool-output compaction proxy. Prefix eligible shell commands with `lowfat` (for example `lowfat git status`, `lowfat git diff`, `lowfat npm test`) unless full raw output is required for diagnosis; use raw commands when compaction would hide necessary detail.",
+          "optional_guidance": "Lowfat is available as an optional terminal/tool-output compaction proxy. Use `lowfat <command>` for git, test, build, and search commands when it is likely to reduce terminal output without hiding required diagnostics; otherwise use Codex native shell commands."
+        },
+        "tool_config_sha256": "806975d22c5cfb2b1020d12dcd4cac926289061478e02e83ef4eb7b8cafb3016",
+        "tool_state": "cold-cli",
+        "tool_use_policy": "preferred",
+        "command_identity": {
+          "kind": "preflight_command",
+          "command": [
+            "lowfat",
+            "--version"
+          ]
+        },
+        "binary_identity": {
+          "executable_token": "lowfat",
+          "resolved_path": "/opt/data/tool-candidates/lowfat-bin/lowfat",
+          "realpath": "/opt/data/tool-candidates/lowfat-bin/lowfat",
+          "sha256": "609e9e42d9f01b9b1c4203dc00197498c65a629453d07927cbd68cea83980558",
+          "metadata": {
+            "size": 7390512,
+            "mode": "-rwxr-xr-x",
+            "uid": 10000,
+            "gid": 10000,
+            "mtime_ns": 1781880431000000000
+          },
+          "version": {
+            "command": [
+              "/opt/data/tool-candidates/lowfat-bin/lowfat",
+              "--version"
+            ],
+            "captured": true,
+            "exit_code": 0,
+            "output": "lowfat 0.8.0",
+            "truncated": false
+          }
+        },
+        "source_identity": [
+          {
+            "path": "/opt/data/tool-candidates/lowfat",
+            "exists": true,
+            "kind": "directory",
+            "git_head": "b9f6f99d02e5774296305a591bfb13ef24548c38"
+          },
+          {
+            "path": "/opt/data/tool-candidates/lowfat-bin",
+            "exists": true,
+            "kind": "directory"
+          }
+        ]
+      },
+      "date": "2026-07-13",
+      "target": {
+        "fixture_id": "large-hashicorp-terraform",
+        "fixture_scale": "large-project",
+        "project_id": "hashicorp-terraform",
+        "repository_path": "sources/evaluations/workflow-sessions/lowfat-terraform-20260713-p-5b17c90c9943-r0/project/repo",
+        "initial_snapshot": {
+          "commit": "e02391ad384c9c38f1d7f40b853c0d2297348094",
+          "branch": "detached",
+          "fixture_hash": ""
+        }
+      },
+      "task_sequence": {
+        "sequence_id": "terraform-maintenance-sequence-v2",
+        "task_ids": [
+          "terraform-161ffe-tracing-context-regression",
+          "terraform-520378-computed-block-capabilities-regression",
+          "terraform-9ae470-objchange-validation-regression"
+        ],
+        "reset_policy": "reset source checkout, profile home, tool state, indexes, caches, generated config, and agent home before the lane; preserve repository, thread, tool, index, cache, and agent state across every sequential prompt",
+        "prompt_delivery": {
+          "mode": "sequential-one-task-at-a-time",
+          "future_tasks_visible": false,
+          "future_prompts_materialized_lazily": true,
+          "seed_delivery_mode": "preseeded-composite",
+          "future_seed_regressions_visible": true,
+          "controller_verification": "final-only",
+          "codex_thread_id": "019f5d07-1a93-75e3-9e11-a158b0bd9047",
+          "task_prompt_evidence": "sources/evaluations/workflow-sessions/lowfat-terraform-20260713-p-5b17c90c9943-r0/evidence.jsonl.gz"
+        },
+        "leakage_controls": {
+          "seed_origin_concealed": true,
+          "seed_patches_model_visible": false,
+          "git_baseline_true_root_per_task": false,
+          "git_baseline_true_root_at_lane_start": true,
+          "fixed_snapshot_objects_model_visible": false,
+          "pre_seed_reflog_entries_visible": false,
+          "concealment_verification_passed": true,
+          "task_directories_model_visible": false,
+          "verifier_assets_model_visible": false,
+          "model_writable_surface": "target repository plus isolated model-output directory",
+          "verifier_integrity_passed": true,
+          "verifier_integrity_evidence": "sources/evaluations/workflow-sessions/lowfat-terraform-20260713-p-5b17c90c9943-r0/evidence.jsonl.gz#verifier-integrity.json",
+          "model_prompts_sanitized": true,
+          "upstream_remote_removed_from_model_facing_repo": true,
+          "broken_start_committed_as_local_baseline": true,
+          "remaining_limitations": [
+            "Future regression code is present from lane start, while future prompts and concealed acceptance assets remain controller-only.",
+            "Task semantics and verifier names may still be searchable if the model intentionally uses external network access."
+          ]
+        }
+      },
+      "profile": {
+        "profile_id": "terminal-lowfat",
+        "profile_type": "individual_tool",
+        "enabled_surfaces": [
+          "terminal-output"
+        ],
+        "disabled_overlaps": [
+          "all unlisted surfaces"
+        ],
+        "component_ids": [
+          "terminal-lowfat"
+        ]
+      },
+      "agent": {
+        "runtime_id": "codex-cli",
+        "model_condition_id": "codex-openai-gpt-5-6-luna-xhigh",
+        "name": "Codex CLI",
+        "version": "codex-cli 0.144.0",
+        "provider": "openai",
+        "model": "gpt-5.6-luna",
+        "reasoning_effort": "xhigh",
+        "temperature": null,
+        "max_turns": null,
+        "time_budget_seconds": 10800
+      },
+      "state_policy": {
+        "reset_before_session": [
+          "repository working tree",
+          "profile home",
+          "tool indexes and caches",
+          "generated config",
+          "agent home",
+          "temporary directories"
+        ],
+        "persist_between_tasks": [
+          "repository source working tree and model-facing Git metadata from one composite broken-start root",
+          "tool indexes and caches",
+          "generated config",
+          "agent home",
+          "memory/state stores enabled by the active profile",
+          "run artifacts"
+        ]
+      },
+      "cumulative_token_usage": {
+        "measurement_source": "codex-jsonl-usage-events",
+        "fresh_input_tokens": 554745,
+        "cached_input_tokens": 20533760,
+        "cache_write_tokens": null,
+        "output_tokens": 62202,
+        "reasoning_tokens": 26534,
+        "total_provider_tokens": 21150707,
+        "estimated_cost_usd": null,
+        "tokens_per_accepted_task": 7050235.666666667,
+        "pricing_basis": "not computed; Codex-reported token volume, not billing-weighted cost"
+      },
+      "per_task_results": [
+        {
+          "task_id": "terraform-161ffe-tracing-context-regression",
+          "task_alias": "task-01",
+          "order": 1,
+          "codex_exit_code": 0,
+          "controller_verification": "deferred-to-final",
+          "accepted": null,
+          "task_delta": "sources/evaluations/workflow-sessions/lowfat-terraform-20260713-p-5b17c90c9943-r0/task-01-agent.diff",
+          "usage_events": "sources/evaluations/workflow-sessions/lowfat-terraform-20260713-p-5b17c90c9943-r0/task-01-codex-events.jsonl",
+          "operational_retry_count": 0,
+          "agent_claimed_complete": true
+        },
+        {
+          "task_id": "terraform-520378-computed-block-capabilities-regression",
+          "task_alias": "task-02",
+          "order": 2,
+          "codex_exit_code": 0,
+          "controller_verification": "deferred-to-final",
+          "accepted": null,
+          "task_delta": "sources/evaluations/workflow-sessions/lowfat-terraform-20260713-p-5b17c90c9943-r0/task-02-agent.diff",
+          "usage_events": "sources/evaluations/workflow-sessions/lowfat-terraform-20260713-p-5b17c90c9943-r0/task-02-codex-events.jsonl",
+          "operational_retry_count": 0,
+          "agent_claimed_complete": true
+        },
+        {
+          "task_id": "terraform-9ae470-objchange-validation-regression",
+          "task_alias": "task-03",
+          "order": 3,
+          "codex_exit_code": 0,
+          "controller_verification": "deferred-to-final",
+          "accepted": null,
+          "task_delta": "sources/evaluations/workflow-sessions/lowfat-terraform-20260713-p-5b17c90c9943-r0/task-03-agent.diff",
+          "usage_events": "sources/evaluations/workflow-sessions/lowfat-terraform-20260713-p-5b17c90c9943-r0/task-03-codex-events.jsonl",
+          "operational_retry_count": 0,
+          "agent_claimed_complete": true
+        }
+      ],
+      "software_quality": {
+        "tasks_attempted": 3,
+        "tasks_passed": 3,
+        "final_verifier_command": "sources/evaluations/workflow-sessions/lowfat-terraform-20260713-p-5b17c90c9943-r0/verify-workflow.sh",
+        "final_verifier_passed": true,
+        "functional_verifier_passed": true,
+        "quality_review_status": "reviewed",
+        "quality_score": 4,
+        "critical_failures": [],
+        "tasks_agent_claimed_complete": 3,
+        "reviewed_on": "2026-07-13",
+        "review_method": "manifest verification, concealed final verifier, source-diff review, and raw model-command audit",
+        "review_findings": [
+          "All three concealed Terraform verifier surfaces pass.",
+          "Lowfat was used by 27 of 37 completed model shell commands (98 Lowfat prefixes); no test or verifier modifications observed."
+        ]
+      },
+      "state_observations": {
+        "stale_context_incidents": null,
+        "overfeeding_incidents": null,
+        "repeated_rediscovery_incidents": null,
+        "thread_continuity_errors": [],
+        "useful_state_reuse_notes": "Single persistent Codex thread, composite repository, and source/tool/agent state across sequentially disclosed prompts."
+      },
+      "operational_reproducibility": {
+        "install_logged": true,
+        "pre_session_reset_verified": true,
+        "raw_artifacts_recoverable": true,
+        "state_leakage_outside_session_observed": false,
+        "tool_isolation_audit": {
+          "command": "python3 scripts/audit_tool_isolation.py --json-output ...",
+          "passed": true,
+          "forbidden_tool_hits": []
+        }
+      },
+      "artifacts": {
+        "artifact_contract": "compact-v1-four-files",
+        "run_record": "sources/evaluations/workflow-sessions/lowfat-terraform-20260713-p-5b17c90c9943-r0/run.json",
+        "final_diff": "sources/evaluations/workflow-sessions/lowfat-terraform-20260713-p-5b17c90c9943-r0/changes.diff",
+        "final_diff_basis": "ordered cumulative checkpoints plus final cumulative source diff from one composite root",
+        "evidence_bundle": "sources/evaluations/workflow-sessions/lowfat-terraform-20260713-p-5b17c90c9943-r0/evidence.jsonl.gz",
+        "manifest": "sources/evaluations/workflow-sessions/lowfat-terraform-20260713-p-5b17c90c9943-r0/manifest.sha256"
+      },
+      "interpretation": {
+        "accepted_for_execution": true,
+        "accepted_for_objective": true,
+        "claim_status": "accepted-treatment-ready-for-comparison",
+        "comparison_baseline_session_id": "baseline-terraform-20260713-p-5b17c90c9943-r0",
+        "exclusion_reason": "",
+        "notes": "Accepted after independent correctness, source-quality, and causal-exposure review.",
+        "scope_note": "Full warm-state lane; all regressions are preseeded, prompts are disclosed sequentially, and concealed verification runs only after the final prompt."
+      },
+      "tool_use_observations": {
+        "tool_id": "lowfat",
+        "model_initiated_use_confirmed": true,
+        "completed_shell_commands": 37,
+        "commands_using_tool": 27,
+        "tool_prefix_invocations": 98,
+        "command_adoption_percent": 73.0,
+        "zero_use_disposition": "not-applicable"
+      }
+    },
+    {
+      "schema_version": 1,
+      "session_id": "lowfat-fastify-20260713-p-6a8afd4b63ca-r0",
+      "record_type": "workflow_session",
+      "evidence_type": "workflow-simulation",
+      "study_id": "phase-2-sequential-workflow-v1",
+      "experiment_group_id": "fastify-fastify-terminal-lowfat-6a8afd4b63ca-sequential-workflow-r0",
+      "objective": "individual_tool_effectiveness",
+      "evidence_stage": "reproduction",
+      "status": "completed",
+      "session_role": "individual_tool_treatment",
+      "replicate_index": 0,
+      "frozen_protocol": {
+        "protocol_id": "fastify-terminal-lowfat-production-gpt-5.6-luna-xhigh-v7",
+        "path": "sources/evaluations/protocols/fastify-terminal-lowfat-production-gpt-5.6-luna-xhigh-v7.json",
+        "sha256": "c79b924a31dfb583b4d2652cbddac60ba70389190e4e09e7c16fff7d14daf2f8"
+      },
+      "baseline_pool": {
+        "protocol_version": "baseline-pool-v1",
+        "protocol_fingerprint": "6a8afd4b63ca",
+        "identity_policy": "frozen-protocol-and-replicate; execution date is metadata only"
+      },
+      "selected_execution": {
+        "descriptor_sha256": "fab5ed615c05de6209d6c2c73476bdebd97a97db4ed7908689b33ca176624a26",
+        "descriptor": {
+          "version": "execution-condition-v1",
+          "sequence_id": "fastify-maintenance-sequence-v1",
+          "execution_role": "individual_tool_treatment",
+          "selected_profile": {
+            "profile_id": "terminal-lowfat",
+            "profile_type": "individual_tool",
+            "component_ids": [
+              "terminal-lowfat"
+            ],
+            "enabled_surfaces": [
+              "terminal-output"
+            ],
+            "disabled_overlaps": [
+              "all unlisted surfaces"
+            ],
+            "registry_entry_sha256": "5691d70c084aea9f554a09aff14afb8c47d8d16807940f866a8ed1f62800f248",
+            "registry_entry": {
+              "id": "terminal-lowfat",
+              "profile_type": "individual_tool",
+              "objective_scope": "individual_tool_effectiveness",
+              "status": "candidate-profile",
+              "enabled_surfaces": [
+                "terminal-output"
+              ],
+              "disabled_overlaps": [
+                "all unlisted surfaces"
+              ],
+              "components": [
+                {
+                  "component_id": "terminal-lowfat",
+                  "surface": "terminal-output",
+                  "role": "individual_tool"
+                }
+              ],
+              "install": {
+                "policy": "Record exact commands, versions, generated files, and environment variables in every run record before using this profile."
+              },
+              "reset": {
+                "policy": "Record disable/uninstall commands and verify no stale index, hook, memory, cache, or generated profile survives into the next run."
+              },
+              "evaluation_protocol": {
+                "tool_state": "cold-cli",
+                "tool_use_policy": "preferred",
+                "required_tool_invocations_per_workflow": 1,
+                "zero_use_disposition": "invalid-as-tool-effectiveness-evidence"
+              },
+              "notes": "Lowfat terminal/tool-output compaction. A valid tool-effectiveness run requires at least one model-initiated Lowfat command; zero-use exposure lanes are not Lowfat results."
+            }
+          },
+          "tool_adapter": {
+            "tool_id": "lowfat",
+            "tool_manifest": "scripts/run_codex_fixture_evaluation.py:TOOL_CONFIGS",
+            "tool_manifest_sha256": "85f08be36a078c3b0337a1eaf85f97f92582acb7915e9a77e9b3a2de9c83f3fd",
+            "tool_config": {
+              "display_name": "Lowfat",
+              "lane_name": "terminal-lowfat",
+              "surface": "terminal/tool-output-compaction",
+              "allowed_terms": [
+                "lowfat"
+              ],
+              "data_dir_name": "lowfat",
+              "executable": "/opt/data/tool-candidates/lowfat-bin/lowfat",
+              "path_entries": [
+                "/opt/data/tool-candidates/lowfat-bin"
+              ],
+              "mounts": [
+                "/opt/data/tool-candidates/lowfat",
+                "/opt/data/tool-candidates/lowfat-bin"
+              ],
+              "binary_mount_target": "/usr/local/bin/lowfat",
+              "env": {
+                "LOWFAT_TELEMETRY": "0"
+              },
+              "preflight_command": [
+                "lowfat",
+                "--version"
+              ],
+              "default_tool_state": "cold-cli",
+              "preferred_guidance": "Lowfat is available as a terminal/tool-output compaction proxy. Prefix eligible shell commands with `lowfat` (for example `lowfat git status`, `lowfat git diff`, `lowfat npm test`) unless full raw output is required for diagnosis; use raw commands when compaction would hide necessary detail.",
+              "optional_guidance": "Lowfat is available as an optional terminal/tool-output compaction proxy. Use `lowfat <command>` for git, test, build, and search commands when it is likely to reduce terminal output without hiding required diagnostics; otherwise use Codex native shell commands."
+            },
+            "tool_config_sha256": "806975d22c5cfb2b1020d12dcd4cac926289061478e02e83ef4eb7b8cafb3016",
+            "tool_state": "cold-cli",
+            "tool_use_policy": "preferred",
+            "command_identity": {
+              "kind": "preflight_command",
+              "command": [
+                "lowfat",
+                "--version"
+              ]
+            },
+            "binary_identity": {
+              "executable_token": "lowfat",
+              "resolved_path": "/opt/data/tool-candidates/lowfat-bin/lowfat",
+              "realpath": "/opt/data/tool-candidates/lowfat-bin/lowfat",
+              "sha256": "609e9e42d9f01b9b1c4203dc00197498c65a629453d07927cbd68cea83980558",
+              "metadata": {
+                "size": 7390512,
+                "mode": "-rwxr-xr-x",
+                "uid": 10000,
+                "gid": 10000,
+                "mtime_ns": 1781880431000000000
+              },
+              "version": {
+                "command": [
+                  "/opt/data/tool-candidates/lowfat-bin/lowfat",
+                  "--version"
+                ],
+                "captured": true,
+                "exit_code": 0,
+                "output": "lowfat 0.8.0",
+                "truncated": false
+              }
+            },
+            "source_identity": [
+              {
+                "path": "/opt/data/tool-candidates/lowfat",
+                "exists": true,
+                "kind": "directory",
+                "git_head": "b9f6f99d02e5774296305a591bfb13ef24548c38"
+              },
+              {
+                "path": "/opt/data/tool-candidates/lowfat-bin",
+                "exists": true,
+                "kind": "directory"
+              }
+            ]
+          },
+          "runtime": {
+            "docker_image": "token-eval-codex:latest",
+            "docker_image_identity": {
+              "image_ref": "token-eval-codex:latest",
+              "image_id": "sha256:8e3971cfeb9d942802672adece69c4b5b3e7d527c887f9b90245798d2f5d4f67",
+              "repo_digests": [
+                "token-eval-codex@sha256:8e3971cfeb9d942802672adece69c4b5b3e7d527c887f9b90245798d2f5d4f67"
+              ],
+              "repo_tags": [
+                "token-eval-codex:latest"
+              ]
+            },
+            "dockerfile_path": "sources/evaluations/fixtures/container/Dockerfile",
+            "dockerfile_sha256": "b7b869849c77a1e49d7d53de5773a3e3b9ad143cbd99c5f170356427b0c28472",
+            "fixture_runner_path": "scripts/run_codex_fixture_evaluation.py",
+            "fixture_runner_sha256": "85f08be36a078c3b0337a1eaf85f97f92582acb7915e9a77e9b3a2de9c83f3fd",
+            "codex_entrypoint_path": "sources/evaluations/fixtures/container/codex-entrypoint.sh",
+            "codex_entrypoint_sha256": "8715fe37cb1fa3823f5f05493bc9681ce7ffc72126dfec4d64d448762c550c3c",
+            "timeout_seconds_per_task": 3600,
+            "isolation_policy": "fresh lane-specific Codex home/tool data; sequential one-task prompt delivery; concealed tests removed before model-visible root commit"
+          },
+          "dependencies": {
+            "command": "npm install --ignore-scripts --no-audit --no-fund",
+            "command_sha256": "7493d616f26e72b22eb5a21beafa12a6717ebf5b93a7a75e709de65e7323cc41",
+            "lockfiles": [
+              {
+                "path": "package.json",
+                "snapshot_sha256": "b273320af1bb4cfc0f9334457c8e3b1d035fde0da14f9db65e8ef97d361d0be3",
+                "current_fixture_sha256": null
+              }
+            ]
+          },
+          "agent_condition": {
+            "runtime_id": "codex-cli",
+            "provider": "openai",
+            "model": "gpt-5.6-luna",
+            "model_condition_id": "codex-openai-gpt-5-6-luna-xhigh",
+            "reasoning_effort": "xhigh",
+            "codex_version_condition": "captured-at-run-and-bound-to-record"
+          },
+          "isolation": {
+            "prompt_delivery": "sequential-one-task-at-a-time",
+            "seed_delivery_mode": "preseeded-composite",
+            "future_tasks_visible": false,
+            "future_seed_regressions_visible": true,
+            "controller_verification": "final-only",
+            "verifier_assets_model_visible": false,
+            "model_concealed_paths": [
+              "test/404s.test.js",
+              "test/content-parser.test.js",
+              "test/content-type.test.js",
+              "test/custom-parser.1.test.js",
+              "test/handler-timeout.test.js",
+              "test/internals/errors.test.js",
+              "test/internals/initial-config.test.js",
+              "test/internals/logger.test.js",
+              "test/internals/reply.test.js",
+              "test/logger/logging.test.js",
+              "test/request-media-type.test.js",
+              "test/request-timeout.test.js",
+              "test/route.4.test.js",
+              "test/router-options.test.js",
+              "test/schema-feature.test.js",
+              "test/schema-validation.test.js",
+              "test/stream-serializers.test.js",
+              "test/stream.1.test.js",
+              "test/stream.4.test.js",
+              "test/types/errors.tst.ts",
+              "test/types/fastify.tst.ts",
+              "test/types/instance.tst.ts",
+              "test/types/logger.tst.ts",
+              "test/types/request.tst.ts",
+              "test/validation-error-handling.test.js"
+            ]
+          },
+          "baseline_pool_reference": {
+            "protocol_version": "baseline-pool-v1",
+            "protocol_fingerprint": "6a8afd4b63ca",
+            "comparison_policy": "paired baseline and treatment must share this baseline pool fingerprint and replicate"
+          }
+        }
+      },
+      "docker_image_identity": {
+        "image_ref": "token-eval-codex:latest",
+        "image_id": "sha256:8e3971cfeb9d942802672adece69c4b5b3e7d527c887f9b90245798d2f5d4f67",
+        "repo_digests": [
+          "token-eval-codex@sha256:8e3971cfeb9d942802672adece69c4b5b3e7d527c887f9b90245798d2f5d4f67"
+        ],
+        "repo_tags": [
+          "token-eval-codex:latest"
+        ]
+      },
+      "tool_adapter_identity": {
+        "tool_id": "lowfat",
+        "tool_manifest": "scripts/run_codex_fixture_evaluation.py:TOOL_CONFIGS",
+        "tool_manifest_sha256": "85f08be36a078c3b0337a1eaf85f97f92582acb7915e9a77e9b3a2de9c83f3fd",
+        "tool_config": {
+          "display_name": "Lowfat",
+          "lane_name": "terminal-lowfat",
+          "surface": "terminal/tool-output-compaction",
+          "allowed_terms": [
+            "lowfat"
+          ],
+          "data_dir_name": "lowfat",
+          "executable": "/opt/data/tool-candidates/lowfat-bin/lowfat",
+          "path_entries": [
+            "/opt/data/tool-candidates/lowfat-bin"
+          ],
+          "mounts": [
+            "/opt/data/tool-candidates/lowfat",
+            "/opt/data/tool-candidates/lowfat-bin"
+          ],
+          "binary_mount_target": "/usr/local/bin/lowfat",
+          "env": {
+            "LOWFAT_TELEMETRY": "0"
+          },
+          "preflight_command": [
+            "lowfat",
+            "--version"
+          ],
+          "default_tool_state": "cold-cli",
+          "preferred_guidance": "Lowfat is available as a terminal/tool-output compaction proxy. Prefix eligible shell commands with `lowfat` (for example `lowfat git status`, `lowfat git diff`, `lowfat npm test`) unless full raw output is required for diagnosis; use raw commands when compaction would hide necessary detail.",
+          "optional_guidance": "Lowfat is available as an optional terminal/tool-output compaction proxy. Use `lowfat <command>` for git, test, build, and search commands when it is likely to reduce terminal output without hiding required diagnostics; otherwise use Codex native shell commands."
+        },
+        "tool_config_sha256": "806975d22c5cfb2b1020d12dcd4cac926289061478e02e83ef4eb7b8cafb3016",
+        "tool_state": "cold-cli",
+        "tool_use_policy": "preferred",
+        "command_identity": {
+          "kind": "preflight_command",
+          "command": [
+            "lowfat",
+            "--version"
+          ]
+        },
+        "binary_identity": {
+          "executable_token": "lowfat",
+          "resolved_path": "/opt/data/tool-candidates/lowfat-bin/lowfat",
+          "realpath": "/opt/data/tool-candidates/lowfat-bin/lowfat",
+          "sha256": "609e9e42d9f01b9b1c4203dc00197498c65a629453d07927cbd68cea83980558",
+          "metadata": {
+            "size": 7390512,
+            "mode": "-rwxr-xr-x",
+            "uid": 10000,
+            "gid": 10000,
+            "mtime_ns": 1781880431000000000
+          },
+          "version": {
+            "command": [
+              "/opt/data/tool-candidates/lowfat-bin/lowfat",
+              "--version"
+            ],
+            "captured": true,
+            "exit_code": 0,
+            "output": "lowfat 0.8.0",
+            "truncated": false
+          }
+        },
+        "source_identity": [
+          {
+            "path": "/opt/data/tool-candidates/lowfat",
+            "exists": true,
+            "kind": "directory",
+            "git_head": "b9f6f99d02e5774296305a591bfb13ef24548c38"
+          },
+          {
+            "path": "/opt/data/tool-candidates/lowfat-bin",
+            "exists": true,
+            "kind": "directory"
+          }
+        ]
+      },
+      "date": "2026-07-13",
+      "target": {
+        "fixture_id": "medium-fastify-fastify",
+        "fixture_scale": "medium-project",
+        "project_id": "fastify-fastify",
+        "repository_path": "sources/evaluations/workflow-sessions/lowfat-fastify-20260713-p-6a8afd4b63ca-r0/project/repo",
+        "initial_snapshot": {
+          "commit": "94bcbcc6e2ef3b8e8f8e8797fe551ccbe7b942fd",
+          "branch": "detached",
+          "fixture_hash": ""
+        }
+      },
+      "task_sequence": {
+        "sequence_id": "fastify-maintenance-sequence-v1",
+        "task_ids": [
+          "fastify-max-param-length-regression",
+          "fastify-handler-timeout-regression",
+          "fastify-request-media-type-regression",
+          "fastify-log-controller-regression",
+          "fastify-content-type-semantics-regression"
+        ],
+        "reset_policy": "reset source checkout, profile home, tool state, indexes, caches, generated config, and agent home before the lane; preserve repository, thread, tool, index, cache, and agent state across every sequential prompt",
+        "prompt_delivery": {
+          "mode": "sequential-one-task-at-a-time",
+          "future_tasks_visible": false,
+          "future_prompts_materialized_lazily": true,
+          "seed_delivery_mode": "preseeded-composite",
+          "future_seed_regressions_visible": true,
+          "controller_verification": "final-only",
+          "codex_thread_id": "019f5d06-d92c-7a03-b5ff-7a158b2ed006",
+          "task_prompt_evidence": "sources/evaluations/workflow-sessions/lowfat-fastify-20260713-p-6a8afd4b63ca-r0/evidence.jsonl.gz"
+        },
+        "leakage_controls": {
+          "seed_origin_concealed": true,
+          "seed_patches_model_visible": false,
+          "git_baseline_true_root_per_task": false,
+          "git_baseline_true_root_at_lane_start": true,
+          "fixed_snapshot_objects_model_visible": false,
+          "pre_seed_reflog_entries_visible": false,
+          "concealment_verification_passed": true,
+          "task_directories_model_visible": false,
+          "verifier_assets_model_visible": false,
+          "model_writable_surface": "target repository plus isolated model-output directory",
+          "verifier_integrity_passed": true,
+          "verifier_integrity_evidence": "sources/evaluations/workflow-sessions/lowfat-fastify-20260713-p-6a8afd4b63ca-r0/evidence.jsonl.gz#verifier-integrity.json",
+          "model_prompts_sanitized": true,
+          "upstream_remote_removed_from_model_facing_repo": true,
+          "broken_start_committed_as_local_baseline": true,
+          "remaining_limitations": [
+            "Future regression code is present from lane start, while future prompts and concealed acceptance assets remain controller-only.",
+            "Task semantics and verifier names may still be searchable if the model intentionally uses external network access."
+          ]
+        }
+      },
+      "profile": {
+        "profile_id": "terminal-lowfat",
+        "profile_type": "individual_tool",
+        "enabled_surfaces": [
+          "terminal-output"
+        ],
+        "disabled_overlaps": [
+          "all unlisted surfaces"
+        ],
+        "component_ids": [
+          "terminal-lowfat"
+        ]
+      },
+      "agent": {
+        "runtime_id": "codex-cli",
+        "model_condition_id": "codex-openai-gpt-5-6-luna-xhigh",
+        "name": "Codex CLI",
+        "version": "codex-cli 0.144.0",
+        "provider": "openai",
+        "model": "gpt-5.6-luna",
+        "reasoning_effort": "xhigh",
+        "temperature": null,
+        "max_turns": null,
+        "time_budget_seconds": 18000
+      },
+      "state_policy": {
+        "reset_before_session": [
+          "repository working tree",
+          "profile home",
+          "tool indexes and caches",
+          "generated config",
+          "agent home",
+          "temporary directories"
+        ],
+        "persist_between_tasks": [
+          "repository source working tree and model-facing Git metadata from one composite broken-start root",
+          "tool indexes and caches",
+          "generated config",
+          "agent home",
+          "memory/state stores enabled by the active profile",
+          "run artifacts"
+        ]
+      },
+      "cumulative_token_usage": {
+        "measurement_source": "codex-jsonl-usage-events",
+        "fresh_input_tokens": 2238393,
+        "cached_input_tokens": 73852416,
+        "cache_write_tokens": null,
+        "output_tokens": 305122,
+        "reasoning_tokens": 120210,
+        "total_provider_tokens": 76395931,
+        "estimated_cost_usd": null,
+        "tokens_per_accepted_task": 15279186.2,
+        "pricing_basis": "not computed; Codex-reported token volume, not billing-weighted cost"
+      },
+      "per_task_results": [
+        {
+          "task_id": "fastify-max-param-length-regression",
+          "task_alias": "task-01",
+          "order": 1,
+          "codex_exit_code": 0,
+          "controller_verification": "deferred-to-final",
+          "accepted": null,
+          "task_delta": "sources/evaluations/workflow-sessions/lowfat-fastify-20260713-p-6a8afd4b63ca-r0/task-01-agent.diff",
+          "usage_events": "sources/evaluations/workflow-sessions/lowfat-fastify-20260713-p-6a8afd4b63ca-r0/task-01-codex-events.jsonl",
+          "operational_retry_count": 0,
+          "agent_claimed_complete": true
+        },
+        {
+          "task_id": "fastify-handler-timeout-regression",
+          "task_alias": "task-02",
+          "order": 2,
+          "codex_exit_code": 0,
+          "controller_verification": "deferred-to-final",
+          "accepted": null,
+          "task_delta": "sources/evaluations/workflow-sessions/lowfat-fastify-20260713-p-6a8afd4b63ca-r0/task-02-agent.diff",
+          "usage_events": "sources/evaluations/workflow-sessions/lowfat-fastify-20260713-p-6a8afd4b63ca-r0/task-02-codex-events.jsonl",
+          "operational_retry_count": 0,
+          "agent_claimed_complete": true
+        },
+        {
+          "task_id": "fastify-request-media-type-regression",
+          "task_alias": "task-03",
+          "order": 3,
+          "codex_exit_code": 0,
+          "controller_verification": "deferred-to-final",
+          "accepted": null,
+          "task_delta": "sources/evaluations/workflow-sessions/lowfat-fastify-20260713-p-6a8afd4b63ca-r0/task-03-agent.diff",
+          "usage_events": "sources/evaluations/workflow-sessions/lowfat-fastify-20260713-p-6a8afd4b63ca-r0/task-03-codex-events.jsonl",
+          "operational_retry_count": 0,
+          "agent_claimed_complete": true
+        },
+        {
+          "task_id": "fastify-log-controller-regression",
+          "task_alias": "task-04",
+          "order": 4,
+          "codex_exit_code": 0,
+          "controller_verification": "deferred-to-final",
+          "accepted": null,
+          "task_delta": "sources/evaluations/workflow-sessions/lowfat-fastify-20260713-p-6a8afd4b63ca-r0/task-04-agent.diff",
+          "usage_events": "sources/evaluations/workflow-sessions/lowfat-fastify-20260713-p-6a8afd4b63ca-r0/task-04-codex-events.jsonl",
+          "operational_retry_count": 0,
+          "agent_claimed_complete": true
+        },
+        {
+          "task_id": "fastify-content-type-semantics-regression",
+          "task_alias": "task-05",
+          "order": 5,
+          "codex_exit_code": 0,
+          "controller_verification": "deferred-to-final",
+          "accepted": null,
+          "task_delta": "sources/evaluations/workflow-sessions/lowfat-fastify-20260713-p-6a8afd4b63ca-r0/task-05-agent.diff",
+          "usage_events": "sources/evaluations/workflow-sessions/lowfat-fastify-20260713-p-6a8afd4b63ca-r0/task-05-codex-events.jsonl",
+          "operational_retry_count": 0,
+          "agent_claimed_complete": true
+        }
+      ],
+      "software_quality": {
+        "tasks_attempted": 5,
+        "tasks_passed": 5,
+        "final_verifier_command": "sources/evaluations/workflow-sessions/lowfat-fastify-20260713-p-6a8afd4b63ca-r0/verify-workflow.sh",
+        "final_verifier_passed": true,
+        "functional_verifier_passed": true,
+        "quality_review_status": "reviewed",
+        "quality_score": 4,
+        "critical_failures": [],
+        "tasks_agent_claimed_complete": 5,
+        "reviewed_on": "2026-07-13",
+        "review_method": "manifest verification, concealed final verifier, source-diff review, and raw model-command audit",
+        "review_findings": [
+          "All five current prompt-aligned Fastify verifier surfaces pass.",
+          "Lowfat was used by 124 of 139 completed model shell commands (362 Lowfat prefixes); final diff restores the required production/type behaviors."
+        ]
+      },
+      "state_observations": {
+        "stale_context_incidents": null,
+        "overfeeding_incidents": null,
+        "repeated_rediscovery_incidents": null,
+        "thread_continuity_errors": [],
+        "useful_state_reuse_notes": "Single persistent Codex thread, composite repository, and source/tool/agent state across sequentially disclosed prompts."
+      },
+      "operational_reproducibility": {
+        "install_logged": true,
+        "pre_session_reset_verified": true,
+        "raw_artifacts_recoverable": true,
+        "state_leakage_outside_session_observed": false,
+        "tool_isolation_audit": {
+          "command": "python3 scripts/audit_tool_isolation.py --json-output ...",
+          "passed": true,
+          "forbidden_tool_hits": []
+        }
+      },
+      "artifacts": {
+        "artifact_contract": "compact-v1-four-files",
+        "run_record": "sources/evaluations/workflow-sessions/lowfat-fastify-20260713-p-6a8afd4b63ca-r0/run.json",
+        "final_diff": "sources/evaluations/workflow-sessions/lowfat-fastify-20260713-p-6a8afd4b63ca-r0/changes.diff",
+        "final_diff_basis": "ordered cumulative checkpoints plus final cumulative source diff from one composite root",
+        "evidence_bundle": "sources/evaluations/workflow-sessions/lowfat-fastify-20260713-p-6a8afd4b63ca-r0/evidence.jsonl.gz",
+        "manifest": "sources/evaluations/workflow-sessions/lowfat-fastify-20260713-p-6a8afd4b63ca-r0/manifest.sha256"
+      },
+      "interpretation": {
+        "accepted_for_execution": true,
+        "accepted_for_objective": true,
+        "claim_status": "accepted-treatment-ready-for-comparison",
+        "comparison_baseline_session_id": "baseline-fastify-20260713-p-6a8afd4b63ca-r0",
+        "exclusion_reason": "",
+        "notes": "Accepted after independent correctness, source-quality, and causal-exposure review.",
+        "scope_note": "Full warm-state lane; all regressions are preseeded, prompts are disclosed sequentially, and concealed verification runs only after the final prompt."
+      },
+      "tool_use_observations": {
+        "tool_id": "lowfat",
+        "model_initiated_use_confirmed": true,
+        "completed_shell_commands": 139,
+        "commands_using_tool": 124,
+        "tool_prefix_invocations": 362,
+        "command_adoption_percent": 89.2,
+        "zero_use_disposition": "not-applicable"
+      }
     }
   ],
   "hard_lane_policy": {
