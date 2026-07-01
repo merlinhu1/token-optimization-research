@@ -34,7 +34,7 @@
       "id": "medium-fastify-fastify",
       "status": "qualified-fixture",
       "fixture_scale": "medium-project",
-      "evaluation_use": "calibration",
+      "evaluation_use": "primary-objective",
       "repository": {
         "url": "https://github.com/fastify/fastify",
         "id": "fastify__fastify",
@@ -69,8 +69,8 @@
         "root": "execution-time scratch; non-recoverable after compact bundling"
       },
       "future_evaluation_lanes": [
-        "hard-lane-baseline-calibration",
-        "hard-lane-treatment-calibration"
+        "primary-hard-lane-baseline",
+        "primary-hard-lane-treatment"
       ],
       "candidate_profiles": [
         "baseline-bare-codex",
@@ -81,12 +81,10 @@
         "serena-cavemem-lightweight",
         "lower-intervention-codegraph"
       ],
-      "blockers": [
-        "No objective-accepted bare baseline after two five-task Luna xhigh attempts."
-      ],
+      "blockers": [],
       "caveats": [
         "Agent-declared completion is not verifier-confirmed correctness.",
-        "Hard-lane results are diagnostic/calibration evidence and cannot replace the Terraform/Beets production comparison."
+        "The failed baseline is valid primary-objective token-usage evidence; treatment claims must be relative to its correctness and token result."
       ],
       "tasks": [
         "fastify-max-param-length-regression",
@@ -103,19 +101,21 @@
       ],
       "difficulty_class": "hard-lane",
       "evidence_policy": {
+        "baseline_session_id": "baseline-fastify-20260713-p-57a82a0dca61-r0",
+        "baseline_provider_tokens": 92627212,
+        "baseline_operational_completion": "5/5",
+        "baseline_agent_declared_completion": "5/5",
+        "baseline_final_verifier": "0/5 task surfaces passed",
         "valid_uses": [
+          "primary-objective provider-token comparison",
           "operational completion",
           "agent-declared completion",
-          "provider-token demand",
+          "verified-correctness comparison",
           "failure localization",
           "difficulty calibration"
         ],
-        "invalid_uses": [
-          "verified task correctness",
-          "objective-accepted baseline",
-          "successful token-savings claim"
-        ],
-        "comparison_rule": "Compare correctness and token usage jointly; lower tokens are favorable only when verified correctness is no worse."
+        "claim_boundary": "Agent-declared completion is distinct from verifier-confirmed correctness.",
+        "outperformance_rule": "A treatment outperforms the hard baseline when it improves verified correctness, or achieves the same verified-correctness result with fewer provider tokens; report both dimensions."
       }
     },
     {
