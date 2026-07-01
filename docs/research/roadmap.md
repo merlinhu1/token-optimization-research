@@ -4,9 +4,9 @@
 
 The active research direction is Phase 2 workflow-simulation repair: qualify realistic persistent multi-task workflows before comparing profiles with cumulative provider-billed token usage and software-quality gates.
 
-Terraform and Beets are the two immediate production comparison workflows, with three tasks each. Fastify retains one current qualified reference contract but is excluded from this production pair. All three current contracts have controller-hidden acceptance assets, pinned source identity, and byte-bound qualification evidence.
+Terraform and Beets are the two immediate production comparison workflows, with three tasks each. Fastify is retained as a qualified five-task **hard calibration lane**: its runs measure operational completion, agent-declared completion, token demand, and failure patterns, but cannot substitute for an accepted production baseline. All three current contracts have controller-hidden acceptance assets, pinned source identity, and byte-bound qualification evidence.
 
-Checkout-generated qualification for both workflows proves a conflict-free composite broken start, every selected verifier failing on that broken state, the complete cumulative verifier passing on the fixed snapshot, asset concealment, and the production-file floor. Both have accepted, quality-reviewed, pool-matched bare baselines. The next priority is paired treatment execution; do not create another workflow or protocol version unless the production contract materially changes.
+Checkout-generated qualification for the production pair proves a conflict-free composite broken start, every selected verifier failing on that broken state, the complete cumulative verifier passing on the fixed snapshot, asset concealment, and the production-file floor. Terraform and Beets have accepted, quality-reviewed, pool-matched bare baselines. Hard-lane interpretation follows [`hard-lane-evidence.md`](hard-lane-evidence.md): report correctness and token usage jointly, and label model claims separately from verifier-confirmed behavior. The next priority is paired treatment execution; do not create another workflow or protocol version unless the production contract materially changes.
 
 ## Phase 1 — Source-logic stack research
 
@@ -28,6 +28,7 @@ Status: active.
 - Generate the human operator runbook with `scripts/update_workflow_runbook.py`.
 - Run canonical shared-baseline and treatment workflow sessions with the same sequence, runtime, provider, model condition, prompt-disclosure policy, and verifier set.
 - Record compact workflow-session evidence under `sources/evaluations/workflow-sessions/<session-id>/`.
+- Retain failed but well-formed workloads as hard-lane diagnostic evidence when operational completion, agent-declared completion, verified correctness, and token usage are reported separately.
 - Promote selected dossiers from `source-logic` to `benchmark-audit` only after harness, scoring, token accounting, raw outputs, and failure semantics are inspected.
 
 ## Phase 3 — Controlled stack reproduction
