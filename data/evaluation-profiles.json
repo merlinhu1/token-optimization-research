@@ -974,7 +974,13 @@
       "reset": {
         "policy": "Record disable/uninstall commands and verify no stale index, hook, memory, cache, or generated profile survives into the next run."
       },
-      "notes": "Lowfat terminal/tool-output compaction."
+      "evaluation_protocol": {
+        "tool_state": "cold-cli",
+        "tool_use_policy": "preferred",
+        "required_tool_invocations_per_workflow": 1,
+        "zero_use_disposition": "invalid-as-tool-effectiveness-evidence"
+      },
+      "notes": "Lowfat terminal/tool-output compaction. A valid tool-effectiveness run requires at least one model-initiated Lowfat command; zero-use exposure lanes are not Lowfat results."
     },
     {
       "id": "terminal-rtk",
