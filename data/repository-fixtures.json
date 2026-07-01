@@ -101,11 +101,6 @@
       ],
       "difficulty_class": "hard-lane",
       "evidence_policy": {
-        "baseline_session_id": "baseline-fastify-20260713-p-57a82a0dca61-r0",
-        "baseline_provider_tokens": 92627212,
-        "baseline_operational_completion": "5/5",
-        "baseline_agent_declared_completion": "5/5",
-        "baseline_final_verifier": "0/5 task surfaces passed",
         "valid_uses": [
           "primary-objective provider-token comparison",
           "operational completion",
@@ -115,7 +110,24 @@
           "difficulty calibration"
         ],
         "claim_boundary": "Agent-declared completion is distinct from verifier-confirmed correctness.",
-        "outperformance_rule": "A treatment outperforms the hard baseline when it improves verified correctness, or achieves the same verified-correctness result with fewer provider tokens; report both dimensions."
+        "outperformance_rule": "A treatment outperforms the hard baseline when it improves verified correctness, or achieves the same verified-correctness result with fewer provider tokens; report both dimensions.",
+        "model_condition_baselines": [
+          {
+            "model_condition_id": "codex-openai-gpt-5-6-luna-xhigh",
+            "session_id": "baseline-fastify-20260713-p-57a82a0dca61-r0",
+            "provider_tokens": 92627212,
+            "agent_declared_tasks": 5,
+            "verified_task_surfaces": 0
+          },
+          {
+            "model_condition_id": "codex-openai-gpt-5-5-high",
+            "session_id": "baseline-fastify-20260713-p-d8a06f2ef78f-r0",
+            "provider_tokens": 50112674,
+            "agent_declared_tasks": 5,
+            "verified_task_surfaces": 0
+          }
+        ],
+        "baseline_selection_rule": "Pair each tool treatment with the Fastify hard baseline from the same frozen model condition and protocol fingerprint."
       }
     },
     {

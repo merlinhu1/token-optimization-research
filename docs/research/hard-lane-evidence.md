@@ -38,17 +38,21 @@ A treatment outperforms the hard baseline when either:
 
 For a specifically **token-efficiency** claim, require no worse correctness and fewer provider tokens. If correctness improves while tokens increase, report a correctness-versus-token tradeoff rather than calling it token savings. Never infer verifier-confirmed correctness from an agent completion claim.
 
-## Fastify primary-objective hard baseline
+## Fastify primary-objective hard baselines
 
 Frozen sequence: `fastify-maintenance-sequence-v1`
 
-Model condition: GPT-5.6 Luna, xhigh reasoning
-
 Qualified task count: five sequential warm-state repairs
 
-| Session | Operational turns | Agent-declared complete | Deterministic result | Provider tokens | Evidence status |
-|---|---:|---:|---|---:|---|
-| `baseline-fastify-20260713-p-292cc70dff18-r0` | 5/5 | 5/5 | Original verifier green; rejected at independent quality review (2/5) | 90,553,295 | Superseded difficulty evidence; archived in `e4be0b3` |
-| `baseline-fastify-20260713-p-57a82a0dca61-r0` | 5/5 | 5/5 | Strengthened final verifier failed all five task surfaces | 92,627,212 | **Current primary-objective hard baseline**; archived in `d210f18` |
+| Model condition | Session | Operational turns | Agent-declared complete | Verified task surfaces | Provider tokens | Evidence status |
+|---|---|---:|---:|---:|---:|---|
+| GPT-5.6 Luna, xhigh | `baseline-fastify-20260713-p-57a82a0dca61-r0` | 5/5 | 5/5 | 0/5 | 92,627,212 | Primary-objective hard baseline for fingerprint `57a82a0dca61` |
+| GPT-5.5, high | `baseline-fastify-20260713-p-d8a06f2ef78f-r0` | 5/5 | 5/5 | 0/5 | 50,112,674 | Primary-objective hard baseline for fingerprint `d8a06f2ef78f` |
 
-The current comparison anchor is the strengthened run because it matches the active verifier contract. Its measured baseline is **92,627,212 provider tokens**, or **18,525,442.4 provider tokens per agent-declared task completion**. Treatment results must use the same frozen protocol and report both correctness and provider-token deltas against this anchor.
+The older GPT-5.6 session `baseline-fastify-20260713-p-292cc70dff18-r0` used a superseded verifier contract and remains difficulty evidence in Git commit `e4be0b3` rather than a comparison anchor.
+
+### Model-condition observation
+
+Against GPT-5.6 Luna xhigh, GPT-5.5 high used **42,514,538 fewer provider tokens (-45.90%)** with the same observed hard-lane outcome: 5/5 operational turns, 5/5 agent-declared completions, and 0/5 verified task surfaces. Under the hard-lane rule, GPT-5.5 high is more token-efficient for this run.
+
+This is a condition-level comparison, not a causal model-family ablation: both the routed model (`gpt-5.5` versus `gpt-5.6-luna`) and reasoning effort (`high` versus `xhigh`) differ. Tool treatments must pair against the baseline with the same frozen model condition and protocol fingerprint.
