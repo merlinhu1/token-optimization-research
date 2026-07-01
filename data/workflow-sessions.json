@@ -412,6 +412,731 @@
         "notes": "Reviewed three-task Terraform v2 baseline is reusable for its frozen current-pool protocol; no treatment claim exists yet.",
         "scope_note": "Full warm-state lane; all regressions are preseeded, prompts are disclosed sequentially, and concealed verification runs only after the final prompt."
       }
+    },
+    {
+      "schema_version": 1,
+      "session_id": "baseline-fastify-20260713-p-6a8afd4b63ca-r0",
+      "record_type": "workflow_session",
+      "evidence_type": "workflow-simulation",
+      "study_id": "phase-2-sequential-workflow-v1",
+      "experiment_group_id": "fastify-fastify-canonical-baseline-6a8afd4b63ca-sequential-workflow-r0",
+      "objective": "individual_tool_effectiveness",
+      "evidence_stage": "reproduction",
+      "status": "completed",
+      "session_role": "baseline",
+      "replicate_index": 0,
+      "frozen_protocol": {
+        "protocol_id": "fastify-production-gpt-5.6-luna-xhigh-v7",
+        "path": "sources/evaluations/protocols/fastify-production-gpt-5.6-luna-xhigh-v7.json",
+        "sha256": "f1be8d1007f0718ce8d3f405d61945afb7e2768ba1210d7ab8e67ec6b2cd2644"
+      },
+      "baseline_pool": {
+        "protocol_version": "baseline-pool-v1",
+        "protocol_fingerprint": "6a8afd4b63ca",
+        "descriptor": {
+          "version": "baseline-pool-v1",
+          "runner_contract_version": "workflow-runner-v6",
+          "runner_sha256": "16637f32d2fd790b83f2435e8144d1ec8a4a1debcf419330d9b351453ce57ba3",
+          "qualification_generator_sha256": "73eba4b0f331a2f15cec49e3967c347c2d194a24e9d92f16272f14d98c0d3618",
+          "validator_sha256": "f622cb28ccad9dbe82a986f715591600785176acb1dd39320e8f102b1b70f27c",
+          "sequence_id": "fastify-maintenance-sequence-v1",
+          "fixture_id": "medium-fastify-fastify",
+          "fixture_scale": "medium-project",
+          "initial_snapshot": {
+            "commit": "94bcbcc6e2ef3b8e8f8e8797fe551ccbe7b942fd",
+            "upstream": "https://github.com/fastify/fastify.git",
+            "dependency_lockfiles": [
+              {
+                "path": "package.json",
+                "sha256": "b273320af1bb4cfc0f9334457c8e3b1d035fde0da14f9db65e8ef97d361d0be3"
+              }
+            ]
+          },
+          "objective": "individual_tool_effectiveness",
+          "primary_metric": "cumulative provider-billed workflow tokens",
+          "tasks": [
+            {
+              "id": "fastify-max-param-length-regression",
+              "order": 1,
+              "prompt_path": "sources/evaluations/fixtures/medium/fastify-fastify/tasks/fastify-max-param-length-regression/agent-prompt.txt",
+              "prompt_sha256": "cb52e855951b97c8b9c2af43d75a8c4ba07400ac9cecac8d1153dc6f21316b97",
+              "seed_patch_sha256": "a3140efa999e751f11412fc054ae87d7991efe2ba37a95067c61c0063df878f3",
+              "verifier_command": "sources/evaluations/fixtures/medium/fastify-fastify/tasks/fastify-max-param-length-regression/verify.sh",
+              "verifier_sha256": "75b5f53a091749072d812cb060410e8df8c6244285a94ddc422dc10826c1b647",
+              "upstream_test_paths": [
+                "test/internals/errors.test.js",
+                "test/logger/logging.test.js",
+                "test/router-options.test.js",
+                "test/types/instance.tst.ts"
+              ],
+              "compatibility_rebased_test_paths": [
+                "test/route.4.test.js"
+              ],
+              "expected_model_concealed_paths": [
+                "test/internals/errors.test.js",
+                "test/logger/logging.test.js",
+                "test/route.4.test.js",
+                "test/router-options.test.js",
+                "test/types/instance.tst.ts"
+              ],
+              "model_concealed_paths": [
+                "test/internals/errors.test.js",
+                "test/logger/logging.test.js",
+                "test/route.4.test.js",
+                "test/router-options.test.js",
+                "test/types/instance.tst.ts"
+              ]
+            },
+            {
+              "id": "fastify-handler-timeout-regression",
+              "order": 2,
+              "prompt_path": "sources/evaluations/fixtures/medium/fastify-fastify/tasks/fastify-handler-timeout-regression/agent-prompt.txt",
+              "prompt_sha256": "8f3fce903948b03f88b50addec757420fc21529327cf1d3e687cdeec4f4effde",
+              "seed_patch_sha256": "7a1b43c8fe4f893835942409222285c895a45a22c04a3ce5a1ba5b667f2cfb33",
+              "verifier_command": "sources/evaluations/fixtures/medium/fastify-fastify/tasks/fastify-handler-timeout-regression/verify.sh",
+              "verifier_sha256": "e34b62593ee6f8d2a799a58a94cdb2a159af669872ed7c8307430d2eade1349d",
+              "upstream_test_paths": [
+                "test/handler-timeout.test.js",
+                "test/internals/errors.test.js",
+                "test/internals/initial-config.test.js",
+                "test/types/fastify.tst.ts",
+                "test/types/request.tst.ts"
+              ],
+              "compatibility_rebased_test_paths": [
+                "test/request-timeout.test.js",
+                "test/stream.1.test.js"
+              ],
+              "expected_model_concealed_paths": [
+                "test/handler-timeout.test.js",
+                "test/internals/errors.test.js",
+                "test/internals/initial-config.test.js",
+                "test/request-timeout.test.js",
+                "test/stream.1.test.js",
+                "test/types/fastify.tst.ts",
+                "test/types/request.tst.ts"
+              ],
+              "model_concealed_paths": [
+                "test/handler-timeout.test.js",
+                "test/internals/errors.test.js",
+                "test/internals/initial-config.test.js",
+                "test/request-timeout.test.js",
+                "test/stream.1.test.js",
+                "test/types/fastify.tst.ts",
+                "test/types/request.tst.ts"
+              ]
+            },
+            {
+              "id": "fastify-request-media-type-regression",
+              "order": 3,
+              "prompt_path": "sources/evaluations/fixtures/medium/fastify-fastify/tasks/fastify-request-media-type-regression/agent-prompt.txt",
+              "prompt_sha256": "015fbb995560caf229c33ae37bf0ceaf8d1c08fdd0838c1d0fe34224151ef169",
+              "seed_patch_sha256": "19035d0a5fd94a640705537cfcfc4fbc161d9ca124b08e0a8291e854fe78e578",
+              "verifier_command": "sources/evaluations/fixtures/medium/fastify-fastify/tasks/fastify-request-media-type-regression/verify.sh",
+              "verifier_sha256": "799568eed4493fce3a04405917522e8b1876f224a9e4c06874de544fc27037c5",
+              "upstream_test_paths": [
+                "test/request-media-type.test.js",
+                "test/schema-validation.test.js"
+              ],
+              "compatibility_rebased_test_paths": [
+                "test/schema-feature.test.js",
+                "test/types/request.tst.ts"
+              ],
+              "expected_model_concealed_paths": [
+                "test/request-media-type.test.js",
+                "test/schema-feature.test.js",
+                "test/schema-validation.test.js",
+                "test/types/request.tst.ts"
+              ],
+              "model_concealed_paths": [
+                "test/request-media-type.test.js",
+                "test/schema-feature.test.js",
+                "test/schema-validation.test.js",
+                "test/types/request.tst.ts"
+              ]
+            },
+            {
+              "id": "fastify-log-controller-regression",
+              "order": 4,
+              "prompt_path": "sources/evaluations/fixtures/medium/fastify-fastify/tasks/fastify-log-controller-regression/agent-prompt.txt",
+              "prompt_sha256": "ef9722a76fda11e4a75753d7441f0c42f694c9ce43cd63082b381d29d45f5435",
+              "seed_patch_sha256": "156e6439182792870108700a19a16004b31c1c62ca5eff555f788bdeef23b6df",
+              "verifier_command": "sources/evaluations/fixtures/medium/fastify-fastify/tasks/fastify-log-controller-regression/verify.sh",
+              "verifier_sha256": "e138d7da2d038848ce548643086fd836188c250f7fb6d5ee3ee48018872e4338",
+              "upstream_test_paths": [
+                "test/internals/errors.test.js",
+                "test/internals/logger.test.js",
+                "test/internals/reply.test.js",
+                "test/logger/logging.test.js",
+                "test/stream.4.test.js"
+              ],
+              "compatibility_rebased_test_paths": [
+                "test/404s.test.js",
+                "test/stream-serializers.test.js",
+                "test/types/errors.tst.ts",
+                "test/types/fastify.tst.ts",
+                "test/types/instance.tst.ts",
+                "test/types/logger.tst.ts",
+                "test/validation-error-handling.test.js"
+              ],
+              "expected_model_concealed_paths": [
+                "test/404s.test.js",
+                "test/internals/errors.test.js",
+                "test/internals/logger.test.js",
+                "test/internals/reply.test.js",
+                "test/logger/logging.test.js",
+                "test/stream-serializers.test.js",
+                "test/stream.4.test.js",
+                "test/types/errors.tst.ts",
+                "test/types/fastify.tst.ts",
+                "test/types/instance.tst.ts",
+                "test/types/logger.tst.ts",
+                "test/validation-error-handling.test.js"
+              ],
+              "model_concealed_paths": [
+                "test/404s.test.js",
+                "test/internals/errors.test.js",
+                "test/internals/logger.test.js",
+                "test/internals/reply.test.js",
+                "test/logger/logging.test.js",
+                "test/stream-serializers.test.js",
+                "test/stream.4.test.js",
+                "test/types/errors.tst.ts",
+                "test/types/fastify.tst.ts",
+                "test/types/instance.tst.ts",
+                "test/types/logger.tst.ts",
+                "test/validation-error-handling.test.js"
+              ]
+            },
+            {
+              "id": "fastify-content-type-semantics-regression",
+              "order": 5,
+              "prompt_path": "sources/evaluations/fixtures/medium/fastify-fastify/tasks/fastify-content-type-semantics-regression/agent-prompt.txt",
+              "prompt_sha256": "9ddf2d94b33fe4174ed171ce32a8e67366ad69b1982a6b32cad09c995756b044",
+              "seed_patch_sha256": "970bcf62eea40c5da2e3018c1985ce098aa5870a398d4e241d0f188e164ed3db",
+              "verifier_command": "sources/evaluations/fixtures/medium/fastify-fastify/tasks/fastify-content-type-semantics-regression/verify.sh",
+              "verifier_sha256": "c1b90f7326d4dc6e6728c5e7c3816abeb509de83fb24446c3c631394bcb94f93",
+              "upstream_test_paths": [
+                "test/content-type.test.js",
+                "test/internals/reply.test.js"
+              ],
+              "compatibility_rebased_test_paths": [
+                "test/content-parser.test.js",
+                "test/custom-parser.1.test.js"
+              ],
+              "expected_model_concealed_paths": [
+                "test/content-parser.test.js",
+                "test/content-type.test.js",
+                "test/custom-parser.1.test.js",
+                "test/internals/reply.test.js"
+              ],
+              "model_concealed_paths": [
+                "test/content-parser.test.js",
+                "test/content-type.test.js",
+                "test/custom-parser.1.test.js",
+                "test/internals/reply.test.js"
+              ]
+            }
+          ],
+          "qualification": {
+            "path": "sources/evaluations/fixtures/medium/fastify-fastify/qualification-composite-v5.json",
+            "sha256": "87ab86106ed631543e595e812c31eba249be30dee430728bc51cfdab39a61a36"
+          },
+          "baseline_profile": {
+            "profile_id": "baseline-bare-codex",
+            "profile_type": "control",
+            "enabled_surfaces": [
+              "codex-native-shell-edit"
+            ],
+            "disabled_overlaps": [
+              "all MCP servers",
+              "all token-saving surfaces",
+              "global Codex instructions",
+              "hooks",
+              "skills/plugins",
+              "warm indexes"
+            ]
+          },
+          "agent": {
+            "runtime_id": "codex-cli",
+            "provider": "openai",
+            "model": "gpt-5.6-luna",
+            "model_condition_id": "codex-openai-gpt-5-6-luna-xhigh",
+            "reasoning_effort": "xhigh"
+          },
+          "runtime_inputs": {
+            "timeout_seconds_per_task": 3600,
+            "docker_image": "token-eval-codex:latest",
+            "docker_image_identity": {
+              "image_ref": "token-eval-codex:latest",
+              "image_id": "sha256:8e3971cfeb9d942802672adece69c4b5b3e7d527c887f9b90245798d2f5d4f67",
+              "repo_digests": [
+                "token-eval-codex@sha256:8e3971cfeb9d942802672adece69c4b5b3e7d527c887f9b90245798d2f5d4f67"
+              ],
+              "repo_tags": [
+                "token-eval-codex:latest"
+              ]
+            },
+            "dockerfile_path": "sources/evaluations/fixtures/container/Dockerfile",
+            "dockerfile_sha256": "b7b869849c77a1e49d7d53de5773a3e3b9ad143cbd99c5f170356427b0c28472",
+            "dependency_command": "npm install --ignore-scripts --no-audit --no-fund",
+            "dependency_lockfiles": [
+              {
+                "path": "package.json",
+                "sha256": "b273320af1bb4cfc0f9334457c8e3b1d035fde0da14f9db65e8ef97d361d0be3"
+              }
+            ],
+            "codex_runtime_condition": "codex-openai-gpt-5-6-luna-xhigh"
+          },
+          "isolation": {
+            "prompt_delivery": "sequential-one-task-at-a-time",
+            "seed_delivery_mode": "preseeded-composite",
+            "future_tasks_visible": false,
+            "future_seed_regressions_visible": true,
+            "verifier_assets_model_visible": false,
+            "git_baseline_true_root_at_lane_start": true,
+            "controller_verification": "final-only",
+            "prompt_sanitizer": "sanitize_task_prompt-v1",
+            "concealment": "declared-model-concealed-paths-removed-before-root-commit",
+            "model_concealed_paths": [
+              "test/404s.test.js",
+              "test/content-parser.test.js",
+              "test/content-type.test.js",
+              "test/custom-parser.1.test.js",
+              "test/handler-timeout.test.js",
+              "test/internals/errors.test.js",
+              "test/internals/initial-config.test.js",
+              "test/internals/logger.test.js",
+              "test/internals/reply.test.js",
+              "test/logger/logging.test.js",
+              "test/request-media-type.test.js",
+              "test/request-timeout.test.js",
+              "test/route.4.test.js",
+              "test/router-options.test.js",
+              "test/schema-feature.test.js",
+              "test/schema-validation.test.js",
+              "test/stream-serializers.test.js",
+              "test/stream.1.test.js",
+              "test/stream.4.test.js",
+              "test/types/errors.tst.ts",
+              "test/types/fastify.tst.ts",
+              "test/types/instance.tst.ts",
+              "test/types/logger.tst.ts",
+              "test/types/request.tst.ts",
+              "test/validation-error-handling.test.js"
+            ]
+          }
+        }
+      },
+      "selected_execution": {
+        "descriptor_sha256": "0934794e2dd784acfd2f450b96a99f43750b98f7ba497da1f222fa79be01668a",
+        "descriptor": {
+          "version": "execution-condition-v1",
+          "sequence_id": "fastify-maintenance-sequence-v1",
+          "execution_role": "baseline",
+          "selected_profile": {
+            "profile_id": "baseline-bare-codex",
+            "profile_type": "control",
+            "component_ids": [],
+            "enabled_surfaces": [
+              "codex-native-shell-edit"
+            ],
+            "disabled_overlaps": [
+              "all MCP servers",
+              "all token-saving surfaces",
+              "global Codex instructions",
+              "hooks",
+              "skills/plugins",
+              "warm indexes"
+            ],
+            "registry_entry_sha256": "ac6fe54b3c2150c70deb4e8c22a742e18e6f377ecbc25617053b55c557b6dea6",
+            "registry_entry": {
+              "id": "baseline-bare-codex",
+              "profile_type": "control",
+              "objective_scope": "control",
+              "status": "active-control",
+              "substrate": "codex-cli",
+              "enabled_surfaces": [
+                "codex-native-shell-edit"
+              ],
+              "disabled_overlaps": [
+                "all MCP servers",
+                "all token-saving surfaces",
+                "global Codex instructions",
+                "hooks",
+                "skills/plugins",
+                "warm indexes"
+              ],
+              "components": [],
+              "native_agent_tools_allowed": [
+                "shell_command_execution",
+                "file_editing",
+                "plain_file_read_search",
+                "git",
+                "verifier_commands"
+              ],
+              "forbidden_surfaces": [
+                "lean-ctx",
+                "codegraph",
+                "serena",
+                "rtk",
+                "lowfat",
+                "tokenjuice",
+                "repomix",
+                "mex",
+                "cavemem",
+                "cartog",
+                "all unlisted retrieval/compression/memory/token-saving tools"
+              ],
+              "install": {
+                "policy": "Run Codex from a fresh lane-specific CODEX_HOME with auth only, no MCP servers, no global instructions, no hooks, no skills/plugins, isolated HOME/PYTHONUSERBASE/XDG/TMPDIR, and a preflight artifact proving empty MCP config."
+              },
+              "reset": {
+                "policy": "Delete the lane-specific Codex home and run-local HOME/PYTHONUSERBASE/XDG/TMPDIR before each run; verify no stale indexes or generated profile files survive."
+              },
+              "notes": "Canonical Codex CLI no-MCP substrate baseline. Codex native shell/edit/file/git/verifier operations are allowed; MCP, retrieval, compression, memory, token-saving add-ons, global instructions, hooks, skills/plugins, and warm indexes are forbidden."
+            }
+          },
+          "tool_adapter": {
+            "tool_id": null,
+            "tool_manifest": "baseline-native-codex-tools",
+            "tool_config": null,
+            "binary_identity": null,
+            "source_identity": []
+          },
+          "runtime": {
+            "docker_image": "token-eval-codex:latest",
+            "docker_image_identity": {
+              "image_ref": "token-eval-codex:latest",
+              "image_id": "sha256:8e3971cfeb9d942802672adece69c4b5b3e7d527c887f9b90245798d2f5d4f67",
+              "repo_digests": [
+                "token-eval-codex@sha256:8e3971cfeb9d942802672adece69c4b5b3e7d527c887f9b90245798d2f5d4f67"
+              ],
+              "repo_tags": [
+                "token-eval-codex:latest"
+              ]
+            },
+            "dockerfile_path": "sources/evaluations/fixtures/container/Dockerfile",
+            "dockerfile_sha256": "b7b869849c77a1e49d7d53de5773a3e3b9ad143cbd99c5f170356427b0c28472",
+            "fixture_runner_path": "scripts/run_codex_fixture_evaluation.py",
+            "fixture_runner_sha256": "85f08be36a078c3b0337a1eaf85f97f92582acb7915e9a77e9b3a2de9c83f3fd",
+            "codex_entrypoint_path": "sources/evaluations/fixtures/container/codex-entrypoint.sh",
+            "codex_entrypoint_sha256": "8715fe37cb1fa3823f5f05493bc9681ce7ffc72126dfec4d64d448762c550c3c",
+            "timeout_seconds_per_task": 3600,
+            "isolation_policy": "fresh lane-specific Codex home/tool data; sequential one-task prompt delivery; concealed tests removed before model-visible root commit"
+          },
+          "dependencies": {
+            "command": "npm install --ignore-scripts --no-audit --no-fund",
+            "command_sha256": "7493d616f26e72b22eb5a21beafa12a6717ebf5b93a7a75e709de65e7323cc41",
+            "lockfiles": [
+              {
+                "path": "package.json",
+                "snapshot_sha256": "b273320af1bb4cfc0f9334457c8e3b1d035fde0da14f9db65e8ef97d361d0be3",
+                "current_fixture_sha256": null
+              }
+            ]
+          },
+          "agent_condition": {
+            "runtime_id": "codex-cli",
+            "provider": "openai",
+            "model": "gpt-5.6-luna",
+            "model_condition_id": "codex-openai-gpt-5-6-luna-xhigh",
+            "reasoning_effort": "xhigh",
+            "codex_version_condition": "captured-at-run-and-bound-to-record"
+          },
+          "isolation": {
+            "prompt_delivery": "sequential-one-task-at-a-time",
+            "seed_delivery_mode": "preseeded-composite",
+            "future_tasks_visible": false,
+            "future_seed_regressions_visible": true,
+            "controller_verification": "final-only",
+            "verifier_assets_model_visible": false,
+            "model_concealed_paths": [
+              "test/404s.test.js",
+              "test/content-parser.test.js",
+              "test/content-type.test.js",
+              "test/custom-parser.1.test.js",
+              "test/handler-timeout.test.js",
+              "test/internals/errors.test.js",
+              "test/internals/initial-config.test.js",
+              "test/internals/logger.test.js",
+              "test/internals/reply.test.js",
+              "test/logger/logging.test.js",
+              "test/request-media-type.test.js",
+              "test/request-timeout.test.js",
+              "test/route.4.test.js",
+              "test/router-options.test.js",
+              "test/schema-feature.test.js",
+              "test/schema-validation.test.js",
+              "test/stream-serializers.test.js",
+              "test/stream.1.test.js",
+              "test/stream.4.test.js",
+              "test/types/errors.tst.ts",
+              "test/types/fastify.tst.ts",
+              "test/types/instance.tst.ts",
+              "test/types/logger.tst.ts",
+              "test/types/request.tst.ts",
+              "test/validation-error-handling.test.js"
+            ]
+          },
+          "baseline_pool_reference": {
+            "protocol_version": "baseline-pool-v1",
+            "protocol_fingerprint": "6a8afd4b63ca",
+            "comparison_policy": "paired baseline and treatment must share this baseline pool fingerprint and replicate"
+          }
+        }
+      },
+      "docker_image_identity": {
+        "image_ref": "token-eval-codex:latest",
+        "image_id": "sha256:8e3971cfeb9d942802672adece69c4b5b3e7d527c887f9b90245798d2f5d4f67",
+        "repo_digests": [
+          "token-eval-codex@sha256:8e3971cfeb9d942802672adece69c4b5b3e7d527c887f9b90245798d2f5d4f67"
+        ],
+        "repo_tags": [
+          "token-eval-codex:latest"
+        ]
+      },
+      "tool_adapter_identity": null,
+      "date": "2026-07-13",
+      "target": {
+        "fixture_id": "medium-fastify-fastify",
+        "fixture_scale": "medium-project",
+        "project_id": "fastify-fastify",
+        "repository_path": "sources/evaluations/workflow-sessions/baseline-fastify-20260713-p-105ed6fb58fc-r0/project/repo",
+        "initial_snapshot": {
+          "commit": "94bcbcc6e2ef3b8e8f8e8797fe551ccbe7b942fd",
+          "branch": "detached",
+          "fixture_hash": ""
+        }
+      },
+      "task_sequence": {
+        "sequence_id": "fastify-maintenance-sequence-v1",
+        "task_ids": [
+          "fastify-max-param-length-regression",
+          "fastify-handler-timeout-regression",
+          "fastify-request-media-type-regression",
+          "fastify-log-controller-regression",
+          "fastify-content-type-semantics-regression"
+        ],
+        "reset_policy": "reset source checkout, profile home, tool state, indexes, caches, generated config, and agent home before the lane; preserve repository, thread, tool, index, cache, and agent state across every sequential prompt",
+        "prompt_delivery": {
+          "mode": "sequential-one-task-at-a-time",
+          "future_tasks_visible": false,
+          "future_prompts_materialized_lazily": true,
+          "seed_delivery_mode": "preseeded-composite",
+          "future_seed_regressions_visible": true,
+          "controller_verification": "final-only",
+          "codex_thread_id": "019f5ccd-79d8-7a41-9133-714bc4857b14",
+          "task_prompt_evidence": "sources/evaluations/workflow-sessions/baseline-fastify-20260713-p-105ed6fb58fc-r0/evidence.jsonl.gz"
+        },
+        "leakage_controls": {
+          "seed_origin_concealed": true,
+          "seed_patches_model_visible": false,
+          "git_baseline_true_root_per_task": false,
+          "git_baseline_true_root_at_lane_start": true,
+          "fixed_snapshot_objects_model_visible": false,
+          "pre_seed_reflog_entries_visible": false,
+          "concealment_verification_passed": true,
+          "task_directories_model_visible": false,
+          "verifier_assets_model_visible": false,
+          "model_writable_surface": "target repository plus isolated model-output directory",
+          "verifier_integrity_passed": true,
+          "verifier_integrity_evidence": "sources/evaluations/workflow-sessions/baseline-fastify-20260713-p-105ed6fb58fc-r0/evidence.jsonl.gz#verifier-integrity.json",
+          "model_prompts_sanitized": true,
+          "upstream_remote_removed_from_model_facing_repo": true,
+          "broken_start_committed_as_local_baseline": true,
+          "remaining_limitations": [
+            "Future regression code is present from lane start, while future prompts and concealed acceptance assets remain controller-only.",
+            "Task semantics and verifier names may still be searchable if the model intentionally uses external network access."
+          ]
+        }
+      },
+      "profile": {
+        "profile_id": "baseline-bare-codex",
+        "profile_type": "control",
+        "enabled_surfaces": [
+          "codex-native-shell-edit"
+        ],
+        "disabled_overlaps": [
+          "all MCP servers",
+          "all token-saving surfaces",
+          "global Codex instructions",
+          "hooks",
+          "skills/plugins",
+          "warm indexes"
+        ],
+        "component_ids": []
+      },
+      "agent": {
+        "runtime_id": "codex-cli",
+        "model_condition_id": "codex-openai-gpt-5-6-luna-xhigh",
+        "name": "Codex CLI",
+        "version": "codex-cli 0.144.0",
+        "provider": "openai",
+        "model": "gpt-5.6-luna",
+        "reasoning_effort": "xhigh",
+        "temperature": null,
+        "max_turns": null,
+        "time_budget_seconds": 18000
+      },
+      "state_policy": {
+        "reset_before_session": [
+          "repository working tree",
+          "profile home",
+          "tool indexes and caches",
+          "generated config",
+          "agent home",
+          "temporary directories"
+        ],
+        "persist_between_tasks": [
+          "repository source working tree and model-facing Git metadata from one composite broken-start root",
+          "tool indexes and caches",
+          "generated config",
+          "agent home",
+          "memory/state stores enabled by the active profile",
+          "run artifacts"
+        ]
+      },
+      "cumulative_token_usage": {
+        "measurement_source": "codex-jsonl-usage-events",
+        "fresh_input_tokens": 2274819,
+        "cached_input_tokens": 57991680,
+        "cache_write_tokens": null,
+        "output_tokens": 404588,
+        "reasoning_tokens": 184550,
+        "total_provider_tokens": 60671087,
+        "estimated_cost_usd": null,
+        "tokens_per_accepted_task": 12134217.4,
+        "pricing_basis": "not computed; Codex-reported token volume, not billing-weighted cost"
+      },
+      "per_task_results": [
+        {
+          "task_id": "fastify-max-param-length-regression",
+          "task_alias": "task-01",
+          "order": 1,
+          "codex_exit_code": 0,
+          "controller_verification": "deferred-to-final",
+          "accepted": null,
+          "task_delta": "sources/evaluations/workflow-sessions/baseline-fastify-20260713-p-105ed6fb58fc-r0/task-01-agent.diff",
+          "usage_events": "sources/evaluations/workflow-sessions/baseline-fastify-20260713-p-105ed6fb58fc-r0/task-01-codex-events.jsonl",
+          "operational_retry_count": 0,
+          "agent_claimed_complete": true
+        },
+        {
+          "task_id": "fastify-handler-timeout-regression",
+          "task_alias": "task-02",
+          "order": 2,
+          "codex_exit_code": 0,
+          "controller_verification": "deferred-to-final",
+          "accepted": null,
+          "task_delta": "sources/evaluations/workflow-sessions/baseline-fastify-20260713-p-105ed6fb58fc-r0/task-02-agent.diff",
+          "usage_events": "sources/evaluations/workflow-sessions/baseline-fastify-20260713-p-105ed6fb58fc-r0/task-02-codex-events.jsonl",
+          "operational_retry_count": 0,
+          "agent_claimed_complete": true
+        },
+        {
+          "task_id": "fastify-request-media-type-regression",
+          "task_alias": "task-03",
+          "order": 3,
+          "codex_exit_code": 0,
+          "controller_verification": "deferred-to-final",
+          "accepted": null,
+          "task_delta": "sources/evaluations/workflow-sessions/baseline-fastify-20260713-p-105ed6fb58fc-r0/task-03-agent.diff",
+          "usage_events": "sources/evaluations/workflow-sessions/baseline-fastify-20260713-p-105ed6fb58fc-r0/task-03-codex-events.jsonl",
+          "operational_retry_count": 0,
+          "agent_claimed_complete": true
+        },
+        {
+          "task_id": "fastify-log-controller-regression",
+          "task_alias": "task-04",
+          "order": 4,
+          "codex_exit_code": 0,
+          "controller_verification": "deferred-to-final",
+          "accepted": null,
+          "task_delta": "sources/evaluations/workflow-sessions/baseline-fastify-20260713-p-105ed6fb58fc-r0/task-04-agent.diff",
+          "usage_events": "sources/evaluations/workflow-sessions/baseline-fastify-20260713-p-105ed6fb58fc-r0/task-04-codex-events.jsonl",
+          "operational_retry_count": 0,
+          "agent_claimed_complete": true
+        },
+        {
+          "task_id": "fastify-content-type-semantics-regression",
+          "task_alias": "task-05",
+          "order": 5,
+          "codex_exit_code": 0,
+          "controller_verification": "deferred-to-final",
+          "accepted": null,
+          "task_delta": "sources/evaluations/workflow-sessions/baseline-fastify-20260713-p-105ed6fb58fc-r0/task-05-agent.diff",
+          "usage_events": "sources/evaluations/workflow-sessions/baseline-fastify-20260713-p-105ed6fb58fc-r0/task-05-codex-events.jsonl",
+          "operational_retry_count": 0,
+          "agent_claimed_complete": true
+        }
+      ],
+      "software_quality": {
+        "tasks_attempted": 5,
+        "tasks_passed": 5,
+        "final_verifier_command": "sources/evaluations/workflow-sessions/baseline-fastify-20260713-p-6a8afd4b63ca-r0/verify-workflow.sh",
+        "final_verifier_passed": true,
+        "functional_verifier_passed": true,
+        "quality_review_status": "reviewed",
+        "quality_score": 4,
+        "critical_failures": [],
+        "tasks_agent_claimed_complete": 5,
+        "reviewed_on": "2026-07-13",
+        "review_method": "independent source review plus replay of all five current prompt-aligned verifiers",
+        "review_findings": [
+          "All five current behavioral/type surfaces pass.",
+          "The model-visible prompts and execution condition are byte-identical; only the concealed task-1 verifier/qualification hash changed to remove an unstated message-path assertion."
+        ]
+      },
+      "state_observations": {
+        "stale_context_incidents": null,
+        "overfeeding_incidents": null,
+        "repeated_rediscovery_incidents": null,
+        "thread_continuity_errors": [],
+        "useful_state_reuse_notes": "Single persistent Codex thread, composite repository, and source/tool/agent state across sequentially disclosed prompts."
+      },
+      "operational_reproducibility": {
+        "install_logged": true,
+        "pre_session_reset_verified": true,
+        "raw_artifacts_recoverable": true,
+        "state_leakage_outside_session_observed": false,
+        "tool_isolation_audit": {
+          "command": "python3 scripts/audit_tool_isolation.py --json-output ...",
+          "passed": true,
+          "forbidden_tool_hits": []
+        }
+      },
+      "artifacts": {
+        "artifact_contract": "compact-v1-four-files",
+        "run_record": "sources/evaluations/workflow-sessions/baseline-fastify-20260713-p-6a8afd4b63ca-r0/run.json",
+        "final_diff": "sources/evaluations/workflow-sessions/baseline-fastify-20260713-p-6a8afd4b63ca-r0/changes.diff",
+        "final_diff_basis": "ordered cumulative checkpoints plus final cumulative source diff from one composite root",
+        "evidence_bundle": "sources/evaluations/workflow-sessions/baseline-fastify-20260713-p-6a8afd4b63ca-r0/evidence.jsonl.gz",
+        "manifest": "sources/evaluations/workflow-sessions/baseline-fastify-20260713-p-6a8afd4b63ca-r0/manifest.sha256"
+      },
+      "interpretation": {
+        "accepted_for_execution": true,
+        "accepted_for_objective": true,
+        "claim_status": "accepted-baseline-ready-for-paired-treatment",
+        "comparison_baseline_session_id": "",
+        "exclusion_reason": "",
+        "notes": "Accepted by explicit hidden-verifier-only contract replay; provider execution and original failed gate remain preserved in compact evidence.",
+        "scope_note": "Full warm-state lane; all regressions are preseeded, prompts are disclosed sequentially, and concealed verification runs only after the final prompt.",
+        "contract_replay": {
+          "kind": "hidden-verifier-only-contract-correction-v1",
+          "source_session_id": "baseline-fastify-20260713-p-105ed6fb58fc-r0",
+          "source_protocol_fingerprint": "105ed6fb58fc",
+          "current_protocol_fingerprint": "6a8afd4b63ca",
+          "model_visible_prompt_or_execution_changes": false,
+          "changed_protocol_fields": [
+            "qualification sha256",
+            "task-1 verifier sha256",
+            "derived baseline fingerprint and descriptor hash"
+          ],
+          "reason": "Removed a path-specific error-message assertion absent from the public prompt while retaining the default 414/code behavioral gate.",
+          "current_verifier_replay_exit_code": 0,
+          "current_verifier_replay_output": "evidence.jsonl.gz#contract-replay/current-final-verifier-output.txt"
+        }
+      }
     }
   ],
   "hard_lane_policy": {
