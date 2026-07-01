@@ -734,6 +734,15 @@ class MatrixLifecycleContractTest(unittest.TestCase):
         self.assertFalse(matrix.publication_allowed(True, [{"exit_code": 0}]))
         self.assertTrue(matrix.publication_allowed(False, [{"exit_code": 0}]))
 
+    def test_completed_sessions_merge_even_when_a_sibling_lane_fails(self) -> None:
+        results = [
+            {"exit_code": 0, "produced_session_ids": ["successful-session"]},
+            {"exit_code": 1, "produced_session_ids": ["hard-baseline-session"]},
+        ]
+        self.assertTrue(matrix.artifact_merge_allowed(False, results))
+        self.assertFalse(matrix.artifact_merge_allowed(True, results))
+        self.assertFalse(matrix.publication_allowed(False, results))
+
     def test_missing_baseline_collapses_treatments_to_one_baseline_lane(self) -> None:
         jobs = matrix.plan_workflow_jobs(
             [SEQUENCE_ID],
