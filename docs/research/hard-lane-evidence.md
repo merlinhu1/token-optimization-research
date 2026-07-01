@@ -59,13 +59,13 @@ Post-hoc replay against prompt-aligned behavioral verifiers produced:
 | GPT-5.6 Luna, xhigh | `baseline-fastify-20260713-p-57a82a0dca61-r0` | 5/5 | 5/5 | 4/5 | 92,627,212 | Invalid original protocol; archived in Git |
 | GPT-5.5, high | `baseline-fastify-20260713-p-d8a06f2ef78f-r0` | 5/5 | 5/5 | **5/5** | 50,112,674 | Invalid original protocol, but implementation succeeds under corrected acceptance; archived in Git |
 
-The previous 0/5 versus 0/5 condition comparison is withdrawn. The failed process exit reflected verifier-contract errors rather than five implementation failures. Current prompt-aligned fingerprints are `a9c642bc016a` for GPT-5.6 Luna xhigh and `109705c35eff` for GPT-5.5 high. Treatments must pair against a run from the same corrected frozen model condition and protocol fingerprint.
+The previous 0/5 versus 0/5 condition comparison is withdrawn. The failed process exit reflected verifier-contract errors rather than five implementation failures. The intermediate prompt-aligned fingerprints were `a9c642bc016a` for GPT-5.6 Luna xhigh and `109705c35eff` for GPT-5.5 high; both are now superseded by the additional source-review findings below.
 
-Current corrected-protocol anchors:
+Independent source review then found that the `a9c642bc016a` GPT-5.6 run was still a verifier false negative despite its green aggregate gate: default max-parameter handling returned 404 instead of 414, and logger compatibility behavior was incomplete. It was rejected at quality review (2/5, 3/5 tasks) and removed from the live pool. The `109705c35eff` GPT-5.5 record and the accepted Beets pool were also retired because the prompt/verifier bytes changed.
 
-| Model condition | Session | Verified surfaces | Provider tokens | Status |
-|---|---|---:|---:|---|
-| GPT-5.6 Luna, xhigh | `baseline-fastify-20260713-p-a9c642bc016a-r0` | 5/5 | 64,598,189 | Accepted baseline after quality review (4/5) |
-| GPT-5.5, high | `baseline-fastify-20260713-p-109705c35eff-r0` | 4/5 | 45,449,446 | Primary-objective hard baseline; client-disconnect abort remains incorrect |
+Current prompt-aligned baseline fingerprints awaiting fresh execution are:
+
+- Fastify GPT-5.6 Luna xhigh: `105ed6fb58fc`
+- Beets GPT-5.6 Luna xhigh: `7aaac4b8a309`
 
 The first Terraform and Beets `terminal-lowfat` exposure attempts completed their workflows but invoked Lowfat zero times. They are excluded from Lowfat tool-effectiveness evidence and removed from the canonical registry. The active Lowfat treatment protocol now uses preferred guidance and requires at least one model-initiated Lowfat command for tool-effectiveness acceptance.
