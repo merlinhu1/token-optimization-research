@@ -516,32 +516,39 @@
       "objective_scope": "individual_tool_effectiveness",
       "status": "candidate-profile",
       "enabled_surfaces": [
-        "behavioral-output-compression",
-        "mcp-description-compression"
+        "behavioral-output-compression"
       ],
       "disabled_overlaps": [
         "all unlisted surfaces",
-        "other behavior/output-style controllers"
+        "other behavior/output-style controllers",
+        "MCP-description compression",
+        "agent-plugin hooks and persistent mode state"
       ],
       "components": [
         {
           "component_id": "behavior-caveman",
           "surface": "behavioral-output-compression",
           "role": "individual_tool"
-        },
-        {
-          "component_id": "behavior-caveman:mcp-description-compression",
-          "surface": "mcp-description-compression",
-          "role": "individual_tool"
         }
       ],
       "install": {
-        "policy": "Record exact Caveman plugin/skill/hook installation commands, versions, generated files, mode state, and environment variables in every run record before using this profile."
+        "policy": "Render the pinned Caveman full-mode skill into the treatment prompt only. Keep MCP, plugin hooks, global instructions, and persistent mode state disabled in the isolated Codex lane."
       },
       "reset": {
-        "policy": "Record disable/uninstall commands and verify no stale Caveman mode state, hooks, MCP wrapper config, cache, or generated profile survives into the next run."
+        "policy": "Delete the lane-specific Codex home and rendered policy artifact before each run; verify no Caveman hook, MCP wrapper, global rule, or mode-state file survives."
       },
-      "notes": "JuliusBrussee/caveman terse-output and MCP-description compression treatment."
+      "evaluation_protocol": {
+        "arm_label": "caveman-behavior-policy-only",
+        "tool_state": "active-instruction-layer",
+        "tool_use_policy": "preferred",
+        "required_policy_injection": true,
+        "inactive_surfaces": [
+          "MCP-description compression (baseline substrate exposes no MCP tools)",
+          "agent-plugin hooks and persistent mode state"
+        ],
+        "zero_use_disposition": "invalid-if-rendered-policy-is-absent-from-model-facing-prompt"
+      },
+      "notes": "Caveman full-mode behavioral output-compression policy arm. Claims are bounded to prompt-injected behavior policy; this is not the MCP-shrink or host-hook integration."
     },
     {
       "id": "retrieval-cartog",
