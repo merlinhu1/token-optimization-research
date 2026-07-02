@@ -214,6 +214,24 @@ def active_sequence_ids() -> list[str]:
     return [seq["id"] for seq in sequence_doc().get("sequences", []) if seq.get("status") == "active"]
 
 
+def validate_sequence_launch_status(
+    seq: dict[str, Any],
+    *,
+    prepare_only: bool,
+    allow_retired_sequence: bool,
+) -> None:
+    """Fail closed unless an explicitly selected historical lane is authorized."""
+    status = seq.get("status")
+    if status == "active" or prepare_only:
+        return
+    if status == "retired" and allow_retired_sequence:
+        return
+    raise ValueError(
+        f"workflow sequence {seq.get('id')} is not active; only prepare-only is allowed "
+        "unless --allow-retired-sequence explicitly authorizes a historical lane"
+    )
+
+
 def warm_lane_contract(seq: dict[str, Any]) -> dict[str, Any]:
     orders = [int(task["order"]) for task in sorted(seq["tasks"], key=lambda item: int(item["order"]))]
     return {
@@ -2198,8 +2216,11 @@ def run_one(args: argparse.Namespace) -> dict[str, Any]:
     validate_default_model_condition()
     validate_run_safety_args(args)
     seq = load_sequence(args.sequence_id)
-    if seq.get("status") != "active" and not args.prepare_only:
-        raise ValueError(f"workflow sequence {args.sequence_id} is not active; only prepare-only is allowed")
+    validate_sequence_launch_status(
+        seq,
+        prepare_only=args.prepare_only,
+        allow_retired_sequence=getattr(args, "allow_retired_sequence", False),
+    )
     if seq["fixture_id"] not in PROJECT_META:
         raise ValueError(f"No runner metadata for fixture {seq['fixture_id']}")
     profile_id = args.profile_id
@@ -2511,6 +2532,11 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--no-provider", action="store_true", help="prepare-only proof mode; forces provider-spend setup steps off")
     parser.add_argument("--timeout-per-task", type=int, default=3600)
     parser.add_argument("--replicate-index", type=int, default=0)
+    parser.add_argument(
+        "--allow-retired-sequence",
+        action="store_true",
+        help="explicitly authorize one historical retired-sequence lane; automatic matrix planning remains active-only",
+    )
     parser.add_argument("--session-id")
     parser.add_argument("--study-id")
     parser.add_argument("--experiment-group-id")
