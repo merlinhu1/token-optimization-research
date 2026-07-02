@@ -1,0 +1,5 @@
+Review the supplied proposed `ftintitle` metadata-hook change, identify acceptance-critical defects, and correct the checked-out implementation.
+
+The intended feature is automatic application of the existing ftintitle transformation to incoming track and album metadata while preserving existing manual-command and import behavior. Keep configuration compatible. In particular, do not turn a bare singleton collaboration into fabricated featured-artist data; preserve `artist_credit` when artist-credit mode is disabled; keep canonical artist, artist-sort, title, and `item_data` values coherent when it is enabled; respect no-op/drop/keep-in-artist cases; and avoid broad changes outside the plugin and its established metadata event surface.
+
+The patch below is review evidence, not a trusted solution. Inspect it and the checked-out code, then implement the corrections you judge necessary. Run the focused plugin tests and relevant repository checks.

@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import copy
 import hashlib
 import json
 import subprocess
@@ -9,6 +10,7 @@ from pathlib import Path
 from unittest import mock
 
 from scripts import generate_workflow_qualification as qualification
+from scripts import refresh_workflow_contracts as contract_refresh
 from scripts import run_codex_workflow_evaluation as runner
 from scripts import run_codex_workflow_model_condition as model_condition_runner
 from scripts import run_sequential_workflow_matrix as matrix
@@ -17,6 +19,205 @@ from scripts import validate_repository
 
 ROOT = Path(__file__).resolve().parents[1]
 SEQUENCE_ID = "terraform-maintenance-sequence-v2"
+
+
+class ActiveCampaignArchitectureTest(unittest.TestCase):
+    def test_primary_lifecycle_sequence_covers_owner_task_mix(self) -> None:
+        sequences = json.loads((ROOT / "data/workflow-task-sequences.json").read_text())["sequences"]
+        lifecycle = [
+            sequence
+            for sequence in sequences
+            if sequence.get("status") == "active"
+            and sequence.get("sequence_contract") == "feature-refactor-review"
+        ]
+        self.assertEqual(len(lifecycle), 1)
+        ordered = sorted(lifecycle[0]["tasks"], key=lambda task: task["order"])
+        self.assertEqual(
+            [task.get("task_class") for task in ordered],
+            [
+                "feature-implementation",
+                "behavior-preserving-refactor",
+                "code-review-correction",
+            ],
+        )
+        descriptor = runner.baseline_protocol_descriptor(lifecycle[0])
+        self.assertEqual(descriptor.get("sequence_contract"), "feature-refactor-review")
+        self.assertEqual(
+            [task.get("task_class") for task in descriptor["tasks"]],
+            [
+                "feature-implementation",
+                "behavior-preserving-refactor",
+                "code-review-correction",
+            ],
+        )
+        self.assertEqual(
+            [task["id"] for task in ordered],
+            [
+                "beets-lifecycle-multivalue-modify-feature",
+                "beets-lifecycle-lazy-model-storage-refactor",
+                "beets-lifecycle-ftintitle-review",
+            ],
+        )
+        review_task = ordered[2]
+        self.assertEqual(review_task["review_patch_path"], "review-change.patch")
+        self.assertIn("review_patch_sha256", descriptor["tasks"][2])
+        self.assertNotIn("review_patch_sha256", descriptor["tasks"][0])
+
+    def test_review_patch_is_disclosed_only_with_the_review_prompt(self) -> None:
+        sequence = runner.load_sequence("beets-lifecycle-sequence-v1")
+        review_task = sorted(sequence["tasks"], key=lambda task: task["order"])[2]
+        source_dir = (ROOT / review_task["prompt_path"]).parent
+        with tempfile.TemporaryDirectory() as tmp:
+            project = Path(tmp)
+            for order in (1, 3):
+                alias = runner.task_dir(project, order)
+                alias.mkdir(parents=True)
+                task = next(item for item in sequence["tasks"] if item["order"] == order)
+                source = (ROOT / task["prompt_path"]).parent
+                (alias / "agent-prompt.txt").write_text((source / "agent-prompt.txt").read_text())
+                if order == 3:
+                    (alias / "review-change.patch").write_bytes((source_dir / "review-change.patch").read_bytes())
+            first = runner.task_prompt(sequence, "baseline-bare-codex", project, 1, first_task=True)
+            review = runner.task_prompt(sequence, "baseline-bare-codex", project, 3, first_task=False)
+        self.assertNotIn("## Proposed change under review", first)
+        self.assertIn("## Proposed change under review", review)
+        self.assertIn("diff --git", review)
+
+    def test_refactor_qualification_separates_behavior_and_structure(self) -> None:
+        sequence = runner.load_sequence("beets-lifecycle-sequence-v1")
+        qualification = json.loads((ROOT / sequence["qualification_path"]).read_text())
+        boundary = next(
+            item
+            for item in qualification["cumulative_boundaries"]
+            if item["task_id"] == "beets-lifecycle-lazy-model-storage-refactor"
+        )
+        self.assertEqual(boundary["seeded_behavior_exit"], 0)
+        self.assertNotEqual(boundary["seeded_structure_exit"], 0)
+        self.assertEqual(boundary["fixed_behavior_exit"], 0)
+        self.assertEqual(boundary["fixed_structure_exit"], 0)
+
+    def test_runbook_matches_active_lifecycle_contract(self) -> None:
+        runbook = (ROOT / "docs/evaluations/workflow-evaluation-runbook.md").read_text()
+        self.assertNotIn("at least five causally related production files", runbook)
+        exact_prepare = 'python3 scripts/run_sequential_workflow_matrix.py --prepare-only "$SEQUENCE_ID"'
+        prepare_lines = [
+            line
+            for line in runbook.splitlines()
+            if "scripts/run_sequential_workflow_matrix.py" in line
+            and "--prepare-only" in line
+            and "$SEQUENCE_ID" in line
+        ]
+        self.assertEqual(prepare_lines, [exact_prepare])
+        self.assertNotIn("--skip-container-preflight", runbook)
+
+    def test_active_tasks_need_real_scope_not_arbitrary_file_padding(self) -> None:
+        workflow = json.loads((ROOT / "data/workflow-task-sequences.json").read_text())
+        fixtures = json.loads((ROOT / "data/repository-fixtures.json").read_text())
+        errors: list[str] = []
+        with (
+            mock.patch.object(
+                validate_repository,
+                "patch_paths",
+                return_value=["beets/one_behavior_bearing_file.py"],
+            ),
+            mock.patch.object(
+                validate_repository,
+                "validate_qualification",
+            ),
+        ):
+            validate_repository.validate_workflow_task_sequences(workflow, fixtures, errors)
+        self.assertFalse(any("minimum is 5" in error for error in errors), errors)
+
+    def test_candidate_portfolio_is_reduced_before_provider_runs(self) -> None:
+        profiles = json.loads((ROOT / "data/evaluation-profiles.json").read_text())["profiles"]
+        shortlisted = [profile["id"] for profile in profiles if profile.get("status") == "screening-shortlist"]
+        self.assertEqual(shortlisted, ["retrieval-codegraph"])
+        runner.assert_profile_runnable("retrieval-codegraph")
+        with self.assertRaisesRegex(ValueError, "deferred"):
+            runner.assert_profile_runnable("terminal-rtk")
+
+        fixtures = json.loads((ROOT / "data/repository-fixtures.json").read_text())["fixtures"]
+        active = [fixture for fixture in fixtures if fixture.get("evaluation_use") == "primary-objective"]
+        self.assertEqual([fixture["id"] for fixture in active], ["medium-beetbox-beets"])
+        self.assertEqual(active[0]["candidate_profiles"], ["baseline-bare-codex", "retrieval-codegraph"])
+
+        medium = json.loads((ROOT / "data/medium-project-candidates.json").read_text())
+        medium_active = [
+            candidate["id"]
+            for candidate in medium["candidates"]
+            if candidate.get("selection_status") == "primary-fixture"
+        ]
+        self.assertEqual(medium_active, ["medium-beetbox-beets"])
+        large = json.loads((ROOT / "data/large-project-candidates.json").read_text())
+        self.assertFalse(
+            any(candidate.get("selection_status") == "primary-fixture" for candidate in large["candidates"])
+        )
+
+    def test_validator_does_not_hardcode_active_sequence_ids(self) -> None:
+        workflow = json.loads((ROOT / "data/workflow-task-sequences.json").read_text())
+        fixtures = json.loads((ROOT / "data/repository-fixtures.json").read_text())
+        workflow = copy.deepcopy(workflow)
+        workflow["sequences"][0]["id"] = "replacement-lifecycle-sequence-v1"
+        errors: list[str] = []
+        validate_repository.validate_workflow_task_sequences(workflow, fixtures, errors)
+        self.assertFalse(
+            any("active workflow sequences must be exactly" in error for error in errors),
+            errors,
+        )
+
+    def test_protocol_ids_are_derived_for_new_sequences(self) -> None:
+        sequence = copy.deepcopy(runner.load_sequence(SEQUENCE_ID))
+        sequence["id"] = "replacement-lifecycle-sequence-v1"
+        protocol_id = contract_refresh.protocol_id(sequence, "baseline-bare-codex")
+        self.assertRegex(
+            protocol_id,
+            r"^replacement-lifecycle-sequence-v1-baseline-bare-codex-[a-f0-9]{12}$",
+        )
+
+    def test_protocol_id_changes_when_frozen_controller_provenance_changes(self) -> None:
+        sequence = runner.load_sequence(SEQUENCE_ID)
+        original = contract_refresh.protocol_id(sequence, "baseline-bare-codex")
+        changed_descriptor = runner.baseline_protocol_descriptor(sequence)
+        changed_descriptor["validator_sha256"] = "0" * 64
+        with mock.patch.object(
+            runner,
+            "baseline_protocol_descriptor",
+            return_value=changed_descriptor,
+        ):
+            changed = contract_refresh.protocol_id(sequence, "baseline-bare-codex")
+        self.assertNotEqual(original, changed)
+
+    def test_protocol_writer_refuses_to_overwrite_different_bytes(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            path = Path(tmp) / "protocol.json"
+            contract_refresh.write_json(path, {"value": 1})
+            contract_refresh.write_json(path, {"value": 1})
+            with self.assertRaises(FileExistsError):
+                contract_refresh.write_json(path, {"value": 2})
+
+    def test_legacy_sessions_do_not_occupy_current_campaign_slots(self) -> None:
+        registry = json.loads((ROOT / "data/workflow-sessions.json").read_text())
+        sequence = runner.load_sequence("beets-maintenance-sequence-v4")
+        self.assertIsNone(matrix.find_baseline_record(registry, sequence, 0))
+        self.assertIsNone(runner.find_pool_profile_record(registry, sequence, "behavior-caveman", 0))
+
+    def test_protocol_lookup_ignores_protocols_already_used_by_legacy_sessions(self) -> None:
+        with self.assertRaisesRegex(ValueError, "expected exactly one frozen protocol"):
+            matrix.find_protocol(
+                ROOT,
+                "beets-maintenance-sequence-v4",
+                "baseline-bare-codex",
+            )
+
+    def test_current_protocols_declare_strict_schema_version(self) -> None:
+        for sequence_id in runner.active_sequence_ids():
+            path = matrix.find_protocol(ROOT, sequence_id, "baseline-bare-codex")
+            protocol = json.loads(path.read_text())
+            self.assertEqual(protocol.get("protocol_schema_version"), 3, path.name)
+            sequence = runner.load_sequence(sequence_id)
+            qualification = json.loads((ROOT / sequence["qualification_path"]).read_text())
+            self.assertGreaterEqual(protocol["frozen_at"], qualification["qualified_on"])
+            self.assertEqual(protocol["frozen_at"], sequence["protocol_freeze_date"])
 
 
 class SeedDeliveryContractTest(unittest.TestCase):
@@ -64,6 +265,11 @@ class SeedDeliveryContractTest(unittest.TestCase):
             qualification = json.loads((ROOT / sequence["qualification_path"]).read_text())
             self.assertTrue(qualification["composite_seed_merge_zero"])
             self.assertTrue(qualification["composite_seeded_verifiers_nonzero"])
+            self.assertEqual(
+                set(qualification["composite_seed_verifier_exits"].values()),
+                {1},
+                "seeded tasks must fail acceptance, not collection or infrastructure",
+            )
             self.assertTrue(qualification["full_fixed_cumulative_verifier_zero"])
             self.assertTrue(qualification["composite_seed_diff_sha256"])
 
@@ -120,8 +326,9 @@ class VerifierContractTest(unittest.TestCase):
         with tempfile.TemporaryDirectory() as tmp:
             script = runner.write_verifier({"tasks": [{"order": 1}, {"order": 2}, {"order": 3}]}, Path(tmp), Path(tmp) / "tasks").read_text()
         self.assertNotIn("set -e", script)
-        self.assertEqual(script.count("if ! bash "), 3)
-        self.assertGreater(script.index('exit "$status"'), script.rfind("if ! bash "))
+        self.assertEqual(script.count("task_status=$?"), 3)
+        self.assertEqual(script.count(runner.TASK_VERIFIER_RESULT_PREFIX), 3)
+        self.assertGreater(script.index('exit "$status"'), script.rfind(runner.TASK_VERIFIER_RESULT_PREFIX))
 
     def test_warm_lane_contract_preseeds_all_regressions_and_verifies_once(self) -> None:
         contract = runner.warm_lane_contract({"tasks": [{"order": 1}, {"order": 2}]})
@@ -247,7 +454,7 @@ class VerifierContractTest(unittest.TestCase):
         for sequence_id in runner.active_sequence_ids():
             for task in runner.load_sequence(sequence_id)["tasks"]:
                 prompt = (ROOT / task["prompt_path"]).read_text()
-                self.assertIn("Validation is part of the repair", prompt, task["id"])
+                self.assertRegex(prompt.lower(), r"validation|run (?:the )?focused.*tests", task["id"])
                 self.assertNotIn("Use the fixture verifier", prompt, task["id"])
                 self.assertNotIn("seeded with the regression", prompt, task["id"])
 
@@ -256,10 +463,252 @@ class VerifierContractTest(unittest.TestCase):
         modes = {branch["properties"]["prompt_delivery"]["properties"]["seed_delivery_mode"]["const"] for branch in schema["properties"]["task_sequence"]["oneOf"]}
         self.assertTrue({"lazy-one-task-at-a-time", "preseeded-composite"}.issubset(modes))
 
-    def test_functional_task_count_is_independent_of_audit_acceptance(self) -> None:
-        checkpoints = [{"order": 1}, {"order": 2}]
-        self.assertEqual(runner.functional_task_count(expected_tasks=2, task_checkpoints=checkpoints, final_verifier_code=0), 2)
-        self.assertEqual(runner.functional_task_count(expected_tasks=2, task_checkpoints=checkpoints, final_verifier_code=1), 0)
+    def test_functional_task_count_uses_per_task_verifier_outcomes(self) -> None:
+        checkpoints = [{"order": 1, "accepted": True}, {"order": 2, "accepted": False}]
+        self.assertEqual(runner.functional_task_count(task_checkpoints=checkpoints), 1)
+
+    def test_structured_verifier_results_preserve_partial_correctness(self) -> None:
+        sequence = {
+            "tasks": [
+                {"id": "first-task", "order": 1},
+                {"id": "second-task", "order": 2},
+                {"id": "third-task", "order": 3},
+            ]
+        }
+        with tempfile.TemporaryDirectory() as tmp:
+            output = Path(tmp) / "final-verifier-output.txt"
+            output.write_text(
+                "\n".join(
+                    [
+                        f"{runner.TASK_VERIFIER_RESULT_PREFIX}\t1\tfirst-task\t1",
+                        f"{runner.TASK_VERIFIER_RESULT_PREFIX}\t2\tsecond-task\t0",
+                        f"{runner.TASK_VERIFIER_RESULT_PREFIX}\t3\tthird-task\t1",
+                    ]
+                )
+                + "\n"
+            )
+            results = runner.parse_task_verifier_results(sequence, output)
+        self.assertEqual([item["verifier_passed"] for item in results], [False, True, False])
+        checkpoints = [
+            {"task_id": item["task_id"], "order": item["order"], "accepted": None}
+            for item in results
+        ]
+        applied = runner.apply_task_verifier_results(checkpoints, results)
+        self.assertEqual(runner.functional_task_count(task_checkpoints=applied), 1)
+
+    def test_missing_structured_verifier_outcome_fails_closed(self) -> None:
+        sequence = {
+            "tasks": [
+                {"id": "first-task", "order": 1},
+                {"id": "second-task", "order": 2},
+            ]
+        }
+        with tempfile.TemporaryDirectory() as tmp:
+            output = Path(tmp) / "final-verifier-output.txt"
+            output.write_text(
+                f"{runner.TASK_VERIFIER_RESULT_PREFIX}\t1\tfirst-task\t0\n"
+            )
+            with self.assertRaisesRegex(ValueError, "missing structured verifier outcomes"):
+                runner.parse_task_verifier_results(sequence, output)
+
+    def test_structured_record_contract_rejects_hidden_or_inconsistent_task_outcomes(self) -> None:
+        session = {
+            "schema_version": 2,
+            "session_id": "structured-unit",
+            "task_sequence": {"task_ids": ["first-task", "second-task"]},
+            "per_task_results": [
+                {
+                    "task_id": "first-task",
+                    "task_alias": "task-01",
+                    "order": 1,
+                    "agent_attempted": True,
+                    "codex_exit_code": 0,
+                    "controller_verification": "passed",
+                    "verifier_exit_code": 0,
+                    "verifier_passed": True,
+                    "accepted": True,
+                    "operational_retry_count": 0,
+                },
+                {
+                    "task_id": "second-task",
+                    "task_alias": "task-02",
+                    "order": 2,
+                    "agent_attempted": False,
+                    "codex_exit_code": None,
+                    "controller_verification": "failed",
+                    "verifier_exit_code": 1,
+                    "verifier_passed": False,
+                    "accepted": False,
+                    "operational_retry_count": 0,
+                },
+            ],
+            "software_quality": {
+                "tasks_attempted": 1,
+                "tasks_passed": 1,
+                "final_verifier_passed": False,
+                "functional_verifier_passed": False,
+            },
+            "cumulative_token_usage": {
+                "measurement_source": "unit",
+                "total_provider_tokens": 1,
+                "accounting_basis": "provider-reported tokens",
+            },
+            "execution_integrity": {
+                "verifier_integrity_passed": True,
+                "tool_isolation_audit_passed": True,
+                "external_retrieval_hits": [],
+                "pass_through_tool_command_hits": [],
+            },
+        }
+        errors: list[str] = []
+        validate_repository.validate_structured_task_outcomes(session, "structured-unit", errors)
+        self.assertEqual(errors, [])
+
+        malformed = copy.deepcopy(session)
+        malformed["per_task_results"][1] = {}
+        malformed["software_quality"]["tasks_passed"] = 2
+        errors = []
+        validate_repository.validate_structured_task_outcomes(malformed, "structured-unit", errors)
+        self.assertTrue(any("exact task coverage" in error for error in errors))
+        self.assertTrue(any("tasks_passed" in error for error in errors))
+
+    def test_structured_record_contract_is_versioned_for_legacy_compatibility(self) -> None:
+        legacy = {"schema_version": 1}
+        current = {"schema_version": 2}
+        self.assertFalse(validate_repository.requires_structured_task_contract(legacy))
+        self.assertTrue(validate_repository.requires_structured_task_contract(current))
+
+    def test_unattempted_tasks_remain_structured_before_final_verification(self) -> None:
+        tasks = [
+            {"id": "first-task", "order": 1},
+            {"id": "second-task", "order": 2},
+            {"id": "third-task", "order": 3},
+        ]
+        completed = runner.complete_task_checkpoints(
+            tasks,
+            [
+                {
+                    "task_id": "first-task",
+                    "order": 1,
+                    "agent_attempted": True,
+                    "codex_exit_code": 1,
+                }
+            ],
+        )
+        self.assertEqual([item["agent_attempted"] for item in completed], [True, False, False])
+        self.assertIsNone(completed[1]["codex_exit_code"])
+        self.assertEqual(completed[1]["controller_verification"], "deferred-to-final")
+
+    def test_framework_uses_lean_token_only_decision_fields(self) -> None:
+        schema = json.loads((ROOT / "schemas/workflow-session-record.schema.json").read_text())
+        token_schema = schema["properties"]["cumulative_token_usage"]
+        token_fields = token_schema["properties"]
+        self.assertNotIn("estimated_cost_usd", token_fields)
+        self.assertNotIn("pricing_basis", token_fields)
+        self.assertFalse(token_schema["additionalProperties"])
+        strict_branch = next(
+            branch for branch in schema["allOf"]
+            if branch.get("if", {}).get("properties", {}).get("schema_version", {}).get("const") == 2
+        )
+        self.assertIn(
+            "accounting_basis",
+            strict_branch["then"]["properties"]["cumulative_token_usage"]["required"],
+        )
+        registry = json.loads((ROOT / "data/workflow-sessions.json").read_text())
+        self.assertEqual(registry["primary_metric"], "cumulative provider-reported workflow tokens")
+        for session in registry["sessions"]:
+            self.assertNotIn("estimated_cost_usd", session["cumulative_token_usage"])
+            self.assertNotIn("pricing_basis", session["cumulative_token_usage"])
+            self.assertEqual(
+                session["baseline_pool"].get("identity_policy"),
+                "frozen-protocol-and-replicate; execution date is metadata only",
+                session["session_id"],
+            )
+        for rel in ("AGENTS.md", "data/evaluation-profiles.json"):
+            self.assertNotIn("provider-billed", (ROOT / rel).read_text(), rel)
+        events = [
+            {
+                "type": "turn.completed",
+                "usage": {
+                    "input_tokens": 10,
+                    "cached_input_tokens": 2,
+                    "output_tokens": 3,
+                },
+            }
+        ]
+        with tempfile.TemporaryDirectory() as tmp:
+            path = Path(tmp) / "events.jsonl"
+            path.write_text("\n".join(json.dumps(item) for item in events) + "\n")
+            usage = runner.extract_codex_usage.build_summary(path)
+        self.assertNotIn("estimated_cost_usd", usage)
+
+    def test_active_evaluation_run_contract_is_token_only(self) -> None:
+        schema = json.loads((ROOT / "schemas/evaluation-run-record.schema.json").read_text())
+        template = json.loads((ROOT / "templates/evaluation-run-record.json").read_text())
+        token_requirements = schema["properties"]["token_usage"]["required"]
+        self.assertNotIn("estimated_cost_usd", token_requirements)
+        self.assertNotIn("estimated_cost_usd", template["token_usage"])
+        self.assertNotIn("pricing_basis", template["token_usage"])
+        self.assertIn("provider-reported", template["agent"]["usage_accounting"])
+        self.assertRegex(template["evaluation_id"], r"^[a-z0-9]+(?:-[a-z0-9]+)*$")
+        for rel in (
+            "templates/progressive-evaluation-change/protocol.md",
+            "templates/progressive-evaluation-change/results.md",
+        ):
+            self.assertNotIn("estimated cost", (ROOT / rel).read_text().lower(), rel)
+
+    def test_reporting_only_runner_hash_does_not_split_comparison_pool(self) -> None:
+        sequence = runner.load_sequence(SEQUENCE_ID)
+        with mock.patch.object(runner, "_self_hash", return_value="a" * 64):
+            first = runner.baseline_protocol_fingerprint(sequence)
+        with mock.patch.object(runner, "_self_hash", return_value="b" * 64):
+            second = runner.baseline_protocol_fingerprint(sequence)
+        self.assertEqual(first, second)
+
+    def test_model_facing_prompt_change_splits_comparison_identity(self) -> None:
+        sequence = runner.load_sequence(SEQUENCE_ID)
+        original = runner.baseline_protocol_fingerprint(sequence)
+        with mock.patch.object(runner, "profile_prompt_guidance", return_value="materially changed guidance\n"):
+            changed = runner.baseline_protocol_fingerprint(sequence)
+        self.assertNotEqual(original, changed)
+
+    def test_execution_integrity_preserves_pass_through_command_hits(self) -> None:
+        hits = [{"tool": "lowfat", "command": "unknown-command"}]
+        integrity = runner.execution_integrity_record(
+            {"leakage_controls": {"verifier_integrity_passed": True}},
+            0,
+            {
+                "external_retrieval_hits": [],
+                "pass_through_tool_command_hits": hits,
+            },
+        )
+        self.assertEqual(integrity["pass_through_tool_command_hits"], hits)
+
+    def test_fixture_taxonomy_supports_compact_lifecycle_workflow(self) -> None:
+        self.assertTrue(
+            {"feature-implementation", "behavior-preserving-refactor", "code-review"}.issubset(
+                validate_repository.FIXTURE_TASK_CLASSES
+            )
+        )
+
+    def test_lowfat_estimands_are_explicit_and_fail_closed(self) -> None:
+        with self.assertRaisesRegex(ValueError, "historical preferred direct-use"):
+            runner.assert_profile_runnable("terminal-lowfat")
+        with self.assertRaisesRegex(ValueError, "native shell integration"):
+            runner.assert_profile_runnable("terminal-lowfat-shell-integrated-v0.8.0")
+
+    def test_historical_lowfat_external_retrieval_is_not_false_green(self) -> None:
+        registry = json.loads((ROOT / "data/workflow-sessions.json").read_text())
+        by_id = {session["session_id"]: session for session in registry["sessions"]}
+        for session_id in (
+            "lowfat-terraform-20260713-p-5b17c90c9943-r0",
+            "lowfat-fastify-20260713-p-6a8afd4b63ca-r0",
+        ):
+            audit = by_id[session_id]["operational_reproducibility"]["tool_isolation_audit"]
+            self.assertEqual(audit["scope"], "forbidden-tool-command audit only")
+            self.assertFalse(audit["external_retrieval_audit_passed"])
+            self.assertFalse(audit["overall_treatment_isolation_passed"])
+            self.assertTrue(audit["external_retrieval_hits"])
 
 
 class ActiveAcceptanceContractTest(unittest.TestCase):
@@ -273,7 +722,7 @@ class ActiveAcceptanceContractTest(unittest.TestCase):
                 patch = ROOT / Path(task["prompt_path"]).parent / "seed-regression.patch"
                 changed = validate_repository.patch_paths(patch)
                 production = [path for path in changed if validate_repository.is_production_path(path)]
-                self.assertGreaterEqual(len(set(production)), 5, task["id"])
+                self.assertGreaterEqual(len(set(production)), 1, task["id"])
                 self.assertEqual(records[task["id"]]["production_files"], production)
                 self.assertEqual(records[task["id"]]["model_concealed_paths"], sorted(task["model_concealed_paths"]))
                 self.assertEqual(records[task["id"]]["omitted_expected_model_concealed_paths"], [])
@@ -307,6 +756,7 @@ class ManifestAndProtocolContractTest(unittest.TestCase):
             f"--protocol {protocol_path} --docker-image {docker_image}"
         )
         return {
+            "protocol_schema_version": 3,
             "protocol_id": "unit-production-v3",
             "status": "frozen-ready-not-run",
             "task_fixture": {
@@ -361,52 +811,36 @@ class ManifestAndProtocolContractTest(unittest.TestCase):
         self.assertEqual([item["id"] for item in active], ["codex-openai-gpt-5-6-luna-xhigh"])
 
     def test_active_sequences_use_token_savings_task_subsets(self) -> None:
+        self.assertEqual(runner.active_sequence_ids(), ["beets-lifecycle-sequence-v1"])
+        sequence = runner.load_sequence("beets-lifecycle-sequence-v1")
         self.assertEqual(
-            runner.active_sequence_ids(),
+            [task["id"] for task in sequence["tasks"]],
             [
-                "fastify-maintenance-sequence-v1",
-                "terraform-maintenance-sequence-v2",
-                "beets-maintenance-sequence-v4",
+                "beets-lifecycle-multivalue-modify-feature",
+                "beets-lifecycle-lazy-model-storage-refactor",
+                "beets-lifecycle-ftintitle-review",
             ],
         )
-        expected_tasks = {
-            "terraform-maintenance-sequence-v2": [
-                "terraform-161ffe-tracing-context-regression",
-                "terraform-520378-computed-block-capabilities-regression",
-                "terraform-9ae470-objchange-validation-regression",
-            ],
-            "beets-maintenance-sequence-v4": [
-                "beets-path-format-core-regression",
-                "beets-multivalue-core-regression",
-                "beets-tidal-metadata-sync-regression-v2",
-            ],
-        }
-        for sequence_id, task_ids in expected_tasks.items():
-            sequence = runner.load_sequence(sequence_id)
-            self.assertEqual([task["id"] for task in sequence["tasks"]], task_ids)
-            self.assertEqual([task["order"] for task in sequence["tasks"]], list(range(1, len(task_ids) + 1)))
+        self.assertEqual([task["order"] for task in sequence["tasks"]], [1, 2, 3])
 
     def test_active_sequences_bind_current_qualifications(self) -> None:
-        expected = {
-            "fastify-maintenance-sequence-v1": "qualification-composite-v5.json",
-            "terraform-maintenance-sequence-v2": "qualification-composite-v6.json",
-            "beets-maintenance-sequence-v4": "qualification-composite-v9.json",
-        }
-        for sequence_id in runner.active_sequence_ids():
-            self.assertTrue(runner.load_sequence(sequence_id)["qualification_path"].endswith(expected[sequence_id]))
+        sequence = runner.load_sequence("beets-lifecycle-sequence-v1")
+        self.assertTrue(sequence["qualification_path"].endswith("qualification-lifecycle-v1.json"))
 
     def test_current_protocol_fingerprint_matches_runner(self) -> None:
-        cases = {
-            "fastify-maintenance-sequence-v1": "sources/evaluations/protocols/fastify-production-gpt-5.6-luna-xhigh-v7.json",
-            "terraform-maintenance-sequence-v2": "sources/evaluations/protocols/hashicorp-terraform-token-savings-production-gpt-5.6-luna-xhigh-v8.json",
-            "beets-maintenance-sequence-v4": "sources/evaluations/protocols/beetbox-beets-token-savings-production-gpt-5.6-luna-xhigh-v11.json",
-        }
-        for sequence_id, protocol_path in cases.items():
-            seq = runner.load_sequence(sequence_id)
-            protocol = json.loads((ROOT / protocol_path).read_text())
-            expected = runner.baseline_protocol_fingerprint(seq)
-            self.assertEqual(protocol["baseline_pool"]["protocol_fingerprint"], expected)
-            self.assertEqual(protocol["baseline_pool"]["descriptor"], runner.baseline_protocol_descriptor(seq))
+        sequence = runner.load_sequence("beets-lifecycle-sequence-v1")
+        protocol_path = matrix.find_protocol(
+            ROOT,
+            "beets-lifecycle-sequence-v1",
+            "baseline-bare-codex",
+        )
+        protocol = json.loads(protocol_path.read_text())
+        expected = runner.baseline_protocol_fingerprint(sequence)
+        self.assertEqual(protocol["baseline_pool"]["protocol_fingerprint"], expected)
+        self.assertEqual(
+            protocol["baseline_pool"]["descriptor"]["tasks"],
+            runner.baseline_protocol_descriptor(sequence)["tasks"],
+        )
 
     def test_protocol_is_required_before_setup_for_paid_run(self) -> None:
         seq = runner.load_sequence(SEQUENCE_ID)
@@ -423,7 +857,7 @@ class ManifestAndProtocolContractTest(unittest.TestCase):
     def test_protocol_timeout_mismatch_rejects(self) -> None:
         seq = runner.load_sequence(SEQUENCE_ID)
         args = mock.Mock(
-            protocol="sources/evaluations/protocols/hashicorp-terraform-token-savings-production-gpt-5.6-luna-xhigh-v8.json",
+            protocol="sources/evaluations/protocols/terraform-maintenance-sequence-v2-baseline-bare-codex-8fadc39ad0f5.json",
             prepare_only=False,
             no_provider=False,
             timeout_per_task=1,
@@ -435,7 +869,7 @@ class ManifestAndProtocolContractTest(unittest.TestCase):
     def test_protocol_docker_image_mismatch_rejects(self) -> None:
         seq = runner.load_sequence(SEQUENCE_ID)
         args = mock.Mock(
-            protocol="sources/evaluations/protocols/hashicorp-terraform-token-savings-production-gpt-5.6-luna-xhigh-v8.json",
+            protocol="sources/evaluations/protocols/terraform-maintenance-sequence-v2-baseline-bare-codex-8fadc39ad0f5.json",
             prepare_only=True,
             no_provider=True,
             timeout_per_task=3600,
@@ -447,14 +881,14 @@ class ManifestAndProtocolContractTest(unittest.TestCase):
     def test_baseline_protocol_cannot_validate_treatment(self) -> None:
         seq = runner.load_sequence(SEQUENCE_ID)
         args = mock.Mock(
-            protocol="sources/evaluations/protocols/hashicorp-terraform-token-savings-production-gpt-5.6-luna-xhigh-v8.json",
+            protocol="sources/evaluations/protocols/terraform-maintenance-sequence-v2-baseline-bare-codex-8fadc39ad0f5.json",
             prepare_only=True,
             no_provider=True,
             timeout_per_task=3600,
             docker_image=runner.DEFAULT_DOCKER_IMAGE,
         )
         with self.assertRaisesRegex(ValueError, "selected_execution|treatment_profile_id"):
-            runner.validate_protocol_for_run(seq, "retrieval-leanctx", args)
+            runner.validate_protocol_for_run(seq, "retrieval-codegraph", args)
 
     def test_same_docker_tag_different_image_id_rejects(self) -> None:
         seq = runner.load_sequence(SEQUENCE_ID)
@@ -472,16 +906,16 @@ class ManifestAndProtocolContractTest(unittest.TestCase):
     def test_treatment_executable_identity_mismatch_rejects(self) -> None:
         seq = runner.load_sequence(SEQUENCE_ID)
         image = {"image_ref": runner.DEFAULT_DOCKER_IMAGE, "image_id": "sha256:" + "1" * 64, "repo_digests": [], "repo_tags": [runner.DEFAULT_DOCKER_IMAGE]}
-        binary_a = {"executable_token": "rtk", "resolved_path": "/tmp/rtk", "realpath": "/tmp/rtk", "sha256": "a" * 64, "metadata": {}, "version": {"captured": True, "output": "rtk 1"}}
-        binary_b = {"executable_token": "rtk", "resolved_path": "/tmp/rtk", "realpath": "/tmp/rtk", "sha256": "b" * 64, "metadata": {}, "version": {"captured": True, "output": "rtk 2"}}
+        binary_a = {"executable_token": "codegraph", "resolved_path": "/tmp/codegraph", "realpath": "/tmp/codegraph", "sha256": "a" * 64, "metadata": {}, "version": {"captured": True, "output": "codegraph 1"}}
+        binary_b = {"executable_token": "codegraph", "resolved_path": "/tmp/codegraph", "realpath": "/tmp/codegraph", "sha256": "b" * 64, "metadata": {}, "version": {"captured": True, "output": "codegraph 2"}}
         with tempfile.TemporaryDirectory() as tmp:
             protocol_path = Path(tmp) / "protocol.json"
             with mock.patch.object(runner, "docker_image_identity", return_value=image), mock.patch.object(runner, "executable_identity", return_value=binary_a):
-                protocol_path.write_text(json.dumps(self.frozen_protocol_doc(protocol_path, seq, "terminal-rtk"), indent=2) + "\n")
+                protocol_path.write_text(json.dumps(self.frozen_protocol_doc(protocol_path, seq, "retrieval-codegraph"), indent=2) + "\n")
             args = mock.Mock(protocol=str(protocol_path), prepare_only=True, no_provider=True, timeout_per_task=3600, docker_image=runner.DEFAULT_DOCKER_IMAGE)
             with mock.patch.object(runner, "docker_image_identity", return_value=image), mock.patch.object(runner, "executable_identity", return_value=binary_b):
                 with self.assertRaisesRegex(ValueError, "selected_execution"):
-                    runner.validate_protocol_for_run(seq, "terminal-rtk", args)
+                    runner.validate_protocol_for_run(seq, "retrieval-codegraph", args)
 
     def test_unresolved_treatment_executable_rejects_identity(self) -> None:
         profile_id = "unit-missing-tool-profile"
@@ -626,7 +1060,7 @@ class ManifestAndProtocolContractTest(unittest.TestCase):
                 "time_budget_seconds": 1,
             },
             "state_policy": {"reset_before_session": [], "persist_between_tasks": []},
-            "cumulative_token_usage": {"measurement_source": "unit", "total_provider_tokens": None, "pricing_basis": "unit"},
+            "cumulative_token_usage": {"measurement_source": "unit", "total_provider_tokens": None, "accounting_basis": "unit-test provider usage"},
             "per_task_results": [],
             "software_quality": {"functional_verifier_passed": False, "quality_review_status": "not-reviewed", "quality_score": None, "critical_failures": []},
             "state_observations": {},
@@ -650,7 +1084,7 @@ class ManifestAndProtocolContractTest(unittest.TestCase):
     def production_v3_errors(self, session: dict) -> list[str]:
         errors: list[str] = []
         validate_repository.validate_workflow_sessions(
-            {"schema_version": 1, "primary_metric": "cumulative provider-billed workflow tokens", "sessions": [session]},
+            {"schema_version": 1, "primary_metric": "cumulative provider-reported workflow tokens", "sessions": [session]},
             {"unit-sequence"},
             {"fixtures": [{"id": "unit-fixture"}]},
             {
@@ -671,6 +1105,60 @@ class ManifestAndProtocolContractTest(unittest.TestCase):
         with tempfile.TemporaryDirectory(dir=ROOT) as tmp:
             session, _ = self.production_v3_fixture(Path(tmp))
             self.assertEqual(self.production_v3_errors(session), [])
+
+    def test_production_v3_lean_record_does_not_require_legacy_operational_metrics(self) -> None:
+        with tempfile.TemporaryDirectory(dir=ROOT) as tmp:
+            session, _ = self.production_v3_fixture(Path(tmp))
+            session.pop("state_observations")
+            session.pop("operational_reproducibility")
+            session["execution_integrity"] = {
+                "verifier_integrity_passed": True,
+                "tool_isolation_audit_passed": True,
+                "external_retrieval_hits": [],
+                "pass_through_tool_command_hits": [],
+            }
+            self.assertEqual(self.production_v3_errors(session), [])
+
+    def test_objective_acceptance_rejects_failed_execution_integrity(self) -> None:
+        with tempfile.TemporaryDirectory(dir=ROOT) as tmp:
+            session, _ = self.production_v3_fixture(Path(tmp))
+            session.update(schema_version=2, status="completed")
+            session["cumulative_token_usage"].update(
+                measurement_source="codex-jsonl-usage-events",
+                total_provider_tokens=1,
+            )
+            session["per_task_results"] = [{
+                "task_id": "task-1",
+                "task_alias": "task-01",
+                "order": 1,
+                "agent_attempted": True,
+                "codex_exit_code": 0,
+                "controller_verification": "passed",
+                "verifier_exit_code": 0,
+                "verifier_passed": True,
+                "accepted": True,
+                "operational_retry_count": 0,
+            }]
+            session["software_quality"].update(
+                tasks_attempted=1,
+                tasks_passed=1,
+                final_verifier_passed=True,
+                functional_verifier_passed=True,
+                quality_review_status="reviewed",
+                quality_score=4,
+            )
+            session["execution_integrity"] = {
+                "verifier_integrity_passed": True,
+                "tool_isolation_audit_passed": False,
+                "external_retrieval_hits": ["unit retrieval"],
+                "pass_through_tool_command_hits": [],
+            }
+            session["interpretation"].update(
+                accepted_for_execution=True,
+                accepted_for_objective=True,
+            )
+            errors = self.production_v3_errors(session)
+            self.assertTrue(any("clean execution integrity" in error for error in errors), errors)
 
     def test_production_v3_protocol_hash_tamper_rejects(self) -> None:
         with tempfile.TemporaryDirectory(dir=ROOT) as tmp:
@@ -729,6 +1217,40 @@ class ModelConditionLauncherContractTest(unittest.TestCase):
 
 
 class MatrixLifecycleContractTest(unittest.TestCase):
+    def test_prepare_only_summary_cannot_claim_objective_acceptance(self) -> None:
+        self.assertIsNone(
+            matrix.matrix_acceptance_state(
+                prepare_only=True,
+                execution_passed=True,
+                awaiting_quality_review=False,
+            )
+        )
+        self.assertTrue(
+            matrix.matrix_acceptance_state(
+                prepare_only=False,
+                execution_passed=True,
+                awaiting_quality_review=False,
+            )
+        )
+        self.assertEqual(
+            matrix.matrix_exit_code(
+                prepare_only=True,
+                execution_passed=True,
+                awaiting_quality_review=False,
+                accepted=None,
+            ),
+            0,
+        )
+        self.assertEqual(
+            matrix.matrix_exit_code(
+                prepare_only=True,
+                execution_passed=False,
+                awaiting_quality_review=False,
+                accepted=None,
+            ),
+            1,
+        )
+
     def test_failed_lane_cannot_publish(self) -> None:
         self.assertFalse(matrix.publication_allowed(False, [{"exit_code": 1}]))
         self.assertFalse(matrix.publication_allowed(True, [{"exit_code": 0}]))

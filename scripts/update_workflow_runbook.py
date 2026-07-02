@@ -143,7 +143,7 @@ Every active task must use causally related behavioral acceptance. Unrelated exa
 
 Before changing a sequence to `active`, require:
 
-- at least five causally related production files per primary task, or explicit smoke/calibration scope;
+- the smallest causally related production surface that satisfies explicit semantic acceptance, with no arbitrary changed-file minimum;
 - behavioral seeded-fail/fixed-pass gates;
 - a conflict-free composite seed whose task verifiers all fail at lane start;
 - one parentless model-facing Git baseline with the fixed commit inaccessible;
@@ -151,17 +151,11 @@ Before changing a sequence to `active`, require:
 - controller-only task, seed, verifier, and reference assets;
 - cumulative provider usage capture, verifier integrity, isolation, and software-quality review.
 
-A no-model prepare for a planned candidate is allowed:
+A no-model prepare for a frozen candidate is allowed:
 
 ```bash
-SEQUENCE_ID=<planned-sequence-id>
-python3 scripts/run_codex_workflow_evaluation.py \
-  --sequence-id "$SEQUENCE_ID" \
-  --profile-id baseline-bare-codex \
-  --prepare-only \
-  --skip-container-preflight \
-  --skip-codex-preflight \
-  --skip-dependency-install
+SEQUENCE_ID=<frozen-sequence-id>
+python3 scripts/run_sequential_workflow_matrix.py --prepare-only "$SEQUENCE_ID"
 ```
 
 `prepare-verification.json` must show every task preseeded, only task 1's prompt materialized, a clean true-root Git baseline, no fixed commit object or prior reflog, current composite qualification, and no model-visible seed or verifier assets.

@@ -10,7 +10,7 @@
 - Commit URL: https://github.com/zdk/lowfat/commit/b9f6f99d02e5774296305a591bfb13ef24548c38
 - Source artifact path: `sources/discovery/2026-07-01-pinned-dossier-refresh-source-structures.json`
 - Date inspected: 2026-07-01
-- Evidence stage: source-logic (fresh pinned shallow clone; representative source/config/test files inspected; benchmark-audit and reproduction still required for measured savings)
+- Evidence stage: source-logic + reproduction (one isolation-clean, one-workflow-replicate screening result exists for the narrow Lowfat v0.8.0 prompted/preferred direct-use estimand; native automatic shell integration remains unevaluated)
 - Stars at inspection: 543
 - Forks at inspection: 17
 - License: Apache-2.0
@@ -87,7 +87,7 @@ The 2026-07-01 refresh pins the inspected source to `b9f6f99d02e5774296305a591bf
 
 - Tool: Lowfat
 - Primary intervention surface: Terminal/tool-output filtering and command-specific compression plugins
-- Integration status: source and integration paths identified; exact production behavior should be verified per target agent before rollout.
+- Integration status: direct use prefixes commands with `lowfat`; native shell integration evaluates `lowfat shell-init bash|zsh` in the agent shell and automatically wraps only configured command filters. `terminal-lowfat` preserves the historical prompted direct-use arm; `terminal-lowfat-shell-integrated-v0.8.0` is the blocked future native-integration arm.
 - Disable/uninstall path: requires follow-up inspection where not covered by representative files.
 - Failure behavior if dependency is missing: partially inspected where representative code exposes it; complete failure-mode review remains open.
 
@@ -106,7 +106,7 @@ The 2026-07-01 refresh pins the inspected source to `b9f6f99d02e5774296305a591bf
 - Addressable token surface: Terminal/tool-output filtering and command-specific compression plugins
 - Reduction method: implementation-level mechanism identified in representative source files where runtime implementation is present.
 - Quality-preservation mechanism: partially identified; benchmark/reproduction review remains required.
-- Cases where savings may not translate to provider-billed reductions: prompt-cache effects, added tool calls, stale indexes/state, failed retrieval/compression, or increased correction turns.
+- Cases where transformed-output savings may not reduce provider-reported total tokens: prompt-cache effects, added model turns, stale indexes/state, failed retrieval/compression, or increased correction work.
 
 ## Compatibility notes
 
@@ -116,12 +116,17 @@ A compatibility-safe stack has components that do not fight over the same hook, 
 
 ## Failure modes and limits
 
+- The pinned v0.8.0 binary bundles filters only for `docker`, `find`, `git`, `grep`, `ls`, and `tree`; unknown commands are pass-through unless an external plugin is installed.
 - Command-output filtering can hide needed diagnostics if raw recovery is not surfaced.
 - Plugin/process filters add execution and security surface.
 - Token savings need fidelity checks for compiler/test/log outputs.
+- Prompted/preferred direct use was the predeclared historical treatment and is not invalid merely because a later natural-use principle chose a different estimand. Fastify and Terraform are causally excluded because only treatment used external retrieval. Beets remains valid one-replicate screening evidence for the narrow preferred-direct-use arm: +42.25% provider tokens with accepted baseline/treatment correctness and quality. This is not evidence for native automatic shell integration. Its high pass-through count limits mechanism attribution. See `docs/research/lowfat-three-lane-evaluation.md`.
 
 ## Open questions and next review tasks
 
-- [ ] Inspect built-in embedded filters and command coverage.
+- [x] Inspect built-in embedded filters and command coverage.
+- [x] Audit the historical preferred-direct-use guidance, treatment timing, and external-retrieval contamination.
+- [ ] Implement and preflight native `lowfat shell-init` in the actual model shell before any natural-use protocol is eligible.
 - [ ] Review raw-output retrieval/user workflow.
-- [ ] Benchmark against RTK/TokenJuice/Snip on terminal-heavy tasks.
+- [ ] Add or install target-specific test/build filters before evaluating those command families.
+- [ ] Benchmark against RTK/TokenJuice/Snip on terminal-heavy tasks under the corrected network and coverage contract.

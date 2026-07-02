@@ -24,13 +24,11 @@
     "cumulative_token_usage",
     "per_task_results",
     "software_quality",
-    "state_observations",
-    "operational_reproducibility",
     "artifacts",
     "interpretation"
   ],
   "properties": {
-    "schema_version": { "const": 1 },
+    "schema_version": { "enum": [1, 2] },
     "session_id": {
       "type": "string",
       "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"
@@ -163,7 +161,9 @@
       "required": ["sequence_id", "task_ids", "reset_policy", "prompt_delivery", "leakage_controls"],
       "properties": {
         "sequence_id": { "type": "string" },
+        "sequence_contract": { "type": "string" },
         "task_ids": { "type": "array", "items": { "type": "string" } },
+        "task_classes": { "type": "array", "items": { "type": "string" } },
         "reset_policy": { "type": "string" },
         "prompt_delivery": {
           "type": "object",
@@ -278,7 +278,8 @@
     },
     "cumulative_token_usage": {
       "type": "object",
-      "required": ["measurement_source", "total_provider_tokens", "pricing_basis"],
+      "additionalProperties": false,
+      "required": ["measurement_source", "total_provider_tokens"],
       "properties": {
         "measurement_source": { "type": "string" },
         "fresh_input_tokens": { "type": ["integer", "null"], "minimum": 0 },
@@ -287,16 +288,36 @@
         "output_tokens": { "type": ["integer", "null"], "minimum": 0 },
         "reasoning_tokens": { "type": ["integer", "null"], "minimum": 0 },
         "total_provider_tokens": { "type": ["integer", "null"], "minimum": 0 },
-        "estimated_cost_usd": { "type": ["number", "null"], "minimum": 0 },
         "tokens_per_accepted_task": { "type": ["number", "null"], "minimum": 0 },
-        "pricing_basis": { "type": "string" }
+        "accounting_basis": { "type": "string" }
       }
     },
-    "per_task_results": { "type": "array", "items": { "type": "object" } },
+    "per_task_results": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "task_id": { "type": "string" },
+          "task_class": { "type": "string" },
+          "task_alias": { "type": "string" },
+          "order": { "type": "integer", "minimum": 1 },
+          "agent_attempted": { "type": "boolean" },
+          "codex_exit_code": { "type": ["integer", "null"] },
+          "controller_verification": { "enum": ["deferred-to-final", "passed", "failed", "not-run"] },
+          "verifier_exit_code": { "type": ["integer", "null"] },
+          "verifier_passed": { "type": ["boolean", "null"] },
+          "accepted": { "type": ["boolean", "null"] },
+          "operational_retry_count": { "type": "integer", "minimum": 0 }
+        }
+      }
+    },
     "software_quality": {
       "type": "object",
       "required": ["functional_verifier_passed", "quality_review_status", "quality_score", "critical_failures"],
       "properties": {
+        "tasks_attempted": { "type": "integer", "minimum": 0 },
+        "tasks_passed": { "type": "integer", "minimum": 0 },
+        "final_verifier_passed": { "type": "boolean" },
         "functional_verifier_passed": { "type": "boolean" },
         "quality_review_status": { "enum": ["not-reviewed", "reviewed"] },
         "quality_score": { "type": ["integer", "null"], "minimum": 0, "maximum": 5 },
@@ -305,6 +326,15 @@
     },
     "state_observations": { "type": "object" },
     "operational_reproducibility": { "type": "object" },
+    "execution_integrity": {
+      "type": "object",
+      "properties": {
+        "verifier_integrity_passed": { "type": "boolean" },
+        "tool_isolation_audit_passed": { "type": "boolean" },
+        "external_retrieval_hits": { "type": "array" },
+        "pass_through_tool_command_hits": { "type": "array" }
+      }
+    },
     "artifacts": { "type": "object" },
     "interpretation": {
       "type": "object",
@@ -332,6 +362,61 @@
       },
       "then": {
         "required": ["frozen_protocol", "selected_execution", "docker_image_identity", "tool_adapter_identity"]
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "schema_version": { "const": 2 }
+        },
+        "required": ["schema_version"]
+      },
+      "then": {
+        "required": ["execution_integrity"],
+        "properties": {
+          "task_sequence": {
+            "required": ["task_ids"]
+          },
+          "per_task_results": {
+            "minItems": 1,
+            "items": {
+              "required": [
+                "task_id",
+                "task_alias",
+                "order",
+                "agent_attempted",
+                "codex_exit_code",
+                "controller_verification",
+                "verifier_exit_code",
+                "verifier_passed",
+                "accepted",
+                "operational_retry_count"
+              ]
+            }
+          },
+          "software_quality": {
+            "required": [
+              "tasks_attempted",
+              "tasks_passed",
+              "final_verifier_passed",
+              "functional_verifier_passed",
+              "quality_review_status",
+              "quality_score",
+              "critical_failures"
+            ]
+          },
+          "cumulative_token_usage": {
+            "required": ["accounting_basis"]
+          },
+          "execution_integrity": {
+            "required": [
+              "verifier_integrity_passed",
+              "tool_isolation_audit_passed",
+              "external_retrieval_hits",
+              "pass_through_tool_command_hits"
+            ]
+          }
+        }
       }
     }
   ]

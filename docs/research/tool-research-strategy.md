@@ -9,7 +9,7 @@ This repository uses a source-code-first research process for token-saving tools
 | `lead` | Search result, catalog mention, README headline, repository metadata, or integration-path notes without source-logic interpretation. | Backlog and dossier planning only. Do not use in recommendations. |
 | `source-logic` | Representative implementation files inspected; input/output transformations, state, caches, fallbacks, safety boundaries, and compatibility implications mapped. | Minimum stage for qualified recommendations and stack decisions. |
 | `benchmark-audit` | Benchmark harness, tasks, scoring, token accounting, raw outputs, and maintainer/independent evidence boundaries inspected. | Evidence-weighted ranking. |
-| `reproduction` | Local or independent reproduction measures provider-billed tokens, turns, pass rate, latency, and quality on target workloads. | Deployment-grade recommendation. |
+| `reproduction` | Local or independent persistent-workflow reproduction measures provider-reported tokens, structured task correctness, treatment/isolation validity, and independent quality. | Scoped treatment evidence; recommendation strength depends on compatible replicate count. |
 
 ## Required dossier sections
 

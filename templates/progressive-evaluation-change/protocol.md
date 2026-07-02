@@ -45,7 +45,7 @@ Write this before collecting results.
 
 ### Token accounting boundary
 
-Primary boundary: artifact_estimated | request_estimated | provider_billed_request | provider_billed_task | session_total
+Primary boundary: cumulative provider-reported workflow tokens
 
 Required fields:
 
@@ -55,7 +55,6 @@ Required fields:
 - output tokens:
 - reasoning tokens:
 - total provider tokens:
-- estimated cost:
 - measurement source:
 
 ### Agent behavior
