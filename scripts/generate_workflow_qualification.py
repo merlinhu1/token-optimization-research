@@ -152,16 +152,55 @@ def main() -> int:
         omissions = omitted_expected_concealment(task)
         seed_check = call(["git", "apply", "--check", str(patch)], checkout)
         seed_apply = call(["git", "apply", str(patch)], checkout) if seed_check == 0 else 1
+        is_refactor = task.get("task_class") == "behavior-preserving-refactor"
+        seeded_behavior_exit = (
+            call(["bash", str(verifier), "behavior"], checkout, env=qualification_env)
+            if is_refactor and seed_apply == 0
+            else None
+        )
+        seeded_structure_exit = (
+            call(["bash", str(verifier), "structure"], checkout, env=qualification_env)
+            if is_refactor and seed_apply == 0
+            else None
+        )
         seeded_exit = call(["bash", str(verifier)], checkout, env=qualification_env) if seed_apply == 0 else 125
         restore_check = call(["git", "apply", "--check", "--reverse", str(patch)], checkout) if seed_apply == 0 else 125
         restore_apply = call(["git", "apply", "--reverse", str(patch)], checkout) if restore_check == 0 else 125
+        fixed_behavior_exit = (
+            call(["bash", str(verifier), "behavior"], checkout, env=qualification_env)
+            if is_refactor and restore_apply == 0
+            else None
+        )
+        fixed_structure_exit = (
+            call(["bash", str(verifier), "structure"], checkout, env=qualification_env)
+            if is_refactor and restore_apply == 0
+            else None
+        )
         prior_exits = {
             prior["id"]: call(["bash", str((ROOT / prior["verifier_command"]).resolve())], checkout, env=qualification_env)
             for prior in ordered[:index + 1]
         } if restore_apply == 0 else {}
-        seeded_fail &= seeded_exit != 0
-        fixed_pass &= restore_apply == 0 and all(code == 0 for code in prior_exits.values())
-        boundaries.append({"task_id": task["id"], "seed_apply_check_exit": seed_check, "seed_apply_exit": seed_apply, "seeded_verifier_exit": seeded_exit, "repair_apply_check_exit": restore_check, "repair_apply_exit": restore_apply, "retained_verifier_exits": prior_exits})
+        refactor_seed_qualified = not is_refactor or (
+            seeded_behavior_exit == 0 and seeded_structure_exit not in (None, 0)
+        )
+        refactor_fixed_qualified = not is_refactor or (
+            fixed_behavior_exit == 0 and fixed_structure_exit == 0
+        )
+        seeded_fail &= seeded_exit == 1 and refactor_seed_qualified
+        fixed_pass &= (
+            restore_apply == 0
+            and refactor_fixed_qualified
+            and all(code == 0 for code in prior_exits.values())
+        )
+        boundary = {"task_id": task["id"], "seed_apply_check_exit": seed_check, "seed_apply_exit": seed_apply, "seeded_verifier_exit": seeded_exit, "repair_apply_check_exit": restore_check, "repair_apply_exit": restore_apply, "retained_verifier_exits": prior_exits}
+        if is_refactor:
+            boundary.update({
+                "seeded_behavior_exit": seeded_behavior_exit,
+                "seeded_structure_exit": seeded_structure_exit,
+                "fixed_behavior_exit": fixed_behavior_exit,
+                "fixed_structure_exit": fixed_structure_exit,
+            })
+        boundaries.append(boundary)
         records.append({
             "task_id": task["id"],
             "seed_patch_sha256": hashlib.sha256(patch.read_bytes()).hexdigest(),
@@ -208,7 +247,7 @@ def main() -> int:
             for task in ordered
         }
         composite_seeded_verifiers_nonzero = bool(composite_diff.strip()) and all(
-            code != 0 for code in composite_seed_verifier_exits.values()
+            code == 1 for code in composite_seed_verifier_exits.values()
         )
     except Exception as exc:
         composite_seed_error = str(exc)

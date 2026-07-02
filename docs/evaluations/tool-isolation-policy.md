@@ -24,6 +24,8 @@ Agent runtime and model choice are a separate dimension from the tool profile. C
 
 A treatment profile is an additive lane on the same Codex substrate. It enables exactly the named tool or stack from `profile.component_ids` and `setup.tool_permissions.allowed_token_saving_tools`. Individual-tool lanes expose one treatment tool; stack profiles must list each enabled component and owned surface.
 
+Treatment setup validates installation, identity, configuration, and readiness only. Model-facing task guidance must not mention, prefer, require, quota, or otherwise steer invocation beyond instructions that are themselves the tool's normal installation surface. The agent chooses tools naturally. Zero use is a valid observed outcome and must be recorded without invalidation or a forced rerun; command/filter coverage is descriptive post-run evidence only.
+
 ## Ambient installed tools
 
 Installed tools do not contaminate a run merely by existing on disk. They contaminate a run if they are exposed to the evaluated agent, called in the transcript, pre-seed indexes or memory, alter shell output, or change setup/reset/verifier behavior.
@@ -33,7 +35,7 @@ For Codex-based runs, do not uninstall global tools to create a baseline. Instea
 - `baseline-bare-codex`: minimal config, no MCP servers, no global `AGENTS.md`, no hooks, no skills/plugins, auth symlink only.
 - Treatment lanes: generated config intentionally enables only the MCP/tool server declared by the active tool config, with run-local data/cache/index state.
 
-Current concrete tool configs include LeanCTX and CodeGraph; adding another tool requires a new tool-config entry with command, allowed audit terms, optional env/mounts, prompt guidance, and optional warmup hook.
+Current concrete tool configs include LeanCTX and CodeGraph; adding another tool requires a new tool-config entry with command, allowed audit terms, optional env/mounts, any instructions that are part of the tool's normal installed surface, and optional setup hook.
 
 The controller session may have ambient tools installed, but the evaluated Codex process must not inherit the controller's Codex home, global instructions, MCP config, hooks, skills, plugins, warm indexes, `HOME`, Python user site, XDG directories, or temp directory unless the active profile explicitly enables them. Agent subprocess `HOME`, `PYTHONUSERBASE`, `XDG_CACHE_HOME`, `XDG_CONFIG_HOME`, `XDG_DATA_HOME`, and `TMPDIR` must live under the fresh lane-specific Codex home.
 

@@ -221,7 +221,7 @@ Do not combine two L-sized tasks in one session unless the operator explicitly c
 
 - A `source-logic` candidate can be selected for evaluation, but cannot be described as measured.
 - A `benchmark-audit` result requires inspected harness, tasks, scoring, token accounting, raw outputs, and failure semantics.
-- A `reproduction` result requires independent continuous target-workload workflow simulation with provider-billed accounting where available, pass/fail or quality score, turns, tool calls, latency, state behavior, and reset evidence.
+- A `reproduction` result requires an independent persistent target-workload workflow with provider-reported token accounting, structured per-task verification, independent software-quality review, treatment/isolation evidence, and recoverable artifacts. Turns, tool calls, latency, and manually scored state behavior are optional diagnostics rather than publication requirements.
 - A treatment that reduces tokens while failing the verifier is a quality regression.
 - A treatment with overlapping surface owners is invalid unless overlap was disabled and verified before the run.
 - Negative, null, blocked, and excluded results remain first-class repository evidence.

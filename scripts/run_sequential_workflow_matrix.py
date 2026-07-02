@@ -108,7 +108,8 @@ def find_baseline_record(registry: dict[str, Any], seq: dict[str, Any], replicat
     fingerprint = workflow.baseline_protocol_fingerprint(seq)
     matches = [
         session for session in registry.get("sessions", [])
-        if session.get("baseline_pool", {}).get("protocol_fingerprint") == fingerprint
+        if session.get("schema_version") == 2
+        and session.get("baseline_pool", {}).get("protocol_fingerprint") == fingerprint
         and session.get("replicate_index") == replicate_index
         and session.get("session_role") == "baseline"
         and session.get("task_sequence", {}).get("sequence_id") == seq["id"]
@@ -207,14 +208,23 @@ def find_protocol(root: Path, sequence_id: str, profile_id: str) -> Path:
     if not isinstance(active_sequence, dict):
         raise ValueError(f"unknown workflow sequence: {sequence_id}")
     active_qualification = active_sequence.get("qualification_path")
+    current_fingerprint = workflow.baseline_protocol_fingerprint(active_sequence)
+    registry = load_json(root / "data/workflow-sessions.json")
+    executed_protocol_paths = {
+        str(session.get("frozen_protocol", {}).get("path"))
+        for session in registry.get("sessions", [])
+        if session.get("frozen_protocol", {}).get("path")
+    }
     matches: list[Path] = []
     for path in (root / "sources/evaluations/protocols").glob("*.json"):
         protocol = load_json(path)
         selected = protocol.get("selected_execution", {}).get("descriptor", {})
         if (
-            protocol.get("status") == "frozen-ready-not-run"
+            str(path.relative_to(root)) not in executed_protocol_paths
+            and protocol.get("status") == "frozen-ready-not-run"
             and protocol.get("task_fixture", {}).get("sequence_id") == sequence_id
             and protocol.get("task_fixture", {}).get("qualification_path") == active_qualification
+            and protocol.get("baseline_pool", {}).get("protocol_fingerprint") == current_fingerprint
             and selected.get("selected_profile", {}).get("profile_id") == profile_id
         ):
             matches.append(path)
@@ -353,6 +363,29 @@ def publication_allowed(prepare_only: bool, lane_results: list[dict[str, Any]]) 
 def artifact_merge_allowed(prepare_only: bool, lane_results: list[dict[str, Any]]) -> bool:
     """Preserve every completed compact session even when a sibling lane fails."""
     return not prepare_only and any(result.get("produced_session_ids") for result in lane_results)
+
+
+def matrix_acceptance_state(
+    *, prepare_only: bool, execution_passed: bool, awaiting_quality_review: bool
+) -> bool | None:
+    """Preparation success is not provider-backed objective acceptance."""
+    if prepare_only:
+        return None
+    return execution_passed and not awaiting_quality_review
+
+
+def matrix_exit_code(
+    *,
+    prepare_only: bool,
+    execution_passed: bool,
+    awaiting_quality_review: bool,
+    accepted: bool | None,
+) -> int:
+    if awaiting_quality_review and execution_passed:
+        return 3
+    if prepare_only:
+        return 0 if execution_passed else 1
+    return 0 if accepted else 1
 
 
 def lane_session_records(checkout: Path, sequence_id: str, replicate_index: int, produced_session_ids: set[str] | None = None) -> list[dict[str, Any]]:
@@ -537,7 +570,15 @@ def publish_ready_comparisons(sequence_ids: list[str], profiles: list[str], repl
 
 
 def run_validation(summary_dir: Path) -> dict[str, Any]:
-    truthmark = shutil.which("truthmark") or str(Path.home() / ".local/bin/truthmark")
+    truthmark_candidates = [
+        shutil.which("truthmark"),
+        "/opt/data/.local/bin/truthmark",
+        str(Path.home() / ".local/bin/truthmark"),
+    ]
+    truthmark = next(
+        (candidate for candidate in truthmark_candidates if candidate and Path(candidate).is_file()),
+        truthmark_candidates[-1],
+    )
     validation_env = os.environ.copy()
     validation_env["PATH"] = f"{Path(truthmark).parent}:{validation_env.get('PATH', '')}"
     commands = [
@@ -691,18 +732,14 @@ def main(argv: list[str] | None = None) -> int:
     )
     validation = run_validation(run_root)
     if not args.prepare_only and not validation["passed"]:
-        registry_path.write_bytes(registry_before)
-        for rel in [
-            *merge_summary.get("copied_artifacts", []),
-            *published_comparisons,
-        ]:
+        for rel in published_comparisons:
             path = ROOT / rel
             if path.is_dir():
                 chmod_tree(path)
                 shutil.rmtree(path)
             elif path.exists():
                 path.unlink()
-        merge_summary["rolled_back"] = True
+        merge_summary["validation_failed_artifacts_preserved"] = True
         published_comparisons = []
     execution_passed = lanes_passed and validation["passed"]
     awaiting_quality_review = not args.prepare_only and merge_summary.get("merged_session_count", 0) > 0
@@ -714,20 +751,26 @@ def main(argv: list[str] | None = None) -> int:
         "validation": validation,
         "execution_passed": execution_passed,
         "awaiting_quality_review": awaiting_quality_review,
-        "accepted": execution_passed and not awaiting_quality_review,
+        "accepted": matrix_acceptance_state(
+            prepare_only=args.prepare_only,
+            execution_passed=execution_passed,
+            awaiting_quality_review=awaiting_quality_review,
+        ),
     }
     write_json(run_root / "matrix-summary.json", summary)
     print(json.dumps(summary, indent=2), flush=True)
 
     if not args.keep_lanes:
         cleanup_lane_checkouts(run_root)
-    if awaiting_quality_review and execution_passed:
-        if production_lock_fd is not None:
-            os.close(production_lock_fd)
-        return 3
+    exit_code = matrix_exit_code(
+        prepare_only=args.prepare_only,
+        execution_passed=execution_passed,
+        awaiting_quality_review=awaiting_quality_review,
+        accepted=summary["accepted"],
+    )
     if production_lock_fd is not None:
         os.close(production_lock_fd)
-    return 0 if summary["accepted"] else 1
+    return exit_code
 
 
 if __name__ == "__main__":

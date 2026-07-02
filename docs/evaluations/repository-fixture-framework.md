@@ -35,6 +35,9 @@ candidate repositories
 
 | Task class | Token-waste target | Minimum verifier expectation |
 |---|---|---|
+| `feature-implementation` | Context selection and convention reuse while adding user-visible behavior. | Required behavior and compatibility tests pass; diff follows project conventions. |
+| `behavior-preserving-refactor` | Precise navigation and multi-file editing without behavioral drift. | Existing behavior remains green and structural acceptance points hold. |
+| `code-review` | Defect localization and review of a realistic cumulative change. | Required findings are identified; acceptance-critical defects are corrected when the protocol requires it. |
 | `noisy-terminal-repair` | Long test logs, repeated command output, and diagnostic extraction. | Failing test becomes passing or expected diagnostic is localized. |
 | `build-repair` | Compiler, typechecker, or build output. | Build/typecheck passes or a frozen diagnostic is correctly localized. |
 | `large-codebase-navigation` | Broad file reads and imprecise code search. | Correct file, symbol, or module is identified and task-specific question is answered. |
@@ -66,7 +69,7 @@ Each fixture record in `data/repository-fixtures.json` must include:
 - `candidate_profiles`: profile IDs from `data/evaluation-profiles.json` that may use this fixture; these are not active treatments until a protocol freezes them.
 - `blockers` and `caveats`: open readiness issues.
 
-Primary objective claims require `fixture_scale = large-project` or `fixture_scale = medium-project` plus reproduction records. Aggregate claims must stratify by fixture scale unless a report explicitly scopes itself to one scale.
+Primary objective claims require `fixture_scale = large-project` or `fixture_scale = medium-project` plus reproduction records. The primary practical fixture should support the feature/refactor/review lifecycle triad. Aggregate claims are scoped to the frozen workflow; the project does not require a language matrix.
 
 ## Promotion rules
 
@@ -86,4 +89,4 @@ Readiness states stricter than `candidate-fixture` require concrete setup, reset
 
 ## Non-goals
 
-This framework does not run baselines, run treatments, select stack winners, claim provider-billed savings, or promote tool evidence stages. Those actions belong in later progressive evaluation changes with frozen protocols.
+This framework does not run baselines, run treatments, select stack winners, claim provider-reported token reductions, or promote tool evidence stages. Those actions belong in later progressive evaluation changes with frozen protocols.

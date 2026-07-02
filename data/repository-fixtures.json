@@ -32,9 +32,9 @@
   "fixtures": [
     {
       "id": "medium-fastify-fastify",
-      "status": "qualified-fixture",
+      "status": "retired-fixture",
       "fixture_scale": "medium-project",
-      "evaluation_use": "primary-objective",
+      "evaluation_use": "historical-evidence",
       "repository": {
         "url": "https://github.com/fastify/fastify",
         "id": "fastify__fastify",
@@ -44,7 +44,7 @@
       "snapshot": {
         "commit": "94bcbcc6e2ef3b8e8f8e8797fe551ccbe7b942fd",
         "branch": "detached",
-        "snapshot_policy": "Pinned active workflow snapshot; five upstream-derived seed patches are controller-injected one at a time."
+        "snapshot_policy": "Pinned historical maintenance snapshot; five upstream-derived seed patches are controller-injected one at a time."
       },
       "task_classes": [
         "multi-file-refactor",
@@ -68,23 +68,12 @@
       "artifact_paths": {
         "root": "execution-time scratch; non-recoverable after compact bundling"
       },
-      "future_evaluation_lanes": [
-        "primary-hard-lane-baseline",
-        "primary-hard-lane-treatment"
-      ],
-      "candidate_profiles": [
-        "baseline-bare-codex",
-        "retrieval-leanctx",
-        "retrieval-serena",
-        "terminal-rtk",
-        "terminal-lowfat",
-        "serena-cavemem-lightweight",
-        "lower-intervention-codegraph"
-      ],
+      "candidate_profiles": [],
       "blockers": [],
       "caveats": [
         "Agent-declared completion is not verifier-confirmed correctness.",
-        "The failed baseline is valid primary-objective token-usage evidence; treatment claims must be relative to its correctness and token result."
+        "The failed baseline is valid primary-objective token-usage evidence; treatment claims must be relative to its correctness and token result.",
+        "Retired from active planning; preserve frozen maintenance evidence under its historical estimand."
       ],
       "tasks": [
         "fastify-max-param-length-regression",
@@ -93,12 +82,10 @@
         "fastify-log-controller-regression",
         "fastify-content-type-semantics-regression"
       ],
-      "qualification_status": "active-reproduction-flow",
+      "qualification_status": "retired-qualified-flow",
       "workflow_sequence_id": "fastify-maintenance-sequence-v1",
       "qualification_evidence": "sources/evaluations/fixtures/medium/fastify-fastify/qualification-composite-v5.json",
-      "active_profiles": [
-        "baseline-bare-codex"
-      ],
+      "active_profiles": [],
       "difficulty_class": "hard-lane",
       "evidence_policy": {
         "valid_uses": [
@@ -124,7 +111,12 @@
         ],
         "baseline_selection_rule": "Pair each tool treatment with a successful or hard baseline from the same prompt-aligned frozen model condition and protocol fingerprint.",
         "qualification_disposition": "Prompt-aligned qualification refreshed after independent source review exposed missing default 414 and logger compatibility coverage."
-      }
+      },
+      "historical_evaluation_lanes": [
+        "primary-hard-lane-baseline",
+        "primary-hard-lane-treatment"
+      ],
+      "future_evaluation_lanes": []
     },
     {
       "id": "medium-beetbox-beets",
@@ -138,9 +130,9 @@
         "path": "sources/evaluations/fixtures/medium/beetbox-beets/repo"
       },
       "task_classes": [
-        "multi-file-refactor",
-        "large-codebase-navigation",
-        "build-repair"
+        "feature-implementation",
+        "behavior-preserving-refactor",
+        "code-review-correction"
       ],
       "primary_token_waste_surface": "retrieval-context",
       "setup": {
@@ -156,17 +148,12 @@
         "root": "execution-time scratch; non-recoverable after compact bundling"
       },
       "future_evaluation_lanes": [
-        "native-baseline-reproduction",
-        "individual-tool-reproduction",
-        "stack-ablation-reproduction"
+        "baseline-lifecycle-reproduction",
+        "retrieval-codegraph-lifecycle-reproduction"
       ],
       "candidate_profiles": [
         "baseline-bare-codex",
-        "retrieval-leanctx",
-        "retrieval-serena",
-        "terminal-rtk",
-        "terminal-lowfat",
-        "lower-intervention-codegraph"
+        "retrieval-codegraph"
       ],
       "blockers": [],
       "caveats": [
@@ -176,28 +163,28 @@
         "baseline-bare-codex"
       ],
       "snapshot": {
-        "commit": "8ddae794d30e9984be904f80459614155c6592d9",
+        "commit": "9acb1ecff6c7ee0a1e83e3b983c94792345712c5",
         "branch": "detached",
-        "snapshot_policy": "Pinned active three-task production workflow snapshot; all regressions are controller-injected before sequential prompt disclosure."
+        "snapshot_policy": "Pinned active three-task lifecycle fixed snapshot; all start-condition patches are controller-injected before sequential prompt disclosure."
       },
       "prompt": {
         "path": "sources/evaluations/fixtures/medium/beetbox-beets/tasks/README.md",
         "prompt_policy": "Prompts are disclosed one at a time; all acceptance assets remain controller-only."
       },
       "tasks": [
-        "beets-path-format-core-regression",
-        "beets-multivalue-core-regression",
-        "beets-tidal-metadata-sync-regression-v2"
+        "beets-lifecycle-multivalue-modify-feature",
+        "beets-lifecycle-lazy-model-storage-refactor",
+        "beets-lifecycle-ftintitle-review"
       ],
       "qualification_status": "active-reproduction-flow",
-      "workflow_sequence_id": "beets-maintenance-sequence-v4",
-      "qualification_evidence": "sources/evaluations/fixtures/medium/beetbox-beets/qualification-composite-v9.json"
+      "workflow_sequence_id": "beets-lifecycle-sequence-v1",
+      "qualification_evidence": "sources/evaluations/fixtures/medium/beetbox-beets/qualification-lifecycle-v1.json"
     },
     {
       "id": "large-hashicorp-terraform",
-      "status": "qualified-fixture",
+      "status": "retired-fixture",
       "fixture_scale": "large-project",
-      "evaluation_use": "primary-objective",
+      "evaluation_use": "historical-evidence",
       "repository": {
         "url": "https://github.com/hashicorp/terraform",
         "id": "large__hashicorp-terraform",
@@ -207,7 +194,7 @@
       "snapshot": {
         "commit": "e02391ad384c9c38f1d7f40b853c0d2297348094",
         "branch": "detached",
-        "snapshot_policy": "Pinned active workflow snapshot; five upstream-derived seed patches are controller-injected one at a time."
+        "snapshot_policy": "Pinned historical maintenance snapshot; five upstream-derived seed patches are controller-injected one at a time."
       },
       "task_classes": [
         "multi-file-refactor",
@@ -231,34 +218,27 @@
       "artifact_paths": {
         "root": "execution-time scratch; non-recoverable after compact bundling"
       },
-      "future_evaluation_lanes": [
-        "native-baseline-reproduction",
-        "individual-tool-reproduction",
-        "stack-ablation-reproduction"
-      ],
-      "candidate_profiles": [
-        "baseline-bare-codex",
-        "retrieval-leanctx",
-        "retrieval-serena",
-        "terminal-rtk",
-        "terminal-lowfat",
-        "lower-intervention-codegraph"
-      ],
+      "candidate_profiles": [],
       "blockers": [],
       "caveats": [
-        "Runner-enabled does not mean objective-accepted; each session still requires software-quality review."
+        "Runner-enabled does not mean objective-accepted; each session still requires software-quality review.",
+        "Retired from active planning; preserve frozen maintenance evidence under its historical estimand."
       ],
       "tasks": [
         "terraform-161ffe-tracing-context-regression",
         "terraform-520378-computed-block-capabilities-regression",
         "terraform-9ae470-objchange-validation-regression"
       ],
-      "qualification_status": "active-reproduction-flow",
+      "qualification_status": "retired-qualified-flow",
       "workflow_sequence_id": "terraform-maintenance-sequence-v2",
       "qualification_evidence": "sources/evaluations/fixtures/large/hashicorp-terraform/qualification-composite-v6.json",
-      "active_profiles": [
-        "baseline-bare-codex"
-      ]
+      "active_profiles": [],
+      "historical_evaluation_lanes": [
+        "native-baseline-reproduction",
+        "individual-tool-reproduction",
+        "stack-ablation-reproduction"
+      ],
+      "future_evaluation_lanes": []
     }
   ],
   "fixture_scales": [
