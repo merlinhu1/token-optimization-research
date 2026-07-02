@@ -53,9 +53,9 @@ class ActiveCampaignArchitectureTest(unittest.TestCase):
         self.assertEqual(
             [task["id"] for task in ordered],
             [
-                "beets-lifecycle-multivalue-modify-feature",
-                "beets-lifecycle-lazy-model-storage-refactor",
-                "beets-lifecycle-ftintitle-review",
+                "beets-lifecycle-multivalue-modify-feature-v2",
+                "beets-lifecycle-lazy-model-storage-refactor-v2",
+                "beets-lifecycle-ftintitle-review-v2",
             ],
         )
         review_task = ordered[2]
@@ -64,7 +64,7 @@ class ActiveCampaignArchitectureTest(unittest.TestCase):
         self.assertNotIn("review_patch_sha256", descriptor["tasks"][0])
 
     def test_review_patch_is_disclosed_only_with_the_review_prompt(self) -> None:
-        sequence = runner.load_sequence("beets-lifecycle-sequence-v1")
+        sequence = runner.load_sequence("beets-lifecycle-sequence-v2")
         review_task = sorted(sequence["tasks"], key=lambda task: task["order"])[2]
         source_dir = (ROOT / review_task["prompt_path"]).parent
         with tempfile.TemporaryDirectory() as tmp:
@@ -84,12 +84,12 @@ class ActiveCampaignArchitectureTest(unittest.TestCase):
         self.assertIn("diff --git", review)
 
     def test_refactor_qualification_separates_behavior_and_structure(self) -> None:
-        sequence = runner.load_sequence("beets-lifecycle-sequence-v1")
+        sequence = runner.load_sequence("beets-lifecycle-sequence-v2")
         qualification = json.loads((ROOT / sequence["qualification_path"]).read_text())
         boundary = next(
             item
             for item in qualification["cumulative_boundaries"]
-            if item["task_id"] == "beets-lifecycle-lazy-model-storage-refactor"
+            if item["task_id"] == "beets-lifecycle-lazy-model-storage-refactor-v2"
         )
         self.assertEqual(boundary["seeded_behavior_exit"], 0)
         self.assertNotEqual(boundary["seeded_structure_exit"], 0)
@@ -127,6 +127,42 @@ class ActiveCampaignArchitectureTest(unittest.TestCase):
         ):
             validate_repository.validate_workflow_task_sequences(workflow, fixtures, errors)
         self.assertFalse(any("minimum is 5" in error for error in errors), errors)
+
+    def test_active_concealed_paths_are_unique_to_the_controller(self) -> None:
+        sequence = runner.load_sequence("beets-lifecycle-sequence-v2")
+        fixture_repo = ROOT / "sources/evaluations/fixtures/medium/beetbox-beets/repo"
+        snapshot = sequence["initial_snapshot"]["commit"]
+        for task in sequence["tasks"]:
+            for path in task["model_concealed_paths"]:
+                self.assertTrue(path.startswith("test/controller_hidden/"), path)
+                probe = subprocess.run(
+                    ["git", "cat-file", "-e", f"{snapshot}:{path}"],
+                    cwd=fixture_repo,
+                    stdout=subprocess.DEVNULL,
+                    stderr=subprocess.DEVNULL,
+                )
+                self.assertNotEqual(
+                    probe.returncode,
+                    0,
+                    f"concealed path collides with fixed snapshot: {path}",
+                )
+
+    def test_feature_verifier_checks_semantics_not_canonical_error_prose(self) -> None:
+        sequence = runner.load_sequence("beets-lifecycle-sequence-v2")
+        feature = sorted(sequence["tasks"], key=lambda task: task["order"])[0]
+        hidden = next(
+            (ROOT / feature["prompt_path"]).parent.glob("controller-hidden/**/*.py")
+        ).read_text()
+        self.assertNotIn("pytest.raises(UserError, match=", hidden)
+        self.assertIn('assert "title" in message', hidden)
+        self.assertIn('assert "+=" in message', hidden)
+
+    def test_refactor_verifier_does_not_require_undisclosed_parameter_names(self) -> None:
+        sequence = runner.load_sequence("beets-lifecycle-sequence-v2")
+        refactor = sorted(sequence["tasks"], key=lambda task: task["order"])[1]
+        verifier = (ROOT / refactor["verifier_command"]).read_text()
+        self.assertNotIn("inspect.signature", verifier)
+        self.assertNotIn('"fixed_values" in params', verifier)
 
     def test_candidate_portfolio_is_reduced_before_provider_runs(self) -> None:
         profiles = json.loads((ROOT / "data/evaluation-profiles.json").read_text())["profiles"]
@@ -202,12 +238,64 @@ class ActiveCampaignArchitectureTest(unittest.TestCase):
         self.assertIsNone(runner.find_pool_profile_record(registry, sequence, "behavior-caveman", 0))
 
     def test_protocol_lookup_ignores_protocols_already_used_by_legacy_sessions(self) -> None:
-        with self.assertRaisesRegex(ValueError, "expected exactly one frozen protocol"):
+        with self.assertRaisesRegex(ValueError, "unknown or non-active workflow sequence"):
             matrix.find_protocol(
                 ROOT,
                 "beets-maintenance-sequence-v4",
                 "baseline-bare-codex",
             )
+
+    def test_active_protocol_remains_discoverable_after_execution(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            (root / "data").mkdir()
+            protocol_dir = root / "sources/evaluations/protocols"
+            protocol_dir.mkdir(parents=True)
+            sequence = {
+                "id": "unit-sequence",
+                "status": "active",
+                "qualification_path": "qualification.json",
+            }
+            (root / "data/workflow-task-sequences.json").write_text(
+                json.dumps({"sequences": [sequence]})
+            )
+            protocol_rel = "sources/evaluations/protocols/unit.json"
+            (root / "data/workflow-sessions.json").write_text(
+                json.dumps(
+                    {
+                        "sessions": [
+                            {"frozen_protocol": {"path": protocol_rel}}
+                        ]
+                    }
+                )
+            )
+            protocol = {
+                "status": "frozen-ready-not-run",
+                "task_fixture": {
+                    "sequence_id": "unit-sequence",
+                    "qualification_path": "qualification.json",
+                },
+                "baseline_pool": {"protocol_fingerprint": "unit-fingerprint"},
+                "selected_execution": {
+                    "descriptor": {
+                        "selected_profile": {"profile_id": "baseline-bare-codex"}
+                    }
+                },
+            }
+            (root / protocol_rel).write_text(json.dumps(protocol))
+            with mock.patch.object(
+                matrix.workflow,
+                "baseline_protocol_fingerprint",
+                return_value="unit-fingerprint",
+            ):
+                self.assertEqual(
+                    matrix.find_protocol(
+                        root,
+                        "unit-sequence",
+                        "baseline-bare-codex",
+                    ),
+                    root / protocol_rel,
+                )
 
     def test_current_protocols_declare_strict_schema_version(self) -> None:
         for sequence_id in runner.active_sequence_ids():
@@ -255,6 +343,27 @@ class SeedDeliveryContractTest(unittest.TestCase):
                     capture_output=True,
                 ).stdout,
                 "",
+            )
+
+    def test_qualification_rejects_concealed_paths_present_in_fixed_snapshot(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            checkout = Path(tmp)
+            collision = checkout / "test/controller_hidden/collision.py"
+            collision.parent.mkdir(parents=True)
+            collision.write_text("fixed upstream test\n")
+            sequence = {
+                "tasks": [
+                    {
+                        "model_concealed_paths": [
+                            "test/controller_hidden/collision.py",
+                            "test/controller_hidden/absent.py",
+                        ]
+                    }
+                ]
+            }
+            self.assertEqual(
+                qualification.concealed_path_collisions(checkout, sequence),
+                ["test/controller_hidden/collision.py"],
             )
 
     def test_active_qualifications_prove_composite_broken_start(self) -> None:
@@ -712,6 +821,45 @@ class VerifierContractTest(unittest.TestCase):
 
 
 class ActiveAcceptanceContractTest(unittest.TestCase):
+    def test_invalid_fixture_disposition_must_be_excluded_from_comparison(self) -> None:
+        session = {
+            "status": "failed",
+            "interpretation": {
+                "evaluation_validity": "invalid-fixture",
+                "accepted_for_execution": False,
+                "accepted_for_objective": False,
+                "primary_objective_hard_baseline": True,
+                "usable_for_primary_objective_token_comparison": True,
+            },
+        }
+        errors: list[str] = []
+        validate_repository.validate_invalid_fixture_disposition(
+            session,
+            "invalid-session",
+            errors,
+        )
+        self.assertTrue(errors)
+
+    def test_excluded_invalid_fixture_disposition_is_valid(self) -> None:
+        session = {
+            "status": "excluded",
+            "interpretation": {
+                "evaluation_validity": "invalid-fixture",
+                "accepted_for_execution": False,
+                "accepted_for_objective": False,
+                "primary_objective_hard_baseline": False,
+                "usable_for_primary_objective_token_comparison": False,
+                "invalidity_reasons": ["verifier contract mismatch"],
+            },
+        }
+        errors: list[str] = []
+        validate_repository.validate_invalid_fixture_disposition(
+            session,
+            "invalid-session",
+            errors,
+        )
+        self.assertEqual(errors, [])
+
     def test_active_qualification_records_match_task_assets(self) -> None:
         for sequence_id in runner.active_sequence_ids():
             sequence = runner.load_sequence(sequence_id)
@@ -811,27 +959,27 @@ class ManifestAndProtocolContractTest(unittest.TestCase):
         self.assertEqual([item["id"] for item in active], ["codex-openai-gpt-5-6-luna-xhigh"])
 
     def test_active_sequences_use_token_savings_task_subsets(self) -> None:
-        self.assertEqual(runner.active_sequence_ids(), ["beets-lifecycle-sequence-v1"])
-        sequence = runner.load_sequence("beets-lifecycle-sequence-v1")
+        self.assertEqual(runner.active_sequence_ids(), ["beets-lifecycle-sequence-v2"])
+        sequence = runner.load_sequence("beets-lifecycle-sequence-v2")
         self.assertEqual(
             [task["id"] for task in sequence["tasks"]],
             [
-                "beets-lifecycle-multivalue-modify-feature",
-                "beets-lifecycle-lazy-model-storage-refactor",
-                "beets-lifecycle-ftintitle-review",
+                "beets-lifecycle-multivalue-modify-feature-v2",
+                "beets-lifecycle-lazy-model-storage-refactor-v2",
+                "beets-lifecycle-ftintitle-review-v2",
             ],
         )
         self.assertEqual([task["order"] for task in sequence["tasks"]], [1, 2, 3])
 
     def test_active_sequences_bind_current_qualifications(self) -> None:
-        sequence = runner.load_sequence("beets-lifecycle-sequence-v1")
-        self.assertTrue(sequence["qualification_path"].endswith("qualification-lifecycle-v1.json"))
+        sequence = runner.load_sequence("beets-lifecycle-sequence-v2")
+        self.assertTrue(sequence["qualification_path"].endswith("qualification-lifecycle-v2.json"))
 
     def test_current_protocol_fingerprint_matches_runner(self) -> None:
-        sequence = runner.load_sequence("beets-lifecycle-sequence-v1")
+        sequence = runner.load_sequence("beets-lifecycle-sequence-v2")
         protocol_path = matrix.find_protocol(
             ROOT,
-            "beets-lifecycle-sequence-v1",
+            "beets-lifecycle-sequence-v2",
             "baseline-bare-codex",
         )
         protocol = json.loads(protocol_path.read_text())
@@ -1308,6 +1456,61 @@ class MatrixLifecycleContractTest(unittest.TestCase):
         with mock.patch.object(matrix, "compact_artifacts_intact", return_value=True):
             self.assertTrue(matrix.hard_baseline_usable(session))
             self.assertEqual(matrix.baseline_reuse_state(session), "reusable")
+
+    def test_invalid_fixture_run_is_never_reusable_as_a_hard_baseline(self) -> None:
+        session = {
+            "interpretation": {
+                "accepted_for_objective": False,
+                "primary_objective_hard_baseline": True,
+                "usable_for_primary_objective_token_comparison": True,
+                "operationally_completed": True,
+                "agent_declared_task_completion_count": 3,
+                "evaluation_validity": "invalid-fixture",
+            },
+            "software_quality": {
+                "tasks_attempted": 3,
+                "quality_review_status": "reviewed",
+                "final_verifier_passed": False,
+                "quality_score": 4,
+            },
+            "cumulative_token_usage": {"total_provider_tokens": 26417006},
+        }
+        with mock.patch.object(matrix, "compact_artifacts_intact", return_value=True):
+            self.assertFalse(matrix.hard_baseline_usable(session))
+
+    def test_rejected_replicate_is_occupied_and_not_planned_again(self) -> None:
+        sequence = {"id": "unit-sequence"}
+        rejected = {
+            "schema_version": 2,
+            "status": "excluded",
+            "replicate_index": 0,
+            "session_role": "baseline",
+            "baseline_pool": {"protocol_fingerprint": "unit-fingerprint"},
+            "task_sequence": {"sequence_id": "unit-sequence"},
+            "profile": {"profile_id": "baseline-bare-codex"},
+            "interpretation": {
+                "accepted_for_execution": False,
+                "accepted_for_objective": False,
+                "evaluation_validity": "invalid-fixture",
+            },
+        }
+        registry = {"sessions": [rejected]}
+        with mock.patch.object(
+            matrix.workflow,
+            "baseline_protocol_fingerprint",
+            return_value="unit-fingerprint",
+        ):
+            self.assertEqual(
+                matrix.baseline_campaign_state(registry, sequence, 0),
+                "occupied",
+            )
+        with self.assertRaisesRegex(ValueError, "occupied"):
+            matrix.plan_workflow_jobs(
+                ["unit-sequence"],
+                [],
+                baseline_state=lambda _sequence: "occupied",
+                profile_state=lambda _sequence, _profile: "missing",
+            )
 
     def test_quality_passing_nonaccepted_baseline_is_not_hard_reusable(self) -> None:
         session = {

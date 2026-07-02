@@ -57,6 +57,14 @@ Every concealed verifier runs against the final cumulative repository, regardles
 
 `tasks_passed` is the count of tasks whose structured `accepted` value is true. Missing outcomes fail closed; the aggregate verifier exit is not used to synthesize all-or-zero task counts.
 
+### Estimand-aligned acceptance
+
+The research objective is provider-reported workflow token usage under fair, disclosed software-engineering tasks. Deterministic correctness is an eligibility gate for that token comparison, not a source-reconstruction benchmark.
+
+A verifier may enforce disclosed observable behavior, compatibility, safety, and explicitly public structural contracts. It must not require canonical human-facing prose, local parameter names, source identity, or one implementation shape unless that exact requirement is disclosed in the prompt and necessary to the task. Test cases may remain controller-only; acceptance requirements may not be hidden. Controller-only test paths must not collide with files in the fixed project snapshot.
+
+If a production run exposes a prompt/verifier/fixture mismatch, preserve its artifacts and provider usage for audit, mark it `evaluation_validity: invalid-fixture` and `status: excluded`, and prohibit baseline reuse or token comparison. Repair the contract under a new version and fingerprint rather than changing the historical result.
+
 ## Software-quality standard
 
 Token improvement is eligible only after correctness and independent quality are classified.

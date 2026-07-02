@@ -36,6 +36,11 @@ def concealed_paths(sequence: dict) -> list[str]:
     return sorted({str(path) for task in sequence["tasks"] for path in task.get("model_concealed_paths", [])})
 
 
+def concealed_path_collisions(checkout: Path, sequence: dict) -> list[str]:
+    """Return concealed paths that would overwrite fixed-snapshot project files."""
+    return [path for path in concealed_paths(sequence) if (checkout / path).exists()]
+
+
 def expected_task_concealed_paths(task: dict) -> list[str]:
     expected = set()
     expected.update(str(path) for path in task.get("upstream_test_paths", []))
@@ -121,6 +126,12 @@ def main() -> int:
     status = out(["git", "status", "--porcelain", "--untracked-files=all"], source_checkout)
     if status:
         raise SystemExit("prepared checkout must be clean, including untracked files")
+    collisions = concealed_path_collisions(source_checkout, sequence)
+    if collisions:
+        raise SystemExit(
+            "model-concealed paths collide with fixed-snapshot project files: "
+            + ", ".join(collisions)
+        )
 
     workspace_root = Path(tempfile.mkdtemp(prefix="workflow-qualification-"))
     atexit.register(shutil.rmtree, workspace_root, ignore_errors=True)
@@ -212,6 +223,9 @@ def main() -> int:
             "omitted_expected_model_concealed_paths": omissions,
             "declared_concealment_matches_expected": task_concealed == expected_concealed,
             "model_concealed_absent": all(not (checkout / path).exists() for path in task_concealed),
+            "fixed_snapshot_model_concealed_absent": all(
+                not (source_checkout / path).exists() for path in task_concealed
+            ),
         })
 
     # Verifiers may leave tracked source artifacts or formatting changes behind.
@@ -273,6 +287,8 @@ def main() -> int:
         "tool_versions": {"git": out(["git", "--version"], ROOT), "qualification_dependency_command": dependency_command},
         "ordered_task_ids": [task["id"] for task in ordered],
         "model_concealed_paths": concealed_paths(sequence),
+        "fixed_snapshot_concealed_path_collisions": collisions,
+        "fixed_snapshot_model_concealed_paths_absent": not collisions,
         "tasks": records,
         "cumulative_boundaries": boundaries,
         "composite_seed_merge_zero": composite_seed_merge_zero,
