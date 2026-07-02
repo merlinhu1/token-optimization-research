@@ -7464,6 +7464,413 @@
           "refactor verifier required constructor parameter names not disclosed by the prompt"
         ]
       }
+    },
+    {
+      "schema_version": 2,
+      "session_id": "baseline-beets-20260715-p-d248be3bdc63-r0",
+      "record_type": "workflow_session",
+      "evidence_type": "workflow-simulation",
+      "study_id": "phase-2-sequential-workflow-v1",
+      "experiment_group_id": "beetbox-beets-canonical-baseline-d248be3bdc63-sequential-workflow-r0",
+      "objective": "individual_tool_effectiveness",
+      "evidence_stage": "reproduction",
+      "status": "completed",
+      "session_role": "baseline",
+      "replicate_index": 0,
+      "frozen_protocol": {
+        "protocol_id": "beets-lifecycle-sequence-v2-baseline-bare-codex-db8b916d1781",
+        "path": "sources/evaluations/protocols/beets-lifecycle-sequence-v2-baseline-bare-codex-db8b916d1781.json",
+        "sha256": "5036f153ef7b0b5586ecda4a011d27103b4e9c9a8ef17b24fae387e8056492f0"
+      },
+      "baseline_pool": {
+        "protocol_version": "baseline-pool-v1",
+        "protocol_fingerprint": "d248be3bdc63",
+        "identity_policy": "frozen-protocol-and-replicate; execution date is metadata only"
+      },
+      "selected_execution": {
+        "descriptor_sha256": "13f73bb8a7bfbd10a6c905f38b66c38cff7f6abed16e7115a454f59bbcc79d8d",
+        "descriptor": {
+          "version": "execution-condition-v1",
+          "sequence_id": "beets-lifecycle-sequence-v2",
+          "execution_role": "baseline",
+          "selected_profile": {
+            "profile_id": "baseline-bare-codex",
+            "profile_type": "control",
+            "component_ids": [],
+            "enabled_surfaces": [
+              "codex-native-shell-edit"
+            ],
+            "disabled_overlaps": [
+              "all MCP servers",
+              "all token-saving surfaces",
+              "global Codex instructions",
+              "hooks",
+              "skills/plugins",
+              "warm indexes"
+            ],
+            "registry_entry_sha256": "ac6fe54b3c2150c70deb4e8c22a742e18e6f377ecbc25617053b55c557b6dea6",
+            "registry_entry": {
+              "id": "baseline-bare-codex",
+              "profile_type": "control",
+              "objective_scope": "control",
+              "status": "active-control",
+              "substrate": "codex-cli",
+              "enabled_surfaces": [
+                "codex-native-shell-edit"
+              ],
+              "disabled_overlaps": [
+                "all MCP servers",
+                "all token-saving surfaces",
+                "global Codex instructions",
+                "hooks",
+                "skills/plugins",
+                "warm indexes"
+              ],
+              "components": [],
+              "native_agent_tools_allowed": [
+                "shell_command_execution",
+                "file_editing",
+                "plain_file_read_search",
+                "git",
+                "verifier_commands"
+              ],
+              "forbidden_surfaces": [
+                "lean-ctx",
+                "codegraph",
+                "serena",
+                "rtk",
+                "lowfat",
+                "tokenjuice",
+                "repomix",
+                "mex",
+                "cavemem",
+                "cartog",
+                "all unlisted retrieval/compression/memory/token-saving tools"
+              ],
+              "install": {
+                "policy": "Run Codex from a fresh lane-specific CODEX_HOME with auth only, no MCP servers, no global instructions, no hooks, no skills/plugins, isolated HOME/PYTHONUSERBASE/XDG/TMPDIR, and a preflight artifact proving empty MCP config."
+              },
+              "reset": {
+                "policy": "Delete the lane-specific Codex home and run-local HOME/PYTHONUSERBASE/XDG/TMPDIR before each run; verify no stale indexes or generated profile files survive."
+              },
+              "notes": "Canonical Codex CLI no-MCP substrate baseline. Codex native shell/edit/file/git/verifier operations are allowed; MCP, retrieval, compression, memory, token-saving add-ons, global instructions, hooks, skills/plugins, and warm indexes are forbidden."
+            }
+          },
+          "model_facing_prompts": {
+            "rendering_contract": "sequential-model-facing-prompts-v2",
+            "profile_guidance_sha256": "f1d7a2cf7b0a7c1affd8bbb04705f073332ee6efc5f8f89f019b9e0cbacec4bb",
+            "tasks": [
+              {
+                "task_id": "beets-lifecycle-multivalue-modify-feature-v2",
+                "order": 1,
+                "rendered_prompt_sha256": "0384e6bd96372c140335499ecb379d94f284ebfeeb4c98ee6a8391f3b1eda958"
+              },
+              {
+                "task_id": "beets-lifecycle-lazy-model-storage-refactor-v2",
+                "order": 2,
+                "rendered_prompt_sha256": "b769ecc67b68ce6f59cd388ff263bbed84346b48748161251fde65c7dec904a9"
+              },
+              {
+                "task_id": "beets-lifecycle-ftintitle-review-v2",
+                "order": 3,
+                "rendered_prompt_sha256": "1cbcb5c5e2cb1e7fcf20242e4eb25d15f17c9c58876304a563c485bb94197c71"
+              }
+            ]
+          },
+          "tool_adapter": {
+            "tool_id": null,
+            "tool_manifest": "baseline-native-codex-tools",
+            "tool_config": null,
+            "binary_identity": null,
+            "source_identity": []
+          },
+          "runtime": {
+            "docker_image": "token-eval-codex:latest",
+            "docker_image_identity": {
+              "image_ref": "token-eval-codex:latest",
+              "image_id": "sha256:6f86d01f2c63f5029c6bb874d8f3694c24d5cd567e3d09413eccc956ba3feafe",
+              "repo_digests": [
+                "token-eval-codex@sha256:6f86d01f2c63f5029c6bb874d8f3694c24d5cd567e3d09413eccc956ba3feafe"
+              ],
+              "repo_tags": [
+                "token-eval-codex:latest"
+              ]
+            },
+            "dockerfile_path": "sources/evaluations/fixtures/container/Dockerfile",
+            "dockerfile_sha256": "47c91967ce25014ce54879514f51d2ff0326651be1087209115eff4d358226b3",
+            "fixture_runner_path": "scripts/run_codex_fixture_evaluation.py",
+            "fixture_runner_sha256": "6b8058a84891d2919a2583fb73d7ae78c72504476c1e0abe2ba9b4eda605eae3",
+            "codex_entrypoint_path": "sources/evaluations/fixtures/container/codex-entrypoint.sh",
+            "codex_entrypoint_sha256": "8715fe37cb1fa3823f5f05493bc9681ce7ffc72126dfec4d64d448762c550c3c",
+            "timeout_seconds_per_task": 3600,
+            "network_isolation": {
+              "provider_access": true,
+              "model_shell_network_access": false,
+              "model_shell_enforcement": "seccomp denies AF_INET and AF_INET6 socket creation for the shell process and descendants",
+              "codex_web_search": "disabled",
+              "external_retrieval_audit": "fail-closed"
+            },
+            "isolation_policy": "fresh lane-specific Codex home/tool data; provider-only network with model shell and Codex web search disabled; sequential one-task prompt delivery; concealed tests removed before model-visible root commit"
+          },
+          "dependencies": {
+            "command": "uv sync --group test",
+            "command_sha256": "e718e73048f88b906401006442fb858a4e9e4252f387df2c938eb41755762aa8",
+            "lockfiles": []
+          },
+          "agent_condition": {
+            "runtime_id": "codex-cli",
+            "provider": "openai",
+            "model": "gpt-5.6-luna",
+            "model_condition_id": "codex-openai-gpt-5-6-luna-xhigh",
+            "reasoning_effort": "xhigh",
+            "codex_version_condition": "captured-at-run-and-bound-to-record"
+          },
+          "isolation": {
+            "prompt_delivery": "sequential-one-task-at-a-time",
+            "seed_delivery_mode": "preseeded-composite",
+            "future_tasks_visible": false,
+            "future_seed_regressions_visible": true,
+            "controller_verification": "final-only",
+            "verifier_assets_model_visible": false,
+            "model_concealed_paths": [
+              "test/controller_hidden/lifecycle/test_ftintitle_review.py",
+              "test/controller_hidden/lifecycle/test_lazy_model_storage_refactor.py",
+              "test/controller_hidden/lifecycle/test_multivalue_modify_feature.py"
+            ]
+          },
+          "baseline_pool_reference": {
+            "protocol_version": "baseline-pool-v1",
+            "protocol_fingerprint": "d248be3bdc63",
+            "comparison_policy": "paired baseline and treatment must share this baseline pool fingerprint and replicate"
+          }
+        }
+      },
+      "docker_image_identity": {
+        "image_ref": "token-eval-codex:latest",
+        "image_id": "sha256:6f86d01f2c63f5029c6bb874d8f3694c24d5cd567e3d09413eccc956ba3feafe",
+        "repo_digests": [
+          "token-eval-codex@sha256:6f86d01f2c63f5029c6bb874d8f3694c24d5cd567e3d09413eccc956ba3feafe"
+        ],
+        "repo_tags": [
+          "token-eval-codex:latest"
+        ]
+      },
+      "tool_adapter_identity": null,
+      "date": "2026-07-15",
+      "target": {
+        "fixture_id": "medium-beetbox-beets",
+        "fixture_scale": "medium-project",
+        "project_id": "beetbox-beets",
+        "repository_path": "sources/evaluations/workflow-sessions/baseline-beets-20260715-p-d248be3bdc63-r0/project/repo",
+        "initial_snapshot": {
+          "commit": "9acb1ecff6c7ee0a1e83e3b983c94792345712c5",
+          "branch": "detached",
+          "fixture_hash": ""
+        }
+      },
+      "task_sequence": {
+        "sequence_id": "beets-lifecycle-sequence-v2",
+        "sequence_contract": "feature-refactor-review",
+        "task_ids": [
+          "beets-lifecycle-multivalue-modify-feature-v2",
+          "beets-lifecycle-lazy-model-storage-refactor-v2",
+          "beets-lifecycle-ftintitle-review-v2"
+        ],
+        "task_classes": [
+          "feature-implementation",
+          "behavior-preserving-refactor",
+          "code-review-correction"
+        ],
+        "reset_policy": "reset source checkout, profile home, tool state, indexes, caches, generated config, and agent home before the lane; preserve repository, thread, tool, index, cache, and agent state across every sequential prompt",
+        "prompt_delivery": {
+          "mode": "sequential-one-task-at-a-time",
+          "future_tasks_visible": false,
+          "future_prompts_materialized_lazily": true,
+          "seed_delivery_mode": "preseeded-composite",
+          "future_seed_regressions_visible": true,
+          "controller_verification": "final-only",
+          "codex_thread_id": "019f67d2-2a1b-7d83-92c5-9dbacd211824",
+          "task_prompt_evidence": "sources/evaluations/workflow-sessions/baseline-beets-20260715-p-d248be3bdc63-r0/evidence.jsonl.gz"
+        },
+        "leakage_controls": {
+          "seed_origin_concealed": true,
+          "seed_patches_model_visible": false,
+          "git_baseline_true_root_per_task": false,
+          "git_baseline_true_root_at_lane_start": true,
+          "fixed_snapshot_objects_model_visible": false,
+          "pre_seed_reflog_entries_visible": false,
+          "concealment_verification_passed": true,
+          "task_directories_model_visible": false,
+          "verifier_assets_model_visible": false,
+          "model_writable_surface": "target repository plus isolated model-output directory",
+          "verifier_integrity_passed": true,
+          "verifier_integrity_evidence": "sources/evaluations/workflow-sessions/baseline-beets-20260715-p-d248be3bdc63-r0/evidence.jsonl.gz#verifier-integrity.json",
+          "model_prompts_sanitized": true,
+          "upstream_remote_removed_from_model_facing_repo": true,
+          "broken_start_committed_as_local_baseline": true,
+          "remaining_limitations": [
+            "Future regression code is present from lane start, while future prompts and concealed acceptance assets remain controller-only.",
+            "Task semantics and verifier names may still be searchable if the model intentionally uses external network access."
+          ]
+        }
+      },
+      "profile": {
+        "profile_id": "baseline-bare-codex",
+        "profile_type": "control",
+        "enabled_surfaces": [
+          "codex-native-shell-edit"
+        ],
+        "disabled_overlaps": [
+          "all MCP servers",
+          "all token-saving surfaces",
+          "global Codex instructions",
+          "hooks",
+          "skills/plugins",
+          "warm indexes"
+        ],
+        "component_ids": []
+      },
+      "agent": {
+        "runtime_id": "codex-cli",
+        "model_condition_id": "codex-openai-gpt-5-6-luna-xhigh",
+        "name": "Codex CLI",
+        "version": "codex-cli 0.144.0",
+        "provider": "openai",
+        "model": "gpt-5.6-luna",
+        "reasoning_effort": "xhigh",
+        "temperature": null,
+        "max_turns": null,
+        "time_budget_seconds": 10800
+      },
+      "state_policy": {
+        "reset_before_session": [
+          "repository working tree",
+          "profile home",
+          "tool indexes and caches",
+          "generated config",
+          "agent home",
+          "temporary directories"
+        ],
+        "persist_between_tasks": [
+          "repository source working tree and model-facing Git metadata from one composite broken-start root",
+          "tool indexes and caches",
+          "generated config",
+          "agent home",
+          "memory/state stores enabled by the active profile",
+          "run artifacts"
+        ]
+      },
+      "cumulative_token_usage": {
+        "measurement_source": "codex-jsonl-usage-events",
+        "fresh_input_tokens": 679836,
+        "cached_input_tokens": 16787456,
+        "cache_write_tokens": null,
+        "output_tokens": 127244,
+        "reasoning_tokens": 67897,
+        "total_provider_tokens": 17594536,
+        "tokens_per_accepted_task": 5864845.333333333,
+        "accounting_basis": "Codex-reported token volume; monetary cost estimation is out of scope"
+      },
+      "per_task_results": [
+        {
+          "task_id": "beets-lifecycle-multivalue-modify-feature-v2",
+          "task_class": "feature-implementation",
+          "task_alias": "task-01",
+          "order": 1,
+          "agent_attempted": true,
+          "codex_exit_code": 0,
+          "controller_verification": "passed",
+          "accepted": true,
+          "task_delta": "sources/evaluations/workflow-sessions/baseline-beets-20260715-p-d248be3bdc63-r0/task-01-agent.diff",
+          "usage_events": "sources/evaluations/workflow-sessions/baseline-beets-20260715-p-d248be3bdc63-r0/task-01-codex-events.jsonl",
+          "operational_retry_count": 0,
+          "verifier_exit_code": 0,
+          "verifier_passed": true
+        },
+        {
+          "task_id": "beets-lifecycle-lazy-model-storage-refactor-v2",
+          "task_class": "behavior-preserving-refactor",
+          "task_alias": "task-02",
+          "order": 2,
+          "agent_attempted": true,
+          "codex_exit_code": 0,
+          "controller_verification": "passed",
+          "accepted": true,
+          "task_delta": "sources/evaluations/workflow-sessions/baseline-beets-20260715-p-d248be3bdc63-r0/task-02-agent.diff",
+          "usage_events": "sources/evaluations/workflow-sessions/baseline-beets-20260715-p-d248be3bdc63-r0/task-02-codex-events.jsonl",
+          "operational_retry_count": 0,
+          "verifier_exit_code": 0,
+          "verifier_passed": true
+        },
+        {
+          "task_id": "beets-lifecycle-ftintitle-review-v2",
+          "task_class": "code-review-correction",
+          "task_alias": "task-03",
+          "order": 3,
+          "agent_attempted": true,
+          "codex_exit_code": 0,
+          "controller_verification": "passed",
+          "accepted": true,
+          "task_delta": "sources/evaluations/workflow-sessions/baseline-beets-20260715-p-d248be3bdc63-r0/task-03-agent.diff",
+          "usage_events": "sources/evaluations/workflow-sessions/baseline-beets-20260715-p-d248be3bdc63-r0/task-03-codex-events.jsonl",
+          "operational_retry_count": 0,
+          "verifier_exit_code": 0,
+          "verifier_passed": true
+        }
+      ],
+      "software_quality": {
+        "tasks_attempted": 3,
+        "tasks_agent_claimed_complete": 3,
+        "tasks_passed": 3,
+        "final_verifier_command": "sources/evaluations/workflow-sessions/baseline-beets-20260715-p-d248be3bdc63-r0/verify-workflow.sh",
+        "final_verifier_passed": true,
+        "functional_verifier_passed": true,
+        "quality_review_status": "reviewed",
+        "quality_score": 5,
+        "critical_failures": [],
+        "reviewed_on": "2026-07-15",
+        "review_method": "manifest/protocol verification, exact concealed-verifier replay, final-tree reconstruction, source review, focused fixed-snapshot differential testing, and full upstream-suite comparison",
+        "review_findings": [
+          "All three independently executed concealed verifier surfaces pass: 7 feature tests, 3 lazy-storage behavior tests plus the structural gate, and 5 ftintitle review/correction tests.",
+          "The submitted final tree was reconstructed from the qualified composite broken root plus the final cumulative agent diff; no tests or verifier assets were modified by the agent.",
+          "The reconstructed final tree passes the complete upstream suite: 2429 passed, 162 skipped, 8 subtests passed. The pinned fixed snapshot produces the identical totals.",
+          "A mixed focused invocation has one ftintitle plugin-registration-order failure on both the final tree and untouched fixed snapshot; isolated ftintitle/autotag coverage passes 217 tests and database/UI coverage passes 447 tests with 1 skip.",
+          "The cumulative source changes are focused on the disclosed feature, refactor, and review surfaces; Ruff, formatting, mypy, verifier integrity, tool isolation, artifact checksums, and repository publication validation pass.",
+          "No critical correctness, maintainability, safety, secret-exposure, forbidden-tool, or external-retrieval issue was found."
+        ],
+        "review_evidence": [
+          "sources/evaluations/workflow-sessions/baseline-beets-20260715-p-d248be3bdc63-r0/run.json",
+          "sources/evaluations/workflow-sessions/baseline-beets-20260715-p-d248be3bdc63-r0/changes.diff",
+          "sources/evaluations/workflow-sessions/baseline-beets-20260715-p-d248be3bdc63-r0/evidence.jsonl.gz",
+          "sources/evaluations/workflow-sessions/baseline-beets-20260715-p-d248be3bdc63-r0/manifest.sha256",
+          "sources/evaluations/protocols/beets-lifecycle-sequence-v2-baseline-bare-codex-db8b916d1781.json",
+          "data/workflow-sessions.json"
+        ]
+      },
+      "execution_integrity": {
+        "verifier_integrity_passed": true,
+        "tool_isolation_audit_passed": true,
+        "external_retrieval_hits": [],
+        "pass_through_tool_command_hits": []
+      },
+      "artifacts": {
+        "artifact_contract": "compact-v1-four-files",
+        "run_record": "sources/evaluations/workflow-sessions/baseline-beets-20260715-p-d248be3bdc63-r0/run.json",
+        "final_diff": "sources/evaluations/workflow-sessions/baseline-beets-20260715-p-d248be3bdc63-r0/changes.diff",
+        "final_diff_basis": "ordered cumulative checkpoints plus final cumulative source diff from one composite root",
+        "evidence_bundle": "sources/evaluations/workflow-sessions/baseline-beets-20260715-p-d248be3bdc63-r0/evidence.jsonl.gz",
+        "manifest": "sources/evaluations/workflow-sessions/baseline-beets-20260715-p-d248be3bdc63-r0/manifest.sha256"
+      },
+      "interpretation": {
+        "accepted_for_execution": true,
+        "accepted_for_objective": true,
+        "claim_status": "accepted-baseline-ready-for-paired-treatment",
+        "comparison_baseline_session_id": "",
+        "exclusion_reason": "",
+        "notes": "Accepted after independent correctness, final-tree source-quality, fixed-snapshot differential, isolation, and artifact-integrity review.",
+        "scope_note": "Full warm-state lane; all regressions are preseeded, prompts are disclosed sequentially, and concealed verification runs only after the final prompt.",
+        "independent_objective_tasks_passed": 3
+      }
     }
   ],
   "hard_lane_policy": {
