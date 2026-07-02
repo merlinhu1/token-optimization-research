@@ -3042,7 +3042,7 @@
         "review_findings": [
           "All three corrected Beets surfaces pass, including required MediaAttributes.popularity.",
           "Final diff is confined to the 15 scoped production/type files and modifies no tests.",
-          "Lowfat was genuinely model-initiated in 42 of 68 shell command events with 114 syntactic prefixes."
+          "Independent raw-event audit confirms 51 unique Lowfat-bearing command events, 134 syntactic prefixes, and at least 128 reached invocations; controller preflight and router-rejected pre-start attempts are excluded."
         ]
       },
       "state_observations": {
@@ -3083,11 +3083,20 @@
       "tool_use_observations": {
         "tool_id": "lowfat",
         "model_initiated_use_confirmed": true,
-        "completed_shell_commands": 68,
-        "lowfat_bearing_shell_events": 42,
-        "syntactic_tool_prefixes": 114,
-        "command_adoption_percent": 61.8,
-        "counting_note": "Conservative raw item.started/item.completed command-position audit; controller preflight excluded.",
+        "unique_lowfat_bearing_command_events": 51,
+        "successful_lowfat_commands": 47,
+        "nonzero_lowfat_commands": 4,
+        "syntactic_tool_prefixes": 134,
+        "minimum_confirmed_reached_invocations": 128,
+        "per_task_lowfat_events": [
+          15,
+          29,
+          7
+        ],
+        "excluded_router_rejected_prestart_attempts": 3,
+        "excluded_prestart_prefixes": 9,
+        "controller_preflight_excluded": true,
+        "telemetry_caveat": "provider-usage.json reports tool_calls_observed=0 despite raw command_execution evidence; classification telemetry defect, not a causal-use failure.",
         "zero_use_disposition": "not-applicable"
       }
     }
