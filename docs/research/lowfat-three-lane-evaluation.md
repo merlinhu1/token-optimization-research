@@ -20,7 +20,7 @@ The initial optional-exposure Terraform and Beets attempts invoked Lowfat zero t
 
 - Fastify: 139/139 audited completed shell commands used Lowfat; 406 syntactic command-position prefixes; at least 139 confirmed executions.
 - Terraform: 34 Lowfat-bearing shell events and 115 individual Lowfat invocations.
-- Beets: 42/68 completed shell events used Lowfat, with 114 syntactic prefixes.
+- Beets: 51 unique Lowfat-bearing command events (47 successful, 4 nonzero), 134 syntactic prefixes, and at least 128 confirmed reached invocations. Controller preflight and router-rejected pre-start attempts are excluded. `provider-usage.json` incorrectly reports zero observed tool calls despite the raw command events; this is a telemetry-classification defect, not a causal-use failure.
 
 These runs therefore establish genuine tool exposure, not merely tool availability.
 
