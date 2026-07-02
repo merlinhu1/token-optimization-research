@@ -65,7 +65,7 @@ Independent source review then found that the `a9c642bc016a` GPT-5.6 run was sti
 
 Current prompt-aligned baseline state:
 
-- Fastify GPT-5.6 Luna xhigh: `baseline-fastify-20260713-p-6a8afd4b63ca-r0`, 5/5 verified surfaces, 60,671,087 provider tokens, accepted at 4/5 quality. The provider execution originally failed only an unstated path-in-message assertion. The model-visible condition was unchanged; all five current verifiers pass under an explicitly recorded hidden-verifier-only replay.
-- Beets GPT-5.6 Luna xhigh fingerprint `7aaac4b8a309` still requires a fresh baseline because its public prompt changed.
+- Fastify GPT-5.6 Luna xhigh: `baseline-fastify-20260713-p-6a8afd4b63ca-r0`, 5/5 verified surfaces and 60,671,087 provider tokens, but rejected at independent quality review (3/5). Final-tree reconstruction showed `kLogController` remained undefined, so controller state used the collision-prone public string key `"undefined"`. It remains a primary-objective hard baseline, not an accepted baseline. The paired Lowfat run has the same quality defect and uses 76,395,931 tokens (+25.92%).
+- Beets GPT-5.6 Luna xhigh: `baseline-beets-20260713-p-7aaac4b8a309-r0`, 3/3 verified tasks, 6,400,224 provider tokens, accepted at 4/5 quality. The required `MediaAttributes.popularity` contract is explicitly verified.
 
 The first Terraform and Beets `terminal-lowfat` exposure attempts completed their workflows but invoked Lowfat zero times. They are excluded from Lowfat tool-effectiveness evidence and removed from the canonical registry. The active Lowfat treatment protocol now uses preferred guidance and requires at least one model-initiated Lowfat command for tool-effectiveness acceptance.
