@@ -76,6 +76,8 @@ def hard_baseline_usable(session: dict[str, Any] | None, root: Path = ROOT) -> b
     usage = session.get("cumulative_token_usage", {})
     if not all(isinstance(value, dict) for value in (interpretation, quality, usage)):
         return False
+    if interpretation.get("evaluation_validity") == "invalid-fixture":
+        return False
     verifier_failed = quality.get("final_verifier_passed") is False
     quality_failed = (
         quality.get("final_verifier_passed") is True
@@ -118,6 +120,25 @@ def find_baseline_record(registry: dict[str, Any], seq: dict[str, Any], replicat
     if len(matches) > 1:
         raise RuntimeError(f"ambiguous hard baselines for {seq['id']} r{replicate_index}: {[item['session_id'] for item in matches]}")
     return matches[0] if matches else None
+
+
+def baseline_campaign_state(
+    registry: dict[str, Any],
+    seq: dict[str, Any],
+    replicate_index: int,
+    root: Path = ROOT,
+) -> str:
+    """Separate reusable-baseline selection from replicate occupancy."""
+    baseline = find_baseline_record(registry, seq, replicate_index)
+    if baseline is not None:
+        return baseline_reuse_state(baseline, root)
+    occupied = workflow.find_pool_profile_record(
+        registry,
+        seq,
+        "baseline-bare-codex",
+        replicate_index,
+    )
+    return workflow.reviewed_session_reuse_state(occupied, root)
 
 
 def acquire_production_lock() -> int:
@@ -205,23 +226,16 @@ def rsync_checkout(source: Path, destination: Path) -> None:
 def find_protocol(root: Path, sequence_id: str, profile_id: str) -> Path:
     sequences = load_json(root / "data/workflow-task-sequences.json").get("sequences", [])
     active_sequence = next((item for item in sequences if item.get("id") == sequence_id), None)
-    if not isinstance(active_sequence, dict):
-        raise ValueError(f"unknown workflow sequence: {sequence_id}")
+    if not isinstance(active_sequence, dict) or active_sequence.get("status") != "active":
+        raise ValueError(f"unknown or non-active workflow sequence: {sequence_id}")
     active_qualification = active_sequence.get("qualification_path")
     current_fingerprint = workflow.baseline_protocol_fingerprint(active_sequence)
-    registry = load_json(root / "data/workflow-sessions.json")
-    executed_protocol_paths = {
-        str(session.get("frozen_protocol", {}).get("path"))
-        for session in registry.get("sessions", [])
-        if session.get("frozen_protocol", {}).get("path")
-    }
     matches: list[Path] = []
     for path in (root / "sources/evaluations/protocols").glob("*.json"):
         protocol = load_json(path)
         selected = protocol.get("selected_execution", {}).get("descriptor", {})
         if (
-            str(path.relative_to(root)) not in executed_protocol_paths
-            and protocol.get("status") == "frozen-ready-not-run"
+            protocol.get("status") == "frozen-ready-not-run"
             and protocol.get("task_fixture", {}).get("sequence_id") == sequence_id
             and protocol.get("task_fixture", {}).get("qualification_path") == active_qualification
             and protocol.get("baseline_pool", {}).get("protocol_fingerprint") == current_fingerprint
@@ -646,8 +660,7 @@ def main(argv: list[str] | None = None) -> int:
         if args.prepare_only:
             return "missing"
         sequence = workflow.load_sequence(sequence_id)
-        baseline = find_baseline_record(registry, sequence, args.replicate_index)
-        return baseline_reuse_state(baseline, ROOT)
+        return baseline_campaign_state(registry, sequence, args.replicate_index, ROOT)
 
     def profile_state(sequence_id: str, profile_id: str) -> str:
         sequence = workflow.load_sequence(sequence_id)
