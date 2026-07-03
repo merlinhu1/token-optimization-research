@@ -12,8 +12,14 @@ Monetary cost estimation is excluded.
 2. **Complete:** reconcile historical treatment estimands and result dispositions.
 3. **Complete for the first screen:** reduce the runnable treatment portfolio to `retrieval-codegraph`; defer every other unexecuted candidate.
 4. **Complete:** replace the invalid calibration contract with executable-qualified `beets-lifecycle-sequence-v2`.
-5. **In progress:** complete and independently review the current production baselines for Beets lifecycle V2, Fastify maintenance V1, and Terraform maintenance V2.
-6. After baseline eligibility is established per lane, freeze and run matched treatments only where the baseline passed independent quality review; accumulate later replicates only as token budget permits.
+5. **Complete for the current baseline screen:** Beets lifecycle V2 is accepted; Fastify maintenance V1 and Terraform maintenance V2 completed execution but were independently quality-rejected.
+6. Freeze and run matched treatments only where the baseline passed independent quality review. A rejected baseline replicate remains occupied; any replacement protocol or additional replicate requires an explicit, disclosed decision.
+
+Current baseline evidence:
+
+- Beets lifecycle V2: accepted, 17,594,536 provider tokens.
+- Fastify maintenance V1: controller 5/5 but quality-rejected, 78,911,126 provider tokens.
+- Terraform maintenance V2: controller 3/3 but quality-rejected, 17,918,550 provider tokens.
 
 Do not add or reactivate profiles without a concrete mechanism gap or first-screen evidence.
 
@@ -44,7 +50,7 @@ Before any paid run, the frozen contract must prove:
 - conflict-free seed application and a qualified initial state;
 - exact prompt, seed, and verifier bytes;
 - future-prompt concealment and controller-only verifier assets;
-- no controller-only path collides with a file in the fixed project snapshot;
+- controller-only paths are absent from the fixed snapshot, or byte-exact concealed upstream copies prove matching hashes plus bounded restore/cleanup;
 - acceptance checks enforce only disclosed observable/public contracts, never canonical prose or undisclosed local names;
 - model/runtime/treatment identity;
 - model shell/network and treatment isolation;

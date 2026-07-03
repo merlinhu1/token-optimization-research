@@ -34,9 +34,9 @@ Status: complete for the current catalog.
 
 ## Phase 2A — Controlled maintenance workflows
 
-Status: current production baseline collection and review active.
+Status: first current-production baseline screen complete; both maintenance artifacts are quality-rejected.
 
-Fastify maintenance V1 and Terraform maintenance V2 are current production lanes covering regression repair on medium/large public repositories. They complement, rather than replace, the primary Beets lifecycle workflow.
+Fastify maintenance V1 and Terraform maintenance V2 remain current production lanes covering regression repair on medium/large public repositories. They complement, rather than replace, the primary Beets lifecycle workflow. Their completed controller-green baseline artifacts are preserved but excluded from objective comparison because independent review found real contract regressions.
 
 Continue to:
 
@@ -64,7 +64,7 @@ Optional fourth-task/lane coverage may include maintenance repair, diagnosis, mi
 
 ## Phase 3 — Candidate reduction and replicated treatment evidence
 
-Status: initial reduction complete; treatment execution waits for a reviewed lifecycle baseline.
+Status: initial reduction complete; treatment execution can proceed only from an independently accepted, matching baseline contract.
 
 - Stop adding profiles.
 - Keep `retrieval-codegraph` as the sole first-screen candidate because its pinned local build is executable, its fresh-lane installation is deterministic, and retrieval is naturally relevant to all three lifecycle tasks.
