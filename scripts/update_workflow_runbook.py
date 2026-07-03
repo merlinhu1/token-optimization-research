@@ -12,6 +12,7 @@ ROOT = Path(__file__).resolve().parents[1]
 RUNBOOK = ROOT / "docs" / "evaluations" / "workflow-evaluation-runbook.md"
 SEQUENCES = ROOT / "data" / "workflow-task-sequences.json"
 FIXTURES = ROOT / "data" / "repository-fixtures.json"
+SESSIONS = ROOT / "data" / "workflow-sessions.json"
 ARTIFACT_FILES = ("run.json", "changes.diff", "evidence.jsonl.gz", "manifest.sha256")
 
 
@@ -99,23 +100,59 @@ def render() -> str:
         candidate_lines.append(f"- `{sequence['id']}`: {reason}")
     candidate_text = "\n".join(candidate_lines) if candidate_lines else "_None._"
 
+    session_records = load_json(SESSIONS).get("sessions", [])
+    reusable_baseline_replicates: dict[str, list[int]] = {}
+    for session in session_records:
+        sequence_id = session.get("task_sequence", {}).get("sequence_id")
+        replicate_index = session.get("replicate_index")
+        if (
+            isinstance(sequence_id, str)
+            and isinstance(replicate_index, int)
+            and session.get("status") == "completed"
+            and session.get("session_role") == "baseline"
+            and session.get("interpretation", {}).get("accepted_for_objective") is True
+        ):
+            reusable_baseline_replicates.setdefault(sequence_id, []).append(replicate_index)
+    reusable_baseline_sequences = set(reusable_baseline_replicates)
+    pending_baselines = [
+        sequence for sequence in sequences if sequence["id"] not in reusable_baseline_sequences
+    ]
+    retained_baselines = [
+        sequence for sequence in sequences if sequence["id"] in reusable_baseline_sequences
+    ]
+
     if sequences:
-        prepare_commands = "\n".join(
-            f"python3 scripts/run_sequential_workflow_matrix.py {sequence['id']} --prepare-only"
-            for sequence in sequences
+        chunks: list[str] = []
+        if pending_baselines:
+            prepare_commands = "\n".join(
+                f"python3 scripts/run_sequential_workflow_matrix.py {sequence['id']} --prepare-only"
+                for sequence in pending_baselines
+            )
+            baseline_commands = "\n".join(
+                f"python3 scripts/run_sequential_workflow_matrix.py {sequence['id']}"
+                for sequence in pending_baselines
+            )
+            chunks.append(
+                "Prepare and run only lanes that do not yet have a reusable operational baseline:\n\n"
+                f"```bash\n{prepare_commands}\n{baseline_commands}\n```"
+            )
+        if retained_baselines:
+            retained_ids = ", ".join(
+                f"`{sequence['id']}` ({', '.join(f'r{index}' for index in sorted(reusable_baseline_replicates[sequence['id']]))})"
+                for sequence in retained_baselines
+            )
+            chunks.append(
+                f"Reusable baselines already exist for {retained_ids}. Do not rerun them. Choose one compatible treatment profile and one intended lane:\n\n"
+                "```bash\n"
+                "SEQUENCE_ID=replace-with-one-active-sequence-id\n"
+                "PROFILE_ID=replace-with-compatible-profile-id\n"
+                "python3 scripts/run_sequential_workflow_matrix.py \"$SEQUENCE_ID\" --treatment-profile \"$PROFILE_ID\"\n"
+                "```"
+            )
+        chunks.append(
+            "Retain the first operationally valid provider sample for each protocol and replicate. Stop only when a sample is fixture-invalid or operationally incomplete; verifier and review outcomes are diagnostic."
         )
-        baseline_commands = "\n".join(
-            f"python3 scripts/run_sequential_workflow_matrix.py {sequence['id']}"
-            for sequence in sequences
-        )
-        execution_text = f"""Freeze one protocol per active lane, run no-model preparation for all current production lanes, then run each canonical baseline:
-
-```bash
-{prepare_commands}
-{baseline_commands}
-```
-
-After a lane has a reviewed reusable baseline, launch its matched treatment with `python3 scripts/run_sequential_workflow_matrix.py <sequence-id> --treatment-profile <profile-id>`. Stop before treatment if that lane's baseline fails any frozen gate."""
+        execution_text = "\n\n".join(chunks)
     else:
         execution_text = "Paid lane, pair, and matrix execution is disabled because no sequence is active. Planned sequences accept `--prepare-only` for fixture repair, but non-prepare runs fail before model execution."
 
@@ -123,9 +160,9 @@ After a lane has a reviewed reusable baseline, launch its matched treatment with
 
 This generated runbook reflects current workflow-sequence readiness.
 
-It is rendered from `data/workflow-task-sequences.json` and `data/repository-fixtures.json` by `scripts/update_workflow_runbook.py`.
+It is rendered from `data/workflow-task-sequences.json`, `data/repository-fixtures.json`, and `data/workflow-sessions.json` by `scripts/update_workflow_runbook.py`.
 
-Do not hand-edit sequence status here. Update the registries, then run:
+Do not hand-edit execution status here. Update the registries, then run:
 
 ```bash
 python3 scripts/update_workflow_runbook.py
@@ -156,7 +193,7 @@ Before changing a sequence to `active`, require:
 - one parentless model-facing Git baseline with the fixed commit inaccessible;
 - final-only concealed functional verification with no per-task controller gate;
 - controller-only task, seed, verifier, and reference assets;
-- cumulative provider usage capture, verifier integrity, isolation, and software-quality review.
+- cumulative provider usage capture, verifier integrity, isolation, structured verifier diagnostics, and optional source review.
 
 A no-model prepare for a frozen candidate is allowed:
 
@@ -196,9 +233,9 @@ Controller Git objects, generated checkouts, dependency environments, Codex home
 
 ## Maintenance contract
 
-- Session IDs and compact evidence are append-only.
-- Deterministic verifier success is an execution gate, not an automatic software-quality score.
-- Objective acceptance requires a recorded software-quality review.
+- Session IDs and compact evidence are retained once a provider run is operationally valid.
+- Deterministic verifier and source-review outcomes are diagnostic model-behavior evidence, not token-accounting gates.
+- Reuse the first valid provider sample for each frozen protocol and replicate; never rerun to select for a pass.
 - `python3 scripts/validate_repository.py` checks generated-runbook drift.
 - Truth docs own durable claims; this runbook is generated operator procedure.
 """

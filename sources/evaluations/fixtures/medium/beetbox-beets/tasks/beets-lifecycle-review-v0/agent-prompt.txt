@@ -1,5 +1,13 @@
-Review the supplied proposed `ftintitle` metadata-hook change, identify acceptance-critical defects, and correct the checked-out implementation.
+Review the supplied `ftintitle` metadata-hook change and correct the checked-out implementation.
 
-The intended feature is automatic application of the existing ftintitle transformation to incoming track and album metadata while preserving existing manual-command and import behavior. Keep configuration compatible. In particular, do not turn a bare singleton collaboration into fabricated featured-artist data; preserve `artist_credit` when artist-credit mode is disabled; keep canonical artist, artist-sort, title, and `item_data` values coherent when it is enabled; respect no-op/drop/keep-in-artist cases; and avoid broad changes outside the plugin and its established metadata event surface.
+The proposed change regresses established command, import, and metadata-hook behavior. Restore these observable contracts:
 
-The patch below is review evidence, not a trusted solution. Inspect it and the checked-out code, then implement the corrections you judge necessary. Run the focused plugin tests and relevant repository checks.
+- Metadata listeners run only when the plugin's `auto` option is enabled.
+- A bare singleton collaboration such as `Alice & Bob` is not fabricated into featured-artist metadata when there is no album-artist context or explicit featuring marker.
+- Album metadata uses the album artist when interpreting a track collaboration, so `Alice & Bob` under album artist `Alice` becomes canonical artist `Alice` and title `Song feat. Bob`.
+- The manual command and import stage continue passing each item's album artist into the existing transformation.
+- Existing explicit `feat.` handling, drop/keep-in-artist no-op behavior, artist-sort updates, and preservation of `artist_credit` when global artist-credit mode is disabled remain unchanged.
+
+Keep the established `ft_in_title`/`update_metadata` design. This is a focused review-and-correction task, not a request to redesign metadata objects, cache invalidation, or global artist-credit semantics. Do not modify tests merely to make acceptance pass.
+
+Run the focused `test/plugins/test_ftintitle.py` tests and `uv run ruff check beetsplug/ftintitle.py`. Preserve all prior lifecycle work; cumulative concealed acceptance runs after the final prompt.

@@ -2,22 +2,23 @@
 
 ## Status
 
-Pre-production. No execution result has been accepted or retained.
+Production token-evidence collection is active.
 
 ## Portfolio
 
-Run exactly three lifecycle v0 sequences: Fastify, Beets, and Terraform. Each sequence uses feature implementation, behavior-preserving refactor, and code review/correction.
+Run exactly three lifecycle-v0 sequences: Fastify, Beets, and Terraform. Each sequence uses feature implementation, behavior-preserving refactor, and code review/correction.
 
 ## Order of operations
 
-1. Keep the pinned snapshots, prompts, start patches, review patches, concealed tests, and generated qualification evidence synchronized.
-2. Freeze one current v0 execution contract for each selected lane/profile.
+1. Keep pinned snapshots, prompts, seed patches, concealed tests, and generated qualification synchronized.
+2. Freeze one current v0 execution contract for each lane/profile.
 3. Run one isolated bare baseline replicate per sequence.
-4. Complete independent correctness and software-quality review.
-5. Reject fixture defects before attributing model failure.
-6. Only after an accepted baseline, run the selected treatment under the same lane contract.
-7. Compare cumulative provider-reported tokens only within a compatible baseline pool.
+4. Retain the first operationally complete, integrity-valid provider sample regardless of model verifier/review outcome.
+5. Record verifier and source-review outcomes diagnostically; do not use them to select or replace token samples.
+6. Repair fixture defects before attribution, then rerun only the invalid fixture contract under a new fingerprint.
+7. Run treatment under the same compatible lane contract and replicate.
+8. Compare cumulative provider-reported tokens only within a compatible baseline pool.
 
-## Acceptance
+## Eligibility
 
-A run is usable only when all task outcomes are structurally recorded, all final concealed verifiers pass, tool isolation passes, provider usage is complete, and independent quality review accepts the final tree.
+A run is usable for token accounting when every prompt completed operationally, provider usage is complete, isolation and integrity checks pass, compact evidence is recoverable, and the fixture contract is valid. Model correctness, verifier pass rate, and review score are reported outcomes—not eligibility gates.

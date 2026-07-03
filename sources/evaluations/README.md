@@ -1,9 +1,9 @@
 # Evaluation sources
 
-This directory contains the lifecycle v0 fixture implementations and future execution output locations.
+This directory contains the lifecycle-v0 fixture implementations, frozen execution contracts, and retained compact provider-run evidence.
 
 - `fixtures/` — pinned Fastify, Beets, and Terraform lifecycle lanes.
-- `protocols/` — generated current v0 execution contracts only.
-- `workflow-sessions/` — empty until a production run occurs.
+- `protocols/` — immutable frozen execution contracts. Their embedded readiness text records freeze-time state; current execution state lives in `data/workflow-sessions.json`.
+- `workflow-sessions/` — retained four-file evidence bundles for completed operational runs and compatible comparisons.
 
-There are no retained production results. Generated fixture qualification is readiness evidence, not effectiveness evidence.
+Six operational baseline bundles are retained: two replicates for each active lane. Nine `r1` treatment bundles—three each for Caveman, RTK, and Serena—and their compatible comparison records are also retained. Verifier and review outcomes are diagnostic rather than token-eligibility gates. Current status and token totals are indexed by `data/workflow-sessions.json`.

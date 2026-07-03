@@ -32,7 +32,7 @@ TRUTHMARK_ARTIFACTS = [
     "docs/truthmark/engineering/research/evidence-stages.md",
     "docs/truthmark/engineering/research/methodology.md",
     "docs/truthmark/engineering/research/token-accounting.md",
-    "docs/truthmark/engineering/research/software-quality-gates.md",
+    "docs/truthmark/engineering/research/software-quality-diagnostics.md",
     "docs/truthmark/engineering/research/stack-compatibility.md",
     "docs/truthmark/engineering/research/current-findings.md",
     "docs/truthmark/engineering/research/agent-workflow.md",
@@ -127,7 +127,6 @@ REQUIRED_PATHS = [
     "templates/evaluation-record.md",
     "templates/evaluation-task.md",
     "templates/evaluation-run-record.json",
-    "templates/workflow-session-record.json",
     "scripts/update_workflow_runbook.py",
     "schemas/evaluation-run-record.schema.json",
     "schemas/workflow-session-record.schema.json",
@@ -760,7 +759,7 @@ def validate_workflow_task_sequences(sequence_doc: dict, fixture_doc: dict, erro
             errors.append(f"duplicate workflow sequence id: {sid}")
         sequence_ids.add(sid)
         if sequence.get("status") != "active":
-            errors.append(f"workflow sequence {sid} must be active; pre-production v0 keeps no planned or retired lanes")
+            errors.append(f"workflow sequence {sid} must be active; lifecycle v0 keeps no parallel planned or retired lanes")
         if not str(sid).endswith("-lifecycle-sequence-v0"):
             errors.append(f"workflow sequence {sid} must use the lifecycle-sequence-v0 identity")
         if sequence.get("sequence_contract") != "feature-refactor-review":
@@ -859,7 +858,7 @@ def validate_workflow_task_sequences(sequence_doc: dict, fixture_doc: dict, erro
             validate_qualification(sequence, errors)
     active = [sequence for sequence in sequences if sequence.get("status") == "active"]
     if len(active) != 3:
-        errors.append(f"pre-production v0 portfolio must contain exactly three active lifecycle sequences, found {len(active)}")
+        errors.append(f"production lifecycle-v0 portfolio must contain exactly three active sequences, found {len(active)}")
     if len({sequence.get("fixture_id") for sequence in active}) != len(active):
         errors.append("each lifecycle v0 sequence must own a distinct fixture")
     forbidden_contract_phrases = (
@@ -1327,7 +1326,6 @@ def validate_workflow_session_contract(session: dict, canonical_profile: dict | 
             or token_usage.get("total_provider_tokens", 0) <= 0
         ):
             errors.append(f"workflow session {sid} objective acceptance requires positive provider-reported total tokens")
-        critical_failures = quality.get("critical_failures", []) if isinstance(quality, dict) else []
         prompt_delivery = sequence.get("prompt_delivery", {}) if isinstance(sequence, dict) else {}
         leakage_controls = sequence.get("leakage_controls", {}) if isinstance(sequence, dict) else {}
         composite_seed_delivery = (
@@ -1351,11 +1349,10 @@ def validate_workflow_session_contract(session: dict, canonical_profile: dict | 
         if (
             session.get("status") != "completed"
             or interpretation.get("accepted_for_execution") is not True
-            or quality.get("functional_verifier_passed") is not True
             or not structurally_isolated
         ):
             errors.append(
-                f"workflow session {sid} objective acceptance requires a completed, execution-accepted, functionally verified, and structurally isolated run"
+                f"workflow session {sid} token-objective acceptance requires a completed, execution-accepted, and structurally isolated provider run"
             )
         if session.get("schema_version") == 2:
             integrity = session.get("execution_integrity", {})
@@ -1368,8 +1365,6 @@ def validate_workflow_session_contract(session: dict, canonical_profile: dict | 
                 errors.append(
                     f"workflow session {sid} objective acceptance requires clean execution integrity"
                 )
-        if review_status != "reviewed" or not isinstance(quality_score, int) or quality_score < 4 or critical_failures:
-            errors.append(f"workflow session {sid} objective acceptance requires a reviewed quality result with score >= 4 and no critical failures")
 
 
 def validate_workflow_sessions(session_doc: dict, sequence_ids: set[str], fixture_doc: dict, profiles_by_id: dict[str, dict], runtime_ids: set[str], model_condition_ids: set[str], errors: list[str]) -> None:
@@ -1625,8 +1620,10 @@ def validate_frozen_protocol_bindings(errors: list[str]) -> None:
                     errors.append(f"execution contract {path.name} selects a non-runnable profile: {exc}")
                     continue
                 descriptor = protocol.get("baseline_pool", {}).get("descriptor")
-                if descriptor != runner.baseline_protocol_descriptor(seq):
-                    errors.append(f"execution contract {path.name} has a stale baseline descriptor")
+                if not runner.baseline_protocol_descriptor_compatible(
+                    descriptor, runner.baseline_protocol_descriptor(seq)
+                ):
+                    errors.append(f"execution contract {path.name} has a stale causal baseline descriptor")
                     continue
                 docker_image = selected_descriptor.get("runtime", {}).get("docker_image")
                 timeout_for_execution = int(fixture.get("timeout_seconds_per_task", 3600))
@@ -1657,6 +1654,76 @@ def validate_frozen_protocol_bindings(errors: list[str]) -> None:
         missing = sorted(set(runner.active_sequence_ids()) - current_sequence_bindings)
         if missing:
             errors.append(f"active workflow sequences missing current v0 execution contracts: {', '.join(missing)}")
+
+
+def validate_document_lifecycle(
+    session_doc: dict,
+    fixture_doc: dict,
+    sequence_doc: dict,
+    errors: list[str],
+) -> None:
+    accepted_baselines = [
+        session
+        for session in session_doc.get("sessions", [])
+        if session.get("status") == "completed"
+        and session.get("session_role") == "baseline"
+        and session.get("interpretation", {}).get("accepted_for_objective") is True
+    ]
+    if accepted_baselines:
+        stale_claims = {
+            "docs/evaluations/README.md": ("No production result exists",),
+            "sources/evaluations/README.md": (
+                "There are no retained production results",
+                "empty until a production run occurs",
+            ),
+            "data/workflow-task-sequences.json": ("pre-production evaluation portfolio",),
+            "data/repository-fixtures.json": ("No production result has been recorded",),
+        }
+        for rel, phrases in stale_claims.items():
+            text = (ROOT / rel).read_text()
+            for phrase in phrases:
+                if phrase in text:
+                    errors.append(f"{rel} retains stale post-baseline claim: {phrase}")
+        sequence_to_fixture = {
+            sequence.get("id"): sequence.get("fixture_id")
+            for sequence in sequence_doc.get("sequences", [])
+        }
+        completed_fixture_ids = {
+            fixture_id
+            for session in accepted_baselines
+            if isinstance(
+                fixture_id := sequence_to_fixture.get(
+                    session.get("task_sequence", {}).get("sequence_id")
+                ),
+                str,
+            )
+        }
+        fixtures_by_id = {
+            fixture.get("id"): fixture
+            for fixture in fixture_doc.get("fixtures", [])
+        }
+        non_ready = [
+            fixture_id
+            for fixture_id in sorted(completed_fixture_ids)
+            if fixtures_by_id.get(fixture_id, {}).get("status") != "treatment-ready"
+        ]
+        if non_ready:
+            errors.append(
+                "fixtures with retained operational baselines must be treatment-ready: "
+                + ", ".join(str(item) for item in non_ready)
+            )
+    agents = (ROOT / "AGENTS.md").read_text()
+    if "## Documentation lifecycle" not in agents:
+        errors.append("AGENTS.md must define the evidence-driven documentation lifecycle")
+    retired_paths = (
+        "docs/evaluations/progressive-repository-evaluation-plan.md",
+        "docs/evaluations/changes",
+        "templates/progressive-evaluation-change",
+        "templates/workflow-session-record.json",
+    )
+    for rel in retired_paths:
+        if (ROOT / rel).exists():
+            errors.append(f"retired duplicate evaluation surface still exists: {rel}")
 
 
 def main() -> int:
@@ -1722,6 +1789,7 @@ def main() -> int:
     workflow_sequence_ids = validate_workflow_task_sequences(workflow_sequences_doc, fixtures_doc, errors)
     validate_fixture_sequence_status_consistency(workflow_sequences_doc, fixtures_doc, large_candidates_doc, medium_candidates_doc, errors)
     validate_workflow_sessions(workflow_sessions_doc, workflow_sequence_ids, fixtures_doc, profiles_by_id, runtime_ids, model_condition_ids, errors)
+    validate_document_lifecycle(workflow_sessions_doc, fixtures_doc, workflow_sequences_doc, errors)
     validate_frozen_protocol_bindings(errors)
     for path in (ROOT / "data/workflow-task-sequences.json", ROOT / "templates/evaluation-run-record.json"):
         if "gpt-5.5" in path.read_text():

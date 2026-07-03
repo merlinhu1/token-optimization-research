@@ -44,7 +44,7 @@ Copy this template when drafting a fixture note. The machine-readable registry l
 - Verifier blocker:
 - Expected passing output:
 - Critical diagnostic facts to preserve:
-- Minimum quality gate:
+- Minimum behavioral acceptance contract:
 
 ## Prompt and task records
 
