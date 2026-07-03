@@ -1,0 +1,13 @@
+Restored the mail system check wiring to the pinned upstream state:
+
+- Added `Tags.mail`.
+- Restored `django.core.checks.mail.check_mailers_default_alias()`.
+- Re-imported `django.core.checks.mail` from `django/core/checks/__init__.py` so it registers with the check framework.
+
+Verification passed with the repo-local interpreter:
+
+```bash
+PYTHONPATH=. .venv/bin/python tests/runtests.py check_framework.test_mail --verbosity 2
+```
+
+Result: 4 tests ran, all passed. The literal `python` command was unavailable on `PATH`, so I used `.venv/bin/python`.

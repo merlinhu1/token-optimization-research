@@ -1,0 +1,9 @@
+Restored the XML control-character fix in production code. The tracked files now match the pinned fixed upstream state, so `git diff` is clean; only the pre-existing untracked `.venv/` remains.
+
+Verifier passed:
+
+```bash
+PYTHONPATH=. .venv/bin/python tests/runtests.py serializers.test_xml.XmlSerializerTestCase.test_control_char_failure_attribute syndication_tests.tests.SyndicationFeedTest.test_no_control_chars_in_attributes --verbosity 2
+```
+
+Result: 2 tests passed. `rtk` and bare `python` were unavailable, so I used the repo’s `.venv/bin/python`.

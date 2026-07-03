@@ -1,0 +1,13 @@
+Restored the Django mail system check wiring:
+
+- `django.core.checks.mail` exists again with `check_mailers_default_alias()`.
+- `Tags.mail` is registered.
+- `django.core.checks.__init__` imports the mail checks so they register with the check framework.
+
+Verification passed with the repo virtualenv:
+
+```bash
+PYTHONPATH=. .venv/bin/python tests/runtests.py check_framework.test_mail --verbosity 2
+```
+
+Result: 4 tests passed. The literal `python` command could not run because `python` is not installed on this image.

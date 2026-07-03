@@ -1,0 +1,59 @@
+diff --git a/django/core/checks/__init__.py b/django/core/checks/__init__.py
+index 7f2f2198..faca2a33 100644
+--- a/django/core/checks/__init__.py
++++ b/django/core/checks/__init__.py
+@@ -20,7 +20,6 @@ import django.core.checks.commands  # NOQA isort:skip
+ import django.core.checks.compatibility.django_4_0  # NOQA isort:skip
+ import django.core.checks.database  # NOQA isort:skip
+ import django.core.checks.files  # NOQA isort:skip
+-import django.core.checks.mail  # NOQA isort:skip
+ import django.core.checks.model_checks  # NOQA isort:skip
+ import django.core.checks.security.base  # NOQA isort:skip
+ import django.core.checks.security.csrf  # NOQA isort:skip
+diff --git a/django/core/checks/mail.py b/django/core/checks/mail.py
+deleted file mode 100644
+index 49fcf0d8..00000000
+--- a/django/core/checks/mail.py
++++ /dev/null
+@@ -1,29 +0,0 @@
+-from django.conf import settings
+-from django.core.checks import Tags, Warning, register
+-from django.core.mail import DEFAULT_MAILER_ALIAS
+-
+-
+-@register(Tags.mail)
+-def check_mailers_default_alias(app_configs, **kwargs):
+-    if not settings.is_overridden("MAILERS"):
+-        return []
+-
+-    if DEFAULT_MAILER_ALIAS in settings.MAILERS:
+-        return []
+-
+-    if settings.MAILERS:
+-        hint = (
+-            f"Add a '{DEFAULT_MAILER_ALIAS}' entry to MAILERS, or pass 'using' when "
+-            "sending email."
+-        )
+-    else:
+-        hint = f"Add a '{DEFAULT_MAILER_ALIAS}' entry to MAILERS."
+-
+-    return [
+-        Warning(
+-            f"Your MAILERS setting has no '{DEFAULT_MAILER_ALIAS}' entry. Sending "
+-            "email without a valid mailer will fail.",
+-            hint=hint,
+-            id="mail.W001",
+-        )
+-    ]
+diff --git a/django/core/checks/registry.py b/django/core/checks/registry.py
+index 32657ce1..257dadac 100644
+--- a/django/core/checks/registry.py
++++ b/django/core/checks/registry.py
+@@ -17,7 +17,6 @@ class Tags:
+     compatibility = "compatibility"
+     database = "database"
+     files = "files"
+-    mail = "mail"
+     models = "models"
+     security = "security"
+     signals = "signals"

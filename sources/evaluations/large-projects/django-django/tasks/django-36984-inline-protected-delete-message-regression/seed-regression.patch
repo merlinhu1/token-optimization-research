@@ -1,0 +1,154 @@
+diff --git a/django/contrib/admin/checks.py b/django/contrib/admin/checks.py
+index 3cea98a0..e6933045 100644
+--- a/django/contrib/admin/checks.py
++++ b/django/contrib/admin/checks.py
+@@ -190,7 +190,6 @@ class BaseModelAdminChecks:
+             *self._check_view_on_site_url(admin_obj),
+             *self._check_ordering(admin_obj),
+             *self._check_readonly_fields(admin_obj),
+-            *self._check_delete_confirmation_max_display(admin_obj),
+         ]
+ 
+     def _check_autocomplete_fields(self, obj):
+@@ -825,25 +824,6 @@ class BaseModelAdminChecks:
+             else:
+                 return []
+ 
+-    def _check_delete_confirmation_max_display(self, obj):
+-        """Check that delete_confirmation_max_display is
+-        a non-negative integer or None."""
+-
+-        if obj.delete_confirmation_max_display is None:
+-            return []
+-        if (
+-            not isinstance(obj.delete_confirmation_max_display, int)
+-            or obj.delete_confirmation_max_display < 0
+-        ):
+-            return must_be(
+-                "a non-negative integer or None",
+-                option="delete_confirmation_max_display",
+-                obj=obj,
+-                id="admin.E041",
+-            )
+-        else:
+-            return []
+-
+ 
+ class ModelAdminChecks(BaseModelAdminChecks):
+     def check(self, admin_obj, **kwargs):
+@@ -862,6 +842,7 @@ class ModelAdminChecks(BaseModelAdminChecks):
+             *self._check_search_fields(admin_obj),
+             *self._check_date_hierarchy(admin_obj),
+             *self._check_actions(admin_obj),
++            *self._check_delete_confirmation_max_display(admin_obj),
+         ]
+ 
+     def _check_save_as(self, obj):
+@@ -1112,6 +1093,25 @@ class ModelAdminChecks(BaseModelAdminChecks):
+         else:
+             return []
+ 
++    def _check_delete_confirmation_max_display(self, obj):
++        """Check that delete_confirmation_max_display is
++        a non-negative integer or None."""
++
++        if obj.delete_confirmation_max_display is None:
++            return []
++        if (
++            not isinstance(obj.delete_confirmation_max_display, int)
++            or obj.delete_confirmation_max_display < 0
++        ):
++            return must_be(
++                "a non-negative integer or None",
++                option="delete_confirmation_max_display",
++                obj=obj,
++                id="admin.E131",
++            )
++        else:
++            return []
++
+     def _check_list_per_page(self, obj):
+         """Check that list_per_page is an integer."""
+ 
+diff --git a/django/contrib/admin/options.py b/django/contrib/admin/options.py
+index b4713c2f..83faff96 100644
+--- a/django/contrib/admin/options.py
++++ b/django/contrib/admin/options.py
+@@ -1,9 +1,7 @@
+ import copy
+ import enum
+-import itertools
+ import json
+ import re
+-import sys
+ import warnings
+ from collections.abc import Callable
+ from dataclasses import dataclass
+@@ -193,7 +191,6 @@ class BaseModelAdmin(metaclass=forms.MediaDefiningClass):
+     view_on_site = True
+     show_full_result_count = True
+     checks_class = BaseModelAdminChecks
+-    delete_confirmation_max_display = None
+ 
+     def check(self, **kwargs):
+         return self.checks_class().check(self, **kwargs)
+@@ -707,6 +704,7 @@ class ModelAdmin(BaseModelAdmin):
+     add_form_template = None
+     change_form_template = None
+     change_list_template = None
++    delete_confirmation_max_display = None
+     delete_confirmation_template = None
+     delete_selected_confirmation_template = None
+     object_history_template = None
+@@ -2757,11 +2755,6 @@ class InlineModelAdmin(BaseModelAdmin):
+         base_model_form = defaults["form"]
+         can_change = self.has_change_permission(request, obj) if request else True
+         can_add = self.has_add_permission(request, obj) if request else True
+-        delete_confirmation_max_display = (
+-            self.delete_confirmation_max_display
+-            if self.delete_confirmation_max_display
+-            else sys.maxsize
+-        )
+ 
+         class DeleteProtectedModelForm(base_model_form):
+             def hand_clean_DELETE(self):
+@@ -2778,10 +2771,7 @@ class InlineModelAdmin(BaseModelAdmin):
+                     collector.collect([self.instance])
+                     if collector.protected:
+                         objs = []
+-                        protected = itertools.islice(
+-                            collector.protected, delete_confirmation_max_display
+-                        )
+-                        for p in protected:
++                        for p in collector.protected:
+                             objs.append(
+                                 # Translators: Model verbose name and instance
+                                 # representation, suitable to be an item in a
+@@ -2792,26 +2782,8 @@ class InlineModelAdmin(BaseModelAdmin):
+                         params = {
+                             "class_name": self._meta.model._meta.verbose_name,
+                             "instance": self.instance,
++                            "related_objects": get_text_list(objs, _("and")),
+                         }
+-                        remaining_object_count = (
+-                            len(collector.protected) - delete_confirmation_max_display
+-                        )
+-                        if remaining_object_count > 0:
+-                            # Translators: This string is used as a separator
+-                            # between list elements
+-                            related = (
+-                                _(", ").join(str(i) for i in objs)
+-                                + _(", ")
+-                                + ngettext(
+-                                    "…and %(count)d more object.",
+-                                    "…and %(count)d more objects.",
+-                                    remaining_object_count,
+-                                )
+-                                % {"count": remaining_object_count}
+-                            )
+-                        else:
+-                            related = get_text_list(objs, _("and"))
+-                        params["related_objects"] = related
+                         msg = _(
+                             "Deleting %(class_name)s %(instance)s would require "
+                             "deleting the following protected related objects: "

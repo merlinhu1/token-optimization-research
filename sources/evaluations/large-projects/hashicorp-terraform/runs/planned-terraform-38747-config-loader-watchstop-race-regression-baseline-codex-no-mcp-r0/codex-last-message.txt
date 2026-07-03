@@ -1,0 +1,8 @@
+Repaired the seeded regression by restoring the upstream fixed production behavior. The worktree is clean now.
+
+Verifier passed:
+
+```text
+go test -race ./internal/command -run TestPlan_configLoaderRace -count=1
+ok  	github.com/hashicorp/terraform/internal/command	6.143s
+```

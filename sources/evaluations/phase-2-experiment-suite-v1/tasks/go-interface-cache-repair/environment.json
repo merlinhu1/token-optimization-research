@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "fixture_id": "go-interface-cache-repair",
+  "created_at": "2026-07-01",
+  "materializer": "sources/evaluations/fixture-corpus/v1/materialize.py",
+  "verifier_command": "cd sources/evaluations/fixture-corpus/v1/go-interface-cache-repair/repo && PATH=/opt/data/bin:/opt/data/opt/go/bin:$PATH go test ./...",
+  "required_artifacts": [
+    "transcript",
+    "provider-usage",
+    "verifier-output",
+    "quality-review"
+  ]
+}

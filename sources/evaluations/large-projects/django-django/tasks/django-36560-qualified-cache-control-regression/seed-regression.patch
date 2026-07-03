@@ -1,0 +1,98 @@
+diff --git a/django/middleware/cache.py b/django/middleware/cache.py
+index f4feab96..60c21906 100644
+--- a/django/middleware/cache.py
++++ b/django/middleware/cache.py
+@@ -56,9 +56,10 @@ from django.utils.cache import (
+     learn_cache_key,
+     patch_response_headers,
+     patch_vary_headers,
++    split_header_value,
+ )
+ from django.utils.deprecation import MiddlewareMixin
+-from django.utils.http import parse_http_date_safe, split_directive_names
++from django.utils.http import parse_http_date_safe
+ 
+ 
+ class UpdateCacheMiddleware(MiddlewareMixin):
+@@ -104,12 +105,17 @@ class UpdateCacheMiddleware(MiddlewareMixin):
+             return response
+ 
+         # Don't cache responses when the Cache-Control header is set to
+-        # private, no-cache, or no-store. Qualified forms like
+-        # `private="Set-Cookie"` reduce to their directive name and match too.
+-        cache_control_parts = set(
+-            split_directive_names(response.get("Cache-Control", ""))
+-        )
+-        if cache_control_parts.intersection({"private", "no-cache", "no-store"}):
++        # private, no-cache, or no-store.
++        cache_control = response.get("Cache-Control", "").lower()
++        cache_control_parts = list(split_header_value(cache_control))
++        if cache_control and any(
++            directive in cache_control_parts
++            for directive in (
++                "private",
++                "no-cache",
++                "no-store",
++            )
++        ):
+             return response
+ 
+         # Don't cache responses when the Vary header contains '*'.
+diff --git a/django/middleware/http.py b/django/middleware/http.py
+index b5d2b8a0..ec9fecdc 100644
+--- a/django/middleware/http.py
++++ b/django/middleware/http.py
+@@ -1,6 +1,6 @@
+ from django.utils.cache import get_conditional_response, set_response_etag
+ from django.utils.deprecation import MiddlewareMixin
+-from django.utils.http import parse_http_date_safe, split_directive_names
++from django.utils.http import parse_http_date_safe, split_header_value
+ 
+ 
+ class ConditionalGetMiddleware(MiddlewareMixin):
+@@ -37,5 +37,5 @@ class ConditionalGetMiddleware(MiddlewareMixin):
+ 
+     def needs_etag(self, response):
+         """Return True if an ETag header should be added to response."""
+-        directives = split_directive_names(response.get("Cache-Control", ""))
+-        return "no-store" not in directives
++        cache_control_headers = split_header_value(response.get("Cache-Control", ""))
++        return all(header.lower() != "no-store" for header in cache_control_headers)
+diff --git a/django/utils/cache.py b/django/utils/cache.py
+index e797e9ec..4bdae65b 100644
+--- a/django/utils/cache.py
++++ b/django/utils/cache.py
+@@ -50,7 +50,7 @@ def patch_cache_control(response, **kwargs):
+     def dictitem(s):
+         t = s.split("=", 1)
+         if len(t) > 1:
+-            return (t[0].strip().lower(), t[1])
++            return (t[0].lower(), t[1])
+         else:
+             return (t[0].lower(), True)
+ 
+diff --git a/django/utils/http.py b/django/utils/http.py
+index 3d5b7b6b..040b2841 100644
+--- a/django/utils/http.py
++++ b/django/utils/http.py
+@@ -209,20 +209,6 @@ def split_header_value(value, sep=","):
+             yield stripped
+ 
+ 
+-def split_directive_names(value):
+-    """Yield the lowercased directive names from an HTTP header value.
+-
+-    Any qualified value is discarded, so that qualified forms permitted by
+-    RFC 9111 (e.g. `private="Set-Cookie"`) reduce to their directive name
+-    ("private").
+-
+-    Use to check for the presence of a directive when its value is not needed;
+-    use `split_header_value()` when the value matters (e.g. `max-age`).
+-    """
+-    for part in split_header_value(value):
+-        yield part.split("=", 1)[0].strip().lower()
+-
+-
+ def parse_etags(etag_str):
+     """
+     Parse a string of ETags given in an If-None-Match or If-Match header as

@@ -1,0 +1,14 @@
+Implemented the repair by restoring the upstream production behavior in the affected policy/state lifecycle paths. The workspace is clean against the pinned fixed commit.
+
+Verifier passed:
+
+```text
+ok  	github.com/hashicorp/terraform/internal/command
+ok  	github.com/hashicorp/terraform/internal/terraform
+```
+
+Command run:
+
+```bash
+go test ./internal/command ./internal/terraform -run "TestApply_PolicyResultsJSON_WithSavedPlan|TestApplyGraphBuilder_PolicyClient|TestPlanGraphBuilder_PolicyClient" -count=1
+```
