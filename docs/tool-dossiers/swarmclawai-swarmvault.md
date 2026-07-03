@@ -5,6 +5,10 @@
 - Repository: `swarmclawai/swarmvault`
 - URL: https://github.com/swarmclawai/swarmvault
 - Version/ref inspected: local shallow clone `4ce0c7cb545c`, 2026-06-29
+- Snapshot status: pinned-commit
+- Commit inspected: 4ce0c7cb545c
+- Commit URL: https://github.com/swarmclawai/swarmvault/commit/4ce0c7cb545c
+- Source artifact path: `sources/discovery/2026-06-29-graph-leads-a-source-logic.json`
 - Date inspected: 2026-06-29
 - Evidence stage: source-logic (local source inspection of workspace manifest, engine exports, MCP server, vault/retrieval/search/token logic, Obsidian plugin, and retrieval tests)
 - License: `LICENSE` present in repository root

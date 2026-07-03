@@ -4,9 +4,13 @@
 
 - Repository: `edouard-claude/snip`
 - URL: https://github.com/edouard-claude/snip
-- Version/ref inspected: GitHub `HEAD` API or local shallow clone plus representative implementation files, 2026-06-26
-- Date inspected: 2026-06-26
-- Evidence stage: source-logic (local shallow clone; representative hook rewrite, transparent prefix, parser, and audit files inspected)
+- Version/ref inspected: local shallow clone `82b741b3ba50`, 2026-07-01
+- Snapshot status: pinned-commit
+- Commit inspected: 82b741b3ba504a22b609f3ac8122ade94306f6ec
+- Commit URL: https://github.com/edouard-claude/snip/commit/82b741b3ba504a22b609f3ac8122ade94306f6ec
+- Source artifact path: `sources/discovery/2026-07-01-pinned-dossier-refresh-source-structures.json`
+- Date inspected: 2026-07-01
+- Evidence stage: source-logic (fresh pinned shallow clone; representative source/config/test files inspected; benchmark-audit and reproduction still required for measured savings)
 - Stars at inspection: 347
 - Forks at inspection: None
 - License: UNKNOWN-local-clone
@@ -21,8 +25,8 @@ Snip rewrites agent shell commands so supported producers run through command-sp
 | Evidence type | Files/URLs inspected | Notes |
 |---|---|---|
 | Repository metadata | GitHub API where available; local shallow clone fallback for rate-limited repos | Popularity and license signals only; not effectiveness evidence. |
-| Source tree | `sources/discovery/2026-06-26-ten-more-tool-source-structures.json` | Used to identify source, hook, MCP, test, benchmark, and runtime paths beyond README. |
-| Runtime/source content | `sources/discovery/2026-06-26-ten-more-tool-code-inspection.json` | Representative files fetched from raw GitHub or read from local clones with SHA-256 prefixes and behavior excerpts. |
+| Source tree | `sources/discovery/2026-07-01-pinned-dossier-refresh-source-structures.json` | Used to identify source, hook, MCP, test, benchmark, and runtime paths beyond README. |
+| Runtime/source content | `sources/discovery/2026-07-01-pinned-dossier-refresh-code-inspection.json` | Representative files fetched from raw GitHub or read from local clones with SHA-256 prefixes and behavior excerpts. |
 | README/docs | README/docs paths identified when present. | README claims are not used as behavior evidence. |
 | Tests/benchmarks | Paths identified where present. | Full benchmark-method review remains open. |
 
@@ -66,7 +70,12 @@ Repository tree inspection found 242 files and 100 files matching integration, s
 
 ## Code-detail inspection findings
 
-Evidence artifact: `sources/discovery/2026-06-26-ten-more-tool-code-inspection.json`.
+Evidence artifact: `sources/discovery/2026-07-01-pinned-dossier-refresh-code-inspection.json`.
+
+### Fresh pinned-source refresh
+
+The 2026-07-01 refresh pins the inspected source to `82b741b3ba504a22b609f3ac8122ade94306f6ec` and records a fresh tree plus selected implementation excerpts in `sources/discovery/2026-07-01-pinned-dossier-refresh-source-structures.json` and `sources/discovery/2026-07-01-pinned-dossier-refresh-code-inspection.json`. Representative files captured for this refresh include `internal/hook/codex.go`, `internal/hook/codex_test.go`, `internal/hook/hook_test.go`, `internal/hook/rewrite.go`, `internal/hook/rewrite_test.go`, `internal/hook/transparent.go`. Treat benchmark, savings, and deployment claims below as source-logic only unless a benchmark-audit or reproduction artifact is explicitly cited.
+
 
 - `internal/hook/rewrite.go` splits compound commands on shell boundaries and rewrites only eligible producer stages so filters apply before downstream pipes.
 - `internal/hook/transparent.go` models transparent runners such as `uv run`, `poetry run`, and `docker exec`, preserving prefixes while filtering the inner command.

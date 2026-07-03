@@ -5,6 +5,10 @@
 - Repository: `JuliusBrussee/caveman-code`
 - URL: https://github.com/JuliusBrussee/caveman-code
 - Version/ref inspected: local shallow clone `74d599aa7a61`, 2026-06-26
+- Snapshot status: pinned-commit
+- Commit inspected: 74d599aa7a61
+- Commit URL: https://github.com/JuliusBrussee/caveman-code/commit/74d599aa7a61
+- Source artifact path: `sources/discovery/2026-06-26-final-lead-uplift-source-structures.json`
 - Date inspected: 2026-06-26
 - Evidence stage: source-logic (local shallow clone; agent loop, model routing, proxy stream, cost caps, compression fallback, memory provider, repomap builder, token verification, microbench runner, and session/settings paths inspected)
 - Stars at inspection: not recorded in source-logic artifact

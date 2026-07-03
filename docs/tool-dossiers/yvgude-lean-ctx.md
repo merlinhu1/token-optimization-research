@@ -4,9 +4,13 @@
 
 - Repository: `yvgude/lean-ctx`
 - URL: https://github.com/yvgude/lean-ctx
-- Version/ref inspected: GitHub `HEAD` tree and representative raw implementation files via API, 2026-06-26
-- Date inspected: 2026-06-26
-- Evidence stage: source-logic (representative implementation files inspected; benchmark/reproduction review remains open)
+- Version/ref inspected: local shallow clone `adc4e8b2e401`, 2026-07-01
+- Snapshot status: pinned-commit
+- Commit inspected: adc4e8b2e401d160906a392994c9afd7af3dfffa
+- Commit URL: https://github.com/yvgude/lean-ctx/commit/adc4e8b2e401d160906a392994c9afd7af3dfffa
+- Source artifact path: `sources/discovery/2026-07-01-pinned-dossier-refresh-source-structures.json`
+- Date inspected: 2026-07-01
+- Evidence stage: source-logic (fresh pinned shallow clone; representative source/config/test files inspected; benchmark-audit and reproduction still required for measured savings)
 - Stars at inspection: 2,941
 - Forks at inspection: 285
 - License: Apache-2.0
@@ -21,8 +25,8 @@ LeanCTX is a broad local context layer that controls what agents read, compresse
 | Evidence type | Files/URLs inspected | Notes |
 |---|---|---|
 | Repository metadata | GitHub API repository metadata | Popularity and license signals only; not effectiveness evidence. |
-| Source tree | `sources/discovery/2026-06-26-eight-more-tool-source-structures.json` | Used to identify installer, plugin, MCP, test, benchmark, and runtime paths beyond README. |
-| Runtime source | `sources/discovery/2026-06-26-eight-more-tool-code-inspection.json` | Representative implementation files fetched from GitHub HEAD with SHA-256 prefixes and behavior excerpts. |
+| Source tree | `sources/discovery/2026-07-01-pinned-dossier-refresh-source-structures.json` | Used to identify installer, plugin, MCP, test, benchmark, and runtime paths beyond README. |
+| Runtime source | `sources/discovery/2026-07-01-pinned-dossier-refresh-code-inspection.json` | Representative implementation files fetched from GitHub HEAD with SHA-256 prefixes and behavior excerpts. |
 | README/docs | README path identified when present. | README claims are not used as behavior evidence. |
 | Tests/benchmarks | Paths identified where present. | Full benchmark-method review remains open. |
 
@@ -69,7 +73,12 @@ Repository tree inspection found 2,060 files and 1,762 files matching integratio
 
 ## Code-detail inspection findings
 
-Evidence artifact: `sources/discovery/2026-06-26-eight-more-tool-code-inspection.json`.
+Evidence artifact: `sources/discovery/2026-07-01-pinned-dossier-refresh-code-inspection.json`.
+
+### Fresh pinned-source refresh
+
+The 2026-07-01 refresh pins the inspected source to `adc4e8b2e401d160906a392994c9afd7af3dfffa` and records a fresh tree plus selected implementation excerpts in `sources/discovery/2026-07-01-pinned-dossier-refresh-source-structures.json` and `sources/discovery/2026-07-01-pinned-dossier-refresh-code-inspection.json`. Representative files captured for this refresh include `integrations/hermes-lean-ctx/benchmarks/README.md`, `integrations/hermes-lean-ctx/benchmarks/__init__.py`, `integrations/hermes-lean-ctx/benchmarks/corpus.py`, `integrations/hermes-lean-ctx/benchmarks/engines.py`, `integrations/hermes-lean-ctx/benchmarks/metrics.py`, `integrations/hermes-lean-ctx/benchmarks/run.py`. Treat benchmark, savings, and deployment claims below as source-logic only unless a benchmark-audit or reproduction artifact is explicitly cited.
+
 
 - `rust/src/mcp_stdio.rs` implements MCP stdio serving, so LeanCTX can be an MCP tool provider rather than only a CLI.
 - `rust/src/tools/ctx_read/mod.rs` implements compressed/cacheable read modes, computes output tokens, and stores compressed bodies with a full-source-on-request hint.

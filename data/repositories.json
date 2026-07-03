@@ -84,16 +84,25 @@
       "mechanism": "A cross-platform installer and lifecycle manager that wires RTK, Caveman, CodeGraph, and Context Mode into several coding agents as a preselected token-saving stack.",
       "technique_ids": [],
       "technique_coverage": [],
-      "evidence_label": "`documented-mechanism`",
+      "evidence_label": "`source-logic`",
       "reported_result": "No independent aggregate benchmark is supplied; the README repeats component-level examples from the bundled projects.",
       "main_caveat": "It adds no new compression algorithm and inherits the compatibility, licensing, overlap, and benchmark limitations of four separate tools; stack-level attribution is difficult.",
       "sources": [
         "sources/seed-catalogs/AI-Coding-Token-Savers-Catalog-Revised.md",
-        "https://github.com/HoangP8/tokless"
+        "https://github.com/HoangP8/tokless",
+        "docs/tool-dossiers/hoangp8-tokless.md",
+        "sources/discovery/2026-06-26-final-lead-uplift-source-structures.json",
+        "sources/discovery/2026-06-26-final-lead-uplift-code-inspection.json"
       ],
-      "reviewed_at": "2026-06-25",
-      "review_depth": "seed-catalog",
-      "status": "normalized-from-seed"
+      "reviewed_at": "2026-06-26",
+      "review_depth": "source-logic",
+      "status": "source-logic-reviewed",
+      "source_snapshot": {
+        "status": "pinned-commit",
+        "commit": "769cd6dc8413",
+        "commit_url": "https://github.com/HoangP8/tokless/commit/769cd6dc8413",
+        "source_structure_artifact": "sources/discovery/2026-06-26-final-lead-uplift-source-structures.json"
+      }
     },
     {
       "id": "JuliusBrussee__cavekit",
@@ -130,16 +139,25 @@
         "T09-model-routing-cache-economics"
       ],
       "technique_coverage": [],
-      "evidence_label": "`reproducible-maintainer-benchmark`",
+      "evidence_label": "`source-logic`",
       "reported_result": "On a published 25-task MicroBench using GPT-5.5 xhigh, the maintainer reports 524K fresh tokens versus Codex's 1.01M, with 14/25 tasks passing versus 15/25 for Codex.",
       "main_caveat": "It is a replacement agent rather than a drop-in layer; the comparison is maintainer-run, pass rates are low for both arms, and fresh-token accounting may not match provider bills under caching.",
       "sources": [
         "sources/seed-catalogs/AI-Coding-Token-Savers-Catalog-Revised.md",
-        "https://github.com/JuliusBrussee/caveman-code"
+        "https://github.com/JuliusBrussee/caveman-code",
+        "docs/tool-dossiers/juliusbrussee-caveman-code.md",
+        "sources/discovery/2026-06-26-final-lead-uplift-source-structures.json",
+        "sources/discovery/2026-06-26-final-lead-uplift-code-inspection.json"
       ],
-      "reviewed_at": "2026-06-25",
-      "review_depth": "seed-catalog",
-      "status": "normalized-from-seed"
+      "reviewed_at": "2026-06-26",
+      "review_depth": "source-logic",
+      "status": "source-logic-reviewed",
+      "source_snapshot": {
+        "status": "pinned-commit",
+        "commit": "74d599aa7a61",
+        "commit_url": "https://github.com/JuliusBrussee/caveman-code/commit/74d599aa7a61",
+        "source_structure_artifact": "sources/discovery/2026-06-26-final-lead-uplift-source-structures.json"
+      }
     },
     {
       "id": "ww-w-ai__claude-code-token-saver",
@@ -248,16 +266,25 @@
         "T08-artifact-code-minimization"
       ],
       "technique_coverage": [],
-      "evidence_label": "`reproducible-maintainer-benchmark`",
+      "evidence_label": "`source-logic`",
       "reported_result": "On twelve feature tasks with Haiku 4.5 and four runs per arm, the maintainer reports 54% fewer added lines, 22% fewer total tokens, 20% lower cost, and 27% less time, with 100% safety on a separate adversarial tier.",
       "main_caveat": "Results are model- and task-specific; gains concentrate in over-build traps and approach zero on irreducible work. The maintainer notes some reasoning models can spend more tokens under the discipline.",
       "sources": [
         "sources/seed-catalogs/AI-Coding-Token-Savers-Catalog-Revised.md",
-        "https://github.com/DietrichGebert/ponytail"
+        "https://github.com/DietrichGebert/ponytail",
+        "docs/tool-dossiers/dietrichgebert-ponytail.md",
+        "sources/discovery/2026-06-26-source-logic-uplift-source-structures.json",
+        "sources/discovery/2026-06-26-source-logic-uplift-code-inspection.json"
       ],
-      "reviewed_at": "2026-06-25",
-      "review_depth": "seed-catalog",
-      "status": "normalized-from-seed"
+      "reviewed_at": "2026-06-26",
+      "review_depth": "source-logic",
+      "status": "source-logic-reviewed",
+      "source_snapshot": {
+        "status": "pinned-commit",
+        "commit": "c4d1925ae9b7",
+        "commit_url": "https://github.com/DietrichGebert/ponytail/commit/c4d1925ae9b7",
+        "source_structure_artifact": "sources/discovery/2026-06-26-source-logic-uplift-source-structures.json"
+      }
     },
     {
       "id": "JuliusBrussee__caveman",
@@ -272,16 +299,25 @@
         "T07-behavioral-output-compression"
       ],
       "technique_coverage": [],
-      "evidence_label": "`mixed-maintainer-and-external-evidence`",
+      "evidence_label": "`source-logic`",
       "reported_result": "Maintainer reports an average 65% output-token reduction across ten prompts. Ponytail's separate agentic benchmark found Caveman used 7% more total tokens on twelve feature tasks despite producing less code.",
-      "main_caveat": "It primarily changes model output, not reasoning or tool-input tokens. Lower response verbosity may have little or negative effect on total-session cost when deliberation and tool use dominate.",
+      "main_caveat": "It primarily changes model output, not reasoning or tool-input tokens. Lower response verbosity may have little or negative effect on total-session cost when deliberation and tool use dominate. Fresh pinned source-logic inspection is available; benchmark-audit and reproduction remain required before measured savings or deployment-grade recommendation.",
       "sources": [
         "sources/seed-catalogs/AI-Coding-Token-Savers-Catalog-Revised.md",
-        "https://github.com/JuliusBrussee/caveman"
+        "https://github.com/JuliusBrussee/caveman",
+        "docs/tool-dossiers/juliusbrussee-caveman.md",
+        "sources/discovery/2026-07-01-pinned-dossier-refresh-source-structures.json",
+        "sources/discovery/2026-07-01-pinned-dossier-refresh-code-inspection.json"
       ],
-      "reviewed_at": "2026-06-25",
-      "review_depth": "seed-catalog",
-      "status": "normalized-from-seed"
+      "reviewed_at": "2026-07-01",
+      "review_depth": "source-logic",
+      "status": "source-logic-reviewed",
+      "source_snapshot": {
+        "status": "pinned-commit",
+        "commit": "25d22f864ad68cc447a4cb93aefde918aa4aec9f",
+        "commit_url": "https://github.com/JuliusBrussee/caveman/commit/25d22f864ad68cc447a4cb93aefde918aa4aec9f",
+        "source_structure_artifact": "sources/discovery/2026-07-01-pinned-dossier-refresh-source-structures.json"
+      }
     },
     {
       "id": "Kir93__scrooge-mode",
@@ -440,16 +476,25 @@
         "T02-targeted-code-retrieval"
       ],
       "technique_coverage": [],
-      "evidence_label": "`maintainer-claim`",
+      "evidence_label": "`source-logic`",
       "reported_result": "README advertises approximately 70% instant token savings from targeted semantic search.",
-      "main_caveat": "The reviewed README did not provide the full methodology behind the headline percentage.",
+      "main_caveat": "The reviewed README did not provide the full methodology behind the headline percentage. Fresh pinned source-logic inspection is available; benchmark-audit and reproduction remain required before measured savings or deployment-grade recommendation.",
       "sources": [
         "sources/seed-catalogs/AI-Coding-Token-Savers-Catalog-Revised.md",
-        "https://github.com/cocoindex-io/cocoindex-code"
+        "https://github.com/cocoindex-io/cocoindex-code",
+        "docs/tool-dossiers/cocoindex-io-cocoindex-code.md",
+        "sources/discovery/2026-07-01-pinned-dossier-refresh-source-structures.json",
+        "sources/discovery/2026-07-01-pinned-dossier-refresh-code-inspection.json"
       ],
-      "reviewed_at": "2026-06-25",
-      "review_depth": "seed-catalog",
-      "status": "normalized-from-seed"
+      "reviewed_at": "2026-07-01",
+      "review_depth": "source-logic",
+      "status": "source-logic-reviewed",
+      "source_snapshot": {
+        "status": "pinned-commit",
+        "commit": "7fe0e890ad58da96e93c8c3f18b4060e8b6501db",
+        "commit_url": "https://github.com/cocoindex-io/cocoindex-code/commit/7fe0e890ad58da96e93c8c3f18b4060e8b6501db",
+        "source_structure_artifact": "sources/discovery/2026-07-01-pinned-dossier-refresh-source-structures.json"
+      }
     },
     {
       "id": "safishamsi__graphify",
@@ -477,7 +522,13 @@
       ],
       "reviewed_at": "2026-06-29",
       "review_depth": "source-logic",
-      "status": "source-logic-reviewed"
+      "status": "source-logic-reviewed",
+      "source_snapshot": {
+        "status": "pinned-commit",
+        "commit": "199061207f66",
+        "commit_url": "https://github.com/safishamsi/graphify/commit/199061207f66",
+        "source_structure_artifact": "sources/discovery/2026-06-29-graph-leads-a-source-logic.json"
+      }
     },
     {
       "id": "colbymchenry__codegraph",
@@ -492,16 +543,25 @@
         "T02-targeted-code-retrieval"
       ],
       "technique_coverage": [],
-      "evidence_label": "`reproducible-maintainer-benchmark`",
+      "evidence_label": "`source-logic`",
       "reported_result": "Across seven open-source codebases, the maintainer reports median results of 47% fewer total tokens, 58% fewer tool calls, 22% less time, and 16% lower cost, using four runs per arm.",
       "main_caveat": "The benchmark tests architecture questions rather than implementation tasks, is maintainer-run, and depends on graph accuracy and agent adoption of the MCP tools.",
       "sources": [
         "sources/seed-catalogs/AI-Coding-Token-Savers-Catalog-Revised.md",
-        "https://github.com/colbymchenry/codegraph"
+        "https://github.com/colbymchenry/codegraph",
+        "docs/tool-dossiers/colbymchenry-codegraph.md",
+        "sources/discovery/2026-06-26-source-logic-uplift-source-structures.json",
+        "sources/discovery/2026-06-26-source-logic-uplift-code-inspection.json"
       ],
-      "reviewed_at": "2026-06-25",
-      "review_depth": "seed-catalog",
-      "status": "normalized-from-seed"
+      "reviewed_at": "2026-06-26",
+      "review_depth": "source-logic",
+      "status": "source-logic-reviewed",
+      "source_snapshot": {
+        "status": "pinned-commit",
+        "commit": "4077ed19b7d8",
+        "commit_url": "https://github.com/colbymchenry/codegraph/commit/4077ed19b7d8",
+        "source_structure_artifact": "sources/discovery/2026-06-26-source-logic-uplift-source-structures.json"
+      }
     },
     {
       "id": "glommer__cachebro",
@@ -564,16 +624,25 @@
         "T02-targeted-code-retrieval"
       ],
       "technique_coverage": [],
-      "evidence_label": "`documented-mechanism`",
+      "evidence_label": "`source-logic`",
       "reported_result": "README describes symbolic editing and retrieval as more token-efficient than full-file and search/replace workflows; no single token benchmark was reviewed.",
-      "main_caveat": "Primary goal is semantic IDE capability, not token reduction alone; efficiency varies with language-server quality and tool usage.",
+      "main_caveat": "Primary goal is semantic IDE capability, not token reduction alone; efficiency varies with language-server quality and tool usage. Fresh pinned source-logic inspection is available; benchmark-audit and reproduction remain required before measured savings or deployment-grade recommendation.",
       "sources": [
         "sources/seed-catalogs/AI-Coding-Token-Savers-Catalog-Revised.md",
-        "https://github.com/oraios/serena"
+        "https://github.com/oraios/serena",
+        "docs/tool-dossiers/oraios-serena.md",
+        "sources/discovery/2026-07-01-pinned-dossier-refresh-source-structures.json",
+        "sources/discovery/2026-07-01-pinned-dossier-refresh-code-inspection.json"
       ],
-      "reviewed_at": "2026-06-25",
-      "review_depth": "seed-catalog",
-      "status": "normalized-from-seed"
+      "reviewed_at": "2026-07-01",
+      "review_depth": "source-logic",
+      "status": "source-logic-reviewed",
+      "source_snapshot": {
+        "status": "pinned-commit",
+        "commit": "103a17072e9b915c9c9980f946902be856695978",
+        "commit_url": "https://github.com/oraios/serena/commit/103a17072e9b915c9c9980f946902be856695978",
+        "source_structure_artifact": "sources/discovery/2026-07-01-pinned-dossier-refresh-source-structures.json"
+      }
     },
     {
       "id": "tobi__qmd",
@@ -660,16 +729,25 @@
         "T05-prompt-history-context-compression"
       ],
       "technique_coverage": [],
-      "evidence_label": "`mixed-maintainer-and-external-evidence`",
+      "evidence_label": "`source-logic`",
       "reported_result": "Maintainer benchmarks report 47–92% savings on several agent workloads. Tokbench independently verified 342K tokens removed on wire in an N=1 pilot, but the run still billed 43% more input than native because it took more turns.",
-      "main_caveat": "Verified per-request compression can be outweighed by longer execution paths. Compression fidelity, cache behavior, and total turns must be measured on the target workload; Tokbench replication was still pending.",
+      "main_caveat": "Verified per-request compression can be outweighed by longer execution paths. Compression fidelity, cache behavior, and total turns must be measured on the target workload; Tokbench replication was still pending. Fresh pinned source-logic inspection is available; benchmark-audit and reproduction remain required before measured savings or deployment-grade recommendation.",
       "sources": [
         "sources/seed-catalogs/AI-Coding-Token-Savers-Catalog-Revised.md",
-        "https://github.com/chopratejas/headroom"
+        "https://github.com/chopratejas/headroom",
+        "docs/tool-dossiers/chopratejas-headroom.md",
+        "sources/discovery/2026-07-01-pinned-dossier-refresh-source-structures.json",
+        "sources/discovery/2026-07-01-pinned-dossier-refresh-code-inspection.json"
       ],
-      "reviewed_at": "2026-06-25",
-      "review_depth": "seed-catalog",
-      "status": "normalized-from-seed"
+      "reviewed_at": "2026-07-01",
+      "review_depth": "source-logic",
+      "status": "source-logic-reviewed",
+      "source_snapshot": {
+        "status": "pinned-commit",
+        "commit": "715ed7d200cb62c43e6ee3976ce8d3aa639ccf9f",
+        "commit_url": "https://github.com/chopratejas/headroom/commit/715ed7d200cb62c43e6ee3976ce8d3aa639ccf9f",
+        "source_structure_artifact": "sources/discovery/2026-07-01-pinned-dossier-refresh-source-structures.json"
+      }
     },
     {
       "id": "npow__kompact",
@@ -708,16 +786,25 @@
         "T04-execution-offload-code-mode"
       ],
       "technique_coverage": [],
-      "evidence_label": "`maintainer-example`",
+      "evidence_label": "`source-logic`",
       "reported_result": "README demonstrates a 150k-to-2k token multi-step example, described as a 98.7% reduction.",
-      "main_caveat": "The headline result is a worked example, not a broad coding benchmark; generated sandbox code adds a security and correctness boundary.",
+      "main_caveat": "The headline result is a worked example, not a broad coding benchmark; generated sandbox code adds a security and correctness boundary. Fresh pinned source-logic inspection is available; benchmark-audit and reproduction remain required before measured savings or deployment-grade recommendation.",
       "sources": [
         "sources/seed-catalogs/AI-Coding-Token-Savers-Catalog-Revised.md",
-        "https://github.com/portofcontext/pctx"
+        "https://github.com/portofcontext/pctx",
+        "docs/tool-dossiers/portofcontext-pctx.md",
+        "sources/discovery/2026-07-01-pinned-dossier-refresh-source-structures.json",
+        "sources/discovery/2026-07-01-pinned-dossier-refresh-code-inspection.json"
       ],
-      "reviewed_at": "2026-06-25",
-      "review_depth": "seed-catalog",
-      "status": "normalized-from-seed"
+      "reviewed_at": "2026-07-01",
+      "review_depth": "source-logic",
+      "status": "source-logic-reviewed",
+      "source_snapshot": {
+        "status": "pinned-commit",
+        "commit": "515c79a26e14635f965aac859d766f91dc35d157",
+        "commit_url": "https://github.com/portofcontext/pctx/commit/515c79a26e14635f965aac859d766f91dc35d157",
+        "source_structure_artifact": "sources/discovery/2026-07-01-pinned-dossier-refresh-source-structures.json"
+      }
     },
     {
       "id": "ast-grep__ast-grep",
@@ -828,16 +915,25 @@
         "T06-persistent-memory-reinjection"
       ],
       "technique_coverage": [],
-      "evidence_label": "`maintainer-claim`",
+      "evidence_label": "`source-logic`",
       "reported_result": "Maintainer reports roughly 75% fewer prose tokens in stored observations, with code blocks, paths, URLs, identifiers, and versions preserved.",
-      "main_caveat": "At-rest compression is not the same as provider-billed savings; memory capture, embeddings, retrieval quality, and reinjection policy determine the net effect.",
+      "main_caveat": "At-rest compression is not the same as provider-billed savings; memory capture, embeddings, retrieval quality, and reinjection policy determine the net effect. Fresh pinned source-logic inspection is available; benchmark-audit and reproduction remain required before measured savings or deployment-grade recommendation.",
       "sources": [
         "sources/seed-catalogs/AI-Coding-Token-Savers-Catalog-Revised.md",
-        "https://github.com/JuliusBrussee/cavemem"
+        "https://github.com/JuliusBrussee/cavemem",
+        "docs/tool-dossiers/juliusbrussee-cavemem.md",
+        "sources/discovery/2026-07-01-pinned-dossier-refresh-source-structures.json",
+        "sources/discovery/2026-07-01-pinned-dossier-refresh-code-inspection.json"
       ],
-      "reviewed_at": "2026-06-25",
-      "review_depth": "seed-catalog",
-      "status": "normalized-from-seed"
+      "reviewed_at": "2026-07-01",
+      "review_depth": "source-logic",
+      "status": "source-logic-reviewed",
+      "source_snapshot": {
+        "status": "pinned-commit",
+        "commit": "1fe41e9c9f28380d3da9640f02812f8e5565839a",
+        "commit_url": "https://github.com/JuliusBrussee/cavemem/commit/1fe41e9c9f28380d3da9640f02812f8e5565839a",
+        "source_structure_artifact": "sources/discovery/2026-07-01-pinned-dossier-refresh-source-structures.json"
+      }
     },
     {
       "id": "Mibayy__token-savior",
@@ -854,16 +950,25 @@
         "T02-targeted-code-retrieval",
         "T06-persistent-memory-reinjection"
       ],
-      "evidence_label": "`reproducible-maintainer-benchmark`",
+      "evidence_label": "`source-logic`",
       "reported_result": "Maintainer reports about 80% fewer active tokens per task on a 96-task tsbench run, with benchmark fixtures published separately.",
       "main_caveat": "Results are maintainer-run and profile-dependent; the tool exposes many features that can add overhead when poorly configured.",
       "sources": [
         "sources/seed-catalogs/AI-Coding-Token-Savers-Catalog-Revised.md",
-        "https://github.com/Mibayy/token-savior"
+        "https://github.com/Mibayy/token-savior",
+        "docs/tool-dossiers/mibayy-token-savior.md",
+        "sources/discovery/2026-06-26-source-logic-uplift-source-structures.json",
+        "sources/discovery/2026-06-26-source-logic-uplift-code-inspection.json"
       ],
-      "reviewed_at": "2026-06-25",
-      "review_depth": "seed-catalog",
-      "status": "normalized-from-seed"
+      "reviewed_at": "2026-06-26",
+      "review_depth": "source-logic",
+      "status": "source-logic-reviewed",
+      "source_snapshot": {
+        "status": "pinned-commit",
+        "commit": "ff42ef14cc97",
+        "commit_url": "https://github.com/Mibayy/token-savior/commit/ff42ef14cc97",
+        "source_structure_artifact": "sources/discovery/2026-06-26-source-logic-uplift-source-structures.json"
+      }
     },
     {
       "id": "mksglu__context-mode",
@@ -878,16 +983,25 @@
         "T04-execution-offload-code-mode"
       ],
       "technique_coverage": [],
-      "evidence_label": "`maintainer-examples`",
+      "evidence_label": "`source-logic`",
       "reported_result": "Maintainer examples report 315 KB reduced to 5.4 KB and 47 file reads totaling about 700 KB replaced by one 3.6 KB execution result.",
-      "main_caveat": "The examples are not a neutral end-to-end benchmark. Generated analysis code and routing rules introduce correctness and sandbox boundaries; the repository uses Elastic License 2.0 rather than an OSI-approved license.",
+      "main_caveat": "The examples are not a neutral end-to-end benchmark. Generated analysis code and routing rules introduce correctness and sandbox boundaries; the repository uses Elastic License 2.0 rather than an OSI-approved license. Fresh pinned source-logic inspection is available; benchmark-audit and reproduction remain required before measured savings or deployment-grade recommendation.",
       "sources": [
         "sources/seed-catalogs/AI-Coding-Token-Savers-Catalog-Revised.md",
-        "https://github.com/mksglu/context-mode"
+        "https://github.com/mksglu/context-mode",
+        "docs/tool-dossiers/mksglu-context-mode.md",
+        "sources/discovery/2026-07-01-pinned-dossier-refresh-source-structures.json",
+        "sources/discovery/2026-07-01-pinned-dossier-refresh-code-inspection.json"
       ],
-      "reviewed_at": "2026-06-25",
-      "review_depth": "seed-catalog",
-      "status": "normalized-from-seed"
+      "reviewed_at": "2026-07-01",
+      "review_depth": "source-logic",
+      "status": "source-logic-reviewed",
+      "source_snapshot": {
+        "status": "pinned-commit",
+        "commit": "3fbc6ea6569db1b1c6524d3543dc95f50bb5363a",
+        "commit_url": "https://github.com/mksglu/context-mode/commit/3fbc6ea6569db1b1c6524d3543dc95f50bb5363a",
+        "source_structure_artifact": "sources/discovery/2026-07-01-pinned-dossier-refresh-source-structures.json"
+      }
     },
     {
       "id": "yvgude__lean-ctx",
@@ -904,16 +1018,25 @@
         "T06-persistent-memory-reinjection"
       ],
       "technique_coverage": [],
-      "evidence_label": "`mixed-maintainer-and-external-evidence`",
+      "evidence_label": "`source-logic`",
       "reported_result": "Maintainer reports 60–90% fewer tokens for reads and shell output and cached rereads near 13 tokens. In Tokbench's N=1 external pilot, provider-billed input was 38% above native in MCP mode and 59% above native with the default integration.",
-      "main_caveat": "The product covers many mechanisms, but end-to-end savings depend on whether agents actually use the optimized surfaces and whether additional tool calls increase total turns. The external benchmark is configuration-specific and single-run.",
+      "main_caveat": "The product covers many mechanisms, but end-to-end savings depend on whether agents actually use the optimized surfaces and whether additional tool calls increase total turns. The external benchmark is configuration-specific and single-run. Fresh pinned source-logic inspection is available; benchmark-audit and reproduction remain required before measured savings or deployment-grade recommendation.",
       "sources": [
         "sources/seed-catalogs/AI-Coding-Token-Savers-Catalog-Revised.md",
-        "https://github.com/yvgude/lean-ctx"
+        "https://github.com/yvgude/lean-ctx",
+        "docs/tool-dossiers/yvgude-lean-ctx.md",
+        "sources/discovery/2026-07-01-pinned-dossier-refresh-source-structures.json",
+        "sources/discovery/2026-07-01-pinned-dossier-refresh-code-inspection.json"
       ],
-      "reviewed_at": "2026-06-25",
-      "review_depth": "seed-catalog",
-      "status": "normalized-from-seed"
+      "reviewed_at": "2026-07-01",
+      "review_depth": "source-logic",
+      "status": "source-logic-reviewed",
+      "source_snapshot": {
+        "status": "pinned-commit",
+        "commit": "adc4e8b2e401d160906a392994c9afd7af3dfffa",
+        "commit_url": "https://github.com/yvgude/lean-ctx/commit/adc4e8b2e401d160906a392994c9afd7af3dfffa",
+        "source_structure_artifact": "sources/discovery/2026-07-01-pinned-dossier-refresh-source-structures.json"
+      }
     },
     {
       "id": "ccusage__ccusage",
@@ -1096,16 +1219,25 @@
         "T10-repository-packing-digests"
       ],
       "technique_coverage": [],
-      "evidence_label": "`documented-mechanism`",
+      "evidence_label": "`source-logic`",
       "reported_result": "No compression benchmark was reviewed; its value is selective, reproducible repository ingestion and token accounting.",
-      "main_caveat": "A digest is not automatically minimal; users must exclude generated, vendored, secret, and irrelevant files.",
+      "main_caveat": "A digest is not automatically minimal; users must exclude generated, vendored, secret, and irrelevant files. Fresh pinned source-logic inspection is available; benchmark-audit and reproduction remain required before measured savings or deployment-grade recommendation.",
       "sources": [
         "sources/seed-catalogs/AI-Coding-Token-Savers-Catalog-Revised.md",
-        "https://github.com/coderamp-labs/gitingest"
+        "https://github.com/coderamp-labs/gitingest",
+        "docs/tool-dossiers/coderamp-labs-gitingest.md",
+        "sources/discovery/2026-07-01-pinned-dossier-refresh-source-structures.json",
+        "sources/discovery/2026-07-01-pinned-dossier-refresh-code-inspection.json"
       ],
-      "reviewed_at": "2026-06-25",
-      "review_depth": "seed-catalog",
-      "status": "normalized-from-seed"
+      "reviewed_at": "2026-07-01",
+      "review_depth": "source-logic",
+      "status": "source-logic-reviewed",
+      "source_snapshot": {
+        "status": "pinned-commit",
+        "commit": "4e259a02fe72115bee538271622f1234a81c8e1a",
+        "commit_url": "https://github.com/coderamp-labs/gitingest/commit/4e259a02fe72115bee538271622f1234a81c8e1a",
+        "source_structure_artifact": "sources/discovery/2026-07-01-pinned-dossier-refresh-source-structures.json"
+      }
     },
     {
       "id": "yamadashy__repomix",
@@ -1120,16 +1252,25 @@
         "T10-repository-packing-digests"
       ],
       "technique_coverage": [],
-      "evidence_label": "`documented-mechanism`",
+      "evidence_label": "`source-logic`",
       "reported_result": "No universal reduction percentage was reviewed; the --compress mode extracts key code elements to reduce token count.",
-      "main_caveat": "Packing an entire repository can increase context use; aggressive filtering and compression are essential.",
+      "main_caveat": "Packing an entire repository can increase context use; aggressive filtering and compression are essential. Fresh pinned source-logic inspection is available; benchmark-audit and reproduction remain required before measured savings or deployment-grade recommendation.",
       "sources": [
         "sources/seed-catalogs/AI-Coding-Token-Savers-Catalog-Revised.md",
-        "https://github.com/yamadashy/repomix"
+        "https://github.com/yamadashy/repomix",
+        "docs/tool-dossiers/yamadashy-repomix.md",
+        "sources/discovery/2026-07-01-pinned-dossier-refresh-source-structures.json",
+        "sources/discovery/2026-07-01-pinned-dossier-refresh-code-inspection.json"
       ],
-      "reviewed_at": "2026-06-25",
-      "review_depth": "seed-catalog",
-      "status": "normalized-from-seed"
+      "reviewed_at": "2026-07-01",
+      "review_depth": "source-logic",
+      "status": "source-logic-reviewed",
+      "source_snapshot": {
+        "status": "pinned-commit",
+        "commit": "6873d5212227998a4de7395744acc1f2d894cc20",
+        "commit_url": "https://github.com/yamadashy/repomix/commit/6873d5212227998a4de7395744acc1f2d894cc20",
+        "source_structure_artifact": "sources/discovery/2026-07-01-pinned-dossier-refresh-source-structures.json"
+      }
     },
     {
       "id": "ipa-lab__minified-state-in-context-agent",
@@ -1288,16 +1429,25 @@
         "T01-terminal-tool-output-compression"
       ],
       "technique_coverage": [],
-      "evidence_label": "`maintainer-measurement`",
+      "evidence_label": "`source-logic`",
       "reported_result": "Maintainer reports the TOON format uses roughly 30–60% fewer tokens than its JSON representation.",
-      "main_caveat": "Specialized for Swift/Xcode workflows and does not reduce source-code context itself.",
+      "main_caveat": "Specialized for Swift/Xcode workflows and does not reduce source-code context itself. Fresh pinned source-logic inspection is available; benchmark-audit and reproduction remain required before measured savings or deployment-grade recommendation.",
       "sources": [
         "sources/seed-catalogs/AI-Coding-Token-Savers-Catalog-Revised.md",
-        "https://github.com/ldomaradzki/xcsift"
+        "https://github.com/ldomaradzki/xcsift",
+        "docs/tool-dossiers/ldomaradzki-xcsift.md",
+        "sources/discovery/2026-07-01-pinned-dossier-refresh-source-structures.json",
+        "sources/discovery/2026-07-01-pinned-dossier-refresh-code-inspection.json"
       ],
-      "reviewed_at": "2026-06-25",
-      "review_depth": "seed-catalog",
-      "status": "normalized-from-seed"
+      "reviewed_at": "2026-07-01",
+      "review_depth": "source-logic",
+      "status": "source-logic-reviewed",
+      "source_snapshot": {
+        "status": "pinned-commit",
+        "commit": "0a4b1287bf1b698ef2bff0016ee583ed39ae6d77",
+        "commit_url": "https://github.com/ldomaradzki/xcsift/commit/0a4b1287bf1b698ef2bff0016ee583ed39ae6d77",
+        "source_structure_artifact": "sources/discovery/2026-07-01-pinned-dossier-refresh-source-structures.json"
+      }
     },
     {
       "id": "Pask00__mcp-trim",
@@ -1336,16 +1486,25 @@
         "T01-terminal-tool-output-compression"
       ],
       "technique_coverage": [],
-      "evidence_label": "`mixed-maintainer-and-external-evidence`",
+      "evidence_label": "`source-logic`",
       "reported_result": "Maintainer reports roughly 60–90% reduction for supported command output. Tokbench independently observed 74.7% reduction on commands RTK touched, but those commands represented only about 2.5% of total spend in its N=1 pilot and the full run billed 27% more input tokens than native.",
       "main_caveat": "Operation-level compression does not guarantee lower task-level billing; command coverage, turn count, prompt caching, and harness design determine the addressable surface. The external result is a single-run pilot.",
       "sources": [
         "sources/seed-catalogs/AI-Coding-Token-Savers-Catalog-Revised.md",
-        "https://github.com/rtk-ai/rtk"
+        "https://github.com/rtk-ai/rtk",
+        "docs/tool-dossiers/rtk-ai-rtk.md",
+        "sources/discovery/2026-06-26-source-logic-uplift-source-structures.json",
+        "sources/discovery/2026-06-26-source-logic-uplift-code-inspection.json"
       ],
-      "reviewed_at": "2026-06-25",
-      "review_depth": "seed-catalog",
-      "status": "normalized-from-seed"
+      "reviewed_at": "2026-06-26",
+      "review_depth": "source-logic",
+      "status": "source-logic-reviewed",
+      "source_snapshot": {
+        "status": "pinned-commit",
+        "commit": "23aae98c5b29",
+        "commit_url": "https://github.com/rtk-ai/rtk/commit/23aae98c5b29",
+        "source_structure_artifact": "sources/discovery/2026-06-26-source-logic-uplift-source-structures.json"
+      }
     },
     {
       "id": "vincentkoc__tokenjuice",
@@ -1360,16 +1519,25 @@
         "T01-terminal-tool-output-compression"
       ],
       "technique_coverage": [],
-      "evidence_label": "`documented-mechanism`",
+      "evidence_label": "`source-logic`",
       "reported_result": "No quantified end-to-end benchmark was reviewed; the README documents deterministic reducers and broad integrations.",
-      "main_caveat": "Reducer coverage varies by command and integration; inspect raw output when diagnostics are incomplete.",
+      "main_caveat": "Reducer coverage varies by command and integration; inspect raw output when diagnostics are incomplete. Fresh pinned source-logic inspection is available; benchmark-audit and reproduction remain required before measured savings or deployment-grade recommendation.",
       "sources": [
         "sources/seed-catalogs/AI-Coding-Token-Savers-Catalog-Revised.md",
-        "https://github.com/vincentkoc/tokenjuice"
+        "https://github.com/vincentkoc/tokenjuice",
+        "docs/tool-dossiers/vincentkoc-tokenjuice.md",
+        "sources/discovery/2026-07-01-pinned-dossier-refresh-source-structures.json",
+        "sources/discovery/2026-07-01-pinned-dossier-refresh-code-inspection.json"
       ],
-      "reviewed_at": "2026-06-25",
-      "review_depth": "seed-catalog",
-      "status": "normalized-from-seed"
+      "reviewed_at": "2026-07-01",
+      "review_depth": "source-logic",
+      "status": "source-logic-reviewed",
+      "source_snapshot": {
+        "status": "pinned-commit",
+        "commit": "49bdcf1755833ff1e02e44e6e7fe91c0fb44c16e",
+        "commit_url": "https://github.com/vincentkoc/tokenjuice/commit/49bdcf1755833ff1e02e44e6e7fe91c0fb44c16e",
+        "source_structure_artifact": "sources/discovery/2026-07-01-pinned-dossier-refresh-source-structures.json"
+      }
     },
     {
       "id": "0xhimanshu__governor",
@@ -1432,19 +1600,28 @@
         "T05-prompt-history-context-compression"
       ],
       "technique_coverage": [],
-      "evidence_label": "discovery-lead",
+      "evidence_label": "`source-logic`",
       "reported_result": "Not yet reviewed beyond discovery metadata/search snippets.",
       "main_caveat": "Needs README/source inspection before being treated as evidence.",
       "sources": [
         "sources/discovery/github-search-results.json",
-        "https://github.com/Context-Engine-AI/Context-Engine"
+        "https://github.com/Context-Engine-AI/Context-Engine",
+        "docs/tool-dossiers/context-engine-ai-context-engine.md",
+        "sources/discovery/2026-06-26-source-logic-uplift-source-structures.json",
+        "sources/discovery/2026-06-26-source-logic-uplift-code-inspection.json"
       ],
-      "reviewed_at": "2026-06-25",
-      "review_depth": "discovery",
-      "status": "candidate",
+      "reviewed_at": "2026-06-26",
+      "review_depth": "source-logic",
+      "status": "source-logic-reviewed",
       "discovery_routes": [
         "github-search"
-      ]
+      ],
+      "source_snapshot": {
+        "status": "pinned-commit",
+        "commit": "b1dc3ef3ff4a",
+        "commit_url": "https://github.com/Context-Engine-AI/Context-Engine/commit/b1dc3ef3ff4a",
+        "source_structure_artifact": "sources/discovery/2026-06-26-source-logic-uplift-source-structures.json"
+      }
     },
     {
       "id": "decolua__9router",
@@ -1507,19 +1684,28 @@
         "T01-terminal-tool-output-compression"
       ],
       "technique_coverage": [],
-      "evidence_label": "discovery-lead",
+      "evidence_label": "`source-logic`",
       "reported_result": "Not yet reviewed beyond discovery metadata/search snippets.",
-      "main_caveat": "Needs README/source inspection before being treated as evidence.",
+      "main_caveat": "Needs README/source inspection before being treated as evidence. Fresh pinned source-logic inspection is available; benchmark-audit and reproduction remain required before measured savings or deployment-grade recommendation.",
       "sources": [
         "sources/discovery/github-search-results.json",
-        "https://github.com/edouard-claude/snip"
+        "https://github.com/edouard-claude/snip",
+        "docs/tool-dossiers/edouard-claude-snip.md",
+        "sources/discovery/2026-07-01-pinned-dossier-refresh-source-structures.json",
+        "sources/discovery/2026-07-01-pinned-dossier-refresh-code-inspection.json"
       ],
-      "reviewed_at": "2026-06-25",
-      "review_depth": "discovery",
-      "status": "candidate",
+      "reviewed_at": "2026-07-01",
+      "review_depth": "source-logic",
+      "status": "source-logic-reviewed",
       "discovery_routes": [
         "github-search"
-      ]
+      ],
+      "source_snapshot": {
+        "status": "pinned-commit",
+        "commit": "82b741b3ba504a22b609f3ac8122ade94306f6ec",
+        "commit_url": "https://github.com/edouard-claude/snip/commit/82b741b3ba504a22b609f3ac8122ade94306f6ec",
+        "source_structure_artifact": "sources/discovery/2026-07-01-pinned-dossier-refresh-source-structures.json"
+      }
     },
     {
       "id": "fajarhide__omni",
@@ -1657,19 +1843,28 @@
         "T02-targeted-code-retrieval"
       ],
       "technique_coverage": [],
-      "evidence_label": "discovery-lead",
+      "evidence_label": "`source-logic`",
       "reported_result": "Not yet reviewed beyond discovery metadata/search snippets.",
-      "main_caveat": "Needs README/source inspection before being treated as evidence.",
+      "main_caveat": "Needs README/source inspection before being treated as evidence. Fresh pinned source-logic inspection is available; benchmark-audit and reproduction remain required before measured savings or deployment-grade recommendation.",
       "sources": [
         "sources/discovery/github-search-results.json",
-        "https://github.com/jgravelle/jcodemunch-mcp"
+        "https://github.com/jgravelle/jcodemunch-mcp",
+        "docs/tool-dossiers/jgravelle-jcodemunch-mcp.md",
+        "sources/discovery/2026-07-01-pinned-dossier-refresh-source-structures.json",
+        "sources/discovery/2026-07-01-pinned-dossier-refresh-code-inspection.json"
       ],
-      "reviewed_at": "2026-06-25",
-      "review_depth": "discovery",
-      "status": "candidate",
+      "reviewed_at": "2026-07-01",
+      "review_depth": "source-logic",
+      "status": "source-logic-reviewed",
       "discovery_routes": [
         "github-search"
-      ]
+      ],
+      "source_snapshot": {
+        "status": "pinned-commit",
+        "commit": "bdebb6399f07431d4b072582ff80f7639d8752c5",
+        "commit_url": "https://github.com/jgravelle/jcodemunch-mcp/commit/bdebb6399f07431d4b072582ff80f7639d8752c5",
+        "source_structure_artifact": "sources/discovery/2026-07-01-pinned-dossier-refresh-source-structures.json"
+      }
     },
     {
       "id": "juyterman1000__entroly",
@@ -1732,19 +1927,28 @@
         "T02-targeted-code-retrieval"
       ],
       "technique_coverage": [],
-      "evidence_label": "discovery-lead",
+      "evidence_label": "`source-logic`",
       "reported_result": "Not yet reviewed beyond discovery metadata/search snippets.",
-      "main_caveat": "Needs README/source inspection before being treated as evidence.",
+      "main_caveat": "Needs README/source inspection before being treated as evidence. Fresh pinned source-logic inspection is available; benchmark-audit and reproduction remain required before measured savings or deployment-grade recommendation.",
       "sources": [
         "sources/discovery/github-search-results.json",
-        "https://github.com/manojmallick/sigmap"
+        "https://github.com/manojmallick/sigmap",
+        "docs/tool-dossiers/manojmallick-sigmap.md",
+        "sources/discovery/2026-07-01-pinned-dossier-refresh-source-structures.json",
+        "sources/discovery/2026-07-01-pinned-dossier-refresh-code-inspection.json"
       ],
-      "reviewed_at": "2026-06-25",
-      "review_depth": "discovery",
-      "status": "candidate",
+      "reviewed_at": "2026-07-01",
+      "review_depth": "source-logic",
+      "status": "source-logic-reviewed",
       "discovery_routes": [
         "github-search"
-      ]
+      ],
+      "source_snapshot": {
+        "status": "pinned-commit",
+        "commit": "569320994751935ab25bf4a9b5bd07aee99cc53b",
+        "commit_url": "https://github.com/manojmallick/sigmap/commit/569320994751935ab25bf4a9b5bd07aee99cc53b",
+        "source_structure_artifact": "sources/discovery/2026-07-01-pinned-dossier-refresh-source-structures.json"
+      }
     },
     {
       "id": "mex-memory__mex",
@@ -1757,19 +1961,28 @@
         "T06-persistent-memory-reinjection"
       ],
       "technique_coverage": [],
-      "evidence_label": "discovery-lead",
+      "evidence_label": "`source-logic`",
       "reported_result": "Not yet reviewed beyond discovery metadata/search snippets.",
-      "main_caveat": "Needs README/source inspection before being treated as evidence.",
+      "main_caveat": "Needs README/source inspection before being treated as evidence. Fresh pinned source-logic inspection is available; benchmark-audit and reproduction remain required before measured savings or deployment-grade recommendation.",
       "sources": [
         "sources/discovery/github-search-results.json",
-        "https://github.com/mex-memory/mex"
+        "https://github.com/mex-memory/mex",
+        "docs/tool-dossiers/mex-memory-mex.md",
+        "sources/discovery/2026-07-01-pinned-dossier-refresh-source-structures.json",
+        "sources/discovery/2026-07-01-pinned-dossier-refresh-code-inspection.json"
       ],
-      "reviewed_at": "2026-06-25",
-      "review_depth": "discovery",
-      "status": "candidate",
+      "reviewed_at": "2026-07-01",
+      "review_depth": "source-logic",
+      "status": "source-logic-reviewed",
       "discovery_routes": [
         "github-search"
-      ]
+      ],
+      "source_snapshot": {
+        "status": "pinned-commit",
+        "commit": "c341ee7301dea6f5990336f69fc84d9ceef2fa06",
+        "commit_url": "https://github.com/mex-memory/mex/commit/c341ee7301dea6f5990336f69fc84d9ceef2fa06",
+        "source_structure_artifact": "sources/discovery/2026-07-01-pinned-dossier-refresh-source-structures.json"
+      }
     },
     {
       "id": "NickCirv__engram",
@@ -1807,19 +2020,28 @@
         "T05-prompt-history-context-compression"
       ],
       "technique_coverage": [],
-      "evidence_label": "discovery-lead",
+      "evidence_label": "`source-logic`",
       "reported_result": "Not yet reviewed beyond discovery metadata/search snippets.",
-      "main_caveat": "Needs README/source inspection before being treated as evidence.",
+      "main_caveat": "Needs README/source inspection before being treated as evidence. Fresh pinned source-logic inspection is available; benchmark-audit and reproduction remain required before measured savings or deployment-grade recommendation.",
       "sources": [
         "sources/discovery/github-search-results.json",
-        "https://github.com/open-compress/claw-compactor"
+        "https://github.com/open-compress/claw-compactor",
+        "docs/tool-dossiers/open-compress-claw-compactor.md",
+        "sources/discovery/2026-07-01-pinned-dossier-refresh-source-structures.json",
+        "sources/discovery/2026-07-01-pinned-dossier-refresh-code-inspection.json"
       ],
-      "reviewed_at": "2026-06-25",
-      "review_depth": "discovery",
-      "status": "candidate",
+      "reviewed_at": "2026-07-01",
+      "review_depth": "source-logic",
+      "status": "source-logic-reviewed",
       "discovery_routes": [
         "github-search"
-      ]
+      ],
+      "source_snapshot": {
+        "status": "pinned-commit",
+        "commit": "c1b936d40b1145c7a257bd6e34a17994f467495f",
+        "commit_url": "https://github.com/open-compress/claw-compactor/commit/c1b936d40b1145c7a257bd6e34a17994f467495f",
+        "source_structure_artifact": "sources/discovery/2026-07-01-pinned-dossier-refresh-source-structures.json"
+      }
     },
     {
       "id": "ppgranger__token-saver",
@@ -1882,19 +2104,28 @@
         "T02-targeted-code-retrieval"
       ],
       "technique_coverage": [],
-      "evidence_label": "discovery-lead",
+      "evidence_label": "`source-logic`",
       "reported_result": "Not yet reviewed beyond discovery metadata/search snippets.",
-      "main_caveat": "Needs README/source inspection before being treated as evidence.",
+      "main_caveat": "Needs README/source inspection before being treated as evidence. Fresh pinned source-logic inspection is available; benchmark-audit and reproduction remain required before measured savings or deployment-grade recommendation.",
       "sources": [
         "sources/discovery/github-search-results.json",
-        "https://github.com/tirth8205/code-review-graph"
+        "https://github.com/tirth8205/code-review-graph",
+        "docs/tool-dossiers/tirth8205-code-review-graph.md",
+        "sources/discovery/2026-07-01-pinned-dossier-refresh-source-structures.json",
+        "sources/discovery/2026-07-01-pinned-dossier-refresh-code-inspection.json"
       ],
-      "reviewed_at": "2026-06-25",
-      "review_depth": "discovery",
-      "status": "candidate",
+      "reviewed_at": "2026-07-01",
+      "review_depth": "source-logic",
+      "status": "source-logic-reviewed",
       "discovery_routes": [
         "github-search"
-      ]
+      ],
+      "source_snapshot": {
+        "status": "pinned-commit",
+        "commit": "b72413cbd34a4ac08cc60dcdd42df1d02f3fc77d",
+        "commit_url": "https://github.com/tirth8205/code-review-graph/commit/b72413cbd34a4ac08cc60dcdd42df1d02f3fc77d",
+        "source_structure_artifact": "sources/discovery/2026-07-01-pinned-dossier-refresh-source-structures.json"
+      }
     },
     {
       "id": "zdk__lowfat",
@@ -1907,19 +2138,28 @@
         "T01-terminal-tool-output-compression"
       ],
       "technique_coverage": [],
-      "evidence_label": "discovery-lead",
+      "evidence_label": "`source-logic`",
       "reported_result": "Not yet reviewed beyond discovery metadata/search snippets.",
-      "main_caveat": "Needs README/source inspection before being treated as evidence.",
+      "main_caveat": "Needs README/source inspection before being treated as evidence. Fresh pinned source-logic inspection is available; benchmark-audit and reproduction remain required before measured savings or deployment-grade recommendation.",
       "sources": [
         "sources/discovery/github-search-results.json",
-        "https://github.com/zdk/lowfat"
+        "https://github.com/zdk/lowfat",
+        "docs/tool-dossiers/zdk-lowfat.md",
+        "sources/discovery/2026-07-01-pinned-dossier-refresh-source-structures.json",
+        "sources/discovery/2026-07-01-pinned-dossier-refresh-code-inspection.json"
       ],
-      "reviewed_at": "2026-06-25",
-      "review_depth": "discovery",
-      "status": "candidate",
+      "reviewed_at": "2026-07-01",
+      "review_depth": "source-logic",
+      "status": "source-logic-reviewed",
       "discovery_routes": [
         "github-topic-token-saving"
-      ]
+      ],
+      "source_snapshot": {
+        "status": "pinned-commit",
+        "commit": "b9f6f99d02e5774296305a591bfb13ef24548c38",
+        "commit_url": "https://github.com/zdk/lowfat/commit/b9f6f99d02e5774296305a591bfb13ef24548c38",
+        "source_structure_artifact": "sources/discovery/2026-07-01-pinned-dossier-refresh-source-structures.json"
+      }
     },
     {
       "id": "zilliztech__claude-context",
@@ -1932,19 +2172,28 @@
         "T02-targeted-code-retrieval"
       ],
       "technique_coverage": [],
-      "evidence_label": "discovery-lead",
+      "evidence_label": "`source-logic`",
       "reported_result": "Not yet reviewed beyond discovery metadata/search snippets.",
-      "main_caveat": "Needs README/source inspection before being treated as evidence.",
+      "main_caveat": "Needs README/source inspection before being treated as evidence. Fresh pinned source-logic inspection is available; benchmark-audit and reproduction remain required before measured savings or deployment-grade recommendation.",
       "sources": [
         "sources/discovery/github-search-results.json",
-        "https://github.com/zilliztech/claude-context"
+        "https://github.com/zilliztech/claude-context",
+        "docs/tool-dossiers/zilliztech-claude-context.md",
+        "sources/discovery/2026-07-01-pinned-dossier-refresh-source-structures.json",
+        "sources/discovery/2026-07-01-pinned-dossier-refresh-code-inspection.json"
       ],
-      "reviewed_at": "2026-06-25",
-      "review_depth": "discovery",
-      "status": "candidate",
+      "reviewed_at": "2026-07-01",
+      "review_depth": "source-logic",
+      "status": "source-logic-reviewed",
       "discovery_routes": [
         "github-search"
-      ]
+      ],
+      "source_snapshot": {
+        "status": "pinned-commit",
+        "commit": "627eb2be339723926d5b468698a8f5cc0da21167",
+        "commit_url": "https://github.com/zilliztech/claude-context/commit/627eb2be339723926d5b468698a8f5cc0da21167",
+        "source_structure_artifact": "sources/discovery/2026-07-01-pinned-dossier-refresh-source-structures.json"
+      }
     },
     {
       "id": "egonex-ai__understand-anything",
@@ -1970,7 +2219,13 @@
       ],
       "reviewed_at": "2026-06-29",
       "review_depth": "source-logic",
-      "status": "source-logic-reviewed"
+      "status": "source-logic-reviewed",
+      "source_snapshot": {
+        "status": "pinned-commit",
+        "commit": "54754a6f9705",
+        "commit_url": "https://github.com/Egonex-AI/Understand-Anything/commit/54754a6f9705",
+        "source_structure_artifact": "sources/discovery/2026-06-29-graph-leads-a-source-logic.json"
+      }
     },
     {
       "id": "swarmclawai__swarmvault",
@@ -1996,7 +2251,13 @@
       ],
       "reviewed_at": "2026-06-29",
       "review_depth": "source-logic",
-      "status": "source-logic-reviewed"
+      "status": "source-logic-reviewed",
+      "source_snapshot": {
+        "status": "pinned-commit",
+        "commit": "4ce0c7cb545c",
+        "commit_url": "https://github.com/swarmclawai/swarmvault/commit/4ce0c7cb545c",
+        "source_structure_artifact": "sources/discovery/2026-06-29-graph-leads-a-source-logic.json"
+      }
     },
     {
       "id": "catlog22__maestro-flow",
@@ -2020,7 +2281,13 @@
       ],
       "reviewed_at": "2026-06-29",
       "review_depth": "source-logic",
-      "status": "source-logic-reviewed"
+      "status": "source-logic-reviewed",
+      "source_snapshot": {
+        "status": "pinned-commit",
+        "commit": "6f1d8b6dc41d",
+        "commit_url": "https://github.com/catlog22/maestro-flow/commit/6f1d8b6dc41d",
+        "source_structure_artifact": "sources/discovery/2026-06-29-graph-leads-a-source-logic.json"
+      }
     },
     {
       "id": "osovv__grace-marketplace",
@@ -2044,7 +2311,13 @@
       ],
       "reviewed_at": "2026-06-29",
       "review_depth": "source-logic",
-      "status": "source-logic-reviewed"
+      "status": "source-logic-reviewed",
+      "source_snapshot": {
+        "status": "pinned-commit",
+        "commit": "73f2b207cfcd",
+        "commit_url": "https://github.com/osovv/grace-marketplace/commit/73f2b207cfcd",
+        "source_structure_artifact": "sources/discovery/2026-06-29-graph-leads-a-source-logic.json"
+      }
     },
     {
       "id": "vbcherepanov__total-agent-memory",
@@ -2070,7 +2343,13 @@
       ],
       "reviewed_at": "2026-06-29",
       "review_depth": "source-logic",
-      "status": "source-logic-reviewed"
+      "status": "source-logic-reviewed",
+      "source_snapshot": {
+        "status": "pinned-commit",
+        "commit": "616d9a6f8b50",
+        "commit_url": "https://github.com/vbcherepanov/total-agent-memory/commit/616d9a6f8b50",
+        "source_structure_artifact": "sources/discovery/2026-06-29-graph-leads-b-source-logic.json"
+      }
     },
     {
       "id": "looptech-ai__understand-quickly",
@@ -2094,7 +2373,13 @@
       ],
       "reviewed_at": "2026-06-29",
       "review_depth": "source-logic",
-      "status": "source-logic-reviewed"
+      "status": "source-logic-reviewed",
+      "source_snapshot": {
+        "status": "pinned-commit",
+        "commit": "6df261fcfa99",
+        "commit_url": "https://github.com/looptech-ai/understand-quickly/commit/6df261fcfa99",
+        "source_structure_artifact": "sources/discovery/2026-06-29-graph-leads-b-source-logic.json"
+      }
     },
     {
       "id": "jrollin__cartog",
@@ -2120,7 +2405,13 @@
       ],
       "reviewed_at": "2026-06-29",
       "review_depth": "source-logic",
-      "status": "source-logic-reviewed"
+      "status": "source-logic-reviewed",
+      "source_snapshot": {
+        "status": "pinned-commit",
+        "commit": "890d15b66b52",
+        "commit_url": "https://github.com/jrollin/cartog/commit/890d15b66b52",
+        "source_structure_artifact": "sources/discovery/2026-06-29-graph-leads-b-source-logic.json"
+      }
     },
     {
       "id": "cognitx-leyton__codegraph",
@@ -2146,7 +2437,13 @@
       ],
       "reviewed_at": "2026-06-29",
       "review_depth": "source-logic",
-      "status": "source-logic-reviewed"
+      "status": "source-logic-reviewed",
+      "source_snapshot": {
+        "status": "pinned-commit",
+        "commit": "ba5e0039b24d",
+        "commit_url": "https://github.com/cognitx-leyton/codegraph/commit/ba5e0039b24d",
+        "source_structure_artifact": "sources/discovery/2026-06-29-graph-leads-b-source-logic.json"
+      }
     },
     {
       "id": "onur-gokyildiz-bhi__codescope",
@@ -2172,7 +2469,13 @@
       ],
       "reviewed_at": "2026-06-29",
       "review_depth": "source-logic",
-      "status": "source-logic-reviewed"
+      "status": "source-logic-reviewed",
+      "source_snapshot": {
+        "status": "pinned-commit",
+        "commit": "d8e58d83e920",
+        "commit_url": "https://github.com/onur-gokyildiz-bhi/codescope/commit/d8e58d83e920",
+        "source_structure_artifact": "sources/discovery/2026-06-29-graph-leads-c-source-logic.json"
+      }
     },
     {
       "id": "iikarus__dragon-brain",
@@ -2198,7 +2501,13 @@
       ],
       "reviewed_at": "2026-06-29",
       "review_depth": "source-logic",
-      "status": "source-logic-reviewed"
+      "status": "source-logic-reviewed",
+      "source_snapshot": {
+        "status": "pinned-commit",
+        "commit": "8877153df6eb",
+        "commit_url": "https://github.com/iikarus/Dragon-Brain/commit/8877153df6eb",
+        "source_structure_artifact": "sources/discovery/2026-06-29-graph-leads-c-source-logic.json"
+      }
     },
     {
       "id": "stifler7__memex",
@@ -2224,7 +2533,13 @@
       ],
       "reviewed_at": "2026-06-29",
       "review_depth": "source-logic",
-      "status": "source-logic-reviewed"
+      "status": "source-logic-reviewed",
+      "source_snapshot": {
+        "status": "pinned-commit",
+        "commit": "cf9b1833ab41",
+        "commit_url": "https://github.com/STiFLeR7/memex/commit/cf9b1833ab41",
+        "source_structure_artifact": "sources/discovery/2026-06-29-graph-leads-c-source-logic.json"
+      }
     },
     {
       "id": "ishandutta2007__code-knowledge-graph",
@@ -2250,7 +2565,67 @@
       ],
       "reviewed_at": "2026-06-29",
       "review_depth": "source-logic",
-      "status": "source-logic-reviewed"
+      "status": "source-logic-reviewed",
+      "source_snapshot": {
+        "status": "pinned-commit",
+        "commit": "1b1986717647",
+        "commit_url": "https://github.com/ishandutta2007/Code-Knowledge-Graph/commit/1b1986717647",
+        "source_structure_artifact": "sources/discovery/2026-06-29-graph-leads-c-source-logic.json"
+      }
+    },
+    {
+      "id": "thedotmack__claude-mem",
+      "name": "claude-mem",
+      "url": "https://github.com/thedotmack/claude-mem",
+      "kind": "technique-implementation",
+      "summary": "Claude Mem captures agent session observations, summarizes/compresses them, and injects relevant prior context into future agent sessions across multiple agent adapters.",
+      "mechanism": "Persistent context capture, summarization, memory retrieval, and context reinjection",
+      "technique_ids": [],
+      "technique_coverage": [],
+      "reported_result": "No benchmark-audit or reproduction evidence recorded in the source-logic dossier.",
+      "main_caveat": "Source-logic inspection supports mechanism and compatibility assessment only; benchmark-audit and reproduction remain required before measured-savings claims.",
+      "sources": [
+        "docs/tool-dossiers/thedotmack-claude-mem.md",
+        "sources/discovery/2026-07-01-pinned-dossier-refresh-source-structures.json",
+        "sources/discovery/2026-07-01-pinned-dossier-refresh-code-inspection.json"
+      ],
+      "reviewed_at": "2026-07-01",
+      "review_depth": "source-logic",
+      "status": "source-logic-reviewed",
+      "evidence_label": "`source-logic`",
+      "source_snapshot": {
+        "status": "pinned-commit",
+        "commit": "cbdce2d676a9646b73dc236eebb53e4019870dcf",
+        "commit_url": "https://github.com/thedotmack/claude-mem/commit/cbdce2d676a9646b73dc236eebb53e4019870dcf",
+        "source_structure_artifact": "sources/discovery/2026-07-01-pinned-dossier-refresh-source-structures.json"
+      }
+    },
+    {
+      "id": "agentforce314__clawcodex",
+      "name": "clawcodex",
+      "url": "https://github.com/agentforce314/clawcodex",
+      "kind": "technique-implementation",
+      "summary": "ClawCodex is a Python Claude Code-style coding agent/rebuild with token estimation, context/prefetch optimizations, compression pipeline tests, and cost tracking.",
+      "mechanism": "Replacement AI coding agent with token estimation, compaction pipeline, memory/history, and cost tracking",
+      "technique_ids": [],
+      "technique_coverage": [],
+      "reported_result": "No benchmark-audit or reproduction evidence recorded in the source-logic dossier.",
+      "main_caveat": "Source-logic inspection supports mechanism and compatibility assessment only; benchmark-audit and reproduction remain required before measured-savings claims.",
+      "sources": [
+        "docs/tool-dossiers/agentforce314-clawcodex.md",
+        "sources/discovery/2026-07-01-pinned-dossier-refresh-source-structures.json",
+        "sources/discovery/2026-07-01-pinned-dossier-refresh-code-inspection.json"
+      ],
+      "reviewed_at": "2026-07-01",
+      "review_depth": "source-logic",
+      "status": "source-logic-reviewed",
+      "evidence_label": "`source-logic`",
+      "source_snapshot": {
+        "status": "pinned-commit",
+        "commit": "31a1670fe33f4d8cbe23d22300a4e971b6420023",
+        "commit_url": "https://github.com/agentforce314/clawcodex/commit/31a1670fe33f4d8cbe23d22300a4e971b6420023",
+        "source_structure_artifact": "sources/discovery/2026-07-01-pinned-dossier-refresh-source-structures.json"
+      }
     }
   ]
 }

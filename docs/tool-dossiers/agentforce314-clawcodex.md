@@ -4,9 +4,13 @@
 
 - Repository: `agentforce314/clawcodex`
 - URL: https://github.com/agentforce314/clawcodex
-- Version/ref inspected: GitHub `HEAD` API or local shallow clone plus representative implementation files, 2026-06-26
-- Date inspected: 2026-06-26
-- Evidence stage: source-logic (local shallow clone; representative token estimation, history, prefetch, cost, and compression-pipeline tests inspected)
+- Version/ref inspected: local shallow clone `31a1670fe33f`, 2026-07-01
+- Snapshot status: pinned-commit
+- Commit inspected: 31a1670fe33f4d8cbe23d22300a4e971b6420023
+- Commit URL: https://github.com/agentforce314/clawcodex/commit/31a1670fe33f4d8cbe23d22300a4e971b6420023
+- Source artifact path: `sources/discovery/2026-07-01-pinned-dossier-refresh-source-structures.json`
+- Date inspected: 2026-07-01
+- Evidence stage: source-logic (fresh pinned shallow clone; representative source/config/test files inspected; benchmark-audit and reproduction still required for measured savings)
 - Stars at inspection: 653
 - Forks at inspection: None
 - License: UNKNOWN-local-clone
@@ -21,8 +25,8 @@ ClawCodex is a Python Claude Code-style coding agent/rebuild with token estimati
 | Evidence type | Files/URLs inspected | Notes |
 |---|---|---|
 | Repository metadata | GitHub API where available; local shallow clone fallback for rate-limited repos | Popularity and license signals only; not effectiveness evidence. |
-| Source tree | `sources/discovery/2026-06-26-ten-more-tool-source-structures.json` | Used to identify source, hook, MCP, test, benchmark, and runtime paths beyond README. |
-| Runtime/source content | `sources/discovery/2026-06-26-ten-more-tool-code-inspection.json` | Representative files fetched from raw GitHub or read from local clones with SHA-256 prefixes and behavior excerpts. |
+| Source tree | `sources/discovery/2026-07-01-pinned-dossier-refresh-source-structures.json` | Used to identify source, hook, MCP, test, benchmark, and runtime paths beyond README. |
+| Runtime/source content | `sources/discovery/2026-07-01-pinned-dossier-refresh-code-inspection.json` | Representative files fetched from raw GitHub or read from local clones with SHA-256 prefixes and behavior excerpts. |
 | README/docs | README/docs paths identified when present. | README claims are not used as behavior evidence. |
 | Tests/benchmarks | Paths identified where present. | Full benchmark-method review remains open. |
 
@@ -66,7 +70,12 @@ Repository tree inspection found 1,422 files and 1,358 files matching integratio
 
 ## Code-detail inspection findings
 
-Evidence artifact: `sources/discovery/2026-06-26-ten-more-tool-code-inspection.json`.
+Evidence artifact: `sources/discovery/2026-07-01-pinned-dossier-refresh-code-inspection.json`.
+
+### Fresh pinned-source refresh
+
+The 2026-07-01 refresh pins the inspected source to `31a1670fe33f4d8cbe23d22300a4e971b6420023` and records a fresh tree plus selected implementation excerpts in `sources/discovery/2026-07-01-pinned-dossier-refresh-source-structures.json` and `sources/discovery/2026-07-01-pinned-dossier-refresh-code-inspection.json`. Representative files captured for this refresh include `src/__init__.py`, `src/cli.py`, `src/costHook.py`, `src/cost_tracker.py`, `src/deferred_init.py`, `src/history.py`. Treat benchmark, savings, and deployment claims below as source-logic only unless a benchmark-audit or reproduction artifact is explicitly cited.
+
 
 - `src/token_estimation.py` implements rough and tiktoken-backed token counting plus memoization for repeated compaction/context-analysis calls.
 - `src/history.py` stores session history events and renders them to Markdown.

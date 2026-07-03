@@ -4,9 +4,13 @@
 
 - Repository: `manojmallick/sigmap`
 - URL: https://github.com/manojmallick/sigmap
-- Version/ref inspected: GitHub `HEAD` API or local shallow clone plus representative implementation files, 2026-06-26
-- Date inspected: 2026-06-26
-- Evidence stage: source-logic (representative MCP, tools, ranker, graph, and session memory files inspected)
+- Version/ref inspected: local shallow clone `569320994751`, 2026-07-01
+- Snapshot status: pinned-commit
+- Commit inspected: 569320994751935ab25bf4a9b5bd07aee99cc53b
+- Commit URL: https://github.com/manojmallick/sigmap/commit/569320994751935ab25bf4a9b5bd07aee99cc53b
+- Source artifact path: `sources/discovery/2026-07-01-pinned-dossier-refresh-source-structures.json`
+- Date inspected: 2026-07-01
+- Evidence stage: source-logic (fresh pinned shallow clone; representative source/config/test files inspected; benchmark-audit and reproduction still required for measured savings)
 - Stars at inspection: 530
 - Forks at inspection: 37
 - License: MIT
@@ -21,8 +25,8 @@ SigMap extracts code signatures and exposes an MCP server with tools for context
 | Evidence type | Files/URLs inspected | Notes |
 |---|---|---|
 | Repository metadata | GitHub API where available; local shallow clone fallback for rate-limited repos | Popularity and license signals only; not effectiveness evidence. |
-| Source tree | `sources/discovery/2026-06-26-ten-more-tool-source-structures.json` | Used to identify source, hook, MCP, test, benchmark, and runtime paths beyond README. |
-| Runtime/source content | `sources/discovery/2026-06-26-ten-more-tool-code-inspection.json` | Representative files fetched from raw GitHub or read from local clones with SHA-256 prefixes and behavior excerpts. |
+| Source tree | `sources/discovery/2026-07-01-pinned-dossier-refresh-source-structures.json` | Used to identify source, hook, MCP, test, benchmark, and runtime paths beyond README. |
+| Runtime/source content | `sources/discovery/2026-07-01-pinned-dossier-refresh-code-inspection.json` | Representative files fetched from raw GitHub or read from local clones with SHA-256 prefixes and behavior excerpts. |
 | README/docs | README/docs paths identified when present. | README claims are not used as behavior evidence. |
 | Tests/benchmarks | Paths identified where present. | Full benchmark-method review remains open. |
 
@@ -66,7 +70,12 @@ Repository tree inspection found 499 files and 365 files matching integration, s
 
 ## Code-detail inspection findings
 
-Evidence artifact: `sources/discovery/2026-06-26-ten-more-tool-code-inspection.json`.
+Evidence artifact: `sources/discovery/2026-07-01-pinned-dossier-refresh-code-inspection.json`.
+
+### Fresh pinned-source refresh
+
+The 2026-07-01 refresh pins the inspected source to `569320994751935ab25bf4a9b5bd07aee99cc53b` and records a fresh tree plus selected implementation excerpts in `sources/discovery/2026-07-01-pinned-dossier-refresh-source-structures.json` and `sources/discovery/2026-07-01-pinned-dossier-refresh-code-inspection.json`. Representative files captured for this refresh include `benchmarks/R_LANGUAGE_BENCHMARKS.md`, `benchmarks/R_LANGUAGE_SETUP.md`, `src/graph/builder.js`, `src/graph/impact.js`, `src/mcp/handlers.js`, `src/mcp/install.js`. Treat benchmark, savings, and deployment claims below as source-logic only unless a benchmark-audit or reproduction artifact is explicitly cited.
+
 
 - `src/mcp/server.js` is a zero-dependency JSON-RPC line server that lists tools and dispatches calls over stdin/stdout.
 - `src/mcp/tools.js` defines 17 MCP tools including context reads, signature search, impact, memory, diff context, and architecture overview.

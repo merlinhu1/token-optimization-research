@@ -6,6 +6,10 @@
 - URL: https://github.com/looptech-ai/understand-quickly
 - Local clone inspected: `/tmp/token-leads-20260629/looptech-ai__understand-quickly`
 - Version/ref inspected: local shallow clone `6df261fcfa99`, 2026-06-29
+- Snapshot status: pinned-commit
+- Commit inspected: 6df261fcfa99
+- Commit URL: https://github.com/looptech-ai/understand-quickly/commit/6df261fcfa99
+- Source artifact path: `sources/discovery/2026-06-29-graph-leads-b-source-logic.json`
 - Date inspected: 2026-06-29
 - Evidence stage: source-logic (local shallow clone; representative registry scripts, MCP server, CLI add flow, schemas, validation, aggregation, and tests inspected)
 

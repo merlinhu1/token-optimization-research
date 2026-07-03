@@ -4,9 +4,13 @@
 
 - Repository: `zdk/lowfat`
 - URL: https://github.com/zdk/lowfat
-- Version/ref inspected: GitHub `HEAD` API or local shallow clone plus representative implementation files, 2026-06-26
-- Date inspected: 2026-06-26
-- Evidence stage: source-logic (representative compression, pipeline, runner, tee, and plugin files inspected)
+- Version/ref inspected: local shallow clone `b9f6f99d02e5`, 2026-07-01
+- Snapshot status: pinned-commit
+- Commit inspected: b9f6f99d02e5774296305a591bfb13ef24548c38
+- Commit URL: https://github.com/zdk/lowfat/commit/b9f6f99d02e5774296305a591bfb13ef24548c38
+- Source artifact path: `sources/discovery/2026-07-01-pinned-dossier-refresh-source-structures.json`
+- Date inspected: 2026-07-01
+- Evidence stage: source-logic (fresh pinned shallow clone; representative source/config/test files inspected; benchmark-audit and reproduction still required for measured savings)
 - Stars at inspection: 543
 - Forks at inspection: 17
 - License: Apache-2.0
@@ -21,8 +25,8 @@ Lowfat filters command output through built-in and plugin pipelines, routing con
 | Evidence type | Files/URLs inspected | Notes |
 |---|---|---|
 | Repository metadata | GitHub API where available; local shallow clone fallback for rate-limited repos | Popularity and license signals only; not effectiveness evidence. |
-| Source tree | `sources/discovery/2026-06-26-ten-more-tool-source-structures.json` | Used to identify source, hook, MCP, test, benchmark, and runtime paths beyond README. |
-| Runtime/source content | `sources/discovery/2026-06-26-ten-more-tool-code-inspection.json` | Representative files fetched from raw GitHub or read from local clones with SHA-256 prefixes and behavior excerpts. |
+| Source tree | `sources/discovery/2026-07-01-pinned-dossier-refresh-source-structures.json` | Used to identify source, hook, MCP, test, benchmark, and runtime paths beyond README. |
+| Runtime/source content | `sources/discovery/2026-07-01-pinned-dossier-refresh-code-inspection.json` | Representative files fetched from raw GitHub or read from local clones with SHA-256 prefixes and behavior excerpts. |
 | README/docs | README/docs paths identified when present. | README claims are not used as behavior evidence. |
 | Tests/benchmarks | Paths identified where present. | Full benchmark-method review remains open. |
 
@@ -66,7 +70,12 @@ Repository tree inspection found 143 files and 98 files matching integration, so
 
 ## Code-detail inspection findings
 
-Evidence artifact: `sources/discovery/2026-06-26-ten-more-tool-code-inspection.json`.
+Evidence artifact: `sources/discovery/2026-07-01-pinned-dossier-refresh-code-inspection.json`.
+
+### Fresh pinned-source refresh
+
+The 2026-07-01 refresh pins the inspected source to `b9f6f99d02e5774296305a591bfb13ef24548c38` and records a fresh tree plus selected implementation excerpts in `sources/discovery/2026-07-01-pinned-dossier-refresh-source-structures.json` and `sources/discovery/2026-07-01-pinned-dossier-refresh-code-inspection.json`. Representative files captured for this refresh include `crates/lowfat-compress/Cargo.toml`, `crates/lowfat-compress/src/code.rs`, `crates/lowfat-compress/src/data.rs`, `crates/lowfat-compress/src/detect.rs`, `crates/lowfat-compress/src/html.rs`, `crates/lowfat-compress/src/lib.rs`. Treat benchmark, savings, and deployment claims below as source-logic only unless a benchmark-audit or reproduction artifact is explicitly cited.
+
 
 - `crates/lowfat-core/src/pipeline.rs` selects conditional pipelines based on exit code, empty output, and output size/token budget.
 - `crates/lowfat-core/src/tee.rs` saves raw command output on failures when output is large, keeping a bounded history of raw logs.

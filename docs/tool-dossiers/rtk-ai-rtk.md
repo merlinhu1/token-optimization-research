@@ -5,6 +5,10 @@
 - Repository: `rtk-ai/rtk`
 - URL: https://github.com/rtk-ai/rtk
 - Version/ref inspected: local shallow clone `23aae98c5b29`, 2026-06-26
+- Snapshot status: pinned-commit
+- Commit inspected: 23aae98c5b29
+- Commit URL: https://github.com/rtk-ai/rtk/commit/23aae98c5b29
+- Source artifact path: `sources/discovery/2026-06-26-source-logic-uplift-source-structures.json`
 - Date inspected: 2026-06-26
 - Evidence stage: source-logic (local shallow clone; representative runner, filter, tee, hook rewrite/init, discovery, formatter, and guard tests inspected)
 
