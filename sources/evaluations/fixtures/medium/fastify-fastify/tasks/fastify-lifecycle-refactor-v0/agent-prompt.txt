@@ -1,0 +1,7 @@
+Refactor Fastify's Content-Type parsing without changing externally observable parsing or serialization behavior.
+
+Repeated calls to `ContentType.from(...)` with the same raw header must reuse one shared, bounded parsed representation instead of reparsing identical values. Preserve case-insensitive media types and parameter names, parameter values, stable serialization, request parsing, body validation, structured `+json` handling, and reply charset behavior. The shared-cache requirement is an explicit structural/performance contract; object reuse for identical raw inputs is therefore expected.
+
+The starting repository already satisfies the behavioral contract but contains the disclosed structural debt. Work only inside the target repository and keep the refactor narrowly scoped. Do not modify tests merely to make acceptance pass. The controller runs concealed acceptance only after all three lifecycle prompts are complete.
+
+Run focused behavior tests before and after the refactor and preserve all prior lifecycle work.

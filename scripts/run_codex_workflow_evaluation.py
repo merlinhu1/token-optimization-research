@@ -558,7 +558,7 @@ def baseline_protocol_descriptor(seq: dict[str, Any], root: Path = ROOT) -> dict
         task_descriptor = {
             "id": task["id"],
             "order": int(task["order"]),
-            "task_class": task.get("task_class", "maintenance-regression"),
+            "task_class": task["task_class"],
             "prompt_path": str(task["prompt_path"]),
             "prompt_sha256": _protocol_file_hash(prompt_path),
             "seed_patch_sha256": _protocol_file_hash(seed_path),
@@ -585,7 +585,7 @@ def baseline_protocol_descriptor(seq: dict[str, Any], root: Path = ROOT) -> dict
         "qualification_generator_sha256": _protocol_file_hash(root / "scripts/generate_workflow_qualification.py"),
         "validator_sha256": _protocol_file_hash(root / "scripts/validate_repository.py"),
         "sequence_id": seq["id"],
-        "sequence_contract": seq.get("sequence_contract", "maintenance-regression"),
+        "sequence_contract": seq["sequence_contract"],
         "fixture_id": seq["fixture_id"],
         "fixture_scale": seq.get("fixture_scale"),
         "initial_snapshot": seq.get("initial_snapshot", {}),
@@ -780,11 +780,11 @@ def artifact_profile_label(profile_id: str) -> str:
     return "baseline" if profile_id == "baseline-bare-codex" else safe_profile_key(profile_id).rsplit("-", 1)[-1]
 
 
-def canonical_baseline_session_id(project_id: str, replicate_index: int, protocol_fingerprint: str = "legacy", *, run_date: str = DATE) -> str:
+def canonical_baseline_session_id(project_id: str, replicate_index: int, protocol_fingerprint: str = "unfrozen", *, run_date: str = DATE) -> str:
     return f"baseline-{artifact_lane_label(project_id)}-{run_date.replace('-', '')}-p-{protocol_fingerprint}-r{replicate_index}"
 
 
-def canonical_treatment_session_id(project_id: str, profile_id: str, replicate_index: int, protocol_fingerprint: str = "legacy", *, run_date: str = DATE) -> str:
+def canonical_treatment_session_id(project_id: str, profile_id: str, replicate_index: int, protocol_fingerprint: str = "unfrozen", *, run_date: str = DATE) -> str:
     return f"{artifact_profile_label(profile_id)}-{artifact_lane_label(project_id)}-{run_date.replace('-', '')}-p-{protocol_fingerprint}-r{replicate_index}"
 
 
@@ -836,7 +836,7 @@ def canonical_baseline_group_id(project_id: str, replicate_index: int, protocol_
     return f"{project_id}-canonical-baseline-{protocol_fingerprint}-sequential-workflow-r{replicate_index}"
 
 
-def treatment_experiment_group_id(project_id: str, treatment_profile_id: str, replicate_index: int, protocol_fingerprint: str = "legacy") -> str:
+def treatment_experiment_group_id(project_id: str, treatment_profile_id: str, replicate_index: int, protocol_fingerprint: str = "unfrozen") -> str:
     return f"{project_id}-{safe_profile_key(treatment_profile_id)}-{protocol_fingerprint}-sequential-workflow-r{replicate_index}"
 
 
@@ -1518,7 +1518,7 @@ def complete_task_checkpoints(
         if checkpoint is None:
             checkpoint = {
                 "task_id": str(task["id"]),
-                "task_class": task.get("task_class", "maintenance-regression"),
+                "task_class": task["task_class"],
                 "task_alias": task_alias(order),
                 "order": order,
                 "agent_attempted": False,
@@ -2030,9 +2030,9 @@ def workflow_session_record(
         },
         "task_sequence": {
             "sequence_id": seq["id"],
-            "sequence_contract": seq.get("sequence_contract", "maintenance-regression"),
+            "sequence_contract": seq["sequence_contract"],
             "task_ids": [task["id"] for task in sorted(seq["tasks"], key=lambda item: item["order"])],
-            "task_classes": [task.get("task_class", "maintenance-regression") for task in sorted(seq["tasks"], key=lambda item: item["order"])],
+            "task_classes": [task["task_class"] for task in sorted(seq["tasks"], key=lambda item: item["order"])],
             "reset_policy": "reset source checkout, profile home, tool state, indexes, caches, generated config, and agent home before the lane; preserve repository, thread, tool, index, cache, and agent state across every sequential prompt",
             "prompt_delivery": prompt_delivery,
             "leakage_controls": leakage_controls,
@@ -2343,7 +2343,7 @@ def run_one(args: argparse.Namespace) -> dict[str, Any]:
             (run_dir / f"task-{order:02d}-thread-continuity-error.txt").write_text(message + "\n")
         task_checkpoints.append({
             "task_id": task["id"],
-            "task_class": task.get("task_class", "maintenance-regression"),
+            "task_class": task["task_class"],
             "task_alias": task_alias(order),
             "order": order,
             "agent_attempted": True,
@@ -2409,7 +2409,6 @@ def run_one(args: argparse.Namespace) -> dict[str, Any]:
     leakage_controls = {
         "seed_origin_concealed": not args.no_conceal_seed_origin,
         "seed_patches_model_visible": False,
-        "git_baseline_true_root_per_task": False,
         "git_baseline_true_root_at_lane_start": concealment_verified,
         "fixed_snapshot_objects_model_visible": False,
         "pre_seed_reflog_entries_visible": False,

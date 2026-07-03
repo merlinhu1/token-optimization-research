@@ -1,0 +1,7 @@
+Review the supplied proposed adjustment to Fastify's `onMaxParamLength` implementation, identify acceptance-critical defects, and correct the checked-out candidate.
+
+The intended behavior is a dedicated HTTP 414 framework-error path for overlong route parameters, including custom `frameworkErrors` handling and encapsulated not-found routing. The public TypeScript API must continue to expose `onMaxParamLength` through `FastifyRouterOptions` and `FST_ERR_MAX_PARAM_LENGTH` through `FastifyErrorCodes`. Ordinary routes at or below the configured limit and custom not-found behavior must remain unchanged.
+
+The supplied patch reproduces an authentic pre-review status-code flaw from Fastify PR #6716; it is review evidence, not a trusted solution. Inspect it and the checked-out candidate, then implement the corrections you judge necessary. Do not modify tests merely to make acceptance pass. The controller runs concealed acceptance only after all three lifecycle prompts are complete.
+
+Run focused Node behavior and TypeScript tests for the reviewed surfaces, and preserve all prior lifecycle work.

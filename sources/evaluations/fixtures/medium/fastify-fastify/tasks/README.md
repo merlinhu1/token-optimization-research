@@ -1,5 +1,7 @@
-# Fastify qualified task set
+# Fastify lifecycle v0
 
-Fastify retains one current five-task qualified workflow contract as a reference suite, but it is excluded from the immediate Terraform/Beets production comparison and will not be rerun without an explicit study decision.
+1. `fastify-lifecycle-feature-v0` — implement request media-type metadata.
+2. `fastify-lifecycle-refactor-v0` — preserve behavior while centralizing bounded Content-Type parsing reuse.
+3. `fastify-lifecycle-review-v0` — review and correct the supplied `onMaxParamLength` status-code change.
 
-Superseded Fastify protocols, qualifications, and historical sessions were removed from the live tree and remain recoverable from Git history.
+The controller applies all three start patches before prompt 1 and runs all concealed verifiers after prompt 3.

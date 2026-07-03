@@ -1,29 +1,11 @@
-# Evaluation Fixtures
+# Evaluation fixtures
 
-This directory stores human-readable notes for repository fixtures when a registry entry needs more context than `data/repository-fixtures.json` can carry cleanly.
+Runnable fixtures live under `sources/evaluations/fixtures/`. The sole active portfolio is lifecycle v0:
 
-The compact registry is canonical for machine validation:
+- Fastify
+- Beets
+- Terraform
 
-```text
-data/repository-fixtures.json
-```
+Each fixture contains a pinned repository checkout, three ordered lifecycle task directories, controller-only acceptance assets, setup/reset helpers, and one generated `qualification-lifecycle-v0.json`.
 
-Active task sequences are canonical in:
-
-```text
-data/workflow-task-sequences.json
-```
-
-Use `templates/repository-fixture.md` for detailed fixture notes.
-
-Raw fixture source material lives under `sources/evaluations/fixtures/`.
-
-Fastify, Terraform, and Beets are the three current executable production-qualified workflow fixtures. Each active fixture has five controller-only regression tasks and byte-bound qualification evidence.
-
-Workflow-session evidence belongs under `sources/evaluations/workflow-sessions/<session-id>/` using the compact four-file artifact contract.
-
-The old generated calibration corpus under `sources/evaluations/fixture-corpus/v1/` is retired.
-
-The old hand-maintained Phase 2 experiment suite under `sources/evaluations/phase-2-experiment-suite-v1/` is retired.
-
-Fixture status is repository readiness only. It does not promote any tool or compatibility-safe stack to `benchmark-audit` or `reproduction`.
+Qualification demonstrates fixed/start/composite gate behavior. It does not constitute a production result.
