@@ -41,6 +41,37 @@ def concealed_path_collisions(checkout: Path, sequence: dict) -> list[str]:
     return [path for path in concealed_paths(sequence) if (checkout / path).exists()]
 
 
+def controller_hidden_copy(task: dict, path: str) -> Path | None:
+    """Resolve a task-local or fixture-shared controller copy for a concealed path."""
+    task_dir = (ROOT / task["prompt_path"]).parent
+    candidates = (
+        task_dir / "controller-hidden" / path,
+        task_dir.parents[1] / "controller-hidden" / path,
+    )
+    return next((candidate for candidate in candidates if candidate.is_file()), None)
+
+
+def concealed_path_collision_audit(checkout: Path, sequence: dict) -> list[dict[str, object]]:
+    """Prove fixed-path collisions are byte-exact controller copies before concealment."""
+    records: dict[str, dict[str, object]] = {}
+    for task in sequence["tasks"]:
+        for path in task.get("model_concealed_paths", []):
+            fixed = checkout / path
+            if not fixed.exists() or path in records:
+                continue
+            controller = controller_hidden_copy(task, path)
+            fixed_sha = hashlib.sha256(fixed.read_bytes()).hexdigest()
+            controller_sha = hashlib.sha256(controller.read_bytes()).hexdigest() if controller else None
+            records[path] = {
+                "path": path,
+                "controller_copy": str(controller.relative_to(ROOT)) if controller else None,
+                "fixed_sha256": fixed_sha,
+                "controller_sha256": controller_sha,
+                "byte_exact": controller_sha == fixed_sha,
+            }
+    return [records[path] for path in sorted(records)]
+
+
 def expected_task_concealed_paths(task: dict) -> list[str]:
     expected = set()
     expected.update(str(path) for path in task.get("upstream_test_paths", []))
@@ -127,10 +158,12 @@ def main() -> int:
     if status:
         raise SystemExit("prepared checkout must be clean, including untracked files")
     collisions = concealed_path_collisions(source_checkout, sequence)
-    if collisions:
+    collision_audit = concealed_path_collision_audit(source_checkout, sequence)
+    unsafe_collisions = [record["path"] for record in collision_audit if record["byte_exact"] is not True]
+    if unsafe_collisions:
         raise SystemExit(
-            "model-concealed paths collide with fixed-snapshot project files: "
-            + ", ".join(collisions)
+            "model-concealed paths would overwrite fixed-snapshot files without a byte-exact controller copy: "
+            + ", ".join(str(path) for path in unsafe_collisions)
         )
 
     workspace_root = Path(tempfile.mkdtemp(prefix="workflow-qualification-"))
@@ -161,6 +194,7 @@ def main() -> int:
         task_concealed = sorted(str(path) for path in task.get("model_concealed_paths", []))
         expected_concealed = expected_task_concealed_paths(task)
         omissions = omitted_expected_concealment(task)
+        task_collision_audit = [record for record in collision_audit if record["path"] in task_concealed]
         seed_check = call(["git", "apply", "--check", str(patch)], checkout)
         seed_apply = call(["git", "apply", str(patch)], checkout) if seed_check == 0 else 1
         is_refactor = task.get("task_class") == "behavior-preserving-refactor"
@@ -226,6 +260,12 @@ def main() -> int:
             "fixed_snapshot_model_concealed_absent": all(
                 not (source_checkout / path).exists() for path in task_concealed
             ),
+            "fixed_snapshot_model_concealed_safe": all(
+                not (source_checkout / path).exists()
+                or any(record["path"] == path and record["byte_exact"] is True for record in task_collision_audit)
+                for path in task_concealed
+            ),
+            "fixed_snapshot_concealed_path_collision_audit": task_collision_audit,
         })
 
     # Verifiers may leave tracked source artifacts or formatting changes behind.
@@ -289,6 +329,10 @@ def main() -> int:
         "model_concealed_paths": concealed_paths(sequence),
         "fixed_snapshot_concealed_path_collisions": collisions,
         "fixed_snapshot_model_concealed_paths_absent": not collisions,
+        "fixed_snapshot_model_concealed_paths_safe": all(
+            record["byte_exact"] is True for record in collision_audit
+        ),
+        "fixed_snapshot_concealed_path_collision_audit": collision_audit,
         "tasks": records,
         "cumulative_boundaries": boundaries,
         "composite_seed_merge_zero": composite_seed_merge_zero,

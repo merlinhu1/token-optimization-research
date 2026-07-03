@@ -22,39 +22,6 @@ SEQUENCE_ID = "terraform-maintenance-sequence-v2"
 
 
 class ActiveCampaignArchitectureTest(unittest.TestCase):
-    def test_retired_sequence_launch_requires_explicit_authorization(self) -> None:
-        sequence = runner.load_sequence("fastify-maintenance-sequence-v1")
-        with self.assertRaisesRegex(ValueError, "not active"):
-            runner.validate_sequence_launch_status(
-                sequence,
-                prepare_only=False,
-                allow_retired_sequence=False,
-            )
-        runner.validate_sequence_launch_status(
-            sequence,
-            prepare_only=False,
-            allow_retired_sequence=True,
-        )
-        runner.validate_sequence_launch_status(
-            sequence,
-            prepare_only=True,
-            allow_retired_sequence=False,
-        )
-
-    def test_retired_sequence_cli_flag_reaches_runner(self) -> None:
-        with mock.patch.object(runner, "run_one", return_value={"accepted": True}) as run_one:
-            self.assertEqual(
-                runner.main(
-                    [
-                        "--sequence-id",
-                        "fastify-maintenance-sequence-v1",
-                        "--allow-retired-sequence",
-                    ]
-                ),
-                0,
-            )
-        self.assertTrue(run_one.call_args.args[0].allow_retired_sequence)
-
     def test_primary_lifecycle_sequence_covers_owner_task_mix(self) -> None:
         sequences = json.loads((ROOT / "data/workflow-task-sequences.json").read_text())["sequences"]
         lifecycle = [
@@ -197,7 +164,7 @@ class ActiveCampaignArchitectureTest(unittest.TestCase):
         self.assertNotIn("inspect.signature", verifier)
         self.assertNotIn('"fixed_values" in params', verifier)
 
-    def test_candidate_portfolio_is_reduced_before_provider_runs(self) -> None:
+    def test_current_production_portfolio_has_three_lanes(self) -> None:
         profiles = json.loads((ROOT / "data/evaluation-profiles.json").read_text())["profiles"]
         shortlisted = [profile["id"] for profile in profiles if profile.get("status") == "screening-shortlist"]
         self.assertEqual(shortlisted, ["retrieval-codegraph"])
@@ -207,19 +174,25 @@ class ActiveCampaignArchitectureTest(unittest.TestCase):
 
         fixtures = json.loads((ROOT / "data/repository-fixtures.json").read_text())["fixtures"]
         active = [fixture for fixture in fixtures if fixture.get("evaluation_use") == "primary-objective"]
-        self.assertEqual([fixture["id"] for fixture in active], ["medium-beetbox-beets"])
-        self.assertEqual(active[0]["candidate_profiles"], ["baseline-bare-codex", "retrieval-codegraph"])
+        self.assertEqual(
+            [fixture["id"] for fixture in active],
+            ["medium-fastify-fastify", "medium-beetbox-beets", "large-hashicorp-terraform"],
+        )
+        self.assertEqual(active[0]["candidate_profiles"], ["baseline-bare-codex"])
+        self.assertEqual(active[1]["candidate_profiles"], ["baseline-bare-codex", "retrieval-codegraph"])
+        self.assertEqual(active[2]["candidate_profiles"], ["baseline-bare-codex"])
 
         medium = json.loads((ROOT / "data/medium-project-candidates.json").read_text())
         medium_active = [
             candidate["id"]
             for candidate in medium["candidates"]
-            if candidate.get("selection_status") == "primary-fixture"
+            if candidate.get("selection_status") in {"primary-fixture", "production-fixture"}
         ]
-        self.assertEqual(medium_active, ["medium-beetbox-beets"])
+        self.assertEqual(medium_active, ["medium-fastify-fastify", "medium-beetbox-beets"])
         large = json.loads((ROOT / "data/large-project-candidates.json").read_text())
-        self.assertFalse(
-            any(candidate.get("selection_status") == "primary-fixture" for candidate in large["candidates"])
+        self.assertEqual(
+            [candidate["id"] for candidate in large["candidates"] if candidate.get("selection_status") == "production-fixture"],
+            ["large-hashicorp-terraform"],
         )
 
     def test_validator_does_not_hardcode_active_sequence_ids(self) -> None:
@@ -403,7 +376,7 @@ class SeedDeliveryContractTest(unittest.TestCase):
                 "",
             )
 
-    def test_qualification_rejects_concealed_paths_present_in_fixed_snapshot(self) -> None:
+    def test_qualification_detects_concealed_paths_present_in_fixed_snapshot(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             checkout = Path(tmp)
             collision = checkout / "test/controller_hidden/collision.py"
@@ -424,6 +397,13 @@ class SeedDeliveryContractTest(unittest.TestCase):
                 ["test/controller_hidden/collision.py"],
             )
 
+    def test_terraform_concealed_collisions_are_byte_exact_controller_copies(self) -> None:
+        sequence = runner.load_sequence("terraform-maintenance-sequence-v2")
+        checkout = ROOT / "sources/evaluations/fixtures/large/hashicorp-terraform/repo"
+        audit = qualification.concealed_path_collision_audit(checkout, sequence)
+        self.assertEqual(len(audit), 4)
+        self.assertTrue(all(record["byte_exact"] is True for record in audit), audit)
+
     def test_active_qualifications_prove_composite_broken_start(self) -> None:
         sequences = json.loads((ROOT / "data/workflow-task-sequences.json").read_text())["sequences"]
         for sequence in sequences:
@@ -438,6 +418,7 @@ class SeedDeliveryContractTest(unittest.TestCase):
                 "seeded tasks must fail acceptance, not collection or infrastructure",
             )
             self.assertTrue(qualification["full_fixed_cumulative_verifier_zero"])
+            self.assertTrue(qualification["fixed_snapshot_model_concealed_paths_safe"])
             self.assertTrue(qualification["composite_seed_diff_sha256"])
 
     def test_composite_seed_merge_preserves_independent_regressions(self) -> None:
@@ -1016,8 +997,15 @@ class ManifestAndProtocolContractTest(unittest.TestCase):
         active = [item for item in registry["model_conditions"] if item["status"] == "active-default"]
         self.assertEqual([item["id"] for item in active], ["codex-openai-gpt-5-6-luna-xhigh"])
 
-    def test_active_sequences_use_token_savings_task_subsets(self) -> None:
-        self.assertEqual(runner.active_sequence_ids(), ["beets-lifecycle-sequence-v2"])
+    def test_active_sequences_are_the_three_current_production_lanes(self) -> None:
+        self.assertEqual(
+            runner.active_sequence_ids(),
+            [
+                "fastify-maintenance-sequence-v1",
+                "terraform-maintenance-sequence-v2",
+                "beets-lifecycle-sequence-v2",
+            ],
+        )
         sequence = runner.load_sequence("beets-lifecycle-sequence-v2")
         self.assertEqual(
             [task["id"] for task in sequence["tasks"]],
@@ -1031,7 +1019,7 @@ class ManifestAndProtocolContractTest(unittest.TestCase):
 
     def test_active_sequences_bind_current_qualifications(self) -> None:
         sequence = runner.load_sequence("beets-lifecycle-sequence-v2")
-        self.assertTrue(sequence["qualification_path"].endswith("qualification-lifecycle-v2.json"))
+        self.assertTrue(sequence["qualification_path"].endswith("qualification-lifecycle-v3.json"))
 
     def test_current_protocol_fingerprint_matches_runner(self) -> None:
         sequence = runner.load_sequence("beets-lifecycle-sequence-v2")
