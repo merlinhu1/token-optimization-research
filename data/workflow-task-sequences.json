@@ -103,7 +103,7 @@
       "acceptance_design": "behavioral",
       "scope": "production-primary",
       "readiness_blockers": [],
-      "qualification_path": "sources/evaluations/fixtures/large/hashicorp-terraform/qualification-composite-v7.json",
+      "qualification_path": "sources/evaluations/fixtures/large/hashicorp-terraform/qualification-composite-v8.json",
       "qualification_date": "2026-07-16",
       "fixture_id": "large-hashicorp-terraform",
       "fixture_scale": "large-project",
@@ -138,8 +138,11 @@
           "upstream_test_paths": [
             "internal/terraform/context_plan_test.go"
           ],
-          "compatibility_rebased_test_paths": [],
+          "compatibility_rebased_test_paths": [
+            "internal/grpcwrap/workflow_capabilities_test.go"
+          ],
           "model_concealed_paths": [
+            "internal/grpcwrap/workflow_capabilities_test.go",
             "internal/terraform/context_plan_test.go"
           ]
         },
