@@ -75,7 +75,7 @@ Primary objective claims require `fixture_scale = large-project` or `fixture_sca
 
 A fixture can move from `candidate-fixture` to `qualified-fixture` only when setup, reset, verifier, snapshot, prompt, and artifact path are concrete enough for another operator to freeze a protocol without rereading Phase 1 reports.
 
-A fixture can move to `baseline-run` only after the substrate baseline is stored under `sources/evaluations/<evaluation-id>/` with verifier output and environment notes.
+A fixture can move to `baseline-run` only after its operational baseline is indexed in `data/workflow-sessions.json` and its compact evidence bundle is stored under `sources/evaluations/workflow-sessions/<session-id>/`.
 
 A fixture can move to `treatment-ready` only after baseline artifacts exist and reset behavior is repeatable.
 
@@ -89,4 +89,4 @@ Readiness states stricter than `candidate-fixture` require concrete setup, reset
 
 ## Non-goals
 
-This framework does not run baselines, run treatments, select stack winners, claim provider-reported token reductions, or promote tool evidence stages. Those actions belong in later progressive evaluation changes with frozen protocols.
+This framework does not run baselines or treatments, select winners, or claim provider-token reductions. Those actions belong to the lifecycle-v0 workflow runner with frozen protocols and compact session records.

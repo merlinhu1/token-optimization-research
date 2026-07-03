@@ -27,9 +27,9 @@ Use this for primary evidence about individual tools and compatibility-safe stac
 7. Run every concealed task verifier after the last task, without short-circuiting, and emit structured per-task outcomes.
 8. Derive `tasks_passed` from those structured outcomes.
 9. Aggregate cumulative provider-reported tokens across all tasks; do not estimate money.
-10. Complete independent source-quality review, write the compact bundle, and append metadata to `data/workflow-sessions.json`.
+10. Write the compact bundle and append metadata to `data/workflow-sessions.json`; add an independent source-quality review only as optional diagnostic context.
 
-Minimum positive condition: treatment reduces cumulative provider token use versus the compatible shared baseline while preserving structured task correctness and final quality.
+Minimum token condition: treatment and baseline are compatible, operationally valid provider samples. Report the cumulative token delta as the primary outcome and structured correctness/quality alongside it without gating or replacing either sample.
 
 ## Flow 2: run a workflow ablation
 

@@ -73,7 +73,7 @@ High-signal lead indicators include any of:
 - `lead`: search result, metadata, README, package metadata, or catalog entry only.
 - `source-logic`: representative source code logic, runtime behavior, and failure behavior inspected.
 - `benchmark-audit`: benchmark harness, tasks, scoring, token accounting, raw outputs, and failure semantics inspected.
-- `reproduction`: independent target-workload reproduction with provider-billed accounting and quality gates.
+- `reproduction`: independent target-workload reproduction with complete provider-reported accounting and execution integrity; verifier and optional review outcomes remain separate diagnostics.
 
 Do not use retired `surface/moderate/deep` wording for decision confidence. Those terms describe reading effort, not evidence stage.
 

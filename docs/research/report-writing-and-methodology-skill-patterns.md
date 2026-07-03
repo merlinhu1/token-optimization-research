@@ -57,9 +57,9 @@ Checklist:
 
 1. Define hypothesis using `X improves Y for workload Z`.
 2. Freeze repository fixture, prompt, baseline, treatment profile, and model/provider.
-3. Declare token accounting boundary and quality gates.
-4. Declare expected failure modes and exclusion rules before running.
-5. Store the protocol under `sources/evaluations/<evaluation-id>/task.md` or `profile.md`.
+3. Declare the complete provider-token accounting boundary, execution-integrity conditions, and separate model-behavior diagnostics.
+4. Declare fixture/contract invalidity and operational exclusion rules before running.
+5. Freeze the lifecycle protocol under `sources/evaluations/protocols/`; current execution state and compact evidence are indexed by `data/workflow-sessions.json`.
 
 ### 3. Stack ablation planner
 
@@ -130,23 +130,24 @@ Recommended visuals:
 |---|---|
 | `docs/reports/phase-1-compatibility-safe-token-saving-stacks.md` | Add claim-evidence and falsification discipline; keep stack hypotheses evidence-stage calibrated and not deployment-grade. |
 | `docs/evaluations/phase-2-benchmark-plan.md` | Use protocol-before-result, ablation planning, and benchmark configuration capture. |
-| `docs/evaluations/token-usage-and-quality-standards.md` | Add provider-reported workflow-token accounting and software-quality acceptance criteria. |
-| `docs/evaluations/immediately-usable-flows.md` | Convert generic methodology into execution flows with artifacts and minimum pass conditions. |
-| `templates/evaluation-record.md` | Record claims, metrics, quality gates, and raw artifact paths in one structured record. |
+| `docs/evaluations/token-usage-and-quality-standards.md` | Keep provider-reported workflow-token eligibility separate from model-behavior diagnostics. |
+| `docs/evaluations/immediately-usable-flows.md` | Convert methodology into lifecycle-v0 execution flows with compact artifacts and operational validity checks. |
+| `data/workflow-sessions.json` | Store the compact index of operational provider runs and their separate quality diagnostics. |
 | `prompts/paper-writer.md` | Enforce narrative, reverse outline, claim-evidence map, and citation-light prior-art rules. |
-| `prompts/evaluator.md` | Enforce protocol-before-result, baseline parity, ablations, and software-quality review. |
+| `prompts/evaluator.md` | Enforce protocol-before-result, baseline compatibility, token-first comparison, and post-run document synchronization. |
 
-## Immediate recommendation
+## Current operating recommendation
 
-Before Phase 2 experiments start, use this operating sequence:
+For lifecycle-v0 research:
 
-1. Draft a benchmark protocol using `templates/evaluation-task.md`.
-2. Run claim-evidence audit on the Phase 1 report to identify claims that need benchmark-audit first.
-3. Select one terminal-output compactor, one retrieval stack, one full add-on stack, and one replacement-agent profile for initial benchmark-audit.
-4. For each, run benchmark-audit before reproduction.
-5. After each run, update `data/evaluations.json`, the relevant dossier, and the Phase 2 findings narrative.
+1. Reuse the retained operational baseline for each active sequence; do not rerun it for a better diagnostic outcome.
+2. Freeze a compatible treatment protocol and verify tool identity, isolation, and fixture qualification before provider use.
+3. Run one treatment through `scripts/run_sequential_workflow_matrix.py` and retain the first operationally valid sample.
+4. Compare cumulative provider-reported tokens as the primary outcome; report verifier and optional source-review outcomes separately.
+5. Update `data/workflow-sessions.json`, fixture state, generated runbook, current findings, and any active prompt or method surface affected by the run.
+6. Delete superseded workflow guidance instead of maintaining two architectures.
 
-The resulting Phase 2 report should be concise and evidence-forward: fewer citations, more protocol, raw artifacts, provider-reported token usage, verifier output, quality review, ablations, and negative findings.
+The Phase 2 report should be concise and evidence-forward: fewer citations, more protocol, compact raw artifacts, provider-reported token usage, verifier diagnostics, optional review context, ablations, and negative findings.
 ## Installed repo-local skills
 
 The recommended internal skills are installed as repo-local prompt files under `.agents/skills/` and surfaced through `AGENTS.md`:
@@ -165,6 +166,6 @@ These files are intentionally repo-local rather than global Hermes skills so the
 
 Truthmark is installed as a repo-local research-truth workflow layer.
 
-Durable methodology, evidence-stage, token-accounting, quality-gate, stack-compatibility, current-finding, and agent-workflow claims live under `docs/truthmark/engineering/research/`.
+Durable methodology, evidence-stage, token-accounting, quality-diagnostic, stack-compatibility, current-finding, and agent-workflow claims live under `docs/truthmark/engineering/research/`.
 
 Raw `sources/**` artifacts remain evidence archives, not canonical truth docs.

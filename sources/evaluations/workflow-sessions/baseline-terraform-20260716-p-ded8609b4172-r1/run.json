@@ -1,0 +1,306 @@
+{
+  "session_id": "baseline-terraform-20260716-p-ded8609b4172-r1",
+  "study_id": "phase-2-sequential-workflow-v1",
+  "experiment_group_id": "hashicorp-terraform-canonical-baseline-ded8609b4172-sequential-workflow-r1",
+  "replicate_index": 1,
+  "frozen_protocol": {
+    "protocol_id": "terraform-lifecycle-sequence-v0-baseline-bare-codex-16d788db8424",
+    "path": "sources/evaluations/protocols/terraform-lifecycle-sequence-v0-baseline-bare-codex-16d788db8424.json",
+    "sha256": "e40bdb8bc2bb0c3a12c7cfc62d0e122da0ba1be1b1c2d7aac043f73b5a85df92"
+  },
+  "baseline_pool": {
+    "protocol_version": "baseline-pool-v1",
+    "protocol_fingerprint": "ded8609b4172",
+    "identity_policy": "frozen-protocol-and-replicate; execution date is metadata only"
+  },
+  "selected_execution": {
+    "descriptor_sha256": "e36031c35439af5ad01bb1e628ead159d67bb35039f567cea6e69dc178186d55",
+    "descriptor": {
+      "version": "execution-condition-v1",
+      "sequence_id": "terraform-lifecycle-sequence-v0",
+      "execution_role": "baseline",
+      "selected_profile": {
+        "profile_id": "baseline-bare-codex",
+        "profile_type": "control",
+        "component_ids": [],
+        "enabled_surfaces": [
+          "codex-native-shell-edit"
+        ],
+        "disabled_overlaps": [
+          "all MCP servers",
+          "all token-saving surfaces",
+          "global Codex instructions",
+          "hooks",
+          "skills/plugins",
+          "warm indexes"
+        ],
+        "registry_entry_sha256": "ac6fe54b3c2150c70deb4e8c22a742e18e6f377ecbc25617053b55c557b6dea6",
+        "registry_entry": {
+          "id": "baseline-bare-codex",
+          "profile_type": "control",
+          "objective_scope": "control",
+          "status": "active-control",
+          "substrate": "codex-cli",
+          "enabled_surfaces": [
+            "codex-native-shell-edit"
+          ],
+          "disabled_overlaps": [
+            "all MCP servers",
+            "all token-saving surfaces",
+            "global Codex instructions",
+            "hooks",
+            "skills/plugins",
+            "warm indexes"
+          ],
+          "components": [],
+          "native_agent_tools_allowed": [
+            "shell_command_execution",
+            "file_editing",
+            "plain_file_read_search",
+            "git",
+            "verifier_commands"
+          ],
+          "forbidden_surfaces": [
+            "lean-ctx",
+            "codegraph",
+            "serena",
+            "rtk",
+            "lowfat",
+            "tokenjuice",
+            "repomix",
+            "mex",
+            "cavemem",
+            "cartog",
+            "all unlisted retrieval/compression/memory/token-saving tools"
+          ],
+          "install": {
+            "policy": "Run Codex from a fresh lane-specific CODEX_HOME with auth only, no MCP servers, no global instructions, no hooks, no skills/plugins, isolated HOME/PYTHONUSERBASE/XDG/TMPDIR, and a preflight artifact proving empty MCP config."
+          },
+          "reset": {
+            "policy": "Delete the lane-specific Codex home and run-local HOME/PYTHONUSERBASE/XDG/TMPDIR before each run; verify no stale indexes or generated profile files survive."
+          },
+          "notes": "Canonical Codex CLI no-MCP substrate baseline. Codex native shell/edit/file/git/verifier operations are allowed; MCP, retrieval, compression, memory, token-saving add-ons, global instructions, hooks, skills/plugins, and warm indexes are forbidden."
+        }
+      },
+      "model_facing_prompts": {
+        "rendering_contract": "sequential-model-facing-prompts-v2",
+        "profile_guidance_sha256": "f1d7a2cf7b0a7c1affd8bbb04705f073332ee6efc5f8f89f019b9e0cbacec4bb",
+        "tasks": [
+          {
+            "task_id": "terraform-lifecycle-feature-v0",
+            "order": 1,
+            "rendered_prompt_sha256": "f62f320d52a2dd5772c3335f76cb8526d110c294fe08a64e01289d9f6d364bfa"
+          },
+          {
+            "task_id": "terraform-lifecycle-refactor-v0",
+            "order": 2,
+            "rendered_prompt_sha256": "03c5f1278ec60898809f305121a8f121a3d203b1e07aeae982bef888faaddbda"
+          },
+          {
+            "task_id": "terraform-lifecycle-review-v0",
+            "order": 3,
+            "rendered_prompt_sha256": "d6f5dea173dfd749ca1646b9fa87f0f2dbaa5bcb2409937395ca1ff50fcfad91"
+          }
+        ]
+      },
+      "tool_adapter": {
+        "tool_id": null,
+        "tool_manifest": "baseline-native-codex-tools",
+        "tool_config": null,
+        "binary_identity": null,
+        "source_identity": []
+      },
+      "runtime": {
+        "docker_image": "token-eval-codex:latest",
+        "docker_image_identity": {
+          "image_ref": "token-eval-codex:latest",
+          "image_id": "sha256:6f86d01f2c63f5029c6bb874d8f3694c24d5cd567e3d09413eccc956ba3feafe",
+          "repo_digests": [
+            "token-eval-codex@sha256:6f86d01f2c63f5029c6bb874d8f3694c24d5cd567e3d09413eccc956ba3feafe"
+          ],
+          "repo_tags": [
+            "token-eval-codex:latest"
+          ]
+        },
+        "dockerfile_path": "sources/evaluations/fixtures/container/Dockerfile",
+        "dockerfile_sha256": "47c91967ce25014ce54879514f51d2ff0326651be1087209115eff4d358226b3",
+        "fixture_runner_path": "scripts/run_codex_fixture_evaluation.py",
+        "fixture_runner_sha256": "6b8058a84891d2919a2583fb73d7ae78c72504476c1e0abe2ba9b4eda605eae3",
+        "codex_entrypoint_path": "sources/evaluations/fixtures/container/codex-entrypoint.sh",
+        "codex_entrypoint_sha256": "8715fe37cb1fa3823f5f05493bc9681ce7ffc72126dfec4d64d448762c550c3c",
+        "timeout_seconds_per_task": 3600,
+        "network_isolation": {
+          "provider_access": true,
+          "model_shell_network_access": false,
+          "model_shell_enforcement": "seccomp denies AF_INET and AF_INET6 socket creation for the shell process and descendants",
+          "codex_web_search": "disabled",
+          "external_retrieval_audit": "fail-closed"
+        },
+        "isolation_policy": "fresh lane-specific Codex home/tool data; provider-only network with model shell and Codex web search disabled; sequential one-task prompt delivery; concealed tests removed before model-visible root commit"
+      },
+      "dependencies": {
+        "command": "go mod download",
+        "command_sha256": "42a8263a643ccbe692d70752ffdd8cea328fc2d3190677df1485ee06f55b350a",
+        "lockfiles": []
+      },
+      "agent_condition": {
+        "runtime_id": "codex-cli",
+        "provider": "openai",
+        "model": "gpt-5.6-luna",
+        "model_condition_id": "codex-openai-gpt-5-6-luna-xhigh",
+        "reasoning_effort": "xhigh",
+        "codex_version_condition": "captured-at-run-and-bound-to-record"
+      },
+      "isolation": {
+        "prompt_delivery": "sequential-one-task-at-a-time",
+        "seed_delivery_mode": "preseeded-composite",
+        "future_tasks_visible": false,
+        "future_seed_regressions_visible": true,
+        "controller_verification": "final-only",
+        "verifier_assets_model_visible": false,
+        "model_concealed_paths": [
+          "internal/cloud/backend_tfPolicyEvaluation_test.go",
+          "internal/cloud/lifecycle_v0_policy_summary_test.go",
+          "internal/policy/callback/lifecycle_v0_deferred_callbacks_test.go"
+        ]
+      },
+      "baseline_pool_reference": {
+        "protocol_version": "baseline-pool-v1",
+        "protocol_fingerprint": "ded8609b4172",
+        "comparison_policy": "paired baseline and treatment must share this baseline pool fingerprint and replicate"
+      }
+    }
+  },
+  "docker_image_identity": {
+    "image_ref": "token-eval-codex:latest",
+    "image_id": "sha256:6f86d01f2c63f5029c6bb874d8f3694c24d5cd567e3d09413eccc956ba3feafe",
+    "repo_digests": [
+      "token-eval-codex@sha256:6f86d01f2c63f5029c6bb874d8f3694c24d5cd567e3d09413eccc956ba3feafe"
+    ],
+    "repo_tags": [
+      "token-eval-codex:latest"
+    ]
+  },
+  "tool_adapter_identity": null,
+  "profile_id": "baseline-bare-codex",
+  "workflow_sequence_id": "terraform-lifecycle-sequence-v0",
+  "fixture_id": "large-hashicorp-terraform",
+  "repository_path": "sources/evaluations/workflow-sessions/baseline-terraform-20260716-p-ded8609b4172-r1/project/repo",
+  "codex_exit_codes": [
+    0,
+    0,
+    0
+  ],
+  "final_verifier_exit_code": 0,
+  "tool_isolation_audit_exit_code": 0,
+  "verifier_integrity_passed": true,
+  "thread_continuity_errors": [],
+  "seed_delivery": {
+    "mode": "preseeded-composite",
+    "future_seed_regressions_visible": true,
+    "preseeded_task_orders": [
+      1,
+      2,
+      3
+    ],
+    "pending_seed_orders": []
+  },
+  "accepted": true,
+  "timeout_seconds": 10800,
+  "codex_version": "codex-cli 0.144.0",
+  "token_usage": {
+    "fresh_input_tokens": 977127,
+    "cached_input_tokens": 42297344,
+    "cache_write_tokens": null,
+    "output_tokens": 117853,
+    "reasoning_tokens": 54468,
+    "total_provider_tokens": 43392324
+  },
+  "usage_warnings": [],
+  "per_task_results": [
+    {
+      "task_id": "terraform-lifecycle-feature-v0",
+      "task_class": "feature-implementation",
+      "task_alias": "task-01",
+      "order": 1,
+      "agent_attempted": true,
+      "codex_exit_code": 0,
+      "controller_verification": "passed",
+      "accepted": true,
+      "task_delta": "sources/evaluations/workflow-sessions/baseline-terraform-20260716-p-ded8609b4172-r1/task-01-agent.diff",
+      "usage_events": "sources/evaluations/workflow-sessions/baseline-terraform-20260716-p-ded8609b4172-r1/task-01-codex-events.jsonl",
+      "operational_retry_count": 0,
+      "verifier_exit_code": 0,
+      "verifier_passed": true
+    },
+    {
+      "task_id": "terraform-lifecycle-refactor-v0",
+      "task_class": "behavior-preserving-refactor",
+      "task_alias": "task-02",
+      "order": 2,
+      "agent_attempted": true,
+      "codex_exit_code": 0,
+      "controller_verification": "passed",
+      "accepted": true,
+      "task_delta": "sources/evaluations/workflow-sessions/baseline-terraform-20260716-p-ded8609b4172-r1/task-02-agent.diff",
+      "usage_events": "sources/evaluations/workflow-sessions/baseline-terraform-20260716-p-ded8609b4172-r1/task-02-codex-events.jsonl",
+      "operational_retry_count": 0,
+      "verifier_exit_code": 0,
+      "verifier_passed": true
+    },
+    {
+      "task_id": "terraform-lifecycle-review-v0",
+      "task_class": "code-review-correction",
+      "task_alias": "task-03",
+      "order": 3,
+      "agent_attempted": true,
+      "codex_exit_code": 0,
+      "controller_verification": "passed",
+      "accepted": true,
+      "task_delta": "sources/evaluations/workflow-sessions/baseline-terraform-20260716-p-ded8609b4172-r1/task-03-agent.diff",
+      "usage_events": "sources/evaluations/workflow-sessions/baseline-terraform-20260716-p-ded8609b4172-r1/task-03-codex-events.jsonl",
+      "operational_retry_count": 0,
+      "verifier_exit_code": 0,
+      "verifier_passed": true
+    }
+  ],
+  "prompt_delivery": {
+    "mode": "sequential-one-task-at-a-time",
+    "future_tasks_visible": false,
+    "future_prompts_materialized_lazily": true,
+    "seed_delivery_mode": "preseeded-composite",
+    "future_seed_regressions_visible": true,
+    "controller_verification": "final-only",
+    "codex_thread_id": "019f6ac7-8777-7140-a8ac-2421ada8b2a0",
+    "task_prompt_evidence": "sources/evaluations/workflow-sessions/baseline-terraform-20260716-p-ded8609b4172-r1/evidence.jsonl.gz"
+  },
+  "leakage_controls": {
+    "seed_origin_concealed": true,
+    "seed_patches_model_visible": false,
+    "git_baseline_true_root_at_lane_start": true,
+    "fixed_snapshot_objects_model_visible": false,
+    "pre_seed_reflog_entries_visible": false,
+    "concealment_verification_passed": true,
+    "task_directories_model_visible": false,
+    "verifier_assets_model_visible": false,
+    "model_writable_surface": "target repository plus isolated model-output directory",
+    "verifier_integrity_passed": true,
+    "verifier_integrity_evidence": "sources/evaluations/workflow-sessions/baseline-terraform-20260716-p-ded8609b4172-r1/evidence.jsonl.gz#verifier-integrity.json",
+    "model_prompts_sanitized": true,
+    "upstream_remote_removed_from_model_facing_repo": true,
+    "broken_start_committed_as_local_baseline": true,
+    "remaining_limitations": [
+      "Future regression code is present from lane start, while future prompts and concealed acceptance assets remain controller-only.",
+      "Task semantics and verifier names may still be searchable if the model intentionally uses external network access."
+    ]
+  },
+  "artifacts": {
+    "artifact_contract": "compact-v1-four-files",
+    "run_record": "sources/evaluations/workflow-sessions/baseline-terraform-20260716-p-ded8609b4172-r1/run.json",
+    "final_diff": "sources/evaluations/workflow-sessions/baseline-terraform-20260716-p-ded8609b4172-r1/changes.diff",
+    "final_diff_basis": "ordered cumulative checkpoints plus final cumulative source diff from one composite root",
+    "evidence_bundle": "sources/evaluations/workflow-sessions/baseline-terraform-20260716-p-ded8609b4172-r1/evidence.jsonl.gz",
+    "manifest": "sources/evaluations/workflow-sessions/baseline-terraform-20260716-p-ded8609b4172-r1/manifest.sha256"
+  },
+  "run_dir": "sources/evaluations/workflow-sessions/baseline-terraform-20260716-p-ded8609b4172-r1"
+}

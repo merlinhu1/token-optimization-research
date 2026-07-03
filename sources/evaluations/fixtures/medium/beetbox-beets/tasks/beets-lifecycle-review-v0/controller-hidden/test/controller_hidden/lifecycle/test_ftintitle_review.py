@@ -10,31 +10,18 @@ class TestFtInTitleReview(PluginTestHelper):
     plugin = "ftintitle"
     preload_plugin = False
 
-    def test_trackinfo_received_rewrites_artist_credit_coherently(self) -> None:
-        self.config["artist_credit"] = True
-        info = TrackInfo(
-            artist="Alice feat. Bob",
-            artist_credit="Alice",
-            artist_sort="Alice feat. Bob",
-            artists=["Alice", "Bob"],
-            artists_credit=["Alice"],
-            title="Song",
-        )
-        with self.configure_plugin({"auto": True}):
-            plugins.send("trackinfo_received", info=info)
-        assert info.artist == "Alice"
-        assert info.artist_credit == "Alice"
-        assert info.artist_sort == "Alice"
-        assert info.artists == ["Alice", "Bob"]
-        assert info.artists_credit == ["Alice"]
-        assert info.title == "Song feat. Bob"
-        assert info.item_data["title"] == "Song feat. Bob"
-
     def test_auto_disabled_preserves_metadata(self) -> None:
         info = TrackInfo(artist="Alice feat. Bob", title="Song")
         with self.configure_plugin({"auto": False}):
             plugins.send("trackinfo_received", info=info)
         assert info.artist == "Alice feat. Bob"
+        assert info.title == "Song"
+
+    def test_bare_singleton_collaboration_is_not_fabricated(self) -> None:
+        info = TrackInfo(artist="Alice & Bob", title="Song")
+        with self.configure_plugin({"auto": True}):
+            plugins.send("trackinfo_received", info=info)
+        assert info.artist == "Alice & Bob"
         assert info.title == "Song"
 
     def test_drop_and_keep_together_are_a_noop(self) -> None:

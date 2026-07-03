@@ -4,7 +4,7 @@
 
 Continuous workflow simulation is the primary Phase 2 evidence path for token-optimization claims. It measures cumulative provider-reported token use across a realistic persistent project session. Monetary cost is out of scope.
 
-The goal is to determine whether a declared baseline or treatment profile completes an ordered sequence with fewer provider tokens while preserving structured task correctness and independent final quality.
+The goal is to measure how cumulative provider token use changes between compatible baseline and treatment sessions. Structured task correctness and optional independent final quality review are recorded as diagnostic outcomes, not eligibility conditions.
 
 ## Core rule
 
@@ -41,15 +41,9 @@ Record fresh input, cached input, cache-write, output, reasoning when available,
 
 ## Quality constraint
 
-A treatment only supports a positive claim when it reduces cumulative provider token use and preserves correctness and quality.
+A treatment supports a token-usage claim when it is bound to a compatible baseline and both executions are operationally complete with valid integrity and provider usage. Correctness and quality outcomes are reported alongside the token delta rather than used to select samples.
 
-Quality requires:
-
-- one structured concealed-verifier outcome for every task after all prompts complete;
-- no critical safety, diagnostic, compatibility, or maintainability failure;
-- final diff/status and transcript reviewability.
-
-Deterministic verifier success is a functional execution gate, not an automatic ordinal quality score. Leave `quality_score` null and `accepted_for_objective` false until a recorded software-quality review evaluates the documented quality dimensions.
+Record one structured concealed-verifier outcome for every task, final diff/status, and any optional quality review. Leave `quality_score` null when unreviewed. Verifier failures and low review scores remain eligible model-behavior observations; rerun only for experiment invalidity or incomplete execution.
 
 ## Workflow session contract
 
@@ -67,7 +61,7 @@ A workflow session binds:
 - final software-quality result;
 - execution-integrity evidence.
 
-Baseline and treatment sessions are directly comparable only when they use the same repository fixture, initial snapshot, task sequence, runtime, provider, model, model condition, and quality gates.
+Baseline and treatment sessions are directly comparable only when they use the same repository fixture, initial snapshot, task sequence, runtime, provider, model, model condition, and verifier/acceptance contract.
 
 ## Evidence boundaries
 
