@@ -191,7 +191,7 @@ Code surface:
 
 Update truth when:
 - repo-local agent instructions, installed local skills, Truthmark routing, or validation workflow changes
-- future agents need a different maintenance sequence for research-truth work
+- future agents need a different change sequence for research-truth work
 
 ## Research Route Support
 

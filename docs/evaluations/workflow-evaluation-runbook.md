@@ -21,9 +21,9 @@ Every active task must use causally related behavioral acceptance. Unrelated exa
 
 | Sequence | Fixture | Scale | Snapshot | Tasks |
 |---|---|---|---|---:|
-| `fastify-maintenance-sequence-v1` | `medium-fastify-fastify` | medium-project | [`94bcbcc6e2ef`](https://github.com/fastify/fastify.git) | 5 |
-| `terraform-maintenance-sequence-v2` | `large-hashicorp-terraform` | large-project | [`e02391ad384c`](https://github.com/hashicorp/terraform.git) | 3 |
-| `beets-lifecycle-sequence-v2` | `medium-beetbox-beets` | medium-project | [`9acb1ecff6c7`](https://github.com/beetbox/beets.git) | 3 |
+| `fastify-lifecycle-sequence-v0` | `medium-fastify-fastify` | medium-project | [`94bcbcc6e2ef`](https://github.com/fastify/fastify.git) | 3 |
+| `beets-lifecycle-sequence-v0` | `medium-beetbox-beets` | medium-project | [`9acb1ecff6c7`](https://github.com/beetbox/beets.git) | 3 |
+| `terraform-lifecycle-sequence-v0` | `large-hashicorp-terraform` | large-project | [`e02391ad384c`](https://github.com/hashicorp/terraform.git) | 3 |
 
 ## Planned candidates and blockers
 
@@ -55,55 +55,53 @@ python3 scripts/run_sequential_workflow_matrix.py --prepare-only "$SEQUENCE_ID"
 Freeze one protocol per active lane, run no-model preparation for all current production lanes, then run each canonical baseline:
 
 ```bash
-python3 scripts/run_sequential_workflow_matrix.py fastify-maintenance-sequence-v1 --prepare-only
-python3 scripts/run_sequential_workflow_matrix.py terraform-maintenance-sequence-v2 --prepare-only
-python3 scripts/run_sequential_workflow_matrix.py beets-lifecycle-sequence-v2 --prepare-only
-python3 scripts/run_sequential_workflow_matrix.py fastify-maintenance-sequence-v1
-python3 scripts/run_sequential_workflow_matrix.py terraform-maintenance-sequence-v2
-python3 scripts/run_sequential_workflow_matrix.py beets-lifecycle-sequence-v2
+python3 scripts/run_sequential_workflow_matrix.py fastify-lifecycle-sequence-v0 --prepare-only
+python3 scripts/run_sequential_workflow_matrix.py beets-lifecycle-sequence-v0 --prepare-only
+python3 scripts/run_sequential_workflow_matrix.py terraform-lifecycle-sequence-v0 --prepare-only
+python3 scripts/run_sequential_workflow_matrix.py fastify-lifecycle-sequence-v0
+python3 scripts/run_sequential_workflow_matrix.py beets-lifecycle-sequence-v0
+python3 scripts/run_sequential_workflow_matrix.py terraform-lifecycle-sequence-v0
 ```
 
 After a lane has a reviewed reusable baseline, launch its matched treatment with `python3 scripts/run_sequential_workflow_matrix.py <sequence-id> --treatment-profile <profile-id>`. Stop before treatment if that lane's baseline fails any frozen gate.
 
 ## Active sequence details
 
-### `fastify-maintenance-sequence-v1`
+### `fastify-lifecycle-sequence-v0`
 
 - Fixture: `medium-fastify-fastify`
 - Primary metric: cumulative provider-reported workflow tokens
-- Reset policy: Reset once before the lane; preseed all regressions into one concealed composite root; preserve source, Git, tool, index, cache, generated config, memory, and agent state across prompts; run concealed functional verification once at the end.
+- Reset policy: Reset once before the lane; preseed the missing feature, behavior-preserving structural debt, and flawed review candidate into one concealed composite root; preserve repository, Git, tool, index, cache, generated configuration, memory, and agent state across prompts; run every concealed verifier after the final prompt.
 
 | Order | Task | Prompt | Verifier |
 |---:|---|---|---|
-| 1 | `fastify-max-param-length-regression` | `sources/evaluations/fixtures/medium/fastify-fastify/tasks/fastify-max-param-length-regression/agent-prompt.txt` | `sources/evaluations/fixtures/medium/fastify-fastify/tasks/fastify-max-param-length-regression/verify.sh` |
-| 2 | `fastify-handler-timeout-regression` | `sources/evaluations/fixtures/medium/fastify-fastify/tasks/fastify-handler-timeout-regression/agent-prompt.txt` | `sources/evaluations/fixtures/medium/fastify-fastify/tasks/fastify-handler-timeout-regression/verify.sh` |
-| 3 | `fastify-request-media-type-regression` | `sources/evaluations/fixtures/medium/fastify-fastify/tasks/fastify-request-media-type-regression/agent-prompt.txt` | `sources/evaluations/fixtures/medium/fastify-fastify/tasks/fastify-request-media-type-regression/verify.sh` |
-| 4 | `fastify-log-controller-regression` | `sources/evaluations/fixtures/medium/fastify-fastify/tasks/fastify-log-controller-regression/agent-prompt.txt` | `sources/evaluations/fixtures/medium/fastify-fastify/tasks/fastify-log-controller-regression/verify.sh` |
-| 5 | `fastify-content-type-semantics-regression` | `sources/evaluations/fixtures/medium/fastify-fastify/tasks/fastify-content-type-semantics-regression/agent-prompt.txt` | `sources/evaluations/fixtures/medium/fastify-fastify/tasks/fastify-content-type-semantics-regression/verify.sh` |
+| 1 | `fastify-lifecycle-feature-v0` | `sources/evaluations/fixtures/medium/fastify-fastify/tasks/fastify-lifecycle-feature-v0/agent-prompt.txt` | `sources/evaluations/fixtures/medium/fastify-fastify/tasks/fastify-lifecycle-feature-v0/verify.sh` |
+| 2 | `fastify-lifecycle-refactor-v0` | `sources/evaluations/fixtures/medium/fastify-fastify/tasks/fastify-lifecycle-refactor-v0/agent-prompt.txt` | `sources/evaluations/fixtures/medium/fastify-fastify/tasks/fastify-lifecycle-refactor-v0/verify.sh` |
+| 3 | `fastify-lifecycle-review-v0` | `sources/evaluations/fixtures/medium/fastify-fastify/tasks/fastify-lifecycle-review-v0/agent-prompt.txt` | `sources/evaluations/fixtures/medium/fastify-fastify/tasks/fastify-lifecycle-review-v0/verify.sh` |
 
-### `terraform-maintenance-sequence-v2`
-
-- Fixture: `large-hashicorp-terraform`
-- Primary metric: cumulative provider-reported workflow tokens
-- Reset policy: Reset once before the lane; preseed all regressions into one concealed composite root; preserve source, Git, tool, index, cache, generated config, memory, and agent state across prompts; run concealed functional verification once at the end.
-
-| Order | Task | Prompt | Verifier |
-|---:|---|---|---|
-| 1 | `terraform-161ffe-tracing-context-regression` | `sources/evaluations/fixtures/large/hashicorp-terraform/tasks/terraform-161ffe-tracing-context-regression/agent-prompt.txt` | `sources/evaluations/fixtures/large/hashicorp-terraform/tasks/terraform-161ffe-tracing-context-regression/verify.sh` |
-| 2 | `terraform-520378-computed-block-capabilities-regression` | `sources/evaluations/fixtures/large/hashicorp-terraform/tasks/terraform-520378-computed-block-capabilities-regression/agent-prompt.txt` | `sources/evaluations/fixtures/large/hashicorp-terraform/tasks/terraform-520378-computed-block-capabilities-regression/verify.sh` |
-| 3 | `terraform-9ae470-objchange-validation-regression` | `sources/evaluations/fixtures/large/hashicorp-terraform/tasks/terraform-9ae470-objchange-validation-regression/agent-prompt.txt` | `sources/evaluations/fixtures/large/hashicorp-terraform/tasks/terraform-9ae470-objchange-validation-regression/verify.sh` |
-
-### `beets-lifecycle-sequence-v2`
+### `beets-lifecycle-sequence-v0`
 
 - Fixture: `medium-beetbox-beets`
 - Primary metric: cumulative provider-reported workflow tokens
-- Reset policy: Reset once before the lane; preseed the missing feature, the pre-refactor lazy storage implementation, and the authentic flawed review revision into one concealed composite root; preserve repository and agent state across prompts; run every concealed verifier after the final prompt.
+- Reset policy: Reset once before the lane; preseed the missing feature, behavior-preserving structural debt, and flawed review candidate into one concealed composite root; preserve repository, Git, tool, index, cache, generated configuration, memory, and agent state across prompts; run every concealed verifier after the final prompt.
 
 | Order | Task | Prompt | Verifier |
 |---:|---|---|---|
-| 1 | `beets-lifecycle-multivalue-modify-feature-v2` | `sources/evaluations/fixtures/medium/beetbox-beets/tasks/beets-lifecycle-multivalue-modify-feature-v2/agent-prompt.txt` | `sources/evaluations/fixtures/medium/beetbox-beets/tasks/beets-lifecycle-multivalue-modify-feature-v2/verify.sh` |
-| 2 | `beets-lifecycle-lazy-model-storage-refactor-v2` | `sources/evaluations/fixtures/medium/beetbox-beets/tasks/beets-lifecycle-lazy-model-storage-refactor-v2/agent-prompt.txt` | `sources/evaluations/fixtures/medium/beetbox-beets/tasks/beets-lifecycle-lazy-model-storage-refactor-v2/verify.sh` |
-| 3 | `beets-lifecycle-ftintitle-review-v2` | `sources/evaluations/fixtures/medium/beetbox-beets/tasks/beets-lifecycle-ftintitle-review-v2/agent-prompt.txt` | `sources/evaluations/fixtures/medium/beetbox-beets/tasks/beets-lifecycle-ftintitle-review-v2/verify.sh` |
+| 1 | `beets-lifecycle-feature-v0` | `sources/evaluations/fixtures/medium/beetbox-beets/tasks/beets-lifecycle-feature-v0/agent-prompt.txt` | `sources/evaluations/fixtures/medium/beetbox-beets/tasks/beets-lifecycle-feature-v0/verify.sh` |
+| 2 | `beets-lifecycle-refactor-v0` | `sources/evaluations/fixtures/medium/beetbox-beets/tasks/beets-lifecycle-refactor-v0/agent-prompt.txt` | `sources/evaluations/fixtures/medium/beetbox-beets/tasks/beets-lifecycle-refactor-v0/verify.sh` |
+| 3 | `beets-lifecycle-review-v0` | `sources/evaluations/fixtures/medium/beetbox-beets/tasks/beets-lifecycle-review-v0/agent-prompt.txt` | `sources/evaluations/fixtures/medium/beetbox-beets/tasks/beets-lifecycle-review-v0/verify.sh` |
+
+### `terraform-lifecycle-sequence-v0`
+
+- Fixture: `large-hashicorp-terraform`
+- Primary metric: cumulative provider-reported workflow tokens
+- Reset policy: Reset once before the lane; preseed the missing feature, behavior-preserving structural debt, and flawed review candidate into one concealed composite root; preserve repository, Git, tool, index, cache, generated configuration, memory, and agent state across prompts; run every concealed verifier after the final prompt.
+
+| Order | Task | Prompt | Verifier |
+|---:|---|---|---|
+| 1 | `terraform-lifecycle-feature-v0` | `sources/evaluations/fixtures/large/hashicorp-terraform/tasks/terraform-lifecycle-feature-v0/agent-prompt.txt` | `sources/evaluations/fixtures/large/hashicorp-terraform/tasks/terraform-lifecycle-feature-v0/verify.sh` |
+| 2 | `terraform-lifecycle-refactor-v0` | `sources/evaluations/fixtures/large/hashicorp-terraform/tasks/terraform-lifecycle-refactor-v0/agent-prompt.txt` | `sources/evaluations/fixtures/large/hashicorp-terraform/tasks/terraform-lifecycle-refactor-v0/verify.sh` |
+| 3 | `terraform-lifecycle-review-v0` | `sources/evaluations/fixtures/large/hashicorp-terraform/tasks/terraform-lifecycle-review-v0/agent-prompt.txt` | `sources/evaluations/fixtures/large/hashicorp-terraform/tasks/terraform-lifecycle-review-v0/verify.sh` |
 
 ## Artifact contract
 

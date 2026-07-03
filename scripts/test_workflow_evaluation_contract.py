@@ -4,10 +4,15 @@ import copy
 import hashlib
 import json
 import subprocess
+import sys
 import tempfile
 import unittest
 from pathlib import Path
 from unittest import mock
+
+ROOT = Path(__file__).resolve().parents[1]
+if str(ROOT) not in sys.path:
+    sys.path.insert(0, str(ROOT))
 
 from scripts import generate_workflow_qualification as qualification
 from scripts import refresh_workflow_contracts as contract_refresh
@@ -17,12 +22,11 @@ from scripts import run_sequential_workflow_matrix as matrix
 from scripts import validate_repository
 
 
-ROOT = Path(__file__).resolve().parents[1]
-SEQUENCE_ID = "terraform-maintenance-sequence-v2"
+SEQUENCE_ID = "terraform-lifecycle-sequence-v0"
 
 
 class ActiveCampaignArchitectureTest(unittest.TestCase):
-    def test_primary_lifecycle_sequence_covers_owner_task_mix(self) -> None:
+    def test_all_lifecycle_sequences_cover_the_v0_task_mix(self) -> None:
         sequences = json.loads((ROOT / "data/workflow-task-sequences.json").read_text())["sequences"]
         lifecycle = [
             sequence
@@ -30,41 +34,26 @@ class ActiveCampaignArchitectureTest(unittest.TestCase):
             if sequence.get("status") == "active"
             and sequence.get("sequence_contract") == "feature-refactor-review"
         ]
-        self.assertEqual(len(lifecycle), 1)
-        ordered = sorted(lifecycle[0]["tasks"], key=lambda task: task["order"])
-        self.assertEqual(
-            [task.get("task_class") for task in ordered],
-            [
+        self.assertEqual(len(lifecycle), 3)
+        for sequence in lifecycle:
+            ordered = sorted(sequence["tasks"], key=lambda task: task["order"])
+            expected_classes = [
                 "feature-implementation",
                 "behavior-preserving-refactor",
                 "code-review-correction",
-            ],
-        )
-        descriptor = runner.baseline_protocol_descriptor(lifecycle[0])
-        self.assertEqual(descriptor.get("sequence_contract"), "feature-refactor-review")
-        self.assertEqual(
-            [task.get("task_class") for task in descriptor["tasks"]],
-            [
-                "feature-implementation",
-                "behavior-preserving-refactor",
-                "code-review-correction",
-            ],
-        )
-        self.assertEqual(
-            [task["id"] for task in ordered],
-            [
-                "beets-lifecycle-multivalue-modify-feature-v2",
-                "beets-lifecycle-lazy-model-storage-refactor-v2",
-                "beets-lifecycle-ftintitle-review-v2",
-            ],
-        )
-        review_task = ordered[2]
-        self.assertEqual(review_task["review_patch_path"], "review-change.patch")
-        self.assertIn("review_patch_sha256", descriptor["tasks"][2])
-        self.assertNotIn("review_patch_sha256", descriptor["tasks"][0])
+            ]
+            self.assertEqual([task["task_class"] for task in ordered], expected_classes)
+            self.assertTrue(all(task["id"].endswith("-v0") for task in ordered))
+            descriptor = runner.baseline_protocol_descriptor(sequence)
+            self.assertEqual(descriptor["sequence_contract"], "feature-refactor-review")
+            self.assertEqual([task["task_class"] for task in descriptor["tasks"]], expected_classes)
+            review_task = ordered[2]
+            self.assertEqual(review_task["review_patch_path"], "review-change.patch")
+            self.assertIn("review_patch_sha256", descriptor["tasks"][2])
+            self.assertNotIn("review_patch_sha256", descriptor["tasks"][0])
 
     def test_review_patch_is_disclosed_only_with_the_review_prompt(self) -> None:
-        sequence = runner.load_sequence("beets-lifecycle-sequence-v2")
+        sequence = runner.load_sequence("beets-lifecycle-sequence-v0")
         review_task = sorted(sequence["tasks"], key=lambda task: task["order"])[2]
         source_dir = (ROOT / review_task["prompt_path"]).parent
         with tempfile.TemporaryDirectory() as tmp:
@@ -84,12 +73,12 @@ class ActiveCampaignArchitectureTest(unittest.TestCase):
         self.assertIn("diff --git", review)
 
     def test_refactor_qualification_separates_behavior_and_structure(self) -> None:
-        sequence = runner.load_sequence("beets-lifecycle-sequence-v2")
+        sequence = runner.load_sequence("beets-lifecycle-sequence-v0")
         qualification = json.loads((ROOT / sequence["qualification_path"]).read_text())
         boundary = next(
             item
             for item in qualification["cumulative_boundaries"]
-            if item["task_id"] == "beets-lifecycle-lazy-model-storage-refactor-v2"
+            if item["task_id"] == "beets-lifecycle-refactor-v0"
         )
         self.assertEqual(boundary["seeded_behavior_exit"], 0)
         self.assertNotEqual(boundary["seeded_structure_exit"], 0)
@@ -129,7 +118,7 @@ class ActiveCampaignArchitectureTest(unittest.TestCase):
         self.assertFalse(any("minimum is 5" in error for error in errors), errors)
 
     def test_active_concealed_paths_are_unique_to_the_controller(self) -> None:
-        sequence = runner.load_sequence("beets-lifecycle-sequence-v2")
+        sequence = runner.load_sequence("beets-lifecycle-sequence-v0")
         qualification_record = json.loads((ROOT / sequence["qualification_path"]).read_text())
         self.assertTrue(qualification_record["fixed_snapshot_model_concealed_paths_absent"])
         for task in sequence["tasks"]:
@@ -139,7 +128,7 @@ class ActiveCampaignArchitectureTest(unittest.TestCase):
             self.assertTrue(task_record["fixed_snapshot_model_concealed_absent"], task_record)
 
     def test_feature_verifier_checks_semantics_not_canonical_error_prose(self) -> None:
-        sequence = runner.load_sequence("beets-lifecycle-sequence-v2")
+        sequence = runner.load_sequence("beets-lifecycle-sequence-v0")
         feature = sorted(sequence["tasks"], key=lambda task: task["order"])[0]
         hidden = next(
             (ROOT / feature["prompt_path"]).parent.glob("controller-hidden/**/*.py")
@@ -149,7 +138,7 @@ class ActiveCampaignArchitectureTest(unittest.TestCase):
         self.assertIn('assert "+=" in message', hidden)
 
     def test_refactor_verifier_does_not_require_undisclosed_parameter_names(self) -> None:
-        sequence = runner.load_sequence("beets-lifecycle-sequence-v2")
+        sequence = runner.load_sequence("beets-lifecycle-sequence-v0")
         refactor = sorted(sequence["tasks"], key=lambda task: task["order"])[1]
         verifier = (ROOT / refactor["verifier_command"]).read_text()
         self.assertNotIn("inspect.signature", verifier)
@@ -169,9 +158,8 @@ class ActiveCampaignArchitectureTest(unittest.TestCase):
             [fixture["id"] for fixture in active],
             ["medium-fastify-fastify", "medium-beetbox-beets", "large-hashicorp-terraform"],
         )
-        self.assertEqual(active[0]["candidate_profiles"], ["baseline-bare-codex"])
-        self.assertEqual(active[1]["candidate_profiles"], ["baseline-bare-codex", "retrieval-codegraph"])
-        self.assertEqual(active[2]["candidate_profiles"], ["baseline-bare-codex"])
+        for fixture in active:
+            self.assertEqual(fixture["candidate_profiles"], ["baseline-bare-codex", "retrieval-codegraph"])
 
         medium = json.loads((ROOT / "data/medium-project-candidates.json").read_text())
         medium_active = [
@@ -190,7 +178,7 @@ class ActiveCampaignArchitectureTest(unittest.TestCase):
         workflow = json.loads((ROOT / "data/workflow-task-sequences.json").read_text())
         fixtures = json.loads((ROOT / "data/repository-fixtures.json").read_text())
         workflow = copy.deepcopy(workflow)
-        workflow["sequences"][0]["id"] = "replacement-lifecycle-sequence-v1"
+        workflow["sequences"][0]["id"] = "replacement-lifecycle-sequence-v0"
         errors: list[str] = []
         validate_repository.validate_workflow_task_sequences(workflow, fixtures, errors)
         self.assertFalse(
@@ -200,11 +188,11 @@ class ActiveCampaignArchitectureTest(unittest.TestCase):
 
     def test_protocol_ids_are_derived_for_new_sequences(self) -> None:
         sequence = copy.deepcopy(runner.load_sequence(SEQUENCE_ID))
-        sequence["id"] = "replacement-lifecycle-sequence-v1"
+        sequence["id"] = "replacement-lifecycle-sequence-v0"
         protocol_id = contract_refresh.protocol_id(sequence, "baseline-bare-codex")
         self.assertRegex(
             protocol_id,
-            r"^replacement-lifecycle-sequence-v1-baseline-bare-codex-[a-f0-9]{12}$",
+            r"^replacement-lifecycle-sequence-v0-baseline-bare-codex-[a-f0-9]{12}$",
         )
 
     def test_protocol_id_changes_when_frozen_controller_provenance_changes(self) -> None:
@@ -228,17 +216,19 @@ class ActiveCampaignArchitectureTest(unittest.TestCase):
             with self.assertRaises(FileExistsError):
                 contract_refresh.write_json(path, {"value": 2})
 
-    def test_legacy_sessions_do_not_occupy_current_campaign_slots(self) -> None:
+    def test_empty_preproduction_registry_has_no_occupied_campaign_slots(self) -> None:
         registry = json.loads((ROOT / "data/workflow-sessions.json").read_text())
-        sequence = runner.load_sequence("beets-maintenance-sequence-v4")
+        sequence = runner.load_sequence("beets-lifecycle-sequence-v0")
+        self.assertEqual(registry["production_status"], "pre-production")
+        self.assertEqual(registry["sessions"], [])
         self.assertIsNone(matrix.find_baseline_record(registry, sequence, 0))
         self.assertIsNone(runner.find_pool_profile_record(registry, sequence, "behavior-caveman", 0))
 
-    def test_protocol_lookup_ignores_protocols_already_used_by_legacy_sessions(self) -> None:
+    def test_protocol_lookup_rejects_unknown_sequence(self) -> None:
         with self.assertRaisesRegex(ValueError, "unknown or non-active workflow sequence"):
             matrix.find_protocol(
                 ROOT,
-                "beets-maintenance-sequence-v4",
+                "missing-lifecycle-sequence-v0",
                 "baseline-bare-codex",
             )
 
@@ -389,10 +379,10 @@ class SeedDeliveryContractTest(unittest.TestCase):
             )
 
     def test_terraform_concealed_collisions_are_byte_exact_controller_copies(self) -> None:
-        sequence = runner.load_sequence("terraform-maintenance-sequence-v2")
+        sequence = runner.load_sequence("terraform-lifecycle-sequence-v0")
         qualification_record = json.loads((ROOT / sequence["qualification_path"]).read_text())
         audit = qualification_record["fixed_snapshot_concealed_path_collision_audit"]
-        self.assertEqual(len(audit), 4)
+        self.assertEqual(len(audit), 1)
         self.assertTrue(all(record["byte_exact"] is True for record in audit), audit)
 
     def test_active_qualifications_prove_composite_broken_start(self) -> None:
@@ -562,8 +552,8 @@ class VerifierContractTest(unittest.TestCase):
             prompt = runner.task_prompt(sequence, "baseline-bare-codex", project, 1, first_task=True) + runner.task_prompt(sequence, "baseline-bare-codex", project, 2, first_task=False)
         self.assertIn("composite broken start", prompt)
         self.assertIn("concealed verification only after the final task prompt", prompt)
-        for retired in ("previous task verifier passed", "injected only the current regression", "until this verifier passes"):
-            self.assertNotIn(retired, prompt.lower())
+        for forbidden in ("previous task verifier passed", "injected only the current regression", "until this verifier passes"):
+            self.assertNotIn(forbidden, prompt.lower())
 
     def test_generated_prompts_require_cumulative_validation(self) -> None:
         sequence = {"id": "unit", "tasks": [{"id": "first", "order": 1}, {"id": "second", "order": 2}]}
@@ -579,15 +569,21 @@ class VerifierContractTest(unittest.TestCase):
 
     def test_active_prompts_name_acceptance_critical_public_contracts(self) -> None:
         cases = {
-            "sources/evaluations/fixtures/medium/beetbox-beets/tasks/beets-path-format-core-regression/agent-prompt.txt": ["PF_KEY_QUERIES", "comp:true", "custom keys", "all three prompts"],
-            "sources/evaluations/fixtures/medium/beetbox-beets/tasks/beets-multivalue-core-regression/agent-prompt.txt": ["TrackInfo", 'MULTI_VALUE_DSV.normalize("Jazz; Funk")', "TYPE_BY_FIELD", "all three prompts"],
-            "sources/evaluations/fixtures/medium/beetbox-beets/tasks/beets-tidal-metadata-sync-regression-v2/agent-prompt.txt": ["REIMPORT_FRESH_FIELDS_ITEM", "coverArt", "every paginated request", "all three prompts"],
-            "sources/evaluations/fixtures/large/hashicorp-terraform/tasks/terraform-161ffe-tracing-context-regression/agent-prompt.txt": ["ContextOpts.TracingContext", "localRun(ctx, op)", "must compile"],
+            "beets-lifecycle-feature-v0": ["field+=value", "field-=value", "UserError"],
+            "fastify-lifecycle-feature-v0": ["request.mediaType", "FastifyRequest.mediaType", "application/json"],
+            "terraform-lifecycle-feature-v0": ["deferred", "partial response", "data-source callbacks"],
+            "terraform-lifecycle-refactor-v0": ["StateStoreProviderRequirement", "exact-version validation", "structural contract"],
         }
-        for path, required in cases.items():
-            prompt = (ROOT / path).read_text()
+        for task_id, required in cases.items():
+            task = next(
+                task
+                for sequence_id in runner.active_sequence_ids()
+                for task in runner.load_sequence(sequence_id)["tasks"]
+                if task["id"] == task_id
+            )
+            prompt = (ROOT / task["prompt_path"]).read_text()
             for text in required:
-                self.assertIn(text, prompt, path)
+                self.assertIn(text, prompt, task_id)
 
     def test_all_active_prompts_explain_validation_without_inaccessible_verifier_claims(self) -> None:
         for sequence_id in runner.active_sequence_ids():
@@ -597,10 +593,11 @@ class VerifierContractTest(unittest.TestCase):
                 self.assertNotIn("Use the fixture verifier", prompt, task["id"])
                 self.assertNotIn("seeded with the regression", prompt, task["id"])
 
-    def test_schema_discriminates_warm_and_legacy_protocols(self) -> None:
+    def test_schema_requires_composite_v0_delivery(self) -> None:
         schema = json.loads((ROOT / "schemas/workflow-session-record.schema.json").read_text())
-        modes = {branch["properties"]["prompt_delivery"]["properties"]["seed_delivery_mode"]["const"] for branch in schema["properties"]["task_sequence"]["oneOf"]}
-        self.assertTrue({"lazy-one-task-at-a-time", "preseeded-composite"}.issubset(modes))
+        prompt = schema["properties"]["task_sequence"]["properties"]["prompt_delivery"]["properties"]
+        self.assertEqual(prompt["seed_delivery_mode"]["const"], "preseeded-composite")
+        self.assertEqual(prompt["controller_verification"]["const"], "final-only")
 
     def test_functional_task_count_uses_per_task_verifier_outcomes(self) -> None:
         checkpoints = [{"order": 1, "accepted": True}, {"order": 2, "accepted": False}]
@@ -711,17 +708,17 @@ class VerifierContractTest(unittest.TestCase):
         self.assertTrue(any("exact task coverage" in error for error in errors))
         self.assertTrue(any("tasks_passed" in error for error in errors))
 
-    def test_structured_record_contract_is_versioned_for_legacy_compatibility(self) -> None:
-        legacy = {"schema_version": 1}
+    def test_structured_record_contract_distinguishes_prior_schema(self) -> None:
+        prior = {"schema_version": 1}
         current = {"schema_version": 2}
-        self.assertFalse(validate_repository.requires_structured_task_contract(legacy))
+        self.assertFalse(validate_repository.requires_structured_task_contract(prior))
         self.assertTrue(validate_repository.requires_structured_task_contract(current))
 
     def test_unattempted_tasks_remain_structured_before_final_verification(self) -> None:
         tasks = [
-            {"id": "first-task", "order": 1},
-            {"id": "second-task", "order": 2},
-            {"id": "third-task", "order": 3},
+            {"id": "first-task", "order": 1, "task_class": "feature-implementation"},
+            {"id": "second-task", "order": 2, "task_class": "behavior-preserving-refactor"},
+            {"id": "third-task", "order": 3, "task_class": "code-review-correction"},
         ]
         completed = runner.complete_task_checkpoints(
             tasks,
@@ -836,18 +833,6 @@ class VerifierContractTest(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "native shell integration"):
             runner.assert_profile_runnable("terminal-lowfat-shell-integrated-v0.8.0")
 
-    def test_historical_lowfat_external_retrieval_is_not_false_green(self) -> None:
-        registry = json.loads((ROOT / "data/workflow-sessions.json").read_text())
-        by_id = {session["session_id"]: session for session in registry["sessions"]}
-        for session_id in (
-            "lowfat-terraform-20260713-p-5b17c90c9943-r0",
-            "lowfat-fastify-20260713-p-6a8afd4b63ca-r0",
-        ):
-            audit = by_id[session_id]["operational_reproducibility"]["tool_isolation_audit"]
-            self.assertEqual(audit["scope"], "forbidden-tool-command audit only")
-            self.assertFalse(audit["external_retrieval_audit_passed"])
-            self.assertFalse(audit["overall_treatment_isolation_passed"])
-            self.assertTrue(audit["external_retrieval_hits"])
 
 
 class ActiveAcceptanceContractTest(unittest.TestCase):
@@ -992,31 +977,31 @@ class ManifestAndProtocolContractTest(unittest.TestCase):
         self.assertEqual(
             runner.active_sequence_ids(),
             [
-                "fastify-maintenance-sequence-v1",
-                "terraform-maintenance-sequence-v2",
-                "beets-lifecycle-sequence-v2",
+                "fastify-lifecycle-sequence-v0",
+                "beets-lifecycle-sequence-v0",
+                "terraform-lifecycle-sequence-v0",
             ],
         )
-        sequence = runner.load_sequence("beets-lifecycle-sequence-v2")
+        sequence = runner.load_sequence("beets-lifecycle-sequence-v0")
         self.assertEqual(
             [task["id"] for task in sequence["tasks"]],
             [
-                "beets-lifecycle-multivalue-modify-feature-v2",
-                "beets-lifecycle-lazy-model-storage-refactor-v2",
-                "beets-lifecycle-ftintitle-review-v2",
+                "beets-lifecycle-feature-v0",
+                "beets-lifecycle-refactor-v0",
+                "beets-lifecycle-review-v0",
             ],
         )
         self.assertEqual([task["order"] for task in sequence["tasks"]], [1, 2, 3])
 
     def test_active_sequences_bind_current_qualifications(self) -> None:
-        sequence = runner.load_sequence("beets-lifecycle-sequence-v2")
-        self.assertTrue(sequence["qualification_path"].endswith("qualification-lifecycle-v3.json"))
+        sequence = runner.load_sequence("beets-lifecycle-sequence-v0")
+        self.assertTrue(sequence["qualification_path"].endswith("qualification-lifecycle-v0.json"))
 
     def test_current_protocol_fingerprint_matches_runner(self) -> None:
-        sequence = runner.load_sequence("beets-lifecycle-sequence-v2")
+        sequence = runner.load_sequence("beets-lifecycle-sequence-v0")
         protocol_path = matrix.find_protocol(
             ROOT,
-            "beets-lifecycle-sequence-v2",
+            "beets-lifecycle-sequence-v0",
             "baseline-bare-codex",
         )
         protocol = json.loads(protocol_path.read_text())
@@ -1042,7 +1027,7 @@ class ManifestAndProtocolContractTest(unittest.TestCase):
     def test_protocol_timeout_mismatch_rejects(self) -> None:
         seq = runner.load_sequence(SEQUENCE_ID)
         args = mock.Mock(
-            protocol="sources/evaluations/protocols/terraform-maintenance-sequence-v2-baseline-bare-codex-8fadc39ad0f5.json",
+            protocol=str(matrix.find_protocol(ROOT, SEQUENCE_ID, "baseline-bare-codex").relative_to(ROOT)),
             prepare_only=False,
             no_provider=False,
             timeout_per_task=1,
@@ -1054,7 +1039,7 @@ class ManifestAndProtocolContractTest(unittest.TestCase):
     def test_protocol_docker_image_mismatch_rejects(self) -> None:
         seq = runner.load_sequence(SEQUENCE_ID)
         args = mock.Mock(
-            protocol="sources/evaluations/protocols/terraform-maintenance-sequence-v2-baseline-bare-codex-8fadc39ad0f5.json",
+            protocol=str(matrix.find_protocol(ROOT, SEQUENCE_ID, "baseline-bare-codex").relative_to(ROOT)),
             prepare_only=True,
             no_provider=True,
             timeout_per_task=3600,
@@ -1066,7 +1051,7 @@ class ManifestAndProtocolContractTest(unittest.TestCase):
     def test_baseline_protocol_cannot_validate_treatment(self) -> None:
         seq = runner.load_sequence(SEQUENCE_ID)
         args = mock.Mock(
-            protocol="sources/evaluations/protocols/terraform-maintenance-sequence-v2-baseline-bare-codex-8fadc39ad0f5.json",
+            protocol=str(matrix.find_protocol(ROOT, SEQUENCE_ID, "baseline-bare-codex").relative_to(ROOT)),
             prepare_only=True,
             no_provider=True,
             timeout_per_task=3600,
@@ -1291,7 +1276,7 @@ class ManifestAndProtocolContractTest(unittest.TestCase):
             session, _ = self.production_v3_fixture(Path(tmp))
             self.assertEqual(self.production_v3_errors(session), [])
 
-    def test_production_v3_lean_record_does_not_require_legacy_operational_metrics(self) -> None:
+    def test_production_v3_lean_record_does_not_require_optional_operational_metrics(self) -> None:
         with tempfile.TemporaryDirectory(dir=ROOT) as tmp:
             session, _ = self.production_v3_fixture(Path(tmp))
             session.pop("state_observations")
@@ -1460,7 +1445,7 @@ class MatrixLifecycleContractTest(unittest.TestCase):
         self.assertEqual(jobs, [(SEQUENCE_ID, "baseline-bare-codex")])
 
     def test_superseded_hard_baseline_is_not_reused_after_contract_change(self) -> None:
-        sequence = runner.load_sequence("fastify-maintenance-sequence-v1")
+        sequence = runner.load_sequence("fastify-lifecycle-sequence-v0")
         registry = {
             "sessions": [{
                 "session_id": "superseded-hard-baseline",
@@ -1570,7 +1555,7 @@ class MatrixLifecycleContractTest(unittest.TestCase):
             self.assertFalse(matrix.hard_baseline_usable(session))
 
     def test_hard_baseline_comparison_scores_correctness_and_tokens(self) -> None:
-        sequence = runner.load_sequence("fastify-maintenance-sequence-v1")
+        sequence = runner.load_sequence("fastify-lifecycle-sequence-v0")
         baseline = {
             "session_id": "hard-baseline",
             "study_id": "study",

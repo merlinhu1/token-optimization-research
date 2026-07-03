@@ -1,12 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 PROJECT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-REPO="$PROJECT_DIR/repo"
-if [ ! -d "$REPO/.git" ]; then
-  echo "Missing repo checkout; run $PROJECT_DIR/setup.sh first." >&2
-  exit 2
-fi
-(
-  cd "$REPO"
-  uv run pytest test/util/test_pathformats.py -q
-)
+
+WORKFLOW_REPO="$PROJECT_DIR/repo" "$PROJECT_DIR/tasks/beets-lifecycle-feature-v0/verify.sh"
+WORKFLOW_REPO="$PROJECT_DIR/repo" "$PROJECT_DIR/tasks/beets-lifecycle-refactor-v0/verify.sh"
+WORKFLOW_REPO="$PROJECT_DIR/repo" "$PROJECT_DIR/tasks/beets-lifecycle-review-v0/verify.sh"

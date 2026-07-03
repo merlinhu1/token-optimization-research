@@ -1,0 +1,7 @@
+Implement a missing Fastify request-metadata feature.
+
+Expose the parsed media type through the exact public property `request.mediaType` and the corresponding `FastifyRequest.mediaType` type. The value must be the normalized media type, such as `application/json`, consistently available before and during body validation; it is not the original header and must not introduce a second `request.contentType` API. Reuse the shared Content-Type representation without changing parser semantics.
+
+The feature is absent from the starting repository. Work only inside the target repository and make the smallest maintainable production/type changes. Do not modify tests merely to make acceptance pass. The controller runs concealed behavioral acceptance only after all three lifecycle prompts are complete.
+
+Run focused model-visible Node behavior and TypeScript tests for the touched surfaces. Preserve all prior lifecycle work.
