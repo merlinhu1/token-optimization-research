@@ -41,6 +41,20 @@ class ActiveCampaignArchitectureTest(unittest.TestCase):
             allow_retired_sequence=False,
         )
 
+    def test_retired_sequence_cli_flag_reaches_runner(self) -> None:
+        with mock.patch.object(runner, "run_one", return_value={"accepted": True}) as run_one:
+            self.assertEqual(
+                runner.main(
+                    [
+                        "--sequence-id",
+                        "fastify-maintenance-sequence-v1",
+                        "--allow-retired-sequence",
+                    ]
+                ),
+                0,
+            )
+        self.assertTrue(run_one.call_args.args[0].allow_retired_sequence)
+
     def test_primary_lifecycle_sequence_covers_owner_task_mix(self) -> None:
         sequences = json.loads((ROOT / "data/workflow-task-sequences.json").read_text())["sequences"]
         lifecycle = [

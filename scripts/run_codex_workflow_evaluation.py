@@ -2560,8 +2560,14 @@ def main(argv: list[str] | None = None) -> int:
         selected_sequence = load_sequence(args.sequence_id)
     except KeyError:
         parser.error(f"unknown workflow sequence: {args.sequence_id}")
-    if selected_sequence.get("status") != "active" and not args.prepare_only:
-        parser.error(f"workflow sequence {args.sequence_id} is not active; only --prepare-only is allowed")
+    try:
+        validate_sequence_launch_status(
+            selected_sequence,
+            prepare_only=args.prepare_only,
+            allow_retired_sequence=args.allow_retired_sequence,
+        )
+    except ValueError as exc:
+        parser.error(str(exc))
     result = run_one(args)
     if args.prepare_only:
         print(json.dumps(result, indent=2))
