@@ -64,3 +64,5 @@ Store run evidence under `sources/evaluations/<evaluation-id>/` when Phase 2 dat
 - Changing prompts or fixtures between baseline and treatment.
 - Reporting only visible prompt/token estimates rather than provider-billed usage.
 - Counting partial task completion as token savings.
+- Treating runner preflight PATH as proof that Codex-launched login shells can see a non-MCP terminal tool.
+- Keeping partial pre-fix and post-fix batch results in one summary after a harness or isolation defect is found.

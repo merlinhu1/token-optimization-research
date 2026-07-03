@@ -1,7 +1,7 @@
 ---
 status: active
 doc_type: route-index
-last_reviewed: 2026-06-26
+last_reviewed: 2026-06-29
 ---
 
 # Truthmark Areas
@@ -24,6 +24,7 @@ Code surface:
 - docs/reports/**
 - docs/research/tool-research-strategy.md
 - scripts/validate_repository.py
+- scripts/audit_dossier_snapshots.py
 - templates/tool-dossier.md
 
 Update truth when:
@@ -46,6 +47,7 @@ Code surface:
 - docs/research/**
 - docs/reports/**
 - docs/standards/**
+- prompts/researcher.md
 - prompts/paper-writer.md
 - templates/report.md
 - templates/claim-entry.md
@@ -71,10 +73,17 @@ truth_documents:
 Code surface:
 - data/evaluations.json
 - docs/evaluations/**
+- scripts/audit_tool_isolation.py
+- scripts/extract_codex_usage.py
+- scripts/run_codex_evaluation_batch.py
+- scripts/run_codex_fixture_evaluation.py
+- sources/evaluations/large-projects/container/Dockerfile
+- sources/evaluations/large-projects/**/runs/planned/*.json
 - prompts/evaluator.md
 - templates/evaluation-record.md
 - templates/evaluation-task.md
 - templates/evaluation-run-record.json
+- schemas/evaluation-run-record.schema.json
 - docs/tool-dossiers/**
 - .agents/skills/benchmark-protocol-writer.md
 

@@ -1,0 +1,275 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.invalid/token-optimization/evaluation-run-record.schema.json",
+  "title": "Token optimization cumulative evaluation run record",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "evaluation_id",
+    "record_type",
+    "study_id",
+    "experiment_group_id",
+    "objective",
+    "evidence_stage",
+    "status",
+    "run_role",
+    "replicate_index",
+    "date",
+    "target",
+    "task",
+    "profile",
+    "agent",
+    "setup",
+    "token_usage",
+    "agent_behavior",
+    "software_quality",
+    "operational_reproducibility",
+    "artifacts",
+    "interpretation"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": 2
+    },
+    "evaluation_id": {
+      "type": "string",
+      "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"
+    },
+    "record_type": {
+      "const": "run"
+    },
+    "study_id": {
+      "type": "string"
+    },
+    "experiment_group_id": {
+      "type": "string"
+    },
+    "objective": {
+      "enum": [
+        "individual_tool_effectiveness",
+        "stack_effectiveness"
+      ]
+    },
+    "evidence_stage": {
+      "enum": [
+        "benchmark_audit",
+        "reproduction"
+      ]
+    },
+    "status": {
+      "enum": [
+        "planned",
+        "running",
+        "completed",
+        "failed",
+        "excluded",
+        "superseded"
+      ]
+    },
+    "run_role": {
+      "enum": [
+        "baseline",
+        "individual_tool_treatment",
+        "stack_treatment",
+        "replacement_runtime",
+        "audit_only"
+      ]
+    },
+    "replicate_index": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "date": {
+      "type": "string"
+    },
+    "target": {
+      "type": "object",
+      "required": [
+        "fixture_id",
+        "fixture_scale",
+        "project_id",
+        "repository_path",
+        "snapshot",
+        "dirty_state"
+      ],
+      "properties": {
+        "fixture_id": {
+          "type": "string"
+        },
+        "fixture_scale": {
+          "enum": [
+            "synthetic-micro",
+            "recorded-diagnostic",
+            "large-project"
+          ]
+        },
+        "project_id": {
+          "type": "string"
+        },
+        "repository_path": {
+          "type": "string"
+        },
+        "snapshot": {
+          "type": "object"
+        },
+        "dirty_state": {
+          "type": "string"
+        }
+      }
+    },
+    "task": {
+      "type": "object",
+      "required": [
+        "task_id",
+        "task_class",
+        "prompt_path",
+        "prompt_sha256",
+        "verifier_command"
+      ],
+      "properties": {
+        "task_id": {
+          "type": "string"
+        },
+        "task_class": {
+          "type": "string"
+        },
+        "prompt_path": {
+          "type": "string"
+        },
+        "prompt_sha256": {
+          "type": "string"
+        },
+        "verifier_command": {
+          "type": "string"
+        }
+      }
+    },
+    "profile": {
+      "type": "object",
+      "required": [
+        "profile_id",
+        "profile_type",
+        "enabled_surfaces",
+        "disabled_overlaps",
+        "component_ids"
+      ],
+      "properties": {
+        "profile_id": {
+          "type": "string"
+        },
+        "profile_type": {
+          "type": "string"
+        },
+        "enabled_surfaces": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "disabled_overlaps": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "component_ids": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "agent": {
+      "type": "object",
+      "required": [
+        "name",
+        "version",
+        "model",
+        "provider",
+        "temperature",
+        "max_turns",
+        "time_budget_seconds"
+      ],
+      "properties": {}
+    },
+    "setup": {
+      "type": "object",
+      "required": [
+        "setup_command",
+        "reset_command",
+        "tool_permissions",
+        "environment"
+      ],
+      "properties": {}
+    },
+    "token_usage": {
+      "type": "object",
+      "required": [
+        "measurement_source",
+        "fresh_input_tokens",
+        "cached_input_tokens",
+        "cache_write_tokens",
+        "output_tokens",
+        "reasoning_tokens",
+        "total_provider_tokens",
+        "estimated_cost_usd",
+        "raw_artifact_tokens",
+        "transformed_artifact_tokens"
+      ],
+      "properties": {}
+    },
+    "agent_behavior": {
+      "type": "object",
+      "required": [
+        "turns",
+        "tool_calls",
+        "correction_turns",
+        "wall_time_seconds"
+      ],
+      "properties": {}
+    },
+    "software_quality": {
+      "type": "object",
+      "required": [
+        "verifier_passed",
+        "quality_score",
+        "critical_failures",
+        "diagnostic_preservation"
+      ],
+      "properties": {}
+    },
+    "operational_reproducibility": {
+      "type": "object",
+      "required": [
+        "install_logged",
+        "reset_verified",
+        "raw_artifacts_recoverable",
+        "state_leakage_observed"
+      ],
+      "properties": {}
+    },
+    "artifacts": {
+      "type": "object",
+      "required": [
+        "root",
+        "transcript",
+        "provider_usage",
+        "verifier_output",
+        "quality_review",
+        "diff_or_generated_artifacts"
+      ],
+      "properties": {}
+    },
+    "interpretation": {
+      "type": "object",
+      "required": [
+        "accepted_for_objective",
+        "comparison_baseline_evaluation_id",
+        "exclusion_reason",
+        "notes"
+      ],
+      "properties": {}
+    }
+  }
+}

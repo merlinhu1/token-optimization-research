@@ -1,0 +1,443 @@
+{
+  "schema_version": 1,
+  "description": "Repository fixture readiness registry for Phase 2 evaluation. Fixture status is repository-readiness evidence, not tool or stack evidence stage.",
+  "lifecycle_states": [
+    "candidate-fixture",
+    "qualified-fixture",
+    "baseline-run",
+    "treatment-ready",
+    "retired-fixture"
+  ],
+  "task_classes": [
+    "noisy-terminal-repair",
+    "build-repair",
+    "large-codebase-navigation",
+    "multi-file-refactor",
+    "memory-rediscovery",
+    "broad-owner-context",
+    "mcp-tool-heavy",
+    "apple-build-repair",
+    "replacement-runtime-comparison"
+  ],
+  "token_waste_surfaces": [
+    "terminal-output",
+    "build-output",
+    "retrieval-context",
+    "memory-rediscovery",
+    "broad-context-owner",
+    "mcp-tool-trace",
+    "apple-build-output",
+    "replacement-runtime"
+  ],
+  "fixtures": [
+    {
+      "id": "go-interface-cache-repair",
+      "status": "qualified-fixture",
+      "repository": {
+        "path": "sources/evaluations/fixture-corpus/v1/go-interface-cache-repair/repo",
+        "id": "go-interface-cache-repair"
+      },
+      "snapshot": {
+        "snapshot_policy": "Generated fixture corpus v1 via sources/evaluations/fixture-corpus/v1/materialize.py go-interface-cache-repair; reset command recreates the frozen broken-start state."
+      },
+      "task_classes": [
+        "build-repair"
+      ],
+      "primary_token_waste_surface": "build-output",
+      "setup": {
+        "command": "python3 sources/evaluations/fixture-corpus/v1/materialize.py go-interface-cache-repair"
+      },
+      "reset": {
+        "command": "python3 sources/evaluations/fixture-corpus/v1/materialize.py go-interface-cache-repair"
+      },
+      "verifier": {
+        "command": "cd sources/evaluations/fixture-corpus/v1/go-interface-cache-repair/repo && PATH=/opt/data/bin:/opt/data/opt/go/bin:$PATH go test ./..."
+      },
+      "prompt": {
+        "path": "sources/evaluations/phase-2-experiment-suite-v1/tasks/go-interface-cache-repair/agent-prompt.txt"
+      },
+      "artifact_paths": {
+        "root": "sources/evaluations/phase-2-experiment-suite-v1/runs/go-interface-cache-repair/"
+      },
+      "future_evaluation_lanes": [
+        "terminal-compactor-microbenchmark",
+        "retrieval-bakeoff",
+        "component-calibration"
+      ],
+      "candidate_profiles": [
+        "baseline-codex-no-mcp",
+        "terminal-rtk",
+        "terminal-lowfat",
+        "terminal-snip",
+        "retrieval-serena",
+        "retrieval-leanctx"
+      ],
+      "blockers": [],
+      "caveats": [
+        "Initial verifier is expected to fail until an evaluated agent performs the task.",
+        "Retained only as a small calibration or diagnostic-preservation fixture; not sufficient for primary objective claims about complex projects."
+      ],
+      "fixture_scale": "synthetic-micro",
+      "evaluation_use": "calibration"
+    },
+    {
+      "id": "node-esm-import-repair",
+      "status": "qualified-fixture",
+      "repository": {
+        "path": "sources/evaluations/fixture-corpus/v1/node-esm-import-repair/repo",
+        "id": "node-esm-import-repair"
+      },
+      "snapshot": {
+        "snapshot_policy": "Generated fixture corpus v1 via sources/evaluations/fixture-corpus/v1/materialize.py node-esm-import-repair; reset command recreates the frozen broken-start state."
+      },
+      "task_classes": [
+        "build-repair"
+      ],
+      "primary_token_waste_surface": "build-output",
+      "setup": {
+        "command": "python3 sources/evaluations/fixture-corpus/v1/materialize.py node-esm-import-repair"
+      },
+      "reset": {
+        "command": "python3 sources/evaluations/fixture-corpus/v1/materialize.py node-esm-import-repair"
+      },
+      "verifier": {
+        "command": "cd sources/evaluations/fixture-corpus/v1/node-esm-import-repair/repo && node --test"
+      },
+      "prompt": {
+        "path": "sources/evaluations/phase-2-experiment-suite-v1/tasks/node-esm-import-repair/agent-prompt.txt"
+      },
+      "artifact_paths": {
+        "root": "sources/evaluations/phase-2-experiment-suite-v1/runs/node-esm-import-repair/"
+      },
+      "future_evaluation_lanes": [
+        "terminal-compactor-microbenchmark",
+        "retrieval-bakeoff",
+        "component-calibration"
+      ],
+      "candidate_profiles": [
+        "baseline-codex-no-mcp",
+        "terminal-rtk",
+        "terminal-lowfat",
+        "terminal-snip",
+        "retrieval-leanctx"
+      ],
+      "blockers": [],
+      "caveats": [
+        "Initial verifier is expected to fail until an evaluated agent performs the task.",
+        "Retained only as a small calibration or diagnostic-preservation fixture; not sufficient for primary objective claims about complex projects."
+      ],
+      "fixture_scale": "synthetic-micro",
+      "evaluation_use": "calibration"
+    },
+    {
+      "id": "py-noisy-unit-failure",
+      "status": "qualified-fixture",
+      "repository": {
+        "path": "sources/evaluations/fixture-corpus/v1/py-noisy-unit-failure/repo",
+        "id": "py-noisy-unit-failure"
+      },
+      "snapshot": {
+        "snapshot_policy": "Generated fixture corpus v1 via sources/evaluations/fixture-corpus/v1/materialize.py py-noisy-unit-failure; reset command recreates the frozen broken-start state."
+      },
+      "task_classes": [
+        "noisy-terminal-repair"
+      ],
+      "primary_token_waste_surface": "terminal-output",
+      "setup": {
+        "command": "python3 sources/evaluations/fixture-corpus/v1/materialize.py py-noisy-unit-failure"
+      },
+      "reset": {
+        "command": "python3 sources/evaluations/fixture-corpus/v1/materialize.py py-noisy-unit-failure"
+      },
+      "verifier": {
+        "command": "cd sources/evaluations/fixture-corpus/v1/py-noisy-unit-failure/repo && python3 -m unittest discover -s tests -v"
+      },
+      "prompt": {
+        "path": "sources/evaluations/phase-2-experiment-suite-v1/tasks/py-noisy-unit-failure/agent-prompt.txt"
+      },
+      "artifact_paths": {
+        "root": "sources/evaluations/phase-2-experiment-suite-v1/runs/py-noisy-unit-failure/"
+      },
+      "future_evaluation_lanes": [
+        "terminal-compactor-microbenchmark",
+        "component-calibration"
+      ],
+      "candidate_profiles": [
+        "baseline-codex-no-mcp",
+        "terminal-rtk",
+        "terminal-lowfat",
+        "terminal-snip",
+        "terminal-tokenjuice",
+        "terminal-headroom"
+      ],
+      "blockers": [],
+      "caveats": [
+        "Initial verifier is expected to fail until an evaluated agent performs the task.",
+        "Retained only as a small calibration or diagnostic-preservation fixture; not sufficient for primary objective claims about complex projects."
+      ],
+      "fixture_scale": "synthetic-micro",
+      "evaluation_use": "calibration"
+    },
+    {
+      "id": "recorded-dotnet-build-diagnostic",
+      "status": "qualified-fixture",
+      "repository": {
+        "path": "sources/evaluations/fixture-corpus/v1/recorded-dotnet-build-diagnostic/repo",
+        "id": "recorded-dotnet-build-diagnostic"
+      },
+      "snapshot": {
+        "snapshot_policy": "Generated fixture corpus v1 via sources/evaluations/fixture-corpus/v1/materialize.py recorded-dotnet-build-diagnostic; reset command recreates the frozen broken-start state."
+      },
+      "task_classes": [
+        "build-repair"
+      ],
+      "primary_token_waste_surface": "build-output",
+      "setup": {
+        "command": "python3 sources/evaluations/fixture-corpus/v1/materialize.py recorded-dotnet-build-diagnostic"
+      },
+      "reset": {
+        "command": "python3 sources/evaluations/fixture-corpus/v1/materialize.py recorded-dotnet-build-diagnostic"
+      },
+      "verifier": {
+        "command": "cd sources/evaluations/fixture-corpus/v1/recorded-dotnet-build-diagnostic/repo && python3 verify_compaction.py"
+      },
+      "prompt": {
+        "path": "sources/evaluations/phase-2-experiment-suite-v1/tasks/recorded-dotnet-build-diagnostic/agent-prompt.txt"
+      },
+      "artifact_paths": {
+        "root": "sources/evaluations/phase-2-experiment-suite-v1/runs/recorded-dotnet-build-diagnostic/"
+      },
+      "future_evaluation_lanes": [
+        "terminal-compactor-microbenchmark",
+        "component-calibration"
+      ],
+      "candidate_profiles": [
+        "terminal-rtk",
+        "terminal-lowfat",
+        "terminal-snip",
+        "terminal-headroom"
+      ],
+      "blockers": [
+        "Local dotnet SDK is not installed; this is a recorded diagnostic-preservation fixture, not a live C# build/test fixture."
+      ],
+      "caveats": [
+        "Verifier is expected to fail until the evaluated profile writes artifacts/compacted.txt from the recorded .NET build log.",
+        "Retained only as a small calibration or diagnostic-preservation fixture; not sufficient for primary objective claims about complex projects."
+      ],
+      "fixture_scale": "recorded-diagnostic",
+      "evaluation_use": "diagnostic-preservation"
+    },
+    {
+      "id": "recorded-xcodebuild-diagnostic",
+      "status": "qualified-fixture",
+      "repository": {
+        "path": "sources/evaluations/fixture-corpus/v1/recorded-xcodebuild-diagnostic/repo",
+        "id": "recorded-xcodebuild-diagnostic"
+      },
+      "snapshot": {
+        "snapshot_policy": "Generated fixture corpus v1 via sources/evaluations/fixture-corpus/v1/materialize.py recorded-xcodebuild-diagnostic; reset command recreates the frozen broken-start state."
+      },
+      "task_classes": [
+        "apple-build-repair"
+      ],
+      "primary_token_waste_surface": "apple-build-output",
+      "setup": {
+        "command": "python3 sources/evaluations/fixture-corpus/v1/materialize.py recorded-xcodebuild-diagnostic"
+      },
+      "reset": {
+        "command": "python3 sources/evaluations/fixture-corpus/v1/materialize.py recorded-xcodebuild-diagnostic"
+      },
+      "verifier": {
+        "command": "cd sources/evaluations/fixture-corpus/v1/recorded-xcodebuild-diagnostic/repo && python3 verify_compaction.py"
+      },
+      "prompt": {
+        "path": "sources/evaluations/phase-2-experiment-suite-v1/tasks/recorded-xcodebuild-diagnostic/agent-prompt.txt"
+      },
+      "artifact_paths": {
+        "root": "sources/evaluations/phase-2-experiment-suite-v1/runs/recorded-xcodebuild-diagnostic/"
+      },
+      "future_evaluation_lanes": [
+        "terminal-compactor-microbenchmark",
+        "component-calibration"
+      ],
+      "candidate_profiles": [
+        "terminal-xcsift",
+        "terminal-rtk",
+        "terminal-headroom"
+      ],
+      "blockers": [],
+      "caveats": [
+        "Verifier is expected to fail until the evaluated profile writes the required artifact files.",
+        "Retained only as a small calibration or diagnostic-preservation fixture; not sufficient for primary objective claims about complex projects."
+      ],
+      "fixture_scale": "recorded-diagnostic",
+      "evaluation_use": "diagnostic-preservation"
+    },
+    {
+      "id": "large-django-django",
+      "status": "qualified-fixture",
+      "fixture_scale": "large-project",
+      "evaluation_use": "primary-objective",
+      "repository": {
+        "url": "https://github.com/django/django",
+        "id": "django__django",
+        "github": "django/django",
+        "path": "sources/evaluations/large-projects/django-django/repo"
+      },
+      "snapshot": {
+        "commit": "task-specific-pinned-fixed-commits",
+        "branch": "main",
+        "snapshot_policy": "Each task setup fetches its task-specific pinned fixed upstream commit by SHA, verifies FETCH_HEAD equals that commit, checks it out detached, then applies the task-specific production-code seed-regression patch.",
+        "pinned_task_commits": [
+          "67c407585ccdc01b76d78e33c082f23d46346747",
+          "99a14b6be85793f3371779cd9bf6fb9d9247f475",
+          "b461519bf5973d7fc149560d2f99acdba71a437d",
+          "57c8c8b107248a3358dd26276ac497c577454011",
+          "4bbc27c8686f10f9556cef02dbfa9f5157fbcf56"
+        ]
+      },
+      "task_classes": [
+        "multi-file-refactor",
+        "large-codebase-navigation"
+      ],
+      "primary_token_waste_surface": "retrieval-context",
+      "setup": {
+        "command": "sources/evaluations/large-projects/django-django/tasks/django-37183-xml-control-chars-regression/setup.sh"
+      },
+      "reset": {
+        "command": "sources/evaluations/large-projects/django-django/tasks/django-37183-xml-control-chars-regression/reset.sh"
+      },
+      "verifier": {
+        "command": "sources/evaluations/large-projects/django-django/tasks/django-37183-xml-control-chars-regression/verify.sh"
+      },
+      "prompt": {
+        "path": "sources/evaluations/large-projects/django-django/tasks/django-37183-xml-control-chars-regression/agent-prompt.txt"
+      },
+      "artifact_paths": {
+        "root": "sources/evaluations/large-projects/django-django/runs/"
+      },
+      "future_evaluation_lanes": [
+        "native-baseline-reproduction",
+        "individual-tool-reproduction",
+        "stack-ablation-reproduction"
+      ],
+      "candidate_profiles": [
+        "baseline-codex-no-mcp",
+        "retrieval-leanctx",
+        "retrieval-serena",
+        "terminal-rtk",
+        "terminal-lowfat",
+        "memory-mex",
+        "serena-cavemem-lightweight",
+        "lower-intervention-codegraph"
+      ],
+      "blockers": [],
+      "caveats": [
+        "First setup clones a public upstream repository and requires network and disk space.",
+        "Primary claims still require executed baseline and treatment run records with provider usage and verifier output."
+      ],
+      "tasks": [
+        "django-37183-xml-control-chars-regression",
+        "django-37161-mailers-default-check-regression",
+        "django-36560-qualified-cache-control-regression",
+        "django-36984-inline-protected-delete-message-regression",
+        "django-36492-sqlite-boolean-literal-regression"
+      ],
+      "active_profiles": [
+        "baseline-codex-no-mcp",
+        "retrieval-leanctx"
+      ]
+    },
+    {
+      "id": "large-hashicorp-terraform",
+      "status": "qualified-fixture",
+      "fixture_scale": "large-project",
+      "evaluation_use": "primary-objective",
+      "repository": {
+        "url": "https://github.com/hashicorp/terraform",
+        "id": "hashicorp__terraform",
+        "github": "hashicorp/terraform",
+        "path": "sources/evaluations/large-projects/hashicorp-terraform/repo"
+      },
+      "snapshot": {
+        "commit": "task-specific-pinned-fixed-commits",
+        "branch": "main",
+        "snapshot_policy": "Each task setup fetches its task-specific pinned fixed upstream commit by SHA, verifies FETCH_HEAD equals that commit, checks it out detached, then applies the task-specific production-code seed-regression patch.",
+        "pinned_task_commits": [
+          "b4e933dd73ba8d4be04f1613808b53d5e129957c",
+          "afc607b675afef6995612fdff767fa65ecea681e",
+          "e02391ad384c9c38f1d7f40b853c0d2297348094",
+          "8de90a32ef3d48017db4b14ab591bef313348d70",
+          "5ef60fcc6c11de94d6af1011d65b55be76325cd8"
+        ]
+      },
+      "task_classes": [
+        "multi-file-refactor",
+        "large-codebase-navigation"
+      ],
+      "primary_token_waste_surface": "retrieval-context",
+      "setup": {
+        "command": "sources/evaluations/large-projects/hashicorp-terraform/tasks/terraform-38747-config-loader-watchstop-race-regression/setup.sh"
+      },
+      "reset": {
+        "command": "sources/evaluations/large-projects/hashicorp-terraform/tasks/terraform-38747-config-loader-watchstop-race-regression/reset.sh"
+      },
+      "verifier": {
+        "command": "sources/evaluations/large-projects/hashicorp-terraform/tasks/terraform-38747-config-loader-watchstop-race-regression/verify.sh"
+      },
+      "prompt": {
+        "path": "sources/evaluations/large-projects/hashicorp-terraform/tasks/terraform-38747-config-loader-watchstop-race-regression/agent-prompt.txt"
+      },
+      "artifact_paths": {
+        "root": "sources/evaluations/large-projects/hashicorp-terraform/runs/"
+      },
+      "future_evaluation_lanes": [
+        "native-baseline-reproduction",
+        "individual-tool-reproduction",
+        "stack-ablation-reproduction"
+      ],
+      "candidate_profiles": [
+        "baseline-codex-no-mcp",
+        "retrieval-leanctx",
+        "retrieval-serena",
+        "terminal-rtk",
+        "terminal-lowfat",
+        "memory-mex",
+        "serena-cavemem-lightweight",
+        "lower-intervention-codegraph"
+      ],
+      "blockers": [],
+      "caveats": [
+        "First setup clones a public upstream repository and requires network and disk space.",
+        "Primary claims still require executed baseline and treatment run records with provider usage and verifier output."
+      ],
+      "tasks": [
+        "terraform-38747-config-loader-watchstop-race-regression",
+        "terraform-38775-policy-state-close-order-regression",
+        "terraform-38781-policy-callback-deferred-resources-regression",
+        "terraform-38745-config-parser-concurrency-regression",
+        "terraform-38739-sensitive-policy-paths-regression"
+      ],
+      "active_profiles": [
+        "baseline-codex-no-mcp",
+        "retrieval-leanctx"
+      ]
+    }
+  ],
+  "fixture_scales": [
+    "synthetic-micro",
+    "recorded-diagnostic",
+    "large-project"
+  ],
+  "evaluation_uses": [
+    "calibration",
+    "diagnostic-preservation",
+    "primary-candidate",
+    "primary-objective"
+  ],
+  "complex_project_policy": {
+    "primary_objective_claims_require": "large-project fixture_scale and reproduction evidence with provider-billed usage when available",
+    "small_fixture_use": "Retained synthetic/recorded fixtures are only calibration, diagnostic-preservation, or tool sanity-check evidence; they do not support primary objective claims about complex-project software engineering tasks.",
+    "candidate_selection": "Use the two first-wave public large fixtures, Django and Terraform. Do not use user-owned projects as primary fixtures unless explicitly requested."
+  }
+}
