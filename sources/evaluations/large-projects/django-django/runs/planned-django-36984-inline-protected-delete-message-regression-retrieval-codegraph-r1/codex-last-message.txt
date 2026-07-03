@@ -1,0 +1,13 @@
+Restored the admin inline deletion behavior for protected related objects:
+
+- `delete_confirmation_max_display` applies to inline admins again.
+- Inline protected-object validation messages truncate and append the “and N more objects” suffix.
+- The system check covers inline admins with the expected `admin.E041`.
+
+Verifier passed with `.venv/bin/python` since `python` is not on PATH:
+
+```bash
+PYTHONPATH=. .venv/bin/python tests/runtests.py admin_inlines.tests.TestInline.test_delete_protected_message_limits_number_of_objects_displayed admin_inlines.tests.TestInline.test_delete_protected_message_does_not_limit_small_amount_of_objects modeladmin.test_checks.DeleteConfirmationMaxObjectsCheckTests.test_inline_not_integer --verbosity 2
+```
+
+Result: `Ran 3 tests ... OK`. The only remaining worktree item is the preexisting untracked `.venv/`.

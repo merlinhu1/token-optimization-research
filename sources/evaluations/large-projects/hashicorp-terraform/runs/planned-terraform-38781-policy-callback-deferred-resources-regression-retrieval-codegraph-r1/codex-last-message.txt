@@ -1,0 +1,8 @@
+Restored the policy callback regression back to the pinned upstream fixed behavior. The worktree is clean against the fixed commit.
+
+Verifier passed:
+
+```text
+go test ./internal/terraform -run "TestContext2(Apply|Plan)_PolicyCallback_(GetDataSource|GetResources_Deferral)" -count=1
+ok github.com/hashicorp/terraform/internal/terraform
+```
