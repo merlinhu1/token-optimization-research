@@ -1,7 +1,7 @@
 ---
 status: active
 truth_kind: engineering-behavior
-last_reviewed: 2026-06-29
+last_reviewed: 2026-07-01
 ---
 
 # Current Findings
@@ -26,8 +26,10 @@ Detailed evidence remains in reports, dossiers, structured data, and evaluation 
 
 - The repository is in Phase 2 readiness work.
 - Phase 1 established 42 source-logic dossiers and a compatibility-safe stack report.
+- As of 2026-07-01, all 42 tool dossiers have pinned source-snapshot metadata and pass dossier-quality validation.
 - The 2026-06-28 corrective knowledge-graph and agent-memory leads were promoted from `lead` to `source-logic` on 2026-06-29.
 - Phase 2 focuses on benchmark design, token-usage accounting, quality standards, immediately usable evaluation flows, and a broader source-logic stack hypothesis portfolio.
+- As of 2026-07-01, the evaluation setup retains 5 calibration/diagnostic fixtures and promotes Django plus Terraform as the two active public large-project fixtures; primary objective claims require reproduction run records on those fixtures in the cumulative schema.
 - Stack findings are hypotheses until benchmark-audit or reproduction evidence exists; Phase 1 now routes multiple candidate stacks and comparators rather than selecting a single default stack.
 - Lead-stage backlog items are not decision evidence.
 - Raw discovery and source-inspection artifacts remain provenance, not canonical conclusion prose.

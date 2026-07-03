@@ -4,9 +4,13 @@
 
 - Repository: `zilliztech/claude-context`
 - URL: https://github.com/zilliztech/claude-context
-- Version/ref inspected: GitHub `HEAD` tree and representative raw implementation files via API, 2026-06-26
-- Date inspected: 2026-06-26
-- Evidence stage: source-logic (representative implementation files inspected; benchmark/reproduction review remains open)
+- Version/ref inspected: local shallow clone `627eb2be3397`, 2026-07-01
+- Snapshot status: pinned-commit
+- Commit inspected: 627eb2be339723926d5b468698a8f5cc0da21167
+- Commit URL: https://github.com/zilliztech/claude-context/commit/627eb2be339723926d5b468698a8f5cc0da21167
+- Source artifact path: `sources/discovery/2026-07-01-pinned-dossier-refresh-source-structures.json`
+- Date inspected: 2026-07-01
+- Evidence stage: source-logic (fresh pinned shallow clone; representative source/config/test files inspected; benchmark-audit and reproduction still required for measured savings)
 - Stars at inspection: 11,966
 - Forks at inspection: 891
 - License: MIT
@@ -21,8 +25,8 @@ Claude Context indexes a codebase into code chunks and exposes MCP tools for sem
 | Evidence type | Files/URLs inspected | Notes |
 |---|---|---|
 | Repository metadata | GitHub API repository metadata | Popularity and license signals only; not effectiveness evidence. |
-| Source tree | `sources/discovery/2026-06-26-eight-more-tool-source-structures.json` | Used to identify installer, plugin, MCP, test, benchmark, and runtime paths beyond README. |
-| Runtime source | `sources/discovery/2026-06-26-eight-more-tool-code-inspection.json` | Representative implementation files fetched from GitHub HEAD with SHA-256 prefixes and behavior excerpts. |
+| Source tree | `sources/discovery/2026-07-01-pinned-dossier-refresh-source-structures.json` | Used to identify installer, plugin, MCP, test, benchmark, and runtime paths beyond README. |
+| Runtime source | `sources/discovery/2026-07-01-pinned-dossier-refresh-code-inspection.json` | Representative implementation files fetched from GitHub HEAD with SHA-256 prefixes and behavior excerpts. |
 | README/docs | README path identified when present. | README claims are not used as behavior evidence. |
 | Tests/benchmarks | Paths identified where present. | Full benchmark-method review remains open. |
 
@@ -69,7 +73,12 @@ Repository tree inspection found 177 files and 142 files matching integration, s
 
 ## Code-detail inspection findings
 
-Evidence artifact: `sources/discovery/2026-06-26-eight-more-tool-code-inspection.json`.
+Evidence artifact: `sources/discovery/2026-07-01-pinned-dossier-refresh-code-inspection.json`.
+
+### Fresh pinned-source refresh
+
+The 2026-07-01 refresh pins the inspected source to `627eb2be339723926d5b468698a8f5cc0da21167` and records a fresh tree plus selected implementation excerpts in `sources/discovery/2026-07-01-pinned-dossier-refresh-source-structures.json` and `sources/discovery/2026-07-01-pinned-dossier-refresh-code-inspection.json`. Representative files captured for this refresh include `packages/core/src/context.abort.test.ts`, `packages/core/src/context.embedding-error.test.ts`, `packages/core/src/context.ignore-patterns.test.ts`, `packages/core/src/context.splitter.test.ts`, `packages/core/src/context.ts`, `packages/core/src/embedding/base-embedding.ts`. Treat benchmark, savings, and deployment claims below as source-logic only unless a benchmark-audit or reproduction artifact is explicitly cited.
+
 
 - `packages/core/src/context.ts` implements indexing/search context and defines `IndexAbortError` for cancelling in-flight indexing.
 - `packages/core/src/splitter/ast-splitter.ts` chunks code through tree-sitter AST nodes, with LangChain fallback and chunk-size/overlap controls.

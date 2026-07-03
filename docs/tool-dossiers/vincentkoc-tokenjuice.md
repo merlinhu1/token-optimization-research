@@ -4,9 +4,13 @@
 
 - Repository: `vincentkoc/tokenjuice`
 - URL: https://github.com/vincentkoc/tokenjuice
-- Version/ref inspected: GitHub `HEAD` API or local shallow clone plus representative implementation files, 2026-06-26
-- Date inspected: 2026-06-26
-- Evidence stage: source-logic (representative reducer, command matcher, Bash compaction integration, rules, and Claude Code host files inspected)
+- Version/ref inspected: local shallow clone `49bdcf175583`, 2026-07-01
+- Snapshot status: pinned-commit
+- Commit inspected: 49bdcf1755833ff1e02e44e6e7fe91c0fb44c16e
+- Commit URL: https://github.com/vincentkoc/tokenjuice/commit/49bdcf1755833ff1e02e44e6e7fe91c0fb44c16e
+- Source artifact path: `sources/discovery/2026-07-01-pinned-dossier-refresh-source-structures.json`
+- Date inspected: 2026-07-01
+- Evidence stage: source-logic (fresh pinned shallow clone; representative source/config/test files inspected; benchmark-audit and reproduction still required for measured savings)
 - Stars at inspection: 469
 - Forks at inspection: 48
 - License: MIT
@@ -21,8 +25,8 @@ TokenJuice compacts command outputs using rule-driven reducers and installs host
 | Evidence type | Files/URLs inspected | Notes |
 |---|---|---|
 | Repository metadata | GitHub API where available; local shallow clone fallback for rate-limited repos | Popularity and license signals only; not effectiveness evidence. |
-| Source tree | `sources/discovery/2026-06-26-ten-more-tool-source-structures.json` | Used to identify source, hook, MCP, test, benchmark, and runtime paths beyond README. |
-| Runtime/source content | `sources/discovery/2026-06-26-ten-more-tool-code-inspection.json` | Representative files fetched from raw GitHub or read from local clones with SHA-256 prefixes and behavior excerpts. |
+| Source tree | `sources/discovery/2026-07-01-pinned-dossier-refresh-source-structures.json` | Used to identify source, hook, MCP, test, benchmark, and runtime paths beyond README. |
+| Runtime/source content | `sources/discovery/2026-07-01-pinned-dossier-refresh-code-inspection.json` | Representative files fetched from raw GitHub or read from local clones with SHA-256 prefixes and behavior excerpts. |
 | README/docs | README/docs paths identified when present. | README claims are not used as behavior evidence. |
 | Tests/benchmarks | Paths identified where present. | Full benchmark-method review remains open. |
 
@@ -66,7 +70,12 @@ Repository tree inspection found 793 files and 603 files matching integration, s
 
 ## Code-detail inspection findings
 
-Evidence artifact: `sources/discovery/2026-06-26-ten-more-tool-code-inspection.json`.
+Evidence artifact: `sources/discovery/2026-07-01-pinned-dossier-refresh-code-inspection.json`.
+
+### Fresh pinned-source refresh
+
+The 2026-07-01 refresh pins the inspected source to `49bdcf1755833ff1e02e44e6e7fe91c0fb44c16e` and records a fresh tree plus selected implementation excerpts in `sources/discovery/2026-07-01-pinned-dossier-refresh-source-structures.json` and `sources/discovery/2026-07-01-pinned-dossier-refresh-code-inspection.json`. Representative files captured for this refresh include `src/core/analysis.ts`, `src/core/artifacts.ts`, `src/core/builtin-rules.generated.ts`, `src/core/classify.ts`, `src/core/cli-client.ts`, `src/core/command-identity.ts`. Treat benchmark, savings, and deployment claims below as source-logic only unless a benchmark-audit or reproduction artifact is explicitly cited.
+
 
 - `src/core/reduce.ts` implements core reduction logic for command output and compaction metadata.
 - `src/core/command-match.ts` identifies commands and command variants for rule matching.

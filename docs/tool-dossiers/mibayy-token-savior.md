@@ -5,6 +5,10 @@
 - Repository: `Mibayy/token-savior`
 - URL: https://github.com/Mibayy/token-savior
 - Version/ref inspected: local shallow clone `ff42ef14cc97`, 2026-06-26
+- Snapshot status: pinned-commit
+- Commit inspected: ff42ef14cc97
+- Commit URL: https://github.com/Mibayy/token-savior/commit/ff42ef14cc97
+- Source artifact path: `sources/discovery/2026-06-26-source-logic-uplift-source-structures.json`
 - Date inspected: 2026-06-26
 - Evidence stage: source-logic (local shallow clone; representative MCP server, tool schemas, compact ops, bash rewriter, memory DB, query API, project indexer, and tests inspected)
 

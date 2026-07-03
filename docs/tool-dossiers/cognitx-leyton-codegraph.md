@@ -6,6 +6,10 @@
 - URL: https://github.com/cognitx-leyton/codegraph
 - Local clone inspected: `/tmp/token-leads-20260629/cognitx-leyton__codegraph`
 - Version/ref inspected: local shallow clone `ba5e0039b24d`, 2026-06-29
+- Snapshot status: pinned-commit
+- Commit inspected: ba5e0039b24d
+- Commit URL: https://github.com/cognitx-leyton/codegraph/commit/ba5e0039b24d
+- Source artifact path: `sources/discovery/2026-06-29-graph-leads-b-source-logic.json`
 - Date inspected: 2026-06-29
 - Evidence stage: source-logic (local shallow clone; representative Python package manifest, CLI, MCP server, parser/resolver/loader, hooks, init, tests, and benchmark command wiring inspected)
 

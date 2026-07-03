@@ -4,9 +4,13 @@
 
 - Repository: `portofcontext/pctx`
 - URL: https://github.com/portofcontext/pctx
-- Version/ref inspected: GitHub `HEAD` API or local shallow clone plus representative implementation files, 2026-06-26
-- Date inspected: 2026-06-26
-- Evidence stage: source-logic (local shallow clone; representative MCP server, service, code mode, executor, and session routes inspected)
+- Version/ref inspected: local shallow clone `515c79a26e14`, 2026-07-01
+- Snapshot status: pinned-commit
+- Commit inspected: 515c79a26e14635f965aac859d766f91dc35d157
+- Commit URL: https://github.com/portofcontext/pctx/commit/515c79a26e14635f965aac859d766f91dc35d157
+- Source artifact path: `sources/discovery/2026-07-01-pinned-dossier-refresh-source-structures.json`
+- Date inspected: 2026-07-01
+- Evidence stage: source-logic (fresh pinned shallow clone; representative source/config/test files inspected; benchmark-audit and reproduction still required for measured savings)
 - Stars at inspection: 264
 - Forks at inspection: None
 - License: UNKNOWN-local-clone
@@ -21,8 +25,8 @@ pctx provides an MCP/code-mode execution layer with session-scoped registries, g
 | Evidence type | Files/URLs inspected | Notes |
 |---|---|---|
 | Repository metadata | GitHub API where available; local shallow clone fallback for rate-limited repos | Popularity and license signals only; not effectiveness evidence. |
-| Source tree | `sources/discovery/2026-06-26-ten-more-tool-source-structures.json` | Used to identify source, hook, MCP, test, benchmark, and runtime paths beyond README. |
-| Runtime/source content | `sources/discovery/2026-06-26-ten-more-tool-code-inspection.json` | Representative files fetched from raw GitHub or read from local clones with SHA-256 prefixes and behavior excerpts. |
+| Source tree | `sources/discovery/2026-07-01-pinned-dossier-refresh-source-structures.json` | Used to identify source, hook, MCP, test, benchmark, and runtime paths beyond README. |
+| Runtime/source content | `sources/discovery/2026-07-01-pinned-dossier-refresh-code-inspection.json` | Representative files fetched from raw GitHub or read from local clones with SHA-256 prefixes and behavior excerpts. |
 | README/docs | README/docs paths identified when present. | README claims are not used as behavior evidence. |
 | Tests/benchmarks | Paths identified where present. | Full benchmark-method review remains open. |
 
@@ -66,7 +70,12 @@ Repository tree inspection found 272 files and 206 files matching integration, s
 
 ## Code-detail inspection findings
 
-Evidence artifact: `sources/discovery/2026-06-26-ten-more-tool-code-inspection.json`.
+Evidence artifact: `sources/discovery/2026-07-01-pinned-dossier-refresh-code-inspection.json`.
+
+### Fresh pinned-source refresh
+
+The 2026-07-01 refresh pins the inspected source to `515c79a26e14635f965aac859d766f91dc35d157` and records a fresh tree plus selected implementation excerpts in `sources/discovery/2026-07-01-pinned-dossier-refresh-source-structures.json` and `sources/discovery/2026-07-01-pinned-dossier-refresh-code-inspection.json`. Representative files captured for this refresh include `crates/pctx_code_mode/Cargo.toml`, `crates/pctx_code_mode/src/code_mode.rs`, `crates/pctx_code_mode/src/lib.rs`, `crates/pctx_code_mode/src/model.rs`, `crates/pctx_mcp_server/Cargo.toml`, `crates/pctx_mcp_server/src/extractors.rs`. Treat benchmark, savings, and deployment claims below as source-logic only unless a benchmark-audit or reproduction artifact is explicitly cited.
+
 
 - `crates/pctx_mcp_server/src/server.rs` wraps a local session manager and cancels cached MCP connection pools when sessions close.
 - `crates/pctx_mcp_server/src/service.rs` defines a `PctxMcpService` with tool routing, per-session MCP connection pools, and registry/disclosure configuration.

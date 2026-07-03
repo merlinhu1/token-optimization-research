@@ -5,6 +5,10 @@
 - Repository: `colbymchenry/codegraph`
 - URL: https://github.com/colbymchenry/codegraph
 - Version/ref inspected: local shallow clone `4077ed19b7d8`, 2026-06-26
+- Snapshot status: pinned-commit
+- Commit inspected: 4077ed19b7d8
+- Commit URL: https://github.com/colbymchenry/codegraph/commit/4077ed19b7d8
+- Source artifact path: `sources/discovery/2026-06-26-source-logic-uplift-source-structures.json`
 - Date inspected: 2026-06-26
 - Evidence stage: source-logic (local shallow clone; representative CLI, context builder/formatter, search parser, DB queries, API, output-budget, and staleness tests inspected)
 

@@ -6,6 +6,10 @@
 - URL: https://github.com/vbcherepanov/total-agent-memory
 - Local clone inspected: `/tmp/token-leads-20260629/vbcherepanov__total-agent-memory`
 - Version/ref inspected: local shallow clone `616d9a6f8b50`, 2026-06-29
+- Snapshot status: pinned-commit
+- Commit inspected: 616d9a6f8b50
+- Commit URL: https://github.com/vbcherepanov/total-agent-memory/commit/616d9a6f8b50
+- Source artifact path: `sources/discovery/2026-06-29-graph-leads-b-source-logic.json`
 - Date inspected: 2026-06-29
 - Evidence stage: source-logic (local shallow clone; representative package entrypoints, MCP server, lookup CLI, retrieval/save paths, installer, hooks, and tests inspected)
 

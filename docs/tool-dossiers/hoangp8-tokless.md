@@ -5,6 +5,10 @@
 - Repository: `HoangP8/tokless`
 - URL: https://github.com/HoangP8/tokless
 - Version/ref inspected: local shallow clone `769cd6dc8413`, 2026-06-26
+- Snapshot status: pinned-commit
+- Commit inspected: 769cd6dc8413
+- Commit URL: https://github.com/HoangP8/tokless/commit/769cd6dc8413
+- Source artifact path: `sources/discovery/2026-06-26-final-lead-uplift-source-structures.json`
 - Date inspected: 2026-06-26
 - Evidence stage: source-logic (local shallow clone; registry, init/wire loop, agent config writers, bundled-tool installers, MCP/hook wiring, indexing, and integration tests inspected)
 - Stars at inspection: not recorded in source-logic artifact
@@ -97,7 +101,7 @@ Because Tokless can wire several tools at once, the selected profile must still 
 - Bundle risk: the default tool set may combine surfaces that should be selected intentionally rather than installed as a blanket stack.
 - External dependency risk: npm, cargo, GitHub release downloads, install scripts, and tool-specific postinstall behavior can fail or change independently.
 - Verification mainly confirms install/config presence; it is not evidence of provider-billed token savings or pass-rate preservation.
-- Benchmark evidence for Tokless as an orchestrated full-stack installer was not found in the inspected representative files.
+- Benchmark-audit or reproduction evidence for Tokless as an orchestrated full-stack installer was not found in the inspected representative files.
 
 ## Open questions and next review tasks
 

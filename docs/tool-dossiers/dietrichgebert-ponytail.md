@@ -5,6 +5,10 @@
 - Repository: `DietrichGebert/ponytail`
 - URL: https://github.com/DietrichGebert/ponytail
 - Version/ref inspected: local shallow clone `c4d1925ae9b7`, 2026-06-26
+- Snapshot status: pinned-commit
+- Commit inspected: c4d1925ae9b7
+- Commit URL: https://github.com/DietrichGebert/ponytail/commit/c4d1925ae9b7
+- Source artifact path: `sources/discovery/2026-06-26-source-logic-uplift-source-structures.json`
 - Date inspected: 2026-06-26
 - Evidence stage: source-logic (local shallow clone; representative runtime, instruction builder, mode tracker, activation hook, MCP server, tests, and benchmark judge inspected)
 
