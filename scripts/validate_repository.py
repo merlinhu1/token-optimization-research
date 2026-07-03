@@ -370,7 +370,7 @@ def validate_qualification(sequence: dict, errors: list[str]) -> None:
     }
     required_true = ("seeded_verifier_nonzero", "fixed_verifier_zero", "full_fixed_cumulative_verifier_zero", "composite_seed_merge_zero", "composite_seeded_verifiers_nonzero", "no_unmerged_paths", "no_model_visible_acceptance_assets", "all_expected_model_concealment_declared")
     if sequence.get("status") == "active":
-        required_true += ("fixed_snapshot_model_concealed_paths_absent",)
+        required_true += ("fixed_snapshot_model_concealed_paths_safe",)
     if q.get("snapshot") != sequence.get("initial_snapshot", {}).get("commit") or q.get("ordered_task_ids") != [t["id"] for t in ordered] or q.get("qualified_on") != sequence.get("qualification_date"):
         errors.append(f"qualification {rel} snapshot, date, or task order is stale")
     if any(q.get(field) is not True for field in required_true):
@@ -424,10 +424,7 @@ def validate_qualification(sequence: dict, errors: list[str]) -> None:
             or record.get("model_concealed_paths") != declared
             or record.get("omitted_expected_model_concealed_paths") != []
             or record.get("declared_concealment_matches_expected") is not True
-            or (
-                sequence.get("status") == "active"
-                and record.get("fixed_snapshot_model_concealed_absent") is not True
-            )
+            or (sequence.get("status") == "active" and record.get("fixed_snapshot_model_concealed_safe") is not True)
         ):
             errors.append(f"qualification {rel} task {task['id']} concealment evidence is stale or incomplete")
         if q.get("task_binding", {}).get("task_directories", {}).get(task["id"]) != task_directory_sha256(task_dir):

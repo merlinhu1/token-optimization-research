@@ -34,9 +34,9 @@ Status: complete for the current catalog.
 
 ## Phase 2A — Controlled maintenance workflows
 
-Status: evidence collected; interpretation/reconciliation active.
+Status: current production baseline collection and review active.
 
-The retired Fastify, Terraform, and Beets maintenance sequences cover regression repair on medium/large public repositories. They remain qualified evidence boundaries but are no longer the active primary experiment design.
+Fastify maintenance V1 and Terraform maintenance V2 are current production lanes covering regression repair on medium/large public repositories. They complement, rather than replace, the primary Beets lifecycle workflow.
 
 Continue to:
 
@@ -48,7 +48,7 @@ Continue to:
 
 ## Phase 2B — Compact lifecycle workflow
 
-Status: v2 implemented and executable-qualified; valid baseline not yet run.
+Status: v2 implemented, executable-qualified, and baseline-reviewed.
 
 `beets-lifecycle-sequence-v2` is one pragmatically broad persistent workflow with:
 
@@ -56,7 +56,7 @@ Status: v2 implemented and executable-qualified; valid baseline not yet run.
 2. a behavior-preserving refactor;
 3. a code-review task with correction of acceptance-critical findings.
 
-This lifecycle triad is the primary common-work configuration. Do not create a combinatorial language matrix. Select a representative medium/large repository whose existing tests and conventions can support all three tasks with deterministic controller-owned acceptance.
+This lifecycle triad remains the primary common-work configuration within the three-lane production matrix. Fastify and Terraform provide current secondary maintenance evidence, not language variants added for coverage optics.
 
 The v1 calibration run is retained but excluded: it exposed an upstream concealed-path collision and verifier requirements for exact error prose and constructor parameter names that were not disclosed by the prompts. V2 keeps the workload while aligning acceptance with the provider-token estimand.
 
