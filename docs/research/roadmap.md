@@ -2,7 +2,7 @@
 
 ## Current state
 
-The repository is in production token-evidence collection. Fastify, Beets, and Terraform each have two retained operationally valid baselines. A Caveman `r1` treatment screen is complete across all three lanes; verifier and review results remain diagnostic rather than eligibility gates.
+The repository is in production token-evidence collection. Fastify, Beets, and Terraform each have two retained operationally valid baselines. Six natural-use `r1` treatment screens—Caveman, RTK, Serena, Ponytail, Token Savior, and Graphify—are complete across all three lanes; verifier and review results remain diagnostic rather than eligibility gates.
 
 ## Production entry evidence
 
@@ -16,4 +16,4 @@ The repository is in production token-evidence collection. Fastify, Beets, and T
 
 ## Next production step
 
-Treat the Caveman, RTK, and Serena `r1` results as initial natural-use assignment screens, not stable population estimates. Their matched aggregate provider-token changes were -14.05%, -12.72%, and -3.27%, respectively. Preserve these first valid samples. Use preregistered compatible natural-use replication—not outcome-selected reruns, forced invocation, or post-hoc command-count reinterpretation—for the next inference step.
+Treat the six `r1` treatment results as initial natural-use assignment screens, not stable population estimates. Matched aggregate provider-token changes were: Graphify -16.38%, Token Savior -14.89%, Caveman -14.05%, RTK -12.72%, Serena -3.27%, and Ponytail -1.21%. Preserve these first valid samples and report verifier diagnostics separately. Use preregistered compatible natural-use replication—not outcome-selected reruns, forced invocation, or post-hoc command-count reinterpretation—for the next inference step.
