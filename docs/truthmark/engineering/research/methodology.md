@@ -1,7 +1,7 @@
 ---
 status: active
 truth_kind: engineering-workflow
-last_reviewed: 2026-06-26
+last_reviewed: 2026-06-30
 ---
 
 # Methodology And Reporting Workflow
@@ -25,6 +25,7 @@ Benchmark protocol details, quality gates, and stack compatibility are owned by 
 - The repository validator checks structural files and retired terminology.
 - Discovery coverage audits are required before claiming a candidate set is complete, primary, recommended, or representative.
 - High-signal leads discovered by coverage audits stay visible in repository data and backlog even when they remain non-decision-bearing `lead` evidence.
+- Repositories without auditable source versioning are excluded from valid candidate sets until refreshed against a pinned source snapshot.
 
 ## Product Truth Links
 
@@ -52,10 +53,11 @@ Write claims from evidence first, then polish prose.
 
 1. Identify the report thesis and target evidence stage.
 2. Map major claims to source-logic, benchmark-audit, reproduction, or limitation evidence.
-3. Weaken, move, or remove unsupported claims.
-4. Keep prior-art framing citation-light and mechanism-grouped.
-5. Pair decision tables with limitations and falsification conditions.
-6. Plan figures and tables only after metrics or structural evidence exists.
+3. Exclude unversioned or unpinned repositories from candidate recommendations; keep them as limitations or refresh targets.
+4. Weaken, move, or remove unsupported claims.
+5. Keep prior-art framing citation-light and mechanism-grouped.
+6. Pair decision tables with limitations and falsification conditions.
+7. Plan figures and tables only after metrics or structural evidence exists.
 
 ## Outputs
 
@@ -69,6 +71,7 @@ Write claims from evidence first, then polish prose.
 - Decision (2026-06-26): Research reports should summarize evidence classes instead of dumping raw provenance ledgers.
 - Decision (2026-06-26): Negative findings and exclusions are part of the research record.
 - Decision (2026-06-28): Discovery coverage is a separate quality gate from source inspection depth; high-signal leads must be visible before stack candidates are called complete or primary.
+- Decision (2026-06-30): Candidate recommendations require auditable source versioning; unpinned historical inspections are refresh targets, not valid candidates.
 
 ## Rationale
 
@@ -94,6 +97,7 @@ Its main quality risk is over-scoped claims, not lack of prose polish.
 - ../../../../docs/research/report-writing-and-methodology-skill-patterns.md
 - ../../../../templates/report.md
 - ../../../../templates/claim-entry.md
+- ../../../../prompts/researcher.md
 - ../../../../prompts/paper-writer.md
 - ../../../../.agents/skills/claim-evidence-auditor.md
 - ../../../../.agents/skills/scientific-report-reviewer.md

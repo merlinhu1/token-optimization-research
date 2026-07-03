@@ -42,6 +42,7 @@ Default order for Phase 2 work:
 
 - Treat stack claims as falsifiable hypotheses until benchmark-audit or reproduction exists.
 - Do not present source-logic candidates as measured winners.
+- Repositories without auditable source versioning for the inspected source are not valid candidates for recommendation, stack construction, benchmark-audit, or reproduction.
 - Avoid raw provenance ledgers in report bodies; summarize evidence classes and keep raw paths in dossiers/data.
 - Include falsification or downgrade criteria for important recommendations.
 - Pair token savings with software-quality gates; lower token use is not success if the task is under-solved.

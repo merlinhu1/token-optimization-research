@@ -1,0 +1,1001 @@
+{
+  "schema_version": 1,
+  "description": "Standard profile registry for individual token-saving tool, stack, replacement-runtime, comparator, installer, and baseline evaluations.",
+  "primary_objectives": [
+    "individual_tool_effectiveness",
+    "stack_effectiveness"
+  ],
+  "profile_types": [
+    "control",
+    "individual_tool",
+    "tool_stack",
+    "replacement_runtime",
+    "installer_orchestrator",
+    "comparator"
+  ],
+  "profiles": [
+    {
+      "id": "baseline-codex-no-mcp",
+      "profile_type": "control",
+      "objective_scope": "control",
+      "status": "active-control",
+      "substrate": "codex-cli",
+      "enabled_surfaces": [
+        "codex-native-shell-edit"
+      ],
+      "disabled_overlaps": [
+        "all MCP servers",
+        "all token-saving surfaces",
+        "global Codex instructions",
+        "hooks",
+        "skills/plugins",
+        "warm indexes"
+      ],
+      "components": [],
+      "native_agent_tools_allowed": [
+        "shell_command_execution",
+        "file_editing",
+        "plain_file_read_search",
+        "git",
+        "verifier_commands"
+      ],
+      "forbidden_surfaces": [
+        "lean-ctx",
+        "codegraph",
+        "serena",
+        "rtk",
+        "lowfat",
+        "tokenjuice",
+        "repomix",
+        "mex",
+        "cavemem",
+        "cartog",
+        "all unlisted retrieval/compression/memory/token-saving tools"
+      ],
+      "install": {
+        "policy": "Run Codex from a fresh lane-specific CODEX_HOME with auth only, no MCP servers, no global instructions, no hooks, no skills/plugins, isolated HOME/PYTHONUSERBASE/XDG/TMPDIR, and a preflight artifact proving empty MCP config."
+      },
+      "reset": {
+        "policy": "Delete the lane-specific Codex home and run-local HOME/PYTHONUSERBASE/XDG/TMPDIR before each run; verify no stale indexes or generated profile files survive."
+      },
+      "notes": "Canonical Codex CLI no-MCP substrate baseline. Codex native shell/edit/file/git/verifier operations are allowed; MCP, retrieval, compression, memory, token-saving add-ons, global instructions, hooks, skills/plugins, and warm indexes are forbidden."
+    },
+    {
+      "id": "broad-compression-owner",
+      "profile_type": "individual_tool",
+      "objective_scope": "individual_tool_effectiveness",
+      "status": "candidate-profile",
+      "enabled_surfaces": [
+        "broad-context-owner"
+      ],
+      "disabled_overlaps": [
+        "all unlisted surfaces"
+      ],
+      "components": [
+        {
+          "component_id": "broad-compression-owner",
+          "surface": "broad-context-owner",
+          "role": "individual_tool"
+        }
+      ],
+      "install": {
+        "policy": "Record exact commands, versions, generated files, and environment variables in every run record before using this profile."
+      },
+      "reset": {
+        "policy": "Record disable/uninstall commands and verify no stale index, hook, memory, cache, or generated profile survives into the next run."
+      },
+      "notes": "Broad compression owner comparator."
+    },
+    {
+      "id": "broad-context-owner",
+      "profile_type": "individual_tool",
+      "objective_scope": "individual_tool_effectiveness",
+      "status": "candidate-profile",
+      "enabled_surfaces": [
+        "broad-context-owner"
+      ],
+      "disabled_overlaps": [
+        "all unlisted surfaces"
+      ],
+      "components": [
+        {
+          "component_id": "broad-context-owner",
+          "surface": "broad-context-owner",
+          "role": "individual_tool"
+        }
+      ],
+      "install": {
+        "policy": "Record exact commands, versions, generated files, and environment variables in every run record before using this profile."
+      },
+      "reset": {
+        "policy": "Record disable/uninstall commands and verify no stale index, hook, memory, cache, or generated profile survives into the next run."
+      },
+      "notes": "Broad context owner comparator."
+    },
+    {
+      "id": "cartog-memory",
+      "profile_type": "tool_stack",
+      "objective_scope": "stack_effectiveness",
+      "status": "candidate-profile",
+      "enabled_surfaces": [
+        "retrieval-context",
+        "memory-rediscovery"
+      ],
+      "disabled_overlaps": [
+        "all unlisted surfaces"
+      ],
+      "components": [
+        {
+          "component_id": "cartog-memory:retrieval-context",
+          "surface": "retrieval-context",
+          "role": "stack_component"
+        },
+        {
+          "component_id": "cartog-memory:memory-rediscovery",
+          "surface": "memory-rediscovery",
+          "role": "stack_component"
+        }
+      ],
+      "install": {
+        "policy": "Record exact commands, versions, generated files, and environment variables in every run record before using this profile."
+      },
+      "reset": {
+        "policy": "Record disable/uninstall commands and verify no stale index, hook, memory, cache, or generated profile survives into the next run."
+      },
+      "notes": "Cartog plus memory stack."
+    },
+    {
+      "id": "codescope-owner",
+      "profile_type": "individual_tool",
+      "objective_scope": "individual_tool_effectiveness",
+      "status": "candidate-profile",
+      "enabled_surfaces": [
+        "broad-context-owner"
+      ],
+      "disabled_overlaps": [
+        "all unlisted surfaces"
+      ],
+      "components": [
+        {
+          "component_id": "codescope-owner",
+          "surface": "broad-context-owner",
+          "role": "individual_tool"
+        }
+      ],
+      "install": {
+        "policy": "Record exact commands, versions, generated files, and environment variables in every run record before using this profile."
+      },
+      "reset": {
+        "policy": "Record disable/uninstall commands and verify no stale index, hook, memory, cache, or generated profile survives into the next run."
+      },
+      "notes": "CodeScope broad context owner."
+    },
+    {
+      "id": "grace-artifact-project",
+      "profile_type": "tool_stack",
+      "objective_scope": "stack_effectiveness",
+      "status": "candidate-profile",
+      "enabled_surfaces": [
+        "broad-context-owner",
+        "retrieval-context"
+      ],
+      "disabled_overlaps": [
+        "all unlisted surfaces"
+      ],
+      "components": [
+        {
+          "component_id": "grace-artifact-project:broad-context-owner",
+          "surface": "broad-context-owner",
+          "role": "stack_component"
+        },
+        {
+          "component_id": "grace-artifact-project:retrieval-context",
+          "surface": "retrieval-context",
+          "role": "stack_component"
+        }
+      ],
+      "install": {
+        "policy": "Record exact commands, versions, generated files, and environment variables in every run record before using this profile."
+      },
+      "reset": {
+        "policy": "Record disable/uninstall commands and verify no stale index, hook, memory, cache, or generated profile survives into the next run."
+      },
+      "notes": "Grace artifact/project stack candidate."
+    },
+    {
+      "id": "integrated-mcp-owner",
+      "profile_type": "individual_tool",
+      "objective_scope": "individual_tool_effectiveness",
+      "status": "candidate-profile",
+      "enabled_surfaces": [
+        "mcp-tool-trace"
+      ],
+      "disabled_overlaps": [
+        "all unlisted surfaces"
+      ],
+      "components": [
+        {
+          "component_id": "integrated-mcp-owner",
+          "surface": "mcp-tool-trace",
+          "role": "individual_tool"
+        }
+      ],
+      "install": {
+        "policy": "Record exact commands, versions, generated files, and environment variables in every run record before using this profile."
+      },
+      "reset": {
+        "policy": "Record disable/uninstall commands and verify no stale index, hook, memory, cache, or generated profile survives into the next run."
+      },
+      "notes": "Integrated MCP owner treatment."
+    },
+    {
+      "id": "lower-intervention-cartog",
+      "profile_type": "comparator",
+      "objective_scope": "individual_tool_effectiveness",
+      "status": "candidate-profile",
+      "enabled_surfaces": [
+        "retrieval-context"
+      ],
+      "disabled_overlaps": [
+        "all unlisted surfaces"
+      ],
+      "components": [
+        {
+          "component_id": "lower-intervention-cartog",
+          "surface": "retrieval-context",
+          "role": "comparator"
+        }
+      ],
+      "install": {
+        "policy": "Record exact commands, versions, generated files, and environment variables in every run record before using this profile."
+      },
+      "reset": {
+        "policy": "Record disable/uninstall commands and verify no stale index, hook, memory, cache, or generated profile survives into the next run."
+      },
+      "notes": "Lower-intervention Cartog comparator."
+    },
+    {
+      "id": "lower-intervention-codegraph",
+      "profile_type": "comparator",
+      "objective_scope": "individual_tool_effectiveness",
+      "status": "candidate-profile",
+      "enabled_surfaces": [
+        "retrieval-context"
+      ],
+      "disabled_overlaps": [
+        "all unlisted surfaces"
+      ],
+      "components": [
+        {
+          "component_id": "lower-intervention-codegraph",
+          "surface": "retrieval-context",
+          "role": "comparator"
+        }
+      ],
+      "install": {
+        "policy": "Record exact commands, versions, generated files, and environment variables in every run record before using this profile."
+      },
+      "reset": {
+        "policy": "Record disable/uninstall commands and verify no stale index, hook, memory, cache, or generated profile survives into the next run."
+      },
+      "notes": "Lower-intervention CodeGraph comparator."
+    },
+    {
+      "id": "maestro-orchestrator",
+      "profile_type": "installer_orchestrator",
+      "objective_scope": "stack_effectiveness",
+      "status": "candidate-profile",
+      "enabled_surfaces": [
+        "broad-context-owner"
+      ],
+      "disabled_overlaps": [
+        "all unlisted surfaces"
+      ],
+      "components": [
+        {
+          "component_id": "maestro-orchestrator",
+          "surface": "broad-context-owner",
+          "role": "installer_orchestrator"
+        }
+      ],
+      "install": {
+        "policy": "Record exact commands, versions, generated files, and environment variables in every run record before using this profile."
+      },
+      "reset": {
+        "policy": "Record disable/uninstall commands and verify no stale index, hook, memory, cache, or generated profile survives into the next run."
+      },
+      "notes": "Maestro orchestrator profile validation."
+    },
+    {
+      "id": "mcp-offload",
+      "profile_type": "individual_tool",
+      "objective_scope": "individual_tool_effectiveness",
+      "status": "candidate-profile",
+      "enabled_surfaces": [
+        "mcp-tool-trace"
+      ],
+      "disabled_overlaps": [
+        "all unlisted surfaces"
+      ],
+      "components": [
+        {
+          "component_id": "mcp-offload",
+          "surface": "mcp-tool-trace",
+          "role": "individual_tool"
+        }
+      ],
+      "install": {
+        "policy": "Record exact commands, versions, generated files, and environment variables in every run record before using this profile."
+      },
+      "reset": {
+        "policy": "Record disable/uninstall commands and verify no stale index, hook, memory, cache, or generated profile survives into the next run."
+      },
+      "notes": "MCP/offloaded execution trace treatment."
+    },
+    {
+      "id": "memory-cavemem",
+      "profile_type": "individual_tool",
+      "objective_scope": "individual_tool_effectiveness",
+      "status": "candidate-profile",
+      "enabled_surfaces": [
+        "memory-rediscovery"
+      ],
+      "disabled_overlaps": [
+        "all unlisted surfaces"
+      ],
+      "components": [
+        {
+          "component_id": "memory-cavemem",
+          "surface": "memory-rediscovery",
+          "role": "individual_tool"
+        }
+      ],
+      "install": {
+        "policy": "Record exact commands, versions, generated files, and environment variables in every run record before using this profile."
+      },
+      "reset": {
+        "policy": "Record disable/uninstall commands and verify no stale index, hook, memory, cache, or generated profile survives into the next run."
+      },
+      "notes": "Cavemem persistent-memory treatment."
+    },
+    {
+      "id": "memory-claude-mem",
+      "profile_type": "individual_tool",
+      "objective_scope": "individual_tool_effectiveness",
+      "status": "candidate-profile",
+      "enabled_surfaces": [
+        "memory-rediscovery"
+      ],
+      "disabled_overlaps": [
+        "all unlisted surfaces"
+      ],
+      "components": [
+        {
+          "component_id": "memory-claude-mem",
+          "surface": "memory-rediscovery",
+          "role": "individual_tool"
+        }
+      ],
+      "install": {
+        "policy": "Record exact commands, versions, generated files, and environment variables in every run record before using this profile."
+      },
+      "reset": {
+        "policy": "Record disable/uninstall commands and verify no stale index, hook, memory, cache, or generated profile survives into the next run."
+      },
+      "notes": "Claude Mem persistent-memory treatment."
+    },
+    {
+      "id": "memory-mex",
+      "profile_type": "individual_tool",
+      "objective_scope": "individual_tool_effectiveness",
+      "status": "candidate-profile",
+      "enabled_surfaces": [
+        "memory-rediscovery"
+      ],
+      "disabled_overlaps": [
+        "all unlisted surfaces"
+      ],
+      "components": [
+        {
+          "component_id": "memory-mex",
+          "surface": "memory-rediscovery",
+          "role": "individual_tool"
+        }
+      ],
+      "install": {
+        "policy": "Record exact commands, versions, generated files, and environment variables in every run record before using this profile."
+      },
+      "reset": {
+        "policy": "Record disable/uninstall commands and verify no stale index, hook, memory, cache, or generated profile survives into the next run."
+      },
+      "notes": "MEX persistent-memory treatment."
+    },
+    {
+      "id": "memory-total-agent-memory",
+      "profile_type": "individual_tool",
+      "objective_scope": "individual_tool_effectiveness",
+      "status": "candidate-profile",
+      "enabled_surfaces": [
+        "memory-rediscovery"
+      ],
+      "disabled_overlaps": [
+        "all unlisted surfaces"
+      ],
+      "components": [
+        {
+          "component_id": "memory-total-agent-memory",
+          "surface": "memory-rediscovery",
+          "role": "individual_tool"
+        }
+      ],
+      "install": {
+        "policy": "Record exact commands, versions, generated files, and environment variables in every run record before using this profile."
+      },
+      "reset": {
+        "policy": "Record disable/uninstall commands and verify no stale index, hook, memory, cache, or generated profile survives into the next run."
+      },
+      "notes": "Total Agent Memory treatment."
+    },
+    {
+      "id": "replacement-caveman-code",
+      "profile_type": "replacement_runtime",
+      "objective_scope": "individual_tool_effectiveness",
+      "status": "candidate-profile",
+      "enabled_surfaces": [
+        "replacement-runtime"
+      ],
+      "disabled_overlaps": [
+        "all unlisted surfaces"
+      ],
+      "components": [
+        {
+          "component_id": "replacement-caveman-code",
+          "surface": "replacement-runtime",
+          "role": "replacement_runtime"
+        }
+      ],
+      "install": {
+        "policy": "Record exact commands, versions, generated files, and environment variables in every run record before using this profile."
+      },
+      "reset": {
+        "policy": "Record disable/uninstall commands and verify no stale index, hook, memory, cache, or generated profile survives into the next run."
+      },
+      "notes": "Caveman Code replacement runtime."
+    },
+    {
+      "id": "replacement-clawcodex",
+      "profile_type": "replacement_runtime",
+      "objective_scope": "individual_tool_effectiveness",
+      "status": "candidate-profile",
+      "enabled_surfaces": [
+        "replacement-runtime"
+      ],
+      "disabled_overlaps": [
+        "all unlisted surfaces"
+      ],
+      "components": [
+        {
+          "component_id": "replacement-clawcodex",
+          "surface": "replacement-runtime",
+          "role": "replacement_runtime"
+        }
+      ],
+      "install": {
+        "policy": "Record exact commands, versions, generated files, and environment variables in every run record before using this profile."
+      },
+      "reset": {
+        "policy": "Record disable/uninstall commands and verify no stale index, hook, memory, cache, or generated profile survives into the next run."
+      },
+      "notes": "ClawCodex replacement runtime."
+    },
+    {
+      "id": "retrieval-cartog",
+      "profile_type": "individual_tool",
+      "objective_scope": "individual_tool_effectiveness",
+      "status": "candidate-profile",
+      "enabled_surfaces": [
+        "retrieval-context"
+      ],
+      "disabled_overlaps": [
+        "all unlisted surfaces"
+      ],
+      "components": [
+        {
+          "component_id": "retrieval-cartog",
+          "surface": "retrieval-context",
+          "role": "individual_tool"
+        }
+      ],
+      "install": {
+        "policy": "Record exact commands, versions, generated files, and environment variables in every run record before using this profile."
+      },
+      "reset": {
+        "policy": "Record disable/uninstall commands and verify no stale index, hook, memory, cache, or generated profile survives into the next run."
+      },
+      "notes": "Cartog retrieval/navigation treatment."
+    },
+    {
+      "id": "retrieval-codegraph",
+      "profile_type": "individual_tool",
+      "objective_scope": "individual_tool_effectiveness",
+      "status": "candidate-profile",
+      "enabled_surfaces": [
+        "retrieval-context"
+      ],
+      "disabled_overlaps": [
+        "all unlisted surfaces"
+      ],
+      "components": [
+        {
+          "component_id": "retrieval-codegraph",
+          "surface": "retrieval-context",
+          "role": "individual_tool"
+        }
+      ],
+      "install": {
+        "policy": "Record exact commands, versions, generated files, and environment variables in every run record before using this profile."
+      },
+      "reset": {
+        "policy": "Record disable/uninstall commands and verify no stale index, hook, memory, cache, or generated profile survives into the next run."
+      },
+      "notes": "CodeGraph retrieval/navigation treatment. Primary cold/optional treatment lane; any indexing the agent performs during the task is counted in task execution.",
+      "evaluation_protocol": {
+        "schema_version": 1,
+        "tool_state": "cold",
+        "tool_use_policy": "optional",
+        "container_required": true,
+        "provider_token_boundary": "codex-events.jsonl turn.completed usage only",
+        "warmup_provider_tokens_counted": false,
+        "notes": "Primary treatment condition: no prebuilt tool state; the tool is available but optional."
+      }
+    },
+    {
+      "id": "retrieval-graphify",
+      "profile_type": "individual_tool",
+      "objective_scope": "individual_tool_effectiveness",
+      "status": "candidate-profile",
+      "enabled_surfaces": [
+        "retrieval-context"
+      ],
+      "disabled_overlaps": [
+        "all unlisted surfaces"
+      ],
+      "components": [
+        {
+          "component_id": "retrieval-graphify",
+          "surface": "retrieval-context",
+          "role": "individual_tool"
+        }
+      ],
+      "install": {
+        "policy": "Record exact commands, versions, generated files, and environment variables in every run record before using this profile."
+      },
+      "reset": {
+        "policy": "Record disable/uninstall commands and verify no stale index, hook, memory, cache, or generated profile survives into the next run."
+      },
+      "notes": "Graphify graph retrieval treatment."
+    },
+    {
+      "id": "retrieval-leanctx",
+      "profile_type": "individual_tool",
+      "objective_scope": "individual_tool_effectiveness",
+      "status": "candidate-profile",
+      "enabled_surfaces": [
+        "retrieval-context"
+      ],
+      "disabled_overlaps": [
+        "all unlisted surfaces"
+      ],
+      "components": [
+        {
+          "component_id": "retrieval-leanctx",
+          "surface": "retrieval-context",
+          "role": "individual_tool"
+        }
+      ],
+      "install": {
+        "policy": "Record exact commands, versions, generated files, and environment variables in every run record before using this profile."
+      },
+      "reset": {
+        "policy": "Record disable/uninstall commands and verify no stale index, hook, memory, cache, or generated profile survives into the next run."
+      },
+      "notes": "LeanCTX retrieval/navigation treatment. Primary cold/optional treatment lane; any indexing the agent performs during the task is counted in task execution.",
+      "evaluation_protocol": {
+        "schema_version": 1,
+        "tool_state": "cold",
+        "tool_use_policy": "optional",
+        "container_required": true,
+        "provider_token_boundary": "codex-events.jsonl turn.completed usage only",
+        "warmup_provider_tokens_counted": false,
+        "notes": "Primary treatment condition: no prebuilt tool state; the tool is available but optional."
+      }
+    },
+    {
+      "id": "retrieval-leanctx-warm-optional",
+      "profile_type": "individual_tool",
+      "objective_scope": "individual_tool_effectiveness",
+      "status": "candidate-profile",
+      "enabled_surfaces": [
+        "retrieval-context"
+      ],
+      "disabled_overlaps": [
+        "all unlisted surfaces"
+      ],
+      "components": [
+        {
+          "component_id": "retrieval-leanctx-warm-optional",
+          "surface": "retrieval-context",
+          "role": "individual_tool"
+        }
+      ],
+      "install": {
+        "policy": "Record exact commands, versions, generated files, and environment variables in every run record before using this profile."
+      },
+      "reset": {
+        "policy": "Delete lane-specific Codex home and tool data unless the active protocol is warm-index; warm-index runs rebuild the index after task setup and before Codex starts."
+      },
+      "notes": "LeanCTX warm-index, optional-use retrieval/navigation treatment. The agent may choose native Codex tools when LeanCTX would add context overhead. Calibration-only lane; run on a capped sentinel subset, not the full suite by default.",
+      "evaluation_protocol": {
+        "tool_state": "warm-index",
+        "tool_use_policy": "optional",
+        "warmup_provider_tokens_counted": false,
+        "container_required": true,
+        "notes": "Warm/index preparation is a separate artifact and wall-time/storage metric; provider tokens are counted only from codex-events.jsonl.",
+        "schema_version": 1,
+        "calibration_only": true,
+        "calibration_reason": "Tool-state/use-policy calibration; excluded from default full-suite batches to control cost."
+      }
+    },
+    {
+      "id": "retrieval-serena",
+      "profile_type": "individual_tool",
+      "objective_scope": "individual_tool_effectiveness",
+      "status": "candidate-profile",
+      "enabled_surfaces": [
+        "retrieval-context"
+      ],
+      "disabled_overlaps": [
+        "all unlisted surfaces"
+      ],
+      "components": [
+        {
+          "component_id": "retrieval-serena",
+          "surface": "retrieval-context",
+          "role": "individual_tool"
+        }
+      ],
+      "install": {
+        "policy": "Record exact commands, versions, generated files, and environment variables in every run record before using this profile."
+      },
+      "reset": {
+        "policy": "Record disable/uninstall commands and verify no stale index, hook, memory, cache, or generated profile survives into the next run."
+      },
+      "notes": "Serena retrieval/navigation treatment."
+    },
+    {
+      "id": "retrieval-sigmap",
+      "profile_type": "individual_tool",
+      "objective_scope": "individual_tool_effectiveness",
+      "status": "candidate-profile",
+      "enabled_surfaces": [
+        "retrieval-context"
+      ],
+      "disabled_overlaps": [
+        "all unlisted surfaces"
+      ],
+      "components": [
+        {
+          "component_id": "retrieval-sigmap",
+          "surface": "retrieval-context",
+          "role": "individual_tool"
+        }
+      ],
+      "install": {
+        "policy": "Record exact commands, versions, generated files, and environment variables in every run record before using this profile."
+      },
+      "reset": {
+        "policy": "Record disable/uninstall commands and verify no stale index, hook, memory, cache, or generated profile survives into the next run."
+      },
+      "notes": "SigMap retrieval/governance treatment."
+    },
+    {
+      "id": "serena-cavemem-lightweight",
+      "profile_type": "tool_stack",
+      "objective_scope": "stack_effectiveness",
+      "status": "candidate-profile",
+      "enabled_surfaces": [
+        "retrieval-context",
+        "memory-rediscovery"
+      ],
+      "disabled_overlaps": [
+        "all unlisted surfaces"
+      ],
+      "components": [
+        {
+          "component_id": "serena-cavemem-lightweight:retrieval-context",
+          "surface": "retrieval-context",
+          "role": "stack_component"
+        },
+        {
+          "component_id": "serena-cavemem-lightweight:memory-rediscovery",
+          "surface": "memory-rediscovery",
+          "role": "stack_component"
+        }
+      ],
+      "install": {
+        "policy": "Record exact commands, versions, generated files, and environment variables in every run record before using this profile."
+      },
+      "reset": {
+        "policy": "Record disable/uninstall commands and verify no stale index, hook, memory, cache, or generated profile survives into the next run."
+      },
+      "notes": "Serena plus Cavemem lightweight stack."
+    },
+    {
+      "id": "sigmap-governance-artifact",
+      "profile_type": "tool_stack",
+      "objective_scope": "stack_effectiveness",
+      "status": "candidate-profile",
+      "enabled_surfaces": [
+        "retrieval-context",
+        "artifact-policy"
+      ],
+      "disabled_overlaps": [
+        "all unlisted surfaces"
+      ],
+      "components": [
+        {
+          "component_id": "sigmap-governance-artifact:retrieval-context",
+          "surface": "retrieval-context",
+          "role": "stack_component"
+        },
+        {
+          "component_id": "sigmap-governance-artifact:artifact-policy",
+          "surface": "artifact-policy",
+          "role": "stack_component"
+        }
+      ],
+      "install": {
+        "policy": "Record exact commands, versions, generated files, and environment variables in every run record before using this profile."
+      },
+      "reset": {
+        "policy": "Record disable/uninstall commands and verify no stale index, hook, memory, cache, or generated profile survives into the next run."
+      },
+      "notes": "SigMap governance plus artifact-policy stack candidate."
+    },
+    {
+      "id": "swarmvault-owner",
+      "profile_type": "individual_tool",
+      "objective_scope": "individual_tool_effectiveness",
+      "status": "candidate-profile",
+      "enabled_surfaces": [
+        "broad-context-owner"
+      ],
+      "disabled_overlaps": [
+        "all unlisted surfaces"
+      ],
+      "components": [
+        {
+          "component_id": "swarmvault-owner",
+          "surface": "broad-context-owner",
+          "role": "individual_tool"
+        }
+      ],
+      "install": {
+        "policy": "Record exact commands, versions, generated files, and environment variables in every run record before using this profile."
+      },
+      "reset": {
+        "policy": "Record disable/uninstall commands and verify no stale index, hook, memory, cache, or generated profile survives into the next run."
+      },
+      "notes": "SwarmVault broad context owner."
+    },
+    {
+      "id": "terminal-headroom",
+      "profile_type": "individual_tool",
+      "objective_scope": "individual_tool_effectiveness",
+      "status": "candidate-profile",
+      "enabled_surfaces": [
+        "terminal-output"
+      ],
+      "disabled_overlaps": [
+        "all unlisted surfaces"
+      ],
+      "components": [
+        {
+          "component_id": "terminal-headroom",
+          "surface": "terminal-output",
+          "role": "individual_tool"
+        }
+      ],
+      "install": {
+        "policy": "Record exact commands, versions, generated files, and environment variables in every run record before using this profile."
+      },
+      "reset": {
+        "policy": "Record disable/uninstall commands and verify no stale index, hook, memory, cache, or generated profile survives into the next run."
+      },
+      "notes": "Headroom command-output or context-budget treatment."
+    },
+    {
+      "id": "terminal-lowfat",
+      "profile_type": "individual_tool",
+      "objective_scope": "individual_tool_effectiveness",
+      "status": "candidate-profile",
+      "enabled_surfaces": [
+        "terminal-output"
+      ],
+      "disabled_overlaps": [
+        "all unlisted surfaces"
+      ],
+      "components": [
+        {
+          "component_id": "terminal-lowfat",
+          "surface": "terminal-output",
+          "role": "individual_tool"
+        }
+      ],
+      "install": {
+        "policy": "Record exact commands, versions, generated files, and environment variables in every run record before using this profile."
+      },
+      "reset": {
+        "policy": "Record disable/uninstall commands and verify no stale index, hook, memory, cache, or generated profile survives into the next run."
+      },
+      "notes": "Lowfat terminal/tool-output compaction."
+    },
+    {
+      "id": "terminal-rtk",
+      "profile_type": "individual_tool",
+      "objective_scope": "individual_tool_effectiveness",
+      "status": "candidate-profile",
+      "enabled_surfaces": [
+        "terminal-output"
+      ],
+      "disabled_overlaps": [
+        "all unlisted surfaces"
+      ],
+      "components": [
+        {
+          "component_id": "terminal-rtk",
+          "surface": "terminal-output",
+          "role": "individual_tool"
+        }
+      ],
+      "install": {
+        "policy": "Record exact commands, versions, generated files, and environment variables in every run record before using this profile."
+      },
+      "reset": {
+        "policy": "Record disable/uninstall commands and verify no stale index, hook, memory, cache, or generated profile survives into the next run."
+      },
+      "notes": "RTK terminal/tool-output compaction."
+    },
+    {
+      "id": "terminal-snip",
+      "profile_type": "individual_tool",
+      "objective_scope": "individual_tool_effectiveness",
+      "status": "candidate-profile",
+      "enabled_surfaces": [
+        "terminal-output"
+      ],
+      "disabled_overlaps": [
+        "all unlisted surfaces"
+      ],
+      "components": [
+        {
+          "component_id": "terminal-snip",
+          "surface": "terminal-output",
+          "role": "individual_tool"
+        }
+      ],
+      "install": {
+        "policy": "Record exact commands, versions, generated files, and environment variables in every run record before using this profile."
+      },
+      "reset": {
+        "policy": "Record disable/uninstall commands and verify no stale index, hook, memory, cache, or generated profile survives into the next run."
+      },
+      "notes": "Snip terminal/tool-output compaction."
+    },
+    {
+      "id": "terminal-tokenjuice",
+      "profile_type": "individual_tool",
+      "objective_scope": "individual_tool_effectiveness",
+      "status": "candidate-profile",
+      "enabled_surfaces": [
+        "terminal-output"
+      ],
+      "disabled_overlaps": [
+        "all unlisted surfaces"
+      ],
+      "components": [
+        {
+          "component_id": "terminal-tokenjuice",
+          "surface": "terminal-output",
+          "role": "individual_tool"
+        }
+      ],
+      "install": {
+        "policy": "Record exact commands, versions, generated files, and environment variables in every run record before using this profile."
+      },
+      "reset": {
+        "policy": "Record disable/uninstall commands and verify no stale index, hook, memory, cache, or generated profile survives into the next run."
+      },
+      "notes": "TokenJuice terminal/tool-output compaction."
+    },
+    {
+      "id": "terminal-xcsift",
+      "profile_type": "individual_tool",
+      "objective_scope": "individual_tool_effectiveness",
+      "status": "candidate-profile",
+      "enabled_surfaces": [
+        "apple-build-output",
+        "build-output"
+      ],
+      "disabled_overlaps": [
+        "all unlisted surfaces"
+      ],
+      "components": [
+        {
+          "component_id": "terminal-xcsift",
+          "surface": "apple-build-output",
+          "role": "individual_tool"
+        }
+      ],
+      "install": {
+        "policy": "Record exact commands, versions, generated files, and environment variables in every run record before using this profile."
+      },
+      "reset": {
+        "policy": "Record disable/uninstall commands and verify no stale index, hook, memory, cache, or generated profile survives into the next run."
+      },
+      "notes": "xcsift Apple/build diagnostic treatment."
+    },
+    {
+      "id": "tokless-profile",
+      "profile_type": "installer_orchestrator",
+      "objective_scope": "stack_effectiveness",
+      "status": "candidate-profile",
+      "enabled_surfaces": [
+        "broad-context-owner"
+      ],
+      "disabled_overlaps": [
+        "all unlisted surfaces"
+      ],
+      "components": [
+        {
+          "component_id": "tokless-profile",
+          "surface": "broad-context-owner",
+          "role": "installer_orchestrator"
+        }
+      ],
+      "install": {
+        "policy": "Record exact commands, versions, generated files, and environment variables in every run record before using this profile."
+      },
+      "reset": {
+        "policy": "Record disable/uninstall commands and verify no stale index, hook, memory, cache, or generated profile survives into the next run."
+      },
+      "notes": "Tokless-generated profile/orchestrator validation."
+    },
+    {
+      "id": "artifact-ponytail",
+      "profile_type": "individual_tool",
+      "objective_scope": "individual_tool_effectiveness",
+      "status": "candidate-profile",
+      "enabled_surfaces": [
+        "artifact-policy"
+      ],
+      "disabled_overlaps": [
+        "all unlisted surfaces"
+      ],
+      "components": [
+        {
+          "component_id": "ponytail",
+          "surface": "artifact-policy",
+          "role": "individual_tool"
+        }
+      ],
+      "install": {
+        "policy": "Run Codex from a fresh lane-specific CODEX_HOME with Ponytail instructions injected only into the treatment prompt; no MCP servers, hooks, inherited skills/plugins, or global instructions."
+      },
+      "reset": {
+        "policy": "Remove generated lane artifacts/eval home before rerun; verify no Ponytail state, hook, MCP, or global instruction survives into baseline or other treatment lanes."
+      },
+      "notes": "Ponytail artifact/code-minimization policy treatment. Codex integration is instruction-layer delivery, not a terminal proxy or retrieval tool."
+    }
+  ]
+}

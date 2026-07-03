@@ -3,7 +3,7 @@
 ## Identity
 
 - Task ID:
-- Task class: noisy-test-repair | build-repair | retrieval-navigation | multi-file-refactor | memory-rediscovery | mcp-heavy | apple-build-repair | replacement-agent
+- Task class: noisy-terminal-repair | build-repair | large-codebase-navigation | multi-file-refactor | memory-rediscovery | broad-owner-context | mcp-tool-heavy | apple-build-repair | replacement-runtime-comparison
 - Repository fixture:
 - Fixture commit/hash:
 - Prompt hash:
