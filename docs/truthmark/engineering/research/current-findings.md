@@ -31,6 +31,12 @@ This document covers the active lifecycle-v0 portfolio and retained production b
 - Across the matched `r1` portfolio, the RTK-assigned arm used 64,494,191 tokens, a reduction of 9,399,256 tokens (-12.72%). A post-hoc count of explicit model-issued `rtk` command strings is not a valid universal measure of integration activity and is not part of the frozen estimand; no inactivity or no-effect claim is inferred from that count.
 - Serena's `r1` availability screen used 12,778,273 tokens on Fastify (-2.29%), 16,314,633 on Beets (-6.36%), and 42,381,834 on Terraform (-2.33%). All three sessions passed 3/3 verifier tasks and are token-accounting eligible.
 - Across the matched `r1` portfolio, the Serena-assigned arm used 71,474,740 tokens, a reduction of 2,418,707 tokens (-3.27%). Explicit model-visible calls are diagnostic rather than an eligibility gate, and the natural-use sample is preserved without forced invocation or a post-hoc mechanism rewrite.
+- Ponytail's `r1` instruction-layer screen used 12,994,738 tokens on Fastify (-0.63%), 23,130,928 on Beets (+32.76%), and 36,870,055 on Terraform (-15.03%). All three sessions passed 3/3 verifier tasks and are token-accounting eligible.
+- Across the matched `r1` portfolio, Ponytail used 72,995,721 tokens, a reduction of 897,726 tokens (-1.21%). The lane effects are mixed, and this single replicate is not a stable estimate.
+- Token Savior's `r1` natural-use screen used 7,583,285 tokens on Fastify (-42.01%), 17,188,521 on Beets (-1.35%), and 38,118,793 on Terraform (-12.15%). All three sessions are token-accounting eligible; verifier diagnostics were 2/3, 2/3, and 3/3, respectively.
+- Across the matched `r1` portfolio, Token Savior used 62,890,599 tokens, a reduction of 11,002,848 tokens (-14.89%). Verifier outcomes remain separate from the primary provider-token comparison.
+- Graphify's `r1` natural-use screen used 8,707,133 tokens on Fastify (-33.42%), 17,235,153 on Beets (-1.08%), and 35,845,436 on Terraform (-17.39%). All three sessions are token-accounting eligible; verifier diagnostics were 2/3, 3/3, and 3/3, respectively.
+- Across the matched `r1` portfolio, Graphify used 61,787,722 tokens, a reduction of 12,105,725 tokens (-16.38%), the largest aggregate reduction among the six initial treatment screens. This remains a single replicate per lane rather than a stable population estimate.
 
 ## Evidence Boundary
 

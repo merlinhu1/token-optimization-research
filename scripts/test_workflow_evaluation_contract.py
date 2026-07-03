@@ -239,7 +239,15 @@ class ActiveCampaignArchitectureTest(unittest.TestCase):
         shortlisted = [profile["id"] for profile in profiles if profile.get("status") == "screening-shortlist"]
         self.assertEqual(
             set(shortlisted),
-            {"behavior-caveman", "retrieval-codegraph", "retrieval-serena", "terminal-rtk"},
+            {
+                "artifact-ponytail",
+                "behavior-caveman",
+                "integrated-token-savior",
+                "retrieval-codegraph",
+                "retrieval-graphify",
+                "retrieval-serena",
+                "terminal-rtk",
+            },
         )
         for profile_id in shortlisted:
             runner.assert_profile_runnable(profile_id)
