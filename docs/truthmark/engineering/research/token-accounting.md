@@ -112,6 +112,7 @@ Software-quality scoring is owned by `software-quality-gates.md`.
 - Decision (2026-07-14): The next practical workflow after consolidation and candidate reduction uses a feature/refactor/code-review lifecycle triad rather than a language matrix.
 - Decision (2026-07-15): `beets-lifecycle-sequence-v2` realizes that triad on one pinned Python repository; maintenance sequences are retained but retired from active planning. `retrieval-codegraph` is the sole initial treatment shortlist and all other unexecuted candidates are deferred.
 - Decision (2026-07-16): Supersede the maintenance-lane retirement portion of the July 15 decision. The current production matrix is Beets lifecycle V2, Fastify maintenance V1, and Terraform maintenance V2; Beets remains the primary practical design and `retrieval-codegraph` remains the sole initial treatment shortlist.
+- Decision (2026-07-16): Treat Fastify session `baseline-fastify-20260715-p-d1be8ed202a8-r2` as `invalid-fixture`, not model-quality evidence, because its original prompt omitted the acceptance-critical `request aborted` compatibility identifier. Fastify V7 discloses that public behavior and visible focused test. Terraform V8 separately hardens the concealed cross-adapter `ComputedBlocksAllowed` boundary after fixed/seed/rejected-candidate replay exposed a controller false green.
 
 ## Rationale
 
