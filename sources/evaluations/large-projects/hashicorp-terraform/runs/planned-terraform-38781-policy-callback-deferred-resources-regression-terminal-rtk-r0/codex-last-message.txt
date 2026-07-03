@@ -1,0 +1,9 @@
+Restored the policy callback regression to the pinned fixed upstream behavior. The callback API now carries data-source deferral status again, resource callbacks treat deferred resources as partial results, and policy data-source reads use the correct deferral-capable provider request path.
+
+Verifier passed:
+
+```bash
+go test ./internal/terraform -run "TestContext2(Apply|Plan)_PolicyCallback_(GetDataSource|GetResources_Deferral)" -count=1
+```
+
+Result: `15 passed in 1 packages`. The worktree is clean.

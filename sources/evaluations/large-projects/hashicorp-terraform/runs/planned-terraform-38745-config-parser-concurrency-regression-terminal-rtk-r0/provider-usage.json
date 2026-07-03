@@ -1,0 +1,55 @@
+{
+  "schema_version": 1,
+  "source": "codex-jsonl",
+  "source_artifact": "/opt/data/repos/token-optimization-research/sources/evaluations/large-projects/hashicorp-terraform/runs/planned-terraform-38745-config-parser-concurrency-regression-terminal-rtk-r0/codex-events.jsonl",
+  "extracted_at_utc": "2026-07-02T22:53:15.706918+00:00",
+  "measurement_source": "codex-jsonl-usage-events",
+  "fresh_input_tokens": 87967,
+  "cached_input_tokens": 595456,
+  "cache_write_tokens": null,
+  "output_tokens": 5078,
+  "reasoning_tokens": 601,
+  "total_provider_tokens": 688501,
+  "estimated_cost_usd": null,
+  "raw_artifact_tokens": null,
+  "transformed_artifact_tokens": null,
+  "codex_usage": {
+    "input_tokens": 683423,
+    "cached_input_tokens": 595456,
+    "output_tokens": 5078,
+    "reasoning_output_tokens": 601,
+    "total_tokens_formula": "input_tokens + output_tokens unless Codex emits total_tokens",
+    "usage_blocks": [
+      {
+        "event_type": "turn.completed",
+        "usage": {
+          "input_tokens": 683423,
+          "cached_input_tokens": 595456,
+          "output_tokens": 5078,
+          "reasoning_output_tokens": 601
+        }
+      }
+    ]
+  },
+  "agent_behavior": {
+    "turns": 1,
+    "tool_calls_observed": 0,
+    "event_count": 72,
+    "event_types": {
+      "thread.started": 1,
+      "turn.started": 1,
+      "item.completed": 42,
+      "item.started": 27,
+      "turn.completed": 1
+    },
+    "non_json_line_count": 5
+  },
+  "warnings": [],
+  "non_json_line_samples": [
+    "2026-07-02T22:52:34.479293Z ERROR codex_core::tools::router: error=apply_patch verification failed: Failed to find expected lines in /opt/data/repos/token-optimization-research/sources/evaluations/large-projects/hashicorp-terraform/repo/internal/configs/source_bundle_parser.go:",
+    "default:",
+    "file, fdiags = p.p.ParseHCL(src, syntheticFilename)",
+    "}",
+    "diags = append(diags, fdiags...)"
+  ]
+}

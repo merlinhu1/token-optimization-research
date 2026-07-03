@@ -1,0 +1,11 @@
+Implemented the policy callback repair in production code only.
+
+Changed:
+- [internal/terraform/policy.go](/opt/data/repos/token-optimization-research/sources/evaluations/large-projects/hashicorp-terraform/repo/internal/terraform/policy.go): `GetResources` now treats deferred instances as partial results while still returning known matches; `GetDataSource` now returns the deferred flag and errors when providers defer while deferrals are disabled.
+- [internal/terraform/node_policy_resource.go](/opt/data/repos/token-optimization-research/sources/evaluations/large-projects/hashicorp-terraform/repo/internal/terraform/node_policy_resource.go): policy data-source callbacks now receive provider meta from the resource’s provider config.
+
+Verifier passed:
+
+```bash
+go test ./internal/terraform -run "TestContext2(Apply|Plan)_PolicyCallback_(GetDataSource|GetResources_Deferral)" -count=1
+```
