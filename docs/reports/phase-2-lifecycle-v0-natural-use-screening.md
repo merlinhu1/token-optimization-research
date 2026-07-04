@@ -14,7 +14,7 @@
 
 ## Abstract
 
-This report evaluates sixteen token-saving tools or tool profiles, plus one required Headroom component ablation, on three frozen software-engineering lifecycle workflows. Each workflow contains feature implementation, behavior-preserving refactoring, and code review/correction in one persistent Codex session. Treatments were installed through their normal frozen integration surfaces and made available without evaluator-authored instructions to invoke, prefer, or quota them. The comparison therefore estimates assignment to a normal-use treatment configuration, not treatment-on-the-treated behavior.
+This report evaluates sixteen token-saving tools or bounded tool profiles, plus one required Headroom component ablation, on three frozen software-engineering lifecycle workflows. Each workflow contains feature implementation, behavior-preserving refactoring, and code review/correction in one persistent Codex session. Treatments were installed through their frozen declared integration surfaces and made available without evaluator-authored instructions to invoke, prefer, or quota them. The comparison therefore estimates assignment to the named treatment configuration, not treatment-on-the-treated behavior or an unevaluated broader product surface.
 
 The evidence contains 57 operationally valid provider runs: six bare-Codex baselines and 51 treatment sessions. Every run has provider-reported token components, three structured final-state verifier outcomes, frozen execution identity, isolation evidence, and a checksum-verified compact artifact bundle. Across 171 task outcomes, 164 passed and seven failed. All 57 tool-isolation and verifier-integrity audits passed, no prohibited external-retrieval event was recorded, and all 171 manifest entries independently matched their recorded SHA-256 hashes.
 
@@ -89,6 +89,17 @@ All 57 sessions used:
 - fresh lane-specific runtime homes and tool state as declared by the profile;
 - disabled Codex web search and model-shell network denial;
 - final-only controller verification.
+
+Several profiles intentionally bound claims to less than every surface offered by the upstream product:
+
+- Caveman is the instruction-layer behavior-policy arm; MCP-description compression, plugin hooks, and persistent mode state are inactive.
+- Token Savior uses its integrated MCP surface with external host hooks and automatic memory injection disabled.
+- CodeGraph and LeanCTX are cold optional retrieval conditions; no controller-built index is provided.
+- CodeScope retains its official MCP tools and cold auto-indexer but removes upstream mandatory-uptake wording so use remains natural; telemetry export and external embedding providers are inactive.
+- SwarmVault uses an offline heuristic warm index with its product-native deterministic 500-file cap; cloud/local model providers, hooks, agent-rule installation, and graph viewer are inactive.
+- Default Headroom is the primary wrapper condition. The separately reported `terminal-headroom` profile disables several default Headroom-managed surfaces and is explicitly proxy-only.
+
+Claims in this report apply to these frozen profiles, not to disabled product surfaces.
 
 ### 3.3 Treatment validity and use
 
