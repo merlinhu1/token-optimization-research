@@ -197,7 +197,7 @@
       "id": "codescope-owner",
       "profile_type": "individual_tool",
       "objective_scope": "individual_tool_effectiveness",
-      "status": "deferred-profile",
+      "status": "screening-shortlist",
       "enabled_surfaces": [
         "broad-context-owner"
       ],
@@ -212,13 +212,25 @@
         }
       ],
       "install": {
-        "policy": "Record exact commands, versions, generated files, and environment variables in every run record before using this profile."
+        "policy": "Use the checksum-verified CodeScope v0.8.12 Linux release at the source-pinned v0.8.12 tag. Launch the bundled SurrealDB through `codescope start`, expose the official stdio MCP server with `--auto-index`, and strip only the upstream mandatory uptake instructions from the initialize response."
       },
       "reset": {
-        "policy": "Record disable/uninstall commands and verify no stale index, hook, memory, cache, or generated profile survives into the next run."
+        "policy": "Use a fresh lane-specific Codex home for every run; CodeScope database, logs, and supervisor state remain under that home and are destroyed with the lane. Stop the bundled SurrealDB when the MCP adapter exits."
       },
-      "notes": "CodeScope broad context owner.",
-      "deferred_reason": "Not selected for the first compact lifecycle screen. Candidate expansion remains paused; reconsider only after the CodeGraph screen or a concrete workflow/mechanism gap justifies another atomic treatment."
+      "notes": "CodeScope broad context-owner treatment. The official 37-tool MCP surface and cold auto-indexer remain active; only the upstream `ALWAYS prefer` / `follow strictly` initialize instructions are removed so model uptake stays natural.",
+      "evaluation_protocol": {
+        "arm_label": "codescope-neutral-mcp-cold-auto-index",
+        "tool_state": "cold-auto-index",
+        "tool_use_policy": "natural",
+        "upstream_initialize_instructions_policy": "strip-mandatory-uptake-text",
+        "inactive_surfaces": [
+          "mandatory MCP initialize uptake instructions",
+          "OpenTelemetry export",
+          "external embedding providers"
+        ],
+        "installation_failure_disposition": "invalid-if-official-MCP-tools-or-auto-index-are-unavailable"
+      },
+      "selection_rationale": "Explicit experiment-owner direction on 2026-07-17 to evaluate CodeScope before SwarmVault across all three active lifecycle-v0 lanes."
     },
     {
       "id": "grace-artifact-project",
