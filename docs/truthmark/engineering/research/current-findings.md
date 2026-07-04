@@ -64,6 +64,8 @@ Qualification proves fixture mechanics and discriminative diagnostics, not model
 
 A prior Headroom proxy-only attempt was excluded as a controller-audit false positive because the audit interpreted the wrapper's explicit disabled-component startup notices as active tool exposure. The corrected first valid ablation is the only retained sample and no tokens from the excluded attempt are included in comparisons.
 
+An artifact-packaging audit found that the three Graphify bundles had included generated `graphify-out` indexes in cumulative source diffs and the CodeScope Fastify bundle had included generated embedding-cache state. Those generated paths were removed under `source-diff-generated-state-exclusion-v1`; source changes, provider events and usage, verifier output, comparisons, and result interpretation were unchanged. Original artifact hashes and sizes remain recorded in each repaired `run.json`.
+
 ## Product Truth Links
 
 - None. This is an engineering research evidence surface.
@@ -81,3 +83,4 @@ A prior Headroom proxy-only attempt was excluded as a controller-audit false pos
 - ../../../../data/workflow-sessions.json
 - ../../../../sources/evaluations/workflow-sessions/
 - ../../../../docs/evaluations/workflow-evaluation-runbook.md
+- ../../../../docs/reports/phase-2-lifecycle-v0-natural-use-screening.md

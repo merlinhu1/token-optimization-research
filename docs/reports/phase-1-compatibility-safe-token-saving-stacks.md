@@ -1,6 +1,6 @@
 # Phase 1 report: compatibility-safe token-saving stack hypotheses for AI coding agents
 
-> Historical report. This preserves the Phase 1 state and terminology at publication time. Current lifecycle-v0 execution, token eligibility, and artifact contracts are owned by `AGENTS.md`, `data/workflow-sessions.json`, and `docs/evaluations/evaluation-framework.md`; quality review is now diagnostic rather than a token-sample gate.
+> Historical report. This preserves the Phase 1 state and terminology at publication time. Current lifecycle-v0 execution, token eligibility, and artifact contracts are owned by `AGENTS.md`, `data/workflow-sessions.json`, and `docs/evaluations/evaluation-framework.md`; quality review is now diagnostic rather than a token-sample gate. The current measured synthesis is the [Phase 2 lifecycle-v0 natural-use screening report](phase-2-lifecycle-v0-natural-use-screening.md); the Phase 2 routing and priority lists below are historical planning rather than the active evaluation roadmap.
 
 **Date:** 2026-06-29
 **Repository:** `token-optimization-research`

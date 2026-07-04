@@ -1288,6 +1288,15 @@ def create_project(seq: dict[str, Any], project: Path, run_dir: Path, *, conceal
         raise RuntimeError("composite seed delivery, qualification, or concealment verification failed")
 
 
+def treatment_diff_exclude_paths(cfg: dict[str, Any] | None) -> tuple[str, ...]:
+    if not cfg:
+        return ()
+    paths = [str(path) for path in cfg.get("diff_exclude_paths", [])]
+    warmup = cfg.get("warmup") or {}
+    paths.extend(str(path) for path in warmup.get("cleanup_paths", []))
+    return tuple(dict.fromkeys(paths))
+
+
 def capture_task_delta(
     repo: Path,
     run_dir: Path,
@@ -2400,7 +2409,7 @@ def run_one(args: argparse.Namespace) -> dict[str, Any]:
         codex_exit_codes.append(code)
         redact_auth_sync(run_dir)
         cfg = fixture.active_tool_config(record, profile_id)
-        excluded_paths = tuple(str(path) for path in (cfg or {}).get("diff_exclude_paths", []))
+        excluded_paths = treatment_diff_exclude_paths(cfg)
         capture_task_delta(project / "repo", run_dir, order, excluded_paths)
         integrity = {"stage": f"after-task-{order:02d}", **check_verifier_integrity(expected_verifier_hashes)}
         verifier_integrity_checks.append(integrity)
