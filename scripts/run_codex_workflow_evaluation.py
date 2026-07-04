@@ -56,12 +56,14 @@ SUPPORTED_WORKFLOW_TOOL_PROFILES = {
     "retrieval-leanctx": "lean-ctx",
     "retrieval-codegraph": "codegraph",
     "lower-intervention-codegraph": "codegraph",
+    "retrieval-cartog": "cartog",
     "retrieval-serena": "serena",
     "retrieval-graphify": "graphify",
     "retrieval-sigmap": "sigmap",
     "retrieval-jcodemunch-mcp": "jcodemunch-mcp",
     "integrated-token-savior": "token-savior",
     "headroom-default-codex": "headroom",
+    "terminal-headroom": "headroom-proxy-only",
     "terminal-rtk": "rtk",
     "terminal-snip": "snip",
     "terminal-lowfat": "lowfat",
@@ -1278,14 +1280,25 @@ def create_project(seq: dict[str, Any], project: Path, run_dir: Path, *, conceal
         raise RuntimeError("composite seed delivery, qualification, or concealment verification failed")
 
 
-def capture_task_delta(repo: Path, run_dir: Path, order: int) -> Path:
+def capture_task_delta(
+    repo: Path,
+    run_dir: Path,
+    order: int,
+    excluded_paths: tuple[str, ...] = (),
+) -> Path:
+    def included(path: str) -> bool:
+        return not any(path == prefix or path.startswith(prefix.rstrip("/") + "/") for prefix in excluded_paths)
+
     untracked = subprocess.check_output(["git", "ls-files", "--others", "--exclude-standard", "-z"], cwd=repo)
-    paths = [path for path in untracked.decode().split("\0") if path]
+    paths = [path for path in untracked.decode().split("\0") if path and included(path)]
     if paths:
         run(["git", "add", "-N", "--", *paths], cwd=repo)
+    pathspec = ["."]
+    for prefix in excluded_paths:
+        pathspec.extend([f":(exclude){prefix}", f":(exclude){prefix.rstrip('/')}/**"])
     path = run_dir / f"task-{order:02d}-agent.diff"
-    run(["git", "diff", "--binary", "HEAD", "--"], cwd=repo, stdout=path, timeout=120)
-    run(["git", "diff", "--stat", "HEAD", "--"], cwd=repo, stdout=run_dir / f"task-{order:02d}-agent-diffstat.txt", timeout=120)
+    run(["git", "diff", "--binary", "HEAD", "--", *pathspec], cwd=repo, stdout=path, timeout=120)
+    run(["git", "diff", "--stat", "HEAD", "--", *pathspec], cwd=repo, stdout=run_dir / f"task-{order:02d}-agent-diffstat.txt", timeout=120)
     return path
 
 
@@ -1752,12 +1765,14 @@ def run_codex_task(
         if wrapper:
             assert cfg is not None
             data_dir = fixture.tool_data_dir(codex_home, cfg)
+            tool_port = 18000 + int(hashlib.sha256(str(repo.resolve()).encode()).hexdigest()[:8], 16) % 20000
             wrapper_args = [
                 str(part).format(
                     repo=repo,
                     codex_home=codex_home,
                     tool_data_dir=data_dir,
                     repo_slug=repo.name.replace("-", "_"),
+                    tool_port=tool_port,
                 )
                 for part in wrapper.get("args", [])
             ]
@@ -1866,7 +1881,9 @@ def evidence_source_files(run_dir: Path) -> list[Path]:
         if not path.is_file():
             continue
         rel_parts = path.relative_to(run_dir).parts
-        if not rel_parts or rel_parts[0] in {"codex-homes", "controller-scratch"}:
+        if not rel_parts or rel_parts[0] in {"codex-homes", "controller-scratch", "tasks"}:
+            continue
+        if rel_parts == ("composite-seed.diff",):
             continue
         if rel_parts[0] == "project":
             continue
@@ -2374,7 +2391,9 @@ def run_one(args: argparse.Namespace) -> dict[str, Any]:
         code, thread_id = run_codex_task(record, profile_id, codex_home, run_dir, runtime_docker_image, prompt_path, events_path, last_message_path, timeout=args.timeout_per_task, thread_id=thread_id)
         codex_exit_codes.append(code)
         redact_auth_sync(run_dir)
-        capture_task_delta(project / "repo", run_dir, order)
+        cfg = fixture.active_tool_config(record, profile_id)
+        excluded_paths = tuple(str(path) for path in (cfg or {}).get("diff_exclude_paths", []))
+        capture_task_delta(project / "repo", run_dir, order, excluded_paths)
         integrity = {"stage": f"after-task-{order:02d}", **check_verifier_integrity(expected_verifier_hashes)}
         verifier_integrity_checks.append(integrity)
         if thread_id is None:

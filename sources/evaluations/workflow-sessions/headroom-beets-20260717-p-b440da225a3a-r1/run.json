@@ -1,0 +1,603 @@
+{
+  "session_id": "headroom-beets-20260717-p-b440da225a3a-r1",
+  "study_id": "phase-2-sequential-workflow-v1",
+  "experiment_group_id": "beetbox-beets-terminal-headroom-b440da225a3a-sequential-workflow-r1",
+  "replicate_index": 1,
+  "frozen_protocol": {
+    "protocol_id": "beets-lifecycle-sequence-v0-terminal-headroom-146fe875d2d5",
+    "path": "sources/evaluations/protocols/beets-lifecycle-sequence-v0-terminal-headroom-146fe875d2d5.json",
+    "sha256": "7f337aaf3ee254a27a817c843cb6b42c7494cccd4156ce5f13b86e5e3108656b"
+  },
+  "baseline_pool": {
+    "protocol_version": "baseline-pool-v1",
+    "protocol_fingerprint": "b440da225a3a",
+    "identity_policy": "frozen-protocol-and-replicate; execution date is metadata only"
+  },
+  "selected_execution": {
+    "descriptor_sha256": "42129cfaa5cb05ea6952327ebc86c720891a648157673c3c4fc0b5c532f93ded",
+    "descriptor": {
+      "version": "execution-condition-v1",
+      "sequence_id": "beets-lifecycle-sequence-v0",
+      "execution_role": "individual_tool_treatment",
+      "selected_profile": {
+        "profile_id": "terminal-headroom",
+        "profile_type": "comparator",
+        "component_ids": [
+          "headroom-proxy-only"
+        ],
+        "enabled_surfaces": [
+          "api-proxy/context-compression-only"
+        ],
+        "disabled_overlaps": [
+          "Codex context-tool setup / RTK instructions",
+          "headroom_retrieve MCP server",
+          "tokensave code-graph MCP server",
+          "Serena backup compressor",
+          "all unlisted surfaces"
+        ],
+        "registry_entry_sha256": "6f8592a2cf61cbaa1939b8ac946e550ec6789ca70bb6d69b34fe6c7cf20a40e4",
+        "registry_entry": {
+          "id": "terminal-headroom",
+          "profile_type": "comparator",
+          "objective_scope": "individual_tool_effectiveness",
+          "status": "ablation-profile",
+          "enabled_surfaces": [
+            "api-proxy/context-compression-only"
+          ],
+          "disabled_overlaps": [
+            "Codex context-tool setup / RTK instructions",
+            "headroom_retrieve MCP server",
+            "tokensave code-graph MCP server",
+            "Serena backup compressor",
+            "all unlisted surfaces"
+          ],
+          "components": [
+            {
+              "component_id": "headroom-proxy-only",
+              "surface": "api-proxy/context-compression-only",
+              "role": "component_ablation"
+            }
+          ],
+          "install": {
+            "policy": "Record exact commands, versions, generated files, and environment variables in every run record before using this profile."
+          },
+          "reset": {
+            "policy": "Record disable/uninstall commands and verify no stale index, hook, memory, cache, or generated profile survives into the next run."
+          },
+          "notes": "Headroom proxy-only ablation. The runner disables context-tool setup, headroom MCP retrieval, tokensave code-graph MCP, and Serena backup; this profile is not a primary candidate evaluation and must not be cited as full/default Headroom.",
+          "evaluation_protocol": {
+            "tool_use_policy": "natural",
+            "profile_intent": "component ablation only",
+            "claim_boundary": "Use only to measure Headroom proxy-only behavior; never rank Headroom from this profile alone.",
+            "requires_primary_companion": "headroom-default-codex",
+            "disabled_default_headroom_surfaces": [
+              "Codex context-tool setup / RTK instructions",
+              "headroom_retrieve MCP server",
+              "tokensave code-graph MCP server",
+              "Serena backup compressor"
+            ]
+          }
+        }
+      },
+      "model_facing_prompts": {
+        "rendering_contract": "sequential-model-facing-prompts-v2",
+        "profile_guidance_sha256": "9b2f1577ecb060f1bfb169b8cc141d771af2b668ace35b685080b3d4e38a5617",
+        "tasks": [
+          {
+            "task_id": "beets-lifecycle-feature-v0",
+            "order": 1,
+            "rendered_prompt_sha256": "ef6826c620ac055477413c51d5216f88b89060548bd0bbc3739acf5761ddc8b4"
+          },
+          {
+            "task_id": "beets-lifecycle-refactor-v0",
+            "order": 2,
+            "rendered_prompt_sha256": "efc524621eb27d3f8c2d07e63061d40ed2304b4a7953c0c9d4ae390b59626038"
+          },
+          {
+            "task_id": "beets-lifecycle-review-v0",
+            "order": 3,
+            "rendered_prompt_sha256": "0df0d8bcaca81970cf89cedd0adb932fefcacf558f4ff3f0af9a9f26b8c86cf6"
+          }
+        ]
+      },
+      "tool_adapter": {
+        "tool_id": "headroom-proxy-only",
+        "tool_manifest": "scripts/run_codex_fixture_evaluation.py:TOOL_CONFIGS",
+        "tool_manifest_sha256": "156577db64dda68323311084ceccc1e34544228078ec691e9ac13d45e1158272",
+        "tool_config": {
+          "display_name": "Headroom proxy-only ablation",
+          "lane_name": "terminal-headroom",
+          "surface": "api-proxy/context-compression",
+          "allowed_terms": [
+            "headroom",
+            "headroom_retrieve",
+            "rtk",
+            "tokensave",
+            "serena"
+          ],
+          "data_dir_name": "headroom-proxy-only",
+          "mounts": [
+            "/opt/data/tool-candidates/headroom",
+            "/opt/data/tool-candidates/headroom/dist/headroom_ai-0.28.0-cp310-abi3-linux_x86_64.whl"
+          ],
+          "path_entries": [
+            "{codex_home}/home/.headroom/bin",
+            "{codex_home}/home/.local/bin"
+          ],
+          "env": {
+            "HEADROOM_HOME": "{tool_data_dir}",
+            "HEADROOM_CACHE_DIR": "{tool_data_dir}/cache",
+            "HEADROOM_DISABLE_DASHBOARD": "1",
+            "HEADROOM_TELEMETRY": "0",
+            "HEADROOM_PROJECT": "{repo_slug}"
+          },
+          "codex_wrapper": {
+            "command": "/opt/data/opt/uv/uv",
+            "args": [
+              "tool",
+              "run",
+              "--from",
+              "/opt/data/tool-candidates/headroom/dist/headroom_ai-0.28.0-cp310-abi3-linux_x86_64.whl",
+              "--with",
+              "mcp",
+              "--with",
+              "fastapi",
+              "--with",
+              "uvicorn<1.0",
+              "--with",
+              "httpx[http2]",
+              "--with",
+              "openai",
+              "--with",
+              "zstandard",
+              "--with",
+              "websockets",
+              "headroom",
+              "wrap",
+              "codex",
+              "--port",
+              "{tool_port}",
+              "--no-context-tool",
+              "--no-mcp",
+              "--no-tokensave",
+              "--no-serena",
+              "--verbose",
+              "--"
+            ]
+          },
+          "preflight_command": [
+            "/opt/data/opt/uv/uv",
+            "tool",
+            "run",
+            "--from",
+            "/opt/data/tool-candidates/headroom/dist/headroom_ai-0.28.0-cp310-abi3-linux_x86_64.whl",
+            "--with",
+            "mcp",
+            "headroom",
+            "--version"
+          ],
+          "default_tool_state": "active-proxy-only-wrapper"
+        },
+        "tool_config_sha256": "8bd7e36ba69fc8795be70d13e75dcf06a7bab24429496437cff984d7e8b4640e",
+        "tool_state": "active-proxy-only-wrapper",
+        "tool_use_policy": "natural",
+        "command_identity": {
+          "kind": "codex_wrapper",
+          "command": [
+            "/opt/data/opt/uv/uv",
+            "tool",
+            "run",
+            "--from",
+            "/opt/data/tool-candidates/headroom/dist/headroom_ai-0.28.0-cp310-abi3-linux_x86_64.whl",
+            "--with",
+            "mcp",
+            "--with",
+            "fastapi",
+            "--with",
+            "uvicorn<1.0",
+            "--with",
+            "httpx[http2]",
+            "--with",
+            "openai",
+            "--with",
+            "zstandard",
+            "--with",
+            "websockets",
+            "headroom",
+            "wrap",
+            "codex",
+            "--port",
+            "{tool_port}",
+            "--no-context-tool",
+            "--no-mcp",
+            "--no-tokensave",
+            "--no-serena",
+            "--verbose",
+            "--"
+          ]
+        },
+        "binary_identity": {
+          "executable_token": "/opt/data/opt/uv/uv",
+          "resolved_path": "/opt/data/opt/uv/uv",
+          "realpath": "/opt/data/opt/uv/uv",
+          "sha256": "dc407e8ebb7903e94580217e564e544b231f16ce2a697c247b71632bffe35b35",
+          "metadata": {
+            "size": 58002784,
+            "mode": "-rwxr-xr-x",
+            "uid": 10000,
+            "gid": 10000,
+            "mtime_ns": 1783498937309771510
+          },
+          "version": {
+            "command": [
+              "/opt/data/opt/uv/uv",
+              "--version"
+            ],
+            "captured": true,
+            "exit_code": 0,
+            "output": "uv 0.11.6 (x86_64-unknown-linux-musl)",
+            "truncated": false
+          }
+        },
+        "source_identity": [
+          {
+            "path": "/opt/data/tool-candidates/headroom",
+            "exists": true,
+            "kind": "directory",
+            "git_head": "715ed7d200cb62c43e6ee3976ce8d3aa639ccf9f"
+          },
+          {
+            "path": "/opt/data/tool-candidates/headroom/dist/headroom_ai-0.28.0-cp310-abi3-linux_x86_64.whl",
+            "exists": true,
+            "kind": "file",
+            "sha256": "82ed60b45ac86258728de1c2480ec4fc35aef4dd4475c54bafa432d65c8fb838"
+          }
+        ]
+      },
+      "runtime": {
+        "docker_image": "token-eval-codex:latest",
+        "docker_image_identity": {
+          "image_ref": "token-eval-codex:latest",
+          "image_id": "sha256:6f86d01f2c63f5029c6bb874d8f3694c24d5cd567e3d09413eccc956ba3feafe",
+          "repo_digests": [
+            "token-eval-codex@sha256:6f86d01f2c63f5029c6bb874d8f3694c24d5cd567e3d09413eccc956ba3feafe"
+          ],
+          "repo_tags": [
+            "token-eval-codex:latest"
+          ]
+        },
+        "dockerfile_path": "sources/evaluations/fixtures/container/Dockerfile",
+        "dockerfile_sha256": "47c91967ce25014ce54879514f51d2ff0326651be1087209115eff4d358226b3",
+        "fixture_runner_path": "scripts/run_codex_fixture_evaluation.py",
+        "fixture_runner_sha256": "156577db64dda68323311084ceccc1e34544228078ec691e9ac13d45e1158272",
+        "codex_entrypoint_path": "sources/evaluations/fixtures/container/codex-entrypoint.sh",
+        "codex_entrypoint_sha256": "8715fe37cb1fa3823f5f05493bc9681ce7ffc72126dfec4d64d448762c550c3c",
+        "timeout_seconds_per_task": 3600,
+        "network_isolation": {
+          "provider_access": true,
+          "model_shell_network_access": false,
+          "model_shell_enforcement": "seccomp denies AF_INET and AF_INET6 socket creation for the shell process and descendants",
+          "codex_web_search": "disabled",
+          "external_retrieval_audit": "fail-closed"
+        },
+        "isolation_policy": "fresh lane-specific Codex home/tool data; provider-only network with model shell and Codex web search disabled; sequential one-task prompt delivery; concealed tests removed before model-visible root commit"
+      },
+      "dependencies": {
+        "command": "uv sync --group test",
+        "command_sha256": "e718e73048f88b906401006442fb858a4e9e4252f387df2c938eb41755762aa8",
+        "lockfiles": []
+      },
+      "agent_condition": {
+        "runtime_id": "codex-cli",
+        "provider": "openai",
+        "model": "gpt-5.6-luna",
+        "model_condition_id": "codex-openai-gpt-5-6-luna-xhigh",
+        "reasoning_effort": "xhigh",
+        "codex_version_condition": "captured-at-run-and-bound-to-record"
+      },
+      "isolation": {
+        "prompt_delivery": "sequential-one-task-at-a-time",
+        "seed_delivery_mode": "preseeded-composite",
+        "future_tasks_visible": false,
+        "future_seed_regressions_visible": true,
+        "controller_verification": "final-only",
+        "verifier_assets_model_visible": false,
+        "model_concealed_paths": [
+          "test/controller_hidden/lifecycle/test_ftintitle_review.py",
+          "test/controller_hidden/lifecycle/test_lazy_model_storage_refactor.py",
+          "test/controller_hidden/lifecycle/test_multivalue_modify_feature.py"
+        ]
+      },
+      "baseline_pool_reference": {
+        "protocol_version": "baseline-pool-v1",
+        "protocol_fingerprint": "b440da225a3a",
+        "comparison_policy": "paired baseline and treatment must share this baseline pool fingerprint and replicate"
+      }
+    }
+  },
+  "docker_image_identity": {
+    "image_ref": "token-eval-codex:latest",
+    "image_id": "sha256:6f86d01f2c63f5029c6bb874d8f3694c24d5cd567e3d09413eccc956ba3feafe",
+    "repo_digests": [
+      "token-eval-codex@sha256:6f86d01f2c63f5029c6bb874d8f3694c24d5cd567e3d09413eccc956ba3feafe"
+    ],
+    "repo_tags": [
+      "token-eval-codex:latest"
+    ]
+  },
+  "tool_adapter_identity": {
+    "tool_id": "headroom-proxy-only",
+    "tool_manifest": "scripts/run_codex_fixture_evaluation.py:TOOL_CONFIGS",
+    "tool_manifest_sha256": "156577db64dda68323311084ceccc1e34544228078ec691e9ac13d45e1158272",
+    "tool_config": {
+      "display_name": "Headroom proxy-only ablation",
+      "lane_name": "terminal-headroom",
+      "surface": "api-proxy/context-compression",
+      "allowed_terms": [
+        "headroom",
+        "headroom_retrieve",
+        "rtk",
+        "tokensave",
+        "serena"
+      ],
+      "data_dir_name": "headroom-proxy-only",
+      "mounts": [
+        "/opt/data/tool-candidates/headroom",
+        "/opt/data/tool-candidates/headroom/dist/headroom_ai-0.28.0-cp310-abi3-linux_x86_64.whl"
+      ],
+      "path_entries": [
+        "{codex_home}/home/.headroom/bin",
+        "{codex_home}/home/.local/bin"
+      ],
+      "env": {
+        "HEADROOM_HOME": "{tool_data_dir}",
+        "HEADROOM_CACHE_DIR": "{tool_data_dir}/cache",
+        "HEADROOM_DISABLE_DASHBOARD": "1",
+        "HEADROOM_TELEMETRY": "0",
+        "HEADROOM_PROJECT": "{repo_slug}"
+      },
+      "codex_wrapper": {
+        "command": "/opt/data/opt/uv/uv",
+        "args": [
+          "tool",
+          "run",
+          "--from",
+          "/opt/data/tool-candidates/headroom/dist/headroom_ai-0.28.0-cp310-abi3-linux_x86_64.whl",
+          "--with",
+          "mcp",
+          "--with",
+          "fastapi",
+          "--with",
+          "uvicorn<1.0",
+          "--with",
+          "httpx[http2]",
+          "--with",
+          "openai",
+          "--with",
+          "zstandard",
+          "--with",
+          "websockets",
+          "headroom",
+          "wrap",
+          "codex",
+          "--port",
+          "{tool_port}",
+          "--no-context-tool",
+          "--no-mcp",
+          "--no-tokensave",
+          "--no-serena",
+          "--verbose",
+          "--"
+        ]
+      },
+      "preflight_command": [
+        "/opt/data/opt/uv/uv",
+        "tool",
+        "run",
+        "--from",
+        "/opt/data/tool-candidates/headroom/dist/headroom_ai-0.28.0-cp310-abi3-linux_x86_64.whl",
+        "--with",
+        "mcp",
+        "headroom",
+        "--version"
+      ],
+      "default_tool_state": "active-proxy-only-wrapper"
+    },
+    "tool_config_sha256": "8bd7e36ba69fc8795be70d13e75dcf06a7bab24429496437cff984d7e8b4640e",
+    "tool_state": "active-proxy-only-wrapper",
+    "tool_use_policy": "natural",
+    "command_identity": {
+      "kind": "codex_wrapper",
+      "command": [
+        "/opt/data/opt/uv/uv",
+        "tool",
+        "run",
+        "--from",
+        "/opt/data/tool-candidates/headroom/dist/headroom_ai-0.28.0-cp310-abi3-linux_x86_64.whl",
+        "--with",
+        "mcp",
+        "--with",
+        "fastapi",
+        "--with",
+        "uvicorn<1.0",
+        "--with",
+        "httpx[http2]",
+        "--with",
+        "openai",
+        "--with",
+        "zstandard",
+        "--with",
+        "websockets",
+        "headroom",
+        "wrap",
+        "codex",
+        "--port",
+        "{tool_port}",
+        "--no-context-tool",
+        "--no-mcp",
+        "--no-tokensave",
+        "--no-serena",
+        "--verbose",
+        "--"
+      ]
+    },
+    "binary_identity": {
+      "executable_token": "/opt/data/opt/uv/uv",
+      "resolved_path": "/opt/data/opt/uv/uv",
+      "realpath": "/opt/data/opt/uv/uv",
+      "sha256": "dc407e8ebb7903e94580217e564e544b231f16ce2a697c247b71632bffe35b35",
+      "metadata": {
+        "size": 58002784,
+        "mode": "-rwxr-xr-x",
+        "uid": 10000,
+        "gid": 10000,
+        "mtime_ns": 1783498937309771510
+      },
+      "version": {
+        "command": [
+          "/opt/data/opt/uv/uv",
+          "--version"
+        ],
+        "captured": true,
+        "exit_code": 0,
+        "output": "uv 0.11.6 (x86_64-unknown-linux-musl)",
+        "truncated": false
+      }
+    },
+    "source_identity": [
+      {
+        "path": "/opt/data/tool-candidates/headroom",
+        "exists": true,
+        "kind": "directory",
+        "git_head": "715ed7d200cb62c43e6ee3976ce8d3aa639ccf9f"
+      },
+      {
+        "path": "/opt/data/tool-candidates/headroom/dist/headroom_ai-0.28.0-cp310-abi3-linux_x86_64.whl",
+        "exists": true,
+        "kind": "file",
+        "sha256": "82ed60b45ac86258728de1c2480ec4fc35aef4dd4475c54bafa432d65c8fb838"
+      }
+    ]
+  },
+  "profile_id": "terminal-headroom",
+  "workflow_sequence_id": "beets-lifecycle-sequence-v0",
+  "fixture_id": "medium-beetbox-beets",
+  "repository_path": "sources/evaluations/workflow-sessions/headroom-beets-20260717-p-b440da225a3a-r1/project/repo",
+  "codex_exit_codes": [
+    0,
+    0,
+    0
+  ],
+  "final_verifier_exit_code": 0,
+  "tool_isolation_audit_exit_code": 0,
+  "verifier_integrity_passed": true,
+  "thread_continuity_errors": [],
+  "seed_delivery": {
+    "mode": "preseeded-composite",
+    "future_seed_regressions_visible": true,
+    "preseeded_task_orders": [
+      1,
+      2,
+      3
+    ],
+    "pending_seed_orders": []
+  },
+  "accepted": true,
+  "timeout_seconds": 10800,
+  "codex_version": "codex-cli 0.144.0",
+  "token_usage": {
+    "fresh_input_tokens": 487047,
+    "cached_input_tokens": 15870720,
+    "cache_write_tokens": null,
+    "output_tokens": 103050,
+    "reasoning_tokens": 49417,
+    "total_provider_tokens": 16460817
+  },
+  "usage_warnings": [],
+  "per_task_results": [
+    {
+      "task_id": "beets-lifecycle-feature-v0",
+      "task_class": "feature-implementation",
+      "task_alias": "task-01",
+      "order": 1,
+      "agent_attempted": true,
+      "codex_exit_code": 0,
+      "controller_verification": "passed",
+      "accepted": true,
+      "task_delta": "sources/evaluations/workflow-sessions/headroom-beets-20260717-p-b440da225a3a-r1/task-01-agent.diff",
+      "usage_events": "sources/evaluations/workflow-sessions/headroom-beets-20260717-p-b440da225a3a-r1/task-01-codex-events.jsonl",
+      "operational_retry_count": 0,
+      "verifier_exit_code": 0,
+      "verifier_passed": true
+    },
+    {
+      "task_id": "beets-lifecycle-refactor-v0",
+      "task_class": "behavior-preserving-refactor",
+      "task_alias": "task-02",
+      "order": 2,
+      "agent_attempted": true,
+      "codex_exit_code": 0,
+      "controller_verification": "passed",
+      "accepted": true,
+      "task_delta": "sources/evaluations/workflow-sessions/headroom-beets-20260717-p-b440da225a3a-r1/task-02-agent.diff",
+      "usage_events": "sources/evaluations/workflow-sessions/headroom-beets-20260717-p-b440da225a3a-r1/task-02-codex-events.jsonl",
+      "operational_retry_count": 0,
+      "verifier_exit_code": 0,
+      "verifier_passed": true
+    },
+    {
+      "task_id": "beets-lifecycle-review-v0",
+      "task_class": "code-review-correction",
+      "task_alias": "task-03",
+      "order": 3,
+      "agent_attempted": true,
+      "codex_exit_code": 0,
+      "controller_verification": "passed",
+      "accepted": true,
+      "task_delta": "sources/evaluations/workflow-sessions/headroom-beets-20260717-p-b440da225a3a-r1/task-03-agent.diff",
+      "usage_events": "sources/evaluations/workflow-sessions/headroom-beets-20260717-p-b440da225a3a-r1/task-03-codex-events.jsonl",
+      "operational_retry_count": 0,
+      "verifier_exit_code": 0,
+      "verifier_passed": true
+    }
+  ],
+  "prompt_delivery": {
+    "mode": "sequential-one-task-at-a-time",
+    "future_tasks_visible": false,
+    "future_prompts_materialized_lazily": true,
+    "seed_delivery_mode": "preseeded-composite",
+    "future_seed_regressions_visible": true,
+    "controller_verification": "final-only",
+    "codex_thread_id": "019f7035-cc09-7233-919b-44097ae49696",
+    "task_prompt_evidence": "sources/evaluations/workflow-sessions/headroom-beets-20260717-p-b440da225a3a-r1/evidence.jsonl.gz"
+  },
+  "leakage_controls": {
+    "seed_origin_concealed": true,
+    "seed_patches_model_visible": false,
+    "git_baseline_true_root_at_lane_start": true,
+    "fixed_snapshot_objects_model_visible": false,
+    "pre_seed_reflog_entries_visible": false,
+    "concealment_verification_passed": true,
+    "task_directories_model_visible": false,
+    "verifier_assets_model_visible": false,
+    "model_writable_surface": "target repository plus isolated model-output directory",
+    "verifier_integrity_passed": true,
+    "verifier_integrity_evidence": "sources/evaluations/workflow-sessions/headroom-beets-20260717-p-b440da225a3a-r1/evidence.jsonl.gz#verifier-integrity.json",
+    "model_prompts_sanitized": true,
+    "upstream_remote_removed_from_model_facing_repo": true,
+    "broken_start_committed_as_local_baseline": true,
+    "remaining_limitations": [
+      "Future regression code is present from lane start, while future prompts and concealed acceptance assets remain controller-only.",
+      "Task semantics and verifier names may still be searchable if the model intentionally uses external network access."
+    ]
+  },
+  "artifacts": {
+    "artifact_contract": "compact-v1-four-files",
+    "run_record": "sources/evaluations/workflow-sessions/headroom-beets-20260717-p-b440da225a3a-r1/run.json",
+    "final_diff": "sources/evaluations/workflow-sessions/headroom-beets-20260717-p-b440da225a3a-r1/changes.diff",
+    "final_diff_basis": "ordered cumulative checkpoints plus final cumulative source diff from one composite root",
+    "evidence_bundle": "sources/evaluations/workflow-sessions/headroom-beets-20260717-p-b440da225a3a-r1/evidence.jsonl.gz",
+    "manifest": "sources/evaluations/workflow-sessions/headroom-beets-20260717-p-b440da225a3a-r1/manifest.sha256"
+  },
+  "run_dir": "sources/evaluations/workflow-sessions/headroom-beets-20260717-p-b440da225a3a-r1"
+}
