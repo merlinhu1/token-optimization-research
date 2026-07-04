@@ -25,6 +25,26 @@ from scripts import validate_repository
 SEQUENCE_ID = "terraform-lifecycle-sequence-v0"
 
 
+def retained_protocol_path(sequence_id: str, profile_id: str, replicate_index: int = 1) -> Path:
+    registry = json.loads((ROOT / "data/workflow-sessions.json").read_text())
+    matches = [
+        session
+        for session in registry["sessions"]
+        if session.get("task_sequence", {}).get("sequence_id") == sequence_id
+        and session.get("profile", {}).get("profile_id") == profile_id
+        and session.get("replicate_index") == replicate_index
+    ]
+    if len(matches) != 1:
+        raise AssertionError(
+            f"expected one retained protocol for {sequence_id}/{profile_id}/r{replicate_index}; "
+            f"found {[session['session_id'] for session in matches]}"
+        )
+    path = ROOT / matches[0]["frozen_protocol"]["path"]
+    if not path.is_file():
+        raise AssertionError(f"retained frozen protocol is missing: {path}")
+    return path
+
+
 class ActiveCampaignArchitectureTest(unittest.TestCase):
     def test_all_lifecycle_sequences_cover_the_v0_task_mix(self) -> None:
         sequences = json.loads((ROOT / "data/workflow-task-sequences.json").read_text())["sequences"]
@@ -243,6 +263,8 @@ class ActiveCampaignArchitectureTest(unittest.TestCase):
                 "artifact-ponytail",
                 "behavior-caveman",
                 "integrated-token-savior",
+                "headroom-default-codex",
+                "retrieval-cartog",
                 "retrieval-codegraph",
                 "retrieval-graphify",
                 "retrieval-jcodemunch-mcp",
@@ -250,6 +272,8 @@ class ActiveCampaignArchitectureTest(unittest.TestCase):
                 "retrieval-serena",
                 "retrieval-sigmap",
                 "terminal-rtk",
+                "terminal-snip",
+                "terminal-tokenjuice",
             },
         )
         for profile_id in shortlisted:
@@ -276,6 +300,75 @@ class ActiveCampaignArchitectureTest(unittest.TestCase):
             [candidate["id"] for candidate in large["candidates"] if candidate.get("selection_status") == "production-fixture"],
             ["large-hashicorp-terraform"],
         )
+
+    def test_new_treatment_adapters_preserve_declared_boundaries(self) -> None:
+        runner.assert_profile_runnable("terminal-headroom")
+        self.assertIs(
+            runner.fixture.active_tool_config({}, "headroom-default-codex"),
+            runner.fixture.TOOL_CONFIGS["headroom"],
+        )
+        self.assertIs(
+            runner.fixture.active_tool_config({}, "terminal-headroom"),
+            runner.fixture.TOOL_CONFIGS["headroom-proxy-only"],
+        )
+        proxy_only = runner.fixture.TOOL_CONFIGS["headroom-proxy-only"]
+        wrapper_args = proxy_only["codex_wrapper"]["args"]
+        self.assertEqual(proxy_only["lane_name"], "terminal-headroom")
+        for flag in ("--no-context-tool", "--no-mcp", "--no-tokensave", "--no-serena"):
+            self.assertIn(flag, wrapper_args)
+        self.assertNotIn("--no-proxy", wrapper_args)
+        self.assertIn("--port", wrapper_args)
+        self.assertIn("{tool_port}", wrapper_args)
+        self.assertTrue({"headroom_retrieve", "rtk", "tokensave", "serena"}.issubset(proxy_only["allowed_terms"]))
+
+        runner.assert_profile_runnable("retrieval-cartog")
+        cartog = runner.fixture.TOOL_CONFIGS["cartog"]
+        self.assertEqual(cartog["mcp_command"], "/bin/bash")
+        self.assertEqual(cartog["warmup"]["kind"], "code-graph-build")
+        self.assertIn("CARTOG_AUTO_INIT", cartog["env"])
+        self.assertEqual(cartog["diff_exclude_paths"], [".cartog"])
+
+    def test_task_delta_can_exclude_treatment_owned_cache_paths(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            repo = root / "repo"
+            run_dir = root / "run"
+            repo.mkdir()
+            run_dir.mkdir()
+            subprocess.run(["git", "init", "-q"], cwd=repo, check=True)
+            subprocess.run(["git", "config", "user.email", "fixture@example.invalid"], cwd=repo, check=True)
+            subprocess.run(["git", "config", "user.name", "Fixture Test"], cwd=repo, check=True)
+            source = repo / "source.txt"
+            source.write_text("before\n")
+            subprocess.run(["git", "add", "source.txt"], cwd=repo, check=True)
+            subprocess.run(["git", "commit", "-qm", "base"], cwd=repo, check=True)
+            source.write_text("after\n")
+            cache = repo / ".cartog"
+            cache.mkdir()
+            (cache / "cartog.db").write_bytes(b"treatment cache")
+
+            delta = runner.capture_task_delta(repo, run_dir, 1, (".cartog",))
+            text = delta.read_text()
+            self.assertIn("source.txt", text)
+            self.assertNotIn(".cartog", text)
+            self.assertNotIn("cartog.db", text)
+
+    def test_evidence_bundle_sources_exclude_controller_answer_assets(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            run_dir = Path(tmp)
+            (run_dir / "tasks/task-01/controller-hidden").mkdir(parents=True)
+            (run_dir / "tasks/task-01/seed-regression.patch").write_text("answer patch\n")
+            (run_dir / "tasks/task-01/controller-hidden/hidden_test.py").write_text("answer test\n")
+            (run_dir / "task-prompts").mkdir()
+            (run_dir / "task-prompts/task-01.md").write_text("model-visible prompt\n")
+            (run_dir / "codex-events.jsonl").write_text("{}\n")
+            (run_dir / "composite-seed.diff").write_text("answer composite\n")
+
+            paths = {path.relative_to(run_dir).as_posix() for path in runner.evidence_source_files(run_dir)}
+            self.assertIn("task-prompts/task-01.md", paths)
+            self.assertIn("codex-events.jsonl", paths)
+            self.assertNotIn("composite-seed.diff", paths)
+            self.assertFalse(any(path.startswith("tasks/") for path in paths))
 
     def test_validator_does_not_hardcode_active_sequence_ids(self) -> None:
         workflow = json.loads((ROOT / "data/workflow-task-sequences.json").read_text())
@@ -431,7 +524,7 @@ class ActiveCampaignArchitectureTest(unittest.TestCase):
 
     def test_current_protocols_declare_strict_schema_version(self) -> None:
         for sequence_id in runner.active_sequence_ids():
-            path = matrix.find_protocol(ROOT, sequence_id, "baseline-bare-codex")
+            path = retained_protocol_path(sequence_id, "baseline-bare-codex")
             protocol = json.loads(path.read_text())
             self.assertEqual(protocol.get("protocol_schema_version"), 3, path.name)
             sequence = runner.load_sequence(sequence_id)
@@ -1114,8 +1207,7 @@ class ManifestAndProtocolContractTest(unittest.TestCase):
 
     def test_current_protocol_fingerprint_matches_runner(self) -> None:
         sequence = runner.load_sequence("beets-lifecycle-sequence-v0")
-        protocol_path = matrix.find_protocol(
-            ROOT,
+        protocol_path = retained_protocol_path(
             "beets-lifecycle-sequence-v0",
             "baseline-bare-codex",
         )
@@ -1153,7 +1245,7 @@ class ManifestAndProtocolContractTest(unittest.TestCase):
     def test_protocol_timeout_mismatch_rejects(self) -> None:
         seq = runner.load_sequence(SEQUENCE_ID)
         args = mock.Mock(
-            protocol=str(matrix.find_protocol(ROOT, SEQUENCE_ID, "baseline-bare-codex").relative_to(ROOT)),
+            protocol=str(retained_protocol_path(SEQUENCE_ID, "baseline-bare-codex").relative_to(ROOT)),
             prepare_only=False,
             no_provider=False,
             timeout_per_task=1,
@@ -1165,7 +1257,7 @@ class ManifestAndProtocolContractTest(unittest.TestCase):
     def test_protocol_docker_image_mismatch_rejects(self) -> None:
         seq = runner.load_sequence(SEQUENCE_ID)
         args = mock.Mock(
-            protocol=str(matrix.find_protocol(ROOT, SEQUENCE_ID, "baseline-bare-codex").relative_to(ROOT)),
+            protocol=str(retained_protocol_path(SEQUENCE_ID, "baseline-bare-codex").relative_to(ROOT)),
             prepare_only=True,
             no_provider=True,
             timeout_per_task=3600,
@@ -1177,7 +1269,7 @@ class ManifestAndProtocolContractTest(unittest.TestCase):
     def test_baseline_protocol_cannot_validate_treatment(self) -> None:
         seq = runner.load_sequence(SEQUENCE_ID)
         args = mock.Mock(
-            protocol=str(matrix.find_protocol(ROOT, SEQUENCE_ID, "baseline-bare-codex").relative_to(ROOT)),
+            protocol=str(retained_protocol_path(SEQUENCE_ID, "baseline-bare-codex").relative_to(ROOT)),
             prepare_only=True,
             no_provider=True,
             timeout_per_task=3600,

@@ -10,6 +10,7 @@ from __future__ import annotations
 
 import argparse
 import datetime as dt
+import hashlib
 import json
 import os
 import re
@@ -66,7 +67,13 @@ FORBIDDEN_BASELINE_TERMS = [
     "caveman",
 ]
 BASELINE_CODEX_NO_MCP_PROFILES = {"baseline-codex-no-mcp"}
+PROFILE_TOOL_CONFIG_OVERRIDES = {
+    "headroom-default-codex": "headroom",
+    "terminal-headroom": "headroom-proxy-only",
+}
 CODEGRAPH_BIN = Path("/opt/data/tool-candidates/codegraph/dist/bin/codegraph.js")
+CARTOG_ROOT = Path("/opt/data/tool-candidates/cartog")
+CARTOG_BIN = CARTOG_ROOT / "target" / "release" / "cartog"
 SERENA_ROOT = Path("/opt/data/tool-candidates/serena")
 TOKEN_SAVIOR_ROOT = Path("/opt/data/tool-candidates/token-savior")
 GRAPHIFY_ROOT = Path("/opt/data/tool-candidates/graphify")
@@ -125,6 +132,35 @@ TOOL_CONFIGS: dict[str, dict[str, Any]] = {
             "cleanup_paths": [".codegraph"],
             "output_name": "codegraph-warmup-output.txt",
             "metadata_name": "codegraph-warmup-metadata.json",
+        },
+    },
+    "cartog": {
+        "display_name": "Cartog",
+        "lane_name": "retrieval-cartog",
+        "surface": "retrieval/context",
+        "mcp_server": "cartog",
+        "allowed_terms": ["cartog"],
+        "data_dir_name": "cartog",
+        "mcp_command": "/bin/bash",
+        "mcp_args": [
+            "-lc",
+            "cd {repo} && exec /opt/data/tool-candidates/cartog/target/release/cartog serve",
+        ],
+        "env": {
+            "CARTOG_AUTO_INIT": "1",
+            "CARTOG_MCP_COMPACT": "1",
+        },
+        "mounts": [str(CARTOG_ROOT)],
+        "diff_exclude_paths": [".cartog"],
+        "preflight_command": [str(CARTOG_BIN), "--version"],
+        "default_tool_state": "warm-index",
+        "warmup": {
+            "kind": "code-graph-build",
+            "command": [str(CARTOG_BIN), "index", "{repo}"],
+            "cleanup_paths": [".cartog"],
+            "output_name": "cartog-warmup-output.txt",
+            "metadata_name": "cartog-warmup-metadata.json",
+            "timeout_seconds": 1200,
         },
     },
     "serena": {
@@ -351,6 +387,8 @@ TOOL_CONFIGS: dict[str, dict[str, Any]] = {
                 "headroom",
                 "wrap",
                 "codex",
+                "--port",
+                "{tool_port}",
                 "--verbose",
                 "--",
             ],
@@ -367,6 +405,68 @@ TOOL_CONFIGS: dict[str, dict[str, Any]] = {
             "--version",
         ],
         "default_tool_state": "active-wrapper",
+    },
+    "headroom-proxy-only": {
+        "display_name": "Headroom proxy-only ablation",
+        "lane_name": "terminal-headroom",
+        "surface": "api-proxy/context-compression",
+        "allowed_terms": ["headroom", "headroom_retrieve", "rtk", "tokensave", "serena"],
+        "data_dir_name": "headroom-proxy-only",
+        "mounts": [str(HEADROOM_ROOT), str(HEADROOM_WHEEL)],
+        "path_entries": ["{codex_home}/home/.headroom/bin", "{codex_home}/home/.local/bin"],
+        "env": {
+            "HEADROOM_HOME": "{tool_data_dir}",
+            "HEADROOM_CACHE_DIR": "{tool_data_dir}/cache",
+            "HEADROOM_DISABLE_DASHBOARD": "1",
+            "HEADROOM_TELEMETRY": "0",
+            "HEADROOM_PROJECT": "{repo_slug}",
+        },
+        "codex_wrapper": {
+            "command": str(UV_BIN),
+            "args": [
+                "tool",
+                "run",
+                "--from",
+                str(HEADROOM_WHEEL),
+                "--with",
+                "mcp",
+                "--with",
+                "fastapi",
+                "--with",
+                "uvicorn<1.0",
+                "--with",
+                "httpx[http2]",
+                "--with",
+                "openai",
+                "--with",
+                "zstandard",
+                "--with",
+                "websockets",
+                "headroom",
+                "wrap",
+                "codex",
+                "--port",
+                "{tool_port}",
+                "--no-context-tool",
+                "--no-mcp",
+                "--no-tokensave",
+                "--no-serena",
+                "--verbose",
+                "--",
+            ],
+        },
+        "preflight_command": [
+            str(UV_BIN),
+            "tool",
+            "run",
+            "--from",
+            str(HEADROOM_WHEEL),
+            "--with",
+            "mcp",
+            "headroom",
+            "--version",
+        ],
+        "default_tool_state": "active-proxy-only-wrapper",
     },
     "token-savior": {
         "display_name": "Token Savior",
@@ -501,6 +601,8 @@ def auth_candidates(source_home: Path) -> list[Path]:
 def tool_ids_for_record(record: dict[str, Any], pid: str) -> list[str]:
     if pid in BASELINE_CODEX_NO_MCP_PROFILES:
         return []
+    if pid in PROFILE_TOOL_CONFIG_OVERRIDES:
+        return [PROFILE_TOOL_CONFIG_OVERRIDES[pid]]
 
     def resolve(raw_values: list[Any]) -> list[str]:
         ids: list[str] = []
@@ -1435,7 +1537,17 @@ def run_codex(record: dict[str, Any], pid: str, codex_home: Path, run_dir: Path,
     input_path_for_proc: Path | None = prompt
     if wrapper:
         data_dir = tool_data_dir(codex_home, cfg)
-        wrapper_args = [str(part).format(repo=repo, codex_home=codex_home, tool_data_dir=data_dir, repo_slug=repo.name.replace("-", "_")) for part in wrapper.get("args", [])]
+        tool_port = 18000 + int(hashlib.sha256(str(repo.resolve()).encode()).hexdigest()[:8], 16) % 20000
+        wrapper_args = [
+            str(part).format(
+                repo=repo,
+                codex_home=codex_home,
+                tool_data_dir=data_dir,
+                repo_slug=repo.name.replace("-", "_"),
+                tool_port=tool_port,
+            )
+            for part in wrapper.get("args", [])
+        ]
         if codex_cmd and codex_cmd[-1] == "-":
             codex_cmd = [*codex_cmd[:-1], prompt.read_text()]
             input_path_for_proc = None

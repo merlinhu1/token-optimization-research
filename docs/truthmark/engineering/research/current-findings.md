@@ -40,15 +40,25 @@ This document covers the active lifecycle-v0 portfolio and retained production b
 - CodeGraph's `r1` natural-use screen used 8,358,733 tokens on Fastify (-36.08%), 18,870,554 on Beets (+8.30%), and 33,993,794 on Terraform (-21.66%). All three sessions passed 3/3 verifier tasks and are token-accounting eligible.
 - Across the matched `r1` portfolio, CodeGraph used 61,223,081 tokens, a reduction of 12,670,366 tokens (-17.15%). The Beets increase makes the lane effects mixed despite the aggregate reduction.
 - jcodemunch MCP's `r1` natural-use screen used 6,697,747 tokens on Fastify (-48.78%), 17,318,314 on Beets (-0.60%), and 36,885,960 on Terraform (-14.99%). All three sessions passed 3/3 verifier tasks and are token-accounting eligible.
-- Across the matched `r1` portfolio, jcodemunch MCP used 60,902,021 tokens, a reduction of 12,991,426 tokens (-17.58%), the largest aggregate reduction among the ten initial treatment screens.
+- Across the matched `r1` portfolio, jcodemunch MCP used 60,902,021 tokens, a reduction of 12,991,426 tokens (-17.58%).
 - SigMap's `r1` natural-use screen used 10,570,387 tokens on Fastify (-19.17%), 19,351,542 on Beets (+11.07%), and 52,610,520 on Terraform (+21.24%). All three sessions passed 3/3 verifier tasks and are token-accounting eligible.
 - Across the matched `r1` portfolio, SigMap used 82,532,449 tokens, an increase of 8,639,002 tokens (+11.69%). It is the only initial treatment screen with an aggregate token increase.
 - LeanCTX's `r1` natural-use screen used 11,305,098 tokens on Fastify (-13.55%), 23,460,229 on Beets (+34.65%), and 35,342,005 on Terraform (-18.55%). All three sessions passed 3/3 verifier tasks and are token-accounting eligible.
 - Across the matched `r1` portfolio, LeanCTX used 70,107,332 tokens, a reduction of 3,786,115 tokens (-5.12%). Its lane effects are mixed and the Beets increase is substantial.
+- Snip's `r1` natural-use screen used 7,893,367 tokens on Fastify (-39.64%), 19,165,738 on Beets (+10.00%), and 32,679,643 on Terraform (-24.69%). All three sessions are operationally valid and token-accounting eligible; verifier diagnostics were 2/3, 3/3, and 3/3.
+- Across the matched `r1` portfolio, Snip used 59,738,748 tokens, a reduction of 14,154,699 tokens (-19.16%). The Beets increase makes the lane effects mixed.
+- TokenJuice's `r1` natural-use screen used 8,582,919 tokens on Fastify (-34.37%), 18,143,576 on Beets (+4.13%), and 26,074,453 on Terraform (-39.91%). All three sessions are operationally valid and token-accounting eligible and passed 9/9 verifier tasks.
+- Across the matched `r1` portfolio, TokenJuice used 52,800,948 tokens, a reduction of 21,092,499 tokens (-28.54%), the largest aggregate reduction among the fourteen full-tool screens.
+- Default Headroom's `r1` natural-use screen used 10,742,031 tokens on Fastify (-17.86%), 25,934,311 on Beets (+48.85%), and 34,821,358 on Terraform (-19.75%). All three sessions are operationally valid and token-accounting eligible; verifier diagnostics were 2/3, 3/3, and 3/3.
+- Across the matched `r1` portfolio, default Headroom used 71,497,700 tokens, a reduction of 2,395,747 tokens (-3.24%). Its required proxy-only companion ablation used 77,931,962 tokens (+5.47%) with 8/9 verifier tasks passed; the ablation is not ranked as a separate full-tool screen.
+- Cartog's `r1` natural-use screen used 6,055,080 tokens on Fastify (-53.70%), 14,563,339 on Beets (-16.42%), and 39,515,464 on Terraform (-8.93%). All three sessions are operationally valid and token-accounting eligible; verifier diagnostics were 2/3, 3/3, and 3/3.
+- Across the matched `r1` portfolio, Cartog used 60,133,883 tokens, a reduction of 13,759,564 tokens (-18.62%). It reduced provider-token usage on all three lanes in this initial screen.
 
 ## Evidence Boundary
 
 Qualification proves fixture mechanics and discriminative diagnostics, not model effectiveness. Baseline runs establish token controls. A token-usage comparison requires compatible treatment records bound to the same baseline-pool fingerprint and replicate; verifier and review outcomes are reported alongside the comparison without gating it.
+
+A prior Headroom proxy-only attempt was excluded as a controller-audit false positive because the audit interpreted the wrapper's explicit disabled-component startup notices as active tool exposure. The corrected first valid ablation is the only retained sample and no tokens from the excluded attempt are included in comparisons.
 
 ## Product Truth Links
 
