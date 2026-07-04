@@ -245,7 +245,10 @@ class ActiveCampaignArchitectureTest(unittest.TestCase):
                 "integrated-token-savior",
                 "retrieval-codegraph",
                 "retrieval-graphify",
+                "retrieval-jcodemunch-mcp",
+                "retrieval-leanctx",
                 "retrieval-serena",
+                "retrieval-sigmap",
                 "terminal-rtk",
             },
         )
