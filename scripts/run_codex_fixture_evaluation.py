@@ -192,6 +192,7 @@ TOOL_CONFIGS: dict[str, dict[str, Any]] = {
             str(CODESCOPE_BIN),
             str(CODESCOPE_SURREAL_BIN),
         ],
+        "diff_exclude_paths": [".fastembed_cache", ".codescope"],
         "preflight_command": [str(CODESCOPE_BIN), "--version"],
         "default_tool_state": "cold-auto-index",
         "initialize_instructions_policy": "strip-mandatory-uptake-text",
@@ -288,6 +289,7 @@ TOOL_CONFIGS: dict[str, dict[str, Any]] = {
         ],
         "env": {"GRAPHIFY_OUT": "graphify-out"},
         "mounts": [str(GRAPHIFY_ROOT)],
+        "diff_exclude_paths": ["graphify-out"],
         "default_tool_state": "warm-index",
         "warmup": {
             "kind": "code-graph-build",
