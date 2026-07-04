@@ -58,6 +58,7 @@ FORBIDDEN_BASELINE_TERMS = [
     "mex",
     "cavemem",
     "cartog",
+    "codescope",
     "sigmap",
     "jcodemunch",
     "jcodemunch-mcp",
@@ -74,6 +75,11 @@ PROFILE_TOOL_CONFIG_OVERRIDES = {
 CODEGRAPH_BIN = Path("/opt/data/tool-candidates/codegraph/dist/bin/codegraph.js")
 CARTOG_ROOT = Path("/opt/data/tool-candidates/cartog")
 CARTOG_BIN = CARTOG_ROOT / "target" / "release" / "cartog"
+CODESCOPE_RELEASE_ROOT = Path("/opt/data/tool-candidates/codescope-release-v0.8.12")
+CODESCOPE_BIN = CODESCOPE_RELEASE_ROOT / "codescope"
+CODESCOPE_SURREAL_BIN = CODESCOPE_RELEASE_ROOT / "surreal"
+CODESCOPE_NEUTRAL_MCP_SOURCE = ROOT / "scripts" / "run_codescope_neutral_mcp.py"
+CODESCOPE_NEUTRAL_MCP = Path("/opt/data/tool-candidates/codescope-adapter/run_codescope_neutral_mcp.py")
 SERENA_ROOT = Path("/opt/data/tool-candidates/serena")
 TOKEN_SAVIOR_ROOT = Path("/opt/data/tool-candidates/token-savior")
 GRAPHIFY_ROOT = Path("/opt/data/tool-candidates/graphify")
@@ -162,6 +168,30 @@ TOOL_CONFIGS: dict[str, dict[str, Any]] = {
             "metadata_name": "cartog-warmup-metadata.json",
             "timeout_seconds": 1200,
         },
+    },
+    "codescope": {
+        "display_name": "CodeScope",
+        "lane_name": "codescope-owner",
+        "surface": "broad-context-owner/mcp",
+        "mcp_server": "codescope",
+        "allowed_terms": ["codescope"],
+        "data_dir_name": "codescope",
+        "mcp_command": "python3",
+        "mcp_args": [
+            str(CODESCOPE_NEUTRAL_MCP),
+            "{repo}",
+            "--codescope-bin",
+            str(CODESCOPE_BIN),
+        ],
+        "path_entries": [str(CODESCOPE_RELEASE_ROOT)],
+        "mounts": [
+            str(CODESCOPE_NEUTRAL_MCP),
+            str(CODESCOPE_BIN),
+            str(CODESCOPE_SURREAL_BIN),
+        ],
+        "preflight_command": [str(CODESCOPE_BIN), "--version"],
+        "default_tool_state": "cold-auto-index",
+        "initialize_instructions_policy": "strip-mandatory-uptake-text",
     },
     "serena": {
         "display_name": "Serena",
