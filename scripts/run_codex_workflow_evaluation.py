@@ -58,6 +58,7 @@ SUPPORTED_WORKFLOW_TOOL_PROFILES = {
     "lower-intervention-codegraph": "codegraph",
     "retrieval-cartog": "cartog",
     "codescope-owner": "codescope",
+    "swarmvault-owner": "swarmvault",
     "retrieval-serena": "serena",
     "retrieval-graphify": "graphify",
     "retrieval-sigmap": "sigmap",
@@ -805,7 +806,13 @@ def artifact_lane_label(project_id: str) -> str:
 
 
 def artifact_profile_label(profile_id: str) -> str:
-    return "baseline" if profile_id == "baseline-bare-codex" else safe_profile_key(profile_id).rsplit("-", 1)[-1]
+    explicit = {
+        "codescope-owner": "codescope",
+        "swarmvault-owner": "swarmvault",
+    }
+    if profile_id == "baseline-bare-codex":
+        return "baseline"
+    return explicit.get(profile_id, safe_profile_key(profile_id).rsplit("-", 1)[-1])
 
 
 def canonical_baseline_session_id(project_id: str, replicate_index: int, protocol_fingerprint: str = "unfrozen", *, run_date: str = DATE) -> str:

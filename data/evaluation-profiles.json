@@ -892,7 +892,7 @@
       "id": "swarmvault-owner",
       "profile_type": "individual_tool",
       "objective_scope": "individual_tool_effectiveness",
-      "status": "deferred-profile",
+      "status": "screening-shortlist",
       "enabled_surfaces": [
         "broad-context-owner"
       ],
@@ -907,13 +907,29 @@
         }
       ],
       "install": {
-        "policy": "Record exact commands, versions, generated files, and environment variables in every run record before using this profile."
+        "policy": "Use the source-built SwarmVault 3.20.0 CLI at pinned commit 4ce0c7cb545c. In a lane-private workspace, initialize the lite offline profile, ingest up to 500 files from the target repository with the product-native deterministic scale cap, compile with the built-in heuristic provider, and expose the official stdio MCP server without agent-rule installation."
       },
       "reset": {
-        "policy": "Record disable/uninstall commands and verify no stale index, hook, memory, cache, or generated profile survives into the next run."
+        "policy": "Use a fresh lane-specific Codex home for every run. Keep SwarmVault config, raw copies, wiki, graph, SQLite retrieval state, agent helpers, and inbox under the lane-private tool workspace; destroy that home after the lane."
       },
-      "notes": "SwarmVault broad context owner.",
-      "deferred_reason": "Not selected for the first compact lifecycle screen. Candidate expansion remains paused; reconsider only after the CodeGraph screen or a concrete workflow/mechanism gap justifies another atomic treatment."
+      "notes": "SwarmVault broad context-owner treatment using its source-built 3.20.0 CLI, offline heuristic compiler, deterministic product-native 500-file scale cap, warm lane-private vault, and unmodified 51-tool stdio MCP surface. No task-specific paths, agent rules, or uptake instructions are installed.",
+      "evaluation_protocol": {
+        "arm_label": "swarmvault-offline-heuristic-warm-index-mcp",
+        "tool_state": "warm-index",
+        "tool_use_policy": "natural",
+        "provider": "built-in-heuristic-offline",
+        "inactive_surfaces": [
+          "agent-rule installation",
+          "cloud model providers",
+          "local LLM providers",
+          "hooks",
+          "graph viewer"
+        ],
+        "installation_failure_disposition": "invalid-if-lite-init-ingest-compile-or-official-MCP-server-is-unavailable",
+        "max_files": 500,
+        "scale_policy": "Use SwarmVault's native deterministic --max-files cap to bound initialization on large repositories; no task-specific paths or patterns are selected."
+      },
+      "selection_rationale": "Explicit experiment-owner direction on 2026-07-17 to evaluate SwarmVault after CodeScope across all three active lifecycle-v0 lanes."
     },
     {
       "id": "terminal-headroom",
