@@ -60,6 +60,13 @@ Codescope is a Rust code-intelligence stack that parses supported project files,
 - This pass inspected source and tests only; no benchmark-audit or reproduction evidence is promoted here.
 - Source comments mention prior performance fixes and a bad historical benchmark, but those comments are not treated as measured effectiveness evidence.
 
+## Lifecycle-v0 evaluation outcome
+
+- A checksum-verified `v0.8.12` Linux release and bundled SurrealDB were qualified against pinned source commit `d8e58d83e920`.
+- The official 37-tool stdio MCP surface passed index/search smoke testing. Mandatory upstream initialization wording that instructed agents to always prefer CodeScope was removed for the natural-use arm; ordinary tool schemas and responses remained available.
+- The first valid `r1` screen used 5,516,066 provider tokens on Fastify, 15,344,837 on Beets, and 64,579,065 on Terraform. Aggregate usage was 85,439,968 tokens, +15.63% versus the matched baseline.
+- All 9/9 verifier tasks passed. No explicit model-issued CodeScope MCP call was observed; that diagnostic does not invalidate the frozen natural-availability assignment.
+
 ## Compatibility notes
 
 - Broad context owner: Codescope overlaps with code graph, search, memory, shell/output compression, web UI, editor extension, and MCP surfaces.
@@ -82,7 +89,7 @@ Codescope is a Rust code-intelligence stack that parses supported project files,
 
 ## Next review tasks
 
-- [ ] Run a bounded source-logic smoke test on a small fixture to verify index/search/MCP round trip.
-- [ ] Inspect all tool routers for overlapping behavior and side effects before stack inclusion.
-- [ ] Map `~/.codescope` state files, migration behavior, and daemon lifecycle for reproducibility.
-- [ ] Only after source behavior is accepted, inspect any benchmark harness/raw outputs separately before effectiveness claims.
+- [x] Run a bounded source-logic smoke test on a small fixture to verify index/search/MCP round trip.
+- [x] Inspect the production MCP initialization and state boundaries needed for an isolated natural-use screen.
+- [x] Map `~/.codescope` state and bundled SurrealDB into lane-private homes for reproducibility.
+- [ ] Audit upstream benchmark artifacts separately from the retained lifecycle-v0 provider-token evidence.
