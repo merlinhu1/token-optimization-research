@@ -273,6 +273,7 @@ class ActiveCampaignArchitectureTest(unittest.TestCase):
                 "retrieval-leanctx",
                 "retrieval-serena",
                 "retrieval-sigmap",
+                "swarmvault-owner",
                 "terminal-rtk",
                 "terminal-snip",
                 "terminal-tokenjuice",
@@ -357,6 +358,23 @@ class ActiveCampaignArchitectureTest(unittest.TestCase):
         sanitized = json.loads(codescope_adapter.sanitize_response((json.dumps(initialize) + "\n").encode()))
         self.assertNotIn("instructions", sanitized["result"])
         self.assertEqual(sanitized["result"]["serverInfo"], initialize["result"]["serverInfo"])
+
+        runner.assert_profile_runnable("swarmvault-owner")
+        swarmvault = runner.fixture.TOOL_CONFIGS["swarmvault"]
+        self.assertEqual(swarmvault["mcp_server"], "swarmvault")
+        self.assertEqual(swarmvault["default_tool_state"], "warm-index")
+        self.assertEqual(swarmvault["warmup"]["kind"], "knowledge-graph-build")
+        self.assertIn("init --lite", swarmvault["warmup"]["command"][-1])
+        self.assertIn(" ingest {repo}", swarmvault["warmup"]["command"][-1])
+        self.assertIn("--max-files 500", swarmvault["warmup"]["command"][-1])
+        self.assertIn(" compile", swarmvault["warmup"]["command"][-1])
+        self.assertNotIn("install-agent-rules", " ".join(swarmvault["warmup"]["command"]))
+        self.assertEqual(runner.artifact_profile_label("codescope-owner"), "codescope")
+        self.assertEqual(runner.artifact_profile_label("swarmvault-owner"), "swarmvault")
+        self.assertNotEqual(
+            runner.canonical_treatment_session_id("fastify-fastify", "codescope-owner", 1),
+            runner.canonical_treatment_session_id("fastify-fastify", "swarmvault-owner", 1),
+        )
 
     def test_task_delta_can_exclude_treatment_owned_cache_paths(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
