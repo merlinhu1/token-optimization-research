@@ -145,7 +145,7 @@ class ActiveCampaignArchitectureTest(unittest.TestCase):
                 runbook,
             )
         self.assertIn('--treatment-profile "$PROFILE_ID"', runbook)
-        self.assertEqual(runbook.count("(r0, r1)"), 3)
+        self.assertEqual(runbook.count("(r0, r1, r2)"), 3)
 
     def test_repository_surfaces_match_production_evidence_state(self) -> None:
         stale_claims = {
