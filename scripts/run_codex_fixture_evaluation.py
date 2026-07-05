@@ -72,6 +72,7 @@ BASELINE_CODEX_NO_MCP_PROFILES = {"baseline-codex-no-mcp"}
 PROFILE_TOOL_CONFIG_OVERRIDES = {
     "headroom-default-codex": "headroom",
     "terminal-headroom": "headroom-proxy-only",
+    "stack-tokenjuice-jcodemunch-mcp": "tokenjuice-jcodemunch-mcp-stack",
 }
 CODEGRAPH_BIN = Path("/opt/data/tool-candidates/codegraph/dist/bin/codegraph.js")
 CARTOG_ROOT = Path("/opt/data/tool-candidates/cartog")
@@ -417,6 +418,45 @@ TOOL_CONFIGS: dict[str, dict[str, Any]] = {
         "env": {"TOKENJUICE_TELEMETRY": "0"},
         "preflight_command": ["tokenjuice", "--version"],
         "default_tool_state": "cold-cli",
+    },
+    "tokenjuice-jcodemunch-mcp-stack": {
+        "display_name": "TokenJuice + jcodemunch MCP",
+        "lane_name": "stack-tokenjuice-jcodemunch-mcp",
+        "surface": "terminal/tool-output-compaction + retrieval/context",
+        "component_tool_ids": ["tokenjuice", "jcodemunch-mcp"],
+        "allowed_terms": ["tokenjuice", "jcodemunch", "jcodemunch-mcp"],
+        "data_dir_name": "tokenjuice-jcodemunch-mcp-stack",
+        "executable": str(TOKENJUICE_BIN),
+        "path_entries": [str(TOKENJUICE_BIN.parent)],
+        "mcp_server": "jcodemunch",
+        "mcp_command": "/bin/bash",
+        "mcp_args": [
+            "-lc",
+            "cd {repo} && exec /opt/data/opt/uv/uv tool run --from /opt/data/tool-candidates/jcodemunch-mcp/dist/jcodemunch_mcp-1.108.114-py3-none-any.whl jcodemunch-mcp serve --transport stdio --log-level ERROR",
+        ],
+        "mounts": [str(TOKENJUICE_ROOT), str(JCODEMUNCH_ROOT), str(JCODEMUNCH_WHEEL)],
+        "env": {
+            "TOKENJUICE_TELEMETRY": "0",
+            "JCODEMUNCH_LOG_LEVEL": "ERROR",
+        },
+        "preflight_command": ["tokenjuice", "--version"],
+        "default_tool_state": "warm-index",
+        "warmup": {
+            "kind": "code-index-build",
+            "command": [
+                str(UV_BIN),
+                "tool",
+                "run",
+                "--from",
+                str(JCODEMUNCH_WHEEL),
+                "jcodemunch-mcp",
+                "index",
+                "{repo}",
+            ],
+            "output_name": "tokenjuice-jcodemunch-warmup-output.txt",
+            "metadata_name": "tokenjuice-jcodemunch-warmup-metadata.json",
+            "timeout_seconds": 1200,
+        },
     },
 
     "headroom": {

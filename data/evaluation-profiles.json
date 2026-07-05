@@ -1184,6 +1184,47 @@
       "deferred_reason": "Selected for the next lifecycle-v0 natural-use treatment round after the first ten screens."
     },
     {
+      "id": "stack-tokenjuice-jcodemunch-mcp",
+      "profile_type": "tool_stack",
+      "objective_scope": "stack_effectiveness",
+      "status": "screening-shortlist",
+      "enabled_surfaces": [
+        "terminal-output",
+        "retrieval-context"
+      ],
+      "disabled_overlaps": [
+        "all unlisted surfaces"
+      ],
+      "components": [
+        {
+          "component_id": "terminal-tokenjuice",
+          "surface": "terminal-output",
+          "role": "terminal_output_owner"
+        },
+        {
+          "component_id": "retrieval-jcodemunch-mcp",
+          "surface": "retrieval-context",
+          "role": "retrieval_context_owner"
+        }
+      ],
+      "install": {
+        "policy": "Compose the retained TokenJuice PATH integration with the retained jcodemunch MCP server and warm index. Record exact commands, versions, generated files, and environment variables in every run record."
+      },
+      "reset": {
+        "policy": "Remove the lane-private jcodemunch index, TokenJuice state, isolated Codex home, hooks, caches, and generated profile state; verify no component survives into the next run."
+      },
+      "evaluation_protocol": {
+        "tool_use_policy": "natural",
+        "tool_state": "warm-index",
+        "component_states": {
+          "terminal-tokenjuice": "cold-cli",
+          "retrieval-jcodemunch-mcp": "warm-index"
+        }
+      },
+      "notes": "Orthogonal lifecycle-v0 stack: TokenJuice owns terminal/tool output; jcodemunch MCP owns retrieval/context. No invocation is required or preferred.",
+      "selection_reason": "Explicit experiment-owner direction on 2026-07-18 to run the first Phase 3 lifecycle-v0 stack evaluation without rerunning retained individual-tool profiles."
+    },
+    {
       "id": "tokless-profile",
       "profile_type": "installer_orchestrator",
       "objective_scope": "stack_effectiveness",
