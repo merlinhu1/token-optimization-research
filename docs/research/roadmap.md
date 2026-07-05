@@ -2,9 +2,9 @@
 
 ## Current state
 
-The repository is in integration-contract repair after a full official-parity audit. Fastify, Beets, and Terraform retain two eligible bare-Codex baselines each. Of 54 historical treatment sessions, 12 retain eligibility for four narrow conditions and 42 are excluded from product-effect claims while preserving immutable provider-accounting evidence. The historical TokenJuice+jcodemunch stack decision is withdrawn.
+The repository is completing integration-contract repair after the 2026-07-18 official-parity audit. Fastify, Beets, and Terraform retain two eligible bare-Codex baselines each. Of 54 historical treatment sessions, 12 remain active and objective-eligible for four narrow conditions. The other 42 were deleted from the active corpus at the experiment owner's direction because their treatment configuration or assignment proof was invalid; they were not relabelled as baseline. The historical TokenJuice+jcodemunch stack decision remains withdrawn.
 
-Corrected no-provider contracts exist for `terminal-tokenjuice-codex-hook-v1` and `retrieval-jcodemunch-mcp-direct-v1`. The former installs and enables the TokenJuice Codex hook. The latter uses a direct pinned binary, mandatory MCP handshake, and warm index under an explicitly neutral availability policy. A product-guided jcodemunch arm would require a separate versioned instruction-policy contract. Neither corrected profile has a provider-backed sample.
+Thirteen versioned individual-tool replacements now cover TokenJuice, jcodemunch, RTK, Snip, Graphify, CodeGraph, LeanCTX, Cartog, CodeScope, SwarmVault, Serena, SigMap, and Token Savior. All 39 fixture-specific frozen protocols passed the provider-free preparation matrix. MCP profiles retained initialize plus tools/list evidence, and product-guided profiles installed the pinned product-authored Codex surface rather than evaluator-authored steering.
 
 ## Production entry evidence
 
@@ -14,10 +14,11 @@ Corrected no-provider contracts exist for `terminal-tokenjuice-codex-hook-v1` an
 4. All three start patches compose without conflicts.
 5. Fixed snapshots pass every verifier.
 6. Qualification evidence and frozen v0 execution contracts match registry fingerprints.
-7. Repository validation and contract tests pass.
+7. Every corrected profile passes its provider-free setup, warm-state, and assignment-proof gate.
+8. Repository validation and contract tests pass without deleting control-plane files.
 
 ## Next production step
 
-Finish exact-tree qualification of the two corrected individual profiles without provider spend. Do not rerun occupied historical profile IDs. Any provider-backed TokenJuice or jcodemunch sample requires explicit authorization and a first-valid-run policy under the new versioned identity.
+Provider-free qualification is complete and retained in one machine-readable receipt for all 39 corrected protocols. Do not rerun occupied historical profile IDs or reconstruct deleted results as baseline.
 
-Before another stack, create versioned corrections for RTK, snip, and any excluded MCP profile selected for further study. A corrected stack should be preregistered only after both individual assignments have positive integration evidence.
+Any provider-backed corrected sample requires explicit experiment-owner authorization and the first-valid-run policy. Run individual profiles before preregistering another stack; a future stack is eligible only after both component assignments have positive integration evidence under their versioned individual contracts.

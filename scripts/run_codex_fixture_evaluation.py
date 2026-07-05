@@ -73,7 +73,18 @@ PROFILE_TOOL_CONFIG_OVERRIDES = {
     "headroom-default-codex": "headroom",
     "terminal-headroom": "headroom-proxy-only",
     "terminal-tokenjuice-codex-hook-v1": "tokenjuice-codex-hook-v1",
+    "terminal-rtk-codex-instructions-v1": "rtk-codex-instructions-v1",
+    "terminal-snip-codex-hook-v1": "snip-codex-hook-v1",
     "retrieval-jcodemunch-mcp-direct-v1": "jcodemunch-mcp-direct-v1",
+    "retrieval-graphify-codex-skill-v1": "graphify-codex-skill-v1",
+    "retrieval-codegraph-codex-mcp-v1": "codegraph-codex-mcp-v1",
+    "integrated-leanctx-codex-hybrid-v1": "leanctx-codex-hybrid-v1",
+    "retrieval-cartog-mcp-v1": "cartog-mcp-v1",
+    "codescope-codex-product-v1": "codescope-codex-product-v1",
+    "swarmvault-codex-product-v1": "swarmvault-codex-product-v1",
+    "retrieval-serena-codex-mcp-v1": "serena-codex-mcp-v1",
+    "retrieval-sigmap-codex-live-v1": "sigmap-codex-live-v1",
+    "integrated-token-savior-mcp-v1": "token-savior-mcp-v1",
     "stack-tokenjuice-jcodemunch-mcp": "tokenjuice-jcodemunch-mcp-stack",
 }
 CODEGRAPH_BIN = Path("/opt/data/tool-candidates/codegraph/dist/bin/codegraph.js")
@@ -107,12 +118,13 @@ UV_BIN = Path("/opt/data/opt/uv/uv")
 RTK_BIN = Path("/opt/data/tool-candidates/rtk/target/release/rtk")
 PONYTAIL_ROOT = Path("/opt/data/ponytail")
 NODE_TOOLCHAIN_ROOT = Path("/opt/data/opt/node-v24.18.0-linux-x64")
+NODE_BIN = NODE_TOOLCHAIN_ROOT / "bin" / "node"
 
 TOOL_CONFIGS: dict[str, dict[str, Any]] = {
     "lean-ctx": {
-        "display_name": "LeanCTX",
+        "display_name": "LeanCTX (historical MCP-only partial profile)",
         "lane_name": "retrieval-leanctx",
-        "surface": "retrieval/context",
+        "surface": "retrieval/context-mcp-only",
         "mcp_server": "lean-ctx",
         "allowed_terms": ["lean-ctx", "mcp_lean_ctx", "ctx_read", "ctx_search", "ctx_shell", "ctx_graph"],
         "data_dir_name": "lean-ctx",
@@ -127,10 +139,45 @@ TOOL_CONFIGS: dict[str, dict[str, Any]] = {
             "metadata_name": "lean-ctx-warmup-metadata.json",
         },
     },
+    "leanctx-codex-hybrid-v1": {
+        "display_name": "LeanCTX official Codex hybrid integration v1",
+        "lane_name": "integrated-leanctx-codex-hybrid-v1",
+        "surface": "retrieval/context-mcp+shell-output-compression+instructions",
+        "mcp_server": "lean-ctx",
+        "allowed_terms": ["lean-ctx", "mcp_lean_ctx", "ctx_read", "ctx_search", "ctx_shell", "ctx_graph"],
+        "data_dir_name": "leanctx-codex-hybrid-v1",
+        "mcp_command": "/opt/data/bin/lean-ctx",
+        "mcp_args": [],
+        "env": {"LEAN_CTX_DATA_DIR": "{tool_data_dir}"},
+        "mounts": ["/opt/data/bin"],
+        "diff_exclude_paths": ["AGENTS.md", "LEAN-CTX.md"],
+        "host_integration": {
+            "install_commands": [["/opt/data/bin/lean-ctx", "init", "--agent", "codex"]],
+            "verify_commands": [["/opt/data/bin/lean-ctx", "--version"]],
+            "required_files": [
+                "{codex_home}/config.toml",
+                "{codex_home}/hooks.json",
+                "{codex_home}/instructions.md",
+                "{codex_home}/skills/lean-ctx/SKILL.md",
+                "{repo}/AGENTS.md",
+                "{repo}/LEAN-CTX.md",
+            ],
+            "timeout_seconds": 300,
+        },
+        "mcp_handshake": {"required": True, "method": "initialize-and-tools-list", "timeout_seconds": 60},
+        "default_tool_state": "warm-index",
+        "warmup": {
+            "kind": "index",
+            "command": ["/opt/data/bin/lean-ctx", "index", "build", "{repo}"],
+            "output_name": "lean-ctx-warmup-output.txt",
+            "metadata_name": "lean-ctx-warmup-metadata.json",
+            "timeout_seconds": 1200,
+        },
+    },
     "codegraph": {
-        "display_name": "CodeGraph",
+        "display_name": "CodeGraph (historical no-watch manual profile)",
         "lane_name": "retrieval-codegraph",
-        "surface": "retrieval/context",
+        "surface": "retrieval/context-manual-no-watch",
         "mcp_server": "codegraph",
         "allowed_terms": ["codegraph"],
         "data_dir_name": "codegraph",
@@ -144,6 +191,35 @@ TOOL_CONFIGS: dict[str, dict[str, Any]] = {
             "cleanup_paths": [".codegraph"],
             "output_name": "codegraph-warmup-output.txt",
             "metadata_name": "codegraph-warmup-metadata.json",
+        },
+    },
+    "codegraph-codex-mcp-v1": {
+        "display_name": "CodeGraph official Codex MCP with live watch v1",
+        "lane_name": "retrieval-codegraph-codex-mcp-v1",
+        "surface": "retrieval/context+mcp-live-index",
+        "mcp_server": "codegraph",
+        "allowed_terms": ["codegraph"],
+        "data_dir_name": "codegraph-codex-mcp-v1",
+        "mcp_command": str(CODEGRAPH_BIN),
+        "mcp_args": ["serve", "--mcp"],
+        "env": {"CODEGRAPH_TELEMETRY": "0"},
+        "mounts": ["/opt/data/tool-candidates/codegraph"],
+        "diff_exclude_paths": [".codegraph"],
+        "host_integration": {
+            "home_dot_codex_alias": True,
+            "install_commands": [[str(CODEGRAPH_BIN), "install", "--target", "codex", "--location", "global", "--yes"]],
+            "verify_commands": [[str(CODEGRAPH_BIN), "--version"]],
+            "required_files": ["{codex_home}/config.toml", "{codex_home}/AGENTS.md"],
+        },
+        "mcp_handshake": {"required": True, "method": "initialize-and-tools-list"},
+        "default_tool_state": "warm-index",
+        "warmup": {
+            "kind": "index",
+            "command": [str(CODEGRAPH_BIN), "init", "{repo}"],
+            "cleanup_paths": [".codegraph"],
+            "output_name": "codegraph-warmup-output.txt",
+            "metadata_name": "codegraph-warmup-metadata.json",
+            "timeout_seconds": 1200,
         },
     },
     "cartog": {
@@ -270,9 +346,9 @@ TOOL_CONFIGS: dict[str, dict[str, Any]] = {
         "mounts": [str(SERENA_ROOT)],
     },
     "graphify": {
-        "display_name": "Graphify",
+        "display_name": "Graphify (historical optional MCP-only ablation)",
         "lane_name": "retrieval-graphify",
-        "surface": "retrieval/context",
+        "surface": "retrieval/context-optional-mcp",
         "mcp_server": "graphify",
         "allowed_terms": ["graphify", "graphify-mcp"],
         "data_dir_name": "graphify",
@@ -314,6 +390,43 @@ TOOL_CONFIGS: dict[str, dict[str, Any]] = {
             "output_name": "graphify-warmup-output.txt",
             "metadata_name": "graphify-warmup-metadata.json",
             "timeout_seconds": 1200,
+        },
+    },
+    "graphify-codex-skill-v1": {
+        "display_name": "Graphify official Codex skill and always-on graph policy v1",
+        "lane_name": "retrieval-graphify-codex-skill-v1",
+        "surface": "retrieval/context+codex-skill+instructions+pretooluse-hook",
+        "allowed_terms": ["graphify"],
+        "data_dir_name": "graphify-codex-skill-v1",
+        "executable": "{tool_data_dir}/venv/bin/graphify",
+        "path_entries": ["{tool_data_dir}/venv/bin"],
+        "env": {"GRAPHIFY_OUT": "graphify-out"},
+        "mounts": [str(GRAPHIFY_ROOT), str(GRAPHIFY_WHEEL)],
+        "diff_exclude_paths": ["graphify-out", "AGENTS.md", ".codex"],
+        "codex_features": {"hooks": True, "multi_agent": True},
+        "host_integration": {
+            "home_dot_codex_alias": True,
+            "install_commands": [
+                [str(UV_BIN), "venv", "{tool_data_dir}/venv", "--python", "python3"],
+                [str(UV_BIN), "pip", "install", "--python", "{tool_data_dir}/venv/bin/python", str(GRAPHIFY_WHEEL)],
+                ["{tool_data_dir}/venv/bin/graphify", "install", "--platform", "codex"],
+            ],
+            "verify_commands": [["{tool_data_dir}/venv/bin/graphify", "--help"]],
+            "required_files": ["{tool_data_dir}/venv/bin/graphify", "{codex_home}/skills/graphify/SKILL.md"],
+            "timeout_seconds": 600,
+        },
+        "default_tool_state": "warm-index",
+        "warmup": {
+            "kind": "official-full-graph-and-codex-policy",
+            "command": [
+                "/bin/bash",
+                "-lc",
+                "set -euo pipefail; graphify update {repo} --force; cd {repo}; graphify codex install; test -f AGENTS.md; test -f .codex/hooks.json",
+            ],
+            "cleanup_paths": ["graphify-out", "AGENTS.md", ".codex"],
+            "output_name": "graphify-warmup-output.txt",
+            "metadata_name": "graphify-warmup-metadata.json",
+            "timeout_seconds": 3600,
         },
     },
 
@@ -409,15 +522,35 @@ TOOL_CONFIGS: dict[str, dict[str, Any]] = {
         },
     },
     "snip": {
-        "display_name": "Snip",
+        "display_name": "Snip (historical PATH-only profile)",
         "lane_name": "terminal-snip",
-        "surface": "terminal/tool-output-compaction",
+        "surface": "terminal/tool-output-compaction-cli-only",
         "allowed_terms": ["snip"],
         "data_dir_name": "snip",
         "executable": str(SNIP_BIN),
         "path_entries": [str(SNIP_BIN.parent)],
         "mounts": [str(SNIP_ROOT)],
         "env": {"SNIP_TELEMETRY": "0"},
+        "preflight_command": ["snip", "--version"],
+        "default_tool_state": "cold-cli",
+    },
+    "snip-codex-hook-v1": {
+        "display_name": "Snip Codex PreToolUse hook v1",
+        "lane_name": "terminal-snip-codex-hook-v1",
+        "surface": "codex-pre-tool-use-hook/terminal-output-compaction",
+        "allowed_terms": ["snip"],
+        "data_dir_name": "snip-codex-hook-v1",
+        "executable": str(SNIP_BIN),
+        "path_entries": [str(SNIP_BIN.parent)],
+        "mounts": [str(SNIP_ROOT)],
+        "env": {"SNIP_TELEMETRY": "0"},
+        "codex_features": {"hooks": True},
+        "host_integration": {
+            "home_dot_codex_alias": True,
+            "install_commands": [["snip", "init", "--agent", "codex"]],
+            "verify_commands": [["snip", "hook-audit"]],
+            "required_files": ["{codex_home}/hooks.json", "{codex_home}/config.toml"],
+        },
         "preflight_command": ["snip", "--version"],
         "default_tool_state": "cold-cli",
     },
@@ -658,9 +791,9 @@ TOOL_CONFIGS: dict[str, dict[str, Any]] = {
         "mounts": [str(TOKEN_SAVIOR_ROOT)],
     },
     "rtk": {
-        "display_name": "RTK",
+        "display_name": "RTK (historical PATH-only profile)",
         "lane_name": "terminal-rtk",
-        "surface": "terminal/tool-output-compaction",
+        "surface": "terminal/tool-output-compaction-cli-only",
         "allowed_terms": ["rtk"],
         "data_dir_name": "rtk",
         "executable": str(RTK_BIN),
@@ -669,6 +802,25 @@ TOOL_CONFIGS: dict[str, dict[str, Any]] = {
         "binary_mount_target": "/usr/local/bin/rtk",
         "env": {"RTK_TELEMETRY": "0"},
         "preflight_command": ["rtk", "--version"],
+    },
+    "rtk-codex-instructions-v1": {
+        "display_name": "RTK Codex global instruction policy v1",
+        "lane_name": "terminal-rtk-codex-instructions-v1",
+        "surface": "codex-global-instructions/terminal-output-compaction",
+        "allowed_terms": ["rtk"],
+        "data_dir_name": "rtk-codex-instructions-v1",
+        "executable": str(RTK_BIN),
+        "path_entries": [str(RTK_BIN.parent)],
+        "mounts": [str(RTK_BIN.parent)],
+        "binary_mount_target": "/usr/local/bin/rtk",
+        "env": {"RTK_TELEMETRY": "0"},
+        "host_integration": {
+            "install_commands": [["rtk", "init", "--global", "--codex"]],
+            "verify_commands": [["rtk", "init", "--global", "--codex", "--dry-run"]],
+            "required_files": ["{codex_home}/AGENTS.md", "{codex_home}/RTK.md"],
+        },
+        "preflight_command": ["rtk", "--version"],
+        "default_tool_state": "active-instruction-layer",
     },
     "caveman": {
         "display_name": "Caveman",
@@ -692,6 +844,93 @@ TOOL_CONFIGS: dict[str, dict[str, Any]] = {
         "prompt_instructions_command": ["node", "-e", "const {getFallbackInstructions}=require('/opt/data/ponytail/hooks/ponytail-instructions.js'); console.log(getFallbackInstructions('full'));"],
     },
 }
+
+TOOL_CONFIGS.update({
+    "cartog-mcp-v1": {
+        **TOOL_CONFIGS["cartog"],
+        "display_name": "Cartog handshake-gated Codex MCP v1",
+        "lane_name": "retrieval-cartog-mcp-v1",
+        "mcp_handshake": {"required": True, "method": "initialize-and-tools-list", "timeout_seconds": 60},
+    },
+    "token-savior-mcp-v1": {
+        **TOOL_CONFIGS["token-savior"],
+        "display_name": "Token Savior bounded Codex MCP v1",
+        "lane_name": "integrated-token-savior-mcp-v1",
+        "env": {**TOOL_CONFIGS["token-savior"]["env"], "TOKEN_SAVIOR_CLIENT": "codex"},
+        "mcp_handshake": {"required": True, "method": "initialize-and-tools-list", "timeout_seconds": 60},
+    },
+    "serena-codex-mcp-v1": {
+        "display_name": "Serena official Codex MCP v1",
+        "lane_name": "retrieval-serena-codex-mcp-v1",
+        "surface": "retrieval/context+official-codex-mcp",
+        "mcp_server": "serena",
+        "allowed_terms": ["serena"],
+        "data_dir_name": "serena-codex-mcp-v1",
+        "mcp_command": str(UV_BIN),
+        "mcp_args": ["tool", "run", "--from", str(SERENA_ROOT), "serena", "start-mcp-server", "--project-from-cwd", "--context=codex", "--enable-web-dashboard", "false", "--open-web-dashboard", "false"],
+        "env": {"SERENA_HOME": "{tool_data_dir}"},
+        "mounts": [str(SERENA_ROOT)],
+        "host_integration": {
+            "install_commands": [[str(UV_BIN), "tool", "run", "--from", str(SERENA_ROOT), "serena", "setup", "codex"]],
+            "verify_commands": [[str(UV_BIN), "tool", "run", "--from", str(SERENA_ROOT), "serena", "--version"]],
+            "required_files": ["{codex_home}/config.toml"],
+            "timeout_seconds": 600,
+        },
+        "mcp_handshake": {"required": True, "method": "initialize-and-tools-list", "timeout_seconds": 120},
+        "default_tool_state": "cold-auto-index",
+    },
+    "sigmap-codex-live-v1": {
+        "display_name": "SigMap Codex MCP with live watcher v1",
+        "lane_name": "retrieval-sigmap-codex-live-v1",
+        "surface": "retrieval/context+codex-agents+mcp-live-watch",
+        "mcp_server": "sigmap",
+        "allowed_terms": ["sigmap", "gen-context"],
+        "data_dir_name": "sigmap-codex-live-v1",
+        "mcp_command": "/bin/bash",
+        "mcp_args": ["-lc", f"cd {{repo}}; {NODE_BIN} {SIGMAP_ROOT / 'gen-context.js'} --watch >/dev/null 2>&1 & watcher=$!; trap 'kill $watcher 2>/dev/null || true; wait $watcher 2>/dev/null || true' EXIT; {NODE_BIN} {SIGMAP_ROOT / 'gen-context.js'} --mcp"],
+        "env": {"SIGMAP_TELEMETRY": "0"},
+        "mounts": [str(SIGMAP_ROOT)],
+        "diff_exclude_paths": [".context", "AGENTS.md"],
+        "default_tool_state": "warm-index",
+        "warmup": {"kind": "signature-map-and-codex-guidance", "command": [str(NODE_BIN), str(SIGMAP_ROOT / "gen-context.js"), "--adapter", "codex", "--no-track"], "cleanup_paths": [".context", "AGENTS.md"], "output_name": "sigmap-warmup-output.txt", "metadata_name": "sigmap-warmup-metadata.json", "timeout_seconds": 900},
+        "mcp_handshake": {"required": True, "method": "initialize-and-tools-list", "timeout_seconds": 60},
+        "compatibility_deviation": "Manual Codex TOML registration is retained because the pinned targeted installer writes obsolete YAML; product AGENTS guidance and live watcher are present.",
+    },
+    "swarmvault-codex-product-v1": {
+        "display_name": "SwarmVault official Codex rules, hook, and MCP v1",
+        "lane_name": "swarmvault-codex-product-v1",
+        "surface": "broad-context-owner/mcp+codex-rules+hook",
+        "mcp_server": "swarmvault",
+        "allowed_terms": ["swarmvault"],
+        "data_dir_name": "swarmvault-codex-product-v1",
+        "mcp_command": "/bin/bash",
+        "mcp_args": ["-lc", f"cd {{repo}} && exec {NODE_BIN} {SWARMVAULT_CLI} mcp"],
+        "env": {"SWARMVAULT_OUT": "{tool_data_dir}/vault", "SWARMVAULT_NO_NOTICES": "1"},
+        "mounts": [str(SWARMVAULT_ROOT)],
+        "diff_exclude_paths": ["AGENTS.md", ".codex", "swarmvault.config.json", "swarmvault.schema.md"],
+        "codex_features": {"hooks": True},
+        "default_tool_state": "warm-index",
+        "warmup": {"kind": "official-vault-compile-and-codex-install", "command": ["/bin/bash", "-lc", f"set -euo pipefail; cd {{repo}}; {NODE_BIN} {SWARMVAULT_CLI} init --lite; {NODE_BIN} {SWARMVAULT_CLI} ingest {{repo}} --max-files 500; {NODE_BIN} {SWARMVAULT_CLI} compile; {NODE_BIN} {SWARMVAULT_CLI} install --agent codex --hook; test -f AGENTS.md"], "cleanup_paths": ["AGENTS.md", ".codex", "swarmvault.config.json", "swarmvault.schema.md"], "output_name": "swarmvault-warmup-output.txt", "metadata_name": "swarmvault-warmup-metadata.json", "timeout_seconds": 3600},
+        "mcp_handshake": {"required": True, "method": "initialize-and-tools-list", "timeout_seconds": 120},
+    },
+    "codescope-codex-product-v1": {
+        "display_name": "CodeScope official Codex product v1",
+        "lane_name": "codescope-codex-product-v1",
+        "surface": "broad-context-owner/mcp+official-initialize-instructions",
+        "mcp_server": "codescope",
+        "allowed_terms": ["codescope"],
+        "data_dir_name": "codescope-codex-product-v1",
+        "mcp_command": "/bin/bash",
+        "mcp_args": ["-lc", "set -euo pipefail; codescope start >/dev/null; trap 'codescope stop >/dev/null 2>&1 || true' EXIT; i=0; until codescope status | grep -q '^running'; do i=$((i+1)); [ \"$i\" -lt 50 ]; sleep 0.2; done; codescope mcp {repo}"],
+        "path_entries": [str(CODESCOPE_RELEASE_ROOT)],
+        "mounts": [str(CODESCOPE_BIN), str(CODESCOPE_SURREAL_BIN)],
+        "diff_exclude_paths": [".codescope"],
+        "host_integration": {"home_dot_codex_alias": True, "verify_commands": [[str(CODESCOPE_BIN), "--version"]]},
+        "default_tool_state": "warm-index",
+        "warmup": {"kind": "official-surreal-start-index-and-codex-install", "command": ["/bin/bash", "-lc", "set -euo pipefail; codescope start; trap 'codescope stop >/dev/null 2>&1 || true' EXIT; i=0; until codescope status | grep -q '^running'; do i=$((i+1)); [ \"$i\" -lt 50 ]; sleep 0.2; done; codescope init --agent codex {repo}; test -f {codex_home}/config.toml"], "cleanup_paths": [".codescope"], "output_name": "codescope-warmup-output.txt", "metadata_name": "codescope-warmup-metadata.json", "timeout_seconds": 3600},
+        "mcp_handshake": {"required": True, "method": "initialize-and-tools-list", "timeout_seconds": 120},
+    },
+})
 
 
 def rel_or_abs(path_text: str) -> Path:
@@ -833,12 +1072,14 @@ def format_toml_array(values: list[str]) -> str:
 
 
 def render_tool_value(value: Any, record: dict[str, Any], codex_home: Path, cfg: dict[str, Any]) -> str:
-    repo = rel_or_abs(record["target"]["repository_path"]) if record.get("target") else ROOT
+    repo_path = rel_or_abs(record["target"]["repository_path"]) if record.get("target") else ROOT
+    tool_port = 18000 + int(hashlib.sha256(str(repo_path.resolve()).encode()).hexdigest()[:8], 16) % 20000
     return str(value).format(
-        repo=repo,
+        repo=repo_path,
         codex_home=codex_home,
         tool_data_dir=tool_data_dir(codex_home, cfg),
-        repo_slug=repo.name.replace("-", "_"),
+        repo_slug=repo_path.name.replace("-", "_"),
+        tool_port=tool_port,
     )
 
 
@@ -848,13 +1089,18 @@ def render_mcp_args(record: dict[str, Any], codex_home: Path, cfg: dict[str, Any
 
 def write_codex_config(codex_home: Path, record: dict[str, Any], pid: str) -> None:
     cfg = active_tool_config(record, pid)
-    hooks_enabled = bool((cfg or {}).get("codex_features", {}).get("hooks", False))
+    declared_features = dict((cfg or {}).get("codex_features", {}))
+    declared_features.setdefault("hooks", False)
     lines = [
         'sandbox_mode = "danger-full-access"',
         'approval_policy = "never"',
         "",
         "[features]",
-        f"hooks = {'true' if hooks_enabled else 'false'}",
+        *[
+            f"{key} = {'true' if value else 'false'}"
+            for key, value in sorted(declared_features.items())
+            if isinstance(value, bool)
+        ],
         "",
     ]
     if cfg:
@@ -1008,7 +1254,11 @@ def codex_env(codex_home: Path, *, containerized: bool = False, cfg: dict[str, A
     ]
     if cfg:
         for entry in cfg.get("path_entries", []):
-            rendered_entry = str(entry).format(codex_home=codex_home, home=codex_home / "home")
+            rendered_entry = str(entry).format(
+                codex_home=codex_home,
+                home=codex_home / "home",
+                tool_data_dir=tool_data_dir(codex_home, cfg),
+            )
             if rendered_entry not in path_entries:
                 path_entries.insert(1, rendered_entry)
     if containerized:
@@ -1458,6 +1708,21 @@ def missing_declared_filter_commands(
     return missing
 
 
+def prepare_home_dot_codex_alias(codex_home: Path) -> Path:
+    """Expose lane-private CODEX_HOME to installers hard-coded to ~/.codex."""
+    home = codex_home / "home"
+    home.mkdir(parents=True, exist_ok=True)
+    alias = home / ".codex"
+    if alias.is_symlink():
+        if alias.resolve() != codex_home.resolve():
+            raise RuntimeError(f"unexpected ~/.codex alias target: {alias} -> {alias.resolve()}")
+        return alias
+    if alias.exists():
+        raise RuntimeError(f"refusing to replace existing ~/.codex path: {alias}")
+    alias.symlink_to(codex_home, target_is_directory=True)
+    return alias
+
+
 def prepare_profile_integration(
     record: dict[str, Any],
     pid: str,
@@ -1483,6 +1748,8 @@ def prepare_profile_integration(
         return result
 
     assert cfg is not None
+    if integration.get("home_dot_codex_alias"):
+        prepare_home_dot_codex_alias(codex_home)
     env = codex_env(codex_home, containerized=backend == "docker", cfg=cfg)
     env.update(tool_env_for_record(record, pid, codex_home))
     mounts = container_mounts_for_record(record, codex_home, include_repo=True, cfg=cfg)
@@ -1573,7 +1840,7 @@ def probe_mcp_handshake(
         str(handshake.get("timeout_seconds", 30)),
     ]
     for arg in render_mcp_args(record, codex_home, cfg):
-        command.extend(["--arg", arg])
+        command.append(f"--arg={arg}")
     proc = run_backend(
         command,
         backend=backend,
@@ -1792,7 +2059,7 @@ def prepare_profile_workspace(record: dict[str, Any], pid: str, codex_home: Path
     env = codex_env(codex_home, containerized=backend == "docker", cfg=cfg)
     env.update(tool_env_for_record(record, pid, codex_home))
     mounts = container_mounts_for_record(record, codex_home, include_repo=True, cfg=cfg)
-    command = [str(part).format(repo=repo, codex_home=codex_home, tool_data_dir=tool_data_dir(codex_home, cfg)) for part in warmup["command"]]
+    command = [render_tool_value(part, record, codex_home, cfg) for part in warmup["command"]]
     output_name = warmup.get("output_name", "tool-warmup-output.txt")
     metadata_name = warmup.get("metadata_name", "tool-warmup-metadata.json")
     started = dt.datetime.now(dt.UTC)

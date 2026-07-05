@@ -68,7 +68,18 @@
       "candidate_profiles": [
         "baseline-bare-codex",
         "terminal-tokenjuice-codex-hook-v1",
-        "retrieval-jcodemunch-mcp-direct-v1"
+        "retrieval-jcodemunch-mcp-direct-v1",
+        "terminal-rtk-codex-instructions-v1",
+        "terminal-snip-codex-hook-v1",
+        "retrieval-graphify-codex-skill-v1",
+        "retrieval-codegraph-codex-mcp-v1",
+        "integrated-leanctx-codex-hybrid-v1",
+        "retrieval-cartog-mcp-v1",
+        "codescope-codex-product-v1",
+        "swarmvault-codex-product-v1",
+        "retrieval-serena-codex-mcp-v1",
+        "retrieval-sigmap-codex-live-v1",
+        "integrated-token-savior-mcp-v1"
       ],
       "blockers": [],
       "caveats": [
@@ -96,16 +107,6 @@
           ]
         },
         {
-          "id": "retrieval-codegraph",
-          "status": "treatment-run",
-          "purpose": "compatible individual-tool treatment",
-          "role": "retrieval-treatment",
-          "replicate_indexes": [
-            1
-          ],
-          "session_id": "codegraph-fastify-20260717-p-769d40697529-r1"
-        },
-        {
           "id": "behavior-caveman",
           "role": "behavior-policy-treatment",
           "status": "treatment-run",
@@ -115,24 +116,6 @@
           "session_id": "caveman-fastify-20260716-p-769d40697529-r1"
         },
         {
-          "id": "terminal-rtk",
-          "role": "terminal-output-treatment",
-          "status": "treatment-run",
-          "replicate_indexes": [
-            1
-          ],
-          "session_id": "rtk-fastify-20260716-p-769d40697529-r1"
-        },
-        {
-          "id": "retrieval-serena",
-          "role": "retrieval-treatment",
-          "status": "treatment-run",
-          "replicate_indexes": [
-            1
-          ],
-          "session_id": "serena-fastify-20260716-p-769d40697529-r1"
-        },
-        {
           "id": "artifact-ponytail",
           "role": "artifact-policy-treatment",
           "status": "treatment-run",
@@ -140,71 +123,6 @@
             1
           ],
           "session_id": "ponytail-fastify-20260716-p-769d40697529-r1"
-        },
-        {
-          "id": "integrated-token-savior",
-          "role": "integrated-mcp-treatment",
-          "status": "treatment-run",
-          "replicate_indexes": [
-            1
-          ],
-          "session_id": "savior-fastify-20260716-p-769d40697529-r1"
-        },
-        {
-          "id": "retrieval-graphify",
-          "role": "retrieval-treatment",
-          "status": "treatment-run",
-          "replicate_indexes": [
-            1
-          ],
-          "session_id": "graphify-fastify-20260716-p-769d40697529-r1"
-        },
-        {
-          "id": "retrieval-jcodemunch-mcp",
-          "role": "retrieval-treatment",
-          "status": "treatment-run",
-          "replicate_indexes": [
-            1
-          ],
-          "session_id": "mcp-fastify-20260717-p-769d40697529-r1"
-        },
-        {
-          "id": "retrieval-sigmap",
-          "role": "retrieval-treatment",
-          "status": "treatment-run",
-          "replicate_indexes": [
-            1
-          ],
-          "session_id": "sigmap-fastify-20260717-p-769d40697529-r1"
-        },
-        {
-          "id": "retrieval-leanctx",
-          "role": "retrieval-treatment",
-          "status": "treatment-run",
-          "replicate_indexes": [
-            1
-          ],
-          "session_id": "leanctx-fastify-20260717-p-769d40697529-r1"
-        },
-        {
-          "id": "terminal-snip",
-          "role": "terminal-output-treatment",
-          "status": "treatment-run",
-          "purpose": "compatible natural-use terminal compaction treatment",
-          "replicate_indexes": [
-            1
-          ],
-          "session_id": "snip-fastify-20260717-p-769d40697529-r1"
-        },
-        {
-          "id": "terminal-tokenjuice",
-          "role": "terminal-output-treatment",
-          "status": "treatment-run",
-          "purpose": "compatible natural-use terminal compaction treatment",
-          "replicate_indexes": [
-            1
-          ],
-          "session_id": "tokenjuice-fastify-20260717-p-769d40697529-r1"
         },
         {
           "id": "headroom-default-codex",
@@ -227,34 +145,121 @@
           "session_id": "headroom-fastify-20260717-p-769d40697529-r1"
         },
         {
-          "id": "retrieval-cartog",
-          "role": "retrieval-treatment",
-          "status": "treatment-run",
-          "purpose": "compatible natural-use retrieval treatment",
+          "id": "terminal-tokenjuice-codex-hook-v1",
+          "role": "individual-tool-treatment",
+          "status": "treatment-ready",
+          "purpose": "versioned source-parity and assignment-proof-gated rerun",
           "replicate_indexes": [
             1
-          ],
-          "session_id": "cartog-fastify-20260717-p-769d40697529-r1"
+          ]
         },
         {
-          "id": "codescope-owner",
-          "role": "broad-context-owner-treatment",
-          "status": "treatment-run",
-          "purpose": "compatible natural-use CodeScope MCP treatment",
+          "id": "retrieval-jcodemunch-mcp-direct-v1",
+          "role": "individual-tool-treatment",
+          "status": "treatment-ready",
+          "purpose": "versioned source-parity and assignment-proof-gated rerun",
           "replicate_indexes": [
             1
-          ],
-          "session_id": "owner-fastify-20260717-p-769d40697529-r1"
+          ]
         },
         {
-          "id": "swarmvault-owner",
-          "role": "broad-context-owner-treatment",
-          "status": "treatment-run",
-          "purpose": "compatible natural-use SwarmVault warm-index MCP treatment with the product-native 500-file scale cap",
+          "id": "terminal-rtk-codex-instructions-v1",
+          "role": "individual-tool-treatment",
+          "status": "treatment-ready",
+          "purpose": "versioned source-parity and assignment-proof-gated rerun",
           "replicate_indexes": [
             1
-          ],
-          "session_id": "swarmvault-fastify-20260717-p-769d40697529-r1"
+          ]
+        },
+        {
+          "id": "terminal-snip-codex-hook-v1",
+          "role": "individual-tool-treatment",
+          "status": "treatment-ready",
+          "purpose": "versioned source-parity and assignment-proof-gated rerun",
+          "replicate_indexes": [
+            1
+          ]
+        },
+        {
+          "id": "retrieval-graphify-codex-skill-v1",
+          "role": "individual-tool-treatment",
+          "status": "treatment-ready",
+          "purpose": "versioned source-parity and assignment-proof-gated rerun",
+          "replicate_indexes": [
+            1
+          ]
+        },
+        {
+          "id": "retrieval-codegraph-codex-mcp-v1",
+          "role": "individual-tool-treatment",
+          "status": "treatment-ready",
+          "purpose": "versioned source-parity and assignment-proof-gated rerun",
+          "replicate_indexes": [
+            1
+          ]
+        },
+        {
+          "id": "integrated-leanctx-codex-hybrid-v1",
+          "role": "individual-tool-treatment",
+          "status": "treatment-ready",
+          "purpose": "versioned source-parity and assignment-proof-gated rerun",
+          "replicate_indexes": [
+            1
+          ]
+        },
+        {
+          "id": "retrieval-cartog-mcp-v1",
+          "role": "individual-tool-treatment",
+          "status": "treatment-ready",
+          "purpose": "versioned source-parity and assignment-proof-gated rerun",
+          "replicate_indexes": [
+            1
+          ]
+        },
+        {
+          "id": "codescope-codex-product-v1",
+          "role": "individual-tool-treatment",
+          "status": "treatment-ready",
+          "purpose": "versioned source-parity and assignment-proof-gated rerun",
+          "replicate_indexes": [
+            1
+          ]
+        },
+        {
+          "id": "swarmvault-codex-product-v1",
+          "role": "individual-tool-treatment",
+          "status": "treatment-ready",
+          "purpose": "versioned source-parity and assignment-proof-gated rerun",
+          "replicate_indexes": [
+            1
+          ]
+        },
+        {
+          "id": "retrieval-serena-codex-mcp-v1",
+          "role": "individual-tool-treatment",
+          "status": "treatment-ready",
+          "purpose": "versioned source-parity and assignment-proof-gated rerun",
+          "replicate_indexes": [
+            1
+          ]
+        },
+        {
+          "id": "retrieval-sigmap-codex-live-v1",
+          "role": "individual-tool-treatment",
+          "status": "treatment-ready",
+          "purpose": "versioned source-parity and assignment-proof-gated rerun",
+          "replicate_indexes": [
+            1
+          ]
+        },
+        {
+          "id": "integrated-token-savior-mcp-v1",
+          "role": "individual-tool-treatment",
+          "status": "treatment-ready",
+          "purpose": "versioned source-parity and assignment-proof-gated rerun",
+          "replicate_indexes": [
+            1
+          ]
         }
       ]
     },
@@ -303,7 +308,18 @@
       "candidate_profiles": [
         "baseline-bare-codex",
         "terminal-tokenjuice-codex-hook-v1",
-        "retrieval-jcodemunch-mcp-direct-v1"
+        "retrieval-jcodemunch-mcp-direct-v1",
+        "terminal-rtk-codex-instructions-v1",
+        "terminal-snip-codex-hook-v1",
+        "retrieval-graphify-codex-skill-v1",
+        "retrieval-codegraph-codex-mcp-v1",
+        "integrated-leanctx-codex-hybrid-v1",
+        "retrieval-cartog-mcp-v1",
+        "codescope-codex-product-v1",
+        "swarmvault-codex-product-v1",
+        "retrieval-serena-codex-mcp-v1",
+        "retrieval-sigmap-codex-live-v1",
+        "integrated-token-savior-mcp-v1"
       ],
       "blockers": [],
       "caveats": [
@@ -331,16 +347,6 @@
           ]
         },
         {
-          "id": "retrieval-codegraph",
-          "status": "treatment-run",
-          "purpose": "compatible individual-tool treatment",
-          "role": "retrieval-treatment",
-          "replicate_indexes": [
-            1
-          ],
-          "session_id": "codegraph-beets-20260717-p-b440da225a3a-r1"
-        },
-        {
           "id": "behavior-caveman",
           "role": "behavior-policy-treatment",
           "status": "treatment-run",
@@ -350,24 +356,6 @@
           "session_id": "caveman-beets-20260716-p-b440da225a3a-r1"
         },
         {
-          "id": "terminal-rtk",
-          "role": "terminal-output-treatment",
-          "status": "treatment-run",
-          "replicate_indexes": [
-            1
-          ],
-          "session_id": "rtk-beets-20260716-p-b440da225a3a-r1"
-        },
-        {
-          "id": "retrieval-serena",
-          "role": "retrieval-treatment",
-          "status": "treatment-run",
-          "replicate_indexes": [
-            1
-          ],
-          "session_id": "serena-beets-20260716-p-b440da225a3a-r1"
-        },
-        {
           "id": "artifact-ponytail",
           "role": "artifact-policy-treatment",
           "status": "treatment-run",
@@ -375,71 +363,6 @@
             1
           ],
           "session_id": "ponytail-beets-20260716-p-b440da225a3a-r1"
-        },
-        {
-          "id": "integrated-token-savior",
-          "role": "integrated-mcp-treatment",
-          "status": "treatment-run",
-          "replicate_indexes": [
-            1
-          ],
-          "session_id": "savior-beets-20260716-p-b440da225a3a-r1"
-        },
-        {
-          "id": "retrieval-graphify",
-          "role": "retrieval-treatment",
-          "status": "treatment-run",
-          "replicate_indexes": [
-            1
-          ],
-          "session_id": "graphify-beets-20260716-p-b440da225a3a-r1"
-        },
-        {
-          "id": "retrieval-jcodemunch-mcp",
-          "role": "retrieval-treatment",
-          "status": "treatment-run",
-          "replicate_indexes": [
-            1
-          ],
-          "session_id": "mcp-beets-20260717-p-b440da225a3a-r1"
-        },
-        {
-          "id": "retrieval-sigmap",
-          "role": "retrieval-treatment",
-          "status": "treatment-run",
-          "replicate_indexes": [
-            1
-          ],
-          "session_id": "sigmap-beets-20260717-p-b440da225a3a-r1"
-        },
-        {
-          "id": "retrieval-leanctx",
-          "role": "retrieval-treatment",
-          "status": "treatment-run",
-          "replicate_indexes": [
-            1
-          ],
-          "session_id": "leanctx-beets-20260717-p-b440da225a3a-r1"
-        },
-        {
-          "id": "terminal-snip",
-          "role": "terminal-output-treatment",
-          "status": "treatment-run",
-          "purpose": "compatible natural-use terminal compaction treatment",
-          "replicate_indexes": [
-            1
-          ],
-          "session_id": "snip-beets-20260717-p-b440da225a3a-r1"
-        },
-        {
-          "id": "terminal-tokenjuice",
-          "role": "terminal-output-treatment",
-          "status": "treatment-run",
-          "purpose": "compatible natural-use terminal compaction treatment",
-          "replicate_indexes": [
-            1
-          ],
-          "session_id": "tokenjuice-beets-20260717-p-b440da225a3a-r1"
         },
         {
           "id": "headroom-default-codex",
@@ -462,34 +385,121 @@
           "session_id": "headroom-beets-20260717-p-b440da225a3a-r1"
         },
         {
-          "id": "retrieval-cartog",
-          "role": "retrieval-treatment",
-          "status": "treatment-run",
-          "purpose": "compatible natural-use retrieval treatment",
+          "id": "terminal-tokenjuice-codex-hook-v1",
+          "role": "individual-tool-treatment",
+          "status": "treatment-ready",
+          "purpose": "versioned source-parity and assignment-proof-gated rerun",
           "replicate_indexes": [
             1
-          ],
-          "session_id": "cartog-beets-20260717-p-b440da225a3a-r1"
+          ]
         },
         {
-          "id": "codescope-owner",
-          "role": "broad-context-owner-treatment",
-          "status": "treatment-run",
-          "purpose": "compatible natural-use CodeScope MCP treatment",
+          "id": "retrieval-jcodemunch-mcp-direct-v1",
+          "role": "individual-tool-treatment",
+          "status": "treatment-ready",
+          "purpose": "versioned source-parity and assignment-proof-gated rerun",
           "replicate_indexes": [
             1
-          ],
-          "session_id": "owner-beets-20260717-p-b440da225a3a-r1"
+          ]
         },
         {
-          "id": "swarmvault-owner",
-          "role": "broad-context-owner-treatment",
-          "status": "treatment-run",
-          "purpose": "compatible natural-use SwarmVault warm-index MCP treatment with the product-native 500-file scale cap",
+          "id": "terminal-rtk-codex-instructions-v1",
+          "role": "individual-tool-treatment",
+          "status": "treatment-ready",
+          "purpose": "versioned source-parity and assignment-proof-gated rerun",
           "replicate_indexes": [
             1
-          ],
-          "session_id": "swarmvault-beets-20260717-p-b440da225a3a-r1"
+          ]
+        },
+        {
+          "id": "terminal-snip-codex-hook-v1",
+          "role": "individual-tool-treatment",
+          "status": "treatment-ready",
+          "purpose": "versioned source-parity and assignment-proof-gated rerun",
+          "replicate_indexes": [
+            1
+          ]
+        },
+        {
+          "id": "retrieval-graphify-codex-skill-v1",
+          "role": "individual-tool-treatment",
+          "status": "treatment-ready",
+          "purpose": "versioned source-parity and assignment-proof-gated rerun",
+          "replicate_indexes": [
+            1
+          ]
+        },
+        {
+          "id": "retrieval-codegraph-codex-mcp-v1",
+          "role": "individual-tool-treatment",
+          "status": "treatment-ready",
+          "purpose": "versioned source-parity and assignment-proof-gated rerun",
+          "replicate_indexes": [
+            1
+          ]
+        },
+        {
+          "id": "integrated-leanctx-codex-hybrid-v1",
+          "role": "individual-tool-treatment",
+          "status": "treatment-ready",
+          "purpose": "versioned source-parity and assignment-proof-gated rerun",
+          "replicate_indexes": [
+            1
+          ]
+        },
+        {
+          "id": "retrieval-cartog-mcp-v1",
+          "role": "individual-tool-treatment",
+          "status": "treatment-ready",
+          "purpose": "versioned source-parity and assignment-proof-gated rerun",
+          "replicate_indexes": [
+            1
+          ]
+        },
+        {
+          "id": "codescope-codex-product-v1",
+          "role": "individual-tool-treatment",
+          "status": "treatment-ready",
+          "purpose": "versioned source-parity and assignment-proof-gated rerun",
+          "replicate_indexes": [
+            1
+          ]
+        },
+        {
+          "id": "swarmvault-codex-product-v1",
+          "role": "individual-tool-treatment",
+          "status": "treatment-ready",
+          "purpose": "versioned source-parity and assignment-proof-gated rerun",
+          "replicate_indexes": [
+            1
+          ]
+        },
+        {
+          "id": "retrieval-serena-codex-mcp-v1",
+          "role": "individual-tool-treatment",
+          "status": "treatment-ready",
+          "purpose": "versioned source-parity and assignment-proof-gated rerun",
+          "replicate_indexes": [
+            1
+          ]
+        },
+        {
+          "id": "retrieval-sigmap-codex-live-v1",
+          "role": "individual-tool-treatment",
+          "status": "treatment-ready",
+          "purpose": "versioned source-parity and assignment-proof-gated rerun",
+          "replicate_indexes": [
+            1
+          ]
+        },
+        {
+          "id": "integrated-token-savior-mcp-v1",
+          "role": "individual-tool-treatment",
+          "status": "treatment-ready",
+          "purpose": "versioned source-parity and assignment-proof-gated rerun",
+          "replicate_indexes": [
+            1
+          ]
         }
       ]
     },
@@ -538,7 +548,18 @@
       "candidate_profiles": [
         "baseline-bare-codex",
         "terminal-tokenjuice-codex-hook-v1",
-        "retrieval-jcodemunch-mcp-direct-v1"
+        "retrieval-jcodemunch-mcp-direct-v1",
+        "terminal-rtk-codex-instructions-v1",
+        "terminal-snip-codex-hook-v1",
+        "retrieval-graphify-codex-skill-v1",
+        "retrieval-codegraph-codex-mcp-v1",
+        "integrated-leanctx-codex-hybrid-v1",
+        "retrieval-cartog-mcp-v1",
+        "codescope-codex-product-v1",
+        "swarmvault-codex-product-v1",
+        "retrieval-serena-codex-mcp-v1",
+        "retrieval-sigmap-codex-live-v1",
+        "integrated-token-savior-mcp-v1"
       ],
       "blockers": [],
       "caveats": [
@@ -566,16 +587,6 @@
           ]
         },
         {
-          "id": "retrieval-codegraph",
-          "status": "treatment-run",
-          "purpose": "compatible individual-tool treatment",
-          "role": "retrieval-treatment",
-          "replicate_indexes": [
-            1
-          ],
-          "session_id": "codegraph-terraform-20260717-p-ded8609b4172-r1"
-        },
-        {
           "id": "behavior-caveman",
           "role": "behavior-policy-treatment",
           "status": "treatment-run",
@@ -585,24 +596,6 @@
           "session_id": "caveman-terraform-20260716-p-ded8609b4172-r1"
         },
         {
-          "id": "terminal-rtk",
-          "role": "terminal-output-treatment",
-          "status": "treatment-run",
-          "replicate_indexes": [
-            1
-          ],
-          "session_id": "rtk-terraform-20260716-p-ded8609b4172-r1"
-        },
-        {
-          "id": "retrieval-serena",
-          "role": "retrieval-treatment",
-          "status": "treatment-run",
-          "replicate_indexes": [
-            1
-          ],
-          "session_id": "serena-terraform-20260716-p-ded8609b4172-r1"
-        },
-        {
           "id": "artifact-ponytail",
           "role": "artifact-policy-treatment",
           "status": "treatment-run",
@@ -610,71 +603,6 @@
             1
           ],
           "session_id": "ponytail-terraform-20260716-p-ded8609b4172-r1"
-        },
-        {
-          "id": "integrated-token-savior",
-          "role": "integrated-mcp-treatment",
-          "status": "treatment-run",
-          "replicate_indexes": [
-            1
-          ],
-          "session_id": "savior-terraform-20260716-p-ded8609b4172-r1"
-        },
-        {
-          "id": "retrieval-graphify",
-          "role": "retrieval-treatment",
-          "status": "treatment-run",
-          "replicate_indexes": [
-            1
-          ],
-          "session_id": "graphify-terraform-20260716-p-ded8609b4172-r1"
-        },
-        {
-          "id": "retrieval-jcodemunch-mcp",
-          "role": "retrieval-treatment",
-          "status": "treatment-run",
-          "replicate_indexes": [
-            1
-          ],
-          "session_id": "mcp-terraform-20260717-p-ded8609b4172-r1"
-        },
-        {
-          "id": "retrieval-sigmap",
-          "role": "retrieval-treatment",
-          "status": "treatment-run",
-          "replicate_indexes": [
-            1
-          ],
-          "session_id": "sigmap-terraform-20260717-p-ded8609b4172-r1"
-        },
-        {
-          "id": "retrieval-leanctx",
-          "role": "retrieval-treatment",
-          "status": "treatment-run",
-          "replicate_indexes": [
-            1
-          ],
-          "session_id": "leanctx-terraform-20260717-p-ded8609b4172-r1"
-        },
-        {
-          "id": "terminal-snip",
-          "role": "terminal-output-treatment",
-          "status": "treatment-run",
-          "purpose": "compatible natural-use terminal compaction treatment",
-          "replicate_indexes": [
-            1
-          ],
-          "session_id": "snip-terraform-20260717-p-ded8609b4172-r1"
-        },
-        {
-          "id": "terminal-tokenjuice",
-          "role": "terminal-output-treatment",
-          "status": "treatment-run",
-          "purpose": "compatible natural-use terminal compaction treatment",
-          "replicate_indexes": [
-            1
-          ],
-          "session_id": "tokenjuice-terraform-20260717-p-ded8609b4172-r1"
         },
         {
           "id": "headroom-default-codex",
@@ -697,34 +625,121 @@
           "session_id": "headroom-terraform-20260717-p-ded8609b4172-r1"
         },
         {
-          "id": "retrieval-cartog",
-          "role": "retrieval-treatment",
-          "status": "treatment-run",
-          "purpose": "compatible natural-use retrieval treatment",
+          "id": "terminal-tokenjuice-codex-hook-v1",
+          "role": "individual-tool-treatment",
+          "status": "treatment-ready",
+          "purpose": "versioned source-parity and assignment-proof-gated rerun",
           "replicate_indexes": [
             1
-          ],
-          "session_id": "cartog-terraform-20260717-p-ded8609b4172-r1"
+          ]
         },
         {
-          "id": "codescope-owner",
-          "role": "broad-context-owner-treatment",
-          "status": "treatment-run",
-          "purpose": "compatible natural-use CodeScope MCP treatment",
+          "id": "retrieval-jcodemunch-mcp-direct-v1",
+          "role": "individual-tool-treatment",
+          "status": "treatment-ready",
+          "purpose": "versioned source-parity and assignment-proof-gated rerun",
           "replicate_indexes": [
             1
-          ],
-          "session_id": "owner-terraform-20260717-p-ded8609b4172-r1"
+          ]
         },
         {
-          "id": "swarmvault-owner",
-          "role": "broad-context-owner-treatment",
-          "status": "treatment-run",
-          "purpose": "compatible natural-use SwarmVault warm-index MCP treatment with the product-native 500-file scale cap",
+          "id": "terminal-rtk-codex-instructions-v1",
+          "role": "individual-tool-treatment",
+          "status": "treatment-ready",
+          "purpose": "versioned source-parity and assignment-proof-gated rerun",
           "replicate_indexes": [
             1
-          ],
-          "session_id": "swarmvault-terraform-20260717-p-ded8609b4172-r1"
+          ]
+        },
+        {
+          "id": "terminal-snip-codex-hook-v1",
+          "role": "individual-tool-treatment",
+          "status": "treatment-ready",
+          "purpose": "versioned source-parity and assignment-proof-gated rerun",
+          "replicate_indexes": [
+            1
+          ]
+        },
+        {
+          "id": "retrieval-graphify-codex-skill-v1",
+          "role": "individual-tool-treatment",
+          "status": "treatment-ready",
+          "purpose": "versioned source-parity and assignment-proof-gated rerun",
+          "replicate_indexes": [
+            1
+          ]
+        },
+        {
+          "id": "retrieval-codegraph-codex-mcp-v1",
+          "role": "individual-tool-treatment",
+          "status": "treatment-ready",
+          "purpose": "versioned source-parity and assignment-proof-gated rerun",
+          "replicate_indexes": [
+            1
+          ]
+        },
+        {
+          "id": "integrated-leanctx-codex-hybrid-v1",
+          "role": "individual-tool-treatment",
+          "status": "treatment-ready",
+          "purpose": "versioned source-parity and assignment-proof-gated rerun",
+          "replicate_indexes": [
+            1
+          ]
+        },
+        {
+          "id": "retrieval-cartog-mcp-v1",
+          "role": "individual-tool-treatment",
+          "status": "treatment-ready",
+          "purpose": "versioned source-parity and assignment-proof-gated rerun",
+          "replicate_indexes": [
+            1
+          ]
+        },
+        {
+          "id": "codescope-codex-product-v1",
+          "role": "individual-tool-treatment",
+          "status": "treatment-ready",
+          "purpose": "versioned source-parity and assignment-proof-gated rerun",
+          "replicate_indexes": [
+            1
+          ]
+        },
+        {
+          "id": "swarmvault-codex-product-v1",
+          "role": "individual-tool-treatment",
+          "status": "treatment-ready",
+          "purpose": "versioned source-parity and assignment-proof-gated rerun",
+          "replicate_indexes": [
+            1
+          ]
+        },
+        {
+          "id": "retrieval-serena-codex-mcp-v1",
+          "role": "individual-tool-treatment",
+          "status": "treatment-ready",
+          "purpose": "versioned source-parity and assignment-proof-gated rerun",
+          "replicate_indexes": [
+            1
+          ]
+        },
+        {
+          "id": "retrieval-sigmap-codex-live-v1",
+          "role": "individual-tool-treatment",
+          "status": "treatment-ready",
+          "purpose": "versioned source-parity and assignment-proof-gated rerun",
+          "replicate_indexes": [
+            1
+          ]
+        },
+        {
+          "id": "integrated-token-savior-mcp-v1",
+          "role": "individual-tool-treatment",
+          "status": "treatment-ready",
+          "purpose": "versioned source-parity and assignment-proof-gated rerun",
+          "replicate_indexes": [
+            1
+          ]
         }
       ]
     }

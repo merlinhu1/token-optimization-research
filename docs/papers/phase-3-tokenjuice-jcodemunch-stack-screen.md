@@ -1,8 +1,8 @@
 # Phase 3 report: TokenJuice + jcodemunch MCP lifecycle-v0 stack screen
 
-> **Report status:** withdrawn product-effect screen. The executions and provider-token arithmetic are retained, but the decision is superseded by the [official-integration parity audit](official-integration-parity-audit.md).
+> **Report status:** withdrawn historical product-effect screen. The narrative preserves the arithmetic reported at the time, but the three corrupted stack sessions, comparisons, compact bundles, and protocols were deleted from the active corpus under receipt. The decision is superseded by the [official-integration parity audit](official-integration-parity-audit.md).
 >
-> **Superseding adjudication (2026-07-18):** TokenJuice's required Codex hook was absent and explicitly disabled; jcodemunch used a non-recommended launcher, omitted normal product guidance, and retained no successful MCP handshake. The three stack sessions are excluded from stack-effect, ranking, aggregate, and recommendation claims.
+> **Superseding adjudication (2026-07-18):** TokenJuice's required Codex hook was absent and explicitly disabled; jcodemunch used an unverified launcher and retained no successful MCP handshake. The stack records were deleted rather than relabelled as baseline. No corrected stack protocol will be created until both versioned individual components have valid evidence.
 
 **Report date:** 2026-07-18
 

@@ -7,15 +7,23 @@
   "summary": {
     "profiles_audited": 18,
     "historical_sessions_audited": 54,
-    "objective_eligible_sessions": 12,
-    "excluded_sessions": 42,
     "disposition_counts": {
       "valid-narrower-instruction-policy": 2,
       "valid-product-treatment": 1,
       "valid-protocol-defined-ablation": 1,
       "invalid-treatment-configuration": 8,
       "unverified-treatment-assignment": 6
-    }
+    },
+    "objective_eligible_sessions_retained": 12,
+    "corrupted_sessions_deleted_from_active_corpus": 42,
+    "active_excluded_sessions": 0,
+    "active_treatment_sessions": 12,
+    "deletion_receipts": [
+      "sources/evaluations/audits/invalid-treatment-result-deletions-20260718.json",
+      "sources/evaluations/audits/unproven-treatment-result-deletions-20260718.json"
+    ],
+    "corrected_individual_profiles": 13,
+    "corrected_frozen_protocols": 39
   },
   "profiles": [
     {
@@ -198,13 +206,9 @@
       "profile_id": "terminal-rtk",
       "disposition": "invalid-treatment-configuration",
       "objective_eligible": false,
-      "session_ids": [
-        "rtk-fastify-20260716-p-769d40697529-r1",
-        "rtk-beets-20260716-p-b440da225a3a-r1",
-        "rtk-terraform-20260716-p-ded8609b4172-r1"
-      ],
+      "session_ids": [],
       "session_statuses": [
-        "excluded"
+        "deleted-from-active-corpus"
       ],
       "selected_execution_descriptor_sha256": [
         "3e9a9826568e8b146bd647c88e32517f5bedcc74c7549dec4e7a7ffeb49bcf6b",
@@ -233,20 +237,24 @@
         "standalone_mcp_handshake_receipts": 0,
         "completed_model_mcp_call_events": 0
       },
-      "correction": "Exclude historical sessions; future correction requires a versioned product-authored AGENTS.md instruction-policy profile.",
-      "superseded_by": "not-created"
+      "correction": "Historical result, comparison, compact bundle, and frozen protocol deleted from the active corpus by owner direction. A proper rerun requires a versioned corrected profile and fresh frozen protocol.",
+      "superseded_by": "terminal-rtk-codex-instructions-v1",
+      "deleted_session_ids": [
+        "rtk-fastify-20260716-p-769d40697529-r1",
+        "rtk-beets-20260716-p-b440da225a3a-r1",
+        "rtk-terraform-20260716-p-ded8609b4172-r1"
+      ],
+      "deletion_receipt": "sources/evaluations/audits/invalid-treatment-result-deletions-20260718.json",
+      "active_corpus_action": "deleted-under-owner-authorized-receipt",
+      "historical_session_ids_deleted_from_active_registry": true
     },
     {
       "profile_id": "terminal-snip",
       "disposition": "invalid-treatment-configuration",
       "objective_eligible": false,
-      "session_ids": [
-        "snip-fastify-20260717-p-769d40697529-r1",
-        "snip-beets-20260717-p-b440da225a3a-r1",
-        "snip-terraform-20260717-p-ded8609b4172-r1"
-      ],
+      "session_ids": [],
       "session_statuses": [
-        "excluded"
+        "deleted-from-active-corpus"
       ],
       "selected_execution_descriptor_sha256": [
         "48b30398448f4c7b4ca651002a834d801483ca7a32963c7da647408540755547",
@@ -275,20 +283,24 @@
         "standalone_mcp_handshake_receipts": 0,
         "completed_model_mcp_call_events": 0
       },
-      "correction": "Exclude historical sessions; future correction requires a versioned product-authored AGENTS.md instruction-policy profile.",
-      "superseded_by": "not-created"
+      "correction": "Historical result, comparison, compact bundle, and frozen protocol deleted from the active corpus by owner direction. A proper rerun requires a versioned corrected profile and fresh frozen protocol.",
+      "superseded_by": "terminal-snip-codex-hook-v1",
+      "deleted_session_ids": [
+        "snip-fastify-20260717-p-769d40697529-r1",
+        "snip-beets-20260717-p-b440da225a3a-r1",
+        "snip-terraform-20260717-p-ded8609b4172-r1"
+      ],
+      "deletion_receipt": "sources/evaluations/audits/invalid-treatment-result-deletions-20260718.json",
+      "active_corpus_action": "deleted-under-owner-authorized-receipt",
+      "historical_session_ids_deleted_from_active_registry": true
     },
     {
       "profile_id": "terminal-tokenjuice",
       "disposition": "invalid-treatment-configuration",
       "objective_eligible": false,
-      "session_ids": [
-        "tokenjuice-fastify-20260717-p-769d40697529-r1",
-        "tokenjuice-beets-20260717-p-b440da225a3a-r1",
-        "tokenjuice-terraform-20260717-p-ded8609b4172-r1"
-      ],
+      "session_ids": [],
       "session_statuses": [
-        "excluded"
+        "deleted-from-active-corpus"
       ],
       "selected_execution_descriptor_sha256": [
         "0270f07f9e30024815c79a81be4eeab37328bf08e3ae23a7e84502259a0cfa6d",
@@ -317,20 +329,24 @@
         "standalone_mcp_handshake_receipts": 0,
         "completed_model_mcp_call_events": 0
       },
-      "correction": "Exclude historical sessions and use terminal-tokenjuice-codex-hook-v1.",
-      "superseded_by": "terminal-tokenjuice-codex-hook-v1"
+      "correction": "Historical result, comparison, compact bundle, and frozen protocol deleted from the active corpus by owner direction. A proper rerun requires a versioned corrected profile and fresh frozen protocol.",
+      "superseded_by": "terminal-tokenjuice-codex-hook-v1",
+      "deleted_session_ids": [
+        "tokenjuice-fastify-20260717-p-769d40697529-r1",
+        "tokenjuice-beets-20260717-p-b440da225a3a-r1",
+        "tokenjuice-terraform-20260717-p-ded8609b4172-r1"
+      ],
+      "deletion_receipt": "sources/evaluations/audits/invalid-treatment-result-deletions-20260718.json",
+      "active_corpus_action": "deleted-under-owner-authorized-receipt",
+      "historical_session_ids_deleted_from_active_registry": true
     },
     {
       "profile_id": "retrieval-jcodemunch-mcp",
       "disposition": "invalid-treatment-configuration",
       "objective_eligible": false,
-      "session_ids": [
-        "mcp-fastify-20260717-p-769d40697529-r1",
-        "mcp-beets-20260717-p-b440da225a3a-r1",
-        "mcp-terraform-20260717-p-ded8609b4172-r1"
-      ],
+      "session_ids": [],
       "session_statuses": [
-        "excluded"
+        "deleted-from-active-corpus"
       ],
       "selected_execution_descriptor_sha256": [
         "dacfe573579b2a3df3d532808ed13aa660490833ab45d3fd6f60a23d7f7fe085",
@@ -364,20 +380,24 @@
         "standalone_mcp_handshake_receipts": 0,
         "completed_model_mcp_call_events": 0
       },
-      "correction": "Exclude historical sessions and use retrieval-jcodemunch-mcp-direct-v1.",
-      "superseded_by": "retrieval-jcodemunch-mcp-direct-v1"
+      "correction": "Historical result, comparison, compact bundle, and frozen protocol deleted from the active corpus by owner direction. A proper rerun requires a versioned corrected profile and fresh frozen protocol.",
+      "superseded_by": "retrieval-jcodemunch-mcp-direct-v1",
+      "deleted_session_ids": [
+        "mcp-fastify-20260717-p-769d40697529-r1",
+        "mcp-beets-20260717-p-b440da225a3a-r1",
+        "mcp-terraform-20260717-p-ded8609b4172-r1"
+      ],
+      "deletion_receipt": "sources/evaluations/audits/invalid-treatment-result-deletions-20260718.json",
+      "active_corpus_action": "deleted-under-owner-authorized-receipt",
+      "historical_session_ids_deleted_from_active_registry": true
     },
     {
       "profile_id": "retrieval-leanctx",
       "disposition": "invalid-treatment-configuration",
       "objective_eligible": false,
-      "session_ids": [
-        "leanctx-fastify-20260717-p-769d40697529-r1",
-        "leanctx-beets-20260717-p-b440da225a3a-r1",
-        "leanctx-terraform-20260717-p-ded8609b4172-r1"
-      ],
+      "session_ids": [],
       "session_statuses": [
-        "excluded"
+        "deleted-from-active-corpus"
       ],
       "selected_execution_descriptor_sha256": [
         "01335fd4bdc11ddd74be18732f6229a79c9e691279c02bba6e721c984fa18d7e",
@@ -405,20 +425,24 @@
         "standalone_mcp_handshake_receipts": 0,
         "completed_model_mcp_call_events": 0
       },
-      "correction": "Exclude historical product-effect claims. A versioned correction requires lane-private official init, retained generated rules/hooks/TOML, doctor receipt, source identity, and MCP handshake.",
-      "superseded_by": "not-created"
+      "correction": "Historical result, comparison, compact bundle, and frozen protocol deleted from the active corpus by owner direction. A proper rerun requires a versioned corrected profile and fresh frozen protocol.",
+      "superseded_by": "integrated-leanctx-codex-hybrid-v1",
+      "deleted_session_ids": [
+        "leanctx-fastify-20260717-p-769d40697529-r1",
+        "leanctx-beets-20260717-p-b440da225a3a-r1",
+        "leanctx-terraform-20260717-p-ded8609b4172-r1"
+      ],
+      "deletion_receipt": "sources/evaluations/audits/invalid-treatment-result-deletions-20260718.json",
+      "active_corpus_action": "deleted-under-owner-authorized-receipt",
+      "historical_session_ids_deleted_from_active_registry": true
     },
     {
       "profile_id": "retrieval-codegraph",
       "disposition": "invalid-treatment-configuration",
       "objective_eligible": false,
-      "session_ids": [
-        "codegraph-fastify-20260717-p-769d40697529-r1",
-        "codegraph-beets-20260717-p-b440da225a3a-r1",
-        "codegraph-terraform-20260717-p-ded8609b4172-r1"
-      ],
+      "session_ids": [],
       "session_statuses": [
-        "excluded"
+        "deleted-from-active-corpus"
       ],
       "selected_execution_descriptor_sha256": [
         "1c9fe07d90e67e407830cae50d6fef0642ffe9800f0f3b6028956f99e2f36d51",
@@ -449,20 +473,24 @@
         "standalone_mcp_handshake_receipts": 0,
         "completed_model_mcp_call_events": 0
       },
-      "correction": "Exclude historical product-effect claims. A versioned correction requires install parity, initialized graph, declared freshness/watch policy, and retained handshake.",
-      "superseded_by": "not-created"
+      "correction": "Historical result, comparison, compact bundle, and frozen protocol deleted from the active corpus by owner direction. A proper rerun requires a versioned corrected profile and fresh frozen protocol.",
+      "superseded_by": "retrieval-codegraph-codex-mcp-v1",
+      "deleted_session_ids": [
+        "codegraph-fastify-20260717-p-769d40697529-r1",
+        "codegraph-beets-20260717-p-b440da225a3a-r1",
+        "codegraph-terraform-20260717-p-ded8609b4172-r1"
+      ],
+      "deletion_receipt": "sources/evaluations/audits/invalid-treatment-result-deletions-20260718.json",
+      "active_corpus_action": "deleted-under-owner-authorized-receipt",
+      "historical_session_ids_deleted_from_active_registry": true
     },
     {
       "profile_id": "retrieval-cartog",
       "disposition": "unverified-treatment-assignment",
       "objective_eligible": false,
-      "session_ids": [
-        "cartog-fastify-20260717-p-769d40697529-r1",
-        "cartog-beets-20260717-p-b440da225a3a-r1",
-        "cartog-terraform-20260717-p-ded8609b4172-r1"
-      ],
+      "session_ids": [],
       "session_statuses": [
-        "excluded"
+        "deleted-from-active-corpus"
       ],
       "selected_execution_descriptor_sha256": [
         "374926c7078a52cc876ad40d09429bb66468b8033e8b95f27d6cf8086145d7af",
@@ -490,20 +518,24 @@
         "standalone_mcp_handshake_receipts": 0,
         "completed_model_mcp_call_events": 0
       },
-      "correction": "Exclude historical product-effect claims; rerun only under a versioned handshake-gated profile.",
-      "superseded_by": "not-created"
+      "correction": "Deleted corrupted treatment results and occupied protocols from the active corpus; rerun requires a versioned source-parity and assignment-proof-gated profile.",
+      "superseded_by": "retrieval-cartog-mcp-v1",
+      "deleted_session_ids": [
+        "cartog-fastify-20260717-p-769d40697529-r1",
+        "cartog-beets-20260717-p-b440da225a3a-r1",
+        "cartog-terraform-20260717-p-ded8609b4172-r1"
+      ],
+      "deletion_receipt_path": "sources/evaluations/audits/unproven-treatment-result-deletions-20260718.json",
+      "active_corpus_action": "deleted-under-owner-authorized-receipt",
+      "historical_session_ids_deleted_from_active_registry": true
     },
     {
       "profile_id": "codescope-owner",
       "disposition": "unverified-treatment-assignment",
       "objective_eligible": false,
-      "session_ids": [
-        "owner-fastify-20260717-p-769d40697529-r1",
-        "owner-beets-20260717-p-b440da225a3a-r1",
-        "owner-terraform-20260717-p-ded8609b4172-r1"
-      ],
+      "session_ids": [],
       "session_statuses": [
-        "excluded"
+        "deleted-from-active-corpus"
       ],
       "selected_execution_descriptor_sha256": [
         "6b42476ac4bb88f0d696b81b5c1a00c042cf4b6d0c3b63ee145beed15bb62d0f",
@@ -542,20 +574,24 @@
         "standalone_mcp_handshake_receipts": 0,
         "completed_model_mcp_call_events": 0
       },
-      "correction": "Exclude broad product-effect claims; any rerun must separately label neutral-surface and official-product instruction conditions.",
-      "superseded_by": "not-created"
+      "correction": "Deleted corrupted treatment results and occupied protocols from the active corpus; rerun requires a versioned source-parity and assignment-proof-gated profile.",
+      "superseded_by": "codescope-codex-product-v1",
+      "deleted_session_ids": [
+        "owner-fastify-20260717-p-769d40697529-r1",
+        "owner-beets-20260717-p-b440da225a3a-r1",
+        "owner-terraform-20260717-p-ded8609b4172-r1"
+      ],
+      "deletion_receipt_path": "sources/evaluations/audits/unproven-treatment-result-deletions-20260718.json",
+      "active_corpus_action": "deleted-under-owner-authorized-receipt",
+      "historical_session_ids_deleted_from_active_registry": true
     },
     {
       "profile_id": "swarmvault-owner",
       "disposition": "unverified-treatment-assignment",
       "objective_eligible": false,
-      "session_ids": [
-        "swarmvault-fastify-20260717-p-769d40697529-r1",
-        "swarmvault-beets-20260717-p-b440da225a3a-r1",
-        "swarmvault-terraform-20260717-p-ded8609b4172-r1"
-      ],
+      "session_ids": [],
       "session_statuses": [
-        "excluded"
+        "deleted-from-active-corpus"
       ],
       "selected_execution_descriptor_sha256": [
         "303d1767a420f68c6e7b682ff51b70131811296ad7a49156238f4efee7cb4336",
@@ -583,20 +619,24 @@
         "standalone_mcp_handshake_receipts": 0,
         "completed_model_mcp_call_events": 0
       },
-      "correction": "Exclude broad product-effect claims; rerun as separately labeled neutral MCP or product-rules profile with handshake gating.",
-      "superseded_by": "not-created"
+      "correction": "Deleted corrupted treatment results and occupied protocols from the active corpus; rerun requires a versioned source-parity and assignment-proof-gated profile.",
+      "superseded_by": "swarmvault-codex-product-v1",
+      "deleted_session_ids": [
+        "swarmvault-fastify-20260717-p-769d40697529-r1",
+        "swarmvault-beets-20260717-p-b440da225a3a-r1",
+        "swarmvault-terraform-20260717-p-ded8609b4172-r1"
+      ],
+      "deletion_receipt_path": "sources/evaluations/audits/unproven-treatment-result-deletions-20260718.json",
+      "active_corpus_action": "deleted-under-owner-authorized-receipt",
+      "historical_session_ids_deleted_from_active_registry": true
     },
     {
       "profile_id": "retrieval-serena",
       "disposition": "unverified-treatment-assignment",
       "objective_eligible": false,
-      "session_ids": [
-        "serena-fastify-20260716-p-769d40697529-r1",
-        "serena-beets-20260716-p-b440da225a3a-r1",
-        "serena-terraform-20260716-p-ded8609b4172-r1"
-      ],
+      "session_ids": [],
       "session_statuses": [
-        "excluded"
+        "deleted-from-active-corpus"
       ],
       "selected_execution_descriptor_sha256": [
         "188039bcc702dc77bc1c7f498450348f6a30ecbc466f3a7f9dcc9c44157a0730",
@@ -625,20 +665,24 @@
         "standalone_mcp_handshake_receipts": 0,
         "completed_model_mcp_call_events": 0
       },
-      "correction": "Exclude historical product-effect claims; rerun under a versioned handshake-gated profile.",
-      "superseded_by": "not-created"
+      "correction": "Deleted corrupted treatment results and occupied protocols from the active corpus; rerun requires a versioned source-parity and assignment-proof-gated profile.",
+      "superseded_by": "retrieval-serena-codex-mcp-v1",
+      "deleted_session_ids": [
+        "serena-fastify-20260716-p-769d40697529-r1",
+        "serena-beets-20260716-p-b440da225a3a-r1",
+        "serena-terraform-20260716-p-ded8609b4172-r1"
+      ],
+      "deletion_receipt_path": "sources/evaluations/audits/unproven-treatment-result-deletions-20260718.json",
+      "active_corpus_action": "deleted-under-owner-authorized-receipt",
+      "historical_session_ids_deleted_from_active_registry": true
     },
     {
       "profile_id": "retrieval-graphify",
       "disposition": "invalid-treatment-configuration",
       "objective_eligible": false,
-      "session_ids": [
-        "graphify-fastify-20260716-p-769d40697529-r1",
-        "graphify-beets-20260716-p-b440da225a3a-r1",
-        "graphify-terraform-20260716-p-ded8609b4172-r1"
-      ],
+      "session_ids": [],
       "session_statuses": [
-        "excluded"
+        "deleted-from-active-corpus"
       ],
       "selected_execution_descriptor_sha256": [
         "217334da68e018685aa03b3aa137076ce9ed66b5fa370d608e2b30c9c9915633",
@@ -667,20 +711,24 @@
         "standalone_mcp_handshake_receipts": 0,
         "completed_model_mcp_call_events": 0
       },
-      "correction": "Exclude historical product-effect claims. A future official profile must use the pinned Codex installer and full declared graph state; a separate optional MCP-only ablation needs its own versioned identity and handshake.",
-      "superseded_by": "not-created"
+      "correction": "Historical result, comparison, compact bundle, and frozen protocol deleted from the active corpus by owner direction. A proper rerun requires a versioned corrected profile and fresh frozen protocol.",
+      "superseded_by": "retrieval-graphify-codex-skill-v1",
+      "deleted_session_ids": [
+        "graphify-fastify-20260716-p-769d40697529-r1",
+        "graphify-beets-20260716-p-b440da225a3a-r1",
+        "graphify-terraform-20260716-p-ded8609b4172-r1"
+      ],
+      "deletion_receipt": "sources/evaluations/audits/invalid-treatment-result-deletions-20260718.json",
+      "active_corpus_action": "deleted-under-owner-authorized-receipt",
+      "historical_session_ids_deleted_from_active_registry": true
     },
     {
       "profile_id": "retrieval-sigmap",
       "disposition": "unverified-treatment-assignment",
       "objective_eligible": false,
-      "session_ids": [
-        "sigmap-fastify-20260717-p-769d40697529-r1",
-        "sigmap-beets-20260717-p-b440da225a3a-r1",
-        "sigmap-terraform-20260717-p-ded8609b4172-r1"
-      ],
+      "session_ids": [],
       "session_statuses": [
-        "excluded"
+        "deleted-from-active-corpus"
       ],
       "selected_execution_descriptor_sha256": [
         "3ea344c33a0887bd35ab610f2be5cf18aa56365583868b397ba1a63e897c9125",
@@ -710,20 +758,24 @@
         "standalone_mcp_handshake_receipts": 0,
         "completed_model_mcp_call_events": 0
       },
-      "correction": "Preserve as an operationally unproven manual-equivalent partial condition. A rerun must document the installer compatibility deviation, freshness policy, and retain handshake proof.",
-      "superseded_by": "not-created"
+      "correction": "Deleted corrupted treatment results and occupied protocols from the active corpus; rerun requires a versioned source-parity and assignment-proof-gated profile.",
+      "superseded_by": "retrieval-sigmap-codex-live-v1",
+      "deleted_session_ids": [
+        "sigmap-fastify-20260717-p-769d40697529-r1",
+        "sigmap-beets-20260717-p-b440da225a3a-r1",
+        "sigmap-terraform-20260717-p-ded8609b4172-r1"
+      ],
+      "deletion_receipt_path": "sources/evaluations/audits/unproven-treatment-result-deletions-20260718.json",
+      "active_corpus_action": "deleted-under-owner-authorized-receipt",
+      "historical_session_ids_deleted_from_active_registry": true
     },
     {
       "profile_id": "integrated-token-savior",
       "disposition": "unverified-treatment-assignment",
       "objective_eligible": false,
-      "session_ids": [
-        "savior-fastify-20260716-p-769d40697529-r1",
-        "savior-beets-20260716-p-b440da225a3a-r1",
-        "savior-terraform-20260716-p-ded8609b4172-r1"
-      ],
+      "session_ids": [],
       "session_statuses": [
-        "excluded"
+        "deleted-from-active-corpus"
       ],
       "selected_execution_descriptor_sha256": [
         "2ecb5ef1487dec44f88b50f20f0216d4d1b4b91334c4a7ea5215adf7061fff4a",
@@ -752,20 +804,24 @@
         "standalone_mcp_handshake_receipts": 0,
         "completed_model_mcp_call_events": 0
       },
-      "correction": "Preserve historical accounting; any rerun needs a versioned handshake-gated profile. No additional product guidance layer is required for the same bounded MCP-only estimand.",
-      "superseded_by": "not-created"
+      "correction": "Deleted corrupted treatment results and occupied protocols from the active corpus; rerun requires a versioned source-parity and assignment-proof-gated profile.",
+      "superseded_by": "integrated-token-savior-mcp-v1",
+      "deleted_session_ids": [
+        "savior-fastify-20260716-p-769d40697529-r1",
+        "savior-beets-20260716-p-b440da225a3a-r1",
+        "savior-terraform-20260716-p-ded8609b4172-r1"
+      ],
+      "deletion_receipt_path": "sources/evaluations/audits/unproven-treatment-result-deletions-20260718.json",
+      "active_corpus_action": "deleted-under-owner-authorized-receipt",
+      "historical_session_ids_deleted_from_active_registry": true
     },
     {
       "profile_id": "stack-tokenjuice-jcodemunch-mcp",
       "disposition": "invalid-treatment-configuration",
       "objective_eligible": false,
-      "session_ids": [
-        "tokenjuice-jcodemunch-fastify-20260718-p-769d40697529-r1",
-        "tokenjuice-jcodemunch-beets-20260718-p-b440da225a3a-r1",
-        "tokenjuice-jcodemunch-terraform-20260718-p-ded8609b4172-r1"
-      ],
+      "session_ids": [],
       "session_statuses": [
-        "excluded"
+        "deleted-from-active-corpus"
       ],
       "selected_execution_descriptor_sha256": [
         "1828c8bae806098ba5476647414d00b4b05bc29ac626183538768ca9047e01e9",
@@ -806,8 +862,27 @@
         "standalone_mcp_handshake_receipts": 0,
         "completed_model_mcp_call_events": 0
       },
-      "correction": "Exclude stack-effect claims; do not create a corrected stack until corrected individual profiles are qualified.",
-      "superseded_by": "not-created"
+      "correction": "Historical result, comparison, compact bundle, and frozen protocol deleted from the active corpus by owner direction. A proper rerun requires a versioned corrected profile and fresh frozen protocol.",
+      "superseded_by": null,
+      "deleted_session_ids": [
+        "tokenjuice-jcodemunch-fastify-20260718-p-769d40697529-r1",
+        "tokenjuice-jcodemunch-beets-20260718-p-b440da225a3a-r1",
+        "tokenjuice-jcodemunch-terraform-20260718-p-ded8609b4172-r1"
+      ],
+      "deletion_receipt": "sources/evaluations/audits/invalid-treatment-result-deletions-20260718.json",
+      "active_corpus_action": "deleted-under-owner-authorized-receipt",
+      "historical_session_ids_deleted_from_active_registry": true
     }
-  ]
+  ],
+  "corrected_contracts": {
+    "profiles": 13,
+    "fixture_specific_protocols": 39,
+    "provider_free_qualification": {
+      "receipt": "sources/evaluations/audits/corrected-integration-qualification-20260718.json",
+      "passed": 39,
+      "failed": 0,
+      "provider_calls": 0
+    },
+    "provider_backed_sessions": 0
+  }
 }
