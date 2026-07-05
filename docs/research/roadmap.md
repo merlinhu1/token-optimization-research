@@ -2,7 +2,7 @@
 
 ## Current state
 
-The repository is completing integration-contract repair after the 2026-07-18 official-parity audit. Fastify, Beets, and Terraform retain two eligible bare-Codex baselines each. Of 54 historical treatment sessions, 12 remain active and objective-eligible for four narrow conditions. The other 42 were deleted from the active corpus at the experiment owner's direction because their treatment configuration or assignment proof was invalid; they were not relabelled as baseline. The historical TokenJuice+jcodemunch stack decision remains withdrawn.
+The repository is completing integration-contract repair after the 2026-07-18 official-parity audit. Fastify, Beets, and Terraform retain three eligible bare-Codex baselines each (`r0`–`r2`). Of 54 historical treatment sessions, 12 remain active and objective-eligible for four narrow conditions. The other 42 were deleted from the active corpus at the experiment owner's direction because their treatment configuration or assignment proof was invalid; they were not relabelled as baseline. The historical TokenJuice+jcodemunch stack decision remains withdrawn.
 
 Thirteen versioned individual-tool replacements now cover TokenJuice, jcodemunch, RTK, Snip, Graphify, CodeGraph, LeanCTX, Cartog, CodeScope, SwarmVault, Serena, SigMap, and Token Savior. All 39 fixture-specific frozen protocols passed the provider-free preparation matrix. MCP profiles retained initialize plus tools/list evidence, and product-guided profiles installed the pinned product-authored Codex surface rather than evaluator-authored steering.
 
