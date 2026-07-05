@@ -638,6 +638,194 @@ def validate_evaluation_profiles(profile_doc: dict, fixture_doc: dict, errors: l
     return seen
 
 
+def validate_candidate_profile_launch_readiness(
+    profile_doc: dict,
+    fixture_doc: dict,
+    sequence_doc: dict,
+    parity_doc: dict,
+    qualification_docs: list[dict],
+    protocol_docs: dict[str, dict],
+    errors: list[str],
+) -> None:
+    """Fail closed before provider execution for every non-baseline fixture candidate."""
+    profiles_by_id = {
+        profile.get("id"): profile
+        for profile in profile_doc.get("profiles", [])
+        if isinstance(profile, dict) and profile.get("id")
+    }
+    candidate_profiles = {
+        profile_id
+        for fixture in fixture_doc.get("fixtures", [])
+        if isinstance(fixture, dict)
+        for profile_id in fixture.get("candidate_profiles", [])
+        if profile_id != "baseline-bare-codex"
+    }
+    approved_profiles = set(
+        parity_doc.get("corrected_contracts", {}).get("approved_profile_ids", [])
+    )
+    if approved_profiles != candidate_profiles:
+        errors.append(
+            "future candidate parity-approved profile set must exactly match non-baseline fixture candidates: "
+            f"approved={sorted(approved_profiles)} candidates={sorted(candidate_profiles)}"
+        )
+
+    active_sequences_by_fixture: dict[str, list[str]] = {}
+    for sequence in sequence_doc.get("sequences", []):
+        if not isinstance(sequence, dict) or sequence.get("status") != "active":
+            continue
+        fixture_id = sequence.get("fixture_id")
+        sequence_id = sequence.get("id")
+        if isinstance(fixture_id, str) and isinstance(sequence_id, str):
+            active_sequences_by_fixture.setdefault(fixture_id, []).append(sequence_id)
+
+    expected_pairs: set[tuple[str, str]] = set()
+    for fixture in fixture_doc.get("fixtures", []):
+        if not isinstance(fixture, dict):
+            continue
+        sequence_ids = active_sequences_by_fixture.get(str(fixture.get("id")), [])
+        for profile_id in fixture.get("candidate_profiles", []):
+            if profile_id == "baseline-bare-codex":
+                continue
+            for sequence_id in sequence_ids:
+                expected_pairs.add((sequence_id, str(profile_id)))
+
+    eligible_lanes: list[dict] = []
+    for receipt in qualification_docs:
+        if not isinstance(receipt, dict):
+            continue
+        if receipt.get("execution_mode") != "prepare-only-no-provider":
+            continue
+        if receipt.get("provider_calls") != 0:
+            continue
+        if receipt.get("summary", {}).get("provider_backed_sessions_created") != 0:
+            continue
+        eligible_lanes.extend(
+            lane for lane in receipt.get("lanes", []) if isinstance(lane, dict)
+        )
+
+    for sequence_id, profile_id in sorted(expected_pairs):
+        profile = profiles_by_id.get(profile_id)
+        if not profile or profile.get("status") != "screening-shortlist":
+            errors.append(
+                f"future candidate {profile_id} must be a screening-shortlist profile before launch"
+            )
+
+        matching_protocols: list[tuple[str, dict]] = []
+        for protocol_path, record in protocol_docs.items():
+            if not isinstance(record, dict):
+                continue
+            protocol = record.get("document", {})
+            selected = protocol.get("selected_execution", {}).get("descriptor", {})
+            if (
+                selected.get("sequence_id") == sequence_id
+                and selected.get("selected_profile", {}).get("profile_id") == profile_id
+                and protocol.get("status") == "frozen-ready-not-run"
+            ):
+                matching_protocols.append((protocol_path, record))
+        if len(matching_protocols) != 1:
+            errors.append(
+                f"future candidate {sequence_id}/{profile_id} must bind exactly one current frozen protocol; "
+                f"found {len(matching_protocols)}"
+            )
+            continue
+
+        protocol_path, protocol_record = matching_protocols[0]
+        protocol_sha = protocol_record.get("sha256")
+        matching_lanes = [
+            lane
+            for lane in eligible_lanes
+            if lane.get("sequence_id") == sequence_id
+            and lane.get("profile_id") == profile_id
+            and lane.get("protocol_path") == protocol_path
+            and lane.get("protocol_sha256") == protocol_sha
+        ]
+        if len(matching_lanes) != 1:
+            errors.append(
+                f"future candidate {sequence_id}/{profile_id} is missing matching provider-free qualification "
+                f"for {protocol_path}@{protocol_sha}"
+            )
+            continue
+
+        lane = matching_lanes[0]
+        preparation = lane.get("prepare_verification", {})
+        host = lane.get("host_integration", {})
+        if lane.get("prepared") is not True or preparation.get("passed") is not True:
+            errors.append(f"future candidate {sequence_id}/{profile_id} lacks successful fixture preparation")
+        if preparation.get("concealment_passed") is not True:
+            errors.append(f"future candidate {sequence_id}/{profile_id} lacks concealment proof")
+        if preparation.get("composite_seed_delivery_passed") is not True:
+            errors.append(f"future candidate {sequence_id}/{profile_id} lacks composite seed-delivery proof")
+        if host.get("passed") is not True or host.get("missing_required_files"):
+            errors.append(f"future candidate {sequence_id}/{profile_id} lacks successful host-integration proof")
+        if any(code != 0 for code in host.get("install_exit_codes", [])) or any(
+            code != 0 for code in host.get("verify_exit_codes", [])
+        ):
+            errors.append(f"future candidate {sequence_id}/{profile_id} has failed host-integration commands")
+        if lane.get("tool_warmup_exit_code") != 0:
+            errors.append(f"future candidate {sequence_id}/{profile_id} lacks successful tool warmup")
+
+        protocol = protocol_record.get("document", {})
+        tool_config = (
+            protocol.get("selected_execution", {})
+            .get("descriptor", {})
+            .get("tool_adapter", {})
+            .get("tool_config", {})
+        )
+        mcp_required = bool(tool_config.get("mcp_handshake", {}).get("required"))
+        handshake = lane.get("mcp_handshake", {})
+        if bool(handshake.get("required")) != mcp_required:
+            errors.append(f"future candidate {sequence_id}/{profile_id} has mismatched MCP requirement proof")
+        if mcp_required:
+            tool_names = handshake.get("tool_names", [])
+            tool_count = handshake.get("tool_count", 0)
+            if not (
+                handshake.get("passed") is True
+                and handshake.get("initialize_passed") is True
+                and handshake.get("tools_list_passed") is True
+                and isinstance(tool_count, int)
+                and tool_count > 0
+                and isinstance(tool_names, list)
+                and len(tool_names) == tool_count
+                and not handshake.get("errors")
+            ):
+                errors.append(
+                    f"future candidate {sequence_id}/{profile_id} lacks non-empty MCP tools/list proof"
+                )
+
+
+def current_candidate_profile_launch_readiness_errors(root: Path = ROOT) -> list[str]:
+    profile_doc = json.loads((root / "data/evaluation-profiles.json").read_text())
+    fixture_doc = json.loads((root / "data/repository-fixtures.json").read_text())
+    sequence_doc = json.loads((root / "data/workflow-task-sequences.json").read_text())
+    parity_doc = json.loads(
+        (root / "sources/evaluations/audits/official-integration-parity-20260718.json").read_text()
+    )
+    qualification_docs = [
+        json.loads(path.read_text())
+        for path in sorted(
+            (root / "sources/evaluations/audits").glob("corrected-integration-qualification-*.json")
+        )
+    ]
+    protocol_docs = {
+        path.relative_to(root).as_posix(): {
+            "document": json.loads(path.read_text()),
+            "sha256": hashlib.sha256(path.read_bytes()).hexdigest(),
+        }
+        for path in (root / "sources/evaluations/protocols").glob("*.json")
+    }
+    errors: list[str] = []
+    validate_candidate_profile_launch_readiness(
+        profile_doc,
+        fixture_doc,
+        sequence_doc,
+        parity_doc,
+        qualification_docs,
+        protocol_docs,
+        errors,
+    )
+    return errors
+
+
 def validate_agent_runtimes(runtime_doc: dict, errors: list[str]) -> tuple[set[str], set[str]]:
     if runtime_doc.get("schema_version") != 1:
         errors.append("data/evaluation-agent-runtimes.json must use schema_version 1")
@@ -1829,6 +2017,20 @@ def main() -> int:
     medium_candidates_doc = load_json("data/medium-project-candidates.json")
     fixtures_doc = load_json("data/repository-fixtures.json")
     backlog_doc = load_json("data/tool-analysis-backlog.json")
+    parity_doc = load_json("sources/evaluations/audits/official-integration-parity-20260718.json")
+    qualification_docs = [
+        json.loads(path.read_text())
+        for path in sorted(
+            (ROOT / "sources/evaluations/audits").glob("corrected-integration-qualification-*.json")
+        )
+    ]
+    protocol_docs = {
+        path.relative_to(ROOT).as_posix(): {
+            "document": json.loads(path.read_text()),
+            "sha256": hashlib.sha256(path.read_bytes()).hexdigest(),
+        }
+        for path in (ROOT / "sources/evaluations/protocols").glob("*.json")
+    }
 
     technique_ids = {t.get("id") for t in techniques_doc.get("techniques", [])}
     if not technique_ids:
@@ -1871,6 +2073,15 @@ def main() -> int:
     runtime_ids, model_condition_ids = validate_agent_runtimes(agent_runtimes_doc, errors)
     validate_evaluations(evaluations_doc, fixtures_doc, profile_ids, runtime_ids, model_condition_ids, errors)
     workflow_sequence_ids = validate_workflow_task_sequences(workflow_sequences_doc, fixtures_doc, errors)
+    validate_candidate_profile_launch_readiness(
+        profiles_doc,
+        fixtures_doc,
+        workflow_sequences_doc,
+        parity_doc,
+        qualification_docs,
+        protocol_docs,
+        errors,
+    )
     validate_fixture_sequence_status_consistency(workflow_sequences_doc, fixtures_doc, large_candidates_doc, medium_candidates_doc, errors)
     validate_workflow_sessions(workflow_sessions_doc, workflow_sequence_ids, fixtures_doc, profiles_by_id, runtime_ids, model_condition_ids, errors)
     validate_document_lifecycle(workflow_sessions_doc, fixtures_doc, workflow_sequences_doc, errors)
