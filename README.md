@@ -14,7 +14,7 @@ The repository retains operationally valid Fastify, Beets, and Terraform provide
 
 Every lane uses one pinned repository snapshot and one persistent model session. The controller applies all three independently qualified start conditions before prompt 1, discloses prompts in order, preserves model/tool state, and runs all concealed verifiers after prompt 3.
 
-Phase 3 keeps these lifecycle-v0 contracts unchanged. Its first frozen stack profile, `stack-tokenjuice-jcodemunch-mcp`, composes TokenJuice as the terminal-output owner with jcodemunch MCP as the retrieval-context owner and reuses the retained `r1` baseline and individual-tool samples.
+Phase 3 keeps these lifecycle-v0 contracts unchanged. Its first completed stack screen, `stack-tokenjuice-jcodemunch-mcp`, composes TokenJuice as the terminal-output owner with jcodemunch MCP as the retrieval-context owner and reuses the retained `r1` baseline and individual-tool samples. The stack used 9.12% fewer provider tokens than bare Codex but 27.19% more than TokenJuice alone, so it did not advance.
 
 ## Documentation
 
