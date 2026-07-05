@@ -397,6 +397,112 @@ class ActiveCampaignArchitectureTest(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, "historical-profile"):
                 runner.assert_profile_runnable(profile_id)
 
+    def test_future_candidate_profiles_fail_closed_without_parity_and_qualification(self) -> None:
+        profile_doc = json.loads((ROOT / "data/evaluation-profiles.json").read_text())
+        fixture_doc = json.loads((ROOT / "data/repository-fixtures.json").read_text())
+        sequence_doc = json.loads((ROOT / "data/workflow-task-sequences.json").read_text())
+        parity_doc = json.loads(
+            (ROOT / "sources/evaluations/audits/official-integration-parity-20260718.json").read_text()
+        )
+        qualification_docs = [
+            json.loads(path.read_text())
+            for path in sorted(
+                (ROOT / "sources/evaluations/audits").glob("corrected-integration-qualification-*.json")
+            )
+        ]
+        protocol_docs = {
+            path.relative_to(ROOT).as_posix(): {
+                "document": json.loads(path.read_text()),
+                "sha256": hashlib.sha256(path.read_bytes()).hexdigest(),
+            }
+            for path in (ROOT / "sources/evaluations/protocols").glob("*.json")
+        }
+
+        errors: list[str] = []
+        validate_repository.validate_candidate_profile_launch_readiness(
+            profile_doc,
+            fixture_doc,
+            sequence_doc,
+            parity_doc,
+            qualification_docs,
+            protocol_docs,
+            errors,
+        )
+        self.assertEqual(errors, [])
+
+        missing_approval = copy.deepcopy(parity_doc)
+        missing_approval["corrected_contracts"]["approved_profile_ids"].remove(
+            "retrieval-cartog-mcp-v1"
+        )
+        errors = []
+        validate_repository.validate_candidate_profile_launch_readiness(
+            profile_doc,
+            fixture_doc,
+            sequence_doc,
+            missing_approval,
+            qualification_docs,
+            protocol_docs,
+            errors,
+        )
+        self.assertTrue(any("parity-approved profile set" in error for error in errors), errors)
+
+        missing_lane_receipts = copy.deepcopy(qualification_docs)
+        missing_lane_receipts[0]["lanes"] = [
+            lane
+            for lane in missing_lane_receipts[0]["lanes"]
+            if not (
+                lane["sequence_id"] == "fastify-lifecycle-sequence-v0"
+                and lane["profile_id"] == "retrieval-cartog-mcp-v1"
+            )
+        ]
+        errors = []
+        validate_repository.validate_candidate_profile_launch_readiness(
+            profile_doc,
+            fixture_doc,
+            sequence_doc,
+            parity_doc,
+            missing_lane_receipts,
+            protocol_docs,
+            errors,
+        )
+        self.assertTrue(any("missing matching provider-free qualification" in error for error in errors), errors)
+
+        empty_mcp_tools = copy.deepcopy(qualification_docs)
+        target_lane = next(
+            lane
+            for lane in empty_mcp_tools[0]["lanes"]
+            if lane["sequence_id"] == "fastify-lifecycle-sequence-v0"
+            and lane["profile_id"] == "retrieval-cartog-mcp-v1"
+        )
+        target_lane["mcp_handshake"]["tool_count"] = 0
+        target_lane["mcp_handshake"]["tool_names"] = []
+        errors = []
+        validate_repository.validate_candidate_profile_launch_readiness(
+            profile_doc,
+            fixture_doc,
+            sequence_doc,
+            parity_doc,
+            empty_mcp_tools,
+            protocol_docs,
+            errors,
+        )
+        self.assertTrue(any("non-empty MCP tools/list proof" in error for error in errors), errors)
+
+    def test_provider_launch_rechecks_candidate_readiness_gate(self) -> None:
+        args = runner.argparse.Namespace(prepare_only=False, protocol=None)
+        with mock.patch.object(
+            runner.repository_validation,
+            "current_candidate_profile_launch_readiness_errors",
+            return_value=["missing qualification"],
+            create=True,
+        ):
+            with self.assertRaisesRegex(ValueError, "provider launch readiness gate failed"):
+                runner.validate_protocol_for_run(
+                    runner.load_sequence("fastify-lifecycle-sequence-v0"),
+                    "retrieval-cartog-mcp-v1",
+                    args,
+                )
+
     def test_corrected_tokenjuice_and_jcodemunch_profiles_bind_official_integrations(self) -> None:
         token_profile = "terminal-tokenjuice-codex-hook-v1"
         token_cfg = runner.fixture.active_tool_config({}, token_profile)
