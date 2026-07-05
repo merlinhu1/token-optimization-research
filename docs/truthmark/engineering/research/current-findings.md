@@ -57,7 +57,10 @@ This document covers the active lifecycle-v0 portfolio and retained production b
 - Across the matched `r1` portfolio, CodeScope used 85,439,968 tokens, an increase of 11,546,521 tokens (+15.63%). Its large Terraform increase dominated reductions on the two medium lanes. No explicit model-issued CodeScope MCP call was observed; availability without forced invocation remains the frozen estimand.
 - SwarmVault's `r1` natural-use screen used 16,974,841 tokens on Fastify (+29.80%), 15,464,870 on Beets (-11.24%), and 28,715,407 on Terraform (-33.82%). All three sessions passed 3/3 verifier tasks and are token-accounting eligible.
 - Across the matched `r1` portfolio, SwarmVault used 61,155,118 tokens, a reduction of 12,738,329 tokens (-17.24%). Its offline heuristic warm index used the product-native deterministic 500-file cap on every lane. No explicit model-issued SwarmVault MCP call was observed; the sample is retained without forced uptake or an outcome-selected rerun.
-- Phase 3 keeps lifecycle v0 unchanged. The first frozen stack profile, `stack-tokenjuice-jcodemunch-mcp`, assigns terminal-output ownership to TokenJuice and retrieval-context ownership to jcodemunch MCP. It reuses retained compatible `r1` baseline and individual-tool samples; no stack outcome is claimed before provider execution.
+- Phase 3 keeps lifecycle v0 unchanged. The first stack profile, `stack-tokenjuice-jcodemunch-mcp`, assigns terminal-output ownership to TokenJuice and retrieval-context ownership to jcodemunch MCP and reuses compatible retained `r1` baseline and component records.
+- The stack used 7,308,107 tokens on Fastify (-44.12% versus bare Codex), 18,458,613 on Beets (+5.94%), and 41,388,865 on Terraform (-4.62%). All three sessions are token-accounting eligible, passed their isolation and verifier-integrity checks, and passed 9/9 structured verifier tasks.
+- Across the matched `r1` portfolio, the stack used 67,155,585 tokens: 6,737,862 fewer than bare Codex (-9.12%), 14,354,637 more than TokenJuice (+27.19%), and 6,253,564 more than jcodemunch MCP (+10.27%). The stack was worse than the better individual component in every lane and does not advance.
+- The descriptive interaction contrast `stack - TokenJuice - jcodemunch + baseline` was positive in every lane and +27,346,063 tokens in aggregate. No explicit model-issued TokenJuice command or jcodemunch MCP call was observed in the stack sessions; the retained component sessions likewise had zero explicit calls. The records remain valid natural-availability samples, but no realized compaction, retrieval, or mechanism-interaction claim is made.
 
 ## Evidence Boundary
 
@@ -85,3 +88,4 @@ An artifact-packaging audit found that the three Graphify bundles had included g
 - ../../../../sources/evaluations/workflow-sessions/
 - ../../../../docs/evaluations/operations/runbook.md
 - ../../../../docs/papers/phase-2-lifecycle-v0-natural-use-screening.md
+- ../../../../docs/papers/phase-3-tokenjuice-jcodemunch-stack-screen.md

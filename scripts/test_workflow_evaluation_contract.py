@@ -1933,6 +1933,8 @@ class MatrixLifecycleContractTest(unittest.TestCase):
         }
         treatment = {
             "session_id": "treatment",
+            "study_id": "phase-3-stack-study",
+            "objective": "stack_effectiveness",
             "experiment_group_id": "group",
             "cumulative_token_usage": {"total_provider_tokens": 900},
             "software_quality": {"tasks_agent_claimed_complete": 3, "tasks_passed": 1},
@@ -1941,6 +1943,8 @@ class MatrixLifecycleContractTest(unittest.TestCase):
             path = matrix.write_hard_baseline_comparison(sequence, baseline, treatment, "terminal-rtk", 0)
             comparison = json.loads(path.read_text())
         self.assertFalse(comparison["correctness_improved"])
+        self.assertEqual(comparison["study_id"], "phase-3-stack-study")
+        self.assertEqual(comparison["objective"], "stack_effectiveness")
         self.assertTrue(comparison["token_efficiency_improved"])
         self.assertTrue(comparison["primary_token_objective_improved"])
         self.assertNotIn("treatment_outperforms_baseline", comparison)

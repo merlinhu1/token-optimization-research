@@ -2,7 +2,7 @@
 
 ## Current state
 
-The repository is in Phase 3 stack token-evidence collection. Fastify, Beets, and Terraform each have two retained operationally valid baselines. Sixteen natural-use `r1` individual-tool screens—Caveman, RTK, Serena, Ponytail, Token Savior, Graphify, CodeGraph, jcodemunch MCP, SigMap, LeanCTX, Snip, TokenJuice, default Headroom, Cartog, CodeScope, and SwarmVault—are complete across all three lanes. Headroom also has a compatible proxy-only component ablation. The first stack profile, `stack-tokenjuice-jcodemunch-mcp`, is frozen for the unchanged lifecycle-v0 lanes; it assigns terminal-output ownership to TokenJuice and retrieval-context ownership to jcodemunch MCP. Verifier and review results remain diagnostic rather than eligibility gates.
+The repository is in Phase 3 stack token-evidence collection. Fastify, Beets, and Terraform each have two retained operationally valid baselines. Sixteen natural-use `r1` individual-tool screens—Caveman, RTK, Serena, Ponytail, Token Savior, Graphify, CodeGraph, jcodemunch MCP, SigMap, LeanCTX, Snip, TokenJuice, default Headroom, Cartog, CodeScope, and SwarmVault—are complete across all three lanes. Headroom also has a compatible proxy-only component ablation. The first stack profile, `stack-tokenjuice-jcodemunch-mcp`, completed on the unchanged lifecycle-v0 lanes with 9/9 verifier tasks. It used 67,155,585 provider tokens: 9.12% fewer than bare Codex but 27.19% more than TokenJuice alone. The stack failed the incremental-value criterion and does not advance. Verifier and review results remain diagnostic rather than eligibility gates.
 
 ## Production entry evidence
 
@@ -16,4 +16,4 @@ The repository is in Phase 3 stack token-evidence collection. Fastify, Beets, an
 
 ## Next production step
 
-Run only the new `stack-tokenjuice-jcodemunch-mcp` `r1` profile across the three existing lifecycle-v0 lanes. Reuse the retained compatible baseline, TokenJuice, and jcodemunch MCP samples; do not rerun those profiles. Report the stack against baseline, against each component, against the better component, and with the descriptive interaction contrast `stack - TokenJuice - jcodemunch + baseline`. Preserve the first valid stack samples and report verifier diagnostics separately without forced invocation or outcome-selected reruns.
+Preserve the first valid TokenJuice-plus-jcodemunch stack samples without outcome-selected reruns. Preregister the next compatibility-safe pair on lifecycle v0, reusing compatible retained baseline and component records and adding only the missing stack sessions. The next pair should improve the chance that both integrations are naturally exercised while retaining non-overlapping surface ownership.

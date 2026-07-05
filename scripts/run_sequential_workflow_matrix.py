@@ -547,7 +547,8 @@ def write_hard_baseline_comparison(
     comparison = {
         "schema_version": 4,
         "comparison_id": comparison_id,
-        "study_id": baseline.get("study_id"),
+        "study_id": treatment.get("study_id"),
+        "objective": treatment.get("objective"),
         "experiment_group_id": treatment.get("experiment_group_id"),
         "comparison_design": "token-objective-compatible-pair-v1",
         "baseline_protocol_fingerprint": fingerprint,

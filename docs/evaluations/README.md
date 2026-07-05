@@ -26,10 +26,10 @@ Start with the generated [operator runbook](operations/runbook.md).
 
 ## Current evidence
 
-The production surface is lifecycle v0 only. Fastify, Beets, and Terraform each exercise feature implementation, behavior-preserving refactoring, and code review/correction in one persistent workflow. The repository retains 57 operationally valid provider-backed sessions and 51 matched treatment comparisons.
+The production surface is lifecycle v0 only. Fastify, Beets, and Terraform each exercise feature implementation, behavior-preserving refactoring, and code review/correction in one persistent workflow. The repository retains 60 operationally valid provider-backed sessions and 54 matched treatment comparisons.
 
-Phase 3 does not introduce new tasks or rerun retained components. The first frozen stack profile, `stack-tokenjuice-jcodemunch-mcp`, uses the same lifecycle-v0 pool and adds only a TokenJuice-plus-jcodemunch treatment session for each lane.
+Phase 3 does not introduce new tasks or rerun retained components. The first completed stack profile, `stack-tokenjuice-jcodemunch-mcp`, used the same lifecycle-v0 pool and added only a TokenJuice-plus-jcodemunch treatment session for each lane. It reduced aggregate tokens 9.12% versus bare Codex but used 27.19% more than TokenJuice alone and failed the incremental-value criterion.
 
-The current synthesis is the [Phase 2 lifecycle-v0 natural-use screening paper](../papers/phase-2-lifecycle-v0-natural-use-screening.md).
+The current synthesis is the [Phase 3 TokenJuice + jcodemunch MCP stack-screen paper](../papers/phase-3-tokenjuice-jcodemunch-stack-screen.md), with component evidence in the [Phase 2 lifecycle-v0 natural-use screening paper](../papers/phase-2-lifecycle-v0-natural-use-screening.md).
 
 Verifier and optional source-review outcomes are diagnostic; complete provider usage and execution integrity determine token-accounting eligibility. Natural availability without forced invocation remains the treatment boundary.
