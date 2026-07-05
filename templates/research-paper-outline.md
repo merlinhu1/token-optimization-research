@@ -36,5 +36,5 @@ AI coding agents increasingly use context-management middleware, output compacto
 
 - `data/repositories.json`
 - `data/techniques.json`
-- `docs/taxonomy/compatibility-taxonomy.md`
-- `docs/evaluations/evaluation-framework.md`
+- `docs/reference/compatibility-taxonomy.md`
+- `docs/evaluations/design/framework.md`

@@ -128,10 +128,10 @@ Recommended visuals:
 
 | Existing artifact | Improvement from these skills |
 |---|---|
-| `docs/reports/phase-1-compatibility-safe-token-saving-stacks.md` | Add claim-evidence and falsification discipline; keep stack hypotheses evidence-stage calibrated and not deployment-grade. |
-| `docs/evaluations/phase-2-benchmark-plan.md` | Use protocol-before-result, ablation planning, and benchmark configuration capture. |
-| `docs/evaluations/token-usage-and-quality-standards.md` | Keep provider-reported workflow-token eligibility separate from model-behavior diagnostics. |
-| `docs/evaluations/immediately-usable-flows.md` | Convert methodology into lifecycle-v0 execution flows with compact artifacts and operational validity checks. |
+| `docs/papers/phase-1-compatibility-safe-token-saving-stacks.md` | Add claim-evidence and falsification discipline; keep stack hypotheses evidence-stage calibrated and not deployment-grade. |
+| `docs/evaluations/plans/phase-2-benchmark-plan.md` | Use protocol-before-result, ablation planning, and benchmark configuration capture. |
+| `docs/evaluations/design/token-and-quality-policy.md` | Keep provider-reported workflow-token eligibility separate from model-behavior diagnostics. |
+| `docs/evaluations/operations/workflow-guide.md` | Convert methodology into lifecycle-v0 execution flows with compact artifacts and operational validity checks. |
 | `data/workflow-sessions.json` | Store the compact index of operational provider runs and their separate quality diagnostics. |
 | `prompts/paper-writer.md` | Enforce narrative, reverse outline, claim-evidence map, and citation-light prior-art rules. |
 | `prompts/evaluator.md` | Enforce protocol-before-result, baseline compatibility, token-first comparison, and post-run document synchronization. |

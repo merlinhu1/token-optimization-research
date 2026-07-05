@@ -14,14 +14,24 @@ The repository retains operationally valid Fastify, Beets, and Terraform provide
 
 Every lane uses one pinned repository snapshot and one persistent model session. The controller applies all three independently qualified start conditions before prompt 1, discloses prompts in order, preserves model/tool state, and runs all concealed verifiers after prompt 3.
 
+## Documentation
+
+Start with [`docs/README.md`](docs/README.md). The main destinations are:
+
+- [`docs/papers/`](docs/papers/README.md) — completed research papers and phase reports;
+- [`docs/evaluations/`](docs/evaluations/README.md) — evaluation design and operator guidance;
+- [`docs/research/`](docs/research/README.md) — current roadmap and research direction;
+- [`docs/tool-dossiers/`](docs/tool-dossiers/README.md) — tool index and source-inspection dossiers;
+- [`templates/`](templates/README.md) — blank outlines and reusable templates.
+
 ## Source of truth
 
 - `data/workflow-task-sequences.json` — lifecycle v0 contracts.
 - `data/repository-fixtures.json` — pinned fixture readiness.
 - `sources/evaluations/fixtures/` — task prompts, start patches, controller acceptance, and generated v0 qualification evidence.
 - `data/workflow-sessions.json` — retained provider-backed token samples, diagnostic model outcomes, and experiment-invalid exclusions.
-- `docs/evaluations/workflow-evaluation-runbook.md` — generated operator runbook.
-- `docs/reports/phase-2-lifecycle-v0-natural-use-screening.md` — production screening report for the retained baseline and treatment evidence.
+- `docs/evaluations/operations/runbook.md` — generated operator runbook.
+- `docs/papers/phase-2-lifecycle-v0-natural-use-screening.md` — production screening report for the retained baseline and treatment evidence.
 
 ## Validation
 

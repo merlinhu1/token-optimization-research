@@ -21,12 +21,18 @@ The repository is a research production system. Top-level folders are organized 
 
 | Path | Responsibility |
 |---|---|
-| `docs/architecture/` | System design, domain model, compatibility model, repository layout |
-| `docs/methodology/` | Research method, discovery, evidence, and provenance rules |
-| `docs/evaluations/` | Evaluation protocols, active runbook, fixture framework, token/quality standards |
-| `docs/research/` | Tool research strategy, roadmap, methodology corrections, reusable research patterns |
+| `docs/README.md` | Human-facing documentation index and placement rules |
+| `docs/architecture/` | System design, domain model, compatibility model, and decision records |
+| `docs/evaluations/design/` | Evaluation estimand, workflow, fixture, result, accounting, and isolation contracts |
+| `docs/evaluations/operations/` | Generated runbook, runner reference, workflow guide, and fixture guide |
+| `docs/evaluations/plans/` | Historical phase plans retained for context |
+| `docs/methodology/` | Durable research methods, discovery, provenance, reporting patterns, and case studies |
+| `docs/papers/` | Completed research papers and phase reports |
+| `docs/reference/` | Literature, taxonomy, and research standards |
+| `docs/research/` | Active roadmap and tool-research direction |
+| `templates/` | Repository-wide blank paper, evaluation, record, and fixture templates |
 | `docs/tool-dossiers/` | Persistent source-logic or better tool dossiers |
-| `docs/truthmark/` | Repository-truth routes and durable Truthmark claims |
+| `docs/truthmark/` | Maintainer-facing routes and durable repository-truth claims |
 
 The root `README.md` is a storefront and navigation page. It should not duplicate detailed methodology or evaluation procedure.
 
@@ -65,7 +71,7 @@ sources/evaluations/
 
 `data/repository-fixtures.json` is the canonical fixture-readiness registry.
 
-`docs/evaluations/workflow-evaluation-runbook.md` is generated from the registries by `scripts/update_workflow_runbook.py`.
+`docs/evaluations/operations/runbook.md` is generated from the registries by `scripts/update_workflow_runbook.py`.
 
 ## Archive policy
 

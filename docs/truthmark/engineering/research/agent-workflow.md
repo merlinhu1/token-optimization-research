@@ -38,7 +38,7 @@ Apply the synchronization workflow after an evaluation run, qualification/protoc
 
 1. Read the active contract in `AGENTS.md` and the relevant repo-local skill.
 2. Update machine authorities first, especially `data/workflow-sessions.json` and `data/repository-fixtures.json`.
-3. Regenerate `docs/evaluations/workflow-evaluation-runbook.md` from the registries.
+3. Regenerate `docs/evaluations/operations/runbook.md` from the registries.
 4. Reconcile active README, roadmap, current-findings, prompt, schema, skill, and Truthmark surfaces that report the changed state or policy.
 5. Search for the retired status, path, identifier, and policy wording. Delete a redundant document or template when it has no distinct maintained authority or current consumer.
 6. Preserve immutable protocol and evidence bytes; record current state in registries and generated views.

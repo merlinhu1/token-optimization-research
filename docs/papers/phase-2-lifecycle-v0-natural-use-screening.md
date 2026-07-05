@@ -385,9 +385,9 @@ Primary machine-readable authorities:
 - `sources/evaluations/protocols/` — immutable baseline and treatment execution contracts;
 - `sources/evaluations/workflow-sessions/<session-id>/` — compact four-file run bundles;
 - `sources/evaluations/workflow-sessions/*-vs-*.json` — matched comparison records;
-- `docs/evaluations/token-usage-and-quality-standards.md` — accounting and eligibility rules;
-- `docs/evaluations/evaluation-framework.md` — estimand and interpretation contract;
-- `docs/evaluations/workflow-evaluation-runbook.md` — generated operational index.
+- `docs/evaluations/design/token-and-quality-policy.md` — accounting and eligibility rules;
+- `docs/evaluations/design/framework.md` — estimand and interpretation contract;
+- `docs/evaluations/operations/runbook.md` — generated operational index.
 
 Repository validation commands:
 

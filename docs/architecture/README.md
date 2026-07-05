@@ -19,7 +19,7 @@ The repository exists to move evidence through those layers until it can support
 | Normalization | Decompose products into techniques and claims. | `data/techniques.json`, `docs/architecture/domain-model.md` |
 | Compatibility analysis | Model conflict and stackability by intervention surface. | `data/compatibility-edges.json`, `docs/architecture/compatibility-graph.md` |
 | Evaluation design | Define reproducible experiments and measurement contracts. | `docs/evaluations/`, `data/evaluations.json` |
-| Synthesis | Turn validated records into papers, standards, and prompts. | `docs/paper/`, `docs/standards/`, `prompts/` |
+| Synthesis | Turn validated records into papers, references, and prompts. | `docs/papers/`, `docs/reference/`, `prompts/` |
 
 ## Research kernel
 
