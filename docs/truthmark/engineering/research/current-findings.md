@@ -1,7 +1,7 @@
 ---
 status: active
 truth_kind: engineering-behavior
-last_reviewed: 2026-07-17
+last_reviewed: 2026-07-18
 ---
 
 # Current Findings
@@ -48,7 +48,7 @@ This document covers the active lifecycle-v0 portfolio and retained production b
 - Snip's `r1` natural-use screen used 7,893,367 tokens on Fastify (-39.64%), 19,165,738 on Beets (+10.00%), and 32,679,643 on Terraform (-24.69%). All three sessions are operationally valid and token-accounting eligible; verifier diagnostics were 2/3, 3/3, and 3/3.
 - Across the matched `r1` portfolio, Snip used 59,738,748 tokens, a reduction of 14,154,699 tokens (-19.16%). The Beets increase makes the lane effects mixed.
 - TokenJuice's `r1` natural-use screen used 8,582,919 tokens on Fastify (-34.37%), 18,143,576 on Beets (+4.13%), and 26,074,453 on Terraform (-39.91%). All three sessions are operationally valid and token-accounting eligible and passed 9/9 verifier tasks.
-- Across the matched `r1` portfolio, TokenJuice used 52,800,948 tokens, a reduction of 21,092,499 tokens (-28.54%), the largest aggregate reduction among the fourteen full-tool screens.
+- Across the matched `r1` portfolio, TokenJuice used 52,800,948 tokens, a reduction of 21,092,499 tokens (-28.54%), the largest aggregate reduction among the sixteen full-tool screens.
 - Default Headroom's `r1` natural-use screen used 10,742,031 tokens on Fastify (-17.86%), 25,934,311 on Beets (+48.85%), and 34,821,358 on Terraform (-19.75%). All three sessions are operationally valid and token-accounting eligible; verifier diagnostics were 2/3, 3/3, and 3/3.
 - Across the matched `r1` portfolio, default Headroom used 71,497,700 tokens, a reduction of 2,395,747 tokens (-3.24%). Its required proxy-only companion ablation used 77,931,962 tokens (+5.47%) with 8/9 verifier tasks passed; the ablation is not ranked as a separate full-tool screen.
 - Cartog's `r1` natural-use screen used 6,055,080 tokens on Fastify (-53.70%), 14,563,339 on Beets (-16.42%), and 39,515,464 on Terraform (-8.93%). All three sessions are operationally valid and token-accounting eligible; verifier diagnostics were 2/3, 3/3, and 3/3.
@@ -57,6 +57,7 @@ This document covers the active lifecycle-v0 portfolio and retained production b
 - Across the matched `r1` portfolio, CodeScope used 85,439,968 tokens, an increase of 11,546,521 tokens (+15.63%). Its large Terraform increase dominated reductions on the two medium lanes. No explicit model-issued CodeScope MCP call was observed; availability without forced invocation remains the frozen estimand.
 - SwarmVault's `r1` natural-use screen used 16,974,841 tokens on Fastify (+29.80%), 15,464,870 on Beets (-11.24%), and 28,715,407 on Terraform (-33.82%). All three sessions passed 3/3 verifier tasks and are token-accounting eligible.
 - Across the matched `r1` portfolio, SwarmVault used 61,155,118 tokens, a reduction of 12,738,329 tokens (-17.24%). Its offline heuristic warm index used the product-native deterministic 500-file cap on every lane. No explicit model-issued SwarmVault MCP call was observed; the sample is retained without forced uptake or an outcome-selected rerun.
+- Phase 3 keeps lifecycle v0 unchanged. The first frozen stack profile, `stack-tokenjuice-jcodemunch-mcp`, assigns terminal-output ownership to TokenJuice and retrieval-context ownership to jcodemunch MCP. It reuses retained compatible `r1` baseline and individual-tool samples; no stack outcome is claimed before provider execution.
 
 ## Evidence Boundary
 

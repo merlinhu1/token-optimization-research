@@ -70,6 +70,7 @@ SUPPORTED_WORKFLOW_TOOL_PROFILES = {
     "terminal-snip": "snip",
     "terminal-lowfat": "lowfat",
     "terminal-tokenjuice": "tokenjuice",
+    "stack-tokenjuice-jcodemunch-mcp": "tokenjuice-jcodemunch-mcp-stack",
     "behavior-caveman": "caveman",
     "artifact-ponytail": "ponytail",
 }
@@ -93,10 +94,11 @@ def build_profile_meta() -> dict[str, dict[str, Any]]:
                 "baseline"
                 if profile_type == "control"
                 else "stack_treatment"
-                if profile_type == "stack"
+                if profile_type == "tool_stack"
                 else "individual_tool_treatment"
             ),
             "profile_type": profile_type,
+            "objective_scope": str(source["objective_scope"]),
             "component_ids": [str(component["component_id"]) for component in source.get("components", [])],
             "enabled_surfaces": [str(surface) for surface in source.get("enabled_surfaces", [])],
             "disabled_overlaps": [str(surface) for surface in source.get("disabled_overlaps", [])],
@@ -279,6 +281,12 @@ def assert_profile_runnable(profile_id: str, root: Path = ROOT) -> None:
             or "integration is not qualified"
         )
         raise ValueError(f"profile {profile_id} is {profile.get('status')}: {reason}")
+
+
+def default_study_id(profile_id: str) -> str:
+    if PROFILE_META[profile_id]["objective_scope"] == "stack_effectiveness":
+        return "phase-3-lifecycle-v0-stack-screen"
+    return "phase-2-sequential-workflow-v1"
 
 
 def path_identity(path_text: str) -> dict[str, Any]:
@@ -809,6 +817,7 @@ def artifact_profile_label(profile_id: str) -> str:
     explicit = {
         "codescope-owner": "codescope",
         "swarmvault-owner": "swarmvault",
+        "stack-tokenjuice-jcodemunch-mcp": "tokenjuice-jcodemunch",
     }
     if profile_id == "baseline-bare-codex":
         return "baseline"
@@ -2069,7 +2078,11 @@ def workflow_session_record(
         "evidence_type": "workflow-simulation",
         "study_id": summary["study_id"],
         "experiment_group_id": summary["experiment_group_id"],
-        "objective": seq.get("objective", "individual_tool_effectiveness"),
+        "objective": (
+            pmeta["objective_scope"]
+            if pmeta["objective_scope"] != "control"
+            else seq.get("objective", "individual_tool_effectiveness")
+        ),
         "evidence_stage": "reproduction",
         "status": "completed" if accepted else "failed",
         "session_role": pmeta["session_role"],
@@ -2229,6 +2242,7 @@ def write_comparison_if_ready(seq: dict[str, Any], study_id: str, replicate_inde
         "schema_version": 3,
         "comparison_id": f"baseline-{artifact_lane_label(project_id)}-{DATE.replace('-', '')}-vs-{artifact_profile_label(treatment_profile_id)}-p-{protocol_fingerprint}-r{replicate_index}",
         "study_id": study_id,
+        "objective": treatment.get("objective"),
         "experiment_group_id": group_id,
         "comparison_design": "protocol-bound-shared-baseline-v3",
         "baseline_reuse_policy": "one operationally valid canonical baseline-bare-codex provider sample per causal comparison fingerprint and replicate is shared by all treatment comparisons; verifier/review outcomes and execution date do not select the sample",
@@ -2297,7 +2311,7 @@ def run_one(args: argparse.Namespace) -> dict[str, Any]:
         "protocol_fingerprint": protocol_fingerprint,
         "identity_policy": "frozen-protocol-and-replicate; execution date is metadata only",
     }
-    study_id = args.study_id or "phase-2-sequential-workflow-v1"
+    study_id = args.study_id or default_study_id(profile_id)
     comparison_profile_id = args.comparison_profile_id or (profile_id if profile_id != "baseline-bare-codex" else "")
     if args.prepare_only and not args.session_id:
         stamp = dt.datetime.now(dt.UTC).strftime("%Y%m%dT%H%M%S%fZ")

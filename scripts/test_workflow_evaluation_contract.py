@@ -273,6 +273,7 @@ class ActiveCampaignArchitectureTest(unittest.TestCase):
                 "retrieval-leanctx",
                 "retrieval-serena",
                 "retrieval-sigmap",
+                "stack-tokenjuice-jcodemunch-mcp",
                 "swarmvault-owner",
                 "terminal-rtk",
                 "terminal-snip",
@@ -383,6 +384,36 @@ class ActiveCampaignArchitectureTest(unittest.TestCase):
             runner.canonical_treatment_session_id("fastify-fastify", "codescope-owner", 1),
             runner.canonical_treatment_session_id("fastify-fastify", "swarmvault-owner", 1),
         )
+
+    def test_tokenjuice_jcodemunch_stack_composes_orthogonal_integrations(self) -> None:
+        profile_id = "stack-tokenjuice-jcodemunch-mcp"
+        tool_id = "tokenjuice-jcodemunch-mcp-stack"
+        runner.assert_profile_runnable(profile_id)
+        meta = runner.PROFILE_META[profile_id]
+        self.assertEqual(meta["profile_type"], "tool_stack")
+        self.assertEqual(meta["objective_scope"], "stack_effectiveness")
+        self.assertEqual(meta["session_role"], "stack_treatment")
+        self.assertEqual(runner.default_study_id(profile_id), "phase-3-lifecycle-v0-stack-screen")
+        self.assertEqual(
+            meta["component_ids"],
+            ["terminal-tokenjuice", "retrieval-jcodemunch-mcp"],
+        )
+        self.assertEqual(runner.SUPPORTED_WORKFLOW_TOOL_PROFILES[profile_id], tool_id)
+
+        cfg = runner.fixture.TOOL_CONFIGS[tool_id]
+        self.assertIs(runner.fixture.active_tool_config({}, profile_id), cfg)
+        self.assertEqual(cfg["component_tool_ids"], ["tokenjuice", "jcodemunch-mcp"])
+        self.assertEqual(cfg["executable"], str(runner.fixture.TOKENJUICE_BIN))
+        self.assertIn(str(runner.fixture.TOKENJUICE_BIN.parent), cfg["path_entries"])
+        self.assertEqual(cfg["mcp_server"], "jcodemunch")
+        self.assertIn("jcodemunch-mcp serve", cfg["mcp_args"][-1])
+        self.assertIn("TOKENJUICE_TELEMETRY", cfg["env"])
+        self.assertIn("JCODEMUNCH_LOG_LEVEL", cfg["env"])
+        self.assertIn(str(runner.fixture.TOKENJUICE_ROOT), cfg["mounts"])
+        self.assertIn(str(runner.fixture.JCODEMUNCH_WHEEL), cfg["mounts"])
+        self.assertEqual(cfg["warmup"]["kind"], "code-index-build")
+        self.assertIn("jcodemunch-mcp", cfg["warmup"]["command"])
+        self.assertEqual(runner.artifact_profile_label(profile_id), "tokenjuice-jcodemunch")
 
     def test_task_delta_can_exclude_treatment_owned_cache_paths(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
