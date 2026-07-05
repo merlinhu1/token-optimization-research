@@ -26,10 +26,8 @@ Start with the generated [operator runbook](operations/runbook.md).
 
 ## Current evidence
 
-The production surface remains lifecycle v0: Fastify, Beets, and Terraform each exercise feature implementation, behavior-preserving refactoring, and code review/correction in one persistent workflow. The repository retains 60 completed provider-backed sessions and 54 historical treatment comparisons.
+The production surface remains lifecycle v0: Fastify, Beets, and Terraform each exercise feature implementation, behavior-preserving refactoring, and code review/correction in one persistent workflow. The active session registry contains 18 completed provider-backed records: six bare-Codex controls and 12 objective-eligible treatments across four narrow conditions.
 
-The official-integration parity audit excludes 42 of the 54 treatment sessions from objective claims while preserving their provider-accounting evidence. The historical Phase 3 TokenJuice+jcodemunch screen is withdrawn as a product-effect decision. Corrected TokenJuice and neutral direct-binary jcodemunch profiles are versioned and no-provider-qualified but have no provider-backed samples; a product-guided jcodemunch condition would require a separate instruction-policy profile.
+The official-integration parity audit found 42 corrupted historical treatment sessions. At the experiment owner's direction, their session records, comparisons, compact bundles, and occupied protocols were deleted from the active corpus—not relabelled as baseline. Two deletion receipts record the affected identities and recovery commit. The historical Phase 3 TokenJuice+jcodemunch screen remains withdrawn.
 
-The current validity authority is the [official-integration parity audit](../papers/official-integration-parity-audit.md). Phase 2 and Phase 3 reports remain as historical accounting reports with superseding notices.
-
-Natural tool use remains unconstrained after valid assignment. Valid assignment now requires the pinned product's real Codex integration and, for MCP, a retained successful handshake. Product-authored routing guidance is part of the treatment when the pinned guide makes it part of normal setup; evaluator-authored steering remains forbidden.
+Thirteen corrected individual-tool profiles and 39 fixture-specific frozen protocols now cover every deleted individual condition. All 39 passed provider-free fixture preparation, host-integration, warm-state, and applicable initialize plus tools/list handshake gates; the retained machine receipt records every lane. Product-authored routing guidance is part of the treatment when normal pinned setup installs it; evaluator-authored steering remains forbidden. No corrected profile has a provider-backed sample.
