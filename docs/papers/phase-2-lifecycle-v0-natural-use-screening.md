@@ -1,6 +1,8 @@
 # Phase 2 report: lifecycle-v0 natural-use screening of token-saving tools for Codex workflows
 
-> **Report status:** production screening report. Results are valid scoped reproduction evidence, not population estimates, a universal tool ranking, or deployment recommendations.
+> **Report status:** historical provider-accounting report, superseded for treatment validity and product-effect interpretation by the [official-integration parity audit](official-integration-parity-audit.md). Tables preserve observed execution/token records; they are not a current tool ranking.
+>
+> **Superseding adjudication (2026-07-18):** 42 of 54 lifecycle-v0 treatment sessions are now objective-ineligible: 24 because the evaluated configuration did not implement the pinned product's required Codex treatment, and 18 because a plausible bounded/manual MCP assignment was not positively proven. Only Caveman, Ponytail, default Headroom, and the Headroom proxy-only ablation retain eligibility for their explicitly narrower estimands.
 
 **Report date:** 2026-07-18
 
@@ -16,11 +18,11 @@
 
 This report evaluates sixteen token-saving tools or bounded tool profiles, plus one required Headroom component ablation, on three frozen software-engineering lifecycle workflows. Each workflow contains feature implementation, behavior-preserving refactoring, and code review/correction in one persistent Codex session. Treatments were installed through their frozen declared integration surfaces and made available without evaluator-authored instructions to invoke, prefer, or quota them. The comparison therefore estimates assignment to the named treatment configuration, not treatment-on-the-treated behavior or an unevaluated broader product surface.
 
-The evidence contains 57 operationally valid provider runs: six bare-Codex baselines and 51 treatment sessions. Every run has provider-reported token components, three structured final-state verifier outcomes, frozen execution identity, isolation evidence, and a checksum-verified compact artifact bundle. Across 171 task outcomes, 164 passed and seven failed. All 57 tool-isolation and verifier-integrity audits passed, no prohibited external-retrieval event was recorded, and all 171 manifest entries independently matched their recorded SHA-256 hashes.
+The evidence contains 57 completed provider runs: six bare-Codex baselines and 51 treatment executions. Every run retains provider-reported token components, structured verifier outcomes, frozen execution identity, isolation evidence, and a checksum-verified compact artifact bundle. The post-run parity audit later excluded 42 treatment sessions from objective claims while preserving their execution and token-accounting records.
 
-In the matched `r1` screen, the three-lane bare baseline used 73.893 million provider tokens. Descriptively ordered aggregate treatment changes ranged from TokenJuice at -28.54% to CodeScope at +15.63%. TokenJuice combined the largest aggregate reduction with 9/9 verifier passes, but increased tokens on Beets. jcodemunch MCP and Serena were the only treatments with both 9/9 verifier passes and reductions on all three lanes; their aggregate changes were -17.58% and -3.27%, respectively. Cartog reduced all three lanes by an aggregate -18.62% but passed 8/9 tasks. SigMap and CodeScope increased aggregate tokens by 11.69% and 15.63%. Effects were strongly repository-dependent, and the Terraform lane contributed 58.72% of the matched baseline total.
+The historical matched `r1` tables range from TokenJuice at -28.54% to CodeScope at +15.63%. Those deltas remain factual arithmetic over retained provider totals, but most named treatment assignments were later found invalid or operationally unverified. They must not be interpreted as product effects, ordered as a tool ranking, or used for recommendations.
 
-These are first valid assignment samples—one treatment replicate per repository. Baseline replicate changes ranged from -31.32% to +29.28% by lane, independent quality review exists for only two of 57 sessions, and provider totals were dominated by cached input. The results support a preregistered replication program; they do not support stable effect sizes, a universal winner, or deployment-grade recommendations.
+The surviving objective-eligible evidence is limited to Caveman and Ponytail as always-on product-authored instruction policies, default Headroom as the wrapper treatment, and the Headroom proxy-only ablation. Corrected TokenJuice and jcodemunch protocols have no provider-backed samples yet.
 
 ## 1. Research question and claim boundary
 
@@ -28,7 +30,7 @@ The primary question is:
 
 > Under a frozen normal-user treatment configuration, how does cumulative provider-reported token use change relative to a compatible retained bare-Codex baseline on the same persistent lifecycle workflow?
 
-The primary estimand is **availability/natural use**. A treatment can operate through a CLI wrapper, MCP server, warm index, proxy, host integration, or product-authored instruction layer. The evaluator installs and validates that integration but does not add instructions requiring or preferring use. Explicit model-issued command counts are therefore not a universal uptake measure, and zero visible calls do not invalidate a treatment assignment.
+The historical protocol intended an **availability/natural-use** estimand, but the parity audit established that configuration was not enough to prove assignment. A valid product treatment must materialize the product's pinned Codex integration. An MCP treatment additionally requires a retained successful handshake or completed MCP call. Product-authored routing instructions are part of the treatment when the pinned product documentation identifies them as normal integration; evaluator-authored steering remains prohibited.
 
 The report permits the following claims:
 
@@ -402,8 +404,8 @@ git diff --check
 
 ## 13. Conclusion
 
-The lifecycle-v0 screen establishes a credible production evidence base for scoped token research: 57 valid provider runs, 51 matched comparisons, complete provider accounting, 171 structured task outcomes, clean isolation, and checksum-verified artifacts. It also shows why operation-level claims and single aggregate percentages are insufficient. Tool effects varied sharply by repository; cached context dominated the accounting boundary; seven task failures remained visible; and baseline lane variability was large.
+The lifecycle-v0 executions remain a well-preserved provider-accounting corpus, but the post-run integration audit narrowed their scientific use. Forty-two treatment sessions cannot support product effects: some never installed the product's required Codex mechanism, while others did not retain positive MCP assignment proof.
 
-TokenJuice produced the largest observed aggregate reduction with complete verifier success, while jcodemunch MCP uniquely combined a substantial aggregate reduction with reductions on all three lanes and 9/9 verifier passes. Serena also reduced every lane with 9/9 passes, but by a much smaller aggregate amount. Cartog, Snip, SwarmVault, CodeGraph, Graphify, Token Savior, Caveman, and RTK produced screening signals worth further study under different correctness or consistency profiles. SigMap and CodeScope are important negative observations rather than inconvenient records to discard.
+The current evidence therefore supports only the four eligible narrow conditions named above. Historical tables for TokenJuice, jcodemunch, RTK, snip, and the nine unverified MCP profiles are retained for forensic accounting rather than screening conclusions.
 
-The scientifically defensible next step is preregistered compatible replication of a narrowed set, preserving every sample and keeping assignment, mechanism activity, correctness, and provider-token accounting separate. Until that evidence accumulates, this report should be read as a production-grade screening report—not a universal ranking or deployment recommendation.
+The scientifically defensible next step is to qualify versioned official integrations before any new provider spend. Corrected TokenJuice and jcodemunch contracts now exist; the other excluded profiles require separate corrections and preregistration.

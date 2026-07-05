@@ -72,6 +72,8 @@ BASELINE_CODEX_NO_MCP_PROFILES = {"baseline-codex-no-mcp"}
 PROFILE_TOOL_CONFIG_OVERRIDES = {
     "headroom-default-codex": "headroom",
     "terminal-headroom": "headroom-proxy-only",
+    "terminal-tokenjuice-codex-hook-v1": "tokenjuice-codex-hook-v1",
+    "retrieval-jcodemunch-mcp-direct-v1": "jcodemunch-mcp-direct-v1",
     "stack-tokenjuice-jcodemunch-mcp": "tokenjuice-jcodemunch-mcp-stack",
 }
 CODEGRAPH_BIN = Path("/opt/data/tool-candidates/codegraph/dist/bin/codegraph.js")
@@ -346,9 +348,9 @@ TOOL_CONFIGS: dict[str, dict[str, Any]] = {
         },
     },
     "jcodemunch-mcp": {
-        "display_name": "jcodemunch MCP",
+        "display_name": "jcodemunch MCP (historical uv-launcher profile)",
         "lane_name": "retrieval-jcodemunch-mcp",
-        "surface": "retrieval/context",
+        "surface": "retrieval/context-neutral-availability",
         "mcp_server": "jcodemunch",
         "allowed_terms": ["jcodemunch", "jcodemunch-mcp"],
         "data_dir_name": "jcodemunch-mcp",
@@ -372,6 +374,35 @@ TOOL_CONFIGS: dict[str, dict[str, Any]] = {
                 "index",
                 "{repo}",
             ],
+            "output_name": "jcodemunch-warmup-output.txt",
+            "metadata_name": "jcodemunch-warmup-metadata.json",
+            "timeout_seconds": 1200,
+        },
+    },
+    "jcodemunch-mcp-direct-v1": {
+        "display_name": "jcodemunch MCP direct-binary neutral availability v1",
+        "lane_name": "retrieval-jcodemunch-mcp-direct-v1",
+        "surface": "retrieval/context-neutral-mcp-availability",
+        "mcp_server": "jcodemunch",
+        "allowed_terms": ["jcodemunch", "jcodemunch-mcp"],
+        "data_dir_name": "jcodemunch-mcp-direct-v1",
+        "mcp_command": "{tool_data_dir}/venv/bin/jcodemunch-mcp",
+        "mcp_args": [],
+        "env": {"JCODEMUNCH_LOG_LEVEL": "ERROR"},
+        "mounts": [str(JCODEMUNCH_ROOT), str(JCODEMUNCH_WHEEL)],
+        "host_integration": {
+            "install_commands": [
+                [str(UV_BIN), "venv", "{tool_data_dir}/venv", "--python", "python3"],
+                [str(UV_BIN), "pip", "install", "--python", "{tool_data_dir}/venv/bin/python", str(JCODEMUNCH_WHEEL)],
+            ],
+            "verify_commands": [["{tool_data_dir}/venv/bin/jcodemunch-mcp", "--help"]],
+            "required_files": ["{tool_data_dir}/venv/bin/jcodemunch-mcp"],
+        },
+        "mcp_handshake": {"required": True, "method": "initialize-and-tools-list"},
+        "default_tool_state": "warm-index",
+        "warmup": {
+            "kind": "code-index-build",
+            "command": ["{tool_data_dir}/venv/bin/jcodemunch-mcp", "index", "{repo}"],
             "output_name": "jcodemunch-warmup-output.txt",
             "metadata_name": "jcodemunch-warmup-metadata.json",
             "timeout_seconds": 1200,
@@ -407,15 +438,34 @@ TOOL_CONFIGS: dict[str, dict[str, Any]] = {
         "default_tool_state": "cold-cli",
     },
     "tokenjuice": {
-        "display_name": "TokenJuice",
+        "display_name": "TokenJuice (historical CLI-only profile)",
         "lane_name": "terminal-tokenjuice",
-        "surface": "terminal/tool-output-compaction",
+        "surface": "terminal/tool-output-compaction-cli-only",
         "allowed_terms": ["tokenjuice"],
         "data_dir_name": "tokenjuice",
         "executable": str(TOKENJUICE_BIN),
         "path_entries": [str(TOKENJUICE_BIN.parent)],
         "mounts": [str(TOKENJUICE_ROOT)],
         "env": {"TOKENJUICE_TELEMETRY": "0"},
+        "preflight_command": ["tokenjuice", "--version"],
+        "default_tool_state": "cold-cli",
+    },
+    "tokenjuice-codex-hook-v1": {
+        "display_name": "TokenJuice Codex hook v1",
+        "lane_name": "terminal-tokenjuice-codex-hook-v1",
+        "surface": "codex-post-tool-use-hook/terminal-output-compaction",
+        "allowed_terms": ["tokenjuice"],
+        "data_dir_name": "tokenjuice-codex-hook-v1",
+        "executable": str(TOKENJUICE_BIN),
+        "path_entries": [str(TOKENJUICE_BIN.parent)],
+        "mounts": [str(TOKENJUICE_ROOT)],
+        "env": {"TOKENJUICE_TELEMETRY": "0"},
+        "codex_features": {"hooks": True},
+        "host_integration": {
+            "install_commands": [["tokenjuice", "install", "codex"]],
+            "verify_commands": [["tokenjuice", "doctor", "codex"]],
+            "required_files": ["{codex_home}/hooks.json"],
+        },
         "preflight_command": ["tokenjuice", "--version"],
         "default_tool_state": "cold-cli",
     },
@@ -782,34 +832,45 @@ def format_toml_array(values: list[str]) -> str:
     return "[" + ", ".join(json.dumps(v) for v in values) + "]"
 
 
-def render_mcp_args(record: dict[str, Any], codex_home: Path, cfg: dict[str, Any]) -> list[str]:
+def render_tool_value(value: Any, record: dict[str, Any], codex_home: Path, cfg: dict[str, Any]) -> str:
     repo = rel_or_abs(record["target"]["repository_path"]) if record.get("target") else ROOT
-    data_dir = tool_data_dir(codex_home, cfg)
-    return [str(arg).format(repo=repo, codex_home=codex_home, tool_data_dir=data_dir) for arg in cfg.get("mcp_args", [])]
+    return str(value).format(
+        repo=repo,
+        codex_home=codex_home,
+        tool_data_dir=tool_data_dir(codex_home, cfg),
+        repo_slug=repo.name.replace("-", "_"),
+    )
+
+
+def render_mcp_args(record: dict[str, Any], codex_home: Path, cfg: dict[str, Any]) -> list[str]:
+    return [render_tool_value(arg, record, codex_home, cfg) for arg in cfg.get("mcp_args", [])]
 
 
 def write_codex_config(codex_home: Path, record: dict[str, Any], pid: str) -> None:
+    cfg = active_tool_config(record, pid)
+    hooks_enabled = bool((cfg or {}).get("codex_features", {}).get("hooks", False))
     lines = [
         'sandbox_mode = "danger-full-access"',
         'approval_policy = "never"',
         "",
         "[features]",
-        "hooks = false",
+        f"hooks = {'true' if hooks_enabled else 'false'}",
         "",
     ]
-    cfg = active_tool_config(record, pid)
     if cfg:
         executable = cfg.get("executable") or cfg.get("mcp_command")
-        if executable:
-            command = Path(str(executable))
-            if command.is_absolute() and not command.exists():
+        rendered_executable = render_tool_value(executable, record, codex_home, cfg) if executable else ""
+        if rendered_executable:
+            command = Path(rendered_executable)
+            generated_by_install = bool(cfg.get("host_integration")) and "{" in str(executable)
+            if command.is_absolute() and not command.exists() and not generated_by_install:
                 raise FileNotFoundError(f"{cfg['display_name']} command not found: {command}")
         server = cfg.get("mcp_server")
         if server:
             lines.extend(
                 [
                     f"[mcp_servers.{server}]",
-                    f"command = {json.dumps(str(cfg['mcp_command']))}",
+                    f"command = {json.dumps(rendered_executable)}",
                     f"args = {format_toml_array(render_mcp_args(record, codex_home, cfg))}",
                     "",
                 ]
@@ -964,6 +1025,12 @@ def apply_model_network_isolation(env: dict[str, str]) -> None:
     path_entries = env.get("PATH", "").split(":")
     if MODEL_NETWORK_DENIED_BIN not in path_entries:
         env["PATH"] = ":".join([MODEL_NETWORK_DENIED_BIN, *path_entries])
+
+
+def codex_hook_args(cfg: dict[str, Any] | None) -> list[str]:
+    if bool((cfg or {}).get("codex_features", {}).get("hooks", False)):
+        return []
+    return ["--disable", "hooks"]
 
 
 def codex_isolation_args(codex_home: Path | None = None) -> list[str]:
@@ -1391,6 +1458,144 @@ def missing_declared_filter_commands(
     return missing
 
 
+def prepare_profile_integration(
+    record: dict[str, Any],
+    pid: str,
+    codex_home: Path,
+    run_dir: Path,
+    *,
+    backend: str,
+    docker_image: str,
+) -> dict[str, Any]:
+    cfg = active_tool_config(record, pid)
+    integration = (cfg or {}).get("host_integration") or {}
+    if not integration:
+        result = {
+            "profile_id": pid,
+            "passed": True,
+            "skipped": True,
+            "install_exit_codes": [],
+            "verify_exit_codes": [],
+            "missing_required_files": [],
+            "artifacts": [],
+        }
+        (run_dir / "tool-host-integration.json").write_text(json.dumps(result, indent=2) + "\n")
+        return result
+
+    assert cfg is not None
+    env = codex_env(codex_home, containerized=backend == "docker", cfg=cfg)
+    env.update(tool_env_for_record(record, pid, codex_home))
+    mounts = container_mounts_for_record(record, codex_home, include_repo=True, cfg=cfg)
+    artifacts: list[str] = []
+    install_exit_codes: list[int] = []
+    verify_exit_codes: list[int] = []
+
+    for phase, commands, exits in (
+        ("install", integration.get("install_commands", []), install_exit_codes),
+        ("verify", integration.get("verify_commands", []), verify_exit_codes),
+    ):
+        for index, raw_command in enumerate(commands, start=1):
+            command = [render_tool_value(part, record, codex_home, cfg) for part in raw_command]
+            artifact = run_dir / f"tool-host-{phase}-{index}.txt"
+            proc = run_backend(
+                command,
+                backend=backend,
+                docker_image=docker_image,
+                cwd=rel_or_abs(record["target"]["repository_path"]) if record.get("target") else codex_home / "home",
+                env=env,
+                stdout_path=artifact,
+                timeout=int(integration.get("timeout_seconds", 300)),
+                mounts=mounts,
+            )
+            exits.append(proc.returncode)
+            artifacts.append(str(artifact.relative_to(ROOT)) if artifact.is_relative_to(ROOT) else str(artifact))
+            if proc.returncode != 0:
+                break
+        if exits and exits[-1] != 0:
+            break
+
+    required_files = [Path(render_tool_value(value, record, codex_home, cfg)) for value in integration.get("required_files", [])]
+    missing_required_files = [str(path) for path in required_files if not path.is_file()]
+    passed = all(code == 0 for code in [*install_exit_codes, *verify_exit_codes]) and not missing_required_files
+    result = {
+        "profile_id": pid,
+        "passed": passed,
+        "skipped": False,
+        "install_exit_codes": install_exit_codes,
+        "verify_exit_codes": verify_exit_codes,
+        "missing_required_files": missing_required_files,
+        "required_files": [str(path) for path in required_files],
+        "artifacts": artifacts,
+    }
+    (run_dir / "tool-host-integration.json").write_text(json.dumps(result, indent=2) + "\n")
+
+    manifest_path = run_dir / "codex-home-manifest.json"
+    if manifest_path.is_file():
+        manifest = json.loads(manifest_path.read_text())
+        manifest["hooks_enabled"] = bool(cfg.get("codex_features", {}).get("hooks", False))
+        manifest["host_integration_prepared"] = passed
+        manifest["host_integration_receipt"] = str((run_dir / "tool-host-integration.json").relative_to(ROOT))
+        manifest_path.write_text(json.dumps(manifest, indent=2) + "\n")
+    return result
+
+
+def probe_mcp_handshake(
+    record: dict[str, Any],
+    pid: str,
+    codex_home: Path,
+    run_dir: Path,
+    *,
+    backend: str,
+    docker_image: str,
+) -> dict[str, Any]:
+    cfg = active_tool_config(record, pid)
+    handshake = (cfg or {}).get("mcp_handshake") or {}
+    receipt_path = run_dir / "mcp-handshake.json"
+    if not handshake.get("required"):
+        result = {"profile_id": pid, "passed": True, "required": False, "skipped": True}
+        receipt_path.write_text(json.dumps(result, indent=2) + "\n")
+        return result
+
+    assert cfg is not None
+    env = codex_env(codex_home, containerized=backend == "docker", cfg=cfg)
+    env.update(tool_env_for_record(record, pid, codex_home))
+    mounts = container_mounts_for_record(record, codex_home, include_repo=True, cfg=cfg)
+    probe_script = ROOT / "scripts" / "probe_mcp_stdio.py"
+    add_mount(mounts, probe_script, mode="ro")
+    command = [
+        "python3",
+        str(probe_script),
+        "--command",
+        render_tool_value(cfg["mcp_command"], record, codex_home, cfg),
+        "--cwd",
+        str(rel_or_abs(record["target"]["repository_path"])),
+        "--timeout",
+        str(handshake.get("timeout_seconds", 30)),
+    ]
+    for arg in render_mcp_args(record, codex_home, cfg):
+        command.extend(["--arg", arg])
+    proc = run_backend(
+        command,
+        backend=backend,
+        docker_image=docker_image,
+        cwd=rel_or_abs(record["target"]["repository_path"]),
+        env=env,
+        stdout_path=receipt_path,
+        timeout=int(handshake.get("timeout_seconds", 30)) + 10,
+        mounts=mounts,
+    )
+    try:
+        result = json.loads(receipt_path.read_text())
+    except (OSError, json.JSONDecodeError):
+        result = {"passed": False, "errors": ["MCP handshake probe did not emit a valid JSON receipt"]}
+    result["profile_id"] = pid
+    result["required"] = True
+    result["probe_exit_code"] = proc.returncode
+    result["passed"] = bool(result.get("passed")) and proc.returncode == 0
+    receipt_path.write_text(json.dumps(result, indent=2, sort_keys=True) + "\n")
+    return result
+
+
 def preflight_codex(record: dict[str, Any], codex_home: Path, pid: str, run_dir: Path, *, backend: str, docker_image: str) -> dict[str, Any]:
     ensure_codex_native_binary_executable()
     cfg = active_tool_config(record, pid)
@@ -1627,6 +1832,7 @@ def run_codex(record: dict[str, Any], pid: str, codex_home: Path, run_dir: Path,
     prompt = write_prompt(record, run_dir, pid, protocol)
     events = run_dir / "codex-events.jsonl"
     last = run_dir / "codex-last-message.txt"
+    cfg = active_tool_config(record, pid)
     codex_cmd = [
         "codex",
         "exec",
@@ -1634,8 +1840,7 @@ def run_codex(record: dict[str, Any], pid: str, codex_home: Path, run_dir: Path,
         "--json",
         "--color",
         "never",
-        "--disable",
-        "hooks",
+        *codex_hook_args(cfg),
         "--ignore-rules",
         "--cd",
         str(repo),
@@ -1643,7 +1848,6 @@ def run_codex(record: dict[str, Any], pid: str, codex_home: Path, run_dir: Path,
         str(last),
         "-",
     ]
-    cfg = active_tool_config(record, pid)
     wrapper = (cfg or {}).get("codex_wrapper") if cfg else None
     input_path_for_proc: Path | None = prompt
     if wrapper:
@@ -1802,12 +2006,46 @@ def main(argv: list[str]) -> int:
     if not container_preflight["passed"]:
         print(json.dumps(container_preflight, indent=2))
         return 6
+    integration = prepare_profile_integration(
+        record,
+        pid,
+        codex_home,
+        run_dir,
+        backend=args.execution_backend,
+        docker_image=args.docker_image,
+    )
+    if not integration["passed"]:
+        print(json.dumps(integration, indent=2))
+        return 7
     preflight = preflight_codex(record, codex_home, pid, run_dir, backend=args.execution_backend, docker_image=args.docker_image)
     if not preflight["passed"]:
         print(json.dumps(preflight, indent=2))
         return 3
     if args.prepare_only:
-        print(json.dumps({"prepared": True, "profile_id": pid, "codex_home": str(codex_home), "run_dir": str(run_dir)}, indent=2))
+        workspace_code = prepare_profile_workspace(
+            record,
+            pid,
+            codex_home,
+            run_dir,
+            protocol,
+            backend=args.execution_backend,
+            docker_image=args.docker_image,
+        )
+        if workspace_code != 0:
+            print(f"profile workspace preparation failed with exit {workspace_code}")
+            return 5
+        handshake = probe_mcp_handshake(
+            record,
+            pid,
+            codex_home,
+            run_dir,
+            backend=args.execution_backend,
+            docker_image=args.docker_image,
+        )
+        if not handshake["passed"]:
+            print(json.dumps(handshake, indent=2))
+            return 8
+        print(json.dumps({"prepared": True, "profile_id": pid, "codex_home": str(codex_home), "run_dir": str(run_dir), "host_integration": integration, "mcp_handshake": handshake, "tool_warmup_exit_code": workspace_code}, indent=2))
         return 0
 
     setup_code = 0 if args.skip_setup else run_setup(record, run_dir, backend=args.execution_backend, docker_image=args.docker_image, codex_home=codex_home)
@@ -1821,6 +2059,17 @@ def main(argv: list[str]) -> int:
         capture_diff(record, run_dir)
         print(f"profile workspace preparation failed with exit {workspace_code}")
         return 5
+    handshake = probe_mcp_handshake(
+        record,
+        pid,
+        codex_home,
+        run_dir,
+        backend=args.execution_backend,
+        docker_image=args.docker_image,
+    )
+    if not handshake["passed"]:
+        print(json.dumps(handshake, indent=2))
+        return 8
 
     codex_code = run_codex(record, pid, codex_home, run_dir, args.timeout, protocol, backend=args.execution_backend, docker_image=args.docker_image)
     usage_code = extract_usage(run_dir)

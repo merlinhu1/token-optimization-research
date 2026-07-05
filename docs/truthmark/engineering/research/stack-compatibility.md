@@ -23,7 +23,7 @@ It does not store raw tool-source inspection notes.
 - The repository stores techniques in `data/techniques.json`.
 - The repository stores compatibility edges in `data/compatibility-edges.json`.
 - The Phase 1 report frames current stack hypotheses as compatibility-safe research candidates, not measured selections.
-- The first Phase 3 execution profile, `stack-tokenjuice-jcodemunch-mcp`, freezes TokenJuice as terminal-output owner and jcodemunch MCP as retrieval-context owner on lifecycle v0. Its three accepted sessions used 67,155,585 provider tokens: 9.12% fewer than bare Codex but 27.19% more than TokenJuice alone. The stack did not beat the better component in any lane and does not advance.
+- The historical `stack-tokenjuice-jcodemunch-mcp` executions are excluded from stack-effect claims. TokenJuice's Codex hook was absent and disabled; jcodemunch lacked the pinned direct-binary path, positive handshake proof, and an explicit neutral-versus-guided estimand. The retained 67,155,585-token total is forensic accounting, and the prior “does not advance” conclusion is withdrawn.
 
 ## Product Truth Links
 
@@ -67,8 +67,8 @@ This model is the repository's architecture layer for combining token-saving too
 - Decision (2026-06-26): Compatibility-safe stacks should avoid duplicate ownership of the same surface.
 - Decision (2026-06-26): Installer or orchestrator tools are evaluated separately from reducers.
 - Decision (2026-06-26): Multi-component stack claims require ablation planning before benchmark conclusions.
-- Decision (2026-07-18): The first Phase 3 stack reuses lifecycle-v0 baseline and component `r1` samples and runs only the new TokenJuice-plus-jcodemunch treatment profile.
-- Decision (2026-07-18): TokenJuice plus jcodemunch MCP does not advance under the evaluated model/runtime condition because it failed the incremental-value criterion despite passing all verifier and integrity checks.
+- Decision (2026-07-18): The historical TokenJuice+jcodemunch stack decision is withdrawn because the intended component assignments were not validly installed/proven. Preserve its provider-accounting records as excluded evidence.
+- Decision (2026-07-18): A future stack requires separately qualified versioned individual integrations and a new preregistered stack identity.
 
 ## Rationale
 
