@@ -1,7 +1,7 @@
 ---
 status: active
 doc_type: route-index
-last_reviewed: 2026-07-14
+last_reviewed: 2026-07-18
 ---
 
 # Truthmark Areas
@@ -21,7 +21,7 @@ Code surface:
 - data/repositories.json
 - data/evaluations.json
 - docs/tool-dossiers/**
-- docs/reports/**
+- docs/papers/**
 - docs/research/tool-research-strategy.md
 - scripts/validate_repository.py
 - scripts/audit_dossier_snapshots.py
@@ -45,8 +45,8 @@ truth_documents:
 Code surface:
 - docs/methodology/README.md
 - docs/research/**
-- docs/reports/**
-- docs/standards/**
+- docs/papers/**
+- docs/reference/research-standards.md
 - prompts/researcher.md
 - prompts/paper-writer.md
 - templates/report.md
@@ -75,7 +75,7 @@ Code surface:
 - data/workflow-task-sequences.json
 - data/workflow-sessions.json
 - docs/evaluations/**
-- docs/evaluations/sequential-workflow-runner.md
+- docs/evaluations/operations/runner-reference.md
 - scripts/audit_tool_isolation.py
 - scripts/extract_codex_usage.py
 - scripts/generate_workflow_qualification.py
@@ -114,9 +114,9 @@ truth_documents:
 ```
 
 Code surface:
-- docs/evaluations/token-usage-and-quality-standards.md
-- docs/evaluations/evaluation-framework.md
-- docs/evaluations/immediately-usable-flows.md
+- docs/evaluations/design/token-and-quality-policy.md
+- docs/evaluations/design/framework.md
+- docs/evaluations/operations/workflow-guide.md
 - prompts/evaluator.md
 - templates/evaluation-record.md
 - templates/evaluation-run-record.json
@@ -139,9 +139,9 @@ truth_documents:
 Code surface:
 - data/compatibility-edges.json
 - data/techniques.json
-- docs/taxonomy/compatibility-taxonomy.md
+- docs/reference/compatibility-taxonomy.md
 - docs/architecture/compatibility-graph.md
-- docs/reports/phase-1-compatibility-safe-token-saving-stacks.md
+- docs/papers/phase-1-compatibility-safe-token-saving-stacks.md
 - docs/tool-dossiers/**
 - .agents/skills/stack-ablation-planner.md
 
@@ -164,7 +164,7 @@ Code surface:
 - docs/research/roadmap.md
 - data/repositories.json
 - data/tool-analysis-backlog.json
-- docs/reports/**
+- docs/papers/**
 - docs/tool-dossiers/**
 
 Update truth when:
@@ -212,4 +212,4 @@ Update truth when:
 
 - ../../../.truthmark/config.yml
 - ../../../AGENTS.md
-- ../../../docs/research/report-writing-and-methodology-skill-patterns.md
+- ../../../docs/methodology/report-writing-patterns.md

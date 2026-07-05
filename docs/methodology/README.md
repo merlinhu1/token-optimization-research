@@ -2,6 +2,15 @@
 
 This project uses a source-grounded, compatibility-first research workflow. Tool decisions require inspecting source code logic; README summaries, repository metadata, and integration-path discovery are lead-generation inputs, not decision evidence.
 
+## Documents in this section
+
+- [Discovery protocol](discovery-protocol.md)
+- [Evidence and provenance](evidence-and-provenance.md)
+- [Report-writing patterns](report-writing-patterns.md)
+- [Graphify discovery correction case study](case-studies/graphify-discovery-correction.md)
+
+The active roadmap lives in [`../research/`](../research/README.md); supporting standards and literature live in [`../reference/`](../reference/README.md).
+
 ## Research workflow
 
 1. **Discover** repositories and papers through GitHub search, web search, benchmark repositories, paper indexes, issue threads, community reports, and citation chaining.

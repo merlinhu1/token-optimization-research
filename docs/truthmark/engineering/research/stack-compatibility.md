@@ -89,7 +89,7 @@ Surface ownership makes stack design testable and reviewable.
 
 - ../../../../data/compatibility-edges.json
 - ../../../../data/techniques.json
-- ../../../../docs/taxonomy/compatibility-taxonomy.md
+- ../../../../docs/reference/compatibility-taxonomy.md
 - ../../../../docs/architecture/compatibility-graph.md
-- ../../../../docs/reports/phase-1-compatibility-safe-token-saving-stacks.md
+- ../../../../docs/papers/phase-1-compatibility-safe-token-saving-stacks.md
 - ../../../../.agents/skills/stack-ablation-planner.md

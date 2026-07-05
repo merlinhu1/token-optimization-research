@@ -1,6 +1,6 @@
 # Warm-state workflow lane runner
 
-This page documents runner details. The maintained operator runbook is `docs/evaluations/workflow-evaluation-runbook.md`, rendered from the active workflow registries.
+This page documents runner details. The maintained operator runbook is `docs/evaluations/operations/runbook.md`, rendered from the active workflow registries.
 
 ## What this runner does
 

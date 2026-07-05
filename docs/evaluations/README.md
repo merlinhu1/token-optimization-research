@@ -1,11 +1,33 @@
 # Evaluations
 
-The production evaluation surface is lifecycle v0 only. Three pinned fixtures—Fastify, Beets, and Terraform—each exercise feature implementation, behavior-preserving refactor, and code review/correction in one persistent workflow.
+This directory separates evaluation contracts from operator instructions and historical plans.
 
-Each lane has two retained operationally valid baseline replicates (`r0` and `r1`) in `data/workflow-sessions.json`, with compact evidence under `sources/evaluations/workflow-sessions/`. Verifier and optional source-review outcomes are diagnostic; complete provider usage and execution integrity determine token-accounting eligibility.
+## Run an evaluation
 
-Sixteen natural-use treatment screens are complete: Caveman, RTK, Serena, Ponytail, Token Savior, Graphify, CodeGraph, jcodemunch MCP, SigMap, LeanCTX, Snip, TokenJuice, Headroom, Cartog, CodeScope, and SwarmVault each produced three compatible `r1` paired comparisons. CodeScope used 15.63% more aggregate provider tokens than the matched baseline; SwarmVault used 17.24% fewer. Both newest screens passed 9/9 verifier tasks. Headroom's required proxy-only companion ablation used 5.47% more tokens than the matched baseline and is not ranked as a separate full-tool screen. These are first valid assignment-level samples under each product's frozen integration. Neither newest screen produced an explicit model-issued MCP tool call; natural availability without forced invocation remains the frozen estimand, so zero call uptake is reported diagnostically rather than used to discard or rerun the samples. Treat every result as an initial single-replicate screen rather than a stable estimate. Start with `workflow-evaluation-runbook.md`, then use `token-usage-and-quality-standards.md` and `cumulative-result-schema.md` for preregistered natural-use replication.
+Start with the generated [operator runbook](operations/runbook.md).
 
-The production screening synthesis is [`../reports/phase-2-lifecycle-v0-natural-use-screening.md`](../reports/phase-2-lifecycle-v0-natural-use-screening.md).
+- [Runner reference](operations/runner-reference.md) — command-line and resume details
+- [Workflow guide](operations/workflow-guide.md) — the active lifecycle-v0 flows
+- [Fixture guide](operations/fixture-guide.md) — fixture layout and preparation
 
-An artifact-packaging repair removed treatment-generated Graphify indexes and CodeScope embedding caches that had been accidentally captured inside source-diff checkpoints. The repair did not alter source changes, provider events or usage, verifier output, comparisons, or interpretation. Each repaired `run.json` retains the original artifact hashes and sizes, and `data/workflow-sessions.json` identifies the four affected bundles.
+## Understand the design
+
+- [Evaluation framework](design/framework.md) — estimand, eligibility, and interpretation
+- [Persistent workflow model](design/workflow-model.md) — why tasks run in one resumed session
+- [Result schema](design/result-schema.md) — cumulative result structure
+- [Fixture design](design/fixture-design.md) — fixture and verifier contract
+- [Token and quality policy](design/token-and-quality-policy.md) — provider accounting and diagnostic quality
+- [Tool isolation policy](design/tool-isolation-policy.md) — treatment isolation requirements
+
+## Plans and templates
+
+- [`plans/`](plans/) contains phase plans retained for historical context.
+- The reusable [evaluation protocol template](../../templates/evaluation-protocol.md) lives with the other repository-wide templates.
+
+## Current evidence
+
+The production surface is lifecycle v0 only. Fastify, Beets, and Terraform each exercise feature implementation, behavior-preserving refactoring, and code review/correction in one persistent workflow. The repository retains 57 operationally valid provider-backed sessions and 51 matched treatment comparisons.
+
+The current synthesis is the [Phase 2 lifecycle-v0 natural-use screening paper](../papers/phase-2-lifecycle-v0-natural-use-screening.md).
+
+Verifier and optional source-review outcomes are diagnostic; complete provider usage and execution integrity determine token-accounting eligibility. Natural availability without forced invocation remains the treatment boundary.

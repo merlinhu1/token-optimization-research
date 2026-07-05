@@ -82,5 +82,5 @@ An artifact-packaging audit found that the three Graphify bundles had included g
 - ../../../../data/repository-fixtures.json
 - ../../../../data/workflow-sessions.json
 - ../../../../sources/evaluations/workflow-sessions/
-- ../../../../docs/evaluations/workflow-evaluation-runbook.md
-- ../../../../docs/reports/phase-2-lifecycle-v0-natural-use-screening.md
+- ../../../../docs/evaluations/operations/runbook.md
+- ../../../../docs/papers/phase-2-lifecycle-v0-natural-use-screening.md

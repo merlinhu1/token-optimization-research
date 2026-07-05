@@ -9,7 +9,7 @@ from pathlib import Path
 from typing import Any
 
 ROOT = Path(__file__).resolve().parents[1]
-RUNBOOK = ROOT / "docs" / "evaluations" / "workflow-evaluation-runbook.md"
+RUNBOOK = ROOT / "docs" / "evaluations" / "operations" / "runbook.md"
 SEQUENCES = ROOT / "data" / "workflow-task-sequences.json"
 FIXTURES = ROOT / "data" / "repository-fixtures.json"
 SESSIONS = ROOT / "data" / "workflow-sessions.json"

@@ -26,9 +26,9 @@ Define:
 
 - `data/workflow-task-sequences.json`
 - `data/workflow-sessions.json`
-- `docs/evaluations/workflow-evaluation-runbook.md`
-- `docs/evaluations/technique-protocol-template.md`
-- `docs/evaluations/token-usage-and-quality-standards.md`
+- `docs/evaluations/operations/runbook.md`
+- `templates/evaluation-protocol.md`
+- `docs/evaluations/design/token-and-quality-policy.md`
 - `sources/evaluations/protocols/`
 - `sources/evaluations/workflow-sessions/`
 
