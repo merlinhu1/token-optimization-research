@@ -14,7 +14,9 @@ The repository retains operationally valid Fastify, Beets, and Terraform provide
 
 Every lane uses one pinned repository snapshot and one persistent model session. The controller applies all three independently qualified start conditions before prompt 1, discloses prompts in order, preserves model/tool state, and runs all concealed verifiers after prompt 3.
 
-Phase 3 keeps these lifecycle-v0 contracts unchanged. Its first completed stack screen, `stack-tokenjuice-jcodemunch-mcp`, composes TokenJuice as the terminal-output owner with jcodemunch MCP as the retrieval-context owner and reuses the retained `r1` baseline and individual-tool samples. The stack used 9.12% fewer provider tokens than bare Codex but 27.19% more than TokenJuice alone, so it did not advance.
+A 2026-07-18 official-integration audit found that 42 of 54 historical treatment sessions cannot support product-effect claims. Twenty-four used configurations that did not implement the pinned product's required Codex treatment; 18 additional sessions had plausible bounded/manual MCP setup but lacked positive operational-assignment proof. Their provider execution and token totals remain preserved as excluded forensic records. The prior TokenJuice+jcodemunch stack decision is withdrawn.
+
+The currently runnable corrected treatment contracts are `terminal-tokenjuice-codex-hook-v1` and `retrieval-jcodemunch-mcp-direct-v1`. TokenJuice represents its official hook integration; jcodemunch represents neutral direct-binary MCP availability with a mandatory handshake. A product-guided jcodemunch condition would be a separate instruction-policy treatment. These contracts have completed no-provider qualification only; no corrected provider-backed treatment session has run.
 
 ## Documentation
 
@@ -33,7 +35,8 @@ Start with [`docs/README.md`](docs/README.md). The main destinations are:
 - `sources/evaluations/fixtures/` — task prompts, start patches, controller acceptance, and generated v0 qualification evidence.
 - `data/workflow-sessions.json` — retained provider-backed token samples, diagnostic model outcomes, and experiment-invalid exclusions.
 - `docs/evaluations/operations/runbook.md` — generated operator runbook.
-- `docs/papers/phase-2-lifecycle-v0-natural-use-screening.md` — production screening report for the retained baseline and treatment evidence.
+- `docs/papers/official-integration-parity-audit.md` — current treatment-validity and disposition authority.
+- `docs/papers/phase-2-lifecycle-v0-natural-use-screening.md` — historical provider-accounting report, retained with superseding adjudication.
 
 ## Validation
 

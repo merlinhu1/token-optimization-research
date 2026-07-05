@@ -1,0 +1,53 @@
+{
+  "schema_version": "official-integration-qualification-v1",
+  "qualified_at": "2026-07-18",
+  "mode": "no-provider-prepare-only",
+  "matrix_root": "/opt/data/eval-workflow-lanes/workflow-matrix-20260718T085744295994Z-p1269694-r0",
+  "matrix_execution_passed": true,
+  "repository_validation_passed": true,
+  "scope_note": "Final exact-contract Fastify smoke for each corrected integration. The runner warms profile workspace state before an MCP handshake. Beets and Terraform descriptors were generated and repository-validated; no provider-backed treatment session was launched.",
+  "lanes": [
+    {
+      "sequence_id": "fastify-lifecycle-sequence-v0",
+      "profile_id": "terminal-tokenjuice-codex-hook-v1",
+      "lane_exit_code": 0,
+      "protocol_path": "sources/evaluations/protocols/fastify-lifecycle-sequence-v0-terminal-tokenjuice-codex-hook-v1-49c7d8982047.json",
+      "protocol_sha256": "08c8a0ac670b573ed040cc330ccdcd59399e9ef81ae5ce5682fd67d5c730eb1f",
+      "preparation_order": [
+        "host-integration",
+        "codex-preflight",
+        "tool-workspace-warmup",
+        "mcp-handshake"
+      ],
+      "host_integration_passed": true,
+      "codex_preflight_passed": true,
+      "tool_warmup_exit_code": 0,
+      "mcp_handshake_required": false,
+      "mcp_handshake_skipped": true,
+      "mcp_handshake_passed": true,
+      "mcp_advertised_tool_count": 0,
+      "provider_execution_performed": false
+    },
+    {
+      "sequence_id": "fastify-lifecycle-sequence-v0",
+      "profile_id": "retrieval-jcodemunch-mcp-direct-v1",
+      "lane_exit_code": 0,
+      "protocol_path": "sources/evaluations/protocols/fastify-lifecycle-sequence-v0-retrieval-jcodemunch-mcp-direct-v1-d54acdf35ef7.json",
+      "protocol_sha256": "98f070b035185e38c00c85cd455cf280b737c8485e89bd258088d7fd5207b84d",
+      "preparation_order": [
+        "host-integration",
+        "codex-preflight",
+        "tool-workspace-warmup",
+        "mcp-handshake"
+      ],
+      "host_integration_passed": true,
+      "codex_preflight_passed": true,
+      "tool_warmup_exit_code": 0,
+      "mcp_handshake_required": true,
+      "mcp_handshake_skipped": false,
+      "mcp_handshake_passed": true,
+      "mcp_advertised_tool_count": 89,
+      "provider_execution_performed": false
+    }
+  ]
+}

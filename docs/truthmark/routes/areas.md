@@ -79,6 +79,7 @@ Code surface:
 - scripts/audit_tool_isolation.py
 - scripts/extract_codex_usage.py
 - scripts/generate_workflow_qualification.py
+- scripts/probe_mcp_stdio.py
 - scripts/refresh_workflow_contracts.py
 - scripts/run_codescope_neutral_mcp.py
 - scripts/run_codex_fixture_evaluation.py

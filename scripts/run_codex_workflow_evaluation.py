@@ -63,6 +63,7 @@ SUPPORTED_WORKFLOW_TOOL_PROFILES = {
     "retrieval-graphify": "graphify",
     "retrieval-sigmap": "sigmap",
     "retrieval-jcodemunch-mcp": "jcodemunch-mcp",
+    "retrieval-jcodemunch-mcp-direct-v1": "jcodemunch-mcp-direct-v1",
     "integrated-token-savior": "token-savior",
     "headroom-default-codex": "headroom",
     "terminal-headroom": "headroom-proxy-only",
@@ -70,6 +71,7 @@ SUPPORTED_WORKFLOW_TOOL_PROFILES = {
     "terminal-snip": "snip",
     "terminal-lowfat": "lowfat",
     "terminal-tokenjuice": "tokenjuice",
+    "terminal-tokenjuice-codex-hook-v1": "tokenjuice-codex-hook-v1",
     "stack-tokenjuice-jcodemunch-mcp": "tokenjuice-jcodemunch-mcp-stack",
     "behavior-caveman": "caveman",
     "artifact-ponytail": "ponytail",
@@ -381,6 +383,13 @@ def executable_identity(command: list[str], cfg: dict[str, Any], root: Path = RO
     if not command:
         raise ValueError("tool command is empty")
     token = command[0]
+    if "{" in token and cfg.get("host_integration"):
+        return {
+            "kind": "generated-by-host-integration",
+            "command_template": token,
+            "install_commands": cfg["host_integration"].get("install_commands", []),
+            "install_contract_sha256": _json_hash(cfg["host_integration"]),
+        }
     explicit = Path(token)
     resolved_text = str(explicit) if explicit.is_absolute() else shutil.which(token, path=_lane_path(cfg, root))
     if not resolved_text:
@@ -476,6 +485,8 @@ def execution_condition_descriptor(
             "dockerfile_sha256": _protocol_file_hash(fixture.DEFAULT_DOCKERFILE),
             "fixture_runner_path": "scripts/run_codex_fixture_evaluation.py",
             "fixture_runner_sha256": _protocol_file_hash(root / "scripts/run_codex_fixture_evaluation.py"),
+            "mcp_probe_path": "scripts/probe_mcp_stdio.py",
+            "mcp_probe_sha256": _protocol_file_hash(root / "scripts/probe_mcp_stdio.py"),
             "codex_entrypoint_path": "sources/evaluations/fixtures/container/codex-entrypoint.sh",
             "codex_entrypoint_sha256": _protocol_file_hash(root / "sources/evaluations/fixtures/container/codex-entrypoint.sh"),
             "timeout_seconds_per_task": timeout_seconds_per_task,
@@ -1716,7 +1727,7 @@ def codex_isolation_args(codex_home: Path | None = None) -> list[str]:
 
 
 def codex_base_cmd(
-    record: dict[str, Any], codex_home: Path | None = None
+    record: dict[str, Any], codex_home: Path | None = None, cfg: dict[str, Any] | None = None
 ) -> list[str]:
     return [
         "codex",
@@ -1726,8 +1737,7 @@ def codex_base_cmd(
         "--json",
         "--color",
         "never",
-        "--disable",
-        "hooks",
+        *fixture.codex_hook_args(cfg),
         "--ignore-rules",
     ]
 
@@ -1784,9 +1794,9 @@ def run_codex_task(
 
     def execute(active_prompt: Path, events: Path, active_thread: str | None, attempt_timeout: int) -> int:
         if active_thread is None:
-            codex_cmd = [*codex_base_cmd(record, codex_home), "--cd", str(repo), "--output-last-message", str(last_message_path), "-"]
+            codex_cmd = [*codex_base_cmd(record, codex_home, cfg), "--cd", str(repo), "--output-last-message", str(last_message_path), "-"]
         else:
-            codex_cmd = ["codex", "exec", "resume", *fixture.codex_model_args(record), *codex_isolation_args(codex_home), "--json", "--disable", "hooks", "--ignore-rules", "--output-last-message", str(last_message_path), active_thread, "-"]
+            codex_cmd = ["codex", "exec", "resume", *fixture.codex_model_args(record), *codex_isolation_args(codex_home), "--json", *fixture.codex_hook_args(cfg), "--ignore-rules", "--output-last-message", str(last_message_path), active_thread, "-"]
         input_path_for_proc: Path | None = active_prompt
         if wrapper:
             assert cfg is not None
@@ -2358,6 +2368,17 @@ def run_one(args: argparse.Namespace) -> dict[str, Any]:
         container_preflight = fixture.check_container_runtime("docker", runtime_docker_image, run_dir, False, build_image=False, dockerfile=fixture.DEFAULT_DOCKERFILE, codex_home=codex_home, cfg=cfg)
         if not container_preflight.get("passed"):
             return finalize_failed_attempt({"session_id": session_id, "profile_id": profile_id, "accepted": False, "stage": "container-preflight", "run_dir": rel(run_dir), "container_preflight": container_preflight}, record, run_dir)
+    integration = fixture.prepare_profile_integration(
+        record,
+        profile_id,
+        codex_home,
+        run_dir,
+        backend="docker",
+        docker_image=runtime_docker_image,
+    )
+    if not integration.get("passed"):
+        return finalize_failed_attempt({"session_id": session_id, "profile_id": profile_id, "accepted": False, "stage": "host-integration", "run_dir": rel(run_dir), "host_integration": integration}, record, run_dir)
+    preflight: dict[str, Any] = {"passed": None, "skipped": True}
     if not args.skip_codex_preflight:
         preflight = fixture.preflight_codex(record, codex_home, profile_id, run_dir, backend="docker", docker_image=runtime_docker_image)
         redact_auth_sync(run_dir)
@@ -2380,6 +2401,17 @@ def run_one(args: argparse.Namespace) -> dict[str, Any]:
     if warmup_code != 0:
         return finalize_failed_attempt({"session_id": session_id, "profile_id": profile_id, "accepted": False, "stage": "tool-warmup", "tool_warmup_exit_code": warmup_code, "run_dir": rel(run_dir)}, record, run_dir)
 
+    handshake = fixture.probe_mcp_handshake(
+        record,
+        profile_id,
+        codex_home,
+        run_dir,
+        backend="docker",
+        docker_image=runtime_docker_image,
+    )
+    if not handshake.get("passed"):
+        return finalize_failed_attempt({"session_id": session_id, "profile_id": profile_id, "accepted": False, "stage": "mcp-handshake", "run_dir": rel(run_dir), "mcp_handshake": handshake}, record, run_dir)
+
     ordered_tasks = sorted(seq["tasks"], key=lambda item: item["order"])
 
     if args.prepare_only:
@@ -2399,6 +2431,10 @@ def run_one(args: argparse.Namespace) -> dict[str, Any]:
             "sequence_id": seq["id"],
             "prepared": bool(prepare_verification.get("passed")),
             "prepare_verification": prepare_verification,
+            "host_integration": integration,
+            "mcp_handshake": handshake,
+            "codex_preflight": preflight,
+            "tool_warmup_exit_code": warmup_code,
         }
         chmod_tree(run_dir)
         shutil.rmtree(run_dir)
@@ -2622,7 +2658,6 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--no-conceal-seed-origin", action="store_true", help="debug only: leave seed patch as visible git diff; prepare-only runs only")
     args = parser.parse_args(argv)
     if args.no_provider:
-        args.skip_codex_preflight = True
         args.skip_dependency_install = True
     if args.list_sequences:
         print(json.dumps({"active_sequences": active_sequence_ids(), "profiles": sorted(PROFILE_META)}, indent=2))

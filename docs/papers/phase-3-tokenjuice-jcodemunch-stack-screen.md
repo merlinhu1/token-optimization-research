@@ -1,6 +1,8 @@
 # Phase 3 report: TokenJuice + jcodemunch MCP lifecycle-v0 stack screen
 
-> **Report status:** completed single-replicate stack screen. Results are scoped descriptive evidence, not a population estimate or deployment recommendation.
+> **Report status:** withdrawn product-effect screen. The executions and provider-token arithmetic are retained, but the decision is superseded by the [official-integration parity audit](official-integration-parity-audit.md).
+>
+> **Superseding adjudication (2026-07-18):** TokenJuice's required Codex hook was absent and explicitly disabled; jcodemunch used a non-recommended launcher, omitted normal product guidance, and retained no successful MCP handshake. The three stack sessions are excluded from stack-effect, ranking, aggregate, and recommendation claims.
 
 **Report date:** 2026-07-18
 
@@ -16,9 +18,9 @@
 
 This Phase 3 screen evaluates the compatibility-safe `stack-tokenjuice-jcodemunch-mcp` profile on the unchanged lifecycle-v0 Fastify, Beets, and Terraform workflows. TokenJuice owns the terminal-output surface and jcodemunch MCP owns retrieval context. The experiment reuses the compatible retained `r1` bare-Codex, TokenJuice-only, and jcodemunch-only records and adds only the missing stack treatment in each lane.
 
-All three stack sessions were operationally valid, passed tool-isolation and verifier-integrity checks, and passed all nine structured workflow verifiers. The stack used 67,155,585 provider tokens, 6,737,862 fewer than bare Codex (-9.12%). It nevertheless used 14,354,637 more tokens than TokenJuice alone (+27.19%) and 6,253,564 more than jcodemunch alone (+10.27%). It was worse than the better individual component in every lane. The aggregate descriptive interaction contrast was +27,346,063 provider tokens, with positive contrasts in all three lanes.
+The three stack executions completed, passed tool-isolation and verifier-integrity checks, and passed all nine structured workflow verifiers. Their retained provider totals were 67,155,585 tokens: 6,737,862 fewer than bare Codex (-9.12%), 14,354,637 more than the historical TokenJuice arm (+27.19%), and 6,253,564 more than the historical jcodemunch arm (+10.27%). These are forensic accounting contrasts across defective or unverified treatments, not valid component or stack effects.
 
-No explicit model-issued TokenJuice command or jcodemunch MCP call was observed in any stack lane. The retained individual TokenJuice and jcodemunch sessions also had zero such explicit calls. These valid natural-availability samples therefore measure assignment to the configured profiles and resulting trajectories, not realized terminal compaction or retrieval mechanism use. The stack fails the preregistered incremental-value criterion and should not advance under this model/runtime condition.
+No TokenJuice hook could execute because the historical Codex configuration disabled hooks and no `hooks.json` was installed. No retained jcodemunch handshake or completed model MCP call proves that component was operational. The prior “does not advance” decision is therefore withdrawn; the tested condition cannot accept or reject the correctly installed stack.
 
 ## 1. Research question and claim boundary
 
@@ -166,27 +168,25 @@ The compact Codex event streams show:
 | jcodemunch-only `B` | not configured | 0 |
 | Stack `AB` | 0 | 0 |
 
-Zero explicit use is valid under the frozen natural-availability estimand and is not grounds for a rerun. It materially limits mechanism interpretation, however. The observed differences cannot be attributed to realized TokenJuice output compaction, realized jcodemunch retrieval, or interaction between those mechanisms. They are trajectory observations under the named configured conditions.
+Zero visible use is not itself grounds for an outcome-selected rerun. Here, however, independent retained setup evidence proves that the TokenJuice mechanism was disabled, while the jcodemunch assignment lacks the required operational handshake proof. The observed differences therefore remain provider-accounting trajectories under a partial configuration and cannot support product, mechanism, or interaction claims.
 
 ## 6. Decision
 
-The `stack-tokenjuice-jcodemunch-mcp` pair should **not advance** under the evaluated Codex/GPT-5.6-Luna lifecycle-v0 condition.
+The prior **does not advance** decision is withdrawn. The historical `stack-tokenjuice-jcodemunch-mcp` profile did not assign the intended two-product stack and therefore cannot satisfy or fail its preregistered incremental-value criteria.
 
-The decision follows the preregistered criteria:
+The retained arithmetic still records what occurred:
 
-1. **Versus bare baseline:** pass in aggregate (-9.12%), but fail on Beets (+5.94%).
-2. **Versus the better component:** fail in every lane and aggregate (+27.19% versus aggregate-best TokenJuice).
-3. **Interaction direction:** positive in all lanes; aggregate +27,346,063 provider tokens.
-4. **Correctness:** pass, with 9/9 verifier tasks.
-5. **Integrity and reproducibility:** pass, with all sessions accepted and all isolation/integrity checks passing.
-6. **Portfolio robustness:** fail; the aggregate result is dominated by Terraform, where the stack is 58.73% worse than TokenJuice.
-7. **Mechanism evidence:** absent; neither component was explicitly invoked in the stack sessions.
+1. the partial configuration used 9.12% fewer tokens than bare Codex in aggregate;
+2. it used 27.19% more than the historical TokenJuice CLI-only arm;
+3. all nine workflow verifiers passed;
+4. the TokenJuice Codex mechanism was disabled;
+5. jcodemunch operational assignment was not positively proven.
 
-The first valid samples must remain in the dataset. They should not be rerun merely to seek component uptake or a more favorable outcome.
+The sessions and comparisons remain in the dataset as excluded forensic records. They must not be rerun in place or relabeled as the corrected treatment.
 
 ## 7. Next research step
 
-Phase 3 should move to a different preregistered pair rather than replicate this stack immediately. The next candidate should preserve non-overlapping ownership while improving the chance that lifecycle-v0 naturally exercises both integrations. Any new pair should reuse compatible retained component records and add only the missing stack sessions, following the same first-valid-run and no-forced-uptake rules.
+Do not move directly to another stack based on these component rankings. First qualify the versioned `terminal-tokenjuice-codex-hook-v1` and neutral `retrieval-jcodemunch-mcp-direct-v1` assignments. If the intended jcodemunch estimand includes its separate usage-guidance layer, preregister that as another versioned instruction-policy profile. A corrected stack requires separate preregistration and new profile identity after the intended individual assignments are proven.
 
 ## 8. Reproducibility pointers
 
