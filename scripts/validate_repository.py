@@ -1816,9 +1816,11 @@ def validate_frozen_protocol_bindings(errors: list[str]) -> None:
             executed_protocols.setdefault(protocol_path, set()).add(protocol_sha)
     try:
         from scripts import run_codex_workflow_evaluation as runner
+        from scripts import run_codex_workflow_model_condition as model_condition_runner
     except Exception as exc:
         errors.append(f"cannot import workflow runner for protocol binding validation: {exc}")
         runner = None
+        model_condition_runner = None
     current_sequence_bindings: set[str] = set()
     for path in (ROOT / "sources/evaluations/protocols").glob("*.json"):
         protocol = json.loads(path.read_text())
@@ -1841,6 +1843,8 @@ def validate_frozen_protocol_bindings(errors: list[str]) -> None:
         if fixture.get("qualification_sha256") != actual:
             errors.append(f"frozen protocol {path.name} has a stale qualification hash")
         if runner is not None:
+            expected_descriptor = None
+            expected_override = None
             try:
                 seq = runner.load_sequence(str(fixture.get("sequence_id")))
                 if seq.get("status") != "active":
@@ -1849,7 +1853,43 @@ def validate_frozen_protocol_bindings(errors: list[str]) -> None:
                 if qualification_rel != seq.get("qualification_path"):
                     errors.append(f"execution contract {path.name} does not bind the selected v0 qualification")
                     continue
-                expected_fingerprint = runner.baseline_protocol_fingerprint(seq)
+                expected_descriptor = runner.baseline_protocol_descriptor(seq)
+                frozen_descriptor = protocol.get("baseline_pool", {}).get("descriptor", {})
+                override = frozen_descriptor.get("model_condition_override") if isinstance(frozen_descriptor, dict) else None
+                if override is not None:
+                    if not isinstance(override, dict) or model_condition_runner is None:
+                        raise ValueError("invalid model-condition override")
+                    condition = model_condition_runner.registered_condition(
+                        str(override.get("model_condition_id", "")),
+                        str(override.get("model", "")),
+                        str(override.get("reasoning_effort", "")),
+                    )
+                    expected_override = {
+                        "model_condition_id": condition["id"],
+                        "model": condition["model"],
+                        "reasoning_effort": condition["reasoning_effort"],
+                        "registry_status": condition.get("status"),
+                        "launcher": model_condition_runner.launcher_identity(),
+                    }
+                    if override != expected_override:
+                        raise ValueError("model-condition override does not match its registry entry and launcher")
+                    expected_descriptor["agent"].update({
+                        "model": condition["model"],
+                        "model_condition_id": condition["id"],
+                        "reasoning_effort": condition["reasoning_effort"],
+                    })
+                    expected_descriptor["runtime_inputs"]["codex_runtime_condition"] = condition["id"]
+                    expected_descriptor["model_condition_override"] = expected_override
+                    comparison_descriptor = runner.baseline_comparison_descriptor(seq)
+                    comparison_descriptor["agent"] = expected_descriptor["agent"]
+                    comparison_descriptor["runtime_inputs"] = expected_descriptor["runtime_inputs"]
+                    encoded = json.dumps(comparison_descriptor, sort_keys=True, separators=(",", ":")).encode()
+                    full_hash = hashlib.sha256(encoded).hexdigest()
+                    expected_fingerprint = runner.COMPARISON_IDENTITY_ALIASES.get(
+                        full_hash, full_hash[:runner.BASELINE_POOL_FINGERPRINT_LENGTH]
+                    )
+                else:
+                    expected_fingerprint = runner.baseline_protocol_fingerprint(seq)
             except Exception as exc:
                 errors.append(f"frozen protocol {path.name} cannot compute current runner fingerprint: {exc}")
             else:
@@ -1884,7 +1924,7 @@ def validate_frozen_protocol_bindings(errors: list[str]) -> None:
                         continue
                 descriptor = protocol.get("baseline_pool", {}).get("descriptor")
                 if not runner.baseline_protocol_descriptor_compatible(
-                    descriptor, runner.baseline_protocol_descriptor(seq)
+                    descriptor, expected_descriptor
                 ):
                     errors.append(f"execution contract {path.name} has a stale causal baseline descriptor")
                     continue
@@ -1896,6 +1936,35 @@ def validate_frozen_protocol_bindings(errors: list[str]) -> None:
                     timeout_seconds_per_task=timeout_for_execution,
                     docker_image=str(docker_image or runner.DEFAULT_DOCKER_IMAGE),
                 )
+                if expected_override is not None:
+                    expected_execution["agent_condition"].update({
+                        "model": expected_override["model"],
+                        "model_condition_id": expected_override["model_condition_id"],
+                        "reasoning_effort": expected_override["reasoning_effort"],
+                    })
+                    expected_execution["baseline_pool_reference"]["protocol_fingerprint"] = expected_fingerprint
+                    expected_execution["model_condition_override"] = expected_override
+                    selected_override = selected_descriptor.get("model_condition_override")
+                    agent_block = protocol.get("baseline", {}) if selected_profile == "baseline-bare-codex" else protocol.get("treatment", {})
+                    required_model_args = (
+                        "scripts/run_codex_workflow_model_condition.py",
+                        f"--workflow-model-condition-id {expected_override['model_condition_id']}",
+                        f"--workflow-model {expected_override['model']}",
+                        f"--workflow-reasoning-effort {expected_override['reasoning_effort']}",
+                    )
+                    if selected_override != expected_override:
+                        errors.append(f"execution contract {path.name} has inconsistent model-condition overrides")
+                        continue
+                    if any(required not in str(agent_block.get("command", "")) for required in required_model_args):
+                        errors.append(f"execution contract {path.name} command does not bind its model-condition override")
+                        continue
+                    if any(agent_block.get(key) != expected_override[override_key] for key, override_key in (
+                        ("model", "model"),
+                        ("model_condition_id", "model_condition_id"),
+                        ("reasoning_effort", "reasoning_effort"),
+                    )):
+                        errors.append(f"execution contract {path.name} agent block does not bind its model-condition override")
+                        continue
                 protocol_rel = path.relative_to(ROOT).as_posix()
                 frozen_hashes = executed_protocols.get(protocol_rel)
                 if frozen_hashes:
