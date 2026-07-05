@@ -2105,6 +2105,25 @@ class ModelConditionLauncherContractTest(unittest.TestCase):
         identity = model_condition_runner.launcher_identity()
         self.assertRegex(identity["sha256"], r"^[a-f0-9]{64}$")
 
+    def test_registered_gpt56_sol_high_condition_is_selectable(self) -> None:
+        condition = model_condition_runner.registered_condition(
+            "codex-openai-gpt-5-6-sol-high", "gpt-5.6-sol", "high"
+        )
+        self.assertEqual(condition["status"], "active-model-comparison")
+
+    def test_registered_model_condition_protocols_validate(self) -> None:
+        errors: list[str] = []
+        validate_repository.validate_frozen_protocol_bindings(errors)
+        sol_protocol_errors = [
+            error for error in errors
+            if any(protocol_id in error for protocol_id in (
+                "beets-lifecycle-sequence-v0-baseline-bare-codex-b76903081a2d",
+                "fastify-lifecycle-sequence-v0-baseline-bare-codex-3f3ce79ce469",
+                "terraform-lifecycle-sequence-v0-baseline-bare-codex-8bba1cd949b1",
+            ))
+        ]
+        self.assertEqual(sol_protocol_errors, [])
+
     def test_unregistered_override_is_rejected(self) -> None:
         with self.assertRaises(ValueError):
             model_condition_runner.registered_condition("missing", "gpt-missing", "high")
@@ -2124,6 +2143,31 @@ class MatrixLifecycleContractTest(unittest.TestCase):
             cmd[cmd.index("--timeout-per-task") : cmd.index("--timeout-per-task") + 2],
             ["--timeout-per-task", "30"],
         )
+
+    def test_lane_command_uses_registered_model_condition_launcher(self) -> None:
+        cmd = matrix.workflow_lane_command(
+            sequence_id="fastify-lifecycle-sequence-v0",
+            profile_id="baseline-bare-codex",
+            protocol=Path("sources/evaluations/protocols/sol.json"),
+            replicate_index=2,
+            runner_args=[],
+            model_condition={
+                "id": "codex-openai-gpt-5-6-sol-high",
+                "model": "gpt-5.6-sol",
+                "reasoning_effort": "high",
+            },
+        )
+        self.assertEqual(cmd[1], "scripts/run_codex_workflow_model_condition.py")
+        self.assertEqual(cmd[cmd.index("--workflow-model-condition-id") + 1], "codex-openai-gpt-5-6-sol-high")
+        self.assertEqual(cmd[cmd.index("--workflow-model") + 1], "gpt-5.6-sol")
+        self.assertEqual(cmd[cmd.index("--workflow-reasoning-effort") + 1], "high")
+
+    def test_matrix_model_condition_arguments_must_be_complete(self) -> None:
+        args = matrix.parse_args([
+            "--workflow-model-condition-id", "codex-openai-gpt-5-6-sol-high",
+        ])
+        with self.assertRaises(SystemExit):
+            matrix.selected_model_condition(args)
 
     def test_prepare_only_summary_cannot_claim_objective_acceptance(self) -> None:
         self.assertIsNone(

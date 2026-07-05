@@ -28,6 +28,7 @@ from typing import Any, Callable
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "scripts"))
 import run_codex_workflow_evaluation as workflow  # type: ignore
+import run_codex_workflow_model_condition as model_condition_launcher  # type: ignore
 DEFAULT_LANE_ROOT = Path("/opt/data/eval-workflow-lanes")
 WORKFLOW_ARTIFACT_ROOT = Path("sources/evaluations/workflow-sessions")
 COMPACT_ARTIFACT_NAMES = {"run.json", "changes.diff", "evidence.jsonl.gz", "manifest.sha256"}
@@ -302,16 +303,25 @@ def workflow_lane_command(
     protocol: Path,
     replicate_index: int,
     runner_args: list[str],
+    model_condition: dict[str, str] | None = None,
 ) -> list[str]:
-    cmd = [
-        sys.executable,
-        "scripts/run_codex_workflow_evaluation.py",
+    if model_condition is None:
+        cmd = [sys.executable, "scripts/run_codex_workflow_evaluation.py"]
+    else:
+        cmd = [
+            sys.executable,
+            "scripts/run_codex_workflow_model_condition.py",
+            "--workflow-model-condition-id", model_condition["id"],
+            "--workflow-model", model_condition["model"],
+            "--workflow-reasoning-effort", model_condition["reasoning_effort"],
+        ]
+    cmd.extend([
         "--sequence-id", sequence_id,
         "--profile-id", profile_id,
         "--protocol", str(protocol),
         "--replicate-index", str(replicate_index),
         *runner_args,
-    ]
+    ])
     if profile_id != "baseline-bare-codex":
         cmd.extend(["--comparison-profile-id", profile_id])
     return cmd
@@ -325,6 +335,7 @@ def run_flow_lane(
     replicate_index: int,
     runner_args: list[str],
     source_codex_home: Path | None,
+    model_condition: dict[str, str] | None = None,
 ) -> dict[str, Any]:
     lane_id = safe_name(f"{sequence_id}--{treatment_profile}")
     lane_dir = lane_root / lane_id
@@ -349,6 +360,7 @@ def run_flow_lane(
         protocol=protocol,
         replicate_index=replicate_index,
         runner_args=runner_args,
+        model_condition=model_condition,
     )
     if "--prepare-only" in runner_args:
         cmd.extend(["--session-id", f"prepare-{lane_id}"])
@@ -648,11 +660,36 @@ def cleanup_lane_checkouts(run_root: Path) -> None:
             shutil.rmtree(checkout, ignore_errors=True)
 
 
+def selected_model_condition(args: argparse.Namespace, *, configure: bool = False) -> dict[str, str] | None:
+    values = (
+        args.workflow_model_condition_id,
+        args.workflow_model,
+        args.workflow_reasoning_effort,
+    )
+    if not any(values):
+        return None
+    if not all(values):
+        raise SystemExit(
+            "--workflow-model-condition-id, --workflow-model, and --workflow-reasoning-effort must be supplied together"
+        )
+    condition = model_condition_launcher.registered_condition(*values)
+    if configure:
+        model_condition_launcher.configure_model_condition(*values)
+    return {
+        "id": str(condition["id"]),
+        "model": str(condition["model"]),
+        "reasoning_effort": str(condition["reasoning_effort"]),
+    }
+
+
 def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("sequences", nargs="*", help="workflow sequence IDs; defaults to all active sequences")
     parser.add_argument("--max-parallel", type=int, default=3, help="maximum flow lanes to run concurrently (default: 3)")
     parser.add_argument("--replicate-index", type=int, default=0)
+    parser.add_argument("--workflow-model-condition-id")
+    parser.add_argument("--workflow-model")
+    parser.add_argument("--workflow-reasoning-effort")
     parser.add_argument("--lane-root", type=Path, default=DEFAULT_LANE_ROOT)
     parser.add_argument("--source-codex-home", type=Path, help="forwarded to each shared-baseline runner; defaults to runner default/CODEX_HOME")
     parser.add_argument("--treatment-profile", action="append", dest="treatment_profiles", help="treatment profile; repeat to run multiple profiles concurrently after baseline review")
@@ -668,6 +705,7 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
 
 def main(argv: list[str] | None = None) -> int:
     args = parse_args(argv)
+    model_condition = selected_model_condition(args, configure=True)
     sequences = args.sequences or active_sequences()
     valid = set(active_sequences())
     unknown = [seq for seq in sequences if seq not in valid]
@@ -721,6 +759,7 @@ def main(argv: list[str] | None = None) -> int:
         "jobs": job_specs,
         "max_parallel": args.max_parallel,
         "replicate_index": args.replicate_index,
+        "model_condition": model_condition,
         "lane_root": str(run_root),
         "runner_args": runner_args,
     }
@@ -744,6 +783,7 @@ def main(argv: list[str] | None = None) -> int:
                     replicate_index=args.replicate_index,
                     runner_args=runner_args,
                     source_codex_home=args.source_codex_home,
+                    model_condition=model_condition,
                 )
                 for sequence_id, treatment_profile in jobs
             ]
