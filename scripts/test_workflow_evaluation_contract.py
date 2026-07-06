@@ -9,12 +9,14 @@ import sys
 import tempfile
 import unittest
 from pathlib import Path
+from typing import Any
 from unittest import mock
 
 ROOT = Path(__file__).resolve().parents[1]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
+from scripts import extract_codex_usage
 from scripts import generate_workflow_qualification as qualification
 from scripts import refresh_workflow_contracts as contract_refresh
 from scripts import run_codescope_neutral_mcp as codescope_adapter
@@ -51,6 +53,114 @@ def retained_protocol_path(
     if not path.is_file():
         raise AssertionError(f"retained frozen protocol is missing: {path}")
     return path
+
+
+class CodexUsageAccountingTest(unittest.TestCase):
+    def summarize(self, events: list[dict[str, Any]]) -> dict[str, Any]:
+        with tempfile.TemporaryDirectory() as tmp:
+            path = Path(tmp) / "events.jsonl"
+            path.write_text("".join(json.dumps(event) + "\n" for event in events))
+            return extract_codex_usage.build_summary(path)
+
+    @staticmethod
+    def thread_usage(thread_id: str, usage: dict[str, int]) -> list[dict[str, object]]:
+        return [
+            {"type": "thread.started", "thread_id": thread_id},
+            {"type": "turn.completed", "usage": usage},
+        ]
+
+    def test_resumed_thread_uses_final_cumulative_total_instead_of_sum(self) -> None:
+        first = {
+            "input_tokens": 100,
+            "cached_input_tokens": 80,
+            "output_tokens": 10,
+            "reasoning_output_tokens": 3,
+        }
+        final = {
+            "input_tokens": 250,
+            "cached_input_tokens": 200,
+            "output_tokens": 20,
+            "reasoning_output_tokens": 7,
+        }
+        summary = self.summarize(
+            self.thread_usage("thread-a", first) + self.thread_usage("thread-a", final)
+        )
+        self.assertEqual(summary["schema_version"], 2)
+        self.assertEqual(summary["total_provider_tokens"], 270)
+        self.assertEqual(summary["fresh_input_tokens"], 50)
+        self.assertEqual(summary["cached_input_tokens"], 200)
+        self.assertEqual(summary["output_tokens"], 20)
+        self.assertEqual(summary["reasoning_tokens"], 7)
+        codex_usage = summary["codex_usage"]
+        self.assertEqual(codex_usage["accounting_mode"], "final-cumulative-total-per-thread")
+        self.assertEqual(len(codex_usage["usage_blocks"]), 2)
+        self.assertEqual(len(codex_usage["effective_usage_blocks"]), 1)
+        self.assertEqual(
+            [block["usage"] for block in codex_usage["incremental_usage_blocks"]],
+            [
+                first,
+                {
+                    "cached_input_tokens": 120,
+                    "input_tokens": 150,
+                    "output_tokens": 10,
+                    "reasoning_output_tokens": 4,
+                },
+            ],
+        )
+
+    def test_distinct_threads_sum_their_final_cumulative_totals(self) -> None:
+        events = self.thread_usage(
+            "thread-a",
+            {"input_tokens": 100, "cached_input_tokens": 80, "output_tokens": 10},
+        ) + self.thread_usage(
+            "thread-b",
+            {"input_tokens": 50, "cached_input_tokens": 40, "output_tokens": 5},
+        )
+        summary = self.summarize(events)
+        self.assertEqual(summary["total_provider_tokens"], 165)
+        self.assertEqual(summary["fresh_input_tokens"], 30)
+        self.assertEqual(summary["cached_input_tokens"], 120)
+        self.assertEqual(summary["output_tokens"], 15)
+
+    def test_resumed_thread_rejects_decreasing_cumulative_counters(self) -> None:
+        events = self.thread_usage(
+            "thread-a",
+            {"input_tokens": 100, "cached_input_tokens": 80, "output_tokens": 10},
+        ) + self.thread_usage(
+            "thread-a",
+            {"input_tokens": 90, "cached_input_tokens": 70, "output_tokens": 9},
+        )
+        with self.assertRaisesRegex(ValueError, "decreased"):
+            self.summarize(events)
+
+    def test_retained_accounting_correction_covers_every_session(self) -> None:
+        registry = json.loads((ROOT / "data/workflow-sessions.json").read_text())
+        audit_path = (
+            ROOT
+            / "sources/evaluations/audits/codex-cumulative-usage-accounting-20260718.json"
+        )
+        audit = json.loads(audit_path.read_text())
+        rows = {row["session_id"]: row for row in audit["sessions"]}
+        self.assertEqual(rows.keys(), {session["session_id"] for session in registry["sessions"]})
+        self.assertEqual(audit["integrity"]["correction_required_count"], len(rows))
+        self.assertTrue(audit["integrity"]["all_manifests_passed"])
+        self.assertTrue(audit["integrity"]["all_usage_monotonic"])
+        self.assertEqual(
+            audit["codex_source_evidence"]["source_commit"],
+            "767822446c7a594caa19609ca435281a9ec67e0d",
+        )
+        terraform_r0 = rows["baseline-terraform-20260718-p-ca21cbff5ed5-r0"]
+        self.assertEqual(
+            terraform_r0["legacy_registry_usage"]["total_provider_tokens"], 31_471_786
+        )
+        self.assertEqual(terraform_r0["corrected_usage"]["total_provider_tokens"], 15_526_000)
+        self.assertEqual(
+            [
+                task["corrected_incremental_usage"]["total_provider_tokens"]
+                for task in terraform_r0["tasks"]
+            ],
+            [4_999_516, 5_946_754, 4_579_730],
+        )
 
 
 class ActiveCampaignArchitectureTest(unittest.TestCase):

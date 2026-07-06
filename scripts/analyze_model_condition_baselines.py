@@ -16,6 +16,7 @@ from typing import Any
 ROOT = Path(__file__).resolve().parents[1]
 SESSIONS = ROOT / "data/workflow-sessions.json"
 DEFAULT_OUTPUT = ROOT / "sources/evaluations/audits/gpt-5-6-sol-high-baseline-variance-20260718.json"
+DEFAULT_ACCOUNTING_AUDIT = ROOT / "sources/evaluations/audits/codex-cumulative-usage-accounting-20260718.json"
 CONDITIONS = (
     "codex-openai-gpt-5-6-luna-xhigh",
     "codex-openai-gpt-5-6-sol-high",
@@ -217,37 +218,45 @@ def eligible(session: dict[str, Any]) -> bool:
     )
 
 
-def session_row(session: dict[str, Any]) -> tuple[dict[str, Any], dict[str, Any]]:
+def session_row(
+    session: dict[str, Any], correction: dict[str, Any]
+) -> tuple[dict[str, Any], dict[str, Any]]:
     bundle_path = ROOT / session["artifacts"]["evidence_bundle"]
     bundle = read_bundle(bundle_path)
     nested_artifact_validation = validate_nested_artifacts(bundle)
-    provider, trajectory = trajectory_metrics(bundle)
+    _legacy_provider, trajectory = trajectory_metrics(bundle)
+    if not correction["manifest"]["passed"]:
+        raise ValueError(f"correction audit manifest failure for {session['session_id']}")
+    if correction["accounting_mode"] != "final-cumulative-total-per-thread":
+        raise ValueError(f"unexpected accounting mode for {session['session_id']}")
+    registry_total = session["cumulative_token_usage"]["total_provider_tokens"]
+    if correction["legacy_registry_usage"]["total_provider_tokens"] != registry_total:
+        raise ValueError(f"stale correction audit for {session['session_id']}")
     tasks = []
-    usage_blocks = provider.get("codex_usage", {}).get("usage_blocks", [])
+    corrected_tasks = sorted(correction["tasks"], key=lambda item: item["order"])
     task_results = sorted(session["per_task_results"], key=lambda item: item["order"])
-    if len(usage_blocks) != len(task_results):
-        raise ValueError(f"usage block/task mismatch for {session['session_id']}")
-    for result, block in zip(task_results, usage_blocks, strict=True):
-        usage = block["usage"]
-        input_tokens = int(usage["input_tokens"])
-        cached = int(usage["cached_input_tokens"])
-        output = int(usage["output_tokens"])
+    if len(corrected_tasks) != len(task_results):
+        raise ValueError(f"corrected usage/task mismatch for {session['session_id']}")
+    for result, corrected_task in zip(task_results, corrected_tasks, strict=True):
+        if result["task_id"] != corrected_task["task_id"]:
+            raise ValueError(f"corrected task identity mismatch for {session['session_id']}")
+        usage = corrected_task["corrected_incremental_usage"]
         tasks.append({
             "task_id": result["task_id"],
             "task_class": result["task_class"],
             "order": result["order"],
-            "fresh_input_tokens": input_tokens - cached,
-            "cached_input_tokens": cached,
-            "output_tokens": output,
-            "reasoning_tokens": int(usage["reasoning_output_tokens"]),
-            "total_provider_tokens": input_tokens + output,
+            "fresh_input_tokens": usage["fresh_input_tokens"],
+            "cached_input_tokens": usage["cached_input_tokens"],
+            "output_tokens": usage["output_tokens"],
+            "reasoning_tokens": usage["reasoning_tokens"],
+            "total_provider_tokens": usage["total_provider_tokens"],
             "operational_retry_count": int(result.get("operational_retry_count", 0)),
             "codex_exit_code": result.get("codex_exit_code"),
             "verifier_passed": result.get("verifier_passed"),
         })
-    cumulative = session["cumulative_token_usage"]
+    cumulative = correction["corrected_usage"]
     if sum(task["total_provider_tokens"] for task in tasks) != cumulative["total_provider_tokens"]:
-        raise ValueError(f"task totals do not reconcile for {session['session_id']}")
+        raise ValueError(f"corrected task totals do not reconcile for {session['session_id']}")
     row = {
         "session_id": session["session_id"],
         "date": session["date"],
@@ -271,6 +280,12 @@ def session_row(session: dict[str, Any]) -> tuple[dict[str, Any], dict[str, Any]
             "output_tokens": cumulative["output_tokens"],
             "reasoning_tokens": cumulative["reasoning_tokens"],
             "total_provider_tokens": cumulative["total_provider_tokens"],
+        },
+        "legacy_extractor_tokens": correction["legacy_registry_usage"],
+        "accounting_correction": {
+            "mode": correction["accounting_mode"],
+            "legacy_overcount_tokens": correction["legacy_overcount_tokens"],
+            "legacy_inflation_factor": correction["legacy_inflation_factor"],
         },
         "tasks": tasks,
         "trajectory": trajectory,
@@ -446,13 +461,19 @@ def paired_comparison(by_key: dict[tuple[str, int, str], dict[str, Any]]) -> dic
 def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--output", type=Path, default=DEFAULT_OUTPUT)
+    parser.add_argument("--accounting-audit", type=Path, default=DEFAULT_ACCOUNTING_AUDIT)
     args = parser.parse_args()
     records = json.loads(SESSIONS.read_text(encoding="utf-8"))["sessions"]
+    accounting_audit = json.loads(args.accounting_audit.read_text(encoding="utf-8"))
+    corrections = {row["session_id"]: row for row in accounting_audit["sessions"]}
     selected = [session for session in records if eligible(session)]
     rows = []
     manifests = []
     for session in selected:
-        row, manifest = session_row(session)
+        correction = corrections.get(session["session_id"])
+        if correction is None:
+            raise ValueError(f"missing accounting correction for {session['session_id']}")
+        row, manifest = session_row(session, correction)
         rows.append(row)
         manifests.append(manifest)
     by_key = {
@@ -505,6 +526,9 @@ def main() -> int:
             "sequences": list(SEQUENCES),
             "replicates": list(REPLICATES),
             "primary_metric": "total_provider_tokens including cached input",
+            "accounting_mode": "final cumulative ThreadTokenUsage.total snapshot per thread",
+            "accounting_audit": str(args.accounting_audit.relative_to(ROOT)),
+            "accounting_audit_sha256": sha256(args.accounting_audit),
             "reasoning_token_note": "reasoning_tokens are a reported subset of output_tokens, not an additive component",
         },
         "integrity": {
@@ -513,6 +537,14 @@ def main() -> int:
             "manifest_count": len(manifests),
             "manifest_file_check_count": sum(len(item["checks"]) for item in manifests),
             "all_manifests_passed": all(item["passed"] for item in manifests),
+            "accounting_correction_count": sum(
+                row["accounting_correction"]["legacy_overcount_tokens"] > 0 for row in rows
+            ),
+            "all_accounting_corrections_reconciled": all(
+                sum(task["total_provider_tokens"] for task in row["tasks"])
+                == row["tokens"]["total_provider_tokens"]
+                for row in rows
+            ),
             "manifests": manifests,
             "nested_artifact_count": sum(
                 row["nested_artifact_validation"]["artifact_count"] for row in rows
@@ -544,6 +576,7 @@ def main() -> int:
             "The compound condition changes both model (Luna to Sol) and reasoning effort (xhigh to high).",
             "The Luna sessions were collected on 2026-07-16 and the Sol sessions on 2026-07-18, so collection time is not blocked or randomized.",
             "Provider event item counts describe trajectories but are post-treatment mechanisms and are not adjusted out of the primary token outcome.",
+            "Token totals use the correction audit rather than legacy registry totals because Codex 0.144.0 emits cumulative thread totals at every resumed turn and the legacy extractor summed those snapshots.",
             "Compact bundle manifests pass, but some embedded Codex JSONL event streams contain raw stderr or non-object lines and therefore are not strictly parseable line by line.",
         ],
     }

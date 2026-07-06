@@ -16,6 +16,8 @@ Token claims must name their accounting boundary:
 
 The canonical metric is `workflow_session_total`. Estimated artifact/request counts cannot establish a workflow saving.
 
+Codex exec emits cumulative thread totals, not isolated turn deltas. For one persistent thread, the session total is the final `turn.completed.usage` snapshot and each task increment is the current snapshot minus the previous snapshot. For multiple distinct threads, sum one final snapshot per thread. Summing repeated snapshots from the same thread double-counts prior work and is forbidden.
+
 ## Required token fields
 
 Record these when the provider exposes them:

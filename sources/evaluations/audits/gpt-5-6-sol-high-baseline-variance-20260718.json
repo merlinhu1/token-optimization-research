@@ -19,6 +19,9 @@
       2
     ],
     "primary_metric": "total_provider_tokens including cached input",
+    "accounting_mode": "final cumulative ThreadTokenUsage.total snapshot per thread",
+    "accounting_audit": "sources/evaluations/audits/codex-cumulative-usage-accounting-20260718.json",
+    "accounting_audit_sha256": "0ca487fdcbefa80f3fd2d1e2d608c81afd52724f9427b2f843b113691d774e3a",
     "reasoning_token_note": "reasoning_tokens are a reported subset of output_tokens, not an additive component"
   },
   "integrity": {
@@ -30,6 +33,8 @@
     "manifest_count": 18,
     "manifest_file_check_count": 54,
     "all_manifests_passed": true,
+    "accounting_correction_count": 18,
+    "all_accounting_corrections_reconciled": true,
     "manifests": [
       {
         "manifest": "sources/evaluations/workflow-sessions/baseline-fastify-20260716-p-769d40697529-r0/manifest.sha256",
@@ -620,11 +625,24 @@
       ],
       "protocol_fingerprint": "b440da225a3a",
       "tokens": {
+        "fresh_input_tokens": 335235,
+        "cached_input_tokens": 11855360,
+        "output_tokens": 54134,
+        "reasoning_tokens": 27150,
+        "total_provider_tokens": 12244729
+      },
+      "legacy_extractor_tokens": {
         "fresh_input_tokens": 738082,
         "cached_input_tokens": 24512256,
+        "cache_write_tokens": null,
         "output_tokens": 119187,
         "reasoning_tokens": 59746,
         "total_provider_tokens": 25369525
+      },
+      "accounting_correction": {
+        "mode": "final-cumulative-total-per-thread",
+        "legacy_overcount_tokens": 13124796,
+        "legacy_inflation_factor": 2.0718731300627398
       },
       "tasks": [
         {
@@ -644,11 +662,11 @@
           "task_id": "beets-lifecycle-refactor-v0",
           "task_class": "behavior-preserving-refactor",
           "order": 2,
-          "fresh_input_tokens": 257116,
-          "cached_input_tokens": 9696768,
-          "output_tokens": 44825,
-          "reasoning_tokens": 21876,
-          "total_provider_tokens": 9998709,
+          "fresh_input_tokens": 111385,
+          "cached_input_tokens": 6736640,
+          "output_tokens": 24597,
+          "reasoning_tokens": 11156,
+          "total_provider_tokens": 6872622,
           "operational_retry_count": 0,
           "codex_exit_code": 0,
           "verifier_passed": true
@@ -657,11 +675,11 @@
           "task_id": "beets-lifecycle-review-v0",
           "task_class": "code-review-correction",
           "order": 3,
-          "fresh_input_tokens": 335235,
-          "cached_input_tokens": 11855360,
-          "output_tokens": 54134,
-          "reasoning_tokens": 27150,
-          "total_provider_tokens": 12244729,
+          "fresh_input_tokens": 78119,
+          "cached_input_tokens": 2158592,
+          "output_tokens": 9309,
+          "reasoning_tokens": 5274,
+          "total_provider_tokens": 2246020,
           "operational_retry_count": 0,
           "codex_exit_code": 0,
           "verifier_passed": true
@@ -919,11 +937,24 @@
       ],
       "protocol_fingerprint": "b440da225a3a",
       "tokens": {
+        "fresh_input_tokens": 274928,
+        "cached_input_tokens": 8400896,
+        "output_tokens": 52908,
+        "reasoning_tokens": 26260,
+        "total_provider_tokens": 8728732
+      },
+      "legacy_extractor_tokens": {
         "fresh_input_tokens": 658929,
         "cached_input_tokens": 16645632,
+        "cache_write_tokens": null,
         "output_tokens": 119010,
         "reasoning_tokens": 58291,
         "total_provider_tokens": 17423571
+      },
+      "accounting_correction": {
+        "mode": "final-cumulative-total-per-thread",
+        "legacy_overcount_tokens": 8694839,
+        "legacy_inflation_factor": 1.996117076340527
       },
       "tasks": [
         {
@@ -943,11 +974,11 @@
           "task_id": "beets-lifecycle-refactor-v0",
           "task_class": "behavior-preserving-refactor",
           "order": 2,
-          "fresh_input_tokens": 234057,
-          "cached_input_tokens": 6408704,
-          "output_tokens": 46035,
-          "reasoning_tokens": 21716,
-          "total_provider_tokens": 6688796,
+          "fresh_input_tokens": 84113,
+          "cached_input_tokens": 4572672,
+          "output_tokens": 25968,
+          "reasoning_tokens": 11401,
+          "total_provider_tokens": 4682753,
           "operational_retry_count": 0,
           "codex_exit_code": 0,
           "verifier_passed": true
@@ -956,11 +987,11 @@
           "task_id": "beets-lifecycle-review-v0",
           "task_class": "code-review-correction",
           "order": 3,
-          "fresh_input_tokens": 274928,
-          "cached_input_tokens": 8400896,
-          "output_tokens": 52908,
-          "reasoning_tokens": 26260,
-          "total_provider_tokens": 8728732,
+          "fresh_input_tokens": 40871,
+          "cached_input_tokens": 1992192,
+          "output_tokens": 6873,
+          "reasoning_tokens": 4544,
+          "total_provider_tokens": 2039936,
           "operational_retry_count": 0,
           "codex_exit_code": 0,
           "verifier_passed": true
@@ -1222,11 +1253,24 @@
       ],
       "protocol_fingerprint": "b440da225a3a",
       "tokens": {
+        "fresh_input_tokens": 231792,
+        "cached_input_tokens": 8943616,
+        "output_tokens": 63038,
+        "reasoning_tokens": 28957,
+        "total_provider_tokens": 9238446
+      },
+      "legacy_extractor_tokens": {
         "fresh_input_tokens": 503643,
         "cached_input_tokens": 16973056,
+        "cache_write_tokens": null,
         "output_tokens": 135579,
         "reasoning_tokens": 62498,
         "total_provider_tokens": 17612278
+      },
+      "accounting_correction": {
+        "mode": "final-cumulative-total-per-thread",
+        "legacy_overcount_tokens": 8373832,
+        "legacy_inflation_factor": 1.9064113163620808
       },
       "tasks": [
         {
@@ -1246,11 +1290,11 @@
           "task_id": "beets-lifecycle-refactor-v0",
           "task_class": "behavior-preserving-refactor",
           "order": 2,
-          "fresh_input_tokens": 187044,
-          "cached_input_tokens": 6710784,
-          "output_tokens": 53828,
-          "reasoning_tokens": 24906,
-          "total_provider_tokens": 6951656,
+          "fresh_input_tokens": 102237,
+          "cached_input_tokens": 5392128,
+          "output_tokens": 35115,
+          "reasoning_tokens": 16271,
+          "total_provider_tokens": 5529480,
           "operational_retry_count": 0,
           "codex_exit_code": 0,
           "verifier_passed": true
@@ -1259,11 +1303,11 @@
           "task_id": "beets-lifecycle-review-v0",
           "task_class": "code-review-correction",
           "order": 3,
-          "fresh_input_tokens": 231792,
-          "cached_input_tokens": 8943616,
-          "output_tokens": 63038,
-          "reasoning_tokens": 28957,
-          "total_provider_tokens": 9238446,
+          "fresh_input_tokens": 44748,
+          "cached_input_tokens": 2232832,
+          "output_tokens": 9210,
+          "reasoning_tokens": 4051,
+          "total_provider_tokens": 2286790,
           "operational_retry_count": 0,
           "codex_exit_code": 0,
           "verifier_passed": true
@@ -1549,11 +1593,24 @@
       ],
       "protocol_fingerprint": "769d40697529",
       "tokens": {
+        "fresh_input_tokens": 207464,
+        "cached_input_tokens": 6186752,
+        "output_tokens": 25858,
+        "reasoning_tokens": 14231,
+        "total_provider_tokens": 6420074
+      },
+      "legacy_extractor_tokens": {
         "fresh_input_tokens": 528375,
         "cached_input_tokens": 12357888,
+        "cache_write_tokens": null,
         "output_tokens": 63803,
         "reasoning_tokens": 35977,
         "total_provider_tokens": 12950066
+      },
+      "accounting_correction": {
+        "mode": "final-cumulative-total-per-thread",
+        "legacy_overcount_tokens": 6529992,
+        "legacy_inflation_factor": 2.0171209864559194
       },
       "tasks": [
         {
@@ -1573,11 +1630,11 @@
           "task_id": "fastify-lifecycle-refactor-v0",
           "task_class": "behavior-preserving-refactor",
           "order": 2,
-          "fresh_input_tokens": 172299,
-          "cached_input_tokens": 3821312,
-          "output_tokens": 21089,
-          "reasoning_tokens": 12010,
-          "total_provider_tokens": 4014700,
+          "fresh_input_tokens": 23687,
+          "cached_input_tokens": 1471488,
+          "output_tokens": 4233,
+          "reasoning_tokens": 2274,
+          "total_provider_tokens": 1499408,
           "operational_retry_count": 0,
           "codex_exit_code": 0,
           "verifier_passed": true
@@ -1586,11 +1643,11 @@
           "task_id": "fastify-lifecycle-review-v0",
           "task_class": "code-review-correction",
           "order": 3,
-          "fresh_input_tokens": 207464,
-          "cached_input_tokens": 6186752,
-          "output_tokens": 25858,
-          "reasoning_tokens": 14231,
-          "total_provider_tokens": 6420074,
+          "fresh_input_tokens": 35165,
+          "cached_input_tokens": 2365440,
+          "output_tokens": 4769,
+          "reasoning_tokens": 2221,
+          "total_provider_tokens": 2405374,
           "operational_retry_count": 0,
           "codex_exit_code": 0,
           "verifier_passed": true
@@ -1838,11 +1895,24 @@
       ],
       "protocol_fingerprint": "769d40697529",
       "tokens": {
+        "fresh_input_tokens": 208494,
+        "cached_input_tokens": 6461952,
+        "output_tokens": 42324,
+        "reasoning_tokens": 23354,
+        "total_provider_tokens": 6712770
+      },
+      "legacy_extractor_tokens": {
         "fresh_input_tokens": 470975,
         "cached_input_tokens": 12509696,
+        "cache_write_tokens": null,
         "output_tokens": 96881,
         "reasoning_tokens": 52478,
         "total_provider_tokens": 13077552
+      },
+      "accounting_correction": {
+        "mode": "final-cumulative-total-per-thread",
+        "legacy_overcount_tokens": 6364782,
+        "legacy_inflation_factor": 1.9481602974628953
       },
       "tasks": [
         {
@@ -1862,11 +1932,11 @@
           "task_id": "fastify-lifecycle-refactor-v0",
           "task_class": "behavior-preserving-refactor",
           "order": 2,
-          "fresh_input_tokens": 147846,
-          "cached_input_tokens": 3816192,
-          "output_tokens": 30199,
-          "reasoning_tokens": 15666,
-          "total_provider_tokens": 3994237,
+          "fresh_input_tokens": 33211,
+          "cached_input_tokens": 1584640,
+          "output_tokens": 5841,
+          "reasoning_tokens": 2208,
+          "total_provider_tokens": 1623692,
           "operational_retry_count": 0,
           "codex_exit_code": 0,
           "verifier_passed": true
@@ -1875,11 +1945,11 @@
           "task_id": "fastify-lifecycle-review-v0",
           "task_class": "code-review-correction",
           "order": 3,
-          "fresh_input_tokens": 208494,
-          "cached_input_tokens": 6461952,
-          "output_tokens": 42324,
-          "reasoning_tokens": 23354,
-          "total_provider_tokens": 6712770,
+          "fresh_input_tokens": 60648,
+          "cached_input_tokens": 2645760,
+          "output_tokens": 12125,
+          "reasoning_tokens": 7688,
+          "total_provider_tokens": 2718533,
           "operational_retry_count": 0,
           "codex_exit_code": 0,
           "verifier_passed": true
@@ -2114,11 +2184,24 @@
       ],
       "protocol_fingerprint": "769d40697529",
       "tokens": {
+        "fresh_input_tokens": 273649,
+        "cached_input_tokens": 4318464,
+        "output_tokens": 25010,
+        "reasoning_tokens": 10741,
+        "total_provider_tokens": 4617123
+      },
+      "legacy_extractor_tokens": {
         "fresh_input_tokens": 562227,
         "cached_input_tokens": 7030528,
+        "cache_write_tokens": null,
         "output_tokens": 49815,
         "reasoning_tokens": 22016,
         "total_provider_tokens": 7642570
+      },
+      "accounting_correction": {
+        "mode": "final-cumulative-total-per-thread",
+        "legacy_overcount_tokens": 3025447,
+        "legacy_inflation_factor": 1.655266710460172
       },
       "tasks": [
         {
@@ -2138,11 +2221,11 @@
           "task_id": "fastify-lifecycle-refactor-v0",
           "task_class": "behavior-preserving-refactor",
           "order": 2,
-          "fresh_input_tokens": 197325,
-          "cached_input_tokens": 1801728,
-          "output_tokens": 15232,
-          "reasoning_tokens": 6908,
-          "total_provider_tokens": 2014285,
+          "fresh_input_tokens": 106072,
+          "cached_input_tokens": 891392,
+          "output_tokens": 5659,
+          "reasoning_tokens": 2541,
+          "total_provider_tokens": 1003123,
           "operational_retry_count": 0,
           "codex_exit_code": 0,
           "verifier_passed": true
@@ -2151,11 +2234,11 @@
           "task_id": "fastify-lifecycle-review-v0",
           "task_class": "code-review-correction",
           "order": 3,
-          "fresh_input_tokens": 273649,
-          "cached_input_tokens": 4318464,
-          "output_tokens": 25010,
-          "reasoning_tokens": 10741,
-          "total_provider_tokens": 4617123,
+          "fresh_input_tokens": 76324,
+          "cached_input_tokens": 2516736,
+          "output_tokens": 9778,
+          "reasoning_tokens": 3833,
+          "total_provider_tokens": 2602838,
           "operational_retry_count": 0,
           "codex_exit_code": 0,
           "verifier_passed": true
@@ -2369,11 +2452,24 @@
       ],
       "protocol_fingerprint": "ded8609b4172",
       "tokens": {
+        "fresh_input_tokens": 555640,
+        "cached_input_tokens": 15246336,
+        "output_tokens": 61852,
+        "reasoning_tokens": 26561,
+        "total_provider_tokens": 15863828
+      },
+      "legacy_extractor_tokens": {
         "fresh_input_tokens": 1286070,
         "cached_input_tokens": 32159488,
+        "cache_write_tokens": null,
         "output_tokens": 118592,
         "reasoning_tokens": 51277,
         "total_provider_tokens": 33564150
+      },
+      "accounting_correction": {
+        "mode": "final-cumulative-total-per-thread",
+        "legacy_overcount_tokens": 17700322,
+        "legacy_inflation_factor": 2.1157661316045533
       },
       "tasks": [
         {
@@ -2393,11 +2489,11 @@
           "task_id": "terraform-lifecycle-refactor-v0",
           "task_class": "behavior-preserving-refactor",
           "order": 2,
-          "fresh_input_tokens": 417448,
-          "cached_input_tokens": 12340480,
-          "output_tokens": 37255,
-          "reasoning_tokens": 16506,
-          "total_provider_tokens": 12795183,
+          "fresh_input_tokens": 104466,
+          "cached_input_tokens": 7767808,
+          "output_tokens": 17770,
+          "reasoning_tokens": 8296,
+          "total_provider_tokens": 7890044,
           "operational_retry_count": 0,
           "codex_exit_code": 0,
           "verifier_passed": true
@@ -2406,11 +2502,11 @@
           "task_id": "terraform-lifecycle-review-v0",
           "task_class": "code-review-correction",
           "order": 3,
-          "fresh_input_tokens": 555640,
-          "cached_input_tokens": 15246336,
-          "output_tokens": 61852,
-          "reasoning_tokens": 26561,
-          "total_provider_tokens": 15863828,
+          "fresh_input_tokens": 138192,
+          "cached_input_tokens": 2905856,
+          "output_tokens": 24597,
+          "reasoning_tokens": 10055,
+          "total_provider_tokens": 3068645,
           "operational_retry_count": 0,
           "codex_exit_code": 0,
           "verifier_passed": true
@@ -2657,11 +2753,24 @@
       ],
       "protocol_fingerprint": "ded8609b4172",
       "tokens": {
+        "fresh_input_tokens": 491544,
+        "cached_input_tokens": 18905856,
+        "output_tokens": 55666,
+        "reasoning_tokens": 26157,
+        "total_provider_tokens": 19453066
+      },
+      "legacy_extractor_tokens": {
         "fresh_input_tokens": 977127,
         "cached_input_tokens": 42297344,
+        "cache_write_tokens": null,
         "output_tokens": 117853,
         "reasoning_tokens": 54468,
         "total_provider_tokens": 43392324
+      },
+      "accounting_correction": {
+        "mode": "final-cumulative-total-per-thread",
+        "legacy_overcount_tokens": 23939258,
+        "legacy_inflation_factor": 2.2306161918126426
       },
       "tasks": [
         {
@@ -2681,11 +2790,11 @@
           "task_id": "terraform-lifecycle-refactor-v0",
           "task_class": "behavior-preserving-refactor",
           "order": 2,
-          "fresh_input_tokens": 302864,
-          "cached_input_tokens": 16671232,
-          "output_tokens": 39469,
-          "reasoning_tokens": 18448,
-          "total_provider_tokens": 17013565,
+          "fresh_input_tokens": 120145,
+          "cached_input_tokens": 9950976,
+          "output_tokens": 16751,
+          "reasoning_tokens": 8585,
+          "total_provider_tokens": 10087872,
           "operational_retry_count": 0,
           "codex_exit_code": 0,
           "verifier_passed": true
@@ -2694,11 +2803,11 @@
           "task_id": "terraform-lifecycle-review-v0",
           "task_class": "code-review-correction",
           "order": 3,
-          "fresh_input_tokens": 491544,
-          "cached_input_tokens": 18905856,
-          "output_tokens": 55666,
-          "reasoning_tokens": 26157,
-          "total_provider_tokens": 19453066,
+          "fresh_input_tokens": 188680,
+          "cached_input_tokens": 2234624,
+          "output_tokens": 16197,
+          "reasoning_tokens": 7709,
+          "total_provider_tokens": 2439501,
           "operational_retry_count": 0,
           "codex_exit_code": 0,
           "verifier_passed": true
@@ -2953,11 +3062,24 @@
       ],
       "protocol_fingerprint": "ded8609b4172",
       "tokens": {
+        "fresh_input_tokens": 468939,
+        "cached_input_tokens": 17051392,
+        "output_tokens": 57846,
+        "reasoning_tokens": 27200,
+        "total_provider_tokens": 17578177
+      },
+      "legacy_extractor_tokens": {
         "fresh_input_tokens": 1014946,
         "cached_input_tokens": 36360192,
+        "cache_write_tokens": null,
         "output_tokens": 124055,
         "reasoning_tokens": 56969,
         "total_provider_tokens": 37499193
+      },
+      "accounting_correction": {
+        "mode": "final-cumulative-total-per-thread",
+        "legacy_overcount_tokens": 19921016,
+        "legacy_inflation_factor": 2.1332811132804044
       },
       "tasks": [
         {
@@ -2977,11 +3099,11 @@
           "task_id": "terraform-lifecycle-refactor-v0",
           "task_class": "behavior-preserving-refactor",
           "order": 2,
-          "fresh_input_tokens": 338382,
-          "cached_input_tokens": 11433216,
-          "output_tokens": 39869,
-          "reasoning_tokens": 17816,
-          "total_provider_tokens": 11811467,
+          "fresh_input_tokens": 130757,
+          "cached_input_tokens": 3557632,
+          "output_tokens": 13529,
+          "reasoning_tokens": 5863,
+          "total_provider_tokens": 3701918,
           "operational_retry_count": 0,
           "codex_exit_code": 0,
           "verifier_passed": true
@@ -2990,11 +3112,11 @@
           "task_id": "terraform-lifecycle-review-v0",
           "task_class": "code-review-correction",
           "order": 3,
-          "fresh_input_tokens": 468939,
-          "cached_input_tokens": 17051392,
-          "output_tokens": 57846,
-          "reasoning_tokens": 27200,
-          "total_provider_tokens": 17578177,
+          "fresh_input_tokens": 130557,
+          "cached_input_tokens": 5618176,
+          "output_tokens": 17977,
+          "reasoning_tokens": 9384,
+          "total_provider_tokens": 5766710,
           "operational_retry_count": 0,
           "codex_exit_code": 0,
           "verifier_passed": true
@@ -3234,11 +3356,24 @@
       ],
       "protocol_fingerprint": "be9d43b94b02",
       "tokens": {
+        "fresh_input_tokens": 190868,
+        "cached_input_tokens": 6822912,
+        "output_tokens": 34758,
+        "reasoning_tokens": 14260,
+        "total_provider_tokens": 7048538
+      },
+      "legacy_extractor_tokens": {
         "fresh_input_tokens": 437384,
         "cached_input_tokens": 13704960,
+        "cache_write_tokens": null,
         "output_tokens": 77538,
         "reasoning_tokens": 30341,
         "total_provider_tokens": 14219882
+      },
+      "accounting_correction": {
+        "mode": "final-cumulative-total-per-thread",
+        "legacy_overcount_tokens": 7171344,
+        "legacy_inflation_factor": 2.0174229038702776
       },
       "tasks": [
         {
@@ -3258,11 +3393,11 @@
           "task_id": "beets-lifecycle-refactor-v0",
           "task_class": "behavior-preserving-refactor",
           "order": 2,
-          "fresh_input_tokens": 155479,
-          "cached_input_tokens": 5121024,
-          "output_tokens": 29689,
-          "reasoning_tokens": 12008,
-          "total_provider_tokens": 5306192,
+          "fresh_input_tokens": 64442,
+          "cached_input_tokens": 3360000,
+          "output_tokens": 16598,
+          "reasoning_tokens": 7935,
+          "total_provider_tokens": 3441040,
           "operational_retry_count": 0,
           "codex_exit_code": 0,
           "verifier_passed": true
@@ -3271,11 +3406,11 @@
           "task_id": "beets-lifecycle-review-v0",
           "task_class": "code-review-correction",
           "order": 3,
-          "fresh_input_tokens": 190868,
-          "cached_input_tokens": 6822912,
-          "output_tokens": 34758,
-          "reasoning_tokens": 14260,
-          "total_provider_tokens": 7048538,
+          "fresh_input_tokens": 35389,
+          "cached_input_tokens": 1701888,
+          "output_tokens": 5069,
+          "reasoning_tokens": 2252,
+          "total_provider_tokens": 1742346,
           "operational_retry_count": 0,
           "codex_exit_code": 0,
           "verifier_passed": true
@@ -3488,11 +3623,24 @@
       ],
       "protocol_fingerprint": "be9d43b94b02",
       "tokens": {
+        "fresh_input_tokens": 189127,
+        "cached_input_tokens": 5063424,
+        "output_tokens": 32402,
+        "reasoning_tokens": 14465,
+        "total_provider_tokens": 5284953
+      },
+      "legacy_extractor_tokens": {
         "fresh_input_tokens": 428528,
         "cached_input_tokens": 9850112,
+        "cache_write_tokens": null,
         "output_tokens": 71726,
         "reasoning_tokens": 31138,
         "total_provider_tokens": 10350366
+      },
+      "accounting_correction": {
+        "mode": "final-cumulative-total-per-thread",
+        "legacy_overcount_tokens": 5065413,
+        "legacy_inflation_factor": 1.9584594224395184
       },
       "tasks": [
         {
@@ -3512,11 +3660,11 @@
           "task_id": "beets-lifecycle-refactor-v0",
           "task_class": "behavior-preserving-refactor",
           "order": 2,
-          "fresh_input_tokens": 156516,
-          "cached_input_tokens": 3754240,
-          "output_tokens": 27969,
-          "reasoning_tokens": 12222,
-          "total_provider_tokens": 3938725,
+          "fresh_input_tokens": 73631,
+          "cached_input_tokens": 2721792,
+          "output_tokens": 16614,
+          "reasoning_tokens": 7771,
+          "total_provider_tokens": 2812037,
           "operational_retry_count": 0,
           "codex_exit_code": 0,
           "verifier_passed": true
@@ -3525,11 +3673,11 @@
           "task_id": "beets-lifecycle-review-v0",
           "task_class": "code-review-correction",
           "order": 3,
-          "fresh_input_tokens": 189127,
-          "cached_input_tokens": 5063424,
-          "output_tokens": 32402,
-          "reasoning_tokens": 14465,
-          "total_provider_tokens": 5284953,
+          "fresh_input_tokens": 32611,
+          "cached_input_tokens": 1309184,
+          "output_tokens": 4433,
+          "reasoning_tokens": 2243,
+          "total_provider_tokens": 1346228,
           "operational_retry_count": 0,
           "codex_exit_code": 0,
           "verifier_passed": true
@@ -3752,11 +3900,24 @@
       ],
       "protocol_fingerprint": "be9d43b94b02",
       "tokens": {
+        "fresh_input_tokens": 181119,
+        "cached_input_tokens": 5592064,
+        "output_tokens": 35333,
+        "reasoning_tokens": 13701,
+        "total_provider_tokens": 5808516
+      },
+      "legacy_extractor_tokens": {
         "fresh_input_tokens": 409208,
         "cached_input_tokens": 10889472,
+        "cache_write_tokens": null,
         "output_tokens": 77436,
         "reasoning_tokens": 29996,
         "total_provider_tokens": 11376116
+      },
+      "accounting_correction": {
+        "mode": "final-cumulative-total-per-thread",
+        "legacy_overcount_tokens": 5567600,
+        "legacy_inflation_factor": 1.9585236573334739
       },
       "tasks": [
         {
@@ -3776,11 +3937,11 @@
           "task_id": "beets-lifecycle-refactor-v0",
           "task_class": "behavior-preserving-refactor",
           "order": 2,
-          "fresh_input_tokens": 151075,
-          "cached_input_tokens": 4167424,
-          "output_tokens": 30668,
-          "reasoning_tokens": 11938,
-          "total_provider_tokens": 4349167,
+          "fresh_input_tokens": 74061,
+          "cached_input_tokens": 3037440,
+          "output_tokens": 19233,
+          "reasoning_tokens": 7581,
+          "total_provider_tokens": 3130734,
           "operational_retry_count": 0,
           "codex_exit_code": 0,
           "verifier_passed": true
@@ -3789,11 +3950,11 @@
           "task_id": "beets-lifecycle-review-v0",
           "task_class": "code-review-correction",
           "order": 3,
-          "fresh_input_tokens": 181119,
-          "cached_input_tokens": 5592064,
-          "output_tokens": 35333,
-          "reasoning_tokens": 13701,
-          "total_provider_tokens": 5808516,
+          "fresh_input_tokens": 30044,
+          "cached_input_tokens": 1424640,
+          "output_tokens": 4665,
+          "reasoning_tokens": 1763,
+          "total_provider_tokens": 1459349,
           "operational_retry_count": 0,
           "codex_exit_code": 0,
           "verifier_passed": true
@@ -4048,11 +4209,24 @@
       ],
       "protocol_fingerprint": "bd9fd65385d9",
       "tokens": {
+        "fresh_input_tokens": 153230,
+        "cached_input_tokens": 4287744,
+        "output_tokens": 23448,
+        "reasoning_tokens": 9697,
+        "total_provider_tokens": 4464422
+      },
+      "legacy_extractor_tokens": {
         "fresh_input_tokens": 359563,
         "cached_input_tokens": 7977216,
+        "cache_write_tokens": null,
         "output_tokens": 50455,
         "reasoning_tokens": 21179,
         "total_provider_tokens": 8387234
+      },
+      "accounting_correction": {
+        "mode": "final-cumulative-total-per-thread",
+        "legacy_overcount_tokens": 3922812,
+        "legacy_inflation_factor": 1.8786830635634355
       },
       "tasks": [
         {
@@ -4072,11 +4246,11 @@
           "task_id": "fastify-lifecycle-refactor-v0",
           "task_class": "behavior-preserving-refactor",
           "order": 2,
-          "fresh_input_tokens": 119773,
-          "cached_input_tokens": 2572288,
-          "output_tokens": 16978,
-          "reasoning_tokens": 7227,
-          "total_provider_tokens": 2709039,
+          "fresh_input_tokens": 33213,
+          "cached_input_tokens": 1455104,
+          "output_tokens": 6949,
+          "reasoning_tokens": 2972,
+          "total_provider_tokens": 1495266,
           "operational_retry_count": 0,
           "codex_exit_code": 0,
           "verifier_passed": true
@@ -4085,11 +4259,11 @@
           "task_id": "fastify-lifecycle-review-v0",
           "task_class": "code-review-correction",
           "order": 3,
-          "fresh_input_tokens": 153230,
-          "cached_input_tokens": 4287744,
-          "output_tokens": 23448,
-          "reasoning_tokens": 9697,
-          "total_provider_tokens": 4464422,
+          "fresh_input_tokens": 33457,
+          "cached_input_tokens": 1715456,
+          "output_tokens": 6470,
+          "reasoning_tokens": 2470,
+          "total_provider_tokens": 1755383,
           "operational_retry_count": 0,
           "codex_exit_code": 0,
           "verifier_passed": true
@@ -4302,11 +4476,24 @@
       ],
       "protocol_fingerprint": "bd9fd65385d9",
       "tokens": {
+        "fresh_input_tokens": 167165,
+        "cached_input_tokens": 4264448,
+        "output_tokens": 33576,
+        "reasoning_tokens": 14291,
+        "total_provider_tokens": 4465189
+      },
+      "legacy_extractor_tokens": {
         "fresh_input_tokens": 373697,
         "cached_input_tokens": 7649792,
+        "cache_write_tokens": null,
         "output_tokens": 74365,
         "reasoning_tokens": 32676,
         "total_provider_tokens": 8097854
+      },
+      "accounting_correction": {
+        "mode": "final-cumulative-total-per-thread",
+        "legacy_overcount_tokens": 3632665,
+        "legacy_inflation_factor": 1.813552349071898
       },
       "tasks": [
         {
@@ -4326,11 +4513,11 @@
           "task_id": "fastify-lifecycle-refactor-v0",
           "task_class": "behavior-preserving-refactor",
           "order": 2,
-          "fresh_input_tokens": 123045,
-          "cached_input_tokens": 2120448,
-          "output_tokens": 23069,
-          "reasoning_tokens": 9985,
-          "total_provider_tokens": 2266562,
+          "fresh_input_tokens": 39558,
+          "cached_input_tokens": 855552,
+          "output_tokens": 5349,
+          "reasoning_tokens": 1585,
+          "total_provider_tokens": 900459,
           "operational_retry_count": 0,
           "codex_exit_code": 0,
           "verifier_passed": true
@@ -4339,11 +4526,11 @@
           "task_id": "fastify-lifecycle-review-v0",
           "task_class": "code-review-correction",
           "order": 3,
-          "fresh_input_tokens": 167165,
-          "cached_input_tokens": 4264448,
-          "output_tokens": 33576,
-          "reasoning_tokens": 14291,
-          "total_provider_tokens": 4465189,
+          "fresh_input_tokens": 44120,
+          "cached_input_tokens": 2144000,
+          "output_tokens": 10507,
+          "reasoning_tokens": 4306,
+          "total_provider_tokens": 2198627,
           "operational_retry_count": 0,
           "codex_exit_code": 0,
           "verifier_passed": true
@@ -4566,11 +4753,24 @@
       ],
       "protocol_fingerprint": "bd9fd65385d9",
       "tokens": {
+        "fresh_input_tokens": 150787,
+        "cached_input_tokens": 3773440,
+        "output_tokens": 30069,
+        "reasoning_tokens": 14847,
+        "total_provider_tokens": 3954296
+      },
+      "legacy_extractor_tokens": {
         "fresh_input_tokens": 327699,
         "cached_input_tokens": 6712576,
+        "cache_write_tokens": null,
         "output_tokens": 66250,
         "reasoning_tokens": 33996,
         "total_provider_tokens": 7106525
+      },
+      "accounting_correction": {
+        "mode": "final-cumulative-total-per-thread",
+        "legacy_overcount_tokens": 3152229,
+        "legacy_inflation_factor": 1.797165664886999
       },
       "tasks": [
         {
@@ -4590,11 +4790,11 @@
           "task_id": "fastify-lifecycle-refactor-v0",
           "task_class": "behavior-preserving-refactor",
           "order": 2,
-          "fresh_input_tokens": 104278,
-          "cached_input_tokens": 1987584,
-          "output_tokens": 21313,
-          "reasoning_tokens": 10871,
-          "total_provider_tokens": 2113175,
+          "fresh_input_tokens": 31644,
+          "cached_input_tokens": 1036032,
+          "output_tokens": 6445,
+          "reasoning_tokens": 2593,
+          "total_provider_tokens": 1074121,
           "operational_retry_count": 0,
           "codex_exit_code": 0,
           "verifier_passed": true
@@ -4603,11 +4803,11 @@
           "task_id": "fastify-lifecycle-review-v0",
           "task_class": "code-review-correction",
           "order": 3,
-          "fresh_input_tokens": 150787,
-          "cached_input_tokens": 3773440,
-          "output_tokens": 30069,
-          "reasoning_tokens": 14847,
-          "total_provider_tokens": 3954296,
+          "fresh_input_tokens": 46509,
+          "cached_input_tokens": 1785856,
+          "output_tokens": 8756,
+          "reasoning_tokens": 3976,
+          "total_provider_tokens": 1841121,
           "operational_retry_count": 0,
           "codex_exit_code": 0,
           "verifier_passed": true
@@ -4820,11 +5020,24 @@
       ],
       "protocol_fingerprint": "ca21cbff5ed5",
       "tokens": {
+        "fresh_input_tokens": 289203,
+        "cached_input_tokens": 15201280,
+        "output_tokens": 35517,
+        "reasoning_tokens": 12897,
+        "total_provider_tokens": 15526000
+      },
+      "legacy_extractor_tokens": {
         "fresh_input_tokens": 651418,
         "cached_input_tokens": 30747648,
+        "cache_write_tokens": null,
         "output_tokens": 72720,
         "reasoning_tokens": 24356,
         "total_provider_tokens": 31471786
+      },
+      "accounting_correction": {
+        "mode": "final-cumulative-total-per-thread",
+        "legacy_overcount_tokens": 15945786,
+        "legacy_inflation_factor": 2.0270376143243594
       },
       "tasks": [
         {
@@ -4844,11 +5057,11 @@
           "task_id": "terraform-lifecycle-refactor-v0",
           "task_class": "behavior-preserving-refactor",
           "order": 2,
-          "fresh_input_tokens": 217490,
-          "cached_input_tokens": 10705408,
-          "output_tokens": 23372,
-          "reasoning_tokens": 7385,
-          "total_provider_tokens": 10946270,
+          "fresh_input_tokens": 72765,
+          "cached_input_tokens": 5864448,
+          "output_tokens": 9541,
+          "reasoning_tokens": 3311,
+          "total_provider_tokens": 5946754,
           "operational_retry_count": 0,
           "codex_exit_code": 0,
           "verifier_passed": true
@@ -4857,11 +5070,11 @@
           "task_id": "terraform-lifecycle-review-v0",
           "task_class": "code-review-correction",
           "order": 3,
-          "fresh_input_tokens": 289203,
-          "cached_input_tokens": 15201280,
-          "output_tokens": 35517,
-          "reasoning_tokens": 12897,
-          "total_provider_tokens": 15526000,
+          "fresh_input_tokens": 71713,
+          "cached_input_tokens": 4495872,
+          "output_tokens": 12145,
+          "reasoning_tokens": 5512,
+          "total_provider_tokens": 4579730,
           "operational_retry_count": 0,
           "codex_exit_code": 0,
           "verifier_passed": true
@@ -5084,11 +5297,24 @@
       ],
       "protocol_fingerprint": "ca21cbff5ed5",
       "tokens": {
+        "fresh_input_tokens": 217030,
+        "cached_input_tokens": 10715648,
+        "output_tokens": 28977,
+        "reasoning_tokens": 10198,
+        "total_provider_tokens": 10961655
+      },
+      "legacy_extractor_tokens": {
         "fresh_input_tokens": 460021,
         "cached_input_tokens": 19501568,
+        "cache_write_tokens": null,
         "output_tokens": 57094,
         "reasoning_tokens": 18774,
         "total_provider_tokens": 20018683
+      },
+      "accounting_correction": {
+        "mode": "final-cumulative-total-per-thread",
+        "legacy_overcount_tokens": 9057028,
+        "legacy_inflation_factor": 1.8262464016610631
       },
       "tasks": [
         {
@@ -5108,11 +5334,11 @@
           "task_id": "terraform-lifecycle-refactor-v0",
           "task_class": "behavior-preserving-refactor",
           "order": 2,
-          "fresh_input_tokens": 154432,
-          "cached_input_tokens": 6568960,
-          "output_tokens": 17775,
-          "reasoning_tokens": 5502,
-          "total_provider_tokens": 6741167,
+          "fresh_input_tokens": 65873,
+          "cached_input_tokens": 4352000,
+          "output_tokens": 7433,
+          "reasoning_tokens": 2428,
+          "total_provider_tokens": 4425306,
           "operational_retry_count": 0,
           "codex_exit_code": 0,
           "verifier_passed": true
@@ -5121,11 +5347,11 @@
           "task_id": "terraform-lifecycle-review-v0",
           "task_class": "code-review-correction",
           "order": 3,
-          "fresh_input_tokens": 217030,
-          "cached_input_tokens": 10715648,
-          "output_tokens": 28977,
-          "reasoning_tokens": 10198,
-          "total_provider_tokens": 10961655,
+          "fresh_input_tokens": 62598,
+          "cached_input_tokens": 4146688,
+          "output_tokens": 11202,
+          "reasoning_tokens": 4696,
+          "total_provider_tokens": 4220488,
           "operational_retry_count": 0,
           "codex_exit_code": 0,
           "verifier_passed": true
@@ -5356,11 +5582,24 @@
       ],
       "protocol_fingerprint": "ca21cbff5ed5",
       "tokens": {
+        "fresh_input_tokens": 234395,
+        "cached_input_tokens": 10495232,
+        "output_tokens": 32119,
+        "reasoning_tokens": 13128,
+        "total_provider_tokens": 10761746
+      },
+      "legacy_extractor_tokens": {
         "fresh_input_tokens": 489423,
         "cached_input_tokens": 18804736,
+        "cache_write_tokens": null,
         "output_tokens": 63143,
         "reasoning_tokens": 23987,
         "total_provider_tokens": 19357302
+      },
+      "accounting_correction": {
+        "mode": "final-cumulative-total-per-thread",
+        "legacy_overcount_tokens": 8595556,
+        "legacy_inflation_factor": 1.798713888991619
       },
       "tasks": [
         {
@@ -5380,11 +5619,11 @@
           "task_id": "terraform-lifecycle-refactor-v0",
           "task_class": "behavior-preserving-refactor",
           "order": 2,
-          "fresh_input_tokens": 161101,
-          "cached_input_tokens": 6159104,
-          "output_tokens": 19710,
-          "reasoning_tokens": 6842,
-          "total_provider_tokens": 6339915,
+          "fresh_input_tokens": 67174,
+          "cached_input_tokens": 4008704,
+          "output_tokens": 8396,
+          "reasoning_tokens": 2825,
+          "total_provider_tokens": 4084274,
           "operational_retry_count": 0,
           "codex_exit_code": 0,
           "verifier_passed": true
@@ -5393,11 +5632,11 @@
           "task_id": "terraform-lifecycle-review-v0",
           "task_class": "code-review-correction",
           "order": 3,
-          "fresh_input_tokens": 234395,
-          "cached_input_tokens": 10495232,
-          "output_tokens": 32119,
-          "reasoning_tokens": 13128,
-          "total_provider_tokens": 10761746,
+          "fresh_input_tokens": 73294,
+          "cached_input_tokens": 4336128,
+          "output_tokens": 12409,
+          "reasoning_tokens": 6286,
+          "total_provider_tokens": 4421831,
           "operational_retry_count": 0,
           "codex_exit_code": 0,
           "verifier_passed": true
@@ -5597,104 +5836,104 @@
     "codex-openai-gpt-5-6-luna-xhigh": {
       "session_count": 9,
       "component_totals": {
-        "fresh_input_tokens": 6740374,
-        "cached_input_tokens": 200846080,
-        "output_tokens": 944775,
-        "reasoning_tokens": 453720,
-        "total_provider_tokens": 208531229
+        "fresh_input_tokens": 3047685,
+        "cached_input_tokens": 97370624,
+        "output_tokens": 438636,
+        "reasoning_tokens": 210611,
+        "total_provider_tokens": 100856945
       },
       "component_shares": {
-        "fresh_input_share_of_total": 0.032323091521222466,
-        "cached_input_share_of_total": 0.963146292107644,
-        "output_share_of_total": 0.004530616371133553,
-        "reasoning_share_of_output": 0.48024132730015084
+        "fresh_input_share_of_total": 0.030217899223499184,
+        "cached_input_share_of_total": 0.9654330100916699,
+        "output_share_of_total": 0.004349090684830876,
+        "reasoning_share_of_output": 0.48014982810348444
       },
       "sequence_stats": {
         "fastify-lifecycle-sequence-v0": {
           "total_provider_tokens": {
             "n": 3,
             "values": [
-              12950066,
-              13077552,
-              7642570
+              6420074,
+              6712770,
+              4617123
             ],
-            "mean": 11223396.0,
-            "median": 12950066.0,
-            "sample_standard_deviation": 3101741.3337923586,
-            "coefficient_of_variation": 0.27636388609939083,
-            "minimum": 7642570.0,
-            "maximum": 13077552.0,
-            "range": 5434982.0,
-            "geometric_mean": 10897978.686338108,
-            "sample_log_standard_deviation": 0.30734242918143473
+            "mean": 5916655.666666667,
+            "median": 6420074.0,
+            "sample_standard_deviation": 1134903.7848665116,
+            "coefficient_of_variation": 0.19181508081674375,
+            "minimum": 4617123.0,
+            "maximum": 6712770.0,
+            "range": 2095647.0,
+            "geometric_mean": 5838093.979235873,
+            "sample_log_standard_deviation": 0.2044167983639054
           },
           "fresh_input_tokens": {
             "n": 3,
             "values": [
-              528375,
-              470975,
-              562227
+              207464,
+              208494,
+              273649
             ],
-            "mean": 520525.6666666667,
-            "median": 528375.0,
-            "sample_standard_deviation": 46129.60981119755,
-            "coefficient_of_variation": 0.08862120115344466,
-            "minimum": 470975.0,
-            "maximum": 562227.0,
-            "range": 91252.0,
-            "geometric_mean": 519139.3367032562,
-            "sample_log_standard_deviation": 0.0898575462410897
+            "mean": 229869.0,
+            "median": 208494.0,
+            "sample_standard_deviation": 37918.08968025684,
+            "coefficient_of_variation": 0.16495521223069157,
+            "minimum": 207464.0,
+            "maximum": 273649.0,
+            "range": 66185.0,
+            "geometric_mean": 227899.5099406841,
+            "sample_log_standard_deviation": 0.15845131666177298
           },
           "cached_input_tokens": {
             "n": 3,
             "values": [
-              12357888,
-              12509696,
-              7030528
+              6186752,
+              6461952,
+              4318464
             ],
-            "mean": 10632704.0,
-            "median": 12357888.0,
-            "sample_standard_deviation": 3120499.2178252507,
-            "coefficient_of_variation": 0.2934812459582483,
-            "minimum": 7030528.0,
-            "maximum": 12509696.0,
-            "range": 5479168.0,
-            "geometric_mean": 10281575.074471368,
-            "sample_log_standard_deviation": 0.32922563376525876
+            "mean": 5655722.666666667,
+            "median": 6186752.0,
+            "sample_standard_deviation": 1166245.8215064837,
+            "coefficient_of_variation": 0.206206331222715,
+            "minimum": 4318464.0,
+            "maximum": 6461952.0,
+            "range": 2143488.0,
+            "geometric_mean": 5568248.125651937,
+            "sample_log_standard_deviation": 0.22119989960786546
           },
           "output_tokens": {
             "n": 3,
             "values": [
-              63803,
-              96881,
-              49815
+              25858,
+              42324,
+              25010
             ],
-            "mean": 70166.33333333333,
-            "median": 63803.0,
-            "sample_standard_deviation": 24169.631716956992,
-            "coefficient_of_variation": 0.3444619459041182,
-            "minimum": 49815.0,
-            "maximum": 96881.0,
-            "range": 47066.0,
-            "geometric_mean": 67527.38765619016,
-            "sample_log_standard_deviation": 0.33619318233696605
+            "mean": 31064.0,
+            "median": 25858.0,
+            "sample_standard_deviation": 9760.65960885841,
+            "coefficient_of_variation": 0.31421129310000034,
+            "minimum": 25010.0,
+            "maximum": 42324.0,
+            "range": 17314.0,
+            "geometric_mean": 30136.890688614963,
+            "sample_log_standard_deviation": 0.29457810217534314
           },
           "reasoning_tokens": {
             "n": 3,
             "values": [
-              35977,
-              52478,
-              22016
+              14231,
+              23354,
+              10741
             ],
-            "mean": 36823.666666666664,
-            "median": 35977.0,
-            "sample_standard_deviation": 15248.639097746833,
-            "coefficient_of_variation": 0.4140988792827122,
-            "minimum": 22016.0,
-            "maximum": 52478.0,
-            "range": 30462.0,
-            "geometric_mean": 34640.1857888188,
-            "sample_log_standard_deviation": 0.4355485084767038
+            "mean": 16108.666666666666,
+            "median": 14231.0,
+            "sample_standard_deviation": 6512.769482588289,
+            "coefficient_of_variation": 0.404302206840311,
+            "minimum": 10741.0,
+            "maximum": 23354.0,
+            "range": 12613.0,
+            "geometric_mean": 15283.182660114022,
+            "sample_log_standard_deviation": 0.3932324630289189
           },
           "trajectory": {
             "provider_event_count": {
@@ -5805,87 +6044,87 @@
           "total_provider_tokens": {
             "n": 3,
             "values": [
-              25369525,
-              17423571,
-              17612278
+              12244729,
+              8728732,
+              9238446
             ],
-            "mean": 20135124.666666668,
-            "median": 17612278.0,
-            "sample_standard_deviation": 4534105.5038631745,
-            "coefficient_of_variation": 0.22518388035457776,
-            "minimum": 17423571.0,
-            "maximum": 25369525.0,
-            "range": 7945954.0,
-            "geometric_mean": 19819301.561887752,
-            "sample_log_standard_deviation": 0.2138828869189609
+            "mean": 10070635.666666666,
+            "median": 9238446.0,
+            "sample_standard_deviation": 1899990.383392067,
+            "coefficient_of_variation": 0.18866638078080278,
+            "minimum": 8728732.0,
+            "maximum": 12244729.0,
+            "range": 3515997.0,
+            "geometric_mean": 9957869.274668219,
+            "sample_log_standard_deviation": 0.1812704274642816
           },
           "fresh_input_tokens": {
             "n": 3,
             "values": [
-              738082,
-              658929,
-              503643
+              335235,
+              274928,
+              231792
             ],
-            "mean": 633551.3333333334,
-            "median": 658929.0,
-            "sample_standard_deviation": 119262.02519802074,
-            "coefficient_of_variation": 0.18824366538784135,
-            "minimum": 503643.0,
-            "maximum": 738082.0,
-            "range": 234439.0,
-            "geometric_mean": 625684.4273503588,
-            "sample_log_standard_deviation": 0.19628256576559105
+            "mean": 280651.6666666667,
+            "median": 274928.0,
+            "sample_standard_deviation": 51958.481813206716,
+            "coefficient_of_variation": 0.1851351265086853,
+            "minimum": 231792.0,
+            "maximum": 335235.0,
+            "range": 103443.0,
+            "geometric_mean": 277473.97559388593,
+            "sample_log_standard_deviation": 0.1846683062749027
           },
           "cached_input_tokens": {
             "n": 3,
             "values": [
-              24512256,
-              16645632,
-              16973056
+              11855360,
+              8400896,
+              8943616
             ],
-            "mean": 19376981.333333332,
-            "median": 16973056.0,
-            "sample_standard_deviation": 4450290.557427159,
-            "coefficient_of_variation": 0.22966892937918704,
-            "minimum": 16645632.0,
-            "maximum": 24512256.0,
-            "range": 7866624.0,
-            "geometric_mean": 19061096.15869984,
-            "sample_log_standard_deviation": 0.21804366208286288
+            "mean": 9733290.666666666,
+            "median": 8943616.0,
+            "sample_standard_deviation": 1857692.10075441,
+            "coefficient_of_variation": 0.19085961411965197,
+            "minimum": 8400896.0,
+            "maximum": 11855360.0,
+            "range": 3454464.0,
+            "geometric_mean": 9621685.701433463,
+            "sample_log_standard_deviation": 0.18348156332407553
           },
           "output_tokens": {
             "n": 3,
             "values": [
-              119187,
-              119010,
-              135579
+              54134,
+              52908,
+              63038
             ],
-            "mean": 124592.0,
-            "median": 119187.0,
-            "sample_standard_deviation": 9515.432675396321,
-            "coefficient_of_variation": 0.07637274203316682,
-            "minimum": 119010.0,
-            "maximum": 135579.0,
-            "range": 16569.0,
-            "geometric_mean": 124356.43308136959,
-            "sample_log_standard_deviation": 0.07483053065116514
+            "mean": 56693.333333333336,
+            "median": 54134.0,
+            "sample_standard_deviation": 5528.730897171007,
+            "coefficient_of_variation": 0.097519947621784,
+            "minimum": 52908.0,
+            "maximum": 63038.0,
+            "range": 10130.0,
+            "geometric_mean": 56519.45470007102,
+            "sample_log_standard_deviation": 0.09522050610120078
           },
           "reasoning_tokens": {
             "n": 3,
             "values": [
-              59746,
-              58291,
-              62498
+              27150,
+              26260,
+              28957
             ],
-            "mean": 60178.333333333336,
-            "median": 59746.0,
-            "sample_standard_deviation": 2136.561801898867,
-            "coefficient_of_variation": 0.03550383806849974,
-            "minimum": 58291.0,
-            "maximum": 62498.0,
-            "range": 4207.0,
-            "geometric_mean": 60153.211683589536,
-            "sample_log_standard_deviation": 0.03533650671482412
+            "mean": 27455.666666666668,
+            "median": 27150.0,
+            "sample_standard_deviation": 1374.2366365853202,
+            "coefficient_of_variation": 0.050052932724950046,
+            "minimum": 26260.0,
+            "maximum": 28957.0,
+            "range": 2697.0,
+            "geometric_mean": 27432.962338426358,
+            "sample_log_standard_deviation": 0.04970039475715733
           },
           "trajectory": {
             "provider_event_count": {
@@ -5996,87 +6235,87 @@
           "total_provider_tokens": {
             "n": 3,
             "values": [
-              33564150,
-              43392324,
-              37499193
+              15863828,
+              19453066,
+              17578177
             ],
-            "mean": 38151889.0,
-            "median": 37499193.0,
-            "sample_standard_deviation": 4946489.673989121,
-            "coefficient_of_variation": 0.12965254941869644,
-            "minimum": 33564150.0,
-            "maximum": 43392324.0,
-            "range": 9828174.0,
-            "geometric_mean": 37940538.8960025,
-            "sample_log_standard_deviation": 0.12881120233664695
+            "mean": 17631690.333333332,
+            "median": 17578177.0,
+            "sample_standard_deviation": 1795217.2884624116,
+            "coefficient_of_variation": 0.10181765074835111,
+            "minimum": 15863828.0,
+            "maximum": 19453066.0,
+            "range": 3589238.0,
+            "geometric_mean": 17570736.341934305,
+            "sample_log_standard_deviation": 0.10198223092511377
           },
           "fresh_input_tokens": {
             "n": 3,
             "values": [
-              1286070,
-              977127,
-              1014946
+              555640,
+              491544,
+              468939
             ],
-            "mean": 1092714.3333333333,
-            "median": 1014946.0,
-            "sample_standard_deviation": 168515.22057171373,
-            "coefficient_of_variation": 0.15421708623301095,
-            "minimum": 977127.0,
-            "maximum": 1286070.0,
-            "range": 308943.0,
-            "geometric_mean": 1084474.9361619079,
-            "sample_log_standard_deviation": 0.14886888796281572
+            "mean": 505374.3333333333,
+            "median": 491544.0,
+            "sample_standard_deviation": 44974.708896593576,
+            "coefficient_of_variation": 0.08899286317124715,
+            "minimum": 468939.0,
+            "maximum": 555640.0,
+            "range": 86701.0,
+            "geometric_mean": 504069.88474515796,
+            "sample_log_standard_deviation": 0.08757855263063517
           },
           "cached_input_tokens": {
             "n": 3,
             "values": [
-              32159488,
-              42297344,
-              36360192
+              15246336,
+              18905856,
+              17051392
             ],
-            "mean": 36939008.0,
-            "median": 36360192.0,
-            "sample_standard_deviation": 5093653.113490946,
-            "coefficient_of_variation": 0.1378936086613627,
-            "minimum": 32159488.0,
-            "maximum": 42297344.0,
-            "range": 10137856.0,
-            "geometric_mean": 36707048.33567942,
-            "sample_log_standard_deviation": 0.13725488368036542
+            "mean": 17067861.333333332,
+            "median": 17051392.0,
+            "sample_standard_deviation": 1829815.588196071,
+            "coefficient_of_variation": 0.10720825254318553,
+            "minimum": 15246336.0,
+            "maximum": 18905856.0,
+            "range": 3659520.0,
+            "geometric_mean": 17002282.33345014,
+            "sample_log_standard_deviation": 0.10759524941038862
           },
           "output_tokens": {
             "n": 3,
             "values": [
-              118592,
-              117853,
-              124055
+              61852,
+              55666,
+              57846
             ],
-            "mean": 120166.66666666667,
-            "median": 118592.0,
-            "sample_standard_deviation": 3387.6071692764694,
-            "coefficient_of_variation": 0.028190905708264654,
-            "minimum": 117853.0,
-            "maximum": 124055.0,
-            "range": 6202.0,
-            "geometric_mean": 120135.15217636798,
-            "sample_log_standard_deviation": 0.027981135028175737
+            "mean": 58454.666666666664,
+            "median": 57846.0,
+            "sample_standard_deviation": 3137.59546999503,
+            "coefficient_of_variation": 0.05367570544687102,
+            "minimum": 55666.0,
+            "maximum": 61852.0,
+            "range": 6186.0,
+            "geometric_mean": 58399.038737097224,
+            "sample_log_standard_deviation": 0.053327946456413415
           },
           "reasoning_tokens": {
             "n": 3,
             "values": [
-              51277,
-              54468,
-              56969
+              26561,
+              26157,
+              27200
             ],
-            "mean": 54238.0,
-            "median": 54468.0,
-            "sample_standard_deviation": 2852.9617943463595,
-            "coefficient_of_variation": 0.05260079269785684,
-            "minimum": 51277.0,
-            "maximum": 56969.0,
-            "range": 5692.0,
-            "geometric_mean": 54187.71997354012,
-            "sample_log_standard_deviation": 0.05282177043788858
+            "mean": 26639.333333333332,
+            "median": 26561.0,
+            "sample_standard_deviation": 525.893842266035,
+            "coefficient_of_variation": 0.01974125387019326,
+            "minimum": 26157.0,
+            "maximum": 27200.0,
+            "range": 1043.0,
+            "geometric_mean": 26635.88223515715,
+            "sample_log_standard_deviation": 0.01970150936255275
           },
           "trajectory": {
             "provider_event_count": {
@@ -6187,31 +6426,31 @@
       "aggregate_by_replicate": [
         {
           "replicate_index": 0,
-          "fresh_input_tokens": 2552527,
-          "cached_input_tokens": 69029632,
-          "output_tokens": 301582,
-          "reasoning_tokens": 147000,
-          "total_provider_tokens": 71883741,
+          "fresh_input_tokens": 1098339,
+          "cached_input_tokens": 33288448,
+          "output_tokens": 141844,
+          "reasoning_tokens": 67942,
+          "total_provider_tokens": 34528631,
           "native_command_executions": 222,
           "provider_event_count": 612
         },
         {
           "replicate_index": 1,
-          "fresh_input_tokens": 2107031,
-          "cached_input_tokens": 71452672,
-          "output_tokens": 333744,
-          "reasoning_tokens": 165237,
-          "total_provider_tokens": 73893447,
+          "fresh_input_tokens": 974966,
+          "cached_input_tokens": 33768704,
+          "output_tokens": 150898,
+          "reasoning_tokens": 75771,
+          "total_provider_tokens": 34894568,
           "native_command_executions": 210,
           "provider_event_count": 574
         },
         {
           "replicate_index": 2,
-          "fresh_input_tokens": 2080816,
-          "cached_input_tokens": 60363776,
-          "output_tokens": 309449,
-          "reasoning_tokens": 141483,
-          "total_provider_tokens": 62754041,
+          "fresh_input_tokens": 974380,
+          "cached_input_tokens": 30313472,
+          "output_tokens": 145894,
+          "reasoning_tokens": 66898,
+          "total_provider_tokens": 31433746,
           "native_command_executions": 311,
           "provider_event_count": 801
         }
@@ -6219,253 +6458,253 @@
       "aggregate_total_provider_tokens": {
         "n": 3,
         "values": [
-          71883741,
-          73893447,
-          62754041
+          34528631,
+          34894568,
+          31433746
         ],
-        "mean": 69510409.66666667,
-        "median": 71883741.0,
-        "sample_standard_deviation": 5936844.0876904735,
-        "coefficient_of_variation": 0.08540942451872002,
-        "minimum": 62754041.0,
-        "maximum": 73893447.0,
-        "range": 11139406.0,
-        "geometric_mean": 69336103.41757788,
-        "sample_log_standard_deviation": 0.08747312137255056
+        "mean": 33618981.666666664,
+        "median": 34528631.0,
+        "sample_standard_deviation": 1901293.9439093403,
+        "coefficient_of_variation": 0.05655418009863397,
+        "minimum": 31433746.0,
+        "maximum": 34894568.0,
+        "range": 3460822.0,
+        "geometric_mean": 33582351.92009701,
+        "sample_log_standard_deviation": 0.05750254688813985
       },
       "task_class_stats": {
         "behavior-preserving-refactor": {
           "total_provider_tokens": {
             "n": 9,
             "values": [
-              4014700,
-              9998709,
-              12795183,
-              3994237,
-              6688796,
-              17013565,
-              2014285,
-              6951656,
-              11811467
+              1499408,
+              6872622,
+              7890044,
+              1623692,
+              4682753,
+              10087872,
+              1003123,
+              5529480,
+              3701918
             ],
-            "mean": 8364733.111111111,
-            "median": 6951656.0,
-            "sample_standard_deviation": 4900749.925084972,
-            "coefficient_of_variation": 0.5858824017439561,
-            "minimum": 2014285.0,
-            "maximum": 17013565.0,
-            "range": 14999280.0,
-            "geometric_mean": 6965790.480287104,
-            "sample_log_standard_deviation": 0.6828929629775295
+            "mean": 4765656.888888889,
+            "median": 4682753.0,
+            "sample_standard_deviation": 3141375.0202790755,
+            "coefficient_of_variation": 0.6591693639555083,
+            "minimum": 1003123.0,
+            "maximum": 10087872.0,
+            "range": 9084749.0,
+            "geometric_mean": 3693923.851595671,
+            "sample_log_standard_deviation": 0.8198780694132226
           },
           "fresh_input_tokens": {
             "n": 9,
             "values": [
-              172299,
-              257116,
-              417448,
-              147846,
-              234057,
-              302864,
-              197325,
-              187044,
-              338382
+              23687,
+              111385,
+              104466,
+              33211,
+              84113,
+              120145,
+              106072,
+              102237,
+              130757
             ],
-            "mean": 250486.77777777778,
-            "median": 234057.0,
-            "sample_standard_deviation": 88146.53703744944,
-            "coefficient_of_variation": 0.35190095788468984,
-            "minimum": 147846.0,
-            "maximum": 417448.0,
-            "range": 269602.0,
-            "geometric_mean": 237679.54445680947,
-            "sample_log_standard_deviation": 0.3406009071214753
+            "mean": 90674.77777777778,
+            "median": 104466.0,
+            "sample_standard_deviation": 37579.007007828775,
+            "coefficient_of_variation": 0.41443726611523596,
+            "minimum": 23687.0,
+            "maximum": 130757.0,
+            "range": 107070.0,
+            "geometric_mean": 79796.12698755733,
+            "sample_log_standard_deviation": 0.610729870812681
           },
           "cached_input_tokens": {
             "n": 9,
             "values": [
-              3821312,
-              9696768,
-              12340480,
-              3816192,
-              6408704,
-              16671232,
-              1801728,
-              6710784,
-              11433216
+              1471488,
+              6736640,
+              7767808,
+              1584640,
+              4572672,
+              9950976,
+              891392,
+              5392128,
+              3557632
             ],
-            "mean": 8077824.0,
-            "median": 6710784.0,
-            "sample_standard_deviation": 4824677.126818747,
-            "coefficient_of_variation": 0.5972743559179734,
-            "minimum": 1801728.0,
-            "maximum": 16671232.0,
-            "range": 14869504.0,
-            "geometric_mean": 6659833.896117251,
-            "sample_log_standard_deviation": 0.7057763739517976
+            "mean": 4658375.111111111,
+            "median": 4572672.0,
+            "sample_standard_deviation": 3113499.1264143805,
+            "coefficient_of_variation": 0.6683659113213302,
+            "minimum": 891392.0,
+            "maximum": 9950976.0,
+            "range": 9059584.0,
+            "geometric_mean": 3573144.153748365,
+            "sample_log_standard_deviation": 0.8411471469382439
           },
           "output_tokens": {
             "n": 9,
             "values": [
-              21089,
-              44825,
-              37255,
-              30199,
-              46035,
-              39469,
-              15232,
-              53828,
-              39869
+              4233,
+              24597,
+              17770,
+              5841,
+              25968,
+              16751,
+              5659,
+              35115,
+              13529
             ],
-            "mean": 36422.333333333336,
-            "median": 39469.0,
-            "sample_standard_deviation": 12301.888259531543,
-            "coefficient_of_variation": 0.3377567314797206,
-            "minimum": 15232.0,
-            "maximum": 53828.0,
-            "range": 38596.0,
-            "geometric_mean": 34149.8412560399,
-            "sample_log_standard_deviation": 0.406511784769783
+            "mean": 16607.0,
+            "median": 16751.0,
+            "sample_standard_deviation": 10569.668928116907,
+            "coefficient_of_variation": 0.6364586576815142,
+            "minimum": 4233.0,
+            "maximum": 35115.0,
+            "range": 30882.0,
+            "geometric_mean": 13255.897882169447,
+            "sample_log_standard_deviation": 0.7602369762249446
           },
           "reasoning_tokens": {
             "n": 9,
             "values": [
-              12010,
-              21876,
-              16506,
-              15666,
-              21716,
-              18448,
-              6908,
-              24906,
-              17816
+              2274,
+              11156,
+              8296,
+              2208,
+              11401,
+              8585,
+              2541,
+              16271,
+              5863
             ],
-            "mean": 17316.88888888889,
-            "median": 17816.0,
-            "sample_standard_deviation": 5467.538487391846,
-            "coefficient_of_variation": 0.31573445567927655,
-            "minimum": 6908.0,
-            "maximum": 24906.0,
-            "range": 17998.0,
-            "geometric_mean": 16348.522251526661,
-            "sample_log_standard_deviation": 0.38790549680163555
+            "mean": 7621.666666666667,
+            "median": 8296.0,
+            "sample_standard_deviation": 4870.574709415718,
+            "coefficient_of_variation": 0.6390432594903631,
+            "minimum": 2208.0,
+            "maximum": 16271.0,
+            "range": 14063.0,
+            "geometric_mean": 6060.209634770423,
+            "sample_log_standard_deviation": 0.7668019438851557
           }
         },
         "code-review-correction": {
           "total_provider_tokens": {
             "n": 9,
             "values": [
-              6420074,
-              12244729,
-              15863828,
-              6712770,
-              8728732,
-              19453066,
-              4617123,
-              9238446,
-              17578177
+              2405374,
+              2246020,
+              3068645,
+              2718533,
+              2039936,
+              2439501,
+              2602838,
+              2286790,
+              5766710
             ],
-            "mean": 11206327.222222222,
-            "median": 9238446.0,
-            "sample_standard_deviation": 5337469.96590245,
-            "coefficient_of_variation": 0.47629074718773257,
-            "minimum": 4617123.0,
-            "maximum": 19453066.0,
-            "range": 14835943.0,
-            "geometric_mean": 10071074.797538579,
-            "sample_log_standard_deviation": 0.49896288235182606
+            "mean": 2841594.111111111,
+            "median": 2439501.0,
+            "sample_standard_deviation": 1136724.586983303,
+            "coefficient_of_variation": 0.40003059639605765,
+            "minimum": 2039936.0,
+            "maximum": 5766710.0,
+            "range": 3726774.0,
+            "geometric_mean": 2702849.3560289186,
+            "sample_log_standard_deviation": 0.30767773189404635
           },
           "fresh_input_tokens": {
             "n": 9,
             "values": [
-              207464,
-              335235,
-              555640,
-              208494,
-              274928,
-              491544,
-              273649,
-              231792,
-              468939
+              35165,
+              78119,
+              138192,
+              60648,
+              40871,
+              188680,
+              76324,
+              44748,
+              130557
             ],
-            "mean": 338631.6666666667,
-            "median": 274928.0,
-            "sample_standard_deviation": 132901.61983493654,
-            "coefficient_of_variation": 0.3924666028524696,
-            "minimum": 207464.0,
-            "maximum": 555640.0,
-            "range": 348176.0,
-            "geometric_mean": 317067.7955962207,
-            "sample_log_standard_deviation": 0.3806288185395118
+            "mean": 88144.88888888889,
+            "median": 76324.0,
+            "sample_standard_deviation": 52834.788478909526,
+            "coefficient_of_variation": 0.5994084188535362,
+            "minimum": 35165.0,
+            "maximum": 188680.0,
+            "range": 153515.0,
+            "geometric_mean": 75442.46303393961,
+            "sample_log_standard_deviation": 0.5902998779235203
           },
           "cached_input_tokens": {
             "n": 9,
             "values": [
-              6186752,
-              11855360,
-              15246336,
-              6461952,
-              8400896,
-              18905856,
-              4318464,
-              8943616,
-              17051392
+              2365440,
+              2158592,
+              2905856,
+              2645760,
+              1992192,
+              2234624,
+              2516736,
+              2232832,
+              5618176
             ],
-            "mean": 10818958.222222222,
-            "median": 8943616.0,
-            "sample_standard_deviation": 5207904.39253837,
-            "coefficient_of_variation": 0.4813683799833236,
-            "minimum": 4318464.0,
-            "maximum": 18905856.0,
-            "range": 14587392.0,
-            "geometric_mean": 9693761.338874904,
-            "sample_log_standard_deviation": 0.5071577966950624
+            "mean": 2741134.222222222,
+            "median": 2365440.0,
+            "sample_standard_deviation": 1113569.331889328,
+            "coefficient_of_variation": 0.40624400033449065,
+            "minimum": 1992192.0,
+            "maximum": 5618176.0,
+            "range": 3625984.0,
+            "geometric_mean": 2604641.5875642556,
+            "sample_log_standard_deviation": 0.30982601288445727
           },
           "output_tokens": {
             "n": 9,
             "values": [
-              25858,
-              54134,
-              61852,
-              42324,
-              52908,
-              55666,
-              25010,
-              63038,
-              57846
+              4769,
+              9309,
+              24597,
+              12125,
+              6873,
+              16197,
+              9778,
+              9210,
+              17977
             ],
-            "mean": 48737.333333333336,
-            "median": 54134.0,
-            "sample_standard_deviation": 14498.178057949213,
-            "coefficient_of_variation": 0.297475817127511,
-            "minimum": 25010.0,
-            "maximum": 63038.0,
-            "range": 38028.0,
-            "geometric_mean": 46334.096785948925,
-            "sample_log_standard_deviation": 0.35908308778453885
+            "mean": 12315.0,
+            "median": 9778.0,
+            "sample_standard_deviation": 6221.763234807317,
+            "coefficient_of_variation": 0.5052182894687224,
+            "minimum": 4769.0,
+            "maximum": 24597.0,
+            "range": 19828.0,
+            "geometric_mean": 11014.55343867637,
+            "sample_log_standard_deviation": 0.5050973540240811
           },
           "reasoning_tokens": {
             "n": 9,
             "values": [
-              14231,
-              27150,
-              26561,
-              23354,
-              26260,
-              26157,
-              10741,
-              28957,
-              27200
+              2221,
+              5274,
+              10055,
+              7688,
+              4544,
+              7709,
+              3833,
+              4051,
+              9384
             ],
-            "mean": 23401.222222222223,
-            "median": 26260.0,
-            "sample_standard_deviation": 6417.537140090772,
-            "coefficient_of_variation": 0.27423939994025454,
-            "minimum": 10741.0,
-            "maximum": 28957.0,
-            "range": 18216.0,
-            "geometric_mean": 22352.076013080008,
-            "sample_log_standard_deviation": 0.3476083644557939
+            "mean": 6084.333333333333,
+            "median": 5274.0,
+            "sample_standard_deviation": 2716.220720044673,
+            "coefficient_of_variation": 0.446428650640115,
+            "minimum": 2221.0,
+            "maximum": 10055.0,
+            "range": 7834.0,
+            "geometric_mean": 5502.174957872328,
+            "sample_log_standard_deviation": 0.49497227492269874
           }
         },
         "feature-implementation": {
@@ -6603,104 +6842,104 @@
     "codex-openai-gpt-5-6-sol-high": {
       "session_count": 9,
       "component_totals": {
-        "fresh_input_tokens": 3936941,
-        "cached_input_tokens": 125838080,
-        "output_tokens": 610727,
-        "reasoning_tokens": 246443,
-        "total_provider_tokens": 130385748
+        "fresh_input_tokens": 1772924,
+        "cached_input_tokens": 66216192,
+        "output_tokens": 286199,
+        "reasoning_tokens": 117484,
+        "total_provider_tokens": 68275315
       },
       "component_shares": {
-        "fresh_input_share_of_total": 0.030194565436707087,
-        "cached_input_share_of_total": 0.9651214333640208,
-        "output_share_of_total": 0.004684001199272178,
-        "reasoning_share_of_output": 0.4035239968103588
+        "fresh_input_share_of_total": 0.025967276752952368,
+        "cached_input_share_of_total": 0.9698408861240698,
+        "output_share_of_total": 0.004191837122977756,
+        "reasoning_share_of_output": 0.41049759083714477
       },
       "sequence_stats": {
         "fastify-lifecycle-sequence-v0": {
           "total_provider_tokens": {
             "n": 3,
             "values": [
-              8387234,
-              8097854,
-              7106525
+              4464422,
+              4465189,
+              3954296
             ],
-            "mean": 7863871.0,
-            "median": 8097854.0,
-            "sample_standard_deviation": 671650.8906321796,
-            "coefficient_of_variation": 0.08540970352033744,
-            "minimum": 7106525.0,
-            "maximum": 8387234.0,
-            "range": 1280709.0,
-            "geometric_mean": 7844200.09602148,
-            "sample_log_standard_deviation": 0.08731274436715981
+            "mean": 4294635.666666667,
+            "median": 4464422.0,
+            "sample_standard_deviation": 294743.04674128164,
+            "coefficient_of_variation": 0.06863051248536992,
+            "minimum": 3954296.0,
+            "maximum": 4465189.0,
+            "range": 510893.0,
+            "geometric_mean": 4287703.579179944,
+            "sample_log_standard_deviation": 0.07010369235385625
           },
           "fresh_input_tokens": {
             "n": 3,
             "values": [
-              359563,
-              373697,
-              327699
+              153230,
+              167165,
+              150787
             ],
-            "mean": 353653.0,
-            "median": 359563.0,
-            "sample_standard_deviation": 23561.622949194312,
-            "coefficient_of_variation": 0.06662356306660572,
-            "minimum": 327699.0,
-            "maximum": 373697.0,
-            "range": 45998.0,
-            "geometric_mean": 353120.75219749217,
-            "sample_log_standard_deviation": 0.06751547588994697
+            "mean": 157060.66666666666,
+            "median": 153230.0,
+            "sample_standard_deviation": 8835.452808618998,
+            "coefficient_of_variation": 0.05625503186848606,
+            "minimum": 150787.0,
+            "maximum": 167165.0,
+            "range": 16378.0,
+            "geometric_mean": 156898.1002102805,
+            "sample_log_standard_deviation": 0.05547792536365367
           },
           "cached_input_tokens": {
             "n": 3,
             "values": [
-              7977216,
-              7649792,
-              6712576
+              4287744,
+              4264448,
+              3773440
             ],
-            "mean": 7446528.0,
-            "median": 7649792.0,
-            "sample_standard_deviation": 656365.5785246511,
-            "coefficient_of_variation": 0.08814384079730192,
-            "minimum": 6712576.0,
-            "maximum": 7977216.0,
-            "range": 1264640.0,
-            "geometric_mean": 7426714.541826647,
-            "sample_log_standard_deviation": 0.09002866676022908
+            "mean": 4108544.0,
+            "median": 4264448.0,
+            "sample_standard_deviation": 290442.23869127576,
+            "coefficient_of_variation": 0.07069225465061972,
+            "minimum": 3773440.0,
+            "maximum": 4287744.0,
+            "range": 514304.0,
+            "geometric_mean": 4101503.060240959,
+            "sample_log_standard_deviation": 0.07224883656028251
           },
           "output_tokens": {
             "n": 3,
             "values": [
-              50455,
-              74365,
-              66250
+              23448,
+              33576,
+              30069
             ],
-            "mean": 63690.0,
-            "median": 66250.0,
-            "sample_standard_deviation": 12158.833208823946,
-            "coefficient_of_variation": 0.19090647211216746,
-            "minimum": 50455.0,
-            "maximum": 74365.0,
-            "range": 23910.0,
-            "geometric_mean": 62876.19108526243,
-            "sample_log_standard_deviation": 0.1991638539430975
+            "mean": 29031.0,
+            "median": 30069.0,
+            "sample_standard_deviation": 5143.16818702247,
+            "coefficient_of_variation": 0.17716124787373738,
+            "minimum": 23448.0,
+            "maximum": 33576.0,
+            "range": 10128.0,
+            "geometric_mean": 28713.397433788694,
+            "sample_log_standard_deviation": 0.18390492444218484
           },
           "reasoning_tokens": {
             "n": 3,
             "values": [
-              21179,
-              32676,
-              33996
+              9697,
+              14291,
+              14847
             ],
-            "mean": 29283.666666666668,
-            "median": 32676.0,
-            "sample_standard_deviation": 7049.809666461452,
-            "coefficient_of_variation": 0.24074204049338488,
-            "minimum": 21179.0,
-            "maximum": 33996.0,
-            "range": 12817.0,
-            "geometric_mean": 28654.140504354047,
-            "sample_log_standard_deviation": 0.2625367175596531
+            "mean": 12945.0,
+            "median": 14291.0,
+            "sample_standard_deviation": 2826.554793383634,
+            "coefficient_of_variation": 0.2183510848500297,
+            "minimum": 9697.0,
+            "maximum": 14847.0,
+            "range": 5150.0,
+            "geometric_mean": 12718.80301411307,
+            "sample_log_standard_deviation": 0.23569615467787394
           },
           "trajectory": {
             "provider_event_count": {
@@ -6811,87 +7050,87 @@
           "total_provider_tokens": {
             "n": 3,
             "values": [
-              14219882,
-              10350366,
-              11376116
+              7048538,
+              5284953,
+              5808516
             ],
-            "mean": 11982121.333333334,
-            "median": 11376116.0,
-            "sample_standard_deviation": 2004674.6286081772,
-            "coefficient_of_variation": 0.16730548563477884,
-            "minimum": 10350366.0,
-            "maximum": 14219882.0,
-            "range": 3869516.0,
-            "geometric_mean": 11874497.41205368,
-            "sample_log_standard_deviation": 0.16309298321057353
+            "mean": 6047335.666666667,
+            "median": 5808516.0,
+            "sample_standard_deviation": 905722.9918393004,
+            "coefficient_of_variation": 0.1497722371906207,
+            "minimum": 5284953.0,
+            "maximum": 7048538.0,
+            "range": 1763585.0,
+            "geometric_mean": 6003462.307557396,
+            "sample_log_standard_deviation": 0.14678910671951043
           },
           "fresh_input_tokens": {
             "n": 3,
             "values": [
-              437384,
-              428528,
-              409208
+              190868,
+              189127,
+              181119
             ],
-            "mean": 425040.0,
-            "median": 428528.0,
-            "sample_standard_deviation": 14408.204329478396,
-            "coefficient_of_variation": 0.033898466801897224,
-            "minimum": 409208.0,
-            "maximum": 437384.0,
-            "range": 28176.0,
-            "geometric_mean": 424875.87355673395,
-            "sample_log_standard_deviation": 0.034109106173220945
+            "mean": 187038.0,
+            "median": 189127.0,
+            "sample_standard_deviation": 5199.393329995337,
+            "coefficient_of_variation": 0.027798593494345197,
+            "minimum": 181119.0,
+            "maximum": 190868.0,
+            "range": 9749.0,
+            "geometric_mean": 186989.3575066769,
+            "sample_log_standard_deviation": 0.02800136118646459
           },
           "cached_input_tokens": {
             "n": 3,
             "values": [
-              13704960,
-              9850112,
-              10889472
+              6822912,
+              5063424,
+              5592064
             ],
-            "mean": 11481514.666666666,
-            "median": 10889472.0,
-            "sample_standard_deviation": 1994454.6034295524,
-            "coefficient_of_variation": 0.17371006015607748,
-            "minimum": 9850112.0,
-            "maximum": 13704960.0,
-            "range": 3854848.0,
-            "geometric_mean": 11370387.20974116,
-            "sample_log_standard_deviation": 0.16932543448888507
+            "mean": 5826133.333333333,
+            "median": 5592064.0,
+            "sample_standard_deviation": 902796.1260114785,
+            "coefficient_of_variation": 0.15495631053382664,
+            "minimum": 5063424.0,
+            "maximum": 6822912.0,
+            "range": 1759488.0,
+            "geometric_mean": 5780899.238011017,
+            "sample_log_standard_deviation": 0.15187002046623443
           },
           "output_tokens": {
             "n": 3,
             "values": [
-              77538,
-              71726,
-              77436
+              34758,
+              32402,
+              35333
             ],
-            "mean": 75566.66666666667,
-            "median": 77436.0,
-            "sample_standard_deviation": 3326.5058745376255,
-            "coefficient_of_variation": 0.044020809985059,
-            "minimum": 71726.0,
-            "maximum": 77538.0,
-            "range": 5812.0,
-            "geometric_mean": 75516.99602295707,
-            "sample_log_standard_deviation": 0.04460900908119425
+            "mean": 34164.333333333336,
+            "median": 34758.0,
+            "sample_standard_deviation": 1553.0680388615733,
+            "coefficient_of_variation": 0.045458754418201436,
+            "minimum": 32402.0,
+            "maximum": 35333.0,
+            "range": 2931.0,
+            "geometric_mean": 34140.433921805634,
+            "sample_log_standard_deviation": 0.04599795320314263
           },
           "reasoning_tokens": {
             "n": 3,
             "values": [
-              30341,
-              31138,
-              29996
+              14260,
+              14465,
+              13701
             ],
-            "mean": 30491.666666666668,
-            "median": 30341.0,
-            "sample_standard_deviation": 585.7186469059469,
-            "coefficient_of_variation": 0.019209138460976667,
-            "minimum": 29996.0,
-            "maximum": 31138.0,
-            "range": 1142.0,
-            "geometric_mean": 30487.933131334696,
-            "sample_log_standard_deviation": 0.01914518492697576
+            "mean": 14142.0,
+            "median": 14260.0,
+            "sample_standard_deviation": 395.43267442132293,
+            "coefficient_of_variation": 0.02796158071144979,
+            "minimum": 13701.0,
+            "maximum": 14465.0,
+            "range": 764.0,
+            "geometric_mean": 14138.285369168134,
+            "sample_log_standard_deviation": 0.028128830580480765
           },
           "trajectory": {
             "provider_event_count": {
@@ -7002,87 +7241,87 @@
           "total_provider_tokens": {
             "n": 3,
             "values": [
-              31471786,
-              20018683,
-              19357302
+              15526000,
+              10961655,
+              10761746
             ],
-            "mean": 23615923.666666668,
-            "median": 20018683.0,
-            "sample_standard_deviation": 6811408.514911165,
-            "coefficient_of_variation": 0.2884243958039766,
-            "minimum": 19357302.0,
-            "maximum": 31471786.0,
-            "range": 12114484.0,
-            "geometric_mean": 23017981.63494246,
-            "sample_log_standard_deviation": 0.271426681438163
+            "mean": 12416467.0,
+            "median": 10961655.0,
+            "sample_standard_deviation": 2694788.9547489616,
+            "coefficient_of_variation": 0.2170334729475753,
+            "minimum": 10761746.0,
+            "maximum": 15526000.0,
+            "range": 4764254.0,
+            "geometric_mean": 12235061.29871415,
+            "sample_log_standard_deviation": 0.20650135985990856
           },
           "fresh_input_tokens": {
             "n": 3,
             "values": [
-              651418,
-              460021,
-              489423
+              289203,
+              217030,
+              234395
             ],
-            "mean": 533620.6666666666,
-            "median": 489423.0,
-            "sample_standard_deviation": 103069.28837599167,
-            "coefficient_of_variation": 0.193150855681486,
-            "minimum": 460021.0,
-            "maximum": 651418.0,
-            "range": 191397.0,
-            "geometric_mean": 527360.0932107897,
-            "sample_log_standard_deviation": 0.1855672562244362
+            "mean": 246876.0,
+            "median": 234395.0,
+            "sample_standard_deviation": 37670.50574388404,
+            "coefficient_of_variation": 0.15258877227387044,
+            "minimum": 217030.0,
+            "maximum": 289203.0,
+            "range": 72173.0,
+            "geometric_mean": 245032.46884004175,
+            "sample_log_standard_deviation": 0.14860358218742412
           },
           "cached_input_tokens": {
             "n": 3,
             "values": [
-              30747648,
-              19501568,
-              18804736
+              15201280,
+              10715648,
+              10495232
             ],
-            "mean": 23017984.0,
-            "median": 19501568.0,
-            "sample_standard_deviation": 6703146.49054666,
-            "coefficient_of_variation": 0.29121344816933836,
-            "minimum": 18804736.0,
-            "maximum": 30747648.0,
-            "range": 11942912.0,
-            "geometric_mean": 22424162.107662335,
-            "sample_log_standard_deviation": 0.27398679014742205
+            "mean": 12137386.666666666,
+            "median": 10715648.0,
+            "sample_standard_deviation": 2655697.191284679,
+            "coefficient_of_variation": 0.21880304749440949,
+            "minimum": 10495232.0,
+            "maximum": 15201280.0,
+            "range": 4706048.0,
+            "geometric_mean": 11957219.826997165,
+            "sample_log_standard_deviation": 0.20814410521921056
           },
           "output_tokens": {
             "n": 3,
             "values": [
-              72720,
-              57094,
-              63143
+              35517,
+              28977,
+              32119
             ],
-            "mean": 64319.0,
-            "median": 63143.0,
-            "sample_standard_deviation": 7879.098996712759,
-            "coefficient_of_variation": 0.12250033422025776,
-            "minimum": 57094.0,
-            "maximum": 72720.0,
-            "range": 15626.0,
-            "geometric_mean": 64001.45553836813,
-            "sample_log_standard_deviation": 0.12152273163533318
+            "mean": 32204.333333333332,
+            "median": 32119.0,
+            "sample_standard_deviation": 3270.834959659893,
+            "coefficient_of_variation": 0.10156505727986584,
+            "minimum": 28977.0,
+            "maximum": 35517.0,
+            "range": 6540.0,
+            "geometric_mean": 32093.51144718681,
+            "sample_log_standard_deviation": 0.10175684426565437
           },
           "reasoning_tokens": {
             "n": 3,
             "values": [
-              24356,
-              18774,
-              23987
+              12897,
+              10198,
+              13128
             ],
-            "mean": 22372.333333333332,
-            "median": 23987.0,
-            "sample_standard_deviation": 3121.7050362475525,
-            "coefficient_of_variation": 0.1395341732905621,
-            "minimum": 18774.0,
-            "maximum": 24356.0,
-            "range": 5582.0,
-            "geometric_mean": 22218.40631990376,
-            "sample_log_standard_deviation": 0.14607991779081206
+            "mean": 12074.333333333334,
+            "median": 12897.0,
+            "sample_standard_deviation": 1629.0519737974394,
+            "coefficient_of_variation": 0.13491858546758462,
+            "minimum": 10198.0,
+            "maximum": 13128.0,
+            "range": 2930.0,
+            "geometric_mean": 11996.855425042684,
+            "sample_log_standard_deviation": 0.14096811138364415
           },
           "trajectory": {
             "provider_event_count": {
@@ -7193,31 +7432,31 @@
       "aggregate_by_replicate": [
         {
           "replicate_index": 0,
-          "fresh_input_tokens": 1448365,
-          "cached_input_tokens": 52429824,
-          "output_tokens": 200713,
-          "reasoning_tokens": 75876,
-          "total_provider_tokens": 54078902,
+          "fresh_input_tokens": 633301,
+          "cached_input_tokens": 26311936,
+          "output_tokens": 93723,
+          "reasoning_tokens": 36854,
+          "total_provider_tokens": 27038960,
           "native_command_executions": 132,
           "provider_event_count": 407
         },
         {
           "replicate_index": 1,
-          "fresh_input_tokens": 1262246,
-          "cached_input_tokens": 37001472,
-          "output_tokens": 203185,
-          "reasoning_tokens": 82588,
-          "total_provider_tokens": 38466903,
+          "fresh_input_tokens": 573322,
+          "cached_input_tokens": 20043520,
+          "output_tokens": 94955,
+          "reasoning_tokens": 38954,
+          "total_provider_tokens": 20711797,
           "native_command_executions": 154,
           "provider_event_count": 432
         },
         {
           "replicate_index": 2,
-          "fresh_input_tokens": 1226330,
-          "cached_input_tokens": 36406784,
-          "output_tokens": 206829,
-          "reasoning_tokens": 87979,
-          "total_provider_tokens": 37839943,
+          "fresh_input_tokens": 566301,
+          "cached_input_tokens": 19860736,
+          "output_tokens": 97521,
+          "reasoning_tokens": 41676,
+          "total_provider_tokens": 20524558,
           "native_command_executions": 160,
           "provider_event_count": 450
         }
@@ -7225,253 +7464,253 @@
       "aggregate_total_provider_tokens": {
         "n": 3,
         "values": [
-          54078902,
-          38466903,
-          37839943
+          27038960,
+          20711797,
+          20524558
         ],
-        "mean": 43461916.0,
-        "median": 38466903.0,
-        "sample_standard_deviation": 9199921.929209346,
-        "coefficient_of_variation": 0.21167778082331543,
-        "minimum": 37839943.0,
-        "maximum": 54078902.0,
-        "range": 16238959.0,
-        "geometric_mean": 42857008.550868176,
-        "sample_log_standard_deviation": 0.20158332383941244
+        "mean": 22758438.333333332,
+        "median": 20711797.0,
+        "sample_standard_deviation": 3708222.4737577885,
+        "coefficient_of_variation": 0.16293835365348905,
+        "minimum": 20524558.0,
+        "maximum": 27038960.0,
+        "range": 6514402.0,
+        "geometric_mean": 22568040.84443166,
+        "sample_log_standard_deviation": 0.15659474513115196
       },
       "task_class_stats": {
         "behavior-preserving-refactor": {
           "total_provider_tokens": {
             "n": 9,
             "values": [
-              2709039,
-              5306192,
-              10946270,
-              2266562,
-              3938725,
-              6741167,
-              2113175,
-              4349167,
-              6339915
+              1495266,
+              3441040,
+              5946754,
+              900459,
+              2812037,
+              4425306,
+              1074121,
+              3130734,
+              4084274
             ],
-            "mean": 4967801.333333333,
-            "median": 4349167.0,
-            "sample_standard_deviation": 2803422.3905604645,
-            "coefficient_of_variation": 0.5643185390184279,
-            "minimum": 2113175.0,
-            "maximum": 10946270.0,
-            "range": 8833095.0,
-            "geometric_mean": 4344821.785481824,
-            "sample_log_standard_deviation": 0.5483217396018163
+            "mean": 3034443.4444444445,
+            "median": 3130734.0,
+            "sample_standard_deviation": 1677351.847900591,
+            "coefficient_of_variation": 0.5527708387419579,
+            "minimum": 900459.0,
+            "maximum": 5946754.0,
+            "range": 5046295.0,
+            "geometric_mean": 2559195.178667199,
+            "sample_log_standard_deviation": 0.6614490435789068
           },
           "fresh_input_tokens": {
             "n": 9,
             "values": [
-              119773,
-              155479,
-              217490,
-              123045,
-              156516,
-              154432,
-              104278,
-              151075,
-              161101
+              33213,
+              64442,
+              72765,
+              39558,
+              73631,
+              65873,
+              31644,
+              74061,
+              67174
             ],
-            "mean": 149243.22222222222,
-            "median": 154432.0,
-            "sample_standard_deviation": 32590.256733331273,
-            "coefficient_of_variation": 0.21837009579439787,
-            "minimum": 104278.0,
-            "maximum": 217490.0,
-            "range": 113212.0,
-            "geometric_mean": 146229.44550589696,
-            "sample_log_standard_deviation": 0.21311668922197777
+            "mean": 58040.11111111111,
+            "median": 65873.0,
+            "sample_standard_deviation": 17878.275451259586,
+            "coefficient_of_variation": 0.30803310174637133,
+            "minimum": 31644.0,
+            "maximum": 74061.0,
+            "range": 42417.0,
+            "geometric_mean": 55129.89199371919,
+            "sample_log_standard_deviation": 0.3567496305765441
           },
           "cached_input_tokens": {
             "n": 9,
             "values": [
-              2572288,
-              5121024,
-              10705408,
-              2120448,
-              3754240,
-              6568960,
-              1987584,
-              4167424,
-              6159104
+              1455104,
+              3360000,
+              5864448,
+              855552,
+              2721792,
+              4352000,
+              1036032,
+              3037440,
+              4008704
             ],
-            "mean": 4795164.444444444,
-            "median": 4167424.0,
-            "sample_standard_deviation": 2772616.6021954385,
-            "coefficient_of_variation": 0.5782109527875987,
-            "minimum": 1987584.0,
-            "maximum": 10705408.0,
-            "range": 8717824.0,
-            "geometric_mean": 4163829.6930713467,
-            "sample_log_standard_deviation": 0.5635407083044105
+            "mean": 2965674.6666666665,
+            "median": 3037440.0,
+            "sample_standard_deviation": 1661730.2230338112,
+            "coefficient_of_variation": 0.5603211443625906,
+            "minimum": 855552.0,
+            "maximum": 5864448.0,
+            "range": 5008896.0,
+            "geometric_mean": 2488943.6317677274,
+            "sample_log_standard_deviation": 0.6715923596626788
           },
           "output_tokens": {
             "n": 9,
             "values": [
-              16978,
-              29689,
-              23372,
-              23069,
-              27969,
-              17775,
-              21313,
-              30668,
-              19710
+              6949,
+              16598,
+              9541,
+              5349,
+              16614,
+              7433,
+              6445,
+              19233,
+              8396
             ],
-            "mean": 23393.666666666668,
-            "median": 23069.0,
-            "sample_standard_deviation": 5052.41857925489,
-            "coefficient_of_variation": 0.21597377834121298,
-            "minimum": 16978.0,
-            "maximum": 30668.0,
-            "range": 13690.0,
-            "geometric_mean": 22912.837982160803,
-            "sample_log_standard_deviation": 0.21637720392374812
+            "mean": 10728.666666666666,
+            "median": 8396.0,
+            "sample_standard_deviation": 5252.3769143122245,
+            "coefficient_of_variation": 0.4895647406616751,
+            "minimum": 5349.0,
+            "maximum": 19233.0,
+            "range": 13884.0,
+            "geometric_mean": 9694.739480277462,
+            "sample_log_standard_deviation": 0.4705428316349782
           },
           "reasoning_tokens": {
             "n": 9,
             "values": [
-              7227,
-              12008,
-              7385,
-              9985,
-              12222,
-              5502,
-              10871,
-              11938,
-              6842
+              2972,
+              7935,
+              3311,
+              1585,
+              7771,
+              2428,
+              2593,
+              7581,
+              2825
             ],
-            "mean": 9331.111111111111,
-            "median": 9985.0,
-            "sample_standard_deviation": 2602.6445418287744,
-            "coefficient_of_variation": 0.27892118214406963,
-            "minimum": 5502.0,
-            "maximum": 12222.0,
-            "range": 6720.0,
-            "geometric_mean": 8986.176059580517,
-            "sample_log_standard_deviation": 0.29740891849623796
+            "mean": 4333.444444444444,
+            "median": 2972.0,
+            "sample_standard_deviation": 2615.405040864183,
+            "coefficient_of_variation": 0.6035395340575279,
+            "minimum": 1585.0,
+            "maximum": 7935.0,
+            "range": 6350.0,
+            "geometric_mean": 3699.0929893963644,
+            "sample_log_standard_deviation": 0.591922119883933
           }
         },
         "code-review-correction": {
           "total_provider_tokens": {
             "n": 9,
             "values": [
-              4464422,
-              7048538,
-              15526000,
-              4465189,
-              5284953,
-              10961655,
-              3954296,
-              5808516,
-              10761746
+              1755383,
+              1742346,
+              4579730,
+              2198627,
+              1346228,
+              4220488,
+              1841121,
+              1459349,
+              4421831
             ],
-            "mean": 7586146.111111111,
-            "median": 5808516.0,
-            "sample_standard_deviation": 3967683.9223710676,
-            "coefficient_of_variation": 0.5230170714165084,
-            "minimum": 3954296.0,
-            "maximum": 15526000.0,
-            "range": 11571704.0,
-            "geometric_mean": 6803685.50561272,
-            "sample_log_standard_deviation": 0.4819057199272111
+            "mean": 2618344.777777778,
+            "median": 1841121.0,
+            "sample_standard_deviation": 1365664.9689674787,
+            "coefficient_of_variation": 0.5215756842101351,
+            "minimum": 1346228.0,
+            "maximum": 4579730.0,
+            "range": 3233502.0,
+            "geometric_mean": 2336936.7643366754,
+            "sample_log_standard_deviation": 0.49539323339314373
           },
           "fresh_input_tokens": {
             "n": 9,
             "values": [
-              153230,
-              190868,
-              289203,
-              167165,
-              189127,
-              217030,
-              150787,
-              181119,
-              234395
+              33457,
+              35389,
+              71713,
+              44120,
+              32611,
+              62598,
+              46509,
+              30044,
+              73294
             ],
-            "mean": 196991.55555555556,
-            "median": 189127.0,
-            "sample_standard_deviation": 44150.810723335286,
-            "coefficient_of_variation": 0.22412539765382924,
-            "minimum": 150787.0,
-            "maximum": 289203.0,
-            "range": 138416.0,
-            "geometric_mean": 192997.96809479463,
-            "sample_log_standard_deviation": 0.21050235987523971
+            "mean": 47748.333333333336,
+            "median": 44120.0,
+            "sample_standard_deviation": 17181.66643547709,
+            "coefficient_of_variation": 0.35983803488031885,
+            "minimum": 30044.0,
+            "maximum": 73294.0,
+            "range": 43250.0,
+            "geometric_mean": 45172.607432815006,
+            "sample_log_standard_deviation": 0.34962652527873794
           },
           "cached_input_tokens": {
             "n": 9,
             "values": [
-              4287744,
-              6822912,
-              15201280,
-              4264448,
-              5063424,
-              10715648,
-              3773440,
-              5592064,
-              10495232
+              1715456,
+              1701888,
+              4495872,
+              2144000,
+              1309184,
+              4146688,
+              1785856,
+              1424640,
+              4336128
             ],
-            "mean": 7357354.666666667,
-            "median": 5592064.0,
-            "sample_standard_deviation": 3923464.612805371,
-            "coefficient_of_variation": 0.5332710995408546,
-            "minimum": 3773440.0,
-            "maximum": 15201280.0,
-            "range": 11427840.0,
-            "geometric_mean": 6569357.316271063,
-            "sample_log_standard_deviation": 0.49168984853133524
+            "mean": 2562190.222222222,
+            "median": 1785856.0,
+            "sample_standard_deviation": 1346073.7075437007,
+            "coefficient_of_variation": 0.5253605668576132,
+            "minimum": 1309184.0,
+            "maximum": 4495872.0,
+            "range": 3186688.0,
+            "geometric_mean": 2283088.6600657655,
+            "sample_log_standard_deviation": 0.4988476799633889
           },
           "output_tokens": {
             "n": 9,
             "values": [
-              23448,
-              34758,
-              35517,
-              33576,
-              32402,
-              28977,
-              30069,
-              35333,
-              32119
+              6470,
+              5069,
+              12145,
+              10507,
+              4433,
+              11202,
+              8756,
+              4665,
+              12409
             ],
-            "mean": 31799.88888888889,
-            "median": 32402.0,
-            "sample_standard_deviation": 3863.0926226420083,
-            "coefficient_of_variation": 0.12148132454613074,
-            "minimum": 23448.0,
-            "maximum": 35517.0,
-            "range": 12069.0,
-            "geometric_mean": 31568.718464297646,
-            "sample_log_standard_deviation": 0.13170083190867762
+            "mean": 8406.222222222223,
+            "median": 8756.0,
+            "sample_standard_deviation": 3298.1419306094826,
+            "coefficient_of_variation": 0.39234531795872557,
+            "minimum": 4433.0,
+            "maximum": 12409.0,
+            "range": 7976.0,
+            "geometric_mean": 7787.515483680664,
+            "sample_log_standard_deviation": 0.42558254702339826
           },
           "reasoning_tokens": {
             "n": 9,
             "values": [
-              9697,
-              14260,
-              12897,
-              14291,
-              14465,
-              10198,
-              14847,
-              13701,
-              13128
+              2470,
+              2252,
+              5512,
+              4306,
+              2243,
+              4696,
+              3976,
+              1763,
+              6286
             ],
-            "mean": 13053.777777777777,
-            "median": 13701.0,
-            "sample_standard_deviation": 1873.008727807867,
-            "coefficient_of_variation": 0.14348403655196285,
-            "minimum": 9697.0,
-            "maximum": 14847.0,
-            "range": 5150.0,
-            "geometric_mean": 12921.218479715979,
-            "sample_log_standard_deviation": 0.15573084376379678
+            "mean": 3722.6666666666665,
+            "median": 3976.0,
+            "sample_standard_deviation": 1615.7802294866713,
+            "coefficient_of_variation": 0.4340383854280098,
+            "minimum": 1763.0,
+            "maximum": 6286.0,
+            "range": 4523.0,
+            "geometric_mean": 3403.4540292614333,
+            "sample_log_standard_deviation": 0.45714670400046725
           }
         },
         "feature-implementation": {
@@ -7614,34 +7853,34 @@
           {
             "replicate_index": 0,
             "fresh_input_tokens": {
-              "luna_xhigh": 528375,
-              "sol_high": 359563,
-              "ratio_sol_over_luna": 0.6805072155192808,
-              "percent_change": -31.949278448071915
+              "luna_xhigh": 207464,
+              "sol_high": 153230,
+              "ratio_sol_over_luna": 0.7385859715420506,
+              "percent_change": -26.141402845794936
             },
             "cached_input_tokens": {
-              "luna_xhigh": 12357888,
-              "sol_high": 7977216,
-              "ratio_sol_over_luna": 0.6455161270275309,
-              "percent_change": -35.44838729724691
+              "luna_xhigh": 6186752,
+              "sol_high": 4287744,
+              "ratio_sol_over_luna": 0.693052509620557,
+              "percent_change": -30.6947490379443
             },
             "output_tokens": {
-              "luna_xhigh": 63803,
-              "sol_high": 50455,
-              "ratio_sol_over_luna": 0.7907935363540899,
-              "percent_change": -20.92064636459101
+              "luna_xhigh": 25858,
+              "sol_high": 23448,
+              "ratio_sol_over_luna": 0.9067986696573594,
+              "percent_change": -9.320133034264055
             },
             "reasoning_tokens": {
-              "luna_xhigh": 35977,
-              "sol_high": 21179,
-              "ratio_sol_over_luna": 0.5886816577257692,
-              "percent_change": -41.131834227423084
+              "luna_xhigh": 14231,
+              "sol_high": 9697,
+              "ratio_sol_over_luna": 0.6813997610849554,
+              "percent_change": -31.86002389150446
             },
             "total_provider_tokens": {
-              "luna_xhigh": 12950066,
-              "sol_high": 8387234,
-              "ratio_sol_over_luna": 0.6476595563296743,
-              "percent_change": -35.23404436703257
+              "luna_xhigh": 6420074,
+              "sol_high": 4464422,
+              "ratio_sol_over_luna": 0.6953848195519242,
+              "percent_change": -30.46151804480758
             },
             "native_command_executions": {
               "luna_xhigh": 53,
@@ -7652,34 +7891,34 @@
           {
             "replicate_index": 1,
             "fresh_input_tokens": {
-              "luna_xhigh": 470975,
-              "sol_high": 373697,
-              "ratio_sol_over_luna": 0.7934540049896491,
-              "percent_change": -20.654599501035086
+              "luna_xhigh": 208494,
+              "sol_high": 167165,
+              "ratio_sol_over_luna": 0.8017736721440425,
+              "percent_change": -19.82263278559575
             },
             "cached_input_tokens": {
-              "luna_xhigh": 12509696,
-              "sol_high": 7649792,
-              "ratio_sol_over_luna": 0.6115090246797364,
-              "percent_change": -38.849097532026356
+              "luna_xhigh": 6461952,
+              "sol_high": 4264448,
+              "ratio_sol_over_luna": 0.6599318595990809,
+              "percent_change": -34.00681404009192
             },
             "output_tokens": {
-              "luna_xhigh": 96881,
-              "sol_high": 74365,
-              "ratio_sol_over_luna": 0.7675911685469803,
-              "percent_change": -23.24088314530197
+              "luna_xhigh": 42324,
+              "sol_high": 33576,
+              "ratio_sol_over_luna": 0.7933087609866742,
+              "percent_change": -20.669123901332576
             },
             "reasoning_tokens": {
-              "luna_xhigh": 52478,
-              "sol_high": 32676,
-              "ratio_sol_over_luna": 0.6226609245779183,
-              "percent_change": -37.733907542208165
+              "luna_xhigh": 23354,
+              "sol_high": 14291,
+              "ratio_sol_over_luna": 0.6119294339299478,
+              "percent_change": -38.80705660700522
             },
             "total_provider_tokens": {
-              "luna_xhigh": 13077552,
-              "sol_high": 8097854,
-              "ratio_sol_over_luna": 0.6192178780860516,
-              "percent_change": -38.07821219139485
+              "luna_xhigh": 6712770,
+              "sol_high": 4465189,
+              "ratio_sol_over_luna": 0.665178309401335,
+              "percent_change": -33.48216905986649
             },
             "native_command_executions": {
               "luna_xhigh": 66,
@@ -7690,34 +7929,34 @@
           {
             "replicate_index": 2,
             "fresh_input_tokens": {
-              "luna_xhigh": 562227,
-              "sol_high": 327699,
-              "ratio_sol_over_luna": 0.5828588808435027,
-              "percent_change": -41.71411191564973
+              "luna_xhigh": 273649,
+              "sol_high": 150787,
+              "ratio_sol_over_luna": 0.5510233912786088,
+              "percent_change": -44.89766087213912
             },
             "cached_input_tokens": {
-              "luna_xhigh": 7030528,
-              "sol_high": 6712576,
-              "ratio_sol_over_luna": 0.9547755161490005,
-              "percent_change": -4.522448385099953
+              "luna_xhigh": 4318464,
+              "sol_high": 3773440,
+              "ratio_sol_over_luna": 0.8737921631394866,
+              "percent_change": -12.62078368605134
             },
             "output_tokens": {
-              "luna_xhigh": 49815,
-              "sol_high": 66250,
-              "ratio_sol_over_luna": 1.3299207066144736,
-              "percent_change": 32.99207066144736
+              "luna_xhigh": 25010,
+              "sol_high": 30069,
+              "ratio_sol_over_luna": 1.2022790883646541,
+              "percent_change": 20.227908836465414
             },
             "reasoning_tokens": {
-              "luna_xhigh": 22016,
-              "sol_high": 33996,
-              "ratio_sol_over_luna": 1.5441497093023255,
-              "percent_change": 54.414970930232556
+              "luna_xhigh": 10741,
+              "sol_high": 14847,
+              "ratio_sol_over_luna": 1.3822735313285541,
+              "percent_change": 38.22735313285541
             },
             "total_provider_tokens": {
-              "luna_xhigh": 7642570,
-              "sol_high": 7106525,
-              "ratio_sol_over_luna": 0.9298606358855726,
-              "percent_change": -7.013936411442745
+              "luna_xhigh": 4617123,
+              "sol_high": 3954296,
+              "ratio_sol_over_luna": 0.8564415546217851,
+              "percent_change": -14.355844537821493
             },
             "native_command_executions": {
               "luna_xhigh": 64,
@@ -7729,55 +7968,55 @@
         "total_provider_tokens_ratio": {
           "n": 3,
           "values": [
-            0.6476595563296743,
-            0.6192178780860516,
-            0.9298606358855726
+            0.6953848195519242,
+            0.665178309401335,
+            0.8564415546217851
           ],
-          "mean": 0.7322460234337661,
-          "median": 0.6476595563296743,
-          "sample_standard_deviation": 0.17172909932852579,
-          "coefficient_of_variation": 0.23452377183726586,
-          "minimum": 0.6192178780860516,
-          "maximum": 0.9298606358855726,
-          "range": 0.310642757799521,
-          "geometric_mean": 0.7197848630274063,
-          "sample_log_standard_deviation": 0.22290762941447298
+          "mean": 0.7390015611916815,
+          "median": 0.6953848195519242,
+          "sample_standard_deviation": 0.10282131275429476,
+          "coefficient_of_variation": 0.13913544727630836,
+          "minimum": 0.665178309401335,
+          "maximum": 0.8564415546217851,
+          "range": 0.19126324522045002,
+          "geometric_mean": 0.7344355185836087,
+          "sample_log_standard_deviation": 0.13493375351087464
         },
-        "geometric_mean_percent_change": -28.02151369725937
+        "geometric_mean_percent_change": -26.556448141639134
       },
       "beets-lifecycle-sequence-v0": {
         "pairs": [
           {
             "replicate_index": 0,
             "fresh_input_tokens": {
-              "luna_xhigh": 738082,
-              "sol_high": 437384,
-              "ratio_sol_over_luna": 0.5925954026788351,
-              "percent_change": -40.740459732116484
+              "luna_xhigh": 335235,
+              "sol_high": 190868,
+              "ratio_sol_over_luna": 0.5693558250182708,
+              "percent_change": -43.06441749817292
             },
             "cached_input_tokens": {
-              "luna_xhigh": 24512256,
-              "sol_high": 13704960,
-              "ratio_sol_over_luna": 0.559106432308801,
-              "percent_change": -44.0893567691199
+              "luna_xhigh": 11855360,
+              "sol_high": 6822912,
+              "ratio_sol_over_luna": 0.5755128481969337,
+              "percent_change": -42.44871518030663
             },
             "output_tokens": {
-              "luna_xhigh": 119187,
-              "sol_high": 77538,
-              "ratio_sol_over_luna": 0.6505575272470991,
-              "percent_change": -34.94424727529009
+              "luna_xhigh": 54134,
+              "sol_high": 34758,
+              "ratio_sol_over_luna": 0.6420733734806222,
+              "percent_change": -35.79266265193778
             },
             "reasoning_tokens": {
-              "luna_xhigh": 59746,
-              "sol_high": 30341,
-              "ratio_sol_over_luna": 0.5078331603789376,
-              "percent_change": -49.216683962106245
+              "luna_xhigh": 27150,
+              "sol_high": 14260,
+              "ratio_sol_over_luna": 0.5252302025782689,
+              "percent_change": -47.47697974217311
             },
             "total_provider_tokens": {
-              "luna_xhigh": 25369525,
-              "sol_high": 14219882,
-              "ratio_sol_over_luna": 0.5605103761304163,
-              "percent_change": -43.94896238695837
+              "luna_xhigh": 12244729,
+              "sol_high": 7048538,
+              "ratio_sol_over_luna": 0.5756385461858731,
+              "percent_change": -42.43614538141269
             },
             "native_command_executions": {
               "luna_xhigh": 65,
@@ -7788,34 +8027,34 @@
           {
             "replicate_index": 1,
             "fresh_input_tokens": {
-              "luna_xhigh": 658929,
-              "sol_high": 428528,
-              "ratio_sol_over_luna": 0.6503401732204835,
-              "percent_change": -34.965982677951644
+              "luna_xhigh": 274928,
+              "sol_high": 189127,
+              "ratio_sol_over_luna": 0.6879146540185067,
+              "percent_change": -31.208534598149328
             },
             "cached_input_tokens": {
-              "luna_xhigh": 16645632,
-              "sol_high": 9850112,
-              "ratio_sol_over_luna": 0.5917535603334256,
-              "percent_change": -40.82464396665743
+              "luna_xhigh": 8400896,
+              "sol_high": 5063424,
+              "ratio_sol_over_luna": 0.6027242808386153,
+              "percent_change": -39.72757191613847
             },
             "output_tokens": {
-              "luna_xhigh": 119010,
-              "sol_high": 71726,
-              "ratio_sol_over_luna": 0.6026888496764978,
-              "percent_change": -39.73111503235022
+              "luna_xhigh": 52908,
+              "sol_high": 32402,
+              "ratio_sol_over_luna": 0.6124215619566039,
+              "percent_change": -38.75784380433961
             },
             "reasoning_tokens": {
-              "luna_xhigh": 58291,
-              "sol_high": 31138,
-              "ratio_sol_over_luna": 0.5341819491859807,
-              "percent_change": -46.581805081401924
+              "luna_xhigh": 26260,
+              "sol_high": 14465,
+              "ratio_sol_over_luna": 0.5508377760853008,
+              "percent_change": -44.916222391469915
             },
             "total_provider_tokens": {
-              "luna_xhigh": 17423571,
-              "sol_high": 10350366,
-              "ratio_sol_over_luna": 0.5940438960532258,
-              "percent_change": -40.595610394677415
+              "luna_xhigh": 8728732,
+              "sol_high": 5284953,
+              "ratio_sol_over_luna": 0.605466292240385,
+              "percent_change": -39.4533707759615
             },
             "native_command_executions": {
               "luna_xhigh": 56,
@@ -7826,34 +8065,34 @@
           {
             "replicate_index": 2,
             "fresh_input_tokens": {
-              "luna_xhigh": 503643,
-              "sol_high": 409208,
-              "ratio_sol_over_luna": 0.8124961530290304,
-              "percent_change": -18.750384697096955
+              "luna_xhigh": 231792,
+              "sol_high": 181119,
+              "ratio_sol_over_luna": 0.7813858977013874,
+              "percent_change": -21.861410229861256
             },
             "cached_input_tokens": {
-              "luna_xhigh": 16973056,
-              "sol_high": 10889472,
-              "ratio_sol_over_luna": 0.6415740335741542,
-              "percent_change": -35.84259664258458
+              "luna_xhigh": 8943616,
+              "sol_high": 5592064,
+              "ratio_sol_over_luna": 0.6252576139226014,
+              "percent_change": -37.47423860773986
             },
             "output_tokens": {
-              "luna_xhigh": 135579,
-              "sol_high": 77436,
-              "ratio_sol_over_luna": 0.5711503993981368,
-              "percent_change": -42.884960060186316
+              "luna_xhigh": 63038,
+              "sol_high": 35333,
+              "ratio_sol_over_luna": 0.5605031885529363,
+              "percent_change": -43.94968114470637
             },
             "reasoning_tokens": {
-              "luna_xhigh": 62498,
-              "sol_high": 29996,
-              "ratio_sol_over_luna": 0.4799513584434702,
-              "percent_change": -52.004864155652974
+              "luna_xhigh": 28957,
+              "sol_high": 13701,
+              "ratio_sol_over_luna": 0.4731498428704631,
+              "percent_change": -52.6850157129537
             },
             "total_provider_tokens": {
-              "luna_xhigh": 17612278,
-              "sol_high": 11376116,
-              "ratio_sol_over_luna": 0.6459196249343782,
-              "percent_change": -35.40803750656218
+              "luna_xhigh": 9238446,
+              "sol_high": 5808516,
+              "ratio_sol_over_luna": 0.6287330141887499,
+              "percent_change": -37.126698581125005
             },
             "native_command_executions": {
               "luna_xhigh": 105,
@@ -7865,55 +8104,55 @@
         "total_provider_tokens_ratio": {
           "n": 3,
           "values": [
-            0.5605103761304163,
-            0.5940438960532258,
-            0.6459196249343782
+            0.5756385461858731,
+            0.605466292240385,
+            0.6287330141887499
           ],
-          "mean": 0.6001579657060068,
-          "median": 0.5940438960532258,
-          "sample_standard_deviation": 0.0430316317504177,
-          "coefficient_of_variation": 0.07170050921476424,
-          "minimum": 0.5605103761304163,
-          "maximum": 0.6459196249343782,
-          "range": 0.08540924880396183,
-          "geometric_mean": 0.5991380359683415,
-          "sample_log_standard_deviation": 0.07129818112055399
+          "mean": 0.6032792842050027,
+          "median": 0.605466292240385,
+          "sample_standard_deviation": 0.026614711838328232,
+          "coefficient_of_variation": 0.044116734214404395,
+          "minimum": 0.5756385461858731,
+          "maximum": 0.6287330141887499,
+          "range": 0.05309446800287687,
+          "geometric_mean": 0.6028862341896352,
+          "sample_log_standard_deviation": 0.044268133805119514
         },
-        "geometric_mean_percent_change": -40.08619640316585
+        "geometric_mean_percent_change": -39.71137658103648
       },
       "terraform-lifecycle-sequence-v0": {
         "pairs": [
           {
             "replicate_index": 0,
             "fresh_input_tokens": {
-              "luna_xhigh": 1286070,
-              "sol_high": 651418,
-              "ratio_sol_over_luna": 0.506518307712644,
-              "percent_change": -49.34816922873561
+              "luna_xhigh": 555640,
+              "sol_high": 289203,
+              "ratio_sol_over_luna": 0.5204862860845152,
+              "percent_change": -47.95137139154848
             },
             "cached_input_tokens": {
-              "luna_xhigh": 32159488,
-              "sol_high": 30747648,
-              "ratio_sol_over_luna": 0.9560988035630418,
-              "percent_change": -4.390119643695822
+              "luna_xhigh": 15246336,
+              "sol_high": 15201280,
+              "ratio_sol_over_luna": 0.997044798173148,
+              "percent_change": -0.29552018268520497
             },
             "output_tokens": {
-              "luna_xhigh": 118592,
-              "sol_high": 72720,
-              "ratio_sol_over_luna": 0.6131948192120885,
-              "percent_change": -38.680518078791145
+              "luna_xhigh": 61852,
+              "sol_high": 35517,
+              "ratio_sol_over_luna": 0.5742255707171959,
+              "percent_change": -42.577442928280405
             },
             "reasoning_tokens": {
-              "luna_xhigh": 51277,
-              "sol_high": 24356,
-              "ratio_sol_over_luna": 0.47498878639545994,
-              "percent_change": -52.50112136045401
+              "luna_xhigh": 26561,
+              "sol_high": 12897,
+              "ratio_sol_over_luna": 0.48556153759271115,
+              "percent_change": -51.44384624072889
             },
             "total_provider_tokens": {
-              "luna_xhigh": 33564150,
-              "sol_high": 31471786,
-              "ratio_sol_over_luna": 0.9376607481494392,
-              "percent_change": -6.233925185056077
+              "luna_xhigh": 15863828,
+              "sol_high": 15526000,
+              "ratio_sol_over_luna": 0.978704509403405,
+              "percent_change": -2.129549059659497
             },
             "native_command_executions": {
               "luna_xhigh": 104,
@@ -7924,34 +8163,34 @@
           {
             "replicate_index": 1,
             "fresh_input_tokens": {
-              "luna_xhigh": 977127,
-              "sol_high": 460021,
-              "ratio_sol_over_luna": 0.47078936514905434,
-              "percent_change": -52.921063485094564
+              "luna_xhigh": 491544,
+              "sol_high": 217030,
+              "ratio_sol_over_luna": 0.44152710642383997,
+              "percent_change": -55.847289357616006
             },
             "cached_input_tokens": {
-              "luna_xhigh": 42297344,
-              "sol_high": 19501568,
-              "ratio_sol_over_luna": 0.46105892606401006,
-              "percent_change": -53.894107393598986
+              "luna_xhigh": 18905856,
+              "sol_high": 10715648,
+              "ratio_sol_over_luna": 0.5667898877469499,
+              "percent_change": -43.32101122530501
             },
             "output_tokens": {
-              "luna_xhigh": 117853,
-              "sol_high": 57094,
-              "ratio_sol_over_luna": 0.4844509685795016,
-              "percent_change": -51.554903142049845
+              "luna_xhigh": 55666,
+              "sol_high": 28977,
+              "ratio_sol_over_luna": 0.5205511443250818,
+              "percent_change": -47.94488556749182
             },
             "reasoning_tokens": {
-              "luna_xhigh": 54468,
-              "sol_high": 18774,
-              "ratio_sol_over_luna": 0.34467944481163254,
-              "percent_change": -65.53205551883674
+              "luna_xhigh": 26157,
+              "sol_high": 10198,
+              "ratio_sol_over_luna": 0.3898765148908514,
+              "percent_change": -61.01234851091486
             },
             "total_provider_tokens": {
-              "luna_xhigh": 43392324,
-              "sol_high": 20018683,
-              "ratio_sol_over_luna": 0.4613415727629615,
-              "percent_change": -53.86584272370385
+              "luna_xhigh": 19453066,
+              "sol_high": 10961655,
+              "ratio_sol_over_luna": 0.5634924078291823,
+              "percent_change": -43.65075921708177
             },
             "native_command_executions": {
               "luna_xhigh": 88,
@@ -7962,34 +8201,34 @@
           {
             "replicate_index": 2,
             "fresh_input_tokens": {
-              "luna_xhigh": 1014946,
-              "sol_high": 489423,
-              "ratio_sol_over_luna": 0.4822158026141292,
-              "percent_change": -51.778419738587075
+              "luna_xhigh": 468939,
+              "sol_high": 234395,
+              "ratio_sol_over_luna": 0.49984113072275926,
+              "percent_change": -50.015886927724075
             },
             "cached_input_tokens": {
-              "luna_xhigh": 36360192,
-              "sol_high": 18804736,
-              "ratio_sol_over_luna": 0.517179227216402,
-              "percent_change": -48.2820772783598
+              "luna_xhigh": 17051392,
+              "sol_high": 10495232,
+              "ratio_sol_over_luna": 0.6155058777605957,
+              "percent_change": -38.44941222394043
             },
             "output_tokens": {
-              "luna_xhigh": 124055,
-              "sol_high": 63143,
-              "ratio_sol_over_luna": 0.5089919793639918,
-              "percent_change": -49.100802063600824
+              "luna_xhigh": 57846,
+              "sol_high": 32119,
+              "ratio_sol_over_luna": 0.5552501469418801,
+              "percent_change": -44.474985305811984
             },
             "reasoning_tokens": {
-              "luna_xhigh": 56969,
-              "sol_high": 23987,
-              "ratio_sol_over_luna": 0.4210535554424336,
-              "percent_change": -57.89464445575664
+              "luna_xhigh": 27200,
+              "sol_high": 13128,
+              "ratio_sol_over_luna": 0.48264705882352943,
+              "percent_change": -51.73529411764706
             },
             "total_provider_tokens": {
-              "luna_xhigh": 37499193,
-              "sol_high": 19357302,
-              "ratio_sol_over_luna": 0.5162058287494347,
-              "percent_change": -48.379417125056534
+              "luna_xhigh": 17578177,
+              "sol_high": 10761746,
+              "ratio_sol_over_luna": 0.6122219613558334,
+              "percent_change": -38.77780386441666
             },
             "native_command_executions": {
               "luna_xhigh": 142,
@@ -8001,70 +8240,71 @@
         "total_provider_tokens_ratio": {
           "n": 3,
           "values": [
-            0.9376607481494392,
-            0.4613415727629615,
-            0.5162058287494347
+            0.978704509403405,
+            0.5634924078291823,
+            0.6122219613558334
           ],
-          "mean": 0.6384027165539451,
-          "median": 0.5162058287494347,
-          "sample_standard_deviation": 0.26061283305325667,
-          "coefficient_of_variation": 0.40822638484376633,
-          "minimum": 0.4613415727629615,
-          "maximum": 0.9376607481494392,
-          "range": 0.4763191753864777,
-          "geometric_mean": 0.6066856798749314,
-          "sample_log_standard_deviation": 0.381210799179305
+          "mean": 0.7181396261961402,
+          "median": 0.6122219613558334,
+          "sample_standard_deviation": 0.22696736795702227,
+          "coefficient_of_variation": 0.3160490797022699,
+          "minimum": 0.5634924078291823,
+          "maximum": 0.978704509403405,
+          "range": 0.4152121015742227,
+          "geometric_mean": 0.696331733662975,
+          "sample_log_standard_deviation": 0.2977007864219704
         },
-        "geometric_mean_percent_change": -39.33143201250686
+        "geometric_mean_percent_change": -30.366826633702505
       }
     },
     "aggregate_pairs": [
       {
         "replicate_index": 0,
-        "luna_xhigh_total_provider_tokens": 71883741,
-        "sol_high_total_provider_tokens": 54078902,
-        "ratio_sol_over_luna": 0.7523106233438797,
-        "percent_change": -24.768937665612036
+        "luna_xhigh_total_provider_tokens": 34528631,
+        "sol_high_total_provider_tokens": 27038960,
+        "ratio_sol_over_luna": 0.7830880986854069,
+        "percent_change": -21.691190131459315
       },
       {
         "replicate_index": 1,
-        "luna_xhigh_total_provider_tokens": 73893447,
-        "sol_high_total_provider_tokens": 38466903,
-        "ratio_sol_over_luna": 0.5205725887980297,
-        "percent_change": -47.94274112019703
+        "luna_xhigh_total_provider_tokens": 34894568,
+        "sol_high_total_provider_tokens": 20711797,
+        "ratio_sol_over_luna": 0.5935536155656089,
+        "percent_change": -40.644638443439106
       },
       {
         "replicate_index": 2,
-        "luna_xhigh_total_provider_tokens": 62754041,
-        "sol_high_total_provider_tokens": 37839943,
-        "ratio_sol_over_luna": 0.6029881486038485,
-        "percent_change": -39.70118513961515
+        "luna_xhigh_total_provider_tokens": 31433746,
+        "sol_high_total_provider_tokens": 20524558,
+        "ratio_sol_over_luna": 0.6529466134898463,
+        "percent_change": -34.705338651015374
       }
     ],
     "aggregate_ratio": {
       "n": 3,
       "values": [
-        0.7523106233438797,
-        0.5205725887980297,
-        0.6029881486038485
+        0.7830880986854069,
+        0.5935536155656089,
+        0.6529466134898463
       ],
-      "mean": 0.6252904535819193,
-      "median": 0.6029881486038485,
-      "sample_standard_deviation": 0.11746775629633242,
-      "coefficient_of_variation": 0.18786110618422064,
-      "minimum": 0.5205725887980297,
-      "maximum": 0.7523106233438797,
-      "range": 0.23173803454584996,
-      "geometric_mean": 0.6181052357782669,
-      "sample_log_standard_deviation": 0.1853545861222078
+      "mean": 0.6765294425802874,
+      "median": 0.6529466134898463,
+      "sample_standard_deviation": 0.09694298553172352,
+      "coefficient_of_variation": 0.14329455516670847,
+      "minimum": 0.5935536155656089,
+      "maximum": 0.7830880986854069,
+      "range": 0.18953448311979793,
+      "geometric_mean": 0.6720208548266119,
+      "sample_log_standard_deviation": 0.1407848351737975
     },
-    "aggregate_geometric_mean_percent_change": -38.18947642217331
+    "aggregate_geometric_mean_percent_change": -32.79791451733881
   },
   "limitations": [
     "Three replicates per sequence support descriptive variance comparison only.",
     "The compound condition changes both model (Luna to Sol) and reasoning effort (xhigh to high).",
     "The Luna sessions were collected on 2026-07-16 and the Sol sessions on 2026-07-18, so collection time is not blocked or randomized.",
     "Provider event item counts describe trajectories but are post-treatment mechanisms and are not adjusted out of the primary token outcome.",
+    "Token totals use the correction audit rather than legacy registry totals because Codex 0.144.0 emits cumulative thread totals at every resumed turn and the legacy extractor summed those snapshots.",
     "Compact bundle manifests pass, but some embedded Codex JSONL event streams contain raw stderr or non-object lines and therefore are not strictly parseable line by line."
   ]
 }
