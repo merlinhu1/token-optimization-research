@@ -4,6 +4,7 @@ This directory contains completed research syntheses. These are the documents to
 
 | Paper | Status | Scope |
 |---|---|---|
+| [GPT-5.6 Sol/High Persistent-Baseline Variance Screen](gpt-5-6-sol-high-baseline-variance-screen.md) | Current descriptive model-condition screen | Three persistent baseline replicates per lane; token volume, components, trajectories, and variance versus retained Luna/`xhigh` evidence |
 | [Official Integration Parity Audit](official-integration-parity-audit.md) | Current validity authority | Exact pinned Codex integration audit and session/comparison disposition |
 | [Phase 3: TokenJuice + jcodemunch MCP Stack Screen](phase-3-tokenjuice-jcodemunch-stack-screen.md) | Withdrawn product-effect screen | Historical provider-accounting comparison; superseded treatment validity |
 | [Phase 2: Lifecycle-v0 Natural-Use Screening](phase-2-lifecycle-v0-natural-use-screening.md) | Historical provider-accounting report | Retained token/verifier tables with superseding integration adjudication |
