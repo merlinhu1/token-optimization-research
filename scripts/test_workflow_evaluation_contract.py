@@ -511,6 +511,38 @@ class ActiveCampaignArchitectureTest(unittest.TestCase):
         self.assertNotIn("install-agent-rules", " ".join(swarmvault["warmup"]["command"]))
         self.assertEqual(runner.artifact_profile_label("codescope-owner"), "codescope")
         self.assertEqual(runner.artifact_profile_label("swarmvault-owner"), "swarmvault")
+        corrected_labels = {
+            "terminal-tokenjuice-codex-hook-v1": "tokenjuice",
+            "retrieval-jcodemunch-mcp-direct-v1": "jcodemunch",
+            "terminal-rtk-codex-instructions-v1": "rtk",
+            "terminal-snip-codex-hook-v1": "snip",
+            "retrieval-graphify-codex-skill-v1": "graphify",
+            "retrieval-codegraph-codex-mcp-v1": "codegraph",
+            "integrated-leanctx-codex-hybrid-v1": "leanctx",
+            "retrieval-cartog-mcp-v1": "cartog",
+            "codescope-codex-product-v1": "codescope",
+            "swarmvault-codex-product-v1": "swarmvault",
+            "retrieval-serena-codex-mcp-v1": "serena",
+            "retrieval-sigmap-codex-live-v1": "sigmap",
+            "integrated-token-savior-mcp-v1": "token-savior",
+        }
+        self.assertEqual(
+            {profile: runner.artifact_profile_label(profile) for profile in corrected_labels},
+            corrected_labels,
+        )
+        corrected_session_ids = {
+            runner.canonical_treatment_session_id("fastify-fastify", profile, 2)
+            for profile in corrected_labels
+        }
+        self.assertEqual(len(corrected_session_ids), len(corrected_labels))
+        executed_protocols = matrix.executed_protocol_paths(ROOT)
+        for profile in corrected_labels:
+            launch_protocol = matrix.find_protocol(
+                ROOT,
+                "fastify-lifecycle-sequence-v0",
+                profile,
+            )
+            self.assertNotIn(launch_protocol.relative_to(ROOT).as_posix(), executed_protocols)
         self.assertNotEqual(
             runner.canonical_treatment_session_id("fastify-fastify", "codescope-owner", 1),
             runner.canonical_treatment_session_id("fastify-fastify", "swarmvault-owner", 1),
@@ -548,6 +580,10 @@ class ActiveCampaignArchitectureTest(unittest.TestCase):
             }
             for path in (ROOT / "sources/evaluations/protocols").glob("*.json")
         }
+        workflow_sessions_doc = json.loads((ROOT / "data/workflow-sessions.json").read_text())
+        executed_protocols = validate_repository.executed_protocol_paths_from_registry(
+            workflow_sessions_doc
+        )
 
         errors: list[str] = []
         validate_repository.validate_candidate_profile_launch_readiness(
@@ -558,6 +594,7 @@ class ActiveCampaignArchitectureTest(unittest.TestCase):
             qualification_docs,
             protocol_docs,
             errors,
+            executed_protocols,
         )
         self.assertEqual(errors, [])
 
@@ -574,6 +611,7 @@ class ActiveCampaignArchitectureTest(unittest.TestCase):
             qualification_docs,
             protocol_docs,
             errors,
+            executed_protocols,
         )
         self.assertTrue(any("parity-approved profile set" in error for error in errors), errors)
 
@@ -595,6 +633,7 @@ class ActiveCampaignArchitectureTest(unittest.TestCase):
             missing_lane_receipts,
             protocol_docs,
             errors,
+            executed_protocols,
         )
         self.assertTrue(any("missing matching provider-free qualification" in error for error in errors), errors)
 
@@ -616,6 +655,7 @@ class ActiveCampaignArchitectureTest(unittest.TestCase):
             empty_mcp_tools,
             protocol_docs,
             errors,
+            executed_protocols,
         )
         self.assertTrue(any("non-empty MCP tools/list proof" in error for error in errors), errors)
 

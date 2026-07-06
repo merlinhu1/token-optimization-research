@@ -869,6 +869,19 @@ def artifact_profile_label(profile_id: str) -> str:
         "codescope-owner": "codescope",
         "swarmvault-owner": "swarmvault",
         "stack-tokenjuice-jcodemunch-mcp": "tokenjuice-jcodemunch",
+        "terminal-tokenjuice-codex-hook-v1": "tokenjuice",
+        "retrieval-jcodemunch-mcp-direct-v1": "jcodemunch",
+        "terminal-rtk-codex-instructions-v1": "rtk",
+        "terminal-snip-codex-hook-v1": "snip",
+        "retrieval-graphify-codex-skill-v1": "graphify",
+        "retrieval-codegraph-codex-mcp-v1": "codegraph",
+        "integrated-leanctx-codex-hybrid-v1": "leanctx",
+        "retrieval-cartog-mcp-v1": "cartog",
+        "codescope-codex-product-v1": "codescope",
+        "swarmvault-codex-product-v1": "swarmvault",
+        "retrieval-serena-codex-mcp-v1": "serena",
+        "retrieval-sigmap-codex-live-v1": "sigmap",
+        "integrated-token-savior-mcp-v1": "token-savior",
     }
     if profile_id == "baseline-bare-codex":
         return "baseline"
