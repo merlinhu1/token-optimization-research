@@ -146,6 +146,11 @@ class ActiveCampaignArchitectureTest(unittest.TestCase):
             )
         self.assertIn('--treatment-profile "$PROFILE_ID"', runbook)
         self.assertEqual(runbook.count("(r0, r1, r2)"), 3)
+        self.assertIn(
+            "Non-default model-comparison baselines are tracked separately",
+            runbook,
+        )
+        self.assertEqual(runbook.count("`codex-openai-gpt-5-6-sol-high` (r0)"), 3)
 
     def test_repository_surfaces_match_production_evidence_state(self) -> None:
         stale_claims = {
@@ -2168,6 +2173,32 @@ class MatrixLifecycleContractTest(unittest.TestCase):
         ])
         with self.assertRaises(SystemExit):
             matrix.selected_model_condition(args)
+
+    def test_missing_protected_control_plane_test_is_restored_before_validation(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            protected = root / "scripts/test_workflow_evaluation_contract.py"
+            protected.parent.mkdir(parents=True)
+            protected.write_text("protected\n")
+            subprocess.run(["git", "init", "-q"], cwd=root, check=True)
+            subprocess.run(["git", "add", str(protected.relative_to(root))], cwd=root, check=True)
+            subprocess.run(
+                ["git", "-c", "user.name=Test", "-c", "user.email=test@example.invalid", "commit", "-qm", "fixture"],
+                cwd=root,
+                check=True,
+            )
+            protected.unlink()
+            matrix.restore_protected_control_plane_files(root)
+            self.assertEqual(protected.read_text(), "protected\n")
+
+    def test_controller_refreshes_generated_runbook_before_validation(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            script = root / "scripts/update_workflow_runbook.py"
+            script.parent.mkdir(parents=True)
+            script.write_text("from pathlib import Path\nPath('refreshed').write_text('yes')\n")
+            matrix.refresh_generated_runbook(root)
+            self.assertEqual((root / "refreshed").read_text(), "yes")
 
     def test_prepare_only_summary_cannot_claim_objective_acceptance(self) -> None:
         self.assertIsNone(
