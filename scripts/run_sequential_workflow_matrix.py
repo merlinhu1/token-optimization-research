@@ -640,6 +640,14 @@ def refresh_generated_runbook(root: Path = ROOT) -> None:
     )
 
 
+def refresh_cumulative_usage_audit(root: Path = ROOT) -> None:
+    subprocess.run(
+        [sys.executable, "scripts/audit_codex_cumulative_usage.py"],
+        cwd=root,
+        check=True,
+    )
+
+
 def run_validation(summary_dir: Path) -> dict[str, Any]:
     truthmark_candidates = [
         shutil.which("truthmark"),
@@ -830,6 +838,8 @@ def main(argv: list[str] | None = None) -> int:
     )
     restore_protected_control_plane_files()
     refresh_generated_runbook()
+    if not args.prepare_only and merge_summary.get("merged_session_count", 0):
+        refresh_cumulative_usage_audit()
     validation = run_validation(run_root)
     if not args.prepare_only and not validation["passed"]:
         for rel in published_comparisons:
