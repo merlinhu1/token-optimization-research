@@ -62,7 +62,7 @@ PROFILE_ID=replace-with-compatible-profile-id
 python3 scripts/run_sequential_workflow_matrix.py "$SEQUENCE_ID" --treatment-profile "$PROFILE_ID"
 ```
 
-Non-default model-comparison baselines are tracked separately: `beets-lifecycle-sequence-v0` under `codex-openai-gpt-5-6-sol-high` (r0), `fastify-lifecycle-sequence-v0` under `codex-openai-gpt-5-6-sol-high` (r0), `terraform-lifecycle-sequence-v0` under `codex-openai-gpt-5-6-sol-high` (r0). They do not satisfy active-default baseline requirements or define treatment-pair reuse.
+Non-default model-comparison baselines are tracked separately: `beets-lifecycle-sequence-v0` under `codex-openai-gpt-5-6-sol-high` (r0, r1), `fastify-lifecycle-sequence-v0` under `codex-openai-gpt-5-6-sol-high` (r0, r1), `terraform-lifecycle-sequence-v0` under `codex-openai-gpt-5-6-sol-high` (r0, r1). They do not satisfy active-default baseline requirements or define treatment-pair reuse.
 
 Retain the first operationally valid provider sample for each protocol and replicate. Stop only when a sample is fixture-invalid or operationally incomplete; verifier and review outcomes are diagnostic.
 
