@@ -1,15 +1,12 @@
 {
-  "schema_version": "corrected-integration-qualification-v2",
+  "schema_version": "corrected-integration-qualification-v3",
   "audit_id": "corrected-integration-qualification-20260718",
   "date": "2026-07-18",
   "execution_mode": "prepare-only-no-provider",
   "provider_calls": 0,
   "command_contract": [
     "--prepare-only",
-    "--no-provider",
-    "--skip-dependency-install",
-    "--skip-container-preflight",
-    "--skip-codex-preflight"
+    "--no-provider"
   ],
   "scope": {
     "profiles": 13,
@@ -23,7 +20,15 @@
     "all_fixture_preparation_verified": true,
     "all_host_integrations_verified": true,
     "all_required_mcp_handshakes_verified": true,
+    "all_codex_visibility_preflights_verified": true,
     "provider_backed_sessions_created": 0
+  },
+  "repair_note": {
+    "root_cause": "Graphify's full virtualenv bin directory exposed the unintended graphify-mcp entrypoint on the model PATH.",
+    "fix": "Expose only a lane-private graphify symlink directory; keep the transitive graphify-mcp entrypoint off PATH.",
+    "shared_runner_protocol_impact": "All 39 unoccupied corrected-profile protocols were regenerated because the frozen descriptor binds the shared fixture-runner hash.",
+    "failed_provider_calls": 0,
+    "matrix_portability_fix": "Graphify protocol identity now binds its generated host-integrated executable contract rather than a warmup shell identity containing a checkout-specific PATH."
   },
   "profiles": [
     "terminal-tokenjuice-codex-hook-v1",
@@ -44,9 +49,9 @@
     {
       "sequence_id": "beets-lifecycle-sequence-v0",
       "profile_id": "codescope-codex-product-v1",
-      "protocol_path": "sources/evaluations/protocols/beets-lifecycle-sequence-v0-codescope-codex-product-v1-5e08d6293949.json",
-      "protocol_sha256": "f767189d1c7f860db1af8c430364a5e516f65cb2eb1e6fc0b25bfb03e4d7dcb2",
-      "raw_prepare_output_sha256": "d9dd38a18b18b44e0199a048c41bb9476b8259cc8e2e8318a8394736a6c6e3c2",
+      "protocol_path": "sources/evaluations/protocols/beets-lifecycle-sequence-v0-codescope-codex-product-v1-e6faf0e4fbef.json",
+      "protocol_sha256": "5b79937a05c4862f0491cd23a3957dbd05d6c1533171f981bf1344f8edde7437",
+      "raw_prepare_output_sha256": "833ed54a1de7b14feed93e8e5710971553d061a15f8a89f14418a7a4671cc8fa",
       "prepared": true,
       "prepare_verification": {
         "passed": true,
@@ -55,6 +60,7 @@
         "composite_seed_delivery_passed": true
       },
       "host_integration": {
+        "profile_id": "codescope-codex-product-v1",
         "passed": true,
         "skipped": false,
         "install_exit_codes": [],
@@ -62,16 +68,19 @@
           0
         ],
         "missing_required_files": [],
-        "required_files": []
+        "required_files": [],
+        "artifacts": [
+          "sources/evaluations/workflow-sessions/prepare-beets-codescope-codex-product-v1-20260718T194524380516Z-p1505775/tool-host-verify-1.txt"
+        ]
       },
       "mcp_handshake": {
-        "required": true,
-        "passed": true,
+        "errors": [],
         "initialize_passed": true,
-        "tools_list_passed": true,
-        "server_name": "rmcp",
+        "non_json_stdout_lines": [],
+        "passed": true,
         "protocol_version": "2025-06-18",
-        "tool_count": 37,
+        "server_name": "rmcp",
+        "stderr_present": true,
         "tool_names": [
           "api_changelog",
           "ask",
@@ -111,20 +120,45 @@
           "sync_git_history",
           "type_hierarchy"
         ],
-        "errors": []
+        "tools_list_passed": true,
+        "profile_id": "codescope-codex-product-v1",
+        "required": true,
+        "probe_exit_code": 0,
+        "tool_count": 37
       },
       "tool_warmup_exit_code": 0,
       "codex_preflight": {
-        "passed": null,
-        "skipped": true
+        "profile_id": "codescope-codex-product-v1",
+        "passed": true,
+        "doctor_exit_code": 1,
+        "mcp_list_exit_code": 0,
+        "tool_preflight_exit_code": null,
+        "coverage_preflight_exit_code": null,
+        "missing_declared_filter_commands": [],
+        "forbidden_command_probe_exit_code": 0,
+        "forbidden_mcp_hits": [],
+        "forbidden_config_hits": [],
+        "visible_forbidden_commands": [],
+        "failure_reasons": [],
+        "warnings": [
+          "codex doctor exited 1; preserve the diagnostic, but use the isolated MCP/config probes and task execution as gates"
+        ],
+        "artifacts": {
+          "doctor": "sources/evaluations/workflow-sessions/prepare-beets-codescope-codex-product-v1-20260718T194524380516Z-p1505775/codex-doctor.txt",
+          "mcp_list": "sources/evaluations/workflow-sessions/prepare-beets-codescope-codex-product-v1-20260718T194524380516Z-p1505775/codex-mcp-list.txt",
+          "effective_config": "sources/evaluations/workflow-sessions/prepare-beets-codescope-codex-product-v1-20260718T194524380516Z-p1505775/codex-effective-config.toml",
+          "forbidden_command_visibility": "sources/evaluations/workflow-sessions/prepare-beets-codescope-codex-product-v1-20260718T194524380516Z-p1505775/forbidden-command-visibility.txt",
+          "tool_preflight": null,
+          "tool_coverage_preflight": null
+        }
       }
     },
     {
       "sequence_id": "fastify-lifecycle-sequence-v0",
       "profile_id": "codescope-codex-product-v1",
-      "protocol_path": "sources/evaluations/protocols/fastify-lifecycle-sequence-v0-codescope-codex-product-v1-39bd7e64891a.json",
-      "protocol_sha256": "cde2d006206e63bdf42dfde9e2080c108e64fd9d08558bb28d4a50eba8feb08e",
-      "raw_prepare_output_sha256": "139b374bc64281f96c5bd2e8b2fa83c96148dd506bcbc786e02480aebb18d6d9",
+      "protocol_path": "sources/evaluations/protocols/fastify-lifecycle-sequence-v0-codescope-codex-product-v1-bad1818ce43e.json",
+      "protocol_sha256": "15bea31c6dfe8f634f5d8a91e63ca31cb05fa05e2926edaf362e792b11780603",
+      "raw_prepare_output_sha256": "fbab7e7344af1bc6ae95f054c289dcc1ab90370825db4e108b0a295d2057153e",
       "prepared": true,
       "prepare_verification": {
         "passed": true,
@@ -133,6 +167,7 @@
         "composite_seed_delivery_passed": true
       },
       "host_integration": {
+        "profile_id": "codescope-codex-product-v1",
         "passed": true,
         "skipped": false,
         "install_exit_codes": [],
@@ -140,16 +175,19 @@
           0
         ],
         "missing_required_files": [],
-        "required_files": []
+        "required_files": [],
+        "artifacts": [
+          "sources/evaluations/workflow-sessions/prepare-fastify-codescope-codex-product-v1-20260718T194506084839Z-p1505583/tool-host-verify-1.txt"
+        ]
       },
       "mcp_handshake": {
-        "required": true,
-        "passed": true,
+        "errors": [],
         "initialize_passed": true,
-        "tools_list_passed": true,
-        "server_name": "rmcp",
+        "non_json_stdout_lines": [],
+        "passed": true,
         "protocol_version": "2025-06-18",
-        "tool_count": 37,
+        "server_name": "rmcp",
+        "stderr_present": true,
         "tool_names": [
           "api_changelog",
           "ask",
@@ -189,20 +227,45 @@
           "sync_git_history",
           "type_hierarchy"
         ],
-        "errors": []
+        "tools_list_passed": true,
+        "profile_id": "codescope-codex-product-v1",
+        "required": true,
+        "probe_exit_code": 0,
+        "tool_count": 37
       },
       "tool_warmup_exit_code": 0,
       "codex_preflight": {
-        "passed": null,
-        "skipped": true
+        "profile_id": "codescope-codex-product-v1",
+        "passed": true,
+        "doctor_exit_code": 1,
+        "mcp_list_exit_code": 0,
+        "tool_preflight_exit_code": null,
+        "coverage_preflight_exit_code": null,
+        "missing_declared_filter_commands": [],
+        "forbidden_command_probe_exit_code": 0,
+        "forbidden_mcp_hits": [],
+        "forbidden_config_hits": [],
+        "visible_forbidden_commands": [],
+        "failure_reasons": [],
+        "warnings": [
+          "codex doctor exited 1; preserve the diagnostic, but use the isolated MCP/config probes and task execution as gates"
+        ],
+        "artifacts": {
+          "doctor": "sources/evaluations/workflow-sessions/prepare-fastify-codescope-codex-product-v1-20260718T194506084839Z-p1505583/codex-doctor.txt",
+          "mcp_list": "sources/evaluations/workflow-sessions/prepare-fastify-codescope-codex-product-v1-20260718T194506084839Z-p1505583/codex-mcp-list.txt",
+          "effective_config": "sources/evaluations/workflow-sessions/prepare-fastify-codescope-codex-product-v1-20260718T194506084839Z-p1505583/codex-effective-config.toml",
+          "forbidden_command_visibility": "sources/evaluations/workflow-sessions/prepare-fastify-codescope-codex-product-v1-20260718T194506084839Z-p1505583/forbidden-command-visibility.txt",
+          "tool_preflight": null,
+          "tool_coverage_preflight": null
+        }
       }
     },
     {
       "sequence_id": "terraform-lifecycle-sequence-v0",
       "profile_id": "codescope-codex-product-v1",
-      "protocol_path": "sources/evaluations/protocols/terraform-lifecycle-sequence-v0-codescope-codex-product-v1-54ed29afa670.json",
-      "protocol_sha256": "ce2eedf4250adf864917d0285d4d77caf66c10d2cf1cad9af0a47736024a6761",
-      "raw_prepare_output_sha256": "ed0c1a3a7e7ec9fb573b173b953625285b0031929de104fcb1a8412621234a0b",
+      "protocol_path": "sources/evaluations/protocols/terraform-lifecycle-sequence-v0-codescope-codex-product-v1-9003a9fabec8.json",
+      "protocol_sha256": "10c2ab6c331d0af1affbf66af8ddcfdedd3ad567e5876f7cbb59c5fb3b9f0b4f",
+      "raw_prepare_output_sha256": "aaaf9e72d1299705f76ca92680a1703108671594e57a75b0f571e14ae62d7d7c",
       "prepared": true,
       "prepare_verification": {
         "passed": true,
@@ -211,6 +274,7 @@
         "composite_seed_delivery_passed": true
       },
       "host_integration": {
+        "profile_id": "codescope-codex-product-v1",
         "passed": true,
         "skipped": false,
         "install_exit_codes": [],
@@ -218,16 +282,19 @@
           0
         ],
         "missing_required_files": [],
-        "required_files": []
+        "required_files": [],
+        "artifacts": [
+          "sources/evaluations/workflow-sessions/prepare-terraform-codescope-codex-product-v1-20260718T194551245042Z-p1505960/tool-host-verify-1.txt"
+        ]
       },
       "mcp_handshake": {
-        "required": true,
-        "passed": true,
+        "errors": [],
         "initialize_passed": true,
-        "tools_list_passed": true,
-        "server_name": "rmcp",
+        "non_json_stdout_lines": [],
+        "passed": true,
         "protocol_version": "2025-06-18",
-        "tool_count": 37,
+        "server_name": "rmcp",
+        "stderr_present": true,
         "tool_names": [
           "api_changelog",
           "ask",
@@ -267,20 +334,45 @@
           "sync_git_history",
           "type_hierarchy"
         ],
-        "errors": []
+        "tools_list_passed": true,
+        "profile_id": "codescope-codex-product-v1",
+        "required": true,
+        "probe_exit_code": 0,
+        "tool_count": 37
       },
       "tool_warmup_exit_code": 0,
       "codex_preflight": {
-        "passed": null,
-        "skipped": true
+        "profile_id": "codescope-codex-product-v1",
+        "passed": true,
+        "doctor_exit_code": 1,
+        "mcp_list_exit_code": 0,
+        "tool_preflight_exit_code": null,
+        "coverage_preflight_exit_code": null,
+        "missing_declared_filter_commands": [],
+        "forbidden_command_probe_exit_code": 0,
+        "forbidden_mcp_hits": [],
+        "forbidden_config_hits": [],
+        "visible_forbidden_commands": [],
+        "failure_reasons": [],
+        "warnings": [
+          "codex doctor exited 1; preserve the diagnostic, but use the isolated MCP/config probes and task execution as gates"
+        ],
+        "artifacts": {
+          "doctor": "sources/evaluations/workflow-sessions/prepare-terraform-codescope-codex-product-v1-20260718T194551245042Z-p1505960/codex-doctor.txt",
+          "mcp_list": "sources/evaluations/workflow-sessions/prepare-terraform-codescope-codex-product-v1-20260718T194551245042Z-p1505960/codex-mcp-list.txt",
+          "effective_config": "sources/evaluations/workflow-sessions/prepare-terraform-codescope-codex-product-v1-20260718T194551245042Z-p1505960/codex-effective-config.toml",
+          "forbidden_command_visibility": "sources/evaluations/workflow-sessions/prepare-terraform-codescope-codex-product-v1-20260718T194551245042Z-p1505960/forbidden-command-visibility.txt",
+          "tool_preflight": null,
+          "tool_coverage_preflight": null
+        }
       }
     },
     {
       "sequence_id": "beets-lifecycle-sequence-v0",
       "profile_id": "integrated-leanctx-codex-hybrid-v1",
-      "protocol_path": "sources/evaluations/protocols/beets-lifecycle-sequence-v0-integrated-leanctx-codex-hybrid-v1-5984f6527e0c.json",
-      "protocol_sha256": "15bb032b85e11bf3ecc30cf324e84c1530acdd2b98e2482b468efb082efefa46",
-      "raw_prepare_output_sha256": "3da31226560411ea8ccc46d96ad2a1bf33db99294203ddc37fc9c8bb47abaa8a",
+      "protocol_path": "sources/evaluations/protocols/beets-lifecycle-sequence-v0-integrated-leanctx-codex-hybrid-v1-41c9f2a5f16f.json",
+      "protocol_sha256": "b16af3dfd6964f6691fd94d3e8e16ca57e7000eddc0f7eedfc98a04bc1e063c5",
+      "raw_prepare_output_sha256": "0f0529a3e012af567d1f2b41880644216477cfbbc0269f43361758e928245258",
       "prepared": true,
       "prepare_verification": {
         "passed": true,
@@ -289,6 +381,7 @@
         "composite_seed_delivery_passed": true
       },
       "host_integration": {
+        "profile_id": "integrated-leanctx-codex-hybrid-v1",
         "passed": true,
         "skipped": false,
         "install_exit_codes": [
@@ -299,22 +392,26 @@
         ],
         "missing_required_files": [],
         "required_files": [
-          "{codex_home}/config.toml",
-          "{codex_home}/hooks.json",
-          "{codex_home}/instructions.md",
-          "{codex_home}/skills/lean-ctx/SKILL.md",
-          "{repo}/AGENTS.md",
-          "{repo}/LEAN-CTX.md"
+          "/opt/data/repos/token-optimization-research/sources/evaluations/workflow-sessions/prepare-beets-integrated-leanctx-codex-hybrid-v1-20260718T194306816682Z-p1504176/codex-homes/integrated-leanctx-codex-hybrid-v1/config.toml",
+          "/opt/data/repos/token-optimization-research/sources/evaluations/workflow-sessions/prepare-beets-integrated-leanctx-codex-hybrid-v1-20260718T194306816682Z-p1504176/codex-homes/integrated-leanctx-codex-hybrid-v1/hooks.json",
+          "/opt/data/repos/token-optimization-research/sources/evaluations/workflow-sessions/prepare-beets-integrated-leanctx-codex-hybrid-v1-20260718T194306816682Z-p1504176/codex-homes/integrated-leanctx-codex-hybrid-v1/instructions.md",
+          "/opt/data/repos/token-optimization-research/sources/evaluations/workflow-sessions/prepare-beets-integrated-leanctx-codex-hybrid-v1-20260718T194306816682Z-p1504176/codex-homes/integrated-leanctx-codex-hybrid-v1/skills/lean-ctx/SKILL.md",
+          "/opt/data/repos/token-optimization-research/sources/evaluations/workflow-sessions/prepare-beets-integrated-leanctx-codex-hybrid-v1-20260718T194306816682Z-p1504176/project/repo/AGENTS.md",
+          "/opt/data/repos/token-optimization-research/sources/evaluations/workflow-sessions/prepare-beets-integrated-leanctx-codex-hybrid-v1-20260718T194306816682Z-p1504176/project/repo/LEAN-CTX.md"
+        ],
+        "artifacts": [
+          "sources/evaluations/workflow-sessions/prepare-beets-integrated-leanctx-codex-hybrid-v1-20260718T194306816682Z-p1504176/tool-host-install-1.txt",
+          "sources/evaluations/workflow-sessions/prepare-beets-integrated-leanctx-codex-hybrid-v1-20260718T194306816682Z-p1504176/tool-host-verify-1.txt"
         ]
       },
       "mcp_handshake": {
-        "required": true,
-        "passed": true,
+        "errors": [],
         "initialize_passed": true,
-        "tools_list_passed": true,
-        "server_name": "lean-ctx",
+        "non_json_stdout_lines": [],
+        "passed": true,
         "protocol_version": "2025-06-18",
-        "tool_count": 11,
+        "server_name": "lean-ctx",
+        "stderr_present": true,
         "tool_names": [
           "ctx_call",
           "ctx_compose",
@@ -328,20 +425,45 @@
           "ctx_tree",
           "shell"
         ],
-        "errors": []
+        "tools_list_passed": true,
+        "profile_id": "integrated-leanctx-codex-hybrid-v1",
+        "required": true,
+        "probe_exit_code": 0,
+        "tool_count": 11
       },
       "tool_warmup_exit_code": 0,
       "codex_preflight": {
-        "passed": null,
-        "skipped": true
+        "profile_id": "integrated-leanctx-codex-hybrid-v1",
+        "passed": true,
+        "doctor_exit_code": 1,
+        "mcp_list_exit_code": 0,
+        "tool_preflight_exit_code": null,
+        "coverage_preflight_exit_code": null,
+        "missing_declared_filter_commands": [],
+        "forbidden_command_probe_exit_code": 0,
+        "forbidden_mcp_hits": [],
+        "forbidden_config_hits": [],
+        "visible_forbidden_commands": [],
+        "failure_reasons": [],
+        "warnings": [
+          "codex doctor exited 1; preserve the diagnostic, but use the isolated MCP/config probes and task execution as gates"
+        ],
+        "artifacts": {
+          "doctor": "sources/evaluations/workflow-sessions/prepare-beets-integrated-leanctx-codex-hybrid-v1-20260718T194306816682Z-p1504176/codex-doctor.txt",
+          "mcp_list": "sources/evaluations/workflow-sessions/prepare-beets-integrated-leanctx-codex-hybrid-v1-20260718T194306816682Z-p1504176/codex-mcp-list.txt",
+          "effective_config": "sources/evaluations/workflow-sessions/prepare-beets-integrated-leanctx-codex-hybrid-v1-20260718T194306816682Z-p1504176/codex-effective-config.toml",
+          "forbidden_command_visibility": "sources/evaluations/workflow-sessions/prepare-beets-integrated-leanctx-codex-hybrid-v1-20260718T194306816682Z-p1504176/forbidden-command-visibility.txt",
+          "tool_preflight": null,
+          "tool_coverage_preflight": null
+        }
       }
     },
     {
       "sequence_id": "fastify-lifecycle-sequence-v0",
       "profile_id": "integrated-leanctx-codex-hybrid-v1",
-      "protocol_path": "sources/evaluations/protocols/fastify-lifecycle-sequence-v0-integrated-leanctx-codex-hybrid-v1-682a2af6cbb8.json",
-      "protocol_sha256": "eb196bba0bf4b00f7e6286918f55eb1ca4e01ce57e533684d6e30f07e733a5ae",
-      "raw_prepare_output_sha256": "e5a96a3f78db506b4af5ce54b4bf9e5f143763641f3d37f26f3af261b9edd913",
+      "protocol_path": "sources/evaluations/protocols/fastify-lifecycle-sequence-v0-integrated-leanctx-codex-hybrid-v1-60d7ae5d39db.json",
+      "protocol_sha256": "4d273971535679c1086f238a5bf18a44c5db0d33bde53be79de123b8c7cae697",
+      "raw_prepare_output_sha256": "7bab36dbade9d7ef7f890d8bb6e7e6db46da02d5bcb1c123f4a3cc5e5299a0a7",
       "prepared": true,
       "prepare_verification": {
         "passed": true,
@@ -350,6 +472,7 @@
         "composite_seed_delivery_passed": true
       },
       "host_integration": {
+        "profile_id": "integrated-leanctx-codex-hybrid-v1",
         "passed": true,
         "skipped": false,
         "install_exit_codes": [
@@ -360,22 +483,26 @@
         ],
         "missing_required_files": [],
         "required_files": [
-          "{codex_home}/config.toml",
-          "{codex_home}/hooks.json",
-          "{codex_home}/instructions.md",
-          "{codex_home}/skills/lean-ctx/SKILL.md",
-          "{repo}/AGENTS.md",
-          "{repo}/LEAN-CTX.md"
+          "/opt/data/repos/token-optimization-research/sources/evaluations/workflow-sessions/prepare-fastify-integrated-leanctx-codex-hybrid-v1-20260718T194255984539Z-p1503969/codex-homes/integrated-leanctx-codex-hybrid-v1/config.toml",
+          "/opt/data/repos/token-optimization-research/sources/evaluations/workflow-sessions/prepare-fastify-integrated-leanctx-codex-hybrid-v1-20260718T194255984539Z-p1503969/codex-homes/integrated-leanctx-codex-hybrid-v1/hooks.json",
+          "/opt/data/repos/token-optimization-research/sources/evaluations/workflow-sessions/prepare-fastify-integrated-leanctx-codex-hybrid-v1-20260718T194255984539Z-p1503969/codex-homes/integrated-leanctx-codex-hybrid-v1/instructions.md",
+          "/opt/data/repos/token-optimization-research/sources/evaluations/workflow-sessions/prepare-fastify-integrated-leanctx-codex-hybrid-v1-20260718T194255984539Z-p1503969/codex-homes/integrated-leanctx-codex-hybrid-v1/skills/lean-ctx/SKILL.md",
+          "/opt/data/repos/token-optimization-research/sources/evaluations/workflow-sessions/prepare-fastify-integrated-leanctx-codex-hybrid-v1-20260718T194255984539Z-p1503969/project/repo/AGENTS.md",
+          "/opt/data/repos/token-optimization-research/sources/evaluations/workflow-sessions/prepare-fastify-integrated-leanctx-codex-hybrid-v1-20260718T194255984539Z-p1503969/project/repo/LEAN-CTX.md"
+        ],
+        "artifacts": [
+          "sources/evaluations/workflow-sessions/prepare-fastify-integrated-leanctx-codex-hybrid-v1-20260718T194255984539Z-p1503969/tool-host-install-1.txt",
+          "sources/evaluations/workflow-sessions/prepare-fastify-integrated-leanctx-codex-hybrid-v1-20260718T194255984539Z-p1503969/tool-host-verify-1.txt"
         ]
       },
       "mcp_handshake": {
-        "required": true,
-        "passed": true,
+        "errors": [],
         "initialize_passed": true,
-        "tools_list_passed": true,
-        "server_name": "lean-ctx",
+        "non_json_stdout_lines": [],
+        "passed": true,
         "protocol_version": "2025-06-18",
-        "tool_count": 11,
+        "server_name": "lean-ctx",
+        "stderr_present": true,
         "tool_names": [
           "ctx_call",
           "ctx_compose",
@@ -389,20 +516,45 @@
           "ctx_tree",
           "shell"
         ],
-        "errors": []
+        "tools_list_passed": true,
+        "profile_id": "integrated-leanctx-codex-hybrid-v1",
+        "required": true,
+        "probe_exit_code": 0,
+        "tool_count": 11
       },
       "tool_warmup_exit_code": 0,
       "codex_preflight": {
-        "passed": null,
-        "skipped": true
+        "profile_id": "integrated-leanctx-codex-hybrid-v1",
+        "passed": true,
+        "doctor_exit_code": 1,
+        "mcp_list_exit_code": 0,
+        "tool_preflight_exit_code": null,
+        "coverage_preflight_exit_code": null,
+        "missing_declared_filter_commands": [],
+        "forbidden_command_probe_exit_code": 0,
+        "forbidden_mcp_hits": [],
+        "forbidden_config_hits": [],
+        "visible_forbidden_commands": [],
+        "failure_reasons": [],
+        "warnings": [
+          "codex doctor exited 1; preserve the diagnostic, but use the isolated MCP/config probes and task execution as gates"
+        ],
+        "artifacts": {
+          "doctor": "sources/evaluations/workflow-sessions/prepare-fastify-integrated-leanctx-codex-hybrid-v1-20260718T194255984539Z-p1503969/codex-doctor.txt",
+          "mcp_list": "sources/evaluations/workflow-sessions/prepare-fastify-integrated-leanctx-codex-hybrid-v1-20260718T194255984539Z-p1503969/codex-mcp-list.txt",
+          "effective_config": "sources/evaluations/workflow-sessions/prepare-fastify-integrated-leanctx-codex-hybrid-v1-20260718T194255984539Z-p1503969/codex-effective-config.toml",
+          "forbidden_command_visibility": "sources/evaluations/workflow-sessions/prepare-fastify-integrated-leanctx-codex-hybrid-v1-20260718T194255984539Z-p1503969/forbidden-command-visibility.txt",
+          "tool_preflight": null,
+          "tool_coverage_preflight": null
+        }
       }
     },
     {
       "sequence_id": "terraform-lifecycle-sequence-v0",
       "profile_id": "integrated-leanctx-codex-hybrid-v1",
-      "protocol_path": "sources/evaluations/protocols/terraform-lifecycle-sequence-v0-integrated-leanctx-codex-hybrid-v1-9901f9150240.json",
-      "protocol_sha256": "f46c870a7ef89ea161c681e4853367f5a453a52d0927c29fa6ae60cc5a8bb45e",
-      "raw_prepare_output_sha256": "3a2e0f90dee5b4cf246be9295d0aa15d1fcc0b13840b37cdc1e84771a3513f33",
+      "protocol_path": "sources/evaluations/protocols/terraform-lifecycle-sequence-v0-integrated-leanctx-codex-hybrid-v1-7fb12c8a8181.json",
+      "protocol_sha256": "f62fce7f798ec311a0ec496f79c231de593715a3b1bdcd0c65b0e7920cd4e50a",
+      "raw_prepare_output_sha256": "f0ff1262cb2ef35222f2c53d2a12ba41a60e004173f7edaf687b4d87408cf009",
       "prepared": true,
       "prepare_verification": {
         "passed": true,
@@ -411,6 +563,7 @@
         "composite_seed_delivery_passed": true
       },
       "host_integration": {
+        "profile_id": "integrated-leanctx-codex-hybrid-v1",
         "passed": true,
         "skipped": false,
         "install_exit_codes": [
@@ -421,22 +574,26 @@
         ],
         "missing_required_files": [],
         "required_files": [
-          "{codex_home}/config.toml",
-          "{codex_home}/hooks.json",
-          "{codex_home}/instructions.md",
-          "{codex_home}/skills/lean-ctx/SKILL.md",
-          "{repo}/AGENTS.md",
-          "{repo}/LEAN-CTX.md"
+          "/opt/data/repos/token-optimization-research/sources/evaluations/workflow-sessions/prepare-terraform-integrated-leanctx-codex-hybrid-v1-20260718T194320430668Z-p1504371/codex-homes/integrated-leanctx-codex-hybrid-v1/config.toml",
+          "/opt/data/repos/token-optimization-research/sources/evaluations/workflow-sessions/prepare-terraform-integrated-leanctx-codex-hybrid-v1-20260718T194320430668Z-p1504371/codex-homes/integrated-leanctx-codex-hybrid-v1/hooks.json",
+          "/opt/data/repos/token-optimization-research/sources/evaluations/workflow-sessions/prepare-terraform-integrated-leanctx-codex-hybrid-v1-20260718T194320430668Z-p1504371/codex-homes/integrated-leanctx-codex-hybrid-v1/instructions.md",
+          "/opt/data/repos/token-optimization-research/sources/evaluations/workflow-sessions/prepare-terraform-integrated-leanctx-codex-hybrid-v1-20260718T194320430668Z-p1504371/codex-homes/integrated-leanctx-codex-hybrid-v1/skills/lean-ctx/SKILL.md",
+          "/opt/data/repos/token-optimization-research/sources/evaluations/workflow-sessions/prepare-terraform-integrated-leanctx-codex-hybrid-v1-20260718T194320430668Z-p1504371/project/repo/AGENTS.md",
+          "/opt/data/repos/token-optimization-research/sources/evaluations/workflow-sessions/prepare-terraform-integrated-leanctx-codex-hybrid-v1-20260718T194320430668Z-p1504371/project/repo/LEAN-CTX.md"
+        ],
+        "artifacts": [
+          "sources/evaluations/workflow-sessions/prepare-terraform-integrated-leanctx-codex-hybrid-v1-20260718T194320430668Z-p1504371/tool-host-install-1.txt",
+          "sources/evaluations/workflow-sessions/prepare-terraform-integrated-leanctx-codex-hybrid-v1-20260718T194320430668Z-p1504371/tool-host-verify-1.txt"
         ]
       },
       "mcp_handshake": {
-        "required": true,
-        "passed": true,
+        "errors": [],
         "initialize_passed": true,
-        "tools_list_passed": true,
-        "server_name": "lean-ctx",
+        "non_json_stdout_lines": [],
+        "passed": true,
         "protocol_version": "2025-06-18",
-        "tool_count": 11,
+        "server_name": "lean-ctx",
+        "stderr_present": true,
         "tool_names": [
           "ctx_call",
           "ctx_compose",
@@ -450,20 +607,45 @@
           "ctx_tree",
           "shell"
         ],
-        "errors": []
+        "tools_list_passed": true,
+        "profile_id": "integrated-leanctx-codex-hybrid-v1",
+        "required": true,
+        "probe_exit_code": 0,
+        "tool_count": 11
       },
       "tool_warmup_exit_code": 0,
       "codex_preflight": {
-        "passed": null,
-        "skipped": true
+        "profile_id": "integrated-leanctx-codex-hybrid-v1",
+        "passed": true,
+        "doctor_exit_code": 1,
+        "mcp_list_exit_code": 0,
+        "tool_preflight_exit_code": null,
+        "coverage_preflight_exit_code": null,
+        "missing_declared_filter_commands": [],
+        "forbidden_command_probe_exit_code": 0,
+        "forbidden_mcp_hits": [],
+        "forbidden_config_hits": [],
+        "visible_forbidden_commands": [],
+        "failure_reasons": [],
+        "warnings": [
+          "codex doctor exited 1; preserve the diagnostic, but use the isolated MCP/config probes and task execution as gates"
+        ],
+        "artifacts": {
+          "doctor": "sources/evaluations/workflow-sessions/prepare-terraform-integrated-leanctx-codex-hybrid-v1-20260718T194320430668Z-p1504371/codex-doctor.txt",
+          "mcp_list": "sources/evaluations/workflow-sessions/prepare-terraform-integrated-leanctx-codex-hybrid-v1-20260718T194320430668Z-p1504371/codex-mcp-list.txt",
+          "effective_config": "sources/evaluations/workflow-sessions/prepare-terraform-integrated-leanctx-codex-hybrid-v1-20260718T194320430668Z-p1504371/codex-effective-config.toml",
+          "forbidden_command_visibility": "sources/evaluations/workflow-sessions/prepare-terraform-integrated-leanctx-codex-hybrid-v1-20260718T194320430668Z-p1504371/forbidden-command-visibility.txt",
+          "tool_preflight": null,
+          "tool_coverage_preflight": null
+        }
       }
     },
     {
       "sequence_id": "beets-lifecycle-sequence-v0",
       "profile_id": "integrated-token-savior-mcp-v1",
-      "protocol_path": "sources/evaluations/protocols/beets-lifecycle-sequence-v0-integrated-token-savior-mcp-v1-e415400dc608.json",
-      "protocol_sha256": "db138d715676526614b1e8b32b903421681142e60e1eebba9ccaf6af2dfd3288",
-      "raw_prepare_output_sha256": "d101624f12fe655300bb84fc210a3a70e912eb82f8f5f7bb8f947a779b632f9f",
+      "protocol_path": "sources/evaluations/protocols/beets-lifecycle-sequence-v0-integrated-token-savior-mcp-v1-fcbeeab9039b.json",
+      "protocol_sha256": "8c7a32ee97de094362a3539687c43417268e4ee5e0c1904225c5245a5e124aee",
+      "raw_prepare_output_sha256": "bc3f13f5171c6e14eba6113ffd1052715f6f73fcdefe9e35d02c9552d22a19a9",
       "prepared": true,
       "prepare_verification": {
         "passed": true,
@@ -472,21 +654,22 @@
         "composite_seed_delivery_passed": true
       },
       "host_integration": {
+        "profile_id": "integrated-token-savior-mcp-v1",
         "passed": true,
         "skipped": true,
         "install_exit_codes": [],
         "verify_exit_codes": [],
         "missing_required_files": [],
-        "required_files": []
+        "artifacts": []
       },
       "mcp_handshake": {
-        "required": true,
-        "passed": true,
+        "errors": [],
         "initialize_passed": true,
-        "tools_list_passed": true,
-        "server_name": "token-savior-recall",
+        "non_json_stdout_lines": [],
+        "passed": true,
         "protocol_version": "2025-06-18",
-        "tool_count": 15,
+        "server_name": "token-savior-recall",
+        "stderr_present": true,
         "tool_names": [
           "add_field_to_model",
           "analyze_config",
@@ -504,20 +687,45 @@
           "switch_project",
           "ts_search"
         ],
-        "errors": []
+        "tools_list_passed": true,
+        "profile_id": "integrated-token-savior-mcp-v1",
+        "required": true,
+        "probe_exit_code": 0,
+        "tool_count": 15
       },
       "tool_warmup_exit_code": 0,
       "codex_preflight": {
-        "passed": null,
-        "skipped": true
+        "profile_id": "integrated-token-savior-mcp-v1",
+        "passed": true,
+        "doctor_exit_code": 1,
+        "mcp_list_exit_code": 0,
+        "tool_preflight_exit_code": null,
+        "coverage_preflight_exit_code": null,
+        "missing_declared_filter_commands": [],
+        "forbidden_command_probe_exit_code": 0,
+        "forbidden_mcp_hits": [],
+        "forbidden_config_hits": [],
+        "visible_forbidden_commands": [],
+        "failure_reasons": [],
+        "warnings": [
+          "codex doctor exited 1; preserve the diagnostic, but use the isolated MCP/config probes and task execution as gates"
+        ],
+        "artifacts": {
+          "doctor": "sources/evaluations/workflow-sessions/prepare-beets-integrated-token-savior-mcp-v1-20260718T200945842110Z-p1508983/codex-doctor.txt",
+          "mcp_list": "sources/evaluations/workflow-sessions/prepare-beets-integrated-token-savior-mcp-v1-20260718T200945842110Z-p1508983/codex-mcp-list.txt",
+          "effective_config": "sources/evaluations/workflow-sessions/prepare-beets-integrated-token-savior-mcp-v1-20260718T200945842110Z-p1508983/codex-effective-config.toml",
+          "forbidden_command_visibility": "sources/evaluations/workflow-sessions/prepare-beets-integrated-token-savior-mcp-v1-20260718T200945842110Z-p1508983/forbidden-command-visibility.txt",
+          "tool_preflight": null,
+          "tool_coverage_preflight": null
+        }
       }
     },
     {
       "sequence_id": "fastify-lifecycle-sequence-v0",
       "profile_id": "integrated-token-savior-mcp-v1",
-      "protocol_path": "sources/evaluations/protocols/fastify-lifecycle-sequence-v0-integrated-token-savior-mcp-v1-dc56353c172d.json",
-      "protocol_sha256": "c329e735c8e4a4d41cea6d4da5661357d75c6ca3a702a8e8f73129aafde60870",
-      "raw_prepare_output_sha256": "0a3ea5354b82bd8d35f78bf6a1ab3e927da6842c3909001b8ea85363b4dbaace",
+      "protocol_path": "sources/evaluations/protocols/fastify-lifecycle-sequence-v0-integrated-token-savior-mcp-v1-534820995d73.json",
+      "protocol_sha256": "da9e626688ded1000a225be1be33974163a279baf5a21f607c962d082b3b8d08",
+      "raw_prepare_output_sha256": "4d5d0d320f5264f592bc6324292532e540f090985f99bed9b4ac562d4dea5921",
       "prepared": true,
       "prepare_verification": {
         "passed": true,
@@ -526,21 +734,22 @@
         "composite_seed_delivery_passed": true
       },
       "host_integration": {
+        "profile_id": "integrated-token-savior-mcp-v1",
         "passed": true,
         "skipped": true,
         "install_exit_codes": [],
         "verify_exit_codes": [],
         "missing_required_files": [],
-        "required_files": []
+        "artifacts": []
       },
       "mcp_handshake": {
-        "required": true,
-        "passed": true,
+        "errors": [],
         "initialize_passed": true,
-        "tools_list_passed": true,
-        "server_name": "token-savior-recall",
+        "non_json_stdout_lines": [],
+        "passed": true,
         "protocol_version": "2025-06-18",
-        "tool_count": 15,
+        "server_name": "token-savior-recall",
+        "stderr_present": true,
         "tool_names": [
           "add_field_to_model",
           "analyze_config",
@@ -558,20 +767,45 @@
           "switch_project",
           "ts_search"
         ],
-        "errors": []
+        "tools_list_passed": true,
+        "profile_id": "integrated-token-savior-mcp-v1",
+        "required": true,
+        "probe_exit_code": 0,
+        "tool_count": 15
       },
       "tool_warmup_exit_code": 0,
       "codex_preflight": {
-        "passed": null,
-        "skipped": true
+        "profile_id": "integrated-token-savior-mcp-v1",
+        "passed": true,
+        "doctor_exit_code": 1,
+        "mcp_list_exit_code": 0,
+        "tool_preflight_exit_code": null,
+        "coverage_preflight_exit_code": null,
+        "missing_declared_filter_commands": [],
+        "forbidden_command_probe_exit_code": 0,
+        "forbidden_mcp_hits": [],
+        "forbidden_config_hits": [],
+        "visible_forbidden_commands": [],
+        "failure_reasons": [],
+        "warnings": [
+          "codex doctor exited 1; preserve the diagnostic, but use the isolated MCP/config probes and task execution as gates"
+        ],
+        "artifacts": {
+          "doctor": "sources/evaluations/workflow-sessions/prepare-fastify-integrated-token-savior-mcp-v1-20260718T200937833169Z-p1508805/codex-doctor.txt",
+          "mcp_list": "sources/evaluations/workflow-sessions/prepare-fastify-integrated-token-savior-mcp-v1-20260718T200937833169Z-p1508805/codex-mcp-list.txt",
+          "effective_config": "sources/evaluations/workflow-sessions/prepare-fastify-integrated-token-savior-mcp-v1-20260718T200937833169Z-p1508805/codex-effective-config.toml",
+          "forbidden_command_visibility": "sources/evaluations/workflow-sessions/prepare-fastify-integrated-token-savior-mcp-v1-20260718T200937833169Z-p1508805/forbidden-command-visibility.txt",
+          "tool_preflight": null,
+          "tool_coverage_preflight": null
+        }
       }
     },
     {
       "sequence_id": "terraform-lifecycle-sequence-v0",
       "profile_id": "integrated-token-savior-mcp-v1",
-      "protocol_path": "sources/evaluations/protocols/terraform-lifecycle-sequence-v0-integrated-token-savior-mcp-v1-635231890f37.json",
-      "protocol_sha256": "ec11b5980ebfb7b7d3574fac6a6959d04856b29b4535321d6c4289cf87b2e6e4",
-      "raw_prepare_output_sha256": "ea1915219a5a8044f43103fa23265a90ee7e8d9e08ae0a92b301a80b61361ba1",
+      "protocol_path": "sources/evaluations/protocols/terraform-lifecycle-sequence-v0-integrated-token-savior-mcp-v1-ba407b99a736.json",
+      "protocol_sha256": "b5c85b1b3fa514f99eb1729877cd46f72f8c1927e564400be81527cabb9f0224",
+      "raw_prepare_output_sha256": "a605a52515a99df3a60f1d007785bc550e9ec78bd7bb1b81cf940ca955dfbab8",
       "prepared": true,
       "prepare_verification": {
         "passed": true,
@@ -580,21 +814,22 @@
         "composite_seed_delivery_passed": true
       },
       "host_integration": {
+        "profile_id": "integrated-token-savior-mcp-v1",
         "passed": true,
         "skipped": true,
         "install_exit_codes": [],
         "verify_exit_codes": [],
         "missing_required_files": [],
-        "required_files": []
+        "artifacts": []
       },
       "mcp_handshake": {
-        "required": true,
-        "passed": true,
+        "errors": [],
         "initialize_passed": true,
-        "tools_list_passed": true,
-        "server_name": "token-savior-recall",
+        "non_json_stdout_lines": [],
+        "passed": true,
         "protocol_version": "2025-06-18",
-        "tool_count": 15,
+        "server_name": "token-savior-recall",
+        "stderr_present": true,
         "tool_names": [
           "add_field_to_model",
           "analyze_config",
@@ -612,20 +847,45 @@
           "switch_project",
           "ts_search"
         ],
-        "errors": []
+        "tools_list_passed": true,
+        "profile_id": "integrated-token-savior-mcp-v1",
+        "required": true,
+        "probe_exit_code": 0,
+        "tool_count": 15
       },
       "tool_warmup_exit_code": 0,
       "codex_preflight": {
-        "passed": null,
-        "skipped": true
+        "profile_id": "integrated-token-savior-mcp-v1",
+        "passed": true,
+        "doctor_exit_code": 1,
+        "mcp_list_exit_code": 0,
+        "tool_preflight_exit_code": null,
+        "coverage_preflight_exit_code": null,
+        "missing_declared_filter_commands": [],
+        "forbidden_command_probe_exit_code": 0,
+        "forbidden_mcp_hits": [],
+        "forbidden_config_hits": [],
+        "visible_forbidden_commands": [],
+        "failure_reasons": [],
+        "warnings": [
+          "codex doctor exited 1; preserve the diagnostic, but use the isolated MCP/config probes and task execution as gates"
+        ],
+        "artifacts": {
+          "doctor": "sources/evaluations/workflow-sessions/prepare-terraform-integrated-token-savior-mcp-v1-20260718T200955075867Z-p1509150/codex-doctor.txt",
+          "mcp_list": "sources/evaluations/workflow-sessions/prepare-terraform-integrated-token-savior-mcp-v1-20260718T200955075867Z-p1509150/codex-mcp-list.txt",
+          "effective_config": "sources/evaluations/workflow-sessions/prepare-terraform-integrated-token-savior-mcp-v1-20260718T200955075867Z-p1509150/codex-effective-config.toml",
+          "forbidden_command_visibility": "sources/evaluations/workflow-sessions/prepare-terraform-integrated-token-savior-mcp-v1-20260718T200955075867Z-p1509150/forbidden-command-visibility.txt",
+          "tool_preflight": null,
+          "tool_coverage_preflight": null
+        }
       }
     },
     {
       "sequence_id": "beets-lifecycle-sequence-v0",
       "profile_id": "retrieval-cartog-mcp-v1",
-      "protocol_path": "sources/evaluations/protocols/beets-lifecycle-sequence-v0-retrieval-cartog-mcp-v1-ca544bf8706d.json",
-      "protocol_sha256": "acea2dab10d03169f8b7823cb0dde210f5254950352e208e74e9ed950a6fe726",
-      "raw_prepare_output_sha256": "ab954c9e6be2ea5be7faaa019ec786325b834e3a349b0d60bb754be2bf47e8a7",
+      "protocol_path": "sources/evaluations/protocols/beets-lifecycle-sequence-v0-retrieval-cartog-mcp-v1-e3fc347045e9.json",
+      "protocol_sha256": "b6caa70b9795868f7e37ff75fdc8ccc85a69ff22b930bbd9e02f34194adc1562",
+      "raw_prepare_output_sha256": "8c83640f1c025bbf45a0e265a5b20e919b1c53260c5fbc2636336f53c00b9278",
       "prepared": true,
       "prepare_verification": {
         "passed": true,
@@ -634,21 +894,22 @@
         "composite_seed_delivery_passed": true
       },
       "host_integration": {
+        "profile_id": "retrieval-cartog-mcp-v1",
         "passed": true,
         "skipped": true,
         "install_exit_codes": [],
         "verify_exit_codes": [],
         "missing_required_files": [],
-        "required_files": []
+        "artifacts": []
       },
       "mcp_handshake": {
-        "required": true,
-        "passed": true,
+        "errors": [],
         "initialize_passed": true,
-        "tools_list_passed": true,
-        "server_name": "cartog",
+        "non_json_stdout_lines": [],
+        "passed": true,
         "protocol_version": "2025-06-18",
-        "tool_count": 16,
+        "server_name": "cartog",
+        "stderr_present": false,
         "tool_names": [
           "cartog_callees",
           "cartog_changes",
@@ -667,20 +928,45 @@
           "cartog_trace",
           "cartog_update"
         ],
-        "errors": []
+        "tools_list_passed": true,
+        "profile_id": "retrieval-cartog-mcp-v1",
+        "required": true,
+        "probe_exit_code": 0,
+        "tool_count": 16
       },
       "tool_warmup_exit_code": 0,
       "codex_preflight": {
-        "passed": null,
-        "skipped": true
+        "profile_id": "retrieval-cartog-mcp-v1",
+        "passed": true,
+        "doctor_exit_code": 1,
+        "mcp_list_exit_code": 0,
+        "tool_preflight_exit_code": 0,
+        "coverage_preflight_exit_code": null,
+        "missing_declared_filter_commands": [],
+        "forbidden_command_probe_exit_code": 0,
+        "forbidden_mcp_hits": [],
+        "forbidden_config_hits": [],
+        "visible_forbidden_commands": [],
+        "failure_reasons": [],
+        "warnings": [
+          "codex doctor exited 1; preserve the diagnostic, but use the isolated MCP/config probes and task execution as gates"
+        ],
+        "artifacts": {
+          "doctor": "sources/evaluations/workflow-sessions/prepare-beets-retrieval-cartog-mcp-v1-20260718T194410389484Z-p1504991/codex-doctor.txt",
+          "mcp_list": "sources/evaluations/workflow-sessions/prepare-beets-retrieval-cartog-mcp-v1-20260718T194410389484Z-p1504991/codex-mcp-list.txt",
+          "effective_config": "sources/evaluations/workflow-sessions/prepare-beets-retrieval-cartog-mcp-v1-20260718T194410389484Z-p1504991/codex-effective-config.toml",
+          "forbidden_command_visibility": "sources/evaluations/workflow-sessions/prepare-beets-retrieval-cartog-mcp-v1-20260718T194410389484Z-p1504991/forbidden-command-visibility.txt",
+          "tool_preflight": "sources/evaluations/workflow-sessions/prepare-beets-retrieval-cartog-mcp-v1-20260718T194410389484Z-p1504991/tool-preflight.txt",
+          "tool_coverage_preflight": null
+        }
       }
     },
     {
       "sequence_id": "fastify-lifecycle-sequence-v0",
       "profile_id": "retrieval-cartog-mcp-v1",
-      "protocol_path": "sources/evaluations/protocols/fastify-lifecycle-sequence-v0-retrieval-cartog-mcp-v1-4aa834b1a1c3.json",
-      "protocol_sha256": "32f76fd2b9eb372acd4120cb380226fe456c704e2f5b2b60ced9cff1ca447ad6",
-      "raw_prepare_output_sha256": "9a85a8cbb0022d9cc10fe4ebe8facb4356c997916b49960938654520cc69e955",
+      "protocol_path": "sources/evaluations/protocols/fastify-lifecycle-sequence-v0-retrieval-cartog-mcp-v1-5873bcda58a4.json",
+      "protocol_sha256": "8e35fc8621d43c4ac9fc61e4c6ca0cc47129bbcf58708a6d7f2b417f0c18439b",
+      "raw_prepare_output_sha256": "0099710a5444ed915d2a38981274ada4803936c4f10301c4a7b6af6986a5ff85",
       "prepared": true,
       "prepare_verification": {
         "passed": true,
@@ -689,21 +975,22 @@
         "composite_seed_delivery_passed": true
       },
       "host_integration": {
+        "profile_id": "retrieval-cartog-mcp-v1",
         "passed": true,
         "skipped": true,
         "install_exit_codes": [],
         "verify_exit_codes": [],
         "missing_required_files": [],
-        "required_files": []
+        "artifacts": []
       },
       "mcp_handshake": {
-        "required": true,
-        "passed": true,
+        "errors": [],
         "initialize_passed": true,
-        "tools_list_passed": true,
-        "server_name": "cartog",
+        "non_json_stdout_lines": [],
+        "passed": true,
         "protocol_version": "2025-06-18",
-        "tool_count": 16,
+        "server_name": "cartog",
+        "stderr_present": false,
         "tool_names": [
           "cartog_callees",
           "cartog_changes",
@@ -722,20 +1009,45 @@
           "cartog_trace",
           "cartog_update"
         ],
-        "errors": []
+        "tools_list_passed": true,
+        "profile_id": "retrieval-cartog-mcp-v1",
+        "required": true,
+        "probe_exit_code": 0,
+        "tool_count": 16
       },
       "tool_warmup_exit_code": 0,
       "codex_preflight": {
-        "passed": null,
-        "skipped": true
+        "profile_id": "retrieval-cartog-mcp-v1",
+        "passed": true,
+        "doctor_exit_code": 1,
+        "mcp_list_exit_code": 0,
+        "tool_preflight_exit_code": 0,
+        "coverage_preflight_exit_code": null,
+        "missing_declared_filter_commands": [],
+        "forbidden_command_probe_exit_code": 0,
+        "forbidden_mcp_hits": [],
+        "forbidden_config_hits": [],
+        "visible_forbidden_commands": [],
+        "failure_reasons": [],
+        "warnings": [
+          "codex doctor exited 1; preserve the diagnostic, but use the isolated MCP/config probes and task execution as gates"
+        ],
+        "artifacts": {
+          "doctor": "sources/evaluations/workflow-sessions/prepare-fastify-retrieval-cartog-mcp-v1-20260718T194355835151Z-p1504797/codex-doctor.txt",
+          "mcp_list": "sources/evaluations/workflow-sessions/prepare-fastify-retrieval-cartog-mcp-v1-20260718T194355835151Z-p1504797/codex-mcp-list.txt",
+          "effective_config": "sources/evaluations/workflow-sessions/prepare-fastify-retrieval-cartog-mcp-v1-20260718T194355835151Z-p1504797/codex-effective-config.toml",
+          "forbidden_command_visibility": "sources/evaluations/workflow-sessions/prepare-fastify-retrieval-cartog-mcp-v1-20260718T194355835151Z-p1504797/forbidden-command-visibility.txt",
+          "tool_preflight": "sources/evaluations/workflow-sessions/prepare-fastify-retrieval-cartog-mcp-v1-20260718T194355835151Z-p1504797/tool-preflight.txt",
+          "tool_coverage_preflight": null
+        }
       }
     },
     {
       "sequence_id": "terraform-lifecycle-sequence-v0",
       "profile_id": "retrieval-cartog-mcp-v1",
-      "protocol_path": "sources/evaluations/protocols/terraform-lifecycle-sequence-v0-retrieval-cartog-mcp-v1-51211bd1b419.json",
-      "protocol_sha256": "bbc3a6e804cb71e2b7f787a3da89b683c87a94341c7b36b041a605a3ecb7049f",
-      "raw_prepare_output_sha256": "cf22f4c0b9f9f203a3375ca3fe7e0113952b8d3a6f632cc2a1b7ca53391134ab",
+      "protocol_path": "sources/evaluations/protocols/terraform-lifecycle-sequence-v0-retrieval-cartog-mcp-v1-27f2b36e684d.json",
+      "protocol_sha256": "fd205a7d235d7e96dc7a5db6e43573f2c1ce68f99194e1686c8aa11afdabfc9e",
+      "raw_prepare_output_sha256": "ab73198814baa6d413f86a9bb20caa3022a4ab407dd76579c2e150954d6769ae",
       "prepared": true,
       "prepare_verification": {
         "passed": true,
@@ -744,21 +1056,22 @@
         "composite_seed_delivery_passed": true
       },
       "host_integration": {
+        "profile_id": "retrieval-cartog-mcp-v1",
         "passed": true,
         "skipped": true,
         "install_exit_codes": [],
         "verify_exit_codes": [],
         "missing_required_files": [],
-        "required_files": []
+        "artifacts": []
       },
       "mcp_handshake": {
-        "required": true,
-        "passed": true,
+        "errors": [],
         "initialize_passed": true,
-        "tools_list_passed": true,
-        "server_name": "cartog",
+        "non_json_stdout_lines": [],
+        "passed": true,
         "protocol_version": "2025-06-18",
-        "tool_count": 16,
+        "server_name": "cartog",
+        "stderr_present": false,
         "tool_names": [
           "cartog_callees",
           "cartog_changes",
@@ -777,20 +1090,45 @@
           "cartog_trace",
           "cartog_update"
         ],
-        "errors": []
+        "tools_list_passed": true,
+        "profile_id": "retrieval-cartog-mcp-v1",
+        "required": true,
+        "probe_exit_code": 0,
+        "tool_count": 16
       },
       "tool_warmup_exit_code": 0,
       "codex_preflight": {
-        "passed": null,
-        "skipped": true
+        "profile_id": "retrieval-cartog-mcp-v1",
+        "passed": true,
+        "doctor_exit_code": 1,
+        "mcp_list_exit_code": 0,
+        "tool_preflight_exit_code": 0,
+        "coverage_preflight_exit_code": null,
+        "missing_declared_filter_commands": [],
+        "forbidden_command_probe_exit_code": 0,
+        "forbidden_mcp_hits": [],
+        "forbidden_config_hits": [],
+        "visible_forbidden_commands": [],
+        "failure_reasons": [],
+        "warnings": [
+          "codex doctor exited 1; preserve the diagnostic, but use the isolated MCP/config probes and task execution as gates"
+        ],
+        "artifacts": {
+          "doctor": "sources/evaluations/workflow-sessions/prepare-terraform-retrieval-cartog-mcp-v1-20260718T194426865792Z-p1505175/codex-doctor.txt",
+          "mcp_list": "sources/evaluations/workflow-sessions/prepare-terraform-retrieval-cartog-mcp-v1-20260718T194426865792Z-p1505175/codex-mcp-list.txt",
+          "effective_config": "sources/evaluations/workflow-sessions/prepare-terraform-retrieval-cartog-mcp-v1-20260718T194426865792Z-p1505175/codex-effective-config.toml",
+          "forbidden_command_visibility": "sources/evaluations/workflow-sessions/prepare-terraform-retrieval-cartog-mcp-v1-20260718T194426865792Z-p1505175/forbidden-command-visibility.txt",
+          "tool_preflight": "sources/evaluations/workflow-sessions/prepare-terraform-retrieval-cartog-mcp-v1-20260718T194426865792Z-p1505175/tool-preflight.txt",
+          "tool_coverage_preflight": null
+        }
       }
     },
     {
       "sequence_id": "beets-lifecycle-sequence-v0",
       "profile_id": "retrieval-codegraph-codex-mcp-v1",
-      "protocol_path": "sources/evaluations/protocols/beets-lifecycle-sequence-v0-retrieval-codegraph-codex-mcp-v1-30852b9da7b0.json",
-      "protocol_sha256": "dd9ebe7c4977c7c61fd184cb8b9156c4081bb9fc5245c2deeb24513631d8cdbb",
-      "raw_prepare_output_sha256": "a6b98fd9d800a46863af92f9873d5639eedacdef0ab8585d9500a989c0dba382",
+      "protocol_path": "sources/evaluations/protocols/beets-lifecycle-sequence-v0-retrieval-codegraph-codex-mcp-v1-e7cb646bc84b.json",
+      "protocol_sha256": "ebb05353709cf19aa87158dc867b14966915ef5911467ad94a15dfb1d5367467",
+      "raw_prepare_output_sha256": "07fb64ca78584d26fa47a965b4e62fae43f8512ea6febcf16a3b4a2837ad3c2e",
       "prepared": true,
       "prepare_verification": {
         "passed": true,
@@ -799,6 +1137,7 @@
         "composite_seed_delivery_passed": true
       },
       "host_integration": {
+        "profile_id": "retrieval-codegraph-codex-mcp-v1",
         "passed": true,
         "skipped": false,
         "install_exit_codes": [
@@ -809,35 +1148,64 @@
         ],
         "missing_required_files": [],
         "required_files": [
-          "{codex_home}/config.toml",
-          "{codex_home}/AGENTS.md"
+          "/opt/data/repos/token-optimization-research/sources/evaluations/workflow-sessions/prepare-beets-retrieval-codegraph-codex-mcp-v1-20260718T194119298921Z-p1503325/codex-homes/retrieval-codegraph-codex-mcp-v1/config.toml",
+          "/opt/data/repos/token-optimization-research/sources/evaluations/workflow-sessions/prepare-beets-retrieval-codegraph-codex-mcp-v1-20260718T194119298921Z-p1503325/codex-homes/retrieval-codegraph-codex-mcp-v1/AGENTS.md"
+        ],
+        "artifacts": [
+          "sources/evaluations/workflow-sessions/prepare-beets-retrieval-codegraph-codex-mcp-v1-20260718T194119298921Z-p1503325/tool-host-install-1.txt",
+          "sources/evaluations/workflow-sessions/prepare-beets-retrieval-codegraph-codex-mcp-v1-20260718T194119298921Z-p1503325/tool-host-verify-1.txt"
         ]
       },
       "mcp_handshake": {
-        "required": true,
-        "passed": true,
+        "errors": [],
         "initialize_passed": true,
-        "tools_list_passed": true,
-        "server_name": "codegraph",
+        "non_json_stdout_lines": [],
+        "passed": true,
         "protocol_version": "2024-11-05",
-        "tool_count": 1,
+        "server_name": "codegraph",
+        "stderr_present": false,
         "tool_names": [
           "codegraph_explore"
         ],
-        "errors": []
+        "tools_list_passed": true,
+        "profile_id": "retrieval-codegraph-codex-mcp-v1",
+        "required": true,
+        "probe_exit_code": 0,
+        "tool_count": 1
       },
       "tool_warmup_exit_code": 0,
       "codex_preflight": {
-        "passed": null,
-        "skipped": true
+        "profile_id": "retrieval-codegraph-codex-mcp-v1",
+        "passed": true,
+        "doctor_exit_code": 1,
+        "mcp_list_exit_code": 0,
+        "tool_preflight_exit_code": null,
+        "coverage_preflight_exit_code": null,
+        "missing_declared_filter_commands": [],
+        "forbidden_command_probe_exit_code": 0,
+        "forbidden_mcp_hits": [],
+        "forbidden_config_hits": [],
+        "visible_forbidden_commands": [],
+        "failure_reasons": [],
+        "warnings": [
+          "codex doctor exited 1; preserve the diagnostic, but use the isolated MCP/config probes and task execution as gates"
+        ],
+        "artifacts": {
+          "doctor": "sources/evaluations/workflow-sessions/prepare-beets-retrieval-codegraph-codex-mcp-v1-20260718T194119298921Z-p1503325/codex-doctor.txt",
+          "mcp_list": "sources/evaluations/workflow-sessions/prepare-beets-retrieval-codegraph-codex-mcp-v1-20260718T194119298921Z-p1503325/codex-mcp-list.txt",
+          "effective_config": "sources/evaluations/workflow-sessions/prepare-beets-retrieval-codegraph-codex-mcp-v1-20260718T194119298921Z-p1503325/codex-effective-config.toml",
+          "forbidden_command_visibility": "sources/evaluations/workflow-sessions/prepare-beets-retrieval-codegraph-codex-mcp-v1-20260718T194119298921Z-p1503325/forbidden-command-visibility.txt",
+          "tool_preflight": null,
+          "tool_coverage_preflight": null
+        }
       }
     },
     {
       "sequence_id": "fastify-lifecycle-sequence-v0",
       "profile_id": "retrieval-codegraph-codex-mcp-v1",
-      "protocol_path": "sources/evaluations/protocols/fastify-lifecycle-sequence-v0-retrieval-codegraph-codex-mcp-v1-0021543ebf0a.json",
-      "protocol_sha256": "c5646bd1fd331b782ab9510ecfb330b3b8f69443edf882aaa017a388b8064751",
-      "raw_prepare_output_sha256": "93a52bbadb0863752c2cb0e3994eec6cc7c2a40799fcbec05817286b79b3e5e7",
+      "protocol_path": "sources/evaluations/protocols/fastify-lifecycle-sequence-v0-retrieval-codegraph-codex-mcp-v1-418b9383d0e7.json",
+      "protocol_sha256": "4f5dcbbd603eb4603173912f8469a6c0661872ef33ca8ec92ccf47af48e5efcb",
+      "raw_prepare_output_sha256": "9aa42276903fadf049036b67c025dca53bafa28793d27a40a20a23f16e0bf5f8",
       "prepared": true,
       "prepare_verification": {
         "passed": true,
@@ -846,6 +1214,7 @@
         "composite_seed_delivery_passed": true
       },
       "host_integration": {
+        "profile_id": "retrieval-codegraph-codex-mcp-v1",
         "passed": true,
         "skipped": false,
         "install_exit_codes": [
@@ -856,35 +1225,64 @@
         ],
         "missing_required_files": [],
         "required_files": [
-          "{codex_home}/config.toml",
-          "{codex_home}/AGENTS.md"
+          "/opt/data/repos/token-optimization-research/sources/evaluations/workflow-sessions/prepare-fastify-retrieval-codegraph-codex-mcp-v1-20260718T194104858811Z-p1503107/codex-homes/retrieval-codegraph-codex-mcp-v1/config.toml",
+          "/opt/data/repos/token-optimization-research/sources/evaluations/workflow-sessions/prepare-fastify-retrieval-codegraph-codex-mcp-v1-20260718T194104858811Z-p1503107/codex-homes/retrieval-codegraph-codex-mcp-v1/AGENTS.md"
+        ],
+        "artifacts": [
+          "sources/evaluations/workflow-sessions/prepare-fastify-retrieval-codegraph-codex-mcp-v1-20260718T194104858811Z-p1503107/tool-host-install-1.txt",
+          "sources/evaluations/workflow-sessions/prepare-fastify-retrieval-codegraph-codex-mcp-v1-20260718T194104858811Z-p1503107/tool-host-verify-1.txt"
         ]
       },
       "mcp_handshake": {
-        "required": true,
-        "passed": true,
+        "errors": [],
         "initialize_passed": true,
-        "tools_list_passed": true,
-        "server_name": "codegraph",
+        "non_json_stdout_lines": [],
+        "passed": true,
         "protocol_version": "2024-11-05",
-        "tool_count": 1,
+        "server_name": "codegraph",
+        "stderr_present": false,
         "tool_names": [
           "codegraph_explore"
         ],
-        "errors": []
+        "tools_list_passed": true,
+        "profile_id": "retrieval-codegraph-codex-mcp-v1",
+        "required": true,
+        "probe_exit_code": 0,
+        "tool_count": 1
       },
       "tool_warmup_exit_code": 0,
       "codex_preflight": {
-        "passed": null,
-        "skipped": true
+        "profile_id": "retrieval-codegraph-codex-mcp-v1",
+        "passed": true,
+        "doctor_exit_code": 1,
+        "mcp_list_exit_code": 0,
+        "tool_preflight_exit_code": null,
+        "coverage_preflight_exit_code": null,
+        "missing_declared_filter_commands": [],
+        "forbidden_command_probe_exit_code": 0,
+        "forbidden_mcp_hits": [],
+        "forbidden_config_hits": [],
+        "visible_forbidden_commands": [],
+        "failure_reasons": [],
+        "warnings": [
+          "codex doctor exited 1; preserve the diagnostic, but use the isolated MCP/config probes and task execution as gates"
+        ],
+        "artifacts": {
+          "doctor": "sources/evaluations/workflow-sessions/prepare-fastify-retrieval-codegraph-codex-mcp-v1-20260718T194104858811Z-p1503107/codex-doctor.txt",
+          "mcp_list": "sources/evaluations/workflow-sessions/prepare-fastify-retrieval-codegraph-codex-mcp-v1-20260718T194104858811Z-p1503107/codex-mcp-list.txt",
+          "effective_config": "sources/evaluations/workflow-sessions/prepare-fastify-retrieval-codegraph-codex-mcp-v1-20260718T194104858811Z-p1503107/codex-effective-config.toml",
+          "forbidden_command_visibility": "sources/evaluations/workflow-sessions/prepare-fastify-retrieval-codegraph-codex-mcp-v1-20260718T194104858811Z-p1503107/forbidden-command-visibility.txt",
+          "tool_preflight": null,
+          "tool_coverage_preflight": null
+        }
       }
     },
     {
       "sequence_id": "terraform-lifecycle-sequence-v0",
       "profile_id": "retrieval-codegraph-codex-mcp-v1",
-      "protocol_path": "sources/evaluations/protocols/terraform-lifecycle-sequence-v0-retrieval-codegraph-codex-mcp-v1-d90748f72c68.json",
-      "protocol_sha256": "899e3733c318c7c46292c231a19e89057fe1e57ec895876ac5b57d0821994fd9",
-      "raw_prepare_output_sha256": "89e391fee203df257ad12bd421fb645c1426ccf9e5712f1ecaa906678aef081d",
+      "protocol_path": "sources/evaluations/protocols/terraform-lifecycle-sequence-v0-retrieval-codegraph-codex-mcp-v1-a5d85da719d8.json",
+      "protocol_sha256": "a663b094dfdaa268a604b4be92a7c032d5af5f9552bb47bff2e45757387e329e",
+      "raw_prepare_output_sha256": "c67952faf2205c826fcdfdd159b7c24c253bdb2ff07050b34df6264a659e4957",
       "prepared": true,
       "prepare_verification": {
         "passed": true,
@@ -893,6 +1291,7 @@
         "composite_seed_delivery_passed": true
       },
       "host_integration": {
+        "profile_id": "retrieval-codegraph-codex-mcp-v1",
         "passed": true,
         "skipped": false,
         "install_exit_codes": [
@@ -903,35 +1302,64 @@
         ],
         "missing_required_files": [],
         "required_files": [
-          "{codex_home}/config.toml",
-          "{codex_home}/AGENTS.md"
+          "/opt/data/repos/token-optimization-research/sources/evaluations/workflow-sessions/prepare-terraform-retrieval-codegraph-codex-mcp-v1-20260718T194138014853Z-p1503534/codex-homes/retrieval-codegraph-codex-mcp-v1/config.toml",
+          "/opt/data/repos/token-optimization-research/sources/evaluations/workflow-sessions/prepare-terraform-retrieval-codegraph-codex-mcp-v1-20260718T194138014853Z-p1503534/codex-homes/retrieval-codegraph-codex-mcp-v1/AGENTS.md"
+        ],
+        "artifacts": [
+          "sources/evaluations/workflow-sessions/prepare-terraform-retrieval-codegraph-codex-mcp-v1-20260718T194138014853Z-p1503534/tool-host-install-1.txt",
+          "sources/evaluations/workflow-sessions/prepare-terraform-retrieval-codegraph-codex-mcp-v1-20260718T194138014853Z-p1503534/tool-host-verify-1.txt"
         ]
       },
       "mcp_handshake": {
-        "required": true,
-        "passed": true,
+        "errors": [],
         "initialize_passed": true,
-        "tools_list_passed": true,
-        "server_name": "codegraph",
+        "non_json_stdout_lines": [],
+        "passed": true,
         "protocol_version": "2024-11-05",
-        "tool_count": 1,
+        "server_name": "codegraph",
+        "stderr_present": false,
         "tool_names": [
           "codegraph_explore"
         ],
-        "errors": []
+        "tools_list_passed": true,
+        "profile_id": "retrieval-codegraph-codex-mcp-v1",
+        "required": true,
+        "probe_exit_code": 0,
+        "tool_count": 1
       },
       "tool_warmup_exit_code": 0,
       "codex_preflight": {
-        "passed": null,
-        "skipped": true
+        "profile_id": "retrieval-codegraph-codex-mcp-v1",
+        "passed": true,
+        "doctor_exit_code": 1,
+        "mcp_list_exit_code": 0,
+        "tool_preflight_exit_code": null,
+        "coverage_preflight_exit_code": null,
+        "missing_declared_filter_commands": [],
+        "forbidden_command_probe_exit_code": 0,
+        "forbidden_mcp_hits": [],
+        "forbidden_config_hits": [],
+        "visible_forbidden_commands": [],
+        "failure_reasons": [],
+        "warnings": [
+          "codex doctor exited 1; preserve the diagnostic, but use the isolated MCP/config probes and task execution as gates"
+        ],
+        "artifacts": {
+          "doctor": "sources/evaluations/workflow-sessions/prepare-terraform-retrieval-codegraph-codex-mcp-v1-20260718T194138014853Z-p1503534/codex-doctor.txt",
+          "mcp_list": "sources/evaluations/workflow-sessions/prepare-terraform-retrieval-codegraph-codex-mcp-v1-20260718T194138014853Z-p1503534/codex-mcp-list.txt",
+          "effective_config": "sources/evaluations/workflow-sessions/prepare-terraform-retrieval-codegraph-codex-mcp-v1-20260718T194138014853Z-p1503534/codex-effective-config.toml",
+          "forbidden_command_visibility": "sources/evaluations/workflow-sessions/prepare-terraform-retrieval-codegraph-codex-mcp-v1-20260718T194138014853Z-p1503534/forbidden-command-visibility.txt",
+          "tool_preflight": null,
+          "tool_coverage_preflight": null
+        }
       }
     },
     {
       "sequence_id": "beets-lifecycle-sequence-v0",
       "profile_id": "retrieval-graphify-codex-skill-v1",
-      "protocol_path": "sources/evaluations/protocols/beets-lifecycle-sequence-v0-retrieval-graphify-codex-skill-v1-cff43c94f039.json",
-      "protocol_sha256": "d5044da2e197ad434860a18681826df9e080361a8cf6a0dd195656b54306eca1",
-      "raw_prepare_output_sha256": "af0c68ba535129dee468e87a0e8cd6e63288ac677539cfd9a9af5fc7fe75e471",
+      "protocol_path": "sources/evaluations/protocols/beets-lifecycle-sequence-v0-retrieval-graphify-codex-skill-v1-979c155db66a.json",
+      "protocol_sha256": "a6b1c2cb381c0f69673658634c846fedf785881ecdce2adf39e9669126c600af",
+      "raw_prepare_output_sha256": "476eab7f7d8673e72d5620b55151014306a21523308cb78abdbd7499bb73ddf9",
       "prepared": true,
       "prepare_verification": {
         "passed": true,
@@ -940,9 +1368,12 @@
         "composite_seed_delivery_passed": true
       },
       "host_integration": {
+        "profile_id": "retrieval-graphify-codex-skill-v1",
         "passed": true,
         "skipped": false,
         "install_exit_codes": [
+          0,
+          0,
           0,
           0,
           0
@@ -952,33 +1383,58 @@
         ],
         "missing_required_files": [],
         "required_files": [
-          "{codex_home}/.config/graphify-codex-skill-v1/venv/bin/graphify",
-          "{codex_home}/skills/graphify/SKILL.md"
+          "/opt/data/repos/token-optimization-research/sources/evaluations/workflow-sessions/prepare-beets-retrieval-graphify-codex-skill-v1-20260718T202201433956Z-p1530808/codex-homes/retrieval-graphify-codex-skill-v1/.config/graphify-codex-skill-v1/venv/bin/graphify",
+          "/opt/data/repos/token-optimization-research/sources/evaluations/workflow-sessions/prepare-beets-retrieval-graphify-codex-skill-v1-20260718T202201433956Z-p1530808/codex-homes/retrieval-graphify-codex-skill-v1/.config/graphify-codex-skill-v1/bin/graphify",
+          "/opt/data/repos/token-optimization-research/sources/evaluations/workflow-sessions/prepare-beets-retrieval-graphify-codex-skill-v1-20260718T202201433956Z-p1530808/codex-homes/retrieval-graphify-codex-skill-v1/skills/graphify/SKILL.md"
+        ],
+        "artifacts": [
+          "sources/evaluations/workflow-sessions/prepare-beets-retrieval-graphify-codex-skill-v1-20260718T202201433956Z-p1530808/tool-host-install-1.txt",
+          "sources/evaluations/workflow-sessions/prepare-beets-retrieval-graphify-codex-skill-v1-20260718T202201433956Z-p1530808/tool-host-install-2.txt",
+          "sources/evaluations/workflow-sessions/prepare-beets-retrieval-graphify-codex-skill-v1-20260718T202201433956Z-p1530808/tool-host-install-3.txt",
+          "sources/evaluations/workflow-sessions/prepare-beets-retrieval-graphify-codex-skill-v1-20260718T202201433956Z-p1530808/tool-host-install-4.txt",
+          "sources/evaluations/workflow-sessions/prepare-beets-retrieval-graphify-codex-skill-v1-20260718T202201433956Z-p1530808/tool-host-install-5.txt",
+          "sources/evaluations/workflow-sessions/prepare-beets-retrieval-graphify-codex-skill-v1-20260718T202201433956Z-p1530808/tool-host-verify-1.txt"
         ]
       },
       "mcp_handshake": {
-        "required": false,
+        "profile_id": "retrieval-graphify-codex-skill-v1",
         "passed": true,
-        "initialize_passed": null,
-        "tools_list_passed": null,
-        "server_name": null,
-        "protocol_version": null,
-        "tool_count": 0,
-        "tool_names": [],
-        "errors": []
+        "required": false,
+        "skipped": true
       },
       "tool_warmup_exit_code": 0,
       "codex_preflight": {
-        "passed": null,
-        "skipped": true
+        "profile_id": "retrieval-graphify-codex-skill-v1",
+        "passed": true,
+        "doctor_exit_code": 1,
+        "mcp_list_exit_code": 0,
+        "tool_preflight_exit_code": null,
+        "coverage_preflight_exit_code": null,
+        "missing_declared_filter_commands": [],
+        "forbidden_command_probe_exit_code": 0,
+        "forbidden_mcp_hits": [],
+        "forbidden_config_hits": [],
+        "visible_forbidden_commands": [],
+        "failure_reasons": [],
+        "warnings": [
+          "codex doctor exited 1; preserve the diagnostic, but use the isolated MCP/config probes and task execution as gates"
+        ],
+        "artifacts": {
+          "doctor": "sources/evaluations/workflow-sessions/prepare-beets-retrieval-graphify-codex-skill-v1-20260718T202201433956Z-p1530808/codex-doctor.txt",
+          "mcp_list": "sources/evaluations/workflow-sessions/prepare-beets-retrieval-graphify-codex-skill-v1-20260718T202201433956Z-p1530808/codex-mcp-list.txt",
+          "effective_config": "sources/evaluations/workflow-sessions/prepare-beets-retrieval-graphify-codex-skill-v1-20260718T202201433956Z-p1530808/codex-effective-config.toml",
+          "forbidden_command_visibility": "sources/evaluations/workflow-sessions/prepare-beets-retrieval-graphify-codex-skill-v1-20260718T202201433956Z-p1530808/forbidden-command-visibility.txt",
+          "tool_preflight": null,
+          "tool_coverage_preflight": null
+        }
       }
     },
     {
       "sequence_id": "fastify-lifecycle-sequence-v0",
       "profile_id": "retrieval-graphify-codex-skill-v1",
-      "protocol_path": "sources/evaluations/protocols/fastify-lifecycle-sequence-v0-retrieval-graphify-codex-skill-v1-7a83ca1e3feb.json",
-      "protocol_sha256": "8726e11ffe6f2ae1b52b956cf1f461ce22a3405c2f4fbafcd7ffd12c0a904d9c",
-      "raw_prepare_output_sha256": "ea5ed5097c19e41c486bafa059f7903f782db8380ab068ad37c0943da493c00b",
+      "protocol_path": "sources/evaluations/protocols/fastify-lifecycle-sequence-v0-retrieval-graphify-codex-skill-v1-c546c1276a1b.json",
+      "protocol_sha256": "3967cc838c2e393ce5ebbadb5a86b8ab7e33ab0d192ca6d676e0f26d2f8eaefe",
+      "raw_prepare_output_sha256": "c197aa3b42b2ad7b4836ca21589025232a68e5c8fb841c34d55c271a505a8ac5",
       "prepared": true,
       "prepare_verification": {
         "passed": true,
@@ -987,9 +1443,12 @@
         "composite_seed_delivery_passed": true
       },
       "host_integration": {
+        "profile_id": "retrieval-graphify-codex-skill-v1",
         "passed": true,
         "skipped": false,
         "install_exit_codes": [
+          0,
+          0,
           0,
           0,
           0
@@ -999,33 +1458,58 @@
         ],
         "missing_required_files": [],
         "required_files": [
-          "{codex_home}/.config/graphify-codex-skill-v1/venv/bin/graphify",
-          "{codex_home}/skills/graphify/SKILL.md"
+          "/opt/data/repos/token-optimization-research/sources/evaluations/workflow-sessions/prepare-fastify-retrieval-graphify-codex-skill-v1-20260718T202142172165Z-p1530578/codex-homes/retrieval-graphify-codex-skill-v1/.config/graphify-codex-skill-v1/venv/bin/graphify",
+          "/opt/data/repos/token-optimization-research/sources/evaluations/workflow-sessions/prepare-fastify-retrieval-graphify-codex-skill-v1-20260718T202142172165Z-p1530578/codex-homes/retrieval-graphify-codex-skill-v1/.config/graphify-codex-skill-v1/bin/graphify",
+          "/opt/data/repos/token-optimization-research/sources/evaluations/workflow-sessions/prepare-fastify-retrieval-graphify-codex-skill-v1-20260718T202142172165Z-p1530578/codex-homes/retrieval-graphify-codex-skill-v1/skills/graphify/SKILL.md"
+        ],
+        "artifacts": [
+          "sources/evaluations/workflow-sessions/prepare-fastify-retrieval-graphify-codex-skill-v1-20260718T202142172165Z-p1530578/tool-host-install-1.txt",
+          "sources/evaluations/workflow-sessions/prepare-fastify-retrieval-graphify-codex-skill-v1-20260718T202142172165Z-p1530578/tool-host-install-2.txt",
+          "sources/evaluations/workflow-sessions/prepare-fastify-retrieval-graphify-codex-skill-v1-20260718T202142172165Z-p1530578/tool-host-install-3.txt",
+          "sources/evaluations/workflow-sessions/prepare-fastify-retrieval-graphify-codex-skill-v1-20260718T202142172165Z-p1530578/tool-host-install-4.txt",
+          "sources/evaluations/workflow-sessions/prepare-fastify-retrieval-graphify-codex-skill-v1-20260718T202142172165Z-p1530578/tool-host-install-5.txt",
+          "sources/evaluations/workflow-sessions/prepare-fastify-retrieval-graphify-codex-skill-v1-20260718T202142172165Z-p1530578/tool-host-verify-1.txt"
         ]
       },
       "mcp_handshake": {
-        "required": false,
+        "profile_id": "retrieval-graphify-codex-skill-v1",
         "passed": true,
-        "initialize_passed": null,
-        "tools_list_passed": null,
-        "server_name": null,
-        "protocol_version": null,
-        "tool_count": 0,
-        "tool_names": [],
-        "errors": []
+        "required": false,
+        "skipped": true
       },
       "tool_warmup_exit_code": 0,
       "codex_preflight": {
-        "passed": null,
-        "skipped": true
+        "profile_id": "retrieval-graphify-codex-skill-v1",
+        "passed": true,
+        "doctor_exit_code": 1,
+        "mcp_list_exit_code": 0,
+        "tool_preflight_exit_code": null,
+        "coverage_preflight_exit_code": null,
+        "missing_declared_filter_commands": [],
+        "forbidden_command_probe_exit_code": 0,
+        "forbidden_mcp_hits": [],
+        "forbidden_config_hits": [],
+        "visible_forbidden_commands": [],
+        "failure_reasons": [],
+        "warnings": [
+          "codex doctor exited 1; preserve the diagnostic, but use the isolated MCP/config probes and task execution as gates"
+        ],
+        "artifacts": {
+          "doctor": "sources/evaluations/workflow-sessions/prepare-fastify-retrieval-graphify-codex-skill-v1-20260718T202142172165Z-p1530578/codex-doctor.txt",
+          "mcp_list": "sources/evaluations/workflow-sessions/prepare-fastify-retrieval-graphify-codex-skill-v1-20260718T202142172165Z-p1530578/codex-mcp-list.txt",
+          "effective_config": "sources/evaluations/workflow-sessions/prepare-fastify-retrieval-graphify-codex-skill-v1-20260718T202142172165Z-p1530578/codex-effective-config.toml",
+          "forbidden_command_visibility": "sources/evaluations/workflow-sessions/prepare-fastify-retrieval-graphify-codex-skill-v1-20260718T202142172165Z-p1530578/forbidden-command-visibility.txt",
+          "tool_preflight": null,
+          "tool_coverage_preflight": null
+        }
       }
     },
     {
       "sequence_id": "terraform-lifecycle-sequence-v0",
       "profile_id": "retrieval-graphify-codex-skill-v1",
-      "protocol_path": "sources/evaluations/protocols/terraform-lifecycle-sequence-v0-retrieval-graphify-codex-skill-v1-a31dd5a3f9e3.json",
-      "protocol_sha256": "5ad8d0a7b5b204741bd66b77549aad2b8a9ef58d54ef0403450ec8d982455ad7",
-      "raw_prepare_output_sha256": "b5e9e63c40dce465134b1911dd4d8308887a54d1c4b31cc7634d225ef201c758",
+      "protocol_path": "sources/evaluations/protocols/terraform-lifecycle-sequence-v0-retrieval-graphify-codex-skill-v1-d84c70b1a37d.json",
+      "protocol_sha256": "b64845d38e85b9caa7215a18723adf3f76695fca23dcd5cae6c9a6701c2c82b8",
+      "raw_prepare_output_sha256": "35cb435d1a25c0efd2d1aefdd353c5f9e32add9bb10d8cf8d9c5a7996c922d0e",
       "prepared": true,
       "prepare_verification": {
         "passed": true,
@@ -1034,9 +1518,12 @@
         "composite_seed_delivery_passed": true
       },
       "host_integration": {
+        "profile_id": "retrieval-graphify-codex-skill-v1",
         "passed": true,
         "skipped": false,
         "install_exit_codes": [
+          0,
+          0,
           0,
           0,
           0
@@ -1046,33 +1533,58 @@
         ],
         "missing_required_files": [],
         "required_files": [
-          "{codex_home}/.config/graphify-codex-skill-v1/venv/bin/graphify",
-          "{codex_home}/skills/graphify/SKILL.md"
+          "/opt/data/repos/token-optimization-research/sources/evaluations/workflow-sessions/prepare-terraform-retrieval-graphify-codex-skill-v1-20260718T202235637358Z-p1531030/codex-homes/retrieval-graphify-codex-skill-v1/.config/graphify-codex-skill-v1/venv/bin/graphify",
+          "/opt/data/repos/token-optimization-research/sources/evaluations/workflow-sessions/prepare-terraform-retrieval-graphify-codex-skill-v1-20260718T202235637358Z-p1531030/codex-homes/retrieval-graphify-codex-skill-v1/.config/graphify-codex-skill-v1/bin/graphify",
+          "/opt/data/repos/token-optimization-research/sources/evaluations/workflow-sessions/prepare-terraform-retrieval-graphify-codex-skill-v1-20260718T202235637358Z-p1531030/codex-homes/retrieval-graphify-codex-skill-v1/skills/graphify/SKILL.md"
+        ],
+        "artifacts": [
+          "sources/evaluations/workflow-sessions/prepare-terraform-retrieval-graphify-codex-skill-v1-20260718T202235637358Z-p1531030/tool-host-install-1.txt",
+          "sources/evaluations/workflow-sessions/prepare-terraform-retrieval-graphify-codex-skill-v1-20260718T202235637358Z-p1531030/tool-host-install-2.txt",
+          "sources/evaluations/workflow-sessions/prepare-terraform-retrieval-graphify-codex-skill-v1-20260718T202235637358Z-p1531030/tool-host-install-3.txt",
+          "sources/evaluations/workflow-sessions/prepare-terraform-retrieval-graphify-codex-skill-v1-20260718T202235637358Z-p1531030/tool-host-install-4.txt",
+          "sources/evaluations/workflow-sessions/prepare-terraform-retrieval-graphify-codex-skill-v1-20260718T202235637358Z-p1531030/tool-host-install-5.txt",
+          "sources/evaluations/workflow-sessions/prepare-terraform-retrieval-graphify-codex-skill-v1-20260718T202235637358Z-p1531030/tool-host-verify-1.txt"
         ]
       },
       "mcp_handshake": {
-        "required": false,
+        "profile_id": "retrieval-graphify-codex-skill-v1",
         "passed": true,
-        "initialize_passed": null,
-        "tools_list_passed": null,
-        "server_name": null,
-        "protocol_version": null,
-        "tool_count": 0,
-        "tool_names": [],
-        "errors": []
+        "required": false,
+        "skipped": true
       },
       "tool_warmup_exit_code": 0,
       "codex_preflight": {
-        "passed": null,
-        "skipped": true
+        "profile_id": "retrieval-graphify-codex-skill-v1",
+        "passed": true,
+        "doctor_exit_code": 1,
+        "mcp_list_exit_code": 0,
+        "tool_preflight_exit_code": null,
+        "coverage_preflight_exit_code": null,
+        "missing_declared_filter_commands": [],
+        "forbidden_command_probe_exit_code": 0,
+        "forbidden_mcp_hits": [],
+        "forbidden_config_hits": [],
+        "visible_forbidden_commands": [],
+        "failure_reasons": [],
+        "warnings": [
+          "codex doctor exited 1; preserve the diagnostic, but use the isolated MCP/config probes and task execution as gates"
+        ],
+        "artifacts": {
+          "doctor": "sources/evaluations/workflow-sessions/prepare-terraform-retrieval-graphify-codex-skill-v1-20260718T202235637358Z-p1531030/codex-doctor.txt",
+          "mcp_list": "sources/evaluations/workflow-sessions/prepare-terraform-retrieval-graphify-codex-skill-v1-20260718T202235637358Z-p1531030/codex-mcp-list.txt",
+          "effective_config": "sources/evaluations/workflow-sessions/prepare-terraform-retrieval-graphify-codex-skill-v1-20260718T202235637358Z-p1531030/codex-effective-config.toml",
+          "forbidden_command_visibility": "sources/evaluations/workflow-sessions/prepare-terraform-retrieval-graphify-codex-skill-v1-20260718T202235637358Z-p1531030/forbidden-command-visibility.txt",
+          "tool_preflight": null,
+          "tool_coverage_preflight": null
+        }
       }
     },
     {
       "sequence_id": "beets-lifecycle-sequence-v0",
       "profile_id": "retrieval-jcodemunch-mcp-direct-v1",
-      "protocol_path": "sources/evaluations/protocols/beets-lifecycle-sequence-v0-retrieval-jcodemunch-mcp-direct-v1-f7324b57345c.json",
-      "protocol_sha256": "29adf6cab117e5b99537a70f3a8e3ef52d722a8259e3d87d2f3e3bf5d6813b38",
-      "raw_prepare_output_sha256": "01a6ded2ddbd81f779a3ee621bef80e0d1712d0c125124d3a944aa9c8b7585f7",
+      "protocol_path": "sources/evaluations/protocols/beets-lifecycle-sequence-v0-retrieval-jcodemunch-mcp-direct-v1-4ee45057847f.json",
+      "protocol_sha256": "9a184c13a90beef6a8878dcada037ea4a3b6162c3cc2536021ed82853e588239",
+      "raw_prepare_output_sha256": "68cd6468a838e77dd33d43915af5440b21cb996ba9bf42d49b8db4de841b9b3b",
       "prepared": true,
       "prepare_verification": {
         "passed": true,
@@ -1081,6 +1593,7 @@
         "composite_seed_delivery_passed": true
       },
       "host_integration": {
+        "profile_id": "retrieval-jcodemunch-mcp-direct-v1",
         "passed": true,
         "skipped": false,
         "install_exit_codes": [
@@ -1092,17 +1605,22 @@
         ],
         "missing_required_files": [],
         "required_files": [
-          "{codex_home}/.config/jcodemunch-mcp-direct-v1/venv/bin/jcodemunch-mcp"
+          "/opt/data/repos/token-optimization-research/sources/evaluations/workflow-sessions/prepare-beets-retrieval-jcodemunch-mcp-direct-v1-20260718T193620118322Z-p1499917/codex-homes/retrieval-jcodemunch-mcp-direct-v1/.config/jcodemunch-mcp-direct-v1/venv/bin/jcodemunch-mcp"
+        ],
+        "artifacts": [
+          "sources/evaluations/workflow-sessions/prepare-beets-retrieval-jcodemunch-mcp-direct-v1-20260718T193620118322Z-p1499917/tool-host-install-1.txt",
+          "sources/evaluations/workflow-sessions/prepare-beets-retrieval-jcodemunch-mcp-direct-v1-20260718T193620118322Z-p1499917/tool-host-install-2.txt",
+          "sources/evaluations/workflow-sessions/prepare-beets-retrieval-jcodemunch-mcp-direct-v1-20260718T193620118322Z-p1499917/tool-host-verify-1.txt"
         ]
       },
       "mcp_handshake": {
-        "required": true,
-        "passed": true,
+        "errors": [],
         "initialize_passed": true,
-        "tools_list_passed": true,
-        "server_name": "jcodemunch-mcp",
+        "non_json_stdout_lines": [],
+        "passed": true,
         "protocol_version": "2025-06-18",
-        "tool_count": 89,
+        "server_name": "jcodemunch-mcp",
+        "stderr_present": true,
         "tool_names": [
           "analyze_perf",
           "announce_model",
@@ -1194,20 +1712,45 @@
           "tune_weights",
           "winnow_symbols"
         ],
-        "errors": []
+        "tools_list_passed": true,
+        "profile_id": "retrieval-jcodemunch-mcp-direct-v1",
+        "required": true,
+        "probe_exit_code": 0,
+        "tool_count": 89
       },
       "tool_warmup_exit_code": 0,
       "codex_preflight": {
-        "passed": null,
-        "skipped": true
+        "profile_id": "retrieval-jcodemunch-mcp-direct-v1",
+        "passed": true,
+        "doctor_exit_code": 1,
+        "mcp_list_exit_code": 0,
+        "tool_preflight_exit_code": null,
+        "coverage_preflight_exit_code": null,
+        "missing_declared_filter_commands": [],
+        "forbidden_command_probe_exit_code": 0,
+        "forbidden_mcp_hits": [],
+        "forbidden_config_hits": [],
+        "visible_forbidden_commands": [],
+        "failure_reasons": [],
+        "warnings": [
+          "codex doctor exited 1; preserve the diagnostic, but use the isolated MCP/config probes and task execution as gates"
+        ],
+        "artifacts": {
+          "doctor": "sources/evaluations/workflow-sessions/prepare-beets-retrieval-jcodemunch-mcp-direct-v1-20260718T193620118322Z-p1499917/codex-doctor.txt",
+          "mcp_list": "sources/evaluations/workflow-sessions/prepare-beets-retrieval-jcodemunch-mcp-direct-v1-20260718T193620118322Z-p1499917/codex-mcp-list.txt",
+          "effective_config": "sources/evaluations/workflow-sessions/prepare-beets-retrieval-jcodemunch-mcp-direct-v1-20260718T193620118322Z-p1499917/codex-effective-config.toml",
+          "forbidden_command_visibility": "sources/evaluations/workflow-sessions/prepare-beets-retrieval-jcodemunch-mcp-direct-v1-20260718T193620118322Z-p1499917/forbidden-command-visibility.txt",
+          "tool_preflight": null,
+          "tool_coverage_preflight": null
+        }
       }
     },
     {
       "sequence_id": "fastify-lifecycle-sequence-v0",
       "profile_id": "retrieval-jcodemunch-mcp-direct-v1",
-      "protocol_path": "sources/evaluations/protocols/fastify-lifecycle-sequence-v0-retrieval-jcodemunch-mcp-direct-v1-8e698153eb18.json",
-      "protocol_sha256": "5f543e202e2493ca59d076bb1b0354e8dfc9698540e8ea7c9f53a251f90ab752",
-      "raw_prepare_output_sha256": "3999a3ac6e450ca7f4d1d4388fbba22dbd65ff1439fc1884737a49ef12c895ad",
+      "protocol_path": "sources/evaluations/protocols/fastify-lifecycle-sequence-v0-retrieval-jcodemunch-mcp-direct-v1-1024d69a920d.json",
+      "protocol_sha256": "4713ce109d40939b8beb21fb85af84e5899b051c0620443c19857046148b89e9",
+      "raw_prepare_output_sha256": "c7109fbbd50dd7e6a31f4045450b4283c83152275876192e9ac57173e48ce24a",
       "prepared": true,
       "prepare_verification": {
         "passed": true,
@@ -1216,6 +1759,7 @@
         "composite_seed_delivery_passed": true
       },
       "host_integration": {
+        "profile_id": "retrieval-jcodemunch-mcp-direct-v1",
         "passed": true,
         "skipped": false,
         "install_exit_codes": [
@@ -1227,17 +1771,22 @@
         ],
         "missing_required_files": [],
         "required_files": [
-          "{codex_home}/.config/jcodemunch-mcp-direct-v1/venv/bin/jcodemunch-mcp"
+          "/opt/data/repos/token-optimization-research/sources/evaluations/workflow-sessions/prepare-fastify-retrieval-jcodemunch-mcp-direct-v1-20260718T193605891420Z-p1499704/codex-homes/retrieval-jcodemunch-mcp-direct-v1/.config/jcodemunch-mcp-direct-v1/venv/bin/jcodemunch-mcp"
+        ],
+        "artifacts": [
+          "sources/evaluations/workflow-sessions/prepare-fastify-retrieval-jcodemunch-mcp-direct-v1-20260718T193605891420Z-p1499704/tool-host-install-1.txt",
+          "sources/evaluations/workflow-sessions/prepare-fastify-retrieval-jcodemunch-mcp-direct-v1-20260718T193605891420Z-p1499704/tool-host-install-2.txt",
+          "sources/evaluations/workflow-sessions/prepare-fastify-retrieval-jcodemunch-mcp-direct-v1-20260718T193605891420Z-p1499704/tool-host-verify-1.txt"
         ]
       },
       "mcp_handshake": {
-        "required": true,
-        "passed": true,
+        "errors": [],
         "initialize_passed": true,
-        "tools_list_passed": true,
-        "server_name": "jcodemunch-mcp",
+        "non_json_stdout_lines": [],
+        "passed": true,
         "protocol_version": "2025-06-18",
-        "tool_count": 89,
+        "server_name": "jcodemunch-mcp",
+        "stderr_present": true,
         "tool_names": [
           "analyze_perf",
           "announce_model",
@@ -1329,20 +1878,45 @@
           "tune_weights",
           "winnow_symbols"
         ],
-        "errors": []
+        "tools_list_passed": true,
+        "profile_id": "retrieval-jcodemunch-mcp-direct-v1",
+        "required": true,
+        "probe_exit_code": 0,
+        "tool_count": 89
       },
       "tool_warmup_exit_code": 0,
       "codex_preflight": {
-        "passed": null,
-        "skipped": true
+        "profile_id": "retrieval-jcodemunch-mcp-direct-v1",
+        "passed": true,
+        "doctor_exit_code": 1,
+        "mcp_list_exit_code": 0,
+        "tool_preflight_exit_code": null,
+        "coverage_preflight_exit_code": null,
+        "missing_declared_filter_commands": [],
+        "forbidden_command_probe_exit_code": 0,
+        "forbidden_mcp_hits": [],
+        "forbidden_config_hits": [],
+        "visible_forbidden_commands": [],
+        "failure_reasons": [],
+        "warnings": [
+          "codex doctor exited 1; preserve the diagnostic, but use the isolated MCP/config probes and task execution as gates"
+        ],
+        "artifacts": {
+          "doctor": "sources/evaluations/workflow-sessions/prepare-fastify-retrieval-jcodemunch-mcp-direct-v1-20260718T193605891420Z-p1499704/codex-doctor.txt",
+          "mcp_list": "sources/evaluations/workflow-sessions/prepare-fastify-retrieval-jcodemunch-mcp-direct-v1-20260718T193605891420Z-p1499704/codex-mcp-list.txt",
+          "effective_config": "sources/evaluations/workflow-sessions/prepare-fastify-retrieval-jcodemunch-mcp-direct-v1-20260718T193605891420Z-p1499704/codex-effective-config.toml",
+          "forbidden_command_visibility": "sources/evaluations/workflow-sessions/prepare-fastify-retrieval-jcodemunch-mcp-direct-v1-20260718T193605891420Z-p1499704/forbidden-command-visibility.txt",
+          "tool_preflight": null,
+          "tool_coverage_preflight": null
+        }
       }
     },
     {
       "sequence_id": "terraform-lifecycle-sequence-v0",
       "profile_id": "retrieval-jcodemunch-mcp-direct-v1",
-      "protocol_path": "sources/evaluations/protocols/terraform-lifecycle-sequence-v0-retrieval-jcodemunch-mcp-direct-v1-b425e63f6057.json",
-      "protocol_sha256": "465220ab7e13aacfd42c0da7212c095d69bcd40813000f5f6302130ea6128cbc",
-      "raw_prepare_output_sha256": "ed5d80be9233458c3ee38366e039144ba5d860f3ed5a4cbd95a4c5a6e5e45701",
+      "protocol_path": "sources/evaluations/protocols/terraform-lifecycle-sequence-v0-retrieval-jcodemunch-mcp-direct-v1-96ebe1aaca3b.json",
+      "protocol_sha256": "2873bb2fb230998bb583845c70c1148bc092b229e083baf1368d6b57b88c12a1",
+      "raw_prepare_output_sha256": "68e8ee77bc4f23f6a828163450c695cc4a1911d4dce9d4fd55aa1e12406937af",
       "prepared": true,
       "prepare_verification": {
         "passed": true,
@@ -1351,6 +1925,7 @@
         "composite_seed_delivery_passed": true
       },
       "host_integration": {
+        "profile_id": "retrieval-jcodemunch-mcp-direct-v1",
         "passed": true,
         "skipped": false,
         "install_exit_codes": [
@@ -1362,17 +1937,22 @@
         ],
         "missing_required_files": [],
         "required_files": [
-          "{codex_home}/.config/jcodemunch-mcp-direct-v1/venv/bin/jcodemunch-mcp"
+          "/opt/data/repos/token-optimization-research/sources/evaluations/workflow-sessions/prepare-terraform-retrieval-jcodemunch-mcp-direct-v1-20260718T193635078565Z-p1500119/codex-homes/retrieval-jcodemunch-mcp-direct-v1/.config/jcodemunch-mcp-direct-v1/venv/bin/jcodemunch-mcp"
+        ],
+        "artifacts": [
+          "sources/evaluations/workflow-sessions/prepare-terraform-retrieval-jcodemunch-mcp-direct-v1-20260718T193635078565Z-p1500119/tool-host-install-1.txt",
+          "sources/evaluations/workflow-sessions/prepare-terraform-retrieval-jcodemunch-mcp-direct-v1-20260718T193635078565Z-p1500119/tool-host-install-2.txt",
+          "sources/evaluations/workflow-sessions/prepare-terraform-retrieval-jcodemunch-mcp-direct-v1-20260718T193635078565Z-p1500119/tool-host-verify-1.txt"
         ]
       },
       "mcp_handshake": {
-        "required": true,
-        "passed": true,
+        "errors": [],
         "initialize_passed": true,
-        "tools_list_passed": true,
-        "server_name": "jcodemunch-mcp",
+        "non_json_stdout_lines": [],
+        "passed": true,
         "protocol_version": "2025-06-18",
-        "tool_count": 89,
+        "server_name": "jcodemunch-mcp",
+        "stderr_present": true,
         "tool_names": [
           "analyze_perf",
           "announce_model",
@@ -1464,20 +2044,45 @@
           "tune_weights",
           "winnow_symbols"
         ],
-        "errors": []
+        "tools_list_passed": true,
+        "profile_id": "retrieval-jcodemunch-mcp-direct-v1",
+        "required": true,
+        "probe_exit_code": 0,
+        "tool_count": 89
       },
       "tool_warmup_exit_code": 0,
       "codex_preflight": {
-        "passed": null,
-        "skipped": true
+        "profile_id": "retrieval-jcodemunch-mcp-direct-v1",
+        "passed": true,
+        "doctor_exit_code": 1,
+        "mcp_list_exit_code": 0,
+        "tool_preflight_exit_code": null,
+        "coverage_preflight_exit_code": null,
+        "missing_declared_filter_commands": [],
+        "forbidden_command_probe_exit_code": 0,
+        "forbidden_mcp_hits": [],
+        "forbidden_config_hits": [],
+        "visible_forbidden_commands": [],
+        "failure_reasons": [],
+        "warnings": [
+          "codex doctor exited 1; preserve the diagnostic, but use the isolated MCP/config probes and task execution as gates"
+        ],
+        "artifacts": {
+          "doctor": "sources/evaluations/workflow-sessions/prepare-terraform-retrieval-jcodemunch-mcp-direct-v1-20260718T193635078565Z-p1500119/codex-doctor.txt",
+          "mcp_list": "sources/evaluations/workflow-sessions/prepare-terraform-retrieval-jcodemunch-mcp-direct-v1-20260718T193635078565Z-p1500119/codex-mcp-list.txt",
+          "effective_config": "sources/evaluations/workflow-sessions/prepare-terraform-retrieval-jcodemunch-mcp-direct-v1-20260718T193635078565Z-p1500119/codex-effective-config.toml",
+          "forbidden_command_visibility": "sources/evaluations/workflow-sessions/prepare-terraform-retrieval-jcodemunch-mcp-direct-v1-20260718T193635078565Z-p1500119/forbidden-command-visibility.txt",
+          "tool_preflight": null,
+          "tool_coverage_preflight": null
+        }
       }
     },
     {
       "sequence_id": "beets-lifecycle-sequence-v0",
       "profile_id": "retrieval-serena-codex-mcp-v1",
-      "protocol_path": "sources/evaluations/protocols/beets-lifecycle-sequence-v0-retrieval-serena-codex-mcp-v1-a19e651fb46a.json",
-      "protocol_sha256": "323316b84789bde07b020484473815e58698f0878177c5f3265fc6aff1462acc",
-      "raw_prepare_output_sha256": "6bb389bf77db5ee5bff924535965c4dbe0205cbd93aa64c08f4cf530a65d0748",
+      "protocol_path": "sources/evaluations/protocols/beets-lifecycle-sequence-v0-retrieval-serena-codex-mcp-v1-f3956bae8bfd.json",
+      "protocol_sha256": "c9ec79855fa89b00fb0b96c464254f6a7372c91e71c32a8c86a0b12f5edb8756",
+      "raw_prepare_output_sha256": "8550aa2cb7ca895db6349916f43884508af9a2586eceb42b8f0faf9ea9985686",
       "prepared": true,
       "prepare_verification": {
         "passed": true,
@@ -1486,6 +2091,7 @@
         "composite_seed_delivery_passed": true
       },
       "host_integration": {
+        "profile_id": "retrieval-serena-codex-mcp-v1",
         "passed": true,
         "skipped": false,
         "install_exit_codes": [
@@ -1496,17 +2102,21 @@
         ],
         "missing_required_files": [],
         "required_files": [
-          "{codex_home}/config.toml"
+          "/opt/data/repos/token-optimization-research/sources/evaluations/workflow-sessions/prepare-beets-retrieval-serena-codex-mcp-v1-20260718T200826439996Z-p1507434/codex-homes/retrieval-serena-codex-mcp-v1/config.toml"
+        ],
+        "artifacts": [
+          "sources/evaluations/workflow-sessions/prepare-beets-retrieval-serena-codex-mcp-v1-20260718T200826439996Z-p1507434/tool-host-install-1.txt",
+          "sources/evaluations/workflow-sessions/prepare-beets-retrieval-serena-codex-mcp-v1-20260718T200826439996Z-p1507434/tool-host-verify-1.txt"
         ]
       },
       "mcp_handshake": {
-        "required": true,
-        "passed": true,
+        "errors": [],
         "initialize_passed": true,
-        "tools_list_passed": true,
-        "server_name": "Serena",
+        "non_json_stdout_lines": [],
+        "passed": true,
         "protocol_version": "2025-06-18",
-        "tool_count": 23,
+        "server_name": "Serena",
+        "stderr_present": true,
         "tool_names": [
           "activate_project",
           "delete_memory",
@@ -1532,20 +2142,45 @@
           "search_for_pattern",
           "write_memory"
         ],
-        "errors": []
+        "tools_list_passed": true,
+        "profile_id": "retrieval-serena-codex-mcp-v1",
+        "required": true,
+        "probe_exit_code": 0,
+        "tool_count": 23
       },
       "tool_warmup_exit_code": 0,
       "codex_preflight": {
-        "passed": null,
-        "skipped": true
+        "profile_id": "retrieval-serena-codex-mcp-v1",
+        "passed": true,
+        "doctor_exit_code": 1,
+        "mcp_list_exit_code": 0,
+        "tool_preflight_exit_code": null,
+        "coverage_preflight_exit_code": null,
+        "missing_declared_filter_commands": [],
+        "forbidden_command_probe_exit_code": 0,
+        "forbidden_mcp_hits": [],
+        "forbidden_config_hits": [],
+        "visible_forbidden_commands": [],
+        "failure_reasons": [],
+        "warnings": [
+          "codex doctor exited 1; preserve the diagnostic, but use the isolated MCP/config probes and task execution as gates"
+        ],
+        "artifacts": {
+          "doctor": "sources/evaluations/workflow-sessions/prepare-beets-retrieval-serena-codex-mcp-v1-20260718T200826439996Z-p1507434/codex-doctor.txt",
+          "mcp_list": "sources/evaluations/workflow-sessions/prepare-beets-retrieval-serena-codex-mcp-v1-20260718T200826439996Z-p1507434/codex-mcp-list.txt",
+          "effective_config": "sources/evaluations/workflow-sessions/prepare-beets-retrieval-serena-codex-mcp-v1-20260718T200826439996Z-p1507434/codex-effective-config.toml",
+          "forbidden_command_visibility": "sources/evaluations/workflow-sessions/prepare-beets-retrieval-serena-codex-mcp-v1-20260718T200826439996Z-p1507434/forbidden-command-visibility.txt",
+          "tool_preflight": null,
+          "tool_coverage_preflight": null
+        }
       }
     },
     {
       "sequence_id": "fastify-lifecycle-sequence-v0",
       "profile_id": "retrieval-serena-codex-mcp-v1",
-      "protocol_path": "sources/evaluations/protocols/fastify-lifecycle-sequence-v0-retrieval-serena-codex-mcp-v1-afee0e6ccad4.json",
-      "protocol_sha256": "a5cbba281efb650f59c734e74477d34d2971e52eea3a39ef460386b7ac6f4cc4",
-      "raw_prepare_output_sha256": "73477c1aa8622d466ad0495e3d7b5ab745a763518889723cc6b66467ee590cbf",
+      "protocol_path": "sources/evaluations/protocols/fastify-lifecycle-sequence-v0-retrieval-serena-codex-mcp-v1-9ec3a09e8a02.json",
+      "protocol_sha256": "af9596ea33fd12c2bef960b357d4c9946d373d5ccbb998b94c0c9e5083a7008c",
+      "raw_prepare_output_sha256": "32c04ab9e02e8098f9c186ff7610cbb30c26dbebfba66fdc129555504a4c0407",
       "prepared": true,
       "prepare_verification": {
         "passed": true,
@@ -1554,6 +2189,7 @@
         "composite_seed_delivery_passed": true
       },
       "host_integration": {
+        "profile_id": "retrieval-serena-codex-mcp-v1",
         "passed": true,
         "skipped": false,
         "install_exit_codes": [
@@ -1564,17 +2200,21 @@
         ],
         "missing_required_files": [],
         "required_files": [
-          "{codex_home}/config.toml"
+          "/opt/data/repos/token-optimization-research/sources/evaluations/workflow-sessions/prepare-fastify-retrieval-serena-codex-mcp-v1-20260718T200812052526Z-p1507219/codex-homes/retrieval-serena-codex-mcp-v1/config.toml"
+        ],
+        "artifacts": [
+          "sources/evaluations/workflow-sessions/prepare-fastify-retrieval-serena-codex-mcp-v1-20260718T200812052526Z-p1507219/tool-host-install-1.txt",
+          "sources/evaluations/workflow-sessions/prepare-fastify-retrieval-serena-codex-mcp-v1-20260718T200812052526Z-p1507219/tool-host-verify-1.txt"
         ]
       },
       "mcp_handshake": {
-        "required": true,
-        "passed": true,
+        "errors": [],
         "initialize_passed": true,
-        "tools_list_passed": true,
-        "server_name": "Serena",
+        "non_json_stdout_lines": [],
+        "passed": true,
         "protocol_version": "2025-06-18",
-        "tool_count": 23,
+        "server_name": "Serena",
+        "stderr_present": true,
         "tool_names": [
           "activate_project",
           "delete_memory",
@@ -1600,20 +2240,45 @@
           "search_for_pattern",
           "write_memory"
         ],
-        "errors": []
+        "tools_list_passed": true,
+        "profile_id": "retrieval-serena-codex-mcp-v1",
+        "required": true,
+        "probe_exit_code": 0,
+        "tool_count": 23
       },
       "tool_warmup_exit_code": 0,
       "codex_preflight": {
-        "passed": null,
-        "skipped": true
+        "profile_id": "retrieval-serena-codex-mcp-v1",
+        "passed": true,
+        "doctor_exit_code": 1,
+        "mcp_list_exit_code": 0,
+        "tool_preflight_exit_code": null,
+        "coverage_preflight_exit_code": null,
+        "missing_declared_filter_commands": [],
+        "forbidden_command_probe_exit_code": 0,
+        "forbidden_mcp_hits": [],
+        "forbidden_config_hits": [],
+        "visible_forbidden_commands": [],
+        "failure_reasons": [],
+        "warnings": [
+          "codex doctor exited 1; preserve the diagnostic, but use the isolated MCP/config probes and task execution as gates"
+        ],
+        "artifacts": {
+          "doctor": "sources/evaluations/workflow-sessions/prepare-fastify-retrieval-serena-codex-mcp-v1-20260718T200812052526Z-p1507219/codex-doctor.txt",
+          "mcp_list": "sources/evaluations/workflow-sessions/prepare-fastify-retrieval-serena-codex-mcp-v1-20260718T200812052526Z-p1507219/codex-mcp-list.txt",
+          "effective_config": "sources/evaluations/workflow-sessions/prepare-fastify-retrieval-serena-codex-mcp-v1-20260718T200812052526Z-p1507219/codex-effective-config.toml",
+          "forbidden_command_visibility": "sources/evaluations/workflow-sessions/prepare-fastify-retrieval-serena-codex-mcp-v1-20260718T200812052526Z-p1507219/forbidden-command-visibility.txt",
+          "tool_preflight": null,
+          "tool_coverage_preflight": null
+        }
       }
     },
     {
       "sequence_id": "terraform-lifecycle-sequence-v0",
       "profile_id": "retrieval-serena-codex-mcp-v1",
-      "protocol_path": "sources/evaluations/protocols/terraform-lifecycle-sequence-v0-retrieval-serena-codex-mcp-v1-edd0acaa9b65.json",
-      "protocol_sha256": "f91b2258f69a7bee97ddbf7e663ea06634da9474727d536f83ff564fffb38b22",
-      "raw_prepare_output_sha256": "3227682e8c1867715b7781fa055d8fcfb82b7f1eb36ed8f2f3d62672e82d6d6d",
+      "protocol_path": "sources/evaluations/protocols/terraform-lifecycle-sequence-v0-retrieval-serena-codex-mcp-v1-ef9b869dca7e.json",
+      "protocol_sha256": "c581e4119c149cc526fa832355b256c39c2ba6745cbfd33dfb9737ceee571a16",
+      "raw_prepare_output_sha256": "6aa5ed01c2755064df02fe10491ae0b832397462d1b535ca15c460c9bd8f83a7",
       "prepared": true,
       "prepare_verification": {
         "passed": true,
@@ -1622,6 +2287,7 @@
         "composite_seed_delivery_passed": true
       },
       "host_integration": {
+        "profile_id": "retrieval-serena-codex-mcp-v1",
         "passed": true,
         "skipped": false,
         "install_exit_codes": [
@@ -1632,17 +2298,21 @@
         ],
         "missing_required_files": [],
         "required_files": [
-          "{codex_home}/config.toml"
+          "/opt/data/repos/token-optimization-research/sources/evaluations/workflow-sessions/prepare-terraform-retrieval-serena-codex-mcp-v1-20260718T200841599520Z-p1507620/codex-homes/retrieval-serena-codex-mcp-v1/config.toml"
+        ],
+        "artifacts": [
+          "sources/evaluations/workflow-sessions/prepare-terraform-retrieval-serena-codex-mcp-v1-20260718T200841599520Z-p1507620/tool-host-install-1.txt",
+          "sources/evaluations/workflow-sessions/prepare-terraform-retrieval-serena-codex-mcp-v1-20260718T200841599520Z-p1507620/tool-host-verify-1.txt"
         ]
       },
       "mcp_handshake": {
-        "required": true,
-        "passed": true,
+        "errors": [],
         "initialize_passed": true,
-        "tools_list_passed": true,
-        "server_name": "Serena",
+        "non_json_stdout_lines": [],
+        "passed": true,
         "protocol_version": "2025-06-18",
-        "tool_count": 23,
+        "server_name": "Serena",
+        "stderr_present": true,
         "tool_names": [
           "activate_project",
           "delete_memory",
@@ -1668,20 +2338,45 @@
           "search_for_pattern",
           "write_memory"
         ],
-        "errors": []
+        "tools_list_passed": true,
+        "profile_id": "retrieval-serena-codex-mcp-v1",
+        "required": true,
+        "probe_exit_code": 0,
+        "tool_count": 23
       },
       "tool_warmup_exit_code": 0,
       "codex_preflight": {
-        "passed": null,
-        "skipped": true
+        "profile_id": "retrieval-serena-codex-mcp-v1",
+        "passed": true,
+        "doctor_exit_code": 1,
+        "mcp_list_exit_code": 0,
+        "tool_preflight_exit_code": null,
+        "coverage_preflight_exit_code": null,
+        "missing_declared_filter_commands": [],
+        "forbidden_command_probe_exit_code": 0,
+        "forbidden_mcp_hits": [],
+        "forbidden_config_hits": [],
+        "visible_forbidden_commands": [],
+        "failure_reasons": [],
+        "warnings": [
+          "codex doctor exited 1; preserve the diagnostic, but use the isolated MCP/config probes and task execution as gates"
+        ],
+        "artifacts": {
+          "doctor": "sources/evaluations/workflow-sessions/prepare-terraform-retrieval-serena-codex-mcp-v1-20260718T200841599520Z-p1507620/codex-doctor.txt",
+          "mcp_list": "sources/evaluations/workflow-sessions/prepare-terraform-retrieval-serena-codex-mcp-v1-20260718T200841599520Z-p1507620/codex-mcp-list.txt",
+          "effective_config": "sources/evaluations/workflow-sessions/prepare-terraform-retrieval-serena-codex-mcp-v1-20260718T200841599520Z-p1507620/codex-effective-config.toml",
+          "forbidden_command_visibility": "sources/evaluations/workflow-sessions/prepare-terraform-retrieval-serena-codex-mcp-v1-20260718T200841599520Z-p1507620/forbidden-command-visibility.txt",
+          "tool_preflight": null,
+          "tool_coverage_preflight": null
+        }
       }
     },
     {
       "sequence_id": "beets-lifecycle-sequence-v0",
       "profile_id": "retrieval-sigmap-codex-live-v1",
-      "protocol_path": "sources/evaluations/protocols/beets-lifecycle-sequence-v0-retrieval-sigmap-codex-live-v1-b3dda6f1dd87.json",
-      "protocol_sha256": "36e6fdcc1009b1f00dea508ede81c6303ceb01fec95378303f3e70e2c65f2290",
-      "raw_prepare_output_sha256": "0b80fd61d3de1bc619009de0726a9594f50be40d83228d098ba032818219c8e4",
+      "protocol_path": "sources/evaluations/protocols/beets-lifecycle-sequence-v0-retrieval-sigmap-codex-live-v1-953b1f437fc3.json",
+      "protocol_sha256": "cd0e7c9408d39868b55d685f31d8124924ce77c66533320d262e15c57ebb397d",
+      "raw_prepare_output_sha256": "84a432050437b128bb8d74b6032f38ef04fe8257d1e44f7e892929e455da923b",
       "prepared": true,
       "prepare_verification": {
         "passed": true,
@@ -1690,21 +2385,22 @@
         "composite_seed_delivery_passed": true
       },
       "host_integration": {
+        "profile_id": "retrieval-sigmap-codex-live-v1",
         "passed": true,
         "skipped": true,
         "install_exit_codes": [],
         "verify_exit_codes": [],
         "missing_required_files": [],
-        "required_files": []
+        "artifacts": []
       },
       "mcp_handshake": {
-        "required": true,
-        "passed": true,
+        "errors": [],
         "initialize_passed": true,
-        "tools_list_passed": true,
-        "server_name": "sigmap",
+        "non_json_stdout_lines": [],
+        "passed": true,
         "protocol_version": "2025-06-18",
-        "tool_count": 19,
+        "server_name": "sigmap",
+        "stderr_present": false,
         "tool_names": [
           "create_checkpoint",
           "explain_file",
@@ -1726,20 +2422,45 @@
           "squeeze_output",
           "verify_suggestion"
         ],
-        "errors": []
+        "tools_list_passed": true,
+        "profile_id": "retrieval-sigmap-codex-live-v1",
+        "required": true,
+        "probe_exit_code": 0,
+        "tool_count": 19
       },
       "tool_warmup_exit_code": 0,
       "codex_preflight": {
-        "passed": null,
-        "skipped": true
+        "profile_id": "retrieval-sigmap-codex-live-v1",
+        "passed": true,
+        "doctor_exit_code": 1,
+        "mcp_list_exit_code": 0,
+        "tool_preflight_exit_code": null,
+        "coverage_preflight_exit_code": null,
+        "missing_declared_filter_commands": [],
+        "forbidden_command_probe_exit_code": 0,
+        "forbidden_mcp_hits": [],
+        "forbidden_config_hits": [],
+        "visible_forbidden_commands": [],
+        "failure_reasons": [],
+        "warnings": [
+          "codex doctor exited 1; preserve the diagnostic, but use the isolated MCP/config probes and task execution as gates"
+        ],
+        "artifacts": {
+          "doctor": "sources/evaluations/workflow-sessions/prepare-beets-retrieval-sigmap-codex-live-v1-20260718T200911826472Z-p1508224/codex-doctor.txt",
+          "mcp_list": "sources/evaluations/workflow-sessions/prepare-beets-retrieval-sigmap-codex-live-v1-20260718T200911826472Z-p1508224/codex-mcp-list.txt",
+          "effective_config": "sources/evaluations/workflow-sessions/prepare-beets-retrieval-sigmap-codex-live-v1-20260718T200911826472Z-p1508224/codex-effective-config.toml",
+          "forbidden_command_visibility": "sources/evaluations/workflow-sessions/prepare-beets-retrieval-sigmap-codex-live-v1-20260718T200911826472Z-p1508224/forbidden-command-visibility.txt",
+          "tool_preflight": null,
+          "tool_coverage_preflight": null
+        }
       }
     },
     {
       "sequence_id": "fastify-lifecycle-sequence-v0",
       "profile_id": "retrieval-sigmap-codex-live-v1",
-      "protocol_path": "sources/evaluations/protocols/fastify-lifecycle-sequence-v0-retrieval-sigmap-codex-live-v1-dbaf4a1d719c.json",
-      "protocol_sha256": "9fffce6246b38b9d39c6e2f1cd1fa7f344a93f33ff928bcb3d172f7d33550782",
-      "raw_prepare_output_sha256": "803d0a47e877609547429d242d551f16f5eb62bdc9f4eed67aae7cc746096ea4",
+      "protocol_path": "sources/evaluations/protocols/fastify-lifecycle-sequence-v0-retrieval-sigmap-codex-live-v1-aeab31c0965c.json",
+      "protocol_sha256": "0d7ce33309fb79b5e384735ee216eeb36da645fb22bf1583437b05a4a97ddf20",
+      "raw_prepare_output_sha256": "71039191829409b918a004fb424768d5f174fb7a2320ebd346ba0ab765de5d22",
       "prepared": true,
       "prepare_verification": {
         "passed": true,
@@ -1748,21 +2469,22 @@
         "composite_seed_delivery_passed": true
       },
       "host_integration": {
+        "profile_id": "retrieval-sigmap-codex-live-v1",
         "passed": true,
         "skipped": true,
         "install_exit_codes": [],
         "verify_exit_codes": [],
         "missing_required_files": [],
-        "required_files": []
+        "artifacts": []
       },
       "mcp_handshake": {
-        "required": true,
-        "passed": true,
+        "errors": [],
         "initialize_passed": true,
-        "tools_list_passed": true,
-        "server_name": "sigmap",
+        "non_json_stdout_lines": [],
+        "passed": true,
         "protocol_version": "2025-06-18",
-        "tool_count": 19,
+        "server_name": "sigmap",
+        "stderr_present": false,
         "tool_names": [
           "create_checkpoint",
           "explain_file",
@@ -1784,20 +2506,45 @@
           "squeeze_output",
           "verify_suggestion"
         ],
-        "errors": []
+        "tools_list_passed": true,
+        "profile_id": "retrieval-sigmap-codex-live-v1",
+        "required": true,
+        "probe_exit_code": 0,
+        "tool_count": 19
       },
       "tool_warmup_exit_code": 0,
       "codex_preflight": {
-        "passed": null,
-        "skipped": true
+        "profile_id": "retrieval-sigmap-codex-live-v1",
+        "passed": true,
+        "doctor_exit_code": 1,
+        "mcp_list_exit_code": 0,
+        "tool_preflight_exit_code": null,
+        "coverage_preflight_exit_code": null,
+        "missing_declared_filter_commands": [],
+        "forbidden_command_probe_exit_code": 0,
+        "forbidden_mcp_hits": [],
+        "forbidden_config_hits": [],
+        "visible_forbidden_commands": [],
+        "failure_reasons": [],
+        "warnings": [
+          "codex doctor exited 1; preserve the diagnostic, but use the isolated MCP/config probes and task execution as gates"
+        ],
+        "artifacts": {
+          "doctor": "sources/evaluations/workflow-sessions/prepare-fastify-retrieval-sigmap-codex-live-v1-20260718T200904317530Z-p1508038/codex-doctor.txt",
+          "mcp_list": "sources/evaluations/workflow-sessions/prepare-fastify-retrieval-sigmap-codex-live-v1-20260718T200904317530Z-p1508038/codex-mcp-list.txt",
+          "effective_config": "sources/evaluations/workflow-sessions/prepare-fastify-retrieval-sigmap-codex-live-v1-20260718T200904317530Z-p1508038/codex-effective-config.toml",
+          "forbidden_command_visibility": "sources/evaluations/workflow-sessions/prepare-fastify-retrieval-sigmap-codex-live-v1-20260718T200904317530Z-p1508038/forbidden-command-visibility.txt",
+          "tool_preflight": null,
+          "tool_coverage_preflight": null
+        }
       }
     },
     {
       "sequence_id": "terraform-lifecycle-sequence-v0",
       "profile_id": "retrieval-sigmap-codex-live-v1",
-      "protocol_path": "sources/evaluations/protocols/terraform-lifecycle-sequence-v0-retrieval-sigmap-codex-live-v1-5155a26b8132.json",
-      "protocol_sha256": "c9b3872e2305a1f7bdc535fc0683c0e12b884d46d77e3b7944b3ef3ffb726b5b",
-      "raw_prepare_output_sha256": "539ccf75ab86ddd43486b656fca7533ab5e3192e5a8aeaa399575eda682f4dda",
+      "protocol_path": "sources/evaluations/protocols/terraform-lifecycle-sequence-v0-retrieval-sigmap-codex-live-v1-d47c396f32ec.json",
+      "protocol_sha256": "6e15b8775af6c5c60b868b0bdeba4926c08c292897163ff1b4ce8c97fe18ec8f",
+      "raw_prepare_output_sha256": "757f1d9d47ca920846bdecd9d584f21ce36e8cc54b3d39d9a3a744f335ecd16c",
       "prepared": true,
       "prepare_verification": {
         "passed": true,
@@ -1806,21 +2553,22 @@
         "composite_seed_delivery_passed": true
       },
       "host_integration": {
+        "profile_id": "retrieval-sigmap-codex-live-v1",
         "passed": true,
         "skipped": true,
         "install_exit_codes": [],
         "verify_exit_codes": [],
         "missing_required_files": [],
-        "required_files": []
+        "artifacts": []
       },
       "mcp_handshake": {
-        "required": true,
-        "passed": true,
+        "errors": [],
         "initialize_passed": true,
-        "tools_list_passed": true,
-        "server_name": "sigmap",
+        "non_json_stdout_lines": [],
+        "passed": true,
         "protocol_version": "2025-06-18",
-        "tool_count": 19,
+        "server_name": "sigmap",
+        "stderr_present": false,
         "tool_names": [
           "create_checkpoint",
           "explain_file",
@@ -1842,20 +2590,45 @@
           "squeeze_output",
           "verify_suggestion"
         ],
-        "errors": []
+        "tools_list_passed": true,
+        "profile_id": "retrieval-sigmap-codex-live-v1",
+        "required": true,
+        "probe_exit_code": 0,
+        "tool_count": 19
       },
       "tool_warmup_exit_code": 0,
       "codex_preflight": {
-        "passed": null,
-        "skipped": true
+        "profile_id": "retrieval-sigmap-codex-live-v1",
+        "passed": true,
+        "doctor_exit_code": 1,
+        "mcp_list_exit_code": 0,
+        "tool_preflight_exit_code": null,
+        "coverage_preflight_exit_code": null,
+        "missing_declared_filter_commands": [],
+        "forbidden_command_probe_exit_code": 0,
+        "forbidden_mcp_hits": [],
+        "forbidden_config_hits": [],
+        "visible_forbidden_commands": [],
+        "failure_reasons": [],
+        "warnings": [
+          "codex doctor exited 1; preserve the diagnostic, but use the isolated MCP/config probes and task execution as gates"
+        ],
+        "artifacts": {
+          "doctor": "sources/evaluations/workflow-sessions/prepare-terraform-retrieval-sigmap-codex-live-v1-20260718T200921544684Z-p1508403/codex-doctor.txt",
+          "mcp_list": "sources/evaluations/workflow-sessions/prepare-terraform-retrieval-sigmap-codex-live-v1-20260718T200921544684Z-p1508403/codex-mcp-list.txt",
+          "effective_config": "sources/evaluations/workflow-sessions/prepare-terraform-retrieval-sigmap-codex-live-v1-20260718T200921544684Z-p1508403/codex-effective-config.toml",
+          "forbidden_command_visibility": "sources/evaluations/workflow-sessions/prepare-terraform-retrieval-sigmap-codex-live-v1-20260718T200921544684Z-p1508403/forbidden-command-visibility.txt",
+          "tool_preflight": null,
+          "tool_coverage_preflight": null
+        }
       }
     },
     {
       "sequence_id": "beets-lifecycle-sequence-v0",
       "profile_id": "swarmvault-codex-product-v1",
-      "protocol_path": "sources/evaluations/protocols/beets-lifecycle-sequence-v0-swarmvault-codex-product-v1-54dd23686692.json",
-      "protocol_sha256": "c079a55c9f40cbb35af4dc851c9e4acaec81bc79fb5042a8676102a751390634",
-      "raw_prepare_output_sha256": "f06870e70b72c8c8680bc8c2d9effd056bad70390e70fd612df4aeea71cf73df",
+      "protocol_path": "sources/evaluations/protocols/beets-lifecycle-sequence-v0-swarmvault-codex-product-v1-03d2d23eabf5.json",
+      "protocol_sha256": "81b5e26d223c31d4c0762a5a32dc8bdb3e8a11d15da0514d78a2234be96b75a1",
+      "raw_prepare_output_sha256": "47c5421df109377269f1acbd6a95d25d7b4e857eec22146ef7548d546beb09a6",
       "prepared": true,
       "prepare_verification": {
         "passed": true,
@@ -1864,21 +2637,22 @@
         "composite_seed_delivery_passed": true
       },
       "host_integration": {
+        "profile_id": "swarmvault-codex-product-v1",
         "passed": true,
         "skipped": true,
         "install_exit_codes": [],
         "verify_exit_codes": [],
         "missing_required_files": [],
-        "required_files": []
+        "artifacts": []
       },
       "mcp_handshake": {
-        "required": true,
-        "passed": true,
+        "errors": [],
         "initialize_passed": true,
-        "tools_list_passed": true,
-        "server_name": "swarmvault",
+        "non_json_stdout_lines": [],
+        "passed": true,
         "protocol_version": "2025-06-18",
-        "tool_count": 51,
+        "server_name": "swarmvault",
+        "stderr_present": false,
         "tool_names": [
           "archive_candidate",
           "auto_promote_candidates",
@@ -1932,20 +2706,45 @@
           "watch_status",
           "workspace_info"
         ],
-        "errors": []
+        "tools_list_passed": true,
+        "profile_id": "swarmvault-codex-product-v1",
+        "required": true,
+        "probe_exit_code": 0,
+        "tool_count": 51
       },
       "tool_warmup_exit_code": 0,
       "codex_preflight": {
-        "passed": null,
-        "skipped": true
+        "profile_id": "swarmvault-codex-product-v1",
+        "passed": true,
+        "doctor_exit_code": 1,
+        "mcp_list_exit_code": 0,
+        "tool_preflight_exit_code": null,
+        "coverage_preflight_exit_code": null,
+        "missing_declared_filter_commands": [],
+        "forbidden_command_probe_exit_code": 0,
+        "forbidden_mcp_hits": [],
+        "forbidden_config_hits": [],
+        "visible_forbidden_commands": [],
+        "failure_reasons": [],
+        "warnings": [
+          "codex doctor exited 1; preserve the diagnostic, but use the isolated MCP/config probes and task execution as gates"
+        ],
+        "artifacts": {
+          "doctor": "sources/evaluations/workflow-sessions/prepare-beets-swarmvault-codex-product-v1-20260718T195052189909Z-p1506583/codex-doctor.txt",
+          "mcp_list": "sources/evaluations/workflow-sessions/prepare-beets-swarmvault-codex-product-v1-20260718T195052189909Z-p1506583/codex-mcp-list.txt",
+          "effective_config": "sources/evaluations/workflow-sessions/prepare-beets-swarmvault-codex-product-v1-20260718T195052189909Z-p1506583/codex-effective-config.toml",
+          "forbidden_command_visibility": "sources/evaluations/workflow-sessions/prepare-beets-swarmvault-codex-product-v1-20260718T195052189909Z-p1506583/forbidden-command-visibility.txt",
+          "tool_preflight": null,
+          "tool_coverage_preflight": null
+        }
       }
     },
     {
       "sequence_id": "fastify-lifecycle-sequence-v0",
       "profile_id": "swarmvault-codex-product-v1",
-      "protocol_path": "sources/evaluations/protocols/fastify-lifecycle-sequence-v0-swarmvault-codex-product-v1-fbd5c6406180.json",
-      "protocol_sha256": "7cf2484dcfa591f2b124183026e867bf903d72dffc69aaac1c11450728730d97",
-      "raw_prepare_output_sha256": "7c43adf9d8b97469a718aa7e7d78a7f23e96e4f2753b33fb1d7c4543bf9ec07c",
+      "protocol_path": "sources/evaluations/protocols/fastify-lifecycle-sequence-v0-swarmvault-codex-product-v1-8d8a07e8c397.json",
+      "protocol_sha256": "8406ce55cd3c30a98fb0747bf4fdc367b3fb5630ebbd93c013f9f4069f7d2364",
+      "raw_prepare_output_sha256": "e9f07b45d0273832f909b71a56cf8da4091cfbc7f1b33e360bcf9e8eb6e317f1",
       "prepared": true,
       "prepare_verification": {
         "passed": true,
@@ -1954,21 +2753,22 @@
         "composite_seed_delivery_passed": true
       },
       "host_integration": {
+        "profile_id": "swarmvault-codex-product-v1",
         "passed": true,
         "skipped": true,
         "install_exit_codes": [],
         "verify_exit_codes": [],
         "missing_required_files": [],
-        "required_files": []
+        "artifacts": []
       },
       "mcp_handshake": {
-        "required": true,
-        "passed": true,
+        "errors": [],
         "initialize_passed": true,
-        "tools_list_passed": true,
-        "server_name": "swarmvault",
+        "non_json_stdout_lines": [],
+        "passed": true,
         "protocol_version": "2025-06-18",
-        "tool_count": 51,
+        "server_name": "swarmvault",
+        "stderr_present": false,
         "tool_names": [
           "archive_candidate",
           "auto_promote_candidates",
@@ -2022,20 +2822,45 @@
           "watch_status",
           "workspace_info"
         ],
-        "errors": []
+        "tools_list_passed": true,
+        "profile_id": "swarmvault-codex-product-v1",
+        "required": true,
+        "probe_exit_code": 0,
+        "tool_count": 51
       },
       "tool_warmup_exit_code": 0,
       "codex_preflight": {
-        "passed": null,
-        "skipped": true
+        "profile_id": "swarmvault-codex-product-v1",
+        "passed": true,
+        "doctor_exit_code": 1,
+        "mcp_list_exit_code": 0,
+        "tool_preflight_exit_code": null,
+        "coverage_preflight_exit_code": null,
+        "missing_declared_filter_commands": [],
+        "forbidden_command_probe_exit_code": 0,
+        "forbidden_mcp_hits": [],
+        "forbidden_config_hits": [],
+        "visible_forbidden_commands": [],
+        "failure_reasons": [],
+        "warnings": [
+          "codex doctor exited 1; preserve the diagnostic, but use the isolated MCP/config probes and task execution as gates"
+        ],
+        "artifacts": {
+          "doctor": "sources/evaluations/workflow-sessions/prepare-fastify-swarmvault-codex-product-v1-20260718T194725557718Z-p1506367/codex-doctor.txt",
+          "mcp_list": "sources/evaluations/workflow-sessions/prepare-fastify-swarmvault-codex-product-v1-20260718T194725557718Z-p1506367/codex-mcp-list.txt",
+          "effective_config": "sources/evaluations/workflow-sessions/prepare-fastify-swarmvault-codex-product-v1-20260718T194725557718Z-p1506367/codex-effective-config.toml",
+          "forbidden_command_visibility": "sources/evaluations/workflow-sessions/prepare-fastify-swarmvault-codex-product-v1-20260718T194725557718Z-p1506367/forbidden-command-visibility.txt",
+          "tool_preflight": null,
+          "tool_coverage_preflight": null
+        }
       }
     },
     {
       "sequence_id": "terraform-lifecycle-sequence-v0",
       "profile_id": "swarmvault-codex-product-v1",
-      "protocol_path": "sources/evaluations/protocols/terraform-lifecycle-sequence-v0-swarmvault-codex-product-v1-efe38ebd4728.json",
-      "protocol_sha256": "8e4f360eaf540376fbf1b9c5bf721ca8033e7b47a298de5bb41ec86ae9588712",
-      "raw_prepare_output_sha256": "b720e315071736367db1eee6a162d637c5f63811e660bd7f6267e842cc661616",
+      "protocol_path": "sources/evaluations/protocols/terraform-lifecycle-sequence-v0-swarmvault-codex-product-v1-4b34f31f4425.json",
+      "protocol_sha256": "b43081da7a8ad74c16b3ed30eeeb2a37d38aa3e6a771d0315d06675247d9194c",
+      "raw_prepare_output_sha256": "747372da700678bdf9a1317d2d53002139685c07632f7837c07fd8ef67e19959",
       "prepared": true,
       "prepare_verification": {
         "passed": true,
@@ -2044,21 +2869,22 @@
         "composite_seed_delivery_passed": true
       },
       "host_integration": {
+        "profile_id": "swarmvault-codex-product-v1",
         "passed": true,
         "skipped": true,
         "install_exit_codes": [],
         "verify_exit_codes": [],
         "missing_required_files": [],
-        "required_files": []
+        "artifacts": []
       },
       "mcp_handshake": {
-        "required": true,
-        "passed": true,
+        "errors": [],
         "initialize_passed": true,
-        "tools_list_passed": true,
-        "server_name": "swarmvault",
+        "non_json_stdout_lines": [],
+        "passed": true,
         "protocol_version": "2025-06-18",
-        "tool_count": 51,
+        "server_name": "swarmvault",
+        "stderr_present": false,
         "tool_names": [
           "archive_candidate",
           "auto_promote_candidates",
@@ -2112,20 +2938,45 @@
           "watch_status",
           "workspace_info"
         ],
-        "errors": []
+        "tools_list_passed": true,
+        "profile_id": "swarmvault-codex-product-v1",
+        "required": true,
+        "probe_exit_code": 0,
+        "tool_count": 51
       },
       "tool_warmup_exit_code": 0,
       "codex_preflight": {
-        "passed": null,
-        "skipped": true
+        "profile_id": "swarmvault-codex-product-v1",
+        "passed": true,
+        "doctor_exit_code": 1,
+        "mcp_list_exit_code": 0,
+        "tool_preflight_exit_code": null,
+        "coverage_preflight_exit_code": null,
+        "missing_declared_filter_commands": [],
+        "forbidden_command_probe_exit_code": 0,
+        "forbidden_mcp_hits": [],
+        "forbidden_config_hits": [],
+        "visible_forbidden_commands": [],
+        "failure_reasons": [],
+        "warnings": [
+          "codex doctor exited 1; preserve the diagnostic, but use the isolated MCP/config probes and task execution as gates"
+        ],
+        "artifacts": {
+          "doctor": "sources/evaluations/workflow-sessions/prepare-terraform-swarmvault-codex-product-v1-20260718T200258358823Z-p1506812/codex-doctor.txt",
+          "mcp_list": "sources/evaluations/workflow-sessions/prepare-terraform-swarmvault-codex-product-v1-20260718T200258358823Z-p1506812/codex-mcp-list.txt",
+          "effective_config": "sources/evaluations/workflow-sessions/prepare-terraform-swarmvault-codex-product-v1-20260718T200258358823Z-p1506812/codex-effective-config.toml",
+          "forbidden_command_visibility": "sources/evaluations/workflow-sessions/prepare-terraform-swarmvault-codex-product-v1-20260718T200258358823Z-p1506812/forbidden-command-visibility.txt",
+          "tool_preflight": null,
+          "tool_coverage_preflight": null
+        }
       }
     },
     {
       "sequence_id": "beets-lifecycle-sequence-v0",
       "profile_id": "terminal-rtk-codex-instructions-v1",
-      "protocol_path": "sources/evaluations/protocols/beets-lifecycle-sequence-v0-terminal-rtk-codex-instructions-v1-f43ace79706f.json",
-      "protocol_sha256": "8eced0d3317c06aa668e4bfd4079f02a956468bdacc1b9e7221d04d69b5bf6aa",
-      "raw_prepare_output_sha256": "ccc20af7665bb49dfe15c935b2f023468db91b48bccabfdf7fae5fcfb01b32bb",
+      "protocol_path": "sources/evaluations/protocols/beets-lifecycle-sequence-v0-terminal-rtk-codex-instructions-v1-b86a4321d930.json",
+      "protocol_sha256": "f59a5278a3f99d0943ce9d9b2dec165cf790bfecf2893d5f218aa825611403b8",
+      "raw_prepare_output_sha256": "8cd6458d8dd8b24a04d37ac5bd5a7666090376ee6ed7744035c44b6b660ec54f",
       "prepared": true,
       "prepare_verification": {
         "passed": true,
@@ -2134,6 +2985,7 @@
         "composite_seed_delivery_passed": true
       },
       "host_integration": {
+        "profile_id": "terminal-rtk-codex-instructions-v1",
         "passed": true,
         "skipped": false,
         "install_exit_codes": [
@@ -2144,33 +2996,53 @@
         ],
         "missing_required_files": [],
         "required_files": [
-          "{codex_home}/AGENTS.md",
-          "{codex_home}/RTK.md"
+          "/opt/data/repos/token-optimization-research/sources/evaluations/workflow-sessions/prepare-beets-terminal-rtk-codex-instructions-v1-20260718T193722062544Z-p1500744/codex-homes/terminal-rtk-codex-instructions-v1/AGENTS.md",
+          "/opt/data/repos/token-optimization-research/sources/evaluations/workflow-sessions/prepare-beets-terminal-rtk-codex-instructions-v1-20260718T193722062544Z-p1500744/codex-homes/terminal-rtk-codex-instructions-v1/RTK.md"
+        ],
+        "artifacts": [
+          "sources/evaluations/workflow-sessions/prepare-beets-terminal-rtk-codex-instructions-v1-20260718T193722062544Z-p1500744/tool-host-install-1.txt",
+          "sources/evaluations/workflow-sessions/prepare-beets-terminal-rtk-codex-instructions-v1-20260718T193722062544Z-p1500744/tool-host-verify-1.txt"
         ]
       },
       "mcp_handshake": {
-        "required": false,
+        "profile_id": "terminal-rtk-codex-instructions-v1",
         "passed": true,
-        "initialize_passed": null,
-        "tools_list_passed": null,
-        "server_name": null,
-        "protocol_version": null,
-        "tool_count": 0,
-        "tool_names": [],
-        "errors": []
+        "required": false,
+        "skipped": true
       },
       "tool_warmup_exit_code": 0,
       "codex_preflight": {
-        "passed": null,
-        "skipped": true
+        "profile_id": "terminal-rtk-codex-instructions-v1",
+        "passed": true,
+        "doctor_exit_code": 1,
+        "mcp_list_exit_code": 0,
+        "tool_preflight_exit_code": 0,
+        "coverage_preflight_exit_code": null,
+        "missing_declared_filter_commands": [],
+        "forbidden_command_probe_exit_code": 0,
+        "forbidden_mcp_hits": [],
+        "forbidden_config_hits": [],
+        "visible_forbidden_commands": [],
+        "failure_reasons": [],
+        "warnings": [
+          "codex doctor exited 1; preserve the diagnostic, but use the isolated MCP/config probes and task execution as gates"
+        ],
+        "artifacts": {
+          "doctor": "sources/evaluations/workflow-sessions/prepare-beets-terminal-rtk-codex-instructions-v1-20260718T193722062544Z-p1500744/codex-doctor.txt",
+          "mcp_list": "sources/evaluations/workflow-sessions/prepare-beets-terminal-rtk-codex-instructions-v1-20260718T193722062544Z-p1500744/codex-mcp-list.txt",
+          "effective_config": "sources/evaluations/workflow-sessions/prepare-beets-terminal-rtk-codex-instructions-v1-20260718T193722062544Z-p1500744/codex-effective-config.toml",
+          "forbidden_command_visibility": "sources/evaluations/workflow-sessions/prepare-beets-terminal-rtk-codex-instructions-v1-20260718T193722062544Z-p1500744/forbidden-command-visibility.txt",
+          "tool_preflight": "sources/evaluations/workflow-sessions/prepare-beets-terminal-rtk-codex-instructions-v1-20260718T193722062544Z-p1500744/tool-preflight.txt",
+          "tool_coverage_preflight": null
+        }
       }
     },
     {
       "sequence_id": "fastify-lifecycle-sequence-v0",
       "profile_id": "terminal-rtk-codex-instructions-v1",
-      "protocol_path": "sources/evaluations/protocols/fastify-lifecycle-sequence-v0-terminal-rtk-codex-instructions-v1-81e847ab8581.json",
-      "protocol_sha256": "e18b0b5f3b0ef1b36ce9ecb2fa42bfbc429c2cc8cba4aaacadccf4368de9f739",
-      "raw_prepare_output_sha256": "90780a6d64c2ff5e45ce20c26e4d1451e4ba07a2b12e1a11b69246e30f496d39",
+      "protocol_path": "sources/evaluations/protocols/fastify-lifecycle-sequence-v0-terminal-rtk-codex-instructions-v1-f4ad091d0337.json",
+      "protocol_sha256": "1af64e3973fdaafc8e71221654282592db0b2fb70f8184ffea84bfc84c613ee4",
+      "raw_prepare_output_sha256": "d292cfe46d7c5c41a4a7df34ed454f0411e5ef4345c088e54a8554b43618b46b",
       "prepared": true,
       "prepare_verification": {
         "passed": true,
@@ -2179,6 +3051,7 @@
         "composite_seed_delivery_passed": true
       },
       "host_integration": {
+        "profile_id": "terminal-rtk-codex-instructions-v1",
         "passed": true,
         "skipped": false,
         "install_exit_codes": [
@@ -2189,33 +3062,53 @@
         ],
         "missing_required_files": [],
         "required_files": [
-          "{codex_home}/AGENTS.md",
-          "{codex_home}/RTK.md"
+          "/opt/data/repos/token-optimization-research/sources/evaluations/workflow-sessions/prepare-fastify-terminal-rtk-codex-instructions-v1-20260718T193716368163Z-p1500547/codex-homes/terminal-rtk-codex-instructions-v1/AGENTS.md",
+          "/opt/data/repos/token-optimization-research/sources/evaluations/workflow-sessions/prepare-fastify-terminal-rtk-codex-instructions-v1-20260718T193716368163Z-p1500547/codex-homes/terminal-rtk-codex-instructions-v1/RTK.md"
+        ],
+        "artifacts": [
+          "sources/evaluations/workflow-sessions/prepare-fastify-terminal-rtk-codex-instructions-v1-20260718T193716368163Z-p1500547/tool-host-install-1.txt",
+          "sources/evaluations/workflow-sessions/prepare-fastify-terminal-rtk-codex-instructions-v1-20260718T193716368163Z-p1500547/tool-host-verify-1.txt"
         ]
       },
       "mcp_handshake": {
-        "required": false,
+        "profile_id": "terminal-rtk-codex-instructions-v1",
         "passed": true,
-        "initialize_passed": null,
-        "tools_list_passed": null,
-        "server_name": null,
-        "protocol_version": null,
-        "tool_count": 0,
-        "tool_names": [],
-        "errors": []
+        "required": false,
+        "skipped": true
       },
       "tool_warmup_exit_code": 0,
       "codex_preflight": {
-        "passed": null,
-        "skipped": true
+        "profile_id": "terminal-rtk-codex-instructions-v1",
+        "passed": true,
+        "doctor_exit_code": 1,
+        "mcp_list_exit_code": 0,
+        "tool_preflight_exit_code": 0,
+        "coverage_preflight_exit_code": null,
+        "missing_declared_filter_commands": [],
+        "forbidden_command_probe_exit_code": 0,
+        "forbidden_mcp_hits": [],
+        "forbidden_config_hits": [],
+        "visible_forbidden_commands": [],
+        "failure_reasons": [],
+        "warnings": [
+          "codex doctor exited 1; preserve the diagnostic, but use the isolated MCP/config probes and task execution as gates"
+        ],
+        "artifacts": {
+          "doctor": "sources/evaluations/workflow-sessions/prepare-fastify-terminal-rtk-codex-instructions-v1-20260718T193716368163Z-p1500547/codex-doctor.txt",
+          "mcp_list": "sources/evaluations/workflow-sessions/prepare-fastify-terminal-rtk-codex-instructions-v1-20260718T193716368163Z-p1500547/codex-mcp-list.txt",
+          "effective_config": "sources/evaluations/workflow-sessions/prepare-fastify-terminal-rtk-codex-instructions-v1-20260718T193716368163Z-p1500547/codex-effective-config.toml",
+          "forbidden_command_visibility": "sources/evaluations/workflow-sessions/prepare-fastify-terminal-rtk-codex-instructions-v1-20260718T193716368163Z-p1500547/forbidden-command-visibility.txt",
+          "tool_preflight": "sources/evaluations/workflow-sessions/prepare-fastify-terminal-rtk-codex-instructions-v1-20260718T193716368163Z-p1500547/tool-preflight.txt",
+          "tool_coverage_preflight": null
+        }
       }
     },
     {
       "sequence_id": "terraform-lifecycle-sequence-v0",
       "profile_id": "terminal-rtk-codex-instructions-v1",
-      "protocol_path": "sources/evaluations/protocols/terraform-lifecycle-sequence-v0-terminal-rtk-codex-instructions-v1-9cfbe606b1bd.json",
-      "protocol_sha256": "d0b52a765dd8713a2861249c8c0d72e8d9d302cfcc4b0e61b588fae12498ae6f",
-      "raw_prepare_output_sha256": "c4bbf11e30b72b35d62e0e7e4e1db1b6c5f5dafa3c4f7c4ed14d03ff6070399f",
+      "protocol_path": "sources/evaluations/protocols/terraform-lifecycle-sequence-v0-terminal-rtk-codex-instructions-v1-ea9682fd1eb6.json",
+      "protocol_sha256": "99708d3927f57bf162d6a5ae55b9cab2c344aecb0f7f98913721ca9f3e67920b",
+      "raw_prepare_output_sha256": "a5d5c659588c9578964d43f70a493ce130194213d2a115dbdaddc0dad8677eda",
       "prepared": true,
       "prepare_verification": {
         "passed": true,
@@ -2224,6 +3117,7 @@
         "composite_seed_delivery_passed": true
       },
       "host_integration": {
+        "profile_id": "terminal-rtk-codex-instructions-v1",
         "passed": true,
         "skipped": false,
         "install_exit_codes": [
@@ -2234,33 +3128,53 @@
         ],
         "missing_required_files": [],
         "required_files": [
-          "{codex_home}/AGENTS.md",
-          "{codex_home}/RTK.md"
+          "/opt/data/repos/token-optimization-research/sources/evaluations/workflow-sessions/prepare-terraform-terminal-rtk-codex-instructions-v1-20260718T193728017924Z-p1500929/codex-homes/terminal-rtk-codex-instructions-v1/AGENTS.md",
+          "/opt/data/repos/token-optimization-research/sources/evaluations/workflow-sessions/prepare-terraform-terminal-rtk-codex-instructions-v1-20260718T193728017924Z-p1500929/codex-homes/terminal-rtk-codex-instructions-v1/RTK.md"
+        ],
+        "artifacts": [
+          "sources/evaluations/workflow-sessions/prepare-terraform-terminal-rtk-codex-instructions-v1-20260718T193728017924Z-p1500929/tool-host-install-1.txt",
+          "sources/evaluations/workflow-sessions/prepare-terraform-terminal-rtk-codex-instructions-v1-20260718T193728017924Z-p1500929/tool-host-verify-1.txt"
         ]
       },
       "mcp_handshake": {
-        "required": false,
+        "profile_id": "terminal-rtk-codex-instructions-v1",
         "passed": true,
-        "initialize_passed": null,
-        "tools_list_passed": null,
-        "server_name": null,
-        "protocol_version": null,
-        "tool_count": 0,
-        "tool_names": [],
-        "errors": []
+        "required": false,
+        "skipped": true
       },
       "tool_warmup_exit_code": 0,
       "codex_preflight": {
-        "passed": null,
-        "skipped": true
+        "profile_id": "terminal-rtk-codex-instructions-v1",
+        "passed": true,
+        "doctor_exit_code": 1,
+        "mcp_list_exit_code": 0,
+        "tool_preflight_exit_code": 0,
+        "coverage_preflight_exit_code": null,
+        "missing_declared_filter_commands": [],
+        "forbidden_command_probe_exit_code": 0,
+        "forbidden_mcp_hits": [],
+        "forbidden_config_hits": [],
+        "visible_forbidden_commands": [],
+        "failure_reasons": [],
+        "warnings": [
+          "codex doctor exited 1; preserve the diagnostic, but use the isolated MCP/config probes and task execution as gates"
+        ],
+        "artifacts": {
+          "doctor": "sources/evaluations/workflow-sessions/prepare-terraform-terminal-rtk-codex-instructions-v1-20260718T193728017924Z-p1500929/codex-doctor.txt",
+          "mcp_list": "sources/evaluations/workflow-sessions/prepare-terraform-terminal-rtk-codex-instructions-v1-20260718T193728017924Z-p1500929/codex-mcp-list.txt",
+          "effective_config": "sources/evaluations/workflow-sessions/prepare-terraform-terminal-rtk-codex-instructions-v1-20260718T193728017924Z-p1500929/codex-effective-config.toml",
+          "forbidden_command_visibility": "sources/evaluations/workflow-sessions/prepare-terraform-terminal-rtk-codex-instructions-v1-20260718T193728017924Z-p1500929/forbidden-command-visibility.txt",
+          "tool_preflight": "sources/evaluations/workflow-sessions/prepare-terraform-terminal-rtk-codex-instructions-v1-20260718T193728017924Z-p1500929/tool-preflight.txt",
+          "tool_coverage_preflight": null
+        }
       }
     },
     {
       "sequence_id": "beets-lifecycle-sequence-v0",
       "profile_id": "terminal-snip-codex-hook-v1",
-      "protocol_path": "sources/evaluations/protocols/beets-lifecycle-sequence-v0-terminal-snip-codex-hook-v1-17e2402cce04.json",
-      "protocol_sha256": "c86fe34ef914ae463014d194831df7fdd434026bd29c9e5e87aa074b4d07beaf",
-      "raw_prepare_output_sha256": "ffd3c4512c55cf22ad8be757806ee46a6b248fd6a178baf7d59dd969e88c3d19",
+      "protocol_path": "sources/evaluations/protocols/beets-lifecycle-sequence-v0-terminal-snip-codex-hook-v1-4595baec2f5c.json",
+      "protocol_sha256": "5cd7780cac6c6a28dbf9e5ee11d59b46192f7b7682b2a0735427feefa716dfdb",
+      "raw_prepare_output_sha256": "ce6fdfa07b836131b2484ad8526c263f0321f9e9d1fb6466875566dd7ca6d386",
       "prepared": true,
       "prepare_verification": {
         "passed": true,
@@ -2269,6 +3183,7 @@
         "composite_seed_delivery_passed": true
       },
       "host_integration": {
+        "profile_id": "terminal-snip-codex-hook-v1",
         "passed": true,
         "skipped": false,
         "install_exit_codes": [
@@ -2279,33 +3194,53 @@
         ],
         "missing_required_files": [],
         "required_files": [
-          "{codex_home}/hooks.json",
-          "{codex_home}/config.toml"
+          "/opt/data/repos/token-optimization-research/sources/evaluations/workflow-sessions/prepare-beets-terminal-snip-codex-hook-v1-20260718T193747408535Z-p1501558/codex-homes/terminal-snip-codex-hook-v1/hooks.json",
+          "/opt/data/repos/token-optimization-research/sources/evaluations/workflow-sessions/prepare-beets-terminal-snip-codex-hook-v1-20260718T193747408535Z-p1501558/codex-homes/terminal-snip-codex-hook-v1/config.toml"
+        ],
+        "artifacts": [
+          "sources/evaluations/workflow-sessions/prepare-beets-terminal-snip-codex-hook-v1-20260718T193747408535Z-p1501558/tool-host-install-1.txt",
+          "sources/evaluations/workflow-sessions/prepare-beets-terminal-snip-codex-hook-v1-20260718T193747408535Z-p1501558/tool-host-verify-1.txt"
         ]
       },
       "mcp_handshake": {
-        "required": false,
+        "profile_id": "terminal-snip-codex-hook-v1",
         "passed": true,
-        "initialize_passed": null,
-        "tools_list_passed": null,
-        "server_name": null,
-        "protocol_version": null,
-        "tool_count": 0,
-        "tool_names": [],
-        "errors": []
+        "required": false,
+        "skipped": true
       },
       "tool_warmup_exit_code": 0,
       "codex_preflight": {
-        "passed": null,
-        "skipped": true
+        "profile_id": "terminal-snip-codex-hook-v1",
+        "passed": true,
+        "doctor_exit_code": 1,
+        "mcp_list_exit_code": 0,
+        "tool_preflight_exit_code": 0,
+        "coverage_preflight_exit_code": null,
+        "missing_declared_filter_commands": [],
+        "forbidden_command_probe_exit_code": 0,
+        "forbidden_mcp_hits": [],
+        "forbidden_config_hits": [],
+        "visible_forbidden_commands": [],
+        "failure_reasons": [],
+        "warnings": [
+          "codex doctor exited 1; preserve the diagnostic, but use the isolated MCP/config probes and task execution as gates"
+        ],
+        "artifacts": {
+          "doctor": "sources/evaluations/workflow-sessions/prepare-beets-terminal-snip-codex-hook-v1-20260718T193747408535Z-p1501558/codex-doctor.txt",
+          "mcp_list": "sources/evaluations/workflow-sessions/prepare-beets-terminal-snip-codex-hook-v1-20260718T193747408535Z-p1501558/codex-mcp-list.txt",
+          "effective_config": "sources/evaluations/workflow-sessions/prepare-beets-terminal-snip-codex-hook-v1-20260718T193747408535Z-p1501558/codex-effective-config.toml",
+          "forbidden_command_visibility": "sources/evaluations/workflow-sessions/prepare-beets-terminal-snip-codex-hook-v1-20260718T193747408535Z-p1501558/forbidden-command-visibility.txt",
+          "tool_preflight": "sources/evaluations/workflow-sessions/prepare-beets-terminal-snip-codex-hook-v1-20260718T193747408535Z-p1501558/tool-preflight.txt",
+          "tool_coverage_preflight": null
+        }
       }
     },
     {
       "sequence_id": "fastify-lifecycle-sequence-v0",
       "profile_id": "terminal-snip-codex-hook-v1",
-      "protocol_path": "sources/evaluations/protocols/fastify-lifecycle-sequence-v0-terminal-snip-codex-hook-v1-9e736a1bd864.json",
-      "protocol_sha256": "ab15432ac96e4a39a7f761df515c151aa3f36433b0ec58e896eefefb51da5053",
-      "raw_prepare_output_sha256": "b35adeef73ee03f989f034f53bfa3f21636713fe67787675e8e87324784ac960",
+      "protocol_path": "sources/evaluations/protocols/fastify-lifecycle-sequence-v0-terminal-snip-codex-hook-v1-ed73244d87c0.json",
+      "protocol_sha256": "11e162512f99e3f0313e48b6a70493828a98ca6df7b6a74fb9d70f6ea5724750",
+      "raw_prepare_output_sha256": "4435ddd115a93362f9ae86c7e7de8aba957d893d28660f363ef79a367f859fe4",
       "prepared": true,
       "prepare_verification": {
         "passed": true,
@@ -2314,6 +3249,7 @@
         "composite_seed_delivery_passed": true
       },
       "host_integration": {
+        "profile_id": "terminal-snip-codex-hook-v1",
         "passed": true,
         "skipped": false,
         "install_exit_codes": [
@@ -2324,33 +3260,53 @@
         ],
         "missing_required_files": [],
         "required_files": [
-          "{codex_home}/hooks.json",
-          "{codex_home}/config.toml"
+          "/opt/data/repos/token-optimization-research/sources/evaluations/workflow-sessions/prepare-fastify-terminal-snip-codex-hook-v1-20260718T193741435525Z-p1501358/codex-homes/terminal-snip-codex-hook-v1/hooks.json",
+          "/opt/data/repos/token-optimization-research/sources/evaluations/workflow-sessions/prepare-fastify-terminal-snip-codex-hook-v1-20260718T193741435525Z-p1501358/codex-homes/terminal-snip-codex-hook-v1/config.toml"
+        ],
+        "artifacts": [
+          "sources/evaluations/workflow-sessions/prepare-fastify-terminal-snip-codex-hook-v1-20260718T193741435525Z-p1501358/tool-host-install-1.txt",
+          "sources/evaluations/workflow-sessions/prepare-fastify-terminal-snip-codex-hook-v1-20260718T193741435525Z-p1501358/tool-host-verify-1.txt"
         ]
       },
       "mcp_handshake": {
-        "required": false,
+        "profile_id": "terminal-snip-codex-hook-v1",
         "passed": true,
-        "initialize_passed": null,
-        "tools_list_passed": null,
-        "server_name": null,
-        "protocol_version": null,
-        "tool_count": 0,
-        "tool_names": [],
-        "errors": []
+        "required": false,
+        "skipped": true
       },
       "tool_warmup_exit_code": 0,
       "codex_preflight": {
-        "passed": null,
-        "skipped": true
+        "profile_id": "terminal-snip-codex-hook-v1",
+        "passed": true,
+        "doctor_exit_code": 1,
+        "mcp_list_exit_code": 0,
+        "tool_preflight_exit_code": 0,
+        "coverage_preflight_exit_code": null,
+        "missing_declared_filter_commands": [],
+        "forbidden_command_probe_exit_code": 0,
+        "forbidden_mcp_hits": [],
+        "forbidden_config_hits": [],
+        "visible_forbidden_commands": [],
+        "failure_reasons": [],
+        "warnings": [
+          "codex doctor exited 1; preserve the diagnostic, but use the isolated MCP/config probes and task execution as gates"
+        ],
+        "artifacts": {
+          "doctor": "sources/evaluations/workflow-sessions/prepare-fastify-terminal-snip-codex-hook-v1-20260718T193741435525Z-p1501358/codex-doctor.txt",
+          "mcp_list": "sources/evaluations/workflow-sessions/prepare-fastify-terminal-snip-codex-hook-v1-20260718T193741435525Z-p1501358/codex-mcp-list.txt",
+          "effective_config": "sources/evaluations/workflow-sessions/prepare-fastify-terminal-snip-codex-hook-v1-20260718T193741435525Z-p1501358/codex-effective-config.toml",
+          "forbidden_command_visibility": "sources/evaluations/workflow-sessions/prepare-fastify-terminal-snip-codex-hook-v1-20260718T193741435525Z-p1501358/forbidden-command-visibility.txt",
+          "tool_preflight": "sources/evaluations/workflow-sessions/prepare-fastify-terminal-snip-codex-hook-v1-20260718T193741435525Z-p1501358/tool-preflight.txt",
+          "tool_coverage_preflight": null
+        }
       }
     },
     {
       "sequence_id": "terraform-lifecycle-sequence-v0",
       "profile_id": "terminal-snip-codex-hook-v1",
-      "protocol_path": "sources/evaluations/protocols/terraform-lifecycle-sequence-v0-terminal-snip-codex-hook-v1-f158e7bf50be.json",
-      "protocol_sha256": "cc51f5fedcbab7b6c28bc63f90c871c1db0d07950c813ff5f97249d82522a74d",
-      "raw_prepare_output_sha256": "e7128a4a7157f8644fd92e7a1b9870b3aa8138dcbf1f05a3e5204a91a4adf767",
+      "protocol_path": "sources/evaluations/protocols/terraform-lifecycle-sequence-v0-terminal-snip-codex-hook-v1-37fafdca4d56.json",
+      "protocol_sha256": "6dbf3488a43f7a3c6a00478a88746aac59a4e4f6cb761eea0dc6d99b32031041",
+      "raw_prepare_output_sha256": "136dcd6bc0474d5fee563722106c7abd8ca6c0adcf06436404ec5e1c6abea6fe",
       "prepared": true,
       "prepare_verification": {
         "passed": true,
@@ -2359,6 +3315,7 @@
         "composite_seed_delivery_passed": true
       },
       "host_integration": {
+        "profile_id": "terminal-snip-codex-hook-v1",
         "passed": true,
         "skipped": false,
         "install_exit_codes": [
@@ -2369,33 +3326,53 @@
         ],
         "missing_required_files": [],
         "required_files": [
-          "{codex_home}/hooks.json",
-          "{codex_home}/config.toml"
+          "/opt/data/repos/token-optimization-research/sources/evaluations/workflow-sessions/prepare-terraform-terminal-snip-codex-hook-v1-20260718T193753515524Z-p1501752/codex-homes/terminal-snip-codex-hook-v1/hooks.json",
+          "/opt/data/repos/token-optimization-research/sources/evaluations/workflow-sessions/prepare-terraform-terminal-snip-codex-hook-v1-20260718T193753515524Z-p1501752/codex-homes/terminal-snip-codex-hook-v1/config.toml"
+        ],
+        "artifacts": [
+          "sources/evaluations/workflow-sessions/prepare-terraform-terminal-snip-codex-hook-v1-20260718T193753515524Z-p1501752/tool-host-install-1.txt",
+          "sources/evaluations/workflow-sessions/prepare-terraform-terminal-snip-codex-hook-v1-20260718T193753515524Z-p1501752/tool-host-verify-1.txt"
         ]
       },
       "mcp_handshake": {
-        "required": false,
+        "profile_id": "terminal-snip-codex-hook-v1",
         "passed": true,
-        "initialize_passed": null,
-        "tools_list_passed": null,
-        "server_name": null,
-        "protocol_version": null,
-        "tool_count": 0,
-        "tool_names": [],
-        "errors": []
+        "required": false,
+        "skipped": true
       },
       "tool_warmup_exit_code": 0,
       "codex_preflight": {
-        "passed": null,
-        "skipped": true
+        "profile_id": "terminal-snip-codex-hook-v1",
+        "passed": true,
+        "doctor_exit_code": 1,
+        "mcp_list_exit_code": 0,
+        "tool_preflight_exit_code": 0,
+        "coverage_preflight_exit_code": null,
+        "missing_declared_filter_commands": [],
+        "forbidden_command_probe_exit_code": 0,
+        "forbidden_mcp_hits": [],
+        "forbidden_config_hits": [],
+        "visible_forbidden_commands": [],
+        "failure_reasons": [],
+        "warnings": [
+          "codex doctor exited 1; preserve the diagnostic, but use the isolated MCP/config probes and task execution as gates"
+        ],
+        "artifacts": {
+          "doctor": "sources/evaluations/workflow-sessions/prepare-terraform-terminal-snip-codex-hook-v1-20260718T193753515524Z-p1501752/codex-doctor.txt",
+          "mcp_list": "sources/evaluations/workflow-sessions/prepare-terraform-terminal-snip-codex-hook-v1-20260718T193753515524Z-p1501752/codex-mcp-list.txt",
+          "effective_config": "sources/evaluations/workflow-sessions/prepare-terraform-terminal-snip-codex-hook-v1-20260718T193753515524Z-p1501752/codex-effective-config.toml",
+          "forbidden_command_visibility": "sources/evaluations/workflow-sessions/prepare-terraform-terminal-snip-codex-hook-v1-20260718T193753515524Z-p1501752/forbidden-command-visibility.txt",
+          "tool_preflight": "sources/evaluations/workflow-sessions/prepare-terraform-terminal-snip-codex-hook-v1-20260718T193753515524Z-p1501752/tool-preflight.txt",
+          "tool_coverage_preflight": null
+        }
       }
     },
     {
       "sequence_id": "beets-lifecycle-sequence-v0",
       "profile_id": "terminal-tokenjuice-codex-hook-v1",
-      "protocol_path": "sources/evaluations/protocols/beets-lifecycle-sequence-v0-terminal-tokenjuice-codex-hook-v1-3cedb095f349.json",
-      "protocol_sha256": "191b1d217f015a5e9fe89b8bc4af2370705111b493727839418658535409f747",
-      "raw_prepare_output_sha256": "a5c9d42460884c5e31130743746a98408419e976ec102ca2458b1b62ed6c6ff6",
+      "protocol_path": "sources/evaluations/protocols/beets-lifecycle-sequence-v0-terminal-tokenjuice-codex-hook-v1-e10f234fd4a3.json",
+      "protocol_sha256": "1314212d17aa072de5076d3d6eb240167d33d987ee94a7670a4474bd905cf604",
+      "raw_prepare_output_sha256": "52cb33b78d4a813ca6a249bf3390add8d67a6c0a4c3ff9a2928bb9f612a69aa7",
       "prepared": true,
       "prepare_verification": {
         "passed": true,
@@ -2404,6 +3381,7 @@
         "composite_seed_delivery_passed": true
       },
       "host_integration": {
+        "profile_id": "terminal-tokenjuice-codex-hook-v1",
         "passed": true,
         "skipped": false,
         "install_exit_codes": [
@@ -2414,32 +3392,52 @@
         ],
         "missing_required_files": [],
         "required_files": [
-          "{codex_home}/hooks.json"
+          "/opt/data/repos/token-optimization-research/sources/evaluations/workflow-sessions/prepare-beets-terminal-tokenjuice-codex-hook-v1-20260718T193545041196Z-p1499088/codex-homes/terminal-tokenjuice-codex-hook-v1/hooks.json"
+        ],
+        "artifacts": [
+          "sources/evaluations/workflow-sessions/prepare-beets-terminal-tokenjuice-codex-hook-v1-20260718T193545041196Z-p1499088/tool-host-install-1.txt",
+          "sources/evaluations/workflow-sessions/prepare-beets-terminal-tokenjuice-codex-hook-v1-20260718T193545041196Z-p1499088/tool-host-verify-1.txt"
         ]
       },
       "mcp_handshake": {
-        "required": false,
+        "profile_id": "terminal-tokenjuice-codex-hook-v1",
         "passed": true,
-        "initialize_passed": null,
-        "tools_list_passed": null,
-        "server_name": null,
-        "protocol_version": null,
-        "tool_count": 0,
-        "tool_names": [],
-        "errors": []
+        "required": false,
+        "skipped": true
       },
       "tool_warmup_exit_code": 0,
       "codex_preflight": {
-        "passed": null,
-        "skipped": true
+        "profile_id": "terminal-tokenjuice-codex-hook-v1",
+        "passed": true,
+        "doctor_exit_code": 1,
+        "mcp_list_exit_code": 0,
+        "tool_preflight_exit_code": 0,
+        "coverage_preflight_exit_code": null,
+        "missing_declared_filter_commands": [],
+        "forbidden_command_probe_exit_code": 0,
+        "forbidden_mcp_hits": [],
+        "forbidden_config_hits": [],
+        "visible_forbidden_commands": [],
+        "failure_reasons": [],
+        "warnings": [
+          "codex doctor exited 1; preserve the diagnostic, but use the isolated MCP/config probes and task execution as gates"
+        ],
+        "artifacts": {
+          "doctor": "sources/evaluations/workflow-sessions/prepare-beets-terminal-tokenjuice-codex-hook-v1-20260718T193545041196Z-p1499088/codex-doctor.txt",
+          "mcp_list": "sources/evaluations/workflow-sessions/prepare-beets-terminal-tokenjuice-codex-hook-v1-20260718T193545041196Z-p1499088/codex-mcp-list.txt",
+          "effective_config": "sources/evaluations/workflow-sessions/prepare-beets-terminal-tokenjuice-codex-hook-v1-20260718T193545041196Z-p1499088/codex-effective-config.toml",
+          "forbidden_command_visibility": "sources/evaluations/workflow-sessions/prepare-beets-terminal-tokenjuice-codex-hook-v1-20260718T193545041196Z-p1499088/forbidden-command-visibility.txt",
+          "tool_preflight": "sources/evaluations/workflow-sessions/prepare-beets-terminal-tokenjuice-codex-hook-v1-20260718T193545041196Z-p1499088/tool-preflight.txt",
+          "tool_coverage_preflight": null
+        }
       }
     },
     {
       "sequence_id": "fastify-lifecycle-sequence-v0",
       "profile_id": "terminal-tokenjuice-codex-hook-v1",
-      "protocol_path": "sources/evaluations/protocols/fastify-lifecycle-sequence-v0-terminal-tokenjuice-codex-hook-v1-225b1cbbd8bc.json",
-      "protocol_sha256": "023faecd1f5b6597fc0325b4d716b10c59e0fb7e7b8c4288471bebc6d94f72bc",
-      "raw_prepare_output_sha256": "d861c5563bc3be2c032dc77aac8f7078567a61171b9359b05274ab99b3617937",
+      "protocol_path": "sources/evaluations/protocols/fastify-lifecycle-sequence-v0-terminal-tokenjuice-codex-hook-v1-9b87ef358cfe.json",
+      "protocol_sha256": "a39a75cfa289ddc81032b86326189d99c67e78dee0fc5affe27839de12ad2c01",
+      "raw_prepare_output_sha256": "7f0e509e6552024ac59c1937cfc5b0c7e028faff6fd6dec09068c21f670fc533",
       "prepared": true,
       "prepare_verification": {
         "passed": true,
@@ -2448,6 +3446,7 @@
         "composite_seed_delivery_passed": true
       },
       "host_integration": {
+        "profile_id": "terminal-tokenjuice-codex-hook-v1",
         "passed": true,
         "skipped": false,
         "install_exit_codes": [
@@ -2458,32 +3457,52 @@
         ],
         "missing_required_files": [],
         "required_files": [
-          "{codex_home}/hooks.json"
+          "/opt/data/repos/token-optimization-research/sources/evaluations/workflow-sessions/prepare-fastify-terminal-tokenjuice-codex-hook-v1-20260718T193538825723Z-p1498877/codex-homes/terminal-tokenjuice-codex-hook-v1/hooks.json"
+        ],
+        "artifacts": [
+          "sources/evaluations/workflow-sessions/prepare-fastify-terminal-tokenjuice-codex-hook-v1-20260718T193538825723Z-p1498877/tool-host-install-1.txt",
+          "sources/evaluations/workflow-sessions/prepare-fastify-terminal-tokenjuice-codex-hook-v1-20260718T193538825723Z-p1498877/tool-host-verify-1.txt"
         ]
       },
       "mcp_handshake": {
-        "required": false,
+        "profile_id": "terminal-tokenjuice-codex-hook-v1",
         "passed": true,
-        "initialize_passed": null,
-        "tools_list_passed": null,
-        "server_name": null,
-        "protocol_version": null,
-        "tool_count": 0,
-        "tool_names": [],
-        "errors": []
+        "required": false,
+        "skipped": true
       },
       "tool_warmup_exit_code": 0,
       "codex_preflight": {
-        "passed": null,
-        "skipped": true
+        "profile_id": "terminal-tokenjuice-codex-hook-v1",
+        "passed": true,
+        "doctor_exit_code": 1,
+        "mcp_list_exit_code": 0,
+        "tool_preflight_exit_code": 0,
+        "coverage_preflight_exit_code": null,
+        "missing_declared_filter_commands": [],
+        "forbidden_command_probe_exit_code": 0,
+        "forbidden_mcp_hits": [],
+        "forbidden_config_hits": [],
+        "visible_forbidden_commands": [],
+        "failure_reasons": [],
+        "warnings": [
+          "codex doctor exited 1; preserve the diagnostic, but use the isolated MCP/config probes and task execution as gates"
+        ],
+        "artifacts": {
+          "doctor": "sources/evaluations/workflow-sessions/prepare-fastify-terminal-tokenjuice-codex-hook-v1-20260718T193538825723Z-p1498877/codex-doctor.txt",
+          "mcp_list": "sources/evaluations/workflow-sessions/prepare-fastify-terminal-tokenjuice-codex-hook-v1-20260718T193538825723Z-p1498877/codex-mcp-list.txt",
+          "effective_config": "sources/evaluations/workflow-sessions/prepare-fastify-terminal-tokenjuice-codex-hook-v1-20260718T193538825723Z-p1498877/codex-effective-config.toml",
+          "forbidden_command_visibility": "sources/evaluations/workflow-sessions/prepare-fastify-terminal-tokenjuice-codex-hook-v1-20260718T193538825723Z-p1498877/forbidden-command-visibility.txt",
+          "tool_preflight": "sources/evaluations/workflow-sessions/prepare-fastify-terminal-tokenjuice-codex-hook-v1-20260718T193538825723Z-p1498877/tool-preflight.txt",
+          "tool_coverage_preflight": null
+        }
       }
     },
     {
       "sequence_id": "terraform-lifecycle-sequence-v0",
       "profile_id": "terminal-tokenjuice-codex-hook-v1",
-      "protocol_path": "sources/evaluations/protocols/terraform-lifecycle-sequence-v0-terminal-tokenjuice-codex-hook-v1-229a1139471f.json",
-      "protocol_sha256": "36c49172a4529f737584b69bf567de15103ed56fdddfe45fa0e7ea3164b54ab8",
-      "raw_prepare_output_sha256": "83fcfc4b21423e563f048fb53ed24a07a8496d9404e5026759efe931dc8216b4",
+      "protocol_path": "sources/evaluations/protocols/terraform-lifecycle-sequence-v0-terminal-tokenjuice-codex-hook-v1-8c825780d34c.json",
+      "protocol_sha256": "3d65631094720917ee73b2f4fe178c214fe980c2c0b1431416d332185c348089",
+      "raw_prepare_output_sha256": "239fc747b4336a2e7e72183646a44cb5f291f2935a82509844a572454216a43a",
       "prepared": true,
       "prepare_verification": {
         "passed": true,
@@ -2492,6 +3511,7 @@
         "composite_seed_delivery_passed": true
       },
       "host_integration": {
+        "profile_id": "terminal-tokenjuice-codex-hook-v1",
         "passed": true,
         "skipped": false,
         "install_exit_codes": [
@@ -2502,31 +3522,45 @@
         ],
         "missing_required_files": [],
         "required_files": [
-          "{codex_home}/hooks.json"
+          "/opt/data/repos/token-optimization-research/sources/evaluations/workflow-sessions/prepare-terraform-terminal-tokenjuice-codex-hook-v1-20260718T193552502285Z-p1499285/codex-homes/terminal-tokenjuice-codex-hook-v1/hooks.json"
+        ],
+        "artifacts": [
+          "sources/evaluations/workflow-sessions/prepare-terraform-terminal-tokenjuice-codex-hook-v1-20260718T193552502285Z-p1499285/tool-host-install-1.txt",
+          "sources/evaluations/workflow-sessions/prepare-terraform-terminal-tokenjuice-codex-hook-v1-20260718T193552502285Z-p1499285/tool-host-verify-1.txt"
         ]
       },
       "mcp_handshake": {
-        "required": false,
+        "profile_id": "terminal-tokenjuice-codex-hook-v1",
         "passed": true,
-        "initialize_passed": null,
-        "tools_list_passed": null,
-        "server_name": null,
-        "protocol_version": null,
-        "tool_count": 0,
-        "tool_names": [],
-        "errors": []
+        "required": false,
+        "skipped": true
       },
       "tool_warmup_exit_code": 0,
       "codex_preflight": {
-        "passed": null,
-        "skipped": true
+        "profile_id": "terminal-tokenjuice-codex-hook-v1",
+        "passed": true,
+        "doctor_exit_code": 1,
+        "mcp_list_exit_code": 0,
+        "tool_preflight_exit_code": 0,
+        "coverage_preflight_exit_code": null,
+        "missing_declared_filter_commands": [],
+        "forbidden_command_probe_exit_code": 0,
+        "forbidden_mcp_hits": [],
+        "forbidden_config_hits": [],
+        "visible_forbidden_commands": [],
+        "failure_reasons": [],
+        "warnings": [
+          "codex doctor exited 1; preserve the diagnostic, but use the isolated MCP/config probes and task execution as gates"
+        ],
+        "artifacts": {
+          "doctor": "sources/evaluations/workflow-sessions/prepare-terraform-terminal-tokenjuice-codex-hook-v1-20260718T193552502285Z-p1499285/codex-doctor.txt",
+          "mcp_list": "sources/evaluations/workflow-sessions/prepare-terraform-terminal-tokenjuice-codex-hook-v1-20260718T193552502285Z-p1499285/codex-mcp-list.txt",
+          "effective_config": "sources/evaluations/workflow-sessions/prepare-terraform-terminal-tokenjuice-codex-hook-v1-20260718T193552502285Z-p1499285/codex-effective-config.toml",
+          "forbidden_command_visibility": "sources/evaluations/workflow-sessions/prepare-terraform-terminal-tokenjuice-codex-hook-v1-20260718T193552502285Z-p1499285/forbidden-command-visibility.txt",
+          "tool_preflight": "sources/evaluations/workflow-sessions/prepare-terraform-terminal-tokenjuice-codex-hook-v1-20260718T193552502285Z-p1499285/tool-preflight.txt",
+          "tool_coverage_preflight": null
+        }
       }
     }
-  ],
-  "notes": [
-    "Raw prepare outputs were reduced into this retained receipt; each raw output SHA-256 is recorded.",
-    "Codex provider preflight was intentionally skipped because this qualification is provider-free; direct host integration, warmup, fixture preparation, and required MCP initialize plus tools/list checks still ran.",
-    "No provider-backed corrected-profile evaluation is authorized by this receipt.",
-    "One SwarmVault Beets preparation attempt was OOM-killed while three graph builds ran concurrently; the exact lane passed when rerun serially with no provider call."
   ]
 }

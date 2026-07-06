@@ -1,0 +1,468 @@
+{
+  "protocol_schema_version": 3,
+  "protocol_id": "terraform-lifecycle-sequence-v0-retrieval-codegraph-codex-mcp-v1-a5d85da719d8",
+  "status": "frozen-ready-not-run",
+  "outcome": "Frozen retrieval-codegraph-codex-mcp-v1 protocol for terraform-lifecycle-sequence-v0; no provider/model run has occurred.",
+  "frozen_at": "2026-07-16",
+  "hypothesis": "retrieval-codegraph-codex-mcp-v1 produces reproducible provider-reported token and software-quality evidence for terraform-lifecycle-sequence-v0",
+  "evidence_stage_target": "reproduction",
+  "task_fixture": {
+    "fixture_id": "large-hashicorp-terraform",
+    "sequence_id": "terraform-lifecycle-sequence-v0",
+    "repository": "https://github.com/hashicorp/terraform.git",
+    "snapshot": "e02391ad384c9c38f1d7f40b853c0d2297348094",
+    "qualification_path": "sources/evaluations/fixtures/large/hashicorp-terraform/qualification-lifecycle-v0.json",
+    "qualification_sha256": "e27ca0efb487c3200232fad0facfc8b3e718d7e0e8ac87a29bc8f9d7cfd29baf",
+    "timeout_seconds_per_task": 3600
+  },
+  "baseline": {
+    "profile_id": "baseline-bare-codex",
+    "provider": "openai",
+    "model": "gpt-5.6-luna",
+    "model_condition_id": "codex-openai-gpt-5-6-luna-xhigh",
+    "reasoning_effort": "xhigh",
+    "command": ""
+  },
+  "treatment": {
+    "profile_id": "retrieval-codegraph-codex-mcp-v1",
+    "provider": "openai",
+    "model": "gpt-5.6-luna",
+    "model_condition_id": "codex-openai-gpt-5-6-luna-xhigh",
+    "reasoning_effort": "xhigh",
+    "command": "python3 scripts/run_codex_workflow_evaluation.py --sequence-id terraform-lifecycle-sequence-v0 --profile-id retrieval-codegraph-codex-mcp-v1 --timeout-per-task 3600 --protocol sources/evaluations/protocols/terraform-lifecycle-sequence-v0-retrieval-codegraph-codex-mcp-v1-a5d85da719d8.json --docker-image token-eval-codex:latest"
+  },
+  "token_accounting_boundary": {
+    "fields": [
+      "fresh_input_tokens",
+      "cached_input_tokens",
+      "cache_write_tokens",
+      "output_tokens",
+      "reasoning_tokens",
+      "total_provider_tokens"
+    ]
+  },
+  "baseline_pool": {
+    "protocol_version": "baseline-pool-v1",
+    "protocol_fingerprint": "ded8609b4172",
+    "descriptor": {
+      "version": "baseline-pool-v1",
+      "runner_contract_version": "workflow-runner-v9",
+      "runner_sha256": "ec5d33e602e8552f78ee32c9c61c96d16336a68de075e5d05c0b16e03d4833a6",
+      "qualification_generator_sha256": "cb549c9aacc1e1401dedff37b08e0d578aa91d491556dfd5e3814d52a567efe8",
+      "validator_sha256": "693e4e81ce6c9d774326afd0a221efd6e4156dacb20c330b4157216e0a16ada0",
+      "sequence_id": "terraform-lifecycle-sequence-v0",
+      "sequence_contract": "feature-refactor-review",
+      "fixture_id": "large-hashicorp-terraform",
+      "fixture_scale": "large-project",
+      "initial_snapshot": {
+        "commit": "e02391ad384c9c38f1d7f40b853c0d2297348094",
+        "upstream": "https://github.com/hashicorp/terraform.git",
+        "dependency_lockfiles": []
+      },
+      "objective": "individual_tool_effectiveness",
+      "primary_metric": "cumulative provider-reported workflow tokens",
+      "tasks": [
+        {
+          "id": "terraform-lifecycle-feature-v0",
+          "order": 1,
+          "task_class": "feature-implementation",
+          "prompt_path": "sources/evaluations/fixtures/large/hashicorp-terraform/tasks/terraform-lifecycle-feature-v0/agent-prompt.txt",
+          "prompt_sha256": "16218607081ad81aa37126cae6524bd2e0d1a4678b3bfa14338789fa22efd346",
+          "seed_patch_sha256": "4743dd5ca0b107349c7e8520f57f2331a1b20d0c407fa322b451ea1f72f88f98",
+          "verifier_command": "sources/evaluations/fixtures/large/hashicorp-terraform/tasks/terraform-lifecycle-feature-v0/verify.sh",
+          "verifier_sha256": "a40e9a67054ea272eb6d9998f92e5e1987d2f74fad8a91ed791923427a44a95b",
+          "upstream_test_paths": [],
+          "compatibility_rebased_test_paths": [
+            "internal/policy/callback/lifecycle_v0_deferred_callbacks_test.go"
+          ],
+          "expected_model_concealed_paths": [
+            "internal/policy/callback/lifecycle_v0_deferred_callbacks_test.go"
+          ],
+          "model_concealed_paths": [
+            "internal/policy/callback/lifecycle_v0_deferred_callbacks_test.go"
+          ]
+        },
+        {
+          "id": "terraform-lifecycle-refactor-v0",
+          "order": 2,
+          "task_class": "behavior-preserving-refactor",
+          "prompt_path": "sources/evaluations/fixtures/large/hashicorp-terraform/tasks/terraform-lifecycle-refactor-v0/agent-prompt.txt",
+          "prompt_sha256": "e8cc801f917b737105f51e5b2e4a9ca87961ca29275e5d0bb5427c667613a441",
+          "seed_patch_sha256": "5124289095935ba7ad376c557b2d349b6b5e97864813a0f82f6672be357203fa",
+          "verifier_command": "sources/evaluations/fixtures/large/hashicorp-terraform/tasks/terraform-lifecycle-refactor-v0/verify.sh",
+          "verifier_sha256": "4c388b6781d48d71afa168fc71c1f8fdf80f464632dde49d4c70fda84e551ac7",
+          "upstream_test_paths": [],
+          "compatibility_rebased_test_paths": [],
+          "expected_model_concealed_paths": [],
+          "model_concealed_paths": []
+        },
+        {
+          "id": "terraform-lifecycle-review-v0",
+          "order": 3,
+          "task_class": "code-review-correction",
+          "prompt_path": "sources/evaluations/fixtures/large/hashicorp-terraform/tasks/terraform-lifecycle-review-v0/agent-prompt.txt",
+          "prompt_sha256": "1e85870d818d95ea07fefdd71443b67df2fc5c5e4e43fbc1beef14039fe9f339",
+          "seed_patch_sha256": "d63ea99bcb6025d6def80e6dc252ed6dc11f3a4a51af291423bfdc4ddddde776",
+          "verifier_command": "sources/evaluations/fixtures/large/hashicorp-terraform/tasks/terraform-lifecycle-review-v0/verify.sh",
+          "verifier_sha256": "2f4d1117aba75b24a9faf6769a317f62da9698f1a5dd43bd8414399969242b51",
+          "upstream_test_paths": [
+            "internal/cloud/backend_tfPolicyEvaluation_test.go"
+          ],
+          "compatibility_rebased_test_paths": [
+            "internal/cloud/lifecycle_v0_policy_summary_test.go"
+          ],
+          "expected_model_concealed_paths": [
+            "internal/cloud/backend_tfPolicyEvaluation_test.go",
+            "internal/cloud/lifecycle_v0_policy_summary_test.go"
+          ],
+          "model_concealed_paths": [
+            "internal/cloud/backend_tfPolicyEvaluation_test.go",
+            "internal/cloud/lifecycle_v0_policy_summary_test.go"
+          ],
+          "review_patch_path": "review-change.patch",
+          "review_patch_sha256": "55ca7b3135c61bd44affa72c1d74e701a8ee9fb717c3f9003805cf67a9692f0b"
+        }
+      ],
+      "model_facing_prompts": {
+        "rendering_contract": "sequential-model-facing-prompts-v2",
+        "profile_guidance_sha256": "f1d7a2cf7b0a7c1affd8bbb04705f073332ee6efc5f8f89f019b9e0cbacec4bb",
+        "tasks": [
+          {
+            "task_id": "terraform-lifecycle-feature-v0",
+            "order": 1,
+            "rendered_prompt_sha256": "f62f320d52a2dd5772c3335f76cb8526d110c294fe08a64e01289d9f6d364bfa"
+          },
+          {
+            "task_id": "terraform-lifecycle-refactor-v0",
+            "order": 2,
+            "rendered_prompt_sha256": "03c5f1278ec60898809f305121a8f121a3d203b1e07aeae982bef888faaddbda"
+          },
+          {
+            "task_id": "terraform-lifecycle-review-v0",
+            "order": 3,
+            "rendered_prompt_sha256": "d6f5dea173dfd749ca1646b9fa87f0f2dbaa5bcb2409937395ca1ff50fcfad91"
+          }
+        ]
+      },
+      "qualification": {
+        "path": "sources/evaluations/fixtures/large/hashicorp-terraform/qualification-lifecycle-v0.json",
+        "sha256": "e27ca0efb487c3200232fad0facfc8b3e718d7e0e8ac87a29bc8f9d7cfd29baf"
+      },
+      "baseline_profile": {
+        "profile_id": "baseline-bare-codex",
+        "profile_type": "control",
+        "enabled_surfaces": [
+          "codex-native-shell-edit"
+        ],
+        "disabled_overlaps": [
+          "all MCP servers",
+          "all token-saving surfaces",
+          "global Codex instructions",
+          "hooks",
+          "skills/plugins",
+          "warm indexes"
+        ]
+      },
+      "agent": {
+        "runtime_id": "codex-cli",
+        "provider": "openai",
+        "model": "gpt-5.6-luna",
+        "model_condition_id": "codex-openai-gpt-5-6-luna-xhigh",
+        "reasoning_effort": "xhigh"
+      },
+      "runtime_inputs": {
+        "timeout_seconds_per_task": 3600,
+        "docker_image": "token-eval-codex:latest",
+        "docker_image_identity": {
+          "image_ref": "token-eval-codex:latest",
+          "image_id": "sha256:6f86d01f2c63f5029c6bb874d8f3694c24d5cd567e3d09413eccc956ba3feafe",
+          "repo_digests": [
+            "token-eval-codex@sha256:6f86d01f2c63f5029c6bb874d8f3694c24d5cd567e3d09413eccc956ba3feafe"
+          ],
+          "repo_tags": [
+            "token-eval-codex:latest"
+          ]
+        },
+        "dockerfile_path": "sources/evaluations/fixtures/container/Dockerfile",
+        "dockerfile_sha256": "47c91967ce25014ce54879514f51d2ff0326651be1087209115eff4d358226b3",
+        "dependency_command": "go mod download",
+        "dependency_lockfiles": [],
+        "codex_runtime_condition": "codex-openai-gpt-5-6-luna-xhigh"
+      },
+      "isolation": {
+        "prompt_delivery": "sequential-one-task-at-a-time",
+        "seed_delivery_mode": "preseeded-composite",
+        "future_tasks_visible": false,
+        "future_seed_regressions_visible": true,
+        "verifier_assets_model_visible": false,
+        "git_baseline_true_root_at_lane_start": true,
+        "controller_verification": "final-only",
+        "prompt_sanitizer": "sanitize_task_prompt-v1",
+        "concealment": "declared-model-concealed-paths-removed-before-root-commit",
+        "model_concealed_paths": [
+          "internal/cloud/backend_tfPolicyEvaluation_test.go",
+          "internal/cloud/lifecycle_v0_policy_summary_test.go",
+          "internal/policy/callback/lifecycle_v0_deferred_callbacks_test.go"
+        ]
+      }
+    }
+  },
+  "selected_execution": {
+    "descriptor_sha256": "267a336e53434a92e6aaa4543fde23c511bfbaeee698230d66e12290dd502e1a",
+    "descriptor": {
+      "version": "execution-condition-v1",
+      "sequence_id": "terraform-lifecycle-sequence-v0",
+      "execution_role": "individual_tool_treatment",
+      "selected_profile": {
+        "profile_id": "retrieval-codegraph-codex-mcp-v1",
+        "profile_type": "individual_tool",
+        "component_ids": [
+          "retrieval-codegraph-codex-mcp-v1"
+        ],
+        "enabled_surfaces": [
+          "retrieval-context",
+          "mcp",
+          "codex-global-instructions",
+          "live-index-watch"
+        ],
+        "disabled_overlaps": [
+          "all unlisted surfaces"
+        ],
+        "registry_entry_sha256": "b26d081591e4efe2d10bc16a0af77f272fba59fccaddf589e5e1d2b89818b706",
+        "registry_entry": {
+          "id": "retrieval-codegraph-codex-mcp-v1",
+          "profile_type": "individual_tool",
+          "objective_scope": "individual_tool_effectiveness",
+          "status": "screening-shortlist",
+          "enabled_surfaces": [
+            "retrieval-context",
+            "mcp",
+            "codex-global-instructions",
+            "live-index-watch"
+          ],
+          "disabled_overlaps": [
+            "all unlisted surfaces"
+          ],
+          "components": [
+            {
+              "component_id": "retrieval-codegraph-codex-mcp-v1",
+              "surface": "retrieval-context+mcp+instructions+live-index",
+              "role": "individual_tool"
+            }
+          ],
+          "install": {
+            "policy": "Run the pinned CodeGraph official Codex installer in the lane-private home, initialize the full project graph, retain live watch, and require an initialize plus tools/list handshake."
+          },
+          "reset": {
+            "policy": "Delete lane-private CODEX_HOME and .codegraph state after evidence capture; verify no MCP config, instructions, daemon, or index survives."
+          },
+          "evaluation_protocol": {
+            "tool_use_policy": "natural",
+            "tool_state": "warm-index",
+            "integration_state": "official-codex-mcp-live-watch",
+            "instruction_policy": "product-authored-guidance"
+          },
+          "notes": "Versioned correction of the historical manually wired no-watch CodeGraph profile."
+        }
+      },
+      "model_facing_prompts": {
+        "rendering_contract": "sequential-model-facing-prompts-v2",
+        "profile_guidance_sha256": "9b2f1577ecb060f1bfb169b8cc141d771af2b668ace35b685080b3d4e38a5617",
+        "tasks": [
+          {
+            "task_id": "terraform-lifecycle-feature-v0",
+            "order": 1,
+            "rendered_prompt_sha256": "ee9beba6e5286f02aa455c5a64fc351d01a675d104d29b967ff8800eccf38fc3"
+          },
+          {
+            "task_id": "terraform-lifecycle-refactor-v0",
+            "order": 2,
+            "rendered_prompt_sha256": "03c5f1278ec60898809f305121a8f121a3d203b1e07aeae982bef888faaddbda"
+          },
+          {
+            "task_id": "terraform-lifecycle-review-v0",
+            "order": 3,
+            "rendered_prompt_sha256": "d6f5dea173dfd749ca1646b9fa87f0f2dbaa5bcb2409937395ca1ff50fcfad91"
+          }
+        ]
+      },
+      "tool_adapter": {
+        "tool_id": "codegraph-codex-mcp-v1",
+        "tool_manifest": "scripts/run_codex_fixture_evaluation.py:TOOL_CONFIGS",
+        "tool_manifest_sha256": "7d24bcdd7d574681c55e97000fdd633e87d51362674919406b22e1d97813f4bd",
+        "tool_config": {
+          "display_name": "CodeGraph official Codex MCP with live watch v1",
+          "lane_name": "retrieval-codegraph-codex-mcp-v1",
+          "surface": "retrieval/context+mcp-live-index",
+          "mcp_server": "codegraph",
+          "allowed_terms": [
+            "codegraph"
+          ],
+          "data_dir_name": "codegraph-codex-mcp-v1",
+          "mcp_command": "/opt/data/tool-candidates/codegraph/dist/bin/codegraph.js",
+          "mcp_args": [
+            "serve",
+            "--mcp"
+          ],
+          "env": {
+            "CODEGRAPH_TELEMETRY": "0"
+          },
+          "mounts": [
+            "/opt/data/tool-candidates/codegraph"
+          ],
+          "diff_exclude_paths": [
+            ".codegraph"
+          ],
+          "host_integration": {
+            "home_dot_codex_alias": true,
+            "install_commands": [
+              [
+                "/opt/data/tool-candidates/codegraph/dist/bin/codegraph.js",
+                "install",
+                "--target",
+                "codex",
+                "--location",
+                "global",
+                "--yes"
+              ]
+            ],
+            "verify_commands": [
+              [
+                "/opt/data/tool-candidates/codegraph/dist/bin/codegraph.js",
+                "--version"
+              ]
+            ],
+            "required_files": [
+              "{codex_home}/config.toml",
+              "{codex_home}/AGENTS.md"
+            ]
+          },
+          "mcp_handshake": {
+            "required": true,
+            "method": "initialize-and-tools-list"
+          },
+          "default_tool_state": "warm-index",
+          "warmup": {
+            "kind": "index",
+            "command": [
+              "/opt/data/tool-candidates/codegraph/dist/bin/codegraph.js",
+              "init",
+              "{repo}"
+            ],
+            "cleanup_paths": [
+              ".codegraph"
+            ],
+            "output_name": "codegraph-warmup-output.txt",
+            "metadata_name": "codegraph-warmup-metadata.json",
+            "timeout_seconds": 1200
+          }
+        },
+        "tool_config_sha256": "fd11d2b178a1f24baacb455096a90ac1213a9100ec55963431cf3f213a569ada",
+        "tool_state": "warm-index",
+        "tool_use_policy": "natural",
+        "command_identity": {
+          "kind": "mcp_command",
+          "command": [
+            "/opt/data/tool-candidates/codegraph/dist/bin/codegraph.js",
+            "serve",
+            "--mcp"
+          ]
+        },
+        "binary_identity": {
+          "executable_token": "/opt/data/tool-candidates/codegraph/dist/bin/codegraph.js",
+          "resolved_path": "/opt/data/tool-candidates/codegraph/dist/bin/codegraph.js",
+          "realpath": "/opt/data/tool-candidates/codegraph/dist/bin/codegraph.js",
+          "sha256": "7cb7ae2a31d1c30a11d2b3190f89a7f9c2db3886ad5903affdc080bd7922755e",
+          "metadata": {
+            "size": 95531,
+            "mode": "-rwxr-xr-x",
+            "uid": 10000,
+            "gid": 10000,
+            "mtime_ns": 1783063448573523305
+          },
+          "version": {
+            "command": [
+              "/opt/data/tool-candidates/codegraph/dist/bin/codegraph.js",
+              "--version"
+            ],
+            "environment_path": "/opt/data/.local/bin:/opt/data/opt/go/bin:/opt/data/opt/uv:/opt/data/opt/node-v24.18.0-linux-x64/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+            "captured": true,
+            "exit_code": 0,
+            "output": "1.1.1",
+            "truncated": false
+          }
+        },
+        "source_identity": [
+          {
+            "path": "/opt/data/tool-candidates/codegraph",
+            "exists": true,
+            "kind": "directory",
+            "git_head": "4077ed19b7d8a88eba93601c0c308e59c8640f8c",
+            "package_json_sha256": "36be5a0aa54234b486b61cb2d95d2cb9acc98a13523f0f5841b796c5d8db6255"
+          }
+        ]
+      },
+      "runtime": {
+        "docker_image": "token-eval-codex:latest",
+        "docker_image_identity": {
+          "image_ref": "token-eval-codex:latest",
+          "image_id": "sha256:6f86d01f2c63f5029c6bb874d8f3694c24d5cd567e3d09413eccc956ba3feafe",
+          "repo_digests": [
+            "token-eval-codex@sha256:6f86d01f2c63f5029c6bb874d8f3694c24d5cd567e3d09413eccc956ba3feafe"
+          ],
+          "repo_tags": [
+            "token-eval-codex:latest"
+          ]
+        },
+        "dockerfile_path": "sources/evaluations/fixtures/container/Dockerfile",
+        "dockerfile_sha256": "47c91967ce25014ce54879514f51d2ff0326651be1087209115eff4d358226b3",
+        "fixture_runner_path": "scripts/run_codex_fixture_evaluation.py",
+        "fixture_runner_sha256": "7d24bcdd7d574681c55e97000fdd633e87d51362674919406b22e1d97813f4bd",
+        "mcp_probe_path": "scripts/probe_mcp_stdio.py",
+        "mcp_probe_sha256": "7c06ea36ee5cac933a97140b84a41405fc99b45152388e8d7c6659136af698fd",
+        "codex_entrypoint_path": "sources/evaluations/fixtures/container/codex-entrypoint.sh",
+        "codex_entrypoint_sha256": "8715fe37cb1fa3823f5f05493bc9681ce7ffc72126dfec4d64d448762c550c3c",
+        "timeout_seconds_per_task": 3600,
+        "network_isolation": {
+          "provider_access": true,
+          "model_shell_network_access": false,
+          "model_shell_enforcement": "seccomp denies AF_INET and AF_INET6 socket creation for the shell process and descendants",
+          "codex_web_search": "disabled",
+          "external_retrieval_audit": "fail-closed"
+        },
+        "isolation_policy": "fresh lane-specific Codex home/tool data; provider-only network with model shell and Codex web search disabled; sequential one-task prompt delivery; concealed tests removed before model-visible root commit"
+      },
+      "dependencies": {
+        "command": "go mod download",
+        "command_sha256": "42a8263a643ccbe692d70752ffdd8cea328fc2d3190677df1485ee06f55b350a",
+        "lockfiles": []
+      },
+      "agent_condition": {
+        "runtime_id": "codex-cli",
+        "provider": "openai",
+        "model": "gpt-5.6-luna",
+        "model_condition_id": "codex-openai-gpt-5-6-luna-xhigh",
+        "reasoning_effort": "xhigh",
+        "codex_version_condition": "captured-at-run-and-bound-to-record"
+      },
+      "isolation": {
+        "prompt_delivery": "sequential-one-task-at-a-time",
+        "seed_delivery_mode": "preseeded-composite",
+        "future_tasks_visible": false,
+        "future_seed_regressions_visible": true,
+        "controller_verification": "final-only",
+        "verifier_assets_model_visible": false,
+        "model_concealed_paths": [
+          "internal/cloud/backend_tfPolicyEvaluation_test.go",
+          "internal/cloud/lifecycle_v0_policy_summary_test.go",
+          "internal/policy/callback/lifecycle_v0_deferred_callbacks_test.go"
+        ]
+      },
+      "baseline_pool_reference": {
+        "protocol_version": "baseline-pool-v1",
+        "protocol_fingerprint": "ded8609b4172",
+        "comparison_policy": "paired baseline and treatment must share this baseline pool fingerprint and replicate"
+      }
+    }
+  }
+}
