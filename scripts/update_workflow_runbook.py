@@ -14,6 +14,7 @@ SEQUENCES = ROOT / "data" / "workflow-task-sequences.json"
 FIXTURES = ROOT / "data" / "repository-fixtures.json"
 SESSIONS = ROOT / "data" / "workflow-sessions.json"
 PROFILES = ROOT / "data" / "evaluation-profiles.json"
+AGENT_RUNTIMES = ROOT / "data" / "evaluation-agent-runtimes.json"
 ARTIFACT_FILES = ("run.json", "changes.diff", "evidence.jsonl.gz", "manifest.sha256")
 
 
@@ -102,6 +103,18 @@ def render() -> str:
     candidate_text = "\n".join(candidate_lines) if candidate_lines else "_None._"
 
     session_records = load_json(SESSIONS).get("sessions", [])
+    model_conditions = load_json(AGENT_RUNTIMES).get("model_conditions", [])
+    active_default_condition_ids = [
+        str(condition.get("id"))
+        for condition in model_conditions
+        if condition.get("status") == "active-default"
+    ]
+    if len(active_default_condition_ids) != 1:
+        raise SystemExit(
+            "runbook generation requires exactly one active-default model condition; "
+            f"found {active_default_condition_ids}"
+        )
+    active_default_condition_id = active_default_condition_ids[0]
     runnable_profiles = sorted(
         profile["id"]
         for profile in load_json(PROFILES).get("profiles", [])
@@ -109,17 +122,25 @@ def render() -> str:
     )
     runnable_profile_text = ", ".join(f"`{profile_id}`" for profile_id in runnable_profiles) or "_None_"
     reusable_baseline_replicates: dict[str, list[int]] = {}
+    model_comparison_baseline_replicates: dict[tuple[str, str], list[int]] = {}
     for session in session_records:
         sequence_id = session.get("task_sequence", {}).get("sequence_id")
         replicate_index = session.get("replicate_index")
+        condition_id = session.get("agent", {}).get("model_condition_id")
         if (
             isinstance(sequence_id, str)
             and isinstance(replicate_index, int)
+            and isinstance(condition_id, str)
             and session.get("status") == "completed"
             and session.get("session_role") == "baseline"
             and session.get("interpretation", {}).get("accepted_for_objective") is True
         ):
-            reusable_baseline_replicates.setdefault(sequence_id, []).append(replicate_index)
+            if condition_id == active_default_condition_id:
+                reusable_baseline_replicates.setdefault(sequence_id, []).append(replicate_index)
+            else:
+                model_comparison_baseline_replicates.setdefault(
+                    (sequence_id, condition_id), []
+                ).append(replicate_index)
     reusable_baseline_sequences = set(reusable_baseline_replicates)
     pending_baselines = [
         sequence for sequence in sequences if sequence["id"] not in reusable_baseline_sequences
@@ -148,7 +169,7 @@ def render() -> str:
             )
         if retained_baselines:
             retained_ids = ", ".join(
-                f"`{sequence['id']}` ({', '.join(f'r{index}' for index in sorted(reusable_baseline_replicates[sequence['id']]))})"
+                f"`{sequence['id']}` ({', '.join(f'r{index}' for index in sorted(set(reusable_baseline_replicates[sequence['id']])))})"
                 for sequence in retained_baselines
             )
             chunks.append(
@@ -158,6 +179,19 @@ def render() -> str:
                 "PROFILE_ID=replace-with-compatible-profile-id\n"
                 "python3 scripts/run_sequential_workflow_matrix.py \"$SEQUENCE_ID\" --treatment-profile \"$PROFILE_ID\"\n"
                 "```"
+            )
+        if model_comparison_baseline_replicates:
+            comparison_ids = ", ".join(
+                f"`{sequence_id}` under `{condition_id}` "
+                f"({', '.join(f'r{index}' for index in sorted(set(replicates)))})"
+                for (sequence_id, condition_id), replicates in sorted(
+                    model_comparison_baseline_replicates.items()
+                )
+            )
+            chunks.append(
+                "Non-default model-comparison baselines are tracked separately: "
+                f"{comparison_ids}. They do not satisfy active-default baseline requirements "
+                "or define treatment-pair reuse."
             )
         chunks.append(
             "Retain the first operationally valid provider sample for each protocol and replicate. Stop only when a sample is fixture-invalid or operationally incomplete; verifier and review outcomes are diagnostic."
@@ -170,7 +204,7 @@ def render() -> str:
 
 This generated runbook reflects current workflow-sequence readiness.
 
-It is rendered from `data/workflow-task-sequences.json`, `data/repository-fixtures.json`, `data/evaluation-profiles.json`, and `data/workflow-sessions.json` by `scripts/update_workflow_runbook.py`.
+It is rendered from `data/workflow-task-sequences.json`, `data/repository-fixtures.json`, `data/evaluation-profiles.json`, `data/evaluation-agent-runtimes.json`, and `data/workflow-sessions.json` by `scripts/update_workflow_runbook.py`.
 
 Do not hand-edit execution status here. Update the registries, then run:
 

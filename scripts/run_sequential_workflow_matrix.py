@@ -619,6 +619,27 @@ def publish_ready_comparisons(sequence_ids: list[str], profiles: list[str], repl
     return published
 
 
+PROTECTED_CONTROL_PLANE_FILES = (Path("scripts/test_workflow_evaluation_contract.py"),)
+
+
+def restore_protected_control_plane_files(root: Path = ROOT) -> None:
+    for relative in PROTECTED_CONTROL_PLANE_FILES:
+        if not (root / relative).is_file():
+            subprocess.run(
+                ["git", "restore", "--worktree", "--", str(relative)],
+                cwd=root,
+                check=True,
+            )
+
+
+def refresh_generated_runbook(root: Path = ROOT) -> None:
+    subprocess.run(
+        [sys.executable, "scripts/update_workflow_runbook.py"],
+        cwd=root,
+        check=True,
+    )
+
+
 def run_validation(summary_dir: Path) -> dict[str, Any]:
     truthmark_candidates = [
         shutil.which("truthmark"),
@@ -807,6 +828,8 @@ def main(argv: list[str] | None = None) -> int:
     published_comparisons = [] if not publish_allowed else publish_ready_comparisons(
         sequences, treatment_profiles, args.replicate_index
     )
+    restore_protected_control_plane_files()
+    refresh_generated_runbook()
     validation = run_validation(run_root)
     if not args.prepare_only and not validation["passed"]:
         for rel in published_comparisons:
