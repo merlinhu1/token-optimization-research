@@ -142,7 +142,13 @@ class CodexUsageAccountingTest(unittest.TestCase):
         audit = json.loads(audit_path.read_text())
         rows = {row["session_id"]: row for row in audit["sessions"]}
         self.assertEqual(rows.keys(), {session["session_id"] for session in registry["sessions"]})
-        self.assertEqual(audit["integrity"]["correction_required_count"], len(rows))
+        self.assertEqual(
+            audit["integrity"]["correction_required_count"],
+            sum(row["correction_required"] for row in rows.values()),
+        )
+        for row in rows.values():
+            if not row["correction_required"]:
+                self.assertEqual(row["legacy_registry_usage"], row["corrected_usage"])
         self.assertTrue(audit["integrity"]["all_manifests_passed"])
         self.assertTrue(audit["integrity"]["all_usage_monotonic"])
         self.assertEqual(
@@ -2333,6 +2339,15 @@ class MatrixLifecycleContractTest(unittest.TestCase):
             script.write_text("from pathlib import Path\nPath('refreshed').write_text('yes')\n")
             matrix.refresh_generated_runbook(root)
             self.assertEqual((root / "refreshed").read_text(), "yes")
+
+    def test_controller_refreshes_cumulative_usage_audit_before_validation(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            script = root / "scripts/audit_codex_cumulative_usage.py"
+            script.parent.mkdir(parents=True)
+            script.write_text("from pathlib import Path\nPath('audited').write_text('yes')\n")
+            matrix.refresh_cumulative_usage_audit(root)
+            self.assertEqual((root / "audited").read_text(), "yes")
 
     def test_prepare_only_summary_cannot_claim_objective_acceptance(self) -> None:
         self.assertIsNone(
