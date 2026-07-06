@@ -66,6 +66,8 @@ A provider-backed lane is eligible for the token-usage objective when:
 - verifier integrity and tool isolation pass;
 - compact evidence is recoverable.
 
+Usage extraction is thread-aware. Codex `turn.completed.usage` carries cumulative `ThreadTokenUsage.total`; `scripts/extract_codex_usage.py` schema v2 selects the final snapshot per distinct thread and derives per-task increments by differencing snapshots. A decreasing cumulative counter is an accounting-integrity failure. Historical schema-v1 summaries remain immutable and require the retained correction audit.
+
 Concealed verifier outcomes and source-quality reviews remain diagnostic evidence about the sampled model behavior. They do **not** gate token accounting or baseline reuse. Keep the first operationally valid sample for each frozen protocol and replicate; never rerun merely because the model produced imperfect code or received a sub-perfect review score. Rerun only when the fixture/contract was invalid or the provider execution was operationally incomplete.
 
 ## Compact artifacts
