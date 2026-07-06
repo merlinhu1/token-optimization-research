@@ -742,8 +742,22 @@ class ActiveCampaignArchitectureTest(unittest.TestCase):
     def test_graphify_identity_path_renders_lane_private_tool_data_dir(self) -> None:
         cfg = runner.fixture.TOOL_CONFIGS["graphify-codex-skill-v1"]
         lane_path = runner._lane_path(cfg)
-        expected = runner.fixture.tool_data_dir(ROOT / ".identity-codex-home", cfg) / "venv" / "bin"
+        tool_data = runner.fixture.tool_data_dir(ROOT / ".identity-codex-home", cfg)
+        expected = tool_data / "bin"
         self.assertIn(str(expected), lane_path.split(":"))
+        self.assertNotIn(str(tool_data / "venv" / "bin"), lane_path.split(":"))
+        self.assertEqual(cfg["executable"], "{tool_data_dir}/bin/graphify")
+        self.assertIn(
+            ["/bin/ln", "-s", "{tool_data_dir}/venv/bin/graphify", "{tool_data_dir}/bin/graphify"],
+            cfg["host_integration"]["install_commands"],
+        )
+        command = runner._tool_command_spec(cfg)
+        assert command is not None
+        self.assertEqual(command, {"kind": "executable", "command": ["{tool_data_dir}/bin/graphify"]})
+        self.assertEqual(
+            runner.executable_identity(command["command"], cfg, ROOT),
+            runner.executable_identity(command["command"], cfg, ROOT / "another-lane"),
+        )
 
     def test_codegraph_binary_version_identity_uses_lane_path(self) -> None:
         cfg = runner.fixture.TOOL_CONFIGS["codegraph-codex-mcp-v1"]

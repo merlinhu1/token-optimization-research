@@ -352,6 +352,8 @@ def _tool_command_spec(cfg: dict[str, Any]) -> dict[str, Any] | None:
         return {"kind": "codex_wrapper", "command": [str(wrapper["command"]), *[str(arg) for arg in wrapper.get("args", [])]]}
     if cfg.get("preflight_command"):
         return {"kind": "preflight_command", "command": [str(arg) for arg in cfg["preflight_command"]]}
+    if cfg.get("executable") and cfg.get("host_integration"):
+        return {"kind": "executable", "command": [str(cfg["executable"])]}
     warmup = cfg.get("warmup") or {}
     if warmup.get("command"):
         return {"kind": "warmup_command", "command": [str(arg) for arg in warmup["command"]]}
