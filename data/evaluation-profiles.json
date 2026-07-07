@@ -551,7 +551,7 @@
       "id": "behavior-caveman",
       "profile_type": "individual_tool",
       "objective_scope": "individual_tool_effectiveness",
-      "status": "screening-shortlist",
+      "status": "invalid-profile",
       "enabled_surfaces": [
         "behavioral-output-compression"
       ],
@@ -585,8 +585,12 @@
         ],
         "installation_failure_disposition": "invalid-if-rendered-policy-is-absent-from-model-facing-prompt"
       },
-      "notes": "Caveman full-mode behavioral output-compression policy arm. Claims are bounded to prompt-injected behavior policy; this is not the MCP-shrink or host-hook integration.",
-      "selection_rationale": "Explicit experiment-owner direction on 2026-07-16 to run the Caveman behavior-policy treatment across all three active lifecycle-v0 lanes."
+      "notes": "Caveman full-mode behavioral output-compression policy arm. Claims are bounded to prompt-injected behavior policy; this is not the MCP-shrink or host-hook integration. Historical provider-backed results were deleted by owner direction because this was not a guide-faithful canonical installation.",
+      "selection_rationale": "Explicit experiment-owner direction on 2026-07-16 to run the Caveman behavior-policy treatment across all three active lifecycle-v0 lanes.",
+      "invalidity": "The lane rendered the Caveman skill body into the evaluator prompt but did not run the author-recommended Codex native skill installer or the documented per-session /caveman activation. It therefore measured a prompt emulation rather than the installed Caveman Codex product.",
+      "historical_results_deleted": true,
+      "superseded_by": "behavior-caveman-codex-skill-v1",
+      "deletion_receipt": "sources/evaluations/audits/invalid-ponytail-caveman-result-deletion-20260719.json"
     },
     {
       "id": "retrieval-cartog",
@@ -832,8 +836,8 @@
       },
       "notes": "Historical neutral MCP condition used an on-demand uv launcher contrary to the pinned Codex guide and retained no initialize/tools-list handshake. Historical invalid sessions were deleted from the active corpus and are not eligible from jcodemunch product-effect claims.",
       "selection_reason": "Selected by the experiment owner for the next lifecycle-v0 natural-use screen.",
-      "blocked_reason": "Historical neutral MCP condition used an on-demand uv launcher contrary to the pinned Codex guide and retained no initialize/tools-list handshake. Historical invalid sessions were deleted from the active corpus and are not eligible from jcodemunch product-effect claims.",
-      "superseded_by": "retrieval-jcodemunch-mcp-direct-v1",
+      "blocked_reason": "Historical neutral MCP condition used an on-demand uv launcher contrary to the pinned Codex guide and retained no initialize/tools-list handshake. Historical invalid sessions were deleted from the active corpus and are not eligible for jcodemunch product-effect claims. The later direct-v1 attempt was also deleted because it omitted the author-provided Codex guidance layer.",
+      "superseded_by": "retrieval-jcodemunch-codex-mcp-v2",
       "historical_results_deleted": true,
       "deletion_receipt": "sources/evaluations/audits/invalid-treatment-result-deletions-20260718.json",
       "historical_result_disposition": "deleted-invalid-treatment",
@@ -1334,7 +1338,7 @@
       "id": "artifact-ponytail",
       "profile_type": "individual_tool",
       "objective_scope": "individual_tool_effectiveness",
-      "status": "screening-shortlist",
+      "status": "invalid-profile",
       "enabled_surfaces": [
         "artifact-policy"
       ],
@@ -1354,8 +1358,12 @@
       "reset": {
         "policy": "Remove generated lane artifacts/eval home before rerun; verify no Ponytail state, hook, MCP, or global instruction survives into baseline or other treatment lanes."
       },
-      "notes": "Ponytail artifact/code-minimization policy treatment. Codex integration is instruction-layer delivery, not a terminal proxy or retrieval tool.",
-      "selection_reason": "Selected by the experiment owner for the next lifecycle-v0 natural-use treatment screen."
+      "notes": "Ponytail artifact/code-minimization policy treatment. Codex integration is instruction-layer delivery, not a terminal proxy or retrieval tool. Historical provider-backed results were deleted by owner direction because this was not a guide-faithful canonical installation.",
+      "selection_reason": "Selected by the experiment owner for the next lifecycle-v0 natural-use treatment screen.",
+      "invalidity": "The lane injected Ponytail fallback instructions into the evaluator prompt but explicitly omitted the author-recommended Codex plugin installation and trusted lifecycle hooks. It therefore measured a prompt-only policy rather than the installed Ponytail Codex product.",
+      "historical_results_deleted": true,
+      "superseded_by": "artifact-ponytail-codex-plugin-v1",
+      "deletion_receipt": "sources/evaluations/audits/invalid-ponytail-caveman-result-deletion-20260719.json"
     },
     {
       "id": "terminal-tokenjuice-codex-hook-v1",
@@ -1393,7 +1401,7 @@
       "id": "retrieval-jcodemunch-mcp-direct-v1",
       "profile_type": "individual_tool",
       "objective_scope": "individual_tool_effectiveness",
-      "status": "screening-shortlist",
+      "status": "invalid-profile",
       "enabled_surfaces": [
         "retrieval-context",
         "mcp"
@@ -1409,18 +1417,23 @@
         }
       ],
       "install": {
-        "policy": "Install the pinned wheel into a lane-private venv, configure Codex with the direct jcodemunch-mcp binary, warm the repository index, and retain a provider-free initialize plus tools/list handshake before execution."
+        "policy": "Historical incomplete setup: direct MCP binary and warm index were present, but the tool-author-provided Codex guidance layer was deliberately omitted."
       },
       "reset": {
         "policy": "Delete the lane-private venv, index, CODEX_HOME, MCP config, and cache after evidence capture; verify no generated state survives into another lane."
       },
       "evaluation_protocol": {
         "tool_use_policy": "natural",
-        "tool_state": "warm-index",
-        "integration_state": "direct-binary-neutral-mcp",
-        "instruction_policy": "neutral-availability-no-product-guidance"
+        "tool_state": "deleted-invalid-treatment",
+        "integration_state": "incomplete-codex-install",
+        "instruction_policy": "missing-tool-author-recommended-guidance"
       },
-      "notes": "Versioned correction of the historical jcodemunch technical assignment. This is an explicitly neutral MCP-availability estimand. The product universal guidance layer is not installed and would require a separate versioned instruction-policy profile."
+      "notes": "Invalid canonical product treatment. The runner omitted the tool-author-recommended Codex guidance layer, so the installation was incomplete and all provider-backed results were deleted by experiment-owner direction.",
+      "blocked_reason": "Incomplete installation: MCP wiring alone did not follow the tool-author-provided Codex installation guide, which requires a guidance layer teaching the agent when to use jcodemunch.",
+      "superseded_by": "retrieval-jcodemunch-codex-mcp-v2",
+      "historical_results_deleted": true,
+      "deletion_receipt": "sources/evaluations/audits/invalid-jcodemunch-direct-v1-result-deletion-20260719.json",
+      "historical_result_disposition": "deleted-invalid-treatment"
     },
     {
       "id": "terminal-rtk-codex-instructions-v1",
@@ -1521,41 +1534,6 @@
         "instruction_policy": "product-authored-guidance"
       },
       "notes": "Versioned correction of the historical optional-MCP Graphify ablation. Measures the official Codex skill, project instructions, hook, and full graph without adding an evaluator-authored MCP arm."
-    },
-    {
-      "id": "retrieval-codegraph-codex-mcp-v1",
-      "profile_type": "individual_tool",
-      "objective_scope": "individual_tool_effectiveness",
-      "status": "screening-shortlist",
-      "enabled_surfaces": [
-        "retrieval-context",
-        "mcp",
-        "codex-global-instructions",
-        "live-index-watch"
-      ],
-      "disabled_overlaps": [
-        "all unlisted surfaces"
-      ],
-      "components": [
-        {
-          "component_id": "retrieval-codegraph-codex-mcp-v1",
-          "surface": "retrieval-context+mcp+instructions+live-index",
-          "role": "individual_tool"
-        }
-      ],
-      "install": {
-        "policy": "Run the pinned CodeGraph official Codex installer in the lane-private home, initialize the full project graph, retain live watch, and require an initialize plus tools/list handshake."
-      },
-      "reset": {
-        "policy": "Delete lane-private CODEX_HOME and .codegraph state after evidence capture; verify no MCP config, instructions, daemon, or index survives."
-      },
-      "evaluation_protocol": {
-        "tool_use_policy": "natural",
-        "tool_state": "warm-index",
-        "integration_state": "official-codex-mcp-live-watch",
-        "instruction_policy": "product-authored-guidance"
-      },
-      "notes": "Versioned correction of the historical manually wired no-watch CodeGraph profile."
     },
     {
       "id": "integrated-leanctx-codex-hybrid-v1",
@@ -1796,6 +1774,161 @@
         "assignment_proof": "provider-free initialize plus tools/list handshake required"
       },
       "notes": "Versioned replacement for deleted historical results whose treatment assignment was not operationally proven."
+    },
+    {
+      "id": "artifact-ponytail-codex-plugin-v1",
+      "profile_type": "individual_tool",
+      "objective_scope": "individual_tool_effectiveness",
+      "status": "screening-shortlist",
+      "enabled_surfaces": [
+        "codex-plugin",
+        "product-authored-skills-and-commands",
+        "session-start-hook",
+        "user-prompt-submit-hook",
+        "subagent-start-hook"
+      ],
+      "disabled_overlaps": [
+        "all unlisted surfaces"
+      ],
+      "components": [
+        {
+          "component_id": "artifact-ponytail-codex-plugin-v1",
+          "surface": "codex-plugin+skills+commands+trusted-lifecycle-hooks",
+          "role": "individual_tool"
+        }
+      ],
+      "install": {
+        "policy": "Create a local Codex marketplace from the exact pinned Ponytail commit, install ponytail@ponytail through the official `codex plugin` commands in a lane-private CODEX_HOME, discover every plugin hook through Codex app-server, persist trust for the reviewed current hashes, and verify the enabled plugin plus trusted hooks."
+      },
+      "reset": {
+        "policy": "Delete the lane-private CODEX_HOME, local marketplace mirror, hook-trust receipt, plugin cache, and all generated evaluation artifacts after evidence capture."
+      },
+      "evaluation_protocol": {
+        "tool_use_policy": "natural",
+        "tool_state": "active-plugin-hooks-and-skills",
+        "integration_state": "official-codex-plugin+pinned-local-marketplace+trusted-product-hooks",
+        "instruction_policy": "product-authored-plugin-skills-and-hooks",
+        "source_commit": "40e50d9e03242aa5dd53ac771950f9127362b25f",
+        "assignment_proof": "provider-free plugin list plus source-pin receipt plus trusted hooks/list receipt required"
+      },
+      "notes": "Guide-faithful replacement for the deleted prompt-only artifact-ponytail profile."
+    },
+    {
+      "id": "behavior-caveman-codex-skill-v1",
+      "profile_type": "individual_tool",
+      "objective_scope": "individual_tool_effectiveness",
+      "status": "screening-shortlist",
+      "enabled_surfaces": [
+        "codex-project-skills",
+        "product-authored-caveman-skill-suite",
+        "documented-per-session-activation"
+      ],
+      "disabled_overlaps": [
+        "all unlisted surfaces"
+      ],
+      "components": [
+        {
+          "component_id": "behavior-caveman-codex-skill-v1",
+          "surface": "codex-native-skills+documented-session-activation",
+          "role": "individual_tool"
+        }
+      ],
+      "install": {
+        "policy": "Run the author-recommended `npx skills add` path against the exact pinned Caveman checkout with the Codex agent target, verify all seven product skills in the target repository, and place the documented `/caveman` activation in the first prompt of each persistent workflow session."
+      },
+      "reset": {
+        "policy": "Delete the isolated checkout, project-local .agents skill installation, lane-private CODEX_HOME, npm cache, and generated evaluation artifacts after evidence capture."
+      },
+      "evaluation_protocol": {
+        "tool_use_policy": "natural-after-product-required-session-activation",
+        "tool_state": "active-native-skill",
+        "integration_state": "official-npx-codex-skill-install+documented-session-activation",
+        "instruction_policy": "product-authored-native-skill",
+        "source_commit": "0d95a81d35a9f2d123a5e9430d1cfc43d55f1bb0",
+        "session_activation": "/caveman",
+        "assignment_proof": "provider-free seven-skill materialization plus deterministic first-prompt activation required"
+      },
+      "notes": "Guide-faithful replacement for the deleted prompt-emulated behavior-caveman profile."
+    },
+    {
+      "id": "retrieval-codegraph-codex-mcp-v1",
+      "profile_type": "individual_tool",
+      "objective_scope": "individual_tool_effectiveness",
+      "status": "screening-shortlist",
+      "enabled_surfaces": [
+        "retrieval-context",
+        "mcp",
+        "codex-global-instructions",
+        "live-index-watch"
+      ],
+      "disabled_overlaps": [
+        "all unlisted surfaces"
+      ],
+      "components": [
+        {
+          "component_id": "retrieval-codegraph-codex-mcp-v1",
+          "surface": "retrieval-context+mcp+instructions+live-index+model-runtime-cli",
+          "role": "individual_tool"
+        }
+      ],
+      "install": {
+        "policy": "Run the pinned official CodeGraph Codex installer in the lane-private home, expose the pinned `codegraph` binary on the actual model-runtime PATH, initialize the full project graph, retain live watch, require a container `command -v` plus version probe, and require initialize plus tools/list."
+      },
+      "reset": {
+        "policy": "Delete lane-private CODEX_HOME, PATH shim, and .codegraph state after evidence capture; verify no MCP config, instructions, daemon, alias, or index survives."
+      },
+      "evaluation_protocol": {
+        "tool_use_policy": "natural",
+        "tool_state": "warm-index",
+        "integration_state": "official-codex-mcp-live-watch-model-runtime-path",
+        "instruction_policy": "product-authored-guidance"
+      },
+      "notes": "Canonical corrected CodeGraph integration after owner-authorized deletion of the invalid prior result: materializes the bare command generated by the official Codex installer on the actual model container PATH and gates provider use on that runtime probe."
+    },
+    {
+      "id": "retrieval-jcodemunch-codex-mcp-v2",
+      "profile_type": "individual_tool",
+      "objective_scope": "individual_tool_effectiveness",
+      "status": "screening-shortlist",
+      "enabled_surfaces": [
+        "retrieval-context",
+        "mcp",
+        "codex-global-instructions",
+        "warm-index"
+      ],
+      "disabled_overlaps": [
+        "all unlisted surfaces"
+      ],
+      "components": [
+        {
+          "component_id": "retrieval-jcodemunch-codex-mcp-v2",
+          "surface": "retrieval-context+mcp+product-authored-codex-guidance+warm-index",
+          "role": "individual_tool"
+        }
+      ],
+      "install": {
+        "policy": "Install the pinned 1.108.114 wheel into a lane-private venv, point Codex directly at the resolved jcodemunch-mcp binary with no launcher or arguments, install verbatim product-authored guidance excerpts into the lane-private Codex AGENTS.md, build a product-native warm index, and require initialize plus tools/list before provider use."
+      },
+      "reset": {
+        "policy": "Delete the lane-private venv, CODE_INDEX_PATH, CODEX_HOME, MCP config, install receipt, and index after evidence capture; verify no guidance or generated state survives into another lane."
+      },
+      "evaluation_protocol": {
+        "tool_use_policy": "natural",
+        "tool_state": "warm-index",
+        "integration_state": "pinned-direct-binary-mcp-with-product-authored-codex-guidance",
+        "instruction_policy": "verbatim-product-authored-guidance",
+        "assignment_proof": "provider-free direct-binary probe, guidance provenance receipt, warm-index receipt, and initialize-plus-tools-list required"
+      },
+      "source_snapshot": {
+        "repository": "jgravelle/jcodemunch-mcp",
+        "commit": "fbc14e40c7057ebc6d718fb48083d30522afe15f",
+        "version": "1.108.114",
+        "wheel": "/opt/data/tool-candidates/jcodemunch-mcp/dist/jcodemunch_mcp-1.108.114-py3-none-any.whl",
+        "wheel_sha256": "9ae3a44c2be5709d33fa2b56c9e569906ed63906a907f89b4762a370d397ed54",
+        "readme_sha256": "09ba2669b45355464761b130a9696f7851af2e42df7fb9bec1283357788f3ad2",
+        "universal_guide_sha256": "2026d09f4af85e972a5c4a9874d91bd8a8675ab7fbb44a283911fd06afd0abb2"
+      },
+      "notes": "Guide-faithful replacement for the deleted direct-v1 treatment. The evaluator adds no prompt steering: the lane installs verbatim jcodemunch policy and universal-guide excerpts into Codex AGENTS.md and records their source hashes."
     }
   ]
 }

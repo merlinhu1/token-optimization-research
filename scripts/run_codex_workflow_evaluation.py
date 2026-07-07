@@ -71,9 +71,9 @@ SUPPORTED_WORKFLOW_TOOL_PROFILES = {
     "retrieval-sigmap": "sigmap",
     "retrieval-sigmap-codex-live-v1": "sigmap-codex-live-v1",
     "retrieval-jcodemunch-mcp": "jcodemunch-mcp",
-    "retrieval-jcodemunch-mcp-direct-v1": "jcodemunch-mcp-direct-v1",
     "integrated-token-savior": "token-savior",
     "integrated-token-savior-mcp-v1": "token-savior-mcp-v1",
+    "retrieval-jcodemunch-codex-mcp-v2": "jcodemunch-codex-mcp-v2",
     "headroom-default-codex": "headroom",
     "terminal-headroom": "headroom-proxy-only",
     "terminal-rtk": "rtk",
@@ -84,8 +84,8 @@ SUPPORTED_WORKFLOW_TOOL_PROFILES = {
     "terminal-tokenjuice": "tokenjuice",
     "terminal-tokenjuice-codex-hook-v1": "tokenjuice-codex-hook-v1",
     "stack-tokenjuice-jcodemunch-mcp": "tokenjuice-jcodemunch-mcp-stack",
-    "behavior-caveman": "caveman",
-    "artifact-ponytail": "ponytail",
+    "behavior-caveman-codex-skill-v1": "caveman-codex-skill-v1",
+    "artifact-ponytail-codex-plugin-v1": "ponytail-codex-plugin-v1",
 }
 
 
@@ -287,7 +287,7 @@ def profile_registry_entry(profile_id: str, root: Path = ROOT) -> dict[str, Any]
 
 def assert_profile_runnable(profile_id: str, root: Path = ROOT) -> None:
     profile = profile_registry_entry(profile_id, root)
-    if profile.get("status") in {"blocked-profile", "historical-profile", "deferred-profile"}:
+    if profile.get("status") in {"blocked-profile", "historical-profile", "deferred-profile", "invalid-profile"}:
         reason = str(
             profile.get("blocked_reason")
             or profile.get("deferred_reason")
@@ -870,7 +870,6 @@ def artifact_profile_label(profile_id: str) -> str:
         "swarmvault-owner": "swarmvault",
         "stack-tokenjuice-jcodemunch-mcp": "tokenjuice-jcodemunch",
         "terminal-tokenjuice-codex-hook-v1": "tokenjuice",
-        "retrieval-jcodemunch-mcp-direct-v1": "jcodemunch",
         "terminal-rtk-codex-instructions-v1": "rtk",
         "terminal-snip-codex-hook-v1": "snip",
         "retrieval-graphify-codex-skill-v1": "graphify",

@@ -1,0 +1,452 @@
+{
+  "protocol_schema_version": 3,
+  "protocol_id": "fastify-lifecycle-sequence-v0-behavior-caveman-codex-skill-v1-2831bac7af6f",
+  "status": "frozen-ready-not-run",
+  "outcome": "Frozen behavior-caveman-codex-skill-v1 protocol for fastify-lifecycle-sequence-v0; no provider/model run has occurred.",
+  "frozen_at": "2026-07-16",
+  "hypothesis": "behavior-caveman-codex-skill-v1 produces reproducible provider-reported token and software-quality evidence for fastify-lifecycle-sequence-v0",
+  "evidence_stage_target": "reproduction",
+  "task_fixture": {
+    "fixture_id": "medium-fastify-fastify",
+    "sequence_id": "fastify-lifecycle-sequence-v0",
+    "repository": "https://github.com/fastify/fastify.git",
+    "snapshot": "94bcbcc6e2ef3b8e8f8e8797fe551ccbe7b942fd",
+    "qualification_path": "sources/evaluations/fixtures/medium/fastify-fastify/qualification-lifecycle-v0.json",
+    "qualification_sha256": "87068241dd67e58e6850cc65a3116be341beb3de814abc553e01920415a2c12b",
+    "timeout_seconds_per_task": 3600
+  },
+  "baseline": {
+    "profile_id": "baseline-bare-codex",
+    "provider": "openai",
+    "model": "gpt-5.6-luna",
+    "model_condition_id": "codex-openai-gpt-5-6-luna-xhigh",
+    "reasoning_effort": "xhigh",
+    "command": ""
+  },
+  "treatment": {
+    "profile_id": "behavior-caveman-codex-skill-v1",
+    "provider": "openai",
+    "model": "gpt-5.6-luna",
+    "model_condition_id": "codex-openai-gpt-5-6-luna-xhigh",
+    "reasoning_effort": "xhigh",
+    "command": "python3 scripts/run_codex_workflow_evaluation.py --sequence-id fastify-lifecycle-sequence-v0 --profile-id behavior-caveman-codex-skill-v1 --timeout-per-task 3600 --protocol sources/evaluations/protocols/fastify-lifecycle-sequence-v0-behavior-caveman-codex-skill-v1-2831bac7af6f.json --docker-image token-eval-codex:latest"
+  },
+  "token_accounting_boundary": {
+    "fields": [
+      "fresh_input_tokens",
+      "cached_input_tokens",
+      "cache_write_tokens",
+      "output_tokens",
+      "reasoning_tokens",
+      "total_provider_tokens"
+    ]
+  },
+  "baseline_pool": {
+    "protocol_version": "baseline-pool-v1",
+    "protocol_fingerprint": "769d40697529",
+    "descriptor": {
+      "version": "baseline-pool-v1",
+      "runner_contract_version": "workflow-runner-v9",
+      "runner_sha256": "65aa70f7fd816c0d4b0ef69618fd5a9af11c7ec7d3793ad4ef803eff86056843",
+      "qualification_generator_sha256": "cb549c9aacc1e1401dedff37b08e0d578aa91d491556dfd5e3814d52a567efe8",
+      "validator_sha256": "48fd29d25354ec4e0dae9c8f0e0f974105b67dfc737a64d50c4b06175362292e",
+      "sequence_id": "fastify-lifecycle-sequence-v0",
+      "sequence_contract": "feature-refactor-review",
+      "fixture_id": "medium-fastify-fastify",
+      "fixture_scale": "medium-project",
+      "initial_snapshot": {
+        "commit": "94bcbcc6e2ef3b8e8f8e8797fe551ccbe7b942fd",
+        "upstream": "https://github.com/fastify/fastify.git",
+        "dependency_lockfiles": [
+          {
+            "path": "package.json",
+            "sha256": "b273320af1bb4cfc0f9334457c8e3b1d035fde0da14f9db65e8ef97d361d0be3"
+          }
+        ]
+      },
+      "objective": "individual_tool_effectiveness",
+      "primary_metric": "cumulative provider-reported workflow tokens",
+      "tasks": [
+        {
+          "id": "fastify-lifecycle-feature-v0",
+          "order": 1,
+          "task_class": "feature-implementation",
+          "prompt_path": "sources/evaluations/fixtures/medium/fastify-fastify/tasks/fastify-lifecycle-feature-v0/agent-prompt.txt",
+          "prompt_sha256": "b325204fff1c81fdbef764f7c1c624c43d4c775eb913b2d11d4a4bab6aa1ccc2",
+          "seed_patch_sha256": "19035d0a5fd94a640705537cfcfc4fbc161d9ca124b08e0a8291e854fe78e578",
+          "verifier_command": "sources/evaluations/fixtures/medium/fastify-fastify/tasks/fastify-lifecycle-feature-v0/verify.sh",
+          "verifier_sha256": "799568eed4493fce3a04405917522e8b1876f224a9e4c06874de544fc27037c5",
+          "upstream_test_paths": [],
+          "compatibility_rebased_test_paths": [],
+          "expected_model_concealed_paths": [],
+          "model_concealed_paths": []
+        },
+        {
+          "id": "fastify-lifecycle-refactor-v0",
+          "order": 2,
+          "task_class": "behavior-preserving-refactor",
+          "prompt_path": "sources/evaluations/fixtures/medium/fastify-fastify/tasks/fastify-lifecycle-refactor-v0/agent-prompt.txt",
+          "prompt_sha256": "9368235d19cf540ed112fbf27ce8746eafa28f357953392139c3e54c0560e1bc",
+          "seed_patch_sha256": "fd1982e087c713640c8ab55b7875545b59a60296135e0dc847a13cea038d89d5",
+          "verifier_command": "sources/evaluations/fixtures/medium/fastify-fastify/tasks/fastify-lifecycle-refactor-v0/verify.sh",
+          "verifier_sha256": "e2acf6e7b516df4eabde50c072955e4851503bf139f5b1170f926c55a25d055b",
+          "upstream_test_paths": [],
+          "compatibility_rebased_test_paths": [],
+          "expected_model_concealed_paths": [],
+          "model_concealed_paths": []
+        },
+        {
+          "id": "fastify-lifecycle-review-v0",
+          "order": 3,
+          "task_class": "code-review-correction",
+          "prompt_path": "sources/evaluations/fixtures/medium/fastify-fastify/tasks/fastify-lifecycle-review-v0/agent-prompt.txt",
+          "prompt_sha256": "afcf8af54c18ae8ae5be6bcd87f9c104f4c32f7862a6d02e83cca03969431dcc",
+          "seed_patch_sha256": "0402a5fc7785775c034fddc539539bbbd0083d11a6f555e22f95dd992476aa3c",
+          "verifier_command": "sources/evaluations/fixtures/medium/fastify-fastify/tasks/fastify-lifecycle-review-v0/verify.sh",
+          "verifier_sha256": "75b5f53a091749072d812cb060410e8df8c6244285a94ddc422dc10826c1b647",
+          "upstream_test_paths": [],
+          "compatibility_rebased_test_paths": [],
+          "expected_model_concealed_paths": [],
+          "model_concealed_paths": [],
+          "review_patch_path": "review-change.patch",
+          "review_patch_sha256": "0402a5fc7785775c034fddc539539bbbd0083d11a6f555e22f95dd992476aa3c"
+        }
+      ],
+      "model_facing_prompts": {
+        "rendering_contract": "sequential-model-facing-prompts-v2",
+        "profile_guidance_sha256": "f1d7a2cf7b0a7c1affd8bbb04705f073332ee6efc5f8f89f019b9e0cbacec4bb",
+        "tasks": [
+          {
+            "task_id": "fastify-lifecycle-feature-v0",
+            "order": 1,
+            "rendered_prompt_sha256": "1fe89fb9203788300d9bc89267d4bbf3dd932c0c55de064293160a51ab5ce1f0"
+          },
+          {
+            "task_id": "fastify-lifecycle-refactor-v0",
+            "order": 2,
+            "rendered_prompt_sha256": "9c2087dc09a311d8f30c4f900a5d4d137ecbe5097a5c83b89ab36c73f95d39da"
+          },
+          {
+            "task_id": "fastify-lifecycle-review-v0",
+            "order": 3,
+            "rendered_prompt_sha256": "89c678d4dbdbfeb8474ce1ba90a4e5ad372f14a618eade2611ba385e2d82c05a"
+          }
+        ]
+      },
+      "qualification": {
+        "path": "sources/evaluations/fixtures/medium/fastify-fastify/qualification-lifecycle-v0.json",
+        "sha256": "87068241dd67e58e6850cc65a3116be341beb3de814abc553e01920415a2c12b"
+      },
+      "baseline_profile": {
+        "profile_id": "baseline-bare-codex",
+        "profile_type": "control",
+        "enabled_surfaces": [
+          "codex-native-shell-edit"
+        ],
+        "disabled_overlaps": [
+          "all MCP servers",
+          "all token-saving surfaces",
+          "global Codex instructions",
+          "hooks",
+          "skills/plugins",
+          "warm indexes"
+        ]
+      },
+      "agent": {
+        "runtime_id": "codex-cli",
+        "provider": "openai",
+        "model": "gpt-5.6-luna",
+        "model_condition_id": "codex-openai-gpt-5-6-luna-xhigh",
+        "reasoning_effort": "xhigh"
+      },
+      "runtime_inputs": {
+        "timeout_seconds_per_task": 3600,
+        "docker_image": "token-eval-codex:latest",
+        "docker_image_identity": {
+          "image_ref": "token-eval-codex:latest",
+          "image_id": "sha256:6f86d01f2c63f5029c6bb874d8f3694c24d5cd567e3d09413eccc956ba3feafe",
+          "repo_digests": [
+            "token-eval-codex@sha256:6f86d01f2c63f5029c6bb874d8f3694c24d5cd567e3d09413eccc956ba3feafe"
+          ],
+          "repo_tags": [
+            "token-eval-codex:latest"
+          ]
+        },
+        "dockerfile_path": "sources/evaluations/fixtures/container/Dockerfile",
+        "dockerfile_sha256": "47c91967ce25014ce54879514f51d2ff0326651be1087209115eff4d358226b3",
+        "dependency_command": "npm install --ignore-scripts --no-audit --no-fund",
+        "dependency_lockfiles": [
+          {
+            "path": "package.json",
+            "sha256": "b273320af1bb4cfc0f9334457c8e3b1d035fde0da14f9db65e8ef97d361d0be3"
+          }
+        ],
+        "codex_runtime_condition": "codex-openai-gpt-5-6-luna-xhigh"
+      },
+      "isolation": {
+        "prompt_delivery": "sequential-one-task-at-a-time",
+        "seed_delivery_mode": "preseeded-composite",
+        "future_tasks_visible": false,
+        "future_seed_regressions_visible": true,
+        "verifier_assets_model_visible": false,
+        "git_baseline_true_root_at_lane_start": true,
+        "controller_verification": "final-only",
+        "prompt_sanitizer": "sanitize_task_prompt-v1",
+        "concealment": "declared-model-concealed-paths-removed-before-root-commit",
+        "model_concealed_paths": []
+      }
+    }
+  },
+  "selected_execution": {
+    "descriptor_sha256": "7efe271586d7ae56ad00cc079d2684fee823da74876bb0a293359b3e31626dbe",
+    "descriptor": {
+      "version": "execution-condition-v1",
+      "sequence_id": "fastify-lifecycle-sequence-v0",
+      "execution_role": "individual_tool_treatment",
+      "selected_profile": {
+        "profile_id": "behavior-caveman-codex-skill-v1",
+        "profile_type": "individual_tool",
+        "component_ids": [
+          "behavior-caveman-codex-skill-v1"
+        ],
+        "enabled_surfaces": [
+          "codex-project-skills",
+          "product-authored-caveman-skill-suite",
+          "documented-per-session-activation"
+        ],
+        "disabled_overlaps": [
+          "all unlisted surfaces"
+        ],
+        "registry_entry_sha256": "5f372023119f71e37c2580ee04548a5c54c14abc6f8d4f5bb5a05f0131b9df5c",
+        "registry_entry": {
+          "id": "behavior-caveman-codex-skill-v1",
+          "profile_type": "individual_tool",
+          "objective_scope": "individual_tool_effectiveness",
+          "status": "screening-shortlist",
+          "enabled_surfaces": [
+            "codex-project-skills",
+            "product-authored-caveman-skill-suite",
+            "documented-per-session-activation"
+          ],
+          "disabled_overlaps": [
+            "all unlisted surfaces"
+          ],
+          "components": [
+            {
+              "component_id": "behavior-caveman-codex-skill-v1",
+              "surface": "codex-native-skills+documented-session-activation",
+              "role": "individual_tool"
+            }
+          ],
+          "install": {
+            "policy": "Run the author-recommended `npx skills add` path against the exact pinned Caveman checkout with the Codex agent target, verify all seven product skills in the target repository, and place the documented `/caveman` activation in the first prompt of each persistent workflow session."
+          },
+          "reset": {
+            "policy": "Delete the isolated checkout, project-local .agents skill installation, lane-private CODEX_HOME, npm cache, and generated evaluation artifacts after evidence capture."
+          },
+          "evaluation_protocol": {
+            "tool_use_policy": "natural-after-product-required-session-activation",
+            "tool_state": "active-native-skill",
+            "integration_state": "official-npx-codex-skill-install+documented-session-activation",
+            "instruction_policy": "product-authored-native-skill",
+            "source_commit": "0d95a81d35a9f2d123a5e9430d1cfc43d55f1bb0",
+            "session_activation": "/caveman",
+            "assignment_proof": "provider-free seven-skill materialization plus deterministic first-prompt activation required"
+          },
+          "notes": "Guide-faithful replacement for the deleted prompt-emulated behavior-caveman profile."
+        }
+      },
+      "model_facing_prompts": {
+        "rendering_contract": "sequential-model-facing-prompts-v2",
+        "profile_guidance_sha256": "6c7e76e601937fb2b1d84348f01ffc99257fbd04ed666eaea410ad48ba4515e8",
+        "tasks": [
+          {
+            "task_id": "fastify-lifecycle-feature-v0",
+            "order": 1,
+            "rendered_prompt_sha256": "5f291e8fe6ecd875f45b0e9c8bd4f759dd4781ee185bf97be835c189d00e1aad"
+          },
+          {
+            "task_id": "fastify-lifecycle-refactor-v0",
+            "order": 2,
+            "rendered_prompt_sha256": "9c2087dc09a311d8f30c4f900a5d4d137ecbe5097a5c83b89ab36c73f95d39da"
+          },
+          {
+            "task_id": "fastify-lifecycle-review-v0",
+            "order": 3,
+            "rendered_prompt_sha256": "89c678d4dbdbfeb8474ce1ba90a4e5ad372f14a618eade2611ba385e2d82c05a"
+          }
+        ]
+      },
+      "tool_adapter": {
+        "tool_id": "caveman-codex-skill-v1",
+        "tool_manifest": "scripts/run_codex_fixture_evaluation.py:TOOL_CONFIGS",
+        "tool_manifest_sha256": "9f46ff5b1a8fb335aa72b4a56e736749c2e58705850d8afafdc588a46faf1dca",
+        "tool_config": {
+          "display_name": "Caveman official Codex skill v1",
+          "lane_name": "behavior-caveman-codex-skill-v1",
+          "surface": "codex-project-skills+documented-per-session-activation",
+          "allowed_terms": [
+            "caveman",
+            "cavecrew"
+          ],
+          "data_dir_name": "caveman-codex-skill-v1",
+          "path_entries": [
+            "/opt/data/opt/node-v24.18.0-linux-x64/bin"
+          ],
+          "mounts": [
+            "/opt/data/tool-candidates/caveman"
+          ],
+          "diff_exclude_paths": [
+            ".agents"
+          ],
+          "host_integration": {
+            "home_dot_codex_alias": true,
+            "install_commands": [
+              [
+                "/opt/data/opt/node-v24.18.0-linux-x64/bin/npx",
+                "--yes",
+                "skills",
+                "add",
+                "/opt/data/tool-candidates/caveman",
+                "-a",
+                "codex",
+                "-y"
+              ]
+            ],
+            "verify_commands": [
+              [
+                "python3",
+                "-c",
+                "from pathlib import Path; assert Path('.agents/skills/caveman/SKILL.md').is_file()"
+              ]
+            ],
+            "required_files": [
+              "{repo}/.agents/skills/cavecrew/SKILL.md",
+              "{repo}/.agents/skills/caveman/SKILL.md",
+              "{repo}/.agents/skills/caveman-commit/SKILL.md",
+              "{repo}/.agents/skills/caveman-compress/SKILL.md",
+              "{repo}/.agents/skills/caveman-help/SKILL.md",
+              "{repo}/.agents/skills/caveman-review/SKILL.md",
+              "{repo}/.agents/skills/caveman-stats/SKILL.md"
+            ],
+            "timeout_seconds": 300
+          },
+          "preflight_command": [
+            "python3",
+            "-c",
+            "from pathlib import Path; print(Path('.agents/skills/caveman/SKILL.md').resolve())"
+          ],
+          "session_activation": "/caveman",
+          "default_tool_state": "active-native-skill"
+        },
+        "tool_config_sha256": "a0d7f77e5baedbcab0cb737d33b9682a0eb3330ae14fb1a3a563c1197401f21e",
+        "tool_state": "active-native-skill",
+        "tool_use_policy": "natural-after-product-required-session-activation",
+        "command_identity": {
+          "kind": "preflight_command",
+          "command": [
+            "python3",
+            "-c",
+            "from pathlib import Path; print(Path('.agents/skills/caveman/SKILL.md').resolve())"
+          ]
+        },
+        "binary_identity": {
+          "executable_token": "python3",
+          "resolved_path": "/usr/bin/python3",
+          "realpath": "/usr/bin/python3.13",
+          "sha256": "4703a3d15898c0b5d81c3f939e93bdd8ca6116342093fb160ab1e01860dd7d8b",
+          "metadata": {
+            "size": 6812336,
+            "mode": "-rwxr-xr-x",
+            "uid": 0,
+            "gid": 0,
+            "mtime_ns": 1778015152000000000
+          },
+          "version": {
+            "command": [
+              "/usr/bin/python3.13",
+              "--version"
+            ],
+            "environment_path": "/opt/data/.local/bin:/opt/data/opt/go/bin:/opt/data/opt/uv:/opt/data/opt/node-v24.18.0-linux-x64/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+            "captured": true,
+            "exit_code": 0,
+            "output": "Python 3.13.5",
+            "truncated": false
+          }
+        },
+        "source_identity": [
+          {
+            "path": "/opt/data/tool-candidates/caveman",
+            "exists": true,
+            "kind": "directory",
+            "git_head": "0d95a81d35a9f2d123a5e9430d1cfc43d55f1bb0",
+            "package_json_sha256": "3f9a34e4224efcad6e53a7cdef3c93869b77d932e2757c29fdaf0f63cfb2ad5f"
+          }
+        ]
+      },
+      "runtime": {
+        "docker_image": "token-eval-codex:latest",
+        "docker_image_identity": {
+          "image_ref": "token-eval-codex:latest",
+          "image_id": "sha256:6f86d01f2c63f5029c6bb874d8f3694c24d5cd567e3d09413eccc956ba3feafe",
+          "repo_digests": [
+            "token-eval-codex@sha256:6f86d01f2c63f5029c6bb874d8f3694c24d5cd567e3d09413eccc956ba3feafe"
+          ],
+          "repo_tags": [
+            "token-eval-codex:latest"
+          ]
+        },
+        "dockerfile_path": "sources/evaluations/fixtures/container/Dockerfile",
+        "dockerfile_sha256": "47c91967ce25014ce54879514f51d2ff0326651be1087209115eff4d358226b3",
+        "fixture_runner_path": "scripts/run_codex_fixture_evaluation.py",
+        "fixture_runner_sha256": "9f46ff5b1a8fb335aa72b4a56e736749c2e58705850d8afafdc588a46faf1dca",
+        "mcp_probe_path": "scripts/probe_mcp_stdio.py",
+        "mcp_probe_sha256": "7c06ea36ee5cac933a97140b84a41405fc99b45152388e8d7c6659136af698fd",
+        "codex_entrypoint_path": "sources/evaluations/fixtures/container/codex-entrypoint.sh",
+        "codex_entrypoint_sha256": "8715fe37cb1fa3823f5f05493bc9681ce7ffc72126dfec4d64d448762c550c3c",
+        "timeout_seconds_per_task": 3600,
+        "network_isolation": {
+          "provider_access": true,
+          "model_shell_network_access": false,
+          "model_shell_enforcement": "seccomp denies AF_INET and AF_INET6 socket creation for the shell process and descendants",
+          "codex_web_search": "disabled",
+          "external_retrieval_audit": "fail-closed"
+        },
+        "isolation_policy": "fresh lane-specific Codex home/tool data; provider-only network with model shell and Codex web search disabled; sequential one-task prompt delivery; concealed tests removed before model-visible root commit"
+      },
+      "dependencies": {
+        "command": "npm install --ignore-scripts --no-audit --no-fund",
+        "command_sha256": "7493d616f26e72b22eb5a21beafa12a6717ebf5b93a7a75e709de65e7323cc41",
+        "lockfiles": [
+          {
+            "path": "package.json",
+            "snapshot_sha256": "b273320af1bb4cfc0f9334457c8e3b1d035fde0da14f9db65e8ef97d361d0be3",
+            "current_fixture_sha256": null
+          }
+        ]
+      },
+      "agent_condition": {
+        "runtime_id": "codex-cli",
+        "provider": "openai",
+        "model": "gpt-5.6-luna",
+        "model_condition_id": "codex-openai-gpt-5-6-luna-xhigh",
+        "reasoning_effort": "xhigh",
+        "codex_version_condition": "captured-at-run-and-bound-to-record"
+      },
+      "isolation": {
+        "prompt_delivery": "sequential-one-task-at-a-time",
+        "seed_delivery_mode": "preseeded-composite",
+        "future_tasks_visible": false,
+        "future_seed_regressions_visible": true,
+        "controller_verification": "final-only",
+        "verifier_assets_model_visible": false,
+        "model_concealed_paths": []
+      },
+      "baseline_pool_reference": {
+        "protocol_version": "baseline-pool-v1",
+        "protocol_fingerprint": "769d40697529",
+        "comparison_policy": "paired baseline and treatment must share this baseline pool fingerprint and replicate"
+      }
+    }
+  }
+}

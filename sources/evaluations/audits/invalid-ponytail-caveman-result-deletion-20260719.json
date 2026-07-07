@@ -1,0 +1,209 @@
+{
+  "schema_version": 1,
+  "date": "2026-07-19",
+  "action": "owner-authorized-deletion-from-active-corpus",
+  "owner_direction": "Delete defect results for ponytail and caveman. Create fresh guide faithful profiles.",
+  "recovery_commit": "78c0526",
+  "policy": {
+    "baseline_relabeling": "forbidden; invalid treatment assignments are not controls",
+    "provider_rerun": "required under new versioned guide-faithful Codex profiles",
+    "result_retention": "no provider totals, task outcomes, diffs, event streams, or comparison deltas retained in this deletion receipt"
+  },
+  "profiles": [
+    {
+      "profile_id": "artifact-ponytail",
+      "invalidity": "The lane injected Ponytail fallback instructions into the evaluator prompt but explicitly omitted the author-recommended Codex plugin installation and trusted lifecycle hooks. It therefore measured a prompt-only policy rather than the installed Ponytail Codex product.",
+      "deleted_session_ids": [
+        "ponytail-fastify-20260716-p-769d40697529-r1",
+        "ponytail-beets-20260716-p-b440da225a3a-r1",
+        "ponytail-terraform-20260716-p-ded8609b4172-r1"
+      ],
+      "deleted_protocol_paths": [
+        "sources/evaluations/protocols/fastify-lifecycle-sequence-v0-artifact-ponytail-3dab8dc0fb93.json",
+        "sources/evaluations/protocols/beets-lifecycle-sequence-v0-artifact-ponytail-6cb26839deda.json",
+        "sources/evaluations/protocols/terraform-lifecycle-sequence-v0-artifact-ponytail-e15365f3d566.json"
+      ],
+      "deleted_comparison_paths": [
+        "sources/evaluations/workflow-sessions/baseline-fastify-20260716-vs-ponytail-p-769d40697529-r1.json",
+        "sources/evaluations/workflow-sessions/baseline-beets-20260716-vs-ponytail-p-b440da225a3a-r1.json",
+        "sources/evaluations/workflow-sessions/baseline-terraform-20260716-vs-ponytail-p-ded8609b4172-r1.json"
+      ],
+      "deleted_bundle_roots": [
+        "sources/evaluations/workflow-sessions/ponytail-fastify-20260716-p-769d40697529-r1",
+        "sources/evaluations/workflow-sessions/ponytail-beets-20260716-p-b440da225a3a-r1",
+        "sources/evaluations/workflow-sessions/ponytail-terraform-20260716-p-ded8609b4172-r1"
+      ],
+      "replacement_profile_id": "artifact-ponytail-codex-plugin-v1",
+      "derived_aggregate_disposition": "Removed from active sessions and current product-effect aggregates; successor has no provider-backed result.",
+      "regenerated_derived_paths": [
+        "sources/evaluations/audits/codex-cumulative-usage-accounting-20260718.json",
+        "sources/evaluations/audits/gpt-5-6-sol-high-baseline-variance-20260718.json",
+        "docs/evaluations/operations/runbook.md"
+      ],
+      "deleted_external_paths": [
+        "/opt/data/eval-workflow-lanes/workflow-matrix-20260716T222130684592Z-p908777-r1/beets-lifecycle-sequence-v0--artifact-ponytail",
+        "/opt/data/eval-workflow-lanes/workflow-matrix-20260716T222130684592Z-p908777-r1/fastify-lifecycle-sequence-v0--artifact-ponytail",
+        "/opt/data/eval-workflow-lanes/workflow-matrix-20260716T222130684592Z-p908777-r1/terraform-lifecycle-sequence-v0--artifact-ponytail",
+        "/opt/data/eval-workflow-lanes/workflow-matrix-20260716T222156345890Z-p910304-r1/beets-lifecycle-sequence-v0--artifact-ponytail",
+        "/opt/data/eval-workflow-lanes/workflow-matrix-20260716T222156345890Z-p910304-r1/fastify-lifecycle-sequence-v0--artifact-ponytail",
+        "/opt/data/eval-workflow-lanes/workflow-matrix-20260716T222156345890Z-p910304-r1/terraform-lifecycle-sequence-v0--artifact-ponytail",
+        "/opt/data/eval-workflow-lanes/workflow-matrix-20260718T082550368156Z-p1248678-r0/beets-lifecycle-sequence-v0--retrieval-jcodemunch-mcp-official-v1/checkout/sources/evaluations/workflow-sessions/ponytail-beets-20260716-p-b440da225a3a-r1",
+        "/opt/data/eval-workflow-lanes/workflow-matrix-20260718T082550368156Z-p1248678-r0/beets-lifecycle-sequence-v0--retrieval-jcodemunch-mcp-official-v1/checkout/sources/evaluations/workflow-sessions/ponytail-fastify-20260716-p-769d40697529-r1",
+        "/opt/data/eval-workflow-lanes/workflow-matrix-20260718T082550368156Z-p1248678-r0/beets-lifecycle-sequence-v0--retrieval-jcodemunch-mcp-official-v1/checkout/sources/evaluations/workflow-sessions/ponytail-terraform-20260716-p-ded8609b4172-r1",
+        "/opt/data/eval-workflow-lanes/workflow-matrix-20260718T082550368156Z-p1248678-r0/beets-lifecycle-sequence-v0--terminal-tokenjuice-codex-hook-v1/checkout/sources/evaluations/workflow-sessions/ponytail-beets-20260716-p-b440da225a3a-r1",
+        "/opt/data/eval-workflow-lanes/workflow-matrix-20260718T082550368156Z-p1248678-r0/beets-lifecycle-sequence-v0--terminal-tokenjuice-codex-hook-v1/checkout/sources/evaluations/workflow-sessions/ponytail-fastify-20260716-p-769d40697529-r1",
+        "/opt/data/eval-workflow-lanes/workflow-matrix-20260718T082550368156Z-p1248678-r0/beets-lifecycle-sequence-v0--terminal-tokenjuice-codex-hook-v1/checkout/sources/evaluations/workflow-sessions/ponytail-terraform-20260716-p-ded8609b4172-r1",
+        "/opt/data/eval-workflow-lanes/workflow-matrix-20260718T082550368156Z-p1248678-r0/fastify-lifecycle-sequence-v0--retrieval-jcodemunch-mcp-official-v1/checkout/sources/evaluations/workflow-sessions/ponytail-beets-20260716-p-b440da225a3a-r1",
+        "/opt/data/eval-workflow-lanes/workflow-matrix-20260718T082550368156Z-p1248678-r0/fastify-lifecycle-sequence-v0--retrieval-jcodemunch-mcp-official-v1/checkout/sources/evaluations/workflow-sessions/ponytail-fastify-20260716-p-769d40697529-r1",
+        "/opt/data/eval-workflow-lanes/workflow-matrix-20260718T082550368156Z-p1248678-r0/fastify-lifecycle-sequence-v0--retrieval-jcodemunch-mcp-official-v1/checkout/sources/evaluations/workflow-sessions/ponytail-terraform-20260716-p-ded8609b4172-r1",
+        "/opt/data/eval-workflow-lanes/workflow-matrix-20260718T082550368156Z-p1248678-r0/fastify-lifecycle-sequence-v0--terminal-tokenjuice-codex-hook-v1/checkout/sources/evaluations/workflow-sessions/ponytail-beets-20260716-p-b440da225a3a-r1",
+        "/opt/data/eval-workflow-lanes/workflow-matrix-20260718T082550368156Z-p1248678-r0/fastify-lifecycle-sequence-v0--terminal-tokenjuice-codex-hook-v1/checkout/sources/evaluations/workflow-sessions/ponytail-fastify-20260716-p-769d40697529-r1",
+        "/opt/data/eval-workflow-lanes/workflow-matrix-20260718T082550368156Z-p1248678-r0/fastify-lifecycle-sequence-v0--terminal-tokenjuice-codex-hook-v1/checkout/sources/evaluations/workflow-sessions/ponytail-terraform-20260716-p-ded8609b4172-r1",
+        "/opt/data/eval-workflow-lanes/workflow-matrix-20260718T082550368156Z-p1248678-r0/terraform-lifecycle-sequence-v0--retrieval-jcodemunch-mcp-official-v1/checkout/sources/evaluations/workflow-sessions/ponytail-beets-20260716-p-b440da225a3a-r1",
+        "/opt/data/eval-workflow-lanes/workflow-matrix-20260718T082550368156Z-p1248678-r0/terraform-lifecycle-sequence-v0--retrieval-jcodemunch-mcp-official-v1/checkout/sources/evaluations/workflow-sessions/ponytail-fastify-20260716-p-769d40697529-r1",
+        "/opt/data/eval-workflow-lanes/workflow-matrix-20260718T082550368156Z-p1248678-r0/terraform-lifecycle-sequence-v0--retrieval-jcodemunch-mcp-official-v1/checkout/sources/evaluations/workflow-sessions/ponytail-terraform-20260716-p-ded8609b4172-r1",
+        "/opt/data/eval-workflow-lanes/workflow-matrix-20260718T082550368156Z-p1248678-r0/terraform-lifecycle-sequence-v0--terminal-tokenjuice-codex-hook-v1/checkout/sources/evaluations/workflow-sessions/ponytail-beets-20260716-p-b440da225a3a-r1",
+        "/opt/data/eval-workflow-lanes/workflow-matrix-20260718T082550368156Z-p1248678-r0/terraform-lifecycle-sequence-v0--terminal-tokenjuice-codex-hook-v1/checkout/sources/evaluations/workflow-sessions/ponytail-fastify-20260716-p-769d40697529-r1",
+        "/opt/data/eval-workflow-lanes/workflow-matrix-20260718T082550368156Z-p1248678-r0/terraform-lifecycle-sequence-v0--terminal-tokenjuice-codex-hook-v1/checkout/sources/evaluations/workflow-sessions/ponytail-terraform-20260716-p-ded8609b4172-r1",
+        "/opt/data/eval-workflow-lanes/workflow-matrix-20260718T083411939868Z-p1254239-r0/fastify-lifecycle-sequence-v0--retrieval-jcodemunch-mcp-official-v1/checkout/sources/evaluations/workflow-sessions/ponytail-beets-20260716-p-b440da225a3a-r1",
+        "/opt/data/eval-workflow-lanes/workflow-matrix-20260718T083411939868Z-p1254239-r0/fastify-lifecycle-sequence-v0--retrieval-jcodemunch-mcp-official-v1/checkout/sources/evaluations/workflow-sessions/ponytail-fastify-20260716-p-769d40697529-r1",
+        "/opt/data/eval-workflow-lanes/workflow-matrix-20260718T083411939868Z-p1254239-r0/fastify-lifecycle-sequence-v0--retrieval-jcodemunch-mcp-official-v1/checkout/sources/evaluations/workflow-sessions/ponytail-terraform-20260716-p-ded8609b4172-r1",
+        "/opt/data/eval-workflow-lanes/workflow-matrix-20260718T083411939868Z-p1254239-r0/fastify-lifecycle-sequence-v0--terminal-tokenjuice-codex-hook-v1/checkout/sources/evaluations/workflow-sessions/ponytail-beets-20260716-p-b440da225a3a-r1",
+        "/opt/data/eval-workflow-lanes/workflow-matrix-20260718T083411939868Z-p1254239-r0/fastify-lifecycle-sequence-v0--terminal-tokenjuice-codex-hook-v1/checkout/sources/evaluations/workflow-sessions/ponytail-fastify-20260716-p-769d40697529-r1",
+        "/opt/data/eval-workflow-lanes/workflow-matrix-20260718T083411939868Z-p1254239-r0/fastify-lifecycle-sequence-v0--terminal-tokenjuice-codex-hook-v1/checkout/sources/evaluations/workflow-sessions/ponytail-terraform-20260716-p-ded8609b4172-r1",
+        "/opt/data/eval-workflow-lanes/workflow-matrix-20260718T083948052188Z-p1257717-r0/fastify-lifecycle-sequence-v0--terminal-tokenjuice-codex-hook-v1/checkout/sources/evaluations/workflow-sessions/ponytail-beets-20260716-p-b440da225a3a-r1",
+        "/opt/data/eval-workflow-lanes/workflow-matrix-20260718T083948052188Z-p1257717-r0/fastify-lifecycle-sequence-v0--terminal-tokenjuice-codex-hook-v1/checkout/sources/evaluations/workflow-sessions/ponytail-fastify-20260716-p-769d40697529-r1",
+        "/opt/data/eval-workflow-lanes/workflow-matrix-20260718T083948052188Z-p1257717-r0/fastify-lifecycle-sequence-v0--terminal-tokenjuice-codex-hook-v1/checkout/sources/evaluations/workflow-sessions/ponytail-terraform-20260716-p-ded8609b4172-r1",
+        "/opt/data/eval-workflow-lanes/workflow-matrix-20260718T085300946117Z-p1264016-r0/fastify-lifecycle-sequence-v0--terminal-tokenjuice-codex-hook-v1/checkout/sources/evaluations/workflow-sessions/ponytail-beets-20260716-p-b440da225a3a-r1",
+        "/opt/data/eval-workflow-lanes/workflow-matrix-20260718T085300946117Z-p1264016-r0/fastify-lifecycle-sequence-v0--terminal-tokenjuice-codex-hook-v1/checkout/sources/evaluations/workflow-sessions/ponytail-fastify-20260716-p-769d40697529-r1",
+        "/opt/data/eval-workflow-lanes/workflow-matrix-20260718T085300946117Z-p1264016-r0/fastify-lifecycle-sequence-v0--terminal-tokenjuice-codex-hook-v1/checkout/sources/evaluations/workflow-sessions/ponytail-terraform-20260716-p-ded8609b4172-r1",
+        "/opt/data/eval-workflow-lanes/workflow-matrix-20260718T085744295994Z-p1269694-r0/fastify-lifecycle-sequence-v0--terminal-tokenjuice-codex-hook-v1/checkout/sources/evaluations/workflow-sessions/ponytail-beets-20260716-p-b440da225a3a-r1",
+        "/opt/data/eval-workflow-lanes/workflow-matrix-20260718T085744295994Z-p1269694-r0/fastify-lifecycle-sequence-v0--terminal-tokenjuice-codex-hook-v1/checkout/sources/evaluations/workflow-sessions/ponytail-fastify-20260716-p-769d40697529-r1",
+        "/opt/data/eval-workflow-lanes/workflow-matrix-20260718T085744295994Z-p1269694-r0/fastify-lifecycle-sequence-v0--terminal-tokenjuice-codex-hook-v1/checkout/sources/evaluations/workflow-sessions/ponytail-terraform-20260716-p-ded8609b4172-r1",
+        "/opt/data/eval-workflow-lanes/workflow-matrix-20260718T201720299971Z-p1527992-r2/beets-lifecycle-sequence-v0--retrieval-graphify-codex-skill-v1/checkout/sources/evaluations/workflow-sessions/ponytail-beets-20260716-p-b440da225a3a-r1",
+        "/opt/data/eval-workflow-lanes/workflow-matrix-20260718T201720299971Z-p1527992-r2/beets-lifecycle-sequence-v0--retrieval-graphify-codex-skill-v1/checkout/sources/evaluations/workflow-sessions/ponytail-fastify-20260716-p-769d40697529-r1",
+        "/opt/data/eval-workflow-lanes/workflow-matrix-20260718T201720299971Z-p1527992-r2/beets-lifecycle-sequence-v0--retrieval-graphify-codex-skill-v1/checkout/sources/evaluations/workflow-sessions/ponytail-terraform-20260716-p-ded8609b4172-r1",
+        "/opt/data/eval-workflow-lanes/workflow-matrix-20260718T201720299971Z-p1527992-r2/fastify-lifecycle-sequence-v0--retrieval-graphify-codex-skill-v1/checkout/sources/evaluations/workflow-sessions/ponytail-beets-20260716-p-b440da225a3a-r1",
+        "/opt/data/eval-workflow-lanes/workflow-matrix-20260718T201720299971Z-p1527992-r2/fastify-lifecycle-sequence-v0--retrieval-graphify-codex-skill-v1/checkout/sources/evaluations/workflow-sessions/ponytail-fastify-20260716-p-769d40697529-r1",
+        "/opt/data/eval-workflow-lanes/workflow-matrix-20260718T201720299971Z-p1527992-r2/fastify-lifecycle-sequence-v0--retrieval-graphify-codex-skill-v1/checkout/sources/evaluations/workflow-sessions/ponytail-terraform-20260716-p-ded8609b4172-r1",
+        "/opt/data/eval-workflow-lanes/workflow-matrix-20260718T201720299971Z-p1527992-r2/terraform-lifecycle-sequence-v0--retrieval-graphify-codex-skill-v1/checkout/sources/evaluations/workflow-sessions/ponytail-beets-20260716-p-b440da225a3a-r1",
+        "/opt/data/eval-workflow-lanes/workflow-matrix-20260718T201720299971Z-p1527992-r2/terraform-lifecycle-sequence-v0--retrieval-graphify-codex-skill-v1/checkout/sources/evaluations/workflow-sessions/ponytail-fastify-20260716-p-769d40697529-r1",
+        "/opt/data/eval-workflow-lanes/workflow-matrix-20260718T201720299971Z-p1527992-r2/terraform-lifecycle-sequence-v0--retrieval-graphify-codex-skill-v1/checkout/sources/evaluations/workflow-sessions/ponytail-terraform-20260716-p-ded8609b4172-r1"
+      ],
+      "deleted_external_discovery": {
+        "roots": [
+          "/opt/data/eval-workflow-lanes",
+          "/opt/data/campaigns"
+        ],
+        "match_rule": "directory basename contains the invalid profile id or one of its deleted session ids",
+        "matching_directories_deleted": 48,
+        "post_delete_remaining_matches": 0
+      }
+    },
+    {
+      "profile_id": "behavior-caveman",
+      "invalidity": "The lane rendered the Caveman skill body into the evaluator prompt but did not run the author-recommended Codex native skill installer or the documented per-session /caveman activation. It therefore measured a prompt emulation rather than the installed Caveman Codex product.",
+      "deleted_session_ids": [
+        "caveman-fastify-20260716-p-769d40697529-r1",
+        "caveman-beets-20260716-p-b440da225a3a-r1",
+        "caveman-terraform-20260716-p-ded8609b4172-r1"
+      ],
+      "deleted_protocol_paths": [
+        "sources/evaluations/protocols/fastify-lifecycle-sequence-v0-behavior-caveman-70acb7102d4d.json",
+        "sources/evaluations/protocols/beets-lifecycle-sequence-v0-behavior-caveman-205632696240.json",
+        "sources/evaluations/protocols/terraform-lifecycle-sequence-v0-behavior-caveman-5337ce6a6feb.json"
+      ],
+      "deleted_comparison_paths": [
+        "sources/evaluations/workflow-sessions/baseline-fastify-20260716-vs-caveman-p-769d40697529-r1.json",
+        "sources/evaluations/workflow-sessions/baseline-beets-20260716-vs-caveman-p-b440da225a3a-r1.json",
+        "sources/evaluations/workflow-sessions/baseline-terraform-20260716-vs-caveman-p-ded8609b4172-r1.json"
+      ],
+      "deleted_bundle_roots": [
+        "sources/evaluations/workflow-sessions/caveman-fastify-20260716-p-769d40697529-r1",
+        "sources/evaluations/workflow-sessions/caveman-beets-20260716-p-b440da225a3a-r1",
+        "sources/evaluations/workflow-sessions/caveman-terraform-20260716-p-ded8609b4172-r1"
+      ],
+      "replacement_profile_id": "behavior-caveman-codex-skill-v1",
+      "derived_aggregate_disposition": "Removed from active sessions and current product-effect aggregates; successor has no provider-backed result.",
+      "regenerated_derived_paths": [
+        "sources/evaluations/audits/codex-cumulative-usage-accounting-20260718.json",
+        "sources/evaluations/audits/gpt-5-6-sol-high-baseline-variance-20260718.json",
+        "docs/evaluations/operations/runbook.md"
+      ],
+      "deleted_external_paths": [
+        "/opt/data/eval-workflow-lanes/workflow-matrix-20260713T223952133180Z-p554983-r0/beets-maintenance-sequence-v4--behavior-caveman",
+        "/opt/data/eval-workflow-lanes/workflow-matrix-20260713T223952133180Z-p554983-r0/fastify-maintenance-sequence-v1--behavior-caveman",
+        "/opt/data/eval-workflow-lanes/workflow-matrix-20260713T223952133180Z-p554983-r0/terraform-maintenance-sequence-v2--behavior-caveman",
+        "/opt/data/eval-workflow-lanes/workflow-matrix-20260713T233416701071Z-p564136-r0/beets-maintenance-sequence-v4--behavior-caveman",
+        "/opt/data/eval-workflow-lanes/workflow-matrix-20260713T233416701071Z-p564136-r0/fastify-maintenance-sequence-v1--behavior-caveman",
+        "/opt/data/eval-workflow-lanes/workflow-matrix-20260713T233416701071Z-p564136-r0/terraform-maintenance-sequence-v2--behavior-caveman",
+        "/opt/data/eval-workflow-lanes/workflow-matrix-20260714T003259787894Z-p575089-r0/beets-maintenance-sequence-v4--behavior-caveman",
+        "/opt/data/eval-workflow-lanes/workflow-matrix-20260714T003259787894Z-p575089-r0/fastify-maintenance-sequence-v1--behavior-caveman",
+        "/opt/data/eval-workflow-lanes/workflow-matrix-20260714T003259787894Z-p575089-r0/terraform-maintenance-sequence-v2--behavior-caveman",
+        "/opt/data/eval-workflow-lanes/workflow-matrix-20260714T014256753458Z-p583177-r0/beets-maintenance-sequence-v4--behavior-caveman",
+        "/opt/data/eval-workflow-lanes/workflow-matrix-20260714T014256753458Z-p583177-r0/fastify-maintenance-sequence-v1--behavior-caveman",
+        "/opt/data/eval-workflow-lanes/workflow-matrix-20260714T014256753458Z-p583177-r0/terraform-maintenance-sequence-v2--behavior-caveman",
+        "/opt/data/eval-workflow-lanes/workflow-matrix-20260714T073521076310Z-p594813-r0/beets-maintenance-sequence-v4--behavior-caveman",
+        "/opt/data/eval-workflow-lanes/workflow-matrix-20260714T073521076310Z-p594813-r0/fastify-maintenance-sequence-v1--behavior-caveman",
+        "/opt/data/eval-workflow-lanes/workflow-matrix-20260714T073521076310Z-p594813-r0/terraform-maintenance-sequence-v2--behavior-caveman",
+        "/opt/data/eval-workflow-lanes/workflow-matrix-20260716T124331845662Z-p891248-r1/beets-lifecycle-sequence-v0--behavior-caveman",
+        "/opt/data/eval-workflow-lanes/workflow-matrix-20260716T124331845662Z-p891248-r1/fastify-lifecycle-sequence-v0--behavior-caveman",
+        "/opt/data/eval-workflow-lanes/workflow-matrix-20260716T124331845662Z-p891248-r1/terraform-lifecycle-sequence-v0--behavior-caveman",
+        "/opt/data/eval-workflow-lanes/workflow-matrix-20260716T124354517868Z-p892199-r1/beets-lifecycle-sequence-v0--behavior-caveman",
+        "/opt/data/eval-workflow-lanes/workflow-matrix-20260716T124354517868Z-p892199-r1/fastify-lifecycle-sequence-v0--behavior-caveman",
+        "/opt/data/eval-workflow-lanes/workflow-matrix-20260716T124354517868Z-p892199-r1/terraform-lifecycle-sequence-v0--behavior-caveman",
+        "/opt/data/eval-workflow-lanes/workflow-matrix-20260718T082550368156Z-p1248678-r0/beets-lifecycle-sequence-v0--retrieval-jcodemunch-mcp-official-v1/checkout/sources/evaluations/workflow-sessions/caveman-beets-20260716-p-b440da225a3a-r1",
+        "/opt/data/eval-workflow-lanes/workflow-matrix-20260718T082550368156Z-p1248678-r0/beets-lifecycle-sequence-v0--retrieval-jcodemunch-mcp-official-v1/checkout/sources/evaluations/workflow-sessions/caveman-fastify-20260716-p-769d40697529-r1",
+        "/opt/data/eval-workflow-lanes/workflow-matrix-20260718T082550368156Z-p1248678-r0/beets-lifecycle-sequence-v0--retrieval-jcodemunch-mcp-official-v1/checkout/sources/evaluations/workflow-sessions/caveman-terraform-20260716-p-ded8609b4172-r1",
+        "/opt/data/eval-workflow-lanes/workflow-matrix-20260718T082550368156Z-p1248678-r0/beets-lifecycle-sequence-v0--terminal-tokenjuice-codex-hook-v1/checkout/sources/evaluations/workflow-sessions/caveman-beets-20260716-p-b440da225a3a-r1",
+        "/opt/data/eval-workflow-lanes/workflow-matrix-20260718T082550368156Z-p1248678-r0/beets-lifecycle-sequence-v0--terminal-tokenjuice-codex-hook-v1/checkout/sources/evaluations/workflow-sessions/caveman-fastify-20260716-p-769d40697529-r1",
+        "/opt/data/eval-workflow-lanes/workflow-matrix-20260718T082550368156Z-p1248678-r0/beets-lifecycle-sequence-v0--terminal-tokenjuice-codex-hook-v1/checkout/sources/evaluations/workflow-sessions/caveman-terraform-20260716-p-ded8609b4172-r1",
+        "/opt/data/eval-workflow-lanes/workflow-matrix-20260718T082550368156Z-p1248678-r0/fastify-lifecycle-sequence-v0--retrieval-jcodemunch-mcp-official-v1/checkout/sources/evaluations/workflow-sessions/caveman-beets-20260716-p-b440da225a3a-r1",
+        "/opt/data/eval-workflow-lanes/workflow-matrix-20260718T082550368156Z-p1248678-r0/fastify-lifecycle-sequence-v0--retrieval-jcodemunch-mcp-official-v1/checkout/sources/evaluations/workflow-sessions/caveman-fastify-20260716-p-769d40697529-r1",
+        "/opt/data/eval-workflow-lanes/workflow-matrix-20260718T082550368156Z-p1248678-r0/fastify-lifecycle-sequence-v0--retrieval-jcodemunch-mcp-official-v1/checkout/sources/evaluations/workflow-sessions/caveman-terraform-20260716-p-ded8609b4172-r1",
+        "/opt/data/eval-workflow-lanes/workflow-matrix-20260718T082550368156Z-p1248678-r0/fastify-lifecycle-sequence-v0--terminal-tokenjuice-codex-hook-v1/checkout/sources/evaluations/workflow-sessions/caveman-beets-20260716-p-b440da225a3a-r1",
+        "/opt/data/eval-workflow-lanes/workflow-matrix-20260718T082550368156Z-p1248678-r0/fastify-lifecycle-sequence-v0--terminal-tokenjuice-codex-hook-v1/checkout/sources/evaluations/workflow-sessions/caveman-fastify-20260716-p-769d40697529-r1",
+        "/opt/data/eval-workflow-lanes/workflow-matrix-20260718T082550368156Z-p1248678-r0/fastify-lifecycle-sequence-v0--terminal-tokenjuice-codex-hook-v1/checkout/sources/evaluations/workflow-sessions/caveman-terraform-20260716-p-ded8609b4172-r1",
+        "/opt/data/eval-workflow-lanes/workflow-matrix-20260718T082550368156Z-p1248678-r0/terraform-lifecycle-sequence-v0--retrieval-jcodemunch-mcp-official-v1/checkout/sources/evaluations/workflow-sessions/caveman-beets-20260716-p-b440da225a3a-r1",
+        "/opt/data/eval-workflow-lanes/workflow-matrix-20260718T082550368156Z-p1248678-r0/terraform-lifecycle-sequence-v0--retrieval-jcodemunch-mcp-official-v1/checkout/sources/evaluations/workflow-sessions/caveman-fastify-20260716-p-769d40697529-r1",
+        "/opt/data/eval-workflow-lanes/workflow-matrix-20260718T082550368156Z-p1248678-r0/terraform-lifecycle-sequence-v0--retrieval-jcodemunch-mcp-official-v1/checkout/sources/evaluations/workflow-sessions/caveman-terraform-20260716-p-ded8609b4172-r1",
+        "/opt/data/eval-workflow-lanes/workflow-matrix-20260718T082550368156Z-p1248678-r0/terraform-lifecycle-sequence-v0--terminal-tokenjuice-codex-hook-v1/checkout/sources/evaluations/workflow-sessions/caveman-beets-20260716-p-b440da225a3a-r1",
+        "/opt/data/eval-workflow-lanes/workflow-matrix-20260718T082550368156Z-p1248678-r0/terraform-lifecycle-sequence-v0--terminal-tokenjuice-codex-hook-v1/checkout/sources/evaluations/workflow-sessions/caveman-fastify-20260716-p-769d40697529-r1",
+        "/opt/data/eval-workflow-lanes/workflow-matrix-20260718T082550368156Z-p1248678-r0/terraform-lifecycle-sequence-v0--terminal-tokenjuice-codex-hook-v1/checkout/sources/evaluations/workflow-sessions/caveman-terraform-20260716-p-ded8609b4172-r1",
+        "/opt/data/eval-workflow-lanes/workflow-matrix-20260718T083411939868Z-p1254239-r0/fastify-lifecycle-sequence-v0--retrieval-jcodemunch-mcp-official-v1/checkout/sources/evaluations/workflow-sessions/caveman-beets-20260716-p-b440da225a3a-r1",
+        "/opt/data/eval-workflow-lanes/workflow-matrix-20260718T083411939868Z-p1254239-r0/fastify-lifecycle-sequence-v0--retrieval-jcodemunch-mcp-official-v1/checkout/sources/evaluations/workflow-sessions/caveman-fastify-20260716-p-769d40697529-r1",
+        "/opt/data/eval-workflow-lanes/workflow-matrix-20260718T083411939868Z-p1254239-r0/fastify-lifecycle-sequence-v0--retrieval-jcodemunch-mcp-official-v1/checkout/sources/evaluations/workflow-sessions/caveman-terraform-20260716-p-ded8609b4172-r1",
+        "/opt/data/eval-workflow-lanes/workflow-matrix-20260718T083411939868Z-p1254239-r0/fastify-lifecycle-sequence-v0--terminal-tokenjuice-codex-hook-v1/checkout/sources/evaluations/workflow-sessions/caveman-beets-20260716-p-b440da225a3a-r1",
+        "/opt/data/eval-workflow-lanes/workflow-matrix-20260718T083411939868Z-p1254239-r0/fastify-lifecycle-sequence-v0--terminal-tokenjuice-codex-hook-v1/checkout/sources/evaluations/workflow-sessions/caveman-fastify-20260716-p-769d40697529-r1",
+        "/opt/data/eval-workflow-lanes/workflow-matrix-20260718T083411939868Z-p1254239-r0/fastify-lifecycle-sequence-v0--terminal-tokenjuice-codex-hook-v1/checkout/sources/evaluations/workflow-sessions/caveman-terraform-20260716-p-ded8609b4172-r1",
+        "/opt/data/eval-workflow-lanes/workflow-matrix-20260718T083948052188Z-p1257717-r0/fastify-lifecycle-sequence-v0--terminal-tokenjuice-codex-hook-v1/checkout/sources/evaluations/workflow-sessions/caveman-beets-20260716-p-b440da225a3a-r1",
+        "/opt/data/eval-workflow-lanes/workflow-matrix-20260718T083948052188Z-p1257717-r0/fastify-lifecycle-sequence-v0--terminal-tokenjuice-codex-hook-v1/checkout/sources/evaluations/workflow-sessions/caveman-fastify-20260716-p-769d40697529-r1",
+        "/opt/data/eval-workflow-lanes/workflow-matrix-20260718T083948052188Z-p1257717-r0/fastify-lifecycle-sequence-v0--terminal-tokenjuice-codex-hook-v1/checkout/sources/evaluations/workflow-sessions/caveman-terraform-20260716-p-ded8609b4172-r1",
+        "/opt/data/eval-workflow-lanes/workflow-matrix-20260718T085300946117Z-p1264016-r0/fastify-lifecycle-sequence-v0--terminal-tokenjuice-codex-hook-v1/checkout/sources/evaluations/workflow-sessions/caveman-beets-20260716-p-b440da225a3a-r1",
+        "/opt/data/eval-workflow-lanes/workflow-matrix-20260718T085300946117Z-p1264016-r0/fastify-lifecycle-sequence-v0--terminal-tokenjuice-codex-hook-v1/checkout/sources/evaluations/workflow-sessions/caveman-fastify-20260716-p-769d40697529-r1",
+        "/opt/data/eval-workflow-lanes/workflow-matrix-20260718T085300946117Z-p1264016-r0/fastify-lifecycle-sequence-v0--terminal-tokenjuice-codex-hook-v1/checkout/sources/evaluations/workflow-sessions/caveman-terraform-20260716-p-ded8609b4172-r1",
+        "/opt/data/eval-workflow-lanes/workflow-matrix-20260718T085744295994Z-p1269694-r0/fastify-lifecycle-sequence-v0--terminal-tokenjuice-codex-hook-v1/checkout/sources/evaluations/workflow-sessions/caveman-beets-20260716-p-b440da225a3a-r1",
+        "/opt/data/eval-workflow-lanes/workflow-matrix-20260718T085744295994Z-p1269694-r0/fastify-lifecycle-sequence-v0--terminal-tokenjuice-codex-hook-v1/checkout/sources/evaluations/workflow-sessions/caveman-fastify-20260716-p-769d40697529-r1",
+        "/opt/data/eval-workflow-lanes/workflow-matrix-20260718T085744295994Z-p1269694-r0/fastify-lifecycle-sequence-v0--terminal-tokenjuice-codex-hook-v1/checkout/sources/evaluations/workflow-sessions/caveman-terraform-20260716-p-ded8609b4172-r1",
+        "/opt/data/eval-workflow-lanes/workflow-matrix-20260718T201720299971Z-p1527992-r2/beets-lifecycle-sequence-v0--retrieval-graphify-codex-skill-v1/checkout/sources/evaluations/workflow-sessions/caveman-beets-20260716-p-b440da225a3a-r1",
+        "/opt/data/eval-workflow-lanes/workflow-matrix-20260718T201720299971Z-p1527992-r2/beets-lifecycle-sequence-v0--retrieval-graphify-codex-skill-v1/checkout/sources/evaluations/workflow-sessions/caveman-fastify-20260716-p-769d40697529-r1",
+        "/opt/data/eval-workflow-lanes/workflow-matrix-20260718T201720299971Z-p1527992-r2/beets-lifecycle-sequence-v0--retrieval-graphify-codex-skill-v1/checkout/sources/evaluations/workflow-sessions/caveman-terraform-20260716-p-ded8609b4172-r1",
+        "/opt/data/eval-workflow-lanes/workflow-matrix-20260718T201720299971Z-p1527992-r2/fastify-lifecycle-sequence-v0--retrieval-graphify-codex-skill-v1/checkout/sources/evaluations/workflow-sessions/caveman-beets-20260716-p-b440da225a3a-r1",
+        "/opt/data/eval-workflow-lanes/workflow-matrix-20260718T201720299971Z-p1527992-r2/fastify-lifecycle-sequence-v0--retrieval-graphify-codex-skill-v1/checkout/sources/evaluations/workflow-sessions/caveman-fastify-20260716-p-769d40697529-r1",
+        "/opt/data/eval-workflow-lanes/workflow-matrix-20260718T201720299971Z-p1527992-r2/fastify-lifecycle-sequence-v0--retrieval-graphify-codex-skill-v1/checkout/sources/evaluations/workflow-sessions/caveman-terraform-20260716-p-ded8609b4172-r1",
+        "/opt/data/eval-workflow-lanes/workflow-matrix-20260718T201720299971Z-p1527992-r2/terraform-lifecycle-sequence-v0--retrieval-graphify-codex-skill-v1/checkout/sources/evaluations/workflow-sessions/caveman-beets-20260716-p-b440da225a3a-r1",
+        "/opt/data/eval-workflow-lanes/workflow-matrix-20260718T201720299971Z-p1527992-r2/terraform-lifecycle-sequence-v0--retrieval-graphify-codex-skill-v1/checkout/sources/evaluations/workflow-sessions/caveman-fastify-20260716-p-769d40697529-r1",
+        "/opt/data/eval-workflow-lanes/workflow-matrix-20260718T201720299971Z-p1527992-r2/terraform-lifecycle-sequence-v0--retrieval-graphify-codex-skill-v1/checkout/sources/evaluations/workflow-sessions/caveman-terraform-20260716-p-ded8609b4172-r1"
+      ],
+      "deleted_external_discovery": {
+        "roots": [
+          "/opt/data/eval-workflow-lanes",
+          "/opt/data/campaigns"
+        ],
+        "match_rule": "directory basename contains the invalid profile id or one of its deleted session ids",
+        "matching_directories_deleted": 63,
+        "post_delete_remaining_matches": 0
+      }
+    }
+  ]
+}

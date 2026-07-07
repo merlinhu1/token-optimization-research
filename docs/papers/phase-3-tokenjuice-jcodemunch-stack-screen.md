@@ -188,7 +188,9 @@ The sessions and comparisons remain in the dataset as excluded forensic records.
 
 ## 7. Next research step
 
-Do not move directly to another stack based on these component rankings. First qualify the versioned `terminal-tokenjuice-codex-hook-v1` and neutral `retrieval-jcodemunch-mcp-direct-v1` assignments. If the intended jcodemunch estimand includes its separate usage-guidance layer, preregister that as another versioned instruction-policy profile. A corrected stack requires separate preregistration and new profile identity after the intended individual assignments are proven.
+Do not move directly to another stack based on these historical component rankings. `terminal-tokenjuice-codex-hook-v1` has later valid individual evidence, but `retrieval-jcodemunch-mcp-direct-v1` was deleted on 2026-07-19 because deliberately omitting the tool-author-provided Codex guidance made the canonical installation broken and incomplete. A future jcodemunch candidate must follow the full pinned installation guide under a new identity. A corrected stack requires separate preregistration and new profile identity only after both intended individual assignments are proven.
+
+> **Subsequent control-plane update (2026-07-19):** the separately versioned `retrieval-jcodemunch-codex-mcp-v2` candidate now satisfies that guide-faithful provider-free installation contract. It has no provider-backed result and does not revive this historical stack conclusion.
 
 ## 8. Reproducibility pointers
 

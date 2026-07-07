@@ -8,35 +8,33 @@
     "profiles_audited": 18,
     "historical_sessions_audited": 54,
     "disposition_counts": {
-      "valid-narrower-instruction-policy": 2,
+      "valid-narrower-instruction-policy": 0,
       "valid-product-treatment": 1,
       "valid-protocol-defined-ablation": 1,
       "invalid-treatment-configuration": 8,
-      "unverified-treatment-assignment": 6
+      "unverified-treatment-assignment": 6,
+      "invalid-incomplete-canonical-installation-results-deleted": 2
     },
-    "objective_eligible_sessions_retained": 12,
-    "corrupted_sessions_deleted_from_active_corpus": 42,
+    "objective_eligible_sessions_retained": 6,
+    "corrupted_sessions_deleted_from_active_corpus": 48,
     "active_excluded_sessions": 0,
-    "active_treatment_sessions": 12,
+    "active_treatment_sessions": 6,
     "deletion_receipts": [
       "sources/evaluations/audits/invalid-treatment-result-deletions-20260718.json",
-      "sources/evaluations/audits/unproven-treatment-result-deletions-20260718.json"
+      "sources/evaluations/audits/unproven-treatment-result-deletions-20260718.json",
+      "sources/evaluations/audits/invalid-ponytail-caveman-result-deletion-20260719.json"
     ],
-    "corrected_individual_profiles": 13,
-    "corrected_frozen_protocols": 39
+    "corrected_individual_profiles": 14,
+    "corrected_frozen_protocols": 42
   },
   "profiles": [
     {
       "profile_id": "artifact-ponytail",
-      "disposition": "valid-narrower-instruction-policy",
-      "objective_eligible": true,
-      "session_ids": [
-        "ponytail-fastify-20260716-p-769d40697529-r1",
-        "ponytail-beets-20260716-p-b440da225a3a-r1",
-        "ponytail-terraform-20260716-p-ded8609b4172-r1"
-      ],
+      "disposition": "invalid-incomplete-canonical-installation-results-deleted",
+      "objective_eligible": false,
+      "session_ids": [],
       "session_statuses": [
-        "completed"
+        "deleted-invalid-installation"
       ],
       "selected_execution_descriptor_sha256": [
         "264489923b13d425e3fbd431136afb01f7b7c29f56dff2da8cd6e563a29e7fdb",
@@ -65,20 +63,23 @@
         "standalone_mcp_handshake_receipts": 0,
         "completed_model_mcp_call_events": 0
       },
-      "correction": "Keep eligible only for the always-on full-mode artifact/code-minimization instruction-policy estimand; do not generalize to the complete plugin UX.",
-      "superseded_by": null
+      "correction": "Delete all provider-backed results; rerun only under the fresh versioned guide-faithful profile.",
+      "superseded_by": "artifact-ponytail-codex-plugin-v1",
+      "deletion_receipt": "sources/evaluations/audits/invalid-ponytail-caveman-result-deletion-20260719.json",
+      "active_corpus_action": "deleted-under-owner-authorized-receipt",
+      "deleted_session_ids": [
+        "ponytail-fastify-20260716-p-769d40697529-r1",
+        "ponytail-beets-20260716-p-b440da225a3a-r1",
+        "ponytail-terraform-20260716-p-ded8609b4172-r1"
+      ]
     },
     {
       "profile_id": "behavior-caveman",
-      "disposition": "valid-narrower-instruction-policy",
-      "objective_eligible": true,
-      "session_ids": [
-        "caveman-fastify-20260716-p-769d40697529-r1",
-        "caveman-beets-20260716-p-b440da225a3a-r1",
-        "caveman-terraform-20260716-p-ded8609b4172-r1"
-      ],
+      "disposition": "invalid-incomplete-canonical-installation-results-deleted",
+      "objective_eligible": false,
+      "session_ids": [],
       "session_statuses": [
-        "completed"
+        "deleted-invalid-installation"
       ],
       "selected_execution_descriptor_sha256": [
         "494219c7a15c3609f289bc5b754365d8751ccd1e5785250d1b60b5b2b5ba5859",
@@ -107,8 +108,15 @@
         "standalone_mcp_handshake_receipts": 0,
         "completed_model_mcp_call_events": 0
       },
-      "correction": "Keep eligible for always-on behavioral output-compression policy; do not claim installer/plugin lifecycle effects.",
-      "superseded_by": null
+      "correction": "Delete all provider-backed results; rerun only under the fresh versioned guide-faithful profile.",
+      "superseded_by": "behavior-caveman-codex-skill-v1",
+      "deletion_receipt": "sources/evaluations/audits/invalid-ponytail-caveman-result-deletion-20260719.json",
+      "active_corpus_action": "deleted-under-owner-authorized-receipt",
+      "deleted_session_ids": [
+        "caveman-fastify-20260716-p-769d40697529-r1",
+        "caveman-beets-20260716-p-b440da225a3a-r1",
+        "caveman-terraform-20260716-p-ded8609b4172-r1"
+      ]
     },
     {
       "profile_id": "headroom-default-codex",
@@ -374,7 +382,7 @@
         "/opt/data/tool-candidates/jcodemunch-mcp/README.md#works-with",
         "/opt/data/tool-candidates/jcodemunch-mcp/AGENT_INSTALL_UNIVERSAL.md#the-prompt"
       ],
-      "official_integration_requirement": "Pinned Codex MCP wiring uses a preinstalled direct binary with successful connection and warmed index. Persistent usage guidance is a separate product layer without a first-class Codex installer and must be identified as a distinct instruction-policy treatment.",
+      "official_integration_requirement": "Canonical Codex product evaluation requires the pinned direct MCP binary, successful connection, warm index, and the tool-author-provided persistent usage guidance installed through Codex project rules or AGENTS.md. MCP-only availability is incomplete except as an explicitly named ablation.",
       "evaluated_materialization": "Historical runner used `uv tool run` as the MCP launcher, retained no initialize/tools-list receipt, and did not distinguish neutral MCP availability from a product-guided condition.",
       "retained_operational_proof": {
         "standalone_mcp_handshake_receipts": 0,
@@ -875,23 +883,39 @@
     }
   ],
   "corrected_contracts": {
-    "profiles": 13,
-    "fixture_specific_protocols": 39,
+    "profiles": 12,
+    "fixture_specific_protocols": 36,
     "provider_free_qualification": {
       "receipt": "sources/evaluations/audits/corrected-integration-qualification-20260718.json",
       "passed": 39,
       "failed": 0,
+      "provider_calls": 0,
+      "status": "historical-exact-hashes-only"
+    },
+    "current_future_candidate_qualification": {
+      "receipts": [
+        "sources/evaluations/audits/corrected-integration-qualification-ponytail-caveman-v1-20260719.json",
+        "sources/evaluations/audits/corrected-integration-qualification-current-candidates-v3-20260719.json",
+        "sources/evaluations/audits/corrected-integration-qualification-jcodemunch-codex-mcp-v2-20260719.json",
+        "sources/evaluations/audits/corrected-integration-qualification-codegraph-20260719.json"
+      ],
+      "profiles": 15,
+      "fixture_specific_protocols": 45,
+      "passed": 45,
+      "failed": 0,
       "provider_calls": 0
     },
-    "provider_backed_sessions": 0,
+    "provider_backed_sessions": 12,
     "approved_profile_ids": [
+      "artifact-ponytail-codex-plugin-v1",
+      "behavior-caveman-codex-skill-v1",
       "codescope-codex-product-v1",
       "integrated-leanctx-codex-hybrid-v1",
       "integrated-token-savior-mcp-v1",
       "retrieval-cartog-mcp-v1",
       "retrieval-codegraph-codex-mcp-v1",
       "retrieval-graphify-codex-skill-v1",
-      "retrieval-jcodemunch-mcp-direct-v1",
+      "retrieval-jcodemunch-codex-mcp-v2",
       "retrieval-serena-codex-mcp-v1",
       "retrieval-sigmap-codex-live-v1",
       "swarmvault-codex-product-v1",
@@ -899,5 +923,39 @@
       "terminal-snip-codex-hook-v1",
       "terminal-tokenjuice-codex-hook-v1"
     ]
-  }
+  },
+  "post_audit_corrections": [
+    {
+      "date": "2026-07-19",
+      "invalid_profile_id": "retrieval-codegraph-codex-mcp-v1",
+      "reason": "The installer-generated bare codegraph command was absent from the actual model-runtime PATH; all three attempted CLI calls exited 127.",
+      "deletion_receipt": "sources/evaluations/audits/invalid-codegraph-v1-result-deletion-20260719.json",
+      "replacement_profile_id": "retrieval-codegraph-codex-mcp-v1",
+      "replacement_qualification_receipt": "sources/evaluations/audits/corrected-integration-qualification-codegraph-20260719.json",
+      "identity_policy": "The deleted generation is bound to the deleted protocol paths in its receipt; the corrected canonical v1 generation is bound to fresh protocol hashes and provider-free qualification."
+    },
+    {
+      "date": "2026-07-19",
+      "invalid_profile_id": "retrieval-jcodemunch-mcp-direct-v1",
+      "reason": "The direct MCP binary, warm index, and handshake were present, but the runner deliberately omitted the tool-author-recommended Codex guidance layer. The experiment owner classified this as a broken, incomplete installation and directed deletion of all results.",
+      "deletion_receipt": "sources/evaluations/audits/invalid-jcodemunch-direct-v1-result-deletion-20260719.json",
+      "replacement_profile_id": "retrieval-jcodemunch-codex-mcp-v2",
+      "replacement_qualification_receipt": "sources/evaluations/audits/corrected-integration-qualification-jcodemunch-codex-mcp-v2-20260719.json",
+      "replacement_contract": "Pinned 1.108.114 direct binary with no MCP args, product-native warm index, verbatim product-authored Codex guidance excerpts, and initialize plus tools/list assignment proof."
+    },
+    {
+      "date": "2026-07-19",
+      "invalid_profile_id": "artifact-ponytail",
+      "reason": "Prompt-only fallback instructions omitted the official Codex plugin and trusted lifecycle hooks.",
+      "deletion_receipt": "sources/evaluations/audits/invalid-ponytail-caveman-result-deletion-20260719.json",
+      "replacement_profile_id": "artifact-ponytail-codex-plugin-v1"
+    },
+    {
+      "date": "2026-07-19",
+      "invalid_profile_id": "behavior-caveman",
+      "reason": "Evaluator-rendered skill prose omitted the native Codex skill install and documented /caveman session activation.",
+      "deletion_receipt": "sources/evaluations/audits/invalid-ponytail-caveman-result-deletion-20260719.json",
+      "replacement_profile_id": "behavior-caveman-codex-skill-v1"
+    }
+  ]
 }

@@ -76,7 +76,7 @@ Operational retry count remains attached to a task because retries directly cont
 
 ## Treatment estimands
 
-Treatment configuration is part of the causal question. Lifecycle-v0 production execution uses **available/natural-use** profiles: install each product's normal integration surface and allow it to operate naturally. That normal surface may include product-authored instructions, hooks, wrappers, proxies, MCP exposure, or other host integration; the evaluator must not add instructions that require, prefer, suggest, or calibrate tool invocation.
+Treatment configuration is part of the causal question. Lifecycle-v0 production execution uses **available/natural-use** profiles: faithfully install every tool-author-recommended normal integration surface and allow it to operate naturally. That normal surface may include product-authored instructions, rules, skills, hooks, wrappers, proxies, MCP exposure, or other host integration. Evaluator-authored steering is forbidden, but neutrality must never remove, suppress, or contradict product-authored guidance. Server-only, guidance-free, or otherwise reduced setups are explicit ablations rather than canonical product treatments.
 
 Prompted preferred/direct-use and mandatory-use profiles describe distinct historical estimands, but they are not runnable production profiles in lifecycle v0 and must not be proposed as a remedy for low or unobserved explicit invocation. Historical records retain their original labels rather than being silently rewritten.
 

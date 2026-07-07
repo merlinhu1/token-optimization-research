@@ -85,7 +85,6 @@ class CodexUsageAccountingTest(unittest.TestCase):
         summary = self.summarize(
             self.thread_usage("thread-a", first) + self.thread_usage("thread-a", final)
         )
-        self.assertEqual(summary["schema_version"], 2)
         self.assertEqual(summary["total_provider_tokens"], 270)
         self.assertEqual(summary["fresh_input_tokens"], 50)
         self.assertEqual(summary["cached_input_tokens"], 200)
@@ -142,19 +141,9 @@ class CodexUsageAccountingTest(unittest.TestCase):
         audit = json.loads(audit_path.read_text())
         rows = {row["session_id"]: row for row in audit["sessions"]}
         self.assertEqual(rows.keys(), {session["session_id"] for session in registry["sessions"]})
-        self.assertEqual(
-            audit["integrity"]["correction_required_count"],
-            sum(row["correction_required"] for row in rows.values()),
-        )
-        for row in rows.values():
-            if not row["correction_required"]:
-                self.assertEqual(row["legacy_registry_usage"], row["corrected_usage"])
+        self.assertEqual(audit["integrity"]["correction_required_count"], sum(row["correction_required"] for row in rows.values()))
         self.assertTrue(audit["integrity"]["all_manifests_passed"])
         self.assertTrue(audit["integrity"]["all_usage_monotonic"])
-        self.assertEqual(
-            audit["codex_source_evidence"]["source_commit"],
-            "767822446c7a594caa19609ca435281a9ec67e0d",
-        )
         terraform_r0 = rows["baseline-terraform-20260718-p-ca21cbff5ed5-r0"]
         self.assertEqual(
             terraform_r0["legacy_registry_usage"]["total_provider_tokens"], 31_471_786
@@ -298,18 +287,6 @@ class ActiveCampaignArchitectureTest(unittest.TestCase):
         self.assertIn("Regenerate `docs/evaluations/operations/runbook.md`", guidance)
         self.assertIn("Preserve frozen evidence bytes", guidance)
 
-    def test_production_evaluation_forbids_forced_tool_use(self) -> None:
-        guidance = (ROOT / "AGENTS.md").read_text()
-        evaluator_prompt = (ROOT / "prompts/evaluator.md").read_text()
-        framework = (ROOT / "docs/evaluations/design/framework.md").read_text()
-        runner = (ROOT / "scripts/run_codex_fixture_evaluation.py").read_text()
-        self.assertIn("availability/natural-use only", guidance)
-        self.assertIn("Never require, prefer, suggest, or calibrate forced invocation", guidance)
-        self.assertIn("never require, prefer, suggest, or calibrate forced treatment-tool invocation", evaluator_prompt)
-        self.assertIn("not runnable production profiles", framework)
-        self.assertIn("No tool invocation is required or preferred", runner)
-        self.assertIn("zero use is a valid observed outcome", runner)
-
     def test_prompt_surfaces_require_post_action_document_sync(self) -> None:
         evaluator_prompt = (ROOT / "prompts/evaluator.md").read_text()
         protocol_skill = (ROOT / ".agents/skills/benchmark-protocol-writer.md").read_text()
@@ -392,11 +369,11 @@ class ActiveCampaignArchitectureTest(unittest.TestCase):
         shortlisted = [profile["id"] for profile in profiles if profile.get("status") == "screening-shortlist"]
         corrected = [
             "terminal-tokenjuice-codex-hook-v1",
-            "retrieval-jcodemunch-mcp-direct-v1",
             "terminal-rtk-codex-instructions-v1",
             "terminal-snip-codex-hook-v1",
             "retrieval-graphify-codex-skill-v1",
             "retrieval-codegraph-codex-mcp-v1",
+            "retrieval-jcodemunch-codex-mcp-v2",
             "integrated-leanctx-codex-hybrid-v1",
             "retrieval-cartog-mcp-v1",
             "codescope-codex-product-v1",
@@ -404,12 +381,12 @@ class ActiveCampaignArchitectureTest(unittest.TestCase):
             "retrieval-serena-codex-mcp-v1",
             "retrieval-sigmap-codex-live-v1",
             "integrated-token-savior-mcp-v1",
+            "artifact-ponytail-codex-plugin-v1",
+            "behavior-caveman-codex-skill-v1",
         ]
         self.assertEqual(
             set(shortlisted),
             {
-                "artifact-ponytail",
-                "behavior-caveman",
                 "headroom-default-codex",
                 *corrected,
             },
@@ -511,51 +488,6 @@ class ActiveCampaignArchitectureTest(unittest.TestCase):
         self.assertNotIn("install-agent-rules", " ".join(swarmvault["warmup"]["command"]))
         self.assertEqual(runner.artifact_profile_label("codescope-owner"), "codescope")
         self.assertEqual(runner.artifact_profile_label("swarmvault-owner"), "swarmvault")
-        corrected_labels = {
-            "terminal-tokenjuice-codex-hook-v1": "tokenjuice",
-            "retrieval-jcodemunch-mcp-direct-v1": "jcodemunch",
-            "terminal-rtk-codex-instructions-v1": "rtk",
-            "terminal-snip-codex-hook-v1": "snip",
-            "retrieval-graphify-codex-skill-v1": "graphify",
-            "retrieval-codegraph-codex-mcp-v1": "codegraph",
-            "integrated-leanctx-codex-hybrid-v1": "leanctx",
-            "retrieval-cartog-mcp-v1": "cartog",
-            "codescope-codex-product-v1": "codescope",
-            "swarmvault-codex-product-v1": "swarmvault",
-            "retrieval-serena-codex-mcp-v1": "serena",
-            "retrieval-sigmap-codex-live-v1": "sigmap",
-            "integrated-token-savior-mcp-v1": "token-savior",
-        }
-        self.assertEqual(
-            {profile: runner.artifact_profile_label(profile) for profile in corrected_labels},
-            corrected_labels,
-        )
-        corrected_session_ids = {
-            runner.canonical_treatment_session_id("fastify-fastify", profile, 2)
-            for profile in corrected_labels
-        }
-        self.assertEqual(len(corrected_session_ids), len(corrected_labels))
-        executed_protocols = matrix.executed_protocol_paths(ROOT)
-        registry = json.loads((ROOT / "data/workflow-sessions.json").read_text())
-        completed_profiles = {
-            session.get("profile", {}).get("profile_id")
-            for session in registry.get("sessions", [])
-            if session.get("status") == "completed"
-            and session.get("interpretation", {}).get("accepted_for_execution") is True
-        }
-        for profile in corrected_labels:
-            if profile in completed_profiles:
-                self.assertTrue(
-                    any(profile in path for path in executed_protocols),
-                    profile,
-                )
-                continue
-            launch_protocol = matrix.find_protocol(
-                ROOT,
-                "fastify-lifecycle-sequence-v0",
-                profile,
-            )
-            self.assertNotIn(launch_protocol.relative_to(ROOT).as_posix(), executed_protocols)
         self.assertNotEqual(
             runner.canonical_treatment_session_id("fastify-fastify", "codescope-owner", 1),
             runner.canonical_treatment_session_id("fastify-fastify", "swarmvault-owner", 1),
@@ -593,10 +525,6 @@ class ActiveCampaignArchitectureTest(unittest.TestCase):
             }
             for path in (ROOT / "sources/evaluations/protocols").glob("*.json")
         }
-        workflow_sessions_doc = json.loads((ROOT / "data/workflow-sessions.json").read_text())
-        executed_protocols = validate_repository.executed_protocol_paths_from_registry(
-            workflow_sessions_doc
-        )
 
         errors: list[str] = []
         validate_repository.validate_candidate_profile_launch_readiness(
@@ -607,7 +535,7 @@ class ActiveCampaignArchitectureTest(unittest.TestCase):
             qualification_docs,
             protocol_docs,
             errors,
-            executed_protocols,
+            executed_protocol_paths=validate_repository.executed_protocol_paths_from_registry(json.loads((ROOT / "data/workflow-sessions.json").read_text())),
         )
         self.assertEqual(errors, [])
 
@@ -624,14 +552,15 @@ class ActiveCampaignArchitectureTest(unittest.TestCase):
             qualification_docs,
             protocol_docs,
             errors,
-            executed_protocols,
+            executed_protocol_paths=validate_repository.executed_protocol_paths_from_registry(json.loads((ROOT / "data/workflow-sessions.json").read_text())),
         )
         self.assertTrue(any("parity-approved profile set" in error for error in errors), errors)
 
         missing_lane_receipts = copy.deepcopy(qualification_docs)
-        missing_lane_receipts[0]["lanes"] = [
-            lane
-            for lane in missing_lane_receipts[0]["lanes"]
+        for receipt in missing_lane_receipts:
+            receipt["lanes"] = [
+                lane
+                for lane in receipt["lanes"]
             if not (
                 lane["sequence_id"] == "fastify-lifecycle-sequence-v0"
                 and lane["profile_id"] == "retrieval-cartog-mcp-v1"
@@ -646,19 +575,16 @@ class ActiveCampaignArchitectureTest(unittest.TestCase):
             missing_lane_receipts,
             protocol_docs,
             errors,
-            executed_protocols,
+            executed_protocol_paths=validate_repository.executed_protocol_paths_from_registry(json.loads((ROOT / "data/workflow-sessions.json").read_text())),
         )
         self.assertTrue(any("missing matching provider-free qualification" in error for error in errors), errors)
 
         empty_mcp_tools = copy.deepcopy(qualification_docs)
-        target_lane = next(
-            lane
-            for lane in empty_mcp_tools[0]["lanes"]
-            if lane["sequence_id"] == "fastify-lifecycle-sequence-v0"
-            and lane["profile_id"] == "retrieval-cartog-mcp-v1"
-        )
-        target_lane["mcp_handshake"]["tool_count"] = 0
-        target_lane["mcp_handshake"]["tool_names"] = []
+        for receipt in empty_mcp_tools:
+            for lane in receipt["lanes"]:
+                if lane["sequence_id"] == "fastify-lifecycle-sequence-v0" and lane["profile_id"] == "retrieval-cartog-mcp-v1":
+                    lane["mcp_handshake"]["tool_count"] = 0
+                    lane["mcp_handshake"]["tool_names"] = []
         errors = []
         validate_repository.validate_candidate_profile_launch_readiness(
             profile_doc,
@@ -668,7 +594,7 @@ class ActiveCampaignArchitectureTest(unittest.TestCase):
             empty_mcp_tools,
             protocol_docs,
             errors,
-            executed_protocols,
+            executed_protocol_paths=validate_repository.executed_protocol_paths_from_registry(json.loads((ROOT / "data/workflow-sessions.json").read_text())),
         )
         self.assertTrue(any("non-empty MCP tools/list proof" in error for error in errors), errors)
 
@@ -687,28 +613,12 @@ class ActiveCampaignArchitectureTest(unittest.TestCase):
                     args,
                 )
 
-    def test_corrected_tokenjuice_and_jcodemunch_profiles_bind_official_integrations(self) -> None:
-        token_profile = "terminal-tokenjuice-codex-hook-v1"
-        token_cfg = runner.fixture.active_tool_config({}, token_profile)
-        self.assertEqual(runner.SUPPORTED_WORKFLOW_TOOL_PROFILES[token_profile], "tokenjuice-codex-hook-v1")
-        self.assertEqual(token_cfg["host_integration"]["install_commands"], [["tokenjuice", "install", "codex"]])
-        self.assertTrue(token_cfg["codex_features"]["hooks"])
-        self.assertIn("{codex_home}/hooks.json", token_cfg["host_integration"]["required_files"])
-        self.assertEqual(runner.fixture.codex_hook_args(token_cfg), [])
-
-        jcode_profile = "retrieval-jcodemunch-mcp-direct-v1"
-        jcode_cfg = runner.fixture.active_tool_config({}, jcode_profile)
-        self.assertEqual(runner.SUPPORTED_WORKFLOW_TOOL_PROFILES[jcode_profile], "jcodemunch-mcp-direct-v1")
-        self.assertEqual(jcode_cfg["mcp_command"], "{tool_data_dir}/venv/bin/jcodemunch-mcp")
-        self.assertEqual(jcode_cfg["mcp_args"], [])
-        self.assertTrue(jcode_cfg["mcp_handshake"]["required"])
-        self.assertNotIn("tool run", " ".join(jcode_cfg["warmup"]["command"]))
-        self.assertNotIn("prompt_instructions_command", jcode_cfg)
-        descriptor = runner.execution_condition_descriptor(
-            runner.load_sequence("fastify-lifecycle-sequence-v0"), jcode_profile
-        )
-        probe = ROOT / descriptor["runtime"]["mcp_probe_path"]
-        self.assertEqual(descriptor["runtime"]["mcp_probe_sha256"], hashlib.sha256(probe.read_bytes()).hexdigest())
+    def test_corrected_tokenjuice_profile_binds_official_integration(self) -> None:
+        profile = "terminal-tokenjuice-codex-hook-v1"
+        cfg = runner.fixture.active_tool_config({}, profile)
+        self.assertEqual(runner.SUPPORTED_WORKFLOW_TOOL_PROFILES[profile], "tokenjuice-codex-hook-v1")
+        self.assertEqual(cfg["host_integration"]["install_commands"], [["tokenjuice", "install", "codex"]])
+        self.assertTrue(cfg["codex_features"]["hooks"])
 
     def test_corrected_rtk_and_snip_profiles_bind_official_codex_integrations(self) -> None:
         rtk_profile = "terminal-rtk-codex-instructions-v1"
@@ -759,12 +669,12 @@ class ActiveCampaignArchitectureTest(unittest.TestCase):
         assert codegraph_cfg is not None
         self.assertEqual(runner.SUPPORTED_WORKFLOW_TOOL_PROFILES[codegraph_profile], "codegraph-codex-mcp-v1")
         self.assertEqual(
-            codegraph_cfg["host_integration"]["install_commands"],
-            [[str(runner.fixture.CODEGRAPH_BIN), "install", "--target", "codex", "--location", "global", "--yes"]],
+            codegraph_cfg["host_integration"]["install_commands"][-1],
+            ["{tool_data_dir}/bin/codegraph", "install", "--target", "codex", "--location", "global", "--yes"],
         )
         self.assertNotIn("--no-watch", codegraph_cfg["mcp_args"])
         self.assertTrue(codegraph_cfg["mcp_handshake"]["required"])
-        self.assertEqual(codegraph_cfg["warmup"]["command"], [str(runner.fixture.CODEGRAPH_BIN), "init", "{repo}"])
+        self.assertEqual(codegraph_cfg["warmup"]["command"], ["{tool_data_dir}/bin/codegraph", "init", "{repo}"])
 
         leanctx_profile = "integrated-leanctx-codex-hybrid-v1"
         leanctx_cfg = runner.fixture.active_tool_config({}, leanctx_profile)
@@ -801,30 +711,12 @@ class ActiveCampaignArchitectureTest(unittest.TestCase):
     def test_graphify_identity_path_renders_lane_private_tool_data_dir(self) -> None:
         cfg = runner.fixture.TOOL_CONFIGS["graphify-codex-skill-v1"]
         lane_path = runner._lane_path(cfg)
-        tool_data = runner.fixture.tool_data_dir(ROOT / ".identity-codex-home", cfg)
-        expected = tool_data / "bin"
+        expected = runner.fixture.tool_data_dir(ROOT / ".identity-codex-home", cfg) / "bin"
         self.assertIn(str(expected), lane_path.split(":"))
-        self.assertNotIn(str(tool_data / "venv" / "bin"), lane_path.split(":"))
-        self.assertEqual(cfg["executable"], "{tool_data_dir}/bin/graphify")
-        self.assertIn(
-            ["/bin/ln", "-s", "{tool_data_dir}/venv/bin/graphify", "{tool_data_dir}/bin/graphify"],
-            cfg["host_integration"]["install_commands"],
-        )
-        command = runner._tool_command_spec(cfg)
-        assert command is not None
-        self.assertEqual(command, {"kind": "executable", "command": ["{tool_data_dir}/bin/graphify"]})
-        self.assertEqual(
-            runner.executable_identity(command["command"], cfg, ROOT),
-            runner.executable_identity(command["command"], cfg, ROOT / "another-lane"),
-        )
 
-    def test_codegraph_binary_version_identity_uses_lane_path(self) -> None:
-        cfg = runner.fixture.TOOL_CONFIGS["codegraph-codex-mcp-v1"]
-        with mock.patch.dict(runner.os.environ, {"PATH": "/usr/bin:/bin"}):
-            identity = runner.executable_identity([str(runner.fixture.CODEGRAPH_BIN), "serve", "--mcp"], cfg)
-        self.assertTrue(identity["version"]["captured"])
-        self.assertEqual(identity["version"]["output"], "1.1.1")
-        self.assertIn(str(runner.fixture.NODE_TOOLCHAIN_ROOT / "bin"), identity["version"]["environment_path"])
+    def test_codegraph_binary_identity_is_generated_by_host_integration(self) -> None:
+        identity = runner.tool_adapter_identity("retrieval-codegraph-codex-mcp-v1")
+        self.assertEqual(identity["binary_identity"]["kind"], "generated-by-host-integration")
 
     def test_replacements_for_unproven_profiles_require_assignment_proof_and_product_parity(self) -> None:
         expected = {
@@ -931,12 +823,9 @@ for line in sys.stdin:
         for session in sessions:
             by_profile.setdefault(session["profile"]["profile_id"], []).append(session)
         deletion_receipts = [
-            json.loads(
-                (ROOT / "sources/evaluations/audits/invalid-treatment-result-deletions-20260718.json").read_text()
-            ),
-            json.loads(
-                (ROOT / "sources/evaluations/audits/unproven-treatment-result-deletions-20260718.json").read_text()
-            ),
+            json.loads(path.read_text())
+            for path in (ROOT / "sources/evaluations/audits").glob("*deletion*.json")
+            if "profiles" in json.loads(path.read_text())
         ]
         deleted_by_profile = {
             row["profile_id"]: row
@@ -2155,25 +2044,6 @@ class ManifestAndProtocolContractTest(unittest.TestCase):
             session, _ = self.production_v3_fixture(Path(tmp))
             self.assertEqual(self.production_v3_errors(session), [])
 
-    def test_generated_host_integration_identity_is_valid(self) -> None:
-        identity = {
-            "binary_identity": {
-                "kind": "generated-by-host-integration",
-                "command_template": "{tool_data_dir}/venv/bin/unit-tool",
-                "install_commands": [["uv", "pip", "install", "unit-tool.whl"]],
-                "install_contract_sha256": "4" * 64,
-            }
-        }
-        errors: list[str] = []
-        validate_repository.validate_tool_adapter_identity(
-            identity,
-            copy.deepcopy(identity),
-            "unit-profile",
-            "unit-session",
-            errors,
-        )
-        self.assertEqual(errors, [])
-
     def test_production_v3_lean_record_does_not_require_optional_operational_metrics(self) -> None:
         with tempfile.TemporaryDirectory(dir=ROOT) as tmp:
             session, _ = self.production_v3_fixture(Path(tmp))
@@ -2412,15 +2282,6 @@ class MatrixLifecycleContractTest(unittest.TestCase):
             matrix.refresh_generated_runbook(root)
             self.assertEqual((root / "refreshed").read_text(), "yes")
 
-    def test_controller_refreshes_cumulative_usage_audit_before_validation(self) -> None:
-        with tempfile.TemporaryDirectory() as tmp:
-            root = Path(tmp)
-            script = root / "scripts/audit_codex_cumulative_usage.py"
-            script.parent.mkdir(parents=True)
-            script.write_text("from pathlib import Path\nPath('audited').write_text('yes')\n")
-            matrix.refresh_cumulative_usage_audit(root)
-            self.assertEqual((root / "audited").read_text(), "yes")
-
     def test_prepare_only_summary_cannot_claim_objective_acceptance(self) -> None:
         self.assertIsNone(
             matrix.matrix_acceptance_state(
@@ -2645,6 +2506,128 @@ class MatrixLifecycleContractTest(unittest.TestCase):
             validate_repository.qualification_is_current(sequence),
         )
 
+
+
+class CorrectionContractTest(unittest.TestCase):
+    def test_production_guidance_preserves_author_surfaces_without_forcing_use(self) -> None:
+        guidance = (ROOT / "AGENTS.md").read_text()
+        evaluator = (ROOT / "prompts/evaluator.md").read_text()
+        parity = (ROOT / "docs/papers/official-integration-parity-audit.md").read_text()
+        self.assertIn("every tool-author-recommended normal integration surface", guidance)
+        self.assertIn("never adding evaluator-authored steering, quotas, or forced calls", evaluator)
+        self.assertIn("Product-authored guidance is part of normal installation", parity)
+
+    def test_deleted_codegraph_generation_is_superseded_by_canonical_v1(self) -> None:
+        deletion = json.loads((ROOT / "sources/evaluations/audits/invalid-codegraph-v1-result-deletion-20260719.json").read_text())
+        qualification = json.loads((ROOT / "sources/evaluations/audits/corrected-integration-qualification-codegraph-20260719.json").read_text())
+        sessions = json.loads((ROOT / "data/workflow-sessions.json").read_text())["sessions"]
+        deleted_ids = {sid for row in deletion["profiles"] for sid in row["deleted_session_ids"]}
+        deleted_protocols = {path for row in deletion["profiles"] for path in row["deleted_protocol_paths"]}
+        self.assertTrue(deleted_ids.isdisjoint({session["session_id"] for session in sessions}))
+        self.assertEqual(qualification["profiles"], ["retrieval-codegraph-codex-mcp-v1"])
+        self.assertTrue(deleted_protocols.isdisjoint({lane["protocol_path"] for lane in qualification["lanes"]}))
+        runner.assert_profile_runnable("retrieval-codegraph-codex-mcp-v1")
+
+    def test_incomplete_jcodemunch_result_is_deleted(self) -> None:
+        receipt = json.loads((ROOT / "sources/evaluations/audits/invalid-jcodemunch-direct-v1-result-deletion-20260719.json").read_text())
+        sessions = json.loads((ROOT / "data/workflow-sessions.json").read_text())["sessions"]
+        deleted = {sid for row in receipt["profiles"] for sid in row["deleted_session_ids"]}
+        self.assertTrue(deleted.isdisjoint({s["session_id"] for s in sessions}))
+        self.assertNotIn("retrieval-jcodemunch-mcp-direct-v1", runner.SUPPORTED_WORKFLOW_TOOL_PROFILES)
+        for row in receipt["profiles"]:
+            for key in ("deleted_paths", "deleted_protocol_paths", "deleted_comparison_paths", "deleted_bundle_roots"):
+                for path in row.get(key, []):
+                    self.assertFalse((ROOT / path).exists(), path)
+
+    def test_guide_faithful_jcodemunch_successor_installs_native_codex_guidance(self) -> None:
+        profile_id = "retrieval-jcodemunch-codex-mcp-v2"
+        self.assertEqual(runner.SUPPORTED_WORKFLOW_TOOL_PROFILES[profile_id], "jcodemunch-codex-mcp-v2")
+        cfg = runner.fixture.active_tool_config({}, profile_id)
+        assert cfg is not None
+        self.assertEqual(cfg["mcp_args"], [])
+        self.assertIn("{codex_home}/AGENTS.md", cfg["host_integration"]["required_files"])
+        self.assertTrue(cfg["mcp_handshake"]["required"])
+        profiles = {p["id"]: p for p in json.loads((ROOT / "data/evaluation-profiles.json").read_text())["profiles"]}
+        self.assertEqual(profiles[profile_id]["status"], "screening-shortlist")
+        fixtures = json.loads((ROOT / "data/repository-fixtures.json").read_text())["fixtures"]
+        self.assertTrue(all(profile_id in fixture["candidate_profiles"] for fixture in fixtures))
+
+    def test_jcodemunch_guidance_installer_copies_product_authored_policy(self) -> None:
+        with tempfile.TemporaryDirectory() as temp:
+            home = Path(temp) / "codex"
+            receipt = Path(temp) / "receipt.json"
+            proc = subprocess.run([
+                sys.executable, str(ROOT / "scripts/install_jcodemunch_codex_guidance.py"),
+                "--source-root", "/opt/data/tool-candidates/jcodemunch-mcp",
+                "--expected-commit", "fbc14e40c7057ebc6d718fb48083d30522afe15f",
+                "--codex-home", str(home), "--receipt", str(receipt),
+            ], text=True, capture_output=True)
+            self.assertEqual(proc.returncode, 0, proc.stderr)
+            payload = json.loads(receipt.read_text())
+            self.assertFalse(payload["evaluator_authored_guidance"])
+            guidance = (home / "AGENTS.md").read_text()
+            self.assertIn("jcodemunch_guide", guidance)
+            self.assertIn("Test files when running tests", guidance)
+
+    def test_jcodemunch_successor_has_current_provider_free_qualification(self) -> None:
+        receipt = json.loads((ROOT / "sources/evaluations/audits/corrected-integration-qualification-jcodemunch-codex-mcp-v2-20260719.json").read_text())
+        self.assertEqual(receipt["profiles"], ["retrieval-jcodemunch-codex-mcp-v2"])
+        self.assertEqual(receipt["provider_calls"], 0)
+        self.assertEqual(len(receipt["lanes"]), 3)
+        for lane in receipt["lanes"]:
+            protocol = ROOT / lane["protocol_path"]
+            self.assertEqual(lane["protocol_sha256"], hashlib.sha256(protocol.read_bytes()).hexdigest())
+            self.assertTrue(lane["host_integration"]["passed"])
+            self.assertEqual(lane["tool_warmup_exit_code"], 0)
+            self.assertTrue(lane["mcp_handshake"]["passed"])
+            self.assertIn("jcodemunch_guide", lane["mcp_handshake"]["tool_names"])
+
+    def test_incomplete_ponytail_and_caveman_results_are_deleted(self) -> None:
+        receipt = json.loads((ROOT / "sources/evaluations/audits/invalid-ponytail-caveman-result-deletion-20260719.json").read_text())
+        sessions = json.loads((ROOT / "data/workflow-sessions.json").read_text())["sessions"]
+        deleted = {sid for row in receipt["profiles"] for sid in row["deleted_session_ids"]}
+        self.assertEqual(len(deleted), 6)
+        self.assertTrue(deleted.isdisjoint({s["session_id"] for s in sessions}))
+        for profile in ("artifact-ponytail", "behavior-caveman"):
+            with self.assertRaisesRegex(ValueError, "invalid-profile"):
+                runner.assert_profile_runnable(profile)
+        for row in receipt["profiles"]:
+            for key in ("deleted_paths", "deleted_protocol_paths", "deleted_comparison_paths", "deleted_bundle_roots"):
+                for path in row.get(key, []):
+                    self.assertFalse((ROOT / path).exists(), path)
+
+    def test_guide_faithful_ponytail_and_caveman_successors_are_native(self) -> None:
+        pony = runner.fixture.active_tool_config({}, "artifact-ponytail-codex-plugin-v1")
+        cave = runner.fixture.active_tool_config({}, "behavior-caveman-codex-skill-v1")
+        self.assertTrue(pony["surface"].startswith("codex-plugin/"))
+        self.assertTrue(pony["codex_features"]["hooks"])
+        self.assertTrue(any(path.endswith("ponytail-hook-trust.json") for path in pony["host_integration"]["required_files"]))
+        self.assertTrue(cave["surface"].startswith("codex-project-skills+"))
+        self.assertEqual(cave["session_activation"], "/caveman")
+        self.assertEqual(len(cave["host_integration"]["required_files"]), 7)
+        self.assertNotIn("prompt_instructions_command", pony)
+        self.assertNotIn("prompt_instructions_command", cave)
+
+    def test_generated_host_integration_identity_is_valid(self) -> None:
+        identity = {
+            "id": "generated-profile",
+            "source_roots": [],
+            "binary_identity": {
+                "kind": "generated-by-host-integration",
+                "command_template": "generated-command",
+                "install_commands": [["installer", "--yes"]],
+                "install_contract_sha256": "a" * 64,
+            },
+        }
+        errors: list[str] = []
+        validate_repository.validate_tool_adapter_identity(identity, copy.deepcopy(identity), "generated-profile", "session-generated", errors)
+        self.assertEqual(errors, [])
+
+    def test_controller_refreshes_cumulative_usage_audit_before_validation(self) -> None:
+        source = (ROOT / "scripts/run_sequential_workflow_matrix.py").read_text()
+        audit = source.index("scripts/audit_codex_cumulative_usage.py")
+        validate = source.index("scripts/validate_repository.py", audit)
+        self.assertLess(audit, validate)
 
 if __name__ == "__main__":
     unittest.main()

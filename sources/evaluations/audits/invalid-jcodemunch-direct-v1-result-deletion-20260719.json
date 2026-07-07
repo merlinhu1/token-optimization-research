@@ -1,0 +1,59 @@
+{
+  "schema_version": 1,
+  "date": "2026-07-19",
+  "action": "owner-authorized-deletion-from-active-corpus",
+  "recovery_commit": "78c0526",
+  "policy": {
+    "baseline_relabeling": "forbidden; invalid treatment assignments are not controls",
+    "provider_rerun": "required under a new guide-faithful versioned Codex profile",
+    "result_retention": "no provider totals, task outcomes, diffs, event streams, or comparison deltas retained in this deletion receipt"
+  },
+  "profiles": [
+    {
+      "profile_id": "retrieval-jcodemunch-mcp-direct-v1",
+      "invalidity": "The lane installed and registered the direct jcodemunch MCP binary, warmed the index, and passed initialize plus tools/list, but deliberately omitted the tool-author-provided Codex guidance layer. The pinned guide states that MCP wiring alone does not make the agent use jcodemunch and directs Codex users to install persistent guidance through project rules or AGENTS.md. The experiment owner therefore classified the canonical product installation as broken and incomplete.",
+      "deleted_session_ids": [
+        "jcodemunch-fastify-20260718-p-769d40697529-r2",
+        "jcodemunch-beets-20260718-p-b440da225a3a-r2",
+        "jcodemunch-terraform-20260719-p-ded8609b4172-r2"
+      ],
+      "deleted_protocol_paths": [
+        "sources/evaluations/protocols/fastify-lifecycle-sequence-v0-retrieval-jcodemunch-mcp-direct-v1-a6816d8b1460.json",
+        "sources/evaluations/protocols/beets-lifecycle-sequence-v0-retrieval-jcodemunch-mcp-direct-v1-9789dd17f876.json",
+        "sources/evaluations/protocols/terraform-lifecycle-sequence-v0-retrieval-jcodemunch-mcp-direct-v1-90a3a5b679f6.json"
+      ],
+      "deleted_comparison_paths": [
+        "sources/evaluations/workflow-sessions/baseline-fastify-20260719-vs-jcodemunch-p-769d40697529-r2.json",
+        "sources/evaluations/workflow-sessions/baseline-beets-20260719-vs-jcodemunch-p-b440da225a3a-r2.json",
+        "sources/evaluations/workflow-sessions/baseline-terraform-20260719-vs-jcodemunch-p-ded8609b4172-r2.json"
+      ],
+      "deleted_bundle_roots": [
+        "sources/evaluations/workflow-sessions/jcodemunch-fastify-20260718-p-769d40697529-r2",
+        "sources/evaluations/workflow-sessions/jcodemunch-beets-20260718-p-b440da225a3a-r2",
+        "sources/evaluations/workflow-sessions/jcodemunch-terraform-20260719-p-ded8609b4172-r2"
+      ],
+      "replacement_profile_id": "not-created-pending-guide-faithful-codex-profile",
+      "derived_aggregate_disposition": "Removed from the active session registry and regenerated cumulative-accounting audit; no invalid jcodemunch totals remain in current aggregate claims.",
+      "regenerated_derived_paths": [
+        "sources/evaluations/audits/codex-cumulative-usage-accounting-20260718.json",
+        "sources/evaluations/audits/gpt-5-6-sol-high-baseline-variance-20260718.json",
+        "docs/evaluations/operations/runbook.md"
+      ],
+      "deleted_external_paths": [
+        "/opt/data/campaigns/corrected-luna-xhigh-r2/provider/retrieval-jcodemunch-mcp-direct-v1",
+        "/opt/data/eval-workflow-lanes/workflow-matrix-20260718T234259104691Z-p1644365-r2/fastify-lifecycle-sequence-v0--retrieval-jcodemunch-mcp-direct-v1",
+        "/opt/data/eval-workflow-lanes/workflow-matrix-20260718T234259104691Z-p1644365-r2/beets-lifecycle-sequence-v0--retrieval-jcodemunch-mcp-direct-v1",
+        "/opt/data/eval-workflow-lanes/workflow-matrix-20260718T234259104691Z-p1644365-r2/terraform-lifecycle-sequence-v0--retrieval-jcodemunch-mcp-direct-v1"
+      ],
+      "deleted_external_discovery": {
+        "roots": [
+          "/opt/data/eval-workflow-lanes",
+          "/opt/data/campaigns"
+        ],
+        "match_rule": "directory basename contains jcodemunch-mcp-direct-v1",
+        "additional_matching_directories_deleted": 22,
+        "post_delete_remaining_matches": 0
+      }
+    }
+  ]
+}
