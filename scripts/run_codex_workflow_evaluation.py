@@ -459,6 +459,13 @@ def tool_adapter_identity(profile_id: str, root: Path = ROOT) -> dict[str, Any]:
     if command_spec is None:
         raise ValueError(f"treatment tool {tool_id} has no executable command to identify")
     source_paths = sorted({str(path) for path in cfg.get("mounts", []) if str(path)})
+    source_identity = []
+    for path_text in source_paths:
+        rendered_path = path_text.format(repository_root=root)
+        identity = path_identity(rendered_path)
+        if "{repository_root}" in path_text:
+            identity["path"] = path_text
+        source_identity.append(identity)
     return {
         "tool_id": tool_id,
         "tool_manifest": "scripts/run_codex_fixture_evaluation.py:TOOL_CONFIGS",
@@ -469,7 +476,7 @@ def tool_adapter_identity(profile_id: str, root: Path = ROOT) -> dict[str, Any]:
         "tool_use_policy": meta["tool_use_policy"],
         "command_identity": command_spec,
         "binary_identity": executable_identity(command_spec["command"], cfg, root),
-        "source_identity": [path_identity(path) for path in source_paths],
+        "source_identity": source_identity,
     }
 
 
@@ -881,6 +888,9 @@ def artifact_profile_label(profile_id: str) -> str:
         "retrieval-serena-codex-mcp-v1": "serena",
         "retrieval-sigmap-codex-live-v1": "sigmap",
         "integrated-token-savior-mcp-v1": "token-savior",
+        "artifact-ponytail-codex-plugin-v1": "ponytail",
+        "behavior-caveman-codex-skill-v1": "caveman",
+        "retrieval-jcodemunch-codex-mcp-v2": "jcodemunch",
     }
     if profile_id == "baseline-bare-codex":
         return "baseline"
