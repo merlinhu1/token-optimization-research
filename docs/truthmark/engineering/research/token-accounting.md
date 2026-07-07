@@ -1,7 +1,7 @@
 ---
 status: active
 truth_kind: engineering-contract
-last_reviewed: 2026-07-16
+last_reviewed: 2026-07-19
 ---
 
 # Token Accounting And Evaluation Contracts
@@ -21,7 +21,9 @@ This contract governs lifecycle-v0 provider-token samples, baseline reuse, compa
 - The matrix reuses the first operationally valid baseline for a causal comparison fingerprint and replicate.
 - Repository validation requires complete provider usage, structural isolation, clean execution integrity, and recoverable compact evidence—not verifier success or source review.
 - Before any non-baseline provider launch, both repository validation and the direct runner require exact parity approval plus a current provider-free qualification receipt for every active fixture/profile protocol binding; MCP profiles additionally require non-empty `tools/list` proof.
-- Three provider-backed baseline token samples are currently retained.
+- Canonical treatment profiles install every author-recommended Codex surface, including product-authored guidance, native skills/plugins, and reviewed hooks; reduced or prompt-emulated setups are ablations or invalid assignments, not product treatments.
+- The final shared-runner qualification covers 45 current selectable fixture/profile bindings across 15 profiles with zero provider calls.
+- Eighteen provider-backed baseline records are currently retained.
 
 ## Product Truth Links
 
@@ -32,6 +34,9 @@ This contract governs lifecycle-v0 provider-token samples, baseline reuse, compa
 - `data/workflow-task-sequences.json`
 - `data/workflow-sessions.json`
 - `scripts/run_codex_workflow_evaluation.py`
+- `scripts/prepare_pinned_codex_marketplace.py`
+- `scripts/trust_codex_plugin_hooks.py`
+- `scripts/install_jcodemunch_codex_guidance.py`
 - `scripts/run_sequential_workflow_matrix.py`
 - `scripts/validate_repository.py`
 
@@ -81,4 +86,8 @@ Update this document whenever token eligibility, comparison identity, provider a
 - ../../../../docs/evaluations/operations/runbook.md
 - ../../../../docs/evaluations/design/token-and-quality-policy.md
 - ../../../../scripts/run_codex_workflow_evaluation.py
+- ../../../../scripts/prepare_pinned_codex_marketplace.py
+- ../../../../scripts/trust_codex_plugin_hooks.py
+- ../../../../scripts/install_jcodemunch_codex_guidance.py
+- ../../../../sources/evaluations/audits/corrected-integration-qualification-jcodemunch-codex-mcp-v2-20260719.json
 - ../../../../scripts/validate_repository.py

@@ -1,0 +1,809 @@
+{
+  "schema_version": 1,
+  "date": "2026-07-19",
+  "created_at": "2026-07-19T12:04:26.586946+00:00",
+  "purpose": "Provider-free qualification of the guide-faithful jcodemunch Codex MCP v2 replacement after deletion of incomplete direct-v1 evidence.",
+  "profiles": [
+    "retrieval-jcodemunch-codex-mcp-v2"
+  ],
+  "sequences": [
+    "fastify-lifecycle-sequence-v0",
+    "beets-lifecycle-sequence-v0",
+    "terraform-lifecycle-sequence-v0"
+  ],
+  "no_provider": true,
+  "execution_mode": "prepare-only-no-provider",
+  "provider_calls": 0,
+  "scope": {
+    "profiles": 1,
+    "fixtures": 3,
+    "lanes": 3,
+    "protocols": 3
+  },
+  "summary": {
+    "passed": 3,
+    "failed": 0,
+    "all_fixture_preparation_verified": true,
+    "all_host_integrations_verified": true,
+    "all_required_mcp_handshakes_verified": true,
+    "all_codex_visibility_preflights_verified": true,
+    "all_product_native_warmups_verified": true,
+    "provider_backed_sessions_created": 0
+  },
+  "controller_provenance": {
+    "fixture_runner_sha256": "9f46ff5b1a8fb335aa72b4a56e736749c2e58705850d8afafdc588a46faf1dca",
+    "workflow_runner_sha256": "65aa70f7fd816c0d4b0ef69618fd5a9af11c7ec7d3793ad4ef803eff86056843",
+    "evaluator_prompt_sha256": "dfd582e145d6b8baf7052b7c70148c3ecbce7e801c46b5f39c366aaa70118eb0",
+    "agent_guidance_sha256": "254f82547db404f8c85e76090325b396dc0838044ee6bf1b8a8c8e9830216826",
+    "guidance_installer_sha256": "8a166d38229d1f69d530af9b0f302f6a22ed97e34f90695c128091255821c1ed"
+  },
+  "integration_contract_proof": {
+    "source_root": "/opt/data/tool-candidates/jcodemunch-mcp",
+    "source_commit": "fbc14e40c7057ebc6d718fb48083d30522afe15f",
+    "source_pin_matches": true,
+    "wheel_sha256": "9ae3a44c2be5709d33fa2b56c9e569906ed63906a907f89b4762a370d397ed54",
+    "official_install_surface": "lane-private pre-installed venv binary with no MCP arguments plus product-authored Codex guidance",
+    "required_file_proof": true,
+    "initialize_and_tools_list_proof": true,
+    "jcodemunch_guide_exposed": true,
+    "evaluator_authored_product_instructions_injected": false
+  },
+  "lanes": [
+    {
+      "session_id": "prepare-canonical-v1-fastify-retrieval-jcodemunch-codex-mcp-v2",
+      "profile_id": "retrieval-jcodemunch-codex-mcp-v2",
+      "sequence_id": "fastify-lifecycle-sequence-v0",
+      "prepared": true,
+      "prepare_verification": {
+        "passed": true,
+        "mode": "preseeded-composite",
+        "future_seed_regressions_visible": true,
+        "seed_patches_model_visible": false,
+        "preseeded_task_orders": [
+          1,
+          2,
+          3
+        ],
+        "pending_seed_orders": [],
+        "controller_verification": "final-only",
+        "diff_basis": "ordered-task-checkpoints-plus-final-cumulative-diff",
+        "fixed_snapshot_oid": "94bcbcc6e2ef3b8e8f8e8797fe551ccbe7b942fd",
+        "concealment": {
+          "order": 1,
+          "head": "8ce099532cd140615c1d4699393915e7f719e2de",
+          "head_is_root": true,
+          "reachable_commit_count": 1,
+          "reflog_oids": [
+            "8ce099532cd140615c1d4699393915e7f719e2de"
+          ],
+          "remotes": [],
+          "working_tree_clean": true,
+          "fixed_snapshot_object_present": false,
+          "unreachable_objects": [],
+          "leaked_git_admin_paths": [],
+          "model_concealed_paths": [],
+          "model_concealed_paths_present": [],
+          "passed": true
+        },
+        "composite_seed_delivery": {
+          "mode": "preseeded-composite",
+          "preseeded_task_orders": [
+            1,
+            2,
+            3
+          ],
+          "merged_task_orders": [
+            1,
+            2,
+            3
+          ],
+          "composite_diff_sha256": "46613844cbf7bcd17c2f04c2fe53990f233bc1fb79134bf3aefc7b4962002e93",
+          "model_repo_seed_or_verifier_assets": [],
+          "model_concealed_paths": [],
+          "model_concealed_paths_present": [],
+          "passed": true
+        },
+        "stage_seed_delivery": {
+          "mode": "preseeded-composite",
+          "preseeded_task_orders": [
+            1,
+            2,
+            3
+          ],
+          "merged_task_orders": [
+            1,
+            2,
+            3
+          ],
+          "composite_diff_sha256": "46613844cbf7bcd17c2f04c2fe53990f233bc1fb79134bf3aefc7b4962002e93",
+          "model_repo_seed_or_verifier_assets": [],
+          "model_concealed_paths": [],
+          "model_concealed_paths_present": [],
+          "passed": true
+        },
+        "fixed_composite_qualification": {
+          "path": "sources/evaluations/fixtures/medium/fastify-fastify/qualification-lifecycle-v0.json",
+          "passed": true,
+          "full_fixed_cumulative_verifier_zero": true,
+          "composite_seed_merge_zero": true,
+          "composite_seeded_verifiers_nonzero": true,
+          "composite_seed_diff_sha256": "46613844cbf7bcd17c2f04c2fe53990f233bc1fb79134bf3aefc7b4962002e93",
+          "runtime_composite_seed_diff_sha256": "46613844cbf7bcd17c2f04c2fe53990f233bc1fb79134bf3aefc7b4962002e93",
+          "composite_seed_diff_hash_matches": true
+        },
+        "concealment_passed": true,
+        "composite_seed_delivery_passed": true
+      },
+      "host_integration": {
+        "profile_id": "retrieval-jcodemunch-codex-mcp-v2",
+        "passed": true,
+        "skipped": false,
+        "install_exit_codes": [
+          0,
+          0,
+          0
+        ],
+        "verify_exit_codes": [
+          0
+        ],
+        "missing_required_files": [],
+        "required_files": [
+          "/opt/data/repos/token-optimization-research/sources/evaluations/workflow-sessions/prepare-canonical-v1-fastify-retrieval-jcodemunch-codex-mcp-v2/codex-homes/retrieval-jcodemunch-codex-mcp-v2/.config/jcodemunch-codex-mcp-v2/venv/bin/jcodemunch-mcp",
+          "/opt/data/repos/token-optimization-research/sources/evaluations/workflow-sessions/prepare-canonical-v1-fastify-retrieval-jcodemunch-codex-mcp-v2/codex-homes/retrieval-jcodemunch-codex-mcp-v2/AGENTS.md",
+          "/opt/data/repos/token-optimization-research/sources/evaluations/workflow-sessions/prepare-canonical-v1-fastify-retrieval-jcodemunch-codex-mcp-v2/codex-homes/retrieval-jcodemunch-codex-mcp-v2/.config/jcodemunch-codex-mcp-v2/jcodemunch-guidance-install.json"
+        ],
+        "artifacts": [
+          "sources/evaluations/workflow-sessions/prepare-canonical-v1-fastify-retrieval-jcodemunch-codex-mcp-v2/tool-host-install-1.txt",
+          "sources/evaluations/workflow-sessions/prepare-canonical-v1-fastify-retrieval-jcodemunch-codex-mcp-v2/tool-host-install-2.txt",
+          "sources/evaluations/workflow-sessions/prepare-canonical-v1-fastify-retrieval-jcodemunch-codex-mcp-v2/tool-host-install-3.txt",
+          "sources/evaluations/workflow-sessions/prepare-canonical-v1-fastify-retrieval-jcodemunch-codex-mcp-v2/tool-host-verify-1.txt"
+        ]
+      },
+      "mcp_handshake": {
+        "errors": [],
+        "initialize_passed": true,
+        "non_json_stdout_lines": [],
+        "passed": true,
+        "protocol_version": "2025-06-18",
+        "server_name": "jcodemunch-mcp",
+        "stderr_present": true,
+        "tool_names": [
+          "analyze_perf",
+          "announce_model",
+          "assemble_task_context",
+          "audit_agent_config",
+          "check_delete_safe",
+          "check_edit_safe",
+          "check_embedding_drift",
+          "check_references",
+          "check_rename_safe",
+          "diff_health_radar",
+          "digest",
+          "embed_repo",
+          "find_dead_code",
+          "find_hot_paths",
+          "find_implementations",
+          "find_importers",
+          "find_references",
+          "find_similar_symbols",
+          "find_unused_paths",
+          "get_architecture_metrics",
+          "get_blast_radius",
+          "get_call_hierarchy",
+          "get_changed_symbols",
+          "get_churn_rate",
+          "get_class_hierarchy",
+          "get_context_bundle",
+          "get_coupling_metrics",
+          "get_cross_repo_map",
+          "get_dead_code_v2",
+          "get_decorator_census",
+          "get_delivery_metrics",
+          "get_dependency_cycles",
+          "get_dependency_graph",
+          "get_endpoint_impact",
+          "get_extraction_candidates",
+          "get_file_content",
+          "get_file_outline",
+          "get_file_risk",
+          "get_file_tree",
+          "get_group_contracts",
+          "get_hotspots",
+          "get_impact_preview",
+          "get_layer_violations",
+          "get_parity_map",
+          "get_pr_risk_profile",
+          "get_project_intel",
+          "get_ranked_context",
+          "get_redaction_log",
+          "get_related_symbols",
+          "get_repo_health",
+          "get_repo_map",
+          "get_repo_outline",
+          "get_runtime_coverage",
+          "get_session_context",
+          "get_session_snapshot",
+          "get_session_stats",
+          "get_signal_chains",
+          "get_symbol_complexity",
+          "get_symbol_diff",
+          "get_symbol_importance",
+          "get_symbol_provenance",
+          "get_symbol_source",
+          "get_tectonic_map",
+          "get_untested_symbols",
+          "get_watch_status",
+          "import_runtime_signal",
+          "index_dependency",
+          "index_file",
+          "index_folder",
+          "index_repo",
+          "invalidate_cache",
+          "jcodemunch_guide",
+          "list_repos",
+          "list_workspaces",
+          "plan_refactoring",
+          "plan_turn",
+          "register_edit",
+          "render_diagram",
+          "resolve_repo",
+          "search_ast",
+          "search_columns",
+          "search_symbols",
+          "search_text",
+          "set_tool_tier",
+          "suggest_corrections",
+          "suggest_queries",
+          "summarize_repo",
+          "tune_weights",
+          "winnow_symbols"
+        ],
+        "tools_list_passed": true,
+        "profile_id": "retrieval-jcodemunch-codex-mcp-v2",
+        "required": true,
+        "probe_exit_code": 0,
+        "tool_count": 89
+      },
+      "codex_preflight": {
+        "profile_id": "retrieval-jcodemunch-codex-mcp-v2",
+        "passed": true,
+        "doctor_exit_code": 1,
+        "mcp_list_exit_code": 0,
+        "tool_preflight_exit_code": null,
+        "coverage_preflight_exit_code": null,
+        "missing_declared_filter_commands": [],
+        "forbidden_command_probe_exit_code": 0,
+        "forbidden_mcp_hits": [],
+        "forbidden_config_hits": [],
+        "visible_forbidden_commands": [],
+        "failure_reasons": [],
+        "warnings": [
+          "codex doctor exited 1; preserve the diagnostic, but use the isolated MCP/config probes and task execution as gates"
+        ],
+        "artifacts": {
+          "doctor": "sources/evaluations/workflow-sessions/prepare-canonical-v1-fastify-retrieval-jcodemunch-codex-mcp-v2/codex-doctor.txt",
+          "mcp_list": "sources/evaluations/workflow-sessions/prepare-canonical-v1-fastify-retrieval-jcodemunch-codex-mcp-v2/codex-mcp-list.txt",
+          "effective_config": "sources/evaluations/workflow-sessions/prepare-canonical-v1-fastify-retrieval-jcodemunch-codex-mcp-v2/codex-effective-config.toml",
+          "forbidden_command_visibility": "sources/evaluations/workflow-sessions/prepare-canonical-v1-fastify-retrieval-jcodemunch-codex-mcp-v2/forbidden-command-visibility.txt",
+          "tool_preflight": null,
+          "tool_coverage_preflight": null
+        }
+      },
+      "tool_warmup_exit_code": 0,
+      "protocol_path": "sources/evaluations/protocols/fastify-lifecycle-sequence-v0-retrieval-jcodemunch-codex-mcp-v2-55e1a466d28d.json",
+      "protocol_sha256": "d6a7618af04d1e951ce260a77bb49bff6e045ceb10a59728781932db5f000ae8"
+    },
+    {
+      "session_id": "prepare-canonical-v1-beets-retrieval-jcodemunch-codex-mcp-v2",
+      "profile_id": "retrieval-jcodemunch-codex-mcp-v2",
+      "sequence_id": "beets-lifecycle-sequence-v0",
+      "prepared": true,
+      "prepare_verification": {
+        "passed": true,
+        "mode": "preseeded-composite",
+        "future_seed_regressions_visible": true,
+        "seed_patches_model_visible": false,
+        "preseeded_task_orders": [
+          1,
+          2,
+          3
+        ],
+        "pending_seed_orders": [],
+        "controller_verification": "final-only",
+        "diff_basis": "ordered-task-checkpoints-plus-final-cumulative-diff",
+        "fixed_snapshot_oid": "9acb1ecff6c7ee0a1e83e3b983c94792345712c5",
+        "concealment": {
+          "order": 1,
+          "head": "966e70c358560a490b5aeb45f58d8c6acba004c7",
+          "head_is_root": true,
+          "reachable_commit_count": 1,
+          "reflog_oids": [
+            "966e70c358560a490b5aeb45f58d8c6acba004c7"
+          ],
+          "remotes": [],
+          "working_tree_clean": true,
+          "fixed_snapshot_object_present": false,
+          "unreachable_objects": [],
+          "leaked_git_admin_paths": [],
+          "model_concealed_paths": [
+            "test/controller_hidden/lifecycle/test_ftintitle_review.py",
+            "test/controller_hidden/lifecycle/test_lazy_model_storage_refactor.py",
+            "test/controller_hidden/lifecycle/test_multivalue_modify_feature.py"
+          ],
+          "model_concealed_paths_present": [],
+          "passed": true
+        },
+        "composite_seed_delivery": {
+          "mode": "preseeded-composite",
+          "preseeded_task_orders": [
+            1,
+            2,
+            3
+          ],
+          "merged_task_orders": [
+            1,
+            2,
+            3
+          ],
+          "composite_diff_sha256": "7d44dab7226fb451f7b8051ec633f4fb204ef090e2e7d72e2370ab4f3999afdc",
+          "model_repo_seed_or_verifier_assets": [],
+          "model_concealed_paths": [
+            "test/controller_hidden/lifecycle/test_ftintitle_review.py",
+            "test/controller_hidden/lifecycle/test_lazy_model_storage_refactor.py",
+            "test/controller_hidden/lifecycle/test_multivalue_modify_feature.py"
+          ],
+          "model_concealed_paths_present": [],
+          "passed": true
+        },
+        "stage_seed_delivery": {
+          "mode": "preseeded-composite",
+          "preseeded_task_orders": [
+            1,
+            2,
+            3
+          ],
+          "merged_task_orders": [
+            1,
+            2,
+            3
+          ],
+          "composite_diff_sha256": "7d44dab7226fb451f7b8051ec633f4fb204ef090e2e7d72e2370ab4f3999afdc",
+          "model_repo_seed_or_verifier_assets": [],
+          "model_concealed_paths": [
+            "test/controller_hidden/lifecycle/test_ftintitle_review.py",
+            "test/controller_hidden/lifecycle/test_lazy_model_storage_refactor.py",
+            "test/controller_hidden/lifecycle/test_multivalue_modify_feature.py"
+          ],
+          "model_concealed_paths_present": [],
+          "passed": true
+        },
+        "fixed_composite_qualification": {
+          "path": "sources/evaluations/fixtures/medium/beetbox-beets/qualification-lifecycle-v0.json",
+          "passed": true,
+          "full_fixed_cumulative_verifier_zero": true,
+          "composite_seed_merge_zero": true,
+          "composite_seeded_verifiers_nonzero": true,
+          "composite_seed_diff_sha256": "7d44dab7226fb451f7b8051ec633f4fb204ef090e2e7d72e2370ab4f3999afdc",
+          "runtime_composite_seed_diff_sha256": "7d44dab7226fb451f7b8051ec633f4fb204ef090e2e7d72e2370ab4f3999afdc",
+          "composite_seed_diff_hash_matches": true
+        },
+        "concealment_passed": true,
+        "composite_seed_delivery_passed": true
+      },
+      "host_integration": {
+        "profile_id": "retrieval-jcodemunch-codex-mcp-v2",
+        "passed": true,
+        "skipped": false,
+        "install_exit_codes": [
+          0,
+          0,
+          0
+        ],
+        "verify_exit_codes": [
+          0
+        ],
+        "missing_required_files": [],
+        "required_files": [
+          "/opt/data/repos/token-optimization-research/sources/evaluations/workflow-sessions/prepare-canonical-v1-beets-retrieval-jcodemunch-codex-mcp-v2/codex-homes/retrieval-jcodemunch-codex-mcp-v2/.config/jcodemunch-codex-mcp-v2/venv/bin/jcodemunch-mcp",
+          "/opt/data/repos/token-optimization-research/sources/evaluations/workflow-sessions/prepare-canonical-v1-beets-retrieval-jcodemunch-codex-mcp-v2/codex-homes/retrieval-jcodemunch-codex-mcp-v2/AGENTS.md",
+          "/opt/data/repos/token-optimization-research/sources/evaluations/workflow-sessions/prepare-canonical-v1-beets-retrieval-jcodemunch-codex-mcp-v2/codex-homes/retrieval-jcodemunch-codex-mcp-v2/.config/jcodemunch-codex-mcp-v2/jcodemunch-guidance-install.json"
+        ],
+        "artifacts": [
+          "sources/evaluations/workflow-sessions/prepare-canonical-v1-beets-retrieval-jcodemunch-codex-mcp-v2/tool-host-install-1.txt",
+          "sources/evaluations/workflow-sessions/prepare-canonical-v1-beets-retrieval-jcodemunch-codex-mcp-v2/tool-host-install-2.txt",
+          "sources/evaluations/workflow-sessions/prepare-canonical-v1-beets-retrieval-jcodemunch-codex-mcp-v2/tool-host-install-3.txt",
+          "sources/evaluations/workflow-sessions/prepare-canonical-v1-beets-retrieval-jcodemunch-codex-mcp-v2/tool-host-verify-1.txt"
+        ]
+      },
+      "mcp_handshake": {
+        "errors": [],
+        "initialize_passed": true,
+        "non_json_stdout_lines": [],
+        "passed": true,
+        "protocol_version": "2025-06-18",
+        "server_name": "jcodemunch-mcp",
+        "stderr_present": true,
+        "tool_names": [
+          "analyze_perf",
+          "announce_model",
+          "assemble_task_context",
+          "audit_agent_config",
+          "check_delete_safe",
+          "check_edit_safe",
+          "check_embedding_drift",
+          "check_references",
+          "check_rename_safe",
+          "diff_health_radar",
+          "digest",
+          "embed_repo",
+          "find_dead_code",
+          "find_hot_paths",
+          "find_implementations",
+          "find_importers",
+          "find_references",
+          "find_similar_symbols",
+          "find_unused_paths",
+          "get_architecture_metrics",
+          "get_blast_radius",
+          "get_call_hierarchy",
+          "get_changed_symbols",
+          "get_churn_rate",
+          "get_class_hierarchy",
+          "get_context_bundle",
+          "get_coupling_metrics",
+          "get_cross_repo_map",
+          "get_dead_code_v2",
+          "get_decorator_census",
+          "get_delivery_metrics",
+          "get_dependency_cycles",
+          "get_dependency_graph",
+          "get_endpoint_impact",
+          "get_extraction_candidates",
+          "get_file_content",
+          "get_file_outline",
+          "get_file_risk",
+          "get_file_tree",
+          "get_group_contracts",
+          "get_hotspots",
+          "get_impact_preview",
+          "get_layer_violations",
+          "get_parity_map",
+          "get_pr_risk_profile",
+          "get_project_intel",
+          "get_ranked_context",
+          "get_redaction_log",
+          "get_related_symbols",
+          "get_repo_health",
+          "get_repo_map",
+          "get_repo_outline",
+          "get_runtime_coverage",
+          "get_session_context",
+          "get_session_snapshot",
+          "get_session_stats",
+          "get_signal_chains",
+          "get_symbol_complexity",
+          "get_symbol_diff",
+          "get_symbol_importance",
+          "get_symbol_provenance",
+          "get_symbol_source",
+          "get_tectonic_map",
+          "get_untested_symbols",
+          "get_watch_status",
+          "import_runtime_signal",
+          "index_dependency",
+          "index_file",
+          "index_folder",
+          "index_repo",
+          "invalidate_cache",
+          "jcodemunch_guide",
+          "list_repos",
+          "list_workspaces",
+          "plan_refactoring",
+          "plan_turn",
+          "register_edit",
+          "render_diagram",
+          "resolve_repo",
+          "search_ast",
+          "search_columns",
+          "search_symbols",
+          "search_text",
+          "set_tool_tier",
+          "suggest_corrections",
+          "suggest_queries",
+          "summarize_repo",
+          "tune_weights",
+          "winnow_symbols"
+        ],
+        "tools_list_passed": true,
+        "profile_id": "retrieval-jcodemunch-codex-mcp-v2",
+        "required": true,
+        "probe_exit_code": 0,
+        "tool_count": 89
+      },
+      "codex_preflight": {
+        "profile_id": "retrieval-jcodemunch-codex-mcp-v2",
+        "passed": true,
+        "doctor_exit_code": 1,
+        "mcp_list_exit_code": 0,
+        "tool_preflight_exit_code": null,
+        "coverage_preflight_exit_code": null,
+        "missing_declared_filter_commands": [],
+        "forbidden_command_probe_exit_code": 0,
+        "forbidden_mcp_hits": [],
+        "forbidden_config_hits": [],
+        "visible_forbidden_commands": [],
+        "failure_reasons": [],
+        "warnings": [
+          "codex doctor exited 1; preserve the diagnostic, but use the isolated MCP/config probes and task execution as gates"
+        ],
+        "artifacts": {
+          "doctor": "sources/evaluations/workflow-sessions/prepare-canonical-v1-beets-retrieval-jcodemunch-codex-mcp-v2/codex-doctor.txt",
+          "mcp_list": "sources/evaluations/workflow-sessions/prepare-canonical-v1-beets-retrieval-jcodemunch-codex-mcp-v2/codex-mcp-list.txt",
+          "effective_config": "sources/evaluations/workflow-sessions/prepare-canonical-v1-beets-retrieval-jcodemunch-codex-mcp-v2/codex-effective-config.toml",
+          "forbidden_command_visibility": "sources/evaluations/workflow-sessions/prepare-canonical-v1-beets-retrieval-jcodemunch-codex-mcp-v2/forbidden-command-visibility.txt",
+          "tool_preflight": null,
+          "tool_coverage_preflight": null
+        }
+      },
+      "tool_warmup_exit_code": 0,
+      "protocol_path": "sources/evaluations/protocols/beets-lifecycle-sequence-v0-retrieval-jcodemunch-codex-mcp-v2-6ff818cd9767.json",
+      "protocol_sha256": "51d7db316f58dabe7d3b8de2b04127e1c70c9290e245b9365cf855c5b8511484"
+    },
+    {
+      "session_id": "prepare-canonical-v1-terraform-retrieval-jcodemunch-codex-mcp-v2",
+      "profile_id": "retrieval-jcodemunch-codex-mcp-v2",
+      "sequence_id": "terraform-lifecycle-sequence-v0",
+      "prepared": true,
+      "prepare_verification": {
+        "passed": true,
+        "mode": "preseeded-composite",
+        "future_seed_regressions_visible": true,
+        "seed_patches_model_visible": false,
+        "preseeded_task_orders": [
+          1,
+          2,
+          3
+        ],
+        "pending_seed_orders": [],
+        "controller_verification": "final-only",
+        "diff_basis": "ordered-task-checkpoints-plus-final-cumulative-diff",
+        "fixed_snapshot_oid": "e02391ad384c9c38f1d7f40b853c0d2297348094",
+        "concealment": {
+          "order": 1,
+          "head": "3a27703a1c13d61c2eaae641bd6ab0a3199a6d83",
+          "head_is_root": true,
+          "reachable_commit_count": 1,
+          "reflog_oids": [
+            "3a27703a1c13d61c2eaae641bd6ab0a3199a6d83"
+          ],
+          "remotes": [],
+          "working_tree_clean": true,
+          "fixed_snapshot_object_present": false,
+          "unreachable_objects": [],
+          "leaked_git_admin_paths": [],
+          "model_concealed_paths": [
+            "internal/cloud/backend_tfPolicyEvaluation_test.go",
+            "internal/cloud/lifecycle_v0_policy_summary_test.go",
+            "internal/policy/callback/lifecycle_v0_deferred_callbacks_test.go"
+          ],
+          "model_concealed_paths_present": [],
+          "passed": true
+        },
+        "composite_seed_delivery": {
+          "mode": "preseeded-composite",
+          "preseeded_task_orders": [
+            1,
+            2,
+            3
+          ],
+          "merged_task_orders": [
+            1,
+            2,
+            3
+          ],
+          "composite_diff_sha256": "8473d1db8353c106a8deb02abc9914bcce633277b98d1556c5f261040e3d8c0e",
+          "model_repo_seed_or_verifier_assets": [],
+          "model_concealed_paths": [
+            "internal/cloud/backend_tfPolicyEvaluation_test.go",
+            "internal/cloud/lifecycle_v0_policy_summary_test.go",
+            "internal/policy/callback/lifecycle_v0_deferred_callbacks_test.go"
+          ],
+          "model_concealed_paths_present": [],
+          "passed": true
+        },
+        "stage_seed_delivery": {
+          "mode": "preseeded-composite",
+          "preseeded_task_orders": [
+            1,
+            2,
+            3
+          ],
+          "merged_task_orders": [
+            1,
+            2,
+            3
+          ],
+          "composite_diff_sha256": "8473d1db8353c106a8deb02abc9914bcce633277b98d1556c5f261040e3d8c0e",
+          "model_repo_seed_or_verifier_assets": [],
+          "model_concealed_paths": [
+            "internal/cloud/backend_tfPolicyEvaluation_test.go",
+            "internal/cloud/lifecycle_v0_policy_summary_test.go",
+            "internal/policy/callback/lifecycle_v0_deferred_callbacks_test.go"
+          ],
+          "model_concealed_paths_present": [],
+          "passed": true
+        },
+        "fixed_composite_qualification": {
+          "path": "sources/evaluations/fixtures/large/hashicorp-terraform/qualification-lifecycle-v0.json",
+          "passed": true,
+          "full_fixed_cumulative_verifier_zero": true,
+          "composite_seed_merge_zero": true,
+          "composite_seeded_verifiers_nonzero": true,
+          "composite_seed_diff_sha256": "8473d1db8353c106a8deb02abc9914bcce633277b98d1556c5f261040e3d8c0e",
+          "runtime_composite_seed_diff_sha256": "8473d1db8353c106a8deb02abc9914bcce633277b98d1556c5f261040e3d8c0e",
+          "composite_seed_diff_hash_matches": true
+        },
+        "concealment_passed": true,
+        "composite_seed_delivery_passed": true
+      },
+      "host_integration": {
+        "profile_id": "retrieval-jcodemunch-codex-mcp-v2",
+        "passed": true,
+        "skipped": false,
+        "install_exit_codes": [
+          0,
+          0,
+          0
+        ],
+        "verify_exit_codes": [
+          0
+        ],
+        "missing_required_files": [],
+        "required_files": [
+          "/opt/data/repos/token-optimization-research/sources/evaluations/workflow-sessions/prepare-canonical-v1-terraform-retrieval-jcodemunch-codex-mcp-v2/codex-homes/retrieval-jcodemunch-codex-mcp-v2/.config/jcodemunch-codex-mcp-v2/venv/bin/jcodemunch-mcp",
+          "/opt/data/repos/token-optimization-research/sources/evaluations/workflow-sessions/prepare-canonical-v1-terraform-retrieval-jcodemunch-codex-mcp-v2/codex-homes/retrieval-jcodemunch-codex-mcp-v2/AGENTS.md",
+          "/opt/data/repos/token-optimization-research/sources/evaluations/workflow-sessions/prepare-canonical-v1-terraform-retrieval-jcodemunch-codex-mcp-v2/codex-homes/retrieval-jcodemunch-codex-mcp-v2/.config/jcodemunch-codex-mcp-v2/jcodemunch-guidance-install.json"
+        ],
+        "artifacts": [
+          "sources/evaluations/workflow-sessions/prepare-canonical-v1-terraform-retrieval-jcodemunch-codex-mcp-v2/tool-host-install-1.txt",
+          "sources/evaluations/workflow-sessions/prepare-canonical-v1-terraform-retrieval-jcodemunch-codex-mcp-v2/tool-host-install-2.txt",
+          "sources/evaluations/workflow-sessions/prepare-canonical-v1-terraform-retrieval-jcodemunch-codex-mcp-v2/tool-host-install-3.txt",
+          "sources/evaluations/workflow-sessions/prepare-canonical-v1-terraform-retrieval-jcodemunch-codex-mcp-v2/tool-host-verify-1.txt"
+        ]
+      },
+      "mcp_handshake": {
+        "errors": [],
+        "initialize_passed": true,
+        "non_json_stdout_lines": [],
+        "passed": true,
+        "protocol_version": "2025-06-18",
+        "server_name": "jcodemunch-mcp",
+        "stderr_present": true,
+        "tool_names": [
+          "analyze_perf",
+          "announce_model",
+          "assemble_task_context",
+          "audit_agent_config",
+          "check_delete_safe",
+          "check_edit_safe",
+          "check_embedding_drift",
+          "check_references",
+          "check_rename_safe",
+          "diff_health_radar",
+          "digest",
+          "embed_repo",
+          "find_dead_code",
+          "find_hot_paths",
+          "find_implementations",
+          "find_importers",
+          "find_references",
+          "find_similar_symbols",
+          "find_unused_paths",
+          "get_architecture_metrics",
+          "get_blast_radius",
+          "get_call_hierarchy",
+          "get_changed_symbols",
+          "get_churn_rate",
+          "get_class_hierarchy",
+          "get_context_bundle",
+          "get_coupling_metrics",
+          "get_cross_repo_map",
+          "get_dead_code_v2",
+          "get_decorator_census",
+          "get_delivery_metrics",
+          "get_dependency_cycles",
+          "get_dependency_graph",
+          "get_endpoint_impact",
+          "get_extraction_candidates",
+          "get_file_content",
+          "get_file_outline",
+          "get_file_risk",
+          "get_file_tree",
+          "get_group_contracts",
+          "get_hotspots",
+          "get_impact_preview",
+          "get_layer_violations",
+          "get_parity_map",
+          "get_pr_risk_profile",
+          "get_project_intel",
+          "get_ranked_context",
+          "get_redaction_log",
+          "get_related_symbols",
+          "get_repo_health",
+          "get_repo_map",
+          "get_repo_outline",
+          "get_runtime_coverage",
+          "get_session_context",
+          "get_session_snapshot",
+          "get_session_stats",
+          "get_signal_chains",
+          "get_symbol_complexity",
+          "get_symbol_diff",
+          "get_symbol_importance",
+          "get_symbol_provenance",
+          "get_symbol_source",
+          "get_tectonic_map",
+          "get_untested_symbols",
+          "get_watch_status",
+          "import_runtime_signal",
+          "index_dependency",
+          "index_file",
+          "index_folder",
+          "index_repo",
+          "invalidate_cache",
+          "jcodemunch_guide",
+          "list_repos",
+          "list_workspaces",
+          "plan_refactoring",
+          "plan_turn",
+          "register_edit",
+          "render_diagram",
+          "resolve_repo",
+          "search_ast",
+          "search_columns",
+          "search_symbols",
+          "search_text",
+          "set_tool_tier",
+          "suggest_corrections",
+          "suggest_queries",
+          "summarize_repo",
+          "tune_weights",
+          "winnow_symbols"
+        ],
+        "tools_list_passed": true,
+        "profile_id": "retrieval-jcodemunch-codex-mcp-v2",
+        "required": true,
+        "probe_exit_code": 0,
+        "tool_count": 89
+      },
+      "codex_preflight": {
+        "profile_id": "retrieval-jcodemunch-codex-mcp-v2",
+        "passed": true,
+        "doctor_exit_code": 1,
+        "mcp_list_exit_code": 0,
+        "tool_preflight_exit_code": null,
+        "coverage_preflight_exit_code": null,
+        "missing_declared_filter_commands": [],
+        "forbidden_command_probe_exit_code": 0,
+        "forbidden_mcp_hits": [],
+        "forbidden_config_hits": [],
+        "visible_forbidden_commands": [],
+        "failure_reasons": [],
+        "warnings": [
+          "codex doctor exited 1; preserve the diagnostic, but use the isolated MCP/config probes and task execution as gates"
+        ],
+        "artifacts": {
+          "doctor": "sources/evaluations/workflow-sessions/prepare-canonical-v1-terraform-retrieval-jcodemunch-codex-mcp-v2/codex-doctor.txt",
+          "mcp_list": "sources/evaluations/workflow-sessions/prepare-canonical-v1-terraform-retrieval-jcodemunch-codex-mcp-v2/codex-mcp-list.txt",
+          "effective_config": "sources/evaluations/workflow-sessions/prepare-canonical-v1-terraform-retrieval-jcodemunch-codex-mcp-v2/codex-effective-config.toml",
+          "forbidden_command_visibility": "sources/evaluations/workflow-sessions/prepare-canonical-v1-terraform-retrieval-jcodemunch-codex-mcp-v2/forbidden-command-visibility.txt",
+          "tool_preflight": null,
+          "tool_coverage_preflight": null
+        }
+      },
+      "tool_warmup_exit_code": 0,
+      "protocol_path": "sources/evaluations/protocols/terraform-lifecycle-sequence-v0-retrieval-jcodemunch-codex-mcp-v2-f7796b66df86.json",
+      "protocol_sha256": "e8cebc2f64bb70182e488dcf5a0ecffdbacddada6d2f5db4b5c8a07093211154"
+    }
+  ]
+}

@@ -76,9 +76,13 @@ Code surface:
 - data/workflow-sessions.json
 - docs/evaluations/**
 - docs/evaluations/operations/runner-reference.md
+- scripts/analyze_model_condition_baselines.py
+- scripts/audit_codex_cumulative_usage.py
 - scripts/audit_tool_isolation.py
 - scripts/extract_codex_usage.py
 - scripts/generate_workflow_qualification.py
+- scripts/install_jcodemunch_codex_guidance.py
+- scripts/prepare_pinned_codex_marketplace.py
 - scripts/probe_mcp_stdio.py
 - scripts/refresh_workflow_contracts.py
 - scripts/run_codescope_neutral_mcp.py
@@ -87,6 +91,7 @@ Code surface:
 - scripts/run_codex_workflow_model_condition.py
 - scripts/run_sequential_workflow_matrix.py
 - scripts/test_workflow_evaluation_contract.py
+- scripts/trust_codex_plugin_hooks.py
 - scripts/update_workflow_runbook.py
 - sources/evaluations/fixtures/container/Dockerfile
 - sources/evaluations/fixtures/container/codex-entrypoint.sh

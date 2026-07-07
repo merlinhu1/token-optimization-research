@@ -18,7 +18,8 @@ Before execution:
 - bind the current frozen protocol and compatible baseline pool;
 - verify fixture qualification, image identity, treatment adapter identity, concealment, and installation of the profile's normal integration surface;
 - declare the provider-token accounting boundary and operational invalidity conditions;
-- preserve availability/natural use: never require, prefer, suggest, or calibrate forced treatment-tool invocation;
+- preserve availability/natural use after faithful product installation: include every tool-author-recommended integration surface, including product-authored guidance, rules, skills, and hooks, while never adding evaluator-authored steering, quotas, or forced calls;
+- never strip product-authored guidance in the name of neutrality; server-only, guidance-free, or otherwise reduced setups are explicit ablations rather than canonical product treatments;
 - do not infer integration inactivity from the absence of explicit model-issued tool commands unless the frozen integration contract makes that observation complete and dispositive;
 - treat deterministic verifiers and optional source review as diagnostics, not token-sample eligibility gates.
 

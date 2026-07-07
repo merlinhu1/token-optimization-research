@@ -75,7 +75,6 @@ PROFILE_TOOL_CONFIG_OVERRIDES = {
     "terminal-tokenjuice-codex-hook-v1": "tokenjuice-codex-hook-v1",
     "terminal-rtk-codex-instructions-v1": "rtk-codex-instructions-v1",
     "terminal-snip-codex-hook-v1": "snip-codex-hook-v1",
-    "retrieval-jcodemunch-mcp-direct-v1": "jcodemunch-mcp-direct-v1",
     "retrieval-graphify-codex-skill-v1": "graphify-codex-skill-v1",
     "retrieval-codegraph-codex-mcp-v1": "codegraph-codex-mcp-v1",
     "integrated-leanctx-codex-hybrid-v1": "leanctx-codex-hybrid-v1",
@@ -85,7 +84,10 @@ PROFILE_TOOL_CONFIG_OVERRIDES = {
     "retrieval-serena-codex-mcp-v1": "serena-codex-mcp-v1",
     "retrieval-sigmap-codex-live-v1": "sigmap-codex-live-v1",
     "integrated-token-savior-mcp-v1": "token-savior-mcp-v1",
+    "retrieval-jcodemunch-codex-mcp-v2": "jcodemunch-codex-mcp-v2",
     "stack-tokenjuice-jcodemunch-mcp": "tokenjuice-jcodemunch-mcp-stack",
+    "artifact-ponytail-codex-plugin-v1": "ponytail-codex-plugin-v1",
+    "behavior-caveman-codex-skill-v1": "caveman-codex-skill-v1",
 }
 CODEGRAPH_BIN = Path("/opt/data/tool-candidates/codegraph/dist/bin/codegraph.js")
 CARTOG_ROOT = Path("/opt/data/tool-candidates/cartog")
@@ -113,12 +115,18 @@ HEADROOM_WHEEL = HEADROOM_ROOT / "dist" / "headroom_ai-0.28.0-cp310-abi3-linux_x
 TOKEN_SAVIOR_WHEEL = TOKEN_SAVIOR_ROOT / "dist" / "token_savior_recall-4.4.1-py3-none-any.whl"
 GRAPHIFY_WHEEL = GRAPHIFY_ROOT / "dist" / "graphifyy-0.9.1-py3-none-any.whl"
 JCODEMUNCH_WHEEL = JCODEMUNCH_ROOT / "dist" / "jcodemunch_mcp-1.108.114-py3-none-any.whl"
+JCODEMUNCH_COMMIT = "fbc14e40c7057ebc6d718fb48083d30522afe15f"
+JCODEMUNCH_GUIDANCE_INSTALLER = ROOT / "scripts" / "install_jcodemunch_codex_guidance.py"
 SNIP_BIN = SNIP_ROOT / "snip"
 UV_BIN = Path("/opt/data/opt/uv/uv")
 RTK_BIN = Path("/opt/data/tool-candidates/rtk/target/release/rtk")
 PONYTAIL_ROOT = Path("/opt/data/ponytail")
 NODE_TOOLCHAIN_ROOT = Path("/opt/data/opt/node-v24.18.0-linux-x64")
 NODE_BIN = NODE_TOOLCHAIN_ROOT / "bin" / "node"
+NPX_BIN = NODE_TOOLCHAIN_ROOT / "bin" / "npx"
+PONYTAIL_COMMIT = "40e50d9e03242aa5dd53ac771950f9127362b25f"
+PONYTAIL_MARKETPLACE_PREPARER = ROOT / "scripts" / "prepare_pinned_codex_marketplace.py"
+CODEX_PLUGIN_HOOK_TRUSTER = ROOT / "scripts" / "trust_codex_plugin_hooks.py"
 
 TOOL_CONFIGS: dict[str, dict[str, Any]] = {
     "lean-ctx": {
@@ -194,28 +202,45 @@ TOOL_CONFIGS: dict[str, dict[str, Any]] = {
         },
     },
     "codegraph-codex-mcp-v1": {
-        "display_name": "CodeGraph official Codex MCP with live watch v1",
+        "display_name": "CodeGraph official Codex MCP with model-runtime PATH",
         "lane_name": "retrieval-codegraph-codex-mcp-v1",
         "surface": "retrieval/context+mcp-live-index",
         "mcp_server": "codegraph",
         "allowed_terms": ["codegraph"],
         "data_dir_name": "codegraph-codex-mcp-v1",
-        "mcp_command": str(CODEGRAPH_BIN),
+        "mcp_command": "{tool_data_dir}/bin/codegraph",
         "mcp_args": ["serve", "--mcp"],
+        "path_entries": ["{tool_data_dir}/bin"],
         "env": {"CODEGRAPH_TELEMETRY": "0"},
         "mounts": ["/opt/data/tool-candidates/codegraph"],
         "diff_exclude_paths": [".codegraph"],
         "host_integration": {
             "home_dot_codex_alias": True,
-            "install_commands": [[str(CODEGRAPH_BIN), "install", "--target", "codex", "--location", "global", "--yes"]],
-            "verify_commands": [[str(CODEGRAPH_BIN), "--version"]],
-            "required_files": ["{codex_home}/config.toml", "{codex_home}/AGENTS.md"],
+            "install_commands": [
+                ["mkdir", "-p", "{tool_data_dir}/bin"],
+                [
+                    "/bin/bash",
+                    "-lc",
+                    (
+                        f"printf '%s\\n' '#!/bin/sh' 'exec {NODE_TOOLCHAIN_ROOT}/bin/node {CODEGRAPH_BIN} \"$@\"' "
+                        "> {tool_data_dir}/bin/codegraph && chmod 755 {tool_data_dir}/bin/codegraph"
+                    ),
+                ],
+                ["{tool_data_dir}/bin/codegraph", "install", "--target", "codex", "--location", "global", "--yes"],
+            ],
+            "verify_commands": [["{tool_data_dir}/bin/codegraph", "--version"]],
+            "required_files": [
+                "{tool_data_dir}/bin/codegraph",
+                "{codex_home}/config.toml",
+                "{codex_home}/AGENTS.md",
+            ],
         },
+        "preflight_command": ["/bin/bash", "-lc", "command -v codegraph && codegraph --version"],
         "mcp_handshake": {"required": True, "method": "initialize-and-tools-list"},
         "default_tool_state": "warm-index",
         "warmup": {
             "kind": "index",
-            "command": [str(CODEGRAPH_BIN), "init", "{repo}"],
+            "command": ["{tool_data_dir}/bin/codegraph", "init", "{repo}"],
             "cleanup_paths": [".codegraph"],
             "output_name": "codegraph-warmup-output.txt",
             "metadata_name": "codegraph-warmup-metadata.json",
@@ -493,35 +518,6 @@ TOOL_CONFIGS: dict[str, dict[str, Any]] = {
                 "index",
                 "{repo}",
             ],
-            "output_name": "jcodemunch-warmup-output.txt",
-            "metadata_name": "jcodemunch-warmup-metadata.json",
-            "timeout_seconds": 1200,
-        },
-    },
-    "jcodemunch-mcp-direct-v1": {
-        "display_name": "jcodemunch MCP direct-binary neutral availability v1",
-        "lane_name": "retrieval-jcodemunch-mcp-direct-v1",
-        "surface": "retrieval/context-neutral-mcp-availability",
-        "mcp_server": "jcodemunch",
-        "allowed_terms": ["jcodemunch", "jcodemunch-mcp"],
-        "data_dir_name": "jcodemunch-mcp-direct-v1",
-        "mcp_command": "{tool_data_dir}/venv/bin/jcodemunch-mcp",
-        "mcp_args": [],
-        "env": {"JCODEMUNCH_LOG_LEVEL": "ERROR"},
-        "mounts": [str(JCODEMUNCH_ROOT), str(JCODEMUNCH_WHEEL)],
-        "host_integration": {
-            "install_commands": [
-                [str(UV_BIN), "venv", "{tool_data_dir}/venv", "--python", "python3"],
-                [str(UV_BIN), "pip", "install", "--python", "{tool_data_dir}/venv/bin/python", str(JCODEMUNCH_WHEEL)],
-            ],
-            "verify_commands": [["{tool_data_dir}/venv/bin/jcodemunch-mcp", "--help"]],
-            "required_files": ["{tool_data_dir}/venv/bin/jcodemunch-mcp"],
-        },
-        "mcp_handshake": {"required": True, "method": "initialize-and-tools-list"},
-        "default_tool_state": "warm-index",
-        "warmup": {
-            "kind": "code-index-build",
-            "command": ["{tool_data_dir}/venv/bin/jcodemunch-mcp", "index", "{repo}"],
             "output_name": "jcodemunch-warmup-output.txt",
             "metadata_name": "jcodemunch-warmup-metadata.json",
             "timeout_seconds": 1200,
@@ -852,6 +848,111 @@ TOOL_CONFIGS: dict[str, dict[str, Any]] = {
 }
 
 TOOL_CONFIGS.update({
+    "jcodemunch-codex-mcp-v2": {
+        "display_name": "jcodemunch guide-faithful Codex MCP v2",
+        "lane_name": "retrieval-jcodemunch-codex-mcp-v2",
+        "surface": "retrieval/context-mcp+product-authored-codex-guidance",
+        "mcp_server": "jcodemunch",
+        "allowed_terms": ["jcodemunch", "jcodemunch-mcp"],
+        "data_dir_name": "jcodemunch-codex-mcp-v2",
+        "mcp_command": "{tool_data_dir}/venv/bin/jcodemunch-mcp",
+        "mcp_args": [],
+        "env": {
+            "CODE_INDEX_PATH": "{tool_data_dir}/index",
+            "JCODEMUNCH_LOG_LEVEL": "ERROR",
+        },
+        "mounts": [str(JCODEMUNCH_ROOT), str(JCODEMUNCH_WHEEL), str(JCODEMUNCH_GUIDANCE_INSTALLER)],
+        "host_integration": {
+            "install_commands": [
+                [str(UV_BIN), "venv", "{tool_data_dir}/venv", "--python", "python3"],
+                [str(UV_BIN), "pip", "install", "--python", "{tool_data_dir}/venv/bin/python", str(JCODEMUNCH_WHEEL)],
+                [
+                    "python3",
+                    str(JCODEMUNCH_GUIDANCE_INSTALLER),
+                    "--source-root",
+                    str(JCODEMUNCH_ROOT),
+                    "--expected-commit",
+                    JCODEMUNCH_COMMIT,
+                    "--codex-home",
+                    "{codex_home}",
+                    "--receipt",
+                    "{tool_data_dir}/jcodemunch-guidance-install.json",
+                ],
+            ],
+            "verify_commands": [["{tool_data_dir}/venv/bin/jcodemunch-mcp", "--version"]],
+            "required_files": [
+                "{tool_data_dir}/venv/bin/jcodemunch-mcp",
+                "{codex_home}/AGENTS.md",
+                "{tool_data_dir}/jcodemunch-guidance-install.json",
+            ],
+            "timeout_seconds": 600,
+        },
+        "mcp_handshake": {"required": True, "method": "initialize-and-tools-list", "timeout_seconds": 60},
+        "default_tool_state": "warm-index",
+        "warmup": {
+            "kind": "product-native-code-index-build",
+            "command": ["{tool_data_dir}/venv/bin/jcodemunch-mcp", "index", "{repo}"],
+            "output_name": "jcodemunch-warmup-output.txt",
+            "metadata_name": "jcodemunch-warmup-metadata.json",
+            "timeout_seconds": 1200,
+        },
+    },
+    "ponytail-codex-plugin-v1": {
+        "display_name": "Ponytail official Codex plugin v1",
+        "lane_name": "artifact-ponytail-codex-plugin-v1",
+        "surface": "codex-plugin/skills+commands+sessionstart+userpromptsubmit+subagentstart-hooks",
+        "allowed_terms": ["ponytail"],
+        "data_dir_name": "ponytail-codex-plugin-v1",
+        "mounts": [str(PONYTAIL_ROOT), str(PONYTAIL_MARKETPLACE_PREPARER), str(CODEX_PLUGIN_HOOK_TRUSTER)],
+        "codex_features": {"hooks": True},
+        "host_integration": {
+            "home_dot_codex_alias": True,
+            "install_commands": [
+                ["python3", str(PONYTAIL_MARKETPLACE_PREPARER), "--source", str(PONYTAIL_ROOT), "--expected-commit", PONYTAIL_COMMIT, "--marketplace-root", "{tool_data_dir}/marketplace", "--marketplace-name", "ponytail", "--plugin-name", "ponytail"],
+                ["codex", "plugin", "marketplace", "add", "{tool_data_dir}/marketplace", "--json"],
+                ["codex", "plugin", "add", "ponytail@ponytail", "--json"],
+                ["python3", str(CODEX_PLUGIN_HOOK_TRUSTER), "--codex", "codex", "--cwd", "{repo}", "--plugin-id", "ponytail@ponytail", "--expected-events", "sessionStart,userPromptSubmit,subagentStart", "--receipt", "{tool_data_dir}/ponytail-hook-trust.json"],
+            ],
+            "verify_commands": [["codex", "plugin", "list", "--json"]],
+            "required_files": [
+                "{codex_home}/config.toml",
+                "{codex_home}/plugins/cache/ponytail/ponytail/4.8.4/.codex-plugin/plugin.json",
+                "{tool_data_dir}/marketplace/source-pin-receipt.json",
+                "{tool_data_dir}/ponytail-hook-trust.json",
+            ],
+            "timeout_seconds": 300,
+        },
+        "preflight_command": ["codex", "plugin", "list", "--json"],
+        "default_tool_state": "active-plugin-hooks-and-skills",
+    },
+    "caveman-codex-skill-v1": {
+        "display_name": "Caveman official Codex skill v1",
+        "lane_name": "behavior-caveman-codex-skill-v1",
+        "surface": "codex-project-skills+documented-per-session-activation",
+        "allowed_terms": ["caveman", "cavecrew"],
+        "data_dir_name": "caveman-codex-skill-v1",
+        "path_entries": [str(NODE_TOOLCHAIN_ROOT / "bin")],
+        "mounts": [str(CAVEMAN_ROOT)],
+        "diff_exclude_paths": [".agents"],
+        "host_integration": {
+            "home_dot_codex_alias": True,
+            "install_commands": [[str(NPX_BIN), "--yes", "skills", "add", str(CAVEMAN_ROOT), "-a", "codex", "-y"]],
+            "verify_commands": [["python3", "-c", "from pathlib import Path; assert Path('.agents/skills/caveman/SKILL.md').is_file()"]],
+            "required_files": [
+                "{repo}/.agents/skills/cavecrew/SKILL.md",
+                "{repo}/.agents/skills/caveman/SKILL.md",
+                "{repo}/.agents/skills/caveman-commit/SKILL.md",
+                "{repo}/.agents/skills/caveman-compress/SKILL.md",
+                "{repo}/.agents/skills/caveman-help/SKILL.md",
+                "{repo}/.agents/skills/caveman-review/SKILL.md",
+                "{repo}/.agents/skills/caveman-stats/SKILL.md",
+            ],
+            "timeout_seconds": 300,
+        },
+        "preflight_command": ["python3", "-c", "from pathlib import Path; print(Path('.agents/skills/caveman/SKILL.md').resolve())"],
+        "session_activation": "/caveman",
+        "default_tool_state": "active-native-skill",
+    },
     "cartog-mcp-v1": {
         **TOOL_CONFIGS["cartog"],
         "display_name": "Cartog handshake-gated Codex MCP v1",
@@ -2004,15 +2105,23 @@ def treatment_lane_guidance(pid: str, cfg: dict[str, Any], protocol: dict[str, A
         if prompt_instructions
         else ""
     )
+    session_activation = str(cfg.get("session_activation", "")).strip()
+    activation_block = (
+        f"\n# Product-required session activation\n\n{session_activation}\n\n---\n\n"
+        if session_activation
+        else ""
+    )
     return (
         "# Evaluation isolation contract\n\n"
-        "This is a treatment lane. Its profile was installed and configured before the task using the profile's normal integration surface. "
-        "No tool invocation is required or preferred. Use the exposed environment naturally, and do not invoke a tool merely because this is a treatment lane. "
-        "If no treatment tool is invoked, zero use is a valid observed outcome. "
+        "This is a treatment lane. Its profile was installed and configured before the task using every tool-author-recommended normal integration surface. "
+        "The product's own installed guidance remains authoritative. The evaluator adds no invocation requirement, preference, quota, or forced call. "
+        "Use the exposed environment naturally, and do not invoke a tool merely because this is a treatment lane. "
+        "If no treatment tool is invoked after faithful installation, zero use is a valid observed outcome. "
         "Do not use unconfigured retrieval, compression, memory, or token-saving tools. "
         "Codex web search is disabled and model-launched shell commands have no network access; do not attempt curl, wget, browsers, package downloads, or any other external retrieval. "
         "Work only inside the target repository. The controller owns concealed verification; do not inspect or modify evaluation harness files.\n\n"
         "---\n\n"
+        f"{activation_block}"
         f"{prompt_block}"
     )
 
