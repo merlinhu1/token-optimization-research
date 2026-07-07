@@ -536,7 +536,20 @@ class ActiveCampaignArchitectureTest(unittest.TestCase):
         }
         self.assertEqual(len(corrected_session_ids), len(corrected_labels))
         executed_protocols = matrix.executed_protocol_paths(ROOT)
+        registry = json.loads((ROOT / "data/workflow-sessions.json").read_text())
+        completed_profiles = {
+            session.get("profile", {}).get("profile_id")
+            for session in registry.get("sessions", [])
+            if session.get("status") == "completed"
+            and session.get("interpretation", {}).get("accepted_for_execution") is True
+        }
         for profile in corrected_labels:
+            if profile in completed_profiles:
+                self.assertTrue(
+                    any(profile in path for path in executed_protocols),
+                    profile,
+                )
+                continue
             launch_protocol = matrix.find_protocol(
                 ROOT,
                 "fastify-lifecycle-sequence-v0",
@@ -2141,6 +2154,25 @@ class ManifestAndProtocolContractTest(unittest.TestCase):
         with tempfile.TemporaryDirectory(dir=ROOT) as tmp:
             session, _ = self.production_v3_fixture(Path(tmp))
             self.assertEqual(self.production_v3_errors(session), [])
+
+    def test_generated_host_integration_identity_is_valid(self) -> None:
+        identity = {
+            "binary_identity": {
+                "kind": "generated-by-host-integration",
+                "command_template": "{tool_data_dir}/venv/bin/unit-tool",
+                "install_commands": [["uv", "pip", "install", "unit-tool.whl"]],
+                "install_contract_sha256": "4" * 64,
+            }
+        }
+        errors: list[str] = []
+        validate_repository.validate_tool_adapter_identity(
+            identity,
+            copy.deepcopy(identity),
+            "unit-profile",
+            "unit-session",
+            errors,
+        )
+        self.assertEqual(errors, [])
 
     def test_production_v3_lean_record_does_not_require_optional_operational_metrics(self) -> None:
         with tempfile.TemporaryDirectory(dir=ROOT) as tmp:
