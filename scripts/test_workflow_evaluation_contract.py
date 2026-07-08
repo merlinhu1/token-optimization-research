@@ -562,7 +562,7 @@ class ActiveCampaignArchitectureTest(unittest.TestCase):
             path
             for path in executed_protocol_paths
             if protocol_docs[path]["document"]["selected_execution"]["descriptor"]["selected_profile"]["profile_id"]
-            != "retrieval-cartog-mcp-v1"
+            != unexecuted_profile_id
         }
 
         errors: list[str] = []
@@ -574,7 +574,7 @@ class ActiveCampaignArchitectureTest(unittest.TestCase):
             qualification_docs,
             protocol_docs,
             errors,
-            executed_protocol_paths=validate_repository.executed_protocol_paths_from_registry(json.loads((ROOT / "data/workflow-sessions.json").read_text())),
+            executed_protocol_paths=future_candidate_executed_protocol_paths,
         )
         self.assertEqual(errors, [])
 
@@ -591,7 +591,7 @@ class ActiveCampaignArchitectureTest(unittest.TestCase):
             qualification_docs,
             protocol_docs,
             errors,
-            executed_protocol_paths=validate_repository.executed_protocol_paths_from_registry(json.loads((ROOT / "data/workflow-sessions.json").read_text())),
+            executed_protocol_paths=future_candidate_executed_protocol_paths,
         )
         self.assertTrue(any("parity-approved profile set" in error for error in errors), errors)
 
@@ -614,7 +614,7 @@ class ActiveCampaignArchitectureTest(unittest.TestCase):
             missing_lane_receipts,
             protocol_docs,
             errors,
-            executed_protocol_paths=validate_repository.executed_protocol_paths_from_registry(json.loads((ROOT / "data/workflow-sessions.json").read_text())),
+            executed_protocol_paths=future_candidate_executed_protocol_paths,
         )
         self.assertTrue(any("missing matching provider-free qualification" in error for error in errors), errors)
 
@@ -633,7 +633,7 @@ class ActiveCampaignArchitectureTest(unittest.TestCase):
             empty_mcp_tools,
             protocol_docs,
             errors,
-            executed_protocol_paths=validate_repository.executed_protocol_paths_from_registry(json.loads((ROOT / "data/workflow-sessions.json").read_text())),
+            executed_protocol_paths=future_candidate_executed_protocol_paths,
         )
         self.assertTrue(any("non-empty MCP tools/list proof" in error for error in errors), errors)
 
