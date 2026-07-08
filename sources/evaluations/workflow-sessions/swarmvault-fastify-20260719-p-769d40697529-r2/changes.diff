@@ -1,0 +1,756 @@
+# Ordered cumulative source checkpoints. Every section is relative to the one composite broken-start root.
+
+# --- task-01-agent ---
+diff --git a/lib/handle-request.js b/lib/handle-request.js
+index d3ec986..aabcb8f 100644
+--- a/lib/handle-request.js
++++ b/lib/handle-request.js
+@@ -11,7 +11,8 @@ const {
+   kRouteContext,
+   kFourOhFourContext,
+   kSupportedHTTPMethods,
+-  kDiagnosticsStore
++  kDiagnosticsStore,
++  kRequestContentType
+ } = require('./symbols')
+ const ContentType = require('./content-type')
+ 
+@@ -35,6 +36,8 @@ function handleRequest (err, request, reply) {
+   if (this[kSupportedHTTPMethods].bodywith.has(method)) {
+     const headers = request.headers
+     const ctHeader = headers['content-type']
++    const contentType = ContentType.from(ctHeader)
++    request[kRequestContentType] = contentType
+ 
+     if (ctHeader === undefined) {
+       const contentLength = headers['content-length']
+@@ -52,7 +55,6 @@ function handleRequest (err, request, reply) {
+       return
+     }
+ 
+-    const contentType = ContentType.from(ctHeader)
+     if (contentType.isValid === false) {
+       reply[kReplyIsError] = true
+       reply.status(415).send(new FST_ERR_CTP_INVALID_MEDIA_TYPE())
+diff --git a/lib/request.js b/lib/request.js
+index 6ff2393..e48782b 100644
+--- a/lib/request.js
++++ b/lib/request.js
+@@ -1,6 +1,7 @@
+ 'use strict'
+ 
+ const proxyAddr = require('@fastify/proxy-addr')
++const ContentType = require('./content-type')
+ const {
+   kHasBeenDecorated,
+   kSchemaBody,
+@@ -13,7 +14,8 @@ const {
+   kRouteContext,
+   kRequestOriginalUrl,
+   kRequestSignal,
+-  kOnAbort
++  kOnAbort,
++  kRequestContentType
+ } = require('./symbols')
+ const { FST_ERR_REQ_INVALID_VALIDATION_INVOCATION, FST_ERR_DEC_UNDECLARED } = require('./errors')
+ const decorators = require('./decorate')
+@@ -34,6 +36,7 @@ function Request (id, params, req, query, log, context) {
+   this.query = query
+   this.log = log
+   this.body = undefined
++  this[kRequestContentType] = ContentType.from(req?.headers?.['content-type'])
+ }
+ Request.props = []
+ Request.instanceProperties = new Set(['id', 'params', 'raw', 'query', 'log', 'body'])
+@@ -76,6 +79,7 @@ function buildRegularRequest (R) {
+     this.query = query
+     this.log = log
+     this.body = undefined
++    this[kRequestContentType] = ContentType.from(req?.headers?.['content-type'])
+ 
+     let prop
+     for (let i = 0; i < props.length; i++) {
+@@ -178,6 +182,12 @@ Object.defineProperties(Request.prototype, {
+       return this.raw.method
+     }
+   },
++  mediaType: {
++    get () {
++      const contentType = this[kRequestContentType]
++      return contentType?.isValid ? contentType.mediaType : undefined
++    }
++  },
+   routeOptions: {
+     get () {
+       const context = this[kRouteContext]
+diff --git a/lib/symbols.js b/lib/symbols.js
+index 8ddc076..7eec858 100644
+--- a/lib/symbols.js
++++ b/lib/symbols.js
+@@ -30,6 +30,7 @@ const keys = {
+   kRequest: Symbol('fastify.Request'),
+   kRequestPayloadStream: Symbol('fastify.RequestPayloadStream'),
+   kRequestAcceptVersion: Symbol('fastify.RequestAcceptVersion'),
++  kRequestContentType: Symbol('fastify.RequestContentType'),
+   kRequestCacheValidateFns: Symbol('fastify.request.cache.validateFns'),
+   kRequestOriginalUrl: Symbol('fastify.request.originalUrl'),
+   kRequestSignal: Symbol('fastify.request.signal'),
+diff --git a/lib/validation.js b/lib/validation.js
+index 48850b1..8b25a0b 100644
+--- a/lib/validation.js
++++ b/lib/validation.js
+@@ -5,7 +5,8 @@ const {
+   kSchemaParams: paramsSchema,
+   kSchemaQuerystring: querystringSchema,
+   kSchemaBody: bodySchema,
+-  kSchemaResponse: responseSchema
++  kSchemaResponse: responseSchema,
++  kRequestContentType
+ } = require('./symbols')
+ const scChecker = /^[1-5](?:\d{2}|xx)$|^default$/
+ 
+@@ -171,9 +172,10 @@ function validate (context, request, execution) {
+     if (typeof context[bodySchema] === 'function') {
+       validatorFunction = context[bodySchema]
+     } else if (context[bodySchema]) {
+-      // TODO: add request.contentType and reuse it here
+-      const contentType = getEssenceMediaType(request.headers['content-type'])
+-      const contentSchema = context[bodySchema][contentType]
++      const contentType = request[kRequestContentType]
++      const contentSchema = contentType?.isValid
++        ? context[bodySchema][contentType.mediaType]
++        : undefined
+       if (contentSchema) {
+         validatorFunction = contentSchema
+       }
+@@ -271,16 +273,6 @@ function wrapValidationError (result, dataVar, schemaErrorFormatter) {
+   return error
+ }
+ 
+-/**
+- * simple function to retrieve the essence media type
+- * @param {string} header
+- * @returns {string} Mimetype string.
+- */
+-function getEssenceMediaType (header) {
+-  if (!header) return ''
+-  return header.trimStart().split(/[ ;]/, 1)[0].trim().toLowerCase()
+-}
+-
+ module.exports = {
+   symbols: { bodySchema, querystringSchema, responseSchema, paramsSchema, headersSchema },
+   compileSchemasForValidation,
+diff --git a/types/request.d.ts b/types/request.d.ts
+index fabaed9..90cef7c 100644
+--- a/types/request.d.ts
++++ b/types/request.d.ts
+@@ -94,6 +94,7 @@ export interface FastifyRequest<RouteGeneric extends RouteGenericInterface = Rou
+   readonly hostname: string;
+   readonly url: string;
+   readonly originalUrl: string;
++  readonly mediaType: string | undefined;
+   /**
+    * Derived from socket state or forwarding headers.
+    * Treat as untrusted input and validate before security-sensitive use.
+diff --git a/wiki/index.md b/wiki/index.md
+new file mode 100644
+index 0000000..786be07
+--- /dev/null
++++ b/wiki/index.md
+@@ -0,0 +1,28 @@
++---
++page_id: 'wiki:index'
++kind: index
++title: Wiki Index
++tags:
++  - index
++source_ids: []
++project_ids: []
++node_ids: []
++freshness: fresh
++status: active
++confidence: 1
++created_at: '2026-07-19T19:53:32.871Z'
++updated_at: '2026-07-19T19:53:32.871Z'
++compiled_from: []
++managed_by: agent
++backlinks: []
++schema_hash: ''
++source_hashes: {}
++source_semantic_hashes: {}
++---
++# Wiki Index
++
++This lite vault is agent-maintained. Drop sources into `raw/`, edit `swarmvault.schema.md` to teach the agent how the wiki should be organized, then ask your agent to read sources and update pages here.
++
++- Summaries, entity pages, and concept pages live under `wiki/`.
++- Append every ingest/query/lint operation to `wiki/log.md`.
++- Run `swarmvault init` (without `--lite`) when you want the full toolchain with graph, search, and approvals.
+diff --git a/wiki/log.md b/wiki/log.md
+new file mode 100644
+index 0000000..03bd3a7
+--- /dev/null
++++ b/wiki/log.md
+@@ -0,0 +1,27 @@
++---
++page_id: 'wiki:log'
++kind: index
++title: Activity Log
++tags:
++  - log
++  - append-only
++source_ids: []
++project_ids: []
++node_ids: []
++freshness: fresh
++status: active
++confidence: 1
++created_at: '2026-07-19T19:53:32.871Z'
++updated_at: '2026-07-19T19:53:32.871Z'
++compiled_from: []
++managed_by: agent
++backlinks: []
++schema_hash: ''
++source_hashes: {}
++source_semantic_hashes: {}
++---
++# Activity Log
++
++Append-only chronological record. One line per ingest/query/lint operation, newest at the bottom.
++
++Format: `## [YYYY-MM-DD] <verb> | <subject>`
+
+# --- task-02-agent ---
+diff --git a/lib/content-type.js b/lib/content-type.js
+index aeab8cd..78927f4 100644
+--- a/lib/content-type.js
++++ b/lib/content-type.js
+@@ -1,5 +1,7 @@
+ 'use strict'
+ 
++const { FifoMap } = require('toad-cache')
++
+ /**
+  * keyValuePairsReg is used to split the parameters list into associated
+  * key value pairings. The leading `(?:^|;)\s*` anchor ensures the regex
+@@ -55,7 +57,12 @@ class ContentType {
+    * @returns {ContentType | undefined}
+    */
+   static from (headerValue) {
+-    return new ContentType(headerValue)
++    const cached = ContentType.cache.get(headerValue)
++    if (cached !== undefined) return cached
++
++    const contentType = new ContentType(headerValue)
++    ContentType.cache.set(headerValue, contentType)
++    return contentType
+   }
+ 
+   constructor (headerValue) {
+@@ -170,4 +177,6 @@ class ContentType {
+   }
+ }
+ 
++ContentType.cache = new FifoMap(100)
++
+ module.exports = ContentType
+diff --git a/lib/handle-request.js b/lib/handle-request.js
+index d3ec986..aabcb8f 100644
+--- a/lib/handle-request.js
++++ b/lib/handle-request.js
+@@ -11,7 +11,8 @@ const {
+   kRouteContext,
+   kFourOhFourContext,
+   kSupportedHTTPMethods,
+-  kDiagnosticsStore
++  kDiagnosticsStore,
++  kRequestContentType
+ } = require('./symbols')
+ const ContentType = require('./content-type')
+ 
+@@ -35,6 +36,8 @@ function handleRequest (err, request, reply) {
+   if (this[kSupportedHTTPMethods].bodywith.has(method)) {
+     const headers = request.headers
+     const ctHeader = headers['content-type']
++    const contentType = ContentType.from(ctHeader)
++    request[kRequestContentType] = contentType
+ 
+     if (ctHeader === undefined) {
+       const contentLength = headers['content-length']
+@@ -52,7 +55,6 @@ function handleRequest (err, request, reply) {
+       return
+     }
+ 
+-    const contentType = ContentType.from(ctHeader)
+     if (contentType.isValid === false) {
+       reply[kReplyIsError] = true
+       reply.status(415).send(new FST_ERR_CTP_INVALID_MEDIA_TYPE())
+diff --git a/lib/request.js b/lib/request.js
+index 6ff2393..e48782b 100644
+--- a/lib/request.js
++++ b/lib/request.js
+@@ -1,6 +1,7 @@
+ 'use strict'
+ 
+ const proxyAddr = require('@fastify/proxy-addr')
++const ContentType = require('./content-type')
+ const {
+   kHasBeenDecorated,
+   kSchemaBody,
+@@ -13,7 +14,8 @@ const {
+   kRouteContext,
+   kRequestOriginalUrl,
+   kRequestSignal,
+-  kOnAbort
++  kOnAbort,
++  kRequestContentType
+ } = require('./symbols')
+ const { FST_ERR_REQ_INVALID_VALIDATION_INVOCATION, FST_ERR_DEC_UNDECLARED } = require('./errors')
+ const decorators = require('./decorate')
+@@ -34,6 +36,7 @@ function Request (id, params, req, query, log, context) {
+   this.query = query
+   this.log = log
+   this.body = undefined
++  this[kRequestContentType] = ContentType.from(req?.headers?.['content-type'])
+ }
+ Request.props = []
+ Request.instanceProperties = new Set(['id', 'params', 'raw', 'query', 'log', 'body'])
+@@ -76,6 +79,7 @@ function buildRegularRequest (R) {
+     this.query = query
+     this.log = log
+     this.body = undefined
++    this[kRequestContentType] = ContentType.from(req?.headers?.['content-type'])
+ 
+     let prop
+     for (let i = 0; i < props.length; i++) {
+@@ -178,6 +182,12 @@ Object.defineProperties(Request.prototype, {
+       return this.raw.method
+     }
+   },
++  mediaType: {
++    get () {
++      const contentType = this[kRequestContentType]
++      return contentType?.isValid ? contentType.mediaType : undefined
++    }
++  },
+   routeOptions: {
+     get () {
+       const context = this[kRouteContext]
+diff --git a/lib/symbols.js b/lib/symbols.js
+index 8ddc076..7eec858 100644
+--- a/lib/symbols.js
++++ b/lib/symbols.js
+@@ -30,6 +30,7 @@ const keys = {
+   kRequest: Symbol('fastify.Request'),
+   kRequestPayloadStream: Symbol('fastify.RequestPayloadStream'),
+   kRequestAcceptVersion: Symbol('fastify.RequestAcceptVersion'),
++  kRequestContentType: Symbol('fastify.RequestContentType'),
+   kRequestCacheValidateFns: Symbol('fastify.request.cache.validateFns'),
+   kRequestOriginalUrl: Symbol('fastify.request.originalUrl'),
+   kRequestSignal: Symbol('fastify.request.signal'),
+diff --git a/lib/validation.js b/lib/validation.js
+index 48850b1..8b25a0b 100644
+--- a/lib/validation.js
++++ b/lib/validation.js
+@@ -5,7 +5,8 @@ const {
+   kSchemaParams: paramsSchema,
+   kSchemaQuerystring: querystringSchema,
+   kSchemaBody: bodySchema,
+-  kSchemaResponse: responseSchema
++  kSchemaResponse: responseSchema,
++  kRequestContentType
+ } = require('./symbols')
+ const scChecker = /^[1-5](?:\d{2}|xx)$|^default$/
+ 
+@@ -171,9 +172,10 @@ function validate (context, request, execution) {
+     if (typeof context[bodySchema] === 'function') {
+       validatorFunction = context[bodySchema]
+     } else if (context[bodySchema]) {
+-      // TODO: add request.contentType and reuse it here
+-      const contentType = getEssenceMediaType(request.headers['content-type'])
+-      const contentSchema = context[bodySchema][contentType]
++      const contentType = request[kRequestContentType]
++      const contentSchema = contentType?.isValid
++        ? context[bodySchema][contentType.mediaType]
++        : undefined
+       if (contentSchema) {
+         validatorFunction = contentSchema
+       }
+@@ -271,16 +273,6 @@ function wrapValidationError (result, dataVar, schemaErrorFormatter) {
+   return error
+ }
+ 
+-/**
+- * simple function to retrieve the essence media type
+- * @param {string} header
+- * @returns {string} Mimetype string.
+- */
+-function getEssenceMediaType (header) {
+-  if (!header) return ''
+-  return header.trimStart().split(/[ ;]/, 1)[0].trim().toLowerCase()
+-}
+-
+ module.exports = {
+   symbols: { bodySchema, querystringSchema, responseSchema, paramsSchema, headersSchema },
+   compileSchemasForValidation,
+diff --git a/types/request.d.ts b/types/request.d.ts
+index fabaed9..90cef7c 100644
+--- a/types/request.d.ts
++++ b/types/request.d.ts
+@@ -94,6 +94,7 @@ export interface FastifyRequest<RouteGeneric extends RouteGenericInterface = Rou
+   readonly hostname: string;
+   readonly url: string;
+   readonly originalUrl: string;
++  readonly mediaType: string | undefined;
+   /**
+    * Derived from socket state or forwarding headers.
+    * Treat as untrusted input and validate before security-sensitive use.
+diff --git a/wiki/index.md b/wiki/index.md
+new file mode 100644
+index 0000000..786be07
+--- /dev/null
++++ b/wiki/index.md
+@@ -0,0 +1,28 @@
++---
++page_id: 'wiki:index'
++kind: index
++title: Wiki Index
++tags:
++  - index
++source_ids: []
++project_ids: []
++node_ids: []
++freshness: fresh
++status: active
++confidence: 1
++created_at: '2026-07-19T19:53:32.871Z'
++updated_at: '2026-07-19T19:53:32.871Z'
++compiled_from: []
++managed_by: agent
++backlinks: []
++schema_hash: ''
++source_hashes: {}
++source_semantic_hashes: {}
++---
++# Wiki Index
++
++This lite vault is agent-maintained. Drop sources into `raw/`, edit `swarmvault.schema.md` to teach the agent how the wiki should be organized, then ask your agent to read sources and update pages here.
++
++- Summaries, entity pages, and concept pages live under `wiki/`.
++- Append every ingest/query/lint operation to `wiki/log.md`.
++- Run `swarmvault init` (without `--lite`) when you want the full toolchain with graph, search, and approvals.
+diff --git a/wiki/log.md b/wiki/log.md
+new file mode 100644
+index 0000000..03bd3a7
+--- /dev/null
++++ b/wiki/log.md
+@@ -0,0 +1,27 @@
++---
++page_id: 'wiki:log'
++kind: index
++title: Activity Log
++tags:
++  - log
++  - append-only
++source_ids: []
++project_ids: []
++node_ids: []
++freshness: fresh
++status: active
++confidence: 1
++created_at: '2026-07-19T19:53:32.871Z'
++updated_at: '2026-07-19T19:53:32.871Z'
++compiled_from: []
++managed_by: agent
++backlinks: []
++schema_hash: ''
++source_hashes: {}
++source_semantic_hashes: {}
++---
++# Activity Log
++
++Append-only chronological record. One line per ingest/query/lint operation, newest at the bottom.
++
++Format: `## [YYYY-MM-DD] <verb> | <subject>`
+
+# --- task-03-agent ---
+diff --git a/fastify.js b/fastify.js
+index 7c015f9..48895f3 100644
+--- a/fastify.js
++++ b/fastify.js
+@@ -678,9 +678,9 @@ function fastify (serverOptions) {
+       error: 'Bad Request',
+       code: 'FST_ERR_MAX_PARAM_LENGTH',
+       message: `'${path}' is exceeding the max param length`,
+-      statusCode: 413
++      statusCode: 414
+     })
+-    res.writeHead(413, {
++    res.writeHead(414, {
+       'Content-Type': 'application/json',
+       'Content-Length': Buffer.byteLength(body)
+     })
+diff --git a/lib/content-type.js b/lib/content-type.js
+index aeab8cd..78927f4 100644
+--- a/lib/content-type.js
++++ b/lib/content-type.js
+@@ -1,5 +1,7 @@
+ 'use strict'
+ 
++const { FifoMap } = require('toad-cache')
++
+ /**
+  * keyValuePairsReg is used to split the parameters list into associated
+  * key value pairings. The leading `(?:^|;)\s*` anchor ensures the regex
+@@ -55,7 +57,12 @@ class ContentType {
+    * @returns {ContentType | undefined}
+    */
+   static from (headerValue) {
+-    return new ContentType(headerValue)
++    const cached = ContentType.cache.get(headerValue)
++    if (cached !== undefined) return cached
++
++    const contentType = new ContentType(headerValue)
++    ContentType.cache.set(headerValue, contentType)
++    return contentType
+   }
+ 
+   constructor (headerValue) {
+@@ -170,4 +177,6 @@ class ContentType {
+   }
+ }
+ 
++ContentType.cache = new FifoMap(100)
++
+ module.exports = ContentType
+diff --git a/lib/errors.js b/lib/errors.js
+index 1aea926..24abe8a 100644
+--- a/lib/errors.js
++++ b/lib/errors.js
+@@ -374,7 +374,7 @@ const codes = {
+   FST_ERR_MAX_PARAM_LENGTH: createError(
+     'FST_ERR_MAX_PARAM_LENGTH',
+     "'%s' is exceeding the max param length",
+-    413,
++    414,
+     URIError
+   ),
+   FST_ERR_ASYNC_CONSTRAINT: createError(
+diff --git a/lib/handle-request.js b/lib/handle-request.js
+index d3ec986..aabcb8f 100644
+--- a/lib/handle-request.js
++++ b/lib/handle-request.js
+@@ -11,7 +11,8 @@ const {
+   kRouteContext,
+   kFourOhFourContext,
+   kSupportedHTTPMethods,
+-  kDiagnosticsStore
++  kDiagnosticsStore,
++  kRequestContentType
+ } = require('./symbols')
+ const ContentType = require('./content-type')
+ 
+@@ -35,6 +36,8 @@ function handleRequest (err, request, reply) {
+   if (this[kSupportedHTTPMethods].bodywith.has(method)) {
+     const headers = request.headers
+     const ctHeader = headers['content-type']
++    const contentType = ContentType.from(ctHeader)
++    request[kRequestContentType] = contentType
+ 
+     if (ctHeader === undefined) {
+       const contentLength = headers['content-length']
+@@ -52,7 +55,6 @@ function handleRequest (err, request, reply) {
+       return
+     }
+ 
+-    const contentType = ContentType.from(ctHeader)
+     if (contentType.isValid === false) {
+       reply[kReplyIsError] = true
+       reply.status(415).send(new FST_ERR_CTP_INVALID_MEDIA_TYPE())
+diff --git a/lib/request.js b/lib/request.js
+index 6ff2393..e48782b 100644
+--- a/lib/request.js
++++ b/lib/request.js
+@@ -1,6 +1,7 @@
+ 'use strict'
+ 
+ const proxyAddr = require('@fastify/proxy-addr')
++const ContentType = require('./content-type')
+ const {
+   kHasBeenDecorated,
+   kSchemaBody,
+@@ -13,7 +14,8 @@ const {
+   kRouteContext,
+   kRequestOriginalUrl,
+   kRequestSignal,
+-  kOnAbort
++  kOnAbort,
++  kRequestContentType
+ } = require('./symbols')
+ const { FST_ERR_REQ_INVALID_VALIDATION_INVOCATION, FST_ERR_DEC_UNDECLARED } = require('./errors')
+ const decorators = require('./decorate')
+@@ -34,6 +36,7 @@ function Request (id, params, req, query, log, context) {
+   this.query = query
+   this.log = log
+   this.body = undefined
++  this[kRequestContentType] = ContentType.from(req?.headers?.['content-type'])
+ }
+ Request.props = []
+ Request.instanceProperties = new Set(['id', 'params', 'raw', 'query', 'log', 'body'])
+@@ -76,6 +79,7 @@ function buildRegularRequest (R) {
+     this.query = query
+     this.log = log
+     this.body = undefined
++    this[kRequestContentType] = ContentType.from(req?.headers?.['content-type'])
+ 
+     let prop
+     for (let i = 0; i < props.length; i++) {
+@@ -178,6 +182,12 @@ Object.defineProperties(Request.prototype, {
+       return this.raw.method
+     }
+   },
++  mediaType: {
++    get () {
++      const contentType = this[kRequestContentType]
++      return contentType?.isValid ? contentType.mediaType : undefined
++    }
++  },
+   routeOptions: {
+     get () {
+       const context = this[kRouteContext]
+diff --git a/lib/symbols.js b/lib/symbols.js
+index 8ddc076..7eec858 100644
+--- a/lib/symbols.js
++++ b/lib/symbols.js
+@@ -30,6 +30,7 @@ const keys = {
+   kRequest: Symbol('fastify.Request'),
+   kRequestPayloadStream: Symbol('fastify.RequestPayloadStream'),
+   kRequestAcceptVersion: Symbol('fastify.RequestAcceptVersion'),
++  kRequestContentType: Symbol('fastify.RequestContentType'),
+   kRequestCacheValidateFns: Symbol('fastify.request.cache.validateFns'),
+   kRequestOriginalUrl: Symbol('fastify.request.originalUrl'),
+   kRequestSignal: Symbol('fastify.request.signal'),
+diff --git a/lib/validation.js b/lib/validation.js
+index 48850b1..8b25a0b 100644
+--- a/lib/validation.js
++++ b/lib/validation.js
+@@ -5,7 +5,8 @@ const {
+   kSchemaParams: paramsSchema,
+   kSchemaQuerystring: querystringSchema,
+   kSchemaBody: bodySchema,
+-  kSchemaResponse: responseSchema
++  kSchemaResponse: responseSchema,
++  kRequestContentType
+ } = require('./symbols')
+ const scChecker = /^[1-5](?:\d{2}|xx)$|^default$/
+ 
+@@ -171,9 +172,10 @@ function validate (context, request, execution) {
+     if (typeof context[bodySchema] === 'function') {
+       validatorFunction = context[bodySchema]
+     } else if (context[bodySchema]) {
+-      // TODO: add request.contentType and reuse it here
+-      const contentType = getEssenceMediaType(request.headers['content-type'])
+-      const contentSchema = context[bodySchema][contentType]
++      const contentType = request[kRequestContentType]
++      const contentSchema = contentType?.isValid
++        ? context[bodySchema][contentType.mediaType]
++        : undefined
+       if (contentSchema) {
+         validatorFunction = contentSchema
+       }
+@@ -271,16 +273,6 @@ function wrapValidationError (result, dataVar, schemaErrorFormatter) {
+   return error
+ }
+ 
+-/**
+- * simple function to retrieve the essence media type
+- * @param {string} header
+- * @returns {string} Mimetype string.
+- */
+-function getEssenceMediaType (header) {
+-  if (!header) return ''
+-  return header.trimStart().split(/[ ;]/, 1)[0].trim().toLowerCase()
+-}
+-
+ module.exports = {
+   symbols: { bodySchema, querystringSchema, responseSchema, paramsSchema, headersSchema },
+   compileSchemasForValidation,
+diff --git a/types/request.d.ts b/types/request.d.ts
+index fabaed9..90cef7c 100644
+--- a/types/request.d.ts
++++ b/types/request.d.ts
+@@ -94,6 +94,7 @@ export interface FastifyRequest<RouteGeneric extends RouteGenericInterface = Rou
+   readonly hostname: string;
+   readonly url: string;
+   readonly originalUrl: string;
++  readonly mediaType: string | undefined;
+   /**
+    * Derived from socket state or forwarding headers.
+    * Treat as untrusted input and validate before security-sensitive use.
+diff --git a/wiki/index.md b/wiki/index.md
+new file mode 100644
+index 0000000..786be07
+--- /dev/null
++++ b/wiki/index.md
+@@ -0,0 +1,28 @@
++---
++page_id: 'wiki:index'
++kind: index
++title: Wiki Index
++tags:
++  - index
++source_ids: []
++project_ids: []
++node_ids: []
++freshness: fresh
++status: active
++confidence: 1
++created_at: '2026-07-19T19:53:32.871Z'
++updated_at: '2026-07-19T19:53:32.871Z'
++compiled_from: []
++managed_by: agent
++backlinks: []
++schema_hash: ''
++source_hashes: {}
++source_semantic_hashes: {}
++---
++# Wiki Index
++
++This lite vault is agent-maintained. Drop sources into `raw/`, edit `swarmvault.schema.md` to teach the agent how the wiki should be organized, then ask your agent to read sources and update pages here.
++
++- Summaries, entity pages, and concept pages live under `wiki/`.
++- Append every ingest/query/lint operation to `wiki/log.md`.
++- Run `swarmvault init` (without `--lite`) when you want the full toolchain with graph, search, and approvals.
+diff --git a/wiki/log.md b/wiki/log.md
+new file mode 100644
+index 0000000..03bd3a7
+--- /dev/null
++++ b/wiki/log.md
+@@ -0,0 +1,27 @@
++---
++page_id: 'wiki:log'
++kind: index
++title: Activity Log
++tags:
++  - log
++  - append-only
++source_ids: []
++project_ids: []
++node_ids: []
++freshness: fresh
++status: active
++confidence: 1
++created_at: '2026-07-19T19:53:32.871Z'
++updated_at: '2026-07-19T19:53:32.871Z'
++compiled_from: []
++managed_by: agent
++backlinks: []
++schema_hash: ''
++source_hashes: {}
++source_semantic_hashes: {}
++---
++# Activity Log
++
++Append-only chronological record. One line per ingest/query/lint operation, newest at the bottom.
++
++Format: `## [YYYY-MM-DD] <verb> | <subject>`
