@@ -32837,6 +32837,1727 @@
         "operationally_completed": true,
         "agent_declared_task_completion_count": 3
       }
+    },
+    {
+      "schema_version": 2,
+      "session_id": "sigmap-fastify-20260719-p-769d40697529-r2",
+      "record_type": "workflow_session",
+      "evidence_type": "workflow-simulation",
+      "study_id": "phase-2-sequential-workflow-v1",
+      "experiment_group_id": "fastify-fastify-retrieval-sigmap-codex-live-v1-769d40697529-sequential-workflow-r2",
+      "objective": "individual_tool_effectiveness",
+      "evidence_stage": "reproduction",
+      "status": "completed",
+      "session_role": "individual_tool_treatment",
+      "replicate_index": 2,
+      "frozen_protocol": {
+        "protocol_id": "fastify-lifecycle-sequence-v0-retrieval-sigmap-codex-live-v1-b7f240b309a2",
+        "path": "sources/evaluations/protocols/fastify-lifecycle-sequence-v0-retrieval-sigmap-codex-live-v1-b7f240b309a2.json",
+        "sha256": "f5a90d411f1fdfc5b3563c1803ab22cce8635471f53afcdf215604b0ef1c9fc5"
+      },
+      "baseline_pool": {
+        "protocol_version": "baseline-pool-v1",
+        "protocol_fingerprint": "769d40697529",
+        "identity_policy": "frozen-protocol-and-replicate; execution date is metadata only"
+      },
+      "selected_execution": {
+        "descriptor_sha256": "dcc04eaa8ba866e3bd66b3149a79e9e4356e44a2edc1ccc55c78cf0f0ed4ebb8",
+        "descriptor": {
+          "version": "execution-condition-v1",
+          "sequence_id": "fastify-lifecycle-sequence-v0",
+          "execution_role": "individual_tool_treatment",
+          "selected_profile": {
+            "profile_id": "retrieval-sigmap-codex-live-v1",
+            "profile_type": "individual_tool",
+            "component_ids": [
+              "retrieval-sigmap-codex-live-v1"
+            ],
+            "enabled_surfaces": [
+              "retrieval-context",
+              "mcp",
+              "codex-agents",
+              "live-watch"
+            ],
+            "disabled_overlaps": [
+              "all unlisted surfaces"
+            ],
+            "registry_entry_sha256": "7ff6edc14f1f857ebd13ef872b7c6a78309b11cbb8895ec63361125a10d4b466",
+            "registry_entry": {
+              "id": "retrieval-sigmap-codex-live-v1",
+              "profile_type": "individual_tool",
+              "objective_scope": "individual_tool_effectiveness",
+              "status": "screening-shortlist",
+              "enabled_surfaces": [
+                "retrieval-context",
+                "mcp",
+                "codex-agents",
+                "live-watch"
+              ],
+              "disabled_overlaps": [
+                "all unlisted surfaces"
+              ],
+              "components": [
+                {
+                  "component_id": "retrieval-sigmap-codex-live-v1",
+                  "surface": "retrieval-context+mcp+codex-agents+live-watch",
+                  "role": "individual_tool"
+                }
+              ],
+              "install": {
+                "policy": "SigMap compatibility-safe Codex TOML registration, AGENTS guidance, live watcher, and retained MCP handshake proof."
+              },
+              "reset": {
+                "policy": "Delete lane-private CODEX_HOME, product state, generated repository treatment files, and background processes after evidence capture."
+              },
+              "evaluation_protocol": {
+                "tool_use_policy": "natural",
+                "tool_state": "warm-index",
+                "integration_state": "compatibility-safe-codex-live-mcp",
+                "assignment_proof": "provider-free initialize plus tools/list handshake required"
+              },
+              "notes": "Versioned replacement for deleted historical results whose treatment assignment was not operationally proven."
+            }
+          },
+          "model_facing_prompts": {
+            "rendering_contract": "sequential-model-facing-prompts-v2",
+            "profile_guidance_sha256": "cb08dba8b361975eb89669cc77d206861b05fc26b161a9215337dbb2d30a6366",
+            "tasks": [
+              {
+                "task_id": "fastify-lifecycle-feature-v0",
+                "order": 1,
+                "rendered_prompt_sha256": "664092271195c07db968eb429b9a89fd5a0ee799c117aa9948a7c28d91bfe198"
+              },
+              {
+                "task_id": "fastify-lifecycle-refactor-v0",
+                "order": 2,
+                "rendered_prompt_sha256": "9c2087dc09a311d8f30c4f900a5d4d137ecbe5097a5c83b89ab36c73f95d39da"
+              },
+              {
+                "task_id": "fastify-lifecycle-review-v0",
+                "order": 3,
+                "rendered_prompt_sha256": "89c678d4dbdbfeb8474ce1ba90a4e5ad372f14a618eade2611ba385e2d82c05a"
+              }
+            ]
+          },
+          "tool_adapter": {
+            "tool_id": "sigmap-codex-live-v1",
+            "tool_manifest": "scripts/run_codex_fixture_evaluation.py:TOOL_CONFIGS",
+            "tool_manifest_sha256": "6fa8271b89a577706ea0bbffcc8e4521831f41b646ed9519369efee3642fe41c",
+            "tool_config": {
+              "display_name": "SigMap Codex MCP with live watcher v1",
+              "lane_name": "retrieval-sigmap-codex-live-v1",
+              "surface": "retrieval/context+codex-agents+mcp-live-watch",
+              "mcp_server": "sigmap",
+              "allowed_terms": [
+                "sigmap",
+                "gen-context"
+              ],
+              "data_dir_name": "sigmap-codex-live-v1",
+              "mcp_command": "/bin/bash",
+              "mcp_args": [
+                "-lc",
+                "cd {repo}; /opt/data/opt/node-v24.18.0-linux-x64/bin/node /opt/data/tool-candidates/sigmap/gen-context.js --watch >/dev/null 2>&1 & watcher=$!; trap 'kill $watcher 2>/dev/null || true; wait $watcher 2>/dev/null || true' EXIT; /opt/data/opt/node-v24.18.0-linux-x64/bin/node /opt/data/tool-candidates/sigmap/gen-context.js --mcp"
+              ],
+              "env": {
+                "SIGMAP_TELEMETRY": "0"
+              },
+              "mounts": [
+                "/opt/data/tool-candidates/sigmap"
+              ],
+              "diff_exclude_paths": [
+                ".context",
+                "AGENTS.md"
+              ],
+              "default_tool_state": "warm-index",
+              "warmup": {
+                "kind": "signature-map-and-codex-guidance",
+                "command": [
+                  "/opt/data/opt/node-v24.18.0-linux-x64/bin/node",
+                  "/opt/data/tool-candidates/sigmap/gen-context.js",
+                  "--adapter",
+                  "codex",
+                  "--no-track"
+                ],
+                "cleanup_paths": [
+                  ".context",
+                  "AGENTS.md"
+                ],
+                "output_name": "sigmap-warmup-output.txt",
+                "metadata_name": "sigmap-warmup-metadata.json",
+                "timeout_seconds": 900
+              },
+              "mcp_handshake": {
+                "required": true,
+                "method": "initialize-and-tools-list",
+                "timeout_seconds": 60
+              },
+              "compatibility_deviation": "Manual Codex TOML registration is retained because the pinned targeted installer writes obsolete YAML; product AGENTS guidance and live watcher are present."
+            },
+            "tool_config_sha256": "fcb359822696e9f45ae706fabfeeef16652679cf5befb8425c75c2e8f3325358",
+            "tool_state": "warm-index",
+            "tool_use_policy": "natural",
+            "command_identity": {
+              "kind": "mcp_command",
+              "command": [
+                "/bin/bash",
+                "-lc",
+                "cd {repo}; /opt/data/opt/node-v24.18.0-linux-x64/bin/node /opt/data/tool-candidates/sigmap/gen-context.js --watch >/dev/null 2>&1 & watcher=$!; trap 'kill $watcher 2>/dev/null || true; wait $watcher 2>/dev/null || true' EXIT; /opt/data/opt/node-v24.18.0-linux-x64/bin/node /opt/data/tool-candidates/sigmap/gen-context.js --mcp"
+              ]
+            },
+            "binary_identity": {
+              "executable_token": "/bin/bash",
+              "resolved_path": "/bin/bash",
+              "realpath": "/usr/bin/bash",
+              "sha256": "223fe8564b60636bc738b6178d3ba9a50ef7d791266b0efae6363bb716e4c47f",
+              "metadata": {
+                "size": 1298416,
+                "mode": "-rwxr-xr-x",
+                "uid": 0,
+                "gid": 0,
+                "mtime_ns": 1772983313000000000
+              },
+              "version": {
+                "command": [
+                  "/usr/bin/bash",
+                  "--version"
+                ],
+                "environment_path": "/opt/data/.local/bin:/opt/data/opt/go/bin:/opt/data/opt/uv:/opt/data/opt/node-v24.18.0-linux-x64/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+                "captured": true,
+                "exit_code": 0,
+                "output": "GNU bash, version 5.2.37(1)-release (x86_64-pc-linux-gnu)\nCopyright (C) 2022 Free Software Foundation, Inc.\nLicense GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>\n\nThis is free software; you are free to change and redistribute it.\nThere is NO WARRANTY, to the extent permitted by law.",
+                "truncated": false
+              }
+            },
+            "source_identity": [
+              {
+                "path": "/opt/data/tool-candidates/sigmap",
+                "exists": true,
+                "kind": "directory",
+                "git_head": "b1e086cf06bc7a7622473ffe9637c122567404e0",
+                "package_json_sha256": "f8478ca025747dada0b86288f696e1ae39ea8701a5081c60f54c70eafa034963"
+              }
+            ]
+          },
+          "runtime": {
+            "docker_image": "token-eval-codex:latest",
+            "docker_image_identity": {
+              "image_ref": "token-eval-codex:latest",
+              "image_id": "sha256:6f86d01f2c63f5029c6bb874d8f3694c24d5cd567e3d09413eccc956ba3feafe",
+              "repo_digests": [
+                "token-eval-codex@sha256:6f86d01f2c63f5029c6bb874d8f3694c24d5cd567e3d09413eccc956ba3feafe"
+              ],
+              "repo_tags": [
+                "token-eval-codex:latest"
+              ]
+            },
+            "dockerfile_path": "sources/evaluations/fixtures/container/Dockerfile",
+            "dockerfile_sha256": "47c91967ce25014ce54879514f51d2ff0326651be1087209115eff4d358226b3",
+            "fixture_runner_path": "scripts/run_codex_fixture_evaluation.py",
+            "fixture_runner_sha256": "6fa8271b89a577706ea0bbffcc8e4521831f41b646ed9519369efee3642fe41c",
+            "mcp_probe_path": "scripts/probe_mcp_stdio.py",
+            "mcp_probe_sha256": "7c06ea36ee5cac933a97140b84a41405fc99b45152388e8d7c6659136af698fd",
+            "codex_entrypoint_path": "sources/evaluations/fixtures/container/codex-entrypoint.sh",
+            "codex_entrypoint_sha256": "8715fe37cb1fa3823f5f05493bc9681ce7ffc72126dfec4d64d448762c550c3c",
+            "timeout_seconds_per_task": 3600,
+            "network_isolation": {
+              "provider_access": true,
+              "model_shell_network_access": false,
+              "model_shell_enforcement": "seccomp denies AF_INET and AF_INET6 socket creation for the shell process and descendants",
+              "codex_web_search": "disabled",
+              "external_retrieval_audit": "fail-closed"
+            },
+            "isolation_policy": "fresh lane-specific Codex home/tool data; provider-only network with model shell and Codex web search disabled; sequential one-task prompt delivery; concealed tests removed before model-visible root commit"
+          },
+          "dependencies": {
+            "command": "npm install --ignore-scripts --no-audit --no-fund",
+            "command_sha256": "7493d616f26e72b22eb5a21beafa12a6717ebf5b93a7a75e709de65e7323cc41",
+            "lockfiles": [
+              {
+                "path": "package.json",
+                "snapshot_sha256": "b273320af1bb4cfc0f9334457c8e3b1d035fde0da14f9db65e8ef97d361d0be3",
+                "current_fixture_sha256": null
+              }
+            ]
+          },
+          "agent_condition": {
+            "runtime_id": "codex-cli",
+            "provider": "openai",
+            "model": "gpt-5.6-luna",
+            "model_condition_id": "codex-openai-gpt-5-6-luna-xhigh",
+            "reasoning_effort": "xhigh",
+            "codex_version_condition": "captured-at-run-and-bound-to-record"
+          },
+          "isolation": {
+            "prompt_delivery": "sequential-one-task-at-a-time",
+            "seed_delivery_mode": "preseeded-composite",
+            "future_tasks_visible": false,
+            "future_seed_regressions_visible": true,
+            "controller_verification": "final-only",
+            "verifier_assets_model_visible": false,
+            "model_concealed_paths": []
+          },
+          "baseline_pool_reference": {
+            "protocol_version": "baseline-pool-v1",
+            "protocol_fingerprint": "769d40697529",
+            "comparison_policy": "paired baseline and treatment must share this baseline pool fingerprint and replicate"
+          }
+        }
+      },
+      "docker_image_identity": {
+        "image_ref": "token-eval-codex:latest",
+        "image_id": "sha256:6f86d01f2c63f5029c6bb874d8f3694c24d5cd567e3d09413eccc956ba3feafe",
+        "repo_digests": [
+          "token-eval-codex@sha256:6f86d01f2c63f5029c6bb874d8f3694c24d5cd567e3d09413eccc956ba3feafe"
+        ],
+        "repo_tags": [
+          "token-eval-codex:latest"
+        ]
+      },
+      "tool_adapter_identity": {
+        "tool_id": "sigmap-codex-live-v1",
+        "tool_manifest": "scripts/run_codex_fixture_evaluation.py:TOOL_CONFIGS",
+        "tool_manifest_sha256": "6fa8271b89a577706ea0bbffcc8e4521831f41b646ed9519369efee3642fe41c",
+        "tool_config": {
+          "display_name": "SigMap Codex MCP with live watcher v1",
+          "lane_name": "retrieval-sigmap-codex-live-v1",
+          "surface": "retrieval/context+codex-agents+mcp-live-watch",
+          "mcp_server": "sigmap",
+          "allowed_terms": [
+            "sigmap",
+            "gen-context"
+          ],
+          "data_dir_name": "sigmap-codex-live-v1",
+          "mcp_command": "/bin/bash",
+          "mcp_args": [
+            "-lc",
+            "cd {repo}; /opt/data/opt/node-v24.18.0-linux-x64/bin/node /opt/data/tool-candidates/sigmap/gen-context.js --watch >/dev/null 2>&1 & watcher=$!; trap 'kill $watcher 2>/dev/null || true; wait $watcher 2>/dev/null || true' EXIT; /opt/data/opt/node-v24.18.0-linux-x64/bin/node /opt/data/tool-candidates/sigmap/gen-context.js --mcp"
+          ],
+          "env": {
+            "SIGMAP_TELEMETRY": "0"
+          },
+          "mounts": [
+            "/opt/data/tool-candidates/sigmap"
+          ],
+          "diff_exclude_paths": [
+            ".context",
+            "AGENTS.md"
+          ],
+          "default_tool_state": "warm-index",
+          "warmup": {
+            "kind": "signature-map-and-codex-guidance",
+            "command": [
+              "/opt/data/opt/node-v24.18.0-linux-x64/bin/node",
+              "/opt/data/tool-candidates/sigmap/gen-context.js",
+              "--adapter",
+              "codex",
+              "--no-track"
+            ],
+            "cleanup_paths": [
+              ".context",
+              "AGENTS.md"
+            ],
+            "output_name": "sigmap-warmup-output.txt",
+            "metadata_name": "sigmap-warmup-metadata.json",
+            "timeout_seconds": 900
+          },
+          "mcp_handshake": {
+            "required": true,
+            "method": "initialize-and-tools-list",
+            "timeout_seconds": 60
+          },
+          "compatibility_deviation": "Manual Codex TOML registration is retained because the pinned targeted installer writes obsolete YAML; product AGENTS guidance and live watcher are present."
+        },
+        "tool_config_sha256": "fcb359822696e9f45ae706fabfeeef16652679cf5befb8425c75c2e8f3325358",
+        "tool_state": "warm-index",
+        "tool_use_policy": "natural",
+        "command_identity": {
+          "kind": "mcp_command",
+          "command": [
+            "/bin/bash",
+            "-lc",
+            "cd {repo}; /opt/data/opt/node-v24.18.0-linux-x64/bin/node /opt/data/tool-candidates/sigmap/gen-context.js --watch >/dev/null 2>&1 & watcher=$!; trap 'kill $watcher 2>/dev/null || true; wait $watcher 2>/dev/null || true' EXIT; /opt/data/opt/node-v24.18.0-linux-x64/bin/node /opt/data/tool-candidates/sigmap/gen-context.js --mcp"
+          ]
+        },
+        "binary_identity": {
+          "executable_token": "/bin/bash",
+          "resolved_path": "/bin/bash",
+          "realpath": "/usr/bin/bash",
+          "sha256": "223fe8564b60636bc738b6178d3ba9a50ef7d791266b0efae6363bb716e4c47f",
+          "metadata": {
+            "size": 1298416,
+            "mode": "-rwxr-xr-x",
+            "uid": 0,
+            "gid": 0,
+            "mtime_ns": 1772983313000000000
+          },
+          "version": {
+            "command": [
+              "/usr/bin/bash",
+              "--version"
+            ],
+            "environment_path": "/opt/data/.local/bin:/opt/data/opt/go/bin:/opt/data/opt/uv:/opt/data/opt/node-v24.18.0-linux-x64/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+            "captured": true,
+            "exit_code": 0,
+            "output": "GNU bash, version 5.2.37(1)-release (x86_64-pc-linux-gnu)\nCopyright (C) 2022 Free Software Foundation, Inc.\nLicense GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>\n\nThis is free software; you are free to change and redistribute it.\nThere is NO WARRANTY, to the extent permitted by law.",
+            "truncated": false
+          }
+        },
+        "source_identity": [
+          {
+            "path": "/opt/data/tool-candidates/sigmap",
+            "exists": true,
+            "kind": "directory",
+            "git_head": "b1e086cf06bc7a7622473ffe9637c122567404e0",
+            "package_json_sha256": "f8478ca025747dada0b86288f696e1ae39ea8701a5081c60f54c70eafa034963"
+          }
+        ]
+      },
+      "date": "2026-07-19",
+      "target": {
+        "fixture_id": "medium-fastify-fastify",
+        "fixture_scale": "medium-project",
+        "project_id": "fastify-fastify",
+        "repository_path": "sources/evaluations/workflow-sessions/sigmap-fastify-20260719-p-769d40697529-r2/project/repo",
+        "initial_snapshot": {
+          "commit": "94bcbcc6e2ef3b8e8f8e8797fe551ccbe7b942fd",
+          "branch": "detached",
+          "fixture_hash": ""
+        }
+      },
+      "task_sequence": {
+        "sequence_id": "fastify-lifecycle-sequence-v0",
+        "sequence_contract": "feature-refactor-review",
+        "task_ids": [
+          "fastify-lifecycle-feature-v0",
+          "fastify-lifecycle-refactor-v0",
+          "fastify-lifecycle-review-v0"
+        ],
+        "task_classes": [
+          "feature-implementation",
+          "behavior-preserving-refactor",
+          "code-review-correction"
+        ],
+        "reset_policy": "reset source checkout, profile home, tool state, indexes, caches, generated config, and agent home before the lane; preserve repository, thread, tool, index, cache, and agent state across every sequential prompt",
+        "prompt_delivery": {
+          "mode": "sequential-one-task-at-a-time",
+          "future_tasks_visible": false,
+          "future_prompts_materialized_lazily": true,
+          "seed_delivery_mode": "preseeded-composite",
+          "future_seed_regressions_visible": true,
+          "controller_verification": "final-only",
+          "codex_thread_id": "019f7c8b-16f3-72f2-8e27-ada9782761a3",
+          "task_prompt_evidence": "sources/evaluations/workflow-sessions/sigmap-fastify-20260719-p-769d40697529-r2/evidence.jsonl.gz"
+        },
+        "leakage_controls": {
+          "seed_origin_concealed": true,
+          "seed_patches_model_visible": false,
+          "git_baseline_true_root_at_lane_start": true,
+          "fixed_snapshot_objects_model_visible": false,
+          "pre_seed_reflog_entries_visible": false,
+          "concealment_verification_passed": true,
+          "task_directories_model_visible": false,
+          "verifier_assets_model_visible": false,
+          "model_writable_surface": "target repository plus isolated model-output directory",
+          "verifier_integrity_passed": true,
+          "verifier_integrity_evidence": "sources/evaluations/workflow-sessions/sigmap-fastify-20260719-p-769d40697529-r2/evidence.jsonl.gz#verifier-integrity.json",
+          "model_prompts_sanitized": true,
+          "upstream_remote_removed_from_model_facing_repo": true,
+          "broken_start_committed_as_local_baseline": true,
+          "remaining_limitations": [
+            "Future regression code is present from lane start, while future prompts and concealed acceptance assets remain controller-only.",
+            "Task semantics and verifier names may still be searchable if the model intentionally uses external network access."
+          ]
+        }
+      },
+      "profile": {
+        "profile_id": "retrieval-sigmap-codex-live-v1",
+        "profile_type": "individual_tool",
+        "enabled_surfaces": [
+          "retrieval-context",
+          "mcp",
+          "codex-agents",
+          "live-watch"
+        ],
+        "disabled_overlaps": [
+          "all unlisted surfaces"
+        ],
+        "component_ids": [
+          "retrieval-sigmap-codex-live-v1"
+        ]
+      },
+      "agent": {
+        "runtime_id": "codex-cli",
+        "model_condition_id": "codex-openai-gpt-5-6-luna-xhigh",
+        "name": "Codex CLI",
+        "version": "codex-cli 0.144.0",
+        "provider": "openai",
+        "model": "gpt-5.6-luna",
+        "reasoning_effort": "xhigh",
+        "temperature": null,
+        "max_turns": null,
+        "time_budget_seconds": 10800
+      },
+      "state_policy": {
+        "reset_before_session": [
+          "repository working tree",
+          "profile home",
+          "tool indexes and caches",
+          "generated config",
+          "agent home",
+          "temporary directories"
+        ],
+        "persist_between_tasks": [
+          "repository source working tree and model-facing Git metadata from one composite broken-start root",
+          "tool indexes and caches",
+          "generated config",
+          "agent home",
+          "memory/state stores enabled by the active profile",
+          "run artifacts"
+        ]
+      },
+      "cumulative_token_usage": {
+        "measurement_source": "codex-jsonl-usage-events",
+        "fresh_input_tokens": 195263,
+        "cached_input_tokens": 4091136,
+        "cache_write_tokens": null,
+        "output_tokens": 31942,
+        "reasoning_tokens": 14080,
+        "total_provider_tokens": 4318341,
+        "tokens_per_accepted_task": 1439447.0,
+        "accounting_basis": "Codex-reported token volume; monetary cost estimation is out of scope"
+      },
+      "per_task_results": [
+        {
+          "task_id": "fastify-lifecycle-feature-v0",
+          "task_class": "feature-implementation",
+          "task_alias": "task-01",
+          "order": 1,
+          "agent_attempted": true,
+          "codex_exit_code": 0,
+          "controller_verification": "passed",
+          "accepted": true,
+          "task_delta": "sources/evaluations/workflow-sessions/sigmap-fastify-20260719-p-769d40697529-r2/task-01-agent.diff",
+          "usage_events": "sources/evaluations/workflow-sessions/sigmap-fastify-20260719-p-769d40697529-r2/task-01-codex-events.jsonl",
+          "operational_retry_count": 0,
+          "verifier_exit_code": 0,
+          "verifier_passed": true
+        },
+        {
+          "task_id": "fastify-lifecycle-refactor-v0",
+          "task_class": "behavior-preserving-refactor",
+          "task_alias": "task-02",
+          "order": 2,
+          "agent_attempted": true,
+          "codex_exit_code": 0,
+          "controller_verification": "passed",
+          "accepted": true,
+          "task_delta": "sources/evaluations/workflow-sessions/sigmap-fastify-20260719-p-769d40697529-r2/task-02-agent.diff",
+          "usage_events": "sources/evaluations/workflow-sessions/sigmap-fastify-20260719-p-769d40697529-r2/task-02-codex-events.jsonl",
+          "operational_retry_count": 0,
+          "verifier_exit_code": 0,
+          "verifier_passed": true
+        },
+        {
+          "task_id": "fastify-lifecycle-review-v0",
+          "task_class": "code-review-correction",
+          "task_alias": "task-03",
+          "order": 3,
+          "agent_attempted": true,
+          "codex_exit_code": 0,
+          "controller_verification": "passed",
+          "accepted": true,
+          "task_delta": "sources/evaluations/workflow-sessions/sigmap-fastify-20260719-p-769d40697529-r2/task-03-agent.diff",
+          "usage_events": "sources/evaluations/workflow-sessions/sigmap-fastify-20260719-p-769d40697529-r2/task-03-codex-events.jsonl",
+          "operational_retry_count": 0,
+          "verifier_exit_code": 0,
+          "verifier_passed": true
+        }
+      ],
+      "software_quality": {
+        "tasks_attempted": 3,
+        "tasks_agent_claimed_complete": 3,
+        "tasks_passed": 3,
+        "final_verifier_command": "sources/evaluations/workflow-sessions/sigmap-fastify-20260719-p-769d40697529-r2/verify-workflow.sh",
+        "final_verifier_passed": true,
+        "functional_verifier_passed": true,
+        "quality_review_status": "not-reviewed",
+        "quality_score": null,
+        "critical_failures": []
+      },
+      "execution_integrity": {
+        "verifier_integrity_passed": true,
+        "tool_isolation_audit_passed": true,
+        "external_retrieval_hits": [],
+        "pass_through_tool_command_hits": []
+      },
+      "artifacts": {
+        "artifact_contract": "compact-v1-four-files",
+        "run_record": "sources/evaluations/workflow-sessions/sigmap-fastify-20260719-p-769d40697529-r2/run.json",
+        "final_diff": "sources/evaluations/workflow-sessions/sigmap-fastify-20260719-p-769d40697529-r2/changes.diff",
+        "final_diff_basis": "ordered cumulative checkpoints plus final cumulative source diff from one composite root",
+        "evidence_bundle": "sources/evaluations/workflow-sessions/sigmap-fastify-20260719-p-769d40697529-r2/evidence.jsonl.gz",
+        "manifest": "sources/evaluations/workflow-sessions/sigmap-fastify-20260719-p-769d40697529-r2/manifest.sha256"
+      },
+      "interpretation": {
+        "accepted_for_execution": true,
+        "accepted_for_objective": true,
+        "claim_status": "token-accounting-eligible",
+        "comparison_baseline_session_id": "baseline-fastify-20260718-p-769d40697529-r2",
+        "exclusion_reason": "",
+        "notes": "Provider-backed lane completed with clean integrity; verifier and review outcomes are diagnostic model-behavior evidence and do not gate token accounting.",
+        "scope_note": "Full warm-state lane; all regressions are preseeded, prompts are disclosed sequentially, and concealed verification runs only after the final prompt.",
+        "evaluation_validity": "valid",
+        "primary_objective_hard_baseline": false,
+        "usable_for_primary_objective_token_comparison": true,
+        "operationally_completed": true,
+        "agent_declared_task_completion_count": 3
+      }
+    },
+    {
+      "schema_version": 2,
+      "session_id": "sigmap-beets-20260719-p-b440da225a3a-r2",
+      "record_type": "workflow_session",
+      "evidence_type": "workflow-simulation",
+      "study_id": "phase-2-sequential-workflow-v1",
+      "experiment_group_id": "beetbox-beets-retrieval-sigmap-codex-live-v1-b440da225a3a-sequential-workflow-r2",
+      "objective": "individual_tool_effectiveness",
+      "evidence_stage": "reproduction",
+      "status": "completed",
+      "session_role": "individual_tool_treatment",
+      "replicate_index": 2,
+      "frozen_protocol": {
+        "protocol_id": "beets-lifecycle-sequence-v0-retrieval-sigmap-codex-live-v1-39fb63c28f76",
+        "path": "sources/evaluations/protocols/beets-lifecycle-sequence-v0-retrieval-sigmap-codex-live-v1-39fb63c28f76.json",
+        "sha256": "4fb9070be74edd32bbfe4f3cdd9d9b7bd516eb648ec22425f7fbc63442ce9124"
+      },
+      "baseline_pool": {
+        "protocol_version": "baseline-pool-v1",
+        "protocol_fingerprint": "b440da225a3a",
+        "identity_policy": "frozen-protocol-and-replicate; execution date is metadata only"
+      },
+      "selected_execution": {
+        "descriptor_sha256": "d1fc39e2191662e9629bd01066c59e8695ab72669fb07b1d7917c8e83d87af58",
+        "descriptor": {
+          "version": "execution-condition-v1",
+          "sequence_id": "beets-lifecycle-sequence-v0",
+          "execution_role": "individual_tool_treatment",
+          "selected_profile": {
+            "profile_id": "retrieval-sigmap-codex-live-v1",
+            "profile_type": "individual_tool",
+            "component_ids": [
+              "retrieval-sigmap-codex-live-v1"
+            ],
+            "enabled_surfaces": [
+              "retrieval-context",
+              "mcp",
+              "codex-agents",
+              "live-watch"
+            ],
+            "disabled_overlaps": [
+              "all unlisted surfaces"
+            ],
+            "registry_entry_sha256": "7ff6edc14f1f857ebd13ef872b7c6a78309b11cbb8895ec63361125a10d4b466",
+            "registry_entry": {
+              "id": "retrieval-sigmap-codex-live-v1",
+              "profile_type": "individual_tool",
+              "objective_scope": "individual_tool_effectiveness",
+              "status": "screening-shortlist",
+              "enabled_surfaces": [
+                "retrieval-context",
+                "mcp",
+                "codex-agents",
+                "live-watch"
+              ],
+              "disabled_overlaps": [
+                "all unlisted surfaces"
+              ],
+              "components": [
+                {
+                  "component_id": "retrieval-sigmap-codex-live-v1",
+                  "surface": "retrieval-context+mcp+codex-agents+live-watch",
+                  "role": "individual_tool"
+                }
+              ],
+              "install": {
+                "policy": "SigMap compatibility-safe Codex TOML registration, AGENTS guidance, live watcher, and retained MCP handshake proof."
+              },
+              "reset": {
+                "policy": "Delete lane-private CODEX_HOME, product state, generated repository treatment files, and background processes after evidence capture."
+              },
+              "evaluation_protocol": {
+                "tool_use_policy": "natural",
+                "tool_state": "warm-index",
+                "integration_state": "compatibility-safe-codex-live-mcp",
+                "assignment_proof": "provider-free initialize plus tools/list handshake required"
+              },
+              "notes": "Versioned replacement for deleted historical results whose treatment assignment was not operationally proven."
+            }
+          },
+          "model_facing_prompts": {
+            "rendering_contract": "sequential-model-facing-prompts-v2",
+            "profile_guidance_sha256": "cb08dba8b361975eb89669cc77d206861b05fc26b161a9215337dbb2d30a6366",
+            "tasks": [
+              {
+                "task_id": "beets-lifecycle-feature-v0",
+                "order": 1,
+                "rendered_prompt_sha256": "0e02dd6a47f904f0e4630b3b76bc9fe4a11c9a8557af76f8f2190ae06c978a45"
+              },
+              {
+                "task_id": "beets-lifecycle-refactor-v0",
+                "order": 2,
+                "rendered_prompt_sha256": "efc524621eb27d3f8c2d07e63061d40ed2304b4a7953c0c9d4ae390b59626038"
+              },
+              {
+                "task_id": "beets-lifecycle-review-v0",
+                "order": 3,
+                "rendered_prompt_sha256": "0df0d8bcaca81970cf89cedd0adb932fefcacf558f4ff3f0af9a9f26b8c86cf6"
+              }
+            ]
+          },
+          "tool_adapter": {
+            "tool_id": "sigmap-codex-live-v1",
+            "tool_manifest": "scripts/run_codex_fixture_evaluation.py:TOOL_CONFIGS",
+            "tool_manifest_sha256": "6fa8271b89a577706ea0bbffcc8e4521831f41b646ed9519369efee3642fe41c",
+            "tool_config": {
+              "display_name": "SigMap Codex MCP with live watcher v1",
+              "lane_name": "retrieval-sigmap-codex-live-v1",
+              "surface": "retrieval/context+codex-agents+mcp-live-watch",
+              "mcp_server": "sigmap",
+              "allowed_terms": [
+                "sigmap",
+                "gen-context"
+              ],
+              "data_dir_name": "sigmap-codex-live-v1",
+              "mcp_command": "/bin/bash",
+              "mcp_args": [
+                "-lc",
+                "cd {repo}; /opt/data/opt/node-v24.18.0-linux-x64/bin/node /opt/data/tool-candidates/sigmap/gen-context.js --watch >/dev/null 2>&1 & watcher=$!; trap 'kill $watcher 2>/dev/null || true; wait $watcher 2>/dev/null || true' EXIT; /opt/data/opt/node-v24.18.0-linux-x64/bin/node /opt/data/tool-candidates/sigmap/gen-context.js --mcp"
+              ],
+              "env": {
+                "SIGMAP_TELEMETRY": "0"
+              },
+              "mounts": [
+                "/opt/data/tool-candidates/sigmap"
+              ],
+              "diff_exclude_paths": [
+                ".context",
+                "AGENTS.md"
+              ],
+              "default_tool_state": "warm-index",
+              "warmup": {
+                "kind": "signature-map-and-codex-guidance",
+                "command": [
+                  "/opt/data/opt/node-v24.18.0-linux-x64/bin/node",
+                  "/opt/data/tool-candidates/sigmap/gen-context.js",
+                  "--adapter",
+                  "codex",
+                  "--no-track"
+                ],
+                "cleanup_paths": [
+                  ".context",
+                  "AGENTS.md"
+                ],
+                "output_name": "sigmap-warmup-output.txt",
+                "metadata_name": "sigmap-warmup-metadata.json",
+                "timeout_seconds": 900
+              },
+              "mcp_handshake": {
+                "required": true,
+                "method": "initialize-and-tools-list",
+                "timeout_seconds": 60
+              },
+              "compatibility_deviation": "Manual Codex TOML registration is retained because the pinned targeted installer writes obsolete YAML; product AGENTS guidance and live watcher are present."
+            },
+            "tool_config_sha256": "fcb359822696e9f45ae706fabfeeef16652679cf5befb8425c75c2e8f3325358",
+            "tool_state": "warm-index",
+            "tool_use_policy": "natural",
+            "command_identity": {
+              "kind": "mcp_command",
+              "command": [
+                "/bin/bash",
+                "-lc",
+                "cd {repo}; /opt/data/opt/node-v24.18.0-linux-x64/bin/node /opt/data/tool-candidates/sigmap/gen-context.js --watch >/dev/null 2>&1 & watcher=$!; trap 'kill $watcher 2>/dev/null || true; wait $watcher 2>/dev/null || true' EXIT; /opt/data/opt/node-v24.18.0-linux-x64/bin/node /opt/data/tool-candidates/sigmap/gen-context.js --mcp"
+              ]
+            },
+            "binary_identity": {
+              "executable_token": "/bin/bash",
+              "resolved_path": "/bin/bash",
+              "realpath": "/usr/bin/bash",
+              "sha256": "223fe8564b60636bc738b6178d3ba9a50ef7d791266b0efae6363bb716e4c47f",
+              "metadata": {
+                "size": 1298416,
+                "mode": "-rwxr-xr-x",
+                "uid": 0,
+                "gid": 0,
+                "mtime_ns": 1772983313000000000
+              },
+              "version": {
+                "command": [
+                  "/usr/bin/bash",
+                  "--version"
+                ],
+                "environment_path": "/opt/data/.local/bin:/opt/data/opt/go/bin:/opt/data/opt/uv:/opt/data/opt/node-v24.18.0-linux-x64/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+                "captured": true,
+                "exit_code": 0,
+                "output": "GNU bash, version 5.2.37(1)-release (x86_64-pc-linux-gnu)\nCopyright (C) 2022 Free Software Foundation, Inc.\nLicense GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>\n\nThis is free software; you are free to change and redistribute it.\nThere is NO WARRANTY, to the extent permitted by law.",
+                "truncated": false
+              }
+            },
+            "source_identity": [
+              {
+                "path": "/opt/data/tool-candidates/sigmap",
+                "exists": true,
+                "kind": "directory",
+                "git_head": "b1e086cf06bc7a7622473ffe9637c122567404e0",
+                "package_json_sha256": "f8478ca025747dada0b86288f696e1ae39ea8701a5081c60f54c70eafa034963"
+              }
+            ]
+          },
+          "runtime": {
+            "docker_image": "token-eval-codex:latest",
+            "docker_image_identity": {
+              "image_ref": "token-eval-codex:latest",
+              "image_id": "sha256:6f86d01f2c63f5029c6bb874d8f3694c24d5cd567e3d09413eccc956ba3feafe",
+              "repo_digests": [
+                "token-eval-codex@sha256:6f86d01f2c63f5029c6bb874d8f3694c24d5cd567e3d09413eccc956ba3feafe"
+              ],
+              "repo_tags": [
+                "token-eval-codex:latest"
+              ]
+            },
+            "dockerfile_path": "sources/evaluations/fixtures/container/Dockerfile",
+            "dockerfile_sha256": "47c91967ce25014ce54879514f51d2ff0326651be1087209115eff4d358226b3",
+            "fixture_runner_path": "scripts/run_codex_fixture_evaluation.py",
+            "fixture_runner_sha256": "6fa8271b89a577706ea0bbffcc8e4521831f41b646ed9519369efee3642fe41c",
+            "mcp_probe_path": "scripts/probe_mcp_stdio.py",
+            "mcp_probe_sha256": "7c06ea36ee5cac933a97140b84a41405fc99b45152388e8d7c6659136af698fd",
+            "codex_entrypoint_path": "sources/evaluations/fixtures/container/codex-entrypoint.sh",
+            "codex_entrypoint_sha256": "8715fe37cb1fa3823f5f05493bc9681ce7ffc72126dfec4d64d448762c550c3c",
+            "timeout_seconds_per_task": 3600,
+            "network_isolation": {
+              "provider_access": true,
+              "model_shell_network_access": false,
+              "model_shell_enforcement": "seccomp denies AF_INET and AF_INET6 socket creation for the shell process and descendants",
+              "codex_web_search": "disabled",
+              "external_retrieval_audit": "fail-closed"
+            },
+            "isolation_policy": "fresh lane-specific Codex home/tool data; provider-only network with model shell and Codex web search disabled; sequential one-task prompt delivery; concealed tests removed before model-visible root commit"
+          },
+          "dependencies": {
+            "command": "uv sync --group test",
+            "command_sha256": "e718e73048f88b906401006442fb858a4e9e4252f387df2c938eb41755762aa8",
+            "lockfiles": []
+          },
+          "agent_condition": {
+            "runtime_id": "codex-cli",
+            "provider": "openai",
+            "model": "gpt-5.6-luna",
+            "model_condition_id": "codex-openai-gpt-5-6-luna-xhigh",
+            "reasoning_effort": "xhigh",
+            "codex_version_condition": "captured-at-run-and-bound-to-record"
+          },
+          "isolation": {
+            "prompt_delivery": "sequential-one-task-at-a-time",
+            "seed_delivery_mode": "preseeded-composite",
+            "future_tasks_visible": false,
+            "future_seed_regressions_visible": true,
+            "controller_verification": "final-only",
+            "verifier_assets_model_visible": false,
+            "model_concealed_paths": [
+              "test/controller_hidden/lifecycle/test_ftintitle_review.py",
+              "test/controller_hidden/lifecycle/test_lazy_model_storage_refactor.py",
+              "test/controller_hidden/lifecycle/test_multivalue_modify_feature.py"
+            ]
+          },
+          "baseline_pool_reference": {
+            "protocol_version": "baseline-pool-v1",
+            "protocol_fingerprint": "b440da225a3a",
+            "comparison_policy": "paired baseline and treatment must share this baseline pool fingerprint and replicate"
+          }
+        }
+      },
+      "docker_image_identity": {
+        "image_ref": "token-eval-codex:latest",
+        "image_id": "sha256:6f86d01f2c63f5029c6bb874d8f3694c24d5cd567e3d09413eccc956ba3feafe",
+        "repo_digests": [
+          "token-eval-codex@sha256:6f86d01f2c63f5029c6bb874d8f3694c24d5cd567e3d09413eccc956ba3feafe"
+        ],
+        "repo_tags": [
+          "token-eval-codex:latest"
+        ]
+      },
+      "tool_adapter_identity": {
+        "tool_id": "sigmap-codex-live-v1",
+        "tool_manifest": "scripts/run_codex_fixture_evaluation.py:TOOL_CONFIGS",
+        "tool_manifest_sha256": "6fa8271b89a577706ea0bbffcc8e4521831f41b646ed9519369efee3642fe41c",
+        "tool_config": {
+          "display_name": "SigMap Codex MCP with live watcher v1",
+          "lane_name": "retrieval-sigmap-codex-live-v1",
+          "surface": "retrieval/context+codex-agents+mcp-live-watch",
+          "mcp_server": "sigmap",
+          "allowed_terms": [
+            "sigmap",
+            "gen-context"
+          ],
+          "data_dir_name": "sigmap-codex-live-v1",
+          "mcp_command": "/bin/bash",
+          "mcp_args": [
+            "-lc",
+            "cd {repo}; /opt/data/opt/node-v24.18.0-linux-x64/bin/node /opt/data/tool-candidates/sigmap/gen-context.js --watch >/dev/null 2>&1 & watcher=$!; trap 'kill $watcher 2>/dev/null || true; wait $watcher 2>/dev/null || true' EXIT; /opt/data/opt/node-v24.18.0-linux-x64/bin/node /opt/data/tool-candidates/sigmap/gen-context.js --mcp"
+          ],
+          "env": {
+            "SIGMAP_TELEMETRY": "0"
+          },
+          "mounts": [
+            "/opt/data/tool-candidates/sigmap"
+          ],
+          "diff_exclude_paths": [
+            ".context",
+            "AGENTS.md"
+          ],
+          "default_tool_state": "warm-index",
+          "warmup": {
+            "kind": "signature-map-and-codex-guidance",
+            "command": [
+              "/opt/data/opt/node-v24.18.0-linux-x64/bin/node",
+              "/opt/data/tool-candidates/sigmap/gen-context.js",
+              "--adapter",
+              "codex",
+              "--no-track"
+            ],
+            "cleanup_paths": [
+              ".context",
+              "AGENTS.md"
+            ],
+            "output_name": "sigmap-warmup-output.txt",
+            "metadata_name": "sigmap-warmup-metadata.json",
+            "timeout_seconds": 900
+          },
+          "mcp_handshake": {
+            "required": true,
+            "method": "initialize-and-tools-list",
+            "timeout_seconds": 60
+          },
+          "compatibility_deviation": "Manual Codex TOML registration is retained because the pinned targeted installer writes obsolete YAML; product AGENTS guidance and live watcher are present."
+        },
+        "tool_config_sha256": "fcb359822696e9f45ae706fabfeeef16652679cf5befb8425c75c2e8f3325358",
+        "tool_state": "warm-index",
+        "tool_use_policy": "natural",
+        "command_identity": {
+          "kind": "mcp_command",
+          "command": [
+            "/bin/bash",
+            "-lc",
+            "cd {repo}; /opt/data/opt/node-v24.18.0-linux-x64/bin/node /opt/data/tool-candidates/sigmap/gen-context.js --watch >/dev/null 2>&1 & watcher=$!; trap 'kill $watcher 2>/dev/null || true; wait $watcher 2>/dev/null || true' EXIT; /opt/data/opt/node-v24.18.0-linux-x64/bin/node /opt/data/tool-candidates/sigmap/gen-context.js --mcp"
+          ]
+        },
+        "binary_identity": {
+          "executable_token": "/bin/bash",
+          "resolved_path": "/bin/bash",
+          "realpath": "/usr/bin/bash",
+          "sha256": "223fe8564b60636bc738b6178d3ba9a50ef7d791266b0efae6363bb716e4c47f",
+          "metadata": {
+            "size": 1298416,
+            "mode": "-rwxr-xr-x",
+            "uid": 0,
+            "gid": 0,
+            "mtime_ns": 1772983313000000000
+          },
+          "version": {
+            "command": [
+              "/usr/bin/bash",
+              "--version"
+            ],
+            "environment_path": "/opt/data/.local/bin:/opt/data/opt/go/bin:/opt/data/opt/uv:/opt/data/opt/node-v24.18.0-linux-x64/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+            "captured": true,
+            "exit_code": 0,
+            "output": "GNU bash, version 5.2.37(1)-release (x86_64-pc-linux-gnu)\nCopyright (C) 2022 Free Software Foundation, Inc.\nLicense GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>\n\nThis is free software; you are free to change and redistribute it.\nThere is NO WARRANTY, to the extent permitted by law.",
+            "truncated": false
+          }
+        },
+        "source_identity": [
+          {
+            "path": "/opt/data/tool-candidates/sigmap",
+            "exists": true,
+            "kind": "directory",
+            "git_head": "b1e086cf06bc7a7622473ffe9637c122567404e0",
+            "package_json_sha256": "f8478ca025747dada0b86288f696e1ae39ea8701a5081c60f54c70eafa034963"
+          }
+        ]
+      },
+      "date": "2026-07-19",
+      "target": {
+        "fixture_id": "medium-beetbox-beets",
+        "fixture_scale": "medium-project",
+        "project_id": "beetbox-beets",
+        "repository_path": "sources/evaluations/workflow-sessions/sigmap-beets-20260719-p-b440da225a3a-r2/project/repo",
+        "initial_snapshot": {
+          "commit": "9acb1ecff6c7ee0a1e83e3b983c94792345712c5",
+          "branch": "detached",
+          "fixture_hash": ""
+        }
+      },
+      "task_sequence": {
+        "sequence_id": "beets-lifecycle-sequence-v0",
+        "sequence_contract": "feature-refactor-review",
+        "task_ids": [
+          "beets-lifecycle-feature-v0",
+          "beets-lifecycle-refactor-v0",
+          "beets-lifecycle-review-v0"
+        ],
+        "task_classes": [
+          "feature-implementation",
+          "behavior-preserving-refactor",
+          "code-review-correction"
+        ],
+        "reset_policy": "reset source checkout, profile home, tool state, indexes, caches, generated config, and agent home before the lane; preserve repository, thread, tool, index, cache, and agent state across every sequential prompt",
+        "prompt_delivery": {
+          "mode": "sequential-one-task-at-a-time",
+          "future_tasks_visible": false,
+          "future_prompts_materialized_lazily": true,
+          "seed_delivery_mode": "preseeded-composite",
+          "future_seed_regressions_visible": true,
+          "controller_verification": "final-only",
+          "codex_thread_id": "019f7c97-34fb-7e42-9a28-20b8a9210906",
+          "task_prompt_evidence": "sources/evaluations/workflow-sessions/sigmap-beets-20260719-p-b440da225a3a-r2/evidence.jsonl.gz"
+        },
+        "leakage_controls": {
+          "seed_origin_concealed": true,
+          "seed_patches_model_visible": false,
+          "git_baseline_true_root_at_lane_start": true,
+          "fixed_snapshot_objects_model_visible": false,
+          "pre_seed_reflog_entries_visible": false,
+          "concealment_verification_passed": true,
+          "task_directories_model_visible": false,
+          "verifier_assets_model_visible": false,
+          "model_writable_surface": "target repository plus isolated model-output directory",
+          "verifier_integrity_passed": true,
+          "verifier_integrity_evidence": "sources/evaluations/workflow-sessions/sigmap-beets-20260719-p-b440da225a3a-r2/evidence.jsonl.gz#verifier-integrity.json",
+          "model_prompts_sanitized": true,
+          "upstream_remote_removed_from_model_facing_repo": true,
+          "broken_start_committed_as_local_baseline": true,
+          "remaining_limitations": [
+            "Future regression code is present from lane start, while future prompts and concealed acceptance assets remain controller-only.",
+            "Task semantics and verifier names may still be searchable if the model intentionally uses external network access."
+          ]
+        }
+      },
+      "profile": {
+        "profile_id": "retrieval-sigmap-codex-live-v1",
+        "profile_type": "individual_tool",
+        "enabled_surfaces": [
+          "retrieval-context",
+          "mcp",
+          "codex-agents",
+          "live-watch"
+        ],
+        "disabled_overlaps": [
+          "all unlisted surfaces"
+        ],
+        "component_ids": [
+          "retrieval-sigmap-codex-live-v1"
+        ]
+      },
+      "agent": {
+        "runtime_id": "codex-cli",
+        "model_condition_id": "codex-openai-gpt-5-6-luna-xhigh",
+        "name": "Codex CLI",
+        "version": "codex-cli 0.144.0",
+        "provider": "openai",
+        "model": "gpt-5.6-luna",
+        "reasoning_effort": "xhigh",
+        "temperature": null,
+        "max_turns": null,
+        "time_budget_seconds": 10800
+      },
+      "state_policy": {
+        "reset_before_session": [
+          "repository working tree",
+          "profile home",
+          "tool indexes and caches",
+          "generated config",
+          "agent home",
+          "temporary directories"
+        ],
+        "persist_between_tasks": [
+          "repository source working tree and model-facing Git metadata from one composite broken-start root",
+          "tool indexes and caches",
+          "generated config",
+          "agent home",
+          "memory/state stores enabled by the active profile",
+          "run artifacts"
+        ]
+      },
+      "cumulative_token_usage": {
+        "measurement_source": "codex-jsonl-usage-events",
+        "fresh_input_tokens": 237197,
+        "cached_input_tokens": 8155904,
+        "cache_write_tokens": null,
+        "output_tokens": 55046,
+        "reasoning_tokens": 28515,
+        "total_provider_tokens": 8448147,
+        "tokens_per_accepted_task": 2816049.0,
+        "accounting_basis": "Codex-reported token volume; monetary cost estimation is out of scope"
+      },
+      "per_task_results": [
+        {
+          "task_id": "beets-lifecycle-feature-v0",
+          "task_class": "feature-implementation",
+          "task_alias": "task-01",
+          "order": 1,
+          "agent_attempted": true,
+          "codex_exit_code": 0,
+          "controller_verification": "passed",
+          "accepted": true,
+          "task_delta": "sources/evaluations/workflow-sessions/sigmap-beets-20260719-p-b440da225a3a-r2/task-01-agent.diff",
+          "usage_events": "sources/evaluations/workflow-sessions/sigmap-beets-20260719-p-b440da225a3a-r2/task-01-codex-events.jsonl",
+          "operational_retry_count": 0,
+          "verifier_exit_code": 0,
+          "verifier_passed": true
+        },
+        {
+          "task_id": "beets-lifecycle-refactor-v0",
+          "task_class": "behavior-preserving-refactor",
+          "task_alias": "task-02",
+          "order": 2,
+          "agent_attempted": true,
+          "codex_exit_code": 0,
+          "controller_verification": "passed",
+          "accepted": true,
+          "task_delta": "sources/evaluations/workflow-sessions/sigmap-beets-20260719-p-b440da225a3a-r2/task-02-agent.diff",
+          "usage_events": "sources/evaluations/workflow-sessions/sigmap-beets-20260719-p-b440da225a3a-r2/task-02-codex-events.jsonl",
+          "operational_retry_count": 0,
+          "verifier_exit_code": 0,
+          "verifier_passed": true
+        },
+        {
+          "task_id": "beets-lifecycle-review-v0",
+          "task_class": "code-review-correction",
+          "task_alias": "task-03",
+          "order": 3,
+          "agent_attempted": true,
+          "codex_exit_code": 0,
+          "controller_verification": "passed",
+          "accepted": true,
+          "task_delta": "sources/evaluations/workflow-sessions/sigmap-beets-20260719-p-b440da225a3a-r2/task-03-agent.diff",
+          "usage_events": "sources/evaluations/workflow-sessions/sigmap-beets-20260719-p-b440da225a3a-r2/task-03-codex-events.jsonl",
+          "operational_retry_count": 0,
+          "verifier_exit_code": 0,
+          "verifier_passed": true
+        }
+      ],
+      "software_quality": {
+        "tasks_attempted": 3,
+        "tasks_agent_claimed_complete": 3,
+        "tasks_passed": 3,
+        "final_verifier_command": "sources/evaluations/workflow-sessions/sigmap-beets-20260719-p-b440da225a3a-r2/verify-workflow.sh",
+        "final_verifier_passed": true,
+        "functional_verifier_passed": true,
+        "quality_review_status": "not-reviewed",
+        "quality_score": null,
+        "critical_failures": []
+      },
+      "execution_integrity": {
+        "verifier_integrity_passed": true,
+        "tool_isolation_audit_passed": true,
+        "external_retrieval_hits": [],
+        "pass_through_tool_command_hits": []
+      },
+      "artifacts": {
+        "artifact_contract": "compact-v1-four-files",
+        "run_record": "sources/evaluations/workflow-sessions/sigmap-beets-20260719-p-b440da225a3a-r2/run.json",
+        "final_diff": "sources/evaluations/workflow-sessions/sigmap-beets-20260719-p-b440da225a3a-r2/changes.diff",
+        "final_diff_basis": "ordered cumulative checkpoints plus final cumulative source diff from one composite root",
+        "evidence_bundle": "sources/evaluations/workflow-sessions/sigmap-beets-20260719-p-b440da225a3a-r2/evidence.jsonl.gz",
+        "manifest": "sources/evaluations/workflow-sessions/sigmap-beets-20260719-p-b440da225a3a-r2/manifest.sha256"
+      },
+      "interpretation": {
+        "accepted_for_execution": true,
+        "accepted_for_objective": true,
+        "claim_status": "token-accounting-eligible",
+        "comparison_baseline_session_id": "baseline-beets-20260718-p-b440da225a3a-r2",
+        "exclusion_reason": "",
+        "notes": "Provider-backed lane completed with clean integrity; verifier and review outcomes are diagnostic model-behavior evidence and do not gate token accounting.",
+        "scope_note": "Full warm-state lane; all regressions are preseeded, prompts are disclosed sequentially, and concealed verification runs only after the final prompt.",
+        "evaluation_validity": "valid",
+        "primary_objective_hard_baseline": false,
+        "usable_for_primary_objective_token_comparison": true,
+        "operationally_completed": true,
+        "agent_declared_task_completion_count": 3
+      }
+    },
+    {
+      "schema_version": 2,
+      "session_id": "sigmap-terraform-20260719-p-ded8609b4172-r2",
+      "record_type": "workflow_session",
+      "evidence_type": "workflow-simulation",
+      "study_id": "phase-2-sequential-workflow-v1",
+      "experiment_group_id": "hashicorp-terraform-retrieval-sigmap-codex-live-v1-ded8609b4172-sequential-workflow-r2",
+      "objective": "individual_tool_effectiveness",
+      "evidence_stage": "reproduction",
+      "status": "completed",
+      "session_role": "individual_tool_treatment",
+      "replicate_index": 2,
+      "frozen_protocol": {
+        "protocol_id": "terraform-lifecycle-sequence-v0-retrieval-sigmap-codex-live-v1-4e408f740b3c",
+        "path": "sources/evaluations/protocols/terraform-lifecycle-sequence-v0-retrieval-sigmap-codex-live-v1-4e408f740b3c.json",
+        "sha256": "8d73348b7bbffcda0d9f34c103250103ae8875bfaee4d4aa59792f2af589df5f"
+      },
+      "baseline_pool": {
+        "protocol_version": "baseline-pool-v1",
+        "protocol_fingerprint": "ded8609b4172",
+        "identity_policy": "frozen-protocol-and-replicate; execution date is metadata only"
+      },
+      "selected_execution": {
+        "descriptor_sha256": "4076d5bdf9fc2cb95feee0308df77171d003d080b9f50192b50df64d0fd22dd5",
+        "descriptor": {
+          "version": "execution-condition-v1",
+          "sequence_id": "terraform-lifecycle-sequence-v0",
+          "execution_role": "individual_tool_treatment",
+          "selected_profile": {
+            "profile_id": "retrieval-sigmap-codex-live-v1",
+            "profile_type": "individual_tool",
+            "component_ids": [
+              "retrieval-sigmap-codex-live-v1"
+            ],
+            "enabled_surfaces": [
+              "retrieval-context",
+              "mcp",
+              "codex-agents",
+              "live-watch"
+            ],
+            "disabled_overlaps": [
+              "all unlisted surfaces"
+            ],
+            "registry_entry_sha256": "7ff6edc14f1f857ebd13ef872b7c6a78309b11cbb8895ec63361125a10d4b466",
+            "registry_entry": {
+              "id": "retrieval-sigmap-codex-live-v1",
+              "profile_type": "individual_tool",
+              "objective_scope": "individual_tool_effectiveness",
+              "status": "screening-shortlist",
+              "enabled_surfaces": [
+                "retrieval-context",
+                "mcp",
+                "codex-agents",
+                "live-watch"
+              ],
+              "disabled_overlaps": [
+                "all unlisted surfaces"
+              ],
+              "components": [
+                {
+                  "component_id": "retrieval-sigmap-codex-live-v1",
+                  "surface": "retrieval-context+mcp+codex-agents+live-watch",
+                  "role": "individual_tool"
+                }
+              ],
+              "install": {
+                "policy": "SigMap compatibility-safe Codex TOML registration, AGENTS guidance, live watcher, and retained MCP handshake proof."
+              },
+              "reset": {
+                "policy": "Delete lane-private CODEX_HOME, product state, generated repository treatment files, and background processes after evidence capture."
+              },
+              "evaluation_protocol": {
+                "tool_use_policy": "natural",
+                "tool_state": "warm-index",
+                "integration_state": "compatibility-safe-codex-live-mcp",
+                "assignment_proof": "provider-free initialize plus tools/list handshake required"
+              },
+              "notes": "Versioned replacement for deleted historical results whose treatment assignment was not operationally proven."
+            }
+          },
+          "model_facing_prompts": {
+            "rendering_contract": "sequential-model-facing-prompts-v2",
+            "profile_guidance_sha256": "cb08dba8b361975eb89669cc77d206861b05fc26b161a9215337dbb2d30a6366",
+            "tasks": [
+              {
+                "task_id": "terraform-lifecycle-feature-v0",
+                "order": 1,
+                "rendered_prompt_sha256": "e61f4623dd5e311cf6d1bff9080e853aa39b84489e2ce754f97ddc92fe7aa8be"
+              },
+              {
+                "task_id": "terraform-lifecycle-refactor-v0",
+                "order": 2,
+                "rendered_prompt_sha256": "03c5f1278ec60898809f305121a8f121a3d203b1e07aeae982bef888faaddbda"
+              },
+              {
+                "task_id": "terraform-lifecycle-review-v0",
+                "order": 3,
+                "rendered_prompt_sha256": "d6f5dea173dfd749ca1646b9fa87f0f2dbaa5bcb2409937395ca1ff50fcfad91"
+              }
+            ]
+          },
+          "tool_adapter": {
+            "tool_id": "sigmap-codex-live-v1",
+            "tool_manifest": "scripts/run_codex_fixture_evaluation.py:TOOL_CONFIGS",
+            "tool_manifest_sha256": "6fa8271b89a577706ea0bbffcc8e4521831f41b646ed9519369efee3642fe41c",
+            "tool_config": {
+              "display_name": "SigMap Codex MCP with live watcher v1",
+              "lane_name": "retrieval-sigmap-codex-live-v1",
+              "surface": "retrieval/context+codex-agents+mcp-live-watch",
+              "mcp_server": "sigmap",
+              "allowed_terms": [
+                "sigmap",
+                "gen-context"
+              ],
+              "data_dir_name": "sigmap-codex-live-v1",
+              "mcp_command": "/bin/bash",
+              "mcp_args": [
+                "-lc",
+                "cd {repo}; /opt/data/opt/node-v24.18.0-linux-x64/bin/node /opt/data/tool-candidates/sigmap/gen-context.js --watch >/dev/null 2>&1 & watcher=$!; trap 'kill $watcher 2>/dev/null || true; wait $watcher 2>/dev/null || true' EXIT; /opt/data/opt/node-v24.18.0-linux-x64/bin/node /opt/data/tool-candidates/sigmap/gen-context.js --mcp"
+              ],
+              "env": {
+                "SIGMAP_TELEMETRY": "0"
+              },
+              "mounts": [
+                "/opt/data/tool-candidates/sigmap"
+              ],
+              "diff_exclude_paths": [
+                ".context",
+                "AGENTS.md"
+              ],
+              "default_tool_state": "warm-index",
+              "warmup": {
+                "kind": "signature-map-and-codex-guidance",
+                "command": [
+                  "/opt/data/opt/node-v24.18.0-linux-x64/bin/node",
+                  "/opt/data/tool-candidates/sigmap/gen-context.js",
+                  "--adapter",
+                  "codex",
+                  "--no-track"
+                ],
+                "cleanup_paths": [
+                  ".context",
+                  "AGENTS.md"
+                ],
+                "output_name": "sigmap-warmup-output.txt",
+                "metadata_name": "sigmap-warmup-metadata.json",
+                "timeout_seconds": 900
+              },
+              "mcp_handshake": {
+                "required": true,
+                "method": "initialize-and-tools-list",
+                "timeout_seconds": 60
+              },
+              "compatibility_deviation": "Manual Codex TOML registration is retained because the pinned targeted installer writes obsolete YAML; product AGENTS guidance and live watcher are present."
+            },
+            "tool_config_sha256": "fcb359822696e9f45ae706fabfeeef16652679cf5befb8425c75c2e8f3325358",
+            "tool_state": "warm-index",
+            "tool_use_policy": "natural",
+            "command_identity": {
+              "kind": "mcp_command",
+              "command": [
+                "/bin/bash",
+                "-lc",
+                "cd {repo}; /opt/data/opt/node-v24.18.0-linux-x64/bin/node /opt/data/tool-candidates/sigmap/gen-context.js --watch >/dev/null 2>&1 & watcher=$!; trap 'kill $watcher 2>/dev/null || true; wait $watcher 2>/dev/null || true' EXIT; /opt/data/opt/node-v24.18.0-linux-x64/bin/node /opt/data/tool-candidates/sigmap/gen-context.js --mcp"
+              ]
+            },
+            "binary_identity": {
+              "executable_token": "/bin/bash",
+              "resolved_path": "/bin/bash",
+              "realpath": "/usr/bin/bash",
+              "sha256": "223fe8564b60636bc738b6178d3ba9a50ef7d791266b0efae6363bb716e4c47f",
+              "metadata": {
+                "size": 1298416,
+                "mode": "-rwxr-xr-x",
+                "uid": 0,
+                "gid": 0,
+                "mtime_ns": 1772983313000000000
+              },
+              "version": {
+                "command": [
+                  "/usr/bin/bash",
+                  "--version"
+                ],
+                "environment_path": "/opt/data/.local/bin:/opt/data/opt/go/bin:/opt/data/opt/uv:/opt/data/opt/node-v24.18.0-linux-x64/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+                "captured": true,
+                "exit_code": 0,
+                "output": "GNU bash, version 5.2.37(1)-release (x86_64-pc-linux-gnu)\nCopyright (C) 2022 Free Software Foundation, Inc.\nLicense GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>\n\nThis is free software; you are free to change and redistribute it.\nThere is NO WARRANTY, to the extent permitted by law.",
+                "truncated": false
+              }
+            },
+            "source_identity": [
+              {
+                "path": "/opt/data/tool-candidates/sigmap",
+                "exists": true,
+                "kind": "directory",
+                "git_head": "b1e086cf06bc7a7622473ffe9637c122567404e0",
+                "package_json_sha256": "f8478ca025747dada0b86288f696e1ae39ea8701a5081c60f54c70eafa034963"
+              }
+            ]
+          },
+          "runtime": {
+            "docker_image": "token-eval-codex:latest",
+            "docker_image_identity": {
+              "image_ref": "token-eval-codex:latest",
+              "image_id": "sha256:6f86d01f2c63f5029c6bb874d8f3694c24d5cd567e3d09413eccc956ba3feafe",
+              "repo_digests": [
+                "token-eval-codex@sha256:6f86d01f2c63f5029c6bb874d8f3694c24d5cd567e3d09413eccc956ba3feafe"
+              ],
+              "repo_tags": [
+                "token-eval-codex:latest"
+              ]
+            },
+            "dockerfile_path": "sources/evaluations/fixtures/container/Dockerfile",
+            "dockerfile_sha256": "47c91967ce25014ce54879514f51d2ff0326651be1087209115eff4d358226b3",
+            "fixture_runner_path": "scripts/run_codex_fixture_evaluation.py",
+            "fixture_runner_sha256": "6fa8271b89a577706ea0bbffcc8e4521831f41b646ed9519369efee3642fe41c",
+            "mcp_probe_path": "scripts/probe_mcp_stdio.py",
+            "mcp_probe_sha256": "7c06ea36ee5cac933a97140b84a41405fc99b45152388e8d7c6659136af698fd",
+            "codex_entrypoint_path": "sources/evaluations/fixtures/container/codex-entrypoint.sh",
+            "codex_entrypoint_sha256": "8715fe37cb1fa3823f5f05493bc9681ce7ffc72126dfec4d64d448762c550c3c",
+            "timeout_seconds_per_task": 3600,
+            "network_isolation": {
+              "provider_access": true,
+              "model_shell_network_access": false,
+              "model_shell_enforcement": "seccomp denies AF_INET and AF_INET6 socket creation for the shell process and descendants",
+              "codex_web_search": "disabled",
+              "external_retrieval_audit": "fail-closed"
+            },
+            "isolation_policy": "fresh lane-specific Codex home/tool data; provider-only network with model shell and Codex web search disabled; sequential one-task prompt delivery; concealed tests removed before model-visible root commit"
+          },
+          "dependencies": {
+            "command": "go mod download",
+            "command_sha256": "42a8263a643ccbe692d70752ffdd8cea328fc2d3190677df1485ee06f55b350a",
+            "lockfiles": []
+          },
+          "agent_condition": {
+            "runtime_id": "codex-cli",
+            "provider": "openai",
+            "model": "gpt-5.6-luna",
+            "model_condition_id": "codex-openai-gpt-5-6-luna-xhigh",
+            "reasoning_effort": "xhigh",
+            "codex_version_condition": "captured-at-run-and-bound-to-record"
+          },
+          "isolation": {
+            "prompt_delivery": "sequential-one-task-at-a-time",
+            "seed_delivery_mode": "preseeded-composite",
+            "future_tasks_visible": false,
+            "future_seed_regressions_visible": true,
+            "controller_verification": "final-only",
+            "verifier_assets_model_visible": false,
+            "model_concealed_paths": [
+              "internal/cloud/backend_tfPolicyEvaluation_test.go",
+              "internal/cloud/lifecycle_v0_policy_summary_test.go",
+              "internal/policy/callback/lifecycle_v0_deferred_callbacks_test.go"
+            ]
+          },
+          "baseline_pool_reference": {
+            "protocol_version": "baseline-pool-v1",
+            "protocol_fingerprint": "ded8609b4172",
+            "comparison_policy": "paired baseline and treatment must share this baseline pool fingerprint and replicate"
+          }
+        }
+      },
+      "docker_image_identity": {
+        "image_ref": "token-eval-codex:latest",
+        "image_id": "sha256:6f86d01f2c63f5029c6bb874d8f3694c24d5cd567e3d09413eccc956ba3feafe",
+        "repo_digests": [
+          "token-eval-codex@sha256:6f86d01f2c63f5029c6bb874d8f3694c24d5cd567e3d09413eccc956ba3feafe"
+        ],
+        "repo_tags": [
+          "token-eval-codex:latest"
+        ]
+      },
+      "tool_adapter_identity": {
+        "tool_id": "sigmap-codex-live-v1",
+        "tool_manifest": "scripts/run_codex_fixture_evaluation.py:TOOL_CONFIGS",
+        "tool_manifest_sha256": "6fa8271b89a577706ea0bbffcc8e4521831f41b646ed9519369efee3642fe41c",
+        "tool_config": {
+          "display_name": "SigMap Codex MCP with live watcher v1",
+          "lane_name": "retrieval-sigmap-codex-live-v1",
+          "surface": "retrieval/context+codex-agents+mcp-live-watch",
+          "mcp_server": "sigmap",
+          "allowed_terms": [
+            "sigmap",
+            "gen-context"
+          ],
+          "data_dir_name": "sigmap-codex-live-v1",
+          "mcp_command": "/bin/bash",
+          "mcp_args": [
+            "-lc",
+            "cd {repo}; /opt/data/opt/node-v24.18.0-linux-x64/bin/node /opt/data/tool-candidates/sigmap/gen-context.js --watch >/dev/null 2>&1 & watcher=$!; trap 'kill $watcher 2>/dev/null || true; wait $watcher 2>/dev/null || true' EXIT; /opt/data/opt/node-v24.18.0-linux-x64/bin/node /opt/data/tool-candidates/sigmap/gen-context.js --mcp"
+          ],
+          "env": {
+            "SIGMAP_TELEMETRY": "0"
+          },
+          "mounts": [
+            "/opt/data/tool-candidates/sigmap"
+          ],
+          "diff_exclude_paths": [
+            ".context",
+            "AGENTS.md"
+          ],
+          "default_tool_state": "warm-index",
+          "warmup": {
+            "kind": "signature-map-and-codex-guidance",
+            "command": [
+              "/opt/data/opt/node-v24.18.0-linux-x64/bin/node",
+              "/opt/data/tool-candidates/sigmap/gen-context.js",
+              "--adapter",
+              "codex",
+              "--no-track"
+            ],
+            "cleanup_paths": [
+              ".context",
+              "AGENTS.md"
+            ],
+            "output_name": "sigmap-warmup-output.txt",
+            "metadata_name": "sigmap-warmup-metadata.json",
+            "timeout_seconds": 900
+          },
+          "mcp_handshake": {
+            "required": true,
+            "method": "initialize-and-tools-list",
+            "timeout_seconds": 60
+          },
+          "compatibility_deviation": "Manual Codex TOML registration is retained because the pinned targeted installer writes obsolete YAML; product AGENTS guidance and live watcher are present."
+        },
+        "tool_config_sha256": "fcb359822696e9f45ae706fabfeeef16652679cf5befb8425c75c2e8f3325358",
+        "tool_state": "warm-index",
+        "tool_use_policy": "natural",
+        "command_identity": {
+          "kind": "mcp_command",
+          "command": [
+            "/bin/bash",
+            "-lc",
+            "cd {repo}; /opt/data/opt/node-v24.18.0-linux-x64/bin/node /opt/data/tool-candidates/sigmap/gen-context.js --watch >/dev/null 2>&1 & watcher=$!; trap 'kill $watcher 2>/dev/null || true; wait $watcher 2>/dev/null || true' EXIT; /opt/data/opt/node-v24.18.0-linux-x64/bin/node /opt/data/tool-candidates/sigmap/gen-context.js --mcp"
+          ]
+        },
+        "binary_identity": {
+          "executable_token": "/bin/bash",
+          "resolved_path": "/bin/bash",
+          "realpath": "/usr/bin/bash",
+          "sha256": "223fe8564b60636bc738b6178d3ba9a50ef7d791266b0efae6363bb716e4c47f",
+          "metadata": {
+            "size": 1298416,
+            "mode": "-rwxr-xr-x",
+            "uid": 0,
+            "gid": 0,
+            "mtime_ns": 1772983313000000000
+          },
+          "version": {
+            "command": [
+              "/usr/bin/bash",
+              "--version"
+            ],
+            "environment_path": "/opt/data/.local/bin:/opt/data/opt/go/bin:/opt/data/opt/uv:/opt/data/opt/node-v24.18.0-linux-x64/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+            "captured": true,
+            "exit_code": 0,
+            "output": "GNU bash, version 5.2.37(1)-release (x86_64-pc-linux-gnu)\nCopyright (C) 2022 Free Software Foundation, Inc.\nLicense GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>\n\nThis is free software; you are free to change and redistribute it.\nThere is NO WARRANTY, to the extent permitted by law.",
+            "truncated": false
+          }
+        },
+        "source_identity": [
+          {
+            "path": "/opt/data/tool-candidates/sigmap",
+            "exists": true,
+            "kind": "directory",
+            "git_head": "b1e086cf06bc7a7622473ffe9637c122567404e0",
+            "package_json_sha256": "f8478ca025747dada0b86288f696e1ae39ea8701a5081c60f54c70eafa034963"
+          }
+        ]
+      },
+      "date": "2026-07-19",
+      "target": {
+        "fixture_id": "large-hashicorp-terraform",
+        "fixture_scale": "large-project",
+        "project_id": "hashicorp-terraform",
+        "repository_path": "sources/evaluations/workflow-sessions/sigmap-terraform-20260719-p-ded8609b4172-r2/project/repo",
+        "initial_snapshot": {
+          "commit": "e02391ad384c9c38f1d7f40b853c0d2297348094",
+          "branch": "detached",
+          "fixture_hash": ""
+        }
+      },
+      "task_sequence": {
+        "sequence_id": "terraform-lifecycle-sequence-v0",
+        "sequence_contract": "feature-refactor-review",
+        "task_ids": [
+          "terraform-lifecycle-feature-v0",
+          "terraform-lifecycle-refactor-v0",
+          "terraform-lifecycle-review-v0"
+        ],
+        "task_classes": [
+          "feature-implementation",
+          "behavior-preserving-refactor",
+          "code-review-correction"
+        ],
+        "reset_policy": "reset source checkout, profile home, tool state, indexes, caches, generated config, and agent home before the lane; preserve repository, thread, tool, index, cache, and agent state across every sequential prompt",
+        "prompt_delivery": {
+          "mode": "sequential-one-task-at-a-time",
+          "future_tasks_visible": false,
+          "future_prompts_materialized_lazily": true,
+          "seed_delivery_mode": "preseeded-composite",
+          "future_seed_regressions_visible": true,
+          "controller_verification": "final-only",
+          "codex_thread_id": "019f7caa-d5c1-71b2-b1d8-9e2e70f185c9",
+          "task_prompt_evidence": "sources/evaluations/workflow-sessions/sigmap-terraform-20260719-p-ded8609b4172-r2/evidence.jsonl.gz"
+        },
+        "leakage_controls": {
+          "seed_origin_concealed": true,
+          "seed_patches_model_visible": false,
+          "git_baseline_true_root_at_lane_start": true,
+          "fixed_snapshot_objects_model_visible": false,
+          "pre_seed_reflog_entries_visible": false,
+          "concealment_verification_passed": true,
+          "task_directories_model_visible": false,
+          "verifier_assets_model_visible": false,
+          "model_writable_surface": "target repository plus isolated model-output directory",
+          "verifier_integrity_passed": true,
+          "verifier_integrity_evidence": "sources/evaluations/workflow-sessions/sigmap-terraform-20260719-p-ded8609b4172-r2/evidence.jsonl.gz#verifier-integrity.json",
+          "model_prompts_sanitized": true,
+          "upstream_remote_removed_from_model_facing_repo": true,
+          "broken_start_committed_as_local_baseline": true,
+          "remaining_limitations": [
+            "Future regression code is present from lane start, while future prompts and concealed acceptance assets remain controller-only.",
+            "Task semantics and verifier names may still be searchable if the model intentionally uses external network access."
+          ]
+        }
+      },
+      "profile": {
+        "profile_id": "retrieval-sigmap-codex-live-v1",
+        "profile_type": "individual_tool",
+        "enabled_surfaces": [
+          "retrieval-context",
+          "mcp",
+          "codex-agents",
+          "live-watch"
+        ],
+        "disabled_overlaps": [
+          "all unlisted surfaces"
+        ],
+        "component_ids": [
+          "retrieval-sigmap-codex-live-v1"
+        ]
+      },
+      "agent": {
+        "runtime_id": "codex-cli",
+        "model_condition_id": "codex-openai-gpt-5-6-luna-xhigh",
+        "name": "Codex CLI",
+        "version": "codex-cli 0.144.0",
+        "provider": "openai",
+        "model": "gpt-5.6-luna",
+        "reasoning_effort": "xhigh",
+        "temperature": null,
+        "max_turns": null,
+        "time_budget_seconds": 10800
+      },
+      "state_policy": {
+        "reset_before_session": [
+          "repository working tree",
+          "profile home",
+          "tool indexes and caches",
+          "generated config",
+          "agent home",
+          "temporary directories"
+        ],
+        "persist_between_tasks": [
+          "repository source working tree and model-facing Git metadata from one composite broken-start root",
+          "tool indexes and caches",
+          "generated config",
+          "agent home",
+          "memory/state stores enabled by the active profile",
+          "run artifacts"
+        ]
+      },
+      "cumulative_token_usage": {
+        "measurement_source": "codex-jsonl-usage-events",
+        "fresh_input_tokens": 395949,
+        "cached_input_tokens": 15188224,
+        "cache_write_tokens": null,
+        "output_tokens": 64785,
+        "reasoning_tokens": 30404,
+        "total_provider_tokens": 15648958,
+        "tokens_per_accepted_task": 5216319.333333333,
+        "accounting_basis": "Codex-reported token volume; monetary cost estimation is out of scope"
+      },
+      "per_task_results": [
+        {
+          "task_id": "terraform-lifecycle-feature-v0",
+          "task_class": "feature-implementation",
+          "task_alias": "task-01",
+          "order": 1,
+          "agent_attempted": true,
+          "codex_exit_code": 0,
+          "controller_verification": "passed",
+          "accepted": true,
+          "task_delta": "sources/evaluations/workflow-sessions/sigmap-terraform-20260719-p-ded8609b4172-r2/task-01-agent.diff",
+          "usage_events": "sources/evaluations/workflow-sessions/sigmap-terraform-20260719-p-ded8609b4172-r2/task-01-codex-events.jsonl",
+          "operational_retry_count": 0,
+          "verifier_exit_code": 0,
+          "verifier_passed": true
+        },
+        {
+          "task_id": "terraform-lifecycle-refactor-v0",
+          "task_class": "behavior-preserving-refactor",
+          "task_alias": "task-02",
+          "order": 2,
+          "agent_attempted": true,
+          "codex_exit_code": 0,
+          "controller_verification": "passed",
+          "accepted": true,
+          "task_delta": "sources/evaluations/workflow-sessions/sigmap-terraform-20260719-p-ded8609b4172-r2/task-02-agent.diff",
+          "usage_events": "sources/evaluations/workflow-sessions/sigmap-terraform-20260719-p-ded8609b4172-r2/task-02-codex-events.jsonl",
+          "operational_retry_count": 0,
+          "verifier_exit_code": 0,
+          "verifier_passed": true
+        },
+        {
+          "task_id": "terraform-lifecycle-review-v0",
+          "task_class": "code-review-correction",
+          "task_alias": "task-03",
+          "order": 3,
+          "agent_attempted": true,
+          "codex_exit_code": 0,
+          "controller_verification": "passed",
+          "accepted": true,
+          "task_delta": "sources/evaluations/workflow-sessions/sigmap-terraform-20260719-p-ded8609b4172-r2/task-03-agent.diff",
+          "usage_events": "sources/evaluations/workflow-sessions/sigmap-terraform-20260719-p-ded8609b4172-r2/task-03-codex-events.jsonl",
+          "operational_retry_count": 0,
+          "verifier_exit_code": 0,
+          "verifier_passed": true
+        }
+      ],
+      "software_quality": {
+        "tasks_attempted": 3,
+        "tasks_agent_claimed_complete": 3,
+        "tasks_passed": 3,
+        "final_verifier_command": "sources/evaluations/workflow-sessions/sigmap-terraform-20260719-p-ded8609b4172-r2/verify-workflow.sh",
+        "final_verifier_passed": true,
+        "functional_verifier_passed": true,
+        "quality_review_status": "not-reviewed",
+        "quality_score": null,
+        "critical_failures": []
+      },
+      "execution_integrity": {
+        "verifier_integrity_passed": true,
+        "tool_isolation_audit_passed": true,
+        "external_retrieval_hits": [],
+        "pass_through_tool_command_hits": []
+      },
+      "artifacts": {
+        "artifact_contract": "compact-v1-four-files",
+        "run_record": "sources/evaluations/workflow-sessions/sigmap-terraform-20260719-p-ded8609b4172-r2/run.json",
+        "final_diff": "sources/evaluations/workflow-sessions/sigmap-terraform-20260719-p-ded8609b4172-r2/changes.diff",
+        "final_diff_basis": "ordered cumulative checkpoints plus final cumulative source diff from one composite root",
+        "evidence_bundle": "sources/evaluations/workflow-sessions/sigmap-terraform-20260719-p-ded8609b4172-r2/evidence.jsonl.gz",
+        "manifest": "sources/evaluations/workflow-sessions/sigmap-terraform-20260719-p-ded8609b4172-r2/manifest.sha256"
+      },
+      "interpretation": {
+        "accepted_for_execution": true,
+        "accepted_for_objective": true,
+        "claim_status": "token-accounting-eligible",
+        "comparison_baseline_session_id": "baseline-terraform-20260718-p-ded8609b4172-r2",
+        "exclusion_reason": "",
+        "notes": "Provider-backed lane completed with clean integrity; verifier and review outcomes are diagnostic model-behavior evidence and do not gate token accounting.",
+        "scope_note": "Full warm-state lane; all regressions are preseeded, prompts are disclosed sequentially, and concealed verification runs only after the final prompt.",
+        "evaluation_validity": "valid",
+        "primary_objective_hard_baseline": false,
+        "usable_for_primary_objective_token_comparison": true,
+        "operationally_completed": true,
+        "agent_declared_task_completion_count": 3
+      }
     }
   ]
 }
