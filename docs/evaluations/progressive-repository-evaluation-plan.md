@@ -58,7 +58,7 @@ Use stable, descriptive IDs that make partial work easy to find.
 - Change ID: `YYYY-MM-DD-<lane>-<target>`.
 - Evaluation ID: `<change-id>-<run-role>-rNN` for run evidence.
 - Task ID: `<task-class>-<short-fixture>-vNN`.
-- Profile ID: use existing Phase 2 profile IDs when possible, such as `baseline-codex-no-mcp` for Codex substrate baselines, `sigmap-governance-artifact`, or `replacement-caveman-code`.
+- Profile ID: use existing Phase 2 profile IDs when possible, such as `baseline-bare-codex` for Codex substrate baselines, `sigmap-governance-artifact`, or `behavior-caveman`.
 
 Examples:
 
@@ -221,7 +221,7 @@ Do not combine two L-sized tasks in one session unless the operator explicitly c
 
 - A `source-logic` candidate can be selected for evaluation, but cannot be described as measured.
 - A `benchmark-audit` result requires inspected harness, tasks, scoring, token accounting, raw outputs, and failure semantics.
-- A `reproduction` result requires independent target-workload runs with provider-billed accounting where available, pass/fail or quality score, turns, tool calls, latency, and reset evidence.
+- A `reproduction` result requires independent continuous target-workload workflow simulation with provider-billed accounting where available, pass/fail or quality score, turns, tool calls, latency, state behavior, and reset evidence.
 - A treatment that reduces tokens while failing the verifier is a quality regression.
 - A treatment with overlapping surface owners is invalid unless overlap was disabled and verified before the run.
 - Negative, null, blocked, and excluded results remain first-class repository evidence.

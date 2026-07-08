@@ -6,17 +6,17 @@ Token-saving claims must state the accounting boundary.
 
 | Boundary | Definition | Accepted use |
 |---|---|---|
-| `artifact_estimated` | Tokenizer estimate for a static artifact before and after transformation. | Micro-benchmark and reducer debugging. |
+| `artifact_estimated` | Tokenizer estimate for a static artifact before and after transformation. | Sanity checks and reducer debugging. |
 | `request_estimated` | Estimated input/output tokens for one model request. | Local analysis when provider records are unavailable. |
-| `provider_billed_request` | Provider-reported usage for one request, including cache fields when exposed. | Request-level cost comparison. |
-| `provider_billed_task` | Sum of provider-reported usage across a complete task. | Primary reproduction metric. |
-| `session_total` | Full agent session usage, including setup, retries, and follow-up corrections. | Operational cost and budget analysis. |
+| `provider_billed_request` | Provider-reported usage for one request, including cache fields when exposed. | Request-level cost diagnosis. |
+| `provider_billed_task` | Sum of provider-reported usage across one complete task. | Per-task diagnostic inside a workflow session. |
+| `workflow_session_total` | Sum of provider-reported usage across a persistent ordered task sequence, including setup visible to the model, retries, and follow-up corrections. | Primary Phase 2 metric. |
 
-The primary Phase 2 metric is `provider_billed_task` where provider records are available. `artifact_estimated` and `request_estimated` are supporting diagnostics only.
+The primary Phase 2 token metric is `workflow_session_total` where provider records are available. `artifact_estimated`, `request_estimated`, and isolated `provider_billed_task` values are supporting diagnostics only.
 
 ## Required token fields
 
-Each run record should capture these fields when available:
+Each workflow session should capture these fields when available:
 
 | Field | Meaning |
 |---|---|
@@ -25,39 +25,40 @@ Each run record should capture these fields when available:
 | `cache_write_tokens` | Cache-write tokens, if provider exposes them. |
 | `output_tokens` | Visible model output tokens. |
 | `reasoning_tokens` | Hidden reasoning tokens, if provider exposes them. |
-| `tool_result_tokens_estimated` | Estimated tool-output tokens before any compaction. |
-| `transformed_tool_result_tokens_estimated` | Estimated tool-output tokens after compaction. |
 | `total_provider_tokens` | Provider-reported total or reconstructed total with formula noted. |
 | `estimated_cost_usd` | Cost using recorded model/pricing table and timestamp. |
-| `measurement_source` | Provider API, local log, ccusage, tokbench, tokenizer, or manual artifact count. |
+| `tokens_per_accepted_task` | Total provider tokens divided by tasks that passed verifier/quality gates. |
+| `measurement_source` | Provider API, local agent log, ccusage, tokbench, tokenizer, or manual artifact count. |
+
+Sanity checks may additionally record `tool_result_tokens_estimated` and `transformed_tool_result_tokens_estimated` for artifact-level reducer diagnostics.
 
 ## Derived token metrics
 
 Use explicit formulas:
 
-- `artifact_reduction_ratio = 1 - transformed_artifact_tokens / raw_artifact_tokens`
-- `fresh_input_change = treatment_fresh_input_tokens - baseline_fresh_input_tokens`
-- `task_billed_token_change = treatment_total_provider_tokens - baseline_total_provider_tokens`
-- `task_billed_token_reduction_ratio = 1 - treatment_total_provider_tokens / baseline_total_provider_tokens`
+- `workflow_billed_token_change = treatment_total_provider_tokens - baseline_total_provider_tokens`
+- `workflow_billed_token_reduction_ratio = 1 - treatment_total_provider_tokens / baseline_total_provider_tokens`
+- `tokens_per_accepted_task = total_provider_tokens / accepted_task_count`
 - `cost_change_usd = treatment_cost_usd - baseline_cost_usd`
 - `turn_change = treatment_turns - baseline_turns`
 - `tool_call_change = treatment_tool_calls - baseline_tool_calls`
+- `artifact_reduction_ratio = 1 - transformed_artifact_tokens / raw_artifact_tokens`
 
-A positive artifact reduction ratio is not sufficient for a positive task result.
+A positive artifact reduction ratio is not sufficient for a positive workflow result.
 
 ## Software quality standard
 
-Every task needs an explicit quality gate before token or cost savings can be accepted.
+Every workflow needs explicit quality gates before token or cost savings can be accepted.
 
 | Quality dimension | Required check |
 |---|---|
-| Functional correctness | Repository tests, task verifier, or executable reproduction script passes. |
+| Functional correctness | Per-task verifier passes and final repository verifier passes where applicable. |
 | Diagnostic preservation | For failure-repair tasks, the treatment preserves the error type, failing file, relevant stack frame, and actionable message. |
-| Code quality | Diff is minimal for the task, avoids unnecessary dependencies, preserves conventions, and does not bypass validation. |
-| Maintainability | New abstractions, config, and generated files are justified by the task. |
+| Code quality | Final diff is minimal for the task sequence, avoids unnecessary dependencies, preserves conventions, and does not bypass validation. |
+| Maintainability | New abstractions, config, and generated files are justified by the session outcome. |
 | Safety/security | Trust-boundary validation, secrets handling, permissions, and sandbox changes are reviewed when touched. |
-| Reviewability | The final diff and transcript are inspectable without hidden state. |
-| Reversibility | Tool installation, hooks, memory, indexes, and generated config have a reset or disable path. |
+| Reviewability | The final diff, transcript, provider usage, and tool-state changes are inspectable. |
+| Reversibility | Tool installation, hooks, memory, indexes, and generated config have a reset or disable path after the session. |
 
 ## Quality scoring rubric
 
@@ -65,23 +66,23 @@ Use a five-point ordinal score only after deterministic gates are recorded.
 
 | Score | Meaning |
 |---:|---|
-| 0 | Task failed, verifier failed, or output is unusable. |
+| 0 | Workflow failed, final verifier failed, or output is unusable. |
 | 1 | Partial progress but important requirements or diagnostics are missing. |
-| 2 | Task passes narrowly with quality, maintainability, or recovery concerns. |
-| 3 | Task passes with acceptable quality and no major review blockers. |
-| 4 | Task passes with good quality, minimal unnecessary change, and clear recovery evidence. |
-| 5 | Task passes, is minimal, robust, well-verified, and easier to review than baseline. |
+| 2 | Tasks pass narrowly with quality, maintainability, stale-state, or recovery concerns. |
+| 3 | Workflow passes with acceptable quality and no major review blockers. |
+| 4 | Workflow passes with good quality, minimal unnecessary change, and clear recovery evidence. |
+| 5 | Workflow passes, is minimal, robust, well-verified, and easier to review than baseline. |
 
 A treatment is acceptable for Phase 2 only if it meets both criteria:
 
-1. deterministic verifier passes or the quality score is at least 3 when no deterministic verifier exists;
-2. no critical diagnostic, safety, or reversibility failure is present.
+1. required per-task and final verifiers pass, or the quality score is at least 3 when no deterministic verifier exists;
+2. no critical diagnostic, safety, stale-context, or reversibility failure is present.
 
 ## Statistical and reporting standard
 
-- Use at least three runs per baseline/treatment pair for stochastic agent tasks when cost permits.
-- Report median and range; do not overinterpret mean values from small samples.
-- Pair runs by task and repository snapshot.
-- Keep failed and excluded runs in the dataset with reason codes.
-- Label maintainer-run, external-pilot, and local-reproduction evidence separately.
+- Compare baseline and treatment by workflow session totals first.
+- Report median and range across repeated workflow sessions when cost permits.
+- Pair sessions by task sequence, repository snapshot, profile controls, runtime, provider, model, and model condition.
+- Keep failed and excluded sessions in the dataset with reason codes.
+- Label sanity checks, maintainer-run results, external pilots, benchmark audits, and local workflow reproductions separately.
 - Prefer effect sizes over rank-only claims.
