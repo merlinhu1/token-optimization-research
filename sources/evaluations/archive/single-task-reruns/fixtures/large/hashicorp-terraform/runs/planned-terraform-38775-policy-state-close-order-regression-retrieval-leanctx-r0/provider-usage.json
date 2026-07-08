@@ -1,0 +1,51 @@
+{
+  "schema_version": 1,
+  "source": "codex-jsonl",
+  "source_artifact": "/opt/data/repos/token-optimization-research/sources/evaluations/archive/single-task-reruns/fixtures/large/hashicorp-terraform/runs/planned-terraform-38775-policy-state-close-order-regression-retrieval-leanctx-r0/codex-events.jsonl",
+  "extracted_at_utc": "2026-07-02T16:55:36.046415+00:00",
+  "measurement_source": "codex-jsonl-usage-events",
+  "fresh_input_tokens": 161489,
+  "cached_input_tokens": 2402176,
+  "cache_write_tokens": null,
+  "output_tokens": 10661,
+  "reasoning_tokens": 2800,
+  "total_provider_tokens": 2574326,
+  "estimated_cost_usd": null,
+  "raw_artifact_tokens": null,
+  "transformed_artifact_tokens": null,
+  "codex_usage": {
+    "input_tokens": 2563665,
+    "cached_input_tokens": 2402176,
+    "output_tokens": 10661,
+    "reasoning_output_tokens": 2800,
+    "total_tokens_formula": "input_tokens + output_tokens unless Codex emits total_tokens",
+    "usage_blocks": [
+      {
+        "event_type": "turn.completed",
+        "usage": {
+          "input_tokens": 2563665,
+          "cached_input_tokens": 2402176,
+          "output_tokens": 10661,
+          "reasoning_output_tokens": 2800
+        }
+      }
+    ]
+  },
+  "agent_behavior": {
+    "turns": 1,
+    "tool_calls_observed": 84,
+    "event_count": 146,
+    "event_types": {
+      "thread.started": 1,
+      "turn.started": 1,
+      "item.completed": 89,
+      "item.started": 54,
+      "turn.completed": 1
+    },
+    "non_json_line_count": 1
+  },
+  "warnings": [],
+  "non_json_line_samples": [
+    "Failed to write last message file \"/opt/data/repos/token-optimization-research/sources/evaluations/archive/single-task-reruns/fixtures/large/hashicorp-terraform/runs/planned-terraform-38775-policy-state-close-order-regression-retrieval-leanctx-r0/codex-last-message.txt\": No such file or directory (os error 2)"
+  ]
+}

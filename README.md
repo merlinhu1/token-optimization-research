@@ -17,11 +17,11 @@ This repository is not a list of tips. It is organized around a research system:
 - Domain model: [`docs/architecture/domain-model.md`](docs/architecture/domain-model.md)
 - Compatibility model: [`docs/architecture/compatibility-graph.md`](docs/architecture/compatibility-graph.md)
 - Research workflows: [`docs/architecture/workflows.md`](docs/architecture/workflows.md)
-- Evaluation framework: [`docs/evaluations/evaluation-framework.md`](docs/evaluations/evaluation-framework.md)
+- Evaluations index: [`docs/evaluations/README.md`](docs/evaluations/README.md)
+- Active workflow runbook: [`docs/evaluations/workflow-evaluation-runbook.md`](docs/evaluations/workflow-evaluation-runbook.md)
 - Token usage and quality standards: [`docs/evaluations/token-usage-and-quality-standards.md`](docs/evaluations/token-usage-and-quality-standards.md)
-- Phase 2 benchmark plan: [`docs/evaluations/phase-2-benchmark-plan.md`](docs/evaluations/phase-2-benchmark-plan.md)
-- Progressive repository-level evaluation plan: [`docs/evaluations/progressive-repository-evaluation-plan.md`](docs/evaluations/progressive-repository-evaluation-plan.md)
-- Immediately usable evaluation flows: [`docs/evaluations/immediately-usable-flows.md`](docs/evaluations/immediately-usable-flows.md)
+- Methodology: [`docs/methodology/README.md`](docs/methodology/README.md)
+- Research roadmap: [`docs/research/roadmap.md`](docs/research/roadmap.md)
 - Research-reporting skill patterns: [`docs/research/report-writing-and-methodology-skill-patterns.md`](docs/research/report-writing-and-methodology-skill-patterns.md)
 - Repo-local agent instructions and skills: [`AGENTS.md`](AGENTS.md), [`.agents/skills/`](.agents/skills/)
 - Repository truth: [`docs/truthmark/routes/areas.md`](docs/truthmark/routes/areas.md), [`docs/truthmark/engineering/research/`](docs/truthmark/engineering/research/)
@@ -37,4 +37,4 @@ python3 scripts/validate_repository.py
 
 ## Current status
 
-Phase 1 established 29 source-logic tool dossiers and a compatibility-safe stack report. The current active direction is Phase 2: benchmark design, token-usage accounting, software-quality standards, and immediately usable evaluation flows before controlled stack reproduction.
+Phase 1 established source-logic tool dossiers and a compatibility-safe stack report. The current active direction is Phase 2 workflow simulation: compare baseline and treatment profiles across the Terraform, OrchardCore, Fastify, and Beets workflow matrix with provider-billed token accounting and software-quality gates.

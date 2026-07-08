@@ -1,50 +1,104 @@
 # Repository Layout Architecture
 
+The repository is a research production system. Top-level folders are organized by ownership, not by project phase.
+
 ## Top-level responsibilities
 
 | Path | Role | Should contain | Should not contain |
 |---|---|---|---|
-| `data/` | Canonical structured records | JSON registries used by validation and synthesis | Free-form notes without schema |
-| `sources/` | Imported raw or seed material | Seed catalogs, snapshots, raw source notes | Canonical conclusions |
-| `docs/architecture/` | Research-system design | Domain model, workflows, compatibility model | Tool marketing summaries |
-| `docs/methodology/` | How research is conducted | Discovery, evidence, provenance, measurement rules | Individual repo reviews |
-| `docs/taxonomy/` | Human-readable taxonomy | Category definitions and rationale | Raw data records |
-| `docs/evaluations/` | Evaluation protocols and framework | Protocols, metrics, analysis templates | Unscoped benchmark claims |
-| `docs/literature/` | Literature synthesis | Paper clusters and method extraction | Unreviewed paper dumps |
-| `docs/paper/` | Manuscript staging | Outlines, sections, figures | Canonical source data |
-| `docs/standards/` | Reporting standards | Naming, evidence labels, checklists | One-off notes |
-| `docs/research/` | Research methods | Tool research strategy and multi-pass review process | Tool-specific findings |
-| `docs/tool-dossiers/` | Persistent tool dossiers | Source-level tool findings, evidence stages, open questions | Short README summaries |
-| `templates/` | Entry and report templates | Repository, technique, claim, evaluation, and professional report templates | Filled canonical records and publication-ready reports |
-| `prompts/` | Agent prompts | Researcher/evaluator/writer prompts | Source evidence |
-| `scripts/` | Validation and utility scripts | Deterministic checks and transforms | Research conclusions |
+| `data/` | Canonical structured records | JSON registries used by validation, runbooks, and synthesis | Free-form notes without schema |
+| `sources/` | Raw/source material and evidence bundles | Discovery artifacts, fixture source material, archived run evidence | Canonical conclusions or active docs |
+| `docs/` | Human-facing documentation | Architecture, methodology, evaluation protocols, reports, Truthmark docs | Raw transcripts, generated checkouts, local runtime state |
+| `schemas/` | Machine-readable record contracts | JSON Schema files for evaluation/session records | Example records or run outputs |
+| `templates/` | Reusable record and report templates | Blank templates for dossiers, records, reports, and evaluation changes | Filled canonical records |
+| `scripts/` | Deterministic tools | Validators, runbook generators, runners, usage extractors | Research conclusions |
+| `prompts/` | Agent prompts | Researcher, evaluator, and writer prompts | Source evidence or generated run output |
+| `.agents/` | Repo-local agent skills | Skills required by this repository's research workflow | Host-level agent configuration |
+| `.truthmark/` | Truthmark configuration | Truthmark config only | Truth docs or generated run artifacts |
+| `openspec/` | Optional planning metadata | OpenSpec config and currently active change directories only | Completed/stale change directories |
 
-## Data directory evolution
+## Documentation layout
 
-Bootstrap state:
+| Path | Responsibility |
+|---|---|
+| `docs/architecture/` | System design, domain model, compatibility model, repository layout |
+| `docs/methodology/` | Research method, discovery, evidence, and provenance rules |
+| `docs/evaluations/` | Evaluation protocols, active runbook, fixture framework, token/quality standards |
+| `docs/research/` | Tool research strategy, roadmap, methodology corrections, reusable research patterns |
+| `docs/tool-dossiers/` | Persistent source-logic or better tool dossiers |
+| `docs/truthmark/` | Repository-truth routes and durable Truthmark claims |
 
-```text
-data/
-  repositories.json
-  techniques.json
-  compatibility-edges.json
-  literature.json
-  evaluations.json
-```
+The root `README.md` is a storefront and navigation page. It should not duplicate detailed methodology or evaluation procedure.
 
-Scaled state:
+## Evaluation source layout
+
+Active workflow fixtures and archived evidence are separated under `sources/evaluations/`:
 
 ```text
-data/
-  artifacts.json
-  sources.json
-  source-reviews.json
-  claims.json
-  techniques.json
-  compatibility-edges.json
-  protocols.json
-  evaluations.json
-  findings.json
+sources/evaluations/
+  README.md
+  fixtures/
+    container/Dockerfile
+    large/<project-id>/
+      setup.sh
+      reset.sh
+      verify-smoke.sh
+      tasks/<task-id>/
+        agent-prompt.txt
+        seed-regression.patch
+        setup.sh
+        reset.sh
+        verify.sh
+    medium/<project-id>/
+      ...same contract...
+  workflow-sessions/<session-id>/
+    run.json
+    changes.diff
+    evidence.jsonl.gz
+    manifest.sha256
+  archive/
+    historical-fixtures/<project-id>/
+    single-task-reruns/<group>/
 ```
 
-The scaled split should happen when repository records become too large or when paper writing needs claim-level citation IDs.
+`data/workflow-task-sequences.json` is the canonical active sequence registry.
+
+`data/repository-fixtures.json` is the canonical fixture-readiness registry.
+
+`docs/evaluations/workflow-evaluation-runbook.md` is generated from the registries by `scripts/update_workflow_runbook.py`.
+
+## Archive policy
+
+Archived fixture/run evidence is retained for traceability, negative findings, and historical comparisons.
+
+Archived evidence does not define active workflow architecture.
+
+Do not present archived single-task evidence as positive `reproduction` evidence unless it is requalified through the active workflow-session protocol.
+
+## Local/generated state policy
+
+Generated fixture checkouts are local runtime state and are ignored:
+
+```text
+sources/evaluations/fixtures/large/*/repo/
+sources/evaluations/fixtures/medium/*/repo/
+```
+
+Workflow sessions may keep only compact evidence bundles in git. Do not commit materialized `project/`, `codex-homes/`, `.venv/`, `__pycache__/`, split transcripts, or split setup/verifier logs.
+
+## Scaled data directory direction
+
+Current canonical registries are intentionally compact:
+
+```text
+data/repositories.json
+data/techniques.json
+data/compatibility-edges.json
+data/literature.json
+data/evaluations.json
+data/repository-fixtures.json
+data/workflow-task-sequences.json
+data/workflow-sessions.json
+```
+
+Split into claim/source/finding-level registries only when repository records become too large or paper writing needs stable claim-level citation IDs.

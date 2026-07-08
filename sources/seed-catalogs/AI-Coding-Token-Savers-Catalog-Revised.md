@@ -110,4 +110,4 @@ Quantitative statements below are reported results, not a cross-project ranking.
 
 ## Data provenance
 
-Each record includes a reviewed source URL, review date, discovery routes, and any material secondary evidence in `data/repositories.json`. See `METHODOLOGY.md` for the multi-pass discovery protocol, evidence hierarchy, canonicalization rules, and limitations.
+Each record includes a reviewed source URL, review date, discovery routes, and any material secondary evidence in `data/repositories.json`. See `docs/methodology/README.md` for the multi-pass discovery protocol, evidence hierarchy, canonicalization rules, and limitations.
