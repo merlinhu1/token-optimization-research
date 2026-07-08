@@ -65,6 +65,7 @@ REQUIRED_PATHS = [
     "docs/evaluations/token-usage-and-quality-standards.md",
     "docs/evaluations/phase-2-benchmark-plan.md",
     "docs/evaluations/continuous-workflow-simulation.md",
+    "docs/evaluations/workflow-evaluation-runbook.md",
     "docs/evaluations/immediately-usable-flows.md",
     "docs/evaluations/repository-fixture-framework.md",
     "docs/evaluations/cumulative-result-schema.md",
@@ -123,6 +124,7 @@ REQUIRED_PATHS = [
     "templates/evaluation-task.md",
     "templates/evaluation-run-record.json",
     "templates/workflow-session-record.json",
+    "scripts/update_workflow_runbook.py",
     "schemas/evaluation-run-record.schema.json",
     "schemas/workflow-session-record.schema.json",
     "templates/report.md",
@@ -855,6 +857,7 @@ def main() -> int:
         ROOT / "docs/evaluations/token-usage-and-quality-standards.md",
         ROOT / "docs/evaluations/phase-2-benchmark-plan.md",
         ROOT / "docs/evaluations/continuous-workflow-simulation.md",
+        ROOT / "docs/evaluations/workflow-evaluation-runbook.md",
         ROOT / "docs/evaluations/immediately-usable-flows.md",
         ROOT / "docs/research/report-writing-and-methodology-skill-patterns.md",
         ROOT / "templates/report.md",
@@ -898,6 +901,16 @@ def main() -> int:
         errors.append("phase-1 report body lists raw discovery JSON artifacts; summarize provenance instead")
     if re.search(r"\|\s*`[^`]+`\s*\|\s*[0-9]\s*\|", report_text):
         errors.append("phase-1 report contains a numeric evidence-stage table row; use named stages")
+
+    runbook_check = subprocess.run(
+        ["python3", "scripts/update_workflow_runbook.py", "--check"],
+        cwd=ROOT,
+        text=True,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+    )
+    if runbook_check.returncode != 0:
+        errors.append((runbook_check.stderr or runbook_check.stdout or "workflow runbook is stale").strip())
 
     run_truthmark("check", errors)
     run_truthmark("index", errors)

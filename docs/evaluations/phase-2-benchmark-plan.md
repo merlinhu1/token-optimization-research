@@ -95,4 +95,4 @@ The first objective-bearing batch is a workflow-session pilot, not a single-task
 3. Run one treatment profile on the same sequence and model condition.
 4. Compare cumulative tokens, tokens per accepted task, pass rate, correction turns, and final quality.
 5. Only after the pilot record shape works, add CodeGraph/Serena/Headroom/LeanCTX comparisons.
-6. Use calibration fixtures only for sanity checks and diagnostic-preservation gates.
+6. Keep the human rerun procedure aligned through `docs/evaluations/workflow-evaluation-runbook.md`.
