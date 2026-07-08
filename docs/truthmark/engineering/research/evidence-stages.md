@@ -87,7 +87,7 @@ Evidence stages keep polished research prose aligned with inspected or measured 
 ## Source References
 
 - ../../../../AGENTS.md
-- ../../../../METHODOLOGY.md
+- ../../../../docs/methodology/README.md
 - ../../../../data/repositories.json
 - ../../../../data/evaluations.json
 - ../../../../scripts/validate_repository.py

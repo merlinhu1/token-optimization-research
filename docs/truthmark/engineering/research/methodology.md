@@ -93,7 +93,7 @@ Its main quality risk is over-scoped claims, not lack of prose polish.
 
 ## Source References
 
-- ../../../../METHODOLOGY.md
+- ../../../../docs/methodology/README.md
 - ../../../../docs/research/report-writing-and-methodology-skill-patterns.md
 - ../../../../templates/report.md
 - ../../../../templates/claim-entry.md

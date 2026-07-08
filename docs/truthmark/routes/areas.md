@@ -17,7 +17,7 @@ truth_documents:
 ```
 
 Code surface:
-- METHODOLOGY.md
+- docs/methodology/README.md
 - data/repositories.json
 - data/evaluations.json
 - docs/tool-dossiers/**
@@ -43,7 +43,7 @@ truth_documents:
 ```
 
 Code surface:
-- METHODOLOGY.md
+- docs/methodology/README.md
 - docs/research/**
 - docs/reports/**
 - docs/standards/**
@@ -84,8 +84,8 @@ Code surface:
 - scripts/run_sequential_workflow_matrix.py
 - scripts/run_sequential_workflow_pair.sh
 - scripts/update_workflow_runbook.py
-- sources/evaluations/large-projects/**/runs/planned/*.json
-- sources/evaluations/large-projects/container/Dockerfile
+- sources/evaluations/archive/single-task-reruns/fixtures/large/**/runs/planned/*.json
+- sources/evaluations/fixtures/container/Dockerfile
 
 - prompts/evaluator.md
 - templates/evaluation-record.md
@@ -159,7 +159,7 @@ truth_documents:
 
 Code surface:
 - README.md
-- RESEARCH_ROADMAP.md
+- docs/research/roadmap.md
 - data/repositories.json
 - data/tool-analysis-backlog.json
 - docs/reports/**

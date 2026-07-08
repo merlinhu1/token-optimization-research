@@ -205,7 +205,7 @@ build the standard evaluation image from the repository root before spending mod
 
 ```bash
 docker build \
-  -f sources/evaluations/large-projects/container/Dockerfile \
+  -f sources/evaluations/fixtures/container/Dockerfile \
   -t token-eval-codex:latest \
   .
 ```

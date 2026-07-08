@@ -1,0 +1,12 @@
+Implemented the regression repair by restoring the upstream behavior in:
+
+- [django/utils/xmlutils.py](/opt/data/repos/token-optimization-research/sources/evaluations/archive/historical-fixtures/django-django/repo/django/utils/xmlutils.py): XML attributes are checked for XML 1.0 control characters, using the shared lazy regex and default `UnserializableContentError` message.
+- [django/core/serializers/xml_serializer.py](/opt/data/repos/token-optimization-research/sources/evaluations/archive/historical-fixtures/django-django/repo/django/core/serializers/xml_serializer.py): serializer object attribute failures are wrapped with the expected model/pk `ValueError`.
+
+Verification passed with the repo virtualenv:
+
+```bash
+PYTHONPATH=. .venv/bin/python tests/runtests.py serializers.test_xml.XmlSerializerTestCase.test_control_char_failure_attribute syndication_tests.tests.SyndicationFeedTest.test_no_control_chars_in_attributes --verbosity 2
+```
+
+Note: the exact verifier using `python` could not run because `python` is not on PATH in this container; `.venv/bin/python` passed both tests.

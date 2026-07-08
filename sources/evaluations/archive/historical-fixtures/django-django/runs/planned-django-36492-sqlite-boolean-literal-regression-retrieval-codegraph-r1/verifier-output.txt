@@ -1,0 +1,41 @@
+Creating test database for alias 'default' ('file:memorydb_default?mode=memory&cache=shared')...
+Testing against Django installed in '/opt/data/repos/token-optimization-research/sources/evaluations/archive/historical-fixtures/django-django/repo/django' with up to 4 processes
+Importing application lookup
+Found 2 test(s).
+Skipping setup of unused database(s): other.
+Operations to perform:
+  Synchronize unmigrated apps: auth, contenttypes, lookup, messages, sessions, staticfiles
+  Apply all migrations: admin, sites
+Synchronizing apps without migrations:
+  Creating tables...
+    Creating table django_content_type
+    Creating table auth_permission
+    Creating table auth_group
+    Creating table auth_user
+    Creating table django_session
+    Creating table lookup_alarm
+    Creating table lookup_author
+    Creating table lookup_article
+    Creating table lookup_tag
+    Creating table lookup_season
+    Creating table lookup_game
+    Creating table lookup_player
+    Creating table lookup_product
+    Creating table lookup_stock
+    Creating table lookup_freebie
+    Running deferred SQL...
+Running migrations:
+  Applying admin.0001_initial... OK
+  Applying admin.0002_logentry_remove_auto_add... OK
+  Applying admin.0003_logentry_add_action_flag_choices... OK
+  Applying sites.0001_initial... OK
+  Applying sites.0002_alter_domain_unique...test_exact_booleanfield (lookup.tests.LookupTests.test_exact_booleanfield) ... ok
+test_exact_booleanfield_annotation (lookup.tests.LookupTests.test_exact_booleanfield_annotation) ... ok
+
+----------------------------------------------------------------------
+Ran 2 tests in 0.015s
+
+OK
+Destroying test database for alias 'default' ('file:memorydb_default?mode=memory&cache=shared')...
+ OK
+System check identified no issues (0 silenced).
