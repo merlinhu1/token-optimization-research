@@ -2,26 +2,17 @@
 
 ## Directory convention
 
-Create one directory per workflow session:
+Completed workflow sessions keep exactly four files in the session directory:
 
 ```text
 sources/evaluations/workflow-sessions/<session-id>/
-  workflow-session-record.json
-  environment.json
-  profile-manifest.json
-  cumulative-provider-usage.json
-  final-verifier-output.txt
-  final-diff.patch
-  quality-review.md
-  task-01-<task-id>/
-    prompt.md
-    transcript.jsonl
-    provider-usage.json
-    verifier-output.txt
-    task-result.json
+  run.json
+  changes.diff
+  evidence.jsonl.gz
+  manifest.sha256
 ```
 
-Use `data/workflow-sessions.json` for compact workflow-session records. Keep raw logs out of reports unless summarized.
+Use `data/workflow-sessions.json` for compact workflow-session records. Keep raw logs out of reports unless summarized; recoverable raw evidence lives inside `evidence.jsonl.gz`, not as split transcript/log directories.
 
 ## Flow 1: run a continuous workflow simulation
 
@@ -31,12 +22,12 @@ Use this for primary evidence about individual tools and compatibility-safe stac
 2. Reset the repository, profile home, tool state, indexes, caches, and agent home once before the session.
 3. Activate exactly one baseline or treatment profile.
 4. Run tasks in the sequence order without resetting repository or tool state between tasks.
-5. Capture per-task provider usage, transcript, verifier output, diff/status, tool calls, turns, and correction turns.
+5. Capture per-task provider usage, transcript, verifier output, diff/status, tool calls, turns, and correction turns into the compact evidence bundle.
 6. Preserve indexes, caches, generated config, memory, and agent/tool home across tasks unless the sequence explicitly models a reset.
 7. Run the final repository verifier or final quality review after the last task.
 8. Aggregate cumulative provider-billed tokens and cost across all tasks.
 9. Record stale-context, overfeeding, repeated rediscovery, or state-reuse observations.
-10. Write `workflow-session-record.json` and append compact metadata to `data/workflow-sessions.json`.
+10. Write `run.json`, `changes.diff`, `evidence.jsonl.gz`, and `manifest.sha256`, then append compact metadata to `data/workflow-sessions.json`.
 
 Minimum positive condition: treatment reduces cumulative provider-billed workflow tokens or cost versus the paired baseline while preserving task pass rate and final quality gates.
 
