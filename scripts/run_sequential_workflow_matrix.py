@@ -263,6 +263,7 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser.add_argument("--replicate-index", type=int, default=0)
     parser.add_argument("--lane-root", type=Path, default=DEFAULT_LANE_ROOT)
     parser.add_argument("--source-codex-home", type=Path, help="forwarded to each pair runner; defaults to runner default/CODEX_HOME")
+    parser.add_argument("--treatment-profile", default="retrieval-leanctx", help="treatment profile to pair against baseline-bare-codex")
     parser.add_argument("--timeout-per-task", type=int, help="forwarded to each lane runner")
     parser.add_argument("--prepare-only", action="store_true", help="forward prepare-only to lane runners for a no-model-spend concurrency smoke")
     parser.add_argument("--skip-container-preflight", action="store_true", help="forwarded to lane runners; smoke/debug only")
@@ -285,7 +286,7 @@ def main(argv: list[str] | None = None) -> int:
 
     timestamp = dt.datetime.now(dt.UTC).strftime("%Y%m%dT%H%M%SZ")
     run_root = args.lane_root / f"workflow-matrix-{timestamp}-r{args.replicate_index}"
-    runner_args: list[str] = []
+    runner_args: list[str] = ["--treatment-profile", args.treatment_profile]
     if args.timeout_per_task is not None:
         runner_args.extend(["--timeout-per-task", str(args.timeout_per_task)])
     for flag in ("prepare_only", "skip_container_preflight", "skip_codex_preflight", "skip_dependency_install"):
