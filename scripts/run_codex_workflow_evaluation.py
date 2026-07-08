@@ -64,45 +64,46 @@ PROJECT_META: dict[str, dict[str, str]] = {
     },
 }
 
-PROFILE_META: dict[str, dict[str, Any]] = {
-    "baseline-bare-codex": {
-        "session_role": "baseline",
-        "profile_type": "control",
-        "component_ids": [],
-        "enabled_surfaces": ["codex-native-shell-edit"],
-        "disabled_overlaps": ["all token-saving surfaces"],
-        "allowed_terms": [],
-        "tool_state": "none",
-        "tool_use_policy": "none",
-        "prompt_guidance": (
-            "# Evaluation isolation contract\n\n"
-            "You are running inside the `baseline-bare-codex` control lane. "
-            "This is a Codex substrate baseline: native shell, file, git, and verifier operations are allowed. "
-            "Do not use external retrieval, compression, memory, MCP, or token-saving tools. "
-            "Work only inside the target repository and use the current task verifier as the acceptance gate.\n\n"
-            "---\n\n"
-        ),
-    },
-    "retrieval-leanctx": {
-        "session_role": "individual_tool_treatment",
-        "profile_type": "individual_tool",
-        "component_ids": ["lean-ctx"],
-        "enabled_surfaces": ["retrieval-context"],
-        "disabled_overlaps": ["all unlisted token-saving surfaces"],
-        "allowed_terms": ["lean-ctx", "mcp_lean_ctx", "ctx_read", "ctx_search", "ctx_shell", "ctx_graph"],
-        "tool_state": "cold",
-        "tool_use_policy": "optional",
-        "prompt_guidance": (
-            "# Evaluation isolation contract\n\n"
-            "You are running inside the `retrieval-leanctx` treatment lane for LeanCTX. "
-            "Tool-state condition: `cold`. Tool-use policy: `optional`. LeanCTX is available as an optional retrieval/context MCP tool. "
-            "Use it only when it is likely to reduce total context or improve localization; otherwise use Codex native shell/file tools. "
-            "Do not use other retrieval, compression, memory, or token-saving tools. "
-            "Work only inside the target repository and use the current task verifier as the acceptance gate.\n\n"
-            "---\n\n"
-        ),
-    },
+SUPPORTED_WORKFLOW_TOOL_PROFILES = {
+    "retrieval-leanctx": "lean-ctx",
+    "retrieval-codegraph": "codegraph",
+    "lower-intervention-codegraph": "codegraph",
+    "terminal-rtk": "rtk",
+    "artifact-ponytail": "ponytail",
 }
+
+
+def build_profile_meta() -> dict[str, dict[str, Any]]:
+    profiles: dict[str, dict[str, Any]] = {
+        "baseline-bare-codex": {
+            "session_role": "baseline",
+            "profile_type": "control",
+            "component_ids": [],
+            "enabled_surfaces": ["codex-native-shell-edit"],
+            "disabled_overlaps": ["all token-saving surfaces"],
+            "allowed_terms": [],
+            "tool_state": "none",
+            "tool_use_policy": "none",
+            "tool_id": None,
+        }
+    }
+    for profile_id, tool_id in SUPPORTED_WORKFLOW_TOOL_PROFILES.items():
+        cfg = fixture.TOOL_CONFIGS[tool_id]
+        profiles[profile_id] = {
+            "session_role": "individual_tool_treatment",
+            "profile_type": "comparator" if profile_id.startswith("lower-intervention-") else "individual_tool",
+            "component_ids": [tool_id],
+            "enabled_surfaces": [str(cfg.get("surface", "token-saving-tool"))],
+            "disabled_overlaps": ["all unlisted token-saving surfaces"],
+            "allowed_terms": sorted({tool_id, *[str(term) for term in cfg.get("allowed_terms", [])]}),
+            "tool_state": "cold",
+            "tool_use_policy": "optional",
+            "tool_id": tool_id,
+        }
+    return profiles
+
+
+PROFILE_META: dict[str, dict[str, Any]] = build_profile_meta()
 
 LEAKY_PROMPT_LINE_PATTERNS = [
     re.compile(r"^Issue source:.*$", re.IGNORECASE),
@@ -323,13 +324,43 @@ def base_record(session_id: str, seq: dict[str, Any], profile_id: str, project: 
     }
 
 
+def profile_prompt_guidance(profile_id: str) -> str:
+    pmeta = PROFILE_META[profile_id]
+    tool_id = pmeta.get("tool_id")
+    if not tool_id:
+        return (
+            "# Evaluation isolation contract\n\n"
+            "You are running inside the `baseline-bare-codex` control lane. "
+            "This is a Codex substrate baseline: native shell, file, git, and verifier operations are allowed. "
+            "Do not use external retrieval, compression, memory, MCP, or token-saving tools. "
+            "Work only inside the target repository and use the current task verifier as the acceptance gate.\n\n"
+            "---\n\n"
+        )
+    cfg = fixture.TOOL_CONFIGS[str(tool_id)]
+    tool_state = str(pmeta.get("tool_state", "cold"))
+    use_policy = str(pmeta.get("tool_use_policy", "optional"))
+    guidance_key = "optional_guidance" if use_policy == "optional" else "preferred_guidance"
+    use_sentence = cfg.get(guidance_key) or cfg.get("preferred_guidance") or "Use the exposed treatment tool only when it helps."
+    prompt_instructions = fixture.render_prompt_instructions(cfg)
+    prompt_block = f"\n# {cfg['display_name']} lane instructions\n\n{prompt_instructions}\n\n---\n\n" if prompt_instructions else ""
+    return (
+        "# Evaluation isolation contract\n\n"
+        f"You are running inside the `{profile_id}` treatment lane for {cfg['display_name']}. "
+        f"Tool-state condition: `{tool_state}`. Tool-use policy: `{use_policy}`. "
+        f"{use_sentence} Do not use other retrieval, compression, memory, or token-saving tools. "
+        "Work only inside the target repository and use the current task verifier as the acceptance gate.\n\n"
+        "---\n\n"
+        f"{prompt_block}"
+    )
+
+
 def task_prompt(seq: dict[str, Any], profile_id: str, project: Path, order: int, *, first_task: bool) -> str:
     task = next(item for item in seq["tasks"] if int(item["order"]) == order)
     prompt_path = task_dir(project, order) / "agent-prompt.txt"
     verifier = task_dir(project, order) / "verify.sh"
     preface: list[str] = []
     if first_task:
-        preface.append(PROFILE_META[profile_id]["prompt_guidance"])
+        preface.append(profile_prompt_guidance(profile_id))
         preface.extend([
             f"# Sequential workflow session: {seq['id']}",
             "",
@@ -694,6 +725,7 @@ def workflow_session_record(
             "stale_context_incidents": None,
             "overfeeding_incidents": None,
             "repeated_rediscovery_incidents": None,
+            "thread_continuity_errors": summary.get("thread_continuity_errors", []),
             "useful_state_reuse_notes": "Single persistent Codex thread resumed across one task prompt at a time.",
         },
         "operational_reproducibility": {
@@ -711,7 +743,7 @@ def workflow_session_record(
         "interpretation": {
             "accepted_for_objective": accepted,
             "comparison_baseline_session_id": "",
-            "exclusion_reason": "" if accepted else f"codex_exit_codes={codex_exit_codes}; final_verifier_exit={final_verifier_code}; audit_exit={audit_code}; usage_warnings={usage.get('warnings')}",
+            "exclusion_reason": "" if accepted else f"codex_exit_codes={codex_exit_codes}; final_verifier_exit={final_verifier_code}; audit_exit={audit_code}; thread_continuity_errors={summary.get('thread_continuity_errors', [])}; usage_warnings={usage.get('warnings')}",
             "notes": "Accepted sequential workflow session." if accepted else "Sequential workflow session failed one or more acceptance gates; inspect raw artifacts.",
             "scope_note": "Full active workflow sequence; tasks disclosed one at a time.",
         },
@@ -731,13 +763,14 @@ def update_registry(record: dict[str, Any]) -> None:
     path.write_text(json.dumps(doc, indent=2) + "\n")
 
 
-def write_comparison_if_ready(seq: dict[str, Any], study_id: str, replicate_index: int) -> dict[str, Any] | None:
+def write_comparison_if_ready(seq: dict[str, Any], study_id: str, replicate_index: int, treatment_profile_id: str) -> dict[str, Any] | None:
     registry = json.loads((ROOT / "data/workflow-sessions.json").read_text())
     project_id = PROJECT_META[seq["fixture_id"]]["project_id"]
-    group_id = f"{DATE_COMPACT}-{project_id}-leanctx-sequential-workflow-r{replicate_index}"
+    comparison_key = treatment_profile_id.replace("_", "-")
+    group_id = f"{DATE_COMPACT}-{project_id}-{comparison_key}-sequential-workflow-r{replicate_index}"
     sessions = [s for s in registry.get("sessions", []) if s.get("experiment_group_id") == group_id]
     baseline = next((s for s in sessions if s.get("session_role") == "baseline"), None)
-    treatment = next((s for s in sessions if s.get("profile", {}).get("profile_id") == "retrieval-leanctx"), None)
+    treatment = next((s for s in sessions if s.get("profile", {}).get("profile_id") == treatment_profile_id), None)
     if not baseline or not treatment:
         return None
     b_tokens = baseline.get("cumulative_token_usage", {}).get("total_provider_tokens")
@@ -746,7 +779,7 @@ def write_comparison_if_ready(seq: dict[str, Any], study_id: str, replicate_inde
     pct = (delta / b_tokens * 100) if delta is not None and b_tokens else None
     comparison = {
         "schema_version": 1,
-        "comparison_id": f"{DATE_COMPACT}-{project_id}-baseline-vs-leanctx-sequential-workflow-r{replicate_index}",
+        "comparison_id": f"{DATE_COMPACT}-{project_id}-baseline-vs-{comparison_key}-sequential-workflow-r{replicate_index}",
         "study_id": study_id,
         "experiment_group_id": group_id,
         "sequence_id": seq["id"],
@@ -763,7 +796,7 @@ def write_comparison_if_ready(seq: dict[str, Any], study_id: str, replicate_inde
             "treatment_tasks_passed": treatment.get("software_quality", {}).get("tasks_passed"),
             "task_count": len(seq["tasks"]),
         },
-        "interpretation": "Sequential prompt delivery: each task is disclosed only after the previous verifier passes. Positive token delta means LeanCTX used more Codex-reported provider tokens; negative means fewer.",
+        "interpretation": f"Sequential prompt delivery: each task is disclosed only after the previous verifier passes. Positive token delta means {treatment_profile_id} used more Codex-reported provider tokens; negative means fewer.",
     }
     out = ROOT / "sources/evaluations/workflow-sessions" / f"{comparison['comparison_id']}.json"
     out.parent.mkdir(parents=True, exist_ok=True)
@@ -783,7 +816,9 @@ def run_one(args: argparse.Namespace) -> dict[str, Any]:
     mode_suffix = "sequential"
     session_id = args.session_id or f"{DATE_COMPACT}-{project_id}-{profile_suffix}-{mode_suffix}-workflow-r{args.replicate_index}"
     study_id = args.study_id or "phase-2-sequential-workflow-v1"
-    experiment_group_id = args.experiment_group_id or f"{DATE_COMPACT}-{project_id}-leanctx-sequential-workflow-r{args.replicate_index}"
+    comparison_profile_id = args.comparison_profile_id or (profile_id if profile_id != "baseline-bare-codex" else "retrieval-leanctx")
+    comparison_key = comparison_profile_id.replace("_", "-")
+    experiment_group_id = args.experiment_group_id or f"{DATE_COMPACT}-{project_id}-{comparison_key}-sequential-workflow-r{args.replicate_index}"
     run_dir = ROOT / "sources/evaluations/workflow-sessions" / session_id
     if run_dir.exists() and not args.keep_existing_run_dir:
         chmod_tree(run_dir)
@@ -838,6 +873,7 @@ def run_one(args: argparse.Namespace) -> dict[str, Any]:
     thread_id: str | None = None
     codex_exit_codes: list[int] = []
     verifier_results: list[dict[str, Any]] = []
+    thread_continuity_errors: list[dict[str, Any]] = []
     for task in ordered_tasks:
         order = int(task["order"])
         prompt_path = prompt_dir / f"task-{order:02d}.md"
@@ -848,6 +884,11 @@ def run_one(args: argparse.Namespace) -> dict[str, Any]:
         sync_copied_codex_auth_back(codex_home, args.source_codex_home, run_dir, f"after-task-{order:02d}")
         redact_auth_sync(run_dir)
         if code != 0:
+            break
+        if thread_id is None:
+            message = f"Codex task {order} exited 0 but no thread_id was captured; refusing to continue because workflow continuity is unproven."
+            thread_continuity_errors.append({"order": order, "task_id": task["id"], "message": message})
+            (run_dir / f"task-{order:02d}-thread-continuity-error.txt").write_text(message + "\n")
             break
         result = run_one_verifier(seq, order, record, codex_home, run_dir, args.docker_image)
         verifier_results.append(result)
@@ -860,7 +901,7 @@ def run_one(args: argparse.Namespace) -> dict[str, Any]:
     final_verifier_code = run_final_verifier(seq, record, codex_home, run_dir, args.docker_image) if len(verifier_results) == len(ordered_tasks) else 1
     capture_diff(record, run_dir)
     audit_code = audit(record_path, run_dir)
-    accepted = all(code == 0 for code in codex_exit_codes) and len(verifier_results) == len(ordered_tasks) and final_verifier_code == 0 and audit_code == 0 and not usage.get("warnings")
+    accepted = all(code == 0 for code in codex_exit_codes) and not thread_continuity_errors and len(verifier_results) == len(ordered_tasks) and final_verifier_code == 0 and audit_code == 0 and not usage.get("warnings")
     smoke = (run_dir / "docker-smoke-output.txt").read_text(errors="replace") if (run_dir / "docker-smoke-output.txt").exists() else ""
     codex_version = next((line.strip() for line in smoke.splitlines() if "codex" in line.lower() and any(ch.isdigit() for ch in line)), "")
     prompt_delivery = {
@@ -892,6 +933,7 @@ def run_one(args: argparse.Namespace) -> dict[str, Any]:
         "codex_exit_codes": codex_exit_codes,
         "final_verifier_exit_code": final_verifier_code,
         "tool_isolation_audit_exit_code": audit_code,
+        "thread_continuity_errors": thread_continuity_errors,
         "accepted": accepted,
         "timeout_seconds": args.timeout_per_task * len(ordered_tasks),
         "codex_version": codex_version,
@@ -905,7 +947,7 @@ def run_one(args: argparse.Namespace) -> dict[str, Any]:
     }
     session_record = workflow_session_record(seq, summary, run_dir, profile_id, codex_exit_codes, final_verifier_code, audit_code, usage, verifier_results, prompt_delivery=prompt_delivery, leakage_controls=leakage_controls)
     update_registry(session_record)
-    comparison = write_comparison_if_ready(seq, study_id, args.replicate_index)
+    comparison = write_comparison_if_ready(seq, study_id, args.replicate_index, comparison_profile_id)
     if comparison:
         summary["comparison"] = comparison
     (run_dir / "run.json").write_text(json.dumps(summary, indent=2) + "\n")
@@ -935,6 +977,7 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--session-id")
     parser.add_argument("--study-id")
     parser.add_argument("--experiment-group-id")
+    parser.add_argument("--comparison-profile-id", choices=sorted(PROFILE_META), help="treatment profile used to group baseline/treatment comparison records")
     parser.add_argument("--docker-image", default=DEFAULT_DOCKER_IMAGE)
     parser.add_argument("--source-codex-home", type=Path, default=DEFAULT_SOURCE_CODEX_HOME)
     parser.add_argument("--skip-container-preflight", action="store_true")
