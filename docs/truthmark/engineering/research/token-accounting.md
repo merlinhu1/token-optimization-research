@@ -25,6 +25,8 @@ Software-quality scoring is owned by `software-quality-gates.md`.
 - Evaluation templates define task, run-record, and workflow-session artifacts.
 - `data/workflow-task-sequences.json` defines ordered persistent task sequences.
 - `data/workflow-sessions.json` is the structured workflow-session registry.
+- `docs/evaluations/workflow-evaluation-runbook.md` is the maintained human-facing runbook rendered from the workflow sequence and fixture registries.
+- `scripts/update_workflow_runbook.py` refreshes that runbook and provides a validator check so operator docs fail closed on registry drift.
 - `scripts/run_codex_fixture_evaluation.py` creates lane-specific Codex homes, isolates agent HOME/PYTHONUSERBASE/XDG/TMPDIR under that Codex home, captures preflight artifacts, runs Codex, extracts provider usage, verifies tasks, and invokes the isolation audit for Codex-based sanity or historical fixture evaluations.
 - Non-MCP terminal-binary treatment lanes expose the active binary through lane-specific container mounts and require solve-shell availability checks in addition to runner preflight.
 - `scripts/run_codex_evaluation_batch.py` runs serial planned Codex fixture evaluations, skips already accepted runs by default, writes a machine-readable batch summary, and refuses direct multi-record batches unless `--allow-serial-batch` is explicitly passed.
@@ -60,6 +62,7 @@ Software-quality scoring is owned by `software-quality-gates.md`.
 - Reproduction records require independent continuous target-workload workflow simulations.
 - Codex-based reproduction runs require containerized execution, lane-specific runtime isolation, provider-billed usage capture, verifier output, final diff/status, and a passing tool-isolation audit before acceptance.
 - Completed workflow-session directories publish evidence streams as the compact four-file bundle `run.json`, `changes.diff`, `evidence.jsonl.gz`, and `manifest.sha256`.
+- Human runbook tables are generated from machine registries, not maintained as a separate hand-written source of truth.
 - Parallel Codex-based batches must use isolated lane checkouts and Codex home roots; shared mutable fixture repos or shared profile Codex homes are not valid parallel reproduction evidence.
 - Docker preflight may build the evaluation image from the repo Dockerfile, then must smoke-test the image with mounted Codex/tool binaries before model execution.
 - Docker-socket execution from a Dockerized Hermes agent must translate nested `docker run` bind sources from the agent-visible `/opt/data` tree at runtime, without recording actual host paths in publishable artifacts unless a record is explicitly marked private.
@@ -82,6 +85,7 @@ Software-quality scoring is owned by `software-quality-gates.md`.
 - Decision (2026-07-03): Parallel Codex batch execution uses rsync-materialized lane roots by default so dirty or untracked evaluation setup is snapshotted without sharing mutable fixture checkouts.
 - Decision (2026-07-07): Continuous workflow simulation is the primary Phase 2 evidence path; cumulative provider-billed workflow usage is the primary metric, and isolated task runs are sanity/debug evidence only.
 - Decision (2026-07-08): Completed workflow-session runs keep a compact four-file evidence bundle instead of committing materialized checkouts, virtualenvs, Codex homes, or split per-task logs.
+- Decision (2026-07-08): The human-facing workflow-evaluation runbook is maintained by rendering active registry data and validating the rendered file, rather than by hand-maintaining a parallel Phase 2 suite folder.
 
 ## Rationale
 
@@ -100,6 +104,7 @@ The repo needs accounting boundaries that expose those tradeoffs.
 - Update this doc when `templates/workflow-session-record.json` changes schema.
 - Update this doc when the Phase 2 benchmark plan changes required metrics.
 - Keep workflow protocol wording aligned with the repo-local `benchmark-protocol-writer` skill.
+- Regenerate `docs/evaluations/workflow-evaluation-runbook.md` after active sequence or fixture registry changes.
 
 ## Source References
 
@@ -107,9 +112,11 @@ The repo needs accounting boundaries that expose those tradeoffs.
 - ../../../../docs/evaluations/phase-2-benchmark-plan.md
 - ../../../../docs/evaluations/token-usage-and-quality-standards.md
 - ../../../../docs/evaluations/continuous-workflow-simulation.md
+- ../../../../docs/evaluations/workflow-evaluation-runbook.md
 - ../../../../docs/evaluations/tool-isolation-policy.md
 - ../../../../scripts/audit_tool_isolation.py
 - ../../../../scripts/extract_codex_usage.py
+- ../../../../scripts/update_workflow_runbook.py
 - ../../../../scripts/run_codex_evaluation_batch.py
 - ../../../../scripts/run_codex_fixture_evaluation.py
 - ../../../../templates/evaluation-record.md

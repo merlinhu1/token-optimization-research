@@ -2,8 +2,8 @@
 # Run the paired baseline + LeanCTX sequential workflow evaluation for one sequence.
 #
 # Usage:
-#   scripts/run_sequential_workflow_pair.sh requests-maintenance-sequence-v1
-#   REPLICATE_INDEX=1 scripts/run_sequential_workflow_pair.sh flask-maintenance-sequence-v1 --timeout-per-task 2400
+#   scripts/run_sequential_workflow_pair.sh terraform-maintenance-sequence-v1
+#   REPLICATE_INDEX=1 scripts/run_sequential_workflow_pair.sh beets-maintenance-sequence-v1 --timeout-per-task 2400
 #
 # Extra arguments are passed through to scripts/run_codex_workflow_evaluation.py.
 set -euo pipefail
@@ -20,9 +20,9 @@ Environment:
   REPLICATE_INDEX   replicate index to pass to both lanes (default: 0)
 
 Examples:
-  scripts/run_sequential_workflow_pair.sh requests-maintenance-sequence-v1
-  REPLICATE_INDEX=1 scripts/run_sequential_workflow_pair.sh flask-maintenance-sequence-v1 --timeout-per-task 2400
-  scripts/run_sequential_workflow_pair.sh requests-maintenance-sequence-v1 --source-codex-home /path/to/.codex
+  scripts/run_sequential_workflow_pair.sh terraform-maintenance-sequence-v1
+  REPLICATE_INDEX=1 scripts/run_sequential_workflow_pair.sh beets-maintenance-sequence-v1 --timeout-per-task 2400
+  scripts/run_sequential_workflow_pair.sh terraform-maintenance-sequence-v1 --source-codex-home /path/to/.codex
 
 Useful discovery:
   python3 scripts/run_codex_workflow_evaluation.py --list-sequences
