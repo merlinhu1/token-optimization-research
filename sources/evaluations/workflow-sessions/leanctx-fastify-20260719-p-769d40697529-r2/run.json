@@ -1,0 +1,521 @@
+{
+  "session_id": "leanctx-fastify-20260719-p-769d40697529-r2",
+  "study_id": "phase-2-sequential-workflow-v1",
+  "experiment_group_id": "fastify-fastify-integrated-leanctx-codex-hybrid-v1-769d40697529-sequential-workflow-r2",
+  "replicate_index": 2,
+  "frozen_protocol": {
+    "protocol_id": "fastify-lifecycle-sequence-v0-integrated-leanctx-codex-hybrid-v1-a5d64d077536",
+    "path": "sources/evaluations/protocols/fastify-lifecycle-sequence-v0-integrated-leanctx-codex-hybrid-v1-a5d64d077536.json",
+    "sha256": "4796c2b223b0ec00d833a813adce360f31e690a4064749fe56d55ca146e980b5"
+  },
+  "baseline_pool": {
+    "protocol_version": "baseline-pool-v1",
+    "protocol_fingerprint": "769d40697529",
+    "identity_policy": "frozen-protocol-and-replicate; execution date is metadata only"
+  },
+  "selected_execution": {
+    "descriptor_sha256": "ce387d16174d4fda225eace0953e8afd210fc2da272f62ebde368b611339e65d",
+    "descriptor": {
+      "version": "execution-condition-v1",
+      "sequence_id": "fastify-lifecycle-sequence-v0",
+      "execution_role": "individual_tool_treatment",
+      "selected_profile": {
+        "profile_id": "integrated-leanctx-codex-hybrid-v1",
+        "profile_type": "individual_tool",
+        "component_ids": [
+          "integrated-leanctx-codex-hybrid-v1"
+        ],
+        "enabled_surfaces": [
+          "retrieval-context",
+          "mcp",
+          "codex-instructions",
+          "shell-output-compression"
+        ],
+        "disabled_overlaps": [
+          "all unlisted surfaces"
+        ],
+        "registry_entry_sha256": "a706cf6a6c1b782dc8ac0ba0b182c0ebd344af03a0a8a24c93a6c89a265b23db",
+        "registry_entry": {
+          "id": "integrated-leanctx-codex-hybrid-v1",
+          "profile_type": "individual_tool",
+          "objective_scope": "individual_tool_effectiveness",
+          "status": "screening-shortlist",
+          "enabled_surfaces": [
+            "retrieval-context",
+            "mcp",
+            "codex-instructions",
+            "shell-output-compression"
+          ],
+          "disabled_overlaps": [
+            "all unlisted surfaces"
+          ],
+          "components": [
+            {
+              "component_id": "integrated-leanctx-codex-hybrid-v1",
+              "surface": "retrieval-context+mcp+instructions+shell-output-compression",
+              "role": "individual_tool"
+            }
+          ],
+          "install": {
+            "policy": "Run the pinned LeanCTX official Codex initializer against lane-private CODEX_HOME, verify with doctor, warm the repository index, and require an initialize plus tools/list handshake."
+          },
+          "reset": {
+            "policy": "Delete lane-private CODEX_HOME, LeanCTX data/index, instructions, and shell integration state after evidence capture."
+          },
+          "evaluation_protocol": {
+            "tool_use_policy": "natural",
+            "tool_state": "warm-index",
+            "integration_state": "official-codex-hybrid",
+            "instruction_policy": "product-authored-guidance"
+          },
+          "notes": "Versioned correction of the historical MCP-only LeanCTX profile. Measures the official hybrid product surface rather than a hand-wired partial ablation."
+        }
+      },
+      "model_facing_prompts": {
+        "rendering_contract": "sequential-model-facing-prompts-v2",
+        "profile_guidance_sha256": "cb08dba8b361975eb89669cc77d206861b05fc26b161a9215337dbb2d30a6366",
+        "tasks": [
+          {
+            "task_id": "fastify-lifecycle-feature-v0",
+            "order": 1,
+            "rendered_prompt_sha256": "664092271195c07db968eb429b9a89fd5a0ee799c117aa9948a7c28d91bfe198"
+          },
+          {
+            "task_id": "fastify-lifecycle-refactor-v0",
+            "order": 2,
+            "rendered_prompt_sha256": "9c2087dc09a311d8f30c4f900a5d4d137ecbe5097a5c83b89ab36c73f95d39da"
+          },
+          {
+            "task_id": "fastify-lifecycle-review-v0",
+            "order": 3,
+            "rendered_prompt_sha256": "89c678d4dbdbfeb8474ce1ba90a4e5ad372f14a618eade2611ba385e2d82c05a"
+          }
+        ]
+      },
+      "tool_adapter": {
+        "tool_id": "leanctx-codex-hybrid-v1",
+        "tool_manifest": "scripts/run_codex_fixture_evaluation.py:TOOL_CONFIGS",
+        "tool_manifest_sha256": "6fa8271b89a577706ea0bbffcc8e4521831f41b646ed9519369efee3642fe41c",
+        "tool_config": {
+          "display_name": "LeanCTX official Codex hybrid integration v1",
+          "lane_name": "integrated-leanctx-codex-hybrid-v1",
+          "surface": "retrieval/context-mcp+shell-output-compression+instructions",
+          "mcp_server": "lean-ctx",
+          "allowed_terms": [
+            "lean-ctx",
+            "mcp_lean_ctx",
+            "ctx_read",
+            "ctx_search",
+            "ctx_shell",
+            "ctx_graph"
+          ],
+          "data_dir_name": "leanctx-codex-hybrid-v1",
+          "mcp_command": "/opt/data/bin/lean-ctx",
+          "mcp_args": [],
+          "env": {
+            "LEAN_CTX_DATA_DIR": "{tool_data_dir}"
+          },
+          "mounts": [
+            "/opt/data/bin"
+          ],
+          "diff_exclude_paths": [
+            "AGENTS.md",
+            "LEAN-CTX.md"
+          ],
+          "host_integration": {
+            "install_commands": [
+              [
+                "/opt/data/bin/lean-ctx",
+                "init",
+                "--agent",
+                "codex"
+              ]
+            ],
+            "verify_commands": [
+              [
+                "/opt/data/bin/lean-ctx",
+                "--version"
+              ]
+            ],
+            "required_files": [
+              "{codex_home}/config.toml",
+              "{codex_home}/hooks.json",
+              "{codex_home}/instructions.md",
+              "{codex_home}/skills/lean-ctx/SKILL.md",
+              "{repo}/AGENTS.md",
+              "{repo}/LEAN-CTX.md"
+            ],
+            "timeout_seconds": 300
+          },
+          "mcp_handshake": {
+            "required": true,
+            "method": "initialize-and-tools-list",
+            "timeout_seconds": 60
+          },
+          "default_tool_state": "warm-index",
+          "warmup": {
+            "kind": "index",
+            "command": [
+              "/opt/data/bin/lean-ctx",
+              "index",
+              "build",
+              "{repo}"
+            ],
+            "output_name": "lean-ctx-warmup-output.txt",
+            "metadata_name": "lean-ctx-warmup-metadata.json",
+            "timeout_seconds": 1200
+          }
+        },
+        "tool_config_sha256": "f42cccbcb873313cfef4cdaff4c4f9f2ec288523606a5af366970fda9607eee7",
+        "tool_state": "warm-index",
+        "tool_use_policy": "natural",
+        "command_identity": {
+          "kind": "mcp_command",
+          "command": [
+            "/opt/data/bin/lean-ctx"
+          ]
+        },
+        "binary_identity": {
+          "executable_token": "/opt/data/bin/lean-ctx",
+          "resolved_path": "/opt/data/bin/lean-ctx",
+          "realpath": "/opt/data/bin/lean-ctx",
+          "sha256": "475e89e495c31824ef324f92e695706ddbd890dff2c3b55b807cd1f8526c6db9",
+          "metadata": {
+            "size": 90124616,
+            "mode": "-rwxr-xr-x",
+            "uid": 10000,
+            "gid": 10000,
+            "mtime_ns": 1783086783177197301
+          },
+          "version": {
+            "command": [
+              "/opt/data/bin/lean-ctx",
+              "--version"
+            ],
+            "environment_path": "/opt/data/.local/bin:/opt/data/opt/go/bin:/opt/data/opt/uv:/opt/data/opt/node-v24.18.0-linux-x64/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+            "captured": true,
+            "exit_code": 0,
+            "output": "lean-ctx 3.8.18 (official, https://github.com/yvgude/lean-ctx)",
+            "truncated": false
+          }
+        },
+        "source_identity": [
+          {
+            "path": "/opt/data/bin",
+            "exists": true,
+            "kind": "directory"
+          }
+        ]
+      },
+      "runtime": {
+        "docker_image": "token-eval-codex:latest",
+        "docker_image_identity": {
+          "image_ref": "token-eval-codex:latest",
+          "image_id": "sha256:6f86d01f2c63f5029c6bb874d8f3694c24d5cd567e3d09413eccc956ba3feafe",
+          "repo_digests": [
+            "token-eval-codex@sha256:6f86d01f2c63f5029c6bb874d8f3694c24d5cd567e3d09413eccc956ba3feafe"
+          ],
+          "repo_tags": [
+            "token-eval-codex:latest"
+          ]
+        },
+        "dockerfile_path": "sources/evaluations/fixtures/container/Dockerfile",
+        "dockerfile_sha256": "47c91967ce25014ce54879514f51d2ff0326651be1087209115eff4d358226b3",
+        "fixture_runner_path": "scripts/run_codex_fixture_evaluation.py",
+        "fixture_runner_sha256": "6fa8271b89a577706ea0bbffcc8e4521831f41b646ed9519369efee3642fe41c",
+        "mcp_probe_path": "scripts/probe_mcp_stdio.py",
+        "mcp_probe_sha256": "7c06ea36ee5cac933a97140b84a41405fc99b45152388e8d7c6659136af698fd",
+        "codex_entrypoint_path": "sources/evaluations/fixtures/container/codex-entrypoint.sh",
+        "codex_entrypoint_sha256": "8715fe37cb1fa3823f5f05493bc9681ce7ffc72126dfec4d64d448762c550c3c",
+        "timeout_seconds_per_task": 3600,
+        "network_isolation": {
+          "provider_access": true,
+          "model_shell_network_access": false,
+          "model_shell_enforcement": "seccomp denies AF_INET and AF_INET6 socket creation for the shell process and descendants",
+          "codex_web_search": "disabled",
+          "external_retrieval_audit": "fail-closed"
+        },
+        "isolation_policy": "fresh lane-specific Codex home/tool data; provider-only network with model shell and Codex web search disabled; sequential one-task prompt delivery; concealed tests removed before model-visible root commit"
+      },
+      "dependencies": {
+        "command": "npm install --ignore-scripts --no-audit --no-fund",
+        "command_sha256": "7493d616f26e72b22eb5a21beafa12a6717ebf5b93a7a75e709de65e7323cc41",
+        "lockfiles": [
+          {
+            "path": "package.json",
+            "snapshot_sha256": "b273320af1bb4cfc0f9334457c8e3b1d035fde0da14f9db65e8ef97d361d0be3",
+            "current_fixture_sha256": null
+          }
+        ]
+      },
+      "agent_condition": {
+        "runtime_id": "codex-cli",
+        "provider": "openai",
+        "model": "gpt-5.6-luna",
+        "model_condition_id": "codex-openai-gpt-5-6-luna-xhigh",
+        "reasoning_effort": "xhigh",
+        "codex_version_condition": "captured-at-run-and-bound-to-record"
+      },
+      "isolation": {
+        "prompt_delivery": "sequential-one-task-at-a-time",
+        "seed_delivery_mode": "preseeded-composite",
+        "future_tasks_visible": false,
+        "future_seed_regressions_visible": true,
+        "controller_verification": "final-only",
+        "verifier_assets_model_visible": false,
+        "model_concealed_paths": []
+      },
+      "baseline_pool_reference": {
+        "protocol_version": "baseline-pool-v1",
+        "protocol_fingerprint": "769d40697529",
+        "comparison_policy": "paired baseline and treatment must share this baseline pool fingerprint and replicate"
+      }
+    }
+  },
+  "docker_image_identity": {
+    "image_ref": "token-eval-codex:latest",
+    "image_id": "sha256:6f86d01f2c63f5029c6bb874d8f3694c24d5cd567e3d09413eccc956ba3feafe",
+    "repo_digests": [
+      "token-eval-codex@sha256:6f86d01f2c63f5029c6bb874d8f3694c24d5cd567e3d09413eccc956ba3feafe"
+    ],
+    "repo_tags": [
+      "token-eval-codex:latest"
+    ]
+  },
+  "tool_adapter_identity": {
+    "tool_id": "leanctx-codex-hybrid-v1",
+    "tool_manifest": "scripts/run_codex_fixture_evaluation.py:TOOL_CONFIGS",
+    "tool_manifest_sha256": "6fa8271b89a577706ea0bbffcc8e4521831f41b646ed9519369efee3642fe41c",
+    "tool_config": {
+      "display_name": "LeanCTX official Codex hybrid integration v1",
+      "lane_name": "integrated-leanctx-codex-hybrid-v1",
+      "surface": "retrieval/context-mcp+shell-output-compression+instructions",
+      "mcp_server": "lean-ctx",
+      "allowed_terms": [
+        "lean-ctx",
+        "mcp_lean_ctx",
+        "ctx_read",
+        "ctx_search",
+        "ctx_shell",
+        "ctx_graph"
+      ],
+      "data_dir_name": "leanctx-codex-hybrid-v1",
+      "mcp_command": "/opt/data/bin/lean-ctx",
+      "mcp_args": [],
+      "env": {
+        "LEAN_CTX_DATA_DIR": "{tool_data_dir}"
+      },
+      "mounts": [
+        "/opt/data/bin"
+      ],
+      "diff_exclude_paths": [
+        "AGENTS.md",
+        "LEAN-CTX.md"
+      ],
+      "host_integration": {
+        "install_commands": [
+          [
+            "/opt/data/bin/lean-ctx",
+            "init",
+            "--agent",
+            "codex"
+          ]
+        ],
+        "verify_commands": [
+          [
+            "/opt/data/bin/lean-ctx",
+            "--version"
+          ]
+        ],
+        "required_files": [
+          "{codex_home}/config.toml",
+          "{codex_home}/hooks.json",
+          "{codex_home}/instructions.md",
+          "{codex_home}/skills/lean-ctx/SKILL.md",
+          "{repo}/AGENTS.md",
+          "{repo}/LEAN-CTX.md"
+        ],
+        "timeout_seconds": 300
+      },
+      "mcp_handshake": {
+        "required": true,
+        "method": "initialize-and-tools-list",
+        "timeout_seconds": 60
+      },
+      "default_tool_state": "warm-index",
+      "warmup": {
+        "kind": "index",
+        "command": [
+          "/opt/data/bin/lean-ctx",
+          "index",
+          "build",
+          "{repo}"
+        ],
+        "output_name": "lean-ctx-warmup-output.txt",
+        "metadata_name": "lean-ctx-warmup-metadata.json",
+        "timeout_seconds": 1200
+      }
+    },
+    "tool_config_sha256": "f42cccbcb873313cfef4cdaff4c4f9f2ec288523606a5af366970fda9607eee7",
+    "tool_state": "warm-index",
+    "tool_use_policy": "natural",
+    "command_identity": {
+      "kind": "mcp_command",
+      "command": [
+        "/opt/data/bin/lean-ctx"
+      ]
+    },
+    "binary_identity": {
+      "executable_token": "/opt/data/bin/lean-ctx",
+      "resolved_path": "/opt/data/bin/lean-ctx",
+      "realpath": "/opt/data/bin/lean-ctx",
+      "sha256": "475e89e495c31824ef324f92e695706ddbd890dff2c3b55b807cd1f8526c6db9",
+      "metadata": {
+        "size": 90124616,
+        "mode": "-rwxr-xr-x",
+        "uid": 10000,
+        "gid": 10000,
+        "mtime_ns": 1783086783177197301
+      },
+      "version": {
+        "command": [
+          "/opt/data/bin/lean-ctx",
+          "--version"
+        ],
+        "environment_path": "/opt/data/.local/bin:/opt/data/opt/go/bin:/opt/data/opt/uv:/opt/data/opt/node-v24.18.0-linux-x64/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+        "captured": true,
+        "exit_code": 0,
+        "output": "lean-ctx 3.8.18 (official, https://github.com/yvgude/lean-ctx)",
+        "truncated": false
+      }
+    },
+    "source_identity": [
+      {
+        "path": "/opt/data/bin",
+        "exists": true,
+        "kind": "directory"
+      }
+    ]
+  },
+  "profile_id": "integrated-leanctx-codex-hybrid-v1",
+  "workflow_sequence_id": "fastify-lifecycle-sequence-v0",
+  "fixture_id": "medium-fastify-fastify",
+  "repository_path": "sources/evaluations/workflow-sessions/leanctx-fastify-20260719-p-769d40697529-r2/project/repo",
+  "codex_exit_codes": [
+    0,
+    0,
+    0
+  ],
+  "final_verifier_exit_code": 0,
+  "tool_isolation_audit_exit_code": 0,
+  "verifier_integrity_passed": true,
+  "thread_continuity_errors": [],
+  "seed_delivery": {
+    "mode": "preseeded-composite",
+    "future_seed_regressions_visible": true,
+    "preseeded_task_orders": [
+      1,
+      2,
+      3
+    ],
+    "pending_seed_orders": []
+  },
+  "accepted": true,
+  "timeout_seconds": 10800,
+  "codex_version": "codex-cli 0.144.0",
+  "token_usage": {
+    "fresh_input_tokens": 210907,
+    "cached_input_tokens": 4499200,
+    "cache_write_tokens": null,
+    "output_tokens": 25164,
+    "reasoning_tokens": 14788,
+    "total_provider_tokens": 4735271
+  },
+  "usage_warnings": [],
+  "per_task_results": [
+    {
+      "task_id": "fastify-lifecycle-feature-v0",
+      "task_class": "feature-implementation",
+      "task_alias": "task-01",
+      "order": 1,
+      "agent_attempted": true,
+      "codex_exit_code": 0,
+      "controller_verification": "passed",
+      "accepted": true,
+      "task_delta": "sources/evaluations/workflow-sessions/leanctx-fastify-20260719-p-769d40697529-r2/task-01-agent.diff",
+      "usage_events": "sources/evaluations/workflow-sessions/leanctx-fastify-20260719-p-769d40697529-r2/task-01-codex-events.jsonl",
+      "operational_retry_count": 0,
+      "verifier_exit_code": 0,
+      "verifier_passed": true
+    },
+    {
+      "task_id": "fastify-lifecycle-refactor-v0",
+      "task_class": "behavior-preserving-refactor",
+      "task_alias": "task-02",
+      "order": 2,
+      "agent_attempted": true,
+      "codex_exit_code": 0,
+      "controller_verification": "passed",
+      "accepted": true,
+      "task_delta": "sources/evaluations/workflow-sessions/leanctx-fastify-20260719-p-769d40697529-r2/task-02-agent.diff",
+      "usage_events": "sources/evaluations/workflow-sessions/leanctx-fastify-20260719-p-769d40697529-r2/task-02-codex-events.jsonl",
+      "operational_retry_count": 0,
+      "verifier_exit_code": 0,
+      "verifier_passed": true
+    },
+    {
+      "task_id": "fastify-lifecycle-review-v0",
+      "task_class": "code-review-correction",
+      "task_alias": "task-03",
+      "order": 3,
+      "agent_attempted": true,
+      "codex_exit_code": 0,
+      "controller_verification": "passed",
+      "accepted": true,
+      "task_delta": "sources/evaluations/workflow-sessions/leanctx-fastify-20260719-p-769d40697529-r2/task-03-agent.diff",
+      "usage_events": "sources/evaluations/workflow-sessions/leanctx-fastify-20260719-p-769d40697529-r2/task-03-codex-events.jsonl",
+      "operational_retry_count": 0,
+      "verifier_exit_code": 0,
+      "verifier_passed": true
+    }
+  ],
+  "prompt_delivery": {
+    "mode": "sequential-one-task-at-a-time",
+    "future_tasks_visible": false,
+    "future_prompts_materialized_lazily": true,
+    "seed_delivery_mode": "preseeded-composite",
+    "future_seed_regressions_visible": true,
+    "controller_verification": "final-only",
+    "codex_thread_id": "019f7b17-419f-75c0-ade0-08479f259253",
+    "task_prompt_evidence": "sources/evaluations/workflow-sessions/leanctx-fastify-20260719-p-769d40697529-r2/evidence.jsonl.gz"
+  },
+  "leakage_controls": {
+    "seed_origin_concealed": true,
+    "seed_patches_model_visible": false,
+    "git_baseline_true_root_at_lane_start": true,
+    "fixed_snapshot_objects_model_visible": false,
+    "pre_seed_reflog_entries_visible": false,
+    "concealment_verification_passed": true,
+    "task_directories_model_visible": false,
+    "verifier_assets_model_visible": false,
+    "model_writable_surface": "target repository plus isolated model-output directory",
+    "verifier_integrity_passed": true,
+    "verifier_integrity_evidence": "sources/evaluations/workflow-sessions/leanctx-fastify-20260719-p-769d40697529-r2/evidence.jsonl.gz#verifier-integrity.json",
+    "model_prompts_sanitized": true,
+    "upstream_remote_removed_from_model_facing_repo": true,
+    "broken_start_committed_as_local_baseline": true,
+    "remaining_limitations": [
+      "Future regression code is present from lane start, while future prompts and concealed acceptance assets remain controller-only.",
+      "Task semantics and verifier names may still be searchable if the model intentionally uses external network access."
+    ]
+  },
+  "artifacts": {
+    "artifact_contract": "compact-v1-four-files",
+    "run_record": "sources/evaluations/workflow-sessions/leanctx-fastify-20260719-p-769d40697529-r2/run.json",
+    "final_diff": "sources/evaluations/workflow-sessions/leanctx-fastify-20260719-p-769d40697529-r2/changes.diff",
+    "final_diff_basis": "ordered cumulative checkpoints plus final cumulative source diff from one composite root",
+    "evidence_bundle": "sources/evaluations/workflow-sessions/leanctx-fastify-20260719-p-769d40697529-r2/evidence.jsonl.gz",
+    "manifest": "sources/evaluations/workflow-sessions/leanctx-fastify-20260719-p-769d40697529-r2/manifest.sha256"
+  },
+  "run_dir": "sources/evaluations/workflow-sessions/leanctx-fastify-20260719-p-769d40697529-r2"
+}
