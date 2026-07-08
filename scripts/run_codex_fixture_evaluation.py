@@ -24,7 +24,7 @@ ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_CODEX_HOME_ROOT = Path("/opt/data/eval-codex-homes")
 DEFAULT_SOURCE_CODEX_HOME = Path("/opt/data/home/.codex")
 DEFAULT_DOCKER_IMAGE = "token-eval-codex:latest"
-DEFAULT_DOCKERFILE = ROOT / "sources" / "evaluations" / "large-projects" / "container" / "Dockerfile"
+DEFAULT_DOCKERFILE = ROOT / "sources" / "evaluations" / "fixtures" / "container" / "Dockerfile"
 FORBIDDEN_BASELINE_TERMS = [
     "lean-ctx",
     "mcp_lean_ctx",
