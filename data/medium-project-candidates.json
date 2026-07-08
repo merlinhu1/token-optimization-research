@@ -1,0 +1,86 @@
+{
+  "schema_version": 1,
+  "description": "Active public medium-project fixtures for lower-cost primary objective token-saving experiments. GitHub metadata was fetched via gh api on 2026-07-03; commits are pinned per task from real upstream fixes.",
+  "selection_policy": {
+    "include": "Mature, active, public repositories smaller than Django/Terraform but with realistic issue-derived software-engineering task surfaces and bounded verifiers.",
+    "exclude": "Toy fixtures, archived repositories, user-owned projects, and projects without repeatable targeted tests.",
+    "promotion_required": "Pin real fixed commits, freeze setup/reset/verifier commands, and preserve planned baseline/treatment records before execution.",
+    "benchmark_inspiration": "SWE-bench-style real issue-derived regression repair: fixed commit + seeded production regression + upstream tests.",
+    "target_matrix": "medium TypeScript/JavaScript Fastify plus medium Python Beets; avoid foundational Python fixtures such as Requests, pytest, pip, Black, Pydantic, SQLAlchemy, and Sphinx for the default Python slot.",
+    "active_fixture_count": "Existing Flask and Requests fixtures remain historical/qualified, but the target replacement matrix is Fastify for TypeScript/JavaScript and Beets for Python once their five-task workflows are qualified."
+  },
+  "candidates": [
+    {
+      "id": "medium-fastify-fastify",
+      "github": "fastify/fastify",
+      "url": "https://github.com/fastify/fastify",
+      "language": "JavaScript/TypeScript",
+      "size_kb": 10327,
+      "stars": 36639,
+      "forks": 2771,
+      "open_issues": 72,
+      "default_branch": "main",
+      "pushed_at": "2026-07-07T10:15:35Z",
+      "role": "target medium TypeScript/JavaScript fixture candidate",
+      "why": "Active Node server framework with realistic routing, schema, plugin, hook, and reply-serialization behavior; good replacement for the Python Flask slot without using another Python web framework.",
+      "task_classes": [
+        "large-codebase-navigation",
+        "multi-file-refactor",
+        "build-repair"
+      ],
+      "surface": "retrieval-context",
+      "setup_policy": "Clone a pinned commit, install Node dependencies with the repo-pinned package manager, apply seeded production regressions, and freeze targeted test commands. Current candidate scaffold provides setup/reset/smoke scripts at the fixture root.",
+      "verifier_policy": "Use bounded npm/pnpm test selectors for affected Fastify subsystems and record any package-manager or Node-version constraints explicitly.",
+      "selection_status": "target-fixture-candidate",
+      "selected_reason": "Preferred medium TS/JS slot for the target matrix.",
+      "pinned_task_commits": [
+        "94bcbcc6e2ef3b8e8f8e8797fe551ccbe7b942fd"
+      ],
+      "tasks": [
+        "fastify-route-schema-regression",
+        "fastify-plugin-lifecycle-regression",
+        "fastify-reply-serialization-regression",
+        "fastify-hook-order-regression",
+        "fastify-error-handler-regression"
+      ],
+      "qualification_status": "active-reproduction-flow",
+      "workflow_sequence_id": "fastify-maintenance-sequence-v1"
+    },
+    {
+      "id": "medium-beetbox-beets",
+      "github": "beetbox/beets",
+      "url": "https://github.com/beetbox/beets",
+      "language": "Python",
+      "size_kb": 35127,
+      "stars": 15360,
+      "forks": 2054,
+      "open_issues": 638,
+      "default_branch": "master",
+      "pushed_at": "2026-07-07T21:09:30Z",
+      "role": "target medium Python fixture candidate",
+      "why": "Real Python application with CLI, library, and plugin surfaces that is less foundational than Requests, pytest, pip, Black, Pydantic, SQLAlchemy, or Sphinx while still offering realistic bounded tests.",
+      "task_classes": [
+        "large-codebase-navigation",
+        "multi-file-refactor",
+        "build-repair"
+      ],
+      "surface": "retrieval-context",
+      "setup_policy": "Clone a pinned commit, create a venv, install bounded test dependencies, apply seeded production regressions, and freeze targeted pytest commands. Current candidate scaffold provides setup/reset/smoke scripts at the fixture root.",
+      "verifier_policy": "Use targeted pytest selectors for affected CLI/library/plugin behavior; avoid full-suite runs unless needed for diagnosis.",
+      "selection_status": "target-fixture-candidate",
+      "selected_reason": "Preferred medium Python slot for the target matrix because it is realistic but not a foundational Python ecosystem project.",
+      "pinned_task_commits": [
+        "8ddae794d30e9984be904f80459614155c6592d9"
+      ],
+      "tasks": [
+        "beets-cli-option-regression",
+        "beets-plugin-dispatch-regression",
+        "beets-metadata-normalization-regression",
+        "beets-import-state-regression",
+        "beets-query-filter-regression"
+      ],
+      "qualification_status": "active-reproduction-flow",
+      "workflow_sequence_id": "beets-maintenance-sequence-v1"
+    }
+  ]
+}

@@ -1,7 +1,7 @@
 ---
 status: active
 doc_type: route-index
-last_reviewed: 2026-06-29
+last_reviewed: 2026-07-07
 ---
 
 # Truthmark Areas
@@ -72,18 +72,27 @@ truth_documents:
 
 Code surface:
 - data/evaluations.json
+- data/workflow-task-sequences.json
+- data/workflow-sessions.json
 - docs/evaluations/**
+- docs/evaluations/sequential-workflow-runner.md
 - scripts/audit_tool_isolation.py
 - scripts/extract_codex_usage.py
 - scripts/run_codex_evaluation_batch.py
 - scripts/run_codex_fixture_evaluation.py
-- sources/evaluations/large-projects/container/Dockerfile
+- scripts/run_codex_workflow_evaluation.py
+- scripts/run_sequential_workflow_matrix.py
+- scripts/run_sequential_workflow_pair.sh
 - sources/evaluations/large-projects/**/runs/planned/*.json
+- sources/evaluations/large-projects/container/Dockerfile
+
 - prompts/evaluator.md
 - templates/evaluation-record.md
 - templates/evaluation-task.md
 - templates/evaluation-run-record.json
+- templates/workflow-session-record.json
 - schemas/evaluation-run-record.schema.json
+- schemas/workflow-session-record.schema.json
 - docs/tool-dossiers/**
 - .agents/skills/benchmark-protocol-writer.md
 

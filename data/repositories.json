@@ -63,7 +63,7 @@
       ],
       "technique_coverage": [],
       "evidence_label": "`reproducible-maintainer-benchmark`",
-      "reported_result": "Maintainer reports 20–50% fewer code-reading tokens and a seven-task cost comparison of $6.64 versus $12.44 for Claude Code, with transcripts published.",
+      "reported_result": "Maintainer reports 20\u201350% fewer code-reading tokens and a seven-task cost comparison of $6.64 versus $12.44 for Claude Code, with transcripts published.",
       "main_caveat": "The maintainers explicitly call the benchmark observational rather than scientific; one task was slightly more expensive.",
       "sources": [
         "sources/seed-catalogs/AI-Coding-Token-Savers-Catalog-Revised.md",
@@ -116,7 +116,7 @@
       "technique_ids": [],
       "technique_coverage": [],
       "evidence_label": "`maintainer-measurement`",
-      "reported_result": "Maintainer reports all nine skill descriptions consume about 1.1K context tokens, described as 16× lighter than spec-kit, and caveman-encoded prose is roughly 75% smaller.",
+      "reported_result": "Maintainer reports all nine skill descriptions consume about 1.1K context tokens, described as 16\u00d7 lighter than spec-kit, and caveman-encoded prose is roughly 75% smaller.",
       "main_caveat": "The comparison is configuration-level, not an end-to-end task benchmark; a durable spec can still become stale or add overhead on small changes.",
       "sources": [
         "sources/seed-catalogs/AI-Coding-Token-Savers-Catalog-Revised.md",
@@ -125,39 +125,6 @@
       "reviewed_at": "2026-06-25",
       "review_depth": "seed-catalog",
       "status": "normalized-from-seed"
-    },
-    {
-      "id": "JuliusBrussee__caveman-code",
-      "name": "caveman-code",
-      "url": "https://github.com/JuliusBrussee/caveman-code",
-      "kind": "agent-runtime-or-routing",
-      "source_scope": "`direct`",
-      "catalog_section": "Agent runtimes, routing, and workflow orchestration",
-      "summary": "A replacement terminal coding agent with terse replies, per-tool output budgets, read deduplication, optional RTK integration, repository maps, model-role splitting, and persistent memory.",
-      "mechanism": "A replacement terminal coding agent with terse replies, per-tool output budgets, read deduplication, optional RTK integration, repository maps, model-role splitting, and persistent memory.",
-      "technique_ids": [
-        "T09-model-routing-cache-economics"
-      ],
-      "technique_coverage": [],
-      "evidence_label": "`source-logic`",
-      "reported_result": "On a published 25-task MicroBench using GPT-5.5 xhigh, the maintainer reports 524K fresh tokens versus Codex's 1.01M, with 14/25 tasks passing versus 15/25 for Codex.",
-      "main_caveat": "It is a replacement agent rather than a drop-in layer; the comparison is maintainer-run, pass rates are low for both arms, and fresh-token accounting may not match provider bills under caching.",
-      "sources": [
-        "sources/seed-catalogs/AI-Coding-Token-Savers-Catalog-Revised.md",
-        "https://github.com/JuliusBrussee/caveman-code",
-        "docs/tool-dossiers/juliusbrussee-caveman-code.md",
-        "sources/discovery/2026-06-26-final-lead-uplift-source-structures.json",
-        "sources/discovery/2026-06-26-final-lead-uplift-code-inspection.json"
-      ],
-      "reviewed_at": "2026-06-26",
-      "review_depth": "source-logic",
-      "status": "source-logic-reviewed",
-      "source_snapshot": {
-        "status": "pinned-commit",
-        "commit": "74d599aa7a61",
-        "commit_url": "https://github.com/JuliusBrussee/caveman-code/commit/74d599aa7a61",
-        "source_structure_artifact": "sources/discovery/2026-06-26-final-lead-uplift-source-structures.json"
-      }
     },
     {
       "id": "ww-w-ai__claude-code-token-saver",
@@ -195,7 +162,7 @@
       ],
       "technique_coverage": [],
       "evidence_label": "`maintainer-projection`",
-      "reported_result": "Maintainer projects 35–45% lower net output, including 60–70% less prose and no reduction in code tokens.",
+      "reported_result": "Maintainer projects 35\u201345% lower net output, including 60\u201370% less prose and no reduction in code tokens.",
       "main_caveat": "The figures are projections rather than a published measured benchmark, and the skill does not address input, reasoning, or tool-output tokens.",
       "sources": [
         "sources/seed-catalogs/AI-Coding-Token-Savers-Catalog-Revised.md",
@@ -357,7 +324,7 @@
       ],
       "technique_coverage": [],
       "evidence_label": "`maintainer-examples`",
-      "reported_result": "Maintainer claims roughly 60–70% fewer output tokens and provides before-and-after examples, but no reviewed task-level benchmark was found.",
+      "reported_result": "Maintainer claims roughly 60\u201370% fewer output tokens and provides before-and-after examples, but no reviewed task-level benchmark was found.",
       "main_caveat": "The claim is output-only and example-based; it does not measure reasoning, tool calls, total session tokens, or answer-quality regressions.",
       "sources": [
         "sources/seed-catalogs/AI-Coding-Token-Savers-Catalog-Revised.md",
@@ -601,7 +568,7 @@
       ],
       "technique_coverage": [],
       "evidence_label": "`maintainer-benchmark`",
-      "reported_result": "Maintainer examples on Redis and Linux report roughly 88–99% fewer tokens for targeted symbol retrieval than full-file reads.",
+      "reported_result": "Maintainer examples on Redis and Linux report roughly 88\u201399% fewer tokens for targeted symbol retrieval than full-file reads.",
       "main_caveat": "Depends on Universal Ctags plus custom parsers; static-call and import analysis can be incomplete in dynamic code.",
       "sources": [
         "sources/seed-catalogs/AI-Coding-Token-Savers-Catalog-Revised.md",
@@ -730,7 +697,7 @@
       ],
       "technique_coverage": [],
       "evidence_label": "`source-logic`",
-      "reported_result": "Maintainer benchmarks report 47–92% savings on several agent workloads. Tokbench independently verified 342K tokens removed on wire in an N=1 pilot, but the run still billed 43% more input than native because it took more turns.",
+      "reported_result": "Maintainer benchmarks report 47\u201392% savings on several agent workloads. Tokbench independently verified 342K tokens removed on wire in an N=1 pilot, but the run still billed 43% more input than native because it took more turns.",
       "main_caveat": "Verified per-request compression can be outweighed by longer execution paths. Compression fidelity, cache behavior, and total turns must be measured on the target workload; Tokbench replication was still pending. Fresh pinned source-logic inspection is available; benchmark-audit and reproduction remain required before measured savings or deployment-grade recommendation.",
       "sources": [
         "sources/seed-catalogs/AI-Coding-Token-Savers-Catalog-Revised.md",
@@ -763,7 +730,7 @@
       ],
       "technique_coverage": [],
       "evidence_label": "`reproducible-maintainer-benchmark`",
-      "reported_result": "Maintainer reports 40–70% token-bill reduction, with BFCL and other dataset scripts included for compression and quality checks.",
+      "reported_result": "Maintainer reports 40\u201370% token-bill reduction, with BFCL and other dataset scripts included for compression and quality checks.",
       "main_caveat": "Compression can alter tool schemas or code semantics; per-transform quality should be tested on the target workflow.",
       "sources": [
         "sources/seed-catalogs/AI-Coding-Token-Savers-Catalog-Revised.md",
@@ -1019,7 +986,7 @@
       ],
       "technique_coverage": [],
       "evidence_label": "`source-logic`",
-      "reported_result": "Maintainer reports 60–90% fewer tokens for reads and shell output and cached rereads near 13 tokens. In Tokbench's N=1 external pilot, provider-billed input was 38% above native in MCP mode and 59% above native with the default integration.",
+      "reported_result": "Maintainer reports 60\u201390% fewer tokens for reads and shell output and cached rereads near 13 tokens. In Tokbench's N=1 external pilot, provider-billed input was 38% above native in MCP mode and 59% above native with the default integration.",
       "main_caveat": "The product covers many mechanisms, but end-to-end savings depend on whether agents actually use the optimized surfaces and whether additional tool calls increase total turns. The external benchmark is configuration-specific and single-run. Fresh pinned source-logic inspection is available; benchmark-audit and reproduction remain required before measured savings or deployment-grade recommendation.",
       "sources": [
         "sources/seed-catalogs/AI-Coding-Token-Savers-Catalog-Revised.md",
@@ -1172,7 +1139,7 @@
       ],
       "technique_coverage": [],
       "evidence_label": "`benchmark-suite`",
-      "reported_result": "Pinned Cassandra tasks report 65.1–99.2% reductions for six tools, with exact validators and a second quality-retention layer.",
+      "reported_result": "Pinned Cassandra tasks report 65.1\u201399.2% reductions for six tools, with exact validators and a second quality-retention layer.",
       "main_caveat": "Task-level artifact reduction is not the same as end-to-end session savings; workloads and agent behavior differ.",
       "sources": [
         "sources/seed-catalogs/AI-Coding-Token-Savers-Catalog-Revised.md",
@@ -1297,6 +1264,46 @@
       "status": "normalized-from-seed"
     },
     {
+      "id": "Ayanami1314__swe-pruner",
+      "name": "swe-pruner",
+      "url": "https://github.com/Ayanami1314/swe-pruner",
+      "kind": "research",
+      "source_scope": "`research`",
+      "catalog_section": "Research and prompt compression",
+      "summary": "Task-aware context pruning for coding agents: a lightweight neural skimmer scores code tokens/lines against a query and exposes local service plus agent wrappers for pruning source, file, and command-output context.",
+      "mechanism": "A local `swe-pruner` service accepts `{query, code}`, scores token/line relevance with a Qwen-reranker-derived model, emits pruned code with filtered-line markers and token-count fields, and can be wired into Claude/OpenHands/mini-swe-agent loops through wrapper tools.",
+      "technique_ids": [
+        "T05-prompt-history-context-compression"
+      ],
+      "technique_coverage": [],
+      "evidence_label": "`source-logic; evaluation-ineligible`",
+      "reported_result": "README/research claims include large token reductions, but this repository does not accept the tool as an evaluation candidate because basic operation depends on heavyweight local neural-model runtime/model files and likely GPU-class infrastructure.",
+      "main_caveat": "Evaluation-ineligible for this program: GPU/heavyweight model-runtime dependencies are outside the practical candidate boundary; preserve as a rejected research note only, not a benchmark-audit/reproduction target.",
+      "sources": [
+        "sources/seed-catalogs/AI-Coding-Token-Savers-Catalog-Revised.md",
+        "https://github.com/Ayanami1314/swe-pruner",
+        "https://arxiv.org/abs/2601.16746",
+        "docs/tool-dossiers/ayanami1314-swe-pruner.md",
+        "sources/discovery/2026-07-04-swe-pruner-source-structures.json",
+        "sources/discovery/2026-07-04-swe-pruner-code-inspection.json",
+        "sources/evaluations/swe-pruner-benchmark-readiness-audit-20260707.json"
+      ],
+      "reviewed_at": "2026-07-07",
+      "review_depth": "source-logic-readiness-audit",
+      "status": "rejected-evaluation-ineligible",
+      "source_snapshot": {
+        "status": "pinned-commit",
+        "commit": "96171b5f3ecaf89745cbeb436c8893b57f3400bd",
+        "commit_url": "https://github.com/Ayanami1314/swe-pruner/commit/96171b5f3ecaf89745cbeb436c8893b57f3400bd",
+        "source_structure_artifact": "sources/discovery/2026-07-04-swe-pruner-source-structures.json"
+      },
+      "candidate_decision": {
+        "status": "removed-from-candidates",
+        "decided_at": "2026-07-07",
+        "reason": "Requires heavyweight local neural-model runtime/model files and likely GPU-class infrastructure for basic service operation; this eval program does not evaluate GPU-demanding systems."
+      }
+    },
+    {
       "id": "JuliusBrussee__cavegemma",
       "name": "cavegemma",
       "url": "https://github.com/JuliusBrussee/cavegemma",
@@ -1310,7 +1317,7 @@
       ],
       "technique_coverage": [],
       "evidence_label": "`research-implementation`",
-      "reported_result": "On a 193-pair holdout, the maintainer reports about 65% compression, 91–98% semantic similarity by category, and 96–100% exact preservation of source code fences.",
+      "reported_result": "On a 193-pair holdout, the maintainer reports about 65% compression, 91\u201398% semantic similarity by category, and 96\u2013100% exact preservation of source code fences.",
       "main_caveat": "The evaluation is style and semantic-similarity oriented rather than a coding-task benchmark; a 31B model has substantial hardware requirements and Gemma license terms apply to the weights.",
       "sources": [
         "sources/seed-catalogs/AI-Coding-Token-Savers-Catalog-Revised.md",
@@ -1334,7 +1341,7 @@
       ],
       "technique_coverage": [],
       "evidence_label": "`peer-reviewed-research`",
-      "reported_result": "Project reports up to 20× compression in research settings, with task-dependent quality retention.",
+      "reported_result": "Project reports up to 20\u00d7 compression in research settings, with task-dependent quality retention.",
       "main_caveat": "Not coding-agent-specific; code, JSON, and tool schemas can be brittle under learned token deletion and require dedicated evaluation.",
       "sources": [
         "sources/seed-catalogs/AI-Coding-Token-Savers-Catalog-Revised.md",
@@ -1358,7 +1365,7 @@
       ],
       "technique_coverage": [],
       "evidence_label": "`research-evaluation`",
-      "reported_result": "Adapters reached roughly 35–39% output/input token ratios, but the published DS1000 results show large code-generation quality losses for aggressive learned compression.",
+      "reported_result": "Adapters reached roughly 35\u201339% output/input token ratios, but the published DS1000 results show large code-generation quality losses for aggressive learned compression.",
       "main_caveat": "Useful as a cautionary benchmark: compression ratio alone is not evidence that coding quality is preserved.",
       "sources": [
         "sources/seed-catalogs/AI-Coding-Token-Savers-Catalog-Revised.md",
@@ -1382,7 +1389,7 @@
       ],
       "technique_coverage": [],
       "evidence_label": "`maintainer-benchmark`",
-      "reported_result": "Maintainer examples show code transformation modes ranging from light cleanup to roughly 90–95% reduction for signatures or types.",
+      "reported_result": "Maintainer examples show code transformation modes ranging from light cleanup to roughly 90\u201395% reduction for signatures or types.",
       "main_caveat": "Aggressive structural modes deliberately omit implementations and are unsuitable when exact behavior is required.",
       "sources": [
         "sources/seed-catalogs/AI-Coding-Token-Savers-Catalog-Revised.md",
@@ -1430,8 +1437,8 @@
       ],
       "technique_coverage": [],
       "evidence_label": "`source-logic`",
-      "reported_result": "Maintainer reports the TOON format uses roughly 30–60% fewer tokens than its JSON representation.",
-      "main_caveat": "Specialized for Swift/Xcode workflows and does not reduce source-code context itself. Fresh pinned source-logic inspection is available; benchmark-audit and reproduction remain required before measured savings or deployment-grade recommendation.",
+      "reported_result": "Maintainer reports the TOON format uses roughly 30\u201360% fewer tokens than its JSON representation.",
+      "main_caveat": "Out of current Codex token-optimization candidate scope: specialized Apple/Xcode output parser requiring Apple/Xcode fixtures and host support.",
       "sources": [
         "sources/seed-catalogs/AI-Coding-Token-Savers-Catalog-Revised.md",
         "https://github.com/ldomaradzki/xcsift",
@@ -1441,7 +1448,7 @@
       ],
       "reviewed_at": "2026-07-01",
       "review_depth": "source-logic",
-      "status": "source-logic-reviewed",
+      "status": "out-of-current-scope",
       "source_snapshot": {
         "status": "pinned-commit",
         "commit": "0a4b1287bf1b698ef2bff0016ee583ed39ae6d77",
@@ -1487,7 +1494,7 @@
       ],
       "technique_coverage": [],
       "evidence_label": "`source-logic`",
-      "reported_result": "Maintainer reports roughly 60–90% reduction for supported command output. Tokbench independently observed 74.7% reduction on commands RTK touched, but those commands represented only about 2.5% of total spend in its N=1 pilot and the full run billed 27% more input tokens than native.",
+      "reported_result": "Maintainer reports roughly 60\u201390% reduction for supported command output. Tokbench independently observed 74.7% reduction on commands RTK touched, but those commands represented only about 2.5% of total spend in its N=1 pilot and the full run billed 27% more input tokens than native.",
       "main_caveat": "Operation-level compression does not guarantee lower task-level billing; command coverage, turn count, prompt caching, and harness design determine the addressable surface. The external result is a single-run pilot.",
       "sources": [
         "sources/seed-catalogs/AI-Coding-Token-Savers-Catalog-Revised.md",
@@ -2610,7 +2617,7 @@
       "technique_ids": [],
       "technique_coverage": [],
       "reported_result": "No benchmark-audit or reproduction evidence recorded in the source-logic dossier.",
-      "main_caveat": "Source-logic inspection supports mechanism and compatibility assessment only; benchmark-audit and reproduction remain required before measured-savings claims.",
+      "main_caveat": "Out of current additive Codex tool-lane scope: replacement coding-agent runtime requiring a separate replacement-runtime protocol.",
       "sources": [
         "docs/tool-dossiers/agentforce314-clawcodex.md",
         "sources/discovery/2026-07-01-pinned-dossier-refresh-source-structures.json",
@@ -2618,7 +2625,7 @@
       ],
       "reviewed_at": "2026-07-01",
       "review_depth": "source-logic",
-      "status": "source-logic-reviewed",
+      "status": "out-of-current-scope",
       "evidence_label": "`source-logic`",
       "source_snapshot": {
         "status": "pinned-commit",

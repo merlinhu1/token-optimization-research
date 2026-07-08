@@ -6,7 +6,8 @@
 - Project: `hashicorp-terraform`
 - Upstream: `hashicorp/terraform`
 - Real issue/PR source: `PR #38781`
-- Pinned fixed commit: `e02391ad384c9c38f1d7f40b853c0d2297348094`
+- Shared workflow base commit: `e02391ad384c9c38f1d7f40b853c0d2297348094`
+- Original fixed commit: `e02391ad384c9c38f1d7f40b853c0d2297348094`
 - Evidence stage target: `reproduction`
 - Task class: `real-issue-derived-multi-file-regression`
 - Primary token-waste surface: `retrieval-context`
@@ -23,7 +24,7 @@ The seed patch reverses production-code portions of a real upstream fix across 4
 
 ## Seeded start state
 
-Apply `seed-regression.patch` after checking out the pinned fixed commit. The patch creates a controlled broken state by reverting production-code portions of the real upstream fix without using a user-owned repository.
+Apply `seed-regression.patch` after checking out the shared workflow base commit. The patch creates a controlled broken state by reverting production-code portions of the real upstream fix without using a user-owned repository.
 
 ## Agent prompt
 

@@ -51,7 +51,7 @@ Each fixture record in `data/repository-fixtures.json` must include:
 
 - `id`: stable kebab-case fixture ID.
 - `status`: one lifecycle state.
-- `fixture_scale`: `synthetic-micro`, `recorded-diagnostic`, or `large-project`.
+- `fixture_scale`: `synthetic-micro`, `recorded-diagnostic`, `medium-project`, or `large-project`.
 - `evaluation_use`: `calibration`, `diagnostic-preservation`, `primary-candidate`, or `primary-objective`.
 - `repository`: repository ID, path, or URL.
 - `snapshot`: commit, tag, archive, or explicit snapshot policy.
@@ -66,7 +66,7 @@ Each fixture record in `data/repository-fixtures.json` must include:
 - `candidate_profiles`: profile IDs from `data/evaluation-profiles.json` that may use this fixture; these are not active treatments until a protocol freezes them.
 - `blockers` and `caveats`: open readiness issues.
 
-Primary objective claims require `fixture_scale = large-project` plus reproduction records. Synthetic and recorded fixtures are calibration or diagnostic evidence unless a report explicitly scopes its claim to that smaller setting.
+Primary objective claims require `fixture_scale = large-project` or `fixture_scale = medium-project` plus reproduction records. Aggregate claims must stratify by fixture scale unless a report explicitly scopes itself to one scale.
 
 ## Promotion rules
 

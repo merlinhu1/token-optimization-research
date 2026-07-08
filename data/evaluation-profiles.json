@@ -15,7 +15,7 @@
   ],
   "profiles": [
     {
-      "id": "baseline-codex-no-mcp",
+      "id": "baseline-bare-codex",
       "profile_type": "control",
       "objective_scope": "control",
       "status": "active-control",
@@ -59,6 +59,52 @@
         "policy": "Delete the lane-specific Codex home and run-local HOME/PYTHONUSERBASE/XDG/TMPDIR before each run; verify no stale indexes or generated profile files survive."
       },
       "notes": "Canonical Codex CLI no-MCP substrate baseline. Codex native shell/edit/file/git/verifier operations are allowed; MCP, retrieval, compression, memory, token-saving add-ons, global instructions, hooks, skills/plugins, and warm indexes are forbidden."
+    },
+    {
+      "id": "baseline-claude-code-no-mcp",
+      "profile_type": "control",
+      "objective_scope": "control",
+      "status": "future-candidate-control",
+      "substrate": "claude-code",
+      "enabled_surfaces": [
+        "claude-code-native-shell-edit"
+      ],
+      "disabled_overlaps": [
+        "all MCP servers",
+        "all token-saving surfaces",
+        "global Claude instructions",
+        "hooks",
+        "skills/plugins",
+        "warm indexes"
+      ],
+      "components": [],
+      "native_agent_tools_allowed": [
+        "shell_command_execution",
+        "file_editing",
+        "plain_file_read_search",
+        "git",
+        "verifier_commands"
+      ],
+      "forbidden_surfaces": [
+        "lean-ctx",
+        "codegraph",
+        "serena",
+        "rtk",
+        "lowfat",
+        "tokenjuice",
+        "repomix",
+        "mex",
+        "cavemem",
+        "cartog",
+        "all unlisted retrieval/compression/memory/token-saving tools"
+      ],
+      "install": {
+        "policy": "Future Claude/Anthropic control lane. Run Claude Code from a fresh lane-specific runtime home/config with auth only, no MCP servers, no global instructions, no hooks, no skills/plugins, isolated HOME/PYTHONUSERBASE/XDG/TMPDIR, and preflight artifacts proving only allowed surfaces are visible."
+      },
+      "reset": {
+        "policy": "Delete the lane-specific Claude runtime home and run-local HOME/PYTHONUSERBASE/XDG/TMPDIR before each run; verify no stale indexes, generated profile files, hooks, skills, or memory survive."
+      },
+      "notes": "Future Claude Code no-MCP substrate baseline for Claude Opus/Anthropic model-condition studies. Requires a dedicated runner and usage extractor before reproduction records can be accepted."
     },
     {
       "id": "broad-compression-owner",
@@ -437,56 +483,37 @@
       "notes": "Total Agent Memory treatment."
     },
     {
-      "id": "replacement-caveman-code",
-      "profile_type": "replacement_runtime",
+      "id": "behavior-caveman",
+      "profile_type": "individual_tool",
       "objective_scope": "individual_tool_effectiveness",
       "status": "candidate-profile",
       "enabled_surfaces": [
-        "replacement-runtime"
+        "behavioral-output-compression",
+        "mcp-description-compression"
       ],
       "disabled_overlaps": [
-        "all unlisted surfaces"
+        "all unlisted surfaces",
+        "other behavior/output-style controllers"
       ],
       "components": [
         {
-          "component_id": "replacement-caveman-code",
-          "surface": "replacement-runtime",
-          "role": "replacement_runtime"
-        }
-      ],
-      "install": {
-        "policy": "Record exact commands, versions, generated files, and environment variables in every run record before using this profile."
-      },
-      "reset": {
-        "policy": "Record disable/uninstall commands and verify no stale index, hook, memory, cache, or generated profile survives into the next run."
-      },
-      "notes": "Caveman Code replacement runtime."
-    },
-    {
-      "id": "replacement-clawcodex",
-      "profile_type": "replacement_runtime",
-      "objective_scope": "individual_tool_effectiveness",
-      "status": "candidate-profile",
-      "enabled_surfaces": [
-        "replacement-runtime"
-      ],
-      "disabled_overlaps": [
-        "all unlisted surfaces"
-      ],
-      "components": [
+          "component_id": "behavior-caveman",
+          "surface": "behavioral-output-compression",
+          "role": "individual_tool"
+        },
         {
-          "component_id": "replacement-clawcodex",
-          "surface": "replacement-runtime",
-          "role": "replacement_runtime"
+          "component_id": "behavior-caveman:mcp-description-compression",
+          "surface": "mcp-description-compression",
+          "role": "individual_tool"
         }
       ],
       "install": {
-        "policy": "Record exact commands, versions, generated files, and environment variables in every run record before using this profile."
+        "policy": "Record exact Caveman plugin/skill/hook installation commands, versions, generated files, mode state, and environment variables in every run record before using this profile."
       },
       "reset": {
-        "policy": "Record disable/uninstall commands and verify no stale index, hook, memory, cache, or generated profile survives into the next run."
+        "policy": "Record disable/uninstall commands and verify no stale Caveman mode state, hooks, MCP wrapper config, cache, or generated profile survives into the next run."
       },
-      "notes": "ClawCodex replacement runtime."
+      "notes": "JuliusBrussee/caveman terse-output and MCP-description compression treatment."
     },
     {
       "id": "retrieval-cartog",
@@ -790,20 +817,24 @@
     },
     {
       "id": "terminal-headroom",
-      "profile_type": "individual_tool",
+      "profile_type": "comparator",
       "objective_scope": "individual_tool_effectiveness",
-      "status": "candidate-profile",
+      "status": "ablation-profile",
       "enabled_surfaces": [
-        "terminal-output"
+        "api-proxy/context-compression-only"
       ],
       "disabled_overlaps": [
+        "Codex context-tool setup / RTK instructions",
+        "headroom_retrieve MCP server",
+        "tokensave code-graph MCP server",
+        "Serena backup compressor",
         "all unlisted surfaces"
       ],
       "components": [
         {
-          "component_id": "terminal-headroom",
-          "surface": "terminal-output",
-          "role": "individual_tool"
+          "component_id": "headroom-proxy-only",
+          "surface": "api-proxy/context-compression-only",
+          "role": "component_ablation"
         }
       ],
       "install": {
@@ -812,7 +843,58 @@
       "reset": {
         "policy": "Record disable/uninstall commands and verify no stale index, hook, memory, cache, or generated profile survives into the next run."
       },
-      "notes": "Headroom command-output or context-budget treatment."
+      "notes": "Headroom proxy-only ablation. The runner disables context-tool setup, headroom MCP retrieval, tokensave code-graph MCP, and Serena backup; this profile is not a primary candidate evaluation and must not be cited as full/default Headroom.",
+      "evaluation_protocol": {
+        "profile_intent": "component ablation only",
+        "claim_boundary": "Use only to measure Headroom proxy-only behavior; never rank Headroom from this profile alone.",
+        "requires_primary_companion": "headroom-default-codex",
+        "disabled_default_headroom_surfaces": [
+          "Codex context-tool setup / RTK instructions",
+          "headroom_retrieve MCP server",
+          "tokensave code-graph MCP server",
+          "Serena backup compressor"
+        ]
+      }
+    },
+    {
+      "id": "headroom-default-codex",
+      "profile_type": "individual_tool",
+      "objective_scope": "individual_tool_effectiveness",
+      "status": "candidate-profile",
+      "enabled_surfaces": [
+        "api-proxy/context-compression",
+        "context-tool/terminal-output-compaction",
+        "mcp-retrieval/raw-context-recovery",
+        "code-graph-retrieval",
+        "cache-alignment"
+      ],
+      "disabled_overlaps": [
+        "external broad compressors/retrievers not enabled by default Headroom Codex wrapping"
+      ],
+      "components": [
+        {
+          "component_id": "headroom-default-codex",
+          "surface": "broad compression/proxy/Codex integration",
+          "role": "individual_tool"
+        }
+      ],
+      "install": {
+        "policy": "Run default `headroom wrap codex -- codex exec ...` unless the protocol explicitly names an ablation. Record generated Codex config, MCP registrations, context-tool setup, tokensave install/index artifacts, versions, and environment variables before scoring."
+      },
+      "reset": {
+        "policy": "Record disable/uninstall commands and verify no stale proxy config, MCP server registration, context-tool instruction, tokensave index/cache, Serena state, or generated profile survives into the next run."
+      },
+      "evaluation_protocol": {
+        "profile_intent": "primary Headroom Codex integration evaluation",
+        "hypothesis_boundary": "Measures default Headroom behavior through its Codex wrapper/integration on coding tasks.",
+        "required_companion_ablations": [
+          "baseline-bare-codex",
+          "terminal-headroom"
+        ],
+        "must_run_before_component_conclusions": true,
+        "token_accounting_boundary": "provider-billed task usage with verifier acceptance; per-request Headroom headers are secondary diagnostics only."
+      },
+      "notes": "Primary Headroom candidate profile for Codex integration. Headroom is not a Codex stack integrator; it is a broader compression/proxy framework with a Codex wrapper. Do not disable Headroom-managed default surfaces unless the run is explicitly labeled as an ablation."
     },
     {
       "id": "terminal-lowfat",
@@ -917,33 +999,6 @@
         "policy": "Record disable/uninstall commands and verify no stale index, hook, memory, cache, or generated profile survives into the next run."
       },
       "notes": "TokenJuice terminal/tool-output compaction."
-    },
-    {
-      "id": "terminal-xcsift",
-      "profile_type": "individual_tool",
-      "objective_scope": "individual_tool_effectiveness",
-      "status": "candidate-profile",
-      "enabled_surfaces": [
-        "apple-build-output",
-        "build-output"
-      ],
-      "disabled_overlaps": [
-        "all unlisted surfaces"
-      ],
-      "components": [
-        {
-          "component_id": "terminal-xcsift",
-          "surface": "apple-build-output",
-          "role": "individual_tool"
-        }
-      ],
-      "install": {
-        "policy": "Record exact commands, versions, generated files, and environment variables in every run record before using this profile."
-      },
-      "reset": {
-        "policy": "Record disable/uninstall commands and verify no stale index, hook, memory, cache, or generated profile survives into the next run."
-      },
-      "notes": "xcsift Apple/build diagnostic treatment."
     },
     {
       "id": "tokless-profile",
