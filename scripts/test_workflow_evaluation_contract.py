@@ -409,7 +409,7 @@ class ActiveCampaignArchitectureTest(unittest.TestCase):
             "swarmvault-codex-product-v1",
             "retrieval-serena-codex-mcp-v1",
             "retrieval-sigmap-codex-live-v1",
-            "integrated-token-savior-mcp-v1",
+            "integrated-token-savior-codex-product-v2",
             "artifact-ponytail-codex-plugin-v1",
             "behavior-caveman-codex-skill-v1",
         ]
@@ -535,6 +535,7 @@ class ActiveCampaignArchitectureTest(unittest.TestCase):
                 runner.assert_profile_runnable(profile_id)
 
     def test_future_candidate_profiles_fail_closed_without_parity_and_qualification(self) -> None:
+        unexecuted_profile_id = "integrated-token-savior-codex-product-v2"
         profile_doc = json.loads((ROOT / "data/evaluation-profiles.json").read_text())
         fixture_doc = json.loads((ROOT / "data/repository-fixtures.json").read_text())
         sequence_doc = json.loads((ROOT / "data/workflow-task-sequences.json").read_text())
@@ -554,6 +555,15 @@ class ActiveCampaignArchitectureTest(unittest.TestCase):
             }
             for path in (ROOT / "sources/evaluations/protocols").glob("*.json")
         }
+        executed_protocol_paths = validate_repository.executed_protocol_paths_from_registry(
+            json.loads((ROOT / "data/workflow-sessions.json").read_text())
+        )
+        future_candidate_executed_protocol_paths = {
+            path
+            for path in executed_protocol_paths
+            if protocol_docs[path]["document"]["selected_execution"]["descriptor"]["selected_profile"]["profile_id"]
+            != "retrieval-cartog-mcp-v1"
+        }
 
         errors: list[str] = []
         validate_repository.validate_candidate_profile_launch_readiness(
@@ -570,7 +580,7 @@ class ActiveCampaignArchitectureTest(unittest.TestCase):
 
         missing_approval = copy.deepcopy(parity_doc)
         missing_approval["corrected_contracts"]["approved_profile_ids"].remove(
-            "retrieval-cartog-mcp-v1"
+            unexecuted_profile_id
         )
         errors = []
         validate_repository.validate_candidate_profile_launch_readiness(
@@ -592,7 +602,7 @@ class ActiveCampaignArchitectureTest(unittest.TestCase):
                 for lane in receipt["lanes"]
             if not (
                 lane["sequence_id"] == "fastify-lifecycle-sequence-v0"
-                and lane["profile_id"] == "retrieval-cartog-mcp-v1"
+                and lane["profile_id"] == unexecuted_profile_id
             )
         ]
         errors = []
@@ -611,7 +621,7 @@ class ActiveCampaignArchitectureTest(unittest.TestCase):
         empty_mcp_tools = copy.deepcopy(qualification_docs)
         for receipt in empty_mcp_tools:
             for lane in receipt["lanes"]:
-                if lane["sequence_id"] == "fastify-lifecycle-sequence-v0" and lane["profile_id"] == "retrieval-cartog-mcp-v1":
+                if lane["sequence_id"] == "fastify-lifecycle-sequence-v0" and lane["profile_id"] == unexecuted_profile_id:
                     lane["mcp_handshake"]["tool_count"] = 0
                     lane["mcp_handshake"]["tool_names"] = []
         errors = []
@@ -793,6 +803,132 @@ class ActiveCampaignArchitectureTest(unittest.TestCase):
         token_savior = runner.fixture.active_tool_config({}, "integrated-token-savior-mcp-v1")
         assert token_savior is not None
         self.assertEqual(token_savior["env"]["TOKEN_SAVIOR_CLIENT"], "codex")
+
+    def test_token_savior_product_guided_codex_successor_installs_guidance_and_hooks(self) -> None:
+        profile_id = "integrated-token-savior-codex-product-v2"
+        self.assertEqual(runner.SUPPORTED_WORKFLOW_TOOL_PROFILES[profile_id], "token-savior-codex-product-v2")
+        cfg = runner.fixture.active_tool_config({}, profile_id)
+        assert cfg is not None
+        self.assertEqual(cfg["env"]["TOKEN_SAVIOR_CLIENT"], "codex")
+        self.assertEqual(cfg["env"]["TOKEN_SAVIOR_PROFILE"], "optimized")
+        self.assertEqual(cfg["env"]["TS_CAPTURE_DISABLED"], "0")
+        self.assertEqual(cfg["env"]["TS_BASH_COMPACT"], "1")
+        self.assertEqual(cfg["env"]["TS_BASH_REWRITE"], "1")
+        self.assertTrue(cfg["codex_features"]["hooks"])
+        self.assertTrue(cfg["codex_hook_bypass_trust"])
+        self.assertTrue(cfg["mcp_handshake"]["required"])
+        self.assertIn("AGENTS.md", cfg["diff_exclude_paths"])
+        required = cfg["host_integration"]["required_files"]
+        self.assertIn("{repo}/AGENTS.md", required)
+        self.assertIn("{codex_home}/hooks.json", required)
+        self.assertIn("{tool_data_dir}/codex-product-installation.json", required)
+        self.assertIn("{tool_data_dir}/codex-hook-probe.json", required)
+        self.assertEqual(cfg["host_integration"]["install_commands"], [])
+        installs = [" ".join(command) for command in cfg["host_integration"]["controller_install_commands"]]
+        self.assertTrue(any("install_token_savior_codex_product.py" in command for command in installs))
+        self.assertTrue(any("probe_token_savior_codex_hooks.py" in command for command in installs))
+        self.assertIn('backend="host"', inspect.getsource(runner.fixture.prepare_profile_integration))
+        self.assertEqual(
+            runner.tool_adapter_identity("integrated-token-savior-mcp-v1")["tool_manifest_sha256"],
+            runner.LEGACY_TOOL_MANIFEST_SHA256,
+        )
+        self.assertEqual(
+            runner.tool_adapter_identity(profile_id)["tool_manifest_sha256"],
+            hashlib.sha256((ROOT / "scripts/run_codex_fixture_evaluation.py").read_bytes()).hexdigest(),
+        )
+
+        profiles = json.loads((ROOT / "data/evaluation-profiles.json").read_text())["profiles"]
+        successor = next(item for item in profiles if item["id"] == profile_id)
+        bounded = next(item for item in profiles if item["id"] == "integrated-token-savior-mcp-v1")
+        self.assertEqual(successor["status"], "screening-shortlist")
+        self.assertIn("product-authored-codex-guidance", successor["enabled_surfaces"])
+        self.assertEqual(bounded["status"], "screening-ablation")
+        self.assertEqual(bounded["superseded_by"], profile_id)
+
+        qualification = json.loads(
+            (
+                ROOT
+                / "sources/evaluations/audits/corrected-integration-qualification-token-savior-codex-product-v2-20260719.json"
+            ).read_text()
+        )
+        self.assertEqual(qualification["profiles"], [profile_id])
+        self.assertEqual(qualification["provider_calls"], 0)
+        self.assertEqual(len(qualification["lanes"]), 3)
+        for lane in qualification["lanes"]:
+            self.assertTrue(lane["prepared"])
+            self.assertTrue(lane["host_integration"]["passed"])
+            self.assertEqual(lane["host_integration"]["controller_install_exit_codes"], [0, 0])
+            self.assertTrue(lane["mcp_handshake"]["passed"])
+            protocol = ROOT / lane["protocol_path"]
+            self.assertEqual(lane["protocol_sha256"], hashlib.sha256(protocol.read_bytes()).hexdigest())
+
+    def test_token_savior_codex_product_installer_preserves_existing_agents_and_emits_current_hooks(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            repo = root / "repo"
+            codex_home = root / "codex-home"
+            receipt = root / "receipt.json"
+            repo.mkdir()
+            (repo / "AGENTS.md").write_text("# Existing project guidance\n\nKeep me.\n")
+            proc = subprocess.run(
+                [
+                    sys.executable,
+                    str(ROOT / "scripts/install_token_savior_codex_product.py"),
+                    "--source-root",
+                    "/opt/data/tool-candidates/token-savior",
+                    "--expected-commit",
+                    "ff42ef14cc972dad5470e0ca8101e4501e00600f",
+                    "--codex-home",
+                    str(codex_home),
+                    "--repo",
+                    str(repo),
+                    "--receipt",
+                    str(receipt),
+                ],
+                text=True,
+                capture_output=True,
+                check=False,
+            )
+            self.assertEqual(proc.returncode, 0, proc.stderr)
+            agents = (repo / "AGENTS.md").read_text()
+            product_guidance = Path("/opt/data/tool-candidates/token-savior/CLAUDE.md").read_text().rstrip()
+            self.assertTrue(agents.startswith("# Existing project guidance\n\nKeep me.\n"))
+            self.assertIn(product_guidance, agents)
+            hooks = json.loads((codex_home / "hooks.json").read_text())
+            self.assertEqual(set(hooks["hooks"]), {"PreToolUse", "PostToolUse"})
+            self.assertEqual(hooks["hooks"]["PreToolUse"][0]["matcher"], "Bash")
+            self.assertIn("bash_rewriter_hook.py", hooks["hooks"]["PreToolUse"][0]["hooks"][0]["command"])
+            self.assertIn("tool_capture_hook.py", hooks["hooks"]["PostToolUse"][0]["hooks"][0]["command"])
+            payload = json.loads(receipt.read_text())
+            self.assertFalse(payload["evaluator_authored_guidance"])
+            self.assertTrue(payload["host_adapter_authored_by_evaluator"])
+            self.assertEqual(payload["source_commit"], "ff42ef14cc972dad5470e0ca8101e4501e00600f")
+
+            probe_receipt = root / "hook-probe.json"
+            hook_probe = subprocess.run(
+                [
+                    sys.executable,
+                    str(ROOT / "scripts/probe_token_savior_codex_hooks.py"),
+                    "--source-root",
+                    "/opt/data/tool-candidates/token-savior",
+                    "--repo",
+                    str(repo),
+                    "--state-dir",
+                    str(root / "hook-state"),
+                    "--receipt",
+                    str(probe_receipt),
+                ],
+                text=True,
+                capture_output=True,
+                check=False,
+            )
+            self.assertEqual(hook_probe.returncode, 0, hook_probe.stderr)
+            probe = json.loads(probe_receipt.read_text())
+            self.assertEqual(probe["provider_calls"], 0)
+            self.assertTrue(probe["pre_tool_use"]["passed"])
+            self.assertIn("--porcelain=v2", probe["pre_tool_use"]["rewritten_command"])
+            self.assertTrue(probe["post_tool_use"]["passed"])
+            self.assertIn("[token-savior:compact]", probe["post_tool_use"]["additional_context"])
 
     def test_mcp_handshake_runs_after_profile_workspace_warmup(self) -> None:
         workflow_source = inspect.getsource(runner.run_one)

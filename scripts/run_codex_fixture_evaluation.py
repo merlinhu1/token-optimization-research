@@ -84,6 +84,7 @@ PROFILE_TOOL_CONFIG_OVERRIDES = {
     "retrieval-serena-codex-mcp-v1": "serena-codex-mcp-v1",
     "retrieval-sigmap-codex-live-v1": "sigmap-codex-live-v1",
     "integrated-token-savior-mcp-v1": "token-savior-mcp-v1",
+    "integrated-token-savior-codex-product-v2": "token-savior-codex-product-v2",
     "retrieval-jcodemunch-codex-mcp-v2": "jcodemunch-codex-mcp-v2",
     "stack-tokenjuice-jcodemunch-mcp": "tokenjuice-jcodemunch-mcp-stack",
     "artifact-ponytail-codex-plugin-v1": "ponytail-codex-plugin-v1",
@@ -966,6 +967,71 @@ TOOL_CONFIGS.update({
         "env": {**TOOL_CONFIGS["token-savior"]["env"], "TOKEN_SAVIOR_CLIENT": "codex"},
         "mcp_handshake": {"required": True, "method": "initialize-and-tools-list", "timeout_seconds": 60},
     },
+    "token-savior-codex-product-v2": {
+        **TOOL_CONFIGS["token-savior"],
+        "display_name": "Token Savior product-guided Codex integration v2",
+        "lane_name": "integrated-token-savior-codex-product-v2",
+        "surface": "integrated-mcp+product-authored-guidance+codex-pre-post-tool-hooks",
+        "tool_manifest_identity": "current-file-v1",
+        "data_dir_name": "token-savior-codex-product-v2",
+        "env": {
+            **TOOL_CONFIGS["token-savior"]["env"],
+            "TOKEN_SAVIOR_CLIENT": "codex",
+            "TS_CAPTURE_DISABLED": "0",
+            "TS_BASH_COMPACT": "1",
+            "TS_BASH_REWRITE": "1",
+            "TS_BASH_REWRITE_LOG": "{tool_data_dir}/bash-rewrites.jsonl",
+        },
+        "diff_exclude_paths": ["AGENTS.md"],
+        "codex_features": {"hooks": True},
+        "codex_hook_bypass_trust": True,
+        "host_integration": {
+            "controller_install_commands": [
+                [
+                    "python3",
+                    "{repository_root}/scripts/install_token_savior_codex_product.py",
+                    "--source-root",
+                    str(TOKEN_SAVIOR_ROOT),
+                    "--expected-commit",
+                    "ff42ef14cc972dad5470e0ca8101e4501e00600f",
+                    "--codex-home",
+                    "{codex_home}",
+                    "--repo",
+                    "{repo}",
+                    "--receipt",
+                    "{tool_data_dir}/codex-product-installation.json",
+                ],
+                [
+                    "python3",
+                    "{repository_root}/scripts/probe_token_savior_codex_hooks.py",
+                    "--source-root",
+                    str(TOKEN_SAVIOR_ROOT),
+                    "--repo",
+                    "{repo}",
+                    "--state-dir",
+                    "{tool_data_dir}/hook-probe-state",
+                    "--receipt",
+                    "{tool_data_dir}/codex-hook-probe.json",
+                ],
+            ],
+            "install_commands": [],
+            "verify_commands": [[
+                "python3",
+                "-c",
+                "import json; from pathlib import Path; r=Path('AGENTS.md').read_text(); h=json.loads(Path('{codex_home}/hooks.json').read_text()); assert 'TOKEN_SAVIOR_PRODUCT_GUIDANCE_BEGIN' in r; assert set(('PreToolUse','PostToolUse')).issubset(h['hooks'])",
+            ]],
+            "required_files": [
+                "{repo}/AGENTS.md",
+                "{codex_home}/hooks.json",
+                "{tool_data_dir}/codex-product-installation.json",
+                "{tool_data_dir}/codex-hook-probe.json",
+            ],
+            "timeout_seconds": 120,
+        },
+        "mcp_handshake": {"required": True, "method": "initialize-and-tools-list", "timeout_seconds": 60},
+        "default_tool_state": "cold-auto-index+active-guidance-and-hooks",
+        "compatibility_deviation": "The pinned product's Codex descriptor targets obsolete .codex/settings.json tool_complete hooks. This versioned host adapter maps the unchanged product hook scripts to Codex 0.144 hooks.json PreToolUse/PostToolUse while preserving product-authored guidance verbatim in AGENTS.md.",
+    },
     "serena-codex-mcp-v1": {
         "display_name": "Serena official Codex MCP v1",
         "lane_name": "retrieval-serena-codex-mcp-v1",
@@ -1387,6 +1453,8 @@ def apply_model_network_isolation(env: dict[str, str]) -> None:
 
 def codex_hook_args(cfg: dict[str, Any] | None) -> list[str]:
     if bool((cfg or {}).get("codex_features", {}).get("hooks", False)):
+        if bool((cfg or {}).get("codex_hook_bypass_trust", False)):
+            return ["--dangerously-bypass-hook-trust"]
         return []
     return ["--disable", "hooks"]
 
@@ -1866,12 +1934,32 @@ def prepare_profile_integration(
     mounts = container_mounts_for_record(record, codex_home, include_repo=True, cfg=cfg)
     artifacts: list[str] = []
     install_exit_codes: list[int] = []
+    controller_install_exit_codes: list[int] = []
     verify_exit_codes: list[int] = []
 
-    for phase, commands, exits in (
+    for index, raw_command in enumerate(integration.get("controller_install_commands", []), start=1):
+        command = [render_tool_value(part, record, codex_home, cfg) for part in raw_command]
+        artifact = run_dir / f"tool-host-controller-install-{index}.txt"
+        proc = run_backend(
+            command,
+            backend="host",
+            docker_image=docker_image,
+            cwd=rel_or_abs(record["target"]["repository_path"]) if record.get("target") else codex_home / "home",
+            env=env,
+            stdout_path=artifact,
+            timeout=int(integration.get("timeout_seconds", 300)),
+        )
+        controller_install_exit_codes.append(proc.returncode)
+        install_exit_codes.append(proc.returncode)
+        artifacts.append(str(artifact.relative_to(ROOT)) if artifact.is_relative_to(ROOT) else str(artifact))
+        if proc.returncode != 0:
+            break
+
+    backend_phases = () if any(code != 0 for code in controller_install_exit_codes) else (
         ("install", integration.get("install_commands", []), install_exit_codes),
         ("verify", integration.get("verify_commands", []), verify_exit_codes),
-    ):
+    )
+    for phase, commands, exits in backend_phases:
         for index, raw_command in enumerate(commands, start=1):
             command = [render_tool_value(part, record, codex_home, cfg) for part in raw_command]
             artifact = run_dir / f"tool-host-{phase}-{index}.txt"
@@ -1899,6 +1987,7 @@ def prepare_profile_integration(
         "profile_id": pid,
         "passed": passed,
         "skipped": False,
+        "controller_install_exit_codes": controller_install_exit_codes,
         "install_exit_codes": install_exit_codes,
         "verify_exit_codes": verify_exit_codes,
         "missing_required_files": missing_required_files,

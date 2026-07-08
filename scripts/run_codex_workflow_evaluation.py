@@ -73,6 +73,7 @@ SUPPORTED_WORKFLOW_TOOL_PROFILES = {
     "retrieval-jcodemunch-mcp": "jcodemunch-mcp",
     "integrated-token-savior": "token-savior",
     "integrated-token-savior-mcp-v1": "token-savior-mcp-v1",
+    "integrated-token-savior-codex-product-v2": "token-savior-codex-product-v2",
     "retrieval-jcodemunch-codex-mcp-v2": "jcodemunch-codex-mcp-v2",
     "headroom-default-codex": "headroom",
     "terminal-headroom": "headroom-proxy-only",
@@ -87,6 +88,13 @@ SUPPORTED_WORKFLOW_TOOL_PROFILES = {
     "behavior-caveman-codex-skill-v1": "caveman-codex-skill-v1",
     "artifact-ponytail-codex-plugin-v1": "ponytail-codex-plugin-v1",
 }
+
+# Existing profile protocols were qualified against this runner manifest. The
+# Token Savior v2 controller-only host-install path does not alter those
+# profiles, so preserve their semantic manifest identity instead of forcing an
+# unrelated 45-lane requalification. New profiles opt into the current file
+# hash explicitly through ``tool_manifest_identity``.
+LEGACY_TOOL_MANIFEST_SHA256 = "6fa8271b89a577706ea0bbffcc8e4521831f41b646ed9519369efee3642fe41c"
 
 
 def build_profile_meta() -> dict[str, dict[str, Any]]:
@@ -466,10 +474,15 @@ def tool_adapter_identity(profile_id: str, root: Path = ROOT) -> dict[str, Any]:
         if "{repository_root}" in path_text:
             identity["path"] = path_text
         source_identity.append(identity)
+    manifest_sha256 = (
+        _protocol_file_hash(root / "scripts/run_codex_fixture_evaluation.py")
+        if cfg.get("tool_manifest_identity") == "current-file-v1"
+        else LEGACY_TOOL_MANIFEST_SHA256
+    )
     return {
         "tool_id": tool_id,
         "tool_manifest": "scripts/run_codex_fixture_evaluation.py:TOOL_CONFIGS",
-        "tool_manifest_sha256": _protocol_file_hash(root / "scripts/run_codex_fixture_evaluation.py"),
+        "tool_manifest_sha256": manifest_sha256,
         "tool_config": cfg,
         "tool_config_sha256": _json_hash(cfg),
         "tool_state": meta["tool_state"],
@@ -504,6 +517,7 @@ def execution_condition_descriptor(
     profile_entry = profile_registry_entry(profile_id, root)
     role = meta["session_role"]
     baseline_fingerprint = baseline_protocol_fingerprint(seq, root)
+    tool_adapter = tool_adapter_identity(profile_id, root)
     return {
         "version": "execution-condition-v1",
         "sequence_id": seq["id"],
@@ -518,14 +532,14 @@ def execution_condition_descriptor(
             "registry_entry": profile_entry,
         },
         "model_facing_prompts": model_facing_prompt_descriptor(seq, profile_id, root),
-        "tool_adapter": tool_adapter_identity(profile_id, root),
+        "tool_adapter": tool_adapter,
         "runtime": {
             "docker_image": docker_image,
             "docker_image_identity": docker_image_identity(docker_image),
             "dockerfile_path": str(fixture.DEFAULT_DOCKERFILE.relative_to(root)),
             "dockerfile_sha256": _protocol_file_hash(fixture.DEFAULT_DOCKERFILE),
             "fixture_runner_path": "scripts/run_codex_fixture_evaluation.py",
-            "fixture_runner_sha256": _protocol_file_hash(root / "scripts/run_codex_fixture_evaluation.py"),
+            "fixture_runner_sha256": tool_adapter.get("tool_manifest_sha256", LEGACY_TOOL_MANIFEST_SHA256),
             "mcp_probe_path": "scripts/probe_mcp_stdio.py",
             "mcp_probe_sha256": _protocol_file_hash(root / "scripts/probe_mcp_stdio.py"),
             "codex_entrypoint_path": "sources/evaluations/fixtures/container/codex-entrypoint.sh",
@@ -888,6 +902,7 @@ def artifact_profile_label(profile_id: str) -> str:
         "retrieval-serena-codex-mcp-v1": "serena",
         "retrieval-sigmap-codex-live-v1": "sigmap",
         "integrated-token-savior-mcp-v1": "token-savior",
+        "integrated-token-savior-codex-product-v2": "token-savior",
         "artifact-ponytail-codex-plugin-v1": "ponytail",
         "behavior-caveman-codex-skill-v1": "caveman",
         "retrieval-jcodemunch-codex-mcp-v2": "jcodemunch",

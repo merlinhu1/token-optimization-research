@@ -82,8 +82,10 @@ Code surface:
 - scripts/extract_codex_usage.py
 - scripts/generate_workflow_qualification.py
 - scripts/install_jcodemunch_codex_guidance.py
+- scripts/install_token_savior_codex_product.py
 - scripts/prepare_pinned_codex_marketplace.py
 - scripts/probe_mcp_stdio.py
+- scripts/probe_token_savior_codex_hooks.py
 - scripts/refresh_workflow_contracts.py
 - scripts/run_codescope_neutral_mcp.py
 - scripts/run_codex_fixture_evaluation.py
