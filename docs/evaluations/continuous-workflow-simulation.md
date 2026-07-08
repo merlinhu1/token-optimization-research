@@ -78,23 +78,17 @@ Sanity checks do not rank tools.
 
 ## Artifact layout
 
+Completed workflow-session runs keep a compact evidence bundle instead of a materialized checkout or split task-log tree:
+
 ```text
 sources/evaluations/workflow-sessions/<session-id>/
-  workflow-session-record.json
-  environment.json
-  profile-manifest.json
-  cumulative-provider-usage.json
-  final-git-status.txt
-  final-diff.patch
-  final-verifier-output.txt
-  quality-review.md
-  task-01-<task-id>/
-    prompt.md
-    transcript.jsonl
-    provider-usage.json
-    verifier-output.txt
-    task-result.json
+  run.json
+  changes.diff
+  evidence.jsonl.gz
+  manifest.sha256
 ```
+
+`evidence.jsonl.gz` preserves recoverable raw streams such as prompts, Codex events, setup logs, verifier output, provider usage extraction, and tool-isolation audit output. Do not commit generated checkouts, virtualenvs, Codex homes, caches, or split per-task transcript directories.
 
 ## Initial research experiments
 
