@@ -14,9 +14,9 @@ The repository retains operationally valid Fastify, Beets, and Terraform provide
 
 Every lane uses one pinned repository snapshot and one persistent model session. The controller applies all three independently qualified start conditions before prompt 1, discloses prompts in order, preserves model/tool state, and runs all concealed verifiers after prompt 3.
 
-A 2026-07-18 official-integration audit found that 42 of 54 historical treatment sessions could not support product-effect claims. Twenty-four used configurations that did not implement the pinned product's required Codex treatment; 18 more lacked positive operational-assignment proof. At the experiment owner's direction, all 42 corrupted treatment sessions, comparisons, compact bundles, and occupied protocols were deleted from the active corpus rather than relabelled as baseline. Deletion receipts preserve the adjudication and recovery commit; the prior TokenJuice+jcodemunch stack decision remains withdrawn.
+A 2026-07-18 official-integration audit and follow-up runtime review found that 48 of 54 historical treatment sessions could not support product-effect claims. At the experiment owner's direction, invalid sessions, comparisons, compact bundles, and occupied protocols were deleted from the active corpus rather than relabelled as baseline. Deletion receipts preserve each adjudication; the six retained historical records are the Headroom default-wrapper and proxy-only conditions, and the prior TokenJuice+jcodemunch stack decision remains withdrawn.
 
-Thirteen versioned individual-tool replacements now cover every deleted historical individual condition: TokenJuice, jcodemunch, RTK, Snip, Graphify, CodeGraph, LeanCTX, Cartog, CodeScope, SwarmVault, Serena, SigMap, and Token Savior. All 39 frozen fixture-specific protocols passed provider-free preparation, host-integration, warm-state, fixture, and applicable MCP handshake gates. They remain provider-unrun; any paid rerun requires explicit authorization and the first-valid-run policy.
+Fifteen corrected canonical profiles now contribute 45 accepted provider-backed sessions alongside the six retained Headroom records, for 51 eligible treatment sessions across 17 conditions. Every corrected profile passed protocol-bound provider-free setup and assignment gates before its first valid run. The corrected Phase 2 synthesis reports 582,180,587 treatment tokens against 541,295,326 repeated matched-baseline tokens (+7.55%) with 150/153 task verifiers; these are screening observations, not stable rankings.
 
 ## Documentation
 
@@ -36,7 +36,7 @@ Start with [`docs/README.md`](docs/README.md). The main destinations are:
 - `data/workflow-sessions.json` — active retained provider-backed controls and objective-eligible treatment samples; corrupted treatments are represented only by deletion receipts.
 - `docs/evaluations/operations/runbook.md` — generated operator runbook.
 - `docs/papers/official-integration-parity-audit.md` — current treatment-validity and disposition authority.
-- `docs/papers/phase-2-lifecycle-v0-natural-use-screening.md` — historical provider-accounting report, retained with superseding adjudication.
+- `docs/papers/phase-2-lifecycle-v0-natural-use-screening.md` — current corrected individual-tool reproduction screen.
 
 ## Validation
 
