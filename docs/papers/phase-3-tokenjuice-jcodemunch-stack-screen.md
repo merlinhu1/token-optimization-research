@@ -192,6 +192,8 @@ Do not move directly to another stack based on these historical component rankin
 
 > **Subsequent control-plane update (2026-07-19):** the separately versioned `retrieval-jcodemunch-codex-mcp-v2` candidate now satisfies that guide-faithful provider-free installation contract. It has no provider-backed result and does not revive this historical stack conclusion.
 
+> **Subsequent evidence update (2026-07-20):** the guide-faithful v2 individual treatment now has a retained provider-backed sample: 31,552,424 tokens and 8/9 task verifiers. This establishes valid individual evidence but does not revive the deleted historical stack or authorize a corrected stack without separate preregistration.
+
 ## 8. Reproducibility pointers
 
 - Profile registry: [`data/evaluation-profiles.json`](../../data/evaluation-profiles.json)

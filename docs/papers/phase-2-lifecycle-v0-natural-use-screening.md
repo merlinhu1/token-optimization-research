@@ -5,6 +5,8 @@
 > **Accounting supersession (2026-07-18):** all persistent-session totals in this historical report sum cumulative Codex `ThreadTokenUsage.total` snapshots and are inflated. Use the [cumulative usage correction audit](../../sources/evaluations/audits/codex-cumulative-usage-accounting-20260718.json) and [current findings](../truthmark/engineering/research/current-findings.md) for active token claims. The historical tables below remain unchanged for provenance.
 >
 > **Superseding adjudication (updated 2026-07-19):** all historical treatment results except the two Headroom conditions were deleted from the active corpus—not relabelled as baseline—after official-installation and assignment audits. The later Ponytail and Caveman correction removed their six prompt-emulated results as incomplete canonical installations. Their guide-faithful successors have provider-free setup evidence only and no product-effect result. Historical tables below remain unchanged for provenance.
+>
+> **Subsequent evidence update (2026-07-20):** the guide-faithful Ponytail and Caveman successors now have retained first-valid provider samples of 26,087,938 and 39,731,333 tokens respectively, each with 9/9 task verifiers. These later results supersede the “provider-free only” status above without changing the preserved historical tables.
 
 **Report date:** 2026-07-18
 
