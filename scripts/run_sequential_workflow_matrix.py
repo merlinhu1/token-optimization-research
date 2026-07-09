@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Run multiple sequential workflow pairs in isolated parallel lane checkouts.
+"""Run multiple sequential workflow shared-baseline lanes in isolated parallel checkouts.
 
 This is the concurrency wrapper for the four active workflow flows. Each flow is
 run in its own rsync-materialized checkout so parallel runs do not race on
@@ -262,8 +262,8 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser.add_argument("--max-parallel", type=int, default=2, help="maximum flow lanes to run concurrently; use 4 to run all four active flows at once")
     parser.add_argument("--replicate-index", type=int, default=0)
     parser.add_argument("--lane-root", type=Path, default=DEFAULT_LANE_ROOT)
-    parser.add_argument("--source-codex-home", type=Path, help="forwarded to each pair runner; defaults to runner default/CODEX_HOME")
-    parser.add_argument("--treatment-profile", default="retrieval-leanctx", help="treatment profile to pair against baseline-bare-codex")
+    parser.add_argument("--source-codex-home", type=Path, help="forwarded to each shared-baseline runner; defaults to runner default/CODEX_HOME")
+    parser.add_argument("--treatment-profile", default="retrieval-leanctx", help="treatment profile to compare against the canonical baseline-bare-codex run")
     parser.add_argument("--timeout-per-task", type=int, help="forwarded to each lane runner")
     parser.add_argument("--prepare-only", action="store_true", help="forward prepare-only to lane runners for a no-model-spend concurrency smoke")
     parser.add_argument("--skip-container-preflight", action="store_true", help="forwarded to lane runners; smoke/debug only")

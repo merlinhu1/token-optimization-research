@@ -30,7 +30,7 @@ Status: active.
 - Maintain active workflow sequences in `data/workflow-task-sequences.json`.
 - Maintain fixture readiness in `data/repository-fixtures.json`.
 - Generate the human operator runbook with `scripts/update_workflow_runbook.py`.
-- Run paired baseline and treatment workflow sessions with the same sequence, runtime, provider, model condition, prompt-disclosure policy, and verifier set.
+- Run canonical shared-baseline and treatment workflow sessions with the same sequence, runtime, provider, model condition, prompt-disclosure policy, and verifier set.
 - Record compact workflow-session evidence under `sources/evaluations/workflow-sessions/<session-id>/`.
 - Promote selected dossiers from `source-logic` to `benchmark-audit` only after harness, scoring, token accounting, raw outputs, and failure semantics are inspected.
 

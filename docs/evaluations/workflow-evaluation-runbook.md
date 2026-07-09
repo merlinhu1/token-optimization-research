@@ -26,7 +26,7 @@ The primary evidence path is continuous workflow simulation.
 
 Single-task isolated runs and tiny calibration fixtures are not the default matrix and do not support positive workflow-level claims.
 
-A positive reproduction claim needs paired baseline and treatment sessions on the same sequence, runtime, provider, model condition, prompt-disclosure policy, and verifier set.
+A positive reproduction claim needs a canonical shared baseline and treatment sessions on the same sequence, runtime, provider, model condition, prompt-disclosure policy, and verifier set.
 
 ## Active four-workflow matrix
 
@@ -88,9 +88,9 @@ Supported Codex treatment profiles are listed by:
 python3 scripts/run_codex_workflow_evaluation.py --list-sequences
 ```
 
-## Running paired lanes
+## Running shared-baseline lanes
 
-Run the paired baseline plus default LeanCTX lanes for one sequence:
+Run the canonical baseline plus default LeanCTX lane for one sequence:
 
 ```bash
 scripts/run_sequential_workflow_pair.sh terraform-maintenance-sequence-v1
@@ -111,6 +111,8 @@ REPLICATE_INDEX=1 scripts/run_sequential_workflow_pair.sh \
   beets-maintenance-sequence-v1 \
   --timeout-per-task 2400
 ```
+
+The helper reuses a completed canonical `baseline-bare-codex` session for the same sequence/date/replicate instead of rerunning a treatment-specific baseline. Set `FORCE_BASELINE_RERUN=1` only when intentionally replacing that canonical baseline.
 
 ## Running the active matrix
 

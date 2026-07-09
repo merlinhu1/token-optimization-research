@@ -26,7 +26,7 @@ Single-task isolated runs remain available only as sanity checks for instrumenta
 | Surface | Components | Audit focus |
 |---|---|---|
 | Terminal/tool-output compaction | RTK, Lowfat, Snip, TokenJuice, Headroom terminal modes | command coverage, raw fallback, failing-output fidelity, operation-to-workflow translation. |
-| Retrieval/context | CodeGraph, Cartog, Graphify, Understand-Anything, Serena, SigMap, jcodemunch MCP, Claude Context, CocoIndex Code, Code Review Graph, CognitX CodeGraph, Codescope, SwarmVault, LeanCTX retrieval, Token Savior retrieval | query quality, freshness, index cost, tool-call overhead, edit-target success, persistent-session behavior. |
+| Retrieval/context | CodeGraph, Cartog, Graphify, Understand-Anything, Serena, SigMap, jcodemunch MCP, CocoIndex Code, Code Review Graph, CognitX CodeGraph, Codescope, SwarmVault, LeanCTX retrieval, Token Savior retrieval | query quality, freshness, index cost, tool-call overhead, edit-target success, persistent-session behavior. |
 | Memory/reinjection | Cavemem, Claude Mem, MEX, Total Agent Memory, Dragon-Brain, Memex, Token Savior memory, LeanCTX memory, SwarmVault memory | rediscovery reduction across task sequences, stale-context rate, project/session scoping, reset path. |
 | Broad compression/proxy | Headroom, Claw Compactor, LeanCTX, Token Savior, Codescope, Memex | schema/code fidelity, raw recovery, workflow-level billing, turn inflation. |
 | Installer/orchestrator | Tokless, Maestro Flow, Grace Marketplace | profile reproducibility, non-overlap enforcement, disable/reset behavior, generated config audit, workflow overhead. |
@@ -79,7 +79,7 @@ Run baselines, single-surface owners, and a small set of source-logic hypotheses
 
 A stack can be described as Phase 2 positive only if:
 
-- cumulative provider-billed workflow tokens or cost improve versus the paired baseline;
+- cumulative provider-billed workflow tokens or cost improve versus the canonical shared baseline;
 - deterministic per-task and final verifiers pass, or the final quality score is at least 3 when no deterministic verifier exists;
 - correction turns, repeated reads, tool-call overhead, and stale-context incidents do not erase workflow-level savings;
 - no overlapping surface owner is active unintentionally;
