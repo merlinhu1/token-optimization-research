@@ -44,17 +44,17 @@ The audit used two independent gates:
 | `retrieval-sigmap` | 3 | Deleted manual and unproven assignment | The pinned installer defect was bypassed, but freshness and handshake proof were absent. |
 | `integrated-token-savior` | 3 | Deleted bounded and unproven assignment | The MCP shape matched, but no handshake or completed MCP call proved operation. |
 
-The active registry therefore contains 36 provider-backed records: 18 bare-Codex controls and 18 retained treatments (six Headroom historical records plus 12 later corrected-profile records). It contains no invalid/excluded treatment records.
+The active registry therefore contains 69 provider-backed records: 18 controls and 51 retained individual-tool treatments. It contains no invalid/excluded treatment records.
 
 ## Versioned corrected contracts
 
-The 2026-07-18 audit created versioned replacements for the profiles deleted at that time. Subsequent runtime and installation-guide review invalidated two of those replacements: the original CodeGraph v1 generation and jcodemunch direct v1. By owner direction, corrected CodeGraph reuses the canonical v1 profile ID with new frozen hashes and fresh qualification. jcodemunch direct v1 remains deleted and is superseded by the separately versioned, guide-faithful `retrieval-jcodemunch-codex-mcp-v2` provider-free candidate.
+The 2026-07-18 audit created versioned replacements for the profiles deleted at that time. Subsequent runtime and installation-guide review invalidated two of those replacements: the original CodeGraph v1 generation and jcodemunch direct v1. By owner direction, corrected CodeGraph reuses the canonical v1 profile ID with new frozen hashes and fresh qualification. jcodemunch direct v1 remains deleted and is superseded by the separately versioned, guide-faithful `retrieval-jcodemunch-codex-mcp-v2` treatment.
 
 | Current or subsequently adjudicated profile | Treatment contract or disposition |
 |---|---|
 | `terminal-tokenjuice-codex-hook-v1` | Official `tokenjuice install codex`, enabled hooks, doctor, generated hook proof. |
 | `retrieval-jcodemunch-mcp-direct-v1` | **Deleted invalid treatment.** It installed the direct MCP binary and warm index but deliberately omitted the tool-author-provided Codex guidance layer. |
-| `retrieval-jcodemunch-codex-mcp-v2` | Pinned 1.108.114 pre-installed binary with no MCP arguments, product-native warm index, verbatim product-authored Codex guidance excerpts, and mandatory initialize plus non-empty `tools/list`; provider-free qualification only. |
+| `retrieval-jcodemunch-codex-mcp-v2` | Pinned 1.108.114 pre-installed binary with no MCP arguments, product-native warm index, verbatim product-authored Codex guidance excerpts, and mandatory initialize plus non-empty `tools/list`; retained provider-backed sample. |
 | `terminal-rtk-codex-instructions-v1` | Official global Codex initializer and generated `AGENTS.md`/`RTK.md`. |
 | `terminal-snip-codex-hook-v1` | Pinned source-default Codex hook in lane-private home with hook audit. |
 | `retrieval-graphify-codex-skill-v1` | Full graph, Codex skill, project AGENTS policy, hook, and multi-agent feature. |
@@ -75,7 +75,7 @@ The original replacement set produced 39 fixture-specific protocols and a 39-lan
 
 The table above is preserved as the 2026-07-18 audit decision. Subsequent retained provider events proved that `retrieval-codegraph-codex-mcp-v1` was not usable from the actual model runtime: the official installer generated a bare `codegraph` command, but v1 did not put that command on the model container PATH, and all three attempted `codegraph explore` commands exited 127. The experiment owner directed deletion of its sessions, comparisons, bundles, and occupied protocols rather than relabelling them.
 
-By owner direction, the corrected candidate reuses the canonical `retrieval-codegraph-codex-mcp-v1` profile ID after the invalid result was deleted. The deletion receipt binds the rejected generation to its three deleted protocol paths; the corrected generation is distinguished by new frozen protocol hashes and fresh provider-free qualification. It uses the same pinned source and official `--target codex` installer but exposes a lane-private `codegraph` command on the model PATH, executes project-local `init`, and requires a container-level `command -v codegraph && codegraph --version` probe plus MCP initialize/tools-list before provider access.
+By owner direction, the corrected candidate reuses the canonical `retrieval-codegraph-codex-mcp-v1` profile ID after the invalid result was deleted. The deletion receipt binds the rejected generation to its three deleted protocol paths; the corrected generation is distinguished by new frozen protocol hashes and fresh provider-free qualification. It uses the same pinned source and official `--target codex` installer but exposes a lane-private `codegraph` command on the model PATH, executes project-local `init`, and requires a container-level `command -v codegraph && codegraph --version` probe plus MCP initialize/tools-list before provider access. The retained corrected sample used 31,680,860 provider tokens, passed 9/9 task verifiers, and produced 23 successful model-issued `codegraph explore` commands across all nine tasks.
 
 ### 2026-07-19 jcodemunch installation-guide correction
 
@@ -83,7 +83,7 @@ The direct-v1 lanes correctly installed a pinned binary, registered it in Codex,
 
 The experiment owner classified that omission as a broken and incomplete installation. All three direct-v1 sessions, comparisons, compact bundles, occupied protocols, and external result roots were deleted under [`invalid-jcodemunch-direct-v1-result-deletion-20260719.json`](../../sources/evaluations/audits/invalid-jcodemunch-direct-v1-result-deletion-20260719.json). No totals or task outcomes are preserved in the deletion receipt.
 
-The clean successor is `retrieval-jcodemunch-codex-mcp-v2`. It pins source commit `fbc14e40c7057ebc6d718fb48083d30522afe15f` and wheel 1.108.114, installs that wheel into a lane-private venv, registers the resolved binary directly with no MCP arguments, builds the product-native index, and materializes only verbatim product-authored policy and universal-guide excerpts into lane-private Codex `AGENTS.md`. Its provider-free receipt requires the guidance provenance files, successful warmup, successful initialize, a non-empty 89-tool `tools/list`, and exposure of `jcodemunch_guide` on all three fixtures. No provider-backed successor session exists.
+The clean successor is `retrieval-jcodemunch-codex-mcp-v2`. It pins source commit `fbc14e40c7057ebc6d718fb48083d30522afe15f` and wheel 1.108.114, installs that wheel into a lane-private venv, registers the resolved binary directly with no MCP arguments, builds the product-native index, and materializes only verbatim product-authored policy and universal-guide excerpts into lane-private Codex `AGENTS.md`. Its provider-free receipt requires the guidance provenance files, successful warmup, successful initialize, a non-empty 89-tool `tools/list`, and exposure of `jcodemunch_guide` on all three fixtures. The retained provider-backed successor sample used 31,552,424 tokens and passed 8/9 task verifiers; the Fastify feature task failed only its hidden TypeScript `mediaType` diagnostic.
 
 The policy is now explicit: canonical product treatments include every author-recommended integration surface, including product-authored guidance, rules, skills, and hooks. Evaluator-authored steering remains forbidden, but evaluator neutrality may not remove or contradict the product's own instructions. Reduced surfaces are separate named ablations only.
 
@@ -91,7 +91,11 @@ The policy is now explicit: canonical product treatments include every author-re
 
 The historical `artifact-ponytail` lane was a prompt-only emulation: it injected fallback policy text while omitting the author's official Codex plugin, commands, skills, and trusted `SessionStart`, `UserPromptSubmit`, and `SubagentStart` hooks. The historical `behavior-caveman` lane similarly rendered skill prose into evaluator prompts without using the author's Codex skill installer or documented `/caveman` session activation. The owner directed deletion of all six results and their dependent artifacts under [`invalid-ponytail-caveman-result-deletion-20260719.json`](../../sources/evaluations/audits/invalid-ponytail-caveman-result-deletion-20260719.json).
 
-The clean successors are `artifact-ponytail-codex-plugin-v1` and `behavior-caveman-codex-skill-v1`. Ponytail is installed through Codex's native marketplace/plugin commands from a source-pinned local mirror, after which every discovered plugin hook is reviewed and trusted at its current hash. Caveman uses the author-recommended `npx skills add ... -a codex` path against the exact pinned checkout and places `/caveman` in the first prompt of each persistent session. Provider-free qualification proves these installations across all three active fixtures but makes no product-effect claim.
+The clean successors are `artifact-ponytail-codex-plugin-v1` and `behavior-caveman-codex-skill-v1`. Ponytail is installed through Codex's native marketplace/plugin commands from a source-pinned local mirror, after which every discovered plugin hook is reviewed and trusted at its current hash. Caveman uses the author-recommended `npx skills add ... -a codex` path against the exact pinned checkout and places `/caveman` in the first prompt of each persistent session. Their retained first-valid provider samples used 26,087,938 and 39,731,333 tokens respectively, each with 9/9 task verifiers.
+
+### 2026-07-20 corrected-campaign closure
+
+The 11 corrected Luna/`xhigh` assignments retained 33 sessions and 369,127,654 provider tokens against 690,294,451 tokens across the corresponding baseline assignments, a descriptive 46.53% reduction. All sessions are accepted for the token objective and all compact manifests verify; task diagnostics passed 98/99. The aggregate receipt is [`corrected-luna-xhigh-r2-campaign-20260720.json`](../../sources/evaluations/audits/corrected-luna-xhigh-r2-campaign-20260720.json), and the CodeGraph actual-use proof is [`codegraph-provider-actual-use-20260720.json`](../../sources/evaluations/audits/codegraph-provider-actual-use-20260720.json).
 
 ## Future fail-closed prevention
 
