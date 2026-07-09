@@ -1206,6 +1206,9 @@ for line in sys.stdin:
                 },
             }
             (root / protocol_rel).write_text(json.dumps(protocol))
+            legacy_protocol = copy.deepcopy(protocol)
+            legacy_protocol["baseline_pool"]["descriptor"] = {"unit": "legacy-baseline"}
+            (protocol_dir / "legacy-compatible.json").write_text(json.dumps(legacy_protocol))
             with (
                 mock.patch.object(
                     matrix.workflow,
@@ -1216,6 +1219,11 @@ for line in sys.stdin:
                     matrix.workflow,
                     "baseline_protocol_descriptor",
                     return_value={"unit": "baseline"},
+                ),
+                mock.patch.object(
+                    matrix.workflow,
+                    "baseline_protocol_descriptor_compatible",
+                    return_value=True,
                 ),
                 mock.patch.object(
                     matrix.workflow,

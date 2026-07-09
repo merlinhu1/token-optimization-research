@@ -232,7 +232,8 @@ def find_protocol(root: Path, sequence_id: str, profile_id: str) -> Path:
         timeout_seconds_per_task=3600,
         docker_image=workflow.DEFAULT_DOCKER_IMAGE,
     )
-    matches: list[Path] = []
+    compatible_matches: list[Path] = []
+    exact_matches: list[Path] = []
     for path in (root / "sources/evaluations/protocols").glob("*.json"):
         protocol = load_json(path)
         selected_execution = protocol.get("selected_execution", {})
@@ -250,10 +251,14 @@ def find_protocol(root: Path, sequence_id: str, profile_id: str) -> Path:
             and selected == current_execution
             and selected_execution.get("descriptor_sha256") == workflow._json_hash(current_execution)
         ):
-            matches.append(path)
+            compatible_matches.append(path)
+            if protocol.get("baseline_pool", {}).get("descriptor") == current_baseline_descriptor:
+                exact_matches.append(path)
+    matches = exact_matches or compatible_matches
     if len(matches) != 1:
         raise ValueError(
-            f"expected exactly one frozen protocol for {sequence_id}/{profile_id}; found {[path.name for path in matches]}"
+            f"expected exactly one current frozen protocol for {sequence_id}/{profile_id}; "
+            f"exact={[path.name for path in exact_matches]} compatible={[path.name for path in compatible_matches]}"
         )
     return matches[0]
 
