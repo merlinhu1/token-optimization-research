@@ -82,7 +82,7 @@ python3 scripts/run_codex_workflow_evaluation.py \
   --timeout-per-task 1800
 ```
 
-## Run the paired baseline plus treatment lanes
+## Run the shared baseline plus treatment lane
 
 Preferred human rerun command for the default LeanCTX treatment:
 
@@ -106,11 +106,13 @@ REPLICATE_INDEX=1 scripts/run_sequential_workflow_pair.sh \
   --timeout-per-task 2400
 ```
 
-The pair script runs repository validation, whitespace diff checks, and Truthmark check/index after both lanes complete.
+The pair script reuses a completed canonical `baseline-bare-codex` session for the same sequence/date/replicate when one exists. Otherwise it runs that baseline first, then runs the selected treatment. Set `FORCE_BASELINE_RERUN=1` only when intentionally replacing the canonical baseline for that date/replicate.
+
+The pair script runs repository validation, whitespace diff checks, and Truthmark check/index after the required lanes complete.
 
 ## Run multiple flows in parallel
 
-Use the matrix wrapper when you want to run more than one workflow flow at the same time. It materializes one isolated checkout per flow under `/opt/data/eval-workflow-lanes/`, runs each flow's paired baseline plus LeanCTX lanes inside that checkout, then copies workflow-session artifacts back and merges the produced records into `data/workflow-sessions.json`.
+Use the matrix wrapper when you want to run more than one workflow flow at the same time. It materializes one isolated checkout per flow under `/opt/data/eval-workflow-lanes/`, runs each flow's canonical baseline plus LeanCTX lane inside that checkout, then copies workflow-session artifacts back and merges the produced records into `data/workflow-sessions.json`.
 
 Dry-run the plan:
 
@@ -199,7 +201,7 @@ The registry is updated at:
 data/workflow-sessions.json
 ```
 
-When both baseline and treatment exist for the same experiment group, a comparison JSON is written under:
+When the canonical baseline and treatment exist for the same sequence/date/replicate, a comparison JSON is written under:
 
 ```text
 sources/evaluations/workflow-sessions/

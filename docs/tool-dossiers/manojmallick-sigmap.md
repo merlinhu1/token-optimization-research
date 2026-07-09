@@ -110,7 +110,7 @@ The 2026-07-01 refresh pins the inspected source to `569320994751935ab25bf4a9b5b
 
 ## Compatibility notes
 
-Code retrieval/signature authority plus light memory. It overlaps with CodeGraph, Serena, jcodemunch, Claude Context, CocoIndex Code, code-review-graph, and LeanCTX retrieval.
+Code retrieval/signature authority plus light memory. It overlaps with CodeGraph, Serena, jcodemunch, CocoIndex Code, code-review-graph, and LeanCTX retrieval.
 
 A compatibility-safe stack has components that do not fight over the same hook, context surface, retrieval authority, memory authority, proxy, output channel, behavior controller, artifact policy, or state boundary.
 

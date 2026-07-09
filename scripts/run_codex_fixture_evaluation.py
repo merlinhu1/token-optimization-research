@@ -34,6 +34,12 @@ FORBIDDEN_BASELINE_TERMS = [
     "ctx_graph",
     "codegraph",
     "serena",
+    "graphify",
+    "graphify-mcp",
+    "headroom",
+    "headroom_retrieve",
+    "token-savior",
+    "token_savior",
     "rtk",
     "ponytail",
     "lowfat",
@@ -42,9 +48,34 @@ FORBIDDEN_BASELINE_TERMS = [
     "mex",
     "cavemem",
     "cartog",
+    "sigmap",
+    "jcodemunch",
+    "jcodemunch-mcp",
+    "snip",
+    "lowfat",
+    "tokenjuice",
+    "caveman",
 ]
 BASELINE_CODEX_NO_MCP_PROFILES = {"baseline-codex-no-mcp"}
 CODEGRAPH_BIN = Path("/opt/data/tool-candidates/codegraph/dist/bin/codegraph.js")
+SERENA_ROOT = Path("/opt/data/tool-candidates/serena")
+TOKEN_SAVIOR_ROOT = Path("/opt/data/tool-candidates/token-savior")
+GRAPHIFY_ROOT = Path("/opt/data/tool-candidates/graphify")
+SIGMAP_ROOT = Path("/opt/data/tool-candidates/sigmap")
+JCODEMUNCH_ROOT = Path("/opt/data/tool-candidates/jcodemunch-mcp")
+SNIP_ROOT = Path("/opt/data/tool-candidates/snip")
+LOWFAT_ROOT = Path("/opt/data/tool-candidates/lowfat")
+LOWFAT_BIN = Path("/opt/data/tool-candidates/lowfat-bin/lowfat")
+TOKENJUICE_ROOT = Path("/opt/data/tool-candidates/tokenjuice")
+TOKENJUICE_BIN = TOKENJUICE_ROOT / "bin" / "tokenjuice"
+CAVEMAN_ROOT = Path("/opt/data/tool-candidates/caveman")
+HEADROOM_ROOT = Path("/opt/data/tool-candidates/headroom")
+HEADROOM_WHEEL = HEADROOM_ROOT / "dist" / "headroom_ai-0.28.0-cp310-abi3-linux_x86_64.whl"
+TOKEN_SAVIOR_WHEEL = TOKEN_SAVIOR_ROOT / "dist" / "token_savior_recall-4.4.1-py3-none-any.whl"
+GRAPHIFY_WHEEL = GRAPHIFY_ROOT / "dist" / "graphifyy-0.9.1-py3-none-any.whl"
+JCODEMUNCH_WHEEL = JCODEMUNCH_ROOT / "dist" / "jcodemunch_mcp-1.108.114-py3-none-any.whl"
+SNIP_BIN = SNIP_ROOT / "snip"
+UV_BIN = Path("/opt/data/opt/uv/uv")
 RTK_BIN = Path("/opt/data/tool-candidates/rtk/target/release/rtk")
 PONYTAIL_ROOT = Path("/opt/data/ponytail")
 NODE_TOOLCHAIN_ROOT = Path("/opt/data/opt/node-v24.18.0-linux-x64")
@@ -91,6 +122,291 @@ TOOL_CONFIGS: dict[str, dict[str, Any]] = {
             "metadata_name": "codegraph-warmup-metadata.json",
         },
     },
+    "serena": {
+        "display_name": "Serena",
+        "lane_name": "retrieval-serena",
+        "surface": "retrieval/context",
+        "mcp_server": "serena",
+        "allowed_terms": ["serena"],
+        "data_dir_name": "serena",
+        "mcp_command": str(UV_BIN),
+        "mcp_args": [
+            "tool",
+            "run",
+            "--from",
+            str(SERENA_ROOT),
+            "serena",
+            "start-mcp-server",
+            "--transport",
+            "stdio",
+            "--context",
+            "codex",
+            "--mode",
+            "no-onboarding",
+            "--mode",
+            "no-memories",
+            "--project",
+            "{repo}",
+            "--enable-web-dashboard",
+            "false",
+            "--open-web-dashboard",
+            "false",
+        ],
+        "env": {"SERENA_HOME": "{tool_data_dir}"},
+        "mounts": [str(SERENA_ROOT)],
+        "preferred_guidance": "For codebase navigation, symbol overview, targeted reads, and semantic edits, prefer the exposed Serena MCP tools over broad grep/read scans when language-server-backed context is likely to help.",
+        "optional_guidance": "Serena is available as an optional retrieval/context MCP tool. Use symbolic overview/search and targeted reads when they are likely to reduce total context or improve localization; otherwise use Codex native shell/file tools.",
+    },
+    "graphify": {
+        "display_name": "Graphify",
+        "lane_name": "retrieval-graphify",
+        "surface": "retrieval/context",
+        "mcp_server": "graphify",
+        "allowed_terms": ["graphify", "graphify-mcp"],
+        "data_dir_name": "graphify",
+        "mcp_command": str(UV_BIN),
+        "mcp_args": [
+            "tool",
+            "run",
+            "--from",
+            str(GRAPHIFY_WHEEL),
+            "--with",
+            "mcp",
+            "graphify-mcp",
+            "--graph",
+            "{repo}/graphify-out/graph.json",
+            "--transport",
+            "stdio",
+        ],
+        "env": {"GRAPHIFY_OUT": "graphify-out"},
+        "mounts": [str(GRAPHIFY_ROOT)],
+        "default_tool_state": "warm-index",
+        "preferred_guidance": "For codebase navigation, dependency/orientation questions, and scoped code search, prefer the exposed Graphify MCP graph query tools before broad grep/read scans.",
+        "optional_guidance": "Graphify is available as an optional warm code-graph retrieval tool. Use graph queries when they are likely to reduce total context or improve localization; otherwise use Codex native shell/file tools.",
+        "warmup": {
+            "kind": "code-graph-build",
+            "command": [
+                str(UV_BIN),
+                "tool",
+                "run",
+                "--from",
+                str(GRAPHIFY_WHEEL),
+                "--with",
+                "mcp",
+                "graphify",
+                "update",
+                "{repo}",
+                "--no-cluster",
+                "--force",
+            ],
+            "cleanup_paths": ["graphify-out"],
+            "output_name": "graphify-warmup-output.txt",
+            "metadata_name": "graphify-warmup-metadata.json",
+            "timeout_seconds": 1200,
+        },
+    },
+
+    "sigmap": {
+        "display_name": "SigMap",
+        "lane_name": "retrieval-sigmap",
+        "surface": "retrieval/context",
+        "mcp_server": "sigmap",
+        "allowed_terms": ["sigmap", "gen-context"],
+        "data_dir_name": "sigmap",
+        "mcp_command": "/bin/bash",
+        "mcp_args": [
+            "-lc",
+            "cd {repo} && exec /opt/data/opt/node-v24.18.0-linux-x64/bin/node /opt/data/tool-candidates/sigmap/gen-context.js --mcp",
+        ],
+        "env": {"SIGMAP_TELEMETRY": "0"},
+        "mounts": [str(SIGMAP_ROOT)],
+        "default_tool_state": "warm-index",
+        "preferred_guidance": "For codebase navigation, signature lookup, targeted context, impact analysis, and grounded reads, prefer the exposed SigMap MCP tools before broad grep/read scans.",
+        "optional_guidance": "SigMap is available as an optional signature-map retrieval MCP tool. Use its ranked context, signature search, impact, and targeted line tools when they are likely to reduce total context or improve localization; otherwise use Codex native shell/file tools.",
+        "warmup": {
+            "kind": "signature-map-build",
+            "command": [
+                str(NODE_TOOLCHAIN_ROOT / "bin" / "node"),
+                str(SIGMAP_ROOT / "gen-context.js"),
+                "--adapter",
+                "codex",
+                "--no-track",
+            ],
+            "cleanup_paths": [".context"],
+            "output_name": "sigmap-warmup-output.txt",
+            "metadata_name": "sigmap-warmup-metadata.json",
+            "timeout_seconds": 900,
+        },
+    },
+    "jcodemunch-mcp": {
+        "display_name": "jcodemunch MCP",
+        "lane_name": "retrieval-jcodemunch-mcp",
+        "surface": "retrieval/context",
+        "mcp_server": "jcodemunch",
+        "allowed_terms": ["jcodemunch", "jcodemunch-mcp"],
+        "data_dir_name": "jcodemunch-mcp",
+        "mcp_command": "/bin/bash",
+        "mcp_args": [
+            "-lc",
+            "cd {repo} && exec /opt/data/opt/uv/uv tool run --from /opt/data/tool-candidates/jcodemunch-mcp/dist/jcodemunch_mcp-1.108.114-py3-none-any.whl jcodemunch-mcp serve --transport stdio --log-level ERROR",
+        ],
+        "env": {"JCODEMUNCH_LOG_LEVEL": "ERROR"},
+        "mounts": [str(JCODEMUNCH_ROOT), str(JCODEMUNCH_WHEEL)],
+        "default_tool_state": "warm-index",
+        "preferred_guidance": "For codebase navigation, symbol lookup, ranked context bundles, file outlines, dependency/impact queries, and targeted reads, prefer the exposed jcodemunch MCP tools before broad grep/read scans.",
+        "optional_guidance": "jcodemunch MCP is available as an optional warm code retrieval/indexing tool. Use indexed symbol/context tools when they are likely to reduce total context or improve localization; otherwise use Codex native shell/file tools.",
+        "warmup": {
+            "kind": "code-index-build",
+            "command": [
+                str(UV_BIN),
+                "tool",
+                "run",
+                "--from",
+                str(JCODEMUNCH_WHEEL),
+                "jcodemunch-mcp",
+                "index",
+                "{repo}",
+            ],
+            "output_name": "jcodemunch-warmup-output.txt",
+            "metadata_name": "jcodemunch-warmup-metadata.json",
+            "timeout_seconds": 1200,
+        },
+    },
+    "snip": {
+        "display_name": "Snip",
+        "lane_name": "terminal-snip",
+        "surface": "terminal/tool-output-compaction",
+        "allowed_terms": ["snip"],
+        "data_dir_name": "snip",
+        "executable": str(SNIP_BIN),
+        "path_entries": [str(SNIP_BIN.parent)],
+        "mounts": [str(SNIP_ROOT)],
+        "env": {"SNIP_TELEMETRY": "0"},
+        "preflight_command": ["snip", "--version"],
+        "default_tool_state": "cold-cli",
+        "preferred_guidance": "Snip is available as a terminal/tool-output compaction proxy. Prefix eligible shell commands with `snip` (for example `snip git status --short`, `snip npm test`, `snip node --test`) unless full raw output is required for diagnosis; use raw commands when compaction would hide necessary detail.",
+        "optional_guidance": "Snip is available as an optional terminal/tool-output compaction proxy. Use it for git, test, build, and log-producing commands when likely to reduce terminal output without hiding required diagnostics; otherwise use Codex native shell commands.",
+    },
+    "lowfat": {
+        "display_name": "Lowfat",
+        "lane_name": "terminal-lowfat",
+        "surface": "terminal/tool-output-compaction",
+        "allowed_terms": ["lowfat"],
+        "data_dir_name": "lowfat",
+        "executable": str(LOWFAT_BIN),
+        "path_entries": [str(LOWFAT_BIN.parent)],
+        "mounts": [str(LOWFAT_ROOT), str(LOWFAT_BIN.parent)],
+        "binary_mount_target": "/usr/local/bin/lowfat",
+        "env": {"LOWFAT_TELEMETRY": "0"},
+        "preflight_command": ["lowfat", "--version"],
+        "default_tool_state": "cold-cli",
+        "preferred_guidance": "Lowfat is available as a terminal/tool-output compaction proxy. Prefix eligible shell commands with `lowfat` (for example `lowfat git status`, `lowfat git diff`, `lowfat npm test`) unless full raw output is required for diagnosis; use raw commands when compaction would hide necessary detail.",
+        "optional_guidance": "Lowfat is available as an optional terminal/tool-output compaction proxy. Use `lowfat <command>` for git, test, build, and search commands when it is likely to reduce terminal output without hiding required diagnostics; otherwise use Codex native shell commands.",
+    },
+    "tokenjuice": {
+        "display_name": "TokenJuice",
+        "lane_name": "terminal-tokenjuice",
+        "surface": "terminal/tool-output-compaction",
+        "allowed_terms": ["tokenjuice"],
+        "data_dir_name": "tokenjuice",
+        "executable": str(TOKENJUICE_BIN),
+        "path_entries": [str(TOKENJUICE_BIN.parent)],
+        "mounts": [str(TOKENJUICE_ROOT)],
+        "env": {"TOKENJUICE_TELEMETRY": "0"},
+        "preflight_command": ["tokenjuice", "--version"],
+        "default_tool_state": "cold-cli",
+        "preferred_guidance": "TokenJuice is available as a terminal/tool-output compaction proxy. Prefix eligible shell commands with `tokenjuice` (for example `tokenjuice git status`, `tokenjuice git diff`, `tokenjuice npm test`) unless full raw output is required for diagnosis; use `tokenjuice wrap -- <command>` or a raw command when compaction would hide necessary detail.",
+        "optional_guidance": "TokenJuice is available as an optional terminal/tool-output compaction proxy. Use `tokenjuice <command>` for git, test, build, and search commands when likely to reduce terminal output without hiding required diagnostics; otherwise use Codex native shell commands.",
+    },
+
+    "headroom": {
+        "display_name": "Headroom",
+        "lane_name": "headroom-default-codex",
+        "surface": "broad-compression/proxy/codex-wrapper",
+        "allowed_terms": ["headroom", "headroom_retrieve", "rtk", "tokensave", "token-savior", "token_savior", "serena"],
+        "data_dir_name": "headroom",
+        "mounts": [str(HEADROOM_ROOT), str(HEADROOM_WHEEL)],
+        "path_entries": ["{codex_home}/home/.headroom/bin", "{codex_home}/home/.local/bin"],
+        "env": {
+            "HEADROOM_HOME": "{tool_data_dir}",
+            "HEADROOM_CACHE_DIR": "{tool_data_dir}/cache",
+            "HEADROOM_DISABLE_DASHBOARD": "1",
+            "HEADROOM_TELEMETRY": "0",
+            "HEADROOM_PROJECT": "{repo_slug}",
+        },
+        "codex_wrapper": {
+            "command": str(UV_BIN),
+            "args": [
+                "tool",
+                "run",
+                "--from",
+                str(HEADROOM_WHEEL),
+                "--with",
+                "mcp",
+                "--with",
+                "fastapi",
+                "--with",
+                "uvicorn<1.0",
+                "--with",
+                "httpx[http2]",
+                "--with",
+                "openai",
+                "--with",
+                "zstandard",
+                "--with",
+                "websockets",
+                "headroom",
+                "wrap",
+                "codex",
+                "--verbose",
+                "--",
+            ],
+        },
+        "preflight_command": [
+            str(UV_BIN),
+            "tool",
+            "run",
+            "--from",
+            str(HEADROOM_WHEEL),
+            "--with",
+            "mcp",
+            "headroom",
+            "--version",
+        ],
+        "default_tool_state": "active-wrapper",
+        "preferred_guidance": "Headroom is active as the Codex wrapper/proxy lane. Treat its default compression, MCP retrieval, and Headroom-managed context-tool/code-graph setup as the treatment surface; do not manually enable unrelated token-saving tools outside the wrapper.",
+        "optional_guidance": "Headroom is active as an optional broad compression/proxy Codex wrapper. Use Codex normally through the wrapper, retrieve compressed originals with the Headroom tool when needed, and preserve verifier/debug output if compression or retrieval hides required diagnostics.",
+    },
+    "token-savior": {
+        "display_name": "Token Savior",
+        "lane_name": "integrated-token-savior",
+        "surface": "integrated-mcp/retrieval-memory-compact-ops",
+        "mcp_server": "token-savior",
+        "allowed_terms": ["token-savior", "token_savior", "ts"],
+        "data_dir_name": "token-savior",
+        "mcp_command": str(UV_BIN),
+        "mcp_args": [
+            "tool",
+            "run",
+            "--from",
+            str(TOKEN_SAVIOR_WHEEL),
+            "--with",
+            "mcp",
+            "token-savior",
+        ],
+        "env": {
+            "PROJECT_ROOT": "{repo}",
+            "WORKSPACE_ROOTS": "{repo}",
+            "CLAUDE_PROJECT_ROOT": "{repo}",
+            "TOKEN_SAVIOR_PROFILE": "optimized",
+            "TS_THIN_SCHEMAS": "1",
+            "TS_CAPTURE_DISABLED": "1",
+            "TS_HOME": "{tool_data_dir}",
+        },
+        "mounts": [str(TOKEN_SAVIOR_ROOT)],
+        "preferred_guidance": "For symbol lookup, targeted source reads, call/dependency context, structured git status, compact change summaries, and codebase search, prefer the exposed Token Savior MCP tools over broad grep/read scans when they are likely to reduce context.",
+        "optional_guidance": "Token Savior is available as an optional integrated MCP tool. Use targeted symbol/context tools when they are likely to reduce total context or improve localization; otherwise use Codex native shell/file tools. Do not rely on host hooks or external memory injection in this lane.",
+    },
     "rtk": {
         "display_name": "RTK",
         "lane_name": "terminal-rtk",
@@ -105,6 +421,19 @@ TOOL_CONFIGS: dict[str, dict[str, Any]] = {
         "preflight_command": ["rtk", "--version"],
         "preferred_guidance": "RTK is available as a terminal/tool-output compaction proxy. Prefix eligible shell commands with `rtk` (for example `rtk git status`, `rtk git diff`, `rtk go test`, `rtk pytest`) unless full raw output is required for diagnosis; use `rtk proxy <cmd>` or a raw command when compaction would hide necessary detail.",
         "optional_guidance": "RTK is available as an optional terminal/tool-output compaction proxy. Use `rtk <command>` for git, test, build, and search commands when it is likely to reduce terminal output without hiding required diagnostics; otherwise use Codex native shell commands.",
+    },
+    "caveman": {
+        "display_name": "Caveman",
+        "lane_name": "behavior-caveman",
+        "surface": "behavioral-output-compression/mcp-description-compression",
+        "allowed_terms": ["caveman"],
+        "data_dir_name": "caveman",
+        "mounts": [str(CAVEMAN_ROOT)],
+        "preflight_command": ["node", str(CAVEMAN_ROOT / "src" / "tools" / "caveman-init.js"), "--help"],
+        "prompt_instructions_command": ["python3", "-c", f"from pathlib import Path; print(Path({str(CAVEMAN_ROOT / 'skills' / 'caveman' / 'SKILL.md')!r}).read_text())"],
+        "default_tool_state": "active-instruction-layer",
+        "preferred_guidance": "Caveman is active as a behavioral output-compression policy layer. Keep technical substance exact while making assistant replies terse; preserve code, command output needed for diagnosis, verifier details, and safety warnings exactly.",
+        "optional_guidance": "Caveman is active as an optional behavior-compression policy layer. Bias final and intermediate assistant prose toward terse, low-fluff responses, but do not under-solve tasks or compress code, commands, errors, or verifier evidence into ambiguity.",
     },
     "ponytail": {
         "display_name": "Ponytail",
@@ -189,22 +518,31 @@ def auth_candidates(source_home: Path) -> list[Path]:
 def tool_ids_for_record(record: dict[str, Any], pid: str) -> list[str]:
     if pid in BASELINE_CODEX_NO_MCP_PROFILES:
         return []
-    raw_ids: list[str] = []
-    raw_ids.extend(record.get("profile", {}).get("component_ids") or [])
-    raw_ids.extend(record.get("setup", {}).get("tool_permissions", {}).get("allowed_token_saving_tools") or [])
-    ids: list[str] = []
-    for raw in raw_ids:
-        term = str(raw).lower()
-        if term in TOOL_CONFIGS and term not in ids:
-            ids.append(term)
-        elif term in {"mcp_lean_ctx", "ctx_read", "ctx_search", "ctx_shell", "ctx_graph"} and "lean-ctx" not in ids:
-            ids.append("lean-ctx")
+
+    def resolve(raw_values: list[Any]) -> list[str]:
+        ids: list[str] = []
+        for raw in raw_values:
+            term = str(raw).lower()
+            if term in TOOL_CONFIGS and term not in ids:
+                ids.append(term)
+            elif term in {"mcp_lean_ctx", "ctx_read", "ctx_search", "ctx_shell", "ctx_graph"} and "lean-ctx" not in ids:
+                ids.append("lean-ctx")
+        return ids
+
+    component_ids = resolve(record.get("profile", {}).get("component_ids") or [])
+    if component_ids:
+        return component_ids
+
+    permission_ids = resolve(record.get("setup", {}).get("tool_permissions", {}).get("allowed_token_saving_tools") or [])
+    if permission_ids:
+        return permission_ids
+
     # Compatibility fallback for old planned records. New tools should be declared
     # in profile.component_ids or setup.tool_permissions.allowed_token_saving_tools.
-    if not ids:
-        for tool_id, cfg in TOOL_CONFIGS.items():
-            if tool_id.replace("-", "") in pid.replace("-", "") or tool_id in pid:
-                ids.append(tool_id)
+    ids: list[str] = []
+    for tool_id, cfg in TOOL_CONFIGS.items():
+        if tool_id.replace("-", "") in pid.replace("-", "") or tool_id in pid:
+            ids.append(tool_id)
     return ids
 
 
@@ -234,17 +572,24 @@ def tool_data_dir(codex_home: Path, cfg: dict[str, Any]) -> Path:
     return codex_home / ".config" / str(cfg["data_dir_name"])
 
 
-def render_tool_env(codex_home: Path, cfg: dict[str, Any]) -> dict[str, str]:
+def render_tool_env(codex_home: Path, cfg: dict[str, Any], repo: Path | None = None) -> dict[str, str]:
     data_dir = tool_data_dir(codex_home, cfg)
     data_dir.mkdir(parents=True, exist_ok=True)
     rendered: dict[str, str] = {}
+    repo_path = repo or ROOT
     for key, value in (cfg.get("env") or {}).items():
-        rendered[key] = str(value).format(tool_data_dir=data_dir, codex_home=codex_home)
+        rendered[key] = str(value).format(tool_data_dir=data_dir, codex_home=codex_home, repo=repo_path, repo_slug=repo_path.name.replace("-", "_"))
     return rendered
 
 
 def format_toml_array(values: list[str]) -> str:
     return "[" + ", ".join(json.dumps(v) for v in values) + "]"
+
+
+def render_mcp_args(record: dict[str, Any], codex_home: Path, cfg: dict[str, Any]) -> list[str]:
+    repo = rel_or_abs(record["target"]["repository_path"]) if record.get("target") else ROOT
+    data_dir = tool_data_dir(codex_home, cfg)
+    return [str(arg).format(repo=repo, codex_home=codex_home, tool_data_dir=data_dir) for arg in cfg.get("mcp_args", [])]
 
 
 def write_codex_config(codex_home: Path, record: dict[str, Any], pid: str) -> None:
@@ -269,11 +614,11 @@ def write_codex_config(codex_home: Path, record: dict[str, Any], pid: str) -> No
                 [
                     f"[mcp_servers.{server}]",
                     f"command = {json.dumps(str(cfg['mcp_command']))}",
-                    f"args = {format_toml_array([str(a) for a in cfg.get('mcp_args', [])])}",
+                    f"args = {format_toml_array(render_mcp_args(record, codex_home, cfg))}",
                     "",
                 ]
             )
-            env = render_tool_env(codex_home, cfg)
+            env = render_tool_env(codex_home, cfg, rel_or_abs(record["target"]["repository_path"]) if record.get("target") else ROOT)
             if env:
                 lines.append(f"[mcp_servers.{server}.env]")
                 for key, value in sorted(env.items()):
@@ -400,8 +745,9 @@ def codex_env(codex_home: Path, *, containerized: bool = False, cfg: dict[str, A
     ]
     if cfg:
         for entry in cfg.get("path_entries", []):
-            if str(entry) not in path_entries:
-                path_entries.insert(1, str(entry))
+            rendered_entry = str(entry).format(codex_home=codex_home, home=codex_home / "home")
+            if rendered_entry not in path_entries:
+                path_entries.insert(1, rendered_entry)
     if containerized:
         path_entries.extend(["/usr/local/sbin", "/usr/local/bin", "/usr/sbin", "/usr/bin", "/sbin", "/bin"])
     else:
@@ -438,7 +784,8 @@ def docker_env_keys() -> list[str]:
 
 def tool_env_for_record(record: dict[str, Any], pid: str, codex_home: Path) -> dict[str, str]:
     cfg = active_tool_config(record, pid)
-    return render_tool_env(codex_home, cfg) if cfg else {}
+    repo = rel_or_abs(record["target"]["repository_path"]) if record.get("target") else ROOT
+    return render_tool_env(codex_home, cfg, repo) if cfg else {}
 
 
 
@@ -991,7 +1338,7 @@ def run_codex(record: dict[str, Any], pid: str, codex_home: Path, run_dir: Path,
     prompt = write_prompt(record, run_dir, pid, protocol)
     events = run_dir / "codex-events.jsonl"
     last = run_dir / "codex-last-message.txt"
-    cmd = [
+    codex_cmd = [
         "codex",
         "exec",
         "--json",
@@ -1009,11 +1356,22 @@ def run_codex(record: dict[str, Any], pid: str, codex_home: Path, run_dir: Path,
         "-",
     ]
     cfg = active_tool_config(record, pid)
+    wrapper = (cfg or {}).get("codex_wrapper") if cfg else None
+    input_path_for_proc: Path | None = prompt
+    if wrapper:
+        data_dir = tool_data_dir(codex_home, cfg)
+        wrapper_args = [str(part).format(repo=repo, codex_home=codex_home, tool_data_dir=data_dir, repo_slug=repo.name.replace("-", "_")) for part in wrapper.get("args", [])]
+        if codex_cmd and codex_cmd[-1] == "-":
+            codex_cmd = [*codex_cmd[:-1], prompt.read_text()]
+            input_path_for_proc = None
+        cmd = [str(wrapper["command"]), *wrapper_args, *codex_cmd[1:]]
+    else:
+        cmd = codex_cmd
     env = codex_env(codex_home, containerized=backend == "docker", cfg=cfg)
     env.update(tool_env_for_record(record, pid, codex_home))
     mounts = container_mounts_for_record(record, codex_home, include_repo=True, cfg=cfg)
     add_mount(mounts, run_dir, mode="rw")
-    proc = run_backend(cmd, backend=backend, docker_image=docker_image, cwd=repo, env=env, stdout_path=events, input_path=prompt, timeout=timeout, mounts=mounts)
+    proc = run_backend(cmd, backend=backend, docker_image=docker_image, cwd=repo, env=env, stdout_path=events, input_path=input_path_for_proc, timeout=timeout, mounts=mounts)
     (run_dir / "codex-exit-code.txt").write_text(str(proc.returncode) + "\n")
     return proc.returncode
 

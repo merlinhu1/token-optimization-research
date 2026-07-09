@@ -92,7 +92,7 @@ sources/evaluations/workflow-sessions/<session-id>/
 
 ## Initial research experiments
 
-Human rerun recipe: use `docs/evaluations/sequential-workflow-runner.md`; prefer `scripts/run_sequential_workflow_pair.sh <sequence-id>` for one paired baseline plus LeanCTX rerun, or `scripts/run_sequential_workflow_matrix.py --max-parallel 4` for isolated parallel reruns of all four active flows.
+Human rerun recipe: use `docs/evaluations/sequential-workflow-runner.md`; prefer `scripts/run_sequential_workflow_pair.sh <sequence-id>` for one canonical baseline plus LeanCTX rerun, or `scripts/run_sequential_workflow_matrix.py --max-parallel 4` for isolated parallel reruns of all four active flows.
 
 Start with one medium-project task sequence before running a matrix:
 

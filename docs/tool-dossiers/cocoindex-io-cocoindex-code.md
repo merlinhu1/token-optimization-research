@@ -113,7 +113,7 @@ The 2026-07-01 refresh pins the inspected source to `7fe0e890ad58da96e93c8c3f18b
 
 ## Compatibility notes
 
-Code retrieval/search authority. It overlaps with CodeGraph, Serena, claude-context, jcodemunch, and LeanCTX retrieval; its structural grep mode can be a narrower sidecar if not duplicating the primary retrieval engine.
+Code retrieval/search authority. It overlaps with CodeGraph, Serena, jcodemunch, and LeanCTX retrieval; its structural grep mode can be a narrower sidecar if not duplicating the primary retrieval engine.
 
 A compatibility-safe stack has components that do not fight over the same hook, context surface, retrieval authority, memory authority, proxy, output channel, behavior controller, artifact policy, or state boundary.
 

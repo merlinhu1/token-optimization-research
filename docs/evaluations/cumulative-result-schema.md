@@ -28,7 +28,7 @@ Synthetic micro fixtures and recorded diagnostic fixtures are useful for sanity 
 ## Append-only workflow policy
 
 - Add one workflow session record per executed baseline or treatment session.
-- Use the same `experiment_group_id` for baseline and directly comparable treatment sessions.
+- Use one canonical baseline `experiment_group_id` per fixture/date/replicate and a separate treatment `experiment_group_id` per profile; link them through comparison records and `interpretation.comparison_baseline_session_id`.
 - Bind `agent.runtime_id`, `agent.provider`, `agent.model`, and `agent.model_condition_id` before execution; placeholder model/provider values are allowed only for planned records.
 - Keep baseline and treatment workflow sessions on the same task sequence and model condition for direct tool-effect comparisons.
 - Use `objective = individual_tool_effectiveness` for one tool or comparator profile.
