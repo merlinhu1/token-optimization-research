@@ -2,7 +2,7 @@
 
 This section indexes the token-saving tools studied by the project. Detailed source-level analysis lives under `dossiers/`; each dossier is updated across research sessions and records more than README claims.
 
-For current treatment validity, read the [official-integration parity audit](../papers/official-integration-parity-audit.md). The [Phase 2 paper](../papers/phase-2-lifecycle-v0-natural-use-screening.md) preserves historical provider-accounting tables but is not a current product ranking. For selection and promotion rules, read the [tool research strategy](../research/tool-research-strategy.md).
+For current treatment validity, read the [official-integration parity audit](../papers/official-integration-parity-audit.md). The corrected [Phase 2 paper](../papers/phase-2-lifecycle-v0-natural-use-screening.md) contains current scoped reproduction evidence but is not a stable product ranking. For selection and promotion rules, read the [tool research strategy](../research/tool-research-strategy.md).
 
 ## Evidence-stage key
 
@@ -13,7 +13,7 @@ For current treatment validity, read the [official-integration parity audit](../
 
 ## Current dossiers
 
-Current dossiers are listed below. All are at `source-logic` with pinned source-snapshot metadata; none are benchmark-audit or reproduction evidence yet.
+Current dossier files are listed below. Their dossier stage remains `source-logic` with pinned source-snapshot metadata; separate evaluation records provide scoped reproduction evidence for the tested profile identities and do not automatically promote the dossiers themselves.
 
 | Tool | Dossier | Current evidence stage | Primary surface |
 |---|---|---:|---|
