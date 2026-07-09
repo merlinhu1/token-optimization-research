@@ -289,10 +289,38 @@ class ActiveCampaignArchitectureTest(unittest.TestCase):
             "Non-default model-comparison baselines are tracked separately",
             runbook,
         )
+        default_model_id = runner.DEFAULT_WORKFLOW_MODEL_CONDITION_ID
+        comparison_model_id = "codex-openai-gpt-5-6-sol-high"
         for sequence_id in completed:
-            self.assertIn(f"`{sequence_id}` (r0, r1, r2)", runbook)
+            default_replicates = sorted(
+                {
+                    session["replicate_index"]
+                    for session in registry["sessions"]
+                    if session.get("status") == "completed"
+                    and session.get("session_role") == "baseline"
+                    and session.get("task_sequence", {}).get("sequence_id") == sequence_id
+                    and session.get("agent", {}).get("model_condition_id") == default_model_id
+                    and session.get("interpretation", {}).get("accepted_for_objective") is True
+                }
+            )
+            comparison_replicates = sorted(
+                {
+                    session["replicate_index"]
+                    for session in registry["sessions"]
+                    if session.get("status") == "completed"
+                    and session.get("session_role") == "baseline"
+                    and session.get("task_sequence", {}).get("sequence_id") == sequence_id
+                    and session.get("agent", {}).get("model_condition_id") == comparison_model_id
+                    and session.get("interpretation", {}).get("accepted_for_objective") is True
+                }
+            )
             self.assertIn(
-                f"`{sequence_id}` under `codex-openai-gpt-5-6-sol-high` (r0, r1, r2)",
+                f"`{sequence_id}` ({', '.join(f'r{index}' for index in default_replicates)})",
+                runbook,
+            )
+            self.assertIn(
+                f"`{sequence_id}` under `{comparison_model_id}` "
+                f"({', '.join(f'r{index}' for index in comparison_replicates)})",
                 runbook,
             )
 
