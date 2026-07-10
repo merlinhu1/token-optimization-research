@@ -21,57 +21,6 @@
   },
   "sequences": [
     {
-      "id": "terraform-maintenance-sequence-v1",
-      "status": "planned",
-      "acceptance_design": "behavioral",
-      "readiness_blockers": [
-        "Tasks touch only three or four production files and do not satisfy the primary workflow complexity floor."
-      ],
-      "fixture_id": "large-hashicorp-terraform",
-      "fixture_scale": "large-project",
-      "objective": "individual_tool_effectiveness",
-      "primary_metric": "cumulative provider-billed workflow tokens",
-      "reset_policy": "Reset once before the session; preserve source, tool, index, cache, generated config, memory, and agent state between tasks; inject only the current regression and re-root model-facing Git metadata before disclosure.",
-      "conversion_note": "Shared-snapshot candidate: the five Terraform regressions target commit e02391ad384c9c38f1d7f40b853c0d2297348094 and must be injected one task at a time while prior source fixes persist.",
-      "tasks": [
-        {
-          "id": "terraform-38739-sensitive-policy-paths-regression",
-          "order": 1,
-          "prompt_path": "sources/evaluations/fixtures/large/hashicorp-terraform/tasks/terraform-38739-sensitive-policy-paths-regression/agent-prompt.txt",
-          "verifier_command": "sources/evaluations/fixtures/large/hashicorp-terraform/tasks/terraform-38739-sensitive-policy-paths-regression/verify.sh"
-        },
-        {
-          "id": "terraform-38745-config-parser-concurrency-regression",
-          "order": 2,
-          "prompt_path": "sources/evaluations/fixtures/large/hashicorp-terraform/tasks/terraform-38745-config-parser-concurrency-regression/agent-prompt.txt",
-          "verifier_command": "sources/evaluations/fixtures/large/hashicorp-terraform/tasks/terraform-38745-config-parser-concurrency-regression/verify.sh"
-        },
-        {
-          "id": "terraform-38747-config-loader-watchstop-race-regression",
-          "order": 3,
-          "prompt_path": "sources/evaluations/fixtures/large/hashicorp-terraform/tasks/terraform-38747-config-loader-watchstop-race-regression/agent-prompt.txt",
-          "verifier_command": "sources/evaluations/fixtures/large/hashicorp-terraform/tasks/terraform-38747-config-loader-watchstop-race-regression/verify.sh"
-        },
-        {
-          "id": "terraform-38775-policy-state-close-order-regression",
-          "order": 4,
-          "prompt_path": "sources/evaluations/fixtures/large/hashicorp-terraform/tasks/terraform-38775-policy-state-close-order-regression/agent-prompt.txt",
-          "verifier_command": "sources/evaluations/fixtures/large/hashicorp-terraform/tasks/terraform-38775-policy-state-close-order-regression/verify.sh"
-        },
-        {
-          "id": "terraform-38781-policy-callback-deferred-resources-regression",
-          "order": 5,
-          "prompt_path": "sources/evaluations/fixtures/large/hashicorp-terraform/tasks/terraform-38781-policy-callback-deferred-resources-regression/agent-prompt.txt",
-          "verifier_command": "sources/evaluations/fixtures/large/hashicorp-terraform/tasks/terraform-38781-policy-callback-deferred-resources-regression/verify.sh"
-        }
-      ],
-      "initial_snapshot": {
-        "commit": "e02391ad384c9c38f1d7f40b853c0d2297348094",
-        "upstream": "https://github.com/hashicorp/terraform.git"
-      },
-      "seed_patch_policy": "Task seed patches target one shared snapshot but are controller-injected only when that task is disclosed; future regressions must remain absent from the model-facing tree."
-    },
-    {
       "id": "orchardcore-maintenance-sequence-v1",
       "status": "planned",
       "acceptance_design": "requires-redesign",

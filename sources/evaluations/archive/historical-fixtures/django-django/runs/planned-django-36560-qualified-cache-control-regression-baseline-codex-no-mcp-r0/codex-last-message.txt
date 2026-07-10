@@ -1,5 +1,0 @@
-Repaired the regression by restoring the upstream production behavior: Cache-Control directive checks now parse by directive name, so qualified forms like `public="abc"` and `no-store="x"` are recognized, and whitespace around `=` is stripped for `patch_cache_control()`.
-
-Verifier result: passed all 5 targeted tests using `.venv/bin/python` because `python` is not on PATH here.
-
-`git status` now shows only the pre-existing untracked `.venv/`; no production diff remains against the pinned fixed commit.

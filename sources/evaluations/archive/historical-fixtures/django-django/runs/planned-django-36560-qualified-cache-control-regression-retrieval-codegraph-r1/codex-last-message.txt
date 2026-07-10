@@ -1,9 +1,0 @@
-Restored the upstream production behavior for Cache-Control directive parsing. The repo diff is now clean against the pinned fixed commit; only the pre-existing untracked `.venv/` remains.
-
-Verification passed with the local virtualenv interpreter because `/usr/bin/python` is absent:
-
-```bash
-PYTHONPATH=. .venv/bin/python tests/runtests.py cache.tests.CacheUtils.test_patch_cache_control_whitespace_around_equals cache.tests.CacheMiddlewareTest.test_qualified_cache_control_value_not_cached cache.tests.CacheMiddlewareTest.test_authorization_header_exception_qualified_public_directive middleware.tests.ConditionalGetMiddlewareTest.test_no_etag_no_store_qualified utils_tests.test_http.SplitDirectiveNamesTests.test_basic --verbosity 2
-```
-
-Result: `Ran 5 tests ... OK`.

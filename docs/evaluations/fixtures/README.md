@@ -18,7 +18,7 @@ Use `templates/repository-fixture.md` for detailed fixture notes.
 
 Raw fixture source material lives under `sources/evaluations/fixtures/`.
 
-Archived historical fixture evidence lives under `sources/evaluations/archive/` and is not active workflow architecture.
+Legacy archived fixture evidence was removed because it used invalid task designs. Active evaluation fixtures live under `sources/evaluations/fixtures/`.
 
 Workflow-session evidence belongs under `sources/evaluations/workflow-sessions/<session-id>/` using the compact four-file artifact contract.
 
