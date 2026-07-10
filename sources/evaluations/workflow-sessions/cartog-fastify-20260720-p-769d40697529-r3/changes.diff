@@ -1,0 +1,466 @@
+# Ordered cumulative source checkpoints. Every section is relative to the one composite broken-start root.
+
+# --- task-01-agent ---
+diff --git a/lib/request.js b/lib/request.js
+index 6ff2393..f1bf847 100644
+--- a/lib/request.js
++++ b/lib/request.js
+@@ -17,6 +17,7 @@ const {
+ } = require('./symbols')
+ const { FST_ERR_REQ_INVALID_VALIDATION_INVOCATION, FST_ERR_DEC_UNDECLARED } = require('./errors')
+ const decorators = require('./decorate')
++const ContentType = require('./content-type')
+ 
+ const HTTP_PART_SYMBOL_MAP = {
+   body: kSchemaBody,
+@@ -282,6 +283,12 @@ Object.defineProperties(Request.prototype, {
+       this.additionalHeaders = headers
+     }
+   },
++  mediaType: {
++    get () {
++      const contentType = ContentType.from(this.headers['content-type'])
++      return contentType.isValid ? contentType.mediaType : undefined
++    }
++  },
+   getValidationFunction: {
+     value: function (httpPartOrSchema) {
+       if (typeof httpPartOrSchema === 'string') {
+diff --git a/lib/validation.js b/lib/validation.js
+index 48850b1..b444d86 100644
+--- a/lib/validation.js
++++ b/lib/validation.js
+@@ -171,8 +171,7 @@ function validate (context, request, execution) {
+     if (typeof context[bodySchema] === 'function') {
+       validatorFunction = context[bodySchema]
+     } else if (context[bodySchema]) {
+-      // TODO: add request.contentType and reuse it here
+-      const contentType = getEssenceMediaType(request.headers['content-type'])
++      const contentType = request.mediaType ?? ''
+       const contentSchema = context[bodySchema][contentType]
+       if (contentSchema) {
+         validatorFunction = contentSchema
+@@ -271,16 +270,6 @@ function wrapValidationError (result, dataVar, schemaErrorFormatter) {
+   return error
+ }
+ 
+-/**
+- * simple function to retrieve the essence media type
+- * @param {string} header
+- * @returns {string} Mimetype string.
+- */
+-function getEssenceMediaType (header) {
+-  if (!header) return ''
+-  return header.trimStart().split(/[ ;]/, 1)[0].trim().toLowerCase()
+-}
+-
+ module.exports = {
+   symbols: { bodySchema, querystringSchema, responseSchema, paramsSchema, headersSchema },
+   compileSchemasForValidation,
+diff --git a/types/request.d.ts b/types/request.d.ts
+index fabaed9..90cef7c 100644
+--- a/types/request.d.ts
++++ b/types/request.d.ts
+@@ -94,6 +94,7 @@ export interface FastifyRequest<RouteGeneric extends RouteGenericInterface = Rou
+   readonly hostname: string;
+   readonly url: string;
+   readonly originalUrl: string;
++  readonly mediaType: string | undefined;
+   /**
+    * Derived from socket state or forwarding headers.
+    * Treat as untrusted input and validate before security-sensitive use.
+
+# --- task-02-agent ---
+diff --git a/lib/content-type-parser.js b/lib/content-type-parser.js
+index 3910c85..b686d09 100644
+--- a/lib/content-type-parser.js
++++ b/lib/content-type-parser.js
+@@ -76,7 +76,7 @@ ContentTypeParser.prototype.add = function (contentType, opts, parserFn) {
+     this.customParsers.set('', parser)
+   } else {
+     if (contentTypeIsString) {
+-      const ct = new ContentType(contentType)
++      const ct = ContentType.from(contentType)
+       if (ct.isValid === false) {
+         throw new FST_ERR_CTP_INVALID_TYPE()
+       }
+@@ -93,7 +93,7 @@ ContentTypeParser.prototype.add = function (contentType, opts, parserFn) {
+ 
+ ContentTypeParser.prototype.hasParser = function (contentType) {
+   if (typeof contentType === 'string') {
+-    contentType = new ContentType(contentType).toString()
++    contentType = ContentType.from(contentType).toString()
+   } else {
+     if (!(contentType instanceof RegExp)) throw new FST_ERR_CTP_INVALID_TYPE()
+     contentType = contentType.toString()
+@@ -104,7 +104,7 @@ ContentTypeParser.prototype.hasParser = function (contentType) {
+ 
+ ContentTypeParser.prototype.existingParser = function (contentType) {
+   if (typeof contentType === 'string') {
+-    const ct = new ContentType(contentType).toString()
++    const ct = ContentType.from(contentType).toString()
+     if (contentType === 'application/json' && this.customParsers.has(contentType)) {
+       return this.customParsers.get(ct).fn !== this[kDefaultJsonParse]
+     }
+@@ -120,7 +120,7 @@ ContentTypeParser.prototype.getParser = function (contentType) {
+   if (typeof contentType === 'string') {
+     const cached = this.cache.get(contentType)
+     if (cached !== undefined) return cached
+-    contentType = new ContentType(contentType)
++    contentType = ContentType.from(contentType)
+   }
+   const ct = contentType.toString()
+ 
+@@ -166,7 +166,7 @@ ContentTypeParser.prototype.remove = function (contentType) {
+   let parsers
+ 
+   if (typeof contentType === 'string') {
+-    contentType = new ContentType(contentType).toString()
++    contentType = ContentType.from(contentType).toString()
+     parsers = this.parserList
+   } else {
+     if (!(contentType instanceof RegExp)) throw new FST_ERR_CTP_INVALID_TYPE()
+diff --git a/lib/content-type.js b/lib/content-type.js
+index aeab8cd..ddc6890 100644
+--- a/lib/content-type.js
++++ b/lib/content-type.js
+@@ -1,5 +1,7 @@
+ 'use strict'
+ 
++const { FifoMap: Fifo } = require('toad-cache')
++
+ /**
+  * keyValuePairsReg is used to split the parameters list into associated
+  * key value pairings. The leading `(?:^|;)\s*` anchor ensures the regex
+@@ -55,7 +57,12 @@ class ContentType {
+    * @returns {ContentType | undefined}
+    */
+   static from (headerValue) {
+-    return new ContentType(headerValue)
++    const cached = ContentType.cache.get(headerValue)
++    if (cached !== undefined) return cached
++
++    const contentType = new ContentType(headerValue)
++    ContentType.cache.set(headerValue, contentType)
++    return contentType
+   }
+ 
+   constructor (headerValue) {
+@@ -170,4 +177,6 @@ class ContentType {
+   }
+ }
+ 
++ContentType.cache = new Fifo(100)
++
+ module.exports = ContentType
+diff --git a/lib/request.js b/lib/request.js
+index 6ff2393..f1bf847 100644
+--- a/lib/request.js
++++ b/lib/request.js
+@@ -17,6 +17,7 @@ const {
+ } = require('./symbols')
+ const { FST_ERR_REQ_INVALID_VALIDATION_INVOCATION, FST_ERR_DEC_UNDECLARED } = require('./errors')
+ const decorators = require('./decorate')
++const ContentType = require('./content-type')
+ 
+ const HTTP_PART_SYMBOL_MAP = {
+   body: kSchemaBody,
+@@ -282,6 +283,12 @@ Object.defineProperties(Request.prototype, {
+       this.additionalHeaders = headers
+     }
+   },
++  mediaType: {
++    get () {
++      const contentType = ContentType.from(this.headers['content-type'])
++      return contentType.isValid ? contentType.mediaType : undefined
++    }
++  },
+   getValidationFunction: {
+     value: function (httpPartOrSchema) {
+       if (typeof httpPartOrSchema === 'string') {
+diff --git a/lib/schemas.js b/lib/schemas.js
+index 06bdb7c..74b1d05 100644
+--- a/lib/schemas.js
++++ b/lib/schemas.js
+@@ -149,7 +149,7 @@ function getSchemaSerializer (context, statusCode, contentType) {
+   }
+   if (responseSchemaDef[statusCode]) {
+     if (responseSchemaDef[statusCode].constructor === Object) {
+-      const ct = new ContentType(contentType)
++      const ct = ContentType.from(contentType)
+       if (ct.isValid) {
+         if (responseSchemaDef[statusCode][ct.mediaType]) {
+           return responseSchemaDef[statusCode][ct.mediaType]
+@@ -168,7 +168,7 @@ function getSchemaSerializer (context, statusCode, contentType) {
+   const fallbackStatusCode = (statusCode + '')[0] + 'xx'
+   if (responseSchemaDef[fallbackStatusCode]) {
+     if (responseSchemaDef[fallbackStatusCode].constructor === Object) {
+-      const ct = new ContentType(contentType)
++      const ct = ContentType.from(contentType)
+       if (ct.isValid) {
+         if (responseSchemaDef[fallbackStatusCode][ct.mediaType]) {
+           return responseSchemaDef[fallbackStatusCode][ct.mediaType]
+@@ -187,7 +187,7 @@ function getSchemaSerializer (context, statusCode, contentType) {
+   }
+   if (responseSchemaDef.default) {
+     if (responseSchemaDef.default.constructor === Object) {
+-      const ct = new ContentType(contentType)
++      const ct = ContentType.from(contentType)
+       if (ct.isValid) {
+         if (responseSchemaDef.default[ct.mediaType]) {
+           return responseSchemaDef.default[ct.mediaType]
+diff --git a/lib/validation.js b/lib/validation.js
+index 48850b1..b444d86 100644
+--- a/lib/validation.js
++++ b/lib/validation.js
+@@ -171,8 +171,7 @@ function validate (context, request, execution) {
+     if (typeof context[bodySchema] === 'function') {
+       validatorFunction = context[bodySchema]
+     } else if (context[bodySchema]) {
+-      // TODO: add request.contentType and reuse it here
+-      const contentType = getEssenceMediaType(request.headers['content-type'])
++      const contentType = request.mediaType ?? ''
+       const contentSchema = context[bodySchema][contentType]
+       if (contentSchema) {
+         validatorFunction = contentSchema
+@@ -271,16 +270,6 @@ function wrapValidationError (result, dataVar, schemaErrorFormatter) {
+   return error
+ }
+ 
+-/**
+- * simple function to retrieve the essence media type
+- * @param {string} header
+- * @returns {string} Mimetype string.
+- */
+-function getEssenceMediaType (header) {
+-  if (!header) return ''
+-  return header.trimStart().split(/[ ;]/, 1)[0].trim().toLowerCase()
+-}
+-
+ module.exports = {
+   symbols: { bodySchema, querystringSchema, responseSchema, paramsSchema, headersSchema },
+   compileSchemasForValidation,
+diff --git a/types/request.d.ts b/types/request.d.ts
+index fabaed9..90cef7c 100644
+--- a/types/request.d.ts
++++ b/types/request.d.ts
+@@ -94,6 +94,7 @@ export interface FastifyRequest<RouteGeneric extends RouteGenericInterface = Rou
+   readonly hostname: string;
+   readonly url: string;
+   readonly originalUrl: string;
++  readonly mediaType: string | undefined;
+   /**
+    * Derived from socket state or forwarding headers.
+    * Treat as untrusted input and validate before security-sensitive use.
+
+# --- task-03-agent ---
+diff --git a/fastify.js b/fastify.js
+index 7c015f9..48895f3 100644
+--- a/fastify.js
++++ b/fastify.js
+@@ -678,9 +678,9 @@ function fastify (serverOptions) {
+       error: 'Bad Request',
+       code: 'FST_ERR_MAX_PARAM_LENGTH',
+       message: `'${path}' is exceeding the max param length`,
+-      statusCode: 413
++      statusCode: 414
+     })
+-    res.writeHead(413, {
++    res.writeHead(414, {
+       'Content-Type': 'application/json',
+       'Content-Length': Buffer.byteLength(body)
+     })
+diff --git a/lib/content-type-parser.js b/lib/content-type-parser.js
+index 3910c85..b686d09 100644
+--- a/lib/content-type-parser.js
++++ b/lib/content-type-parser.js
+@@ -76,7 +76,7 @@ ContentTypeParser.prototype.add = function (contentType, opts, parserFn) {
+     this.customParsers.set('', parser)
+   } else {
+     if (contentTypeIsString) {
+-      const ct = new ContentType(contentType)
++      const ct = ContentType.from(contentType)
+       if (ct.isValid === false) {
+         throw new FST_ERR_CTP_INVALID_TYPE()
+       }
+@@ -93,7 +93,7 @@ ContentTypeParser.prototype.add = function (contentType, opts, parserFn) {
+ 
+ ContentTypeParser.prototype.hasParser = function (contentType) {
+   if (typeof contentType === 'string') {
+-    contentType = new ContentType(contentType).toString()
++    contentType = ContentType.from(contentType).toString()
+   } else {
+     if (!(contentType instanceof RegExp)) throw new FST_ERR_CTP_INVALID_TYPE()
+     contentType = contentType.toString()
+@@ -104,7 +104,7 @@ ContentTypeParser.prototype.hasParser = function (contentType) {
+ 
+ ContentTypeParser.prototype.existingParser = function (contentType) {
+   if (typeof contentType === 'string') {
+-    const ct = new ContentType(contentType).toString()
++    const ct = ContentType.from(contentType).toString()
+     if (contentType === 'application/json' && this.customParsers.has(contentType)) {
+       return this.customParsers.get(ct).fn !== this[kDefaultJsonParse]
+     }
+@@ -120,7 +120,7 @@ ContentTypeParser.prototype.getParser = function (contentType) {
+   if (typeof contentType === 'string') {
+     const cached = this.cache.get(contentType)
+     if (cached !== undefined) return cached
+-    contentType = new ContentType(contentType)
++    contentType = ContentType.from(contentType)
+   }
+   const ct = contentType.toString()
+ 
+@@ -166,7 +166,7 @@ ContentTypeParser.prototype.remove = function (contentType) {
+   let parsers
+ 
+   if (typeof contentType === 'string') {
+-    contentType = new ContentType(contentType).toString()
++    contentType = ContentType.from(contentType).toString()
+     parsers = this.parserList
+   } else {
+     if (!(contentType instanceof RegExp)) throw new FST_ERR_CTP_INVALID_TYPE()
+diff --git a/lib/content-type.js b/lib/content-type.js
+index aeab8cd..ddc6890 100644
+--- a/lib/content-type.js
++++ b/lib/content-type.js
+@@ -1,5 +1,7 @@
+ 'use strict'
+ 
++const { FifoMap: Fifo } = require('toad-cache')
++
+ /**
+  * keyValuePairsReg is used to split the parameters list into associated
+  * key value pairings. The leading `(?:^|;)\s*` anchor ensures the regex
+@@ -55,7 +57,12 @@ class ContentType {
+    * @returns {ContentType | undefined}
+    */
+   static from (headerValue) {
+-    return new ContentType(headerValue)
++    const cached = ContentType.cache.get(headerValue)
++    if (cached !== undefined) return cached
++
++    const contentType = new ContentType(headerValue)
++    ContentType.cache.set(headerValue, contentType)
++    return contentType
+   }
+ 
+   constructor (headerValue) {
+@@ -170,4 +177,6 @@ class ContentType {
+   }
+ }
+ 
++ContentType.cache = new Fifo(100)
++
+ module.exports = ContentType
+diff --git a/lib/errors.js b/lib/errors.js
+index 1aea926..24abe8a 100644
+--- a/lib/errors.js
++++ b/lib/errors.js
+@@ -374,7 +374,7 @@ const codes = {
+   FST_ERR_MAX_PARAM_LENGTH: createError(
+     'FST_ERR_MAX_PARAM_LENGTH',
+     "'%s' is exceeding the max param length",
+-    413,
++    414,
+     URIError
+   ),
+   FST_ERR_ASYNC_CONSTRAINT: createError(
+diff --git a/lib/request.js b/lib/request.js
+index 6ff2393..f1bf847 100644
+--- a/lib/request.js
++++ b/lib/request.js
+@@ -17,6 +17,7 @@ const {
+ } = require('./symbols')
+ const { FST_ERR_REQ_INVALID_VALIDATION_INVOCATION, FST_ERR_DEC_UNDECLARED } = require('./errors')
+ const decorators = require('./decorate')
++const ContentType = require('./content-type')
+ 
+ const HTTP_PART_SYMBOL_MAP = {
+   body: kSchemaBody,
+@@ -282,6 +283,12 @@ Object.defineProperties(Request.prototype, {
+       this.additionalHeaders = headers
+     }
+   },
++  mediaType: {
++    get () {
++      const contentType = ContentType.from(this.headers['content-type'])
++      return contentType.isValid ? contentType.mediaType : undefined
++    }
++  },
+   getValidationFunction: {
+     value: function (httpPartOrSchema) {
+       if (typeof httpPartOrSchema === 'string') {
+diff --git a/lib/schemas.js b/lib/schemas.js
+index 06bdb7c..74b1d05 100644
+--- a/lib/schemas.js
++++ b/lib/schemas.js
+@@ -149,7 +149,7 @@ function getSchemaSerializer (context, statusCode, contentType) {
+   }
+   if (responseSchemaDef[statusCode]) {
+     if (responseSchemaDef[statusCode].constructor === Object) {
+-      const ct = new ContentType(contentType)
++      const ct = ContentType.from(contentType)
+       if (ct.isValid) {
+         if (responseSchemaDef[statusCode][ct.mediaType]) {
+           return responseSchemaDef[statusCode][ct.mediaType]
+@@ -168,7 +168,7 @@ function getSchemaSerializer (context, statusCode, contentType) {
+   const fallbackStatusCode = (statusCode + '')[0] + 'xx'
+   if (responseSchemaDef[fallbackStatusCode]) {
+     if (responseSchemaDef[fallbackStatusCode].constructor === Object) {
+-      const ct = new ContentType(contentType)
++      const ct = ContentType.from(contentType)
+       if (ct.isValid) {
+         if (responseSchemaDef[fallbackStatusCode][ct.mediaType]) {
+           return responseSchemaDef[fallbackStatusCode][ct.mediaType]
+@@ -187,7 +187,7 @@ function getSchemaSerializer (context, statusCode, contentType) {
+   }
+   if (responseSchemaDef.default) {
+     if (responseSchemaDef.default.constructor === Object) {
+-      const ct = new ContentType(contentType)
++      const ct = ContentType.from(contentType)
+       if (ct.isValid) {
+         if (responseSchemaDef.default[ct.mediaType]) {
+           return responseSchemaDef.default[ct.mediaType]
+diff --git a/lib/validation.js b/lib/validation.js
+index 48850b1..b444d86 100644
+--- a/lib/validation.js
++++ b/lib/validation.js
+@@ -171,8 +171,7 @@ function validate (context, request, execution) {
+     if (typeof context[bodySchema] === 'function') {
+       validatorFunction = context[bodySchema]
+     } else if (context[bodySchema]) {
+-      // TODO: add request.contentType and reuse it here
+-      const contentType = getEssenceMediaType(request.headers['content-type'])
++      const contentType = request.mediaType ?? ''
+       const contentSchema = context[bodySchema][contentType]
+       if (contentSchema) {
+         validatorFunction = contentSchema
+@@ -271,16 +270,6 @@ function wrapValidationError (result, dataVar, schemaErrorFormatter) {
+   return error
+ }
+ 
+-/**
+- * simple function to retrieve the essence media type
+- * @param {string} header
+- * @returns {string} Mimetype string.
+- */
+-function getEssenceMediaType (header) {
+-  if (!header) return ''
+-  return header.trimStart().split(/[ ;]/, 1)[0].trim().toLowerCase()
+-}
+-
+ module.exports = {
+   symbols: { bodySchema, querystringSchema, responseSchema, paramsSchema, headersSchema },
+   compileSchemasForValidation,
+diff --git a/types/request.d.ts b/types/request.d.ts
+index fabaed9..90cef7c 100644
+--- a/types/request.d.ts
++++ b/types/request.d.ts
+@@ -94,6 +94,7 @@ export interface FastifyRequest<RouteGeneric extends RouteGenericInterface = Rou
+   readonly hostname: string;
+   readonly url: string;
+   readonly originalUrl: string;
++  readonly mediaType: string | undefined;
+   /**
+    * Derived from socket state or forwarding headers.
+    * Treat as untrusted input and validate before security-sensitive use.

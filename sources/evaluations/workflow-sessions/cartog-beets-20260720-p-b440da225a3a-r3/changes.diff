@@ -1,0 +1,1376 @@
+# Ordered cumulative source checkpoints. Every section is relative to the one composite broken-start root.
+
+# --- task-01-agent ---
+diff --git a/beets/ui/commands/modify.py b/beets/ui/commands/modify.py
+index 0dd54d5..d1b66a3 100644
+--- a/beets/ui/commands/modify.py
++++ b/beets/ui/commands/modify.py
+@@ -1,5 +1,13 @@
+ """The `modify` command: change metadata fields."""
+ 
++from __future__ import annotations
++
++from dataclasses import dataclass
++from typing import TYPE_CHECKING, Any, Literal, cast
++
++if TYPE_CHECKING:
++    from collections.abc import Mapping
++
+ from beets import library, ui
+ from beets.exceptions import UserError
+ from beets.util import functemplate
+@@ -7,16 +15,79 @@ from beets.util.deprecation import maybe_replace_legacy_field
+ 
+ from .utils import do_query
+ 
++ModifyOperator = Literal["+=", "-="]
++
++
++@dataclass(frozen=True)
++class ModifyOperation:
++    """A parsed field assignment for the modify command."""
++
++    operator: ModifyOperator | None
++    value: str
++
++
++def _validate_modify_operations(
++    model_cls: type[library.LibModel], mods: Mapping[str, ModifyOperation]
++) -> None:
++    """Ensure incremental operations target fields represented as lists."""
++    for field, operation in mods.items():
++        if (
++            operation.operator is not None
++            and model_cls._type(field).model_type is not list
++        ):
++            raise UserError(
++                f"field '{field}' does not support {operation.operator!r}; "
++                "incremental updates require a multi-value field"
++            )
++
++
++def _apply_modify_operation(
++    obj: library.LibModel, field: str, operation: ModifyOperation, value: str
++) -> Any:
++    """Parse and apply one assignment without mutating the object."""
++    parsed = obj._parse(field, value)
++    if operation.operator is None:
++        return parsed
++
++    # _validate_modify_operations guarantees this for the built-in model
++    # types. Keep the check here as a guard for custom model types whose
++    # parser does not return the declared model type.
++    if not isinstance(parsed, list):
++        raise UserError(
++            f"field '{field}' does not support {operation.operator!r}; "
++            "incremental updates require a multi-value field"
++        )
+ 
+-def modify_items(lib, mods, dels, query, write, move, album, confirm, inherit):
++    current = cast(list[Any], obj.get(field, []))
++    if operation.operator == "+=":
++        result = list(current)
++        for item in parsed:
++            if item not in result:
++                result.append(item)
++        return result
++
++    return [item for item in current if item not in parsed]
++
++
++def modify_items(
++    lib,
++    mods: Mapping[str, ModifyOperation],
++    dels,
++    query,
++    write,
++    move,
++    album,
++    confirm,
++    inherit,
++):
+     """Modifies matching items according to user-specified assignments and
+     deletions.
+ 
+-    `mods` is a dictionary of field and value pairse indicating
+-    assignments. `dels` is a list of fields to be deleted.
++    `mods` is a mapping of fields to parsed assignment operations.
++    `dels` is a list of fields to be deleted.
+     """
+-    # Parse key=value specifications into a dictionary.
+     model_cls = library.Album if album else library.Item
++    _validate_modify_operations(model_cls, mods)
+ 
+     # Get the items to modify.
+     items, albums = do_query(lib, query, album, False)
+@@ -27,12 +98,15 @@ def modify_items(lib, mods, dels, query, write, move, album, confirm, inherit):
+     ui.print_(f"Modifying {len(objs)} {'album' if album else 'item'}s.")
+     changed = []
+     templates = {
+-        key: functemplate.template(value) for key, value in mods.items()
++        key: functemplate.template(operation.value)
++        for key, operation in mods.items()
+     }
+     for obj in objs:
+         obj_mods = {
+-            key: model_cls._parse(key, obj.evaluate_template(templates[key]))
+-            for key in mods.keys()
++            key: _apply_modify_operation(
++                obj, key, operation, obj.evaluate_template(templates[key])
++            )
++            for key, operation in mods.items()
+         }
+         if print_and_modify(obj, obj_mods, dels) and obj not in changed:
+             changed.append(obj)
+@@ -54,9 +128,7 @@ def modify_items(lib, mods, dels, query, write, move, album, confirm, inherit):
+             extra = ""
+ 
+         changed = ui.input_select_objects(
+-            f"Really modify{extra}",
+-            changed,
+-            lambda o: print_and_modify(o, mods, dels),
++            f"Really modify{extra}", changed, lambda o: ui.show_model_changes(o)
+         )
+ 
+     # Apply changes to database and files
+@@ -81,24 +153,30 @@ def print_and_modify(obj, mods, dels):
+     return ui.show_model_changes(obj)
+ 
+ 
+-def modify_parse_args(args, is_album: bool):
++def modify_parse_args(
++    args: list[str], is_album: bool
++) -> tuple[list[str], dict[str, ModifyOperation], list[str]]:
+     """Split the arguments for the modify subcommand into query parts,
+-    assignments (field=value), and deletions (field!).  Returns the result as
+-    a three-tuple in that order.
++    assignments (field=value, field+=value, or field-=value), and deletions
++    (field!). Returns the result as a three-tuple in that order.
+ 
+     Replace legacy string fields with list equivalents, and supply deprecation
+     warnings for the user.
+     """
+-    mods = {}
+-    dels = []
+-    query = []
++    mods: dict[str, ModifyOperation] = {}
++    dels: list[str] = []
++    query: list[str] = []
+     for arg in args:
+         if arg.endswith("!") and "=" not in arg and ":" not in arg:
+             dels.append(arg[:-1])  # Strip trailing !.
+         elif "=" in arg and ":" not in arg.split("=", 1)[0]:
+             key, val = arg.split("=", 1)
++            operator: ModifyOperator | None = None
++            if key.endswith(("+", "-")):
++                operator = cast(ModifyOperator, f"{key[-1]}=")
++                key = key[:-1]
+             key = maybe_replace_legacy_field(key, is_album, modify=True)
+-            mods[key] = val
++            mods[key] = ModifyOperation(operator, val)
+         else:
+             query.append(arg)
+     return query, mods, dels
+diff --git a/test/ui/commands/test_modify.py b/test/ui/commands/test_modify.py
+index a74f08a..aecd503 100644
+--- a/test/ui/commands/test_modify.py
++++ b/test/ui/commands/test_modify.py
+@@ -239,6 +239,15 @@ class ModifyTest(ModifyHelper, BeetsTestCase):
+         assert query == ["title:foo=bar"]
+         assert mods == {"title": ModifyOperation(None, "newTitle")}
+ 
++    def test_arg_parsing_incremental_operation(self):
++        for operator in ("+=", "-="):
++            query, mods, dels = modify_parse_args(
++                [f"genres{operator}Jazz; Blues"], is_album=False
++            )
++            assert query == []
++            assert mods == {"genres": ModifyOperation(operator, "Jazz; Blues")}
++            assert dels == []
++
+ 
+ class TestMultiValue(ModifyHelper, TestHelper):
+     @pytest.fixture
+@@ -293,10 +302,22 @@ class TestMultiValue(ModifyHelper, TestHelper):
+         item.load()
+         assert item.genres == expected_genres
+ 
+-    def test_modify_scalar_operator_error(self):
++    def test_modify_scalar_operator_error(self, item):
++        old_title = item.title
+         with pytest.raises(UserError, match="field 'title' does not support"):
+             self.modify("--nowrite", "--nomove", "title+=foo")
+ 
++        item.load()
++        assert item.title == old_title
++
++    def test_modify_multi_value_selective_confirmation(self, item):
++        item.genres = ["Jazz"]
++        item.store()
++
++        self.modify_inp(["s", "y"], "--nowrite", "--nomove", "genres+=Funk")
++        item.load()
++        assert item.genres == ["Jazz", "Funk"]
++
+ 
+ @pytest.mark.parametrize(
+     "is_album, legacy_field, list_field",
+
+# --- task-02-agent ---
+diff --git a/beets/dbcore/db.py b/beets/dbcore/db.py
+index 98f250f..aa35527 100755
+--- a/beets/dbcore/db.py
++++ b/beets/dbcore/db.py
+@@ -10,7 +10,7 @@ import sys
+ import threading
+ import time
+ from abc import ABC, abstractmethod
+-from collections import defaultdict
++from collections import UserDict, defaultdict
+ from collections.abc import Mapping
+ from contextlib import contextmanager
+ from dataclasses import dataclass
+@@ -44,10 +44,12 @@ if TYPE_CHECKING:
+     from collections.abc import (
+         Callable,
+         Generator,
++        ItemsView,
+         Iterable,
+         Iterator,
+         KeysView,
+         Sequence,
++        ValuesView,
+     )
+     from sqlite3 import Connection
+     from types import TracebackType
+@@ -158,107 +160,76 @@ class FormattedMapping(Mapping[str, str]):
+         return value
+ 
+ 
+-# NOTE: This seems like it should be a `Mapping`, i.e.
+-# ```
+-# class LazyConvertDict(Mapping[str, Any])
+-# ```
+-# but there are some conflicts with the `Mapping` protocol such that we
+-# can't do this without changing behaviour: In particular, iterators returned
+-# by some methods build intermediate lists, such that modification of the
+-# `LazyConvertDict` becomes safe during iteration. Some code does in fact rely
+-# on this.
+-class LazyConvertDict:
+-    """Lazily convert types for attributes fetched from the database"""
+-
+-    def __init__(self, model_cls: Model):
+-        """Initialize the object empty"""
+-        # FIXME: Dict[str, SQLiteType]
+-        self._data: dict[str, Any] = {}
+-        self.model_cls = model_cls
+-        self._converted: dict[str, Any] = {}
++class LazyDict(UserDict[str, Any]):
++    """A mapping that lazily converts raw database values on access."""
+ 
+-    def init(self, data: dict[str, Any]):
+-        """Set the base data that should be lazily converted"""
+-        self._data = data
++    def __init__(
++        self, model_cls: Model, data: Mapping[str, Any] | None = None
++    ) -> None:
++        super().__init__()
++        self.model_cls = model_cls
++        self._raw: dict[str, Any] = dict(data or {})
+ 
+-    def _convert(self, key: str, value: Any):
+-        """Convert the attribute type according to the SQL type"""
++    def _convert(self, key: str, value: Any) -> Any:
++        """Convert an attribute according to its model type."""
+         return self.model_cls._type(key).from_sql(value)
+ 
+-    def __setitem__(self, key: str, value: Any):
+-        """Set an attribute value, assume it's already converted"""
+-        self._converted[key] = value
++    def __setitem__(self, key: str, value: Any) -> None:
++        """Set an already-converted value."""
++        self.data[key] = value
+ 
+     def __getitem__(self, key: str) -> Any:
+-        """Get an attribute value, converting the type on demand
+-        if needed
+-        """
+-        if key in self._converted:
+-            return self._converted[key]
+-        if key in self._data:
+-            value = self._convert(key, self._data[key])
+-            self._converted[key] = value
++        """Get a value, converting raw values on demand."""
++        if key in self.data:
++            return self.data[key]
++        if key in self._raw:
++            value = self._convert(key, self._raw[key])
++            self.data[key] = value
+             return value
+         return None
+ 
+-    def __delitem__(self, key: str):
+-        """Delete both converted and base data"""
+-        if key in self._converted:
+-            del self._converted[key]
+-        if key in self._data:
+-            del self._data[key]
+-
+-    def keys(self) -> list[str]:
+-        """Get a list of available field names for this object."""
+-        return list(self._converted.keys()) + list(self._data.keys())
+-
+-    def copy(self) -> LazyConvertDict:
+-        """Create a copy of the object."""
+-        new = self.__class__(self.model_cls)
+-        new._data = self._data.copy()
+-        new._converted = self._converted.copy()
+-        return new
+-
+-    # Act like a dictionary.
+-
+-    def update(self, values: Mapping[str, Any]):
+-        """Assign all values in the given dict."""
+-        for key, value in values.items():
+-            self[key] = value
+-
+-    def items(self) -> Iterable[tuple[str, Any]]:
+-        """Iterate over (key, value) pairs that this object contains.
+-        Computed fields are not included.
+-        """
+-        for key in self:
+-            yield key, self[key]
++    def __delitem__(self, key: str) -> None:
++        """Delete both raw and converted values, if present."""
++        self.data.pop(key, None)
++        self._raw.pop(key, None)
+ 
+-    def get(self, key: str, default: Any | None = None):
+-        """Get the value for a given key or `default` if it does not
+-        exist.
+-        """
+-        if key in self:
+-            return self[key]
+-        return default
++    def clear(self) -> None:
++        self.data.clear()
++        self._raw.clear()
+ 
+-    def __contains__(self, key: Any) -> bool:
+-        """Determine whether `key` is an attribute on this object."""
+-        return key in self._converted or key in self._data
++    def keys(self) -> KeysView[str]:
++        """Get a snapshot of the available field names."""
++        return dict.fromkeys([*self._raw, *self.data]).keys()
+ 
+     def __iter__(self) -> Iterator[str]:
+-        """Iterate over the available field names (excluding computed
+-        fields).
+-        """
+-        # NOTE: It would be nice to use the following:
+-        # yield from self._converted
+-        # yield from self._data
+-        # but that won't work since some code relies on modifying `self`
+-        # during iteration.
++        """Iterate over a snapshot so mutation during iteration is safe."""
+         return iter(self.keys())
+ 
++    def __contains__(self, key: object) -> bool:
++        return key in self.data or key in self._raw
++
+     def __len__(self) -> int:
+-        # FIXME: This is incorrect due to duplication of keys
+-        return len(self._converted) + len(self._data)
++        return len(self.keys())
++
++    def copy(self) -> LazyDict:
++        """Create an isolated copy of the lazy mapping."""
++        new = self.__class__(self.model_cls, self._raw.copy())
++        new.data = self.data.copy()
++        return new
++
++    def _converted_data(self) -> dict[str, Any]:
++        return {key: self[key] for key in self}
++
++    def items(self) -> ItemsView[str, Any]:
++        """Get a snapshot of the available items with converted values."""
++        return self._converted_data().items()
++
++    def values(self) -> ValuesView[Any]:
++        """Get a snapshot of the available converted values."""
++        return self._converted_data().values()
++
++    def __copy__(self) -> LazyDict:
++        return self.copy()
+ 
+ 
+ # Abstract base for model classes.
+@@ -399,38 +370,25 @@ class Model(ABC, Generic[D]):
+ 
+     # Basic operation.
+ 
+-    def __init__(self, db: D | None = None, **values):
++    def __init__(
++        self,
++        db: D | None = None,
++        fixed_values: Mapping[str, Any] | None = None,
++        flex_values: Mapping[str, Any] | None = None,
++        **values: Any,
++    ) -> None:
+         """Create a new object with an optional Database association and
+         initial field values.
+         """
+         self._db = db
+         self._dirty: set[str] = set()
+-        self._values_fixed = LazyConvertDict(self)
+-        self._values_flex = LazyConvertDict(self)
++        self._values_fixed = LazyDict(self, fixed_values)
++        self._values_flex = LazyDict(self, flex_values)
+ 
+         # Initial contents.
+         self.update(values)
+         self.clear_dirty()
+ 
+-    @classmethod
+-    def _awaken(
+-        cls: type[AnyModel],
+-        db: D | None = None,
+-        fixed_values: dict[str, Any] = {},
+-        flex_values: dict[str, Any] = {},
+-    ) -> AnyModel:
+-        """Create an object with values drawn from the database.
+-
+-        This is a performance optimization: the checks involved with
+-        ordinary construction are bypassed.
+-        """
+-        obj = cls(db)
+-
+-        obj._values_fixed.init(fixed_values)
+-        obj._values_flex.init(flex_values)
+-
+-        return obj
+-
+     def __repr__(self) -> str:
+         return (
+             f"{type(self).__name__}"
+@@ -881,14 +839,14 @@ class Results(Generic[AnyModel]):
+         return flex_values
+ 
+     def _make_model(
+-        self, row: sqlite3.Row, flex_values: FlexAttrs = {}
++        self, row: sqlite3.Row, flex_values: FlexAttrs | None = None
+     ) -> AnyModel:
+         """Create a Model object for the given row"""
+         cols = dict(row)
+         values = {k: v for (k, v) in cols.items() if not k[:4] == "flex"}
+ 
+         # Construct the Python object
+-        return self.model_class._awaken(self.db, values, flex_values)
++        return self.model_class(self.db, values, flex_values)
+ 
+     def __len__(self) -> int:
+         """Get the number of matching objects."""
+@@ -1240,8 +1198,8 @@ class Database:
+             0,
+         ):
+             # If possible, disable double-quoted strings
+-            conn.setconfig(sqlite3.SQLITE_DBCONFIG_DQS_DDL, 0)
+-            conn.setconfig(sqlite3.SQLITE_DBCONFIG_DQS_DML, 0)
++            conn.setconfig(sqlite3.SQLITE_DBCONFIG_DQS_DDL, False)
++            conn.setconfig(sqlite3.SQLITE_DBCONFIG_DQS_DML, False)
+ 
+         self.add_functions(conn)
+ 
+diff --git a/beets/ui/commands/modify.py b/beets/ui/commands/modify.py
+index 0dd54d5..d1b66a3 100644
+--- a/beets/ui/commands/modify.py
++++ b/beets/ui/commands/modify.py
+@@ -1,5 +1,13 @@
+ """The `modify` command: change metadata fields."""
+ 
++from __future__ import annotations
++
++from dataclasses import dataclass
++from typing import TYPE_CHECKING, Any, Literal, cast
++
++if TYPE_CHECKING:
++    from collections.abc import Mapping
++
+ from beets import library, ui
+ from beets.exceptions import UserError
+ from beets.util import functemplate
+@@ -7,16 +15,79 @@ from beets.util.deprecation import maybe_replace_legacy_field
+ 
+ from .utils import do_query
+ 
++ModifyOperator = Literal["+=", "-="]
++
++
++@dataclass(frozen=True)
++class ModifyOperation:
++    """A parsed field assignment for the modify command."""
++
++    operator: ModifyOperator | None
++    value: str
++
++
++def _validate_modify_operations(
++    model_cls: type[library.LibModel], mods: Mapping[str, ModifyOperation]
++) -> None:
++    """Ensure incremental operations target fields represented as lists."""
++    for field, operation in mods.items():
++        if (
++            operation.operator is not None
++            and model_cls._type(field).model_type is not list
++        ):
++            raise UserError(
++                f"field '{field}' does not support {operation.operator!r}; "
++                "incremental updates require a multi-value field"
++            )
++
++
++def _apply_modify_operation(
++    obj: library.LibModel, field: str, operation: ModifyOperation, value: str
++) -> Any:
++    """Parse and apply one assignment without mutating the object."""
++    parsed = obj._parse(field, value)
++    if operation.operator is None:
++        return parsed
++
++    # _validate_modify_operations guarantees this for the built-in model
++    # types. Keep the check here as a guard for custom model types whose
++    # parser does not return the declared model type.
++    if not isinstance(parsed, list):
++        raise UserError(
++            f"field '{field}' does not support {operation.operator!r}; "
++            "incremental updates require a multi-value field"
++        )
+ 
+-def modify_items(lib, mods, dels, query, write, move, album, confirm, inherit):
++    current = cast(list[Any], obj.get(field, []))
++    if operation.operator == "+=":
++        result = list(current)
++        for item in parsed:
++            if item not in result:
++                result.append(item)
++        return result
++
++    return [item for item in current if item not in parsed]
++
++
++def modify_items(
++    lib,
++    mods: Mapping[str, ModifyOperation],
++    dels,
++    query,
++    write,
++    move,
++    album,
++    confirm,
++    inherit,
++):
+     """Modifies matching items according to user-specified assignments and
+     deletions.
+ 
+-    `mods` is a dictionary of field and value pairse indicating
+-    assignments. `dels` is a list of fields to be deleted.
++    `mods` is a mapping of fields to parsed assignment operations.
++    `dels` is a list of fields to be deleted.
+     """
+-    # Parse key=value specifications into a dictionary.
+     model_cls = library.Album if album else library.Item
++    _validate_modify_operations(model_cls, mods)
+ 
+     # Get the items to modify.
+     items, albums = do_query(lib, query, album, False)
+@@ -27,12 +98,15 @@ def modify_items(lib, mods, dels, query, write, move, album, confirm, inherit):
+     ui.print_(f"Modifying {len(objs)} {'album' if album else 'item'}s.")
+     changed = []
+     templates = {
+-        key: functemplate.template(value) for key, value in mods.items()
++        key: functemplate.template(operation.value)
++        for key, operation in mods.items()
+     }
+     for obj in objs:
+         obj_mods = {
+-            key: model_cls._parse(key, obj.evaluate_template(templates[key]))
+-            for key in mods.keys()
++            key: _apply_modify_operation(
++                obj, key, operation, obj.evaluate_template(templates[key])
++            )
++            for key, operation in mods.items()
+         }
+         if print_and_modify(obj, obj_mods, dels) and obj not in changed:
+             changed.append(obj)
+@@ -54,9 +128,7 @@ def modify_items(lib, mods, dels, query, write, move, album, confirm, inherit):
+             extra = ""
+ 
+         changed = ui.input_select_objects(
+-            f"Really modify{extra}",
+-            changed,
+-            lambda o: print_and_modify(o, mods, dels),
++            f"Really modify{extra}", changed, lambda o: ui.show_model_changes(o)
+         )
+ 
+     # Apply changes to database and files
+@@ -81,24 +153,30 @@ def print_and_modify(obj, mods, dels):
+     return ui.show_model_changes(obj)
+ 
+ 
+-def modify_parse_args(args, is_album: bool):
++def modify_parse_args(
++    args: list[str], is_album: bool
++) -> tuple[list[str], dict[str, ModifyOperation], list[str]]:
+     """Split the arguments for the modify subcommand into query parts,
+-    assignments (field=value), and deletions (field!).  Returns the result as
+-    a three-tuple in that order.
++    assignments (field=value, field+=value, or field-=value), and deletions
++    (field!). Returns the result as a three-tuple in that order.
+ 
+     Replace legacy string fields with list equivalents, and supply deprecation
+     warnings for the user.
+     """
+-    mods = {}
+-    dels = []
+-    query = []
++    mods: dict[str, ModifyOperation] = {}
++    dels: list[str] = []
++    query: list[str] = []
+     for arg in args:
+         if arg.endswith("!") and "=" not in arg and ":" not in arg:
+             dels.append(arg[:-1])  # Strip trailing !.
+         elif "=" in arg and ":" not in arg.split("=", 1)[0]:
+             key, val = arg.split("=", 1)
++            operator: ModifyOperator | None = None
++            if key.endswith(("+", "-")):
++                operator = cast(ModifyOperator, f"{key[-1]}=")
++                key = key[:-1]
+             key = maybe_replace_legacy_field(key, is_album, modify=True)
+-            mods[key] = val
++            mods[key] = ModifyOperation(operator, val)
+         else:
+             query.append(arg)
+     return query, mods, dels
+diff --git a/test/dbcore/test_db.py b/test/dbcore/test_db.py
+index 79be0c6..fcee4b2 100644
+--- a/test/dbcore/test_db.py
++++ b/test/dbcore/test_db.py
+@@ -10,7 +10,7 @@ import pytest
+ 
+ from beets import dbcore
+ from beets.dbcore import query, sort, types
+-from beets.dbcore.db import DBCustomFunctionError, Index
++from beets.dbcore.db import DBCustomFunctionError, Index, LazyDict
+ from beets.library import Album, Item
+ from beets.test.fixtures import ModelFixture1
+ 
+@@ -382,6 +382,56 @@ class ModelTest(unittest.TestCase):
+         pickle.dumps(model)
+ 
+ 
++class LazyDictTest(unittest.TestCase):
++    def setUp(self):
++        self.model = ModelFixture1()
++
++    def test_raw_values_are_converted_on_access(self):
++        values = LazyDict(self.model, {"field_one": "12", "field_two": "raw"})
++
++        assert values.data == {}
++        assert values._raw == {"field_one": "12", "field_two": "raw"}
++        assert values["field_one"] == 12
++        assert values.data == {"field_one": 12}
++        assert values._raw == {"field_one": "12", "field_two": "raw"}
++        assert values["missing"] is None
++
++    def test_mutation_deletion_and_copy_are_isolated(self):
++        values = LazyDict(self.model, {"field_one": "12"})
++        values["field_one"] = 13
++        values["new"] = "value"
++        copied = values.copy()
++
++        del copied["field_one"]
++        copied["new"] = "changed"
++        del values["new"]
++
++        assert values["field_one"] == 13
++        assert values["new"] is None
++        assert "field_one" not in copied
++        assert copied["new"] == "changed"
++
++    def test_iteration_uses_snapshots_and_converted_values(self):
++        values = LazyDict(self.model, {"field_one": "12", "field_two": "raw"})
++
++        for key in values:
++            values[key] = values[key]
++
++        assert dict(values.items()) == {"field_one": 12, "field_two": "raw"}
++        assert list(values.values()) == [12, "raw"]
++
++
++class RawModelConstructionTest(unittest.TestCase):
++    def test_raw_fixed_and_flexible_values_are_loaded(self):
++        model = ModelFixture1(
++            fixed_values={"field_one": "12"},
++            flex_values={"some_float_field": "1.5"},
++        )
++
++        assert model.field_one == 12
++        assert model.some_float_field == 1.5
++
++
+ class FormatTest(unittest.TestCase):
+     def test_format_fixed_field_integer(self):
+         model = ModelFixture1()
+diff --git a/test/ui/commands/test_modify.py b/test/ui/commands/test_modify.py
+index a74f08a..aecd503 100644
+--- a/test/ui/commands/test_modify.py
++++ b/test/ui/commands/test_modify.py
+@@ -239,6 +239,15 @@ class ModifyTest(ModifyHelper, BeetsTestCase):
+         assert query == ["title:foo=bar"]
+         assert mods == {"title": ModifyOperation(None, "newTitle")}
+ 
++    def test_arg_parsing_incremental_operation(self):
++        for operator in ("+=", "-="):
++            query, mods, dels = modify_parse_args(
++                [f"genres{operator}Jazz; Blues"], is_album=False
++            )
++            assert query == []
++            assert mods == {"genres": ModifyOperation(operator, "Jazz; Blues")}
++            assert dels == []
++
+ 
+ class TestMultiValue(ModifyHelper, TestHelper):
+     @pytest.fixture
+@@ -293,10 +302,22 @@ class TestMultiValue(ModifyHelper, TestHelper):
+         item.load()
+         assert item.genres == expected_genres
+ 
+-    def test_modify_scalar_operator_error(self):
++    def test_modify_scalar_operator_error(self, item):
++        old_title = item.title
+         with pytest.raises(UserError, match="field 'title' does not support"):
+             self.modify("--nowrite", "--nomove", "title+=foo")
+ 
++        item.load()
++        assert item.title == old_title
++
++    def test_modify_multi_value_selective_confirmation(self, item):
++        item.genres = ["Jazz"]
++        item.store()
++
++        self.modify_inp(["s", "y"], "--nowrite", "--nomove", "genres+=Funk")
++        item.load()
++        assert item.genres == ["Jazz", "Funk"]
++
+ 
+ @pytest.mark.parametrize(
+     "is_album, legacy_field, list_field",
+
+# --- task-03-agent ---
+diff --git a/beets/dbcore/db.py b/beets/dbcore/db.py
+index 98f250f..aa35527 100755
+--- a/beets/dbcore/db.py
++++ b/beets/dbcore/db.py
+@@ -10,7 +10,7 @@ import sys
+ import threading
+ import time
+ from abc import ABC, abstractmethod
+-from collections import defaultdict
++from collections import UserDict, defaultdict
+ from collections.abc import Mapping
+ from contextlib import contextmanager
+ from dataclasses import dataclass
+@@ -44,10 +44,12 @@ if TYPE_CHECKING:
+     from collections.abc import (
+         Callable,
+         Generator,
++        ItemsView,
+         Iterable,
+         Iterator,
+         KeysView,
+         Sequence,
++        ValuesView,
+     )
+     from sqlite3 import Connection
+     from types import TracebackType
+@@ -158,107 +160,76 @@ class FormattedMapping(Mapping[str, str]):
+         return value
+ 
+ 
+-# NOTE: This seems like it should be a `Mapping`, i.e.
+-# ```
+-# class LazyConvertDict(Mapping[str, Any])
+-# ```
+-# but there are some conflicts with the `Mapping` protocol such that we
+-# can't do this without changing behaviour: In particular, iterators returned
+-# by some methods build intermediate lists, such that modification of the
+-# `LazyConvertDict` becomes safe during iteration. Some code does in fact rely
+-# on this.
+-class LazyConvertDict:
+-    """Lazily convert types for attributes fetched from the database"""
+-
+-    def __init__(self, model_cls: Model):
+-        """Initialize the object empty"""
+-        # FIXME: Dict[str, SQLiteType]
+-        self._data: dict[str, Any] = {}
+-        self.model_cls = model_cls
+-        self._converted: dict[str, Any] = {}
++class LazyDict(UserDict[str, Any]):
++    """A mapping that lazily converts raw database values on access."""
+ 
+-    def init(self, data: dict[str, Any]):
+-        """Set the base data that should be lazily converted"""
+-        self._data = data
++    def __init__(
++        self, model_cls: Model, data: Mapping[str, Any] | None = None
++    ) -> None:
++        super().__init__()
++        self.model_cls = model_cls
++        self._raw: dict[str, Any] = dict(data or {})
+ 
+-    def _convert(self, key: str, value: Any):
+-        """Convert the attribute type according to the SQL type"""
++    def _convert(self, key: str, value: Any) -> Any:
++        """Convert an attribute according to its model type."""
+         return self.model_cls._type(key).from_sql(value)
+ 
+-    def __setitem__(self, key: str, value: Any):
+-        """Set an attribute value, assume it's already converted"""
+-        self._converted[key] = value
++    def __setitem__(self, key: str, value: Any) -> None:
++        """Set an already-converted value."""
++        self.data[key] = value
+ 
+     def __getitem__(self, key: str) -> Any:
+-        """Get an attribute value, converting the type on demand
+-        if needed
+-        """
+-        if key in self._converted:
+-            return self._converted[key]
+-        if key in self._data:
+-            value = self._convert(key, self._data[key])
+-            self._converted[key] = value
++        """Get a value, converting raw values on demand."""
++        if key in self.data:
++            return self.data[key]
++        if key in self._raw:
++            value = self._convert(key, self._raw[key])
++            self.data[key] = value
+             return value
+         return None
+ 
+-    def __delitem__(self, key: str):
+-        """Delete both converted and base data"""
+-        if key in self._converted:
+-            del self._converted[key]
+-        if key in self._data:
+-            del self._data[key]
+-
+-    def keys(self) -> list[str]:
+-        """Get a list of available field names for this object."""
+-        return list(self._converted.keys()) + list(self._data.keys())
+-
+-    def copy(self) -> LazyConvertDict:
+-        """Create a copy of the object."""
+-        new = self.__class__(self.model_cls)
+-        new._data = self._data.copy()
+-        new._converted = self._converted.copy()
+-        return new
+-
+-    # Act like a dictionary.
+-
+-    def update(self, values: Mapping[str, Any]):
+-        """Assign all values in the given dict."""
+-        for key, value in values.items():
+-            self[key] = value
+-
+-    def items(self) -> Iterable[tuple[str, Any]]:
+-        """Iterate over (key, value) pairs that this object contains.
+-        Computed fields are not included.
+-        """
+-        for key in self:
+-            yield key, self[key]
++    def __delitem__(self, key: str) -> None:
++        """Delete both raw and converted values, if present."""
++        self.data.pop(key, None)
++        self._raw.pop(key, None)
+ 
+-    def get(self, key: str, default: Any | None = None):
+-        """Get the value for a given key or `default` if it does not
+-        exist.
+-        """
+-        if key in self:
+-            return self[key]
+-        return default
++    def clear(self) -> None:
++        self.data.clear()
++        self._raw.clear()
+ 
+-    def __contains__(self, key: Any) -> bool:
+-        """Determine whether `key` is an attribute on this object."""
+-        return key in self._converted or key in self._data
++    def keys(self) -> KeysView[str]:
++        """Get a snapshot of the available field names."""
++        return dict.fromkeys([*self._raw, *self.data]).keys()
+ 
+     def __iter__(self) -> Iterator[str]:
+-        """Iterate over the available field names (excluding computed
+-        fields).
+-        """
+-        # NOTE: It would be nice to use the following:
+-        # yield from self._converted
+-        # yield from self._data
+-        # but that won't work since some code relies on modifying `self`
+-        # during iteration.
++        """Iterate over a snapshot so mutation during iteration is safe."""
+         return iter(self.keys())
+ 
++    def __contains__(self, key: object) -> bool:
++        return key in self.data or key in self._raw
++
+     def __len__(self) -> int:
+-        # FIXME: This is incorrect due to duplication of keys
+-        return len(self._converted) + len(self._data)
++        return len(self.keys())
++
++    def copy(self) -> LazyDict:
++        """Create an isolated copy of the lazy mapping."""
++        new = self.__class__(self.model_cls, self._raw.copy())
++        new.data = self.data.copy()
++        return new
++
++    def _converted_data(self) -> dict[str, Any]:
++        return {key: self[key] for key in self}
++
++    def items(self) -> ItemsView[str, Any]:
++        """Get a snapshot of the available items with converted values."""
++        return self._converted_data().items()
++
++    def values(self) -> ValuesView[Any]:
++        """Get a snapshot of the available converted values."""
++        return self._converted_data().values()
++
++    def __copy__(self) -> LazyDict:
++        return self.copy()
+ 
+ 
+ # Abstract base for model classes.
+@@ -399,38 +370,25 @@ class Model(ABC, Generic[D]):
+ 
+     # Basic operation.
+ 
+-    def __init__(self, db: D | None = None, **values):
++    def __init__(
++        self,
++        db: D | None = None,
++        fixed_values: Mapping[str, Any] | None = None,
++        flex_values: Mapping[str, Any] | None = None,
++        **values: Any,
++    ) -> None:
+         """Create a new object with an optional Database association and
+         initial field values.
+         """
+         self._db = db
+         self._dirty: set[str] = set()
+-        self._values_fixed = LazyConvertDict(self)
+-        self._values_flex = LazyConvertDict(self)
++        self._values_fixed = LazyDict(self, fixed_values)
++        self._values_flex = LazyDict(self, flex_values)
+ 
+         # Initial contents.
+         self.update(values)
+         self.clear_dirty()
+ 
+-    @classmethod
+-    def _awaken(
+-        cls: type[AnyModel],
+-        db: D | None = None,
+-        fixed_values: dict[str, Any] = {},
+-        flex_values: dict[str, Any] = {},
+-    ) -> AnyModel:
+-        """Create an object with values drawn from the database.
+-
+-        This is a performance optimization: the checks involved with
+-        ordinary construction are bypassed.
+-        """
+-        obj = cls(db)
+-
+-        obj._values_fixed.init(fixed_values)
+-        obj._values_flex.init(flex_values)
+-
+-        return obj
+-
+     def __repr__(self) -> str:
+         return (
+             f"{type(self).__name__}"
+@@ -881,14 +839,14 @@ class Results(Generic[AnyModel]):
+         return flex_values
+ 
+     def _make_model(
+-        self, row: sqlite3.Row, flex_values: FlexAttrs = {}
++        self, row: sqlite3.Row, flex_values: FlexAttrs | None = None
+     ) -> AnyModel:
+         """Create a Model object for the given row"""
+         cols = dict(row)
+         values = {k: v for (k, v) in cols.items() if not k[:4] == "flex"}
+ 
+         # Construct the Python object
+-        return self.model_class._awaken(self.db, values, flex_values)
++        return self.model_class(self.db, values, flex_values)
+ 
+     def __len__(self) -> int:
+         """Get the number of matching objects."""
+@@ -1240,8 +1198,8 @@ class Database:
+             0,
+         ):
+             # If possible, disable double-quoted strings
+-            conn.setconfig(sqlite3.SQLITE_DBCONFIG_DQS_DDL, 0)
+-            conn.setconfig(sqlite3.SQLITE_DBCONFIG_DQS_DML, 0)
++            conn.setconfig(sqlite3.SQLITE_DBCONFIG_DQS_DDL, False)
++            conn.setconfig(sqlite3.SQLITE_DBCONFIG_DQS_DML, False)
+ 
+         self.add_functions(conn)
+ 
+diff --git a/beets/ui/commands/modify.py b/beets/ui/commands/modify.py
+index 0dd54d5..d1b66a3 100644
+--- a/beets/ui/commands/modify.py
++++ b/beets/ui/commands/modify.py
+@@ -1,5 +1,13 @@
+ """The `modify` command: change metadata fields."""
+ 
++from __future__ import annotations
++
++from dataclasses import dataclass
++from typing import TYPE_CHECKING, Any, Literal, cast
++
++if TYPE_CHECKING:
++    from collections.abc import Mapping
++
+ from beets import library, ui
+ from beets.exceptions import UserError
+ from beets.util import functemplate
+@@ -7,16 +15,79 @@ from beets.util.deprecation import maybe_replace_legacy_field
+ 
+ from .utils import do_query
+ 
++ModifyOperator = Literal["+=", "-="]
++
++
++@dataclass(frozen=True)
++class ModifyOperation:
++    """A parsed field assignment for the modify command."""
++
++    operator: ModifyOperator | None
++    value: str
++
++
++def _validate_modify_operations(
++    model_cls: type[library.LibModel], mods: Mapping[str, ModifyOperation]
++) -> None:
++    """Ensure incremental operations target fields represented as lists."""
++    for field, operation in mods.items():
++        if (
++            operation.operator is not None
++            and model_cls._type(field).model_type is not list
++        ):
++            raise UserError(
++                f"field '{field}' does not support {operation.operator!r}; "
++                "incremental updates require a multi-value field"
++            )
++
++
++def _apply_modify_operation(
++    obj: library.LibModel, field: str, operation: ModifyOperation, value: str
++) -> Any:
++    """Parse and apply one assignment without mutating the object."""
++    parsed = obj._parse(field, value)
++    if operation.operator is None:
++        return parsed
++
++    # _validate_modify_operations guarantees this for the built-in model
++    # types. Keep the check here as a guard for custom model types whose
++    # parser does not return the declared model type.
++    if not isinstance(parsed, list):
++        raise UserError(
++            f"field '{field}' does not support {operation.operator!r}; "
++            "incremental updates require a multi-value field"
++        )
+ 
+-def modify_items(lib, mods, dels, query, write, move, album, confirm, inherit):
++    current = cast(list[Any], obj.get(field, []))
++    if operation.operator == "+=":
++        result = list(current)
++        for item in parsed:
++            if item not in result:
++                result.append(item)
++        return result
++
++    return [item for item in current if item not in parsed]
++
++
++def modify_items(
++    lib,
++    mods: Mapping[str, ModifyOperation],
++    dels,
++    query,
++    write,
++    move,
++    album,
++    confirm,
++    inherit,
++):
+     """Modifies matching items according to user-specified assignments and
+     deletions.
+ 
+-    `mods` is a dictionary of field and value pairse indicating
+-    assignments. `dels` is a list of fields to be deleted.
++    `mods` is a mapping of fields to parsed assignment operations.
++    `dels` is a list of fields to be deleted.
+     """
+-    # Parse key=value specifications into a dictionary.
+     model_cls = library.Album if album else library.Item
++    _validate_modify_operations(model_cls, mods)
+ 
+     # Get the items to modify.
+     items, albums = do_query(lib, query, album, False)
+@@ -27,12 +98,15 @@ def modify_items(lib, mods, dels, query, write, move, album, confirm, inherit):
+     ui.print_(f"Modifying {len(objs)} {'album' if album else 'item'}s.")
+     changed = []
+     templates = {
+-        key: functemplate.template(value) for key, value in mods.items()
++        key: functemplate.template(operation.value)
++        for key, operation in mods.items()
+     }
+     for obj in objs:
+         obj_mods = {
+-            key: model_cls._parse(key, obj.evaluate_template(templates[key]))
+-            for key in mods.keys()
++            key: _apply_modify_operation(
++                obj, key, operation, obj.evaluate_template(templates[key])
++            )
++            for key, operation in mods.items()
+         }
+         if print_and_modify(obj, obj_mods, dels) and obj not in changed:
+             changed.append(obj)
+@@ -54,9 +128,7 @@ def modify_items(lib, mods, dels, query, write, move, album, confirm, inherit):
+             extra = ""
+ 
+         changed = ui.input_select_objects(
+-            f"Really modify{extra}",
+-            changed,
+-            lambda o: print_and_modify(o, mods, dels),
++            f"Really modify{extra}", changed, lambda o: ui.show_model_changes(o)
+         )
+ 
+     # Apply changes to database and files
+@@ -81,24 +153,30 @@ def print_and_modify(obj, mods, dels):
+     return ui.show_model_changes(obj)
+ 
+ 
+-def modify_parse_args(args, is_album: bool):
++def modify_parse_args(
++    args: list[str], is_album: bool
++) -> tuple[list[str], dict[str, ModifyOperation], list[str]]:
+     """Split the arguments for the modify subcommand into query parts,
+-    assignments (field=value), and deletions (field!).  Returns the result as
+-    a three-tuple in that order.
++    assignments (field=value, field+=value, or field-=value), and deletions
++    (field!). Returns the result as a three-tuple in that order.
+ 
+     Replace legacy string fields with list equivalents, and supply deprecation
+     warnings for the user.
+     """
+-    mods = {}
+-    dels = []
+-    query = []
++    mods: dict[str, ModifyOperation] = {}
++    dels: list[str] = []
++    query: list[str] = []
+     for arg in args:
+         if arg.endswith("!") and "=" not in arg and ":" not in arg:
+             dels.append(arg[:-1])  # Strip trailing !.
+         elif "=" in arg and ":" not in arg.split("=", 1)[0]:
+             key, val = arg.split("=", 1)
++            operator: ModifyOperator | None = None
++            if key.endswith(("+", "-")):
++                operator = cast(ModifyOperator, f"{key[-1]}=")
++                key = key[:-1]
+             key = maybe_replace_legacy_field(key, is_album, modify=True)
+-            mods[key] = val
++            mods[key] = ModifyOperation(operator, val)
+         else:
+             query.append(arg)
+     return query, mods, dels
+diff --git a/beetsplug/ftintitle.py b/beetsplug/ftintitle.py
+index 5aa9f36..7ef6ab6 100644
+--- a/beetsplug/ftintitle.py
++++ b/beetsplug/ftintitle.py
+@@ -119,7 +119,7 @@ def find_feat_part(
+     """
+     if not albumartist:
+         _, feat_part = split_on_feat(
+-            artist, for_artist=True, custom_words=custom_words
++            artist, for_artist=False, custom_words=custom_words
+         )
+         return feat_part
+ 
+@@ -262,7 +262,7 @@ class FtInTitlePlugin(plugins.BeetsPlugin):
+             write = ui.should_write()
+ 
+             for item in lib.items(args):
+-                if self.ft_in_title(item, ""):
++                if self.ft_in_title(item, item.get("albumartist") or ""):
+                     item.store()
+                     if write:
+                         item.try_write()
+@@ -276,7 +276,7 @@ class FtInTitlePlugin(plugins.BeetsPlugin):
+             return
+ 
+         for item in task.imported_items():
+-            if self.ft_in_title(item, ""):
++            if self.ft_in_title(item, item.get("albumartist") or ""):
+                 item.store()
+ 
+     def update_metadata(self, metadata: Item | Info, feat_part: str) -> bool:
+@@ -324,11 +324,17 @@ class FtInTitlePlugin(plugins.BeetsPlugin):
+ 
+     def trackinfo_received(self, info: TrackInfo) -> None:
+         """Move featuring artists in fetched singleton metadata."""
++        if not self.auto:
++            return
++
+         self.ft_in_title(info, "")
+ 
+     def albuminfo_received(self, info: AlbumInfo) -> None:
+         """Move featuring artists in fetched album track metadata."""
+-        albumartist = ""
++        if not self.auto:
++            return
++
++        albumartist = info.get("artist") or ""
+         for track_info in info.tracks:
+             self.ft_in_title(track_info, albumartist)
+ 
+@@ -358,7 +364,7 @@ class FtInTitlePlugin(plugins.BeetsPlugin):
+         if self.preserve_album_artist and albumartist and artist == albumartist:
+             return False
+ 
+-        for_artist = not albumartist or albumartist in artist
++        for_artist = bool(albumartist) and albumartist in artist
+         _, featured = split_on_feat(
+             artist, for_artist=for_artist, custom_words=self.custom_words
+         )
+diff --git a/test/dbcore/test_db.py b/test/dbcore/test_db.py
+index 79be0c6..fcee4b2 100644
+--- a/test/dbcore/test_db.py
++++ b/test/dbcore/test_db.py
+@@ -10,7 +10,7 @@ import pytest
+ 
+ from beets import dbcore
+ from beets.dbcore import query, sort, types
+-from beets.dbcore.db import DBCustomFunctionError, Index
++from beets.dbcore.db import DBCustomFunctionError, Index, LazyDict
+ from beets.library import Album, Item
+ from beets.test.fixtures import ModelFixture1
+ 
+@@ -382,6 +382,56 @@ class ModelTest(unittest.TestCase):
+         pickle.dumps(model)
+ 
+ 
++class LazyDictTest(unittest.TestCase):
++    def setUp(self):
++        self.model = ModelFixture1()
++
++    def test_raw_values_are_converted_on_access(self):
++        values = LazyDict(self.model, {"field_one": "12", "field_two": "raw"})
++
++        assert values.data == {}
++        assert values._raw == {"field_one": "12", "field_two": "raw"}
++        assert values["field_one"] == 12
++        assert values.data == {"field_one": 12}
++        assert values._raw == {"field_one": "12", "field_two": "raw"}
++        assert values["missing"] is None
++
++    def test_mutation_deletion_and_copy_are_isolated(self):
++        values = LazyDict(self.model, {"field_one": "12"})
++        values["field_one"] = 13
++        values["new"] = "value"
++        copied = values.copy()
++
++        del copied["field_one"]
++        copied["new"] = "changed"
++        del values["new"]
++
++        assert values["field_one"] == 13
++        assert values["new"] is None
++        assert "field_one" not in copied
++        assert copied["new"] == "changed"
++
++    def test_iteration_uses_snapshots_and_converted_values(self):
++        values = LazyDict(self.model, {"field_one": "12", "field_two": "raw"})
++
++        for key in values:
++            values[key] = values[key]
++
++        assert dict(values.items()) == {"field_one": 12, "field_two": "raw"}
++        assert list(values.values()) == [12, "raw"]
++
++
++class RawModelConstructionTest(unittest.TestCase):
++    def test_raw_fixed_and_flexible_values_are_loaded(self):
++        model = ModelFixture1(
++            fixed_values={"field_one": "12"},
++            flex_values={"some_float_field": "1.5"},
++        )
++
++        assert model.field_one == 12
++        assert model.some_float_field == 1.5
++
++
+ class FormatTest(unittest.TestCase):
+     def test_format_fixed_field_integer(self):
+         model = ModelFixture1()
+diff --git a/test/ui/commands/test_modify.py b/test/ui/commands/test_modify.py
+index a74f08a..aecd503 100644
+--- a/test/ui/commands/test_modify.py
++++ b/test/ui/commands/test_modify.py
+@@ -239,6 +239,15 @@ class ModifyTest(ModifyHelper, BeetsTestCase):
+         assert query == ["title:foo=bar"]
+         assert mods == {"title": ModifyOperation(None, "newTitle")}
+ 
++    def test_arg_parsing_incremental_operation(self):
++        for operator in ("+=", "-="):
++            query, mods, dels = modify_parse_args(
++                [f"genres{operator}Jazz; Blues"], is_album=False
++            )
++            assert query == []
++            assert mods == {"genres": ModifyOperation(operator, "Jazz; Blues")}
++            assert dels == []
++
+ 
+ class TestMultiValue(ModifyHelper, TestHelper):
+     @pytest.fixture
+@@ -293,10 +302,22 @@ class TestMultiValue(ModifyHelper, TestHelper):
+         item.load()
+         assert item.genres == expected_genres
+ 
+-    def test_modify_scalar_operator_error(self):
++    def test_modify_scalar_operator_error(self, item):
++        old_title = item.title
+         with pytest.raises(UserError, match="field 'title' does not support"):
+             self.modify("--nowrite", "--nomove", "title+=foo")
+ 
++        item.load()
++        assert item.title == old_title
++
++    def test_modify_multi_value_selective_confirmation(self, item):
++        item.genres = ["Jazz"]
++        item.store()
++
++        self.modify_inp(["s", "y"], "--nowrite", "--nomove", "genres+=Funk")
++        item.load()
++        assert item.genres == ["Jazz", "Funk"]
++
+ 
+ @pytest.mark.parametrize(
+     "is_album, legacy_field, list_field",
