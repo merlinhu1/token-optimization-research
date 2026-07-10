@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "session_id": "YYYYMMDD-workflow-profile-r00",
+  "session_id": "baseline-<lane>-YYYYMMDD-p-<protocol-fingerprint>-r0",
   "record_type": "workflow_session",
   "evidence_type": "workflow-simulation",
   "study_id": "phase-2-workflow-study-v1",
@@ -10,6 +10,11 @@
   "status": "planned",
   "session_role": "baseline",
   "replicate_index": 0,
+  "baseline_pool": {
+    "protocol_version": "baseline-pool-v1",
+    "protocol_fingerprint": "<12-lowercase-hex-digest>",
+    "identity_policy": "frozen-protocol-and-replicate; execution date is metadata only"
+  },
   "date": "YYYY-MM-DD",
   "target": {
     "fixture_id": "large-hashicorp-terraform",
@@ -25,15 +30,27 @@
   "task_sequence": {
     "sequence_id": "terraform-maintenance-sequence-v1",
     "task_ids": [],
-    "reset_policy": "reset repository, profile home, tool state, indexes, caches, generated config, and agent home before the session; persist them between tasks",
+    "reset_policy": "reset source checkout, profile home, tool state, indexes, caches, generated config, and agent home before the session; preserve source/tool/agent state while re-rooting model-facing Git metadata before each task",
     "prompt_delivery": {
       "mode": "sequential-one-task-at-a-time",
       "future_tasks_visible": false,
+      "future_prompts_materialized_lazily": true,
+      "seed_delivery_mode": "lazy-one-task-at-a-time",
+      "future_seed_regressions_visible": false,
       "codex_thread_id": ""
     },
     "leakage_controls": {
       "seed_origin_concealed": true,
-      "task_directories_model_facing_aliases": true,
+      "seed_patches_model_visible": false,
+      "git_baseline_true_root_per_task": true,
+      "fixed_snapshot_objects_model_visible": false,
+      "pre_seed_reflog_entries_visible": false,
+      "concealment_verification_passed": true,
+      "task_directories_model_visible": false,
+      "verifier_assets_model_visible": false,
+      "model_writable_surface": "target repository plus isolated model-output directory",
+      "verifier_integrity_passed": true,
+      "verifier_integrity_evidence": "sources/evaluations/workflow-sessions/<session-id>/evidence.jsonl.gz#verifier-integrity.json",
       "model_prompts_sanitized": true,
       "upstream_remote_removed_from_model_facing_repo": true,
       "broken_start_committed_as_local_baseline": true
@@ -42,9 +59,16 @@
   "profile": {
     "profile_id": "baseline-bare-codex",
     "profile_type": "control",
-    "enabled_surfaces": [],
+    "enabled_surfaces": [
+      "codex-native-shell-edit"
+    ],
     "disabled_overlaps": [
-      "all token-saving surfaces"
+      "all MCP servers",
+      "all token-saving surfaces",
+      "global Codex instructions",
+      "hooks",
+      "skills/plugins",
+      "warm indexes"
     ],
     "component_ids": []
   },
@@ -96,6 +120,8 @@
     "tasks_passed": null,
     "final_verifier_command": "",
     "final_verifier_passed": null,
+    "functional_verifier_passed": false,
+    "quality_review_status": "not-reviewed",
     "quality_score": null,
     "critical_failures": []
   },
@@ -124,7 +150,9 @@
     "manifest": "sources/evaluations/workflow-sessions/<session-id>/manifest.sha256"
   },
   "interpretation": {
+    "accepted_for_execution": false,
     "accepted_for_objective": false,
+    "claim_status": "planned",
     "comparison_baseline_session_id": "",
     "exclusion_reason": "",
     "notes": ""

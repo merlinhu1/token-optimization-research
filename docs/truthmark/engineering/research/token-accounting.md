@@ -1,7 +1,7 @@
 ---
 status: active
 truth_kind: engineering-contract
-last_reviewed: 2026-07-08
+last_reviewed: 2026-07-10
 ---
 
 # Token Accounting And Benchmark Protocols
@@ -28,8 +28,9 @@ Software-quality scoring is owned by `software-quality-gates.md`.
 - `docs/evaluations/workflow-evaluation-runbook.md` is the maintained human-facing runbook rendered from the workflow sequence and fixture registries.
 - `scripts/update_workflow_runbook.py` refreshes that runbook and provides a validator check so operator docs fail closed on registry drift.
 - `scripts/run_codex_fixture_evaluation.py` creates lane-specific Codex homes, isolates agent HOME/PYTHONUSERBASE/XDG/TMPDIR under that Codex home, captures preflight artifacts, runs Codex, extracts provider usage, verifies tasks, and invokes the isolation audit for Codex-based sanity or historical fixture evaluations.
-- `scripts/run_codex_workflow_evaluation.py` supports the Codex substrate baseline plus single-tool Codex treatment lanes for LeanCTX, CodeGraph, RTK, and Ponytail profiles.
+- `scripts/run_codex_workflow_evaluation.py` loads canonical profile metadata from `data/evaluation-profiles.json` and keeps executable adapter configuration separate.
 - `scripts/run_codex_workflow_evaluation.py` treats missing Codex thread IDs after a successful task as a workflow-continuity failure instead of silently starting later tasks in a fresh thread.
+- `scripts/run_codex_workflow_evaluation.py` materializes prompts one task at a time, keeps task fixtures and verifiers outside the model mount, and verifies acceptance-asset hashes before running controller verifiers.
 - Non-MCP terminal-binary treatment lanes expose the active binary through lane-specific container mounts and require solve-shell availability checks in addition to runner preflight.
 - `scripts/run_codex_evaluation_batch.py` runs serial planned Codex fixture evaluations, skips already accepted runs by default, writes a machine-readable batch summary, and refuses direct multi-record batches unless `--allow-serial-batch` is explicitly passed.
 - `scripts/extract_codex_usage.py` normalizes Codex JSONL `turn.completed.usage` blocks into `provider-usage.json` records.
@@ -62,7 +63,7 @@ Software-quality scoring is owned by `software-quality-gates.md`.
 - Estimated tool-result tokens and isolated task totals are secondary evidence.
 - Benchmark-audit records require raw outputs or recoverable raw-output paths.
 - Reproduction records require independent continuous target-workload workflow simulations.
-- Codex-based reproduction runs require containerized execution, lane-specific runtime isolation, provider-billed usage capture, verifier output, final diff/status, and a passing tool-isolation audit before acceptance.
+- Codex-based reproduction runs require containerized execution, lane-specific runtime isolation, provider-billed usage capture, controller-only verifier assets, verifier-integrity evidence, final diff/status, and a passing tool-isolation audit before execution acceptance.
 - Completed workflow-session directories publish evidence streams as the compact four-file bundle `run.json`, `changes.diff`, `evidence.jsonl.gz`, and `manifest.sha256`.
 - Human runbook tables are generated from machine registries, not maintained as a separate hand-written source of truth.
 - Parallel Codex-based batches must use isolated lane checkouts and Codex home roots; shared mutable fixture repos or shared profile Codex homes are not valid parallel reproduction evidence.
@@ -74,6 +75,13 @@ Software-quality scoring is owned by `software-quality-gates.md`.
 - Treatment Codex workflow sessions are additive lanes on the same Codex substrate. They may expose only the tools named by the active profile and must use isolated tool data directories before the session begins.
 - Workflow sessions reset repository, tool, profile, and agent state before the session and preserve them between tasks unless the sequence explicitly models a user reset.
 - Accepted workflow sessions require a captured Codex thread ID before later tasks can resume the persistent session.
+- Session IDs and compact evidence are immutable; reruns use a new replicate/session ID instead of replacing prior evidence.
+- A reviewed baseline is reusable only within its frozen protocol fingerprint and replicate. That fingerprint binds the fixture snapshot, prompt and verifier bytes, baseline substrate, agent/model condition, and isolation policy; the execution date is metadata, not a baseline cache key.
+- New workflow evidence defaults to Codex CLI `gpt-5.6-terra` at `medium` reasoning effort (`codex-openai-gpt-5-6-terra-medium`). This is a protocol-bound model condition: changing it requires a new baseline pool.
+- New workflow artifact IDs begin with the short profile label, short project lane, and UTC run date, followed by the protocol fingerprint and replicate; the fingerprint, rather than the date-bearing name, determines reuse eligibility.
+- The matrix defaults to three concurrent lanes (`--max-parallel 3`). It runs distinct sequence lanes concurrently up to that cap; after a shared baseline is reviewed reusable, repeated `--treatment-profile` arguments run independent profile lanes concurrently; an unreviewed/missing baseline collapses those requests to one baseline-only lane to prevent duplicate spend.
+- A comparison is published only after the matching baseline and treatment both have reviewed, objective-accepted records with compact artifacts.
+- Single-replicate comparisons are screening observations with null uncertainty and are not ranking evidence.
 - Index-using retrieval tools persist their indexes during the workflow session; index preparation is setup metadata, not a separate warm optional condition.
 - Percentage savings must be paired with absolute token and cost values when available.
 
@@ -90,6 +98,8 @@ Software-quality scoring is owned by `software-quality-gates.md`.
 - Decision (2026-07-08): Completed workflow-session runs keep a compact four-file evidence bundle instead of committing materialized checkouts, virtualenvs, Codex homes, or split per-task logs.
 - Decision (2026-07-08): The human-facing workflow-evaluation runbook is maintained by rendering active registry data and validating the rendered file, rather than by hand-maintaining a parallel Phase 2 suite folder.
 - Decision (2026-07-08): Workflow evaluation supports multiple single-tool Codex treatment profiles, and missing persistent Codex thread IDs are acceptance failures.
+- Decision (2026-07-09): Sequential disclosure is enforced by model mount boundaries, lazy prompt materialization, and verifier hashes rather than trusted metadata or prompt instructions.
+- Decision (2026-07-09): The July 8-9 r0 workflow sessions are excluded from objective use because the old runner exposed the writable run directory; their raw token and execution artifacts remain historical audit evidence.
 
 ## Rationale
 

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Render the maintained human runbook for the active workflow-evaluation matrix."""
+"""Render the maintained workflow-evaluation operator runbook."""
 from __future__ import annotations
 
 import argparse
@@ -12,12 +12,6 @@ ROOT = Path(__file__).resolve().parents[1]
 RUNBOOK = ROOT / "docs" / "evaluations" / "workflow-evaluation-runbook.md"
 SEQUENCES = ROOT / "data" / "workflow-task-sequences.json"
 FIXTURES = ROOT / "data" / "repository-fixtures.json"
-EXPECTED_ACTIVE_FIXTURES = {
-    "large-hashicorp-terraform",
-    "large-orchardcms-orchardcore",
-    "medium-fastify-fastify",
-    "medium-beetbox-beets",
-}
 ARTIFACT_FILES = ("run.json", "changes.diff", "evidence.jsonl.gz", "manifest.sha256")
 
 
@@ -30,12 +24,11 @@ def fixture_map() -> dict[str, dict[str, Any]]:
 
 
 def active_sequences() -> list[dict[str, Any]]:
-    sequences = [
+    return [
         sequence
         for sequence in load_json(SEQUENCES).get("sequences", [])
         if sequence.get("status") == "active"
     ]
-    return sequences
 
 
 def render_table(sequences: list[dict[str, Any]], fixtures: dict[str, dict[str, Any]]) -> str:
@@ -43,6 +36,9 @@ def render_table(sequences: list[dict[str, Any]], fixtures: dict[str, dict[str, 
         "| Sequence | Fixture | Scale | Snapshot | Tasks |",
         "|---|---|---|---|---:|",
     ]
+    if not sequences:
+        lines.append("| _None_ |  |  |  | 0 |")
+        return "\n".join(lines)
     for sequence in sequences:
         fixture_id = sequence["fixture_id"]
         fixture = fixtures.get(fixture_id, {})
@@ -62,6 +58,8 @@ def render_table(sequences: list[dict[str, Any]], fixtures: dict[str, dict[str, 
 
 
 def render_tasks(sequences: list[dict[str, Any]]) -> str:
+    if not sequences:
+        return "_None._"
     chunks: list[str] = []
     for sequence in sequences:
         chunks.append(f"### `{sequence['id']}`")
@@ -72,7 +70,7 @@ def render_tasks(sequences: list[dict[str, Any]]) -> str:
         chunks.append("")
         chunks.append("| Order | Task | Prompt | Verifier |")
         chunks.append("|---:|---|---|---|")
-        for task in sorted(sequence.get("tasks", []), key=lambda task: task.get("order", 0)):
+        for task in sorted(sequence.get("tasks", []), key=lambda item: item.get("order", 0)):
             chunks.append(
                 f"| {task.get('order')} | `{task.get('id')}` | "
                 f"`{task.get('prompt_path')}` | `{task.get('verifier_command')}` |"
@@ -82,209 +80,126 @@ def render_tasks(sequences: list[dict[str, Any]]) -> str:
 
 
 def render() -> str:
-    sequences = active_sequences()
+    all_sequences = load_json(SEQUENCES).get("sequences", [])
+    sequences = [sequence for sequence in all_sequences if sequence.get("status") == "active"]
+    planned = [sequence for sequence in all_sequences if sequence.get("status") == "planned"]
     fixtures = fixture_map()
     active_fixture_ids = {str(sequence.get("fixture_id")) for sequence in sequences}
-    if active_fixture_ids != EXPECTED_ACTIVE_FIXTURES:
-        raise SystemExit(
-            "active workflow fixture set drifted: "
-            f"expected {sorted(EXPECTED_ACTIVE_FIXTURES)}, found {sorted(active_fixture_ids)}"
-        )
-    if len(sequences) != 4:
-        raise SystemExit(f"expected exactly four active workflow sequences, found {len(sequences)}")
     missing_fixtures = sorted(active_fixture_ids - set(fixtures))
     if missing_fixtures:
         raise SystemExit(f"active sequences reference missing fixtures: {missing_fixtures}")
 
     artifact_lines = "\n".join(f"  {name}" for name in ARTIFACT_FILES)
-    runbook = f"""# Workflow Evaluation Runbook
+    active_table = render_table(sequences, fixtures)
+    active_details = render_tasks(sequences)
+    candidate_lines = []
+    for sequence in planned:
+        blockers = sequence.get("readiness_blockers", [])
+        reason = "; ".join(str(item) for item in blockers) if blockers else "readiness not yet established"
+        candidate_lines.append(f"- `{sequence['id']}`: {reason}")
+    candidate_text = "\n".join(candidate_lines) if candidate_lines else "_None._"
 
-This is the maintained human-facing runbook for the active four-workflow evaluation matrix.
+    if sequences:
+        first_sequence = sequences[0]["id"]
+        execution_text = f"""The active sequence list is non-empty. Freeze a protocol, run a no-model prepare, then run the canonical baseline first:
+
+```bash
+python3 scripts/run_codex_workflow_evaluation.py --sequence-id {first_sequence} --prepare-only
+scripts/run_sequential_workflow_pair.sh {first_sequence}
+```
+
+Stop before treatment if the baseline fails any frozen gate."""
+    else:
+        execution_text = "Paid lane, pair, and matrix execution is disabled because no sequence is active. Planned sequences accept `--prepare-only` for fixture repair, but non-prepare runs fail before model execution."
+
+    return f"""# Workflow Evaluation Runbook
+
+This generated runbook reflects current workflow-sequence readiness.
 
 It is rendered from `data/workflow-task-sequences.json` and `data/repository-fixtures.json` by `scripts/update_workflow_runbook.py`.
 
-Do not hand-edit active sequence tables in this file; update the machine registries first, then run:
+Do not hand-edit sequence status here. Update the registries, then run:
 
 ```bash
 python3 scripts/update_workflow_runbook.py
 python3 scripts/validate_repository.py
 ```
 
-## Canonical sources
-
-- Active sequences: `data/workflow-task-sequences.json`
-- Fixture contracts: `data/repository-fixtures.json`
-- Completed sessions: `data/workflow-sessions.json`
-- Single-sequence runner: `scripts/run_codex_workflow_evaluation.py`
-- Matrix runner: `scripts/run_sequential_workflow_matrix.py`
-- Artifact contract: `templates/workflow-session-record.json`
-
 ## Evidence boundary
 
-The primary evidence path is continuous workflow simulation.
+A valid workflow run materializes one prompt and injects one regression at a time. Future regressions, seed patches, task fixtures, verifier assets, controller Git objects, fixed parents, and prior-stage reflogs must remain outside the model-visible surface.
 
-Single-task isolated runs and tiny calibration fixtures are not the default matrix and do not support positive workflow-level claims.
+Every active task must use causally related behavioral acceptance. Unrelated exact-source restoration guards are not valid complexity.
 
-A positive reproduction claim needs a canonical shared baseline and treatment sessions on the same sequence, runtime, provider, model condition, prompt-disclosure policy, and verifier set.
+## Active sequences
 
-## Active four-workflow matrix
+{active_table}
 
-{render_table(sequences, fixtures)}
+## Planned candidates and blockers
 
-## Running a smoke prepare
+{candidate_text}
 
-Use `--prepare-only` to verify fixture construction, task prompt sanitization, and seed-origin concealment without spending model tokens.
+## Activation gate
 
-```bash
-python3 scripts/run_codex_workflow_evaluation.py \\
-  --sequence-id terraform-maintenance-sequence-v1 \\
-  --profile-id baseline-bare-codex \\
-  --prepare-only \\
-  --skip-container-preflight \\
-  --skip-codex-preflight \\
-  --skip-dependency-install \\
-  --session-id smoke-terraform-sequential-runner
+Before changing a sequence to `active`, require:
 
-rm -rf sources/evaluations/workflow-sessions/smoke-terraform-sequential-runner
-```
+- at least five causally related production files per primary task, or explicit smoke/calibration scope;
+- behavioral seeded-fail/fixed-pass gates;
+- lazy one-task seed delivery with future regressions absent;
+- a parentless model-facing Git baseline with fixed and prior-stage commits inaccessible;
+- controller-only task, seed, verifier, and reference assets;
+- cumulative provider usage capture, verifier integrity, isolation, and software-quality review.
 
-Expected smoke properties:
-
-- The generated task prompt for order 1 contains task 1 only.
-- Future task prompts are not visible before their turn.
-- The materialized repository has no upstream remote that reveals the fix.
-- The visible baseline commit is the workflow broken-start state.
-
-## Running one lane
-
-Baseline lane:
+A no-model prepare for a planned candidate is allowed:
 
 ```bash
-python3 scripts/run_codex_workflow_evaluation.py \\
-  --sequence-id terraform-maintenance-sequence-v1 \\
-  --profile-id baseline-bare-codex \\
-  --timeout-per-task 1800
-```
-
-Treatment lane:
-
-```bash
-python3 scripts/run_codex_workflow_evaluation.py \\
-  --sequence-id terraform-maintenance-sequence-v1 \\
-  --profile-id retrieval-leanctx \\
-  --comparison-profile-id retrieval-leanctx \\
-  --timeout-per-task 1800
-```
-
-Supported Codex treatment profiles are listed by:
-
-```bash
-python3 scripts/run_codex_workflow_evaluation.py --list-sequences
-```
-
-## Running shared-baseline lanes
-
-Run the canonical baseline plus default LeanCTX lane for one sequence:
-
-```bash
-scripts/run_sequential_workflow_pair.sh terraform-maintenance-sequence-v1
-```
-
-Run a different supported treatment profile:
-
-```bash
-scripts/run_sequential_workflow_pair.sh \\
-  terraform-maintenance-sequence-v1 \\
-  --treatment-profile retrieval-codegraph
-```
-
-Use a different replicate or timeout when needed:
-
-```bash
-REPLICATE_INDEX=1 scripts/run_sequential_workflow_pair.sh \\
-  beets-maintenance-sequence-v1 \\
-  --timeout-per-task 2400
-```
-
-The helper reuses a completed canonical `baseline-bare-codex` session for the same sequence/date/replicate instead of rerunning a treatment-specific baseline. Set `FORCE_BASELINE_RERUN=1` only when intentionally replacing that canonical baseline.
-
-## Running the active matrix
-
-Dry-run the matrix plan:
-
-```bash
-scripts/run_sequential_workflow_matrix.py --dry-run
-```
-
-Run all active flows with the conservative default concurrency:
-
-```bash
-scripts/run_sequential_workflow_matrix.py
-```
-
-Run all four active flows concurrently only when provider quota and host resources allow it:
-
-```bash
-scripts/run_sequential_workflow_matrix.py --max-parallel 4
-```
-
-Smoke two flows without model spend:
-
-```bash
-scripts/run_sequential_workflow_matrix.py \\
-  terraform-maintenance-sequence-v1 \\
-  fastify-maintenance-sequence-v1 \\
-  --max-parallel 2 \\
-  --prepare-only \\
-  --skip-container-preflight \\
-  --skip-codex-preflight \\
+SEQUENCE_ID=<planned-sequence-id>
+python3 scripts/run_codex_workflow_evaluation.py \
+  --sequence-id "$SEQUENCE_ID" \
+  --profile-id baseline-bare-codex \
+  --prepare-only \
+  --skip-container-preflight \
+  --skip-codex-preflight \
   --skip-dependency-install
 ```
 
-Smoke a non-default treatment profile without model spend:
+`prepare-verification.json` must show only task 1 seeded, future seeds absent, a clean true-root Git baseline, no fixed commit object, no prior reflog, and no model-visible seed or verifier assets.
 
-```bash
-scripts/run_sequential_workflow_matrix.py \\
-  fastify-maintenance-sequence-v1 \\
-  --treatment-profile retrieval-codegraph \\
-  --prepare-only \\
-  --skip-container-preflight \\
-  --skip-codex-preflight \\
-  --skip-dependency-install
-```
+## Paid execution
+
+{execution_text}
 
 ## Active sequence details
 
-{render_tasks(sequences)}
+{active_details}
 
 ## Artifact contract
 
-Each completed session keeps exactly four files in its session directory:
+Each completed session keeps exactly four files:
 
 ```text
 sources/evaluations/workflow-sessions/<session-id>/
 {artifact_lines}
 ```
 
-`run.json` contains summary metadata, provider usage, and per-task verifier exits.
+`run.json` contains metadata, provider usage, seed-delivery/concealment claims, and per-task verifier exits.
 
-`changes.diff` contains the final code changes produced by the agent.
+`changes.diff` concatenates ordered task deltas, each relative to that task's concealed stage root.
 
-`evidence.jsonl.gz` contains recoverable raw streams such as prompts, Codex events, setup logs, verifier output, provider usage extraction, and tool-isolation audit output.
+`evidence.jsonl.gz` contains prompts, Codex events, setup logs, per-task deltas, seed-delivery and concealment reports, verifier output and integrity checks, provider-usage extraction, and tool-isolation audit output.
 
 `manifest.sha256` hashes the other three files.
 
-Do not commit materialized runtime state such as `project/`, `project/repo/`, `.venv/`, `__pycache__/`, `codex-homes/`, split task transcripts, or split verifier/setup logs.
+Controller Git objects, generated checkouts, dependency environments, Codex homes, caches, and split task artifacts are scratch state and must not remain beside the compact four files.
 
 ## Maintenance contract
 
-- Update `data/workflow-task-sequences.json` and `data/repository-fixtures.json` before updating this runbook.
-- Run `python3 scripts/update_workflow_runbook.py` after registry changes.
-- `python3 scripts/validate_repository.py` runs `scripts/update_workflow_runbook.py --check` and fails on drift.
-- Truth docs own durable claims; this runbook is the operator procedure generated from the current registries.
-- Retired calibration artifacts such as `sources/evaluations/fixture-corpus/v1/` and `sources/evaluations/phase-2-experiment-suite-v1/` should not reappear as active workflow architecture.
+- Session IDs and compact evidence are append-only.
+- Deterministic verifier success is an execution gate, not an automatic software-quality score.
+- Objective acceptance requires a recorded software-quality review.
+- `python3 scripts/validate_repository.py` checks generated-runbook drift.
+- Truth docs own durable claims; this runbook is generated operator procedure.
 """
-    return runbook
 
 
 def main() -> int:

@@ -17,12 +17,13 @@ if [[ $# -lt 1 || "${1:-}" == "-h" || "${1:-}" == "--help" ]]; then
 Usage: scripts/run_sequential_workflow_pair.sh <sequence-id> [--treatment-profile <profile-id>] [runner options]
 
 Runs comparable lanes in order:
-  1. one canonical baseline-bare-codex per sequence/date/replicate, reused across treatments
+  1. one reviewed canonical baseline-bare-codex per frozen protocol fingerprint/replicate, reused across treatments
   2. the selected treatment profile (default: retrieval-leanctx)
 
 Environment:
   REPLICATE_INDEX            replicate index to pass to both lanes (default: 0)
-  FORCE_BASELINE_RERUN=1     rerun the canonical baseline even if a completed one exists
+
+Session evidence is append-only: this helper reuses an eligible canonical baseline and never overwrites an existing session ID. Use a new REPLICATE_INDEX when an occupied baseline is excluded or unsuitable.
 
 Examples:
   scripts/run_sequential_workflow_pair.sh terraform-maintenance-sequence-v1
@@ -80,42 +81,91 @@ import scripts.run_codex_workflow_evaluation as runner
 
 seq = runner.load_sequence(sys.argv[1])
 project_id = runner.PROJECT_META[seq["fixture_id"]]["project_id"]
-print(runner.canonical_baseline_session_id(project_id, int(sys.argv[2])))
+fingerprint = runner.baseline_protocol_fingerprint(seq)
+print(runner.canonical_baseline_session_id(project_id, int(sys.argv[2]), fingerprint))
 PY
 )"
 
-baseline_ready="$(python3 - "$baseline_session_id" <<'PY'
+treatment_session_id="$(python3 - "$sequence_id" "$treatment_profile" "$replicate_index" <<'PY'
+import sys
+import scripts.run_codex_workflow_evaluation as runner
+
+seq = runner.load_sequence(sys.argv[1])
+project_id = runner.PROJECT_META[seq["fixture_id"]]["project_id"]
+fingerprint = runner.baseline_protocol_fingerprint(seq)
+print(runner.canonical_treatment_session_id(project_id, sys.argv[2], int(sys.argv[3]), fingerprint))
+PY
+)"
+
+session_identity() {
+  python3 - "$sequence_id" "$1" "$replicate_index" "$2" <<'PY'
 import json
 import sys
 from pathlib import Path
+import scripts.run_codex_workflow_evaluation as runner
 
 root = Path.cwd()
-session_id = sys.argv[1]
-registry = root / "data/workflow-sessions.json"
-if not registry.exists():
-    print("0")
-    raise SystemExit
-doc = json.loads(registry.read_text())
-for session in doc.get("sessions", []):
-    if session.get("session_id") != session_id:
-        continue
-    accepted = session.get("interpretation", {}).get("accepted_for_objective") is True
-    completed = session.get("status") == "completed"
-    artifacts = session.get("artifacts", {}) if isinstance(session.get("artifacts"), dict) else {}
-    required = [artifacts.get(key) for key in ("run_record", "final_diff", "evidence_bundle", "manifest")]
-    have_artifacts = all(path and (root / path).exists() for path in required)
-    print("1" if accepted and completed and have_artifacts else "0")
-    raise SystemExit
-print("0")
+seq = runner.load_sequence(sys.argv[1])
+profile_id = sys.argv[2]
+fallback_session_id = sys.argv[4]
+doc = json.loads((root / "data/workflow-sessions.json").read_text())
+session = runner.find_pool_profile_record(doc, seq, profile_id, int(sys.argv[3]))
+print(f"{session.get('session_id') if session else fallback_session_id}\t{runner.reviewed_session_reuse_state(session, root)}")
 PY
-)"
+}
 
-if [[ "${FORCE_BASELINE_RERUN:-0}" == "1" || "$baseline_ready" != "1" ]]; then
+baseline_identity="$(session_identity baseline-bare-codex "$baseline_session_id")"
+IFS=$'\t' read -r baseline_session_id baseline_state <<<"$baseline_identity"
+
+if [[ "$baseline_state" == "missing" ]]; then
   run_lane baseline-bare-codex "${runner_args[@]}"
+  echo "Canonical baseline ${baseline_session_id} completed execution but requires a recorded software-quality review with score >= 4 and objective acceptance before treatment spend. Review it, then rerun this pair command." >&2
+  exit 3
+elif [[ "$baseline_state" == "reusable" ]]; then
+  echo "== sequential workflow: ${sequence_id} :: baseline-bare-codex :: r${replicate_index} :: reuse reviewed canonical ${baseline_session_id} =="
+elif [[ "$baseline_state" == "review-pending" ]]; then
+  echo "Canonical baseline ${baseline_session_id} is execution-ready but quality-review pending. Record the review and objective acceptance before treatment spend." >&2
+  exit 3
 else
-  echo "== sequential workflow: ${sequence_id} :: baseline-bare-codex :: r${replicate_index} :: reuse canonical ${baseline_session_id} =="
+  echo "Canonical baseline ${baseline_session_id} already exists but is not reusable. Evidence is append-only; select a new REPLICATE_INDEX instead of overwriting it." >&2
+  exit 2
 fi
-run_lane "$treatment_profile" "${runner_args[@]}"
+
+treatment_identity="$(session_identity "$treatment_profile" "$treatment_session_id")"
+IFS=$'\t' read -r treatment_session_id treatment_state <<<"$treatment_identity"
+if [[ "$treatment_state" == "missing" ]]; then
+  run_lane "$treatment_profile" "${runner_args[@]}"
+  echo "Treatment ${treatment_session_id} completed execution but requires the same recorded quality review and objective acceptance before comparison." >&2
+  exit 3
+elif [[ "$treatment_state" == "review-pending" ]]; then
+  echo "Treatment ${treatment_session_id} is execution-ready but quality-review pending. Record the review and objective acceptance, then rerun this pair command." >&2
+  exit 3
+elif [[ "$treatment_state" == "reusable" ]]; then
+  echo "== sequential workflow: ${sequence_id} :: ${treatment_profile} :: r${replicate_index} :: reuse reviewed ${treatment_session_id} =="
+else
+  echo "Treatment ${treatment_session_id} already exists but is not reusable. Evidence is append-only; select a new REPLICATE_INDEX instead of overwriting it." >&2
+  exit 2
+fi
+
+python3 - "$sequence_id" "$treatment_profile" "$replicate_index" <<'PY'
+import json
+import sys
+from pathlib import Path
+import scripts.run_codex_workflow_evaluation as runner
+
+seq = runner.load_sequence(sys.argv[1])
+project_id = runner.PROJECT_META[seq["fixture_id"]]["project_id"]
+fingerprint = runner.baseline_protocol_fingerprint(seq)
+comparison_id = f"baseline-{runner.artifact_lane_label(project_id)}-{runner.DATE.replace('-', '')}-vs-{runner.artifact_profile_label(sys.argv[2])}-p-{fingerprint}-r{int(sys.argv[3])}"
+path = Path("sources/evaluations/workflow-sessions") / f"{comparison_id}.json"
+if path.exists():
+    comparison = json.loads(path.read_text())
+else:
+    comparison = runner.write_comparison_if_ready(seq, "phase-2-sequential-workflow-v1", int(sys.argv[3]), sys.argv[2])
+if not comparison:
+    raise SystemExit("reviewed baseline/treatment did not produce a comparison")
+print(json.dumps({"comparison_id": comparison["comparison_id"], "ranking_eligible": comparison["ranking_eligible"]}))
+PY
 
 if [[ "${SKIP_PAIR_VALIDATION:-0}" == "1" ]]; then
   echo "== validation skipped by SKIP_PAIR_VALIDATION=1 (matrix controller validates after merge) =="

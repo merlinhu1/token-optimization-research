@@ -567,6 +567,10 @@ def validate_workflow_task_sequences(sequence_doc: dict, fixture_doc: dict, erro
         sequence_ids.add(sid)
         if sequence.get("status") not in {"planned", "active", "retired"}:
             errors.append(f"workflow sequence {sid} has invalid status: {sequence.get('status')}")
+        if sequence.get("status") == "active" and sequence.get("acceptance_design") != "behavioral":
+            errors.append(f"active workflow sequence {sid} must declare acceptance_design=behavioral")
+        if sequence.get("status") == "planned" and not sequence.get("readiness_blockers"):
+            errors.append(f"planned workflow sequence {sid} must record readiness_blockers")
         fixture_id = sequence.get("fixture_id")
         if fixture_id not in fixture_ids:
             errors.append(f"workflow sequence {sid} references unknown fixture {fixture_id}")
@@ -602,12 +606,139 @@ def validate_workflow_task_sequences(sequence_doc: dict, fixture_doc: dict, erro
             verifier_command = task.get("verifier_command")
             if not verifier_command:
                 errors.append(f"workflow sequence {sid} task {tid} missing verifier_command")
+            elif sequence.get("status") == "active":
+                verifier_path = ROOT / verifier_command
+                if verifier_path.exists():
+                    verifier_text = verifier_path.read_text(errors="replace")
+                    exact_source_greps = [
+                        line
+                        for line in verifier_text.splitlines()
+                        if re.match(r"^\s*grep\s+", line)
+                        and re.search(r"\.(?:c|cc|cpp|cs|go|java|js|jsx|mjs|py|rb|rs|ts|tsx)(?:\s|$)", line)
+                    ]
+                    if "source-invariant checks" in verifier_text.lower() or exact_source_greps:
+                        errors.append(f"active workflow sequence {sid} task {tid} uses exact-source supplemental guards instead of behavioral acceptance")
         if orders and sorted(orders) != list(range(1, len(orders) + 1)):
             errors.append(f"workflow sequence {sid} task orders must be contiguous starting at 1")
     return sequence_ids
 
 
-def validate_workflow_sessions(session_doc: dict, sequence_ids: set[str], fixture_doc: dict, profile_ids: set[str], runtime_ids: set[str], model_condition_ids: set[str], errors: list[str]) -> None:
+def validate_fixture_sequence_status_consistency(
+    workflow_doc: dict,
+    fixtures_doc: dict,
+    large_candidates_doc: dict,
+    medium_candidates_doc: dict,
+    errors: list[str],
+) -> None:
+    statuses = {
+        sequence.get("id"): sequence.get("status")
+        for sequence in workflow_doc.get("sequences", [])
+        if sequence.get("id")
+    }
+    surfaces = [
+        ("fixture", fixtures_doc.get("fixtures", [])),
+        ("large candidate", large_candidates_doc.get("candidates", [])),
+        ("medium candidate", medium_candidates_doc.get("candidates", [])),
+    ]
+    for label, records in surfaces:
+        for record in records:
+            sequence_id = record.get("workflow_sequence_id")
+            if not sequence_id or sequence_id not in statuses:
+                continue
+            active = statuses[sequence_id] == "active"
+            qualification = record.get("qualification_status")
+            if active and qualification != "active-reproduction-flow":
+                errors.append(f"{label} {record.get('id')} must be active-reproduction-flow when sequence {sequence_id} is active")
+            if not active and qualification == "active-reproduction-flow":
+                errors.append(f"{label} {record.get('id')} cannot be active-reproduction-flow while sequence {sequence_id} is {statuses[sequence_id]}")
+            if not active and record.get("active_profiles"):
+                errors.append(f"{label} {record.get('id')} cannot list active_profiles while sequence {sequence_id} is {statuses[sequence_id]}")
+
+
+def validate_workflow_session_contract(session: dict, canonical_profile: dict | None, errors: list[str]) -> None:
+    sid = session.get("session_id") or session.get("id") or "<unknown>"
+    sequence = session.get("task_sequence", {})
+    if session.get("status") == "completed" and session.get("evidence_type") == "workflow-simulation" and session.get("evidence_stage") == "reproduction":
+        prompt_delivery = sequence.get("prompt_delivery") if isinstance(sequence, dict) else None
+        if not isinstance(prompt_delivery, dict):
+            errors.append(f"workflow session {sid} must record task_sequence.prompt_delivery for completed workflow reproduction")
+        else:
+            if prompt_delivery.get("mode") != "sequential-one-task-at-a-time":
+                errors.append(f"workflow session {sid} must use sequential-one-task-at-a-time prompt delivery")
+            if prompt_delivery.get("future_tasks_visible") is not False:
+                errors.append(f"workflow session {sid} must hide future tasks during workflow reproduction")
+            if prompt_delivery.get("future_prompts_materialized_lazily") is not True:
+                errors.append(f"workflow session {sid} future prompts must be materialized lazily")
+            if prompt_delivery.get("seed_delivery_mode") != "lazy-one-task-at-a-time" or prompt_delivery.get("future_seed_regressions_visible") is not False:
+                errors.append(f"workflow session {sid} future seed regressions must be delivered lazily")
+        leakage_controls = sequence.get("leakage_controls") if isinstance(sequence, dict) else None
+        if not isinstance(leakage_controls, dict) or leakage_controls.get("seed_origin_concealed") is not True:
+            errors.append(f"workflow session {sid} must record seed_origin_concealed leakage control for completed workflow reproduction")
+        elif leakage_controls.get("task_directories_model_visible") is not False:
+            errors.append(f"workflow session {sid} task directories must not be model-visible")
+        if not isinstance(leakage_controls, dict) or leakage_controls.get("seed_patches_model_visible") is not False:
+            errors.append(f"workflow session {sid} seed patches must not be model-visible")
+        if not isinstance(leakage_controls, dict) or leakage_controls.get("git_baseline_true_root_per_task") is not True:
+            errors.append(f"workflow session {sid} must use a verified true-root Git baseline for every task")
+        if not isinstance(leakage_controls, dict) or leakage_controls.get("fixed_snapshot_objects_model_visible") is not False or leakage_controls.get("pre_seed_reflog_entries_visible") is not False:
+            errors.append(f"workflow session {sid} fixed snapshot objects and pre-seed reflogs must not be model-visible")
+        if not isinstance(leakage_controls, dict) or leakage_controls.get("concealment_verification_passed") is not True:
+            errors.append(f"workflow session {sid} must pass seed concealment verification")
+        if not isinstance(leakage_controls, dict) or leakage_controls.get("verifier_assets_model_visible") is not False:
+            errors.append(f"workflow session {sid} verifier assets must not be model-visible")
+        if not isinstance(leakage_controls, dict) or leakage_controls.get("verifier_integrity_passed") is not True:
+            errors.append(f"workflow session {sid} must pass verifier integrity checks")
+
+    profile = session.get("profile", {})
+    if canonical_profile is not None and isinstance(profile, dict):
+        expected = {
+            "profile_type": canonical_profile.get("profile_type"),
+            "enabled_surfaces": canonical_profile.get("enabled_surfaces", []),
+            "disabled_overlaps": canonical_profile.get("disabled_overlaps", []),
+            "component_ids": [component.get("component_id") for component in canonical_profile.get("components", [])],
+        }
+        actual = {key: profile.get(key) for key in expected}
+        if actual != expected:
+            errors.append(f"workflow session {sid} profile metadata does not match canonical evaluation profile")
+
+    quality = session.get("software_quality", {})
+    interpretation = session.get("interpretation", {})
+    review_status = quality.get("quality_review_status") if isinstance(quality, dict) else None
+    quality_score = quality.get("quality_score") if isinstance(quality, dict) else None
+    if review_status == "not-reviewed" and quality_score is not None:
+        errors.append(f"workflow session {sid} unreviewed quality_score must be null")
+    if isinstance(interpretation, dict) and interpretation.get("accepted_for_objective") is True:
+        critical_failures = quality.get("critical_failures", []) if isinstance(quality, dict) else []
+        prompt_delivery = sequence.get("prompt_delivery", {}) if isinstance(sequence, dict) else {}
+        leakage_controls = sequence.get("leakage_controls", {}) if isinstance(sequence, dict) else {}
+        structurally_isolated = (
+            prompt_delivery.get("future_tasks_visible") is False
+            and prompt_delivery.get("future_prompts_materialized_lazily") is True
+            and prompt_delivery.get("seed_delivery_mode") == "lazy-one-task-at-a-time"
+            and prompt_delivery.get("future_seed_regressions_visible") is False
+            and leakage_controls.get("task_directories_model_visible") is False
+            and leakage_controls.get("verifier_assets_model_visible") is False
+            and leakage_controls.get("verifier_integrity_passed") is True
+            and leakage_controls.get("seed_patches_model_visible") is False
+            and leakage_controls.get("git_baseline_true_root_per_task") is True
+            and leakage_controls.get("fixed_snapshot_objects_model_visible") is False
+            and leakage_controls.get("pre_seed_reflog_entries_visible") is False
+            and leakage_controls.get("concealment_verification_passed") is True
+        )
+        if (
+            session.get("status") != "completed"
+            or interpretation.get("accepted_for_execution") is not True
+            or quality.get("functional_verifier_passed") is not True
+            or not structurally_isolated
+        ):
+            errors.append(
+                f"workflow session {sid} objective acceptance requires a completed, execution-accepted, functionally verified, and structurally isolated run"
+            )
+        if review_status != "reviewed" or not isinstance(quality_score, int) or quality_score < 3 or critical_failures:
+            errors.append(f"workflow session {sid} objective acceptance requires a reviewed quality result with score >= 3 and no critical failures")
+
+
+def validate_workflow_sessions(session_doc: dict, sequence_ids: set[str], fixture_doc: dict, profiles_by_id: dict[str, dict], runtime_ids: set[str], model_condition_ids: set[str], errors: list[str]) -> None:
     if session_doc.get("schema_version") != 1:
         errors.append("data/workflow-sessions.json must use schema_version 1")
     if session_doc.get("primary_metric") != "cumulative provider-billed workflow tokens":
@@ -647,21 +778,12 @@ def validate_workflow_sessions(session_doc: dict, sequence_ids: set[str], fixtur
         sequence = session.get("task_sequence", {})
         if isinstance(sequence, dict) and sequence.get("sequence_id") and sequence.get("sequence_id") not in sequence_ids:
             errors.append(f"workflow session {sid} references unknown sequence {sequence.get('sequence_id')}")
-        if session.get("status") == "completed" and session.get("evidence_type") == "workflow-simulation" and session.get("evidence_stage") == "reproduction":
-            prompt_delivery = sequence.get("prompt_delivery") if isinstance(sequence, dict) else None
-            if not isinstance(prompt_delivery, dict):
-                errors.append(f"workflow session {sid} must record task_sequence.prompt_delivery for completed workflow reproduction")
-            else:
-                if prompt_delivery.get("mode") != "sequential-one-task-at-a-time":
-                    errors.append(f"workflow session {sid} must use sequential-one-task-at-a-time prompt delivery")
-                if prompt_delivery.get("future_tasks_visible") is not False:
-                    errors.append(f"workflow session {sid} must hide future tasks during workflow reproduction")
-            leakage_controls = sequence.get("leakage_controls") if isinstance(sequence, dict) else None
-            if not isinstance(leakage_controls, dict) or leakage_controls.get("seed_origin_concealed") is not True:
-                errors.append(f"workflow session {sid} must record seed_origin_concealed leakage control for completed workflow reproduction")
         profile = session.get("profile", {})
-        if isinstance(profile, dict) and profile.get("profile_id") and profile.get("profile_id") not in profile_ids:
-            errors.append(f"workflow session {sid} references unknown profile {profile.get('profile_id')}")
+        profile_id = profile.get("profile_id") if isinstance(profile, dict) else None
+        canonical_profile = profiles_by_id.get(profile_id) if profile_id else None
+        if profile_id and canonical_profile is None:
+            errors.append(f"workflow session {sid} references unknown profile {profile_id}")
+        validate_workflow_session_contract(session, canonical_profile, errors)
         agent = session.get("agent", {})
         if isinstance(agent, dict):
             runtime_id = agent.get("runtime_id")
@@ -815,10 +937,12 @@ def main() -> int:
     validate_large_project_candidates(large_candidates_doc, fixtures_doc, errors)
     validate_medium_project_candidates(medium_candidates_doc, fixtures_doc, errors)
     profile_ids = validate_evaluation_profiles(profiles_doc, fixtures_doc, errors)
+    profiles_by_id = {profile["id"]: profile for profile in profiles_doc.get("profiles", []) if profile.get("id")}
     runtime_ids, model_condition_ids = validate_agent_runtimes(agent_runtimes_doc, errors)
     validate_evaluations(evaluations_doc, fixtures_doc, profile_ids, runtime_ids, model_condition_ids, errors)
     workflow_sequence_ids = validate_workflow_task_sequences(workflow_sequences_doc, fixtures_doc, errors)
-    validate_workflow_sessions(workflow_sessions_doc, workflow_sequence_ids, fixtures_doc, profile_ids, runtime_ids, model_condition_ids, errors)
+    validate_fixture_sequence_status_consistency(workflow_sequences_doc, fixtures_doc, large_candidates_doc, medium_candidates_doc, errors)
+    validate_workflow_sessions(workflow_sessions_doc, workflow_sequence_ids, fixtures_doc, profiles_by_id, runtime_ids, model_condition_ids, errors)
     validate_tool_dossier_snapshots(errors)
 
     for lit in literature_doc.get("literature", []):
