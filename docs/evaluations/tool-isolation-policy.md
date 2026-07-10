@@ -16,7 +16,7 @@ A run is accepted only if all controls agree:
 
 ## Baseline profile
 
-`baseline-bare-codex` is the current Codex/OpenAI substrate baseline. This baseline is not model-only or tool-free: Codex native shell, plain file operations, git, edits, and verifier commands are allowed. It forbids MCP servers, retrieval/compression/memory/token-saving owners, global Codex instructions, hooks, skills/plugins, and warm indexes.
+`baseline-bare-codex` is the current Codex/OpenAI substrate baseline. This baseline is not model-only or tool-free: Codex native shell, plain file operations, git, and edits inside the target repository are allowed. Acceptance verifiers are controller-only. The lane forbids MCP servers, retrieval/compression/memory/token-saving owners, global Codex instructions, hooks, skills/plugins, and warm indexes.
 
 Agent runtime and model choice are a separate dimension from the tool profile. Current accepted automation is `agent.runtime_id = codex-cli` with OpenAI/Codex usage extraction. A future Claude Opus lane must use its own runtime/model condition, for example `agent.runtime_id = claude-code` plus an Anthropic model condition in `data/evaluation-agent-runtimes.json`; it must not be executed through the Codex runner or merged into Codex/OpenAI tool-effect aggregates.
 
@@ -45,7 +45,7 @@ The preflight PATH and the actual Codex solve shell are separate isolation surfa
 
 For Docker-backed Codex solves, mount the pinned treatment binary at its provenance path and also bind the binary into a stable default shell path such as `/usr/local/bin/<tool>`. RTK reruns use `/opt/data/tool-candidates/rtk/target/release/rtk` for provenance and `/usr/local/bin/rtk` for solve-shell availability.
 
-When Codex is invoked with artifact-output flags, the run artifact directory must be mounted writable into the solve container. For example, `codex exec --output-last-message <run_dir>/codex-last-message.txt` is not valid unless `<run_dir>` exists inside the solve container.
+When Codex is invoked with artifact-output flags, mount a dedicated output-only subdirectory into the solve container. Never mount the full workflow run directory: it contains controller-only task fixtures, future prompts, seed patches, verifier assets, and fixed-snapshot Git objects. The model write surface is the target repository plus that isolated output directory; only the current regression may be present, the model-facing Git baseline must be a verified parentless root, and verifier hashes must match before controller acceptance.
 
 Protocol-changing reruns must remove stale lane eval homes and use `--no-skip-accepted`. If a batch is killed because of a harness or isolation defect, its partial output is retained as negative operational evidence but excluded from the final summary; rerun the full planned set after the fix.
 

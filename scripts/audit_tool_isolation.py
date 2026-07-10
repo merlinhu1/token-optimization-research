@@ -94,7 +94,7 @@ def main(argv: list[str]) -> int:
         hits.extend(scan_file(artifact, forbidden, allowed))
 
     result = {
-        "passed": not hits,
+        "passed": not hits and not missing,
         "run_record": str(args.run_record),
         "artifacts_scanned": [str(Path(p)) for p in args.artifacts if Path(p).exists()],
         "missing_artifacts": missing,
@@ -104,6 +104,12 @@ def main(argv: list[str]) -> int:
     if args.json_output:
         args.json_output.write_text(json.dumps(result, indent=2) + "\n")
 
+    if missing:
+        print("TOOL ISOLATION FAILED")
+        print("missing required artifacts:")
+        for artifact in missing:
+            print(f"- {artifact}")
+        return 1
     if hits:
         print("TOOL ISOLATION FAILED")
         print("forbidden terms:", ", ".join(sorted({hit["term"] for hit in hits})))

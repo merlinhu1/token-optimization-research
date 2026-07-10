@@ -54,6 +54,15 @@
       "enum": ["baseline", "individual_tool_treatment", "stack_treatment", "ablation", "sanity_check"]
     },
     "replicate_index": { "type": "integer", "minimum": 0 },
+    "baseline_pool": {
+      "type": "object",
+      "required": ["protocol_version", "protocol_fingerprint", "identity_policy"],
+      "properties": {
+        "protocol_version": { "type": "string" },
+        "protocol_fingerprint": { "type": "string", "pattern": "^[a-f0-9]{12}$" },
+        "identity_policy": { "const": "frozen-protocol-and-replicate; execution date is metadata only" }
+      }
+    },
     "date": { "type": "string" },
     "target": {
       "type": "object",
@@ -75,8 +84,32 @@
         "sequence_id": { "type": "string" },
         "task_ids": { "type": "array", "items": { "type": "string" } },
         "reset_policy": { "type": "string" },
-        "prompt_delivery": { "type": "object" },
-        "leakage_controls": { "type": "object" }
+        "prompt_delivery": {
+          "type": "object",
+          "required": ["mode", "future_tasks_visible", "future_prompts_materialized_lazily"],
+          "properties": {
+            "mode": { "const": "sequential-one-task-at-a-time" },
+            "future_tasks_visible": { "type": "boolean" },
+            "future_prompts_materialized_lazily": { "type": "boolean" },
+            "seed_delivery_mode": { "enum": ["lazy-one-task-at-a-time", "all-seeds-before-task-1"] },
+            "future_seed_regressions_visible": { "type": "boolean" }
+          }
+        },
+        "leakage_controls": {
+          "type": "object",
+          "required": ["seed_origin_concealed", "task_directories_model_visible", "verifier_assets_model_visible", "verifier_integrity_passed"],
+          "properties": {
+            "seed_origin_concealed": { "type": "boolean" },
+            "seed_patches_model_visible": { "type": "boolean" },
+            "git_baseline_true_root_per_task": { "type": "boolean" },
+            "fixed_snapshot_objects_model_visible": { "type": "boolean" },
+            "pre_seed_reflog_entries_visible": { "type": "boolean" },
+            "concealment_verification_passed": { "type": "boolean" },
+            "task_directories_model_visible": { "type": "boolean" },
+            "verifier_assets_model_visible": { "type": "boolean" },
+            "verifier_integrity_passed": { "type": ["boolean", "null"] }
+          }
+        }
       }
     },
     "profile": {
@@ -131,10 +164,28 @@
       }
     },
     "per_task_results": { "type": "array", "items": { "type": "object" } },
-    "software_quality": { "type": "object" },
+    "software_quality": {
+      "type": "object",
+      "required": ["functional_verifier_passed", "quality_review_status", "quality_score", "critical_failures"],
+      "properties": {
+        "functional_verifier_passed": { "type": "boolean" },
+        "quality_review_status": { "enum": ["not-reviewed", "reviewed"] },
+        "quality_score": { "type": ["integer", "null"], "minimum": 0, "maximum": 5 },
+        "critical_failures": { "type": "array", "items": { "type": "string" } }
+      }
+    },
     "state_observations": { "type": "object" },
     "operational_reproducibility": { "type": "object" },
     "artifacts": { "type": "object" },
-    "interpretation": { "type": "object" }
+    "interpretation": {
+      "type": "object",
+      "required": ["accepted_for_execution", "accepted_for_objective", "claim_status", "exclusion_reason"],
+      "properties": {
+        "accepted_for_execution": { "type": "boolean" },
+        "accepted_for_objective": { "type": "boolean" },
+        "claim_status": { "type": "string" },
+        "exclusion_reason": { "type": "string" }
+      }
+    }
   }
 }

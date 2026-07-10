@@ -70,8 +70,8 @@ Run baselines, single-surface owners, and a small set of source-logic hypotheses
 9. Run the same task sequence with the same model/provider where possible.
 10. Capture per-task transcript, usage, tool logs, raw artifacts, verifier output, and final diff/status.
 11. Capture session-level cumulative provider usage, pricing basis, state observations, and tool-state artifacts.
-12. Mount run artifact directories when the evaluated process writes artifacts; missing artifact mounts are harness failures, not treatment results.
-13. If a session batch is killed to fix harness or isolation defects, discard its partial summary and rerun the full planned workflow session from the beginning.
+12. Mount only dedicated model-output directories when the evaluated process writes artifacts; never mount controller run roots, seed patches, verifier assets, or controller Git objects.
+13. Preserve harness- or isolation-invalid attempts as excluded negative evidence; freeze a revised protocol and use a new session/replicate identifier for any rerun.
 14. Score final software quality using the standard rubric.
 15. Record result in `data/workflow-sessions.json` and store raw artifacts under `sources/evaluations/workflow-sessions/<session-id>/`.
 
@@ -80,7 +80,8 @@ Run baselines, single-surface owners, and a small set of source-logic hypotheses
 A stack can be described as Phase 2 positive only if:
 
 - cumulative provider-billed workflow tokens or cost improve versus the canonical shared baseline;
-- deterministic per-task and final verifiers pass, or the final quality score is at least 3 when no deterministic verifier exists;
+- deterministic per-task and final verifiers pass when available;
+- an explicit software-quality review records `quality_review_status: reviewed`, score at least 3, and no critical failures;
 - correction turns, repeated reads, tool-call overhead, and stale-context incidents do not erase workflow-level savings;
 - no overlapping surface owner is active unintentionally;
 - install, disable, and reset paths are documented;

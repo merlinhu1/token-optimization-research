@@ -28,13 +28,14 @@ Synthetic micro fixtures and recorded diagnostic fixtures are useful for sanity 
 ## Append-only workflow policy
 
 - Add one workflow session record per executed baseline or treatment session.
-- Use one canonical baseline `experiment_group_id` per fixture/date/replicate and a separate treatment `experiment_group_id` per profile; link them through comparison records and `interpretation.comparison_baseline_session_id`.
+- Use one reviewed canonical baseline pool per frozen protocol fingerprint and replicate, plus a separate treatment `experiment_group_id` per profile. The fingerprint binds the fixture snapshot, task-prompt and verifier hashes, baseline substrate, agent/model condition, and isolation policy; execution date remains metadata only. Link treatments through comparison records and `interpretation.comparison_baseline_session_id`.
 - Bind `agent.runtime_id`, `agent.provider`, `agent.model`, and `agent.model_condition_id` before execution; placeholder model/provider values are allowed only for planned records.
 - Keep baseline and treatment workflow sessions on the same task sequence and model condition for direct tool-effect comparisons.
 - Use `objective = individual_tool_effectiveness` for one tool or comparator profile.
 - Use `objective = stack_effectiveness` for two-or-more-component stack treatments.
 - Reset repository/tool/agent state before the session, then preserve state between tasks unless the sequence explicitly models a user reset.
 - Supersede records instead of deleting failed, excluded, or negative results.
+- Never reuse a session ID or overwrite its compact evidence. Post-hoc integrity review may change objective eligibility only by preserving raw metrics/artifacts and recording the assessment reason and evidence.
 - Do not create paired workflow comparisons or aggregate summaries until the referenced workflow session records exist.
 
 ## Required workflow metric groups
@@ -43,9 +44,11 @@ Each workflow session must record:
 
 1. `cumulative_token_usage` — provider-billed session totals, cache tokens, output/reasoning tokens, pricing basis, and tokens per accepted task.
 2. `per_task_results` — task ID, status, provider usage, verifier output, turns, tool calls, correction turns, and notes.
-3. `software_quality` — per-task verifier pass/fail, final verifier pass/fail, quality score, critical failures, and final diff/status.
+3. `software_quality` — per-task verifier pass/fail, final verifier pass/fail, explicit review status, nullable quality score, critical failures, and final diff/status. Verifier success alone must not synthesize a quality score.
 4. `state_observations` — persisted indexes/cache/memory/config, stale-context incidents, repeated rediscovery, overfeeding, and recovery notes.
 5. `operational_reproducibility` — install log, pre-session reset verification, raw-artifact recovery, state leakage outside the session boundary, and tool-isolation audit result.
+
+Completed reproduction records must also prove structural sequential disclosure: lazy future-prompt materialization, controller-only task/verifier assets, a model mount limited to the target repository plus isolated output, and passing verifier-integrity hashes. Single-replicate comparisons must record `replicate_count = 1`, null uncertainty, and non-ranking claim status.
 
 ## Complex-project policy
 

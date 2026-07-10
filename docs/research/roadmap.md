@@ -2,14 +2,14 @@
 
 ## Current direction
 
-The active research direction is Phase 2 workflow simulation: compare compatibility-safe profiles on persistent multi-task repository workflows using cumulative provider-billed token usage and software-quality gates.
+The active research direction is Phase 2 workflow-simulation repair: qualify realistic persistent multi-task workflows before comparing profiles with cumulative provider-billed token usage and software-quality gates.
 
-The default active matrix is:
+No workflow sequence is currently active. The candidate matrix is:
 
-- Terraform: large Go workflow.
-- OrchardCore: large C# workflow.
-- Fastify: medium TS/JS workflow.
-- Beets: medium Python workflow.
+- Terraform: behavioral tasks below the five-production-file floor.
+- OrchardCore: synthetic exact-source supplemental checks require redesign.
+- Fastify: the paid canary exposed future-seed contamination and invalid exact-source acceptance.
+- Beets: synthetic exact-source supplemental checks require redesign.
 
 Django single-task evidence is archived as historical evidence outside the active workflow matrix.
 
@@ -27,7 +27,8 @@ Status: complete for the current candidate set.
 
 Status: active.
 
-- Maintain active workflow sequences in `data/workflow-task-sequences.json`.
+- Keep blocked candidates `planned` until their readiness blockers are resolved and verified.
+- Require lazy one-task seed delivery, true-root Git concealment, and behavioral acceptance before activation.
 - Maintain fixture readiness in `data/repository-fixtures.json`.
 - Generate the human operator runbook with `scripts/update_workflow_runbook.py`.
 - Run canonical shared-baseline and treatment workflow sessions with the same sequence, runtime, provider, model condition, prompt-disclosure policy, and verifier set.

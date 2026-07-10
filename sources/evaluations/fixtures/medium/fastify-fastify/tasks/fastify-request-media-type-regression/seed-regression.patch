@@ -1,0 +1,124 @@
+diff --git a/lib/handle-request.js b/lib/handle-request.js
+index dce3402e..d3ec9867 100644
+--- a/lib/handle-request.js
++++ b/lib/handle-request.js
+@@ -11,7 +11,6 @@ const {
+   kRouteContext,
+   kFourOhFourContext,
+   kSupportedHTTPMethods,
+-  kRequestContentType,
+   kDiagnosticsStore
+ } = require('./symbols')
+ const ContentType = require('./content-type')
+@@ -53,17 +52,13 @@ function handleRequest (err, request, reply) {
+       return
+     }
+ 
+-    // Conditional assignment to avoid creating a new ContentType instance
+-    // It can be assigned when accessing the .mediaType in hooks
+-    if (!request[kRequestContentType]) {
+-      request[kRequestContentType] = ContentType.from(ctHeader)
+-    }
+-    if (request[kRequestContentType].isValid === false) {
++    const contentType = ContentType.from(ctHeader)
++    if (contentType.isValid === false) {
+       reply[kReplyIsError] = true
+       reply.status(415).send(new FST_ERR_CTP_INVALID_MEDIA_TYPE())
+       return
+     }
+-    request[kRouteContext].contentTypeParser.run(request[kRequestContentType].toString(), handler, request, reply)
++    request[kRouteContext].contentTypeParser.run(contentType.toString(), handler, request, reply)
+     return
+   }
+ 
+diff --git a/lib/request.js b/lib/request.js
+index ebf686ca..6ff2393c 100644
+--- a/lib/request.js
++++ b/lib/request.js
+@@ -10,7 +10,6 @@ const {
+   kSchemaController,
+   kOptions,
+   kRequestCacheValidateFns,
+-  kRequestContentType,
+   kRouteContext,
+   kRequestOriginalUrl,
+   kRequestSignal,
+@@ -18,7 +17,6 @@ const {
+ } = require('./symbols')
+ const { FST_ERR_REQ_INVALID_VALIDATION_INVOCATION, FST_ERR_DEC_UNDECLARED } = require('./errors')
+ const decorators = require('./decorate')
+-const ContentType = require('./content-type')
+ 
+ const HTTP_PART_SYMBOL_MAP = {
+   body: kSchemaBody,
+@@ -284,14 +282,6 @@ Object.defineProperties(Request.prototype, {
+       this.additionalHeaders = headers
+     }
+   },
+-  mediaType: {
+-    get () {
+-      if (!this[kRequestContentType] && this.headers['content-type'] !== undefined) {
+-        this[kRequestContentType] = ContentType.from(this.headers['content-type'])
+-      }
+-      return this[kRequestContentType]?.mediaType
+-    }
+-  },
+   getValidationFunction: {
+     value: function (httpPartOrSchema) {
+       if (typeof httpPartOrSchema === 'string') {
+diff --git a/lib/symbols.js b/lib/symbols.js
+index 507af35e..8ddc0767 100644
+--- a/lib/symbols.js
++++ b/lib/symbols.js
+@@ -31,7 +31,6 @@ const keys = {
+   kRequestPayloadStream: Symbol('fastify.RequestPayloadStream'),
+   kRequestAcceptVersion: Symbol('fastify.RequestAcceptVersion'),
+   kRequestCacheValidateFns: Symbol('fastify.request.cache.validateFns'),
+-  kRequestContentType: Symbol('fastify.request.contentType'),
+   kRequestOriginalUrl: Symbol('fastify.request.originalUrl'),
+   kRequestSignal: Symbol('fastify.request.signal'),
+   kHandlerTimeout: Symbol('fastify.handlerTimeout'),
+diff --git a/lib/validation.js b/lib/validation.js
+index 7cac74e7..48850b1c 100644
+--- a/lib/validation.js
++++ b/lib/validation.js
+@@ -171,7 +171,9 @@ function validate (context, request, execution) {
+     if (typeof context[bodySchema] === 'function') {
+       validatorFunction = context[bodySchema]
+     } else if (context[bodySchema]) {
+-      const contentSchema = context[bodySchema][request.mediaType]
++      // TODO: add request.contentType and reuse it here
++      const contentType = getEssenceMediaType(request.headers['content-type'])
++      const contentSchema = context[bodySchema][contentType]
+       if (contentSchema) {
+         validatorFunction = contentSchema
+       }
+@@ -269,6 +271,16 @@ function wrapValidationError (result, dataVar, schemaErrorFormatter) {
+   return error
+ }
+ 
++/**
++ * simple function to retrieve the essence media type
++ * @param {string} header
++ * @returns {string} Mimetype string.
++ */
++function getEssenceMediaType (header) {
++  if (!header) return ''
++  return header.trimStart().split(/[ ;]/, 1)[0].trim().toLowerCase()
++}
++
+ module.exports = {
+   symbols: { bodySchema, querystringSchema, responseSchema, paramsSchema, headersSchema },
+   compileSchemasForValidation,
+diff --git a/types/request.d.ts b/types/request.d.ts
+index 6ee9757c..fabaed9f 100644
+--- a/types/request.d.ts
++++ b/types/request.d.ts
+@@ -104,7 +104,6 @@ export interface FastifyRequest<RouteGeneric extends RouteGenericInterface = Rou
+   readonly is404: boolean;
+   readonly socket: RawRequest['socket'];
+   readonly signal: AbortSignal;
+-  readonly mediaType: string | undefined;
+ 
+   getValidationFunction(httpPart: HTTPRequestPart): ValidationFunction | undefined
+   getValidationFunction(schema: { [key: string]: any }): ValidationFunction | undefined

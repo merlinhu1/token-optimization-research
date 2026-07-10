@@ -1,7 +1,7 @@
 ---
 status: active
 truth_kind: engineering-contract
-last_reviewed: 2026-06-26
+last_reviewed: 2026-07-09
 ---
 
 # Software Quality Gates
@@ -22,6 +22,7 @@ Token-accounting mechanics are owned by `token-accounting.md`.
 
 - Evaluation docs require token savings to be paired with software-quality evidence.
 - The evaluator prompt and templates ask for verifier, diagnostic, maintainability, safety, and reviewability records.
+- Workflow runners record deterministic verifier success separately from software-quality review status.
 
 ## Product Truth Links
 
@@ -49,12 +50,16 @@ Token-accounting mechanics are owned by `token-accounting.md`.
 - Evaluation artifacts should preserve reset or uninstall paths for installed tools and profiles.
 - Safety review includes secrets, permissions, network behavior, and credential handling.
 - Quality scoring should explain partial success and under-solving.
+- Deterministic verifier success does not assign an ordinal quality score.
+- Unreviewed runs keep `quality_score` null and remain ineligible for objective acceptance.
+- Objective acceptance requires a recorded review, score at least 3, and no critical failures.
 
 ## Engineering Decisions
 
 - Decision (2026-06-26): Token savings must be paired with software-quality gates.
 - Decision (2026-06-26): Diagnostic preservation is an evaluation concern, not just a tooling convenience.
 - Decision (2026-06-26): A failed verifier or unreviewable diff can invalidate an apparent token-saving result.
+- Decision (2026-07-09): Mechanical acceptance is a functional execution gate; software-quality scores require an explicit review.
 
 ## Rationale
 

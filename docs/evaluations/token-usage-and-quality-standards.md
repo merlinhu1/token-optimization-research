@@ -62,7 +62,7 @@ Every workflow needs explicit quality gates before token or cost savings can be 
 
 ## Quality scoring rubric
 
-Use a five-point ordinal score only after deterministic gates are recorded.
+Use a five-point ordinal score only after deterministic gates are recorded and a software-quality review has been completed. A passing verifier records functional correctness; it must not automatically assign score 3, 4, or 5. Until review, record `quality_review_status: not-reviewed`, `quality_score: null`, and keep `accepted_for_objective` false.
 
 | Score | Meaning |
 |---:|---|

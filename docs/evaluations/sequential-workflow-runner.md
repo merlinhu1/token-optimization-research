@@ -6,180 +6,52 @@ This page documents runner details. The maintained operator runbook is `docs/eva
 
 `scripts/run_codex_workflow_evaluation.py` runs one profile on one active workflow sequence from `data/workflow-task-sequences.json`.
 
-The runner discloses tasks sequentially:
+The runner delivers task state and prompts sequentially:
 
-1. show Codex task 1 only;
-2. run task 1 verifier;
-3. resume the same Codex thread with task 2 only after task 1 passes;
-4. repeat until all tasks pass or one gate fails;
-5. extract cumulative provider tokens from the concatenated Codex JSONL events.
+1. inject task 1's regression only and commit that state as a parentless model-facing root;
+2. show Codex task 1 only;
+3. run the hidden task 1 verifier and capture its task delta;
+4. after a pass, inject task 2 only, preserve prior source fixes, and replace model-facing Git metadata with a new parentless root;
+5. resume the same Codex thread with task 2 only;
+6. repeat until all tasks pass or one gate fails;
+7. extract cumulative provider tokens, retain ordered per-task deltas, and run the final behavioral verifier.
 
-Do not use older all-tasks-visible workflow artifacts for decision evidence.
+Future prompts and future regressions remain absent until their turn. The model container mounts the target repository and an isolated output directory, not the workflow run directory, task fixtures, seed patches, controller Git objects, or verifier scripts. The controller hashes verifier assets before execution and verifies both verifier integrity and true-root concealment before acceptance.
 
-## Prerequisites
+Do not use older all-tasks-visible or verifier-visible workflow artifacts for decision evidence.
 
-From the repository root:
+## Activation and prerequisites
+
+Fastify is the active primary sequence after behavioral fixture qualification. `--list-sequences` may expose it, but provider-backed execution still requires an explicit frozen protocol and operator authorization; fixture validation uses `--prepare-only`.
+
+A sequence may return to `active` only after it has causally related multi-file behavior, behavioral acceptance tests, standalone seeded-fail/fixed-pass evidence, and a clean lazy-seed prepare smoke.
+
+For an activated sequence, verify the runner and container from the repository root:
 
 ```bash
 python3 scripts/run_codex_workflow_evaluation.py --list-sequences
 docker image inspect token-eval-codex:latest >/dev/null
 ```
 
-Codex auth must be available through the source Codex home copied into the isolated run home. The default is:
+Codex auth is copied from the selected source Codex home into the isolated run home. Real evaluation runs must keep container, Codex, and dependency preflights enabled.
 
-```text
-/opt/data/home/.codex
-```
+## No-model prepare gate
 
-Override it when needed:
+Run `--prepare-only` before model spend after a sequence is reactivated. The generated `prepare-verification.json` must prove all of these:
 
-```bash
---source-codex-home /path/to/.codex
-```
+- only task 1's regression is present;
+- future regressions remain absent and forward-applicable;
+- only `task-prompts/task-01.md` is materialized;
+- task fixtures, seed patches, and verifier scripts remain controller-only;
+- the model-facing Git repository has one parentless commit and no remote;
+- the fixed snapshot commit and earlier stage commits are absent from the model-facing object database and reflog;
+- `git status --short` is clean.
 
-The runner performs container and Codex preflights by default. Do not skip those for real evaluation runs.
+During a paid run, the controller captures each task delta, injects only the next regression after the current verifier passes, and replaces model-facing Git metadata with a new true-root baseline. Source files, tool indexes, caches, generated configuration, the agent home, and the Codex thread persist.
 
-## Smoke prepare without model spend
+## Paid execution gate
 
-Use this only to verify fixture construction, prompt sanitization, and seed-origin concealment:
-
-```bash
-python3 scripts/run_codex_workflow_evaluation.py \
-  --sequence-id terraform-maintenance-sequence-v1 \
-  --profile-id baseline-bare-codex \
-  --prepare-only \
-  --skip-container-preflight \
-  --skip-codex-preflight \
-  --skip-dependency-install \
-  --session-id smoke-terraform-sequential-runner
-
-rm -rf sources/evaluations/workflow-sessions/smoke-terraform-sequential-runner
-```
-
-Expected smoke properties:
-
-- `task-prompts/task-01.md` contains task 1 only;
-- there are no references to task 2+ in task 1's prompt;
-- `project/repo` has no `origin` remote;
-- `project/repo` has a clean git status;
-- the visible commit is `workflow broken-start baseline`.
-
-## Run one lane
-
-```bash
-python3 scripts/run_codex_workflow_evaluation.py \
-  --sequence-id terraform-maintenance-sequence-v1 \
-  --profile-id baseline-bare-codex \
-  --timeout-per-task 1800
-```
-
-Treatment lane:
-
-```bash
-python3 scripts/run_codex_workflow_evaluation.py \
-  --sequence-id terraform-maintenance-sequence-v1 \
-  --profile-id retrieval-leanctx \
-  --timeout-per-task 1800
-```
-
-## Run the shared baseline plus treatment lane
-
-Preferred human rerun command for the default LeanCTX treatment:
-
-```bash
-scripts/run_sequential_workflow_pair.sh terraform-maintenance-sequence-v1
-```
-
-With a different supported treatment profile:
-
-```bash
-scripts/run_sequential_workflow_pair.sh \
-  terraform-maintenance-sequence-v1 \
-  --treatment-profile retrieval-codegraph
-```
-
-With a different replicate or timeout:
-
-```bash
-REPLICATE_INDEX=1 scripts/run_sequential_workflow_pair.sh \
-  beets-maintenance-sequence-v1 \
-  --timeout-per-task 2400
-```
-
-The pair script reuses a completed canonical `baseline-bare-codex` session for the same sequence/date/replicate when one exists. Otherwise it runs that baseline first, then runs the selected treatment. Set `FORCE_BASELINE_RERUN=1` only when intentionally replacing the canonical baseline for that date/replicate.
-
-The pair script runs repository validation, whitespace diff checks, and Truthmark check/index after the required lanes complete.
-
-## Run multiple flows in parallel
-
-Use the matrix wrapper when you want to run more than one workflow flow at the same time. It materializes one isolated checkout per flow under `/opt/data/eval-workflow-lanes/`, runs each flow's canonical baseline plus LeanCTX lane inside that checkout, then copies workflow-session artifacts back and merges the produced records into `data/workflow-sessions.json`.
-
-Dry-run the plan:
-
-```bash
-scripts/run_sequential_workflow_matrix.py --dry-run
-```
-
-Run all active flows with two concurrent flow lanes, the conservative default:
-
-```bash
-scripts/run_sequential_workflow_matrix.py
-```
-
-Run all four active flows concurrently if provider quota and host resources allow it:
-
-```bash
-scripts/run_sequential_workflow_matrix.py --max-parallel 4
-```
-
-Smoke the parallel wrapper without model spend:
-
-```bash
-scripts/run_sequential_workflow_matrix.py \
-  terraform-maintenance-sequence-v1 \
-  beets-maintenance-sequence-v1 \
-  --max-parallel 2 \
-  --prepare-only \
-  --skip-container-preflight \
-  --skip-codex-preflight \
-  --skip-dependency-install
-```
-
-Run a real subset:
-
-```bash
-scripts/run_sequential_workflow_matrix.py \
-  terraform-maintenance-sequence-v1 \
-  beets-maintenance-sequence-v1 \
-  --max-parallel 2
-```
-
-Run a real subset with a non-default treatment profile:
-
-```bash
-scripts/run_sequential_workflow_matrix.py \
-  terraform-maintenance-sequence-v1 \
-  beets-maintenance-sequence-v1 \
-  --treatment-profile retrieval-codegraph \
-  --max-parallel 2
-```
-
-The matrix wrapper exists because running four pair scripts directly from the same checkout is not safe: those processes would race on `data/workflow-sessions.json`, workflow artifact directories, copied Codex homes, tool caches, and temporary Truthmark outputs.
-
-## Active sequence IDs
-
-Check live IDs with:
-
-```bash
-python3 scripts/run_codex_workflow_evaluation.py --list-sequences
-```
-
-Current active sequences are maintained in `docs/evaluations/workflow-evaluation-runbook.md` and are expected to include:
-
-- `terraform-maintenance-sequence-v1`
-- `orchardcore-maintenance-sequence-v1`
-- `fastify-maintenance-sequence-v1`
-- `beets-maintenance-sequence-v1`
+Do not run a lane, pair, or matrix while `--list-sequences` is empty. After a sequence is reactivated, use the maintained commands in `docs/evaluations/workflow-evaluation-runbook.md`. The pair helper is review-gated: the first invocation runs only a missing baseline, the second can run treatment only after baseline quality score >= 4 with no critical failures and objective acceptance, and a final invocation writes/reuses the comparison only after the treatment receives the same review. Any failed execution, isolation, concealment, verifier-integrity, or quality gate stops the pair.
 
 ## Artifacts to inspect
 
@@ -188,8 +60,8 @@ Each completed run keeps exactly four files in its session directory:
 ```text
 sources/evaluations/workflow-sessions/<session-id>/
   run.json              # summary, metadata, token usage, per-task verifier exits
-  changes.diff          # final code changes produced by the agent
-  evidence.jsonl.gz     # compressed raw stream: prompts, Codex events, logs, verifier output
+  changes.diff          # ordered task deltas, each relative to that task's concealed stage root
+  evidence.jsonl.gz     # compressed raw stream: prompts, Codex events, logs, verifier output/integrity checks
   manifest.sha256       # hashes for the other three files
 ```
 
@@ -201,7 +73,7 @@ The registry is updated at:
 data/workflow-sessions.json
 ```
 
-When the canonical baseline and treatment exist for the same sequence/date/replicate, a comparison JSON is written under:
+When reviewed canonical baseline and treatment records exist for the same frozen protocol fingerprint and replicate, a comparison JSON is written under:
 
 ```text
 sources/evaluations/workflow-sessions/
@@ -258,8 +130,14 @@ A completed workflow-reproduction record is valid only if it records:
 ```json
 "prompt_delivery": {
   "mode": "sequential-one-task-at-a-time",
-  "future_tasks_visible": false
+  "future_tasks_visible": false,
+  "future_prompts_materialized_lazily": true
+},
+"leakage_controls": {
+  "task_directories_model_visible": false,
+  "verifier_assets_model_visible": false,
+  "verifier_integrity_passed": true
 }
 ```
 
-and seed-origin concealment is enabled.
+Seed-origin concealment must also be enabled. Deterministic verifier success records execution correctness only; objective acceptance remains false until `quality_review_status` is `reviewed`, `quality_score` is at least 3, and no critical failure is recorded.
