@@ -78,14 +78,12 @@ Code surface:
 - docs/evaluations/sequential-workflow-runner.md
 - scripts/audit_tool_isolation.py
 - scripts/extract_codex_usage.py
-- scripts/run_codex_evaluation_batch.py
 - scripts/run_codex_fixture_evaluation.py
 - scripts/run_codex_workflow_evaluation.py
 - scripts/run_sequential_workflow_matrix.py
 - scripts/run_sequential_workflow_pair.sh
 - scripts/test_workflow_evaluation_contract.py
 - scripts/update_workflow_runbook.py
-- sources/evaluations/archive/single-task-reruns/fixtures/large/**/runs/planned/*.json
 - sources/evaluations/fixtures/container/Dockerfile
 
 - prompts/evaluator.md

@@ -1,9 +1,0 @@
-Restored the upstream parser concurrency fix: the shared `hclparse.Parser` state is protected by parser mutexes again, option reads go through synchronized accessors, and `ConfigDirFiles` avoids copying the mutex.
-
-Verifier passed:
-
-```text
-go test -race ./internal/configs/configload ./internal/configs -run "TestLoaderSourcesConcurrentWithParserWrite|TestSourceBundleParserConcurrentLoadConfigDir|TestParserLoadConfigDirSuccess" -count=1
-ok  	github.com/hashicorp/terraform/internal/configs/configload
-ok  	github.com/hashicorp/terraform/internal/configs
-```

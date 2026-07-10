@@ -32,7 +32,6 @@ Software-quality scoring is owned by `software-quality-gates.md`.
 - `scripts/run_codex_workflow_evaluation.py` treats missing Codex thread IDs after a successful task as a workflow-continuity failure instead of silently starting later tasks in a fresh thread.
 - `scripts/run_codex_workflow_evaluation.py` materializes prompts one task at a time, keeps task fixtures and verifiers outside the model mount, and verifies acceptance-asset hashes before running controller verifiers.
 - Non-MCP terminal-binary treatment lanes expose the active binary through lane-specific container mounts and require solve-shell availability checks in addition to runner preflight.
-- `scripts/run_codex_evaluation_batch.py` runs serial planned Codex fixture evaluations, skips already accepted runs by default, writes a machine-readable batch summary, and refuses direct multi-record batches unless `--allow-serial-batch` is explicitly passed.
 - `scripts/extract_codex_usage.py` normalizes Codex JSONL `turn.completed.usage` blocks into `provider-usage.json` records.
 - `scripts/audit_tool_isolation.py` audits event streams and preflight artifacts against the active run record's tool manifest.
 - `data/evaluations.json` is the structured evaluation registry.
@@ -131,7 +130,6 @@ The repo needs accounting boundaries that expose those tradeoffs.
 - ../../../../scripts/audit_tool_isolation.py
 - ../../../../scripts/extract_codex_usage.py
 - ../../../../scripts/update_workflow_runbook.py
-- ../../../../scripts/run_codex_evaluation_batch.py
 - ../../../../scripts/run_codex_fixture_evaluation.py
 - ../../../../templates/evaluation-record.md
 - ../../../../templates/evaluation-task.md
