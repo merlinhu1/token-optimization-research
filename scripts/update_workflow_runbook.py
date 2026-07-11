@@ -184,6 +184,17 @@ def render() -> str:
         chunks.append(
             f"Current runnable treatment profiles: {runnable_profile_text}. Historical profiles marked `historical-profile` are occupied evidence identities and cannot be rerun in place."
         )
+        blocked_gates = []
+        for sequence in sequences:
+            gate_passed, gate_reason = workflow.baseline_v2_treatment_gate(sequence, ROOT)
+            if not gate_passed:
+                blocked_gates.append(f"`{sequence['id']}` ({gate_reason})")
+        if blocked_gates:
+            chunks.append(
+                "Treatment protocol freezing, preparation, and execution are machine-blocked for "
+                + ", ".join(blocked_gates)
+                + ". Only the designated baseline pilot may run before its independent zero-incident audit passes."
+            )
         if pending_baselines:
             prepare_commands = "\n".join(
                 f"python3 scripts/run_sequential_workflow_matrix.py {sequence['id']} {sequence_model_flags(sequence)} --prepare-only".replace("  ", " ")
@@ -198,18 +209,24 @@ def render() -> str:
                 f"```bash\n{prepare_commands}\n{baseline_commands}\n```"
             )
         if retained_baselines:
-            retained_ids = ", ".join(
-                f"`{sequence['id']}` ({', '.join(f'r{index}' for index in sorted(set(reusable_baseline_replicates[sequence['id']])))})"
-                for sequence in retained_baselines
-            )
-            chunks.append(
-                f"Reusable baselines already exist for {retained_ids}. Do not rerun them. Choose one compatible treatment profile and one intended lane:\n\n"
-                "```bash\n"
-                "SEQUENCE_ID=replace-with-one-active-sequence-id\n"
-                "PROFILE_ID=replace-with-compatible-profile-id\n"
-                "python3 scripts/run_sequential_workflow_matrix.py \"$SEQUENCE_ID\" --treatment-profile \"$PROFILE_ID\"\n"
-                "```"
-            )
+            unlocked_baselines = []
+            for sequence in retained_baselines:
+                gate_passed, gate_reason = workflow.baseline_v2_treatment_gate(sequence, ROOT)
+                if gate_passed:
+                    unlocked_baselines.append((sequence, gate_reason))
+            if unlocked_baselines:
+                retained_ids = ", ".join(
+                    f"`{sequence['id']}` ({', '.join(f'r{index}' for index in sorted(set(reusable_baseline_replicates[sequence['id']])))})"
+                    for sequence, _reason in unlocked_baselines
+                )
+                chunks.append(
+                    f"Reusable, zero-incident-audited baselines exist for {retained_ids}. Choose one compatible treatment profile and one intended lane:\n\n"
+                    "```bash\n"
+                    "SEQUENCE_ID=replace-with-one-active-sequence-id\n"
+                    "PROFILE_ID=replace-with-compatible-profile-id\n"
+                    "python3 scripts/run_sequential_workflow_matrix.py \"$SEQUENCE_ID\" --treatment-profile \"$PROFILE_ID\"\n"
+                    "```"
+                )
         if historical_default_baseline_replicates:
             historical_ids = ", ".join(
                 f"`{sequence_id}` pool `{pool_fingerprint}` "
@@ -257,7 +274,7 @@ python3 scripts/validate_repository.py
 
 ## Evidence boundary
 
-A valid workflow run pre-seeds every regression into one qualified composite broken root, then materializes one prompt at a time. Seed patches, task fixtures, verifier assets, controller Git objects, and fixed parents remain outside the model-visible surface; hidden functional verification runs only after all prompts complete. Product-effect eligibility also requires parity with the pinned official Codex integration and positive treatment-assignment evidence; MCP configuration/listing alone is insufficient.
+A valid Baseline V2 workflow pre-seeds every regression and its focused model-visible acceptance test into one qualified composite broken root, then materializes one prompt at a time. Seed patch files, controller scripts, and fixed parents remain outside the model-visible surface; final verification repeats only the commands and behavior disclosed in each prompt. Product-effect eligibility also requires parity with the pinned official Codex integration and positive treatment-assignment evidence; MCP configuration/listing alone is insufficient.
 
 Every active task must use causally related behavioral acceptance. Unrelated exact-source restoration guards are not valid complexity.
 
@@ -277,9 +294,10 @@ Before changing a sequence to `active`, require:
 - behavioral seeded-fail/fixed-pass gates;
 - a conflict-free composite seed whose task verifiers all fail at lane start;
 - one parentless model-facing Git baseline with the fixed commit inaccessible;
-- final-only concealed functional verification with no per-task controller gate;
-- controller-only task, seed, verifier, and reference assets;
-- cumulative provider usage capture, verifier integrity, isolation, structured verifier diagnostics, and optional source review.
+- final-only execution of focused acceptance whose complete behavior and command are model-visible;
+- controller-only seed patch files and fixed references, with no undisclosed acceptance assertions;
+- cumulative provider usage capture, verifier integrity, isolation, structured verifier diagnostics, and optional source review;
+- a machine-validated independent pilot audit with every required incident count equal to zero before any treatment protocol can be frozen, prepared, or run.
 
 A no-model prepare for a frozen candidate is allowed:
 
@@ -288,7 +306,7 @@ SEQUENCE_ID=<frozen-sequence-id>
 python3 scripts/run_sequential_workflow_matrix.py --prepare-only "$SEQUENCE_ID"
 ```
 
-`prepare-verification.json` must show every task preseeded, only task 1's prompt materialized, a clean true-root Git baseline, no fixed commit object or prior reflog, current composite qualification, and no model-visible seed or verifier assets.
+`prepare-verification.json` must show every task preseeded, only task 1's prompt materialized, a clean true-root Git baseline, no fixed commit object or prior reflog, current composite qualification, no controller seed/verifier files in the model root, and the declared focused acceptance tests visible.
 
 ## Paid execution
 

@@ -2,16 +2,247 @@
 """Lightweight structural validation for the token optimization research repository."""
 from __future__ import annotations
 
+import gzip
 import json
 import re
 import subprocess
 import hashlib
-from pathlib import Path
+from pathlib import Path, PurePosixPath
 import sys
 
 ROOT = Path(__file__).resolve().parents[1]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
+
+BASELINE_V2_ACCEPTANCE_ASSET_PATHS = {
+    "fastify-lifecycle-feature-v0": ["test/baseline-v2-request-media-type.test.js"],
+    "fastify-lifecycle-refactor-v0": ["test/baseline-v2-content-type-cache.test.js"],
+    "fastify-lifecycle-review-v0": ["test/baseline-v2-max-param.test.js"],
+    "beets-lifecycle-feature-v0": ["test/util/test_functemplate.py"],
+    "beets-lifecycle-refactor-v0": [],
+    "beets-lifecycle-review-v0": ["test/plugins/test_ftintitle.py"],
+    "terraform-lifecycle-feature-v0": ["internal/policy/callback/baseline_v2_deferred_test.go"],
+    "terraform-lifecycle-refactor-v0": [
+        "internal/configs/parser_config_dir_test.go",
+        "internal/configs/baseline_v2_requirement_type_test.go",
+    ],
+    "terraform-lifecycle-review-v0": ["internal/addrs/baseline_v2_checkable_test.go"],
+}
+
+PROVIDER_USAGE_FIELDS = (
+    "fresh_input_tokens",
+    "cached_input_tokens",
+    "cache_write_tokens",
+    "output_tokens",
+    "reasoning_tokens",
+    "total_provider_tokens",
+)
+
+LEGACY_RUN_ACCEPTANCE_MISMATCH_SESSION_IDS = {
+    "ponytail-fastify-20260719-p-769d40697529-r2",
+    "ponytail-beets-20260719-p-b440da225a3a-r2",
+    "ponytail-terraform-20260719-p-ded8609b4172-r2",
+}
+
+
+def provider_usage_valid(usage: object, *, allow_legacy_null_cache_write: bool = False) -> bool:
+    if (
+        not isinstance(usage, dict)
+        or usage.get("measurement_source") != "codex-jsonl-usage-events"
+        or not set(PROVIDER_USAGE_FIELDS).issubset(usage)
+    ):
+        return False
+    for key in ("fresh_input_tokens", "cached_input_tokens", "output_tokens", "reasoning_tokens"):
+        value = usage.get(key)
+        if type(value) is not int or value < 0:
+            return False
+    cache_write = usage.get("cache_write_tokens")
+    if cache_write is None:
+        if not allow_legacy_null_cache_write:
+            return False
+        cache_write_value = 0
+    elif type(cache_write) is int and cache_write >= 0:
+        cache_write_value = cache_write
+    else:
+        return False
+    total = usage.get("total_provider_tokens")
+    expected_total = (
+        usage["fresh_input_tokens"]
+        + usage["cached_input_tokens"]
+        + cache_write_value
+        + usage["output_tokens"]
+    )
+    return (
+        type(total) is int
+        and total > 0
+        and total == expected_total
+        and usage["reasoning_tokens"] <= usage["output_tokens"]
+    )
+
+
+def compact_run_record_matches_session(
+    session: dict,
+    run_record: object,
+    *,
+    current_contract: bool,
+    require_accepted: bool,
+) -> bool:
+    if not isinstance(run_record, dict):
+        return False
+    usage = session.get("cumulative_token_usage")
+    run_usage = run_record.get("token_usage")
+    if not isinstance(usage, dict) or not isinstance(run_usage, dict):
+        return False
+    usage_keys = PROVIDER_USAGE_FIELDS
+    if any(run_usage.get(key) != usage.get(key) for key in usage_keys):
+        return False
+    run_usage_for_validation = dict(run_usage)
+    run_usage_for_validation["measurement_source"] = run_usage.get(
+        "measurement_source",
+        usage.get("measurement_source"),
+    )
+    interpretation = session.get("interpretation", {})
+    usage_is_decision_bearing = (
+        current_contract
+        or require_accepted
+        or (isinstance(interpretation, dict) and interpretation.get("accepted_for_objective") is True)
+    )
+    if usage_is_decision_bearing and (
+        not provider_usage_valid(
+            usage,
+            allow_legacy_null_cache_write=not current_contract,
+        )
+        or not provider_usage_valid(
+            run_usage_for_validation,
+            allow_legacy_null_cache_write=not current_contract,
+        )
+    ):
+        return False
+    if current_contract and run_usage.get("measurement_source") != usage.get("measurement_source"):
+        return False
+    expected_accepted = interpretation.get("accepted_for_execution") if isinstance(interpretation, dict) else None
+    integrity = session.get("execution_integrity", {})
+    expected_verifier_integrity = (
+        integrity.get("verifier_integrity_passed") if isinstance(integrity, dict) else None
+    )
+    expected = {
+        "session_id": session.get("session_id"),
+        "replicate_index": session.get("replicate_index"),
+        "workflow_sequence_id": session.get("task_sequence", {}).get("sequence_id"),
+        "profile_id": session.get("profile", {}).get("profile_id"),
+        "frozen_protocol": session.get("frozen_protocol"),
+        "baseline_pool": session.get("baseline_pool"),
+        "selected_execution": session.get("selected_execution"),
+        "docker_image_identity": session.get("docker_image_identity"),
+        "tool_adapter_identity": session.get("tool_adapter_identity"),
+        "per_task_results": session.get("per_task_results"),
+        "verifier_integrity_passed": expected_verifier_integrity,
+    }
+    if any(run_record.get(key) != value for key, value in expected.items()):
+        return False
+    legacy_acceptance_mismatch = (
+        not current_contract
+        and session.get("session_id") in LEGACY_RUN_ACCEPTANCE_MISMATCH_SESSION_IDS
+        and run_record.get("accepted") is False
+        and expected_accepted is True
+    )
+    if run_record.get("accepted") != expected_accepted and not legacy_acceptance_mismatch:
+        return False
+    if require_accepted and run_record.get("accepted") is not True:
+        return False
+    if current_contract:
+        expected_agent = session.get("agent")
+        run_agent = run_record.get("agent_condition")
+        agent_keys = ("runtime_id", "provider", "model", "model_condition_id", "reasoning_effort")
+        if (
+            not isinstance(expected_agent, dict)
+            or not isinstance(run_agent, dict)
+            or any(run_agent.get(key) != expected_agent.get(key) for key in agent_keys)
+        ):
+            return False
+    return True
+
+
+def current_provider_usage_contract(session: dict) -> bool:
+    leakage = session.get("task_sequence", {}).get("leakage_controls", {})
+    if isinstance(leakage, dict) and "controller_verifier_scripts_and_canonical_copies_model_visible" in leakage:
+        return True
+    frozen = session.get("frozen_protocol", {})
+    path_value = frozen.get("path") if isinstance(frozen, dict) else None
+    if not isinstance(path_value, str) or not path_value:
+        return False
+    path = Path(path_value)
+    if path.is_absolute() or ".." in path.parts:
+        return False
+    try:
+        protocol = json.loads((ROOT / path).read_text())
+    except (OSError, json.JSONDecodeError):
+        return False
+    return str(protocol.get("task_fixture", {}).get("qualification_path", "")).endswith(
+        "-baseline-v2.json"
+    )
+
+
+def _json_object_without_duplicate_keys(pairs: list[tuple[str, object]]) -> dict[str, object]:
+    result: dict[str, object] = {}
+    for key, value in pairs:
+        if key in result:
+            raise ValueError(f"duplicate JSON member: {key}")
+        result[key] = value
+    return result
+
+
+def evidence_bundle_valid(
+    path: Path,
+    max_uncompressed_bytes: int = 64 * 1024 * 1024,
+    max_record_bytes: int = 8 * 1024 * 1024,
+) -> bool:
+    """Parse a compact evidence bundle without allowing unbounded decompression."""
+    seen_paths: set[str] = set()
+    total_bytes = 0
+    records = 0
+    try:
+        with gzip.open(path, "rb") as stream:
+            while True:
+                raw_line = stream.readline(max_record_bytes + 1)
+                if not raw_line:
+                    break
+                if len(raw_line) > max_record_bytes:
+                    return False
+                total_bytes += len(raw_line)
+                if total_bytes > max_uncompressed_bytes or not raw_line.endswith(b"\n"):
+                    return False
+                line = raw_line.decode("utf-8")
+                if not line.strip():
+                    return False
+                record = json.loads(
+                    line,
+                    object_pairs_hook=_json_object_without_duplicate_keys,
+                )
+                if not isinstance(record, dict) or set(record) != {"path", "content"}:
+                    return False
+                evidence_path = record.get("path")
+                content = record.get("content")
+                if not isinstance(evidence_path, str) or not evidence_path or not isinstance(content, str):
+                    return False
+                canonical = PurePosixPath(evidence_path)
+                canonical_text = canonical.as_posix()
+                if (
+                    canonical.is_absolute()
+                    or ".." in canonical.parts
+                    or "." in canonical.parts
+                    or "\\" in evidence_path
+                    or canonical_text != evidence_path
+                    or canonical_text in {"", "."}
+                    or canonical_text in seen_paths
+                ):
+                    return False
+                seen_paths.add(canonical_text)
+                records += 1
+    except (OSError, EOFError, UnicodeDecodeError, ValueError):
+        return False
+    return records > 0
+
 
 LOCAL_SKILL_ARTIFACTS = [
     "AGENTS.md",
@@ -306,12 +537,20 @@ def patch_paths(path: Path) -> list[str]:
 
 def is_production_path(path: str) -> bool:
     low = path.lower()
-    parts = set(Path(low).parts)
+    parsed = Path(low)
+    parts = set(parsed.parts)
+    name = parsed.name
     if parts & {"test", "tests", "testing", "fixture", "fixtures", "docs", "doc", "generated", "dist", "build", "coverage", "tasks", "controller"}:
+        return False
+    if (
+        name.endswith(("_test.go", ".test.js", ".test.jsx", ".test.mjs", ".test.ts", ".test.tsx"))
+        or (name.startswith("test_") and parsed.suffix == ".py")
+        or (name.endswith("_test.py"))
+    ):
         return False
     if low.endswith((".md", ".rst", ".txt", ".snap", ".patch", ".lock", ".map")):
         return False
-    return Path(low).suffix in {".c", ".cc", ".cpp", ".cs", ".cshtml", ".go", ".java", ".js", ".jsx", ".mjs", ".py", ".rb", ".rs", ".ts", ".tsx", ".yaml", ".yml"}
+    return parsed.suffix in {".c", ".cc", ".cpp", ".cs", ".cshtml", ".go", ".java", ".js", ".jsx", ".mjs", ".py", ".rb", ".rs", ".ts", ".tsx", ".yaml", ".yml"}
 
 
 def patch_behavior_bearing_paths(path: Path) -> list[str]:
@@ -386,7 +625,20 @@ def validate_qualification(sequence: dict, errors: list[str]) -> None:
         ]
         for task in ordered
     }
-    required_true = ("seeded_verifier_nonzero", "fixed_verifier_zero", "full_fixed_cumulative_verifier_zero", "composite_seed_merge_zero", "composite_seeded_verifiers_nonzero", "no_unmerged_paths", "no_model_visible_acceptance_assets", "all_expected_model_concealment_declared")
+    required_true = ("seeded_verifier_nonzero", "fixed_verifier_zero", "full_fixed_cumulative_verifier_zero", "composite_seed_merge_zero", "composite_seeded_verifiers_nonzero", "no_unmerged_paths", "all_expected_model_concealment_declared")
+    if sequence.get("task_family_generation") == "baseline-v2":
+        required_true += ("no_model_concealed_acceptance_assets", "all_acceptance_behavior_model_visible", "model_visible_acceptance_assets_match_verifier_copies")
+        if q.get("no_model_visible_acceptance_assets") is not False:
+            errors.append(f"qualification {rel} must not claim Baseline V2 acceptance assets are absent from the model")
+        if q.get("acceptance_visibility") != "model-visible-complete":
+            errors.append(f"qualification {rel} must record complete model-visible Baseline V2 acceptance")
+        expected_asset_count = sum(
+            len(BASELINE_V2_ACCEPTANCE_ASSET_PATHS[task["id"]]) for task in ordered
+        )
+        if expected_asset_count < 1 or q.get("expected_model_visible_acceptance_asset_count") != expected_asset_count:
+            errors.append(f"qualification {rel} must record the complete nonempty Baseline V2 acceptance-asset set")
+    else:
+        required_true += ("no_model_visible_acceptance_assets",)
     if sequence.get("status") == "active":
         required_true += ("fixed_snapshot_model_concealed_paths_safe",)
     if q.get("snapshot") != sequence.get("initial_snapshot", {}).get("commit") or q.get("ordered_task_ids") != [t["id"] for t in ordered] or q.get("qualified_on") != sequence.get("qualification_date"):
@@ -429,9 +681,20 @@ def validate_qualification(sequence: dict, errors: list[str]) -> None:
         task_dir = (ROOT / task["prompt_path"]).parent
         files = production_by_task[task["id"]]
         hashes = {name: hashlib.sha256((task_dir / name).read_bytes()).hexdigest() for name in ("agent-prompt.txt", "seed-regression.patch", "verify.sh")}
+        controller_visible = task_dir / "controller-visible"
+        expected_acceptance_paths = BASELINE_V2_ACCEPTANCE_ASSET_PATHS.get(task["id"], [])
+        controller_visible_assets = [
+            {
+                "path": str(Path("controller-visible") / path_text),
+                "model_visible_path": path_text,
+                "sha256": hashlib.sha256((controller_visible / path_text).read_bytes()).hexdigest(),
+            }
+            for path_text in expected_acceptance_paths
+            if (controller_visible / path_text).is_file()
+        ]
         if not set(record.get("production_files", [])) or record.get("production_file_count", 0) < 1:
             errors.append(f"qualification {rel} task {task['id']} records no production/type files")
-        if record.get("task_id") != task["id"] or record.get("production_files") != files or record.get("production_file_count") != len(files) or record.get("agent_prompt_sha256") != hashes["agent-prompt.txt"] or record.get("seed_patch_sha256") != hashes["seed-regression.patch"] or record.get("verifier_sha256") != hashes["verify.sh"] or record.get("task_directory_sha256") != task_directory_sha256(task_dir):
+        if record.get("task_id") != task["id"] or record.get("production_files") != files or record.get("production_file_count") != len(files) or record.get("agent_prompt_sha256") != hashes["agent-prompt.txt"] or record.get("seed_patch_sha256") != hashes["seed-regression.patch"] or record.get("verifier_sha256") != hashes["verify.sh"] or record.get("controller_visible_acceptance_assets") != controller_visible_assets or record.get("model_visible_acceptance_asset_paths") != expected_acceptance_paths or len(controller_visible_assets) != len(expected_acceptance_paths) or record.get("task_directory_sha256") != task_directory_sha256(task_dir):
             errors.append(f"qualification {rel} task {task['id']} has stale hashes, files, or count")
         expected = expected_task_concealed_paths(task)
         declared = sorted(str(path) for path in task.get("model_concealed_paths", []))
@@ -979,7 +1242,12 @@ def validate_workflow_task_sequences(sequence_doc: dict, fixture_doc: dict, erro
     if not isinstance(sequences, list):
         errors.append("data/workflow-task-sequences.json must contain a sequences list")
         return set()
-    fixture_ids = {fixture.get("id") for fixture in fixture_doc.get("fixtures", [])}
+    fixtures = fixture_doc.get("fixtures", [])
+    fixture_ids = {fixture.get("id") for fixture in fixtures}
+    required_v2_blocker = "Baseline V2 strongest-model provider pilot must complete with all eight required observed categories recorded as strict integer zero before treatment launch."
+    for fixture in fixtures:
+        if required_v2_blocker not in fixture.get("blockers", []):
+            errors.append(f"repository fixture {fixture.get('id')} must state the complete strict eight-category Baseline V2 blocker")
     sequence_ids: set[str] = set()
     for index, sequence in enumerate(sequences):
         if not isinstance(sequence, dict):
@@ -1016,10 +1284,22 @@ def validate_workflow_task_sequences(sequence_doc: dict, fixture_doc: dict, erro
                 "allowed_code_rework_events": 0,
                 "allowed_verifier_or_environment_failures": 0,
                 "incident_counting": "unique-auditable-not-command-count",
+                "pilot_audit_path": "sources/evaluations/audits/baseline-v2-pilot-zero-mistake.json",
                 "status": "provider-pilot-required",
+                "treatment_launch_policy": "blocked until one first-valid strongest-model pilot is independently audited with all eight required observed counts equal to integer zero",
             }
-            if not isinstance(gate, dict) or any(gate.get(key) != value for key, value in expected_gate.items()):
-                errors.append(f"active workflow sequence {sid} must preserve the Baseline V2 zero-mistake gate")
+            allowed_gate_fields = [key for key in expected_gate if key.startswith("allowed_")]
+            gate_values_match = (
+                isinstance(gate, dict)
+                and all(gate.get(key) == value for key, value in expected_gate.items())
+                and all(type(gate.get(key)) is int and gate.get(key) == 0 for key in allowed_gate_fields)
+            )
+            if not gate_values_match:
+                errors.append(f"active workflow sequence {sid} must preserve the Baseline V2 zero-mistake gate with strict integer-zero allowances")
+            if "declared focused acceptance tests" not in str(sequence.get("reset_policy", "")):
+                errors.append(f"active workflow sequence {sid} reset policy must retain declared model-visible acceptance tests")
+            if "complete acceptance behavior stays model-visible" not in str(sequence.get("seed_patch_policy", "")):
+                errors.append(f"active workflow sequence {sid} seed policy must not describe acceptance as controller-only")
         qualification_path = str(sequence.get("qualification_path", ""))
         qualification_name = Path(qualification_path).name
         if is_active and qualification_name != "qualification-lifecycle-v0-baseline-v2.json":
@@ -1110,9 +1390,30 @@ def validate_workflow_task_sequences(sequence_doc: dict, fixture_doc: dict, erro
                     if not isinstance(expected_changed, list) or sorted(expected_changed) != sorted(target_production) or not 1 <= len(target_production) <= 3:
                         errors.append(f"active workflow sequence {sid} task {tid} must declare one-to-three exact Baseline V2 production targets")
                     anchors = task.get("model_visible_validation_anchors")
+                    acceptance_asset_paths = task.get("model_visible_acceptance_asset_paths")
                     verifier_text = verifier_path.read_text() if verifier_path.is_file() else ""
+                    if task.get("acceptance_visibility") != "model-visible-complete":
+                        errors.append(f"active workflow sequence {sid} task {tid} must declare complete model-visible acceptance")
+                    undisclosed_inline_markers = ("<<'NODE'", '<<"NODE"', "<<'PY'", '<<"PY"', "<<'TS'", '<<"TS"', "workflow-hidden")
+                    if any(marker in verifier_text and marker not in prompt_text for marker in undisclosed_inline_markers):
+                        errors.append(f"active workflow sequence {sid} task {tid} contains undisclosed inline verifier assertions")
                     if not isinstance(anchors, list) or not anchors or any(anchor not in prompt_text or anchor not in verifier_text for anchor in anchors):
                         errors.append(f"active workflow sequence {sid} task {tid} must bind complete model-visible focused validation anchors")
+                    expected_acceptance_assets = BASELINE_V2_ACCEPTANCE_ASSET_PATHS.get(str(tid))
+                    if (
+                        expected_acceptance_assets is None
+                        or not isinstance(acceptance_asset_paths, list)
+                        or acceptance_asset_paths != expected_acceptance_assets
+                    ):
+                        errors.append(f"active workflow sequence {sid} task {tid} must declare the exact file-backed Baseline V2 acceptance assets")
+                    elif not isinstance(anchors, list) or any(
+                        asset not in anchors
+                        or asset not in prompt_text
+                        or asset not in verifier_text
+                        or not (task_dir / "controller-visible" / asset).is_file()
+                        for asset in expected_acceptance_assets
+                    ):
+                        errors.append(f"active workflow sequence {sid} task {tid} has missing or unbound canonical acceptance assets")
                     if task.get("model_concealed_paths"):
                         errors.append(f"active workflow sequence {sid} task {tid} must not hide Baseline V2 validation behavior")
                     if verifier_uses_source_identity(task_dir):
@@ -1311,7 +1612,7 @@ def validate_production_v3_schema_shape(session: dict, sid: str, errors: list[st
         errors.append(f"workflow session {sid} status is invalid")
     if session.get("session_role") not in WORKFLOW_SESSION_ROLES:
         errors.append(f"workflow session {sid} session_role is invalid")
-    if not isinstance(session.get("replicate_index"), int) or session.get("replicate_index", -1) < 0:
+    if type(session.get("replicate_index")) is not int or session.get("replicate_index", -1) < 0:
         errors.append(f"workflow session {sid} replicate_index must be a non-negative integer")
     for key in ("target", "task_sequence", "profile", "agent", "state_policy", "cumulative_token_usage", "software_quality", "artifacts", "interpretation"):
         if not isinstance(session.get(key), dict):
@@ -1452,11 +1753,13 @@ def validate_production_v3_identity(session: dict, run_record: dict | None, sid:
     profile_id = session.get("profile", {}).get("profile_id") if isinstance(session.get("profile"), dict) else None
     validate_tool_adapter_identity(session.get("tool_adapter_identity"), descriptor.get("tool_adapter"), profile_id, sid, errors)
 
-    if run_record is not None:
-        identity_keys = ("frozen_protocol", "baseline_pool", "selected_execution", "docker_image_identity", "tool_adapter_identity")
-        for key in identity_keys:
-            if run_record.get(key) != session.get(key):
-                errors.append(f"workflow session {sid} run.json {key} does not match registry session")
+    if run_record is not None and not compact_run_record_matches_session(
+        session,
+        run_record,
+        current_contract=current_provider_usage_contract(session),
+        require_accepted=False,
+    ):
+        errors.append(f"workflow session {sid} run.json does not exactly match registry session")
 
 
 def requires_structured_task_contract(session: dict) -> bool:
@@ -1606,6 +1909,22 @@ def validate_workflow_session_contract(session: dict, canonical_profile: dict | 
             if not composite_seed_delivery:
                 errors.append(f"workflow session {sid} must use the lifecycle v0 composite seed-delivery contract")
         leakage_controls = sequence.get("leakage_controls") if isinstance(sequence, dict) else None
+        precise_visibility = (
+            isinstance(leakage_controls, dict)
+            and "controller_verifier_scripts_and_canonical_copies_model_visible" in leakage_controls
+        )
+        verifier_visibility_valid = (
+            isinstance(leakage_controls, dict)
+            and (
+                (
+                    leakage_controls.get("controller_verifier_scripts_and_canonical_copies_model_visible") is False
+                    and isinstance(leakage_controls.get("model_visible_acceptance_asset_paths"), list)
+                    and bool(leakage_controls.get("model_visible_acceptance_asset_paths"))
+                )
+                if precise_visibility
+                else leakage_controls.get("verifier_assets_model_visible") is False
+            )
+        )
         if not isinstance(leakage_controls, dict) or leakage_controls.get("seed_origin_concealed") is not True:
             errors.append(f"workflow session {sid} must record seed_origin_concealed leakage control for completed workflow reproduction")
         elif leakage_controls.get("task_directories_model_visible") is not False:
@@ -1618,8 +1937,8 @@ def validate_workflow_session_contract(session: dict, canonical_profile: dict | 
             errors.append(f"workflow session {sid} fixed snapshot objects and pre-seed reflogs must not be model-visible")
         if not isinstance(leakage_controls, dict) or leakage_controls.get("concealment_verification_passed") is not True:
             errors.append(f"workflow session {sid} must pass seed concealment verification")
-        if not isinstance(leakage_controls, dict) or leakage_controls.get("verifier_assets_model_visible") is not False:
-            errors.append(f"workflow session {sid} verifier assets must not be model-visible")
+        if not verifier_visibility_valid:
+            errors.append(f"workflow session {sid} must distinguish hidden controller verifier/canonical assets from model-visible acceptance tests")
         if not isinstance(leakage_controls, dict) or leakage_controls.get("verifier_integrity_passed") is not True:
             errors.append(f"workflow session {sid} must pass verifier integrity checks")
 
@@ -1643,15 +1962,24 @@ def validate_workflow_session_contract(session: dict, canonical_profile: dict | 
         errors.append(f"workflow session {sid} unreviewed quality_score must be null")
     if isinstance(interpretation, dict) and interpretation.get("accepted_for_objective") is True:
         token_usage = session.get("cumulative_token_usage", {})
-        if (
-            not isinstance(token_usage, dict)
-            or token_usage.get("measurement_source") != "codex-jsonl-usage-events"
-            or not isinstance(token_usage.get("total_provider_tokens"), int)
-            or token_usage.get("total_provider_tokens", 0) <= 0
+        if not provider_usage_valid(
+            token_usage,
+            allow_legacy_null_cache_write=not current_provider_usage_contract(session),
         ):
-            errors.append(f"workflow session {sid} objective acceptance requires positive provider-reported total tokens")
+            errors.append(
+                f"workflow session {sid} objective acceptance requires exact canonical non-boolean provider-token usage and arithmetic"
+            )
         prompt_delivery = sequence.get("prompt_delivery", {}) if isinstance(sequence, dict) else {}
         leakage_controls = sequence.get("leakage_controls", {}) if isinstance(sequence, dict) else {}
+        objective_visibility_valid = (
+            (
+                leakage_controls.get("controller_verifier_scripts_and_canonical_copies_model_visible") is False
+                and isinstance(leakage_controls.get("model_visible_acceptance_asset_paths"), list)
+                and bool(leakage_controls.get("model_visible_acceptance_asset_paths"))
+            )
+            if "controller_verifier_scripts_and_canonical_copies_model_visible" in leakage_controls
+            else leakage_controls.get("verifier_assets_model_visible") is False
+        )
         composite_seed_delivery = (
             prompt_delivery.get("seed_delivery_mode") == "preseeded-composite"
             and prompt_delivery.get("future_seed_regressions_visible") is True
@@ -1663,7 +1991,7 @@ def validate_workflow_session_contract(session: dict, canonical_profile: dict | 
             and prompt_delivery.get("future_prompts_materialized_lazily") is True
             and composite_seed_delivery
             and leakage_controls.get("task_directories_model_visible") is False
-            and leakage_controls.get("verifier_assets_model_visible") is False
+            and objective_visibility_valid
             and leakage_controls.get("verifier_integrity_passed") is True
             and leakage_controls.get("seed_patches_model_visible") is False
             and leakage_controls.get("fixed_snapshot_objects_model_visible") is False
@@ -1747,8 +2075,36 @@ def validate_workflow_sessions(session_doc: dict, sequence_ids: set[str], fixtur
         canonical_profile = profiles_by_id.get(profile_id) if profile_id else None
         if profile_id and canonical_profile is None:
             errors.append(f"workflow session {sid} references unknown profile {profile_id}")
+        baseline_profile = profile_id == "baseline-bare-codex"
+        expected_session_role = (
+            "baseline"
+            if baseline_profile
+            else "stack_treatment"
+            if isinstance(canonical_profile, dict) and canonical_profile.get("profile_type") == "tool_stack"
+            else "individual_tool_treatment"
+            if isinstance(canonical_profile, dict)
+            else None
+        )
+        strict_session_contract = session.get("schema_version") == 2
+        if strict_session_contract and profile_id and session.get("session_role") != expected_session_role:
+            errors.append(
+                f"workflow session {sid} role/profile mismatch: {session.get('session_role')} vs {profile_id}"
+            )
+        selected_descriptor = session.get("selected_execution", {}).get("descriptor", {})
+        if strict_session_contract and isinstance(selected_descriptor, dict) and selected_descriptor:
+            if (
+                selected_descriptor.get("execution_role") != expected_session_role
+                or selected_descriptor.get("selected_profile", {}).get("profile_id") != profile_id
+            ):
+                errors.append(f"workflow session {sid} selected execution does not match top-level role/profile")
         validate_workflow_session_contract(session, canonical_profile, errors)
-        comparison_id = session.get("interpretation", {}).get("comparison_baseline_session_id") if isinstance(session.get("interpretation"), dict) else None
+        interpretation = session.get("interpretation", {}) if isinstance(session.get("interpretation"), dict) else {}
+        comparison_id = interpretation.get("comparison_baseline_session_id")
+        accepted_for_objective = interpretation.get("accepted_for_objective") is True
+        if strict_session_contract and not baseline_profile and accepted_for_objective and not comparison_id:
+            errors.append(f"accepted treatment workflow session {sid} requires a comparison baseline binding")
+        if strict_session_contract and baseline_profile and comparison_id:
+            errors.append(f"baseline workflow session {sid} must not carry a comparison baseline binding")
         if comparison_id:
             baseline = sessions_by_id.get(comparison_id)
             if baseline is None:
@@ -1757,8 +2113,17 @@ def validate_workflow_sessions(session_doc: dict, sequence_ids: set[str], fixtur
                 baseline.get("replicate_index") != session.get("replicate_index")
                 or baseline.get("baseline_pool", {}).get("protocol_fingerprint")
                 != session.get("baseline_pool", {}).get("protocol_fingerprint")
+                or baseline.get("task_sequence", {}).get("sequence_id")
+                != session.get("task_sequence", {}).get("sequence_id")
+                or baseline.get("session_role") != "baseline"
+                or baseline.get("profile", {}).get("profile_id") != "baseline-bare-codex"
+                or baseline.get("status") != "completed"
+                or baseline.get("interpretation", {}).get("accepted_for_objective") is not True
+                or baseline.get("selected_execution", {}).get("descriptor", {}).get("execution_role") != "baseline"
+                or baseline.get("selected_execution", {}).get("descriptor", {}).get("selected_profile", {}).get("profile_id")
+                != "baseline-bare-codex"
             ):
-                errors.append(f"workflow session {sid} comparison baseline {comparison_id} is not pool- and replicate-matched")
+                errors.append(f"workflow session {sid} comparison baseline {comparison_id} is not a canonical sequence-, pool-, and replicate-matched baseline")
         agent = session.get("agent", {})
         if isinstance(agent, dict):
             runtime_id = agent.get("runtime_id")
@@ -1774,11 +2139,41 @@ def validate_workflow_sessions(session_doc: dict, sequence_ids: set[str], fixtur
                 errors.append(f"workflow session {sid} reproduction must target a large-project or medium-project fixture")
         artifacts = session.get("artifacts", {})
         if isinstance(artifacts, dict) and artifacts.get("artifact_contract") == "compact-v1-four-files":
+            expected_artifact_root = Path(f"sources/evaluations/workflow-sessions/{sid}")
+            frozen_protocol = session.get("frozen_protocol", {})
+            frozen_protocol_path = (
+                ROOT / frozen_protocol.get("path", "missing")
+                if isinstance(frozen_protocol, dict)
+                else ROOT / "missing"
+            )
+            try:
+                frozen_protocol_doc = json.loads(frozen_protocol_path.read_text())
+            except (OSError, json.JSONDecodeError):
+                frozen_protocol_doc = {}
+            strict_compact_contract = session.get("schema_version") == 2
+            if (
+                strict_compact_contract
+                and artifacts.get("root") is not None
+                and artifacts.get("root") != str(expected_artifact_root)
+            ) or (
+                current_provider_usage_contract(session)
+                and artifacts.get("root") != str(expected_artifact_root)
+            ):
+                errors.append(
+                    f"workflow session {sid} compact artifact root must be {expected_artifact_root}"
+                )
             required = {"run_record", "final_diff", "evidence_bundle", "manifest"}
             missing = sorted(required - set(artifacts))
             if missing:
                 errors.append(f"workflow session {sid} compact artifacts missing keys: {', '.join(missing)}")
             artifact_paths = []
+            canonical_names = {
+                "run_record": "run.json",
+                "final_diff": "changes.diff",
+                "evidence_bundle": "evidence.jsonl.gz",
+                "manifest": "manifest.sha256",
+            }
+            declared_paths: dict[str, Path] = {}
             for key in sorted(required):
                 value = artifacts.get(key)
                 if not isinstance(value, str) or not value:
@@ -1789,16 +2184,47 @@ def validate_workflow_sessions(session_doc: dict, sequence_ids: set[str], fixtur
                     continue
                 full = ROOT / path
                 artifact_paths.append(full)
+                declared_paths[key] = path
+                if path.name != canonical_names[key]:
+                    errors.append(f"workflow session {sid} compact artifact {key} must reference {canonical_names[key]}")
                 if not full.exists():
                     errors.append(f"workflow session {sid} compact artifact {key} does not exist: {value}")
+            if len(set(declared_paths.values())) != len(required):
+                errors.append(f"workflow session {sid} compact artifact keys must reference four distinct canonical files")
             roots = {path.parent for path in artifact_paths}
             if len(roots) == 1:
                 root = next(iter(roots))
+                expected_full_root = (ROOT / expected_artifact_root).absolute()
+                resolved_artifact_root = root.resolve()
+                if strict_compact_contract and (
+                    root.absolute() != expected_full_root
+                    or resolved_artifact_root != expected_full_root
+                    or not resolved_artifact_root.is_relative_to(ROOT.resolve())
+                    or root.is_symlink()
+                ):
+                    errors.append(
+                        f"workflow session {sid} compact artifact paths must use exact root {expected_artifact_root}"
+                    )
                 allowed_names = {"run.json", "changes.diff", "evidence.jsonl.gz", "manifest.sha256"}
-                actual_names = {path.name for path in root.iterdir() if path.is_file()}
-                if actual_names != allowed_names:
-                    errors.append(f"workflow session {sid} compact artifact directory must contain exactly {sorted(allowed_names)}; found {sorted(actual_names)}")
+                if root.is_dir():
+                    entries = list(root.iterdir())
+                else:
+                    entries = []
+                    errors.append(
+                        f"workflow session {sid} compact artifact root does not exist as a directory: {root.relative_to(ROOT)}"
+                    )
+                actual_names = {path.name for path in entries}
+                if (
+                    len(entries) != len(allowed_names)
+                    or any(path.is_symlink() or not path.is_file() for path in entries)
+                    or actual_names != allowed_names
+                ):
+                    errors.append(f"workflow session {sid} compact artifact directory must contain exactly four nonsymlink regular files {sorted(allowed_names)}; found {sorted(actual_names)}")
                 validate_compact_manifest(root, sid, errors)
+                if not evidence_bundle_valid(root / "evidence.jsonl.gz"):
+                    errors.append(
+                        f"workflow session {sid} evidence.jsonl.gz must be a bounded nonempty canonical gzip JSONL bundle"
+                    )
                 frozen_protocol = session.get("frozen_protocol")
                 production_v3 = requires_structured_task_contract(session) or (
                     isinstance(frozen_protocol, dict)
@@ -1814,6 +2240,33 @@ def validate_workflow_sessions(session_doc: dict, sequence_ids: set[str], fixtur
             elif len(roots) > 1:
                 errors.append(f"workflow session {sid} compact artifacts must share one directory")
 
+    # Accepted schema-v2 treatments may compare only against a baseline that
+    # itself survived every strict canonical session, protocol, provider-usage,
+    # and compact-artifact check above. This second pass prevents a structurally
+    # plausible legacy or malformed record from satisfying the cross-record bind.
+    for session in sessions:
+        if not isinstance(session, dict) or session.get("schema_version") != 2:
+            continue
+        profile_id = session.get("profile", {}).get("profile_id")
+        interpretation = session.get("interpretation", {})
+        if profile_id == "baseline-bare-codex" or interpretation.get("accepted_for_objective") is not True:
+            continue
+        sid = session.get("session_id") or session.get("id")
+        comparison_id = interpretation.get("comparison_baseline_session_id")
+        baseline = sessions_by_id.get(comparison_id)
+        baseline_has_errors = any(
+            f"workflow session {comparison_id} " in error
+            for error in errors
+        )
+        if (
+            not isinstance(baseline, dict)
+            or baseline.get("schema_version") != 2
+            or baseline_has_errors
+        ):
+            errors.append(
+                f"accepted treatment workflow session {sid} comparison baseline {comparison_id} must be an error-free canonical schema-v2 baseline with intact provider and compact evidence"
+            )
+
 
 def validate_compact_manifest(root: Path, sid: str, errors: list[str]) -> None:
     allowed_names = {"run.json", "changes.diff", "evidence.jsonl.gz", "manifest.sha256"}
@@ -1828,6 +2281,8 @@ def validate_compact_manifest(root: Path, sid: str, errors: list[str]) -> None:
             errors.append(f"workflow session {sid} manifest has malformed line: {line}")
             continue
         digest, name = parts
+        if name in seen_manifest:
+            errors.append(f"workflow session {sid} manifest contains duplicate artifact: {name}")
         seen_manifest.add(name)
         target = root / name
         if name == "manifest.sha256" or name not in allowed_names or not target.is_file():
@@ -1890,6 +2345,100 @@ def validate_tool_dossier_snapshots(errors: list[str]) -> None:
                 errors.append(
                     f"{rel} has unpinned-historical-inspection status but Commit inspected is not the required disclosure"
                 )
+
+
+def validate_baseline_v2_qualification_audit(errors: list[str]) -> None:
+    audit_path = ROOT / "sources/evaluations/audits/baseline-v2-task-family-qualification-20260721.json"
+    try:
+        audit = json.loads(audit_path.read_text())
+        sequences_doc = json.loads((ROOT / "data/workflow-task-sequences.json").read_text())
+    except (OSError, json.JSONDecodeError) as exc:
+        errors.append(f"Baseline V2 qualification audit cannot be read: {exc}")
+        return
+    active_sequences = {
+        item.get("id"): item
+        for item in sequences_doc.get("sequences", [])
+        if item.get("status") == "active" and item.get("task_family_generation") == "baseline-v2"
+    }
+    audit_sequences = {
+        item.get("sequence_id"): item
+        for item in audit.get("sequences", [])
+        if isinstance(item, dict)
+    }
+    current_refs = {
+        item.get("sequence_id"): item
+        for item in audit.get("protocols", [])
+        if isinstance(item, dict)
+    }
+    if set(audit_sequences) != set(active_sequences) or set(current_refs) != set(active_sequences):
+        errors.append("Baseline V2 qualification audit must cover exactly the active sequences")
+        return
+    for sequence_id, sequence in active_sequences.items():
+        entry = audit_sequences[sequence_id]
+        current_ref = current_refs[sequence_id]
+        frozen_refs = entry.get("frozen_baseline_protocols")
+        protocol_rel = current_ref.get("path")
+        if not isinstance(protocol_rel, str) or not protocol_rel:
+            errors.append(f"Baseline V2 audit {sequence_id} current protocol path is missing")
+            continue
+        protocol_path = ROOT / protocol_rel
+        try:
+            protocol_bytes = protocol_path.read_bytes()
+            protocol = json.loads(protocol_bytes)
+        except (OSError, json.JSONDecodeError) as exc:
+            errors.append(f"Baseline V2 audit {sequence_id} current protocol is unreadable: {exc}")
+            continue
+        qualification_rel = sequence.get("qualification_path")
+        qualification_path = ROOT / str(qualification_rel)
+        try:
+            qualification_sha = hashlib.sha256(qualification_path.read_bytes()).hexdigest()
+        except OSError as exc:
+            errors.append(f"Baseline V2 audit {sequence_id} qualification is unreadable: {exc}")
+            continue
+        protocol_sha = hashlib.sha256(protocol_bytes).hexdigest()
+        protocol_id = protocol.get("protocol_id")
+        selected = protocol.get("selected_execution", {})
+        descriptor = selected.get("descriptor", {}) if isinstance(selected, dict) else {}
+        model_condition_id = descriptor.get("agent_condition", {}).get("model_condition_id")
+        expected_frozen = {
+            "path": protocol_rel,
+            "protocol_id": protocol_id,
+            "protocol_sha256": protocol_sha,
+            "status": protocol.get("status"),
+            "baseline_pool_fingerprint": protocol.get("baseline_pool", {}).get("protocol_fingerprint"),
+            "qualification_sha256": qualification_sha,
+            "selected_execution_sha256": selected.get("descriptor_sha256") if isinstance(selected, dict) else None,
+            "model_condition_id": model_condition_id,
+        }
+        if current_ref != {
+            "sequence_id": sequence_id,
+            "protocol_id": protocol_id,
+            "path": protocol_rel,
+            "sha256": protocol_sha,
+        }:
+            errors.append(f"Baseline V2 audit {sequence_id} current protocol reference is stale")
+        if frozen_refs != [expected_frozen]:
+            errors.append(f"Baseline V2 audit {sequence_id} frozen baseline protocol reference is stale")
+        if entry.get("qualification_path") != qualification_rel or entry.get("qualification_sha256") != qualification_sha:
+            errors.append(f"Baseline V2 audit {sequence_id} qualification reference is stale")
+        task_fixture = protocol.get("task_fixture", {})
+        if (
+            protocol_id != protocol_path.stem
+            or task_fixture.get("qualification_path") != qualification_rel
+            or task_fixture.get("qualification_sha256") != qualification_sha
+            or model_condition_id != "codex-openai-gpt-5-6-sol-high"
+        ):
+            errors.append(f"Baseline V2 audit {sequence_id} does not identify the current canonical pilot protocol")
+    prepare = audit.get("latest_prepare_matrix")
+    if prepare != {
+        "evidence_classification": "non-authoritative-scratch",
+        "repository_artifact": None,
+        "provider_free_lanes": 3,
+        "prepared_lanes": 3,
+        "provider_calls": 0,
+        "provider_tokens": 0,
+    }:
+        errors.append("Baseline V2 qualification audit prepare-matrix note must remain non-authoritative scratch metadata")
 
 
 def validate_frozen_protocol_bindings(errors: list[str]) -> None:
@@ -2126,6 +2675,15 @@ def validate_frozen_protocol_bindings(errors: list[str]) -> None:
                 elif selected.get("descriptor") != expected_execution or selected.get("descriptor_sha256") != runner._json_hash(expected_execution):
                     errors.append(f"execution contract {path.name} has a stale selected-execution descriptor")
                     continue
+                expected_protocol_id = runner.canonical_protocol_id(
+                    seq,
+                    str(selected_profile or "baseline-bare-codex"),
+                    baseline_descriptor=expected_descriptor,
+                    selected_execution=expected_execution,
+                )
+                if protocol.get("protocol_id") != expected_protocol_id or path.stem != expected_protocol_id:
+                    errors.append(f"execution contract {path.name} does not use its canonical protocol ID and path")
+                    continue
                 current_sequence_bindings.add(str(seq["id"]))
         timeout = fixture.get("timeout_seconds_per_task")
         selected = protocol.get("selected_execution", {})
@@ -2304,6 +2862,7 @@ def main() -> int:
     validate_fixture_sequence_status_consistency(workflow_sequences_doc, fixtures_doc, large_candidates_doc, medium_candidates_doc, errors)
     validate_workflow_sessions(workflow_sessions_doc, workflow_sequence_ids, fixtures_doc, profiles_by_id, runtime_ids, model_condition_ids, errors)
     validate_document_lifecycle(workflow_sessions_doc, fixtures_doc, workflow_sequences_doc, errors)
+    validate_baseline_v2_qualification_audit(errors)
     validate_frozen_protocol_bindings(errors)
     for path in (ROOT / "data/workflow-task-sequences.json", ROOT / "templates/evaluation-run-record.json"):
         if "gpt-5.5" in path.read_text():

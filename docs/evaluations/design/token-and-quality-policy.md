@@ -49,7 +49,7 @@ A positive artifact reduction ratio is not sufficient for a positive workflow re
 
 ## Structured task outcomes
 
-Every concealed verifier runs against the final cumulative repository, regardless of earlier failures. Record for each task:
+Every controller verifier runs against the final cumulative repository, regardless of earlier failures. Baseline V2 keeps its complete focused acceptance assertions model-visible and checks candidate copies against integrity-bound canonical bytes; earlier generations may use concealed assertions. Record for each task:
 
 - `task_id` and `order`;
 - agent operational exit and declared-completion state;
@@ -61,7 +61,7 @@ Every concealed verifier runs against the final cumulative repository, regardles
 
 ### Estimand-aligned eligibility
 
-The research objective is provider-reported workflow token usage under fair, disclosed software-engineering tasks. An operationally complete, integrity-valid provider run is eligible regardless of whether the sampled model passes concealed verifiers.
+The research objective is provider-reported workflow token usage under fair, disclosed software-engineering tasks. An operationally complete, integrity-valid provider run is eligible regardless of whether the sampled model passes the controller verifiers.
 
 Solution-directed task assistance is permitted and preferred when it reduces irrelevant search, validation, and correction variance. The frozen prompt may disclose the intended solution path, exact focused checks, environment constraints, and stop condition, provided the same recipe is used for compatible baseline and treatment sessions and must not require or prefer treatment-tool invocation. This project does not use solution discovery as a model-intelligence outcome.
 

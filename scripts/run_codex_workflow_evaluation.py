@@ -11,6 +11,7 @@ from __future__ import annotations
 
 import argparse
 import datetime as dt
+import fcntl
 import gzip
 import hashlib
 import json
@@ -35,6 +36,8 @@ DEFAULT_DOCKER_IMAGE = "token-eval-codex:latest"
 DEFAULT_SOURCE_CODEX_HOME = Path(os.environ.get("CODEX_HOME", "/opt/data/home/.codex"))
 DATE = dt.datetime.now(dt.UTC).date().isoformat()
 COMPACT_ARTIFACT_NAMES = {"run.json", "changes.diff", "evidence.jsonl.gz", "manifest.sha256"}
+PRODUCTION_LOCK_PATH = Path("/opt/data/eval-workflow-lanes/.production.lock")
+PRODUCTION_LOCK_FD_ENV = "WORKFLOW_PRODUCTION_LOCK_FD"
 
 PROJECT_META: dict[str, dict[str, str]] = {
     "medium-fastify-fastify": {
@@ -139,6 +142,7 @@ DEFAULT_WORKFLOW_MODEL = "gpt-5.6-luna"
 DEFAULT_WORKFLOW_REASONING_EFFORT = "xhigh"
 RUNNER_CONTRACT_VERSION = "workflow-runner-v9"
 MAX_CODEX_OPERATIONAL_RETRIES = 1
+THREAD_CONTINUITY_FAILURE_EXIT_CODE = 86
 TASK_VERIFIER_RESULT_PREFIX = "__WORKFLOW_TASK_RESULT__"
 
 # Preserve the active comparison pools while moving their identity away from
@@ -302,6 +306,538 @@ def assert_profile_runnable(profile_id: str, root: Path = ROOT) -> None:
             or "integration is not qualified"
         )
         raise ValueError(f"profile {profile_id} is {profile.get('status')}: {reason}")
+
+
+PILOT_ZERO_COUNT_FIELDS = (
+    "observed_unique_model_caused_incidents",
+    "observed_corrected_implementation_mistakes",
+    "observed_unresolved_defects",
+    "observed_prohibited_operations",
+    "observed_unnecessary_exploration_incidents",
+    "observed_model_caused_failed_commands",
+    "observed_code_rework_events",
+    "observed_verifier_or_environment_failures",
+)
+PILOT_PROVIDER_USAGE_FIELDS = (
+    "fresh_input_tokens",
+    "cached_input_tokens",
+    "cache_write_tokens",
+    "output_tokens",
+    "reasoning_tokens",
+    "total_provider_tokens",
+)
+
+
+def canonical_protocol_id(
+    seq: dict[str, Any],
+    profile_id: str,
+    root: Path = ROOT,
+    *,
+    baseline_descriptor: dict[str, Any] | None = None,
+    selected_execution: dict[str, Any] | None = None,
+) -> str:
+    """Compute the sole canonical protocol identity from causal descriptor bytes."""
+    execution = selected_execution or execution_condition_descriptor(
+        seq,
+        profile_id,
+        timeout_seconds_per_task=3600,
+        docker_image=DEFAULT_DOCKER_IMAGE,
+        root=root,
+    )
+    identity = {
+        "baseline_protocol": baseline_descriptor or baseline_protocol_descriptor(seq, root),
+        "selected_execution": execution,
+    }
+    return "-".join(
+        (
+            safe_profile_key(seq["id"]),
+            safe_profile_key(profile_id),
+            _json_hash(identity)[:12],
+        )
+    )
+
+
+def pilot_provider_usage_valid(usage: Any) -> bool:
+    """Validate the canonical Codex provider-token evidence shape and arithmetic."""
+    return repository_validation.provider_usage_valid(usage)
+
+
+def condition_bound_protocol_descriptors(
+    seq: dict[str, Any],
+    profile_id: str,
+    condition_id: str,
+    model: str,
+    reasoning_effort: str,
+    root: Path = ROOT,
+) -> tuple[dict[str, Any], dict[str, Any]]:
+    """Build protocol descriptors for a registered model condition without mutable globals."""
+    conditions = json.loads((root / "data/evaluation-agent-runtimes.json").read_text()).get("model_conditions", [])
+    matches = [
+        item for item in conditions
+        if item.get("id") == condition_id
+        and item.get("runtime_id") == "codex-cli"
+        and item.get("provider") == "openai"
+        and item.get("model") == model
+        and item.get("reasoning_effort") == reasoning_effort
+    ]
+    if len(matches) != 1:
+        raise ValueError(f"expected one registered model condition for {condition_id}/{model}/{reasoning_effort}; found {len(matches)}")
+    override = {
+        "model_condition_id": condition_id,
+        "model": model,
+        "reasoning_effort": reasoning_effort,
+        "registry_status": matches[0].get("status"),
+        "launcher": {
+            "path": "scripts/run_codex_workflow_model_condition.py",
+            "sha256": _protocol_file_hash(root / "scripts/run_codex_workflow_model_condition.py"),
+        },
+    }
+    baseline_descriptor = baseline_protocol_descriptor(seq, root)
+    baseline_descriptor["agent"].update({
+        "model": model,
+        "model_condition_id": condition_id,
+        "reasoning_effort": reasoning_effort,
+    })
+    baseline_descriptor["runtime_inputs"]["codex_runtime_condition"] = condition_id
+    baseline_descriptor["model_condition_override"] = override
+    comparison_descriptor = baseline_comparison_descriptor(seq, root)
+    comparison_descriptor["agent"] = baseline_descriptor["agent"]
+    comparison_descriptor["runtime_inputs"] = baseline_descriptor["runtime_inputs"]
+    encoded = json.dumps(comparison_descriptor, sort_keys=True, separators=(",", ":")).encode()
+    full_hash = hashlib.sha256(encoded).hexdigest()
+    fingerprint = COMPARISON_IDENTITY_ALIASES.get(full_hash, full_hash[:BASELINE_POOL_FINGERPRINT_LENGTH])
+    selected_execution = execution_condition_descriptor(
+        seq,
+        profile_id,
+        timeout_seconds_per_task=3600,
+        docker_image=DEFAULT_DOCKER_IMAGE,
+        root=root,
+    )
+    selected_execution["agent_condition"].update({
+        "model": model,
+        "model_condition_id": condition_id,
+        "reasoning_effort": reasoning_effort,
+    })
+    selected_execution["baseline_pool_reference"]["protocol_fingerprint"] = fingerprint
+    selected_execution["model_condition_override"] = override
+    return baseline_descriptor, selected_execution
+
+
+def current_baseline_v2_protocol(
+    seq: dict[str, Any], gate: dict[str, Any], root: Path = ROOT
+) -> tuple[dict[str, str], dict[str, Any]]:
+    """Return the one frozen baseline protocol matching every current V2 input."""
+    expected_descriptor, expected_execution = condition_bound_protocol_descriptors(
+        seq,
+        "baseline-bare-codex",
+        str(gate.get("designated_model_condition", "")),
+        str(gate.get("model", "")),
+        str(gate.get("reasoning_effort", "")),
+        root,
+    )
+    expected_fingerprint = baseline_protocol_fingerprint_from_descriptor(expected_descriptor)
+    expected_execution_hash = _json_hash(expected_execution)
+    expected_protocol_id = canonical_protocol_id(
+        seq,
+        "baseline-bare-codex",
+        root,
+        baseline_descriptor=expected_descriptor,
+        selected_execution=expected_execution,
+    )
+    qualification_rel = seq.get("qualification_path")
+    if not isinstance(qualification_rel, str):
+        raise ValueError("sequence qualification_path is missing")
+    qualification_path = root / qualification_rel
+    qualification_sha = _protocol_file_hash(qualification_path)
+    expected_condition = {
+        "model_condition_id": gate.get("designated_model_condition"),
+        "model": gate.get("model"),
+        "reasoning_effort": gate.get("reasoning_effort"),
+    }
+    matches: list[tuple[Path, dict[str, Any]]] = []
+    protocol_dir = root / "sources/evaluations/protocols"
+    expected_protocol_path = protocol_dir / f"{expected_protocol_id}.json"
+    candidate_paths = [expected_protocol_path] if expected_protocol_path.is_file() else []
+    for path in candidate_paths:
+        document = json.loads(path.read_text())
+        fixture_block = document.get("task_fixture", {})
+        baseline_block = document.get("baseline", {})
+        selected_execution = document.get("selected_execution", {})
+        baseline_pool = document.get("baseline_pool", {})
+        if (
+            document.get("protocol_schema_version") == 3
+            and document.get("status") == "frozen-ready-not-run"
+            and document.get("protocol_id") == expected_protocol_id
+            and path == expected_protocol_path
+            and fixture_block.get("sequence_id") == seq.get("id")
+            and fixture_block.get("fixture_id") == seq.get("fixture_id")
+            and fixture_block.get("snapshot") == seq.get("initial_snapshot", {}).get("commit")
+            and fixture_block.get("qualification_path") == qualification_rel
+            and fixture_block.get("qualification_sha256") == qualification_sha
+            and baseline_block.get("profile_id") == "baseline-bare-codex"
+            and {
+                "model_condition_id": baseline_block.get("model_condition_id"),
+                "model": baseline_block.get("model"),
+                "reasoning_effort": baseline_block.get("reasoning_effort"),
+            } == expected_condition
+            and not document.get("treatment", {}).get("profile_id")
+            and baseline_pool.get("protocol_fingerprint") == expected_fingerprint
+            and baseline_pool.get("descriptor") == expected_descriptor
+            and selected_execution.get("descriptor") == expected_execution
+            and selected_execution.get("descriptor_sha256") == expected_execution_hash
+        ):
+            matches.append((path, document))
+    if len(matches) != 1:
+        raise ValueError(
+            f"expected exactly one current designated baseline protocol for {seq.get('id')}; found {len(matches)}"
+        )
+    path, document = matches[0]
+    identity = {
+        "protocol_id": document["protocol_id"],
+        "path": str(path.relative_to(root)),
+        "sha256": _protocol_file_hash(path),
+        "qualification_sha256": qualification_sha,
+        "baseline_pool_fingerprint": expected_fingerprint,
+        "selected_execution_sha256": expected_execution_hash,
+    }
+    return identity, document
+
+
+def evidence_bundle_valid(path: Path, max_uncompressed_bytes: int = 64 * 1024 * 1024) -> bool:
+    return repository_validation.evidence_bundle_valid(path, max_uncompressed_bytes)
+
+
+def pilot_session_artifacts_valid(session: dict[str, Any], root: Path = ROOT) -> bool:
+    """Require an intact compact artifact bundle bound to the audited session."""
+    artifacts = session.get("artifacts")
+    if not isinstance(artifacts, dict) or artifacts.get("artifact_contract") != "compact-v1-four-files":
+        return False
+    keys = ("run_record", "final_diff", "evidence_bundle", "manifest")
+    root_resolved = root.resolve()
+    paths: dict[str, Path] = {}
+    try:
+        for key in keys:
+            value = artifacts.get(key)
+            if not isinstance(value, str) or not value or Path(value).is_absolute():
+                return False
+            candidate = root / value
+            if candidate.is_symlink():
+                return False
+            path = candidate.resolve()
+            path.relative_to(root_resolved)
+            if not path.is_file():
+                return False
+            paths[key] = path
+    except (OSError, ValueError):
+        return False
+    expected_artifact_names = {
+        "run_record": "run.json",
+        "final_diff": "changes.diff",
+        "evidence_bundle": "evidence.jsonl.gz",
+        "manifest": "manifest.sha256",
+    }
+    if (
+        len({path for path in paths.values()}) != len(keys)
+        or any(paths[key].name != expected_artifact_names[key] for key in keys)
+    ):
+        return False
+    parents = {path.parent for path in paths.values()}
+    if len(parents) != 1:
+        return False
+    artifact_root = next(iter(parents))
+    session_id = session.get("session_id")
+    if not isinstance(session_id, str) or not session_id:
+        return False
+    expected_artifact_root = (
+        root / "sources/evaluations/workflow-sessions" / session_id
+    )
+    expected_root_value = f"sources/evaluations/workflow-sessions/{session_id}"
+    if (
+        artifacts.get("root") != expected_root_value
+        or expected_artifact_root.is_symlink()
+        or artifact_root != expected_artifact_root.resolve()
+    ):
+        return False
+    try:
+        entries = list(artifact_root.iterdir())
+    except OSError:
+        return False
+    if (
+        len(entries) != len(COMPACT_ARTIFACT_NAMES)
+        or any(entry.is_symlink() or not entry.is_file() for entry in entries)
+        or {entry.name for entry in entries} != COMPACT_ARTIFACT_NAMES
+    ):
+        return False
+    errors: list[str] = []
+    repository_validation.validate_compact_manifest(
+        artifact_root,
+        str(session.get("session_id", "pilot-session")),
+        errors,
+    )
+    if errors or not evidence_bundle_valid(paths["evidence_bundle"]):
+        return False
+    try:
+        run_record = json.loads(paths["run_record"].read_text())
+    except (OSError, json.JSONDecodeError):
+        return False
+    if not repository_validation.compact_run_record_matches_session(
+        session,
+        run_record,
+        current_contract=True,
+        require_accepted=True,
+    ):
+        return False
+    usage = session.get("cumulative_token_usage", {})
+    run_usage = run_record.get("token_usage", {}) if isinstance(run_record, dict) else {}
+    if not pilot_provider_usage_valid(usage) or not pilot_provider_usage_valid(run_usage):
+        return False
+    if any(run_usage.get(key) != usage.get(key) for key in ("measurement_source", *PILOT_PROVIDER_USAGE_FIELDS)):
+        return False
+    selected_descriptor = session.get("selected_execution", {}).get("descriptor", {})
+    runtime = selected_descriptor.get("runtime", {}) if isinstance(selected_descriptor, dict) else {}
+    expected_agent = selected_descriptor.get("agent_condition", {}) if isinstance(selected_descriptor, dict) else {}
+    session_agent = session.get("agent", {})
+    run_agent = run_record.get("agent_condition", {}) if isinstance(run_record, dict) else {}
+    agent_keys = ("runtime_id", "provider", "model", "model_condition_id", "reasoning_effort")
+    if (
+        not isinstance(expected_agent, dict)
+        or not isinstance(session_agent, dict)
+        or not isinstance(run_agent, dict)
+        or any(session_agent.get(key) != expected_agent.get(key) for key in agent_keys)
+        or any(run_agent.get(key) != expected_agent.get(key) for key in agent_keys)
+    ):
+        return False
+    profile_id = session.get("profile", {}).get("profile_id")
+    selected_profile_id = selected_descriptor.get("selected_profile", {}).get("profile_id")
+    expected_session_role = PROFILE_META.get(profile_id, {}).get("session_role")
+    expected_execution_role = expected_session_role
+    if (
+        not isinstance(profile_id, str)
+        or not expected_session_role
+        or selected_profile_id != profile_id
+        or selected_descriptor.get("execution_role") != expected_execution_role
+        or session.get("session_role") != expected_session_role
+    ):
+        return False
+    identity_errors: list[str] = []
+    repository_validation.validate_docker_identity(
+        session.get("docker_image_identity"), runtime.get("docker_image_identity"), str(session.get("session_id", "pilot-session")), identity_errors
+    )
+    repository_validation.validate_tool_adapter_identity(
+        session.get("tool_adapter_identity"), selected_descriptor.get("tool_adapter"), profile_id, str(session.get("session_id", "pilot-session")), identity_errors
+    )
+    repository_validation.validate_docker_identity(
+        run_record.get("docker_image_identity"), runtime.get("docker_image_identity"), str(session.get("session_id", "pilot-session")), identity_errors
+    )
+    repository_validation.validate_tool_adapter_identity(
+        run_record.get("tool_adapter_identity"), selected_descriptor.get("tool_adapter"), profile_id, str(session.get("session_id", "pilot-session")), identity_errors
+    )
+    if identity_errors:
+        return False
+    return (
+        isinstance(run_record, dict)
+        and run_record.get("session_id") == session.get("session_id")
+        and run_record.get("replicate_index") == session.get("replicate_index")
+        and run_record.get("workflow_sequence_id") == session.get("task_sequence", {}).get("sequence_id")
+        and run_record.get("profile_id") == session.get("profile", {}).get("profile_id")
+        and run_record.get("accepted") is True
+        and run_record.get("frozen_protocol") == session.get("frozen_protocol")
+        and run_record.get("baseline_pool") == session.get("baseline_pool")
+        and run_record.get("selected_execution") == session.get("selected_execution")
+        and run_record.get("per_task_results") == session.get("per_task_results")
+        and run_record.get("verifier_integrity_passed") is True
+        and run_record.get("token_usage", {}).get("total_provider_tokens") == usage.get("total_provider_tokens")
+    )
+
+
+def baseline_v2_treatment_gate(seq: dict[str, Any], root: Path = ROOT) -> tuple[bool, str]:
+    """Fail closed until an independently audited zero-incident Baseline V2 pilot exists."""
+    if seq.get("task_family_generation") != "baseline-v2":
+        return True, "not a Baseline V2 sequence"
+    gate = seq.get("mistake_gate")
+    if not isinstance(gate, dict):
+        return False, "missing Baseline V2 mistake gate"
+    audit_rel = gate.get("pilot_audit_path")
+    if not isinstance(audit_rel, str) or not audit_rel:
+        return False, "missing pilot_audit_path"
+    audit_path = root / audit_rel
+    if not audit_path.is_file():
+        return False, f"pilot audit is absent: {audit_rel}"
+    try:
+        audit = json.loads(audit_path.read_text())
+    except (OSError, ValueError) as exc:
+        return False, f"pilot audit is unreadable: {exc}"
+    if audit.get("schema_version") != 1 or audit.get("task_family_generation") != "baseline-v2":
+        return False, "pilot audit schema or task-family generation is invalid"
+    entries = [
+        entry for entry in audit.get("sequences", [])
+        if isinstance(entry, dict) and entry.get("sequence_id") == seq.get("id")
+    ]
+    if len(entries) != 1:
+        return False, f"pilot audit must contain exactly one entry for {seq.get('id')}"
+    entry = entries[0]
+    if entry.get("passed") is not True or entry.get("trajectory_review_complete") is not True:
+        return False, "pilot trajectory review is incomplete or did not pass"
+    if entry.get("independent_source_review_passed") is not True:
+        return False, "independent source review did not pass"
+    if entry.get("reviewer_role") != "independent":
+        return False, "pilot audit reviewer is not independent"
+    expected_condition = {
+        "id": gate.get("designated_model_condition"),
+        "model": gate.get("model"),
+        "reasoning_effort": gate.get("reasoning_effort"),
+    }
+    if entry.get("model_condition") != expected_condition:
+        return False, "pilot audit model condition does not match the designated gate tuple"
+    invalid_counts = {
+        field: entry.get(field)
+        for field in PILOT_ZERO_COUNT_FIELDS
+        if type(entry.get(field)) is not int or entry.get(field) != 0
+    }
+    if invalid_counts:
+        return False, f"pilot audit has missing, non-integer, or nonzero incident counts: {invalid_counts}"
+    session_id = entry.get("baseline_session_id")
+    if not isinstance(session_id, str) or not session_id:
+        return False, "pilot audit is missing baseline_session_id"
+    registry_path = root / "data/workflow-sessions.json"
+    try:
+        registry = json.loads(registry_path.read_text())
+    except (OSError, ValueError) as exc:
+        return False, f"workflow session registry is unreadable: {exc}"
+    registry_sessions = registry.get("sessions")
+    if not isinstance(registry_sessions, list) or not all(isinstance(item, dict) for item in registry_sessions):
+        return False, "workflow session registry has invalid sessions"
+    sessions = [session for session in registry_sessions if session.get("session_id") == session_id]
+    if len(sessions) != 1:
+        return False, "pilot audit baseline session is absent or ambiguous"
+    session = sessions[0]
+    interpretation = session.get("interpretation", {})
+    usage = session.get("cumulative_token_usage", {})
+    software_quality = session.get("software_quality", {})
+    selected_execution = session.get("selected_execution", {})
+    selected_descriptor = selected_execution.get("descriptor", {})
+    agent = session.get("agent", {})
+    per_task_results = session.get("per_task_results")
+    ordered_tasks = sorted(seq.get("tasks", []), key=lambda item: int(item["order"]))
+    expected_task_results = [(str(task["id"]), int(task["order"])) for task in ordered_tasks]
+    task_identity_complete = (
+        isinstance(per_task_results, list)
+        and all(isinstance(item, dict) for item in per_task_results)
+        and [(str(item.get("task_id")), item.get("order")) for item in per_task_results] == expected_task_results
+    )
+    if (
+        session.get("schema_version") != 2
+        or session.get("status") != "completed"
+        or session.get("session_role") != "baseline"
+        or session.get("replicate_index") != 0
+        or session.get("task_sequence", {}).get("sequence_id") != seq.get("id")
+        or session.get("profile", {}).get("profile_id") != "baseline-bare-codex"
+        or selected_descriptor.get("execution_role") != "baseline"
+        or selected_descriptor.get("selected_profile", {}).get("profile_id") != "baseline-bare-codex"
+        or not isinstance(agent, dict)
+        or agent.get("runtime_id") != "codex-cli"
+        or agent.get("provider") != "openai"
+        or agent.get("model_condition_id") != gate.get("designated_model_condition")
+        or agent.get("model") != gate.get("model")
+        or agent.get("reasoning_effort") != gate.get("reasoning_effort")
+        or interpretation.get("accepted_for_execution") is not True
+        or interpretation.get("operationally_completed") is not True
+        or interpretation.get("evaluation_validity") != "valid"
+        or interpretation.get("accepted_for_objective") is not True
+        or interpretation.get("primary_objective_hard_baseline") is not True
+        or interpretation.get("usable_for_primary_objective_token_comparison") is not True
+        or not pilot_provider_usage_valid(usage)
+        or not isinstance(software_quality, dict)
+        or type(software_quality.get("tasks_attempted")) is not int
+        or software_quality.get("tasks_attempted") != len(ordered_tasks)
+        or type(software_quality.get("tasks_passed")) is not int
+        or software_quality.get("tasks_passed") != len(ordered_tasks)
+        or software_quality.get("final_verifier_passed") is not True
+        or software_quality.get("functional_verifier_passed") is not True
+        or not isinstance(per_task_results, list)
+        or len(per_task_results) != len(ordered_tasks)
+        or not task_identity_complete
+        or any(
+            not isinstance(item, dict)
+            or item.get("agent_attempted") is not True
+            or type(item.get("codex_exit_code")) is not int
+            or item.get("codex_exit_code") != 0
+            or item.get("controller_verification") != "passed"
+            or type(item.get("verifier_exit_code")) is not int
+            or item.get("verifier_exit_code") != 0
+            or item.get("verifier_passed") is not True
+            or item.get("accepted") is not True
+            or type(item.get("operational_retry_count")) is not int
+            or item.get("operational_retry_count") != 0
+            for item in per_task_results
+        )
+        or reviewed_session_reuse_state(session, root) != "reusable"
+        or not pilot_session_artifacts_valid(session, root)
+    ):
+        return False, "pilot audit session is not the first operationally valid provider-backed baseline for this sequence"
+    protocol = entry.get("frozen_protocol")
+    if not isinstance(protocol, dict) or protocol != session.get("frozen_protocol"):
+        return False, "pilot audit protocol binding does not match the baseline session"
+    try:
+        current_protocol, protocol_document = current_baseline_v2_protocol(seq, gate, root)
+    except (OSError, ValueError, KeyError, RuntimeError, subprocess.SubprocessError) as exc:
+        return False, f"pilot audit protocol cannot be matched to the current baseline contract: {exc}"
+    expected_binding = {
+        key: current_protocol[key] for key in ("protocol_id", "path", "sha256")
+    }
+    if protocol != expected_binding or session.get("frozen_protocol") != expected_binding:
+        return False, "pilot audit does not bind the exact current designated baseline protocol"
+    if entry.get("qualification_sha256") != current_protocol["qualification_sha256"]:
+        return False, "pilot audit qualification hash does not match the current protocol"
+    if selected_execution != protocol_document.get("selected_execution"):
+        return False, "baseline session selected execution does not match the current protocol"
+    if selected_execution.get("descriptor_sha256") != current_protocol["selected_execution_sha256"]:
+        return False, "baseline session selected-execution hash does not match the current protocol"
+    runtime = selected_descriptor.get("runtime", {}) if isinstance(selected_descriptor, dict) else {}
+    identity_errors: list[str] = []
+    repository_validation.validate_docker_identity(
+        session.get("docker_image_identity"), runtime.get("docker_image_identity"), session_id, identity_errors
+    )
+    repository_validation.validate_tool_adapter_identity(
+        session.get("tool_adapter_identity"), selected_descriptor.get("tool_adapter"), "baseline-bare-codex", session_id, identity_errors
+    )
+    if identity_errors:
+        return False, "baseline session runtime identity does not match the current selected execution"
+    if (
+        entry.get("baseline_pool_fingerprint") != current_protocol["baseline_pool_fingerprint"]
+        or session.get("baseline_pool", {}).get("protocol_fingerprint") != current_protocol["baseline_pool_fingerprint"]
+    ):
+        return False, "pilot audit does not bind the current baseline-pool contract"
+    agent_condition = selected_descriptor.get("agent_condition", {})
+    if {
+        "id": agent_condition.get("model_condition_id"),
+        "model": agent_condition.get("model"),
+        "reasoning_effort": agent_condition.get("reasoning_effort"),
+    } != expected_condition:
+        return False, "baseline session model condition does not match the designated gate tuple"
+    slot_sessions = [
+        item
+        for item in registry_sessions
+        if isinstance(item, dict)
+        and item.get("replicate_index") == 0
+        and item.get("task_sequence", {}).get("sequence_id") == seq.get("id")
+        and item.get("profile", {}).get("profile_id") == "baseline-bare-codex"
+        and item.get("frozen_protocol") == expected_binding
+        and item.get("baseline_pool", {}).get("protocol_fingerprint") == current_protocol["baseline_pool_fingerprint"]
+        and any(
+            isinstance(result, dict) and result.get("agent_attempted") is True
+            for result in item.get("per_task_results", [])
+        )
+    ]
+    if len(slot_sessions) != 1 or slot_sessions[0].get("session_id") != session_id:
+        return False, "current Baseline V2 r0 slot is absent, ambiguous, or was rerun"
+    return True, "independently audited zero-incident Baseline V2 pilot"
+
+
+def require_baseline_v2_treatment_gate(seq: dict[str, Any], root: Path = ROOT) -> None:
+    passed, reason = baseline_v2_treatment_gate(seq, root)
+    if not passed:
+        raise ValueError(f"treatments are blocked for {seq.get('id')}: {reason}")
 
 
 def default_study_id(profile_id: str) -> str:
@@ -552,7 +1088,7 @@ def execution_condition_descriptor(
                 "codex_web_search": "disabled",
                 "external_retrieval_audit": "fail-closed",
             },
-            "isolation_policy": "fresh lane-specific Codex home/tool data; provider-only network with model shell and Codex web search disabled; sequential one-task prompt delivery; concealed tests removed before model-visible root commit",
+            "isolation_policy": "fresh lane-specific Codex home/tool data; provider-only network with model shell and Codex web search disabled; sequential one-task prompt delivery; controller seed/verifier scripts excluded while declared model-visible acceptance tests are retained",
         },
         "dependencies": {
             "command": PROJECT_META[seq["fixture_id"]]["dependency_command"],
@@ -573,7 +1109,8 @@ def execution_condition_descriptor(
             "future_tasks_visible": False,
             "future_seed_regressions_visible": True,
             "controller_verification": "final-only",
-            "verifier_assets_model_visible": False,
+            "controller_verifier_scripts_and_canonical_copies_model_visible": False,
+            "model_visible_acceptance_asset_paths": sequence_model_visible_acceptance_paths(seq),
             "model_concealed_paths": sequence_concealed_paths(seq),
         },
         "baseline_pool_reference": {
@@ -582,6 +1119,14 @@ def execution_condition_descriptor(
             "comparison_policy": "paired baseline and treatment must share this baseline pool fingerprint and replicate",
         },
     }
+
+
+def sequence_model_visible_acceptance_paths(seq: dict[str, Any]) -> list[str]:
+    paths: set[str] = set()
+    for task in seq.get("tasks", []):
+        for path in task.get("model_visible_acceptance_asset_paths", []):
+            paths.add(str(path))
+    return sorted(paths)
 
 
 def sequence_concealed_paths(seq: dict[str, Any]) -> list[str]:
@@ -633,6 +1178,15 @@ def baseline_protocol_descriptor(seq: dict[str, Any], root: Path = ROOT) -> dict
         prompt_path = root / str(task["prompt_path"])
         verifier_path = root / str(task["verifier_command"])
         seed_path = prompt_path.parent / "seed-regression.patch"
+        controller_visible = prompt_path.parent / "controller-visible"
+        controller_visible_assets = [
+            {
+                "path": str(path.relative_to(root)),
+                "sha256": _protocol_file_hash(path),
+            }
+            for path in sorted(controller_visible.rglob("*"))
+            if path.is_file()
+        ] if controller_visible.is_dir() else []
         task_descriptor = {
             "id": task["id"],
             "order": int(task["order"]),
@@ -642,6 +1196,7 @@ def baseline_protocol_descriptor(seq: dict[str, Any], root: Path = ROOT) -> dict
             "seed_patch_sha256": _protocol_file_hash(seed_path),
             "verifier_command": str(task["verifier_command"]),
             "verifier_sha256": _protocol_file_hash(verifier_path),
+            "controller_visible_acceptance_assets": controller_visible_assets,
             "upstream_test_paths": sorted(str(path) for path in task.get("upstream_test_paths", [])),
             "compatibility_rebased_test_paths": sorted(str(path) for path in task.get("compatibility_rebased_test_paths", [])),
             "expected_model_concealed_paths": expected_task_concealed_paths(task),
@@ -704,7 +1259,8 @@ def baseline_protocol_descriptor(seq: dict[str, Any], root: Path = ROOT) -> dict
             "seed_delivery_mode": "preseeded-composite",
             "future_tasks_visible": False,
             "future_seed_regressions_visible": True,
-            "verifier_assets_model_visible": False,
+            "controller_verifier_scripts_and_canonical_copies_model_visible": False,
+            "model_visible_acceptance_asset_paths": sequence_model_visible_acceptance_paths(seq),
             "git_baseline_true_root_at_lane_start": True,
             "controller_verification": "final-only",
             "prompt_sanitizer": "sanitize_task_prompt-v1",
@@ -834,6 +1390,21 @@ def validate_protocol_for_run(seq: dict[str, Any], profile_id: str, args: argpar
     expected_execution_hash = _json_hash(expected_execution)
     selected_execution = protocol.get("selected_execution", {})
     errors: list[str] = []
+    if seq.get("task_family_generation") == "baseline-v2":
+        expected_protocol_id = canonical_protocol_id(
+            seq,
+            profile_id,
+            baseline_descriptor=expected_descriptor,
+            selected_execution=expected_execution,
+        )
+        expected_protocol_path = ROOT / "sources/evaluations/protocols" / f"{expected_protocol_id}.json"
+        if (
+            protocol.get("protocol_id") != expected_protocol_id
+            or protocol_path.absolute() != expected_protocol_path.absolute()
+            or protocol_path.is_symlink()
+            or protocol_path.name != f"{expected_protocol_id}.json"
+        ):
+            errors.append("canonical_protocol_identity")
     if fixture_block.get("sequence_id") != seq["id"]:
         errors.append("sequence_id")
     if fixture_block.get("fixture_id") != seq["fixture_id"]:
@@ -950,6 +1521,21 @@ def reviewed_session_reuse_state(session: dict[str, Any] | None, root: Path = RO
     sequence = session.get("task_sequence", {}) if isinstance(session.get("task_sequence"), dict) else {}
     prompt_delivery = sequence.get("prompt_delivery", {}) if isinstance(sequence.get("prompt_delivery"), dict) else {}
     leakage = sequence.get("leakage_controls", {}) if isinstance(sequence.get("leakage_controls"), dict) else {}
+    sequence_definition = next(
+        (
+            item for item in sequence_doc().get("sequences", [])
+            if item.get("id") == sequence.get("sequence_id")
+        ),
+        {},
+    )
+    if sequence_definition.get("task_family_generation") == "baseline-v2":
+        verifier_visibility_valid = (
+            leakage.get("controller_verifier_scripts_and_canonical_copies_model_visible") is False
+            and leakage.get("model_visible_acceptance_asset_paths")
+            == sequence_model_visible_acceptance_paths(sequence_definition)
+        )
+    else:
+        verifier_visibility_valid = leakage.get("verifier_assets_model_visible") is False
     isolated = (
         prompt_delivery.get("future_tasks_visible") is False
         and prompt_delivery.get("future_prompts_materialized_lazily") is True
@@ -957,7 +1543,7 @@ def reviewed_session_reuse_state(session: dict[str, Any] | None, root: Path = RO
         and prompt_delivery.get("future_seed_regressions_visible") is True
         and prompt_delivery.get("controller_verification") == "final-only"
         and leakage.get("task_directories_model_visible") is False
-        and leakage.get("verifier_assets_model_visible") is False
+        and verifier_visibility_valid
         and leakage.get("verifier_integrity_passed") is True
         and leakage.get("seed_patches_model_visible") is False
         and leakage.get("git_baseline_true_root_at_lane_start") is True
@@ -965,13 +1551,11 @@ def reviewed_session_reuse_state(session: dict[str, Any] | None, root: Path = RO
         and leakage.get("pre_seed_reflog_entries_visible") is False
         and leakage.get("concealment_verification_passed") is True
     )
-    artifacts = session.get("artifacts", {}) if isinstance(session.get("artifacts"), dict) else {}
-    required = [artifacts.get(key) for key in ("run_record", "final_diff", "evidence_bundle", "manifest")]
-    have_artifacts = all(path and (root / path).exists() for path in required)
+    compact_artifacts_verified = pilot_session_artifacts_valid(session, root)
     # This repository measures provider token usage, not model quality. A
     # structurally valid, operationally complete provider run is reusable even
     # when its verifier or quality review reports imperfect model output.
-    execution_ready = execution_accepted and completed and isolated and have_artifacts
+    execution_ready = execution_accepted and completed and isolated and compact_artifacts_verified
     return "reusable" if execution_ready else "occupied"
 
 
@@ -1012,8 +1596,25 @@ def assert_pool_slot_available(
         )
 
 
+def require_reusable_treatment_baseline(
+    registry: dict[str, Any],
+    seq: dict[str, Any],
+    replicate_index: int,
+    root: Path = ROOT,
+) -> dict[str, Any]:
+    baseline = find_canonical_baseline_record(registry, seq, replicate_index)
+    if baseline is None or reviewed_session_reuse_state(baseline, root) != "reusable":
+        raise ValueError(
+            f"treatment execution requires a reusable canonical baseline for {seq['id']} r{replicate_index}"
+        )
+    return baseline
+
+
 def find_canonical_baseline_record(registry: dict[str, Any], seq: dict[str, Any], replicate_index: int) -> dict[str, Any] | None:
     protocol_fingerprint = baseline_protocol_fingerprint(seq)
+    expected_protocol_identity: dict[str, Any] | None = None
+    expected_selected_execution: dict[str, Any] | None = None
+    expected_identity_loaded = False
     matches = []
     for session in registry.get("sessions", []):
         if session.get("schema_version") != 2:
@@ -1021,6 +1622,25 @@ def find_canonical_baseline_record(registry: dict[str, Any], seq: dict[str, Any]
         if session.get("baseline_pool", {}).get("protocol_fingerprint") != protocol_fingerprint:
             continue
         if session.get("session_role") != "baseline":
+            continue
+        if session.get("profile", {}).get("profile_id") != "baseline-bare-codex":
+            continue
+        selected_descriptor = session.get("selected_execution", {}).get("descriptor", {})
+        if (
+            selected_descriptor.get("execution_role") != "baseline"
+            or selected_descriptor.get("selected_profile", {}).get("profile_id") != "baseline-bare-codex"
+        ):
+            continue
+        if seq.get("task_family_generation") == "baseline-v2" and not expected_identity_loaded:
+            expected_protocol_identity, expected_protocol = current_baseline_v2_protocol(
+                seq, seq["mistake_gate"], ROOT
+            )
+            expected_selected_execution = expected_protocol["selected_execution"]
+            expected_identity_loaded = True
+        if expected_protocol_identity is not None and (
+            session.get("frozen_protocol") != expected_protocol_identity
+            or session.get("selected_execution") != expected_selected_execution
+        ):
             continue
         if session.get("replicate_index") != replicate_index:
             continue
@@ -1715,7 +2335,7 @@ def complete_task_checkpoints(
 def apply_task_verifier_results(
     task_checkpoints: list[dict[str, Any]], verifier_results: list[dict[str, Any]]
 ) -> list[dict[str, Any]]:
-    """Attach final concealed-verifier outcomes to their task checkpoints."""
+    """Attach final controller-verifier outcomes to their task checkpoints."""
     by_key = {(int(item["order"]), str(item["task_id"])): item for item in verifier_results}
     updated: list[dict[str, Any]] = []
     for checkpoint in task_checkpoints:
@@ -1737,10 +2357,13 @@ def apply_task_verifier_results(
 
 
 def verifier_paths(seq: dict[str, Any], task_root: Path, run_dir: Path) -> list[Path]:
-    paths = [
-        task_dir(task_root, int(task["order"])) / "verify.sh"
-        for task in sorted(seq["tasks"], key=lambda item: item["order"])
-    ]
+    paths: list[Path] = []
+    for task in sorted(seq["tasks"], key=lambda item: item["order"]):
+        copied_task_dir = task_dir(task_root, int(task["order"]))
+        paths.append(copied_task_dir / "verify.sh")
+        controller_visible = copied_task_dir / "controller-visible"
+        if controller_visible.is_dir():
+            paths.extend(sorted(path for path in controller_visible.rglob("*") if path.is_file()))
     paths.append(run_dir / "verify-workflow.sh")
     return paths
 
@@ -1840,15 +2463,43 @@ def codex_base_cmd(
     ]
 
 
-def extract_thread_id(events_path: Path) -> str | None:
+def extract_thread_ids(events_path: Path) -> list[str]:
+    thread_ids: list[str] = []
     for line in events_path.read_text(errors="replace").splitlines():
         try:
             item = json.loads(line)
         except json.JSONDecodeError:
             continue
         if item.get("type") == "thread.started" and item.get("thread_id"):
-            return str(item["thread_id"])
-    return None
+            thread_ids.append(str(item["thread_id"]))
+    return thread_ids
+
+
+def extract_thread_id(events_path: Path) -> str | None:
+    thread_ids = extract_thread_ids(events_path)
+    return thread_ids[0] if thread_ids else None
+
+
+def thread_stream_continuity(
+    events_path: Path,
+    requested_thread_id: str | None,
+) -> tuple[str | None, dict[str, Any] | None]:
+    observed = extract_thread_ids(events_path)
+    unique = sorted(set(observed))
+    expected = requested_thread_id
+    if len(unique) != 1 or (expected is not None and unique[0] != expected):
+        return expected, {
+            "events": str(events_path),
+            "expected_thread_id": expected,
+            "observed_thread_ids": unique,
+            "thread_started_event_count": len(observed),
+            "message": (
+                "Codex event stream did not prove exactly one persistent thread"
+                if expected is None
+                else "Codex resume event stream did not match the requested persistent thread"
+            ),
+        }
+    return unique[0], None
 
 
 def retryable_codex_operational_failure(events_path: Path) -> bool:
@@ -1881,7 +2532,7 @@ def run_codex_task(
     *,
     timeout: int,
     thread_id: str | None,
-) -> tuple[int, str | None]:
+) -> tuple[int, str | None, dict[str, Any] | None]:
     cfg = fixture.active_tool_config(record, profile_id)
     repo = ROOT / record["target"]["repository_path"]
     wrapper = (cfg or {}).get("codex_wrapper") if cfg else None
@@ -1921,9 +2572,11 @@ def run_codex_task(
 
     deadline = time.monotonic() + timeout
     code = execute(prompt_path, output_path, thread_id, timeout)
-    captured_thread = thread_id or extract_thread_id(output_path)
+    captured_thread, continuity_error = thread_stream_continuity(output_path, thread_id)
+    if continuity_error is not None:
+        code = THREAD_CONTINUITY_FAILURE_EXIT_CODE
     remaining_timeout = max(0, int(deadline - time.monotonic()))
-    if code != 0 and remaining_timeout > 0 and MAX_CODEX_OPERATIONAL_RETRIES > 0 and captured_thread and retryable_codex_operational_failure(output_path):
+    if code != 0 and remaining_timeout > 0 and MAX_CODEX_OPERATIONAL_RETRIES > 0 and captured_thread and continuity_error is None and retryable_codex_operational_failure(output_path):
         retry_prompt = prompt_path.with_name(f"{prompt_path.stem}-operational-retry-01.md")
         retry_prompt.write_text(
             "The previous turn ended because Codex emitted a malformed tool call before completion. "
@@ -1932,12 +2585,16 @@ def run_codex_task(
         )
         retry_events = output_path.with_name(f"{output_path.stem}-retry-01{output_path.suffix}")
         retry_code = execute(retry_prompt, retry_events, captured_thread, remaining_timeout)
+        _, retry_continuity_error = thread_stream_continuity(retry_events, captured_thread)
+        if retry_continuity_error is not None:
+            retry_code = THREAD_CONTINUITY_FAILURE_EXIT_CODE
+            continuity_error = retry_continuity_error
         original_text = output_path.read_text(errors="replace")
         retry_text = retry_events.read_text(errors="replace")
         separator = "" if not original_text or original_text.endswith("\n") else "\n"
         output_path.write_text(original_text + separator + retry_text)
         code = retry_code
-    return code, captured_thread
+    return code, captured_thread, continuity_error
 
 
 def run_final_verifier(seq: dict[str, Any], record: dict[str, Any], codex_home: Path, run_dir: Path, docker_image: str) -> int:
@@ -2000,6 +2657,7 @@ def audit(record_path: Path, run_dir: Path) -> int:
 def compact_artifacts(run_dir: Path) -> dict[str, str]:
     return {
         "artifact_contract": "compact-v1-four-files",
+        "root": rel(run_dir),
         "run_record": rel(run_dir / "run.json"),
         "final_diff": rel(run_dir / "changes.diff"),
         "final_diff_basis": "ordered cumulative checkpoints plus final cumulative source diff from one composite root",
@@ -2138,7 +2796,7 @@ def remove_ephemeral_homes(run_dir: Path) -> None:
 
 
 def functional_task_count(*, task_checkpoints: list[dict[str, Any]]) -> int:
-    """Count final concealed-verifier passes from structured per-task outcomes."""
+    """Count final controller-verifier passes from structured per-task outcomes."""
     return sum(item.get("accepted") is True for item in task_checkpoints)
 
 
@@ -2174,6 +2832,10 @@ def workflow_session_record(
 ) -> dict[str, Any]:
     pmeta = PROFILE_META[profile_id]
     accepted = bool(summary.get("accepted"))
+    if profile_id == "baseline-bare-codex" and comparison_baseline_session_id:
+        raise ValueError("baseline session must not carry a comparison baseline binding")
+    if profile_id != "baseline-bare-codex" and accepted and not comparison_baseline_session_id:
+        raise ValueError("accepted treatment session requires a comparison baseline binding")
     tasks_passed = functional_task_count(task_checkpoints=task_checkpoints)
     audit_path = run_dir / "tool-isolation-audit.json"
     audit_result = json.loads(audit_path.read_text()) if audit_path.exists() else {}
@@ -2279,7 +2941,7 @@ def workflow_session_record(
             "comparison_baseline_session_id": comparison_baseline_session_id,
             "exclusion_reason": "" if accepted else f"codex_exit_codes={codex_exit_codes}; audit_exit={audit_code}; thread_continuity_errors={summary.get('thread_continuity_errors', [])}; usage_warnings={usage.get('warnings')}",
             "notes": "Provider-backed lane completed with clean integrity; verifier and review outcomes are diagnostic model-behavior evidence and do not gate token accounting." if accepted else "Lane did not complete operationally; exclude it from token accounting.",
-            "scope_note": "Full warm-state lane; all regressions are preseeded, prompts are disclosed sequentially, and concealed verification runs only after the final prompt.",
+            "scope_note": "Full warm-state lane; all regressions are preseeded, prompts are disclosed sequentially, and controller verification runs only after the final prompt; declared acceptance assertions remain model-visible.",
             "evaluation_validity": "valid" if accepted else "operationally-invalid",
             "primary_objective_hard_baseline": accepted and profile_id == "baseline-bare-codex",
             "usable_for_primary_objective_token_comparison": accepted,
@@ -2292,6 +2954,54 @@ def workflow_session_record(
     }
 
 
+def acquire_provider_production_lock() -> int:
+    """Acquire, or verify inheritance of, the shared provider-production lock."""
+    inherited = os.environ.get(PRODUCTION_LOCK_FD_ENV)
+    if inherited is not None:
+        try:
+            fd = int(inherited)
+            held = os.fstat(fd)
+            expected = PRODUCTION_LOCK_PATH.stat()
+        except (OSError, TypeError, ValueError) as exc:
+            raise RuntimeError("invalid inherited workflow production lock") from exc
+        if (held.st_dev, held.st_ino) != (expected.st_dev, expected.st_ino):
+            raise RuntimeError("inherited workflow production lock points to the wrong file")
+        try:
+            fcntl.flock(fd, fcntl.LOCK_EX | fcntl.LOCK_NB)
+        except BlockingIOError as exc:
+            raise RuntimeError("inherited workflow production lock is not held by this matrix") from exc
+        return fd
+    PRODUCTION_LOCK_PATH.parent.mkdir(parents=True, exist_ok=True)
+    fd = os.open(PRODUCTION_LOCK_PATH, os.O_CREAT | os.O_RDWR, 0o600)
+    try:
+        fcntl.flock(fd, fcntl.LOCK_EX | fcntl.LOCK_NB)
+    except BlockingIOError as exc:
+        os.close(fd)
+        raise RuntimeError("another provider-capable workflow run is already active") from exc
+    return fd
+
+
+def same_provider_slot(existing: dict[str, Any], record: dict[str, Any]) -> bool:
+    """Match the immutable provider-sample slot independently of session ID."""
+    if existing.get("schema_version") != 2 or record.get("schema_version") != 2:
+        return False
+    same_coordinate = (
+        existing.get("task_sequence", {}).get("sequence_id") == record.get("task_sequence", {}).get("sequence_id")
+        and existing.get("profile", {}).get("profile_id") == record.get("profile", {}).get("profile_id")
+        and existing.get("replicate_index") == record.get("replicate_index")
+    )
+    if not same_coordinate:
+        return False
+    same_pool = existing.get("baseline_pool", {}).get("protocol_fingerprint") == record.get("baseline_pool", {}).get("protocol_fingerprint")
+    existing_protocol = existing.get("frozen_protocol", {})
+    record_protocol = record.get("frozen_protocol", {})
+    same_protocol = all(
+        existing_protocol.get(key) == record_protocol.get(key)
+        for key in ("protocol_id", "path", "sha256")
+    )
+    return same_pool or same_protocol
+
+
 def update_registry(record: dict[str, Any]) -> None:
     path = ROOT / "data/workflow-sessions.json"
     doc = json.loads(path.read_text())
@@ -2299,6 +3009,12 @@ def update_registry(record: dict[str, Any]) -> None:
     if any(session.get("session_id") == record["session_id"] for session in sessions):
         raise FileExistsError(
             f"workflow session {record['session_id']} already exists; use a new replicate/session ID and supersedes_session_id"
+        )
+    occupied = next((session for session in sessions if same_provider_slot(session, record)), None)
+    if occupied is not None:
+        raise FileExistsError(
+            "provider sample slot already occupied at registry publication by "
+            f"{occupied.get('session_id')}; refusing duplicate {record.get('session_id')}"
         )
     sessions.append(record)
     doc["sessions"] = sessions
@@ -2325,6 +3041,37 @@ def freshish_tokens(record: dict[str, Any]) -> int | float | None:
 
 def percent_delta(delta: int | float | None, baseline: int | float | None) -> float | None:
     return (delta / baseline * 100) if delta is not None and baseline else None
+
+
+def atomic_create_json(path: Path, data: Any) -> None:
+    """Durably publish new JSON without exposing partial bytes or overwriting."""
+    path.parent.mkdir(parents=True, exist_ok=True)
+    temporary_path: Path | None = None
+    try:
+        with tempfile.NamedTemporaryFile(
+            mode="w",
+            dir=path.parent,
+            prefix=f".{path.name}.",
+            suffix=".tmp",
+            delete=False,
+        ) as handle:
+            temporary_path = Path(handle.name)
+            json.dump(data, handle, indent=2)
+            handle.write("\n")
+            handle.flush()
+            os.fsync(handle.fileno())
+        try:
+            os.link(temporary_path, path)
+        except FileExistsError as exc:
+            raise FileExistsError(f"workflow comparison already exists; refusing overwrite: {path}") from exc
+        directory_fd = os.open(path.parent, os.O_RDONLY)
+        try:
+            os.fsync(directory_fd)
+        finally:
+            os.close(directory_fd)
+    finally:
+        if temporary_path is not None:
+            temporary_path.unlink(missing_ok=True)
 
 
 def write_comparison_if_ready(seq: dict[str, Any], study_id: str, replicate_index: int, treatment_profile_id: str) -> dict[str, Any] | None:
@@ -2380,14 +3127,22 @@ def write_comparison_if_ready(seq: dict[str, Any], study_id: str, replicate_inde
         "interpretation": f"Single-run token screening observation only; do not treat one pair as a population estimate. Negative token deltas mean {treatment_profile_id} used fewer provider-reported tokens than the compatible retained baseline. Structured verifier and review outcomes are diagnostic and do not select the pair. Freshish tokens are fresh_input_tokens + output_tokens for a cache-adjusted secondary view.",
     }
     out = ROOT / "sources/evaluations/workflow-sessions" / f"{comparison['comparison_id']}.json"
-    out.parent.mkdir(parents=True, exist_ok=True)
-    if out.exists():
-        raise FileExistsError(f"workflow comparison already exists; refusing overwrite: {out}")
-    out.write_text(json.dumps(comparison, indent=2) + "\n")
+    atomic_create_json(out, comparison)
     return comparison
 
 
 def run_one(args: argparse.Namespace) -> dict[str, Any]:
+    """Serialize every direct provider run from slot check through publication."""
+    if args.prepare_only:
+        return _run_one_locked(args)
+    lock_fd = acquire_provider_production_lock()
+    try:
+        return _run_one_locked(args)
+    finally:
+        os.close(lock_fd)
+
+
+def _run_one_locked(args: argparse.Namespace) -> dict[str, Any]:
     validate_default_model_condition()
     validate_run_safety_args(args)
     seq = load_sequence(args.sequence_id)
@@ -2398,10 +3153,17 @@ def run_one(args: argparse.Namespace) -> dict[str, Any]:
     profile_id = args.profile_id
     if profile_id not in PROFILE_META:
         raise ValueError(f"No runner metadata for profile {profile_id}")
+    if profile_id != "baseline-bare-codex":
+        require_baseline_v2_treatment_gate(seq, ROOT)
     validate_protocol_for_run(seq, profile_id, args)
+    comparison_baseline_session_id = ""
     if not args.prepare_only:
         registry = json.loads((ROOT / "data/workflow-sessions.json").read_text())
         assert_pool_slot_available(registry, seq, profile_id, args.replicate_index)
+        if profile_id != "baseline-bare-codex":
+            comparison_baseline_session_id = require_reusable_treatment_baseline(
+                registry, seq, args.replicate_index, ROOT
+            )["session_id"]
     project_id = PROJECT_META[seq["fixture_id"]]["project_id"]
     protocol_fingerprint = baseline_protocol_fingerprint(seq)
     protocol_path = args.protocol_path
@@ -2553,7 +3315,8 @@ def run_one(args: argparse.Namespace) -> dict[str, Any]:
         )
         events_path = run_dir / f"task-{order:02d}-codex-events.jsonl"
         last_message_path = model_output_dir / f"task-{order:02d}-codex-last-message.txt"
-        code, thread_id = run_codex_task(record, profile_id, codex_home, run_dir, runtime_docker_image, prompt_path, events_path, last_message_path, timeout=args.timeout_per_task, thread_id=thread_id)
+        requested_thread_id = thread_id
+        code, thread_id, continuity_error = run_codex_task(record, profile_id, codex_home, run_dir, runtime_docker_image, prompt_path, events_path, last_message_path, timeout=args.timeout_per_task, thread_id=requested_thread_id)
         codex_exit_codes.append(code)
         redact_auth_sync(run_dir)
         cfg = fixture.active_tool_config(record, profile_id)
@@ -2561,7 +3324,18 @@ def run_one(args: argparse.Namespace) -> dict[str, Any]:
         capture_task_delta(project / "repo", run_dir, order, excluded_paths)
         integrity = {"stage": f"after-task-{order:02d}", **check_verifier_integrity(expected_verifier_hashes)}
         verifier_integrity_checks.append(integrity)
-        if thread_id is None:
+        if continuity_error is not None:
+            continuity_error = {
+                "order": order,
+                "task_id": task["id"],
+                "requested_thread_id": requested_thread_id,
+                **continuity_error,
+            }
+            thread_continuity_errors.append(continuity_error)
+            (run_dir / f"task-{order:02d}-thread-continuity-error.txt").write_text(
+                json.dumps(continuity_error, indent=2) + "\n"
+            )
+        elif thread_id is None:
             message = f"Codex task {order} exited {code} but no thread_id was captured; refusing to continue because workflow continuity is unproven."
             thread_continuity_errors.append({"order": order, "task_id": task["id"], "message": message})
             (run_dir / f"task-{order:02d}-thread-continuity-error.txt").write_text(message + "\n")
@@ -2572,6 +3346,8 @@ def run_one(args: argparse.Namespace) -> dict[str, Any]:
             "order": order,
             "agent_attempted": True,
             "codex_exit_code": code,
+            "thread_continuity_passed": continuity_error is None and thread_id is not None,
+            "thread_id": thread_id,
             "controller_verification": "deferred-to-final",
             "accepted": None,
             "task_delta": rel(run_dir / f"task-{order:02d}-agent.diff"),
@@ -2640,6 +3416,11 @@ def run_one(args: argparse.Namespace) -> dict[str, Any]:
         "codex_thread_id": thread_id,
         "task_prompt_evidence": rel(run_dir / "evidence.jsonl.gz"),
     }
+    acceptance_visibility_limit = (
+        "Future regression code and declared focused acceptance tests are present from lane start; future prompts, seed patches, and controller verifier scripts remain controller-only."
+        if seq.get("task_family_generation") == "baseline-v2"
+        else "Future regression code is present from lane start, while future prompts and concealed acceptance assets remain controller-only."
+    )
     leakage_controls = {
         "seed_origin_concealed": not args.no_conceal_seed_origin,
         "seed_patches_model_visible": False,
@@ -2648,7 +3429,8 @@ def run_one(args: argparse.Namespace) -> dict[str, Any]:
         "pre_seed_reflog_entries_visible": False,
         "concealment_verification_passed": concealment_verified,
         "task_directories_model_visible": False,
-        "verifier_assets_model_visible": False,
+        "controller_verifier_scripts_and_canonical_copies_model_visible": False,
+        "model_visible_acceptance_asset_paths": sequence_model_visible_acceptance_paths(seq),
         "model_writable_surface": "target repository plus isolated model-output directory",
         "verifier_integrity_passed": verifier_integrity_passed,
         "verifier_integrity_evidence": f"{rel(run_dir / 'evidence.jsonl.gz')}#verifier-integrity.json",
@@ -2656,7 +3438,7 @@ def run_one(args: argparse.Namespace) -> dict[str, Any]:
         "upstream_remote_removed_from_model_facing_repo": not args.no_conceal_seed_origin,
         "broken_start_committed_as_local_baseline": not args.no_conceal_seed_origin,
         "remaining_limitations": [
-            "Future regression code is present from lane start, while future prompts and concealed acceptance assets remain controller-only.",
+            acceptance_visibility_limit,
             "Task semantics and verifier names may still be searchable if the model intentionally uses external network access.",
         ],
     }
@@ -2668,6 +3450,7 @@ def run_one(args: argparse.Namespace) -> dict[str, Any]:
         "frozen_protocol": frozen_protocol,
         "baseline_pool": baseline_pool,
         "selected_execution": selected_execution,
+        "agent_condition": selected_descriptor.get("agent_condition"),
         "docker_image_identity": selected_descriptor.get("runtime", {}).get("docker_image_identity"),
         "tool_adapter_identity": selected_descriptor.get("tool_adapter") if profile_id != "baseline-bare-codex" else None,
         "profile_id": profile_id,
@@ -2688,7 +3471,10 @@ def run_one(args: argparse.Namespace) -> dict[str, Any]:
         "accepted": accepted,
         "timeout_seconds": args.timeout_per_task * len(ordered_tasks),
         "codex_version": codex_version,
-        "token_usage": {k: usage.get(k) for k in ["fresh_input_tokens", "cached_input_tokens", "cache_write_tokens", "output_tokens", "reasoning_tokens", "total_provider_tokens"]},
+        "token_usage": {
+            "measurement_source": "codex-jsonl-usage-events",
+            **{key: usage.get(key) for key in PILOT_PROVIDER_USAGE_FIELDS},
+        },
         "usage_warnings": usage.get("warnings"),
         "per_task_results": task_checkpoints,
         "prompt_delivery": prompt_delivery,
@@ -2696,12 +3482,6 @@ def run_one(args: argparse.Namespace) -> dict[str, Any]:
         "artifacts": compact_artifacts(run_dir),
         "run_dir": rel(run_dir),
     }
-    comparison_baseline_session_id = ""
-    if profile_id != "baseline-bare-codex":
-        registry = json.loads((ROOT / "data/workflow-sessions.json").read_text())
-        baseline_record = find_canonical_baseline_record(registry, seq, args.replicate_index)
-        if baseline_record:
-            comparison_baseline_session_id = baseline_record["session_id"]
     session_record = workflow_session_record(
         seq,
         summary,

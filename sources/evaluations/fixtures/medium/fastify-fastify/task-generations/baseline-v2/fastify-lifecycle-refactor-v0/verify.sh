@@ -2,42 +2,23 @@
 set -euo pipefail
 TASK_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PROJECT_DIR="$(cd "$TASK_DIR/../.." && pwd)"
-repo="${WORKFLOW_REPO:-$PROJECT_DIR/repo}"
+cd "${WORKFLOW_REPO:-$PROJECT_DIR/repo}"
+test_path=test/baseline-v2-content-type-cache.test.js
+canonical="$TASK_DIR/controller-visible/$test_path"
+created=0
+if [[ -f "$test_path" ]]; then
+  cmp -s "$canonical" "$test_path" || { printf 'model-visible acceptance test differs from canonical bytes: %s\n' "$test_path" >&2; exit 1; }
+else
+  [[ "${WORKFLOW_QUALIFICATION_CANONICAL_MATERIALIZATION:-0}" == 1 ]] || { printf 'model-visible acceptance test is missing: %s\n' "$test_path" >&2; exit 1; }
+  mkdir -p "$(dirname "$test_path")"
+  cp "$canonical" "$test_path"
+  created=1
+fi
+trap 'if [[ $created == 1 ]]; then rm -f "$test_path"; fi' EXIT
 mode="${1:-all}"
-behavior() {
-  (cd "$repo" && node <<'NODE'
-const assert = require('node:assert/strict')
-const Fastify = require('./fastify')
-const ContentType = require('./lib/content-type')
-;(async () => {
-  const parsed = ContentType.from('Application/JSON; Charset=UTF-8; boundary="abc"')
-  assert.equal(parsed.mediaType, 'application/json')
-  assert.equal(parsed.parameters.get('charset'), 'UTF-8')
-  assert.equal(parsed.parameters.get('boundary'), 'abc')
-  const serialized = parsed.toString()
-  assert.equal(ContentType.from(serialized).toString(), serialized)
-  const app = Fastify({ logger: false })
-  app.post('/echo', async request => ({ mediaType: request.mediaType, body: request.body }))
-  const response = await app.inject({ method: 'POST', url: '/echo', headers: { 'content-type': 'Application/JSON; Charset=UTF-8' }, payload: JSON.stringify({ ok: true }) })
-  assert.equal(response.statusCode, 200)
-  assert.deepEqual(JSON.parse(response.payload), { mediaType: 'application/json', body: { ok: true } })
-})().catch(error => { console.error(error); process.exitCode = 1 })
-NODE
-  )
-}
-structure() {
-  (cd "$repo" && node <<'NODE'
-const assert = require('node:assert/strict')
-const ContentType = require('./lib/content-type')
-const raw = 'Application/JSON; Charset=UTF-8'
-assert.ok(ContentType.cache, 'ContentType must expose the shared bounded cache')
-assert.strictEqual(ContentType.from(raw), ContentType.from(raw), 'identical raw values must reuse one parsed representation')
-NODE
-  )
-}
 case "$mode" in
-  behavior) behavior ;;
-  structure) structure ;;
-  all) behavior; structure ;;
+  behavior) node --test --test-name-pattern='behavior is preserved' "$test_path" ;;
+  structure) node --test --test-name-pattern='uses one shared bounded cache' "$test_path" ;;
+  all) node --test "$test_path" ;;
   *) echo "usage: verify.sh [behavior|structure|all]" >&2; exit 2 ;;
 esac

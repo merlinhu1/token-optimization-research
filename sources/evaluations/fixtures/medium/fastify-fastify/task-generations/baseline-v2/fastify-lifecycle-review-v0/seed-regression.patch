@@ -27,3 +27,60 @@ index 24abe8a3c2b64c329f9adfd3233330e14f1979e1..1aea926426008512c3f697fc1395dc45
      URIError
    ),
    FST_ERR_ASYNC_CONSTRAINT: createError(
+diff --git a/test/baseline-v2-max-param.test.js b/test/baseline-v2-max-param.test.js
+new file mode 100644
+index 0000000000000000000000000000000000000000..988f6aff8a27802863fcb3443e4529b6a9a3bffd
+--- /dev/null
++++ b/test/baseline-v2-max-param.test.js
+@@ -0,0 +1,51 @@
++'use strict'
++
++const { test } = require('node:test')
++const assert = require('node:assert/strict')
++const Fastify = require('../fastify')
++
++test('Baseline V2 max parameter length returns HTTP 414 through default and custom handlers', async () => {
++  const seen = []
++  const app = Fastify({
++    logger: false,
++    maxParamLength: 2,
++    frameworkErrors (error, request, reply) {
++      seen.push({ code: error.code, url: request.url })
++      reply.code(error.statusCode || 500).send({ code: error.code, message: error.message })
++    }
++  })
++  app.get('/:id', async request => ({ id: request.params.id }))
++  app.register(async child => {
++    child.setNotFoundHandler((request, reply) => {
++      reply.code(499).send({ child: true, url: request.url })
++    })
++    child.get('/:id', async request => ({ child: request.params.id }))
++  }, { prefix: '/c' })
++
++  const ok = await app.inject('/ab')
++  assert.equal(ok.statusCode, 200)
++  assert.deepEqual(JSON.parse(ok.payload), { id: 'ab' })
++
++  const tooLong = await app.inject('/abc')
++  assert.equal(tooLong.statusCode, 414)
++  assert.equal(JSON.parse(tooLong.payload).code, 'FST_ERR_MAX_PARAM_LENGTH')
++  assert.deepEqual(seen, [{ code: 'FST_ERR_MAX_PARAM_LENGTH', url: '/abc' }])
++
++  const defaultApp = Fastify({ logger: false, maxParamLength: 2 })
++  defaultApp.get('/:id', async request => ({ id: request.params.id }))
++  const defaultTooLong = await defaultApp.inject('/abc')
++  assert.equal(defaultTooLong.statusCode, 414)
++  assert.equal(JSON.parse(defaultTooLong.payload).code, 'FST_ERR_MAX_PARAM_LENGTH')
++
++  const childOk = await app.inject('/c/ab')
++  assert.equal(childOk.statusCode, 200)
++  assert.deepEqual(JSON.parse(childOk.payload), { child: 'ab' })
++
++  const childTooLong = await app.inject('/c/abc')
++  assert.equal(childTooLong.statusCode, 414)
++  assert.equal(JSON.parse(childTooLong.payload).code, 'FST_ERR_MAX_PARAM_LENGTH')
++
++  const customNotFound = await app.inject('/c/no/xx')
++  assert.equal(customNotFound.statusCode, 499)
++  assert.deepEqual(JSON.parse(customNotFound.payload), { child: true, url: '/c/no/xx' })
++})
