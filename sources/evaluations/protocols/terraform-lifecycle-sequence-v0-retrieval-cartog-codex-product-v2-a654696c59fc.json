@@ -1,18 +1,18 @@
 {
   "protocol_schema_version": 3,
-  "protocol_id": "terraform-lifecycle-sequence-v0-retrieval-cartog-mcp-v1-8da881d12950",
+  "protocol_id": "terraform-lifecycle-sequence-v0-retrieval-cartog-codex-product-v2-a654696c59fc",
   "status": "frozen-ready-not-run",
-  "outcome": "Frozen retrieval-cartog-mcp-v1 protocol for terraform-lifecycle-sequence-v0; no provider/model run has occurred.",
+  "outcome": "Frozen retrieval-cartog-codex-product-v2 protocol for terraform-lifecycle-sequence-v0; no provider/model run has occurred.",
   "frozen_at": "2026-07-16",
-  "hypothesis": "retrieval-cartog-mcp-v1 produces reproducible provider-reported token and software-quality evidence for terraform-lifecycle-sequence-v0",
+  "hypothesis": "retrieval-cartog-codex-product-v2 produces reproducible provider-reported token and software-quality evidence for terraform-lifecycle-sequence-v0",
   "evidence_stage_target": "reproduction",
   "task_fixture": {
     "fixture_id": "large-hashicorp-terraform",
     "sequence_id": "terraform-lifecycle-sequence-v0",
     "repository": "https://github.com/hashicorp/terraform.git",
     "snapshot": "e02391ad384c9c38f1d7f40b853c0d2297348094",
-    "qualification_path": "sources/evaluations/fixtures/large/hashicorp-terraform/qualification-lifecycle-v0.json",
-    "qualification_sha256": "e27ca0efb487c3200232fad0facfc8b3e718d7e0e8ac87a29bc8f9d7cfd29baf",
+    "qualification_path": "sources/evaluations/fixtures/large/hashicorp-terraform/qualification-lifecycle-v0-assisted-v1.json",
+    "qualification_sha256": "1bde1356e8b08954ff0542e98813d4c5366ec16184069a19e752a767482871b7",
     "timeout_seconds_per_task": 3600
   },
   "baseline": {
@@ -24,12 +24,12 @@
     "command": ""
   },
   "treatment": {
-    "profile_id": "retrieval-cartog-mcp-v1",
+    "profile_id": "retrieval-cartog-codex-product-v2",
     "provider": "openai",
     "model": "gpt-5.6-luna",
     "model_condition_id": "codex-openai-gpt-5-6-luna-xhigh",
     "reasoning_effort": "xhigh",
-    "command": "python3 scripts/run_codex_workflow_evaluation.py --sequence-id terraform-lifecycle-sequence-v0 --profile-id retrieval-cartog-mcp-v1 --timeout-per-task 3600 --protocol sources/evaluations/protocols/terraform-lifecycle-sequence-v0-retrieval-cartog-mcp-v1-8da881d12950.json --docker-image token-eval-codex:latest"
+    "command": "python3 scripts/run_codex_workflow_evaluation.py --sequence-id terraform-lifecycle-sequence-v0 --profile-id retrieval-cartog-codex-product-v2 --timeout-per-task 3600 --protocol sources/evaluations/protocols/terraform-lifecycle-sequence-v0-retrieval-cartog-codex-product-v2-a654696c59fc.json --docker-image token-eval-codex:latest"
   },
   "token_accounting_boundary": {
     "fields": [
@@ -43,13 +43,13 @@
   },
   "baseline_pool": {
     "protocol_version": "baseline-pool-v1",
-    "protocol_fingerprint": "ded8609b4172",
+    "protocol_fingerprint": "948b9b182e3f",
     "descriptor": {
       "version": "baseline-pool-v1",
       "runner_contract_version": "workflow-runner-v9",
-      "runner_sha256": "446292bdc9bda15babcf723621c70538df243b74e950028b0804c3f30aa17c53",
+      "runner_sha256": "6e2c6f1bb6803cdbd1862b7868fca4a62f10aa384b7b313e7027ca98d5d6fc7d",
       "qualification_generator_sha256": "cb549c9aacc1e1401dedff37b08e0d578aa91d491556dfd5e3814d52a567efe8",
-      "validator_sha256": "48fd29d25354ec4e0dae9c8f0e0f974105b67dfc737a64d50c4b06175362292e",
+      "validator_sha256": "fb9d4b83d60999caf36d63bdc4c692af20941fac312271508e8856ab80e784e2",
       "sequence_id": "terraform-lifecycle-sequence-v0",
       "sequence_contract": "feature-refactor-review",
       "fixture_id": "large-hashicorp-terraform",
@@ -67,7 +67,7 @@
           "order": 1,
           "task_class": "feature-implementation",
           "prompt_path": "sources/evaluations/fixtures/large/hashicorp-terraform/tasks/terraform-lifecycle-feature-v0/agent-prompt.txt",
-          "prompt_sha256": "16218607081ad81aa37126cae6524bd2e0d1a4678b3bfa14338789fa22efd346",
+          "prompt_sha256": "cc968292758ba15bc7e747027553b713353272b5dfe50de5d184622695540b58",
           "seed_patch_sha256": "4743dd5ca0b107349c7e8520f57f2331a1b20d0c407fa322b451ea1f72f88f98",
           "verifier_command": "sources/evaluations/fixtures/large/hashicorp-terraform/tasks/terraform-lifecycle-feature-v0/verify.sh",
           "verifier_sha256": "a40e9a67054ea272eb6d9998f92e5e1987d2f74fad8a91ed791923427a44a95b",
@@ -87,7 +87,7 @@
           "order": 2,
           "task_class": "behavior-preserving-refactor",
           "prompt_path": "sources/evaluations/fixtures/large/hashicorp-terraform/tasks/terraform-lifecycle-refactor-v0/agent-prompt.txt",
-          "prompt_sha256": "e8cc801f917b737105f51e5b2e4a9ca87961ca29275e5d0bb5427c667613a441",
+          "prompt_sha256": "95a0effbf251e85826ec7b93d208a8eb7095285e4b7b884a25d1a713d6d34209",
           "seed_patch_sha256": "5124289095935ba7ad376c557b2d349b6b5e97864813a0f82f6672be357203fa",
           "verifier_command": "sources/evaluations/fixtures/large/hashicorp-terraform/tasks/terraform-lifecycle-refactor-v0/verify.sh",
           "verifier_sha256": "4c388b6781d48d71afa168fc71c1f8fdf80f464632dde49d4c70fda84e551ac7",
@@ -101,7 +101,7 @@
           "order": 3,
           "task_class": "code-review-correction",
           "prompt_path": "sources/evaluations/fixtures/large/hashicorp-terraform/tasks/terraform-lifecycle-review-v0/agent-prompt.txt",
-          "prompt_sha256": "1e85870d818d95ea07fefdd71443b67df2fc5c5e4e43fbc1beef14039fe9f339",
+          "prompt_sha256": "d94c479d65097a548f905600940fb12af6c917bbdbcebcf00461f5db4d1c4bb9",
           "seed_patch_sha256": "d63ea99bcb6025d6def80e6dc252ed6dc11f3a4a51af291423bfdc4ddddde776",
           "verifier_command": "sources/evaluations/fixtures/large/hashicorp-terraform/tasks/terraform-lifecycle-review-v0/verify.sh",
           "verifier_sha256": "2f4d1117aba75b24a9faf6769a317f62da9698f1a5dd43bd8414399969242b51",
@@ -130,23 +130,23 @@
           {
             "task_id": "terraform-lifecycle-feature-v0",
             "order": 1,
-            "rendered_prompt_sha256": "f62f320d52a2dd5772c3335f76cb8526d110c294fe08a64e01289d9f6d364bfa"
+            "rendered_prompt_sha256": "bcdeb618e56f8fc07820f0a7b39a93eecd2940c2359da21dd36ec4ea6cc84be5"
           },
           {
             "task_id": "terraform-lifecycle-refactor-v0",
             "order": 2,
-            "rendered_prompt_sha256": "03c5f1278ec60898809f305121a8f121a3d203b1e07aeae982bef888faaddbda"
+            "rendered_prompt_sha256": "fc51c075559c02db8e874aae55d061b854c1d4bf5247e5db49066c16a64385dc"
           },
           {
             "task_id": "terraform-lifecycle-review-v0",
             "order": 3,
-            "rendered_prompt_sha256": "d6f5dea173dfd749ca1646b9fa87f0f2dbaa5bcb2409937395ca1ff50fcfad91"
+            "rendered_prompt_sha256": "fe1ed26c6fd62f58f060aa112ec834286a8f4cb7f913818b15d50772f1607147"
           }
         ]
       },
       "qualification": {
-        "path": "sources/evaluations/fixtures/large/hashicorp-terraform/qualification-lifecycle-v0.json",
-        "sha256": "e27ca0efb487c3200232fad0facfc8b3e718d7e0e8ac87a29bc8f9d7cfd29baf"
+        "path": "sources/evaluations/fixtures/large/hashicorp-terraform/qualification-lifecycle-v0-assisted-v1.json",
+        "sha256": "1bde1356e8b08954ff0542e98813d4c5366ec16184069a19e752a767482871b7"
       },
       "baseline_profile": {
         "profile_id": "baseline-bare-codex",
@@ -208,57 +208,64 @@
     }
   },
   "selected_execution": {
-    "descriptor_sha256": "7a3d071159558def2bad9b6ee73db95dccf39dcfa853c68d2c23d596fbbd4701",
+    "descriptor_sha256": "50eae1eacbe509c2be12841ef184622f46dc8241ac89e88dbfb02139e8587469",
     "descriptor": {
       "version": "execution-condition-v1",
       "sequence_id": "terraform-lifecycle-sequence-v0",
       "execution_role": "individual_tool_treatment",
       "selected_profile": {
-        "profile_id": "retrieval-cartog-mcp-v1",
+        "profile_id": "retrieval-cartog-codex-product-v2",
         "profile_type": "individual_tool",
         "component_ids": [
-          "retrieval-cartog-mcp-v1"
+          "retrieval-cartog-codex-product-v2"
         ],
         "enabled_surfaces": [
           "retrieval-context",
-          "mcp"
+          "mcp",
+          "codex-project-instructions",
+          "model-runtime-cli",
+          "live-index-watch"
         ],
         "disabled_overlaps": [
           "all unlisted surfaces"
         ],
-        "registry_entry_sha256": "660742ae9dea712eb7df0139504e747aaae206f3f8a04807e82b953bf505ffcb",
+        "registry_entry_sha256": "0f605722554be93b9c3a041a2310a1bc93fa82780aa0f4a7bc11e5cbce096e03",
         "registry_entry": {
-          "id": "retrieval-cartog-mcp-v1",
+          "id": "retrieval-cartog-codex-product-v2",
           "profile_type": "individual_tool",
           "objective_scope": "individual_tool_effectiveness",
           "status": "screening-shortlist",
           "enabled_surfaces": [
             "retrieval-context",
-            "mcp"
+            "mcp",
+            "codex-project-instructions",
+            "model-runtime-cli",
+            "live-index-watch"
           ],
           "disabled_overlaps": [
             "all unlisted surfaces"
           ],
           "components": [
             {
-              "component_id": "retrieval-cartog-mcp-v1",
-              "surface": "retrieval-context+mcp",
+              "component_id": "retrieval-cartog-codex-product-v2",
+              "surface": "retrieval-context+mcp+codex-agents+model-runtime-cli+live-watch",
               "role": "individual_tool"
             }
           ],
           "install": {
-            "policy": "Cartog official serve/index contract with retained MCP handshake proof."
+            "policy": "Run the pinned Cartog official Codex installer (`cartog ide --client codex --yes`), preserve the product-authored AGENTS routing snippet verbatim, expose the pinned binary on the model-runtime PATH, initialize the project, build the structural index, and serve with live watch."
           },
           "reset": {
-            "policy": "Delete lane-private CODEX_HOME, product state, generated repository treatment files, and background processes after evidence capture."
+            "policy": "Delete lane-private CODEX_HOME, PATH shim, project AGENTS managed block, .cartog.toml, .cartog index state, and watcher processes after evidence capture."
           },
           "evaluation_protocol": {
-            "tool_use_policy": "natural",
-            "tool_state": "warm-index",
-            "integration_state": "official-direct-serve-mcp",
-            "assignment_proof": "provider-free initialize plus tools/list handshake required"
+            "tool_use_policy": "natural-after-product-authored-guidance",
+            "tool_state": "warm-structural-index",
+            "integration_state": "official-codex-ide+product-authored-agents-guidance+model-runtime-cli+live-watch",
+            "assignment_proof": "official installer receipt, guidance hash, model-runtime executable probe, initialize plus tools/list handshake, and index/watcher preparation required",
+            "rag_scope": "structural graph plus FTS5; optional local vector/reranker tier is not prepared"
           },
-          "notes": "Versioned replacement for deleted historical results whose treatment assignment was not operationally proven."
+          "notes": "Versioned guide-faithful successor to deleted retrieval-cartog-mcp-v1. Product-authored routing is treatment configuration, not evaluator-authored steering."
         }
       },
       "model_facing_prompts": {
@@ -268,107 +275,151 @@
           {
             "task_id": "terraform-lifecycle-feature-v0",
             "order": 1,
-            "rendered_prompt_sha256": "e61f4623dd5e311cf6d1bff9080e853aa39b84489e2ce754f97ddc92fe7aa8be"
+            "rendered_prompt_sha256": "cc5ad3302162b7730aa41b1aaeb68de25f11b047ddfb6c6e9091ce9ee2261e39"
           },
           {
             "task_id": "terraform-lifecycle-refactor-v0",
             "order": 2,
-            "rendered_prompt_sha256": "03c5f1278ec60898809f305121a8f121a3d203b1e07aeae982bef888faaddbda"
+            "rendered_prompt_sha256": "fc51c075559c02db8e874aae55d061b854c1d4bf5247e5db49066c16a64385dc"
           },
           {
             "task_id": "terraform-lifecycle-review-v0",
             "order": 3,
-            "rendered_prompt_sha256": "d6f5dea173dfd749ca1646b9fa87f0f2dbaa5bcb2409937395ca1ff50fcfad91"
+            "rendered_prompt_sha256": "fe1ed26c6fd62f58f060aa112ec834286a8f4cb7f913818b15d50772f1607147"
           }
         ]
       },
       "tool_adapter": {
-        "tool_id": "cartog-mcp-v1",
+        "tool_id": "cartog-codex-product-v2",
         "tool_manifest": "scripts/run_codex_fixture_evaluation.py:TOOL_CONFIGS",
         "tool_manifest_sha256": "6fa8271b89a577706ea0bbffcc8e4521831f41b646ed9519369efee3642fe41c",
         "tool_config": {
-          "display_name": "Cartog handshake-gated Codex MCP v1",
-          "lane_name": "retrieval-cartog-mcp-v1",
-          "surface": "retrieval/context",
+          "display_name": "Cartog product-guided Codex integration v2",
+          "lane_name": "retrieval-cartog-codex-product-v2",
+          "surface": "retrieval/context+mcp-live-watch+model-runtime-cli+product-authored-agents-guidance",
           "mcp_server": "cartog",
+          "mcp_config_via_host_integration": true,
           "allowed_terms": [
             "cartog"
           ],
-          "data_dir_name": "cartog",
-          "mcp_command": "/bin/bash",
+          "data_dir_name": "cartog-codex-product-v2",
+          "mcp_command": "{tool_data_dir}/bin/cartog",
           "mcp_args": [
-            "-lc",
-            "cd {repo} && exec /opt/data/tool-candidates/cartog/target/release/cartog serve"
+            "serve",
+            "--watch"
+          ],
+          "path_entries": [
+            "{tool_data_dir}/bin"
           ],
           "env": {
-            "CARTOG_AUTO_INIT": "1",
-            "CARTOG_MCP_COMPACT": "1"
+            "CARTOG_MCP_COMPACT": "1",
+            "CARTOG_NO_UPDATE_CHECK": "1"
           },
           "mounts": [
-            "/opt/data/tool-candidates/cartog"
+            "/opt/data/tool-candidates/cartog",
+            "{repository_root}/scripts/install_cartog_codex_product.py"
           ],
           "diff_exclude_paths": [
-            ".cartog"
+            ".cartog",
+            ".cartog.toml",
+            "AGENTS.md"
           ],
+          "host_integration": {
+            "home_dot_codex_alias": true,
+            "controller_install_commands": [
+              [
+                "python3",
+                "{repository_root}/scripts/install_cartog_codex_product.py",
+                "--source-root",
+                "/opt/data/tool-candidates/cartog",
+                "--expected-commit",
+                "890d15b66b523841290a63e431a31b6f6438fc4b",
+                "--repo",
+                "{repo}",
+                "--binary-source",
+                "/opt/data/tool-candidates/cartog/target/release/cartog",
+                "--binary-destination",
+                "{tool_data_dir}/bin/cartog",
+                "--receipt",
+                "{tool_data_dir}/cartog-codex-product-installation.json"
+              ]
+            ],
+            "install_commands": [
+              [
+                "{tool_data_dir}/bin/cartog",
+                "ide",
+                "--client",
+                "codex",
+                "--yes"
+              ]
+            ],
+            "verify_commands": [
+              [
+                "python3",
+                "-c",
+                "from pathlib import Path; a=Path('AGENTS.md').read_text(); c=Path('{codex_home}/config.toml').read_text(); assert 'CARTOG_PRODUCT_GUIDANCE_BEGIN' in a; assert 'prefer cartog over grep' in a; assert 'args = [\\\"serve\\\", \\\"--watch\\\"]' in c"
+              ]
+            ],
+            "required_files": [
+              "{tool_data_dir}/bin/cartog",
+              "{tool_data_dir}/cartog-codex-product-installation.json",
+              "{repo}/AGENTS.md",
+              "{codex_home}/config.toml"
+            ],
+            "timeout_seconds": 300
+          },
           "preflight_command": [
-            "/opt/data/tool-candidates/cartog/target/release/cartog",
-            "--version"
+            "/bin/bash",
+            "-lc",
+            "command -v cartog && cartog --version"
           ],
-          "default_tool_state": "warm-index",
+          "mcp_handshake": {
+            "required": true,
+            "method": "initialize-and-tools-list",
+            "timeout_seconds": 60
+          },
+          "default_tool_state": "warm-structural-index+active-guidance+live-watch",
           "warmup": {
-            "kind": "code-graph-build",
+            "kind": "official-init-and-structural-index",
             "command": [
-              "/opt/data/tool-candidates/cartog/target/release/cartog",
-              "index",
-              "{repo}"
+              "/bin/bash",
+              "-lc",
+              "set -euo pipefail; cartog init; cartog index ."
             ],
             "cleanup_paths": [
-              ".cartog"
+              ".cartog",
+              ".cartog.toml"
             ],
             "output_name": "cartog-warmup-output.txt",
             "metadata_name": "cartog-warmup-metadata.json",
             "timeout_seconds": 1200
           },
-          "mcp_handshake": {
-            "required": true,
-            "method": "initialize-and-tools-list",
-            "timeout_seconds": 60
-          }
+          "canonical_scope": "The product-authored Codex MCP installer, live watcher, model-runtime CLI, and documented AGENTS routing snippet are active. The optional local vector/reranker tier is not prepared; documented structural and FTS5 retrieval remain available."
         },
-        "tool_config_sha256": "87693f73d806ebd8af557ef880b65c146053603a2a7067da368fd8f88fe37800",
-        "tool_state": "warm-index",
-        "tool_use_policy": "natural",
+        "tool_config_sha256": "a1f650f2e6e169334d4fd87f2432b6a86dcaa15c835a569000cd73dccbaba470",
+        "tool_state": "warm-structural-index",
+        "tool_use_policy": "natural-after-product-authored-guidance",
         "command_identity": {
           "kind": "mcp_command",
           "command": [
-            "/bin/bash",
-            "-lc",
-            "cd {repo} && exec /opt/data/tool-candidates/cartog/target/release/cartog serve"
+            "{tool_data_dir}/bin/cartog",
+            "serve",
+            "--watch"
           ]
         },
         "binary_identity": {
-          "executable_token": "/bin/bash",
-          "resolved_path": "/bin/bash",
-          "realpath": "/usr/bin/bash",
-          "sha256": "223fe8564b60636bc738b6178d3ba9a50ef7d791266b0efae6363bb716e4c47f",
-          "metadata": {
-            "size": 1298416,
-            "mode": "-rwxr-xr-x",
-            "uid": 0,
-            "gid": 0,
-            "mtime_ns": 1772983313000000000
-          },
-          "version": {
-            "command": [
-              "/usr/bin/bash",
-              "--version"
-            ],
-            "environment_path": "/opt/data/.local/bin:/opt/data/opt/go/bin:/opt/data/opt/uv:/opt/data/opt/node-v24.18.0-linux-x64/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
-            "captured": true,
-            "exit_code": 0,
-            "output": "GNU bash, version 5.2.37(1)-release (x86_64-pc-linux-gnu)\nCopyright (C) 2022 Free Software Foundation, Inc.\nLicense GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>\n\nThis is free software; you are free to change and redistribute it.\nThere is NO WARRANTY, to the extent permitted by law.",
-            "truncated": false
-          }
+          "kind": "generated-by-host-integration",
+          "command_template": "{tool_data_dir}/bin/cartog",
+          "install_commands": [
+            [
+              "{tool_data_dir}/bin/cartog",
+              "ide",
+              "--client",
+              "codex",
+              "--yes"
+            ]
+          ],
+          "install_contract_sha256": "115b185c81abd08407c3914a94102769431992f51de02aaf905936fdc7830eab"
         },
         "source_identity": [
           {
@@ -376,6 +427,12 @@
             "exists": true,
             "kind": "directory",
             "git_head": "890d15b66b523841290a63e431a31b6f6438fc4b"
+          },
+          {
+            "path": "{repository_root}/scripts/install_cartog_codex_product.py",
+            "exists": true,
+            "kind": "file",
+            "sha256": "4087a3ad841c58adba4e8954a7fe6b3cb88655285a72149b885799b087b8aced"
           }
         ]
       },
@@ -437,7 +494,7 @@
       },
       "baseline_pool_reference": {
         "protocol_version": "baseline-pool-v1",
-        "protocol_fingerprint": "ded8609b4172",
+        "protocol_fingerprint": "948b9b182e3f",
         "comparison_policy": "paired baseline and treatment must share this baseline pool fingerprint and replicate"
       }
     }

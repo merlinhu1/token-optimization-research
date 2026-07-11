@@ -1,22 +1,22 @@
 {
   "schema_version": "phase-2-corrected-analysis/v1",
-  "generated_at": "2026-07-20T06:51:16.453053+00:00",
+  "generated_at": "2026-07-20T22:37:37Z",
   "evidence_stage": "reproduction-screen",
   "primary_metric": "provider-reported tokens using final cumulative total per thread",
   "reasoning_tokens_are_subset_not_additive": true,
   "sources": {
     "workflow_sessions": {
       "path": "data/workflow-sessions.json",
-      "sha256": "8790e6f86c61029a31b711e1204be4bc40e22df477b4aa772ae46198c203a6e2"
+      "sha256": "af82ff9bfb1e9a308f4458e82ff188c6512bc6c396f5d392c4554b38063c35bf"
     },
     "cumulative_usage_audit": {
       "path": "sources/evaluations/audits/codex-cumulative-usage-accounting-20260718.json",
-      "sha256": "7b4064720a899a5f861864626e13049ac16d6374fdbad04aba40ced9b7b65d8a"
+      "sha256": "dc254436651d6bb98a9efeb311d3b8c6f155e6acbb6d603f891de085f1f5aa83"
     }
   },
   "integrity": {
     "accepted_baseline_sessions": 18,
-    "accepted_treatment_sessions": 51,
+    "accepted_treatment_sessions": 48,
     "all_cited_manifests_verified": true,
     "invalid_or_deleted_treatments_excluded": true
   },
@@ -1454,116 +1454,6 @@
       ]
     },
     {
-      "profile_id": "retrieval-cartog-mcp-v1",
-      "display_name": "Cartog",
-      "mechanism_family": "retrieval MCP",
-      "model_condition_id": "codex-openai-gpt-5-6-luna-xhigh",
-      "replicate_index": 2,
-      "session_count": 3,
-      "treatment_corrected_usage": {
-        "fresh_input_tokens": 817420,
-        "cached_input_tokens": 30142976,
-        "output_tokens": 160010,
-        "reasoning_tokens": 76376,
-        "total_provider_tokens": 31120406
-      },
-      "matched_baseline_corrected_usage": {
-        "fresh_input_tokens": 974380,
-        "cached_input_tokens": 30313472,
-        "output_tokens": 145894,
-        "reasoning_tokens": 66898,
-        "total_provider_tokens": 31433746
-      },
-      "delta_total_provider_tokens": -313340,
-      "delta_percent": -0.996827,
-      "tasks_passed": 9,
-      "tasks_attempted": 9,
-      "all_manifests_verified": true,
-      "lanes": [
-        {
-          "sequence_id": "beets-lifecycle-sequence-v0",
-          "treatment_session_id": "cartog-beets-20260719-p-b440da225a3a-r2",
-          "baseline_session_id": "baseline-beets-20260718-p-b440da225a3a-r2",
-          "treatment_corrected_usage": {
-            "fresh_input_tokens": 223299,
-            "cached_input_tokens": 8771072,
-            "cache_write_tokens": null,
-            "output_tokens": 52949,
-            "reasoning_tokens": 25800,
-            "total_provider_tokens": 9047320
-          },
-          "baseline_corrected_usage": {
-            "fresh_input_tokens": 231792,
-            "cached_input_tokens": 8943616,
-            "cache_write_tokens": null,
-            "output_tokens": 63038,
-            "reasoning_tokens": 28957,
-            "total_provider_tokens": 9238446
-          },
-          "delta_total_provider_tokens": -191126,
-          "delta_percent": -2.068811,
-          "tasks_passed": 3,
-          "tasks_attempted": 3,
-          "treatment_manifest_verified": true,
-          "baseline_manifest_verified": true
-        },
-        {
-          "sequence_id": "fastify-lifecycle-sequence-v0",
-          "treatment_session_id": "cartog-fastify-20260719-p-769d40697529-r2",
-          "baseline_session_id": "baseline-fastify-20260718-p-769d40697529-r2",
-          "treatment_corrected_usage": {
-            "fresh_input_tokens": 180940,
-            "cached_input_tokens": 5313024,
-            "cache_write_tokens": null,
-            "output_tokens": 37624,
-            "reasoning_tokens": 19588,
-            "total_provider_tokens": 5531588
-          },
-          "baseline_corrected_usage": {
-            "fresh_input_tokens": 273649,
-            "cached_input_tokens": 4318464,
-            "cache_write_tokens": null,
-            "output_tokens": 25010,
-            "reasoning_tokens": 10741,
-            "total_provider_tokens": 4617123
-          },
-          "delta_total_provider_tokens": 914465,
-          "delta_percent": 19.805948,
-          "tasks_passed": 3,
-          "tasks_attempted": 3,
-          "treatment_manifest_verified": true,
-          "baseline_manifest_verified": true
-        },
-        {
-          "sequence_id": "terraform-lifecycle-sequence-v0",
-          "treatment_session_id": "cartog-terraform-20260719-p-ded8609b4172-r2",
-          "baseline_session_id": "baseline-terraform-20260718-p-ded8609b4172-r2",
-          "treatment_corrected_usage": {
-            "fresh_input_tokens": 413181,
-            "cached_input_tokens": 16058880,
-            "cache_write_tokens": null,
-            "output_tokens": 69437,
-            "reasoning_tokens": 30988,
-            "total_provider_tokens": 16541498
-          },
-          "baseline_corrected_usage": {
-            "fresh_input_tokens": 468939,
-            "cached_input_tokens": 17051392,
-            "cache_write_tokens": null,
-            "output_tokens": 57846,
-            "reasoning_tokens": 27200,
-            "total_provider_tokens": 17578177
-          },
-          "delta_total_provider_tokens": -1036679,
-          "delta_percent": -5.897534,
-          "tasks_passed": 3,
-          "tasks_attempted": 3,
-          "treatment_manifest_verified": true,
-          "baseline_manifest_verified": true
-        }
-      ]
-    },
-    {
       "profile_id": "codescope-codex-product-v1",
       "display_name": "CodeScope",
       "mechanism_family": "retrieval product integration",
@@ -2254,23 +2144,23 @@
     }
   ],
   "descriptive_portfolios": {
-    "all_17_matched_assignments": {
-      "treatment_provider_tokens": 582180587,
-      "matched_baseline_provider_tokens": 541295326,
-      "delta_provider_tokens": 40885261,
-      "delta_percent": 7.553226,
-      "tasks_passed": 150,
-      "tasks_attempted": 153,
-      "profiles": 17
+    "all_16_matched_assignments": {
+      "treatment_provider_tokens": 551060181,
+      "matched_baseline_provider_tokens": 509861580,
+      "delta_provider_tokens": 41198601,
+      "delta_percent": 8.08035,
+      "tasks_passed": 141,
+      "tasks_attempted": 144,
+      "profiles": 16
     },
-    "r2_15_profile_panel": {
-      "treatment_provider_tokens": 508041799,
-      "matched_baseline_provider_tokens": 471506190,
-      "delta_provider_tokens": 36535609,
-      "delta_percent": 7.748702,
-      "tasks_passed": 134,
-      "tasks_attempted": 135,
-      "profiles": 15
+    "r2_14_profile_panel": {
+      "treatment_provider_tokens": 476921393,
+      "matched_baseline_provider_tokens": 440072444,
+      "delta_provider_tokens": 36848949,
+      "delta_percent": 8.373382,
+      "tasks_passed": 125,
+      "tasks_attempted": 126,
+      "profiles": 14
     },
     "r1_headroom_panel": {
       "treatment_provider_tokens": 74138788,
@@ -2288,6 +2178,7 @@
     "sources/evaluations/audits/unproven-treatment-result-deletions-20260718.json",
     "sources/evaluations/audits/invalid-codegraph-v1-result-deletion-20260719.json",
     "sources/evaluations/audits/invalid-jcodemunch-direct-v1-result-deletion-20260719.json",
-    "sources/evaluations/audits/invalid-ponytail-caveman-result-deletion-20260719.json"
+    "sources/evaluations/audits/invalid-ponytail-caveman-result-deletion-20260719.json",
+    "sources/evaluations/audits/invalid-cartog-result-deletions-20260720.json"
   ]
 }

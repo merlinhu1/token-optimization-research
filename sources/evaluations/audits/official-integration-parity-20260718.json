@@ -22,7 +22,8 @@
     "deletion_receipts": [
       "sources/evaluations/audits/invalid-treatment-result-deletions-20260718.json",
       "sources/evaluations/audits/unproven-treatment-result-deletions-20260718.json",
-      "sources/evaluations/audits/invalid-ponytail-caveman-result-deletion-20260719.json"
+      "sources/evaluations/audits/invalid-ponytail-caveman-result-deletion-20260719.json",
+      "sources/evaluations/audits/invalid-cartog-result-deletions-20260720.json"
     ],
     "corrected_individual_profiles": 14,
     "corrected_frozen_protocols": 42
@@ -526,8 +527,8 @@
         "standalone_mcp_handshake_receipts": 0,
         "completed_model_mcp_call_events": 0
       },
-      "correction": "Deleted corrupted treatment results and occupied protocols from the active corpus; rerun requires a versioned source-parity and assignment-proof-gated profile.",
-      "superseded_by": "retrieval-cartog-mcp-v1",
+      "correction": "Deleted corrupted treatment results and occupied protocols from the active corpus; rerun requires a versioned source-parity and assignment-proof-gated profile. The intermediate retrieval-cartog-mcp-v1 replacement was later deleted for an incomplete product-authored Codex integration.",
+      "superseded_by": "retrieval-cartog-codex-product-v2",
       "deleted_session_ids": [
         "cartog-fastify-20260717-p-769d40697529-r1",
         "cartog-beets-20260717-p-b440da225a3a-r1",
@@ -897,7 +898,8 @@
         "sources/evaluations/audits/corrected-integration-qualification-ponytail-caveman-v1-20260719.json",
         "sources/evaluations/audits/corrected-integration-qualification-current-candidates-v3-20260719.json",
         "sources/evaluations/audits/corrected-integration-qualification-jcodemunch-codex-mcp-v2-20260719.json",
-        "sources/evaluations/audits/corrected-integration-qualification-codegraph-20260719.json"
+        "sources/evaluations/audits/corrected-integration-qualification-codegraph-20260719.json",
+        "sources/evaluations/audits/corrected-integration-qualification-cartog-codex-product-v2-20260720.json"
       ],
       "profiles": 15,
       "fixture_specific_protocols": 45,
@@ -912,7 +914,7 @@
       "codescope-codex-product-v1",
       "integrated-leanctx-codex-hybrid-v1",
       "integrated-token-savior-codex-product-v2",
-      "retrieval-cartog-mcp-v1",
+      "retrieval-cartog-codex-product-v2",
       "retrieval-codegraph-codex-mcp-v1",
       "retrieval-graphify-codex-skill-v1",
       "retrieval-jcodemunch-codex-mcp-v2",
@@ -956,6 +958,16 @@
       "reason": "Evaluator-rendered skill prose omitted the native Codex skill install and documented /caveman session activation.",
       "deletion_receipt": "sources/evaluations/audits/invalid-ponytail-caveman-result-deletion-20260719.json",
       "replacement_profile_id": "behavior-caveman-codex-skill-v1"
+    },
+    {
+      "date": "2026-07-20",
+      "profile_id": "retrieval-cartog-mcp-v1",
+      "disposition": "invalid-treatment-configuration",
+      "active_corpus_action": "deleted-under-owner-authorized-receipt",
+      "deleted_sessions": 6,
+      "receipt": "sources/evaluations/audits/invalid-cartog-result-deletions-20260720.json",
+      "superseded_by": "retrieval-cartog-codex-product-v2",
+      "reason": "The direct-MCP arm omitted Cartog product-authored Codex AGENTS routing, the official Codex installer, model-runtime CLI exposure, and live watch."
     }
   ]
 }

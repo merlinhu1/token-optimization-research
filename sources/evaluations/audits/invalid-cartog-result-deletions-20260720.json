@@ -1,0 +1,74 @@
+{
+  "schema_version": 1,
+  "date": "2026-07-20",
+  "action": "owner-authorized-active-corpus-deletion",
+  "profile_id": "retrieval-cartog-mcp-v1",
+  "disposition": "invalid-treatment-configuration",
+  "root_causes": [
+    "The treatment omitted Cartog product-authored Codex AGENTS routing guidance even though docs/agent-snippet.md says this layer teaches agents to prefer Cartog and notes that most agents otherwise default to grep.",
+    "The treatment manually registered `cartog serve` instead of running the documented `cartog ide --client codex --yes` installer, which emits `cartog serve --watch`.",
+    "The treatment did not expose the Cartog CLI on the model-runtime PATH."
+  ],
+  "operational_evidence_boundary": "MCP initialize and tools/list passed with 16 tools, but transport proof cannot rescue a materially incomplete canonical product treatment.",
+  "deleted_session_ids": [
+    "cartog-fastify-20260719-p-769d40697529-r2",
+    "cartog-beets-20260719-p-b440da225a3a-r2",
+    "cartog-terraform-20260719-p-ded8609b4172-r2",
+    "cartog-fastify-20260720-p-769d40697529-r3",
+    "cartog-beets-20260720-p-b440da225a3a-r3",
+    "cartog-terraform-20260720-p-ded8609b4172-r3"
+  ],
+  "deleted_protocol_paths": [
+    "sources/evaluations/protocols/beets-lifecycle-sequence-v0-retrieval-cartog-mcp-v1-82dd489d051c.json",
+    "sources/evaluations/protocols/beets-lifecycle-sequence-v0-retrieval-cartog-mcp-v1-862f3f9a1c77.json",
+    "sources/evaluations/protocols/beets-lifecycle-sequence-v0-retrieval-cartog-mcp-v1-9275d3cefcae.json",
+    "sources/evaluations/protocols/fastify-lifecycle-sequence-v0-retrieval-cartog-mcp-v1-44b3e084c59d.json",
+    "sources/evaluations/protocols/fastify-lifecycle-sequence-v0-retrieval-cartog-mcp-v1-7bde40821ff1.json",
+    "sources/evaluations/protocols/fastify-lifecycle-sequence-v0-retrieval-cartog-mcp-v1-9c6f93d79f02.json",
+    "sources/evaluations/protocols/terraform-lifecycle-sequence-v0-retrieval-cartog-mcp-v1-1fe472627322.json",
+    "sources/evaluations/protocols/terraform-lifecycle-sequence-v0-retrieval-cartog-mcp-v1-8da881d12950.json",
+    "sources/evaluations/protocols/terraform-lifecycle-sequence-v0-retrieval-cartog-mcp-v1-95c0de4e1638.json"
+  ],
+  "deleted_comparison_paths": [
+    "sources/evaluations/workflow-sessions/baseline-beets-20260719-vs-cartog-p-b440da225a3a-r2.json",
+    "sources/evaluations/workflow-sessions/baseline-beets-20260720-vs-cartog-p-b440da225a3a-r3.json",
+    "sources/evaluations/workflow-sessions/baseline-fastify-20260719-vs-cartog-p-769d40697529-r2.json",
+    "sources/evaluations/workflow-sessions/baseline-fastify-20260720-vs-cartog-p-769d40697529-r3.json",
+    "sources/evaluations/workflow-sessions/baseline-terraform-20260719-vs-cartog-p-ded8609b4172-r2.json",
+    "sources/evaluations/workflow-sessions/baseline-terraform-20260720-vs-cartog-p-ded8609b4172-r3.json"
+  ],
+  "deleted_bundle_roots": [
+    "sources/evaluations/workflow-sessions/cartog-fastify-20260719-p-769d40697529-r2",
+    "sources/evaluations/workflow-sessions/cartog-beets-20260719-p-b440da225a3a-r2",
+    "sources/evaluations/workflow-sessions/cartog-terraform-20260719-p-ded8609b4172-r2",
+    "sources/evaluations/workflow-sessions/cartog-fastify-20260720-p-769d40697529-r3",
+    "sources/evaluations/workflow-sessions/cartog-beets-20260720-p-b440da225a3a-r3",
+    "sources/evaluations/workflow-sessions/cartog-terraform-20260720-p-ded8609b4172-r3"
+  ],
+  "deleted_provider_session_count": 6,
+  "baseline_relabeling": "forbidden",
+  "baseline_sessions_modified": false,
+  "recovery_commit": "db7f603006c5987e60669750b1312b1d7a619b0c",
+  "recovery_ref": "refs/heads/backup/pre-cartog-product-repair-20260720",
+  "replacement_profile_id": "retrieval-cartog-codex-product-v2",
+  "rerun_requirement": "A fresh provider-backed sample requires provider-free qualification of the guide-faithful replacement profile; deleted replicate slots and protocol identities must not be reused.",
+  "recomputed_active_audits": [
+    "sources/evaluations/audits/codex-cumulative-usage-accounting-20260718.json",
+    "sources/evaluations/audits/corrected-luna-xhigh-r2-campaign-20260720.json",
+    "sources/evaluations/audits/phase-2-corrected-analysis-20260720.json",
+    "sources/evaluations/audits/luna-xhigh-r3-replication-screen-20260720.json",
+    "sources/evaluations/audits/corrected-integration-qualification-20260718.json",
+    "sources/evaluations/audits/corrected-integration-qualification-current-candidates-v3-20260719.json",
+    "sources/evaluations/audits/assisted-v1-protocol-qualification-20260720.json",
+    "sources/evaluations/audits/official-integration-parity-20260718.json"
+  ],
+  "reconciled_reports": [
+    "README.md",
+    "docs/evaluations/README.md",
+    "docs/papers/phase-2-lifecycle-v0-natural-use-screening.md",
+    "docs/papers/luna-xhigh-r3-natural-use-replication-screen.md",
+    "docs/papers/official-integration-parity-audit.md",
+    "docs/research/roadmap.md",
+    "docs/truthmark/engineering/research/current-findings.md"
+  ]
+}
