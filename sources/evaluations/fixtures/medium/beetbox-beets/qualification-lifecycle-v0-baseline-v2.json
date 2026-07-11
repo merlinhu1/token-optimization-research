@@ -1,0 +1,156 @@
+{
+  "schema_version": 4,
+  "controller_hidden_sha256": null,
+  "qualified_on": "2026-07-21",
+  "snapshot": "9acb1ecff6c7ee0a1e83e3b983c94792345712c5",
+  "observed_source": {
+    "head": "9acb1ecff6c7ee0a1e83e3b983c94792345712c5",
+    "tree": "47a0d93d5ea4afc6d1e11c11add615322ddc3c87",
+    "remotes": [
+      "origin\tgit@github.com:beetbox/beets.git (fetch) [blob:none]",
+      "origin\tgit@github.com:beetbox/beets.git (push)"
+    ],
+    "expected_upstream": "https://github.com/beetbox/beets.git",
+    "clean": true
+  },
+  "tool_versions": {
+    "git": "git version 2.47.3",
+    "qualification_dependency_command": "uv sync --group test"
+  },
+  "ordered_task_ids": [
+    "beets-lifecycle-feature-v0",
+    "beets-lifecycle-refactor-v0",
+    "beets-lifecycle-review-v0"
+  ],
+  "model_concealed_paths": [],
+  "fixed_snapshot_concealed_path_collisions": [],
+  "fixed_snapshot_model_concealed_paths_absent": true,
+  "fixed_snapshot_model_concealed_paths_safe": true,
+  "fixed_snapshot_concealed_path_collision_audit": [],
+  "tasks": [
+    {
+      "task_id": "beets-lifecycle-feature-v0",
+      "seed_patch_sha256": "9dc1cf36d0d0120fb57f75c4579af7f1f65b80e9d80de2d2c5cbdeb69b4ac17e",
+      "verifier_sha256": "765a906b75df00d1222f75e75bd900db171039822850a202b00b1a1223c6fa1e",
+      "production_files": [
+        "beets/util/functemplate.py"
+      ],
+      "production_file_count": 1,
+      "expected_model_concealed_paths": [],
+      "model_concealed_paths": [],
+      "omitted_expected_model_concealed_paths": [],
+      "declared_concealment_matches_expected": true,
+      "model_concealed_absent": true,
+      "fixed_snapshot_model_concealed_absent": true,
+      "fixed_snapshot_model_concealed_safe": true,
+      "fixed_snapshot_concealed_path_collision_audit": [],
+      "agent_prompt_sha256": "a9353ed0ca5b0ea93f642a75b6a241abbbb77ca43acdc80f42df3407a6581810",
+      "task_directory_sha256": "f14767038502d293d0fd28d70012b985e262fed4645ed3c678378fee3524234f"
+    },
+    {
+      "task_id": "beets-lifecycle-refactor-v0",
+      "seed_patch_sha256": "9bcf590139fc91987524e643bc1e6281efbe5a09cd9b2218ca31f670c391c722",
+      "verifier_sha256": "bcb4f4b9578e1250d6a44a74e347c75bb5e9fa5659117ed3812a5c57b731e402",
+      "production_files": [
+        "beets/dbcore/db.py"
+      ],
+      "production_file_count": 1,
+      "expected_model_concealed_paths": [],
+      "model_concealed_paths": [],
+      "omitted_expected_model_concealed_paths": [],
+      "declared_concealment_matches_expected": true,
+      "model_concealed_absent": true,
+      "fixed_snapshot_model_concealed_absent": true,
+      "fixed_snapshot_model_concealed_safe": true,
+      "fixed_snapshot_concealed_path_collision_audit": [],
+      "agent_prompt_sha256": "5a4b1f90abd1acc6f1ad3360783512a5b8167536f9f01468ca0784a4efa5638b",
+      "task_directory_sha256": "0d3de601b6a15968118f78029c9c6dec6fba5f1649bb317fc03a6fd5101df19d"
+    },
+    {
+      "task_id": "beets-lifecycle-review-v0",
+      "seed_patch_sha256": "14d8dd83706706805b8159f85871036cfb39148dd7912e66e2c8044d505cabad",
+      "verifier_sha256": "28ede1f233a090f2555b4abac09f101b4cfad9838fec33402f694dc6ef3060dc",
+      "production_files": [
+        "beetsplug/ftintitle.py"
+      ],
+      "production_file_count": 1,
+      "expected_model_concealed_paths": [],
+      "model_concealed_paths": [],
+      "omitted_expected_model_concealed_paths": [],
+      "declared_concealment_matches_expected": true,
+      "model_concealed_absent": true,
+      "fixed_snapshot_model_concealed_absent": true,
+      "fixed_snapshot_model_concealed_safe": true,
+      "fixed_snapshot_concealed_path_collision_audit": [],
+      "agent_prompt_sha256": "1321246f7b37e6a87e291767da5dc37295731344f78cfd823f6390a3dc124856",
+      "task_directory_sha256": "c2780714d1c7a29a7240b01273dfc1711416c4c504006a899467e1b73021d1ba"
+    }
+  ],
+  "cumulative_boundaries": [
+    {
+      "task_id": "beets-lifecycle-feature-v0",
+      "seed_apply_check_exit": 0,
+      "seed_apply_exit": 0,
+      "seeded_verifier_exit": 1,
+      "repair_apply_check_exit": 0,
+      "repair_apply_exit": 0,
+      "retained_verifier_exits": {
+        "beets-lifecycle-feature-v0": 0
+      }
+    },
+    {
+      "task_id": "beets-lifecycle-refactor-v0",
+      "seed_apply_check_exit": 0,
+      "seed_apply_exit": 0,
+      "seeded_verifier_exit": 1,
+      "repair_apply_check_exit": 0,
+      "repair_apply_exit": 0,
+      "retained_verifier_exits": {
+        "beets-lifecycle-feature-v0": 0,
+        "beets-lifecycle-refactor-v0": 0
+      },
+      "seeded_behavior_exit": 0,
+      "seeded_structure_exit": 1,
+      "fixed_behavior_exit": 0,
+      "fixed_structure_exit": 0
+    },
+    {
+      "task_id": "beets-lifecycle-review-v0",
+      "seed_apply_check_exit": 0,
+      "seed_apply_exit": 0,
+      "seeded_verifier_exit": 1,
+      "repair_apply_check_exit": 0,
+      "repair_apply_exit": 0,
+      "retained_verifier_exits": {
+        "beets-lifecycle-feature-v0": 0,
+        "beets-lifecycle-refactor-v0": 0,
+        "beets-lifecycle-review-v0": 0
+      }
+    }
+  ],
+  "composite_seed_merge_zero": true,
+  "composite_seeded_verifiers_nonzero": true,
+  "composite_seed_verifier_exits": {
+    "beets-lifecycle-feature-v0": 1,
+    "beets-lifecycle-refactor-v0": 1,
+    "beets-lifecycle-review-v0": 1
+  },
+  "composite_seed_diff_sha256": "2586b9a96d627ce22e226621db78f1c7636e265318dc0e45e1424778209217ae",
+  "composite_seed_error": "",
+  "seeded_verifier_nonzero": true,
+  "fixed_verifier_zero": true,
+  "full_fixed_cumulative_verifier_zero": true,
+  "no_unmerged_paths": true,
+  "no_model_visible_acceptance_assets": true,
+  "all_expected_model_concealment_declared": true,
+  "fixture_id": "medium-beetbox-beets",
+  "sequence_id": "beets-lifecycle-sequence-v0",
+  "task_binding": {
+    "algorithm": "sha256(path\\0bytes\\0; lexical recursive task directory order)",
+    "task_directories": {
+      "beets-lifecycle-feature-v0": "f14767038502d293d0fd28d70012b985e262fed4645ed3c678378fee3524234f",
+      "beets-lifecycle-refactor-v0": "0d3de601b6a15968118f78029c9c6dec6fba5f1649bb317fc03a6fd5101df19d",
+      "beets-lifecycle-review-v0": "c2780714d1c7a29a7240b01273dfc1711416c4c504006a899467e1b73021d1ba"
+    }
+  }
+}

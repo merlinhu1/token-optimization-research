@@ -998,9 +998,33 @@ def validate_workflow_task_sequences(sequence_doc: dict, fixture_doc: dict, erro
             errors.append(f"workflow sequence {sid} must use the lifecycle-sequence-v0 identity")
         if sequence.get("sequence_contract") != "feature-refactor-review":
             errors.append(f"workflow sequence {sid} must use the feature-refactor-review contract")
+        is_active = sequence.get("status") == "active"
+        if is_active:
+            if sequence.get("task_family_generation") != "baseline-v2":
+                errors.append(f"active workflow sequence {sid} must bind task_family_generation=baseline-v2")
+            gate = sequence.get("mistake_gate")
+            expected_gate = {
+                "designated_model_condition": "codex-openai-gpt-5-6-sol-high",
+                "model": "gpt-5.6-sol",
+                "reasoning_effort": "high",
+                "allowed_unique_model_incidents": 0,
+                "allowed_corrected_implementation_mistakes": 0,
+                "allowed_unresolved_defects": 0,
+                "allowed_prohibited_operations": 0,
+                "allowed_unnecessary_exploration_incidents": 0,
+                "allowed_model_caused_failed_commands": 0,
+                "allowed_code_rework_events": 0,
+                "allowed_verifier_or_environment_failures": 0,
+                "incident_counting": "unique-auditable-not-command-count",
+                "status": "provider-pilot-required",
+            }
+            if not isinstance(gate, dict) or any(gate.get(key) != value for key, value in expected_gate.items()):
+                errors.append(f"active workflow sequence {sid} must preserve the Baseline V2 zero-mistake gate")
         qualification_path = str(sequence.get("qualification_path", ""))
         qualification_name = Path(qualification_path).name
-        if re.fullmatch(r"qualification-lifecycle-v0(?:-[a-z0-9-]+)?\.json", qualification_name) is None:
+        if is_active and qualification_name != "qualification-lifecycle-v0-baseline-v2.json":
+            errors.append(f"active workflow sequence {sid} must bind qualification-lifecycle-v0-baseline-v2.json")
+        elif re.fullmatch(r"qualification-lifecycle-v0(?:-[a-z0-9-]+)?\.json", qualification_name) is None:
             errors.append(f"workflow sequence {sid} must bind a versioned qualification-lifecycle-v0 JSON artifact")
         if sequence.get("status") == "active" and sequence.get("acceptance_design") != "behavioral":
             errors.append(f"active workflow sequence {sid} must declare acceptance_design=behavioral")
@@ -1066,6 +1090,31 @@ def validate_workflow_task_sequences(sequence_doc: dict, fixture_doc: dict, erro
                     production_by_task[str(tid)] = production
                     if not production:
                         errors.append(f"active workflow sequence {sid} task {tid} seed patch has no production/type files")
+                    prompt_text = (ROOT / prompt_path).read_text() if prompt_path else ""
+                    required_markers = (
+                        "Baseline V2 routine recipe",
+                        "Do not run discovery, search, or broad-suite commands.",
+                        "Only modify:",
+                        "Run exactly:",
+                        "Stop immediately when",
+                        "Do not modify tests.",
+                    )
+                    if "/baseline-v2/" not in str(prompt_path) or any(marker not in prompt_text for marker in required_markers):
+                        errors.append(f"active workflow sequence {sid} task {tid} must use the complete Baseline V2 routine prompt contract")
+                    target_production = [
+                        path
+                        for path in production
+                        if not path.endswith(("_test.go", "_test.py", ".test.js")) and not path.startswith("test/")
+                    ]
+                    expected_changed = task.get("expected_changed_paths")
+                    if not isinstance(expected_changed, list) or sorted(expected_changed) != sorted(target_production) or not 1 <= len(target_production) <= 3:
+                        errors.append(f"active workflow sequence {sid} task {tid} must declare one-to-three exact Baseline V2 production targets")
+                    anchors = task.get("model_visible_validation_anchors")
+                    verifier_text = verifier_path.read_text() if verifier_path.is_file() else ""
+                    if not isinstance(anchors, list) or not anchors or any(anchor not in prompt_text or anchor not in verifier_text for anchor in anchors):
+                        errors.append(f"active workflow sequence {sid} task {tid} must bind complete model-visible focused validation anchors")
+                    if task.get("model_concealed_paths"):
+                        errors.append(f"active workflow sequence {sid} task {tid} must not hide Baseline V2 validation behavior")
                     if verifier_uses_source_identity(task_dir):
                         errors.append(f"active workflow sequence {sid} task {tid} uses exact-source supplemental guards instead of behavioral acceptance")
                     review_patch_name = task.get("review_patch_path")

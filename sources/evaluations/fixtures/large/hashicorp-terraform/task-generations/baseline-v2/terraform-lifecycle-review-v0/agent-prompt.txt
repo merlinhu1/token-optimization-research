@@ -1,0 +1,18 @@
+Baseline V2 routine recipe — correct the disclosed input-variable address review candidate.
+
+## Implementation recipe
+
+Do not run discovery, search, or broad-suite commands.
+Only modify: `internal/addrs/checkable.go`.
+Do not modify tests.
+
+In the `CheckableInputVariable` case of `ParseCheckableStr`, replace only `getCheckableName("input", "variable value")` with `getCheckableName("var", "variable value")`. Terraform input-variable addresses use the `var.name` syntax.
+
+The visible focused test is `internal/addrs/baseline_v2_checkable_test.go`.
+## Validation recipe
+
+Run exactly: `gofmt -w internal/addrs/checkable.go && go test ./internal/addrs -run '^TestBaselineV2ParseInputVariableCheckable$'`
+
+## Stop condition
+
+Stop immediately when that command exits 0 and `git diff --name-only` lists only `internal/addrs/checkable.go`.

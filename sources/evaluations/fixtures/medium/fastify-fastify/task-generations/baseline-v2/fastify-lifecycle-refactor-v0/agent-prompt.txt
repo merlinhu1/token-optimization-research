@@ -1,0 +1,30 @@
+Baseline V2 routine recipe — restore the shared bounded Content-Type cache exactly as specified. The behavior is already correct; this is only the disclosed one-file structural refactor.
+
+## Implementation recipe
+
+Do not run discovery, search, or broad-suite commands.
+Only modify: `lib/content-type.js`.
+Do not modify tests.
+
+1. After `'use strict'`, add `const { LruMap: Lru } = require('toad-cache')`.
+2. Before `class ContentType`, add `const cache = new Lru(100)` with the existing project comment style.
+3. Add `static get cache () { return cache }` to `ContentType`; this exposes the exact `ContentType.cache` structural contract.
+4. Replace `ContentType.from` so it gets by raw header value, returns a cached instance when present, otherwise constructs, stores, and returns one:
+
+```js
+  static from (headerValue) {
+    let contentType = cache.get(headerValue)
+    if (contentType !== undefined) return contentType
+    contentType = new ContentType(headerValue)
+    cache.set(headerValue, contentType)
+    return contentType
+  }
+```
+
+## Validation recipe
+
+Run exactly: `node -c lib/content-type.js && node -e "const C=require('./lib/content-type'); const h='Application/JSON; Charset=UTF-8'; if(!C.cache || C.from(h)!==C.from(h))process.exit(1)"`
+
+## Stop condition
+
+Stop immediately when that command exits 0 and `git diff --name-only` lists only `lib/content-type.js`.

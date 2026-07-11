@@ -30,6 +30,25 @@ from scripts import validate_repository
 SEQUENCE_ID = "terraform-lifecycle-sequence-v0"
 
 
+def current_protocol_path(sequence_id: str, profile_id: str = "baseline-bare-codex") -> Path:
+    sequence = runner.load_sequence(sequence_id)
+    gate = sequence["mistake_gate"]
+    matches = []
+    for path in (ROOT / "sources/evaluations/protocols").glob("*.json"):
+        protocol = json.loads(path.read_text())
+        if (
+            protocol.get("status") == "frozen-ready-not-run"
+            and protocol.get("task_fixture", {}).get("sequence_id") == sequence_id
+            and protocol.get("task_fixture", {}).get("qualification_path") == sequence["qualification_path"]
+            and protocol.get("baseline", {}).get("profile_id") == profile_id
+            and protocol.get("baseline", {}).get("model_condition_id") == gate["designated_model_condition"]
+        ):
+            matches.append(path)
+    if len(matches) != 1:
+        raise AssertionError((sequence_id, profile_id, matches))
+    return matches[0]
+
+
 def retained_protocol_path(
     sequence_id: str,
     profile_id: str,
@@ -268,18 +287,25 @@ class ActiveCampaignArchitectureTest(unittest.TestCase):
         historical_default_groups: dict[tuple[str, str], set[int]] = {}
         for sequence_id in runner.active_sequence_ids():
             sequence = runner.load_sequence(sequence_id)
-            current_pool = runner.baseline_protocol_fingerprint(sequence)
+            current_protocol = json.loads(current_protocol_path(sequence_id).read_text())
+            current_pool = current_protocol["baseline_pool"]["protocol_fingerprint"]
+            gate = sequence["mistake_gate"]
+            model_condition_id = gate["designated_model_condition"]
             matching = [
                 session
                 for session in registry["sessions"]
                 if session.get("status") == "completed"
                 and session.get("session_role") == "baseline"
                 and session.get("task_sequence", {}).get("sequence_id") == sequence_id
-                and session.get("agent", {}).get("model_condition_id") == runner.DEFAULT_WORKFLOW_MODEL_CONDITION_ID
+                and session.get("agent", {}).get("model_condition_id") == model_condition_id
                 and session.get("baseline_pool", {}).get("protocol_fingerprint") == current_pool
                 and session.get("interpretation", {}).get("accepted_for_objective") is True
             ]
-            baseline_command = f"python3 scripts/run_sequential_workflow_matrix.py {sequence_id}\n"
+            flags = (
+                f"--workflow-model-condition-id {model_condition_id} "
+                f"--workflow-model {gate['model']} --workflow-reasoning-effort {gate['reasoning_effort']}"
+            )
+            baseline_command = f"python3 scripts/run_sequential_workflow_matrix.py {sequence_id} {flags}\n"
             if matching:
                 current_ready.add(sequence_id)
                 self.assertNotIn(baseline_command, runbook)
@@ -422,12 +448,13 @@ class ActiveCampaignArchitectureTest(unittest.TestCase):
     def test_feature_verifier_checks_semantics_not_canonical_error_prose(self) -> None:
         sequence = runner.load_sequence("beets-lifecycle-sequence-v0")
         feature = sorted(sequence["tasks"], key=lambda task: task["order"])[0]
-        hidden = next(
-            (ROOT / feature["prompt_path"]).parent.glob("controller-hidden/**/*.py")
-        ).read_text()
-        self.assertNotIn("pytest.raises(UserError, match=", hidden)
-        self.assertIn('assert "title" in message', hidden)
-        self.assertIn('assert "+=" in message', hidden)
+        prompt = (ROOT / feature["prompt_path"]).read_text()
+        verifier = (ROOT / feature["verifier_command"]).read_text()
+        self.assertEqual(feature["model_concealed_paths"], [])
+        self.assertIn("escaped_sep", prompt)
+        self.assertIn("escaped_sep", verifier)
+        self.assertIn("test/util/test_functemplate.py", verifier)
+        self.assertNotIn("read_text", verifier)
 
     def test_refactor_verifier_does_not_require_undisclosed_parameter_names(self) -> None:
         sequence = runner.load_sequence("beets-lifecycle-sequence-v0")
@@ -1334,7 +1361,7 @@ for line in sys.stdin:
 
     def test_current_protocols_declare_strict_schema_version(self) -> None:
         for sequence_id in runner.active_sequence_ids():
-            path = retained_protocol_path(sequence_id, "baseline-bare-codex")
+            path = current_protocol_path(sequence_id)
             protocol = json.loads(path.read_text())
             self.assertEqual(protocol.get("protocol_schema_version"), 3, path.name)
             sequence = runner.load_sequence(sequence_id)
@@ -1401,12 +1428,16 @@ class SeedDeliveryContractTest(unittest.TestCase):
                 ["test/controller_hidden/collision.py"],
             )
 
-    def test_terraform_concealed_collisions_are_byte_exact_controller_copies(self) -> None:
+    def test_terraform_v2_uses_visible_focused_tests_without_concealed_collisions(self) -> None:
         sequence = runner.load_sequence("terraform-lifecycle-sequence-v0")
         qualification_record = json.loads((ROOT / sequence["qualification_path"]).read_text())
-        audit = qualification_record["fixed_snapshot_concealed_path_collision_audit"]
-        self.assertEqual(len(audit), 1)
-        self.assertTrue(all(record["byte_exact"] is True for record in audit), audit)
+        self.assertEqual(qualification_record["fixed_snapshot_concealed_path_collision_audit"], [])
+        self.assertTrue(qualification_record["fixed_snapshot_model_concealed_paths_absent"])
+        for task in sequence["tasks"]:
+            self.assertEqual(task["model_concealed_paths"], [])
+            verifier = (ROOT / task["verifier_command"]).read_text()
+            for anchor in task["model_visible_validation_anchors"]:
+                self.assertIn(anchor, verifier)
 
     def test_active_qualifications_prove_composite_broken_start(self) -> None:
         sequences = json.loads((ROOT / "data/workflow-task-sequences.json").read_text())["sequences"]
@@ -1592,10 +1623,10 @@ class VerifierContractTest(unittest.TestCase):
 
     def test_active_prompts_name_acceptance_critical_public_contracts(self) -> None:
         cases = {
-            "beets-lifecycle-feature-v0": ["field+=value", "field-=value", "UserError"],
-            "fastify-lifecycle-feature-v0": ["request.mediaType", "FastifyRequest.mediaType", "application/json"],
-            "terraform-lifecycle-feature-v0": ["deferred", "partial response", "data-source callbacks"],
-            "terraform-lifecycle-refactor-v0": ["StateStoreProviderRequirement", "exact-version validation", "structural contract"],
+            "beets-lifecycle-feature-v0": ["extra_special_chars", "escaped_sep", "functemplate.py"],
+            "fastify-lifecycle-feature-v0": ["request.mediaType", "kRequestContentType", "application/json"],
+            "terraform-lifecycle-feature-v0": ["Deferred: isDeferred", "baseline_v2_deferred_test.go", "socket"],
+            "terraform-lifecycle-refactor-v0": ["StateStoreProviderRequirement", "providerreqs.Requirements", "NamedType"],
         }
         for task_id, required in cases.items():
             task = next(
@@ -1828,15 +1859,15 @@ class VerifierContractTest(unittest.TestCase):
 
     def test_active_task_prompts_include_solution_and_validation_recipes(self) -> None:
         required_by_task = {
-            "fastify-lifecycle-feature-v0": ["lib/handle-request.js", "request.mediaType", "app.inject"],
+            "fastify-lifecycle-feature-v0": ["lib/request.js", "request.mediaType", "ContentType.from"],
             "fastify-lifecycle-refactor-v0": ["lib/content-type.js", "LruMap", "ContentType.cache"],
             "fastify-lifecycle-review-v0": ["fastify.js", "FST_ERR_MAX_PARAM_LENGTH", "414"],
-            "beets-lifecycle-feature-v0": ["beets/ui/commands/modify.py", "field+=value", "test/ui/commands/test_modify.py"],
-            "beets-lifecycle-refactor-v0": ["beets/dbcore/db.py", "LazyDict(UserDict)", "test/dbcore/test_db.py"],
-            "beets-lifecycle-review-v0": ["beetsplug/ftintitle.py", "albumartist", "test/plugins/test_ftintitle.py"],
-            "terraform-lifecycle-feature-v0": ["internal/terraform/policy.go", "GetDeferredResourceInstanceValue", "Context2(Plan|Apply)_PolicyCallback"],
-            "terraform-lifecycle-refactor-v0": ["internal/configs/state_migrate_file.go", "StateStoreProviderRequirement", "StateMigration|StateStoreProvider|Migrate"],
-            "terraform-lifecycle-review-v0": ["internal/cloud/backend_tfPolicyEvaluation.go", "listTFPolicyOutcomes", "policy-summary"],
+            "beets-lifecycle-feature-v0": ["beets/util/functemplate.py", "extra_special_chars", "test/util/test_functemplate.py"],
+            "beets-lifecycle-refactor-v0": ["beets/dbcore/db.py", "return iter(self._all_keys)", "type(iter(value)).__name__"],
+            "beets-lifecycle-review-v0": ["beetsplug/ftintitle.py", "feat_tokens", "test/plugins/test_ftintitle.py"],
+            "terraform-lifecycle-feature-v0": ["internal/policy/callback/server.go", "Deferred: isDeferred", "baseline_v2_deferred_test.go"],
+            "terraform-lifecycle-refactor-v0": ["internal/configs/state_migrate_file.go", "providerreqs.Requirements", "baseline_v2_requirement_type_test.go"],
+            "terraform-lifecycle-review-v0": ["internal/addrs/checkable.go", 'getCheckableName("var"', "baseline_v2_checkable_test.go"],
         }
         for sequence_id in runner.active_sequence_ids():
             sequence = runner.load_sequence(sequence_id)
@@ -2052,13 +2083,10 @@ class ManifestAndProtocolContractTest(unittest.TestCase):
 
     def test_current_protocol_fingerprint_matches_runner(self) -> None:
         sequence = runner.load_sequence("beets-lifecycle-sequence-v0")
-        protocol_path = matrix.find_protocol(
-            ROOT,
-            "beets-lifecycle-sequence-v0",
-            "baseline-bare-codex",
-        )
+        protocol_path = current_protocol_path("beets-lifecycle-sequence-v0")
         protocol = json.loads(protocol_path.read_text())
-        expected = runner.baseline_protocol_fingerprint(sequence)
+        descriptor = protocol["baseline_pool"]["descriptor"]
+        expected = runner.baseline_protocol_fingerprint_from_descriptor(descriptor)
         self.assertEqual(protocol["baseline_pool"]["protocol_fingerprint"], expected)
         self.assertEqual(
             protocol["baseline_pool"]["descriptor"]["tasks"],
@@ -3021,6 +3049,103 @@ class CorrectionContractTest(unittest.TestCase):
         audit = source.index("scripts/audit_codex_cumulative_usage.py")
         validate = source.index("scripts/validate_repository.py", audit)
         self.assertLess(audit, validate)
+
+
+class BaselineV2LowComplexityContractTest(unittest.TestCase):
+    def test_active_sequences_bind_zero_mistake_baseline_v2_contracts(self) -> None:
+        document = json.loads((ROOT / "data/workflow-task-sequences.json").read_text())
+        active = [sequence for sequence in document["sequences"] if sequence["status"] == "active"]
+        self.assertEqual(len(active), 3)
+
+        for sequence in active:
+            self.assertEqual(sequence["task_family_generation"], "baseline-v2")
+            self.assertRegex(Path(sequence["qualification_path"]).name, r"^qualification-lifecycle-v0-baseline-v2\.json$")
+            gate = sequence["mistake_gate"]
+            self.assertEqual(gate["designated_model_condition"], "codex-openai-gpt-5-6-sol-high")
+            self.assertEqual(gate["model"], "gpt-5.6-sol")
+            self.assertEqual(gate["reasoning_effort"], "high")
+            self.assertEqual(gate["allowed_unique_model_incidents"], 0)
+            self.assertEqual(gate["allowed_corrected_implementation_mistakes"], 0)
+            self.assertEqual(gate["allowed_unresolved_defects"], 0)
+            self.assertEqual(gate["allowed_prohibited_operations"], 0)
+            self.assertEqual(gate["allowed_unnecessary_exploration_incidents"], 0)
+            self.assertEqual(gate["allowed_model_caused_failed_commands"], 0)
+            self.assertEqual(gate["allowed_code_rework_events"], 0)
+            self.assertEqual(gate["allowed_verifier_or_environment_failures"], 0)
+            self.assertEqual(gate["incident_counting"], "unique-auditable-not-command-count")
+            self.assertEqual(gate["status"], "provider-pilot-required")
+
+            for task in sequence["tasks"]:
+                self.assertIn("/baseline-v2/", task["prompt_path"])
+                task_dir = (ROOT / task["prompt_path"]).parent
+                prompt = (ROOT / task["prompt_path"]).read_text()
+                for marker in (
+                    "Baseline V2 routine recipe",
+                    "Do not run discovery, search, or broad-suite commands.",
+                    "Only modify:",
+                    "Run exactly:",
+                    "Stop immediately when",
+                    "Do not modify tests.",
+                ):
+                    self.assertIn(marker, prompt, (sequence["id"], task["id"], marker))
+
+                production_paths = [
+                    path
+                    for path in validate_repository.patch_paths(task_dir / "seed-regression.patch")
+                    if validate_repository.is_production_path(path)
+                    and not path.endswith(("_test.go", "_test.py", ".test.js"))
+                    and not path.startswith("test/")
+                ]
+                self.assertGreaterEqual(len(production_paths), 1)
+                self.assertLessEqual(len(production_paths), 3)
+                self.assertEqual(sorted(production_paths), sorted(task["expected_changed_paths"]))
+                self.assertTrue(task["model_visible_validation_anchors"])
+                self.assertEqual(task.get("model_concealed_paths", []), [])
+                verifier = (ROOT / task["verifier_command"]).read_text()
+                for anchor in task["model_visible_validation_anchors"]:
+                    self.assertIn(anchor, prompt)
+                    self.assertIn(anchor, verifier)
+
+                if task["task_class"] == "code-review-correction":
+                    self.assertTrue((task_dir / task["review_patch_path"]).is_file())
+
+    def test_generated_runbook_pins_v2_pilot_model_tuple(self) -> None:
+        runbook = (ROOT / "docs/evaluations/operations/runbook.md").read_text()
+        document = json.loads((ROOT / "data/workflow-task-sequences.json").read_text())
+        flags = "--workflow-model-condition-id codex-openai-gpt-5-6-sol-high --workflow-model gpt-5.6-sol --workflow-reasoning-effort high"
+        for sequence in document["sequences"]:
+            self.assertIn(
+                f"python3 scripts/run_sequential_workflow_matrix.py {sequence['id']} {flags} --prepare-only",
+                runbook,
+            )
+            self.assertIn(
+                f"python3 scripts/run_sequential_workflow_matrix.py {sequence['id']} {flags}",
+                runbook,
+            )
+
+    def test_provider_free_v2_qualifications_pass_every_boundary(self) -> None:
+        document = json.loads((ROOT / "data/workflow-task-sequences.json").read_text())
+        for sequence in document["sequences"]:
+            qualification = json.loads((ROOT / sequence["qualification_path"]).read_text())
+            for key in (
+                "composite_seed_merge_zero",
+                "composite_seeded_verifiers_nonzero",
+                "seeded_verifier_nonzero",
+                "fixed_verifier_zero",
+                "full_fixed_cumulative_verifier_zero",
+                "no_unmerged_paths",
+            ):
+                self.assertIs(qualification[key], True, (sequence["id"], key))
+            self.assertTrue(all(task["production_file_count"] <= 3 for task in qualification["tasks"]))
+
+    def test_repository_validator_rejects_nonzero_v2_mistake_allowance(self) -> None:
+        document = json.loads((ROOT / "data/workflow-task-sequences.json").read_text())
+        fixtures = json.loads((ROOT / "data/repository-fixtures.json").read_text())
+        document["sequences"][0]["mistake_gate"]["allowed_unique_model_incidents"] = 1
+        errors: list[str] = []
+        validate_repository.validate_workflow_task_sequences(document, fixtures, errors)
+        self.assertTrue(any("zero-mistake gate" in error for error in errors), errors)
+
 
 if __name__ == "__main__":
     unittest.main()
