@@ -63,6 +63,8 @@ Every concealed verifier runs against the final cumulative repository, regardles
 
 The research objective is provider-reported workflow token usage under fair, disclosed software-engineering tasks. An operationally complete, integrity-valid provider run is eligible regardless of whether the sampled model passes concealed verifiers.
 
+Solution-directed task assistance is permitted and preferred when it reduces irrelevant search, validation, and correction variance. The frozen prompt may disclose the intended solution path, exact focused checks, environment constraints, and stop condition, provided the same recipe is used for compatible baseline and treatment sessions and must not require or prefer treatment-tool invocation. This project does not use solution discovery as a model-intelligence outcome.
+
 A verifier may enforce disclosed observable behavior, compatibility, safety, and explicitly public structural contracts. It must not require canonical prose, local parameter names, source identity, or one implementation shape unless that exact requirement is disclosed and necessary. Verifier outcomes are recorded as model-behavior diagnostics, not used to select which token samples count.
 
 Repair prompt/verifier/fixture mismatches in the sole v0 contract. Mark runs produced by an invalid fixture `evaluation_validity: invalid-fixture` and exclude them. Never replace an otherwise valid run merely because model output failed or received a low review score.
