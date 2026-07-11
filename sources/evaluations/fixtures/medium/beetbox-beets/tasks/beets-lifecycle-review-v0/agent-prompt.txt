@@ -1,13 +1,23 @@
-Review the supplied `ftintitle` metadata-hook change and correct the checked-out implementation.
+Correct the supplied `ftintitle` candidate using the prescribed review result below. This is a controlled token-usage workload; do not perform an open-ended metadata redesign.
 
-The proposed change regresses established command, import, and metadata-hook behavior. Restore these observable contracts:
+## Implementation recipe
 
-- Metadata listeners run only when the plugin's `auto` option is enabled.
-- A bare singleton collaboration such as `Alice & Bob` is not fabricated into featured-artist metadata when there is no album-artist context or explicit featuring marker.
-- Album metadata uses the album artist when interpreting a track collaboration, so `Alice & Bob` under album artist `Alice` becomes canonical artist `Alice` and title `Song feat. Bob`.
-- The manual command and import stage continue passing each item's album artist into the existing transformation.
-- Existing explicit `feat.` handling, drop/keep-in-artist no-op behavior, artist-sort updates, and preservation of `artist_credit` when global artist-credit mode is disabled remain unchanged.
+Make only the focused corrections in `beetsplug/ftintitle.py`:
 
-Keep the established `ft_in_title`/`update_metadata` design. This is a focused review-and-correction task, not a request to redesign metadata objects, cache invalidation, or global artist-credit semantics. Do not modify tests merely to make acceptance pass.
+1. In `trackinfo_received`, call `ft_in_title` only when `self.auto` is enabled.
+2. In `albuminfo_received`, do nothing when `self.auto` is disabled; otherwise use `info.get("artist") or ""` as `albumartist` for each track.
+3. In the manual command and import stage, pass `item.get("albumartist") or ""` to `ft_in_title` instead of an empty string.
+4. In `find_feat_part`, when no album artist exists, call `split_on_feat(..., for_artist=False, ...)` so a bare `Alice & Bob` collaboration is not fabricated as featured metadata.
+5. Inside `ft_in_title`, set the artist-splitting mode from `bool(albumartist and albumartist in artist)`.
+6. Keep the existing `ft_in_title`/`update_metadata` design and preserve explicit `feat.`, no-op modes, artist-sort, and artist-credit behavior.
 
-Run the focused `test/plugins/test_ftintitle.py` tests and `uv run ruff check beetsplug/ftintitle.py`. Preserve all prior lifecycle work; cumulative concealed acceptance runs after the final prompt.
+## Validation recipe
+
+- Run `uv run ruff check beetsplug/ftintitle.py`.
+- Run `uv run ruff format --check beetsplug/ftintitle.py`.
+- Run `uv run pytest -q test/plugins/test_ftintitle.py`.
+- Do not run unrelated database typing checks or broad pytest suites.
+
+## Stop condition
+
+Stop when the five focused corrections are present and the ftintitle tests plus Ruff checks pass. Preserve tasks 1 and 2 and do not investigate unrelated failures.

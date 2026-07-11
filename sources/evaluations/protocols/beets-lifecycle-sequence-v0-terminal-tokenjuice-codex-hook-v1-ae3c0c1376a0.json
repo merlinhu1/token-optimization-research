@@ -1,0 +1,443 @@
+{
+  "protocol_schema_version": 3,
+  "protocol_id": "beets-lifecycle-sequence-v0-terminal-tokenjuice-codex-hook-v1-ae3c0c1376a0",
+  "status": "frozen-ready-not-run",
+  "outcome": "Frozen terminal-tokenjuice-codex-hook-v1 protocol for beets-lifecycle-sequence-v0; no provider/model run has occurred.",
+  "frozen_at": "2026-07-16",
+  "hypothesis": "terminal-tokenjuice-codex-hook-v1 produces reproducible provider-reported token and software-quality evidence for beets-lifecycle-sequence-v0",
+  "evidence_stage_target": "reproduction",
+  "task_fixture": {
+    "fixture_id": "medium-beetbox-beets",
+    "sequence_id": "beets-lifecycle-sequence-v0",
+    "repository": "https://github.com/beetbox/beets.git",
+    "snapshot": "9acb1ecff6c7ee0a1e83e3b983c94792345712c5",
+    "qualification_path": "sources/evaluations/fixtures/medium/beetbox-beets/qualification-lifecycle-v0-assisted-v1.json",
+    "qualification_sha256": "48c60a1e4c7981049187ab76be092f5c0d2f7f30c200051909594d3acd3bc8a9",
+    "timeout_seconds_per_task": 3600
+  },
+  "baseline": {
+    "profile_id": "baseline-bare-codex",
+    "provider": "openai",
+    "model": "gpt-5.6-luna",
+    "model_condition_id": "codex-openai-gpt-5-6-luna-xhigh",
+    "reasoning_effort": "xhigh",
+    "command": ""
+  },
+  "treatment": {
+    "profile_id": "terminal-tokenjuice-codex-hook-v1",
+    "provider": "openai",
+    "model": "gpt-5.6-luna",
+    "model_condition_id": "codex-openai-gpt-5-6-luna-xhigh",
+    "reasoning_effort": "xhigh",
+    "command": "python3 scripts/run_codex_workflow_evaluation.py --sequence-id beets-lifecycle-sequence-v0 --profile-id terminal-tokenjuice-codex-hook-v1 --timeout-per-task 3600 --protocol sources/evaluations/protocols/beets-lifecycle-sequence-v0-terminal-tokenjuice-codex-hook-v1-ae3c0c1376a0.json --docker-image token-eval-codex:latest"
+  },
+  "token_accounting_boundary": {
+    "fields": [
+      "fresh_input_tokens",
+      "cached_input_tokens",
+      "cache_write_tokens",
+      "output_tokens",
+      "reasoning_tokens",
+      "total_provider_tokens"
+    ]
+  },
+  "baseline_pool": {
+    "protocol_version": "baseline-pool-v1",
+    "protocol_fingerprint": "9ec0de5e93a1",
+    "descriptor": {
+      "version": "baseline-pool-v1",
+      "runner_contract_version": "workflow-runner-v9",
+      "runner_sha256": "be25bbc13d055716c71dde5ad5b3ea4b1b7dcb7a5b0b35e5e8183a21f0f33201",
+      "qualification_generator_sha256": "cb549c9aacc1e1401dedff37b08e0d578aa91d491556dfd5e3814d52a567efe8",
+      "validator_sha256": "fb9d4b83d60999caf36d63bdc4c692af20941fac312271508e8856ab80e784e2",
+      "sequence_id": "beets-lifecycle-sequence-v0",
+      "sequence_contract": "feature-refactor-review",
+      "fixture_id": "medium-beetbox-beets",
+      "fixture_scale": "medium-project",
+      "initial_snapshot": {
+        "commit": "9acb1ecff6c7ee0a1e83e3b983c94792345712c5",
+        "upstream": "https://github.com/beetbox/beets.git",
+        "dependency_lockfiles": []
+      },
+      "objective": "individual_tool_effectiveness",
+      "primary_metric": "cumulative provider-reported workflow tokens",
+      "tasks": [
+        {
+          "id": "beets-lifecycle-feature-v0",
+          "order": 1,
+          "task_class": "feature-implementation",
+          "prompt_path": "sources/evaluations/fixtures/medium/beetbox-beets/tasks/beets-lifecycle-feature-v0/agent-prompt.txt",
+          "prompt_sha256": "3014ead9717e76df7882096c42338e8865e9ed1cc16710b3525229c4570db1ef",
+          "seed_patch_sha256": "ba70f007559893d046177031857a1ceeafe2d91abf63684772c4440f27839e12",
+          "verifier_command": "sources/evaluations/fixtures/medium/beetbox-beets/tasks/beets-lifecycle-feature-v0/verify.sh",
+          "verifier_sha256": "f60e3f44e31755afd7075f30b5fde2dd8c28f7438adba78463591fca0b2e9d87",
+          "upstream_test_paths": [],
+          "compatibility_rebased_test_paths": [
+            "test/controller_hidden/lifecycle/test_multivalue_modify_feature.py"
+          ],
+          "expected_model_concealed_paths": [
+            "test/controller_hidden/lifecycle/test_multivalue_modify_feature.py"
+          ],
+          "model_concealed_paths": [
+            "test/controller_hidden/lifecycle/test_multivalue_modify_feature.py"
+          ]
+        },
+        {
+          "id": "beets-lifecycle-refactor-v0",
+          "order": 2,
+          "task_class": "behavior-preserving-refactor",
+          "prompt_path": "sources/evaluations/fixtures/medium/beetbox-beets/tasks/beets-lifecycle-refactor-v0/agent-prompt.txt",
+          "prompt_sha256": "6ac1212a05e5f71771282a46fb5d83fcf6c58410c0ae604d8b7146120dbda8dc",
+          "seed_patch_sha256": "e43dd6ca54b70dd02accd0c4d9c995a998d615c8bc6ac253f5d5bbdd9461f35e",
+          "verifier_command": "sources/evaluations/fixtures/medium/beetbox-beets/tasks/beets-lifecycle-refactor-v0/verify.sh",
+          "verifier_sha256": "237b3686e0bc6d2316534a97327e952d900e30d93a2d87a23dc1f14be84f662c",
+          "upstream_test_paths": [],
+          "compatibility_rebased_test_paths": [
+            "test/controller_hidden/lifecycle/test_lazy_model_storage_refactor.py"
+          ],
+          "expected_model_concealed_paths": [
+            "test/controller_hidden/lifecycle/test_lazy_model_storage_refactor.py"
+          ],
+          "model_concealed_paths": [
+            "test/controller_hidden/lifecycle/test_lazy_model_storage_refactor.py"
+          ]
+        },
+        {
+          "id": "beets-lifecycle-review-v0",
+          "order": 3,
+          "task_class": "code-review-correction",
+          "prompt_path": "sources/evaluations/fixtures/medium/beetbox-beets/tasks/beets-lifecycle-review-v0/agent-prompt.txt",
+          "prompt_sha256": "a812677d0cf0fd502a736111bf9fe03fa523762012a4c1d838e7fe8a6f3da8e5",
+          "seed_patch_sha256": "991f4a7367c14c729c49ee06a5c2c528bd1d44efe239cb3a4d9f068a04ff8b53",
+          "verifier_command": "sources/evaluations/fixtures/medium/beetbox-beets/tasks/beets-lifecycle-review-v0/verify.sh",
+          "verifier_sha256": "084832f516836353dbba20a5d7ca1e00f434db1bdbf41a69f3dc3bc5f6671b20",
+          "upstream_test_paths": [],
+          "compatibility_rebased_test_paths": [
+            "test/controller_hidden/lifecycle/test_ftintitle_review.py"
+          ],
+          "expected_model_concealed_paths": [
+            "test/controller_hidden/lifecycle/test_ftintitle_review.py"
+          ],
+          "model_concealed_paths": [
+            "test/controller_hidden/lifecycle/test_ftintitle_review.py"
+          ],
+          "review_patch_path": "review-change.patch",
+          "review_patch_sha256": "82bc5edd33ea44c7d243c73b3bdbd0a43350671f29f25a7d1d2884235cddb6d1"
+        }
+      ],
+      "model_facing_prompts": {
+        "rendering_contract": "sequential-model-facing-prompts-v2",
+        "profile_guidance_sha256": "f1d7a2cf7b0a7c1affd8bbb04705f073332ee6efc5f8f89f019b9e0cbacec4bb",
+        "tasks": [
+          {
+            "task_id": "beets-lifecycle-feature-v0",
+            "order": 1,
+            "rendered_prompt_sha256": "5e39bcb146f21c0ef4c27db5eb6f07d999268405a51854a68d22beadbfabc556"
+          },
+          {
+            "task_id": "beets-lifecycle-refactor-v0",
+            "order": 2,
+            "rendered_prompt_sha256": "3e28f7ae54e5b6bb433f7cc21b55259ddd19a9ca413d852591da88a552b3083d"
+          },
+          {
+            "task_id": "beets-lifecycle-review-v0",
+            "order": 3,
+            "rendered_prompt_sha256": "378b17a776d300bcdd2b8e958c0418f667d6352522ef98931b88b58f5f1b1314"
+          }
+        ]
+      },
+      "qualification": {
+        "path": "sources/evaluations/fixtures/medium/beetbox-beets/qualification-lifecycle-v0-assisted-v1.json",
+        "sha256": "48c60a1e4c7981049187ab76be092f5c0d2f7f30c200051909594d3acd3bc8a9"
+      },
+      "baseline_profile": {
+        "profile_id": "baseline-bare-codex",
+        "profile_type": "control",
+        "enabled_surfaces": [
+          "codex-native-shell-edit"
+        ],
+        "disabled_overlaps": [
+          "all MCP servers",
+          "all token-saving surfaces",
+          "global Codex instructions",
+          "hooks",
+          "skills/plugins",
+          "warm indexes"
+        ]
+      },
+      "agent": {
+        "runtime_id": "codex-cli",
+        "provider": "openai",
+        "model": "gpt-5.6-luna",
+        "model_condition_id": "codex-openai-gpt-5-6-luna-xhigh",
+        "reasoning_effort": "xhigh"
+      },
+      "runtime_inputs": {
+        "timeout_seconds_per_task": 3600,
+        "docker_image": "token-eval-codex:latest",
+        "docker_image_identity": {
+          "image_ref": "token-eval-codex:latest",
+          "image_id": "sha256:6f86d01f2c63f5029c6bb874d8f3694c24d5cd567e3d09413eccc956ba3feafe",
+          "repo_digests": [
+            "token-eval-codex@sha256:6f86d01f2c63f5029c6bb874d8f3694c24d5cd567e3d09413eccc956ba3feafe"
+          ],
+          "repo_tags": [
+            "token-eval-codex:latest"
+          ]
+        },
+        "dockerfile_path": "sources/evaluations/fixtures/container/Dockerfile",
+        "dockerfile_sha256": "47c91967ce25014ce54879514f51d2ff0326651be1087209115eff4d358226b3",
+        "dependency_command": "uv sync --group test",
+        "dependency_lockfiles": [],
+        "codex_runtime_condition": "codex-openai-gpt-5-6-luna-xhigh"
+      },
+      "isolation": {
+        "prompt_delivery": "sequential-one-task-at-a-time",
+        "seed_delivery_mode": "preseeded-composite",
+        "future_tasks_visible": false,
+        "future_seed_regressions_visible": true,
+        "verifier_assets_model_visible": false,
+        "git_baseline_true_root_at_lane_start": true,
+        "controller_verification": "final-only",
+        "prompt_sanitizer": "sanitize_task_prompt-v1",
+        "concealment": "declared-model-concealed-paths-removed-before-root-commit",
+        "model_concealed_paths": [
+          "test/controller_hidden/lifecycle/test_ftintitle_review.py",
+          "test/controller_hidden/lifecycle/test_lazy_model_storage_refactor.py",
+          "test/controller_hidden/lifecycle/test_multivalue_modify_feature.py"
+        ]
+      }
+    }
+  },
+  "selected_execution": {
+    "descriptor_sha256": "f83011d92d1bd3795f891d3427e9535724a92a305c50363daeda1129a65cd8d1",
+    "descriptor": {
+      "version": "execution-condition-v1",
+      "sequence_id": "beets-lifecycle-sequence-v0",
+      "execution_role": "individual_tool_treatment",
+      "selected_profile": {
+        "profile_id": "terminal-tokenjuice-codex-hook-v1",
+        "profile_type": "individual_tool",
+        "component_ids": [
+          "terminal-tokenjuice-codex-hook-v1"
+        ],
+        "enabled_surfaces": [
+          "codex-post-tool-use-hook",
+          "terminal-output"
+        ],
+        "disabled_overlaps": [
+          "all unlisted surfaces"
+        ],
+        "registry_entry_sha256": "d68abdb6553deb2321bb41870fa4aa3fe689c0a6e313a835858c44cbc878b878",
+        "registry_entry": {
+          "id": "terminal-tokenjuice-codex-hook-v1",
+          "profile_type": "individual_tool",
+          "objective_scope": "individual_tool_effectiveness",
+          "status": "screening-shortlist",
+          "enabled_surfaces": [
+            "codex-post-tool-use-hook",
+            "terminal-output"
+          ],
+          "disabled_overlaps": [
+            "all unlisted surfaces"
+          ],
+          "components": [
+            {
+              "component_id": "terminal-tokenjuice-codex-hook-v1",
+              "surface": "codex-post-tool-use-hook/terminal-output-compaction",
+              "role": "individual_tool"
+            }
+          ],
+          "install": {
+            "policy": "Use the pinned TokenJuice binary to run `tokenjuice install codex` against the lane-private CODEX_HOME, retain hooks.json, enable Codex hooks, and require `tokenjuice doctor codex` to pass before provider execution."
+          },
+          "reset": {
+            "policy": "Delete the lane-private CODEX_HOME and TokenJuice state after evidence capture; verify hooks.json and hook history cannot survive into another lane."
+          },
+          "evaluation_protocol": {
+            "tool_use_policy": "natural",
+            "tool_state": "cold-cli",
+            "integration_state": "official-codex-hook"
+          },
+          "notes": "Corrected versioned TokenJuice profile. Supersedes the CLI-only historical profile for product-effect claims; does not rewrite its evidence."
+        }
+      },
+      "model_facing_prompts": {
+        "rendering_contract": "sequential-model-facing-prompts-v2",
+        "profile_guidance_sha256": "cb08dba8b361975eb89669cc77d206861b05fc26b161a9215337dbb2d30a6366",
+        "tasks": [
+          {
+            "task_id": "beets-lifecycle-feature-v0",
+            "order": 1,
+            "rendered_prompt_sha256": "4aaa356c6a47a303fab0c4dbbd9c7317b304ce516608ab25fa9ff3b2dead2fe4"
+          },
+          {
+            "task_id": "beets-lifecycle-refactor-v0",
+            "order": 2,
+            "rendered_prompt_sha256": "3e28f7ae54e5b6bb433f7cc21b55259ddd19a9ca413d852591da88a552b3083d"
+          },
+          {
+            "task_id": "beets-lifecycle-review-v0",
+            "order": 3,
+            "rendered_prompt_sha256": "378b17a776d300bcdd2b8e958c0418f667d6352522ef98931b88b58f5f1b1314"
+          }
+        ]
+      },
+      "tool_adapter": {
+        "tool_id": "tokenjuice-codex-hook-v1",
+        "tool_manifest": "scripts/run_codex_fixture_evaluation.py:TOOL_CONFIGS",
+        "tool_manifest_sha256": "6fa8271b89a577706ea0bbffcc8e4521831f41b646ed9519369efee3642fe41c",
+        "tool_config": {
+          "display_name": "TokenJuice Codex hook v1",
+          "lane_name": "terminal-tokenjuice-codex-hook-v1",
+          "surface": "codex-post-tool-use-hook/terminal-output-compaction",
+          "allowed_terms": [
+            "tokenjuice"
+          ],
+          "data_dir_name": "tokenjuice-codex-hook-v1",
+          "executable": "/opt/data/tool-candidates/tokenjuice/bin/tokenjuice",
+          "path_entries": [
+            "/opt/data/tool-candidates/tokenjuice/bin"
+          ],
+          "mounts": [
+            "/opt/data/tool-candidates/tokenjuice"
+          ],
+          "env": {
+            "TOKENJUICE_TELEMETRY": "0"
+          },
+          "codex_features": {
+            "hooks": true
+          },
+          "host_integration": {
+            "install_commands": [
+              [
+                "tokenjuice",
+                "install",
+                "codex"
+              ]
+            ],
+            "verify_commands": [
+              [
+                "tokenjuice",
+                "doctor",
+                "codex"
+              ]
+            ],
+            "required_files": [
+              "{codex_home}/hooks.json"
+            ]
+          },
+          "preflight_command": [
+            "tokenjuice",
+            "--version"
+          ],
+          "default_tool_state": "cold-cli"
+        },
+        "tool_config_sha256": "ae1533be8109f2cdaf09ae83165aa36153210b262c1768b4265f44e33f6ddb2c",
+        "tool_state": "cold-cli",
+        "tool_use_policy": "natural",
+        "command_identity": {
+          "kind": "preflight_command",
+          "command": [
+            "tokenjuice",
+            "--version"
+          ]
+        },
+        "binary_identity": {
+          "executable_token": "tokenjuice",
+          "resolved_path": "/opt/data/tool-candidates/tokenjuice/bin/tokenjuice",
+          "realpath": "/opt/data/tool-candidates/tokenjuice/bin/tokenjuice",
+          "sha256": "d3939a3f76f8ae5489add74453edee5e11870d25a4bd92972111f664f33bc690",
+          "metadata": {
+            "size": 128,
+            "mode": "-rwxr-xr-x",
+            "uid": 10000,
+            "gid": 10000,
+            "mtime_ns": 1783105655084864002
+          },
+          "version": {
+            "command": [
+              "/opt/data/tool-candidates/tokenjuice/bin/tokenjuice",
+              "--version"
+            ],
+            "environment_path": "/opt/data/.local/bin:/opt/data/tool-candidates/tokenjuice/bin:/opt/data/opt/go/bin:/opt/data/opt/uv:/opt/data/opt/node-v24.18.0-linux-x64/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+            "captured": true,
+            "exit_code": 0,
+            "output": "0.8.1",
+            "truncated": false
+          }
+        },
+        "source_identity": [
+          {
+            "path": "/opt/data/tool-candidates/tokenjuice",
+            "exists": true,
+            "kind": "directory",
+            "git_head": "49bdcf1755833ff1e02e44e6e7fe91c0fb44c16e",
+            "package_json_sha256": "420cce726d4d710bfc59e5059a4e4d4f1d52fcaafe71663e2a7077bb41e9eafe"
+          }
+        ]
+      },
+      "runtime": {
+        "docker_image": "token-eval-codex:latest",
+        "docker_image_identity": {
+          "image_ref": "token-eval-codex:latest",
+          "image_id": "sha256:6f86d01f2c63f5029c6bb874d8f3694c24d5cd567e3d09413eccc956ba3feafe",
+          "repo_digests": [
+            "token-eval-codex@sha256:6f86d01f2c63f5029c6bb874d8f3694c24d5cd567e3d09413eccc956ba3feafe"
+          ],
+          "repo_tags": [
+            "token-eval-codex:latest"
+          ]
+        },
+        "dockerfile_path": "sources/evaluations/fixtures/container/Dockerfile",
+        "dockerfile_sha256": "47c91967ce25014ce54879514f51d2ff0326651be1087209115eff4d358226b3",
+        "fixture_runner_path": "scripts/run_codex_fixture_evaluation.py",
+        "fixture_runner_sha256": "6fa8271b89a577706ea0bbffcc8e4521831f41b646ed9519369efee3642fe41c",
+        "mcp_probe_path": "scripts/probe_mcp_stdio.py",
+        "mcp_probe_sha256": "7c06ea36ee5cac933a97140b84a41405fc99b45152388e8d7c6659136af698fd",
+        "codex_entrypoint_path": "sources/evaluations/fixtures/container/codex-entrypoint.sh",
+        "codex_entrypoint_sha256": "8715fe37cb1fa3823f5f05493bc9681ce7ffc72126dfec4d64d448762c550c3c",
+        "timeout_seconds_per_task": 3600,
+        "network_isolation": {
+          "provider_access": true,
+          "model_shell_network_access": false,
+          "model_shell_enforcement": "seccomp denies AF_INET and AF_INET6 socket creation for the shell process and descendants",
+          "codex_web_search": "disabled",
+          "external_retrieval_audit": "fail-closed"
+        },
+        "isolation_policy": "fresh lane-specific Codex home/tool data; provider-only network with model shell and Codex web search disabled; sequential one-task prompt delivery; concealed tests removed before model-visible root commit"
+      },
+      "dependencies": {
+        "command": "uv sync --group test",
+        "command_sha256": "e718e73048f88b906401006442fb858a4e9e4252f387df2c938eb41755762aa8",
+        "lockfiles": []
+      },
+      "agent_condition": {
+        "runtime_id": "codex-cli",
+        "provider": "openai",
+        "model": "gpt-5.6-luna",
+        "model_condition_id": "codex-openai-gpt-5-6-luna-xhigh",
+        "reasoning_effort": "xhigh",
+        "codex_version_condition": "captured-at-run-and-bound-to-record"
+      },
+      "isolation": {
+        "prompt_delivery": "sequential-one-task-at-a-time",
+        "seed_delivery_mode": "preseeded-composite",
+        "future_tasks_visible": false,
+        "future_seed_regressions_visible": true,
+        "controller_verification": "final-only",
+        "verifier_assets_model_visible": false,
+        "model_concealed_paths": [
+          "test/controller_hidden/lifecycle/test_ftintitle_review.py",
+          "test/controller_hidden/lifecycle/test_lazy_model_storage_refactor.py",
+          "test/controller_hidden/lifecycle/test_multivalue_modify_feature.py"
+        ]
+      },
+      "baseline_pool_reference": {
+        "protocol_version": "baseline-pool-v1",
+        "protocol_fingerprint": "9ec0de5e93a1",
+        "comparison_policy": "paired baseline and treatment must share this baseline pool fingerprint and replicate"
+      }
+    }
+  }
+}

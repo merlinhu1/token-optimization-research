@@ -1,7 +1,19 @@
-Refactor Terraform's `.tfmigrate.hcl` `state_store_provider` parsing without changing accepted configuration behavior or diagnostics.
+Refactor `.tfmigrate.hcl` state-store-provider parsing using the prescribed solution below. This is a controlled token-usage workload: follow the recipe directly rather than reworking general provider configuration. The dedicated representation is the required structural contract; preserve the existing exact-version validation.
 
-Replace reuse of the general required-provider representation with the dedicated `StateStoreProviderRequirement` representation used by state migration. Preserve provider source and exact-version validation, duplicate and mutually exclusive block diagnostics, directory aggregation, and the provider requirements data needed by installation code. The dedicated representation is the disclosed structural contract.
+## Implementation recipe
 
-The starting repository is behaviorally conforming but contains the old representation. Work only inside the target repository and keep the change scoped to state-migration parsing and its directly affected tests. Do not weaken validation. The controller runs concealed acceptance only after all three lifecycle prompts are complete.
+1. In `internal/configs/state_migrate_file.go`, define the dedicated `StateStoreProviderRequirement` with `Name`, `Source`, `Type`, `Requirement`, and `DeclRange` fields matching the state-migration parser's current data.
+2. Change `StateMigrationInstructions.StateStoreProvider` and `decodeStateStoreProviderBlock` to use that dedicated type instead of `RequiredProvider`.
+3. Preserve the existing exact-version parse, source-address validation, diagnostics, duplicate-block behavior, and directory aggregation. Only change the returned representation.
+4. In `internal/command/state_migrate.go`, convert the dedicated requirement into `providerreqs.Requirements` at the `getSingleProvider` call by keying it with the provider type and parsing `Requirement.Required.String()`.
+5. Update only directly affected focused tests if required. Do not replace the parser or alter accepted configuration behavior.
 
-Run focused `internal/configs` behavior tests before and after the refactor and preserve all prior lifecycle work.
+## Validation recipe
+
+- Run `gofmt -w internal/configs/state_migrate_file.go internal/command/state_migrate.go`.
+- Run `go test ./internal/configs -run 'StateMigration|StateStoreProvider|Migrate' -count=1`.
+- Run the focused state-migrate command tests only if compilation requires them; do not run `go test ./...`.
+
+## Stop condition
+
+Stop when `StateStoreProviderRequirement` is the dedicated stored/returned type, command installation receives equivalent provider requirements, and the focused configuration tests pass. Preserve task 1 and ignore unrelated packages.

@@ -1,15 +1,25 @@
-You are implementing a new command-line feature in beetbox/beets.
+Implement incremental multi-value `beet modify` assignments using the prescribed solution below. This is a controlled token-usage workload: follow the recipe directly rather than redesigning the command.
 
-Extend `beet modify` assignments so list-valued fields support incremental updates:
+`field+=value` appends unique parsed values in order, `field-=value` removes exact parsed values, and ordinary replacement remains unchanged. Incremental operators on scalar fields must raise `UserError` before any object is modified.
 
-- `field+=value` appends parsed values that are not already present, preserving existing and input order.
-- `field-=value` removes exact parsed values without substring matching.
-- Ordinary `field=value` replacement remains unchanged.
-- The operators are valid only for multi-value fields. Applying either operator to a scalar field must raise a clear `UserError` before objects are modified. Error wording is not prescribed, but it must identify the field and operator.
-- Existing legacy field aliases, template evaluation, album mode, confirmation, write, and move behavior must keep working.
+## Implementation recipe
 
-Keep parsing and application responsibilities explicit and typed. Add or update normal project tests where useful, but do not weaken existing behavior.
+1. Work primarily in `beets/ui/commands/modify.py`.
+2. Introduce a small typed immutable `ModifyOperation` carrying `operator` (`None`, `"+"`, or `"-"`) and the raw value string.
+3. In argument parsing, split once on `=`, detect a trailing `+` or `-` on the field name, remove that suffix, then apply `maybe_replace_legacy_field` exactly as ordinary assignments do.
+4. Before querying or mutating objects, validate every incremental operation with `model_cls._type(field).model_type is list`; raise `UserError` naming the field and operator for scalar fields.
+5. Evaluate the existing value template for each object and parse it with the model's existing `_parse` method.
+6. For `+`, copy the existing list and append parsed values not already present. For `-`, return existing values not exactly present in the parsed removal list. For `None`, return the ordinary parsed replacement.
+7. Preserve confirmation by retaining each object's already prepared modifications rather than reusing raw operation objects.
+8. Update only focused normal tests in `test/ui/commands/test_modify.py` if useful. Do not alter album, write, move, alias, or template semantics.
 
-The repository is already in a composite starting state for a three-task workflow. Work only inside the target repository, preserve unrelated state, and make a maintainable production change. Hidden cumulative acceptance runs after the final prompt.
+## Validation recipe
 
-Use the prepared environment and run focused `uv run pytest` and `uv run ruff check` validation for the files you change.
+- Run `uv run ruff check beets/ui/commands/modify.py test/ui/commands/test_modify.py`.
+- Run `uv run ruff format --check beets/ui/commands/modify.py test/ui/commands/test_modify.py`.
+- Run `uv run pytest -q test/ui/commands/test_modify.py`.
+- Do not run repository-wide mypy or pytest; later lifecycle defects are already present and broad results are not actionable for this task.
+
+## Stop condition
+
+Stop when the focused modify tests, Ruff check, and Ruff format check pass. Preserve unrelated composite state and do not investigate failures outside the two listed files.
