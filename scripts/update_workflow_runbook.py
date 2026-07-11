@@ -37,6 +37,19 @@ def active_sequences() -> list[dict[str, Any]]:
     ]
 
 
+def sequence_model_flags(sequence: dict[str, Any]) -> str:
+    gate = sequence.get("mistake_gate", {})
+    condition_id = gate.get("designated_model_condition")
+    model = gate.get("model")
+    effort = gate.get("reasoning_effort")
+    if not all(isinstance(value, str) and value for value in (condition_id, model, effort)):
+        return ""
+    return (
+        f"--workflow-model-condition-id {condition_id} "
+        f"--workflow-model {model} --workflow-reasoning-effort {effort}"
+    )
+
+
 def render_table(sequences: list[dict[str, Any]], fixtures: dict[str, dict[str, Any]]) -> str:
     lines = [
         "| Sequence | Fixture | Scale | Snapshot | Tasks |",
@@ -173,11 +186,11 @@ def render() -> str:
         )
         if pending_baselines:
             prepare_commands = "\n".join(
-                f"python3 scripts/run_sequential_workflow_matrix.py {sequence['id']} --prepare-only"
+                f"python3 scripts/run_sequential_workflow_matrix.py {sequence['id']} {sequence_model_flags(sequence)} --prepare-only".replace("  ", " ")
                 for sequence in pending_baselines
             )
             baseline_commands = "\n".join(
-                f"python3 scripts/run_sequential_workflow_matrix.py {sequence['id']}"
+                f"python3 scripts/run_sequential_workflow_matrix.py {sequence['id']} {sequence_model_flags(sequence)}".rstrip()
                 for sequence in pending_baselines
             )
             chunks.append(

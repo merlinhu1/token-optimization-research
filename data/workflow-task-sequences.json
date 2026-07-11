@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "description": "The production evaluation portfolio: three active lifecycle-v0 lanes, each ordered feature implementation, behavior-preserving refactor, and code review/correction. Each lane has two retained operational baseline replicates and is ready for compatible treatment comparison.",
+  "description": "The production lifecycle-v0 portfolio uses the low-complexity Baseline V2 task family: three persistent feature-refactor-review workflows with exact recipes, one-to-three production files per task, model-visible focused validation, and a zero-model-incident strongest-model pilot gate before treatment spend.",
   "state_policy_defaults": {
     "reset_before_session": [
       "repository working tree",
@@ -26,15 +26,17 @@
       "acceptance_design": "behavioral",
       "scope": "production-primary",
       "sequence_contract": "feature-refactor-review",
-      "readiness_blockers": [],
+      "readiness_blockers": [
+        "provider-backed strongest-model zero-mistake pilot not yet executed"
+      ],
       "objective": "individual_tool_effectiveness",
       "primary_metric": "cumulative provider-reported workflow tokens",
       "reset_policy": "Reset once before the lane; preseed the missing feature, behavior-preserving structural debt, and flawed review candidate into one concealed composite root; preserve repository, Git, tool, index, cache, generated configuration, memory, and agent state across prompts; run every concealed verifier after the final prompt.",
       "seed_patch_policy": "Controller merges all three independently qualified lifecycle start conditions into one composite broken start before provider execution. Prompts are disclosed sequentially; the proposed review patch is disclosed only with task 3; acceptance assets remain controller-only; every verifier runs after the final prompt.",
-      "protocol_freeze_date": "2026-07-16",
-      "production_lane": "current-production-v0",
-      "qualification_path": "sources/evaluations/fixtures/medium/fastify-fastify/qualification-lifecycle-v0-assisted-v1.json",
-      "qualification_date": "2026-07-16",
+      "protocol_freeze_date": "2026-07-21",
+      "production_lane": "current-production-v0-baseline-v2",
+      "qualification_path": "sources/evaluations/fixtures/medium/fastify-fastify/qualification-lifecycle-v0-baseline-v2.json",
+      "qualification_date": "2026-07-21",
       "fixture_id": "medium-fastify-fastify",
       "fixture_scale": "medium-project",
       "initial_snapshot": {
@@ -52,37 +54,73 @@
           "id": "fastify-lifecycle-feature-v0",
           "order": 1,
           "task_class": "feature-implementation",
-          "prompt_path": "sources/evaluations/fixtures/medium/fastify-fastify/tasks/fastify-lifecycle-feature-v0/agent-prompt.txt",
-          "verifier_command": "sources/evaluations/fixtures/medium/fastify-fastify/tasks/fastify-lifecycle-feature-v0/verify.sh",
+          "prompt_path": "sources/evaluations/fixtures/medium/fastify-fastify/task-generations/baseline-v2/fastify-lifecycle-feature-v0/agent-prompt.txt",
+          "verifier_command": "sources/evaluations/fixtures/medium/fastify-fastify/task-generations/baseline-v2/fastify-lifecycle-feature-v0/verify.sh",
           "upstream_test_paths": [],
           "compatibility_rebased_test_paths": [],
-          "model_concealed_paths": []
+          "model_concealed_paths": [],
+          "expected_changed_paths": [
+            "lib/request.js"
+          ],
+          "model_visible_validation_anchors": [
+            "request.mediaType"
+          ]
         },
         {
           "id": "fastify-lifecycle-refactor-v0",
           "order": 2,
           "task_class": "behavior-preserving-refactor",
-          "prompt_path": "sources/evaluations/fixtures/medium/fastify-fastify/tasks/fastify-lifecycle-refactor-v0/agent-prompt.txt",
-          "verifier_command": "sources/evaluations/fixtures/medium/fastify-fastify/tasks/fastify-lifecycle-refactor-v0/verify.sh",
+          "prompt_path": "sources/evaluations/fixtures/medium/fastify-fastify/task-generations/baseline-v2/fastify-lifecycle-refactor-v0/agent-prompt.txt",
+          "verifier_command": "sources/evaluations/fixtures/medium/fastify-fastify/task-generations/baseline-v2/fastify-lifecycle-refactor-v0/verify.sh",
           "upstream_test_paths": [],
           "compatibility_rebased_test_paths": [],
-          "model_concealed_paths": []
+          "model_concealed_paths": [],
+          "expected_changed_paths": [
+            "lib/content-type.js"
+          ],
+          "model_visible_validation_anchors": [
+            "ContentType.cache"
+          ]
         },
         {
           "id": "fastify-lifecycle-review-v0",
           "order": 3,
           "task_class": "code-review-correction",
-          "prompt_path": "sources/evaluations/fixtures/medium/fastify-fastify/tasks/fastify-lifecycle-review-v0/agent-prompt.txt",
-          "verifier_command": "sources/evaluations/fixtures/medium/fastify-fastify/tasks/fastify-lifecycle-review-v0/verify.sh",
+          "prompt_path": "sources/evaluations/fixtures/medium/fastify-fastify/task-generations/baseline-v2/fastify-lifecycle-review-v0/agent-prompt.txt",
+          "verifier_command": "sources/evaluations/fixtures/medium/fastify-fastify/task-generations/baseline-v2/fastify-lifecycle-review-v0/verify.sh",
           "upstream_test_paths": [],
           "compatibility_rebased_test_paths": [],
           "model_concealed_paths": [],
-          "review_patch_path": "review-change.patch"
+          "review_patch_path": "review-change.patch",
+          "expected_changed_paths": [
+            "fastify.js",
+            "lib/errors.js"
+          ],
+          "model_visible_validation_anchors": [
+            "FST_ERR_MAX_PARAM_LENGTH"
+          ]
         }
       ],
-      "conversion_note": "One persistent lifecycle adds request media-type metadata, refactors shared Content-Type parsing reuse without behavior change, and reviews an authentic pre-review onMaxParamLength status-code flaw.",
-      "complexity_note": "Authentic feature, disclosed structural/performance refactor, and concrete flawed-change review use disjoint production surfaces.",
-      "complexity_bar": "Each class has an executable fixed/start gate; the refactor separately proves behavior preservation and structural nonconformance."
+      "conversion_note": "Baseline V2 supersedes the active assisted-v1 task generation for future execution while preserving every executed assisted-v1 protocol and session byte-for-byte.",
+      "complexity_note": "Baseline V2 caps each task at one to three prescribed production files, supplies the exact edit and focused model-visible validation, forbids rediscovery and broad suites, and retains disjoint lifecycle surfaces.",
+      "complexity_bar": "The fixed snapshot must pass, each seed must fail semantic or structural acceptance as appropriate, and treatment launch remains blocked until the strongest-model pilot has literally zero unique model incidents.",
+      "task_family_generation": "baseline-v2",
+      "mistake_gate": {
+        "designated_model_condition": "codex-openai-gpt-5-6-sol-high",
+        "allowed_unique_model_incidents": 0,
+        "allowed_corrected_implementation_mistakes": 0,
+        "allowed_unresolved_defects": 0,
+        "status": "provider-pilot-required",
+        "treatment_launch_policy": "blocked until one first-valid strongest-model pilot is independently audited with all three counts equal to zero",
+        "model": "gpt-5.6-sol",
+        "reasoning_effort": "high",
+        "allowed_prohibited_operations": 0,
+        "allowed_unnecessary_exploration_incidents": 0,
+        "allowed_model_caused_failed_commands": 0,
+        "allowed_code_rework_events": 0,
+        "allowed_verifier_or_environment_failures": 0,
+        "incident_counting": "unique-auditable-not-command-count"
+      }
     },
     {
       "id": "beets-lifecycle-sequence-v0",
@@ -90,15 +128,17 @@
       "acceptance_design": "behavioral",
       "scope": "production-primary",
       "sequence_contract": "feature-refactor-review",
-      "readiness_blockers": [],
+      "readiness_blockers": [
+        "provider-backed strongest-model zero-mistake pilot not yet executed"
+      ],
       "objective": "individual_tool_effectiveness",
       "primary_metric": "cumulative provider-reported workflow tokens",
       "reset_policy": "Reset once before the lane; preseed the missing feature, behavior-preserving structural debt, and flawed review candidate into one concealed composite root; preserve repository, Git, tool, index, cache, generated configuration, memory, and agent state across prompts; run every concealed verifier after the final prompt.",
       "seed_patch_policy": "Controller merges all three independently qualified lifecycle start conditions into one composite broken start before provider execution. Prompts are disclosed sequentially; the proposed review patch is disclosed only with task 3; acceptance assets remain controller-only; every verifier runs after the final prompt.",
-      "protocol_freeze_date": "2026-07-16",
-      "production_lane": "current-production-v0",
-      "qualification_path": "sources/evaluations/fixtures/medium/beetbox-beets/qualification-lifecycle-v0-assisted-v1.json",
-      "qualification_date": "2026-07-16",
+      "protocol_freeze_date": "2026-07-21",
+      "production_lane": "current-production-v0-baseline-v2",
+      "qualification_path": "sources/evaluations/fixtures/medium/beetbox-beets/qualification-lifecycle-v0-baseline-v2.json",
+      "qualification_date": "2026-07-21",
       "fixture_id": "medium-beetbox-beets",
       "fixture_scale": "medium-project",
       "initial_snapshot": {
@@ -111,49 +151,72 @@
           "id": "beets-lifecycle-feature-v0",
           "order": 1,
           "task_class": "feature-implementation",
-          "prompt_path": "sources/evaluations/fixtures/medium/beetbox-beets/tasks/beets-lifecycle-feature-v0/agent-prompt.txt",
-          "verifier_command": "sources/evaluations/fixtures/medium/beetbox-beets/tasks/beets-lifecycle-feature-v0/verify.sh",
+          "prompt_path": "sources/evaluations/fixtures/medium/beetbox-beets/task-generations/baseline-v2/beets-lifecycle-feature-v0/agent-prompt.txt",
+          "verifier_command": "sources/evaluations/fixtures/medium/beetbox-beets/task-generations/baseline-v2/beets-lifecycle-feature-v0/verify.sh",
           "upstream_test_paths": [],
-          "compatibility_rebased_test_paths": [
-            "test/controller_hidden/lifecycle/test_multivalue_modify_feature.py"
+          "compatibility_rebased_test_paths": [],
+          "model_concealed_paths": [],
+          "expected_changed_paths": [
+            "beets/util/functemplate.py"
           ],
-          "model_concealed_paths": [
-            "test/controller_hidden/lifecycle/test_multivalue_modify_feature.py"
+          "model_visible_validation_anchors": [
+            "test/util/test_functemplate.py"
           ]
         },
         {
           "id": "beets-lifecycle-refactor-v0",
           "order": 2,
           "task_class": "behavior-preserving-refactor",
-          "prompt_path": "sources/evaluations/fixtures/medium/beetbox-beets/tasks/beets-lifecycle-refactor-v0/agent-prompt.txt",
-          "verifier_command": "sources/evaluations/fixtures/medium/beetbox-beets/tasks/beets-lifecycle-refactor-v0/verify.sh",
+          "prompt_path": "sources/evaluations/fixtures/medium/beetbox-beets/task-generations/baseline-v2/beets-lifecycle-refactor-v0/agent-prompt.txt",
+          "verifier_command": "sources/evaluations/fixtures/medium/beetbox-beets/task-generations/baseline-v2/beets-lifecycle-refactor-v0/verify.sh",
           "upstream_test_paths": [],
-          "compatibility_rebased_test_paths": [
-            "test/controller_hidden/lifecycle/test_lazy_model_storage_refactor.py"
+          "compatibility_rebased_test_paths": [],
+          "model_concealed_paths": [],
+          "expected_changed_paths": [
+            "beets/dbcore/db.py"
           ],
-          "model_concealed_paths": [
-            "test/controller_hidden/lifecycle/test_lazy_model_storage_refactor.py"
+          "model_visible_validation_anchors": [
+            "LazyDict"
           ]
         },
         {
           "id": "beets-lifecycle-review-v0",
           "order": 3,
           "task_class": "code-review-correction",
-          "prompt_path": "sources/evaluations/fixtures/medium/beetbox-beets/tasks/beets-lifecycle-review-v0/agent-prompt.txt",
-          "verifier_command": "sources/evaluations/fixtures/medium/beetbox-beets/tasks/beets-lifecycle-review-v0/verify.sh",
+          "prompt_path": "sources/evaluations/fixtures/medium/beetbox-beets/task-generations/baseline-v2/beets-lifecycle-review-v0/agent-prompt.txt",
+          "verifier_command": "sources/evaluations/fixtures/medium/beetbox-beets/task-generations/baseline-v2/beets-lifecycle-review-v0/verify.sh",
           "upstream_test_paths": [],
-          "compatibility_rebased_test_paths": [
-            "test/controller_hidden/lifecycle/test_ftintitle_review.py"
+          "compatibility_rebased_test_paths": [],
+          "model_concealed_paths": [],
+          "review_patch_path": "review-change.patch",
+          "expected_changed_paths": [
+            "beetsplug/ftintitle.py"
           ],
-          "model_concealed_paths": [
-            "test/controller_hidden/lifecycle/test_ftintitle_review.py"
-          ],
-          "review_patch_path": "review-change.patch"
+          "model_visible_validation_anchors": [
+            "test/plugins/test_ftintitle.py"
+          ]
         }
       ],
-      "conversion_note": "One persistent lifecycle implements multi-value modify operators, performs the UserDict-backed lazy-storage refactor while preserving behavior, and reviews the authentic flawed ftintitle metadata-hook revision.",
-      "complexity_note": "Task scope follows authentic causally related production surfaces without an arbitrary changed-file minimum.",
-      "complexity_bar": "Each class has executable semantic acceptance; the refactor separately records behavior and structure gates."
+      "conversion_note": "Baseline V2 supersedes the active assisted-v1 task generation for future execution while preserving every executed assisted-v1 protocol and session byte-for-byte.",
+      "complexity_note": "Baseline V2 caps each task at one to three prescribed production files, supplies the exact edit and focused model-visible validation, forbids rediscovery and broad suites, and retains disjoint lifecycle surfaces.",
+      "complexity_bar": "The fixed snapshot must pass, each seed must fail semantic or structural acceptance as appropriate, and treatment launch remains blocked until the strongest-model pilot has literally zero unique model incidents.",
+      "task_family_generation": "baseline-v2",
+      "mistake_gate": {
+        "designated_model_condition": "codex-openai-gpt-5-6-sol-high",
+        "allowed_unique_model_incidents": 0,
+        "allowed_corrected_implementation_mistakes": 0,
+        "allowed_unresolved_defects": 0,
+        "status": "provider-pilot-required",
+        "treatment_launch_policy": "blocked until one first-valid strongest-model pilot is independently audited with all three counts equal to zero",
+        "model": "gpt-5.6-sol",
+        "reasoning_effort": "high",
+        "allowed_prohibited_operations": 0,
+        "allowed_unnecessary_exploration_incidents": 0,
+        "allowed_model_caused_failed_commands": 0,
+        "allowed_code_rework_events": 0,
+        "allowed_verifier_or_environment_failures": 0,
+        "incident_counting": "unique-auditable-not-command-count"
+      }
     },
     {
       "id": "terraform-lifecycle-sequence-v0",
@@ -161,15 +224,17 @@
       "acceptance_design": "behavioral",
       "scope": "production-primary",
       "sequence_contract": "feature-refactor-review",
-      "readiness_blockers": [],
+      "readiness_blockers": [
+        "provider-backed strongest-model zero-mistake pilot not yet executed"
+      ],
       "objective": "individual_tool_effectiveness",
       "primary_metric": "cumulative provider-reported workflow tokens",
       "reset_policy": "Reset once before the lane; preseed the missing feature, behavior-preserving structural debt, and flawed review candidate into one concealed composite root; preserve repository, Git, tool, index, cache, generated configuration, memory, and agent state across prompts; run every concealed verifier after the final prompt.",
       "seed_patch_policy": "Controller merges all three independently qualified lifecycle start conditions into one composite broken start before provider execution. Prompts are disclosed sequentially; the proposed review patch is disclosed only with task 3; acceptance assets remain controller-only; every verifier runs after the final prompt.",
-      "protocol_freeze_date": "2026-07-16",
-      "production_lane": "current-production-v0",
-      "qualification_path": "sources/evaluations/fixtures/large/hashicorp-terraform/qualification-lifecycle-v0-assisted-v1.json",
-      "qualification_date": "2026-07-16",
+      "protocol_freeze_date": "2026-07-21",
+      "production_lane": "current-production-v0-baseline-v2",
+      "qualification_path": "sources/evaluations/fixtures/large/hashicorp-terraform/qualification-lifecycle-v0-baseline-v2.json",
+      "qualification_date": "2026-07-21",
       "fixture_id": "large-hashicorp-terraform",
       "fixture_scale": "large-project",
       "initial_snapshot": {
@@ -182,48 +247,73 @@
           "id": "terraform-lifecycle-feature-v0",
           "order": 1,
           "task_class": "feature-implementation",
-          "prompt_path": "sources/evaluations/fixtures/large/hashicorp-terraform/tasks/terraform-lifecycle-feature-v0/agent-prompt.txt",
-          "verifier_command": "sources/evaluations/fixtures/large/hashicorp-terraform/tasks/terraform-lifecycle-feature-v0/verify.sh",
+          "prompt_path": "sources/evaluations/fixtures/large/hashicorp-terraform/task-generations/baseline-v2/terraform-lifecycle-feature-v0/agent-prompt.txt",
+          "verifier_command": "sources/evaluations/fixtures/large/hashicorp-terraform/task-generations/baseline-v2/terraform-lifecycle-feature-v0/verify.sh",
           "upstream_test_paths": [],
-          "compatibility_rebased_test_paths": [
-            "internal/policy/callback/lifecycle_v0_deferred_callbacks_test.go"
+          "compatibility_rebased_test_paths": [],
+          "model_concealed_paths": [],
+          "expected_changed_paths": [
+            "internal/policy/callback/server.go"
           ],
-          "model_concealed_paths": [
-            "internal/policy/callback/lifecycle_v0_deferred_callbacks_test.go"
+          "model_visible_validation_anchors": [
+            "internal/policy/callback/baseline_v2_deferred_test.go"
           ]
         },
         {
           "id": "terraform-lifecycle-refactor-v0",
           "order": 2,
           "task_class": "behavior-preserving-refactor",
-          "prompt_path": "sources/evaluations/fixtures/large/hashicorp-terraform/tasks/terraform-lifecycle-refactor-v0/agent-prompt.txt",
-          "verifier_command": "sources/evaluations/fixtures/large/hashicorp-terraform/tasks/terraform-lifecycle-refactor-v0/verify.sh",
+          "prompt_path": "sources/evaluations/fixtures/large/hashicorp-terraform/task-generations/baseline-v2/terraform-lifecycle-refactor-v0/agent-prompt.txt",
+          "verifier_command": "sources/evaluations/fixtures/large/hashicorp-terraform/task-generations/baseline-v2/terraform-lifecycle-refactor-v0/verify.sh",
           "upstream_test_paths": [],
           "compatibility_rebased_test_paths": [],
-          "model_concealed_paths": []
+          "model_concealed_paths": [],
+          "expected_changed_paths": [
+            "internal/configs/state_migrate_file.go"
+          ],
+          "model_visible_validation_anchors": [
+            "TestParserLoadConfigDirWithStateMigrations_from_state_store",
+            "internal/configs/baseline_v2_requirement_type_test.go"
+          ]
         },
         {
           "id": "terraform-lifecycle-review-v0",
           "order": 3,
           "task_class": "code-review-correction",
-          "prompt_path": "sources/evaluations/fixtures/large/hashicorp-terraform/tasks/terraform-lifecycle-review-v0/agent-prompt.txt",
-          "verifier_command": "sources/evaluations/fixtures/large/hashicorp-terraform/tasks/terraform-lifecycle-review-v0/verify.sh",
-          "upstream_test_paths": [
-            "internal/cloud/backend_tfPolicyEvaluation_test.go"
+          "prompt_path": "sources/evaluations/fixtures/large/hashicorp-terraform/task-generations/baseline-v2/terraform-lifecycle-review-v0/agent-prompt.txt",
+          "verifier_command": "sources/evaluations/fixtures/large/hashicorp-terraform/task-generations/baseline-v2/terraform-lifecycle-review-v0/verify.sh",
+          "upstream_test_paths": [],
+          "compatibility_rebased_test_paths": [],
+          "model_concealed_paths": [],
+          "review_patch_path": "review-change.patch",
+          "expected_changed_paths": [
+            "internal/addrs/checkable.go"
           ],
-          "compatibility_rebased_test_paths": [
-            "internal/cloud/lifecycle_v0_policy_summary_test.go"
-          ],
-          "model_concealed_paths": [
-            "internal/cloud/backend_tfPolicyEvaluation_test.go",
-            "internal/cloud/lifecycle_v0_policy_summary_test.go"
-          ],
-          "review_patch_path": "review-change.patch"
+          "model_visible_validation_anchors": [
+            "internal/addrs/baseline_v2_checkable_test.go"
+          ]
         }
       ],
-      "conversion_note": "One persistent lifecycle adds deferred policy-callback propagation, refactors state-store provider parsing into a dedicated representation without changing behavior, and reviews an authentic Terraform Cloud policy-summary proposal after review feedback exposed count and fallback defects.",
-      "complexity_note": "The three classes use disjoint policy callback, configuration parsing, and cloud rendering surfaces.",
-      "complexity_bar": "Each class has executable fixed/start gates; the refactor separately proves behavior preservation and structural nonconformance."
+      "conversion_note": "Baseline V2 supersedes the active assisted-v1 task generation for future execution while preserving every executed assisted-v1 protocol and session byte-for-byte.",
+      "complexity_note": "Baseline V2 caps each task at one to three prescribed production files, supplies the exact edit and focused model-visible validation, forbids rediscovery and broad suites, and retains disjoint lifecycle surfaces.",
+      "complexity_bar": "The fixed snapshot must pass, each seed must fail semantic or structural acceptance as appropriate, and treatment launch remains blocked until the strongest-model pilot has literally zero unique model incidents.",
+      "task_family_generation": "baseline-v2",
+      "mistake_gate": {
+        "designated_model_condition": "codex-openai-gpt-5-6-sol-high",
+        "allowed_unique_model_incidents": 0,
+        "allowed_corrected_implementation_mistakes": 0,
+        "allowed_unresolved_defects": 0,
+        "status": "provider-pilot-required",
+        "treatment_launch_policy": "blocked until one first-valid strongest-model pilot is independently audited with all three counts equal to zero",
+        "model": "gpt-5.6-sol",
+        "reasoning_effort": "high",
+        "allowed_prohibited_operations": 0,
+        "allowed_unnecessary_exploration_incidents": 0,
+        "allowed_model_caused_failed_commands": 0,
+        "allowed_code_rework_events": 0,
+        "allowed_verifier_or_environment_failures": 0,
+        "incident_counting": "unique-auditable-not-command-count"
+      }
     }
   ]
 }
