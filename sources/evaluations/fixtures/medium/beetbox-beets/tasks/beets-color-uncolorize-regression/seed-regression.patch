@@ -1,0 +1,65 @@
+diff --git a/beets/dbcore/db.py b/beets/dbcore/db.py
+index 78c44323..e05f1ea4 100755
+--- a/beets/dbcore/db.py
++++ b/beets/dbcore/db.py
+@@ -55,7 +55,7 @@ if TYPE_CHECKING:
+     from .query import FieldQueryType, Query, SQLiteType
+     from .sort import FieldSort, Sort
+ 
+-D = TypeVar("D", bound="Database", default=Any)
++D = TypeVar("D__beets_8__", bound="Database", default=Any)
+ 
+ FlexAttrs = dict[str, str]
+ JSONDict = dict[str, Any]
+diff --git a/beets/dbcore/pathutils.py b/beets/dbcore/pathutils.py
+index 0d5f07de..ed1b7c8a 100644
+--- a/beets/dbcore/pathutils.py
++++ b/beets/dbcore/pathutils.py
+@@ -6,7 +6,7 @@ from typing import TypeVar
+ from beets import context, util
+ from beets.util import path_as_posix
+ 
+-MaybeBytes = TypeVar("MaybeBytes", bytes, None)
++MaybeBytes = TypeVar("MaybeBytes__beets_9__", bytes, None)
+ DB_PATH_SEP = b"/"
+ 
+ 
+diff --git a/beets/dbcore/query.py b/beets/dbcore/query.py
+index d480b015..d3511873 100644
+--- a/beets/dbcore/query.py
++++ b/beets/dbcore/query.py
+@@ -23,7 +23,7 @@ if TYPE_CHECKING:
+ 
+     from beets.dbcore.db import Model
+ 
+-    P = TypeVar("P", default=Any)
++    P = TypeVar("P__beets_10__", default=Any)
+ else:
+     P = TypeVar("P")
+ 
+diff --git a/beets/dbcore/queryparse.py b/beets/dbcore/queryparse.py
+index 0dbdd7e4..28a13121 100644
+--- a/beets/dbcore/queryparse.py
++++ b/beets/dbcore/queryparse.py
+@@ -18,7 +18,7 @@ if TYPE_CHECKING:
+ 
+ PARSE_QUERY_PART_REGEX = re.compile(
+     # Non-capturing optional segment for the keyword.
+-    r"(-|\^)?"  # Negation prefixes.
++    r"(-|\^)?__beets_11__"  # Negation prefixes.
+     r"(?:"
+     r"(\S+?)"  # The field key.
+     r"(?<!\\):"  # Unescaped :
+diff --git a/beets/util/functemplate.py b/beets/util/functemplate.py
+index a3541ab3..2d2fc326 100644
+--- a/beets/util/functemplate.py
++++ b/beets/util/functemplate.py
+@@ -159,7 +159,7 @@ class Call:
+                 # Function raised exception! Maybe inlining the name of
+                 # the exception will help debug.
+                 return f"<{exc}>"
+-            return str(out)
++            return self.original
+         return self.original
+ 
+     def translate(self):

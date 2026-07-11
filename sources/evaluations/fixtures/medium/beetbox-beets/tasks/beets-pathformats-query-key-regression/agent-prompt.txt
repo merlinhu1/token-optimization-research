@@ -1,0 +1,23 @@
+You are repairing a five-file, multi-symptom regression in beetbox/beets.
+
+Task: Restore path-format, config wildcard, hidden-file, byte-format, and ANSI-stripping utility behavior.
+
+The repository is already in a broken-start state. The seed patch intentionally corrupts at least five production files in a related utility behavior cluster. Restore the production behavior with the smallest maintainable changes. Do not edit the verifier or tests.
+
+Details:
+The fix spans path format query aliases, string-list wildcard expansion, POSIX hidden file detection, binary-size boundary formatting, and terminal color removal.
+
+Acceptance verifier:
+uv run python - <<'PY'
+from pathlib import Path
+from beets.util.pathformats import PF_KEY_QUERIES
+from beets.util.config import sanitize_choices
+from beets.util.hidden import is_hidden
+from beets.util.units import human_bytes
+from beets.util.color import uncolorize
+assert PF_KEY_QUERIES == {"comp": "comp:true", "singleton": "singleton:true"}
+assert sanitize_choices(["alpha", "*", "alpha"], ["alpha", "beta", "gamma"]) == ["alpha", "beta", "gamma"]
+assert is_hidden(Path('.secret')) is True
+assert human_bytes(1024) == '1.0 KiB'
+assert uncolorize('\x1b[31mred\x1b[39;49;00m') == 'red'
+PY
