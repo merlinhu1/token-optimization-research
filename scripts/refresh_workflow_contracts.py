@@ -13,7 +13,7 @@ import json
 
 import sys
 from pathlib import Path
-from typing import Any
+from typing import Any, Callable
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
@@ -32,6 +32,86 @@ def write_json(path: Path, value: object) -> None:
             return
         raise FileExistsError(f"refusing to overwrite immutable frozen protocol: {path}")
     path.write_text(rendered)
+
+
+MODEL_CONDITION_LAUNCHER = "scripts/run_codex_workflow_model_condition.py"
+
+
+def registered_model_condition(condition_id: str, model: str, reasoning_effort: str) -> dict[str, Any]:
+    conditions = json.loads((ROOT / "data/evaluation-agent-runtimes.json").read_text()).get("model_conditions", [])
+    matches = [
+        item for item in conditions
+        if item.get("id") == condition_id
+        and item.get("runtime_id") == "codex-cli"
+        and item.get("provider") == "openai"
+        and item.get("model") == model
+        and item.get("reasoning_effort") == reasoning_effort
+    ]
+    if len(matches) != 1:
+        raise ValueError(
+            f"expected one registered model condition for {condition_id}/{model}/{reasoning_effort}; found {len(matches)}"
+        )
+    return matches[0]
+
+
+def configure_model_condition(condition_id: str, model: str, reasoning_effort: str) -> None:
+    condition = registered_model_condition(condition_id, model, reasoning_effort)
+    launcher_path = ROOT / MODEL_CONDITION_LAUNCHER
+    override = {
+        "model_condition_id": condition_id,
+        "model": model,
+        "reasoning_effort": reasoning_effort,
+        "registry_status": condition.get("status"),
+        "launcher": {
+            "path": MODEL_CONDITION_LAUNCHER,
+            "sha256": digest(launcher_path),
+        },
+    }
+    runner.DEFAULT_WORKFLOW_MODEL_CONDITION_ID = condition_id
+    runner.DEFAULT_WORKFLOW_MODEL = model
+    runner.DEFAULT_WORKFLOW_REASONING_EFFORT = reasoning_effort
+
+    original_baseline: Callable[..., dict[str, Any]] = runner.baseline_protocol_descriptor
+    original_execution: Callable[..., dict[str, Any]] = runner.execution_condition_descriptor
+
+    def baseline_descriptor(*args: Any, **kwargs: Any) -> dict[str, Any]:
+        descriptor = original_baseline(*args, **kwargs)
+        descriptor["model_condition_override"] = override
+        return descriptor
+
+    def execution_descriptor(*args: Any, **kwargs: Any) -> dict[str, Any]:
+        descriptor = original_execution(*args, **kwargs)
+        descriptor["model_condition_override"] = override
+        return descriptor
+
+    runner.baseline_protocol_descriptor = baseline_descriptor
+    runner.execution_condition_descriptor = execution_descriptor
+    runner.validate_default_model_condition = lambda: registered_model_condition(
+        condition_id, model, reasoning_effort
+    )
+
+
+def runner_command(
+    seq: dict[str, Any],
+    profile_id: str,
+    protocol_path: Path,
+    execution: dict[str, Any],
+) -> str:
+    override = execution.get("model_condition_override")
+    if isinstance(override, dict):
+        prefix = (
+            f"python3 {MODEL_CONDITION_LAUNCHER} "
+            f"--workflow-model-condition-id {override['model_condition_id']} "
+            f"--workflow-model {override['model']} "
+            f"--workflow-reasoning-effort {override['reasoning_effort']}"
+        )
+    else:
+        prefix = "python3 scripts/run_codex_workflow_evaluation.py"
+    return (
+        f"{prefix} --sequence-id {seq['id']} --profile-id {profile_id} "
+        f"--timeout-per-task 3600 --protocol {protocol_path.relative_to(ROOT)} "
+        f"--docker-image {runner.DEFAULT_DOCKER_IMAGE}"
+    )
 
 
 def protocol_id(seq: dict[str, Any], profile_id: str) -> str:
@@ -68,12 +148,7 @@ def frozen_protocol(
         timeout_seconds_per_task=3600,
         docker_image=runner.DEFAULT_DOCKER_IMAGE,
     )
-    command = (
-        "python3 scripts/run_codex_workflow_evaluation.py "
-        f"--sequence-id {seq['id']} --profile-id {profile_id} "
-        f"--timeout-per-task 3600 --protocol {protocol_path.relative_to(ROOT)} "
-        f"--docker-image {runner.DEFAULT_DOCKER_IMAGE}"
-    )
+    command = runner_command(seq, profile_id, protocol_path, execution)
     agent = {
         "profile_id": profile_id,
         "provider": "openai",
@@ -136,11 +211,25 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--sequence-id", action="append", dest="sequence_ids", help="active sequence; repeat to select several (default: all active)")
     parser.add_argument("--profile-id", default="baseline-bare-codex", choices=sorted(runner.PROFILE_META))
+    parser.add_argument("--workflow-model-condition-id")
+    parser.add_argument("--workflow-model")
+    parser.add_argument("--workflow-reasoning-effort")
     return parser.parse_args(argv)
 
 
 def main(argv: list[str] | None = None) -> int:
     args = parse_args(argv)
+    model_values = (
+        args.workflow_model_condition_id,
+        args.workflow_model,
+        args.workflow_reasoning_effort,
+    )
+    if any(model_values) and not all(model_values):
+        raise SystemExit(
+            "--workflow-model-condition-id, --workflow-model, and --workflow-reasoning-effort must be supplied together"
+        )
+    if all(model_values):
+        configure_model_condition(*model_values)
     runner.validate_default_model_condition()
     runner.assert_profile_runnable(args.profile_id)
     sequence_ids = args.sequence_ids or runner.active_sequence_ids()

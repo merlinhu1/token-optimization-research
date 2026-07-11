@@ -2504,6 +2504,25 @@ class ModelConditionLauncherContractTest(unittest.TestCase):
         ]
         self.assertEqual(sol_protocol_errors, [])
 
+    def test_contract_refresher_renders_registered_model_condition_launcher(self) -> None:
+        command = contract_refresh.runner_command(
+            {"id": "fastify-lifecycle-sequence-v0"},
+            "baseline-bare-codex",
+            ROOT / "sources/evaluations/protocols/sol-assisted.json",
+            {
+                "model_condition_override": {
+                    "model_condition_id": "codex-openai-gpt-5-6-sol-high",
+                    "model": "gpt-5.6-sol",
+                    "reasoning_effort": "high",
+                }
+            },
+        )
+        self.assertIn("scripts/run_codex_workflow_model_condition.py", command)
+        self.assertIn("--workflow-model-condition-id codex-openai-gpt-5-6-sol-high", command)
+        self.assertIn("--workflow-model gpt-5.6-sol", command)
+        self.assertIn("--workflow-reasoning-effort high", command)
+        self.assertIn("--protocol sources/evaluations/protocols/sol-assisted.json", command)
+
     def test_unregistered_override_is_rejected(self) -> None:
         with self.assertRaises(ValueError):
             model_condition_runner.registered_condition("missing", "gpt-missing", "high")
