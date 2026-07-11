@@ -16,7 +16,7 @@ Every lane uses one pinned repository snapshot and one persistent model session.
 
 A 2026-07-18 official-integration audit and follow-up runtime review found that 48 of 54 historical treatment sessions could not support product-effect claims. At the experiment owner's direction, invalid sessions, comparisons, compact bundles, and occupied protocols were deleted from the active corpus rather than relabelled as baseline. Deletion receipts preserve each adjudication; the six retained historical records are the Headroom default-wrapper and proxy-only conditions, and the prior TokenJuice+jcodemunch stack decision remains withdrawn.
 
-Fifteen canonical profiles contribute 45 accepted provider-backed sessions alongside the six retained Headroom records, for 51 eligible treatment sessions across 17 conditions. Every profile passed protocol-bound provider-free setup and assignment gates before its first valid run. The Phase 2 synthesis reports 582,180,587 treatment tokens against 541,295,326 repeated matched-baseline tokens (+7.55%) with 150/153 task verifiers; these are screening observations, not stable rankings.
+Seventeen canonical treatment conditions contribute 72 accepted provider-backed sessions alongside 21 controls. Every profile passed protocol-bound provider-free setup and assignment gates before its first valid run. The Phase 2 synthesis reports 582,180,587 treatment tokens against 541,295,326 repeated matched-baseline tokens (+7.55%) with 150/153 task verifiers. A prospective r3 screen of seven profiles used 257,591,572 tokens against 236,364,772 repeated fresh-baseline tokens (+8.98%) with 62/63 treatment verifiers; five of seven aggregate directions changed from the preceding screen. These are descriptive observations, not stable rankings.
 
 ## Documentation
 
@@ -36,7 +36,8 @@ Start with [`docs/README.md`](docs/README.md). The main destinations are:
 - `data/workflow-sessions.json` — active retained provider-backed controls and objective-eligible treatment samples; corrupted treatments are represented only by deletion receipts.
 - `docs/evaluations/operations/runbook.md` — generated operator runbook.
 - `docs/papers/official-integration-parity-audit.md` — current treatment-validity and disposition authority.
-- `docs/papers/phase-2-lifecycle-v0-natural-use-screening.md` — current individual-tool reproduction screen.
+- `docs/papers/phase-2-lifecycle-v0-natural-use-screening.md` — corrected first natural-use screen.
+- `docs/papers/luna-xhigh-r3-natural-use-replication-screen.md` — prospective seven-profile natural-use replication screen.
 
 ## Validation
 

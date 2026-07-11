@@ -1,0 +1,675 @@
+{
+  "schema_version": "luna-xhigh-r3-replication-screen/v1",
+  "generated_at": "2026-07-20T16:58:56+00:00",
+  "evidence_stage": "replication-screen",
+  "campaign_id": "luna-xhigh-round2-r3-20260720",
+  "model_condition_id": "codex-openai-gpt-5-6-luna-xhigh",
+  "model": "gpt-5.6-luna",
+  "reasoning_effort": "xhigh",
+  "replicate_index": 3,
+  "primary_metric": "provider-reported tokens using final cumulative total per thread",
+  "reasoning_tokens_are_subset_not_additive": true,
+  "contract_scope": {
+    "generation": "natural-use lifecycle-v0 before assisted-v1 activation",
+    "sequence_count": 3,
+    "persistent_tasks_per_sequence": 3,
+    "note": "The assisted-v1 task contracts were merged only after every r3 provider session completed and are not part of this evidence."
+  },
+  "sources": {
+    "workflow_sessions": {
+      "path": "data/workflow-sessions.json",
+      "sha256": "0ebfd62274b3895810588dbf61f985c180c1ab50735f4f439dcf3485279a213d"
+    },
+    "evaluation_profiles": {
+      "path": "data/evaluation-profiles.json",
+      "sha256": "c91ce1204f7a879ba831a01cf3c53b6ff850be1daa6770860e63a22f94381e64"
+    },
+    "prior_corrected_analysis": {
+      "path": "sources/evaluations/audits/phase-2-corrected-analysis-20260720.json",
+      "sha256": "169266ddf4d2559f37927ede86b094e804f6b8647b3cf36408de1c99920de21d"
+    },
+    "campaign_controller_summary": {
+      "locator": "/opt/data/campaigns/luna-xhigh-round2-r3/summary.json",
+      "sha256": "98c76c28649c3fcfdf43c33b2f12a08b34a3ad3efdd4578a0d0ccc8e39940bbf",
+      "passed": true,
+      "final_campaign_commit": "f2223bc614aaa5d169391cb0d904bf9771a45b4b"
+    },
+    "analysis_head": "ca2cbdf633e8cc08be63ca3fee95f645a91b35ea"
+  },
+  "design": {
+    "unique_baseline_sessions": 3,
+    "treatment_sessions": 21,
+    "profiles": 7,
+    "baseline_reuse": "The same three r3 baseline sessions are reused descriptively for all seven profile contrasts; repeated baseline totals do not create independent control observations.",
+    "eligibility": "First operationally valid assignment samples retained; verifier outcomes are diagnostic and do not gate token accounting."
+  },
+  "baseline": {
+    "profile_id": "baseline-bare-codex",
+    "usage": {
+      "fresh_input_tokens": 880535,
+      "cached_input_tokens": 32734464,
+      "output_tokens": 151397,
+      "reasoning_tokens": 72433,
+      "total_provider_tokens": 33766396
+    },
+    "tasks_passed": 9,
+    "tasks_attempted": 9,
+    "sessions": [
+      "baseline-fastify-20260720-p-769d40697529-r3",
+      "baseline-beets-20260720-p-b440da225a3a-r3",
+      "baseline-terraform-20260720-p-ded8609b4172-r3"
+    ]
+  },
+  "panels": {
+    "priority_1": {
+      "profiles": 3,
+      "treatment_provider_tokens": 103979943,
+      "repeated_matched_baseline_provider_tokens": 101299188,
+      "delta_provider_tokens": 2680755,
+      "delta_percent": 2.646374
+    },
+    "priority_2": {
+      "profiles": 4,
+      "treatment_provider_tokens": 153611629,
+      "repeated_matched_baseline_provider_tokens": 135065584,
+      "delta_provider_tokens": 18546045,
+      "delta_percent": 13.73114
+    },
+    "all_selected_profiles": {
+      "profiles": 7,
+      "treatment_provider_tokens": 257591572,
+      "repeated_matched_baseline_provider_tokens": 236364772,
+      "delta_provider_tokens": 21226800,
+      "delta_percent": 8.980526
+    }
+  },
+  "profiles": [
+    {
+      "profile_id": "terminal-tokenjuice-codex-hook-v1",
+      "display_name": "TokenJuice",
+      "priority": 1,
+      "enabled_surfaces": [
+        "codex-post-tool-use-hook",
+        "terminal-output"
+      ],
+      "treatment_usage": {
+        "fresh_input_tokens": 973759,
+        "cached_input_tokens": 32733696,
+        "output_tokens": 165935,
+        "reasoning_tokens": 71191,
+        "total_provider_tokens": 33873390
+      },
+      "matched_baseline_usage": {
+        "fresh_input_tokens": 880535,
+        "cached_input_tokens": 32734464,
+        "output_tokens": 151397,
+        "reasoning_tokens": 72433,
+        "total_provider_tokens": 33766396
+      },
+      "delta_provider_tokens": 106994,
+      "delta_percent": 0.316865,
+      "tasks_passed": 9,
+      "tasks_attempted": 9,
+      "all_sessions_accepted_for_objective": true,
+      "all_manifests_verified": true,
+      "lanes": [
+        {
+          "sequence_id": "fastify-lifecycle-sequence-v0",
+          "treatment_session_id": "tokenjuice-fastify-20260720-p-769d40697529-r3",
+          "baseline_session_id": "baseline-fastify-20260720-p-769d40697529-r3",
+          "treatment_provider_tokens": 4397709,
+          "baseline_provider_tokens": 2857781,
+          "delta_provider_tokens": 1539928,
+          "delta_percent": 53.885445,
+          "tasks_passed": 3,
+          "tasks_attempted": 3,
+          "manifest_verified": true,
+          "frozen_protocol_sha256": "46657ac04d5e84c1d8a8e0441df7ae08befda7c8ee30329ee518cf29d91dfee1"
+        },
+        {
+          "sequence_id": "beets-lifecycle-sequence-v0",
+          "treatment_session_id": "tokenjuice-beets-20260720-p-b440da225a3a-r3",
+          "baseline_session_id": "baseline-beets-20260720-p-b440da225a3a-r3",
+          "treatment_provider_tokens": 10383834,
+          "baseline_provider_tokens": 12284833,
+          "delta_provider_tokens": -1900999,
+          "delta_percent": -15.474358,
+          "tasks_passed": 3,
+          "tasks_attempted": 3,
+          "manifest_verified": true,
+          "frozen_protocol_sha256": "ea7898d51717b5818385aceaf05a541c9f8044c953c1b6a53e5398272655d1bb"
+        },
+        {
+          "sequence_id": "terraform-lifecycle-sequence-v0",
+          "treatment_session_id": "tokenjuice-terraform-20260720-p-ded8609b4172-r3",
+          "baseline_session_id": "baseline-terraform-20260720-p-ded8609b4172-r3",
+          "treatment_provider_tokens": 19091847,
+          "baseline_provider_tokens": 18623782,
+          "delta_provider_tokens": 468065,
+          "delta_percent": 2.513265,
+          "tasks_passed": 3,
+          "tasks_attempted": 3,
+          "manifest_verified": true,
+          "frozen_protocol_sha256": "2d1bb2597f0f7b2ff5ec9d2960d9ab8587d1141a5af772c91d1edb2183bc98da"
+        }
+      ],
+      "prior_natural_use_screen": {
+        "replicate_index": 2,
+        "treatment_provider_tokens": 24429098,
+        "matched_baseline_provider_tokens": 31433746,
+        "delta_provider_tokens": -7004648,
+        "delta_percent": -22.283847,
+        "tasks_passed": 9,
+        "tasks_attempted": 9
+      }
+    },
+    {
+      "profile_id": "retrieval-sigmap-codex-live-v1",
+      "display_name": "SigMap",
+      "priority": 1,
+      "enabled_surfaces": [
+        "retrieval-context",
+        "mcp",
+        "codex-agents",
+        "live-watch"
+      ],
+      "treatment_usage": {
+        "fresh_input_tokens": 1089893,
+        "cached_input_tokens": 35526912,
+        "output_tokens": 157469,
+        "reasoning_tokens": 70355,
+        "total_provider_tokens": 36774274
+      },
+      "matched_baseline_usage": {
+        "fresh_input_tokens": 880535,
+        "cached_input_tokens": 32734464,
+        "output_tokens": 151397,
+        "reasoning_tokens": 72433,
+        "total_provider_tokens": 33766396
+      },
+      "delta_provider_tokens": 3007878,
+      "delta_percent": 8.907904,
+      "tasks_passed": 9,
+      "tasks_attempted": 9,
+      "all_sessions_accepted_for_objective": true,
+      "all_manifests_verified": true,
+      "lanes": [
+        {
+          "sequence_id": "fastify-lifecycle-sequence-v0",
+          "treatment_session_id": "sigmap-fastify-20260720-p-769d40697529-r3",
+          "baseline_session_id": "baseline-fastify-20260720-p-769d40697529-r3",
+          "treatment_provider_tokens": 3971375,
+          "baseline_provider_tokens": 2857781,
+          "delta_provider_tokens": 1113594,
+          "delta_percent": 38.967087,
+          "tasks_passed": 3,
+          "tasks_attempted": 3,
+          "manifest_verified": true,
+          "frozen_protocol_sha256": "72b784ac8ceedabdd18aca63dc9bc66f1561b1af946167ddabcbb60fbd6d3809"
+        },
+        {
+          "sequence_id": "beets-lifecycle-sequence-v0",
+          "treatment_session_id": "sigmap-beets-20260720-p-b440da225a3a-r3",
+          "baseline_session_id": "baseline-beets-20260720-p-b440da225a3a-r3",
+          "treatment_provider_tokens": 13665691,
+          "baseline_provider_tokens": 12284833,
+          "delta_provider_tokens": 1380858,
+          "delta_percent": 11.240348,
+          "tasks_passed": 3,
+          "tasks_attempted": 3,
+          "manifest_verified": true,
+          "frozen_protocol_sha256": "f60b5aa6c800ecd841ccec1b36f084740261b76f6b7376f52923a3bd506c7dbb"
+        },
+        {
+          "sequence_id": "terraform-lifecycle-sequence-v0",
+          "treatment_session_id": "sigmap-terraform-20260720-p-ded8609b4172-r3",
+          "baseline_session_id": "baseline-terraform-20260720-p-ded8609b4172-r3",
+          "treatment_provider_tokens": 19137208,
+          "baseline_provider_tokens": 18623782,
+          "delta_provider_tokens": 513426,
+          "delta_percent": 2.75683,
+          "tasks_passed": 3,
+          "tasks_attempted": 3,
+          "manifest_verified": true,
+          "frozen_protocol_sha256": "0565c31de14108727d2f48992d47f1db438f27d138f381bffa85639e6d8c7323"
+        }
+      ],
+      "prior_natural_use_screen": {
+        "replicate_index": 2,
+        "treatment_provider_tokens": 28415446,
+        "matched_baseline_provider_tokens": 31433746,
+        "delta_provider_tokens": -3018300,
+        "delta_percent": -9.602101,
+        "tasks_passed": 9,
+        "tasks_attempted": 9
+      }
+    },
+    {
+      "profile_id": "artifact-ponytail-codex-plugin-v1",
+      "display_name": "Ponytail",
+      "priority": 1,
+      "enabled_surfaces": [
+        "codex-plugin",
+        "product-authored-skills-and-commands",
+        "session-start-hook",
+        "user-prompt-submit-hook",
+        "subagent-start-hook"
+      ],
+      "treatment_usage": {
+        "fresh_input_tokens": 894346,
+        "cached_input_tokens": 32291072,
+        "output_tokens": 146861,
+        "reasoning_tokens": 64128,
+        "total_provider_tokens": 33332279
+      },
+      "matched_baseline_usage": {
+        "fresh_input_tokens": 880535,
+        "cached_input_tokens": 32734464,
+        "output_tokens": 151397,
+        "reasoning_tokens": 72433,
+        "total_provider_tokens": 33766396
+      },
+      "delta_provider_tokens": -434117,
+      "delta_percent": -1.285648,
+      "tasks_passed": 8,
+      "tasks_attempted": 9,
+      "all_sessions_accepted_for_objective": true,
+      "all_manifests_verified": true,
+      "lanes": [
+        {
+          "sequence_id": "fastify-lifecycle-sequence-v0",
+          "treatment_session_id": "ponytail-fastify-20260720-p-769d40697529-r3",
+          "baseline_session_id": "baseline-fastify-20260720-p-769d40697529-r3",
+          "treatment_provider_tokens": 5189658,
+          "baseline_provider_tokens": 2857781,
+          "delta_provider_tokens": 2331877,
+          "delta_percent": 81.59747,
+          "tasks_passed": 2,
+          "tasks_attempted": 3,
+          "manifest_verified": true,
+          "frozen_protocol_sha256": "fa50894c171b1d49f42ef8145f7a044e545653ca8978dc1894abe3b8e2fa9b21"
+        },
+        {
+          "sequence_id": "beets-lifecycle-sequence-v0",
+          "treatment_session_id": "ponytail-beets-20260720-p-b440da225a3a-r3",
+          "baseline_session_id": "baseline-beets-20260720-p-b440da225a3a-r3",
+          "treatment_provider_tokens": 12123086,
+          "baseline_provider_tokens": 12284833,
+          "delta_provider_tokens": -161747,
+          "delta_percent": -1.31664,
+          "tasks_passed": 3,
+          "tasks_attempted": 3,
+          "manifest_verified": true,
+          "frozen_protocol_sha256": "e5afddd8b5c6a3af951f46fbd95f240e427d9fb12b462a41704513ccde2d94d0"
+        },
+        {
+          "sequence_id": "terraform-lifecycle-sequence-v0",
+          "treatment_session_id": "ponytail-terraform-20260720-p-ded8609b4172-r3",
+          "baseline_session_id": "baseline-terraform-20260720-p-ded8609b4172-r3",
+          "treatment_provider_tokens": 16019535,
+          "baseline_provider_tokens": 18623782,
+          "delta_provider_tokens": -2604247,
+          "delta_percent": -13.983449,
+          "tasks_passed": 3,
+          "tasks_attempted": 3,
+          "manifest_verified": true,
+          "frozen_protocol_sha256": "3fa2fe40baa59c48533b6b0fcd51441ff13df9a92fa8659bfad95008a0162ac8"
+        }
+      ],
+      "prior_natural_use_screen": {
+        "replicate_index": 2,
+        "treatment_provider_tokens": 26087938,
+        "matched_baseline_provider_tokens": 31433746,
+        "delta_provider_tokens": -5345808,
+        "delta_percent": -17.006589,
+        "tasks_passed": 9,
+        "tasks_attempted": 9
+      }
+    },
+    {
+      "profile_id": "terminal-rtk-codex-instructions-v1",
+      "display_name": "RTK",
+      "priority": 2,
+      "enabled_surfaces": [
+        "codex-global-instructions",
+        "terminal-output"
+      ],
+      "treatment_usage": {
+        "fresh_input_tokens": 978484,
+        "cached_input_tokens": 36835584,
+        "output_tokens": 176517,
+        "reasoning_tokens": 79645,
+        "total_provider_tokens": 37990585
+      },
+      "matched_baseline_usage": {
+        "fresh_input_tokens": 880535,
+        "cached_input_tokens": 32734464,
+        "output_tokens": 151397,
+        "reasoning_tokens": 72433,
+        "total_provider_tokens": 33766396
+      },
+      "delta_provider_tokens": 4224189,
+      "delta_percent": 12.510038,
+      "tasks_passed": 9,
+      "tasks_attempted": 9,
+      "all_sessions_accepted_for_objective": true,
+      "all_manifests_verified": true,
+      "lanes": [
+        {
+          "sequence_id": "fastify-lifecycle-sequence-v0",
+          "treatment_session_id": "rtk-fastify-20260720-p-769d40697529-r3",
+          "baseline_session_id": "baseline-fastify-20260720-p-769d40697529-r3",
+          "treatment_provider_tokens": 6993181,
+          "baseline_provider_tokens": 2857781,
+          "delta_provider_tokens": 4135400,
+          "delta_percent": 144.70668,
+          "tasks_passed": 3,
+          "tasks_attempted": 3,
+          "manifest_verified": true,
+          "frozen_protocol_sha256": "80dcc4a304b147e203196d6dc3347da2d7cc51ef768737c2d2455558253d2d6a"
+        },
+        {
+          "sequence_id": "beets-lifecycle-sequence-v0",
+          "treatment_session_id": "rtk-beets-20260720-p-b440da225a3a-r3",
+          "baseline_session_id": "baseline-beets-20260720-p-b440da225a3a-r3",
+          "treatment_provider_tokens": 7432336,
+          "baseline_provider_tokens": 12284833,
+          "delta_provider_tokens": -4852497,
+          "delta_percent": -39.499902,
+          "tasks_passed": 3,
+          "tasks_attempted": 3,
+          "manifest_verified": true,
+          "frozen_protocol_sha256": "d42d87e05b8177dee2e08b48baefcf6d82f1d1a1637593e9ac5a1d08a4e3dbc6"
+        },
+        {
+          "sequence_id": "terraform-lifecycle-sequence-v0",
+          "treatment_session_id": "rtk-terraform-20260720-p-ded8609b4172-r3",
+          "baseline_session_id": "baseline-terraform-20260720-p-ded8609b4172-r3",
+          "treatment_provider_tokens": 23565068,
+          "baseline_provider_tokens": 18623782,
+          "delta_provider_tokens": 4941286,
+          "delta_percent": 26.53213,
+          "tasks_passed": 3,
+          "tasks_attempted": 3,
+          "manifest_verified": true,
+          "frozen_protocol_sha256": "f86f69d2e128f34bdf1b474a25cf3d8430dd9c8f86f34e625501406b89526b7d"
+        }
+      ],
+      "prior_natural_use_screen": {
+        "replicate_index": 2,
+        "treatment_provider_tokens": 30835034,
+        "matched_baseline_provider_tokens": 31433746,
+        "delta_provider_tokens": -598712,
+        "delta_percent": -1.904679,
+        "tasks_passed": 9,
+        "tasks_attempted": 9
+      }
+    },
+    {
+      "profile_id": "retrieval-cartog-mcp-v1",
+      "display_name": "Cartog",
+      "priority": 2,
+      "enabled_surfaces": [
+        "retrieval-context",
+        "mcp"
+      ],
+      "treatment_usage": {
+        "fresh_input_tokens": 1018962,
+        "cached_input_tokens": 40353024,
+        "output_tokens": 180287,
+        "reasoning_tokens": 80233,
+        "total_provider_tokens": 41552273
+      },
+      "matched_baseline_usage": {
+        "fresh_input_tokens": 880535,
+        "cached_input_tokens": 32734464,
+        "output_tokens": 151397,
+        "reasoning_tokens": 72433,
+        "total_provider_tokens": 33766396
+      },
+      "delta_provider_tokens": 7785877,
+      "delta_percent": 23.058063,
+      "tasks_passed": 9,
+      "tasks_attempted": 9,
+      "all_sessions_accepted_for_objective": true,
+      "all_manifests_verified": true,
+      "lanes": [
+        {
+          "sequence_id": "fastify-lifecycle-sequence-v0",
+          "treatment_session_id": "cartog-fastify-20260720-p-769d40697529-r3",
+          "baseline_session_id": "baseline-fastify-20260720-p-769d40697529-r3",
+          "treatment_provider_tokens": 6329875,
+          "baseline_provider_tokens": 2857781,
+          "delta_provider_tokens": 3472094,
+          "delta_percent": 121.496154,
+          "tasks_passed": 3,
+          "tasks_attempted": 3,
+          "manifest_verified": true,
+          "frozen_protocol_sha256": "8f872856d4cbad43e736499eec95d9208b76cb580a2cc128ed3557feb35d99c0"
+        },
+        {
+          "sequence_id": "beets-lifecycle-sequence-v0",
+          "treatment_session_id": "cartog-beets-20260720-p-b440da225a3a-r3",
+          "baseline_session_id": "baseline-beets-20260720-p-b440da225a3a-r3",
+          "treatment_provider_tokens": 14571941,
+          "baseline_provider_tokens": 12284833,
+          "delta_provider_tokens": 2287108,
+          "delta_percent": 18.617331,
+          "tasks_passed": 3,
+          "tasks_attempted": 3,
+          "manifest_verified": true,
+          "frozen_protocol_sha256": "4d5ccefa2f1d35eff808c2b6c652ce0ab8217259081f4e3d66c6b7d1f9461a96"
+        },
+        {
+          "sequence_id": "terraform-lifecycle-sequence-v0",
+          "treatment_session_id": "cartog-terraform-20260720-p-ded8609b4172-r3",
+          "baseline_session_id": "baseline-terraform-20260720-p-ded8609b4172-r3",
+          "treatment_provider_tokens": 20650457,
+          "baseline_provider_tokens": 18623782,
+          "delta_provider_tokens": 2026675,
+          "delta_percent": 10.882188,
+          "tasks_passed": 3,
+          "tasks_attempted": 3,
+          "manifest_verified": true,
+          "frozen_protocol_sha256": "e736fc11f25c7860d31b794061142706850c2da8eb5ad1d1d40a68c6fc423846"
+        }
+      ],
+      "prior_natural_use_screen": {
+        "replicate_index": 2,
+        "treatment_provider_tokens": 31120406,
+        "matched_baseline_provider_tokens": 31433746,
+        "delta_provider_tokens": -313340,
+        "delta_percent": -0.996827,
+        "tasks_passed": 9,
+        "tasks_attempted": 9
+      }
+    },
+    {
+      "profile_id": "retrieval-codegraph-codex-mcp-v1",
+      "display_name": "CodeGraph",
+      "priority": 2,
+      "enabled_surfaces": [
+        "retrieval-context",
+        "mcp",
+        "codex-global-instructions",
+        "live-index-watch"
+      ],
+      "treatment_usage": {
+        "fresh_input_tokens": 1128288,
+        "cached_input_tokens": 42361344,
+        "output_tokens": 166616,
+        "reasoning_tokens": 73249,
+        "total_provider_tokens": 43656248
+      },
+      "matched_baseline_usage": {
+        "fresh_input_tokens": 880535,
+        "cached_input_tokens": 32734464,
+        "output_tokens": 151397,
+        "reasoning_tokens": 72433,
+        "total_provider_tokens": 33766396
+      },
+      "delta_provider_tokens": 9889852,
+      "delta_percent": 29.289036,
+      "tasks_passed": 9,
+      "tasks_attempted": 9,
+      "all_sessions_accepted_for_objective": true,
+      "all_manifests_verified": true,
+      "lanes": [
+        {
+          "sequence_id": "fastify-lifecycle-sequence-v0",
+          "treatment_session_id": "codegraph-fastify-20260720-p-769d40697529-r3",
+          "baseline_session_id": "baseline-fastify-20260720-p-769d40697529-r3",
+          "treatment_provider_tokens": 5348214,
+          "baseline_provider_tokens": 2857781,
+          "delta_provider_tokens": 2490433,
+          "delta_percent": 87.145691,
+          "tasks_passed": 3,
+          "tasks_attempted": 3,
+          "manifest_verified": true,
+          "frozen_protocol_sha256": "35832a6104870ac0e9cb629e41cb50a1569b0e5da2597531077b9b9d1834f519"
+        },
+        {
+          "sequence_id": "beets-lifecycle-sequence-v0",
+          "treatment_session_id": "codegraph-beets-20260720-p-b440da225a3a-r3",
+          "baseline_session_id": "baseline-beets-20260720-p-b440da225a3a-r3",
+          "treatment_provider_tokens": 15186641,
+          "baseline_provider_tokens": 12284833,
+          "delta_provider_tokens": 2901808,
+          "delta_percent": 23.621062,
+          "tasks_passed": 3,
+          "tasks_attempted": 3,
+          "manifest_verified": true,
+          "frozen_protocol_sha256": "4a4fef3f44fe0ccb4c8236a68e1dd2244a17d0a552bdbdaf30cd85793a83cee2"
+        },
+        {
+          "sequence_id": "terraform-lifecycle-sequence-v0",
+          "treatment_session_id": "codegraph-terraform-20260720-p-ded8609b4172-r3",
+          "baseline_session_id": "baseline-terraform-20260720-p-ded8609b4172-r3",
+          "treatment_provider_tokens": 23121393,
+          "baseline_provider_tokens": 18623782,
+          "delta_provider_tokens": 4497611,
+          "delta_percent": 24.149826,
+          "tasks_passed": 3,
+          "tasks_attempted": 3,
+          "manifest_verified": true,
+          "frozen_protocol_sha256": "0459d04254bed6665acd81023a38a0b8c074a8485ab9611de00f51b3ca25d2a8"
+        }
+      ],
+      "prior_natural_use_screen": {
+        "replicate_index": 2,
+        "treatment_provider_tokens": 31680860,
+        "matched_baseline_provider_tokens": 31433746,
+        "delta_provider_tokens": 247114,
+        "delta_percent": 0.786142,
+        "tasks_passed": 9,
+        "tasks_attempted": 9
+      }
+    },
+    {
+      "profile_id": "retrieval-jcodemunch-codex-mcp-v2",
+      "display_name": "jcodemunch-mcp v2",
+      "priority": 2,
+      "enabled_surfaces": [
+        "retrieval-context",
+        "mcp",
+        "codex-global-instructions",
+        "warm-index"
+      ],
+      "treatment_usage": {
+        "fresh_input_tokens": 915653,
+        "cached_input_tokens": 29373440,
+        "output_tokens": 123430,
+        "reasoning_tokens": 67362,
+        "total_provider_tokens": 30412523
+      },
+      "matched_baseline_usage": {
+        "fresh_input_tokens": 880535,
+        "cached_input_tokens": 32734464,
+        "output_tokens": 151397,
+        "reasoning_tokens": 72433,
+        "total_provider_tokens": 33766396
+      },
+      "delta_provider_tokens": -3353873,
+      "delta_percent": -9.932576,
+      "tasks_passed": 9,
+      "tasks_attempted": 9,
+      "all_sessions_accepted_for_objective": true,
+      "all_manifests_verified": true,
+      "lanes": [
+        {
+          "sequence_id": "fastify-lifecycle-sequence-v0",
+          "treatment_session_id": "jcodemunch-fastify-20260720-p-769d40697529-r3",
+          "baseline_session_id": "baseline-fastify-20260720-p-769d40697529-r3",
+          "treatment_provider_tokens": 6649805,
+          "baseline_provider_tokens": 2857781,
+          "delta_provider_tokens": 3792024,
+          "delta_percent": 132.691203,
+          "tasks_passed": 3,
+          "tasks_attempted": 3,
+          "manifest_verified": true,
+          "frozen_protocol_sha256": "02eb47a9f6690e97417ed887675628ee891096e4ad981f6e3036fa2eb680d143"
+        },
+        {
+          "sequence_id": "beets-lifecycle-sequence-v0",
+          "treatment_session_id": "jcodemunch-beets-20260720-p-b440da225a3a-r3",
+          "baseline_session_id": "baseline-beets-20260720-p-b440da225a3a-r3",
+          "treatment_provider_tokens": 9514984,
+          "baseline_provider_tokens": 12284833,
+          "delta_provider_tokens": -2769849,
+          "delta_percent": -22.5469,
+          "tasks_passed": 3,
+          "tasks_attempted": 3,
+          "manifest_verified": true,
+          "frozen_protocol_sha256": "7babc6cdc8912872ad7b1434bc19655ff66363da7103392548db4279c6ed5d96"
+        },
+        {
+          "sequence_id": "terraform-lifecycle-sequence-v0",
+          "treatment_session_id": "jcodemunch-terraform-20260720-p-ded8609b4172-r3",
+          "baseline_session_id": "baseline-terraform-20260720-p-ded8609b4172-r3",
+          "treatment_provider_tokens": 14247734,
+          "baseline_provider_tokens": 18623782,
+          "delta_provider_tokens": -4376048,
+          "delta_percent": -23.497096,
+          "tasks_passed": 3,
+          "tasks_attempted": 3,
+          "manifest_verified": true,
+          "frozen_protocol_sha256": "3adc083c1f9a2f847e341861f3ed980ddcf690cef43dc184ed8d637bf23f8580"
+        }
+      ],
+      "prior_natural_use_screen": {
+        "replicate_index": 2,
+        "treatment_provider_tokens": 31552424,
+        "matched_baseline_provider_tokens": 31433746,
+        "delta_provider_tokens": 118678,
+        "delta_percent": 0.37755,
+        "tasks_passed": 8,
+        "tasks_attempted": 9
+      }
+    }
+  ],
+  "quality_diagnostics": [
+    {
+      "profile_id": "artifact-ponytail-codex-plugin-v1",
+      "session_id": "ponytail-fastify-20260720-p-769d40697529-r3",
+      "task_id": "fastify-lifecycle-feature-v0",
+      "verifier_exit_code": 1,
+      "diagnostic_role": "quality-only; token sample retained"
+    }
+  ],
+  "interpretation": {
+    "profile_level_reductions": 2,
+    "profile_level_increases": 5,
+    "lane_level_reductions": 6,
+    "lane_level_increases": 15,
+    "claim_boundary": "Observed assignment-level contrasts in one natural-use replicate per profile and lane. The selected panel does not estimate a product-class effect or stable ranking."
+  },
+  "verification": {
+    "session_count": 24,
+    "all_expected_sessions_present": true,
+    "all_manifests_verified": true,
+    "all_treatment_sessions_accepted_for_objective": true,
+    "component_totals_recomputed_from_session_registry": true,
+    "campaign_summary_reconciled": true,
+    "campaign_task_count_reconciled": true
+  }
+}
