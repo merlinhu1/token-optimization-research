@@ -5,9 +5,13 @@ from __future__ import annotations
 import json
 import re
 import subprocess
+import hashlib
 from pathlib import Path
+import sys
 
 ROOT = Path(__file__).resolve().parents[1]
+if str(ROOT) not in sys.path:
+    sys.path.insert(0, str(ROOT))
 
 LOCAL_SKILL_ARTIFACTS = [
     "AGENTS.md",
@@ -187,6 +191,9 @@ EVALUATION_RUN_ROLES = {"baseline", "individual_tool_treatment", "stack_treatmen
 EVALUATION_STATUSES = {"planned", "running", "completed", "failed", "excluded", "superseded"}
 WORKFLOW_EVIDENCE_TYPES = {"workflow-simulation", "workflow-ablation", "sanity-check"}
 WORKFLOW_SESSION_ROLES = {"baseline", "individual_tool_treatment", "stack_treatment", "ablation", "sanity_check"}
+SHA256_RE = re.compile(r"^[a-f0-9]{64}$")
+DOCKER_IMAGE_ID_RE = re.compile(r"^sha256:[a-f0-9]{64}$")
+REPO_DIGEST_RE = re.compile(r"^.+@sha256:[a-f0-9]{64}$")
 
 DOSSIER_SNAPSHOT_STATUSES = {
     "pinned-commit",
@@ -248,6 +255,115 @@ def load_json(rel: str) -> dict:
         return json.loads(path.read_text(encoding="utf-8"))
     except Exception as exc:
         raise SystemExit(f"Invalid JSON in {rel}: {exc}") from exc
+
+
+TASK_ASSETS = {"agent-prompt.txt", "task.md", "setup.sh", "reset.sh", "seed-regression.patch", "verify.sh"}
+SOURCE_SCAN_RE = re.compile(
+    r"(?im)^.*(?:"
+    r"(?:command\s+)?(?:grep|rg|awk|sed|perl|cmp|diff)\b|git\s+diff\b"
+    r").*(?:^|[\s'\"])(?:[A-Za-z0-9_.-]+/)+(?:[A-Za-z0-9_.-]+)\.(?:c|cc|cpp|cs|go|java|js|jsx|mjs|py|rb|rs|ts|tsx)\b.*$"
+    r"|^.*(?:python(?:3)?|node)\b.*(?:(?:open\(|read_text|read_bytes|readFile|readFileSync).*(?:\.c|\.cc|\.cpp|\.cs|\.go|\.java|\.js|\.jsx|\.mjs|\.py|\.rb|\.rs|\.ts|\.tsx)\b|(?:\.c|\.cc|\.cpp|\.cs|\.go|\.java|\.js|\.jsx|\.mjs|\.py|\.rb|\.rs|\.ts|\.tsx)\b.*(?:open\(|read_text|read_bytes|readFile|readFileSync)).*$"
+)
+
+
+def patch_paths(path: Path) -> list[str]:
+    paths: set[str] = set()
+    for line in path.read_text(errors="replace").splitlines():
+        match = re.match(r"^diff --git a/(.+) b/(.+)$", line)
+        if match:
+            paths.add(match.group(2))
+    return sorted(paths)
+
+
+def is_production_path(path: str) -> bool:
+    low = path.lower()
+    parts = set(Path(low).parts)
+    if parts & {"test", "tests", "testing", "fixture", "fixtures", "docs", "doc", "generated", "dist", "build", "coverage", "tasks", "controller"}:
+        return False
+    if low.endswith((".md", ".rst", ".txt", ".snap", ".patch", ".lock", ".map")):
+        return False
+    return Path(low).suffix in {".c", ".cc", ".cpp", ".cs", ".go", ".java", ".js", ".jsx", ".mjs", ".py", ".rb", ".rs", ".ts", ".tsx"}
+
+
+def verifier_uses_source_identity(task_dir: Path) -> bool:
+    verifier = task_dir / "verify.sh"
+    texts = [verifier.read_text(errors="replace")]
+    for path in task_dir.rglob("*"):
+        if (
+            path.is_file()
+            and path.name not in TASK_ASSETS
+            and path.suffix.lower() in {".sh", ".py", ".js", ".mjs", ".cjs", ".ts"}
+        ):
+            texts.append(path.read_text(errors="replace"))
+    return any(SOURCE_SCAN_RE.search(text) for text in texts)
+
+
+def expected_task_concealed_paths(task: dict) -> list[str]:
+    expected = set()
+    expected.update(str(path) for path in task.get("upstream_test_paths", []))
+    expected.update(str(path) for path in task.get("compatibility_rebased_test_paths", []))
+    return sorted(expected)
+
+
+def validate_qualification(sequence: dict, production_by_task: dict[str, list[str]], errors: list[str]) -> None:
+    sid = sequence["id"]
+    rel = sequence.get("qualification_path")
+    if not rel or not (ROOT / rel).is_file():
+        errors.append(f"active workflow sequence {sid} missing generated qualification evidence: {rel or '<unset>'}")
+        return
+    q = load_json(rel)
+    ordered = sorted(sequence["tasks"], key=lambda item: item["order"])
+    required_true = ("seeded_verifier_nonzero", "fixed_verifier_zero", "full_fixed_cumulative_verifier_zero", "ordered_transition_applicability", "alternative_repair_transition_applicability", "no_unmerged_paths", "no_model_visible_acceptance_assets", "all_expected_model_concealment_declared")
+    if q.get("snapshot") != sequence.get("initial_snapshot", {}).get("commit") or q.get("ordered_task_ids") != [t["id"] for t in ordered] or q.get("qualified_on") != sequence.get("qualification_date"):
+        errors.append(f"qualification {rel} snapshot, date, or task order is stale")
+    if any(q.get(field) is not True for field in required_true):
+        errors.append(f"qualification {rel} must record every executable gate as true")
+    replay = sequence.get("alternative_repair_replay", {})
+    replay_path = ROOT / str(replay.get("changes_diff", ""))
+    if not replay or not replay_path.is_file():
+        errors.append(f"qualification {rel} is missing its accepted alternative-repair replay input")
+    else:
+        source = replay_path.read_text()
+        marker = f"# --- task-{int(replay['repaired_task_order']):02d}-agent ---"
+        try:
+            section = source.split(marker, 1)[1].split("# --- task-", 1)[0].strip() + "\n"
+        except IndexError:
+            errors.append(f"qualification {rel} alternative-repair replay marker is missing")
+        else:
+            digest = __import__("hashlib")
+            if (
+                q.get("alternative_repair_source_sha256") != digest.sha256(replay_path.read_bytes()).hexdigest()
+                or q.get("alternative_repair_patch_sha256") != digest.sha256(section.encode()).hexdigest()
+            ):
+                errors.append(f"qualification {rel} alternative-repair replay hashes are stale")
+            if q.get("alternative_repair_noncanonical") is not True or (
+                q.get("alternative_repair_control_flow_footprint") is not True
+                and int(q.get("alternative_repair_noncomment_changed_line_delta", 0)) < 5
+            ):
+                errors.append(f"qualification {rel} alternative repair is not materially noncanonical")
+    records = q.get("tasks", [])
+    if len(records) != len(ordered):
+        errors.append(f"qualification {rel} task count does not match sequence")
+        return
+    for task, record in zip(ordered, records):
+        task_dir = (ROOT / task["prompt_path"]).parent
+        files = production_by_task[task["id"]]
+        hashes = {name: __import__("hashlib").sha256((task_dir / name).read_bytes()).hexdigest() for name in ("seed-regression.patch", "verify.sh")}
+        if len(set(record.get("production_files", []))) < 5 or record.get("production_file_count", 0) < 5:
+            errors.append(f"qualification {rel} task {task['id']} records fewer than 5 distinct production/type files")
+        if record.get("task_id") != task["id"] or record.get("production_files") != files or record.get("production_file_count") != len(files) or record.get("seed_patch_sha256") != hashes["seed-regression.patch"] or record.get("verifier_sha256") != hashes["verify.sh"]:
+            errors.append(f"qualification {rel} task {task['id']} has stale hashes, files, or count")
+        expected = expected_task_concealed_paths(task)
+        declared = sorted(str(path) for path in task.get("model_concealed_paths", []))
+        if declared != expected:
+            errors.append(f"active workflow sequence {sid} task {task['id']} omits expected model-concealed tests: {sorted(set(expected) - set(declared))}")
+        if (
+            record.get("expected_model_concealed_paths") != expected
+            or record.get("model_concealed_paths") != declared
+            or record.get("omitted_expected_model_concealed_paths") != []
+            or record.get("declared_concealment_matches_expected") is not True
+        ):
+            errors.append(f"qualification {rel} task {task['id']} concealment evidence is stale or incomplete")
 
 
 def validate_repository_fixtures(fixture_doc: dict, errors: list[str]) -> None:
@@ -384,8 +500,10 @@ def validate_medium_project_candidates(candidate_doc: dict, fixture_doc: dict, e
         for key in ("github", "url", "language", "size_kb", "default_branch", "setup_policy", "verifier_policy"):
             if candidate.get(key) in (None, ""):
                 errors.append(f"medium-project candidate {cid} missing {key}")
-        if not candidate.get("tasks"):
+        if not candidate.get("tasks") and candidate.get("qualification_status") != "fixture-redesign-required":
             errors.append(f"medium-project candidate {cid} missing tasks")
+        if candidate.get("qualification_status") == "fixture-redesign-required" and not candidate.get("task_backlog"):
+            errors.append(f"medium-project candidate {cid} redesign status requires a task_backlog")
 
 
 def validate_evaluation_profiles(profile_doc: dict, fixture_doc: dict, errors: list[str]) -> set[str]:
@@ -569,6 +687,8 @@ def validate_workflow_task_sequences(sequence_doc: dict, fixture_doc: dict, erro
             errors.append(f"workflow sequence {sid} has invalid status: {sequence.get('status')}")
         if sequence.get("status") == "active" and sequence.get("acceptance_design") != "behavioral":
             errors.append(f"active workflow sequence {sid} must declare acceptance_design=behavioral")
+        if sequence.get("status") == "active" and sequence.get("scope") != "production-primary":
+            errors.append(f"active workflow sequence {sid} must declare scope=production-primary")
         if sequence.get("status") == "planned" and not sequence.get("readiness_blockers"):
             errors.append(f"planned workflow sequence {sid} must record readiness_blockers")
         fixture_id = sequence.get("fixture_id")
@@ -584,6 +704,7 @@ def validate_workflow_task_sequences(sequence_doc: dict, fixture_doc: dict, erro
             continue
         orders = []
         task_ids: set[str] = set()
+        production_by_task: dict[str, list[str]] = {}
         for task in tasks:
             if not isinstance(task, dict):
                 errors.append(f"workflow sequence {sid} contains non-object task")
@@ -609,17 +730,20 @@ def validate_workflow_task_sequences(sequence_doc: dict, fixture_doc: dict, erro
             elif sequence.get("status") == "active":
                 verifier_path = ROOT / verifier_command
                 if verifier_path.exists():
-                    verifier_text = verifier_path.read_text(errors="replace")
-                    exact_source_greps = [
-                        line
-                        for line in verifier_text.splitlines()
-                        if re.match(r"^\s*grep\s+", line)
-                        and re.search(r"\.(?:c|cc|cpp|cs|go|java|js|jsx|mjs|py|rb|rs|ts|tsx)(?:\s|$)", line)
-                    ]
-                    if "source-invariant checks" in verifier_text.lower() or exact_source_greps:
+                    task_dir = (ROOT / prompt_path).parent
+                    missing = sorted(name for name in TASK_ASSETS if not (task_dir / name).is_file())
+                    if missing:
+                        errors.append(f"active workflow sequence {sid} task {tid} missing assets: {', '.join(missing)}")
+                    production = [path for path in patch_paths(task_dir / "seed-regression.patch") if is_production_path(path)] if (task_dir / "seed-regression.patch").is_file() else []
+                    production_by_task[str(tid)] = production
+                    if len(production) < 5:
+                        errors.append(f"active workflow sequence {sid} task {tid} seed patch has {len(production)} production/type files; minimum is 5")
+                    if verifier_uses_source_identity(task_dir):
                         errors.append(f"active workflow sequence {sid} task {tid} uses exact-source supplemental guards instead of behavioral acceptance")
         if orders and sorted(orders) != list(range(1, len(orders) + 1)):
             errors.append(f"workflow sequence {sid} task orders must be contiguous starting at 1")
+        if sequence.get("status") == "active" and len(production_by_task) == len(tasks):
+            validate_qualification(sequence, production_by_task, errors)
     return sequence_ids
 
 
@@ -643,7 +767,10 @@ def validate_fixture_sequence_status_consistency(
     for label, records in surfaces:
         for record in records:
             sequence_id = record.get("workflow_sequence_id")
-            if not sequence_id or sequence_id not in statuses:
+            if not sequence_id:
+                continue
+            if sequence_id not in statuses:
+                errors.append(f"{label} {record.get('id')} references unknown workflow sequence {sequence_id}")
                 continue
             active = statuses[sequence_id] == "active"
             qualification = record.get("qualification_status")
@@ -655,9 +782,202 @@ def validate_fixture_sequence_status_consistency(
                 errors.append(f"{label} {record.get('id')} cannot list active_profiles while sequence {sequence_id} is {statuses[sequence_id]}")
 
 
+def canonical_json_hash(value: object) -> str:
+    return hashlib.sha256(json.dumps(value, sort_keys=True, separators=(",", ":")).encode()).hexdigest()
+
+
+def validate_required_object(parent: dict, key: str, sid: str, errors: list[str]) -> dict | None:
+    value = parent.get(key)
+    if not isinstance(value, dict):
+        errors.append(f"workflow session {sid} production-v3 record must include object {key}")
+        return None
+    return value
+
+
+def validate_production_v3_schema_shape(session: dict, sid: str, errors: list[str]) -> None:
+    required = (
+        "schema_version",
+        "session_id",
+        "record_type",
+        "evidence_type",
+        "study_id",
+        "experiment_group_id",
+        "objective",
+        "evidence_stage",
+        "status",
+        "session_role",
+        "replicate_index",
+        "date",
+        "target",
+        "task_sequence",
+        "profile",
+        "agent",
+        "state_policy",
+        "cumulative_token_usage",
+        "per_task_results",
+        "software_quality",
+        "state_observations",
+        "operational_reproducibility",
+        "artifacts",
+        "interpretation",
+        "frozen_protocol",
+        "baseline_pool",
+        "selected_execution",
+        "docker_image_identity",
+        "tool_adapter_identity",
+    )
+    for key in required:
+        if key not in session:
+            errors.append(f"workflow session {sid} production-v3 record missing schema field {key}")
+    if session.get("schema_version") != 1:
+        errors.append(f"workflow session {sid} schema_version must be 1")
+    if session.get("record_type") != "workflow_session":
+        errors.append(f"workflow session {sid} record_type must be workflow_session")
+    if session.get("evidence_type") not in WORKFLOW_EVIDENCE_TYPES:
+        errors.append(f"workflow session {sid} evidence_type is invalid")
+    if session.get("objective") not in OBJECTIVES:
+        errors.append(f"workflow session {sid} objective is invalid")
+    if session.get("evidence_stage") not in {"benchmark_audit", "reproduction"}:
+        errors.append(f"workflow session {sid} evidence_stage is invalid")
+    if session.get("status") not in EVALUATION_STATUSES:
+        errors.append(f"workflow session {sid} status is invalid")
+    if session.get("session_role") not in WORKFLOW_SESSION_ROLES:
+        errors.append(f"workflow session {sid} session_role is invalid")
+    if not isinstance(session.get("replicate_index"), int) or session.get("replicate_index", -1) < 0:
+        errors.append(f"workflow session {sid} replicate_index must be a non-negative integer")
+    for key in ("target", "task_sequence", "profile", "agent", "state_policy", "cumulative_token_usage", "software_quality", "state_observations", "operational_reproducibility", "artifacts", "interpretation"):
+        if not isinstance(session.get(key), dict):
+            errors.append(f"workflow session {sid} {key} must be an object")
+    if not isinstance(session.get("per_task_results"), list):
+        errors.append(f"workflow session {sid} per_task_results must be an array")
+
+
+def validate_docker_identity(identity: object, expected: object, sid: str, errors: list[str]) -> None:
+    if not isinstance(identity, dict):
+        errors.append(f"workflow session {sid} production-v3 record must include Docker image immutable identity")
+        return
+    if not isinstance(identity.get("image_ref"), str) or not identity.get("image_ref"):
+        errors.append(f"workflow session {sid} Docker image identity must include image_ref")
+    if not isinstance(identity.get("image_id"), str) or not DOCKER_IMAGE_ID_RE.fullmatch(identity["image_id"]):
+        errors.append(f"workflow session {sid} Docker image identity must be sha256:<64 lowercase hex>")
+    repo_digests = identity.get("repo_digests")
+    if not isinstance(repo_digests, list) or any(not isinstance(value, str) or not REPO_DIGEST_RE.fullmatch(value) for value in repo_digests):
+        errors.append(f"workflow session {sid} Docker repo_digests must use repo@sha256:<64 lowercase hex>")
+    if "repo_tags" in identity and (not isinstance(identity["repo_tags"], list) or any(not isinstance(value, str) for value in identity["repo_tags"])):
+        errors.append(f"workflow session {sid} Docker repo_tags must be strings")
+    if identity != expected:
+        errors.append(f"workflow session {sid} Docker image identity does not match selected_execution descriptor")
+
+
+def validate_tool_adapter_identity(identity: object, expected: object, profile_id: str | None, sid: str, errors: list[str]) -> None:
+    if profile_id == "baseline-bare-codex":
+        if identity is not None:
+            errors.append(f"workflow session {sid} baseline production-v3 record must not publish a treatment tool identity")
+        return
+    if not isinstance(identity, dict):
+        errors.append(f"workflow session {sid} treatment production-v3 record must include tool adapter identity")
+        return
+    binary = identity.get("binary_identity")
+    if not isinstance(binary, dict):
+        errors.append(f"workflow session {sid} treatment production-v3 record must include tool adapter binary identity")
+    else:
+        for key in ("executable_token", "resolved_path", "realpath"):
+            if not isinstance(binary.get(key), str) or not binary.get(key):
+                errors.append(f"workflow session {sid} treatment executable identity missing {key}")
+        if not isinstance(binary.get("sha256"), str) or not SHA256_RE.fullmatch(binary["sha256"]):
+            errors.append(f"workflow session {sid} treatment executable identity sha256 must be 64 lowercase hex")
+        metadata = binary.get("metadata")
+        if not isinstance(metadata, dict) or not isinstance(metadata.get("size"), int) or not isinstance(metadata.get("mode"), str):
+            errors.append(f"workflow session {sid} treatment executable identity metadata has invalid shape")
+        version = binary.get("version")
+        if not isinstance(version, dict) or not isinstance(version.get("captured"), bool) or not isinstance(version.get("command"), list):
+            errors.append(f"workflow session {sid} treatment executable identity version has invalid shape")
+    if identity != expected:
+        errors.append(f"workflow session {sid} treatment tool identity does not match selected_execution descriptor")
+
+
+def validate_production_v3_identity(session: dict, run_record: dict | None, sid: str, errors: list[str]) -> None:
+    validate_production_v3_schema_shape(session, sid, errors)
+    frozen_protocol = validate_required_object(session, "frozen_protocol", sid, errors)
+    baseline_pool = validate_required_object(session, "baseline_pool", sid, errors)
+    selected = validate_required_object(session, "selected_execution", sid, errors)
+    if frozen_protocol is None or baseline_pool is None or selected is None:
+        return
+
+    protocol_id = frozen_protocol.get("protocol_id")
+    protocol_rel = frozen_protocol.get("path")
+    recorded_protocol_hash = frozen_protocol.get("sha256")
+    if not isinstance(protocol_id, str) or not protocol_id.endswith("-v3"):
+        errors.append(f"workflow session {sid} frozen_protocol protocol_id must identify production-v3")
+    if not isinstance(protocol_rel, str) or not protocol_rel:
+        errors.append(f"workflow session {sid} frozen_protocol missing path")
+        protocol_path = None
+    else:
+        protocol_path = ROOT / protocol_rel
+        if Path(protocol_rel).is_absolute() or ".." in Path(protocol_rel).parts:
+            errors.append(f"workflow session {sid} frozen_protocol path must be repository-relative")
+        elif not protocol_path.is_file():
+            errors.append(f"workflow session {sid} frozen protocol file does not exist: {protocol_rel}")
+    if not isinstance(recorded_protocol_hash, str) or not SHA256_RE.fullmatch(recorded_protocol_hash):
+        errors.append(f"workflow session {sid} frozen_protocol sha256 must be 64 lowercase hex")
+
+    protocol = None
+    if protocol_path is not None and protocol_path.is_file():
+        protocol_bytes = protocol_path.read_bytes()
+        actual_protocol_hash = hashlib.sha256(protocol_bytes).hexdigest()
+        if recorded_protocol_hash != actual_protocol_hash:
+            errors.append(f"workflow session {sid} frozen protocol sha256 does not match file bytes")
+        try:
+            protocol = json.loads(protocol_bytes)
+        except Exception as exc:
+            errors.append(f"workflow session {sid} frozen protocol cannot be parsed: {exc}")
+
+    descriptor = selected.get("descriptor")
+    descriptor_hash = selected.get("descriptor_sha256")
+    if not isinstance(descriptor, dict):
+        errors.append(f"workflow session {sid} production-v3 record must include selected_execution descriptor")
+        descriptor = {}
+    if not isinstance(descriptor_hash, str) or not SHA256_RE.fullmatch(descriptor_hash):
+        errors.append(f"workflow session {sid} selected_execution descriptor_sha256 must be 64 lowercase hex")
+    elif descriptor_hash != canonical_json_hash(descriptor):
+        errors.append(f"workflow session {sid} selected_execution descriptor_sha256 does not match canonical descriptor bytes")
+
+    if protocol is not None:
+        if protocol.get("protocol_id") != protocol_id:
+            errors.append(f"workflow session {sid} frozen protocol ID does not match recorded value")
+        protocol_baseline = protocol.get("baseline_pool", {})
+        protocol_selected = protocol.get("selected_execution", {})
+        if baseline_pool.get("protocol_version") != protocol_baseline.get("protocol_version"):
+            errors.append(f"workflow session {sid} baseline pool protocol_version does not match frozen protocol")
+        if baseline_pool.get("protocol_fingerprint") != protocol_baseline.get("protocol_fingerprint"):
+            errors.append(f"workflow session {sid} baseline pool fingerprint does not match frozen protocol")
+        if protocol_selected != selected:
+            errors.append(f"workflow session {sid} selected_execution does not match frozen protocol")
+
+    if baseline_pool.get("identity_policy") != "frozen-protocol-and-replicate; execution date is metadata only":
+        errors.append(f"workflow session {sid} baseline pool identity_policy is invalid")
+    if not isinstance(baseline_pool.get("protocol_fingerprint"), str) or not re.fullmatch(r"[a-f0-9]{12}", baseline_pool.get("protocol_fingerprint", "")):
+        errors.append(f"workflow session {sid} baseline pool protocol_fingerprint must be 12 lowercase hex")
+
+    runtime = descriptor.get("runtime", {}) if isinstance(descriptor, dict) else {}
+    validate_docker_identity(session.get("docker_image_identity"), runtime.get("docker_image_identity"), sid, errors)
+    profile_id = session.get("profile", {}).get("profile_id") if isinstance(session.get("profile"), dict) else None
+    validate_tool_adapter_identity(session.get("tool_adapter_identity"), descriptor.get("tool_adapter"), profile_id, sid, errors)
+
+    if run_record is not None:
+        identity_keys = ("frozen_protocol", "baseline_pool", "selected_execution", "docker_image_identity", "tool_adapter_identity")
+        for key in identity_keys:
+            if run_record.get(key) != session.get(key):
+                errors.append(f"workflow session {sid} run.json {key} does not match registry session")
+
+
 def validate_workflow_session_contract(session: dict, canonical_profile: dict | None, errors: list[str]) -> None:
     sid = session.get("session_id") or session.get("id") or "<unknown>"
     sequence = session.get("task_sequence", {})
+    frozen_protocol = session.get("frozen_protocol")
+    production_v3 = isinstance(frozen_protocol, dict) and str(frozen_protocol.get("protocol_id", "")).endswith("-v3")
+    if production_v3:
+        validate_production_v3_identity(session, None, sid, errors)
     if session.get("status") == "completed" and session.get("evidence_type") == "workflow-simulation" and session.get("evidence_stage") == "reproduction":
         prompt_delivery = sequence.get("prompt_delivery") if isinstance(sequence, dict) else None
         if not isinstance(prompt_delivery, dict):
@@ -748,6 +1068,11 @@ def validate_workflow_sessions(session_doc: dict, sequence_ids: set[str], fixtur
         errors.append("data/workflow-sessions.json must contain a sessions list")
         return
     fixture_ids = {fixture.get("id") for fixture in fixture_doc.get("fixtures", [])}
+    sessions_by_id = {
+        session.get("session_id") or session.get("id"): session
+        for session in sessions
+        if isinstance(session, dict) and (session.get("session_id") or session.get("id"))
+    }
     seen: set[str] = set()
     for index, session in enumerate(sessions):
         if not isinstance(session, dict):
@@ -784,6 +1109,17 @@ def validate_workflow_sessions(session_doc: dict, sequence_ids: set[str], fixtur
         if profile_id and canonical_profile is None:
             errors.append(f"workflow session {sid} references unknown profile {profile_id}")
         validate_workflow_session_contract(session, canonical_profile, errors)
+        comparison_id = session.get("interpretation", {}).get("comparison_baseline_session_id") if isinstance(session.get("interpretation"), dict) else None
+        if comparison_id:
+            baseline = sessions_by_id.get(comparison_id)
+            if baseline is None:
+                errors.append(f"workflow session {sid} references missing comparison baseline {comparison_id}")
+            elif (
+                baseline.get("replicate_index") != session.get("replicate_index")
+                or baseline.get("baseline_pool", {}).get("protocol_fingerprint")
+                != session.get("baseline_pool", {}).get("protocol_fingerprint")
+            ):
+                errors.append(f"workflow session {sid} comparison baseline {comparison_id} is not pool- and replicate-matched")
         agent = session.get("agent", {})
         if isinstance(agent, dict):
             runtime_id = agent.get("runtime_id")
@@ -823,8 +1159,41 @@ def validate_workflow_sessions(session_doc: dict, sequence_ids: set[str], fixtur
                 actual_names = {path.name for path in root.iterdir() if path.is_file()}
                 if actual_names != allowed_names:
                     errors.append(f"workflow session {sid} compact artifact directory must contain exactly {sorted(allowed_names)}; found {sorted(actual_names)}")
+                validate_compact_manifest(root, sid, errors)
+                frozen_protocol = session.get("frozen_protocol")
+                if isinstance(frozen_protocol, dict) and str(frozen_protocol.get("protocol_id", "")).endswith("-v3"):
+                    try:
+                        run_record = json.loads((root / "run.json").read_text())
+                    except Exception as exc:
+                        errors.append(f"workflow session {sid} run.json cannot be parsed: {exc}")
+                    else:
+                        validate_production_v3_identity(session, run_record, sid, errors)
             elif len(roots) > 1:
                 errors.append(f"workflow session {sid} compact artifacts must share one directory")
+
+
+def validate_compact_manifest(root: Path, sid: str, errors: list[str]) -> None:
+    allowed_names = {"run.json", "changes.diff", "evidence.jsonl.gz", "manifest.sha256"}
+    manifest = root / "manifest.sha256"
+    if not manifest.is_file():
+        errors.append(f"workflow session {sid} compact manifest is missing")
+        return
+    seen_manifest: set[str] = set()
+    for line in manifest.read_text().splitlines():
+        parts = line.split()
+        if len(parts) != 2:
+            errors.append(f"workflow session {sid} manifest has malformed line: {line}")
+            continue
+        digest, name = parts
+        seen_manifest.add(name)
+        target = root / name
+        if name == "manifest.sha256" or name not in allowed_names or not target.is_file():
+            errors.append(f"workflow session {sid} manifest references invalid artifact: {name}")
+        elif hashlib.sha256(target.read_bytes()).hexdigest() != digest:
+            errors.append(f"workflow session {sid} manifest digest mismatch for {name}")
+    expected_manifest_names = allowed_names - {"manifest.sha256"}
+    if seen_manifest != expected_manifest_names:
+        errors.append(f"workflow session {sid} manifest must cover exactly {sorted(expected_manifest_names)}; found {sorted(seen_manifest)}")
 
 
 def dossier_field(text: str, field: str) -> str | None:
@@ -878,6 +1247,76 @@ def validate_tool_dossier_snapshots(errors: list[str]) -> None:
                 errors.append(
                     f"{rel} has unpinned-historical-inspection status but Commit inspected is not the required disclosure"
                 )
+
+
+def validate_frozen_protocol_bindings(errors: list[str]) -> None:
+    try:
+        from scripts import run_codex_workflow_evaluation as runner
+    except Exception as exc:
+        errors.append(f"cannot import workflow runner for protocol binding validation: {exc}")
+        runner = None
+    for path in (ROOT / "sources/evaluations/protocols").glob("*.json"):
+        protocol = json.loads(path.read_text())
+        if protocol.get("status") != "frozen-ready-not-run":
+            continue
+        fixture = protocol.get("task_fixture", {})
+        qualification_rel = fixture.get("qualification_path")
+        qualification_path = ROOT / str(qualification_rel or "")
+        if not qualification_rel or not qualification_path.is_file():
+            errors.append(f"frozen protocol {path.name} is missing qualification evidence")
+            continue
+        actual = __import__("hashlib").sha256(qualification_path.read_bytes()).hexdigest()
+        if fixture.get("qualification_sha256") != actual:
+            errors.append(f"frozen protocol {path.name} has a stale qualification hash")
+        preflight_rel = fixture.get("baseline_preflight_path")
+        preflight_path = ROOT / str(preflight_rel or "")
+        if not preflight_rel or not preflight_path.is_file():
+            errors.append(f"frozen protocol {path.name} is missing baseline preflight evidence")
+        else:
+            preflight_hash = __import__("hashlib").sha256(preflight_path.read_bytes()).hexdigest()
+            preflight = json.loads(preflight_path.read_text())
+            if fixture.get("baseline_preflight_sha256") != preflight_hash or preflight.get("passed") is not True:
+                errors.append(f"frozen protocol {path.name} has stale or failed baseline preflight evidence")
+            if runner is not None:
+                try:
+                    seq = runner.load_sequence(str(fixture.get("sequence_id")))
+                    expected_fingerprint = runner.baseline_protocol_fingerprint(seq)
+                except Exception as exc:
+                    errors.append(f"frozen protocol {path.name} cannot compute current runner fingerprint: {exc}")
+                else:
+                    actual_fingerprint = protocol.get("baseline_pool", {}).get("protocol_fingerprint")
+                    preflight_fingerprint = preflight.get("baseline_pool", {}).get("protocol_fingerprint")
+                    if actual_fingerprint != expected_fingerprint or preflight_fingerprint != expected_fingerprint:
+                        errors.append(f"frozen protocol {path.name} fingerprint binding is stale; expected {expected_fingerprint}")
+                    descriptor = protocol.get("baseline_pool", {}).get("descriptor")
+                    if descriptor != runner.baseline_protocol_descriptor(seq):
+                        errors.append(f"frozen protocol {path.name} baseline descriptor does not match current runner bytes")
+                    selected = protocol.get("selected_execution", {})
+                    selected_descriptor = selected.get("descriptor", {})
+                    selected_profile = selected_descriptor.get("selected_profile", {}).get("profile_id")
+                    docker_image = selected_descriptor.get("runtime", {}).get("docker_image")
+                    timeout_for_execution = int(fixture.get("timeout_seconds_per_task", 3600))
+                    expected_execution = runner.execution_condition_descriptor(
+                        seq,
+                        str(selected_profile or "baseline-bare-codex"),
+                        timeout_seconds_per_task=timeout_for_execution,
+                        docker_image=str(docker_image or runner.DEFAULT_DOCKER_IMAGE),
+                    )
+                    if selected.get("descriptor") != expected_execution or selected.get("descriptor_sha256") != runner._json_hash(expected_execution):
+                        errors.append(f"frozen protocol {path.name} selected execution descriptor is stale")
+                    if preflight.get("selected_execution", {}).get("descriptor_sha256") != runner._json_hash(runner.execution_condition_descriptor(seq, "baseline-bare-codex", timeout_seconds_per_task=timeout_for_execution, docker_image=str(docker_image or runner.DEFAULT_DOCKER_IMAGE))):
+                        errors.append(f"frozen protocol {path.name} baseline preflight selected execution binding is stale")
+        timeout = fixture.get("timeout_seconds_per_task")
+        command = protocol.get("baseline", {}).get("command", "")
+        if timeout and f"--timeout-per-task {timeout}" not in command:
+            errors.append(f"frozen protocol {path.name} command does not bind timeout {timeout}")
+        selected = protocol.get("selected_execution", {})
+        docker_image = selected.get("descriptor", {}).get("runtime", {}).get("docker_image")
+        if docker_image and f"--docker-image {docker_image}" not in command:
+            errors.append(f"frozen protocol {path.name} command does not bind docker image {docker_image}")
+        fields = protocol.get("token_accounting_boundary", {}).get("fields", [])
+        if "total_provider_tokens" not in fields:
+            errors.append(f"frozen protocol {path.name} must bind total_provider_tokens")
 
 
 def main() -> int:
@@ -943,6 +1382,7 @@ def main() -> int:
     workflow_sequence_ids = validate_workflow_task_sequences(workflow_sequences_doc, fixtures_doc, errors)
     validate_fixture_sequence_status_consistency(workflow_sequences_doc, fixtures_doc, large_candidates_doc, medium_candidates_doc, errors)
     validate_workflow_sessions(workflow_sessions_doc, workflow_sequence_ids, fixtures_doc, profiles_by_id, runtime_ids, model_condition_ids, errors)
+    validate_frozen_protocol_bindings(errors)
     validate_tool_dossier_snapshots(errors)
 
     for lit in literature_doc.get("literature", []):

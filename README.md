@@ -37,4 +37,4 @@ python3 scripts/validate_repository.py
 
 ## Current status
 
-Phase 1 established source-logic tool dossiers and a compatibility-safe stack report. Phase 2 workflow simulation is in framework and fixture repair: no sequence is active, and paid baseline/treatment comparison remains blocked until at least one candidate passes behavioral acceptance, lazy-seed, true-root concealment, and software-quality gates.
+Phase 1 established source-logic tool dossiers and a compatibility-safe stack report. Fastify is the only current executable Phase 2 workflow suite. Its checkout-generated production qualification passes all seeded-fail, fixed-pass, cumulative, transition, alternative-repair, concealment, and five-file gates. New paid comparisons remain blocked only until a pool-matched accepted baseline exists; current sessions remain quality-review-pending and do not support token-savings claims.

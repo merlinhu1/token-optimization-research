@@ -18,7 +18,7 @@ Use `templates/repository-fixture.md` for detailed fixture notes.
 
 Raw fixture source material lives under `sources/evaluations/fixtures/`.
 
-Legacy archived fixture evidence was removed because it used invalid task designs. Active evaluation fixtures live under `sources/evaluations/fixtures/`.
+Fastify is the only current executable workflow fixture. Terraform, Beets, and OrchardCore task surfaces were purged because their designs did not meet the production-grade floor; candidate metadata may remain.
 
 Workflow-session evidence belongs under `sources/evaluations/workflow-sessions/<session-id>/` using the compact four-file artifact contract.
 
