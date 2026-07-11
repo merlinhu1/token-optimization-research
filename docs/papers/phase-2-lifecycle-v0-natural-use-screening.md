@@ -2,9 +2,9 @@
 
 ## Abstract
 
-Token-saving tools for coding agents operate through different mechanisms, including terminal-output compression, retrieval, indexing, hooks, proxies, plugins, and behavioral instructions. Their effect on provider token usage is difficult to infer from mechanism alone because each integration can also change the agent's turn structure and retained context. This study evaluates 17 treatment conditions in persistent Codex workflows on Fastify, Beets, and Terraform. Each workflow contains a feature task, a behavior-preserving refactor, and a code-review task. Treatments were installed through their documented Codex integration surfaces and used without evaluator-imposed invocation requirements.
+Token-saving tools for coding agents operate through different mechanisms, including terminal-output compression, retrieval, indexing, hooks, proxies, plugins, and behavioral instructions. Their effect on provider token usage is difficult to infer from mechanism alone because each integration can also change the agent's turn structure and retained context. This study evaluates 16 eligible treatment conditions in persistent Codex workflows on Fastify, Beets, and Terraform. Each workflow contains a feature task, a behavior-preserving refactor, and a code-review task. Treatments were installed through their documented Codex integration surfaces and used without evaluator-imposed invocation requirements.
 
-The primary outcome was provider-reported token usage relative to a matched bare-Codex baseline. The study retained 51 treatment sessions and 153 task outcomes. Five conditions used fewer aggregate tokens than their matched baselines: TokenJuice (-22.28%), Ponytail (-17.01%), SigMap (-9.60%), RTK (-1.90%), and Cartog (-1.00%). TokenJuice and SigMap were the only conditions with reductions on all three repositories. Twelve conditions increased aggregate usage. Across the complete panel, treatments used 582,180,587 tokens compared with 541,295,326 tokens for the repeated matched baselines, an increase of 7.55%. Concealed task verifiers passed in 150 of 153 cases.
+The primary outcome was provider-reported token usage relative to a matched bare-Codex baseline. The study retained 48 eligible treatment sessions and 144 task outcomes. Four conditions used fewer aggregate tokens than their matched baselines: TokenJuice (-22.28%), Ponytail (-17.01%), SigMap (-9.60%), and RTK (-1.90%). TokenJuice and SigMap were the only conditions with reductions on all three repositories. Twelve conditions increased aggregate usage. Across the complete panel, treatments used 551,060,181 tokens compared with 509,861,580 tokens for the repeated matched baselines, an increase of 8.08%. Concealed task verifiers passed in 141 of 144 cases. Three Cartog sessions were deleted after a parity audit established that the profile omitted the product-authored Codex routing and official live-watch installer surfaces.
 
 The results do not support a general claim that token-saving integrations reduce provider usage. Within this panel, TokenJuice and SigMap are the strongest candidates for replication, while many other profiles were near baseline or higher. Because each treatment has one accepted assignment per repository, the estimates are descriptive rather than confirmatory.
 
@@ -20,9 +20,9 @@ This study asks: **RQ1: In three persistent coding workflows, what provider-toke
 
 ### 2.1 Study scope and unit of analysis
 
-This reproduction screen analyzes sessions collected from 16 to 20 July 2026. The experimental unit is one persistent three-task workflow session. The analysis contains 51 treatment sessions: 17 profiles evaluated once on each of three repositories. Each profile therefore has one assignment-level observation per repository and no within-profile treatment replicate.
+This reproduction screen analyzes sessions collected from 16 to 20 July 2026. The experimental unit is one persistent three-task workflow session. The analysis contains 48 eligible treatment sessions: 16 profiles evaluated once on each of three repositories. Each profile therefore has one assignment-level observation per repository and no within-profile treatment replicate.
 
-Fifteen profiles are compared with the same three r2 baseline sessions, one for each repository. The two Headroom profiles are compared with the same three r1 baseline sessions. The r0 baseline is used only to describe baseline variability. The complete-panel baseline total repeats six unique baseline sessions across 17 profile-level contrasts; it does not represent 51 independently executed baseline sessions.
+Fourteen profiles are compared with the same three r2 baseline sessions, one for each repository. The two Headroom profiles are compared with the same three r1 baseline sessions. The r0 baseline is used only to describe baseline variability. The complete-panel baseline total repeats six unique baseline sessions across 16 profile-level contrasts; it does not represent 48 independently executed baseline sessions.
 
 A treatment session is eligible when it completed under its frozen profile, sequence, model condition, and replicate assignment; is accepted for the provider-token objective; and has a verified compact-artifact manifest. Token direction and verifier outcome do not determine eligibility.
 
@@ -46,11 +46,11 @@ Table 1 identifies the pinned repository revision and the matched r1 and r2 base
 
 ### 2.3 Model and runtime
 
-Treatment comparisons use OpenAI Codex with GPT-5.6 Luna and `xhigh` reasoning. The baseline is bare Codex under the same model condition. Headroom's full wrapper and proxy-only ablation use the retained r1 baseline. The other 15 treatment conditions use r2. A third baseline replicate, r0, is included only to characterize baseline variability.
+Treatment comparisons use OpenAI Codex with GPT-5.6 Luna and `xhigh` reasoning. The baseline is bare Codex under the same model condition. Headroom's full wrapper and proxy-only ablation use the retained r1 baseline. The other 14 treatment conditions use r2. A third baseline replicate, r0, is included only to characterize baseline variability.
 
 ### 2.4 Treatment profiles
 
-The screen evaluates 17 frozen integration profiles: 16 named integration profiles and one Headroom proxy-only ablation. The profiles span terminal hooks, behavioral instructions, wrappers, retrieval services, MCP integrations, plugins, repository graphs, and hybrid configurations. Claims in this paper apply to the evaluated profile boundaries rather than to every surface or configuration offered by the corresponding upstream product.
+The screen evaluates 16 eligible frozen integration profiles: 15 named integration profiles and one Headroom proxy-only ablation. The profiles span terminal hooks, behavioral instructions, wrappers, retrieval services, MCP integrations, plugins, repository graphs, and hybrid configurations. Claims in this paper apply to the evaluated profile boundaries rather than to every surface or configuration offered by the corresponding upstream product.
 
 The display names used in the results map one-to-one to profile IDs and mechanism families in the supplementary analysis dataset and profile registry.
 
@@ -80,7 +80,7 @@ Terraform contributes 55.92% of the r2 baseline total, compared with 29.39% for 
 
 ### 3.2 Observed treatment-baseline differences
 
-Table 3 reports aggregate profile contrasts and makes the matched baseline replicate explicit. Table 4 reports repository-level changes. Fifteen profiles reuse the r2 baseline panel, and two Headroom profiles reuse the r1 baseline panel. Rows are ordered by observed aggregate change for readability; the ordering is descriptive and is not a statistical ranking. Negative values indicate lower provider usage.
+Table 3 reports aggregate profile contrasts and makes the matched baseline replicate explicit. Table 4 reports repository-level changes. Fourteen profiles reuse the r2 baseline panel, and two Headroom profiles reuse the r1 baseline panel. Rows are ordered by observed aggregate change for readability; the ordering is descriptive and is not a statistical ranking. Negative values indicate lower provider usage.
 
 | Profile | Baseline | Treatment tokens | Matched-baseline tokens | Aggregate change | Tasks passed |
 |---|---:|---:|---:|---:|---:|
@@ -88,7 +88,6 @@ Table 3 reports aggregate profile contrasts and makes the matched baseline repli
 | Ponytail | r2 | 26,087,938 | 31,433,746 | -17.01% | 9/9 |
 | SigMap | r2 | 28,415,446 | 31,433,746 | -9.60% | 9/9 |
 | RTK | r2 | 30,835,034 | 31,433,746 | -1.90% | 9/9 |
-| Cartog | r2 | 31,120,406 | 31,433,746 | -1.00% | 9/9 |
 | jcodemunch v2 | r2 | 31,552,424 | 31,433,746 | +0.38% | 8/9 |
 | CodeGraph | r2 | 31,680,860 | 31,433,746 | +0.79% | 9/9 |
 | Snip | r2 | 32,129,378 | 31,433,746 | +2.21% | 9/9 |
@@ -108,7 +107,6 @@ Table 3 reports aggregate profile contrasts and makes the matched baseline repli
 | Ponytail | +24.93% | -23.38% | -24.67% | Mixed |
 | SigMap | -6.47% | -8.55% | -10.98% | Lower in all lanes |
 | RTK | -4.50% | +20.50% | -13.00% | Mixed |
-| Cartog | +19.81% | -2.07% | -5.90% | Mixed |
 | jcodemunch v2 | +7.03% | -40.98% | +20.37% | Mixed |
 | CodeGraph | +20.46% | -5.14% | -1.26% | Mixed |
 | Snip | -3.73% | -22.70% | +16.87% | Mixed |
@@ -124,35 +122,35 @@ Table 3 reports aggregate profile contrasts and makes the matched baseline repli
 
 TokenJuice produced the largest aggregate reduction and was lower on all three repositories. Its reductions ranged from 16.75% on Terraform to 40.24% on Fastify. SigMap was also lower on all three repositories, with a narrower range of 6.47% to 10.98%.
 
-Ponytail reduced aggregate usage by 17.01%, but the result was not consistent across repositories. Usage increased by 24.93% on Fastify and fell by more than 23% on both Beets and Terraform. RTK and Cartog were slightly below baseline in aggregate, but their effects were mixed and smaller than the observed baseline variation.
+Ponytail reduced aggregate usage by 17.01%, but the result was not consistent across repositories. Usage increased by 24.93% on Fastify and fell by more than 23% on both Beets and Terraform. RTK was slightly below baseline in aggregate, but its effects were mixed and smaller than the observed baseline variation.
 
 CodeGraph and jcodemunch were close to baseline in aggregate at +0.79% and +0.38%, respectively. A separately retained [actual-use receipt](../../sources/evaluations/audits/codegraph-provider-actual-use-20260720.json) records 23 completed CodeGraph calls across the nine tasks. Despite this observed uptake, the profile-level aggregate difference was +0.79%; the design does not estimate the causal contribution of those calls.
 
 Graphify had the largest increase at 63.90% and was higher on all three repositories. Caveman was also higher on every repository, with an aggregate increase of 26.40%. The remaining positive conditions had mixed repository-level effects.
 
-Across the 15 r2 treatments, aggregate usage was 508,041,799 tokens compared with 471,506,190 tokens for the repeated r2 baseline, an increase of 7.75%. Including the two r1 Headroom conditions, the complete panel increased usage by 7.55%.
+Across the 14 eligible r2 treatments, aggregate usage was 476,921,393 tokens compared with 440,072,444 tokens for the repeated r2 baseline, an increase of 8.37%. Including the two r1 Headroom conditions, the complete eligible panel increased usage by 8.08%.
 
 ### 3.3 Token composition
 
 Cached input accounted for 96.1% to 97.3% of provider-reported tokens across the treatment profiles. Fresh input accounted for 2.3% to 3.4%, and provider-reported output accounted for less than 0.6%. Reasoning tokens are included within output and are not additive.
 
-At complete-panel level, the 40,885,261-token increase was almost entirely an increase in cached input. Cached input increased by 40,942,848 tokens, while fresh input decreased by 131,379 and output increased by 73,792.
+At complete-panel level, the 41,198,601-token increase was almost entirely an increase in cached input. Cached input increased by 41,113,344 tokens, while fresh input increased by 25,581 and output increased by 59,676.
 
 Table 5 decomposes the complete-panel totals. The matched baseline is repeated once for each profile-level contrast, as described in Section 2.1.
 
 | Component | Treatments | Repeated matched baselines | Difference |
 |---|---:|---:|---:|
-| Fresh input | 16,434,253 | 16,565,632 | -131,379 |
-| Cached input | 563,182,336 | 522,239,488 | +40,942,848 |
-| Output | 2,563,998 | 2,490,206 | +73,792 |
-| Reasoning subset | 1,232,438 | 1,155,012 | +77,426 |
-| Total provider tokens | 582,180,587 | 541,295,326 | +40,885,261 |
+| Fresh input | 15,616,833 | 15,591,252 | +25,581 |
+| Cached input | 533,039,360 | 491,926,016 | +41,113,344 |
+| Output | 2,403,988 | 2,344,312 | +59,676 |
+| Reasoning subset | 1,156,062 | 1,088,114 | +67,948 |
+| Total provider tokens | 551,060,181 | 509,861,580 | +41,198,601 |
 
 Reasoning tokens are shown diagnostically and are not added to total provider tokens. The decomposition is accounting, not a causal explanation. Cached input may reflect instructions, tool schemas, tool results, repository material, prior turns, or other replayed prompt content.
 
 ### 3.4 Correctness
 
-Concealed verifiers passed 150 of 153 treatment tasks. The three failures occurred on the Fastify feature task under Headroom default Codex wrapper, Headroom proxy-only, and jcodemunch v2. In each case, the implementation exposed `FastifyRequest.mediaType` as `string` rather than `string | undefined`. The subsequent refactor and review tasks passed their individual checks.
+Concealed verifiers passed 141 of 144 eligible treatment tasks. The three failures occurred on the Fastify feature task under Headroom default Codex wrapper, Headroom proxy-only, and jcodemunch v2. In each case, the implementation exposed `FastifyRequest.mediaType` as `string` rather than `string | undefined`. The subsequent refactor and review tasks passed their individual checks.
 
 The token results for these sessions remain part of the study. With one assignment per treatment and repository, the common failure cannot be attributed to the integration rather than ordinary model variation.
 
@@ -160,7 +158,7 @@ The token results for these sessions remain part of the study. With one assignme
 
 ### 4.1 Reductions were not consistent across the screened profiles
 
-Five of the 17 screened profiles were below their matched baseline in aggregate, and two were below baseline on all three repositories. The selected 17-profile panel used more tokens than its repeated matched baselines. These observations show that lower provider usage was not a uniform outcome in this screen; they do not estimate the average effect of token-saving integrations as a broader product class.
+Four of the 16 eligible screened profiles were below their matched baseline in aggregate, and two were below baseline on all three repositories. The selected 16-profile panel used more tokens than its repeated matched baselines. These observations show that lower provider usage was not a uniform outcome in this screen; they do not estimate the average effect of token-saving integrations as a broader product class.
 
 ### 4.2 The strongest signals are candidates for replication
 
@@ -170,7 +168,7 @@ Ponytail also merits replication because its aggregate reduction is substantial,
 
 ### 4.3 Near-zero effects should not be overinterpreted
 
-RTK, Cartog, CodeGraph, and jcodemunch fall within roughly two percentage points of baseline in aggregate. These differences are small relative to baseline variation. The present study cannot distinguish small product effects from normal trajectory variation for these conditions.
+RTK, CodeGraph, and jcodemunch fall within roughly two percentage points of baseline in aggregate. These differences are small relative to baseline variation. The present study cannot distinguish small product effects from normal trajectory variation for these conditions.
 
 ### 4.4 Integration overhead can outweigh local savings
 
@@ -186,13 +184,13 @@ The aggregate measure is workload-weighted. Terraform contributes more than half
 
 The study measures assignment to a product integration rather than effect conditional on explicit use. This is appropriate for hooks, proxies, and behavioral policies that may act without model-issued commands, but it limits mechanism claims. Even when direct calls are observed, as with CodeGraph, the study cannot isolate the calls from the rest of the treatment surface.
 
-Correctness is assessed with bounded concealed verifiers rather than comprehensive human review. The 150/153 pass rate should not be interpreted as evidence of equal maintainability or merge readiness across conditions.
+Correctness is assessed with bounded concealed verifiers rather than comprehensive human review. The 141/144 pass rate should not be interpreted as evidence of equal maintainability or merge readiness across conditions.
 
 Provider token usage is dominated by cached input. Provider totals establish the accounting outcome but do not reveal which earlier turn or integration surface caused the later context to grow or shrink.
 
 ## 6. Implications and future work
 
-The next phase should replicate TokenJuice and SigMap first because they produced reductions on all three repositories with complete verifier success. Ponytail is a second priority because of its large but heterogeneous aggregate reduction. Additional bare-Codex replicates are required to estimate trajectory variance. RTK, Cartog, CodeGraph, and jcodemunch may be retained as near-baseline comparison profiles for evaluating instrumentation sensitivity, but they are not untreated controls.
+The next phase should replicate TokenJuice and SigMap first because they produced reductions on all three repositories with complete verifier success. Ponytail is a second priority because of its large but heterogeneous aggregate reduction. Additional bare-Codex replicates are required to estimate trajectory variance. RTK, CodeGraph, and jcodemunch may be retained as near-baseline comparison profiles for evaluating instrumentation sensitivity, but they are not untreated controls.
 
 Future runs should retain the first valid sample policy and index new replicates prospectively. Additional instrumentation should measure turn counts, explicit tool calls, tool-result volume, wrapper or hook activity, and setup latency. These measurements should remain diagnostic and should not force treatment uptake.
 
@@ -200,10 +198,10 @@ A larger study should add repositories without changing the persistent workflow 
 
 ## 7. Conclusion
 
-In this 17-profile reproduction screen, five profiles were below their matched baseline in aggregate, while the descriptive panel total was 7.55% higher than the repeated matched-baseline total. TokenJuice and SigMap were the only profiles with observed reductions on Fastify, Beets, and Terraform. These results identify replication candidates but do not establish a class-level effect or a stable ranking.
+In this 16-profile reproduction screen, four profiles were below their matched baseline in aggregate, while the descriptive panel total was 8.08% higher than the repeated matched-baseline total. TokenJuice and SigMap were the only profiles with observed reductions on Fastify, Beets, and Terraform. These results identify replication candidates but do not establish a class-level effect or a stable ranking.
 
 The results show why direct workflow measurement is necessary. In this panel, profiles that compress, retrieve, or guide sometimes increased the context carried through a persistent agent session. Provider-token outcomes depend on the entire trajectory, not only on the advertised local mechanism.
 
 ## Data availability
 
-The analysis dataset is available in [`phase-2-corrected-analysis-20260720.json`](../../sources/evaluations/audits/phase-2-corrected-analysis-20260720.json). Accepted session records are indexed by [`data/workflow-sessions.json`](../../data/workflow-sessions.json), with compact evidence bundles under [`sources/evaluations/workflow-sessions/`](../../sources/evaluations/workflow-sessions/). Treatment definitions are recorded in [`data/evaluation-profiles.json`](../../data/evaluation-profiles.json). Provider-usage components and per-thread accounting are available in [`codex-cumulative-usage-accounting-20260718.json`](../../sources/evaluations/audits/codex-cumulative-usage-accounting-20260718.json).
+The analysis dataset is available in [`phase-2-corrected-analysis-20260720.json`](../../sources/evaluations/audits/phase-2-corrected-analysis-20260720.json). The Cartog deletion and recovery boundary is recorded in [`invalid-cartog-result-deletions-20260720.json`](../../sources/evaluations/audits/invalid-cartog-result-deletions-20260720.json). Accepted session records are indexed by [`data/workflow-sessions.json`](../../data/workflow-sessions.json), with compact evidence bundles under [`sources/evaluations/workflow-sessions/`](../../sources/evaluations/workflow-sessions/). Treatment definitions are recorded in [`data/evaluation-profiles.json`](../../data/evaluation-profiles.json). Provider-usage components and per-thread accounting are available in [`codex-cumulative-usage-accounting-20260718.json`](../../sources/evaluations/audits/codex-cumulative-usage-accounting-20260718.json).

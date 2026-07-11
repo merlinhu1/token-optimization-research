@@ -1,12 +1,12 @@
 {
   "schema_version": "assisted-v1-protocol-qualification/v1",
-  "generated_at": "2026-07-20T16:58:56+00:00",
+  "generated_at": "2026-07-20T22:37:37Z",
   "evidence_stage": "provider-free-qualification",
   "contract_generation": "lifecycle-v0-assisted-v1",
   "provider_calls": 0,
-  "profiles": 8,
+  "profiles": 7,
   "sequences": 3,
-  "lanes": 24,
+  "lanes": 21,
   "all_lanes_passed": true,
   "matrix_sources": [
     {
@@ -70,22 +70,6 @@
       "provider_calls": 0,
       "produced_session_ids": [],
       "source_lane_log_sha256": "e3b98447c91f696d6fce19dcc7c5e535b6e05d1ca57fafb9ff82efae004e148b"
-    },
-    {
-      "sequence_id": "beets-lifecycle-sequence-v0",
-      "profile_id": "retrieval-cartog-mcp-v1",
-      "protocol_path": "sources/evaluations/protocols/beets-lifecycle-sequence-v0-retrieval-cartog-mcp-v1-82dd489d051c.json",
-      "protocol_sha256": "710680c33520d406e7766bdcad3344e8ba2b79c7c6215fc5c101b2a0e1d5d184",
-      "qualification_path": "sources/evaluations/fixtures/medium/beetbox-beets/qualification-lifecycle-v0-assisted-v1.json",
-      "prepared": true,
-      "prepare_verification_passed": true,
-      "host_integration_passed": true,
-      "codex_preflight_passed": true,
-      "mcp_handshake_passed": true,
-      "tool_warmup_exit_code": 0,
-      "provider_calls": 0,
-      "produced_session_ids": [],
-      "source_lane_log_sha256": "d6b19ae825f109b5a35c9f6feac75955acc249663ba295416e9a4a1eb74eab5b"
     },
     {
       "sequence_id": "beets-lifecycle-sequence-v0",
@@ -201,22 +185,6 @@
     },
     {
       "sequence_id": "fastify-lifecycle-sequence-v0",
-      "profile_id": "retrieval-cartog-mcp-v1",
-      "protocol_path": "sources/evaluations/protocols/fastify-lifecycle-sequence-v0-retrieval-cartog-mcp-v1-44b3e084c59d.json",
-      "protocol_sha256": "1c7a8c106b96db3592ce8b8738fd15d72983b1a85b69f90ac261f80652e933d3",
-      "qualification_path": "sources/evaluations/fixtures/medium/fastify-fastify/qualification-lifecycle-v0-assisted-v1.json",
-      "prepared": true,
-      "prepare_verification_passed": true,
-      "host_integration_passed": true,
-      "codex_preflight_passed": true,
-      "mcp_handshake_passed": true,
-      "tool_warmup_exit_code": 0,
-      "provider_calls": 0,
-      "produced_session_ids": [],
-      "source_lane_log_sha256": "a400c4420b5417268cab1e25c2dd0636f40ae239cf5f57be779c57e45efb6990"
-    },
-    {
-      "sequence_id": "fastify-lifecycle-sequence-v0",
       "profile_id": "retrieval-codegraph-codex-mcp-v1",
       "protocol_path": "sources/evaluations/protocols/fastify-lifecycle-sequence-v0-retrieval-codegraph-codex-mcp-v1-8af829ec58aa.json",
       "protocol_sha256": "c756230feec6cee00c84440082f3c643eaa26eb597292626aaeb67cc87f4d8be",
@@ -329,22 +297,6 @@
     },
     {
       "sequence_id": "terraform-lifecycle-sequence-v0",
-      "profile_id": "retrieval-cartog-mcp-v1",
-      "protocol_path": "sources/evaluations/protocols/terraform-lifecycle-sequence-v0-retrieval-cartog-mcp-v1-1fe472627322.json",
-      "protocol_sha256": "7228632795d0b8175d8e12355790ec5a6103392655645ca0084c081c6a4c006f",
-      "qualification_path": "sources/evaluations/fixtures/large/hashicorp-terraform/qualification-lifecycle-v0-assisted-v1.json",
-      "prepared": true,
-      "prepare_verification_passed": true,
-      "host_integration_passed": true,
-      "codex_preflight_passed": true,
-      "mcp_handshake_passed": true,
-      "tool_warmup_exit_code": 0,
-      "provider_calls": 0,
-      "produced_session_ids": [],
-      "source_lane_log_sha256": "7ce56815a29e806a75c8b2c5dba605e8896eb00f171d182ac9e061b3b49c5599"
-    },
-    {
-      "sequence_id": "terraform-lifecycle-sequence-v0",
       "profile_id": "retrieval-codegraph-codex-mcp-v1",
       "protocol_path": "sources/evaluations/protocols/terraform-lifecycle-sequence-v0-retrieval-codegraph-codex-mcp-v1-fecd622e2495.json",
       "protocol_sha256": "01ba5ab943f7642e9044289c63da8a2793ae89b11c1fc8db9a992a62b58e10b5",
@@ -427,5 +379,6 @@
   "interpretation": {
     "establishes": "Fixture preparation, fixed-composite qualification, treatment host integration, Codex preflight, warmup, and applicable MCP handshake passed for each frozen protocol.",
     "does_not_establish": "Provider-token effectiveness or software-quality equivalence. No provider session was executed."
-  }
+  },
+  "cartog_lane_deletion_receipt": "sources/evaluations/audits/invalid-cartog-result-deletions-20260720.json"
 }

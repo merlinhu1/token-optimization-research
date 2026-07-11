@@ -9,13 +9,13 @@
     "--no-provider"
   ],
   "scope": {
-    "profiles": 13,
+    "profiles": 12,
     "fixtures": 3,
-    "lanes": 39,
-    "protocols": 39
+    "lanes": 36,
+    "protocols": 36
   },
   "summary": {
-    "passed": 39,
+    "passed": 36,
     "failed": 0,
     "all_fixture_preparation_verified": true,
     "all_host_integrations_verified": true,
@@ -43,7 +43,6 @@
     "retrieval-graphify-codex-skill-v1",
     "retrieval-codegraph-codex-mcp-v1",
     "integrated-leanctx-codex-hybrid-v1",
-    "retrieval-cartog-mcp-v1",
     "codescope-codex-product-v1",
     "swarmvault-codex-product-v1",
     "retrieval-serena-codex-mcp-v1",
@@ -881,249 +880,6 @@
           "effective_config": "sources/evaluations/workflow-sessions/prepare-terraform-integrated-token-savior-mcp-v1-20260718T225832492991Z-p1594011/codex-effective-config.toml",
           "forbidden_command_visibility": "sources/evaluations/workflow-sessions/prepare-terraform-integrated-token-savior-mcp-v1-20260718T225832492991Z-p1594011/forbidden-command-visibility.txt",
           "tool_preflight": null,
-          "tool_coverage_preflight": null
-        }
-      }
-    },
-    {
-      "sequence_id": "beets-lifecycle-sequence-v0",
-      "profile_id": "retrieval-cartog-mcp-v1",
-      "protocol_path": "sources/evaluations/protocols/beets-lifecycle-sequence-v0-retrieval-cartog-mcp-v1-381dd432b270.json",
-      "protocol_sha256": "1998c37a1935070e5b654f7c113e8b136b50c7cec95a831d600b26f7589463bd",
-      "raw_prepare_output_sha256": "efb6bb1b43a686e6fe8b32d9bf7aac519d029f8fd4a9f78ff4810e0c724e4826",
-      "prepared": true,
-      "prepare_verification": {
-        "passed": true,
-        "mode": "preseeded-composite",
-        "concealment_passed": true,
-        "composite_seed_delivery_passed": true
-      },
-      "host_integration": {
-        "profile_id": "retrieval-cartog-mcp-v1",
-        "passed": true,
-        "skipped": true,
-        "install_exit_codes": [],
-        "verify_exit_codes": [],
-        "missing_required_files": [],
-        "artifacts": []
-      },
-      "mcp_handshake": {
-        "errors": [],
-        "initialize_passed": true,
-        "non_json_stdout_lines": [],
-        "passed": true,
-        "protocol_version": "2025-06-18",
-        "server_name": "cartog",
-        "stderr_present": false,
-        "tool_names": [
-          "cartog_callees",
-          "cartog_changes",
-          "cartog_context",
-          "cartog_deps",
-          "cartog_hierarchy",
-          "cartog_impact",
-          "cartog_index",
-          "cartog_map",
-          "cartog_outline",
-          "cartog_rag_index",
-          "cartog_rag_search",
-          "cartog_refs",
-          "cartog_search",
-          "cartog_stats",
-          "cartog_trace",
-          "cartog_update"
-        ],
-        "tools_list_passed": true,
-        "profile_id": "retrieval-cartog-mcp-v1",
-        "required": true,
-        "probe_exit_code": 0,
-        "tool_count": 16
-      },
-      "tool_warmup_exit_code": 0,
-      "codex_preflight": {
-        "profile_id": "retrieval-cartog-mcp-v1",
-        "passed": true,
-        "doctor_exit_code": 1,
-        "mcp_list_exit_code": 0,
-        "tool_preflight_exit_code": 0,
-        "coverage_preflight_exit_code": null,
-        "missing_declared_filter_commands": [],
-        "forbidden_command_probe_exit_code": 0,
-        "forbidden_mcp_hits": [],
-        "forbidden_config_hits": [],
-        "visible_forbidden_commands": [],
-        "failure_reasons": [],
-        "warnings": [
-          "codex doctor exited 1; preserve the diagnostic, but use the isolated MCP/config probes and task execution as gates"
-        ],
-        "artifacts": {
-          "doctor": "sources/evaluations/workflow-sessions/prepare-beets-retrieval-cartog-mcp-v1-20260718T223341257673Z-p1589967/codex-doctor.txt",
-          "mcp_list": "sources/evaluations/workflow-sessions/prepare-beets-retrieval-cartog-mcp-v1-20260718T223341257673Z-p1589967/codex-mcp-list.txt",
-          "effective_config": "sources/evaluations/workflow-sessions/prepare-beets-retrieval-cartog-mcp-v1-20260718T223341257673Z-p1589967/codex-effective-config.toml",
-          "forbidden_command_visibility": "sources/evaluations/workflow-sessions/prepare-beets-retrieval-cartog-mcp-v1-20260718T223341257673Z-p1589967/forbidden-command-visibility.txt",
-          "tool_preflight": "sources/evaluations/workflow-sessions/prepare-beets-retrieval-cartog-mcp-v1-20260718T223341257673Z-p1589967/tool-preflight.txt",
-          "tool_coverage_preflight": null
-        }
-      }
-    },
-    {
-      "sequence_id": "fastify-lifecycle-sequence-v0",
-      "profile_id": "retrieval-cartog-mcp-v1",
-      "protocol_path": "sources/evaluations/protocols/fastify-lifecycle-sequence-v0-retrieval-cartog-mcp-v1-99b0eb4785a0.json",
-      "protocol_sha256": "a4fcb5b21899f7fbe8bc431c5347654c49509ed6a6371517bda6f8d85ab51968",
-      "raw_prepare_output_sha256": "82b0d6d20214bb1d0215ac70dd0bf06781a628a5e056c6efa65b5037eccde1ab",
-      "prepared": true,
-      "prepare_verification": {
-        "passed": true,
-        "mode": "preseeded-composite",
-        "concealment_passed": true,
-        "composite_seed_delivery_passed": true
-      },
-      "host_integration": {
-        "profile_id": "retrieval-cartog-mcp-v1",
-        "passed": true,
-        "skipped": true,
-        "install_exit_codes": [],
-        "verify_exit_codes": [],
-        "missing_required_files": [],
-        "artifacts": []
-      },
-      "mcp_handshake": {
-        "errors": [],
-        "initialize_passed": true,
-        "non_json_stdout_lines": [],
-        "passed": true,
-        "protocol_version": "2025-06-18",
-        "server_name": "cartog",
-        "stderr_present": false,
-        "tool_names": [
-          "cartog_callees",
-          "cartog_changes",
-          "cartog_context",
-          "cartog_deps",
-          "cartog_hierarchy",
-          "cartog_impact",
-          "cartog_index",
-          "cartog_map",
-          "cartog_outline",
-          "cartog_rag_index",
-          "cartog_rag_search",
-          "cartog_refs",
-          "cartog_search",
-          "cartog_stats",
-          "cartog_trace",
-          "cartog_update"
-        ],
-        "tools_list_passed": true,
-        "profile_id": "retrieval-cartog-mcp-v1",
-        "required": true,
-        "probe_exit_code": 0,
-        "tool_count": 16
-      },
-      "tool_warmup_exit_code": 0,
-      "codex_preflight": {
-        "profile_id": "retrieval-cartog-mcp-v1",
-        "passed": true,
-        "doctor_exit_code": 1,
-        "mcp_list_exit_code": 0,
-        "tool_preflight_exit_code": 0,
-        "coverage_preflight_exit_code": null,
-        "missing_declared_filter_commands": [],
-        "forbidden_command_probe_exit_code": 0,
-        "forbidden_mcp_hits": [],
-        "forbidden_config_hits": [],
-        "visible_forbidden_commands": [],
-        "failure_reasons": [],
-        "warnings": [
-          "codex doctor exited 1; preserve the diagnostic, but use the isolated MCP/config probes and task execution as gates"
-        ],
-        "artifacts": {
-          "doctor": "sources/evaluations/workflow-sessions/prepare-fastify-retrieval-cartog-mcp-v1-20260718T223327305221Z-p1589771/codex-doctor.txt",
-          "mcp_list": "sources/evaluations/workflow-sessions/prepare-fastify-retrieval-cartog-mcp-v1-20260718T223327305221Z-p1589771/codex-mcp-list.txt",
-          "effective_config": "sources/evaluations/workflow-sessions/prepare-fastify-retrieval-cartog-mcp-v1-20260718T223327305221Z-p1589771/codex-effective-config.toml",
-          "forbidden_command_visibility": "sources/evaluations/workflow-sessions/prepare-fastify-retrieval-cartog-mcp-v1-20260718T223327305221Z-p1589771/forbidden-command-visibility.txt",
-          "tool_preflight": "sources/evaluations/workflow-sessions/prepare-fastify-retrieval-cartog-mcp-v1-20260718T223327305221Z-p1589771/tool-preflight.txt",
-          "tool_coverage_preflight": null
-        }
-      }
-    },
-    {
-      "sequence_id": "terraform-lifecycle-sequence-v0",
-      "profile_id": "retrieval-cartog-mcp-v1",
-      "protocol_path": "sources/evaluations/protocols/terraform-lifecycle-sequence-v0-retrieval-cartog-mcp-v1-690167799c9f.json",
-      "protocol_sha256": "518db3216d9d675c22e2de15b67352908855ac260eec19c3c05c199598048516",
-      "raw_prepare_output_sha256": "f7c1f19a329d77ae50d8e42e4bc8843a0d37bc78ab1d48398ddcc31eff390773",
-      "prepared": true,
-      "prepare_verification": {
-        "passed": true,
-        "mode": "preseeded-composite",
-        "concealment_passed": true,
-        "composite_seed_delivery_passed": true
-      },
-      "host_integration": {
-        "profile_id": "retrieval-cartog-mcp-v1",
-        "passed": true,
-        "skipped": true,
-        "install_exit_codes": [],
-        "verify_exit_codes": [],
-        "missing_required_files": [],
-        "artifacts": []
-      },
-      "mcp_handshake": {
-        "errors": [],
-        "initialize_passed": true,
-        "non_json_stdout_lines": [],
-        "passed": true,
-        "protocol_version": "2025-06-18",
-        "server_name": "cartog",
-        "stderr_present": false,
-        "tool_names": [
-          "cartog_callees",
-          "cartog_changes",
-          "cartog_context",
-          "cartog_deps",
-          "cartog_hierarchy",
-          "cartog_impact",
-          "cartog_index",
-          "cartog_map",
-          "cartog_outline",
-          "cartog_rag_index",
-          "cartog_rag_search",
-          "cartog_refs",
-          "cartog_search",
-          "cartog_stats",
-          "cartog_trace",
-          "cartog_update"
-        ],
-        "tools_list_passed": true,
-        "profile_id": "retrieval-cartog-mcp-v1",
-        "required": true,
-        "probe_exit_code": 0,
-        "tool_count": 16
-      },
-      "tool_warmup_exit_code": 0,
-      "codex_preflight": {
-        "profile_id": "retrieval-cartog-mcp-v1",
-        "passed": true,
-        "doctor_exit_code": 1,
-        "mcp_list_exit_code": 0,
-        "tool_preflight_exit_code": 0,
-        "coverage_preflight_exit_code": null,
-        "missing_declared_filter_commands": [],
-        "forbidden_command_probe_exit_code": 0,
-        "forbidden_mcp_hits": [],
-        "forbidden_config_hits": [],
-        "visible_forbidden_commands": [],
-        "failure_reasons": [],
-        "warnings": [
-          "codex doctor exited 1; preserve the diagnostic, but use the isolated MCP/config probes and task execution as gates"
-        ],
-        "artifacts": {
-          "doctor": "sources/evaluations/workflow-sessions/prepare-terraform-retrieval-cartog-mcp-v1-20260718T223357347474Z-p1590152/codex-doctor.txt",
-          "mcp_list": "sources/evaluations/workflow-sessions/prepare-terraform-retrieval-cartog-mcp-v1-20260718T223357347474Z-p1590152/codex-mcp-list.txt",
-          "effective_config": "sources/evaluations/workflow-sessions/prepare-terraform-retrieval-cartog-mcp-v1-20260718T223357347474Z-p1590152/codex-effective-config.toml",
-          "forbidden_command_visibility": "sources/evaluations/workflow-sessions/prepare-terraform-retrieval-cartog-mcp-v1-20260718T223357347474Z-p1590152/forbidden-command-visibility.txt",
-          "tool_preflight": "sources/evaluations/workflow-sessions/prepare-terraform-retrieval-cartog-mcp-v1-20260718T223357347474Z-p1590152/tool-preflight.txt",
           "tool_coverage_preflight": null
         }
       }
@@ -3567,5 +3323,6 @@
         }
       }
     }
-  ]
+  ],
+  "cartog_lane_deletion_receipt": "sources/evaluations/audits/invalid-cartog-result-deletions-20260720.json"
 }

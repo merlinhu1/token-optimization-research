@@ -432,7 +432,7 @@ class ActiveCampaignArchitectureTest(unittest.TestCase):
             "retrieval-codegraph-codex-mcp-v1",
             "retrieval-jcodemunch-codex-mcp-v2",
             "integrated-leanctx-codex-hybrid-v1",
-            "retrieval-cartog-mcp-v1",
+            "retrieval-cartog-codex-product-v2",
             "codescope-codex-product-v1",
             "swarmvault-codex-product-v1",
             "retrieval-serena-codex-mcp-v1",
@@ -493,11 +493,25 @@ class ActiveCampaignArchitectureTest(unittest.TestCase):
         self.assertIn("{tool_port}", wrapper_args)
         self.assertTrue({"headroom_retrieve", "rtk", "tokensave", "serena"}.issubset(proxy_only["allowed_terms"]))
 
-        cartog = runner.fixture.TOOL_CONFIGS["cartog"]
-        self.assertEqual(cartog["mcp_command"], "/bin/bash")
-        self.assertEqual(cartog["warmup"]["kind"], "code-graph-build")
-        self.assertIn("CARTOG_AUTO_INIT", cartog["env"])
-        self.assertEqual(cartog["diff_exclude_paths"], [".cartog"])
+        cartog = runner.fixture.TOOL_CONFIGS["cartog-codex-product-v2"]
+        self.assertTrue(cartog["mcp_config_via_host_integration"])
+        self.assertEqual(cartog["mcp_args"], ["serve", "--watch"])
+        self.assertEqual(cartog["warmup"]["kind"], "official-init-and-structural-index")
+        self.assertNotIn("CARTOG_AUTO_INIT", cartog["env"])
+        self.assertEqual(cartog["diff_exclude_paths"], [".cartog", ".cartog.toml", "AGENTS.md"])
+        self.assertNotIn("AGENTS.md", cartog["warmup"]["cleanup_paths"])
+        install_commands = cartog["host_integration"]["install_commands"]
+        self.assertIn(
+            ["{tool_data_dir}/bin/cartog", "ide", "--client", "codex", "--yes"],
+            install_commands,
+        )
+        self.assertIn(
+            "{tool_data_dir}/cartog-codex-product-installation.json",
+            cartog["host_integration"]["required_files"],
+        )
+        self.assertIn("{repo}/AGENTS.md", cartog["host_integration"]["required_files"])
+        self.assertIn("{codex_home}/config.toml", cartog["host_integration"]["required_files"])
+        self.assertIn("scripts/install_cartog_codex_product.py", " ".join(cartog["mounts"]))
 
         codescope = runner.fixture.TOOL_CONFIGS["codescope"]
         self.assertEqual(codescope["mcp_command"], "python3")
@@ -554,7 +568,7 @@ class ActiveCampaignArchitectureTest(unittest.TestCase):
         historical = {
             "terminal-tokenjuice", "terminal-rtk", "terminal-snip",
             "retrieval-jcodemunch-mcp", "retrieval-leanctx", "retrieval-codegraph",
-            "retrieval-cartog", "codescope-owner", "swarmvault-owner",
+            "retrieval-cartog", "retrieval-cartog-mcp-v1", "codescope-owner", "swarmvault-owner",
             "retrieval-serena", "retrieval-graphify", "retrieval-sigmap",
             "integrated-token-savior", "stack-tokenjuice-jcodemunch-mcp",
         }
@@ -676,7 +690,7 @@ class ActiveCampaignArchitectureTest(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, "provider launch readiness gate failed"):
                 runner.validate_protocol_for_run(
                     runner.load_sequence("fastify-lifecycle-sequence-v0"),
-                    "retrieval-cartog-mcp-v1",
+                    "retrieval-cartog-codex-product-v2",
                     args,
                 )
 
@@ -762,6 +776,13 @@ class ActiveCampaignArchitectureTest(unittest.TestCase):
         self.assertIn("hooks = true", config)
         self.assertIn("multi_agent = true", config)
 
+    def test_cartog_profile_defers_mcp_config_to_official_installer(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            codex_home = Path(tmp)
+            runner.fixture.write_codex_config(codex_home, {}, "retrieval-cartog-codex-product-v2")
+            config = (codex_home / "config.toml").read_text()
+        self.assertNotIn("[mcp_servers.cartog", config)
+
     def test_unproven_treatment_results_and_protocols_are_deleted_not_relabelled(self) -> None:
         receipt = json.loads(
             (ROOT / "sources/evaluations/audits/unproven-treatment-result-deletions-20260718.json").read_text()
@@ -775,6 +796,25 @@ class ActiveCampaignArchitectureTest(unittest.TestCase):
             for relative in deleted["deleted_protocol_paths"] + deleted["deleted_comparison_paths"] + deleted["deleted_bundle_roots"]:
                 self.assertFalse((ROOT / relative).exists(), relative)
 
+    def test_invalid_cartog_results_are_deleted_not_relabelled(self) -> None:
+        receipt = json.loads(
+            (ROOT / "sources/evaluations/audits/invalid-cartog-result-deletions-20260720.json").read_text()
+        )
+        sessions = json.loads((ROOT / "data/workflow-sessions.json").read_text())["sessions"]
+        active_ids = {row["session_id"] for row in sessions}
+        self.assertEqual(receipt["profile_id"], "retrieval-cartog-mcp-v1")
+        self.assertEqual(receipt["disposition"], "invalid-treatment-configuration")
+        self.assertEqual(receipt["baseline_relabeling"], "forbidden")
+        self.assertEqual(receipt["replacement_profile_id"], "retrieval-cartog-codex-product-v2")
+        self.assertEqual(len(receipt["deleted_session_ids"]), 6)
+        self.assertTrue(set(receipt["deleted_session_ids"]).isdisjoint(active_ids))
+        for relative in (
+            receipt["deleted_protocol_paths"]
+            + receipt["deleted_comparison_paths"]
+            + receipt["deleted_bundle_roots"]
+        ):
+            self.assertFalse((ROOT / relative).exists(), relative)
+
     def test_graphify_identity_path_renders_lane_private_tool_data_dir(self) -> None:
         cfg = runner.fixture.TOOL_CONFIGS["graphify-codex-skill-v1"]
         lane_path = runner._lane_path(cfg)
@@ -787,7 +827,7 @@ class ActiveCampaignArchitectureTest(unittest.TestCase):
 
     def test_replacements_for_unproven_profiles_require_assignment_proof_and_product_parity(self) -> None:
         expected = {
-            "retrieval-cartog-mcp-v1": "cartog-mcp-v1",
+            "retrieval-cartog-codex-product-v2": "cartog-codex-product-v2",
             "codescope-codex-product-v1": "codescope-codex-product-v1",
             "swarmvault-codex-product-v1": "swarmvault-codex-product-v1",
             "retrieval-serena-codex-mcp-v1": "serena-codex-mcp-v1",

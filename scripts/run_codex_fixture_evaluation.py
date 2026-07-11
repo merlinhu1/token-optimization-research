@@ -78,7 +78,7 @@ PROFILE_TOOL_CONFIG_OVERRIDES = {
     "retrieval-graphify-codex-skill-v1": "graphify-codex-skill-v1",
     "retrieval-codegraph-codex-mcp-v1": "codegraph-codex-mcp-v1",
     "integrated-leanctx-codex-hybrid-v1": "leanctx-codex-hybrid-v1",
-    "retrieval-cartog-mcp-v1": "cartog-mcp-v1",
+    "retrieval-cartog-codex-product-v2": "cartog-codex-product-v2",
     "codescope-codex-product-v1": "codescope-codex-product-v1",
     "swarmvault-codex-product-v1": "swarmvault-codex-product-v1",
     "retrieval-serena-codex-mcp-v1": "serena-codex-mcp-v1",
@@ -93,6 +93,8 @@ PROFILE_TOOL_CONFIG_OVERRIDES = {
 CODEGRAPH_BIN = Path("/opt/data/tool-candidates/codegraph/dist/bin/codegraph.js")
 CARTOG_ROOT = Path("/opt/data/tool-candidates/cartog")
 CARTOG_BIN = CARTOG_ROOT / "target" / "release" / "cartog"
+CARTOG_COMMIT = "890d15b66b523841290a63e431a31b6f6438fc4b"
+CARTOG_PRODUCT_INSTALLER = "{repository_root}/scripts/install_cartog_codex_product.py"
 CODESCOPE_RELEASE_ROOT = Path("/opt/data/tool-candidates/codescope-release-v0.8.12")
 CODESCOPE_BIN = CODESCOPE_RELEASE_ROOT / "codescope"
 CODESCOPE_SURREAL_BIN = CODESCOPE_RELEASE_ROOT / "surreal"
@@ -954,11 +956,70 @@ TOOL_CONFIGS.update({
         "session_activation": "/caveman",
         "default_tool_state": "active-native-skill",
     },
-    "cartog-mcp-v1": {
-        **TOOL_CONFIGS["cartog"],
-        "display_name": "Cartog handshake-gated Codex MCP v1",
-        "lane_name": "retrieval-cartog-mcp-v1",
+    "cartog-codex-product-v2": {
+        "display_name": "Cartog product-guided Codex integration v2",
+        "lane_name": "retrieval-cartog-codex-product-v2",
+        "surface": "retrieval/context+mcp-live-watch+model-runtime-cli+product-authored-agents-guidance",
+        "mcp_server": "cartog",
+        "mcp_config_via_host_integration": True,
+        "allowed_terms": ["cartog"],
+        "data_dir_name": "cartog-codex-product-v2",
+        "mcp_command": "{tool_data_dir}/bin/cartog",
+        "mcp_args": ["serve", "--watch"],
+        "path_entries": ["{tool_data_dir}/bin"],
+        "env": {"CARTOG_MCP_COMPACT": "1", "CARTOG_NO_UPDATE_CHECK": "1"},
+        "mounts": [str(CARTOG_ROOT), CARTOG_PRODUCT_INSTALLER],
+        "diff_exclude_paths": [".cartog", ".cartog.toml", "AGENTS.md"],
+        "host_integration": {
+            "home_dot_codex_alias": True,
+            "controller_install_commands": [[
+                "python3",
+                CARTOG_PRODUCT_INSTALLER,
+                "--source-root",
+                str(CARTOG_ROOT),
+                "--expected-commit",
+                CARTOG_COMMIT,
+                "--repo",
+                "{repo}",
+                "--binary-source",
+                str(CARTOG_BIN),
+                "--binary-destination",
+                "{tool_data_dir}/bin/cartog",
+                "--receipt",
+                "{tool_data_dir}/cartog-codex-product-installation.json",
+            ]],
+            "install_commands": [
+                ["{tool_data_dir}/bin/cartog", "ide", "--client", "codex", "--yes"],
+            ],
+            "verify_commands": [[
+                "python3",
+                "-c",
+                "from pathlib import Path; a=Path('AGENTS.md').read_text(); c=Path('{codex_home}/config.toml').read_text(); assert 'CARTOG_PRODUCT_GUIDANCE_BEGIN' in a; assert 'prefer cartog over grep' in a; assert 'args = [\\\"serve\\\", \\\"--watch\\\"]' in c",
+            ]],
+            "required_files": [
+                "{tool_data_dir}/bin/cartog",
+                "{tool_data_dir}/cartog-codex-product-installation.json",
+                "{repo}/AGENTS.md",
+                "{codex_home}/config.toml",
+            ],
+            "timeout_seconds": 300,
+        },
+        "preflight_command": ["/bin/bash", "-lc", "command -v cartog && cartog --version"],
         "mcp_handshake": {"required": True, "method": "initialize-and-tools-list", "timeout_seconds": 60},
+        "default_tool_state": "warm-structural-index+active-guidance+live-watch",
+        "warmup": {
+            "kind": "official-init-and-structural-index",
+            "command": [
+                "/bin/bash",
+                "-lc",
+                "set -euo pipefail; cartog init; cartog index .",
+            ],
+            "cleanup_paths": [".cartog", ".cartog.toml"],
+            "output_name": "cartog-warmup-output.txt",
+            "metadata_name": "cartog-warmup-metadata.json",
+            "timeout_seconds": 1200,
+        },
+        "canonical_scope": "The product-authored Codex MCP installer, live watcher, model-runtime CLI, and documented AGENTS routing snippet are active. The optional local vector/reranker tier is not prepared; documented structural and FTS5 retrieval remain available.",
     },
     "token-savior-mcp-v1": {
         **TOOL_CONFIGS["token-savior"],
@@ -1286,7 +1347,7 @@ def write_codex_config(codex_home: Path, record: dict[str, Any], pid: str) -> No
             if command.is_absolute() and not command.exists() and not generated_by_install:
                 raise FileNotFoundError(f"{cfg['display_name']} command not found: {command}")
         server = cfg.get("mcp_server")
-        if server:
+        if server and not cfg.get("mcp_config_via_host_integration"):
             lines.extend(
                 [
                     f"[mcp_servers.{server}]",

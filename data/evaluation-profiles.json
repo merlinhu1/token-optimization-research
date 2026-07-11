@@ -616,13 +616,13 @@
       "reset": {
         "policy": "Record disable/uninstall commands and verify no stale index, hook, memory, cache, or generated profile survives into the next run."
       },
-      "notes": "Historical cartog MCP sessions retained configuration/listing evidence but no required initialize/tools-list receipt and no completed MCP tool call; operational treatment assignment is unverified. Historical occupied sessions and protocols were deleted because treatment assignment was unproven.",
+      "notes": "Historical cartog MCP sessions retained configuration/listing evidence but no required initialize/tools-list receipt and no completed MCP tool call; operational treatment assignment is unverified. Historical occupied sessions and protocols were deleted because treatment assignment was unproven. Its first versioned successor was also deleted after a later parity audit found that it omitted Cartog product-authored Codex guidance and live-watch installation.",
       "deferred_reason": "Selected for the next lifecycle-v0 natural-use treatment round after the first ten screens, subject to production adapter qualification.",
       "blocked_reason": "Historical cartog MCP sessions retained configuration/listing evidence but no required initialize/tools-list receipt and no completed MCP tool call; operational treatment assignment is unverified.",
       "historical_results_deleted": true,
       "historical_result_disposition": "deleted-unproven-treatment",
       "active_corpus_result": "deleted-under-owner-authorized-receipt",
-      "superseded_by": "retrieval-cartog-mcp-v1"
+      "superseded_by": "retrieval-cartog-codex-product-v2"
     },
     {
       "id": "retrieval-codegraph",
@@ -1574,7 +1574,7 @@
       "id": "retrieval-cartog-mcp-v1",
       "profile_type": "individual_tool",
       "objective_scope": "individual_tool_effectiveness",
-      "status": "screening-shortlist",
+      "status": "historical-profile",
       "enabled_surfaces": [
         "retrieval-context",
         "mcp"
@@ -1601,7 +1601,50 @@
         "integration_state": "official-direct-serve-mcp",
         "assignment_proof": "provider-free initialize plus tools/list handshake required"
       },
-      "notes": "Versioned replacement for deleted historical results whose treatment assignment was not operationally proven."
+      "notes": "Invalid historical Cartog configuration: direct MCP registration omitted the product-authored Codex AGENTS routing snippet, official `cartog ide --client codex --yes` install path, model-runtime CLI, and `serve --watch`. All six active result sessions were deleted under owner-authorized receipt.",
+      "blocked_reason": "Omitted required product-authored Codex guidance and official live-watch installer surfaces; not eligible for Cartog product-effect claims.",
+      "historical_results_deleted": true,
+      "deletion_receipt": "sources/evaluations/audits/invalid-cartog-result-deletions-20260720.json",
+      "historical_result_disposition": "deleted-invalid-treatment",
+      "active_corpus_result": "deleted-under-owner-authorized-receipt",
+      "superseded_by": "retrieval-cartog-codex-product-v2"
+    },
+    {
+      "id": "retrieval-cartog-codex-product-v2",
+      "profile_type": "individual_tool",
+      "objective_scope": "individual_tool_effectiveness",
+      "status": "screening-shortlist",
+      "enabled_surfaces": [
+        "retrieval-context",
+        "mcp",
+        "codex-project-instructions",
+        "model-runtime-cli",
+        "live-index-watch"
+      ],
+      "disabled_overlaps": [
+        "all unlisted surfaces"
+      ],
+      "components": [
+        {
+          "component_id": "retrieval-cartog-codex-product-v2",
+          "surface": "retrieval-context+mcp+codex-agents+model-runtime-cli+live-watch",
+          "role": "individual_tool"
+        }
+      ],
+      "install": {
+        "policy": "Run the pinned Cartog official Codex installer (`cartog ide --client codex --yes`), preserve the product-authored AGENTS routing snippet verbatim, expose the pinned binary on the model-runtime PATH, initialize the project, build the structural index, and serve with live watch."
+      },
+      "reset": {
+        "policy": "Delete lane-private CODEX_HOME, PATH shim, project AGENTS managed block, .cartog.toml, .cartog index state, and watcher processes after evidence capture."
+      },
+      "evaluation_protocol": {
+        "tool_use_policy": "natural-after-product-authored-guidance",
+        "tool_state": "warm-structural-index",
+        "integration_state": "official-codex-ide+product-authored-agents-guidance+model-runtime-cli+live-watch",
+        "assignment_proof": "official installer receipt, guidance hash, model-runtime executable probe, initialize plus tools/list handshake, and index/watcher preparation required",
+        "rag_scope": "structural graph plus FTS5; optional local vector/reranker tier is not prepared"
+      },
+      "notes": "Versioned guide-faithful successor to deleted retrieval-cartog-mcp-v1. Product-authored routing is treatment configuration, not evaluator-authored steering."
     },
     {
       "id": "codescope-codex-product-v1",

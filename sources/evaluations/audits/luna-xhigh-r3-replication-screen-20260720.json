@@ -1,6 +1,6 @@
 {
   "schema_version": "luna-xhigh-r3-replication-screen/v1",
-  "generated_at": "2026-07-20T16:58:56+00:00",
+  "generated_at": "2026-07-20T22:37:37Z",
   "evidence_stage": "replication-screen",
   "campaign_id": "luna-xhigh-round2-r3-20260720",
   "model_condition_id": "codex-openai-gpt-5-6-luna-xhigh",
@@ -13,20 +13,20 @@
     "generation": "natural-use lifecycle-v0 before assisted-v1 activation",
     "sequence_count": 3,
     "persistent_tasks_per_sequence": 3,
-    "note": "The assisted-v1 task contracts were merged only after every r3 provider session completed and are not part of this evidence."
+    "note": "The assisted-v1 task contracts were merged only after every r3 provider session completed and are not part of this evidence. The incomplete Cartog direct-MCP treatment was deleted on 2026-07-20 and is excluded from every panel total."
   },
   "sources": {
     "workflow_sessions": {
       "path": "data/workflow-sessions.json",
-      "sha256": "0ebfd62274b3895810588dbf61f985c180c1ab50735f4f439dcf3485279a213d"
+      "sha256": "af82ff9bfb1e9a308f4458e82ff188c6512bc6c396f5d392c4554b38063c35bf"
     },
     "evaluation_profiles": {
       "path": "data/evaluation-profiles.json",
-      "sha256": "c91ce1204f7a879ba831a01cf3c53b6ff850be1daa6770860e63a22f94381e64"
+      "sha256": "17a8c1675ec74b37b4f0b2dfde9789e41bfac88ca3814c249c4efca99d04b3b5"
     },
     "prior_corrected_analysis": {
       "path": "sources/evaluations/audits/phase-2-corrected-analysis-20260720.json",
-      "sha256": "169266ddf4d2559f37927ede86b094e804f6b8647b3cf36408de1c99920de21d"
+      "sha256": "f509e5ae077689e5c2e115d72f3bd6843f815d748505488aa3a563a6aa0018b7"
     },
     "campaign_controller_summary": {
       "locator": "/opt/data/campaigns/luna-xhigh-round2-r3/summary.json",
@@ -34,12 +34,13 @@
       "passed": true,
       "final_campaign_commit": "f2223bc614aaa5d169391cb0d904bf9771a45b4b"
     },
-    "analysis_head": "ca2cbdf633e8cc08be63ca3fee95f645a91b35ea"
+    "analysis_head": "ca2cbdf633e8cc08be63ca3fee95f645a91b35ea",
+    "cartog_deletion_receipt": "sources/evaluations/audits/invalid-cartog-result-deletions-20260720.json"
   },
   "design": {
     "unique_baseline_sessions": 3,
-    "treatment_sessions": 21,
-    "profiles": 7,
+    "treatment_sessions": 18,
+    "profiles": 6,
     "baseline_reuse": "The same three r3 baseline sessions are reused descriptively for all seven profile contrasts; repeated baseline totals do not create independent control observations.",
     "eligibility": "First operationally valid assignment samples retained; verifier outcomes are diagnostic and do not gate token accounting.",
     "randomized": false,
@@ -50,7 +51,6 @@
       "retrieval-sigmap-codex-live-v1",
       "artifact-ponytail-codex-plugin-v1",
       "terminal-rtk-codex-instructions-v1",
-      "retrieval-cartog-mcp-v1",
       "retrieval-codegraph-codex-mcp-v1",
       "retrieval-jcodemunch-codex-mcp-v2"
     ],
@@ -83,18 +83,18 @@
       "delta_percent": 2.646374
     },
     "priority_2": {
-      "profiles": 4,
-      "treatment_provider_tokens": 153611629,
-      "repeated_matched_baseline_provider_tokens": 135065584,
-      "delta_provider_tokens": 18546045,
-      "delta_percent": 13.73114
+      "profiles": 3,
+      "treatment_provider_tokens": 112059356,
+      "repeated_matched_baseline_provider_tokens": 101299188,
+      "delta_provider_tokens": 10760168,
+      "delta_percent": 10.622166
     },
     "all_selected_profiles": {
-      "profiles": 7,
-      "treatment_provider_tokens": 257591572,
-      "repeated_matched_baseline_provider_tokens": 236364772,
-      "delta_provider_tokens": 21226800,
-      "delta_percent": 8.980526
+      "profiles": 6,
+      "treatment_provider_tokens": 216039299,
+      "repeated_matched_baseline_provider_tokens": 202598376,
+      "delta_provider_tokens": 13440923,
+      "delta_percent": 6.63427
     }
   },
   "profiles": [
@@ -420,85 +420,6 @@
       }
     },
     {
-      "profile_id": "retrieval-cartog-mcp-v1",
-      "display_name": "Cartog",
-      "priority": 2,
-      "enabled_surfaces": [
-        "retrieval-context",
-        "mcp"
-      ],
-      "treatment_usage": {
-        "fresh_input_tokens": 1018962,
-        "cached_input_tokens": 40353024,
-        "output_tokens": 180287,
-        "reasoning_tokens": 80233,
-        "total_provider_tokens": 41552273
-      },
-      "matched_baseline_usage": {
-        "fresh_input_tokens": 880535,
-        "cached_input_tokens": 32734464,
-        "output_tokens": 151397,
-        "reasoning_tokens": 72433,
-        "total_provider_tokens": 33766396
-      },
-      "delta_provider_tokens": 7785877,
-      "delta_percent": 23.058063,
-      "tasks_passed": 9,
-      "tasks_attempted": 9,
-      "all_sessions_accepted_for_objective": true,
-      "all_manifests_verified": true,
-      "lanes": [
-        {
-          "sequence_id": "fastify-lifecycle-sequence-v0",
-          "treatment_session_id": "cartog-fastify-20260720-p-769d40697529-r3",
-          "baseline_session_id": "baseline-fastify-20260720-p-769d40697529-r3",
-          "treatment_provider_tokens": 6329875,
-          "baseline_provider_tokens": 2857781,
-          "delta_provider_tokens": 3472094,
-          "delta_percent": 121.496154,
-          "tasks_passed": 3,
-          "tasks_attempted": 3,
-          "manifest_verified": true,
-          "frozen_protocol_sha256": "8f872856d4cbad43e736499eec95d9208b76cb580a2cc128ed3557feb35d99c0"
-        },
-        {
-          "sequence_id": "beets-lifecycle-sequence-v0",
-          "treatment_session_id": "cartog-beets-20260720-p-b440da225a3a-r3",
-          "baseline_session_id": "baseline-beets-20260720-p-b440da225a3a-r3",
-          "treatment_provider_tokens": 14571941,
-          "baseline_provider_tokens": 12284833,
-          "delta_provider_tokens": 2287108,
-          "delta_percent": 18.617331,
-          "tasks_passed": 3,
-          "tasks_attempted": 3,
-          "manifest_verified": true,
-          "frozen_protocol_sha256": "4d5ccefa2f1d35eff808c2b6c652ce0ab8217259081f4e3d66c6b7d1f9461a96"
-        },
-        {
-          "sequence_id": "terraform-lifecycle-sequence-v0",
-          "treatment_session_id": "cartog-terraform-20260720-p-ded8609b4172-r3",
-          "baseline_session_id": "baseline-terraform-20260720-p-ded8609b4172-r3",
-          "treatment_provider_tokens": 20650457,
-          "baseline_provider_tokens": 18623782,
-          "delta_provider_tokens": 2026675,
-          "delta_percent": 10.882188,
-          "tasks_passed": 3,
-          "tasks_attempted": 3,
-          "manifest_verified": true,
-          "frozen_protocol_sha256": "e736fc11f25c7860d31b794061142706850c2da8eb5ad1d1d40a68c6fc423846"
-        }
-      ],
-      "prior_natural_use_screen": {
-        "replicate_index": 2,
-        "treatment_provider_tokens": 31120406,
-        "matched_baseline_provider_tokens": 31433746,
-        "delta_provider_tokens": -313340,
-        "delta_percent": -0.996827,
-        "tasks_passed": 9,
-        "tasks_attempted": 9
-      }
-    },
-    {
       "profile_id": "retrieval-codegraph-codex-mcp-v1",
       "display_name": "CodeGraph",
       "priority": 2,
@@ -672,15 +593,15 @@
   ],
   "interpretation": {
     "profile_level_reductions": 2,
-    "profile_level_increases": 5,
+    "profile_level_increases": 4,
     "lane_level_reductions": 6,
-    "lane_level_increases": 15,
+    "lane_level_increases": 12,
     "claim_boundary": "Observed assignment-level contrasts in one natural-use replicate per profile and lane. The selected panel does not estimate a product-class effect or stable ranking.",
     "cross_screen_direction_change_causal_attribution": "not identified",
     "formal_replication_success_threshold_preregistered": false
   },
   "verification": {
-    "session_count": 24,
+    "session_count": 21,
     "all_expected_sessions_present": true,
     "all_manifests_verified": true,
     "all_treatment_sessions_accepted_for_objective": true,
@@ -688,7 +609,7 @@
     "campaign_summary_reconciled": true,
     "campaign_task_count_reconciled": true
   },
-  "reviewed_at": "2026-07-20T17:21:27+00:00",
+  "reviewed_at": "2026-07-20T22:37:37Z",
   "cross_screen_comparability": {
     "preceding_replicate_index": 2,
     "byte_identical_for_every_condition": false,
@@ -708,7 +629,6 @@
     "unchanged_treatment_guidance_profiles": [
       "retrieval-sigmap-codex-live-v1",
       "artifact-ponytail-codex-plugin-v1",
-      "retrieval-cartog-mcp-v1",
       "retrieval-codegraph-codex-mcp-v1",
       "retrieval-jcodemunch-codex-mcp-v2"
     ],
