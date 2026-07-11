@@ -1,9 +1,12 @@
 from __future__ import annotations
 
 import copy
+import gzip
 import hashlib
 import inspect
 import json
+import os
+import shutil
 import subprocess
 import sys
 import tempfile
@@ -11,6 +14,8 @@ import unittest
 from pathlib import Path
 from typing import Any
 from unittest import mock
+
+import jsonschema
 
 ROOT = Path(__file__).resolve().parents[1]
 if str(ROOT) not in sys.path:
@@ -416,6 +421,24 @@ class ActiveCampaignArchitectureTest(unittest.TestCase):
             {"frozen_protocol", "selected_execution", "docker_image_identity", "tool_adapter_identity"}
             <= required
         )
+
+    def test_schema_rejects_unpaired_accepted_treatment(self) -> None:
+        schema = json.loads((ROOT / "schemas/workflow-session-record.schema.json").read_text())
+        registry = json.loads((ROOT / "data/workflow-sessions.json").read_text())
+        treatment = copy.deepcopy(
+            next(
+                session
+                for session in registry["sessions"]
+                if session.get("schema_version") == 2
+                and session.get("session_role") != "baseline"
+                and session.get("interpretation", {}).get("accepted_for_objective") is True
+                and session.get("interpretation", {}).get("comparison_baseline_session_id")
+            )
+        )
+        jsonschema.Draft202012Validator(schema).validate(treatment)
+        treatment["interpretation"]["comparison_baseline_session_id"] = ""
+        with self.assertRaises(jsonschema.ValidationError):
+            jsonschema.Draft202012Validator(schema).validate(treatment)
 
     def test_active_tasks_need_real_scope_not_arbitrary_file_padding(self) -> None:
         workflow = json.loads((ROOT / "data/workflow-task-sequences.json").read_text())
@@ -1041,7 +1064,7 @@ class ActiveCampaignArchitectureTest(unittest.TestCase):
             self.assertIn("[token-savior:compact]", probe["post_tool_use"]["additional_context"])
 
     def test_mcp_handshake_runs_after_profile_workspace_warmup(self) -> None:
-        workflow_source = inspect.getsource(runner.run_one)
+        workflow_source = inspect.getsource(runner._run_one_locked)
         self.assertLess(
             workflow_source.index("fixture.prepare_profile_workspace("),
             workflow_source.index("fixture.probe_mcp_handshake("),
@@ -1561,7 +1584,10 @@ class VerifierContractTest(unittest.TestCase):
                         json.dumps({"type": "turn.failed", "usage": {"input_tokens": 2}, "error": {"message": "failed to parse function arguments: EOF while parsing an object"}}),
                     ]) + "\n")
                     return mock.Mock(returncode=1)
-                output.write_text(json.dumps({"type": "turn.completed", "usage": {"input_tokens": 1}}) + "\n")
+                output.write_text("\n".join([
+                    json.dumps({"type": "thread.started", "thread_id": "thread-1"}),
+                    json.dumps({"type": "turn.completed", "usage": {"input_tokens": 1}}),
+                ]) + "\n")
                 return mock.Mock(returncode=0)
 
             patches = [
@@ -1574,7 +1600,7 @@ class VerifierContractTest(unittest.TestCase):
                 mock.patch.object(runner.time, "monotonic", side_effect=[0, 50]),
             ]
             with patches[0], patches[1], patches[2], patches[3], patches[4], patches[5], patches[6]:
-                code, thread = runner.run_codex_task(
+                code, thread, continuity_error = runner.run_codex_task(
                     {"target": {"repository_path": "."}},
                     "baseline-bare-codex",
                     root / "codex-home",
@@ -1587,6 +1613,7 @@ class VerifierContractTest(unittest.TestCase):
                     thread_id=None,
                 )
             self.assertEqual((code, thread, calls), (0, "thread-1", 2))
+            self.assertIsNone(continuity_error)
             self.assertEqual(timeouts, [60, 10])
             self.assertIn("turn.failed", events.read_text())
             self.assertIn("turn.completed", events.read_text())
@@ -1594,6 +1621,48 @@ class VerifierContractTest(unittest.TestCase):
             usage_blocks = runner.extract_codex_usage.usage_blocks(combined_events)
             self.assertEqual([block["usage"]["input_tokens"] for block in usage_blocks], [2, 1])
             self.assertTrue((root / "task-01-operational-retry-01.md").is_file())
+
+    def test_codex_resume_rejects_mismatched_thread_started_event(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            prompt = root / "task-02.md"
+            prompt.write_text("Continue the task.\n")
+            events = root / "task-02-codex-events.jsonl"
+
+            def fake_backend(*args: object, **kwargs: object) -> mock.Mock:
+                Path(str(kwargs["stdout_path"])).write_text("\n".join([
+                    json.dumps({"type": "thread.started", "thread_id": "thread-B"}),
+                    json.dumps({"type": "turn.completed", "usage": {"input_tokens": 1}}),
+                ]) + "\n")
+                return mock.Mock(returncode=0)
+
+            with (
+                mock.patch.object(runner.fixture, "active_tool_config", return_value=None),
+                mock.patch.object(runner.fixture, "codex_env", return_value={}),
+                mock.patch.object(runner.fixture, "tool_env_for_record", return_value={}),
+                mock.patch.object(runner.fixture, "codex_model_args", return_value=[]),
+                mock.patch.object(runner, "model_mounts_for_record", return_value=[]),
+                mock.patch.object(runner.fixture, "run_backend", side_effect=fake_backend),
+                mock.patch.object(runner.time, "monotonic", side_effect=[0, 1]),
+            ):
+                code, thread, continuity_error = runner.run_codex_task(
+                    {"target": {"repository_path": "."}},
+                    "baseline-bare-codex",
+                    root / "codex-home",
+                    root,
+                    "image",
+                    prompt,
+                    events,
+                    root / "last-message.txt",
+                    timeout=60,
+                    thread_id="thread-A",
+                )
+            self.assertEqual(code, runner.THREAD_CONTINUITY_FAILURE_EXIT_CODE)
+            self.assertEqual(thread, "thread-A")
+            self.assertIsInstance(continuity_error, dict)
+            assert isinstance(continuity_error, dict)
+            self.assertEqual(continuity_error["expected_thread_id"], "thread-A")
+            self.assertEqual(continuity_error["observed_thread_ids"], ["thread-B"])
 
     def test_task_prompts_never_claim_per_task_verification_or_seed_injection(self) -> None:
         sequence = {"id": "unit", "tasks": [{"id": "first", "order": 1}, {"id": "second", "order": 2}]}
@@ -2223,9 +2292,231 @@ class ManifestAndProtocolContractTest(unittest.TestCase):
                 runner.write_evidence_bundle(Path("/tmp/nonexistent"))
             update_registry.assert_not_called()
 
+    def test_canonical_baseline_lookup_rejects_mislabeled_profile_and_selected_role(self) -> None:
+        sequence = {
+            "id": "unit-sequence",
+            "task_family_generation": "baseline-v2",
+            "mistake_gate": {},
+        }
+        identity = {"protocol_id": "canonical", "path": "protocols/canonical.json", "sha256": "a" * 64}
+        selected = {
+            "descriptor_sha256": "b" * 64,
+            "descriptor": {
+                "execution_role": "baseline",
+                "selected_profile": {"profile_id": "baseline-bare-codex"},
+            },
+        }
+        session = {
+            "schema_version": 2,
+            "session_id": "mislabeled",
+            "session_role": "baseline",
+            "status": "completed",
+            "replicate_index": 0,
+            "task_sequence": {"sequence_id": "unit-sequence"},
+            "profile": {"profile_id": "unexpected-treatment-profile"},
+            "baseline_pool": {"protocol_fingerprint": "unit-pool"},
+            "frozen_protocol": identity,
+            "selected_execution": selected,
+            "interpretation": {"accepted_for_execution": True},
+        }
+        with mock.patch.object(runner, "baseline_protocol_fingerprint", return_value="unit-pool"), \
+            mock.patch.object(
+                runner,
+                "current_baseline_v2_protocol",
+                return_value=(identity, {"selected_execution": selected}),
+            ):
+            self.assertIsNone(
+                runner.find_canonical_baseline_record({"sessions": [session]}, sequence, 0)
+            )
+        session["profile"]["profile_id"] = "baseline-bare-codex"
+        session["selected_execution"]["descriptor"]["execution_role"] = "treatment"
+        with mock.patch.object(runner, "baseline_protocol_fingerprint", return_value="unit-pool"), \
+            mock.patch.object(
+                runner,
+                "current_baseline_v2_protocol",
+                return_value=(identity, {"selected_execution": selected}),
+            ):
+            self.assertIsNone(
+                runner.find_canonical_baseline_record({"sessions": [session]}, sequence, 0)
+            )
+
+    def test_session_builder_rejects_unpaired_accepted_treatment(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            run_dir = Path(tmp)
+            with self.assertRaisesRegex(ValueError, "requires a comparison baseline binding"):
+                runner.workflow_session_record(
+                    {},
+                    {"accepted": True},
+                    run_dir,
+                    "terminal-tokenjuice-codex-hook-v1",
+                    [],
+                    0,
+                    0,
+                    {},
+                    [],
+                    prompt_delivery={},
+                    leakage_controls={},
+                )
+            with self.assertRaisesRegex(ValueError, "must not carry"):
+                runner.workflow_session_record(
+                    {},
+                    {"accepted": True},
+                    run_dir,
+                    "baseline-bare-codex",
+                    [],
+                    0,
+                    0,
+                    {},
+                    [],
+                    prompt_delivery={},
+                    leakage_controls={},
+                    comparison_baseline_session_id="not-allowed",
+                )
+
+    def test_direct_treatment_requires_reusable_same_replicate_baseline_before_setup(self) -> None:
+        sequence = {"id": "unit-sequence"}
+        with mock.patch.object(runner, "find_canonical_baseline_record", return_value=None):
+            with self.assertRaisesRegex(ValueError, "requires a reusable canonical baseline"):
+                runner.require_reusable_treatment_baseline({"sessions": []}, sequence, 0)
+        malformed = {"session_id": "malformed-baseline"}
+        with mock.patch.object(runner, "find_canonical_baseline_record", return_value=malformed), \
+            mock.patch.object(runner, "reviewed_session_reuse_state", return_value="occupied"):
+            with self.assertRaisesRegex(ValueError, "requires a reusable canonical baseline"):
+                runner.require_reusable_treatment_baseline({"sessions": [malformed]}, sequence, 0)
+        reusable = {"session_id": "reusable-baseline"}
+        with mock.patch.object(runner, "find_canonical_baseline_record", return_value=reusable), \
+            mock.patch.object(runner, "reviewed_session_reuse_state", return_value="reusable"):
+            self.assertIs(
+                runner.require_reusable_treatment_baseline({"sessions": [reusable]}, sequence, 0),
+                reusable,
+            )
+        source = inspect.getsource(runner._run_one_locked)
+        self.assertLess(
+            source.index("require_reusable_treatment_baseline("),
+            source.index("run_dir.mkdir("),
+        )
+
+    def test_registry_publication_atomically_rejects_duplicate_provider_slot(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            (root / "data").mkdir()
+            registry_path = root / "data/workflow-sessions.json"
+            registry_path.write_text('{"sessions": []}\n')
+            record = {
+                "schema_version": 2,
+                "session_id": "first",
+                "replicate_index": 0,
+                "task_sequence": {"sequence_id": "unit-sequence"},
+                "profile": {"profile_id": "baseline-bare-codex"},
+                "baseline_pool": {"protocol_fingerprint": "unit-pool"},
+                "frozen_protocol": {
+                    "protocol_id": "unit-protocol",
+                    "path": "protocols/unit-protocol.json",
+                    "sha256": "a" * 64,
+                },
+            }
+            with mock.patch.object(runner, "ROOT", root):
+                runner.update_registry(record)
+                duplicate = copy.deepcopy(record)
+                duplicate["session_id"] = "different-session-id"
+                duplicate["frozen_protocol"]["sha256"] = "b" * 64
+                with self.assertRaisesRegex(FileExistsError, "slot already occupied"):
+                    runner.update_registry(duplicate)
+            self.assertEqual(
+                [item["session_id"] for item in json.loads(registry_path.read_text())["sessions"]],
+                ["first"],
+            )
+
+    def test_direct_provider_runs_share_nonblocking_production_lock(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp, \
+            mock.patch.object(runner, "PRODUCTION_LOCK_PATH", Path(tmp) / ".production.lock"), \
+            mock.patch.dict(os.environ, {}, clear=False):
+            os.environ.pop(runner.PRODUCTION_LOCK_FD_ENV, None)
+            held_fd = runner.acquire_provider_production_lock()
+            try:
+                args = mock.Mock(prepare_only=False)
+                with mock.patch.object(runner, "_run_one_locked") as inner:
+                    with self.assertRaisesRegex(RuntimeError, "already active"):
+                        runner.run_one(args)
+                inner.assert_not_called()
+            finally:
+                os.close(held_fd)
+
+    def test_concurrent_process_cannot_acquire_direct_provider_lock(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            lock_path = str(Path(tmp) / ".production.lock")
+            holder_code = """
+import os,sys
+from pathlib import Path
+from scripts import run_codex_workflow_evaluation as runner
+runner.PRODUCTION_LOCK_PATH = Path(sys.argv[1])
+fd = runner.acquire_provider_production_lock()
+print('locked', flush=True)
+sys.stdin.readline()
+os.close(fd)
+"""
+            contender_code = """
+import sys
+from pathlib import Path
+from scripts import run_codex_workflow_evaluation as runner
+runner.PRODUCTION_LOCK_PATH = Path(sys.argv[1])
+try:
+    runner.acquire_provider_production_lock()
+except RuntimeError as exc:
+    print(str(exc))
+    raise SystemExit(0)
+raise SystemExit(1)
+"""
+            holder = subprocess.Popen(
+                [sys.executable, "-c", holder_code, lock_path],
+                cwd=ROOT,
+                text=True,
+                stdin=subprocess.PIPE,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,
+            )
+            try:
+                self.assertIsNotNone(holder.stdout)
+                assert holder.stdout is not None
+                self.assertEqual(holder.stdout.readline().strip(), "locked")
+                contender = subprocess.run(
+                    [sys.executable, "-c", contender_code, lock_path],
+                    cwd=ROOT,
+                    text=True,
+                    capture_output=True,
+                    timeout=30,
+                )
+                self.assertEqual(contender.returncode, 0, contender.stderr)
+                self.assertIn("already active", contender.stdout)
+            finally:
+                if holder.stdin is not None:
+                    holder.stdin.write("release\n")
+                    holder.stdin.flush()
+                holder.communicate(timeout=30)
+
+    def test_matrix_child_can_verify_inherited_production_lock(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp, \
+            mock.patch.object(runner, "PRODUCTION_LOCK_PATH", Path(tmp) / ".production.lock"), \
+            mock.patch.dict(os.environ, {}, clear=False):
+            fd = runner.acquire_provider_production_lock()
+            try:
+                os.environ[runner.PRODUCTION_LOCK_FD_ENV] = str(fd)
+                self.assertEqual(runner.acquire_provider_production_lock(), fd)
+            finally:
+                os.environ.pop(runner.PRODUCTION_LOCK_FD_ENV, None)
+                os.close(fd)
+
     def production_v3_fixture(self, root: Path) -> tuple[dict, Path]:
-        run_dir = root / "session"
-        run_dir.mkdir()
+        session_id = f"unit-production-session-{root.name}"
+        run_dir = ROOT / "sources/evaluations/workflow-sessions" / session_id
+        if run_dir.exists():
+            shutil.rmtree(run_dir)
+        run_dir.mkdir(parents=True)
+        self.addCleanup(
+            lambda path=run_dir: path.unlink(missing_ok=True)
+            if path.is_symlink()
+            else shutil.rmtree(path, ignore_errors=True)
+        )
         docker_identity = {
             "image_ref": "codex-eval:unit",
             "image_id": "sha256:" + "1" * 64,
@@ -2269,7 +2560,7 @@ class ManifestAndProtocolContractTest(unittest.TestCase):
         }
         session = {
             "schema_version": 1,
-            "session_id": "unit-production-session",
+            "session_id": session_id,
             "record_type": "workflow_session",
             "evidence_type": "workflow-simulation",
             "study_id": "unit-study",
@@ -2341,6 +2632,7 @@ class ManifestAndProtocolContractTest(unittest.TestCase):
             "operational_reproducibility": {},
             "artifacts": {
                 "artifact_contract": "compact-v1-four-files",
+                "root": f"sources/evaluations/workflow-sessions/{session_id}",
                 "run_record": str((run_dir / "run.json").relative_to(ROOT)),
                 "final_diff": str((run_dir / "changes.diff").relative_to(ROOT)),
                 "evidence_bundle": str((run_dir / "evidence.jsonl.gz").relative_to(ROOT)),
@@ -2348,32 +2640,312 @@ class ManifestAndProtocolContractTest(unittest.TestCase):
             },
             "interpretation": {"accepted_for_execution": False, "accepted_for_objective": False, "claim_status": "failed", "exclusion_reason": "unit"},
         }
-        run_payload = {key: session[key] for key in ("frozen_protocol", "baseline_pool", "selected_execution", "docker_image_identity", "tool_adapter_identity")}
+        run_payload = {
+            **{
+                key: session[key]
+                for key in (
+                    "frozen_protocol",
+                    "baseline_pool",
+                    "selected_execution",
+                    "docker_image_identity",
+                    "tool_adapter_identity",
+                )
+            },
+            "session_id": session_id,
+            "replicate_index": session["replicate_index"],
+            "workflow_sequence_id": session["task_sequence"]["sequence_id"],
+            "profile_id": session["profile"]["profile_id"],
+            "accepted": session["interpretation"]["accepted_for_execution"],
+            "token_usage": {
+                key: session["cumulative_token_usage"].get(key)
+                for key in validate_repository.PROVIDER_USAGE_FIELDS
+            },
+            "per_task_results": copy.deepcopy(session["per_task_results"]),
+            "verifier_integrity_passed": None,
+        }
         (run_dir / "run.json").write_text(json.dumps(run_payload, indent=2) + "\n")
         (run_dir / "changes.diff").write_text("")
-        (run_dir / "evidence.jsonl.gz").write_text("")
+        with gzip.open(run_dir / "evidence.jsonl.gz", "wt", encoding="utf-8") as evidence:
+            evidence.write(json.dumps({"path": "unit-evidence.json", "content": "{}\n"}) + "\n")
         runner.write_manifest(run_dir)
         return session, protocol_path
 
-    def production_v3_errors(self, session: dict) -> list[str]:
+    def production_v3_errors(
+        self,
+        session: dict,
+        *,
+        legacy_comparison_baseline: bool = False,
+        symlink_comparison_baseline: bool = False,
+    ) -> list[str]:
         errors: list[str] = []
+        sessions = [session]
+        comparison_id = session.get("interpretation", {}).get("comparison_baseline_session_id")
+        if comparison_id:
+            baseline = copy.deepcopy(session)
+            baseline.update(
+                schema_version=2,
+                session_id=comparison_id,
+                session_role="baseline",
+                status="completed",
+            )
+            baseline["profile"] = {
+                "profile_id": "baseline-bare-codex",
+                "profile_type": "control",
+                "enabled_surfaces": ["codex-native-shell-edit"],
+                "disabled_overlaps": [],
+                "component_ids": [],
+            }
+            baseline_descriptor = baseline["selected_execution"]["descriptor"]
+            baseline_descriptor["execution_role"] = "baseline"
+            baseline_descriptor["selected_profile"] = {"profile_id": "baseline-bare-codex"}
+            baseline_descriptor["tool_adapter"] = None
+            baseline["selected_execution"]["descriptor_sha256"] = validate_repository.canonical_json_hash(
+                baseline_descriptor
+            )
+            baseline["tool_adapter_identity"] = None
+            baseline["interpretation"].update(
+                accepted_for_execution=True,
+                accepted_for_objective=True,
+                comparison_baseline_session_id="",
+            )
+
+            source_run_dir = ROOT / session["artifacts"]["run_record"]
+            source_run_dir = source_run_dir.parent
+            baseline_run_dir = source_run_dir.parent / comparison_id
+            if baseline_run_dir.is_symlink():
+                baseline_run_dir.unlink()
+            elif baseline_run_dir.exists():
+                shutil.rmtree(baseline_run_dir)
+            shutil.copytree(source_run_dir, baseline_run_dir)
+            self.addCleanup(
+                lambda path=baseline_run_dir: path.unlink(missing_ok=True)
+                if path.is_symlink()
+                else shutil.rmtree(path, ignore_errors=True)
+            )
+            baseline["artifacts"] = {
+                "artifact_contract": "compact-v1-four-files",
+                "root": f"sources/evaluations/workflow-sessions/{comparison_id}",
+                "run_record": str((baseline_run_dir / "run.json").relative_to(ROOT)),
+                "final_diff": str((baseline_run_dir / "changes.diff").relative_to(ROOT)),
+                "evidence_bundle": str((baseline_run_dir / "evidence.jsonl.gz").relative_to(ROOT)),
+                "manifest": str((baseline_run_dir / "manifest.sha256").relative_to(ROOT)),
+            }
+
+            treatment_protocol_path = ROOT / session["frozen_protocol"]["path"]
+            baseline_protocol = json.loads(treatment_protocol_path.read_text())
+            baseline_protocol_id = "unit-baseline-production-v3"
+            baseline_protocol["protocol_id"] = baseline_protocol_id
+            baseline_protocol["selected_execution"] = copy.deepcopy(baseline["selected_execution"])
+            baseline_protocol_path = treatment_protocol_path.with_name(f"{baseline_protocol_id}.json")
+            baseline_protocol_path.write_text(json.dumps(baseline_protocol, indent=2) + "\n")
+            baseline["frozen_protocol"] = {
+                "protocol_id": baseline_protocol_id,
+                "path": str(baseline_protocol_path.relative_to(ROOT)),
+                "sha256": hashlib.sha256(baseline_protocol_path.read_bytes()).hexdigest(),
+            }
+
+            baseline_run = json.loads((baseline_run_dir / "run.json").read_text())
+            baseline_run.update(
+                session_id=comparison_id,
+                profile_id="baseline-bare-codex",
+                frozen_protocol=copy.deepcopy(baseline["frozen_protocol"]),
+                baseline_pool=copy.deepcopy(baseline["baseline_pool"]),
+                selected_execution=copy.deepcopy(baseline["selected_execution"]),
+                docker_image_identity=copy.deepcopy(baseline["docker_image_identity"]),
+                tool_adapter_identity=None,
+                token_usage=copy.deepcopy(baseline["cumulative_token_usage"]),
+                accepted=True,
+                per_task_results=copy.deepcopy(baseline["per_task_results"]),
+                verifier_integrity_passed=True,
+            )
+            (baseline_run_dir / "run.json").write_text(json.dumps(baseline_run, indent=2) + "\n")
+            runner.write_manifest(baseline_run_dir)
+            if symlink_comparison_baseline:
+                external_baseline_dir = treatment_protocol_path.parent / f"{comparison_id}-external"
+                if external_baseline_dir.exists():
+                    shutil.rmtree(external_baseline_dir)
+                baseline_run_dir.rename(external_baseline_dir)
+                baseline_run_dir.symlink_to(external_baseline_dir, target_is_directory=True)
+            if legacy_comparison_baseline:
+                baseline["schema_version"] = 1
+                baseline["artifacts"] = {}
+            sessions.insert(0, baseline)
         validate_repository.validate_workflow_sessions(
-            {"schema_version": 1, "primary_metric": "cumulative provider-reported workflow tokens", "sessions": [session]},
+            {"schema_version": 1, "primary_metric": "cumulative provider-reported workflow tokens", "sessions": sessions},
             {"unit-sequence"},
             {"fixtures": [{"id": "unit-fixture"}]},
             {
                 "unit-profile": {
                     "profile_type": "individual_tool",
+                    "session_role": "individual_tool_treatment",
                     "enabled_surfaces": ["terminal/tool-output-compaction"],
                     "disabled_overlaps": [],
                     "components": [{"component_id": "unit-tool"}],
-                }
+                },
+                "baseline-bare-codex": {
+                    "profile_type": "control",
+                    "session_role": "baseline",
+                    "enabled_surfaces": ["codex-native-shell-edit"],
+                    "disabled_overlaps": [],
+                    "components": [],
+                },
             },
             {"unit-runtime"},
             {"unit-model"},
             errors,
         )
         return errors
+
+    def test_repository_validator_rejects_noncanonical_compact_evidence(self) -> None:
+        with tempfile.TemporaryDirectory(dir=ROOT) as tmp:
+            session, _ = self.production_v3_fixture(Path(tmp))
+            evidence_path = ROOT / session["artifacts"]["evidence_bundle"]
+            bundle_root = evidence_path.parent
+            invalid_payloads = (
+                b"plain bytes",
+                gzip.compress(b""),
+                gzip.compress(b"not-json\n"),
+                gzip.compress(b'{"path":"first","path":"second","content":"x"}\n'),
+                gzip.compress(b'{"path":"first","content":"x","content":"y"}\n'),
+                gzip.compress(
+                    (json.dumps({"path": "a/b", "content": "one"}) + "\n"
+                     + json.dumps({"path": "a/./b", "content": "two"}) + "\n").encode()
+                ),
+                gzip.compress((json.dumps({"path": "../escape", "content": "bad"}) + "\n").encode()),
+            )
+            for payload in invalid_payloads:
+                evidence_path.write_bytes(payload)
+                runner.write_manifest(bundle_root)
+                errors = self.production_v3_errors(session)
+                self.assertTrue(any("canonical gzip JSONL bundle" in error for error in errors), errors)
+
+    def test_evidence_parser_bounds_single_records_and_canonicalizes_paths(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            path = Path(tmp) / "evidence.jsonl.gz"
+            with gzip.open(path, "wt", encoding="utf-8") as handle:
+                handle.write(json.dumps({"path": "a/b", "content": "ok"}) + "\n")
+            self.assertTrue(validate_repository.evidence_bundle_valid(path))
+            with gzip.open(path, "wb") as handle:
+                handle.write(b"x" * (8 * 1024 * 1024 + 1))
+            self.assertFalse(validate_repository.evidence_bundle_valid(path))
+
+    def test_baseline_v2_qualification_audit_protocol_references_are_live(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            temp_root = Path(tmp)
+            relative_paths = [
+                "data/workflow-task-sequences.json",
+                "sources/evaluations/audits/baseline-v2-task-family-qualification-20260721.json",
+            ]
+            audit = json.loads((ROOT / relative_paths[1]).read_text())
+            relative_paths.extend(item["qualification_path"] for item in audit["sequences"])
+            relative_paths.extend(item["path"] for item in audit["protocols"])
+            for relative in relative_paths:
+                destination = temp_root / relative
+                destination.parent.mkdir(parents=True, exist_ok=True)
+                shutil.copy2(ROOT / relative, destination)
+            with mock.patch.object(validate_repository, "ROOT", temp_root):
+                errors: list[str] = []
+                validate_repository.validate_baseline_v2_qualification_audit(errors)
+                self.assertEqual(errors, [])
+                audit_path = temp_root / relative_paths[1]
+                tampered = json.loads(audit_path.read_text())
+                tampered["sequences"][0]["frozen_baseline_protocols"][0]["path"] = (
+                    "sources/evaluations/protocols/missing-current-protocol.json"
+                )
+                audit_path.write_text(json.dumps(tampered))
+                errors = []
+                validate_repository.validate_baseline_v2_qualification_audit(errors)
+                self.assertTrue(
+                    any("frozen baseline protocol reference is stale" in error for error in errors),
+                    errors,
+                )
+                for key, value, expected_message in (
+                    (
+                        "path",
+                        "sources/evaluations/protocols/missing-current-protocol.json",
+                        "current protocol is unreadable",
+                    ),
+                    ("sha256", "0" * 64, "current protocol reference is stale"),
+                ):
+                    tampered = copy.deepcopy(audit)
+                    tampered["protocols"][0][key] = value
+                    audit_path.write_text(json.dumps(tampered))
+                    errors = []
+                    validate_repository.validate_baseline_v2_qualification_audit(errors)
+                    self.assertTrue(any(expected_message in error for error in errors), errors)
+
+    def test_repository_validator_reports_missing_compact_root_without_crashing(self) -> None:
+        with tempfile.TemporaryDirectory(dir=ROOT) as tmp:
+            session, _ = self.production_v3_fixture(Path(tmp))
+            session_id = "unit-missing-compact-root"
+            session["session_id"] = session_id
+            missing_root = f"sources/evaluations/workflow-sessions/{session_id}"
+            session["artifacts"] = {
+                "artifact_contract": "compact-v1-four-files",
+                "root": missing_root,
+                "run_record": f"{missing_root}/run.json",
+                "final_diff": f"{missing_root}/changes.diff",
+                "evidence_bundle": f"{missing_root}/evidence.jsonl.gz",
+                "manifest": f"{missing_root}/manifest.sha256",
+            }
+            errors = self.production_v3_errors(session)
+            self.assertTrue(any("compact artifact root does not exist as a directory" in error for error in errors), errors)
+            self.assertTrue(any("compact artifact run_record does not exist" in error for error in errors), errors)
+
+    def test_provider_usage_parser_rejects_boolean_and_float_components(self) -> None:
+        usage = {
+            "measurement_source": "codex-jsonl-usage-events",
+            "fresh_input_tokens": 5,
+            "cached_input_tokens": 4,
+            "cache_write_tokens": 0,
+            "output_tokens": 1,
+            "reasoning_tokens": 1,
+            "total_provider_tokens": 10,
+        }
+        self.assertTrue(validate_repository.provider_usage_valid(usage))
+        legacy_null = copy.deepcopy(usage)
+        legacy_null["cache_write_tokens"] = None
+        self.assertFalse(validate_repository.provider_usage_valid(legacy_null))
+        self.assertTrue(
+            validate_repository.provider_usage_valid(
+                legacy_null,
+                allow_legacy_null_cache_write=True,
+            )
+        )
+        for key in validate_repository.PROVIDER_USAGE_FIELDS:
+            for invalid in (True, 1.5):
+                candidate = copy.deepcopy(usage)
+                candidate[key] = invalid
+                self.assertFalse(validate_repository.provider_usage_valid(candidate), (key, invalid))
+
+    def test_validator_rejects_generic_nonbaseline_execution_role(self) -> None:
+        with tempfile.TemporaryDirectory(dir=ROOT) as tmp:
+            session, _ = self.production_v3_fixture(Path(tmp))
+            session["schema_version"] = 2
+            session["selected_execution"]["descriptor"]["execution_role"] = "treatment"
+            errors = self.production_v3_errors(session)
+            self.assertTrue(any("selected execution does not match top-level role/profile" in error for error in errors), errors)
+
+    def test_validator_rejects_boolean_replicate_and_token_counts(self) -> None:
+        with tempfile.TemporaryDirectory(dir=ROOT) as tmp:
+            session, _ = self.production_v3_fixture(Path(tmp))
+            session["replicate_index"] = True
+            session["interpretation"]["accepted_for_objective"] = True
+            session["task_sequence"]["leakage_controls"][
+                "controller_verifier_scripts_and_canonical_copies_model_visible"
+            ] = False
+            session["cumulative_token_usage"].update(
+                measurement_source="codex-jsonl-usage-events",
+                fresh_input_tokens=5,
+                cached_input_tokens=4,
+                cache_write_tokens=None,
+                output_tokens=1,
+                reasoning_tokens=1,
+                total_provider_tokens=10,
+            )
+            errors = self.production_v3_errors(session)
+            self.assertTrue(any("replicate_index must be a non-negative integer" in error for error in errors), errors)
+            self.assertTrue(any("canonical non-boolean provider-token usage" in error for error in errors), errors)
 
     def test_production_v3_identity_record_accepts_matching_payload(self) -> None:
         with tempfile.TemporaryDirectory(dir=ROOT) as tmp:
@@ -2391,6 +2963,11 @@ class ManifestAndProtocolContractTest(unittest.TestCase):
                 "external_retrieval_hits": [],
                 "pass_through_tool_command_hits": [],
             }
+            run_path = ROOT / session["artifacts"]["run_record"]
+            run_payload = json.loads(run_path.read_text())
+            run_payload["verifier_integrity_passed"] = True
+            run_path.write_text(json.dumps(run_payload, indent=2) + "\n")
+            runner.write_manifest(run_path.parent)
             self.assertEqual(self.production_v3_errors(session), [])
 
     def test_objective_acceptance_rejects_failed_execution_integrity(self) -> None:
@@ -2440,6 +3017,11 @@ class ManifestAndProtocolContractTest(unittest.TestCase):
             session.update(schema_version=2, status="completed")
             session["cumulative_token_usage"].update(
                 measurement_source="codex-jsonl-usage-events",
+                fresh_input_tokens=500,
+                cached_input_tokens=400,
+                cache_write_tokens=0,
+                output_tokens=100,
+                reasoning_tokens=50,
                 total_provider_tokens=1000,
             )
             session["per_task_results"] = [{
@@ -2473,9 +3055,75 @@ class ManifestAndProtocolContractTest(unittest.TestCase):
                 accepted_for_execution=True,
                 accepted_for_objective=True,
                 claim_status="token-accounting-eligible",
+                comparison_baseline_session_id="unit-baseline",
                 exclusion_reason="",
             )
+            run_path = ROOT / session["artifacts"]["run_record"]
+            run_payload = json.loads(run_path.read_text())
+            run_payload.update(
+                session_id=session["session_id"],
+                replicate_index=session["replicate_index"],
+                workflow_sequence_id=session["task_sequence"]["sequence_id"],
+                profile_id=session["profile"]["profile_id"],
+                accepted=True,
+                frozen_protocol=copy.deepcopy(session["frozen_protocol"]),
+                baseline_pool=copy.deepcopy(session["baseline_pool"]),
+                selected_execution=copy.deepcopy(session["selected_execution"]),
+                docker_image_identity=copy.deepcopy(session["docker_image_identity"]),
+                tool_adapter_identity=copy.deepcopy(session["tool_adapter_identity"]),
+                per_task_results=copy.deepcopy(session["per_task_results"]),
+                verifier_integrity_passed=True,
+                token_usage={
+                    key: session["cumulative_token_usage"][key]
+                    for key in validate_repository.PROVIDER_USAGE_FIELDS
+                },
+            )
+            run_path.write_text(json.dumps(run_payload, indent=2) + "\n")
+            runner.write_manifest(run_path.parent)
             self.assertEqual(self.production_v3_errors(session), [])
+            legacy_errors = self.production_v3_errors(
+                session,
+                legacy_comparison_baseline=True,
+            )
+            self.assertTrue(
+                any("error-free canonical schema-v2 baseline" in error for error in legacy_errors),
+                legacy_errors,
+            )
+            symlink_errors = self.production_v3_errors(
+                session,
+                symlink_comparison_baseline=True,
+            )
+            self.assertTrue(
+                any("compact artifact paths must use exact root" in error for error in symlink_errors),
+                symlink_errors,
+            )
+            self.assertTrue(
+                any("error-free canonical schema-v2 baseline" in error for error in symlink_errors),
+                symlink_errors,
+            )
+            run_path = ROOT / session["artifacts"]["run_record"]
+            run_root = run_path.parent
+            original_run = json.loads(run_path.read_text())
+            mutations = (
+                lambda payload: payload["token_usage"].__setitem__(
+                    "total_provider_tokens",
+                    payload["token_usage"]["total_provider_tokens"] + 1,
+                ),
+                lambda payload: payload.__setitem__("accepted", False),
+                lambda payload: payload.__setitem__("per_task_results", []),
+            )
+            for mutate in mutations:
+                payload = copy.deepcopy(original_run)
+                mutate(payload)
+                run_path.write_text(json.dumps(payload, indent=2) + "\n")
+                runner.write_manifest(run_root)
+                mismatch_errors = self.production_v3_errors(session)
+                self.assertTrue(
+                    any("run.json does not exactly match registry session" in error for error in mismatch_errors),
+                    mismatch_errors,
+                )
+            run_path.write_text(json.dumps(original_run, indent=2) + "\n")
+            runner.write_manifest(run_root)
 
     def test_production_v3_protocol_hash_tamper_rejects(self) -> None:
         with tempfile.TemporaryDirectory(dir=ROOT) as tmp:
@@ -2516,7 +3164,7 @@ class ManifestAndProtocolContractTest(unittest.TestCase):
             payload["docker_image_identity"]["image_id"] = "sha256:" + "4" * 64
             run_path.write_text(json.dumps(payload, indent=2) + "\n")
             runner.write_manifest(run_path.parent)
-            self.assertTrue(any("run.json docker_image_identity does not match registry session" in error for error in self.production_v3_errors(session)))
+            self.assertTrue(any("run.json does not exactly match registry session" in error for error in self.production_v3_errors(session)))
 
 
 class ModelConditionLauncherContractTest(unittest.TestCase):
@@ -2679,9 +3327,15 @@ class MatrixLifecycleContractTest(unittest.TestCase):
         )
 
     def test_failed_lane_cannot_publish(self) -> None:
-        self.assertFalse(matrix.publication_allowed(False, [{"exit_code": 1}]))
-        self.assertFalse(matrix.publication_allowed(True, [{"exit_code": 0}]))
-        self.assertTrue(matrix.publication_allowed(False, [{"exit_code": 0}]))
+        self.assertFalse(
+            matrix.publication_allowed(False, [{"exit_code": 1, "produced_session_ids": ["failed"]}])
+        )
+        self.assertFalse(
+            matrix.publication_allowed(True, [{"exit_code": 0, "produced_session_ids": ["prepared"]}])
+        )
+        self.assertTrue(
+            matrix.publication_allowed(False, [{"exit_code": 0, "produced_session_ids": ["valid"]}])
+        )
 
     def test_completed_sessions_merge_even_when_a_sibling_lane_fails(self) -> None:
         results = [
@@ -2715,47 +3369,417 @@ class MatrixLifecycleContractTest(unittest.TestCase):
         baseline = matrix.find_baseline_record(registry, sequence, 0)
         self.assertIsNone(baseline)
 
-    def test_quality_rejected_green_baseline_is_reusable_as_primary_hard_evidence(self) -> None:
-        session = {
-            "interpretation": {
-                "accepted_for_objective": False,
-                "primary_objective_hard_baseline": True,
-                "usable_for_primary_objective_token_comparison": True,
-                "operationally_completed": True,
-                "agent_declared_task_completion_count": 5,
-            },
-            "software_quality": {
-                "tasks_attempted": 5,
-                "quality_review_status": "reviewed",
-                "final_verifier_passed": True,
-                "quality_score": 3,
-            },
-            "cumulative_token_usage": {"total_provider_tokens": 1000},
-        }
-        with mock.patch.object(matrix, "compact_artifacts_intact", return_value=True):
-            self.assertTrue(matrix.hard_baseline_usable(session))
-            self.assertEqual(matrix.baseline_reuse_state(session), "reusable")
+    def test_matrix_lane_publication_requires_exact_planned_job_binding(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            checkout = Path(tmp)
+            (checkout / "data").mkdir()
+            selected = {"descriptor_sha256": "a" * 64, "descriptor": {"execution_role": "treatment"}}
+            frozen = {"protocol_id": "planned", "path": "protocols/planned.json", "sha256": "b" * 64}
+            session = {
+                "session_id": "produced",
+                "replicate_index": 0,
+                "task_sequence": {
+                    "sequence_id": "unit-sequence",
+                    "prompt_delivery": {"mode": "sequential-one-task-at-a-time"},
+                },
+                "profile": {"profile_id": "wrong-profile"},
+                "frozen_protocol": frozen,
+                "baseline_pool": {"protocol_fingerprint": "unit-pool"},
+                "selected_execution": selected,
+            }
+            (checkout / "data/workflow-sessions.json").write_text(
+                json.dumps({"sessions": [session]}) + "\n"
+            )
+            expected = {
+                "sequence_id": "unit-sequence",
+                "profile_id": "expected-profile",
+                "replicate_index": 0,
+                "frozen_protocol": frozen,
+                "baseline_pool_fingerprint": "unit-pool",
+                "selected_execution": selected,
+            }
+            with self.assertRaisesRegex(ValueError, "planned job binding"):
+                matrix.lane_session_records(checkout, expected, {"produced"})
 
-    def test_invalid_fixture_run_is_never_reusable_as_a_hard_baseline(self) -> None:
-        session = {
+    def test_matrix_artifact_ingress_fails_before_copy_on_invalid_bundle(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            checkout = Path(tmp)
+            session = {
+                "session_id": "bad-bundle",
+                "artifacts": {
+                    "root": "sources/evaluations/workflow-sessions/bad-bundle"
+                },
+            }
+            with mock.patch.object(matrix.workflow, "pilot_session_artifacts_valid", return_value=False):
+                with self.assertRaisesRegex(ValueError, "strict compact artifact ingress"):
+                    matrix.copy_artifacts_for_sessions(checkout, [session])
+
+    def test_matrix_publication_rollback_restores_registry_and_removes_artifacts(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            registry = root / "data/workflow-sessions.json"
+            registry.parent.mkdir()
+            before = b'{"sessions": []}\n'
+            registry.write_text('{"sessions": [{"session_id": "contamination"}]}\n')
+            artifact = root / "sources/evaluations/workflow-sessions/contamination"
+            artifact.mkdir(parents=True)
+            (artifact / "run.json").write_text("bad\n")
+            runbook = root / "docs/evaluations/operations/runbook.md"
+            runbook.parent.mkdir(parents=True)
+            runbook.write_text("mutated\n")
+            with mock.patch.object(matrix, "ROOT", root):
+                matrix.rollback_matrix_publication(
+                    registry,
+                    before,
+                    {"copied_artifacts": ["sources/evaluations/workflow-sessions/contamination"]},
+                    [],
+                    {runbook: b"original\n"},
+                )
+            self.assertEqual(registry.read_bytes(), before)
+            self.assertFalse(artifact.exists())
+            self.assertEqual(runbook.read_bytes(), b"original\n")
+
+    def test_partial_comparison_publication_is_tracked_for_rollback(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            registry_path = root / "data/workflow-sessions.json"
+            registry_path.parent.mkdir(parents=True)
+            registry_path.write_text('{"sessions": []}\n')
+            (root / matrix.WORKFLOW_ARTIFACT_ROOT).mkdir(parents=True)
+            published: list[str] = []
+            calls = 0
+
+            def publish_one_then_fail(seq: dict[str, Any], _group: str, replicate: int, profile: str) -> dict[str, Any]:
+                nonlocal calls
+                calls += 1
+                if calls == 2:
+                    raise RuntimeError("second comparison failed")
+                project_id = runner.PROJECT_META[seq["fixture_id"]]["project_id"]
+                fingerprint = runner.baseline_protocol_fingerprint(seq)
+                comparison_id = (
+                    f"baseline-{runner.artifact_lane_label(project_id)}-{runner.DATE.replace('-', '')}"
+                    f"-vs-{runner.artifact_profile_label(profile)}-p-{fingerprint}-r{replicate}"
+                )
+                (root / matrix.WORKFLOW_ARTIFACT_ROOT / f"{comparison_id}.json").write_text("{}\n")
+                return {"comparison_id": comparison_id}
+
+            with (
+                mock.patch.object(matrix, "ROOT", root),
+                mock.patch.object(matrix, "find_baseline_record", return_value={"session_id": "baseline"}),
+                mock.patch.object(matrix, "baseline_reuse_state", return_value="reusable"),
+                mock.patch.object(matrix.workflow, "find_pool_profile_record", return_value={"session_id": "treatment"}),
+                mock.patch.object(matrix.workflow, "reviewed_session_reuse_state", return_value="reusable"),
+                mock.patch.object(matrix.workflow, "write_comparison_if_ready", side_effect=publish_one_then_fail),
+            ):
+                with self.assertRaisesRegex(RuntimeError, "second comparison failed"):
+                    matrix.publish_ready_comparisons(
+                        ["fastify-lifecycle-sequence-v0", "beets-lifecycle-sequence-v0"],
+                        ["terminal-tokenjuice-codex-hook-v1"],
+                        0,
+                        published,
+                    )
+                self.assertEqual(len(published), 2)
+                self.assertTrue((root / published[0]).is_file())
+                self.assertFalse((root / published[1]).exists())
+                matrix.rollback_matrix_publication(
+                    registry_path,
+                    registry_path.read_bytes(),
+                    {"copied_artifacts": []},
+                    published,
+                    {},
+                )
+                self.assertFalse((root / published[0]).exists())
+
+    def test_merge_transaction_tracks_registry_replacement_before_fsync_failure(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            artifact = "sources/evaluations/workflow-sessions/unit"
+            (root / artifact).mkdir(parents=True)
+            transaction: dict[str, Any] = {}
+            lane = {"checkout": str(root), "produced_session_ids": ["unit"], "expected_session_binding": {}}
+            with (
+                mock.patch.object(matrix, "ROOT", root),
+                mock.patch.object(matrix, "lane_session_records", return_value=[{"session_id": "unit"}]),
+                mock.patch.object(matrix.workflow, "pilot_session_artifacts_valid", return_value=True),
+                mock.patch.object(matrix, "copy_artifacts_for_sessions", return_value=[artifact]),
+                mock.patch.object(matrix, "merge_registry", side_effect=OSError("directory fsync failed after replace")),
+            ):
+                with self.assertRaisesRegex(OSError, "fsync failed"):
+                    matrix.merge_lanes([lane], 0, transaction)
+            self.assertTrue(transaction["registry_replacement_attempted"])
+            self.assertEqual(transaction["merged_session_ids"], ["unit"])
+
+    def test_outer_transaction_rolls_back_tracked_artifact_on_keyboard_interrupt(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            artifact = "sources/evaluations/workflow-sessions/interrupted"
+            artifact_path = root / artifact
+            artifact_path.mkdir(parents=True)
+            registry_path = root / "data/workflow-sessions.json"
+            registry_path.parent.mkdir(parents=True)
+            registry_before = b'{"sessions": []}\n'
+            registry_path.write_bytes(registry_before)
+            transaction: dict[str, Any] = {}
+            lane = {"checkout": str(root), "produced_session_ids": ["unit"], "expected_session_binding": {}}
+
+            def interrupted_copy(_checkout: Path, _sessions: list[dict[str, Any]], copied: list[str]) -> list[str]:
+                copied.append(artifact)
+                raise KeyboardInterrupt()
+
+            with (
+                mock.patch.object(matrix, "ROOT", root),
+                mock.patch.object(matrix, "lane_session_records", return_value=[{"session_id": "unit"}]),
+                mock.patch.object(matrix.workflow, "pilot_session_artifacts_valid", return_value=True),
+                mock.patch.object(matrix, "copy_artifacts_for_sessions", side_effect=interrupted_copy),
+            ):
+                with self.assertRaises(KeyboardInterrupt):
+                    matrix.merge_lanes([lane], 0, transaction)
+                self.assertTrue(artifact_path.exists())
+                matrix.rollback_matrix_publication(
+                    registry_path,
+                    registry_before,
+                    transaction,
+                    [],
+                    {},
+                )
+            self.assertFalse(artifact_path.exists())
+            self.assertEqual(transaction["copied_artifacts"], [artifact])
+
+    def test_merge_preserves_valid_sibling_when_failed_lane_session_is_rejected(self) -> None:
+        valid = {"session_id": "valid-paid-session"}
+        invalid = {"session_id": "invalid-diagnostic-session"}
+        lane_results = [
+            {
+                "checkout": "/tmp/valid-lane",
+                "lane_id": "valid-lane",
+                "exit_code": 0,
+                "produced_session_ids": [valid["session_id"]],
+                "expected_session_binding": {},
+            },
+            {
+                "checkout": "/tmp/failed-lane",
+                "lane_id": "failed-lane",
+                "exit_code": 1,
+                "produced_session_ids": [invalid["session_id"]],
+                "expected_session_binding": {},
+            },
+        ]
+        copied_sessions: list[str] = []
+        merged: list[dict] = []
+
+        def copy_valid(_checkout, sessions, _copied):
+            copied_sessions.extend(session["session_id"] for session in sessions)
+            return _copied
+
+        with (
+            mock.patch.object(matrix, "lane_session_records", side_effect=[[valid], [invalid]]),
+            mock.patch.object(matrix.workflow, "pilot_session_artifacts_valid", side_effect=[True, False]),
+            mock.patch.object(matrix, "copy_artifacts_for_sessions", side_effect=copy_valid),
+            mock.patch.object(matrix, "merge_registry", side_effect=lambda sessions: merged.extend(sessions)),
+        ):
+            summary = matrix.merge_lanes(lane_results, 0)
+        self.assertEqual(copied_sessions, [valid["session_id"]])
+        self.assertEqual(merged, [valid])
+        self.assertEqual(summary["merged_session_ids"], [valid["session_id"]])
+        self.assertEqual(summary["rejected_session_ids"], [invalid["session_id"]])
+
+    def test_successful_lane_without_session_cannot_pass_or_publish(self) -> None:
+        empty_lane = {
+            "checkout": "/tmp/empty-lane",
+            "lane_id": "empty-lane",
+            "exit_code": 0,
+            "produced_session_ids": [],
+            "expected_session_binding": {},
+        }
+        self.assertFalse(matrix.publication_allowed(False, [empty_lane]))
+        self.assertFalse(
+            matrix.matrix_outputs_complete(
+                prepare_only=False,
+                planned_job_count=1,
+                lane_results=[empty_lane],
+                merge_summary={"merged_session_count": 0, "rejected_lane_errors": []},
+            )
+        )
+        self.assertFalse(
+            matrix.matrix_acceptance_state(
+                prepare_only=False,
+                execution_passed=False,
+                awaiting_quality_review=False,
+            )
+        )
+        with self.assertRaisesRegex(ValueError, "exactly one session"):
+            matrix.lane_session_records(Path("/tmp/empty-lane"), {}, set())
+
+    def test_zero_output_lane_cannot_hide_behind_valid_sibling(self) -> None:
+        valid = {"session_id": "valid-sibling"}
+        lane_results = [
+            {
+                "checkout": "/tmp/valid-lane",
+                "lane_id": "valid-lane",
+                "exit_code": 0,
+                "produced_session_ids": [valid["session_id"]],
+                "expected_session_binding": {},
+            },
+            {
+                "checkout": "/tmp/empty-lane",
+                "lane_id": "empty-lane",
+                "exit_code": 0,
+                "produced_session_ids": [],
+                "expected_session_binding": {},
+            },
+        ]
+        merged: list[dict] = []
+        with (
+            mock.patch.object(
+                matrix,
+                "lane_session_records",
+                side_effect=[[valid], ValueError("matrix lane must produce exactly one session; found []")],
+            ),
+            mock.patch.object(matrix.workflow, "pilot_session_artifacts_valid", return_value=True),
+            mock.patch.object(matrix, "copy_artifacts_for_sessions", return_value=[]),
+            mock.patch.object(matrix, "merge_registry", side_effect=lambda sessions: merged.extend(sessions)),
+        ):
+            summary = matrix.merge_lanes(lane_results, 0)
+        self.assertEqual(merged, [valid])
+        self.assertEqual(summary["merged_session_ids"], [valid["session_id"]])
+        self.assertTrue(summary["rejected_lane_errors"])
+        self.assertFalse(matrix.publication_allowed(False, lane_results))
+        self.assertFalse(
+            matrix.matrix_outputs_complete(
+                prepare_only=False,
+                planned_job_count=2,
+                lane_results=lane_results,
+                merge_summary=summary,
+            )
+        )
+
+    def test_merge_preserves_publication_error_for_outer_transaction_rollback(self) -> None:
+        lane = {
+            "checkout": "/tmp/unit-lane",
+            "lane_id": "unit-lane",
+            "exit_code": 0,
+            "produced_session_ids": ["unit"],
+            "expected_session_binding": {},
+        }
+        transaction: dict[str, Any] = {}
+
+        def tracked_copy(_checkout, _sessions, copied):
+            copied.append("sources/evaluations/workflow-sessions/unit")
+            return copied
+
+        with (
+            mock.patch.object(matrix, "lane_session_records", return_value=[{"session_id": "unit"}]),
+            mock.patch.object(matrix.workflow, "pilot_session_artifacts_valid", return_value=True),
+            mock.patch.object(matrix, "copy_artifacts_for_sessions", side_effect=tracked_copy),
+            mock.patch.object(matrix, "merge_registry", side_effect=RuntimeError("publication failed")),
+            mock.patch.object(matrix.shutil, "rmtree", side_effect=OSError("cleanup failed")) as rmtree,
+        ):
+            with self.assertRaisesRegex(RuntimeError, "publication failed"):
+                matrix.merge_lanes([lane], 0, transaction)
+        rmtree.assert_not_called()
+        self.assertEqual(
+            transaction["copied_artifacts"],
+            ["sources/evaluations/workflow-sessions/unit"],
+        )
+
+    def test_compact_artifacts_are_fsynced_before_registry_publication(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            temp_root = Path(tmp)
+            checkout = temp_root / "checkout"
+            session_id = "unit-durable-session"
+            relative_root = Path("sources/evaluations/workflow-sessions") / session_id
+            source = checkout / relative_root
+            source.mkdir(parents=True)
+            for name in matrix.COMPACT_ARTIFACT_NAMES:
+                (source / name).write_bytes(b"unit")
+            session = {
+                "session_id": session_id,
+                "artifacts": {
+                    "artifact_contract": "compact-v1-four-files",
+                    "root": str(relative_root),
+                },
+            }
+            copied: list[str] = []
+            with (
+                mock.patch.object(matrix, "ROOT", temp_root),
+                mock.patch.object(matrix.workflow, "pilot_session_artifacts_valid", return_value=True),
+                mock.patch.object(
+                    matrix,
+                    "fsync_compact_artifact_tree",
+                    side_effect=OSError("artifact fsync failed"),
+                ) as fsync_tree,
+            ):
+                with self.assertRaisesRegex(OSError, "artifact fsync failed"):
+                    matrix.copy_artifacts_for_sessions(checkout, [session], copied)
+            fsync_tree.assert_called_once_with(temp_root / relative_root)
+            self.assertEqual(copied, [str(relative_root)])
+
+    def test_publication_guard_rolls_back_interrupt_after_validation_result(self) -> None:
+        for validation_passed in (True, False):
+            rollbacks: list[bool] = []
+            with self.assertRaises(KeyboardInterrupt):
+                with matrix.publication_transaction_guard(
+                    lambda: rollbacks.append(validation_passed),
+                    enabled=True,
+                ):
+                    validation = {"passed": validation_passed}
+                    self.assertEqual(validation["passed"], validation_passed)
+                    raise KeyboardInterrupt()
+            self.assertEqual(rollbacks, [validation_passed])
+
+    def test_matrix_registry_merge_atomically_rejects_full_slot_collisions(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            (root / "data").mkdir()
+            registry_path = root / "data/workflow-sessions.json"
+            registry_path.write_text('{"sessions": []}\n')
+            first = {
+                "schema_version": 2,
+                "session_id": "first",
+                "replicate_index": 0,
+                "task_sequence": {"sequence_id": "unit-sequence"},
+                "profile": {"profile_id": "baseline-bare-codex"},
+                "baseline_pool": {"protocol_fingerprint": "unit-pool"},
+                "frozen_protocol": {
+                    "protocol_id": "unit-protocol",
+                    "path": "protocols/unit-protocol.json",
+                    "sha256": "a" * 64,
+                },
+            }
+            duplicate = copy.deepcopy(first)
+            duplicate["session_id"] = "different-session-id"
+            with mock.patch.object(matrix, "ROOT", root):
+                with self.assertRaisesRegex(FileExistsError, "slot already occupied"):
+                    matrix.merge_registry([first, duplicate])
+                self.assertEqual(json.loads(registry_path.read_text())["sessions"], [])
+                matrix.merge_registry([first])
+                with self.assertRaisesRegex(FileExistsError, "slot already occupied"):
+                    matrix.merge_registry([duplicate])
+            self.assertEqual(
+                [item["session_id"] for item in json.loads(registry_path.read_text())["sessions"]],
+                ["first"],
+            )
+            self.assertEqual(list((root / "data").glob(".workflow-sessions.json.*.tmp")), [])
+
+    def test_matrix_reuse_has_no_weaker_hard_baseline_fallback(self) -> None:
+        malformed = {
             "interpretation": {
-                "accepted_for_objective": False,
                 "primary_objective_hard_baseline": True,
                 "usable_for_primary_objective_token_comparison": True,
                 "operationally_completed": True,
-                "agent_declared_task_completion_count": 3,
-                "evaluation_validity": "invalid-fixture",
             },
-            "software_quality": {
-                "tasks_attempted": 3,
-                "quality_review_status": "reviewed",
-                "final_verifier_passed": False,
-                "quality_score": 4,
+            "cumulative_token_usage": {"total_provider_tokens": True},
+            "artifacts": {
+                "run_record": "one-file",
+                "final_diff": "one-file",
+                "evidence_bundle": "one-file",
+                "manifest": "one-file",
             },
-            "cumulative_token_usage": {"total_provider_tokens": 26417006},
         }
-        with mock.patch.object(matrix, "compact_artifacts_intact", return_value=True):
-            self.assertFalse(matrix.hard_baseline_usable(session))
+        with mock.patch.object(matrix.workflow, "reviewed_session_reuse_state", return_value="occupied"):
+            self.assertEqual(matrix.baseline_reuse_state(malformed), "occupied")
+        self.assertFalse(hasattr(matrix, "hard_baseline_usable"))
+        self.assertFalse(hasattr(matrix, "write_hard_baseline_comparison"))
 
     def test_rejected_replicate_is_occupied_and_not_planned_again(self) -> None:
         sequence = {"id": "unit-sequence"}
@@ -2791,54 +3815,6 @@ class MatrixLifecycleContractTest(unittest.TestCase):
                 profile_state=lambda _sequence, _profile: "missing",
             )
 
-    def test_unreviewed_operational_baseline_is_hard_reusable(self) -> None:
-        session = {
-            "interpretation": {
-                "accepted_for_objective": True,
-                "primary_objective_hard_baseline": True,
-                "usable_for_primary_objective_token_comparison": True,
-                "operationally_completed": True,
-                "agent_declared_task_completion_count": 5,
-            },
-            "software_quality": {
-                "tasks_attempted": 5,
-                "quality_review_status": "not-reviewed",
-                "final_verifier_passed": False,
-                "quality_score": None,
-            },
-            "cumulative_token_usage": {"total_provider_tokens": 1000},
-        }
-        with mock.patch.object(matrix, "compact_artifacts_intact", return_value=True):
-            self.assertTrue(matrix.hard_baseline_usable(session))
-
-    def test_primary_token_comparison_is_not_quality_gated(self) -> None:
-        sequence = runner.load_sequence("fastify-lifecycle-sequence-v0")
-        baseline = {
-            "session_id": "hard-baseline",
-            "study_id": "study",
-            "cumulative_token_usage": {"total_provider_tokens": 1000},
-            "software_quality": {"tasks_agent_claimed_complete": 3, "tasks_passed": 3},
-        }
-        treatment = {
-            "session_id": "treatment",
-            "study_id": "phase-3-stack-study",
-            "objective": "stack_effectiveness",
-            "experiment_group_id": "group",
-            "cumulative_token_usage": {"total_provider_tokens": 900},
-            "software_quality": {"tasks_agent_claimed_complete": 3, "tasks_passed": 1},
-        }
-        with tempfile.TemporaryDirectory() as tmp, mock.patch.object(matrix, "ROOT", Path(tmp)):
-            path = matrix.write_hard_baseline_comparison(sequence, baseline, treatment, "terminal-rtk", 0)
-            comparison = json.loads(path.read_text())
-        self.assertFalse(comparison["correctness_improved"])
-        self.assertEqual(comparison["study_id"], "phase-3-stack-study")
-        self.assertEqual(comparison["objective"], "stack_effectiveness")
-        self.assertTrue(comparison["token_efficiency_improved"])
-        self.assertTrue(comparison["primary_token_objective_improved"])
-        self.assertNotIn("treatment_outperforms_baseline", comparison)
-        self.assertNotIn("eligible_for_hard_lane_ranking", comparison)
-        self.assertEqual(comparison["delta_total_provider_tokens"], -100)
-
     def test_artifact_symlink_escape_is_rejected(self) -> None:
         with tempfile.TemporaryDirectory(dir=ROOT) as tmp:
             checkout = Path(tmp) / "checkout"
@@ -2849,7 +3825,7 @@ class MatrixLifecycleContractTest(unittest.TestCase):
             (checkout / rel.parent).mkdir(parents=True)
             (checkout / rel).symlink_to(outside, target_is_directory=True)
             session = {"artifacts": {"root": str(rel)}}
-            with self.assertRaisesRegex(ValueError, "escapes lane checkout"):
+            with self.assertRaisesRegex(ValueError, "strict compact artifact ingress|escapes lane checkout"):
                 matrix.copy_artifacts_for_sessions(checkout, [session])
 
     def test_full_qualification_freshness_is_shared(self) -> None:
@@ -3072,13 +4048,22 @@ class BaselineV2LowComplexityContractTest(unittest.TestCase):
             self.assertEqual(gate["allowed_model_caused_failed_commands"], 0)
             self.assertEqual(gate["allowed_code_rework_events"], 0)
             self.assertEqual(gate["allowed_verifier_or_environment_failures"], 0)
+            for key, value in gate.items():
+                if key.startswith("allowed_"):
+                    self.assertIs(type(value), int, (sequence["id"], key, value))
+                    self.assertEqual(value, 0, (sequence["id"], key, value))
             self.assertEqual(gate["incident_counting"], "unique-auditable-not-command-count")
+            self.assertEqual(gate["pilot_audit_path"], "sources/evaluations/audits/baseline-v2-pilot-zero-mistake.json")
             self.assertEqual(gate["status"], "provider-pilot-required")
 
             for task in sequence["tasks"]:
                 self.assertIn("/baseline-v2/", task["prompt_path"])
+                self.assertEqual(task["acceptance_visibility"], "model-visible-complete")
                 task_dir = (ROOT / task["prompt_path"]).parent
                 prompt = (ROOT / task["prompt_path"]).read_text()
+                verifier = (ROOT / task["verifier_command"]).read_text()
+                for marker in ("<<'NODE'", '<<"NODE"', "<<'PY'", '<<"PY"', "<<'TS'", '<<"TS"', "workflow-hidden"):
+                    self.assertFalse(marker in verifier and marker not in prompt, (sequence["id"], task["id"], marker))
                 for marker in (
                     "Baseline V2 routine recipe",
                     "Do not run discovery, search, or broad-suite commands.",
@@ -3138,13 +4123,726 @@ class BaselineV2LowComplexityContractTest(unittest.TestCase):
                 self.assertIs(qualification[key], True, (sequence["id"], key))
             self.assertTrue(all(task["production_file_count"] <= 3 for task in qualification["tasks"]))
 
-    def test_repository_validator_rejects_nonzero_v2_mistake_allowance(self) -> None:
+    def test_treatments_are_fail_closed_while_v2_pilot_audit_is_absent(self) -> None:
+        document = json.loads((ROOT / "data/workflow-task-sequences.json").read_text())
+        for sequence in document["sequences"]:
+            passed, reason = runner.baseline_v2_treatment_gate(sequence, ROOT)
+            self.assertFalse(passed)
+            self.assertIn("pilot audit is absent", reason)
+
+    def test_current_v2_pilot_protocol_identity_is_unique_and_exact(self) -> None:
+        script = """
+import json
+import sys
+sys.path.insert(0, 'scripts')
+import run_codex_workflow_evaluation as runner
+import run_codex_workflow_model_condition as condition
+condition.configure_model_condition('codex-openai-gpt-5-6-sol-high', 'gpt-5.6-sol', 'high')
+document = json.loads((runner.ROOT / 'data/workflow-task-sequences.json').read_text())
+for sequence in document['sequences']:
+    identity, protocol = runner.current_baseline_v2_protocol(sequence, sequence['mistake_gate'], runner.ROOT)
+    assert identity['protocol_id'] == protocol['protocol_id']
+    assert identity['path'].endswith(identity['protocol_id'] + '.json')
+    assert identity['qualification_sha256'] == protocol['task_fixture']['qualification_sha256']
+    for isolation in (protocol['baseline_pool']['descriptor']['isolation'], protocol['selected_execution']['descriptor']['isolation']):
+        assert 'verifier_assets_model_visible' not in isolation
+        assert isolation['controller_verifier_scripts_and_canonical_copies_model_visible'] is False
+        assert isolation['model_visible_acceptance_asset_paths'] == runner.sequence_model_visible_acceptance_paths(sequence)
+print(len(document['sequences']))
+"""
+        result = subprocess.run(
+            [sys.executable, "-c", script],
+            cwd=ROOT,
+            text=True,
+            capture_output=True,
+            check=False,
+        )
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertEqual(result.stdout.strip(), "3")
+
+    def test_direct_v2_run_rejects_arbitrarily_renamed_protocol_before_setup(self) -> None:
+        code = r'''import argparse, copy, json, tempfile
+from pathlib import Path
+from scripts import run_codex_workflow_evaluation as runner
+from scripts import run_codex_workflow_model_condition as launcher
+launcher.configure_model_condition('codex-openai-gpt-5-6-sol-high', 'gpt-5.6-sol', 'high')
+sequence = runner.load_sequence('fastify-lifecycle-sequence-v0')
+identity, protocol = runner.current_baseline_v2_protocol(sequence, sequence['mistake_gate'], runner.ROOT)
+with tempfile.TemporaryDirectory(dir=runner.ROOT / 'sources/evaluations/protocols') as temp:
+    fake_path = Path(temp) / 'arbitrarily-renamed-protocol.json'
+    fake = copy.deepcopy(protocol)
+    fake['protocol_id'] = 'arbitrarily-renamed-protocol'
+    original_rel = identity['path']
+    fake_rel = str(fake_path.relative_to(runner.ROOT))
+    fake['baseline']['command'] = fake['baseline']['command'].replace(original_rel, fake_rel)
+    fake_path.write_text(json.dumps(fake))
+    args = argparse.Namespace(
+        prepare_only=True,
+        protocol=fake_rel,
+        timeout_per_task=3600,
+        docker_image=runner.DEFAULT_DOCKER_IMAGE,
+    )
+    try:
+        runner.validate_protocol_for_run(sequence, 'baseline-bare-codex', args)
+    except ValueError as exc:
+        assert 'canonical_protocol_identity' in str(exc), exc
+    else:
+        raise AssertionError('arbitrarily renamed Baseline V2 protocol was accepted')
+'''
+        result = subprocess.run(
+            [sys.executable, "-c", code],
+            cwd=ROOT,
+            text=True,
+            capture_output=True,
+        )
+        self.assertEqual(result.returncode, 0, result.stderr)
+
+    def test_current_v2_protocol_rejects_arbitrarily_renamed_identity(self) -> None:
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            sequence = {
+                "id": "unit-sequence-v0",
+                "fixture_id": "unit-fixture",
+                "initial_snapshot": {"commit": "unit-snapshot"},
+                "qualification_path": "qualification.json",
+            }
+            gate = {
+                "designated_model_condition": "unit-condition",
+                "model": "unit-model",
+                "reasoning_effort": "high",
+            }
+            (root / "qualification.json").write_text("{}\n")
+            expected_descriptor = {"contract": "current"}
+            expected_execution = {"execution": "current"}
+            expected_protocol_id = "unit-sequence-v0-baseline-bare-codex-canonical"
+            document = {
+                "protocol_schema_version": 3,
+                "status": "frozen-ready-not-run",
+                "protocol_id": "unit-sequence-v0-baseline-bare-codex-arbitrary",
+                "task_fixture": {
+                    "sequence_id": sequence["id"],
+                    "fixture_id": sequence["fixture_id"],
+                    "snapshot": "unit-snapshot",
+                    "qualification_path": "qualification.json",
+                    "qualification_sha256": hashlib.sha256((root / "qualification.json").read_bytes()).hexdigest(),
+                },
+                "baseline": {
+                    "profile_id": "baseline-bare-codex",
+                    "model_condition_id": "unit-condition",
+                    "model": "unit-model",
+                    "reasoning_effort": "high",
+                },
+                "treatment": {},
+                "baseline_pool": {"protocol_fingerprint": "unit-pool", "descriptor": expected_descriptor},
+                "selected_execution": {
+                    "descriptor": expected_execution,
+                    "descriptor_sha256": runner._json_hash(expected_execution),
+                },
+            }
+            protocol_dir = root / "sources/evaluations/protocols"
+            protocol_dir.mkdir(parents=True)
+            arbitrary_path = protocol_dir / f"{document['protocol_id']}.json"
+            arbitrary_path.write_text(json.dumps(document))
+            with (
+                mock.patch.object(runner, "condition_bound_protocol_descriptors", return_value=(expected_descriptor, expected_execution)),
+                mock.patch.object(runner, "baseline_protocol_fingerprint_from_descriptor", return_value="unit-pool"),
+                mock.patch.object(runner, "canonical_protocol_id", return_value=expected_protocol_id),
+            ):
+                with self.assertRaisesRegex(ValueError, "found 0"):
+                    runner.current_baseline_v2_protocol(sequence, gate, root)
+                document["protocol_id"] = expected_protocol_id
+                (protocol_dir / f"{expected_protocol_id}.json").write_text(json.dumps(document))
+                identity, _ = runner.current_baseline_v2_protocol(sequence, gate, root)
+                self.assertEqual(identity["protocol_id"], expected_protocol_id)
+
+        sequence = json.loads((ROOT / "data/workflow-task-sequences.json").read_text())["sequences"][0]
+        self.assertEqual(
+            contract_refresh.protocol_id(sequence, "baseline-bare-codex"),
+            runner.canonical_protocol_id(sequence, "baseline-bare-codex"),
+        )
+
+    def test_pilot_session_artifact_bundle_is_manifest_verified_and_session_bound(self) -> None:
+        registry = json.loads((ROOT / "data/workflow-sessions.json").read_text())
+        session = next(
+            item
+            for item in reversed(registry["sessions"])
+            if item.get("session_role") == "baseline"
+            and item.get("artifacts", {}).get("artifact_contract") == "compact-v1-four-files"
+            and (ROOT / item.get("artifacts", {}).get("run_record", "missing")).is_file()
+        )
+        source = (ROOT / session["artifacts"]["run_record"]).parent
+        with tempfile.TemporaryDirectory() as temp:
+            temp_root = Path(temp)
+            bundle = temp_root / "sources/evaluations/workflow-sessions" / session["session_id"]
+            bundle.parent.mkdir(parents=True)
+            shutil.copytree(source, bundle)
+            candidate = copy.deepcopy(session)
+            candidate["cumulative_token_usage"]["cache_write_tokens"] = 0
+            candidate["artifacts"]["root"] = (
+                f"sources/evaluations/workflow-sessions/{session['session_id']}"
+            )
+            for key, name in {
+                "run_record": "run.json",
+                "final_diff": "changes.diff",
+                "evidence_bundle": "evidence.jsonl.gz",
+                "manifest": "manifest.sha256",
+            }.items():
+                candidate["artifacts"][key] = (
+                    f"sources/evaluations/workflow-sessions/{session['session_id']}/{name}"
+                )
+            def rewrite_manifest() -> None:
+                manifest_lines = [
+                    f"{hashlib.sha256((bundle / name).read_bytes()).hexdigest()}  {name}"
+                    for name in ("run.json", "changes.diff", "evidence.jsonl.gz")
+                ]
+                (bundle / "manifest.sha256").write_text("\n".join(manifest_lines) + "\n")
+
+            def normalize_bundle() -> None:
+                run_record = json.loads((bundle / "run.json").read_text())
+                run_record["token_usage"] = {
+                    key: candidate["cumulative_token_usage"].get(key)
+                    for key in ("measurement_source", *runner.PILOT_PROVIDER_USAGE_FIELDS)
+                }
+                run_record["agent_condition"] = {
+                    key: candidate["agent"].get(key)
+                    for key in ("runtime_id", "provider", "model", "model_condition_id", "reasoning_effort")
+                }
+                run_record["session_id"] = candidate["session_id"]
+                run_record["replicate_index"] = candidate["replicate_index"]
+                run_record["workflow_sequence_id"] = candidate["task_sequence"]["sequence_id"]
+                run_record["profile_id"] = candidate["profile"]["profile_id"]
+                run_record["selected_execution"] = candidate["selected_execution"]
+                (bundle / "run.json").write_text(json.dumps(run_record, indent=2) + "\n")
+                rewrite_manifest()
+
+            def restore_bundle() -> None:
+                shutil.rmtree(bundle)
+                shutil.copytree(source, bundle)
+                normalize_bundle()
+
+            normalize_bundle()
+            self.assertTrue(runner.pilot_session_artifacts_valid(candidate, temp_root))
+            candidate["cumulative_token_usage"]["cache_write_tokens"] = None
+            normalize_bundle()
+            self.assertFalse(runner.pilot_session_artifacts_valid(candidate, temp_root))
+            candidate["cumulative_token_usage"]["cache_write_tokens"] = 0
+            normalize_bundle()
+
+            relocated = temp_root / "relocated-bundle"
+            shutil.copytree(bundle, relocated)
+            relocated_candidate = copy.deepcopy(candidate)
+            for key, name in {
+                "run_record": "run.json",
+                "final_diff": "changes.diff",
+                "evidence_bundle": "evidence.jsonl.gz",
+                "manifest": "manifest.sha256",
+            }.items():
+                relocated_candidate["artifacts"][key] = f"relocated-bundle/{name}"
+            self.assertFalse(runner.pilot_session_artifacts_valid(relocated_candidate, temp_root))
+
+            (bundle / "unmanifested").mkdir()
+            (bundle / "unmanifested" / "secret.txt").write_text("undeclared\n")
+            self.assertFalse(runner.pilot_session_artifacts_valid(candidate, temp_root))
+            shutil.rmtree(bundle / "unmanifested")
+            (bundle / "escape-link").symlink_to("/etc")
+            self.assertFalse(runner.pilot_session_artifacts_valid(candidate, temp_root))
+            (bundle / "escape-link").unlink()
+
+            (bundle / "evidence.jsonl.gz").write_bytes(b"not gzip or jsonl")
+            rewrite_manifest()
+            self.assertFalse(runner.pilot_session_artifacts_valid(candidate, temp_root))
+            restore_bundle()
+
+            original_model = candidate["agent"]["model"]
+            candidate["agent"]["model"] = "gpt-5.6-luna"
+            self.assertFalse(runner.pilot_session_artifacts_valid(candidate, temp_root))
+            candidate["agent"]["model"] = original_model
+
+            original_profile = candidate["profile"]["profile_id"]
+            candidate["profile"]["profile_id"] = "terminal-tokenjuice-codex-hook-v1"
+            self.assertFalse(runner.pilot_session_artifacts_valid(candidate, temp_root))
+            candidate["profile"]["profile_id"] = original_profile
+
+            baseline_candidate = copy.deepcopy(candidate)
+            sequence_definition = runner.load_sequence(
+                baseline_candidate["task_sequence"]["sequence_id"]
+            )
+            baseline_candidate["task_sequence"]["leakage_controls"].update(
+                controller_verifier_scripts_and_canonical_copies_model_visible=False,
+                model_visible_acceptance_asset_paths=runner.sequence_model_visible_acceptance_paths(
+                    sequence_definition
+                ),
+            )
+            for treatment_profile in (
+                "terminal-tokenjuice-codex-hook-v1",
+                "stack-tokenjuice-jcodemunch-mcp",
+            ):
+                candidate = copy.deepcopy(baseline_candidate)
+                expected_role = runner.PROFILE_META[treatment_profile]["session_role"]
+                candidate["profile"]["profile_id"] = treatment_profile
+                candidate["session_role"] = expected_role
+                descriptor = candidate["selected_execution"]["descriptor"]
+                descriptor["execution_role"] = expected_role
+                descriptor["selected_profile"]["profile_id"] = treatment_profile
+                candidate["selected_execution"]["descriptor_sha256"] = runner._json_hash(descriptor)
+                normalize_bundle()
+                with (
+                    mock.patch.object(runner.repository_validation, "validate_docker_identity"),
+                    mock.patch.object(runner.repository_validation, "validate_tool_adapter_identity"),
+                ):
+                    self.assertTrue(runner.pilot_session_artifacts_valid(candidate, temp_root))
+                    self.assertEqual(runner.reviewed_session_reuse_state(candidate, temp_root), "reusable")
+                    with tempfile.TemporaryDirectory() as destination_temp:
+                        destination_root = Path(destination_temp)
+                        (destination_root / "sources/evaluations/workflow-sessions").mkdir(parents=True)
+                        with mock.patch.object(matrix, "ROOT", destination_root):
+                            copied = matrix.copy_artifacts_for_sessions(temp_root, [candidate])
+                        self.assertEqual(copied, [candidate["artifacts"]["root"]])
+            candidate = baseline_candidate
+            restore_bundle()
+
+            (bundle / "changes.diff").write_text((bundle / "changes.diff").read_text() + "tamper\n")
+            self.assertFalse(runner.pilot_session_artifacts_valid(candidate, temp_root))
+            restore_bundle()
+            first_manifest_line = (bundle / "manifest.sha256").read_text().splitlines()[0]
+            with (bundle / "manifest.sha256").open("a") as handle:
+                handle.write(first_manifest_line + "\n")
+            self.assertFalse(runner.pilot_session_artifacts_valid(candidate, temp_root))
+            restore_bundle()
+            manifest_lines = (bundle / "manifest.sha256").read_text().splitlines()
+            (bundle / "manifest.sha256").write_text("\n".join(manifest_lines[:-1]) + "\n")
+            self.assertFalse(runner.pilot_session_artifacts_valid(candidate, temp_root))
+            restore_bundle()
+            (bundle / "manifest.sha256").write_text("malformed\n")
+            self.assertFalse(runner.pilot_session_artifacts_valid(candidate, temp_root))
+            restore_bundle()
+            original_final_diff = candidate["artifacts"]["final_diff"]
+            candidate["artifacts"]["final_diff"] = candidate["artifacts"]["manifest"]
+            self.assertFalse(runner.pilot_session_artifacts_valid(candidate, temp_root))
+            candidate["artifacts"]["final_diff"] = original_final_diff
+            original_evidence = candidate["artifacts"]["evidence_bundle"]
+            candidate["artifacts"]["final_diff"], candidate["artifacts"]["evidence_bundle"] = (
+                original_evidence,
+                original_final_diff,
+            )
+            self.assertFalse(runner.pilot_session_artifacts_valid(candidate, temp_root))
+            candidate["artifacts"]["final_diff"], candidate["artifacts"]["evidence_bundle"] = (
+                original_final_diff,
+                original_evidence,
+            )
+            run_record = json.loads((bundle / "run.json").read_text())
+            run_record["token_usage"]["fresh_input_tokens"] += 1
+            run_record["token_usage"]["total_provider_tokens"] += 1
+            (bundle / "run.json").write_text(json.dumps(run_record, indent=2) + "\n")
+            rewrite_manifest()
+            self.assertFalse(runner.pilot_session_artifacts_valid(candidate, temp_root))
+            restore_bundle()
+            run_record = json.loads((bundle / "run.json").read_text())
+            run_record["docker_image_identity"] = {
+                **run_record["docker_image_identity"],
+                "image_ref": "wrong-runtime:latest",
+            }
+            (bundle / "run.json").write_text(json.dumps(run_record, indent=2) + "\n")
+            rewrite_manifest()
+            self.assertFalse(runner.pilot_session_artifacts_valid(candidate, temp_root))
+            restore_bundle()
+            run_record = json.loads((bundle / "run.json").read_text())
+            run_record["session_id"] = "wrong-session"
+            (bundle / "run.json").write_text(json.dumps(run_record, indent=2) + "\n")
+            rewrite_manifest()
+            self.assertFalse(runner.pilot_session_artifacts_valid(candidate, temp_root))
+
+    def test_v2_pilot_gate_requires_exact_independent_zero_count_evidence(self) -> None:
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            protocol_rel = "sources/evaluations/protocols/unit.json"
+            protocol_path = root / protocol_rel
+            protocol_path.parent.mkdir(parents=True)
+            protocol_path.write_text('{"protocol_id":"unit-current"}\n')
+            protocol = {
+                "protocol_id": "unit-current",
+                "path": protocol_rel,
+                "sha256": hashlib.sha256(protocol_path.read_bytes()).hexdigest(),
+            }
+            gate = {
+                "pilot_audit_path": "sources/evaluations/audits/baseline-v2-pilot-zero-mistake.json",
+                "designated_model_condition": "codex-openai-gpt-5-6-sol-high",
+                "model": "gpt-5.6-sol",
+                "reasoning_effort": "high",
+            }
+            sequence = {
+                "id": "unit-sequence-v0",
+                "fixture_id": "unit-fixture",
+                "initial_snapshot": {"commit": "unit-snapshot"},
+                "qualification_path": "unit-qualification.json",
+                "task_family_generation": "baseline-v2",
+                "mistake_gate": gate,
+                "tasks": [{"id": "unit-task", "order": 1}],
+            }
+            docker_identity = {
+                "image_ref": "unit-image:latest",
+                "image_id": f"sha256:{'a' * 64}",
+                "repo_digests": [],
+                "repo_tags": ["unit-image:latest"],
+            }
+            selected_descriptor = {
+                "execution_role": "baseline",
+                "selected_profile": {"profile_id": "baseline-bare-codex"},
+                "runtime": {"docker_image_identity": docker_identity},
+                "tool_adapter": {"tool_id": None},
+                "agent_condition": {
+                    "model_condition_id": gate["designated_model_condition"],
+                    "model": gate["model"],
+                    "reasoning_effort": gate["reasoning_effort"],
+                },
+            }
+            selected_execution = {"descriptor": selected_descriptor, "descriptor_sha256": "unit-execution"}
+            session = {
+                "schema_version": 2,
+                "session_id": "unit-baseline",
+                "status": "completed",
+                "session_role": "baseline",
+                "replicate_index": 0,
+                "task_sequence": {"sequence_id": sequence["id"]},
+                "profile": {"profile_id": "baseline-bare-codex"},
+                "agent": {
+                    "runtime_id": "codex-cli",
+                    "provider": "openai",
+                    "model_condition_id": gate["designated_model_condition"],
+                    "model": gate["model"],
+                    "reasoning_effort": gate["reasoning_effort"],
+                },
+                "interpretation": {
+                    "accepted_for_execution": True,
+                    "operationally_completed": True,
+                    "evaluation_validity": "valid",
+                    "accepted_for_objective": True,
+                    "primary_objective_hard_baseline": True,
+                    "usable_for_primary_objective_token_comparison": True,
+                },
+                "cumulative_token_usage": {
+                    "measurement_source": "codex-jsonl-usage-events",
+                    "fresh_input_tokens": 1,
+                    "cached_input_tokens": 0,
+                    "cache_write_tokens": 0,
+                    "output_tokens": 0,
+                    "reasoning_tokens": 0,
+                    "total_provider_tokens": 1,
+                },
+                "per_task_results": [{
+                    "task_id": "unit-task",
+                    "order": 1,
+                    "agent_attempted": True,
+                    "codex_exit_code": 0,
+                    "controller_verification": "passed",
+                    "verifier_exit_code": 0,
+                    "verifier_passed": True,
+                    "accepted": True,
+                    "operational_retry_count": 0,
+                }],
+                "software_quality": {
+                    "tasks_attempted": 1,
+                    "tasks_passed": 1,
+                    "final_verifier_passed": True,
+                    "functional_verifier_passed": True,
+                },
+                "frozen_protocol": protocol,
+                "baseline_pool": {"protocol_fingerprint": "unit-pool"},
+                "selected_execution": selected_execution,
+                "docker_image_identity": docker_identity,
+                "tool_adapter_identity": None,
+            }
+            registry_path = root / "data/workflow-sessions.json"
+            registry_path.parent.mkdir(parents=True)
+            registry_sessions = [session]
+            registry_path.write_text(json.dumps({"sessions": registry_sessions}))
+            entry = {
+                "sequence_id": sequence["id"],
+                "passed": True,
+                "trajectory_review_complete": True,
+                "independent_source_review_passed": True,
+                "reviewer_role": "independent",
+                "model_condition": {"id": gate["designated_model_condition"], "model": gate["model"], "reasoning_effort": gate["reasoning_effort"]},
+                "baseline_session_id": session["session_id"],
+                "frozen_protocol": protocol,
+                "qualification_sha256": "unit-qualification",
+                "baseline_pool_fingerprint": "unit-pool",
+                **{field: 0 for field in runner.PILOT_ZERO_COUNT_FIELDS},
+            }
+            audit_path = root / gate["pilot_audit_path"]
+            audit_path.parent.mkdir(parents=True)
+            audit = {"schema_version": 1, "task_family_generation": "baseline-v2", "sequences": [entry]}
+            current_identity = {
+                **protocol,
+                "qualification_sha256": "unit-qualification",
+                "baseline_pool_fingerprint": "unit-pool",
+                "selected_execution_sha256": "unit-execution",
+            }
+            current_document = {"selected_execution": selected_execution}
+            artifact_valid = True
+
+            def evaluate() -> tuple[bool, str]:
+                audit_path.write_text(json.dumps(audit))
+                registry_path.write_text(json.dumps({"sessions": registry_sessions}))
+                with (
+                    mock.patch.object(runner, "current_baseline_v2_protocol", return_value=(current_identity, current_document)),
+                    mock.patch.object(runner, "reviewed_session_reuse_state", return_value="reusable"),
+                    mock.patch.object(runner, "pilot_session_artifacts_valid", return_value=artifact_valid),
+                ):
+                    return runner.baseline_v2_treatment_gate(sequence, root)
+
+            self.assertTrue(evaluate()[0])
+            for malformed in (False, 0.0, "0", None, 1):
+                entry["observed_prohibited_operations"] = malformed
+                passed, reason = evaluate()
+                self.assertFalse(passed)
+                self.assertIn("non-integer, or nonzero", reason)
+            entry["observed_prohibited_operations"] = 0
+            arbitrary = {**protocol, "protocol_id": "unit-arbitrary"}
+            entry["frozen_protocol"] = arbitrary
+            session["frozen_protocol"] = arbitrary
+            passed, reason = evaluate()
+            self.assertFalse(passed)
+            self.assertIn("exact current designated baseline protocol", reason)
+            entry["frozen_protocol"] = protocol
+            session["frozen_protocol"] = protocol
+            session["profile"]["profile_id"] = "unit-treatment"
+            passed, reason = evaluate()
+            self.assertFalse(passed)
+            self.assertIn("operationally valid provider-backed baseline", reason)
+            session["profile"]["profile_id"] = "baseline-bare-codex"
+            selected_descriptor["execution_role"] = "treatment"
+            passed, reason = evaluate()
+            self.assertFalse(passed)
+            self.assertIn("operationally valid provider-backed baseline", reason)
+            selected_descriptor["execution_role"] = "baseline"
+            session["cumulative_token_usage"]["measurement_source"] = "not-provider-backed"
+            passed, reason = evaluate()
+            self.assertFalse(passed)
+            self.assertIn("operationally valid provider-backed baseline", reason)
+            session["cumulative_token_usage"]["measurement_source"] = "codex-jsonl-usage-events"
+            for malformed_total in (False, 0, 0.0, -1, "1", None):
+                session["cumulative_token_usage"]["total_provider_tokens"] = malformed_total
+                passed, reason = evaluate()
+                self.assertFalse(passed)
+                self.assertIn("operationally valid provider-backed baseline", reason)
+            session["cumulative_token_usage"]["total_provider_tokens"] = 1
+            for field in runner.PILOT_PROVIDER_USAGE_FIELDS:
+                value = session["cumulative_token_usage"].pop(field)
+                passed, reason = evaluate()
+                self.assertFalse(passed, field)
+                self.assertIn("operationally valid provider-backed baseline", reason)
+                session["cumulative_token_usage"][field] = value
+            session["cumulative_token_usage"]["fresh_input_tokens"] = 2
+            passed, reason = evaluate()
+            self.assertFalse(passed)
+            self.assertIn("operationally valid provider-backed baseline", reason)
+            session["cumulative_token_usage"]["fresh_input_tokens"] = 1
+            del session["cumulative_token_usage"]["measurement_source"]
+            session["cumulative_token_usage"]["provider_reported_total"] = 1
+            passed, reason = evaluate()
+            self.assertFalse(passed)
+            self.assertIn("operationally valid provider-backed baseline", reason)
+            del session["cumulative_token_usage"]["provider_reported_total"]
+            session["cumulative_token_usage"]["measurement_source"] = "codex-jsonl-usage-events"
+            session["agent"]["provider"] = "not-openai"
+            passed, reason = evaluate()
+            self.assertFalse(passed)
+            self.assertIn("operationally valid provider-backed baseline", reason)
+            session["agent"]["provider"] = "openai"
+            session["per_task_results"][0]["task_id"] = "wrong-task"
+            passed, reason = evaluate()
+            self.assertFalse(passed)
+            self.assertIn("operationally valid provider-backed baseline", reason)
+            session["per_task_results"][0]["task_id"] = "unit-task"
+            session["per_task_results"][0]["verifier_passed"] = False
+            session["per_task_results"][0]["verifier_exit_code"] = 1
+            session["per_task_results"][0]["controller_verification"] = "failed"
+            session["per_task_results"][0]["accepted"] = False
+            passed, reason = evaluate()
+            self.assertFalse(passed)
+            self.assertIn("operationally valid provider-backed baseline", reason)
+            session["per_task_results"][0].update({
+                "verifier_passed": True,
+                "verifier_exit_code": 0,
+                "controller_verification": "passed",
+                "accepted": True,
+            })
+            for field, malformed in (
+                ("tasks_attempted", 0),
+                ("tasks_passed", False),
+                ("final_verifier_passed", False),
+                ("functional_verifier_passed", False),
+            ):
+                original = session["software_quality"][field]
+                session["software_quality"][field] = malformed
+                passed, reason = evaluate()
+                self.assertFalse(passed, field)
+                self.assertIn("operationally valid provider-backed baseline", reason)
+                session["software_quality"][field] = original
+            session["docker_image_identity"] = {**docker_identity, "image_ref": "wrong:latest"}
+            passed, reason = evaluate()
+            self.assertFalse(passed)
+            self.assertIn("runtime identity", reason)
+            session["docker_image_identity"] = docker_identity
+            for mutate_duplicate in (
+                lambda duplicate: duplicate.update({"session_role": "treatment"}),
+                lambda duplicate: duplicate["selected_execution"].update({"descriptor_sha256": "stale-execution"}),
+            ):
+                duplicate = copy.deepcopy(session)
+                duplicate["session_id"] = "unit-baseline-rerun"
+                mutate_duplicate(duplicate)
+                registry_sessions.append(duplicate)
+                passed, reason = evaluate()
+                self.assertFalse(passed)
+                self.assertIn("ambiguous, or was rerun", reason)
+                registry_sessions.pop()
+            artifact_valid = False
+            passed, reason = evaluate()
+            self.assertFalse(passed)
+            self.assertIn("operationally valid provider-backed baseline", reason)
+
+    def test_treatment_planner_requires_passing_pilot_gate(self) -> None:
+        with self.assertRaisesRegex(ValueError, "treatments are blocked"):
+            matrix.plan_workflow_jobs(
+                ["unit-sequence-v0"],
+                ["unit-treatment"],
+                baseline_state=lambda _sequence: "reusable",
+                profile_state=lambda _sequence, _profile: "missing",
+                treatment_gate=lambda _sequence: (False, "pilot audit is absent"),
+            )
+        jobs = matrix.plan_workflow_jobs(
+            ["unit-sequence-v0"],
+            ["unit-treatment"],
+            baseline_state=lambda _sequence: "reusable",
+            profile_state=lambda _sequence, _profile: "missing",
+            treatment_gate=lambda _sequence: (True, "zero-incident pilot passed"),
+        )
+        self.assertEqual(jobs, [("unit-sequence-v0", "unit-treatment")])
+
+    def test_direct_treatment_runner_checks_pilot_gate_before_protocol(self) -> None:
+        sequence = json.loads((ROOT / "data/workflow-task-sequences.json").read_text())["sequences"][0]
+        args = mock.Mock(sequence_id=sequence["id"], profile_id="terminal-tokenjuice-codex-hook-v1", prepare_only=True)
+        with (
+            mock.patch.object(runner, "validate_default_model_condition"),
+            mock.patch.object(runner, "validate_run_safety_args"),
+            mock.patch.object(runner, "load_sequence", return_value=sequence),
+            self.assertRaisesRegex(ValueError, "treatments are blocked"),
+        ):
+            runner.run_one(args)
+
+    def test_treatment_protocol_freeze_checks_pilot_gate_before_qualification(self) -> None:
+        sequence = json.loads((ROOT / "data/workflow-task-sequences.json").read_text())["sequences"][0]
+        with (
+            mock.patch.object(contract_refresh.runner, "validate_default_model_condition"),
+            mock.patch.object(contract_refresh.runner, "assert_profile_runnable"),
+            mock.patch.object(contract_refresh.runner, "load_sequence", return_value=sequence),
+            self.assertRaisesRegex(ValueError, "treatments are blocked"),
+        ):
+            contract_refresh.main([
+                "--sequence-id", sequence["id"],
+                "--profile-id", "terminal-tokenjuice-codex-hook-v1",
+            ])
+
+    def test_v2_verifiers_reject_modified_model_visible_acceptance_tests(self) -> None:
+        document = json.loads((ROOT / "data/workflow-task-sequences.json").read_text())
+        for sequence in document["sequences"]:
+            for task in sequence["tasks"]:
+                task_dir = (ROOT / task["prompt_path"]).parent
+                controller_visible = task_dir / "controller-visible"
+                assets = [path for path in controller_visible.rglob("*") if path.is_file()] if controller_visible.is_dir() else []
+                for canonical in assets:
+                    candidate_rel = canonical.relative_to(controller_visible)
+                    with tempfile.TemporaryDirectory() as temp:
+                        candidate = Path(temp) / candidate_rel
+                        candidate.parent.mkdir(parents=True, exist_ok=True)
+                        candidate.write_text("modified acceptance asset\n")
+                        result = subprocess.run(
+                            ["bash", str(task_dir / "verify.sh")],
+                            cwd=temp,
+                            env={**os.environ, "WORKFLOW_REPO": temp},
+                            text=True,
+                            capture_output=True,
+                            check=False,
+                        )
+                    self.assertEqual(result.returncode, 1, (task["id"], result.stdout, result.stderr))
+                    self.assertIn("differs from canonical bytes", result.stderr)
+                if assets:
+                    with tempfile.TemporaryDirectory() as temp:
+                        result = subprocess.run(
+                            ["bash", str(task_dir / "verify.sh")],
+                            cwd=temp,
+                            env={**os.environ, "WORKFLOW_REPO": temp},
+                            text=True,
+                            capture_output=True,
+                            check=False,
+                        )
+                    self.assertEqual(result.returncode, 1, (task["id"], result.stdout, result.stderr))
+                    self.assertRegex(result.stderr, r"(?:differs from canonical bytes|acceptance test is missing)")
+
+    def test_provider_free_v2_qualification_records_complete_visible_acceptance(self) -> None:
+        document = json.loads((ROOT / "data/workflow-task-sequences.json").read_text())
+        for sequence in document["sequences"]:
+            qualification_record = json.loads((ROOT / sequence["qualification_path"]).read_text())
+            self.assertEqual(qualification_record["acceptance_visibility"], "model-visible-complete")
+            self.assertIs(qualification_record["no_model_visible_acceptance_assets"], False)
+            self.assertIs(qualification_record["all_acceptance_behavior_model_visible"], True)
+            self.assertIs(qualification_record["model_visible_acceptance_assets_match_verifier_copies"], True)
+            self.assertIs(qualification_record["no_model_concealed_acceptance_assets"], True)
+            self.assertEqual(
+                qualification_record["expected_model_visible_acceptance_asset_count"],
+                sum(len(validate_repository.BASELINE_V2_ACCEPTANCE_ASSET_PATHS[task["id"]]) for task in sequence["tasks"]),
+            )
+            records = {record["task_id"]: record for record in qualification_record["tasks"]}
+            for task in sequence["tasks"]:
+                task_dir = (ROOT / task["prompt_path"]).parent
+                controller_visible = task_dir / "controller-visible"
+                expected_paths = validate_repository.BASELINE_V2_ACCEPTANCE_ASSET_PATHS[task["id"]]
+                self.assertEqual(task["model_visible_acceptance_asset_paths"], expected_paths)
+                expected_assets = [
+                    {
+                        "path": str(Path("controller-visible") / path_text),
+                        "model_visible_path": path_text,
+                        "sha256": hashlib.sha256((controller_visible / path_text).read_bytes()).hexdigest(),
+                    }
+                    for path_text in expected_paths
+                ]
+                self.assertEqual(records[task["id"]]["model_visible_acceptance_asset_paths"], expected_paths)
+                self.assertEqual(records[task["id"]]["controller_visible_acceptance_assets"], expected_assets)
+        audit = json.loads((ROOT / "sources/evaluations/audits/baseline-v2-task-family-qualification-20260721.json").read_text())
+        expected_mistake_gate = {
+            key: value
+            for key, value in document["sequences"][0]["mistake_gate"].items()
+            if key.startswith("allowed_") or key in {"designated_model_condition", "model", "reasoning_effort"}
+        }
+        for key, value in expected_mistake_gate.items():
+            self.assertEqual(audit["mistake_gate"].get(key), value)
+        self.assertNotIn("all three counts", json.dumps(audit).lower())
+        self.assertEqual(audit["treatment_gate"]["status"], "blocked-pending-pilot-audit")
+        self.assertIs(audit["treatment_gate"]["fail_closed"], True)
+        self.assertEqual(audit["treatment_gate"]["required_zero_count_fields"], list(runner.PILOT_ZERO_COUNT_FIELDS))
+        self.assertEqual(
+            audit["treatment_gate"]["enforced_at"],
+            ["treatment-protocol-freeze", "matrix-treatment-plan", "direct-treatment-runner"],
+        )
+
+    def test_repository_validator_rejects_missing_v2_acceptance_asset_declaration(self) -> None:
         document = json.loads((ROOT / "data/workflow-task-sequences.json").read_text())
         fixtures = json.loads((ROOT / "data/repository-fixtures.json").read_text())
-        document["sequences"][0]["mistake_gate"]["allowed_unique_model_incidents"] = 1
+        document["sequences"][0]["tasks"][0]["model_visible_acceptance_asset_paths"] = []
         errors: list[str] = []
         validate_repository.validate_workflow_task_sequences(document, fixtures, errors)
-        self.assertTrue(any("zero-mistake gate" in error for error in errors), errors)
+        self.assertTrue(any("exact file-backed Baseline V2 acceptance assets" in error for error in errors), errors)
+
+    def test_repository_validator_rejects_noninteger_or_nonzero_v2_mistake_allowance(self) -> None:
+        source_document = json.loads((ROOT / "data/workflow-task-sequences.json").read_text())
+        fixtures = json.loads((ROOT / "data/repository-fixtures.json").read_text())
+        for malformed in (1, False, 0.0):
+            document = copy.deepcopy(source_document)
+            document["sequences"][0]["mistake_gate"]["allowed_unique_model_incidents"] = malformed
+            errors: list[str] = []
+            validate_repository.validate_workflow_task_sequences(document, fixtures, errors)
+            self.assertTrue(any("zero-mistake gate" in error for error in errors), (malformed, errors))
 
 
 if __name__ == "__main__":

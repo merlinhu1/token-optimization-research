@@ -1,6 +1,6 @@
 {
   "protocol_schema_version": 3,
-  "protocol_id": "fastify-lifecycle-sequence-v0-baseline-bare-codex-fae08febf5c7",
+  "protocol_id": "fastify-lifecycle-sequence-v0-baseline-bare-codex-8140196ca36d",
   "status": "frozen-ready-not-run",
   "outcome": "Frozen baseline-bare-codex protocol for fastify-lifecycle-sequence-v0; no provider/model run has occurred.",
   "frozen_at": "2026-07-21",
@@ -12,7 +12,7 @@
     "repository": "https://github.com/fastify/fastify.git",
     "snapshot": "94bcbcc6e2ef3b8e8f8e8797fe551ccbe7b942fd",
     "qualification_path": "sources/evaluations/fixtures/medium/fastify-fastify/qualification-lifecycle-v0-baseline-v2.json",
-    "qualification_sha256": "2d569c445c3437b41fdd0c64ae6bee8fb2507a0d79551481894f1cd9fdf2e77d",
+    "qualification_sha256": "bb22d1bc8c647dc5338da76df5a7e96b27d593fcbdac0b3be2397495863847e3",
     "timeout_seconds_per_task": 3600
   },
   "baseline": {
@@ -21,7 +21,7 @@
     "model": "gpt-5.6-sol",
     "model_condition_id": "codex-openai-gpt-5-6-sol-high",
     "reasoning_effort": "high",
-    "command": "python3 scripts/run_codex_workflow_model_condition.py --workflow-model-condition-id codex-openai-gpt-5-6-sol-high --workflow-model gpt-5.6-sol --workflow-reasoning-effort high --sequence-id fastify-lifecycle-sequence-v0 --profile-id baseline-bare-codex --timeout-per-task 3600 --protocol sources/evaluations/protocols/fastify-lifecycle-sequence-v0-baseline-bare-codex-fae08febf5c7.json --docker-image token-eval-codex:latest"
+    "command": "python3 scripts/run_codex_workflow_model_condition.py --workflow-model-condition-id codex-openai-gpt-5-6-sol-high --workflow-model gpt-5.6-sol --workflow-reasoning-effort high --sequence-id fastify-lifecycle-sequence-v0 --profile-id baseline-bare-codex --timeout-per-task 3600 --protocol sources/evaluations/protocols/fastify-lifecycle-sequence-v0-baseline-bare-codex-8140196ca36d.json --docker-image token-eval-codex:latest"
   },
   "treatment": {},
   "token_accounting_boundary": {
@@ -36,13 +36,13 @@
   },
   "baseline_pool": {
     "protocol_version": "baseline-pool-v1",
-    "protocol_fingerprint": "e054ba57e60d",
+    "protocol_fingerprint": "ec3aea5e0625",
     "descriptor": {
       "version": "baseline-pool-v1",
       "runner_contract_version": "workflow-runner-v9",
-      "runner_sha256": "6e2c6f1bb6803cdbd1862b7868fca4a62f10aa384b7b313e7027ca98d5d6fc7d",
-      "qualification_generator_sha256": "cb549c9aacc1e1401dedff37b08e0d578aa91d491556dfd5e3814d52a567efe8",
-      "validator_sha256": "30af949a7e0c48d28b37971dd06d207b51129b15cd03d88d91604fc0905fa674",
+      "runner_sha256": "9d4ca6304c097732e20a01036eab0a595b65c1c66332a573d38bf2f8b81ce6f5",
+      "qualification_generator_sha256": "43ee9b9f286284a416d6bb462cb0ed0a5e39168baf5604c8098a0099ed9cae00",
+      "validator_sha256": "37007c8af09decadebf5ccce035cc743c4089925c03d4cb42fa221d27f423664",
       "sequence_id": "fastify-lifecycle-sequence-v0",
       "sequence_contract": "feature-refactor-review",
       "fixture_id": "medium-fastify-fastify",
@@ -65,10 +65,16 @@
           "order": 1,
           "task_class": "feature-implementation",
           "prompt_path": "sources/evaluations/fixtures/medium/fastify-fastify/task-generations/baseline-v2/fastify-lifecycle-feature-v0/agent-prompt.txt",
-          "prompt_sha256": "28cd165557b1cf2b455f80ff4f28a2adf55bd55deec29c1c527cdce01a38f7a2",
-          "seed_patch_sha256": "6938c76ba8cf9a2de62433ebd7f031d343f8fd0ee2b8d175d49a5e37a16674c3",
+          "prompt_sha256": "64dbcf497dd9862a66b79d95a92a04e8672519a41a919ec9b7d3ee18123445f6",
+          "seed_patch_sha256": "a07c7e7760ef9da94fc4e1785eb7ebfbabb7f1aef1b9dbe8072f07d4f87938e9",
           "verifier_command": "sources/evaluations/fixtures/medium/fastify-fastify/task-generations/baseline-v2/fastify-lifecycle-feature-v0/verify.sh",
-          "verifier_sha256": "799568eed4493fce3a04405917522e8b1876f224a9e4c06874de544fc27037c5",
+          "verifier_sha256": "b468e2d068bd267f52289b350e7ac842a764bb937c4e9bac2636f0431d1af180",
+          "controller_visible_acceptance_assets": [
+            {
+              "path": "sources/evaluations/fixtures/medium/fastify-fastify/task-generations/baseline-v2/fastify-lifecycle-feature-v0/controller-visible/test/baseline-v2-request-media-type.test.js",
+              "sha256": "2bf55739b1bc98d824cf7855a3c2f8bf14e13fc307d4ac15e7837ea97b4ac8c0"
+            }
+          ],
           "upstream_test_paths": [],
           "compatibility_rebased_test_paths": [],
           "expected_model_concealed_paths": [],
@@ -79,10 +85,16 @@
           "order": 2,
           "task_class": "behavior-preserving-refactor",
           "prompt_path": "sources/evaluations/fixtures/medium/fastify-fastify/task-generations/baseline-v2/fastify-lifecycle-refactor-v0/agent-prompt.txt",
-          "prompt_sha256": "2917cb1b03fb073817ef300eee5211000dda02d8d74b6678fd00f3fcf1774494",
-          "seed_patch_sha256": "fd1982e087c713640c8ab55b7875545b59a60296135e0dc847a13cea038d89d5",
+          "prompt_sha256": "8aafc13def62b21afa1946a5f2c20d9e6b8a37266c17704c7fee72d45dd07b7e",
+          "seed_patch_sha256": "463373646cef2d022fb56b2790c8fb47e81791d55a6cb2cafe0472e53e8033e3",
           "verifier_command": "sources/evaluations/fixtures/medium/fastify-fastify/task-generations/baseline-v2/fastify-lifecycle-refactor-v0/verify.sh",
-          "verifier_sha256": "e2acf6e7b516df4eabde50c072955e4851503bf139f5b1170f926c55a25d055b",
+          "verifier_sha256": "09e52db82a8b78bf30d3a8a4180e0aa444fa13aa2ee719f3345bd3606c97a1c1",
+          "controller_visible_acceptance_assets": [
+            {
+              "path": "sources/evaluations/fixtures/medium/fastify-fastify/task-generations/baseline-v2/fastify-lifecycle-refactor-v0/controller-visible/test/baseline-v2-content-type-cache.test.js",
+              "sha256": "732c731ac0f9a243cf33b2bbeed26ab5ebeece6783398ad0c39cb0b9a6df64d4"
+            }
+          ],
           "upstream_test_paths": [],
           "compatibility_rebased_test_paths": [],
           "expected_model_concealed_paths": [],
@@ -93,10 +105,16 @@
           "order": 3,
           "task_class": "code-review-correction",
           "prompt_path": "sources/evaluations/fixtures/medium/fastify-fastify/task-generations/baseline-v2/fastify-lifecycle-review-v0/agent-prompt.txt",
-          "prompt_sha256": "a20d6e6d6727728075482632478f42d8d221e335c293db76b8d6bf279e381f16",
-          "seed_patch_sha256": "0402a5fc7785775c034fddc539539bbbd0083d11a6f555e22f95dd992476aa3c",
+          "prompt_sha256": "74197af9f129e1e963a81867084da46bfa28b672d2d01cc0f6c56e2e5b894899",
+          "seed_patch_sha256": "77fa21fa41b69d1275b556870340e7c110fff7430ed2bbeccd52ca185eccef7e",
           "verifier_command": "sources/evaluations/fixtures/medium/fastify-fastify/task-generations/baseline-v2/fastify-lifecycle-review-v0/verify.sh",
-          "verifier_sha256": "75b5f53a091749072d812cb060410e8df8c6244285a94ddc422dc10826c1b647",
+          "verifier_sha256": "3c8e67aac05926e18551741fe219a7a151e6b002261a972e12fd9eeebe017fd7",
+          "controller_visible_acceptance_assets": [
+            {
+              "path": "sources/evaluations/fixtures/medium/fastify-fastify/task-generations/baseline-v2/fastify-lifecycle-review-v0/controller-visible/test/baseline-v2-max-param.test.js",
+              "sha256": "52fac190ee677c475523e317f69881c65486f5c8c6ee6f69681012f6db876715"
+            }
+          ],
           "upstream_test_paths": [],
           "compatibility_rebased_test_paths": [],
           "expected_model_concealed_paths": [],
@@ -112,23 +130,23 @@
           {
             "task_id": "fastify-lifecycle-feature-v0",
             "order": 1,
-            "rendered_prompt_sha256": "bc45f8c71351cf44aafc420f2b35ba9502a0a6ccb633965a5bea97344ef12505"
+            "rendered_prompt_sha256": "3bfbc96c4dd46a633bdc2e481b606ea2e5e4aa483e73eb0be1b20612ffc0ba13"
           },
           {
             "task_id": "fastify-lifecycle-refactor-v0",
             "order": 2,
-            "rendered_prompt_sha256": "dd09087a518b6ccec23c0382caa9ead474dddd082108ed2c8894343f9991b965"
+            "rendered_prompt_sha256": "80d42e7b4deb33bb26532af69462fb6991e2a6b098bf1da1ae386976fe55f8e7"
           },
           {
             "task_id": "fastify-lifecycle-review-v0",
             "order": 3,
-            "rendered_prompt_sha256": "18a9b8eb83432b361f5c279202a608c3b2cd9f940442d3a6c3fc116cd53031ba"
+            "rendered_prompt_sha256": "6a678bf111e94f44d5306894692cb4463f4a59f63f1623e2ea76ab069426b214"
           }
         ]
       },
       "qualification": {
         "path": "sources/evaluations/fixtures/medium/fastify-fastify/qualification-lifecycle-v0-baseline-v2.json",
-        "sha256": "2d569c445c3437b41fdd0c64ae6bee8fb2507a0d79551481894f1cd9fdf2e77d"
+        "sha256": "bb22d1bc8c647dc5338da76df5a7e96b27d593fcbdac0b3be2397495863847e3"
       },
       "baseline_profile": {
         "profile_id": "baseline-bare-codex",
@@ -181,7 +199,12 @@
         "seed_delivery_mode": "preseeded-composite",
         "future_tasks_visible": false,
         "future_seed_regressions_visible": true,
-        "verifier_assets_model_visible": false,
+        "controller_verifier_scripts_and_canonical_copies_model_visible": false,
+        "model_visible_acceptance_asset_paths": [
+          "test/baseline-v2-content-type-cache.test.js",
+          "test/baseline-v2-max-param.test.js",
+          "test/baseline-v2-request-media-type.test.js"
+        ],
         "git_baseline_true_root_at_lane_start": true,
         "controller_verification": "final-only",
         "prompt_sanitizer": "sanitize_task_prompt-v1",
@@ -201,7 +224,7 @@
     }
   },
   "selected_execution": {
-    "descriptor_sha256": "11d1a726b59b75ec9e2780d584fa6c7542f454e48d0a6476ec18cb24be19f241",
+    "descriptor_sha256": "5be2bbdb11de6898e878922045d0203066a82bc13aa6c31a86eaa8f08a73c04f",
     "descriptor": {
       "version": "execution-condition-v1",
       "sequence_id": "fastify-lifecycle-sequence-v0",
@@ -276,17 +299,17 @@
           {
             "task_id": "fastify-lifecycle-feature-v0",
             "order": 1,
-            "rendered_prompt_sha256": "bc45f8c71351cf44aafc420f2b35ba9502a0a6ccb633965a5bea97344ef12505"
+            "rendered_prompt_sha256": "3bfbc96c4dd46a633bdc2e481b606ea2e5e4aa483e73eb0be1b20612ffc0ba13"
           },
           {
             "task_id": "fastify-lifecycle-refactor-v0",
             "order": 2,
-            "rendered_prompt_sha256": "dd09087a518b6ccec23c0382caa9ead474dddd082108ed2c8894343f9991b965"
+            "rendered_prompt_sha256": "80d42e7b4deb33bb26532af69462fb6991e2a6b098bf1da1ae386976fe55f8e7"
           },
           {
             "task_id": "fastify-lifecycle-review-v0",
             "order": 3,
-            "rendered_prompt_sha256": "18a9b8eb83432b361f5c279202a608c3b2cd9f940442d3a6c3fc116cd53031ba"
+            "rendered_prompt_sha256": "6a678bf111e94f44d5306894692cb4463f4a59f63f1623e2ea76ab069426b214"
           }
         ]
       },
@@ -325,7 +348,7 @@
           "codex_web_search": "disabled",
           "external_retrieval_audit": "fail-closed"
         },
-        "isolation_policy": "fresh lane-specific Codex home/tool data; provider-only network with model shell and Codex web search disabled; sequential one-task prompt delivery; concealed tests removed before model-visible root commit"
+        "isolation_policy": "fresh lane-specific Codex home/tool data; provider-only network with model shell and Codex web search disabled; sequential one-task prompt delivery; controller seed/verifier scripts excluded while declared model-visible acceptance tests are retained"
       },
       "dependencies": {
         "command": "npm install --ignore-scripts --no-audit --no-fund",
@@ -352,12 +375,17 @@
         "future_tasks_visible": false,
         "future_seed_regressions_visible": true,
         "controller_verification": "final-only",
-        "verifier_assets_model_visible": false,
+        "controller_verifier_scripts_and_canonical_copies_model_visible": false,
+        "model_visible_acceptance_asset_paths": [
+          "test/baseline-v2-content-type-cache.test.js",
+          "test/baseline-v2-max-param.test.js",
+          "test/baseline-v2-request-media-type.test.js"
+        ],
         "model_concealed_paths": []
       },
       "baseline_pool_reference": {
         "protocol_version": "baseline-pool-v1",
-        "protocol_fingerprint": "e054ba57e60d",
+        "protocol_fingerprint": "ec3aea5e0625",
         "comparison_policy": "paired baseline and treatment must share this baseline pool fingerprint and replicate"
       },
       "model_condition_override": {

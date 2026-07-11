@@ -23,7 +23,7 @@ Do not modify tests.
 
 ## Validation recipe
 
-Run exactly: `node -c lib/content-type.js && node -e "const C=require('./lib/content-type'); const h='Application/JSON; Charset=UTF-8'; if(!C.cache || C.from(h)!==C.from(h))process.exit(1)"`
+Run exactly: `node --test test/baseline-v2-content-type-cache.test.js`
 
 ## Stop condition
 

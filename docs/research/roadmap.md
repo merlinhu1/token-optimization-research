@@ -25,7 +25,7 @@ The r3 campaign used the original natural-use contracts. The later assisted-v1 S
 Do not rerun occupied natural-use samples to replace unfavorable, high-variance, or near-neutral results. New provider work must be prospective, separately indexed, and explicitly authorized.
 
 1. Execute exactly one explicitly authorized GPT-5.6 Sol/`high` bare-model Baseline V2 pilot; do not launch treatments first.
-2. Audit the complete trajectory and final tree. The pilot gate requires zero unique model incidents, zero corrected implementation mistakes, and zero unresolved defects; verifier green alone is insufficient.
+2. Audit the complete trajectory and final tree into the machine-readable pilot gate record bound to the exact session, protocol hash, and Sol/`high` tuple. Every observed incident, correction/rework, unresolved source defect, prohibited operation, unnecessary exploration, model-caused failed command, and verifier/environment failure count must be zero; verifier green alone is insufficient.
 3. If any incident occurs, simplify or replace the responsible task and mint a new generation rather than rerunning the occupied pilot for a pass.
 4. Only after the gate passes, give baseline and comparable treatments identical Baseline V2 task-assistance bytes while preserving product-authored treatment guidance and forbidding evaluator-authored tool steering.
 5. Retain the three-task persistent-session structure and first-valid-sample policy.

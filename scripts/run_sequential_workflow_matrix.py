@@ -13,6 +13,7 @@ from __future__ import annotations
 import argparse
 import atexit
 import concurrent.futures as futures
+from contextlib import contextmanager
 import datetime as dt
 import fcntl
 import hashlib
@@ -43,78 +44,12 @@ def write_json(path: Path, data: Any) -> None:
     path.write_text(json.dumps(data, indent=2) + "\n")
 
 
-def compact_artifacts_intact(session: dict[str, Any] | None, root: Path = ROOT) -> bool:
-    if not isinstance(session, dict):
-        return False
-    artifacts = session.get("artifacts", {})
-    if not isinstance(artifacts, dict):
-        return False
-    required = [artifacts.get(key) for key in ("run_record", "final_diff", "evidence_bundle", "manifest")]
-    if not all(isinstance(rel, str) and rel for rel in required):
-        return False
-    paths = [root / str(rel) for rel in required]
-    if not all(path.is_file() for path in paths):
-        return False
-    artifact_root = paths[-1].parent
-    try:
-        for line in paths[-1].read_text().splitlines():
-            expected, name = line.split(maxsplit=1)
-            candidate = artifact_root / name.strip().lstrip("*")
-            if candidate.parent != artifact_root or not candidate.is_file():
-                return False
-            if hashlib.sha256(candidate.read_bytes()).hexdigest() != expected:
-                return False
-    except (OSError, ValueError):
-        return False
-    return True
-
-
-def hard_baseline_usable(session: dict[str, Any] | None, root: Path = ROOT) -> bool:
-    if not isinstance(session, dict):
-        return False
-    interpretation = session.get("interpretation", {})
-    quality = session.get("software_quality", {})
-    usage = session.get("cumulative_token_usage", {})
-    if not all(isinstance(value, dict) for value in (interpretation, quality, usage)):
-        return False
-    if interpretation.get("evaluation_validity") == "invalid-fixture":
-        return False
-    # Model quality is an observed outcome, not an eligibility gate for this
-    # token-usage study. Reuse the first operationally valid provider sample for
-    # the frozen protocol rather than rerunning until the model passes.
-    return (
-        interpretation.get("primary_objective_hard_baseline") is True
-        and interpretation.get("usable_for_primary_objective_token_comparison") is True
-        and interpretation.get("operationally_completed") is True
-        and interpretation.get("agent_declared_task_completion_count") == quality.get("tasks_attempted")
-        and isinstance(usage.get("total_provider_tokens"), int)
-        and usage.get("total_provider_tokens", 0) > 0
-        and compact_artifacts_intact(session, root)
-    )
-
-
 def baseline_reuse_state(session: dict[str, Any] | None, root: Path = ROOT) -> str:
-    state = workflow.reviewed_session_reuse_state(session, root)
-    return "reusable" if state != "reusable" and hard_baseline_usable(session, root) else state
+    return workflow.reviewed_session_reuse_state(session, root)
 
 
 def find_baseline_record(registry: dict[str, Any], seq: dict[str, Any], replicate_index: int) -> dict[str, Any] | None:
-    normal = workflow.find_canonical_baseline_record(registry, seq, replicate_index)
-    if normal is not None:
-        return normal
-    fingerprint = workflow.baseline_protocol_fingerprint(seq)
-    matches = [
-        session for session in registry.get("sessions", [])
-        if session.get("schema_version") == 2
-        and session.get("baseline_pool", {}).get("protocol_fingerprint") == fingerprint
-        and session.get("replicate_index") == replicate_index
-        and session.get("session_role") == "baseline"
-        and session.get("task_sequence", {}).get("sequence_id") == seq["id"]
-        and hard_baseline_usable(session, ROOT)
-    ]
-    if len(matches) > 1:
-        raise RuntimeError(f"ambiguous hard baselines for {seq['id']} r{replicate_index}: {[item['session_id'] for item in matches]}")
-    return matches[0] if matches else None
+    return workflow.find_canonical_baseline_record(registry, seq, replicate_index)
 
 
 def baseline_campaign_state(
@@ -269,8 +204,9 @@ def plan_workflow_jobs(
     *,
     baseline_state: Callable[[str], str],
     profile_state: Callable[[str, str], str],
+    treatment_gate: Callable[[str], tuple[bool, str]] | None = None,
 ) -> list[tuple[str, str]]:
-    """Plan one baseline lane per missing sequence or treatment lanes after a reusable token baseline exists."""
+    """Plan baselines or treatments only after a reusable baseline and explicit pilot gate."""
     if len(set(sequence_ids)) != len(sequence_ids):
         raise ValueError("duplicate sequence IDs are not allowed in one matrix")
     if len(set(treatment_profiles)) != len(treatment_profiles):
@@ -284,6 +220,11 @@ def plan_workflow_jobs(
             else:
                 raise ValueError(f"baseline for {sequence_id} is {state}; no new baseline run is needed")
         elif state == "reusable":
+            if treatment_gate is None:
+                raise ValueError("treatment planning requires an explicit Baseline V2 pilot gate")
+            passed, reason = treatment_gate(sequence_id)
+            if not passed:
+                raise ValueError(f"treatments are blocked for {sequence_id}: {reason}")
             for profile in treatment_profiles:
                 treatment_state = profile_state(sequence_id, profile)
                 if treatment_state == "missing":
@@ -341,6 +282,7 @@ def run_flow_lane(
     runner_args: list[str],
     source_codex_home: Path | None,
     model_condition: dict[str, str] | None = None,
+    production_lock_fd: int | None = None,
 ) -> dict[str, Any]:
     lane_id = safe_name(f"{sequence_id}--{treatment_profile}")
     lane_dir = lane_root / lane_id
@@ -359,6 +301,19 @@ def run_flow_lane(
     before_artifact_dirs = {path.name for path in artifact_root.iterdir() if path.is_dir()}
 
     protocol = find_protocol(checkout, sequence_id, treatment_profile).relative_to(checkout)
+    protocol_doc = load_json(checkout / protocol)
+    expected_session_binding = {
+        "sequence_id": sequence_id,
+        "profile_id": treatment_profile,
+        "replicate_index": replicate_index,
+        "frozen_protocol": {
+            "protocol_id": protocol_doc["protocol_id"],
+            "path": str(protocol),
+            "sha256": hashlib.sha256((checkout / protocol).read_bytes()).hexdigest(),
+        },
+        "baseline_pool_fingerprint": protocol_doc["baseline_pool"]["protocol_fingerprint"],
+        "selected_execution": protocol_doc["selected_execution"],
+    }
     cmd = workflow_lane_command(
         sequence_id=sequence_id,
         profile_id=treatment_profile,
@@ -375,9 +330,21 @@ def run_flow_lane(
     env["TMPDIR"] = str(tmp)
     env["SKIP_PAIR_VALIDATION"] = "1"
     env["WORKFLOW_LANE_DISABLE_AUTH_SYNC"] = "1"
+    pass_fds: tuple[int, ...] = ()
+    if production_lock_fd is not None:
+        env[workflow.PRODUCTION_LOCK_FD_ENV] = str(production_lock_fd)
+        pass_fds = (production_lock_fd,)
     log_path = logs / "lane.log"
     with log_path.open("w") as log:
-        proc = subprocess.run(cmd, cwd=checkout, text=True, stdout=log, stderr=subprocess.STDOUT, env=env)
+        proc = subprocess.run(
+            cmd,
+            cwd=checkout,
+            text=True,
+            stdout=log,
+            stderr=subprocess.STDOUT,
+            env=env,
+            pass_fds=pass_fds,
+        )
     after_sessions = load_json(checkout / "data/workflow-sessions.json").get("sessions", [])
     produced_session_ids = sorted(
         str(session["session_id"])
@@ -409,17 +376,48 @@ def run_flow_lane(
         "log": str(log_path),
         "exit_code": proc.returncode,
         "produced_session_ids": produced_session_ids,
+        "expected_session_binding": expected_session_binding,
         "failure_evidence": failure_evidence,
     }
 
 
+def production_lane_output_declared(result: dict[str, Any]) -> bool:
+    produced = result.get("produced_session_ids")
+    return (
+        result.get("exit_code") == 0
+        and isinstance(produced, list)
+        and len(produced) == 1
+        and isinstance(produced[0], str)
+        and bool(produced[0])
+    )
+
+
 def publication_allowed(prepare_only: bool, lane_results: list[dict[str, Any]]) -> bool:
-    return not prepare_only and all(result["exit_code"] == 0 for result in lane_results)
+    return not prepare_only and all(
+        production_lane_output_declared(result) for result in lane_results
+    )
 
 
 def artifact_merge_allowed(prepare_only: bool, lane_results: list[dict[str, Any]]) -> bool:
     """Preserve every completed compact session even when a sibling lane fails."""
     return not prepare_only and any(result.get("produced_session_ids") for result in lane_results)
+
+
+def matrix_outputs_complete(
+    *,
+    prepare_only: bool,
+    planned_job_count: int,
+    lane_results: list[dict[str, Any]],
+    merge_summary: dict[str, Any],
+) -> bool:
+    if prepare_only or planned_job_count == 0:
+        return True
+    return (
+        len(lane_results) == planned_job_count
+        and all(production_lane_output_declared(result) for result in lane_results)
+        and merge_summary.get("merged_session_count", 0) == planned_job_count
+        and not merge_summary.get("rejected_lane_errors")
+    )
 
 
 def matrix_acceptance_state(
@@ -443,37 +441,80 @@ def matrix_exit_code(
     return 0 if accepted else 1
 
 
-def lane_session_records(checkout: Path, sequence_id: str, replicate_index: int, produced_session_ids: set[str] | None = None) -> list[dict[str, Any]]:
+def lane_session_records(
+    checkout: Path,
+    expected: dict[str, Any],
+    produced_session_ids: set[str],
+) -> list[dict[str, Any]]:
+    if len(produced_session_ids) != 1:
+        raise ValueError(
+            f"matrix lane must produce exactly one session; found {sorted(produced_session_ids)}"
+        )
     doc = load_json(checkout / "data/workflow-sessions.json")
-    out: list[dict[str, Any]] = []
-    for session in doc.get("sessions", []):
-        if produced_session_ids is not None and session.get("session_id") not in produced_session_ids:
-            continue
-        if session.get("replicate_index") != replicate_index:
-            continue
-        if session.get("task_sequence", {}).get("sequence_id") != sequence_id:
-            continue
-        prompt_delivery = session.get("task_sequence", {}).get("prompt_delivery", {})
-        if prompt_delivery.get("mode") != "sequential-one-task-at-a-time":
-            continue
-        out.append(session)
-    return out
+    records = [
+        session
+        for session in doc.get("sessions", [])
+        if session.get("session_id") in produced_session_ids
+    ]
+    if len(records) != 1:
+        raise ValueError(
+            f"matrix lane produced IDs do not resolve to exactly one registry record: {sorted(produced_session_ids)}"
+        )
+    session = records[0]
+    selected = session.get("selected_execution", {})
+    bindings_match = (
+        session.get("replicate_index") == expected["replicate_index"]
+        and session.get("task_sequence", {}).get("sequence_id") == expected["sequence_id"]
+        and session.get("profile", {}).get("profile_id") == expected["profile_id"]
+        and session.get("frozen_protocol") == expected["frozen_protocol"]
+        and session.get("baseline_pool", {}).get("protocol_fingerprint")
+        == expected["baseline_pool_fingerprint"]
+        and selected == expected["selected_execution"]
+    )
+    prompt_delivery = session.get("task_sequence", {}).get("prompt_delivery", {})
+    if not bindings_match or prompt_delivery.get("mode") != "sequential-one-task-at-a-time":
+        raise ValueError(
+            f"matrix lane session {session.get('session_id')} does not match its planned job binding"
+        )
+    return [session]
 
 
-def copy_artifacts_for_sessions(checkout: Path, sessions: list[dict[str, Any]]) -> list[str]:
-    copied: list[str] = []
+def fsync_compact_artifact_tree(root: Path) -> None:
+    """Persist copied compact files, their directory entries, and parent entry."""
+    for path in sorted(root.iterdir()):
+        fd = os.open(path, os.O_RDONLY)
+        try:
+            os.fsync(fd)
+        finally:
+            os.close(fd)
+    for directory in (root, root.parent):
+        fd = os.open(directory, os.O_RDONLY)
+        try:
+            os.fsync(fd)
+        finally:
+            os.close(fd)
+
+
+def copy_artifacts_for_sessions(
+    checkout: Path,
+    sessions: list[dict[str, Any]],
+    copied: list[str] | None = None,
+) -> list[str]:
+    if copied is None:
+        copied = []
     lane_artifact_root = (checkout / WORKFLOW_ARTIFACT_ROOT).resolve()
     for session in sessions:
+        if not workflow.pilot_session_artifacts_valid(session, checkout):
+            raise ValueError(
+                f"workflow session {session.get('session_id')} failed strict compact artifact ingress validation"
+            )
         artifacts = session.get("artifacts", {}) if isinstance(session.get("artifacts"), dict) else {}
+        expected_root = f"{WORKFLOW_ARTIFACT_ROOT}/{session['session_id']}"
         root = artifacts.get("root") or ""
-        if not root:
-            for key in ("run_record", "evidence_bundle", "final_diff", "manifest"):
-                artifact_path = artifacts.get(key)
-                if artifact_path:
-                    root = str(Path(str(artifact_path)).parent)
-                    break
-        if not root or root == ".":
-            continue
+        if root != expected_root:
+            raise ValueError(
+                f"workflow session {session.get('session_id')} declares noncanonical artifact root: {root}"
+            )
         rel = Path(root.rstrip("/"))
         if rel.is_absolute() or ".." in rel.parts:
             continue
@@ -490,111 +531,191 @@ def copy_artifacts_for_sessions(checkout: Path, sessions: list[dict[str, Any]]) 
                 raise ValueError(f"workflow artifact root does not satisfy compact artifact contract: {src}")
             if dst.exists():
                 raise FileExistsError(f"workflow artifact destination already exists; refusing overwrite: {dst}")
-            shutil.copytree(src, dst)
             copied.append(str(rel))
+            shutil.copytree(src, dst)
+            fsync_compact_artifact_tree(dst)
     return copied
+
+
+def atomic_write_bytes(path: Path, content: bytes) -> None:
+    tmp = path.with_name(f".{path.name}.{os.getpid()}.tmp")
+    try:
+        with tmp.open("wb") as handle:
+            handle.write(content)
+            handle.flush()
+            os.fsync(handle.fileno())
+        os.replace(tmp, path)
+        directory_fd = os.open(path.parent, os.O_RDONLY)
+        try:
+            os.fsync(directory_fd)
+        finally:
+            os.close(directory_fd)
+    finally:
+        tmp.unlink(missing_ok=True)
+
+
+def atomic_write_json(path: Path, data: Any) -> None:
+    """Durably replace a JSON authority from a same-directory temporary file."""
+    tmp = path.with_name(f".{path.name}.{os.getpid()}.tmp")
+    try:
+        with tmp.open("w") as handle:
+            json.dump(data, handle, indent=2)
+            handle.write("\n")
+            handle.flush()
+            os.fsync(handle.fileno())
+        os.replace(tmp, path)
+        directory_fd = os.open(path.parent, os.O_RDONLY)
+        try:
+            os.fsync(directory_fd)
+        finally:
+            os.close(directory_fd)
+    finally:
+        tmp.unlink(missing_ok=True)
 
 
 def merge_registry(sessions: list[dict[str, Any]]) -> None:
     path = ROOT / "data/workflow-sessions.json"
     doc = load_json(path)
-    existing = {session.get("session_id") for session in doc.get("sessions", []) if session.get("session_id")}
+    retained = list(doc.get("sessions", []))
+    existing_ids = {session.get("session_id") for session in retained if session.get("session_id")}
+    accepted: list[dict[str, Any]] = []
     for session in sessions:
-        if session["session_id"] in existing:
+        if session["session_id"] in existing_ids:
             raise FileExistsError(f"workflow session already exists; refusing overwrite: {session['session_id']}")
-        existing.add(session["session_id"])
-    doc["sessions"].extend(sessions)
-    write_json(path, doc)
+        occupied = next(
+            (item for item in [*retained, *accepted] if workflow.same_provider_slot(item, session)),
+            None,
+        )
+        if occupied is not None:
+            raise FileExistsError(
+                "provider sample slot already occupied during matrix publication by "
+                f"{occupied.get('session_id')}; refusing {session.get('session_id')}"
+            )
+        existing_ids.add(session["session_id"])
+        accepted.append(session)
+    doc["sessions"] = [*retained, *accepted]
+    atomic_write_json(path, doc)
 
 
-def merge_lanes(lane_results: list[dict[str, Any]], replicate_index: int) -> dict[str, Any]:
-    registry_path = ROOT / "data/workflow-sessions.json"
-    registry_before = registry_path.read_bytes()
+def merge_lanes(
+    lane_results: list[dict[str, Any]],
+    replicate_index: int,
+    transaction: dict[str, Any] | None = None,
+) -> dict[str, Any]:
     merged_sessions: list[dict[str, Any]] = []
     copied_artifacts: list[str] = []
+    summary = transaction if transaction is not None else {}
+    summary.update(
+        merged_session_count=0,
+        copied_artifact_count=0,
+        merged_session_ids=[],
+        copied_artifacts=copied_artifacts,
+        registry_replacement_attempted=False,
+        rejected_session_ids=[],
+        rejected_lane_errors=[],
+    )
     try:
         for result in lane_results:
             checkout = Path(result["checkout"])
-            sequence_id = result["sequence_id"]
             produced_session_ids = set(result.get("produced_session_ids", []))
-            sessions = lane_session_records(checkout, sequence_id, replicate_index, produced_session_ids)
-            merged_sessions.extend(sessions)
-            copied_artifacts.extend(copy_artifacts_for_sessions(checkout, sessions))
+            try:
+                sessions = lane_session_records(
+                    checkout,
+                    result["expected_session_binding"],
+                    produced_session_ids,
+                )
+            except Exception as exc:
+                summary["rejected_session_ids"].extend(sorted(produced_session_ids))
+                summary["rejected_lane_errors"].append(
+                    f"{result.get('lane_id', result.get('sequence_id'))}: {exc}"
+                )
+                continue
+            valid_sessions: list[dict[str, Any]] = []
+            for session in sessions:
+                if workflow.pilot_session_artifacts_valid(session, checkout):
+                    valid_sessions.append(session)
+                else:
+                    summary["rejected_session_ids"].append(session.get("session_id"))
+                    summary["rejected_lane_errors"].append(
+                        f"{result.get('lane_id', result.get('sequence_id'))}: "
+                        f"session {session.get('session_id')} failed strict compact artifact ingress validation"
+                    )
+            merged_sessions.extend(valid_sessions)
+            copy_artifacts_for_sessions(checkout, valid_sessions, copied_artifacts)
+            summary["merged_session_count"] = len(merged_sessions)
+            summary["copied_artifact_count"] = len(copied_artifacts)
+            summary["merged_session_ids"] = [session["session_id"] for session in merged_sessions]
         if merged_sessions:
+            summary["registry_replacement_attempted"] = True
             merge_registry(merged_sessions)
-    except Exception:
-        registry_path.write_bytes(registry_before)
-        for rel in copied_artifacts:
-            path = ROOT / rel
+    except BaseException:
+        # The outer publication transaction owns rollback so it can preserve the
+        # initiating error and aggregate every cleanup failure.
+        raise
+    return summary
+
+
+def rollback_matrix_publication(
+    registry_path: Path,
+    registry_before: bytes,
+    merge_summary: dict[str, Any],
+    published_comparisons: list[str],
+    authority_snapshots: dict[Path, bytes],
+) -> None:
+    rollback_errors: list[BaseException] = []
+
+    def attempt(action: Any) -> None:
+        try:
+            action()
+        except BaseException as exc:
+            rollback_errors.append(exc)
+
+    attempt(lambda: atomic_write_bytes(registry_path, registry_before))
+    for rel in [*merge_summary.get("copied_artifacts", []), *published_comparisons]:
+        path = ROOT / rel
+
+        def remove_path(path: Path = path) -> None:
             if path.is_dir():
                 chmod_tree(path)
                 shutil.rmtree(path)
             elif path.exists():
                 path.unlink()
+
+        attempt(remove_path)
+    for path, content in authority_snapshots.items():
+        attempt(lambda path=path, content=content: atomic_write_bytes(path, content))
+    if rollback_errors:
+        raise BaseExceptionGroup("matrix publication rollback failed", rollback_errors)
+
+
+@contextmanager
+def publication_transaction_guard(rollback: Any, *, enabled: bool = True):
+    """Keep every publication decision inside an interrupt-safe rollback boundary."""
+    try:
+        yield
+    except BaseException as publication_error:
+        if enabled:
+            try:
+                rollback()
+            except BaseException as rollback_error:
+                raise BaseExceptionGroup(
+                    "matrix publication failed and rollback reported errors",
+                    [publication_error, rollback_error],
+                ) from None
         raise
-    return {
-        "merged_session_count": len(merged_sessions),
-        "copied_artifact_count": len(copied_artifacts),
-        "merged_session_ids": [session["session_id"] for session in merged_sessions],
-        "copied_artifacts": copied_artifacts,
-    }
 
 
-def write_hard_baseline_comparison(
-    seq: dict[str, Any], baseline: dict[str, Any], treatment: dict[str, Any], profile_id: str, replicate_index: int
-) -> Path:
-    project_id = workflow.PROJECT_META[seq["fixture_id"]]["project_id"]
-    fingerprint = workflow.baseline_protocol_fingerprint(seq)
-    comparison_id = (
-        f"baseline-{workflow.artifact_lane_label(project_id)}-{workflow.DATE.replace('-', '')}"
-        f"-vs-{workflow.artifact_profile_label(profile_id)}-p-{fingerprint}-r{replicate_index}"
-    )
-    path = ROOT / WORKFLOW_ARTIFACT_ROOT / f"{comparison_id}.json"
-    if path.exists():
-        raise FileExistsError(f"workflow comparison already exists; refusing overwrite: {path}")
-    b_tokens = baseline.get("cumulative_token_usage", {}).get("total_provider_tokens")
-    t_tokens = treatment.get("cumulative_token_usage", {}).get("total_provider_tokens")
-    b_passed = baseline.get("software_quality", {}).get("tasks_passed")
-    t_passed = treatment.get("software_quality", {}).get("tasks_passed")
-    if not all(isinstance(value, (int, float)) for value in (b_tokens, t_tokens, b_passed, t_passed)):
-        raise ValueError("hard-lane comparison requires numeric provider tokens and verified task counts")
-    delta = t_tokens - b_tokens
-    correctness_improved = t_passed > b_passed
-    token_efficiency_improved = t_tokens < b_tokens
-    comparison = {
-        "schema_version": 4,
-        "comparison_id": comparison_id,
-        "study_id": treatment.get("study_id"),
-        "objective": treatment.get("objective"),
-        "experiment_group_id": treatment.get("experiment_group_id"),
-        "comparison_design": "token-objective-compatible-pair-v1",
-        "baseline_protocol_fingerprint": fingerprint,
-        "replicate_count": 1,
-        "sequence_id": seq["id"],
-        "baseline_session_id": baseline["session_id"],
-        "treatment_session_id": treatment["session_id"],
-        "baseline_total_provider_tokens": b_tokens,
-        "treatment_total_provider_tokens": t_tokens,
-        "delta_total_provider_tokens": delta,
-        "delta_percent": workflow.percent_delta(delta, b_tokens),
-        "baseline_agent_declared_tasks": baseline.get("software_quality", {}).get("tasks_agent_claimed_complete"),
-        "treatment_agent_declared_tasks": treatment.get("software_quality", {}).get("tasks_agent_claimed_complete"),
-        "baseline_verified_tasks": b_passed,
-        "treatment_verified_tasks": t_passed,
-        "correctness_improved": correctness_improved,
-        "token_efficiency_improved": token_efficiency_improved,
-        "primary_token_objective_improved": token_efficiency_improved,
-        "interpretation": "Token-objective comparison. Provider-token change is the primary result. Verified-task outcomes are reported separately as diagnostic model behavior and do not gate or select the pair.",
-    }
-    write_json(path, comparison)
-    return path
-
-
-def publish_ready_comparisons(sequence_ids: list[str], profiles: list[str], replicate_index: int) -> list[str]:
+def publish_ready_comparisons(
+    sequence_ids: list[str],
+    profiles: list[str],
+    replicate_index: int,
+    published: list[str] | None = None,
+) -> list[str]:
+    if published is None:
+        published = []
     if not profiles:
-        return []
+        return published
     registry = load_json(ROOT / "data/workflow-sessions.json")
-    published: list[str] = []
     for sequence_id in sequence_ids:
         seq = workflow.load_sequence(sequence_id)
         baseline = find_baseline_record(registry, seq, replicate_index)
@@ -612,15 +733,12 @@ def publish_ready_comparisons(sequence_ids: list[str], profiles: list[str], repl
             )
             path = ROOT / WORKFLOW_ARTIFACT_ROOT / f"{comparison_id}.json"
             if not path.exists():
-                if hard_baseline_usable(baseline, ROOT):
-                    path = write_hard_baseline_comparison(seq, baseline, treatment, profile_id, replicate_index)
-                else:
-                    comparison = workflow.write_comparison_if_ready(
-                        seq, "phase-2-sequential-workflow-v1", replicate_index, profile_id
-                    )
-                    if comparison is None:
-                        raise RuntimeError(f"reviewed records did not produce comparison {comparison_id}")
                 published.append(str(path.relative_to(ROOT)))
+                comparison = workflow.write_comparison_if_ready(
+                    seq, "phase-2-sequential-workflow-v1", replicate_index, profile_id
+                )
+                if comparison is None:
+                    raise RuntimeError(f"reviewed records did not produce comparison {comparison_id}")
     return published
 
 
@@ -667,6 +785,7 @@ def run_validation(summary_dir: Path) -> dict[str, Any]:
     validation_env["PATH"] = f"{Path(truthmark).parent}:{validation_env.get('PATH', '')}"
     commands = [
         [sys.executable, "scripts/validate_repository.py"],
+        [sys.executable, "scripts/test_workflow_evaluation_contract.py"],
         ["git", "diff", "--check"],
         [truthmark, "check", "--json"],
         [truthmark, "index", "--json"],
@@ -763,10 +882,24 @@ def main(argv: list[str] | None = None) -> int:
         session = workflow.find_pool_profile_record(registry, sequence, profile_id, args.replicate_index)
         return workflow.reviewed_session_reuse_state(session, ROOT)
 
+    def treatment_gate(sequence_id: str) -> tuple[bool, str]:
+        return workflow.baseline_v2_treatment_gate(workflow.load_sequence(sequence_id), ROOT)
+
+    if args.prepare_only and treatment_profiles:
+        for sequence_id in sequences:
+            passed, reason = treatment_gate(sequence_id)
+            if not passed:
+                raise ValueError(f"treatments are blocked for {sequence_id}: {reason}")
     jobs = (
         [(sequence_id, profile) for sequence_id in sequences for profile in (treatment_profiles or ["baseline-bare-codex"])]
         if args.prepare_only
-        else plan_workflow_jobs(sequences, treatment_profiles, baseline_state=baseline_state, profile_state=profile_state)
+        else plan_workflow_jobs(
+            sequences,
+            treatment_profiles,
+            baseline_state=baseline_state,
+            profile_state=profile_state,
+            treatment_gate=treatment_gate,
+        )
     )
     timestamp = dt.datetime.now(dt.UTC).strftime("%Y%m%dT%H%M%S%fZ")
     run_root = args.lane_root / f"workflow-matrix-{timestamp}-p{os.getpid()}-r{args.replicate_index}"
@@ -818,6 +951,7 @@ def main(argv: list[str] | None = None) -> int:
                     runner_args=runner_args,
                     source_codex_home=args.source_codex_home,
                     model_condition=model_condition,
+                    production_lock_fd=production_lock_fd,
                 )
                 for sequence_id, treatment_profile in jobs
             ]
@@ -828,6 +962,15 @@ def main(argv: list[str] | None = None) -> int:
 
     registry_path = ROOT / "data/workflow-sessions.json"
     registry_before = registry_path.read_bytes() if not args.prepare_only else b""
+    authority_paths = (
+        ROOT / "docs/evaluations/operations/runbook.md",
+        ROOT / "sources/evaluations/audits/codex-cumulative-usage-accounting-20260718.json",
+    )
+    authority_snapshots = (
+        {path: path.read_bytes() for path in authority_paths}
+        if not args.prepare_only
+        else {}
+    )
     lanes_passed = all(result["exit_code"] == 0 for result in lane_results)
     publish_allowed = publication_allowed(args.prepare_only, lane_results)
     merge_allowed = artifact_merge_allowed(args.prepare_only, lane_results)
@@ -837,42 +980,70 @@ def main(argv: list[str] | None = None) -> int:
         "merged_session_ids": [],
         "copied_artifacts": [],
         "skipped": "prepare-only run" if args.prepare_only else "one or more lanes failed",
-    } if not merge_allowed else merge_lanes(lane_results, args.replicate_index)
-    published_comparisons = [] if not publish_allowed else publish_ready_comparisons(
-        sequences, treatment_profiles, args.replicate_index
-    )
-    restore_protected_control_plane_files()
-    refresh_generated_runbook()
-    if not args.prepare_only and merge_summary.get("merged_session_count", 0):
-        refresh_cumulative_usage_audit()
-    validation = run_validation(run_root)
-    if not args.prepare_only and not validation["passed"]:
-        for rel in published_comparisons:
-            path = ROOT / rel
-            if path.is_dir():
-                chmod_tree(path)
-                shutil.rmtree(path)
-            elif path.exists():
-                path.unlink()
-        merge_summary["validation_failed_artifacts_preserved"] = True
-        published_comparisons = []
-    execution_passed = lanes_passed and validation["passed"]
-    awaiting_quality_review = False
-    summary = {
-        "plan": plan,
-        "lane_results": sorted(lane_results, key=lambda item: item["sequence_id"]),
-        "merge": merge_summary,
-        "published_comparisons": published_comparisons,
-        "validation": validation,
-        "execution_passed": execution_passed,
-        "awaiting_quality_review": awaiting_quality_review,
-        "accepted": matrix_acceptance_state(
-            prepare_only=args.prepare_only,
-            execution_passed=execution_passed,
-            awaiting_quality_review=awaiting_quality_review,
-        ),
     }
-    write_json(run_root / "matrix-summary.json", summary)
+    published_comparisons: list[str] = []
+    def rollback_publication() -> None:
+        rollback_matrix_publication(
+            registry_path,
+            registry_before,
+            merge_summary,
+            published_comparisons,
+            authority_snapshots,
+        )
+
+    with publication_transaction_guard(
+        rollback_publication,
+        enabled=not args.prepare_only,
+    ):
+        if merge_allowed:
+            merge_lanes(lane_results, args.replicate_index, merge_summary)
+        authoritative_outputs_complete = matrix_outputs_complete(
+            prepare_only=args.prepare_only,
+            planned_job_count=len(jobs),
+            lane_results=lane_results,
+            merge_summary=merge_summary,
+        )
+        publish_allowed = publish_allowed and authoritative_outputs_complete
+        if publish_allowed:
+            publish_ready_comparisons(
+                sequences,
+                treatment_profiles,
+                args.replicate_index,
+                published_comparisons,
+            )
+        restore_protected_control_plane_files()
+        refresh_generated_runbook()
+        if not args.prepare_only and merge_summary.get("merged_session_count", 0):
+            refresh_cumulative_usage_audit()
+        validation = run_validation(run_root)
+        if not args.prepare_only and not validation["passed"]:
+            rollback_matrix_publication(
+                registry_path,
+                registry_before,
+                merge_summary,
+                published_comparisons,
+                authority_snapshots,
+            )
+            merge_summary["rolled_back_after_validation_failure"] = True
+            published_comparisons = []
+        execution_passed = lanes_passed and authoritative_outputs_complete and validation["passed"]
+        awaiting_quality_review = False
+        summary = {
+            "plan": plan,
+            "lane_results": sorted(lane_results, key=lambda item: item["sequence_id"]),
+            "merge": merge_summary,
+            "published_comparisons": published_comparisons,
+            "validation": validation,
+            "authoritative_outputs_complete": authoritative_outputs_complete,
+            "execution_passed": execution_passed,
+            "awaiting_quality_review": awaiting_quality_review,
+            "accepted": matrix_acceptance_state(
+                prepare_only=args.prepare_only,
+                execution_passed=execution_passed,
+                awaiting_quality_review=awaiting_quality_review,
+            ),
+        }
+        write_json(run_root / "matrix-summary.json", summary)
     print(json.dumps(summary, indent=2), flush=True)
 
     if not args.keep_lanes:

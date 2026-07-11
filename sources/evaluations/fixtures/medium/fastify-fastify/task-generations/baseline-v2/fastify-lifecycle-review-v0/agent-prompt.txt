@@ -10,7 +10,7 @@ Replace each of the three candidate `413` values associated with `FST_ERR_MAX_PA
 
 ## Validation recipe
 
-Run exactly: `node -c fastify.js && node -c lib/errors.js && node -e "const F=require('./fastify'); const a=F({maxParamLength:2}); a.get('/:id',()=>({})); a.inject('/abc').then(r=>{if(r.statusCode!==414)process.exit(1)})"`
+Run exactly: `node --test test/baseline-v2-max-param.test.js`
 
 ## Stop condition
 
