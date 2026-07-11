@@ -1,7 +1,20 @@
-Implement missing Terraform policy-callback support for deferred resources and data sources.
+Implement deferred Terraform policy callbacks using the prescribed solution below. This is a controlled token-usage workload: follow the recipe directly rather than rediscovering Terraform's address and deferral APIs. Concrete resources remain in the concrete response; deferred resources are excluded while setting the partial response flag, and data-source callbacks report whether the provider deferred the read.
 
-Policy callbacks that request resources or data sources must preserve whether the provider deferred the result. Resource collection must exclude deferred instances from concrete matches while reporting a partial response when relevant instances are deferred; data-source callbacks must return the provider's deferred state rather than flattening it into an ordinary result. Preserve existing non-deferred policy evaluation behavior.
+## Implementation recipe
 
-The feature is absent from the starting repository. Work only inside the target repository and make the smallest maintainable production changes. Do not modify tests merely to make acceptance pass. The controller runs concealed behavioral acceptance only after all three lifecycle prompts are complete.
+1. In `internal/policy/callback/callback.go`, change `Functions.GetDataSource` to return `(cty.Value, bool, error)`, where the boolean is the deferred flag.
+2. In `internal/policy/callback/server.go`, receive that boolean and populate `proto.GetDataSourceResponse.Deferred`.
+3. In `internal/states/sync.go`, retain `ReadEachConfigResourceInstance` as a compatibility wrapper and add `ReadEachConfigResourceInstanceWithAddr`, whose selector receives the exact `addrs.AbsResourceInstance` alongside the instance.
+4. In `internal/terraform/policy.go`, use `ctx.Deferrals().GetDeferredChanges()` to mark a matching config resource partial. During apply, use `ReadEachConfigResourceInstanceWithAddr` and `GetDeferredResourceInstanceValue(instanceAddr)` to exclude deferred instances while setting the partial-result flag.
+5. Also in `policy.go`, change the data-source callback to return `(cty.Value, bool, error)`. Pass `ctx.ClientCapabilities()` in `providers.ReadDataSourceRequest`; return `readResp.Deferred != nil`; and report an error if a provider defers while `ctx.Deferrals().DeferralAllowed()` is false.
+6. Return `false` on every data-source error path. Do not substitute `ConfigResource` for `AbsResourceInstance`, scan unrelated address helpers, or redesign deferral storage.
 
-Run focused policy callback plan/apply tests and preserve all prior lifecycle work.
+## Validation recipe
+
+- Run `gofmt -w internal/policy/callback/callback.go internal/policy/callback/server.go internal/states/sync.go internal/terraform/policy.go`.
+- Run `go test ./internal/policy/callback ./internal/terraform -run 'Test(GetResourcesForPolicyCallback|Context2(Plan|Apply)_PolicyCallback.*)' -count=1`.
+- Do not run `go test ./...`; later lifecycle defects and unrelated packages are outside this task.
+
+## Stop condition
+
+Stop when the callback signature, protocol response, address-aware state iterator, resource exclusion/partial flag, and data-source deferred flag all compile and the focused callback tests pass. Preserve unrelated composite state.

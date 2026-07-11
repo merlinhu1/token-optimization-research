@@ -1,7 +1,23 @@
-Implement a missing Fastify request-metadata feature.
+Implement the missing Fastify request-metadata feature using the prescribed solution below. This is a controlled token-usage workload: follow the recipe directly rather than rediscovering the architecture.
 
-Expose the parsed media type through the exact public property `request.mediaType` and the corresponding `FastifyRequest.mediaType` type. The value must be the normalized media type, such as `application/json`, consistently available before and during body validation; it is not the original header and must not introduce a second `request.contentType` API. Reuse the shared Content-Type representation without changing parser semantics.
+Expose the parsed media type through the exact public property `request.mediaType` and the corresponding `FastifyRequest.mediaType` type. The value must be the normalized media type, such as `application/json`, consistently available before and during body validation. Do not introduce `request.contentType`.
 
-The feature is absent from the starting repository. Work only inside the target repository and make the smallest maintainable production/type changes. Do not modify tests merely to make acceptance pass. The controller runs concealed behavioral acceptance only after all three lifecycle prompts are complete.
+## Implementation recipe
 
-Run focused model-visible Node behavior and TypeScript tests for the touched surfaces. Preserve all prior lifecycle work.
+1. In `lib/request.js`, import `./content-type` and add a `mediaType` getter to `Request.prototype`. Parse `this.headers['content-type']` with `ContentType.from(...)`; return its normalized `.mediaType` only when the parsed representation is valid, otherwise return `undefined`.
+2. In `lib/validation.js`, use `request.mediaType` as the body content-schema key. Remove the duplicated `getEssenceMediaType` helper and its header reparsing.
+3. In `types/request.d.ts`, add `readonly mediaType: string | undefined` to `FastifyRequest`.
+4. Do not add a second public API, parser, or normalization path. `lib/handle-request.js` should retain its existing parser flow; no new request symbol is required.
+
+## Validation recipe
+
+The container cannot bind listening sockets. Use `app.inject(...)`; do not run tests that call `listen()`.
+
+- Run `node -c lib/request.js && node -c lib/validation.js`.
+- Run one small in-process `node` script that creates a Fastify route, sends `Application/JSON; Charset=UTF-8` with `app.inject(...)`, and asserts `request.mediaType === 'application/json'` in `preValidation` and the handler.
+- Run a focused TSTyche case asserting `FastifyRequest['mediaType']` is `string | undefined`.
+- Do not run broad Fastify suites: undisclosed later lifecycle defects are already present.
+
+## Stop condition
+
+Stop when the three prescribed source/type changes are complete, the in-process injection check passes, and the focused type assertion passes. Preserve all prior lifecycle work and do not investigate unrelated failures.

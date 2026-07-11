@@ -17,7 +17,7 @@ Every active sequence, task ID, qualification file, and current execution contra
 - Start patches must be independently applicable and compose without overlap.
 - Feature and review start states fail semantic acceptance.
 - Refactor starts must pass behavior acceptance and fail only the disclosed structural/performance gate.
-- Model-facing prompts disclose public behavior and any required structural outcome; controller tests remain concealed.
+- Model-facing prompts may disclose the intended implementation recipe, target files and symbols, exact focused validation commands, environment constraints, and a stop condition. Solution-directed task assistance is a workload control for provider-token measurement; it must be identical across compatible baseline and treatment sessions and must not require or prefer treatment-tool invocation.
 - Review tasks include the exact proposed patch under review.
 - Run all concealed verifiers after the final prompt in one persistent workflow.
 

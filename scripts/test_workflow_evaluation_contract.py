@@ -1771,6 +1771,38 @@ class VerifierContractTest(unittest.TestCase):
             changed = runner.baseline_protocol_fingerprint(sequence)
         self.assertNotEqual(original, changed)
 
+    def test_active_task_prompts_include_solution_and_validation_recipes(self) -> None:
+        required_by_task = {
+            "fastify-lifecycle-feature-v0": ["lib/handle-request.js", "request.mediaType", "app.inject"],
+            "fastify-lifecycle-refactor-v0": ["lib/content-type.js", "LruMap", "ContentType.cache"],
+            "fastify-lifecycle-review-v0": ["fastify.js", "FST_ERR_MAX_PARAM_LENGTH", "414"],
+            "beets-lifecycle-feature-v0": ["beets/ui/commands/modify.py", "field+=value", "test/ui/commands/test_modify.py"],
+            "beets-lifecycle-refactor-v0": ["beets/dbcore/db.py", "LazyDict(UserDict)", "test/dbcore/test_db.py"],
+            "beets-lifecycle-review-v0": ["beetsplug/ftintitle.py", "albumartist", "test/plugins/test_ftintitle.py"],
+            "terraform-lifecycle-feature-v0": ["internal/terraform/policy.go", "GetDeferredResourceInstanceValue", "Context2(Plan|Apply)_PolicyCallback"],
+            "terraform-lifecycle-refactor-v0": ["internal/configs/state_migrate_file.go", "StateStoreProviderRequirement", "StateMigration|StateStoreProvider|Migrate"],
+            "terraform-lifecycle-review-v0": ["internal/cloud/backend_tfPolicyEvaluation.go", "listTFPolicyOutcomes", "policy-summary"],
+        }
+        for sequence_id in runner.active_sequence_ids():
+            sequence = runner.load_sequence(sequence_id)
+            for index, task in enumerate(sorted(sequence["tasks"], key=lambda item: int(item["order"]))):
+                source = (ROOT / task["prompt_path"]).read_text()
+                self.assertIn("## Implementation recipe", source, task["id"])
+                self.assertIn("## Validation recipe", source, task["id"])
+                self.assertIn("## Stop condition", source, task["id"])
+                for snippet in required_by_task[task["id"]]:
+                    self.assertIn(snippet, source, task["id"])
+                rendered = runner.render_task_prompt(
+                    sequence,
+                    "baseline-bare-codex",
+                    int(task["order"]),
+                    source,
+                    first_task=index == 0,
+                )
+                self.assertIn("## Implementation recipe", rendered, task["id"])
+                self.assertIn("## Validation recipe", rendered, task["id"])
+                self.assertIn("## Stop condition", rendered, task["id"])
+
     def test_execution_integrity_preserves_pass_through_command_hits(self) -> None:
         hits = [{"tool": "lowfat", "command": "unknown-command"}]
         integrity = runner.execution_integrity_record(
@@ -1958,11 +1990,15 @@ class ManifestAndProtocolContractTest(unittest.TestCase):
 
     def test_active_sequences_bind_current_qualifications(self) -> None:
         sequence = runner.load_sequence("beets-lifecycle-sequence-v0")
-        self.assertTrue(sequence["qualification_path"].endswith("qualification-lifecycle-v0.json"))
+        self.assertRegex(
+            Path(sequence["qualification_path"]).name,
+            r"^qualification-lifecycle-v0(?:-[a-z0-9-]+)?\.json$",
+        )
 
     def test_current_protocol_fingerprint_matches_runner(self) -> None:
         sequence = runner.load_sequence("beets-lifecycle-sequence-v0")
-        protocol_path = retained_protocol_path(
+        protocol_path = matrix.find_protocol(
+            ROOT,
             "beets-lifecycle-sequence-v0",
             "baseline-bare-codex",
         )
@@ -1977,13 +2013,25 @@ class ManifestAndProtocolContractTest(unittest.TestCase):
     def test_existing_pool_record_blocks_duplicate_provider_sample(self) -> None:
         registry = json.loads((ROOT / "data/workflow-sessions.json").read_text())
         sequence = runner.load_sequence("fastify-lifecycle-sequence-v0")
-        with self.assertRaisesRegex(ValueError, "already occupied"):
-            runner.assert_pool_slot_available(
-                registry,
-                sequence,
-                "baseline-bare-codex",
-                0,
-            )
+        retained = next(
+            session
+            for session in registry["sessions"]
+            if session.get("task_sequence", {}).get("sequence_id") == sequence["id"]
+            and session.get("profile", {}).get("profile_id") == "baseline-bare-codex"
+            and session.get("replicate_index") == 0
+        )
+        with mock.patch.object(
+            runner,
+            "baseline_protocol_fingerprint",
+            return_value=retained["baseline_pool"]["protocol_fingerprint"],
+        ):
+            with self.assertRaisesRegex(ValueError, "already occupied"):
+                runner.assert_pool_slot_available(
+                    registry,
+                    sequence,
+                    "baseline-bare-codex",
+                    0,
+                )
 
     def test_protocol_is_required_before_setup_for_paid_run(self) -> None:
         seq = runner.load_sequence(SEQUENCE_ID)
@@ -2721,6 +2769,17 @@ class CorrectionContractTest(unittest.TestCase):
         self.assertIn("every tool-author-recommended normal integration surface", guidance)
         self.assertIn("never adding evaluator-authored steering, quotas, or forced calls", evaluator)
         self.assertIn("Product-authored guidance is part of normal installation", parity)
+
+    def test_solution_directed_task_assistance_is_distinct_from_tool_steering(self) -> None:
+        for path in (
+            "AGENTS.md",
+            "docs/evaluations/design/framework.md",
+            "docs/evaluations/design/token-and-quality-policy.md",
+            ".agents/skills/benchmark-protocol-writer.md",
+        ):
+            text = (ROOT / path).read_text()
+            self.assertIn("Solution-directed task assistance", text, path)
+            self.assertIn("must not require or prefer treatment-tool invocation", text, path)
 
     def test_deleted_codegraph_generation_is_superseded_by_canonical_v1(self) -> None:
         deletion = json.loads((ROOT / "sources/evaluations/audits/invalid-codegraph-v1-result-deletion-20260719.json").read_text())

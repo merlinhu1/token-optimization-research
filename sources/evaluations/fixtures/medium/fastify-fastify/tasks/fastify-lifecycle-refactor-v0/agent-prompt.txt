@@ -1,7 +1,24 @@
-Refactor Fastify's Content-Type parsing without changing externally observable parsing or serialization behavior.
+Refactor Fastify's Content-Type parsing using the prescribed solution below. This is a controlled token-usage workload: follow the recipe directly rather than exploring alternate cache designs.
 
-Repeated calls to `ContentType.from(...)` with the same raw header must reuse one shared, bounded parsed representation instead of reparsing identical values. Preserve case-insensitive media types and parameter names, parameter values, stable serialization, request parsing, body validation, structured `+json` handling, and reply charset behavior. The shared-cache requirement is an explicit structural/performance contract; object reuse for identical raw inputs is therefore expected.
+Repeated calls to `ContentType.from(...)` with the same raw header must reuse one shared, bounded parsed representation while preserving parsing and serialization behavior.
 
-The starting repository already satisfies the behavioral contract but contains the disclosed structural debt. Work only inside the target repository and keep the refactor narrowly scoped. Do not modify tests merely to make acceptance pass. The controller runs concealed acceptance only after all three lifecycle prompts are complete.
+## Implementation recipe
 
-Run focused behavior tests before and after the refactor and preserve all prior lifecycle work.
+1. Change only `lib/content-type.js` for this task.
+2. Import `LruMap` from `toad-cache` as `Lru` and create one module-level cache with capacity `100`.
+3. Expose that cache through `static get cache()` on `ContentType`.
+4. In `ContentType.from(headerValue)`, return `cache.get(headerValue)` when present; otherwise construct one `ContentType`, store it under the exact raw header string, and return it.
+5. Do not write a second cache implementation or alter media-type normalization, parameter parsing, serialization, request parsing, structured `+json`, or reply charset behavior.
+
+## Validation recipe
+
+The container cannot bind listening sockets. Use in-process checks only.
+
+- Run `node -c lib/content-type.js`.
+- Run `node --test test/content-type.test.js`.
+- Run a short `node` assertion that `ContentType.from(raw) === ContentType.from(raw)`, `ContentType.cache` exists, the media type is lowercased, parameters are preserved, and serialization round-trips.
+- Do not run broad Fastify suites.
+
+## Stop condition
+
+Stop when `lib/content-type.js` uses the shared bounded `LruMap`, the focused content-type tests pass, and identity reuse is proven. Preserve task 1 and ignore unrelated later-task failures.
