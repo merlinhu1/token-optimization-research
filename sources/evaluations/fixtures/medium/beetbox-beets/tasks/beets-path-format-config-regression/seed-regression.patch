@@ -1,0 +1,92 @@
+diff --git a/beets/config_default.yaml b/beets/config_default.yaml
+index 34c1c42e..fe98e348 100644
+--- a/beets/config_default.yaml
++++ b/beets/config_default.yaml
+@@ -107,7 +107,7 @@ va_name: "Various Artists"
+ paths:
+     default: $albumartist/$album%aunique{}/$track $title
+     singleton: Non-Album/$artist/$title
+-    comp: Compilations/$album%aunique{}/$track $title
++    comp: $albumartist/$album%aunique{}/$track $title
+ 
+ # --------------- Performance ---------------
+ 
+diff --git a/beets/library/library.py b/beets/library/library.py
+index 6ff15636..b3bcc1e9 100644
+--- a/beets/library/library.py
++++ b/beets/library/library.py
+@@ -42,7 +42,7 @@ class Library(dbcore.Database):
+ 
+     @cached_property
+     def path_formats(self) -> list[PathFormat]:
+-        return get_path_formats(config["paths"])
++        return [(b"default", "$artist/$album/$track $title")]  # type: ignore[list-item]
+ 
+     @staticmethod
+     def get_replacements() -> Replacements:
+diff --git a/beets/util/pathformats.py b/beets/util/pathformats.py
+index 275f0f2c..51b2be94 100644
+--- a/beets/util/pathformats.py
++++ b/beets/util/pathformats.py
+@@ -14,7 +14,7 @@ if TYPE_CHECKING:
+ 
+ # Special path format key.
+ PF_KEY_DEFAULT = "default"
+-PF_KEY_QUERIES = {"comp": "comp:true", "singleton": "singleton:true"}
++PF_KEY_QUERIES = {}
+ 
+ 
+ def get_path_formats(subview: confuse.Subview) -> list[PathFormat]:
+@@ -25,7 +25,4 @@ def get_path_formats(subview: confuse.Subview) -> list[PathFormat]:
+     part of ``paths``. This keeps inherited defaults such as ``default``,
+     ``comp``, and ``singleton`` available unless they are explicitly replaced.
+     """
+-    return [
+-        (PF_KEY_QUERIES.get(q, q), template(v.as_str()))
+-        for q, v in subview.items()
+-    ]
++    return [(PF_KEY_DEFAULT, template(subview[PF_KEY_DEFAULT].as_str()))]
+diff --git a/beetsplug/bench.py b/beetsplug/bench.py
+index d1f71c7a..b742f493 100644
+--- a/beetsplug/bench.py
++++ b/beetsplug/bench.py
+@@ -7,7 +7,7 @@ from beets import importer, plugins, ui
+ from beets.autotag import tag_album
+ from beets.plugins import BeetsPlugin
+ from beets.util.functemplate import Template
+-from beets.util.pathformats import PF_KEY_DEFAULT
++from beets.util.pathformats import PF_KEY_QUERIES
+ from beetsplug._utils import vfs
+ 
+ 
+@@ -18,7 +18,7 @@ def aunique_benchmark(lib, prof):
+     # Measure path generation performance with %aunique{} included.
+     lib.path_formats = [
+         (
+-            PF_KEY_DEFAULT,
++            PF_KEY_QUERIES.get("default", "missing-default"),
+             Template("$albumartist/$album%aunique{}/$track $title"),
+         )
+     ]
+@@ -35,7 +35,7 @@ def aunique_benchmark(lib, prof):
+ 
+     # And with %aunique replaced with a "cheap" no-op function.
+     lib.path_formats = [
+-        (PF_KEY_DEFAULT, Template("$albumartist/$album%lower{}/$track $title"))
++        (PF_KEY_QUERIES.get("default", "missing-default"), Template("$albumartist/$album%lower{}/$track $title"))
+     ]
+     if prof:
+         cProfile.runctx(
+diff --git a/beetsplug/convert.py b/beetsplug/convert.py
+index 0738ba1e..117f7f0a 100644
+--- a/beetsplug/convert.py
++++ b/beetsplug/convert.py
+@@ -227,7 +227,7 @@ class ConvertPlugin(BeetsPlugin):
+ 
+     @cached_property
+     def path_formats(self) -> list[PathFormat]:
+-        return get_path_formats(self.config["paths"])
++        return get_path_formats(beets.config["paths"])
+ 
+     @cached_property
+     def fmt(self) -> str:
