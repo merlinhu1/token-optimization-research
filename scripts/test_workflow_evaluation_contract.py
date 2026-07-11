@@ -261,66 +261,81 @@ class ActiveCampaignArchitectureTest(unittest.TestCase):
         self.assertEqual(prepare_lines, [exact_prepare])
         self.assertNotIn("--skip-container-preflight", runbook)
 
-    def test_runbook_does_not_offer_duplicate_baseline_commands(self) -> None:
+    def test_runbook_offers_baselines_only_for_unoccupied_current_pools(self) -> None:
         runbook = (ROOT / "docs/evaluations/operations/runbook.md").read_text()
         registry = json.loads((ROOT / "data/workflow-sessions.json").read_text())
-        completed = {
-            session["task_sequence"]["sequence_id"]
-            for session in registry["sessions"]
-            if session.get("status") == "completed"
-            and session.get("session_role") == "baseline"
-            and session.get("interpretation", {}).get("accepted_for_objective") is True
-        }
-        self.assertEqual(
-            completed,
-            {
-                "fastify-lifecycle-sequence-v0",
-                "beets-lifecycle-sequence-v0",
-                "terraform-lifecycle-sequence-v0",
-            },
-        )
-        for sequence_id in completed:
-            self.assertNotIn(
-                f"python3 scripts/run_sequential_workflow_matrix.py {sequence_id}\n",
+        current_ready: set[str] = set()
+        historical_default_groups: dict[tuple[str, str], set[int]] = {}
+        for sequence_id in runner.active_sequence_ids():
+            sequence = runner.load_sequence(sequence_id)
+            current_pool = runner.baseline_protocol_fingerprint(sequence)
+            matching = [
+                session
+                for session in registry["sessions"]
+                if session.get("status") == "completed"
+                and session.get("session_role") == "baseline"
+                and session.get("task_sequence", {}).get("sequence_id") == sequence_id
+                and session.get("agent", {}).get("model_condition_id") == runner.DEFAULT_WORKFLOW_MODEL_CONDITION_ID
+                and session.get("baseline_pool", {}).get("protocol_fingerprint") == current_pool
+                and session.get("interpretation", {}).get("accepted_for_objective") is True
+            ]
+            baseline_command = f"python3 scripts/run_sequential_workflow_matrix.py {sequence_id}\n"
+            if matching:
+                current_ready.add(sequence_id)
+                self.assertNotIn(baseline_command, runbook)
+            else:
+                self.assertIn(baseline_command, runbook)
+
+        for session in registry["sessions"]:
+            if (
+                session.get("status") == "completed"
+                and session.get("session_role") == "baseline"
+                and session.get("agent", {}).get("model_condition_id") == runner.DEFAULT_WORKFLOW_MODEL_CONDITION_ID
+                and session.get("interpretation", {}).get("accepted_for_objective") is True
+            ):
+                key = (
+                    session["task_sequence"]["sequence_id"],
+                    session["baseline_pool"]["protocol_fingerprint"],
+                )
+                if key[0] not in current_ready:
+                    historical_default_groups.setdefault(key, set()).add(session["replicate_index"])
+        for (sequence_id, pool), replicates in historical_default_groups.items():
+            self.assertIn(
+                f"`{sequence_id}` pool `{pool}` "
+                f"({', '.join(f'r{index}' for index in sorted(replicates))})",
                 runbook,
             )
-        self.assertIn('--treatment-profile "$PROFILE_ID"', runbook)
+
+        if current_ready:
+            self.assertIn('--treatment-profile "$PROFILE_ID"', runbook)
+        else:
+            self.assertNotIn('--treatment-profile "$PROFILE_ID"', runbook)
         self.assertIn(
             "Non-default model-comparison baselines are tracked separately",
             runbook,
         )
-        default_model_id = runner.DEFAULT_WORKFLOW_MODEL_CONDITION_ID
-        comparison_model_id = "codex-openai-gpt-5-6-sol-high"
-        for sequence_id in completed:
-            default_replicates = sorted(
-                {
-                    session["replicate_index"]
-                    for session in registry["sessions"]
-                    if session.get("status") == "completed"
-                    and session.get("session_role") == "baseline"
-                    and session.get("task_sequence", {}).get("sequence_id") == sequence_id
-                    and session.get("agent", {}).get("model_condition_id") == default_model_id
-                    and session.get("interpretation", {}).get("accepted_for_objective") is True
-                }
-            )
-            comparison_replicates = sorted(
-                {
-                    session["replicate_index"]
-                    for session in registry["sessions"]
-                    if session.get("status") == "completed"
-                    and session.get("session_role") == "baseline"
-                    and session.get("task_sequence", {}).get("sequence_id") == sequence_id
-                    and session.get("agent", {}).get("model_condition_id") == comparison_model_id
-                    and session.get("interpretation", {}).get("accepted_for_objective") is True
-                }
-            )
+
+    def test_model_comparison_baseline_pools_are_rendered_separately(self) -> None:
+        runbook = (ROOT / "docs/evaluations/operations/runbook.md").read_text()
+        registry = json.loads((ROOT / "data/workflow-sessions.json").read_text())
+        grouped: dict[tuple[str, str], set[int]] = {}
+        for session in registry["sessions"]:
+            if (
+                session.get("status") == "completed"
+                and session.get("session_role") == "baseline"
+                and session.get("agent", {}).get("model_condition_id") == "codex-openai-gpt-5-6-sol-high"
+                and session.get("interpretation", {}).get("accepted_for_objective") is True
+            ):
+                key = (
+                    session["task_sequence"]["sequence_id"],
+                    session["baseline_pool"]["protocol_fingerprint"],
+                )
+                grouped.setdefault(key, set()).add(session["replicate_index"])
+        self.assertGreaterEqual(len(grouped), 6)
+        for (sequence_id, pool), replicates in grouped.items():
             self.assertIn(
-                f"`{sequence_id}` ({', '.join(f'r{index}' for index in default_replicates)})",
-                runbook,
-            )
-            self.assertIn(
-                f"`{sequence_id}` under `{comparison_model_id}` "
-                f"({', '.join(f'r{index}' for index in comparison_replicates)})",
+                f"`{sequence_id}` under `codex-openai-gpt-5-6-sol-high` pool `{pool}` "
+                f"({', '.join(f'r{index}' for index in sorted(replicates))})",
                 runbook,
             )
 
