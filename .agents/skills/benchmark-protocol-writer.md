@@ -16,11 +16,12 @@ Define:
 2. **Evidence target**: `benchmark-audit` or `reproduction`.
 3. **Lifecycle sequence**: sequence ID, pinned fixture/snapshot, ordered prompts, state policy, and time budget.
 4. **Compatible baseline pool**: protocol fingerprint, model/provider condition, replicate index, and retained baseline session when one exists.
-5. **Treatment identity**: profile, enabled surfaces, pinned tool-author installation guide, every author-recommended host surface (including product-authored guidance/rules/skills/hooks), adapter command, binary/config hashes, isolation policy, and reset path. Evaluator-authored steering is forbidden, but reduced or guidance-free setups must be named as ablations rather than canonical product treatments.
-6. **Token boundary**: complete provider-reported persistent workflow usage; capture fresh input, cached input, cache-write, output, reasoning, and total when available.
-7. **Operational validity**: complete execution, thread continuity, warning-free usage, fixture/contract validity, verifier integrity, tool isolation, and compact-artifact integrity.
-8. **Model-behavior diagnostics**: deterministic verifier outcomes, changed-area checks, optional source review, and critical findings. These fields do not gate token accounting or trigger reruns.
-9. **Invalidity rules**: fixture defects, protocol mismatch, incomplete provider usage, broken isolation, corrupted evidence, or interrupted execution.
+5. **Treatment identity**: profile, enabled surfaces, pinned tool-author installation guide, every author-recommended host surface (including product-authored guidance/rules/skills/hooks), adapter command, binary/config hashes, isolation policy, and reset path. Evaluator-authored treatment-tool steering is forbidden, but reduced or guidance-free setups must be named as ablations rather than canonical product treatments.
+6. **Task assistance**: Solution-directed task assistance may prescribe the intended implementation, target files/symbols, exact focused validation, environment limits, and stop condition. Freeze identical recipe bytes across compatible baseline and treatment sessions; the recipe must not require or prefer treatment-tool invocation.
+7. **Token boundary**: complete provider-reported persistent workflow usage; capture fresh input, cached input, cache-write, output, reasoning, and total when available.
+8. **Operational validity**: complete execution, thread continuity, warning-free usage, fixture/contract validity, verifier integrity, tool isolation, and compact-artifact integrity.
+9. **Model-behavior diagnostics**: deterministic verifier outcomes, changed-area checks, optional source review, and critical findings. These fields do not gate token accounting or trigger reruns.
+10. **Invalidity rules**: fixture defects, protocol mismatch, incomplete provider usage, broken isolation, corrupted evidence, or interrupted execution.
 
 ## Current surfaces
 

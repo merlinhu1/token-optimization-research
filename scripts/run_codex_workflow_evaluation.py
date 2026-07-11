@@ -764,13 +764,34 @@ def baseline_comparison_descriptor(seq: dict[str, Any], root: Path = ROOT) -> di
     }
 
 
-def baseline_protocol_fingerprint(seq: dict[str, Any], root: Path = ROOT) -> str:
-    descriptor = baseline_comparison_descriptor(seq, root)
-    encoded = json.dumps(descriptor, sort_keys=True, separators=(",", ":")).encode()
+def baseline_protocol_fingerprint_from_descriptor(descriptor: dict[str, Any]) -> str:
+    """Derive a comparison-pool fingerprint from a frozen baseline descriptor."""
+    isolation = dict(descriptor["isolation"])
+    isolation["verifier_execution"] = "all-tasks-non-short-circuiting-v1"
+    comparison = {
+        "version": "baseline-comparison-identity-v1",
+        "sequence_id": descriptor["sequence_id"],
+        "sequence_contract": descriptor["sequence_contract"],
+        "fixture_id": descriptor["fixture_id"],
+        "fixture_scale": descriptor["fixture_scale"],
+        "initial_snapshot": descriptor["initial_snapshot"],
+        "objective": descriptor["objective"],
+        "tasks": descriptor["tasks"],
+        "model_facing_prompts": descriptor["model_facing_prompts"],
+        "baseline_profile": descriptor["baseline_profile"],
+        "agent": descriptor["agent"],
+        "runtime_inputs": descriptor["runtime_inputs"],
+        "isolation": isolation,
+    }
+    encoded = json.dumps(comparison, sort_keys=True, separators=(",", ":")).encode()
     full_hash = hashlib.sha256(encoded).hexdigest()
     return COMPARISON_IDENTITY_ALIASES.get(
         full_hash, full_hash[:BASELINE_POOL_FINGERPRINT_LENGTH]
     )
+
+
+def baseline_protocol_fingerprint(seq: dict[str, Any], root: Path = ROOT) -> str:
+    return baseline_protocol_fingerprint_from_descriptor(baseline_protocol_descriptor(seq, root))
 
 
 def load_protocol(path_or_id: str) -> tuple[Path, dict[str, Any]]:
