@@ -29,12 +29,10 @@ Detailed evidence remains in reports, dossiers, structured data, and evaluation 
 - As of 2026-07-01, all 42 tool dossiers have pinned source-snapshot metadata and pass dossier-quality validation.
 - The 2026-06-28 corrective knowledge-graph and agent-memory leads were promoted from `lead` to `source-logic` on 2026-06-29.
 - Phase 2 focuses on persistent workflow simulation, provider-billed token accounting, quality standards, and a broader source-logic stack hypothesis portfolio.
-- As of 2026-07-10, no workflow sequence is active; Terraform, OrchardCore, Fastify, and Beets remain planned candidates until their fixture-validity blockers are resolved.
-- The July 10 Fastify paid canary is failed operational evidence: task 1 saw future seeded regressions and the fixed snapshot remained reachable through Git history, so no RTK treatment was launched.
-- The repaired runner injects one regression at a time and replaces model-facing Git metadata with a verified parentless root before each task.
-- The July 8-9 Fastify and Terraform r0 workflow sessions are preserved but excluded from objective use because the old runner exposed future task and verifier assets through a writable run-directory mount.
-- Current r0 comparisons are historical single-run screening observations, not ranking or recommendation evidence.
-- Django single-task evidence is archived as historical evidence outside the active workflow matrix.
+- As of 2026-07-10, Fastify is the only current executable workflow suite. Terraform task assets were purged for falling below the production complexity floor; OrchardCore and Beets task assets were purged for unrelated source-sentinel padding and remain candidate metadata only.
+- Fastify's checkout-generated qualification passes seeded-fail/fixed-pass execution, the fixed-state cumulative verifier, canonical transitions, an accepted alternative-repair transition, asset concealment, and the five-production-file floor. Existing runs remain non-objective evidence because software-quality review is pending and `accepted_for_objective` remains false.
+- Baseline fingerprint `57af3ace816f` replicate 0 is historical execution evidence but superseded and non-reusable for the active Fastify fingerprint `5ace7b956e83`; treatment fingerprint `79105d1b08a5` replicate 1 is also historical/superseded. No pool-matched accepted baseline exists, so no token-savings claim is supported.
+- The active runner injects one regression at a time, reruns every completed verifier after each repair, verifies a checkout-generated fixed composite before spend, and replaces model-facing Git metadata with a verified parentless root before each task.
 - Primary objective claims require reproduction run records on medium-project or large-project fixtures in the cumulative schema.
 - Stack findings are hypotheses until benchmark-audit or reproduction evidence exists; Phase 1 now routes multiple candidate stacks and comparators rather than selecting a single default stack.
 - Lead-stage backlog items are not decision evidence.

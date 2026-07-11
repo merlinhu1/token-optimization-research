@@ -1,160 +1,21 @@
 {
-  "schema_version": 1,
-  "session_id": "baseline-<lane>-YYYYMMDD-p-<protocol-fingerprint>-r0",
-  "record_type": "workflow_session",
-  "evidence_type": "workflow-simulation",
-  "study_id": "phase-2-workflow-study-v1",
-  "experiment_group_id": "<canonical baseline group or treatment profile group>",
-  "objective": "individual_tool_effectiveness",
-  "evidence_stage": "reproduction",
-  "status": "planned",
-  "session_role": "baseline",
-  "replicate_index": 0,
-  "baseline_pool": {
-    "protocol_version": "baseline-pool-v1",
-    "protocol_fingerprint": "<12-lowercase-hex-digest>",
-    "identity_policy": "frozen-protocol-and-replicate; execution date is metadata only"
-  },
-  "date": "YYYY-MM-DD",
-  "target": {
-    "fixture_id": "large-hashicorp-terraform",
-    "fixture_scale": "large-project",
-    "project_id": "hashicorp-terraform",
-    "repository_path": "sources/evaluations/fixtures/large/hashicorp-terraform/repo",
-    "initial_snapshot": {
-      "commit": "",
-      "branch": "",
-      "fixture_hash": ""
-    }
-  },
-  "task_sequence": {
-    "sequence_id": "terraform-maintenance-sequence-v1",
-    "task_ids": [],
-    "reset_policy": "reset source checkout, profile home, tool state, indexes, caches, generated config, and agent home before the session; preserve source/tool/agent state while re-rooting model-facing Git metadata before each task",
-    "prompt_delivery": {
-      "mode": "sequential-one-task-at-a-time",
-      "future_tasks_visible": false,
-      "future_prompts_materialized_lazily": true,
-      "seed_delivery_mode": "lazy-one-task-at-a-time",
-      "future_seed_regressions_visible": false,
-      "codex_thread_id": ""
+    "schema_version": 1,
+    "change_id": "",
+    "state": "not_started",
+    "current_gate": 0,
+    "target_evidence_stage": "benchmark_audit_or_reproduction",
+    "evaluation_lane": "",
+    "next_task": "Fill proposal.md summary, scope, prior evidence, and non-goals.",
+    "resume_context": [],
+    "artifact_paths": {
+        "proposal": "proposal.md",
+        "protocol": "protocol.md",
+        "tasks": "tasks.md",
+        "results": "results.md",
+        "raw_evidence_dir": ""
     },
-    "leakage_controls": {
-      "seed_origin_concealed": true,
-      "seed_patches_model_visible": false,
-      "git_baseline_true_root_per_task": true,
-      "fixed_snapshot_objects_model_visible": false,
-      "pre_seed_reflog_entries_visible": false,
-      "concealment_verification_passed": true,
-      "task_directories_model_visible": false,
-      "verifier_assets_model_visible": false,
-      "model_writable_surface": "target repository plus isolated model-output directory",
-      "verifier_integrity_passed": true,
-      "verifier_integrity_evidence": "sources/evaluations/workflow-sessions/<session-id>/evidence.jsonl.gz#verifier-integrity.json",
-      "model_prompts_sanitized": true,
-      "upstream_remote_removed_from_model_facing_repo": true,
-      "broken_start_committed_as_local_baseline": true
-    }
-  },
-  "profile": {
-    "profile_id": "baseline-bare-codex",
-    "profile_type": "control",
-    "enabled_surfaces": [
-      "codex-native-shell-edit"
-    ],
-    "disabled_overlaps": [
-      "all MCP servers",
-      "all token-saving surfaces",
-      "global Codex instructions",
-      "hooks",
-      "skills/plugins",
-      "warm indexes"
-    ],
-    "component_ids": []
-  },
-  "agent": {
-    "runtime_id": "codex-cli",
-    "model_condition_id": "codex-openai-gpt-5-5-high",
-    "name": "Codex CLI",
-    "version": "",
-    "provider": "openai",
-    "model": "gpt-5.5",
-    "reasoning_effort": "high",
-    "temperature": null,
-    "max_turns": null,
-    "time_budget_seconds": null
-  },
-  "state_policy": {
-    "reset_before_session": [
-      "repository working tree",
-      "profile home",
-      "tool indexes and caches",
-      "generated config",
-      "agent home",
-      "temporary directories"
-    ],
-    "persist_between_tasks": [
-      "repository working tree",
-      "tool indexes and caches",
-      "generated config",
-      "agent home",
-      "memory/state stores enabled by the active profile",
-      "run artifacts"
-    ]
-  },
-  "cumulative_token_usage": {
-    "measurement_source": "provider_api_or_log",
-    "fresh_input_tokens": null,
-    "cached_input_tokens": null,
-    "cache_write_tokens": null,
-    "output_tokens": null,
-    "reasoning_tokens": null,
-    "total_provider_tokens": null,
-    "estimated_cost_usd": null,
-    "tokens_per_accepted_task": null,
-    "pricing_basis": ""
-  },
-  "per_task_results": [],
-  "software_quality": {
-    "tasks_attempted": null,
-    "tasks_passed": null,
-    "final_verifier_command": "",
-    "final_verifier_passed": null,
-    "functional_verifier_passed": false,
-    "quality_review_status": "not-reviewed",
-    "quality_score": null,
-    "critical_failures": []
-  },
-  "state_observations": {
-    "stale_context_incidents": null,
-    "overfeeding_incidents": null,
-    "repeated_rediscovery_incidents": null,
-    "useful_state_reuse_notes": ""
-  },
-  "operational_reproducibility": {
-    "install_logged": false,
-    "pre_session_reset_verified": false,
-    "raw_artifacts_recoverable": false,
-    "state_leakage_outside_session_observed": false,
-    "tool_isolation_audit": {
-      "command": "",
-      "passed": false,
-      "forbidden_tool_hits": []
-    }
-  },
-  "artifacts": {
-    "artifact_contract": "compact-v1-four-files",
-    "run_record": "sources/evaluations/workflow-sessions/<session-id>/run.json",
-    "final_diff": "sources/evaluations/workflow-sessions/<session-id>/changes.diff",
-    "evidence_bundle": "sources/evaluations/workflow-sessions/<session-id>/evidence.jsonl.gz",
-    "manifest": "sources/evaluations/workflow-sessions/<session-id>/manifest.sha256"
-  },
-  "interpretation": {
-    "accepted_for_execution": false,
-    "accepted_for_objective": false,
-    "claim_status": "planned",
-    "comparison_baseline_session_id": "",
-    "exclusion_reason": "",
-    "notes": ""
-  }
+    "latest_completed_tasks": [],
+    "blockers": [],
+    "external_inputs_needed": [],
+    "last_updated": ""
 }

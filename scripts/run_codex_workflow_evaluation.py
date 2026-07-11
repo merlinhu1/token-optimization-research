@@ -17,6 +17,7 @@ import json
 import os
 import re
 import shutil
+import stat
 import subprocess
 import sys
 from pathlib import Path
@@ -37,10 +38,6 @@ PROJECT_META: dict[str, dict[str, str]] = {
         "project_id": "django-django",
         "dependency_command": "python3 -m venv .venv && . .venv/bin/activate && python -m pip install -q --upgrade pip setuptools wheel && python -m pip install -q -e .",
     },
-    "large-hashicorp-terraform": {
-        "project_id": "hashicorp-terraform",
-        "dependency_command": "export PATH=/opt/data/bin:/opt/data/opt/go/bin:$PATH; go env GOMODCACHE >/dev/null",
-    },
     "medium-psf-requests": {
         "project_id": "psf-requests",
         "dependency_command": "python3 -m venv .venv && . .venv/bin/activate && python -m pip install -q --upgrade pip setuptools wheel && python -m pip install -q -e . 'pytest<9' pytest-httpbin==2.1.0 'httpbin~=0.10.0' pytest-cov pytest-mock pytest-xdist trustme PySocks",
@@ -49,17 +46,9 @@ PROJECT_META: dict[str, dict[str, str]] = {
         "project_id": "pallets-flask",
         "dependency_command": "python3 -m venv .venv && . .venv/bin/activate && python -m pip install -q --upgrade pip setuptools wheel && python -m pip install -q -e . 'pytest<9' asgiref python-dotenv",
     },
-    "large-orchardcms-orchardcore": {
-        "project_id": "orchardcms-orchardcore",
-        "dependency_command": "DOTNET_ROOT=/opt/data/dotnet; export DOTNET_ROOT PATH=\"$DOTNET_ROOT:$PATH\" DOTNET_SYSTEM_GLOBALIZATION_INVARIANT=1; dotnet restore test/OrchardCore.Tests/OrchardCore.Tests.csproj >/dev/null",
-    },
     "medium-fastify-fastify": {
         "project_id": "fastify-fastify",
         "dependency_command": "npm install --ignore-scripts --no-audit --no-fund",
-    },
-    "medium-beetbox-beets": {
-        "project_id": "beetbox-beets",
-        "dependency_command": "uv sync --group test",
     },
 }
 
@@ -120,6 +109,7 @@ PROFILE_META: dict[str, dict[str, Any]] = build_profile_meta()
 DEFAULT_WORKFLOW_MODEL_CONDITION_ID = "codex-openai-gpt-5-6-terra-medium"
 DEFAULT_WORKFLOW_MODEL = "gpt-5.6-terra"
 DEFAULT_WORKFLOW_REASONING_EFFORT = "medium"
+RUNNER_CONTRACT_VERSION = "workflow-runner-v4"
 
 LEAKY_PROMPT_LINE_PATTERNS = [
     re.compile(r"^Issue source:.*$", re.IGNORECASE),
@@ -202,6 +192,275 @@ def _protocol_file_hash(path: Path) -> str:
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
+def _self_hash(root: Path = ROOT) -> str:
+    return _protocol_file_hash(root / "scripts/run_codex_workflow_evaluation.py")
+
+
+def _json_hash(value: Any) -> str:
+    return hashlib.sha256(json.dumps(value, sort_keys=True, separators=(",", ":")).encode()).hexdigest()
+
+
+def profile_registry_entry(profile_id: str, root: Path = ROOT) -> dict[str, Any]:
+    catalog = json.loads((root / "data/evaluation-profiles.json").read_text())
+    for profile in catalog.get("profiles", []):
+        if profile.get("id") == profile_id:
+            return profile
+    raise KeyError(f"workflow profile {profile_id} is missing from data/evaluation-profiles.json")
+
+
+def path_identity(path_text: str) -> dict[str, Any]:
+    path = Path(path_text)
+    identity: dict[str, Any] = {"path": path_text, "exists": path.exists()}
+    if path.is_file():
+        identity.update({"kind": "file", "sha256": _protocol_file_hash(path)})
+    elif path.is_dir():
+        identity["kind"] = "directory"
+        git_head = subprocess.run(["git", "rev-parse", "HEAD"], cwd=path, text=True, capture_output=True, check=False)
+        if git_head.returncode == 0:
+            identity["git_head"] = git_head.stdout.strip()
+        package = path / "package.json"
+        if package.is_file():
+            identity["package_json_sha256"] = _protocol_file_hash(package)
+    return identity
+
+
+def docker_image_identity(image: str) -> dict[str, Any]:
+    proc = subprocess.run(
+        ["docker", "image", "inspect", image],
+        cwd=ROOT,
+        text=True,
+        capture_output=True,
+        timeout=30,
+        check=False,
+    )
+    if proc.returncode != 0:
+        raise RuntimeError(f"docker image inspect failed for {image}: {proc.stderr.strip() or proc.stdout.strip()}")
+    inspected = json.loads(proc.stdout)
+    if not inspected:
+        raise RuntimeError(f"docker image inspect returned no records for {image}")
+    item = inspected[0]
+    image_id = str(item.get("Id") or "")
+    if not image_id.startswith("sha256:"):
+        raise RuntimeError(f"docker image {image} has no immutable sha256 image ID")
+    return {
+        "image_ref": image,
+        "image_id": image_id,
+        "repo_digests": sorted(str(value) for value in item.get("RepoDigests") or []),
+        "repo_tags": sorted(str(value) for value in item.get("RepoTags") or []),
+    }
+
+
+def _tool_command_spec(cfg: dict[str, Any]) -> dict[str, Any] | None:
+    if cfg.get("mcp_command"):
+        return {"kind": "mcp_command", "command": [str(cfg["mcp_command"]), *[str(arg) for arg in cfg.get("mcp_args", [])]]}
+    wrapper = cfg.get("codex_wrapper") or {}
+    if wrapper.get("command"):
+        return {"kind": "codex_wrapper", "command": [str(wrapper["command"]), *[str(arg) for arg in wrapper.get("args", [])]]}
+    if cfg.get("preflight_command"):
+        return {"kind": "preflight_command", "command": [str(arg) for arg in cfg["preflight_command"]]}
+    warmup = cfg.get("warmup") or {}
+    if warmup.get("command"):
+        return {"kind": "warmup_command", "command": [str(arg) for arg in warmup["command"]]}
+    if cfg.get("executable"):
+        return {"kind": "executable", "command": [str(cfg["executable"])]}
+    return None
+
+
+def _lane_path(cfg: dict[str, Any], root: Path = ROOT) -> str:
+    path_entries = [
+        "/opt/data/codex-cli/node_modules/.bin",
+        "/opt/data/opt/go/bin",
+        "/opt/data/opt/uv",
+        str(fixture.NODE_TOOLCHAIN_ROOT / "bin"),
+    ]
+    for entry in cfg.get("path_entries", []):
+        rendered = str(entry).format(codex_home=root / ".identity-codex-home", home=root / ".identity-codex-home" / "home")
+        if rendered not in path_entries:
+            path_entries.insert(1, rendered)
+    path_entries.extend(["/usr/local/sbin", "/usr/local/bin", "/usr/sbin", "/usr/bin", "/sbin", "/bin"])
+    return os.pathsep.join(path_entries)
+
+
+def _version_output(path: Path) -> dict[str, Any]:
+    try:
+        proc = subprocess.run([str(path), "--version"], cwd=ROOT, text=True, capture_output=True, timeout=5, check=False)
+    except Exception as exc:
+        return {"command": [str(path), "--version"], "captured": False, "error": type(exc).__name__}
+    output = (proc.stdout + proc.stderr).strip()
+    return {
+        "command": [str(path), "--version"],
+        "captured": proc.returncode == 0 and bool(output),
+        "exit_code": proc.returncode,
+        "output": output[:2000],
+        "truncated": len(output) > 2000,
+    }
+
+
+def executable_identity(command: list[str], cfg: dict[str, Any], root: Path = ROOT) -> dict[str, Any]:
+    if not command:
+        raise ValueError("tool command is empty")
+    token = command[0]
+    explicit = Path(token)
+    resolved_text = str(explicit) if explicit.is_absolute() else shutil.which(token, path=_lane_path(cfg, root))
+    if not resolved_text:
+        raise FileNotFoundError(f"tool executable is not resolvable in lane PATH: {token}")
+    resolved = Path(resolved_text)
+    if not resolved.is_file():
+        raise FileNotFoundError(f"tool executable is not a file: {resolved}")
+    real = resolved.resolve()
+    st = real.stat()
+    return {
+        "executable_token": token,
+        "resolved_path": str(resolved),
+        "realpath": str(real),
+        "sha256": _protocol_file_hash(real),
+        "metadata": {
+            "size": st.st_size,
+            "mode": stat.filemode(st.st_mode),
+            "uid": st.st_uid,
+            "gid": st.st_gid,
+            "mtime_ns": st.st_mtime_ns,
+        },
+        "version": _version_output(real),
+    }
+
+
+def tool_adapter_identity(profile_id: str, root: Path = ROOT) -> dict[str, Any]:
+    meta = PROFILE_META[profile_id]
+    tool_id = meta.get("tool_id")
+    if not tool_id:
+        return {"tool_id": None, "tool_manifest": "baseline-native-codex-tools", "tool_config": None, "binary_identity": None, "source_identity": []}
+    cfg = fixture.TOOL_CONFIGS[str(tool_id)]
+    command_spec = _tool_command_spec(cfg)
+    if command_spec is None:
+        raise ValueError(f"treatment tool {tool_id} has no executable command to identify")
+    source_paths = sorted({str(path) for path in cfg.get("mounts", []) if str(path)})
+    return {
+        "tool_id": tool_id,
+        "tool_manifest": "scripts/run_codex_fixture_evaluation.py:TOOL_CONFIGS",
+        "tool_manifest_sha256": _protocol_file_hash(root / "scripts/run_codex_fixture_evaluation.py"),
+        "tool_config": cfg,
+        "tool_config_sha256": _json_hash(cfg),
+        "tool_state": meta["tool_state"],
+        "tool_use_policy": meta["tool_use_policy"],
+        "command_identity": command_spec,
+        "binary_identity": executable_identity(command_spec["command"], cfg, root),
+        "source_identity": [path_identity(path) for path in source_paths],
+    }
+
+
+def dependency_lock_identities(seq: dict[str, Any], root: Path = ROOT) -> list[dict[str, Any]]:
+    locks = []
+    for item in seq.get("initial_snapshot", {}).get("dependency_lockfiles", []):
+        path_text = str(item.get("path", ""))
+        locks.append({
+            "path": path_text,
+            "snapshot_sha256": item.get("sha256"),
+            "current_fixture_sha256": _protocol_file_hash(root / path_text) if (root / path_text).is_file() else None,
+        })
+    return locks
+
+
+def execution_condition_descriptor(
+    seq: dict[str, Any],
+    profile_id: str,
+    *,
+    timeout_seconds_per_task: int = 3600,
+    docker_image: str = DEFAULT_DOCKER_IMAGE,
+    root: Path = ROOT,
+) -> dict[str, Any]:
+    meta = PROFILE_META[profile_id]
+    profile_entry = profile_registry_entry(profile_id, root)
+    role = meta["session_role"]
+    baseline_fingerprint = baseline_protocol_fingerprint(seq, root)
+    return {
+        "version": "execution-condition-v1",
+        "sequence_id": seq["id"],
+        "execution_role": role,
+        "selected_profile": {
+            "profile_id": profile_id,
+            "profile_type": meta["profile_type"],
+            "component_ids": meta["component_ids"],
+            "enabled_surfaces": meta["enabled_surfaces"],
+            "disabled_overlaps": meta["disabled_overlaps"],
+            "registry_entry_sha256": _json_hash(profile_entry),
+            "registry_entry": profile_entry,
+        },
+        "tool_adapter": tool_adapter_identity(profile_id, root),
+        "runtime": {
+            "docker_image": docker_image,
+            "docker_image_identity": docker_image_identity(docker_image),
+            "dockerfile_path": str(fixture.DEFAULT_DOCKERFILE.relative_to(root)),
+            "dockerfile_sha256": _protocol_file_hash(fixture.DEFAULT_DOCKERFILE),
+            "timeout_seconds_per_task": timeout_seconds_per_task,
+            "isolation_policy": "fresh lane-specific Codex home/tool data; sequential one-task prompt delivery; concealed tests removed before model-visible root commit",
+        },
+        "dependencies": {
+            "command": PROJECT_META[seq["fixture_id"]]["dependency_command"],
+            "command_sha256": hashlib.sha256(PROJECT_META[seq["fixture_id"]]["dependency_command"].encode()).hexdigest(),
+            "lockfiles": dependency_lock_identities(seq, root),
+        },
+        "agent_condition": {
+            "runtime_id": "codex-cli",
+            "provider": "openai",
+            "model": DEFAULT_WORKFLOW_MODEL,
+            "model_condition_id": DEFAULT_WORKFLOW_MODEL_CONDITION_ID,
+            "reasoning_effort": DEFAULT_WORKFLOW_REASONING_EFFORT,
+            "codex_version_condition": "captured-at-run-and-bound-to-record",
+        },
+        "isolation": {
+            "prompt_delivery": "sequential-one-task-at-a-time",
+            "seed_delivery_mode": "lazy-one-task-at-a-time",
+            "future_tasks_visible": False,
+            "future_seed_regressions_visible": False,
+            "verifier_assets_model_visible": False,
+            "model_concealed_paths": sequence_concealed_paths(seq),
+        },
+        "baseline_pool_reference": {
+            "protocol_version": BASELINE_POOL_PROTOCOL_VERSION,
+            "protocol_fingerprint": baseline_fingerprint,
+            "comparison_policy": "paired baseline and treatment must share this baseline pool fingerprint and replicate",
+        },
+    }
+
+
+def sequence_concealed_paths(seq: dict[str, Any]) -> list[str]:
+    paths: set[str] = set()
+    for task in seq.get("tasks", []):
+        for path in task.get("model_concealed_paths", []):
+            paths.add(str(path))
+    return sorted(paths)
+
+
+def expected_task_concealed_paths(task: dict[str, Any]) -> list[str]:
+    expected: set[str] = set()
+    expected.update(str(path) for path in task.get("upstream_test_paths", []))
+    expected.update(str(path) for path in task.get("compatibility_rebased_test_paths", []))
+    return sorted(expected)
+
+
+def omitted_expected_concealment(task: dict[str, Any]) -> list[str]:
+    declared = {str(path) for path in task.get("model_concealed_paths", [])}
+    return sorted(set(expected_task_concealed_paths(task)) - declared)
+
+
+def remove_model_concealed_paths(repo: Path, seq: dict[str, Any]) -> list[str]:
+    removed: list[str] = []
+    for path_text in sequence_concealed_paths(seq):
+        path = repo / path_text
+        if path.is_dir():
+            shutil.rmtree(path)
+            removed.append(path_text)
+        elif path.exists():
+            path.unlink()
+            removed.append(path_text)
+    return removed
+
+
+def assert_model_concealed_paths_absent(repo: Path, seq: dict[str, Any]) -> list[str]:
+    return [path for path in sequence_concealed_paths(seq) if (repo / path).exists()]
+
+
 def baseline_protocol_descriptor(seq: dict[str, Any], root: Path = ROOT) -> dict[str, Any]:
     """Return the date-independent contract that makes a baseline reusable.
 
@@ -213,17 +472,30 @@ def baseline_protocol_descriptor(seq: dict[str, Any], root: Path = ROOT) -> dict
     for task in sorted(seq.get("tasks", []), key=lambda item: int(item["order"])):
         prompt_path = root / str(task["prompt_path"])
         verifier_path = root / str(task["verifier_command"])
+        seed_path = prompt_path.parent / "seed-regression.patch"
         tasks.append({
             "id": task["id"],
             "order": int(task["order"]),
             "prompt_path": str(task["prompt_path"]),
             "prompt_sha256": _protocol_file_hash(prompt_path),
+            "seed_patch_sha256": _protocol_file_hash(seed_path),
             "verifier_command": str(task["verifier_command"]),
             "verifier_sha256": _protocol_file_hash(verifier_path),
+            "upstream_test_paths": sorted(str(path) for path in task.get("upstream_test_paths", [])),
+            "compatibility_rebased_test_paths": sorted(str(path) for path in task.get("compatibility_rebased_test_paths", [])),
+            "expected_model_concealed_paths": expected_task_concealed_paths(task),
+            "model_concealed_paths": sorted(str(path) for path in task.get("model_concealed_paths", [])),
         })
+    qualification_path = root / str(seq.get("qualification_path", ""))
+    replay = seq.get("alternative_repair_replay", {})
+    replay_path = root / str(replay.get("changes_diff", ""))
     baseline = PROFILE_META["baseline-bare-codex"]
     return {
         "version": BASELINE_POOL_PROTOCOL_VERSION,
+        "runner_contract_version": RUNNER_CONTRACT_VERSION,
+        "runner_sha256": _self_hash(root),
+        "qualification_generator_sha256": _protocol_file_hash(root / "scripts/generate_workflow_qualification.py"),
+        "validator_sha256": _protocol_file_hash(root / "scripts/validate_repository.py"),
         "sequence_id": seq["id"],
         "fixture_id": seq["fixture_id"],
         "fixture_scale": seq.get("fixture_scale"),
@@ -231,6 +503,14 @@ def baseline_protocol_descriptor(seq: dict[str, Any], root: Path = ROOT) -> dict
         "objective": seq.get("objective", "individual_tool_effectiveness"),
         "primary_metric": seq.get("primary_metric", "cumulative provider-billed workflow tokens"),
         "tasks": tasks,
+        "qualification": {
+            "path": str(seq.get("qualification_path", "")),
+            "sha256": _protocol_file_hash(qualification_path),
+        },
+        "alternative_repair_replay": {
+            **replay,
+            "changes_diff_sha256": _protocol_file_hash(replay_path),
+        },
         "baseline_profile": {
             "profile_id": "baseline-bare-codex",
             "profile_type": baseline["profile_type"],
@@ -244,12 +524,25 @@ def baseline_protocol_descriptor(seq: dict[str, Any], root: Path = ROOT) -> dict
             "model_condition_id": DEFAULT_WORKFLOW_MODEL_CONDITION_ID,
             "reasoning_effort": DEFAULT_WORKFLOW_REASONING_EFFORT,
         },
+        "runtime_inputs": {
+            "timeout_seconds_per_task": 3600,
+            "docker_image": DEFAULT_DOCKER_IMAGE,
+            "docker_image_identity": docker_image_identity(DEFAULT_DOCKER_IMAGE),
+            "dockerfile_path": str(fixture.DEFAULT_DOCKERFILE.relative_to(root)),
+            "dockerfile_sha256": _protocol_file_hash(fixture.DEFAULT_DOCKERFILE),
+            "dependency_command": PROJECT_META[seq["fixture_id"]]["dependency_command"],
+            "dependency_lockfiles": seq.get("initial_snapshot", {}).get("dependency_lockfiles", []),
+            "codex_runtime_condition": DEFAULT_WORKFLOW_MODEL_CONDITION_ID,
+        },
         "isolation": {
             "prompt_delivery": "sequential-one-task-at-a-time",
             "seed_delivery_mode": "lazy-one-task-at-a-time",
             "future_tasks_visible": False,
             "verifier_assets_model_visible": False,
             "git_baseline_true_root_per_task": True,
+            "prompt_sanitizer": "sanitize_task_prompt-v1",
+            "concealment": "declared-model-concealed-paths-removed-before-root-commit",
+            "model_concealed_paths": sequence_concealed_paths(seq),
         },
     }
 
@@ -258,6 +551,186 @@ def baseline_protocol_fingerprint(seq: dict[str, Any], root: Path = ROOT) -> str
     descriptor = baseline_protocol_descriptor(seq, root)
     encoded = json.dumps(descriptor, sort_keys=True, separators=(",", ":")).encode()
     return hashlib.sha256(encoded).hexdigest()[:BASELINE_POOL_FINGERPRINT_LENGTH]
+
+
+def load_protocol(path_or_id: str) -> tuple[Path, dict[str, Any]]:
+    path = Path(path_or_id)
+    if not path.is_absolute():
+        direct = ROOT / path
+        named = ROOT / "sources/evaluations/protocols" / f"{path_or_id}.json"
+        path = direct if direct.is_file() else named
+    if not path.is_file():
+        raise FileNotFoundError(f"protocol is missing: {path_or_id}")
+    return path, json.loads(path.read_text())
+
+
+def validate_protocol_for_run(seq: dict[str, Any], profile_id: str, args: argparse.Namespace) -> dict[str, Any] | None:
+    if not args.protocol:
+        raise ValueError("--protocol is required before any workflow setup")
+    protocol_path, protocol = load_protocol(args.protocol)
+    if protocol.get("status") != "frozen-ready-not-run":
+        raise ValueError(f"protocol {protocol_path} is not frozen-ready-not-run")
+    fixture_block = protocol.get("task_fixture", {})
+    baseline_block = protocol.get("baseline", {})
+    treatment_block = protocol.get("treatment", {})
+    expected_descriptor = baseline_protocol_descriptor(seq)
+    expected_fingerprint = baseline_protocol_fingerprint(seq)
+    expected_execution = execution_condition_descriptor(
+        seq,
+        profile_id,
+        timeout_seconds_per_task=args.timeout_per_task,
+        docker_image=args.docker_image,
+    )
+    expected_execution_hash = _json_hash(expected_execution)
+    selected_execution = protocol.get("selected_execution", {})
+    errors: list[str] = []
+    if fixture_block.get("sequence_id") != seq["id"]:
+        errors.append("sequence_id")
+    if fixture_block.get("fixture_id") != seq["fixture_id"]:
+        errors.append("fixture_id")
+    if fixture_block.get("snapshot") != seq["initial_snapshot"]["commit"]:
+        errors.append("snapshot")
+    if protocol.get("baseline_pool", {}).get("protocol_fingerprint") != expected_fingerprint:
+        errors.append("protocol_fingerprint")
+    if protocol.get("baseline_pool", {}).get("descriptor") != expected_descriptor:
+        errors.append("descriptor")
+    if selected_execution.get("descriptor") != expected_execution:
+        errors.append("selected_execution")
+    if selected_execution.get("descriptor_sha256") != expected_execution_hash:
+        errors.append("selected_execution_hash")
+    if int(fixture_block.get("timeout_seconds_per_task", -1)) != args.timeout_per_task:
+        errors.append("timeout")
+    if selected_execution.get("descriptor", {}).get("runtime", {}).get("docker_image") != args.docker_image:
+        errors.append("docker_image")
+    if profile_id == "baseline-bare-codex":
+        if baseline_block.get("profile_id") != profile_id:
+            errors.append("profile_id")
+        if treatment_block.get("profile_id"):
+            errors.append("unexpected_treatment")
+    else:
+        if baseline_block.get("profile_id") == profile_id:
+            errors.append("baseline_only_descriptor")
+        if treatment_block.get("profile_id") != profile_id:
+            errors.append("treatment_profile_id")
+    agent_block = baseline_block if profile_id == "baseline-bare-codex" else treatment_block
+    if agent_block.get("provider") != "openai" or agent_block.get("model") != DEFAULT_WORKFLOW_MODEL or agent_block.get("reasoning_effort") != DEFAULT_WORKFLOW_REASONING_EFFORT:
+        errors.append("agent")
+    command = str(agent_block.get("command", ""))
+    for required in (
+        f"--sequence-id {seq['id']}",
+        f"--profile-id {profile_id}",
+        f"--timeout-per-task {args.timeout_per_task}",
+        f"--protocol {protocol_path.relative_to(ROOT) if protocol_path.is_relative_to(ROOT) else protocol_path}",
+        f"--docker-image {args.docker_image}",
+    ):
+        if required not in command:
+            errors.append(f"command:{required}")
+    if errors:
+        raise ValueError(f"protocol {protocol_path} does not match run inputs: {', '.join(errors)}")
+    args.protocol_path = protocol_path
+    args.protocol_doc = protocol
+    return protocol
+
+
+def validate_preflight_for_run(seq: dict[str, Any], args: argparse.Namespace) -> dict[str, Any] | None:
+    protocol = getattr(args, "protocol_doc", None)
+    if not protocol:
+        return None
+    fixture_block = protocol.get("task_fixture", {})
+    preflight_rel = fixture_block.get("baseline_preflight_path")
+    if not preflight_rel:
+        raise ValueError("protocol is missing baseline_preflight_path")
+    preflight_path = ROOT / str(preflight_rel)
+    if not preflight_path.is_file():
+        raise FileNotFoundError(f"baseline preflight is missing: {preflight_rel}")
+    actual_hash = _protocol_file_hash(preflight_path)
+    if fixture_block.get("baseline_preflight_sha256") != actual_hash:
+        raise ValueError("baseline preflight hash does not match protocol")
+    preflight = json.loads(preflight_path.read_text())
+    expected_fingerprint = baseline_protocol_fingerprint(seq)
+    expected_execution = execution_condition_descriptor(
+        seq,
+        "baseline-bare-codex",
+        timeout_seconds_per_task=args.timeout_per_task,
+        docker_image=args.docker_image,
+    )
+    if (
+        preflight.get("passed") is not True
+        or preflight.get("sequence_id") != seq["id"]
+        or preflight.get("fixture_id") != seq["fixture_id"]
+        or preflight.get("snapshot") != seq["initial_snapshot"]["commit"]
+        or preflight.get("baseline_pool", {}).get("protocol_fingerprint") != expected_fingerprint
+        or preflight.get("baseline_pool", {}).get("descriptor_sha256") != hashlib.sha256(json.dumps(baseline_protocol_descriptor(seq), sort_keys=True, separators=(",", ":")).encode()).hexdigest()
+        or preflight.get("selected_execution", {}).get("descriptor_sha256") != _json_hash(expected_execution)
+        or preflight.get("selected_execution", {}).get("descriptor") != expected_execution
+        or preflight.get("timeout_seconds_per_task") != args.timeout_per_task
+        or preflight.get("runner_sha256") != _self_hash()
+    ):
+        raise ValueError("baseline preflight does not bind the current protocol/run inputs")
+    return preflight
+
+
+def qualification_is_current(seq: dict[str, Any]) -> tuple[bool, dict[str, Any]]:
+    path = ROOT / str(seq.get("qualification_path", ""))
+    if not path.is_file():
+        return False, {}
+    qualification = json.loads(path.read_text())
+    required_true = (
+        "seeded_verifier_nonzero",
+        "fixed_verifier_zero",
+        "full_fixed_cumulative_verifier_zero",
+        "ordered_transition_applicability",
+        "alternative_repair_transition_applicability",
+        "no_unmerged_paths",
+        "no_model_visible_acceptance_assets",
+        "all_expected_model_concealment_declared",
+    )
+    ordered = sorted(seq.get("tasks", []), key=lambda item: int(item["order"]))
+    if (
+        any(qualification.get(field) is not True for field in required_true)
+        or qualification.get("snapshot") != seq.get("initial_snapshot", {}).get("commit")
+        or qualification.get("qualified_on") != seq.get("qualification_date")
+        or qualification.get("ordered_task_ids") != [task["id"] for task in ordered]
+    ):
+        return False, qualification
+    records = qualification.get("tasks", [])
+    if len(records) != len(ordered):
+        return False, qualification
+    for task, record in zip(ordered, records):
+        task_root = (ROOT / str(task["prompt_path"])).parent
+        if (
+            record.get("task_id") != task["id"]
+            or record.get("seed_patch_sha256") != _protocol_file_hash(task_root / "seed-regression.patch")
+            or record.get("verifier_sha256") != _protocol_file_hash(task_root / "verify.sh")
+            or record.get("production_file_count") != len(set(record.get("production_files", [])))
+            or record.get("production_file_count", 0) < 5
+            or record.get("expected_model_concealed_paths") != expected_task_concealed_paths(task)
+            or record.get("model_concealed_paths") != sorted(str(path) for path in task.get("model_concealed_paths", []))
+            or record.get("omitted_expected_model_concealed_paths") != []
+            or record.get("declared_concealment_matches_expected") is not True
+            or record.get("model_concealed_absent") is not True
+        ):
+            return False, qualification
+    replay = seq.get("alternative_repair_replay", {})
+    replay_path = ROOT / str(replay.get("changes_diff", ""))
+    if not replay or not replay_path.is_file():
+        return False, qualification
+    source = replay_path.read_text()
+    marker = f"# --- task-{int(replay['repaired_task_order']):02d}-agent ---"
+    if marker not in source:
+        return False, qualification
+    section = source.split(marker, 1)[1].split("# --- task-", 1)[0].strip() + "\n"
+    if (
+        qualification.get("alternative_repair_source_sha256") != _protocol_file_hash(replay_path)
+        or qualification.get("alternative_repair_patch_sha256") != hashlib.sha256(section.encode()).hexdigest()
+        or qualification.get("alternative_repair_noncanonical") is not True
+        or (
+            qualification.get("alternative_repair_control_flow_footprint") is not True
+            and int(qualification.get("alternative_repair_noncomment_changed_line_delta", 0)) < 5
+        )
+    ):
+        return False, qualification
+    return True, qualification
 
 
 def artifact_lane_label(project_id: str) -> str:
@@ -415,7 +888,7 @@ def configure_model_git(repo: Path) -> None:
         out.write("\n.venv/\n__pycache__/\n.pytest_cache/\nnode_modules/\n")
 
 
-def verify_concealed_stage(repo: Path, fixed_snapshot_oid: str, order: int) -> dict[str, Any]:
+def verify_concealed_stage(seq: dict[str, Any], repo: Path, fixed_snapshot_oid: str, order: int) -> dict[str, Any]:
     head = subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=repo, text=True).strip()
     parents = subprocess.check_output(["git", "rev-list", "--parents", "-1", "HEAD"], cwd=repo, text=True).split()
     remotes = subprocess.check_output(["git", "remote"], cwd=repo, text=True).splitlines()
@@ -455,6 +928,8 @@ def verify_concealed_stage(repo: Path, fixed_snapshot_oid: str, order: int) -> d
         "fixed_snapshot_object_present": fixed_probe.returncode == 0,
         "unreachable_objects": [line for line in fsck.stdout.splitlines() if line.strip()],
         "leaked_git_admin_paths": leaked_admin_paths,
+        "model_concealed_paths": sequence_concealed_paths(seq),
+        "model_concealed_paths_present": assert_model_concealed_paths_absent(repo, seq),
     }
     result["passed"] = (
         result["head_is_root"]
@@ -465,11 +940,12 @@ def verify_concealed_stage(repo: Path, fixed_snapshot_oid: str, order: int) -> d
         and not result["fixed_snapshot_object_present"]
         and not result["unreachable_objects"]
         and not result["leaked_git_admin_paths"]
+        and not result["model_concealed_paths_present"]
     )
     return result
 
 
-def conceal_seed(repo: Path, run_dir: Path, order: int, fixed_snapshot_oid: str) -> dict[str, Any]:
+def conceal_seed(seq: dict[str, Any], repo: Path, run_dir: Path, order: int, fixed_snapshot_oid: str) -> dict[str, Any]:
     """Replace Git metadata and commit the current broken state as a true root.
 
     Deleting the fetched repository's object database is required: committing a
@@ -480,6 +956,7 @@ def conceal_seed(repo: Path, run_dir: Path, order: int, fixed_snapshot_oid: str)
     if git_dir.exists():
         chmod_tree(git_dir)
         shutil.rmtree(git_dir)
+    remove_model_concealed_paths(repo, seq)
     run(["git", "init", "-q"], cwd=repo, stdout=run_dir / f"seed-task-{order:02d}-git-init.txt")
     configure_model_git(repo)
     run(["git", "add", "-A"], cwd=repo, stdout=run_dir / f"seed-task-{order:02d}-git-add.txt")
@@ -490,7 +967,7 @@ def conceal_seed(repo: Path, run_dir: Path, order: int, fixed_snapshot_oid: str)
     )
     if commit.returncode != 0:
         raise RuntimeError(f"failed to create concealed root for task {order}")
-    verification = verify_concealed_stage(repo, fixed_snapshot_oid, order)
+    verification = verify_concealed_stage(seq, repo, fixed_snapshot_oid, order)
     (run_dir / f"seed-task-{order:02d}-concealment.json").write_text(json.dumps(verification, indent=2) + "\n")
     if not verification["passed"]:
         raise RuntimeError(f"concealed task {order} baseline failed structural verification")
@@ -564,11 +1041,28 @@ def verify_seed_delivery_stage(seq: dict[str, Any], repo: Path, run_dir: Path, a
     active_applied = states[str(active_order)]["reverse_applicable"]
     pending_absent = all(not states[str(order)]["reverse_applicable"] for order in pending_orders)
     pending_forward_applicable = all(states[str(order)]["forward_applicable"] for order in pending_orders)
-    leaked_assets = [
-        str(path.relative_to(repo))
-        for path in repo.rglob("*")
-        if path.is_file() and path.name in {"seed-regression.patch", "verify.sh"}
-    ]
+    controller_asset_hashes: set[str] = set()
+    controller_asset_sizes: set[int] = set()
+    for order in orders:
+        controller_task = task_dir(run_dir, order)
+        for asset in controller_task.rglob("*"):
+            if asset.is_file():
+                controller_asset_sizes.add(asset.stat().st_size)
+                controller_asset_hashes.add(hashlib.sha256(asset.read_bytes()).hexdigest())
+
+    leaked_assets: list[str] = []
+    explicit_forbidden_names = {"seed-regression.patch", "verify.sh", "task.md", "agent-prompt.txt"}
+    for path in repo.rglob("*"):
+        if ".git" in path.parts or not path.is_file():
+            continue
+        relative = str(path.relative_to(repo))
+        if path.name in explicit_forbidden_names:
+            leaked_assets.append(relative)
+            continue
+        if path.stat().st_size in controller_asset_sizes:
+            digest = hashlib.sha256(path.read_bytes()).hexdigest()
+            if digest in controller_asset_hashes:
+                leaked_assets.append(relative)
     return {
         "active_seed_order": active_order,
         "pending_seed_orders": pending_orders,
@@ -577,7 +1071,9 @@ def verify_seed_delivery_stage(seq: dict[str, Any], repo: Path, run_dir: Path, a
         "pending_seed_regressions_absent": pending_absent,
         "pending_seed_patches_forward_applicable": pending_forward_applicable,
         "model_repo_seed_or_verifier_assets": leaked_assets,
-        "passed": active_applied and pending_absent and pending_forward_applicable and not leaked_assets,
+        "model_concealed_paths": sequence_concealed_paths(seq),
+        "model_concealed_paths_present": assert_model_concealed_paths_absent(repo, seq),
+        "passed": active_applied and pending_absent and pending_forward_applicable and not leaked_assets and not assert_model_concealed_paths_absent(repo, seq),
     }
 
 
@@ -642,7 +1138,7 @@ def create_project(seq: dict[str, Any], project: Path, run_dir: Path, *, conceal
         run_dir / f"seed-task-{first_order:02d}-apply.txt",
     )
     if conceal_seed_origin:
-        concealment = conceal_seed(repo, run_dir, first_order, commit)
+        concealment = conceal_seed(seq, repo, run_dir, first_order, commit)
     else:
         first_patch = task_dir(run_dir, first_order) / "seed-regression.patch"
         reverse = subprocess.run(["git", "apply", "--reverse", str(first_patch)], cwd=repo, text=True, stdout=subprocess.DEVNULL, stderr=subprocess.STDOUT)
@@ -668,7 +1164,22 @@ def create_project(seq: dict[str, Any], project: Path, run_dir: Path, *, conceal
         "transitions": [{"order": first_order, "concealment": concealment, "seed_delivery": delivery_verification}],
     }
     seed_delivery_path(run_dir).write_text(json.dumps(state, indent=2) + "\n")
-    prepare_verification = {"passed": stage_passed, **state, "stage_seed_delivery": delivery_verification}
+    qualification_path = ROOT / seq.get("qualification_path", "")
+    qualification_passed, qualification = qualification_is_current(seq)
+    stage_passed = stage_passed and qualification_passed
+    prepare_verification = {
+        "passed": stage_passed,
+        **state,
+        "stage_seed_delivery": delivery_verification,
+        "fixed_composite_qualification": {
+            "path": rel(qualification_path) if qualification_path.is_file() else "",
+            "passed": qualification_passed,
+            "full_fixed_cumulative_verifier_zero": qualification.get("full_fixed_cumulative_verifier_zero"),
+            "seeded_verifier_nonzero": qualification.get("seeded_verifier_nonzero"),
+            "fixed_verifier_zero": qualification.get("fixed_verifier_zero"),
+            "alternative_repair_transition_applicability": qualification.get("alternative_repair_transition_applicability"),
+        },
+    }
     (run_dir / "prepare-verification.json").write_text(json.dumps(prepare_verification, indent=2) + "\n")
     if conceal_seed_origin and not stage_passed:
         raise RuntimeError("initial lazy seed delivery or concealment verification failed")
@@ -692,7 +1203,7 @@ def advance_task_seed(seq: dict[str, Any], repo: Path, run_dir: Path, next_order
         raise ValueError(f"seed transition must advance to the next pending order; requested {next_order}, pending={pending}")
     patch = task_dir(run_dir, next_order) / "seed-regression.patch"
     apply_seed_patch(repo, patch, run_dir / f"seed-task-{next_order:02d}-apply.txt")
-    concealment = conceal_seed(repo, run_dir, next_order, str(state["fixed_snapshot_oid"]))
+    concealment = conceal_seed(seq, repo, run_dir, next_order, str(state["fixed_snapshot_oid"]))
     remaining = pending[1:]
     delivery_verification = verify_seed_delivery_stage(seq, repo, run_dir, next_order, remaining)
     if not delivery_verification["passed"]:
@@ -899,6 +1410,8 @@ def final_verifier_mounts(
 
 
 def validate_run_safety_args(args: argparse.Namespace) -> None:
+    if bool(getattr(args, "no_provider", False)) and not bool(getattr(args, "prepare_only", False)):
+        raise ValueError("--no-provider is only valid with --prepare-only")
     bypasses = [
         name
         for name in ("skip_container_preflight", "skip_codex_preflight", "skip_dependency_install", "no_conceal_seed_origin")
@@ -981,17 +1494,19 @@ def run_codex_task(
     return proc.returncode, thread_id
 
 
-def run_one_verifier(seq: dict[str, Any], order: int, record: dict[str, Any], codex_home: Path, run_dir: Path, docker_image: str) -> dict[str, Any]:
+def run_one_verifier(seq: dict[str, Any], order: int, record: dict[str, Any], codex_home: Path, run_dir: Path, docker_image: str, *, stage_order: int | None = None) -> dict[str, Any]:
     task = next(item for item in seq["tasks"] if int(item["order"]) == order)
     repo = ROOT / record["target"]["repository_path"]
     env = fixture.codex_env(codex_home, containerized=True)
     mounts = verifier_mounts_for_task(record, codex_home, run_dir, order)
-    out = run_dir / f"verifier-{task_alias(order)}.txt"
+    stage = stage_order if stage_order is not None else order
+    out = run_dir / f"verifier-after-task-{stage:02d}-{task_alias(order)}.txt"
     cmd = ["bash", str(task_dir(repo.parent, order) / "verify.sh")]
     proc = fixture.run_backend(cmd, backend="docker", docker_image=docker_image, cwd=repo, env=env, stdout_path=out, timeout=1800, mounts=mounts)
     return {
         "task_id": task["id"],
         "task_alias": task_alias(order),
+        "stage_order": stage,
         "order": order,
         "verifier_exit_code": proc.returncode,
         "accepted": proc.returncode == 0,
@@ -1226,7 +1741,11 @@ def workflow_session_record(
         "status": "completed" if accepted else "failed",
         "session_role": pmeta["session_role"],
         "replicate_index": summary["replicate_index"],
+        "frozen_protocol": summary["frozen_protocol"],
         "baseline_pool": summary["baseline_pool"],
+        "selected_execution": summary["selected_execution"],
+        "docker_image_identity": summary["docker_image_identity"],
+        "tool_adapter_identity": summary["tool_adapter_identity"],
         "date": DATE,
         "target": {
             "fixture_id": seq["fixture_id"],
@@ -1425,8 +1944,19 @@ def run_one(args: argparse.Namespace) -> dict[str, Any]:
     profile_id = args.profile_id
     if profile_id not in PROFILE_META:
         raise ValueError(f"No runner metadata for profile {profile_id}")
+    validate_protocol_for_run(seq, profile_id, args)
+    validate_preflight_for_run(seq, args)
     project_id = PROJECT_META[seq["fixture_id"]]["project_id"]
     protocol_fingerprint = baseline_protocol_fingerprint(seq)
+    protocol_path = args.protocol_path
+    protocol_doc = args.protocol_doc
+    selected_execution = protocol_doc["selected_execution"]
+    selected_descriptor = selected_execution["descriptor"]
+    frozen_protocol = {
+        "protocol_id": protocol_doc.get("protocol_id"),
+        "path": rel(protocol_path),
+        "sha256": _protocol_file_hash(protocol_path),
+    }
     baseline_pool = {
         "protocol_version": BASELINE_POOL_PROTOCOL_VERSION,
         "protocol_fingerprint": protocol_fingerprint,
@@ -1556,9 +2086,11 @@ def run_one(args: argparse.Namespace) -> dict[str, Any]:
             thread_continuity_errors.append({"order": order, "task_id": task["id"], "message": message})
             (run_dir / f"task-{order:02d}-thread-continuity-error.txt").write_text(message + "\n")
             break
-        result = run_one_verifier(seq, order, record, codex_home, run_dir, args.docker_image)
+        completed = [run_one_verifier(seq, prior, record, codex_home, run_dir, args.docker_image, stage_order=order) for prior in range(1, order + 1)]
+        result = completed[-1]
+        result["completed_verifier_results"] = completed
         verifier_results.append(result)
-        if result["verifier_exit_code"] != 0:
+        if any(item["verifier_exit_code"] != 0 for item in completed):
             break
 
     final_integrity = {"stage": "before-final-verifier", **check_verifier_integrity(expected_verifier_hashes)}
@@ -1610,7 +2142,11 @@ def run_one(args: argparse.Namespace) -> dict[str, Any]:
         "study_id": study_id,
         "experiment_group_id": experiment_group_id,
         "replicate_index": args.replicate_index,
+        "frozen_protocol": frozen_protocol,
         "baseline_pool": baseline_pool,
+        "selected_execution": selected_execution,
+        "docker_image_identity": selected_descriptor.get("runtime", {}).get("docker_image_identity"),
+        "tool_adapter_identity": selected_descriptor.get("tool_adapter") if profile_id != "baseline-bare-codex" else None,
         "profile_id": profile_id,
         "workflow_sequence_id": seq["id"],
         "fixture_id": seq["fixture_id"],
@@ -1658,15 +2194,13 @@ def run_one(args: argparse.Namespace) -> dict[str, Any]:
         leakage_controls=leakage_controls,
         comparison_baseline_session_id=comparison_baseline_session_id,
     )
-    (run_dir / "run.json").write_text(json.dumps(summary, indent=2) + "\n")
     remove_ephemeral_homes(run_dir)
+    (run_dir / "run.json").write_text(json.dumps(summary, indent=2) + "\n")
     write_evidence_bundle(run_dir)
     remove_noncompact_artifacts(run_dir)
     write_manifest(run_dir)
     update_registry(session_record)
-    comparison = write_comparison_if_ready(seq, study_id, args.replicate_index, comparison_profile_id) if comparison_profile_id else None
-    if comparison:
-        summary["comparison"] = comparison
+    write_comparison_if_ready(seq, study_id, args.replicate_index, comparison_profile_id) if comparison_profile_id else None
     print(json.dumps(summary, indent=2), flush=True)
     return summary
 
@@ -1684,7 +2218,9 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--profile-id", choices=sorted(PROFILE_META), default="baseline-bare-codex")
     parser.add_argument("--list-sequences", action="store_true")
     parser.add_argument("--prepare-only", action="store_true")
-    parser.add_argument("--timeout-per-task", type=int, default=1800)
+    parser.add_argument("--protocol", help="required frozen protocol path or id for provider-backed runs")
+    parser.add_argument("--no-provider", action="store_true", help="prepare-only proof mode; forces provider-spend setup steps off")
+    parser.add_argument("--timeout-per-task", type=int, default=3600)
     parser.add_argument("--replicate-index", type=int, default=0)
     parser.add_argument("--session-id")
     parser.add_argument("--study-id")
@@ -1697,6 +2233,9 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--skip-dependency-install", action="store_true")
     parser.add_argument("--no-conceal-seed-origin", action="store_true", help="debug only: leave seed patch as visible git diff; prepare-only runs only")
     args = parser.parse_args(argv)
+    if args.no_provider:
+        args.skip_codex_preflight = True
+        args.skip_dependency_install = True
     if args.list_sequences:
         print(json.dumps({"active_sequences": active_sequence_ids(), "profiles": sorted(PROFILE_META)}, indent=2))
         return 0

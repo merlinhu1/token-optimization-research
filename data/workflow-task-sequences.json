@@ -1,181 +1,41 @@
 {
   "schema_version": 1,
-  "description": "Ordered task sequences for continuous workflow simulation. Sequences reset before the session, disclose prompts and inject regressions one task at a time, preserve source/tool/agent state between tasks, and re-root model-facing Git metadata to prevent answer leakage.",
+  "description": "Ordered production-grade task sequences for continuous workflow simulation.",
   "state_policy_defaults": {
-    "reset_before_session": [
-      "repository working tree",
-      "profile home",
-      "tool indexes and caches",
-      "generated config",
-      "agent home",
-      "temporary directories"
-    ],
-    "persist_between_tasks": [
-      "repository source working tree; controller re-roots model-facing Git metadata before each task",
-      "tool indexes and caches",
-      "generated config",
-      "agent home",
-      "memory/state stores enabled by the active profile",
-      "run artifacts"
-    ]
+    "reset_before_session": ["repository working tree", "profile home", "tool indexes and caches", "generated config", "agent home", "temporary directories"],
+    "persist_between_tasks": ["repository source working tree; controller re-roots model-facing Git metadata before each task", "tool indexes and caches", "generated config", "agent home", "memory/state stores enabled by the active profile", "run artifacts"]
   },
   "sequences": [
-    {
-      "id": "orchardcore-maintenance-sequence-v1",
-      "status": "planned",
-      "acceptance_design": "requires-redesign",
-      "readiness_blockers": [
-        "Supplemental mutations are under-specified exact-source restoration checks rather than causally related behavioral acceptance."
-      ],
-      "fixture_id": "large-orchardcms-orchardcore",
-      "fixture_scale": "large-project",
-      "objective": "individual_tool_effectiveness",
-      "primary_metric": "cumulative provider-billed workflow tokens",
-      "reset_policy": "Reset once before the session; preserve source, tool, index, cache, generated config, memory, and agent state between tasks; inject only the current regression and re-root model-facing Git metadata before disclosure.",
-      "conversion_note": "Shared-snapshot candidate: five OrchardCore regressions target commit 91cd8a4bfcaf9cb1388edef6867af2a0b5a0a000, but the synthetic supplemental guards require behavioral redesign before activation.",
-      "initial_snapshot": {
-        "commit": "91cd8a4bfcaf9cb1388edef6867af2a0b5a0a000",
-        "upstream": "https://github.com/OrchardCMS/OrchardCore.git"
-      },
-      "tasks": [
-        {
-          "id": "orchard-base64-string-decode-regression",
-          "order": 1,
-          "prompt_path": "sources/evaluations/fixtures/large/orchardcms-orchardcore/tasks/orchard-base64-string-decode-regression/agent-prompt.txt",
-          "verifier_command": "sources/evaluations/fixtures/large/orchardcms-orchardcore/tasks/orchard-base64-string-decode-regression/verify.sh"
-        },
-        {
-          "id": "orchard-base64-stream-position-regression",
-          "order": 2,
-          "prompt_path": "sources/evaluations/fixtures/large/orchardcms-orchardcore/tasks/orchard-base64-stream-position-regression/agent-prompt.txt",
-          "verifier_command": "sources/evaluations/fixtures/large/orchardcms-orchardcore/tasks/orchard-base64-stream-position-regression/verify.sh"
-        },
-        {
-          "id": "orchard-email-address-validation-regression",
-          "order": 3,
-          "prompt_path": "sources/evaluations/fixtures/large/orchardcms-orchardcore/tasks/orchard-email-address-validation-regression/agent-prompt.txt",
-          "verifier_command": "sources/evaluations/fixtures/large/orchardcms-orchardcore/tasks/orchard-email-address-validation-regression/verify.sh"
-        },
-        {
-          "id": "orchard-json-array-merge-union-regression",
-          "order": 4,
-          "prompt_path": "sources/evaluations/fixtures/large/orchardcms-orchardcore/tasks/orchard-json-array-merge-union-regression/agent-prompt.txt",
-          "verifier_command": "sources/evaluations/fixtures/large/orchardcms-orchardcore/tasks/orchard-json-array-merge-union-regression/verify.sh"
-        },
-        {
-          "id": "orchard-result-success-state-regression",
-          "order": 5,
-          "prompt_path": "sources/evaluations/fixtures/large/orchardcms-orchardcore/tasks/orchard-result-success-state-regression/agent-prompt.txt",
-          "verifier_command": "sources/evaluations/fixtures/large/orchardcms-orchardcore/tasks/orchard-result-success-state-regression/verify.sh"
-        }
-      ],
-      "seed_patch_policy": "Candidate-only: patches must be injected one task at a time, and supplemental exact-source mutations must be replaced with causally related behavior plus behavioral tests before activation.",
-      "complexity_note": "The 2026-07-08 five-file expansion mixed core behavior with unrelated exact-source sentinels; it is retained for audit only and is not a valid active task design.",
-      "complexity_bar": "Five production files were touched and mechanical seeded-fail/fixed-pass gates passed, but behavioral validity failed; redesign is required."
-    },
     {
       "id": "fastify-maintenance-sequence-v1",
       "status": "active",
       "acceptance_design": "behavioral",
+      "scope": "production-primary",
       "readiness_blockers": [],
+      "qualification_path": "sources/evaluations/fixtures/medium/fastify-fastify/qualification.json",
+      "qualification_date": "2026-07-10",
+  "alternative_repair_replay": {
+    "changes_diff": "sources/evaluations/fixtures/medium/fastify-fastify/alternative-repairs.diff",
+    "repaired_task_order": 2,
+    "next_task_order": 3
+  },
       "fixture_id": "medium-fastify-fastify",
       "fixture_scale": "medium-project",
       "objective": "individual_tool_effectiveness",
       "primary_metric": "cumulative provider-billed workflow tokens",
       "reset_policy": "Reset once before the session; preserve source, tool, index, cache, generated config, memory, and agent state between tasks; inject only the current regression and re-root model-facing Git metadata before disclosure.",
       "conversion_note": "Primary shared-snapshot workflow: five causally related upstream-derived regressions target commit 94bcbcc6e2ef3b8e8f8e8797fe551ccbe7b942fd and are injected one at a time after the prior repair passes.",
-      "initial_snapshot": {
-        "commit": "94bcbcc6e2ef3b8e8f8e8797fe551ccbe7b942fd",
-        "upstream": "https://github.com/fastify/fastify.git"
-      },
+      "initial_snapshot": {"commit": "94bcbcc6e2ef3b8e8f8e8797fe551ccbe7b942fd", "upstream": "https://github.com/fastify/fastify.git", "dependency_lockfiles": [{"path": "package.json", "sha256": "b273320af1bb4cfc0f9334457c8e3b1d035fde0da14f9db65e8ef97d361d0be3"}]},
       "tasks": [
-        {
-          "id": "fastify-log-controller-regression",
-          "order": 4,
-          "prompt_path": "sources/evaluations/fixtures/medium/fastify-fastify/tasks/fastify-log-controller-regression/agent-prompt.txt",
-          "verifier_command": "sources/evaluations/fixtures/medium/fastify-fastify/tasks/fastify-log-controller-regression/verify.sh"
-        },
-        {
-          "id": "fastify-max-param-length-regression",
-          "order": 1,
-          "prompt_path": "sources/evaluations/fixtures/medium/fastify-fastify/tasks/fastify-max-param-length-regression/agent-prompt.txt",
-          "verifier_command": "sources/evaluations/fixtures/medium/fastify-fastify/tasks/fastify-max-param-length-regression/verify.sh"
-        },
-        {
-          "id": "fastify-request-media-type-regression",
-          "order": 3,
-          "prompt_path": "sources/evaluations/fixtures/medium/fastify-fastify/tasks/fastify-request-media-type-regression/agent-prompt.txt",
-          "verifier_command": "sources/evaluations/fixtures/medium/fastify-fastify/tasks/fastify-request-media-type-regression/verify.sh"
-        },
-        {
-          "id": "fastify-content-type-semantics-regression",
-          "order": 5,
-          "prompt_path": "sources/evaluations/fixtures/medium/fastify-fastify/tasks/fastify-content-type-semantics-regression/agent-prompt.txt",
-          "verifier_command": "sources/evaluations/fixtures/medium/fastify-fastify/tasks/fastify-content-type-semantics-regression/verify.sh"
-        },
-        {
-          "id": "fastify-request-lifecycle-regression",
-          "order": 2,
-          "prompt_path": "sources/evaluations/fixtures/medium/fastify-fastify/tasks/fastify-request-lifecycle-regression/agent-prompt.txt",
-          "verifier_command": "sources/evaluations/fixtures/medium/fastify-fastify/tasks/fastify-request-lifecycle-regression/verify.sh"
-        }
+        {"id": "fastify-max-param-length-regression", "order": 1, "prompt_path": "sources/evaluations/fixtures/medium/fastify-fastify/tasks/fastify-max-param-length-regression/agent-prompt.txt", "verifier_command": "sources/evaluations/fixtures/medium/fastify-fastify/tasks/fastify-max-param-length-regression/verify.sh", "upstream_test_paths": ["test/internals/errors.test.js", "test/logger/logging.test.js", "test/router-options.test.js", "test/types/instance.tst.ts"], "compatibility_rebased_test_paths": ["test/route.4.test.js"], "model_concealed_paths": ["test/internals/errors.test.js", "test/logger/logging.test.js", "test/router-options.test.js", "test/route.4.test.js", "test/types/instance.tst.ts"]},
+        {"id": "fastify-handler-timeout-regression", "order": 2, "prompt_path": "sources/evaluations/fixtures/medium/fastify-fastify/tasks/fastify-handler-timeout-regression/agent-prompt.txt", "verifier_command": "sources/evaluations/fixtures/medium/fastify-fastify/tasks/fastify-handler-timeout-regression/verify.sh", "upstream_test_paths": ["test/handler-timeout.test.js", "test/internals/errors.test.js", "test/internals/initial-config.test.js", "test/types/fastify.tst.ts", "test/types/request.tst.ts"], "compatibility_rebased_test_paths": ["test/request-timeout.test.js", "test/stream.1.test.js"], "model_concealed_paths": ["test/handler-timeout.test.js", "test/internals/errors.test.js", "test/internals/initial-config.test.js", "test/request-timeout.test.js", "test/stream.1.test.js", "test/types/fastify.tst.ts", "test/types/request.tst.ts"]},
+        {"id": "fastify-request-media-type-regression", "order": 3, "prompt_path": "sources/evaluations/fixtures/medium/fastify-fastify/tasks/fastify-request-media-type-regression/agent-prompt.txt", "verifier_command": "sources/evaluations/fixtures/medium/fastify-fastify/tasks/fastify-request-media-type-regression/verify.sh", "upstream_test_paths": ["test/request-media-type.test.js", "test/schema-validation.test.js"], "compatibility_rebased_test_paths": ["test/schema-feature.test.js", "test/types/request.tst.ts"], "model_concealed_paths": ["test/request-media-type.test.js", "test/schema-feature.test.js", "test/schema-validation.test.js", "test/types/request.tst.ts"]},
+        {"id": "fastify-log-controller-regression", "order": 4, "prompt_path": "sources/evaluations/fixtures/medium/fastify-fastify/tasks/fastify-log-controller-regression/agent-prompt.txt", "verifier_command": "sources/evaluations/fixtures/medium/fastify-fastify/tasks/fastify-log-controller-regression/verify.sh", "upstream_test_paths": ["test/internals/errors.test.js", "test/internals/logger.test.js", "test/internals/reply.test.js", "test/logger/logging.test.js", "test/stream.4.test.js"], "compatibility_rebased_test_paths": ["test/404s.test.js", "test/stream-serializers.test.js", "test/types/errors.tst.ts", "test/types/fastify.tst.ts", "test/types/instance.tst.ts", "test/types/logger.tst.ts", "test/validation-error-handling.test.js"], "model_concealed_paths": ["test/404s.test.js", "test/internals/errors.test.js", "test/internals/logger.test.js", "test/internals/reply.test.js", "test/logger/logging.test.js", "test/stream-serializers.test.js", "test/stream.4.test.js", "test/types/errors.tst.ts", "test/types/fastify.tst.ts", "test/types/instance.tst.ts", "test/types/logger.tst.ts", "test/validation-error-handling.test.js"]},
+        {"id": "fastify-content-type-semantics-regression", "order": 5, "prompt_path": "sources/evaluations/fixtures/medium/fastify-fastify/tasks/fastify-content-type-semantics-regression/agent-prompt.txt", "verifier_command": "sources/evaluations/fixtures/medium/fastify-fastify/tasks/fastify-content-type-semantics-regression/verify.sh", "upstream_test_paths": ["test/content-type.test.js", "test/internals/reply.test.js"], "compatibility_rebased_test_paths": ["test/content-parser.test.js", "test/custom-parser.1.test.js"], "model_concealed_paths": ["test/content-parser.test.js", "test/content-type.test.js", "test/custom-parser.1.test.js", "test/internals/reply.test.js"]}
       ],
-      "seed_patch_policy": "Controller-injected one task at a time; future seeds and all verifier assets remain outside the model-visible repository.",
+      "seed_patch_policy": "Controller-injected one task at a time; future seeds and all acceptance assets remain outside the model-visible repository.",
       "complexity_note": "Each task is reconstructed from a real upstream Fastify behavior or performance change and changes only its causally related production/type files.",
-      "complexity_bar": "Every task touches at least five production/type files and has behavioral seeded-fail/fixed-pass evidence on the pinned snapshot."
-    },
-    {
-      "id": "beets-maintenance-sequence-v1",
-      "status": "planned",
-      "acceptance_design": "requires-redesign",
-      "readiness_blockers": [
-        "Supplemental mutations are under-specified exact-source restoration checks rather than causally related behavioral acceptance."
-      ],
-      "fixture_id": "medium-beetbox-beets",
-      "fixture_scale": "medium-project",
-      "objective": "individual_tool_effectiveness",
-      "primary_metric": "cumulative provider-billed workflow tokens",
-      "reset_policy": "Reset once before the session; preserve source, tool, index, cache, generated config, memory, and agent state between tasks; inject only the current regression and re-root model-facing Git metadata before disclosure.",
-      "conversion_note": "Shared-snapshot candidate: five Beets regressions target commit 8ddae794d30e9984be904f80459614155c6592d9, but the synthetic supplemental guards require behavioral redesign before activation.",
-      "initial_snapshot": {
-        "commit": "8ddae794d30e9984be904f80459614155c6592d9",
-        "upstream": "https://github.com/beetbox/beets.git"
-      },
-      "tasks": [
-        {
-          "id": "beets-pathformats-query-key-regression",
-          "order": 1,
-          "prompt_path": "sources/evaluations/fixtures/medium/beetbox-beets/tasks/beets-pathformats-query-key-regression/agent-prompt.txt",
-          "verifier_command": "sources/evaluations/fixtures/medium/beetbox-beets/tasks/beets-pathformats-query-key-regression/verify.sh"
-        },
-        {
-          "id": "beets-hidden-dotfile-regression",
-          "order": 2,
-          "prompt_path": "sources/evaluations/fixtures/medium/beetbox-beets/tasks/beets-hidden-dotfile-regression/agent-prompt.txt",
-          "verifier_command": "sources/evaluations/fixtures/medium/beetbox-beets/tasks/beets-hidden-dotfile-regression/verify.sh"
-        },
-        {
-          "id": "beets-color-uncolorize-regression",
-          "order": 3,
-          "prompt_path": "sources/evaluations/fixtures/medium/beetbox-beets/tasks/beets-color-uncolorize-regression/agent-prompt.txt",
-          "verifier_command": "sources/evaluations/fixtures/medium/beetbox-beets/tasks/beets-color-uncolorize-regression/verify.sh"
-        },
-        {
-          "id": "beets-human-bytes-boundary-regression",
-          "order": 4,
-          "prompt_path": "sources/evaluations/fixtures/medium/beetbox-beets/tasks/beets-human-bytes-boundary-regression/agent-prompt.txt",
-          "verifier_command": "sources/evaluations/fixtures/medium/beetbox-beets/tasks/beets-human-bytes-boundary-regression/verify.sh"
-        },
-        {
-          "id": "beets-template-escape-character-regression",
-          "order": 5,
-          "prompt_path": "sources/evaluations/fixtures/medium/beetbox-beets/tasks/beets-template-escape-character-regression/agent-prompt.txt",
-          "verifier_command": "sources/evaluations/fixtures/medium/beetbox-beets/tasks/beets-template-escape-character-regression/verify.sh"
-        }
-      ],
-      "seed_patch_policy": "Candidate-only: patches must be injected one task at a time, and supplemental exact-source mutations must be replaced with causally related behavior plus behavioral tests before activation.",
-      "complexity_note": "The 2026-07-08 five-file expansion mixed core behavior with unrelated exact-source sentinels; it is retained for audit only and is not a valid active task design.",
-      "complexity_bar": "Five production files were touched and mechanical seeded-fail/fixed-pass gates passed, but behavioral validity failed; redesign is required."
+      "complexity_bar": "Every task touches at least five production/type files and requires executable qualification on the pinned snapshot."
     }
   ]
 }

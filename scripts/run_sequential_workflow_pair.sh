@@ -2,9 +2,9 @@
 # Run a shared-baseline + treatment sequential workflow evaluation for one sequence.
 #
 # Usage:
-#   scripts/run_sequential_workflow_pair.sh terraform-maintenance-sequence-v1
-#   scripts/run_sequential_workflow_pair.sh terraform-maintenance-sequence-v1 --treatment-profile retrieval-codegraph
-#   REPLICATE_INDEX=1 scripts/run_sequential_workflow_pair.sh beets-maintenance-sequence-v1 --timeout-per-task 2400
+#   scripts/run_sequential_workflow_pair.sh fastify-maintenance-sequence-v1
+#   scripts/run_sequential_workflow_pair.sh fastify-maintenance-sequence-v1 --baseline-protocol sources/evaluations/protocols/fastify-production-gpt-5.6-terra-medium-v3.json --treatment-protocol <path>
+#   REPLICATE_INDEX=1 scripts/run_sequential_workflow_pair.sh fastify-maintenance-sequence-v1 --timeout-per-task 2400
 #
 # Extra arguments are passed through to scripts/run_codex_workflow_evaluation.py.
 set -euo pipefail
@@ -26,10 +26,8 @@ Environment:
 Session evidence is append-only: this helper reuses an eligible canonical baseline and never overwrites an existing session ID. Use a new REPLICATE_INDEX when an occupied baseline is excluded or unsuitable.
 
 Examples:
-  scripts/run_sequential_workflow_pair.sh terraform-maintenance-sequence-v1
-  scripts/run_sequential_workflow_pair.sh terraform-maintenance-sequence-v1 --treatment-profile retrieval-codegraph
-  REPLICATE_INDEX=1 scripts/run_sequential_workflow_pair.sh beets-maintenance-sequence-v1 --timeout-per-task 2400
-  scripts/run_sequential_workflow_pair.sh terraform-maintenance-sequence-v1 --source-codex-home /path/to/.codex
+  scripts/run_sequential_workflow_pair.sh fastify-maintenance-sequence-v1 --baseline-protocol sources/evaluations/protocols/fastify-production-gpt-5.6-terra-medium-v3.json --treatment-protocol <path>
+  scripts/run_sequential_workflow_pair.sh fastify-maintenance-sequence-v1 --source-codex-home /path/to/.codex
 
 Useful discovery:
   python3 scripts/run_codex_workflow_evaluation.py --list-sequences
@@ -41,6 +39,8 @@ sequence_id="$1"
 shift
 replicate_index="${REPLICATE_INDEX:-0}"
 treatment_profile="retrieval-leanctx"
+baseline_protocol=""
+treatment_protocol=""
 runner_args=()
 while [[ $# -gt 0 ]]; do
   case "$1" in
@@ -56,6 +56,14 @@ while [[ $# -gt 0 ]]; do
       treatment_profile="${1#--treatment-profile=}"
       shift
       ;;
+    --baseline-protocol)
+      baseline_protocol="$2"
+      shift 2
+      ;;
+    --treatment-protocol)
+      treatment_protocol="$2"
+      shift 2
+      ;;
     *)
       runner_args+=("$1")
       shift
@@ -63,15 +71,22 @@ while [[ $# -gt 0 ]]; do
   esac
 done
 
+if [[ -z "$baseline_protocol" || -z "$treatment_protocol" ]]; then
+  echo "--baseline-protocol and --treatment-protocol are required; treatments must use their own frozen protocol" >&2
+  exit 2
+fi
+
 run_lane() {
   local profile_id="$1"
-  shift
+  local protocol_path="$2"
+  shift 2
   echo "== sequential workflow: ${sequence_id} :: ${profile_id} :: r${replicate_index} :: comparison ${treatment_profile} =="
   python3 scripts/run_codex_workflow_evaluation.py \
     --sequence-id "$sequence_id" \
     --profile-id "$profile_id" \
     --comparison-profile-id "$treatment_profile" \
     --replicate-index "$replicate_index" \
+    --protocol "$protocol_path" \
     "$@"
 }
 
@@ -118,7 +133,7 @@ baseline_identity="$(session_identity baseline-bare-codex "$baseline_session_id"
 IFS=$'\t' read -r baseline_session_id baseline_state <<<"$baseline_identity"
 
 if [[ "$baseline_state" == "missing" ]]; then
-  run_lane baseline-bare-codex "${runner_args[@]}"
+  run_lane baseline-bare-codex "$baseline_protocol" "${runner_args[@]}"
   echo "Canonical baseline ${baseline_session_id} completed execution but requires a recorded software-quality review with score >= 4 and objective acceptance before treatment spend. Review it, then rerun this pair command." >&2
   exit 3
 elif [[ "$baseline_state" == "reusable" ]]; then
@@ -134,7 +149,7 @@ fi
 treatment_identity="$(session_identity "$treatment_profile" "$treatment_session_id")"
 IFS=$'\t' read -r treatment_session_id treatment_state <<<"$treatment_identity"
 if [[ "$treatment_state" == "missing" ]]; then
-  run_lane "$treatment_profile" "${runner_args[@]}"
+  run_lane "$treatment_profile" "$treatment_protocol" "${runner_args[@]}"
   echo "Treatment ${treatment_session_id} completed execution but requires the same recorded quality review and objective acceptance before comparison." >&2
   exit 3
 elif [[ "$treatment_state" == "review-pending" ]]; then
@@ -164,7 +179,7 @@ else:
     comparison = runner.write_comparison_if_ready(seq, "phase-2-sequential-workflow-v1", int(sys.argv[3]), sys.argv[2])
 if not comparison:
     raise SystemExit("reviewed baseline/treatment did not produce a comparison")
-print(json.dumps({"comparison_id": comparison["comparison_id"], "ranking_eligible": comparison["ranking_eligible"]}))
+print(json.dumps({"comparison_id": comparison["comparison_id"], "eligible_for_ranking": comparison["eligible_for_ranking"]}))
 PY
 
 if [[ "${SKIP_PAIR_VALIDATION:-0}" == "1" ]]; then

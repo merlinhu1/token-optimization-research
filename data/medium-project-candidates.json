@@ -6,8 +6,8 @@
     "exclude": "Toy fixtures, archived repositories, user-owned projects, and projects without repeatable targeted tests.",
     "promotion_required": "Pin real fixed commits, freeze setup/reset/verifier commands, and preserve planned baseline/treatment records before execution.",
     "benchmark_inspiration": "SWE-bench-style real issue-derived regression repair: fixed commit + seeded production regression + upstream tests.",
-    "target_matrix": "medium TypeScript/JavaScript Fastify plus medium Python Beets; avoid foundational Python fixtures such as Requests, pytest, pip, Black, Pydantic, SQLAlchemy, and Sphinx for the default Python slot.",
-    "active_fixture_count": "Existing Flask and Requests fixtures remain historical/qualified, but the target replacement matrix is Fastify for TypeScript/JavaScript and Beets for Python once their five-task workflows are qualified."
+    "target_matrix": "medium TypeScript/JavaScript Fastify plus a redesigned medium Python candidate; avoid foundational Python fixtures such as Requests, pytest, pip, Black, Pydantic, SQLAlchemy, and Sphinx for the default Python slot.",
+    "active_fixture_count": "Fastify is the only active executable workflow. Beets remains candidate metadata only pending redesign."
   },
   "candidates": [
     {
@@ -41,7 +41,7 @@
         "fastify-max-param-length-regression",
         "fastify-request-media-type-regression",
         "fastify-content-type-semantics-regression",
-        "fastify-request-lifecycle-regression"
+        "fastify-handler-timeout-regression"
       ],
       "qualification_status": "active-reproduction-flow",
       "workflow_sequence_id": "fastify-maintenance-sequence-v1"
@@ -65,22 +65,22 @@
         "build-repair"
       ],
       "surface": "retrieval-context",
-      "setup_policy": "Clone a pinned commit, create a venv, install bounded test dependencies, apply seeded production regressions, and freeze targeted pytest commands. Current candidate scaffold provides setup/reset/smoke scripts at the fixture root.",
+      "setup_policy": "Candidate metadata only until redesigned; no setup/reset/smoke scaffold is active.",
       "verifier_policy": "Use targeted pytest selectors for affected CLI/library/plugin behavior; avoid full-suite runs unless needed for diagnosis.",
       "selection_status": "target-fixture-candidate",
       "selected_reason": "Preferred medium Python slot for the target matrix because it is realistic but not a foundational Python ecosystem project.",
       "pinned_task_commits": [
         "8ddae794d30e9984be904f80459614155c6592d9"
       ],
-      "tasks": [
-        "beets-cli-option-regression",
-        "beets-plugin-dispatch-regression",
-        "beets-metadata-normalization-regression",
-        "beets-import-state-regression",
-        "beets-query-filter-regression"
+      "tasks": [],
+      "task_backlog": [
+        "CLI configuration behavior",
+        "plugin dispatch behavior",
+        "metadata normalization behavior",
+        "import-state behavior",
+        "query-filter behavior"
       ],
-      "qualification_status": "fixture-redesign-required",
-      "workflow_sequence_id": "beets-maintenance-sequence-v1"
+      "qualification_status": "fixture-redesign-required"
     }
   ]
 }
