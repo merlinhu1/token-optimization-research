@@ -1,16 +1,20 @@
-# A second natural-use replicate of seven token-saving integration profiles in persistent Codex workflows
+# Prospective natural-use replication of seven token-saving integration profiles in persistent Codex workflows
 
 ## Abstract
 
 Token-saving integrations can alter coding-agent trajectories as well as the local source or command output they expose. This study prospectively repeated seven frozen integration profiles with OpenAI Codex, GPT-5.6 Luna, and `xhigh` reasoning across persistent Fastify, Beets, and Terraform workflows. Each workflow comprised feature implementation, behavior-preserving refactoring, and code review in one resumed agent session. The primary outcome was provider-reported tokens relative to three newly executed bare-Codex baseline sessions. Treatment availability was natural: documented product guidance was installed when it belonged to the frozen profile, but the evaluator did not require tool invocation.
 
-The seven profiles used 257,591,572 provider tokens against 236,364,772 tokens for the baseline panel repeated descriptively across profile contrasts, an increase of 8.98%. Five profiles were above baseline in aggregate. jcodemunch-mcp v2 was 9.93% below baseline with 9/9 verifier tasks, while Ponytail was 1.29% below baseline with 8/9. TokenJuice was near baseline at +0.32%; SigMap, RTK, Cartog, and CodeGraph ranged from +8.91% to +29.29%. Treatment verifiers passed in 62 of 63 tasks. Five of seven profile-level directions differed from the preceding natural-use screen. These observations show substantial trajectory sensitivity and do not support a stable ranking or a general token-reduction claim.
+Across 21 treatment sessions, 15 of 21 repository-level contrasts and five of seven profile aggregates were above their matched r3 baselines. Profile-level contrasts ranged from -9.93% for jcodemunch-mcp v2 to +29.29% for CodeGraph. jcodemunch-mcp v2 passed 9/9 verifier tasks; Ponytail was 1.29% below baseline with 8/9. Treatment verifiers passed in 62 of 63 tasks.
 
-## 1. Research question
+Five of seven profile-level directions differed from the preceding natural-use screen. These changes show that the single-session contrasts were not stable across the two screens; because baseline realizations, execution timing, and two treatment-guidance identities also differed, they do not by themselves identify trajectory variance as the cause. The evidence does not support a stable ranking or general token-reduction claim.
+
+## 1. Introduction and research question
 
 This study asks: **When seven previously screened integration profiles are assigned again under the same natural-use lifecycle design, what provider-token contrasts are observed against a fresh bare-Codex baseline?**
 
-The estimand is assignment to each frozen profile, not efficiency conditional on explicit tool use. The results are descriptive assignment-level observations from one additional session per profile and repository. They do not estimate an average effect for token-saving products as a class.
+The estimand is assignment to each frozen profile, not efficiency conditional on explicit tool use. The results are descriptive assignment-level observations from one additional session per profile and repository. They do not estimate an average effect for token-saving products as a class. No formal replication-success threshold was preregistered; cross-screen sign and magnitude comparisons are descriptive.
+
+Cross-screen comparisons were not byte-identical for every condition. TokenJuice and RTK used revised evaluator isolation guidance in r3 (`9b2f1577…` to `cb08dba8…`) that clarified that installed product-authored guidance remained authoritative; their first rendered task prompts therefore differed from r2. The bare-Codex model-facing task prompts were unchanged, but the r2 and r3 baseline fixture-runner hashes also differed (`eea63c24…` and `6fa8271b…`). Comparisons with the preceding screen are consequently cross-generation descriptive comparisons rather than pure repeated assignments under an identical execution condition.
 
 ## 2. Experimental design
 
@@ -24,15 +28,31 @@ Evidence was collected on 20 July 2026. The experimental unit was one persistent
 | Beets | Python | `9acb1ecff6c7ee0a1e83e3b983c94792345712c5` |
 | Terraform | Go | `e02391ad384c9c38f1d7f40b853c0d2297348094` |
 
-Each workflow presented feature implementation, behavior-preserving refactoring, and code review/correction sequentially in one Codex thread. Repository changes, agent state, treatment state, indexes, and caches persisted between tasks. The controller used independently qualified composite starting states and concealed acceptance checks.
+Each workflow delivered feature implementation, behavior-preserving refactoring, and code review/correction prompts sequentially in one Codex thread. At lane start, all three latent defects were already present in one committed composite broken-start tree. Later prompts and concealed verifier assets remained hidden, but code associated with later regressions was present from the start. No repository, thread, agent, treatment, index, or cache reset and no concealed verification occurred between prompts. Before each new session, the checkout, agent and profile homes, indexes, caches, configuration, and temporary state were reset.
 
-All sessions used Codex CLI 0.144.0, GPT-5.6 Luna, and `xhigh` reasoning. The seven treatments were TokenJuice, SigMap, Ponytail, RTK, Cartog, CodeGraph, and jcodemunch-mcp v2. Claims apply only to the exact frozen surfaces recorded in the profile registry. Product-authored routing or instruction layers were retained when the documented integration installed them; evaluator-authored steering and mandatory-uptake requirements were absent.
+Model-launched shell commands and Codex web search had no external network access. The controller allowed up to 3,600 seconds per task. Provider-token accounting began with Codex execution and included model-visible setup, retries, and corrections; controller-side installation, local indexing compute, and setup latency were outside the token boundary unless their output entered the Codex event stream.
+
+All sessions used Codex CLI 0.144.0, GPT-5.6 Luna, and `xhigh` reasoning. Claims apply only to these frozen treatment boundaries:
+
+| Profile | Frozen surface and state |
+|---|---|
+| TokenJuice | Codex post-tool-use hook and terminal-output compaction; cold CLI |
+| SigMap | Warm index, MCP retrieval, product `AGENTS.md` guidance, and live watcher |
+| Ponytail | Official Codex plugin with skills, commands, and session, prompt, and subagent hooks |
+| RTK | Product-authored global Codex instructions and terminal-output compaction |
+| Cartog | Warm-index MCP retrieval |
+| CodeGraph | Warm index, MCP retrieval, global instructions, and live-index watch |
+| jcodemunch-mcp v2 | Warm-index MCP retrieval with product-authored Codex guidance |
+
+Product-authored routing or instruction layers were retained when the documented integration installed them; evaluator-authored tool steering and mandatory-uptake requirements were absent.
 
 This evidence used the natural-use lifecycle contracts frozen before the later assisted-v1 activation. The solution-directed contracts are not part of these sessions.
 
 ### 2.2 Assignment and eligibility
 
-The analysis contains three unique bare-Codex baseline sessions and 21 treatment sessions. Every treatment profile was assigned once to each repository. The same three baseline sessions are reused for all seven profile-level contrasts. Repeating their total is a descriptive weighting device and does not create 21 independent control observations.
+The analysis contains three unique bare-Codex baseline sessions and 21 treatment sessions. Every treatment profile was assigned once to each repository. The same three baseline sessions are reused for all seven profile-level contrasts. Repeating their total is a descriptive weighting device and does not create 21 independent control observations. The reused controls were `baseline-fastify-20260720-p-769d40697529-r3`, `baseline-beets-20260720-p-b440da225a3a-r3`, and `baseline-terraform-20260720-p-ded8609b4172-r3`.
+
+Conditions were not randomized or interleaved. The three baseline sessions completed before the seven treatment matrices, which then ran in fixed order: TokenJuice, SigMap, Ponytail, RTK, Cartog, CodeGraph, and jcodemunch-mcp v2. “Matched” denotes shared repository, lifecycle, baseline-pool, model-condition, and replicate identity; it does not denote simultaneous execution or randomized pairing.
 
 The first operationally valid assignment sample was retained. A session was eligible when it completed under its frozen protocol and profile, passed integrity and isolation checks, was accepted for the provider-token objective, and had a valid compact-artifact manifest. Token direction and verifier outcome did not affect eligibility, and no session was repeated to improve an outcome.
 
@@ -61,7 +81,7 @@ The aggregate baseline was 7.42% above r2, but lane movement was heterogeneous: 
 
 Negative values indicate lower provider usage than the fresh r3 baseline.
 
-| Profile | Treatment tokens | Baseline tokens | Change | Tasks passed | Prior-screen change |
+| Profile | Treatment tokens | Baseline tokens | Change | Tasks passed | Prior-screen contrast |
 |---|---:|---:|---:|---:|---:|
 | jcodemunch-mcp v2 | 30,412,523 | 33,766,396 | **-9.93%** | 9/9 | +0.38% |
 | Ponytail | 33,332,279 | 33,766,396 | **-1.29%** | 8/9 | -17.01% |
@@ -71,7 +91,7 @@ Negative values indicate lower provider usage than the fresh r3 baseline.
 | Cartog | 41,552,273 | 33,766,396 | +23.06% | 9/9 | -1.00% |
 | CodeGraph | 43,656,248 | 33,766,396 | +29.29% | 9/9 | +0.79% |
 
-Five profiles were above baseline and two were below. Five of the seven aggregate directions changed relative to the preceding screen. Ponytail remained below baseline but moved substantially toward zero; CodeGraph remained above baseline and increased in magnitude. No profile was below baseline on all three repositories in both screens.
+Five profiles were above baseline and two were below. Five of the seven aggregate directions changed relative to the preceding screen. Ponytail remained below baseline but moved substantially toward zero; CodeGraph remained above baseline and increased in magnitude. No profile was below baseline on all three repositories in both screens. These cross-screen changes demonstrate instability of the observed contrasts, but they do not isolate trajectory variance from baseline variation, execution-time effects, or the guidance change affecting TokenJuice and RTK.
 
 ### 3.3 Repository-level contrasts
 
@@ -85,11 +105,11 @@ Five profiles were above baseline and two were below. Five of the seven aggregat
 | CodeGraph | +87.15% | +23.62% | +24.15% | Higher in all lanes |
 | jcodemunch-mcp v2 | +132.69% | -22.55% | -23.50% | Mixed |
 
-Fifteen of 21 lane contrasts were increases and six were reductions. Fastify was higher for every treatment, while the aggregate reductions for Ponytail and jcodemunch were driven by Beets and Terraform. Because Terraform is the largest baseline lane, its direction has disproportionate influence on aggregate totals.
+Fifteen of 21 lane contrasts were increases and six were reductions. Fastify was higher for every treatment, while the aggregate reductions for Ponytail and jcodemunch were driven by Beets and Terraform. Baseline weights were 8.46% for Fastify, 36.38% for Beets, and 55.15% for Terraform, so Terraform disproportionately determines profile aggregates.
 
-### 3.4 Panel accounting
+### 3.4 Secondary selected-panel decomposition
 
-The complete selected panel used 257,591,572 provider tokens against 236,364,772 repeated matched-baseline tokens, a descriptive increase of 21,226,800 tokens or 8.98%. This panel total summarizes the selected profiles and must not be interpreted as a product-class effect.
+For accounting decomposition only, summing the seven selected profiles yields 257,591,572 provider tokens versus 236,364,772 tokens after repeating the same three-session baseline seven times, a difference of 21,226,800 tokens or 8.98%. This constructed total is not an independent estimand, does not add control observations, and does not estimate a portfolio or product-class effect.
 
 | Component | Treatments | Repeated baselines | Difference |
 |---|---:|---:|---:|
@@ -103,19 +123,21 @@ Most of the accounting difference was cached input. This decomposition does not 
 
 ### 3.5 Quality diagnostics
 
-Treatment verifiers passed in 62 of 63 tasks. Ponytail's Fastify feature task failed its concealed verifier; the session remained eligible for token accounting under the preregistered diagnostic-only quality policy. All baseline tasks passed. The bounded verifiers establish task-contract behavior, not comprehensive maintainability or merge readiness.
+Treatment verifiers passed in 62 of 63 tasks. Ponytail's Fastify feature task failed its concealed verifier; the session remained eligible for token accounting under the preregistered diagnostic-only quality policy. All baseline tasks passed. No independent source-quality review was performed for these r3 sessions. The bounded verifiers establish task-contract behavior, not comprehensive maintainability or merge readiness.
 
 ## 4. Discussion
 
-The additional replicate does not reproduce the strongest reductions from the preceding screen. TokenJuice moved from -22.28% to +0.32%, SigMap from -9.60% to +8.91%, RTK from -1.90% to +12.51%, and Cartog from -1.00% to +23.06%. Conversely, jcodemunch moved from +0.38% to -9.93%. These reversals are consistent with substantial trajectory variance in persistent coding workflows.
+The prospective screen does not reproduce the strongest reductions from the preceding screen. TokenJuice moved from -22.28% to +0.32%, SigMap from -9.60% to +8.91%, RTK from -1.90% to +12.51%, and Cartog from -1.00% to +23.06%. Conversely, jcodemunch moved from +0.38% to -9.93%. These reversals establish cross-screen variability, but they do not isolate model-trajectory variance: the baseline realizations and execution times differed, and TokenJuice and RTK also crossed a treatment-guidance generation.
 
-The results do not show that the integrations have no effect. They show that one additional natural-use assignment per repository is insufficient to separate product effects from variation in model trajectory, command selection, retained context, and repository-specific weighting. The selected panel's 8.98% increase also does not estimate the average effect of integrations as a broader class.
+The results do not show that the integrations have no effect. They show that one additional natural-use assignment per repository is insufficient to separate product effects from variation in baseline realization, model trajectory, command selection, retained context, execution time, guidance generation, and repository-specific weighting. The selected panel's secondary 8.98% decomposition also does not estimate the average effect of integrations as a broader class.
 
-A standardized solution-directed protocol is therefore a useful next experiment for this study's token-usage objective. Holding target files, implementation recipe, validation commands, environment constraints, and stop conditions constant can reduce irrelevant search and debugging variance. That design answers a narrower question—provider-token usage while following a standardized workflow—and should be reported separately from the natural-use evidence here.
+A standardized solution-directed protocol is therefore a useful next experiment for this study's token-usage objective. Holding target files, implementation recipe, validation commands, environment constraints, and stop conditions constant is designed to reduce irrelevant search and debugging variance. That design answers a narrower question—provider-token usage while following a standardized workflow—and should be reported separately from the natural-use evidence here.
 
 ## 5. Threats to validity
 
 Each profile has only one r3 treatment session per repository, and the three baseline sessions are reused across all profile contrasts. No confidence intervals or stable ranking are warranted. The workload panel contains only three repositories and three task classes. Aggregate totals are workload-weighted, with Terraform contributing most baseline tokens.
+
+Conditions ran serially in a fixed order, so treatment identity is confounded with execution time and any unmeasured provider-side temporal variation. Cross-screen comparisons are additionally cross-generation for TokenJuice and RTK because their evaluator isolation guidance changed; the baseline fixture-runner hash also changed even though bare model-facing task prompts did not.
 
 The treatment profiles expose heterogeneous mechanisms. Hooks, instruction layers, plugins, and callable retrieval tools do not share one invocation model. Assignment proves availability of the frozen treatment surface but does not prove that every optional tool was explicitly used. Runtime activity counters were unavailable for some automatic surfaces, limiting mechanism attribution.
 
@@ -123,7 +145,7 @@ Provider-token accounting is dominated by cached input and does not identify the
 
 ## 6. Conclusion
 
-In a second natural-use screen of seven frozen profiles, two profiles were below a fresh bare-Codex baseline in aggregate and five were above it. The selected panel used 8.98% more provider tokens than its repeated matched baselines, and five profile-level directions changed from the preceding screen. The evidence supports continued methodological control and replication, not a stable product ranking or a general claim that token-saving integrations reduce provider usage.
+In this prospective screen, two profile aggregates were below their fresh bare-Codex baselines and five were above; 15 of 21 repository-level contrasts were increases. Five profile-level directions differed from the preceding screen, although two comparisons also crossed a guidance-generation change. The evidence supports additional randomized or interleaved replication under byte-identical conditions, not a stable product ranking or a general token-reduction claim.
 
 ## Data availability
 

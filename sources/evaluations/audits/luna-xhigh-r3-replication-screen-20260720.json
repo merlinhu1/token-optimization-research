@@ -41,7 +41,21 @@
     "treatment_sessions": 21,
     "profiles": 7,
     "baseline_reuse": "The same three r3 baseline sessions are reused descriptively for all seven profile contrasts; repeated baseline totals do not create independent control observations.",
-    "eligibility": "First operationally valid assignment samples retained; verifier outcomes are diagnostic and do not gate token accounting."
+    "eligibility": "First operationally valid assignment samples retained; verifier outcomes are diagnostic and do not gate token accounting.",
+    "randomized": false,
+    "interleaved": false,
+    "execution_order": [
+      "baseline-bare-codex",
+      "terminal-tokenjuice-codex-hook-v1",
+      "retrieval-sigmap-codex-live-v1",
+      "artifact-ponytail-codex-plugin-v1",
+      "terminal-rtk-codex-instructions-v1",
+      "retrieval-cartog-mcp-v1",
+      "retrieval-codegraph-codex-mcp-v1",
+      "retrieval-jcodemunch-codex-mcp-v2"
+    ],
+    "matching_definition": "Shared repository, lifecycle, baseline-pool, model-condition, and replicate identity; not simultaneous execution or randomized pairing.",
+    "temporal_confounding": "Treatment identity is confounded with fixed execution order and possible provider-side temporal variation."
   },
   "baseline": {
     "profile_id": "baseline-bare-codex",
@@ -661,7 +675,9 @@
     "profile_level_increases": 5,
     "lane_level_reductions": 6,
     "lane_level_increases": 15,
-    "claim_boundary": "Observed assignment-level contrasts in one natural-use replicate per profile and lane. The selected panel does not estimate a product-class effect or stable ranking."
+    "claim_boundary": "Observed assignment-level contrasts in one natural-use replicate per profile and lane. The selected panel does not estimate a product-class effect or stable ranking.",
+    "cross_screen_direction_change_causal_attribution": "not identified",
+    "formal_replication_success_threshold_preregistered": false
   },
   "verification": {
     "session_count": 24,
@@ -671,5 +687,31 @@
     "component_totals_recomputed_from_session_registry": true,
     "campaign_summary_reconciled": true,
     "campaign_task_count_reconciled": true
+  },
+  "reviewed_at": "2026-07-20T17:21:27+00:00",
+  "cross_screen_comparability": {
+    "preceding_replicate_index": 2,
+    "byte_identical_for_every_condition": false,
+    "bare_model_facing_task_prompts_unchanged": true,
+    "baseline_fixture_runner_sha256": {
+      "r2": "eea63c242aa9118e1334c9b324e59f38651aa8ab3283166daa62b47b45ccb4a6",
+      "r3": "6fa8271b89a577706ea0bbffcc8e4521831f41b646ed9519369efee3642fe41c"
+    },
+    "changed_treatment_guidance_profiles": [
+      "terminal-tokenjuice-codex-hook-v1",
+      "terminal-rtk-codex-instructions-v1"
+    ],
+    "treatment_isolation_guidance_sha256": {
+      "r2": "9b2f1577ecb060f1bfb169b8cc141d771af2b668ace35b685080b3d4e38a5617",
+      "r3": "cb08dba8b361975eb89669cc77d206861b05fc26b161a9215337dbb2d30a6366"
+    },
+    "unchanged_treatment_guidance_profiles": [
+      "retrieval-sigmap-codex-live-v1",
+      "artifact-ponytail-codex-plugin-v1",
+      "retrieval-cartog-mcp-v1",
+      "retrieval-codegraph-codex-mcp-v1",
+      "retrieval-jcodemunch-codex-mcp-v2"
+    ],
+    "interpretation": "Cross-screen sign and magnitude changes establish instability of observed contrasts but do not isolate trajectory variance from baseline realization, execution time, runner generation, or changed TokenJuice/RTK guidance."
   }
 }
