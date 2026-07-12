@@ -20,6 +20,8 @@ import shutil
 import stat
 import subprocess
 import sys
+import tempfile
+import time
 from pathlib import Path
 from typing import Any
 
@@ -104,10 +106,11 @@ def build_profile_meta() -> dict[str, dict[str, Any]]:
 
 PROFILE_META: dict[str, dict[str, Any]] = build_profile_meta()
 
-DEFAULT_WORKFLOW_MODEL_CONDITION_ID = "codex-openai-gpt-5-3-codex-spark-medium"
-DEFAULT_WORKFLOW_MODEL = "gpt-5.3-codex-spark"
+DEFAULT_WORKFLOW_MODEL_CONDITION_ID = "codex-openai-gpt-5-6-terra-medium"
+DEFAULT_WORKFLOW_MODEL = "gpt-5.6-terra"
 DEFAULT_WORKFLOW_REASONING_EFFORT = "medium"
-RUNNER_CONTRACT_VERSION = "workflow-runner-v4"
+RUNNER_CONTRACT_VERSION = "workflow-runner-v5"
+MAX_CODEX_OPERATIONAL_RETRIES = 1
 
 
 def validate_default_model_condition() -> None:
@@ -124,7 +127,7 @@ def validate_default_model_condition() -> None:
         "reasoning_effort": DEFAULT_WORKFLOW_REASONING_EFFORT,
         "usage_accounting": "provider-billed Codex JSONL usage extracted by scripts/extract_codex_usage.py",
     }]:
-        raise ValueError("active workflow model condition must be codex-openai-gpt-5-3-codex-spark-medium")
+        raise ValueError("active workflow model condition must be codex-openai-gpt-5-6-terra-medium")
 
 LEAKY_PROMPT_LINE_PATTERNS = [
     re.compile(r"^Issue source:.*$", re.IGNORECASE),
@@ -1248,6 +1251,7 @@ def task_prompt(seq: dict[str, Any], profile_id: str, project: Path, order: int,
             "You are in one persistent repository checkout. Do not reset the repository.",
             "You will receive workflow prompts one at a time. Future prompts remain hidden until the current response completes.",
             "Complete only the current task. Preserve the working tree for later tasks.",
+            "Preserve all previously repaired behavior and do not trade one disclosed task contract for another.",
             "Source, agent, tool, index, and cache state persist without controller resets between tasks.",
             "All latent regressions are present in the initial repository, but only the current task prompt is disclosed.",
             "The visible git baseline is the composite broken-start state; do not assume `git diff` or history reveals the intended fixes.",
@@ -1258,6 +1262,7 @@ def task_prompt(seq: dict[str, Any], profile_id: str, project: Path, order: int,
             f"# Continue sequential workflow session: {seq['id']}",
             "",
             "Continue in the same source checkout and preserve earlier fixes.",
+            "Preserve all previously repaired behavior and do not trade one disclosed task contract for another.",
             "The controller did not run concealed verification, inject another regression, or refresh Git state between prompts.",
             "All regressions remain present from the initial composite broken start; only later task prompts remain hidden.",
             "Complete only the current task. Repository, agent, tool, index, and cache state continue unchanged except for your own work.",
@@ -1266,7 +1271,7 @@ def task_prompt(seq: dict[str, Any], profile_id: str, project: Path, order: int,
     preface.extend([
         f"## Current task {order}: {task_alias(order)}",
         "",
-        "Use model-visible tests as useful while working. The controller runs concealed verification only after the final task prompt.",
+        "Run the repository's model-visible behavioral and type checks for the current and previously disclosed work. Do not stop after syntax checks when executable validation is available. The controller runs concealed verification only after the final task prompt.",
         "",
         prompt_path.read_text(),
     ])
@@ -1383,6 +1388,24 @@ def extract_thread_id(events_path: Path) -> str | None:
     return None
 
 
+def retryable_codex_operational_failure(events_path: Path) -> bool:
+    """Recognize the narrow malformed-tool-call failure observed in Codex JSONL."""
+    if not events_path.exists():
+        return False
+    for line in events_path.read_text(errors="replace").splitlines():
+        try:
+            event = json.loads(line)
+        except json.JSONDecodeError:
+            continue
+        if event.get("type") != "turn.failed":
+            continue
+        error = event.get("error")
+        message = error.get("message", "") if isinstance(error, dict) else str(error or "")
+        if "failed to parse function arguments" in message and "EOF while parsing an object" in message:
+            return True
+    return False
+
+
 def run_codex_task(
     record: dict[str, Any],
     profile_id: str,
@@ -1398,37 +1421,57 @@ def run_codex_task(
 ) -> tuple[int, str | None]:
     cfg = fixture.active_tool_config(record, profile_id)
     repo = ROOT / record["target"]["repository_path"]
-    if thread_id is None:
-        codex_cmd = [*codex_base_cmd(record), "--sandbox", "danger-full-access", "--cd", str(repo), "--output-last-message", str(last_message_path), "-"]
-    else:
-        codex_cmd = ["codex", "exec", "resume", *fixture.codex_model_args(record), "--json", "--disable", "hooks", "--ignore-rules", "--output-last-message", str(last_message_path), thread_id, "-"]
     wrapper = (cfg or {}).get("codex_wrapper") if cfg else None
-    input_path_for_proc: Path | None = prompt_path
-    if wrapper:
-        assert cfg is not None
-        data_dir = fixture.tool_data_dir(codex_home, cfg)
-        wrapper_args = [
-            str(part).format(
-                repo=repo,
-                codex_home=codex_home,
-                tool_data_dir=data_dir,
-                repo_slug=repo.name.replace("-", "_"),
-            )
-            for part in wrapper.get("args", [])
-        ]
-        if codex_cmd and codex_cmd[-1] == "-":
-            codex_cmd = [*codex_cmd[:-1], prompt_path.read_text()]
-            input_path_for_proc = None
-        cmd = [str(wrapper["command"]), *wrapper_args, *codex_cmd[1:]]
-    else:
-        cmd = codex_cmd
     env = fixture.codex_env(codex_home, containerized=True, cfg=cfg)
     env.update(fixture.tool_env_for_record(record, profile_id, codex_home))
     mounts = model_mounts_for_record(record, codex_home, run_dir, cfg=cfg)
-    proc = fixture.run_backend(cmd, backend="docker", docker_image=docker_image, cwd=repo, env=env, stdout_path=output_path, input_path=input_path_for_proc, timeout=timeout, mounts=mounts)
-    if thread_id is None and proc.returncode == 0:
-        thread_id = extract_thread_id(output_path)
-    return proc.returncode, thread_id
+
+    def execute(active_prompt: Path, events: Path, active_thread: str | None, attempt_timeout: int) -> int:
+        if active_thread is None:
+            codex_cmd = [*codex_base_cmd(record), "--sandbox", "danger-full-access", "--cd", str(repo), "--output-last-message", str(last_message_path), "-"]
+        else:
+            codex_cmd = ["codex", "exec", "resume", *fixture.codex_model_args(record), "--json", "--disable", "hooks", "--ignore-rules", "--output-last-message", str(last_message_path), active_thread, "-"]
+        input_path_for_proc: Path | None = active_prompt
+        if wrapper:
+            assert cfg is not None
+            data_dir = fixture.tool_data_dir(codex_home, cfg)
+            wrapper_args = [
+                str(part).format(
+                    repo=repo,
+                    codex_home=codex_home,
+                    tool_data_dir=data_dir,
+                    repo_slug=repo.name.replace("-", "_"),
+                )
+                for part in wrapper.get("args", [])
+            ]
+            if codex_cmd[-1] == "-":
+                codex_cmd = [*codex_cmd[:-1], active_prompt.read_text()]
+                input_path_for_proc = None
+            cmd = [str(wrapper["command"]), *wrapper_args, *codex_cmd[1:]]
+        else:
+            cmd = codex_cmd
+        proc = fixture.run_backend(cmd, backend="docker", docker_image=docker_image, cwd=repo, env=env, stdout_path=events, input_path=input_path_for_proc, timeout=attempt_timeout, mounts=mounts)
+        return proc.returncode
+
+    deadline = time.monotonic() + timeout
+    code = execute(prompt_path, output_path, thread_id, timeout)
+    captured_thread = thread_id or extract_thread_id(output_path)
+    remaining_timeout = max(0, int(deadline - time.monotonic()))
+    if code != 0 and remaining_timeout > 0 and MAX_CODEX_OPERATIONAL_RETRIES > 0 and captured_thread and retryable_codex_operational_failure(output_path):
+        retry_prompt = prompt_path.with_name(f"{prompt_path.stem}-operational-retry-01.md")
+        retry_prompt.write_text(
+            "The previous turn ended because Codex emitted a malformed tool call before completion. "
+            "This is one operational retry of the same task, not a new task. Inspect the current repository state, "
+            "preserve valid work already made, complete the currently active task, and run its available validation.\n"
+        )
+        retry_events = output_path.with_name(f"{output_path.stem}-retry-01{output_path.suffix}")
+        retry_code = execute(retry_prompt, retry_events, captured_thread, remaining_timeout)
+        original_text = output_path.read_text(errors="replace")
+        retry_text = retry_events.read_text(errors="replace")
+        separator = "" if not original_text or original_text.endswith("\n") else "\n"
+        output_path.write_text(original_text + separator + retry_text)
+        code = retry_code
+    return code, captured_thread
 
 
 def run_final_verifier(seq: dict[str, Any], record: dict[str, Any], codex_home: Path, run_dir: Path, docker_image: str) -> int:
@@ -2010,6 +2053,7 @@ def run_one(args: argparse.Namespace) -> dict[str, Any]:
             "accepted": None,
             "task_delta": rel(run_dir / f"task-{order:02d}-agent.diff"),
             "usage_events": rel(events_path),
+            "operational_retry_count": len(list(prompt_dir.glob(f"task-{order:02d}-operational-retry-*.md"))),
         })
         if not task_checkpoint_allows_continue(
             codex_exit_code=code,

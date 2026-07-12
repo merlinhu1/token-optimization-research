@@ -636,8 +636,8 @@ def validate_agent_runtimes(runtime_doc: dict, errors: list[str]) -> tuple[set[s
             if not condition.get(key):
                 errors.append(f"model condition {cid} missing {key}")
     active_defaults = [condition for condition in conditions if condition.get("status") == "active-default"]
-    if len(active_defaults) != 1 or active_defaults[0].get("id") != "codex-openai-gpt-5-3-codex-spark-medium" or active_defaults[0].get("model") != "gpt-5.3-codex-spark" or active_defaults[0].get("reasoning_effort") != "medium":
-        errors.append("the only active default model condition must be codex-openai-gpt-5-3-codex-spark-medium")
+    if len(active_defaults) != 1 or active_defaults[0].get("id") != "codex-openai-gpt-5-6-terra-medium" or active_defaults[0].get("model") != "gpt-5.6-terra" or active_defaults[0].get("reasoning_effort") != "medium":
+        errors.append("the only active default model condition must be codex-openai-gpt-5-6-terra-medium")
     return runtime_ids, condition_ids
 
 
