@@ -1,5 +1,3 @@
-# Beets Baseline V2 task family
+# beetbox-beets Baseline V2 task family — historical
 
-Active lifecycle-v0 generation for future execution. The persistent sequence remains feature → behavior-preserving refactor → review/correction. Each task changes exactly one production file, supplies the exact edit, runs a focused visible test, and includes formatting in the sole validation command.
-
-Provider-free qualification passes. Treatment protocol freezing, preparation, and execution are machine-blocked until the designated GPT-5.6 Sol/`high` bare-model pilot is independently audited with every required incident count equal to zero.
+Baseline V2 is a superseded, non-rerunnable generation retained only for failure analysis and historical protocol reconciliation. It is not an active or future-execution surface. Active provider-free-qualified tasks live under `../baseline-v3/`; no paid Baseline V3 or treatment run is authorized by this note.

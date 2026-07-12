@@ -3,9 +3,9 @@
   "audit_id": "baseline-v2-task-family-qualification-20260721",
   "recorded_on": "2026-07-21",
   "task_family_generation": "baseline-v2",
-  "scope": "provider-free fixture qualification and frozen bare-model pilot contracts",
-  "decision": "Activate Baseline V2 for future execution; preserve assisted-v1 sessions and protocols as immutable historical evidence but do not launch comparable treatments from that rejected task family.",
-  "reason": "The designated strongest-model assisted-v1 pilot contained corrected implementation mistakes and one surviving hidden-contract regression, so task difficulty was nuisance variance for the provider-token estimand.",
+  "scope": "historical provider-free Baseline V2 qualification retained after its paid pilot failed operationally",
+  "decision": "Retire Baseline V2 permanently: its paid pilot failed operationally, its identities are occupied, and it is not eligible for rerun, treatment launch, or future execution.",
+  "reason": "The paid Baseline V2 pilot is recorded by baseline-v2-pilot-zero-mistake.json as failed-operationally-invalid and rolled back without published sessions or comparisons; Baseline V3 is the distinct active replacement generation.",
   "design_contract": {
     "persistent_tasks_per_sequence": 3,
     "ordered_classes": [
@@ -23,8 +23,8 @@
     "allowed_unique_model_incidents": 0,
     "allowed_corrected_implementation_mistakes": 0,
     "allowed_unresolved_defects": 0,
-    "status": "provider-pilot-required",
-    "treatment_launch_policy": "blocked until one first-valid strongest-model pilot is independently audited with all eight required observed counts equal to integer zero",
+    "status": "failed-pilot-identity-occupied",
+    "treatment_launch_policy": "permanently blocked for Baseline V2; only a distinct generation may prepare a new baseline",
     "model": "gpt-5.6-sol",
     "reasoning_effort": "high",
     "allowed_prohibited_operations": 0,
@@ -34,19 +34,21 @@
     "allowed_verifier_or_environment_failures": 0,
     "incident_counting": "unique-auditable-not-command-count",
     "pilot_audit_path": "sources/evaluations/audits/baseline-v2-pilot-zero-mistake.json",
-    "current_status": "provider-pilot-required",
-    "treatment_launch": "blocked"
+    "current_status": "failed-operationally-invalid",
+    "treatment_launch": "blocked",
+    "pilot_audit_present": true
   },
   "provider_accounting": {
     "provider_calls": 0,
     "provider_tokens": 0,
-    "provider_result_available": false
+    "provider_result_available": false,
+    "scope": "provider-free qualification only; paid-pilot accounting is authoritative in baseline-v2-pilot-zero-mistake.json"
   },
   "totals": {
     "sequences": 3,
     "tasks": 9,
     "provider_free_qualified_sequences": 3,
-    "frozen_pilot_protocols": 3
+    "frozen_pilot_protocols": 0
   },
   "sequences": [
     {
@@ -67,18 +69,7 @@
         "full_fixed_cumulative_verifier_zero": true,
         "no_unmerged_paths": true
       },
-      "frozen_baseline_protocols": [
-        {
-          "path": "sources/evaluations/protocols/fastify-lifecycle-sequence-v0-baseline-bare-codex-7e0b56951186.json",
-          "protocol_id": "fastify-lifecycle-sequence-v0-baseline-bare-codex-7e0b56951186",
-          "protocol_sha256": "266ef74bd9f53b76e620cbccb50a1997ca74f67194c45699adeb56e646714f45",
-          "status": "frozen-ready-not-run",
-          "baseline_pool_fingerprint": "ec3aea5e0625",
-          "qualification_sha256": "bb22d1bc8c647dc5338da76df5a7e96b27d593fcbdac0b3be2397495863847e3",
-          "selected_execution_sha256": "5be2bbdb11de6898e878922045d0203066a82bc13aa6c31a86eaa8f08a73c04f",
-          "model_condition_id": "codex-openai-gpt-5-6-sol-high"
-        }
-      ],
+      "frozen_baseline_protocols": [],
       "acceptance_visibility": "model-visible-complete",
       "all_acceptance_behavior_model_visible": true,
       "no_model_concealed_acceptance_assets": true,
@@ -127,18 +118,7 @@
         "full_fixed_cumulative_verifier_zero": true,
         "no_unmerged_paths": true
       },
-      "frozen_baseline_protocols": [
-        {
-          "path": "sources/evaluations/protocols/beets-lifecycle-sequence-v0-baseline-bare-codex-a1440ab93fb0.json",
-          "protocol_id": "beets-lifecycle-sequence-v0-baseline-bare-codex-a1440ab93fb0",
-          "protocol_sha256": "f39b84e5d74a752406b67be92bdd0e377899933b734987adce21bda3f22b05ed",
-          "status": "frozen-ready-not-run",
-          "baseline_pool_fingerprint": "57c6571e446a",
-          "qualification_sha256": "58b8953f6d923ea19feb4aa12dd064eedfeac5332ae9c99295ccd9ddc391b28d",
-          "selected_execution_sha256": "cddd9d1bbcfd963aa98960ca02d2be525f74dbb63285fc9b1c7ff52726a1eb36",
-          "model_condition_id": "codex-openai-gpt-5-6-sol-high"
-        }
-      ],
+      "frozen_baseline_protocols": [],
       "acceptance_visibility": "model-visible-complete",
       "all_acceptance_behavior_model_visible": true,
       "no_model_concealed_acceptance_assets": true,
@@ -181,18 +161,7 @@
         "full_fixed_cumulative_verifier_zero": true,
         "no_unmerged_paths": true
       },
-      "frozen_baseline_protocols": [
-        {
-          "path": "sources/evaluations/protocols/terraform-lifecycle-sequence-v0-baseline-bare-codex-c4d7e1380b80.json",
-          "protocol_id": "terraform-lifecycle-sequence-v0-baseline-bare-codex-c4d7e1380b80",
-          "protocol_sha256": "0c57a7ffbc8b5e4d569e7cc0bc35bd53fb01a3c62b42f0a61ab2f190c969207f",
-          "status": "frozen-ready-not-run",
-          "baseline_pool_fingerprint": "013661d9ebd5",
-          "qualification_sha256": "a27283fbc428f53ceaa4134e16e009db111fc4220e460eb798106a1d1d27666e",
-          "selected_execution_sha256": "f87d448f4b6b500741d804af101bb1b8ec5455af9ce2fa8197661555e578968e",
-          "model_condition_id": "codex-openai-gpt-5-6-sol-high"
-        }
-      ],
+      "frozen_baseline_protocols": [],
       "acceptance_visibility": "model-visible-complete",
       "all_acceptance_behavior_model_visible": true,
       "no_model_concealed_acceptance_assets": true,
@@ -280,8 +249,8 @@
     "allowed_unique_model_incidents": 0,
     "allowed_corrected_implementation_mistakes": 0,
     "allowed_unresolved_defects": 0,
-    "status": "provider-pilot-required",
-    "treatment_launch_policy": "blocked until one first-valid strongest-model pilot is independently audited with all eight required observed counts equal to integer zero",
+    "status": "failed-pilot-identity-occupied",
+    "treatment_launch_policy": "permanently blocked for Baseline V2; only a distinct generation may prepare a new baseline",
     "model": "gpt-5.6-sol",
     "reasoning_effort": "high",
     "allowed_prohibited_operations": 0,
@@ -290,12 +259,15 @@
     "allowed_code_rework_events": 0,
     "allowed_verifier_or_environment_failures": 0,
     "incident_counting": "unique-auditable-not-command-count",
-    "pilot_audit_path": "sources/evaluations/audits/baseline-v2-pilot-zero-mistake.json"
+    "pilot_audit_path": "sources/evaluations/audits/baseline-v2-pilot-zero-mistake.json",
+    "current_status": "failed-operationally-invalid",
+    "treatment_launch": "blocked",
+    "pilot_audit_present": true
   },
   "treatment_gate": {
-    "status": "blocked-pending-pilot-audit",
+    "status": "blocked-failed-pilot-identity-occupied",
     "pilot_audit_path": "sources/evaluations/audits/baseline-v2-pilot-zero-mistake.json",
-    "pilot_audit_present": false,
+    "pilot_audit_present": true,
     "enforced_at": [
       "treatment-protocol-freeze",
       "matrix-treatment-plan",
@@ -313,43 +285,9 @@
       "observed_verifier_or_environment_failures"
     ],
     "exact_binding_requirements": [
-      "exactly one attempted session in the current sequence/baseline-profile/exact-protocol/pool/r0 coordinate, regardless of mislabeled role or stale selected execution, and it is the audit-selected session",
-      "all ordered task results have successful agent and controller exits, passed controller verification, acceptance, and zero operational retries",
-      "software-quality aggregates exactly match all tasks attempted/passed and both final/functional verifier outcomes passed",
-      "canonical codex-jsonl-usage-events evidence includes all six provider-token fields with strict types, valid arithmetic, and an exact run-record/registry match",
-      "OpenAI Codex runtime identity plus baseline-bare-codex execution role and selected profile",
-      "exact Docker and tool-adapter identities matching current selected execution and compact run record",
-      "canonical distinct artifact-key mapping to run.json, changes.diff, evidence.jsonl.gz, and manifest.sha256 with exactly-once manifest coverage and verified digests",
-      "protocol ID and path cryptographically recomputed from the exact current baseline and selected-execution descriptors",
-      "current designated Sol/high protocol bytes and SHA-256",
-      "current qualification SHA-256",
-      "current baseline-pool fingerprint",
-      "current selected-execution descriptor SHA-256",
-      "controller verifier scripts and canonical copies remain hidden while every declared focused acceptance-test path is model-visible",
-      "all required observed counts are JSON integer zero",
-      "one shared production lock spans direct-run slot checking through compact-artifact publication and atomic registry slot recheck; matrix children inherit the same held lock",
-      "matrix planning has no weaker hard-baseline fallback and delegates baseline reuse exclusively to the canonical session predicate",
-      "compact artifact roots contain exactly four nonsymlink regular files with no undeclared files, directories, or symlinks",
-      "registry, selected execution, and compact run record bind the exact runtime/provider/model/model-condition/reasoning tuple",
-      "direct Baseline V2 execution requires the canonical protocol ID, filename, repository-relative path, and descriptor identity before setup or provider spend",
-      "direct treatment execution requires a reusable canonical same-sequence/pool/replicate baseline before setup or provider spend",
-      "matrix publication atomically rereads and replaces the registry and rejects full provider-slot collisions across retained and batch records",
-      "canonical reusable baselines bind top-level baseline role/profile and selected-execution baseline role/profile",
-      "compact artifact roots equal sources/evaluations/workflow-sessions/<session_id> exactly",
-      "accepted schema-v2 treatments require a resolved canonical sequence/pool/replicate-matched baseline session binding",
-      "matrix lane returns bind exactly to the planned sequence/profile/replicate/protocol/pool/selected-execution tuple before artifact copy",
-      "matrix artifact ingress validates declared canonical paths, exact root entries, manifest hashes, run-record equality, and runtime identity before publication",
-      "matrix publication and generated-authority updates roll back atomically on any exception or post-publication validation failure",
-      "canonical non-baseline selected-execution roles equal their profile session role, including individual_tool_treatment and stack_treatment",
-      "compact evidence bundles are nonempty bounded valid gzip streams of unique relative-path JSONL evidence objects",
-      "replicate indexes and decision-bearing provider-token totals require exact non-boolean JSON integers",
-      "matrix publication tracks artifact, registry replacement, and comparison mutations before each side effect",
-      "post-publication repository validation includes the workflow contract suite before acceptance",
-      "repository and runtime ingress share one total- and per-record-bounded canonical gzip JSONL evidence validator",
-      "accepted treatments resolve only to an error-free canonical schema-v2 baseline with exact protocol, selected execution, provider usage, and intact compact evidence",
-      "nonbaseline execution roles equal the exact canonical profile-derived individual_tool_treatment or stack_treatment role",
-      "all provider-token components and replicate indexes are exact non-boolean integers with canonical token arithmetic",
-      "matrix rollback catches process-level interrupts, tracks mutations before side effects, aggregates rollback errors, and publishes comparisons atomically without overwrite"
+      "Baseline V2 paid-pilot identities remain permanently occupied",
+      "Baseline V2 cannot be rerun or used to launch treatments",
+      "Any future baseline must use a distinct generation and independently audited protocol identities"
     ]
   },
   "acceptance_visibility": {
@@ -357,26 +295,7 @@
     "model_concealed_paths": [],
     "undisclosed_inline_verifier_assertions": 0
   },
-  "protocols": [
-    {
-      "sequence_id": "fastify-lifecycle-sequence-v0",
-      "protocol_id": "fastify-lifecycle-sequence-v0-baseline-bare-codex-7e0b56951186",
-      "path": "sources/evaluations/protocols/fastify-lifecycle-sequence-v0-baseline-bare-codex-7e0b56951186.json",
-      "sha256": "266ef74bd9f53b76e620cbccb50a1997ca74f67194c45699adeb56e646714f45"
-    },
-    {
-      "sequence_id": "beets-lifecycle-sequence-v0",
-      "protocol_id": "beets-lifecycle-sequence-v0-baseline-bare-codex-a1440ab93fb0",
-      "path": "sources/evaluations/protocols/beets-lifecycle-sequence-v0-baseline-bare-codex-a1440ab93fb0.json",
-      "sha256": "f39b84e5d74a752406b67be92bdd0e377899933b734987adce21bda3f22b05ed"
-    },
-    {
-      "sequence_id": "terraform-lifecycle-sequence-v0",
-      "protocol_id": "terraform-lifecycle-sequence-v0-baseline-bare-codex-c4d7e1380b80",
-      "path": "sources/evaluations/protocols/terraform-lifecycle-sequence-v0-baseline-bare-codex-c4d7e1380b80.json",
-      "sha256": "0c57a7ffbc8b5e4d569e7cc0bc35bd53fb01a3c62b42f0a61ab2f190c969207f"
-    }
-  ],
+  "protocols": [],
   "latest_prepare_matrix": {
     "evidence_classification": "non-authoritative-scratch",
     "repository_artifact": null,
@@ -394,5 +313,13 @@
     "prepare_matrix_passed": 3,
     "provider_calls": 0,
     "provider_tokens": 0
+  },
+  "supersession": {
+    "status": "retired-failed-pilot-identity-occupied",
+    "superseded_by_generation": "baseline-v3",
+    "paid_pilot_audit": "sources/evaluations/audits/baseline-v2-pilot-zero-mistake.json",
+    "paid_pilot_passed": false,
+    "rerun_allowed": false,
+    "treatment_launch_allowed": false
   }
 }

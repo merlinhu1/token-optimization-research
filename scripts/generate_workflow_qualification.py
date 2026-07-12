@@ -192,10 +192,10 @@ def main() -> int:
         patch = task_dir / "seed-regression.patch"
         verifier = task_dir / "verify.sh"
         controller_visible = task_dir / "controller-visible"
-        expected_acceptance_paths = validation.BASELINE_V2_ACCEPTANCE_ASSET_PATHS.get(task["id"])
+        expected_acceptance_paths = validation.BASELINE_V3_ACCEPTANCE_ASSET_PATHS.get(task["id"])
         declared_acceptance_paths = task.get("model_visible_acceptance_asset_paths")
         if expected_acceptance_paths is None or declared_acceptance_paths != expected_acceptance_paths:
-            raise SystemExit(f"{task['id']} does not declare the exact Baseline V2 file-backed acceptance assets")
+            raise SystemExit(f"{task['id']} does not declare the exact low-complexity baseline file-backed acceptance assets")
         controller_visible_acceptance_assets = [
             {
                 "path": str(Path("controller-visible") / path_text),
@@ -312,7 +312,7 @@ def main() -> int:
         expected_visible_asset_count = 0
         for task in ordered:
             task_dir = (ROOT / task["prompt_path"]).parent
-            acceptance_paths = validation.BASELINE_V2_ACCEPTANCE_ASSET_PATHS[task["id"]]
+            acceptance_paths = validation.BASELINE_V3_ACCEPTANCE_ASSET_PATHS[task["id"]]
             expected_visible_asset_count += len(acceptance_paths)
             for path_text in acceptance_paths:
                 controller_visible = task_dir / "controller-visible" / path_text
@@ -356,7 +356,7 @@ def main() -> int:
     cumulative = all(call(["bash", str((ROOT / task["verifier_command"]).resolve())], checkout, env=qualification_env) == 0 for task in ordered)
     unmerged = not out(["git", "diff", "--name-only", "--diff-filter=U"], checkout)
     hidden = all(not (checkout / path).exists() for path in concealed_paths(sequence))
-    is_baseline_v2 = sequence.get("task_family_generation") == "baseline-v2"
+    is_baseline_v2 = sequence.get("task_family_generation") in {"baseline-v2", "baseline-v3"}
     undisclosed_inline_markers = ("<<'NODE'", '<<"NODE"', "<<'PY'", '<<"PY"', "<<'TS'", '<<"TS"', "workflow-hidden")
     all_acceptance_behavior_model_visible = all(
         task.get("acceptance_visibility") == "model-visible-complete"
@@ -406,7 +406,7 @@ def main() -> int:
         "all_acceptance_behavior_model_visible": all_acceptance_behavior_model_visible,
         "model_visible_acceptance_assets_match_verifier_copies": visible_acceptance_assets_byte_exact,
         "expected_model_visible_acceptance_asset_count": sum(
-            len(validation.BASELINE_V2_ACCEPTANCE_ASSET_PATHS[task["id"]]) for task in ordered
+            len(validation.BASELINE_V3_ACCEPTANCE_ASSET_PATHS[task["id"]]) for task in ordered
         ),
         "all_expected_model_concealment_declared": all(record["declared_concealment_matches_expected"] for record in records),
     }

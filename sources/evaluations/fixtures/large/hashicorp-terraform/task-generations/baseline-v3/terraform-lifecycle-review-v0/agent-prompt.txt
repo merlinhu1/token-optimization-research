@@ -1,0 +1,28 @@
+Baseline V3 mechanical review correction — restore the `var` input-variable address prefix. Do not discover or redesign anything.
+
+## Implementation recipe
+
+Only `internal/addrs/checkable.go` may change. The complete visible acceptance asset is `internal/addrs/baseline_v3_checkable_test.go`. Copy and run this command exactly:
+
+```bash
+export PATH=/opt/data/bin:/opt/data/opt/go/bin:$PATH
+python3 - <<'PY'
+from pathlib import Path
+p = Path("internal/addrs/checkable.go")
+s = p.read_text()
+old = 'name, nameDiags := getCheckableName("input", "variable value")'
+new = 'name, nameDiags := getCheckableName("var", "variable value")'
+assert s.count(old) == 1
+p.write_text(s.replace(old, new))
+PY
+gofmt -w internal/addrs/checkable.go
+go test ./internal/addrs -run '^TestBaselineV3ParseInputVariableCheckable$'
+```
+
+## Validation recipe
+
+The command block above runs the complete focused validation.
+
+## Stop condition
+
+Do not inspect, search, modify tests, run anything else, or evaluate aggregate Git state. Run the command block exactly once and stop immediately when it exits 0. Earlier task edits intentionally remain in the persistent checkout.

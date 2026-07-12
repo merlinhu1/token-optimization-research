@@ -199,7 +199,7 @@ def render() -> str:
                 + (
                     ". Only an unoccupied designated baseline pilot identity may run before its independent zero-incident audit passes."
                     if any_pilot_allowed
-                    else ". The failed pilot identities are occupied; no baseline rerun or treatment may run until simpler generations and new audit identities are explicitly authorized."
+                    else ". The designated pilot identities are occupied by immutable attempt evidence or a completed audit. No baseline rerun or treatment may run while the attempt awaits independent classification; a failed classification requires a simpler generation and new audit identities."
                 )
             )
         if pending_baselines:
@@ -271,6 +271,13 @@ def render() -> str:
     else:
         execution_text = "Paid lane, pair, and matrix execution is disabled because no sequence is active. Planned sequences accept `--prepare-only` for fixture repair, but non-prepare runs fail before model execution."
 
+    if sequences:
+        prepare_sequence_id = sequences[0]["id"]
+        prepare_model_flags = sequence_model_flags(sequences[0])
+    else:
+        prepare_sequence_id = "<frozen-sequence-id>"
+        prepare_model_flags = "<frozen-model-condition-flags>"
+
     return f"""# Workflow Evaluation Runbook
 
 This generated runbook reflects current workflow-sequence readiness.
@@ -286,7 +293,7 @@ python3 scripts/validate_repository.py
 
 ## Evidence boundary
 
-A valid Baseline V2 workflow pre-seeds every regression and its focused model-visible acceptance test into one qualified composite broken root, then materializes one prompt at a time. Seed patch files, controller scripts, and fixed parents remain outside the model-visible surface; final verification repeats only the commands and behavior disclosed in each prompt. Product-effect eligibility also requires parity with the pinned official Codex integration and positive treatment-assignment evidence; MCP configuration/listing alone is insufficient.
+A valid Baseline V3 workflow pre-seeds every regression and its focused model-visible acceptance test into one qualified composite broken root, then materializes one prompt at a time. Each prompt supplies one exact mechanical old-to-new edit command plus only its focused validation command; Beets uses the locked project environment and Terraform exports the pinned Go toolchain path explicitly. Seed patch files, controller scripts, and fixed parents remain outside the model-visible surface; final verification repeats only the commands and behavior disclosed in each prompt. Product-effect eligibility also requires parity with the pinned official Codex integration and positive treatment-assignment evidence; MCP configuration/listing alone is insufficient.
 
 Every active task must use causally related behavioral acceptance. Unrelated exact-source restoration guards are not valid complexity.
 
@@ -314,8 +321,8 @@ Before changing a sequence to `active`, require:
 A no-model prepare for a frozen candidate is allowed:
 
 ```bash
-SEQUENCE_ID=<frozen-sequence-id>
-python3 scripts/run_sequential_workflow_matrix.py --prepare-only "$SEQUENCE_ID"
+SEQUENCE_ID={prepare_sequence_id}
+python3 scripts/run_sequential_workflow_matrix.py "$SEQUENCE_ID" {prepare_model_flags} --prepare-only
 ```
 
 `prepare-verification.json` must show every task preseeded, only task 1's prompt materialized, a clean true-root Git baseline, no fixed commit object or prior reflog, current composite qualification, no controller seed/verifier files in the model root, and the declared focused acceptance tests visible.

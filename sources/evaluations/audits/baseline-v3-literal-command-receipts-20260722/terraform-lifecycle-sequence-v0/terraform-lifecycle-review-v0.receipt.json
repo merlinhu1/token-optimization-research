@@ -1,0 +1,54 @@
+{
+  "schema_version": 1,
+  "evidence_classification": "provider-free-production-container-rehearsal",
+  "date": "2026-07-22",
+  "sequence_id": "terraform-lifecycle-sequence-v0",
+  "task_id": "terraform-lifecycle-review-v0",
+  "task_order": 3,
+  "fixture_commit": "e02391ad384c9c38f1d7f40b853c0d2297348094",
+  "dependency_lockfiles": [
+    {
+      "path": "go.sum",
+      "sha256": "be9ec949db0a0b135197f2c78b6d9821d764cc9b8c362b4860e3d5a1e9c74b9e"
+    }
+  ],
+  "container": {
+    "image_ref": "token-eval-codex:latest",
+    "image_id": "sha256:6f86d01f2c63f5029c6bb874d8f3694c24d5cd567e3d09413eccc956ba3feafe",
+    "repo_digest": "token-eval-codex@sha256:6f86d01f2c63f5029c6bb874d8f3694c24d5cd567e3d09413eccc956ba3feafe"
+  },
+  "production_bootstrap": {
+    "shell": [
+      "bash",
+      "-c"
+    ],
+    "command": "go mod download",
+    "path_prefix": "/opt/data/bin:/opt/data/opt/go/bin",
+    "exit_code": 0,
+    "log_path": "sources/evaluations/audits/baseline-v3-literal-command-receipts-20260722/terraform-lifecycle-sequence-v0/setup-deps-output.txt",
+    "log_sha256": "3cb474ce01882bab8470dcac0f052845a8de32d53d9dfdd99fd8aae07ac48a79"
+  },
+  "literal_command": {
+    "prompt_path": "sources/evaluations/fixtures/large/hashicorp-terraform/task-generations/baseline-v3/terraform-lifecycle-review-v0/agent-prompt.txt",
+    "prompt_sha256": "21e77063ef433a113dce597751404593dedad14893aa8111f1997b7834d09b0b",
+    "command_block": "export PATH=/opt/data/bin:/opt/data/opt/go/bin:$PATH\npython3 - <<'PY'\nfrom pathlib import Path\np = Path(\"internal/addrs/checkable.go\")\ns = p.read_text()\nold = 'name, nameDiags := getCheckableName(\"input\", \"variable value\")'\nnew = 'name, nameDiags := getCheckableName(\"var\", \"variable value\")'\nassert s.count(old) == 1\np.write_text(s.replace(old, new))\nPY\ngofmt -w internal/addrs/checkable.go\ngo test ./internal/addrs -run '^TestBaselineV3ParseInputVariableCheckable$'",
+    "command_sha256": "40c2e42af777ae79c6a3c7d6c442ae1c05b3e670942364dbdf2e60a9f4a28307",
+    "exit_code": 0,
+    "log_path": "sources/evaluations/audits/baseline-v3-literal-command-receipts-20260722/terraform-lifecycle-sequence-v0/terraform-lifecycle-review-v0.command.log",
+    "log_sha256": "ea0b4c4f3fa4ef25407ce4c71c098213bd0998036e46d81aba5e0763de8b9d4e",
+    "selected_test_names": [
+      "TestBaselineV3ParseInputVariableCheckable"
+    ]
+  },
+  "controller_verifier": {
+    "path": "sources/evaluations/fixtures/large/hashicorp-terraform/task-generations/baseline-v3/terraform-lifecycle-review-v0/verify.sh",
+    "sha256": "23284f56fb5b7137b34a5201af6f4deef2be32e3d37481f36d6a17d6afff1f35",
+    "exit_code": 0,
+    "log_path": "sources/evaluations/audits/baseline-v3-literal-command-receipts-20260722/terraform-lifecycle-sequence-v0/terraform-lifecycle-review-v0.verifier.log",
+    "log_sha256": "2212073f14f681e7029f81880e3cf9d7914e50fcf2067def99e67dfbf61a0af6"
+  },
+  "persistent_cumulative_workflow": true,
+  "provider_calls": 0,
+  "provider_tokens": 0,
+  "passed": true
+}

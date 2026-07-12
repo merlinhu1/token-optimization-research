@@ -1,0 +1,31 @@
+Baseline V3 mechanical review correction — replace the disclosed HTTP 413 values with HTTP 414. Do not discover or redesign anything.
+
+## Implementation recipe
+
+Only `fastify.js` and `lib/errors.js` may change. Copy and run this command exactly:
+
+```bash
+python3 - <<'PY'
+from pathlib import Path
+edits = {
+    "fastify.js": [("      statusCode: 413", "      statusCode: 414"), ("    res.writeHead(413, {", "    res.writeHead(414, {")],
+    "lib/errors.js": [("    413,\n    URIError", "    414,\n    URIError")],
+}
+for name, replacements in edits.items():
+    p = Path(name)
+    s = p.read_text()
+    for old, new in replacements:
+        assert s.count(old) == 1, (name, old)
+        s = s.replace(old, new)
+    p.write_text(s)
+PY
+node --test test/baseline-v3-max-param.test.js
+```
+
+## Validation recipe
+
+The command block above runs the complete focused validation for `FST_ERR_MAX_PARAM_LENGTH`.
+
+## Stop condition
+
+Do not inspect, search, modify tests, run anything else, or evaluate aggregate Git state. Run the command block exactly once and stop immediately when it exits 0. Earlier task edits intentionally remain in the persistent checkout.
