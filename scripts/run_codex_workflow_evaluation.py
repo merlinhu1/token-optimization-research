@@ -27,6 +27,7 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "scripts"))
 import extract_codex_usage  # type: ignore
 import run_codex_fixture_evaluation as fixture  # type: ignore
+import validate_repository as repository_validation  # type: ignore
 
 DEFAULT_DOCKER_IMAGE = "token-eval-codex:latest"
 DEFAULT_SOURCE_CODEX_HOME = Path(os.environ.get("CODEX_HOME", "/opt/data/home/.codex"))
@@ -34,21 +35,18 @@ DATE = dt.datetime.now(dt.UTC).date().isoformat()
 COMPACT_ARTIFACT_NAMES = {"run.json", "changes.diff", "evidence.jsonl.gz", "manifest.sha256"}
 
 PROJECT_META: dict[str, dict[str, str]] = {
-    "large-django-django": {
-        "project_id": "django-django",
-        "dependency_command": "python3 -m venv .venv && . .venv/bin/activate && python -m pip install -q --upgrade pip setuptools wheel && python -m pip install -q -e .",
-    },
-    "medium-psf-requests": {
-        "project_id": "psf-requests",
-        "dependency_command": "python3 -m venv .venv && . .venv/bin/activate && python -m pip install -q --upgrade pip setuptools wheel && python -m pip install -q -e . 'pytest<9' pytest-httpbin==2.1.0 'httpbin~=0.10.0' pytest-cov pytest-mock pytest-xdist trustme PySocks",
-    },
-    "medium-pallets-flask": {
-        "project_id": "pallets-flask",
-        "dependency_command": "python3 -m venv .venv && . .venv/bin/activate && python -m pip install -q --upgrade pip setuptools wheel && python -m pip install -q -e . 'pytest<9' asgiref python-dotenv",
-    },
     "medium-fastify-fastify": {
         "project_id": "fastify-fastify",
         "dependency_command": "npm install --ignore-scripts --no-audit --no-fund",
+    },
+    "large-hashicorp-terraform": {
+        "project_id": "hashicorp-terraform",
+        "dependency_command": "go mod download",
+        "dependency_environment": {"PATH": "/opt/data/bin:/opt/data/opt/go/bin:{PATH}"},
+    },
+    "medium-beetbox-beets": {
+        "project_id": "beetbox-beets",
+        "dependency_command": "uv sync --group test",
     },
 }
 
@@ -110,6 +108,23 @@ DEFAULT_WORKFLOW_MODEL_CONDITION_ID = "codex-openai-gpt-5-6-terra-medium"
 DEFAULT_WORKFLOW_MODEL = "gpt-5.6-terra"
 DEFAULT_WORKFLOW_REASONING_EFFORT = "medium"
 RUNNER_CONTRACT_VERSION = "workflow-runner-v4"
+
+
+def validate_default_model_condition() -> None:
+    """Reject launches if the registry no longer names the frozen active default."""
+    conditions = json.loads((ROOT / "data/evaluation-agent-runtimes.json").read_text()).get("model_conditions", [])
+    active = [item for item in conditions if item.get("status") == "active-default"]
+    if active != [{
+        "id": DEFAULT_WORKFLOW_MODEL_CONDITION_ID,
+        "status": "active-default",
+        "runtime_id": "codex-cli",
+        "agent_name": "Codex CLI",
+        "provider": "openai",
+        "model": DEFAULT_WORKFLOW_MODEL,
+        "reasoning_effort": DEFAULT_WORKFLOW_REASONING_EFFORT,
+        "usage_accounting": "provider-billed Codex JSONL usage extracted by scripts/extract_codex_usage.py",
+    }]:
+        raise ValueError("active workflow model condition must be codex-openai-gpt-5-6-terra-medium")
 
 LEAKY_PROMPT_LINE_PATTERNS = [
     re.compile(r"^Issue source:.*$", re.IGNORECASE),
@@ -268,7 +283,7 @@ def _tool_command_spec(cfg: dict[str, Any]) -> dict[str, Any] | None:
 
 def _lane_path(cfg: dict[str, Any], root: Path = ROOT) -> str:
     path_entries = [
-        "/opt/data/codex-cli/node_modules/.bin",
+        str(fixture.CODEX_HOST_EXECUTABLE.parent),
         "/opt/data/opt/go/bin",
         "/opt/data/opt/uv",
         str(fixture.NODE_TOOLCHAIN_ROOT / "bin"),
@@ -392,6 +407,10 @@ def execution_condition_descriptor(
             "docker_image_identity": docker_image_identity(docker_image),
             "dockerfile_path": str(fixture.DEFAULT_DOCKERFILE.relative_to(root)),
             "dockerfile_sha256": _protocol_file_hash(fixture.DEFAULT_DOCKERFILE),
+            "fixture_runner_path": "scripts/run_codex_fixture_evaluation.py",
+            "fixture_runner_sha256": _protocol_file_hash(root / "scripts/run_codex_fixture_evaluation.py"),
+            "codex_entrypoint_path": "sources/evaluations/fixtures/container/codex-entrypoint.sh",
+            "codex_entrypoint_sha256": _protocol_file_hash(root / "sources/evaluations/fixtures/container/codex-entrypoint.sh"),
             "timeout_seconds_per_task": timeout_seconds_per_task,
             "isolation_policy": "fresh lane-specific Codex home/tool data; sequential one-task prompt delivery; concealed tests removed before model-visible root commit",
         },
@@ -632,105 +651,8 @@ def validate_protocol_for_run(seq: dict[str, Any], profile_id: str, args: argpar
     return protocol
 
 
-def validate_preflight_for_run(seq: dict[str, Any], args: argparse.Namespace) -> dict[str, Any] | None:
-    protocol = getattr(args, "protocol_doc", None)
-    if not protocol:
-        return None
-    fixture_block = protocol.get("task_fixture", {})
-    preflight_rel = fixture_block.get("baseline_preflight_path")
-    if not preflight_rel:
-        raise ValueError("protocol is missing baseline_preflight_path")
-    preflight_path = ROOT / str(preflight_rel)
-    if not preflight_path.is_file():
-        raise FileNotFoundError(f"baseline preflight is missing: {preflight_rel}")
-    actual_hash = _protocol_file_hash(preflight_path)
-    if fixture_block.get("baseline_preflight_sha256") != actual_hash:
-        raise ValueError("baseline preflight hash does not match protocol")
-    preflight = json.loads(preflight_path.read_text())
-    expected_fingerprint = baseline_protocol_fingerprint(seq)
-    expected_execution = execution_condition_descriptor(
-        seq,
-        "baseline-bare-codex",
-        timeout_seconds_per_task=args.timeout_per_task,
-        docker_image=args.docker_image,
-    )
-    if (
-        preflight.get("passed") is not True
-        or preflight.get("sequence_id") != seq["id"]
-        or preflight.get("fixture_id") != seq["fixture_id"]
-        or preflight.get("snapshot") != seq["initial_snapshot"]["commit"]
-        or preflight.get("baseline_pool", {}).get("protocol_fingerprint") != expected_fingerprint
-        or preflight.get("baseline_pool", {}).get("descriptor_sha256") != hashlib.sha256(json.dumps(baseline_protocol_descriptor(seq), sort_keys=True, separators=(",", ":")).encode()).hexdigest()
-        or preflight.get("selected_execution", {}).get("descriptor_sha256") != _json_hash(expected_execution)
-        or preflight.get("selected_execution", {}).get("descriptor") != expected_execution
-        or preflight.get("timeout_seconds_per_task") != args.timeout_per_task
-        or preflight.get("runner_sha256") != _self_hash()
-    ):
-        raise ValueError("baseline preflight does not bind the current protocol/run inputs")
-    return preflight
-
-
 def qualification_is_current(seq: dict[str, Any]) -> tuple[bool, dict[str, Any]]:
-    path = ROOT / str(seq.get("qualification_path", ""))
-    if not path.is_file():
-        return False, {}
-    qualification = json.loads(path.read_text())
-    required_true = (
-        "seeded_verifier_nonzero",
-        "fixed_verifier_zero",
-        "full_fixed_cumulative_verifier_zero",
-        "ordered_transition_applicability",
-        "alternative_repair_transition_applicability",
-        "no_unmerged_paths",
-        "no_model_visible_acceptance_assets",
-        "all_expected_model_concealment_declared",
-    )
-    ordered = sorted(seq.get("tasks", []), key=lambda item: int(item["order"]))
-    if (
-        any(qualification.get(field) is not True for field in required_true)
-        or qualification.get("snapshot") != seq.get("initial_snapshot", {}).get("commit")
-        or qualification.get("qualified_on") != seq.get("qualification_date")
-        or qualification.get("ordered_task_ids") != [task["id"] for task in ordered]
-    ):
-        return False, qualification
-    records = qualification.get("tasks", [])
-    if len(records) != len(ordered):
-        return False, qualification
-    for task, record in zip(ordered, records):
-        task_root = (ROOT / str(task["prompt_path"])).parent
-        if (
-            record.get("task_id") != task["id"]
-            or record.get("seed_patch_sha256") != _protocol_file_hash(task_root / "seed-regression.patch")
-            or record.get("verifier_sha256") != _protocol_file_hash(task_root / "verify.sh")
-            or record.get("production_file_count") != len(set(record.get("production_files", [])))
-            or record.get("production_file_count", 0) < 5
-            or record.get("expected_model_concealed_paths") != expected_task_concealed_paths(task)
-            or record.get("model_concealed_paths") != sorted(str(path) for path in task.get("model_concealed_paths", []))
-            or record.get("omitted_expected_model_concealed_paths") != []
-            or record.get("declared_concealment_matches_expected") is not True
-            or record.get("model_concealed_absent") is not True
-        ):
-            return False, qualification
-    replay = seq.get("alternative_repair_replay", {})
-    replay_path = ROOT / str(replay.get("changes_diff", ""))
-    if not replay or not replay_path.is_file():
-        return False, qualification
-    source = replay_path.read_text()
-    marker = f"# --- task-{int(replay['repaired_task_order']):02d}-agent ---"
-    if marker not in source:
-        return False, qualification
-    section = source.split(marker, 1)[1].split("# --- task-", 1)[0].strip() + "\n"
-    if (
-        qualification.get("alternative_repair_source_sha256") != _protocol_file_hash(replay_path)
-        or qualification.get("alternative_repair_patch_sha256") != hashlib.sha256(section.encode()).hexdigest()
-        or qualification.get("alternative_repair_noncanonical") is not True
-        or (
-            qualification.get("alternative_repair_control_flow_footprint") is not True
-            and int(qualification.get("alternative_repair_noncomment_changed_line_delta", 0)) < 5
-        )
-    ):
-        return False, qualification
-    return True, qualification
+    return repository_validation.qualification_is_current(seq)
 
 
 def artifact_lane_label(project_id: str) -> str:
@@ -1092,6 +1014,9 @@ def create_project(seq: dict[str, Any], project: Path, run_dir: Path, *, conceal
         src = ROOT / Path(task["prompt_path"]).parent
         dest = task_dir(run_dir, order)
         shutil.copytree(src, dest)
+        shared_controller_hidden = src.parents[1] / "controller-hidden"
+        if shared_controller_hidden.is_dir():
+            shutil.copytree(shared_controller_hidden, dest / "controller-hidden")
         write_sanitized_prompt(src / "agent-prompt.txt", dest / "agent-prompt.txt")
         alias_manifest.append({
             "order": order,
@@ -1935,6 +1860,7 @@ def write_comparison_if_ready(seq: dict[str, Any], study_id: str, replicate_inde
 
 
 def run_one(args: argparse.Namespace) -> dict[str, Any]:
+    validate_default_model_condition()
     validate_run_safety_args(args)
     seq = load_sequence(args.sequence_id)
     if seq.get("status") != "active" and not args.prepare_only:
@@ -1945,7 +1871,6 @@ def run_one(args: argparse.Namespace) -> dict[str, Any]:
     if profile_id not in PROFILE_META:
         raise ValueError(f"No runner metadata for profile {profile_id}")
     validate_protocol_for_run(seq, profile_id, args)
-    validate_preflight_for_run(seq, args)
     project_id = PROJECT_META[seq["fixture_id"]]["project_id"]
     protocol_fingerprint = baseline_protocol_fingerprint(seq)
     protocol_path = args.protocol_path
@@ -1964,6 +1889,9 @@ def run_one(args: argparse.Namespace) -> dict[str, Any]:
     }
     study_id = args.study_id or "phase-2-sequential-workflow-v1"
     comparison_profile_id = args.comparison_profile_id or (profile_id if profile_id != "baseline-bare-codex" else "")
+    if args.prepare_only and not args.session_id:
+        stamp = dt.datetime.now(dt.UTC).strftime("%Y%m%dT%H%M%S%fZ")
+        args.session_id = f"prepare-{artifact_lane_label(project_id)}-{safe_profile_key(profile_id)}-{stamp}-p{os.getpid()}"
     if profile_id == "baseline-bare-codex":
         session_id = args.session_id or canonical_baseline_session_id(project_id, args.replicate_index, protocol_fingerprint)
         experiment_group_id = args.experiment_group_id or canonical_baseline_group_id(project_id, args.replicate_index, protocol_fingerprint)
@@ -2040,14 +1968,16 @@ def run_one(args: argparse.Namespace) -> dict[str, Any]:
         prepare_verification = json.loads((run_dir / "prepare-verification.json").read_text())
         redact_auth_sync(run_dir)
         remove_ephemeral_homes(run_dir)
-        return {
+        result = {
             "session_id": session_id,
             "profile_id": profile_id,
             "sequence_id": seq["id"],
             "prepared": bool(prepare_verification.get("passed")),
             "prepare_verification": prepare_verification,
-            "run_dir": rel(run_dir),
         }
+        chmod_tree(run_dir)
+        shutil.rmtree(run_dir)
+        return result
 
     thread_id: str | None = None
     codex_exit_codes: list[int] = []
@@ -2210,8 +2140,8 @@ def main(argv: list[str] | None = None) -> int:
         description=__doc__,
         epilog=(
             "Manual rerun guide: docs/evaluations/sequential-workflow-runner.md. "
-            "For a shared-baseline+treatment rerun use: "
-            "scripts/run_sequential_workflow_pair.sh <sequence-id>."
+            "For shared-baseline and treatment orchestration use: "
+            "python3 scripts/run_sequential_workflow_matrix.py [sequence-id] --treatment-profile <profile-id>."
         ),
     )
     parser.add_argument("--sequence-id")

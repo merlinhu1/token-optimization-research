@@ -104,8 +104,8 @@ def render() -> str:
         execution_text = f"""The active sequence list is non-empty. Freeze a protocol, run a no-model prepare, then run the canonical baseline first:
 
 ```bash
-python3 scripts/run_codex_workflow_evaluation.py --sequence-id {first_sequence} --prepare-only
-scripts/run_sequential_workflow_pair.sh {first_sequence}
+python3 scripts/run_sequential_workflow_matrix.py {first_sequence} --prepare-only
+python3 scripts/run_sequential_workflow_matrix.py {first_sequence} --treatment-profile <profile-id>
 ```
 
 Stop before treatment if the baseline fails any frozen gate."""

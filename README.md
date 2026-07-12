@@ -37,4 +37,4 @@ python3 scripts/validate_repository.py
 
 ## Current status
 
-Phase 1 established source-logic tool dossiers and a compatibility-safe stack report. Fastify is the only current executable Phase 2 workflow suite. Its checkout-generated production qualification passes all seeded-fail, fixed-pass, cumulative, transition, alternative-repair, concealment, and five-file gates. New paid comparisons remain blocked only until a pool-matched accepted baseline exists; current sessions remain quality-review-pending and do not support token-savings claims.
+Phase 1 established source-logic tool dossiers and a compatibility-safe stack report. Fastify, Terraform, and Beets are the three current production-qualified Phase 2 workflow suites. Each has five checkout-qualified tasks with seeded-fail, fixed-pass, cumulative, transition, alternative-repair, concealment, task-byte, and five-file gates. New paid comparisons remain blocked until a pool-matched accepted baseline exists; historical run records whose fixture fingerprints changed are ineligible and do not support token-savings claims.

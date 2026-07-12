@@ -79,13 +79,14 @@ Code surface:
 - scripts/audit_tool_isolation.py
 - scripts/extract_codex_usage.py
 - scripts/generate_workflow_qualification.py
+- scripts/refresh_workflow_contracts.py
 - scripts/run_codex_fixture_evaluation.py
 - scripts/run_codex_workflow_evaluation.py
 - scripts/run_sequential_workflow_matrix.py
-- scripts/run_sequential_workflow_pair.sh
 - scripts/test_workflow_evaluation_contract.py
 - scripts/update_workflow_runbook.py
 - sources/evaluations/fixtures/container/Dockerfile
+- sources/evaluations/fixtures/container/codex-entrypoint.sh
 
 - prompts/evaluator.md
 - templates/evaluation-record.md

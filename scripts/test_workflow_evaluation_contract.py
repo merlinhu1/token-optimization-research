@@ -9,6 +9,7 @@ from pathlib import Path
 from unittest import mock
 
 from scripts import run_codex_workflow_evaluation as runner
+from scripts import run_sequential_workflow_matrix as matrix
 from scripts import validate_repository
 
 
@@ -196,8 +197,8 @@ class ManifestAndProtocolContractTest(unittest.TestCase):
                 "sequence_id": seq["id"],
                 "snapshot": seq["initial_snapshot"]["commit"],
                 "timeout_seconds_per_task": timeout,
-                "baseline_preflight_path": "sources/evaluations/fixtures/medium/fastify-fastify/baseline-preflight.json",
-                "baseline_preflight_sha256": runner._protocol_file_hash(ROOT / "sources/evaluations/fixtures/medium/fastify-fastify/baseline-preflight.json"),
+                "qualification_path": seq["qualification_path"],
+                "qualification_sha256": runner._protocol_file_hash(ROOT / seq["qualification_path"]),
             },
             "baseline_pool": {
                 "protocol_version": runner.BASELINE_POOL_PROTOCOL_VERSION,
@@ -237,10 +238,8 @@ class ManifestAndProtocolContractTest(unittest.TestCase):
     def test_current_protocol_fingerprint_matches_runner(self) -> None:
         seq = runner.load_sequence(SEQUENCE_ID)
         protocol = json.loads((ROOT / "sources/evaluations/protocols/fastify-production-gpt-5.6-terra-medium-v3.json").read_text())
-        preflight = json.loads((ROOT / "sources/evaluations/fixtures/medium/fastify-fastify/baseline-preflight.json").read_text())
         expected = runner.baseline_protocol_fingerprint(seq)
         self.assertEqual(protocol["baseline_pool"]["protocol_fingerprint"], expected)
-        self.assertEqual(preflight["baseline_pool"]["protocol_fingerprint"], expected)
         self.assertEqual(protocol["baseline_pool"]["descriptor"], runner.baseline_protocol_descriptor(seq))
 
     def test_protocol_is_required_before_setup_for_paid_run(self) -> None:
@@ -546,6 +545,44 @@ class ManifestAndProtocolContractTest(unittest.TestCase):
             run_path.write_text(json.dumps(payload, indent=2) + "\n")
             runner.write_manifest(run_path.parent)
             self.assertTrue(any("run.json docker_image_identity does not match registry session" in error for error in self.production_v3_errors(session)))
+
+
+class MatrixLifecycleContractTest(unittest.TestCase):
+    def test_failed_lane_cannot_publish(self) -> None:
+        self.assertFalse(matrix.publication_allowed(False, [{"exit_code": 1}]))
+        self.assertFalse(matrix.publication_allowed(True, [{"exit_code": 0}]))
+        self.assertTrue(matrix.publication_allowed(False, [{"exit_code": 0}]))
+
+    def test_missing_baseline_collapses_treatments_to_one_baseline_lane(self) -> None:
+        jobs = matrix.plan_workflow_jobs(
+            [SEQUENCE_ID],
+            ["terminal-rtk", "terminal-codegraph"],
+            baseline_state=lambda _sequence: "missing",
+            profile_state=lambda _sequence, _profile: "missing",
+        )
+        self.assertEqual(jobs, [(SEQUENCE_ID, "baseline-bare-codex")])
+
+    def test_artifact_symlink_escape_is_rejected(self) -> None:
+        with tempfile.TemporaryDirectory(dir=ROOT) as tmp:
+            checkout = Path(tmp) / "checkout"
+            outside = Path(tmp) / "outside"
+            outside.mkdir()
+            (outside / "run.json").write_text("{}")
+            rel = matrix.WORKFLOW_ARTIFACT_ROOT / "session"
+            (checkout / rel.parent).mkdir(parents=True)
+            (checkout / rel).symlink_to(outside, target_is_directory=True)
+            session = {"artifacts": {"root": str(rel)}}
+            with self.assertRaisesRegex(ValueError, "escapes lane checkout"):
+                matrix.copy_artifacts_for_sessions(checkout, [session])
+
+    def test_full_qualification_freshness_is_shared(self) -> None:
+        sequence = runner.load_sequence(SEQUENCE_ID)
+        current, qualification = runner.qualification_is_current(sequence)
+        self.assertTrue(current)
+        self.assertEqual(
+            (current, qualification),
+            validate_repository.qualification_is_current(sequence),
+        )
 
 
 if __name__ == "__main__":

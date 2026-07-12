@@ -1,7 +1,7 @@
 ---
 status: active
 truth_kind: engineering-contract
-last_reviewed: 2026-07-10
+last_reviewed: 2026-07-11
 ---
 
 # Token Accounting And Benchmark Protocols
@@ -27,9 +27,10 @@ Software-quality scoring is owned by `software-quality-gates.md`.
 - `data/workflow-sessions.json` is the structured workflow-session registry.
 - `docs/evaluations/workflow-evaluation-runbook.md` is the maintained human-facing runbook rendered from the workflow sequence and fixture registries.
 - `scripts/update_workflow_runbook.py` refreshes that runbook and provides a validator check so operator docs fail closed on registry drift.
-- `scripts/run_codex_fixture_evaluation.py` creates lane-specific Codex homes, isolates agent HOME/PYTHONUSERBASE/XDG/TMPDIR under that Codex home, captures preflight artifacts, runs Codex, extracts provider usage, verifies tasks, and invokes the isolation audit for Codex-based sanity or historical fixture evaluations.
+- `scripts/run_codex_fixture_evaluation.py` creates lane-specific Codex homes, mounts a pinned Codex package through a dedicated container entrypoint (without exposing the broader host bin directory), captures preflight artifacts, runs Codex, extracts provider usage, verifies tasks, and invokes the isolation audit for Codex-based sanity or historical fixture evaluations.
 - `scripts/run_codex_workflow_evaluation.py` loads canonical profile metadata from `data/evaluation-profiles.json` and keeps executable adapter configuration separate.
 - `scripts/generate_workflow_qualification.py` produces deterministic workflow qualification evidence from a clean pinned checkout before paid runs.
+- `scripts/refresh_workflow_contracts.py` validates immutable qualification evidence, then refreshes frozen execution protocols; it never rewrites qualification results.
 - `scripts/run_codex_workflow_evaluation.py` treats missing Codex thread IDs after a successful task as a workflow-continuity failure instead of silently starting later tasks in a fresh thread.
 - `scripts/run_codex_workflow_evaluation.py` materializes prompts one task at a time, keeps task fixtures and verifiers outside the model mount, and verifies acceptance-asset hashes before running controller verifiers.
 - Non-MCP terminal-binary treatment lanes expose the active binary through lane-specific container mounts and require solve-shell availability checks in addition to runner preflight.
@@ -78,6 +79,7 @@ Software-quality scoring is owned by `software-quality-gates.md`.
 - Session IDs and compact evidence are immutable; reruns use a new replicate/session ID instead of replacing prior evidence.
 - A reviewed baseline is reusable only within its frozen protocol fingerprint and replicate. That fingerprint binds the fixture snapshot, prompt and verifier bytes, baseline substrate, agent/model condition, immutable Docker execution identity, and isolation policy; the execution date is metadata, not a baseline cache key.
 - New workflow evidence defaults to Codex CLI `gpt-5.6-terra` at `medium` reasoning effort (`codex-openai-gpt-5-6-terra-medium`). This is a protocol-bound model condition: changing it requires a new baseline pool.
+- Fastify, Terraform, and Beets are the three active production-qualified flows; each has exactly five tasks. Qualification must bind controller task-directory bytes as well as prompt, seed, verifier, pinned source, ordered transition, and concealed-test evidence. Historical sessions with a different fixture fingerprint remain preserved but are ineligible for reuse or comparison.
 - New workflow artifact IDs begin with the short profile label, short project lane, and UTC run date, followed by the protocol fingerprint and replicate; the fingerprint, rather than the date-bearing name, determines reuse eligibility.
 - The matrix defaults to three concurrent lanes (`--max-parallel 3`). It runs distinct sequence lanes concurrently up to that cap; after a shared baseline is reviewed reusable, repeated `--treatment-profile` arguments run independent profile lanes concurrently; an unreviewed/missing baseline collapses those requests to one baseline-only lane to prevent duplicate spend.
 - A comparison is published only after the matching baseline and treatment both have reviewed, objective-accepted records with compact artifacts.
@@ -100,6 +102,7 @@ Software-quality scoring is owned by `software-quality-gates.md`.
 - Decision (2026-07-08): Workflow evaluation supports multiple single-tool Codex treatment profiles, and missing persistent Codex thread IDs are acceptance failures.
 - Decision (2026-07-09): Sequential disclosure is enforced by model mount boundaries, lazy prompt materialization, and verifier hashes rather than trusted metadata or prompt instructions.
 - Decision (2026-07-09): The July 8-9 r0 workflow sessions are excluded from objective use because the old runner exposed the writable run directory; their raw token and execution artifacts remain historical audit evidence.
+- Decision (2026-07-11): Active workflows use one shared four-flow contract and frozen GPT-5.6 Terra-medium baseline protocol/preflight identity; GPT-5.5 is historical-inactive metadata only.
 
 ## Rationale
 

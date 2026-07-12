@@ -81,7 +81,7 @@ A stack can be described as Phase 2 positive only if:
 
 - cumulative provider-billed workflow tokens or cost improve versus the canonical shared baseline;
 - deterministic per-task and final verifiers pass when available;
-- an explicit software-quality review records `quality_review_status: reviewed`, score at least 3, and no critical failures;
+- an explicit software-quality review records `quality_review_status: reviewed`, score at least 4, and no critical failures;
 - correction turns, repeated reads, tool-call overhead, and stale-context incidents do not erase workflow-level savings;
 - no overlapping surface owner is active unintentionally;
 - install, disable, and reset paths are documented;

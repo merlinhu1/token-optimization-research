@@ -4,7 +4,7 @@
 
 The active research direction is Phase 2 workflow-simulation repair: qualify realistic persistent multi-task workflows before comparing profiles with cumulative provider-billed token usage and software-quality gates.
 
-Fastify is the only current executable workflow suite. Terraform task assets were retired because they were below the five-production-file floor; Beets and OrchardCore task assets were retired because unrelated exact-source sentinels padded their scope. Beets and OrchardCore remain candidate metadata only.
+Fastify, Terraform, and Beets are the three current production-qualified executable workflow suites. Each has five causally related tasks, controller-hidden acceptance assets, pinned source identity, and byte-bound qualification evidence.
 
 Fastify's checkout-generated qualification passes all production-task gates, including seeded-fail/fixed-pass execution, full fixed-state cumulative verification, ordered transitions, one accepted alternative-repair transition, asset concealment, and the five-production-file floor. No pool-matched accepted baseline exists for fingerprint `5ace7b956e83`; older fingerprints `57af3ace816f` and `79105d1b08a5` are historical/superseded and non-reusable. Do not publish token-savings claims from these sessions.
 
