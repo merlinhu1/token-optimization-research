@@ -723,6 +723,22 @@ def baseline_v2_pilot_run_gate(
             return False, str(exc)
         if receipt_path.exists():
             return False, f"paid pilot identity is occupied by immutable attempt receipt: {receipt_path.relative_to(root)}"
+    if generation == "baseline-v4":
+        authorization_rel = gate.get("pilot_authorization_path") if isinstance(gate, dict) else None
+        if not isinstance(authorization_rel, str) or not authorization_rel:
+            return False, "Baseline V4 paid pilot is not authorized: missing pilot_authorization_path"
+        authorization_path = root / authorization_rel
+        try:
+            authorization = json.loads(authorization_path.read_text())
+        except (OSError, ValueError) as exc:
+            return False, f"Baseline V4 paid pilot is not authorized: authorization authority is unreadable: {exc}"
+        if (
+            type(authorization.get("schema_version")) is not int
+            or authorization.get("schema_version") != 1
+            or authorization.get("generation") != "baseline-v4"
+            or authorization.get("paid_pilot_authorized") is not True
+        ):
+            return False, f"Baseline V4 paid pilot is not authorized by {authorization_rel}"
     if not isinstance(audit_rel, str) or not audit_rel:
         return False, f"missing {label} pilot_audit_path"
     audit_path = root / audit_rel
@@ -756,7 +772,11 @@ def baseline_v2_treatment_gate(seq: dict[str, Any], root: Path = ROOT) -> tuple[
         audit = json.loads(audit_path.read_text())
     except (OSError, ValueError) as exc:
         return False, f"pilot audit is unreadable: {exc}"
-    if audit.get("schema_version") != 1 or audit.get("task_family_generation") != generation:
+    if (
+        type(audit.get("schema_version")) is not int
+        or audit.get("schema_version") != 1
+        or audit.get("task_family_generation") != generation
+    ):
         return False, "pilot audit schema or task-family generation is invalid"
     entries = [
         entry for entry in audit.get("sequences", [])
@@ -812,12 +832,15 @@ def baseline_v2_treatment_gate(seq: dict[str, Any], root: Path = ROOT) -> tuple[
     task_identity_complete = (
         isinstance(per_task_results, list)
         and all(isinstance(item, dict) for item in per_task_results)
+        and all(type(item.get("order")) is int for item in per_task_results)
         and [(str(item.get("task_id")), item.get("order")) for item in per_task_results] == expected_task_results
     )
     if (
-        session.get("schema_version") != 2
+        type(session.get("schema_version")) is not int
+        or session.get("schema_version") != 2
         or session.get("status") != "completed"
         or session.get("session_role") != "baseline"
+        or type(session.get("replicate_index")) is not int
         or session.get("replicate_index") != 0
         or session.get("task_sequence", {}).get("sequence_id") != seq.get("id")
         or session.get("profile", {}).get("profile_id") != "baseline-bare-codex"
