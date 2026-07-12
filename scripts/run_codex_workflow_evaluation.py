@@ -665,15 +665,19 @@ def pilot_session_artifacts_valid(session: dict[str, Any], root: Path = ROOT) ->
     )
 
 
+def repository_authority_path(root: Path, relative: str, label: str) -> Path:
+    path = root / relative
+    if not path.resolve().is_relative_to(root.resolve()):
+        raise ValueError(f"{label} escapes authority root")
+    return path
+
+
 def baseline_pilot_attempt_receipt_path(seq: dict[str, Any], root: Path = ROOT) -> Path:
     gate = seq.get("mistake_gate")
     receipt_rel = gate.get("attempt_receipt_path") if isinstance(gate, dict) else None
     if not isinstance(receipt_rel, str) or not receipt_rel:
         raise ValueError(f"missing pilot attempt_receipt_path for {seq.get('id')}")
-    receipt_path = root / receipt_rel
-    if not receipt_path.resolve().is_relative_to(root.resolve()):
-        raise ValueError(f"pilot attempt receipt escapes authority root for {seq.get('id')}")
-    return receipt_path
+    return repository_authority_path(root, receipt_rel, f"pilot attempt receipt for {seq.get('id')}")
 
 
 def reserve_baseline_pilot_attempt(
@@ -727,8 +731,12 @@ def baseline_v2_pilot_run_gate(
         authorization_rel = gate.get("pilot_authorization_path") if isinstance(gate, dict) else None
         if not isinstance(authorization_rel, str) or not authorization_rel:
             return False, "Baseline V4 paid pilot is not authorized: missing pilot_authorization_path"
-        authorization_path = root / authorization_rel
         try:
+            authorization_path = repository_authority_path(
+                root,
+                authorization_rel,
+                "Baseline V4 pilot authorization",
+            )
             authorization = json.loads(authorization_path.read_text())
         except (OSError, ValueError) as exc:
             return False, f"Baseline V4 paid pilot is not authorized: authorization authority is unreadable: {exc}"
@@ -741,7 +749,10 @@ def baseline_v2_pilot_run_gate(
             return False, f"Baseline V4 paid pilot is not authorized by {authorization_rel}"
     if not isinstance(audit_rel, str) or not audit_rel:
         return False, f"missing {label} pilot_audit_path"
-    audit_path = root / audit_rel
+    try:
+        audit_path = repository_authority_path(root, audit_rel, f"{label} pilot audit")
+    except ValueError as exc:
+        return False, str(exc)
     if not audit_path.exists():
         return True, f"no prior {label} pilot attempt is recorded"
     try:
@@ -765,7 +776,10 @@ def baseline_v2_treatment_gate(seq: dict[str, Any], root: Path = ROOT) -> tuple[
     audit_rel = gate.get("pilot_audit_path")
     if not isinstance(audit_rel, str) or not audit_rel:
         return False, "missing pilot_audit_path"
-    audit_path = root / audit_rel
+    try:
+        audit_path = repository_authority_path(root, audit_rel, "pilot audit")
+    except ValueError as exc:
+        return False, str(exc)
     if not audit_path.is_file():
         return False, f"pilot audit is absent: {audit_rel}"
     try:
