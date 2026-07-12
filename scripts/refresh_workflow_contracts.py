@@ -161,6 +161,7 @@ def frozen_protocol(
         "task_fixture": {
             "fixture_id": seq["fixture_id"],
             "sequence_id": seq["id"],
+            "task_family_generation": seq.get("task_family_generation"),
             "repository": seq["initial_snapshot"]["upstream"],
             "snapshot": seq["initial_snapshot"]["commit"],
             "qualification_path": str(qualification_path.relative_to(ROOT)),

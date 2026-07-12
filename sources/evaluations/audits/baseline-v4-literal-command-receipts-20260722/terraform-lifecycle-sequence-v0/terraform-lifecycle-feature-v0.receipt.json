@@ -1,0 +1,20 @@
+{
+  "schema_version": 1,
+  "generation": "baseline-v4",
+  "sequence_id": "terraform-lifecycle-sequence-v0",
+  "task_id": "terraform-lifecycle-feature-v0",
+  "order": 1,
+  "provider_calls": 0,
+  "provider_tokens": 0,
+  "prompt_path": "sources/evaluations/fixtures/large/hashicorp-terraform/task-generations/baseline-v4/terraform-lifecycle-feature-v0/agent-prompt.txt",
+  "prompt_sha256": "8052449811cdde0de9b8dac90b2a9e152a12c5a4a5bf75d4a809a15d4286f0da",
+  "verifier_path": "sources/evaluations/fixtures/large/hashicorp-terraform/task-generations/baseline-v4/terraform-lifecycle-feature-v0/verify.sh",
+  "verifier_sha256": "deacfb232db76122e9c4d0c938eccd60f33e5c45daba3f90f2100147854f20c5",
+  "command_block": "export PATH=/opt/data/bin:/opt/data/opt/go/bin:$PATH\npython3 - <<'PY'\nfrom pathlib import Path\np = Path(\"internal/policy/callback/server.go\")\ns = p.read_text()\nold = \"\\t\\tDeferred: false,\\n\"\nnew = \"\\t\\tDeferred: isDeferred,\\n\"\nassert s.count(old) == 1\np.write_text(s.replace(old, new))\nPY\ngofmt -w internal/policy/callback/server.go\ngo test ./internal/policy/callback -run '^TestBaselineV3DeferredDataSource$'",
+  "command_sha256": "f77c952bcd5e830b4e6e2518e2fc8f9eb13e2824ffef356bd4bc297ca31fdb7e",
+  "command_exit": 0,
+  "controller_verifier_exit": 0,
+  "log_path": "sources/evaluations/audits/baseline-v4-literal-command-receipts-20260722/terraform-lifecycle-sequence-v0/terraform-lifecycle-feature-v0.log.txt",
+  "log_sha256": "65fe3b53078743d7e424119cb57ff16008f0fe058ad066528046dafb011153c2",
+  "passed": true
+}

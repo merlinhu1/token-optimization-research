@@ -1,0 +1,191 @@
+{
+  "schema_version": 4,
+  "task_family_generation": "baseline-v4",
+  "controller_hidden_sha256": null,
+  "qualified_on": "2026-07-22",
+  "snapshot": "9acb1ecff6c7ee0a1e83e3b983c94792345712c5",
+  "observed_source": {
+    "head": "9acb1ecff6c7ee0a1e83e3b983c94792345712c5",
+    "tree": "47a0d93d5ea4afc6d1e11c11add615322ddc3c87",
+    "remotes": [
+      "origin\tgit@github.com:beetbox/beets.git (fetch) [blob:none]",
+      "origin\tgit@github.com:beetbox/beets.git (push)"
+    ],
+    "expected_upstream": "https://github.com/beetbox/beets.git",
+    "clean": true
+  },
+  "tool_versions": {
+    "git": "git version 2.47.3",
+    "qualification_dependency_command": "uv sync --group test --frozen"
+  },
+  "ordered_task_ids": [
+    "beets-lifecycle-feature-v0",
+    "beets-lifecycle-refactor-v0",
+    "beets-lifecycle-review-v0"
+  ],
+  "model_concealed_paths": [],
+  "fixed_snapshot_concealed_path_collisions": [],
+  "fixed_snapshot_model_concealed_paths_absent": true,
+  "fixed_snapshot_model_concealed_paths_safe": true,
+  "fixed_snapshot_concealed_path_collision_audit": [],
+  "tasks": [
+    {
+      "task_id": "beets-lifecycle-feature-v0",
+      "seed_patch_sha256": "9dc1cf36d0d0120fb57f75c4579af7f1f65b80e9d80de2d2c5cbdeb69b4ac17e",
+      "verifier_sha256": "6c66323a59314d4b8390eb288a41f823b3ac1723af94f8fe771cacb2b5e88588",
+      "controller_visible_acceptance_assets": [
+        {
+          "path": "controller-visible/test/util/test_functemplate.py",
+          "model_visible_path": "test/util/test_functemplate.py",
+          "sha256": "6806ec35748e63877d993bee3474e13dedba433ff43ca126d8efbcfa10240888"
+        }
+      ],
+      "model_visible_acceptance_asset_paths": [
+        "test/util/test_functemplate.py"
+      ],
+      "production_files": [
+        "beets/util/functemplate.py"
+      ],
+      "production_file_count": 1,
+      "expected_model_concealed_paths": [],
+      "model_concealed_paths": [],
+      "omitted_expected_model_concealed_paths": [],
+      "declared_concealment_matches_expected": true,
+      "model_concealed_absent": true,
+      "fixed_snapshot_model_concealed_absent": true,
+      "fixed_snapshot_model_concealed_safe": true,
+      "fixed_snapshot_concealed_path_collision_audit": [],
+      "agent_prompt_sha256": "9033237087b94204b279a545c0c8967229a4dfebde37ddfae401bac0b0149b53",
+      "task_directory_sha256": "696968dd3b4ecabcf4f92151991bdb10455ae26d734fe90a6725f8de23b89c9a"
+    },
+    {
+      "task_id": "beets-lifecycle-refactor-v0",
+      "seed_patch_sha256": "9bcf590139fc91987524e643bc1e6281efbe5a09cd9b2218ca31f670c391c722",
+      "verifier_sha256": "91ec98650ca43abe69b3cfee3948523aa072cf16ff9cf5254bdf243b7b9f882e",
+      "controller_visible_acceptance_assets": [],
+      "model_visible_acceptance_asset_paths": [],
+      "production_files": [
+        "beets/dbcore/db.py"
+      ],
+      "production_file_count": 1,
+      "expected_model_concealed_paths": [],
+      "model_concealed_paths": [],
+      "omitted_expected_model_concealed_paths": [],
+      "declared_concealment_matches_expected": true,
+      "model_concealed_absent": true,
+      "fixed_snapshot_model_concealed_absent": true,
+      "fixed_snapshot_model_concealed_safe": true,
+      "fixed_snapshot_concealed_path_collision_audit": [],
+      "agent_prompt_sha256": "dba16cdc81587f6265daa6e9c93151616d3c74762851701a75067ba4afdfc9be",
+      "task_directory_sha256": "5092726739b1e96e16f0ac2fd50e40f7ca7c411fb5c7ab87f3903327eb7e9567"
+    },
+    {
+      "task_id": "beets-lifecycle-review-v0",
+      "seed_patch_sha256": "14d8dd83706706805b8159f85871036cfb39148dd7912e66e2c8044d505cabad",
+      "verifier_sha256": "b2d5e2e83bb2b32e1baf9e7cbcd7efbf638f0dd3dbd58fe9f1d7317764def88d",
+      "controller_visible_acceptance_assets": [
+        {
+          "path": "controller-visible/test/plugins/test_ftintitle.py",
+          "model_visible_path": "test/plugins/test_ftintitle.py",
+          "sha256": "1d8ed5ab383d3c0496dc2158ae9853c0b36bca1f50276181f7d675e352abab35"
+        }
+      ],
+      "model_visible_acceptance_asset_paths": [
+        "test/plugins/test_ftintitle.py"
+      ],
+      "production_files": [
+        "beetsplug/ftintitle.py"
+      ],
+      "production_file_count": 1,
+      "expected_model_concealed_paths": [],
+      "model_concealed_paths": [],
+      "omitted_expected_model_concealed_paths": [],
+      "declared_concealment_matches_expected": true,
+      "model_concealed_absent": true,
+      "fixed_snapshot_model_concealed_absent": true,
+      "fixed_snapshot_model_concealed_safe": true,
+      "fixed_snapshot_concealed_path_collision_audit": [],
+      "agent_prompt_sha256": "41d6efa9889579eecec88c4aaa3bf10f0b5a2e71c4da00f265fc724bd68f3280",
+      "task_directory_sha256": "8ab5bed003b699cd1ae138c0657796485ccb649daa87ae74513c9f7fd0802046"
+    }
+  ],
+  "cumulative_boundaries": [
+    {
+      "task_id": "beets-lifecycle-feature-v0",
+      "seed_apply_check_exit": 0,
+      "seed_apply_exit": 0,
+      "seeded_verifier_exit": 1,
+      "repair_apply_check_exit": 0,
+      "repair_apply_exit": 0,
+      "retained_verifier_exits": {
+        "beets-lifecycle-feature-v0": 0
+      }
+    },
+    {
+      "task_id": "beets-lifecycle-refactor-v0",
+      "seed_apply_check_exit": 0,
+      "seed_apply_exit": 0,
+      "seeded_verifier_exit": 1,
+      "repair_apply_check_exit": 0,
+      "repair_apply_exit": 0,
+      "retained_verifier_exits": {
+        "beets-lifecycle-feature-v0": 0,
+        "beets-lifecycle-refactor-v0": 0
+      },
+      "seeded_behavior_exit": 0,
+      "seeded_structure_exit": 1,
+      "fixed_behavior_exit": 0,
+      "fixed_structure_exit": 0
+    },
+    {
+      "task_id": "beets-lifecycle-review-v0",
+      "seed_apply_check_exit": 0,
+      "seed_apply_exit": 0,
+      "seeded_verifier_exit": 1,
+      "repair_apply_check_exit": 0,
+      "repair_apply_exit": 0,
+      "retained_verifier_exits": {
+        "beets-lifecycle-feature-v0": 0,
+        "beets-lifecycle-refactor-v0": 0,
+        "beets-lifecycle-review-v0": 0
+      }
+    }
+  ],
+  "composite_seed_merge_zero": true,
+  "composite_seeded_verifiers_nonzero": true,
+  "composite_seed_verifier_exits": {
+    "beets-lifecycle-feature-v0": 1,
+    "beets-lifecycle-refactor-v0": 1,
+    "beets-lifecycle-review-v0": 1
+  },
+  "composite_seed_diff_sha256": "2586b9a96d627ce22e226621db78f1c7636e265318dc0e45e1424778209217ae",
+  "composite_seed_error": "",
+  "seeded_verifier_nonzero": true,
+  "fixed_verifier_zero": true,
+  "full_fixed_cumulative_verifier_zero": true,
+  "aggregate_verifier_exit": 0,
+  "aggregate_verifier_task_exits": [
+    0,
+    0,
+    0
+  ],
+  "aggregate_verifier_environment_passed": true,
+  "no_unmerged_paths": true,
+  "no_model_visible_acceptance_assets": false,
+  "no_model_concealed_acceptance_assets": true,
+  "acceptance_visibility": "model-visible-complete",
+  "all_acceptance_behavior_model_visible": true,
+  "model_visible_acceptance_assets_match_verifier_copies": true,
+  "expected_model_visible_acceptance_asset_count": 2,
+  "all_expected_model_concealment_declared": true,
+  "fixture_id": "medium-beetbox-beets",
+  "sequence_id": "beets-lifecycle-sequence-v0",
+  "task_binding": {
+    "algorithm": "sha256(path\\0bytes\\0; lexical recursive task directory order)",
+    "task_directories": {
+      "beets-lifecycle-feature-v0": "696968dd3b4ecabcf4f92151991bdb10455ae26d734fe90a6725f8de23b89c9a",
+      "beets-lifecycle-refactor-v0": "5092726739b1e96e16f0ac2fd50e40f7ca7c411fb5c7ab87f3903327eb7e9567",
+      "beets-lifecycle-review-v0": "8ab5bed003b699cd1ae138c0657796485ccb649daa87ae74513c9f7fd0802046"
+    }
+  }
+}

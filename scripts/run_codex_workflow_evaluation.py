@@ -457,7 +457,9 @@ def current_baseline_v2_protocol(
     matches: list[tuple[Path, dict[str, Any]]] = []
     protocol_dir = root / "sources/evaluations/protocols"
     expected_protocol_path = protocol_dir / f"{expected_protocol_id}.json"
-    candidate_paths = [expected_protocol_path] if expected_protocol_path.is_file() else []
+    candidate_paths = [expected_protocol_path] if expected_protocol_path.is_file() else sorted(
+        protocol_dir.glob(f"{safe_profile_key(seq['id'])}-baseline-bare-codex-*.json")
+    )
     for path in candidate_paths:
         document = json.loads(path.read_text())
         fixture_block = document.get("task_fixture", {})
@@ -467,9 +469,20 @@ def current_baseline_v2_protocol(
         if (
             document.get("protocol_schema_version") == 3
             and document.get("status") == "frozen-ready-not-run"
-            and document.get("protocol_id") == expected_protocol_id
-            and path == expected_protocol_path
+            and document.get("protocol_id") == path.stem
+            and path == protocol_dir / f"{document.get('protocol_id')}.json"
+            and document.get("protocol_id") == canonical_protocol_id(
+                seq,
+                "baseline-bare-codex",
+                root,
+                baseline_descriptor=baseline_pool.get("descriptor"),
+                selected_execution=selected_execution.get("descriptor"),
+            )
             and fixture_block.get("sequence_id") == seq.get("id")
+            and (
+                seq.get("task_family_generation") != "baseline-v4"
+                or fixture_block.get("task_family_generation") == "baseline-v4"
+            )
             and fixture_block.get("fixture_id") == seq.get("fixture_id")
             and fixture_block.get("snapshot") == seq.get("initial_snapshot", {}).get("commit")
             and fixture_block.get("qualification_path") == qualification_rel
@@ -482,7 +495,9 @@ def current_baseline_v2_protocol(
             } == expected_condition
             and not document.get("treatment", {}).get("profile_id")
             and baseline_pool.get("protocol_fingerprint") == expected_fingerprint
-            and baseline_pool.get("descriptor") == expected_descriptor
+            and baseline_protocol_descriptor_compatible(
+                baseline_pool.get("descriptor"), expected_descriptor
+            )
             and selected_execution.get("descriptor") == expected_execution
             and selected_execution.get("descriptor_sha256") == expected_execution_hash
         ):
@@ -696,12 +711,12 @@ def baseline_v2_pilot_run_gate(
 ) -> tuple[bool, str]:
     """Permit one provider pilot per declared audit identity; never pass-select reruns."""
     generation = seq.get("task_family_generation")
-    if generation not in {"baseline-v2", "baseline-v3"}:
+    if generation not in {"baseline-v2", "baseline-v3", "baseline-v4"}:
         return True, "not a zero-mistake baseline sequence"
     label = str(generation).replace("baseline-v", "Baseline V")
     gate = seq.get("mistake_gate")
     audit_rel = gate.get("pilot_audit_path") if isinstance(gate, dict) else None
-    if generation == "baseline-v3":
+    if generation in {"baseline-v3", "baseline-v4"}:
         try:
             receipt_path = baseline_pilot_attempt_receipt_path(seq, root)
         except ValueError as exc:
@@ -726,7 +741,7 @@ def baseline_v2_pilot_run_gate(
 def baseline_v2_treatment_gate(seq: dict[str, Any], root: Path = ROOT) -> tuple[bool, str]:
     """Fail closed until an independently audited zero-incident baseline pilot exists."""
     generation = seq.get("task_family_generation")
-    if generation not in {"baseline-v2", "baseline-v3"}:
+    if generation not in {"baseline-v2", "baseline-v3", "baseline-v4"}:
         return True, "not a zero-mistake baseline sequence"
     gate = seq.get("mistake_gate")
     if not isinstance(gate, dict):
@@ -1287,6 +1302,7 @@ def baseline_protocol_descriptor(seq: dict[str, Any], root: Path = ROOT) -> dict
     baseline = PROFILE_META["baseline-bare-codex"]
     return {
         "version": BASELINE_POOL_PROTOCOL_VERSION,
+        "task_family_generation": seq.get("task_family_generation"),
         "runner_contract_version": RUNNER_CONTRACT_VERSION,
         "runner_sha256": _self_hash(root),
         "qualification_generator_sha256": _protocol_file_hash(root / "scripts/generate_workflow_qualification.py"),
@@ -1344,7 +1360,11 @@ def baseline_protocol_descriptor(seq: dict[str, Any], root: Path = ROOT) -> dict
     }
 
 
-NON_CAUSAL_PROTOCOL_PROVENANCE_FIELDS = frozenset({"runner_sha256", "validator_sha256"})
+NON_CAUSAL_PROTOCOL_PROVENANCE_FIELDS = frozenset({
+    "runner_sha256",
+    "qualification_generator_sha256",
+    "validator_sha256",
+})
 
 
 def baseline_protocol_descriptor_compatible(frozen: object, current: object) -> bool:
@@ -1364,6 +1384,11 @@ def baseline_protocol_descriptor_compatible(frozen: object, current: object) -> 
         key: value for key, value in current.items()
         if key not in NON_CAUSAL_PROTOCOL_PROVENANCE_FIELDS
     }
+    if (
+        "task_family_generation" not in frozen_causal
+        and current_causal.get("task_family_generation") == "baseline-v3"
+    ):
+        current_causal.pop("task_family_generation")
     return frozen_causal == current_causal
 
 
@@ -1464,7 +1489,7 @@ def validate_protocol_for_run(seq: dict[str, Any], profile_id: str, args: argpar
     expected_execution_hash = _json_hash(expected_execution)
     selected_execution = protocol.get("selected_execution", {})
     errors: list[str] = []
-    if seq.get("task_family_generation") in {"baseline-v2", "baseline-v3"}:
+    if seq.get("task_family_generation") in {"baseline-v2", "baseline-v3", "baseline-v4"}:
         expected_protocol_id = canonical_protocol_id(
             seq,
             profile_id,
@@ -1602,7 +1627,7 @@ def reviewed_session_reuse_state(session: dict[str, Any] | None, root: Path = RO
         ),
         {},
     )
-    if sequence_definition.get("task_family_generation") in {"baseline-v2", "baseline-v3"}:
+    if sequence_definition.get("task_family_generation") in {"baseline-v2", "baseline-v3", "baseline-v4"}:
         verifier_visibility_valid = (
             leakage.get("controller_verifier_scripts_and_canonical_copies_model_visible") is False
             and leakage.get("model_visible_acceptance_asset_paths")
@@ -1705,7 +1730,7 @@ def find_canonical_baseline_record(registry: dict[str, Any], seq: dict[str, Any]
             or selected_descriptor.get("selected_profile", {}).get("profile_id") != "baseline-bare-codex"
         ):
             continue
-        if seq.get("task_family_generation") in {"baseline-v2", "baseline-v3"} and not expected_identity_loaded:
+        if seq.get("task_family_generation") in {"baseline-v2", "baseline-v3", "baseline-v4"} and not expected_identity_loaded:
             expected_protocol_identity, expected_protocol = current_baseline_v2_protocol(
                 seq, seq["mistake_gate"], ROOT
             )
@@ -2241,7 +2266,7 @@ def render_task_prompt(
         ])
     validation_guidance = (
         "Run only the exact command block in the current task prompt. It includes the complete focused acceptance for this task. Do not rerun earlier checks or inspect aggregate Git state; preserve earlier edits and stop when the block exits 0."
-        if seq.get("task_family_generation") in {"baseline-v2", "baseline-v3"}
+        if seq.get("task_family_generation") in {"baseline-v2", "baseline-v3", "baseline-v4"}
         else "Run the repository's model-visible behavioral and type checks for the current and previously disclosed work. Do not stop after syntax checks when executable validation is available. The controller runs concealed verification only after the final task prompt."
     )
     preface.extend([
@@ -3410,7 +3435,7 @@ def _run_one_locked(args: argparse.Namespace) -> dict[str, Any]:
         shutil.rmtree(run_dir)
         return result
 
-    if profile_id == "baseline-bare-codex" and seq.get("task_family_generation") == "baseline-v3":
+    if profile_id == "baseline-bare-codex" and seq.get("task_family_generation") in {"baseline-v3", "baseline-v4"}:
         reserve_baseline_pilot_attempt(seq, root=ROOT, orchestrator="direct-runner")
 
     thread_id: str | None = None
@@ -3531,7 +3556,7 @@ def _run_one_locked(args: argparse.Namespace) -> dict[str, Any]:
     }
     acceptance_visibility_limit = (
         "Future regression code and declared focused acceptance tests are present from lane start; future prompts, seed patches, and controller verifier scripts remain controller-only."
-        if seq.get("task_family_generation") in {"baseline-v2", "baseline-v3"}
+        if seq.get("task_family_generation") in {"baseline-v2", "baseline-v3", "baseline-v4"}
         else "Future regression code is present from lane start, while future prompts and concealed acceptance assets remain controller-only."
     )
     leakage_controls = {
