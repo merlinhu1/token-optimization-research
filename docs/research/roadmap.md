@@ -8,7 +8,7 @@ The corrected first screen used final cumulative provider usage per thread. Acro
 
 The prospective r3 natural-use replication retains TokenJuice, SigMap, Ponytail, RTK, CodeGraph, and jcodemunch-mcp v2 against three fresh bare-Codex sessions. The six eligible profiles used 216,039,299 tokens against 202,598,376 repeated matched-baseline tokens (+6.63%), with 53/54 treatment verifiers. jcodemunch-mcp v2 (-9.93%) and Ponytail (-1.29%) were below baseline in aggregate; the other four ranged from +0.32% to +29.29%. Four of six aggregate directions changed from the preceding screen. The Cartog direct-MCP v1 results were deleted after a product-parity defect was established. The evidence therefore does not support a stable product ranking.
 
-The r3 campaign used the original natural-use contracts. The later assisted-v1 Sol/`high` baseline completed with 7,718,469 provider tokens and 9/9 verifier passes, but post-run trajectory/source review found substantive corrections and one surviving hidden-contract regression. It remains valid evidence for its frozen contract but is not an acceptable comparison control for treatment spend. Baseline V2 now replaces assisted-v1 for future execution. Its nine routine tasks retain the three persistent lifecycle stages while capping each task at one or two production files, prescribing the exact edit, exposing focused validation, and forbidding rediscovery and broad suites. Three provider-free qualifications and three frozen pilot protocols pass with zero provider calls; the provider-backed zero-mistake gate remains open.
+The r3 campaign used the original natural-use contracts. The later assisted-v1 Sol/`high` baseline completed with 7,718,469 provider tokens and 9/9 verifier passes, but post-run trajectory/source review found substantive corrections and one surviving hidden-contract regression. It remains valid evidence for its frozen contract but is not an acceptable comparison control for treatment spend. Baseline V2 replaced assisted-v1 as the low-complexity design. Its nine routine tasks retain the three persistent lifecycle stages while capping each task at one or two production files, prescribing the exact edit, exposing focused validation, and forbidding rediscovery and broad suites. The authorized 2026-07-22 pilot attempt spent 808,169 provider tokens but failed operational publication because the controller emitted `cache_write_tokens: null` against a strict integer contract and its post-validation interpreter lacked `jsonschema`; Beets and Terraform also reported verifier failures. No session or comparison was published, and the zero-mistake gate remains closed.
 
 ## Production evidence now retained
 
@@ -24,12 +24,12 @@ The r3 campaign used the original natural-use contracts. The later assisted-v1 S
 
 Do not rerun occupied natural-use samples to replace unfavorable, high-variance, or near-neutral results. New provider work must be prospective, separately indexed, and explicitly authorized.
 
-1. Execute exactly one explicitly authorized GPT-5.6 Sol/`high` bare-model Baseline V2 pilot; do not launch treatments first.
-2. Audit the complete trajectory and final tree into the machine-readable pilot gate record bound to the exact session, protocol hash, and Sol/`high` tuple. Every observed incident, correction/rework, unresolved source defect, prohibited operation, unnecessary exploration, model-caused failed command, and verifier/environment failure count must be zero; verifier green alone is insufficient.
-3. If any incident occurs, simplify or replace the responsible task and mint a new generation rather than rerunning the occupied pilot for a pass.
+1. Preserve and independently classify the failed 2026-07-22 pilot attempt; do not treat its unpublished summaries as an accepted baseline.
+2. Simplify or replace the Beets and Terraform tasks that reported verifier failures, mint a new generation and new protocol identities, and keep the prior paid attempt as failed evidence rather than rerunning its occupied protocols for a pass.
+3. Before any newly authorized spend, require exact integer provider fields and prove the controller validation interpreter can import every dependency; retain compact failure evidence even when transactional publication rejects a lane.
 4. Only after the gate passes, give baseline and comparable treatments identical Baseline V2 task-assistance bytes while preserving product-authored treatment guidance and forbidding evaluator-authored tool steering.
 5. Retain the three-task persistent-session structure and first-valid-sample policy.
 6. Keep treatment telemetry observational; do not force tool uptake.
 7. Preregister any future stack under a new identity.
 
-Natural-use, assisted-v1, and Baseline V2 answer different questions and are not exchangeable populations. No Baseline V2 provider result or treatment effect exists yet.
+Natural-use, assisted-v1, and Baseline V2 answer different questions and are not exchangeable populations. Baseline V2 has one failed, unpublished provider-backed attempt but no accepted baseline result or treatment effect.

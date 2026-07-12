@@ -650,6 +650,30 @@ def pilot_session_artifacts_valid(session: dict[str, Any], root: Path = ROOT) ->
     )
 
 
+def baseline_v2_pilot_run_gate(
+    seq: dict[str, Any],
+    root: Path = ROOT,
+) -> tuple[bool, str]:
+    """Permit one provider pilot per declared audit identity; never pass-select reruns."""
+    if seq.get("task_family_generation") != "baseline-v2":
+        return True, "not a Baseline V2 sequence"
+    gate = seq.get("mistake_gate")
+    audit_rel = gate.get("pilot_audit_path") if isinstance(gate, dict) else None
+    if not isinstance(audit_rel, str) or not audit_rel:
+        return False, "missing Baseline V2 pilot_audit_path"
+    audit_path = root / audit_rel
+    if not audit_path.exists():
+        return True, "no prior Baseline V2 pilot attempt is recorded"
+    try:
+        audit = json.loads(audit_path.read_text())
+    except (OSError, ValueError) as exc:
+        return False, f"existing Baseline V2 pilot audit is unreadable: {exc}"
+    return False, (
+        f"Baseline V2 pilot identity is occupied by audit status={audit.get('status', 'unknown')!r} "
+        f"at {audit_rel}; preserve it and mint a simpler generation/audit identity before any new provider run"
+    )
+
+
 def baseline_v2_treatment_gate(seq: dict[str, Any], root: Path = ROOT) -> tuple[bool, str]:
     """Fail closed until an independently audited zero-incident Baseline V2 pilot exists."""
     if seq.get("task_family_generation") != "baseline-v2":
@@ -3137,6 +3161,11 @@ def run_one(args: argparse.Namespace) -> dict[str, Any]:
         return _run_one_locked(args)
     lock_fd = acquire_provider_production_lock()
     try:
+        selected_sequence = load_sequence(args.sequence_id)
+        if args.profile_id == "baseline-bare-codex":
+            pilot_allowed, pilot_reason = baseline_v2_pilot_run_gate(selected_sequence)
+            if not pilot_allowed:
+                raise ValueError(f"baseline provider run is blocked: {pilot_reason}")
         return _run_one_locked(args)
     finally:
         os.close(lock_fd)
