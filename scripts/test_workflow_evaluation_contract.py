@@ -96,6 +96,13 @@ class VerifierContractTest(unittest.TestCase):
         self.assertTrue(result["verifier_output"].endswith("verifier-after-task-04-task-02.txt"))
         self.assertTrue(str(run_backend.call_args.kwargs["stdout_path"]).endswith("verifier-after-task-04-task-02.txt"))
 
+    def test_completed_verifier_summary_is_json_serializable(self) -> None:
+        completed = [{"verifier_exit_code": 0, "task_id": "a"}]
+        result = runner.completed_verifier_summary(completed)
+        self.assertIsNot(result, completed[0])
+        self.assertEqual(result["completed_verifier_results"], completed)
+        json.dumps(result)
+
     def test_any_completed_stage_verifier_failure_rejects_acceptance(self) -> None:
         completed = [
             {"verifier_exit_code": 0},

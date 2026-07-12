@@ -1261,6 +1261,13 @@ def write_verifier(seq: dict[str, Any], run_dir: Path, task_root: Path) -> Path:
     return verifier
 
 
+def completed_verifier_summary(completed: list[dict[str, Any]]) -> dict[str, Any]:
+    """Record prior-stage verifier evidence without inserting a self-reference."""
+    if not completed:
+        raise ValueError("completed verifier list must not be empty")
+    return {**completed[-1], "completed_verifier_results": completed}
+
+
 def verifier_paths(seq: dict[str, Any], task_root: Path, run_dir: Path) -> list[Path]:
     paths = [
         task_dir(task_root, int(task["order"])) / "verify.sh"
@@ -2016,8 +2023,7 @@ def run_one(args: argparse.Namespace) -> dict[str, Any]:
             (run_dir / f"task-{order:02d}-thread-continuity-error.txt").write_text(message + "\n")
             break
         completed = [run_one_verifier(seq, prior, record, codex_home, run_dir, args.docker_image, stage_order=order) for prior in range(1, order + 1)]
-        result = completed[-1]
-        result["completed_verifier_results"] = completed
+        result = completed_verifier_summary(completed)
         verifier_results.append(result)
         if any(item["verifier_exit_code"] != 0 for item in completed):
             break
