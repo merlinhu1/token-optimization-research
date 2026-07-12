@@ -52,7 +52,7 @@ Every workflow needs explicit quality gates before token or cost savings can be 
 
 | Quality dimension | Required check |
 |---|---|
-| Functional correctness | Per-task verifier passes and final repository verifier passes where applicable. |
+| Functional correctness | The complete concealed verifier suite passes once against the final cumulative repository; no per-task hidden controller gate truncates the measured lane. |
 | Diagnostic preservation | For failure-repair tasks, the treatment preserves the error type, failing file, relevant stack frame, and actionable message. |
 | Code quality | Final diff is minimal for the task sequence, avoids unnecessary dependencies, preserves conventions, and does not bypass validation. |
 | Maintainability | New abstractions, config, and generated files are justified by the session outcome. |

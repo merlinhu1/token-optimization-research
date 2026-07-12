@@ -43,12 +43,12 @@ Synthetic micro fixtures and recorded diagnostic fixtures are useful for sanity 
 Each workflow session must record:
 
 1. `cumulative_token_usage` — provider-billed session totals, cache tokens, output/reasoning tokens, pricing basis, and tokens per accepted task.
-2. `per_task_results` — task ID, status, provider usage, verifier output, turns, tool calls, correction turns, and notes.
-3. `software_quality` — per-task verifier pass/fail, final verifier pass/fail, explicit review status, nullable quality score, critical failures, and final diff/status. Verifier success alone must not synthesize a quality score.
+2. `per_task_results` — task ID, Codex exit, provider-event boundary, cumulative source checkpoint, turns, tool calls, and notes; functional acceptance is intentionally deferred.
+3. `software_quality` — one final concealed verifier-suite result, explicit review status, nullable quality score, critical failures, and final diff/status. Verifier success alone must not synthesize a quality score.
 4. `state_observations` — persisted indexes/cache/memory/config, stale-context incidents, repeated rediscovery, overfeeding, and recovery notes.
 5. `operational_reproducibility` — install log, pre-session reset verification, raw-artifact recovery, state leakage outside the session boundary, and tool-isolation audit result.
 
-Completed reproduction records must also prove structural sequential disclosure: lazy future-prompt materialization, controller-only task/verifier assets, a model mount limited to the target repository plus isolated output, and passing verifier-integrity hashes. Single-replicate comparisons must record `replicate_count = 1`, null uncertainty, and non-ranking claim status.
+Completed reproduction records must also prove structural sequential disclosure: lazy future-prompt materialization, a preseeded composite broken root, final-only controller verification, controller-only task/verifier assets, a model mount limited to the target repository plus isolated output, and passing verifier-integrity hashes. Single-replicate comparisons must record `replicate_count = 1`, null uncertainty, and non-ranking claim status.
 
 ## Complex-project policy
 

@@ -127,7 +127,7 @@ python3 scripts/validate_repository.py
 
 ## Evidence boundary
 
-A valid workflow run materializes one prompt and injects one regression at a time. Future regressions, seed patches, task fixtures, verifier assets, controller Git objects, fixed parents, and prior-stage reflogs must remain outside the model-visible surface.
+A valid workflow run pre-seeds every regression into one qualified composite broken root, then materializes one prompt at a time. Seed patches, task fixtures, verifier assets, controller Git objects, and fixed parents remain outside the model-visible surface; hidden functional verification runs only after all prompts complete.
 
 Every active task must use causally related behavioral acceptance. Unrelated exact-source restoration guards are not valid complexity.
 
@@ -145,8 +145,9 @@ Before changing a sequence to `active`, require:
 
 - at least five causally related production files per primary task, or explicit smoke/calibration scope;
 - behavioral seeded-fail/fixed-pass gates;
-- lazy one-task seed delivery with future regressions absent;
-- a parentless model-facing Git baseline with fixed and prior-stage commits inaccessible;
+- a conflict-free composite seed whose task verifiers all fail at lane start;
+- one parentless model-facing Git baseline with the fixed commit inaccessible;
+- final-only concealed functional verification with no per-task controller gate;
 - controller-only task, seed, verifier, and reference assets;
 - cumulative provider usage capture, verifier integrity, isolation, and software-quality review.
 
@@ -163,7 +164,7 @@ python3 scripts/run_codex_workflow_evaluation.py \
   --skip-dependency-install
 ```
 
-`prepare-verification.json` must show only task 1 seeded, future seeds absent, a clean true-root Git baseline, no fixed commit object, no prior reflog, and no model-visible seed or verifier assets.
+`prepare-verification.json` must show every task preseeded, only task 1's prompt materialized, a clean true-root Git baseline, no fixed commit object or prior reflog, current composite qualification, and no model-visible seed or verifier assets.
 
 ## Paid execution
 
@@ -182,11 +183,11 @@ sources/evaluations/workflow-sessions/<session-id>/
 {artifact_lines}
 ```
 
-`run.json` contains metadata, frozen protocol path/id/SHA-256, baseline pool fingerprint, selected-execution descriptor and hash, immutable Docker image identity, treatment tool adapter identity when applicable, provider usage, seed-delivery/concealment claims, and per-task verifier exits.
+`run.json` contains metadata, frozen protocol path/id/SHA-256, baseline pool fingerprint, selected-execution descriptor and hash, immutable Docker image identity, treatment tool adapter identity when applicable, provider usage, composite-seed/concealment claims, operational task checkpoints, and the final verifier result.
 
-`changes.diff` concatenates ordered task deltas, each relative to that task's concealed stage root.
+`changes.diff` concatenates ordered cumulative source checkpoints and the final diff relative to the one composite broken-start root.
 
-`evidence.jsonl.gz` contains prompts, Codex events, setup logs, per-task deltas, seed-delivery and concealment reports, verifier output and integrity checks, provider-usage extraction, and tool-isolation audit output.
+`evidence.jsonl.gz` contains prompts, Codex events, setup logs, cumulative checkpoints, composite-seed and concealment reports, final verifier output and integrity checks, provider-usage extraction, and tool-isolation audit output.
 
 `manifest.sha256` hashes the other three files.
 
