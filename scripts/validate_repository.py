@@ -358,30 +358,11 @@ def validate_qualification(sequence: dict, errors: list[str]) -> None:
         ]
         for task in ordered
     }
-    required_true = ("seeded_verifier_nonzero", "fixed_verifier_zero", "full_fixed_cumulative_verifier_zero", "ordered_transition_applicability", "alternative_repair_transition_applicability", "alternative_repair_noncanonical", "no_unmerged_paths", "no_model_visible_acceptance_assets", "all_expected_model_concealment_declared")
+    required_true = ("seeded_verifier_nonzero", "fixed_verifier_zero", "full_fixed_cumulative_verifier_zero", "composite_seed_merge_zero", "composite_seeded_verifiers_nonzero", "no_unmerged_paths", "no_model_visible_acceptance_assets", "all_expected_model_concealment_declared")
     if q.get("snapshot") != sequence.get("initial_snapshot", {}).get("commit") or q.get("ordered_task_ids") != [t["id"] for t in ordered] or q.get("qualified_on") != sequence.get("qualification_date"):
         errors.append(f"qualification {rel} snapshot, date, or task order is stale")
     if any(q.get(field) is not True for field in required_true):
         errors.append(f"qualification {rel} must record every executable gate as true")
-    replay = sequence.get("alternative_repair_replay", {})
-    replay_path = ROOT / str(replay.get("changes_diff", ""))
-    if not replay or not replay_path.is_file():
-        errors.append(f"qualification {rel} is missing its accepted alternative-repair replay input")
-    else:
-        source = replay_path.read_text()
-        marker = f"# --- task-{int(replay['repaired_task_order']):02d}-agent ---"
-        section = (source.split(marker, 1)[1].split("# --- task-", 1)[0] if marker in source else source).strip() + "\n"
-        if section:
-            digest = __import__("hashlib")
-            if (
-                q.get("alternative_repair_source_sha256") != digest.sha256(replay_path.read_bytes()).hexdigest()
-                or q.get("alternative_repair_patch_sha256") != digest.sha256(section.encode()).hexdigest()
-            ):
-                errors.append(f"qualification {rel} alternative-repair replay hashes are stale")
-            if q.get("alternative_repair_noncanonical") is not True or q.get("alternative_repair_semantic_delta") is not True:
-                errors.append(f"qualification {rel} alternative repair is not materially noncanonical")
-        if int(replay.get("next_task_order", 0)) != int(replay.get("repaired_task_order", 0)) + 1:
-            errors.append(f"qualification {rel} alternative repair must not wrap from task 5 to task 1")
     boundaries = q.get("cumulative_boundaries", [])
     if len(boundaries) != len(ordered) or any(
         boundary.get("task_id") != task["id"]
@@ -391,7 +372,6 @@ def validate_qualification(sequence: dict, errors: list[str]) -> None:
         or boundary.get("repair_apply_check_exit") != 0
         or boundary.get("repair_apply_exit") != 0
         or any(code != 0 for code in boundary.get("retained_verifier_exits", {}).values())
-        or any(code != 0 for code in boundary.get("pending_seed_apply_check_exits", {}).values())
         for task, boundary in zip(ordered, boundaries)
     ):
         errors.append(f"qualification {rel} lacks fresh cumulative seed/repair boundary evidence")
@@ -821,6 +801,21 @@ def validate_workflow_task_sequences(sequence_doc: dict, fixture_doc: dict, erro
         errors.append("active workflow sequences must be exactly Fastify, Terraform, and Beets")
     if any(len(sequence.get("tasks", [])) != 5 for sequence in active):
         errors.append("every active workflow sequence must contain exactly five tasks")
+    retired_contract_phrases = (
+        "one task at a time",
+        "alternative-repair",
+        "ordered transitions",
+    )
+    for sequence in active:
+        policy = str(sequence.get("seed_patch_policy", "")).lower()
+        if "composite broken start" not in policy or "final prompt" not in policy:
+            errors.append(f"active workflow sequence {sequence.get('id')} must declare composite pre-seeding and final-only verification")
+        if any(phrase in policy for phrase in retired_contract_phrases):
+            errors.append(f"active workflow sequence {sequence.get('id')} still describes the retired lazy-seed contract")
+    for surface in ("README.md", "docs/research/roadmap.md"):
+        text = (ROOT / surface).read_text().lower()
+        if any(phrase in text for phrase in retired_contract_phrases):
+            errors.append(f"{surface} still describes retired lazy-seed qualification gates")
     return sequence_ids
 
 
@@ -1066,8 +1061,17 @@ def validate_workflow_session_contract(session: dict, canonical_profile: dict | 
                 errors.append(f"workflow session {sid} must hide future tasks during workflow reproduction")
             if prompt_delivery.get("future_prompts_materialized_lazily") is not True:
                 errors.append(f"workflow session {sid} future prompts must be materialized lazily")
-            if prompt_delivery.get("seed_delivery_mode") != "lazy-one-task-at-a-time" or prompt_delivery.get("future_seed_regressions_visible") is not False:
-                errors.append(f"workflow session {sid} future seed regressions must be delivered lazily")
+            legacy_seed_delivery = (
+                prompt_delivery.get("seed_delivery_mode") == "lazy-one-task-at-a-time"
+                and prompt_delivery.get("future_seed_regressions_visible") is False
+            )
+            warm_seed_delivery = (
+                prompt_delivery.get("seed_delivery_mode") == "preseeded-composite"
+                and prompt_delivery.get("future_seed_regressions_visible") is True
+                and prompt_delivery.get("controller_verification") == "final-only"
+            )
+            if not (legacy_seed_delivery or warm_seed_delivery):
+                errors.append(f"workflow session {sid} must use a recognized frozen seed-delivery contract")
         leakage_controls = sequence.get("leakage_controls") if isinstance(sequence, dict) else None
         if not isinstance(leakage_controls, dict) or leakage_controls.get("seed_origin_concealed") is not True:
             errors.append(f"workflow session {sid} must record seed_origin_concealed leakage control for completed workflow reproduction")
@@ -1075,8 +1079,11 @@ def validate_workflow_session_contract(session: dict, canonical_profile: dict | 
             errors.append(f"workflow session {sid} task directories must not be model-visible")
         if not isinstance(leakage_controls, dict) or leakage_controls.get("seed_patches_model_visible") is not False:
             errors.append(f"workflow session {sid} seed patches must not be model-visible")
-        if not isinstance(leakage_controls, dict) or leakage_controls.get("git_baseline_true_root_per_task") is not True:
-            errors.append(f"workflow session {sid} must use a verified true-root Git baseline for every task")
+        if not isinstance(leakage_controls, dict) or not (
+            leakage_controls.get("git_baseline_true_root_per_task") is True
+            or leakage_controls.get("git_baseline_true_root_at_lane_start") is True
+        ):
+            errors.append(f"workflow session {sid} must use a verified true-root Git baseline")
         if not isinstance(leakage_controls, dict) or leakage_controls.get("fixed_snapshot_objects_model_visible") is not False or leakage_controls.get("pre_seed_reflog_entries_visible") is not False:
             errors.append(f"workflow session {sid} fixed snapshot objects and pre-seed reflogs must not be model-visible")
         if not isinstance(leakage_controls, dict) or leakage_controls.get("concealment_verification_passed") is not True:
@@ -1116,16 +1123,25 @@ def validate_workflow_session_contract(session: dict, canonical_profile: dict | 
         critical_failures = quality.get("critical_failures", []) if isinstance(quality, dict) else []
         prompt_delivery = sequence.get("prompt_delivery", {}) if isinstance(sequence, dict) else {}
         leakage_controls = sequence.get("leakage_controls", {}) if isinstance(sequence, dict) else {}
+        legacy_seed_delivery = (
+            prompt_delivery.get("seed_delivery_mode") == "lazy-one-task-at-a-time"
+            and prompt_delivery.get("future_seed_regressions_visible") is False
+            and leakage_controls.get("git_baseline_true_root_per_task") is True
+        )
+        warm_seed_delivery = (
+            prompt_delivery.get("seed_delivery_mode") == "preseeded-composite"
+            and prompt_delivery.get("future_seed_regressions_visible") is True
+            and prompt_delivery.get("controller_verification") == "final-only"
+            and leakage_controls.get("git_baseline_true_root_at_lane_start") is True
+        )
         structurally_isolated = (
             prompt_delivery.get("future_tasks_visible") is False
             and prompt_delivery.get("future_prompts_materialized_lazily") is True
-            and prompt_delivery.get("seed_delivery_mode") == "lazy-one-task-at-a-time"
-            and prompt_delivery.get("future_seed_regressions_visible") is False
+            and (legacy_seed_delivery or warm_seed_delivery)
             and leakage_controls.get("task_directories_model_visible") is False
             and leakage_controls.get("verifier_assets_model_visible") is False
             and leakage_controls.get("verifier_integrity_passed") is True
             and leakage_controls.get("seed_patches_model_visible") is False
-            and leakage_controls.get("git_baseline_true_root_per_task") is True
             and leakage_controls.get("fixed_snapshot_objects_model_visible") is False
             and leakage_controls.get("pre_seed_reflog_entries_visible") is False
             and leakage_controls.get("concealment_verification_passed") is True
@@ -1340,6 +1356,7 @@ def validate_frozen_protocol_bindings(errors: list[str]) -> None:
     except Exception as exc:
         errors.append(f"cannot import workflow runner for protocol binding validation: {exc}")
         runner = None
+    current_sequence_bindings: set[str] = set()
     for path in (ROOT / "sources/evaluations/protocols").glob("*.json"):
         protocol = json.loads(path.read_text())
         if protocol.get("status") == "frozen-ready-not-run" and "gpt-5.5" in json.dumps(protocol):
@@ -1358,6 +1375,12 @@ def validate_frozen_protocol_bindings(errors: list[str]) -> None:
         if runner is not None:
             try:
                 seq = runner.load_sequence(str(fixture.get("sequence_id")))
+                if qualification_rel != seq.get("qualification_path"):
+                    # Immutable protocols bound to earlier qualification paths are
+                    # historical contracts; current binding checks apply only to
+                    # the qualification path selected by the active sequence.
+                    continue
+                current_sequence_bindings.add(str(seq["id"]))
                 expected_fingerprint = runner.baseline_protocol_fingerprint(seq)
             except Exception as exc:
                 errors.append(f"frozen protocol {path.name} cannot compute current runner fingerprint: {exc}")
@@ -1394,6 +1417,10 @@ def validate_frozen_protocol_bindings(errors: list[str]) -> None:
         fields = protocol.get("token_accounting_boundary", {}).get("fields", [])
         if "total_provider_tokens" not in fields:
             errors.append(f"frozen protocol {path.name} must bind total_provider_tokens")
+    if runner is not None:
+        missing = sorted(set(runner.active_sequence_ids()) - current_sequence_bindings)
+        if missing:
+            errors.append(f"active workflow sequences missing current frozen protocol bindings: {', '.join(missing)}")
 
 
 def main() -> int:

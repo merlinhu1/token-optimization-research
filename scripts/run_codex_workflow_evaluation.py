@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
-"""Run Codex continuous workflow-sequence evaluations.
+"""Run Codex warm-state multi-task lane evaluations.
 
-The runner evaluates one profile on one active workflow sequence from
-``data/workflow-task-sequences.json``. Unlike the early ad-hoc workflow runner,
-tasks are fed to the same Codex session one at a time via ``codex exec resume``;
-future task prompts are not visible to the model until the previous task verifier
-has passed.
+The runner evaluates one profile on one active sequence from
+``data/workflow-task-sequences.json``. Every regression is pre-seeded before
+provider execution; task prompts are then fed to one persistent Codex thread via
+``codex exec resume``. Controller verification is deferred until every prompt
+has run so hidden gates do not alter or truncate the measured workflow.
 """
 from __future__ import annotations
 
@@ -191,6 +191,28 @@ def load_sequence(sequence_id: str) -> dict[str, Any]:
 
 def active_sequence_ids() -> list[str]:
     return [seq["id"] for seq in sequence_doc().get("sequences", []) if seq.get("status") == "active"]
+
+
+def warm_lane_contract(seq: dict[str, Any]) -> dict[str, Any]:
+    orders = [int(task["order"]) for task in sorted(seq["tasks"], key=lambda item: int(item["order"]))]
+    return {
+        "seed_delivery_mode": "preseeded-composite",
+        "preseeded_task_orders": orders,
+        "future_seed_regressions_visible": True,
+        "controller_verification": "final-only",
+        "repository_state_persists_between_tasks": True,
+        "tool_state_persists_between_tasks": True,
+    }
+
+
+def task_checkpoint_allows_continue(
+    *,
+    codex_exit_code: int,
+    thread_id: str | None,
+    verifier_integrity_passed: bool,
+) -> bool:
+    """Gate only operational validity between prompts; functional acceptance is final-only."""
+    return codex_exit_code == 0 and thread_id is not None and verifier_integrity_passed
 
 
 def safe_profile_key(profile_id: str) -> str:
@@ -429,9 +451,10 @@ def execution_condition_descriptor(
         },
         "isolation": {
             "prompt_delivery": "sequential-one-task-at-a-time",
-            "seed_delivery_mode": "lazy-one-task-at-a-time",
+            "seed_delivery_mode": "preseeded-composite",
             "future_tasks_visible": False,
-            "future_seed_regressions_visible": False,
+            "future_seed_regressions_visible": True,
+            "controller_verification": "final-only",
             "verifier_assets_model_visible": False,
             "model_concealed_paths": sequence_concealed_paths(seq),
         },
@@ -506,8 +529,7 @@ def baseline_protocol_descriptor(seq: dict[str, Any], root: Path = ROOT) -> dict
             "model_concealed_paths": sorted(str(path) for path in task.get("model_concealed_paths", [])),
         })
     qualification_path = root / str(seq.get("qualification_path", ""))
-    replay = seq.get("alternative_repair_replay", {})
-    replay_path = root / str(replay.get("changes_diff", ""))
+
     baseline = PROFILE_META["baseline-bare-codex"]
     return {
         "version": BASELINE_POOL_PROTOCOL_VERSION,
@@ -526,10 +548,7 @@ def baseline_protocol_descriptor(seq: dict[str, Any], root: Path = ROOT) -> dict
             "path": str(seq.get("qualification_path", "")),
             "sha256": _protocol_file_hash(qualification_path),
         },
-        "alternative_repair_replay": {
-            **replay,
-            "changes_diff_sha256": _protocol_file_hash(replay_path),
-        },
+
         "baseline_profile": {
             "profile_id": "baseline-bare-codex",
             "profile_type": baseline["profile_type"],
@@ -555,10 +574,12 @@ def baseline_protocol_descriptor(seq: dict[str, Any], root: Path = ROOT) -> dict
         },
         "isolation": {
             "prompt_delivery": "sequential-one-task-at-a-time",
-            "seed_delivery_mode": "lazy-one-task-at-a-time",
+            "seed_delivery_mode": "preseeded-composite",
             "future_tasks_visible": False,
+            "future_seed_regressions_visible": True,
             "verifier_assets_model_visible": False,
-            "git_baseline_true_root_per_task": True,
+            "git_baseline_true_root_at_lane_start": True,
+            "controller_verification": "final-only",
             "prompt_sanitizer": "sanitize_task_prompt-v1",
             "concealment": "declared-model-concealed-paths-removed-before-root-commit",
             "model_concealed_paths": sequence_concealed_paths(seq),
@@ -683,13 +704,14 @@ def reviewed_session_reuse_state(session: dict[str, Any] | None, root: Path = RO
     isolated = (
         prompt_delivery.get("future_tasks_visible") is False
         and prompt_delivery.get("future_prompts_materialized_lazily") is True
-        and prompt_delivery.get("seed_delivery_mode") == "lazy-one-task-at-a-time"
-        and prompt_delivery.get("future_seed_regressions_visible") is False
+        and prompt_delivery.get("seed_delivery_mode") == "preseeded-composite"
+        and prompt_delivery.get("future_seed_regressions_visible") is True
+        and prompt_delivery.get("controller_verification") == "final-only"
         and leakage.get("task_directories_model_visible") is False
         and leakage.get("verifier_assets_model_visible") is False
         and leakage.get("verifier_integrity_passed") is True
         and leakage.get("seed_patches_model_visible") is False
-        and leakage.get("git_baseline_true_root_per_task") is True
+        and leakage.get("git_baseline_true_root_at_lane_start") is True
         and leakage.get("fixed_snapshot_objects_model_visible") is False
         and leakage.get("pre_seed_reflog_entries_visible") is False
         and leakage.get("concealment_verification_passed") is True
@@ -896,107 +918,97 @@ def conceal_seed(seq: dict[str, Any], repo: Path, run_dir: Path, order: int, fix
     return verification
 
 
-def apply_seed_patch(repo: Path, patch: Path, output: Path) -> None:
-    # Prefer a normal context apply. It composes cleanly with a prior model repair
-    # when the task hunks do not overlap. A forced three-way apply depends on the
-    # concealed fixed-snapshot blob, which is intentionally absent from a model
-    # stage root and can fail even for non-overlapping hunks.
-    with output.open("w") as out:
-        proc = subprocess.run(
-            ["git", "apply", str(patch)],
-            cwd=repo,
-            text=True,
-            stdout=out,
-            stderr=subprocess.STDOUT,
-            timeout=120,
-        )
-        if proc.returncode != 0:
-            out.write("\nnormal apply failed; retrying three-way apply\n")
-            proc = subprocess.run(
-                ["git", "apply", "--3way", str(patch)],
-                cwd=repo,
-                text=True,
-                stdout=out,
-                stderr=subprocess.STDOUT,
-                timeout=120,
+def apply_composite_seed_patches(repo: Path, patches: list[Path], scratch: Path, log_path: Path) -> None:
+    """Merge independently-authored regressions against one fixed snapshot."""
+    scratch.mkdir(parents=True, exist_ok=True)
+    base_commit = subprocess.run(
+        ["git", "rev-parse", "HEAD"], cwd=repo, check=True, text=True, capture_output=True
+    ).stdout.strip()
+    events: list[dict[str, Any]] = []
+
+    for index, patch_path in enumerate(patches, start=1):
+        worktree = scratch / f"seed-{index:02d}"
+        subprocess.run(["git", "worktree", "add", "--detach", str(worktree), base_commit], cwd=repo, check=True, capture_output=True)
+        try:
+            subprocess.run(["git", "apply", str(patch_path)], cwd=worktree, check=True, capture_output=True)
+            tracked = subprocess.run(
+                ["git", "diff", "--name-only", "--no-renames", "-z"],
+                cwd=worktree,
+                check=True,
+                stdout=subprocess.PIPE,
+            ).stdout
+            untracked = subprocess.run(
+                ["git", "ls-files", "--others", "-z"],
+                cwd=worktree,
+                check=True,
+                stdout=subprocess.PIPE,
+            ).stdout
+            changed = sorted(
+                {Path(os.fsdecode(item)) for item in (tracked + untracked).split(b"\0") if item},
+                key=lambda item: item.as_posix(),
             )
-    if proc.returncode != 0:
-        raise RuntimeError(f"seed patch failed: {patch}")
-    conflicts = subprocess.run(
-        ["git", "diff", "--name-only", "--diff-filter=U"],
-        cwd=repo,
-        text=True,
-        stdout=subprocess.PIPE,
-        stderr=subprocess.STDOUT,
-        timeout=30,
-    )
-    if conflicts.stdout.strip():
-        subprocess.run(["git", "reset", "--hard", "HEAD"], cwd=repo, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, timeout=60)
-        raise RuntimeError(f"seed patch produced merge conflicts: {patch}: {conflicts.stdout.strip()}")
+            if not changed:
+                raise RuntimeError(f"composite seed patch produced no changed paths: {patch_path}")
+            merged_paths: list[str] = []
+            for relative in changed:
+                current = repo / relative
+                seeded = worktree / relative
+                base_exists = subprocess.run(
+                    ["git", "cat-file", "-e", f"{base_commit}:{relative.as_posix()}"],
+                    cwd=repo,
+                    stdout=subprocess.DEVNULL,
+                    stderr=subprocess.DEVNULL,
+                ).returncode == 0
+                base_path = scratch / f"base-{index:02d}" / relative
+                if base_exists:
+                    base_path.parent.mkdir(parents=True, exist_ok=True)
+                    base_path.write_bytes(
+                        subprocess.run(
+                            ["git", "show", f"{base_commit}:{relative.as_posix()}"],
+                            cwd=repo,
+                            check=True,
+                            stdout=subprocess.PIPE,
+                        ).stdout
+                    )
 
+                if not base_exists:
+                    if not seeded.exists():
+                        raise RuntimeError(f"composite seed has unsupported add/delete state for {relative}")
+                    if current.exists() and current.read_bytes() != seeded.read_bytes():
+                        raise RuntimeError(f"composite seed conflict on independently-added file {relative}")
+                    current.parent.mkdir(parents=True, exist_ok=True)
+                    shutil.copy2(seeded, current)
+                elif not seeded.exists():
+                    if current.exists() and current.read_bytes() != base_path.read_bytes():
+                        raise RuntimeError(f"composite seed conflict deleting modified file {relative}")
+                    current.unlink(missing_ok=True)
+                elif not current.exists():
+                    raise RuntimeError(f"composite seed conflict restoring deleted file {relative}")
+                elif current.read_bytes() == base_path.read_bytes():
+                    shutil.copy2(seeded, current)
+                elif seeded.read_bytes() != base_path.read_bytes():
+                    merged = subprocess.run(
+                        ["git", "merge-file", "-p", str(current), str(base_path), str(seeded)],
+                        stdout=subprocess.PIPE,
+                        stderr=subprocess.PIPE,
+                    )
+                    if merged.returncode != 0:
+                        raise RuntimeError(
+                            f"composite seed conflict for {relative} from {patch_path}: "
+                            f"{merged.stderr.decode(errors='replace').strip()}"
+                        )
+                    current.write_bytes(merged.stdout)
+                merged_paths.append(relative.as_posix())
+            events.append({"order": index, "patch": rel(patch_path), "merged_paths": merged_paths})
+        finally:
+            subprocess.run(
+                ["git", "worktree", "remove", "--force", str(worktree)],
+                cwd=repo,
+                stdout=subprocess.DEVNULL,
+                stderr=subprocess.DEVNULL,
+            )
 
-def seed_patch_application_state(repo: Path, patch: Path) -> dict[str, bool]:
-    def check(*extra: str) -> bool:
-        proc = subprocess.run(
-            # State detection must inspect the working tree, not reconstruct a
-            # three-way result from patch blob IDs (which makes an absent
-            # pending seed appear reverse-applicable).
-            ["git", "apply", *extra, "--check", str(patch)],
-            cwd=repo,
-            stdout=subprocess.DEVNULL,
-            stderr=subprocess.DEVNULL,
-        )
-        return proc.returncode == 0
-
-    return {
-        "forward_applicable": check(),
-        "reverse_applicable": check("--reverse"),
-    }
-
-
-def verify_seed_delivery_stage(seq: dict[str, Any], repo: Path, run_dir: Path, active_order: int, pending_orders: list[int]) -> dict[str, Any]:
-    orders = [active_order, *pending_orders]
-    states = {
-        str(order): seed_patch_application_state(repo, task_dir(run_dir, order) / "seed-regression.patch")
-        for order in orders
-    }
-    active_applied = states[str(active_order)]["reverse_applicable"]
-    pending_absent = all(not states[str(order)]["reverse_applicable"] for order in pending_orders)
-    pending_forward_applicable = all(states[str(order)]["forward_applicable"] for order in pending_orders)
-    controller_asset_hashes: set[str] = set()
-    controller_asset_sizes: set[int] = set()
-    for order in orders:
-        controller_task = task_dir(run_dir, order)
-        for asset in controller_task.rglob("*"):
-            if asset.is_file():
-                controller_asset_sizes.add(asset.stat().st_size)
-                controller_asset_hashes.add(hashlib.sha256(asset.read_bytes()).hexdigest())
-
-    leaked_assets: list[str] = []
-    explicit_forbidden_names = {"seed-regression.patch", "verify.sh", "task.md", "agent-prompt.txt"}
-    for path in repo.rglob("*"):
-        if ".git" in path.parts or not path.is_file():
-            continue
-        relative = str(path.relative_to(repo))
-        if path.name in explicit_forbidden_names:
-            leaked_assets.append(relative)
-            continue
-        if path.stat().st_size in controller_asset_sizes:
-            digest = hashlib.sha256(path.read_bytes()).hexdigest()
-            if digest in controller_asset_hashes:
-                leaked_assets.append(relative)
-    return {
-        "active_seed_order": active_order,
-        "pending_seed_orders": pending_orders,
-        "seed_patch_states": states,
-        "active_seed_applied": active_applied,
-        "pending_seed_regressions_absent": pending_absent,
-        "pending_seed_patches_forward_applicable": pending_forward_applicable,
-        "model_repo_seed_or_verifier_assets": leaked_assets,
-        "model_concealed_paths": sequence_concealed_paths(seq),
-        "model_concealed_paths_present": assert_model_concealed_paths_absent(repo, seq),
-        "passed": active_applied and pending_absent and pending_forward_applicable and not leaked_assets and not assert_model_concealed_paths_absent(repo, seq),
-    }
+    log_path.write_text(json.dumps({"mode": "preseeded-composite", "patches": events}, indent=2) + "\n")
 
 
 def create_project(seq: dict[str, Any], project: Path, run_dir: Path, *, conceal_seed_origin: bool = True) -> None:
@@ -1016,7 +1028,7 @@ def create_project(seq: dict[str, Any], project: Path, run_dir: Path, *, conceal
         shutil.copytree(src, dest)
         shared_controller_hidden = src.parents[1] / "controller-hidden"
         if shared_controller_hidden.is_dir():
-            shutil.copytree(shared_controller_hidden, dest / "controller-hidden")
+            shutil.copytree(shared_controller_hidden, dest / "controller-hidden", dirs_exist_ok=True)
         write_sanitized_prompt(src / "agent-prompt.txt", dest / "agent-prompt.txt")
         alias_manifest.append({
             "order": order,
@@ -1043,55 +1055,81 @@ def create_project(seq: dict[str, Any], project: Path, run_dir: Path, *, conceal
     run(["git", "config", "user.email", "workflow-eval@example.invalid"], cwd=repo)
     run(["git", "config", "user.name", "Workflow Eval"], cwd=repo)
 
-    # Move the fetched Git object database outside the model mount while the
-    # fixed source tree is still checked out. Future seed patches are not applied
-    # here; task deltas provide cumulative review evidence without requiring
-    # independent task seeds to stack in one synthetic broken tree.
+    # Build every regression against the same fixed commit before provider
+    # execution. The model then receives one persistent composite-broken root;
+    # no seed patch is applied over model-authored repairs between prompts.
     scratch = controller_scratch_dir(run_dir)
     scratch.mkdir()
-    shutil.move(str(repo / ".git"), str(controller_git_dir(run_dir)))
-
-    run(["git", "init", "-q"], cwd=repo)
-    configure_model_git(repo)
-    # git apply --3way needs the fixed tree in the temporary controller index.
-    # conceal_seed deletes this metadata before the model can access the repo.
-    run(["git", "add", "-A"], cwd=repo)
-    first_order = int(ordered_tasks[0]["order"])
-    apply_seed_patch(
-        repo,
-        task_dir(run_dir, first_order) / "seed-regression.patch",
-        run_dir / f"seed-task-{first_order:02d}-apply.txt",
-    )
-    if conceal_seed_origin:
-        concealment = conceal_seed(seq, repo, run_dir, first_order, commit)
-    else:
-        first_patch = task_dir(run_dir, first_order) / "seed-regression.patch"
-        reverse = subprocess.run(["git", "apply", "--reverse", str(first_patch)], cwd=repo, text=True, stdout=subprocess.DEVNULL, stderr=subprocess.STDOUT)
-        if reverse.returncode != 0:
-            raise RuntimeError("failed to restore fixed debug baseline")
-        run(["git", "add", "-A"], cwd=repo)
-        run(["git", "commit", "-q", "-m", "debug fixed snapshot"], cwd=repo)
-        apply_seed_patch(repo, first_patch, run_dir / f"seed-task-{first_order:02d}-debug-reapply.txt")
-        concealment = {"order": first_order, "passed": False, "debug_unconcealed": True}
-
     orders = [int(task["order"]) for task in ordered_tasks]
-    delivery_verification = verify_seed_delivery_stage(seq, repo, run_dir, first_order, orders[1:])
-    stage_passed = bool(concealment.get("passed")) and delivery_verification["passed"]
+    seed_patches = [task_dir(run_dir, order) / "seed-regression.patch" for order in orders]
+    apply_composite_seed_patches(
+        repo,
+        seed_patches,
+        scratch / "composite-worktrees",
+        run_dir / "composite-seed-merge.json",
+    )
+    composite_diff = subprocess.run(
+        ["git", "diff", "--full-index", "--binary"],
+        cwd=repo,
+        check=True,
+        text=True,
+        capture_output=True,
+    ).stdout
+    if not composite_diff.strip():
+        raise RuntimeError("composite seed produced no source changes")
+    (run_dir / "composite-seed.diff").write_text(composite_diff)
+
+    if conceal_seed_origin:
+        shutil.move(str(repo / ".git"), str(controller_git_dir(run_dir)))
+        concealment = conceal_seed(seq, repo, run_dir, orders[0], commit)
+    else:
+        remove_model_concealed_paths(repo, seq)
+        run(["git", "add", "-A"], cwd=repo)
+        run(["git", "commit", "-q", "-m", "debug composite broken snapshot"], cwd=repo)
+        concealment = {"order": orders[0], "passed": False, "debug_unconcealed": True}
+
+    merge_state = json.loads((run_dir / "composite-seed-merge.json").read_text())
+    merged_orders = [int(item["order"]) for item in merge_state.get("patches", [])]
+    leaked_assets: list[str] = []
+    explicit_forbidden_names = {"seed-regression.patch", "verify.sh", "task.md", "agent-prompt.txt"}
+    for path in repo.rglob("*"):
+        if ".git" not in path.parts and path.is_file() and path.name in explicit_forbidden_names:
+            leaked_assets.append(str(path.relative_to(repo)))
+    delivery_verification = {
+        "mode": "preseeded-composite",
+        "preseeded_task_orders": orders,
+        "merged_task_orders": merged_orders,
+        "composite_diff_sha256": hashlib.sha256(composite_diff.encode()).hexdigest(),
+        "model_repo_seed_or_verifier_assets": leaked_assets,
+        "model_concealed_paths": sequence_concealed_paths(seq),
+        "model_concealed_paths_present": assert_model_concealed_paths_absent(repo, seq),
+    }
+    delivery_verification["passed"] = (
+        merged_orders == orders
+        and bool(composite_diff.strip())
+        and not leaked_assets
+        and not delivery_verification["model_concealed_paths_present"]
+    )
+    stage_passed = bool(concealment.get("passed")) and bool(delivery_verification["passed"])
     state = {
-        "mode": "lazy-one-task-at-a-time",
-        "future_seed_regressions_visible": False,
+        "mode": "preseeded-composite",
+        "future_seed_regressions_visible": True,
         "seed_patches_model_visible": False,
-        "active_seed_order": first_order,
-        "applied_seed_orders": [first_order],
-        "pending_seed_orders": orders[1:],
-        "diff_basis": "ordered-task-deltas",
+        "preseeded_task_orders": orders,
+        "pending_seed_orders": [],
+        "controller_verification": "final-only",
+        "diff_basis": "ordered-task-checkpoints-plus-final-cumulative-diff",
         "fixed_snapshot_oid": commit,
-        "transitions": [{"order": first_order, "concealment": concealment, "seed_delivery": delivery_verification}],
+        "concealment": concealment,
+        "composite_seed_delivery": delivery_verification,
     }
     seed_delivery_path(run_dir).write_text(json.dumps(state, indent=2) + "\n")
     qualification_path = ROOT / seq.get("qualification_path", "")
     qualification_passed, qualification = qualification_is_current(seq)
-    stage_passed = stage_passed and qualification_passed
+    qualification_composite_sha256 = qualification.get("composite_seed_diff_sha256")
+    runtime_composite_sha256 = delivery_verification["composite_diff_sha256"]
+    composite_hash_matches_qualification = qualification_composite_sha256 == runtime_composite_sha256
+    stage_passed = stage_passed and qualification_passed and composite_hash_matches_qualification
     prepare_verification = {
         "passed": stage_passed,
         **state,
@@ -1100,14 +1138,16 @@ def create_project(seq: dict[str, Any], project: Path, run_dir: Path, *, conceal
             "path": rel(qualification_path) if qualification_path.is_file() else "",
             "passed": qualification_passed,
             "full_fixed_cumulative_verifier_zero": qualification.get("full_fixed_cumulative_verifier_zero"),
-            "seeded_verifier_nonzero": qualification.get("seeded_verifier_nonzero"),
-            "fixed_verifier_zero": qualification.get("fixed_verifier_zero"),
-            "alternative_repair_transition_applicability": qualification.get("alternative_repair_transition_applicability"),
+            "composite_seed_merge_zero": qualification.get("composite_seed_merge_zero"),
+            "composite_seeded_verifiers_nonzero": qualification.get("composite_seeded_verifiers_nonzero"),
+            "composite_seed_diff_sha256": qualification_composite_sha256,
+            "runtime_composite_seed_diff_sha256": runtime_composite_sha256,
+            "composite_seed_diff_hash_matches": composite_hash_matches_qualification,
         },
     }
     (run_dir / "prepare-verification.json").write_text(json.dumps(prepare_verification, indent=2) + "\n")
     if conceal_seed_origin and not stage_passed:
-        raise RuntimeError("initial lazy seed delivery or concealment verification failed")
+        raise RuntimeError("composite seed delivery, qualification, or concealment verification failed")
 
 
 def capture_task_delta(repo: Path, run_dir: Path, order: int) -> Path:
@@ -1119,26 +1159,6 @@ def capture_task_delta(repo: Path, run_dir: Path, order: int) -> Path:
     run(["git", "diff", "--binary", "HEAD", "--"], cwd=repo, stdout=path, timeout=120)
     run(["git", "diff", "--stat", "HEAD", "--"], cwd=repo, stdout=run_dir / f"task-{order:02d}-agent-diffstat.txt", timeout=120)
     return path
-
-
-def advance_task_seed(seq: dict[str, Any], repo: Path, run_dir: Path, next_order: int) -> dict[str, Any]:
-    state = json.loads(seed_delivery_path(run_dir).read_text())
-    pending = [int(order) for order in state.get("pending_seed_orders", [])]
-    if not pending or next_order != pending[0]:
-        raise ValueError(f"seed transition must advance to the next pending order; requested {next_order}, pending={pending}")
-    patch = task_dir(run_dir, next_order) / "seed-regression.patch"
-    apply_seed_patch(repo, patch, run_dir / f"seed-task-{next_order:02d}-apply.txt")
-    concealment = conceal_seed(seq, repo, run_dir, next_order, str(state["fixed_snapshot_oid"]))
-    remaining = pending[1:]
-    delivery_verification = verify_seed_delivery_stage(seq, repo, run_dir, next_order, remaining)
-    if not delivery_verification["passed"]:
-        raise RuntimeError(f"lazy seed delivery verification failed for task {next_order}")
-    state["active_seed_order"] = next_order
-    state["applied_seed_orders"].append(next_order)
-    state["pending_seed_orders"] = remaining
-    state["transitions"].append({"order": next_order, "concealment": concealment, "seed_delivery": delivery_verification})
-    seed_delivery_path(run_dir).write_text(json.dumps(state, indent=2) + "\n")
-    return state
 
 
 def base_record(session_id: str, seq: dict[str, Any], profile_id: str, project: Path, run_dir: Path) -> dict[str, Any]:
@@ -1192,7 +1212,7 @@ def profile_prompt_guidance(profile_id: str) -> str:
             "You are running inside the `baseline-bare-codex` control lane. "
             "This is a Codex substrate baseline: native shell, file, git, and repository edit operations are allowed. "
             "Do not use external retrieval, compression, memory, MCP, or token-saving tools. "
-            "Work only inside the target repository. The controller runs the hidden verifier after you finish; "
+            "Work only inside the target repository. The controller runs concealed verification only after the full task lane; "
             "do not inspect or modify evaluation harness files.\n\n"
             "---\n\n"
         )
@@ -1208,7 +1228,7 @@ def profile_prompt_guidance(profile_id: str) -> str:
         f"You are running inside the `{profile_id}` treatment lane for {cfg['display_name']}. "
         f"Tool-state condition: `{tool_state}`. Tool-use policy: `{use_policy}`. "
         f"{use_sentence} Do not use other retrieval, compression, memory, or token-saving tools. "
-        "Work only inside the target repository. The controller runs the hidden verifier after you finish; "
+        "Work only inside the target repository. The controller runs concealed verification after the full task lane; "
         "do not inspect or modify evaluation harness files.\n\n"
         "---\n\n"
         f"{prompt_block}"
@@ -1226,25 +1246,27 @@ def task_prompt(seq: dict[str, Any], profile_id: str, project: Path, order: int,
             f"# Sequential workflow session: {seq['id']}",
             "",
             "You are in one persistent repository checkout. Do not reset the repository.",
-            "You will receive workflow tasks one at a time. Future tasks are intentionally hidden until the current task verifier passes.",
+            "You will receive workflow prompts one at a time. Future prompts remain hidden until the current response completes.",
             "Complete only the current task. Preserve the working tree for later tasks.",
-            "Source and agent state persist; the controller may replace local Git metadata between tasks to keep undisclosed regressions and answer objects hidden.",
-            "The visible git baseline is the current task's broken-start state; do not assume `git diff` or history reveals the intended fix.",
+            "Source, agent, tool, index, and cache state persist without controller resets between tasks.",
+            "All latent regressions are present in the initial repository, but only the current task prompt is disclosed.",
+            "The visible git baseline is the composite broken-start state; do not assume `git diff` or history reveals the intended fixes.",
             "",
         ])
     else:
         preface.extend([
             f"# Continue sequential workflow session: {seq['id']}",
             "",
-            "The previous task verifier passed. Continue in the same source checkout and preserve earlier fixes.",
-            "The controller injected only the current regression and refreshed the concealed local Git baseline; earlier source fixes and agent/tool state persist.",
-            "Complete only the current task. Future tasks and regressions are intentionally hidden until this verifier passes.",
+            "Continue in the same source checkout and preserve earlier fixes.",
+            "The controller did not run concealed verification, inject another regression, or refresh Git state between prompts.",
+            "All regressions remain present from the initial composite broken start; only later task prompts remain hidden.",
+            "Complete only the current task. Repository, agent, tool, index, and cache state continue unchanged except for your own work.",
             "",
         ])
     preface.extend([
         f"## Current task {order}: {task_alias(order)}",
         "",
-        "The controller runs the hidden verifier after you finish.",
+        "Use model-visible tests as useful while working. The controller runs concealed verification only after the final task prompt.",
         "",
         prompt_path.read_text(),
     ])
@@ -1253,19 +1275,14 @@ def task_prompt(seq: dict[str, Any], profile_id: str, project: Path, order: int,
 
 def write_verifier(seq: dict[str, Any], run_dir: Path, task_root: Path) -> Path:
     verifier = run_dir / "verify-workflow.sh"
-    lines = ["#!/usr/bin/env bash", "set -euo pipefail"]
+    lines = ["#!/usr/bin/env bash", "set -uo pipefail", "status=0"]
     for task in sorted(seq["tasks"], key=lambda item: item["order"]):
-        lines.append(f"bash {json.dumps(str(task_dir(task_root, int(task['order'])) / 'verify.sh'))}")
+        command = f"bash {json.dumps(str(task_dir(task_root, int(task['order'])) / 'verify.sh'))}"
+        lines.append(f"if ! {command}; then status=1; fi")
+    lines.append('exit "$status"')
     verifier.write_text("\n".join(lines) + "\n")
     verifier.chmod(0o755)
     return verifier
-
-
-def completed_verifier_summary(completed: list[dict[str, Any]]) -> dict[str, Any]:
-    """Record prior-stage verifier evidence without inserting a self-reference."""
-    if not completed:
-        raise ValueError("completed verifier list must not be empty")
-    return {**completed[-1], "completed_verifier_results": completed}
 
 
 def verifier_paths(seq: dict[str, Any], task_root: Path, run_dir: Path) -> list[Path]:
@@ -1311,18 +1328,6 @@ def model_mounts_for_record(
 ) -> list[tuple[Path, Path, str]]:
     mounts = fixture.container_mounts_for_record(record, codex_home, include_repo=True, cfg=cfg)
     fixture.add_mount(mounts, model_output_directory(run_dir), mode="rw")
-    return mounts
-
-
-def verifier_mounts_for_task(
-    record: dict[str, Any],
-    codex_home: Path,
-    run_dir: Path,
-    order: int,
-) -> list[tuple[Path, Path, str]]:
-    mounts = fixture.container_mounts_for_record(record, codex_home, include_repo=True)
-    repo = ROOT / record["target"]["repository_path"]
-    fixture.add_mount(mounts, task_dir(run_dir, order), target=task_dir(repo.parent, order), mode="ro")
     return mounts
 
 
@@ -1426,26 +1431,6 @@ def run_codex_task(
     return proc.returncode, thread_id
 
 
-def run_one_verifier(seq: dict[str, Any], order: int, record: dict[str, Any], codex_home: Path, run_dir: Path, docker_image: str, *, stage_order: int | None = None) -> dict[str, Any]:
-    task = next(item for item in seq["tasks"] if int(item["order"]) == order)
-    repo = ROOT / record["target"]["repository_path"]
-    env = fixture.codex_env(codex_home, containerized=True)
-    mounts = verifier_mounts_for_task(record, codex_home, run_dir, order)
-    stage = stage_order if stage_order is not None else order
-    out = run_dir / f"verifier-after-task-{stage:02d}-{task_alias(order)}.txt"
-    cmd = ["bash", str(task_dir(repo.parent, order) / "verify.sh")]
-    proc = fixture.run_backend(cmd, backend="docker", docker_image=docker_image, cwd=repo, env=env, stdout_path=out, timeout=1800, mounts=mounts)
-    return {
-        "task_id": task["id"],
-        "task_alias": task_alias(order),
-        "stage_order": stage,
-        "order": order,
-        "verifier_exit_code": proc.returncode,
-        "accepted": proc.returncode == 0,
-        "verifier_output": rel(out),
-    }
-
-
 def run_final_verifier(seq: dict[str, Any], record: dict[str, Any], codex_home: Path, run_dir: Path, docker_image: str) -> int:
     repo = ROOT / record["target"]["repository_path"]
     env = fixture.codex_env(codex_home, containerized=True)
@@ -1472,7 +1457,7 @@ def capture_diff(record: dict[str, Any], run_dir: Path) -> None:
     task_deltas = sorted(run_dir.glob("task-??-agent.diff"))
     if task_deltas:
         with (run_dir / "changes.diff").open("w") as out:
-            out.write("# Ordered workflow task deltas. Each section is relative to that task's concealed stage root.\n")
+            out.write("# Ordered cumulative source checkpoints. Every section is relative to the one composite broken-start root.\n")
             for path in task_deltas:
                 out.write(f"\n# --- {path.stem} ---\n")
                 text = path.read_text(errors="replace")
@@ -1508,7 +1493,7 @@ def compact_artifacts(run_dir: Path) -> dict[str, str]:
         "artifact_contract": "compact-v1-four-files",
         "run_record": rel(run_dir / "run.json"),
         "final_diff": rel(run_dir / "changes.diff"),
-        "final_diff_basis": "ordered per-task deltas relative to each concealed stage root",
+        "final_diff_basis": "ordered cumulative checkpoints plus final cumulative source diff from one composite root",
         "evidence_bundle": rel(run_dir / "evidence.jsonl.gz"),
         "manifest": rel(run_dir / "manifest.sha256"),
     }
@@ -1641,6 +1626,11 @@ def remove_ephemeral_homes(run_dir: Path) -> None:
             shutil.rmtree(path)
 
 
+def functional_task_count(*, expected_tasks: int, task_checkpoints: list[dict[str, Any]], final_verifier_code: int) -> int:
+    """Count functional passes independently from audit and usage-accounting gates."""
+    return expected_tasks if final_verifier_code == 0 and len(task_checkpoints) == expected_tasks else 0
+
+
 def workflow_session_record(
     seq: dict[str, Any],
     summary: dict[str, Any],
@@ -1650,17 +1640,21 @@ def workflow_session_record(
     final_verifier_code: int,
     audit_code: int,
     usage: dict[str, Any],
-    verifier_results: list[dict[str, Any]],
+    task_checkpoints: list[dict[str, Any]],
     *,
     prompt_delivery: dict[str, Any],
     leakage_controls: dict[str, Any],
     comparison_baseline_session_id: str = "",
 ) -> dict[str, Any]:
     pmeta = PROFILE_META[profile_id]
-    tasks_passed = sum(1 for result in verifier_results if result["verifier_exit_code"] == 0)
+    accepted = bool(summary.get("accepted"))
+    tasks_passed = functional_task_count(
+        expected_tasks=len(seq["tasks"]),
+        task_checkpoints=task_checkpoints,
+        final_verifier_code=final_verifier_code,
+    )
     total_provider_tokens = usage.get("total_provider_tokens")
     tokens_per_accepted_task = (total_provider_tokens / tasks_passed) if tasks_passed and isinstance(total_provider_tokens, (int, float)) else None
-    accepted = bool(summary.get("accepted"))
     return {
         "schema_version": 1,
         "session_id": summary["session_id"],
@@ -1693,7 +1687,7 @@ def workflow_session_record(
         "task_sequence": {
             "sequence_id": seq["id"],
             "task_ids": [task["id"] for task in sorted(seq["tasks"], key=lambda item: item["order"])],
-            "reset_policy": "reset source checkout, profile home, tool state, indexes, caches, generated config, and agent home before the session; preserve source/tool/agent state while re-rooting model-facing Git metadata before each task",
+            "reset_policy": "reset source checkout, profile home, tool state, indexes, caches, generated config, and agent home before the lane; preserve repository, thread, tool, index, cache, and agent state across every sequential prompt",
             "prompt_delivery": prompt_delivery,
             "leakage_controls": leakage_controls,
         },
@@ -1729,9 +1723,9 @@ def workflow_session_record(
             "tokens_per_accepted_task": tokens_per_accepted_task,
             "pricing_basis": "not computed; Codex-reported token volume, not billing-weighted cost",
         },
-        "per_task_results": verifier_results,
+        "per_task_results": task_checkpoints,
         "software_quality": {
-            "tasks_attempted": len(verifier_results),
+            "tasks_attempted": len(task_checkpoints),
             "tasks_passed": tasks_passed,
             "final_verifier_command": rel(run_dir / "verify-workflow.sh"),
             "final_verifier_passed": final_verifier_code == 0,
@@ -1745,8 +1739,7 @@ def workflow_session_record(
             "overfeeding_incidents": None,
             "repeated_rediscovery_incidents": None,
             "thread_continuity_errors": summary.get("thread_continuity_errors", []),
-            "seed_transition_errors": summary.get("seed_transition_errors", []),
-            "useful_state_reuse_notes": "Single persistent Codex thread and source/tool/agent state across one lazily seeded task at a time.",
+            "useful_state_reuse_notes": "Single persistent Codex thread, composite repository, and source/tool/agent state across sequentially disclosed prompts.",
         },
         "operational_reproducibility": {
             "install_logged": True,
@@ -1765,9 +1758,9 @@ def workflow_session_record(
             "accepted_for_objective": False,
             "claim_status": "quality-review-pending" if accepted else "execution-failed",
             "comparison_baseline_session_id": comparison_baseline_session_id,
-            "exclusion_reason": "software-quality-review-pending" if accepted else f"codex_exit_codes={codex_exit_codes}; final_verifier_exit={final_verifier_code}; audit_exit={audit_code}; thread_continuity_errors={summary.get('thread_continuity_errors', [])}; seed_transition_errors={summary.get('seed_transition_errors', [])}; usage_warnings={usage.get('warnings')}",
+            "exclusion_reason": "software-quality-review-pending" if accepted else f"codex_exit_codes={codex_exit_codes}; final_verifier_exit={final_verifier_code}; audit_exit={audit_code}; thread_continuity_errors={summary.get('thread_continuity_errors', [])}; usage_warnings={usage.get('warnings')}",
             "notes": "Execution gates passed; objective acceptance requires a recorded software-quality review." if accepted else "Sequential workflow session failed one or more execution gates; inspect raw artifacts.",
-            "scope_note": "Full active workflow sequence; prompts and regressions delivered one task at a time.",
+            "scope_note": "Full warm-state lane; all regressions are preseeded, prompts are disclosed sequentially, and concealed verification runs only after the final prompt.",
         },
     }
 
@@ -1987,21 +1980,12 @@ def run_one(args: argparse.Namespace) -> dict[str, Any]:
 
     thread_id: str | None = None
     codex_exit_codes: list[int] = []
-    verifier_results: list[dict[str, Any]] = []
+    task_checkpoints: list[dict[str, Any]] = []
     thread_continuity_errors: list[dict[str, Any]] = []
-    seed_transition_errors: list[dict[str, Any]] = []
     verifier_integrity_checks: list[dict[str, Any]] = []
     model_output_dir = model_output_directory(run_dir)
     for task in ordered_tasks:
         order = int(task["order"])
-        if order != int(ordered_tasks[0]["order"]):
-            try:
-                advance_task_seed(seq, project / "repo", run_dir, order)
-            except Exception as exc:
-                error = {"order": order, "task_id": task["id"], "message": str(exc)}
-                seed_transition_errors.append(error)
-                (run_dir / f"seed-task-{order:02d}-transition-error.txt").write_text(str(exc) + "\n")
-                break
         prompt_path = prompt_dir / f"task-{order:02d}.md"
         prompt_path.parent.mkdir(parents=True, exist_ok=True)
         prompt_path.write_text(task_prompt(seq, profile_id, run_dir, order, first_task=order == 1))
@@ -2013,19 +1997,25 @@ def run_one(args: argparse.Namespace) -> dict[str, Any]:
         capture_task_delta(project / "repo", run_dir, order)
         integrity = {"stage": f"after-task-{order:02d}", **check_verifier_integrity(expected_verifier_hashes)}
         verifier_integrity_checks.append(integrity)
-        if not integrity["passed"]:
-            break
-        if code != 0:
-            break
         if thread_id is None:
-            message = f"Codex task {order} exited 0 but no thread_id was captured; refusing to continue because workflow continuity is unproven."
+            message = f"Codex task {order} exited {code} but no thread_id was captured; refusing to continue because workflow continuity is unproven."
             thread_continuity_errors.append({"order": order, "task_id": task["id"], "message": message})
             (run_dir / f"task-{order:02d}-thread-continuity-error.txt").write_text(message + "\n")
-            break
-        completed = [run_one_verifier(seq, prior, record, codex_home, run_dir, args.docker_image, stage_order=order) for prior in range(1, order + 1)]
-        result = completed_verifier_summary(completed)
-        verifier_results.append(result)
-        if any(item["verifier_exit_code"] != 0 for item in completed):
+        task_checkpoints.append({
+            "task_id": task["id"],
+            "task_alias": task_alias(order),
+            "order": order,
+            "codex_exit_code": code,
+            "controller_verification": "deferred-to-final",
+            "accepted": None,
+            "task_delta": rel(run_dir / f"task-{order:02d}-agent.diff"),
+            "usage_events": rel(events_path),
+        })
+        if not task_checkpoint_allows_continue(
+            codex_exit_code=code,
+            thread_id=thread_id,
+            verifier_integrity_passed=bool(integrity["passed"]),
+        ):
             break
 
     final_integrity = {"stage": "before-final-verifier", **check_verifier_integrity(expected_verifier_hashes)}
@@ -2035,27 +2025,30 @@ def run_one(args: argparse.Namespace) -> dict[str, Any]:
     concatenate_events(run_dir, len(ordered_tasks))
     usage = extract_codex_usage.build_summary(run_dir / "codex-events.jsonl")
     (run_dir / "provider-usage.json").write_text(json.dumps(usage, indent=2) + "\n")
-    final_verifier_code = run_final_verifier(seq, record, codex_home, run_dir, args.docker_image) if len(verifier_results) == len(ordered_tasks) and verifier_integrity_passed and not seed_transition_errors else 1
+    final_verifier_code = run_final_verifier(seq, record, codex_home, run_dir, args.docker_image) if len(task_checkpoints) == len(ordered_tasks) and all(code == 0 for code in codex_exit_codes) and verifier_integrity_passed and not thread_continuity_errors else 1
     capture_diff(record, run_dir)
     audit_code = audit(record_path, run_dir)
-    accepted = all(code == 0 for code in codex_exit_codes) and not thread_continuity_errors and not seed_transition_errors and len(verifier_results) == len(ordered_tasks) and final_verifier_code == 0 and audit_code == 0 and verifier_integrity_passed and not usage.get("warnings")
+    accepted = all(code == 0 for code in codex_exit_codes) and not thread_continuity_errors and len(task_checkpoints) == len(ordered_tasks) and final_verifier_code == 0 and audit_code == 0 and verifier_integrity_passed and not usage.get("warnings")
     smoke = (run_dir / "docker-smoke-output.txt").read_text(errors="replace") if (run_dir / "docker-smoke-output.txt").exists() else ""
     codex_version = next((line.strip() for line in smoke.splitlines() if "codex" in line.lower() and any(ch.isdigit() for ch in line)), "")
-    seed_state = json.loads(seed_delivery_path(run_dir).read_text())
-    concealment_verified = all(bool(item.get("concealment", {}).get("passed")) for item in seed_state.get("transitions", []))
+    lane_contract = warm_lane_contract(seq)
+    prepare_state = json.loads(seed_delivery_path(run_dir).read_text())
+    concealment_verified = bool(prepare_state.get("concealment", {}).get("passed"))
     prompt_delivery = {
         "mode": "sequential-one-task-at-a-time",
         "future_tasks_visible": False,
         "future_prompts_materialized_lazily": True,
-        "seed_delivery_mode": "lazy-one-task-at-a-time",
-        "future_seed_regressions_visible": False,
+        "seed_delivery_mode": lane_contract["seed_delivery_mode"],
+        "future_seed_regressions_visible": lane_contract["future_seed_regressions_visible"],
+        "controller_verification": lane_contract["controller_verification"],
         "codex_thread_id": thread_id,
         "task_prompt_evidence": rel(run_dir / "evidence.jsonl.gz"),
     }
     leakage_controls = {
         "seed_origin_concealed": not args.no_conceal_seed_origin,
         "seed_patches_model_visible": False,
-        "git_baseline_true_root_per_task": concealment_verified,
+        "git_baseline_true_root_per_task": False,
+        "git_baseline_true_root_at_lane_start": concealment_verified,
         "fixed_snapshot_objects_model_visible": False,
         "pre_seed_reflog_entries_visible": False,
         "concealment_verification_passed": concealment_verified,
@@ -2068,8 +2061,8 @@ def run_one(args: argparse.Namespace) -> dict[str, Any]:
         "upstream_remote_removed_from_model_facing_repo": not args.no_conceal_seed_origin,
         "broken_start_committed_as_local_baseline": not args.no_conceal_seed_origin,
         "remaining_limitations": [
+            "Future regression code is present from lane start, while future prompts and concealed acceptance assets remain controller-only.",
             "Task semantics and verifier names may still be searchable if the model intentionally uses external network access.",
-            "Full prevention requires fixtures built from pre-fix bases plus hidden verifier tests rather than production-code reverse patches.",
         ],
     }
     summary = {
@@ -2091,19 +2084,18 @@ def run_one(args: argparse.Namespace) -> dict[str, Any]:
         "tool_isolation_audit_exit_code": audit_code,
         "verifier_integrity_passed": verifier_integrity_passed,
         "thread_continuity_errors": thread_continuity_errors,
-        "seed_transition_errors": seed_transition_errors,
         "seed_delivery": {
-            "mode": seed_state["mode"],
-            "future_seed_regressions_visible": seed_state["future_seed_regressions_visible"],
-            "applied_seed_orders": seed_state["applied_seed_orders"],
-            "pending_seed_orders": seed_state["pending_seed_orders"],
+            "mode": lane_contract["seed_delivery_mode"],
+            "future_seed_regressions_visible": lane_contract["future_seed_regressions_visible"],
+            "preseeded_task_orders": lane_contract["preseeded_task_orders"],
+            "pending_seed_orders": [],
         },
         "accepted": accepted,
         "timeout_seconds": args.timeout_per_task * len(ordered_tasks),
         "codex_version": codex_version,
         "token_usage": {k: usage.get(k) for k in ["fresh_input_tokens", "cached_input_tokens", "cache_write_tokens", "output_tokens", "reasoning_tokens", "total_provider_tokens", "estimated_cost_usd"]},
         "usage_warnings": usage.get("warnings"),
-        "per_task_results": verifier_results,
+        "per_task_results": task_checkpoints,
         "prompt_delivery": prompt_delivery,
         "leakage_controls": leakage_controls,
         "artifacts": compact_artifacts(run_dir),
@@ -2124,7 +2116,7 @@ def run_one(args: argparse.Namespace) -> dict[str, Any]:
         final_verifier_code,
         audit_code,
         usage,
-        verifier_results,
+        task_checkpoints,
         prompt_delivery=prompt_delivery,
         leakage_controls=leakage_controls,
         comparison_baseline_session_id=comparison_baseline_session_id,

@@ -160,29 +160,31 @@
     },
     "task_sequence": {
       "type": "object",
-      "required": ["sequence_id", "task_ids", "reset_policy"],
+      "required": ["sequence_id", "task_ids", "reset_policy", "prompt_delivery", "leakage_controls"],
       "properties": {
         "sequence_id": { "type": "string" },
         "task_ids": { "type": "array", "items": { "type": "string" } },
         "reset_policy": { "type": "string" },
         "prompt_delivery": {
           "type": "object",
-          "required": ["mode", "future_tasks_visible", "future_prompts_materialized_lazily"],
+          "required": ["mode", "future_tasks_visible", "future_prompts_materialized_lazily", "seed_delivery_mode", "future_seed_regressions_visible"],
           "properties": {
             "mode": { "const": "sequential-one-task-at-a-time" },
             "future_tasks_visible": { "type": "boolean" },
             "future_prompts_materialized_lazily": { "type": "boolean" },
-            "seed_delivery_mode": { "enum": ["lazy-one-task-at-a-time", "all-seeds-before-task-1"] },
-            "future_seed_regressions_visible": { "type": "boolean" }
+            "seed_delivery_mode": { "enum": ["lazy-one-task-at-a-time", "all-seeds-before-task-1", "preseeded-composite"] },
+            "future_seed_regressions_visible": { "type": "boolean" },
+            "controller_verification": { "enum": ["per-task-cumulative", "final-only"] }
           }
         },
         "leakage_controls": {
           "type": "object",
-          "required": ["seed_origin_concealed", "task_directories_model_visible", "verifier_assets_model_visible", "verifier_integrity_passed"],
+          "required": ["seed_origin_concealed", "seed_patches_model_visible", "fixed_snapshot_objects_model_visible", "pre_seed_reflog_entries_visible", "concealment_verification_passed", "task_directories_model_visible", "verifier_assets_model_visible", "verifier_integrity_passed"],
           "properties": {
             "seed_origin_concealed": { "type": "boolean" },
             "seed_patches_model_visible": { "type": "boolean" },
             "git_baseline_true_root_per_task": { "type": "boolean" },
+            "git_baseline_true_root_at_lane_start": { "type": "boolean" },
             "fixed_snapshot_objects_model_visible": { "type": "boolean" },
             "pre_seed_reflog_entries_visible": { "type": "boolean" },
             "concealment_verification_passed": { "type": "boolean" },
@@ -191,7 +193,53 @@
             "verifier_integrity_passed": { "type": ["boolean", "null"] }
           }
         }
-      }
+      },
+      "oneOf": [
+        {
+          "properties": {
+            "prompt_delivery": {
+              "properties": {
+                "seed_delivery_mode": { "const": "lazy-one-task-at-a-time" },
+                "future_seed_regressions_visible": { "const": false },
+                "controller_verification": { "const": "per-task-cumulative" }
+              }
+            },
+            "leakage_controls": {
+              "required": ["git_baseline_true_root_per_task"],
+              "properties": { "git_baseline_true_root_per_task": { "const": true } }
+            }
+          }
+        },
+        {
+          "properties": {
+            "prompt_delivery": {
+              "required": ["controller_verification"],
+              "properties": {
+                "seed_delivery_mode": { "const": "preseeded-composite" },
+                "future_seed_regressions_visible": { "const": true },
+                "controller_verification": { "const": "final-only" }
+              }
+            },
+            "leakage_controls": {
+              "required": ["git_baseline_true_root_at_lane_start"],
+              "properties": { "git_baseline_true_root_at_lane_start": { "const": true } }
+            }
+          }
+        },
+        {
+          "properties": {
+            "prompt_delivery": {
+              "properties": { "seed_delivery_mode": { "const": "all-seeds-before-task-1" } }
+            },
+            "leakage_controls": {
+              "anyOf": [
+                { "required": ["git_baseline_true_root_per_task"], "properties": { "git_baseline_true_root_per_task": { "const": true } } },
+                { "required": ["git_baseline_true_root_at_lane_start"], "properties": { "git_baseline_true_root_at_lane_start": { "const": true } } }
+              ]
+            }
+          }
+        }
+      ]
     },
     "profile": {
       "type": "object",

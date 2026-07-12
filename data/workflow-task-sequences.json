@@ -11,7 +11,7 @@
       "temporary directories"
     ],
     "persist_between_tasks": [
-      "repository source working tree; controller re-roots model-facing Git metadata before each task",
+      "repository source working tree and model-facing Git metadata from one composite broken-start root",
       "tool indexes and caches",
       "generated config",
       "agent home",
@@ -26,19 +26,15 @@
       "acceptance_design": "behavioral",
       "scope": "production-primary",
       "readiness_blockers": [],
-      "qualification_path": "sources/evaluations/fixtures/medium/fastify-fastify/qualification.json",
-      "qualification_date": "2026-07-10",
-      "alternative_repair_replay": {
-        "changes_diff": "sources/evaluations/fixtures/medium/fastify-fastify/alternative-repairs.diff",
-        "repaired_task_order": 2,
-        "next_task_order": 3
-      },
+      "qualification_path": "sources/evaluations/fixtures/medium/fastify-fastify/qualification-composite-v2.json",
+      "qualification_date": "2026-07-12",
+
       "fixture_id": "medium-fastify-fastify",
       "fixture_scale": "medium-project",
       "objective": "individual_tool_effectiveness",
       "primary_metric": "cumulative provider-billed workflow tokens",
-      "reset_policy": "Reset once before the session; preserve source, tool, index, cache, generated config, memory, and agent state between tasks; inject only the current regression and re-root model-facing Git metadata before disclosure.",
-      "conversion_note": "Primary shared-snapshot workflow: five causally related upstream-derived regressions target commit 94bcbcc6e2ef3b8e8f8e8797fe551ccbe7b942fd and are injected one at a time after the prior repair passes.",
+      "reset_policy": "Reset once before the lane; preseed all regressions into one concealed composite root; preserve source, Git, tool, index, cache, generated config, memory, and agent state across prompts; run concealed functional verification once at the end.",
+      "conversion_note": "Warm-state workflow: five upstream-derived regressions coexist in one qualified composite broken root; prompts arrive sequentially and concealed verification runs after the full lane.",
       "initial_snapshot": {
         "commit": "94bcbcc6e2ef3b8e8f8e8797fe551ccbe7b942fd",
         "upstream": "https://github.com/fastify/fastify.git",
@@ -175,7 +171,7 @@
           ]
         }
       ],
-      "seed_patch_policy": "Controller-injected one task at a time; future seeds and all acceptance assets remain outside the model-visible repository.",
+      "seed_patch_policy": "Controller merges every qualified regression into one composite broken start before provider execution; prompts are disclosed sequentially, acceptance assets remain controller-only, and concealed functional verification runs after the final prompt.",
       "complexity_note": "Each task is reconstructed from a real upstream Fastify behavior or performance change and changes only its causally related production/type files.",
       "complexity_bar": "Every task touches at least five production/type files and requires executable qualification on the pinned snapshot."
     },
@@ -185,19 +181,15 @@
       "acceptance_design": "behavioral",
       "scope": "production-primary",
       "readiness_blockers": [],
-      "qualification_path": "sources/evaluations/fixtures/large/hashicorp-terraform/qualification.json",
-      "qualification_date": "2026-07-11",
-      "alternative_repair_replay": {
-        "changes_diff": "sources/evaluations/fixtures/large/hashicorp-terraform/alternative-repairs.diff",
-        "repaired_task_order": 4,
-        "next_task_order": 5
-      },
+      "qualification_path": "sources/evaluations/fixtures/large/hashicorp-terraform/qualification-composite-v2.json",
+      "qualification_date": "2026-07-12",
+
       "fixture_id": "large-hashicorp-terraform",
       "fixture_scale": "large-project",
       "objective": "individual_tool_effectiveness",
       "primary_metric": "cumulative provider-billed workflow tokens",
-      "reset_policy": "Reset once before the session; preserve source, tool, index, cache, generated config, memory, and agent state between tasks; inject only the current regression and re-root model-facing Git metadata before disclosure.",
-      "conversion_note": "Five upstream-derived production regressions are controller-injected one at a time on the pinned shared snapshot.",
+      "reset_policy": "Reset once before the lane; preseed all regressions into one concealed composite root; preserve source, Git, tool, index, cache, generated config, memory, and agent state across prompts; run concealed functional verification once at the end.",
+      "conversion_note": "Five upstream-derived production regressions coexist in one qualified composite broken root on the pinned shared snapshot.",
       "initial_snapshot": {
         "commit": "e02391ad384c9c38f1d7f40b853c0d2297348094",
         "upstream": "https://github.com/hashicorp/terraform.git",
@@ -284,7 +276,7 @@
           ]
         }
       ],
-      "seed_patch_policy": "Controller-injected one task at a time; future seeds and all acceptance assets remain outside the model-visible repository.",
+      "seed_patch_policy": "Controller merges every qualified regression into one composite broken start before provider execution; prompts are disclosed sequentially, acceptance assets remain controller-only, and concealed functional verification runs after the final prompt.",
       "complexity_note": "Each task changes only causally related production/type files.",
       "complexity_bar": "Every task touches at least five production/type files and requires executable qualification on the pinned snapshot."
     },
@@ -294,19 +286,15 @@
       "acceptance_design": "behavioral",
       "scope": "production-primary",
       "readiness_blockers": [],
-      "qualification_path": "sources/evaluations/fixtures/medium/beetbox-beets/qualification.json",
-      "qualification_date": "2026-07-11",
-      "alternative_repair_replay": {
-        "changes_diff": "sources/evaluations/fixtures/medium/beetbox-beets/alternative-repairs.diff",
-        "repaired_task_order": 1,
-        "next_task_order": 2
-      },
+      "qualification_path": "sources/evaluations/fixtures/medium/beetbox-beets/qualification-composite-v2.json",
+      "qualification_date": "2026-07-12",
+
       "fixture_id": "medium-beetbox-beets",
       "fixture_scale": "medium-project",
       "objective": "individual_tool_effectiveness",
       "primary_metric": "cumulative provider-billed workflow tokens",
-      "reset_policy": "Reset once before the session; preserve source, tool, index, cache, generated config, memory, and agent state between tasks; inject only the current regression and re-root model-facing Git metadata before disclosure.",
-      "conversion_note": "Five upstream-derived production regressions are controller-injected one at a time on the pinned shared snapshot.",
+      "reset_policy": "Reset once before the lane; preseed all regressions into one concealed composite root; preserve source, Git, tool, index, cache, generated config, memory, and agent state across prompts; run concealed functional verification once at the end.",
+      "conversion_note": "Five upstream-derived production regressions coexist in one qualified composite broken root on the pinned shared snapshot.",
       "initial_snapshot": {
         "commit": "8ddae794d30e9984be904f80459614155c6592d9",
         "upstream": "https://github.com/beetbox/beets.git",
@@ -401,7 +389,7 @@
           ]
         }
       ],
-      "seed_patch_policy": "Controller-injected one task at a time; future seeds and all acceptance assets remain outside the model-visible repository.",
+      "seed_patch_policy": "Controller merges every qualified regression into one composite broken start before provider execution; prompts are disclosed sequentially, acceptance assets remain controller-only, and concealed functional verification runs after the final prompt.",
       "complexity_note": "Each task changes only causally related production/type files.",
       "complexity_bar": "Every task touches at least five production/type files and requires executable qualification on the pinned snapshot."
     }

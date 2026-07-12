@@ -8,26 +8,26 @@ The goal is to determine whether a baseline or treatment profile gets an ordered
 
 ## Core rule
 
-Reset before the session, not between tasks. Feed one prompt and inject one regression at a time.
+Reset before the lane, merge every qualified regression into one composite broken start, and disclose prompts one at a time without controller resets or hidden acceptance gates between prompts.
 
 A valid workflow session preserves these across the ordered task sequence:
 
-- repository source working tree; model-facing Git metadata may be re-rooted by the controller before each task to conceal seed provenance;
+- repository source working tree and model-facing Git metadata after one concealed composite broken-start root is created before the lane;
 - tool indexes and caches;
 - generated profile files;
 - agent home and runtime config;
 - memory/state stores enabled by the active profile;
 - accumulated task artifacts unless the protocol explicitly models cleanup.
 
-The agent must not see future task prompts, future regressions, future verifier commands, or future task identifiers before the current task verifier has passed. Enforce this structurally: materialize only the current prompt; inject only the current regression; keep task fixtures and acceptance verifiers in controller-only storage; mount only the target repository plus an isolated output directory into the model runtime; hash verifier assets before execution; and verify those hashes before every acceptance step. A valid runner starts or resumes the same agent session for task 1, runs the hidden task 1 verifier, then injects task 2 and resumes that same session only after task 1 passes. Prompt-only instructions or metadata such as `future_tasks_visible: false` do not prove isolation.
+The agent must not see future task prompts, concealed verifier commands, or future task identifiers before their prompt is disclosed. Future regression code is intentionally present from lane start. Enforce isolation structurally: materialize only the current prompt; keep task fixtures and acceptance verifiers in controller-only storage; mount only the persistent target repository plus an isolated output directory into the model runtime; hash verifier assets before execution; and verify those hashes at operational checkpoints. A valid runner starts or resumes the same agent session for every prompt without injecting source changes or running hidden functional gates between prompts, then runs the complete concealed verifier suite against the final cumulative repository. Prompt-only metadata such as `future_tasks_visible: false` does not prove isolation by itself.
 
 ## Leakage controls
 
-Issue-derived regression fixtures must not expose the answer path as a visible git diff, parent commit, reflog entry, reachable object, public issue lookup key, or future seeded defect. Before every task, the controller must replace model-facing Git metadata, commit the current broken state as a parentless root, verify that the fixed snapshot and prior roots are inaccessible, and keep seed patches plus controller reference objects outside the model mount. Use neutral task aliases and sanitize prompts so they do not mention fixed upstream commits, public issue numbers, or production-code reverse patches.
+Issue-derived regression fixtures must not expose the answer path as a visible git diff, parent commit, reflog entry, reachable object, or public issue lookup key. Before provider execution, the controller merges every qualified regression against the same fixed snapshot, commits that composite broken state as a parentless root, verifies that the fixed snapshot is inaccessible, and keeps seed patches plus controller reference objects outside the model mount. Use neutral task aliases and sanitize prompts before materializing them one at a time.
 
 Behavioral acceptance is mandatory. Unrelated sentinel edits and exact-source restoration guards are not legitimate ways to reach a production-file complexity floor; every seeded change must be causally connected to the stated task and accepted through behavior or a documented source-identity contract.
 
-The stronger fixture design is to build tasks from pre-fix bases plus hidden behavioral tests instead of production-code reverse patches. Until then, lazy seed delivery and verified true-root concealment are required for objective workflow runs.
+Future regression code may be present from lane start; future prompts and concealed acceptance assets remain controller-only. Composite qualification must prove every task is broken at lane start and every verifier passes on the fixed snapshot.
 
 ## Primary metric
 
@@ -45,8 +45,7 @@ A treatment only supports a positive claim when it reduces cumulative provider-b
 
 Quality requires:
 
-- per-task verifier success where available;
-- final repository verifier success where available;
+- one final concealed verifier-suite success after all prompts complete;
 - no critical safety, diagnostic, stale-context, or reversibility failure;
 - final diff/status and transcript reviewability.
 
@@ -92,7 +91,7 @@ sources/evaluations/workflow-sessions/<session-id>/
   manifest.sha256
 ```
 
-`changes.diff` concatenates ordered task deltas; each section is relative to the parentless baseline created for that task. This preserves review evidence across Git re-rooting without requiring all independent seed patches to coexist in one synthetic broken tree.
+`changes.diff` retains ordered cumulative source checkpoints and the final cumulative diff relative to the one parentless composite broken-start root.
 
 `evidence.jsonl.gz` preserves recoverable raw streams such as prompts, Codex events, setup logs, seed-delivery and concealment reports, per-task deltas, verifier output, provider usage extraction, and tool-isolation audit output. Do not commit generated checkouts, virtualenvs, Codex homes, caches, controller Git objects, or split per-task transcript directories.
 
@@ -100,7 +99,7 @@ sources/evaluations/workflow-sessions/<session-id>/
 
 Provider-backed execution requires an active sequence and a frozen protocol. Fastify, Terraform, and Beets satisfy the readiness gate, but fixture qualification and prepare-only validation do not themselves authorize or constitute a paid run.
 
-After one medium-project candidate has causally related behavior and passes fixture, lazy-seed, concealment, verifier-integrity, isolation, and quality preflights:
+After one candidate has causally related behavior and passes composite-seed, concealment, verifier-integrity, isolation, and quality preflights:
 
 1. run `baseline-bare-codex` on the full persistent sequence;
 2. stop if the baseline fails any frozen gate;
