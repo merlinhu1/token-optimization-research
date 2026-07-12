@@ -1,5 +1,3 @@
-# Implement deferred policy callbacks
+# Propagate the deferred callback flag
 
-Preserve deferred and partial callback state across the policy boundary.
-
-Use `agent-prompt.txt` for the complete model-facing contract. Acceptance is controller-only.
+Apply the Baseline V3 one-file mechanical correction in `internal/policy/callback/server.go`. The complete active prompt and focused acceptance command are in `task-generations/baseline-v3/terraform-lifecycle-feature-v0/`.

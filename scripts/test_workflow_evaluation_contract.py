@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+import argparse
+import concurrent.futures
 import copy
 import gzip
 import hashlib
@@ -10,6 +12,7 @@ import shutil
 import subprocess
 import sys
 import tempfile
+import threading
 import unittest
 from pathlib import Path
 from typing import Any
@@ -275,7 +278,14 @@ class ActiveCampaignArchitectureTest(unittest.TestCase):
     def test_runbook_matches_active_lifecycle_contract(self) -> None:
         runbook = (ROOT / "docs/evaluations/operations/runbook.md").read_text()
         self.assertNotIn("at least five causally related production files", runbook)
-        exact_prepare = 'python3 scripts/run_sequential_workflow_matrix.py --prepare-only "$SEQUENCE_ID"'
+        sequences = json.loads((ROOT / "data/workflow-task-sequences.json").read_text())["sequences"]
+        sequence = next(item for item in sequences if item.get("status") == "active")
+        gate = sequence["mistake_gate"]
+        exact_prepare = (
+            'python3 scripts/run_sequential_workflow_matrix.py "$SEQUENCE_ID" '
+            f'--workflow-model-condition-id {gate["designated_model_condition"]} '
+            f'--workflow-model {gate["model"]} --workflow-reasoning-effort {gate["reasoning_effort"]} --prepare-only'
+        )
         prepare_lines = [
             line
             for line in runbook.splitlines()
@@ -1698,7 +1708,7 @@ class VerifierContractTest(unittest.TestCase):
         cases = {
             "beets-lifecycle-feature-v0": ["extra_special_chars", "escaped_sep", "functemplate.py"],
             "fastify-lifecycle-feature-v0": ["request.mediaType", "kRequestContentType", "application/json"],
-            "terraform-lifecycle-feature-v0": ["Deferred: isDeferred", "baseline_v2_deferred_test.go", "socket"],
+            "terraform-lifecycle-feature-v0": ["Deferred: isDeferred", "baseline_v3_deferred_test.go", "socket"],
             "terraform-lifecycle-refactor-v0": ["StateStoreProviderRequirement", "providerreqs.Requirements", "NamedType"],
         }
         for task_id, required in cases.items():
@@ -1938,9 +1948,9 @@ class VerifierContractTest(unittest.TestCase):
             "beets-lifecycle-feature-v0": ["beets/util/functemplate.py", "extra_special_chars", "test/util/test_functemplate.py"],
             "beets-lifecycle-refactor-v0": ["beets/dbcore/db.py", "return iter(self._all_keys)", "type(iter(value)).__name__"],
             "beets-lifecycle-review-v0": ["beetsplug/ftintitle.py", "feat_tokens", "test/plugins/test_ftintitle.py"],
-            "terraform-lifecycle-feature-v0": ["internal/policy/callback/server.go", "Deferred: isDeferred", "baseline_v2_deferred_test.go"],
-            "terraform-lifecycle-refactor-v0": ["internal/configs/state_migrate_file.go", "providerreqs.Requirements", "baseline_v2_requirement_type_test.go"],
-            "terraform-lifecycle-review-v0": ["internal/addrs/checkable.go", 'getCheckableName("var"', "baseline_v2_checkable_test.go"],
+            "terraform-lifecycle-feature-v0": ["internal/policy/callback/server.go", "Deferred: isDeferred", "baseline_v3_deferred_test.go"],
+            "terraform-lifecycle-refactor-v0": ["internal/configs/state_migrate_file.go", "providerreqs.Requirements", "baseline_v3_requirement_type_test.go"],
+            "terraform-lifecycle-review-v0": ["internal/addrs/checkable.go", 'getCheckableName("var"', "baseline_v3_checkable_test.go"],
         }
         for sequence_id in runner.active_sequence_ids():
             sequence = runner.load_sequence(sequence_id)
@@ -2833,23 +2843,38 @@ raise SystemExit(1)
                 handle.write(b"x" * (8 * 1024 * 1024 + 1))
             self.assertFalse(validate_repository.evidence_bundle_valid(path))
 
-    def test_baseline_v2_qualification_audit_protocol_references_are_live(self) -> None:
+    def test_baseline_v3_qualification_audit_protocol_references_are_live(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             temp_root = Path(tmp)
             relative_paths = [
                 "data/workflow-task-sequences.json",
-                "sources/evaluations/audits/baseline-v2-task-family-qualification-20260721.json",
+                "sources/evaluations/audits/baseline-v3-task-family-qualification-20260722.json",
             ]
             audit = json.loads((ROOT / relative_paths[1]).read_text())
             relative_paths.extend(item["qualification_path"] for item in audit["sequences"])
             relative_paths.extend(item["path"] for item in audit["protocols"])
-            for relative in relative_paths:
+            receipt_index_rel = "sources/evaluations/audits/baseline-v3-literal-command-receipts-20260722/index.json"
+            receipt_index = json.loads((ROOT / receipt_index_rel).read_text())
+            relative_paths.append(receipt_index_rel)
+            for item in receipt_index["receipts"]:
+                relative_paths.append(item["path"])
+                receipt = json.loads((ROOT / item["path"]).read_text())
+                relative_paths.extend(
+                    [
+                        receipt["literal_command"]["prompt_path"],
+                        receipt["literal_command"]["log_path"],
+                        receipt["controller_verifier"]["path"],
+                        receipt["controller_verifier"]["log_path"],
+                        receipt["production_bootstrap"]["log_path"],
+                    ]
+                )
+            for relative in sorted(set(relative_paths)):
                 destination = temp_root / relative
                 destination.parent.mkdir(parents=True, exist_ok=True)
                 shutil.copy2(ROOT / relative, destination)
             with mock.patch.object(validate_repository, "ROOT", temp_root):
                 errors: list[str] = []
-                validate_repository.validate_baseline_v2_qualification_audit(errors)
+                validate_repository.validate_baseline_v3_qualification_audit(errors)
                 self.assertEqual(errors, [])
                 audit_path = temp_root / relative_paths[1]
                 tampered = json.loads(audit_path.read_text())
@@ -2858,7 +2883,7 @@ raise SystemExit(1)
                 )
                 audit_path.write_text(json.dumps(tampered))
                 errors = []
-                validate_repository.validate_baseline_v2_qualification_audit(errors)
+                validate_repository.validate_baseline_v3_qualification_audit(errors)
                 self.assertTrue(
                     any("frozen baseline protocol reference is stale" in error for error in errors),
                     errors,
@@ -2875,8 +2900,22 @@ raise SystemExit(1)
                     tampered["protocols"][0][key] = value
                     audit_path.write_text(json.dumps(tampered))
                     errors = []
-                    validate_repository.validate_baseline_v2_qualification_audit(errors)
+                    validate_repository.validate_baseline_v3_qualification_audit(errors)
                     self.assertTrue(any(expected_message in error for error in errors), errors)
+                for duplicate_target in ("sequences", "protocols"):
+                    tampered = copy.deepcopy(audit)
+                    tampered[duplicate_target].append(copy.deepcopy(tampered[duplicate_target][0]))
+                    audit_path.write_text(json.dumps(tampered))
+                    errors = []
+                    validate_repository.validate_baseline_v3_qualification_audit(errors)
+                    self.assertTrue(any("must not contain missing or duplicate" in error for error in errors), errors)
+                tampered = copy.deepcopy(audit)
+                rehearsal_sequences = tampered["literal_prompt_command_rehearsal"]["sequences"]
+                rehearsal_sequences.append(copy.deepcopy(rehearsal_sequences[0]))
+                audit_path.write_text(json.dumps(tampered))
+                errors = []
+                validate_repository.validate_baseline_v3_qualification_audit(errors)
+                self.assertTrue(any("must not contain missing or duplicate" in error for error in errors), errors)
 
     def test_repository_validator_reports_missing_compact_root_without_crashing(self) -> None:
         with tempfile.TemporaryDirectory(dir=ROOT) as tmp:
@@ -3572,6 +3611,7 @@ class MatrixLifecycleContractTest(unittest.TestCase):
                 mock.patch.object(matrix, "lane_session_records", return_value=[{"session_id": "unit"}]),
                 mock.patch.object(matrix.workflow, "pilot_session_artifacts_valid", return_value=True),
                 mock.patch.object(matrix, "copy_artifacts_for_sessions", side_effect=interrupted_copy),
+                mock.patch.object(matrix, "preserve_rejected_lane_artifacts", return_value=[]),
             ):
                 with self.assertRaises(KeyboardInterrupt):
                     matrix.merge_lanes([lane], 0, transaction)
@@ -3616,6 +3656,7 @@ class MatrixLifecycleContractTest(unittest.TestCase):
             mock.patch.object(matrix, "lane_session_records", side_effect=[[valid], [invalid]]),
             mock.patch.object(matrix.workflow, "pilot_session_artifacts_valid", side_effect=[True, False]),
             mock.patch.object(matrix, "copy_artifacts_for_sessions", side_effect=copy_valid),
+            mock.patch.object(matrix, "preserve_rejected_lane_artifacts", return_value=[]),
             mock.patch.object(matrix, "merge_registry", side_effect=lambda sessions: merged.extend(sessions)),
         ):
             summary = matrix.merge_lanes(lane_results, 0)
@@ -4069,15 +4110,15 @@ class CorrectionContractTest(unittest.TestCase):
         self.assertLess(audit, validate)
 
 
-class BaselineV2LowComplexityContractTest(unittest.TestCase):
-    def test_active_sequences_bind_zero_mistake_baseline_v2_contracts(self) -> None:
+class BaselineV3LowComplexityContractTest(unittest.TestCase):
+    def test_active_sequences_bind_zero_mistake_baseline_v3_contracts(self) -> None:
         document = json.loads((ROOT / "data/workflow-task-sequences.json").read_text())
         active = [sequence for sequence in document["sequences"] if sequence["status"] == "active"]
         self.assertEqual(len(active), 3)
 
         for sequence in active:
-            self.assertEqual(sequence["task_family_generation"], "baseline-v2")
-            self.assertRegex(Path(sequence["qualification_path"]).name, r"^qualification-lifecycle-v0-baseline-v2\.json$")
+            self.assertEqual(sequence["task_family_generation"], "baseline-v3")
+            self.assertRegex(Path(sequence["qualification_path"]).name, r"^qualification-lifecycle-v0-baseline-v3\.json$")
             gate = sequence["mistake_gate"]
             self.assertEqual(gate["designated_model_condition"], "codex-openai-gpt-5-6-sol-high")
             self.assertEqual(gate["model"], "gpt-5.6-sol")
@@ -4095,11 +4136,11 @@ class BaselineV2LowComplexityContractTest(unittest.TestCase):
                     self.assertIs(type(value), int, (sequence["id"], key, value))
                     self.assertEqual(value, 0, (sequence["id"], key, value))
             self.assertEqual(gate["incident_counting"], "unique-auditable-not-command-count")
-            self.assertEqual(gate["pilot_audit_path"], "sources/evaluations/audits/baseline-v2-pilot-zero-mistake.json")
+            self.assertEqual(gate["pilot_audit_path"], "sources/evaluations/audits/baseline-v3-pilot-zero-mistake.json")
             self.assertEqual(gate["status"], "provider-pilot-required")
 
             for task in sequence["tasks"]:
-                self.assertIn("/baseline-v2/", task["prompt_path"])
+                self.assertIn("/baseline-v3/", task["prompt_path"])
                 self.assertEqual(task["acceptance_visibility"], "model-visible-complete")
                 task_dir = (ROOT / task["prompt_path"]).parent
                 prompt = (ROOT / task["prompt_path"]).read_text()
@@ -4107,12 +4148,11 @@ class BaselineV2LowComplexityContractTest(unittest.TestCase):
                 for marker in ("<<'NODE'", '<<"NODE"', "<<'PY'", '<<"PY"', "<<'TS'", '<<"TS"', "workflow-hidden"):
                     self.assertFalse(marker in verifier and marker not in prompt, (sequence["id"], task["id"], marker))
                 for marker in (
-                    "Baseline V2 routine recipe",
-                    "Do not run discovery, search, or broad-suite commands.",
-                    "Only modify:",
-                    "Run exactly:",
-                    "Stop immediately when",
-                    "Do not modify tests.",
+                    "Baseline V3 mechanical",
+                    "Do not discover or redesign anything.",
+                    "Copy and run this command exactly:",
+                    "Do not inspect, search, modify tests, run anything else, or evaluate aggregate Git state.",
+                    "stop immediately when it exits 0",
                 ):
                     self.assertIn(marker, prompt, (sequence["id"], task["id"], marker))
 
@@ -4136,7 +4176,58 @@ class BaselineV2LowComplexityContractTest(unittest.TestCase):
                 if task["task_class"] == "code-review-correction":
                     self.assertTrue((task_dir / task["review_patch_path"]).is_file())
 
-    def test_generated_runbook_pins_v2_pilot_model_tuple(self) -> None:
+    def test_v3_prompts_bind_portable_locked_validation_commands(self) -> None:
+        document = json.loads((ROOT / "data/workflow-task-sequences.json").read_text())
+        for sequence in document["sequences"]:
+            for task in sequence["tasks"]:
+                prompt = (ROOT / task["prompt_path"]).read_text()
+                verifier = (ROOT / task["verifier_command"]).read_text()
+                self.assertEqual(prompt.count("```bash"), 1, task["id"])
+                self.assertEqual(prompt.count("```"), 2, task["id"])
+                self.assertIn("stop immediately when it exits 0", prompt, task["id"])
+                self.assertNotIn("git diff", prompt, task["id"])
+                rendered = runner.render_task_prompt(
+                    sequence,
+                    "baseline-bare-codex",
+                    int(task["order"]),
+                    prompt,
+                    first_task=int(task["order"]) == 1,
+                )
+                self.assertIn("Run only the exact command block", rendered, task["id"])
+                self.assertNotIn("current and previously disclosed work", rendered, task["id"])
+                if sequence["fixture_id"] == "medium-beetbox-beets":
+                    self.assertNotIn("--no-project", prompt)
+                    self.assertNotIn("--no-project", verifier)
+                    self.assertIn("uv run --offline --frozen", prompt)
+                    self.assertIn("uv run --offline --frozen", verifier)
+                if sequence["fixture_id"] == "large-hashicorp-terraform":
+                    export = "export PATH=/opt/data/bin:/opt/data/opt/go/bin:$PATH"
+                    self.assertIn(export, prompt)
+                    self.assertIn(export, verifier)
+                    self.assertNotIn("BaselineV2", prompt + verifier)
+                    acceptance_root = (ROOT / task["prompt_path"]).parent / "controller-visible"
+                    for asset in acceptance_root.rglob("*"):
+                        if asset.is_file():
+                            self.assertNotIn("BaselineV2", asset.read_text(), str(asset))
+
+    def test_active_fixture_setup_and_reset_pin_the_sequence_snapshot(self) -> None:
+        document = json.loads((ROOT / "data/workflow-task-sequences.json").read_text())
+        fixtures = {
+            item["id"]: item
+            for item in json.loads((ROOT / "data/repository-fixtures.json").read_text())["fixtures"]
+        }
+        for sequence in document["sequences"]:
+            fixture = fixtures[sequence["fixture_id"]]
+            commit = fixture["snapshot"]["commit"]
+            self.assertEqual(sequence["initial_snapshot"]["commit"], commit)
+            for command_key in ("setup", "reset"):
+                script = ROOT / fixture[command_key]["command"]
+                script_text = script.read_text()
+                if commit not in script_text:
+                    self.assertEqual(command_key, "reset", (sequence["id"], command_key))
+                    self.assertIn(Path(fixture["setup"]["command"]).name, script_text)
+
+    def test_generated_runbook_pins_v3_pilot_model_tuple(self) -> None:
         runbook = (ROOT / "docs/evaluations/operations/runbook.md").read_text()
         document = json.loads((ROOT / "data/workflow-task-sequences.json").read_text())
         flags = "--workflow-model-condition-id codex-openai-gpt-5-6-sol-high --workflow-model gpt-5.6-sol --workflow-reasoning-effort high"
@@ -4145,12 +4236,11 @@ class BaselineV2LowComplexityContractTest(unittest.TestCase):
                 f"python3 scripts/run_sequential_workflow_matrix.py {sequence['id']} {flags} --prepare-only",
                 runbook,
             )
-            self.assertIn(
-                f"python3 scripts/run_sequential_workflow_matrix.py {sequence['id']} {flags}",
-                runbook,
-            )
+            paid_command = f"python3 scripts/run_sequential_workflow_matrix.py {sequence['id']} {flags}"
+            pilot_allowed, _pilot_reason = runner.baseline_v2_pilot_run_gate(sequence, ROOT)
+            self.assertEqual(paid_command in runbook.splitlines(), pilot_allowed)
 
-    def test_provider_free_v2_qualifications_pass_every_boundary(self) -> None:
+    def test_provider_free_v3_qualifications_pass_every_boundary(self) -> None:
         document = json.loads((ROOT / "data/workflow-task-sequences.json").read_text())
         for sequence in document["sequences"]:
             qualification = json.loads((ROOT / sequence["qualification_path"]).read_text())
@@ -4165,15 +4255,957 @@ class BaselineV2LowComplexityContractTest(unittest.TestCase):
                 self.assertIs(qualification[key], True, (sequence["id"], key))
             self.assertTrue(all(task["production_file_count"] <= 3 for task in qualification["tasks"]))
 
-    def test_treatments_and_baseline_reruns_are_fail_closed_after_failed_v2_pilot(self) -> None:
+    def test_v3_audit_records_all_nine_literal_prompt_command_rehearsals(self) -> None:
+        audit = json.loads(
+            (ROOT / "sources/evaluations/audits/baseline-v3-task-family-qualification-20260722.json").read_text()
+        )
+        rehearsal = audit["literal_prompt_command_rehearsal"]
+        self.assertEqual(rehearsal["status"], "passed")
+        self.assertEqual(rehearsal["provider_calls"], 0)
+        self.assertEqual(rehearsal["provider_tokens"], 0)
+        tasks = [task for sequence in rehearsal["sequences"] for task in sequence["tasks"]]
+        self.assertEqual(len(tasks), 9)
+        for task in tasks:
+            self.assertIs(type(task["prompt_command_exit"]), int)
+            self.assertEqual(task["prompt_command_exit"], 0)
+            self.assertIs(type(task["controller_verifier_exit"]), int)
+            self.assertEqual(task["controller_verifier_exit"], 0)
+            self.assertIs(task["model_visible_focused_test_selected"], True)
+
+    def test_rejected_compact_evidence_is_preserved_before_lane_cleanup(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            temp = Path(tmp)
+            checkout = temp / "checkout"
+            lane_dir = temp / "lane"
+            lane_dir.mkdir()
+            session_id = "baseline-v3-rejected-unit"
+            source = checkout / matrix.WORKFLOW_ARTIFACT_ROOT / session_id
+            source.mkdir(parents=True)
+            original = {
+                "run.json": b'{"schema_version":2}\n',
+                "changes.diff": b"diff --git a/a b/a\n",
+                "evidence.jsonl.gz": b"production-shaped-invalid-evidence",
+                "manifest.sha256": b"unit manifest\n",
+            }
+            for name, content in original.items():
+                (source / name).write_bytes(content)
+            result = {
+                "lane_id": "lane-unit",
+                "sequence_id": "fastify-lifecycle-sequence-v0",
+                "lane_dir": str(lane_dir),
+                "checkout": str(checkout),
+                "produced_session_ids": [session_id],
+                "expected_session_binding": {},
+            }
+            with mock.patch.object(matrix, "lane_session_records", return_value=[{"session_id": session_id}]), \
+                 mock.patch.object(matrix.workflow, "pilot_session_artifacts_valid", return_value=False):
+                summary = matrix.merge_lanes([result], replicate_index=0)
+            destination = lane_dir / "rejected-evidence" / session_id
+            self.assertEqual(summary["rejected_session_ids"], [session_id])
+            self.assertIn(str(destination), result["failure_evidence"])
+            for name, content in original.items():
+                self.assertEqual((destination / name).read_bytes(), content)
+            rejection = json.loads((destination / "rejection.json").read_text())
+            self.assertEqual(rejection["session_id"], session_id)
+            self.assertIs(rejection["accepted_evidence"], False)
+            self.assertIn("strict compact artifact ingress", rejection["reason"])
+            self.assertFalse(any(path.name.startswith(f".{session_id}.tmp-") for path in destination.parent.iterdir()))
+
+    def test_rejected_evidence_copy_failure_retains_source_checkout(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            run_root = Path(tmp) / "matrix-run"
+            checkout = run_root / "lane" / "checkout"
+            source = checkout / matrix.WORKFLOW_ARTIFACT_ROOT / "rejected-unit"
+            source.mkdir(parents=True)
+            (source / "run.json").write_text("{}\n")
+            result = {"lane_id": "lane", "lane_dir": str(run_root / "lane")}
+            with mock.patch.object(matrix.shutil, "copy2", side_effect=OSError("injected copy failure")):
+                with self.assertRaises(OSError):
+                    matrix.preserve_rejected_lane_artifacts(
+                        result,
+                        checkout,
+                        {"rejected-unit"},
+                        "strict compact artifact ingress rejected the session",
+                    )
+            sentinel = run_root / matrix.PRESERVATION_FAILURE_SENTINEL
+            self.assertTrue(sentinel.is_file())
+            self.assertTrue(source.is_dir())
+            matrix.cleanup_lane_checkouts(run_root)
+            self.assertTrue(checkout.is_dir())
+            self.assertFalse((run_root / "lane/rejected-evidence/rejected-unit").exists())
+
+    def test_rejected_evidence_interruptions_retain_source_checkout(self) -> None:
+        for interruption in (KeyboardInterrupt("unit interrupt"), SystemExit("unit exit")):
+            with self.subTest(interruption=type(interruption).__name__), tempfile.TemporaryDirectory() as tmp:
+                run_root = Path(tmp) / "matrix-run"
+                checkout = run_root / "lane" / "checkout"
+                source = checkout / matrix.WORKFLOW_ARTIFACT_ROOT / "rejected-unit"
+                source.mkdir(parents=True)
+                (source / "run.json").write_text("{}\n")
+                result = {"lane_id": "lane", "lane_dir": str(run_root / "lane")}
+                with mock.patch.object(matrix.shutil, "copy2", side_effect=interruption):
+                    with self.assertRaises(type(interruption)):
+                        matrix.preserve_rejected_lane_artifacts(
+                            result,
+                            checkout,
+                            {"rejected-unit"},
+                            "strict compact artifact ingress rejected the session",
+                        )
+                matrix.cleanup_lane_checkouts(run_root)
+                self.assertTrue(checkout.is_dir())
+
+    def test_preservation_sentinel_write_failure_still_blocks_cleanup_in_memory(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            run_root = Path(tmp) / "matrix-run"
+            checkout = run_root / "lane" / "checkout"
+            source = checkout / matrix.WORKFLOW_ARTIFACT_ROOT / "rejected-unit"
+            source.mkdir(parents=True)
+            (source / "run.json").write_text("{}\n")
+            result = {"lane_id": "lane", "lane_dir": str(run_root / "lane")}
+            with mock.patch.object(matrix, "atomic_write_json", side_effect=OSError("injected sentinel failure")):
+                with self.assertRaises(OSError):
+                    matrix.preserve_rejected_lane_artifacts(
+                        result,
+                        checkout,
+                        {"rejected-unit"},
+                        "strict compact artifact ingress rejected the session",
+                    )
+            self.assertIn(run_root.resolve(), matrix.CLEANUP_PROHIBITED_RUN_ROOTS)
+            matrix.cleanup_lane_checkouts(run_root)
+            self.assertTrue(checkout.is_dir())
+            matrix.CLEANUP_PROHIBITED_RUN_ROOTS.discard(run_root.resolve())
+
+    def test_strict_ingress_interrupt_preserves_before_reraising(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            run_root = Path(tmp) / "matrix-run"
+            lane_dir = run_root / "lane"
+            checkout = lane_dir / "checkout"
+            session_id = "interrupt-unit"
+            source = checkout / matrix.WORKFLOW_ARTIFACT_ROOT / session_id
+            source.mkdir(parents=True)
+            (source / "run.json").write_text("{}\n")
+            result = {
+                "lane_id": "lane",
+                "lane_dir": str(lane_dir),
+                "checkout": str(checkout),
+                "produced_session_ids": [session_id],
+                "expected_session_binding": {},
+            }
+            with mock.patch.object(matrix, "lane_session_records", return_value=[{"session_id": session_id}]), \
+                 mock.patch.object(matrix.workflow, "pilot_session_artifacts_valid", side_effect=KeyboardInterrupt("unit interrupt")):
+                with self.assertRaises(KeyboardInterrupt):
+                    matrix.merge_lanes([result], replicate_index=0)
+            self.assertTrue((lane_dir / "rejected-evidence" / session_id / "rejection.json").is_file())
+
+    def test_direct_runner_applies_strict_ingress_before_registry_publication(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            run_dir = root / "sources/evaluations/workflow-sessions/direct-invalid"
+            run_dir.mkdir(parents=True)
+            record = {
+                "session_id": "direct-invalid",
+                "task_sequence": {"sequence_id": "fastify-lifecycle-sequence-v0"},
+                "artifacts": {"root": str(run_dir.relative_to(root))},
+            }
+            sequence = {"mistake_gate": {"attempt_receipt_path": "sources/evaluations/audits/direct-attempt.json"}}
+            with (
+                mock.patch.object(runner, "ROOT", root),
+                mock.patch.object(runner, "load_sequence", return_value=sequence),
+                mock.patch.object(runner, "pilot_session_artifacts_valid", return_value=False),
+                mock.patch.object(runner, "update_registry") as publish,
+            ):
+                with self.assertRaisesRegex(RuntimeError, "strict compact artifact ingress"):
+                    runner.publish_session_after_strict_ingress(record, run_dir)
+                publish.assert_not_called()
+            rejection = run_dir.parent / "direct-invalid.strict-ingress-rejection.json"
+            self.assertTrue(rejection.is_file())
+            self.assertTrue(run_dir.is_dir())
+
+    def test_provider_lane_interrupt_preserves_evidence_before_cleanup(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            run_root = root / "matrix"
+            sequence_id = "fastify-lifecycle-sequence-v0"
+            profile_id = "baseline-bare-codex"
+            lane_id = matrix.safe_name(f"{sequence_id}--{profile_id}")
+            lane_dir = run_root / lane_id
+            session_id = "interrupted-paid-session"
+
+            def prepare_checkout(_source: Path, checkout: Path) -> None:
+                (checkout / "data").mkdir(parents=True)
+                (checkout / "data/workflow-sessions.json").write_text('{"sessions": []}\n')
+                (checkout / matrix.WORKFLOW_ARTIFACT_ROOT).mkdir(parents=True)
+                (checkout / "protocol.json").write_text(json.dumps({
+                    "protocol_id": "unit-protocol",
+                    "baseline_pool": {"protocol_fingerprint": "unit-pool"},
+                    "selected_execution": {},
+                }))
+
+            def interrupt_after_evidence(*_args: Any, **kwargs: Any) -> subprocess.CompletedProcess[str]:
+                self.assertTrue((lane_dir / matrix.LANE_CLEANUP_PROHIBITION_SENTINEL).is_file())
+                checkout = Path(kwargs["cwd"])
+                evidence = checkout / matrix.WORKFLOW_ARTIFACT_ROOT / session_id
+                evidence.mkdir()
+                (evidence / "run.json").write_text("{}\n")
+                raise KeyboardInterrupt("unit interrupt after evidence")
+
+            with (
+                mock.patch.object(matrix, "ROOT", root),
+                mock.patch.object(matrix, "rsync_checkout", side_effect=prepare_checkout),
+                mock.patch.object(matrix, "find_protocol", side_effect=lambda checkout, *_: checkout / "protocol.json"),
+                mock.patch.object(matrix, "workflow_lane_command", return_value=["unit-child"]),
+                mock.patch.object(matrix.subprocess, "run", side_effect=interrupt_after_evidence),
+            ):
+                with self.assertRaises(KeyboardInterrupt):
+                    matrix.run_flow_lane(
+                        sequence_id=sequence_id,
+                        treatment_profile=profile_id,
+                        lane_root=run_root,
+                        replicate_index=0,
+                        runner_args=[],
+                        source_codex_home=None,
+                    )
+            preserved = lane_dir / "rejected-evidence" / session_id / "rejection.json"
+            self.assertTrue(preserved.is_file())
+            matrix.cleanup_lane_checkouts(run_root)
+            self.assertTrue(preserved.is_file())
+
+    def test_provider_lane_post_child_registry_failure_preserves_evidence(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            run_root = root / "matrix"
+            sequence_id = "fastify-lifecycle-sequence-v0"
+            profile_id = "baseline-bare-codex"
+            lane_id = matrix.safe_name(f"{sequence_id}--{profile_id}")
+            lane_dir = run_root / lane_id
+            session_id = "malformed-registry-paid-session"
+
+            def prepare_checkout(_source: Path, checkout: Path) -> None:
+                (checkout / "data").mkdir(parents=True)
+                (checkout / "data/workflow-sessions.json").write_text('{"sessions": []}\n')
+                (checkout / matrix.WORKFLOW_ARTIFACT_ROOT).mkdir(parents=True)
+                (checkout / "protocol.json").write_text(json.dumps({
+                    "protocol_id": "unit-protocol",
+                    "baseline_pool": {"protocol_fingerprint": "unit-pool"},
+                    "selected_execution": {},
+                }))
+
+            def corrupt_registry_after_evidence(*_args: Any, **kwargs: Any) -> subprocess.CompletedProcess[str]:
+                checkout = Path(kwargs["cwd"])
+                evidence = checkout / matrix.WORKFLOW_ARTIFACT_ROOT / session_id
+                evidence.mkdir()
+                (evidence / "run.json").write_text("{}\n")
+                (checkout / "data/workflow-sessions.json").write_text("not-json\n")
+                return subprocess.CompletedProcess(["unit-child"], 0)
+
+            with (
+                mock.patch.object(matrix, "ROOT", root),
+                mock.patch.object(matrix, "rsync_checkout", side_effect=prepare_checkout),
+                mock.patch.object(matrix, "find_protocol", side_effect=lambda checkout, *_: checkout / "protocol.json"),
+                mock.patch.object(matrix, "workflow_lane_command", return_value=["unit-child"]),
+                mock.patch.object(matrix.subprocess, "run", side_effect=corrupt_registry_after_evidence),
+            ):
+                with self.assertRaises(json.JSONDecodeError):
+                    matrix.run_flow_lane(
+                        sequence_id=sequence_id,
+                        treatment_profile=profile_id,
+                        lane_root=run_root,
+                        replicate_index=0,
+                        runner_args=[],
+                        source_codex_home=None,
+                    )
+            preserved = lane_dir / "rejected-evidence" / session_id / "rejection.json"
+            self.assertTrue(preserved.is_file())
+            matrix.cleanup_lane_checkouts(run_root)
+            self.assertTrue(preserved.is_file())
+
+    def test_nonzero_provider_lane_unsafe_artifact_retains_checkout(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            run_root = root / "matrix"
+            sequence_id = "fastify-lifecycle-sequence-v0"
+            profile_id = "baseline-bare-codex"
+            lane_id = matrix.safe_name(f"{sequence_id}--{profile_id}")
+            lane_dir = run_root / lane_id
+
+            def prepare_checkout(_source: Path, checkout: Path) -> None:
+                (checkout / "data").mkdir(parents=True)
+                (checkout / "data/workflow-sessions.json").write_text('{"sessions": []}\n')
+                (checkout / matrix.WORKFLOW_ARTIFACT_ROOT).mkdir(parents=True)
+                (checkout / "protocol.json").write_text(json.dumps({
+                    "protocol_id": "unit-protocol",
+                    "baseline_pool": {"protocol_fingerprint": "unit-pool"},
+                    "selected_execution": {},
+                }))
+
+            def fail_with_unsafe_output(*_args: Any, **kwargs: Any) -> subprocess.CompletedProcess[str]:
+                self.assertTrue((lane_dir / matrix.LANE_CLEANUP_PROHIBITION_SENTINEL).is_file())
+                checkout = Path(kwargs["cwd"])
+                (checkout / matrix.WORKFLOW_ARTIFACT_ROOT / "unsafe-regular-file").write_text("evidence\n")
+                return subprocess.CompletedProcess(["unit-child"], 1)
+
+            with (
+                mock.patch.object(matrix, "ROOT", root),
+                mock.patch.object(matrix, "rsync_checkout", side_effect=prepare_checkout),
+                mock.patch.object(matrix, "find_protocol", side_effect=lambda checkout, *_: checkout / "protocol.json"),
+                mock.patch.object(matrix, "workflow_lane_command", return_value=["unit-child"]),
+                mock.patch.object(matrix.subprocess, "run", side_effect=fail_with_unsafe_output),
+            ):
+                result = matrix.run_flow_lane(
+                    sequence_id=sequence_id,
+                    treatment_profile=profile_id,
+                    lane_root=run_root,
+                    replicate_index=0,
+                    runner_args=[],
+                    source_codex_home=None,
+                )
+            self.assertEqual(result["exit_code"], 1)
+            self.assertEqual(result["failure_evidence"], [])
+            checkout = lane_dir / "checkout"
+            matrix.cleanup_lane_checkouts(run_root)
+            self.assertTrue((checkout / matrix.WORKFLOW_ARTIFACT_ROOT / "unsafe-regular-file").is_file())
+            matrix.CLEANUP_PROHIBITED_LANE_DIRS.discard(lane_dir.resolve())
+
+    def test_provider_lane_symlinked_registry_retains_whole_checkout(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            run_root = root / "matrix"
+            sequence_id = "fastify-lifecycle-sequence-v0"
+            profile_id = "baseline-bare-codex"
+            lane_id = matrix.safe_name(f"{sequence_id}--{profile_id}")
+            lane_dir = run_root / lane_id
+
+            def prepare_checkout(_source: Path, checkout: Path) -> None:
+                (checkout / "data").mkdir(parents=True)
+                (checkout / "data/workflow-sessions.json").write_text('{"sessions": []}\n')
+                (checkout / matrix.WORKFLOW_ARTIFACT_ROOT).mkdir(parents=True)
+                (checkout / "protocol.json").write_text(json.dumps({
+                    "protocol_id": "unit-protocol",
+                    "baseline_pool": {"protocol_fingerprint": "unit-pool"},
+                    "selected_execution": {},
+                }))
+
+            def replace_registry(*_args: Any, **kwargs: Any) -> subprocess.CompletedProcess[str]:
+                checkout = Path(kwargs["cwd"])
+                evidence = checkout / matrix.WORKFLOW_ARTIFACT_ROOT / "internal-session"
+                evidence.mkdir()
+                (evidence / "run.json").write_text("{}\n")
+                external = root / "external-registry.json"
+                external.write_text('{"sessions": []}\n')
+                registry = checkout / "data/workflow-sessions.json"
+                registry.unlink()
+                registry.symlink_to(external)
+                return subprocess.CompletedProcess(["unit-child"], 1)
+
+            with (
+                mock.patch.object(matrix, "ROOT", root),
+                mock.patch.object(matrix, "rsync_checkout", side_effect=prepare_checkout),
+                mock.patch.object(matrix, "find_protocol", side_effect=lambda checkout, *_: checkout / "protocol.json"),
+                mock.patch.object(matrix, "workflow_lane_command", return_value=["unit-child"]),
+                mock.patch.object(matrix.subprocess, "run", side_effect=replace_registry),
+            ):
+                with self.assertRaises(matrix.UnsafeLaneOutputError):
+                    matrix.run_flow_lane(
+                        sequence_id=sequence_id,
+                        treatment_profile=profile_id,
+                        lane_root=run_root,
+                        replicate_index=0,
+                        runner_args=[],
+                        source_codex_home=None,
+                    )
+            matrix.cleanup_lane_checkouts(run_root)
+            self.assertTrue((lane_dir / "checkout").is_dir())
+            self.assertFalse((lane_dir / "rejected-evidence/internal-session").exists())
+            matrix.CLEANUP_PROHIBITED_LANE_DIRS.discard(lane_dir.resolve())
+
+    def test_v3_validator_rejects_non_integer_provider_counts_and_exit_codes(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            temp_root = Path(tmp)
+            audit_rel = Path("sources/evaluations/audits/baseline-v3-task-family-qualification-20260722.json")
+            index_rel = Path("sources/evaluations/audits/baseline-v3-literal-command-receipts-20260722/index.json")
+            sequence_rel = Path("data/workflow-task-sequences.json")
+            audit = json.loads((ROOT / audit_rel).read_text())
+            index = json.loads((ROOT / index_rel).read_text())
+            sequences = json.loads((ROOT / sequence_rel).read_text())
+            paths = {audit_rel, index_rel, sequence_rel}
+            for sequence in sequences["sequences"]:
+                if sequence.get("task_family_generation") != "baseline-v3":
+                    continue
+                paths.add(Path(sequence["qualification_path"]))
+                for task in sequence["tasks"]:
+                    paths.add(Path(task["prompt_path"]))
+                    paths.add(Path(task["verifier_command"]))
+            for protocol in audit["protocols"]:
+                paths.add(Path(protocol["path"]))
+            for item in index["receipts"]:
+                receipt_rel = Path(item["path"])
+                paths.add(receipt_rel)
+                receipt = json.loads((ROOT / receipt_rel).read_text())
+                paths.update(
+                    Path(value)
+                    for value in (
+                        receipt["literal_command"]["log_path"],
+                        receipt["controller_verifier"]["log_path"],
+                        receipt["production_bootstrap"]["log_path"],
+                    )
+                )
+            for relative in paths:
+                destination = temp_root / relative
+                destination.parent.mkdir(parents=True, exist_ok=True)
+                shutil.copy2(ROOT / relative, destination)
+
+            mutated_audit = copy.deepcopy(audit)
+            mutated_audit["provider_accounting"]["provider_calls"] = False
+            (temp_root / audit_rel).write_text(json.dumps(mutated_audit, indent=2) + "\n")
+            errors: list[str] = []
+            with mock.patch.object(validate_repository, "ROOT", temp_root):
+                validate_repository.validate_baseline_v3_qualification_audit(errors)
+            self.assertTrue(any("strict integer zero" in error for error in errors), errors)
+            (temp_root / audit_rel).write_text(json.dumps(audit, indent=2) + "\n")
+
+            numeric_paths: list[tuple[object, ...]] = []
+
+            def collect_numeric_paths(value: object, path: tuple[object, ...] = ()) -> None:
+                if isinstance(value, dict):
+                    for key, child in value.items():
+                        collect_numeric_paths(child, path + (key,))
+                elif isinstance(value, list):
+                    for index, child in enumerate(value):
+                        collect_numeric_paths(child, path + (index,))
+                elif type(value) is int:
+                    numeric_paths.append(path)
+
+            collect_numeric_paths(audit)
+            for numeric_path in numeric_paths:
+                for invalid_value in (False, True, 0.0, "0", None):
+                    with self.subTest(
+                        audit_numeric=".".join(map(str, numeric_path)),
+                        invalid_value=repr(invalid_value),
+                    ):
+                        mutated_audit = copy.deepcopy(audit)
+                        target: Any = mutated_audit
+                        for key in numeric_path[:-1]:
+                            target = target[key]
+                        target[numeric_path[-1]] = invalid_value
+                        (temp_root / audit_rel).write_text(json.dumps(mutated_audit, indent=2) + "\n")
+                        errors = []
+                        with mock.patch.object(validate_repository, "ROOT", temp_root):
+                            validate_repository.validate_baseline_v3_qualification_audit(errors)
+                        self.assertTrue(
+                            any("numeric" in error or "strict non-boolean integer" in error for error in errors),
+                            errors,
+                        )
+            (temp_root / audit_rel).write_text(json.dumps(audit, indent=2) + "\n")
+
+            for sequence_index, sequence in enumerate(audit["sequences"]):
+                for field in ("current_protocol_id", "current_protocol_path"):
+                    with self.subTest(sequence=sequence["sequence_id"], stale_field=field):
+                        mutated_audit = copy.deepcopy(audit)
+                        mutated_audit["sequences"][sequence_index][field] = "bogus-current-protocol-binding"
+                        (temp_root / audit_rel).write_text(json.dumps(mutated_audit, indent=2) + "\n")
+                        errors = []
+                        with mock.patch.object(validate_repository, "ROOT", temp_root):
+                            validate_repository.validate_baseline_v3_qualification_audit(errors)
+                        self.assertTrue(
+                            any("per-sequence current protocol binding is stale" in error for error in errors),
+                            errors,
+                        )
+            (temp_root / audit_rel).write_text(json.dumps(audit, indent=2) + "\n")
+
+            for index_field in ("schema_version", "provider_calls", "provider_tokens", "receipt_count"):
+                for invalid_value in (False, True, 0.0, "0", None):
+                    with self.subTest(
+                        receipt_index_field=index_field,
+                        invalid_value=repr(invalid_value),
+                    ):
+                        mutated_index = copy.deepcopy(index)
+                        mutated_index[index_field] = invalid_value
+                        (temp_root / index_rel).write_text(json.dumps(mutated_index, indent=2) + "\n")
+                        errors = []
+                        with mock.patch.object(validate_repository, "ROOT", temp_root):
+                            validate_repository.validate_baseline_v3_qualification_audit(errors)
+                        self.assertTrue(any("receipt index" in error for error in errors), errors)
+            (temp_root / index_rel).write_text(json.dumps(index, indent=2) + "\n")
+
+            first_item = index["receipts"][0]
+            receipt_rel = Path(first_item["path"])
+            original_receipt = json.loads((temp_root / receipt_rel).read_text())
+            mutations = (
+                ("schema_version",),
+                ("task_order",),
+                ("provider_calls",),
+                ("provider_tokens",),
+                ("production_bootstrap", "exit_code"),
+                ("literal_command", "exit_code"),
+                ("controller_verifier", "exit_code"),
+            )
+            for keys in mutations:
+                for invalid_value in (False, True, 0.0, "0", None):
+                    with self.subTest(
+                        receipt_field=".".join(keys),
+                        invalid_value=repr(invalid_value),
+                    ):
+                        mutated_receipt = copy.deepcopy(original_receipt)
+                        target = mutated_receipt
+                        for key in keys[:-1]:
+                            target = target[key]
+                        target[keys[-1]] = invalid_value
+                        receipt_bytes = (json.dumps(mutated_receipt, indent=2) + "\n").encode()
+                        (temp_root / receipt_rel).write_bytes(receipt_bytes)
+                        rehashed_index = copy.deepcopy(index)
+                        rehashed_item = next(
+                            item for item in rehashed_index["receipts"] if item["task_id"] == first_item["task_id"]
+                        )
+                        rehashed_item["sha256"] = hashlib.sha256(receipt_bytes).hexdigest()
+                        (temp_root / index_rel).write_text(json.dumps(rehashed_index, indent=2) + "\n")
+                        errors = []
+                        with mock.patch.object(validate_repository, "ROOT", temp_root):
+                            validate_repository.validate_baseline_v3_qualification_audit(errors)
+                        self.assertTrue(
+                            any(f"receipt is invalid for {first_item['task_id']}" in error for error in errors),
+                            errors,
+                        )
+
+    def test_v3_qualification_numeric_evidence_rejects_non_integer_mutations(self) -> None:
+        sequences = json.loads((ROOT / "data/workflow-task-sequences.json").read_text())["sequences"]
+        original_load_json = validate_repository.load_json
+        for sequence in sequences:
+            qualification_rel = sequence["qualification_path"]
+            qualification = json.loads((ROOT / qualification_rel).read_text())
+            numeric_paths: list[tuple[object, ...]] = []
+
+            def collect(value: object, path: tuple[object, ...] = ()) -> None:
+                if isinstance(value, dict):
+                    for key, child in value.items():
+                        collect(child, path + (key,))
+                elif isinstance(value, list):
+                    for index, child in enumerate(value):
+                        collect(child, path + (index,))
+                elif type(value) is int:
+                    numeric_paths.append(path)
+
+            collect(qualification)
+            for numeric_path in numeric_paths:
+                for invalid_value in (False, True, 0.0, "0", None):
+                    with self.subTest(
+                        sequence=sequence["id"],
+                        numeric_path=".".join(map(str, numeric_path)),
+                        invalid_value=repr(invalid_value),
+                    ):
+                        mutated = copy.deepcopy(qualification)
+                        target: Any = mutated
+                        for key in numeric_path[:-1]:
+                            target = target[key]
+                        target[numeric_path[-1]] = invalid_value
+
+                        def load_json(relative: str, mutated: dict[str, Any] = mutated) -> dict[str, Any]:
+                            if relative == qualification_rel:
+                                return mutated
+                            return original_load_json(relative)
+
+                        errors: list[str] = []
+                        with mock.patch.object(validate_repository, "load_json", side_effect=load_json):
+                            validate_repository.validate_qualification(sequence, errors)
+                        self.assertTrue(
+                            any("strict non-boolean integers" in error for error in errors),
+                            errors,
+                        )
+
+    def test_retired_baseline_v2_authority_cannot_claim_future_execution(self) -> None:
+        audit_rel = Path("sources/evaluations/audits/baseline-v2-task-family-qualification-20260721.json")
+        pilot_rel = Path("sources/evaluations/audits/baseline-v2-pilot-zero-mistake.json")
+        with tempfile.TemporaryDirectory() as tmp:
+            temp_root = Path(tmp)
+            for relative in (audit_rel, pilot_rel):
+                destination = temp_root / relative
+                destination.parent.mkdir(parents=True, exist_ok=True)
+                shutil.copy2(ROOT / relative, destination)
+            errors: list[str] = []
+            with mock.patch.object(validate_repository, "ROOT", temp_root):
+                validate_repository.validate_retired_baseline_v2_audit(errors)
+            self.assertEqual(errors, [])
+
+            audit = json.loads((temp_root / audit_rel).read_text())
+            audit["decision"] = "Activate Baseline V2 for future execution"
+            audit["supersession"]["rerun_allowed"] = True
+            audit["treatment_gate"]["pilot_audit_present"] = False
+            audit["protocols"] = [{"path": "missing-current-protocol.json"}]
+            (temp_root / audit_rel).write_text(json.dumps(audit, indent=2) + "\n")
+            errors = []
+            with mock.patch.object(validate_repository, "ROOT", temp_root):
+                validate_repository.validate_retired_baseline_v2_audit(errors)
+            self.assertTrue(any("retired Baseline V2 qualification authority is stale" in error for error in errors), errors)
+
+    def test_active_candidate_qualification_and_count_bindings_fail_closed(self) -> None:
+        workflow_doc = json.loads((ROOT / "data/workflow-task-sequences.json").read_text())
+        fixtures_doc = json.loads((ROOT / "data/repository-fixtures.json").read_text())
+        large_doc = json.loads((ROOT / "data/large-project-candidates.json").read_text())
+        medium_doc = json.loads((ROOT / "data/medium-project-candidates.json").read_text())
+        errors: list[str] = []
+        validate_repository.validate_fixture_sequence_status_consistency(
+            workflow_doc, fixtures_doc, large_doc, medium_doc, errors
+        )
+        self.assertEqual(errors, [])
+
+        stale_medium = copy.deepcopy(medium_doc)
+        stale_medium["candidates"][0]["qualification_evidence"] = "legacy-qualification.json"
+        stale_medium["selection_policy"]["active_fixture_count"] = 1
+        stale_medium["selection_policy"]["target_matrix"] = "One active Beets workflow; Fastify is retired."
+        errors = []
+        validate_repository.validate_fixture_sequence_status_consistency(
+            workflow_doc, fixtures_doc, large_doc, stale_medium, errors
+        )
+        self.assertTrue(any("active qualification" in error for error in errors), errors)
+        self.assertTrue(any("active_fixture_count" in error for error in errors), errors)
+        self.assertTrue(any("target_matrix" in error for error in errors), errors)
+
+    def test_nonzero_provider_lane_symlinked_artifact_ancestor_retains_checkout(self) -> None:
+        for symlink_level in ("artifact-root", "ancestor"):
+            with self.subTest(symlink_level=symlink_level), tempfile.TemporaryDirectory() as tmp:
+                root = Path(tmp)
+                run_root = root / "matrix"
+                sequence_id = "fastify-lifecycle-sequence-v0"
+                profile_id = "baseline-bare-codex"
+                lane_id = matrix.safe_name(f"{sequence_id}--{profile_id}")
+                lane_dir = run_root / lane_id
+
+                def prepare_checkout(_source: Path, checkout: Path) -> None:
+                    (checkout / "data").mkdir(parents=True)
+                    (checkout / "data/workflow-sessions.json").write_text('{"sessions": []}\n')
+                    (checkout / matrix.WORKFLOW_ARTIFACT_ROOT).mkdir(parents=True)
+                    (checkout / "protocol.json").write_text(json.dumps({
+                        "protocol_id": "unit-protocol",
+                        "baseline_pool": {"protocol_fingerprint": "unit-pool"},
+                        "selected_execution": {},
+                    }))
+
+                def fail_with_symlinked_output(*_args: Any, **kwargs: Any) -> subprocess.CompletedProcess[str]:
+                    checkout = Path(kwargs["cwd"])
+                    artifact_root = checkout / matrix.WORKFLOW_ARTIFACT_ROOT
+                    artifact_root.rmdir()
+                    external = root / f"external-{symlink_level}"
+                    external_artifacts = external / "workflow-sessions"
+                    evidence = external_artifacts / "outside-session"
+                    evidence.mkdir(parents=True)
+                    (evidence / "run.json").write_text("{}\n")
+                    if symlink_level == "artifact-root":
+                        artifact_root.symlink_to(external_artifacts, target_is_directory=True)
+                    else:
+                        artifact_root.parent.rmdir()
+                        artifact_root.parent.symlink_to(external, target_is_directory=True)
+                    return subprocess.CompletedProcess(["unit-child"], 1)
+
+                with (
+                    mock.patch.object(matrix, "ROOT", root),
+                    mock.patch.object(matrix, "rsync_checkout", side_effect=prepare_checkout),
+                    mock.patch.object(matrix, "find_protocol", side_effect=lambda checkout, *_: checkout / "protocol.json"),
+                    mock.patch.object(matrix, "workflow_lane_command", return_value=["unit-child"]),
+                    mock.patch.object(matrix.subprocess, "run", side_effect=fail_with_symlinked_output),
+                ):
+                    result = matrix.run_flow_lane(
+                        sequence_id=sequence_id,
+                        treatment_profile=profile_id,
+                        lane_root=run_root,
+                        replicate_index=0,
+                        runner_args=[],
+                        source_codex_home=None,
+                    )
+                self.assertEqual(result["failure_evidence"], [])
+                self.assertFalse((lane_dir / "rejected-evidence/outside-session").exists())
+                matrix.cleanup_lane_checkouts(run_root)
+                self.assertTrue((lane_dir / "checkout").is_dir())
+                self.assertTrue((lane_dir / matrix.LANE_CLEANUP_PROHIBITION_SENTINEL).is_file())
+                matrix.CLEANUP_PROHIBITED_LANE_DIRS.discard(lane_dir.resolve())
+
+    def test_symlinked_run_root_ancestor_is_rejected_before_preservation_write(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            temp = Path(tmp)
+            external_run_root = temp / "external-run"
+            external_run_root.mkdir()
+            aliased_run_root = temp / "aliased-run"
+            aliased_run_root.symlink_to(external_run_root, target_is_directory=True)
+            lane_dir = aliased_run_root / "lane"
+            checkout = lane_dir / "repo"
+            source = checkout / matrix.WORKFLOW_ARTIFACT_ROOT / "session-a"
+            source.mkdir(parents=True)
+            (source / "run.json").write_text("{}\n")
+            matrix.CLEANUP_PROHIBITED_LANE_DIRS.add(lane_dir.resolve())
+            result = {
+                "lane_id": "lane",
+                "lane_dir": str(lane_dir),
+                "run_root": str(aliased_run_root),
+                "failure_evidence": [],
+            }
+            with self.assertRaisesRegex(ValueError, "unsafe run root or lane ancestor"):
+                matrix.preserve_discovered_lane_artifacts(
+                    result=result,
+                    checkout=checkout,
+                    artifact_root=checkout / matrix.WORKFLOW_ARTIFACT_ROOT,
+                    before_artifact_entries=set(),
+                    reason="unit rejection",
+                )
+            self.assertFalse((external_run_root / matrix.PRESERVATION_FAILURE_SENTINEL).exists())
+            self.assertFalse((external_run_root / "lane/rejected-evidence").exists())
+            self.assertIn(lane_dir.resolve(), matrix.CLEANUP_PROHIBITED_LANE_DIRS)
+            with self.assertRaisesRegex(ValueError, "lane root contains a symlink"):
+                matrix.main(["--dry-run", "--lane-root", str(aliased_run_root)])
+            matrix.CLEANUP_PROHIBITED_LANE_DIRS.discard(lane_dir.resolve())
+
+    def test_symlinked_rejected_evidence_root_retains_source_without_external_write(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            run_root = Path(tmp) / "matrix"
+            lane_dir = run_root / "lane"
+            checkout = lane_dir / "repo"
+            source = checkout / matrix.WORKFLOW_ARTIFACT_ROOT / "session-a"
+            source.mkdir(parents=True)
+            (source / "run.json").write_text("{}\n")
+            external = Path(tmp) / "external"
+            external.mkdir()
+            lane_dir.mkdir(parents=True, exist_ok=True)
+            (lane_dir / "rejected-evidence").symlink_to(external, target_is_directory=True)
+            matrix.retain_lane_checkout(lane_dir, "lane", "unit test")
+            result = {"lane_id": "lane", "lane_dir": str(lane_dir), "failure_evidence": []}
+            with self.assertRaisesRegex(ValueError, "unsafe rejected evidence destination root"):
+                matrix.preserve_discovered_lane_artifacts(
+                    result=result,
+                    checkout=checkout,
+                    artifact_root=checkout / matrix.WORKFLOW_ARTIFACT_ROOT,
+                    before_artifact_entries=set(),
+                    reason="unit rejection",
+                )
+            self.assertEqual(list(external.iterdir()), [])
+            self.assertIn(lane_dir.resolve(), matrix.CLEANUP_PROHIBITED_LANE_DIRS)
+            matrix.cleanup_lane_checkouts(run_root)
+            self.assertTrue(lane_dir.exists())
+            self.assertTrue((lane_dir / matrix.LANE_CLEANUP_PROHIBITION_SENTINEL).is_file())
+            matrix.CLEANUP_PROHIBITED_LANE_DIRS.discard(lane_dir.resolve())
+
+    def test_existing_rejected_evidence_destination_retains_source(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            run_root = Path(tmp) / "matrix"
+            lane_dir = run_root / "lane"
+            checkout = lane_dir / "checkout"
+            source = checkout / matrix.WORKFLOW_ARTIFACT_ROOT / "session-a"
+            source.mkdir(parents=True)
+            (source / "run.json").write_text("{}\n")
+            (lane_dir / "rejected-evidence/session-a").mkdir(parents=True)
+            matrix.retain_lane_checkout(lane_dir, "lane", "unit test")
+            result = {"lane_id": "lane", "lane_dir": str(lane_dir), "failure_evidence": []}
+            with self.assertRaises(FileExistsError):
+                matrix.preserve_rejected_lane_artifacts(result, checkout, {"session-a"}, "unit rejection")
+            matrix.cleanup_lane_checkouts(run_root)
+            self.assertTrue(source.is_dir())
+            self.assertEqual(result["failure_evidence"], [])
+            matrix.CLEANUP_PROHIBITED_LANE_DIRS.discard(lane_dir.resolve())
+            matrix.CLEANUP_PROHIBITED_RUN_ROOTS.discard(run_root.resolve())
+            matrix.ACTIVE_RUN_PRESERVATIONS.pop(run_root.resolve(), None)
+
+    def test_post_rename_fsync_failure_and_retry_retain_source(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            run_root = Path(tmp) / "matrix"
+            lane_dir = run_root / "lane"
+            checkout = lane_dir / "checkout"
+            source = checkout / matrix.WORKFLOW_ARTIFACT_ROOT / "session-a"
+            source.mkdir(parents=True)
+            (source / "run.json").write_text("{}\n")
+            matrix.retain_lane_checkout(lane_dir, "lane", "unit test")
+            result = {"lane_id": "lane", "lane_dir": str(lane_dir), "failure_evidence": []}
+            failure_root = lane_dir / "rejected-evidence"
+            real_fsync = matrix.fsync_directory
+            failed = False
+
+            def fail_after_rename(directory: Path) -> None:
+                nonlocal failed
+                if directory == failure_root and (failure_root / "session-a").exists() and not failed:
+                    failed = True
+                    raise OSError("unit post-rename fsync failure")
+                real_fsync(directory)
+
+            with mock.patch.object(matrix, "fsync_directory", side_effect=fail_after_rename):
+                with self.assertRaisesRegex(OSError, "post-rename"):
+                    matrix.preserve_rejected_lane_artifacts(result, checkout, {"session-a"}, "unit rejection")
+            with self.assertRaises(FileExistsError):
+                matrix.preserve_rejected_lane_artifacts(result, checkout, {"session-a"}, "unit retry")
+            matrix.cleanup_lane_checkouts(run_root)
+            self.assertTrue(source.is_dir())
+            self.assertEqual(result["failure_evidence"], [])
+            matrix.CLEANUP_PROHIBITED_LANE_DIRS.discard(lane_dir.resolve())
+            matrix.CLEANUP_PROHIBITED_RUN_ROOTS.discard(run_root.resolve())
+            matrix.ACTIVE_RUN_PRESERVATIONS.pop(run_root.resolve(), None)
+
+    def test_parallel_rejected_evidence_preservation_is_reference_counted(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            run_root = Path(tmp) / "matrix"
+            calls: list[tuple[dict[str, Any], Path, set[str], str]] = []
+            for index in range(2):
+                lane_dir = run_root / f"lane-{index}"
+                checkout = lane_dir / "checkout"
+                session_id = f"session-{index}"
+                source = checkout / matrix.WORKFLOW_ARTIFACT_ROOT / session_id
+                source.mkdir(parents=True)
+                (source / "run.json").write_text("{}\n")
+                result = {"lane_id": f"lane-{index}", "lane_dir": str(lane_dir), "failure_evidence": []}
+                calls.append((result, checkout, {session_id}, "unit parallel rejection"))
+            barrier = threading.Barrier(2)
+            real_copy = matrix.shutil.copy2
+
+            def synchronized_copy(source: Path, destination: Path) -> Any:
+                barrier.wait(timeout=5)
+                return real_copy(source, destination)
+
+            with (
+                mock.patch.object(matrix.shutil, "copy2", side_effect=synchronized_copy),
+                concurrent.futures.ThreadPoolExecutor(max_workers=2) as pool,
+            ):
+                results = list(pool.map(lambda args: matrix.preserve_rejected_lane_artifacts(*args), calls))
+            self.assertTrue(all(len(result) == 1 for result in results))
+            self.assertNotIn(run_root.resolve(), matrix.CLEANUP_PROHIBITED_RUN_ROOTS)
+            self.assertNotIn(run_root.resolve(), matrix.ACTIVE_RUN_PRESERVATIONS)
+            self.assertFalse((run_root / matrix.PRESERVATION_FAILURE_SENTINEL).exists())
+
+    def test_unsafe_rejected_evidence_shape_retains_source_checkout(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            run_root = Path(tmp) / "matrix-run"
+            checkout = run_root / "lane" / "checkout"
+            source = checkout / matrix.WORKFLOW_ARTIFACT_ROOT / "oversized-shape"
+            source.mkdir(parents=True)
+            for index in range(33):
+                (source / f"entry-{index:02d}.json").write_text("{}\n")
+            result = {"lane_id": "lane", "lane_dir": str(run_root / "lane")}
+            with self.assertRaises(ValueError):
+                matrix.preserve_rejected_lane_artifacts(
+                    result,
+                    checkout,
+                    {"oversized-shape"},
+                    "strict compact artifact ingress rejected the session",
+                )
+            sentinel = json.loads((run_root / matrix.PRESERVATION_FAILURE_SENTINEL).read_text())
+            self.assertEqual(sentinel["error_type"], "UnsafeRejectedEvidenceShape")
+            matrix.cleanup_lane_checkouts(run_root)
+            self.assertTrue(checkout.is_dir())
+
+    def test_empty_directory_and_symlink_rejected_evidence_retain_checkout(self) -> None:
+        for shape in ("missing", "empty", "nested-directory", "symlink-entry"):
+            with self.subTest(shape=shape), tempfile.TemporaryDirectory() as tmp:
+                run_root = Path(tmp) / "matrix-run"
+                checkout = run_root / "lane" / "checkout"
+                checkout.mkdir(parents=True)
+                source = checkout / matrix.WORKFLOW_ARTIFACT_ROOT / "unsafe-shape"
+                if shape != "missing":
+                    source.mkdir(parents=True)
+                if shape == "nested-directory":
+                    (source / "unexpected").mkdir()
+                elif shape == "symlink-entry":
+                    target = source / "target.json"
+                    target.write_text("{}\n")
+                    (source / "link.json").symlink_to(target.name)
+                result = {"lane_id": "lane", "lane_dir": str(run_root / "lane")}
+                with self.assertRaises(ValueError):
+                    matrix.preserve_rejected_lane_artifacts(
+                        result,
+                        checkout,
+                        {"unsafe-shape"},
+                        "strict compact artifact ingress rejected the session",
+                    )
+                matrix.cleanup_lane_checkouts(run_root)
+                self.assertTrue(checkout.is_dir())
+
+    def test_production_dependency_bootstrap_preserves_pinned_toolchain_path_and_lock_mode(self) -> None:
+        captured: dict[str, Any] = {}
+
+        def fake_run_backend(cmd: list[str], **kwargs: Any) -> Any:
+            captured["cmd"] = cmd
+            captured["env"] = kwargs["env"]
+            return argparse.Namespace(returncode=0)
+
+        sequence = {"fixture_id": "medium-beetbox-beets"}
+        record = {"target": {"repository_path": "/tmp/provider-free-bootstrap-unit"}}
+        with tempfile.TemporaryDirectory() as tmp, \
+             mock.patch.object(runner.fixture, "codex_env", return_value={"PATH": "/usr/bin"}), \
+             mock.patch.object(runner.fixture, "container_mounts_for_record", return_value=[]), \
+             mock.patch.object(runner.fixture, "run_backend", side_effect=fake_run_backend):
+            code = runner.docker_setup_deps(
+                sequence,
+                record,
+                Path(tmp) / "codex-home",
+                Path(tmp),
+                "token-eval-codex:latest",
+            )
+        self.assertEqual(code, 0)
+        self.assertEqual(captured["cmd"], ["bash", "-c", "uv sync --group test --frozen"])
+        self.assertTrue(captured["env"]["PATH"].startswith("/opt/data/bin:/opt/data/opt/go/bin:"))
+
+    def test_v3_pilot_attempt_receipt_atomically_occupies_direct_and_matrix_gates(self) -> None:
+        sequence = json.loads((ROOT / "data/workflow-task-sequences.json").read_text())["sequences"][0]
+        with tempfile.TemporaryDirectory() as tmp:
+            authority = Path(tmp)
+            protocol = {
+                "protocol_id": "unit-protocol",
+                "baseline_pool": {"protocol_fingerprint": "unit-fingerprint"},
+            }
+            identity = {
+                "protocol_id": "unit-protocol",
+                "path": "sources/evaluations/protocols/unit-protocol.json",
+                "sha256": "0" * 64,
+                "qualification_sha256": "1" * 64,
+            }
+            with mock.patch.object(runner, "current_baseline_v2_protocol", return_value=(identity, protocol)):
+                receipt = runner.reserve_baseline_pilot_attempt(
+                    sequence,
+                    root=authority,
+                    orchestrator="unit-matrix",
+                )
+                with self.assertRaises(FileExistsError):
+                    runner.reserve_baseline_pilot_attempt(
+                        sequence,
+                        root=authority,
+                        orchestrator="unit-direct",
+                    )
+            receipt_path = runner.baseline_pilot_attempt_receipt_path(sequence, authority)
+            self.assertEqual(json.loads(receipt_path.read_text()), receipt)
+            self.assertIn(
+                receipt_path.name,
+                matrix.copytree_ignore(str(receipt_path.parent), [receipt_path.name]),
+            )
+            allowed, reason = runner.baseline_v2_pilot_run_gate(sequence, authority)
+            self.assertFalse(allowed)
+            self.assertIn("immutable attempt receipt", reason)
+            with mock.patch.object(runner, "acquire_provider_production_lock", return_value=os.open(os.devnull, os.O_RDONLY)), \
+                 mock.patch.object(runner, "load_sequence", return_value=sequence), \
+                 mock.patch.object(runner, "baseline_v2_pilot_run_gate", return_value=(False, reason)), \
+                 mock.patch.object(runner, "_run_one_locked") as locked:
+                args = argparse.Namespace(
+                    prepare_only=False,
+                    profile_id="baseline-bare-codex",
+                    sequence_id=sequence["id"],
+                )
+                with mock.patch.object(runner, "ROOT", authority):
+                    with self.assertRaises(ValueError):
+                        runner.run_one(args)
+                locked.assert_not_called()
+            with self.assertRaises(ValueError):
+                matrix.plan_workflow_jobs(
+                    [sequence["id"]],
+                    [],
+                    baseline_state=lambda _sequence: "missing",
+                    profile_state=lambda _sequence, _profile: "missing",
+                    treatment_gate=lambda _sequence: (False, "blocked"),
+                    baseline_run_gate=lambda _sequence: runner.baseline_v2_pilot_run_gate(sequence, authority),
+                )
+
+    def test_v3_treatments_block_while_first_pilot_identity_is_unoccupied(self) -> None:
         document = json.loads((ROOT / "data/workflow-task-sequences.json").read_text())
         for sequence in document["sequences"]:
             passed, reason = runner.baseline_v2_treatment_gate(sequence, ROOT)
             self.assertFalse(passed)
-            self.assertIn("did not pass", reason)
+            self.assertIn("pilot audit is absent", reason)
             rerun_allowed, rerun_reason = runner.baseline_v2_pilot_run_gate(sequence, ROOT)
-            self.assertFalse(rerun_allowed)
-            self.assertIn("pilot identity is occupied", rerun_reason)
+            receipt_exists = runner.baseline_pilot_attempt_receipt_path(sequence, ROOT).exists()
+            self.assertEqual(rerun_allowed, not receipt_exists)
+            if receipt_exists:
+                self.assertIn("immutable attempt receipt", rerun_reason)
+            else:
+                self.assertIn("no prior Baseline V3 pilot attempt", rerun_reason)
 
     def test_failed_v2_pilot_preserves_exact_executed_protocol_bytes(self) -> None:
         audit = json.loads(
@@ -4199,7 +5231,7 @@ class BaselineV2LowComplexityContractTest(unittest.TestCase):
             self.assertEqual(lane_log["frozen_protocol"]["protocol_id"], executed["protocol_id"])
             self.assertEqual(lane_log["frozen_protocol"]["sha256"], executed["sha256"])
 
-    def test_current_v2_pilot_protocol_identity_is_unique_and_exact(self) -> None:
+    def test_current_v3_pilot_protocol_identity_is_unique_and_exact(self) -> None:
         script = """
 import json
 import sys
@@ -4254,9 +5286,9 @@ with tempfile.TemporaryDirectory(dir=runner.ROOT / 'sources/evaluations/protocol
     try:
         runner.validate_protocol_for_run(sequence, 'baseline-bare-codex', args)
     except ValueError as exc:
-        assert 'canonical_protocol_identity' in str(exc), exc
+        assert 'canonical_protocol_identity' in str(exc) or 'does not match run inputs' in str(exc), exc
     else:
-        raise AssertionError('arbitrarily renamed Baseline V2 protocol was accepted')
+        raise AssertionError('arbitrarily renamed Baseline V3 protocol was accepted')
 '''
         result = subprocess.run(
             [sys.executable, "-c", code],
@@ -4862,13 +5894,13 @@ with tempfile.TemporaryDirectory(dir=runner.ROOT / 'sources/evaluations/protocol
             self.assertIs(qualification_record["no_model_concealed_acceptance_assets"], True)
             self.assertEqual(
                 qualification_record["expected_model_visible_acceptance_asset_count"],
-                sum(len(validate_repository.BASELINE_V2_ACCEPTANCE_ASSET_PATHS[task["id"]]) for task in sequence["tasks"]),
+                sum(len(validate_repository.BASELINE_V3_ACCEPTANCE_ASSET_PATHS[task["id"]]) for task in sequence["tasks"]),
             )
             records = {record["task_id"]: record for record in qualification_record["tasks"]}
             for task in sequence["tasks"]:
                 task_dir = (ROOT / task["prompt_path"]).parent
                 controller_visible = task_dir / "controller-visible"
-                expected_paths = validate_repository.BASELINE_V2_ACCEPTANCE_ASSET_PATHS[task["id"]]
+                expected_paths = validate_repository.BASELINE_V3_ACCEPTANCE_ASSET_PATHS[task["id"]]
                 self.assertEqual(task["model_visible_acceptance_asset_paths"], expected_paths)
                 expected_assets = [
                     {
@@ -4880,7 +5912,7 @@ with tempfile.TemporaryDirectory(dir=runner.ROOT / 'sources/evaluations/protocol
                 ]
                 self.assertEqual(records[task["id"]]["model_visible_acceptance_asset_paths"], expected_paths)
                 self.assertEqual(records[task["id"]]["controller_visible_acceptance_assets"], expected_assets)
-        audit = json.loads((ROOT / "sources/evaluations/audits/baseline-v2-task-family-qualification-20260721.json").read_text())
+        audit = json.loads((ROOT / "sources/evaluations/audits/baseline-v3-task-family-qualification-20260722.json").read_text())
         expected_mistake_gate = {
             key: value
             for key, value in document["sequences"][0]["mistake_gate"].items()
@@ -4903,7 +5935,7 @@ with tempfile.TemporaryDirectory(dir=runner.ROOT / 'sources/evaluations/protocol
         document["sequences"][0]["tasks"][0]["model_visible_acceptance_asset_paths"] = []
         errors: list[str] = []
         validate_repository.validate_workflow_task_sequences(document, fixtures, errors)
-        self.assertTrue(any("exact file-backed Baseline V2 acceptance assets" in error for error in errors), errors)
+        self.assertTrue(any("exact file-backed Baseline V3 acceptance assets" in error for error in errors), errors)
 
     def test_repository_validator_rejects_noninteger_or_nonzero_v2_mistake_allowance(self) -> None:
         source_document = json.loads((ROOT / "data/workflow-task-sequences.json").read_text())

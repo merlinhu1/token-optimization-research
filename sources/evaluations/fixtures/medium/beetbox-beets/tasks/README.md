@@ -1,7 +1,7 @@
-# Beets lifecycle v0
+# Beets lifecycle v0 — active Baseline V3 tasks
 
-1. `beets-lifecycle-feature-v0` — implement list-valued modify operators.
-2. `beets-lifecycle-refactor-v0` — preserve lazy-model behavior while moving storage to `UserDict`.
-3. `beets-lifecycle-review-v0` — review and correct the supplied `ftintitle` metadata-hook change.
+1. `beets-lifecycle-feature-v0` — restore escaped separators in function-template arguments.
+2. `beets-lifecycle-refactor-v0` — remove one unnecessary generator layer from `LazyDict` iteration.
+3. `beets-lifecycle-review-v0` — restore the restricted explicit featuring-token set.
 
-The controller applies all three start patches before prompt 1 and runs all concealed verifiers after prompt 3.
+The active model-facing contracts are under `task-generations/baseline-v3/`. The controller applies all three start patches before prompt 1 and runs all verifiers after prompt 3.

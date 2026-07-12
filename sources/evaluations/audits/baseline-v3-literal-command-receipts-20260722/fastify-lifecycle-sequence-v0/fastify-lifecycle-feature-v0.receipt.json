@@ -1,0 +1,52 @@
+{
+  "schema_version": 1,
+  "evidence_classification": "provider-free-production-container-rehearsal",
+  "date": "2026-07-22",
+  "sequence_id": "fastify-lifecycle-sequence-v0",
+  "task_id": "fastify-lifecycle-feature-v0",
+  "task_order": 1,
+  "fixture_commit": "94bcbcc6e2ef3b8e8f8e8797fe551ccbe7b942fd",
+  "dependency_lockfiles": [
+    {
+      "path": "package.json",
+      "sha256": "b273320af1bb4cfc0f9334457c8e3b1d035fde0da14f9db65e8ef97d361d0be3"
+    }
+  ],
+  "container": {
+    "image_ref": "token-eval-codex:latest",
+    "image_id": "sha256:6f86d01f2c63f5029c6bb874d8f3694c24d5cd567e3d09413eccc956ba3feafe",
+    "repo_digest": "token-eval-codex@sha256:6f86d01f2c63f5029c6bb874d8f3694c24d5cd567e3d09413eccc956ba3feafe"
+  },
+  "production_bootstrap": {
+    "shell": [
+      "bash",
+      "-c"
+    ],
+    "command": "npm install --ignore-scripts --no-audit --no-fund",
+    "path_prefix": "/opt/data/bin:/opt/data/opt/go/bin",
+    "exit_code": 0,
+    "log_path": "sources/evaluations/audits/baseline-v3-literal-command-receipts-20260722/fastify-lifecycle-sequence-v0/setup-deps-output.txt",
+    "log_sha256": "4956e00aca46c3e977cee8cd25f750b06a77213e0d699dffd366f788d8b43209"
+  },
+  "literal_command": {
+    "prompt_path": "sources/evaluations/fixtures/medium/fastify-fastify/task-generations/baseline-v3/fastify-lifecycle-feature-v0/agent-prompt.txt",
+    "prompt_sha256": "dcd5fddb44230d293297438d44ca8b97588ec2bdaaf3a68bd3af2804295da4ea",
+    "command_block": "python3 - <<'PY'\nfrom pathlib import Path\np = Path(\"lib/request.js\")\ns = p.read_text()\nanchor = \"  getValidationFunction: {\"\ninsert = \"\"\"  mediaType: {\n    get () {\n      if (!this[kRequestContentType] && this.headers['content-type'] !== undefined) {\n        this[kRequestContentType] = ContentType.from(this.headers['content-type'])\n      }\n      return this[kRequestContentType]?.mediaType\n    }\n  },\n\"\"\"\nassert s.count(anchor) == 1\np.write_text(s.replace(anchor, insert + anchor))\nPY\nnode --test test/baseline-v3-request-media-type.test.js",
+    "command_sha256": "b715df79c6f82d9d499846a87fdd417ae91718a340be91fdd4d7f0124d1ff034",
+    "exit_code": 0,
+    "log_path": "sources/evaluations/audits/baseline-v3-literal-command-receipts-20260722/fastify-lifecycle-sequence-v0/fastify-lifecycle-feature-v0.command.log",
+    "log_sha256": "53f7b43f1cbcec23de0906671402a16e40b3424771c4b0581b06d1cf90d2b0a4",
+    "selected_test_names": []
+  },
+  "controller_verifier": {
+    "path": "sources/evaluations/fixtures/medium/fastify-fastify/task-generations/baseline-v3/fastify-lifecycle-feature-v0/verify.sh",
+    "sha256": "4d8b6c227dd364dfe0a8aee21cef3027c57ca5a312a51e2846df9b09627c8f67",
+    "exit_code": 0,
+    "log_path": "sources/evaluations/audits/baseline-v3-literal-command-receipts-20260722/fastify-lifecycle-sequence-v0/fastify-lifecycle-feature-v0.verifier.log",
+    "log_sha256": "2f0537b066a81b889cbb38c6189b85455eeb1cc1c5ef45cca4022dd7dcf87eca"
+  },
+  "persistent_cumulative_workflow": true,
+  "provider_calls": 0,
+  "provider_tokens": 0,
+  "passed": true
+}

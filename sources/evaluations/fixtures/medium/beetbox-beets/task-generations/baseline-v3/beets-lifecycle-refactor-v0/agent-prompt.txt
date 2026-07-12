@@ -1,0 +1,27 @@
+Baseline V3 mechanical refactor — remove one unnecessary generator layer. Do not discover or redesign anything.
+
+## Implementation recipe
+
+Only `beets/dbcore/db.py` may change. Copy and run this command exactly:
+
+```bash
+python3 - <<'PY'
+from pathlib import Path
+p = Path("beets/dbcore/db.py")
+s = p.read_text()
+old = "        return (key for key in self._all_keys)\n"
+new = "        return iter(self._all_keys)\n"
+assert s.count(old) == 1
+p.write_text(s.replace(old, new))
+PY
+uv run --offline --frozen python -c "from beets.dbcore.db import LazyDict; value=LazyDict({'a': 1}, lambda k,v:v); assert list(value)==['a']; assert type(iter(value)).__name__ == 'set_iterator'"
+uv run --offline --frozen ruff format --check beets/dbcore/db.py
+```
+
+## Validation recipe
+
+The command block above runs the complete focused validation.
+
+## Stop condition
+
+Do not inspect, search, modify tests, run anything else, or evaluate aggregate Git state. Run the command block exactly once and stop immediately when it exits 0. Earlier task edits intentionally remain in the persistent checkout.

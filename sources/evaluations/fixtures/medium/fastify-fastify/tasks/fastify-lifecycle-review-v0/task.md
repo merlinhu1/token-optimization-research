@@ -1,5 +1,3 @@
-# Review onMaxParamLength behavior
+# Correct `onMaxParamLength` behavior
 
-Review the supplied flawed status-code change and correct it.
-
-Use `agent-prompt.txt` for the complete model-facing contract. Acceptance is controller-only.
+Review and mechanically correct the Baseline V3 status-code change. The complete active prompt and focused acceptance command are in `task-generations/baseline-v3/fastify-lifecycle-review-v0/`.

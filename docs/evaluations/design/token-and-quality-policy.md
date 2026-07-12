@@ -49,7 +49,7 @@ A positive artifact reduction ratio is not sufficient for a positive workflow re
 
 ## Structured task outcomes
 
-Every controller verifier runs against the final cumulative repository, regardless of earlier failures. Baseline V2 keeps its complete focused acceptance assertions model-visible and checks candidate copies against integrity-bound canonical bytes; earlier generations may use concealed assertions. Record for each task:
+Every controller verifier runs against the final cumulative repository, regardless of earlier failures. The historical Baseline V2 and active Baseline V3 zero-mistake generations keep their complete focused acceptance assertions model-visible and check candidate copies against integrity-bound canonical bytes; earlier generations may use concealed assertions. Record for each task:
 
 - `task_id` and `order`;
 - agent operational exit and declared-completion state;

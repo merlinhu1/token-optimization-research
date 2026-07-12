@@ -1,0 +1,28 @@
+Baseline V3 mechanical refactor — restore the named provider requirements type. Do not discover or redesign anything.
+
+## Implementation recipe
+
+Only `internal/configs/state_migrate_file.go` may change. The complete visible acceptance assets are `internal/configs/parser_config_dir_test.go` and `internal/configs/baseline_v3_requirement_type_test.go`. Copy and run this command exactly:
+
+```bash
+export PATH=/opt/data/bin:/opt/data/opt/go/bin:$PATH
+python3 - <<'PY'
+from pathlib import Path
+p = Path("internal/configs/state_migrate_file.go")
+s = p.read_text()
+old = "\tRequirement map[addrs.Provider]providerreqs.VersionConstraints\n"
+new = "\tRequirement providerreqs.Requirements\n"
+assert s.count(old) == 1
+p.write_text(s.replace(old, new))
+PY
+gofmt -w internal/configs/state_migrate_file.go
+go test ./internal/configs -run '^(TestParserLoadConfigDirWithStateMigrations_from_state_store|TestBaselineV3StateStoreRequirementNamedType)$'
+```
+
+## Validation recipe
+
+The command block above runs the complete focused validation for `StateStoreProviderRequirement`.
+
+## Stop condition
+
+Do not inspect, search, modify tests, run anything else, or evaluate aggregate Git state. Run the command block exactly once and stop immediately when it exits 0. Earlier task edits intentionally remain in the persistent checkout.
