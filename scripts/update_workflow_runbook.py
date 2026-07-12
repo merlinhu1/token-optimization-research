@@ -137,8 +137,16 @@ def render() -> str:
         if profile.get("status") == "screening-shortlist"
     )
     runnable_profile_text = ", ".join(f"`{profile_id}`" for profile_id in runnable_profiles) or "_None_"
-    current_default_pool_fingerprints = {
-        sequence["id"]: workflow.baseline_protocol_fingerprint(sequence)
+    current_default_pool_fingerprints = {}
+    for sequence in sequences:
+        gate = sequence.get("mistake_gate")
+        if sequence.get("task_family_generation") in {"baseline-v2", "baseline-v3"} and isinstance(gate, dict):
+            current_protocol, _document = workflow.current_baseline_v2_protocol(sequence, gate, ROOT)
+            current_default_pool_fingerprints[sequence["id"]] = current_protocol["baseline_pool_fingerprint"]
+        else:
+            current_default_pool_fingerprints[sequence["id"]] = workflow.baseline_protocol_fingerprint(sequence)
+    current_baseline_condition_ids = {
+        sequence["id"]: str(sequence.get("mistake_gate", {}).get("designated_model_condition") or active_default_condition_id)
         for sequence in sequences
     }
     reusable_baseline_replicates: dict[str, list[int]] = {}
@@ -159,7 +167,7 @@ def render() -> str:
             and session.get("interpretation", {}).get("accepted_for_objective") is True
         ):
             if (
-                condition_id == active_default_condition_id
+                condition_id == current_baseline_condition_ids.get(sequence_id)
                 and pool_fingerprint == current_default_pool_fingerprints.get(sequence_id)
             ):
                 reusable_baseline_replicates.setdefault(sequence_id, []).append(replicate_index)
@@ -199,7 +207,7 @@ def render() -> str:
                 + (
                     ". Only an unoccupied designated baseline pilot identity may run before its independent zero-incident audit passes."
                     if any_pilot_allowed
-                    else ". The designated pilot identities are occupied by immutable attempt evidence or a completed audit. No baseline rerun or treatment may run while the attempt awaits independent classification; a failed classification requires a simpler generation and new audit identities."
+                    else ". The designated pilot identities are occupied by immutable attempt evidence and their completed audits. Failed classifications are permanent for this generation; correcting a lane requires a new generation and new identities."
                 )
             )
         if pending_baselines:
@@ -231,13 +239,19 @@ def render() -> str:
                     f"`{sequence['id']}` ({', '.join(f'r{index}' for index in sorted(set(reusable_baseline_replicates[sequence['id']])))})"
                     for sequence, _reason in unlocked_baselines
                 )
+                freeze_blocks = []
+                for sequence, _reason in unlocked_baselines:
+                    flags = sequence_model_flags(sequence)
+                    freeze_blocks.append(
+                        f"SEQUENCE_ID={sequence['id']}\n"
+                        "PROFILE_ID=replace-with-compatible-profile-id\n"
+                        f"python3 scripts/refresh_workflow_contracts.py --sequence-id \"$SEQUENCE_ID\" --profile-id \"$PROFILE_ID\" {flags}\n"
+                        "python3 scripts/validate_repository.py\n"
+                        f"python3 scripts/run_sequential_workflow_matrix.py \"$SEQUENCE_ID\" --treatment-profile \"$PROFILE_ID\" {flags} --dry-run"
+                    )
                 chunks.append(
-                    f"Reusable, zero-incident-audited baselines exist for {retained_ids}. Choose one compatible treatment profile and one intended lane:\n\n"
-                    "```bash\n"
-                    "SEQUENCE_ID=replace-with-one-active-sequence-id\n"
-                    "PROFILE_ID=replace-with-compatible-profile-id\n"
-                    "python3 scripts/run_sequential_workflow_matrix.py \"$SEQUENCE_ID\" --treatment-profile \"$PROFILE_ID\"\n"
-                    "```"
+                    f"Reusable, zero-incident-audited baselines exist for {retained_ids}. No current treatment protocol is frozen, so no paid treatment command is published. Choose one compatible profile, freeze and validate its protocol provider-free, certify the resulting exact tree, and then execute the rendered dry-run verbatim before requesting paid execution:\n\n"
+                    f"```bash\n{'\n\n'.join(freeze_blocks)}\n```"
                 )
         if historical_default_baseline_replicates:
             historical_ids = ", ".join(
