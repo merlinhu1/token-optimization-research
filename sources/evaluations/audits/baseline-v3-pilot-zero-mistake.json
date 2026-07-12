@@ -1,0 +1,231 @@
+{
+  "schema_version": 1,
+  "task_family_generation": "baseline-v3",
+  "status": "partially-passed-fastify-only-zero-incident",
+  "passed": false,
+  "matrix_id": "workflow-matrix-20260722T214451970568Z-p2803024-r0",
+  "source_commit": "b10a82dfd0bac7fa476b5d690177b93e312cefa8",
+  "source_tree": "f0bc43e076f52a278613b409140d95e22ef7a38f",
+  "started_by_explicit_authorization": true,
+  "provider_backed": true,
+  "publication_status": "three-first-valid-compact-sessions-recovered-after-post-publication-contract-fix",
+  "rerun_allowed": false,
+  "rerun_policy": "All three paid identities are occupied. Do not rerun for a favorable verifier or audit outcome. Any verifier-wrapper correction requires a new task-family generation, frozen protocols, provider-free qualification, and explicit authorization.",
+  "treatment_gate": {
+    "fastify-lifecycle-sequence-v0": "passed-zero-incident",
+    "beets-lifecycle-sequence-v0": "blocked-one-controller-environment-incident",
+    "terraform-lifecycle-sequence-v0": "blocked-one-controller-environment-incident"
+  },
+  "sequences": [
+    {
+      "sequence_id": "fastify-lifecycle-sequence-v0",
+      "baseline_session_id": "baseline-fastify-20260722-p-bb0e89ed9794-r0",
+      "passed": true,
+      "trajectory_review_complete": true,
+      "independent_source_review_passed": true,
+      "reviewer_role": "independent",
+      "model_condition": {
+        "id": "codex-openai-gpt-5-6-sol-high",
+        "model": "gpt-5.6-sol",
+        "reasoning_effort": "high"
+      },
+      "codex_exit_codes": [
+        0,
+        0,
+        0
+      ],
+      "thread_continuity_errors": [],
+      "verifier_integrity_passed": true,
+      "tool_isolation_audit_exit_code": 0,
+      "final_verifier_exit_code": 0,
+      "per_task_verifier_exit_codes": [
+        0,
+        0,
+        0
+      ],
+      "provider_usage": {
+        "measurement_source": "codex-jsonl-usage-events",
+        "fresh_input_tokens": 10315,
+        "cached_input_tokens": 65024,
+        "cache_write_tokens": 0,
+        "output_tokens": 1284,
+        "reasoning_tokens": 0,
+        "total_provider_tokens": 76623,
+        "tokens_per_accepted_task": 25541.0,
+        "accounting_basis": "Codex-reported token volume; monetary cost estimation is out of scope"
+      },
+      "observed_unique_model_caused_incidents": 0,
+      "observed_corrected_implementation_mistakes": 0,
+      "observed_unresolved_defects": 0,
+      "observed_prohibited_operations": 0,
+      "observed_unnecessary_exploration_incidents": 0,
+      "observed_model_caused_failed_commands": 0,
+      "observed_code_rework_events": 0,
+      "observed_verifier_or_environment_failures": 0,
+      "frozen_protocol": {
+        "protocol_id": "fastify-lifecycle-sequence-v0-baseline-bare-codex-5bd0be12f9f5",
+        "path": "sources/evaluations/protocols/fastify-lifecycle-sequence-v0-baseline-bare-codex-5bd0be12f9f5.json",
+        "sha256": "c11710aeda868a697a75fa75c45209641ec4ac2c30fc3fd5abea8a2add22b0b0"
+      },
+      "qualification_sha256": "82bcabb399b9e7af4234b8ba4a8c12352dc4584cb838ae01bd0854b83c9d0ba1",
+      "baseline_pool_fingerprint": "bb0e89ed9794",
+      "operational_classification": "accepted-first-valid-provider-sample",
+      "independent_review_path": "sources/evaluations/audits/baseline-v3-pilot-20260722/independent-fastify-lifecycle-sequence-v0-review.txt",
+      "findings": [
+        "all three model commands exited zero and the cumulative diff matches the prescribed mechanical edits"
+      ]
+    },
+    {
+      "sequence_id": "beets-lifecycle-sequence-v0",
+      "baseline_session_id": "baseline-beets-20260722-p-82943cffbb9a-r0",
+      "passed": false,
+      "trajectory_review_complete": true,
+      "independent_source_review_passed": true,
+      "reviewer_role": "independent",
+      "model_condition": {
+        "id": "codex-openai-gpt-5-6-sol-high",
+        "model": "gpt-5.6-sol",
+        "reasoning_effort": "high"
+      },
+      "codex_exit_codes": [
+        0,
+        0,
+        0
+      ],
+      "thread_continuity_errors": [],
+      "verifier_integrity_passed": true,
+      "tool_isolation_audit_exit_code": 0,
+      "final_verifier_exit_code": 1,
+      "per_task_verifier_exit_codes": [
+        1,
+        1,
+        1
+      ],
+      "provider_usage": {
+        "measurement_source": "codex-jsonl-usage-events",
+        "fresh_input_tokens": 18560,
+        "cached_input_tokens": 54016,
+        "cache_write_tokens": 0,
+        "output_tokens": 1008,
+        "reasoning_tokens": 0,
+        "total_provider_tokens": 73584,
+        "tokens_per_accepted_task": null,
+        "accounting_basis": "Codex-reported token volume; monetary cost estimation is out of scope"
+      },
+      "observed_unique_model_caused_incidents": 0,
+      "observed_corrected_implementation_mistakes": 0,
+      "observed_unresolved_defects": 0,
+      "observed_prohibited_operations": 0,
+      "observed_unnecessary_exploration_incidents": 0,
+      "observed_model_caused_failed_commands": 0,
+      "observed_code_rework_events": 0,
+      "observed_verifier_or_environment_failures": 1,
+      "frozen_protocol": {
+        "protocol_id": "beets-lifecycle-sequence-v0-baseline-bare-codex-78c2e1f5c002",
+        "path": "sources/evaluations/protocols/beets-lifecycle-sequence-v0-baseline-bare-codex-78c2e1f5c002.json",
+        "sha256": "45336422c8bada67848966b079daf6bd70da6ba8aefa55ab465435bdcebd11d7"
+      },
+      "qualification_sha256": "2fe2688b0d2d5c4030e34cfdf4ef09508dd2f4f34c6efc07bcf9092550dfca06",
+      "baseline_pool_fingerprint": "82943cffbb9a",
+      "operational_classification": "accepted-token-sample-zero-incident-gate-failed-controller-environment",
+      "independent_review_path": "sources/evaluations/audits/baseline-v3-pilot-20260722/independent-beets-lifecycle-sequence-v0-review.txt",
+      "findings": [
+        "all three model commands exited zero and the cumulative diff matches the prescribed mechanical edits",
+        "one unique final-verifier environment failure: aggregate wrapper omitted WORKFLOW_REPO, so all three repeated task verifiers exited before acceptance execution"
+      ]
+    },
+    {
+      "sequence_id": "terraform-lifecycle-sequence-v0",
+      "baseline_session_id": "baseline-terraform-20260722-p-5caa11b3fa2b-r0",
+      "passed": false,
+      "trajectory_review_complete": true,
+      "independent_source_review_passed": true,
+      "reviewer_role": "independent",
+      "model_condition": {
+        "id": "codex-openai-gpt-5-6-sol-high",
+        "model": "gpt-5.6-sol",
+        "reasoning_effort": "high"
+      },
+      "codex_exit_codes": [
+        0,
+        0,
+        0
+      ],
+      "thread_continuity_errors": [],
+      "verifier_integrity_passed": true,
+      "tool_isolation_audit_exit_code": 0,
+      "final_verifier_exit_code": 1,
+      "per_task_verifier_exit_codes": [
+        1,
+        1,
+        1
+      ],
+      "provider_usage": {
+        "measurement_source": "codex-jsonl-usage-events",
+        "fresh_input_tokens": 20872,
+        "cached_input_tokens": 64000,
+        "cache_write_tokens": 0,
+        "output_tokens": 1072,
+        "reasoning_tokens": 17,
+        "total_provider_tokens": 85944,
+        "tokens_per_accepted_task": null,
+        "accounting_basis": "Codex-reported token volume; monetary cost estimation is out of scope"
+      },
+      "observed_unique_model_caused_incidents": 0,
+      "observed_corrected_implementation_mistakes": 0,
+      "observed_unresolved_defects": 0,
+      "observed_prohibited_operations": 0,
+      "observed_unnecessary_exploration_incidents": 0,
+      "observed_model_caused_failed_commands": 0,
+      "observed_code_rework_events": 0,
+      "observed_verifier_or_environment_failures": 1,
+      "frozen_protocol": {
+        "protocol_id": "terraform-lifecycle-sequence-v0-baseline-bare-codex-702e684aebaa",
+        "path": "sources/evaluations/protocols/terraform-lifecycle-sequence-v0-baseline-bare-codex-702e684aebaa.json",
+        "sha256": "cb8d78120fc11a301d40f07303167ef30f212d5351993208703fa6d9ee645f28"
+      },
+      "qualification_sha256": "adcb5d10d1f9f26e4a7fa3b3f5736fdfd67bc72753e593d58750520d136dfa29",
+      "baseline_pool_fingerprint": "5caa11b3fa2b",
+      "operational_classification": "accepted-token-sample-zero-incident-gate-failed-controller-environment",
+      "independent_review_path": "sources/evaluations/audits/baseline-v3-pilot-20260722/independent-terraform-lifecycle-sequence-v0-review.txt",
+      "findings": [
+        "all three model commands exited zero and the cumulative diff matches the prescribed mechanical edits",
+        "one unique final-verifier environment failure: aggregate wrapper omitted WORKFLOW_REPO, so all three repeated task verifiers exited before acceptance execution"
+      ]
+    }
+  ],
+  "totals": {
+    "provider_tokens": 236151,
+    "model_commands_attempted": 9,
+    "model_commands_exit_zero": 9,
+    "model_side_focused_checks_passed": 9,
+    "repeated_final_task_verifiers_passed": 3,
+    "repeated_final_task_verifiers_total": 9,
+    "retained_sessions": 3
+  },
+  "known_controller_failures": [
+    "Beets and Terraform final task verifiers require WORKFLOW_REPO, but the frozen aggregate verifier wrapper did not export it; this is one unique environment incident in each affected lane.",
+    "The initial post-publication contract suite had two stale assumptions: treatment command visibility depended only on baseline presence, and a historical cumulative-accounting correction audit was required to cover future sessions. Both assertions were corrected before no-provider recovery publication."
+  ],
+  "initial_matrix_validation": {
+    "passed": false,
+    "repository_validation_exit_code": 0,
+    "contract_suite_exit_code": 1,
+    "diff_check_exit_code": 0,
+    "truthmark_check_exit_code": 0,
+    "truthmark_index_exit_code": 0,
+    "registry_rolled_back": true
+  },
+  "recovery_validation": {
+    "provider_rerun": false,
+    "sessions_recovered_from_original_compact_bundles": true,
+    "contract_tests": 225,
+    "contract_tests_passed": 225,
+    "repository_validation_passed": true,
+    "runbook_freshness_passed": true,
+    "truthmark_check_passed": true,
+    "truthmark_index_passed": true
+  },
+  "preserved_matrix_evidence_manifest": "sources/evaluations/audits/baseline-v3-pilot-20260722/manifest.json",
+  "notes": "Verifier outcomes remain diagnostic for provider-token eligibility. The stricter zero-incident treatment gate is sequence-specific: Fastify passed; Beets and Terraform did not."
+}
