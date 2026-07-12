@@ -1936,7 +1936,6 @@ def run_one(args: argparse.Namespace) -> dict[str, Any]:
             return finalize_failed_attempt({"session_id": session_id, "profile_id": profile_id, "accepted": False, "stage": "container-preflight", "run_dir": rel(run_dir), "container_preflight": container_preflight}, record, run_dir)
     if not args.skip_codex_preflight:
         preflight = fixture.preflight_codex(record, codex_home, profile_id, run_dir, backend="docker", docker_image=args.docker_image)
-        sync_copied_codex_auth_back(codex_home, args.source_codex_home, run_dir, "after-preflight")
         redact_auth_sync(run_dir)
         if not preflight.get("passed"):
             return finalize_failed_attempt({"session_id": session_id, "profile_id": profile_id, "accepted": False, "stage": "codex-preflight", "run_dir": rel(run_dir), "preflight": preflight}, record, run_dir)
@@ -1997,12 +1996,12 @@ def run_one(args: argparse.Namespace) -> dict[str, Any]:
                 (run_dir / f"seed-task-{order:02d}-transition-error.txt").write_text(str(exc) + "\n")
                 break
         prompt_path = prompt_dir / f"task-{order:02d}.md"
+        prompt_path.parent.mkdir(parents=True, exist_ok=True)
         prompt_path.write_text(task_prompt(seq, profile_id, run_dir, order, first_task=order == 1))
         events_path = run_dir / f"task-{order:02d}-codex-events.jsonl"
         last_message_path = model_output_dir / f"task-{order:02d}-codex-last-message.txt"
         code, thread_id = run_codex_task(record, profile_id, codex_home, run_dir, args.docker_image, prompt_path, events_path, last_message_path, timeout=args.timeout_per_task, thread_id=thread_id)
         codex_exit_codes.append(code)
-        sync_copied_codex_auth_back(codex_home, args.source_codex_home, run_dir, f"after-task-{order:02d}")
         redact_auth_sync(run_dir)
         capture_task_delta(project / "repo", run_dir, order)
         integrity = {"stage": f"after-task-{order:02d}", **check_verifier_integrity(expected_verifier_hashes)}
