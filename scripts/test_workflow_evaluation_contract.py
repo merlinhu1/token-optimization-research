@@ -104,6 +104,78 @@ class VerifierContractTest(unittest.TestCase):
         self.assertTrue(runner.task_checkpoint_allows_continue(codex_exit_code=0, thread_id="thread", verifier_integrity_passed=True))
         self.assertFalse(runner.task_checkpoint_allows_continue(codex_exit_code=1, thread_id="thread", verifier_integrity_passed=True))
 
+    def test_known_malformed_tool_call_is_retryable_once_with_a_thread(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            events = Path(tmp) / "events.jsonl"
+            events.write_text("\n".join([
+                json.dumps({"type": "thread.started", "thread_id": "thread-1"}),
+                json.dumps({"type": "turn.failed", "error": {"message": "failed to parse function arguments: EOF while parsing an object at line 3 column 30072"}}),
+            ]) + "\n")
+            self.assertEqual(runner.extract_thread_id(events), "thread-1")
+            self.assertTrue(runner.retryable_codex_operational_failure(events))
+
+    def test_ordinary_task_failure_is_not_an_operational_retry(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            events = Path(tmp) / "events.jsonl"
+            events.write_text(json.dumps({"type": "turn.failed", "error": {"message": "task failed"}}) + "\n")
+            self.assertFalse(runner.retryable_codex_operational_failure(events))
+
+    def test_codex_task_resumes_once_after_malformed_tool_call(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            prompt = root / "task-01.md"
+            prompt.write_text("Repair the task.\n")
+            events = root / "task-01-codex-events.jsonl"
+            calls = 0
+            timeouts: list[int] = []
+
+            def fake_backend(*args: object, **kwargs: object) -> mock.Mock:
+                nonlocal calls
+                calls += 1
+                attempt_timeout = kwargs["timeout"]
+                self.assertIsInstance(attempt_timeout, int)
+                timeouts.append(attempt_timeout)  # type: ignore[arg-type]
+                output = Path(str(kwargs["stdout_path"]))
+                if calls == 1:
+                    output.write_text("\n".join([
+                        json.dumps({"type": "thread.started", "thread_id": "thread-1"}),
+                        json.dumps({"type": "turn.failed", "usage": {"input_tokens": 2}, "error": {"message": "failed to parse function arguments: EOF while parsing an object"}}),
+                    ]) + "\n")
+                    return mock.Mock(returncode=1)
+                output.write_text(json.dumps({"type": "turn.completed", "usage": {"input_tokens": 1}}) + "\n")
+                return mock.Mock(returncode=0)
+
+            patches = [
+                mock.patch.object(runner.fixture, "active_tool_config", return_value=None),
+                mock.patch.object(runner.fixture, "codex_env", return_value={}),
+                mock.patch.object(runner.fixture, "tool_env_for_record", return_value={}),
+                mock.patch.object(runner.fixture, "codex_model_args", return_value=[]),
+                mock.patch.object(runner, "model_mounts_for_record", return_value=[]),
+                mock.patch.object(runner.fixture, "run_backend", side_effect=fake_backend),
+                mock.patch.object(runner.time, "monotonic", side_effect=[0, 50]),
+            ]
+            with patches[0], patches[1], patches[2], patches[3], patches[4], patches[5], patches[6]:
+                code, thread = runner.run_codex_task(
+                    {"target": {"repository_path": "."}},
+                    "baseline-bare-codex",
+                    root / "codex-home",
+                    root,
+                    "image",
+                    prompt,
+                    events,
+                    root / "last-message.txt",
+                    timeout=60,
+                    thread_id=None,
+                )
+            self.assertEqual((code, thread, calls), (0, "thread-1", 2))
+            self.assertEqual(timeouts, [60, 10])
+            self.assertIn("turn.failed", events.read_text())
+            self.assertIn("turn.completed", events.read_text())
+            combined_events = [json.loads(line) for line in events.read_text().splitlines()]
+            usage_blocks = runner.extract_codex_usage.usage_blocks(combined_events)
+            self.assertEqual([block["usage"]["input_tokens"] for block in usage_blocks], [2, 1])
+            self.assertTrue((root / "task-01-operational-retry-01.md").is_file())
+
     def test_task_prompts_never_claim_per_task_verification_or_seed_injection(self) -> None:
         sequence = {"id": "unit", "tasks": [{"id": "first", "order": 1}, {"id": "second", "order": 2}]}
         with tempfile.TemporaryDirectory() as tmp:
@@ -117,6 +189,45 @@ class VerifierContractTest(unittest.TestCase):
         self.assertIn("concealed verification only after the final task prompt", prompt)
         for retired in ("previous task verifier passed", "injected only the current regression", "until this verifier passes"):
             self.assertNotIn(retired, prompt.lower())
+
+    def test_generated_prompts_require_cumulative_validation(self) -> None:
+        sequence = {"id": "unit", "tasks": [{"id": "first", "order": 1}, {"id": "second", "order": 2}]}
+        with tempfile.TemporaryDirectory() as tmp:
+            project = Path(tmp)
+            for order in (1, 2):
+                task_dir = runner.task_dir(project, order)
+                task_dir.mkdir(parents=True)
+                (task_dir / "agent-prompt.txt").write_text("Ticket text\n")
+            prompt = runner.task_prompt(sequence, "baseline-bare-codex", project, 2, first_task=False)
+        self.assertIn("Preserve all previously repaired behavior", prompt)
+        self.assertIn("Do not stop after syntax checks", prompt)
+
+    def test_active_prompts_name_acceptance_critical_public_contracts(self) -> None:
+        cases = {
+            "sources/evaluations/fixtures/medium/fastify-fastify/tasks/fastify-request-media-type-regression/agent-prompt.txt": ["request.mediaType"],
+            "sources/evaluations/fixtures/medium/fastify-fastify/tasks/fastify-log-controller-regression/agent-prompt.txt": ["Fastify.LogController", "FST_ERR_LOG_INVALID_LOG_CONTROLLER"],
+            "sources/evaluations/fixtures/medium/beetbox-beets/tasks/beets-multivalue-metadata-regression/agent-prompt.txt": ["genre", "genres", "uv run"],
+            "sources/evaluations/fixtures/medium/beetbox-beets/tasks/beets-tidal-metadata-sync-regression/agent-prompt.txt": ["REIMPORT_FRESH_FIELDS_ITEM", "before plugin instantiation", "uv run"],
+        }
+        for path, required in cases.items():
+            prompt = (ROOT / path).read_text()
+            for text in required:
+                self.assertIn(text, prompt, path)
+
+    def test_all_active_prompts_explain_validation_without_inaccessible_verifier_claims(self) -> None:
+        for sequence_id in runner.active_sequence_ids():
+            for task in runner.load_sequence(sequence_id)["tasks"]:
+                prompt = (ROOT / task["prompt_path"]).read_text()
+                self.assertIn("Validation is part of the repair", prompt, task["id"])
+                self.assertNotIn("Use the fixture verifier", prompt, task["id"])
+                self.assertNotIn("seeded with the regression", prompt, task["id"])
+
+    def test_acceptance_avoids_internal_cleanup_and_cache_identity_requirements(self) -> None:
+        timeout_verifier = (ROOT / "sources/evaluations/fixtures/medium/fastify-fastify/tasks/fastify-handler-timeout-regression/verify.sh").read_text()
+        content_type_verifier = (ROOT / "sources/evaluations/fixtures/medium/fastify-fastify/tasks/fastify-content-type-semantics-regression/verify.sh").read_text()
+        self.assertNotIn("kTimeoutTimer", timeout_verifier)
+        self.assertNotIn("kOnAbort", timeout_verifier)
+        self.assertNotIn("ContentType.from('Application/JSON; Charset=UTF-8'), ContentType.from", content_type_verifier)
 
     def test_schema_discriminates_warm_and_legacy_protocols(self) -> None:
         schema = json.loads((ROOT / "schemas/workflow-session-record.schema.json").read_text())
@@ -260,9 +371,21 @@ class ManifestAndProtocolContractTest(unittest.TestCase):
             validate_repository.validate_compact_manifest(root, "test", errors)
         self.assertTrue(any("manifest" in error for error in errors))
 
+    def test_active_default_is_gpt_5_6_terra_medium(self) -> None:
+        self.assertEqual(runner.DEFAULT_WORKFLOW_MODEL_CONDITION_ID, "codex-openai-gpt-5-6-terra-medium")
+        self.assertEqual(runner.DEFAULT_WORKFLOW_MODEL, "gpt-5.6-terra")
+        self.assertEqual(runner.DEFAULT_WORKFLOW_REASONING_EFFORT, "medium")
+        registry = json.loads((ROOT / "data/evaluation-agent-runtimes.json").read_text())
+        active = [item for item in registry["model_conditions"] if item["status"] == "active-default"]
+        self.assertEqual([item["id"] for item in active], ["codex-openai-gpt-5-6-terra-medium"])
+
+    def test_active_sequences_bind_composite_v3_qualifications(self) -> None:
+        for sequence_id in runner.active_sequence_ids():
+            self.assertTrue(runner.load_sequence(sequence_id)["qualification_path"].endswith("qualification-composite-v3.json"))
+
     def test_current_protocol_fingerprint_matches_runner(self) -> None:
         seq = runner.load_sequence(SEQUENCE_ID)
-        protocol = json.loads((ROOT / "sources/evaluations/protocols/fastify-production-gpt-5.3-codex-spark-medium-v4.json").read_text())
+        protocol = json.loads((ROOT / "sources/evaluations/protocols/fastify-production-gpt-5.6-terra-medium-v5.json").read_text())
         expected = runner.baseline_protocol_fingerprint(seq)
         self.assertEqual(protocol["baseline_pool"]["protocol_fingerprint"], expected)
         self.assertEqual(protocol["baseline_pool"]["descriptor"], runner.baseline_protocol_descriptor(seq))
@@ -282,7 +405,7 @@ class ManifestAndProtocolContractTest(unittest.TestCase):
     def test_protocol_timeout_mismatch_rejects(self) -> None:
         seq = runner.load_sequence(SEQUENCE_ID)
         args = mock.Mock(
-            protocol="sources/evaluations/protocols/fastify-production-gpt-5.3-codex-spark-medium-v4.json",
+            protocol="sources/evaluations/protocols/fastify-production-gpt-5.6-terra-medium-v5.json",
             prepare_only=False,
             no_provider=False,
             timeout_per_task=1,
@@ -294,7 +417,7 @@ class ManifestAndProtocolContractTest(unittest.TestCase):
     def test_protocol_docker_image_mismatch_rejects(self) -> None:
         seq = runner.load_sequence(SEQUENCE_ID)
         args = mock.Mock(
-            protocol="sources/evaluations/protocols/fastify-production-gpt-5.3-codex-spark-medium-v4.json",
+            protocol="sources/evaluations/protocols/fastify-production-gpt-5.6-terra-medium-v5.json",
             prepare_only=True,
             no_provider=True,
             timeout_per_task=3600,
@@ -306,7 +429,7 @@ class ManifestAndProtocolContractTest(unittest.TestCase):
     def test_baseline_protocol_cannot_validate_treatment(self) -> None:
         seq = runner.load_sequence(SEQUENCE_ID)
         args = mock.Mock(
-            protocol="sources/evaluations/protocols/fastify-production-gpt-5.3-codex-spark-medium-v4.json",
+            protocol="sources/evaluations/protocols/fastify-production-gpt-5.6-terra-medium-v5.json",
             prepare_only=True,
             no_provider=True,
             timeout_per_task=3600,
