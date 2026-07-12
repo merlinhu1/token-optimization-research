@@ -98,7 +98,7 @@ sources/evaluations/workflow-sessions/<session-id>/
 
 ## Activation sequence
 
-Provider-backed execution requires an active sequence and a frozen protocol. Fastify now satisfies the readiness gate, but fixture qualification and prepare-only validation do not themselves authorize or constitute a paid run.
+Provider-backed execution requires an active sequence and a frozen protocol. Fastify, Terraform, and Beets satisfy the readiness gate, but fixture qualification and prepare-only validation do not themselves authorize or constitute a paid run.
 
 After one medium-project candidate has causally related behavior and passes fixture, lazy-seed, concealment, verifier-integrity, isolation, and quality preflights:
 

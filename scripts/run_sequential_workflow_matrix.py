@@ -11,8 +11,10 @@ session records into the controller checkout.
 from __future__ import annotations
 
 import argparse
+import atexit
 import concurrent.futures as futures
 import datetime as dt
+import fcntl
 import json
 import os
 import re
@@ -27,6 +29,7 @@ sys.path.insert(0, str(ROOT / "scripts"))
 import run_codex_workflow_evaluation as workflow  # type: ignore
 DEFAULT_LANE_ROOT = Path("/opt/data/eval-workflow-lanes")
 WORKFLOW_ARTIFACT_ROOT = Path("sources/evaluations/workflow-sessions")
+COMPACT_ARTIFACT_NAMES = {"run.json", "changes.diff", "evidence.jsonl.gz", "manifest.sha256"}
 
 
 def load_json(path: Path) -> dict[str, Any]:
@@ -36,6 +39,18 @@ def load_json(path: Path) -> dict[str, Any]:
 def write_json(path: Path, data: Any) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text(json.dumps(data, indent=2) + "\n")
+
+
+def acquire_production_lock() -> int:
+    lock_path = DEFAULT_LANE_ROOT / ".production.lock"
+    lock_path.parent.mkdir(parents=True, exist_ok=True)
+    fd = os.open(lock_path, os.O_CREAT | os.O_RDWR, 0o600)
+    try:
+        fcntl.flock(fd, fcntl.LOCK_EX | fcntl.LOCK_NB)
+    except BlockingIOError:
+        os.close(fd)
+        raise RuntimeError("another provider-capable workflow matrix is already running")
+    return fd
 
 
 def active_sequences() -> list[str]:
@@ -73,14 +88,12 @@ def copytree_ignore(current: str, names: list[str]) -> set[str]:
     if ".git" in names:
         ignored.add(".git")
     parts = current_path.parts
+    if "fixtures" in parts and "repo" in names:
+        ignored.add("repo")
     if "workflow-sessions" in parts:
-        if "codex-homes" in names:
-            ignored.add("codex-homes")
-        # Existing workflow-session materialized repositories are bulky and are
-        # not needed to start a fresh lane run. Fresh model-facing repos are
-        # fetched under the lane checkout by the workflow runner.
-        if current_path.name == "project" and "repo" in names:
-            ignored.add("repo")
+        ignored.update({name for name in names if name in {
+            "project", "tasks", "controller-scratch", "codex-homes", "task-prompts", "model-output"
+        }})
     return ignored
 
 
@@ -97,12 +110,35 @@ def rsync_checkout(source: Path, destination: Path) -> None:
         "-a",
         "--delete",
         "--exclude=/.git/",
-        "--exclude=/sources/evaluations/workflow-sessions/*/project/repo/",
+        "--exclude=/sources/evaluations/fixtures/*/*/repo/",
+        "--exclude=/sources/evaluations/workflow-sessions/*/project/",
+        "--exclude=/sources/evaluations/workflow-sessions/*/tasks/",
+        "--exclude=/sources/evaluations/workflow-sessions/*/controller-scratch/",
         "--exclude=/sources/evaluations/workflow-sessions/*/codex-homes/",
+        "--exclude=/sources/evaluations/workflow-sessions/*/task-prompts/",
+        "--exclude=/sources/evaluations/workflow-sessions/*/model-output/",
         str(source.resolve()) + "/",
         str(destination.resolve()) + "/",
     ]
     subprocess.run(cmd, check=True)
+
+
+def find_protocol(root: Path, sequence_id: str, profile_id: str) -> Path:
+    matches: list[Path] = []
+    for path in (root / "sources/evaluations/protocols").glob("*.json"):
+        protocol = load_json(path)
+        selected = protocol.get("selected_execution", {}).get("descriptor", {})
+        if (
+            protocol.get("status") == "frozen-ready-not-run"
+            and protocol.get("task_fixture", {}).get("sequence_id") == sequence_id
+            and selected.get("selected_profile", {}).get("profile_id") == profile_id
+        ):
+            matches.append(path)
+    if len(matches) != 1:
+        raise ValueError(
+            f"expected exactly one frozen protocol for {sequence_id}/{profile_id}; found {[path.name for path in matches]}"
+        )
+    return matches[0]
 
 
 def plan_workflow_jobs(
@@ -110,26 +146,36 @@ def plan_workflow_jobs(
     treatment_profiles: list[str],
     *,
     baseline_state: Callable[[str], str],
+    profile_state: Callable[[str, str], str],
 ) -> list[tuple[str, str]]:
-    """Plan one baseline gate per sequence, or one independent lane per treatment.
-
-    A missing/non-reusable baseline deliberately collapses a multi-profile request
-    to one pair invocation, preventing duplicate baseline provider spend. Once the
-    baseline is reviewed reusable, all requested treatment profiles are separate
-    jobs and may run concurrently in isolated checkouts.
-    """
-    if not treatment_profiles:
-        raise ValueError("at least one treatment profile is required")
+    """Plan one baseline lane per missing sequence or treatment lanes after review."""
     if len(set(sequence_ids)) != len(sequence_ids):
         raise ValueError("duplicate sequence IDs are not allowed in one matrix")
     if len(set(treatment_profiles)) != len(treatment_profiles):
         raise ValueError("duplicate treatment profiles are not allowed in one matrix")
     jobs: list[tuple[str, str]] = []
     for sequence_id in sequence_ids:
-        if baseline_state(sequence_id) == "reusable":
-            jobs.extend((sequence_id, profile) for profile in treatment_profiles)
+        state = baseline_state(sequence_id)
+        if not treatment_profiles:
+            if state == "missing":
+                jobs.append((sequence_id, "baseline-bare-codex"))
+            else:
+                raise ValueError(f"baseline for {sequence_id} is {state}; no new baseline run is needed")
+        elif state == "reusable":
+            for profile in treatment_profiles:
+                treatment_state = profile_state(sequence_id, profile)
+                if treatment_state == "missing":
+                    jobs.append((sequence_id, profile))
+                elif treatment_state != "reusable":
+                    raise ValueError(
+                        f"treatment {profile} for {sequence_id} is {treatment_state}; review it or choose a new replicate"
+                    )
+        elif state == "missing":
+            jobs.append((sequence_id, "baseline-bare-codex"))
         else:
-            jobs.append((sequence_id, treatment_profiles[0]))
+            raise ValueError(
+                f"baseline for {sequence_id} is {state}; review it or choose a new replicate before treatment execution"
+            )
     return jobs
 
 
@@ -155,11 +201,22 @@ def run_flow_lane(
         for session in load_json(checkout / "data/workflow-sessions.json").get("sessions", [])
         if session.get("session_id")
     }
-    before_comparison_files = {
-        path.name for path in (checkout / WORKFLOW_ARTIFACT_ROOT).glob("*.json")
-    }
+    artifact_root = checkout / WORKFLOW_ARTIFACT_ROOT
+    before_artifact_dirs = {path.name for path in artifact_root.iterdir() if path.is_dir()}
 
-    cmd = ["bash", "scripts/run_sequential_workflow_pair.sh", sequence_id, "--treatment-profile", treatment_profile, *runner_args]
+    protocol = find_protocol(checkout, sequence_id, treatment_profile).relative_to(checkout)
+    cmd = [
+        sys.executable,
+        "scripts/run_codex_workflow_evaluation.py",
+        "--sequence-id", sequence_id,
+        "--profile-id", treatment_profile,
+        "--protocol", str(protocol),
+        *runner_args,
+    ]
+    if treatment_profile != "baseline-bare-codex":
+        cmd.extend(["--comparison-profile-id", treatment_profile])
+    if "--prepare-only" in runner_args:
+        cmd.extend(["--session-id", f"prepare-{lane_id}"])
     if source_codex_home is not None:
         cmd.extend(["--source-codex-home", str(source_codex_home)])
     env = os.environ.copy()
@@ -167,7 +224,7 @@ def run_flow_lane(
     env["REPLICATE_INDEX"] = str(replicate_index)
     env["SKIP_PAIR_VALIDATION"] = "1"
     env["WORKFLOW_LANE_DISABLE_AUTH_SYNC"] = "1"
-    log_path = logs / "pair.log"
+    log_path = logs / "lane.log"
     with log_path.open("w") as log:
         proc = subprocess.run(cmd, cwd=checkout, text=True, stdout=log, stderr=subprocess.STDOUT, env=env)
     after_sessions = load_json(checkout / "data/workflow-sessions.json").get("sessions", [])
@@ -176,11 +233,22 @@ def run_flow_lane(
         for session in after_sessions
         if session.get("session_id") and str(session["session_id"]) not in before_session_ids
     )
-    produced_comparison_files = sorted(
-        path.name
-        for path in (checkout / WORKFLOW_ARTIFACT_ROOT).glob("*.json")
-        if path.name not in before_comparison_files
-    )
+    failure_evidence: list[str] = []
+    if proc.returncode != 0:
+        failure_root = lane_dir / "failure-evidence"
+        for path in artifact_root.iterdir():
+            if not path.is_dir() or path.name in before_artifact_dirs or path.is_symlink():
+                continue
+            entries = list(path.iterdir())
+            if any(entry.is_symlink() or not entry.is_file() for entry in entries):
+                continue
+            if {entry.name for entry in entries} != COMPACT_ARTIFACT_NAMES:
+                continue
+            failure_root.mkdir(exist_ok=True)
+            destination = failure_root / path.name
+            shutil.copytree(path, destination)
+            failure_evidence.append(str(destination))
+
     return {
         "sequence_id": sequence_id,
         "treatment_profile": treatment_profile,
@@ -190,8 +258,12 @@ def run_flow_lane(
         "log": str(log_path),
         "exit_code": proc.returncode,
         "produced_session_ids": produced_session_ids,
-        "produced_comparison_files": produced_comparison_files,
+        "failure_evidence": failure_evidence,
     }
+
+
+def publication_allowed(prepare_only: bool, lane_results: list[dict[str, Any]]) -> bool:
+    return not prepare_only and all(result["exit_code"] == 0 for result in lane_results)
 
 
 def lane_session_records(checkout: Path, sequence_id: str, replicate_index: int, produced_session_ids: set[str] | None = None) -> list[dict[str, Any]]:
@@ -213,6 +285,7 @@ def lane_session_records(checkout: Path, sequence_id: str, replicate_index: int,
 
 def copy_artifacts_for_sessions(checkout: Path, sessions: list[dict[str, Any]]) -> list[str]:
     copied: list[str] = []
+    lane_artifact_root = (checkout / WORKFLOW_ARTIFACT_ROOT).resolve()
     for session in sessions:
         artifacts = session.get("artifacts", {}) if isinstance(session.get("artifacts"), dict) else {}
         root = artifacts.get("root") or ""
@@ -230,37 +303,18 @@ def copy_artifacts_for_sessions(checkout: Path, sessions: list[dict[str, Any]]) 
         src = checkout / rel
         dst = ROOT / rel
         if src.exists():
+            resolved = src.resolve()
+            if src.is_symlink() or not resolved.is_relative_to(lane_artifact_root):
+                raise ValueError(f"workflow artifact root escapes lane checkout: {src}")
+            entries = list(src.iterdir())
+            if any(entry.is_symlink() or not entry.is_file() for entry in entries):
+                raise ValueError(f"workflow artifact root contains non-file or symlink entries: {src}")
+            if {entry.name for entry in entries} != COMPACT_ARTIFACT_NAMES:
+                raise ValueError(f"workflow artifact root does not satisfy compact artifact contract: {src}")
             if dst.exists():
                 raise FileExistsError(f"workflow artifact destination already exists; refusing overwrite: {dst}")
             shutil.copytree(src, dst)
             copied.append(str(rel))
-    return copied
-
-
-def copy_comparisons(checkout: Path, sequence_id: str, replicate_index: int, produced_files: set[str] | None = None) -> list[str]:
-    copied: list[str] = []
-    src_root = checkout / WORKFLOW_ARTIFACT_ROOT
-    if not src_root.exists():
-        return copied
-    for src in src_root.glob("*.json"):
-        if produced_files is not None and src.name not in produced_files:
-            continue
-        try:
-            data = load_json(src)
-        except Exception:
-            continue
-        comparison_id = str(data.get("comparison_id", ""))
-        if data.get("sequence_id") != sequence_id:
-            continue
-        if "sequential-workflow" not in comparison_id:
-            continue
-        if not comparison_id.endswith(f"-r{replicate_index}"):
-            continue
-        dst = ROOT / WORKFLOW_ARTIFACT_ROOT / src.name
-        if dst.exists():
-            raise FileExistsError(f"workflow comparison already exists; refusing overwrite: {dst}")
-        shutil.copy2(src, dst)
-        copied.append(str(WORKFLOW_ARTIFACT_ROOT / src.name))
     return copied
 
 
@@ -277,44 +331,100 @@ def merge_registry(sessions: list[dict[str, Any]]) -> None:
 
 
 def merge_lanes(lane_results: list[dict[str, Any]], replicate_index: int) -> dict[str, Any]:
+    registry_path = ROOT / "data/workflow-sessions.json"
+    registry_before = registry_path.read_bytes()
     merged_sessions: list[dict[str, Any]] = []
     copied_artifacts: list[str] = []
-    copied_comparisons: list[str] = []
-    for result in lane_results:
-        checkout = Path(result["checkout"])
-        sequence_id = result["sequence_id"]
-        produced_session_ids = set(result.get("produced_session_ids", []))
-        produced_comparison_files = set(result.get("produced_comparison_files", []))
-        sessions = lane_session_records(checkout, sequence_id, replicate_index, produced_session_ids)
-        merged_sessions.extend(sessions)
-        copied_artifacts.extend(copy_artifacts_for_sessions(checkout, sessions))
-        copied_comparisons.extend(copy_comparisons(checkout, sequence_id, replicate_index, produced_comparison_files))
-    if merged_sessions:
-        merge_registry(merged_sessions)
+    try:
+        for result in lane_results:
+            checkout = Path(result["checkout"])
+            sequence_id = result["sequence_id"]
+            produced_session_ids = set(result.get("produced_session_ids", []))
+            sessions = lane_session_records(checkout, sequence_id, replicate_index, produced_session_ids)
+            merged_sessions.extend(sessions)
+            copied_artifacts.extend(copy_artifacts_for_sessions(checkout, sessions))
+        if merged_sessions:
+            merge_registry(merged_sessions)
+    except Exception:
+        registry_path.write_bytes(registry_before)
+        for rel in copied_artifacts:
+            path = ROOT / rel
+            if path.is_dir():
+                chmod_tree(path)
+                shutil.rmtree(path)
+            elif path.exists():
+                path.unlink()
+        raise
     return {
         "merged_session_count": len(merged_sessions),
         "copied_artifact_count": len(copied_artifacts),
-        "copied_comparison_count": len(copied_comparisons),
         "merged_session_ids": [session["session_id"] for session in merged_sessions],
         "copied_artifacts": copied_artifacts,
-        "copied_comparisons": copied_comparisons,
     }
 
 
+def publish_ready_comparisons(sequence_ids: list[str], profiles: list[str], replicate_index: int) -> list[str]:
+    if not profiles:
+        return []
+    registry = load_json(ROOT / "data/workflow-sessions.json")
+    published: list[str] = []
+    for sequence_id in sequence_ids:
+        seq = workflow.load_sequence(sequence_id)
+        baseline = workflow.find_canonical_baseline_record(registry, seq, replicate_index)
+        if workflow.reviewed_session_reuse_state(baseline, ROOT) != "reusable":
+            continue
+        for profile_id in profiles:
+            treatment = workflow.find_pool_profile_record(registry, seq, profile_id, replicate_index)
+            if workflow.reviewed_session_reuse_state(treatment, ROOT) != "reusable":
+                continue
+            project_id = workflow.PROJECT_META[seq["fixture_id"]]["project_id"]
+            fingerprint = workflow.baseline_protocol_fingerprint(seq)
+            comparison_id = (
+                f"baseline-{workflow.artifact_lane_label(project_id)}-{workflow.DATE.replace('-', '')}"
+                f"-vs-{workflow.artifact_profile_label(profile_id)}-p-{fingerprint}-r{replicate_index}"
+            )
+            path = ROOT / WORKFLOW_ARTIFACT_ROOT / f"{comparison_id}.json"
+            if not path.exists():
+                comparison = workflow.write_comparison_if_ready(
+                    seq, "phase-2-sequential-workflow-v1", replicate_index, profile_id
+                )
+                if comparison is None:
+                    raise RuntimeError(f"reviewed records did not produce comparison {comparison_id}")
+                published.append(str(path.relative_to(ROOT)))
+    return published
+
+
 def run_validation(summary_dir: Path) -> dict[str, Any]:
+    truthmark = shutil.which("truthmark") or str(Path.home() / ".local/bin/truthmark")
+    validation_env = os.environ.copy()
+    validation_env["PATH"] = f"{Path(truthmark).parent}:{validation_env.get('PATH', '')}"
     commands = [
         [sys.executable, "scripts/validate_repository.py"],
         ["git", "diff", "--check"],
-        ["truthmark", "check", "--json"],
-        ["truthmark", "index", "--json"],
+        [truthmark, "check", "--json"],
+        [truthmark, "index", "--json"],
     ]
     results: list[dict[str, Any]] = []
     for idx, cmd in enumerate(commands, start=1):
         out = summary_dir / f"validation-{idx}-{safe_name(cmd[0])}.txt"
         with out.open("w") as log:
-            proc = subprocess.run(cmd, cwd=ROOT, text=True, stdout=log, stderr=subprocess.STDOUT)
-        results.append({"command": cmd, "exit_code": proc.returncode, "output": str(out)})
+            try:
+                proc = subprocess.run(
+                    cmd, cwd=ROOT, text=True, stdout=log, stderr=subprocess.STDOUT, env=validation_env
+                )
+                return_code = proc.returncode
+            except OSError as exc:
+                log.write(f"unable to execute {cmd[0]}: {exc}\n")
+                return_code = 127
+        results.append({"command": cmd, "exit_code": return_code, "output": str(out)})
     return {"passed": all(item["exit_code"] == 0 for item in results), "results": results}
+
+
+def cleanup_lane_checkouts(run_root: Path) -> None:
+    for checkout in run_root.glob("*/checkout"):
+        if checkout.exists():
+            chmod_tree(checkout)
+            shutil.rmtree(checkout, ignore_errors=True)
 
 
 def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
@@ -345,28 +455,50 @@ def main(argv: list[str] | None = None) -> int:
     if args.max_parallel < 1:
         raise SystemExit("--max-parallel must be >= 1")
 
-    treatment_profiles = args.treatment_profiles or ["retrieval-leanctx"]
+    production_lock_fd = None if args.prepare_only or args.dry_run else acquire_production_lock()
+    treatment_profiles = args.treatment_profiles or []
     registry = load_json(ROOT / "data/workflow-sessions.json")
 
     def baseline_state(sequence_id: str) -> str:
+        if args.prepare_only:
+            return "missing"
         sequence = workflow.load_sequence(sequence_id)
         baseline = workflow.find_canonical_baseline_record(registry, sequence, args.replicate_index)
         return workflow.reviewed_session_reuse_state(baseline, ROOT)
 
-    jobs = plan_workflow_jobs(sequences, treatment_profiles, baseline_state=baseline_state)
-    timestamp = dt.datetime.now(dt.UTC).strftime("%Y%m%dT%H%M%SZ")
-    run_root = args.lane_root / f"workflow-matrix-{timestamp}-r{args.replicate_index}"
+    def profile_state(sequence_id: str, profile_id: str) -> str:
+        sequence = workflow.load_sequence(sequence_id)
+        session = workflow.find_pool_profile_record(registry, sequence, profile_id, args.replicate_index)
+        return workflow.reviewed_session_reuse_state(session, ROOT)
+
+    jobs = (
+        [(sequence_id, profile) for sequence_id in sequences for profile in (treatment_profiles or ["baseline-bare-codex"])]
+        if args.prepare_only
+        else plan_workflow_jobs(sequences, treatment_profiles, baseline_state=baseline_state, profile_state=profile_state)
+    )
+    timestamp = dt.datetime.now(dt.UTC).strftime("%Y%m%dT%H%M%S%fZ")
+    run_root = args.lane_root / f"workflow-matrix-{timestamp}-p{os.getpid()}-r{args.replicate_index}"
     runner_args: list[str] = []
     if args.timeout_per_task is not None:
         runner_args.extend(["--timeout-per-task", str(args.timeout_per_task)])
     for flag in ("prepare_only", "skip_container_preflight", "skip_codex_preflight", "skip_dependency_install"):
         if getattr(args, flag):
             runner_args.append("--" + flag.replace("_", "-"))
+    if args.prepare_only:
+        runner_args.append("--no-provider")
 
+    job_specs = [
+        {
+            "sequence_id": sequence_id,
+            "profile_id": profile,
+            "protocol": str(find_protocol(ROOT, sequence_id, profile).relative_to(ROOT)),
+        }
+        for sequence_id, profile in jobs
+    ]
     plan = {
         "sequences": sequences,
         "treatment_profiles": treatment_profiles,
-        "jobs": [{"sequence_id": sequence_id, "treatment_profile": profile} for sequence_id, profile in jobs],
+        "jobs": job_specs,
         "max_parallel": args.max_parallel,
         "replicate_index": args.replicate_index,
         "lane_root": str(run_root),
@@ -377,53 +509,83 @@ def main(argv: list[str] | None = None) -> int:
         return 0
 
     run_root.mkdir(parents=True, exist_ok=True)
+    if not args.keep_lanes:
+        atexit.register(cleanup_lane_checkouts, run_root)
     write_json(run_root / "plan.json", plan)
     lane_results: list[dict[str, Any]] = []
-    with futures.ThreadPoolExecutor(max_workers=min(args.max_parallel, len(jobs))) as pool:
-        submitted = [
-            pool.submit(
-                run_flow_lane,
-                sequence_id=sequence_id,
-                treatment_profile=treatment_profile,
-                lane_root=run_root,
-                replicate_index=args.replicate_index,
-                runner_args=runner_args,
-                source_codex_home=args.source_codex_home,
-            )
-            for sequence_id, treatment_profile in jobs
-        ]
-        for fut in futures.as_completed(submitted):
-            result = fut.result()
-            lane_results.append(result)
-            print(json.dumps(result, indent=2), flush=True)
+    if jobs:
+        with futures.ThreadPoolExecutor(max_workers=min(args.max_parallel, len(jobs))) as pool:
+            submitted = [
+                pool.submit(
+                    run_flow_lane,
+                    sequence_id=sequence_id,
+                    treatment_profile=treatment_profile,
+                    lane_root=run_root,
+                    replicate_index=args.replicate_index,
+                    runner_args=runner_args,
+                    source_codex_home=args.source_codex_home,
+                )
+                for sequence_id, treatment_profile in jobs
+            ]
+            for fut in futures.as_completed(submitted):
+                result = fut.result()
+                lane_results.append(result)
+                print(json.dumps(result, indent=2), flush=True)
 
+    registry_path = ROOT / "data/workflow-sessions.json"
+    registry_before = registry_path.read_bytes() if not args.prepare_only else b""
+    lanes_passed = all(result["exit_code"] == 0 for result in lane_results)
+    publish_allowed = publication_allowed(args.prepare_only, lane_results)
     merge_summary = {
         "merged_session_count": 0,
         "copied_artifact_count": 0,
-        "copied_comparison_count": 0,
         "merged_session_ids": [],
         "copied_artifacts": [],
-        "copied_comparisons": [],
-        "skipped": "prepare-only run" if args.prepare_only else "",
-    } if args.prepare_only else merge_lanes(lane_results, args.replicate_index)
+        "skipped": "prepare-only run" if args.prepare_only else "one or more lanes failed",
+    } if not publish_allowed else merge_lanes(lane_results, args.replicate_index)
+    published_comparisons = [] if not publish_allowed else publish_ready_comparisons(
+        sequences, treatment_profiles, args.replicate_index
+    )
     validation = run_validation(run_root)
+    if not args.prepare_only and not validation["passed"]:
+        registry_path.write_bytes(registry_before)
+        for rel in [
+            *merge_summary.get("copied_artifacts", []),
+            *published_comparisons,
+        ]:
+            path = ROOT / rel
+            if path.is_dir():
+                chmod_tree(path)
+                shutil.rmtree(path)
+            elif path.exists():
+                path.unlink()
+        merge_summary["rolled_back"] = True
+        published_comparisons = []
+    execution_passed = lanes_passed and validation["passed"]
+    awaiting_quality_review = not args.prepare_only and execution_passed and any(
+        result.get("produced_session_ids") for result in lane_results
+    )
     summary = {
         "plan": plan,
         "lane_results": sorted(lane_results, key=lambda item: item["sequence_id"]),
         "merge": merge_summary,
+        "published_comparisons": published_comparisons,
         "validation": validation,
-        "accepted": all(result["exit_code"] == 0 for result in lane_results) and validation["passed"],
+        "execution_passed": execution_passed,
+        "awaiting_quality_review": awaiting_quality_review,
+        "accepted": execution_passed and not awaiting_quality_review,
     }
     write_json(run_root / "matrix-summary.json", summary)
     print(json.dumps(summary, indent=2), flush=True)
 
-    if summary["accepted"] and not args.keep_lanes:
-        # Keep logs and summary, remove bulky checkouts.
-        for result in lane_results:
-            checkout = Path(result["checkout"])
-            if checkout.exists():
-                chmod_tree(checkout)
-                shutil.rmtree(checkout)
+    if not args.keep_lanes:
+        cleanup_lane_checkouts(run_root)
+    if awaiting_quality_review:
+        if production_lock_fd is not None:
+            os.close(production_lock_fd)
+        return 3
+    if production_lock_fd is not None:
+        os.close(production_lock_fd)
     return 0 if summary["accepted"] else 1
 
 

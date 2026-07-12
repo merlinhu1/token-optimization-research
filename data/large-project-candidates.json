@@ -5,35 +5,31 @@
     "include": "Large, active, public repositories with substantial software-engineering task surfaces and feasible subsystem-scoped verification.",
     "exclude": "User-owned/local personal projects, toy fixtures, archived repositories, and projects where no bounded verifier can be frozen.",
     "promotion_required": "Clone/pin a clean snapshot, freeze one task prompt, freeze setup/reset/verifier commands, and record blocker-free raw artifact paths before marking primary-objective.",
-    "active_fixture_count": "No large-project executable workflow is active. Terraform task assets were retired for failing the five-production-file floor; OrchardCore remains candidate metadata only pending redesign.",
-    "target_matrix": "large C# OrchardCore plus a redesigned large Go candidate; avoid foundational/high-popularity platform projects such as ASP.NET Core/runtime/Roslyn for the C# slot."
+    "active_fixture_count": "Three production-qualified active workflows: Fastify, Terraform, and Beets.",
+    "target_matrix": "large Go Terraform plus medium TypeScript/JavaScript Fastify and medium Python Beets; avoid foundational/high-popularity platform projects for future expansion."
   },
   "candidates": [
     {
-      "id": "large-orchardcms-orchardcore",
-      "github": "OrchardCMS/OrchardCore",
-      "url": "https://github.com/OrchardCMS/OrchardCore",
-      "language": "C#",
-      "size_kb": 313973,
-      "stars": 8116,
-      "forks": 2579,
-      "open_issues": 834,
+      "id": "large-hashicorp-terraform",
+      "github": "hashicorp/terraform",
+      "url": "https://github.com/hashicorp/terraform",
+      "language": "Go",
+      "size_kb": 59640,
       "default_branch": "main",
-      "pushed_at": "2026-07-08T02:06:06Z",
-      "role": "target large C# replacement fixture candidate",
-      "why": "Large active C# CMS/application framework with realistic module, routing, content, and service-layer task surfaces while avoiding foundational Microsoft platform repositories such as ASP.NET Core, runtime, or Roslyn.",
-      "task_classes": [
-        "large-codebase-navigation",
-        "multi-file-refactor",
-        "build-repair"
-      ],
       "surface": "retrieval-context",
-      "setup_policy": "Install a pinned .NET SDK, clone a pinned commit, restore only the bounded solution/project subset needed for each task, and freeze exact build/test commands before qualification.",
-      "verifier_policy": "Use bounded dotnet test selectors on edited OrchardCore modules plus build checks for touched projects; do not run the full solution for every replicate unless the task requires it.",
-      "selection_status": "target-fixture-candidate",
-      "selected_reason": "Preferred large C# candidate slot, pending behavioral fixture redesign and requalification.",
-      "pinned_commit": "91cd8a4bfcaf9cb1388edef6867af2a0b5a0a000",
-      "qualification_status": "fixture-redesign-required"
+      "setup_policy": "Use the pinned Go toolchain and run go mod download before bounded verification.",
+      "verifier_policy": "Use bounded Go test selectors for the controller-held regression closure plus the task verifier; do not run the full repository test suite for every replicate.",
+      "selection_status": "primary-fixture",
+      "selected_reason": "Five upstream-derived behavioral tasks passed production qualification.",
+      "tasks": [
+        "terraform-161ffe-tracing-context-regression",
+        "terraform-305dba-query-sensitive-paths-regression",
+        "terraform-520378-computed-block-capabilities-regression",
+        "terraform-81053-invalid-workspace-name-regression",
+        "terraform-9ae470-objchange-validation-regression"
+      ],
+      "qualification_status": "active-reproduction-flow",
+      "workflow_sequence_id": "terraform-maintenance-sequence-v1"
     }
   ]
 }

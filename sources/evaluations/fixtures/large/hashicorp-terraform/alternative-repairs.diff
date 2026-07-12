@@ -1,33 +1,49 @@
-diff --git a/internal/command/views/json/query.go b/internal/command/views/json/query.go
-index c731dcd8ae..fbb3fbd89c 100644
---- a/internal/command/views/json/query.go
-+++ b/internal/command/views/json/query.go
-@@ -46,21 +46,19 @@ func NewQueryStart(addr addrs.AbsResourceInstance, inputConfig cty.Value, config
- 	// We only want a unique set of attribute paths. A path
- 	// can either be defined as sensitive by the provider or
- 	// marked by configuration.
--	uniquePaths := make(map[string]struct{})
-+	uniquePaths := map[string]bool{}
-+	remember := func(path string) {
-+		uniquePaths[path] = true
-+	}
- 
--	// Search for any marked sensitive paths, irrespective
--	// of the schema
- 	for _, pvm := range valPaths {
- 		if _, ok := pvm.Marks[marks.Sensitive]; ok {
--			uniquePaths[format.CtyPath(pvm.Path)] = struct{}{}
-+			remember(format.CtyPath(pvm.Path))
- 		}
+# Qualification-only alternative repair for task 4.
+#
+# Keep the seeded variadic parsing API shape, but restore the const-only
+# behavior at the module/config loading call sites that must accept const
+# variables while ignoring non-const validation dependencies.
+diff --git a/internal/command/meta_config.go b/internal/command/meta_config.go
+index 4f679dc9a..8ad7c3389 100644
+--- a/internal/command/meta_config.go
++++ b/internal/command/meta_config.go
+@@ -115,7 +115,7 @@ func (m *Meta) loadConfig(rootDir string) (*configs.Config, tfdiags.Diagnostics)
+ 		cfg.Root = cfg // Root module is self-referential.
+ 		return cfg, diags
+ 	}
+-	vars, parseDiags := backendrun.ParseVariableValues(m.VariableValues, rootMod.Variables, false)
++	vars, parseDiags := backendrun.ParseVariableValues(m.VariableValues, rootMod.Variables, true)
+ 	diags = diags.Append(parseDiags)
+ 	if parseDiags.HasErrors() {
+ 		return nil, diags
+@@ -152,7 +152,7 @@ func (m *Meta) loadConfigWithTests(rootDir, testDir string) (*configs.Config, tf
+ 		cfg.Root = cfg // Root module is self-referential.
+ 		return cfg, diags
+ 	}
+-	vars, parseDiags := backendrun.ParseVariableValues(m.VariableValues, rootMod.Variables, false)
++	vars, parseDiags := backendrun.ParseVariableValues(m.VariableValues, rootMod.Variables, true)
+ 	diags = diags.Append(parseDiags)
+ 	if parseDiags.HasErrors() {
+ 		return nil, diags
+@@ -300,7 +300,7 @@ func (m *Meta) installModules(ctx context.Context, rootDir, testsDir string, upg
  	}
  
--	// Now let's loop through the resource schema defined by
--	// the provider
--	schemaPaths := configSchema.SensitivePaths(inputConfig, nil)
--	for _, path := range schemaPaths {
--		uniquePaths[format.CtyPath(path)] = struct{}{}
-+	for _, path := range configSchema.SensitivePaths(inputConfig, nil) {
-+		remember(format.CtyPath(path))
+ 	initializer := func(rootMod *configs.Module, walker configs.ModuleWalker) (*configs.Config, tfdiags.Diagnostics) {
+-		variables, diags := backendrun.ParseVariableValues(m.VariableValues, rootMod.Variables, false)
++		variables, diags := backendrun.ParseVariableValues(m.VariableValues, rootMod.Variables, true)
+ 		ctx, ctxDiags := terraform.NewContext(&terraform.ContextOpts{
+ 			Parallelism: 1,
+ 		})
+diff --git a/internal/command/show.go b/internal/command/show.go
+index faad9c2b8..893a00de6 100644
+--- a/internal/command/show.go
++++ b/internal/command/show.go
+@@ -358,7 +358,7 @@ func readConfig(r *planfile.Reader, allowLanguageExperiments bool, variableValue
+ 		return nil, diags
  	}
  
- 	sensitiveAttributePaths := make([]string, 0, len(uniquePaths))
+-	variables, varDiags := backendrun.ParseVariableValues(variableValues, rootMod.Variables, false)
++	variables, varDiags := backendrun.ParseVariableValues(variableValues, rootMod.Variables, true)
+ 	diags = diags.Append(varDiags)
+ 	if diags.HasErrors() {
+ 		return nil, diags
