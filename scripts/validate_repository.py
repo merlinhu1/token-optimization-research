@@ -8,6 +8,7 @@ import re
 import subprocess
 import hashlib
 from pathlib import Path, PurePosixPath
+from typing import Any
 import sys
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -2815,6 +2816,184 @@ def validate_baseline_v3_qualification_audit(errors: list[str]) -> None:
         errors.append("Baseline V3 qualification audit prepare-matrix note must remain non-authoritative scratch metadata")
 
 
+def validate_baseline_v4_evidence_identity(
+    audit: dict[str, Any],
+    index: dict[str, Any],
+    receipt_documents: dict[str, dict[str, Any]],
+    prepare_manifest: dict[str, Any],
+    prepare_files: dict[str, bytes],
+    expected_sequences: dict[str, dict[str, Any]],
+    errors: list[str],
+) -> None:
+    """Validate exact V4 task/evidence coverage and provider-free preparation identity."""
+    ordered_sequence_ids = list(expected_sequences)
+    records = audit.get("sequences")
+    if not isinstance(records, list) or [item.get("sequence_id") for item in records if isinstance(item, dict)] != ordered_sequence_ids:
+        errors.append("Baseline V4 audit sequence records must exactly cover active V4 sequences once and in order")
+        return
+    expected_coordinates: list[tuple[str, str, int]] = []
+    nested_items: list[dict[str, Any]] = []
+    for record in records:
+        sequence_id = record["sequence_id"]
+        sequence = expected_sequences[sequence_id]
+        tasks = sorted(sequence.get("tasks", []), key=lambda item: int(item["order"]))
+        if type(record.get("task_count")) is not int or record.get("task_count") != len(tasks):
+            errors.append(f"Baseline V4 task_count must be a strict integer for {sequence_id}")
+        if record.get("fixture_id") != sequence.get("fixture_id") or record.get("task_family_generation") != "baseline-v4":
+            errors.append(f"Baseline V4 audit sequence identity is stale for {sequence_id}")
+        expected_for_sequence = [(sequence_id, str(task["id"]), int(task["order"])) for task in tasks]
+        expected_coordinates.extend(expected_for_sequence)
+        nested = record.get("literal_command_receipts")
+        if not isinstance(nested, list):
+            errors.append(f"Baseline V4 nested receipts are missing for {sequence_id}")
+            continue
+        nested_items.extend(item for item in nested if isinstance(item, dict))
+        actual_nested = [(item.get("sequence_id"), item.get("task_id")) for item in nested if isinstance(item, dict)]
+        if actual_nested != [(item[0], item[1]) for item in expected_for_sequence]:
+            errors.append(f"Baseline V4 nested receipts must exactly cover ordered tasks for {sequence_id}")
+
+    receipts = index.get("receipts")
+    if type(index.get("schema_version")) is not int or index.get("schema_version") != 1 or index.get("generation") != "baseline-v4":
+        errors.append("Baseline V4 receipt index schema or generation is invalid")
+    if not isinstance(receipts, list):
+        errors.append("Baseline V4 receipt index is missing receipts")
+        return
+    actual_coordinates = [
+        (item.get("sequence_id"), item.get("task_id"))
+        for item in receipts
+        if isinstance(item, dict)
+    ]
+    expected_pairs = [(item[0], item[1]) for item in expected_coordinates]
+    if actual_coordinates != expected_pairs or len(receipts) != len(expected_pairs):
+        errors.append("Baseline V4 receipt index must exactly cover every ordered task once")
+    if nested_items != receipts:
+        errors.append("Baseline V4 nested receipt references must exactly match the receipt index")
+    if set(receipt_documents) != {str(item.get("path")) for item in receipts if isinstance(item, dict)}:
+        errors.append("Baseline V4 receipt documents do not exactly match indexed paths")
+    for item, (sequence_id, task_id, order) in zip(receipts, expected_coordinates, strict=False):
+        if not isinstance(item, dict):
+            errors.append("Baseline V4 receipt index entries must be objects")
+            continue
+        path = item.get("path")
+        receipt = receipt_documents.get(str(path))
+        if not isinstance(path, str) or not isinstance(receipt, dict):
+            errors.append(f"Baseline V4 indexed receipt is missing: {path}")
+            continue
+        if (
+            type(receipt.get("schema_version")) is not int
+            or receipt.get("schema_version") != 1
+            or receipt.get("generation") != "baseline-v4"
+            or receipt.get("sequence_id") != sequence_id
+            or receipt.get("task_id") != task_id
+            or type(receipt.get("order")) is not int
+            or receipt.get("order") != order
+        ):
+            errors.append(f"Baseline V4 receipt identity is invalid: {path}")
+
+    if type(prepare_manifest.get("schema_version")) is not int or prepare_manifest.get("schema_version") != 1:
+        errors.append("Baseline V4 prepare manifest schema_version must be strict integer 1")
+    if prepare_manifest.get("generation") != "baseline-v4":
+        errors.append("Baseline V4 prepare manifest generation is invalid")
+    for key in ("provider_calls", "provider_tokens"):
+        if type(prepare_manifest.get(key)) is not int or prepare_manifest.get(key) != 0:
+            errors.append(f"Baseline V4 prepare manifest {key} must be strict integer zero")
+    for key in ("execution_passed", "validation_passed", "authoritative_outputs_complete"):
+        if prepare_manifest.get(key) is not True:
+            errors.append(f"Baseline V4 prepare manifest {key} must be true")
+    lane_exits = prepare_manifest.get("lane_exit_codes")
+    if not isinstance(lane_exits, dict) or list(lane_exits) != ordered_sequence_ids or any(
+        type(value) is not int or value != 0 for value in lane_exits.values()
+    ):
+        errors.append("Baseline V4 prepare manifest lane exits must exactly cover active V4 sequences with strict integer zero")
+    declared_files = prepare_manifest.get("files")
+    if not isinstance(declared_files, dict) or set(declared_files) != {"plan.json", "matrix-summary.json"}:
+        errors.append("Baseline V4 prepare manifest must bind exactly plan.json and matrix-summary.json")
+    else:
+        for name, expected_sha in declared_files.items():
+            content = prepare_files.get(name)
+            if not isinstance(content, bytes) or hashlib.sha256(content).hexdigest() != expected_sha:
+                errors.append(f"Baseline V4 prepare manifest file hash is stale: {name}")
+    try:
+        plan = json.loads(prepare_files["plan.json"], object_pairs_hook=_json_object_without_duplicate_keys)
+        summary = json.loads(prepare_files["matrix-summary.json"], object_pairs_hook=_json_object_without_duplicate_keys)
+    except (KeyError, ValueError, json.JSONDecodeError) as exc:
+        errors.append(f"Baseline V4 prepare evidence cannot be parsed: {exc}")
+        return
+    records_by_sequence = {record["sequence_id"]: record for record in records}
+    expected_jobs = [
+        {
+            "sequence_id": sequence_id,
+            "profile_id": "baseline-bare-codex",
+            "protocol": records_by_sequence[sequence_id].get("protocol_path"),
+        }
+        for sequence_id in ordered_sequence_ids
+    ]
+    first_gate = expected_sequences[ordered_sequence_ids[0]].get("mistake_gate", {}) if ordered_sequence_ids else {}
+    expected_condition = {
+        "id": first_gate.get("designated_model_condition"),
+        "model": first_gate.get("model"),
+        "reasoning_effort": first_gate.get("reasoning_effort"),
+    }
+    if (
+        plan.get("sequences") != ordered_sequence_ids
+        or plan.get("treatment_profiles") != []
+        or plan.get("jobs") != expected_jobs
+        or type(plan.get("max_parallel")) is not int
+        or plan.get("max_parallel") != 1
+        or type(plan.get("replicate_index")) is not int
+        or plan.get("replicate_index") != 0
+        or plan.get("model_condition") != expected_condition
+        or plan.get("runner_args") != ["--prepare-only", "--no-provider"]
+    ):
+        errors.append("Baseline V4 prepare plan does not match the exact provider-free serial V4 baseline matrix")
+    if summary.get("plan") != plan:
+        errors.append("Baseline V4 prepare summary plan does not match plan.json")
+    lane_results = summary.get("lane_results")
+    if not isinstance(lane_results, list) or [item.get("sequence_id") for item in lane_results if isinstance(item, dict)] != ordered_sequence_ids:
+        errors.append("Baseline V4 prepare summary must contain exactly one ordered result per V4 sequence")
+    else:
+        for item, sequence_id in zip(lane_results, ordered_sequence_ids, strict=True):
+            record = records_by_sequence[sequence_id]
+            binding = item.get("expected_session_binding", {})
+            frozen = binding.get("frozen_protocol", {}) if isinstance(binding, dict) else {}
+            if (
+                type(item.get("exit_code")) is not int
+                or item.get("exit_code") != 0
+                or item.get("produced_session_ids") != []
+                or item.get("failure_evidence") != []
+                or binding.get("sequence_id") != sequence_id
+                or binding.get("profile_id") != "baseline-bare-codex"
+                or type(binding.get("replicate_index")) is not int
+                or binding.get("replicate_index") != 0
+                or frozen.get("protocol_id") != record.get("protocol_id")
+                or frozen.get("path") != record.get("protocol_path")
+                or frozen.get("sha256") != record.get("protocol_sha256")
+                or binding.get("baseline_pool_fingerprint") != record.get("baseline_pool_fingerprint")
+            ):
+                errors.append(f"Baseline V4 prepare lane identity is invalid for {sequence_id}")
+    merge = summary.get("merge", {})
+    if (
+        type(merge.get("merged_session_count")) is not int
+        or merge.get("merged_session_count") != 0
+        or type(merge.get("copied_artifact_count")) is not int
+        or merge.get("copied_artifact_count") != 0
+        or merge.get("merged_session_ids") != []
+        or merge.get("copied_artifacts") != []
+        or merge.get("skipped") != "prepare-only run"
+        or summary.get("published_comparisons") != []
+        or summary.get("execution_passed") is not True
+        or summary.get("authoritative_outputs_complete") is not True
+    ):
+        errors.append("Baseline V4 prepare summary must prove a provider-free, publication-free prepare-only result")
+    validation = summary.get("validation", {})
+    validation_results = validation.get("results") if isinstance(validation, dict) else None
+    if validation.get("passed") is not True or not isinstance(validation_results, list) or len(validation_results) != 5 or any(
+        not isinstance(item, dict) or type(item.get("exit_code")) is not int or item.get("exit_code") != 0
+        for item in validation_results
+    ):
+        errors.append("Baseline V4 prepare summary validation results are incomplete or nonzero")
+
+
 def validate_baseline_v4_qualification_audit(errors: list[str]) -> None:
     audit_path = ROOT / "sources/evaluations/audits/baseline-v4-task-family-qualification-20260722.json"
     try:
@@ -2862,6 +3041,7 @@ def validate_baseline_v4_qualification_audit(errors: list[str]) -> None:
     if not isinstance(receipts, list) or len(receipts) != 6 or index.get("passed") is not True:
         errors.append("Baseline V4 literal receipt index must contain six passing receipts")
         return
+    receipt_documents: dict[str, dict[str, Any]] = {}
     for item in receipts:
         receipt_path = ROOT / str(item.get("path", ""))
         try:
@@ -2870,6 +3050,7 @@ def validate_baseline_v4_qualification_audit(errors: list[str]) -> None:
         except (OSError, ValueError, json.JSONDecodeError) as exc:
             errors.append(f"Baseline V4 literal receipt cannot be read: {exc}")
             continue
+        receipt_documents[str(item.get("path", ""))] = receipt
         if hashlib.sha256(receipt_bytes).hexdigest() != item.get("sha256"):
             errors.append(f"Baseline V4 literal receipt hash is stale: {receipt_path}")
         for key in ("schema_version", "order", "provider_calls", "provider_tokens", "command_exit", "controller_verifier_exit"):
@@ -2877,6 +3058,40 @@ def validate_baseline_v4_qualification_audit(errors: list[str]) -> None:
                 errors.append(f"Baseline V4 literal receipt {receipt_path} {key} must be a strict integer")
         if any(receipt.get(key) != 0 for key in ("provider_calls", "provider_tokens", "command_exit", "controller_verifier_exit")) or receipt.get("passed") is not True:
             errors.append(f"Baseline V4 literal receipt did not pass provider-free: {receipt_path}")
+    prepare_rel = audit.get("prepare_only_manifest")
+    prepare_manifest: dict[str, Any] = {}
+    prepare_files: dict[str, bytes] = {}
+    if not isinstance(prepare_rel, str) or not prepare_rel:
+        errors.append("Baseline V4 qualification audit is missing its prepare-only manifest")
+    else:
+        prepare_path = ROOT / prepare_rel
+        try:
+            prepare_bytes = prepare_path.read_bytes()
+            prepare_manifest = json.loads(prepare_bytes, object_pairs_hook=_json_object_without_duplicate_keys)
+        except (OSError, ValueError, json.JSONDecodeError) as exc:
+            errors.append(f"Baseline V4 prepare-only manifest cannot be read: {exc}")
+        else:
+            if hashlib.sha256(prepare_bytes).hexdigest() != audit.get("prepare_only_manifest_sha256"):
+                errors.append("Baseline V4 prepare-only manifest hash is stale")
+            declared_files = prepare_manifest.get("files")
+            if isinstance(declared_files, dict):
+                for name in declared_files:
+                    if not isinstance(name, str) or PurePosixPath(name).name != name:
+                        errors.append(f"Baseline V4 prepare-only manifest has unsafe file name: {name}")
+                        continue
+                    try:
+                        prepare_files[name] = (prepare_path.parent / name).read_bytes()
+                    except OSError as exc:
+                        errors.append(f"Baseline V4 prepare-only evidence cannot be read: {name}: {exc}")
+    validate_baseline_v4_evidence_identity(
+        audit,
+        index,
+        receipt_documents,
+        prepare_manifest,
+        prepare_files,
+        expected_sequences,
+        errors,
+    )
     from scripts import run_codex_workflow_evaluation as workflow
     for record in records:
         sequence = expected_sequences.get(record.get("sequence_id"))
