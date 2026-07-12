@@ -204,6 +204,7 @@ def plan_workflow_jobs(
     *,
     baseline_state: Callable[[str], str],
     profile_state: Callable[[str, str], str],
+    baseline_run_gate: Callable[[str], tuple[bool, str]],
     treatment_gate: Callable[[str], tuple[bool, str]] | None = None,
 ) -> list[tuple[str, str]]:
     """Plan baselines or treatments only after a reusable baseline and explicit pilot gate."""
@@ -216,6 +217,9 @@ def plan_workflow_jobs(
         state = baseline_state(sequence_id)
         if not treatment_profiles:
             if state == "missing":
+                passed, reason = baseline_run_gate(sequence_id)
+                if not passed:
+                    raise ValueError(f"baseline provider run is blocked for {sequence_id}: {reason}")
                 jobs.append((sequence_id, "baseline-bare-codex"))
             else:
                 raise ValueError(f"baseline for {sequence_id} is {state}; no new baseline run is needed")
@@ -234,6 +238,9 @@ def plan_workflow_jobs(
                         f"treatment {profile} for {sequence_id} is {treatment_state}; review it or choose a new replicate"
                     )
         elif state == "missing":
+            passed, reason = baseline_run_gate(sequence_id)
+            if not passed:
+                raise ValueError(f"baseline provider run is blocked for {sequence_id}: {reason}")
             jobs.append((sequence_id, "baseline-bare-codex"))
         else:
             raise ValueError(
@@ -771,7 +778,33 @@ def refresh_cumulative_usage_audit(root: Path = ROOT) -> None:
     )
 
 
-def run_validation(summary_dir: Path) -> dict[str, Any]:
+def controller_validation_python() -> str:
+    """Return a controller Python with all validation dependencies before spend."""
+    configured = os.environ.get("WORKFLOW_VALIDATION_PYTHON")
+    candidates = [configured, sys.executable, shutil.which("python3")]
+    checked: list[str] = []
+    for candidate in candidates:
+        if not candidate or candidate in checked:
+            continue
+        checked.append(candidate)
+        try:
+            probe = subprocess.run(
+                [candidate, "-c", "import jsonschema"],
+                cwd=ROOT,
+                stdout=subprocess.DEVNULL,
+                stderr=subprocess.DEVNULL,
+            )
+        except OSError:
+            continue
+        if probe.returncode == 0:
+            return candidate
+    raise RuntimeError(
+        "no controller Python can import jsonschema; refusing to start lanes before validation is runnable "
+        f"(checked={checked}; set WORKFLOW_VALIDATION_PYTHON to a prepared interpreter)"
+    )
+
+
+def run_validation(summary_dir: Path, validation_python: str | None = None) -> dict[str, Any]:
     truthmark_candidates = [
         shutil.which("truthmark"),
         "/opt/data/.local/bin/truthmark",
@@ -783,9 +816,10 @@ def run_validation(summary_dir: Path) -> dict[str, Any]:
     )
     validation_env = os.environ.copy()
     validation_env["PATH"] = f"{Path(truthmark).parent}:{validation_env.get('PATH', '')}"
+    validation_python = validation_python or controller_validation_python()
     commands = [
-        [sys.executable, "scripts/validate_repository.py"],
-        [sys.executable, "scripts/test_workflow_evaluation_contract.py"],
+        [validation_python, "scripts/validate_repository.py"],
+        [validation_python, "scripts/test_workflow_evaluation_contract.py"],
         ["git", "diff", "--check"],
         [truthmark, "check", "--json"],
         [truthmark, "index", "--json"],
@@ -866,8 +900,9 @@ def main(argv: list[str] | None = None) -> int:
         raise SystemExit(f"Unknown/non-active sequence IDs: {unknown}; active={sorted(valid)}")
     if args.max_parallel < 1:
         raise SystemExit("--max-parallel must be >= 1")
+    validation_python = None if args.dry_run else controller_validation_python()
 
-    production_lock_fd = None if args.prepare_only or args.dry_run else acquire_production_lock()
+    production_lock_fd = None
     treatment_profiles = args.treatment_profiles or []
     registry = load_json(ROOT / "data/workflow-sessions.json")
 
@@ -885,6 +920,9 @@ def main(argv: list[str] | None = None) -> int:
     def treatment_gate(sequence_id: str) -> tuple[bool, str]:
         return workflow.baseline_v2_treatment_gate(workflow.load_sequence(sequence_id), ROOT)
 
+    def baseline_run_gate(sequence_id: str) -> tuple[bool, str]:
+        return workflow.baseline_v2_pilot_run_gate(workflow.load_sequence(sequence_id), ROOT)
+
     if args.prepare_only and treatment_profiles:
         for sequence_id in sequences:
             passed, reason = treatment_gate(sequence_id)
@@ -899,8 +937,10 @@ def main(argv: list[str] | None = None) -> int:
             baseline_state=baseline_state,
             profile_state=profile_state,
             treatment_gate=treatment_gate,
+            baseline_run_gate=baseline_run_gate,
         )
     )
+    production_lock_fd = None if args.prepare_only or args.dry_run else acquire_production_lock()
     timestamp = dt.datetime.now(dt.UTC).strftime("%Y%m%dT%H%M%S%fZ")
     run_root = args.lane_root / f"workflow-matrix-{timestamp}-p{os.getpid()}-r{args.replicate_index}"
     runner_args: list[str] = []
@@ -1015,7 +1055,7 @@ def main(argv: list[str] | None = None) -> int:
         refresh_generated_runbook()
         if not args.prepare_only and merge_summary.get("merged_session_count", 0):
             refresh_cumulative_usage_audit()
-        validation = run_validation(run_root)
+        validation = run_validation(run_root, validation_python)
         if not args.prepare_only and not validation["passed"]:
             rollback_matrix_publication(
                 registry_path,

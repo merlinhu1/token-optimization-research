@@ -185,28 +185,40 @@ def render() -> str:
             f"Current runnable treatment profiles: {runnable_profile_text}. Historical profiles marked `historical-profile` are occupied evidence identities and cannot be rerun in place."
         )
         blocked_gates = []
+        pilot_run_states: dict[str, tuple[bool, str]] = {}
         for sequence in sequences:
             gate_passed, gate_reason = workflow.baseline_v2_treatment_gate(sequence, ROOT)
+            pilot_run_states[sequence["id"]] = workflow.baseline_v2_pilot_run_gate(sequence, ROOT)
             if not gate_passed:
                 blocked_gates.append(f"`{sequence['id']}` ({gate_reason})")
         if blocked_gates:
+            any_pilot_allowed = any(allowed for allowed, _reason in pilot_run_states.values())
             chunks.append(
                 "Treatment protocol freezing, preparation, and execution are machine-blocked for "
                 + ", ".join(blocked_gates)
-                + ". Only the designated baseline pilot may run before its independent zero-incident audit passes."
+                + (
+                    ". Only an unoccupied designated baseline pilot identity may run before its independent zero-incident audit passes."
+                    if any_pilot_allowed
+                    else ". The failed pilot identities are occupied; no baseline rerun or treatment may run until simpler generations and new audit identities are explicitly authorized."
+                )
             )
         if pending_baselines:
             prepare_commands = "\n".join(
                 f"python3 scripts/run_sequential_workflow_matrix.py {sequence['id']} {sequence_model_flags(sequence)} --prepare-only".replace("  ", " ")
                 for sequence in pending_baselines
             )
+            runnable_pending = [
+                sequence for sequence in pending_baselines
+                if pilot_run_states.get(sequence["id"], (True, ""))[0]
+            ]
             baseline_commands = "\n".join(
                 f"python3 scripts/run_sequential_workflow_matrix.py {sequence['id']} {sequence_model_flags(sequence)}".rstrip()
-                for sequence in pending_baselines
+                for sequence in runnable_pending
             )
+            command_block = prepare_commands + (f"\n{baseline_commands}" if baseline_commands else "")
             chunks.append(
-                "Prepare and run only lanes that do not yet have a reusable operational baseline:\n\n"
-                f"```bash\n{prepare_commands}\n{baseline_commands}\n```"
+                "Provider-free preparation remains available for lanes without a reusable operational baseline; paid commands are listed only for unoccupied pilot identities:\n\n"
+                f"```bash\n{command_block}\n```"
             )
         if retained_baselines:
             unlocked_baselines = []

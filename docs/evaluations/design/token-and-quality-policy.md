@@ -26,7 +26,7 @@ Record these when the provider exposes them:
 |---|---|
 | `fresh_input_tokens` | Non-cached input tokens. |
 | `cached_input_tokens` | Cache-read input tokens. |
-| `cache_write_tokens` | Cache-write tokens. |
+| `cache_write_tokens` | Provider-reported cache-write tokens; normalize to integer `0` for OpenAI Codex because its usage events expose cache reads but no cache-write category. |
 | `output_tokens` | Visible model output tokens. |
 | `reasoning_tokens` | Provider-reported reasoning tokens. |
 | `total_provider_tokens` | Provider total or reconstructed total with formula recorded. |

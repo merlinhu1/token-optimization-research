@@ -141,6 +141,7 @@ class CodexUsageAccountingTest(unittest.TestCase):
         self.assertEqual(summary["total_provider_tokens"], 270)
         self.assertEqual(summary["fresh_input_tokens"], 50)
         self.assertEqual(summary["cached_input_tokens"], 200)
+        self.assertEqual(summary["cache_write_tokens"], 0)
         self.assertEqual(summary["output_tokens"], 20)
         self.assertEqual(summary["reasoning_tokens"], 7)
         codex_usage = summary["codex_usage"]
@@ -311,11 +312,14 @@ class ActiveCampaignArchitectureTest(unittest.TestCase):
                 f"--workflow-model {gate['model']} --workflow-reasoning-effort {gate['reasoning_effort']}"
             )
             baseline_command = f"python3 scripts/run_sequential_workflow_matrix.py {sequence_id} {flags}\n"
+            pilot_allowed, _pilot_reason = runner.baseline_v2_pilot_run_gate(sequence, ROOT)
             if matching:
                 current_ready.add(sequence_id)
                 self.assertNotIn(baseline_command, runbook)
-            else:
+            elif pilot_allowed:
                 self.assertIn(baseline_command, runbook)
+            else:
+                self.assertNotIn(baseline_command, runbook)
 
         for session in registry["sessions"]:
             if (
@@ -3326,6 +3330,42 @@ class MatrixLifecycleContractTest(unittest.TestCase):
             1,
         )
 
+    def test_plan_requires_explicit_baseline_gate(self) -> None:
+        parameter = inspect.signature(matrix.plan_workflow_jobs).parameters["baseline_run_gate"]
+        self.assertIs(parameter.default, inspect.Parameter.empty)
+
+    def test_plan_blocks_occupied_baseline_before_creating_a_job(self) -> None:
+        for treatment_profiles in ([], ["treatment"]):
+            with self.subTest(treatment_profiles=treatment_profiles):
+                with self.assertRaisesRegex(ValueError, "pilot identity is occupied"):
+                    matrix.plan_workflow_jobs(
+                        ["seq"],
+                        treatment_profiles,
+                        baseline_state=lambda _sequence: "missing",
+                        profile_state=lambda _sequence, _profile: "missing",
+                        baseline_run_gate=lambda _sequence: (False, "pilot identity is occupied"),
+                    )
+
+    def test_controller_validation_python_fails_closed_without_jsonschema(self) -> None:
+        failed_probe = mock.Mock(returncode=1)
+        with (
+            mock.patch.dict(os.environ, {}, clear=True),
+            mock.patch.object(matrix.sys, "executable", "/missing/controller-python"),
+            mock.patch.object(matrix.shutil, "which", return_value="/missing/path-python"),
+            mock.patch.object(matrix.subprocess, "run", return_value=failed_probe) as run_probe,
+        ):
+            with self.assertRaisesRegex(RuntimeError, "refusing to start lanes before validation is runnable"):
+                matrix.controller_validation_python()
+        self.assertEqual(run_probe.call_count, 2)
+
+    def test_controller_validation_python_honors_prepared_override(self) -> None:
+        with (
+            mock.patch.dict(os.environ, {"WORKFLOW_VALIDATION_PYTHON": "/prepared/python"}, clear=True),
+            mock.patch.object(matrix.subprocess, "run", return_value=mock.Mock(returncode=0)) as run_probe,
+        ):
+            self.assertEqual(matrix.controller_validation_python(), "/prepared/python")
+        self.assertEqual(run_probe.call_args.args[0], ["/prepared/python", "-c", "import jsonschema"])
+
     def test_failed_lane_cannot_publish(self) -> None:
         self.assertFalse(
             matrix.publication_allowed(False, [{"exit_code": 1, "produced_session_ids": ["failed"]}])
@@ -3352,6 +3392,7 @@ class MatrixLifecycleContractTest(unittest.TestCase):
             ["terminal-rtk", "terminal-codegraph"],
             baseline_state=lambda _sequence: "missing",
             profile_state=lambda _sequence, _profile: "missing",
+            baseline_run_gate=lambda _sequence: (True, "unoccupied pilot identity"),
         )
         self.assertEqual(jobs, [(SEQUENCE_ID, "baseline-bare-codex")])
 
@@ -3813,6 +3854,7 @@ class MatrixLifecycleContractTest(unittest.TestCase):
                 [],
                 baseline_state=lambda _sequence: "occupied",
                 profile_state=lambda _sequence, _profile: "missing",
+                baseline_run_gate=lambda _sequence: (True, "unused for occupied baseline"),
             )
 
     def test_artifact_symlink_escape_is_rejected(self) -> None:
@@ -4123,12 +4165,39 @@ class BaselineV2LowComplexityContractTest(unittest.TestCase):
                 self.assertIs(qualification[key], True, (sequence["id"], key))
             self.assertTrue(all(task["production_file_count"] <= 3 for task in qualification["tasks"]))
 
-    def test_treatments_are_fail_closed_while_v2_pilot_audit_is_absent(self) -> None:
+    def test_treatments_and_baseline_reruns_are_fail_closed_after_failed_v2_pilot(self) -> None:
         document = json.loads((ROOT / "data/workflow-task-sequences.json").read_text())
         for sequence in document["sequences"]:
             passed, reason = runner.baseline_v2_treatment_gate(sequence, ROOT)
             self.assertFalse(passed)
-            self.assertIn("pilot audit is absent", reason)
+            self.assertIn("did not pass", reason)
+            rerun_allowed, rerun_reason = runner.baseline_v2_pilot_run_gate(sequence, ROOT)
+            self.assertFalse(rerun_allowed)
+            self.assertIn("pilot identity is occupied", rerun_reason)
+
+    def test_failed_v2_pilot_preserves_exact_executed_protocol_bytes(self) -> None:
+        audit = json.loads(
+            (ROOT / "sources/evaluations/audits/baseline-v2-pilot-zero-mistake.json").read_text()
+        )
+        evidence_root = ROOT / "sources/evaluations/audits/baseline-v2-pilot-20260722-failed"
+        for sequence in audit["sequences"]:
+            executed = sequence["executed_protocol"]
+            preserved_path = ROOT / executed["path"]
+            preserved_bytes = preserved_path.read_bytes()
+            self.assertEqual(hashlib.sha256(preserved_bytes).hexdigest(), executed["sha256"])
+            source_path = f"sources/evaluations/protocols/{executed['protocol_id']}.json"
+            source_bytes = subprocess.run(
+                ["git", "show", f"{audit['source_commit']}:{source_path}"],
+                cwd=ROOT,
+                capture_output=True,
+                check=True,
+            ).stdout
+            self.assertEqual(preserved_bytes, source_bytes)
+            lane_log = json.loads(
+                next(evidence_root.glob(f"{sequence['sequence_id']}--*-lane.log")).read_text()
+            )
+            self.assertEqual(lane_log["frozen_protocol"]["protocol_id"], executed["protocol_id"])
+            self.assertEqual(lane_log["frozen_protocol"]["sha256"], executed["sha256"])
 
     def test_current_v2_pilot_protocol_identity_is_unique_and_exact(self) -> None:
         script = """
@@ -4709,6 +4778,7 @@ with tempfile.TemporaryDirectory(dir=runner.ROOT / 'sources/evaluations/protocol
                 ["unit-treatment"],
                 baseline_state=lambda _sequence: "reusable",
                 profile_state=lambda _sequence, _profile: "missing",
+                baseline_run_gate=lambda _sequence: (True, "unused for reusable baseline"),
                 treatment_gate=lambda _sequence: (False, "pilot audit is absent"),
             )
         jobs = matrix.plan_workflow_jobs(
@@ -4716,6 +4786,7 @@ with tempfile.TemporaryDirectory(dir=runner.ROOT / 'sources/evaluations/protocol
             ["unit-treatment"],
             baseline_state=lambda _sequence: "reusable",
             profile_state=lambda _sequence, _profile: "missing",
+            baseline_run_gate=lambda _sequence: (True, "unused for reusable baseline"),
             treatment_gate=lambda _sequence: (True, "zero-incident pilot passed"),
         )
         self.assertEqual(jobs, [("unit-sequence-v0", "unit-treatment")])

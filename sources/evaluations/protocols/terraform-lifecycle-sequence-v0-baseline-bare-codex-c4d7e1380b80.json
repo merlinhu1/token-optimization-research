@@ -1,0 +1,393 @@
+{
+  "protocol_schema_version": 3,
+  "protocol_id": "terraform-lifecycle-sequence-v0-baseline-bare-codex-c4d7e1380b80",
+  "status": "frozen-ready-not-run",
+  "outcome": "Frozen baseline-bare-codex protocol for terraform-lifecycle-sequence-v0; no provider/model run has occurred.",
+  "frozen_at": "2026-07-21",
+  "hypothesis": "baseline-bare-codex produces reproducible provider-reported token and software-quality evidence for terraform-lifecycle-sequence-v0",
+  "evidence_stage_target": "reproduction",
+  "task_fixture": {
+    "fixture_id": "large-hashicorp-terraform",
+    "sequence_id": "terraform-lifecycle-sequence-v0",
+    "repository": "https://github.com/hashicorp/terraform.git",
+    "snapshot": "e02391ad384c9c38f1d7f40b853c0d2297348094",
+    "qualification_path": "sources/evaluations/fixtures/large/hashicorp-terraform/qualification-lifecycle-v0-baseline-v2.json",
+    "qualification_sha256": "a27283fbc428f53ceaa4134e16e009db111fc4220e460eb798106a1d1d27666e",
+    "timeout_seconds_per_task": 3600
+  },
+  "baseline": {
+    "profile_id": "baseline-bare-codex",
+    "provider": "openai",
+    "model": "gpt-5.6-sol",
+    "model_condition_id": "codex-openai-gpt-5-6-sol-high",
+    "reasoning_effort": "high",
+    "command": "python3 scripts/run_codex_workflow_model_condition.py --workflow-model-condition-id codex-openai-gpt-5-6-sol-high --workflow-model gpt-5.6-sol --workflow-reasoning-effort high --sequence-id terraform-lifecycle-sequence-v0 --profile-id baseline-bare-codex --timeout-per-task 3600 --protocol sources/evaluations/protocols/terraform-lifecycle-sequence-v0-baseline-bare-codex-c4d7e1380b80.json --docker-image token-eval-codex:latest"
+  },
+  "treatment": {},
+  "token_accounting_boundary": {
+    "fields": [
+      "fresh_input_tokens",
+      "cached_input_tokens",
+      "cache_write_tokens",
+      "output_tokens",
+      "reasoning_tokens",
+      "total_provider_tokens"
+    ]
+  },
+  "baseline_pool": {
+    "protocol_version": "baseline-pool-v1",
+    "protocol_fingerprint": "013661d9ebd5",
+    "descriptor": {
+      "version": "baseline-pool-v1",
+      "runner_contract_version": "workflow-runner-v9",
+      "runner_sha256": "96aa516f8b50023252fdf0d2f71234605146affadad72fc744aa73339c4a5f8b",
+      "qualification_generator_sha256": "43ee9b9f286284a416d6bb462cb0ed0a5e39168baf5604c8098a0099ed9cae00",
+      "validator_sha256": "37007c8af09decadebf5ccce035cc743c4089925c03d4cb42fa221d27f423664",
+      "sequence_id": "terraform-lifecycle-sequence-v0",
+      "sequence_contract": "feature-refactor-review",
+      "fixture_id": "large-hashicorp-terraform",
+      "fixture_scale": "large-project",
+      "initial_snapshot": {
+        "commit": "e02391ad384c9c38f1d7f40b853c0d2297348094",
+        "upstream": "https://github.com/hashicorp/terraform.git",
+        "dependency_lockfiles": []
+      },
+      "objective": "individual_tool_effectiveness",
+      "primary_metric": "cumulative provider-reported workflow tokens",
+      "tasks": [
+        {
+          "id": "terraform-lifecycle-feature-v0",
+          "order": 1,
+          "task_class": "feature-implementation",
+          "prompt_path": "sources/evaluations/fixtures/large/hashicorp-terraform/task-generations/baseline-v2/terraform-lifecycle-feature-v0/agent-prompt.txt",
+          "prompt_sha256": "ddc75418def6d44e964eefc6ade80fab7c55c0ecbcdd364ee9b504624aa172fa",
+          "seed_patch_sha256": "a049a2edb35924309d243b2959b5be357f4e7ded00ad2b1309959d53da2ccb8c",
+          "verifier_command": "sources/evaluations/fixtures/large/hashicorp-terraform/task-generations/baseline-v2/terraform-lifecycle-feature-v0/verify.sh",
+          "verifier_sha256": "ef66e235517cf87d06452b94f416751437d9eefe11c6bfb0938e8c216264ea46",
+          "controller_visible_acceptance_assets": [
+            {
+              "path": "sources/evaluations/fixtures/large/hashicorp-terraform/task-generations/baseline-v2/terraform-lifecycle-feature-v0/controller-visible/internal/policy/callback/baseline_v2_deferred_test.go",
+              "sha256": "987f39f2b7d00179d8d9677b83c42742e8bab189db9f5e8d722358a4717d14d7"
+            }
+          ],
+          "upstream_test_paths": [],
+          "compatibility_rebased_test_paths": [],
+          "expected_model_concealed_paths": [],
+          "model_concealed_paths": []
+        },
+        {
+          "id": "terraform-lifecycle-refactor-v0",
+          "order": 2,
+          "task_class": "behavior-preserving-refactor",
+          "prompt_path": "sources/evaluations/fixtures/large/hashicorp-terraform/task-generations/baseline-v2/terraform-lifecycle-refactor-v0/agent-prompt.txt",
+          "prompt_sha256": "4baeeab13cab2fe684dd869580b7a6ea67d80f568135f55aeab2e335b3c89c1a",
+          "seed_patch_sha256": "acc7bb9b2c27912fca8b2ce0d0cf352c41b67f16d8509edf7171ac6f4e9744ee",
+          "verifier_command": "sources/evaluations/fixtures/large/hashicorp-terraform/task-generations/baseline-v2/terraform-lifecycle-refactor-v0/verify.sh",
+          "verifier_sha256": "9949b38bb91421659c470f45b5076c5a2ae6aaa150268b87ab1dbbc33607c362",
+          "controller_visible_acceptance_assets": [
+            {
+              "path": "sources/evaluations/fixtures/large/hashicorp-terraform/task-generations/baseline-v2/terraform-lifecycle-refactor-v0/controller-visible/internal/configs/baseline_v2_requirement_type_test.go",
+              "sha256": "90eef783193077f2a6c7d142267dea5bf630920a7da6a6fde33cfce1852c1f4f"
+            },
+            {
+              "path": "sources/evaluations/fixtures/large/hashicorp-terraform/task-generations/baseline-v2/terraform-lifecycle-refactor-v0/controller-visible/internal/configs/parser_config_dir_test.go",
+              "sha256": "400097f0e6f777d9fbccd97a22121e2e77ddfda8afbe4385984e5f6eb9a47235"
+            }
+          ],
+          "upstream_test_paths": [],
+          "compatibility_rebased_test_paths": [],
+          "expected_model_concealed_paths": [],
+          "model_concealed_paths": []
+        },
+        {
+          "id": "terraform-lifecycle-review-v0",
+          "order": 3,
+          "task_class": "code-review-correction",
+          "prompt_path": "sources/evaluations/fixtures/large/hashicorp-terraform/task-generations/baseline-v2/terraform-lifecycle-review-v0/agent-prompt.txt",
+          "prompt_sha256": "45e02c1bdd7ddec825a02e6488375898c76c441f1fdb3bfe3e750c27f639e6df",
+          "seed_patch_sha256": "a05878cc1edbca6a0a38754d1d6f9673de521ab81efb9872e8070856905ece98",
+          "verifier_command": "sources/evaluations/fixtures/large/hashicorp-terraform/task-generations/baseline-v2/terraform-lifecycle-review-v0/verify.sh",
+          "verifier_sha256": "dd6feece56f627ec2c68b239db41c752ef3691dd7e7ab7a440246c2050a1bf85",
+          "controller_visible_acceptance_assets": [
+            {
+              "path": "sources/evaluations/fixtures/large/hashicorp-terraform/task-generations/baseline-v2/terraform-lifecycle-review-v0/controller-visible/internal/addrs/baseline_v2_checkable_test.go",
+              "sha256": "c7b2c1bd88e24e70051f1caf0ec567becc2f8841c07ca1611f66ae7b6011524c"
+            }
+          ],
+          "upstream_test_paths": [],
+          "compatibility_rebased_test_paths": [],
+          "expected_model_concealed_paths": [],
+          "model_concealed_paths": [],
+          "review_patch_path": "review-change.patch",
+          "review_patch_sha256": "9820e02bdbf682b7e5559e42ba8bf3799d4f22018d31cb8cd1621223c371cfcd"
+        }
+      ],
+      "model_facing_prompts": {
+        "rendering_contract": "sequential-model-facing-prompts-v2",
+        "profile_guidance_sha256": "f1d7a2cf7b0a7c1affd8bbb04705f073332ee6efc5f8f89f019b9e0cbacec4bb",
+        "tasks": [
+          {
+            "task_id": "terraform-lifecycle-feature-v0",
+            "order": 1,
+            "rendered_prompt_sha256": "b27fd05418d09dab22ad8550e9d42e6999db9f5f06004dbca890d67e4031cac9"
+          },
+          {
+            "task_id": "terraform-lifecycle-refactor-v0",
+            "order": 2,
+            "rendered_prompt_sha256": "6803f1e7f7cf65e4584cdfd0fb6e00f3a36ecc2e3334958913b46c3340007e49"
+          },
+          {
+            "task_id": "terraform-lifecycle-review-v0",
+            "order": 3,
+            "rendered_prompt_sha256": "a36f385a09db83f3fcab5733f841b08e18960576b4891597b526112d10a68e57"
+          }
+        ]
+      },
+      "qualification": {
+        "path": "sources/evaluations/fixtures/large/hashicorp-terraform/qualification-lifecycle-v0-baseline-v2.json",
+        "sha256": "a27283fbc428f53ceaa4134e16e009db111fc4220e460eb798106a1d1d27666e"
+      },
+      "baseline_profile": {
+        "profile_id": "baseline-bare-codex",
+        "profile_type": "control",
+        "enabled_surfaces": [
+          "codex-native-shell-edit"
+        ],
+        "disabled_overlaps": [
+          "all MCP servers",
+          "all token-saving surfaces",
+          "global Codex instructions",
+          "hooks",
+          "skills/plugins",
+          "warm indexes"
+        ]
+      },
+      "agent": {
+        "runtime_id": "codex-cli",
+        "provider": "openai",
+        "model": "gpt-5.6-sol",
+        "model_condition_id": "codex-openai-gpt-5-6-sol-high",
+        "reasoning_effort": "high"
+      },
+      "runtime_inputs": {
+        "timeout_seconds_per_task": 3600,
+        "docker_image": "token-eval-codex:latest",
+        "docker_image_identity": {
+          "image_ref": "token-eval-codex:latest",
+          "image_id": "sha256:6f86d01f2c63f5029c6bb874d8f3694c24d5cd567e3d09413eccc956ba3feafe",
+          "repo_digests": [
+            "token-eval-codex@sha256:6f86d01f2c63f5029c6bb874d8f3694c24d5cd567e3d09413eccc956ba3feafe"
+          ],
+          "repo_tags": [
+            "token-eval-codex:latest"
+          ]
+        },
+        "dockerfile_path": "sources/evaluations/fixtures/container/Dockerfile",
+        "dockerfile_sha256": "47c91967ce25014ce54879514f51d2ff0326651be1087209115eff4d358226b3",
+        "dependency_command": "go mod download",
+        "dependency_lockfiles": [],
+        "codex_runtime_condition": "codex-openai-gpt-5-6-sol-high"
+      },
+      "isolation": {
+        "prompt_delivery": "sequential-one-task-at-a-time",
+        "seed_delivery_mode": "preseeded-composite",
+        "future_tasks_visible": false,
+        "future_seed_regressions_visible": true,
+        "controller_verifier_scripts_and_canonical_copies_model_visible": false,
+        "model_visible_acceptance_asset_paths": [
+          "internal/addrs/baseline_v2_checkable_test.go",
+          "internal/configs/baseline_v2_requirement_type_test.go",
+          "internal/configs/parser_config_dir_test.go",
+          "internal/policy/callback/baseline_v2_deferred_test.go"
+        ],
+        "git_baseline_true_root_at_lane_start": true,
+        "controller_verification": "final-only",
+        "prompt_sanitizer": "sanitize_task_prompt-v1",
+        "concealment": "declared-model-concealed-paths-removed-before-root-commit",
+        "model_concealed_paths": []
+      },
+      "model_condition_override": {
+        "model_condition_id": "codex-openai-gpt-5-6-sol-high",
+        "model": "gpt-5.6-sol",
+        "reasoning_effort": "high",
+        "registry_status": "active-model-comparison",
+        "launcher": {
+          "path": "scripts/run_codex_workflow_model_condition.py",
+          "sha256": "b219d8f88e5df0fd567dff4d47e9193a602b223b2b72cf0ed3ea5c67cad5aecf"
+        }
+      }
+    }
+  },
+  "selected_execution": {
+    "descriptor_sha256": "f87d448f4b6b500741d804af101bb1b8ec5455af9ce2fa8197661555e578968e",
+    "descriptor": {
+      "version": "execution-condition-v1",
+      "sequence_id": "terraform-lifecycle-sequence-v0",
+      "execution_role": "baseline",
+      "selected_profile": {
+        "profile_id": "baseline-bare-codex",
+        "profile_type": "control",
+        "component_ids": [],
+        "enabled_surfaces": [
+          "codex-native-shell-edit"
+        ],
+        "disabled_overlaps": [
+          "all MCP servers",
+          "all token-saving surfaces",
+          "global Codex instructions",
+          "hooks",
+          "skills/plugins",
+          "warm indexes"
+        ],
+        "registry_entry_sha256": "ac6fe54b3c2150c70deb4e8c22a742e18e6f377ecbc25617053b55c557b6dea6",
+        "registry_entry": {
+          "id": "baseline-bare-codex",
+          "profile_type": "control",
+          "objective_scope": "control",
+          "status": "active-control",
+          "substrate": "codex-cli",
+          "enabled_surfaces": [
+            "codex-native-shell-edit"
+          ],
+          "disabled_overlaps": [
+            "all MCP servers",
+            "all token-saving surfaces",
+            "global Codex instructions",
+            "hooks",
+            "skills/plugins",
+            "warm indexes"
+          ],
+          "components": [],
+          "native_agent_tools_allowed": [
+            "shell_command_execution",
+            "file_editing",
+            "plain_file_read_search",
+            "git",
+            "verifier_commands"
+          ],
+          "forbidden_surfaces": [
+            "lean-ctx",
+            "codegraph",
+            "serena",
+            "rtk",
+            "lowfat",
+            "tokenjuice",
+            "repomix",
+            "mex",
+            "cavemem",
+            "cartog",
+            "all unlisted retrieval/compression/memory/token-saving tools"
+          ],
+          "install": {
+            "policy": "Run Codex from a fresh lane-specific CODEX_HOME with auth only, no MCP servers, no global instructions, no hooks, no skills/plugins, isolated HOME/PYTHONUSERBASE/XDG/TMPDIR, and a preflight artifact proving empty MCP config."
+          },
+          "reset": {
+            "policy": "Delete the lane-specific Codex home and run-local HOME/PYTHONUSERBASE/XDG/TMPDIR before each run; verify no stale indexes or generated profile files survive."
+          },
+          "notes": "Canonical Codex CLI no-MCP substrate baseline. Codex native shell/edit/file/git/verifier operations are allowed; MCP, retrieval, compression, memory, token-saving add-ons, global instructions, hooks, skills/plugins, and warm indexes are forbidden."
+        }
+      },
+      "model_facing_prompts": {
+        "rendering_contract": "sequential-model-facing-prompts-v2",
+        "profile_guidance_sha256": "f1d7a2cf7b0a7c1affd8bbb04705f073332ee6efc5f8f89f019b9e0cbacec4bb",
+        "tasks": [
+          {
+            "task_id": "terraform-lifecycle-feature-v0",
+            "order": 1,
+            "rendered_prompt_sha256": "b27fd05418d09dab22ad8550e9d42e6999db9f5f06004dbca890d67e4031cac9"
+          },
+          {
+            "task_id": "terraform-lifecycle-refactor-v0",
+            "order": 2,
+            "rendered_prompt_sha256": "6803f1e7f7cf65e4584cdfd0fb6e00f3a36ecc2e3334958913b46c3340007e49"
+          },
+          {
+            "task_id": "terraform-lifecycle-review-v0",
+            "order": 3,
+            "rendered_prompt_sha256": "a36f385a09db83f3fcab5733f841b08e18960576b4891597b526112d10a68e57"
+          }
+        ]
+      },
+      "tool_adapter": {
+        "tool_id": null,
+        "tool_manifest": "baseline-native-codex-tools",
+        "tool_config": null,
+        "binary_identity": null,
+        "source_identity": []
+      },
+      "runtime": {
+        "docker_image": "token-eval-codex:latest",
+        "docker_image_identity": {
+          "image_ref": "token-eval-codex:latest",
+          "image_id": "sha256:6f86d01f2c63f5029c6bb874d8f3694c24d5cd567e3d09413eccc956ba3feafe",
+          "repo_digests": [
+            "token-eval-codex@sha256:6f86d01f2c63f5029c6bb874d8f3694c24d5cd567e3d09413eccc956ba3feafe"
+          ],
+          "repo_tags": [
+            "token-eval-codex:latest"
+          ]
+        },
+        "dockerfile_path": "sources/evaluations/fixtures/container/Dockerfile",
+        "dockerfile_sha256": "47c91967ce25014ce54879514f51d2ff0326651be1087209115eff4d358226b3",
+        "fixture_runner_path": "scripts/run_codex_fixture_evaluation.py",
+        "fixture_runner_sha256": "6fa8271b89a577706ea0bbffcc8e4521831f41b646ed9519369efee3642fe41c",
+        "mcp_probe_path": "scripts/probe_mcp_stdio.py",
+        "mcp_probe_sha256": "7c06ea36ee5cac933a97140b84a41405fc99b45152388e8d7c6659136af698fd",
+        "codex_entrypoint_path": "sources/evaluations/fixtures/container/codex-entrypoint.sh",
+        "codex_entrypoint_sha256": "8715fe37cb1fa3823f5f05493bc9681ce7ffc72126dfec4d64d448762c550c3c",
+        "timeout_seconds_per_task": 3600,
+        "network_isolation": {
+          "provider_access": true,
+          "model_shell_network_access": false,
+          "model_shell_enforcement": "seccomp denies AF_INET and AF_INET6 socket creation for the shell process and descendants",
+          "codex_web_search": "disabled",
+          "external_retrieval_audit": "fail-closed"
+        },
+        "isolation_policy": "fresh lane-specific Codex home/tool data; provider-only network with model shell and Codex web search disabled; sequential one-task prompt delivery; controller seed/verifier scripts excluded while declared model-visible acceptance tests are retained"
+      },
+      "dependencies": {
+        "command": "go mod download",
+        "command_sha256": "42a8263a643ccbe692d70752ffdd8cea328fc2d3190677df1485ee06f55b350a",
+        "lockfiles": []
+      },
+      "agent_condition": {
+        "runtime_id": "codex-cli",
+        "provider": "openai",
+        "model": "gpt-5.6-sol",
+        "model_condition_id": "codex-openai-gpt-5-6-sol-high",
+        "reasoning_effort": "high",
+        "codex_version_condition": "captured-at-run-and-bound-to-record"
+      },
+      "isolation": {
+        "prompt_delivery": "sequential-one-task-at-a-time",
+        "seed_delivery_mode": "preseeded-composite",
+        "future_tasks_visible": false,
+        "future_seed_regressions_visible": true,
+        "controller_verification": "final-only",
+        "controller_verifier_scripts_and_canonical_copies_model_visible": false,
+        "model_visible_acceptance_asset_paths": [
+          "internal/addrs/baseline_v2_checkable_test.go",
+          "internal/configs/baseline_v2_requirement_type_test.go",
+          "internal/configs/parser_config_dir_test.go",
+          "internal/policy/callback/baseline_v2_deferred_test.go"
+        ],
+        "model_concealed_paths": []
+      },
+      "baseline_pool_reference": {
+        "protocol_version": "baseline-pool-v1",
+        "protocol_fingerprint": "013661d9ebd5",
+        "comparison_policy": "paired baseline and treatment must share this baseline pool fingerprint and replicate"
+      },
+      "model_condition_override": {
+        "model_condition_id": "codex-openai-gpt-5-6-sol-high",
+        "model": "gpt-5.6-sol",
+        "reasoning_effort": "high",
+        "registry_status": "active-model-comparison",
+        "launcher": {
+          "path": "scripts/run_codex_workflow_model_condition.py",
+          "sha256": "b219d8f88e5df0fd567dff4d47e9193a602b223b2b72cf0ed3ea5c67cad5aecf"
+        }
+      }
+    }
+  }
+}
