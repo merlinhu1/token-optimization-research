@@ -371,21 +371,21 @@ class ManifestAndProtocolContractTest(unittest.TestCase):
             validate_repository.validate_compact_manifest(root, "test", errors)
         self.assertTrue(any("manifest" in error for error in errors))
 
-    def test_active_default_is_gpt_5_6_terra_medium(self) -> None:
-        self.assertEqual(runner.DEFAULT_WORKFLOW_MODEL_CONDITION_ID, "codex-openai-gpt-5-6-terra-medium")
-        self.assertEqual(runner.DEFAULT_WORKFLOW_MODEL, "gpt-5.6-terra")
-        self.assertEqual(runner.DEFAULT_WORKFLOW_REASONING_EFFORT, "medium")
+    def test_active_default_is_gpt_5_6_luna_xhigh(self) -> None:
+        self.assertEqual(runner.DEFAULT_WORKFLOW_MODEL_CONDITION_ID, "codex-openai-gpt-5-6-luna-xhigh")
+        self.assertEqual(runner.DEFAULT_WORKFLOW_MODEL, "gpt-5.6-luna")
+        self.assertEqual(runner.DEFAULT_WORKFLOW_REASONING_EFFORT, "xhigh")
         registry = json.loads((ROOT / "data/evaluation-agent-runtimes.json").read_text())
         active = [item for item in registry["model_conditions"] if item["status"] == "active-default"]
-        self.assertEqual([item["id"] for item in active], ["codex-openai-gpt-5-6-terra-medium"])
+        self.assertEqual([item["id"] for item in active], ["codex-openai-gpt-5-6-luna-xhigh"])
 
-    def test_active_sequences_bind_composite_v3_qualifications(self) -> None:
+    def test_active_sequences_bind_composite_v4_qualifications(self) -> None:
         for sequence_id in runner.active_sequence_ids():
-            self.assertTrue(runner.load_sequence(sequence_id)["qualification_path"].endswith("qualification-composite-v3.json"))
+            self.assertTrue(runner.load_sequence(sequence_id)["qualification_path"].endswith("qualification-composite-v4.json"))
 
     def test_current_protocol_fingerprint_matches_runner(self) -> None:
         seq = runner.load_sequence(SEQUENCE_ID)
-        protocol = json.loads((ROOT / "sources/evaluations/protocols/fastify-production-gpt-5.6-terra-medium-v5.json").read_text())
+        protocol = json.loads((ROOT / "sources/evaluations/protocols/fastify-production-gpt-5.6-luna-xhigh-v6.json").read_text())
         expected = runner.baseline_protocol_fingerprint(seq)
         self.assertEqual(protocol["baseline_pool"]["protocol_fingerprint"], expected)
         self.assertEqual(protocol["baseline_pool"]["descriptor"], runner.baseline_protocol_descriptor(seq))
@@ -405,7 +405,7 @@ class ManifestAndProtocolContractTest(unittest.TestCase):
     def test_protocol_timeout_mismatch_rejects(self) -> None:
         seq = runner.load_sequence(SEQUENCE_ID)
         args = mock.Mock(
-            protocol="sources/evaluations/protocols/fastify-production-gpt-5.6-terra-medium-v5.json",
+            protocol="sources/evaluations/protocols/fastify-production-gpt-5.6-luna-xhigh-v6.json",
             prepare_only=False,
             no_provider=False,
             timeout_per_task=1,
@@ -417,7 +417,7 @@ class ManifestAndProtocolContractTest(unittest.TestCase):
     def test_protocol_docker_image_mismatch_rejects(self) -> None:
         seq = runner.load_sequence(SEQUENCE_ID)
         args = mock.Mock(
-            protocol="sources/evaluations/protocols/fastify-production-gpt-5.6-terra-medium-v5.json",
+            protocol="sources/evaluations/protocols/fastify-production-gpt-5.6-luna-xhigh-v6.json",
             prepare_only=True,
             no_provider=True,
             timeout_per_task=3600,
@@ -429,7 +429,7 @@ class ManifestAndProtocolContractTest(unittest.TestCase):
     def test_baseline_protocol_cannot_validate_treatment(self) -> None:
         seq = runner.load_sequence(SEQUENCE_ID)
         args = mock.Mock(
-            protocol="sources/evaluations/protocols/fastify-production-gpt-5.6-terra-medium-v5.json",
+            protocol="sources/evaluations/protocols/fastify-production-gpt-5.6-luna-xhigh-v6.json",
             prepare_only=True,
             no_provider=True,
             timeout_per_task=3600,

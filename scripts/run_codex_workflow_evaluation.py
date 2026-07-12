@@ -106,10 +106,10 @@ def build_profile_meta() -> dict[str, dict[str, Any]]:
 
 PROFILE_META: dict[str, dict[str, Any]] = build_profile_meta()
 
-DEFAULT_WORKFLOW_MODEL_CONDITION_ID = "codex-openai-gpt-5-6-terra-medium"
-DEFAULT_WORKFLOW_MODEL = "gpt-5.6-terra"
-DEFAULT_WORKFLOW_REASONING_EFFORT = "medium"
-RUNNER_CONTRACT_VERSION = "workflow-runner-v5"
+DEFAULT_WORKFLOW_MODEL_CONDITION_ID = "codex-openai-gpt-5-6-luna-xhigh"
+DEFAULT_WORKFLOW_MODEL = "gpt-5.6-luna"
+DEFAULT_WORKFLOW_REASONING_EFFORT = "xhigh"
+RUNNER_CONTRACT_VERSION = "workflow-runner-v6"
 MAX_CODEX_OPERATIONAL_RETRIES = 1
 
 
@@ -127,7 +127,7 @@ def validate_default_model_condition() -> None:
         "reasoning_effort": DEFAULT_WORKFLOW_REASONING_EFFORT,
         "usage_accounting": "provider-billed Codex JSONL usage extracted by scripts/extract_codex_usage.py",
     }]:
-        raise ValueError("active workflow model condition must be codex-openai-gpt-5-6-terra-medium")
+        raise ValueError("active workflow model condition must be codex-openai-gpt-5-6-luna-xhigh")
 
 LEAKY_PROMPT_LINE_PATTERNS = [
     re.compile(r"^Issue source:.*$", re.IGNORECASE),
