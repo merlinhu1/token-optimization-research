@@ -390,18 +390,17 @@ class ActiveCampaignArchitectureTest(unittest.TestCase):
                     session["baseline_pool"]["protocol_fingerprint"],
                 )
                 grouped.setdefault(key, set()).add(session["replicate_index"])
-        pilot = json.loads((ROOT / "sources/evaluations/audits/baseline-v3-pilot-zero-mistake.json").read_text())
         sequences = json.loads((ROOT / "data/workflow-task-sequences.json").read_text())
-        active_v3 = {
-            sequence["id"]
-            for sequence in sequences["sequences"]
-            if sequence.get("task_family_generation") == "baseline-v3"
-        }
-        current_pools = {
-            (entry["sequence_id"], entry["baseline_pool_fingerprint"])
-            for entry in pilot["sequences"]
-            if entry["sequence_id"] in active_v3 and entry.get("passed") is True
-        }
+        current_pools = set()
+        for sequence in sequences["sequences"]:
+            if sequence.get("task_family_generation") not in {"baseline-v2", "baseline-v3", "baseline-v4"}:
+                continue
+            protocol, _document = runner.current_baseline_v2_protocol(
+                sequence,
+                sequence.get("mistake_gate", {}),
+                ROOT,
+            )
+            current_pools.add((sequence["id"], protocol["baseline_pool_fingerprint"]))
         self.assertGreaterEqual(len(grouped), 6)
         for (sequence_id, pool), replicates in grouped.items():
             rendered = (
@@ -3651,7 +3650,7 @@ class MatrixLifecycleContractTest(unittest.TestCase):
             root = Path(tmp)
             artifact = "sources/evaluations/workflow-sessions/unit"
             (root / artifact).mkdir(parents=True)
-            transaction: dict[str, Any] = {}
+            transaction: dict[str, Any] = {"skipped": "one or more lanes failed"}
             lane = {"checkout": str(root), "produced_session_ids": ["unit"], "expected_session_binding": {}}
             with (
                 mock.patch.object(matrix, "ROOT", root),
@@ -3664,6 +3663,7 @@ class MatrixLifecycleContractTest(unittest.TestCase):
                     matrix.merge_lanes([lane], 0, transaction)
             self.assertTrue(transaction["registry_replacement_attempted"])
             self.assertEqual(transaction["merged_session_ids"], ["unit"])
+            self.assertNotIn("skipped", transaction)
 
     def test_outer_transaction_rolls_back_tracked_artifact_on_keyboard_interrupt(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
@@ -4226,7 +4226,8 @@ class BaselineV3LowComplexityContractTest(unittest.TestCase):
                 gate["pilot_audit_path"],
                 f"sources/evaluations/audits/{generation}-pilot-zero-mistake.json",
             )
-            expected_gate_status = "passed-zero-incident" if sequence["id"] == "fastify-lifecycle-sequence-v0" else "provider-pilot-required"
+            treatment_ready, _reason = runner.baseline_v2_treatment_gate(sequence, ROOT)
+            expected_gate_status = "passed-zero-incident" if treatment_ready else "provider-pilot-required"
             self.assertEqual(gate["status"], expected_gate_status)
 
             for task in sequence["tasks"]:
@@ -4333,12 +4334,14 @@ class BaselineV3LowComplexityContractTest(unittest.TestCase):
                 self.assertTrue(receipt.is_file())
                 self.assertNotIn(prepare_command, runbook)
             else:
-                self.assertFalse(receipt.exists())
-                self.assertIn(prepare_command, runbook)
-                if v4_authorized:
-                    self.assertIn(paid_command, runbook.splitlines())
-                else:
+                if receipt.exists():
                     self.assertNotIn(paid_command, runbook.splitlines())
+                else:
+                    self.assertIn(prepare_command, runbook)
+                    if v4_authorized:
+                        self.assertIn(paid_command, runbook.splitlines())
+                    else:
+                        self.assertNotIn(paid_command, runbook.splitlines())
         if v4_authorized:
             self.assertNotIn("Paid pilot execution is not authorized", runbook)
             self.assertIn("Only an unoccupied designated baseline pilot identity may run", runbook)
@@ -5271,6 +5274,7 @@ class BaselineV3LowComplexityContractTest(unittest.TestCase):
         with tempfile.TemporaryDirectory() as tmp:
             lane_root = Path(tmp) / "lanes"
             with mock.patch.object(matrix, "controller_validation_python", return_value=sys.executable), \
+                 mock.patch.object(matrix.workflow, "baseline_v2_pilot_run_gate", return_value=(True, "unit authorized")), \
                  mock.patch.object(matrix, "acquire_production_lock") as acquire_lock, \
                  mock.patch.object(matrix.workflow, "reserve_baseline_pilot_attempt") as reserve_attempt, \
                  mock.patch.object(matrix, "run_flow_lane") as run_lane:
@@ -5402,16 +5406,19 @@ class BaselineV3LowComplexityContractTest(unittest.TestCase):
                 self.assertFalse(rerun_allowed)
                 self.assertIn("immutable attempt receipt", rerun_reason)
             else:
-                self.assertFalse(passed)
-                self.assertIn("pilot audit is absent", reason)
                 receipt = runner.baseline_pilot_attempt_receipt_path(sequence, ROOT)
                 if receipt.exists():
+                    self.assertTrue(passed, reason)
+                    self.assertIn("zero-incident", reason)
                     self.assertFalse(rerun_allowed, rerun_reason)
                     self.assertIn("immutable attempt receipt", rerun_reason)
                 elif authorization["paid_pilot_authorized"] is True:
+                    self.assertFalse(passed)
+                    self.assertIn("exactly one entry", reason)
                     self.assertTrue(rerun_allowed, rerun_reason)
                     self.assertIn("no prior Baseline V4 pilot attempt", rerun_reason)
                 else:
+                    self.assertFalse(passed)
                     self.assertFalse(rerun_allowed, rerun_reason)
                     self.assertIn("not authorized", rerun_reason)
         for slug in ("beets", "terraform"):
@@ -5449,12 +5456,15 @@ class BaselineV3LowComplexityContractTest(unittest.TestCase):
             text = (ROOT / relative).read_text()
             self.assertIn("active Baseline V3/V4", text, relative)
             self.assertNotIn("active Baseline V3 zero-mistake", text, relative)
-        for sequence_id in ("beets-lifecycle-sequence-v0", "terraform-lifecycle-sequence-v0"):
-            sequence = sequences[sequence_id]
-            self.assertEqual(
-                sequence["readiness_blockers"],
-                ["provider-backed strongest-model zero-mistake Baseline V4 pilot is authorized but not executed or independently audited"],
-            )
+        beets = sequences["beets-lifecycle-sequence-v0"]
+        self.assertEqual(beets["readiness_blockers"], [])
+        self.assertEqual(beets["mistake_gate"]["status"], "passed-zero-incident")
+        self.assertTrue(runner.baseline_v2_treatment_gate(beets, ROOT)[0])
+        terraform = sequences["terraform-lifecycle-sequence-v0"]
+        self.assertEqual(
+            terraform["readiness_blockers"],
+            ["provider-backed strongest-model zero-mistake Baseline V4 pilot is authorized but not executed or independently audited"],
+        )
 
         stale_sequences = copy.deepcopy(document)
         for sequence in stale_sequences["sequences"]:
@@ -5502,8 +5512,12 @@ class BaselineV3LowComplexityContractTest(unittest.TestCase):
                 for lane in fixture["future_evaluation_lanes"]
                 if lane.get("status", "").startswith("blocked-baseline-")
             ]
-            self.assertTrue(blocked)
-            self.assertEqual(set(blocked), {"blocked-baseline-v4-pilot"})
+            treatment_ready, _reason = runner.baseline_v2_treatment_gate(sequence, ROOT)
+            if treatment_ready:
+                self.assertEqual(blocked, [])
+            else:
+                self.assertTrue(blocked)
+                self.assertEqual(set(blocked), {"blocked-baseline-v4-pilot"})
         for path in (
             ROOT / "sources/evaluations/fixtures/medium/beetbox-beets/task-generations/baseline-v2/README.md",
             ROOT / "sources/evaluations/fixtures/large/hashicorp-terraform/task-generations/baseline-v2/README.md",
