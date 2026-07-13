@@ -29,7 +29,7 @@ Detailed evidence remains in reports, dossiers, structured data, and evaluation 
 - As of 2026-07-01, all 42 tool dossiers have pinned source-snapshot metadata and pass dossier-quality validation.
 - The 2026-06-28 corrective knowledge-graph and agent-memory leads were promoted from `lead` to `source-logic` on 2026-06-29.
 - Phase 2 focuses on persistent workflow simulation, provider-billed token accounting, quality standards, and a broader source-logic stack hypothesis portfolio.
-- Terraform and Beets are the two immediate production comparison workflows, with three tasks each. Fastify retains one current qualified reference contract but is excluded from this production pair.
+- Terraform and Beets are the two immediate production comparison workflows, with three tasks each. Fastify is a qualified five-task hard calibration lane: use it for operational completion, agent-declared completion, provider-token demand, and failure-pattern evidence, not as an accepted production baseline.
 - Active checkout-generated qualification must prove that every selected regression merges into one composite broken start, every selected verifier fails on that broken state, and the complete cumulative verifier passes on the fixed snapshot.
 - The accepted Beets baseline passed the strengthened Tidal contract and quality review at 4/5 with 7,642,781 provider tokens. The accepted Terraform baseline passed quality review at 4/5 with 18,004,662 provider tokens. Together, the current-pool bare baselines total 25,647,443 provider tokens and are reusable for paired treatment.
 - Fastify session `baseline-fastify-20260713-p-292cc70dff18-r0` completed all scripted verifiers with 90,553,295 provider tokens but was rejected at quality review (2/5). Focused upstream tests exposed nine failures spanning max-parameter framework errors, the shared Content-Type cache, timeout cleanup, and log-controller behavior; the source also omitted the `kLogController` symbol export. Its tokens are excluded from objective use, and its compact evidence remains recoverable from Git commit `e4be0b3`.
@@ -76,6 +76,7 @@ The detailed research corpus remains the evidence base.
 
 - ../../../../README.md
 - ../../../../docs/research/roadmap.md
+- ../../../../docs/research/hard-lane-evidence.md
 - ../../../../docs/reports/phase-1-compatibility-safe-token-saving-stacks.md
 - ../../../../data/repositories.json
 - ../../../../data/tool-analysis-backlog.json

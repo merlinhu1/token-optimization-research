@@ -34,7 +34,7 @@
       "id": "medium-fastify-fastify",
       "status": "qualified-fixture",
       "fixture_scale": "medium-project",
-      "evaluation_use": "primary-objective",
+      "evaluation_use": "calibration",
       "repository": {
         "url": "https://github.com/fastify/fastify",
         "id": "fastify__fastify",
@@ -69,9 +69,8 @@
         "root": "execution-time scratch; non-recoverable after compact bundling"
       },
       "future_evaluation_lanes": [
-        "native-baseline-reproduction",
-        "individual-tool-reproduction",
-        "stack-ablation-reproduction"
+        "hard-lane-baseline-calibration",
+        "hard-lane-treatment-calibration"
       ],
       "candidate_profiles": [
         "baseline-bare-codex",
@@ -82,9 +81,12 @@
         "serena-cavemem-lightweight",
         "lower-intervention-codegraph"
       ],
-      "blockers": [],
+      "blockers": [
+        "No objective-accepted bare baseline after two five-task Luna xhigh attempts."
+      ],
       "caveats": [
-        "Runner-enabled does not mean objective-accepted; each session still requires software-quality review."
+        "Agent-declared completion is not verifier-confirmed correctness.",
+        "Hard-lane results are diagnostic/calibration evidence and cannot replace the Terraform/Beets production comparison."
       ],
       "tasks": [
         "fastify-max-param-length-regression",
@@ -98,7 +100,23 @@
       "qualification_evidence": "sources/evaluations/fixtures/medium/fastify-fastify/qualification-composite-v5.json",
       "active_profiles": [
         "baseline-bare-codex"
-      ]
+      ],
+      "difficulty_class": "hard-lane",
+      "evidence_policy": {
+        "valid_uses": [
+          "operational completion",
+          "agent-declared completion",
+          "provider-token demand",
+          "failure localization",
+          "difficulty calibration"
+        ],
+        "invalid_uses": [
+          "verified task correctness",
+          "objective-accepted baseline",
+          "successful token-savings claim"
+        ],
+        "comparison_rule": "Compare correctness and token usage jointly; lower tokens are favorable only when verified correctness is no worse."
+      }
     },
     {
       "id": "medium-beetbox-beets",
