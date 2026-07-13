@@ -2641,8 +2641,10 @@ def validate_baseline_v3_qualification_audit(errors: list[str]) -> None:
     validate_provider_free_numbers(audit)
     audit_sequence_items = [item for item in audit.get("sequences", []) if isinstance(item, dict)]
     protocol_items = [item for item in audit.get("protocols", []) if isinstance(item, dict)]
+    historical_protocol_items = [item for item in audit.get("historical_protocols", []) if isinstance(item, dict)]
     audit_sequence_ids = [item.get("sequence_id") for item in audit_sequence_items]
     protocol_sequence_ids = [item.get("sequence_id") for item in protocol_items]
+    historical_protocol_sequence_ids = [item.get("sequence_id") for item in historical_protocol_items]
     audit_sequences = {item.get("sequence_id"): item for item in audit_sequence_items}
     current_refs = {item.get("sequence_id"): item for item in protocol_items}
     rehearsal = audit.get("literal_prompt_command_rehearsal")
@@ -2653,14 +2655,17 @@ def validate_baseline_v3_qualification_audit(errors: list[str]) -> None:
     )
     rehearsal_sequence_ids = [item.get("sequence_id") for item in rehearsal_items]
     rehearsal_sequences = {item.get("sequence_id"): item for item in rehearsal_items}
-    multiplicity_valid = all(
-        len(items) == len(active_sequences)
-        and len(ids) == len(set(ids))
-        for items, ids in (
-            (audit_sequence_items, audit_sequence_ids),
-            (protocol_items, protocol_sequence_ids),
-            (rehearsal_items, rehearsal_sequence_ids),
-        )
+    current_v3_sequence_ids = {"fastify-lifecycle-sequence-v0"}
+    multiplicity_valid = (
+        len(audit_sequence_items) == len(active_sequences)
+        and len(audit_sequence_ids) == len(set(audit_sequence_ids))
+        and set(protocol_sequence_ids) == current_v3_sequence_ids
+        and len(protocol_sequence_ids) == len(set(protocol_sequence_ids))
+        and len(historical_protocol_items) == len(active_sequences)
+        and set(historical_protocol_sequence_ids) == set(active_sequences)
+        and len(historical_protocol_sequence_ids) == len(set(historical_protocol_sequence_ids))
+        and len(rehearsal_items) == len(active_sequences)
+        and len(rehearsal_sequence_ids) == len(set(rehearsal_sequence_ids))
     )
     if not multiplicity_valid:
         errors.append("Baseline V3 qualification audit must not contain missing or duplicate sequence identities")
@@ -2795,12 +2800,22 @@ def validate_baseline_v3_qualification_audit(errors: list[str]) -> None:
             )
             if not receipt_valid:
                 errors.append(f"Baseline V3 immutable literal-command receipt is invalid for {task_id}")
-    if set(audit_sequences) != set(active_sequences) or set(current_refs) != set(active_sequences):
-        errors.append("Baseline V3 qualification audit must cover exactly the active sequences")
+    historical_refs = {item.get("sequence_id"): item for item in historical_protocol_items}
+    if set(audit_sequences) != set(active_sequences) or set(historical_refs) != set(active_sequences) or set(current_refs) != current_v3_sequence_ids:
+        errors.append("Baseline V3 qualification audit must cover historical sequences and only current Fastify protocols")
         return
     for sequence_id, sequence in active_sequences.items():
         entry = audit_sequences[sequence_id]
+        if sequence_id != "fastify-lifecycle-sequence-v0":
+            if "current_protocol_id" in entry or "current_protocol_path" in entry or current_refs.get(sequence_id) is not None:
+                errors.append(f"Baseline V3 audit {sequence_id} per-sequence current protocol binding is stale; superseded V3 lanes must not retain it")
+            supersession = entry.get("superseded_by", {})
+            if entry.get("execution_status") != "executed-failed-preserved" or supersession.get("task_family_generation") != "baseline-v4":
+                errors.append(f"Baseline V3 audit {sequence_id} must record its preserved failure and V4 supersession")
+            continue
         current_ref = current_refs[sequence_id]
+        if entry.get("execution_status") != "executed-passed-zero-incident":
+            errors.append("Baseline V3 audit Fastify must record the executed zero-incident outcome")
         frozen_refs = entry.get("frozen_baseline_protocols")
         protocol_rel = current_ref.get("path")
         if not isinstance(protocol_rel, str) or not protocol_rel:
@@ -3085,8 +3100,10 @@ def validate_baseline_v4_qualification_audit(errors: list[str]) -> None:
     for key in ("provider_calls", "provider_tokens"):
         if type(audit.get(key)) is not int or audit.get(key) != 0:
             errors.append(f"Baseline V4 qualification audit {key} must be strict integer zero")
-    if audit.get("passed") is not True or audit.get("paid_pilot_authorized") is not False or audit.get("treatment_unlocked") is not False:
-        errors.append("Baseline V4 qualification audit must pass provider-free while leaving paid pilot and treatment locked")
+    if audit.get("passed") is not True or type(audit.get("paid_pilot_authorized")) is not bool or type(audit.get("treatment_unlocked")) is not bool:
+        errors.append("Baseline V4 qualification audit must declare a valid provider-free qualification and boolean paid-pilot/treatment state")
+    if audit.get("paid_pilot_authorized") is False and audit.get("treatment_unlocked") is not False:
+        errors.append("Baseline V4 treatment cannot unlock before paid-pilot authorization and evidence")
     if audit.get("task_difficulty_changed") is not False or audit.get("v3_attempt_evidence_mutated") is not False:
         errors.append("Baseline V4 qualification audit must preserve task difficulty and immutable V3 evidence")
     expected_sequences = {
@@ -3203,8 +3220,10 @@ def validate_baseline_v4_qualification_audit(errors: list[str]) -> None:
         if protocol.get("task_fixture", {}).get("task_family_generation") != "baseline-v4" or protocol.get("baseline_pool", {}).get("descriptor", {}).get("task_family_generation") != "baseline-v4":
             errors.append(f"Baseline V4 protocol lacks explicit generation binding for {sequence['id']}")
         receipt_path = workflow.baseline_pilot_attempt_receipt_path(sequence, ROOT)
-        if receipt_path.exists():
-            errors.append(f"Baseline V4 provider pilot identity is already occupied: {receipt_path}")
+        if receipt_path.exists() and audit.get("paid_pilot_authorized") is not True:
+            errors.append(f"Baseline V4 provider pilot identity is occupied without recorded authorization: {receipt_path}")
+        if audit.get("treatment_unlocked") is True and not receipt_path.exists():
+            errors.append(f"Baseline V4 treatment cannot unlock before an immutable pilot receipt exists: {receipt_path}")
     for slug in ("beets", "terraform"):
         if not (ROOT / f"sources/evaluations/audits/baseline-v3-pilot-attempt-{slug}.json").is_file():
             errors.append(f"immutable Baseline V3 attempt receipt is missing for {slug}")
