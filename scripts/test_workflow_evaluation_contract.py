@@ -1283,7 +1283,7 @@ for line in sys.stdin:
         )
 
     def test_protocol_id_changes_when_frozen_controller_provenance_changes(self) -> None:
-        sequence = runner.load_sequence(SEQUENCE_ID)
+        sequence = runner.load_sequence("fastify-lifecycle-sequence-v0")
         original = contract_refresh.protocol_id(sequence, "baseline-bare-codex")
         changed_descriptor = runner.baseline_protocol_descriptor(sequence)
         changed_descriptor["validator_sha256"] = "0" * 64
@@ -2493,7 +2493,12 @@ class ManifestAndProtocolContractTest(unittest.TestCase):
             os.environ.pop(runner.PRODUCTION_LOCK_FD_ENV, None)
             held_fd = runner.acquire_provider_production_lock()
             try:
-                args = mock.Mock(prepare_only=False)
+                args = argparse.Namespace(
+                    prepare_only=False,
+                    sequence_id="fastify-lifecycle-sequence-v0",
+                    profile_id="behavior-caveman",
+                    replicate_index=0,
+                )
                 with mock.patch.object(runner, "_run_one_locked") as inner:
                     with self.assertRaisesRegex(RuntimeError, "already active"):
                         runner.run_one(args)
@@ -4312,9 +4317,13 @@ class BaselineV3LowComplexityContractTest(unittest.TestCase):
                     self.assertEqual(command_key, "reset", (sequence["id"], command_key))
                     self.assertIn(Path(fixture["setup"]["command"]).name, script_text)
 
-    def test_generated_runbook_suppresses_occupied_and_unauthorized_paid_pilots(self) -> None:
+    def test_generated_runbook_matches_current_pilot_authorization_and_occupancy(self) -> None:
         runbook = (ROOT / "docs/evaluations/operations/runbook.md").read_text()
         document = json.loads((ROOT / "data/workflow-task-sequences.json").read_text())
+        authorization = json.loads(
+            (ROOT / "sources/evaluations/audits/baseline-v4-task-family-qualification-20260722.json").read_text()
+        )
+        v4_authorized = authorization["paid_pilot_authorized"] is True
         flags = "--workflow-model-condition-id codex-openai-gpt-5-6-sol-high --workflow-model gpt-5.6-sol --workflow-reasoning-effort high"
         for sequence in document["sequences"]:
             prepare_command = f"python3 scripts/run_sequential_workflow_matrix.py {sequence['id']} {flags} --prepare-only"
@@ -4326,8 +4335,15 @@ class BaselineV3LowComplexityContractTest(unittest.TestCase):
             else:
                 self.assertFalse(receipt.exists())
                 self.assertIn(prepare_command, runbook)
-            self.assertNotIn(paid_command, runbook.splitlines())
-        self.assertIn("Paid pilot execution is not authorized", runbook)
+                if v4_authorized:
+                    self.assertIn(paid_command, runbook.splitlines())
+                else:
+                    self.assertNotIn(paid_command, runbook.splitlines())
+        if v4_authorized:
+            self.assertNotIn("Paid pilot execution is not authorized", runbook)
+            self.assertIn("Only an unoccupied designated baseline pilot identity may run", runbook)
+        else:
+            self.assertIn("Paid pilot execution is not authorized", runbook)
         self.assertNotIn("The designated pilot identities are occupied", runbook)
 
     def test_provider_free_v3_qualifications_pass_every_boundary(self) -> None:
@@ -5231,6 +5247,86 @@ class BaselineV3LowComplexityContractTest(unittest.TestCase):
         self.assertEqual(captured["cmd"], ["bash", "-c", "uv sync --group test --frozen"])
         self.assertTrue(captured["env"]["PATH"].startswith("/opt/data/bin:/opt/data/opt/go/bin:"))
 
+    def test_direct_zero_mistake_pilot_rejects_nonzero_replicate_before_lock(self) -> None:
+        sequence = next(
+            item
+            for item in json.loads((ROOT / "data/workflow-task-sequences.json").read_text())["sequences"]
+            if item.get("task_family_generation") == "baseline-v4"
+        )
+        args = argparse.Namespace(
+            prepare_only=False,
+            profile_id="baseline-bare-codex",
+            sequence_id=sequence["id"],
+            replicate_index=1,
+        )
+        with mock.patch.object(runner, "load_sequence", return_value=sequence), \
+             mock.patch.object(runner, "acquire_provider_production_lock") as acquire_lock, \
+             mock.patch.object(runner, "_run_one_locked") as locked:
+            with self.assertRaisesRegex(ValueError, "replicate_index=0"):
+                runner.run_one(args)
+        acquire_lock.assert_not_called()
+        locked.assert_not_called()
+
+    def test_matrix_zero_mistake_pilot_rejects_nonzero_replicate_before_lane_root(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            lane_root = Path(tmp) / "lanes"
+            with mock.patch.object(matrix, "controller_validation_python", return_value=sys.executable), \
+                 mock.patch.object(matrix, "acquire_production_lock") as acquire_lock, \
+                 mock.patch.object(matrix.workflow, "reserve_baseline_pilot_attempt") as reserve_attempt, \
+                 mock.patch.object(matrix, "run_flow_lane") as run_lane:
+                with self.assertRaisesRegex(ValueError, "replicate_index=0"):
+                    matrix.main([
+                        "beets-lifecycle-sequence-v0",
+                        "--replicate-index", "1",
+                        "--lane-root", str(lane_root),
+                    ])
+            self.assertFalse(lane_root.exists())
+            acquire_lock.assert_not_called()
+            reserve_attempt.assert_not_called()
+            run_lane.assert_not_called()
+
+    def test_v4_canonical_protocol_identity_ignores_noncausal_provenance_hashes(self) -> None:
+        sequences = {
+            item["id"]: item
+            for item in json.loads((ROOT / "data/workflow-task-sequences.json").read_text())["sequences"]
+        }
+        sequence = sequences["beets-lifecycle-sequence-v0"]
+        descriptor = runner.baseline_protocol_descriptor(sequence)
+        execution = runner.execution_condition_descriptor(sequence, "baseline-bare-codex")
+        mutated = copy.deepcopy(descriptor)
+        for field in runner.NON_CAUSAL_PROTOCOL_PROVENANCE_FIELDS:
+            mutated[field] = "f" * 64
+        self.assertEqual(
+            runner.canonical_protocol_id(
+                sequence,
+                "baseline-bare-codex",
+                baseline_descriptor=descriptor,
+                selected_execution=execution,
+            ),
+            runner.canonical_protocol_id(
+                sequence,
+                "baseline-bare-codex",
+                baseline_descriptor=mutated,
+                selected_execution=execution,
+            ),
+        )
+        legacy = sequences["fastify-lifecycle-sequence-v0"]
+        legacy_descriptor = runner.baseline_protocol_descriptor(legacy)
+        legacy_mutated = copy.deepcopy(legacy_descriptor)
+        legacy_mutated["validator_sha256"] = "f" * 64
+        self.assertNotEqual(
+            runner.canonical_protocol_id(
+                legacy,
+                "baseline-bare-codex",
+                baseline_descriptor=legacy_descriptor,
+            ),
+            runner.canonical_protocol_id(
+                legacy,
+                "baseline-bare-codex",
+                baseline_descriptor=legacy_mutated,
+            ),
+        )
+
     def test_v3_pilot_attempt_receipt_atomically_occupies_direct_and_matrix_gates(self) -> None:
         sequence = json.loads((ROOT / "data/workflow-task-sequences.json").read_text())["sequences"][0]
         with tempfile.TemporaryDirectory() as tmp:
@@ -5250,12 +5346,14 @@ class BaselineV3LowComplexityContractTest(unittest.TestCase):
                     sequence,
                     root=authority,
                     orchestrator="unit-matrix",
+                    replicate_index=0,
                 )
                 with self.assertRaises(FileExistsError):
                     runner.reserve_baseline_pilot_attempt(
                         sequence,
                         root=authority,
                         orchestrator="unit-direct",
+                        replicate_index=0,
                     )
             receipt_path = runner.baseline_pilot_attempt_receipt_path(sequence, authority)
             self.assertEqual(json.loads(receipt_path.read_text()), receipt)
@@ -5274,6 +5372,7 @@ class BaselineV3LowComplexityContractTest(unittest.TestCase):
                     prepare_only=False,
                     profile_id="baseline-bare-codex",
                     sequence_id=sequence["id"],
+                    replicate_index=0,
                 )
                 with mock.patch.object(runner, "ROOT", authority):
                     with self.assertRaises(ValueError):
@@ -5289,8 +5388,11 @@ class BaselineV3LowComplexityContractTest(unittest.TestCase):
                     baseline_run_gate=lambda _sequence: runner.baseline_v2_pilot_run_gate(sequence, authority),
                 )
 
-    def test_active_generation_gates_preserve_fastify_v3_and_require_v4_authorization(self) -> None:
+    def test_active_generation_gates_preserve_fastify_v3_and_current_v4_state(self) -> None:
         document = json.loads((ROOT / "data/workflow-task-sequences.json").read_text())
+        authorization = json.loads(
+            (ROOT / "sources/evaluations/audits/baseline-v4-task-family-qualification-20260722.json").read_text()
+        )
         for sequence in document["sequences"]:
             passed, reason = runner.baseline_v2_treatment_gate(sequence, ROOT)
             rerun_allowed, rerun_reason = runner.baseline_v2_pilot_run_gate(sequence, ROOT)
@@ -5302,8 +5404,16 @@ class BaselineV3LowComplexityContractTest(unittest.TestCase):
             else:
                 self.assertFalse(passed)
                 self.assertIn("pilot audit is absent", reason)
-                self.assertFalse(rerun_allowed, rerun_reason)
-                self.assertIn("not authorized", rerun_reason)
+                receipt = runner.baseline_pilot_attempt_receipt_path(sequence, ROOT)
+                if receipt.exists():
+                    self.assertFalse(rerun_allowed, rerun_reason)
+                    self.assertIn("immutable attempt receipt", rerun_reason)
+                elif authorization["paid_pilot_authorized"] is True:
+                    self.assertTrue(rerun_allowed, rerun_reason)
+                    self.assertIn("no prior Baseline V4 pilot attempt", rerun_reason)
+                else:
+                    self.assertFalse(rerun_allowed, rerun_reason)
+                    self.assertIn("not authorized", rerun_reason)
         for slug in ("beets", "terraform"):
             self.assertTrue(
                 (ROOT / f"sources/evaluations/audits/baseline-v3-pilot-attempt-{slug}.json").is_file(),
@@ -5341,9 +5451,27 @@ class BaselineV3LowComplexityContractTest(unittest.TestCase):
             self.assertNotIn("active Baseline V3 zero-mistake", text, relative)
         for sequence_id in ("beets-lifecycle-sequence-v0", "terraform-lifecycle-sequence-v0"):
             sequence = sequences[sequence_id]
-            blockers = " ".join(sequence["readiness_blockers"])
-            self.assertIn("Baseline V4", blockers)
-            self.assertNotIn("Baseline V3 pilot not yet executed", blockers)
+            self.assertEqual(
+                sequence["readiness_blockers"],
+                ["provider-backed strongest-model zero-mistake Baseline V4 pilot is authorized but not executed or independently audited"],
+            )
+
+        stale_sequences = copy.deepcopy(document)
+        for sequence in stale_sequences["sequences"]:
+            if sequence.get("task_family_generation") == "baseline-v4":
+                sequence["readiness_blockers"] = [
+                    "provider-backed strongest-model zero-mistake Baseline V4 pilot is not authorized or executed"
+                ]
+        errors: list[str] = []
+        validate_repository.validate_workflow_task_sequences(
+            stale_sequences,
+            json.loads((ROOT / "data/repository-fixtures.json").read_text()),
+            errors,
+        )
+        self.assertTrue(
+            any("authorized but not executed or independently audited" in error for error in errors),
+            errors,
+        )
 
     def test_v4_active_authorities_are_generation_consistent(self) -> None:
         sequences = json.loads((ROOT / "data/workflow-task-sequences.json").read_text())["sequences"]
@@ -5429,7 +5557,7 @@ class BaselineV3LowComplexityContractTest(unittest.TestCase):
         self.assertIs(type(audit["provider_calls"]), int)
         self.assertIs(type(audit["provider_tokens"]), int)
         self.assertEqual((audit["provider_calls"], audit["provider_tokens"]), (0, 0))
-        self.assertIs(audit["paid_pilot_authorized"], False)
+        self.assertIs(audit["paid_pilot_authorized"], True)
         self.assertIs(audit["treatment_unlocked"], False)
         for record in audit["sequences"]:
             qualification = json.loads((ROOT / record["qualification_path"]).read_text())
@@ -5472,6 +5600,76 @@ class BaselineV3LowComplexityContractTest(unittest.TestCase):
             return errors
 
         self.assertEqual(validate(audit, index, prepare_manifest), [])
+
+        def retired_migration_authority(previous_bindings: dict[str, dict[str, str]]) -> dict:
+            candidate = copy.deepcopy(audit)
+            candidate["prepare_only_refresh_pending"] = {
+                "reason": "controller replicate-index binding changed without changing baseline pool fingerprints",
+                "provider_calls": 0,
+                "provider_tokens": 0,
+                "previous_protocol_bindings": previous_bindings,
+            }
+            return candidate
+
+        def encoded_prepare_evidence(candidate_plan: dict, candidate_summary: dict) -> tuple[dict, dict[str, bytes]]:
+            candidate_files = {
+                "plan.json": (json.dumps(candidate_plan, indent=2) + "\n").encode(),
+                "matrix-summary.json": (json.dumps(candidate_summary, indent=2) + "\n").encode(),
+            }
+            candidate_manifest = copy.deepcopy(prepare_manifest)
+            candidate_manifest["files"] = {
+                name: hashlib.sha256(content).hexdigest()
+                for name, content in candidate_files.items()
+            }
+            return candidate_manifest, candidate_files
+
+        invented_bindings = {}
+        for record in audit["sequences"]:
+            sequence_id = record["sequence_id"]
+            invented_id = f"{sequence_id}-baseline-bare-codex-invented000000"
+            invented_bindings[sequence_id] = {
+                "protocol_id": invented_id,
+                "path": f"sources/evaluations/protocols/{invented_id}.json",
+                "sha256": "0" * 64,
+                "baseline_pool_fingerprint": record["baseline_pool_fingerprint"],
+            }
+        invented_audit = retired_migration_authority(invented_bindings)
+        invented_plan = json.loads(prepare_files["plan.json"])
+        invented_summary = json.loads(prepare_files["matrix-summary.json"])
+        for job in invented_plan["jobs"]:
+            job["protocol"] = invented_bindings[job["sequence_id"]]["path"]
+        invented_summary["plan"] = invented_plan
+        for lane in invented_summary["lane_results"]:
+            binding = invented_bindings[lane["sequence_id"]]
+            lane["expected_session_binding"]["frozen_protocol"] = {
+                "protocol_id": binding["protocol_id"],
+                "path": binding["path"],
+                "sha256": binding["sha256"],
+            }
+        invented_manifest, invented_files = encoded_prepare_evidence(invented_plan, invented_summary)
+        invented_errors = validate(invented_audit, index, invented_manifest, invented_files)
+        self.assertTrue(any("prepare plan" in error for error in invented_errors), invented_errors)
+        self.assertTrue(any("prepare lane identity" in error for error in invented_errors), invented_errors)
+
+        current_bindings = {
+            record["sequence_id"]: {
+                "protocol_id": record["protocol_id"],
+                "path": record["protocol_path"],
+                "sha256": record["protocol_sha256"],
+                "baseline_pool_fingerprint": record["baseline_pool_fingerprint"],
+            }
+            for record in audit["sequences"]
+        }
+        prompt_audit = retired_migration_authority(current_bindings)
+        prompt_plan = json.loads(prepare_files["plan.json"])
+        prompt_summary = json.loads(prepare_files["matrix-summary.json"])
+        selected_execution = prompt_summary["lane_results"][0]["expected_session_binding"]["selected_execution"]
+        selected_execution["descriptor"]["model_facing_prompts"]["tasks"][0]["rendered_prompt_sha256"] = "0" * 64
+        selected_execution["descriptor_sha256"] = validate_repository.canonical_json_hash(selected_execution["descriptor"])
+        prompt_manifest, prompt_files = encoded_prepare_evidence(prompt_plan, prompt_summary)
+        prompt_errors = validate(prompt_audit, index, prompt_manifest, prompt_files)
+        self.assertTrue(any("prepare lane identity" in error for error in prompt_errors), prompt_errors)
+
         tampered = copy.deepcopy(audit)
         tampered["sequences"][0]["task_count"] = False
         self.assertTrue(validate(tampered, index, prepare_manifest))

@@ -1369,6 +1369,20 @@ def validate_workflow_task_sequences(sequence_doc: dict, fixture_doc: dict, erro
             }
             if generation == "baseline-v4":
                 expected_gate["pilot_authorization_path"] = "sources/evaluations/audits/baseline-v4-task-family-qualification-20260722.json"
+                receipt_path = workflow.baseline_pilot_attempt_receipt_path(sequence, ROOT)
+                if not receipt_path.exists():
+                    authorization = json.loads(
+                        (ROOT / expected_gate["pilot_authorization_path"]).read_text()
+                    )
+                    expected_blocker = (
+                        "provider-backed strongest-model zero-mistake Baseline V4 pilot is authorized but not executed or independently audited"
+                        if authorization.get("paid_pilot_authorized") is True
+                        else "provider-backed strongest-model zero-mistake Baseline V4 pilot is not authorized or executed"
+                    )
+                    if sequence.get("readiness_blockers") != [expected_blocker]:
+                        errors.append(
+                            f"active workflow sequence {sid} readiness blocker must state: {expected_blocker}"
+                        )
             allowed_gate_fields = [key for key in expected_gate if key.startswith("allowed_")]
             gate_values_match = (
                 isinstance(gate, dict)
@@ -3026,6 +3040,12 @@ def validate_baseline_v4_evidence_identity(
             record = records_by_sequence[sequence_id]
             binding = item.get("expected_session_binding", {})
             frozen = binding.get("frozen_protocol", {}) if isinstance(binding, dict) else {}
+            expected_frozen = {
+                "protocol_id": record.get("protocol_id"),
+                "path": record.get("protocol_path"),
+                "sha256": record.get("protocol_sha256"),
+                "baseline_pool_fingerprint": record.get("baseline_pool_fingerprint"),
+            }
             try:
                 protocol = json.loads(
                     (ROOT / str(record.get("protocol_path"))).read_text(),
@@ -3045,10 +3065,10 @@ def validate_baseline_v4_evidence_identity(
                 or binding.get("profile_id") != "baseline-bare-codex"
                 or type(binding.get("replicate_index")) is not int
                 or binding.get("replicate_index") != 0
-                or frozen.get("protocol_id") != record.get("protocol_id")
-                or frozen.get("path") != record.get("protocol_path")
-                or frozen.get("sha256") != record.get("protocol_sha256")
-                or binding.get("baseline_pool_fingerprint") != record.get("baseline_pool_fingerprint")
+                or frozen.get("protocol_id") != expected_frozen.get("protocol_id")
+                or frozen.get("path") != expected_frozen.get("path")
+                or frozen.get("sha256") != expected_frozen.get("sha256")
+                or binding.get("baseline_pool_fingerprint") != expected_frozen.get("baseline_pool_fingerprint")
                 or binding.get("selected_execution") != protocol.get("selected_execution")
             ):
                 errors.append(f"Baseline V4 prepare lane identity is invalid for {sequence_id}")

@@ -344,8 +344,15 @@ def canonical_protocol_id(
         docker_image=DEFAULT_DOCKER_IMAGE,
         root=root,
     )
+    baseline = baseline_descriptor or baseline_protocol_descriptor(seq, root)
+    if seq.get("task_family_generation") == "baseline-v4":
+        baseline = {
+            key: value
+            for key, value in baseline.items()
+            if key not in NON_CAUSAL_PROTOCOL_PROVENANCE_FIELDS
+        }
     identity = {
-        "baseline_protocol": baseline_descriptor or baseline_protocol_descriptor(seq, root),
+        "baseline_protocol": baseline,
         "selected_execution": execution,
     }
     return "-".join(
@@ -688,20 +695,43 @@ def baseline_pilot_attempt_receipt_path(seq: dict[str, Any], root: Path = ROOT) 
     return repository_authority_path(root, receipt_rel, f"pilot attempt receipt for {seq.get('id')}")
 
 
+def require_zero_mistake_pilot_replicate(
+    seq: dict[str, Any],
+    profile_id: str,
+    replicate_index: int,
+    *,
+    prepare_only: bool,
+) -> None:
+    """Bind the one authorized zero-mistake pilot to its declared r0 identity."""
+    if prepare_only or profile_id != "baseline-bare-codex":
+        return
+    if seq.get("task_family_generation") in {"baseline-v3", "baseline-v4"} and (
+        type(replicate_index) is not int or replicate_index != 0
+    ):
+        raise ValueError("Baseline V3/V4 paid pilots require replicate_index=0")
+
+
 def reserve_baseline_pilot_attempt(
     seq: dict[str, Any],
     *,
     root: Path = ROOT,
     orchestrator: str,
+    replicate_index: int,
 ) -> dict[str, Any]:
     """Atomically occupy one paid pilot identity before any provider task starts."""
+    require_zero_mistake_pilot_replicate(
+        seq,
+        "baseline-bare-codex",
+        replicate_index,
+        prepare_only=False,
+    )
     identity, protocol = current_baseline_v2_protocol(seq, seq["mistake_gate"], root)
     receipt = {
         "schema_version": 1,
         "attempt_status": "reserved-before-provider-task",
         "task_family_generation": seq.get("task_family_generation"),
         "sequence_id": seq.get("id"),
-        "replicate_index": 0,
+        "replicate_index": replicate_index,
         "profile_id": "baseline-bare-codex",
         "model_condition_id": seq["mistake_gate"].get("designated_model_condition"),
         "model": seq["mistake_gate"].get("model"),
@@ -3312,9 +3342,15 @@ def run_one(args: argparse.Namespace) -> dict[str, Any]:
     """Serialize every direct provider run from slot check through publication."""
     if args.prepare_only:
         return _run_one_locked(args)
+    selected_sequence = load_sequence(args.sequence_id)
+    require_zero_mistake_pilot_replicate(
+        selected_sequence,
+        args.profile_id,
+        args.replicate_index,
+        prepare_only=False,
+    )
     lock_fd = acquire_provider_production_lock()
     try:
-        selected_sequence = load_sequence(args.sequence_id)
         if args.profile_id == "baseline-bare-codex":
             pilot_allowed, pilot_reason = baseline_v2_pilot_run_gate(selected_sequence)
             if not pilot_allowed:
@@ -3483,7 +3519,12 @@ def _run_one_locked(args: argparse.Namespace) -> dict[str, Any]:
         return result
 
     if profile_id == "baseline-bare-codex" and seq.get("task_family_generation") in {"baseline-v3", "baseline-v4"}:
-        reserve_baseline_pilot_attempt(seq, root=ROOT, orchestrator="direct-runner")
+        reserve_baseline_pilot_attempt(
+            seq,
+            root=ROOT,
+            orchestrator="direct-runner",
+            replicate_index=args.replicate_index,
+        )
 
     thread_id: str | None = None
     codex_exit_codes: list[int] = []

@@ -1449,11 +1449,7 @@ def main(argv: list[str] | None = None) -> int:
         raise SystemExit(f"Unknown/non-active sequence IDs: {unknown}; active={sorted(valid)}")
     if args.max_parallel < 1:
         raise SystemExit("--max-parallel must be >= 1")
-    validation_python = None if args.dry_run else controller_validation_python()
-    if args.dry_run:
-        if args.lane_root.exists() and not nonsymlink_directory_ancestry(args.lane_root):
-            raise ValueError("lane root contains a symlink or non-directory ancestor")
-    elif not ensure_nonsymlink_directory_ancestry(args.lane_root):
+    if args.lane_root.exists() and not nonsymlink_directory_ancestry(args.lane_root):
         raise ValueError("lane root contains a symlink or non-directory ancestor")
 
     production_lock_fd = None
@@ -1494,6 +1490,16 @@ def main(argv: list[str] | None = None) -> int:
             baseline_run_gate=baseline_run_gate,
         )
     )
+    for sequence_id, profile_id in jobs:
+        workflow.require_zero_mistake_pilot_replicate(
+            workflow.load_sequence(sequence_id),
+            profile_id,
+            args.replicate_index,
+            prepare_only=args.prepare_only,
+        )
+    validation_python = None if args.dry_run else controller_validation_python()
+    if not args.dry_run and not ensure_nonsymlink_directory_ancestry(args.lane_root):
+        raise ValueError("lane root contains a symlink or non-directory ancestor")
     production_lock_fd = None if args.prepare_only or args.dry_run else acquire_production_lock()
     timestamp = dt.datetime.now(dt.UTC).strftime("%Y%m%dT%H%M%S%fZ")
     run_root = args.lane_root / f"workflow-matrix-{timestamp}-p{os.getpid()}-r{args.replicate_index}"
@@ -1542,6 +1548,7 @@ def main(argv: list[str] | None = None) -> int:
                     sequence,
                     root=ROOT,
                     orchestrator=f"workflow-matrix:{run_root.name}",
+                    replicate_index=args.replicate_index,
                 )
     lane_results: list[dict[str, Any]] = []
     if jobs:
