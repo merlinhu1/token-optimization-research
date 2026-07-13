@@ -2757,12 +2757,13 @@
         "quality_score": 4,
         "critical_failures": [],
         "reviewed_on": "2026-07-13",
-        "review_method": "practical-software-quality-reviewer",
+        "review_method": "practical-software-quality-reviewer plus independent artifact review",
         "review_findings": [
           "All three turns and the final cumulative tracing, provider-capability, strict-variable, and const-only behavioral tests passed.",
           "Final changes are gofmt-clean and preserve declared variable diagnostics.",
           "Minor maintainability concerns remain: the obsolete mutable SetTracingContext API survives, capability construction is duplicated, and some added gRPC wrapper propagation lacks direct package tests.",
-          "Artifact checksums, tool isolation, and verifier integrity passed; no critical failure."
+          "Artifact checksums, tool isolation, and verifier integrity passed; no critical failure.",
+          "Artifact-quality concern: provider-usage.json reports tool_calls_observed=0 although preserved Codex events contain command_execution and file_change events; token totals remain provider-reported, but this behavioral metadata is not reliable."
         ],
         "review_evidence": [
           "sources/evaluations/workflow-sessions/baseline-terraform-20260713-p-5b17c90c9943-r0/run.json",
