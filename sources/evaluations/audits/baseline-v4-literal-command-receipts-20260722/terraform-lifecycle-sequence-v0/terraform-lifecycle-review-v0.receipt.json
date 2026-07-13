@@ -1,0 +1,20 @@
+{
+  "schema_version": 1,
+  "generation": "baseline-v4",
+  "sequence_id": "terraform-lifecycle-sequence-v0",
+  "task_id": "terraform-lifecycle-review-v0",
+  "order": 3,
+  "provider_calls": 0,
+  "provider_tokens": 0,
+  "prompt_path": "sources/evaluations/fixtures/large/hashicorp-terraform/task-generations/baseline-v4/terraform-lifecycle-review-v0/agent-prompt.txt",
+  "prompt_sha256": "7428704e5938b2f8a746ccf24d4fb01a7e99e5ee5a0327abe4304bcd7d3fbb47",
+  "verifier_path": "sources/evaluations/fixtures/large/hashicorp-terraform/task-generations/baseline-v4/terraform-lifecycle-review-v0/verify.sh",
+  "verifier_sha256": "61dd3afe0ae32d8e11db631b8aa93eef0a15767f4ea0735d04438cb88bd4518c",
+  "command_block": "export PATH=/opt/data/bin:/opt/data/opt/go/bin:$PATH\npython3 - <<'PY'\nfrom pathlib import Path\np = Path(\"internal/addrs/checkable.go\")\ns = p.read_text()\nold = 'name, nameDiags := getCheckableName(\"input\", \"variable value\")'\nnew = 'name, nameDiags := getCheckableName(\"var\", \"variable value\")'\nassert s.count(old) == 1\np.write_text(s.replace(old, new))\nPY\ngofmt -w internal/addrs/checkable.go\ngo test ./internal/addrs -run '^TestBaselineV3ParseInputVariableCheckable$'",
+  "command_sha256": "40c2e42af777ae79c6a3c7d6c442ae1c05b3e670942364dbdf2e60a9f4a28307",
+  "command_exit": 0,
+  "controller_verifier_exit": 0,
+  "log_path": "sources/evaluations/audits/baseline-v4-literal-command-receipts-20260722/terraform-lifecycle-sequence-v0/terraform-lifecycle-review-v0.log.txt",
+  "log_sha256": "33bbdee86f363a1659a5985d4277eceda812c5c0f38b927a7038e48125fdd44e",
+  "passed": true
+}

@@ -1,0 +1,20 @@
+{
+  "schema_version": 1,
+  "generation": "baseline-v4",
+  "sequence_id": "beets-lifecycle-sequence-v0",
+  "task_id": "beets-lifecycle-feature-v0",
+  "order": 1,
+  "provider_calls": 0,
+  "provider_tokens": 0,
+  "prompt_path": "sources/evaluations/fixtures/medium/beetbox-beets/task-generations/baseline-v4/beets-lifecycle-feature-v0/agent-prompt.txt",
+  "prompt_sha256": "9033237087b94204b279a545c0c8967229a4dfebde37ddfae401bac0b0149b53",
+  "verifier_path": "sources/evaluations/fixtures/medium/beetbox-beets/task-generations/baseline-v4/beets-lifecycle-feature-v0/verify.sh",
+  "verifier_sha256": "6c66323a59314d4b8390eb288a41f823b3ac1723af94f8fe771cacb2b5e88588",
+  "command_block": "python3 - <<'PY'\nfrom pathlib import Path\np = Path(\"beets/util/functemplate.py\")\ns = p.read_text()\nold = \"                self.escapable_chars\\n\"\nnew = \"                self.escapable_chars + extra_special_chars\\n\"\nassert s.count(old) == 1\np.write_text(s.replace(old, new))\nPY\nuv run --offline --frozen pytest -q test/util/test_functemplate.py -k 'escaped_sep'\nuv run --offline --frozen ruff format --check beets/util/functemplate.py",
+  "command_sha256": "f4767f6ddbbbff48d696d41c23cd9192e2e146fb5ec713faedf7b6909724377c",
+  "command_exit": 0,
+  "controller_verifier_exit": 0,
+  "log_path": "sources/evaluations/audits/baseline-v4-literal-command-receipts-20260722/beets-lifecycle-sequence-v0/beets-lifecycle-feature-v0.log.txt",
+  "log_sha256": "64b90eb379693b22f5b96f4e9fd12e8803cd9ac1142bddbfd940359bc3aff207",
+  "passed": true
+}

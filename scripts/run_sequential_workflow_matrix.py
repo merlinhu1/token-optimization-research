@@ -132,7 +132,7 @@ def copytree_ignore(current: str, names: list[str]) -> set[str]:
             "project", "tasks", "controller-scratch", "codex-homes", "task-prompts", "model-output"
         }})
     if current_path.name == "audits":
-        ignored.update({name for name in names if name.startswith("baseline-v3-pilot-attempt-") and name.endswith(".json")})
+        ignored.update({name for name in names if name.startswith("baseline-v") and "-pilot-attempt-" in name and name.endswith(".json")})
     return ignored
 
 
@@ -156,7 +156,7 @@ def rsync_checkout(source: Path, destination: Path) -> None:
         "--exclude=/sources/evaluations/workflow-sessions/*/codex-homes/",
         "--exclude=/sources/evaluations/workflow-sessions/*/task-prompts/",
         "--exclude=/sources/evaluations/workflow-sessions/*/model-output/",
-        "--exclude=/sources/evaluations/audits/baseline-v3-pilot-attempt-*.json",
+        "--exclude=/sources/evaluations/audits/baseline-v*-pilot-attempt-*.json",
         str(source.resolve()) + "/",
         str(destination.resolve()) + "/",
     ]
@@ -1537,7 +1537,7 @@ def main(argv: list[str] | None = None) -> int:
     if not args.prepare_only:
         for sequence_id, profile_id in jobs:
             sequence = workflow.load_sequence(sequence_id)
-            if profile_id == "baseline-bare-codex" and sequence.get("task_family_generation") == "baseline-v3":
+            if profile_id == "baseline-bare-codex" and sequence.get("task_family_generation") in {"baseline-v3", "baseline-v4"}:
                 workflow.reserve_baseline_pilot_attempt(
                     sequence,
                     root=ROOT,
