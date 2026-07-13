@@ -467,9 +467,9 @@
     },
     {
       "id": "beets-maintenance-sequence-v2",
-      "status": "active",
+      "status": "retired",
       "acceptance_design": "behavioral",
-      "scope": "production-primary",
+      "scope": "historical-stress",
       "readiness_blockers": [],
       "qualification_path": "sources/evaluations/fixtures/medium/beetbox-beets/qualification-composite-v6.json",
       "qualification_date": "2026-07-13",
@@ -561,7 +561,52 @@
       "seed_patch_policy": "Controller merges every qualified regression into one composite broken start before provider execution; prompts are disclosed sequentially, acceptance assets remain controller-only, and concealed functional verification runs after the final prompt.",
       "complexity_note": "Each task changes only causally related production/type files.",
       "complexity_bar": "Four non-trivial production repairs with executable concealed qualification on the pinned snapshot.",
-      "selection_rationale": "Token-savings comparison lane selected before treatment from v7 bare-baseline evidence: retain multivalue metadata, path formatting, relative-path portability, and Tidal synchronization; exclude duplicate-action resolution, which failed despite an explicit prompt."
+      "selection_rationale": "Token-savings comparison lane selected before treatment from v7 bare-baseline evidence: retain multivalue metadata, path formatting, relative-path portability, and Tidal synchronization; exclude duplicate-action resolution, which failed despite an explicit prompt.",
+      "readiness": "retired-after-luna-xhigh-v8-baseline-rejection",
+      "retirement_reason": "Luna xhigh v8 still failed multivalue semantics, path-format semantics, and relative-path mypy; retained as immutable calibration evidence."
+    },
+    {
+      "id": "beets-maintenance-sequence-v3",
+      "status": "active",
+      "acceptance_design": "behavioral",
+      "scope": "production-primary",
+      "readiness_blockers": [],
+      "qualification_path": "sources/evaluations/fixtures/medium/beetbox-beets/qualification-composite-v7.json",
+      "qualification_date": "2026-07-13",
+      "fixture_id": "medium-beetbox-beets",
+      "fixture_scale": "medium-project",
+      "objective": "individual_tool_effectiveness",
+      "primary_metric": "cumulative provider-billed workflow tokens",
+      "reset_policy": "Reset once before the lane; preseed all regressions into one concealed composite root; preserve source, Git, tool, index, cache, generated config, memory, and agent state across prompts; run concealed functional verification once at the end.",
+      "conversion_note": "One upstream-derived multi-file plugin synchronization regression with repeated Luna xhigh concealed-verifier success on the pinned snapshot.",
+      "initial_snapshot": {
+        "commit": "8ddae794d30e9984be904f80459614155c6592d9",
+        "upstream": "https://github.com/beetbox/beets.git",
+        "dependency_lockfiles": []
+      },
+      "tasks": [
+        {
+          "id": "beets-tidal-metadata-sync-regression",
+          "order": 1,
+          "prompt_path": "sources/evaluations/fixtures/medium/beetbox-beets/tasks/beets-tidal-metadata-sync-regression/agent-prompt.txt",
+          "verifier_command": "sources/evaluations/fixtures/medium/beetbox-beets/tasks/beets-tidal-metadata-sync-regression/verify.sh",
+          "upstream_test_paths": [
+            "tasks/beets-tidal-metadata-sync-regression/verify.sh",
+            "test/plugins/test_tidal.py"
+          ],
+          "compatibility_rebased_test_paths": [],
+          "model_concealed_paths": [
+            "tasks/beets-tidal-metadata-sync-regression/verify.sh",
+            "test/plugins/test_tidal.py"
+          ]
+        }
+      ],
+      "seed_patch_policy": "Controller merges every qualified regression into one composite broken start before provider execution; prompts are disclosed sequentially, acceptance assets remain controller-only, and concealed functional verification runs after the final prompt.",
+      "complexity_note": "Each task changes only causally related production/type files.",
+      "complexity_bar": "Four non-trivial production repairs with executable concealed qualification on the pinned snapshot.",
+      "selection_rationale": "Capability-proven token-savings comparison lane selected before treatment from v6-v8 bare-baseline evidence: retain only Tidal metadata synchronization, which repeatedly passed; preserve harder Beets tasks in retired stress/calibration sequences.",
+      "readiness": "production-qualified-token-savings-baseline",
+      "retirement_reason": "Luna xhigh v8 still failed multivalue semantics, path-format semantics, and relative-path mypy; retained as immutable calibration evidence."
     }
   ]
 }
