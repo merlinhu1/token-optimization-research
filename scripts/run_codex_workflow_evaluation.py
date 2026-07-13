@@ -666,9 +666,17 @@ def pilot_session_artifacts_valid(session: dict[str, Any], root: Path = ROOT) ->
 
 
 def repository_authority_path(root: Path, relative: str, label: str) -> Path:
-    path = root / relative
+    relative_path = Path(relative)
+    lexical_parts = relative.split("/")
+    if (
+        relative_path.is_absolute()
+        or "\\" in relative
+        or any(part in {"", ".", ".."} for part in lexical_parts)
+    ):
+        raise ValueError(f"{label} must use a canonical repository-relative path without traversal")
+    path = root / relative_path
     if not path.resolve().is_relative_to(root.resolve()):
-        raise ValueError(f"{label} escapes authority root")
+        raise ValueError(f"{label} must use a canonical repository-relative path without traversal")
     return path
 
 
@@ -941,11 +949,10 @@ def baseline_v2_treatment_gate(seq: dict[str, Any], root: Path = ROOT) -> tuple[
         "reasoning_effort": agent_condition.get("reasoning_effort"),
     } != expected_condition:
         return False, "baseline session model condition does not match the designated gate tuple"
-    slot_sessions = [
+    slot_candidates = [
         item
         for item in registry_sessions
         if isinstance(item, dict)
-        and item.get("replicate_index") == 0
         and item.get("task_sequence", {}).get("sequence_id") == seq.get("id")
         and item.get("profile", {}).get("profile_id") == "baseline-bare-codex"
         and item.get("frozen_protocol") == expected_binding
@@ -955,6 +962,9 @@ def baseline_v2_treatment_gate(seq: dict[str, Any], root: Path = ROOT) -> tuple[
             for result in item.get("per_task_results", [])
         )
     ]
+    if any(type(item.get("replicate_index")) is not int for item in slot_candidates):
+        return False, f"current {generation} slot registry contains malformed replicate_index evidence"
+    slot_sessions = [item for item in slot_candidates if item.get("replicate_index") == 0]
     if len(slot_sessions) != 1 or slot_sessions[0].get("session_id") != session_id:
         return False, f"current {generation} r0 slot is absent, ambiguous, or was rerun"
     return True, f"independently audited zero-incident {generation} pilot"
