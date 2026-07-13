@@ -1342,6 +1342,13 @@ def validate_workflow_task_sequences(sequence_doc: dict, fixture_doc: dict, erro
             if generation not in {"baseline-v3", "baseline-v4"}:
                 errors.append(f"active workflow sequence {sid} must bind task_family_generation=baseline-v3 or baseline-v4")
             gate = sequence.get("mistake_gate")
+            treatment_ready, _treatment_reason = workflow.baseline_v2_treatment_gate(sequence, ROOT)
+            gate_status = "passed-zero-incident" if treatment_ready else "provider-pilot-required"
+            launch_policy = (
+                "eligible for treatment protocol freeze after the first-valid strongest-model pilot passed an independent audit with all eight required observed counts equal to integer zero"
+                if treatment_ready
+                else "blocked until one first-valid strongest-model pilot is independently audited with all eight required observed counts equal to integer zero"
+            )
             expected_gate = {
                 "designated_model_condition": "codex-openai-gpt-5-6-sol-high",
                 "model": "gpt-5.6-sol",
@@ -1357,8 +1364,8 @@ def validate_workflow_task_sequences(sequence_doc: dict, fixture_doc: dict, erro
                 "incident_counting": "unique-auditable-not-command-count",
                 "pilot_audit_path": f"sources/evaluations/audits/{generation}-pilot-zero-mistake.json",
                 "attempt_receipt_path": f"sources/evaluations/audits/{generation}-pilot-attempt-{str(sid).split('-lifecycle-sequence-v0')[0]}.json",
-                "status": "provider-pilot-required",
-                "treatment_launch_policy": "blocked until one first-valid strongest-model pilot is independently audited with all eight required observed counts equal to integer zero",
+                "status": gate_status,
+                "treatment_launch_policy": launch_policy,
             }
             if generation == "baseline-v4":
                 expected_gate["pilot_authorization_path"] = "sources/evaluations/audits/baseline-v4-task-family-qualification-20260722.json"

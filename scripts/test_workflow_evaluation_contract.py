@@ -4221,7 +4221,8 @@ class BaselineV3LowComplexityContractTest(unittest.TestCase):
                 gate["pilot_audit_path"],
                 f"sources/evaluations/audits/{generation}-pilot-zero-mistake.json",
             )
-            self.assertEqual(gate["status"], "provider-pilot-required")
+            expected_gate_status = "passed-zero-incident" if sequence["id"] == "fastify-lifecycle-sequence-v0" else "provider-pilot-required"
+            self.assertEqual(gate["status"], expected_gate_status)
 
             for task in sequence["tasks"]:
                 self.assertIn(f"/{generation}/", task["prompt_path"])
@@ -5316,6 +5317,8 @@ class BaselineV3LowComplexityContractTest(unittest.TestCase):
         fastify = sequences["fastify-lifecycle-sequence-v0"]
         self.assertEqual(fastify["task_family_generation"], "baseline-v3")
         self.assertEqual(fastify["readiness_blockers"], [])
+        self.assertEqual(fastify["mistake_gate"]["status"], "passed-zero-incident")
+        self.assertNotIn("blocked until", fastify["mistake_gate"]["treatment_launch_policy"])
         self.assertEqual(runner.baseline_v2_treatment_gate(fastify, ROOT)[0], True)
         fixtures = {
             fixture["id"]: fixture
@@ -6314,7 +6317,9 @@ with tempfile.TemporaryDirectory(dir=runner.ROOT / 'sources/evaluations/protocol
         for key, value in expected_mistake_gate.items():
             self.assertEqual(audit["mistake_gate"].get(key), value)
         self.assertNotIn("all three counts", json.dumps(audit).lower())
-        self.assertEqual(audit["treatment_gate"]["status"], "blocked-pending-pilot-audit")
+        self.assertEqual(audit["zero_mistake_gate"]["status"], "mixed-fastify-passed-beets-terraform-failed-preserved")
+        self.assertEqual(audit["treatment_gate"]["status"], "fastify-eligible-v3-beets-terraform-ineligible")
+        self.assertIs(audit["treatment_gate"]["pilot_audit_present"], True)
         self.assertIs(audit["treatment_gate"]["fail_closed"], True)
         self.assertEqual(audit["treatment_gate"]["required_zero_count_fields"], list(runner.PILOT_ZERO_COUNT_FIELDS))
         self.assertEqual(
