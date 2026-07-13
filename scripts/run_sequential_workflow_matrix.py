@@ -76,13 +76,20 @@ def hard_baseline_usable(session: dict[str, Any] | None, root: Path = ROOT) -> b
     usage = session.get("cumulative_token_usage", {})
     if not all(isinstance(value, dict) for value in (interpretation, quality, usage)):
         return False
+    verifier_failed = quality.get("final_verifier_passed") is False
+    quality_failed = (
+        quality.get("final_verifier_passed") is True
+        and interpretation.get("accepted_for_objective") is False
+        and isinstance(quality.get("quality_score"), int)
+        and quality.get("quality_score") < 4
+    )
     return (
         interpretation.get("primary_objective_hard_baseline") is True
         and interpretation.get("usable_for_primary_objective_token_comparison") is True
         and interpretation.get("operationally_completed") is True
         and interpretation.get("agent_declared_task_completion_count") == quality.get("tasks_attempted")
         and quality.get("quality_review_status") == "reviewed"
-        and quality.get("final_verifier_passed") is False
+        and (verifier_failed or quality_failed)
         and isinstance(usage.get("total_provider_tokens"), int)
         and usage.get("total_provider_tokens", 0) > 0
         and compact_artifacts_intact(session, root)
