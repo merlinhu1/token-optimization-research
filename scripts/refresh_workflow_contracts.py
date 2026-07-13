@@ -39,7 +39,7 @@ def protocol_id(seq: dict[str, Any], profile_id: str) -> str:
     }[seq["fixture_id"]]
     if seq["id"] == "beets-maintenance-sequence-v4":
         lane = f"{lane}-token-savings"
-        version = "v10"
+        version = "v11"
     elif seq["id"] == "terraform-maintenance-sequence-v2":
         lane = f"{lane}-token-savings"
         version = "v8"

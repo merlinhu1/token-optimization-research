@@ -99,7 +99,7 @@ Stop before treatment if the baseline fails any frozen gate.
 |---:|---|---|---|
 | 1 | `beets-path-format-core-regression` | `sources/evaluations/fixtures/medium/beetbox-beets/tasks/beets-path-format-core-regression/agent-prompt.txt` | `sources/evaluations/fixtures/medium/beetbox-beets/tasks/beets-path-format-core-regression/verify.sh` |
 | 2 | `beets-multivalue-core-regression` | `sources/evaluations/fixtures/medium/beetbox-beets/tasks/beets-multivalue-core-regression/agent-prompt.txt` | `sources/evaluations/fixtures/medium/beetbox-beets/tasks/beets-multivalue-core-regression/verify.sh` |
-| 3 | `beets-tidal-metadata-sync-regression` | `sources/evaluations/fixtures/medium/beetbox-beets/tasks/beets-tidal-metadata-sync-regression/agent-prompt.txt` | `sources/evaluations/fixtures/medium/beetbox-beets/tasks/beets-tidal-metadata-sync-regression/verify.sh` |
+| 3 | `beets-tidal-metadata-sync-regression-v2` | `sources/evaluations/fixtures/medium/beetbox-beets/tasks/beets-tidal-metadata-sync-regression-v2/agent-prompt.txt` | `sources/evaluations/fixtures/medium/beetbox-beets/tasks/beets-tidal-metadata-sync-regression-v2/verify.sh` |
 
 ## Artifact contract
 
