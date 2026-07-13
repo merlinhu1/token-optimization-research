@@ -8,7 +8,7 @@ Fixture ID: `medium-fastify-fastify`
 - Pinned snapshot: `94bcbcc6e2ef3b8e8f8e8797fe551ccbe7b942fd`
 - Qualification: `qualification-composite-v5.json`
 - Sequence: `fastify-maintenance-sequence-v1`
-- Current GPT-5.6 Luna xhigh fingerprint: `105ed6fb58fc`; awaiting fresh baseline execution after source-review coverage correction
+- Current GPT-5.6 Luna xhigh fingerprint: `6a8afd4b63ca`; accepted baseline `baseline-fastify-20260713-p-6a8afd4b63ca-r0` (5/5 verified, 60,671,087 tokens) via recorded hidden-verifier-only replay
 - Superseded intermediate fingerprints: GPT-5.5 high `109705c35eff`, GPT-5.6 Luna xhigh `a9c642bc016a`
 
 The prior overconstrained verifier snapshot was superseded because it required exact error/log messages, internal symbol shape, request-header object identity, Content-Type cache identity, and exact serialization details not required by the prompts. A later independent source review then exposed under-coverage in the intermediate correction: default 414 handling and explicitly restored logger compatibility behavior were not enforced. The current contract adds those prompt-aligned behavioral gates.
