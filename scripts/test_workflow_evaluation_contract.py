@@ -1680,6 +1680,49 @@ class VerifierContractTest(unittest.TestCase):
             self.assertEqual([block["usage"]["input_tokens"] for block in usage_blocks], [2, 1])
             self.assertTrue((root / "task-01-operational-retry-01.md").is_file())
 
+    def test_current_replication_turn_budget_disables_operational_retry(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            prompt = root / "task-01.md"
+            prompt.write_text("Repair the task.\n")
+            events = root / "task-01-codex-events.jsonl"
+            calls = 0
+
+            def fake_backend(*args: object, **kwargs: object) -> mock.Mock:
+                nonlocal calls
+                calls += 1
+                Path(str(kwargs["stdout_path"])).write_text("\n".join([
+                    json.dumps({"type": "thread.started", "thread_id": "thread-1"}),
+                    json.dumps({"type": "turn.failed", "error": {"message": "failed to parse function arguments: EOF while parsing an object"}}),
+                ]) + "\n")
+                return mock.Mock(returncode=1)
+
+            with (
+                mock.patch.object(runner.fixture, "active_tool_config", return_value=None),
+                mock.patch.object(runner.fixture, "codex_env", return_value={}),
+                mock.patch.object(runner.fixture, "tool_env_for_record", return_value={}),
+                mock.patch.object(runner.fixture, "codex_model_args", return_value=[]),
+                mock.patch.object(runner, "model_mounts_for_record", return_value=[]),
+                mock.patch.object(runner.fixture, "run_backend", side_effect=fake_backend),
+                mock.patch.object(runner.time, "monotonic", side_effect=[0, 1]),
+            ):
+                code, thread, continuity_error = runner.run_codex_task(
+                    {"target": {"repository_path": "."}},
+                    "baseline-bare-codex",
+                    root / "codex-home",
+                    root,
+                    "image",
+                    prompt,
+                    events,
+                    root / "last-message.txt",
+                    timeout=60,
+                    thread_id=None,
+                    operational_retries=0,
+                )
+            self.assertEqual((code, thread, calls), (1, "thread-1", 1))
+            self.assertIsNone(continuity_error)
+            self.assertFalse((root / "task-01-operational-retry-01.md").exists())
+
     def test_codex_resume_rejects_mismatched_thread_started_event(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
@@ -2569,6 +2612,20 @@ raise SystemExit(1)
                 os.environ.pop(runner.PRODUCTION_LOCK_FD_ENV, None)
                 os.close(fd)
 
+    def test_unlocked_correct_inode_cannot_forge_matrix_parent_lock(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp, \
+             mock.patch.object(runner, "PRODUCTION_LOCK_PATH", Path(tmp) / ".production.lock"), \
+             mock.patch.dict(os.environ, {}, clear=False):
+            runner.PRODUCTION_LOCK_PATH.touch(mode=0o600)
+            fd = os.open(runner.PRODUCTION_LOCK_PATH, os.O_RDWR)
+            try:
+                os.environ[runner.PRODUCTION_LOCK_FD_ENV] = str(fd)
+                with self.assertRaisesRegex(RuntimeError, "was not held before child launch"):
+                    runner.inherited_provider_production_lock_fd()
+            finally:
+                os.environ.pop(runner.PRODUCTION_LOCK_FD_ENV, None)
+                os.close(fd)
+
     def production_v3_fixture(self, root: Path) -> tuple[dict, Path]:
         session_id = f"unit-production-session-{root.name}"
         run_dir = ROOT / "sources/evaluations/workflow-sessions" / session_id
@@ -3338,6 +3395,141 @@ class ModelConditionLauncherContractTest(unittest.TestCase):
 
 
 class MatrixLifecycleContractTest(unittest.TestCase):
+    def test_protected_test_restore_recovers_staged_deletion_from_head(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            protected = root / "scripts/test_workflow_evaluation_contract.py"
+            protected.parent.mkdir(parents=True)
+            protected.write_text("protected\n")
+            subprocess.run(["git", "init", "-q"], cwd=root, check=True)
+            subprocess.run(["git", "config", "user.email", "unit@example.invalid"], cwd=root, check=True)
+            subprocess.run(["git", "config", "user.name", "Unit Test"], cwd=root, check=True)
+            subprocess.run(["git", "add", "--all"], cwd=root, check=True)
+            subprocess.run(["git", "commit", "-q", "-m", "fixture"], cwd=root, check=True)
+            protected.unlink()
+            subprocess.run(["git", "add", "--all"], cwd=root, check=True)
+            matrix.restore_protected_control_plane_files(root)
+            self.assertEqual(protected.read_text(), "protected\n")
+            status = subprocess.run(
+                ["git", "status", "--porcelain"], cwd=root, check=True, text=True, capture_output=True
+            ).stdout
+            self.assertEqual(status, "")
+
+    def test_lane_checkout_excludes_parent_replication_receipts_in_fallback_copy(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            source = root / "source"
+            destination = root / "destination"
+            audits = source / "sources/evaluations/audits"
+            attempts = audits / "current-low-complexity-baseline-r1-r2-attempts"
+            attempts.mkdir(parents=True)
+            (attempts / "beets-r1.json").write_text("{}\n")
+            (audits / "retained-audit.json").write_text("{}\n")
+            with mock.patch.object(matrix.shutil, "which", return_value=None):
+                matrix.rsync_checkout(source, destination)
+            self.assertFalse(
+                (destination / "sources/evaluations/audits/current-low-complexity-baseline-r1-r2-attempts").exists()
+            )
+            self.assertTrue((destination / "sources/evaluations/audits/retained-audit.json").is_file())
+
+    def test_current_replication_rejects_parallel_paid_plan_before_lane_root(self) -> None:
+        result = subprocess.run(
+            [
+                sys.executable,
+                "scripts/run_sequential_workflow_matrix.py",
+                "beets-lifecycle-sequence-v0",
+                "--replicate-index", "1",
+                "--max-parallel", "3",
+                "--workflow-model-condition-id", "codex-openai-gpt-5-6-sol-high",
+                "--workflow-model", "gpt-5.6-sol",
+                "--workflow-reasoning-effort", "high",
+                "--dry-run",
+            ],
+            cwd=ROOT,
+            text=True,
+            capture_output=True,
+            check=False,
+        )
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn("requires --max-parallel 1", result.stderr + result.stdout)
+
+    def test_paid_launch_checkout_gate_requires_clean_published_head(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            base = Path(tmp)
+            remote = base / "remote.git"
+            root = base / "checkout"
+            subprocess.run(["git", "init", "--bare", "-q", str(remote)], check=True)
+            subprocess.run(["git", "init", "-q", str(root)], check=True)
+            subprocess.run(["git", "config", "user.email", "unit@example.invalid"], cwd=root, check=True)
+            subprocess.run(["git", "config", "user.name", "Unit Test"], cwd=root, check=True)
+            protected = root / "scripts/test_workflow_evaluation_contract.py"
+            protected.parent.mkdir(parents=True)
+            protected.write_text("protected\n")
+            subprocess.run(["git", "add", "--all"], cwd=root, check=True)
+            subprocess.run(["git", "commit", "-q", "-m", "fixture"], cwd=root, check=True)
+            subprocess.run(["git", "remote", "add", "origin", str(remote)], cwd=root, check=True)
+            subprocess.run(["git", "push", "-q", "-u", "origin", "HEAD"], cwd=root, check=True)
+            branch = subprocess.check_output(["git", "branch", "--show-current"], cwd=root, text=True).strip()
+
+            def gate() -> list[str]:
+                with (
+                    mock.patch.object(runner, "TRUSTED_REPOSITORY_ORIGIN", str(remote)),
+                    mock.patch.object(runner, "TRUSTED_REPOSITORY_UPSTREAM", f"origin/{branch}"),
+                    mock.patch.object(runner, "TRUSTED_REPOSITORY_REF", f"refs/heads/{branch}"),
+                ):
+                    return runner.paid_launch_checkout_errors(root)
+
+            self.assertEqual(gate(), [])
+            protected.unlink()
+            subprocess.run(["git", "add", "--all"], cwd=root, check=True)
+            errors = gate()
+            self.assertTrue(any("protected control-plane" in error for error in errors), errors)
+            self.assertTrue(any("not clean" in error for error in errors), errors)
+            subprocess.run(
+                ["git", "restore", "--source=HEAD", "--staged", "--worktree", "--", str(protected.relative_to(root))],
+                cwd=root,
+                check=True,
+            )
+            (root / "unpushed.txt").write_text("unpushed\n")
+            subprocess.run(["git", "add", "--all"], cwd=root, check=True)
+            subprocess.run(["git", "commit", "-q", "-m", "unpushed"], cwd=root, check=True)
+            errors = gate()
+            self.assertTrue(any("not the published upstream" in error for error in errors), errors)
+            subprocess.run(["git", "push", "-q", "origin", "HEAD"], cwd=root, check=True)
+            subprocess.run(["git", "checkout", "-q", "--detach", "HEAD"], cwd=root, check=True)
+            errors = gate()
+            self.assertTrue(any("published upstream is unreadable" in error for error in errors), errors)
+
+    def test_provider_lane_clones_exact_trusted_published_commit(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            base = Path(tmp)
+            remote = base / "remote.git"
+            seed = base / "seed"
+            destination = base / "lane"
+            subprocess.run(["git", "init", "--bare", "-q", str(remote)], check=True)
+            subprocess.run(["git", "init", "-q", str(seed)], check=True)
+            subprocess.run(["git", "config", "user.email", "unit@example.invalid"], cwd=seed, check=True)
+            subprocess.run(["git", "config", "user.name", "Unit Test"], cwd=seed, check=True)
+            protected = seed / "scripts/test_workflow_evaluation_contract.py"
+            protected.parent.mkdir(parents=True)
+            protected.write_text("protected\n")
+            subprocess.run(["git", "add", "--all"], cwd=seed, check=True)
+            subprocess.run(["git", "commit", "-q", "-m", "fixture"], cwd=seed, check=True)
+            subprocess.run(["git", "branch", "-M", "phase-3"], cwd=seed, check=True)
+            subprocess.run(["git", "remote", "add", "origin", str(remote)], cwd=seed, check=True)
+            subprocess.run(["git", "push", "-q", "-u", "origin", "phase-3"], cwd=seed, check=True)
+            commit = subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=seed, text=True).strip()
+            with (
+                mock.patch.object(runner, "TRUSTED_REPOSITORY_ORIGIN", str(remote)),
+                mock.patch.object(matrix.workflow, "TRUSTED_REPOSITORY_ORIGIN", str(remote)),
+            ):
+                matrix.clone_published_checkout(destination, commit)
+                self.assertEqual(runner.paid_launch_checkout_errors(destination), [])
+            self.assertEqual(
+                subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=destination, text=True).strip(),
+                commit,
+            )
+
     def test_lane_command_propagates_replicate_index_explicitly(self) -> None:
         cmd = matrix.workflow_lane_command(
             sequence_id="fastify-lifecycle-sequence-v0",
@@ -4352,6 +4544,21 @@ class BaselineV3LowComplexityContractTest(unittest.TestCase):
                 self.assertNotIn("Only an unoccupied designated baseline pilot identity may run", runbook)
         else:
             self.assertIn("Paid pilot execution is not authorized", runbook)
+        for replicate_index in (1, 2):
+            runnable = [
+                sequence
+                for sequence in document["sequences"]
+                if runner.baseline_v2_pilot_run_gate(sequence, ROOT, replicate_index)[0]
+            ]
+            if not runnable:
+                continue
+            sequence_args = " ".join(sequence["id"] for sequence in runnable)
+            command = (
+                f"python3 scripts/run_sequential_workflow_matrix.py {sequence_args} "
+                f"--replicate-index {replicate_index} --max-parallel 1 {flags}"
+            )
+            self.assertIn(command + " --prepare-only", runbook.splitlines())
+            self.assertIn(command, runbook.splitlines())
         blocked_v4 = [
             sequence
             for sequence in document["sequences"]
@@ -4574,7 +4781,7 @@ class BaselineV3LowComplexityContractTest(unittest.TestCase):
 
             with (
                 mock.patch.object(matrix, "ROOT", root),
-                mock.patch.object(matrix, "rsync_checkout", side_effect=prepare_checkout),
+                mock.patch.object(matrix, "clone_published_checkout", side_effect=lambda destination, _commit: prepare_checkout(root, destination)),
                 mock.patch.object(matrix, "find_protocol", side_effect=lambda checkout, *_: checkout / "protocol.json"),
                 mock.patch.object(matrix, "workflow_lane_command", return_value=["unit-child"]),
                 mock.patch.object(matrix.subprocess, "run", side_effect=interrupt_after_evidence),
@@ -4587,6 +4794,7 @@ class BaselineV3LowComplexityContractTest(unittest.TestCase):
                         replicate_index=0,
                         runner_args=[],
                         source_codex_home=None,
+                        published_launch_commit="unit-published",
                     )
             preserved = lane_dir / "rejected-evidence" / session_id / "rejection.json"
             self.assertTrue(preserved.is_file())
@@ -4623,7 +4831,7 @@ class BaselineV3LowComplexityContractTest(unittest.TestCase):
 
             with (
                 mock.patch.object(matrix, "ROOT", root),
-                mock.patch.object(matrix, "rsync_checkout", side_effect=prepare_checkout),
+                mock.patch.object(matrix, "clone_published_checkout", side_effect=lambda destination, _commit: prepare_checkout(root, destination)),
                 mock.patch.object(matrix, "find_protocol", side_effect=lambda checkout, *_: checkout / "protocol.json"),
                 mock.patch.object(matrix, "workflow_lane_command", return_value=["unit-child"]),
                 mock.patch.object(matrix.subprocess, "run", side_effect=corrupt_registry_after_evidence),
@@ -4636,6 +4844,7 @@ class BaselineV3LowComplexityContractTest(unittest.TestCase):
                         replicate_index=0,
                         runner_args=[],
                         source_codex_home=None,
+                        published_launch_commit="unit-published",
                     )
             preserved = lane_dir / "rejected-evidence" / session_id / "rejection.json"
             self.assertTrue(preserved.is_file())
@@ -4669,7 +4878,7 @@ class BaselineV3LowComplexityContractTest(unittest.TestCase):
 
             with (
                 mock.patch.object(matrix, "ROOT", root),
-                mock.patch.object(matrix, "rsync_checkout", side_effect=prepare_checkout),
+                mock.patch.object(matrix, "clone_published_checkout", side_effect=lambda destination, _commit: prepare_checkout(root, destination)),
                 mock.patch.object(matrix, "find_protocol", side_effect=lambda checkout, *_: checkout / "protocol.json"),
                 mock.patch.object(matrix, "workflow_lane_command", return_value=["unit-child"]),
                 mock.patch.object(matrix.subprocess, "run", side_effect=fail_with_unsafe_output),
@@ -4681,6 +4890,7 @@ class BaselineV3LowComplexityContractTest(unittest.TestCase):
                     replicate_index=0,
                     runner_args=[],
                     source_codex_home=None,
+                    published_launch_commit="unit-published",
                 )
             self.assertEqual(result["exit_code"], 1)
             self.assertEqual(result["failure_evidence"], [])
@@ -4722,7 +4932,7 @@ class BaselineV3LowComplexityContractTest(unittest.TestCase):
 
             with (
                 mock.patch.object(matrix, "ROOT", root),
-                mock.patch.object(matrix, "rsync_checkout", side_effect=prepare_checkout),
+                mock.patch.object(matrix, "clone_published_checkout", side_effect=lambda destination, _commit: prepare_checkout(root, destination)),
                 mock.patch.object(matrix, "find_protocol", side_effect=lambda checkout, *_: checkout / "protocol.json"),
                 mock.patch.object(matrix, "workflow_lane_command", return_value=["unit-child"]),
                 mock.patch.object(matrix.subprocess, "run", side_effect=replace_registry),
@@ -4735,6 +4945,7 @@ class BaselineV3LowComplexityContractTest(unittest.TestCase):
                         replicate_index=0,
                         runner_args=[],
                         source_codex_home=None,
+                        published_launch_commit="unit-published",
                     )
             matrix.cleanup_lane_checkouts(run_root)
             self.assertTrue((lane_dir / "checkout").is_dir())
@@ -5026,7 +5237,7 @@ class BaselineV3LowComplexityContractTest(unittest.TestCase):
 
                 with (
                     mock.patch.object(matrix, "ROOT", root),
-                    mock.patch.object(matrix, "rsync_checkout", side_effect=prepare_checkout),
+                    mock.patch.object(matrix, "clone_published_checkout", side_effect=lambda destination, _commit: prepare_checkout(root, destination)),
                     mock.patch.object(matrix, "find_protocol", side_effect=lambda checkout, *_: checkout / "protocol.json"),
                     mock.patch.object(matrix, "workflow_lane_command", return_value=["unit-child"]),
                     mock.patch.object(matrix.subprocess, "run", side_effect=fail_with_symlinked_output),
@@ -5038,6 +5249,7 @@ class BaselineV3LowComplexityContractTest(unittest.TestCase):
                         replicate_index=0,
                         runner_args=[],
                         source_codex_home=None,
+                        published_launch_commit="unit-published",
                     )
                 self.assertEqual(result["failure_evidence"], [])
                 self.assertFalse((lane_dir / "rejected-evidence/outside-session").exists())
@@ -5264,7 +5476,92 @@ class BaselineV3LowComplexityContractTest(unittest.TestCase):
         self.assertEqual(captured["cmd"], ["bash", "-c", "uv sync --group test --frozen"])
         self.assertTrue(captured["env"]["PATH"].startswith("/opt/data/bin:/opt/data/opt/go/bin:"))
 
-    def test_direct_zero_mistake_pilot_rejects_nonzero_replicate_before_lock(self) -> None:
+    def test_runner_scrubs_ambient_git_object_store_environment(self) -> None:
+        ambient = {name: f"unit-{name}" for name in runner.AMBIENT_GIT_OBJECT_ENV_VARS}
+        with mock.patch.dict(os.environ, ambient, clear=False):
+            runner.clear_ambient_git_object_environment()
+            for name in runner.AMBIENT_GIT_OBJECT_ENV_VARS:
+                self.assertNotIn(name, os.environ)
+
+    def test_matrix_scrubs_hostile_git_environment_before_argument_processing(self) -> None:
+        ambient = {name: f"hostile-{name}" for name in runner.AMBIENT_GIT_OBJECT_ENV_VARS}
+        with mock.patch.dict(os.environ, ambient, clear=False), \
+             mock.patch.object(matrix, "parse_args", side_effect=RuntimeError("stop after scrub")):
+            with self.assertRaisesRegex(RuntimeError, "stop after scrub"):
+                matrix.main([])
+            for name in runner.AMBIENT_GIT_OBJECT_ENV_VARS:
+                self.assertNotIn(name, os.environ)
+
+    def test_lane_environment_never_forwards_ambient_git_plumbing(self) -> None:
+        ambient = {name: f"hostile-{name}" for name in runner.AMBIENT_GIT_OBJECT_ENV_VARS}
+        with mock.patch.dict(os.environ, ambient, clear=False):
+            env = matrix.workflow_lane_environment(Path("/tmp/unit-lane"))
+        for name in runner.AMBIENT_GIT_OBJECT_ENV_VARS:
+            self.assertNotIn(name, env)
+        self.assertEqual(env["TMPDIR"], "/tmp/unit-lane")
+
+    def test_direct_current_replication_rejects_invalid_authority_before_lock(self) -> None:
+        sequence = runner.load_sequence("beets-lifecycle-sequence-v0")
+        args = argparse.Namespace(
+            prepare_only=False,
+            profile_id="baseline-bare-codex",
+            sequence_id=sequence["id"],
+            replicate_index=1,
+        )
+        with mock.patch.object(runner, "load_sequence", return_value=sequence), \
+             mock.patch.object(runner, "load_current_baseline_replication_authority", side_effect=ValueError("invalid authorization, scope, budget, model, or policy")), \
+             mock.patch.object(runner, "acquire_provider_production_lock") as acquire_lock, \
+             mock.patch.object(runner, "_run_one_locked") as locked:
+            with self.assertRaisesRegex(ValueError, "invalid authorization"):
+                runner.run_one(args)
+        acquire_lock.assert_not_called()
+        locked.assert_not_called()
+
+    def test_direct_current_replication_rejects_unpublished_checkout_before_lock(self) -> None:
+        sequence = runner.load_sequence("beets-lifecycle-sequence-v0")
+        args = argparse.Namespace(
+            prepare_only=False,
+            profile_id="baseline-bare-codex",
+            sequence_id=sequence["id"],
+            replicate_index=1,
+        )
+        with mock.patch.object(runner, "load_sequence", return_value=sequence), \
+             mock.patch.object(runner, "require_zero_mistake_pilot_replicate"), \
+             mock.patch.object(runner, "inherited_provider_production_lock_fd", return_value=None), \
+             mock.patch.object(runner, "paid_launch_checkout_errors", return_value=["repository checkout is not clean"]), \
+             mock.patch.object(runner, "acquire_provider_production_lock") as acquire_lock, \
+             mock.patch.object(runner, "_run_one_locked") as locked:
+            with self.assertRaisesRegex(ValueError, "paid launch checkout gate failed"):
+                runner.run_one(args)
+        acquire_lock.assert_not_called()
+        locked.assert_not_called()
+
+    def test_prelocked_standalone_cannot_bypass_published_checkout_gate(self) -> None:
+        sequence = runner.load_sequence("beets-lifecycle-sequence-v0")
+        args = argparse.Namespace(
+            prepare_only=False,
+            profile_id="baseline-bare-codex",
+            sequence_id=sequence["id"],
+            replicate_index=1,
+        )
+        with tempfile.TemporaryDirectory() as tmp, \
+             mock.patch.object(runner, "PRODUCTION_LOCK_PATH", Path(tmp) / ".production.lock"), \
+             mock.patch.dict(os.environ, {}, clear=False):
+            fd = runner.acquire_provider_production_lock()
+            os.environ[runner.PRODUCTION_LOCK_FD_ENV] = str(fd)
+            try:
+                with mock.patch.object(runner, "load_sequence", return_value=sequence), \
+                     mock.patch.object(runner, "require_zero_mistake_pilot_replicate"), \
+                     mock.patch.object(runner, "paid_launch_checkout_errors", return_value=["repository checkout is not clean"]), \
+                     mock.patch.object(runner, "_run_one_locked") as locked:
+                    with self.assertRaisesRegex(ValueError, "paid launch checkout gate failed"):
+                        runner.run_one(args)
+                locked.assert_not_called()
+            finally:
+                os.environ.pop(runner.PRODUCTION_LOCK_FD_ENV, None)
+                os.close(fd)
+
+    def test_direct_current_baseline_rejects_unauthorized_replicate_before_lock(self) -> None:
         sequence = next(
             item
             for item in json.loads((ROOT / "data/workflow-task-sequences.json").read_text())["sequences"]
@@ -5274,17 +5571,17 @@ class BaselineV3LowComplexityContractTest(unittest.TestCase):
             prepare_only=False,
             profile_id="baseline-bare-codex",
             sequence_id=sequence["id"],
-            replicate_index=1,
+            replicate_index=3,
         )
         with mock.patch.object(runner, "load_sequence", return_value=sequence), \
              mock.patch.object(runner, "acquire_provider_production_lock") as acquire_lock, \
              mock.patch.object(runner, "_run_one_locked") as locked:
-            with self.assertRaisesRegex(ValueError, "replicate_index=0"):
+            with self.assertRaisesRegex(ValueError, "not authorized"):
                 runner.run_one(args)
         acquire_lock.assert_not_called()
         locked.assert_not_called()
 
-    def test_matrix_zero_mistake_pilot_rejects_nonzero_replicate_before_lane_root(self) -> None:
+    def test_matrix_current_baseline_rejects_unauthorized_replicate_before_lane_root(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             lane_root = Path(tmp) / "lanes"
             with mock.patch.object(matrix, "controller_validation_python", return_value=sys.executable), \
@@ -5292,16 +5589,157 @@ class BaselineV3LowComplexityContractTest(unittest.TestCase):
                  mock.patch.object(matrix, "acquire_production_lock") as acquire_lock, \
                  mock.patch.object(matrix.workflow, "reserve_baseline_pilot_attempt") as reserve_attempt, \
                  mock.patch.object(matrix, "run_flow_lane") as run_lane:
-                with self.assertRaisesRegex(ValueError, "replicate_index=0"):
+                with self.assertRaisesRegex(ValueError, "not authorized"):
                     matrix.main([
                         "beets-lifecycle-sequence-v0",
-                        "--replicate-index", "1",
+                        "--replicate-index", "3",
                         "--lane-root", str(lane_root),
                     ])
             self.assertFalse(lane_root.exists())
             acquire_lock.assert_not_called()
             reserve_attempt.assert_not_called()
             run_lane.assert_not_called()
+
+    def test_strict_replication_authority_rejects_every_decision_field_mutation(self) -> None:
+        source_authority = ROOT / runner.BASELINE_REPLICATION_AUTHORITY_REL
+        source_sequences = ROOT / "data/workflow-task-sequences.json"
+        original = json.loads(source_authority.read_text())
+        mutations = {
+            "serialization": lambda doc: doc.__setitem__("serialization_required", False),
+            "run-budget": lambda doc: doc.__setitem__("allowed_paid_baseline_runs", 7),
+            "turn-budget": lambda doc: doc.__setitem__("allowed_model_turns", 19),
+            "model": lambda doc: doc.__setitem__("model_condition", {"id": "codex-openai-gpt-5-6-luna-xhigh", "model": "gpt-5.6-luna", "reasoning_effort": "xhigh"}),
+            "first-valid": lambda doc: doc.__setitem__("first_valid_sample_policy", False),
+            "rerun": lambda doc: doc.__setitem__("rerun_after_attempt_receipt", True),
+            "provider-calls": lambda doc: doc.__setitem__("provider_calls", 1),
+            "provider-tokens": lambda doc: doc.__setitem__("provider_tokens", 1),
+            "sequence-order": lambda doc: doc.__setitem__("sequence_order", list(reversed(doc["sequence_order"]))),
+            "indexes-true": lambda doc: doc.__setitem__("authorized_replicate_indexes", [True, 2]),
+            "indexes-false": lambda doc: doc.__setitem__("authorized_replicate_indexes", [False, 2]),
+            "indexes-float": lambda doc: doc.__setitem__("authorized_replicate_indexes", [1.0, 2]),
+            "indexes-string": lambda doc: doc.__setitem__("authorized_replicate_indexes", ["1", 2]),
+            "indexes-null": lambda doc: doc.__setitem__("authorized_replicate_indexes", [None, 2]),
+            "extra-field": lambda doc: doc.__setitem__("unreviewed_override", True),
+        }
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            authority_path = root / runner.BASELINE_REPLICATION_AUTHORITY_REL
+            authority_path.parent.mkdir(parents=True)
+            sequence_path = root / "data/workflow-task-sequences.json"
+            sequence_path.parent.mkdir(parents=True)
+            shutil.copy2(source_sequences, sequence_path)
+            shutil.copytree(
+                ROOT / "sources/evaluations/protocols",
+                root / "sources/evaluations/protocols",
+            )
+            for label, mutate in mutations.items():
+                with self.subTest(label=label):
+                    changed = copy.deepcopy(original)
+                    mutate(changed)
+                    authority_path.write_text(json.dumps(changed, indent=2) + "\n")
+                    with self.assertRaisesRegex(
+                        ValueError,
+                        "invalid authorization, scope, budget, model, or policy|stale nested binding",
+                    ):
+                        runner.load_current_baseline_replication_authority(root)
+
+    def test_real_matrix_paid_branch_rejects_mutated_authority_before_lane_root(self) -> None:
+        authority_path = ROOT / runner.BASELINE_REPLICATION_AUTHORITY_REL
+        original_bytes = authority_path.read_bytes()
+        original = json.loads(original_bytes)
+        mutations = {
+            "serialization_required": lambda doc: doc.__setitem__("serialization_required", False),
+            "allowed_paid_baseline_runs": lambda doc: doc.__setitem__("allowed_paid_baseline_runs", 7),
+            "allowed_model_turns": lambda doc: doc.__setitem__("allowed_model_turns", 19),
+            "first_valid_sample_policy": lambda doc: doc.__setitem__("first_valid_sample_policy", False),
+            "rerun_after_attempt_receipt": lambda doc: doc.__setitem__("rerun_after_attempt_receipt", True),
+            "provider_calls": lambda doc: doc.__setitem__("provider_calls", 1),
+            "provider_tokens": lambda doc: doc.__setitem__("provider_tokens", 1),
+            "indexes_true": lambda doc: doc.__setitem__("authorized_replicate_indexes", [True, 2]),
+            "indexes_false": lambda doc: doc.__setitem__("authorized_replicate_indexes", [False, 2]),
+            "indexes_float": lambda doc: doc.__setitem__("authorized_replicate_indexes", [1.0, 2]),
+            "indexes_string": lambda doc: doc.__setitem__("authorized_replicate_indexes", ["1", 2]),
+            "indexes_null": lambda doc: doc.__setitem__("authorized_replicate_indexes", [None, 2]),
+            "sibling_sequence": lambda doc: doc["sequences"][0].__setitem__("sequence_id", "wrong-sequence"),
+            "sibling_generation": lambda doc: doc["sequences"][0].__setitem__("task_family_generation", "baseline-v999"),
+            "sibling_protocol_path": lambda doc: doc["sequences"][0].__setitem__("protocol_path", "sources/evaluations/protocols/wrong.json"),
+            "sibling_protocol_sha": lambda doc: doc["sequences"][0].__setitem__("protocol_sha256", "0" * 64),
+            "sibling_pool": lambda doc: doc["sequences"][0].__setitem__("baseline_pool_fingerprint", "000000000000"),
+        }
+        try:
+            for field, mutate in mutations.items():
+                with self.subTest(field=field), tempfile.TemporaryDirectory() as tmp:
+                    changed = copy.deepcopy(original)
+                    mutate(changed)
+                    authority_path.write_text(json.dumps(changed, indent=2) + "\n")
+                    lane_root = Path(tmp) / "lanes"
+                    result = subprocess.run(
+                        [
+                            sys.executable,
+                            "scripts/run_sequential_workflow_matrix.py",
+                            "beets-lifecycle-sequence-v0",
+                            "--replicate-index", "1",
+                            "--max-parallel", "1",
+                            "--workflow-model-condition-id", "codex-openai-gpt-5-6-sol-high",
+                            "--workflow-model", "gpt-5.6-sol",
+                            "--workflow-reasoning-effort", "high",
+                            "--lane-root", str(lane_root),
+                            "--dry-run",
+                        ],
+                        cwd=ROOT,
+                        text=True,
+                        capture_output=True,
+                        check=False,
+                    )
+                    self.assertNotEqual(result.returncode, 0, field)
+                    self.assertRegex(
+                        result.stderr + result.stdout,
+                        "invalid authorization, scope, budget, model, or policy|stale nested binding",
+                    )
+                    self.assertFalse(lane_root.exists())
+        finally:
+            authority_path.write_bytes(original_bytes)
+
+    def test_matrix_rejects_unapproved_model_before_lane_root_or_receipt(self) -> None:
+        result = subprocess.run(
+            [
+                sys.executable,
+                "scripts/run_sequential_workflow_matrix.py",
+                "beets-lifecycle-sequence-v0",
+                "--replicate-index", "1",
+                "--max-parallel", "1",
+                "--workflow-model-condition-id", "codex-openai-gpt-5-6-luna-xhigh",
+                "--workflow-model", "gpt-5.6-luna",
+                "--workflow-reasoning-effort", "xhigh",
+                "--dry-run",
+            ],
+            cwd=ROOT,
+            text=True,
+            capture_output=True,
+            check=False,
+        )
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn("launch model does not match", result.stderr + result.stdout)
+
+    def test_current_baseline_r1_r2_authority_binds_all_six_unoccupied_identities(self) -> None:
+        sequences = {
+            item["id"]: item
+            for item in json.loads((ROOT / "data/workflow-task-sequences.json").read_text())["sequences"]
+        }
+        self.assertEqual(
+            set(sequences),
+            {"fastify-lifecycle-sequence-v0", "beets-lifecycle-sequence-v0", "terraform-lifecycle-sequence-v0"},
+        )
+        receipts: set[Path] = set()
+        for sequence in sequences.values():
+            for replicate_index in (1, 2):
+                binding, receipt = runner.baseline_replication_binding(sequence, replicate_index, ROOT)
+                self.assertEqual(binding["sequence_id"], sequence["id"])
+                self.assertFalse(receipt.exists(), receipt)
+                self.assertTrue(runner.baseline_v2_pilot_run_gate(sequence, ROOT, replicate_index)[0])
+                receipts.add(receipt)
+            self.assertFalse(runner.baseline_v2_pilot_run_gate(sequence, ROOT, 3)[0])
+        self.assertEqual(len(receipts), 6)
 
     def test_v4_canonical_protocol_identity_ignores_noncausal_provenance_hashes(self) -> None:
         sequences = {
@@ -5822,18 +6260,49 @@ class BaselineV3LowComplexityContractTest(unittest.TestCase):
             preserved_bytes = preserved_path.read_bytes()
             self.assertEqual(hashlib.sha256(preserved_bytes).hexdigest(), executed["sha256"])
             source_path = f"sources/evaluations/protocols/{executed['protocol_id']}.json"
-            source_bytes = subprocess.run(
-                ["git", "show", f"{audit['source_commit']}:{source_path}"],
-                cwd=ROOT,
-                capture_output=True,
-                check=True,
-            ).stdout
-            self.assertEqual(preserved_bytes, source_bytes)
+            self.assertRegex(audit["source_commit"], r"^[0-9a-f]{40}$")
+            self.assertFalse((ROOT / source_path).exists())
+            protocol = json.loads(preserved_bytes)
+            self.assertEqual(protocol["protocol_id"], executed["protocol_id"])
             lane_log = json.loads(
                 next(evidence_root.glob(f"{sequence['sequence_id']}--*-lane.log")).read_text()
             )
             self.assertEqual(lane_log["frozen_protocol"]["protocol_id"], executed["protocol_id"])
             self.assertEqual(lane_log["frozen_protocol"]["sha256"], executed["sha256"])
+
+    def test_current_fastify_v3_frozen_protocol_accepts_only_noncausal_provenance_drift(self) -> None:
+        script = r'''
+import argparse
+import copy
+import sys
+sys.path.insert(0, 'scripts')
+import run_codex_workflow_model_condition as condition
+condition.configure_model_condition('codex-openai-gpt-5-6-sol-high', 'gpt-5.6-sol', 'high')
+runner = condition.runner
+sequence = runner.load_sequence('fastify-lifecycle-sequence-v0')
+identity, protocol = runner.current_baseline_v2_protocol(sequence, sequence['mistake_gate'], runner.ROOT)
+args = argparse.Namespace(
+    prepare_only=True,
+    protocol=identity['path'],
+    timeout_per_task=3600,
+    docker_image=runner.DEFAULT_DOCKER_IMAGE,
+)
+assert runner.validate_protocol_for_run(sequence, 'baseline-bare-codex', args) == protocol
+mutated = copy.deepcopy(protocol)
+mutated['baseline_pool']['descriptor']['objective'] += ' causal drift'
+assert not runner.baseline_protocol_descriptor_compatible(
+    mutated['baseline_pool']['descriptor'],
+    runner.baseline_protocol_descriptor(sequence),
+)
+'''
+        result = subprocess.run(
+            [sys.executable, "-c", script],
+            cwd=ROOT,
+            text=True,
+            capture_output=True,
+            check=False,
+        )
+        self.assertEqual(result.returncode, 0, result.stderr)
 
     def test_current_v3_pilot_protocol_identity_is_unique_and_exact(self) -> None:
         script = """

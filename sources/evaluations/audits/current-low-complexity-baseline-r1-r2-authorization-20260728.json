@@ -1,0 +1,52 @@
+{
+  "schema_version": 1,
+  "campaign_id": "current-low-complexity-baseline-r1-r2-20260728",
+  "authorized_by_owner_message_id": "1531674305564508322",
+  "authorized_on": "2026-07-28",
+  "paid_baseline_replication_authorized": true,
+  "authorized_replicate_indexes": [
+    1,
+    2
+  ],
+  "sequence_order": [
+    "fastify-lifecycle-sequence-v0",
+    "beets-lifecycle-sequence-v0",
+    "terraform-lifecycle-sequence-v0"
+  ],
+  "serialization_required": true,
+  "allowed_paid_baseline_runs": 6,
+  "allowed_model_turns": 18,
+  "model_condition": {
+    "id": "codex-openai-gpt-5-6-sol-high",
+    "model": "gpt-5.6-sol",
+    "reasoning_effort": "high"
+  },
+  "first_valid_sample_policy": true,
+  "rerun_after_attempt_receipt": false,
+  "provider_calls": 0,
+  "provider_tokens": 0,
+  "sequences": [
+    {
+      "sequence_id": "fastify-lifecycle-sequence-v0",
+      "task_family_generation": "baseline-v3",
+      "protocol_path": "sources/evaluations/protocols/fastify-lifecycle-sequence-v0-baseline-bare-codex-5bd0be12f9f5.json",
+      "protocol_sha256": "c11710aeda868a697a75fa75c45209641ec4ac2c30fc3fd5abea8a2add22b0b0",
+      "baseline_pool_fingerprint": "bb0e89ed9794"
+    },
+    {
+      "sequence_id": "beets-lifecycle-sequence-v0",
+      "task_family_generation": "baseline-v4",
+      "protocol_path": "sources/evaluations/protocols/beets-lifecycle-sequence-v0-baseline-bare-codex-de39716463bf.json",
+      "protocol_sha256": "cf6d53501d23e3f5f62d1c6eb53f7cad8f6c00559946c5e5d315fb5266007ba0",
+      "baseline_pool_fingerprint": "fcc8438d2077"
+    },
+    {
+      "sequence_id": "terraform-lifecycle-sequence-v0",
+      "task_family_generation": "baseline-v4",
+      "protocol_path": "sources/evaluations/protocols/terraform-lifecycle-sequence-v0-baseline-bare-codex-93ad6e0a1c6f.json",
+      "protocol_sha256": "c421c23dfedeec72d9de33fbc1088ab41330a75999b19026c18d43613a1a6e73",
+      "baseline_pool_fingerprint": "5811b463c1e9"
+    }
+  ],
+  "notes": "Owner explicitly authorized two additional current-control replicates for every low-complexity lane. r0 remains immutable; this authority covers only r1 and r2."
+}

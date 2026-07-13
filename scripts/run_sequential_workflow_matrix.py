@@ -119,6 +119,16 @@ def safe_name(value: str) -> str:
     return re.sub(r"[^A-Za-z0-9_.-]+", "-", value).strip("-")
 
 
+def workflow_lane_environment(tmp: Path) -> dict[str, str]:
+    env = os.environ.copy()
+    for name in workflow.AMBIENT_GIT_OBJECT_ENV_VARS:
+        env.pop(name, None)
+    env["TMPDIR"] = str(tmp)
+    env["SKIP_PAIR_VALIDATION"] = "1"
+    env["WORKFLOW_LANE_DISABLE_AUTH_SYNC"] = "1"
+    return env
+
+
 def copytree_ignore(current: str, names: list[str]) -> set[str]:
     current_path = Path(current)
     ignored: set[str] = set()
@@ -133,6 +143,8 @@ def copytree_ignore(current: str, names: list[str]) -> set[str]:
         }})
     if current_path.name == "audits":
         ignored.update({name for name in names if name.startswith("baseline-v") and "-pilot-attempt-" in name and name.endswith(".json")})
+        if "current-low-complexity-baseline-r1-r2-attempts" in names:
+            ignored.add("current-low-complexity-baseline-r1-r2-attempts")
     return ignored
 
 
@@ -157,10 +169,37 @@ def rsync_checkout(source: Path, destination: Path) -> None:
         "--exclude=/sources/evaluations/workflow-sessions/*/task-prompts/",
         "--exclude=/sources/evaluations/workflow-sessions/*/model-output/",
         "--exclude=/sources/evaluations/audits/baseline-v*-pilot-attempt-*.json",
+        "--exclude=/sources/evaluations/audits/current-low-complexity-baseline-r1-r2-attempts/",
         str(source.resolve()) + "/",
         str(destination.resolve()) + "/",
     ]
     subprocess.run(cmd, check=True)
+
+
+def clone_published_checkout(destination: Path, expected_commit: str) -> None:
+    """Materialize provider lanes only from the independently published trusted branch."""
+    if destination.exists():
+        chmod_tree(destination)
+        shutil.rmtree(destination)
+    destination.parent.mkdir(parents=True, exist_ok=True)
+    env = os.environ.copy()
+    for name in workflow.AMBIENT_GIT_OBJECT_ENV_VARS:
+        env.pop(name, None)
+    subprocess.run(
+        [
+            "git", "clone", "--no-local", "--single-branch", "--branch", "phase-3",
+            workflow.TRUSTED_REPOSITORY_ORIGIN, str(destination),
+        ],
+        env=env,
+        check=True,
+        stdout=subprocess.DEVNULL,
+    )
+    actual = subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=destination, text=True).strip()
+    if actual != expected_commit:
+        raise RuntimeError(f"trusted publication branch advanced during launch: expected {expected_commit}, got {actual}")
+    errors = workflow.paid_launch_checkout_errors(destination)
+    if errors:
+        raise RuntimeError("published lane checkout certification failed: " + "; ".join(errors))
 
 
 def find_protocol(root: Path, sequence_id: str, profile_id: str) -> Path:
@@ -300,6 +339,7 @@ def run_flow_lane(
     source_codex_home: Path | None,
     model_condition: dict[str, str] | None = None,
     production_lock_fd: int | None = None,
+    published_launch_commit: str | None = None,
 ) -> dict[str, Any]:
     lane_id = safe_name(f"{sequence_id}--{treatment_profile}")
     lane_dir = lane_root / lane_id
@@ -308,7 +348,13 @@ def run_flow_lane(
     logs = lane_dir / "logs"
     logs.mkdir(parents=True, exist_ok=True)
     tmp.mkdir(parents=True, exist_ok=True)
-    rsync_checkout(ROOT, checkout)
+    provider_capable = "--no-provider" not in runner_args
+    if provider_capable:
+        if not published_launch_commit:
+            raise ValueError("provider-capable lane requires a certified published launch commit")
+        clone_published_checkout(checkout, published_launch_commit)
+    else:
+        rsync_checkout(ROOT, checkout)
     before_session_ids = {
         str(session.get("session_id"))
         for session in load_json(checkout / "data/workflow-sessions.json").get("sessions", [])
@@ -343,16 +389,12 @@ def run_flow_lane(
         cmd.extend(["--session-id", f"prepare-{lane_id}"])
     if source_codex_home is not None:
         cmd.extend(["--source-codex-home", str(source_codex_home)])
-    env = os.environ.copy()
-    env["TMPDIR"] = str(tmp)
-    env["SKIP_PAIR_VALIDATION"] = "1"
-    env["WORKFLOW_LANE_DISABLE_AUTH_SYNC"] = "1"
+    env = workflow_lane_environment(tmp)
     pass_fds: tuple[int, ...] = ()
     if production_lock_fd is not None:
         env[workflow.PRODUCTION_LOCK_FD_ENV] = str(production_lock_fd)
         pass_fds = (production_lock_fd,)
     log_path = logs / "lane.log"
-    provider_capable = "--no-provider" not in runner_args
     failure_evidence: list[str] = []
     failure_result: dict[str, Any] = {
         "lane_id": lane_id,
@@ -1290,14 +1332,17 @@ def publish_ready_comparisons(
     return published
 
 
-PROTECTED_CONTROL_PLANE_FILES = (Path("scripts/test_workflow_evaluation_contract.py"),)
+PROTECTED_CONTROL_PLANE_FILES = workflow.PAID_LAUNCH_PROTECTED_FILES
 
 
 def restore_protected_control_plane_files(root: Path = ROOT) -> None:
     for relative in PROTECTED_CONTROL_PLANE_FILES:
         if not (root / relative).is_file():
             subprocess.run(
-                ["git", "restore", "--worktree", "--", str(relative)],
+                [
+                    "git", "restore", "--source=HEAD", "--staged", "--worktree",
+                    "--", str(relative),
+                ],
                 cwd=root,
                 check=True,
             )
@@ -1441,6 +1486,7 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
 
 
 def main(argv: list[str] | None = None) -> int:
+    workflow.clear_ambient_git_object_environment()
     args = parse_args(argv)
     model_condition = selected_model_condition(args, configure=True)
     sequences = args.sequences or active_sequences()
@@ -1472,7 +1518,11 @@ def main(argv: list[str] | None = None) -> int:
         return workflow.baseline_v2_treatment_gate(workflow.load_sequence(sequence_id), ROOT)
 
     def baseline_run_gate(sequence_id: str) -> tuple[bool, str]:
-        return workflow.baseline_v2_pilot_run_gate(workflow.load_sequence(sequence_id), ROOT)
+        return workflow.baseline_v2_pilot_run_gate(
+            workflow.load_sequence(sequence_id),
+            ROOT,
+            args.replicate_index,
+        )
 
     if args.prepare_only and treatment_profiles:
         for sequence_id in sequences:
@@ -1498,6 +1548,18 @@ def main(argv: list[str] | None = None) -> int:
             args.replicate_index,
             prepare_only=args.prepare_only,
         )
+    serialized_replication_jobs = [
+        (sequence_id, profile_id)
+        for sequence_id, profile_id in jobs
+        if profile_id == "baseline-bare-codex"
+        and args.replicate_index in {1, 2}
+        and workflow.load_sequence(sequence_id).get("task_family_generation") in {"baseline-v3", "baseline-v4"}
+    ]
+    if serialized_replication_jobs and args.max_parallel != 1:
+        raise SystemExit("owner-authorized current baseline r1/r2 execution requires --max-parallel 1")
+    published_launch_commit = None
+    if not args.prepare_only and not args.dry_run:
+        published_launch_commit = workflow.certified_published_launch_commit(ROOT)
     validation_python = None if args.dry_run else controller_validation_python()
     if not args.dry_run and not ensure_nonsymlink_directory_ancestry(args.lane_root):
         raise ValueError("lane root contains a symlink or non-directory ancestor")
@@ -1565,6 +1627,7 @@ def main(argv: list[str] | None = None) -> int:
                     source_codex_home=args.source_codex_home,
                     model_condition=model_condition,
                     production_lock_fd=production_lock_fd,
+                    published_launch_commit=published_launch_commit,
                 )
                 for sequence_id, treatment_profile in jobs
             ]
