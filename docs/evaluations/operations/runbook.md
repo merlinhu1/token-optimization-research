@@ -55,13 +55,15 @@ python3 scripts/run_sequential_workflow_matrix.py "$SEQUENCE_ID" --workflow-mode
 
 Current runnable treatment profiles: `artifact-ponytail-codex-plugin-v1`, `behavior-caveman-codex-skill-v1`, `codescope-codex-product-v1`, `headroom-default-codex`, `integrated-leanctx-codex-hybrid-v1`, `integrated-token-savior-codex-product-v2`, `retrieval-cartog-codex-product-v2`, `retrieval-codegraph-codex-mcp-v1`, `retrieval-graphify-codex-skill-v1`, `retrieval-jcodemunch-codex-mcp-v2`, `retrieval-serena-codex-mcp-v1`, `retrieval-sigmap-codex-live-v1`, `swarmvault-codex-product-v1`, `terminal-rtk-codex-instructions-v1`, `terminal-snip-codex-hook-v1`, `terminal-tokenjuice-codex-hook-v1`. Historical profiles marked `historical-profile` are occupied evidence identities and cannot be rerun in place.
 
-Treatment protocol freezing, preparation, and execution are machine-blocked for `beets-lifecycle-sequence-v0` (pilot audit is absent: sources/evaluations/audits/baseline-v4-pilot-zero-mistake.json), `terraform-lifecycle-sequence-v0` (pilot audit is absent: sources/evaluations/audits/baseline-v4-pilot-zero-mistake.json). Paid pilot execution is not authorized for `beets-lifecycle-sequence-v0`, `terraform-lifecycle-sequence-v0`; provider-capable commands are suppressed until the explicit authorization authority is updated.
+Treatment protocol freezing, preparation, and execution are machine-blocked for `beets-lifecycle-sequence-v0` (pilot audit is absent: sources/evaluations/audits/baseline-v4-pilot-zero-mistake.json), `terraform-lifecycle-sequence-v0` (pilot audit is absent: sources/evaluations/audits/baseline-v4-pilot-zero-mistake.json). Only an unoccupied designated baseline pilot identity may run before its independent zero-incident audit passes.
 
 Provider-free preparation remains available for lanes without a reusable operational baseline; paid commands are listed only for unoccupied pilot identities:
 
 ```bash
 python3 scripts/run_sequential_workflow_matrix.py beets-lifecycle-sequence-v0 --workflow-model-condition-id codex-openai-gpt-5-6-sol-high --workflow-model gpt-5.6-sol --workflow-reasoning-effort high --prepare-only
 python3 scripts/run_sequential_workflow_matrix.py terraform-lifecycle-sequence-v0 --workflow-model-condition-id codex-openai-gpt-5-6-sol-high --workflow-model gpt-5.6-sol --workflow-reasoning-effort high --prepare-only
+python3 scripts/run_sequential_workflow_matrix.py beets-lifecycle-sequence-v0 --workflow-model-condition-id codex-openai-gpt-5-6-sol-high --workflow-model gpt-5.6-sol --workflow-reasoning-effort high
+python3 scripts/run_sequential_workflow_matrix.py terraform-lifecycle-sequence-v0 --workflow-model-condition-id codex-openai-gpt-5-6-sol-high --workflow-model gpt-5.6-sol --workflow-reasoning-effort high
 ```
 
 Reusable, zero-incident-audited baselines exist for `fastify-lifecycle-sequence-v0` (r0). No current treatment protocol is frozen, so no paid treatment command is published. Choose one compatible profile, freeze and validate its protocol provider-free, certify the resulting exact tree, and then execute the rendered dry-run verbatim before requesting paid execution:
