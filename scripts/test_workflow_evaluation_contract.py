@@ -417,7 +417,7 @@ class ManifestAndProtocolContractTest(unittest.TestCase):
             [
                 "fastify-maintenance-sequence-v1",
                 "terraform-maintenance-sequence-v2",
-                "beets-maintenance-sequence-v2",
+                "beets-maintenance-sequence-v3",
             ],
         )
         expected_tasks = {
@@ -426,10 +426,7 @@ class ManifestAndProtocolContractTest(unittest.TestCase):
                 "terraform-520378-computed-block-capabilities-regression",
                 "terraform-9ae470-objchange-validation-regression",
             ],
-            "beets-maintenance-sequence-v2": [
-                "beets-multivalue-metadata-regression",
-                "beets-path-format-config-regression",
-                "beets-relative-path-portability-regression",
+            "beets-maintenance-sequence-v3": [
                 "beets-tidal-metadata-sync-regression",
             ],
         }
@@ -444,7 +441,7 @@ class ManifestAndProtocolContractTest(unittest.TestCase):
         expected = {
             "fastify-maintenance-sequence-v1": "qualification-composite-v5.json",
             "terraform-maintenance-sequence-v2": "qualification-composite-v6.json",
-            "beets-maintenance-sequence-v2": "qualification-composite-v6.json",
+            "beets-maintenance-sequence-v3": "qualification-composite-v7.json",
         }
         for sequence_id in runner.active_sequence_ids():
             self.assertTrue(runner.load_sequence(sequence_id)["qualification_path"].endswith(expected[sequence_id]))
@@ -453,7 +450,7 @@ class ManifestAndProtocolContractTest(unittest.TestCase):
         cases = {
             "fastify-maintenance-sequence-v1": "sources/evaluations/protocols/fastify-production-gpt-5.6-luna-xhigh-v7.json",
             "terraform-maintenance-sequence-v2": "sources/evaluations/protocols/hashicorp-terraform-token-savings-production-gpt-5.6-luna-xhigh-v8.json",
-            "beets-maintenance-sequence-v2": "sources/evaluations/protocols/beetbox-beets-token-savings-production-gpt-5.6-luna-xhigh-v8.json",
+            "beets-maintenance-sequence-v3": "sources/evaluations/protocols/beetbox-beets-token-savings-production-gpt-5.6-luna-xhigh-v9.json",
         }
         for sequence_id, protocol_path in cases.items():
             seq = runner.load_sequence(sequence_id)
