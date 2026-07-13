@@ -728,6 +728,44 @@ class MatrixLifecycleContractTest(unittest.TestCase):
         )
         self.assertEqual(jobs, [(SEQUENCE_ID, "baseline-bare-codex")])
 
+    def test_primary_objective_hard_baseline_is_reusable_for_treatment_planning(self) -> None:
+        registry = json.loads((ROOT / "data/workflow-sessions.json").read_text())
+        sequence = runner.load_sequence("fastify-maintenance-sequence-v1")
+        baseline = matrix.find_baseline_record(registry, sequence, 0)
+        self.assertIsNotNone(baseline)
+        assert baseline is not None
+        self.assertTrue(matrix.hard_baseline_usable(baseline, ROOT))
+        self.assertEqual(matrix.baseline_reuse_state(baseline, ROOT), "reusable")
+        jobs = matrix.plan_workflow_jobs(
+            ["fastify-maintenance-sequence-v1"],
+            ["terminal-rtk"],
+            baseline_state=lambda _sequence: matrix.baseline_reuse_state(baseline, ROOT),
+            profile_state=lambda _sequence, _profile: "missing",
+        )
+        self.assertEqual(jobs, [("fastify-maintenance-sequence-v1", "terminal-rtk")])
+
+    def test_hard_baseline_comparison_scores_correctness_and_tokens(self) -> None:
+        sequence = runner.load_sequence("fastify-maintenance-sequence-v1")
+        baseline = {
+            "session_id": "hard-baseline",
+            "study_id": "study",
+            "cumulative_token_usage": {"total_provider_tokens": 1000},
+            "software_quality": {"tasks_agent_claimed_complete": 5, "tasks_passed": 0},
+        }
+        treatment = {
+            "session_id": "treatment",
+            "experiment_group_id": "group",
+            "cumulative_token_usage": {"total_provider_tokens": 900},
+            "software_quality": {"tasks_agent_claimed_complete": 5, "tasks_passed": 1},
+        }
+        with tempfile.TemporaryDirectory() as tmp, mock.patch.object(matrix, "ROOT", Path(tmp)):
+            path = matrix.write_hard_baseline_comparison(sequence, baseline, treatment, "terminal-rtk", 0)
+            comparison = json.loads(path.read_text())
+        self.assertTrue(comparison["correctness_improved"])
+        self.assertTrue(comparison["token_efficiency_improved"])
+        self.assertTrue(comparison["treatment_outperforms_baseline"])
+        self.assertEqual(comparison["delta_total_provider_tokens"], -100)
+
     def test_artifact_symlink_escape_is_rejected(self) -> None:
         with tempfile.TemporaryDirectory(dir=ROOT) as tmp:
             checkout = Path(tmp) / "checkout"
