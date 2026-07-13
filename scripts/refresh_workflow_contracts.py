@@ -32,19 +32,11 @@ def write_json(path: Path, value: object) -> None:
 
 
 def protocol_id(seq: dict[str, Any], profile_id: str) -> str:
-    lane = {
-        "medium-fastify-fastify": "fastify",
-        "large-hashicorp-terraform": "hashicorp-terraform",
-        "medium-beetbox-beets": "beetbox-beets",
-    }[seq["fixture_id"]]
-    if seq["id"] == "beets-maintenance-sequence-v4":
-        lane = f"{lane}-token-savings"
-        version = "v11"
-    elif seq["id"] == "terraform-maintenance-sequence-v2":
-        lane = f"{lane}-token-savings"
-        version = "v8"
-    else:
-        version = "v7"
+    lane, version = {
+        "fastify-maintenance-sequence-v1": ("fastify", "v7"),
+        "terraform-maintenance-sequence-v2": ("hashicorp-terraform-token-savings", "v8"),
+        "beets-maintenance-sequence-v4": ("beetbox-beets-token-savings", "v11"),
+    }[seq["id"]]
     if profile_id == "baseline-bare-codex":
         return f"{lane}-production-gpt-5.6-luna-xhigh-{version}"
     return f"{lane}-{runner.safe_profile_key(profile_id)}-production-gpt-5.6-luna-xhigh-{version}"

@@ -1,15 +1,14 @@
-# hashicorp/terraform primary workflow fixture
+# hashicorp/terraform production workflow fixture
 
 Fixture ID: `large-hashicorp-terraform`
-Status: active large-project reproduction fixture
 
+- Status: active production comparison fixture
 - Upstream: `https://github.com/hashicorp/terraform`
 - Pinned snapshot: `e02391ad384c9c38f1d7f40b853c0d2297348094`
 - Runtime: Go
-- Sequence: `terraform-maintenance-sequence-v1`
+- Active sequence: `terraform-maintenance-sequence-v2`
+- Qualification: `qualification-composite-v6.json`
 
-The five tasks reconstruct real upstream Terraform maintenance changes. Every seed changes at least five causally related production files, applies without conflicts to the pinned snapshot, and is accepted by controller-hidden behavior checks.
+The active workflow has three sequential tasks: tracing-context propagation, computed-block provider capabilities, and strict/const-only variable parsing. All seed regressions coexist in one concealed composite broken start, prompts are disclosed one at a time, and cumulative verification runs after the final prompt.
 
-The controller injects one seed only after the previous repair passes, conceals post-fix tests and verifier assets from the model repository, and keeps future prompts, all seeds, provenance, and qualification evidence fixture-local.
-
-`repo/` and `runs/` are generated locally and are not evaluation evidence unless a frozen protocol explicitly records them.
+The local `repo/`, dependency caches, and run scratch trees are generated and must not be committed.
