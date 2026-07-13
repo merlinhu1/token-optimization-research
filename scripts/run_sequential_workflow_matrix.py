@@ -343,6 +343,11 @@ def publication_allowed(prepare_only: bool, lane_results: list[dict[str, Any]]) 
     return not prepare_only and all(result["exit_code"] == 0 for result in lane_results)
 
 
+def artifact_merge_allowed(prepare_only: bool, lane_results: list[dict[str, Any]]) -> bool:
+    """Preserve every completed compact session even when a sibling lane fails."""
+    return not prepare_only and any(result.get("produced_session_ids") for result in lane_results)
+
+
 def lane_session_records(checkout: Path, sequence_id: str, replicate_index: int, produced_session_ids: set[str] | None = None) -> list[dict[str, Any]]:
     doc = load_json(checkout / "data/workflow-sessions.json")
     out: list[dict[str, Any]] = []
@@ -666,13 +671,14 @@ def main(argv: list[str] | None = None) -> int:
     registry_before = registry_path.read_bytes() if not args.prepare_only else b""
     lanes_passed = all(result["exit_code"] == 0 for result in lane_results)
     publish_allowed = publication_allowed(args.prepare_only, lane_results)
+    merge_allowed = artifact_merge_allowed(args.prepare_only, lane_results)
     merge_summary = {
         "merged_session_count": 0,
         "copied_artifact_count": 0,
         "merged_session_ids": [],
         "copied_artifacts": [],
         "skipped": "prepare-only run" if args.prepare_only else "one or more lanes failed",
-    } if not publish_allowed else merge_lanes(lane_results, args.replicate_index)
+    } if not merge_allowed else merge_lanes(lane_results, args.replicate_index)
     published_comparisons = [] if not publish_allowed else publish_ready_comparisons(
         sequences, treatment_profiles, args.replicate_index
     )
@@ -692,9 +698,7 @@ def main(argv: list[str] | None = None) -> int:
         merge_summary["rolled_back"] = True
         published_comparisons = []
     execution_passed = lanes_passed and validation["passed"]
-    awaiting_quality_review = not args.prepare_only and execution_passed and any(
-        result.get("produced_session_ids") for result in lane_results
-    )
+    awaiting_quality_review = not args.prepare_only and merge_summary.get("merged_session_count", 0) > 0
     summary = {
         "plan": plan,
         "lane_results": sorted(lane_results, key=lambda item: item["sequence_id"]),
@@ -710,7 +714,7 @@ def main(argv: list[str] | None = None) -> int:
 
     if not args.keep_lanes:
         cleanup_lane_checkouts(run_root)
-    if awaiting_quality_review:
+    if awaiting_quality_review and execution_passed:
         if production_lock_fd is not None:
             os.close(production_lock_fd)
         return 3
