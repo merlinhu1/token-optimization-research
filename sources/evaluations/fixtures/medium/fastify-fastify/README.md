@@ -8,10 +8,10 @@ Fixture ID: `medium-fastify-fastify`
 - Pinned snapshot: `94bcbcc6e2ef3b8e8f8e8797fe551ccbe7b942fd`
 - Qualification: `qualification-composite-v5.json`
 - Sequence: `fastify-maintenance-sequence-v1`
-- Corrected GPT-5.5 high fingerprint: `109705c35eff`; current hard baseline `baseline-fastify-20260713-p-109705c35eff-r0` (4/5 verified, 45,449,446 tokens)
-- Corrected GPT-5.6 Luna xhigh fingerprint: `a9c642bc016a`; current accepted baseline `baseline-fastify-20260713-p-a9c642bc016a-r0` (5/5 verified, 64,598,189 tokens)
+- Current GPT-5.6 Luna xhigh fingerprint: `105ed6fb58fc`; awaiting fresh baseline execution after source-review coverage correction
+- Superseded intermediate fingerprints: GPT-5.5 high `109705c35eff`, GPT-5.6 Luna xhigh `a9c642bc016a`
 
-The prior strengthened verifier snapshot was superseded because it required exact error/log messages, internal symbol shape, request-header object identity, Content-Type cache identity, and exact serialization details not required by the prompts. Post-hoc replay of the GPT-5.5 high implementation passes all five corrected behavioral surfaces.
+The prior overconstrained verifier snapshot was superseded because it required exact error/log messages, internal symbol shape, request-header object identity, Content-Type cache identity, and exact serialization details not required by the prompts. A later independent source review then exposed under-coverage in the intermediate correction: default 414 handling and explicitly restored logger compatibility behavior were not enforced. The current contract adds those prompt-aligned behavioral gates.
 
 Report operational completion, agent-declared completion, verifier-confirmed behavior, and provider tokens separately. Pair each treatment with a baseline from the same prompt-aligned frozen model condition and protocol fingerprint.
 
