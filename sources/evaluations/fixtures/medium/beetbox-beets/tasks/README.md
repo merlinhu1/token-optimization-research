@@ -1,5 +1,9 @@
-# Beets Task Set
+# Beets production task set
 
-The fixture preserves the original five production-grade Beets regressions as historical stress/calibration tasks and adds two explicitly versioned focused-core tasks for the active multi-task token-savings lane. All seeds are upstream-derived against pinned snapshot `8ddae794d30e9984be904f80459614155c6592d9` and use controller-hidden verifier scripts.
+The active three-task workflow uses the pinned snapshot `8ddae794d30e9984be904f80459614155c6592d9` and controller-hidden acceptance assets.
 
-The active Beets v4 lane contains three tasks with disjoint production surfaces: core path-format routing, core multivalue metadata, and Tidal metadata synchronization. This retains warm sequential multi-task evaluation while removing the broad cross-surface requirements that repeatedly exceeded the bare model's demonstrated capability.
+1. `beets-path-format-core-regression` — path-format routing across configuration and consumers.
+2. `beets-multivalue-core-regression` — list-valued genre metadata across normalization, fields, migrations, and models.
+3. `beets-tidal-metadata-sync-regression-v2` — freshness, popularity, artwork relationships, pagination includes, and token loading.
+
+Superseded calibration tasks were removed from the live tree and remain recoverable from Git history.

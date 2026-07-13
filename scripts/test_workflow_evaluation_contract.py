@@ -15,7 +15,7 @@ from scripts import validate_repository
 
 
 ROOT = Path(__file__).resolve().parents[1]
-SEQUENCE_ID = "fastify-maintenance-sequence-v1"
+SEQUENCE_ID = "terraform-maintenance-sequence-v2"
 
 
 class SeedDeliveryContractTest(unittest.TestCase):
@@ -232,16 +232,10 @@ class VerifierContractTest(unittest.TestCase):
 
     def test_active_prompts_name_acceptance_critical_public_contracts(self) -> None:
         cases = {
-            "sources/evaluations/fixtures/medium/fastify-fastify/tasks/fastify-request-media-type-regression/agent-prompt.txt": ["request.mediaType"],
-            "sources/evaluations/fixtures/medium/fastify-fastify/tasks/fastify-log-controller-regression/agent-prompt.txt": ["Fastify.LogController", "FST_ERR_LOG_INVALID_LOG_CONTROLLER"],
-            "sources/evaluations/fixtures/medium/beetbox-beets/tasks/beets-import-duplicate-resolution-regression/agent-prompt.txt": ["duplicate_action", "DuplicateAction.MERGE", "DuplicateAction.REMOVE"],
-            "sources/evaluations/fixtures/medium/beetbox-beets/tasks/beets-multivalue-metadata-regression/agent-prompt.txt": ["genre", "genres", 'MULTI_VALUE_DSV.normalize("Jazz; Funk")', "uv run"],
             "sources/evaluations/fixtures/medium/beetbox-beets/tasks/beets-path-format-core-regression/agent-prompt.txt": ["PF_KEY_QUERIES", "comp:true", "custom keys", "all three prompts"],
             "sources/evaluations/fixtures/medium/beetbox-beets/tasks/beets-multivalue-core-regression/agent-prompt.txt": ["TrackInfo", 'MULTI_VALUE_DSV.normalize("Jazz; Funk")', "TYPE_BY_FIELD", "all three prompts"],
             "sources/evaluations/fixtures/medium/beetbox-beets/tasks/beets-tidal-metadata-sync-regression-v2/agent-prompt.txt": ["REIMPORT_FRESH_FIELDS_ITEM", "coverArt", "every paginated request", "all three prompts"],
             "sources/evaluations/fixtures/large/hashicorp-terraform/tasks/terraform-161ffe-tracing-context-regression/agent-prompt.txt": ["ContextOpts.TracingContext", "localRun(ctx, op)", "must compile"],
-            "sources/evaluations/fixtures/large/hashicorp-terraform/tasks/terraform-81053-invalid-workspace-name-regression/agent-prompt.txt": ["WorkspaceOverridden() (string, bool, error)", "recovery", "must compile"],
-            "sources/evaluations/fixtures/large/hashicorp-terraform/tasks/terraform-305dba-query-sensitive-paths-regression/agent-prompt.txt": ["*configschema.Block", "SensitiveAttributePaths", "must compile"],
         }
         for path, required in cases.items():
             prompt = (ROOT / path).read_text()
@@ -256,13 +250,6 @@ class VerifierContractTest(unittest.TestCase):
                 self.assertNotIn("Use the fixture verifier", prompt, task["id"])
                 self.assertNotIn("seeded with the regression", prompt, task["id"])
 
-    def test_acceptance_avoids_internal_cleanup_and_cache_identity_requirements(self) -> None:
-        timeout_verifier = (ROOT / "sources/evaluations/fixtures/medium/fastify-fastify/tasks/fastify-handler-timeout-regression/verify.sh").read_text()
-        content_type_verifier = (ROOT / "sources/evaluations/fixtures/medium/fastify-fastify/tasks/fastify-content-type-semantics-regression/verify.sh").read_text()
-        self.assertNotIn("kTimeoutTimer", timeout_verifier)
-        self.assertNotIn("kOnAbort", timeout_verifier)
-        self.assertNotIn("ContentType.from('Application/JSON; Charset=UTF-8'), ContentType.from", content_type_verifier)
-
     def test_schema_discriminates_warm_and_legacy_protocols(self) -> None:
         schema = json.loads((ROOT / "schemas/workflow-session-record.schema.json").read_text())
         modes = {branch["properties"]["prompt_delivery"]["properties"]["seed_delivery_mode"]["const"] for branch in schema["properties"]["task_sequence"]["oneOf"]}
@@ -274,71 +261,30 @@ class VerifierContractTest(unittest.TestCase):
         self.assertEqual(runner.functional_task_count(expected_tasks=2, task_checkpoints=checkpoints, final_verifier_code=1), 0)
 
 
-class FastifyAcceptanceContractTest(unittest.TestCase):
-    @classmethod
-    def setUpClass(cls) -> None:
-        workflow = json.loads((ROOT / "data/workflow-task-sequences.json").read_text())
-        cls.sequence = next(item for item in workflow["sequences"] if item["id"] == SEQUENCE_ID)
-
-    def test_acceptance_is_hidden_behavioral_and_each_seed_spans_five_sources(self) -> None:
-        self.assertEqual(self.sequence["acceptance_design"], "behavioral")
-        for task in self.sequence["tasks"]:
-            self.assertGreater(len(task.get("model_concealed_paths", [])), 0, task["id"])
-            verifier = (ROOT / task["verifier_command"]).read_text()
-            self.assertIn("node <<'NODE'", verifier)
-            self.assertNotIn("node --test test/", verifier)
-            self.assertNotRegex(verifier, r"(?m)^\s*grep\s")
-            patch = ROOT / Path(task["prompt_path"]).parent / "seed-regression.patch"
-            changed = validate_repository.patch_paths(patch)
-            production = [path for path in changed if validate_repository.is_production_path(path)]
-            self.assertGreaterEqual(len(set(production)), 5, task["id"])
-            self.assertEqual(set(changed), set(production), task["id"])
-
-    def test_qualification_records_concealed_paths_absent(self) -> None:
-        qualification = json.loads((ROOT / self.sequence["qualification_path"]).read_text())
-        records = {item["task_id"]: item for item in qualification["tasks"]}
-        for task in self.sequence["tasks"]:
-            self.assertEqual(records[task["id"]]["model_concealed_paths"], sorted(task["model_concealed_paths"]))
-            self.assertEqual(records[task["id"]]["expected_model_concealed_paths"], runner.expected_task_concealed_paths(task))
-            self.assertEqual(records[task["id"]]["omitted_expected_model_concealed_paths"], [])
-            self.assertIs(records[task["id"]]["declared_concealment_matches_expected"], True)
-            self.assertIs(records[task["id"]]["model_concealed_absent"], True)
+class ActiveAcceptanceContractTest(unittest.TestCase):
+    def test_active_qualification_records_match_task_assets(self) -> None:
+        for sequence_id in runner.active_sequence_ids():
+            sequence = runner.load_sequence(sequence_id)
+            self.assertEqual(sequence["acceptance_design"], "behavioral")
+            qualification = json.loads((ROOT / sequence["qualification_path"]).read_text())
+            records = {item["task_id"]: item for item in qualification["tasks"]}
+            for task in sequence["tasks"]:
+                patch = ROOT / Path(task["prompt_path"]).parent / "seed-regression.patch"
+                changed = validate_repository.patch_paths(patch)
+                production = [path for path in changed if validate_repository.is_production_path(path)]
+                self.assertGreaterEqual(len(set(production)), 5, task["id"])
+                self.assertEqual(records[task["id"]]["production_files"], production)
+                self.assertEqual(records[task["id"]]["model_concealed_paths"], sorted(task["model_concealed_paths"]))
+                self.assertEqual(records[task["id"]]["omitted_expected_model_concealed_paths"], [])
+                self.assertIs(records[task["id"]]["model_concealed_absent"], True)
 
     def test_expected_concealment_omission_is_rejected(self) -> None:
         task = {
-            "upstream_test_paths": ["test/internals/errors.test.js"],
-            "compatibility_rebased_test_paths": ["test/types/request.tst.ts"],
-            "model_concealed_paths": ["test/internals/errors.test.js"],
+            "upstream_test_paths": ["test/behavior.py"],
+            "compatibility_rebased_test_paths": ["test/types.py"],
+            "model_concealed_paths": ["test/behavior.py"],
         }
-        self.assertEqual(runner.omitted_expected_concealment(task), ["test/types/request.tst.ts"])
-
-    def test_qualification_production_files_match_patch_exactly(self) -> None:
-        qualification = json.loads((ROOT / self.sequence["qualification_path"]).read_text())
-        records = {item["task_id"]: item for item in qualification["tasks"]}
-        for task in self.sequence["tasks"]:
-            patch = ROOT / Path(task["prompt_path"]).parent / "seed-regression.patch"
-            self.assertEqual(records[task["id"]]["production_files"], [path for path in validate_repository.patch_paths(patch) if validate_repository.is_production_path(path)])
-
-    def test_active_readiness_surfaces_are_consistent(self) -> None:
-        fixtures = json.loads((ROOT / "data/repository-fixtures.json").read_text())
-        medium = json.loads((ROOT / "data/medium-project-candidates.json").read_text())
-        fixture = next(item for item in fixtures["fixtures"] if item["id"] == "medium-fastify-fastify")
-        candidate = next(item for item in medium["candidates"] if item["id"] == "medium-fastify-fastify")
-        self.assertEqual(self.sequence["status"], "active")
-        self.assertEqual(self.sequence["readiness_blockers"], [])
-        self.assertEqual(fixture["status"], "qualified-fixture")
-        self.assertEqual(fixture["qualification_status"], "active-reproduction-flow")
-        self.assertEqual(candidate["qualification_status"], "active-reproduction-flow")
-
-        errors: list[str] = []
-        validate_repository.validate_fixture_sequence_status_consistency(
-            {"sequences": [self.sequence]},
-            {"fixtures": [fixture]},
-            {"candidates": []},
-            {"candidates": [candidate]},
-            errors,
-        )
-        self.assertEqual(errors, [])
+        self.assertEqual(runner.omitted_expected_concealment(task), ["test/types.py"])
 
 
 class ManifestAndProtocolContractTest(unittest.TestCase):
@@ -438,8 +384,6 @@ class ManifestAndProtocolContractTest(unittest.TestCase):
             sequence = runner.load_sequence(sequence_id)
             self.assertEqual([task["id"] for task in sequence["tasks"]], task_ids)
             self.assertEqual([task["order"] for task in sequence["tasks"]], list(range(1, len(task_ids) + 1)))
-        self.assertEqual(runner.load_sequence("terraform-maintenance-sequence-v1")["status"], "retired")
-        self.assertEqual(runner.load_sequence("beets-maintenance-sequence-v1")["status"], "retired")
 
     def test_active_sequences_bind_current_qualifications(self) -> None:
         expected = {
@@ -478,7 +422,7 @@ class ManifestAndProtocolContractTest(unittest.TestCase):
     def test_protocol_timeout_mismatch_rejects(self) -> None:
         seq = runner.load_sequence(SEQUENCE_ID)
         args = mock.Mock(
-            protocol="sources/evaluations/protocols/fastify-production-gpt-5.6-luna-xhigh-v7.json",
+            protocol="sources/evaluations/protocols/hashicorp-terraform-token-savings-production-gpt-5.6-luna-xhigh-v8.json",
             prepare_only=False,
             no_provider=False,
             timeout_per_task=1,
@@ -490,7 +434,7 @@ class ManifestAndProtocolContractTest(unittest.TestCase):
     def test_protocol_docker_image_mismatch_rejects(self) -> None:
         seq = runner.load_sequence(SEQUENCE_ID)
         args = mock.Mock(
-            protocol="sources/evaluations/protocols/fastify-production-gpt-5.6-luna-xhigh-v7.json",
+            protocol="sources/evaluations/protocols/hashicorp-terraform-token-savings-production-gpt-5.6-luna-xhigh-v8.json",
             prepare_only=True,
             no_provider=True,
             timeout_per_task=3600,
@@ -502,7 +446,7 @@ class ManifestAndProtocolContractTest(unittest.TestCase):
     def test_baseline_protocol_cannot_validate_treatment(self) -> None:
         seq = runner.load_sequence(SEQUENCE_ID)
         args = mock.Mock(
-            protocol="sources/evaluations/protocols/fastify-production-gpt-5.6-luna-xhigh-v7.json",
+            protocol="sources/evaluations/protocols/hashicorp-terraform-token-savings-production-gpt-5.6-luna-xhigh-v8.json",
             prepare_only=True,
             no_provider=True,
             timeout_per_task=3600,
