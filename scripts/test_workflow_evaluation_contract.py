@@ -4325,6 +4325,7 @@ class BaselineV3LowComplexityContractTest(unittest.TestCase):
             (ROOT / "sources/evaluations/audits/baseline-v4-task-family-qualification-20260722.json").read_text()
         )
         v4_authorized = authorization["paid_pilot_authorized"] is True
+        unoccupied_authorized_v4: list[str] = []
         flags = "--workflow-model-condition-id codex-openai-gpt-5-6-sol-high --workflow-model gpt-5.6-sol --workflow-reasoning-effort high"
         for sequence in document["sequences"]:
             prepare_command = f"python3 scripts/run_sequential_workflow_matrix.py {sequence['id']} {flags} --prepare-only"
@@ -4339,15 +4340,28 @@ class BaselineV3LowComplexityContractTest(unittest.TestCase):
                 else:
                     self.assertIn(prepare_command, runbook)
                     if v4_authorized:
+                        unoccupied_authorized_v4.append(sequence["id"])
                         self.assertIn(paid_command, runbook.splitlines())
                     else:
                         self.assertNotIn(paid_command, runbook.splitlines())
         if v4_authorized:
             self.assertNotIn("Paid pilot execution is not authorized", runbook)
-            self.assertIn("Only an unoccupied designated baseline pilot identity may run", runbook)
+            if unoccupied_authorized_v4:
+                self.assertIn("Only an unoccupied designated baseline pilot identity may run", runbook)
+            else:
+                self.assertNotIn("Only an unoccupied designated baseline pilot identity may run", runbook)
         else:
             self.assertIn("Paid pilot execution is not authorized", runbook)
-        self.assertNotIn("The designated pilot identities are occupied", runbook)
+        blocked_v4 = [
+            sequence
+            for sequence in document["sequences"]
+            if sequence["task_family_generation"] == "baseline-v4"
+            and not runner.baseline_v2_treatment_gate(sequence, ROOT)[0]
+        ]
+        if v4_authorized and not unoccupied_authorized_v4 and blocked_v4:
+            self.assertIn("The designated pilot identities are occupied by immutable attempt evidence", runbook)
+        else:
+            self.assertNotIn("The designated pilot identities are occupied", runbook)
 
     def test_provider_free_v3_qualifications_pass_every_boundary(self) -> None:
         document = json.loads((ROOT / "data/workflow-task-sequences.json").read_text())
@@ -5408,10 +5422,12 @@ class BaselineV3LowComplexityContractTest(unittest.TestCase):
             else:
                 receipt = runner.baseline_pilot_attempt_receipt_path(sequence, ROOT)
                 if receipt.exists():
-                    self.assertTrue(passed, reason)
-                    self.assertIn("zero-incident", reason)
                     self.assertFalse(rerun_allowed, rerun_reason)
                     self.assertIn("immutable attempt receipt", rerun_reason)
+                    if passed:
+                        self.assertIn("zero-incident", reason)
+                    else:
+                        self.assertIn("exactly one entry", reason)
                 elif authorization["paid_pilot_authorized"] is True:
                     self.assertFalse(passed)
                     self.assertIn("exactly one entry", reason)
@@ -5461,10 +5477,9 @@ class BaselineV3LowComplexityContractTest(unittest.TestCase):
         self.assertEqual(beets["mistake_gate"]["status"], "passed-zero-incident")
         self.assertTrue(runner.baseline_v2_treatment_gate(beets, ROOT)[0])
         terraform = sequences["terraform-lifecycle-sequence-v0"]
-        self.assertEqual(
-            terraform["readiness_blockers"],
-            ["provider-backed strongest-model zero-mistake Baseline V4 pilot is authorized but not executed or independently audited"],
-        )
+        self.assertEqual(terraform["readiness_blockers"], [])
+        self.assertEqual(terraform["mistake_gate"]["status"], "passed-zero-incident")
+        self.assertTrue(runner.baseline_v2_treatment_gate(terraform, ROOT)[0])
 
         stale_sequences = copy.deepcopy(document)
         for sequence in stale_sequences["sequences"]:
@@ -5473,11 +5488,16 @@ class BaselineV3LowComplexityContractTest(unittest.TestCase):
                     "provider-backed strongest-model zero-mistake Baseline V4 pilot is not authorized or executed"
                 ]
         errors: list[str] = []
-        validate_repository.validate_workflow_task_sequences(
-            stale_sequences,
-            json.loads((ROOT / "data/repository-fixtures.json").read_text()),
-            errors,
-        )
+        with tempfile.TemporaryDirectory() as tmp, mock.patch.object(
+            runner,
+            "baseline_pilot_attempt_receipt_path",
+            return_value=Path(tmp) / "unoccupied.json",
+        ):
+            validate_repository.validate_workflow_task_sequences(
+                stale_sequences,
+                json.loads((ROOT / "data/repository-fixtures.json").read_text()),
+                errors,
+            )
         self.assertTrue(
             any("authorized but not executed or independently audited" in error for error in errors),
             errors,
@@ -5530,6 +5550,10 @@ class BaselineV3LowComplexityContractTest(unittest.TestCase):
             text = path.read_text()
             self.assertNotIn("prompts, seed states", text)
             self.assertIn("prompts differ", text)
+            self.assertNotIn("currently unoccupied", text)
+            self.assertNotIn("remain blocked until a fresh", text)
+            self.assertIn("occupied pilot must never be rerun", text)
+            self.assertIn("Treatment protocol freezing is now eligible", text)
             self.assertIn("only by the generation label", text)
             self.assertIn("command blocks", text)
 
@@ -5572,7 +5596,15 @@ class BaselineV3LowComplexityContractTest(unittest.TestCase):
         self.assertIs(type(audit["provider_tokens"]), int)
         self.assertEqual((audit["provider_calls"], audit["provider_tokens"]), (0, 0))
         self.assertIs(audit["paid_pilot_authorized"], True)
-        self.assertIs(audit["treatment_unlocked"], False)
+        active_v4 = [
+            sequence
+            for sequence in json.loads((ROOT / "data/workflow-task-sequences.json").read_text())["sequences"]
+            if sequence.get("task_family_generation") == "baseline-v4"
+        ]
+        self.assertIs(
+            audit["treatment_unlocked"],
+            all(runner.baseline_v2_treatment_gate(sequence, ROOT)[0] for sequence in active_v4),
+        )
         for record in audit["sequences"]:
             qualification = json.loads((ROOT / record["qualification_path"]).read_text())
             protocol = json.loads((ROOT / record["protocol_path"]).read_text())
@@ -6431,23 +6463,25 @@ with tempfile.TemporaryDirectory(dir=runner.ROOT / 'sources/evaluations/protocol
 
     def test_direct_treatment_runner_checks_pilot_gate_before_protocol(self) -> None:
         sequences = json.loads((ROOT / "data/workflow-task-sequences.json").read_text())["sequences"]
-        sequence = next(item for item in sequences if not runner.baseline_v2_treatment_gate(item, ROOT)[0])
+        sequence = sequences[0]
         args = mock.Mock(sequence_id=sequence["id"], profile_id="terminal-tokenjuice-codex-hook-v1", prepare_only=True)
         with (
             mock.patch.object(runner, "validate_default_model_condition"),
             mock.patch.object(runner, "validate_run_safety_args"),
             mock.patch.object(runner, "load_sequence", return_value=sequence),
+            mock.patch.object(runner, "baseline_v2_treatment_gate", return_value=(False, "synthetic missing pilot audit")),
             self.assertRaisesRegex(ValueError, "treatments are blocked"),
         ):
             runner.run_one(args)
 
     def test_treatment_protocol_freeze_checks_pilot_gate_before_qualification(self) -> None:
         sequences = json.loads((ROOT / "data/workflow-task-sequences.json").read_text())["sequences"]
-        sequence = next(item for item in sequences if not runner.baseline_v2_treatment_gate(item, ROOT)[0])
+        sequence = sequences[0]
         with (
             mock.patch.object(contract_refresh.runner, "validate_default_model_condition"),
             mock.patch.object(contract_refresh.runner, "assert_profile_runnable"),
             mock.patch.object(contract_refresh.runner, "load_sequence", return_value=sequence),
+            mock.patch.object(contract_refresh.runner, "baseline_v2_treatment_gate", return_value=(False, "synthetic missing pilot audit")),
             self.assertRaisesRegex(ValueError, "treatments are blocked"),
         ):
             contract_refresh.main([

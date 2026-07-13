@@ -215,7 +215,7 @@ def render() -> str:
             elif any_pilot_allowed:
                 suffix = ". Only an unoccupied designated baseline pilot identity may run before its independent zero-incident audit passes."
             else:
-                suffix = ". The designated pilot identities are occupied by immutable attempt evidence and their completed audits. Failed classifications are permanent for this generation; correcting a lane requires a new generation and new identities."
+                suffix = ". The designated pilot identities are occupied by immutable attempt evidence. Any sequence without a passing audit remains treatment-blocked; failed classifications are permanent for this generation and require new identities."
             chunks.append(
                 "Treatment protocol freezing, preparation, and execution are machine-blocked for "
                 + ", ".join(blocked_gates)

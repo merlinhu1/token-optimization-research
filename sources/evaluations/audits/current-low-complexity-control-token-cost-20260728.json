@@ -1,0 +1,61 @@
+{
+  "schema_version": 1,
+  "generated_on": "2026-07-28",
+  "status": "complete-current-low-complexity-control-panel",
+  "panel_definition": "Fastify Baseline V3 plus the generation-corrected Beets and Terraform Baseline V4 controls",
+  "weighted_token_cost_formula": "fresh_input_tokens + 0.1 * cached_input_tokens + 6 * output_tokens",
+  "reasoning_accounting": "provider-reported reasoning-output tokens are a subset of output_tokens and are not added separately",
+  "cache_write_accounting": "cache-write tokens are reported but excluded because no weight was specified",
+  "controls": [
+    {
+      "sequence_id": "fastify-lifecycle-sequence-v0",
+      "task_family_generation": "baseline-v3",
+      "session_id": "baseline-fastify-20260722-p-bb0e89ed9794-r0",
+      "fresh_input_tokens": 10315,
+      "cached_input_tokens": 65024,
+      "cache_write_tokens": 0,
+      "output_tokens": 1284,
+      "provider_reported_reasoning_output_subset_tokens": 0,
+      "total_provider_tokens": 76623,
+      "weighted_token_cost": 24521.4
+    },
+    {
+      "sequence_id": "beets-lifecycle-sequence-v0",
+      "task_family_generation": "baseline-v4",
+      "session_id": "baseline-beets-20260728-p-fcc8438d2077-r0",
+      "fresh_input_tokens": 17833,
+      "cached_input_tokens": 69376,
+      "cache_write_tokens": 0,
+      "output_tokens": 991,
+      "provider_reported_reasoning_output_subset_tokens": 0,
+      "total_provider_tokens": 88200,
+      "weighted_token_cost": 30716.6
+    },
+    {
+      "sequence_id": "terraform-lifecycle-sequence-v0",
+      "task_family_generation": "baseline-v4",
+      "session_id": "baseline-terraform-20260728-p-5811b463c1e9-r0",
+      "fresh_input_tokens": 32623,
+      "cached_input_tokens": 54272,
+      "cache_write_tokens": 0,
+      "output_tokens": 916,
+      "provider_reported_reasoning_output_subset_tokens": 0,
+      "total_provider_tokens": 87811,
+      "weighted_token_cost": 43546.2
+    }
+  ],
+  "totals": {
+    "fresh_input_tokens": 60771,
+    "cached_input_tokens": 188672,
+    "cache_write_tokens": 0,
+    "output_tokens": 3191,
+    "provider_reported_reasoning_output_subset_tokens": 0,
+    "total_provider_tokens": 252634,
+    "weighted_token_cost": 98784.2
+  },
+  "evidence": {
+    "fastify_audit": "sources/evaluations/audits/baseline-v3-pilot-zero-mistake.json",
+    "beets_and_terraform_audit": "sources/evaluations/audits/baseline-v4-pilot-zero-mistake.json",
+    "provider_accounting": "sources/evaluations/audits/codex-cumulative-usage-accounting-20260718.json"
+  }
+}
