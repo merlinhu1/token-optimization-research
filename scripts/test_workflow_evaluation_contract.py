@@ -743,21 +743,18 @@ class MatrixLifecycleContractTest(unittest.TestCase):
         )
         self.assertEqual(jobs, [(SEQUENCE_ID, "baseline-bare-codex")])
 
-    def test_primary_objective_hard_baseline_is_reusable_for_treatment_planning(self) -> None:
+    def test_superseded_hard_baseline_is_not_reused_after_contract_change(self) -> None:
         registry = json.loads((ROOT / "data/workflow-sessions.json").read_text())
         sequence = runner.load_sequence("fastify-maintenance-sequence-v1")
         baseline = matrix.find_baseline_record(registry, sequence, 0)
-        self.assertIsNotNone(baseline)
-        assert baseline is not None
-        self.assertTrue(matrix.hard_baseline_usable(baseline, ROOT))
-        self.assertEqual(matrix.baseline_reuse_state(baseline, ROOT), "reusable")
+        self.assertIsNone(baseline)
         jobs = matrix.plan_workflow_jobs(
             ["fastify-maintenance-sequence-v1"],
             ["terminal-rtk"],
-            baseline_state=lambda _sequence: matrix.baseline_reuse_state(baseline, ROOT),
+            baseline_state=lambda _sequence: "missing",
             profile_state=lambda _sequence, _profile: "missing",
         )
-        self.assertEqual(jobs, [("fastify-maintenance-sequence-v1", "terminal-rtk")])
+        self.assertEqual(jobs, [("fastify-maintenance-sequence-v1", "baseline-bare-codex")])
 
     def test_hard_baseline_comparison_scores_correctness_and_tokens(self) -> None:
         sequence = runner.load_sequence("fastify-maintenance-sequence-v1")
