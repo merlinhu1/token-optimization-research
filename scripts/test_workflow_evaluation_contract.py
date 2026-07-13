@@ -766,6 +766,47 @@ class MatrixLifecycleContractTest(unittest.TestCase):
         baseline = matrix.find_baseline_record(registry, sequence, 0)
         self.assertIsNone(baseline)
 
+    def test_quality_rejected_green_baseline_is_reusable_as_primary_hard_evidence(self) -> None:
+        session = {
+            "interpretation": {
+                "accepted_for_objective": False,
+                "primary_objective_hard_baseline": True,
+                "usable_for_primary_objective_token_comparison": True,
+                "operationally_completed": True,
+                "agent_declared_task_completion_count": 5,
+            },
+            "software_quality": {
+                "tasks_attempted": 5,
+                "quality_review_status": "reviewed",
+                "final_verifier_passed": True,
+                "quality_score": 3,
+            },
+            "cumulative_token_usage": {"total_provider_tokens": 1000},
+        }
+        with mock.patch.object(matrix, "compact_artifacts_intact", return_value=True):
+            self.assertTrue(matrix.hard_baseline_usable(session))
+            self.assertEqual(matrix.baseline_reuse_state(session), "reusable")
+
+    def test_quality_passing_nonaccepted_baseline_is_not_hard_reusable(self) -> None:
+        session = {
+            "interpretation": {
+                "accepted_for_objective": False,
+                "primary_objective_hard_baseline": True,
+                "usable_for_primary_objective_token_comparison": True,
+                "operationally_completed": True,
+                "agent_declared_task_completion_count": 5,
+            },
+            "software_quality": {
+                "tasks_attempted": 5,
+                "quality_review_status": "reviewed",
+                "final_verifier_passed": True,
+                "quality_score": 4,
+            },
+            "cumulative_token_usage": {"total_provider_tokens": 1000},
+        }
+        with mock.patch.object(matrix, "compact_artifacts_intact", return_value=True):
+            self.assertFalse(matrix.hard_baseline_usable(session))
+
     def test_hard_baseline_comparison_scores_correctness_and_tokens(self) -> None:
         sequence = runner.load_sequence("fastify-maintenance-sequence-v1")
         baseline = {
