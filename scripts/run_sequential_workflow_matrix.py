@@ -15,6 +15,7 @@ import atexit
 import concurrent.futures as futures
 import datetime as dt
 import fcntl
+import hashlib
 import json
 import os
 import re
@@ -39,6 +40,76 @@ def load_json(path: Path) -> dict[str, Any]:
 def write_json(path: Path, data: Any) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text(json.dumps(data, indent=2) + "\n")
+
+
+def compact_artifacts_intact(session: dict[str, Any] | None, root: Path = ROOT) -> bool:
+    if not isinstance(session, dict):
+        return False
+    artifacts = session.get("artifacts", {})
+    if not isinstance(artifacts, dict):
+        return False
+    required = [artifacts.get(key) for key in ("run_record", "final_diff", "evidence_bundle", "manifest")]
+    if not all(isinstance(rel, str) and rel for rel in required):
+        return False
+    paths = [root / str(rel) for rel in required]
+    if not all(path.is_file() for path in paths):
+        return False
+    artifact_root = paths[-1].parent
+    try:
+        for line in paths[-1].read_text().splitlines():
+            expected, name = line.split(maxsplit=1)
+            candidate = artifact_root / name.strip().lstrip("*")
+            if candidate.parent != artifact_root or not candidate.is_file():
+                return False
+            if hashlib.sha256(candidate.read_bytes()).hexdigest() != expected:
+                return False
+    except (OSError, ValueError):
+        return False
+    return True
+
+
+def hard_baseline_usable(session: dict[str, Any] | None, root: Path = ROOT) -> bool:
+    if not isinstance(session, dict):
+        return False
+    interpretation = session.get("interpretation", {})
+    quality = session.get("software_quality", {})
+    usage = session.get("cumulative_token_usage", {})
+    if not all(isinstance(value, dict) for value in (interpretation, quality, usage)):
+        return False
+    return (
+        interpretation.get("primary_objective_hard_baseline") is True
+        and interpretation.get("usable_for_primary_objective_token_comparison") is True
+        and interpretation.get("operationally_completed") is True
+        and interpretation.get("agent_declared_task_completion_count") == quality.get("tasks_attempted")
+        and quality.get("quality_review_status") == "reviewed"
+        and quality.get("final_verifier_passed") is False
+        and isinstance(usage.get("total_provider_tokens"), int)
+        and usage.get("total_provider_tokens", 0) > 0
+        and compact_artifacts_intact(session, root)
+    )
+
+
+def baseline_reuse_state(session: dict[str, Any] | None, root: Path = ROOT) -> str:
+    state = workflow.reviewed_session_reuse_state(session, root)
+    return "reusable" if state != "reusable" and hard_baseline_usable(session, root) else state
+
+
+def find_baseline_record(registry: dict[str, Any], seq: dict[str, Any], replicate_index: int) -> dict[str, Any] | None:
+    normal = workflow.find_canonical_baseline_record(registry, seq, replicate_index)
+    if normal is not None:
+        return normal
+    fingerprint = workflow.baseline_protocol_fingerprint(seq)
+    matches = [
+        session for session in registry.get("sessions", [])
+        if session.get("baseline_pool", {}).get("protocol_fingerprint") == fingerprint
+        and session.get("replicate_index") == replicate_index
+        and session.get("session_role") == "baseline"
+        and session.get("task_sequence", {}).get("sequence_id") == seq["id"]
+        and hard_baseline_usable(session, ROOT)
+    ]
+    if len(matches) > 1:
+        raise RuntimeError(f"ambiguous hard baselines for {seq['id']} r{replicate_index}: {[item['session_id'] for item in matches]}")
+    return matches[0] if matches else None
 
 
 def acquire_production_lock() -> int:
@@ -369,6 +440,56 @@ def merge_lanes(lane_results: list[dict[str, Any]], replicate_index: int) -> dic
     }
 
 
+def write_hard_baseline_comparison(
+    seq: dict[str, Any], baseline: dict[str, Any], treatment: dict[str, Any], profile_id: str, replicate_index: int
+) -> Path:
+    project_id = workflow.PROJECT_META[seq["fixture_id"]]["project_id"]
+    fingerprint = workflow.baseline_protocol_fingerprint(seq)
+    comparison_id = (
+        f"baseline-{workflow.artifact_lane_label(project_id)}-{workflow.DATE.replace('-', '')}"
+        f"-vs-{workflow.artifact_profile_label(profile_id)}-p-{fingerprint}-r{replicate_index}"
+    )
+    path = ROOT / WORKFLOW_ARTIFACT_ROOT / f"{comparison_id}.json"
+    if path.exists():
+        raise FileExistsError(f"workflow comparison already exists; refusing overwrite: {path}")
+    b_tokens = baseline.get("cumulative_token_usage", {}).get("total_provider_tokens")
+    t_tokens = treatment.get("cumulative_token_usage", {}).get("total_provider_tokens")
+    b_passed = baseline.get("software_quality", {}).get("tasks_passed")
+    t_passed = treatment.get("software_quality", {}).get("tasks_passed")
+    if not all(isinstance(value, (int, float)) for value in (b_tokens, t_tokens, b_passed, t_passed)):
+        raise ValueError("hard-lane comparison requires numeric provider tokens and verified task counts")
+    delta = t_tokens - b_tokens
+    correctness_improved = t_passed > b_passed
+    token_efficiency_improved = t_passed >= b_passed and t_tokens < b_tokens
+    comparison = {
+        "schema_version": 4,
+        "comparison_id": comparison_id,
+        "study_id": baseline.get("study_id"),
+        "experiment_group_id": treatment.get("experiment_group_id"),
+        "comparison_design": "primary-objective-hard-baseline-v1",
+        "baseline_protocol_fingerprint": fingerprint,
+        "replicate_count": 1,
+        "sequence_id": seq["id"],
+        "baseline_session_id": baseline["session_id"],
+        "treatment_session_id": treatment["session_id"],
+        "baseline_total_provider_tokens": b_tokens,
+        "treatment_total_provider_tokens": t_tokens,
+        "delta_total_provider_tokens": delta,
+        "delta_percent": workflow.percent_delta(delta, b_tokens),
+        "baseline_agent_declared_tasks": baseline.get("software_quality", {}).get("tasks_agent_claimed_complete"),
+        "treatment_agent_declared_tasks": treatment.get("software_quality", {}).get("tasks_agent_claimed_complete"),
+        "baseline_verified_tasks": b_passed,
+        "treatment_verified_tasks": t_passed,
+        "correctness_improved": correctness_improved,
+        "token_efficiency_improved": token_efficiency_improved,
+        "treatment_outperforms_baseline": correctness_improved or (t_passed == b_passed and t_tokens < b_tokens),
+        "eligible_for_hard_lane_ranking": True,
+        "interpretation": "Primary-objective hard-lane comparison. The failed bare result remains the token baseline. A treatment is better when verified correctness improves or when equal verified correctness uses fewer provider tokens; report correctness and token usage together.",
+    }
+    write_json(path, comparison)
+    return path
+
+
 def publish_ready_comparisons(sequence_ids: list[str], profiles: list[str], replicate_index: int) -> list[str]:
     if not profiles:
         return []
@@ -376,12 +497,12 @@ def publish_ready_comparisons(sequence_ids: list[str], profiles: list[str], repl
     published: list[str] = []
     for sequence_id in sequence_ids:
         seq = workflow.load_sequence(sequence_id)
-        baseline = workflow.find_canonical_baseline_record(registry, seq, replicate_index)
-        if workflow.reviewed_session_reuse_state(baseline, ROOT) != "reusable":
+        baseline = find_baseline_record(registry, seq, replicate_index)
+        if baseline is None or baseline_reuse_state(baseline, ROOT) != "reusable":
             continue
         for profile_id in profiles:
             treatment = workflow.find_pool_profile_record(registry, seq, profile_id, replicate_index)
-            if workflow.reviewed_session_reuse_state(treatment, ROOT) != "reusable":
+            if treatment is None or workflow.reviewed_session_reuse_state(treatment, ROOT) != "reusable":
                 continue
             project_id = workflow.PROJECT_META[seq["fixture_id"]]["project_id"]
             fingerprint = workflow.baseline_protocol_fingerprint(seq)
@@ -391,11 +512,14 @@ def publish_ready_comparisons(sequence_ids: list[str], profiles: list[str], repl
             )
             path = ROOT / WORKFLOW_ARTIFACT_ROOT / f"{comparison_id}.json"
             if not path.exists():
-                comparison = workflow.write_comparison_if_ready(
-                    seq, "phase-2-sequential-workflow-v1", replicate_index, profile_id
-                )
-                if comparison is None:
-                    raise RuntimeError(f"reviewed records did not produce comparison {comparison_id}")
+                if hard_baseline_usable(baseline, ROOT):
+                    path = write_hard_baseline_comparison(seq, baseline, treatment, profile_id, replicate_index)
+                else:
+                    comparison = workflow.write_comparison_if_ready(
+                        seq, "phase-2-sequential-workflow-v1", replicate_index, profile_id
+                    )
+                    if comparison is None:
+                        raise RuntimeError(f"reviewed records did not produce comparison {comparison_id}")
                 published.append(str(path.relative_to(ROOT)))
     return published
 
@@ -469,8 +593,8 @@ def main(argv: list[str] | None = None) -> int:
         if args.prepare_only:
             return "missing"
         sequence = workflow.load_sequence(sequence_id)
-        baseline = workflow.find_canonical_baseline_record(registry, sequence, args.replicate_index)
-        return workflow.reviewed_session_reuse_state(baseline, ROOT)
+        baseline = find_baseline_record(registry, sequence, args.replicate_index)
+        return baseline_reuse_state(baseline, ROOT)
 
     def profile_state(sequence_id: str, profile_id: str) -> str:
         sequence = workflow.load_sequence(sequence_id)
