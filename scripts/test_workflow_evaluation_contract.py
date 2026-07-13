@@ -236,6 +236,8 @@ class VerifierContractTest(unittest.TestCase):
             "sources/evaluations/fixtures/medium/fastify-fastify/tasks/fastify-log-controller-regression/agent-prompt.txt": ["Fastify.LogController", "FST_ERR_LOG_INVALID_LOG_CONTROLLER"],
             "sources/evaluations/fixtures/medium/beetbox-beets/tasks/beets-import-duplicate-resolution-regression/agent-prompt.txt": ["duplicate_action", "DuplicateAction.MERGE", "DuplicateAction.REMOVE"],
             "sources/evaluations/fixtures/medium/beetbox-beets/tasks/beets-multivalue-metadata-regression/agent-prompt.txt": ["genre", "genres", 'MULTI_VALUE_DSV.normalize("Jazz; Funk")', "uv run"],
+            "sources/evaluations/fixtures/medium/beetbox-beets/tasks/beets-path-format-core-regression/agent-prompt.txt": ["PF_KEY_QUERIES", "comp:true", "custom keys", "all three prompts"],
+            "sources/evaluations/fixtures/medium/beetbox-beets/tasks/beets-multivalue-core-regression/agent-prompt.txt": ["TrackInfo", 'MULTI_VALUE_DSV.normalize("Jazz; Funk")', "TYPE_BY_FIELD", "all three prompts"],
             "sources/evaluations/fixtures/medium/beetbox-beets/tasks/beets-tidal-metadata-sync-regression/agent-prompt.txt": ["REIMPORT_FRESH_FIELDS_ITEM", "before plugin instantiation", "uv run"],
             "sources/evaluations/fixtures/large/hashicorp-terraform/tasks/terraform-161ffe-tracing-context-regression/agent-prompt.txt": ["ContextOpts.TracingContext", "localRun(ctx, op)", "must compile"],
             "sources/evaluations/fixtures/large/hashicorp-terraform/tasks/terraform-81053-invalid-workspace-name-regression/agent-prompt.txt": ["WorkspaceOverridden() (string, bool, error)", "recovery", "must compile"],
@@ -417,7 +419,7 @@ class ManifestAndProtocolContractTest(unittest.TestCase):
             [
                 "fastify-maintenance-sequence-v1",
                 "terraform-maintenance-sequence-v2",
-                "beets-maintenance-sequence-v3",
+                "beets-maintenance-sequence-v4",
             ],
         )
         expected_tasks = {
@@ -426,7 +428,9 @@ class ManifestAndProtocolContractTest(unittest.TestCase):
                 "terraform-520378-computed-block-capabilities-regression",
                 "terraform-9ae470-objchange-validation-regression",
             ],
-            "beets-maintenance-sequence-v3": [
+            "beets-maintenance-sequence-v4": [
+                "beets-path-format-core-regression",
+                "beets-multivalue-core-regression",
                 "beets-tidal-metadata-sync-regression",
             ],
         }
@@ -441,7 +445,7 @@ class ManifestAndProtocolContractTest(unittest.TestCase):
         expected = {
             "fastify-maintenance-sequence-v1": "qualification-composite-v5.json",
             "terraform-maintenance-sequence-v2": "qualification-composite-v6.json",
-            "beets-maintenance-sequence-v3": "qualification-composite-v7.json",
+            "beets-maintenance-sequence-v4": "qualification-composite-v8.json",
         }
         for sequence_id in runner.active_sequence_ids():
             self.assertTrue(runner.load_sequence(sequence_id)["qualification_path"].endswith(expected[sequence_id]))
@@ -450,7 +454,7 @@ class ManifestAndProtocolContractTest(unittest.TestCase):
         cases = {
             "fastify-maintenance-sequence-v1": "sources/evaluations/protocols/fastify-production-gpt-5.6-luna-xhigh-v7.json",
             "terraform-maintenance-sequence-v2": "sources/evaluations/protocols/hashicorp-terraform-token-savings-production-gpt-5.6-luna-xhigh-v8.json",
-            "beets-maintenance-sequence-v3": "sources/evaluations/protocols/beetbox-beets-token-savings-production-gpt-5.6-luna-xhigh-v9.json",
+            "beets-maintenance-sequence-v4": "sources/evaluations/protocols/beetbox-beets-token-savings-production-gpt-5.6-luna-xhigh-v10.json",
         }
         for sequence_id, protocol_path in cases.items():
             seq = runner.load_sequence(sequence_id)
