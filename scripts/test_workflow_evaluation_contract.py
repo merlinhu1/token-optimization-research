@@ -10,6 +10,7 @@ from unittest import mock
 
 from scripts import generate_workflow_qualification as qualification
 from scripts import run_codex_workflow_evaluation as runner
+from scripts import run_codex_workflow_model_condition as model_condition_runner
 from scripts import run_sequential_workflow_matrix as matrix
 from scripts import validate_repository
 
@@ -711,6 +712,20 @@ class ManifestAndProtocolContractTest(unittest.TestCase):
             run_path.write_text(json.dumps(payload, indent=2) + "\n")
             runner.write_manifest(run_path.parent)
             self.assertTrue(any("run.json docker_image_identity does not match registry session" in error for error in self.production_v3_errors(session)))
+
+
+class ModelConditionLauncherContractTest(unittest.TestCase):
+    def test_registered_gpt55_high_condition_is_selectable(self) -> None:
+        condition = model_condition_runner.registered_condition(
+            "codex-openai-gpt-5-5-high", "gpt-5.5", "high"
+        )
+        self.assertEqual(condition["status"], "historical-inactive")
+        identity = model_condition_runner.launcher_identity()
+        self.assertRegex(identity["sha256"], r"^[a-f0-9]{64}$")
+
+    def test_unregistered_override_is_rejected(self) -> None:
+        with self.assertRaises(ValueError):
+            model_condition_runner.registered_condition("missing", "gpt-missing", "high")
 
 
 class MatrixLifecycleContractTest(unittest.TestCase):
