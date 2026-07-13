@@ -1,0 +1,115 @@
+{
+  "schema_version": 1,
+  "task_family_generation": "baseline-v4",
+  "status": "partially-passed-beets-only-zero-incident",
+  "passed": false,
+  "matrix_id": "workflow-matrix-20260728T102818972913Z-p3197199-r0",
+  "source_commit": "8833821d15f5a28d88fd52717b818bdf84202937",
+  "source_tree": "2fe28dc46354533c940bd457c0395918f0f005a4",
+  "started_by_explicit_authorization": true,
+  "provider_backed": true,
+  "publication_status": "one-first-valid-compact-session-recovered-after-post-publication-contract-fix",
+  "rerun_allowed": false,
+  "rerun_policy": "The paid Beets r0 identity is occupied. Do not rerun for a favorable verifier or audit outcome. Terraform r0 remains unoccupied and requires separate explicit execution under its existing authorization.",
+  "treatment_gate": {
+    "beets-lifecycle-sequence-v0": "passed-zero-incident",
+    "terraform-lifecycle-sequence-v0": "provider-pilot-required-unoccupied"
+  },
+  "sequences": [
+    {
+      "sequence_id": "beets-lifecycle-sequence-v0",
+      "baseline_session_id": "baseline-beets-20260728-p-fcc8438d2077-r0",
+      "passed": true,
+      "trajectory_review_complete": true,
+      "independent_source_review_passed": true,
+      "reviewer_role": "independent",
+      "model_condition": {
+        "id": "codex-openai-gpt-5-6-sol-high",
+        "model": "gpt-5.6-sol",
+        "reasoning_effort": "high"
+      },
+      "codex_exit_codes": [
+        0,
+        0,
+        0
+      ],
+      "thread_continuity_errors": [],
+      "verifier_integrity_passed": true,
+      "tool_isolation_audit_exit_code": 0,
+      "final_verifier_exit_code": 0,
+      "per_task_verifier_exit_codes": [
+        0,
+        0,
+        0
+      ],
+      "provider_usage": {
+        "measurement_source": "codex-jsonl-usage-events",
+        "fresh_input_tokens": 17833,
+        "cached_input_tokens": 69376,
+        "cache_write_tokens": 0,
+        "output_tokens": 991,
+        "reasoning_tokens": 0,
+        "total_provider_tokens": 88200,
+        "tokens_per_accepted_task": 29400.0,
+        "accounting_basis": "Codex-reported token volume; monetary cost estimation is out of scope"
+      },
+      "observed_unique_model_caused_incidents": 0,
+      "observed_corrected_implementation_mistakes": 0,
+      "observed_unresolved_defects": 0,
+      "observed_prohibited_operations": 0,
+      "observed_unnecessary_exploration_incidents": 0,
+      "observed_model_caused_failed_commands": 0,
+      "observed_code_rework_events": 0,
+      "observed_verifier_or_environment_failures": 0,
+      "frozen_protocol": {
+        "protocol_id": "beets-lifecycle-sequence-v0-baseline-bare-codex-de39716463bf",
+        "path": "sources/evaluations/protocols/beets-lifecycle-sequence-v0-baseline-bare-codex-de39716463bf.json",
+        "sha256": "cf6d53501d23e3f5f62d1c6eb53f7cad8f6c00559946c5e5d315fb5266007ba0"
+      },
+      "qualification_sha256": "62d841b17636e669440ca040152d5792b08851bea6cc139a47777f89b34a3c80",
+      "baseline_pool_fingerprint": "fcc8438d2077",
+      "operational_classification": "accepted-first-valid-provider-sample",
+      "independent_review_path": "sources/evaluations/audits/baseline-v4-pilot-20260728/independent-beets-lifecycle-sequence-v0-review.txt",
+      "findings": [
+        "all three prescribed model commands executed exactly once with exit zero and no retry, exploration, correction, or rework",
+        "all three final task verifiers, verifier integrity, tool isolation, thread continuity, compact manifest, and provider accounting passed",
+        "the post-merge rollback was one separate controller-publication incident involving three stale occupied-state test expectations"
+      ]
+    }
+  ],
+  "totals": {
+    "provider_tokens": 88200,
+    "model_commands_attempted": 3,
+    "model_commands_exit_zero": 3,
+    "model_side_focused_checks_passed": 3,
+    "repeated_final_task_verifiers_passed": 3,
+    "repeated_final_task_verifiers_total": 3,
+    "retained_sessions": 1
+  },
+  "known_controller_failures": [
+    "The initial post-publication contract suite contained three stale occupied-state expectations: current V4 pool classification, mandatory absence of every V4 attempt receipt, and nonzero-replicate error precedence after occupancy.",
+    "The original matrix summary retained a contradictory skipped field after a successful merge; the immutable summary is preserved and future summaries clear that field after a merge."
+  ],
+  "initial_matrix_validation": {
+    "passed": false,
+    "repository_validation_exit_code": 0,
+    "contract_suite_exit_code": 1,
+    "diff_check_exit_code": 0,
+    "truthmark_check_exit_code": 0,
+    "truthmark_index_exit_code": 0,
+    "registry_rolled_back": true
+  },
+  "recovery_validation": {
+    "provider_rerun": false,
+    "sessions_recovered_from_original_compact_bundles": true,
+    "contract_tests": 237,
+    "contract_tests_passed": 237,
+    "repository_validation_passed": true,
+    "runbook_freshness_passed": true,
+    "truthmark_check_passed": true,
+    "truthmark_index_passed": true,
+    "source_bundle_byte_identical": true
+  },
+  "preserved_matrix_evidence_manifest": "sources/evaluations/audits/baseline-v4-pilot-20260728/manifest.json",
+  "notes": "Verifier outcomes remain diagnostic for provider-token eligibility. The stricter zero-incident treatment gate is sequence-specific: Beets passed; Terraform remains unoccupied and blocked. The Baseline V4 qualification authority remains globally treatment_unlocked=false while only one of its two sequence pilots has completed."
+}
