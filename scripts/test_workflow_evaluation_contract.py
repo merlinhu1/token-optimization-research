@@ -87,6 +87,13 @@ class SeedDeliveryContractTest(unittest.TestCase):
 
 
 class VerifierContractTest(unittest.TestCase):
+    def test_materialize_task_prompt_recreates_cleaned_parent(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            prompt_dir = Path(tmp) / "removed-by-setup" / "task-prompts"
+            prompt_path = runner.materialize_task_prompt(prompt_dir, 1, "Repair it.\n")
+            self.assertEqual(prompt_path.read_text(), "Repair it.\n")
+            self.assertEqual(prompt_path, prompt_dir / "task-01.md")
+
     def test_final_verifier_runs_every_task_without_short_circuiting(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             script = runner.write_verifier({"tasks": [{"order": 1}, {"order": 2}, {"order": 3}]}, Path(tmp), Path(tmp) / "tasks").read_text()
@@ -206,8 +213,12 @@ class VerifierContractTest(unittest.TestCase):
         cases = {
             "sources/evaluations/fixtures/medium/fastify-fastify/tasks/fastify-request-media-type-regression/agent-prompt.txt": ["request.mediaType"],
             "sources/evaluations/fixtures/medium/fastify-fastify/tasks/fastify-log-controller-regression/agent-prompt.txt": ["Fastify.LogController", "FST_ERR_LOG_INVALID_LOG_CONTROLLER"],
-            "sources/evaluations/fixtures/medium/beetbox-beets/tasks/beets-multivalue-metadata-regression/agent-prompt.txt": ["genre", "genres", "uv run"],
+            "sources/evaluations/fixtures/medium/beetbox-beets/tasks/beets-import-duplicate-resolution-regression/agent-prompt.txt": ["duplicate_action", "DuplicateAction.MERGE", "DuplicateAction.REMOVE"],
+            "sources/evaluations/fixtures/medium/beetbox-beets/tasks/beets-multivalue-metadata-regression/agent-prompt.txt": ["genre", "genres", 'MULTI_VALUE_DSV.normalize("Jazz; Funk")', "uv run"],
             "sources/evaluations/fixtures/medium/beetbox-beets/tasks/beets-tidal-metadata-sync-regression/agent-prompt.txt": ["REIMPORT_FRESH_FIELDS_ITEM", "before plugin instantiation", "uv run"],
+            "sources/evaluations/fixtures/large/hashicorp-terraform/tasks/terraform-161ffe-tracing-context-regression/agent-prompt.txt": ["ContextOpts.TracingContext", "localRun(ctx, op)", "must compile"],
+            "sources/evaluations/fixtures/large/hashicorp-terraform/tasks/terraform-81053-invalid-workspace-name-regression/agent-prompt.txt": ["WorkspaceOverridden() (string, bool, error)", "recovery", "must compile"],
+            "sources/evaluations/fixtures/large/hashicorp-terraform/tasks/terraform-305dba-query-sensitive-paths-regression/agent-prompt.txt": ["*configschema.Block", "SensitiveAttributePaths", "must compile"],
         }
         for path, required in cases.items():
             prompt = (ROOT / path).read_text()
@@ -379,13 +390,13 @@ class ManifestAndProtocolContractTest(unittest.TestCase):
         active = [item for item in registry["model_conditions"] if item["status"] == "active-default"]
         self.assertEqual([item["id"] for item in active], ["codex-openai-gpt-5-6-luna-xhigh"])
 
-    def test_active_sequences_bind_composite_v4_qualifications(self) -> None:
+    def test_active_sequences_bind_composite_v5_qualifications(self) -> None:
         for sequence_id in runner.active_sequence_ids():
-            self.assertTrue(runner.load_sequence(sequence_id)["qualification_path"].endswith("qualification-composite-v4.json"))
+            self.assertTrue(runner.load_sequence(sequence_id)["qualification_path"].endswith("qualification-composite-v5.json"))
 
     def test_current_protocol_fingerprint_matches_runner(self) -> None:
         seq = runner.load_sequence(SEQUENCE_ID)
-        protocol = json.loads((ROOT / "sources/evaluations/protocols/fastify-production-gpt-5.6-luna-xhigh-v6.json").read_text())
+        protocol = json.loads((ROOT / "sources/evaluations/protocols/fastify-production-gpt-5.6-luna-xhigh-v7.json").read_text())
         expected = runner.baseline_protocol_fingerprint(seq)
         self.assertEqual(protocol["baseline_pool"]["protocol_fingerprint"], expected)
         self.assertEqual(protocol["baseline_pool"]["descriptor"], runner.baseline_protocol_descriptor(seq))
@@ -405,7 +416,7 @@ class ManifestAndProtocolContractTest(unittest.TestCase):
     def test_protocol_timeout_mismatch_rejects(self) -> None:
         seq = runner.load_sequence(SEQUENCE_ID)
         args = mock.Mock(
-            protocol="sources/evaluations/protocols/fastify-production-gpt-5.6-luna-xhigh-v6.json",
+            protocol="sources/evaluations/protocols/fastify-production-gpt-5.6-luna-xhigh-v7.json",
             prepare_only=False,
             no_provider=False,
             timeout_per_task=1,
@@ -417,7 +428,7 @@ class ManifestAndProtocolContractTest(unittest.TestCase):
     def test_protocol_docker_image_mismatch_rejects(self) -> None:
         seq = runner.load_sequence(SEQUENCE_ID)
         args = mock.Mock(
-            protocol="sources/evaluations/protocols/fastify-production-gpt-5.6-luna-xhigh-v6.json",
+            protocol="sources/evaluations/protocols/fastify-production-gpt-5.6-luna-xhigh-v7.json",
             prepare_only=True,
             no_provider=True,
             timeout_per_task=3600,
@@ -429,7 +440,7 @@ class ManifestAndProtocolContractTest(unittest.TestCase):
     def test_baseline_protocol_cannot_validate_treatment(self) -> None:
         seq = runner.load_sequence(SEQUENCE_ID)
         args = mock.Mock(
-            protocol="sources/evaluations/protocols/fastify-production-gpt-5.6-luna-xhigh-v6.json",
+            protocol="sources/evaluations/protocols/fastify-production-gpt-5.6-luna-xhigh-v7.json",
             prepare_only=True,
             no_provider=True,
             timeout_per_task=3600,
