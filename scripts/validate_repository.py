@@ -8,6 +8,7 @@ import re
 import subprocess
 import hashlib
 from pathlib import Path, PurePosixPath
+from typing import Any
 import sys
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -178,9 +179,8 @@ def current_provider_usage_contract(session: dict) -> bool:
         protocol = json.loads((ROOT / path).read_text())
     except (OSError, json.JSONDecodeError):
         return False
-    return str(protocol.get("task_fixture", {}).get("qualification_path", "")).endswith(
-        "-baseline-v3.json"
-    )
+    qualification_path = str(protocol.get("task_fixture", {}).get("qualification_path", ""))
+    return qualification_path.endswith("-baseline-v3.json") or qualification_path.endswith("-baseline-v4.json")
 
 
 def _json_object_without_duplicate_keys(pairs: list[tuple[str, object]]) -> dict[str, object]:
@@ -650,8 +650,12 @@ def validate_qualification(sequence: dict, errors: list[str]) -> None:
         for task in ordered
     }
     required_true = ("seeded_verifier_nonzero", "fixed_verifier_zero", "full_fixed_cumulative_verifier_zero", "composite_seed_merge_zero", "composite_seeded_verifiers_nonzero", "no_unmerged_paths", "all_expected_model_concealment_declared")
-    if sequence.get("task_family_generation") == "baseline-v3":
+    if sequence.get("task_family_generation") in {"baseline-v3", "baseline-v4"}:
         required_true += ("no_model_concealed_acceptance_assets", "all_acceptance_behavior_model_visible", "model_visible_acceptance_assets_match_verifier_copies")
+        if sequence.get("task_family_generation") == "baseline-v4":
+            required_true += ("aggregate_verifier_environment_passed",)
+            if q.get("task_family_generation") != "baseline-v4":
+                errors.append(f"qualification {rel} must bind task_family_generation=baseline-v4")
         if q.get("no_model_visible_acceptance_assets") is not False:
             errors.append(f"qualification {rel} must not claim Baseline V3 acceptance assets are absent from the model")
         if q.get("acceptance_visibility") != "model-visible-complete":
@@ -1265,6 +1269,8 @@ def validate_evaluations(evaluation_doc: dict, fixture_doc: dict, profile_ids: s
 
 
 def validate_workflow_task_sequences(sequence_doc: dict, fixture_doc: dict, errors: list[str]) -> set[str]:
+    from scripts import run_codex_workflow_evaluation as workflow
+
     if sequence_doc.get("schema_version") != 1:
         errors.append("data/workflow-task-sequences.json must use schema_version 1")
     sequences = sequence_doc.get("sequences")
@@ -1273,10 +1279,45 @@ def validate_workflow_task_sequences(sequence_doc: dict, fixture_doc: dict, erro
         return set()
     fixtures = fixture_doc.get("fixtures", [])
     fixture_ids = {fixture.get("id") for fixture in fixtures}
-    required_v3_blocker = "Baseline V3 strongest-model provider pilot must complete with all eight required observed categories recorded as strict integer zero before treatment launch."
+    generation_by_fixture = {
+        sequence.get("fixture_id"): sequence.get("task_family_generation")
+        for sequence in sequences
+        if isinstance(sequence, dict)
+    }
+    sequence_by_fixture = {
+        sequence.get("fixture_id"): sequence
+        for sequence in sequences
+        if isinstance(sequence, dict)
+    }
     for fixture in fixtures:
-        if required_v3_blocker not in fixture.get("blockers", []):
-            errors.append(f"repository fixture {fixture.get('id')} must state the complete strict eight-category Baseline V3 blocker")
+        generation = str(generation_by_fixture.get(fixture.get("id"), "baseline-v3"))
+        generation_label = generation.replace("baseline-v", "Baseline V")
+        current_family = fixture.get("current_task_family")
+        if not isinstance(current_family, dict) or current_family.get("generation") != generation:
+            errors.append(
+                f"repository fixture {fixture.get('id')} current_task_family generation must match active sequence generation {generation}"
+            )
+        sequence = sequence_by_fixture.get(fixture.get("id"))
+        treatment_ready, _treatment_reason = (
+            workflow.baseline_v2_treatment_gate(sequence, ROOT)
+            if isinstance(sequence, dict)
+            else (False, "missing active sequence")
+        )
+        required_blocker = f"{generation_label} strongest-model provider pilot must complete with all eight required observed categories recorded as strict integer zero before treatment launch."
+        blockers = fixture.get("blockers", [])
+        provider_pilot_status = current_family.get("provider_pilot_status") if isinstance(current_family, dict) else None
+        lane_statuses = {
+            lane.get("status")
+            for lane in fixture.get("future_evaluation_lanes", [])
+            if isinstance(lane, dict)
+        }
+        if treatment_ready:
+            if required_blocker in blockers or provider_pilot_status != "completed-passed-zero-incident":
+                errors.append(f"repository fixture {fixture.get('id')} must record its completed zero-incident {generation_label} pilot")
+            if f"blocked-{generation}-pilot" in lane_statuses:
+                errors.append(f"repository fixture {fixture.get('id')} treatment lanes must not remain blocked by its completed {generation_label} pilot")
+        elif required_blocker not in blockers or provider_pilot_status != "required":
+            errors.append(f"repository fixture {fixture.get('id')} must state the complete strict eight-category {generation_label} blocker")
     sequence_ids: set[str] = set()
     for index, sequence in enumerate(sequences):
         if not isinstance(sequence, dict):
@@ -1297,9 +1338,17 @@ def validate_workflow_task_sequences(sequence_doc: dict, fixture_doc: dict, erro
             errors.append(f"workflow sequence {sid} must use the feature-refactor-review contract")
         is_active = sequence.get("status") == "active"
         if is_active:
-            if sequence.get("task_family_generation") != "baseline-v3":
-                errors.append(f"active workflow sequence {sid} must bind task_family_generation=baseline-v3")
+            generation = sequence.get("task_family_generation")
+            if generation not in {"baseline-v3", "baseline-v4"}:
+                errors.append(f"active workflow sequence {sid} must bind task_family_generation=baseline-v3 or baseline-v4")
             gate = sequence.get("mistake_gate")
+            treatment_ready, _treatment_reason = workflow.baseline_v2_treatment_gate(sequence, ROOT)
+            gate_status = "passed-zero-incident" if treatment_ready else "provider-pilot-required"
+            launch_policy = (
+                "eligible for treatment protocol freeze after the first-valid strongest-model pilot passed an independent audit with all eight required observed counts equal to integer zero"
+                if treatment_ready
+                else "blocked until one first-valid strongest-model pilot is independently audited with all eight required observed counts equal to integer zero"
+            )
             expected_gate = {
                 "designated_model_condition": "codex-openai-gpt-5-6-sol-high",
                 "model": "gpt-5.6-sol",
@@ -1313,11 +1362,13 @@ def validate_workflow_task_sequences(sequence_doc: dict, fixture_doc: dict, erro
                 "allowed_code_rework_events": 0,
                 "allowed_verifier_or_environment_failures": 0,
                 "incident_counting": "unique-auditable-not-command-count",
-                "pilot_audit_path": "sources/evaluations/audits/baseline-v3-pilot-zero-mistake.json",
-                "attempt_receipt_path": f"sources/evaluations/audits/baseline-v3-pilot-attempt-{str(sid).split('-lifecycle-sequence-v0')[0]}.json",
-                "status": "provider-pilot-required",
-                "treatment_launch_policy": "blocked until one first-valid strongest-model pilot is independently audited with all eight required observed counts equal to integer zero",
+                "pilot_audit_path": f"sources/evaluations/audits/{generation}-pilot-zero-mistake.json",
+                "attempt_receipt_path": f"sources/evaluations/audits/{generation}-pilot-attempt-{str(sid).split('-lifecycle-sequence-v0')[0]}.json",
+                "status": gate_status,
+                "treatment_launch_policy": launch_policy,
             }
+            if generation == "baseline-v4":
+                expected_gate["pilot_authorization_path"] = "sources/evaluations/audits/baseline-v4-task-family-qualification-20260722.json"
             allowed_gate_fields = [key for key in expected_gate if key.startswith("allowed_")]
             gate_values_match = (
                 isinstance(gate, dict)
@@ -1325,7 +1376,19 @@ def validate_workflow_task_sequences(sequence_doc: dict, fixture_doc: dict, erro
                 and all(type(gate.get(key)) is int and gate.get(key) == 0 for key in allowed_gate_fields)
             )
             if not gate_values_match:
-                errors.append(f"active workflow sequence {sid} must preserve the Baseline V3 zero-mistake gate with strict integer-zero allowances")
+                errors.append(f"active workflow sequence {sid} must preserve the {generation} zero-mistake gate with strict integer-zero allowances")
+            if isinstance(gate, dict):
+                for field in ("pilot_audit_path", "attempt_receipt_path", "pilot_authorization_path"):
+                    if field not in gate:
+                        continue
+                    relative = gate.get(field)
+                    if not isinstance(relative, str) or not relative:
+                        errors.append(f"active workflow sequence {sid} {field} must be a non-empty repository-relative path")
+                        continue
+                    try:
+                        workflow.repository_authority_path(ROOT, relative, field)
+                    except ValueError:
+                        errors.append(f"active workflow sequence {sid} {field} escapes the repository authority root")
             required_lockfiles = {
                 "medium-fastify-fastify": {"package.json": "b273320af1bb4cfc0f9334457c8e3b1d035fde0da14f9db65e8ef97d361d0be3"},
                 "medium-beetbox-beets": {"uv.lock": "fbf1d7a9c84b658a2433035221ba18c57508c254d711a06f305e2f610839a45f"},
@@ -1337,11 +1400,11 @@ def validate_workflow_task_sequences(sequence_doc: dict, fixture_doc: dict, erro
                 if isinstance(item, dict)
             }
             if observed_lockfiles != required_lockfiles.get(str(sequence.get("fixture_id")), {}):
-                errors.append(f"active workflow sequence {sid} must bind its exact Baseline V3 dependency lock inputs")
+                errors.append(f"active workflow sequence {sid} must bind its exact {generation} dependency lock inputs")
             if sequence.get("fixture_id") == "medium-beetbox-beets":
                 setup_text = (ROOT / "sources/evaluations/fixtures/medium/beetbox-beets/setup.sh").read_text()
                 if "uv sync --group test --frozen" not in setup_text:
-                    errors.append("Beets Baseline V3 setup must enforce uv.lock with --frozen")
+                    errors.append(f"Beets {generation} setup must enforce uv.lock with --frozen")
             if isinstance(gate, dict):
                 receipt_rel = gate.get("attempt_receipt_path")
                 receipt_path = ROOT / str(receipt_rel)
@@ -1353,7 +1416,7 @@ def validate_workflow_task_sequences(sequence_doc: dict, fixture_doc: dict, erro
                     else:
                         expected_receipt_identity = {
                             "schema_version": 1,
-                            "task_family_generation": "baseline-v3",
+                            "task_family_generation": generation,
                             "sequence_id": sid,
                             "replicate_index": 0,
                             "profile_id": "baseline-bare-codex",
@@ -1370,8 +1433,9 @@ def validate_workflow_task_sequences(sequence_doc: dict, fixture_doc: dict, erro
                 errors.append(f"active workflow sequence {sid} seed policy must not describe acceptance as controller-only")
         qualification_path = str(sequence.get("qualification_path", ""))
         qualification_name = Path(qualification_path).name
-        if is_active and qualification_name != "qualification-lifecycle-v0-baseline-v3.json":
-            errors.append(f"active workflow sequence {sid} must bind qualification-lifecycle-v0-baseline-v3.json")
+        expected_qualification_name = f"qualification-lifecycle-v0-{sequence.get('task_family_generation')}.json"
+        if is_active and qualification_name != expected_qualification_name:
+            errors.append(f"active workflow sequence {sid} must bind {expected_qualification_name}")
         elif re.fullmatch(r"qualification-lifecycle-v0(?:-[a-z0-9-]+)?\.json", qualification_name) is None:
             errors.append(f"workflow sequence {sid} must bind a versioned qualification-lifecycle-v0 JSON artifact")
         if sequence.get("status") == "active" and sequence.get("acceptance_design") != "behavioral":
@@ -1439,15 +1503,17 @@ def validate_workflow_task_sequences(sequence_doc: dict, fixture_doc: dict, erro
                     if not production:
                         errors.append(f"active workflow sequence {sid} task {tid} seed patch has no production/type files")
                     prompt_text = (ROOT / prompt_path).read_text() if prompt_path else ""
+                    generation_label = str(sequence.get("task_family_generation", "")).replace("baseline-v", "Baseline V")
                     required_markers = (
-                        "Baseline V3 mechanical",
+                        f"{generation_label} mechanical",
                         "Do not discover or redesign anything.",
                         "Copy and run this command exactly:",
                         "Do not inspect, search, modify tests, run anything else, or evaluate aggregate Git state.",
                         "stop immediately when it exits 0",
                     )
-                    if "/baseline-v3/" not in str(prompt_path) or any(marker not in prompt_text for marker in required_markers):
-                        errors.append(f"active workflow sequence {sid} task {tid} must use the complete Baseline V3 routine prompt contract")
+                    generation_path = f"/{sequence.get('task_family_generation')}/"
+                    if generation_path not in str(prompt_path) or any(marker not in prompt_text for marker in required_markers):
+                        errors.append(f"active workflow sequence {sid} task {tid} must use the complete {generation_label} routine prompt contract")
                     target_production = [
                         path
                         for path in production
@@ -1597,10 +1663,12 @@ def validate_fixture_sequence_status_consistency(
                 except OSError as exc:
                     errors.append(f"fixture {record.get('id')} active-generation documentation is unreadable: {exc}")
                 else:
-                    if qualification_path.name not in fixture_text or "baseline-v3" not in fixture_text:
-                        errors.append(f"fixture {record.get('id')} README does not identify the active Baseline V3 qualification")
-                    if "active Baseline V3" not in tasks_text:
-                        errors.append(f"fixture {record.get('id')} tasks README does not identify the active Baseline V3 generation")
+                    generation = str(sequences[sequence_id].get("task_family_generation", ""))
+                    generation_label = generation.replace("baseline-v", "Baseline V")
+                    if qualification_path.name not in fixture_text or generation not in fixture_text:
+                        errors.append(f"fixture {record.get('id')} README does not identify the active {generation_label} qualification")
+                    if f"active {generation_label}" not in tasks_text:
+                        errors.append(f"fixture {record.get('id')} tasks README does not identify the active {generation_label} generation")
                     if "Active lifecycle-v0 generation" in v2_text or "future execution" in v2_text:
                         errors.append(f"fixture {record.get('id')} Baseline V2 README incorrectly presents a retired generation as active")
             if not active and qualification == "active-reproduction-flow":
@@ -1708,7 +1776,7 @@ def validate_production_v3_schema_shape(session: dict, sid: str, errors: list[st
     for key in required:
         if key not in session:
             errors.append(f"workflow session {sid} production-v3 record missing schema field {key}")
-    if session.get("schema_version") not in {1, 2}:
+    if type(session.get("schema_version")) is not int or session.get("schema_version") not in {1, 2}:
         errors.append(f"workflow session {sid} schema_version must be 1 or 2")
     if session.get("record_type") != "workflow_session":
         errors.append(f"workflow session {sid} record_type must be workflow_session")
@@ -1873,7 +1941,7 @@ def validate_production_v3_identity(session: dict, run_record: dict | None, sid:
 
 
 def requires_structured_task_contract(session: dict) -> bool:
-    return session.get("schema_version") == 2
+    return type(session.get("schema_version")) is int and session.get("schema_version") == 2
 
 
 def validate_structured_task_outcomes(session: dict, sid: str, errors: list[str]) -> None:
@@ -2116,7 +2184,7 @@ def validate_workflow_session_contract(session: dict, canonical_profile: dict | 
             errors.append(
                 f"workflow session {sid} token-objective acceptance requires a completed, execution-accepted, and structurally isolated provider run"
             )
-        if session.get("schema_version") == 2:
+        if requires_structured_task_contract(session):
             integrity = session.get("execution_integrity", {})
             if (
                 not isinstance(integrity, dict)
@@ -2130,7 +2198,7 @@ def validate_workflow_session_contract(session: dict, canonical_profile: dict | 
 
 
 def validate_workflow_sessions(session_doc: dict, sequence_ids: set[str], fixture_doc: dict, profiles_by_id: dict[str, dict], runtime_ids: set[str], model_condition_ids: set[str], errors: list[str]) -> None:
-    if session_doc.get("schema_version") != 1:
+    if type(session_doc.get("schema_version")) is not int or session_doc.get("schema_version") != 1:
         errors.append("data/workflow-sessions.json must use schema_version 1")
     if session_doc.get("primary_metric") != "cumulative provider-reported workflow tokens":
         errors.append("data/workflow-sessions.json primary_metric must be cumulative provider-reported workflow tokens")
@@ -2195,7 +2263,11 @@ def validate_workflow_sessions(session_doc: dict, sequence_ids: set[str], fixtur
             if isinstance(canonical_profile, dict)
             else None
         )
-        strict_session_contract = session.get("schema_version") == 2
+        schema_version = session.get("schema_version")
+        valid_schema_version = type(schema_version) is int and schema_version in {1, 2}
+        if not valid_schema_version:
+            errors.append(f"workflow session {sid} schema_version must be 1 or 2")
+        strict_session_contract = requires_structured_task_contract(session)
         if strict_session_contract and profile_id and session.get("session_role") != expected_session_role:
             errors.append(
                 f"workflow session {sid} role/profile mismatch: {session.get('session_role')} vs {profile_id}"
@@ -2260,7 +2332,7 @@ def validate_workflow_sessions(session_doc: dict, sequence_ids: set[str], fixtur
                 frozen_protocol_doc = json.loads(frozen_protocol_path.read_text())
             except (OSError, json.JSONDecodeError):
                 frozen_protocol_doc = {}
-            strict_compact_contract = session.get("schema_version") == 2
+            strict_compact_contract = requires_structured_task_contract(session)
             if (
                 strict_compact_contract
                 and artifacts.get("root") is not None
@@ -2499,11 +2571,24 @@ def validate_baseline_v3_qualification_audit(errors: list[str]) -> None:
     except (OSError, json.JSONDecodeError) as exc:
         errors.append(f"Baseline V3 qualification audit cannot be read: {exc}")
         return
-    active_sequences = {
-        item.get("id"): item
-        for item in sequences_doc.get("sequences", [])
-        if item.get("status") == "active" and item.get("task_family_generation") == "baseline-v3"
+    v3_sequence_ids = {
+        "fastify-lifecycle-sequence-v0",
+        "beets-lifecycle-sequence-v0",
+        "terraform-lifecycle-sequence-v0",
     }
+    active_sequences: dict[str, dict] = {}
+    for source_sequence in sequences_doc.get("sequences", []):
+        if source_sequence.get("id") not in v3_sequence_ids:
+            continue
+        sequence = json.loads(json.dumps(source_sequence))
+        sequence["task_family_generation"] = "baseline-v3"
+        sequence["qualification_path"] = str(sequence.get("qualification_path", "")).replace(
+            "baseline-v4", "baseline-v3"
+        )
+        for task in sequence.get("tasks", []):
+            for key in ("prompt_path", "verifier_command"):
+                task[key] = str(task.get(key, "")).replace("baseline-v4", "baseline-v3")
+        active_sequences[str(sequence["id"])] = sequence
 
     strict_numeric_keys = {
         "schema_version",
@@ -2556,8 +2641,10 @@ def validate_baseline_v3_qualification_audit(errors: list[str]) -> None:
     validate_provider_free_numbers(audit)
     audit_sequence_items = [item for item in audit.get("sequences", []) if isinstance(item, dict)]
     protocol_items = [item for item in audit.get("protocols", []) if isinstance(item, dict)]
+    historical_protocol_items = [item for item in audit.get("historical_protocols", []) if isinstance(item, dict)]
     audit_sequence_ids = [item.get("sequence_id") for item in audit_sequence_items]
     protocol_sequence_ids = [item.get("sequence_id") for item in protocol_items]
+    historical_protocol_sequence_ids = [item.get("sequence_id") for item in historical_protocol_items]
     audit_sequences = {item.get("sequence_id"): item for item in audit_sequence_items}
     current_refs = {item.get("sequence_id"): item for item in protocol_items}
     rehearsal = audit.get("literal_prompt_command_rehearsal")
@@ -2568,14 +2655,17 @@ def validate_baseline_v3_qualification_audit(errors: list[str]) -> None:
     )
     rehearsal_sequence_ids = [item.get("sequence_id") for item in rehearsal_items]
     rehearsal_sequences = {item.get("sequence_id"): item for item in rehearsal_items}
-    multiplicity_valid = all(
-        len(items) == len(active_sequences)
-        and len(ids) == len(set(ids))
-        for items, ids in (
-            (audit_sequence_items, audit_sequence_ids),
-            (protocol_items, protocol_sequence_ids),
-            (rehearsal_items, rehearsal_sequence_ids),
-        )
+    current_v3_sequence_ids = {"fastify-lifecycle-sequence-v0"}
+    multiplicity_valid = (
+        len(audit_sequence_items) == len(active_sequences)
+        and len(audit_sequence_ids) == len(set(audit_sequence_ids))
+        and set(protocol_sequence_ids) == current_v3_sequence_ids
+        and len(protocol_sequence_ids) == len(set(protocol_sequence_ids))
+        and len(historical_protocol_items) == len(active_sequences)
+        and set(historical_protocol_sequence_ids) == set(active_sequences)
+        and len(historical_protocol_sequence_ids) == len(set(historical_protocol_sequence_ids))
+        and len(rehearsal_items) == len(active_sequences)
+        and len(rehearsal_sequence_ids) == len(set(rehearsal_sequence_ids))
     )
     if not multiplicity_valid:
         errors.append("Baseline V3 qualification audit must not contain missing or duplicate sequence identities")
@@ -2710,12 +2800,22 @@ def validate_baseline_v3_qualification_audit(errors: list[str]) -> None:
             )
             if not receipt_valid:
                 errors.append(f"Baseline V3 immutable literal-command receipt is invalid for {task_id}")
-    if set(audit_sequences) != set(active_sequences) or set(current_refs) != set(active_sequences):
-        errors.append("Baseline V3 qualification audit must cover exactly the active sequences")
+    historical_refs = {item.get("sequence_id"): item for item in historical_protocol_items}
+    if set(audit_sequences) != set(active_sequences) or set(historical_refs) != set(active_sequences) or set(current_refs) != current_v3_sequence_ids:
+        errors.append("Baseline V3 qualification audit must cover historical sequences and only current Fastify protocols")
         return
     for sequence_id, sequence in active_sequences.items():
         entry = audit_sequences[sequence_id]
+        if sequence_id != "fastify-lifecycle-sequence-v0":
+            if "current_protocol_id" in entry or "current_protocol_path" in entry or current_refs.get(sequence_id) is not None:
+                errors.append(f"Baseline V3 audit {sequence_id} per-sequence current protocol binding is stale; superseded V3 lanes must not retain it")
+            supersession = entry.get("superseded_by", {})
+            if entry.get("execution_status") != "executed-failed-preserved" or supersession.get("task_family_generation") != "baseline-v4":
+                errors.append(f"Baseline V3 audit {sequence_id} must record its preserved failure and V4 supersession")
+            continue
         current_ref = current_refs[sequence_id]
+        if entry.get("execution_status") != "executed-passed-zero-incident":
+            errors.append("Baseline V3 audit Fastify must record the executed zero-incident outcome")
         frozen_refs = entry.get("frozen_baseline_protocols")
         protocol_rel = current_ref.get("path")
         if not isinstance(protocol_rel, str) or not protocol_rel:
@@ -2784,6 +2884,349 @@ def validate_baseline_v3_qualification_audit(errors: list[str]) -> None:
         "provider_tokens": 0,
     }:
         errors.append("Baseline V3 qualification audit prepare-matrix note must remain non-authoritative scratch metadata")
+
+
+def validate_baseline_v4_evidence_identity(
+    audit: dict[str, Any],
+    index: dict[str, Any],
+    receipt_documents: dict[str, dict[str, Any]],
+    prepare_manifest: dict[str, Any],
+    prepare_files: dict[str, bytes],
+    expected_sequences: dict[str, dict[str, Any]],
+    errors: list[str],
+) -> None:
+    """Validate exact V4 task/evidence coverage and provider-free preparation identity."""
+    ordered_sequence_ids = list(expected_sequences)
+    records = audit.get("sequences")
+    if not isinstance(records, list) or [item.get("sequence_id") for item in records if isinstance(item, dict)] != ordered_sequence_ids:
+        errors.append("Baseline V4 audit sequence records must exactly cover active V4 sequences once and in order")
+        return
+    expected_coordinates: list[tuple[str, str, int]] = []
+    nested_items: list[dict[str, Any]] = []
+    for record in records:
+        sequence_id = record["sequence_id"]
+        sequence = expected_sequences[sequence_id]
+        tasks = sorted(sequence.get("tasks", []), key=lambda item: int(item["order"]))
+        if type(record.get("task_count")) is not int or record.get("task_count") != len(tasks):
+            errors.append(f"Baseline V4 task_count must be a strict integer for {sequence_id}")
+        if record.get("fixture_id") != sequence.get("fixture_id") or record.get("task_family_generation") != "baseline-v4":
+            errors.append(f"Baseline V4 audit sequence identity is stale for {sequence_id}")
+        expected_for_sequence = [(sequence_id, str(task["id"]), int(task["order"])) for task in tasks]
+        expected_coordinates.extend(expected_for_sequence)
+        nested = record.get("literal_command_receipts")
+        if not isinstance(nested, list):
+            errors.append(f"Baseline V4 nested receipts are missing for {sequence_id}")
+            continue
+        nested_items.extend(item for item in nested if isinstance(item, dict))
+        actual_nested = [(item.get("sequence_id"), item.get("task_id")) for item in nested if isinstance(item, dict)]
+        if actual_nested != [(item[0], item[1]) for item in expected_for_sequence]:
+            errors.append(f"Baseline V4 nested receipts must exactly cover ordered tasks for {sequence_id}")
+
+    receipts = index.get("receipts")
+    if type(index.get("schema_version")) is not int or index.get("schema_version") != 1 or index.get("generation") != "baseline-v4":
+        errors.append("Baseline V4 receipt index schema or generation is invalid")
+    if not isinstance(receipts, list):
+        errors.append("Baseline V4 receipt index is missing receipts")
+        return
+    actual_coordinates = [
+        (item.get("sequence_id"), item.get("task_id"))
+        for item in receipts
+        if isinstance(item, dict)
+    ]
+    expected_pairs = [(item[0], item[1]) for item in expected_coordinates]
+    if actual_coordinates != expected_pairs or len(receipts) != len(expected_pairs):
+        errors.append("Baseline V4 receipt index must exactly cover every ordered task once")
+    if nested_items != receipts:
+        errors.append("Baseline V4 nested receipt references must exactly match the receipt index")
+    if set(receipt_documents) != {str(item.get("path")) for item in receipts if isinstance(item, dict)}:
+        errors.append("Baseline V4 receipt documents do not exactly match indexed paths")
+    for item, (sequence_id, task_id, order) in zip(receipts, expected_coordinates, strict=False):
+        if not isinstance(item, dict):
+            errors.append("Baseline V4 receipt index entries must be objects")
+            continue
+        path = item.get("path")
+        receipt = receipt_documents.get(str(path))
+        if not isinstance(path, str) or not isinstance(receipt, dict):
+            errors.append(f"Baseline V4 indexed receipt is missing: {path}")
+            continue
+        if (
+            type(receipt.get("schema_version")) is not int
+            or receipt.get("schema_version") != 1
+            or receipt.get("generation") != "baseline-v4"
+            or receipt.get("sequence_id") != sequence_id
+            or receipt.get("task_id") != task_id
+            or type(receipt.get("order")) is not int
+            or receipt.get("order") != order
+        ):
+            errors.append(f"Baseline V4 receipt identity is invalid: {path}")
+
+    if type(prepare_manifest.get("schema_version")) is not int or prepare_manifest.get("schema_version") != 1:
+        errors.append("Baseline V4 prepare manifest schema_version must be strict integer 1")
+    if prepare_manifest.get("generation") != "baseline-v4":
+        errors.append("Baseline V4 prepare manifest generation is invalid")
+    for key in ("provider_calls", "provider_tokens"):
+        if type(prepare_manifest.get(key)) is not int or prepare_manifest.get(key) != 0:
+            errors.append(f"Baseline V4 prepare manifest {key} must be strict integer zero")
+    for key in ("execution_passed", "validation_passed", "authoritative_outputs_complete"):
+        if prepare_manifest.get(key) is not True:
+            errors.append(f"Baseline V4 prepare manifest {key} must be true")
+    lane_exits = prepare_manifest.get("lane_exit_codes")
+    if not isinstance(lane_exits, dict) or list(lane_exits) != ordered_sequence_ids or any(
+        type(value) is not int or value != 0 for value in lane_exits.values()
+    ):
+        errors.append("Baseline V4 prepare manifest lane exits must exactly cover active V4 sequences with strict integer zero")
+    declared_files = prepare_manifest.get("files")
+    if not isinstance(declared_files, dict) or set(declared_files) != {"plan.json", "matrix-summary.json"}:
+        errors.append("Baseline V4 prepare manifest must bind exactly plan.json and matrix-summary.json")
+    else:
+        for name, expected_sha in declared_files.items():
+            content = prepare_files.get(name)
+            if not isinstance(content, bytes) or hashlib.sha256(content).hexdigest() != expected_sha:
+                errors.append(f"Baseline V4 prepare manifest file hash is stale: {name}")
+    try:
+        plan = json.loads(prepare_files["plan.json"], object_pairs_hook=_json_object_without_duplicate_keys)
+        summary = json.loads(prepare_files["matrix-summary.json"], object_pairs_hook=_json_object_without_duplicate_keys)
+    except (KeyError, ValueError, json.JSONDecodeError) as exc:
+        errors.append(f"Baseline V4 prepare evidence cannot be parsed: {exc}")
+        return
+    records_by_sequence = {record["sequence_id"]: record for record in records}
+    expected_jobs = [
+        {
+            "sequence_id": sequence_id,
+            "profile_id": "baseline-bare-codex",
+            "protocol": records_by_sequence[sequence_id].get("protocol_path"),
+        }
+        for sequence_id in ordered_sequence_ids
+    ]
+    first_gate = expected_sequences[ordered_sequence_ids[0]].get("mistake_gate", {}) if ordered_sequence_ids else {}
+    expected_condition = {
+        "id": first_gate.get("designated_model_condition"),
+        "model": first_gate.get("model"),
+        "reasoning_effort": first_gate.get("reasoning_effort"),
+    }
+    if (
+        plan.get("sequences") != ordered_sequence_ids
+        or plan.get("treatment_profiles") != []
+        or plan.get("jobs") != expected_jobs
+        or type(plan.get("max_parallel")) is not int
+        or plan.get("max_parallel") != 1
+        or type(plan.get("replicate_index")) is not int
+        or plan.get("replicate_index") != 0
+        or plan.get("model_condition") != expected_condition
+        or plan.get("runner_args") != ["--prepare-only", "--no-provider"]
+    ):
+        errors.append("Baseline V4 prepare plan does not match the exact provider-free serial V4 baseline matrix")
+    if summary.get("plan") != plan:
+        errors.append("Baseline V4 prepare summary plan does not match plan.json")
+    lane_results = summary.get("lane_results")
+    if not isinstance(lane_results, list) or [item.get("sequence_id") for item in lane_results if isinstance(item, dict)] != ordered_sequence_ids:
+        errors.append("Baseline V4 prepare summary must contain exactly one ordered result per V4 sequence")
+    else:
+        for item, sequence_id in zip(lane_results, ordered_sequence_ids, strict=True):
+            record = records_by_sequence[sequence_id]
+            binding = item.get("expected_session_binding", {})
+            frozen = binding.get("frozen_protocol", {}) if isinstance(binding, dict) else {}
+            try:
+                protocol = json.loads(
+                    (ROOT / str(record.get("protocol_path"))).read_text(),
+                    object_pairs_hook=_json_object_without_duplicate_keys,
+                )
+            except (OSError, ValueError, json.JSONDecodeError) as exc:
+                errors.append(f"Baseline V4 prepare protocol cannot be loaded for {sequence_id}: {exc}")
+                protocol = {}
+            if (
+                item.get("treatment_profile") != "baseline-bare-codex"
+                or item.get("lane_id") != f"{sequence_id}--baseline-bare-codex"
+                or type(item.get("exit_code")) is not int
+                or item.get("exit_code") != 0
+                or item.get("produced_session_ids") != []
+                or item.get("failure_evidence") != []
+                or binding.get("sequence_id") != sequence_id
+                or binding.get("profile_id") != "baseline-bare-codex"
+                or type(binding.get("replicate_index")) is not int
+                or binding.get("replicate_index") != 0
+                or frozen.get("protocol_id") != record.get("protocol_id")
+                or frozen.get("path") != record.get("protocol_path")
+                or frozen.get("sha256") != record.get("protocol_sha256")
+                or binding.get("baseline_pool_fingerprint") != record.get("baseline_pool_fingerprint")
+                or binding.get("selected_execution") != protocol.get("selected_execution")
+            ):
+                errors.append(f"Baseline V4 prepare lane identity is invalid for {sequence_id}")
+    merge = summary.get("merge", {})
+    if (
+        type(merge.get("merged_session_count")) is not int
+        or merge.get("merged_session_count") != 0
+        or type(merge.get("copied_artifact_count")) is not int
+        or merge.get("copied_artifact_count") != 0
+        or merge.get("merged_session_ids") != []
+        or merge.get("copied_artifacts") != []
+        or merge.get("skipped") != "prepare-only run"
+        or summary.get("published_comparisons") != []
+        or summary.get("execution_passed") is not True
+        or summary.get("authoritative_outputs_complete") is not True
+    ):
+        errors.append("Baseline V4 prepare summary must prove a provider-free, publication-free prepare-only result")
+    validation = summary.get("validation", {})
+    validation_results = validation.get("results") if isinstance(validation, dict) else None
+    expected_validation_commands = [
+        ["/opt/hermes/.venv/bin/python", "scripts/validate_repository.py"],
+        ["/opt/hermes/.venv/bin/python", "scripts/test_workflow_evaluation_contract.py"],
+        ["git", "diff", "--check"],
+        ["/opt/data/.local/bin/truthmark", "check", "--json"],
+        ["/opt/data/.local/bin/truthmark", "index", "--json"],
+    ]
+    if (
+        validation.get("passed") is not True
+        or not isinstance(validation_results, list)
+        or [item.get("command") for item in validation_results if isinstance(item, dict)] != expected_validation_commands
+        or any(
+            not isinstance(item, dict) or type(item.get("exit_code")) is not int or item.get("exit_code") != 0
+            for item in validation_results
+        )
+    ):
+        errors.append("Baseline V4 prepare summary validation commands or results are incomplete, noncanonical, or nonzero")
+
+
+def validate_baseline_v4_qualification_audit(errors: list[str]) -> None:
+    audit_path = ROOT / "sources/evaluations/audits/baseline-v4-task-family-qualification-20260722.json"
+    try:
+        audit = json.loads(audit_path.read_text(), object_pairs_hook=_json_object_without_duplicate_keys)
+        sequence_doc = json.loads((ROOT / "data/workflow-task-sequences.json").read_text())
+    except (OSError, ValueError, json.JSONDecodeError) as exc:
+        errors.append(f"Baseline V4 qualification audit cannot be read: {exc}")
+        return
+    if type(audit.get("schema_version")) is not int or audit.get("schema_version") != 1:
+        errors.append("Baseline V4 qualification audit must use strict integer schema_version 1")
+    for key in ("provider_calls", "provider_tokens"):
+        if type(audit.get(key)) is not int or audit.get(key) != 0:
+            errors.append(f"Baseline V4 qualification audit {key} must be strict integer zero")
+    if audit.get("passed") is not True or type(audit.get("paid_pilot_authorized")) is not bool or type(audit.get("treatment_unlocked")) is not bool:
+        errors.append("Baseline V4 qualification audit must declare a valid provider-free qualification and boolean paid-pilot/treatment state")
+    if audit.get("paid_pilot_authorized") is False and audit.get("treatment_unlocked") is not False:
+        errors.append("Baseline V4 treatment cannot unlock before paid-pilot authorization and evidence")
+    if audit.get("task_difficulty_changed") is not False or audit.get("v3_attempt_evidence_mutated") is not False:
+        errors.append("Baseline V4 qualification audit must preserve task difficulty and immutable V3 evidence")
+    expected_sequences = {
+        item["id"]: item
+        for item in sequence_doc.get("sequences", [])
+        if item.get("status") == "active" and item.get("task_family_generation") == "baseline-v4"
+    }
+    if set(audit.get("scope", [])) != set(expected_sequences):
+        errors.append("Baseline V4 qualification audit scope must cover exactly the active V4 sequences")
+    records = audit.get("sequences")
+    if not isinstance(records, list) or {item.get("sequence_id") for item in records if isinstance(item, dict)} != set(expected_sequences):
+        errors.append("Baseline V4 qualification audit must contain one record for each active V4 sequence")
+        return
+    index_rel = audit.get("literal_command_receipt_index")
+    if not isinstance(index_rel, str):
+        errors.append("Baseline V4 qualification audit is missing its literal receipt index")
+        return
+    index_path = ROOT / index_rel
+    try:
+        index_bytes = index_path.read_bytes()
+        index = json.loads(index_bytes, object_pairs_hook=_json_object_without_duplicate_keys)
+    except (OSError, ValueError, json.JSONDecodeError) as exc:
+        errors.append(f"Baseline V4 literal receipt index cannot be read: {exc}")
+        return
+    if hashlib.sha256(index_bytes).hexdigest() != audit.get("literal_command_receipt_index_sha256"):
+        errors.append("Baseline V4 literal receipt index hash is stale")
+    if any(type(index.get(key)) is not int or index.get(key) != 0 for key in ("provider_calls", "provider_tokens")):
+        errors.append("Baseline V4 literal receipt index provider counts must be strict integer zero")
+    receipts = index.get("receipts")
+    if not isinstance(receipts, list) or len(receipts) != 6 or index.get("passed") is not True:
+        errors.append("Baseline V4 literal receipt index must contain six passing receipts")
+        return
+    receipt_documents: dict[str, dict[str, Any]] = {}
+    for item in receipts:
+        receipt_path = ROOT / str(item.get("path", ""))
+        try:
+            receipt_bytes = receipt_path.read_bytes()
+            receipt = json.loads(receipt_bytes, object_pairs_hook=_json_object_without_duplicate_keys)
+        except (OSError, ValueError, json.JSONDecodeError) as exc:
+            errors.append(f"Baseline V4 literal receipt cannot be read: {exc}")
+            continue
+        receipt_documents[str(item.get("path", ""))] = receipt
+        if hashlib.sha256(receipt_bytes).hexdigest() != item.get("sha256"):
+            errors.append(f"Baseline V4 literal receipt hash is stale: {receipt_path}")
+        for key in ("schema_version", "order", "provider_calls", "provider_tokens", "command_exit", "controller_verifier_exit"):
+            if type(receipt.get(key)) is not int:
+                errors.append(f"Baseline V4 literal receipt {receipt_path} {key} must be a strict integer")
+        if any(receipt.get(key) != 0 for key in ("provider_calls", "provider_tokens", "command_exit", "controller_verifier_exit")) or receipt.get("passed") is not True:
+            errors.append(f"Baseline V4 literal receipt did not pass provider-free: {receipt_path}")
+    prepare_rel = audit.get("prepare_only_manifest")
+    prepare_manifest: dict[str, Any] = {}
+    prepare_files: dict[str, bytes] = {}
+    if not isinstance(prepare_rel, str) or not prepare_rel:
+        errors.append("Baseline V4 qualification audit is missing its prepare-only manifest")
+    else:
+        prepare_path = ROOT / prepare_rel
+        try:
+            prepare_bytes = prepare_path.read_bytes()
+            prepare_manifest = json.loads(prepare_bytes, object_pairs_hook=_json_object_without_duplicate_keys)
+        except (OSError, ValueError, json.JSONDecodeError) as exc:
+            errors.append(f"Baseline V4 prepare-only manifest cannot be read: {exc}")
+        else:
+            if hashlib.sha256(prepare_bytes).hexdigest() != audit.get("prepare_only_manifest_sha256"):
+                errors.append("Baseline V4 prepare-only manifest hash is stale")
+            declared_files = prepare_manifest.get("files")
+            if isinstance(declared_files, dict):
+                for name in declared_files:
+                    if not isinstance(name, str) or PurePosixPath(name).name != name:
+                        errors.append(f"Baseline V4 prepare-only manifest has unsafe file name: {name}")
+                        continue
+                    try:
+                        prepare_files[name] = (prepare_path.parent / name).read_bytes()
+                    except OSError as exc:
+                        errors.append(f"Baseline V4 prepare-only evidence cannot be read: {name}: {exc}")
+    validate_baseline_v4_evidence_identity(
+        audit,
+        index,
+        receipt_documents,
+        prepare_manifest,
+        prepare_files,
+        expected_sequences,
+        errors,
+    )
+    from scripts import run_codex_workflow_evaluation as workflow
+    for record in records:
+        sequence = expected_sequences.get(record.get("sequence_id"))
+        if sequence is None:
+            continue
+        qualification_path = ROOT / sequence["qualification_path"]
+        try:
+            qualification_bytes = qualification_path.read_bytes()
+            qualification = json.loads(qualification_bytes)
+        except (OSError, json.JSONDecodeError) as exc:
+            errors.append(f"Baseline V4 qualification cannot be read: {exc}")
+            continue
+        if hashlib.sha256(qualification_bytes).hexdigest() != record.get("qualification_sha256"):
+            errors.append(f"Baseline V4 qualification hash is stale for {sequence['id']}")
+        exits = record.get("aggregate_verifier_task_exits")
+        if record.get("aggregate_verifier_environment_passed") is not True or type(record.get("aggregate_verifier_exit")) is not int or record.get("aggregate_verifier_exit") != 0 or not isinstance(exits, list) or exits != [0, 0, 0] or any(type(value) is not int for value in exits):
+            errors.append(f"Baseline V4 aggregate verifier did not execute all three tasks for {sequence['id']}")
+        if qualification.get("aggregate_verifier_environment_passed") is not True:
+            errors.append(f"Baseline V4 qualification lacks aggregate environment proof for {sequence['id']}")
+        if qualification.get("task_family_generation") != "baseline-v4":
+            errors.append(f"Baseline V4 qualification lacks explicit generation for {sequence['id']}")
+        try:
+            identity, protocol = workflow.current_baseline_v2_protocol(sequence, sequence["mistake_gate"], ROOT)
+        except ValueError as exc:
+            errors.append(f"Baseline V4 current protocol cannot be resolved for {sequence['id']}: {exc}")
+            continue
+        if record.get("protocol_id") != identity["protocol_id"] or record.get("protocol_path") != identity["path"] or record.get("protocol_sha256") != identity["sha256"] or record.get("baseline_pool_fingerprint") != identity["baseline_pool_fingerprint"]:
+            errors.append(f"Baseline V4 protocol binding is stale for {sequence['id']}")
+        if protocol.get("task_fixture", {}).get("qualification_sha256") != record.get("qualification_sha256"):
+            errors.append(f"Baseline V4 protocol qualification binding is stale for {sequence['id']}")
+        if protocol.get("task_fixture", {}).get("task_family_generation") != "baseline-v4" or protocol.get("baseline_pool", {}).get("descriptor", {}).get("task_family_generation") != "baseline-v4":
+            errors.append(f"Baseline V4 protocol lacks explicit generation binding for {sequence['id']}")
+        receipt_path = workflow.baseline_pilot_attempt_receipt_path(sequence, ROOT)
+        if receipt_path.exists() and audit.get("paid_pilot_authorized") is not True:
+            errors.append(f"Baseline V4 provider pilot identity is occupied without recorded authorization: {receipt_path}")
+        if audit.get("treatment_unlocked") is True and not receipt_path.exists():
+            errors.append(f"Baseline V4 treatment cannot unlock before an immutable pilot receipt exists: {receipt_path}")
+    for slug in ("beets", "terraform"):
+        if not (ROOT / f"sources/evaluations/audits/baseline-v3-pilot-attempt-{slug}.json").is_file():
+            errors.append(f"immutable Baseline V3 attempt receipt is missing for {slug}")
 
 
 def validate_frozen_protocol_bindings(errors: list[str]) -> None:
@@ -3020,15 +3463,16 @@ def validate_frozen_protocol_bindings(errors: list[str]) -> None:
                 elif selected.get("descriptor") != expected_execution or selected.get("descriptor_sha256") != runner._json_hash(expected_execution):
                     errors.append(f"execution contract {path.name} has a stale selected-execution descriptor")
                     continue
-                expected_protocol_id = runner.canonical_protocol_id(
-                    seq,
-                    str(selected_profile or "baseline-bare-codex"),
-                    baseline_descriptor=expected_descriptor,
-                    selected_execution=expected_execution,
-                )
-                if protocol.get("protocol_id") != expected_protocol_id or path.stem != expected_protocol_id:
-                    errors.append(f"execution contract {path.name} does not use its canonical protocol ID and path")
-                    continue
+                if not frozen_hashes:
+                    expected_protocol_id = runner.canonical_protocol_id(
+                        seq,
+                        str(selected_profile or "baseline-bare-codex"),
+                        baseline_descriptor=expected_descriptor,
+                        selected_execution=expected_execution,
+                    )
+                    if protocol.get("protocol_id") != expected_protocol_id or path.stem != expected_protocol_id:
+                        errors.append(f"execution contract {path.name} does not use its canonical protocol ID and path")
+                        continue
                 current_sequence_bindings.add(str(seq["id"]))
         timeout = fixture.get("timeout_seconds_per_task")
         selected = protocol.get("selected_execution", {})
@@ -3209,6 +3653,7 @@ def main() -> int:
     validate_document_lifecycle(workflow_sessions_doc, fixtures_doc, workflow_sequences_doc, errors)
     validate_retired_baseline_v2_audit(errors)
     validate_baseline_v3_qualification_audit(errors)
+    validate_baseline_v4_qualification_audit(errors)
     validate_frozen_protocol_bindings(errors)
     for path in (ROOT / "data/workflow-task-sequences.json", ROOT / "templates/evaluation-run-record.json"):
         if "gpt-5.5" in path.read_text():

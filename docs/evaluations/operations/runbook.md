@@ -13,7 +13,7 @@ python3 scripts/validate_repository.py
 
 ## Evidence boundary
 
-A valid Baseline V3 workflow pre-seeds every regression and its focused model-visible acceptance test into one qualified composite broken root, then materializes one prompt at a time. Each prompt supplies one exact mechanical old-to-new edit command plus only its focused validation command; Beets uses the locked project environment and Terraform exports the pinned Go toolchain path explicitly. Seed patch files, controller scripts, and fixed parents remain outside the model-visible surface; final verification repeats only the commands and behavior disclosed in each prompt. Product-effect eligibility also requires parity with the pinned official Codex integration and positive treatment-assignment evidence; MCP configuration/listing alone is insufficient.
+A valid low-complexity workflow pre-seeds every regression and its focused model-visible acceptance test into one qualified composite broken root, then materializes one prompt at a time. Each prompt supplies one exact mechanical old-to-new edit command plus only its focused validation command; Beets uses the locked project environment and Terraform exports the pinned Go toolchain path explicitly. Seed patch files, controller scripts, and fixed parents remain outside the model-visible surface; final verification repeats only the commands and behavior disclosed in each prompt. Product-effect eligibility also requires parity with the pinned official Codex integration and positive treatment-assignment evidence; MCP configuration/listing alone is insufficient.
 
 Every active task must use causally related behavioral acceptance. Unrelated exact-source restoration guards are not valid complexity.
 
@@ -55,7 +55,14 @@ python3 scripts/run_sequential_workflow_matrix.py "$SEQUENCE_ID" --workflow-mode
 
 Current runnable treatment profiles: `artifact-ponytail-codex-plugin-v1`, `behavior-caveman-codex-skill-v1`, `codescope-codex-product-v1`, `headroom-default-codex`, `integrated-leanctx-codex-hybrid-v1`, `integrated-token-savior-codex-product-v2`, `retrieval-cartog-codex-product-v2`, `retrieval-codegraph-codex-mcp-v1`, `retrieval-graphify-codex-skill-v1`, `retrieval-jcodemunch-codex-mcp-v2`, `retrieval-serena-codex-mcp-v1`, `retrieval-sigmap-codex-live-v1`, `swarmvault-codex-product-v1`, `terminal-rtk-codex-instructions-v1`, `terminal-snip-codex-hook-v1`, `terminal-tokenjuice-codex-hook-v1`. Historical profiles marked `historical-profile` are occupied evidence identities and cannot be rerun in place.
 
-Treatment protocol freezing, preparation, and execution are machine-blocked for `beets-lifecycle-sequence-v0` (pilot trajectory review is incomplete or did not pass), `terraform-lifecycle-sequence-v0` (pilot trajectory review is incomplete or did not pass). The designated pilot identities are occupied by immutable attempt evidence and their completed audits. Failed classifications are permanent for this generation; correcting a lane requires a new generation and new identities.
+Treatment protocol freezing, preparation, and execution are machine-blocked for `beets-lifecycle-sequence-v0` (pilot audit is absent: sources/evaluations/audits/baseline-v4-pilot-zero-mistake.json), `terraform-lifecycle-sequence-v0` (pilot audit is absent: sources/evaluations/audits/baseline-v4-pilot-zero-mistake.json). Paid pilot execution is not authorized for `beets-lifecycle-sequence-v0`, `terraform-lifecycle-sequence-v0`; provider-capable commands are suppressed until the explicit authorization authority is updated.
+
+Provider-free preparation remains available for lanes without a reusable operational baseline; paid commands are listed only for unoccupied pilot identities:
+
+```bash
+python3 scripts/run_sequential_workflow_matrix.py beets-lifecycle-sequence-v0 --workflow-model-condition-id codex-openai-gpt-5-6-sol-high --workflow-model gpt-5.6-sol --workflow-reasoning-effort high --prepare-only
+python3 scripts/run_sequential_workflow_matrix.py terraform-lifecycle-sequence-v0 --workflow-model-condition-id codex-openai-gpt-5-6-sol-high --workflow-model gpt-5.6-sol --workflow-reasoning-effort high --prepare-only
+```
 
 Reusable, zero-incident-audited baselines exist for `fastify-lifecycle-sequence-v0` (r0). No current treatment protocol is frozen, so no paid treatment command is published. Choose one compatible profile, freeze and validate its protocol provider-free, certify the resulting exact tree, and then execute the rendered dry-run verbatim before requesting paid execution:
 
@@ -69,7 +76,7 @@ python3 scripts/run_sequential_workflow_matrix.py "$SEQUENCE_ID" --treatment-pro
 
 Earlier active-default baseline pools are retained but are not reusable for the current contract generation: `beets-lifecycle-sequence-v0` pool `b440da225a3a` (r0, r1, r2, r3), `fastify-lifecycle-sequence-v0` pool `769d40697529` (r0, r1, r2, r3), `terraform-lifecycle-sequence-v0` pool `ded8609b4172` (r0, r1, r2, r3).
 
-Non-default model-comparison baselines are tracked separately: `beets-lifecycle-sequence-v0` under `codex-openai-gpt-5-6-sol-high` pool `8a88427b8c16` (r0), `beets-lifecycle-sequence-v0` under `codex-openai-gpt-5-6-sol-high` pool `be9d43b94b02` (r0, r1, r2), `fastify-lifecycle-sequence-v0` under `codex-openai-gpt-5-6-sol-high` pool `bd9fd65385d9` (r0, r1, r2), `fastify-lifecycle-sequence-v0` under `codex-openai-gpt-5-6-sol-high` pool `e3f3816c31d8` (r0), `terraform-lifecycle-sequence-v0` under `codex-openai-gpt-5-6-sol-high` pool `6dbcb1227f80` (r0), `terraform-lifecycle-sequence-v0` under `codex-openai-gpt-5-6-sol-high` pool `ca21cbff5ed5` (r0, r1, r2). They do not satisfy active-default baseline requirements or define treatment-pair reuse.
+Non-default model-comparison baselines are tracked separately: `beets-lifecycle-sequence-v0` under `codex-openai-gpt-5-6-sol-high` pool `82943cffbb9a` (r0), `beets-lifecycle-sequence-v0` under `codex-openai-gpt-5-6-sol-high` pool `8a88427b8c16` (r0), `beets-lifecycle-sequence-v0` under `codex-openai-gpt-5-6-sol-high` pool `be9d43b94b02` (r0, r1, r2), `fastify-lifecycle-sequence-v0` under `codex-openai-gpt-5-6-sol-high` pool `bd9fd65385d9` (r0, r1, r2), `fastify-lifecycle-sequence-v0` under `codex-openai-gpt-5-6-sol-high` pool `e3f3816c31d8` (r0), `terraform-lifecycle-sequence-v0` under `codex-openai-gpt-5-6-sol-high` pool `5caa11b3fa2b` (r0), `terraform-lifecycle-sequence-v0` under `codex-openai-gpt-5-6-sol-high` pool `6dbcb1227f80` (r0), `terraform-lifecycle-sequence-v0` under `codex-openai-gpt-5-6-sol-high` pool `ca21cbff5ed5` (r0, r1, r2). They do not satisfy active-default baseline requirements or define treatment-pair reuse.
 
 Retain the first operationally valid provider sample for each protocol and replicate. Stop only when a sample is fixture-invalid or operationally incomplete; verifier and review outcomes are diagnostic.
 
@@ -95,9 +102,9 @@ Retain the first operationally valid provider sample for each protocol and repli
 
 | Order | Task | Prompt | Verifier |
 |---:|---|---|---|
-| 1 | `beets-lifecycle-feature-v0` | `sources/evaluations/fixtures/medium/beetbox-beets/task-generations/baseline-v3/beets-lifecycle-feature-v0/agent-prompt.txt` | `sources/evaluations/fixtures/medium/beetbox-beets/task-generations/baseline-v3/beets-lifecycle-feature-v0/verify.sh` |
-| 2 | `beets-lifecycle-refactor-v0` | `sources/evaluations/fixtures/medium/beetbox-beets/task-generations/baseline-v3/beets-lifecycle-refactor-v0/agent-prompt.txt` | `sources/evaluations/fixtures/medium/beetbox-beets/task-generations/baseline-v3/beets-lifecycle-refactor-v0/verify.sh` |
-| 3 | `beets-lifecycle-review-v0` | `sources/evaluations/fixtures/medium/beetbox-beets/task-generations/baseline-v3/beets-lifecycle-review-v0/agent-prompt.txt` | `sources/evaluations/fixtures/medium/beetbox-beets/task-generations/baseline-v3/beets-lifecycle-review-v0/verify.sh` |
+| 1 | `beets-lifecycle-feature-v0` | `sources/evaluations/fixtures/medium/beetbox-beets/task-generations/baseline-v4/beets-lifecycle-feature-v0/agent-prompt.txt` | `sources/evaluations/fixtures/medium/beetbox-beets/task-generations/baseline-v4/beets-lifecycle-feature-v0/verify.sh` |
+| 2 | `beets-lifecycle-refactor-v0` | `sources/evaluations/fixtures/medium/beetbox-beets/task-generations/baseline-v4/beets-lifecycle-refactor-v0/agent-prompt.txt` | `sources/evaluations/fixtures/medium/beetbox-beets/task-generations/baseline-v4/beets-lifecycle-refactor-v0/verify.sh` |
+| 3 | `beets-lifecycle-review-v0` | `sources/evaluations/fixtures/medium/beetbox-beets/task-generations/baseline-v4/beets-lifecycle-review-v0/agent-prompt.txt` | `sources/evaluations/fixtures/medium/beetbox-beets/task-generations/baseline-v4/beets-lifecycle-review-v0/verify.sh` |
 
 ### `terraform-lifecycle-sequence-v0`
 
@@ -107,9 +114,9 @@ Retain the first operationally valid provider sample for each protocol and repli
 
 | Order | Task | Prompt | Verifier |
 |---:|---|---|---|
-| 1 | `terraform-lifecycle-feature-v0` | `sources/evaluations/fixtures/large/hashicorp-terraform/task-generations/baseline-v3/terraform-lifecycle-feature-v0/agent-prompt.txt` | `sources/evaluations/fixtures/large/hashicorp-terraform/task-generations/baseline-v3/terraform-lifecycle-feature-v0/verify.sh` |
-| 2 | `terraform-lifecycle-refactor-v0` | `sources/evaluations/fixtures/large/hashicorp-terraform/task-generations/baseline-v3/terraform-lifecycle-refactor-v0/agent-prompt.txt` | `sources/evaluations/fixtures/large/hashicorp-terraform/task-generations/baseline-v3/terraform-lifecycle-refactor-v0/verify.sh` |
-| 3 | `terraform-lifecycle-review-v0` | `sources/evaluations/fixtures/large/hashicorp-terraform/task-generations/baseline-v3/terraform-lifecycle-review-v0/agent-prompt.txt` | `sources/evaluations/fixtures/large/hashicorp-terraform/task-generations/baseline-v3/terraform-lifecycle-review-v0/verify.sh` |
+| 1 | `terraform-lifecycle-feature-v0` | `sources/evaluations/fixtures/large/hashicorp-terraform/task-generations/baseline-v4/terraform-lifecycle-feature-v0/agent-prompt.txt` | `sources/evaluations/fixtures/large/hashicorp-terraform/task-generations/baseline-v4/terraform-lifecycle-feature-v0/verify.sh` |
+| 2 | `terraform-lifecycle-refactor-v0` | `sources/evaluations/fixtures/large/hashicorp-terraform/task-generations/baseline-v4/terraform-lifecycle-refactor-v0/agent-prompt.txt` | `sources/evaluations/fixtures/large/hashicorp-terraform/task-generations/baseline-v4/terraform-lifecycle-refactor-v0/verify.sh` |
+| 3 | `terraform-lifecycle-review-v0` | `sources/evaluations/fixtures/large/hashicorp-terraform/task-generations/baseline-v4/terraform-lifecycle-review-v0/agent-prompt.txt` | `sources/evaluations/fixtures/large/hashicorp-terraform/task-generations/baseline-v4/terraform-lifecycle-review-v0/verify.sh` |
 
 ## Artifact contract
 

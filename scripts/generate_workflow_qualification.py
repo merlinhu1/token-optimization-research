@@ -354,9 +354,41 @@ def main() -> int:
         )
 
     cumulative = all(call(["bash", str((ROOT / task["verifier_command"]).resolve())], checkout, env=qualification_env) == 0 for task in ordered)
+    aggregate_verifier_exit = 1
+    aggregate_verifier_task_exits: list[int] = []
+    with tempfile.TemporaryDirectory(prefix="workflow-aggregate-qualification-") as temp:
+        aggregate_root = Path(temp)
+        aggregate_project = aggregate_root / "project"
+        aggregate_project.mkdir()
+        (aggregate_project / "repo").symlink_to(checkout.resolve(), target_is_directory=True)
+        for task in ordered:
+            source_task_dir = (ROOT / task["prompt_path"]).parent
+            shutil.copytree(source_task_dir, runner.task_dir(aggregate_project, int(task["order"])))
+        aggregate = runner.write_verifier(sequence, aggregate_root, aggregate_project)
+        aggregate_env = dict(os.environ)
+        aggregate_env.pop("WORKFLOW_REPO", None)
+        aggregate_result = subprocess.run(
+            ["bash", str(aggregate)],
+            cwd=checkout,
+            env=aggregate_env,
+            text=True,
+            capture_output=True,
+            check=False,
+            timeout=300,
+        )
+        aggregate_verifier_exit = aggregate_result.returncode
+        for line in aggregate_result.stdout.splitlines():
+            if line.startswith(f"{runner.TASK_VERIFIER_RESULT_PREFIX}\t"):
+                parts = line.split("\t")
+                if len(parts) == 4 and parts[3].lstrip("-").isdigit():
+                    aggregate_verifier_task_exits.append(int(parts[3]))
+    aggregate_verifier_environment_passed = (
+        aggregate_verifier_exit == 0
+        and aggregate_verifier_task_exits == [0] * len(ordered)
+    )
     unmerged = not out(["git", "diff", "--name-only", "--diff-filter=U"], checkout)
     hidden = all(not (checkout / path).exists() for path in concealed_paths(sequence))
-    is_baseline_v2 = sequence.get("task_family_generation") in {"baseline-v2", "baseline-v3"}
+    is_baseline_v2 = sequence.get("task_family_generation") in {"baseline-v2", "baseline-v3", "baseline-v4"}
     undisclosed_inline_markers = ("<<'NODE'", '<<"NODE"', "<<'PY'", '<<"PY"', "<<'TS'", '<<"TS"', "workflow-hidden")
     all_acceptance_behavior_model_visible = all(
         task.get("acceptance_visibility") == "model-visible-complete"
@@ -375,6 +407,7 @@ def main() -> int:
     controller_hidden = (ROOT / ordered[0]["prompt_path"]).parent.parents[1] / "controller-hidden"
     payload = {
         "schema_version": 4,
+        "task_family_generation": sequence.get("task_family_generation"),
         "controller_hidden_sha256": validation.task_directory_sha256(controller_hidden) if controller_hidden.is_dir() else None,
         "qualified_on": sequence["qualification_date"],
         "snapshot": expected_commit,
@@ -398,6 +431,9 @@ def main() -> int:
         "seeded_verifier_nonzero": seeded_fail,
         "fixed_verifier_zero": fixed_pass,
         "full_fixed_cumulative_verifier_zero": cumulative,
+        "aggregate_verifier_exit": aggregate_verifier_exit,
+        "aggregate_verifier_task_exits": aggregate_verifier_task_exits,
+        "aggregate_verifier_environment_passed": aggregate_verifier_environment_passed,
 
         "no_unmerged_paths": unmerged,
         "no_model_visible_acceptance_assets": False if is_baseline_v2 else hidden,
@@ -423,6 +459,8 @@ def main() -> int:
     required = ("seeded_verifier_nonzero", "fixed_verifier_zero", "full_fixed_cumulative_verifier_zero", "composite_seed_merge_zero", "composite_seeded_verifiers_nonzero", "no_unmerged_paths", "all_expected_model_concealment_declared")
     if is_baseline_v2:
         required += ("no_model_concealed_acceptance_assets", "all_acceptance_behavior_model_visible", "model_visible_acceptance_assets_match_verifier_copies")
+        if sequence.get("task_family_generation") == "baseline-v4":
+            required += ("aggregate_verifier_environment_passed",)
         if payload["acceptance_visibility"] != "model-visible-complete":
             return 1
     else:

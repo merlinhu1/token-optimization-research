@@ -10,6 +10,8 @@ The prospective r3 natural-use replication retains TokenJuice, SigMap, Ponytail,
 
 The r3 campaign used the original natural-use contracts. The later assisted-v1 Sol/`high` baseline completed with 7,718,469 provider tokens and 9/9 verifier passes, but post-run trajectory/source review found substantive corrections and one surviving hidden-contract regression. The authorized Baseline V2 pilot on 2026-07-22 spent 808,169 provider tokens but failed operational publication and retained no session. The later authorized Baseline V3 pilot retained three first-valid controls totaling 236,151 provider tokens. Each model turn executed one prescribed command successfully, so all nine model-side focused checks passed and the resulting diffs match the mechanical task contracts. The repeated final verifier passed Fastify 3/3 but reported Beets and Terraform 0/3 because its wrapper did not export `WORKFLOW_REPO`; two stale post-publication repository-test assumptions separately caused the initial registry transaction to roll back. Those assertions were fixed and the exact three compact bundles were recovered without provider reruns. Pilot identities remain occupied, and treatment eligibility follows the per-sequence independent zero-incident decision.
 
+Baseline V4 now supplies separate provider-free-qualified Beets and Terraform identities without changing task difficulty. Six literal rehearsals, two exact aggregate-wrapper rehearsals, and the retained serial prepare-only matrix pass with zero provider calls. Fastify remains on V3. The V4 pilot identities are unoccupied, paid execution is not authorized, and treatment is locked until separately authorized provider samples pass independent zero-incident audit.
+
 ## Production evidence now retained
 
 1. Every accepted session is bound to a frozen lifecycle-v0 protocol and compatible baseline pool.
@@ -25,11 +27,11 @@ The r3 campaign used the original natural-use contracts. The later assisted-v1 S
 Do not rerun occupied natural-use samples to replace unfavorable, high-variance, or near-neutral results. New provider work must be prospective, separately indexed, and explicitly authorized.
 
 1. Keep failed Baseline V2 and non-passing Baseline V3 pilot identities immutable; never rerun them to replace diagnostic outcomes.
-2. Use the independent V3 zero-incident audit as the sole per-sequence treatment gate.
-3. Correct the final-verifier environment contract only under a new frozen task-family/protocol identity before any future Beets or Terraform control attempt.
+2. Use the independent V3 zero-incident audit for Fastify and a future independent V4 zero-incident audit for Beets and Terraform as the sole per-sequence treatment gates.
+3. Preserve the provider-free-qualified V4 task, qualification, protocol, and prepare identities exactly; require explicit authorization before occupying either V4 pilot identity.
 4. Give any authorized treatment and its compatible control identical task-assistance bytes while preserving product-authored treatment guidance and forbidding evaluator-authored tool steering.
 5. Retain the three-task persistent-session structure and first-valid-sample policy.
 6. Keep treatment telemetry observational; do not force tool uptake.
 7. Preregister any future stack under a new identity.
 
-Natural-use, assisted-v1, Baseline V2, and Baseline V3 answer different questions and are not exchangeable populations. Baseline V2 has one failed, unpublished provider-backed attempt. Baseline V3 has three retained controls under its exact contract but no treatment result; its per-sequence zero-incident audit controls any subsequent treatment eligibility.
+Natural-use, assisted-v1, Baseline V2, Baseline V3, and Baseline V4 answer different questions and are not exchangeable populations. Baseline V2 has one failed, unpublished provider-backed attempt. Baseline V3 has three retained controls under its exact contract but no treatment result; only Fastify passed its per-sequence zero-incident gate. Baseline V4 has provider-free preparation evidence for Beets and Terraform but no provider result.
