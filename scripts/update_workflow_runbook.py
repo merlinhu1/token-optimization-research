@@ -240,6 +240,28 @@ def render() -> str:
                 f"```bash\n{command_block}\n```"
             )
         if retained_baselines:
+            replication_blocks = []
+            for replicate_index in (1, 2):
+                runnable = [
+                    sequence
+                    for sequence in retained_baselines
+                    if replicate_index not in reusable_baseline_replicates.get(sequence["id"], [])
+                    and workflow.baseline_v2_pilot_run_gate(sequence, ROOT, replicate_index)[0]
+                ]
+                if not runnable:
+                    continue
+                sequence_args = " ".join(sequence["id"] for sequence in runnable)
+                flags = sequence_model_flags(runnable[0])
+                base = (
+                    f"python3 scripts/run_sequential_workflow_matrix.py {sequence_args} "
+                    f"--replicate-index {replicate_index} --max-parallel 1 {flags}"
+                )
+                replication_blocks.extend([base + " --prepare-only", base])
+            if replication_blocks:
+                chunks.append(
+                    "The owner-authorized current-control r1/r2 replication campaign is serialized. Commands are listed only for unoccupied identities; each paid command reserves its immutable receipts before provider work:\n\n"
+                    f"```bash\n{'\n'.join(replication_blocks)}\n```"
+                )
             unlocked_baselines = []
             for sequence in retained_baselines:
                 gate_passed, gate_reason = workflow.baseline_v2_treatment_gate(sequence, ROOT)
