@@ -1690,11 +1690,11 @@
       },
       "interpretation": {
         "accepted_for_execution": true,
-        "accepted_for_objective": true,
-        "claim_status": "accepted-baseline-ready-for-paired-treatment",
+        "accepted_for_objective": false,
+        "claim_status": "excluded-invalid-single-task-estimand",
         "comparison_baseline_session_id": "",
-        "exclusion_reason": "",
-        "notes": "Reviewed baseline is reusable for its frozen Beets v3 token-savings pool; this acceptance does not generalize to retired harder Beets lanes.",
+        "exclusion_reason": "violates-multi-task-warm-sequential-estimand",
+        "notes": "Execution and quality evidence remain valid for the single Tidal task, but this session is excluded from token-savings comparisons because it contains only one task.",
         "scope_note": "Full warm-state lane; all regressions are preseeded, prompts are disclosed sequentially, and concealed verification runs only after the final prompt."
       }
     },
@@ -2062,11 +2062,11 @@
       },
       "interpretation": {
         "accepted_for_execution": true,
-        "accepted_for_objective": true,
-        "claim_status": "accepted-baseline-ready-for-paired-treatment",
+        "accepted_for_objective": false,
+        "claim_status": "superseded-by-multitask-contract-correction",
         "comparison_baseline_session_id": "",
-        "exclusion_reason": "",
-        "notes": "Reviewed baseline is reusable for its frozen Terraform v2 token-savings pool; this acceptance does not generalize to retired five-task Terraform stress lanes.",
+        "exclusion_reason": "baseline-pool-fingerprint-superseded",
+        "notes": "Execution and quality evidence remain valid for Terraform v2, but the validator/protocol fingerprint changed with the multi-task contract correction; rerun before paired treatment.",
         "scope_note": "Full warm-state lane; all regressions are preseeded, prompts are disclosed sequentially, and concealed verification runs only after the final prompt."
       }
     }
