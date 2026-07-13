@@ -2864,6 +2864,22 @@ raise SystemExit(1)
                 errors = self.production_v3_errors(candidate)
                 self.assertTrue(any("schema_version must be 1 or 2" in error for error in errors), (malformed, errors))
                 self.assertFalse(validate_repository.requires_structured_task_contract(candidate))
+        for malformed in (False, True, 0.0, "0", None):
+            errors: list[str] = []
+            validate_repository.validate_workflow_sessions(
+                {
+                    "schema_version": malformed,
+                    "primary_metric": "cumulative provider-reported workflow tokens",
+                    "sessions": [],
+                },
+                set(),
+                {"fixtures": []},
+                {},
+                set(),
+                set(),
+                errors,
+            )
+            self.assertTrue(any("workflow-sessions.json must use schema_version 1" in error for error in errors), (malformed, errors))
 
     def test_repository_validator_rejects_noncanonical_compact_evidence(self) -> None:
         with tempfile.TemporaryDirectory(dir=ROOT) as tmp:
@@ -5301,6 +5317,25 @@ class BaselineV3LowComplexityContractTest(unittest.TestCase):
         self.assertEqual(fastify["task_family_generation"], "baseline-v3")
         self.assertEqual(fastify["readiness_blockers"], [])
         self.assertEqual(runner.baseline_v2_treatment_gate(fastify, ROOT)[0], True)
+        fixtures = {
+            fixture["id"]: fixture
+            for fixture in json.loads((ROOT / "data/repository-fixtures.json").read_text())["fixtures"]
+        }
+        fastify_fixture = fixtures["medium-fastify-fastify"]
+        self.assertEqual(fastify_fixture["blockers"], [])
+        self.assertEqual(fastify_fixture["current_task_family"]["provider_pilot_status"], "completed-passed-zero-incident")
+        self.assertNotIn(
+            "blocked-baseline-v3-pilot",
+            {lane.get("status") for lane in fastify_fixture["future_evaluation_lanes"]},
+        )
+        for relative in (
+            "docs/evaluations/design/token-and-quality-policy.md",
+            "docs/evaluations/design/workflow-model.md",
+            "docs/evaluations/operations/fixture-guide.md",
+        ):
+            text = (ROOT / relative).read_text()
+            self.assertIn("active Baseline V3/V4", text, relative)
+            self.assertNotIn("active Baseline V3 zero-mistake", text, relative)
         for sequence_id in ("beets-lifecycle-sequence-v0", "terraform-lifecycle-sequence-v0"):
             sequence = sequences[sequence_id]
             blockers = " ".join(sequence["readiness_blockers"])
@@ -5513,11 +5548,17 @@ class BaselineV3LowComplexityContractTest(unittest.TestCase):
             external_authority = authority.parent / f"{authority.name}-external-authorization.json"
             external_authority.write_text(json.dumps({"schema_version": 1, "generation": "baseline-v4", "paid_pilot_authorized": True}))
             self.addCleanup(external_authority.unlink, missing_ok=True)
-            for escaped in (str(external_authority), f"../{external_authority.name}"):
+            lexical_traversal = str(Path(original_authorization_path).parent / ".." / "audits" / Path(original_authorization_path).name)
+            for escaped in (
+                str(auth_path),
+                lexical_traversal,
+                str(external_authority),
+                f"../{external_authority.name}",
+            ):
                 sequence["mistake_gate"]["pilot_authorization_path"] = escaped
                 allowed, reason = runner.baseline_v2_pilot_run_gate(sequence, authority)
                 self.assertFalse(allowed)
-                self.assertIn("escapes authority root", reason)
+                self.assertIn("repository-relative path without traversal", reason)
             sequence["mistake_gate"]["pilot_authorization_path"] = original_authorization_path
             treatment_allowed, treatment_reason = runner.baseline_v2_treatment_gate(sequence, authority)
             self.assertFalse(treatment_allowed)
@@ -6034,6 +6075,15 @@ with tempfile.TemporaryDirectory(dir=runner.ROOT / 'sources/evaluations/protocol
                     session["schema_version"] = original
                 else:
                     session["replicate_index"] = original
+            for malformed in (False, True, 0.0, 1.0, 2.0, "0", None):
+                duplicate = copy.deepcopy(session)
+                duplicate["session_id"] = f"malformed-slot-{malformed!r}"
+                duplicate["replicate_index"] = malformed
+                registry_sessions.append(duplicate)
+                passed, reason = evaluate()
+                self.assertFalse(passed, (malformed, reason))
+                self.assertIn("malformed replicate_index", reason)
+                registry_sessions.pop()
             for malformed in (False, 0.0, "0", None, 1):
                 entry["observed_prohibited_operations"] = malformed
                 passed, reason = evaluate()

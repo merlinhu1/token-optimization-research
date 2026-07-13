@@ -1284,6 +1284,11 @@ def validate_workflow_task_sequences(sequence_doc: dict, fixture_doc: dict, erro
         for sequence in sequences
         if isinstance(sequence, dict)
     }
+    sequence_by_fixture = {
+        sequence.get("fixture_id"): sequence
+        for sequence in sequences
+        if isinstance(sequence, dict)
+    }
     for fixture in fixtures:
         generation = str(generation_by_fixture.get(fixture.get("id"), "baseline-v3"))
         generation_label = generation.replace("baseline-v", "Baseline V")
@@ -1292,8 +1297,26 @@ def validate_workflow_task_sequences(sequence_doc: dict, fixture_doc: dict, erro
             errors.append(
                 f"repository fixture {fixture.get('id')} current_task_family generation must match active sequence generation {generation}"
             )
+        sequence = sequence_by_fixture.get(fixture.get("id"))
+        treatment_ready, _treatment_reason = (
+            workflow.baseline_v2_treatment_gate(sequence, ROOT)
+            if isinstance(sequence, dict)
+            else (False, "missing active sequence")
+        )
         required_blocker = f"{generation_label} strongest-model provider pilot must complete with all eight required observed categories recorded as strict integer zero before treatment launch."
-        if required_blocker not in fixture.get("blockers", []):
+        blockers = fixture.get("blockers", [])
+        provider_pilot_status = current_family.get("provider_pilot_status") if isinstance(current_family, dict) else None
+        lane_statuses = {
+            lane.get("status")
+            for lane in fixture.get("future_evaluation_lanes", [])
+            if isinstance(lane, dict)
+        }
+        if treatment_ready:
+            if required_blocker in blockers or provider_pilot_status != "completed-passed-zero-incident":
+                errors.append(f"repository fixture {fixture.get('id')} must record its completed zero-incident {generation_label} pilot")
+            if f"blocked-{generation}-pilot" in lane_statuses:
+                errors.append(f"repository fixture {fixture.get('id')} treatment lanes must not remain blocked by its completed {generation_label} pilot")
+        elif required_blocker not in blockers or provider_pilot_status != "required":
             errors.append(f"repository fixture {fixture.get('id')} must state the complete strict eight-category {generation_label} blocker")
     sequence_ids: set[str] = set()
     for index, sequence in enumerate(sequences):
@@ -2168,7 +2191,7 @@ def validate_workflow_session_contract(session: dict, canonical_profile: dict | 
 
 
 def validate_workflow_sessions(session_doc: dict, sequence_ids: set[str], fixture_doc: dict, profiles_by_id: dict[str, dict], runtime_ids: set[str], model_condition_ids: set[str], errors: list[str]) -> None:
-    if session_doc.get("schema_version") != 1:
+    if type(session_doc.get("schema_version")) is not int or session_doc.get("schema_version") != 1:
         errors.append("data/workflow-sessions.json must use schema_version 1")
     if session_doc.get("primary_metric") != "cumulative provider-reported workflow tokens":
         errors.append("data/workflow-sessions.json primary_metric must be cumulative provider-reported workflow tokens")
