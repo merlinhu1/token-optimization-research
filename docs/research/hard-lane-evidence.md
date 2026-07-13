@@ -60,3 +60,12 @@ Post-hoc replay against prompt-aligned behavioral verifiers produced:
 | GPT-5.5, high | `baseline-fastify-20260713-p-d8a06f2ef78f-r0` | 5/5 | 5/5 | **5/5** | 50,112,674 | Invalid original protocol, but implementation succeeds under corrected acceptance; archived in Git |
 
 The previous 0/5 versus 0/5 condition comparison is withdrawn. The failed process exit reflected verifier-contract errors rather than five implementation failures. Current prompt-aligned fingerprints are `a9c642bc016a` for GPT-5.6 Luna xhigh and `109705c35eff` for GPT-5.5 high. Treatments must pair against a run from the same corrected frozen model condition and protocol fingerprint.
+
+Current corrected-protocol anchors:
+
+| Model condition | Session | Verified surfaces | Provider tokens | Status |
+|---|---|---:|---:|---|
+| GPT-5.6 Luna, xhigh | `baseline-fastify-20260713-p-a9c642bc016a-r0` | 5/5 | 64,598,189 | Accepted baseline after quality review (4/5) |
+| GPT-5.5, high | `baseline-fastify-20260713-p-109705c35eff-r0` | 4/5 | 45,449,446 | Primary-objective hard baseline; client-disconnect abort remains incorrect |
+
+The first Terraform and Beets `terminal-lowfat` exposure attempts completed their workflows but invoked Lowfat zero times. They are excluded from Lowfat tool-effectiveness evidence and removed from the canonical registry. The active Lowfat treatment protocol now uses preferred guidance and requires at least one model-initiated Lowfat command for tool-effectiveness acceptance.

@@ -111,7 +111,24 @@
         ],
         "claim_boundary": "Agent-declared completion is distinct from verifier-confirmed correctness.",
         "outperformance_rule": "A treatment outperforms the hard baseline when it improves verified correctness, or achieves the same verified-correctness result with fewer provider tokens; report both dimensions.",
-        "model_condition_baselines": [],
+        "model_condition_baselines": [
+          {
+            "model_condition_id": "codex-openai-gpt-5-6-luna-xhigh",
+            "session_id": "baseline-fastify-20260713-p-a9c642bc016a-r0",
+            "provider_tokens": 64598189,
+            "agent_declared_tasks": 5,
+            "verified_task_surfaces": 5,
+            "status": "accepted"
+          },
+          {
+            "model_condition_id": "codex-openai-gpt-5-5-high",
+            "session_id": "baseline-fastify-20260713-p-109705c35eff-r0",
+            "provider_tokens": 45449446,
+            "agent_declared_tasks": 5,
+            "verified_task_surfaces": 4,
+            "status": "primary-objective-hard-baseline"
+          }
+        ],
         "baseline_selection_rule": "Pair each tool treatment with a successful or hard baseline from the same prompt-aligned frozen model condition and protocol fingerprint.",
         "qualification_disposition": "Corrected prompt-aligned qualification current; prior exact-shape verifier protocols superseded."
       }
