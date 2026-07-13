@@ -28,7 +28,6 @@
       "readiness_blockers": [],
       "qualification_path": "sources/evaluations/fixtures/medium/fastify-fastify/qualification-composite-v5.json",
       "qualification_date": "2026-07-12",
-
       "fixture_id": "medium-fastify-fastify",
       "fixture_scale": "medium-project",
       "objective": "individual_tool_effectiveness",
@@ -177,13 +176,14 @@
     },
     {
       "id": "terraform-maintenance-sequence-v1",
-      "status": "active",
+      "status": "retired",
       "acceptance_design": "behavioral",
-      "scope": "production-primary",
-      "readiness_blockers": [],
+      "scope": "historical-stress",
+      "readiness_blockers": [
+        "Bare Luna xhigh v7 failed final cumulative verification; retained as a stress workload, not a token-savings comparison lane."
+      ],
       "qualification_path": "sources/evaluations/fixtures/large/hashicorp-terraform/qualification-composite-v5.json",
       "qualification_date": "2026-07-12",
-
       "fixture_id": "large-hashicorp-terraform",
       "fixture_scale": "large-project",
       "objective": "individual_tool_effectiveness",
@@ -281,14 +281,86 @@
       "complexity_bar": "Every task touches at least five production/type files and requires executable qualification on the pinned snapshot."
     },
     {
-      "id": "beets-maintenance-sequence-v1",
+      "id": "terraform-maintenance-sequence-v2",
       "status": "active",
       "acceptance_design": "behavioral",
       "scope": "production-primary",
       "readiness_blockers": [],
+      "qualification_path": "sources/evaluations/fixtures/large/hashicorp-terraform/qualification-composite-v6.json",
+      "qualification_date": "2026-07-13",
+      "fixture_id": "large-hashicorp-terraform",
+      "fixture_scale": "large-project",
+      "objective": "individual_tool_effectiveness",
+      "primary_metric": "cumulative provider-billed workflow tokens",
+      "reset_policy": "Reset once before the lane; preseed all regressions into one concealed composite root; preserve source, Git, tool, index, cache, generated config, memory, and agent state across prompts; run concealed functional verification once at the end.",
+      "conversion_note": "Three upstream-derived production regressions not implicated by the Luna xhigh v7 final failure coexist in one qualified composite broken root on the pinned snapshot.",
+      "initial_snapshot": {
+        "commit": "e02391ad384c9c38f1d7f40b853c0d2297348094",
+        "upstream": "https://github.com/hashicorp/terraform.git",
+        "dependency_lockfiles": []
+      },
+      "tasks": [
+        {
+          "id": "terraform-161ffe-tracing-context-regression",
+          "order": 1,
+          "prompt_path": "sources/evaluations/fixtures/large/hashicorp-terraform/tasks/terraform-161ffe-tracing-context-regression/agent-prompt.txt",
+          "verifier_command": "sources/evaluations/fixtures/large/hashicorp-terraform/tasks/terraform-161ffe-tracing-context-regression/verify.sh",
+          "upstream_test_paths": [
+            "internal/terraform/context_apply_policy_test.go"
+          ],
+          "compatibility_rebased_test_paths": [],
+          "model_concealed_paths": [
+            "internal/terraform/context_apply_policy_test.go"
+          ]
+        },
+        {
+          "id": "terraform-520378-computed-block-capabilities-regression",
+          "order": 2,
+          "prompt_path": "sources/evaluations/fixtures/large/hashicorp-terraform/tasks/terraform-520378-computed-block-capabilities-regression/agent-prompt.txt",
+          "verifier_command": "sources/evaluations/fixtures/large/hashicorp-terraform/tasks/terraform-520378-computed-block-capabilities-regression/verify.sh",
+          "upstream_test_paths": [
+            "internal/terraform/context_plan_test.go"
+          ],
+          "compatibility_rebased_test_paths": [],
+          "model_concealed_paths": [
+            "internal/terraform/context_plan_test.go"
+          ]
+        },
+        {
+          "id": "terraform-9ae470-objchange-validation-regression",
+          "order": 3,
+          "prompt_path": "sources/evaluations/fixtures/large/hashicorp-terraform/tasks/terraform-9ae470-objchange-validation-regression/agent-prompt.txt",
+          "verifier_command": "sources/evaluations/fixtures/large/hashicorp-terraform/tasks/terraform-9ae470-objchange-validation-regression/verify.sh",
+          "upstream_test_paths": [
+            "internal/backend/backendrun/unparsed_value_test.go",
+            "internal/command/init2_test.go",
+            "internal/plans/objchange/compatible_test.go",
+            "internal/plans/objchange/plan_valid_test.go"
+          ],
+          "compatibility_rebased_test_paths": [],
+          "model_concealed_paths": [
+            "internal/backend/backendrun/unparsed_value_test.go",
+            "internal/command/init2_test.go",
+            "internal/plans/objchange/compatible_test.go",
+            "internal/plans/objchange/plan_valid_test.go"
+          ]
+        }
+      ],
+      "seed_patch_policy": "Controller merges every qualified regression into one composite broken start before provider execution; prompts are disclosed sequentially, acceptance assets remain controller-only, and concealed functional verification runs after the final prompt.",
+      "complexity_note": "Each task changes only causally related production/type files.",
+      "complexity_bar": "Three non-trivial cross-file production repairs with executable concealed qualification on the pinned snapshot.",
+      "selection_rationale": "Token-savings comparison lane selected before treatment from v7 bare-baseline failure evidence: retain tracing context, computed-block capabilities, and variable parsing, whose surfaces were not reported as remaining blockers; exclude workspace recovery and query-hook signature migrations that prevented baseline acceptance."
+    },
+    {
+      "id": "beets-maintenance-sequence-v1",
+      "status": "retired",
+      "acceptance_design": "behavioral",
+      "scope": "historical-stress",
+      "readiness_blockers": [
+        "Bare Luna xhigh v7 failed final cumulative verification; retained as a stress workload, not a token-savings comparison lane."
+      ],
       "qualification_path": "sources/evaluations/fixtures/medium/beetbox-beets/qualification-composite-v5.json",
       "qualification_date": "2026-07-12",
-
       "fixture_id": "medium-beetbox-beets",
       "fixture_scale": "medium-project",
       "objective": "individual_tool_effectiveness",
@@ -392,6 +464,104 @@
       "seed_patch_policy": "Controller merges every qualified regression into one composite broken start before provider execution; prompts are disclosed sequentially, acceptance assets remain controller-only, and concealed functional verification runs after the final prompt.",
       "complexity_note": "Each task changes only causally related production/type files.",
       "complexity_bar": "Every task touches at least five production/type files and requires executable qualification on the pinned snapshot."
+    },
+    {
+      "id": "beets-maintenance-sequence-v2",
+      "status": "active",
+      "acceptance_design": "behavioral",
+      "scope": "production-primary",
+      "readiness_blockers": [],
+      "qualification_path": "sources/evaluations/fixtures/medium/beetbox-beets/qualification-composite-v6.json",
+      "qualification_date": "2026-07-13",
+      "fixture_id": "medium-beetbox-beets",
+      "fixture_scale": "medium-project",
+      "objective": "individual_tool_effectiveness",
+      "primary_metric": "cumulative provider-billed workflow tokens",
+      "reset_policy": "Reset once before the lane; preseed all regressions into one concealed composite root; preserve source, Git, tool, index, cache, generated config, memory, and agent state across prompts; run concealed functional verification once at the end.",
+      "conversion_note": "Four upstream-derived production regressions whose concealed checks passed in the Luna xhigh v7 run coexist in one qualified composite broken root on the pinned snapshot.",
+      "initial_snapshot": {
+        "commit": "8ddae794d30e9984be904f80459614155c6592d9",
+        "upstream": "https://github.com/beetbox/beets.git",
+        "dependency_lockfiles": []
+      },
+      "tasks": [
+        {
+          "id": "beets-multivalue-metadata-regression",
+          "order": 1,
+          "prompt_path": "sources/evaluations/fixtures/medium/beetbox-beets/tasks/beets-multivalue-metadata-regression/agent-prompt.txt",
+          "verifier_command": "sources/evaluations/fixtures/medium/beetbox-beets/tasks/beets-multivalue-metadata-regression/verify.sh",
+          "upstream_test_paths": [
+            "tasks/beets-multivalue-metadata-regression/verify.sh",
+            "test/autotag/test_hooks.py",
+            "test/test_library.py",
+            "test/ui/commands/test_modify.py"
+          ],
+          "compatibility_rebased_test_paths": [],
+          "model_concealed_paths": [
+            "tasks/beets-multivalue-metadata-regression/verify.sh",
+            "test/autotag/test_hooks.py",
+            "test/test_library.py",
+            "test/ui/commands/test_modify.py"
+          ]
+        },
+        {
+          "id": "beets-path-format-config-regression",
+          "order": 2,
+          "prompt_path": "sources/evaluations/fixtures/medium/beetbox-beets/tasks/beets-path-format-config-regression/agent-prompt.txt",
+          "verifier_command": "sources/evaluations/fixtures/medium/beetbox-beets/tasks/beets-path-format-config-regression/verify.sh",
+          "upstream_test_paths": [
+            "tasks/beets-path-format-config-regression/verify.sh",
+            "test/test_library.py",
+            "test/ui/test_ui.py",
+            "test/util/test_pathformats.py"
+          ],
+          "compatibility_rebased_test_paths": [],
+          "model_concealed_paths": [
+            "tasks/beets-path-format-config-regression/verify.sh",
+            "test/test_library.py",
+            "test/ui/test_ui.py",
+            "test/util/test_pathformats.py"
+          ]
+        },
+        {
+          "id": "beets-relative-path-portability-regression",
+          "order": 3,
+          "prompt_path": "sources/evaluations/fixtures/medium/beetbox-beets/tasks/beets-relative-path-portability-regression/agent-prompt.txt",
+          "verifier_command": "sources/evaluations/fixtures/medium/beetbox-beets/tasks/beets-relative-path-portability-regression/verify.sh",
+          "upstream_test_paths": [
+            "tasks/beets-relative-path-portability-regression/verify.sh",
+            "test/dbcore/test_query.py",
+            "test/library/test_migrations.py",
+            "test/test_library.py"
+          ],
+          "compatibility_rebased_test_paths": [],
+          "model_concealed_paths": [
+            "tasks/beets-relative-path-portability-regression/verify.sh",
+            "test/dbcore/test_query.py",
+            "test/library/test_migrations.py",
+            "test/test_library.py"
+          ]
+        },
+        {
+          "id": "beets-tidal-metadata-sync-regression",
+          "order": 4,
+          "prompt_path": "sources/evaluations/fixtures/medium/beetbox-beets/tasks/beets-tidal-metadata-sync-regression/agent-prompt.txt",
+          "verifier_command": "sources/evaluations/fixtures/medium/beetbox-beets/tasks/beets-tidal-metadata-sync-regression/verify.sh",
+          "upstream_test_paths": [
+            "tasks/beets-tidal-metadata-sync-regression/verify.sh",
+            "test/plugins/test_tidal.py"
+          ],
+          "compatibility_rebased_test_paths": [],
+          "model_concealed_paths": [
+            "tasks/beets-tidal-metadata-sync-regression/verify.sh",
+            "test/plugins/test_tidal.py"
+          ]
+        }
+      ],
+      "seed_patch_policy": "Controller merges every qualified regression into one composite broken start before provider execution; prompts are disclosed sequentially, acceptance assets remain controller-only, and concealed functional verification runs after the final prompt.",
+      "complexity_note": "Each task changes only causally related production/type files.",
+      "complexity_bar": "Four non-trivial production repairs with executable concealed qualification on the pinned snapshot.",
+      "selection_rationale": "Token-savings comparison lane selected before treatment from v7 bare-baseline evidence: retain multivalue metadata, path formatting, relative-path portability, and Tidal synchronization; exclude duplicate-action resolution, which failed despite an explicit prompt."
     }
   ]
 }
