@@ -3448,6 +3448,31 @@ class ModelConditionLauncherContractTest(unittest.TestCase):
 
 
 class MatrixLifecycleContractTest(unittest.TestCase):
+    def test_serial_lane_execution_is_fail_stop_and_does_not_prequeue(self) -> None:
+        jobs = [("fastify", "baseline"), ("beets", "baseline"), ("terraform", "baseline")]
+        calls: list[tuple[str, str]] = []
+
+        def run(job: tuple[str, str]) -> dict[str, Any]:
+            calls.append(job)
+            if job[0] == "beets":
+                raise FileNotFoundError("unit pre-provider lane failure")
+            return {"lane_id": job[0], "exit_code": 0}
+
+        with self.assertRaisesRegex(FileNotFoundError, "pre-provider lane failure"):
+            matrix.execute_lane_jobs(jobs, 1, run)
+        self.assertEqual(calls, jobs[:2])
+
+        calls.clear()
+
+        def return_nonzero(job: tuple[str, str]) -> dict[str, Any]:
+            calls.append(job)
+            return {"lane_id": job[0], "exit_code": 1 if job[0] == "beets" else 0}
+
+        results = matrix.execute_lane_jobs(jobs, 1, return_nonzero)
+        self.assertEqual(calls, jobs[:2])
+        self.assertEqual([item["exit_code"] for item in results], [0, 1])
+        self.assertEqual(matrix.execute_lane_jobs([], 3, return_nonzero), [])
+
     def test_protected_test_restore_recovers_staged_deletion_from_head(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
@@ -4814,6 +4839,7 @@ class BaselineV3LowComplexityContractTest(unittest.TestCase):
             lane_id = matrix.safe_name(f"{sequence_id}--{profile_id}")
             lane_dir = run_root / lane_id
             session_id = "interrupted-paid-session"
+            reservation_seen = False
 
             def prepare_checkout(_source: Path, checkout: Path) -> None:
                 (checkout / "data").mkdir(parents=True)
@@ -4824,8 +4850,12 @@ class BaselineV3LowComplexityContractTest(unittest.TestCase):
                     "baseline_pool": {"protocol_fingerprint": "unit-pool"},
                     "selected_execution": {},
                 }))
+                # Simulate external scratch reclamation during a long trusted clone.
+                shutil.rmtree(lane_dir / "logs")
+                shutil.rmtree(lane_dir / "tmp")
 
             def interrupt_after_evidence(*_args: Any, **kwargs: Any) -> subprocess.CompletedProcess[str]:
+                self.assertTrue(reservation_seen)
                 self.assertTrue((lane_dir / matrix.LANE_CLEANUP_PROHIBITION_SENTINEL).is_file())
                 checkout = Path(kwargs["cwd"])
                 evidence = checkout / matrix.WORKFLOW_ARTIFACT_ROOT / session_id
@@ -4833,11 +4863,18 @@ class BaselineV3LowComplexityContractTest(unittest.TestCase):
                 (evidence / "run.json").write_text("{}\n")
                 raise KeyboardInterrupt("unit interrupt after evidence")
 
+            def reserve_after_log_open(*_args: Any, **_kwargs: Any) -> None:
+                nonlocal reservation_seen
+                self.assertTrue((lane_dir / "logs/lane.log").is_file())
+                reservation_seen = True
+
             with (
                 mock.patch.object(matrix, "ROOT", root),
                 mock.patch.object(matrix, "clone_published_checkout", side_effect=lambda destination, _commit: prepare_checkout(root, destination)),
                 mock.patch.object(matrix, "find_protocol", side_effect=lambda checkout, *_: checkout / "protocol.json"),
                 mock.patch.object(matrix, "workflow_lane_command", return_value=["unit-child"]),
+                mock.patch.object(matrix.workflow, "load_sequence", return_value={"task_family_generation": "baseline-v3"}),
+                mock.patch.object(matrix.workflow, "reserve_baseline_pilot_attempt", side_effect=reserve_after_log_open),
                 mock.patch.object(matrix.subprocess, "run", side_effect=interrupt_after_evidence),
             ):
                 with self.assertRaises(KeyboardInterrupt):
@@ -4848,6 +4885,7 @@ class BaselineV3LowComplexityContractTest(unittest.TestCase):
                         replicate_index=0,
                         runner_args=[],
                         source_codex_home=None,
+                        production_lock_fd=123,
                         published_launch_commit="unit-published",
                     )
             preserved = lane_dir / "rejected-evidence" / session_id / "rejection.json"
@@ -5581,6 +5619,7 @@ class BaselineV3LowComplexityContractTest(unittest.TestCase):
         )
         with mock.patch.object(runner, "load_sequence", return_value=sequence), \
              mock.patch.object(runner, "require_zero_mistake_pilot_replicate"), \
+             mock.patch.object(runner, "baseline_v2_pilot_run_gate", return_value=(True, "unit unoccupied")), \
              mock.patch.object(runner, "inherited_provider_production_lock_fd", return_value=None), \
              mock.patch.object(runner, "paid_launch_checkout_errors", return_value=["repository checkout is not clean"]), \
              mock.patch.object(runner, "acquire_provider_production_lock") as acquire_lock, \
@@ -5606,6 +5645,7 @@ class BaselineV3LowComplexityContractTest(unittest.TestCase):
             try:
                 with mock.patch.object(runner, "load_sequence", return_value=sequence), \
                      mock.patch.object(runner, "require_zero_mistake_pilot_replicate"), \
+                     mock.patch.object(runner, "baseline_v2_pilot_run_gate", return_value=(True, "unit unoccupied")), \
                      mock.patch.object(runner, "paid_launch_checkout_errors", return_value=["repository checkout is not clean"]), \
                      mock.patch.object(runner, "_run_one_locked") as locked:
                     with self.assertRaisesRegex(ValueError, "paid launch checkout gate failed"):
@@ -5614,6 +5654,27 @@ class BaselineV3LowComplexityContractTest(unittest.TestCase):
             finally:
                 os.environ.pop(runner.PRODUCTION_LOCK_FD_ENV, None)
                 os.close(fd)
+
+    def test_unknown_baseline_generation_fails_closed_before_any_paid_boundary(self) -> None:
+        sequence = copy.deepcopy(runner.load_sequence("beets-lifecycle-sequence-v0"))
+        sequence["task_family_generation"] = "baseline-v5"
+        allowed, reason = runner.baseline_v2_pilot_run_gate(sequence, ROOT, 3)
+        self.assertFalse(allowed)
+        self.assertIn("requires explicit authority", reason)
+        args = argparse.Namespace(
+            prepare_only=False,
+            profile_id="baseline-bare-codex",
+            sequence_id=sequence["id"],
+            replicate_index=3,
+        )
+        with mock.patch.object(runner, "load_sequence", return_value=sequence), \
+             mock.patch.object(runner, "require_zero_mistake_pilot_replicate"), \
+             mock.patch.object(runner, "acquire_provider_production_lock") as acquire_lock, \
+             mock.patch.object(runner, "_run_one_locked") as locked:
+            with self.assertRaisesRegex(ValueError, "requires explicit authority"):
+                runner.run_one(args)
+        acquire_lock.assert_not_called()
+        locked.assert_not_called()
 
     def test_direct_current_baseline_rejects_unauthorized_replicate_before_lock(self) -> None:
         sequence = next(

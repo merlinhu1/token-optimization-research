@@ -55,14 +55,7 @@ python3 scripts/run_sequential_workflow_matrix.py "$SEQUENCE_ID" --workflow-mode
 
 Current runnable treatment profiles: `artifact-ponytail-codex-plugin-v1`, `behavior-caveman-codex-skill-v1`, `codescope-codex-product-v1`, `headroom-default-codex`, `integrated-leanctx-codex-hybrid-v1`, `integrated-token-savior-codex-product-v2`, `retrieval-cartog-codex-product-v2`, `retrieval-codegraph-codex-mcp-v1`, `retrieval-graphify-codex-skill-v1`, `retrieval-jcodemunch-codex-mcp-v2`, `retrieval-serena-codex-mcp-v1`, `retrieval-sigmap-codex-live-v1`, `swarmvault-codex-product-v1`, `terminal-rtk-codex-instructions-v1`, `terminal-snip-codex-hook-v1`, `terminal-tokenjuice-codex-hook-v1`. Historical profiles marked `historical-profile` are occupied evidence identities and cannot be rerun in place.
 
-The owner-authorized current-control r1/r2 replication campaign is serialized. Commands are listed only for unoccupied identities; each paid command reserves its immutable receipts before provider work:
-
-```bash
-python3 scripts/run_sequential_workflow_matrix.py fastify-lifecycle-sequence-v0 beets-lifecycle-sequence-v0 terraform-lifecycle-sequence-v0 --replicate-index 2 --max-parallel 1 --workflow-model-condition-id codex-openai-gpt-5-6-sol-high --workflow-model gpt-5.6-sol --workflow-reasoning-effort high --prepare-only
-python3 scripts/run_sequential_workflow_matrix.py fastify-lifecycle-sequence-v0 beets-lifecycle-sequence-v0 terraform-lifecycle-sequence-v0 --replicate-index 2 --max-parallel 1 --workflow-model-condition-id codex-openai-gpt-5-6-sol-high --workflow-model gpt-5.6-sol --workflow-reasoning-effort high
-```
-
-Reusable, zero-incident-audited baselines exist for `fastify-lifecycle-sequence-v0` (r0, r1), `beets-lifecycle-sequence-v0` (r0, r1), `terraform-lifecycle-sequence-v0` (r0, r1). No current treatment protocol is frozen, so no paid treatment command is published. Choose one compatible profile, freeze and validate its protocol provider-free, certify the resulting exact tree, and then execute the rendered dry-run verbatim before requesting paid execution:
+Reusable, zero-incident-audited baselines exist for `fastify-lifecycle-sequence-v0` (r0, r1, r2), `beets-lifecycle-sequence-v0` (r0, r1), `terraform-lifecycle-sequence-v0` (r0, r1, r2). No current treatment protocol is frozen, so no paid treatment command is published. Choose one compatible profile, freeze and validate its protocol provider-free, certify the resulting exact tree, and then execute the rendered dry-run verbatim before requesting paid execution:
 
 ```bash
 SEQUENCE_ID=fastify-lifecycle-sequence-v0
