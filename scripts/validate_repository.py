@@ -3161,6 +3161,38 @@ def validate_current_baseline_replication_authority(errors: list[str]) -> None:
     if extras:
         errors.append(f"unexpected baseline replication attempt receipts: {extras}")
 
+    try:
+        replacement_authority = workflow.load_beets_r3_replacement_authority(ROOT)
+        beets = next(item for item in sequences if item.get("id") == "beets-lifecycle-sequence-v0")
+        replacement_binding, replacement_receipt_path = workflow.baseline_replication_binding(beets, 3, ROOT)
+    except (OSError, StopIteration, ValueError, json.JSONDecodeError) as exc:
+        errors.append(f"Beets r3 replacement authority is unreadable or invalid: {exc}")
+        return
+    if replacement_receipt_path.relative_to(ROOT).as_posix() != workflow.BEETS_R3_REPLACEMENT_ATTEMPT_REL:
+        errors.append("Beets r3 replacement attempt path is not canonical")
+    if replacement_receipt_path.exists():
+        try:
+            receipt = json.loads(
+                replacement_receipt_path.read_text(),
+                object_pairs_hook=_json_object_without_duplicate_keys,
+            )
+        except (OSError, ValueError, json.JSONDecodeError) as exc:
+            errors.append(f"Beets r3 replacement attempt receipt is unreadable: {exc}")
+            return
+        expected = {
+            "task_family_generation": replacement_binding.get("task_family_generation"),
+            "sequence_id": beets.get("id"),
+            "replicate_index": 3,
+            "profile_id": "baseline-bare-codex",
+            "model_condition_id": replacement_authority["model_condition"]["id"],
+            "model": replacement_authority["model_condition"]["model"],
+            "reasoning_effort": replacement_authority["model_condition"]["reasoning_effort"],
+            "baseline_pool_fingerprint": replacement_binding.get("baseline_pool_fingerprint"),
+            "immutable_identity_receipt": True,
+        }
+        if any(receipt.get(key) != value for key, value in expected.items()):
+            errors.append("Beets r3 replacement attempt receipt identity mismatch")
+
 
 def validate_baseline_v4_qualification_audit(errors: list[str]) -> None:
     audit_path = ROOT / "sources/evaluations/audits/baseline-v4-task-family-qualification-20260722.json"

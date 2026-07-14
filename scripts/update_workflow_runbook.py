@@ -241,7 +241,7 @@ def render() -> str:
             )
         if retained_baselines:
             replication_blocks = []
-            for replicate_index in (1, 2):
+            for replicate_index in (1, 2, 3):
                 runnable = [
                     sequence
                     for sequence in retained_baselines
@@ -259,7 +259,7 @@ def render() -> str:
                 replication_blocks.extend([base + " --prepare-only", base])
             if replication_blocks:
                 chunks.append(
-                    "The owner-authorized current-control r1/r2 replication campaign is serialized. Commands are listed only for unoccupied identities; each paid command reserves its immutable receipts before provider work:\n\n"
+                    "Owner-authorized current-control replication is serialized. Commands are listed only for unoccupied identities; each paid command reserves its immutable receipts before provider work:\n\n"
                     f"```bash\n{'\n'.join(replication_blocks)}\n```"
                 )
             unlocked_baselines = []

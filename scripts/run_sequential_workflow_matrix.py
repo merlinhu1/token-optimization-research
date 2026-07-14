@@ -1595,11 +1595,11 @@ def main(argv: list[str] | None = None) -> int:
         (sequence_id, profile_id)
         for sequence_id, profile_id in jobs
         if profile_id == "baseline-bare-codex"
-        and args.replicate_index in {1, 2}
+        and args.replicate_index > 0
         and workflow.load_sequence(sequence_id).get("task_family_generation") in {"baseline-v3", "baseline-v4"}
     ]
     if serialized_replication_jobs and args.max_parallel != 1:
-        raise SystemExit("owner-authorized current baseline r1/r2 execution requires --max-parallel 1")
+        raise SystemExit("owner-authorized current baseline replication requires --max-parallel 1")
     published_launch_commit = None
     if not args.prepare_only and not args.dry_run:
         published_launch_commit = workflow.certified_published_launch_commit(ROOT)

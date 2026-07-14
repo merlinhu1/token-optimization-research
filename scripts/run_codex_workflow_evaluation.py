@@ -699,6 +699,8 @@ def baseline_pilot_attempt_receipt_path(seq: dict[str, Any], root: Path = ROOT) 
 
 
 BASELINE_REPLICATION_AUTHORITY_REL = "sources/evaluations/audits/current-low-complexity-baseline-r1-r2-authorization-20260728.json"
+BEETS_R3_REPLACEMENT_AUTHORITY_REL = "sources/evaluations/audits/current-low-complexity-beets-r3-replacement-authorization-20260728.json"
+BEETS_R3_REPLACEMENT_ATTEMPT_REL = "sources/evaluations/audits/current-low-complexity-beets-r3-replacement-attempt-20260728.json"
 BASELINE_REPLICATION_MODEL_CONDITION = {
     "id": "codex-openai-gpt-5-6-sol-high",
     "model": "gpt-5.6-sol",
@@ -796,13 +798,102 @@ def load_current_baseline_replication_authority(root: Path = ROOT) -> dict[str, 
     return authority
 
 
+def load_beets_r3_replacement_authority(root: Path = ROOT) -> dict[str, Any]:
+    """Strictly validate the one-run owner-authorized Beets r3 replacement."""
+    path = repository_authority_path(
+        root,
+        BEETS_R3_REPLACEMENT_AUTHORITY_REL,
+        "Beets r3 replacement authorization",
+    )
+    try:
+        authority = json.loads(path.read_text(), object_pairs_hook=_json_without_duplicate_keys)
+        sequence_doc = json.loads(
+            (root / "data/workflow-task-sequences.json").read_text(),
+            object_pairs_hook=_json_without_duplicate_keys,
+        )
+        matches = [
+            item for item in sequence_doc.get("sequences", [])
+            if item.get("id") == "beets-lifecycle-sequence-v0"
+        ]
+        if len(matches) != 1:
+            raise ValueError("Beets r3 replacement sequence is absent or duplicated")
+        sequence = matches[0]
+    except (OSError, ValueError, json.JSONDecodeError) as exc:
+        raise ValueError(f"Beets r3 replacement authority is unreadable: {exc}") from exc
+    records = authority.get("sequences")
+    strict_header = (
+        set(authority) == BASELINE_REPLICATION_TOP_LEVEL_KEYS
+        and type(authority.get("schema_version")) is int
+        and authority.get("schema_version") == 1
+        and authority.get("campaign_id") == "current-low-complexity-beets-r3-replacement-20260728"
+        and authority.get("authorized_by_owner_message_id") == "1531806010350633101"
+        and authority.get("authorized_on") == "2026-07-28"
+        and authority.get("paid_baseline_replication_authorized") is True
+        and authority.get("authorized_replicate_indexes") == [3]
+        and all(type(item) is int for item in authority.get("authorized_replicate_indexes", []))
+        and authority.get("sequence_order") == ["beets-lifecycle-sequence-v0"]
+        and authority.get("serialization_required") is True
+        and type(authority.get("allowed_paid_baseline_runs")) is int
+        and authority.get("allowed_paid_baseline_runs") == 1
+        and type(authority.get("allowed_model_turns")) is int
+        and authority.get("allowed_model_turns") == 3
+        and authority.get("model_condition") == BASELINE_REPLICATION_MODEL_CONDITION
+        and authority.get("first_valid_sample_policy") is True
+        and authority.get("rerun_after_attempt_receipt") is False
+        and type(authority.get("provider_calls")) is int
+        and authority.get("provider_calls") == 0
+        and type(authority.get("provider_tokens")) is int
+        and authority.get("provider_tokens") == 0
+        and isinstance(authority.get("notes"), str)
+        and bool(authority.get("notes"))
+    )
+    strict_records = (
+        sequence.get("status") == "active"
+        and isinstance(records, list)
+        and len(records) == 1
+        and isinstance(records[0], dict)
+        and set(records[0]) == BASELINE_REPLICATION_BINDING_KEYS
+        and records[0].get("sequence_id") == sequence.get("id")
+    )
+    if not strict_header or not strict_records:
+        raise ValueError("Beets r3 replacement authority has invalid authorization, scope, budget, model, or policy")
+    identity, protocol = current_baseline_v2_protocol(sequence, sequence["mistake_gate"], root)
+    expected_binding = {
+        "sequence_id": sequence.get("id"),
+        "task_family_generation": sequence.get("task_family_generation"),
+        "protocol_path": identity["path"],
+        "protocol_sha256": identity["sha256"],
+        "baseline_pool_fingerprint": protocol.get("baseline_pool", {}).get("protocol_fingerprint"),
+    }
+    gate_model = {
+        "id": sequence.get("mistake_gate", {}).get("designated_model_condition"),
+        "model": sequence.get("mistake_gate", {}).get("model"),
+        "reasoning_effort": sequence.get("mistake_gate", {}).get("reasoning_effort"),
+    }
+    if records[0] != expected_binding or gate_model != authority["model_condition"]:
+        raise ValueError("Beets r3 replacement authority has a stale nested binding")
+    return authority
+
+
+def baseline_replication_authority(
+    seq: dict[str, Any],
+    replicate_index: int,
+    root: Path = ROOT,
+) -> dict[str, Any]:
+    if replicate_index == 3:
+        if seq.get("id") != "beets-lifecycle-sequence-v0":
+            raise ValueError("r3 replacement authority covers only beets-lifecycle-sequence-v0")
+        return load_beets_r3_replacement_authority(root)
+    return load_current_baseline_replication_authority(root)
+
+
 def baseline_replication_binding(
     seq: dict[str, Any],
     replicate_index: int,
     root: Path = ROOT,
 ) -> tuple[dict[str, Any], Path]:
-    """Validate one explicitly authorized current-panel r1/r2 identity."""
-    authority = load_current_baseline_replication_authority(root)
+    """Validate one explicitly authorized current-panel replicate identity."""
+    authority = baseline_replication_authority(seq, replicate_index, root)
     if type(replicate_index) is not int or replicate_index not in authority["authorized_replicate_indexes"]:
         raise ValueError("baseline replication is not authorized for this replicate index")
     matches = [
@@ -828,8 +919,11 @@ def baseline_replication_binding(
     }
     if gate_model != authority["model_condition"]:
         raise ValueError(f"baseline replication model binding is stale for {seq.get('id')}")
-    slug = str(seq.get("id", "")).removesuffix("-lifecycle-sequence-v0")
-    receipt_rel = f"sources/evaluations/audits/current-low-complexity-baseline-r1-r2-attempts/{slug}-r{replicate_index}.json"
+    if replicate_index == 3:
+        receipt_rel = BEETS_R3_REPLACEMENT_ATTEMPT_REL
+    else:
+        slug = str(seq.get("id", "")).removesuffix("-lifecycle-sequence-v0")
+        receipt_rel = f"sources/evaluations/audits/current-low-complexity-baseline-r1-r2-attempts/{slug}-r{replicate_index}.json"
     return binding, repository_authority_path(root, receipt_rel, "baseline replication attempt receipt")
 
 
@@ -858,7 +952,7 @@ def require_zero_mistake_pilot_replicate(
             raise ValueError("Baseline V3/V4 paid baselines require an integer replicate_index")
         if replicate_index == 0:
             return
-        authority = load_current_baseline_replication_authority(ROOT)
+        authority = baseline_replication_authority(seq, replicate_index, ROOT)
         baseline_replication_binding(seq, replicate_index, ROOT)
         selected_model_condition = {
             "id": DEFAULT_WORKFLOW_MODEL_CONDITION_ID,
@@ -3656,7 +3750,7 @@ def run_one(args: argparse.Namespace) -> dict[str, Any]:
             raise ValueError(f"baseline provider run is blocked: {pilot_reason}")
     current_baseline_replication = (
         args.profile_id == "baseline-bare-codex"
-        and args.replicate_index in {1, 2}
+        and args.replicate_index > 0
         and selected_sequence.get("task_family_generation") in {"baseline-v3", "baseline-v4"}
     )
     if current_baseline_replication:
@@ -3845,7 +3939,7 @@ def _run_one_locked(args: argparse.Namespace) -> dict[str, Any]:
     operational_retries = (
         0
         if profile_id == "baseline-bare-codex"
-        and args.replicate_index in {1, 2}
+        and args.replicate_index > 0
         and seq.get("task_family_generation") in {"baseline-v3", "baseline-v4"}
         else MAX_CODEX_OPERATIONAL_RETRIES
     )
