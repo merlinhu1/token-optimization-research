@@ -3473,6 +3473,19 @@ class MatrixLifecycleContractTest(unittest.TestCase):
         self.assertEqual([item["exit_code"] for item in results], [0, 1])
         self.assertEqual(matrix.execute_lane_jobs([], 3, return_nonzero), [])
 
+    def test_validation_restores_protected_files_before_truthmark(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp, \
+             mock.patch.object(
+                 matrix.subprocess,
+                 "run",
+                 return_value=subprocess.CompletedProcess([], 0),
+             ) as run, \
+             mock.patch.object(matrix, "restore_protected_control_plane_files") as restore:
+            result = matrix.run_validation(Path(tmp), sys.executable)
+        self.assertTrue(result["passed"])
+        self.assertEqual(run.call_count, 5)
+        restore.assert_called_once_with(ROOT)
+
     def test_protected_test_restore_recovers_staged_deletion_from_head(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
@@ -5715,7 +5728,7 @@ class BaselineV3LowComplexityContractTest(unittest.TestCase):
             reserve_attempt.assert_not_called()
             run_lane.assert_not_called()
 
-    def test_beets_r3_replacement_authority_opens_only_one_unoccupied_identity(self) -> None:
+    def test_beets_r3_replacement_authority_scopes_one_immutable_identity(self) -> None:
         sequences = {
             item["id"]: item
             for item in json.loads((ROOT / "data/workflow-task-sequences.json").read_text())["sequences"]
@@ -5730,11 +5743,18 @@ class BaselineV3LowComplexityContractTest(unittest.TestCase):
         )
         self.assertEqual(binding["sequence_id"], "beets-lifecycle-sequence-v0")
         self.assertEqual(receipt.relative_to(ROOT).as_posix(), runner.BEETS_R3_REPLACEMENT_ATTEMPT_REL)
-        self.assertFalse(receipt.exists())
         allowed, reason = runner.baseline_v2_pilot_run_gate(
             sequences["beets-lifecycle-sequence-v0"], ROOT, 3
         )
-        self.assertTrue(allowed, reason)
+        if receipt.exists():
+            attempt = json.loads(receipt.read_text())
+            self.assertEqual(attempt["sequence_id"], "beets-lifecycle-sequence-v0")
+            self.assertEqual(attempt["replicate_index"], 3)
+            self.assertTrue(attempt["immutable_identity_receipt"])
+            self.assertFalse(allowed)
+            self.assertIn("occupied", reason)
+        else:
+            self.assertTrue(allowed, reason)
         for sequence_id in ("fastify-lifecycle-sequence-v0", "terraform-lifecycle-sequence-v0"):
             with self.assertRaisesRegex(ValueError, "covers only"):
                 runner.baseline_replication_binding(sequences[sequence_id], 3, ROOT)
@@ -5936,7 +5956,11 @@ class BaselineV3LowComplexityContractTest(unittest.TestCase):
                     self.assertTrue(gate_allowed, gate_reason)
                 receipts.add(receipt)
             r3_allowed = runner.baseline_v2_pilot_run_gate(sequence, ROOT, 3)[0]
-            self.assertEqual(r3_allowed, sequence["id"] == "beets-lifecycle-sequence-v0")
+            if sequence["id"] == "beets-lifecycle-sequence-v0":
+                _binding, r3_receipt = runner.baseline_replication_binding(sequence, 3, ROOT)
+                self.assertEqual(r3_allowed, not r3_receipt.exists())
+            else:
+                self.assertFalse(r3_allowed)
             self.assertFalse(runner.baseline_v2_pilot_run_gate(sequence, ROOT, 4)[0])
         self.assertEqual(len(receipts), 6)
 
