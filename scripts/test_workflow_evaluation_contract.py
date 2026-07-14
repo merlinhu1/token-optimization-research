@@ -14,6 +14,7 @@ import sys
 import tempfile
 import threading
 import unittest
+from contextlib import contextmanager
 from pathlib import Path
 from typing import Any
 from unittest import mock
@@ -36,6 +37,58 @@ from scripts import validate_repository
 
 
 SEQUENCE_ID = "terraform-lifecycle-sequence-v0"
+
+
+@contextmanager
+def published_unoccupied_probe_worktree():
+    """Yield published bytes without mutable paid-attempt receipts, then remove them safely."""
+    temp = tempfile.TemporaryDirectory(prefix="workflow-paid-gate-probe-")
+    probe = Path(temp.name) / "repo"
+    subprocess.run(
+        ["git", "worktree", "add", "--quiet", "--detach", str(probe), "HEAD"],
+        cwd=ROOT,
+        check=True,
+    )
+    registry_path = probe / "data/workflow-sessions.json"
+    registry = json.loads(registry_path.read_text())
+    current_sequences = {
+        "fastify-lifecycle-sequence-v0",
+        "beets-lifecycle-sequence-v0",
+        "terraform-lifecycle-sequence-v0",
+    }
+    removed = [
+        session
+        for session in registry.get("sessions", [])
+        if session.get("task_sequence", {}).get("sequence_id") in current_sequences
+        and session.get("profile", {}).get("profile_id") == "baseline-bare-codex"
+        and session.get("replicate_index") in {1, 2}
+        and str(session.get("session_id", "")).startswith("baseline-")
+    ]
+    removed_ids = {session["session_id"] for session in removed}
+    registry["sessions"] = [
+        session for session in registry.get("sessions", [])
+        if session.get("session_id") not in removed_ids
+    ]
+    registry_path.write_text(json.dumps(registry, indent=2) + "\n")
+    for session in removed:
+        artifact_root = session.get("artifacts", {}).get("root")
+        if isinstance(artifact_root, str):
+            shutil.rmtree(probe / artifact_root, ignore_errors=True)
+    shutil.rmtree(
+        probe / "sources/evaluations/audits/current-low-complexity-baseline-r1-r2-attempts",
+        ignore_errors=True,
+    )
+    try:
+        yield probe
+    finally:
+        subprocess.run(
+            ["git", "worktree", "remove", "--force", str(probe)],
+            cwd=ROOT,
+            check=False,
+            stdout=subprocess.DEVNULL,
+            stderr=subprocess.DEVNULL,
+        )
+        temp.cleanup()
 
 
 def current_protocol_path(sequence_id: str, profile_id: str = "baseline-bare-codex") -> Path:
@@ -3433,23 +3486,24 @@ class MatrixLifecycleContractTest(unittest.TestCase):
             self.assertTrue((destination / "sources/evaluations/audits/retained-audit.json").is_file())
 
     def test_current_replication_rejects_parallel_paid_plan_before_lane_root(self) -> None:
-        result = subprocess.run(
-            [
-                sys.executable,
-                "scripts/run_sequential_workflow_matrix.py",
-                "beets-lifecycle-sequence-v0",
-                "--replicate-index", "1",
-                "--max-parallel", "3",
-                "--workflow-model-condition-id", "codex-openai-gpt-5-6-sol-high",
-                "--workflow-model", "gpt-5.6-sol",
-                "--workflow-reasoning-effort", "high",
-                "--dry-run",
-            ],
-            cwd=ROOT,
-            text=True,
-            capture_output=True,
-            check=False,
-        )
+        with published_unoccupied_probe_worktree() as probe:
+            result = subprocess.run(
+                [
+                    sys.executable,
+                    "scripts/run_sequential_workflow_matrix.py",
+                    "beets-lifecycle-sequence-v0",
+                    "--replicate-index", "1",
+                    "--max-parallel", "3",
+                    "--workflow-model-condition-id", "codex-openai-gpt-5-6-sol-high",
+                    "--workflow-model", "gpt-5.6-sol",
+                    "--workflow-reasoning-effort", "high",
+                    "--dry-run",
+                ],
+                cwd=probe,
+                text=True,
+                capture_output=True,
+                check=False,
+            )
         self.assertNotEqual(result.returncode, 0)
         self.assertIn("requires --max-parallel 1", result.stderr + result.stdout)
 
@@ -5644,7 +5698,9 @@ class BaselineV3LowComplexityContractTest(unittest.TestCase):
                         runner.load_current_baseline_replication_authority(root)
 
     def test_real_matrix_paid_branch_rejects_mutated_authority_before_lane_root(self) -> None:
-        authority_path = ROOT / runner.BASELINE_REPLICATION_AUTHORITY_REL
+        probe_context = published_unoccupied_probe_worktree()
+        probe = probe_context.__enter__()
+        authority_path = probe / runner.BASELINE_REPLICATION_AUTHORITY_REL
         original_bytes = authority_path.read_bytes()
         original = json.loads(original_bytes)
         mutations = {
@@ -5686,7 +5742,7 @@ class BaselineV3LowComplexityContractTest(unittest.TestCase):
                             "--lane-root", str(lane_root),
                             "--dry-run",
                         ],
-                        cwd=ROOT,
+                        cwd=probe,
                         text=True,
                         capture_output=True,
                         check=False,
@@ -5699,29 +5755,31 @@ class BaselineV3LowComplexityContractTest(unittest.TestCase):
                     self.assertFalse(lane_root.exists())
         finally:
             authority_path.write_bytes(original_bytes)
+            probe_context.__exit__(None, None, None)
 
     def test_matrix_rejects_unapproved_model_before_lane_root_or_receipt(self) -> None:
-        result = subprocess.run(
-            [
-                sys.executable,
-                "scripts/run_sequential_workflow_matrix.py",
-                "beets-lifecycle-sequence-v0",
-                "--replicate-index", "1",
-                "--max-parallel", "1",
-                "--workflow-model-condition-id", "codex-openai-gpt-5-6-luna-xhigh",
-                "--workflow-model", "gpt-5.6-luna",
-                "--workflow-reasoning-effort", "xhigh",
-                "--dry-run",
-            ],
-            cwd=ROOT,
-            text=True,
-            capture_output=True,
-            check=False,
-        )
+        with published_unoccupied_probe_worktree() as probe:
+            result = subprocess.run(
+                [
+                    sys.executable,
+                    "scripts/run_sequential_workflow_matrix.py",
+                    "beets-lifecycle-sequence-v0",
+                    "--replicate-index", "1",
+                    "--max-parallel", "1",
+                    "--workflow-model-condition-id", "codex-openai-gpt-5-6-luna-xhigh",
+                    "--workflow-model", "gpt-5.6-luna",
+                    "--workflow-reasoning-effort", "xhigh",
+                    "--dry-run",
+                ],
+                cwd=probe,
+                text=True,
+                capture_output=True,
+                check=False,
+            )
         self.assertNotEqual(result.returncode, 0)
         self.assertIn("launch model does not match", result.stderr + result.stdout)
 
-    def test_current_baseline_r1_r2_authority_binds_all_six_unoccupied_identities(self) -> None:
+    def test_current_baseline_r1_r2_authority_binds_all_six_immutable_identities(self) -> None:
         sequences = {
             item["id"]: item
             for item in json.loads((ROOT / "data/workflow-task-sequences.json").read_text())["sequences"]
@@ -5735,8 +5793,17 @@ class BaselineV3LowComplexityContractTest(unittest.TestCase):
             for replicate_index in (1, 2):
                 binding, receipt = runner.baseline_replication_binding(sequence, replicate_index, ROOT)
                 self.assertEqual(binding["sequence_id"], sequence["id"])
-                self.assertFalse(receipt.exists(), receipt)
-                self.assertTrue(runner.baseline_v2_pilot_run_gate(sequence, ROOT, replicate_index)[0])
+                gate_allowed, gate_reason = runner.baseline_v2_pilot_run_gate(sequence, ROOT, replicate_index)
+                if receipt.exists():
+                    attempt = json.loads(receipt.read_text())
+                    self.assertEqual(attempt["sequence_id"], sequence["id"])
+                    self.assertEqual(attempt["replicate_index"], replicate_index)
+                    self.assertTrue(attempt["immutable_identity_receipt"])
+                    self.assertEqual(attempt["attempt_status"], "reserved-before-provider-task")
+                    self.assertFalse(gate_allowed)
+                    self.assertIn("occupied", gate_reason)
+                else:
+                    self.assertTrue(gate_allowed, gate_reason)
                 receipts.add(receipt)
             self.assertFalse(runner.baseline_v2_pilot_run_gate(sequence, ROOT, 3)[0])
         self.assertEqual(len(receipts), 6)
