@@ -1436,6 +1436,8 @@ def run_validation(summary_dir: Path, validation_python: str | None = None) -> d
                 log.write(f"unable to execute {cmd[0]}: {exc}\n")
                 return_code = 127
         results.append({"command": cmd, "exit_code": return_code, "output": str(out)})
+        if len(cmd) > 1 and cmd[1] == "scripts/test_workflow_evaluation_contract.py":
+            restore_protected_control_plane_files(ROOT)
     return {"passed": all(item["exit_code"] == 0 for item in results), "results": results}
 
 
