@@ -1,0 +1,77 @@
+## Audit outcome
+
+All three preserved r1 sessions **pass the strict independent zero-incident audit**.
+
+### `baseline-fastify-20260728-p-bb0e89ed9794-r1`
+
+```yaml
+passed: true
+trajectory_review_complete: true
+independent_source_review_passed: true
+observed_unique_model_caused_incidents: 0
+observed_corrected_implementation_mistakes: 0
+observed_unresolved_defects: 0
+observed_prohibited_operations: 0
+observed_unnecessary_exploration_incidents: 0
+observed_model_caused_failed_commands: 0
+observed_code_rework_events: 0
+observed_verifier_or_environment_failures: 0
+```
+
+- 3 turns, 3 prescribed commands, exits `[0, 0, 0]`; no retries or extra exploration.
+- Exact edits: restored `request.mediaType`, shared bounded Content-Type cache, and HTTP 414 handling.
+- One continuous thread: `019fa9c6-1c6f-70e3-a226-8501595dc354`.
+- Final per-task verifier exits `[0, 0, 0]`; final verifier, verifier integrity, and tool-isolation audit passed.
+- Provider tokens: **90,463**.
+
+### `baseline-beets-20260728-p-fcc8438d2077-r1`
+
+```yaml
+passed: true
+trajectory_review_complete: true
+independent_source_review_passed: true
+observed_unique_model_caused_incidents: 0
+observed_corrected_implementation_mistakes: 0
+observed_unresolved_defects: 0
+observed_prohibited_operations: 0
+observed_unnecessary_exploration_incidents: 0
+observed_model_caused_failed_commands: 0
+observed_code_rework_events: 0
+observed_verifier_or_environment_failures: 0
+```
+
+- 3 turns, 3 prescribed commands, exits `[0, 0, 0]`; no retries or rework.
+- Exact edits: restored escaped separators, replaced the generator with `iter`, and restored `for_artist=False`.
+- One continuous thread: `019fa9c7-305d-7333-9d10-980647e1b84e`.
+- Final per-task verifier exits `[0, 0, 0]`; final verifier, verifier integrity, and tool-isolation audit passed.
+- Provider tokens: **87,396**.
+
+### `baseline-terraform-20260728-p-5811b463c1e9-r1`
+
+```yaml
+passed: true
+trajectory_review_complete: true
+independent_source_review_passed: true
+observed_unique_model_caused_incidents: 0
+observed_corrected_implementation_mistakes: 0
+observed_unresolved_defects: 0
+observed_prohibited_operations: 0
+observed_unnecessary_exploration_incidents: 0
+observed_model_caused_failed_commands: 0
+observed_code_rework_events: 0
+observed_verifier_or_environment_failures: 0
+```
+
+- 3 turns, 3 prescribed commands, exits `[0, 0, 0]`; no retries or additional commands.
+- Exact edits: propagated `isDeferred`, restored `providerreqs.Requirements`, and restored the `var` prefix.
+- One continuous thread: `019fa9c8-ef4a-72a1-b9de-d4ffa617f3aa`.
+- Final per-task verifier exits `[0, 0, 0]`; final verifier, verifier integrity, and tool-isolation audit passed.
+- Provider tokens: **87,816**.
+
+## Integrity and blocker
+
+- Every compact bundle contains exactly the required four files; all three manifests verified successfully.
+- Each evidence bundle has **50 unique canonical records**. No forbidden tools, external retrieval, malformed events, or accounting warnings were found.
+- **Only blocker:** canonical publication remains rolled back. The matrix first merged all three sessions, but the post-merge contract suite failed because tests assumed r1 attempt receipts were absent/unoccupied. The other validation commands passed. This is a **controller-publication defect**, not a model, verifier, or per-session environment incident.
+- The canonical registry/artifact root currently lacks all three r1 sessions, while the byte-valid bundles remain preserved in lane checkouts. They can be transactionally republished after the receipt-aware contract repair; **no provider rerun is warranted**.
+- Root state was already dirty with the test repair and three untracked matrix attempt receipts. I made **no file modifications or provider calls**.
