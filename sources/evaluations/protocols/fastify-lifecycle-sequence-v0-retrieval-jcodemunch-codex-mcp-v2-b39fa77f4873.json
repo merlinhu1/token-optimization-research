@@ -1,10 +1,10 @@
 {
   "protocol_schema_version": 3,
-  "protocol_id": "fastify-lifecycle-sequence-v0-terminal-rtk-codex-instructions-v1-bc3fa951ecce",
+  "protocol_id": "fastify-lifecycle-sequence-v0-retrieval-jcodemunch-codex-mcp-v2-b39fa77f4873",
   "status": "frozen-ready-not-run",
-  "outcome": "Frozen terminal-rtk-codex-instructions-v1 protocol for fastify-lifecycle-sequence-v0; no provider/model run has occurred.",
+  "outcome": "Frozen retrieval-jcodemunch-codex-mcp-v2 protocol for fastify-lifecycle-sequence-v0; no provider/model run has occurred.",
   "frozen_at": "2026-07-22",
-  "hypothesis": "terminal-rtk-codex-instructions-v1 produces reproducible provider-reported token and software-quality evidence for fastify-lifecycle-sequence-v0",
+  "hypothesis": "retrieval-jcodemunch-codex-mcp-v2 produces reproducible provider-reported token and software-quality evidence for fastify-lifecycle-sequence-v0",
   "evidence_stage_target": "reproduction",
   "task_fixture": {
     "fixture_id": "medium-fastify-fastify",
@@ -25,12 +25,12 @@
     "command": ""
   },
   "treatment": {
-    "profile_id": "terminal-rtk-codex-instructions-v1",
+    "profile_id": "retrieval-jcodemunch-codex-mcp-v2",
     "provider": "openai",
     "model": "gpt-5.6-sol",
     "model_condition_id": "codex-openai-gpt-5-6-sol-high",
     "reasoning_effort": "high",
-    "command": "python3 scripts/run_codex_workflow_model_condition.py --workflow-model-condition-id codex-openai-gpt-5-6-sol-high --workflow-model gpt-5.6-sol --workflow-reasoning-effort high --sequence-id fastify-lifecycle-sequence-v0 --profile-id terminal-rtk-codex-instructions-v1 --timeout-per-task 3600 --protocol sources/evaluations/protocols/fastify-lifecycle-sequence-v0-terminal-rtk-codex-instructions-v1-bc3fa951ecce.json --docker-image token-eval-codex:latest"
+    "command": "python3 scripts/run_codex_workflow_model_condition.py --workflow-model-condition-id codex-openai-gpt-5-6-sol-high --workflow-model gpt-5.6-sol --workflow-reasoning-effort high --sequence-id fastify-lifecycle-sequence-v0 --profile-id retrieval-jcodemunch-codex-mcp-v2 --timeout-per-task 3600 --protocol sources/evaluations/protocols/fastify-lifecycle-sequence-v0-retrieval-jcodemunch-codex-mcp-v2-b39fa77f4873.json --docker-image token-eval-codex:latest"
   },
   "token_accounting_boundary": {
     "fields": [
@@ -49,7 +49,7 @@
       "version": "baseline-pool-v1",
       "task_family_generation": "baseline-v3",
       "runner_contract_version": "workflow-runner-v9",
-      "runner_sha256": "30e41bcaad32c16ea5577c992aac6333225c3a53bf94b9f85ea60f4ad2b714f3",
+      "runner_sha256": "a8e44a164c391c8cf4795331ee2891dfc6360e76595d86f9a91287edd6b3978c",
       "qualification_generator_sha256": "92c9d68b3146b37dd0f4f6c0c71a20d7ef83898fec7206b8d022f06351969eb7",
       "validator_sha256": "ccfc9139c7b93285ad7a848663ea31ab70b940fb4fbb2ab082b231f61f4a2b96",
       "sequence_id": "fastify-lifecycle-sequence-v0",
@@ -233,56 +233,71 @@
     }
   },
   "selected_execution": {
-    "descriptor_sha256": "c0671d871581d70989d3e350cc2773562274f5787b1742f0ab2b04ee8f383a9a",
+    "descriptor_sha256": "8f3ed2aaad03e8a9b626e0dd551aa71f235d6600cb17ec249fbf4175c7d362f1",
     "descriptor": {
       "version": "execution-condition-v1",
       "sequence_id": "fastify-lifecycle-sequence-v0",
       "execution_role": "individual_tool_treatment",
       "selected_profile": {
-        "profile_id": "terminal-rtk-codex-instructions-v1",
+        "profile_id": "retrieval-jcodemunch-codex-mcp-v2",
         "profile_type": "individual_tool",
         "component_ids": [
-          "terminal-rtk-codex-instructions-v1"
+          "retrieval-jcodemunch-codex-mcp-v2"
         ],
         "enabled_surfaces": [
+          "retrieval-context",
+          "mcp",
           "codex-global-instructions",
-          "terminal-output"
+          "warm-index"
         ],
         "disabled_overlaps": [
           "all unlisted surfaces"
         ],
-        "registry_entry_sha256": "09169e7cfe82ac626baf50e5fb6fdec8525e91e983e4e8dacee62192b5899069",
+        "registry_entry_sha256": "b716908c84e3cf64e5c21794e62c1f2cdb88c1045241ce264fae06022203b3c6",
         "registry_entry": {
-          "id": "terminal-rtk-codex-instructions-v1",
+          "id": "retrieval-jcodemunch-codex-mcp-v2",
           "profile_type": "individual_tool",
           "objective_scope": "individual_tool_effectiveness",
           "status": "screening-shortlist",
           "enabled_surfaces": [
+            "retrieval-context",
+            "mcp",
             "codex-global-instructions",
-            "terminal-output"
+            "warm-index"
           ],
           "disabled_overlaps": [
             "all unlisted surfaces"
           ],
           "components": [
             {
-              "component_id": "terminal-rtk-codex-instructions-v1",
-              "surface": "codex-global-instructions/terminal-output-compaction",
+              "component_id": "retrieval-jcodemunch-codex-mcp-v2",
+              "surface": "retrieval-context+mcp+product-authored-codex-guidance+warm-index",
               "role": "individual_tool"
             }
           ],
           "install": {
-            "policy": "Run the pinned RTK binary with `rtk init --global --codex` against lane-private CODEX_HOME; require generated AGENTS.md and RTK.md before execution."
+            "policy": "Install the pinned 1.108.114 wheel into a lane-private venv, point Codex directly at the resolved jcodemunch-mcp binary with no launcher or arguments, install verbatim product-authored guidance excerpts into the lane-private Codex AGENTS.md, build a product-native warm index, and require initialize plus tools/list before provider use."
           },
           "reset": {
-            "policy": "Delete lane-private CODEX_HOME and RTK state after evidence capture; verify global instruction files cannot survive into another lane."
+            "policy": "Delete the lane-private venv, CODE_INDEX_PATH, CODEX_HOME, MCP config, install receipt, and index after evidence capture; verify no guidance or generated state survives into another lane."
           },
           "evaluation_protocol": {
             "tool_use_policy": "natural",
-            "tool_state": "active-instruction-layer",
-            "integration_state": "official-codex-global-instructions"
+            "tool_state": "warm-index",
+            "integration_state": "pinned-direct-binary-mcp-with-product-authored-codex-guidance",
+            "instruction_policy": "verbatim-product-authored-guidance",
+            "assignment_proof": "provider-free direct-binary probe, guidance provenance receipt, warm-index receipt, and initialize-plus-tools-list required"
           },
-          "notes": "Versioned correction of the historical PATH-only RTK profile. Measures the product-authored Codex instruction policy, not transparent command rewriting."
+          "source_snapshot": {
+            "repository": "jgravelle/jcodemunch-mcp",
+            "commit": "fbc14e40c7057ebc6d718fb48083d30522afe15f",
+            "version": "1.108.114",
+            "wheel": "/opt/data/tool-candidates/jcodemunch-mcp/dist/jcodemunch_mcp-1.108.114-py3-none-any.whl",
+            "wheel_sha256": "9ae3a44c2be5709d33fa2b56c9e569906ed63906a907f89b4762a370d397ed54",
+            "readme_sha256": "09ba2669b45355464761b130a9696f7851af2e42df7fb9bec1283357788f3ad2",
+            "universal_guide_sha256": "2026d09f4af85e972a5c4a9874d91bd8a8675ab7fbb44a283911fd06afd0abb2"
+          },
+          "notes": "Guide-faithful replacement for the deleted direct-v1 treatment. The evaluator adds no prompt steering: the lane installs verbatim jcodemunch policy and universal-guide excerpts into Codex AGENTS.md and records their source hashes."
         }
       },
       "model_facing_prompts": {
@@ -307,97 +322,152 @@
         ]
       },
       "tool_adapter": {
-        "tool_id": "rtk-codex-instructions-v1",
+        "tool_id": "jcodemunch-codex-mcp-v2",
         "tool_manifest": "scripts/run_codex_fixture_evaluation.py:TOOL_CONFIGS",
         "tool_manifest_sha256": "6fa8271b89a577706ea0bbffcc8e4521831f41b646ed9519369efee3642fe41c",
         "tool_config": {
-          "display_name": "RTK Codex global instruction policy v1",
-          "lane_name": "terminal-rtk-codex-instructions-v1",
-          "surface": "codex-global-instructions/terminal-output-compaction",
+          "display_name": "jcodemunch guide-faithful Codex MCP v2",
+          "lane_name": "retrieval-jcodemunch-codex-mcp-v2",
+          "surface": "retrieval/context-mcp+product-authored-codex-guidance",
+          "mcp_server": "jcodemunch",
           "allowed_terms": [
-            "rtk"
+            "jcodemunch",
+            "jcodemunch-mcp"
           ],
-          "data_dir_name": "rtk-codex-instructions-v1",
-          "executable": "/opt/data/tool-candidates/rtk/target/release/rtk",
-          "path_entries": [
-            "/opt/data/tool-candidates/rtk/target/release"
-          ],
-          "mounts": [
-            "/opt/data/tool-candidates/rtk/target/release"
-          ],
-          "binary_mount_target": "/usr/local/bin/rtk",
+          "data_dir_name": "jcodemunch-codex-mcp-v2",
+          "mcp_command": "{tool_data_dir}/venv/bin/jcodemunch-mcp",
+          "mcp_args": [],
           "env": {
-            "RTK_TELEMETRY": "0"
+            "CODE_INDEX_PATH": "{tool_data_dir}/index",
+            "JCODEMUNCH_LOG_LEVEL": "ERROR"
           },
+          "mounts": [
+            "/opt/data/tool-candidates/jcodemunch-mcp",
+            "/opt/data/tool-candidates/jcodemunch-mcp/dist/jcodemunch_mcp-1.108.114-py3-none-any.whl",
+            "{repository_root}/scripts/install_jcodemunch_codex_guidance.py"
+          ],
           "host_integration": {
             "install_commands": [
               [
-                "rtk",
-                "init",
-                "--global",
-                "--codex"
+                "/opt/data/opt/uv/uv",
+                "venv",
+                "{tool_data_dir}/venv",
+                "--python",
+                "python3"
+              ],
+              [
+                "/opt/data/opt/uv/uv",
+                "pip",
+                "install",
+                "--python",
+                "{tool_data_dir}/venv/bin/python",
+                "/opt/data/tool-candidates/jcodemunch-mcp/dist/jcodemunch_mcp-1.108.114-py3-none-any.whl"
+              ],
+              [
+                "python3",
+                "{repository_root}/scripts/install_jcodemunch_codex_guidance.py",
+                "--source-root",
+                "/opt/data/tool-candidates/jcodemunch-mcp",
+                "--expected-commit",
+                "fbc14e40c7057ebc6d718fb48083d30522afe15f",
+                "--codex-home",
+                "{codex_home}",
+                "--receipt",
+                "{tool_data_dir}/jcodemunch-guidance-install.json"
               ]
             ],
             "verify_commands": [
               [
-                "rtk",
-                "init",
-                "--global",
-                "--codex",
-                "--dry-run"
+                "{tool_data_dir}/venv/bin/jcodemunch-mcp",
+                "--version"
               ]
             ],
             "required_files": [
+              "{tool_data_dir}/venv/bin/jcodemunch-mcp",
               "{codex_home}/AGENTS.md",
-              "{codex_home}/RTK.md"
-            ]
+              "{tool_data_dir}/jcodemunch-guidance-install.json"
+            ],
+            "timeout_seconds": 600
           },
-          "preflight_command": [
-            "rtk",
-            "--version"
-          ],
-          "default_tool_state": "active-instruction-layer"
+          "mcp_handshake": {
+            "required": true,
+            "method": "initialize-and-tools-list",
+            "timeout_seconds": 60
+          },
+          "default_tool_state": "warm-index",
+          "warmup": {
+            "kind": "product-native-code-index-build",
+            "command": [
+              "{tool_data_dir}/venv/bin/jcodemunch-mcp",
+              "index",
+              "{repo}"
+            ],
+            "output_name": "jcodemunch-warmup-output.txt",
+            "metadata_name": "jcodemunch-warmup-metadata.json",
+            "timeout_seconds": 1200
+          }
         },
-        "tool_config_sha256": "dabefc064fc87d3d022683c2c1e8a8c3a5256679f343e444c90c7fa22ae45be2",
-        "tool_state": "active-instruction-layer",
+        "tool_config_sha256": "a024f1c89050e6136a813c1b082648cf9ae0204b217f09fe4d82a87cc8ed8344",
+        "tool_state": "warm-index",
         "tool_use_policy": "natural",
         "command_identity": {
-          "kind": "preflight_command",
+          "kind": "mcp_command",
           "command": [
-            "rtk",
-            "--version"
+            "{tool_data_dir}/venv/bin/jcodemunch-mcp"
           ]
         },
         "binary_identity": {
-          "executable_token": "rtk",
-          "resolved_path": "/opt/data/tool-candidates/rtk/target/release/rtk",
-          "realpath": "/opt/data/tool-candidates/rtk/target/release/rtk",
-          "sha256": "6a5f761863fc184217e6c1ae5336dd969868ad79f24e701a3efbd090a435f2ae",
-          "metadata": {
-            "size": 8534448,
-            "mode": "-rwxr-xr-x",
-            "uid": 10000,
-            "gid": 10000,
-            "mtime_ns": 1783030976951158921
-          },
-          "version": {
-            "command": [
-              "/opt/data/tool-candidates/rtk/target/release/rtk",
-              "--version"
+          "kind": "generated-by-host-integration",
+          "command_template": "{tool_data_dir}/venv/bin/jcodemunch-mcp",
+          "install_commands": [
+            [
+              "/opt/data/opt/uv/uv",
+              "venv",
+              "{tool_data_dir}/venv",
+              "--python",
+              "python3"
             ],
-            "environment_path": "/opt/data/.local/bin:/opt/data/tool-candidates/rtk/target/release:/opt/data/opt/go/bin:/opt/data/opt/uv:/opt/data/opt/node-v24.18.0-linux-x64/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
-            "captured": true,
-            "exit_code": 0,
-            "output": "rtk 0.42.4",
-            "truncated": false
-          }
+            [
+              "/opt/data/opt/uv/uv",
+              "pip",
+              "install",
+              "--python",
+              "{tool_data_dir}/venv/bin/python",
+              "/opt/data/tool-candidates/jcodemunch-mcp/dist/jcodemunch_mcp-1.108.114-py3-none-any.whl"
+            ],
+            [
+              "python3",
+              "{repository_root}/scripts/install_jcodemunch_codex_guidance.py",
+              "--source-root",
+              "/opt/data/tool-candidates/jcodemunch-mcp",
+              "--expected-commit",
+              "fbc14e40c7057ebc6d718fb48083d30522afe15f",
+              "--codex-home",
+              "{codex_home}",
+              "--receipt",
+              "{tool_data_dir}/jcodemunch-guidance-install.json"
+            ]
+          ],
+          "install_contract_sha256": "d3e988d4f33f520ff77be017d6096ff2394a1a2e411277850a4243840b97067a"
         },
         "source_identity": [
           {
-            "path": "/opt/data/tool-candidates/rtk/target/release",
+            "path": "/opt/data/tool-candidates/jcodemunch-mcp",
             "exists": true,
             "kind": "directory",
-            "git_head": "23aae98c5b29cd52d77061c6efd2e65e5e3cc6dd"
+            "git_head": "fbc14e40c7057ebc6d718fb48083d30522afe15f"
+          },
+          {
+            "path": "/opt/data/tool-candidates/jcodemunch-mcp/dist/jcodemunch_mcp-1.108.114-py3-none-any.whl",
+            "exists": true,
+            "kind": "file",
+            "sha256": "9ae3a44c2be5709d33fa2b56c9e569906ed63906a907f89b4762a370d397ed54"
+          },
+          {
+            "path": "{repository_root}/scripts/install_jcodemunch_codex_guidance.py",
+            "exists": true,
+            "kind": "file",
+            "sha256": "8a166d38229d1f69d530af9b0f302f6a22ed97e34f90695c128091255821c1ed"
           }
         ]
       },

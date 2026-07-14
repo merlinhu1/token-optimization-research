@@ -2498,6 +2498,50 @@ class ManifestAndProtocolContractTest(unittest.TestCase):
                 runner.find_canonical_baseline_record({"sessions": [session]}, sequence, 0)
             )
 
+    def test_canonical_baseline_lookup_accepts_enriched_current_protocol_identity(self) -> None:
+        sequence = {
+            "id": "unit-sequence",
+            "task_family_generation": "baseline-v2",
+            "mistake_gate": {},
+        }
+        binding = {"protocol_id": "canonical", "path": "protocols/canonical.json", "sha256": "a" * 64}
+        enriched_identity = {
+            **binding,
+            "qualification_sha256": "c" * 64,
+            "baseline_pool_fingerprint": "unit-pool",
+            "selected_execution_sha256": "b" * 64,
+        }
+        selected = {
+            "descriptor_sha256": "b" * 64,
+            "descriptor": {
+                "execution_role": "baseline",
+                "selected_profile": {"profile_id": "baseline-bare-codex"},
+            },
+        }
+        session = {
+            "schema_version": 2,
+            "session_id": "canonical-baseline",
+            "session_role": "baseline",
+            "status": "completed",
+            "replicate_index": 0,
+            "task_sequence": {"sequence_id": "unit-sequence"},
+            "profile": {"profile_id": "baseline-bare-codex"},
+            "baseline_pool": {"protocol_fingerprint": "unit-pool"},
+            "frozen_protocol": binding,
+            "selected_execution": selected,
+            "interpretation": {"accepted_for_execution": True},
+        }
+        with mock.patch.object(runner, "baseline_protocol_fingerprint", return_value="unit-pool"), \
+             mock.patch.object(
+                 runner,
+                 "current_baseline_v2_protocol",
+                 return_value=(enriched_identity, {"selected_execution": selected}),
+             ):
+            self.assertIs(
+                runner.find_canonical_baseline_record({"sessions": [session]}, sequence, 0),
+                session,
+            )
+
     def test_session_builder_rejects_unpaired_accepted_treatment(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             run_dir = Path(tmp)
