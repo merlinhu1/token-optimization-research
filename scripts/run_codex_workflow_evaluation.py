@@ -913,7 +913,7 @@ def baseline_v2_pilot_run_gate(
     """Permit one provider run per declared identity; never pass-select reruns."""
     generation = seq.get("task_family_generation")
     if generation not in {"baseline-v2", "baseline-v3", "baseline-v4"}:
-        return True, "not a zero-mistake baseline sequence"
+        return False, f"unsupported baseline task family generation requires explicit authority: {generation!r}"
     label = str(generation).replace("baseline-v", "Baseline V")
     gate = seq.get("mistake_gate")
     audit_rel = gate.get("pilot_audit_path") if isinstance(gate, dict) else None
@@ -3647,6 +3647,13 @@ def run_one(args: argparse.Namespace) -> dict[str, Any]:
         args.replicate_index,
         prepare_only=False,
     )
+    if args.profile_id == "baseline-bare-codex":
+        pilot_allowed, pilot_reason = baseline_v2_pilot_run_gate(
+            selected_sequence,
+            replicate_index=args.replicate_index,
+        )
+        if not pilot_allowed:
+            raise ValueError(f"baseline provider run is blocked: {pilot_reason}")
     current_baseline_replication = (
         args.profile_id == "baseline-bare-codex"
         and args.replicate_index in {1, 2}
@@ -3658,13 +3665,6 @@ def run_one(args: argparse.Namespace) -> dict[str, Any]:
             raise ValueError("paid launch checkout gate failed: " + "; ".join(checkout_errors))
     lock_fd = acquire_provider_production_lock()
     try:
-        if args.profile_id == "baseline-bare-codex":
-            pilot_allowed, pilot_reason = baseline_v2_pilot_run_gate(
-                selected_sequence,
-                replicate_index=args.replicate_index,
-            )
-            if not pilot_allowed:
-                raise ValueError(f"baseline provider run is blocked: {pilot_reason}")
         return _run_one_locked(args)
     finally:
         os.close(lock_fd)

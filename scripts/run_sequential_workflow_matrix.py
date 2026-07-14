@@ -408,8 +408,21 @@ def run_flow_lane(
             lane_id,
             "provider-capable child has started; cleanup remains prohibited until evidence is canonical or preserved",
         )
+    # Lane-local scratch may be reclaimed while a long trusted clone is in progress.
+    # Recreate it at the last possible point before crossing the child boundary.
+    logs.mkdir(parents=True, exist_ok=True)
+    tmp.mkdir(parents=True, exist_ok=True)
     try:
         with log_path.open("w") as log:
+            if provider_capable and production_lock_fd is not None and treatment_profile == "baseline-bare-codex":
+                parent_sequence = workflow.load_sequence(sequence_id)
+                if parent_sequence.get("task_family_generation") in {"baseline-v3", "baseline-v4"}:
+                    workflow.reserve_baseline_pilot_attempt(
+                        parent_sequence,
+                        root=ROOT,
+                        orchestrator=f"workflow-matrix:{lane_root.name}",
+                        replicate_index=replicate_index,
+                    )
             proc = subprocess.run(
                 cmd,
                 cwd=checkout,
@@ -1442,6 +1455,36 @@ def cleanup_lane_checkouts(run_root: Path) -> None:
             shutil.rmtree(checkout, ignore_errors=True)
 
 
+def execute_lane_jobs(
+    jobs: list[tuple[str, str]],
+    max_parallel: int,
+    run_job: Callable[[tuple[str, str]], dict[str, Any]],
+    on_result: Callable[[dict[str, Any]], None] | None = None,
+) -> list[dict[str, Any]]:
+    """Execute serialized jobs fail-stop; use queued futures only for parallel plans."""
+    results: list[dict[str, Any]] = []
+    if not jobs:
+        return results
+
+    def record(result: dict[str, Any]) -> None:
+        results.append(result)
+        if on_result is not None:
+            on_result(result)
+
+    if max_parallel == 1:
+        for job in jobs:
+            result = run_job(job)
+            record(result)
+            if result.get("exit_code") != 0:
+                break
+        return results
+    with futures.ThreadPoolExecutor(max_workers=min(max_parallel, len(jobs))) as pool:
+        submitted = [pool.submit(run_job, job) for job in jobs]
+        for future in futures.as_completed(submitted):
+            record(future.result())
+    return results
+
+
 def selected_model_condition(args: argparse.Namespace, *, configure: bool = False) -> dict[str, str] | None:
     values = (
         args.workflow_model_condition_id,
@@ -1603,38 +1646,28 @@ def main(argv: list[str] | None = None) -> int:
     if not args.keep_lanes:
         atexit.register(cleanup_lane_checkouts, run_root)
     write_json(run_root / "plan.json", plan)
-    if not args.prepare_only:
-        for sequence_id, profile_id in jobs:
-            sequence = workflow.load_sequence(sequence_id)
-            if profile_id == "baseline-bare-codex" and sequence.get("task_family_generation") in {"baseline-v3", "baseline-v4"}:
-                workflow.reserve_baseline_pilot_attempt(
-                    sequence,
-                    root=ROOT,
-                    orchestrator=f"workflow-matrix:{run_root.name}",
-                    replicate_index=args.replicate_index,
-                )
     lane_results: list[dict[str, Any]] = []
-    if jobs:
-        with futures.ThreadPoolExecutor(max_workers=min(args.max_parallel, len(jobs))) as pool:
-            submitted = [
-                pool.submit(
-                    run_flow_lane,
-                    sequence_id=sequence_id,
-                    treatment_profile=treatment_profile,
-                    lane_root=run_root,
-                    replicate_index=args.replicate_index,
-                    runner_args=runner_args,
-                    source_codex_home=args.source_codex_home,
-                    model_condition=model_condition,
-                    production_lock_fd=production_lock_fd,
-                    published_launch_commit=published_launch_commit,
-                )
-                for sequence_id, treatment_profile in jobs
-            ]
-            for fut in futures.as_completed(submitted):
-                result = fut.result()
-                lane_results.append(result)
-                print(json.dumps(result, indent=2), flush=True)
+
+    def run_job(job: tuple[str, str]) -> dict[str, Any]:
+        sequence_id, treatment_profile = job
+        return run_flow_lane(
+            sequence_id=sequence_id,
+            treatment_profile=treatment_profile,
+            lane_root=run_root,
+            replicate_index=args.replicate_index,
+            runner_args=runner_args,
+            source_codex_home=args.source_codex_home,
+            model_condition=model_condition,
+            production_lock_fd=production_lock_fd,
+            published_launch_commit=published_launch_commit,
+        )
+
+    lane_results = execute_lane_jobs(
+        jobs,
+        args.max_parallel,
+        run_job,
+        on_result=lambda result: print(json.dumps(result, indent=2), flush=True),
+    )
 
     registry_path = ROOT / "data/workflow-sessions.json"
     registry_before = registry_path.read_bytes() if not args.prepare_only else b""

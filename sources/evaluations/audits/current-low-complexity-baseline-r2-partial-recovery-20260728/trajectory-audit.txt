@@ -1,0 +1,78 @@
+## r2 audit verdicts
+
+### `baseline-fastify-20260728-p-bb0e89ed9794-r2` — **GO**
+
+```yaml
+passed: true
+trajectory_review_complete: true
+independent_source_review_passed: true
+observed_unique_model_caused_incidents: 0
+observed_corrected_implementation_mistakes: 0
+observed_unresolved_defects: 0
+observed_prohibited_operations: 0
+observed_unnecessary_exploration_incidents: 0
+observed_model_caused_failed_commands: 0
+observed_code_rework_events: 0
+observed_verifier_or_environment_failures: 0
+```
+
+- 3 turns on one persistent thread; 3 command starts and completions, exits `[0, 0, 0]`.
+- Each executed shell payload matched its prompt command block byte-for-byte.
+- Retries: **0**; extra commands: **0**; unnecessary reads/searches: **0**.
+- Final verifier: **exit 0**; task verifier exits `[0, 0, 0]`.
+- Verifier-integrity checkpoints: **4/4 passed**.
+- Tool-isolation audit: **passed**; zero forbidden-tool, external-retrieval, MCP, or pass-through hits.
+- Final source changed only the four prescribed files and correctly restored `request.mediaType`, the shared bounded Content-Type cache, and HTTP 414 handling.
+- Compact bundle contains exactly four files; manifest hashes verified. Evidence has 50 unique safe records; all embedded JSON/JSONL parsed.
+- Provider accounting reconciles under final-cumulative same-thread semantics: **90,420 tokens**.
+
+### `baseline-terraform-20260728-p-5811b463c1e9-r2` — **GO**
+
+```yaml
+passed: true
+trajectory_review_complete: true
+independent_source_review_passed: true
+observed_unique_model_caused_incidents: 0
+observed_corrected_implementation_mistakes: 0
+observed_unresolved_defects: 0
+observed_prohibited_operations: 0
+observed_unnecessary_exploration_incidents: 0
+observed_model_caused_failed_commands: 0
+observed_code_rework_events: 0
+observed_verifier_or_environment_failures: 0
+```
+
+- 3 turns on one persistent thread; 3 command starts and completions, exits `[0, 0, 0]`.
+- All three command payloads matched their prompt blocks byte-for-byte.
+- Retries: **0**; extra commands: **0**; exploration or rework: **0**.
+- Final verifier: **exit 0**; task verifier exits `[0, 0, 0]`.
+- Verifier-integrity checkpoints: **4/4 passed**.
+- Tool-isolation audit: **passed**, with zero prohibited or retrieval hits.
+- Final source contains exactly three prescribed one-line repairs. Target blobs `51d0cfc…`, `bf0b349…`, and `772325c…` match the qualified fixed snapshot.
+- Compact four-file manifest and all 50 nested evidence records verified.
+- Provider accounting reconciles: **87,784 tokens**.
+
+The nonzero `codex doctor` diagnostic in each lane was explicitly classified by the passed preflight as a non-gating warning; it is not a verifier/environment incident.
+
+## Beets certification
+
+`baseline-beets-20260728-p-fcc8438d2077-r2` is **absent as a completed session**:
+
+- no session directory;
+- no workflow-registry entry;
+- no lane log or compact bundle;
+- no attributable provider result.
+
+A parent attempt-reservation receipt exists. The cleanup marker records a `FileNotFoundError` for the missing Beets lane log, so absence of a session is not proof that no provider-capable launch was attempted.
+
+## Matrix/publication disposition
+
+- The two completed lanes are strict-audit **GO**.
+- The r2 matrix/publication as a whole is **NO-GO**: it failed around the missing Beets lane artifact, and neither completed r2 session is currently present in the canonical repository registry/artifact root.
+- Lane-local evidence remains byte-valid and preserved.
+
+## Changes and issues
+
+- Files created or modified by this audit: **none**.
+- Provider/model calls: **none**.
+- The repository was already dirty and changed concurrently during review, including the generated runbook; those edits were not made by this audit.

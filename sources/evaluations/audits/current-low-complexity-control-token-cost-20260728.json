@@ -1,38 +1,12 @@
 {
   "schema_version": 2,
   "generated_on": "2026-07-28",
-  "status": "complete-current-low-complexity-control-panel-through-r1",
-  "panel_definition": "Fastify Baseline V3 plus generation-corrected Beets and Terraform Baseline V4 controls, retained at r0 and r1",
+  "status": "complete-valid-current-low-complexity-controls-through-partial-r2",
+  "panel_definition": "Fastify Baseline V3 plus generation-corrected Beets and Terraform Baseline V4 valid controls; r2 Beets is an excluded zero-spend controller failure",
   "weighted_token_cost_formula": "fresh_input_tokens + 0.1 * cached_input_tokens + 6 * output_tokens",
   "reasoning_accounting": "provider-reported reasoning-output tokens are a subset of output_tokens and are not added separately",
   "cache_write_accounting": "cache-write tokens are reported but excluded because no weight was specified",
   "controls": [
-    {
-      "sequence_id": "fastify-lifecycle-sequence-v0",
-      "task_family_generation": "baseline-v3",
-      "replicate_index": 0,
-      "session_id": "baseline-fastify-20260722-p-bb0e89ed9794-r0",
-      "fresh_input_tokens": 10315,
-      "cached_input_tokens": 65024,
-      "cache_write_tokens": 0,
-      "output_tokens": 1284,
-      "provider_reported_reasoning_output_subset_tokens": 0,
-      "total_provider_tokens": 76623,
-      "weighted_token_cost": 24521.4
-    },
-    {
-      "sequence_id": "fastify-lifecycle-sequence-v0",
-      "task_family_generation": "baseline-v3",
-      "replicate_index": 1,
-      "session_id": "baseline-fastify-20260728-p-bb0e89ed9794-r1",
-      "fresh_input_tokens": 34988,
-      "cached_input_tokens": 54272,
-      "cache_write_tokens": 0,
-      "output_tokens": 1203,
-      "provider_reported_reasoning_output_subset_tokens": 0,
-      "total_provider_tokens": 90463,
-      "weighted_token_cost": 47633.2
-    },
     {
       "sequence_id": "beets-lifecycle-sequence-v0",
       "task_family_generation": "baseline-v4",
@@ -60,6 +34,45 @@
       "weighted_token_cost": 43206.2
     },
     {
+      "sequence_id": "fastify-lifecycle-sequence-v0",
+      "task_family_generation": "baseline-v3",
+      "replicate_index": 0,
+      "session_id": "baseline-fastify-20260722-p-bb0e89ed9794-r0",
+      "fresh_input_tokens": 10315,
+      "cached_input_tokens": 65024,
+      "cache_write_tokens": 0,
+      "output_tokens": 1284,
+      "provider_reported_reasoning_output_subset_tokens": 0,
+      "total_provider_tokens": 76623,
+      "weighted_token_cost": 24521.4
+    },
+    {
+      "sequence_id": "fastify-lifecycle-sequence-v0",
+      "task_family_generation": "baseline-v3",
+      "replicate_index": 1,
+      "session_id": "baseline-fastify-20260728-p-bb0e89ed9794-r1",
+      "fresh_input_tokens": 34988,
+      "cached_input_tokens": 54272,
+      "cache_write_tokens": 0,
+      "output_tokens": 1203,
+      "provider_reported_reasoning_output_subset_tokens": 0,
+      "total_provider_tokens": 90463,
+      "weighted_token_cost": 47633.2
+    },
+    {
+      "sequence_id": "fastify-lifecycle-sequence-v0",
+      "task_family_generation": "baseline-v3",
+      "replicate_index": 2,
+      "session_id": "baseline-fastify-20260728-p-bb0e89ed9794-r2",
+      "fresh_input_tokens": 24983,
+      "cached_input_tokens": 64256,
+      "cache_write_tokens": 0,
+      "output_tokens": 1181,
+      "provider_reported_reasoning_output_subset_tokens": 0,
+      "total_provider_tokens": 90420,
+      "weighted_token_cost": 38494.6
+    },
+    {
       "sequence_id": "terraform-lifecycle-sequence-v0",
       "task_family_generation": "baseline-v4",
       "replicate_index": 0,
@@ -84,21 +97,46 @@
       "provider_reported_reasoning_output_subset_tokens": 0,
       "total_provider_tokens": 87816,
       "weighted_token_cost": 20977.0
+    },
+    {
+      "sequence_id": "terraform-lifecycle-sequence-v0",
+      "task_family_generation": "baseline-v4",
+      "replicate_index": 2,
+      "session_id": "baseline-terraform-20260728-p-5811b463c1e9-r2",
+      "fresh_input_tokens": 17503,
+      "cached_input_tokens": 69376,
+      "cache_write_tokens": 0,
+      "output_tokens": 905,
+      "provider_reported_reasoning_output_subset_tokens": 0,
+      "total_provider_tokens": 87784,
+      "weighted_token_cost": 29870.6
     }
   ],
   "totals": {
-    "fresh_input_tokens": 135491,
-    "cached_input_tokens": 376576,
+    "fresh_input_tokens": 177977,
+    "cached_input_tokens": 510208,
     "cache_write_tokens": 0,
-    "output_tokens": 6242,
+    "output_tokens": 8328,
     "provider_reported_reasoning_output_subset_tokens": 0,
-    "total_provider_tokens": 518309,
-    "weighted_token_cost": 210600.6
+    "total_provider_tokens": 696513,
+    "weighted_token_cost": 278965.8
   },
   "evidence": {
     "fastify_r0_audit": "sources/evaluations/audits/baseline-v3-pilot-zero-mistake.json",
     "beets_and_terraform_r0_audit": "sources/evaluations/audits/baseline-v4-pilot-zero-mistake.json",
     "r1_recovery_audit": "sources/evaluations/audits/current-low-complexity-baseline-r1-recovery-20260728/recovery.json",
-    "provider_accounting": "sources/evaluations/audits/codex-cumulative-usage-accounting-20260718.json"
-  }
+    "provider_accounting": "sources/evaluations/audits/codex-cumulative-usage-accounting-20260718.json",
+    "r2_partial_recovery_audit": "sources/evaluations/audits/current-low-complexity-baseline-r2-partial-recovery-20260728/recovery.json"
+  },
+  "excluded_attempts": [
+    {
+      "sequence_id": "beets-lifecycle-sequence-v0",
+      "replicate_index": 2,
+      "classification": "occupied-pre-provider-controller-failure",
+      "provider_tokens": 0,
+      "weighted_token_cost": 0,
+      "session_id": null,
+      "replacement_requires_new_owner_authorization": true
+    }
+  ]
 }
