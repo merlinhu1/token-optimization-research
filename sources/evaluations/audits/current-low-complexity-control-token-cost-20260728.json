@@ -1,8 +1,8 @@
 {
   "schema_version": 2,
   "generated_on": "2026-07-28",
-  "status": "complete-valid-current-low-complexity-controls-through-partial-r2",
-  "panel_definition": "Fastify Baseline V3 plus generation-corrected Beets and Terraform Baseline V4 valid controls; r2 Beets is an excluded zero-spend controller failure",
+  "status": "complete-valid-current-low-complexity-controls-three-per-lane",
+  "panel_definition": "Fastify Baseline V3 plus generation-corrected Beets and Terraform Baseline V4 controls; three valid controls per lane, with Beets r3 prospectively replacing the occupied zero-spend r2 controller failure",
   "weighted_token_cost_formula": "fresh_input_tokens + 0.1 * cached_input_tokens + 6 * output_tokens",
   "reasoning_accounting": "provider-reported reasoning-output tokens are a subset of output_tokens and are not added separately",
   "cache_write_accounting": "cache-write tokens are reported but excluded because no weight was specified",
@@ -32,6 +32,19 @@
       "provider_reported_reasoning_output_subset_tokens": 0,
       "total_provider_tokens": 87396,
       "weighted_token_cost": 43206.2
+    },
+    {
+      "sequence_id": "beets-lifecycle-sequence-v0",
+      "task_family_generation": "baseline-v4",
+      "replicate_index": 3,
+      "session_id": "baseline-beets-20260728-p-fcc8438d2077-r3",
+      "fresh_input_tokens": 32177,
+      "cached_input_tokens": 54272,
+      "cache_write_tokens": 0,
+      "output_tokens": 921,
+      "provider_reported_reasoning_output_subset_tokens": 0,
+      "total_provider_tokens": 87370,
+      "weighted_token_cost": 43130.2
     },
     {
       "sequence_id": "fastify-lifecycle-sequence-v0",
@@ -113,20 +126,21 @@
     }
   ],
   "totals": {
-    "fresh_input_tokens": 177977,
-    "cached_input_tokens": 510208,
+    "fresh_input_tokens": 210154,
+    "cached_input_tokens": 564480,
     "cache_write_tokens": 0,
-    "output_tokens": 8328,
+    "output_tokens": 9249,
     "provider_reported_reasoning_output_subset_tokens": 0,
-    "total_provider_tokens": 696513,
-    "weighted_token_cost": 278965.8
+    "total_provider_tokens": 783883,
+    "weighted_token_cost": 322096.0
   },
   "evidence": {
     "fastify_r0_audit": "sources/evaluations/audits/baseline-v3-pilot-zero-mistake.json",
     "beets_and_terraform_r0_audit": "sources/evaluations/audits/baseline-v4-pilot-zero-mistake.json",
     "r1_recovery_audit": "sources/evaluations/audits/current-low-complexity-baseline-r1-recovery-20260728/recovery.json",
     "provider_accounting": "sources/evaluations/audits/codex-cumulative-usage-accounting-20260718.json",
-    "r2_partial_recovery_audit": "sources/evaluations/audits/current-low-complexity-baseline-r2-partial-recovery-20260728/recovery.json"
+    "r2_partial_recovery_audit": "sources/evaluations/audits/current-low-complexity-baseline-r2-partial-recovery-20260728/recovery.json",
+    "beets_r3_recovery_audit": "sources/evaluations/audits/current-low-complexity-beets-r3-recovery-20260728.json"
   },
   "excluded_attempts": [
     {
@@ -136,7 +150,69 @@
       "provider_tokens": 0,
       "weighted_token_cost": 0,
       "session_id": null,
-      "replacement_requires_new_owner_authorization": true
+      "replacement_requires_new_owner_authorization": false,
+      "replacement_session_id": "baseline-beets-20260728-p-fcc8438d2077-r3",
+      "replacement_authorized_by_owner_message_id": "1531806010350633101",
+      "replacement_completed": true
     }
-  ]
+  ],
+  "lane_totals": {
+    "beets-lifecycle-sequence-v0": {
+      "valid_controls": 3,
+      "fresh_input_tokens": 82203,
+      "cached_input_tokens": 177920,
+      "cache_write_tokens": 0,
+      "output_tokens": 2843,
+      "provider_reported_reasoning_output_subset_tokens": 0,
+      "total_provider_tokens": 262966,
+      "weighted_token_cost": 117053.0
+    },
+    "fastify-lifecycle-sequence-v0": {
+      "valid_controls": 3,
+      "fresh_input_tokens": 70286,
+      "cached_input_tokens": 183552,
+      "cache_write_tokens": 0,
+      "output_tokens": 3668,
+      "provider_reported_reasoning_output_subset_tokens": 0,
+      "total_provider_tokens": 257506,
+      "weighted_token_cost": 110649.2
+    },
+    "terraform-lifecycle-sequence-v0": {
+      "valid_controls": 3,
+      "fresh_input_tokens": 57665,
+      "cached_input_tokens": 203008,
+      "cache_write_tokens": 0,
+      "output_tokens": 2738,
+      "provider_reported_reasoning_output_subset_tokens": 0,
+      "total_provider_tokens": 263411,
+      "weighted_token_cost": 94393.8
+    }
+  },
+  "descriptive_weighted_cost": {
+    "beets-lifecycle-sequence-v0": {
+      "n": 3,
+      "mean": 39017.7,
+      "sample_standard_deviation": 7189.0,
+      "coefficient_of_variation_percent": 18.43,
+      "minimum": 30716.6,
+      "maximum": 43206.2
+    },
+    "fastify-lifecycle-sequence-v0": {
+      "n": 3,
+      "mean": 36883.1,
+      "sample_standard_deviation": 11639.9,
+      "coefficient_of_variation_percent": 31.56,
+      "minimum": 24521.4,
+      "maximum": 47633.2
+    },
+    "terraform-lifecycle-sequence-v0": {
+      "n": 3,
+      "mean": 31464.6,
+      "sample_standard_deviation": 11368.7,
+      "coefficient_of_variation_percent": 36.13,
+      "minimum": 20977.0,
+      "maximum": 43546.2
+    },
+    "interpretation": "Within-lane descriptive diagnostics only; n=3 does not support stable rankings or population claims."
+  }
 }
