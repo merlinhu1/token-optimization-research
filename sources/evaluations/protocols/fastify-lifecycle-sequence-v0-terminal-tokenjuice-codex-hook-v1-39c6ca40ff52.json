@@ -1,10 +1,10 @@
 {
   "protocol_schema_version": 3,
-  "protocol_id": "fastify-lifecycle-sequence-v0-retrieval-sigmap-codex-live-v1-3d4ffcacaf87",
+  "protocol_id": "fastify-lifecycle-sequence-v0-terminal-tokenjuice-codex-hook-v1-39c6ca40ff52",
   "status": "frozen-ready-not-run",
-  "outcome": "Frozen retrieval-sigmap-codex-live-v1 protocol for fastify-lifecycle-sequence-v0; no provider/model run has occurred.",
+  "outcome": "Frozen terminal-tokenjuice-codex-hook-v1 protocol for fastify-lifecycle-sequence-v0; no provider/model run has occurred.",
   "frozen_at": "2026-07-22",
-  "hypothesis": "retrieval-sigmap-codex-live-v1 produces reproducible provider-reported token and software-quality evidence for fastify-lifecycle-sequence-v0",
+  "hypothesis": "terminal-tokenjuice-codex-hook-v1 produces reproducible provider-reported token and software-quality evidence for fastify-lifecycle-sequence-v0",
   "evidence_stage_target": "reproduction",
   "task_fixture": {
     "fixture_id": "medium-fastify-fastify",
@@ -25,12 +25,12 @@
     "command": ""
   },
   "treatment": {
-    "profile_id": "retrieval-sigmap-codex-live-v1",
+    "profile_id": "terminal-tokenjuice-codex-hook-v1",
     "provider": "openai",
     "model": "gpt-5.6-sol",
     "model_condition_id": "codex-openai-gpt-5-6-sol-high",
     "reasoning_effort": "high",
-    "command": "python3 scripts/run_codex_workflow_model_condition.py --workflow-model-condition-id codex-openai-gpt-5-6-sol-high --workflow-model gpt-5.6-sol --workflow-reasoning-effort high --sequence-id fastify-lifecycle-sequence-v0 --profile-id retrieval-sigmap-codex-live-v1 --timeout-per-task 3600 --protocol sources/evaluations/protocols/fastify-lifecycle-sequence-v0-retrieval-sigmap-codex-live-v1-3d4ffcacaf87.json --docker-image token-eval-codex:latest"
+    "command": "python3 scripts/run_codex_workflow_model_condition.py --workflow-model-condition-id codex-openai-gpt-5-6-sol-high --workflow-model gpt-5.6-sol --workflow-reasoning-effort high --sequence-id fastify-lifecycle-sequence-v0 --profile-id terminal-tokenjuice-codex-hook-v1 --timeout-per-task 3600 --protocol sources/evaluations/protocols/fastify-lifecycle-sequence-v0-terminal-tokenjuice-codex-hook-v1-39c6ca40ff52.json --docker-image token-eval-codex:latest"
   },
   "token_accounting_boundary": {
     "fields": [
@@ -49,7 +49,7 @@
       "version": "baseline-pool-v1",
       "task_family_generation": "baseline-v3",
       "runner_contract_version": "workflow-runner-v9",
-      "runner_sha256": "30e41bcaad32c16ea5577c992aac6333225c3a53bf94b9f85ea60f4ad2b714f3",
+      "runner_sha256": "a8e44a164c391c8cf4795331ee2891dfc6360e76595d86f9a91287edd6b3978c",
       "qualification_generator_sha256": "92c9d68b3146b37dd0f4f6c0c71a20d7ef83898fec7206b8d022f06351969eb7",
       "validator_sha256": "ccfc9139c7b93285ad7a848663ea31ab70b940fb4fbb2ab082b231f61f4a2b96",
       "sequence_id": "fastify-lifecycle-sequence-v0",
@@ -233,61 +233,56 @@
     }
   },
   "selected_execution": {
-    "descriptor_sha256": "78c05cbd2b41fbc2994743e9c8d2be6371d97e3e6d402c7a9c9538f209077666",
+    "descriptor_sha256": "3c9f0b7636bb276bcef355a0e39657478457728d905cf39eb6d6979e041e38f4",
     "descriptor": {
       "version": "execution-condition-v1",
       "sequence_id": "fastify-lifecycle-sequence-v0",
       "execution_role": "individual_tool_treatment",
       "selected_profile": {
-        "profile_id": "retrieval-sigmap-codex-live-v1",
+        "profile_id": "terminal-tokenjuice-codex-hook-v1",
         "profile_type": "individual_tool",
         "component_ids": [
-          "retrieval-sigmap-codex-live-v1"
+          "terminal-tokenjuice-codex-hook-v1"
         ],
         "enabled_surfaces": [
-          "retrieval-context",
-          "mcp",
-          "codex-agents",
-          "live-watch"
+          "codex-post-tool-use-hook",
+          "terminal-output"
         ],
         "disabled_overlaps": [
           "all unlisted surfaces"
         ],
-        "registry_entry_sha256": "7ff6edc14f1f857ebd13ef872b7c6a78309b11cbb8895ec63361125a10d4b466",
+        "registry_entry_sha256": "d68abdb6553deb2321bb41870fa4aa3fe689c0a6e313a835858c44cbc878b878",
         "registry_entry": {
-          "id": "retrieval-sigmap-codex-live-v1",
+          "id": "terminal-tokenjuice-codex-hook-v1",
           "profile_type": "individual_tool",
           "objective_scope": "individual_tool_effectiveness",
           "status": "screening-shortlist",
           "enabled_surfaces": [
-            "retrieval-context",
-            "mcp",
-            "codex-agents",
-            "live-watch"
+            "codex-post-tool-use-hook",
+            "terminal-output"
           ],
           "disabled_overlaps": [
             "all unlisted surfaces"
           ],
           "components": [
             {
-              "component_id": "retrieval-sigmap-codex-live-v1",
-              "surface": "retrieval-context+mcp+codex-agents+live-watch",
+              "component_id": "terminal-tokenjuice-codex-hook-v1",
+              "surface": "codex-post-tool-use-hook/terminal-output-compaction",
               "role": "individual_tool"
             }
           ],
           "install": {
-            "policy": "SigMap compatibility-safe Codex TOML registration, AGENTS guidance, live watcher, and retained MCP handshake proof."
+            "policy": "Use the pinned TokenJuice binary to run `tokenjuice install codex` against the lane-private CODEX_HOME, retain hooks.json, enable Codex hooks, and require `tokenjuice doctor codex` to pass before provider execution."
           },
           "reset": {
-            "policy": "Delete lane-private CODEX_HOME, product state, generated repository treatment files, and background processes after evidence capture."
+            "policy": "Delete the lane-private CODEX_HOME and TokenJuice state after evidence capture; verify hooks.json and hook history cannot survive into another lane."
           },
           "evaluation_protocol": {
             "tool_use_policy": "natural",
-            "tool_state": "warm-index",
-            "integration_state": "compatibility-safe-codex-live-mcp",
-            "assignment_proof": "provider-free initialize plus tools/list handshake required"
+            "tool_state": "cold-cli",
+            "integration_state": "official-codex-hook"
           },
-          "notes": "Versioned replacement for deleted historical results whose treatment assignment was not operationally proven."
+          "notes": "Corrected versioned TokenJuice profile. Supersedes the CLI-only historical profile for product-effect claims; does not rewrite its evidence."
         }
       },
       "model_facing_prompts": {
@@ -312,101 +307,96 @@
         ]
       },
       "tool_adapter": {
-        "tool_id": "sigmap-codex-live-v1",
+        "tool_id": "tokenjuice-codex-hook-v1",
         "tool_manifest": "scripts/run_codex_fixture_evaluation.py:TOOL_CONFIGS",
         "tool_manifest_sha256": "6fa8271b89a577706ea0bbffcc8e4521831f41b646ed9519369efee3642fe41c",
         "tool_config": {
-          "display_name": "SigMap Codex MCP with live watcher v1",
-          "lane_name": "retrieval-sigmap-codex-live-v1",
-          "surface": "retrieval/context+codex-agents+mcp-live-watch",
-          "mcp_server": "sigmap",
+          "display_name": "TokenJuice Codex hook v1",
+          "lane_name": "terminal-tokenjuice-codex-hook-v1",
+          "surface": "codex-post-tool-use-hook/terminal-output-compaction",
           "allowed_terms": [
-            "sigmap",
-            "gen-context"
+            "tokenjuice"
           ],
-          "data_dir_name": "sigmap-codex-live-v1",
-          "mcp_command": "/bin/bash",
-          "mcp_args": [
-            "-lc",
-            "cd {repo}; /opt/data/opt/node-v24.18.0-linux-x64/bin/node /opt/data/tool-candidates/sigmap/gen-context.js --watch >/dev/null 2>&1 & watcher=$!; trap 'kill $watcher 2>/dev/null || true; wait $watcher 2>/dev/null || true' EXIT; /opt/data/opt/node-v24.18.0-linux-x64/bin/node /opt/data/tool-candidates/sigmap/gen-context.js --mcp"
+          "data_dir_name": "tokenjuice-codex-hook-v1",
+          "executable": "/opt/data/tool-candidates/tokenjuice/bin/tokenjuice",
+          "path_entries": [
+            "/opt/data/tool-candidates/tokenjuice/bin"
+          ],
+          "mounts": [
+            "/opt/data/tool-candidates/tokenjuice"
           ],
           "env": {
-            "SIGMAP_TELEMETRY": "0"
+            "TOKENJUICE_TELEMETRY": "0"
           },
-          "mounts": [
-            "/opt/data/tool-candidates/sigmap"
-          ],
-          "diff_exclude_paths": [
-            ".context",
-            "AGENTS.md"
-          ],
-          "default_tool_state": "warm-index",
-          "warmup": {
-            "kind": "signature-map-and-codex-guidance",
-            "command": [
-              "/opt/data/opt/node-v24.18.0-linux-x64/bin/node",
-              "/opt/data/tool-candidates/sigmap/gen-context.js",
-              "--adapter",
-              "codex",
-              "--no-track"
+          "codex_features": {
+            "hooks": true
+          },
+          "host_integration": {
+            "install_commands": [
+              [
+                "tokenjuice",
+                "install",
+                "codex"
+              ]
             ],
-            "cleanup_paths": [
-              ".context",
-              "AGENTS.md"
+            "verify_commands": [
+              [
+                "tokenjuice",
+                "doctor",
+                "codex"
+              ]
             ],
-            "output_name": "sigmap-warmup-output.txt",
-            "metadata_name": "sigmap-warmup-metadata.json",
-            "timeout_seconds": 900
+            "required_files": [
+              "{codex_home}/hooks.json"
+            ]
           },
-          "mcp_handshake": {
-            "required": true,
-            "method": "initialize-and-tools-list",
-            "timeout_seconds": 60
-          },
-          "compatibility_deviation": "Manual Codex TOML registration is retained because the pinned targeted installer writes obsolete YAML; product AGENTS guidance and live watcher are present."
+          "preflight_command": [
+            "tokenjuice",
+            "--version"
+          ],
+          "default_tool_state": "cold-cli"
         },
-        "tool_config_sha256": "fcb359822696e9f45ae706fabfeeef16652679cf5befb8425c75c2e8f3325358",
-        "tool_state": "warm-index",
+        "tool_config_sha256": "ae1533be8109f2cdaf09ae83165aa36153210b262c1768b4265f44e33f6ddb2c",
+        "tool_state": "cold-cli",
         "tool_use_policy": "natural",
         "command_identity": {
-          "kind": "mcp_command",
+          "kind": "preflight_command",
           "command": [
-            "/bin/bash",
-            "-lc",
-            "cd {repo}; /opt/data/opt/node-v24.18.0-linux-x64/bin/node /opt/data/tool-candidates/sigmap/gen-context.js --watch >/dev/null 2>&1 & watcher=$!; trap 'kill $watcher 2>/dev/null || true; wait $watcher 2>/dev/null || true' EXIT; /opt/data/opt/node-v24.18.0-linux-x64/bin/node /opt/data/tool-candidates/sigmap/gen-context.js --mcp"
+            "tokenjuice",
+            "--version"
           ]
         },
         "binary_identity": {
-          "executable_token": "/bin/bash",
-          "resolved_path": "/bin/bash",
-          "realpath": "/usr/bin/bash",
-          "sha256": "223fe8564b60636bc738b6178d3ba9a50ef7d791266b0efae6363bb716e4c47f",
+          "executable_token": "tokenjuice",
+          "resolved_path": "/opt/data/tool-candidates/tokenjuice/bin/tokenjuice",
+          "realpath": "/opt/data/tool-candidates/tokenjuice/bin/tokenjuice",
+          "sha256": "d3939a3f76f8ae5489add74453edee5e11870d25a4bd92972111f664f33bc690",
           "metadata": {
-            "size": 1298416,
+            "size": 128,
             "mode": "-rwxr-xr-x",
-            "uid": 0,
-            "gid": 0,
-            "mtime_ns": 1772983313000000000
+            "uid": 10000,
+            "gid": 10000,
+            "mtime_ns": 1783105655084864002
           },
           "version": {
             "command": [
-              "/usr/bin/bash",
+              "/opt/data/tool-candidates/tokenjuice/bin/tokenjuice",
               "--version"
             ],
-            "environment_path": "/opt/data/.local/bin:/opt/data/opt/go/bin:/opt/data/opt/uv:/opt/data/opt/node-v24.18.0-linux-x64/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+            "environment_path": "/opt/data/.local/bin:/opt/data/tool-candidates/tokenjuice/bin:/opt/data/opt/go/bin:/opt/data/opt/uv:/opt/data/opt/node-v24.18.0-linux-x64/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
             "captured": true,
             "exit_code": 0,
-            "output": "GNU bash, version 5.2.37(1)-release (x86_64-pc-linux-gnu)\nCopyright (C) 2022 Free Software Foundation, Inc.\nLicense GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>\n\nThis is free software; you are free to change and redistribute it.\nThere is NO WARRANTY, to the extent permitted by law.",
+            "output": "0.8.1",
             "truncated": false
           }
         },
         "source_identity": [
           {
-            "path": "/opt/data/tool-candidates/sigmap",
+            "path": "/opt/data/tool-candidates/tokenjuice",
             "exists": true,
             "kind": "directory",
-            "git_head": "b1e086cf06bc7a7622473ffe9637c122567404e0",
-            "package_json_sha256": "f8478ca025747dada0b86288f696e1ae39ea8701a5081c60f54c70eafa034963"
+            "git_head": "49bdcf1755833ff1e02e44e6e7fe91c0fb44c16e",
+            "package_json_sha256": "420cce726d4d710bfc59e5059a4e4d4f1d52fcaafe71663e2a7077bb41e9eafe"
           }
         ]
       },
