@@ -73,6 +73,7 @@ def frozen_protocol(
         f"--sequence-id {seq['id']} --profile-id {profile_id} "
         f"--timeout-per-task 3600 --protocol {protocol_path.relative_to(ROOT)} "
         f"--docker-image {runner.DEFAULT_DOCKER_IMAGE}"
+        + (" --allow-retired-sequence" if seq.get("status") == "retired" else "")
     )
     agent = {
         "profile_id": profile_id,
@@ -136,6 +137,11 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--sequence-id", action="append", dest="sequence_ids", help="active sequence; repeat to select several (default: all active)")
     parser.add_argument("--profile-id", default="baseline-bare-codex", choices=sorted(runner.PROFILE_META))
+    parser.add_argument(
+        "--allow-retired-sequence",
+        action="store_true",
+        help="explicitly freeze a selected retired sequence for a historical one-off lane",
+    )
     return parser.parse_args(argv)
 
 
@@ -146,7 +152,9 @@ def main(argv: list[str] | None = None) -> int:
     sequence_ids = args.sequence_ids or runner.active_sequence_ids()
     for sequence_id in sequence_ids:
         seq = runner.load_sequence(sequence_id)
-        if seq.get("status") != "active":
+        if seq.get("status") != "active" and not (
+            args.allow_retired_sequence and seq.get("status") == "retired"
+        ):
             raise ValueError(f"cannot freeze a non-active sequence: {sequence_id}")
         current, _ = runner.qualification_is_current(seq)
         if not current:
