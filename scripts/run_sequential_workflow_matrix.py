@@ -230,16 +230,27 @@ def find_protocol(root: Path, sequence_id: str, profile_id: str) -> Path:
         raise ValueError(f"unknown or non-active workflow sequence: {sequence_id}")
     active_qualification = active_sequence.get("qualification_path")
     current_fingerprint = workflow.baseline_protocol_fingerprint(active_sequence)
+    current_baseline_descriptor = workflow.baseline_protocol_descriptor(active_sequence)
+    current_execution = workflow.execution_condition_descriptor(
+        active_sequence,
+        profile_id,
+        timeout_seconds_per_task=3600,
+        docker_image=workflow.DEFAULT_DOCKER_IMAGE,
+    )
     matches: list[Path] = []
     for path in (root / "sources/evaluations/protocols").glob("*.json"):
         protocol = load_json(path)
-        selected = protocol.get("selected_execution", {}).get("descriptor", {})
+        selected_execution = protocol.get("selected_execution", {})
+        selected = selected_execution.get("descriptor", {})
         if (
             protocol.get("status") == "frozen-ready-not-run"
             and protocol.get("task_fixture", {}).get("sequence_id") == sequence_id
             and protocol.get("task_fixture", {}).get("qualification_path") == active_qualification
             and protocol.get("baseline_pool", {}).get("protocol_fingerprint") == current_fingerprint
+            and protocol.get("baseline_pool", {}).get("descriptor") == current_baseline_descriptor
             and selected.get("selected_profile", {}).get("profile_id") == profile_id
+            and selected == current_execution
+            and selected_execution.get("descriptor_sha256") == workflow._json_hash(current_execution)
         ):
             matches.append(path)
     if len(matches) != 1:

@@ -22,6 +22,25 @@ SEQUENCE_ID = "terraform-maintenance-sequence-v2"
 
 
 class ActiveCampaignArchitectureTest(unittest.TestCase):
+    def test_retired_sequence_launch_requires_explicit_authorization(self) -> None:
+        sequence = runner.load_sequence("fastify-maintenance-sequence-v1")
+        with self.assertRaisesRegex(ValueError, "not active"):
+            runner.validate_sequence_launch_status(
+                sequence,
+                prepare_only=False,
+                allow_retired_sequence=False,
+            )
+        runner.validate_sequence_launch_status(
+            sequence,
+            prepare_only=False,
+            allow_retired_sequence=True,
+        )
+        runner.validate_sequence_launch_status(
+            sequence,
+            prepare_only=True,
+            allow_retired_sequence=False,
+        )
+
     def test_primary_lifecycle_sequence_covers_owner_task_mix(self) -> None:
         sequences = json.loads((ROOT / "data/workflow-task-sequences.json").read_text())["sequences"]
         lifecycle = [
@@ -275,18 +294,43 @@ class ActiveCampaignArchitectureTest(unittest.TestCase):
                     "sequence_id": "unit-sequence",
                     "qualification_path": "qualification.json",
                 },
-                "baseline_pool": {"protocol_fingerprint": "unit-fingerprint"},
+                "baseline_pool": {
+                    "protocol_fingerprint": "unit-fingerprint",
+                    "descriptor": {"unit": "baseline"},
+                },
                 "selected_execution": {
                     "descriptor": {
                         "selected_profile": {"profile_id": "baseline-bare-codex"}
-                    }
+                    },
+                    "descriptor_sha256": "unit-exec-hash",
                 },
             }
             (root / protocol_rel).write_text(json.dumps(protocol))
-            with mock.patch.object(
-                matrix.workflow,
-                "baseline_protocol_fingerprint",
-                return_value="unit-fingerprint",
+            with (
+                mock.patch.object(
+                    matrix.workflow,
+                    "baseline_protocol_fingerprint",
+                    return_value="unit-fingerprint",
+                ),
+                mock.patch.object(
+                    matrix.workflow,
+                    "baseline_protocol_descriptor",
+                    return_value={"unit": "baseline"},
+                ),
+                mock.patch.object(
+                    matrix.workflow,
+                    "execution_condition_descriptor",
+                    return_value={
+                        "selected_profile": {
+                            "profile_id": "baseline-bare-codex"
+                        }
+                    },
+                ),
+                mock.patch.object(
+                    matrix.workflow,
+                    "_json_hash",
+                    return_value="unit-exec-hash",
+                ),
             ):
                 self.assertEqual(
                     matrix.find_protocol(
