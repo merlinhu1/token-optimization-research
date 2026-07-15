@@ -1,0 +1,15 @@
+You are implementing a new command-line feature in beetbox/beets.
+
+Extend `beet modify` assignments so list-valued fields support incremental updates:
+
+- `field+=value` appends parsed values that are not already present, preserving existing and input order.
+- `field-=value` removes exact parsed values without substring matching.
+- Ordinary `field=value` replacement remains unchanged.
+- The operators are valid only for multi-value fields. Applying either operator to a scalar field must raise a clear `UserError` before objects are modified. Error wording is not prescribed, but it must identify the field and operator.
+- Existing legacy field aliases, template evaluation, album mode, confirmation, write, and move behavior must keep working.
+
+Keep parsing and application responsibilities explicit and typed. Add or update normal project tests where useful, but do not weaken existing behavior.
+
+The repository is already in a composite starting state for a three-task workflow. Work only inside the target repository, preserve unrelated state, and make a maintainable production change. Hidden cumulative acceptance runs after the final prompt.
+
+Use the prepared environment and run focused `uv run pytest` and `uv run ruff check` validation for the files you change.

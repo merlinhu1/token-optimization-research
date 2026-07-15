@@ -11,7 +11,7 @@ Monetary cost estimation is excluded.
 1. **Complete:** consolidate and freeze the evaluation framework.
 2. **Complete:** reconcile historical treatment estimands and result dispositions.
 3. **Complete for the first screen:** reduce the runnable treatment portfolio to `retrieval-codegraph`; defer every other unexecuted candidate.
-4. **Complete:** design and executable-qualify `beets-lifecycle-sequence-v1`.
+4. **Complete:** replace the invalid calibration contract with executable-qualified `beets-lifecycle-sequence-v2`.
 5. **Next:** run and review one lifecycle baseline replicate.
 6. If that baseline is valid, freeze and run one matched CodeGraph treatment; accumulate later replicates only as token budget permits.
 
@@ -44,6 +44,8 @@ Before any paid run, the frozen contract must prove:
 - conflict-free seed application and a qualified initial state;
 - exact prompt, seed, and verifier bytes;
 - future-prompt concealment and controller-only verifier assets;
+- no controller-only path collides with a file in the fixed project snapshot;
+- acceptance checks enforce only disclosed observable/public contracts, never canonical prose or undisclosed local names;
 - model/runtime/treatment identity;
 - model shell/network and treatment isolation;
 - every task verifier runs without short-circuiting;

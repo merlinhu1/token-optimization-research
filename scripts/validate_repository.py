@@ -369,6 +369,8 @@ def validate_qualification(sequence: dict, errors: list[str]) -> None:
         for task in ordered
     }
     required_true = ("seeded_verifier_nonzero", "fixed_verifier_zero", "full_fixed_cumulative_verifier_zero", "composite_seed_merge_zero", "composite_seeded_verifiers_nonzero", "no_unmerged_paths", "no_model_visible_acceptance_assets", "all_expected_model_concealment_declared")
+    if sequence.get("status") == "active":
+        required_true += ("fixed_snapshot_model_concealed_paths_absent",)
     if q.get("snapshot") != sequence.get("initial_snapshot", {}).get("commit") or q.get("ordered_task_ids") != [t["id"] for t in ordered] or q.get("qualified_on") != sequence.get("qualification_date"):
         errors.append(f"qualification {rel} snapshot, date, or task order is stale")
     if any(q.get(field) is not True for field in required_true):
@@ -422,6 +424,10 @@ def validate_qualification(sequence: dict, errors: list[str]) -> None:
             or record.get("model_concealed_paths") != declared
             or record.get("omitted_expected_model_concealed_paths") != []
             or record.get("declared_concealment_matches_expected") is not True
+            or (
+                sequence.get("status") == "active"
+                and record.get("fixed_snapshot_model_concealed_absent") is not True
+            )
         ):
             errors.append(f"qualification {rel} task {task['id']} concealment evidence is stale or incomplete")
         if q.get("task_binding", {}).get("task_directories", {}).get(task["id"]) != task_directory_sha256(task_dir):
@@ -917,6 +923,31 @@ def validate_required_object(parent: dict, key: str, sid: str, errors: list[str]
     return value
 
 
+def validate_invalid_fixture_disposition(
+    session: dict,
+    sid: str,
+    errors: list[str],
+) -> None:
+    interpretation = session.get("interpretation", {})
+    if not isinstance(interpretation, dict):
+        return
+    if interpretation.get("evaluation_validity") != "invalid-fixture":
+        return
+    if session.get("status") != "excluded":
+        errors.append(f"workflow session {sid} invalid fixture evidence must be excluded")
+    if interpretation.get("accepted_for_execution") is not False:
+        errors.append(f"workflow session {sid} invalid fixture evidence cannot be execution-accepted")
+    if interpretation.get("accepted_for_objective") is not False:
+        errors.append(f"workflow session {sid} invalid fixture evidence cannot be objective-accepted")
+    if interpretation.get("primary_objective_hard_baseline") is not False:
+        errors.append(f"workflow session {sid} invalid fixture evidence cannot be a hard baseline")
+    if interpretation.get("usable_for_primary_objective_token_comparison") is not False:
+        errors.append(f"workflow session {sid} invalid fixture evidence cannot be used for token comparison")
+    reasons = interpretation.get("invalidity_reasons")
+    if not isinstance(reasons, list) or not reasons or any(not isinstance(reason, str) or not reason for reason in reasons):
+        errors.append(f"workflow session {sid} invalid fixture evidence must record invalidity reasons")
+
+
 def validate_production_v3_schema_shape(session: dict, sid: str, errors: list[str]) -> None:
     required = (
         "schema_version",
@@ -974,6 +1005,7 @@ def validate_production_v3_schema_shape(session: dict, sid: str, errors: list[st
             errors.append(f"workflow session {sid} {key} must be an object when present")
     if not isinstance(session.get("per_task_results"), list):
         errors.append(f"workflow session {sid} per_task_results must be an array")
+    validate_invalid_fixture_disposition(session, sid, errors)
     if requires_structured_task_contract(session):
         validate_structured_task_outcomes(session, sid, errors)
 
@@ -1549,12 +1581,6 @@ def validate_frozen_protocol_bindings(errors: list[str]) -> None:
     except Exception as exc:
         errors.append(f"cannot import workflow runner for protocol binding validation: {exc}")
         runner = None
-    sessions = load_json("data/workflow-sessions.json").get("sessions", [])
-    executed_protocol_paths = {
-        str(session.get("frozen_protocol", {}).get("path"))
-        for session in sessions
-        if session.get("frozen_protocol", {}).get("path")
-    }
     current_sequence_bindings: set[str] = set()
     for path in (ROOT / "sources/evaluations/protocols").glob("*.json"):
         protocol = json.loads(path.read_text())
@@ -1571,7 +1597,7 @@ def validate_frozen_protocol_bindings(errors: list[str]) -> None:
         actual = __import__("hashlib").sha256(qualification_path.read_bytes()).hexdigest()
         if fixture.get("qualification_sha256") != actual:
             errors.append(f"frozen protocol {path.name} has a stale qualification hash")
-        if runner is not None and str(path.relative_to(ROOT)) not in executed_protocol_paths:
+        if runner is not None:
             try:
                 seq = runner.load_sequence(str(fixture.get("sequence_id")))
                 if seq.get("status") != "active":

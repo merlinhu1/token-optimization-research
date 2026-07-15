@@ -48,15 +48,17 @@ Continue to:
 
 ## Phase 2B — Compact lifecycle workflow
 
-Status: implemented and executable-qualified; baseline not yet run.
+Status: v2 implemented and executable-qualified; valid baseline not yet run.
 
-`beets-lifecycle-sequence-v1` is one pragmatically broad persistent workflow with:
+`beets-lifecycle-sequence-v2` is one pragmatically broad persistent workflow with:
 
 1. a feature implementation;
 2. a behavior-preserving refactor;
 3. a code-review task with correction of acceptance-critical findings.
 
 This lifecycle triad is the primary common-work configuration. Do not create a combinatorial language matrix. Select a representative medium/large repository whose existing tests and conventions can support all three tasks with deterministic controller-owned acceptance.
+
+The v1 calibration run is retained but excluded: it exposed an upstream concealed-path collision and verifier requirements for exact error prose and constructor parameter names that were not disclosed by the prompts. V2 keeps the workload while aligning acceptance with the provider-token estimand.
 
 Optional fourth-task/lane coverage may include maintenance repair, diagnosis, migration, or documentation when it tests a distinct treatment mechanism.
 

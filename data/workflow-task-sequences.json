@@ -245,7 +245,7 @@
       "complexity_note": "Each task changes only causally related production/type files.",
       "complexity_bar": "Three non-trivial cross-file production repairs with executable concealed qualification on the pinned snapshot.",
       "selection_rationale": "Token-savings comparison lane selected before treatment from v7 bare-baseline failure evidence: retain tracing context, computed-block capabilities, and variable parsing, whose surfaces were not reported as remaining blockers; exclude workspace recovery and query-hook signature migrations that prevented baseline acceptance.",
-      "retirement_reason": "Retained as a qualified maintenance-regression sequence and historical evidence boundary; superseded as the active primary design by beets-lifecycle-sequence-v1, which implements the owner-selected feature/refactor/review workflow."
+      "retirement_reason": "Retained as a qualified maintenance-regression sequence and historical evidence boundary; superseded as the active primary design by beets-lifecycle-sequence-v2, which implements the owner-selected feature/refactor/review workflow."
     },
     {
       "id": "beets-maintenance-sequence-v4",
@@ -314,11 +314,11 @@
       "complexity_bar": "Every task changes at least five causally related production/configuration files and has executable semantic plus static qualification on the pinned snapshot.",
       "selection_rationale": "Capability-calibrated multi-task lane: two original broad Beets regressions are narrowed into disjoint core contracts and combined with repeatedly successful Tidal synchronization. No treatment was run before this selection.",
       "readiness": "production-qualified-multitask-token-savings-baseline",
-      "retirement_reason": "Retained as a qualified maintenance-regression sequence and historical evidence boundary; superseded as the active primary design by beets-lifecycle-sequence-v1, which implements the owner-selected feature/refactor/review workflow."
+      "retirement_reason": "Retained as a qualified maintenance-regression sequence and historical evidence boundary; superseded as the active primary design by beets-lifecycle-sequence-v2, which implements the owner-selected feature/refactor/review workflow."
     },
     {
       "id": "beets-lifecycle-sequence-v1",
-      "status": "active",
+      "status": "retired",
       "acceptance_design": "behavioral",
       "scope": "production-primary",
       "sequence_contract": "feature-refactor-review",
@@ -385,6 +385,79 @@
       "complexity_note": "Task scope follows authentic causally related production surfaces: one command feature, one core lazy-storage refactor, and one two-module reviewed metadata-hook change. No arbitrary changed-file minimum is used.",
       "complexity_bar": "Each task has executable semantic acceptance on the pinned snapshot, fails independently and in the composite start, and passes cumulatively on the fixed snapshot.",
       "selection_rationale": "A compact Python lifecycle using authentic upstream production work: multi-value modify operators (feature), a UserDict-backed lazy model-storage rewrite with separate behavior and structure gates (refactor), and correction of the reviewed ftintitle metadata-hook revision from PR #6726 (code review). One language avoids a combinatorial matrix until the design is proven.",
+      "readiness": "retired-invalid-fixture",
+      "protocol_freeze_date": "2026-07-15",
+      "retirement_reason": "First provider run exposed an upstream concealed-path collision and acceptance-critical exact wording/signature checks not disclosed by the prompts; retained only as immutable calibration provenance and excluded from model/tool comparison."
+    },
+    {
+      "id": "beets-lifecycle-sequence-v2",
+      "status": "active",
+      "acceptance_design": "behavioral",
+      "scope": "production-primary",
+      "sequence_contract": "feature-refactor-review",
+      "readiness_blockers": [],
+      "qualification_path": "sources/evaluations/fixtures/medium/beetbox-beets/qualification-lifecycle-v2.json",
+      "qualification_date": "2026-07-15",
+      "fixture_id": "medium-beetbox-beets",
+      "fixture_scale": "medium-project",
+      "objective": "individual_tool_effectiveness",
+      "primary_metric": "cumulative provider-reported workflow tokens",
+      "reset_policy": "Reset once before the lane; preseed the missing feature, the pre-refactor lazy storage implementation, and the authentic flawed review revision into one concealed composite root; preserve repository and agent state across prompts; run every concealed verifier after the final prompt.",
+      "conversion_note": "Fair token-usage lifecycle: controller-only tests use collision-free paths, human-facing errors are checked semantically, and refactor acceptance does not prescribe undisclosed constructor parameter names.",
+      "initial_snapshot": {
+        "commit": "9acb1ecff6c7ee0a1e83e3b983c94792345712c5",
+        "upstream": "https://github.com/beetbox/beets.git",
+        "dependency_lockfiles": []
+      },
+      "tasks": [
+        {
+          "id": "beets-lifecycle-multivalue-modify-feature-v2",
+          "order": 1,
+          "task_class": "feature-implementation",
+          "prompt_path": "sources/evaluations/fixtures/medium/beetbox-beets/tasks/beets-lifecycle-multivalue-modify-feature-v2/agent-prompt.txt",
+          "verifier_command": "sources/evaluations/fixtures/medium/beetbox-beets/tasks/beets-lifecycle-multivalue-modify-feature-v2/verify.sh",
+          "upstream_test_paths": [],
+          "compatibility_rebased_test_paths": [
+            "test/controller_hidden/lifecycle/test_multivalue_modify_feature.py"
+          ],
+          "model_concealed_paths": [
+            "test/controller_hidden/lifecycle/test_multivalue_modify_feature.py"
+          ]
+        },
+        {
+          "id": "beets-lifecycle-lazy-model-storage-refactor-v2",
+          "order": 2,
+          "task_class": "behavior-preserving-refactor",
+          "prompt_path": "sources/evaluations/fixtures/medium/beetbox-beets/tasks/beets-lifecycle-lazy-model-storage-refactor-v2/agent-prompt.txt",
+          "verifier_command": "sources/evaluations/fixtures/medium/beetbox-beets/tasks/beets-lifecycle-lazy-model-storage-refactor-v2/verify.sh",
+          "upstream_test_paths": [],
+          "compatibility_rebased_test_paths": [
+            "test/controller_hidden/lifecycle/test_lazy_model_storage_refactor.py"
+          ],
+          "model_concealed_paths": [
+            "test/controller_hidden/lifecycle/test_lazy_model_storage_refactor.py"
+          ]
+        },
+        {
+          "id": "beets-lifecycle-ftintitle-review-v2",
+          "order": 3,
+          "task_class": "code-review-correction",
+          "prompt_path": "sources/evaluations/fixtures/medium/beetbox-beets/tasks/beets-lifecycle-ftintitle-review-v2/agent-prompt.txt",
+          "review_patch_path": "review-change.patch",
+          "verifier_command": "sources/evaluations/fixtures/medium/beetbox-beets/tasks/beets-lifecycle-ftintitle-review-v2/verify.sh",
+          "upstream_test_paths": [],
+          "compatibility_rebased_test_paths": [
+            "test/controller_hidden/lifecycle/test_ftintitle_review.py"
+          ],
+          "model_concealed_paths": [
+            "test/controller_hidden/lifecycle/test_ftintitle_review.py"
+          ]
+        }
+      ],
+      "seed_patch_policy": "Controller merges the three independently qualified lifecycle start conditions into one composite broken start before provider execution. The feature is absent, the old lazy-storage implementation is restored, and the authentic pre-merge ftintitle review revision is applied. Prompts are disclosed sequentially, the proposed review patch is disclosed only with task 3, acceptance assets remain controller-only, and every verifier runs after the final prompt.",
+      "complexity_note": "Task scope follows authentic causally related production surfaces: one command feature, one core lazy-storage refactor, and one two-module reviewed metadata-hook change. No arbitrary changed-file minimum is used.",
+      "complexity_bar": "Each task has executable semantic acceptance on the pinned snapshot, fails independently and in the composite start, and passes cumulatively on the fixed snapshot.",
+      "selection_rationale": "Versioned replacement for v1 after calibration showed verifier-contract false negatives. It preserves the same feature/refactor/review workload while aligning acceptance with disclosed observable behavior for provider-token comparison.",
       "readiness": "production-qualified-lifecycle-baseline",
       "protocol_freeze_date": "2026-07-15"
     }
