@@ -1,12 +1,12 @@
 {
   "schema_version": 1,
-  "description": "Active public large-project fixtures for primary objective token-saving experiments. GitHub metadata was fetched via the GitHub REST API on 2026-07-01; commits were pinned with git ls-remote on 2026-07-01.",
+  "description": "Historical large-project candidate registry; Terraform maintenance evidence is retained but no large-project workflow is active.",
   "selection_policy": {
     "include": "Large, active, public repositories with substantial software-engineering task surfaces and feasible subsystem-scoped verification.",
     "exclude": "User-owned/local personal projects, toy fixtures, archived repositories, and projects where no bounded verifier can be frozen.",
     "promotion_required": "Clone/pin a clean snapshot, freeze one task prompt, freeze setup/reset/verifier commands, and record blocker-free raw artifact paths before marking primary-objective.",
-    "active_fixture_count": "Three production-qualified active workflows: Fastify, Terraform, and Beets.",
-    "target_matrix": "large Go Terraform plus medium TypeScript/JavaScript Fastify and medium Python Beets; avoid foundational/high-popularity platform projects for future expansion."
+    "active_fixture_count": "Zero active large-project workflows; Terraform is retired maintenance evidence.",
+    "target_matrix": "No active language matrix. The single active practical workflow is the medium Beets lifecycle recorded in the medium-project registry."
   },
   "candidates": [
     {
@@ -19,15 +19,16 @@
       "surface": "retrieval-context",
       "setup_policy": "Use the pinned Go toolchain and run go mod download before bounded verification.",
       "verifier_policy": "Use bounded Go test selectors for the controller-held regression closure plus the task verifier; do not run the full repository test suite for every replicate.",
-      "selection_status": "primary-fixture",
-      "selected_reason": "Three production repairs are qualified and have an accepted current-pool baseline.",
+      "selection_status": "retired-maintenance-evidence",
+      "selected_reason": "Historically qualified Terraform maintenance lane retained for additive evidence; not active lifecycle planning.",
       "tasks": [
         "terraform-161ffe-tracing-context-regression",
         "terraform-520378-computed-block-capabilities-regression",
         "terraform-9ae470-objchange-validation-regression"
       ],
-      "qualification_status": "active-reproduction-flow",
-      "workflow_sequence_id": "terraform-maintenance-sequence-v2"
+      "qualification_status": "retired-qualified-fixture",
+      "workflow_sequence_id": "terraform-maintenance-sequence-v2",
+      "evidence_use": "historical maintenance evidence only; excluded from current lifecycle planning and candidate selection"
     }
   ]
 }

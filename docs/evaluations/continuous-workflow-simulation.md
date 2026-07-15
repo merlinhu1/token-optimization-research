@@ -2,9 +2,9 @@
 
 ## Purpose
 
-Continuous workflow simulation is the primary Phase 2 evidence path for token-optimization claims. It measures cumulative provider-billed token usage across a realistic persistent project session.
+Continuous workflow simulation is the primary Phase 2 evidence path for token-optimization claims. It measures cumulative provider-reported token use across a realistic persistent project session. Monetary cost is out of scope.
 
-The goal is to determine whether a baseline or treatment profile gets an ordered sequence of repository tasks to green with fewer provider-billed tokens while preserving task success and final repository quality.
+The goal is to determine whether a declared baseline or treatment profile completes an ordered sequence with fewer provider tokens while preserving structured task correctness and independent final quality.
 
 ## Core rule
 
@@ -31,22 +31,22 @@ Future regression code may be present from lane start; future prompts and concea
 
 ## Primary metric
 
-The primary metric is cumulative provider-billed workflow usage:
+The primary metric is cumulative provider-reported workflow usage:
 
 ```text
-workflow_session_total = sum(provider-billed usage for all model-visible work in the session)
+workflow_session_total = sum(provider-reported usage for all model-visible work in the session)
 ```
 
-Record fresh input, cached input, cache-write, output, reasoning when available, total provider tokens, and cost. Report tokens per accepted task as a derived metric.
+Record fresh input, cached input, cache-write, output, reasoning when available, and total provider tokens. Report tokens per structured accepted task as a derived metric. Do not estimate money.
 
 ## Quality constraint
 
-A treatment only supports a positive claim when it reduces cumulative provider-billed workflow tokens or cost and preserves quality.
+A treatment only supports a positive claim when it reduces cumulative provider token use and preserves correctness and quality.
 
 Quality requires:
 
-- one final concealed verifier-suite success after all prompts complete;
-- no critical safety, diagnostic, stale-context, or reversibility failure;
+- one structured concealed-verifier outcome for every task after all prompts complete;
+- no critical safety, diagnostic, compatibility, or maintainability failure;
 - final diff/status and transcript reviewability.
 
 Deterministic verifier success is a functional execution gate, not an automatic ordinal quality score. Leave `quality_score` null and `accepted_for_objective` false until a recorded software-quality review evaluates the documented quality dimensions.
@@ -65,7 +65,7 @@ A workflow session binds:
 - per-task results;
 - cumulative token usage;
 - final software-quality result;
-- operational reproducibility evidence.
+- execution-integrity evidence.
 
 Baseline and treatment sessions are directly comparable only when they use the same repository fixture, initial snapshot, task sequence, runtime, provider, model, model condition, and quality gates.
 
@@ -81,7 +81,7 @@ Sanity checks do not rank tools.
 
 ## Artifact layout
 
-Completed workflow-session runs keep a compact evidence bundle instead of a materialized checkout or split task-log tree:
+Completed workflow-session runs keep a compact evidence bundle instead of a materialized checkout or split task-log tree. New bundles include the structured task-result artifact inside the recoverable evidence bundle and may also expose it during the controller run:
 
 ```text
 sources/evaluations/workflow-sessions/<session-id>/
@@ -104,7 +104,7 @@ After one candidate has causally related behavior and passes composite-seed, con
 1. run `baseline-bare-codex` on the full persistent sequence;
 2. stop if the baseline fails any frozen gate;
 3. run one treatment profile on the same sequence and model condition;
-4. compare cumulative provider tokens, tokens per accepted task, pass rate, correction turns, repeated reads, stale-context incidents, and final quality;
+4. compare cumulative provider tokens, structured task outcomes, and final quality;
 5. expand only after the record shape, artifacts, and validation remain reliable.
 
 Candidate first treatments:

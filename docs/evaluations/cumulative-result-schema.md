@@ -1,60 +1,80 @@
-# Cumulative Result Schema
+# Cumulative result schema
 
 ## Purpose
 
-The research program is iterative and token-focused. The repository therefore stores primary evaluation evidence as append-only workflow-session records and keeps raw evidence under `sources/evaluations/workflow-sessions/<session-id>/`.
+Primary evidence is stored as append-only workflow-session records, with compact decision fields in `data/workflow-sessions.json` and recoverable evidence under `sources/evaluations/workflow-sessions/<session-id>/`.
 
-The primary metric is cumulative provider-billed token usage across a realistic persistent project workflow. Single-run records remain useful for historical results, debugging, instrumentation checks, and sanity gates, but they are not the default basis for recommendations.
-
-## Primary objectives
-
-1. Evaluate individual token-saving tools by cumulative workflow token usage on complex software-engineering sessions.
-2. Evaluate compatibility-safe tool stacks by cumulative workflow token usage on the same kind of persistent sessions.
-
-Synthetic micro fixtures and recorded diagnostic fixtures are useful for sanity checks and diagnostic-preservation tests. They do not support primary objective claims by themselves.
+The primary metric is cumulative provider-reported token use across a persistent software-engineering workflow. Monetary cost is out of scope.
 
 ## Core entities
 
 | Entity | File | Role |
 |---|---|---|
-| Repository fixture | `data/repository-fixtures.json` | Defines target repository, scale, setup/reset/verifier, and whether the fixture is calibration or primary-objective material. |
-| Workflow task sequence | `data/workflow-task-sequences.json` | Defines the ordered tasks for a persistent session and the reset/state policy for the sequence. |
-| Evaluation profile | `data/evaluation-profiles.json` | Standardizes baseline, individual-tool, stack, installer, and comparator profiles. |
-| Agent/model condition registry | `data/evaluation-agent-runtimes.json` | Separates evaluated runtime/provider/model settings from tool profiles. |
-| Workflow session record | `data/workflow-sessions.json` plus raw session directory | Records one baseline or treatment workflow simulation with cumulative token usage and quality gates. |
-| Historical run record | `data/evaluations.json` plus raw run directory | Records prior single-run baselines, treatments, comparisons, and aggregates. |
-| JSON schema | `schemas/workflow-session-record.schema.json` | Defines the canonical workflow-session shape for future tooling. |
+| Repository fixture | `data/repository-fixtures.json` | Frozen target, snapshot, setup/reset policy, and scale. |
+| Workflow task sequence | `data/workflow-task-sequences.json` | Ordered tasks and persistence policy. |
+| Evaluation profile | `data/evaluation-profiles.json` | Baseline or declared treatment configuration. |
+| Agent/model registry | `data/evaluation-agent-runtimes.json` | Runtime/provider/model condition, independent of the tool profile. |
+| Workflow session | `data/workflow-sessions.json` plus session directory | One complete baseline or treatment workflow replicate. |
+| JSON schema | `schemas/workflow-session-record.schema.json` | Machine validation for compact records. |
 
-## Append-only workflow policy
+## Replicate semantics
 
-- Add one workflow session record per executed baseline or treatment session.
-- Use one reviewed canonical baseline pool per frozen protocol fingerprint and replicate, plus a separate treatment `experiment_group_id` per profile. The fingerprint binds the fixture snapshot, task-prompt and verifier hashes, baseline substrate, agent/model condition, and isolation policy; execution date remains metadata only. Link treatments through comparison records and `interpretation.comparison_baseline_session_id`.
-- Bind `agent.runtime_id`, `agent.provider`, `agent.model`, and `agent.model_condition_id` before execution; placeholder model/provider values are allowed only for planned records.
-- Keep baseline and treatment workflow sessions on the same task sequence and model condition for direct tool-effect comparisons.
-- Use `objective = individual_tool_effectiveness` for one tool or comparator profile.
-- Use `objective = stack_effectiveness` for two-or-more-component stack treatments.
-- Reset repository/tool/agent state before the session, then preserve state between tasks unless the sequence explicitly models a user reset.
-- Supersede records instead of deleting failed, excluded, or negative results.
-- Never reuse a session ID or overwrite its compact evidence. Post-hoc integrity review may change objective eligibility only by preserving raw metrics/artifacts and recording the assessment reason and evidence.
-- Do not create paired workflow comparisons or aggregate summaries until the referenced workflow session records exist.
+A replicate is one complete execution of an ordered workflow sequence. A workflow with three tasks has three structured task outcomes but remains one replicate.
 
-## Required workflow metric groups
+Replicates are cumulative evidence:
 
-Each workflow session must record:
+- add one record per executed session;
+- never overwrite raw metrics or compact evidence;
+- do not call a later compatible execution a replacement run;
+- exclude an earlier session only when a recorded contract, isolation, accounting, or artifact defect makes the intended inference invalid;
+- preserve valid earlier sessions under their frozen scope even when the framework later improves.
 
-1. `cumulative_token_usage` — provider-billed session totals, cache tokens, output/reasoning tokens, pricing basis, and tokens per accepted task.
-2. `per_task_results` — task ID, Codex exit, provider-event boundary, cumulative source checkpoint, turns, tool calls, and notes; functional acceptance is intentionally deferred.
-3. `software_quality` — one final concealed verifier-suite result, explicit review status, nullable quality score, critical failures, and final diff/status. Verifier success alone must not synthesize a quality score.
-4. `state_observations` — persisted indexes/cache/memory/config, stale-context incidents, repeated rediscovery, overfeeding, and recovery notes.
-5. `operational_reproducibility` — install log, pre-session reset verification, raw-artifact recovery, state leakage outside the session boundary, and tool-isolation audit result.
+## Comparison identity
 
-Completed reproduction records must also prove structural sequential disclosure: lazy future-prompt materialization, a preseeded composite broken root, final-only controller verification, controller-only task/verifier assets, a model mount limited to the target repository plus isolated output, and passing verifier-integrity hashes. Single-replicate comparisons must record `replicate_count = 1`, null uncertainty, and non-ranking claim status.
+A comparison pool is defined by causal/model-visible inputs:
 
-## Complex-project policy
+- fixture snapshot and seed state;
+- task order, prompt bytes, and acceptance-verifier bytes;
+- baseline substrate or treatment configuration;
+- runtime image and model condition;
+- prompt disclosure and isolation policy.
 
-Primary objective claims require `fixture_scale = large-project` or `fixture_scale = medium-project`, `evidence_stage = reproduction`, and `evidence_type = workflow-simulation` unless a report explicitly scopes itself to calibration or benchmark-audit evidence.
+Full runner, validator, generator, and schema hashes remain in the frozen protocol for provenance. Reporting-only implementation changes do not split a comparison pool. A change to a causal/model-visible input produces a new comparison identity.
 
-The retained generated/recorded fixtures are sanity and diagnostic gates. The candidate primary fixtures are public complex projects listed in `data/large-project-candidates.json` and `data/medium-project-candidates.json`; each must be promoted from `candidate-fixture` only after a clean pinned snapshot, frozen task sequence, setup policy, reset policy, and verifier exist.
+The active pools retain their existing fingerprints through guarded causal-identity aliases so accumulated runs remain pairable after framework-only repairs.
+
+## Required decision fields
+
+Each new workflow record uses session `schema_version: 2` and contains:
+
+1. **Identity and scope** — session, study, sequence, profile, model condition, replicate, evidence stage, and frozen protocol.
+2. **Token use** — provider source, exposed token components, total provider tokens, reconstruction basis, and tokens per accepted task.
+3. **Per-task outcomes** — task ID/order, operational exit, declared completion, retry count, structured verifier exit/pass, and accepted state.
+4. **Software quality** — tasks attempted/completed/passed, final verifier state, independent review status, quality score, and critical failures.
+5. **Execution integrity** — verifier-integrity result, treatment-isolation result, external-retrieval hits, and pass-through treatment-command hits.
+6. **Artifacts** — compact run record, final diff, evidence bundle, manifest, and checksums.
+7. **Interpretation** — objective eligibility, comparison baseline, exclusions, screening/ranking status, and limitations.
+
+Broad `state_observations` and `operational_reproducibility` objects remain readable for historical records but are no longer required for new records. Their prior null or constant fields did not support the core token-versus-correctness decision.
+
+Money estimates, latency, setup/index timing, turn count, tool-call count, and manually scored behavior observations are not canonical requirements. Raw events may be examined for targeted diagnostics. Immutable historical `run.json` bundles may retain obsolete null-only cost keys for checksum provenance; the canonical registry, schema, and new runner output do not publish them.
+
+## Concealed verifier result artifact
+
+Each completed eligible lane emits `final-verifier-results.json` with one result per task. The controller:
+
+- runs all task verifiers without short-circuiting;
+- rejects duplicate, missing, malformed, or unexpected outcomes;
+- joins each result to its per-task checkpoint;
+- requires exact ordered task coverage and explicit attempt/verifier fields in schema-v2 records;
+- cross-checks `tasks_attempted`, `tasks_passed`, final-verifier state, and functional-verifier state against those outcomes;
+- derives `tasks_passed` from `accepted: true` values.
+
+If provider execution or verifier integrity prevents final verification, each task records `not-run` rather than being fabricated as a deterministic failure.
+
+## Treatment profiles
+
+Treatment estimands must be explicit. Availability/natural-use, prompted preferred direct use, mandatory policy, and integrated-owner profiles are different causal questions. Historical protocol semantics are never silently rewritten to a newer profile definition.
 
 ## Directory convention
 
@@ -62,8 +82,8 @@ The retained generated/recorded fixtures are sanity and diagnostic gates. The ca
 sources/evaluations/workflow-sessions/<session-id>/
   run.json
   changes.diff
-  evidence.jsonl.gz
+  evidence.jsonl.gz        # includes final-verifier-results.json
   manifest.sha256
 ```
 
-A compact copy of workflow-session metadata is appended to `data/workflow-sessions.json`; recoverable raw evidence remains in the session directory inside `evidence.jsonl.gz`.
+Historical bundles without the new structured result object remain valid under their frozen runner contract; their reviewed task outcomes stay in the compact registry and reports.

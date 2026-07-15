@@ -2,82 +2,115 @@
 
 ## Purpose
 
-This framework defines how token-saving tools and compatibility-safe stacks produce decision evidence. The primary metric is cumulative provider-billed token usage across realistic continuous project workflows. A tool is useful when it reduces cumulative tokens or cost for a persistent work session while preserving task success and final repository quality.
+This framework determines whether an AI-agent intervention reduces **cumulative provider-reported token use** across a realistic software-engineering workflow without reducing correctness or final software quality.
 
-Single-task isolated runs are not primary recommendation evidence. They remain useful as sanity checks for installation, profile isolation, usage capture, diagnostic preservation, and runner correctness.
+Monetary cost estimation is out of scope. Token use is the resource metric.
+
+## Practical objective
+
+The program should answer:
+
+> For a normal-user treatment configuration, does the intervention reduce total provider token use per correctness-accepted workflow while preserving software quality?
+
+The answer must be scoped to the frozen workflow, model condition, and treatment estimand. The project does not need a language-by-language matrix to be useful.
+
+## Primary workflow coverage
+
+The target lifecycle workflow is one persistent sequence containing:
+
+1. **Feature implementation** — add user-visible behavior under existing project conventions.
+2. **Behavior-preserving refactor** — improve structure without changing required behavior.
+3. **Code review and correction** — inspect a realistic cumulative change, identify acceptance-critical defects, and correct them when required.
+
+Optional lanes may cover maintenance regression repair, diagnosis, migration, build repair, or documentation. The existing Fastify, Terraform, and Beets sequences are maintenance-regression evidence. They remain valid within that scope; they are not treated as the whole target population.
+
+## Primary evaluation unit
+
+The canonical unit is a `workflow_session`:
+
+- one repository fixture and initial snapshot;
+- one ordered multi-task sequence;
+- one baseline or treatment profile;
+- one runtime/model condition;
+- persistent repository, agent, and permitted tool state across tasks;
+- cumulative provider token use across the complete sequence.
+
+**One replicate is one complete workflow session, not one task.** A three-task workflow executed once has three task outcomes and one replicate.
+
+Baseline and treatment sessions start from the same frozen inputs. State resets before a session, not between tasks, unless the sequence intentionally models a reset.
 
 ## Evidence progression
 
 | Stage | Required evidence | Decision use |
 |---|---|---|
-| `source-logic` | Representative implementation files inspected; runtime transformations, state, fallbacks, and compatibility implications mapped. | Qualified candidate selection and workflow-session design. |
-| `benchmark-audit` | Existing harnesses, task definitions, scoring, token accounting, raw outputs, and failure/exclusion semantics inspected. | Background evidence and protocol design. |
-| `reproduction` | Independent continuous workflow simulation with provider-billed cumulative token accounting and quality gates. | Deployment-grade recommendation for a defined environment. |
+| `source-logic` | Representative implementation inspected; mechanism, fallbacks, state, and compatibility mapped. | Candidate qualification. |
+| `benchmark-audit` | Existing harness, scoring, accounting, raw output, and exclusions inspected. | Protocol design and background evidence. |
+| `reproduction` | Frozen workflow execution with provider token accounting, structured task verification, independent quality review, isolation, and recoverable artifacts. | Scoped treatment evidence. |
 
-A tool or stack can advance only one stage at a time. Maintainer benchmarks, external pilots, sanity checks, and workflow reproductions must be labeled separately.
+A single reproduction is screening evidence. Confidence grows through additional compatible replicates; the record does not pretend that one run is a population estimate.
 
-## Primary evaluation unit
+## Lean decision metrics
 
-The canonical objective-bearing unit is a `workflow_session`:
+Canonical records require only evidence that directly changes the token-versus-correctness conclusion:
 
-- one repository fixture and initial snapshot;
-- one ordered task sequence;
-- one baseline or treatment profile;
-- one runtime/model condition;
-- persistent repository state across tasks;
-- persistent tool state, indexes, caches, generated config, and agent home across tasks;
-- provider-billed token usage accumulated across the whole sequence.
+| Group | Required evidence |
+|---|---|
+| Token use | Fresh input, cached input, cache-write, output, reasoning, and total provider tokens when exposed; accounting source and reconstruction formula. |
+| Task outcome | Operational exit, agent-declared completion, concealed-verifier exit, and accepted status for every task. |
+| Final quality | Independent review status, quality score, critical failures, final diff/status. |
+| Treatment validity | Frozen treatment profile, documented installation/configuration evidence, and tool-isolation audit. Observed use is optional descriptive telemetry. |
+| Integrity | Frozen protocol, source/runtime identities, compact artifacts, and checksums. |
 
-Baseline and treatment sessions must start from the same initial snapshot and run the same task sequence. Reset happens before the session, not between tasks, unless the task sequence explicitly models a user reset.
+The following are not required decision metrics: monetary cost, latency, setup/index timing, broad turn/tool-call telemetry, manually scored stale-context incidents, overfeeding notes, or rediscovery counts. Raw event evidence may be inspected for a targeted diagnosis without expanding every canonical record.
 
-## Evaluation layers
+Operational retry count remains attached to a task because retries directly contribute to measured token use.
 
-| Layer | Measurement question | Required outputs |
-|---|---|---|
-| Workflow token layer | Does the profile reduce cumulative provider-billed tokens across the session? | fresh input, cached input, cache-write, output, reasoning if exposed, total provider tokens, cost, pricing basis. |
-| Workflow behavior layer | Does state persistence reduce rereads, repeated exploration, correction turns, or tool chatter? | per-task transcript, turn count, tool-call count, repeated-read notes, correction count. |
-| Software-quality layer | Does the resulting cumulative repo state remain correct, maintainable, safe, and minimal? | final concealed verifier suite, final diff/status, operational task checkpoints, quality rubric, reviewer notes. |
-| State-quality layer | Does accumulated state help rather than stale or overfeed context? | tool-state manifest, index/cache/memory changes, stale-context incidents, overfeeding incidents, reset/recovery notes. |
-| Operational layer | Is the profile installable, observable, and recoverable across a session? | install log, generated files, disable/reset path, environment metadata, failure log. |
-| Sanity layer | Do artifact-level reducers and runner hooks preserve required facts? | raw artifact, transformed artifact, diagnostic assertions, raw fallback path. |
+## Concealed verification contract
 
-## Experiment classes
+1. Every task has a controller-owned verifier or an explicitly declared non-deterministic review contract.
+2. All concealed task verifiers run against the final cumulative repository, even when an earlier verifier fails.
+3. The controller emits one structured result per task: task ID, order, verifier exit code, pass/fail, and accepted status.
+4. `tasks_passed` is derived from those structured outcomes; it is never inferred as all-or-zero from one aggregate exit code.
+5. Missing or duplicate structured results fail closed.
+6. Independent source-quality review remains separate from prompt/verifier correctness.
 
-| Class | Purpose | Typical candidates | Decision weight |
-|---|---|---|---|
-| Workflow simulation | Compare baseline and treatment over a persistent multi-task project session. | LeanCTX, CodeGraph, Serena, Headroom, Token Savior, compatibility-safe stacks. | Primary. |
-| Workflow ablation | Rerun the same task sequence with one component removed, disabled, or replaced. | Multi-component stacks, broad owners, installer profiles. | Secondary attribution evidence. |
-| Sanity check | Verify install, profile isolation, usage capture, diagnostic preservation, raw fallback, or runner behavior. | Terminal compactors, binary lanes, profile manifests, usage extractors. | Not recommendation evidence. |
-| Benchmark audit | Inspect existing published or repository-local harnesses and token accounting. | Tools with built-in benchmarks. | Protocol/background evidence. |
+## Treatment estimands
 
-## Controls
+Treatment configuration is part of the causal question:
 
-Every workflow reproduction must record:
+- **available/natural-use** — install the normal integration and allow the agent to use it naturally;
+- **preferred/direct-use** — explicitly tell the agent to use the documented direct interface;
+- **mandatory-policy** — require use and measure the complete policy;
+- **integrated owner** — use a broader product-owned integration.
 
-- repository fixture ID, initial snapshot, and fixture scale;
-- task sequence ID and the ordered task IDs;
-- baseline and treatment profile IDs from `data/evaluation-profiles.json`;
-- objective: `individual_tool_effectiveness` or `stack_effectiveness`;
-- agent runtime, model condition, model, provider, and deterministic settings when available;
-- maximum turns, time budget, and tool permissions for the session;
-- state policy, including what persists across tasks and what is reset only before the session;
-- enabled token-saving surfaces and explicitly disabled overlapping surfaces;
-- per-task transcripts, provider usage, verifier output, and diff/status artifacts;
-- session-level cumulative provider usage and pricing basis;
-- final repository verifier output, final diff/status, and quality review;
-- tool manifest and session-level tool-isolation audit result;
-- exclusions with reason, not silent deletion.
+None is automatically invalid. Each must be predeclared and labeled. A prompted direct-use result cannot be presented as evidence for an unprompted automatic integration.
 
-`data/workflow-sessions.json` is the compact index for workflow simulation records. Raw evidence lives under `sources/evaluations/workflow-sessions/<session-id>/`. Existing `data/evaluations.json` single-run records remain historical and sanity/debug material unless a report explicitly scopes them otherwise.
+## Protocol identity and cumulative evidence
+
+Evidence is append-only:
+
+- New compatible runs add evidence; they are not replacement runs.
+- A prior run is excluded only for a demonstrated defect in its frozen contract, isolation, accounting, or artifacts.
+- Negative, failed, and zero-use sessions remain recorded.
+- Protocol files retain full implementation hashes for provenance.
+- Comparison-pool identity is derived only from causal/model-visible inputs: fixture and seed, prompts, verifiers, model condition, treatment configuration, runtime image, and isolation.
+- Reporting, registry, validator, or schema-only code changes do not split a comparison pool.
+- A causal input change mints a new comparison identity; earlier evidence remains valid under its original scope.
+
+This permits statistical evidence to accumulate over months without making every framework repair a forced rerun.
 
 ## Interpretation rules
 
-1. Token usage is the primary metric, measured as cumulative provider-billed workflow usage.
-2. Report fresh input, cached input, cache-write, output, reasoning if exposed, total provider tokens, and cost separately.
-3. Compare treatments by tokens per accepted workflow and tokens per accepted task, not by isolated one-off task deltas.
-4. Do not claim savings from estimated tokenizer counts alone.
-5. A workflow that saves tokens but fails task verifiers or final quality gates is a quality regression.
-6. A workflow that saves one task but increases later correction turns or stale-context failures requires session-level downgrade.
-7. A stack with overlapping owners is invalid unless overlap is explicitly disabled and verified.
-8. Single-task isolated runs are sanity checks and do not rank tools.
-9. Negative findings remain evidence and should be recorded.
+1. Compare cumulative provider token use per accepted workflow first.
+2. Report token components separately when available; do not convert them to money.
+3. Lower token use is not positive when correctness or independently reviewed quality is worse.
+4. Hard-lane correctness rescue and token efficiency are separate outcomes.
+5. A treatment is valid when it is installed and configured according to its documented normal-user instructions and the lane remains isolated. The estimand is availability/configuration (intent-to-treat); observed invocation is not required and must not gate, filter, or trigger reruns.
+6. Overlapping surface owners are invalid unless the overlap is explicitly disabled and verified.
+7. Single-replicate results are labeled screening evidence, not erased.
+8. Additional replicates should be paired to the same comparison identity and accumulated as budget permits.
+9. Candidate/profile expansion stays paused until framework consolidation is complete; candidate reduction follows consolidation.
+
+## Storage
+
+`data/workflow-sessions.json` is the compact decision index. Recoverable evidence lives under `sources/evaluations/workflow-sessions/<session-id>/`. Historical single-run records in `data/evaluations.json` remain debugging or sanity evidence unless a report explicitly says otherwise.

@@ -42,7 +42,7 @@ Everything else is support structure. If a file does not help one of those trans
 
 1. **Bundles are references, not techniques.** A bundle can map to many techniques but must not define a technique merely because it packages tools together.
 2. **Compatibility is surface-based.** Techniques conflict when they compete for the same buffer, decision point, or authority.
-3. **Claims preserve scope.** Command-level, request-level, session-level, provider-billed, output-only, and quality-gated claims are different evidence types.
+3. **Claims preserve scope.** Command-level, request-level, workflow-level, provider-reported, output-only, and quality-accepted claims are different evidence types.
 4. **Evaluations are technique-level first.** Bundle comparisons are secondary and only useful after component techniques are understood.
 5. **Paper text cites internal records.** The paper should cite repository IDs, claim IDs, technique IDs, evaluation IDs, and source URLs.
 

@@ -38,6 +38,12 @@ RUN apt-get update \
         zstd \
     && rm -rf /var/lib/apt/lists/*
 
+COPY sources/evaluations/fixtures/container/network-denied-shell.c /tmp/network-denied-shell.c
+RUN cc -O2 -Wall -Wextra -Werror /tmp/network-denied-shell.c -o /usr/local/bin/eval-network-denied-shell \
+    && mkdir -p /opt/data/model-network-bin \
+    && ln -s /usr/local/bin/eval-network-denied-shell /opt/data/model-network-bin/bash \
+    && rm /tmp/network-denied-shell.c
+
 RUN useradd --create-home --shell /bin/bash eval \
     && mkdir -p /opt/data /workspace \
     && chown -R eval:eval /workspace

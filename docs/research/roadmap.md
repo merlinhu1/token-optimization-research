@@ -1,49 +1,88 @@
 # Research roadmap
 
-## Current direction
+## Grand objective
 
-The active research direction is Phase 2 workflow-simulation repair: qualify realistic persistent multi-task workflows before comparing profiles with cumulative provider-billed token usage and software-quality gates.
+Determine which normal-user AI-agent interventions reduce cumulative provider-reported token use per correctness-accepted software-engineering workflow without reducing final software quality.
 
-Terraform, Beets, and Fastify remain primary-objective workflows. Terraform and Beets form the accepted three-task production pair. Fastify is a qualified five-task **primary-objective hard lane** whose strengthened failed result remains the provider-token baseline for treatment comparison. All three current contracts have controller-hidden acceptance assets, pinned source identity, and byte-bound qualification evidence.
+The project measures tokens, not monetary cost.
 
-Qualification for all three workflows proves a conflict-free composite broken start, every selected verifier failing on that broken state, the complete cumulative verifier passing on the fixed snapshot, asset concealment, and the production-file floor. Terraform and Beets have accepted, quality-reviewed, pool-matched bare baselines. Fastify treatments are compared against its frozen failed baseline under [`hard-lane-evidence.md`](hard-lane-evidence.md): report agent-declared completion, verified correctness, and provider tokens separately; regard a treatment as better when it improves correctness or matches correctness with fewer tokens. The next priority is paired treatment execution; do not create another workflow or protocol version unless the production contract materially changes.
+## Current direction: lifecycle baseline closure
 
-## Phase 1 — Source-logic stack research
+Status: lifecycle fixture qualified; provider-backed execution has not started.
 
-Status: complete for the current candidate set.
+The consolidated framework now provides:
 
-- Build the repository catalog and technique taxonomy.
-- Create persistent source-logic dossiers for important token-saving tools.
-- Define compatibility-safe stack candidates by surface ownership rather than popularity.
-- Publish the Phase 1 compatibility-safe stack report.
-- Keep `lead` entries out of stack recommendations until source-code logic is inspected.
+1. run every concealed task verifier and emit structured per-task outcomes;
+2. derive `tasks_passed` from those outcomes;
+3. keep only decision-critical token, correctness, quality, treatment-validity, and integrity metrics;
+4. preserve comparison identity across reporting-only framework repairs;
+5. qualify prompts, seeds, verifiers, isolation, and artifact recovery before paid execution;
+6. reconcile historical reports and registry dispositions against frozen treatment estimands;
+7. a frozen baseline protocol for the active lifecycle sequence.
 
-## Phase 2 — Workflow-simulation benchmark framework
+The immediate execution order is: independently review the lifecycle fixture, run one baseline replicate, review its artifact, and only then consider the single shortlisted CodeGraph treatment. No other candidate is runnable.
 
-Status: active.
+Existing Fastify, Terraform, Beets, Lowfat, and Caveman sessions remain evidence under their recorded scopes. New compatible runs add statistical evidence; they are not replacement runs.
 
-- Keep non-production candidates out of authoritative sequences.
-- Require qualified composite pre-seeding, sequential prompt disclosure, final-only concealed verification, true-root Git concealment, and behavioral acceptance before activation.
-- Maintain fixture readiness in `data/repository-fixtures.json`.
-- Generate the human operator runbook with `scripts/update_workflow_runbook.py`.
-- Run canonical shared-baseline and treatment workflow sessions with the same sequence, runtime, provider, model condition, prompt-disclosure policy, and verifier set.
-- Record compact workflow-session evidence under `sources/evaluations/workflow-sessions/<session-id>/`.
-- Retain failed but well-formed primary-objective hard-lane baselines for token-usage comparison when operational completion, agent-declared completion, verified correctness, and provider tokens are reported separately; judge treatments by relative outperformance.
-- Promote selected dossiers from `source-logic` to `benchmark-audit` only after harness, scoring, token accounting, raw outputs, and failure semantics are inspected.
+## Phase 1 — Source-logic research
 
-## Phase 3 — Controlled stack reproduction
+Status: complete for the current catalog.
 
-Status: not complete.
+- Build tool dossiers and the surface-ownership taxonomy.
+- Inspect mechanisms and compatibility before evaluation.
+- Keep lead-only candidates out of recommendations.
 
-- Run baseline and treatment profiles on frozen active workflow sequences.
-- Compare provider-billed workflow usage, pass rate, quality score, turns, tool calls, latency, and reset/reproducibility.
-- Keep accepted production sessions in the live registry; use Git history for rejected calibration attempts.
-- Promote only reproduced findings toward deployment-grade recommendations.
+## Phase 2A — Controlled maintenance workflows
 
-## Phase 4 — Research outputs and standards
+Status: evidence collected; interpretation/reconciliation active.
+
+The retired Fastify, Terraform, and Beets maintenance sequences cover regression repair on medium/large public repositories. They remain qualified evidence boundaries but are no longer the active primary experiment design.
+
+Continue to:
+
+- retain all valid same-contract replicates;
+- classify prompt/verifier correctness and independent source quality separately;
+- treat hard-lane correctness rescue separately from token efficiency;
+- label single-replicate treatment observations as screening evidence;
+- add compatible replicates only as token budget permits.
+
+## Phase 2B — Compact lifecycle workflow
+
+Status: implemented and executable-qualified; baseline not yet run.
+
+`beets-lifecycle-sequence-v1` is one pragmatically broad persistent workflow with:
+
+1. a feature implementation;
+2. a behavior-preserving refactor;
+3. a code-review task with correction of acceptance-critical findings.
+
+This lifecycle triad is the primary common-work configuration. Do not create a combinatorial language matrix. Select a representative medium/large repository whose existing tests and conventions can support all three tasks with deterministic controller-owned acceptance.
+
+Optional fourth-task/lane coverage may include maintenance repair, diagnosis, migration, or documentation when it tests a distinct treatment mechanism.
+
+## Phase 3 — Candidate reduction and replicated treatment evidence
+
+Status: initial reduction complete; treatment execution waits for a reviewed lifecycle baseline.
+
+- Stop adding profiles.
+- Keep `retrieval-codegraph` as the sole first-screen candidate because its pinned local build is executable, its fresh-lane installation is deterministic, and retrieval is naturally relevant to all three lifecycle tasks.
+- Keep every other unexecuted candidate deferred until the first screen or a concrete workflow/mechanism gap justifies reconsideration.
+- Prefer one atomic treatment at a time before stacks.
+- Preserve natural-use, preferred-direct, mandatory, and integrated-owner estimands as separate profiles.
+- Run one complete workflow per replicate.
+- Accumulate paired replicates over time instead of waiting for a large batch before recording results.
+- Report individual pair effects; add median/range when repeated compatible pairs exist.
+- Evaluate a second model condition only for a treatment whose first-condition evidence warrants the extra token budget.
+
+## Phase 4 — Practical outputs
 
 Status: future.
 
-- Publish Phase 2 and Phase 3 reports with measured results and limitations.
-- Update dossiers and standards based on benchmark-audit and reproduction findings.
-- Version datasets, task fixtures, evaluation protocols, and run records with clear changelogs.
+For each treatment publish a scoped disposition:
+
+- recommend;
+- conditionally recommend;
+- avoid;
+- insufficient evidence.
+
+Each disposition names the treatment configuration, workflow/task coverage, model condition, token effect, structured correctness, independent quality, replicate count, and limitations. No money estimate is produced.

@@ -10,7 +10,7 @@ External repositories inspected:
 - `orchestra-research/AI-research-SKILLs`
 - `Master-cai/Research-Paper-Writing-Skills`
 
-The patterns below are used as methodology inspiration. Claims in this repository should continue to be grounded primarily in inspected source code, runnable benchmarks, provider-billed usage, verifier outputs, and software-quality review.
+The patterns below are used as methodology inspiration. Claims in this repository should continue to be grounded primarily in inspected source code, runnable benchmarks, provider-reported token usage, verifier outputs, and software-quality review.
 
 ## Selected skill patterns to adapt
 
@@ -117,9 +117,9 @@ Use when turning Phase 2 results into reports.
 Recommended visuals:
 
 - surface ownership matrix;
-- baseline versus treatment provider-billed task tokens;
-- pass rate and quality-score table;
-- turns/tool-calls/latency table;
+- baseline versus treatment provider-reported workflow tokens;
+- structured per-task correctness and independent quality table;
+- treatment installation/configuration and isolation summary, with observed use included only as optional descriptive telemetry;
 - ablation chart by component;
 - run trajectory for iterative benchmark development;
 - installer profile diff for Tokless-generated configuration.
@@ -130,7 +130,7 @@ Recommended visuals:
 |---|---|
 | `docs/reports/phase-1-compatibility-safe-token-saving-stacks.md` | Add claim-evidence and falsification discipline; keep stack hypotheses evidence-stage calibrated and not deployment-grade. |
 | `docs/evaluations/phase-2-benchmark-plan.md` | Use protocol-before-result, ablation planning, and benchmark configuration capture. |
-| `docs/evaluations/token-usage-and-quality-standards.md` | Add provider-billed task accounting and software-quality gates as hard acceptance criteria. |
+| `docs/evaluations/token-usage-and-quality-standards.md` | Add provider-reported workflow-token accounting and software-quality acceptance criteria. |
 | `docs/evaluations/immediately-usable-flows.md` | Convert generic methodology into execution flows with artifacts and minimum pass conditions. |
 | `templates/evaluation-record.md` | Record claims, metrics, quality gates, and raw artifact paths in one structured record. |
 | `prompts/paper-writer.md` | Enforce narrative, reverse outline, claim-evidence map, and citation-light prior-art rules. |
@@ -146,7 +146,7 @@ Before Phase 2 experiments start, use this operating sequence:
 4. For each, run benchmark-audit before reproduction.
 5. After each run, update `data/evaluations.json`, the relevant dossier, and the Phase 2 findings narrative.
 
-The resulting Phase 2 report should be concise and evidence-forward: fewer citations, more protocol, raw artifacts, provider-billed usage, verifier output, quality review, ablations, and negative findings.
+The resulting Phase 2 report should be concise and evidence-forward: fewer citations, more protocol, raw artifacts, provider-reported token usage, verifier output, quality review, ablations, and negative findings.
 ## Installed repo-local skills
 
 The recommended internal skills are installed as repo-local prompt files under `.agents/skills/` and surfaced through `AGENTS.md`:

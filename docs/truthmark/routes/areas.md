@@ -1,7 +1,7 @@
 ---
 status: active
 doc_type: route-index
-last_reviewed: 2026-07-07
+last_reviewed: 2026-07-14
 ---
 
 # Truthmark Areas
@@ -82,6 +82,7 @@ Code surface:
 - scripts/refresh_workflow_contracts.py
 - scripts/run_codex_fixture_evaluation.py
 - scripts/run_codex_workflow_evaluation.py
+- scripts/run_codex_workflow_model_condition.py
 - scripts/run_sequential_workflow_matrix.py
 - scripts/test_workflow_evaluation_contract.py
 - scripts/update_workflow_runbook.py
