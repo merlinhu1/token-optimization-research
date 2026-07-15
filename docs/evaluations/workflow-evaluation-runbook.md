@@ -21,7 +21,7 @@ Every active task must use causally related behavioral acceptance. Unrelated exa
 
 | Sequence | Fixture | Scale | Snapshot | Tasks |
 |---|---|---|---|---:|
-| `beets-lifecycle-sequence-v1` | `medium-beetbox-beets` | medium-project | [`9acb1ecff6c7`](https://github.com/beetbox/beets.git) | 3 |
+| `beets-lifecycle-sequence-v2` | `medium-beetbox-beets` | medium-project | [`9acb1ecff6c7`](https://github.com/beetbox/beets.git) | 3 |
 
 ## Planned candidates and blockers
 
@@ -53,15 +53,15 @@ python3 scripts/run_sequential_workflow_matrix.py --prepare-only "$SEQUENCE_ID"
 The active sequence list is non-empty. Freeze a protocol, run a no-model prepare, then run the canonical baseline first:
 
 ```bash
-python3 scripts/run_sequential_workflow_matrix.py beets-lifecycle-sequence-v1 --prepare-only
-python3 scripts/run_sequential_workflow_matrix.py beets-lifecycle-sequence-v1 --treatment-profile <profile-id>
+python3 scripts/run_sequential_workflow_matrix.py beets-lifecycle-sequence-v2 --prepare-only
+python3 scripts/run_sequential_workflow_matrix.py beets-lifecycle-sequence-v2 --treatment-profile <profile-id>
 ```
 
 Stop before treatment if the baseline fails any frozen gate.
 
 ## Active sequence details
 
-### `beets-lifecycle-sequence-v1`
+### `beets-lifecycle-sequence-v2`
 
 - Fixture: `medium-beetbox-beets`
 - Primary metric: cumulative provider-reported workflow tokens
@@ -69,9 +69,9 @@ Stop before treatment if the baseline fails any frozen gate.
 
 | Order | Task | Prompt | Verifier |
 |---:|---|---|---|
-| 1 | `beets-lifecycle-multivalue-modify-feature` | `sources/evaluations/fixtures/medium/beetbox-beets/tasks/beets-lifecycle-multivalue-modify-feature/agent-prompt.txt` | `sources/evaluations/fixtures/medium/beetbox-beets/tasks/beets-lifecycle-multivalue-modify-feature/verify.sh` |
-| 2 | `beets-lifecycle-lazy-model-storage-refactor` | `sources/evaluations/fixtures/medium/beetbox-beets/tasks/beets-lifecycle-lazy-model-storage-refactor/agent-prompt.txt` | `sources/evaluations/fixtures/medium/beetbox-beets/tasks/beets-lifecycle-lazy-model-storage-refactor/verify.sh` |
-| 3 | `beets-lifecycle-ftintitle-review` | `sources/evaluations/fixtures/medium/beetbox-beets/tasks/beets-lifecycle-ftintitle-review/agent-prompt.txt` | `sources/evaluations/fixtures/medium/beetbox-beets/tasks/beets-lifecycle-ftintitle-review/verify.sh` |
+| 1 | `beets-lifecycle-multivalue-modify-feature-v2` | `sources/evaluations/fixtures/medium/beetbox-beets/tasks/beets-lifecycle-multivalue-modify-feature-v2/agent-prompt.txt` | `sources/evaluations/fixtures/medium/beetbox-beets/tasks/beets-lifecycle-multivalue-modify-feature-v2/verify.sh` |
+| 2 | `beets-lifecycle-lazy-model-storage-refactor-v2` | `sources/evaluations/fixtures/medium/beetbox-beets/tasks/beets-lifecycle-lazy-model-storage-refactor-v2/agent-prompt.txt` | `sources/evaluations/fixtures/medium/beetbox-beets/tasks/beets-lifecycle-lazy-model-storage-refactor-v2/verify.sh` |
+| 3 | `beets-lifecycle-ftintitle-review-v2` | `sources/evaluations/fixtures/medium/beetbox-beets/tasks/beets-lifecycle-ftintitle-review-v2/agent-prompt.txt` | `sources/evaluations/fixtures/medium/beetbox-beets/tasks/beets-lifecycle-ftintitle-review-v2/verify.sh` |
 
 ## Artifact contract
 

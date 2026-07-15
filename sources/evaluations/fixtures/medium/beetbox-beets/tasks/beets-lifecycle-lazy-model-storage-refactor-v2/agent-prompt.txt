@@ -1,0 +1,7 @@
+Refactor the lazy model-value storage in `beets/dbcore/db.py` without changing behavior.
+
+Replace the bespoke `LazyConvertDict` implementation with a small `collections.UserDict`-backed `LazyDict`. Raw database values must remain lazy and convert only on access. Preserve missing-key behavior, mutation and deletion of raw/converted values, iteration safety, copy isolation, fixed/flexible value loading, dirty-state behavior, and normal model construction/query results.
+
+The structural endpoint should make `LazyDict` the single lazy mapping abstraction and let model construction receive raw fixed and flexible values directly; remove the old `LazyConvertDict`/`_awaken` path rather than keeping parallel implementations. The constructor may receive those mappings positionally or by name; acceptance does not prescribe parameter names.
+
+Run focused database/model tests and relevant repository checks. Do not change command behavior or unrelated modules.
