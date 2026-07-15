@@ -21,9 +21,7 @@ Every active task must use causally related behavioral acceptance. Unrelated exa
 
 | Sequence | Fixture | Scale | Snapshot | Tasks |
 |---|---|---|---|---:|
-| `fastify-maintenance-sequence-v1` | `medium-fastify-fastify` | medium-project | [`94bcbcc6e2ef`](https://github.com/fastify/fastify.git) | 5 |
-| `terraform-maintenance-sequence-v2` | `large-hashicorp-terraform` | large-project | [`e02391ad384c`](https://github.com/hashicorp/terraform.git) | 3 |
-| `beets-maintenance-sequence-v4` | `medium-beetbox-beets` | medium-project | [`8ddae794d30e`](https://github.com/beetbox/beets.git) | 3 |
+| `beets-lifecycle-sequence-v1` | `medium-beetbox-beets` | medium-project | [`9acb1ecff6c7`](https://github.com/beetbox/beets.git) | 3 |
 
 ## Planned candidates and blockers
 
@@ -33,7 +31,7 @@ _None._
 
 Before changing a sequence to `active`, require:
 
-- at least five causally related production files per primary task, or explicit smoke/calibration scope;
+- the smallest causally related production surface that satisfies explicit semantic acceptance, with no arbitrary changed-file minimum;
 - behavioral seeded-fail/fixed-pass gates;
 - a conflict-free composite seed whose task verifiers all fail at lane start;
 - one parentless model-facing Git baseline with the fixed commit inaccessible;
@@ -41,11 +39,11 @@ Before changing a sequence to `active`, require:
 - controller-only task, seed, verifier, and reference assets;
 - cumulative provider usage capture, verifier integrity, isolation, and software-quality review.
 
-A no-model prepare for a planned candidate is allowed:
+A no-model prepare for a frozen candidate is allowed:
 
 ```bash
-SEQUENCE_ID=<planned-sequence-id>
-python3 scripts/run_codex_workflow_evaluation.py   --sequence-id "$SEQUENCE_ID"   --profile-id baseline-bare-codex   --prepare-only   --skip-container-preflight   --skip-codex-preflight   --skip-dependency-install
+SEQUENCE_ID=<frozen-sequence-id>
+python3 scripts/run_sequential_workflow_matrix.py --prepare-only "$SEQUENCE_ID"
 ```
 
 `prepare-verification.json` must show every task preseeded, only task 1's prompt materialized, a clean true-root Git baseline, no fixed commit object or prior reflog, current composite qualification, and no model-visible seed or verifier assets.
@@ -55,51 +53,25 @@ python3 scripts/run_codex_workflow_evaluation.py   --sequence-id "$SEQUENCE_ID" 
 The active sequence list is non-empty. Freeze a protocol, run a no-model prepare, then run the canonical baseline first:
 
 ```bash
-python3 scripts/run_sequential_workflow_matrix.py fastify-maintenance-sequence-v1 --prepare-only
-python3 scripts/run_sequential_workflow_matrix.py fastify-maintenance-sequence-v1 --treatment-profile <profile-id>
+python3 scripts/run_sequential_workflow_matrix.py beets-lifecycle-sequence-v1 --prepare-only
+python3 scripts/run_sequential_workflow_matrix.py beets-lifecycle-sequence-v1 --treatment-profile <profile-id>
 ```
 
 Stop before treatment if the baseline fails any frozen gate.
 
 ## Active sequence details
 
-### `fastify-maintenance-sequence-v1`
-
-- Fixture: `medium-fastify-fastify`
-- Primary metric: cumulative provider-billed workflow tokens
-- Reset policy: Reset once before the lane; preseed all regressions into one concealed composite root; preserve source, Git, tool, index, cache, generated config, memory, and agent state across prompts; run concealed functional verification once at the end.
-
-| Order | Task | Prompt | Verifier |
-|---:|---|---|---|
-| 1 | `fastify-max-param-length-regression` | `sources/evaluations/fixtures/medium/fastify-fastify/tasks/fastify-max-param-length-regression/agent-prompt.txt` | `sources/evaluations/fixtures/medium/fastify-fastify/tasks/fastify-max-param-length-regression/verify.sh` |
-| 2 | `fastify-handler-timeout-regression` | `sources/evaluations/fixtures/medium/fastify-fastify/tasks/fastify-handler-timeout-regression/agent-prompt.txt` | `sources/evaluations/fixtures/medium/fastify-fastify/tasks/fastify-handler-timeout-regression/verify.sh` |
-| 3 | `fastify-request-media-type-regression` | `sources/evaluations/fixtures/medium/fastify-fastify/tasks/fastify-request-media-type-regression/agent-prompt.txt` | `sources/evaluations/fixtures/medium/fastify-fastify/tasks/fastify-request-media-type-regression/verify.sh` |
-| 4 | `fastify-log-controller-regression` | `sources/evaluations/fixtures/medium/fastify-fastify/tasks/fastify-log-controller-regression/agent-prompt.txt` | `sources/evaluations/fixtures/medium/fastify-fastify/tasks/fastify-log-controller-regression/verify.sh` |
-| 5 | `fastify-content-type-semantics-regression` | `sources/evaluations/fixtures/medium/fastify-fastify/tasks/fastify-content-type-semantics-regression/agent-prompt.txt` | `sources/evaluations/fixtures/medium/fastify-fastify/tasks/fastify-content-type-semantics-regression/verify.sh` |
-
-### `terraform-maintenance-sequence-v2`
-
-- Fixture: `large-hashicorp-terraform`
-- Primary metric: cumulative provider-billed workflow tokens
-- Reset policy: Reset once before the lane; preseed all regressions into one concealed composite root; preserve source, Git, tool, index, cache, generated config, memory, and agent state across prompts; run concealed functional verification once at the end.
-
-| Order | Task | Prompt | Verifier |
-|---:|---|---|---|
-| 1 | `terraform-161ffe-tracing-context-regression` | `sources/evaluations/fixtures/large/hashicorp-terraform/tasks/terraform-161ffe-tracing-context-regression/agent-prompt.txt` | `sources/evaluations/fixtures/large/hashicorp-terraform/tasks/terraform-161ffe-tracing-context-regression/verify.sh` |
-| 2 | `terraform-520378-computed-block-capabilities-regression` | `sources/evaluations/fixtures/large/hashicorp-terraform/tasks/terraform-520378-computed-block-capabilities-regression/agent-prompt.txt` | `sources/evaluations/fixtures/large/hashicorp-terraform/tasks/terraform-520378-computed-block-capabilities-regression/verify.sh` |
-| 3 | `terraform-9ae470-objchange-validation-regression` | `sources/evaluations/fixtures/large/hashicorp-terraform/tasks/terraform-9ae470-objchange-validation-regression/agent-prompt.txt` | `sources/evaluations/fixtures/large/hashicorp-terraform/tasks/terraform-9ae470-objchange-validation-regression/verify.sh` |
-
-### `beets-maintenance-sequence-v4`
+### `beets-lifecycle-sequence-v1`
 
 - Fixture: `medium-beetbox-beets`
-- Primary metric: cumulative provider-billed workflow tokens
-- Reset policy: Reset once before the lane; preseed all regressions into one concealed composite root; preserve source, Git, tool, index, cache, generated config, memory, and agent state across prompts; run concealed functional verification once at the end.
+- Primary metric: cumulative provider-reported workflow tokens
+- Reset policy: Reset once before the lane; preseed the missing feature, the pre-refactor lazy storage implementation, and the authentic flawed review revision into one concealed composite root; preserve repository and agent state across prompts; run every concealed verifier after the final prompt.
 
 | Order | Task | Prompt | Verifier |
 |---:|---|---|---|
-| 1 | `beets-path-format-core-regression` | `sources/evaluations/fixtures/medium/beetbox-beets/tasks/beets-path-format-core-regression/agent-prompt.txt` | `sources/evaluations/fixtures/medium/beetbox-beets/tasks/beets-path-format-core-regression/verify.sh` |
-| 2 | `beets-multivalue-core-regression` | `sources/evaluations/fixtures/medium/beetbox-beets/tasks/beets-multivalue-core-regression/agent-prompt.txt` | `sources/evaluations/fixtures/medium/beetbox-beets/tasks/beets-multivalue-core-regression/verify.sh` |
-| 3 | `beets-tidal-metadata-sync-regression-v2` | `sources/evaluations/fixtures/medium/beetbox-beets/tasks/beets-tidal-metadata-sync-regression-v2/agent-prompt.txt` | `sources/evaluations/fixtures/medium/beetbox-beets/tasks/beets-tidal-metadata-sync-regression-v2/verify.sh` |
+| 1 | `beets-lifecycle-multivalue-modify-feature` | `sources/evaluations/fixtures/medium/beetbox-beets/tasks/beets-lifecycle-multivalue-modify-feature/agent-prompt.txt` | `sources/evaluations/fixtures/medium/beetbox-beets/tasks/beets-lifecycle-multivalue-modify-feature/verify.sh` |
+| 2 | `beets-lifecycle-lazy-model-storage-refactor` | `sources/evaluations/fixtures/medium/beetbox-beets/tasks/beets-lifecycle-lazy-model-storage-refactor/agent-prompt.txt` | `sources/evaluations/fixtures/medium/beetbox-beets/tasks/beets-lifecycle-lazy-model-storage-refactor/verify.sh` |
+| 3 | `beets-lifecycle-ftintitle-review` | `sources/evaluations/fixtures/medium/beetbox-beets/tasks/beets-lifecycle-ftintitle-review/agent-prompt.txt` | `sources/evaluations/fixtures/medium/beetbox-beets/tasks/beets-lifecycle-ftintitle-review/verify.sh` |
 
 ## Artifact contract
 

@@ -7,7 +7,7 @@ This directory stores cumulative, persistent analysis for token-saving tools. Do
 - `lead`: discovery candidate only; no dossier and no decision evidence.
 - `source-logic`: minimum dossier stage; representative implementation logic inspected.
 - `benchmark-audit`: benchmark harness, tasks, scoring, token accounting, and raw outputs inspected.
-- `reproduction`: independent target-workload reproduction with provider-billed usage and quality gates.
+- `reproduction`: independent target-workload reproduction with provider-reported token usage and software-quality acceptance.
 
 ## Current dossiers
 

@@ -25,6 +25,8 @@ DEFAULT_CODEX_HOME_ROOT = Path("/opt/data/eval-codex-homes")
 DEFAULT_SOURCE_CODEX_HOME = Path("/opt/data/home/.codex")
 DEFAULT_DOCKER_IMAGE = "token-eval-codex:latest"
 DEFAULT_DOCKERFILE = ROOT / "sources" / "evaluations" / "fixtures" / "container" / "Dockerfile"
+MODEL_NETWORK_DENIED_SHELL = "/usr/local/bin/eval-network-denied-shell"
+MODEL_NETWORK_DENIED_BIN = "/opt/data/model-network-bin"
 CODEX_RUNTIME_ROOT = Path(os.environ.get(
     "TOKEN_EVAL_CODEX_RUNTIME_ROOT",
     "/opt/data/.local/lib/node_modules/@openai/codex",
@@ -99,8 +101,6 @@ TOOL_CONFIGS: dict[str, dict[str, Any]] = {
         "mcp_args": [],
         "env": {"LEAN_CTX_DATA_DIR": "{tool_data_dir}"},
         "mounts": ["/opt/data/bin"],
-        "preferred_guidance": "For codebase navigation, file reads, search, and ordinary shell-style inspection, prefer the exposed LeanCTX MCP/ctx tools over raw shell output.",
-        "optional_guidance": "LeanCTX is available as an optional retrieval/context tool. Use it only when it is likely to reduce total context or improve localization; otherwise use Codex native shell/file tools.",
         "warmup": {
             "kind": "index",
             "command": ["/opt/data/bin/lean-ctx", "index", "build", "{repo}"],
@@ -119,8 +119,6 @@ TOOL_CONFIGS: dict[str, dict[str, Any]] = {
         "mcp_args": ["serve", "--mcp", "--no-watch"],
         "env": {"CODEGRAPH_TELEMETRY": "0"},
         "mounts": ["/opt/data/tool-candidates/codegraph"],
-        "preferred_guidance": "For codebase navigation, symbol/context discovery, file reads, and structural search, prefer the exposed CodeGraph MCP tool over raw shell output.",
-        "optional_guidance": "CodeGraph is available as an optional retrieval/context tool. Use it only when graph-backed navigation is likely to reduce total context or improve localization; otherwise use Codex native shell/file tools.",
         "warmup": {
             "kind": "index",
             "command": [str(CODEGRAPH_BIN), "init", "{repo}"],
@@ -161,8 +159,6 @@ TOOL_CONFIGS: dict[str, dict[str, Any]] = {
         ],
         "env": {"SERENA_HOME": "{tool_data_dir}"},
         "mounts": [str(SERENA_ROOT)],
-        "preferred_guidance": "For codebase navigation, symbol overview, targeted reads, and semantic edits, prefer the exposed Serena MCP tools over broad grep/read scans when language-server-backed context is likely to help.",
-        "optional_guidance": "Serena is available as an optional retrieval/context MCP tool. Use symbolic overview/search and targeted reads when they are likely to reduce total context or improve localization; otherwise use Codex native shell/file tools.",
     },
     "graphify": {
         "display_name": "Graphify",
@@ -188,8 +184,6 @@ TOOL_CONFIGS: dict[str, dict[str, Any]] = {
         "env": {"GRAPHIFY_OUT": "graphify-out"},
         "mounts": [str(GRAPHIFY_ROOT)],
         "default_tool_state": "warm-index",
-        "preferred_guidance": "For codebase navigation, dependency/orientation questions, and scoped code search, prefer the exposed Graphify MCP graph query tools before broad grep/read scans.",
-        "optional_guidance": "Graphify is available as an optional warm code-graph retrieval tool. Use graph queries when they are likely to reduce total context or improve localization; otherwise use Codex native shell/file tools.",
         "warmup": {
             "kind": "code-graph-build",
             "command": [
@@ -228,8 +222,6 @@ TOOL_CONFIGS: dict[str, dict[str, Any]] = {
         "env": {"SIGMAP_TELEMETRY": "0"},
         "mounts": [str(SIGMAP_ROOT)],
         "default_tool_state": "warm-index",
-        "preferred_guidance": "For codebase navigation, signature lookup, targeted context, impact analysis, and grounded reads, prefer the exposed SigMap MCP tools before broad grep/read scans.",
-        "optional_guidance": "SigMap is available as an optional signature-map retrieval MCP tool. Use its ranked context, signature search, impact, and targeted line tools when they are likely to reduce total context or improve localization; otherwise use Codex native shell/file tools.",
         "warmup": {
             "kind": "signature-map-build",
             "command": [
@@ -260,8 +252,6 @@ TOOL_CONFIGS: dict[str, dict[str, Any]] = {
         "env": {"JCODEMUNCH_LOG_LEVEL": "ERROR"},
         "mounts": [str(JCODEMUNCH_ROOT), str(JCODEMUNCH_WHEEL)],
         "default_tool_state": "warm-index",
-        "preferred_guidance": "For codebase navigation, symbol lookup, ranked context bundles, file outlines, dependency/impact queries, and targeted reads, prefer the exposed jcodemunch MCP tools before broad grep/read scans.",
-        "optional_guidance": "jcodemunch MCP is available as an optional warm code retrieval/indexing tool. Use indexed symbol/context tools when they are likely to reduce total context or improve localization; otherwise use Codex native shell/file tools.",
         "warmup": {
             "kind": "code-index-build",
             "command": [
@@ -291,8 +281,6 @@ TOOL_CONFIGS: dict[str, dict[str, Any]] = {
         "env": {"SNIP_TELEMETRY": "0"},
         "preflight_command": ["snip", "--version"],
         "default_tool_state": "cold-cli",
-        "preferred_guidance": "Snip is available as a terminal/tool-output compaction proxy. Prefix eligible shell commands with `snip` (for example `snip git status --short`, `snip npm test`, `snip node --test`) unless full raw output is required for diagnosis; use raw commands when compaction would hide necessary detail.",
-        "optional_guidance": "Snip is available as an optional terminal/tool-output compaction proxy. Use it for git, test, build, and log-producing commands when likely to reduce terminal output without hiding required diagnostics; otherwise use Codex native shell commands.",
     },
     "lowfat": {
         "display_name": "Lowfat",
@@ -306,9 +294,9 @@ TOOL_CONFIGS: dict[str, dict[str, Any]] = {
         "binary_mount_target": "/usr/local/bin/lowfat",
         "env": {"LOWFAT_TELEMETRY": "0"},
         "preflight_command": ["lowfat", "--version"],
+        "coverage_preflight_command": ["lowfat", "info"],
+        "supported_commands": ["docker", "find", "git", "grep", "ls", "tree"],
         "default_tool_state": "cold-cli",
-        "preferred_guidance": "Lowfat is available as a terminal/tool-output compaction proxy. Prefix eligible shell commands with `lowfat` (for example `lowfat git status`, `lowfat git diff`, `lowfat npm test`) unless full raw output is required for diagnosis; use raw commands when compaction would hide necessary detail.",
-        "optional_guidance": "Lowfat is available as an optional terminal/tool-output compaction proxy. Use `lowfat <command>` for git, test, build, and search commands when it is likely to reduce terminal output without hiding required diagnostics; otherwise use Codex native shell commands.",
     },
     "tokenjuice": {
         "display_name": "TokenJuice",
@@ -322,8 +310,6 @@ TOOL_CONFIGS: dict[str, dict[str, Any]] = {
         "env": {"TOKENJUICE_TELEMETRY": "0"},
         "preflight_command": ["tokenjuice", "--version"],
         "default_tool_state": "cold-cli",
-        "preferred_guidance": "TokenJuice is available as a terminal/tool-output compaction proxy. Prefix eligible shell commands with `tokenjuice` (for example `tokenjuice git status`, `tokenjuice git diff`, `tokenjuice npm test`) unless full raw output is required for diagnosis; use `tokenjuice wrap -- <command>` or a raw command when compaction would hide necessary detail.",
-        "optional_guidance": "TokenJuice is available as an optional terminal/tool-output compaction proxy. Use `tokenjuice <command>` for git, test, build, and search commands when likely to reduce terminal output without hiding required diagnostics; otherwise use Codex native shell commands.",
     },
 
     "headroom": {
@@ -381,8 +367,6 @@ TOOL_CONFIGS: dict[str, dict[str, Any]] = {
             "--version",
         ],
         "default_tool_state": "active-wrapper",
-        "preferred_guidance": "Headroom is active as the Codex wrapper/proxy lane. Treat its default compression, MCP retrieval, and Headroom-managed context-tool/code-graph setup as the treatment surface; do not manually enable unrelated token-saving tools outside the wrapper.",
-        "optional_guidance": "Headroom is active as an optional broad compression/proxy Codex wrapper. Use Codex normally through the wrapper, retrieve compressed originals with the Headroom tool when needed, and preserve verifier/debug output if compression or retrieval hides required diagnostics.",
     },
     "token-savior": {
         "display_name": "Token Savior",
@@ -411,8 +395,6 @@ TOOL_CONFIGS: dict[str, dict[str, Any]] = {
             "TS_HOME": "{tool_data_dir}",
         },
         "mounts": [str(TOKEN_SAVIOR_ROOT)],
-        "preferred_guidance": "For symbol lookup, targeted source reads, call/dependency context, structured git status, compact change summaries, and codebase search, prefer the exposed Token Savior MCP tools over broad grep/read scans when they are likely to reduce context.",
-        "optional_guidance": "Token Savior is available as an optional integrated MCP tool. Use targeted symbol/context tools when they are likely to reduce total context or improve localization; otherwise use Codex native shell/file tools. Do not rely on host hooks or external memory injection in this lane.",
     },
     "rtk": {
         "display_name": "RTK",
@@ -426,8 +408,6 @@ TOOL_CONFIGS: dict[str, dict[str, Any]] = {
         "binary_mount_target": "/usr/local/bin/rtk",
         "env": {"RTK_TELEMETRY": "0"},
         "preflight_command": ["rtk", "--version"],
-        "preferred_guidance": "RTK is available as a terminal/tool-output compaction proxy. Prefix eligible shell commands with `rtk` (for example `rtk git status`, `rtk git diff`, `rtk go test`, `rtk pytest`) unless full raw output is required for diagnosis; use `rtk proxy <cmd>` or a raw command when compaction would hide necessary detail.",
-        "optional_guidance": "RTK is available as an optional terminal/tool-output compaction proxy. Use `rtk <command>` for git, test, build, and search commands when it is likely to reduce terminal output without hiding required diagnostics; otherwise use Codex native shell commands.",
     },
     "caveman": {
         "display_name": "Caveman",
@@ -439,8 +419,6 @@ TOOL_CONFIGS: dict[str, dict[str, Any]] = {
         "preflight_command": ["node", str(CAVEMAN_ROOT / "src" / "tools" / "caveman-init.js"), "--help"],
         "prompt_instructions_command": ["python3", "-c", f"from pathlib import Path; print(Path({str(CAVEMAN_ROOT / 'skills' / 'caveman' / 'SKILL.md')!r}).read_text())"],
         "default_tool_state": "active-instruction-layer",
-        "preferred_guidance": "Caveman is active as a behavioral output-compression policy layer. Keep technical substance exact while making assistant replies terse; preserve code, command output needed for diagnosis, verifier details, and safety warnings exactly.",
-        "optional_guidance": "Caveman is active as an optional behavior-compression policy layer. Bias final and intermediate assistant prose toward terse, low-fluff responses, but do not under-solve tasks or compress code, commands, errors, or verifier evidence into ambiguity.",
     },
     "ponytail": {
         "display_name": "Ponytail",
@@ -451,8 +429,6 @@ TOOL_CONFIGS: dict[str, dict[str, Any]] = {
         "mounts": [str(PONYTAIL_ROOT)],
         "preflight_command": ["node", "-e", "const {getPonytailInstructions}=require('/opt/data/ponytail/hooks/ponytail-instructions.js'); console.log(getPonytailInstructions('full').split('\\n')[0]);"],
         "prompt_instructions_command": ["node", "-e", "const {getFallbackInstructions}=require('/opt/data/ponytail/hooks/ponytail-instructions.js'); console.log(getFallbackInstructions('full'));"],
-        "preferred_guidance": "Ponytail is active as an artifact/code-minimization policy layer. Prefer the simplest correct implementation, avoid speculative abstractions/dependencies, keep diffs small, and preserve required verifier behavior and safety checks.",
-        "optional_guidance": "Ponytail is active as an optional artifact/code-minimization policy layer. Use it to bias toward the smallest correct diff and fewer artifacts, but do not under-solve the task or remove required validation, error handling, security, or verifier behavior.",
     },
 }
 
@@ -769,6 +745,36 @@ def codex_env(codex_home: Path, *, containerized: bool = False, cfg: dict[str, A
     return env
 
 
+def apply_model_network_isolation(env: dict[str, str]) -> None:
+    """Route Codex shell commands through the image's seccomp wrapper."""
+    env["SHELL"] = MODEL_NETWORK_DENIED_SHELL
+    path_entries = env.get("PATH", "").split(":")
+    if MODEL_NETWORK_DENIED_BIN not in path_entries:
+        env["PATH"] = ":".join([MODEL_NETWORK_DENIED_BIN, *path_entries])
+
+
+def codex_isolation_args(codex_home: Path | None = None) -> list[str]:
+    """Allow Codex provider traffic but deny model-visible web and shell network."""
+    args = [
+        "--strict-config",
+        "-c",
+        'web_search="disabled"',
+        "-c",
+        'sandbox_mode="danger-full-access"',
+        "--disable",
+        "standalone_web_search",
+        "--disable",
+        "in_app_browser",
+        "--disable",
+        "browser_use",
+        "--disable",
+        "browser_use_external",
+        "--disable",
+        "computer_use",
+    ]
+    return args
+
+
 DOCKER_ENV_KEYS = [
     "CODEX_HOME",
     "HOME",
@@ -782,6 +788,7 @@ DOCKER_ENV_KEYS = [
     "GOMODCACHE",
     "GOTOOLCHAIN",
     "PATH",
+    "SHELL",
     "LEAN_CTX_DATA_DIR",
     "CODEGRAPH_TELEMETRY",
 ]
@@ -1122,7 +1129,7 @@ def evaluation_protocol(record: dict[str, Any], pid: str, tool_state: str | None
     if state is None:
         state = "cold" if cfg else "none"
     if policy is None:
-        policy = "optional" if cfg else "none"
+        policy = "natural" if cfg else "none"
     return {
         "tool_state": state,
         "tool_use_policy": policy,
@@ -1156,6 +1163,19 @@ def forbidden_command_probe_script(terms: list[str]) -> str:
         "  if [ -n \"$path\" ]; then printf '%s\\t%s\\n' \"$term\" \"$path\"; fi\n"
         "done\n"
     )
+
+
+def missing_declared_filter_commands(
+    output: str, declared_commands: list[str]
+) -> list[str]:
+    """Return declared Lowfat commands absent from `lowfat info` output."""
+    lines = output.splitlines()
+    missing: list[str] = []
+    for command in declared_commands:
+        pattern = re.compile(rf"^\s*●\s+\S+\s+{re.escape(command)}\s*$")
+        if not any(pattern.match(line) for line in lines):
+            missing.append(command)
+    return missing
 
 
 def preflight_codex(record: dict[str, Any], codex_home: Path, pid: str, run_dir: Path, *, backend: str, docker_image: str) -> dict[str, Any]:
@@ -1215,6 +1235,8 @@ def preflight_codex(record: dict[str, Any], codex_home: Path, pid: str, run_dir:
         passed = False
         failure_reasons.append("forbidden token-saving command visible on PATH in Codex runtime")
     tool_preflight = None
+    coverage_preflight = None
+    missing_filter_commands: list[str] = []
     if cfg and cfg.get("mcp_server") and str(cfg["mcp_server"]).lower() not in visible_hits:
         passed = False
         failure_reasons.append(f"{pid} profile did not expose expected MCP server {cfg['mcp_server']} in preflight")
@@ -1224,6 +1246,22 @@ def preflight_codex(record: dict[str, Any], codex_home: Path, pid: str, run_dir:
         if tool_preflight.returncode != 0:
             passed = False
             failure_reasons.append(f"{cfg['display_name']} preflight exited {tool_preflight.returncode}")
+    if cfg and cfg.get("coverage_preflight_command"):
+        coverage_path = run_dir / "tool-coverage-preflight.txt"
+        coverage_preflight = run_backend([str(x) for x in cfg["coverage_preflight_command"]], backend=backend, docker_image=docker_image, cwd=codex_home / "home", env=env, stdout_path=coverage_path, timeout=120, mounts=mounts)
+        if coverage_preflight.returncode != 0:
+            passed = False
+            failure_reasons.append(f"{cfg['display_name']} coverage preflight exited {coverage_preflight.returncode}")
+        else:
+            missing_filter_commands = missing_declared_filter_commands(
+                coverage_path.read_text(errors="replace"),
+                [str(command) for command in cfg.get("supported_commands", [])],
+            )
+            if missing_filter_commands:
+                passed = False
+                failure_reasons.append(
+                    f"{cfg['display_name']} is missing declared filters: {', '.join(missing_filter_commands)}"
+                )
 
     result = {
         "profile_id": pid,
@@ -1231,6 +1269,8 @@ def preflight_codex(record: dict[str, Any], codex_home: Path, pid: str, run_dir:
         "doctor_exit_code": doctor.returncode,
         "mcp_list_exit_code": mcp.returncode,
         "tool_preflight_exit_code": tool_preflight.returncode if tool_preflight else None,
+        "coverage_preflight_exit_code": coverage_preflight.returncode if coverage_preflight else None,
+        "missing_declared_filter_commands": missing_filter_commands,
         "forbidden_command_probe_exit_code": command_probe.returncode,
         "forbidden_mcp_hits": disallowed_mcp_hits,
         "forbidden_config_hits": disallowed_config_hits,
@@ -1243,6 +1283,7 @@ def preflight_codex(record: dict[str, Any], codex_home: Path, pid: str, run_dir:
             "effective_config": str(config_path.relative_to(ROOT)),
             "forbidden_command_visibility": str(command_visibility_path.relative_to(ROOT)),
             "tool_preflight": str((run_dir / "tool-preflight.txt").relative_to(ROOT)) if tool_preflight else None,
+            "tool_coverage_preflight": str((run_dir / "tool-coverage-preflight.txt").relative_to(ROOT)) if coverage_preflight else None,
         },
     }
     (run_dir / "codex-preflight.json").write_text(json.dumps(result, indent=2) + "\n")
@@ -1259,20 +1300,40 @@ def render_prompt_instructions(cfg: dict[str, Any]) -> str:
     return proc.stdout.strip()
 
 
+def treatment_lane_guidance(pid: str, cfg: dict[str, Any], protocol: dict[str, Any]) -> str:
+    """Describe isolation without steering treatment-tool use.
+
+    Tool-specific prompt content is included only when that content is itself the
+    tool's normal installation surface (for example, an instruction-layer tool).
+    """
+    del pid, protocol
+    prompt_instructions = render_prompt_instructions(cfg)
+    prompt_block = (
+        f"\n# Installed profile instructions\n\n{prompt_instructions}\n\n---\n\n"
+        if prompt_instructions
+        else ""
+    )
+    return (
+        "# Evaluation isolation contract\n\n"
+        "This is a treatment lane. Its profile was installed and configured before the task using the profile's normal integration surface. "
+        "No tool invocation is required or preferred. Use the exposed environment naturally, and do not invoke a tool merely because this is a treatment lane. "
+        "If no treatment tool is invoked, zero use is a valid observed outcome. "
+        "Do not use unconfigured retrieval, compression, memory, or token-saving tools. "
+        "Codex web search is disabled and model-launched shell commands have no network access; do not attempt curl, wget, browsers, package downloads, or any other external retrieval. "
+        "Work only inside the target repository. The controller owns concealed verification; do not inspect or modify evaluation harness files.\n\n"
+        "---\n\n"
+        f"{prompt_block}"
+    )
+
+
 def write_prompt(record: dict[str, Any], run_dir: Path, pid: str, protocol: dict[str, Any]) -> Path:
     prompt_path = rel_or_abs(record["task"]["prompt_path"])
     prompt = prompt_path.read_text()
     cfg = active_tool_config(record, pid)
     if cfg:
-        tool_state = protocol.get("tool_state", "cold")
-        use_policy = protocol.get("tool_use_policy", "optional")
-        guidance_key = "optional_guidance" if use_policy == "optional" else "preferred_guidance"
-        use_sentence = cfg.get(guidance_key) or cfg.get("preferred_guidance") or "Use the exposed treatment tool only when it helps solve the task within the token-accounting protocol."
-        prompt_instructions = render_prompt_instructions(cfg)
-        prompt_block = f"\n# {cfg['display_name']} lane instructions\n\n{prompt_instructions}\n\n---\n\n" if prompt_instructions else ""
-        lane_guidance = f"""# Evaluation isolation contract\n\nYou are running inside the `{pid}` treatment lane for {cfg['display_name']}. Tool-state condition: `{tool_state}`. Tool-use policy: `{use_policy}`. {use_sentence} Do not use other retrieval, compression, memory, or token-saving tools. Work only inside the target repository and use the verifier as the acceptance gate.\n\n---\n\n""" + prompt_block
+        lane_guidance = treatment_lane_guidance(pid, cfg, protocol)
     else:
-        lane_guidance = """# Evaluation isolation contract\n\nYou are running inside the `baseline-codex-no-mcp` control lane. This is a Codex substrate baseline, not a model-only baseline: Codex native shell, file, git, and verifier operations are allowed. Do not use external retrieval, compression, memory, MCP, or token-saving tools. Work only inside the target repository and use the verifier as the acceptance gate.\n\n---\n\n"""
+        lane_guidance = """# Evaluation isolation contract\n\nYou are running inside the `baseline-codex-no-mcp` control lane. This is a Codex substrate baseline, not a model-only baseline: Codex native shell, file, git, and verifier operations are allowed. Do not use external retrieval, compression, memory, MCP, or token-saving tools. Codex web search is disabled and model-launched shell commands have no network access; do not attempt `curl`, `wget`, browsers, package downloads, or any other external retrieval. Work only inside the target repository and use the verifier as the acceptance gate.\n\n---\n\n"""
     out = run_dir / "prompt.md"
     out.write_text(lane_guidance + prompt)
     return out
@@ -1356,11 +1417,10 @@ def run_codex(record: dict[str, Any], pid: str, codex_home: Path, run_dir: Path,
     codex_cmd = [
         "codex",
         "exec",
+        *codex_isolation_args(codex_home),
         "--json",
         "--color",
         "never",
-        "--sandbox",
-        "danger-full-access",
         "--disable",
         "hooks",
         "--ignore-rules",
@@ -1384,6 +1444,8 @@ def run_codex(record: dict[str, Any], pid: str, codex_home: Path, run_dir: Path,
         cmd = codex_cmd
     env = codex_env(codex_home, containerized=backend == "docker", cfg=cfg)
     env.update(tool_env_for_record(record, pid, codex_home))
+    if backend == "docker":
+        apply_model_network_isolation(env)
     mounts = container_mounts_for_record(record, codex_home, include_repo=True, cfg=cfg)
     add_mount(mounts, run_dir, mode="rw")
     proc = run_backend(cmd, backend=backend, docker_image=docker_image, cwd=repo, env=env, stdout_path=events, input_path=input_path_for_proc, timeout=timeout, mounts=mounts)
@@ -1486,6 +1548,15 @@ def main(argv: list[str]) -> int:
     pid = profile_id(record, args.profile_id)
     if not pid:
         raise SystemExit("run record does not identify a profile_id")
+    permissions = record.setdefault("setup", {}).setdefault("tool_permissions", {})
+    permissions["external_retrieval_allowed"] = False
+    cfg = active_tool_config(record, pid)
+    if cfg and cfg.get("supported_commands"):
+        permissions["allowed_tool_commands"] = {
+            tool_ids_for_record(record, pid)[0]: [
+                str(command) for command in cfg["supported_commands"]
+            ]
+        }
 
     run_dir = rel_or_abs(record.get("artifacts", {}).get("root") or f"sources/evaluations/runs/{record['evaluation_id']}")
     safe_clean_run_dir(run_dir)
@@ -1532,7 +1603,7 @@ def main(argv: list[str]) -> int:
     usage_code = extract_usage(run_dir)
     verifier_code = run_verifier(record, run_dir, backend=args.execution_backend, docker_image=args.docker_image, codex_home=codex_home)
     capture_diff(record, run_dir)
-    audit_code = audit(record_path, run_dir)
+    audit_code = audit(run_dir / "run-record-input.json", run_dir)
 
     provider_usage: dict[str, Any] = {}
     provider_usage_path = run_dir / "provider-usage.json"

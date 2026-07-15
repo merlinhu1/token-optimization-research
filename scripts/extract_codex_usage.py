@@ -130,7 +130,6 @@ def build_summary(events_path: Path) -> dict[str, Any]:
         "output_tokens": output_tokens,
         "reasoning_tokens": reasoning_tokens,
         "total_provider_tokens": total_provider_tokens,
-        "estimated_cost_usd": None,
         "raw_artifact_tokens": None,
         "transformed_artifact_tokens": None,
         "codex_usage": {

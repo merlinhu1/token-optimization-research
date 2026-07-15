@@ -33,7 +33,6 @@ Do not fill this file until evidence exists.
 | Output tokens |  |  |  |
 | Reasoning tokens |  |  |  |
 | Total provider tokens |  |  |  |
-| Estimated cost |  |  |  |
 | Turns |  |  |  |
 | Tool calls |  |  |  |
 | Correction turns |  |  |  |

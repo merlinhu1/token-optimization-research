@@ -24,16 +24,15 @@
 
 ## Token accounting
 
-- Accounting boundary: workflow_session_total | provider_billed_task | provider_billed_request | request_estimated | artifact_estimated
-- Primary metric: cumulative provider-billed workflow tokens
-- Measurement source: provider API | local agent log | ccusage | tokbench | tokenizer | manual count
+- Accounting boundary: complete persistent workflow session
+- Primary metric: cumulative provider-reported workflow tokens
+- Measurement source: provider API or provider-backed agent log
 - Fresh input tokens:
 - Cached input tokens:
 - Cache-write tokens:
 - Output tokens:
 - Reasoning tokens:
 - Total provider tokens:
-- Estimated cost:
 - Tokens per accepted task:
 
 ## Software quality gates
@@ -51,16 +50,16 @@
 2. Reset repository, agent state, memory, indexes, hooks, generated config, and temporary directories once before the session.
 3. Activate baseline or treatment profile and record enabled/disabled surfaces.
 4. Run the ordered task sequence without resetting between tasks.
-5. Capture per-task transcript, usage, verifier output, quality result, raw artifacts, and transformed artifacts.
-6. Preserve session state between tasks and record useful reuse, repeated rediscovery, stale-context incidents, and overfeeding.
-7. Run final repository verifier and quality review.
-8. Compare cumulative provider-billed workflow usage and quality outcomes.
+5. Capture provider events, structured per-task verifier outcomes, final diff/status, treatment/isolation evidence, and recoverable artifacts without extra model reporting.
+6. Preserve declared session state between tasks.
+7. Run every concealed task verifier after the lane, then complete independent quality review.
+8. Compare cumulative provider-reported workflow token use and quality outcomes.
 9. Record failed and excluded sessions with reason codes.
 
 ## Results
 
 - Summary:
-- Cumulative token/cost result:
+- Cumulative provider-token result:
 - Quality result:
 - State behavior result:
 - Operational result:

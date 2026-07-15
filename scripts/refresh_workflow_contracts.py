@@ -19,8 +19,6 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 from scripts import run_codex_workflow_evaluation as runner
 
-DATE = "2026-07-13"
-
 
 def digest(path: Path) -> str:
     return hashlib.sha256(path.read_bytes()).hexdigest()
@@ -28,18 +26,32 @@ def digest(path: Path) -> str:
 
 def write_json(path: Path, value: object) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
-    path.write_text(json.dumps(value, indent=2) + "\n")
+    rendered = json.dumps(value, indent=2) + "\n"
+    if path.exists():
+        if path.read_text() == rendered:
+            return
+        raise FileExistsError(f"refusing to overwrite immutable frozen protocol: {path}")
+    path.write_text(rendered)
 
 
 def protocol_id(seq: dict[str, Any], profile_id: str) -> str:
-    lane, version = {
-        "fastify-maintenance-sequence-v1": ("fastify", "v7"),
-        "terraform-maintenance-sequence-v2": ("hashicorp-terraform-token-savings", "v8"),
-        "beets-maintenance-sequence-v4": ("beetbox-beets-token-savings", "v11"),
-    }[seq["id"]]
-    if profile_id == "baseline-bare-codex":
-        return f"{lane}-production-gpt-5.6-luna-xhigh-{version}"
-    return f"{lane}-{runner.safe_profile_key(profile_id)}-production-gpt-5.6-luna-xhigh-{version}"
+    execution = runner.execution_condition_descriptor(
+        seq,
+        profile_id,
+        timeout_seconds_per_task=3600,
+        docker_image=runner.DEFAULT_DOCKER_IMAGE,
+    )
+    identity = {
+        "baseline_protocol": runner.baseline_protocol_descriptor(seq),
+        "selected_execution": execution,
+    }
+    return "-".join(
+        (
+            runner.safe_profile_key(seq["id"]),
+            runner.safe_profile_key(profile_id),
+            runner._json_hash(identity)[:12],
+        )
+    )
 
 
 def frozen_protocol(
@@ -80,11 +92,12 @@ def frozen_protocol(
     }
     treatment = {} if profile_id == "baseline-bare-codex" else agent
     return {
+        "protocol_schema_version": 3,
         "protocol_id": pid,
         "status": "frozen-ready-not-run",
         "outcome": f"Frozen {profile_id} protocol for {seq['id']}; no provider/model run has occurred.",
-        "frozen_at": DATE,
-        "hypothesis": f"{profile_id} produces reproducible provider-billed token and software-quality evidence for {seq['id']}",
+        "frozen_at": seq["protocol_freeze_date"],
+        "hypothesis": f"{profile_id} produces reproducible provider-reported token and software-quality evidence for {seq['id']}",
         "evidence_stage_target": "reproduction",
         "task_fixture": {
             "fixture_id": seq["fixture_id"],
@@ -129,6 +142,7 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
 def main(argv: list[str] | None = None) -> int:
     args = parse_args(argv)
     runner.validate_default_model_condition()
+    runner.assert_profile_runnable(args.profile_id)
     sequence_ids = args.sequence_ids or runner.active_sequence_ids()
     for sequence_id in sequence_ids:
         seq = runner.load_sequence(sequence_id)

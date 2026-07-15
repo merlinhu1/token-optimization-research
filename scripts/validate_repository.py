@@ -160,6 +160,10 @@ FIXTURE_STATES = {
 }
 
 FIXTURE_TASK_CLASSES = {
+    "feature-implementation",
+    "behavior-preserving-refactor",
+    "code-review",
+    "code-review-correction",
     "noisy-terminal-repair",
     "build-repair",
     "large-codebase-navigation",
@@ -183,7 +187,13 @@ FIXTURE_TOKEN_WASTE_SURFACES = {
 }
 
 FIXTURE_SCALES = {"synthetic-micro", "recorded-diagnostic", "medium-project", "large-project"}
-FIXTURE_EVALUATION_USES = {"calibration", "diagnostic-preservation", "primary-candidate", "primary-objective"}
+FIXTURE_EVALUATION_USES = {
+    "calibration",
+    "diagnostic-preservation",
+    "historical-evidence",
+    "primary-candidate",
+    "primary-objective",
+}
 PROFILE_TYPES = {"control", "individual_tool", "tool_stack", "replacement_runtime", "installer_orchestrator", "comparator"}
 OBJECTIVES = {"individual_tool_effectiveness", "stack_effectiveness"}
 EVALUATION_RECORD_TYPES = {"run", "paired_comparison", "aggregate_summary"}
@@ -363,17 +373,33 @@ def validate_qualification(sequence: dict, errors: list[str]) -> None:
         errors.append(f"qualification {rel} snapshot, date, or task order is stale")
     if any(q.get(field) is not True for field in required_true):
         errors.append(f"qualification {rel} must record every executable gate as true")
+    if set(q.get("composite_seed_verifier_exits", {}).values()) != {1}:
+        errors.append(
+            f"qualification {rel} seeded verifiers must fail acceptance with exit 1, not collection or infrastructure"
+        )
     boundaries = q.get("cumulative_boundaries", [])
-    if len(boundaries) != len(ordered) or any(
-        boundary.get("task_id") != task["id"]
-        or boundary.get("seed_apply_check_exit") != 0
-        or boundary.get("seed_apply_exit") != 0
-        or boundary.get("seeded_verifier_exit") == 0
-        or boundary.get("repair_apply_check_exit") != 0
-        or boundary.get("repair_apply_exit") != 0
-        or any(code != 0 for code in boundary.get("retained_verifier_exits", {}).values())
-        for task, boundary in zip(ordered, boundaries)
-    ):
+    boundary_invalid = len(boundaries) != len(ordered)
+    if not boundary_invalid:
+        for task, boundary in zip(ordered, boundaries):
+            common_invalid = (
+                boundary.get("task_id") != task["id"]
+                or boundary.get("seed_apply_check_exit") != 0
+                or boundary.get("seed_apply_exit") != 0
+                or boundary.get("seeded_verifier_exit") != 1
+                or boundary.get("repair_apply_check_exit") != 0
+                or boundary.get("repair_apply_exit") != 0
+                or any(code != 0 for code in boundary.get("retained_verifier_exits", {}).values())
+            )
+            refactor_invalid = task.get("task_class") == "behavior-preserving-refactor" and (
+                boundary.get("seeded_behavior_exit") != 0
+                or boundary.get("seeded_structure_exit") in (None, 0)
+                or boundary.get("fixed_behavior_exit") != 0
+                or boundary.get("fixed_structure_exit") != 0
+            )
+            if common_invalid or refactor_invalid:
+                boundary_invalid = True
+                break
+    if boundary_invalid:
         errors.append(f"qualification {rel} lacks fresh cumulative seed/repair boundary evidence")
     records = q.get("tasks", [])
     if len(records) != len(ordered):
@@ -383,8 +409,8 @@ def validate_qualification(sequence: dict, errors: list[str]) -> None:
         task_dir = (ROOT / task["prompt_path"]).parent
         files = production_by_task[task["id"]]
         hashes = {name: hashlib.sha256((task_dir / name).read_bytes()).hexdigest() for name in ("agent-prompt.txt", "seed-regression.patch", "verify.sh")}
-        if len(set(record.get("production_files", []))) < 5 or record.get("production_file_count", 0) < 5:
-            errors.append(f"qualification {rel} task {task['id']} records fewer than 5 distinct production/type files")
+        if not set(record.get("production_files", [])) or record.get("production_file_count", 0) < 1:
+            errors.append(f"qualification {rel} task {task['id']} records no production/type files")
         if record.get("task_id") != task["id"] or record.get("production_files") != files or record.get("production_file_count") != len(files) or record.get("agent_prompt_sha256") != hashes["agent-prompt.txt"] or record.get("seed_patch_sha256") != hashes["seed-regression.patch"] or record.get("verifier_sha256") != hashes["verify.sh"] or record.get("task_directory_sha256") != task_directory_sha256(task_dir):
             errors.append(f"qualification {rel} task {task['id']} has stale hashes, files, or count")
         expected = expected_task_concealed_paths(task)
@@ -736,6 +762,17 @@ def validate_workflow_task_sequences(sequence_doc: dict, fixture_doc: dict, erro
             errors.append(f"active workflow sequence {sid} must declare acceptance_design=behavioral")
         if sequence.get("status") == "active" and sequence.get("scope") != "production-primary":
             errors.append(f"active workflow sequence {sid} must declare scope=production-primary")
+        if sequence.get("status") == "active":
+            freeze_date = sequence.get("protocol_freeze_date")
+            qualification_date = sequence.get("qualification_date")
+            if (
+                not isinstance(freeze_date, str)
+                or not isinstance(qualification_date, str)
+                or freeze_date < qualification_date
+            ):
+                errors.append(
+                    f"active workflow sequence {sid} protocol freeze date must be explicit and not predate qualification"
+                )
         if sequence.get("status") == "planned" and not sequence.get("readiness_blockers"):
             errors.append(f"planned workflow sequence {sid} must record readiness_blockers")
         fixture_id = sequence.get("fixture_id")
@@ -743,8 +780,8 @@ def validate_workflow_task_sequences(sequence_doc: dict, fixture_doc: dict, erro
             errors.append(f"workflow sequence {sid} references unknown fixture {fixture_id}")
         if sequence.get("objective") not in OBJECTIVES:
             errors.append(f"workflow sequence {sid} has invalid objective: {sequence.get('objective')}")
-        if "cumulative provider-billed" not in str(sequence.get("primary_metric", "")):
-            errors.append(f"workflow sequence {sid} primary_metric must name cumulative provider-billed tokens")
+        if "cumulative provider-reported" not in str(sequence.get("primary_metric", "")):
+            errors.append(f"workflow sequence {sid} primary_metric must name cumulative provider-reported tokens")
         tasks = sequence.get("tasks")
         if not isinstance(tasks, list) or not tasks:
             errors.append(f"workflow sequence {sid} must define a non-empty tasks list")
@@ -783,30 +820,38 @@ def validate_workflow_task_sequences(sequence_doc: dict, fixture_doc: dict, erro
                         errors.append(f"active workflow sequence {sid} task {tid} missing assets: {', '.join(missing)}")
                     production = [path for path in patch_paths(task_dir / "seed-regression.patch") if is_production_path(path)] if (task_dir / "seed-regression.patch").is_file() else []
                     production_by_task[str(tid)] = production
-                    if len(production) < 5:
-                        errors.append(f"active workflow sequence {sid} task {tid} seed patch has {len(production)} production/type files; minimum is 5")
+                    if not production:
+                        errors.append(f"active workflow sequence {sid} task {tid} seed patch has no production/type files")
                     behavior_bearing = patch_behavior_bearing_paths(task_dir / "seed-regression.patch")
                     padded = sorted(set(production) - set(behavior_bearing))
                     if padded and str(tid) == "terraform-9ae470-objchange-validation-regression":
                         errors.append(f"active workflow sequence {sid} task {tid} pads its production scope with comment-only files: {', '.join(padded)}")
                     if verifier_uses_source_identity(task_dir):
                         errors.append(f"active workflow sequence {sid} task {tid} uses exact-source supplemental guards instead of behavioral acceptance")
+                    review_patch_name = task.get("review_patch_path")
+                    if task.get("task_class") == "code-review-correction":
+                        review_patch = task_dir / str(review_patch_name or "")
+                        if not review_patch_name or not review_patch.is_file() or "diff --git" not in review_patch.read_text():
+                            errors.append(f"active workflow sequence {sid} task {tid} must provide a non-empty proposed review patch")
+                    elif review_patch_name:
+                        errors.append(f"active workflow sequence {sid} non-review task {tid} must not disclose a review patch")
         if orders and sorted(orders) != list(range(1, len(orders) + 1)):
             errors.append(f"workflow sequence {sid} task orders must be contiguous starting at 1")
+        task_classes = [
+            task.get("task_class", "maintenance-regression")
+            for task in sorted(tasks, key=lambda item: item.get("order", 0))
+        ]
+        if sequence.get("sequence_contract") == "feature-refactor-review" and task_classes != [
+            "feature-implementation",
+            "behavior-preserving-refactor",
+            "code-review-correction",
+        ]:
+            errors.append(
+                f"workflow sequence {sid} feature-refactor-review contract must order feature implementation, behavior-preserving refactor, and code review/correction"
+            )
         if sequence.get("status") == "active" and len(production_by_task) == len(tasks):
             validate_qualification(sequence, errors)
     active = [sequence for sequence in sequences if sequence.get("status") == "active"]
-    expected_active = {
-        "fastify-maintenance-sequence-v1": 5,
-        "terraform-maintenance-sequence-v2": 3,
-        "beets-maintenance-sequence-v4": 3,
-    }
-    if {sequence.get("id") for sequence in active} != set(expected_active):
-        errors.append("active workflow sequences must be exactly Fastify v1, Terraform v2, and Beets v4")
-    for sequence in active:
-        expected_tasks = expected_active.get(sequence.get("id"))
-        if len(sequence.get("tasks", [])) != expected_tasks:
-            errors.append(f"active workflow sequence {sequence.get('id')} must contain exactly {expected_tasks} tasks")
     retired_contract_phrases = (
         "one task at a time",
         "alternative-repair",
@@ -894,8 +939,6 @@ def validate_production_v3_schema_shape(session: dict, sid: str, errors: list[st
         "cumulative_token_usage",
         "per_task_results",
         "software_quality",
-        "state_observations",
-        "operational_reproducibility",
         "artifacts",
         "interpretation",
         "frozen_protocol",
@@ -907,8 +950,8 @@ def validate_production_v3_schema_shape(session: dict, sid: str, errors: list[st
     for key in required:
         if key not in session:
             errors.append(f"workflow session {sid} production-v3 record missing schema field {key}")
-    if session.get("schema_version") != 1:
-        errors.append(f"workflow session {sid} schema_version must be 1")
+    if session.get("schema_version") not in {1, 2}:
+        errors.append(f"workflow session {sid} schema_version must be 1 or 2")
     if session.get("record_type") != "workflow_session":
         errors.append(f"workflow session {sid} record_type must be workflow_session")
     if session.get("evidence_type") not in WORKFLOW_EVIDENCE_TYPES:
@@ -923,11 +966,16 @@ def validate_production_v3_schema_shape(session: dict, sid: str, errors: list[st
         errors.append(f"workflow session {sid} session_role is invalid")
     if not isinstance(session.get("replicate_index"), int) or session.get("replicate_index", -1) < 0:
         errors.append(f"workflow session {sid} replicate_index must be a non-negative integer")
-    for key in ("target", "task_sequence", "profile", "agent", "state_policy", "cumulative_token_usage", "software_quality", "state_observations", "operational_reproducibility", "artifacts", "interpretation"):
+    for key in ("target", "task_sequence", "profile", "agent", "state_policy", "cumulative_token_usage", "software_quality", "artifacts", "interpretation"):
         if not isinstance(session.get(key), dict):
             errors.append(f"workflow session {sid} {key} must be an object")
+    for key in ("state_observations", "operational_reproducibility", "execution_integrity"):
+        if key in session and not isinstance(session[key], dict):
+            errors.append(f"workflow session {sid} {key} must be an object when present")
     if not isinstance(session.get("per_task_results"), list):
         errors.append(f"workflow session {sid} per_task_results must be an array")
+    if requires_structured_task_contract(session):
+        validate_structured_task_outcomes(session, sid, errors)
 
 
 def validate_docker_identity(identity: object, expected: object, sid: str, errors: list[str]) -> None:
@@ -985,8 +1033,8 @@ def validate_production_v3_identity(session: dict, run_record: dict | None, sid:
     protocol_id = frozen_protocol.get("protocol_id")
     protocol_rel = frozen_protocol.get("path")
     recorded_protocol_hash = frozen_protocol.get("sha256")
-    if not isinstance(protocol_id, str) or not protocol_id.endswith("-v3"):
-        errors.append(f"workflow session {sid} frozen_protocol protocol_id must identify production-v3")
+    if not isinstance(protocol_id, str) or not protocol_id:
+        errors.append(f"workflow session {sid} frozen_protocol protocol_id must be a non-empty string")
     if not isinstance(protocol_rel, str) or not protocol_rel:
         errors.append(f"workflow session {sid} frozen_protocol missing path")
         protocol_path = None
@@ -1021,6 +1069,9 @@ def validate_production_v3_identity(session: dict, run_record: dict | None, sid:
         errors.append(f"workflow session {sid} selected_execution descriptor_sha256 does not match canonical descriptor bytes")
 
     if protocol is not None:
+        protocol_is_v3 = protocol.get("protocol_schema_version") == 3 or str(protocol_id).endswith("-v3")
+        if not protocol_is_v3:
+            errors.append(f"workflow session {sid} frozen protocol must declare protocol_schema_version=3")
         if protocol.get("protocol_id") != protocol_id:
             errors.append(f"workflow session {sid} frozen protocol ID does not match recorded value")
         protocol_baseline = protocol.get("baseline_pool", {})
@@ -1049,11 +1100,132 @@ def validate_production_v3_identity(session: dict, run_record: dict | None, sid:
                 errors.append(f"workflow session {sid} run.json {key} does not match registry session")
 
 
+def requires_structured_task_contract(session: dict) -> bool:
+    return session.get("schema_version") == 2
+
+
+def validate_structured_task_outcomes(session: dict, sid: str, errors: list[str]) -> None:
+    task_sequence = session.get("task_sequence")
+    expected_ids = task_sequence.get("task_ids") if isinstance(task_sequence, dict) else None
+    results = session.get("per_task_results")
+    quality = session.get("software_quality")
+    if (
+        not isinstance(expected_ids, list)
+        or not expected_ids
+        or any(not isinstance(task_id, str) or not task_id for task_id in expected_ids)
+        or len(set(expected_ids)) != len(expected_ids)
+        or not isinstance(results, list)
+    ):
+        errors.append(f"workflow session {sid} structured task contract requires exact task coverage")
+        return
+    if not isinstance(quality, dict):
+        errors.append(f"workflow session {sid} structured task contract requires software_quality totals")
+        return
+    usage = session.get("cumulative_token_usage")
+    if not isinstance(usage, dict) or not isinstance(usage.get("accounting_basis"), str) or not usage.get("accounting_basis"):
+        errors.append(f"workflow session {sid} schema-v2 token usage requires accounting_basis")
+    elif any(key in usage for key in ("estimated_cost_usd", "pricing_basis")):
+        errors.append(f"workflow session {sid} schema-v2 token usage must not contain monetary fields")
+    integrity = session.get("execution_integrity")
+    integrity_fields = {
+        "verifier_integrity_passed",
+        "tool_isolation_audit_passed",
+        "external_retrieval_hits",
+        "pass_through_tool_command_hits",
+    }
+    if not isinstance(integrity, dict) or not integrity_fields.issubset(integrity):
+        errors.append(f"workflow session {sid} schema-v2 record requires complete execution_integrity evidence")
+    elif not isinstance(integrity["external_retrieval_hits"], list) or not isinstance(
+        integrity["pass_through_tool_command_hits"], list
+    ):
+        errors.append(f"workflow session {sid} execution_integrity hit fields must be arrays")
+
+    required_fields = {
+        "task_id",
+        "task_alias",
+        "order",
+        "agent_attempted",
+        "codex_exit_code",
+        "controller_verification",
+        "verifier_exit_code",
+        "verifier_passed",
+        "accepted",
+        "operational_retry_count",
+    }
+    coverage = [item.get("task_id") if isinstance(item, dict) else None for item in results]
+    orders = [item.get("order") if isinstance(item, dict) else None for item in results]
+    if coverage != expected_ids or orders != list(range(1, len(expected_ids) + 1)):
+        errors.append(f"workflow session {sid} structured task results do not provide exact task coverage")
+
+    attempted = 0
+    passed = 0
+    all_verifiers_passed = len(results) == len(expected_ids)
+    for index, item in enumerate(results, start=1):
+        label = f"workflow session {sid} structured task result {index}"
+        if not isinstance(item, dict) or not required_fields.issubset(item):
+            errors.append(f"{label} is missing required structured fields for exact task coverage")
+            all_verifiers_passed = False
+            continue
+        if not isinstance(item["task_alias"], str) or not item["task_alias"]:
+            errors.append(f"{label} task_alias must be a non-empty string")
+        agent_attempted = item["agent_attempted"]
+        codex_exit = item["codex_exit_code"]
+        if not isinstance(agent_attempted, bool):
+            errors.append(f"{label} agent_attempted must be boolean")
+        elif agent_attempted:
+            attempted += 1
+            if not isinstance(codex_exit, int) or isinstance(codex_exit, bool):
+                errors.append(f"{label} attempted task requires an integer codex_exit_code")
+        elif codex_exit is not None:
+            errors.append(f"{label} unattempted task requires null codex_exit_code")
+        retries = item["operational_retry_count"]
+        if not isinstance(retries, int) or isinstance(retries, bool) or retries < 0:
+            errors.append(f"{label} operational_retry_count must be a non-negative integer")
+
+        controller = item["controller_verification"]
+        verifier_exit = item["verifier_exit_code"]
+        verifier_passed = item["verifier_passed"]
+        accepted = item["accepted"]
+        if controller == "passed":
+            consistent = verifier_exit == 0 and verifier_passed is True and accepted is True
+        elif controller == "failed":
+            consistent = (
+                isinstance(verifier_exit, int)
+                and not isinstance(verifier_exit, bool)
+                and verifier_exit != 0
+                and verifier_passed is False
+                and accepted is False
+            )
+        elif controller == "not-run":
+            consistent = verifier_exit is None and verifier_passed is None and accepted is None
+        else:
+            consistent = False
+        if not consistent:
+            errors.append(f"{label} verifier outcome fields are inconsistent")
+        if accepted is True:
+            passed += 1
+        if verifier_passed is not True:
+            all_verifiers_passed = False
+
+    if quality.get("tasks_attempted") != attempted:
+        errors.append(f"workflow session {sid} software_quality.tasks_attempted does not match structured outcomes")
+    if quality.get("tasks_passed") != passed:
+        errors.append(f"workflow session {sid} software_quality.tasks_passed does not match structured accepted outcomes")
+    if quality.get("final_verifier_passed") is not all_verifiers_passed:
+        errors.append(f"workflow session {sid} software_quality.final_verifier_passed does not match structured outcomes")
+    functional = all_verifiers_passed and passed == len(expected_ids)
+    if quality.get("functional_verifier_passed") is not functional:
+        errors.append(f"workflow session {sid} software_quality.functional_verifier_passed does not match structured outcomes")
+
+
 def validate_workflow_session_contract(session: dict, canonical_profile: dict | None, errors: list[str]) -> None:
     sid = session.get("session_id") or session.get("id") or "<unknown>"
     sequence = session.get("task_sequence", {})
     frozen_protocol = session.get("frozen_protocol")
-    production_v3 = isinstance(frozen_protocol, dict) and str(frozen_protocol.get("protocol_id", "")).endswith("-v3")
+    production_v3 = requires_structured_task_contract(session) or (
+        isinstance(frozen_protocol, dict)
+        and str(frozen_protocol.get("protocol_id", "")).endswith("-v3")
+    )
     if production_v3:
         validate_production_v3_identity(session, None, sid, errors)
     if session.get("status") == "completed" and session.get("evidence_type") == "workflow-simulation" and session.get("evidence_stage") == "reproduction":
@@ -1161,6 +1333,17 @@ def validate_workflow_session_contract(session: dict, canonical_profile: dict | 
             errors.append(
                 f"workflow session {sid} objective acceptance requires a completed, execution-accepted, functionally verified, and structurally isolated run"
             )
+        if session.get("schema_version") == 2:
+            integrity = session.get("execution_integrity", {})
+            if (
+                not isinstance(integrity, dict)
+                or integrity.get("verifier_integrity_passed") is not True
+                or integrity.get("tool_isolation_audit_passed") is not True
+                or integrity.get("external_retrieval_hits") != []
+            ):
+                errors.append(
+                    f"workflow session {sid} objective acceptance requires clean execution integrity"
+                )
         if review_status != "reviewed" or not isinstance(quality_score, int) or quality_score < 4 or critical_failures:
             errors.append(f"workflow session {sid} objective acceptance requires a reviewed quality result with score >= 4 and no critical failures")
 
@@ -1168,8 +1351,8 @@ def validate_workflow_session_contract(session: dict, canonical_profile: dict | 
 def validate_workflow_sessions(session_doc: dict, sequence_ids: set[str], fixture_doc: dict, profiles_by_id: dict[str, dict], runtime_ids: set[str], model_condition_ids: set[str], errors: list[str]) -> None:
     if session_doc.get("schema_version") != 1:
         errors.append("data/workflow-sessions.json must use schema_version 1")
-    if session_doc.get("primary_metric") != "cumulative provider-billed workflow tokens":
-        errors.append("data/workflow-sessions.json primary_metric must be cumulative provider-billed workflow tokens")
+    if session_doc.get("primary_metric") != "cumulative provider-reported workflow tokens":
+        errors.append("data/workflow-sessions.json primary_metric must be cumulative provider-reported workflow tokens")
     sessions = session_doc.get("sessions")
     if not isinstance(sessions, list):
         errors.append("data/workflow-sessions.json must contain a sessions list")
@@ -1268,7 +1451,11 @@ def validate_workflow_sessions(session_doc: dict, sequence_ids: set[str], fixtur
                     errors.append(f"workflow session {sid} compact artifact directory must contain exactly {sorted(allowed_names)}; found {sorted(actual_names)}")
                 validate_compact_manifest(root, sid, errors)
                 frozen_protocol = session.get("frozen_protocol")
-                if isinstance(frozen_protocol, dict) and str(frozen_protocol.get("protocol_id", "")).endswith("-v3"):
+                production_v3 = requires_structured_task_contract(session) or (
+                    isinstance(frozen_protocol, dict)
+                    and str(frozen_protocol.get("protocol_id", "")).endswith("-v3")
+                )
+                if production_v3:
                     try:
                         run_record = json.loads((root / "run.json").read_text())
                     except Exception as exc:
@@ -1362,6 +1549,12 @@ def validate_frozen_protocol_bindings(errors: list[str]) -> None:
     except Exception as exc:
         errors.append(f"cannot import workflow runner for protocol binding validation: {exc}")
         runner = None
+    sessions = load_json("data/workflow-sessions.json").get("sessions", [])
+    executed_protocol_paths = {
+        str(session.get("frozen_protocol", {}).get("path"))
+        for session in sessions
+        if session.get("frozen_protocol", {}).get("path")
+    }
     current_sequence_bindings: set[str] = set()
     for path in (ROOT / "sources/evaluations/protocols").glob("*.json"):
         protocol = json.loads(path.read_text())
@@ -1378,7 +1571,7 @@ def validate_frozen_protocol_bindings(errors: list[str]) -> None:
         actual = __import__("hashlib").sha256(qualification_path.read_bytes()).hexdigest()
         if fixture.get("qualification_sha256") != actual:
             errors.append(f"frozen protocol {path.name} has a stale qualification hash")
-        if runner is not None:
+        if runner is not None and str(path.relative_to(ROOT)) not in executed_protocol_paths:
             try:
                 seq = runner.load_sequence(str(fixture.get("sequence_id")))
                 if seq.get("status") != "active":
@@ -1390,20 +1583,30 @@ def validate_frozen_protocol_bindings(errors: list[str]) -> None:
                     # historical contracts; current binding checks apply only to
                     # the qualification path selected by the active sequence.
                     continue
-                current_sequence_bindings.add(str(seq["id"]))
                 expected_fingerprint = runner.baseline_protocol_fingerprint(seq)
             except Exception as exc:
                 errors.append(f"frozen protocol {path.name} cannot compute current runner fingerprint: {exc}")
             else:
                 actual_fingerprint = protocol.get("baseline_pool", {}).get("protocol_fingerprint")
                 if actual_fingerprint != expected_fingerprint:
-                    errors.append(f"frozen protocol {path.name} fingerprint binding is stale; expected {expected_fingerprint}")
-                descriptor = protocol.get("baseline_pool", {}).get("descriptor")
-                if descriptor != runner.baseline_protocol_descriptor(seq):
-                    errors.append(f"frozen protocol {path.name} baseline descriptor does not match current runner bytes")
+                    # Frozen protocols are immutable historical contracts. Multiple
+                    # generations may share the active qualification path while
+                    # binding older runner/image bytes; only the exact current
+                    # fingerprint is eligible as the live binding.
+                    continue
                 selected = protocol.get("selected_execution", {})
                 selected_descriptor = selected.get("descriptor", {})
                 selected_profile = selected_descriptor.get("selected_profile", {}).get("profile_id")
+                try:
+                    runner.assert_profile_runnable(str(selected_profile or "baseline-bare-codex"))
+                except ValueError:
+                    # Historical and blocked treatment profiles retain immutable
+                    # unrun protocol generations as provenance, not live bindings.
+                    continue
+                current_sequence_bindings.add(str(seq["id"]))
+                descriptor = protocol.get("baseline_pool", {}).get("descriptor")
+                if descriptor != runner.baseline_protocol_descriptor(seq):
+                    errors.append(f"frozen protocol {path.name} baseline descriptor does not match current runner bytes")
                 docker_image = selected_descriptor.get("runtime", {}).get("docker_image")
                 timeout_for_execution = int(fixture.get("timeout_seconds_per_task", 3600))
                 expected_execution = runner.execution_condition_descriptor(

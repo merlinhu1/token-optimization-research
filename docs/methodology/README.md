@@ -21,7 +21,7 @@ This project uses a source-grounded, compatibility-first research workflow. Tool
 | `lead` | Search result, catalog mention, README headline, or repository metadata only. | Backlog and discovery planning only; not a dossier and not decision evidence. |
 | `source-logic` | Representative implementation files inspected; runtime transformations, state, fallbacks, compatibility boundaries, and failure modes interpreted. | Minimum stage for qualified stack recommendations and tool decisions. |
 | `benchmark-audit` | Benchmark harness, tasks, scoring, token accounting, raw outputs, and exclusion/failure semantics inspected. | Evidence-weighted ranking. |
-| `reproduction` | Independent or local reproduction on target workloads with provider-billed accounting, pass rate, turn count, latency, and quality gates. | Deployment-grade recommendation. |
+| `reproduction` | Independent or local persistent-workflow reproduction with provider-reported token use, structured task outcomes, treatment/isolation evidence, recoverable artifacts, and independent quality gates. | Scoped treatment evidence; recommendation strength depends on compatible replicate count. |
 
 The full dossier process is defined in `docs/research/tool-research-strategy.md`. Open research tasks are tracked in `data/tool-analysis-backlog.json`.
 
@@ -34,7 +34,7 @@ The full dossier process is defined in `docs/research/tool-research-strategy.md`
 5. `maintainer-measurement` — maintainer numbers without full replication package.
 6. `maintainer-claim` — stated claim without sufficient method.
 7. `documented-mechanism` — mechanism documented, no quantitative result reviewed.
-8. `monitoring-tool` — measures usage/cost without direct token reduction.
+8. `monitoring-tool` — measures token usage without direct token reduction.
 
 README text can identify a claim or installation path, but it is not sufficient evidence for behavior, limits, stack placement, or deployment quality. A tool remains a `lead` until source code logic has been inspected.
 
@@ -42,9 +42,9 @@ README text can identify a claim or installation path, but it is not sufficient 
 
 - Preserve provenance: source URL, file path, review date, exact claim, and caveat.
 - Separate extracted facts from interpretation.
-- Separate operation-level token reduction from provider-billed task totals.
+- Separate operation-level token reduction from provider-reported workflow totals.
 - Treat bundles as references; decompose them into techniques before analysis.
-- Do not rank across projects unless scope, workload, model, pricing, and quality gates are comparable.
+- Do not rank across projects unless scope, workflow, model condition, token boundary, and quality gates are comparable.
 - Record negative and null results; they are first-class research findings.
 - Persist partial findings in dossiers and backlog rather than compressing them into short report summaries.
 - Do not promote README-only or integration-only findings into qualified stack recommendations; inspect source code logic first.

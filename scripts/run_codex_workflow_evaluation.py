@@ -97,8 +97,9 @@ def build_profile_meta() -> dict[str, dict[str, Any]]:
             "enabled_surfaces": [str(surface) for surface in source.get("enabled_surfaces", [])],
             "disabled_overlaps": [str(surface) for surface in source.get("disabled_overlaps", [])],
             "allowed_terms": sorted({str(tool_id), *[str(term) for term in (cfg or {}).get("allowed_terms", [])]}) if tool_id else [],
+            "supported_commands": sorted(str(command) for command in (cfg or {}).get("supported_commands", [])),
             "tool_state": str(protocol.get("tool_state", (cfg or {}).get("default_tool_state", "none"))),
-            "tool_use_policy": str(protocol.get("tool_use_policy", "optional" if tool_id else "none")),
+            "tool_use_policy": str(protocol.get("tool_use_policy", "natural" if tool_id else "none")),
             "tool_id": tool_id,
         }
     return profiles
@@ -109,8 +110,25 @@ PROFILE_META: dict[str, dict[str, Any]] = build_profile_meta()
 DEFAULT_WORKFLOW_MODEL_CONDITION_ID = "codex-openai-gpt-5-6-luna-xhigh"
 DEFAULT_WORKFLOW_MODEL = "gpt-5.6-luna"
 DEFAULT_WORKFLOW_REASONING_EFFORT = "xhigh"
-RUNNER_CONTRACT_VERSION = "workflow-runner-v6"
+RUNNER_CONTRACT_VERSION = "workflow-runner-v9"
 MAX_CODEX_OPERATIONAL_RETRIES = 1
+TASK_VERIFIER_RESULT_PREFIX = "__WORKFLOW_TASK_RESULT__"
+
+# Preserve the active comparison pools while moving their identity away from
+# whole-runner hashes. Each alias is guarded by the full causal comparison hash:
+# exact rendered model-facing prompt bytes, verifier/seed bytes, fixture, model,
+# runtime image, and isolation. A causal change misses the alias and mints a new
+# fingerprint; reporting-only runner changes keep the existing pool and do not
+# invalidate accumulated runs. The second alias per pool binds the same audited
+# historical prompt bytes after rendered-prompt hashes became explicit.
+COMPARISON_IDENTITY_ALIASES = {
+    "fbf96dc85022c887bc5843e5bb1f6a33638c662992df5c0595b025a29e3eaf27": "b60df5d02524",
+    "6bf503b180d4b0fe144ade7ec2d0ef6d67c5cd5b30368c71d2e57c4b74062b58": "e3e314f5a44e",
+    "d263062d12e141cc40092602c3c74c11d8576e12a23124c90b4e78f2acc751cf": "ca2e2a06cba6",
+    "d44793c6f7db74468255680444643cad47819e9a395bfe4b8c4374e46e11aec9": "b60df5d02524",
+    "6d0a5299f7a8ce1cb3c041369afb6efa239a3dc7c30df1fe1247836796e3f2a6": "e3e314f5a44e",
+    "b2de62fd38e071d92c2eeaa7ad03a084c6302d7336f7e3aa658ace11df00e641": "ca2e2a06cba6",
+}
 
 
 def validate_default_model_condition() -> None:
@@ -125,7 +143,7 @@ def validate_default_model_condition() -> None:
         "provider": "openai",
         "model": DEFAULT_WORKFLOW_MODEL,
         "reasoning_effort": DEFAULT_WORKFLOW_REASONING_EFFORT,
-        "usage_accounting": "provider-billed Codex JSONL usage extracted by scripts/extract_codex_usage.py",
+        "usage_accounting": "provider-reported Codex JSONL usage extracted by scripts/extract_codex_usage.py",
     }]:
         raise ValueError("active workflow model condition must be codex-openai-gpt-5-6-luna-xhigh")
 
@@ -246,6 +264,17 @@ def profile_registry_entry(profile_id: str, root: Path = ROOT) -> dict[str, Any]
         if profile.get("id") == profile_id:
             return profile
     raise KeyError(f"workflow profile {profile_id} is missing from data/evaluation-profiles.json")
+
+
+def assert_profile_runnable(profile_id: str, root: Path = ROOT) -> None:
+    profile = profile_registry_entry(profile_id, root)
+    if profile.get("status") in {"blocked-profile", "historical-profile", "deferred-profile"}:
+        reason = str(
+            profile.get("blocked_reason")
+            or profile.get("deferred_reason")
+            or "integration is not qualified"
+        )
+        raise ValueError(f"profile {profile_id} is {profile.get('status')}: {reason}")
 
 
 def path_identity(path_text: str) -> dict[str, Any]:
@@ -426,6 +455,7 @@ def execution_condition_descriptor(
             "registry_entry_sha256": _json_hash(profile_entry),
             "registry_entry": profile_entry,
         },
+        "model_facing_prompts": model_facing_prompt_descriptor(seq, profile_id, root),
         "tool_adapter": tool_adapter_identity(profile_id, root),
         "runtime": {
             "docker_image": docker_image,
@@ -437,7 +467,14 @@ def execution_condition_descriptor(
             "codex_entrypoint_path": "sources/evaluations/fixtures/container/codex-entrypoint.sh",
             "codex_entrypoint_sha256": _protocol_file_hash(root / "sources/evaluations/fixtures/container/codex-entrypoint.sh"),
             "timeout_seconds_per_task": timeout_seconds_per_task,
-            "isolation_policy": "fresh lane-specific Codex home/tool data; sequential one-task prompt delivery; concealed tests removed before model-visible root commit",
+            "network_isolation": {
+                "provider_access": True,
+                "model_shell_network_access": False,
+                "model_shell_enforcement": "seccomp denies AF_INET and AF_INET6 socket creation for the shell process and descendants",
+                "codex_web_search": "disabled",
+                "external_retrieval_audit": "fail-closed",
+            },
+            "isolation_policy": "fresh lane-specific Codex home/tool data; provider-only network with model shell and Codex web search disabled; sequential one-task prompt delivery; concealed tests removed before model-visible root commit",
         },
         "dependencies": {
             "command": PROJECT_META[seq["fixture_id"]]["dependency_command"],
@@ -518,9 +555,10 @@ def baseline_protocol_descriptor(seq: dict[str, Any], root: Path = ROOT) -> dict
         prompt_path = root / str(task["prompt_path"])
         verifier_path = root / str(task["verifier_command"])
         seed_path = prompt_path.parent / "seed-regression.patch"
-        tasks.append({
+        task_descriptor = {
             "id": task["id"],
             "order": int(task["order"]),
+            "task_class": task.get("task_class", "maintenance-regression"),
             "prompt_path": str(task["prompt_path"]),
             "prompt_sha256": _protocol_file_hash(prompt_path),
             "seed_patch_sha256": _protocol_file_hash(seed_path),
@@ -530,7 +568,13 @@ def baseline_protocol_descriptor(seq: dict[str, Any], root: Path = ROOT) -> dict
             "compatibility_rebased_test_paths": sorted(str(path) for path in task.get("compatibility_rebased_test_paths", [])),
             "expected_model_concealed_paths": expected_task_concealed_paths(task),
             "model_concealed_paths": sorted(str(path) for path in task.get("model_concealed_paths", [])),
-        })
+        }
+        review_patch_path = task.get("review_patch_path")
+        if review_patch_path:
+            review_patch = prompt_path.parent / str(review_patch_path)
+            task_descriptor["review_patch_path"] = str(review_patch_path)
+            task_descriptor["review_patch_sha256"] = _protocol_file_hash(review_patch)
+        tasks.append(task_descriptor)
     qualification_path = root / str(seq.get("qualification_path", ""))
 
     baseline = PROFILE_META["baseline-bare-codex"]
@@ -541,12 +585,14 @@ def baseline_protocol_descriptor(seq: dict[str, Any], root: Path = ROOT) -> dict
         "qualification_generator_sha256": _protocol_file_hash(root / "scripts/generate_workflow_qualification.py"),
         "validator_sha256": _protocol_file_hash(root / "scripts/validate_repository.py"),
         "sequence_id": seq["id"],
+        "sequence_contract": seq.get("sequence_contract", "maintenance-regression"),
         "fixture_id": seq["fixture_id"],
         "fixture_scale": seq.get("fixture_scale"),
         "initial_snapshot": seq.get("initial_snapshot", {}),
         "objective": seq.get("objective", "individual_tool_effectiveness"),
-        "primary_metric": seq.get("primary_metric", "cumulative provider-billed workflow tokens"),
+        "primary_metric": seq.get("primary_metric", "cumulative provider-reported workflow tokens"),
         "tasks": tasks,
+        "model_facing_prompts": model_facing_prompt_descriptor(seq, "baseline-bare-codex", root),
         "qualification": {
             "path": str(seq.get("qualification_path", "")),
             "sha256": _protocol_file_hash(qualification_path),
@@ -590,10 +636,40 @@ def baseline_protocol_descriptor(seq: dict[str, Any], root: Path = ROOT) -> dict
     }
 
 
-def baseline_protocol_fingerprint(seq: dict[str, Any], root: Path = ROOT) -> str:
+def baseline_comparison_descriptor(seq: dict[str, Any], root: Path = ROOT) -> dict[str, Any]:
+    """Return only causal/model-visible inputs used to group comparable runs.
+
+    Implementation hashes remain in the frozen protocol for provenance, but
+    reporting, registry, or validator-only code changes must not split an
+    otherwise identical baseline pool.
+    """
     descriptor = baseline_protocol_descriptor(seq, root)
+    isolation = dict(descriptor["isolation"])
+    isolation["verifier_execution"] = "all-tasks-non-short-circuiting-v1"
+    return {
+        "version": "baseline-comparison-identity-v1",
+        "sequence_id": descriptor["sequence_id"],
+        "sequence_contract": descriptor["sequence_contract"],
+        "fixture_id": descriptor["fixture_id"],
+        "fixture_scale": descriptor["fixture_scale"],
+        "initial_snapshot": descriptor["initial_snapshot"],
+        "objective": descriptor["objective"],
+        "tasks": descriptor["tasks"],
+        "model_facing_prompts": descriptor["model_facing_prompts"],
+        "baseline_profile": descriptor["baseline_profile"],
+        "agent": descriptor["agent"],
+        "runtime_inputs": descriptor["runtime_inputs"],
+        "isolation": isolation,
+    }
+
+
+def baseline_protocol_fingerprint(seq: dict[str, Any], root: Path = ROOT) -> str:
+    descriptor = baseline_comparison_descriptor(seq, root)
     encoded = json.dumps(descriptor, sort_keys=True, separators=(",", ":")).encode()
-    return hashlib.sha256(encoded).hexdigest()[:BASELINE_POOL_FINGERPRINT_LENGTH]
+    full_hash = hashlib.sha256(encoded).hexdigest()
+    return COMPARISON_IDENTITY_ALIASES.get(
+        full_hash, full_hash[:BASELINE_POOL_FINGERPRINT_LENGTH]
+    )
 
 
 def load_protocol(path_or_id: str) -> tuple[Path, dict[str, Any]]:
@@ -608,9 +684,12 @@ def load_protocol(path_or_id: str) -> tuple[Path, dict[str, Any]]:
 
 
 def validate_protocol_for_run(seq: dict[str, Any], profile_id: str, args: argparse.Namespace) -> dict[str, Any] | None:
+    assert_profile_runnable(profile_id)
     if not args.protocol:
         raise ValueError("--protocol is required before any workflow setup")
     protocol_path, protocol = load_protocol(args.protocol)
+    if protocol.get("protocol_schema_version") != 3:
+        raise ValueError(f"protocol {protocol_path} must declare protocol_schema_version=3")
     if protocol.get("status") != "frozen-ready-not-run":
         raise ValueError(f"protocol {protocol_path} is not frozen-ready-not-run")
     fixture_block = protocol.get("task_fixture", {})
@@ -673,6 +752,20 @@ def validate_protocol_for_run(seq: dict[str, Any], profile_id: str, args: argpar
     args.protocol_path = protocol_path
     args.protocol_doc = protocol
     return protocol
+
+
+def frozen_runtime_image_ref(protocol: dict[str, Any]) -> str:
+    """Return the immutable image ID bound by the selected execution descriptor."""
+    image_id = (
+        protocol.get("selected_execution", {})
+        .get("descriptor", {})
+        .get("runtime", {})
+        .get("docker_image_identity", {})
+        .get("image_id")
+    )
+    if not isinstance(image_id, str) or not image_id.startswith("sha256:"):
+        raise ValueError("frozen protocol is missing an immutable Docker image ID")
+    return image_id
 
 
 def qualification_is_current(seq: dict[str, Any]) -> tuple[bool, dict[str, Any]]:
@@ -751,7 +844,8 @@ def find_pool_profile_record(registry: dict[str, Any], seq: dict[str, Any], prof
     fingerprint = baseline_protocol_fingerprint(seq)
     matches = [
         session for session in registry.get("sessions", [])
-        if session.get("baseline_pool", {}).get("protocol_fingerprint") == fingerprint
+        if session.get("schema_version") == 2
+        and session.get("baseline_pool", {}).get("protocol_fingerprint") == fingerprint
         and session.get("replicate_index") == replicate_index
         and session.get("task_sequence", {}).get("sequence_id") == seq["id"]
         and session.get("profile", {}).get("profile_id") == profile_id
@@ -765,6 +859,8 @@ def find_canonical_baseline_record(registry: dict[str, Any], seq: dict[str, Any]
     protocol_fingerprint = baseline_protocol_fingerprint(seq)
     matches = []
     for session in registry.get("sessions", []):
+        if session.get("schema_version") != 2:
+            continue
         if session.get("baseline_pool", {}).get("protocol_fingerprint") != protocol_fingerprint:
             continue
         if session.get("session_role") != "baseline":
@@ -1192,6 +1288,12 @@ def base_record(session_id: str, seq: dict[str, Any], profile_id: str, project: 
                 "profile_id": profile_id,
                 "allowed_token_saving_tools": pmeta["allowed_terms"],
                 "allowed_prompt_mentions": pmeta["allowed_terms"],
+                "allowed_tool_commands": {
+                    str(pmeta["tool_id"]): pmeta["supported_commands"]
+                }
+                if pmeta["tool_id"] and pmeta["supported_commands"]
+                else {},
+                "external_retrieval_allowed": False,
                 "forbidden_tools": [],
             }
         },
@@ -1215,33 +1317,31 @@ def profile_prompt_guidance(profile_id: str) -> str:
             "You are running inside the `baseline-bare-codex` control lane. "
             "This is a Codex substrate baseline: native shell, file, git, and repository edit operations are allowed. "
             "Do not use external retrieval, compression, memory, MCP, or token-saving tools. "
+            "Codex web search is disabled and model-launched shell commands have no network access; do not attempt curl, wget, browsers, package downloads, or any other external retrieval. "
             "Work only inside the target repository. The controller runs concealed verification only after the full task lane; "
             "do not inspect or modify evaluation harness files.\n\n"
             "---\n\n"
         )
     cfg = fixture.TOOL_CONFIGS[str(tool_id)]
-    tool_state = str(pmeta.get("tool_state", "cold"))
-    use_policy = str(pmeta.get("tool_use_policy", "optional"))
-    guidance_key = "optional_guidance" if use_policy == "optional" else "preferred_guidance"
-    use_sentence = cfg.get(guidance_key) or cfg.get("preferred_guidance") or "Use the exposed treatment tool only when it helps."
-    prompt_instructions = fixture.render_prompt_instructions(cfg)
-    prompt_block = f"\n# {cfg['display_name']} lane instructions\n\n{prompt_instructions}\n\n---\n\n" if prompt_instructions else ""
-    return (
-        "# Evaluation isolation contract\n\n"
-        f"You are running inside the `{profile_id}` treatment lane for {cfg['display_name']}. "
-        f"Tool-state condition: `{tool_state}`. Tool-use policy: `{use_policy}`. "
-        f"{use_sentence} Do not use other retrieval, compression, memory, or token-saving tools. "
-        "Work only inside the target repository. The controller runs concealed verification after the full task lane; "
-        "do not inspect or modify evaluation harness files.\n\n"
-        "---\n\n"
-        f"{prompt_block}"
+    return fixture.treatment_lane_guidance(
+        profile_id,
+        cfg,
+        {
+            "tool_state": str(pmeta.get("tool_state", "cold")),
+            "tool_use_policy": str(pmeta.get("tool_use_policy", "natural")),
+        },
     )
 
 
-def task_prompt(seq: dict[str, Any], profile_id: str, project: Path, order: int, *, first_task: bool) -> str:
-    task = next(item for item in seq["tasks"] if int(item["order"]) == order)
-    prompt_path = task_dir(project, order) / "agent-prompt.txt"
-
+def render_task_prompt(
+    seq: dict[str, Any],
+    profile_id: str,
+    order: int,
+    prompt_text: str,
+    *,
+    first_task: bool,
+    review_patch_text: str = "",
+) -> str:
     preface: list[str] = []
     if first_task:
         preface.append(profile_prompt_guidance(profile_id))
@@ -1273,9 +1373,68 @@ def task_prompt(seq: dict[str, Any], profile_id: str, project: Path, order: int,
         "",
         "Run the repository's model-visible behavioral and type checks for the current and previously disclosed work. Do not stop after syntax checks when executable validation is available. The controller runs concealed verification only after the final task prompt.",
         "",
-        prompt_path.read_text(),
+        prompt_text,
     ])
+    if review_patch_text:
+        preface.extend([
+            "",
+            "## Proposed change under review",
+            "",
+            "```diff",
+            review_patch_text.rstrip(),
+            "```",
+        ])
     return "\n".join(preface).rstrip() + "\n"
+
+
+def review_patch_text(task: dict[str, Any], task_directory: Path) -> str:
+    path = task.get("review_patch_path")
+    if not path:
+        return ""
+    return (task_directory / str(path)).read_text()
+
+
+def task_prompt(seq: dict[str, Any], profile_id: str, project: Path, order: int, *, first_task: bool) -> str:
+    directory = task_dir(project, order)
+    prompt_path = directory / "agent-prompt.txt"
+    task = next(item for item in seq["tasks"] if int(item["order"]) == order)
+    return render_task_prompt(
+        seq,
+        profile_id,
+        order,
+        prompt_path.read_text(),
+        first_task=first_task,
+        review_patch_text=review_patch_text(task, directory),
+    )
+
+
+def model_facing_prompt_descriptor(
+    seq: dict[str, Any], profile_id: str, root: Path = ROOT
+) -> dict[str, Any]:
+    """Hash the exact deterministic prompt bytes visible to the model."""
+    guidance = profile_prompt_guidance(profile_id)
+    prompts: list[dict[str, Any]] = []
+    for index, task in enumerate(sorted(seq.get("tasks", []), key=lambda item: int(item["order"]))):
+        order = int(task["order"])
+        source = root / str(task["prompt_path"])
+        rendered = render_task_prompt(
+            seq,
+            profile_id,
+            order,
+            sanitize_task_prompt(source.read_text()),
+            first_task=index == 0,
+            review_patch_text=review_patch_text(task, source.parent),
+        )
+        prompts.append({
+            "task_id": str(task["id"]),
+            "order": order,
+            "rendered_prompt_sha256": hashlib.sha256(rendered.encode()).hexdigest(),
+        })
+    return {
+        "rendering_contract": "sequential-model-facing-prompts-v2",
+        "profile_guidance_sha256": hashlib.sha256(guidance.encode()).hexdigest(),
+        "tasks": prompts,
+    }
 
 
 def materialize_task_prompt(prompt_dir: Path, order: int, content: str) -> Path:
@@ -1289,12 +1448,115 @@ def write_verifier(seq: dict[str, Any], run_dir: Path, task_root: Path) -> Path:
     verifier = run_dir / "verify-workflow.sh"
     lines = ["#!/usr/bin/env bash", "set -uo pipefail", "status=0"]
     for task in sorted(seq["tasks"], key=lambda item: item["order"]):
-        command = f"bash {json.dumps(str(task_dir(task_root, int(task['order'])) / 'verify.sh'))}"
-        lines.append(f"if ! {command}; then status=1; fi")
+        order = int(task["order"])
+        task_id = str(task.get("id") or task_alias(order))
+        command = f"bash {json.dumps(str(task_dir(task_root, order) / 'verify.sh'))}"
+        lines.extend(
+            [
+                command,
+                "task_status=$?",
+                'if [ "$task_status" -ne 0 ]; then status=1; fi',
+                (
+                    "printf '%s\\t%s\\t%s\\t%s\\n' "
+                    f"{json.dumps(TASK_VERIFIER_RESULT_PREFIX)} {json.dumps(str(order))} "
+                    f"{json.dumps(task_id)} \"$task_status\""
+                ),
+            ]
+        )
     lines.append('exit "$status"')
     verifier.write_text("\n".join(lines) + "\n")
     verifier.chmod(0o755)
     return verifier
+
+
+def parse_task_verifier_results(seq: dict[str, Any], output_path: Path) -> list[dict[str, Any]]:
+    """Parse one controller-authored outcome for every concealed task verifier."""
+    expected = {
+        (int(task["order"]), str(task["id"]))
+        for task in sorted(seq["tasks"], key=lambda item: item["order"])
+    }
+    parsed: dict[tuple[int, str], dict[str, Any]] = {}
+    for line in output_path.read_text(errors="replace").splitlines():
+        if not line.startswith(f"{TASK_VERIFIER_RESULT_PREFIX}\t"):
+            continue
+        parts = line.split("\t")
+        if len(parts) != 4:
+            raise ValueError(f"malformed structured verifier outcome: {line!r}")
+        _, order_text, task_id, exit_text = parts
+        try:
+            order = int(order_text)
+            exit_code = int(exit_text)
+        except ValueError as exc:
+            raise ValueError(f"malformed structured verifier outcome: {line!r}") from exc
+        key = (order, task_id)
+        if key not in expected:
+            raise ValueError(f"unexpected structured verifier outcome: order={order} task_id={task_id}")
+        if key in parsed:
+            raise ValueError(f"duplicate structured verifier outcome: order={order} task_id={task_id}")
+        parsed[key] = {
+            "task_id": task_id,
+            "order": order,
+            "verifier_exit_code": exit_code,
+            "verifier_passed": exit_code == 0,
+        }
+    missing = sorted(expected - parsed.keys())
+    if missing:
+        raise ValueError(f"missing structured verifier outcomes: {missing}")
+    return [parsed[key] for key in sorted(expected)]
+
+
+def complete_task_checkpoints(
+    ordered_tasks: list[dict[str, Any]],
+    task_checkpoints: list[dict[str, Any]],
+) -> list[dict[str, Any]]:
+    """Represent every expected task, including prompts not reached by the agent."""
+    by_order = {int(item["order"]): dict(item) for item in task_checkpoints}
+    completed: list[dict[str, Any]] = []
+    for task in sorted(ordered_tasks, key=lambda item: int(item["order"])):
+        order = int(task["order"])
+        checkpoint = by_order.get(order)
+        if checkpoint is None:
+            checkpoint = {
+                "task_id": str(task["id"]),
+                "task_class": task.get("task_class", "maintenance-regression"),
+                "task_alias": task_alias(order),
+                "order": order,
+                "agent_attempted": False,
+                "codex_exit_code": None,
+                "controller_verification": "deferred-to-final",
+                "accepted": None,
+                "task_delta": None,
+                "usage_events": None,
+                "operational_retry_count": 0,
+            }
+        else:
+            checkpoint.setdefault("agent_attempted", True)
+        completed.append(checkpoint)
+    return completed
+
+
+def apply_task_verifier_results(
+    task_checkpoints: list[dict[str, Any]], verifier_results: list[dict[str, Any]]
+) -> list[dict[str, Any]]:
+    """Attach final concealed-verifier outcomes to their task checkpoints."""
+    by_key = {(int(item["order"]), str(item["task_id"])): item for item in verifier_results}
+    updated: list[dict[str, Any]] = []
+    for checkpoint in task_checkpoints:
+        item = dict(checkpoint)
+        result = by_key.get((int(item["order"]), str(item["task_id"])))
+        if result is None:
+            item["controller_verification"] = "not-run"
+            item["accepted"] = None
+            item["verifier_exit_code"] = None
+            item["verifier_passed"] = None
+        else:
+            passed = bool(result["verifier_passed"])
+            item["controller_verification"] = "passed" if passed else "failed"
+            item["accepted"] = passed
+            item["verifier_exit_code"] = int(result["verifier_exit_code"])
+            item["verifier_passed"] = passed
+        updated.append(item)
+    return updated
 
 
 def verifier_paths(seq: dict[str, Any], task_root: Path, run_dir: Path) -> list[Path]:
@@ -1380,8 +1642,26 @@ def docker_setup_deps(seq: dict[str, Any], record: dict[str, Any], codex_home: P
     return proc.returncode
 
 
-def codex_base_cmd(record: dict[str, Any]) -> list[str]:
-    return ["codex", "exec", *fixture.codex_model_args(record), "--json", "--color", "never", "--disable", "hooks", "--ignore-rules"]
+def codex_isolation_args(codex_home: Path | None = None) -> list[str]:
+    """Share the fixture runner's provider-only network contract."""
+    return fixture.codex_isolation_args(codex_home)
+
+
+def codex_base_cmd(
+    record: dict[str, Any], codex_home: Path | None = None
+) -> list[str]:
+    return [
+        "codex",
+        "exec",
+        *fixture.codex_model_args(record),
+        *codex_isolation_args(codex_home),
+        "--json",
+        "--color",
+        "never",
+        "--disable",
+        "hooks",
+        "--ignore-rules",
+    ]
 
 
 def extract_thread_id(events_path: Path) -> str | None:
@@ -1431,13 +1711,14 @@ def run_codex_task(
     wrapper = (cfg or {}).get("codex_wrapper") if cfg else None
     env = fixture.codex_env(codex_home, containerized=True, cfg=cfg)
     env.update(fixture.tool_env_for_record(record, profile_id, codex_home))
+    fixture.apply_model_network_isolation(env)
     mounts = model_mounts_for_record(record, codex_home, run_dir, cfg=cfg)
 
     def execute(active_prompt: Path, events: Path, active_thread: str | None, attempt_timeout: int) -> int:
         if active_thread is None:
-            codex_cmd = [*codex_base_cmd(record), "--sandbox", "danger-full-access", "--cd", str(repo), "--output-last-message", str(last_message_path), "-"]
+            codex_cmd = [*codex_base_cmd(record, codex_home), "--cd", str(repo), "--output-last-message", str(last_message_path), "-"]
         else:
-            codex_cmd = ["codex", "exec", "resume", *fixture.codex_model_args(record), "--json", "--disable", "hooks", "--ignore-rules", "--output-last-message", str(last_message_path), active_thread, "-"]
+            codex_cmd = ["codex", "exec", "resume", *fixture.codex_model_args(record), *codex_isolation_args(codex_home), "--json", "--disable", "hooks", "--ignore-rules", "--output-last-message", str(last_message_path), active_thread, "-"]
         input_path_for_proc: Path | None = active_prompt
         if wrapper:
             assert cfg is not None
@@ -1676,9 +1957,24 @@ def remove_ephemeral_homes(run_dir: Path) -> None:
             shutil.rmtree(path)
 
 
-def functional_task_count(*, expected_tasks: int, task_checkpoints: list[dict[str, Any]], final_verifier_code: int) -> int:
-    """Count functional passes independently from audit and usage-accounting gates."""
-    return expected_tasks if final_verifier_code == 0 and len(task_checkpoints) == expected_tasks else 0
+def functional_task_count(*, task_checkpoints: list[dict[str, Any]]) -> int:
+    """Count final concealed-verifier passes from structured per-task outcomes."""
+    return sum(item.get("accepted") is True for item in task_checkpoints)
+
+
+def execution_integrity_record(
+    summary: dict[str, Any], audit_code: int, audit_result: dict[str, Any]
+) -> dict[str, Any]:
+    return {
+        "verifier_integrity_passed": bool(
+            summary.get("leakage_controls", {}).get("verifier_integrity_passed")
+        ),
+        "tool_isolation_audit_passed": audit_code == 0,
+        "external_retrieval_hits": audit_result.get("external_retrieval_hits", []),
+        "pass_through_tool_command_hits": audit_result.get(
+            "pass_through_tool_command_hits", []
+        ),
+    }
 
 
 def workflow_session_record(
@@ -1698,15 +1994,13 @@ def workflow_session_record(
 ) -> dict[str, Any]:
     pmeta = PROFILE_META[profile_id]
     accepted = bool(summary.get("accepted"))
-    tasks_passed = functional_task_count(
-        expected_tasks=len(seq["tasks"]),
-        task_checkpoints=task_checkpoints,
-        final_verifier_code=final_verifier_code,
-    )
+    tasks_passed = functional_task_count(task_checkpoints=task_checkpoints)
+    audit_path = run_dir / "tool-isolation-audit.json"
+    audit_result = json.loads(audit_path.read_text()) if audit_path.exists() else {}
     total_provider_tokens = usage.get("total_provider_tokens")
     tokens_per_accepted_task = (total_provider_tokens / tasks_passed) if tasks_passed and isinstance(total_provider_tokens, (int, float)) else None
     return {
-        "schema_version": 1,
+        "schema_version": 2,
         "session_id": summary["session_id"],
         "record_type": "workflow_session",
         "evidence_type": "workflow-simulation",
@@ -1736,7 +2030,9 @@ def workflow_session_record(
         },
         "task_sequence": {
             "sequence_id": seq["id"],
+            "sequence_contract": seq.get("sequence_contract", "maintenance-regression"),
             "task_ids": [task["id"] for task in sorted(seq["tasks"], key=lambda item: item["order"])],
+            "task_classes": [task.get("task_class", "maintenance-regression") for task in sorted(seq["tasks"], key=lambda item: item["order"])],
             "reset_policy": "reset source checkout, profile home, tool state, indexes, caches, generated config, and agent home before the lane; preserve repository, thread, tool, index, cache, and agent state across every sequential prompt",
             "prompt_delivery": prompt_delivery,
             "leakage_controls": leakage_controls,
@@ -1769,13 +2065,19 @@ def workflow_session_record(
             "output_tokens": usage.get("output_tokens"),
             "reasoning_tokens": usage.get("reasoning_tokens"),
             "total_provider_tokens": usage.get("total_provider_tokens"),
-            "estimated_cost_usd": usage.get("estimated_cost_usd"),
             "tokens_per_accepted_task": tokens_per_accepted_task,
-            "pricing_basis": "not computed; Codex-reported token volume, not billing-weighted cost",
+            "accounting_basis": "Codex-reported token volume; monetary cost estimation is out of scope",
         },
         "per_task_results": task_checkpoints,
         "software_quality": {
-            "tasks_attempted": len(task_checkpoints),
+            "tasks_attempted": sum(
+                item.get("agent_attempted") is True for item in task_checkpoints
+            ),
+            "tasks_agent_claimed_complete": sum(
+                item.get("agent_attempted") is True
+                and item.get("codex_exit_code") == 0
+                for item in task_checkpoints
+            ),
             "tasks_passed": tasks_passed,
             "final_verifier_command": rel(run_dir / "verify-workflow.sh"),
             "final_verifier_passed": final_verifier_code == 0,
@@ -1784,24 +2086,7 @@ def workflow_session_record(
             "quality_score": None,
             "critical_failures": [] if final_verifier_code == 0 else ["one or more workflow verifiers failed"],
         },
-        "state_observations": {
-            "stale_context_incidents": None,
-            "overfeeding_incidents": None,
-            "repeated_rediscovery_incidents": None,
-            "thread_continuity_errors": summary.get("thread_continuity_errors", []),
-            "useful_state_reuse_notes": "Single persistent Codex thread, composite repository, and source/tool/agent state across sequentially disclosed prompts.",
-        },
-        "operational_reproducibility": {
-            "install_logged": True,
-            "pre_session_reset_verified": True,
-            "raw_artifacts_recoverable": True,
-            "state_leakage_outside_session_observed": False,
-            "tool_isolation_audit": {
-                "command": "python3 scripts/audit_tool_isolation.py --json-output ...",
-                "passed": audit_code == 0,
-                "forbidden_tool_hits": [],
-            },
-        },
+        "execution_integrity": execution_integrity_record(summary, audit_code, audit_result),
         "artifacts": compact_artifacts(run_dir),
         "interpretation": {
             "accepted_for_execution": accepted,
@@ -1927,6 +2212,7 @@ def run_one(args: argparse.Namespace) -> dict[str, Any]:
     protocol_doc = args.protocol_doc
     selected_execution = protocol_doc["selected_execution"]
     selected_descriptor = selected_execution["descriptor"]
+    runtime_docker_image = frozen_runtime_image_ref(protocol_doc)
     frozen_protocol = {
         "protocol_id": protocol_doc.get("protocol_id"),
         "path": rel(protocol_path),
@@ -1981,16 +2267,16 @@ def run_one(args: argparse.Namespace) -> dict[str, Any]:
     cfg = fixture.active_tool_config(record, profile_id)
 
     if not args.skip_container_preflight:
-        container_preflight = fixture.check_container_runtime("docker", args.docker_image, run_dir, False, build_image=False, dockerfile=fixture.DEFAULT_DOCKERFILE, codex_home=codex_home, cfg=cfg)
+        container_preflight = fixture.check_container_runtime("docker", runtime_docker_image, run_dir, False, build_image=False, dockerfile=fixture.DEFAULT_DOCKERFILE, codex_home=codex_home, cfg=cfg)
         if not container_preflight.get("passed"):
             return finalize_failed_attempt({"session_id": session_id, "profile_id": profile_id, "accepted": False, "stage": "container-preflight", "run_dir": rel(run_dir), "container_preflight": container_preflight}, record, run_dir)
     if not args.skip_codex_preflight:
-        preflight = fixture.preflight_codex(record, codex_home, profile_id, run_dir, backend="docker", docker_image=args.docker_image)
+        preflight = fixture.preflight_codex(record, codex_home, profile_id, run_dir, backend="docker", docker_image=runtime_docker_image)
         redact_auth_sync(run_dir)
         if not preflight.get("passed"):
             return finalize_failed_attempt({"session_id": session_id, "profile_id": profile_id, "accepted": False, "stage": "codex-preflight", "run_dir": rel(run_dir), "preflight": preflight}, record, run_dir)
     if not args.skip_dependency_install:
-        deps_code = docker_setup_deps(seq, record, codex_home, run_dir, args.docker_image)
+        deps_code = docker_setup_deps(seq, record, codex_home, run_dir, runtime_docker_image)
         if deps_code != 0:
             return finalize_failed_attempt({"session_id": session_id, "profile_id": profile_id, "accepted": False, "stage": "setup-deps", "setup_deps_exit_code": deps_code, "run_dir": rel(run_dir)}, record, run_dir)
 
@@ -2001,7 +2287,7 @@ def run_one(args: argparse.Namespace) -> dict[str, Any]:
         run_dir,
         protocol,
         backend="docker",
-        docker_image=args.docker_image,
+        docker_image=runtime_docker_image,
     )
     if warmup_code != 0:
         return finalize_failed_attempt({"session_id": session_id, "profile_id": profile_id, "accepted": False, "stage": "tool-warmup", "tool_warmup_exit_code": warmup_code, "run_dir": rel(run_dir)}, record, run_dir)
@@ -2045,7 +2331,7 @@ def run_one(args: argparse.Namespace) -> dict[str, Any]:
         )
         events_path = run_dir / f"task-{order:02d}-codex-events.jsonl"
         last_message_path = model_output_dir / f"task-{order:02d}-codex-last-message.txt"
-        code, thread_id = run_codex_task(record, profile_id, codex_home, run_dir, args.docker_image, prompt_path, events_path, last_message_path, timeout=args.timeout_per_task, thread_id=thread_id)
+        code, thread_id = run_codex_task(record, profile_id, codex_home, run_dir, runtime_docker_image, prompt_path, events_path, last_message_path, timeout=args.timeout_per_task, thread_id=thread_id)
         codex_exit_codes.append(code)
         redact_auth_sync(run_dir)
         capture_task_delta(project / "repo", run_dir, order)
@@ -2057,8 +2343,10 @@ def run_one(args: argparse.Namespace) -> dict[str, Any]:
             (run_dir / f"task-{order:02d}-thread-continuity-error.txt").write_text(message + "\n")
         task_checkpoints.append({
             "task_id": task["id"],
+            "task_class": task.get("task_class", "maintenance-regression"),
             "task_alias": task_alias(order),
             "order": order,
+            "agent_attempted": True,
             "codex_exit_code": code,
             "controller_verification": "deferred-to-final",
             "accepted": None,
@@ -2080,7 +2368,26 @@ def run_one(args: argparse.Namespace) -> dict[str, Any]:
     concatenate_events(run_dir, len(ordered_tasks))
     usage = extract_codex_usage.build_summary(run_dir / "codex-events.jsonl")
     (run_dir / "provider-usage.json").write_text(json.dumps(usage, indent=2) + "\n")
-    final_verifier_code = run_final_verifier(seq, record, codex_home, run_dir, args.docker_image) if len(task_checkpoints) == len(ordered_tasks) and all(code == 0 for code in codex_exit_codes) and verifier_integrity_passed and not thread_continuity_errors else 1
+    task_checkpoints = complete_task_checkpoints(ordered_tasks, task_checkpoints)
+    verifier_results: list[dict[str, Any]] = []
+    verifier_ready = verifier_integrity_passed
+    if verifier_ready:
+        final_verifier_code = run_final_verifier(
+            seq, record, codex_home, run_dir, runtime_docker_image
+        )
+        try:
+            verifier_results = parse_task_verifier_results(
+                seq, run_dir / "final-verifier-output.txt"
+            )
+        except ValueError as exc:
+            (run_dir / "final-verifier-results-error.txt").write_text(f"{exc}\n")
+            final_verifier_code = 1
+    else:
+        final_verifier_code = 1
+    task_checkpoints = apply_task_verifier_results(task_checkpoints, verifier_results)
+    (run_dir / "final-verifier-results.json").write_text(
+        json.dumps({"tasks": verifier_results}, indent=2) + "\n"
+    )
     capture_diff(record, run_dir)
     audit_code = audit(record_path, run_dir)
     accepted = all(code == 0 for code in codex_exit_codes) and not thread_continuity_errors and len(task_checkpoints) == len(ordered_tasks) and final_verifier_code == 0 and audit_code == 0 and verifier_integrity_passed and not usage.get("warnings")
@@ -2148,7 +2455,7 @@ def run_one(args: argparse.Namespace) -> dict[str, Any]:
         "accepted": accepted,
         "timeout_seconds": args.timeout_per_task * len(ordered_tasks),
         "codex_version": codex_version,
-        "token_usage": {k: usage.get(k) for k in ["fresh_input_tokens", "cached_input_tokens", "cache_write_tokens", "output_tokens", "reasoning_tokens", "total_provider_tokens", "estimated_cost_usd"]},
+        "token_usage": {k: usage.get(k) for k in ["fresh_input_tokens", "cached_input_tokens", "cache_write_tokens", "output_tokens", "reasoning_tokens", "total_provider_tokens"]},
         "usage_warnings": usage.get("warnings"),
         "per_task_results": task_checkpoints,
         "prompt_delivery": prompt_delivery,

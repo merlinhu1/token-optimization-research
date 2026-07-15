@@ -22,14 +22,14 @@ Use this for primary evidence about individual tools and compatibility-safe stac
 2. Reset the repository, profile home, tool state, indexes, caches, and agent home once before the session.
 3. Activate exactly one baseline or treatment profile.
 4. Run tasks in the sequence order without resetting repository or tool state between tasks.
-5. Capture per-task provider usage, transcript, verifier output, diff/status, tool calls, turns, and correction turns into the compact evidence bundle.
+5. Capture provider events, task checkpoints, verifier output, and diff/status into the compact evidence bundle without asking the model for extra reporting.
 6. Preserve indexes, caches, generated config, memory, and agent/tool home across tasks unless the sequence explicitly models a reset.
-7. Run the final repository verifier or final quality review after the last task.
-8. Aggregate cumulative provider-billed tokens and cost across all tasks.
-9. Record stale-context, overfeeding, repeated rediscovery, or state-reuse observations.
-10. Write `run.json`, `changes.diff`, `evidence.jsonl.gz`, and `manifest.sha256`, then append compact metadata to `data/workflow-sessions.json`.
+7. Run every concealed task verifier after the last task, without short-circuiting, and emit structured per-task outcomes.
+8. Derive `tasks_passed` from those structured outcomes.
+9. Aggregate cumulative provider-reported tokens across all tasks; do not estimate money.
+10. Complete independent source-quality review, write the compact bundle, and append metadata to `data/workflow-sessions.json`.
 
-Minimum positive condition: treatment reduces cumulative provider-billed workflow tokens or cost versus the canonical shared baseline while preserving task pass rate and final quality gates.
+Minimum positive condition: treatment reduces cumulative provider token use versus the compatible shared baseline while preserving structured task correctness and final quality.
 
 ## Flow 2: run a workflow ablation
 
@@ -38,7 +38,7 @@ Use this for attribution after a full/default treatment has a workflow result.
 1. Start from the same initial snapshot and task sequence as the full treatment.
 2. Disable or replace one component or surface before the session begins.
 3. Run the full ordered sequence with the same persistent-state policy.
-4. Compare cumulative tokens, pass rate, stale-context incidents, and final quality against the full treatment and baseline.
+4. Compare cumulative tokens, structured task outcomes, and final quality against the full treatment and baseline.
 
 Minimum pass condition: the ablation explains which component changed cumulative workflow token usage without introducing uncontrolled surface overlap.
 

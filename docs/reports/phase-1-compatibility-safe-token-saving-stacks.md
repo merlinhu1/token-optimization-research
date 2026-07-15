@@ -14,7 +14,7 @@ The central Phase 1 finding is not that a single stack should be treated as the 
 
 The expanded source-logic set materially changes the retrieval and memory portions of the research space. Graphify, Understand-Anything, Cartog, Codescope, SwarmVault, Total Agent Memory, Dragon-Brain, Memex, CognitX CodeGraph, and related graph/RAG or memory tools are now source-logic candidates rather than discovery-only records. They can therefore participate in source-logic stack hypotheses, but they still require benchmark-audit and reproduction before any measured effectiveness claim.
 
-The most important methodological constraint remains unchanged: source inspection can support mechanism and compatibility hypotheses, but it cannot establish provider-billed token savings, pass-rate preservation, latency improvement, or total cost reduction. Phase 2 must evaluate each candidate against a baseline with provider-billed accounting, deterministic verifier results, quality review, turn count, tool-call count, latency, and reset/reproducibility checks.
+The most important methodological constraint remains unchanged: source inspection can support mechanism and compatibility hypotheses, but it cannot establish provider-token savings or correctness/quality preservation. Phase 2 must evaluate each candidate against a baseline with provider-reported workflow token accounting, structured task verifier results, independent quality review, treatment isolation, and recoverable artifacts. Monetary cost, latency, and broad behavior telemetry are not project decision metrics.
 
 ## Scope
 
@@ -370,7 +370,7 @@ The report prioritizes candidates that can be ablated cleanly: baseline, single-
 
 | Variant | Components enabled | Purpose | Required metric |
 |---|---|---|---|
-| `baseline-codex-no-mcp` | Codex CLI workflow with native shell/edit/file operations and no MCP/token-saving add-ons | Establish task-level provider-billed practical-agent baseline | Billed tokens/cost, turns, native tool calls, verifier, quality score, latency |
+| `baseline-codex-no-mcp` | Codex CLI workflow with native shell/edit/file operations and no MCP/token-saving add-ons | Establish the practical-agent workflow baseline | Provider token components/total, structured task outcomes, independent quality, isolation |
 | `terminal-only` | One of RTK, Lowfat, Snip, TokenJuice, or xcsift for Apple logs | Select the terminal owner before multi-tool stacks | Compact/raw token delta, diagnostic fidelity, raw recovery |
 | `retrieval-only` | One of CodeGraph, Cartog, Graphify, Understand-Anything, Serena, SigMap, jcodemunch, CocoIndex Code, Code Review Graph, CognitX CodeGraph, Codescope, or SwarmVault | Isolate retrieval benefit and index overhead | Target localization, follow-up broad reads, billed tokens, index time |
 | `memory-only repeated-task` | One of Cavemem, Claude Mem, Total Agent Memory, Dragon-Brain, Memex, Token Savior memory, or LeanCTX memory | Test rediscovery reduction | Stale-context rate, repeated-task token delta, correctness |
@@ -378,7 +378,7 @@ The report prioritizes candidates that can be ablated cleanly: baseline, single-
 | `graph bakeoff` | Fixed terminal owner plus exactly one retrieval authority | Compare graph/RAG candidates without retrieval overlap | File/symbol hit rate, broad-read reduction, billed tokens |
 | `broad-owner comparator` | LeanCTX, Token Savior, Headroom, Claw Compactor, Codescope, SwarmVault, or Memex alone | Test whether single broad ownership beats narrow composition | Task-level savings, raw recovery, reset behavior |
 | `installer parity` | Manual profile versus Tokless-installed equivalent profile | Test setup reproducibility rather than token reduction | Generated config diff, install/disable/reset, same task metrics |
-| `replacement runtime` | Codex no-MCP baseline versus ClawCodex versus Caveman Code | Test alternative agent runtime trade-offs | Pass rate, billed cost, quality score, latency |
+| `replacement runtime` | Codex no-MCP baseline versus ClawCodex versus Caveman Code | Test alternative agent runtime trade-offs | Provider token use, structured task outcomes, independent quality |
 | `Apple specialized` | xcsift alone, general compactor alone, xcsift+Serena | Test specialized versus general terminal compaction | Diagnostic fidelity, repair success, billed tokens |
 
 ## Compatibility exclusions
@@ -417,7 +417,7 @@ The report prioritizes candidates that can be ablated cleanly: baseline, single-
 ## Limitations
 
 - All retained stack candidates are source-logic hypotheses, not benchmark-audit or reproduction findings.
-- Provider-billed input, output, cache, and total-cost effects have not been measured for these stacks.
+- Provider-reported input, output, cache, and total-token effects have not been measured for these stacks.
 - Pass-rate preservation, edit quality, review quality, diagnostic fidelity, and latency have not been reproduced on frozen target workloads.
 - The report does not rank tools by stars or popularity. Adoption signals are used only as weak discovery and prioritization inputs.
 - Some broad-owner tools may require services, daemons, local databases, or host-specific hooks; Phase 2 must evaluate reset and uninstall behavior.

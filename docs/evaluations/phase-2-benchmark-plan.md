@@ -2,98 +2,117 @@
 
 ## Objective
 
-Phase 2 converts source-logic candidates into workflow-simulation evidence. The goal is to determine which compatibility-safe tools and stacks reduce cumulative provider-billed token usage across realistic persistent project sessions while preserving task success and final repository quality.
+Determine whether a declared AI-agent treatment reduces cumulative provider-reported token use over a persistent software-engineering workflow while preserving structured task correctness and independent software quality.
 
-Single-task isolated runs remain available only as sanity checks for instrumentation, install behavior, isolation, and diagnostic preservation.
+Monetary cost estimation is excluded.
 
-## Inputs from Phase 1
+## Current program order
 
-- 39 source-logic tool dossiers remain in the current-candidate table after excluding out-of-current-scope research notes.
-- Compatibility-safe surface model.
-- Phase 1 source-logic stack hypothesis portfolio, baselines, broad-owner comparators, and installer/orchestrator reproducibility profiles.
-- Existing benchmark examples in cited repositories, including tokbench, agentic-token-bench, CodeGraph benchmarks, Token Savior tsbench, Caveman behavior-compression benchmarks, Ponytail task benchmark, Headroom/Tokbench pilot results, and terminal-output reducer examples.
+1. **Complete:** consolidate and freeze the evaluation framework.
+2. **Complete:** reconcile historical treatment estimands and result dispositions.
+3. **Complete for the first screen:** reduce the runnable treatment portfolio to `retrieval-codegraph`; defer every other unexecuted candidate.
+4. **Complete:** design and executable-qualify `beets-lifecycle-sequence-v1`.
+5. **Next:** run and review one lifecycle baseline replicate.
+6. If that baseline is valid, freeze and run one matched CodeGraph treatment; accumulate later replicates only as token budget permits.
 
-## Phase 2 tracks
+Do not add or reactivate profiles without a concrete mechanism gap or first-screen evidence.
 
-| Track | Output | Promotion target |
-|---|---|---|
-| Benchmark-audit | Inspect existing harnesses, tasks, scoring, token accounting, raw outputs, and failure semantics. | Promote selected dossiers to `benchmark-audit`. |
-| Workflow harness | Define task sequences, session records, usage schema, quality rubric, and artifact layout. | Create immediately usable workflow-simulation flows. |
-| Workflow reproduction | Run baseline and selected treatments on the same persistent task sequence with provider-billed accounting. | Promote validated stack evidence toward `reproduction`. |
+## Workflow portfolio
 
-## Prioritized components for benchmark-audit
+### Controlled maintenance lanes
 
-| Surface | Components | Audit focus |
-|---|---|---|
-| Terminal/tool-output compaction | RTK, Lowfat, Snip, TokenJuice, Headroom terminal modes | command coverage, raw fallback, failing-output fidelity, operation-to-workflow translation. |
-| Retrieval/context | CodeGraph, Cartog, Graphify, Understand-Anything, Serena, SigMap, jcodemunch MCP, CocoIndex Code, Code Review Graph, CognitX CodeGraph, Codescope, SwarmVault, LeanCTX retrieval, Token Savior retrieval | query quality, freshness, index cost, tool-call overhead, edit-target success, persistent-session behavior. |
-| Memory/reinjection | Cavemem, Claude Mem, MEX, Total Agent Memory, Dragon-Brain, Memex, Token Savior memory, LeanCTX memory, SwarmVault memory | rediscovery reduction across task sequences, stale-context rate, project/session scoping, reset path. |
-| Broad compression/proxy | Headroom, Claw Compactor, LeanCTX, Token Savior, Codescope, Memex | schema/code fidelity, raw recovery, workflow-level billing, turn inflation. |
-| Installer/orchestrator | Tokless, Maestro Flow, Grace Marketplace | profile reproducibility, non-overlap enforcement, disable/reset behavior, generated config audit, workflow overhead. |
+Fastify, Terraform, and Beets are retained as scoped maintenance-regression workflows. Existing and future compatible executions accumulate evidence for that task class.
 
-## Initial workflow reproduction portfolio
+### Primary practical lifecycle lane
 
-Run baselines, single-surface owners, and a small set of source-logic hypotheses as full persistent sessions before expanding the matrix.
+Qualify one persistent sequence containing:
 
-| Profile ID | Stack/profile | Reason |
-|---|---|---|
-| `baseline-bare-codex` | Codex CLI substrate with native shell/edit/file operations but no MCP or token-saving add-ons. | Required practical-agent comparator for additive Codex treatment sessions. |
-| `retrieval-leanctx` or `broad-context-owner` | LeanCTX retrieval/broad context owner, depending on the intended user setup. | Tests whether broad persistent context reduces cumulative tokens after state can amortize. |
-| `retrieval-codegraph` or `lower-intervention-codegraph` | CodeGraph alone, then RTK + CodeGraph if needed. | Lower-intervention source-logic comparator. |
-| `retrieval-serena` | Serena only. | Language-server retrieval/editing comparator. |
-| `headroom-default-codex` | Default Headroom Codex integration. | Broad compression/proxy candidate; proxy-only ablations are not primary candidate evidence. |
-| `integrated-mcp-owner` | Token Savior MCP profile. | Single integrated owner hypothesis. |
-| `behavior-caveman` | Caveman. | Behavior/output-compression lane. |
-| `tokless-profile` | Tokless-installed selected non-overlapping profile. | Installer reproducibility test, not extra reduction layer. |
+| Order | Task | Acceptance focus |
+|---:|---|---|
+| 1 | Feature implementation | Required behavior, compatibility, tests, and project conventions. |
+| 2 | Behavior-preserving refactor | Preserved behavior, reduced structural debt, and minimal diff. |
+| 3 | Code review and correction | Correct findings against the cumulative change; acceptance-critical defects corrected. |
 
-## Task classes
+This single lifecycle triad is intended to cover common software-engineering work without multiplying experiments by language. Repository choice is based on verifier quality and realistic project structure, not language coverage.
 
-| Task class | Token-waste target | Minimum verifier |
-|---|---|---|
-| Noisy test failure repair | Long failing test logs and repeated reruns across a session. | The failing test passes; no unrelated tests regress. |
-| Build/typecheck repair | Compiler/typechecker output and code navigation. | Build/typecheck passes. |
-| Large-codebase navigation | Avoid broad file reads while locating relevant symbols across follow-up tasks. | Correct file/function identified and task-specific question answered. |
-| Multi-file refactor | Retrieval precision, edit quality, and state reuse across adjacent changes. | Tests pass and diff matches required behavior. |
-| Memory rediscovery | Reuse project conventions across repeated tasks. | Correct convention applied without re-reading full docs. |
-| MCP/tool-heavy workflow | Large intermediate tool traces and offloaded execution. | Final answer or generated artifact passes verifier; intermediate trace stays outside main context. |
+Optional lanes may cover repair, diagnosis, migration, build/typecheck, or documentation when a candidate mechanism specifically targets them.
 
-## Workflow run design
+## Framework freeze gate
 
-1. Freeze repository fixture, initial snapshot, task sequence, and task prompts.
-2. Run the baseline workflow session with usage capture enabled.
-3. Reset repository, profile home, tool state, indexes, caches, generated config, and agent home before each session.
-4. Install or activate exactly one treatment profile on the same agent substrate.
-5. Run the ordered task sequence without resetting repository or tool state between tasks.
-6. For non-MCP terminal-binary treatments, expose the pinned binary through lane-specific mounts and verify the actual solve shell can resolve it before session execution.
-7. Preserve index-backed and stateful tool state naturally across tasks; state reset happens before the session, not between tasks.
-8. Record setup/index wall time and output separately; count only what the model sees as provider tokens.
-9. Run the same task sequence with the same model/provider where possible.
-10. Capture per-task transcript, usage, tool logs, raw artifacts, verifier output, and final diff/status.
-11. Capture session-level cumulative provider usage, pricing basis, state observations, and tool-state artifacts.
-12. Mount only dedicated model-output directories when the evaluated process writes artifacts; never mount controller run roots, seed patches, verifier assets, or controller Git objects.
-13. Preserve harness- or isolation-invalid attempts as excluded negative evidence; freeze a revised protocol and use a new session/replicate identifier for any rerun.
-14. Score final software quality using the standard rubric.
-15. Record result in `data/workflow-sessions.json` and store raw artifacts under `sources/evaluations/workflow-sessions/<session-id>/`.
+Before any paid run, the frozen contract must prove:
 
-## Minimum acceptance criteria for a stack to advance
+- conflict-free seed application and a qualified initial state;
+- exact prompt, seed, and verifier bytes;
+- future-prompt concealment and controller-only verifier assets;
+- model/runtime/treatment identity;
+- model shell/network and treatment isolation;
+- every task verifier runs without short-circuiting;
+- structured task-result parsing fails closed on missing/duplicate outcomes;
+- the complete fixed state passes every acceptance point;
+- compact artifact creation and checksum recovery work;
+- reporting-only runner changes cannot split the comparison pool.
 
-A stack can be described as Phase 2 positive only if:
+Protocol qualification and mutation testing use no provider tokens and should absorb framework risk before a months-long evidence program begins.
 
-- cumulative provider-billed workflow tokens or cost improve versus the canonical shared baseline;
-- deterministic per-task and final verifiers pass when available;
-- an explicit software-quality review records `quality_review_status: reviewed`, score at least 4, and no critical failures;
-- correction turns, repeated reads, tool-call overhead, and stale-context incidents do not erase workflow-level savings;
-- no overlapping surface owner is active unintentionally;
-- install, disable, and reset paths are documented;
-- negative or failed workflow sessions are retained in the evidence record.
+## Treatment estimands
 
-## Immediate first experiments
+Profiles must state one of:
 
-The first objective-bearing batch is a workflow-session pilot, not a single-task matrix.
+- normal integration available for natural use;
+- documented direct use preferred through model-facing guidance;
+- mandatory-use policy;
+- integrated broad owner.
 
-1. Select one active large-project or medium-project workflow sequence from `data/workflow-task-sequences.json`.
-2. Run `baseline-bare-codex` on the full 5-task sequence and record cumulative provider usage.
-3. Run one treatment profile on the same sequence and model condition.
-4. Compare cumulative tokens, tokens per accepted task, pass rate, correction turns, and final quality.
-5. Only after the pilot record shape works, add CodeGraph/Serena/Headroom/LeanCTX comparisons.
-6. Keep the human rerun procedure aligned through `docs/evaluations/workflow-evaluation-runbook.md`.
+The profile must install the corresponding normal integration. Merely mounting a binary cannot be described as automatic shell integration. Historical prompted/direct-use evidence remains valid for that narrow estimand when isolation is valid.
+
+## Lean run design
+
+1. Freeze fixture, sequence, prompts, seeds, verifiers, comparison identity, and selected treatment.
+2. Start baseline and treatment from the same frozen inputs.
+3. Reset repository, profile home, tool state, and agent home before each complete session.
+4. Preserve permitted state between tasks.
+5. Deliver one task prompt at a time.
+6. Permit the treatment exactly as declared; block overlapping tools and external retrieval unless part of both arms.
+7. Capture provider token events and controller artifacts without asking the model for extra reporting.
+8. Run all concealed verifiers once against the final cumulative repository.
+9. Emit structured per-task results and derive `tasks_passed` from them.
+10. Perform independent source-quality review.
+11. Append the compact record and checksum-valid artifact bundle.
+
+## Required decision evidence
+
+- provider token components and total;
+- per-task operational, declared-completion, verifier, and accepted state;
+- independent quality score and critical failures;
+- treatment installation/configuration and isolation audit, with optional descriptive use telemetry;
+- frozen protocol and recoverable artifacts.
+
+Latency, money, setup/index time, turns, tool calls, and broad behavior annotations are not required. They may be derived from existing raw events only when diagnosing a concrete result.
+
+## Replication policy
+
+One replicate means one complete multi-task workflow execution.
+
+- Record each run immediately.
+- A valid single replicate is screening evidence, not a single-task result and not discarded.
+- New compatible runs add evidence; they do not replace earlier runs.
+- Pair baseline and treatment by comparison identity and replicate index.
+- Add replicates over time as token budget allows.
+- Report each pair. Add median and range once repeated pairs exist.
+- Do not demand an expensive full matrix before publishing a scoped status such as `single-run-screening` or `insufficient-evidence`.
+
+## Advancement rule
+
+A treatment may support a positive token-efficiency conclusion only when:
+
+- operational execution completes;
+- agent-declared completion is recorded;
+- every task has a structured verifier outcome;
+- correctness is no worse than the comparison baseline;
+- independent quality is accepted and no critical failure exists;
+- the declared treatment was correctly installed and configured according to its normal documented instructions;
+- treatment isolation and provider-token accounting are trustworthy;
+- the comparison baseline is compatible;
+- the claim states replicate count and workflow scope.
+
+Hard-lane correctness improvement may be reported separately even when token use increases or production quality remains rejected.
