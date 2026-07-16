@@ -1257,9 +1257,7 @@ for line in sys.stdin:
             (ROOT / "sources/evaluations/audits/official-integration-parity-20260718.json").read_text()
         )
         sessions = json.loads((ROOT / "data/workflow-sessions.json").read_text())["sessions"]
-        by_profile = {}
-        for session in sessions:
-            by_profile.setdefault(session["profile"]["profile_id"], []).append(session)
+        by_id = {session["session_id"]: session for session in sessions}
         deletion_receipts = [
             json.loads(path.read_text())
             for path in (ROOT / "sources/evaluations/audits").glob("*deletion*.json")
@@ -1274,17 +1272,19 @@ for line in sys.stdin:
             "unverified-treatment-assignment": "unverified-treatment-assignment",
         }
         for item in audit["profiles"]:
-            retained = by_profile.get(item["profile_id"], [])
+            expected_session_ids = item["session_ids"]
+            retained = [by_id[session_id] for session_id in expected_session_ids if session_id in by_id]
             if item.get("active_corpus_action") == "deleted-under-owner-authorized-receipt":
-                self.assertEqual(item["session_ids"], [])
+                self.assertEqual(expected_session_ids, [])
                 self.assertFalse(item["objective_eligible"])
-                self.assertNotIn(item["profile_id"], by_profile)
+                self.assertTrue(set(item["deleted_session_ids"]).isdisjoint(by_id))
                 deleted = deleted_by_profile[item["profile_id"]]
                 self.assertEqual(sorted(item["deleted_session_ids"]), sorted(deleted["deleted_session_ids"]))
                 for relative in deleted["deleted_protocol_paths"] + deleted["deleted_comparison_paths"] + deleted["deleted_bundle_roots"]:
                     self.assertFalse((ROOT / relative).exists(), relative)
                 continue
-            self.assertEqual(sorted(item["session_ids"]), sorted(row["session_id"] for row in retained))
+            self.assertEqual(sorted(expected_session_ids), sorted(row["session_id"] for row in retained))
+            self.assertTrue(all(row["profile"]["profile_id"] == item["profile_id"] for row in retained))
             self.assertEqual(
                 item["objective_eligible"],
                 all(row["interpretation"]["accepted_for_objective"] for row in retained),
