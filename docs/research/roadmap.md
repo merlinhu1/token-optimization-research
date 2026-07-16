@@ -34,9 +34,9 @@ Status: complete for the current catalog.
 
 ## Phase 2A — Controlled maintenance workflows
 
-Status: first current-production baseline screen complete; both maintenance artifacts are quality-rejected.
+Status: first current-production baseline screen complete; Fastify is excluded as an invalid prompt fixture and Terraform is quality-rejected.
 
-Fastify maintenance V1 and Terraform maintenance V2 remain current production lanes covering regression repair on medium/large public repositories. They complement, rather than replace, the primary Beets lifecycle workflow. Their completed controller-green baseline artifacts are preserved but excluded from objective comparison because independent review found real contract regressions.
+Fastify maintenance V1 and Terraform maintenance V2 remain current production lanes covering regression repair on medium/large public repositories. They complement, rather than replace, the primary Beets lifecycle workflow. Fastify's provider tokens are preserved only as calibration evidence because its original prompt omitted an acceptance-critical compatibility identifier; Terraform's controller-green artifact is excluded because independent review found a real contract regression. Both current contracts have been versioned and hardened before any future run.
 
 Continue to:
 
