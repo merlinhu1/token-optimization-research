@@ -781,7 +781,7 @@ TOOL_CONFIGS: dict[str, dict[str, Any]] = {
             "--from",
             str(TOKEN_SAVIOR_WHEEL),
             "--with",
-            "mcp",
+            "mcp>=1.25,<2",
             "token-savior",
         ],
         "env": {

@@ -761,6 +761,31 @@ class ActiveCampaignArchitectureTest(unittest.TestCase):
             }
             for path in (ROOT / "sources/evaluations/protocols").glob("*.json")
         }
+        fastify_sequence = next(
+            sequence
+            for sequence in sequence_doc["sequences"]
+            if sequence["id"] == "fastify-lifecycle-sequence-v0"
+        )
+        token_savior_fastify_protocols = [
+            record["document"]
+            for record in protocol_docs.values()
+            if record["document"].get("task_fixture", {}).get("sequence_id")
+            == "fastify-lifecycle-sequence-v0"
+            and record["document"]
+            .get("selected_execution", {})
+            .get("descriptor", {})
+            .get("selected_profile", {})
+            .get("profile_id")
+            == unexecuted_profile_id
+        ]
+        self.assertGreaterEqual(len(token_savior_fastify_protocols), 2)
+        self.assertEqual(
+            sum(
+                validate_repository.protocol_matches_active_sequence(protocol, fastify_sequence)
+                for protocol in token_savior_fastify_protocols
+            ),
+            1,
+        )
         executed_protocol_paths = validate_repository.executed_protocol_paths_from_registry(
             json.loads((ROOT / "data/workflow-sessions.json").read_text())
         )
@@ -985,6 +1010,21 @@ class ActiveCampaignArchitectureTest(unittest.TestCase):
         expected = runner.fixture.tool_data_dir(ROOT / ".identity-codex-home", cfg) / "bin"
         self.assertIn(str(expected), lane_path.split(":"))
 
+    def test_executable_identity_canonicalizes_lane_checkout_path(self) -> None:
+        cfg = {"data_dir_name": "test-tool", "path_entries": ["{codex_home}/home/.local/bin"]}
+        source = runner.executable_identity([sys.executable], cfg, ROOT)
+        lane = runner.executable_identity(
+            [sys.executable],
+            cfg,
+            Path("/opt/data/eval-workflow-lanes/example/checkout"),
+        )
+        self.assertEqual(source, lane)
+        self.assertIn(
+            "{repository_root}/.identity-codex-home/home/.local/bin",
+            source["version"]["environment_path"],
+        )
+        self.assertNotIn(str(ROOT), source["version"]["environment_path"])
+
     def test_codegraph_binary_identity_is_generated_by_host_integration(self) -> None:
         identity = runner.tool_adapter_identity("retrieval-codegraph-codex-mcp-v1")
         self.assertEqual(identity["binary_identity"]["kind"], "generated-by-host-integration")
@@ -1046,6 +1086,7 @@ class ActiveCampaignArchitectureTest(unittest.TestCase):
         self.assertEqual(cfg["env"]["TS_CAPTURE_DISABLED"], "0")
         self.assertEqual(cfg["env"]["TS_BASH_COMPACT"], "1")
         self.assertEqual(cfg["env"]["TS_BASH_REWRITE"], "1")
+        self.assertIn("mcp>=1.25,<2", cfg["mcp_args"])
         self.assertTrue(cfg["codex_features"]["hooks"])
         self.assertTrue(cfg["codex_hook_bypass_trust"])
         self.assertTrue(cfg["mcp_handshake"]["required"])

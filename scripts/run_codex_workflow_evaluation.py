@@ -1416,6 +1416,10 @@ def executable_identity(command: list[str], cfg: dict[str, Any], root: Path = RO
         raise FileNotFoundError(f"tool executable is not a file: {resolved}")
     real = resolved.resolve()
     st = real.stat()
+    version = _version_output(real, environment_path=_lane_path(cfg, root))
+    environment_path = version.get("environment_path")
+    if isinstance(environment_path, str):
+        version["environment_path"] = environment_path.replace(str(root.resolve()), "{repository_root}")
     return {
         "executable_token": token,
         "resolved_path": str(resolved),
@@ -1428,7 +1432,7 @@ def executable_identity(command: list[str], cfg: dict[str, Any], root: Path = RO
             "gid": st.st_gid,
             "mtime_ns": st.st_mtime_ns,
         },
-        "version": _version_output(real, environment_path=_lane_path(cfg, root)),
+        "version": version,
     }
 
 
