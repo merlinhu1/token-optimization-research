@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "description": "Repository fixture readiness for the v0 lifecycle portfolio. No production result has been recorded.",
+  "description": "Repository fixture state for the production lifecycle-v0 portfolio. Each fixture has a retained operational baseline and is ready for a compatible treatment.",
   "lifecycle_states": [
     "candidate-fixture",
     "qualified-fixture",
@@ -25,7 +25,7 @@
   "fixtures": [
     {
       "id": "medium-fastify-fastify",
-      "status": "qualified-fixture",
+      "status": "treatment-ready",
       "fixture_scale": "medium-project",
       "evaluation_use": "primary-objective",
       "repository": {
@@ -59,7 +59,11 @@
         "prompt_policy": "Prompts are disclosed one at a time; proposed review evidence appears only with task 3; acceptance assets remain controller-only."
       },
       "artifact_paths": {
-        "root": "future execution-time scratch; no production session exists"
+        "root": "sources/evaluations/workflow-sessions/",
+        "baseline_session_ids": [
+          "baseline-fastify-20260716-p-769d40697529-r0",
+          "baseline-fastify-20260716-p-769d40697529-r1"
+        ]
       },
       "candidate_profiles": [
         "baseline-bare-codex",
@@ -67,7 +71,7 @@
       ],
       "blockers": [],
       "caveats": [
-        "Qualification and protocol readiness do not imply a production result; every future session requires independent software-quality review."
+        "The retained baseline is eligible from operational integrity and complete provider usage; verifier and optional source-review outcomes are diagnostic."
       ],
       "tasks": [
         "fastify-lifecycle-feature-v0",
@@ -83,14 +87,50 @@
       "future_evaluation_lanes": [
         {
           "id": "baseline-bare-codex",
-          "status": "ready-not-run",
-          "purpose": "v0 lifecycle control"
+          "status": "completed",
+          "purpose": "retained lifecycle-v0 control",
+          "replicate_indexes": [
+            0,
+            1
+          ]
+        },
+        {
+          "id": "retrieval-codegraph",
+          "status": "ready-to-run",
+          "purpose": "compatible individual-tool treatment"
+        },
+        {
+          "id": "behavior-caveman",
+          "role": "behavior-policy-treatment",
+          "status": "treatment-run",
+          "replicate_indexes": [
+            1
+          ],
+          "session_id": "caveman-fastify-20260716-p-769d40697529-r1"
+        },
+        {
+          "id": "terminal-rtk",
+          "role": "terminal-output-treatment",
+          "status": "treatment-run",
+          "replicate_indexes": [
+            1
+          ],
+          "session_id": "rtk-fastify-20260716-p-769d40697529-r1"
+        },
+        {
+          "id": "retrieval-serena",
+          "role": "retrieval-treatment",
+          "status": "treatment-run",
+          "replicate_indexes": [
+            1
+          ],
+          "session_id": "serena-fastify-20260716-p-769d40697529-r1"
         }
       ]
     },
     {
       "id": "medium-beetbox-beets",
-      "status": "qualified-fixture",
+      "status": "treatment-ready",
       "fixture_scale": "medium-project",
       "evaluation_use": "primary-objective",
       "repository": {
@@ -124,7 +164,11 @@
         "prompt_policy": "Prompts are disclosed one at a time; proposed review evidence appears only with task 3; acceptance assets remain controller-only."
       },
       "artifact_paths": {
-        "root": "future execution-time scratch; no production session exists"
+        "root": "sources/evaluations/workflow-sessions/",
+        "baseline_session_ids": [
+          "baseline-beets-20260716-p-b440da225a3a-r0",
+          "baseline-beets-20260716-p-b440da225a3a-r1"
+        ]
       },
       "candidate_profiles": [
         "baseline-bare-codex",
@@ -132,7 +176,7 @@
       ],
       "blockers": [],
       "caveats": [
-        "Qualification and protocol readiness do not imply a production result; every future session requires independent software-quality review."
+        "The retained baseline is eligible from operational integrity and complete provider usage; verifier and optional source-review outcomes are diagnostic."
       ],
       "tasks": [
         "beets-lifecycle-feature-v0",
@@ -148,14 +192,50 @@
       "future_evaluation_lanes": [
         {
           "id": "baseline-bare-codex",
-          "status": "ready-not-run",
-          "purpose": "v0 lifecycle control"
+          "status": "completed",
+          "purpose": "retained lifecycle-v0 control",
+          "replicate_indexes": [
+            0,
+            1
+          ]
+        },
+        {
+          "id": "retrieval-codegraph",
+          "status": "ready-to-run",
+          "purpose": "compatible individual-tool treatment"
+        },
+        {
+          "id": "behavior-caveman",
+          "role": "behavior-policy-treatment",
+          "status": "treatment-run",
+          "replicate_indexes": [
+            1
+          ],
+          "session_id": "caveman-beets-20260716-p-b440da225a3a-r1"
+        },
+        {
+          "id": "terminal-rtk",
+          "role": "terminal-output-treatment",
+          "status": "treatment-run",
+          "replicate_indexes": [
+            1
+          ],
+          "session_id": "rtk-beets-20260716-p-b440da225a3a-r1"
+        },
+        {
+          "id": "retrieval-serena",
+          "role": "retrieval-treatment",
+          "status": "treatment-run",
+          "replicate_indexes": [
+            1
+          ],
+          "session_id": "serena-beets-20260716-p-b440da225a3a-r1"
         }
       ]
     },
     {
       "id": "large-hashicorp-terraform",
-      "status": "qualified-fixture",
+      "status": "treatment-ready",
       "fixture_scale": "large-project",
       "evaluation_use": "primary-objective",
       "repository": {
@@ -189,7 +269,11 @@
         "prompt_policy": "Prompts are disclosed one at a time; proposed review evidence appears only with task 3; acceptance assets remain controller-only."
       },
       "artifact_paths": {
-        "root": "future execution-time scratch; no production session exists"
+        "root": "sources/evaluations/workflow-sessions/",
+        "baseline_session_ids": [
+          "baseline-terraform-20260716-p-ded8609b4172-r0",
+          "baseline-terraform-20260716-p-ded8609b4172-r1"
+        ]
       },
       "candidate_profiles": [
         "baseline-bare-codex",
@@ -197,7 +281,7 @@
       ],
       "blockers": [],
       "caveats": [
-        "Qualification and protocol readiness do not imply a production result; every future session requires independent software-quality review."
+        "The retained baseline is eligible from operational integrity and complete provider usage; verifier and optional source-review outcomes are diagnostic."
       ],
       "tasks": [
         "terraform-lifecycle-feature-v0",
@@ -213,8 +297,44 @@
       "future_evaluation_lanes": [
         {
           "id": "baseline-bare-codex",
-          "status": "ready-not-run",
-          "purpose": "v0 lifecycle control"
+          "status": "completed",
+          "purpose": "retained lifecycle-v0 control",
+          "replicate_indexes": [
+            0,
+            1
+          ]
+        },
+        {
+          "id": "retrieval-codegraph",
+          "status": "ready-to-run",
+          "purpose": "compatible individual-tool treatment"
+        },
+        {
+          "id": "behavior-caveman",
+          "role": "behavior-policy-treatment",
+          "status": "treatment-run",
+          "replicate_indexes": [
+            1
+          ],
+          "session_id": "caveman-terraform-20260716-p-ded8609b4172-r1"
+        },
+        {
+          "id": "terminal-rtk",
+          "role": "terminal-output-treatment",
+          "status": "treatment-run",
+          "replicate_indexes": [
+            1
+          ],
+          "session_id": "rtk-terraform-20260716-p-ded8609b4172-r1"
+        },
+        {
+          "id": "retrieval-serena",
+          "role": "retrieval-treatment",
+          "status": "treatment-run",
+          "replicate_indexes": [
+            1
+          ],
+          "session_id": "serena-terraform-20260716-p-ded8609b4172-r1"
         }
       ]
     }

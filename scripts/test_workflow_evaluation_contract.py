@@ -99,6 +99,96 @@ class ActiveCampaignArchitectureTest(unittest.TestCase):
         self.assertEqual(prepare_lines, [exact_prepare])
         self.assertNotIn("--skip-container-preflight", runbook)
 
+    def test_runbook_does_not_offer_duplicate_baseline_commands(self) -> None:
+        runbook = (ROOT / "docs/evaluations/workflow-evaluation-runbook.md").read_text()
+        registry = json.loads((ROOT / "data/workflow-sessions.json").read_text())
+        completed = {
+            session["task_sequence"]["sequence_id"]
+            for session in registry["sessions"]
+            if session.get("status") == "completed"
+            and session.get("session_role") == "baseline"
+            and session.get("interpretation", {}).get("accepted_for_objective") is True
+        }
+        self.assertEqual(
+            completed,
+            {
+                "fastify-lifecycle-sequence-v0",
+                "beets-lifecycle-sequence-v0",
+                "terraform-lifecycle-sequence-v0",
+            },
+        )
+        for sequence_id in completed:
+            self.assertNotIn(
+                f"python3 scripts/run_sequential_workflow_matrix.py {sequence_id}\n",
+                runbook,
+            )
+        self.assertIn('--treatment-profile "$PROFILE_ID"', runbook)
+        self.assertEqual(runbook.count("(r0, r1)"), 3)
+
+    def test_repository_surfaces_match_production_evidence_state(self) -> None:
+        stale_claims = {
+            "docs/evaluations/README.md": "No production result exists",
+            "sources/evaluations/README.md": "There are no retained production results",
+            "data/workflow-task-sequences.json": "pre-production evaluation portfolio",
+            "data/repository-fixtures.json": "No production result has been recorded",
+        }
+        for rel, stale in stale_claims.items():
+            self.assertNotIn(stale, (ROOT / rel).read_text(), rel)
+        fixtures = json.loads((ROOT / "data/repository-fixtures.json").read_text())["fixtures"]
+        self.assertTrue(fixtures)
+        self.assertTrue(all(item["status"] == "treatment-ready" for item in fixtures), fixtures)
+
+    def test_agent_guidance_requires_evidence_driven_document_sync(self) -> None:
+        guidance = (ROOT / "AGENTS.md").read_text()
+        self.assertIn("## Documentation lifecycle", guidance)
+        self.assertIn("Update the machine authority first", guidance)
+        self.assertIn("Regenerate `docs/evaluations/workflow-evaluation-runbook.md`", guidance)
+        self.assertIn("Preserve frozen evidence bytes", guidance)
+
+    def test_production_evaluation_forbids_forced_tool_use(self) -> None:
+        guidance = (ROOT / "AGENTS.md").read_text()
+        evaluator_prompt = (ROOT / "prompts/evaluator.md").read_text()
+        framework = (ROOT / "docs/evaluations/evaluation-framework.md").read_text()
+        runner = (ROOT / "scripts/run_codex_fixture_evaluation.py").read_text()
+        self.assertIn("availability/natural-use only", guidance)
+        self.assertIn("Never require, prefer, suggest, or calibrate forced invocation", guidance)
+        self.assertIn("never require, prefer, suggest, or calibrate forced treatment-tool invocation", evaluator_prompt)
+        self.assertIn("not runnable production profiles", framework)
+        self.assertIn("No tool invocation is required or preferred", runner)
+        self.assertIn("zero use is a valid observed outcome", runner)
+
+    def test_prompt_surfaces_require_post_action_document_sync(self) -> None:
+        evaluator_prompt = (ROOT / "prompts/evaluator.md").read_text()
+        protocol_skill = (ROOT / ".agents/skills/benchmark-protocol-writer.md").read_text()
+        self.assertIn("After execution, follow the `AGENTS.md` documentation lifecycle", evaluator_prompt)
+        self.assertIn("regenerate the workflow runbook", evaluator_prompt)
+        self.assertIn("## After a run", protocol_skill)
+        self.assertIn("regenerate the runbook", protocol_skill)
+
+    def test_retired_progressive_evaluation_scaffold_is_absent(self) -> None:
+        retired = (
+            "docs/evaluations/progressive-repository-evaluation-plan.md",
+            "docs/evaluations/changes/README.md",
+            "templates/progressive-evaluation-change",
+            "templates/workflow-session-record.json",
+        )
+        for rel in retired:
+            self.assertFalse((ROOT / rel).exists(), rel)
+
+    def test_workflow_session_schema_does_not_dispatch_on_protocol_id_suffix(self) -> None:
+        schema = json.loads((ROOT / "schemas/workflow-session-record.schema.json").read_text())
+        self.assertNotIn('"pattern": "-v3$"', json.dumps(schema))
+        v2_rule = next(
+            item
+            for item in schema["allOf"]
+            if item.get("if", {}).get("properties", {}).get("schema_version", {}).get("const") == 2
+        )
+        required = set(v2_rule["then"]["required"])
+        self.assertTrue(
+            {"frozen_protocol", "selected_execution", "docker_image_identity", "tool_adapter_identity"}
+            <= required
+        )
+
     def test_active_tasks_need_real_scope_not_arbitrary_file_padding(self) -> None:
         workflow = json.loads((ROOT / "data/workflow-task-sequences.json").read_text())
         fixtures = json.loads((ROOT / "data/repository-fixtures.json").read_text())
@@ -147,10 +237,12 @@ class ActiveCampaignArchitectureTest(unittest.TestCase):
     def test_current_production_portfolio_has_three_lanes(self) -> None:
         profiles = json.loads((ROOT / "data/evaluation-profiles.json").read_text())["profiles"]
         shortlisted = [profile["id"] for profile in profiles if profile.get("status") == "screening-shortlist"]
-        self.assertEqual(shortlisted, ["retrieval-codegraph"])
-        runner.assert_profile_runnable("retrieval-codegraph")
-        with self.assertRaisesRegex(ValueError, "deferred"):
-            runner.assert_profile_runnable("terminal-rtk")
+        self.assertEqual(
+            set(shortlisted),
+            {"behavior-caveman", "retrieval-codegraph", "retrieval-serena", "terminal-rtk"},
+        )
+        for profile_id in shortlisted:
+            runner.assert_profile_runnable(profile_id)
 
         fixtures = json.loads((ROOT / "data/repository-fixtures.json").read_text())["fixtures"]
         active = [fixture for fixture in fixtures if fixture.get("evaluation_use") == "primary-objective"]
@@ -208,6 +300,21 @@ class ActiveCampaignArchitectureTest(unittest.TestCase):
             changed = contract_refresh.protocol_id(sequence, "baseline-bare-codex")
         self.assertNotEqual(original, changed)
 
+    def test_protocol_compatibility_ignores_only_noncausal_provenance_hashes(self) -> None:
+        sequence = runner.load_sequence(SEQUENCE_ID)
+        current = runner.baseline_protocol_descriptor(sequence)
+        provenance_only = copy.deepcopy(current)
+        provenance_only["runner_sha256"] = "0" * 64
+        provenance_only["validator_sha256"] = "1" * 64
+        self.assertTrue(
+            runner.baseline_protocol_descriptor_compatible(provenance_only, current)
+        )
+        causal_change = copy.deepcopy(provenance_only)
+        causal_change["tasks"][0]["prompt_sha256"] = "2" * 64
+        self.assertFalse(
+            runner.baseline_protocol_descriptor_compatible(causal_change, current)
+        )
+
     def test_protocol_writer_refuses_to_overwrite_different_bytes(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             path = Path(tmp) / "protocol.json"
@@ -216,13 +323,15 @@ class ActiveCampaignArchitectureTest(unittest.TestCase):
             with self.assertRaises(FileExistsError):
                 contract_refresh.write_json(path, {"value": 2})
 
-    def test_empty_preproduction_registry_has_no_occupied_campaign_slots(self) -> None:
+    def test_registry_lifecycle_matches_record_presence(self) -> None:
         registry = json.loads((ROOT / "data/workflow-sessions.json").read_text())
-        sequence = runner.load_sequence("beets-lifecycle-sequence-v0")
-        self.assertEqual(registry["production_status"], "pre-production")
-        self.assertEqual(registry["sessions"], [])
-        self.assertIsNone(matrix.find_baseline_record(registry, sequence, 0))
-        self.assertIsNone(runner.find_pool_profile_record(registry, sequence, "behavior-caveman", 0))
+        sessions = registry["sessions"]
+        self.assertIn(registry["production_status"], {"pre-production", "production"})
+        if registry["production_status"] == "pre-production":
+            self.assertEqual(sessions, [])
+        else:
+            self.assertTrue(sessions)
+            self.assertTrue(all(session.get("schema_version") == 2 for session in sessions))
 
     def test_protocol_lookup_rejects_unknown_sequence(self) -> None:
         with self.assertRaisesRegex(ValueError, "unknown or non-active workflow sequence"):
@@ -787,11 +896,6 @@ class VerifierContractTest(unittest.TestCase):
         self.assertNotIn("pricing_basis", template["token_usage"])
         self.assertIn("provider-reported", template["agent"]["usage_accounting"])
         self.assertRegex(template["evaluation_id"], r"^[a-z0-9]+(?:-[a-z0-9]+)*$")
-        for rel in (
-            "templates/progressive-evaluation-change/protocol.md",
-            "templates/progressive-evaluation-change/results.md",
-        ):
-            self.assertNotIn("estimated cost", (ROOT / rel).read_text().lower(), rel)
 
     def test_reporting_only_runner_hash_does_not_split_comparison_pool(self) -> None:
         sequence = runner.load_sequence(SEQUENCE_ID)
@@ -1011,6 +1115,17 @@ class ManifestAndProtocolContractTest(unittest.TestCase):
             protocol["baseline_pool"]["descriptor"]["tasks"],
             runner.baseline_protocol_descriptor(sequence)["tasks"],
         )
+
+    def test_existing_pool_record_blocks_duplicate_provider_sample(self) -> None:
+        registry = json.loads((ROOT / "data/workflow-sessions.json").read_text())
+        sequence = runner.load_sequence("fastify-lifecycle-sequence-v0")
+        with self.assertRaisesRegex(ValueError, "already occupied"):
+            runner.assert_pool_slot_available(
+                registry,
+                sequence,
+                "baseline-bare-codex",
+                0,
+            )
 
     def test_protocol_is_required_before_setup_for_paid_run(self) -> None:
         seq = runner.load_sequence(SEQUENCE_ID)
@@ -1330,6 +1445,49 @@ class ManifestAndProtocolContractTest(unittest.TestCase):
             errors = self.production_v3_errors(session)
             self.assertTrue(any("clean execution integrity" in error for error in errors), errors)
 
+    def test_token_objective_accepts_unreviewed_verifier_failure(self) -> None:
+        with tempfile.TemporaryDirectory(dir=ROOT) as tmp:
+            session, _ = self.production_v3_fixture(Path(tmp))
+            session.update(schema_version=2, status="completed")
+            session["cumulative_token_usage"].update(
+                measurement_source="codex-jsonl-usage-events",
+                total_provider_tokens=1000,
+            )
+            session["per_task_results"] = [{
+                "task_id": "task-1",
+                "task_alias": "task-01",
+                "order": 1,
+                "agent_attempted": True,
+                "codex_exit_code": 0,
+                "controller_verification": "failed",
+                "verifier_exit_code": 1,
+                "verifier_passed": False,
+                "accepted": False,
+                "operational_retry_count": 0,
+            }]
+            session["software_quality"].update(
+                tasks_attempted=1,
+                tasks_passed=0,
+                final_verifier_passed=False,
+                functional_verifier_passed=False,
+                quality_review_status="not-reviewed",
+                quality_score=None,
+                critical_failures=["sampled model output failed verification"],
+            )
+            session["execution_integrity"] = {
+                "verifier_integrity_passed": True,
+                "tool_isolation_audit_passed": True,
+                "external_retrieval_hits": [],
+                "pass_through_tool_command_hits": [],
+            }
+            session["interpretation"].update(
+                accepted_for_execution=True,
+                accepted_for_objective=True,
+                claim_status="token-accounting-eligible",
+                exclusion_reason="",
+            )
+            self.assertEqual(self.production_v3_errors(session), [])
+
     def test_production_v3_protocol_hash_tamper_rejects(self) -> None:
         with tempfile.TemporaryDirectory(dir=ROOT) as tmp:
             session, _ = self.production_v3_fixture(Path(tmp))
@@ -1387,6 +1545,20 @@ class ModelConditionLauncherContractTest(unittest.TestCase):
 
 
 class MatrixLifecycleContractTest(unittest.TestCase):
+    def test_lane_command_propagates_replicate_index_explicitly(self) -> None:
+        cmd = matrix.workflow_lane_command(
+            sequence_id="fastify-lifecycle-sequence-v0",
+            profile_id="behavior-caveman",
+            protocol=Path("sources/evaluations/protocols/caveman.json"),
+            replicate_index=1,
+            runner_args=["--timeout-per-task", "30"],
+        )
+        self.assertEqual(cmd[cmd.index("--replicate-index") + 1], "1")
+        self.assertEqual(
+            cmd[cmd.index("--timeout-per-task") : cmd.index("--timeout-per-task") + 2],
+            ["--timeout-per-task", "30"],
+        )
+
     def test_prepare_only_summary_cannot_claim_objective_acceptance(self) -> None:
         self.assertIsNone(
             matrix.matrix_acceptance_state(
@@ -1400,6 +1572,13 @@ class MatrixLifecycleContractTest(unittest.TestCase):
                 prepare_only=False,
                 execution_passed=True,
                 awaiting_quality_review=False,
+            )
+        )
+        self.assertTrue(
+            matrix.matrix_acceptance_state(
+                prepare_only=False,
+                execution_passed=True,
+                awaiting_quality_review=True,
             )
         )
         self.assertEqual(
@@ -1534,10 +1713,10 @@ class MatrixLifecycleContractTest(unittest.TestCase):
                 profile_state=lambda _sequence, _profile: "missing",
             )
 
-    def test_quality_passing_nonaccepted_baseline_is_not_hard_reusable(self) -> None:
+    def test_unreviewed_operational_baseline_is_hard_reusable(self) -> None:
         session = {
             "interpretation": {
-                "accepted_for_objective": False,
+                "accepted_for_objective": True,
                 "primary_objective_hard_baseline": True,
                 "usable_for_primary_objective_token_comparison": True,
                 "operationally_completed": True,
@@ -1545,35 +1724,37 @@ class MatrixLifecycleContractTest(unittest.TestCase):
             },
             "software_quality": {
                 "tasks_attempted": 5,
-                "quality_review_status": "reviewed",
-                "final_verifier_passed": True,
-                "quality_score": 4,
+                "quality_review_status": "not-reviewed",
+                "final_verifier_passed": False,
+                "quality_score": None,
             },
             "cumulative_token_usage": {"total_provider_tokens": 1000},
         }
         with mock.patch.object(matrix, "compact_artifacts_intact", return_value=True):
-            self.assertFalse(matrix.hard_baseline_usable(session))
+            self.assertTrue(matrix.hard_baseline_usable(session))
 
-    def test_hard_baseline_comparison_scores_correctness_and_tokens(self) -> None:
+    def test_primary_token_comparison_is_not_quality_gated(self) -> None:
         sequence = runner.load_sequence("fastify-lifecycle-sequence-v0")
         baseline = {
             "session_id": "hard-baseline",
             "study_id": "study",
             "cumulative_token_usage": {"total_provider_tokens": 1000},
-            "software_quality": {"tasks_agent_claimed_complete": 5, "tasks_passed": 0},
+            "software_quality": {"tasks_agent_claimed_complete": 3, "tasks_passed": 3},
         }
         treatment = {
             "session_id": "treatment",
             "experiment_group_id": "group",
             "cumulative_token_usage": {"total_provider_tokens": 900},
-            "software_quality": {"tasks_agent_claimed_complete": 5, "tasks_passed": 1},
+            "software_quality": {"tasks_agent_claimed_complete": 3, "tasks_passed": 1},
         }
         with tempfile.TemporaryDirectory() as tmp, mock.patch.object(matrix, "ROOT", Path(tmp)):
             path = matrix.write_hard_baseline_comparison(sequence, baseline, treatment, "terminal-rtk", 0)
             comparison = json.loads(path.read_text())
-        self.assertTrue(comparison["correctness_improved"])
+        self.assertFalse(comparison["correctness_improved"])
         self.assertTrue(comparison["token_efficiency_improved"])
-        self.assertTrue(comparison["treatment_outperforms_baseline"])
+        self.assertTrue(comparison["primary_token_objective_improved"])
+        self.assertNotIn("treatment_outperforms_baseline", comparison)
+        self.assertNotIn("eligible_for_hard_lane_ranking", comparison)
         self.assertEqual(comparison["delta_total_provider_tokens"], -100)
 
     def test_artifact_symlink_escape_is_rejected(self) -> None:

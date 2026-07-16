@@ -636,6 +636,29 @@ def baseline_protocol_descriptor(seq: dict[str, Any], root: Path = ROOT) -> dict
     }
 
 
+NON_CAUSAL_PROTOCOL_PROVENANCE_FIELDS = frozenset({"runner_sha256", "validator_sha256"})
+
+
+def baseline_protocol_descriptor_compatible(frozen: object, current: object) -> bool:
+    """Compare causal execution contracts while retaining code hashes as provenance.
+
+    Runner/validator file hashes change for post-run classification and reporting
+    fixes that are invisible to the model. `runner_contract_version` remains the
+    explicit gate for causal execution-semantics changes.
+    """
+    if not isinstance(frozen, dict) or not isinstance(current, dict):
+        return False
+    frozen_causal = {
+        key: value for key, value in frozen.items()
+        if key not in NON_CAUSAL_PROTOCOL_PROVENANCE_FIELDS
+    }
+    current_causal = {
+        key: value for key, value in current.items()
+        if key not in NON_CAUSAL_PROTOCOL_PROVENANCE_FIELDS
+    }
+    return frozen_causal == current_causal
+
+
 def baseline_comparison_descriptor(seq: dict[str, Any], root: Path = ROOT) -> dict[str, Any]:
     """Return only causal/model-visible inputs used to group comparable runs.
 
@@ -714,7 +737,9 @@ def validate_protocol_for_run(seq: dict[str, Any], profile_id: str, args: argpar
         errors.append("snapshot")
     if protocol.get("baseline_pool", {}).get("protocol_fingerprint") != expected_fingerprint:
         errors.append("protocol_fingerprint")
-    if protocol.get("baseline_pool", {}).get("descriptor") != expected_descriptor:
+    if not baseline_protocol_descriptor_compatible(
+        protocol.get("baseline_pool", {}).get("descriptor"), expected_descriptor
+    ):
         errors.append("descriptor")
     if selected_execution.get("descriptor") != expected_execution:
         errors.append("selected_execution")
@@ -812,24 +837,14 @@ def reviewed_session_reuse_state(session: dict[str, Any] | None, root: Path = RO
         and leakage.get("pre_seed_reflog_entries_visible") is False
         and leakage.get("concealment_verification_passed") is True
     )
-    quality = session.get("software_quality", {}) if isinstance(session.get("software_quality"), dict) else {}
-    quality_score = quality.get("quality_score")
-    reviewed_quality = (
-        quality.get("quality_review_status") == "reviewed"
-        and isinstance(quality_score, int)
-        and quality_score >= 4
-        and not quality.get("critical_failures")
-        and interpretation.get("accepted_for_objective") is True
-    )
     artifacts = session.get("artifacts", {}) if isinstance(session.get("artifacts"), dict) else {}
     required = [artifacts.get(key) for key in ("run_record", "final_diff", "evidence_bundle", "manifest")]
     have_artifacts = all(path and (root / path).exists() for path in required)
+    # This repository measures provider token usage, not model quality. A
+    # structurally valid, operationally complete provider run is reusable even
+    # when its verifier or quality review reports imperfect model output.
     execution_ready = execution_accepted and completed and isolated and have_artifacts
-    if execution_ready and reviewed_quality:
-        return "reusable"
-    if execution_ready and quality.get("quality_review_status") == "not-reviewed":
-        return "review-pending"
-    return "occupied"
+    return "reusable" if execution_ready else "occupied"
 
 
 def canonical_baseline_group_id(project_id: str, replicate_index: int, protocol_fingerprint: str) -> str:
@@ -853,6 +868,20 @@ def find_pool_profile_record(registry: dict[str, Any], seq: dict[str, Any], prof
     if len(matches) > 1:
         raise RuntimeError(f"ambiguous {profile_id} pool records for {seq['id']} r{replicate_index}: {[item['session_id'] for item in matches]}")
     return matches[0] if matches else None
+
+
+def assert_pool_slot_available(
+    registry: dict[str, Any],
+    seq: dict[str, Any],
+    profile_id: str,
+    replicate_index: int,
+) -> None:
+    existing = find_pool_profile_record(registry, seq, profile_id, replicate_index)
+    if existing is not None:
+        raise ValueError(
+            f"provider sample slot already occupied for {seq['id']} {profile_id} "
+            f"r{replicate_index} by {existing['session_id']}; retain the first sample"
+        )
 
 
 def find_canonical_baseline_record(registry: dict[str, Any], seq: dict[str, Any], replicate_index: int) -> dict[str, Any] | None:
@@ -2090,12 +2119,20 @@ def workflow_session_record(
         "artifacts": compact_artifacts(run_dir),
         "interpretation": {
             "accepted_for_execution": accepted,
-            "accepted_for_objective": False,
-            "claim_status": "quality-review-pending" if accepted else "execution-failed",
+            "accepted_for_objective": accepted,
+            "claim_status": "token-accounting-eligible" if accepted else "operationally-invalid",
             "comparison_baseline_session_id": comparison_baseline_session_id,
-            "exclusion_reason": "software-quality-review-pending" if accepted else f"codex_exit_codes={codex_exit_codes}; final_verifier_exit={final_verifier_code}; audit_exit={audit_code}; thread_continuity_errors={summary.get('thread_continuity_errors', [])}; usage_warnings={usage.get('warnings')}",
-            "notes": "Execution gates passed; objective acceptance requires a recorded software-quality review." if accepted else "Sequential workflow session failed one or more execution gates; inspect raw artifacts.",
+            "exclusion_reason": "" if accepted else f"codex_exit_codes={codex_exit_codes}; audit_exit={audit_code}; thread_continuity_errors={summary.get('thread_continuity_errors', [])}; usage_warnings={usage.get('warnings')}",
+            "notes": "Provider-backed lane completed with clean integrity; verifier and review outcomes are diagnostic model-behavior evidence and do not gate token accounting." if accepted else "Lane did not complete operationally; exclude it from token accounting.",
             "scope_note": "Full warm-state lane; all regressions are preseeded, prompts are disclosed sequentially, and concealed verification runs only after the final prompt.",
+            "evaluation_validity": "valid" if accepted else "operationally-invalid",
+            "primary_objective_hard_baseline": accepted and profile_id == "baseline-bare-codex",
+            "usable_for_primary_objective_token_comparison": accepted,
+            "operationally_completed": accepted,
+            "agent_declared_task_completion_count": sum(
+                item.get("agent_attempted") is True and item.get("codex_exit_code") == 0
+                for item in task_checkpoints
+            ),
         },
     }
 
@@ -2160,7 +2197,7 @@ def write_comparison_if_ready(seq: dict[str, Any], study_id: str, replicate_inde
         "study_id": study_id,
         "experiment_group_id": group_id,
         "comparison_design": "protocol-bound-shared-baseline-v3",
-        "baseline_reuse_policy": "one reviewed canonical baseline-bare-codex session per frozen protocol fingerprint and replicate is shared by all treatment comparisons; execution date is metadata, not baseline identity",
+        "baseline_reuse_policy": "one operationally valid canonical baseline-bare-codex provider sample per causal comparison fingerprint and replicate is shared by all treatment comparisons; verifier/review outcomes and execution date do not select the sample",
         "baseline_protocol_fingerprint": protocol_fingerprint,
         "replicate_count": 1,
         "uncertainty": None,
@@ -2179,12 +2216,12 @@ def write_comparison_if_ready(seq: dict[str, Any], study_id: str, replicate_inde
         "delta_freshish_percent": percent_delta(freshish_delta, b_freshish),
         "baseline_accepted": baseline.get("interpretation", {}).get("accepted_for_objective"),
         "treatment_accepted": treatment.get("interpretation", {}).get("accepted_for_objective"),
-        "quality_gate": {
+        "model_behavior_diagnostics": {
             "baseline_tasks_passed": baseline.get("software_quality", {}).get("tasks_passed"),
             "treatment_tasks_passed": treatment.get("software_quality", {}).get("tasks_passed"),
             "task_count": len(seq["tasks"]),
         },
-        "interpretation": f"Single-run screening observation only; do not rank tools from this comparison. Sequential prompt delivery exposes only the current task. Positive token deltas mean {treatment_profile_id} used more Codex-reported tokens than the reviewed shared baseline; negative means fewer. Freshish tokens are fresh_input_tokens + output_tokens for a cache-adjusted secondary view.",
+        "interpretation": f"Single-run token screening observation only; do not treat one pair as a population estimate. Negative token deltas mean {treatment_profile_id} used fewer provider-reported tokens than the compatible retained baseline. Structured verifier and review outcomes are diagnostic and do not select the pair. Freshish tokens are fresh_input_tokens + output_tokens for a cache-adjusted secondary view.",
     }
     out = ROOT / "sources/evaluations/workflow-sessions" / f"{comparison['comparison_id']}.json"
     out.parent.mkdir(parents=True, exist_ok=True)
@@ -2206,6 +2243,9 @@ def run_one(args: argparse.Namespace) -> dict[str, Any]:
     if profile_id not in PROFILE_META:
         raise ValueError(f"No runner metadata for profile {profile_id}")
     validate_protocol_for_run(seq, profile_id, args)
+    if not args.prepare_only:
+        registry = json.loads((ROOT / "data/workflow-sessions.json").read_text())
+        assert_pool_slot_available(registry, seq, profile_id, args.replicate_index)
     project_id = PROJECT_META[seq["fixture_id"]]["project_id"]
     protocol_fingerprint = baseline_protocol_fingerprint(seq)
     protocol_path = args.protocol_path
@@ -2390,7 +2430,17 @@ def run_one(args: argparse.Namespace) -> dict[str, Any]:
     )
     capture_diff(record, run_dir)
     audit_code = audit(record_path, run_dir)
-    accepted = all(code == 0 for code in codex_exit_codes) and not thread_continuity_errors and len(task_checkpoints) == len(ordered_tasks) and final_verifier_code == 0 and audit_code == 0 and verifier_integrity_passed and not usage.get("warnings")
+    # Provider-backed token accounting is valid when the lane completed
+    # operationally with clean integrity and complete usage. Verifier outcomes
+    # describe model behavior; they do not gate the token-usage sample.
+    accepted = (
+        all(code == 0 for code in codex_exit_codes)
+        and not thread_continuity_errors
+        and len(task_checkpoints) == len(ordered_tasks)
+        and audit_code == 0
+        and verifier_integrity_passed
+        and not usage.get("warnings")
+    )
     smoke = (run_dir / "docker-smoke-output.txt").read_text(errors="replace") if (run_dir / "docker-smoke-output.txt").exists() else ""
     codex_version = next((line.strip() for line in smoke.splitlines() if "codex" in line.lower() and any(ch.isdigit() for ch in line)), "")
     lane_contract = warm_lane_contract(seq)

@@ -57,39 +57,28 @@ Every concealed verifier runs against the final cumulative repository, regardles
 
 `tasks_passed` is the count of tasks whose structured `accepted` value is true. Missing outcomes fail closed; the aggregate verifier exit is not used to synthesize all-or-zero task counts.
 
-### Estimand-aligned acceptance
+### Estimand-aligned eligibility
 
-The research objective is provider-reported workflow token usage under fair, disclosed software-engineering tasks. Deterministic correctness is an eligibility gate for that token comparison, not a source-reconstruction benchmark.
+The research objective is provider-reported workflow token usage under fair, disclosed software-engineering tasks. An operationally complete, integrity-valid provider run is eligible regardless of whether the sampled model passes concealed verifiers.
 
-A verifier may enforce disclosed observable behavior, compatibility, safety, and explicitly public structural contracts. It must not require canonical human-facing prose, local parameter names, source identity, or one implementation shape unless that exact requirement is disclosed in the prompt and necessary to the task. Test cases may remain controller-only; acceptance requirements may not be hidden. Controller-only test paths must not collide with files in the fixed project snapshot.
+A verifier may enforce disclosed observable behavior, compatibility, safety, and explicitly public structural contracts. It must not require canonical prose, local parameter names, source identity, or one implementation shape unless that exact requirement is disclosed and necessary. Verifier outcomes are recorded as model-behavior diagnostics, not used to select which token samples count.
 
-Before the first production run, repair any prompt/verifier/fixture mismatch in the sole v0 contract and discard the invalid dry-run artifact. After production begins, preserve invalid execution artifacts only for audit, mark them `evaluation_validity: invalid-fixture` and `status: excluded`, prohibit baseline reuse or token comparison, and bind the corrected execution to a new fingerprint without adding a parallel lane version.
+Repair prompt/verifier/fixture mismatches in the sole v0 contract. Mark runs produced by an invalid fixture `evaluation_validity: invalid-fixture` and exclude them. Never replace an otherwise valid run merely because model output failed or received a low review score.
 
-## Software-quality standard
+## Software-quality diagnostics
 
-Token improvement is eligible only after correctness and independent quality are classified.
+Correctness and independent quality are classified to interpret each token sample; they do not determine whether the provider usage is retained.
 
-| Quality dimension | Required check |
+| Quality dimension | Diagnostic check |
 |---|---|
 | Functional correctness | Structured concealed outcomes cover every task on the final cumulative repository. |
-| Diagnostic fidelity | Repair/review tasks preserve the failure type, relevant location, and actionable evidence when required. |
-| Code quality | Final diff is minimal, conventional, and does not bypass validation. |
-| Maintainability | New abstractions, config, and generated files are justified. |
+| Diagnostic fidelity | Repair/review tasks preserve actionable evidence when required. |
+| Code quality | Final diff is conventional and does not bypass validation. |
+| Maintainability | New abstractions, config, and generated files are assessed. |
 | Safety/security | Trust boundaries, secrets, permissions, and sandbox changes are reviewed when touched. |
-| Reviewability | Final diff, verifier output, provider usage, and treatment evidence are inspectable. |
+| Reviewability | Final diff, verifier output, provider usage, and treatment evidence remain inspectable. |
 
-Use the five-point quality scale only after deterministic outcomes are recorded and an independent review is complete:
-
-| Score | Meaning |
-|---:|---|
-| 0 | Unusable or no accepted task outcome. |
-| 1 | Partial progress with major missing requirements. |
-| 2 | Material production-quality or compatibility defects. |
-| 3 | Acceptable implementation with no major blocker. |
-| 4 | Good, minimal, production-compatible implementation. |
-| 5 | Robust, minimal, and clearly stronger than the baseline result. |
-
-Before review, use `quality_review_status: not-reviewed`, `quality_score: null`, and do not accept the run for an objective claim.
+Quality scores are optional diagnostics after deterministic outcomes are recorded. Before review, use `quality_review_status: not-reviewed` and `quality_score: null`; the run remains eligible for the token objective when its execution and integrity are valid.
 
 ## Lean metric policy
 
@@ -101,9 +90,7 @@ Do not ask the agent for extra reporting to collect these metrics. When a specif
 
 - One replicate is one complete multi-task workflow execution.
 - A single replicate is retained and labeled screening evidence; it is not confused with a single task.
-- Additional compatible replicates add evidence rather than replace earlier runs.
+- Retain the first operationally valid provider sample for each protocol/replicate; additional compatible replicates add evidence rather than replace earlier runs.
 - Pair baseline and treatment by comparison identity and replicate index.
-- Run additional replicates as token budget permits; report every observed pair rather than waiting months before exposing evidence.
-- Report individual pair effects first. Add median and range when repeated pairs exist.
-- Never rank treatments from incomparable protocols or quality-rejected token deltas.
-- Keep failed and excluded sessions with explicit reasons.
+- Report every valid observed pair, including verifier failures and low-quality outputs, with those outcomes clearly labeled.
+- Never rank treatments from incomparable or fixture-invalid protocols. Do not discard a compatible pair because model quality differs.

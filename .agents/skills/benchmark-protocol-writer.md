@@ -1,68 +1,49 @@
 ---
 name: benchmark-protocol-writer
-description: Use before running Phase 2 benchmark-audit or reproduction tasks to freeze hypotheses, baselines, metrics, token accounting, quality gates, and artifacts.
+description: Use before a lifecycle-v0 baseline or treatment run to freeze the token estimand, compatible execution condition, integrity controls, diagnostics, and compact artifacts.
 ---
 # Benchmark Protocol Writer
 
 ## Purpose
 
-Write the protocol before results. This prevents metric gaming and keeps Phase 2 evaluations reproducible.
+Freeze the causal execution contract before provider use. The protocol prevents metric drift while keeping token-accounting eligibility separate from model-behavior diagnostics.
 
-## When to Use
+## Required protocol
 
-Use before any benchmark-audit or reproduction run, especially when comparing token-saving stacks, tools, profiles, or replacement-agent runtimes.
+Define:
 
-## Required Protocol
+1. **Hypothesis**: profile X changes cumulative provider tokens for frozen workflow Z.
+2. **Evidence target**: `benchmark-audit` or `reproduction`.
+3. **Lifecycle sequence**: sequence ID, pinned fixture/snapshot, ordered prompts, state policy, and time budget.
+4. **Compatible baseline pool**: protocol fingerprint, model/provider condition, replicate index, and retained baseline session when one exists.
+5. **Treatment identity**: profile, enabled surfaces, adapter command, binary/config hashes, isolation policy, and reset path.
+6. **Token boundary**: complete provider-reported persistent workflow usage; capture fresh input, cached input, cache-write, output, reasoning, and total when available.
+7. **Operational validity**: complete execution, thread continuity, warning-free usage, fixture/contract validity, verifier integrity, tool isolation, and compact-artifact integrity.
+8. **Model-behavior diagnostics**: deterministic verifier outcomes, changed-area checks, optional source review, and critical findings. These fields do not gate token accounting or trigger reruns.
+9. **Invalidity rules**: fixture defects, protocol mismatch, incomplete provider usage, broken isolation, corrupted evidence, or interrupted execution.
 
-Each protocol must define:
+## Current surfaces
 
-1. **Hypothesis** in the form `profile X improves metric Y for workload Z`.
-2. **Evidence stage target**: `benchmark-audit` or `reproduction`.
-3. **Task fixture**:
-   - repository/path;
-   - commit or snapshot;
-   - task prompt;
-   - allowed tools;
-   - maximum turns/time.
-4. **Baseline**:
-   - vanilla agent or lower-intervention stack;
-   - exact model/provider;
-   - exact command or flow.
-5. **Treatment**:
-   - enabled tools/components;
-   - installed profile/config;
-   - reset/uninstall path.
-6. **Token accounting boundary**:
-   - provider-billed task usage preferred;
-   - fresh input, cached input, cache-write, output, and reasoning tokens where available;
-   - estimated tool-result tokens only as secondary evidence.
-7. **Software-quality gates**:
-   - verifier command;
-   - diff quality expectations;
-   - diagnostic preservation;
-   - raw-output recovery;
-   - safety/reversibility.
-8. **Failure and exclusion rules**:
-   - what counts as under-solving;
-   - what counts as tool breakage;
-   - what result would falsify the hypothesis.
-
-## Artifact Locations
-
-Use existing templates and docs:
-
-- `templates/evaluation-task.md`
-- `templates/evaluation-run-record.json`
+- `data/workflow-task-sequences.json`
+- `data/workflow-sessions.json`
+- `docs/evaluations/workflow-evaluation-runbook.md`
+- `docs/evaluations/technique-protocol-template.md`
 - `docs/evaluations/token-usage-and-quality-standards.md`
-- `docs/evaluations/immediately-usable-flows.md`
+- `sources/evaluations/protocols/`
+- `sources/evaluations/workflow-sessions/`
 
-Store run evidence under `sources/evaluations/<evaluation-id>/` when Phase 2 data collection starts.
+Use `scripts/run_sequential_workflow_matrix.py`. Never route lifecycle-v0 results through the older `data/evaluations.json` artifact model.
 
-## Common Pitfalls
+## After a run
 
-- Running the treatment first and designing the baseline afterward.
-- Changing prompts or fixtures between baseline and treatment.
-- Reporting only visible prompt/token estimates rather than provider-billed usage.
-- Counting partial task completion as token savings.
-- Treating runner preflight PATH as proof that Codex-launched login shells can see a non-MCP terminal tool.
-- Keeping partial pre-fix and post-fix batch results in one summary after a harness or isolation defect is found.
+Follow the `AGENTS.md` documentation lifecycle. Update authoritative registries, regenerate the runbook, reconcile active findings/status docs and prompts, delete superseded surfaces, validate, and inspect Git status for missing tests or untracked evidence.
+
+## Pitfalls
+
+- Running a treatment before freezing its compatible comparison identity.
+- Rerunning an occupied protocol/replicate to obtain better verifier or review outcomes.
+- Conditioning the primary token result on correctness diagnostics.
+- Changing prompts or fixtures between paired sessions.
+- Reporting prompt estimates instead of complete provider usage.
+- Treating runner PATH preflight as proof that the model-visible environment can use a treatment tool.
+- Combining samples across a harness, fixture, isolation, or causal protocol change.

@@ -59,15 +59,14 @@ Preparation does not call the model and does not authorize a paid run.
 
 There are no per-task hidden functional gates. Between prompts, the controller stops only for operational invalidity such as a nonzero Codex process exit, missing thread identity, verifier-integrity corruption, isolation failure, or unrecoverable runtime failure.
 
-A completed lane is execution-accepted only when:
+A provider-backed lane is eligible for the token-usage objective when:
 
 - every scheduled prompt completed in the same thread;
-- the final concealed verifier suite passes;
 - provider usage is complete and warning-free;
 - verifier integrity and tool isolation pass;
 - compact evidence is recoverable.
 
-Objective acceptance additionally requires reviewed quality score >= 4 and no critical failures. A lane that under-solves the final repository cannot count as token savings.
+Concealed verifier outcomes and source-quality reviews remain diagnostic evidence about the sampled model behavior. They do **not** gate token accounting or baseline reuse. Keep the first operationally valid sample for each frozen protocol and replicate; never rerun merely because the model produced imperfect code or received a sub-perfect review score. Rerun only when the fixture/contract was invalid or the provider execution was operationally incomplete.
 
 ## Compact artifacts
 

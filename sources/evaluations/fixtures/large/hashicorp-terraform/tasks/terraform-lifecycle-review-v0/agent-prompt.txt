@@ -1,7 +1,14 @@
 Review the supplied Terraform Cloud policy-summary change, identify acceptance-critical defects, and correct the checked-out implementation.
 
-The intended behavior is a per-stage Terraform policy summary for plan and apply that fetches every outcome page, skips unreachable evaluations, respects stage filtering, reports totals consistent with the rendered outcomes, distinguishes passed, failed, advisory, unknown, and errored outcomes, and remains silent when no outcomes exist or an older server rejects the include parameter. Preserve existing plan/apply failure handling and rendering conventions.
+The intended behavior is a per-stage Terraform policy summary for plan and apply that:
 
-The supplied patch is authentic proposed-change evidence, not a trusted solution. Inspect it and the checked-out candidate, then implement the corrections you judge necessary. Do not modify tests merely to make acceptance pass. The controller runs concealed acceptance only after all three lifecycle prompts are complete.
+- fetches every outcome page;
+- skips unreachable evaluations and respects stage filtering;
+- reports totals derived from the outcomes actually rendered;
+- distinguishes passed, failed, advisory, unknown, and errored outcomes;
+- remains silent when no outcomes exist or an older server rejects the include parameter; and
+- preserves existing plan/apply failure handling and rendering conventions.
 
-Run focused Terraform Cloud policy-summary tests and preserve all prior lifecycle work.
+The supplied patch is authentic proposed-change evidence, not a trusted solution. The complete `internal/cloud` package must compile, pagination must be exercised through rendered policy-summary behavior, and focused policy-summary tests must pass. The implementation may choose its own private helper structure; acceptance does not require a canonical unexported symbol name. Do not modify tests merely to make acceptance pass.
+
+Run the focused `internal/cloud` policy-summary tests at minimum, and preserve all prior lifecycle work. The controller runs cumulative concealed acceptance only after all three lifecycle prompts complete.
