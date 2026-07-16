@@ -1,0 +1,313 @@
+# Ordered cumulative source checkpoints. Every section is relative to the one composite broken-start root.
+
+# --- task-01-agent ---
+diff --git a/lib/request.js b/lib/request.js
+index 13b3085..ebf686c 100644
+--- a/lib/request.js
++++ b/lib/request.js
+@@ -284,6 +284,14 @@ Object.defineProperties(Request.prototype, {
+       this.additionalHeaders = headers
+     }
+   },
++  mediaType: {
++    get () {
++      if (!this[kRequestContentType] && this.headers['content-type'] !== undefined) {
++        this[kRequestContentType] = ContentType.from(this.headers['content-type'])
++      }
++      return this[kRequestContentType]?.mediaType
++    }
++  },
+   getValidationFunction: {
+     value: function (httpPartOrSchema) {
+       if (typeof httpPartOrSchema === 'string') {
+diff --git a/skills-lock.json b/skills-lock.json
+new file mode 100644
+index 0000000..243513d
+--- /dev/null
++++ b/skills-lock.json
+@@ -0,0 +1,40 @@
++{
++  "version": 1,
++  "skills": {
++    "cavecrew": {
++      "source": "/opt/data/tool-candidates/caveman",
++      "sourceType": "local",
++      "computedHash": "c5527c994fbd4c22b36714e3b124a0f167a533d114ab164fb1d35e2123533917"
++    },
++    "caveman": {
++      "source": "/opt/data/tool-candidates/caveman",
++      "sourceType": "local",
++      "computedHash": "d18cdf73a5f5c496d681a43a6846336b110223bdffa6817b8992529c57f1a815"
++    },
++    "caveman-commit": {
++      "source": "/opt/data/tool-candidates/caveman",
++      "sourceType": "local",
++      "computedHash": "790a4eeace0be35c6691faf923518ba5bd50f1f1305d1101d09dd4971be94e00"
++    },
++    "caveman-compress": {
++      "source": "/opt/data/tool-candidates/caveman",
++      "sourceType": "local",
++      "computedHash": "84517cd4cf7a49d8d2bc1baf00f61bc359306c6ad9389756b6937eff958bd374"
++    },
++    "caveman-help": {
++      "source": "/opt/data/tool-candidates/caveman",
++      "sourceType": "local",
++      "computedHash": "dd85267e76baad76995157e7b9f762dfa557cd58951ee92af0c283f48aa26537"
++    },
++    "caveman-review": {
++      "source": "/opt/data/tool-candidates/caveman",
++      "sourceType": "local",
++      "computedHash": "fb7214a1c5793bae6ba8b1be4329e2e6f40dbec6dd911dfb335ad29f09c316a1"
++    },
++    "caveman-stats": {
++      "source": "/opt/data/tool-candidates/caveman",
++      "sourceType": "local",
++      "computedHash": "47ce2de3d6cb39a75047b5c962e4eb3da15594e7397c94103e9a104d42626553"
++    }
++  }
++}
+
+# --- task-02-agent ---
+diff --git a/lib/content-type.js b/lib/content-type.js
+index aeab8cd..e30c085 100644
+--- a/lib/content-type.js
++++ b/lib/content-type.js
+@@ -1,5 +1,7 @@
+ 'use strict'
+ 
++const { LruMap: Lru } = require('toad-cache')
++
+ /**
+  * keyValuePairsReg is used to split the parameters list into associated
+  * key value pairings. The leading `(?:^|;)\s*` anchor ensures the regex
+@@ -35,6 +37,12 @@ const typeNameReg = /^[\w!#$%&'*+.^`|~-]+$/
+  */
+ const subtypeNameReg = /^[\w!#$%&'*+.^`|~-]+\s*$/
+ 
++/**
++ * Content-Type internal shared cache
++ * @type {Lru<ContentType>}
++ */
++const cache = new Lru(100)
++
+ /**
+  * ContentType parses and represents the value of the content-type header.
+  *
+@@ -54,8 +62,14 @@ class ContentType {
+    * @param {string} headerValue
+    * @returns {ContentType | undefined}
+    */
++  static get cache () { return cache }
++
+   static from (headerValue) {
+-    return new ContentType(headerValue)
++    let contentType = cache.get(headerValue)
++    if (contentType !== undefined) return contentType
++    contentType = new ContentType(headerValue)
++    cache.set(headerValue, contentType)
++    return contentType
+   }
+ 
+   constructor (headerValue) {
+diff --git a/lib/request.js b/lib/request.js
+index 13b3085..ebf686c 100644
+--- a/lib/request.js
++++ b/lib/request.js
+@@ -284,6 +284,14 @@ Object.defineProperties(Request.prototype, {
+       this.additionalHeaders = headers
+     }
+   },
++  mediaType: {
++    get () {
++      if (!this[kRequestContentType] && this.headers['content-type'] !== undefined) {
++        this[kRequestContentType] = ContentType.from(this.headers['content-type'])
++      }
++      return this[kRequestContentType]?.mediaType
++    }
++  },
+   getValidationFunction: {
+     value: function (httpPartOrSchema) {
+       if (typeof httpPartOrSchema === 'string') {
+diff --git a/skills-lock.json b/skills-lock.json
+new file mode 100644
+index 0000000..243513d
+--- /dev/null
++++ b/skills-lock.json
+@@ -0,0 +1,40 @@
++{
++  "version": 1,
++  "skills": {
++    "cavecrew": {
++      "source": "/opt/data/tool-candidates/caveman",
++      "sourceType": "local",
++      "computedHash": "c5527c994fbd4c22b36714e3b124a0f167a533d114ab164fb1d35e2123533917"
++    },
++    "caveman": {
++      "source": "/opt/data/tool-candidates/caveman",
++      "sourceType": "local",
++      "computedHash": "d18cdf73a5f5c496d681a43a6846336b110223bdffa6817b8992529c57f1a815"
++    },
++    "caveman-commit": {
++      "source": "/opt/data/tool-candidates/caveman",
++      "sourceType": "local",
++      "computedHash": "790a4eeace0be35c6691faf923518ba5bd50f1f1305d1101d09dd4971be94e00"
++    },
++    "caveman-compress": {
++      "source": "/opt/data/tool-candidates/caveman",
++      "sourceType": "local",
++      "computedHash": "84517cd4cf7a49d8d2bc1baf00f61bc359306c6ad9389756b6937eff958bd374"
++    },
++    "caveman-help": {
++      "source": "/opt/data/tool-candidates/caveman",
++      "sourceType": "local",
++      "computedHash": "dd85267e76baad76995157e7b9f762dfa557cd58951ee92af0c283f48aa26537"
++    },
++    "caveman-review": {
++      "source": "/opt/data/tool-candidates/caveman",
++      "sourceType": "local",
++      "computedHash": "fb7214a1c5793bae6ba8b1be4329e2e6f40dbec6dd911dfb335ad29f09c316a1"
++    },
++    "caveman-stats": {
++      "source": "/opt/data/tool-candidates/caveman",
++      "sourceType": "local",
++      "computedHash": "47ce2de3d6cb39a75047b5c962e4eb3da15594e7397c94103e9a104d42626553"
++    }
++  }
++}
+
+# --- task-03-agent ---
+diff --git a/fastify.js b/fastify.js
+index 7c015f9..48895f3 100644
+--- a/fastify.js
++++ b/fastify.js
+@@ -678,9 +678,9 @@ function fastify (serverOptions) {
+       error: 'Bad Request',
+       code: 'FST_ERR_MAX_PARAM_LENGTH',
+       message: `'${path}' is exceeding the max param length`,
+-      statusCode: 413
++      statusCode: 414
+     })
+-    res.writeHead(413, {
++    res.writeHead(414, {
+       'Content-Type': 'application/json',
+       'Content-Length': Buffer.byteLength(body)
+     })
+diff --git a/lib/content-type.js b/lib/content-type.js
+index aeab8cd..e30c085 100644
+--- a/lib/content-type.js
++++ b/lib/content-type.js
+@@ -1,5 +1,7 @@
+ 'use strict'
+ 
++const { LruMap: Lru } = require('toad-cache')
++
+ /**
+  * keyValuePairsReg is used to split the parameters list into associated
+  * key value pairings. The leading `(?:^|;)\s*` anchor ensures the regex
+@@ -35,6 +37,12 @@ const typeNameReg = /^[\w!#$%&'*+.^`|~-]+$/
+  */
+ const subtypeNameReg = /^[\w!#$%&'*+.^`|~-]+\s*$/
+ 
++/**
++ * Content-Type internal shared cache
++ * @type {Lru<ContentType>}
++ */
++const cache = new Lru(100)
++
+ /**
+  * ContentType parses and represents the value of the content-type header.
+  *
+@@ -54,8 +62,14 @@ class ContentType {
+    * @param {string} headerValue
+    * @returns {ContentType | undefined}
+    */
++  static get cache () { return cache }
++
+   static from (headerValue) {
+-    return new ContentType(headerValue)
++    let contentType = cache.get(headerValue)
++    if (contentType !== undefined) return contentType
++    contentType = new ContentType(headerValue)
++    cache.set(headerValue, contentType)
++    return contentType
+   }
+ 
+   constructor (headerValue) {
+diff --git a/lib/errors.js b/lib/errors.js
+index 1aea926..24abe8a 100644
+--- a/lib/errors.js
++++ b/lib/errors.js
+@@ -374,7 +374,7 @@ const codes = {
+   FST_ERR_MAX_PARAM_LENGTH: createError(
+     'FST_ERR_MAX_PARAM_LENGTH',
+     "'%s' is exceeding the max param length",
+-    413,
++    414,
+     URIError
+   ),
+   FST_ERR_ASYNC_CONSTRAINT: createError(
+diff --git a/lib/request.js b/lib/request.js
+index 13b3085..ebf686c 100644
+--- a/lib/request.js
++++ b/lib/request.js
+@@ -284,6 +284,14 @@ Object.defineProperties(Request.prototype, {
+       this.additionalHeaders = headers
+     }
+   },
++  mediaType: {
++    get () {
++      if (!this[kRequestContentType] && this.headers['content-type'] !== undefined) {
++        this[kRequestContentType] = ContentType.from(this.headers['content-type'])
++      }
++      return this[kRequestContentType]?.mediaType
++    }
++  },
+   getValidationFunction: {
+     value: function (httpPartOrSchema) {
+       if (typeof httpPartOrSchema === 'string') {
+diff --git a/skills-lock.json b/skills-lock.json
+new file mode 100644
+index 0000000..243513d
+--- /dev/null
++++ b/skills-lock.json
+@@ -0,0 +1,40 @@
++{
++  "version": 1,
++  "skills": {
++    "cavecrew": {
++      "source": "/opt/data/tool-candidates/caveman",
++      "sourceType": "local",
++      "computedHash": "c5527c994fbd4c22b36714e3b124a0f167a533d114ab164fb1d35e2123533917"
++    },
++    "caveman": {
++      "source": "/opt/data/tool-candidates/caveman",
++      "sourceType": "local",
++      "computedHash": "d18cdf73a5f5c496d681a43a6846336b110223bdffa6817b8992529c57f1a815"
++    },
++    "caveman-commit": {
++      "source": "/opt/data/tool-candidates/caveman",
++      "sourceType": "local",
++      "computedHash": "790a4eeace0be35c6691faf923518ba5bd50f1f1305d1101d09dd4971be94e00"
++    },
++    "caveman-compress": {
++      "source": "/opt/data/tool-candidates/caveman",
++      "sourceType": "local",
++      "computedHash": "84517cd4cf7a49d8d2bc1baf00f61bc359306c6ad9389756b6937eff958bd374"
++    },
++    "caveman-help": {
++      "source": "/opt/data/tool-candidates/caveman",
++      "sourceType": "local",
++      "computedHash": "dd85267e76baad76995157e7b9f762dfa557cd58951ee92af0c283f48aa26537"
++    },
++    "caveman-review": {
++      "source": "/opt/data/tool-candidates/caveman",
++      "sourceType": "local",
++      "computedHash": "fb7214a1c5793bae6ba8b1be4329e2e6f40dbec6dd911dfb335ad29f09c316a1"
++    },
++    "caveman-stats": {
++      "source": "/opt/data/tool-candidates/caveman",
++      "sourceType": "local",
++      "computedHash": "47ce2de3d6cb39a75047b5c962e4eb3da15594e7397c94103e9a104d42626553"
++    }
++  }
++}
