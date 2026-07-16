@@ -1,0 +1,633 @@
+{
+  "session_id": "codex-fastify-20260729-p-bb0e89ed9794-r0",
+  "study_id": "phase-2-sequential-workflow-v1",
+  "experiment_group_id": "fastify-fastify-headroom-default-codex-bb0e89ed9794-sequential-workflow-r0",
+  "replicate_index": 0,
+  "frozen_protocol": {
+    "protocol_id": "fastify-lifecycle-sequence-v0-headroom-default-codex-93a25b83600a",
+    "path": "sources/evaluations/protocols/fastify-lifecycle-sequence-v0-headroom-default-codex-93a25b83600a.json",
+    "sha256": "49e75df6190d9e4c32428d6afd92518171d0827a66ace5a9f3ad7c60230b4392"
+  },
+  "baseline_pool": {
+    "protocol_version": "baseline-pool-v1",
+    "protocol_fingerprint": "bb0e89ed9794",
+    "identity_policy": "frozen-protocol-and-replicate; execution date is metadata only"
+  },
+  "selected_execution": {
+    "descriptor_sha256": "dd14786c49bb2cec8eac30035945e30febe050dc98fcbb2c69a52f8fb7059f6c",
+    "descriptor": {
+      "version": "execution-condition-v1",
+      "sequence_id": "fastify-lifecycle-sequence-v0",
+      "execution_role": "individual_tool_treatment",
+      "selected_profile": {
+        "profile_id": "headroom-default-codex",
+        "profile_type": "individual_tool",
+        "component_ids": [
+          "headroom-default-codex"
+        ],
+        "enabled_surfaces": [
+          "api-proxy/context-compression",
+          "context-tool/terminal-output-compaction",
+          "mcp-retrieval/raw-context-recovery",
+          "code-graph-retrieval",
+          "cache-alignment"
+        ],
+        "disabled_overlaps": [
+          "external broad compressors/retrievers not enabled by default Headroom Codex wrapping"
+        ],
+        "registry_entry_sha256": "f9acf010690cfe59b402ea70bc8af56079c182f4a65875f2472e43a56c6e46da",
+        "registry_entry": {
+          "id": "headroom-default-codex",
+          "profile_type": "individual_tool",
+          "objective_scope": "individual_tool_effectiveness",
+          "status": "screening-shortlist",
+          "enabled_surfaces": [
+            "api-proxy/context-compression",
+            "context-tool/terminal-output-compaction",
+            "mcp-retrieval/raw-context-recovery",
+            "code-graph-retrieval",
+            "cache-alignment"
+          ],
+          "disabled_overlaps": [
+            "external broad compressors/retrievers not enabled by default Headroom Codex wrapping"
+          ],
+          "components": [
+            {
+              "component_id": "headroom-default-codex",
+              "surface": "broad compression/proxy/Codex integration",
+              "role": "individual_tool"
+            }
+          ],
+          "install": {
+            "policy": "Run default `headroom wrap codex -- codex exec ...` unless the protocol explicitly names an ablation. Record generated Codex config, MCP registrations, context-tool setup, tokensave install/index artifacts, versions, and environment variables before scoring."
+          },
+          "reset": {
+            "policy": "Record disable/uninstall commands and verify no stale proxy config, MCP server registration, context-tool instruction, tokensave index/cache, Serena state, or generated profile survives into the next run."
+          },
+          "evaluation_protocol": {
+            "tool_use_policy": "natural",
+            "profile_intent": "primary Headroom Codex integration evaluation",
+            "hypothesis_boundary": "Measures default Headroom behavior through its Codex wrapper/integration on coding tasks.",
+            "required_companion_ablations": [
+              "baseline-bare-codex",
+              "terminal-headroom"
+            ],
+            "must_run_before_component_conclusions": true,
+            "token_accounting_boundary": "provider-reported task usage with verifier acceptance; per-request Headroom headers are secondary diagnostics only."
+          },
+          "notes": "Primary Headroom candidate profile for Codex integration. Headroom is not a Codex stack integrator; it is a broader compression/proxy framework with a Codex wrapper. Do not disable Headroom-managed default surfaces unless the run is explicitly labeled as an ablation.",
+          "deferred_reason": "Selected for the next lifecycle-v0 natural-use treatment round after the first ten screens; primary profile requires its registered companion ablation before component conclusions."
+        }
+      },
+      "model_facing_prompts": {
+        "rendering_contract": "sequential-model-facing-prompts-v2",
+        "profile_guidance_sha256": "cb08dba8b361975eb89669cc77d206861b05fc26b161a9215337dbb2d30a6366",
+        "tasks": [
+          {
+            "task_id": "fastify-lifecycle-feature-v0",
+            "order": 1,
+            "rendered_prompt_sha256": "5ccdd6daf5427c3f1927b08795d1bd290a8c96bdff4fa3beca5b053f149b1725"
+          },
+          {
+            "task_id": "fastify-lifecycle-refactor-v0",
+            "order": 2,
+            "rendered_prompt_sha256": "a4cdc43f80fd89b851e765b409fa99199ab30f88b4b3b1028ee97ed540cd0706"
+          },
+          {
+            "task_id": "fastify-lifecycle-review-v0",
+            "order": 3,
+            "rendered_prompt_sha256": "d7874fd6436994b7a7f09ce348087f39d6105a7cfcb4e2ca1ac3003d7ff8c091"
+          }
+        ]
+      },
+      "tool_adapter": {
+        "tool_id": "headroom",
+        "tool_manifest": "scripts/run_codex_fixture_evaluation.py:TOOL_CONFIGS",
+        "tool_manifest_sha256": "6fa8271b89a577706ea0bbffcc8e4521831f41b646ed9519369efee3642fe41c",
+        "tool_config": {
+          "display_name": "Headroom",
+          "lane_name": "headroom-default-codex",
+          "surface": "broad-compression/proxy/codex-wrapper",
+          "allowed_terms": [
+            "headroom",
+            "headroom_retrieve",
+            "rtk",
+            "tokensave",
+            "token-savior",
+            "token_savior",
+            "serena"
+          ],
+          "data_dir_name": "headroom",
+          "mounts": [
+            "/opt/data/tool-candidates/headroom",
+            "/opt/data/tool-candidates/headroom/dist/headroom_ai-0.28.0-cp310-abi3-linux_x86_64.whl"
+          ],
+          "path_entries": [
+            "{codex_home}/home/.headroom/bin",
+            "{codex_home}/home/.local/bin"
+          ],
+          "env": {
+            "HEADROOM_HOME": "{tool_data_dir}",
+            "HEADROOM_CACHE_DIR": "{tool_data_dir}/cache",
+            "HEADROOM_DISABLE_DASHBOARD": "1",
+            "HEADROOM_TELEMETRY": "0",
+            "HEADROOM_PROJECT": "{repo_slug}"
+          },
+          "codex_wrapper": {
+            "command": "/opt/data/opt/uv/uv",
+            "args": [
+              "tool",
+              "run",
+              "--from",
+              "/opt/data/tool-candidates/headroom/dist/headroom_ai-0.28.0-cp310-abi3-linux_x86_64.whl",
+              "--with",
+              "mcp",
+              "--with",
+              "fastapi",
+              "--with",
+              "uvicorn<1.0",
+              "--with",
+              "httpx[http2]",
+              "--with",
+              "openai",
+              "--with",
+              "zstandard",
+              "--with",
+              "websockets",
+              "headroom",
+              "wrap",
+              "codex",
+              "--port",
+              "{tool_port}",
+              "--verbose",
+              "--"
+            ]
+          },
+          "preflight_command": [
+            "/opt/data/opt/uv/uv",
+            "tool",
+            "run",
+            "--from",
+            "/opt/data/tool-candidates/headroom/dist/headroom_ai-0.28.0-cp310-abi3-linux_x86_64.whl",
+            "--with",
+            "mcp",
+            "headroom",
+            "--version"
+          ],
+          "default_tool_state": "active-wrapper"
+        },
+        "tool_config_sha256": "e701c779e8726afa9026ca5de770e880bcec0d09dfaa609976be36d063dddc9b",
+        "tool_state": "active-wrapper",
+        "tool_use_policy": "natural",
+        "command_identity": {
+          "kind": "codex_wrapper",
+          "command": [
+            "/opt/data/opt/uv/uv",
+            "tool",
+            "run",
+            "--from",
+            "/opt/data/tool-candidates/headroom/dist/headroom_ai-0.28.0-cp310-abi3-linux_x86_64.whl",
+            "--with",
+            "mcp",
+            "--with",
+            "fastapi",
+            "--with",
+            "uvicorn<1.0",
+            "--with",
+            "httpx[http2]",
+            "--with",
+            "openai",
+            "--with",
+            "zstandard",
+            "--with",
+            "websockets",
+            "headroom",
+            "wrap",
+            "codex",
+            "--port",
+            "{tool_port}",
+            "--verbose",
+            "--"
+          ]
+        },
+        "binary_identity": {
+          "executable_token": "/opt/data/opt/uv/uv",
+          "resolved_path": "/opt/data/opt/uv/uv",
+          "realpath": "/opt/data/opt/uv/uv",
+          "sha256": "dc407e8ebb7903e94580217e564e544b231f16ce2a697c247b71632bffe35b35",
+          "metadata": {
+            "size": 58002784,
+            "mode": "-rwxr-xr-x",
+            "uid": 10000,
+            "gid": 10000,
+            "mtime_ns": 1783498937309771510
+          },
+          "version": {
+            "command": [
+              "/opt/data/opt/uv/uv",
+              "--version"
+            ],
+            "environment_path": "/opt/data/.local/bin:{repository_root}/.identity-codex-home/home/.local/bin:{repository_root}/.identity-codex-home/home/.headroom/bin:/opt/data/opt/go/bin:/opt/data/opt/uv:/opt/data/opt/node-v24.18.0-linux-x64/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+            "captured": true,
+            "exit_code": 0,
+            "output": "uv 0.11.6 (x86_64-unknown-linux-musl)",
+            "truncated": false
+          }
+        },
+        "source_identity": [
+          {
+            "path": "/opt/data/tool-candidates/headroom",
+            "exists": true,
+            "kind": "directory",
+            "git_head": "715ed7d200cb62c43e6ee3976ce8d3aa639ccf9f"
+          },
+          {
+            "path": "/opt/data/tool-candidates/headroom/dist/headroom_ai-0.28.0-cp310-abi3-linux_x86_64.whl",
+            "exists": true,
+            "kind": "file",
+            "sha256": "7d4b753d8a0a33aa3222178a92aede5f43c9bc7d3642397c190854d6abbfb560"
+          }
+        ]
+      },
+      "runtime": {
+        "docker_image": "token-eval-codex:latest",
+        "docker_image_identity": {
+          "image_ref": "token-eval-codex:latest",
+          "image_id": "sha256:6f86d01f2c63f5029c6bb874d8f3694c24d5cd567e3d09413eccc956ba3feafe",
+          "repo_digests": [
+            "token-eval-codex@sha256:6f86d01f2c63f5029c6bb874d8f3694c24d5cd567e3d09413eccc956ba3feafe"
+          ],
+          "repo_tags": [
+            "token-eval-codex:latest"
+          ]
+        },
+        "dockerfile_path": "sources/evaluations/fixtures/container/Dockerfile",
+        "dockerfile_sha256": "47c91967ce25014ce54879514f51d2ff0326651be1087209115eff4d358226b3",
+        "fixture_runner_path": "scripts/run_codex_fixture_evaluation.py",
+        "fixture_runner_sha256": "6fa8271b89a577706ea0bbffcc8e4521831f41b646ed9519369efee3642fe41c",
+        "mcp_probe_path": "scripts/probe_mcp_stdio.py",
+        "mcp_probe_sha256": "7c06ea36ee5cac933a97140b84a41405fc99b45152388e8d7c6659136af698fd",
+        "codex_entrypoint_path": "sources/evaluations/fixtures/container/codex-entrypoint.sh",
+        "codex_entrypoint_sha256": "8715fe37cb1fa3823f5f05493bc9681ce7ffc72126dfec4d64d448762c550c3c",
+        "timeout_seconds_per_task": 3600,
+        "network_isolation": {
+          "provider_access": true,
+          "model_shell_network_access": false,
+          "model_shell_enforcement": "seccomp denies AF_INET and AF_INET6 socket creation for the shell process and descendants",
+          "codex_web_search": "disabled",
+          "external_retrieval_audit": "fail-closed"
+        },
+        "isolation_policy": "fresh lane-specific Codex home/tool data; provider-only network with model shell and Codex web search disabled; sequential one-task prompt delivery; controller seed/verifier scripts excluded while declared model-visible acceptance tests are retained"
+      },
+      "dependencies": {
+        "command": "npm install --ignore-scripts --no-audit --no-fund",
+        "command_sha256": "7493d616f26e72b22eb5a21beafa12a6717ebf5b93a7a75e709de65e7323cc41",
+        "lockfiles": [
+          {
+            "path": "package.json",
+            "snapshot_sha256": "b273320af1bb4cfc0f9334457c8e3b1d035fde0da14f9db65e8ef97d361d0be3",
+            "current_fixture_sha256": null
+          }
+        ]
+      },
+      "agent_condition": {
+        "runtime_id": "codex-cli",
+        "provider": "openai",
+        "model": "gpt-5.6-sol",
+        "model_condition_id": "codex-openai-gpt-5-6-sol-high",
+        "reasoning_effort": "high",
+        "codex_version_condition": "captured-at-run-and-bound-to-record"
+      },
+      "isolation": {
+        "prompt_delivery": "sequential-one-task-at-a-time",
+        "seed_delivery_mode": "preseeded-composite",
+        "future_tasks_visible": false,
+        "future_seed_regressions_visible": true,
+        "controller_verification": "final-only",
+        "controller_verifier_scripts_and_canonical_copies_model_visible": false,
+        "model_visible_acceptance_asset_paths": [
+          "test/baseline-v3-content-type-cache.test.js",
+          "test/baseline-v3-max-param.test.js",
+          "test/baseline-v3-request-media-type.test.js"
+        ],
+        "model_concealed_paths": []
+      },
+      "baseline_pool_reference": {
+        "protocol_version": "baseline-pool-v1",
+        "protocol_fingerprint": "bb0e89ed9794",
+        "comparison_policy": "paired baseline and treatment must share this baseline pool fingerprint and replicate"
+      },
+      "model_condition_override": {
+        "model_condition_id": "codex-openai-gpt-5-6-sol-high",
+        "model": "gpt-5.6-sol",
+        "reasoning_effort": "high",
+        "registry_status": "active-model-comparison",
+        "launcher": {
+          "path": "scripts/run_codex_workflow_model_condition.py",
+          "sha256": "b219d8f88e5df0fd567dff4d47e9193a602b223b2b72cf0ed3ea5c67cad5aecf"
+        }
+      }
+    }
+  },
+  "agent_condition": {
+    "runtime_id": "codex-cli",
+    "provider": "openai",
+    "model": "gpt-5.6-sol",
+    "model_condition_id": "codex-openai-gpt-5-6-sol-high",
+    "reasoning_effort": "high",
+    "codex_version_condition": "captured-at-run-and-bound-to-record"
+  },
+  "docker_image_identity": {
+    "image_ref": "token-eval-codex:latest",
+    "image_id": "sha256:6f86d01f2c63f5029c6bb874d8f3694c24d5cd567e3d09413eccc956ba3feafe",
+    "repo_digests": [
+      "token-eval-codex@sha256:6f86d01f2c63f5029c6bb874d8f3694c24d5cd567e3d09413eccc956ba3feafe"
+    ],
+    "repo_tags": [
+      "token-eval-codex:latest"
+    ]
+  },
+  "tool_adapter_identity": {
+    "tool_id": "headroom",
+    "tool_manifest": "scripts/run_codex_fixture_evaluation.py:TOOL_CONFIGS",
+    "tool_manifest_sha256": "6fa8271b89a577706ea0bbffcc8e4521831f41b646ed9519369efee3642fe41c",
+    "tool_config": {
+      "display_name": "Headroom",
+      "lane_name": "headroom-default-codex",
+      "surface": "broad-compression/proxy/codex-wrapper",
+      "allowed_terms": [
+        "headroom",
+        "headroom_retrieve",
+        "rtk",
+        "tokensave",
+        "token-savior",
+        "token_savior",
+        "serena"
+      ],
+      "data_dir_name": "headroom",
+      "mounts": [
+        "/opt/data/tool-candidates/headroom",
+        "/opt/data/tool-candidates/headroom/dist/headroom_ai-0.28.0-cp310-abi3-linux_x86_64.whl"
+      ],
+      "path_entries": [
+        "{codex_home}/home/.headroom/bin",
+        "{codex_home}/home/.local/bin"
+      ],
+      "env": {
+        "HEADROOM_HOME": "{tool_data_dir}",
+        "HEADROOM_CACHE_DIR": "{tool_data_dir}/cache",
+        "HEADROOM_DISABLE_DASHBOARD": "1",
+        "HEADROOM_TELEMETRY": "0",
+        "HEADROOM_PROJECT": "{repo_slug}"
+      },
+      "codex_wrapper": {
+        "command": "/opt/data/opt/uv/uv",
+        "args": [
+          "tool",
+          "run",
+          "--from",
+          "/opt/data/tool-candidates/headroom/dist/headroom_ai-0.28.0-cp310-abi3-linux_x86_64.whl",
+          "--with",
+          "mcp",
+          "--with",
+          "fastapi",
+          "--with",
+          "uvicorn<1.0",
+          "--with",
+          "httpx[http2]",
+          "--with",
+          "openai",
+          "--with",
+          "zstandard",
+          "--with",
+          "websockets",
+          "headroom",
+          "wrap",
+          "codex",
+          "--port",
+          "{tool_port}",
+          "--verbose",
+          "--"
+        ]
+      },
+      "preflight_command": [
+        "/opt/data/opt/uv/uv",
+        "tool",
+        "run",
+        "--from",
+        "/opt/data/tool-candidates/headroom/dist/headroom_ai-0.28.0-cp310-abi3-linux_x86_64.whl",
+        "--with",
+        "mcp",
+        "headroom",
+        "--version"
+      ],
+      "default_tool_state": "active-wrapper"
+    },
+    "tool_config_sha256": "e701c779e8726afa9026ca5de770e880bcec0d09dfaa609976be36d063dddc9b",
+    "tool_state": "active-wrapper",
+    "tool_use_policy": "natural",
+    "command_identity": {
+      "kind": "codex_wrapper",
+      "command": [
+        "/opt/data/opt/uv/uv",
+        "tool",
+        "run",
+        "--from",
+        "/opt/data/tool-candidates/headroom/dist/headroom_ai-0.28.0-cp310-abi3-linux_x86_64.whl",
+        "--with",
+        "mcp",
+        "--with",
+        "fastapi",
+        "--with",
+        "uvicorn<1.0",
+        "--with",
+        "httpx[http2]",
+        "--with",
+        "openai",
+        "--with",
+        "zstandard",
+        "--with",
+        "websockets",
+        "headroom",
+        "wrap",
+        "codex",
+        "--port",
+        "{tool_port}",
+        "--verbose",
+        "--"
+      ]
+    },
+    "binary_identity": {
+      "executable_token": "/opt/data/opt/uv/uv",
+      "resolved_path": "/opt/data/opt/uv/uv",
+      "realpath": "/opt/data/opt/uv/uv",
+      "sha256": "dc407e8ebb7903e94580217e564e544b231f16ce2a697c247b71632bffe35b35",
+      "metadata": {
+        "size": 58002784,
+        "mode": "-rwxr-xr-x",
+        "uid": 10000,
+        "gid": 10000,
+        "mtime_ns": 1783498937309771510
+      },
+      "version": {
+        "command": [
+          "/opt/data/opt/uv/uv",
+          "--version"
+        ],
+        "environment_path": "/opt/data/.local/bin:{repository_root}/.identity-codex-home/home/.local/bin:{repository_root}/.identity-codex-home/home/.headroom/bin:/opt/data/opt/go/bin:/opt/data/opt/uv:/opt/data/opt/node-v24.18.0-linux-x64/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+        "captured": true,
+        "exit_code": 0,
+        "output": "uv 0.11.6 (x86_64-unknown-linux-musl)",
+        "truncated": false
+      }
+    },
+    "source_identity": [
+      {
+        "path": "/opt/data/tool-candidates/headroom",
+        "exists": true,
+        "kind": "directory",
+        "git_head": "715ed7d200cb62c43e6ee3976ce8d3aa639ccf9f"
+      },
+      {
+        "path": "/opt/data/tool-candidates/headroom/dist/headroom_ai-0.28.0-cp310-abi3-linux_x86_64.whl",
+        "exists": true,
+        "kind": "file",
+        "sha256": "7d4b753d8a0a33aa3222178a92aede5f43c9bc7d3642397c190854d6abbfb560"
+      }
+    ]
+  },
+  "profile_id": "headroom-default-codex",
+  "workflow_sequence_id": "fastify-lifecycle-sequence-v0",
+  "fixture_id": "medium-fastify-fastify",
+  "repository_path": "sources/evaluations/workflow-sessions/codex-fastify-20260729-p-bb0e89ed9794-r0/project/repo",
+  "codex_exit_codes": [
+    0,
+    0,
+    0
+  ],
+  "final_verifier_exit_code": 0,
+  "tool_isolation_audit_exit_code": 0,
+  "verifier_integrity_passed": true,
+  "thread_continuity_errors": [],
+  "seed_delivery": {
+    "mode": "preseeded-composite",
+    "future_seed_regressions_visible": true,
+    "preseeded_task_orders": [
+      1,
+      2,
+      3
+    ],
+    "pending_seed_orders": []
+  },
+  "accepted": true,
+  "timeout_seconds": 10800,
+  "codex_version": "codex-cli 0.145.0",
+  "token_usage": {
+    "measurement_source": "codex-jsonl-usage-events",
+    "fresh_input_tokens": 36324,
+    "cached_input_tokens": 56320,
+    "cache_write_tokens": 0,
+    "output_tokens": 1201,
+    "reasoning_tokens": 0,
+    "total_provider_tokens": 93845
+  },
+  "usage_warnings": [],
+  "per_task_results": [
+    {
+      "task_id": "fastify-lifecycle-feature-v0",
+      "task_class": "feature-implementation",
+      "task_alias": "task-01",
+      "order": 1,
+      "agent_attempted": true,
+      "codex_exit_code": 0,
+      "thread_continuity_passed": true,
+      "thread_id": "019fac99-564a-72c0-8230-00bcda86355b",
+      "controller_verification": "passed",
+      "accepted": true,
+      "task_delta": "sources/evaluations/workflow-sessions/codex-fastify-20260729-p-bb0e89ed9794-r0/task-01-agent.diff",
+      "usage_events": "sources/evaluations/workflow-sessions/codex-fastify-20260729-p-bb0e89ed9794-r0/task-01-codex-events.jsonl",
+      "operational_retry_count": 0,
+      "verifier_exit_code": 0,
+      "verifier_passed": true
+    },
+    {
+      "task_id": "fastify-lifecycle-refactor-v0",
+      "task_class": "behavior-preserving-refactor",
+      "task_alias": "task-02",
+      "order": 2,
+      "agent_attempted": true,
+      "codex_exit_code": 0,
+      "thread_continuity_passed": true,
+      "thread_id": "019fac99-564a-72c0-8230-00bcda86355b",
+      "controller_verification": "passed",
+      "accepted": true,
+      "task_delta": "sources/evaluations/workflow-sessions/codex-fastify-20260729-p-bb0e89ed9794-r0/task-02-agent.diff",
+      "usage_events": "sources/evaluations/workflow-sessions/codex-fastify-20260729-p-bb0e89ed9794-r0/task-02-codex-events.jsonl",
+      "operational_retry_count": 0,
+      "verifier_exit_code": 0,
+      "verifier_passed": true
+    },
+    {
+      "task_id": "fastify-lifecycle-review-v0",
+      "task_class": "code-review-correction",
+      "task_alias": "task-03",
+      "order": 3,
+      "agent_attempted": true,
+      "codex_exit_code": 0,
+      "thread_continuity_passed": true,
+      "thread_id": "019fac99-564a-72c0-8230-00bcda86355b",
+      "controller_verification": "passed",
+      "accepted": true,
+      "task_delta": "sources/evaluations/workflow-sessions/codex-fastify-20260729-p-bb0e89ed9794-r0/task-03-agent.diff",
+      "usage_events": "sources/evaluations/workflow-sessions/codex-fastify-20260729-p-bb0e89ed9794-r0/task-03-codex-events.jsonl",
+      "operational_retry_count": 0,
+      "verifier_exit_code": 0,
+      "verifier_passed": true
+    }
+  ],
+  "prompt_delivery": {
+    "mode": "sequential-one-task-at-a-time",
+    "future_tasks_visible": false,
+    "future_prompts_materialized_lazily": true,
+    "seed_delivery_mode": "preseeded-composite",
+    "future_seed_regressions_visible": true,
+    "controller_verification": "final-only",
+    "codex_thread_id": "019fac99-564a-72c0-8230-00bcda86355b",
+    "task_prompt_evidence": "sources/evaluations/workflow-sessions/codex-fastify-20260729-p-bb0e89ed9794-r0/evidence.jsonl.gz"
+  },
+  "leakage_controls": {
+    "seed_origin_concealed": true,
+    "seed_patches_model_visible": false,
+    "git_baseline_true_root_at_lane_start": true,
+    "fixed_snapshot_objects_model_visible": false,
+    "pre_seed_reflog_entries_visible": false,
+    "concealment_verification_passed": true,
+    "task_directories_model_visible": false,
+    "controller_verifier_scripts_and_canonical_copies_model_visible": false,
+    "model_visible_acceptance_asset_paths": [
+      "test/baseline-v3-content-type-cache.test.js",
+      "test/baseline-v3-max-param.test.js",
+      "test/baseline-v3-request-media-type.test.js"
+    ],
+    "model_writable_surface": "target repository plus isolated model-output directory",
+    "verifier_integrity_passed": true,
+    "verifier_integrity_evidence": "sources/evaluations/workflow-sessions/codex-fastify-20260729-p-bb0e89ed9794-r0/evidence.jsonl.gz#verifier-integrity.json",
+    "model_prompts_sanitized": true,
+    "upstream_remote_removed_from_model_facing_repo": true,
+    "broken_start_committed_as_local_baseline": true,
+    "remaining_limitations": [
+      "Future regression code and declared focused acceptance tests are present from lane start; future prompts, seed patches, and controller verifier scripts remain controller-only.",
+      "Task semantics and verifier names may still be searchable if the model intentionally uses external network access."
+    ]
+  },
+  "artifacts": {
+    "artifact_contract": "compact-v1-four-files",
+    "root": "sources/evaluations/workflow-sessions/codex-fastify-20260729-p-bb0e89ed9794-r0",
+    "run_record": "sources/evaluations/workflow-sessions/codex-fastify-20260729-p-bb0e89ed9794-r0/run.json",
+    "final_diff": "sources/evaluations/workflow-sessions/codex-fastify-20260729-p-bb0e89ed9794-r0/changes.diff",
+    "final_diff_basis": "ordered cumulative checkpoints plus final cumulative source diff from one composite root",
+    "evidence_bundle": "sources/evaluations/workflow-sessions/codex-fastify-20260729-p-bb0e89ed9794-r0/evidence.jsonl.gz",
+    "manifest": "sources/evaluations/workflow-sessions/codex-fastify-20260729-p-bb0e89ed9794-r0/manifest.sha256"
+  },
+  "run_dir": "sources/evaluations/workflow-sessions/codex-fastify-20260729-p-bb0e89ed9794-r0"
+}
