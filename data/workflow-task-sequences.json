@@ -22,12 +22,12 @@
   "sequences": [
     {
       "id": "fastify-maintenance-sequence-v1",
-      "status": "retired",
+      "status": "active",
       "acceptance_design": "behavioral",
       "scope": "production-primary",
       "readiness_blockers": [],
-      "qualification_path": "sources/evaluations/fixtures/medium/fastify-fastify/qualification-composite-v5.json",
-      "qualification_date": "2026-07-12",
+      "qualification_path": "sources/evaluations/fixtures/medium/fastify-fastify/qualification-composite-v6.json",
+      "qualification_date": "2026-07-16",
       "fixture_id": "medium-fastify-fastify",
       "fixture_scale": "medium-project",
       "objective": "individual_tool_effectiveness",
@@ -50,141 +50,61 @@
           "order": 1,
           "prompt_path": "sources/evaluations/fixtures/medium/fastify-fastify/tasks/fastify-max-param-length-regression/agent-prompt.txt",
           "verifier_command": "sources/evaluations/fixtures/medium/fastify-fastify/tasks/fastify-max-param-length-regression/verify.sh",
-          "upstream_test_paths": [
-            "test/internals/errors.test.js",
-            "test/logger/logging.test.js",
-            "test/router-options.test.js",
-            "test/types/instance.tst.ts"
-          ],
-          "compatibility_rebased_test_paths": [
-            "test/route.4.test.js"
-          ],
-          "model_concealed_paths": [
-            "test/internals/errors.test.js",
-            "test/logger/logging.test.js",
-            "test/router-options.test.js",
-            "test/route.4.test.js",
-            "test/types/instance.tst.ts"
-          ]
+          "upstream_test_paths": [],
+          "compatibility_rebased_test_paths": [],
+          "model_concealed_paths": []
         },
         {
           "id": "fastify-handler-timeout-regression",
           "order": 2,
           "prompt_path": "sources/evaluations/fixtures/medium/fastify-fastify/tasks/fastify-handler-timeout-regression/agent-prompt.txt",
           "verifier_command": "sources/evaluations/fixtures/medium/fastify-fastify/tasks/fastify-handler-timeout-regression/verify.sh",
-          "upstream_test_paths": [
-            "test/handler-timeout.test.js",
-            "test/internals/errors.test.js",
-            "test/internals/initial-config.test.js",
-            "test/types/fastify.tst.ts",
-            "test/types/request.tst.ts"
-          ],
-          "compatibility_rebased_test_paths": [
-            "test/request-timeout.test.js",
-            "test/stream.1.test.js"
-          ],
-          "model_concealed_paths": [
-            "test/handler-timeout.test.js",
-            "test/internals/errors.test.js",
-            "test/internals/initial-config.test.js",
-            "test/request-timeout.test.js",
-            "test/stream.1.test.js",
-            "test/types/fastify.tst.ts",
-            "test/types/request.tst.ts"
-          ]
+          "upstream_test_paths": [],
+          "compatibility_rebased_test_paths": [],
+          "model_concealed_paths": []
         },
         {
           "id": "fastify-request-media-type-regression",
           "order": 3,
           "prompt_path": "sources/evaluations/fixtures/medium/fastify-fastify/tasks/fastify-request-media-type-regression/agent-prompt.txt",
           "verifier_command": "sources/evaluations/fixtures/medium/fastify-fastify/tasks/fastify-request-media-type-regression/verify.sh",
-          "upstream_test_paths": [
-            "test/request-media-type.test.js",
-            "test/schema-validation.test.js"
-          ],
-          "compatibility_rebased_test_paths": [
-            "test/schema-feature.test.js",
-            "test/types/request.tst.ts"
-          ],
-          "model_concealed_paths": [
-            "test/request-media-type.test.js",
-            "test/schema-feature.test.js",
-            "test/schema-validation.test.js",
-            "test/types/request.tst.ts"
-          ]
+          "upstream_test_paths": [],
+          "compatibility_rebased_test_paths": [],
+          "model_concealed_paths": []
         },
         {
           "id": "fastify-log-controller-regression",
           "order": 4,
           "prompt_path": "sources/evaluations/fixtures/medium/fastify-fastify/tasks/fastify-log-controller-regression/agent-prompt.txt",
           "verifier_command": "sources/evaluations/fixtures/medium/fastify-fastify/tasks/fastify-log-controller-regression/verify.sh",
-          "upstream_test_paths": [
-            "test/internals/errors.test.js",
-            "test/internals/logger.test.js",
-            "test/internals/reply.test.js",
-            "test/logger/logging.test.js",
-            "test/stream.4.test.js"
-          ],
-          "compatibility_rebased_test_paths": [
-            "test/404s.test.js",
-            "test/stream-serializers.test.js",
-            "test/types/errors.tst.ts",
-            "test/types/fastify.tst.ts",
-            "test/types/instance.tst.ts",
-            "test/types/logger.tst.ts",
-            "test/validation-error-handling.test.js"
-          ],
-          "model_concealed_paths": [
-            "test/404s.test.js",
-            "test/internals/errors.test.js",
-            "test/internals/logger.test.js",
-            "test/internals/reply.test.js",
-            "test/logger/logging.test.js",
-            "test/stream-serializers.test.js",
-            "test/stream.4.test.js",
-            "test/types/errors.tst.ts",
-            "test/types/fastify.tst.ts",
-            "test/types/instance.tst.ts",
-            "test/types/logger.tst.ts",
-            "test/validation-error-handling.test.js"
-          ]
+          "upstream_test_paths": [],
+          "compatibility_rebased_test_paths": [],
+          "model_concealed_paths": []
         },
         {
           "id": "fastify-content-type-semantics-regression",
           "order": 5,
           "prompt_path": "sources/evaluations/fixtures/medium/fastify-fastify/tasks/fastify-content-type-semantics-regression/agent-prompt.txt",
           "verifier_command": "sources/evaluations/fixtures/medium/fastify-fastify/tasks/fastify-content-type-semantics-regression/verify.sh",
-          "upstream_test_paths": [
-            "test/content-type.test.js",
-            "test/internals/reply.test.js"
-          ],
-          "compatibility_rebased_test_paths": [
-            "test/content-parser.test.js",
-            "test/custom-parser.1.test.js"
-          ],
-          "model_concealed_paths": [
-            "test/content-parser.test.js",
-            "test/content-type.test.js",
-            "test/custom-parser.1.test.js",
-            "test/internals/reply.test.js"
-          ]
+          "upstream_test_paths": [],
+          "compatibility_rebased_test_paths": [],
+          "model_concealed_paths": []
         }
       ],
       "seed_patch_policy": "Controller merges every qualified regression into one composite broken start before provider execution; prompts are disclosed sequentially, acceptance assets remain controller-only, and concealed functional verification runs after the final prompt.",
       "complexity_note": "Each task is reconstructed from a real upstream Fastify behavior or performance change and changes only its causally related production/type files.",
       "complexity_bar": "Every task touches at least five production/type files and requires executable qualification on the pinned snapshot.",
-      "retirement_reason": "Retained as a qualified maintenance-regression sequence and historical evidence boundary; superseded as the active primary design by beets-lifecycle-sequence-v1, which implements the owner-selected feature/refactor/review workflow.",
-      "protocol_freeze_date": "2026-07-15",
-      "historical_run_authorization": "Owner-authorized one-off bare baseline replicate r2 on 2026-07-15; sequence remains retired and excluded from automatic matrix planning."
+      "protocol_freeze_date": "2026-07-16",
+      "production_lane": "current-production"
     },
     {
       "id": "terraform-maintenance-sequence-v2",
-      "status": "retired",
+      "status": "active",
       "acceptance_design": "behavioral",
       "scope": "production-primary",
       "readiness_blockers": [],
-      "qualification_path": "sources/evaluations/fixtures/large/hashicorp-terraform/qualification-composite-v6.json",
-      "qualification_date": "2026-07-13",
+      "qualification_path": "sources/evaluations/fixtures/large/hashicorp-terraform/qualification-composite-v7.json",
+      "qualification_date": "2026-07-16",
       "fixture_id": "large-hashicorp-terraform",
       "fixture_scale": "large-project",
       "objective": "individual_tool_effectiveness",
@@ -230,16 +150,12 @@
           "verifier_command": "sources/evaluations/fixtures/large/hashicorp-terraform/tasks/terraform-9ae470-objchange-validation-regression/verify.sh",
           "upstream_test_paths": [
             "internal/backend/backendrun/unparsed_value_test.go",
-            "internal/command/init2_test.go",
-            "internal/plans/objchange/compatible_test.go",
-            "internal/plans/objchange/plan_valid_test.go"
+            "internal/command/init2_test.go"
           ],
           "compatibility_rebased_test_paths": [],
           "model_concealed_paths": [
             "internal/backend/backendrun/unparsed_value_test.go",
-            "internal/command/init2_test.go",
-            "internal/plans/objchange/compatible_test.go",
-            "internal/plans/objchange/plan_valid_test.go"
+            "internal/command/init2_test.go"
           ]
         }
       ],
@@ -247,9 +163,8 @@
       "complexity_note": "Each task changes only causally related production/type files.",
       "complexity_bar": "Three non-trivial cross-file production repairs with executable concealed qualification on the pinned snapshot.",
       "selection_rationale": "Token-savings comparison lane selected before treatment from v7 bare-baseline failure evidence: retain tracing context, computed-block capabilities, and variable parsing, whose surfaces were not reported as remaining blockers; exclude workspace recovery and query-hook signature migrations that prevented baseline acceptance.",
-      "retirement_reason": "Retained as a qualified maintenance-regression sequence and historical evidence boundary; superseded as the active primary design by beets-lifecycle-sequence-v2, which implements the owner-selected feature/refactor/review workflow.",
-      "protocol_freeze_date": "2026-07-15",
-      "historical_run_authorization": "Owner-authorized one-off bare baseline replicate r2 on 2026-07-15; sequence remains retired and excluded from automatic matrix planning."
+      "protocol_freeze_date": "2026-07-16",
+      "production_lane": "current-production"
     },
     {
       "id": "beets-maintenance-sequence-v4",
@@ -400,8 +315,8 @@
       "scope": "production-primary",
       "sequence_contract": "feature-refactor-review",
       "readiness_blockers": [],
-      "qualification_path": "sources/evaluations/fixtures/medium/beetbox-beets/qualification-lifecycle-v2.json",
-      "qualification_date": "2026-07-15",
+      "qualification_path": "sources/evaluations/fixtures/medium/beetbox-beets/qualification-lifecycle-v3.json",
+      "qualification_date": "2026-07-16",
       "fixture_id": "medium-beetbox-beets",
       "fixture_scale": "medium-project",
       "objective": "individual_tool_effectiveness",
@@ -463,7 +378,7 @@
       "complexity_bar": "Each task has executable semantic acceptance on the pinned snapshot, fails independently and in the composite start, and passes cumulatively on the fixed snapshot.",
       "selection_rationale": "Versioned replacement for v1 after calibration showed verifier-contract false negatives. It preserves the same feature/refactor/review workload while aligning acceptance with disclosed observable behavior for provider-token comparison.",
       "readiness": "production-qualified-lifecycle-baseline",
-      "protocol_freeze_date": "2026-07-15"
+      "protocol_freeze_date": "2026-07-16"
     }
   ]
 }

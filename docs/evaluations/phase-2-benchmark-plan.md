@@ -12,18 +12,18 @@ Monetary cost estimation is excluded.
 2. **Complete:** reconcile historical treatment estimands and result dispositions.
 3. **Complete for the first screen:** reduce the runnable treatment portfolio to `retrieval-codegraph`; defer every other unexecuted candidate.
 4. **Complete:** replace the invalid calibration contract with executable-qualified `beets-lifecycle-sequence-v2`.
-5. **Next:** run and review one lifecycle baseline replicate.
-6. If that baseline is valid, freeze and run one matched CodeGraph treatment; accumulate later replicates only as token budget permits.
+5. **In progress:** complete and independently review the current production baselines for Beets lifecycle V2, Fastify maintenance V1, and Terraform maintenance V2.
+6. After baseline eligibility is established per lane, freeze and run matched treatments only where the baseline passed independent quality review; accumulate later replicates only as token budget permits.
 
 Do not add or reactivate profiles without a concrete mechanism gap or first-screen evidence.
 
 ## Workflow portfolio
 
-### Controlled maintenance lanes
+### Current production maintenance lanes
 
-Fastify, Terraform, and Beets are retained as scoped maintenance-regression workflows. Existing and future compatible executions accumulate evidence for that task class.
+Fastify maintenance V1 and Terraform maintenance V2 are current production workflows. Existing and future compatible executions accumulate evidence for that task class; failed independent quality review excludes a run from comparison without retiring the lane.
 
-### Primary practical lifecycle lane
+### Current production lifecycle lane
 
 Qualify one persistent sequence containing:
 
