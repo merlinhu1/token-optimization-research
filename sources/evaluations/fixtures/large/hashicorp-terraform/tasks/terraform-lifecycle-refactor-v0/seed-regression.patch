@@ -1,0 +1,374 @@
+diff --git a/internal/configs/parser_config_dir.go b/internal/configs/parser_config_dir.go
+index 63d0ac7577f4e0dbad1ffb5ad10b780774c837ee..98c370aeafe1dbfbe855f774b58ae65ecd00db40 100644
+--- a/internal/configs/parser_config_dir.go
++++ b/internal/configs/parser_config_dir.go
+@@ -148,12 +148,12 @@ func (p *Parser) LoadConfigDir(path string, opts ...Option) (*Module, hcl.Diagno
+ 		case ss != nil && ssp != nil:
+ 			// Both 'from { state_store }' and 'state_store_provider' blocks are present,
+ 			// but are they in agreement with each other?
+-			if ss.Provider.Name != ssp.Type.Type {
++			if ss.Provider.Name != ssp.Name {
+ 				diags = diags.Append(&hcl.Diagnostic{
+ 					Severity: hcl.DiagError,
+ 					Summary:  `Inconsistent provider information for state migration`,
+ 					Detail: fmt.Sprintf(`The configuration's "state_store_provider" block defines a provider called %q but the "migrate_from_state_store" block uses a provider called %q instead. Please update the blocks so that they are in agreement.`,
+-						ssp.Type.Type,
++						ssp.Name,
+ 						ss.Provider.Name,
+ 					),
+ 				})
+diff --git a/internal/configs/parser_config_dir_test.go b/internal/configs/parser_config_dir_test.go
+index 0d886f66ad61eb72783e423d96a0333d1fc57997..d8566eb8675a12ee6e538576d6ee10135178628d 100644
+--- a/internal/configs/parser_config_dir_test.go
++++ b/internal/configs/parser_config_dir_test.go
+@@ -5,13 +5,13 @@ package configs
+ 
+ import (
+ 	"fmt"
++	"io/ioutil"
+ 	"os"
+ 	"path"
+ 	"path/filepath"
+ 	"strings"
+ 	"testing"
+ 
+-	"github.com/apparentlymart/go-versions/versions/constraints"
+ 	"github.com/hashicorp/hcl/v2"
+ 
+ 	"github.com/hashicorp/terraform/internal/addrs"
+@@ -29,7 +29,7 @@ import (
+ // module element contents. More detailed assertions may be made on some subset
+ // of these configuration files in other tests.
+ func TestParserLoadConfigDirSuccess(t *testing.T) {
+-	dirs, err := os.ReadDir("testdata/valid-modules")
++	dirs, err := ioutil.ReadDir("testdata/valid-modules")
+ 	if err != nil {
+ 		t.Fatal(err)
+ 	}
+@@ -97,7 +97,7 @@ func TestParserLoadConfigDirSuccess(t *testing.T) {
+ 
+ 	// The individual files in testdata/valid-files should also work
+ 	// when loaded as modules.
+-	files, err := os.ReadDir("testdata/valid-files")
++	files, err := ioutil.ReadDir("testdata/valid-files")
+ 	if err != nil {
+ 		t.Fatal(err)
+ 	}
+@@ -105,7 +105,7 @@ func TestParserLoadConfigDirSuccess(t *testing.T) {
+ 	for _, info := range files {
+ 		name := info.Name()
+ 		t.Run(fmt.Sprintf("%s as module", name), func(t *testing.T) {
+-			src, err := os.ReadFile(filepath.Join("testdata/valid-files", name))
++			src, err := ioutil.ReadFile(filepath.Join("testdata/valid-files", name))
+ 			if err != nil {
+ 				t.Fatal(err)
+ 			}
+@@ -317,27 +317,14 @@ func TestParserLoadConfigDirWithStateMigrations_from_state_store(t *testing.T) {
+ 
+ 	// Assert that the module includes expected information from state_store_provider block
+ 	ssp := mod.StateMigrationInstructions.StateStoreProvider
+-	expectedAddr := addrs.NewDefaultProvider("test")
+-	if ssp.Source != "hashicorp/test" || !ssp.Type.Equals(expectedAddr) {
+-		t.Fatalf("unexpected state store provider info, got:\n Type: %q\n Source: %q",
+-			ssp.Type, ssp.Source,
++	if ssp.Name != "test" || ssp.Source != "hashicorp/test" || !ssp.Type.Equals(addrs.NewDefaultProvider("test")) {
++		t.Fatalf("unexpected state store provider info, got:\n Name: %q\n Source: %q\n Type: %q\n VersionConstraint: %q",
++			ssp.Name, ssp.Source, ssp.Type, ssp.Requirement,
+ 		)
+ 	}
+-	// Making assertions about the version constraint looks a little hairy,
+-	// but essentially we want to know that:
+-	// - only one requirement is in the map made by parsing
+-	// - the underlying version constraint matches what we'd expect after parsing "1.0.0" or "=1.0.0",
+-	//     which are equivalent ways to pin a single version.
+-	reqs := ssp.Requirement[expectedAddr]
+-	if len(reqs) != 1 {
+-		t.Fatalf("expected parsed state_store_provider block to represent a single version constraint, got %d:\n %#v", len(reqs), reqs)
+-	}
+-	req := reqs[0]
+-	if req.Operator != constraints.OpEqual {
+-		t.Fatalf("expected parsed state_store_provider block's version attribute to represent a an exact version constraint with operator = (%s), got:\n %#v", constraints.OpEqual, req.Operator)
+-	}
+-	if req.Boundary.Major.Num != 1 || req.Boundary.Minor.Num != 0 || req.Boundary.Patch.Num != 0 {
+-		t.Fatalf("expected parsed state_store_provider block's version attribute to represent version constraint of 1.0.0, got:\n %#v", req)
++	expectedConstraint := "1.0.0"
++	if ssp.Requirement.Required.String() != expectedConstraint {
++		t.Fatalf("unexpected version constraint, got %q, want %q", ssp.Requirement.Required.String(), expectedConstraint)
+ 	}
+ }
+ 
+@@ -409,18 +396,8 @@ func TestParserLoadConfigDirWithStateMigrations_error_cases(t *testing.T) {
+ 		},
+ 		// Invalid contents of state_store_provider block
+ 		{
+-			name:              "not pinned version in state_store_provider block",
+-			directory:         "testdata/state-migration-files/invalid/state-store-provider-range-version-constraint",
+-			diagnosticSummary: `Invalid provider version in "state_store_provider" configuration block`,
+-		},
+-		{
+-			name:              "multi-part version constraint in state_store_provider block",
+-			directory:         "testdata/state-migration-files/invalid/state-store-provider-multipart-version-constraint",
+-			diagnosticSummary: `Invalid provider version in "state_store_provider" configuration block`,
+-		},
+-		{
+-			name:              "incorrect data type for version attribute in state_store_provider block",
+-			directory:         "testdata/state-migration-files/invalid/state-store-provider-version-incorrect-data-type",
++			name:              "invalid version constraint in state_store_provider block",
++			directory:         "testdata/state-migration-files/invalid/invalid-version-state-store-provider-block",
+ 			diagnosticSummary: `Invalid provider version in "state_store_provider" configuration block`,
+ 		},
+ 		{
+@@ -603,7 +580,7 @@ func TestParserLoadConfigDirWithTests_ReturnsWarnings(t *testing.T) {
+ // diagnostics in particular. More detailed assertions may be made on some subset
+ // of these configuration files in other tests.
+ func TestParserLoadConfigDirFailure(t *testing.T) {
+-	dirs, err := os.ReadDir("testdata/invalid-modules")
++	dirs, err := ioutil.ReadDir("testdata/invalid-modules")
+ 	if err != nil {
+ 		t.Fatal(err)
+ 	}
+@@ -626,7 +603,7 @@ func TestParserLoadConfigDirFailure(t *testing.T) {
+ 
+ 	// The individual files in testdata/valid-files should also work
+ 	// when loaded as modules.
+-	files, err := os.ReadDir("testdata/invalid-files")
++	files, err := ioutil.ReadDir("testdata/invalid-files")
+ 	if err != nil {
+ 		t.Fatal(err)
+ 	}
+@@ -634,7 +611,7 @@ func TestParserLoadConfigDirFailure(t *testing.T) {
+ 	for _, info := range files {
+ 		name := info.Name()
+ 		t.Run(fmt.Sprintf("%s as module", name), func(t *testing.T) {
+-			src, err := os.ReadFile(filepath.Join("testdata/invalid-files", name))
++			src, err := ioutil.ReadFile(filepath.Join("testdata/invalid-files", name))
+ 			if err != nil {
+ 				t.Fatal(err)
+ 			}
+diff --git a/internal/configs/state_migrate_file.go b/internal/configs/state_migrate_file.go
+index bf0b349db84ec2e8a4618297d5729229cff40db3..e304a3dd8b97ff69558905439e5eecdac1231e63 100644
+--- a/internal/configs/state_migrate_file.go
++++ b/internal/configs/state_migrate_file.go
+@@ -9,9 +9,9 @@ import (
+ 	"slices"
+ 
+ 	"github.com/apparentlymart/go-versions/versions"
++	version "github.com/hashicorp/go-version"
+ 	"github.com/hashicorp/hcl/v2"
+ 	"github.com/hashicorp/terraform/internal/addrs"
+-	"github.com/hashicorp/terraform/internal/getproviders/providerreqs"
+ 	"github.com/zclconf/go-cty/cty"
+ )
+ 
+@@ -26,24 +26,12 @@ import (
+ // When creating a StateMigrationInstructions struct, calling code must ensure that there
+ // are no duplicated or mutually-exclusive pieces of information in the original file(s).
+ type StateMigrationInstructions struct {
+-	StateStoreProvider *StateStoreProviderRequirement
++	StateStoreProvider *RequiredProvider
+ 	StateStore         *StateStore
+ 
+ 	Backend *Backend
+ }
+ 
+-// StateStoreProviderRequirement is very similar to RequiredProvider
+-// but contains data that's specific to state migration files, and how they're used in commands.
+-type StateStoreProviderRequirement struct {
+-	Type      addrs.Provider
+-	Source    string
+-	DeclRange hcl.Range
+-
+-	// Requirement represents the single provider used for state storage.
+-	// By parsing data into this field it can easily be passed to functions for provider download, which expect a providerreqs.Requirements argument.
+-	Requirement providerreqs.Requirements
+-}
+-
+ // StateMigrationFile represents a single state migration file within a configuration directory.
+ // A project can include multiple files of this type, and their contents is aggregated.
+ type StateMigrationFile struct {
+@@ -65,7 +53,7 @@ func loadStateMigrationFile(body hcl.Body) (*StateMigrationFile, hcl.Diagnostics
+ 	for _, block := range content.Blocks {
+ 		switch block.Type {
+ 		case "state_store_provider":
+-			req, pDiags := decodeStateStoreProviderBlock(block)
++			p, pDiags := decodeStateStoreProviderBlock(block)
+ 			diags = diags.Extend(pDiags)
+ 
+ 			if file.StateStoreProvider != nil {
+@@ -78,8 +66,8 @@ func loadStateMigrationFile(body hcl.Body) (*StateMigrationFile, hcl.Diagnostics
+ 				continue // Keep file.StateStoreProvider as first parsed block in this scenario
+ 			}
+ 
+-			if req != nil {
+-				file.StateStoreProvider = req
++			if p != nil {
++				file.StateStoreProvider = p
+ 				file.fromBlockSource = &block.DefRange
+ 			}
+ 		case "from":
+@@ -200,10 +188,10 @@ func decodeFromBlock(block *hcl.Block) (*StateMigrationInstructions, hcl.Diagnos
+ 	return &fromData, diags
+ }
+ 
+-func decodeStateStoreProviderBlock(block *hcl.Block) (*StateStoreProviderRequirement, hcl.Diagnostics) {
++func decodeStateStoreProviderBlock(block *hcl.Block) (*RequiredProvider, hcl.Diagnostics) {
+ 	// state_store_provider blocks are similar to required_provider blocks but different, so we need logic
+ 	// similar to that in decodeProviderRequirementsBlock but distinct. E.g. version constraints must be
+-	// exact versions, not a range.
++	// exact versions, not a range. The similarity is sufficient that we can return a RequiredProvider pointer.
+ 
+ 	var diags hcl.Diagnostics
+ 	attrs, hclDiags := block.Body.JustAttributes()
+@@ -242,10 +230,10 @@ func decodeStateStoreProviderBlock(block *hcl.Block) (*StateStoreProviderRequire
+ 	}
+ 
+ 	// Process the data inside the object describing the provider
+-	ssProvider := StateStoreProviderRequirement{
++	ssProvider := RequiredProvider{
++		Name:      localName,
+ 		DeclRange: attr.Range,
+ 	}
+-	var constraints providerreqs.VersionConstraints
+ 	for _, kv := range kvs {
+ 		key, keyDiags := kv.Key.Value(nil)
+ 		if keyDiags.HasErrors() {
+@@ -265,29 +253,50 @@ func decodeStateStoreProviderBlock(block *hcl.Block) (*StateStoreProviderRequire
+ 
+ 		switch key.AsString() {
+ 		case "version":
++			vc := VersionConstraint{
++				DeclRange: attr.Range,
++			}
++
+ 			versionString, valDiags := kv.Value.Value(nil)
+ 			if valDiags.HasErrors() || !versionString.Type().Equals(cty.String) {
+-				diags = append(diags, badVersionConstraintErrorDiag("", kv.Value.Range().Ptr()))
+-				return nil, diags
++				diags = append(diags, &hcl.Diagnostic{
++					Severity: hcl.DiagError,
++					Summary:  `Invalid provider version in "state_store_provider" configuration block`,
++					Detail:   "Version must be a string, specifying a single version.",
++					Subject:  kv.Value.Range().Ptr(),
++				})
++				continue
+ 			}
+ 
+-			// This means it's only valid to specify a single version in the format "1.0.0",
+-			// but disallows using the equivalent "=1.0.0"
+ 			v, err := versions.ParseVersion(versionString.AsString())
+ 			if err != nil {
+-				diags = append(diags, badVersionConstraintErrorDiag(versionString.AsString(), kv.Value.Range().Ptr()))
++				diags = append(diags, &hcl.Diagnostic{
++					Severity: hcl.DiagError,
++					Summary:  `Invalid provider version in "state_store_provider" configuration block`,
++					Detail:   "The version attribute must specify a single, specific version (e.g. \"1.0.0\") and cannot be a version constraint with an operator.",
++					Subject:  kv.Value.Range().Ptr(),
++				})
+ 				return nil, diags
+ 			}
+ 
+-			constraints, err = providerreqs.ParseVersionConstraints(v.String())
++			// We ensure user input can be parsed as a version, but we need to
++			// create a constraint to be part of the returned RequiredProvider struct.
++			// The constraint will pin to a specific version set by the config.
++			constraints, err := version.NewConstraint(v.String())
+ 			if err != nil {
+-				// ParseVersionConstraints doesn't return user-friendly errors, so we'll just
++				// NewConstraint doesn't return user-friendly errors, so we'll just
+ 				// ignore the provided error and produce our own generic one.
+-				diags = append(diags, badVersionConstraintErrorDiag(versionString.AsString(), kv.Value.Range().Ptr()))
++				diags = append(diags, &hcl.Diagnostic{
++					Severity: hcl.DiagError,
++					Summary:  `Unable to create version constraint from provider version`,
++					Detail:   fmt.Sprintf("Terraform was unable to create an 'exact' version constraint from the provided version string: %s.", v.String()),
++					Subject:  kv.Value.Range().Ptr(),
++				})
+ 				return nil, diags
+ 			}
+ 
+-			// All ok with the parsed version constraint. It's used after this switch statement.
++			vc.Required = constraints
++			ssProvider.Requirement = vc
+ 
+ 		case "source":
+ 			source, err := kv.Value.Value(nil)
+@@ -328,13 +337,8 @@ func decodeStateStoreProviderBlock(block *hcl.Block) (*StateStoreProviderRequire
+ 			})
+ 			return nil, diags
+ 		}
+-	}
+ 
+-	// Now both the source and version have been parsed, we can populate
+-	// the Requirement field with a single provider requirement.
+-	req := make(providerreqs.Requirements, 1)
+-	req[ssProvider.Type] = constraints
+-	ssProvider.Requirement = req
++	}
+ 
+ 	return &ssProvider, diags
+ }
+@@ -368,12 +372,3 @@ var fromBlockSchema = &hcl.BodySchema{
+ 		},
+ 	},
+ }
+-
+-func badVersionConstraintErrorDiag(version string, subject *hcl.Range) *hcl.Diagnostic {
+-	return &hcl.Diagnostic{
+-		Severity: hcl.DiagError,
+-		Summary:  `Invalid provider version in "state_store_provider" configuration block`,
+-		Detail:   fmt.Sprintf("Version must be a string, specifying a single version, but got: %s. Please ensure the version string is valid and specifies a single version in format \"1.0.0\"", version),
+-		Subject:  subject,
+-	}
+-}
+diff --git a/internal/configs/testdata/state-migration-files/invalid/state-store-provider-multipart-version-constraint/main.tfmigrate.hcl b/internal/configs/testdata/state-migration-files/invalid/state-store-provider-multipart-version-constraint/main.tfmigrate.hcl
+deleted file mode 100644
+index ae675f84edd55d7744d2ac34a971f37253194f03..0000000000000000000000000000000000000000
+--- a/internal/configs/testdata/state-migration-files/invalid/state-store-provider-multipart-version-constraint/main.tfmigrate.hcl
++++ /dev/null
+@@ -1,6 +0,0 @@
+-state_store_provider {
+-  test = {
+-    source = "hashicorp/test"
+-    version = "~>1.0, <1.9"
+-  }
+-}
+\ No newline at end of file
+diff --git a/internal/configs/testdata/state-migration-files/invalid/state-store-provider-range-version-constraint/main.tfmigrate.hcl b/internal/configs/testdata/state-migration-files/invalid/state-store-provider-range-version-constraint/main.tfmigrate.hcl
+deleted file mode 100644
+index a40a24855975d43707248e85563fb8a543c590e9..0000000000000000000000000000000000000000
+--- a/internal/configs/testdata/state-migration-files/invalid/state-store-provider-range-version-constraint/main.tfmigrate.hcl
++++ /dev/null
+@@ -1,6 +0,0 @@
+-state_store_provider {
+-  test = {
+-    source = "hashicorp/test"
+-    version = "~>1.0.0"
+-  }
+-}
+\ No newline at end of file
+diff --git a/internal/configs/testdata/state-migration-files/invalid/state-store-provider-version-incorrect-data-type/main.tfmigrate.hcl b/internal/configs/testdata/state-migration-files/invalid/state-store-provider-version-incorrect-data-type/main.tfmigrate.hcl
+deleted file mode 100644
+index 48a5385f388954e8483b496252a97fde939fb4be..0000000000000000000000000000000000000000
+--- a/internal/configs/testdata/state-migration-files/invalid/state-store-provider-version-incorrect-data-type/main.tfmigrate.hcl
++++ /dev/null
+@@ -1,6 +0,0 @@
+-state_store_provider {
+-  test = {
+-    source = "hashicorp/test"
+-    version = 1
+-  }
+-}
+\ No newline at end of file
+diff --git a/internal/configs/testdata/state-migration-files/invalid/invalid-version-state-store-provider-block/main.tfmigrate.hcl b/internal/configs/testdata/state-migration-files/invalid/invalid-version-state-store-provider-block/main.tfmigrate.hcl
+new file mode 100644
+index 0000000000000000000000000000000000000000..a40a24855975d43707248e85563fb8a543c590e9
+--- /dev/null
++++ b/internal/configs/testdata/state-migration-files/invalid/invalid-version-state-store-provider-block/main.tfmigrate.hcl
+@@ -0,0 +1,6 @@
++state_store_provider {
++  test = {
++    source = "hashicorp/test"
++    version = "~>1.0.0"
++  }
++}
+\ No newline at end of file

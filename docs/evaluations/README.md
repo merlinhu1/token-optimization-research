@@ -1,34 +1,7 @@
 # Evaluations
 
-This area holds human-facing evaluation protocols and operator guidance.
+The current evaluation surface is lifecycle v0 only. Three pinned fixtures—Fastify, Beets, and Terraform—each exercise feature implementation, behavior-preserving refactor, and code review/correction in one persistent workflow.
 
-## Canonical workflow docs
+No production result exists. Qualification artifacts prove fixture mechanics; they are not model-performance evidence. Future execution artifacts are written only when a production run occurs.
 
-- `workflow-evaluation-runbook.md` — generated operator runbook; it must show no paid lanes while all sequences are planned.
-- `sequential-workflow-runner.md` — implementation notes for persistent multi-task workflow simulation.
-- `continuous-workflow-simulation.md` — protocol and artifact contract for cumulative workflow sessions.
-- `token-usage-and-quality-standards.md` — shared accounting and software-quality rules.
-
-Sequence status and the runbook are generated from:
-
-```text
-data/workflow-task-sequences.json
-data/repository-fixtures.json
-scripts/update_workflow_runbook.py
-```
-
-## Planning and background docs
-
-- `phase-2-benchmark-plan.md` — benchmark design background.
-- `progressive-repository-evaluation-plan.md` — historical/progressive design notes.
-- `repository-fixture-framework.md` — fixture readiness rules.
-- `immediately-usable-flows.md` — earlier practical flows and sanity checks.
-- `evaluation-framework.md` — general evaluation model.
-
-Planning docs are not operator runbooks. When they conflict with the generated runbook or registries, update the planning doc or treat it as historical context.
-
-## Source and evidence locations
-
-- Active fixture source material: `sources/evaluations/fixtures/`.
-- Legacy archived evaluation evidence was removed because its task design was invalid; use current workflow-session artifacts only.
-- Compact workflow-session evidence: `sources/evaluations/workflow-sessions/<session-id>/` when sessions are recorded.
+Start with `workflow-evaluation-runbook.md`, then use `token-usage-and-quality-standards.md` and `cumulative-result-schema.md` for execution evidence.

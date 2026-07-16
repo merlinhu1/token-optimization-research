@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "description": "Historical large-project candidate registry; Terraform maintenance evidence is retained but no large-project workflow is active.",
+  "description": "Large-project candidates bound only to the v0 lifecycle portfolio.",
   "selection_policy": {
     "include": "Large, active, public repositories with substantial software-engineering task surfaces and feasible subsystem-scoped verification.",
     "exclude": "User-owned/local personal projects, toy fixtures, archived repositories, and projects where no bounded verifier can be frozen.",
@@ -11,24 +11,26 @@
   "candidates": [
     {
       "id": "large-hashicorp-terraform",
+      "status": "production-qualified",
+      "workflow_sequence_id": "terraform-lifecycle-sequence-v0",
+      "qualification_status": "active-reproduction-flow",
+      "qualification_evidence": "sources/evaluations/fixtures/large/hashicorp-terraform/qualification-lifecycle-v0.json",
+      "tasks": [
+        "terraform-lifecycle-feature-v0",
+        "terraform-lifecycle-refactor-v0",
+        "terraform-lifecycle-review-v0"
+      ],
+      "active_profiles": [
+        "baseline-bare-codex"
+      ],
       "github": "hashicorp/terraform",
       "url": "https://github.com/hashicorp/terraform",
       "language": "Go",
       "size_kb": 59640,
       "default_branch": "main",
-      "surface": "retrieval-context",
       "setup_policy": "Use the pinned Go toolchain and run go mod download before bounded verification.",
       "verifier_policy": "Use bounded Go test selectors for the controller-held regression closure plus the task verifier; do not run the full repository test suite for every replicate.",
-      "selection_status": "production-fixture",
-      "selected_reason": "Current qualified production maintenance lane in the three-lane evaluation matrix.",
-      "tasks": [
-        "terraform-161ffe-tracing-context-regression",
-        "terraform-520378-computed-block-capabilities-regression",
-        "terraform-9ae470-objchange-validation-regression"
-      ],
-      "qualification_status": "active-reproduction-flow",
-      "workflow_sequence_id": "terraform-maintenance-sequence-v2",
-      "evidence_use": "current production baseline and matched-treatment evaluation"
+      "selection_status": "production-fixture"
     }
   ]
 }

@@ -759,8 +759,15 @@ def validate_workflow_task_sequences(sequence_doc: dict, fixture_doc: dict, erro
         if sid in sequence_ids:
             errors.append(f"duplicate workflow sequence id: {sid}")
         sequence_ids.add(sid)
-        if sequence.get("status") not in {"planned", "active", "retired"}:
-            errors.append(f"workflow sequence {sid} has invalid status: {sequence.get('status')}")
+        if sequence.get("status") != "active":
+            errors.append(f"workflow sequence {sid} must be active; pre-production v0 keeps no planned or retired lanes")
+        if not str(sid).endswith("-lifecycle-sequence-v0"):
+            errors.append(f"workflow sequence {sid} must use the lifecycle-sequence-v0 identity")
+        if sequence.get("sequence_contract") != "feature-refactor-review":
+            errors.append(f"workflow sequence {sid} must use the feature-refactor-review contract")
+        qualification_path = str(sequence.get("qualification_path", ""))
+        if not qualification_path.endswith("/qualification-lifecycle-v0.json"):
+            errors.append(f"workflow sequence {sid} must bind qualification-lifecycle-v0.json")
         if sequence.get("status") == "active" and sequence.get("acceptance_design") != "behavioral":
             errors.append(f"active workflow sequence {sid} must declare acceptance_design=behavioral")
         if sequence.get("status") == "active" and sequence.get("scope") != "production-primary":
@@ -776,8 +783,6 @@ def validate_workflow_task_sequences(sequence_doc: dict, fixture_doc: dict, erro
                 errors.append(
                     f"active workflow sequence {sid} protocol freeze date must be explicit and not predate qualification"
                 )
-        if sequence.get("status") == "planned" and not sequence.get("readiness_blockers"):
-            errors.append(f"planned workflow sequence {sid} must record readiness_blockers")
         fixture_id = sequence.get("fixture_id")
         if fixture_id not in fixture_ids:
             errors.append(f"workflow sequence {sid} references unknown fixture {fixture_id}")
@@ -803,6 +808,8 @@ def validate_workflow_task_sequences(sequence_doc: dict, fixture_doc: dict, erro
                 errors.append(f"workflow sequence {sid} has duplicate task id {tid}")
             else:
                 task_ids.add(tid)
+            if not str(tid or "").endswith("-v0"):
+                errors.append(f"workflow sequence {sid} task {tid} must use a v0 identity")
             order = task.get("order")
             if not isinstance(order, int) or order < 1:
                 errors.append(f"workflow sequence {sid} task {tid} has invalid order {order}")
@@ -825,10 +832,6 @@ def validate_workflow_task_sequences(sequence_doc: dict, fixture_doc: dict, erro
                     production_by_task[str(tid)] = production
                     if not production:
                         errors.append(f"active workflow sequence {sid} task {tid} seed patch has no production/type files")
-                    behavior_bearing = patch_behavior_bearing_paths(task_dir / "seed-regression.patch")
-                    padded = sorted(set(production) - set(behavior_bearing))
-                    if padded and str(tid) == "terraform-9ae470-objchange-validation-regression":
-                        errors.append(f"active workflow sequence {sid} task {tid} pads its production scope with comment-only files: {', '.join(padded)}")
                     if verifier_uses_source_identity(task_dir):
                         errors.append(f"active workflow sequence {sid} task {tid} uses exact-source supplemental guards instead of behavioral acceptance")
                     review_patch_name = task.get("review_patch_path")
@@ -841,7 +844,7 @@ def validate_workflow_task_sequences(sequence_doc: dict, fixture_doc: dict, erro
         if orders and sorted(orders) != list(range(1, len(orders) + 1)):
             errors.append(f"workflow sequence {sid} task orders must be contiguous starting at 1")
         task_classes = [
-            task.get("task_class", "maintenance-regression")
+            task.get("task_class", "")
             for task in sorted(tasks, key=lambda item: item.get("order", 0))
         ]
         if sequence.get("sequence_contract") == "feature-refactor-review" and task_classes != [
@@ -855,7 +858,11 @@ def validate_workflow_task_sequences(sequence_doc: dict, fixture_doc: dict, erro
         if sequence.get("status") == "active" and len(production_by_task) == len(tasks):
             validate_qualification(sequence, errors)
     active = [sequence for sequence in sequences if sequence.get("status") == "active"]
-    retired_contract_phrases = (
+    if len(active) != 3:
+        errors.append(f"pre-production v0 portfolio must contain exactly three active lifecycle sequences, found {len(active)}")
+    if len({sequence.get("fixture_id") for sequence in active}) != len(active):
+        errors.append("each lifecycle v0 sequence must own a distinct fixture")
+    forbidden_contract_phrases = (
         "one task at a time",
         "alternative-repair",
         "ordered transitions",
@@ -864,12 +871,12 @@ def validate_workflow_task_sequences(sequence_doc: dict, fixture_doc: dict, erro
         policy = str(sequence.get("seed_patch_policy", "")).lower()
         if "composite broken start" not in policy or "final prompt" not in policy:
             errors.append(f"active workflow sequence {sequence.get('id')} must declare composite pre-seeding and final-only verification")
-        if any(phrase in policy for phrase in retired_contract_phrases):
-            errors.append(f"active workflow sequence {sequence.get('id')} still describes the retired lazy-seed contract")
+        if any(phrase in policy for phrase in forbidden_contract_phrases):
+            errors.append(f"active workflow sequence {sequence.get('id')} describes a non-v0 seed-delivery contract")
     for surface in ("README.md", "docs/research/roadmap.md"):
         text = (ROOT / surface).read_text().lower()
-        if any(phrase in text for phrase in retired_contract_phrases):
-            errors.append(f"{surface} still describes retired lazy-seed qualification gates")
+        if any(phrase in text for phrase in forbidden_contract_phrases):
+            errors.append(f"{surface} describes non-v0 seed-delivery gates")
     return sequence_ids
 
 
@@ -1268,17 +1275,13 @@ def validate_workflow_session_contract(session: dict, canonical_profile: dict | 
                 errors.append(f"workflow session {sid} must hide future tasks during workflow reproduction")
             if prompt_delivery.get("future_prompts_materialized_lazily") is not True:
                 errors.append(f"workflow session {sid} future prompts must be materialized lazily")
-            legacy_seed_delivery = (
-                prompt_delivery.get("seed_delivery_mode") == "lazy-one-task-at-a-time"
-                and prompt_delivery.get("future_seed_regressions_visible") is False
-            )
-            warm_seed_delivery = (
+            composite_seed_delivery = (
                 prompt_delivery.get("seed_delivery_mode") == "preseeded-composite"
                 and prompt_delivery.get("future_seed_regressions_visible") is True
                 and prompt_delivery.get("controller_verification") == "final-only"
             )
-            if not (legacy_seed_delivery or warm_seed_delivery):
-                errors.append(f"workflow session {sid} must use a recognized frozen seed-delivery contract")
+            if not composite_seed_delivery:
+                errors.append(f"workflow session {sid} must use the lifecycle v0 composite seed-delivery contract")
         leakage_controls = sequence.get("leakage_controls") if isinstance(sequence, dict) else None
         if not isinstance(leakage_controls, dict) or leakage_controls.get("seed_origin_concealed") is not True:
             errors.append(f"workflow session {sid} must record seed_origin_concealed leakage control for completed workflow reproduction")
@@ -1286,11 +1289,8 @@ def validate_workflow_session_contract(session: dict, canonical_profile: dict | 
             errors.append(f"workflow session {sid} task directories must not be model-visible")
         if not isinstance(leakage_controls, dict) or leakage_controls.get("seed_patches_model_visible") is not False:
             errors.append(f"workflow session {sid} seed patches must not be model-visible")
-        if not isinstance(leakage_controls, dict) or not (
-            leakage_controls.get("git_baseline_true_root_per_task") is True
-            or leakage_controls.get("git_baseline_true_root_at_lane_start") is True
-        ):
-            errors.append(f"workflow session {sid} must use a verified true-root Git baseline")
+        if not isinstance(leakage_controls, dict) or leakage_controls.get("git_baseline_true_root_at_lane_start") is not True:
+            errors.append(f"workflow session {sid} must use a verified true-root Git baseline at lane start")
         if not isinstance(leakage_controls, dict) or leakage_controls.get("fixed_snapshot_objects_model_visible") is not False or leakage_controls.get("pre_seed_reflog_entries_visible") is not False:
             errors.append(f"workflow session {sid} fixed snapshot objects and pre-seed reflogs must not be model-visible")
         if not isinstance(leakage_controls, dict) or leakage_controls.get("concealment_verification_passed") is not True:
@@ -1330,12 +1330,7 @@ def validate_workflow_session_contract(session: dict, canonical_profile: dict | 
         critical_failures = quality.get("critical_failures", []) if isinstance(quality, dict) else []
         prompt_delivery = sequence.get("prompt_delivery", {}) if isinstance(sequence, dict) else {}
         leakage_controls = sequence.get("leakage_controls", {}) if isinstance(sequence, dict) else {}
-        legacy_seed_delivery = (
-            prompt_delivery.get("seed_delivery_mode") == "lazy-one-task-at-a-time"
-            and prompt_delivery.get("future_seed_regressions_visible") is False
-            and leakage_controls.get("git_baseline_true_root_per_task") is True
-        )
-        warm_seed_delivery = (
+        composite_seed_delivery = (
             prompt_delivery.get("seed_delivery_mode") == "preseeded-composite"
             and prompt_delivery.get("future_seed_regressions_visible") is True
             and prompt_delivery.get("controller_verification") == "final-only"
@@ -1344,7 +1339,7 @@ def validate_workflow_session_contract(session: dict, canonical_profile: dict | 
         structurally_isolated = (
             prompt_delivery.get("future_tasks_visible") is False
             and prompt_delivery.get("future_prompts_materialized_lazily") is True
-            and (legacy_seed_delivery or warm_seed_delivery)
+            and composite_seed_delivery
             and leakage_controls.get("task_directories_model_visible") is False
             and leakage_controls.get("verifier_assets_model_visible") is False
             and leakage_controls.get("verifier_integrity_passed") is True
@@ -1386,6 +1381,12 @@ def validate_workflow_sessions(session_doc: dict, sequence_ids: set[str], fixtur
     if not isinstance(sessions, list):
         errors.append("data/workflow-sessions.json must contain a sessions list")
         return
+    if session_doc.get("production_status") == "pre-production":
+        if sessions:
+            errors.append("pre-production workflow session registry must be empty")
+        artifact_root = ROOT / "sources/evaluations/workflow-sessions"
+        if artifact_root.exists() and any(path.is_file() for path in artifact_root.rglob("*")):
+            errors.append("pre-production workflow-session artifact directory must contain no result files")
     fixture_ids = {fixture.get("id") for fixture in fixture_doc.get("fixtures", [])}
     sessions_by_id = {
         session.get("session_id") or session.get("id"): session
@@ -1580,10 +1581,14 @@ def validate_frozen_protocol_bindings(errors: list[str]) -> None:
         runner = None
     current_sequence_bindings: set[str] = set()
     for path in (ROOT / "sources/evaluations/protocols").glob("*.json"):
+        if "-lifecycle-sequence-v0-" not in path.name or re.search(r"-v[1-9][0-9]*-", path.name):
+            errors.append(f"execution contract {path.name} is not lifecycle v0")
+            continue
         protocol = json.loads(path.read_text())
         if protocol.get("status") == "frozen-ready-not-run" and "gpt-5.5" in json.dumps(protocol):
-            errors.append(f"frozen protocol {path.name} uses historical-inactive gpt-5.5")
+            errors.append(f"execution contract {path.name} uses unsupported gpt-5.5")
         if protocol.get("status") != "frozen-ready-not-run":
+            errors.append(f"execution contract {path.name} must be frozen-ready-not-run")
             continue
         fixture = protocol.get("task_fixture", {})
         qualification_rel = fixture.get("qualification_path")
@@ -1598,13 +1603,10 @@ def validate_frozen_protocol_bindings(errors: list[str]) -> None:
             try:
                 seq = runner.load_sequence(str(fixture.get("sequence_id")))
                 if seq.get("status") != "active":
-                    # Retired sequences retain immutable historical protocols whose
-                    # descriptors intentionally bind the pre-retirement contract.
+                    errors.append(f"execution contract {path.name} references an inactive sequence")
                     continue
                 if qualification_rel != seq.get("qualification_path"):
-                    # Immutable protocols bound to earlier qualification paths are
-                    # historical contracts; current binding checks apply only to
-                    # the qualification path selected by the active sequence.
+                    errors.append(f"execution contract {path.name} does not bind the selected v0 qualification")
                     continue
                 expected_fingerprint = runner.baseline_protocol_fingerprint(seq)
             except Exception as exc:
@@ -1612,24 +1614,19 @@ def validate_frozen_protocol_bindings(errors: list[str]) -> None:
             else:
                 actual_fingerprint = protocol.get("baseline_pool", {}).get("protocol_fingerprint")
                 if actual_fingerprint != expected_fingerprint:
-                    # Frozen protocols are immutable historical contracts. Multiple
-                    # generations may share the active qualification path while
-                    # binding older runner/image bytes; only the exact current
-                    # fingerprint is eligible as the live binding.
+                    errors.append(f"execution contract {path.name} has a stale baseline fingerprint")
                     continue
                 selected = protocol.get("selected_execution", {})
                 selected_descriptor = selected.get("descriptor", {})
                 selected_profile = selected_descriptor.get("selected_profile", {}).get("profile_id")
                 try:
                     runner.assert_profile_runnable(str(selected_profile or "baseline-bare-codex"))
-                except ValueError:
-                    # Historical and blocked treatment profiles retain immutable
-                    # unrun protocol generations as provenance, not live bindings.
+                except ValueError as exc:
+                    errors.append(f"execution contract {path.name} selects a non-runnable profile: {exc}")
                     continue
                 descriptor = protocol.get("baseline_pool", {}).get("descriptor")
                 if descriptor != runner.baseline_protocol_descriptor(seq):
-                    # Referenced and superseded protocols remain immutable provenance.
-                    # They are not current bindings after behavior-bearing runner drift.
+                    errors.append(f"execution contract {path.name} has a stale baseline descriptor")
                     continue
                 docker_image = selected_descriptor.get("runtime", {}).get("docker_image")
                 timeout_for_execution = int(fixture.get("timeout_seconds_per_task", 3600))
@@ -1640,6 +1637,7 @@ def validate_frozen_protocol_bindings(errors: list[str]) -> None:
                     docker_image=str(docker_image or runner.DEFAULT_DOCKER_IMAGE),
                 )
                 if selected.get("descriptor") != expected_execution or selected.get("descriptor_sha256") != runner._json_hash(expected_execution):
+                    errors.append(f"execution contract {path.name} has a stale selected-execution descriptor")
                     continue
                 current_sequence_bindings.add(str(seq["id"]))
         timeout = fixture.get("timeout_seconds_per_task")
@@ -1658,7 +1656,7 @@ def validate_frozen_protocol_bindings(errors: list[str]) -> None:
     if runner is not None:
         missing = sorted(set(runner.active_sequence_ids()) - current_sequence_bindings)
         if missing:
-            errors.append(f"active workflow sequences missing current frozen protocol bindings: {', '.join(missing)}")
+            errors.append(f"active workflow sequences missing current v0 execution contracts: {', '.join(missing)}")
 
 
 def main() -> int:

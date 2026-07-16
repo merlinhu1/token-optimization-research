@@ -1,0 +1,52 @@
+diff --git a/lib/content-type.js b/lib/content-type.js
+index f970439c06790978c064059b5f119ba0296b9ef3..aeab8cd541553abec78e5fc39cc72e53b282e764 100644
+--- a/lib/content-type.js
++++ b/lib/content-type.js
+@@ -1,7 +1,5 @@
+ 'use strict'
+ 
+-const { LruMap: Lru } = require('toad-cache')
+-
+ /**
+  * keyValuePairsReg is used to split the parameters list into associated
+  * key value pairings. The leading `(?:^|;)\s*` anchor ensures the regex
+@@ -37,12 +35,6 @@ const typeNameReg = /^[\w!#$%&'*+.^`|~-]+$/
+  */
+ const subtypeNameReg = /^[\w!#$%&'*+.^`|~-]+\s*$/
+ 
+-/**
+- * Content-Type internal shared cache
+- * @type {Lru<ContentType>}
+- */
+-const cache = new Lru(100)
+-
+ /**
+  * ContentType parses and represents the value of the content-type header.
+  *
+@@ -58,24 +50,12 @@ class ContentType {
+   #string
+ 
+   /**
+-   * The shared cache of ContentType instances. The cache is used to avoid
+-   * creating multiple instances of ContentType for the same header value.
+-   * @type {Lru<ContentType>}
+-   */
+-  static get cache () { return cache }
+-
+-  /**
+-   * Create a ContentType instance from a header value. If the value has been
+-   * previously parsed, the cached instance will be returned.
++   * Create a ContentType instance from a header value.
+    * @param {string} headerValue
+    * @returns {ContentType | undefined}
+    */
+   static from (headerValue) {
+-    let contentType = cache.get(headerValue)
+-    if (contentType !== undefined) return contentType
+-    contentType = new ContentType(headerValue)
+-    cache.set(headerValue, contentType)
+-    return contentType
++    return new ContentType(headerValue)
+   }
+ 
+   constructor (headerValue) {
