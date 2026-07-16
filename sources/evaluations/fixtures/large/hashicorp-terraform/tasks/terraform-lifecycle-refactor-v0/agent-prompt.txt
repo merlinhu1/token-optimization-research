@@ -1,0 +1,7 @@
+Refactor Terraform's `.tfmigrate.hcl` `state_store_provider` parsing without changing accepted configuration behavior or diagnostics.
+
+Replace reuse of the general required-provider representation with the dedicated `StateStoreProviderRequirement` representation used by state migration. Preserve provider source and exact-version validation, duplicate and mutually exclusive block diagnostics, directory aggregation, and the provider requirements data needed by installation code. The dedicated representation is the disclosed structural contract.
+
+The starting repository is behaviorally conforming but contains the old representation. Work only inside the target repository and keep the change scoped to state-migration parsing and its directly affected tests. Do not weaken validation. The controller runs concealed acceptance only after all three lifecycle prompts are complete.
+
+Run focused `internal/configs` behavior tests before and after the refactor and preserve all prior lifecycle work.

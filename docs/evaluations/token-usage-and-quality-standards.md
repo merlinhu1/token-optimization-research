@@ -63,7 +63,7 @@ The research objective is provider-reported workflow token usage under fair, dis
 
 A verifier may enforce disclosed observable behavior, compatibility, safety, and explicitly public structural contracts. It must not require canonical human-facing prose, local parameter names, source identity, or one implementation shape unless that exact requirement is disclosed in the prompt and necessary to the task. Test cases may remain controller-only; acceptance requirements may not be hidden. Controller-only test paths must not collide with files in the fixed project snapshot.
 
-If a production run exposes a prompt/verifier/fixture mismatch, preserve its artifacts and provider usage for audit, mark it `evaluation_validity: invalid-fixture` and `status: excluded`, and prohibit baseline reuse or token comparison. Repair the contract under a new version and fingerprint rather than changing the historical result.
+Before the first production run, repair any prompt/verifier/fixture mismatch in the sole v0 contract and discard the invalid dry-run artifact. After production begins, preserve invalid execution artifacts only for audit, mark them `evaluation_validity: invalid-fixture` and `status: excluded`, prohibit baseline reuse or token comparison, and bind the corrected execution to a new fingerprint without adding a parallel lane version.
 
 ## Software-quality standard
 

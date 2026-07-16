@@ -1,0 +1,7 @@
+Implement missing Terraform policy-callback support for deferred resources and data sources.
+
+Policy callbacks that request resources or data sources must preserve whether the provider deferred the result. Resource collection must exclude deferred instances from concrete matches while reporting a partial response when relevant instances are deferred; data-source callbacks must return the provider's deferred state rather than flattening it into an ordinary result. Preserve existing non-deferred policy evaluation behavior.
+
+The feature is absent from the starting repository. Work only inside the target repository and make the smallest maintainable production changes. Do not modify tests merely to make acceptance pass. The controller runs concealed behavioral acceptance only after all three lifecycle prompts are complete.
+
+Run focused policy callback plan/apply tests and preserve all prior lifecycle work.

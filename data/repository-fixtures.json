@@ -1,23 +1,16 @@
 {
   "schema_version": 1,
-  "description": "Repository fixture readiness registry. Candidate projects without executable assets remain in candidate metadata, not this registry.",
+  "description": "Repository fixture readiness for the v0 lifecycle portfolio. No production result has been recorded.",
   "lifecycle_states": [
     "candidate-fixture",
     "qualified-fixture",
     "baseline-run",
-    "treatment-ready",
-    "retired-fixture"
+    "treatment-ready"
   ],
   "task_classes": [
-    "noisy-terminal-repair",
-    "build-repair",
-    "large-codebase-navigation",
-    "multi-file-refactor",
-    "memory-rediscovery",
-    "broad-owner-context",
-    "mcp-tool-heavy",
-    "apple-build-repair",
-    "replacement-runtime-comparison"
+    "feature-implementation",
+    "behavior-preserving-refactor",
+    "code-review-correction"
   ],
   "token_waste_surfaces": [
     "terminal-output",
@@ -44,12 +37,12 @@
       "snapshot": {
         "commit": "94bcbcc6e2ef3b8e8f8e8797fe551ccbe7b942fd",
         "branch": "detached",
-        "snapshot_policy": "Pinned current production maintenance snapshot; five upstream-derived seed patches are controller-injected one at a time."
+        "snapshot_policy": "Pinned v0 lifecycle fixed snapshot; all three start conditions are controller-injected before sequential prompt disclosure."
       },
       "task_classes": [
-        "multi-file-refactor",
-        "large-codebase-navigation",
-        "build-repair"
+        "feature-implementation",
+        "behavior-preserving-refactor",
+        "code-review-correction"
       ],
       "primary_token_waste_surface": "retrieval-context",
       "setup": {
@@ -63,64 +56,36 @@
       },
       "prompt": {
         "path": "sources/evaluations/fixtures/medium/fastify-fastify/tasks/README.md",
-        "prompt_policy": "Prompts are disclosed one at a time; all acceptance assets remain controller-only."
+        "prompt_policy": "Prompts are disclosed one at a time; proposed review evidence appears only with task 3; acceptance assets remain controller-only."
       },
       "artifact_paths": {
-        "root": "execution-time scratch; non-recoverable after compact bundling"
+        "root": "future execution-time scratch; no production session exists"
       },
       "candidate_profiles": [
-        "baseline-bare-codex"
+        "baseline-bare-codex",
+        "retrieval-codegraph"
       ],
       "blockers": [],
       "caveats": [
-        "Agent-declared completion is not verifier-confirmed correctness.",
-        "The failed baseline is valid primary-objective token-usage evidence; treatment claims must be relative to its correctness and token result."
+        "Qualification and protocol readiness do not imply a production result; every future session requires independent software-quality review."
       ],
       "tasks": [
-        "fastify-max-param-length-regression",
-        "fastify-handler-timeout-regression",
-        "fastify-request-media-type-regression",
-        "fastify-log-controller-regression",
-        "fastify-content-type-semantics-regression"
+        "fastify-lifecycle-feature-v0",
+        "fastify-lifecycle-refactor-v0",
+        "fastify-lifecycle-review-v0"
       ],
       "qualification_status": "active-reproduction-flow",
-      "workflow_sequence_id": "fastify-maintenance-sequence-v1",
-      "qualification_evidence": "sources/evaluations/fixtures/medium/fastify-fastify/qualification-composite-v7.json",
+      "workflow_sequence_id": "fastify-lifecycle-sequence-v0",
+      "qualification_evidence": "sources/evaluations/fixtures/medium/fastify-fastify/qualification-lifecycle-v0.json",
       "active_profiles": [
         "baseline-bare-codex"
       ],
-      "difficulty_class": "hard-lane",
-      "evidence_policy": {
-        "valid_uses": [
-          "primary-objective provider-token comparison",
-          "operational completion",
-          "agent-declared completion",
-          "verified-correctness comparison",
-          "failure localization",
-          "difficulty calibration"
-        ],
-        "claim_boundary": "Agent-declared completion is distinct from verifier-confirmed correctness.",
-        "outperformance_rule": "A treatment outperforms the hard baseline when it improves verified correctness, or achieves the same verified-correctness result with fewer provider tokens; report both dimensions.",
-        "model_condition_baselines": [
-          {
-            "model_condition_id": "codex-openai-gpt-5-6-luna-xhigh",
-            "session_id": "baseline-fastify-20260713-p-6a8afd4b63ca-r0",
-            "provider_tokens": 60671087,
-            "agent_declared_tasks": 5,
-            "verified_task_surfaces": 5,
-            "quality_score": 3,
-            "status": "primary-objective-hard-baseline-quality-rejected"
-          }
-        ],
-        "baseline_selection_rule": "Pair each tool treatment with a successful or hard baseline from the same prompt-aligned frozen model condition and protocol fingerprint.",
-        "qualification_disposition": "Prompt-aligned qualification refreshed after independent source review exposed missing default 414 and logger compatibility coverage."
-      },
-      "historical_evaluation_lanes": [
-        "primary-hard-lane-baseline",
-        "primary-hard-lane-treatment"
-      ],
       "future_evaluation_lanes": [
-        "baseline-production-reproduction"
+        {
+          "id": "baseline-bare-codex",
+          "status": "ready-not-run",
+          "purpose": "v0 lifecycle control"
+        }
       ]
     },
     {
@@ -133,6 +98,11 @@
         "id": "medium__beetbox-beets",
         "github": "beetbox/beets",
         "path": "sources/evaluations/fixtures/medium/beetbox-beets/repo"
+      },
+      "snapshot": {
+        "commit": "9acb1ecff6c7ee0a1e83e3b983c94792345712c5",
+        "branch": "detached",
+        "snapshot_policy": "Pinned v0 lifecycle fixed snapshot; all three start conditions are controller-injected before sequential prompt disclosure."
       },
       "task_classes": [
         "feature-implementation",
@@ -149,41 +119,39 @@
       "verifier": {
         "command": "sources/evaluations/fixtures/medium/beetbox-beets/verify-smoke.sh"
       },
-      "artifact_paths": {
-        "root": "execution-time scratch; non-recoverable after compact bundling"
+      "prompt": {
+        "path": "sources/evaluations/fixtures/medium/beetbox-beets/tasks/README.md",
+        "prompt_policy": "Prompts are disclosed one at a time; proposed review evidence appears only with task 3; acceptance assets remain controller-only."
       },
-      "future_evaluation_lanes": [
-        "baseline-lifecycle-reproduction",
-        "retrieval-codegraph-lifecycle-reproduction"
-      ],
+      "artifact_paths": {
+        "root": "future execution-time scratch; no production session exists"
+      },
       "candidate_profiles": [
         "baseline-bare-codex",
         "retrieval-codegraph"
       ],
       "blockers": [],
       "caveats": [
-        "Runner-enabled does not mean objective-accepted; each session still requires software-quality review."
+        "Qualification and protocol readiness do not imply a production result; every future session requires independent software-quality review."
       ],
+      "tasks": [
+        "beets-lifecycle-feature-v0",
+        "beets-lifecycle-refactor-v0",
+        "beets-lifecycle-review-v0"
+      ],
+      "qualification_status": "active-reproduction-flow",
+      "workflow_sequence_id": "beets-lifecycle-sequence-v0",
+      "qualification_evidence": "sources/evaluations/fixtures/medium/beetbox-beets/qualification-lifecycle-v0.json",
       "active_profiles": [
         "baseline-bare-codex"
       ],
-      "snapshot": {
-        "commit": "9acb1ecff6c7ee0a1e83e3b983c94792345712c5",
-        "branch": "detached",
-        "snapshot_policy": "Pinned active three-task lifecycle fixed snapshot; all start-condition patches are controller-injected before sequential prompt disclosure."
-      },
-      "prompt": {
-        "path": "sources/evaluations/fixtures/medium/beetbox-beets/tasks/README.md",
-        "prompt_policy": "Prompts are disclosed one at a time; all acceptance assets remain controller-only."
-      },
-      "tasks": [
-        "beets-lifecycle-multivalue-modify-feature",
-        "beets-lifecycle-lazy-model-storage-refactor",
-        "beets-lifecycle-ftintitle-review"
-      ],
-      "qualification_status": "active-reproduction-flow",
-      "workflow_sequence_id": "beets-lifecycle-sequence-v2",
-      "qualification_evidence": "sources/evaluations/fixtures/medium/beetbox-beets/qualification-lifecycle-v3.json"
+      "future_evaluation_lanes": [
+        {
+          "id": "baseline-bare-codex",
+          "status": "ready-not-run",
+          "purpose": "v0 lifecycle control"
+        }
+      ]
     },
     {
       "id": "large-hashicorp-terraform",
@@ -199,12 +167,12 @@
       "snapshot": {
         "commit": "e02391ad384c9c38f1d7f40b853c0d2297348094",
         "branch": "detached",
-        "snapshot_policy": "Pinned current production maintenance snapshot; five upstream-derived seed patches are controller-injected one at a time."
+        "snapshot_policy": "Pinned v0 lifecycle fixed snapshot; all three start conditions are controller-injected before sequential prompt disclosure."
       },
       "task_classes": [
-        "multi-file-refactor",
-        "large-codebase-navigation",
-        "build-repair"
+        "feature-implementation",
+        "behavior-preserving-refactor",
+        "code-review-correction"
       ],
       "primary_token_waste_surface": "retrieval-context",
       "setup": {
@@ -218,36 +186,36 @@
       },
       "prompt": {
         "path": "sources/evaluations/fixtures/large/hashicorp-terraform/tasks/README.md",
-        "prompt_policy": "Prompts are disclosed one at a time; all acceptance assets remain controller-only."
+        "prompt_policy": "Prompts are disclosed one at a time; proposed review evidence appears only with task 3; acceptance assets remain controller-only."
       },
       "artifact_paths": {
-        "root": "execution-time scratch; non-recoverable after compact bundling"
+        "root": "future execution-time scratch; no production session exists"
       },
       "candidate_profiles": [
-        "baseline-bare-codex"
+        "baseline-bare-codex",
+        "retrieval-codegraph"
       ],
       "blockers": [],
       "caveats": [
-        "Runner-enabled does not mean objective-accepted; each session still requires software-quality review."
+        "Qualification and protocol readiness do not imply a production result; every future session requires independent software-quality review."
       ],
       "tasks": [
-        "terraform-161ffe-tracing-context-regression",
-        "terraform-520378-computed-block-capabilities-regression",
-        "terraform-9ae470-objchange-validation-regression"
+        "terraform-lifecycle-feature-v0",
+        "terraform-lifecycle-refactor-v0",
+        "terraform-lifecycle-review-v0"
       ],
       "qualification_status": "active-reproduction-flow",
-      "workflow_sequence_id": "terraform-maintenance-sequence-v2",
-      "qualification_evidence": "sources/evaluations/fixtures/large/hashicorp-terraform/qualification-composite-v8.json",
+      "workflow_sequence_id": "terraform-lifecycle-sequence-v0",
+      "qualification_evidence": "sources/evaluations/fixtures/large/hashicorp-terraform/qualification-lifecycle-v0.json",
       "active_profiles": [
         "baseline-bare-codex"
       ],
-      "historical_evaluation_lanes": [
-        "native-baseline-reproduction",
-        "individual-tool-reproduction",
-        "stack-ablation-reproduction"
-      ],
       "future_evaluation_lanes": [
-        "baseline-production-reproduction"
+        {
+          "id": "baseline-bare-codex",
+          "status": "ready-not-run",
+          "purpose": "v0 lifecycle control"
+        }
       ]
     }
   ],
@@ -266,6 +234,6 @@
   "complex_project_policy": {
     "primary_objective_claims_require": "medium-project or large-project reproduction evidence with provider-billed usage and software-quality gates",
     "small_fixture_use": "Calibration only",
-    "candidate_selection": "Three production-qualified active workflow suites: Fastify, Terraform, and Beets."
+    "candidate_selection": "Three production-qualified v0 lifecycle suites: Fastify, Beets, and Terraform."
   }
 }
