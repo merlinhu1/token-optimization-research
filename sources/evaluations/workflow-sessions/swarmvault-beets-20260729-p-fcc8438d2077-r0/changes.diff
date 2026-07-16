@@ -1,0 +1,391 @@
+# Ordered cumulative source checkpoints. Every section is relative to the one composite broken-start root.
+
+# --- task-01-agent ---
+diff --git a/.agents/skills/swarmvault/SKILL.md b/.agents/skills/swarmvault/SKILL.md
+new file mode 100644
+index 0000000..828b4ef
+--- /dev/null
++++ b/.agents/skills/swarmvault/SKILL.md
+@@ -0,0 +1,29 @@
++---
++name: swarmvault
++description: SwarmVault graph-first workflow. Use to read the compiled wiki and
++  query the knowledge graph before broad file search.
++---
++
++# SwarmVault
++
++SwarmVault compiles curated sources in `raw/` into a queryable wiki in `wiki/` and a knowledge graph in `state/graph.json`.
++
++## Rules
++
++- Read `swarmvault.schema.md` before compile or query style work. It is the canonical schema path.
++- Treat `raw/` as immutable source input.
++- Treat `wiki/` as generated markdown owned by the agent and compiler workflow.
++- If `SWARMVAULT_OUT` is set, resolve generated artifact paths like `raw/`, `wiki/`, and `state/` under that directory.
++- Read `wiki/graph/report.md` before broad file searching when it exists; otherwise start with `wiki/index.md`.
++- For code and graph questions (where is X, what calls Y, structure, impact), prefer `swarmvault graph query`, `swarmvault graph path`, and `swarmvault graph explain` over broad grep/glob searching; read source files directly only when editing them or when the graph lacks detail.
++- Preserve frontmatter fields including `page_id`, `source_ids`, `node_ids`, `freshness`, and `source_hashes`.
++- When asked for durable research, reviews, or handoff artifacts, save the answer into `wiki/outputs/`; answer quick questions directly in chat without writing files.
++- Prefer `swarmvault ingest`, `swarmvault compile`, `swarmvault query`, and `swarmvault lint` for SwarmVault maintenance tasks.
++
++## Entry points
++
++- `swarmvault ingest <path>` — register a new source
++- `swarmvault compile` — refresh wiki pages and graph
++- `swarmvault query "<question>"` — save-first multi-step query
++- `swarmvault graph query|path|explain` — deterministic graph traversal
++- `swarmvault lint` — wiki health and contradiction checks
+diff --git a/beets/util/functemplate.py b/beets/util/functemplate.py
+index 67b2bfb..a3541ab 100644
+--- a/beets/util/functemplate.py
++++ b/beets/util/functemplate.py
+@@ -319,7 +319,7 @@ class Parser:
+ 
+             next_char = self.string[self.pos + 1]
+             if char == ESCAPE_CHAR and next_char in (
+-                self.escapable_chars
++                self.escapable_chars + extra_special_chars
+             ):
+                 # An escaped special character ($$, $}, etc.). Note that
+                 # ${ is not an escape sequence: this is ambiguous with
+diff --git a/wiki/index.md b/wiki/index.md
+new file mode 100644
+index 0000000..40e179d
+--- /dev/null
++++ b/wiki/index.md
+@@ -0,0 +1,28 @@
++---
++page_id: 'wiki:index'
++kind: index
++title: Wiki Index
++tags:
++  - index
++source_ids: []
++project_ids: []
++node_ids: []
++freshness: fresh
++status: active
++confidence: 1
++created_at: '2026-07-29T07:26:06.108Z'
++updated_at: '2026-07-29T07:26:06.108Z'
++compiled_from: []
++managed_by: agent
++backlinks: []
++schema_hash: ''
++source_hashes: {}
++source_semantic_hashes: {}
++---
++# Wiki Index
++
++This lite vault is agent-maintained. Drop sources into `raw/`, edit `swarmvault.schema.md` to teach the agent how the wiki should be organized, then ask your agent to read sources and update pages here.
++
++- Summaries, entity pages, and concept pages live under `wiki/`.
++- Append every ingest/query/lint operation to `wiki/log.md`.
++- Run `swarmvault init` (without `--lite`) when you want the full toolchain with graph, search, and approvals.
+diff --git a/wiki/log.md b/wiki/log.md
+new file mode 100644
+index 0000000..43c6524
+--- /dev/null
++++ b/wiki/log.md
+@@ -0,0 +1,27 @@
++---
++page_id: 'wiki:log'
++kind: index
++title: Activity Log
++tags:
++  - log
++  - append-only
++source_ids: []
++project_ids: []
++node_ids: []
++freshness: fresh
++status: active
++confidence: 1
++created_at: '2026-07-29T07:26:06.108Z'
++updated_at: '2026-07-29T07:26:06.108Z'
++compiled_from: []
++managed_by: agent
++backlinks: []
++schema_hash: ''
++source_hashes: {}
++source_semantic_hashes: {}
++---
++# Activity Log
++
++Append-only chronological record. One line per ingest/query/lint operation, newest at the bottom.
++
++Format: `## [YYYY-MM-DD] <verb> | <subject>`
+
+# --- task-02-agent ---
+diff --git a/.agents/skills/swarmvault/SKILL.md b/.agents/skills/swarmvault/SKILL.md
+new file mode 100644
+index 0000000..828b4ef
+--- /dev/null
++++ b/.agents/skills/swarmvault/SKILL.md
+@@ -0,0 +1,29 @@
++---
++name: swarmvault
++description: SwarmVault graph-first workflow. Use to read the compiled wiki and
++  query the knowledge graph before broad file search.
++---
++
++# SwarmVault
++
++SwarmVault compiles curated sources in `raw/` into a queryable wiki in `wiki/` and a knowledge graph in `state/graph.json`.
++
++## Rules
++
++- Read `swarmvault.schema.md` before compile or query style work. It is the canonical schema path.
++- Treat `raw/` as immutable source input.
++- Treat `wiki/` as generated markdown owned by the agent and compiler workflow.
++- If `SWARMVAULT_OUT` is set, resolve generated artifact paths like `raw/`, `wiki/`, and `state/` under that directory.
++- Read `wiki/graph/report.md` before broad file searching when it exists; otherwise start with `wiki/index.md`.
++- For code and graph questions (where is X, what calls Y, structure, impact), prefer `swarmvault graph query`, `swarmvault graph path`, and `swarmvault graph explain` over broad grep/glob searching; read source files directly only when editing them or when the graph lacks detail.
++- Preserve frontmatter fields including `page_id`, `source_ids`, `node_ids`, `freshness`, and `source_hashes`.
++- When asked for durable research, reviews, or handoff artifacts, save the answer into `wiki/outputs/`; answer quick questions directly in chat without writing files.
++- Prefer `swarmvault ingest`, `swarmvault compile`, `swarmvault query`, and `swarmvault lint` for SwarmVault maintenance tasks.
++
++## Entry points
++
++- `swarmvault ingest <path>` — register a new source
++- `swarmvault compile` — refresh wiki pages and graph
++- `swarmvault query "<question>"` — save-first multi-step query
++- `swarmvault graph query|path|explain` — deterministic graph traversal
++- `swarmvault lint` — wiki health and contradiction checks
+diff --git a/beets/dbcore/db.py b/beets/dbcore/db.py
+index ff57aaf..78c4432 100755
+--- a/beets/dbcore/db.py
++++ b/beets/dbcore/db.py
+@@ -189,7 +189,7 @@ class LazyDict(UserDict[str, Any]):
+ 
+     def __iter__(self) -> Iterator[str]:
+         """Iterate over the available field names (excluding computed fields)."""
+-        return (key for key in self._all_keys)
++        return iter(self._all_keys)
+ 
+     def __len__(self) -> int:
+         return len(self._all_keys)
+diff --git a/beets/util/functemplate.py b/beets/util/functemplate.py
+index 67b2bfb..a3541ab 100644
+--- a/beets/util/functemplate.py
++++ b/beets/util/functemplate.py
+@@ -319,7 +319,7 @@ class Parser:
+ 
+             next_char = self.string[self.pos + 1]
+             if char == ESCAPE_CHAR and next_char in (
+-                self.escapable_chars
++                self.escapable_chars + extra_special_chars
+             ):
+                 # An escaped special character ($$, $}, etc.). Note that
+                 # ${ is not an escape sequence: this is ambiguous with
+diff --git a/wiki/index.md b/wiki/index.md
+new file mode 100644
+index 0000000..40e179d
+--- /dev/null
++++ b/wiki/index.md
+@@ -0,0 +1,28 @@
++---
++page_id: 'wiki:index'
++kind: index
++title: Wiki Index
++tags:
++  - index
++source_ids: []
++project_ids: []
++node_ids: []
++freshness: fresh
++status: active
++confidence: 1
++created_at: '2026-07-29T07:26:06.108Z'
++updated_at: '2026-07-29T07:26:06.108Z'
++compiled_from: []
++managed_by: agent
++backlinks: []
++schema_hash: ''
++source_hashes: {}
++source_semantic_hashes: {}
++---
++# Wiki Index
++
++This lite vault is agent-maintained. Drop sources into `raw/`, edit `swarmvault.schema.md` to teach the agent how the wiki should be organized, then ask your agent to read sources and update pages here.
++
++- Summaries, entity pages, and concept pages live under `wiki/`.
++- Append every ingest/query/lint operation to `wiki/log.md`.
++- Run `swarmvault init` (without `--lite`) when you want the full toolchain with graph, search, and approvals.
+diff --git a/wiki/log.md b/wiki/log.md
+new file mode 100644
+index 0000000..43c6524
+--- /dev/null
++++ b/wiki/log.md
+@@ -0,0 +1,27 @@
++---
++page_id: 'wiki:log'
++kind: index
++title: Activity Log
++tags:
++  - log
++  - append-only
++source_ids: []
++project_ids: []
++node_ids: []
++freshness: fresh
++status: active
++confidence: 1
++created_at: '2026-07-29T07:26:06.108Z'
++updated_at: '2026-07-29T07:26:06.108Z'
++compiled_from: []
++managed_by: agent
++backlinks: []
++schema_hash: ''
++source_hashes: {}
++source_semantic_hashes: {}
++---
++# Activity Log
++
++Append-only chronological record. One line per ingest/query/lint operation, newest at the bottom.
++
++Format: `## [YYYY-MM-DD] <verb> | <subject>`
+
+# --- task-03-agent ---
+diff --git a/.agents/skills/swarmvault/SKILL.md b/.agents/skills/swarmvault/SKILL.md
+new file mode 100644
+index 0000000..828b4ef
+--- /dev/null
++++ b/.agents/skills/swarmvault/SKILL.md
+@@ -0,0 +1,29 @@
++---
++name: swarmvault
++description: SwarmVault graph-first workflow. Use to read the compiled wiki and
++  query the knowledge graph before broad file search.
++---
++
++# SwarmVault
++
++SwarmVault compiles curated sources in `raw/` into a queryable wiki in `wiki/` and a knowledge graph in `state/graph.json`.
++
++## Rules
++
++- Read `swarmvault.schema.md` before compile or query style work. It is the canonical schema path.
++- Treat `raw/` as immutable source input.
++- Treat `wiki/` as generated markdown owned by the agent and compiler workflow.
++- If `SWARMVAULT_OUT` is set, resolve generated artifact paths like `raw/`, `wiki/`, and `state/` under that directory.
++- Read `wiki/graph/report.md` before broad file searching when it exists; otherwise start with `wiki/index.md`.
++- For code and graph questions (where is X, what calls Y, structure, impact), prefer `swarmvault graph query`, `swarmvault graph path`, and `swarmvault graph explain` over broad grep/glob searching; read source files directly only when editing them or when the graph lacks detail.
++- Preserve frontmatter fields including `page_id`, `source_ids`, `node_ids`, `freshness`, and `source_hashes`.
++- When asked for durable research, reviews, or handoff artifacts, save the answer into `wiki/outputs/`; answer quick questions directly in chat without writing files.
++- Prefer `swarmvault ingest`, `swarmvault compile`, `swarmvault query`, and `swarmvault lint` for SwarmVault maintenance tasks.
++
++## Entry points
++
++- `swarmvault ingest <path>` — register a new source
++- `swarmvault compile` — refresh wiki pages and graph
++- `swarmvault query "<question>"` — save-first multi-step query
++- `swarmvault graph query|path|explain` — deterministic graph traversal
++- `swarmvault lint` — wiki health and contradiction checks
+diff --git a/beets/dbcore/db.py b/beets/dbcore/db.py
+index ff57aaf..78c4432 100755
+--- a/beets/dbcore/db.py
++++ b/beets/dbcore/db.py
+@@ -189,7 +189,7 @@ class LazyDict(UserDict[str, Any]):
+ 
+     def __iter__(self) -> Iterator[str]:
+         """Iterate over the available field names (excluding computed fields)."""
+-        return (key for key in self._all_keys)
++        return iter(self._all_keys)
+ 
+     def __len__(self) -> int:
+         return len(self._all_keys)
+diff --git a/beets/util/functemplate.py b/beets/util/functemplate.py
+index 67b2bfb..a3541ab 100644
+--- a/beets/util/functemplate.py
++++ b/beets/util/functemplate.py
+@@ -319,7 +319,7 @@ class Parser:
+ 
+             next_char = self.string[self.pos + 1]
+             if char == ESCAPE_CHAR and next_char in (
+-                self.escapable_chars
++                self.escapable_chars + extra_special_chars
+             ):
+                 # An escaped special character ($$, $}, etc.). Note that
+                 # ${ is not an escape sequence: this is ambiguous with
+diff --git a/beetsplug/ftintitle.py b/beetsplug/ftintitle.py
+index 1c45962..74d9d7e 100644
+--- a/beetsplug/ftintitle.py
++++ b/beetsplug/ftintitle.py
+@@ -75,7 +75,7 @@ def split_on_feat(
+     # Try explicit featuring tokens first (ft, feat, featuring, etc.)
+     # to avoid splitting on generic separators like "&" when both are present
+     regex_explicit = re.compile(
+-        plugins.feat_tokens(for_artist=for_artist, custom_words=custom_words),
++        plugins.feat_tokens(for_artist=False, custom_words=custom_words),
+         re.IGNORECASE,
+     )
+     parts = _split_on_feat_token(regex_explicit, artist)
+diff --git a/wiki/index.md b/wiki/index.md
+new file mode 100644
+index 0000000..40e179d
+--- /dev/null
++++ b/wiki/index.md
+@@ -0,0 +1,28 @@
++---
++page_id: 'wiki:index'
++kind: index
++title: Wiki Index
++tags:
++  - index
++source_ids: []
++project_ids: []
++node_ids: []
++freshness: fresh
++status: active
++confidence: 1
++created_at: '2026-07-29T07:26:06.108Z'
++updated_at: '2026-07-29T07:26:06.108Z'
++compiled_from: []
++managed_by: agent
++backlinks: []
++schema_hash: ''
++source_hashes: {}
++source_semantic_hashes: {}
++---
++# Wiki Index
++
++This lite vault is agent-maintained. Drop sources into `raw/`, edit `swarmvault.schema.md` to teach the agent how the wiki should be organized, then ask your agent to read sources and update pages here.
++
++- Summaries, entity pages, and concept pages live under `wiki/`.
++- Append every ingest/query/lint operation to `wiki/log.md`.
++- Run `swarmvault init` (without `--lite`) when you want the full toolchain with graph, search, and approvals.
+diff --git a/wiki/log.md b/wiki/log.md
+new file mode 100644
+index 0000000..43c6524
+--- /dev/null
++++ b/wiki/log.md
+@@ -0,0 +1,27 @@
++---
++page_id: 'wiki:log'
++kind: index
++title: Activity Log
++tags:
++  - log
++  - append-only
++source_ids: []
++project_ids: []
++node_ids: []
++freshness: fresh
++status: active
++confidence: 1
++created_at: '2026-07-29T07:26:06.108Z'
++updated_at: '2026-07-29T07:26:06.108Z'
++compiled_from: []
++managed_by: agent
++backlinks: []
++schema_hash: ''
++source_hashes: {}
++source_semantic_hashes: {}
++---
++# Activity Log
++
++Append-only chronological record. One line per ingest/query/lint operation, newest at the bottom.
++
++Format: `## [YYYY-MM-DD] <verb> | <subject>`
