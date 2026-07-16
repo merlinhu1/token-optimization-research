@@ -2,7 +2,7 @@
   "schema_version": 1,
   "evidence_through_date": "2026-07-29",
   "scope": {
-    "session_count": 143,
+    "session_count": 146,
     "policy": "preserve immutable compact bundles; derive final cumulative total per Codex thread",
     "legacy_defect": "scripts/extract_codex_usage.py summed cumulative turn.completed snapshots from resumed threads",
     "corrected_semantics": "select the final ThreadTokenUsage.total snapshot per thread and sum only across distinct threads"
@@ -17,16 +17,16 @@
     "upstream_url": "https://github.com/openai/codex/blob/rust-v0.144.0/codex-rs/exec/src/event_processor_with_jsonl_output.rs#L496-L522"
   },
   "integrity": {
-    "audited_session_count": 143,
-    "correction_required_count": 77,
+    "audited_session_count": 146,
+    "correction_required_count": 80,
     "all_manifests_passed": true,
     "all_usage_monotonic": true,
     "all_usage_blocks_attributed_to_threads": true,
     "raw_compact_bundles_mutated": false
   },
   "aggregate": {
-    "legacy_total_provider_tokens": 1228235823,
-    "corrected_total_provider_tokens": 983160232,
+    "legacy_total_provider_tokens": 1228522771,
+    "corrected_total_provider_tokens": 983447180,
     "legacy_overcount_tokens": 245075591,
     "by_profile_id": {
       "artifact-ponytail-codex-plugin-v1": {
@@ -58,6 +58,11 @@
         "session_count": 6,
         "legacy_total_provider_tokens": 35479061,
         "corrected_total_provider_tokens": 35479061
+      },
+      "integrated-token-savior-codex-product-v2": {
+        "session_count": 3,
+        "legacy_total_provider_tokens": 286948,
+        "corrected_total_provider_tokens": 286948
       },
       "integrated-token-savior-mcp-v1": {
         "session_count": 3,
@@ -127,9 +132,9 @@
         "corrected_total_provider_tokens": 901722821
       },
       "codex-openai-gpt-5-6-sol-high": {
-        "session_count": 65,
-        "legacy_total_provider_tokens": 143547844,
-        "corrected_total_provider_tokens": 81437411
+        "session_count": 68,
+        "legacy_total_provider_tokens": 143834792,
+        "corrected_total_provider_tokens": 81724359
       }
     }
   },
@@ -19597,6 +19602,405 @@
             "path": "run.json",
             "expected_sha256": "8494248762ea7441cd52ee8944a69b9936e4bb0d96033b664f44852e1278f0c3",
             "actual_sha256": "8494248762ea7441cd52ee8944a69b9936e4bb0d96033b664f44852e1278f0c3",
+            "passed": true
+          }
+        ]
+      }
+    },
+    {
+      "session_id": "token-savior-fastify-20260729-p-bb0e89ed9794-r0",
+      "date": "2026-07-29",
+      "sequence_id": "fastify-lifecycle-sequence-v0",
+      "replicate_index": 0,
+      "profile_id": "integrated-token-savior-codex-product-v2",
+      "model_condition_id": "codex-openai-gpt-5-6-sol-high",
+      "model": "gpt-5.6-sol",
+      "reasoning_effort": "high",
+      "accounting_mode": "final-cumulative-total-per-thread",
+      "accounting_warnings": [],
+      "raw_usage_block_count": 3,
+      "effective_usage_block_count": 1,
+      "thread_ids": [
+        "019facda-a16c-7041-be77-964b4b8d1e5c"
+      ],
+      "legacy_registry_usage": {
+        "fresh_input_tokens": 36944,
+        "cached_input_tokens": 59392,
+        "cache_write_tokens": 0,
+        "output_tokens": 1216,
+        "reasoning_tokens": 0,
+        "total_provider_tokens": 97552
+      },
+      "corrected_usage": {
+        "fresh_input_tokens": 36944,
+        "cached_input_tokens": 59392,
+        "cache_write_tokens": null,
+        "output_tokens": 1216,
+        "reasoning_tokens": 0,
+        "total_provider_tokens": 97552
+      },
+      "legacy_overcount_tokens": 0,
+      "legacy_inflation_factor": 1.0,
+      "correction_required": true,
+      "tasks": [
+        {
+          "task_id": "fastify-lifecycle-feature-v0",
+          "task_class": "feature-implementation",
+          "order": 1,
+          "thread_id": "019facda-a16c-7041-be77-964b4b8d1e5c",
+          "legacy_cumulative_snapshot": {
+            "fresh_input_tokens": 15512,
+            "cached_input_tokens": 14080,
+            "cache_write_tokens": null,
+            "output_tokens": 332,
+            "reasoning_tokens": 0,
+            "total_provider_tokens": 29924
+          },
+          "corrected_incremental_usage": {
+            "fresh_input_tokens": 15512,
+            "cached_input_tokens": 14080,
+            "cache_write_tokens": null,
+            "output_tokens": 332,
+            "reasoning_tokens": 0,
+            "total_provider_tokens": 29924
+          }
+        },
+        {
+          "task_id": "fastify-lifecycle-refactor-v0",
+          "task_class": "behavior-preserving-refactor",
+          "order": 2,
+          "thread_id": "019facda-a16c-7041-be77-964b4b8d1e5c",
+          "legacy_cumulative_snapshot": {
+            "fresh_input_tokens": 33367,
+            "cached_input_tokens": 28160,
+            "cache_write_tokens": null,
+            "output_tokens": 865,
+            "reasoning_tokens": 0,
+            "total_provider_tokens": 62392
+          },
+          "corrected_incremental_usage": {
+            "fresh_input_tokens": 17855,
+            "cached_input_tokens": 14080,
+            "cache_write_tokens": null,
+            "output_tokens": 533,
+            "reasoning_tokens": 0,
+            "total_provider_tokens": 32468
+          }
+        },
+        {
+          "task_id": "fastify-lifecycle-review-v0",
+          "task_class": "code-review-correction",
+          "order": 3,
+          "thread_id": "019facda-a16c-7041-be77-964b4b8d1e5c",
+          "legacy_cumulative_snapshot": {
+            "fresh_input_tokens": 36944,
+            "cached_input_tokens": 59392,
+            "cache_write_tokens": null,
+            "output_tokens": 1216,
+            "reasoning_tokens": 0,
+            "total_provider_tokens": 97552
+          },
+          "corrected_incremental_usage": {
+            "fresh_input_tokens": 3577,
+            "cached_input_tokens": 31232,
+            "cache_write_tokens": null,
+            "output_tokens": 351,
+            "reasoning_tokens": 0,
+            "total_provider_tokens": 35160
+          }
+        }
+      ],
+      "raw_event_diagnostics": {
+        "valid_event_count": 27,
+        "invalid_or_non_object_line_count": 0,
+        "invalid_or_non_object_line_samples": [],
+        "missing_model_output_artifacts": []
+      },
+      "manifest": {
+        "passed": true,
+        "checks": [
+          {
+            "path": "changes.diff",
+            "expected_sha256": "acb36f8f1296ad42b67866cc22b17d78ef44d79d37473db5152a50c8b9b58e7d",
+            "actual_sha256": "acb36f8f1296ad42b67866cc22b17d78ef44d79d37473db5152a50c8b9b58e7d",
+            "passed": true
+          },
+          {
+            "path": "evidence.jsonl.gz",
+            "expected_sha256": "c553d7b202c6f5a091693879a5f428e5c0b0f57281f22ccc3e2ac42691d5bbfe",
+            "actual_sha256": "c553d7b202c6f5a091693879a5f428e5c0b0f57281f22ccc3e2ac42691d5bbfe",
+            "passed": true
+          },
+          {
+            "path": "run.json",
+            "expected_sha256": "a93fbf8cacaf704afbeac9c40225216e293fed977dc06716d8cef22654869a96",
+            "actual_sha256": "a93fbf8cacaf704afbeac9c40225216e293fed977dc06716d8cef22654869a96",
+            "passed": true
+          }
+        ]
+      }
+    },
+    {
+      "session_id": "token-savior-beets-20260729-p-fcc8438d2077-r0",
+      "date": "2026-07-29",
+      "sequence_id": "beets-lifecycle-sequence-v0",
+      "replicate_index": 0,
+      "profile_id": "integrated-token-savior-codex-product-v2",
+      "model_condition_id": "codex-openai-gpt-5-6-sol-high",
+      "model": "gpt-5.6-sol",
+      "reasoning_effort": "high",
+      "accounting_mode": "final-cumulative-total-per-thread",
+      "accounting_warnings": [],
+      "raw_usage_block_count": 3,
+      "effective_usage_block_count": 1,
+      "thread_ids": [
+        "019facdc-246e-73b1-8c3e-787c7fe55ac8"
+      ],
+      "legacy_registry_usage": {
+        "fresh_input_tokens": 19031,
+        "cached_input_tokens": 74496,
+        "cache_write_tokens": 0,
+        "output_tokens": 950,
+        "reasoning_tokens": 0,
+        "total_provider_tokens": 94477
+      },
+      "corrected_usage": {
+        "fresh_input_tokens": 19031,
+        "cached_input_tokens": 74496,
+        "cache_write_tokens": null,
+        "output_tokens": 950,
+        "reasoning_tokens": 0,
+        "total_provider_tokens": 94477
+      },
+      "legacy_overcount_tokens": 0,
+      "legacy_inflation_factor": 1.0,
+      "correction_required": true,
+      "tasks": [
+        {
+          "task_id": "beets-lifecycle-feature-v0",
+          "task_class": "feature-implementation",
+          "order": 1,
+          "thread_id": "019facdc-246e-73b1-8c3e-787c7fe55ac8",
+          "legacy_cumulative_snapshot": {
+            "fresh_input_tokens": 15352,
+            "cached_input_tokens": 14080,
+            "cache_write_tokens": null,
+            "output_tokens": 305,
+            "reasoning_tokens": 0,
+            "total_provider_tokens": 29737
+          },
+          "corrected_incremental_usage": {
+            "fresh_input_tokens": 15352,
+            "cached_input_tokens": 14080,
+            "cache_write_tokens": null,
+            "output_tokens": 305,
+            "reasoning_tokens": 0,
+            "total_provider_tokens": 29737
+          }
+        },
+        {
+          "task_id": "beets-lifecycle-refactor-v0",
+          "task_class": "behavior-preserving-refactor",
+          "order": 2,
+          "thread_id": "019facdc-246e-73b1-8c3e-787c7fe55ac8",
+          "legacy_cumulative_snapshot": {
+            "fresh_input_tokens": 17229,
+            "cached_input_tokens": 43264,
+            "cache_write_tokens": null,
+            "output_tokens": 634,
+            "reasoning_tokens": 0,
+            "total_provider_tokens": 61127
+          },
+          "corrected_incremental_usage": {
+            "fresh_input_tokens": 1877,
+            "cached_input_tokens": 29184,
+            "cache_write_tokens": null,
+            "output_tokens": 329,
+            "reasoning_tokens": 0,
+            "total_provider_tokens": 31390
+          }
+        },
+        {
+          "task_id": "beets-lifecycle-review-v0",
+          "task_class": "code-review-correction",
+          "order": 3,
+          "thread_id": "019facdc-246e-73b1-8c3e-787c7fe55ac8",
+          "legacy_cumulative_snapshot": {
+            "fresh_input_tokens": 19031,
+            "cached_input_tokens": 74496,
+            "cache_write_tokens": null,
+            "output_tokens": 950,
+            "reasoning_tokens": 0,
+            "total_provider_tokens": 94477
+          },
+          "corrected_incremental_usage": {
+            "fresh_input_tokens": 1802,
+            "cached_input_tokens": 31232,
+            "cache_write_tokens": null,
+            "output_tokens": 316,
+            "reasoning_tokens": 0,
+            "total_provider_tokens": 33350
+          }
+        }
+      ],
+      "raw_event_diagnostics": {
+        "valid_event_count": 27,
+        "invalid_or_non_object_line_count": 0,
+        "invalid_or_non_object_line_samples": [],
+        "missing_model_output_artifacts": []
+      },
+      "manifest": {
+        "passed": true,
+        "checks": [
+          {
+            "path": "changes.diff",
+            "expected_sha256": "dfe08b58b7703423bac6abf1ea702bd344113c53902e167e0e6c11fab042c17a",
+            "actual_sha256": "dfe08b58b7703423bac6abf1ea702bd344113c53902e167e0e6c11fab042c17a",
+            "passed": true
+          },
+          {
+            "path": "evidence.jsonl.gz",
+            "expected_sha256": "6fc1599d48b54ca8d96ed2561cd1473ce336d4f23abee2a7e1b9f1486ac1bf51",
+            "actual_sha256": "6fc1599d48b54ca8d96ed2561cd1473ce336d4f23abee2a7e1b9f1486ac1bf51",
+            "passed": true
+          },
+          {
+            "path": "run.json",
+            "expected_sha256": "3951cd38fbe3e0c0078a4212295f3187661a130fa0b12678abba40408045c813",
+            "actual_sha256": "3951cd38fbe3e0c0078a4212295f3187661a130fa0b12678abba40408045c813",
+            "passed": true
+          }
+        ]
+      }
+    },
+    {
+      "session_id": "token-savior-terraform-20260729-p-5811b463c1e9-r0",
+      "date": "2026-07-29",
+      "sequence_id": "terraform-lifecycle-sequence-v0",
+      "replicate_index": 0,
+      "profile_id": "integrated-token-savior-codex-product-v2",
+      "model_condition_id": "codex-openai-gpt-5-6-sol-high",
+      "model": "gpt-5.6-sol",
+      "reasoning_effort": "high",
+      "accounting_mode": "final-cumulative-total-per-thread",
+      "accounting_warnings": [],
+      "raw_usage_block_count": 3,
+      "effective_usage_block_count": 1,
+      "thread_ids": [
+        "019facde-2f4d-71f3-a1c2-8df61b7d0618"
+      ],
+      "legacy_registry_usage": {
+        "fresh_input_tokens": 19483,
+        "cached_input_tokens": 74496,
+        "cache_write_tokens": 0,
+        "output_tokens": 940,
+        "reasoning_tokens": 0,
+        "total_provider_tokens": 94919
+      },
+      "corrected_usage": {
+        "fresh_input_tokens": 19483,
+        "cached_input_tokens": 74496,
+        "cache_write_tokens": null,
+        "output_tokens": 940,
+        "reasoning_tokens": 0,
+        "total_provider_tokens": 94919
+      },
+      "legacy_overcount_tokens": 0,
+      "legacy_inflation_factor": 1.0,
+      "correction_required": true,
+      "tasks": [
+        {
+          "task_id": "terraform-lifecycle-feature-v0",
+          "task_class": "feature-implementation",
+          "order": 1,
+          "thread_id": "019facde-2f4d-71f3-a1c2-8df61b7d0618",
+          "legacy_cumulative_snapshot": {
+            "fresh_input_tokens": 15431,
+            "cached_input_tokens": 14080,
+            "cache_write_tokens": null,
+            "output_tokens": 303,
+            "reasoning_tokens": 0,
+            "total_provider_tokens": 29814
+          },
+          "corrected_incremental_usage": {
+            "fresh_input_tokens": 15431,
+            "cached_input_tokens": 14080,
+            "cache_write_tokens": null,
+            "output_tokens": 303,
+            "reasoning_tokens": 0,
+            "total_provider_tokens": 29814
+          }
+        },
+        {
+          "task_id": "terraform-lifecycle-refactor-v0",
+          "task_class": "behavior-preserving-refactor",
+          "order": 2,
+          "thread_id": "019facde-2f4d-71f3-a1c2-8df61b7d0618",
+          "legacy_cumulative_snapshot": {
+            "fresh_input_tokens": 17437,
+            "cached_input_tokens": 43264,
+            "cache_write_tokens": null,
+            "output_tokens": 631,
+            "reasoning_tokens": 0,
+            "total_provider_tokens": 61332
+          },
+          "corrected_incremental_usage": {
+            "fresh_input_tokens": 2006,
+            "cached_input_tokens": 29184,
+            "cache_write_tokens": null,
+            "output_tokens": 328,
+            "reasoning_tokens": 0,
+            "total_provider_tokens": 31518
+          }
+        },
+        {
+          "task_id": "terraform-lifecycle-review-v0",
+          "task_class": "code-review-correction",
+          "order": 3,
+          "thread_id": "019facde-2f4d-71f3-a1c2-8df61b7d0618",
+          "legacy_cumulative_snapshot": {
+            "fresh_input_tokens": 19483,
+            "cached_input_tokens": 74496,
+            "cache_write_tokens": null,
+            "output_tokens": 940,
+            "reasoning_tokens": 0,
+            "total_provider_tokens": 94919
+          },
+          "corrected_incremental_usage": {
+            "fresh_input_tokens": 2046,
+            "cached_input_tokens": 31232,
+            "cache_write_tokens": null,
+            "output_tokens": 309,
+            "reasoning_tokens": 0,
+            "total_provider_tokens": 33587
+          }
+        }
+      ],
+      "raw_event_diagnostics": {
+        "valid_event_count": 27,
+        "invalid_or_non_object_line_count": 0,
+        "invalid_or_non_object_line_samples": [],
+        "missing_model_output_artifacts": []
+      },
+      "manifest": {
+        "passed": true,
+        "checks": [
+          {
+            "path": "changes.diff",
+            "expected_sha256": "615536d0a008a69b9a6dc56ac86c4c17f9cbdea8e05e0b0bed232bfdbe2815ce",
+            "actual_sha256": "615536d0a008a69b9a6dc56ac86c4c17f9cbdea8e05e0b0bed232bfdbe2815ce",
+            "passed": true
+          },
+          {
+            "path": "evidence.jsonl.gz",
+            "expected_sha256": "a3c55fef18af93298da69c480900d480bf9c80eb2cade68a390251aada1345d8",
+            "actual_sha256": "a3c55fef18af93298da69c480900d480bf9c80eb2cade68a390251aada1345d8",
+            "passed": true
+          },
+          {
+            "path": "run.json",
+            "expected_sha256": "1ef80e2d266880191103fa187146633244367214d523bdb2e156c28f0269ca5f",
+            "actual_sha256": "1ef80e2d266880191103fa187146633244367214d523bdb2e156c28f0269ca5f",
             "passed": true
           }
         ]
