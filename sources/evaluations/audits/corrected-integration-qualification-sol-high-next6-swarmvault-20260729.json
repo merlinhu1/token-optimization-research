@@ -1,0 +1,630 @@
+{
+  "schema_version": 1,
+  "date": "2026-07-29",
+  "created_at": "2026-07-29T06:28:11.128970+00:00",
+  "purpose": "GPT-5.6 Sol/high provider-free qualification for next-six campaign: swarmvault-codex-product-v1",
+  "profiles": [
+    "swarmvault-codex-product-v1"
+  ],
+  "sequences": [
+    "beets-lifecycle-sequence-v0",
+    "fastify-lifecycle-sequence-v0",
+    "terraform-lifecycle-sequence-v0"
+  ],
+  "no_provider": true,
+  "execution_mode": "prepare-only-no-provider",
+  "provider_calls": 0,
+  "summary": {
+    "expected": 3,
+    "passed": 3,
+    "failed": 0,
+    "provider_backed_sessions_created": 0
+  },
+  "failures": [],
+  "source_matrix_sha256": "7e000a5b0302cc40b0c54a7a32f8ecf33020fcd7a84481189431adfc4a127fbc",
+  "controller_provenance": {
+    "fixture_runner_sha256": "669153b8836c13dba6a77ac7d438b2bf54dce0ece803eaa2a3553044f80367a7",
+    "workflow_runner_sha256": "87444701ea66448ead3c724dfa8abb01989a89b121e2845470ab557a780f5cda",
+    "matrix_runner_sha256": "e05fa6489fc1f4b63c0bfb22e384a051044e02d33348feb71a8cbe104687f1be",
+    "qualification_publisher_sha256": "2fbefe234d37facb5846c64d6a7769019e82e46c2a845d210a52669f5eab59ea"
+  },
+  "lanes": [
+    {
+      "session_id": "prepare-beets-lifecycle-sequence-v0--swarmvault-codex-product-v1",
+      "profile_id": "swarmvault-codex-product-v1",
+      "sequence_id": "beets-lifecycle-sequence-v0",
+      "prepared": true,
+      "prepare_verification": {
+        "passed": true,
+        "mode": "preseeded-composite",
+        "future_seed_regressions_visible": true,
+        "seed_patches_model_visible": false,
+        "preseeded_task_orders": [
+          1,
+          2,
+          3
+        ],
+        "pending_seed_orders": [],
+        "controller_verification": "final-only",
+        "diff_basis": "ordered-task-checkpoints-plus-final-cumulative-diff",
+        "fixed_snapshot_oid": "9acb1ecff6c7ee0a1e83e3b983c94792345712c5",
+        "concealment": {
+          "order": 1,
+          "head": "9b690d26ff9dc2e20927442f27c7186370e86f28",
+          "head_is_root": true,
+          "reachable_commit_count": 1,
+          "reflog_oids": [
+            "9b690d26ff9dc2e20927442f27c7186370e86f28"
+          ],
+          "remotes": [],
+          "working_tree_clean": true,
+          "fixed_snapshot_object_present": false,
+          "unreachable_objects": [],
+          "leaked_git_admin_paths": [],
+          "model_concealed_paths": [],
+          "model_concealed_paths_present": [],
+          "passed": true
+        },
+        "composite_seed_delivery": {
+          "mode": "preseeded-composite",
+          "preseeded_task_orders": [
+            1,
+            2,
+            3
+          ],
+          "merged_task_orders": [
+            1,
+            2,
+            3
+          ],
+          "composite_diff_sha256": "2586b9a96d627ce22e226621db78f1c7636e265318dc0e45e1424778209217ae",
+          "model_repo_seed_or_verifier_assets": [],
+          "model_concealed_paths": [],
+          "model_concealed_paths_present": [],
+          "passed": true
+        },
+        "stage_seed_delivery": {
+          "mode": "preseeded-composite",
+          "preseeded_task_orders": [
+            1,
+            2,
+            3
+          ],
+          "merged_task_orders": [
+            1,
+            2,
+            3
+          ],
+          "composite_diff_sha256": "2586b9a96d627ce22e226621db78f1c7636e265318dc0e45e1424778209217ae",
+          "model_repo_seed_or_verifier_assets": [],
+          "model_concealed_paths": [],
+          "model_concealed_paths_present": [],
+          "passed": true
+        },
+        "fixed_composite_qualification": {
+          "path": "sources/evaluations/fixtures/medium/beetbox-beets/qualification-lifecycle-v0-baseline-v4.json",
+          "passed": true,
+          "full_fixed_cumulative_verifier_zero": true,
+          "composite_seed_merge_zero": true,
+          "composite_seeded_verifiers_nonzero": true,
+          "composite_seed_diff_sha256": "2586b9a96d627ce22e226621db78f1c7636e265318dc0e45e1424778209217ae",
+          "runtime_composite_seed_diff_sha256": "2586b9a96d627ce22e226621db78f1c7636e265318dc0e45e1424778209217ae",
+          "composite_seed_diff_hash_matches": true
+        },
+        "concealment_passed": true,
+        "composite_seed_delivery_passed": true
+      },
+      "host_integration": {
+        "profile_id": "swarmvault-codex-product-v1",
+        "passed": true,
+        "skipped": true,
+        "install_exit_codes": [],
+        "verify_exit_codes": [],
+        "missing_required_files": [],
+        "artifacts": []
+      },
+      "mcp_handshake": {
+        "errors": [],
+        "initialize_passed": true,
+        "non_json_stdout_lines": [],
+        "passed": true,
+        "protocol_version": "2025-06-18",
+        "server_name": "swarmvault",
+        "stderr_present": false,
+        "tool_names": [
+          "archive_candidate",
+          "auto_promote_candidates",
+          "blast_radius",
+          "build_context_pack",
+          "cluster_graph",
+          "compile_vault",
+          "consolidate",
+          "doctor_retrieval",
+          "doctor_vault",
+          "finish_memory_task",
+          "finish_task",
+          "get_community",
+          "get_hyperedges",
+          "get_neighbors",
+          "get_node",
+          "god_nodes",
+          "graph_callers",
+          "graph_report",
+          "graph_stats",
+          "graph_status",
+          "ingest_input",
+          "lint_vault",
+          "list_approvals",
+          "list_context_packs",
+          "list_memory_tasks",
+          "list_sources",
+          "list_tasks",
+          "migrate",
+          "preview_candidate_scores",
+          "promote_candidate",
+          "query_graph",
+          "query_vault",
+          "read_approval",
+          "read_context_pack",
+          "read_memory_task",
+          "read_page",
+          "read_task",
+          "rebuild_retrieval",
+          "resume_memory_task",
+          "resume_task",
+          "retrieval_status",
+          "review_decision",
+          "search_pages",
+          "shortest_path",
+          "start_memory_task",
+          "start_task",
+          "update_graph",
+          "update_memory_task",
+          "update_task",
+          "watch_status",
+          "workspace_info"
+        ],
+        "tools_list_passed": true,
+        "profile_id": "swarmvault-codex-product-v1",
+        "required": true,
+        "probe_exit_code": 0,
+        "tool_count": 51
+      },
+      "codex_preflight": {
+        "profile_id": "swarmvault-codex-product-v1",
+        "passed": true,
+        "doctor_exit_code": 1,
+        "mcp_list_exit_code": 0,
+        "tool_preflight_exit_code": null,
+        "coverage_preflight_exit_code": null,
+        "missing_declared_filter_commands": [],
+        "forbidden_command_probe_exit_code": 0,
+        "forbidden_mcp_hits": [],
+        "forbidden_config_hits": [],
+        "visible_forbidden_commands": [],
+        "failure_reasons": [],
+        "warnings": [
+          "codex doctor exited 1; preserve the diagnostic, but use the isolated MCP/config probes and task execution as gates"
+        ],
+        "artifacts": {
+          "doctor": "sources/evaluations/workflow-sessions/prepare-beets-lifecycle-sequence-v0--swarmvault-codex-product-v1/codex-doctor.txt",
+          "mcp_list": "sources/evaluations/workflow-sessions/prepare-beets-lifecycle-sequence-v0--swarmvault-codex-product-v1/codex-mcp-list.txt",
+          "effective_config": "sources/evaluations/workflow-sessions/prepare-beets-lifecycle-sequence-v0--swarmvault-codex-product-v1/codex-effective-config.toml",
+          "forbidden_command_visibility": "sources/evaluations/workflow-sessions/prepare-beets-lifecycle-sequence-v0--swarmvault-codex-product-v1/forbidden-command-visibility.txt",
+          "tool_preflight": null,
+          "tool_coverage_preflight": null
+        }
+      },
+      "tool_warmup_exit_code": 0,
+      "protocol_path": "sources/evaluations/protocols/beets-lifecycle-sequence-v0-swarmvault-codex-product-v1-df85579fa1cb.json",
+      "protocol_sha256": "66a99d9da07c966b82cf6372b9af73c2ec6737f7f46cfa6f7b543e57e6046702",
+      "qualification_checks": {
+        "lane_exit_zero": true,
+        "prepared": true,
+        "prepare_verification": true,
+        "host_integration": true,
+        "codex_preflight": true,
+        "warmup": true,
+        "mcp_handshake": true
+      }
+    },
+    {
+      "session_id": "prepare-fastify-lifecycle-sequence-v0--swarmvault-codex-product-v1",
+      "profile_id": "swarmvault-codex-product-v1",
+      "sequence_id": "fastify-lifecycle-sequence-v0",
+      "prepared": true,
+      "prepare_verification": {
+        "passed": true,
+        "mode": "preseeded-composite",
+        "future_seed_regressions_visible": true,
+        "seed_patches_model_visible": false,
+        "preseeded_task_orders": [
+          1,
+          2,
+          3
+        ],
+        "pending_seed_orders": [],
+        "controller_verification": "final-only",
+        "diff_basis": "ordered-task-checkpoints-plus-final-cumulative-diff",
+        "fixed_snapshot_oid": "94bcbcc6e2ef3b8e8f8e8797fe551ccbe7b942fd",
+        "concealment": {
+          "order": 1,
+          "head": "e62d87fe6ed460fd98c111e285415cf5cfd9b9bc",
+          "head_is_root": true,
+          "reachable_commit_count": 1,
+          "reflog_oids": [
+            "e62d87fe6ed460fd98c111e285415cf5cfd9b9bc"
+          ],
+          "remotes": [],
+          "working_tree_clean": true,
+          "fixed_snapshot_object_present": false,
+          "unreachable_objects": [],
+          "leaked_git_admin_paths": [],
+          "model_concealed_paths": [],
+          "model_concealed_paths_present": [],
+          "passed": true
+        },
+        "composite_seed_delivery": {
+          "mode": "preseeded-composite",
+          "preseeded_task_orders": [
+            1,
+            2,
+            3
+          ],
+          "merged_task_orders": [
+            1,
+            2,
+            3
+          ],
+          "composite_diff_sha256": "ac4eab923081641fc398b042626ce32dbfb1f021424624279fcdfa8713af84c2",
+          "model_repo_seed_or_verifier_assets": [],
+          "model_concealed_paths": [],
+          "model_concealed_paths_present": [],
+          "passed": true
+        },
+        "stage_seed_delivery": {
+          "mode": "preseeded-composite",
+          "preseeded_task_orders": [
+            1,
+            2,
+            3
+          ],
+          "merged_task_orders": [
+            1,
+            2,
+            3
+          ],
+          "composite_diff_sha256": "ac4eab923081641fc398b042626ce32dbfb1f021424624279fcdfa8713af84c2",
+          "model_repo_seed_or_verifier_assets": [],
+          "model_concealed_paths": [],
+          "model_concealed_paths_present": [],
+          "passed": true
+        },
+        "fixed_composite_qualification": {
+          "path": "sources/evaluations/fixtures/medium/fastify-fastify/qualification-lifecycle-v0-baseline-v3.json",
+          "passed": true,
+          "full_fixed_cumulative_verifier_zero": true,
+          "composite_seed_merge_zero": true,
+          "composite_seeded_verifiers_nonzero": true,
+          "composite_seed_diff_sha256": "ac4eab923081641fc398b042626ce32dbfb1f021424624279fcdfa8713af84c2",
+          "runtime_composite_seed_diff_sha256": "ac4eab923081641fc398b042626ce32dbfb1f021424624279fcdfa8713af84c2",
+          "composite_seed_diff_hash_matches": true
+        },
+        "concealment_passed": true,
+        "composite_seed_delivery_passed": true
+      },
+      "host_integration": {
+        "profile_id": "swarmvault-codex-product-v1",
+        "passed": true,
+        "skipped": true,
+        "install_exit_codes": [],
+        "verify_exit_codes": [],
+        "missing_required_files": [],
+        "artifacts": []
+      },
+      "mcp_handshake": {
+        "errors": [],
+        "initialize_passed": true,
+        "non_json_stdout_lines": [],
+        "passed": true,
+        "protocol_version": "2025-06-18",
+        "server_name": "swarmvault",
+        "stderr_present": false,
+        "tool_names": [
+          "archive_candidate",
+          "auto_promote_candidates",
+          "blast_radius",
+          "build_context_pack",
+          "cluster_graph",
+          "compile_vault",
+          "consolidate",
+          "doctor_retrieval",
+          "doctor_vault",
+          "finish_memory_task",
+          "finish_task",
+          "get_community",
+          "get_hyperedges",
+          "get_neighbors",
+          "get_node",
+          "god_nodes",
+          "graph_callers",
+          "graph_report",
+          "graph_stats",
+          "graph_status",
+          "ingest_input",
+          "lint_vault",
+          "list_approvals",
+          "list_context_packs",
+          "list_memory_tasks",
+          "list_sources",
+          "list_tasks",
+          "migrate",
+          "preview_candidate_scores",
+          "promote_candidate",
+          "query_graph",
+          "query_vault",
+          "read_approval",
+          "read_context_pack",
+          "read_memory_task",
+          "read_page",
+          "read_task",
+          "rebuild_retrieval",
+          "resume_memory_task",
+          "resume_task",
+          "retrieval_status",
+          "review_decision",
+          "search_pages",
+          "shortest_path",
+          "start_memory_task",
+          "start_task",
+          "update_graph",
+          "update_memory_task",
+          "update_task",
+          "watch_status",
+          "workspace_info"
+        ],
+        "tools_list_passed": true,
+        "profile_id": "swarmvault-codex-product-v1",
+        "required": true,
+        "probe_exit_code": 0,
+        "tool_count": 51
+      },
+      "codex_preflight": {
+        "profile_id": "swarmvault-codex-product-v1",
+        "passed": true,
+        "doctor_exit_code": 1,
+        "mcp_list_exit_code": 0,
+        "tool_preflight_exit_code": null,
+        "coverage_preflight_exit_code": null,
+        "missing_declared_filter_commands": [],
+        "forbidden_command_probe_exit_code": 0,
+        "forbidden_mcp_hits": [],
+        "forbidden_config_hits": [],
+        "visible_forbidden_commands": [],
+        "failure_reasons": [],
+        "warnings": [
+          "codex doctor exited 1; preserve the diagnostic, but use the isolated MCP/config probes and task execution as gates"
+        ],
+        "artifacts": {
+          "doctor": "sources/evaluations/workflow-sessions/prepare-fastify-lifecycle-sequence-v0--swarmvault-codex-product-v1/codex-doctor.txt",
+          "mcp_list": "sources/evaluations/workflow-sessions/prepare-fastify-lifecycle-sequence-v0--swarmvault-codex-product-v1/codex-mcp-list.txt",
+          "effective_config": "sources/evaluations/workflow-sessions/prepare-fastify-lifecycle-sequence-v0--swarmvault-codex-product-v1/codex-effective-config.toml",
+          "forbidden_command_visibility": "sources/evaluations/workflow-sessions/prepare-fastify-lifecycle-sequence-v0--swarmvault-codex-product-v1/forbidden-command-visibility.txt",
+          "tool_preflight": null,
+          "tool_coverage_preflight": null
+        }
+      },
+      "tool_warmup_exit_code": 0,
+      "protocol_path": "sources/evaluations/protocols/fastify-lifecycle-sequence-v0-swarmvault-codex-product-v1-d995b3164e7d.json",
+      "protocol_sha256": "63211589befebe392df51e23d7a3009914c5bb9cc738e9736dfdda05e28c118d",
+      "qualification_checks": {
+        "lane_exit_zero": true,
+        "prepared": true,
+        "prepare_verification": true,
+        "host_integration": true,
+        "codex_preflight": true,
+        "warmup": true,
+        "mcp_handshake": true
+      }
+    },
+    {
+      "session_id": "prepare-terraform-lifecycle-sequence-v0--swarmvault-codex-product-v1",
+      "profile_id": "swarmvault-codex-product-v1",
+      "sequence_id": "terraform-lifecycle-sequence-v0",
+      "prepared": true,
+      "prepare_verification": {
+        "passed": true,
+        "mode": "preseeded-composite",
+        "future_seed_regressions_visible": true,
+        "seed_patches_model_visible": false,
+        "preseeded_task_orders": [
+          1,
+          2,
+          3
+        ],
+        "pending_seed_orders": [],
+        "controller_verification": "final-only",
+        "diff_basis": "ordered-task-checkpoints-plus-final-cumulative-diff",
+        "fixed_snapshot_oid": "e02391ad384c9c38f1d7f40b853c0d2297348094",
+        "concealment": {
+          "order": 1,
+          "head": "ef69234fe8913b8e140c83283bed673a674a39c7",
+          "head_is_root": true,
+          "reachable_commit_count": 1,
+          "reflog_oids": [
+            "ef69234fe8913b8e140c83283bed673a674a39c7"
+          ],
+          "remotes": [],
+          "working_tree_clean": true,
+          "fixed_snapshot_object_present": false,
+          "unreachable_objects": [],
+          "leaked_git_admin_paths": [],
+          "model_concealed_paths": [],
+          "model_concealed_paths_present": [],
+          "passed": true
+        },
+        "composite_seed_delivery": {
+          "mode": "preseeded-composite",
+          "preseeded_task_orders": [
+            1,
+            2,
+            3
+          ],
+          "merged_task_orders": [
+            1,
+            2,
+            3
+          ],
+          "composite_diff_sha256": "48f2006b0d10fc1d365437b282e77ae856479e7b744dbce4f78d9b62b16e9842",
+          "model_repo_seed_or_verifier_assets": [],
+          "model_concealed_paths": [],
+          "model_concealed_paths_present": [],
+          "passed": true
+        },
+        "stage_seed_delivery": {
+          "mode": "preseeded-composite",
+          "preseeded_task_orders": [
+            1,
+            2,
+            3
+          ],
+          "merged_task_orders": [
+            1,
+            2,
+            3
+          ],
+          "composite_diff_sha256": "48f2006b0d10fc1d365437b282e77ae856479e7b744dbce4f78d9b62b16e9842",
+          "model_repo_seed_or_verifier_assets": [],
+          "model_concealed_paths": [],
+          "model_concealed_paths_present": [],
+          "passed": true
+        },
+        "fixed_composite_qualification": {
+          "path": "sources/evaluations/fixtures/large/hashicorp-terraform/qualification-lifecycle-v0-baseline-v4.json",
+          "passed": true,
+          "full_fixed_cumulative_verifier_zero": true,
+          "composite_seed_merge_zero": true,
+          "composite_seeded_verifiers_nonzero": true,
+          "composite_seed_diff_sha256": "48f2006b0d10fc1d365437b282e77ae856479e7b744dbce4f78d9b62b16e9842",
+          "runtime_composite_seed_diff_sha256": "48f2006b0d10fc1d365437b282e77ae856479e7b744dbce4f78d9b62b16e9842",
+          "composite_seed_diff_hash_matches": true
+        },
+        "concealment_passed": true,
+        "composite_seed_delivery_passed": true
+      },
+      "host_integration": {
+        "profile_id": "swarmvault-codex-product-v1",
+        "passed": true,
+        "skipped": true,
+        "install_exit_codes": [],
+        "verify_exit_codes": [],
+        "missing_required_files": [],
+        "artifacts": []
+      },
+      "mcp_handshake": {
+        "errors": [],
+        "initialize_passed": true,
+        "non_json_stdout_lines": [],
+        "passed": true,
+        "protocol_version": "2025-06-18",
+        "server_name": "swarmvault",
+        "stderr_present": false,
+        "tool_names": [
+          "archive_candidate",
+          "auto_promote_candidates",
+          "blast_radius",
+          "build_context_pack",
+          "cluster_graph",
+          "compile_vault",
+          "consolidate",
+          "doctor_retrieval",
+          "doctor_vault",
+          "finish_memory_task",
+          "finish_task",
+          "get_community",
+          "get_hyperedges",
+          "get_neighbors",
+          "get_node",
+          "god_nodes",
+          "graph_callers",
+          "graph_report",
+          "graph_stats",
+          "graph_status",
+          "ingest_input",
+          "lint_vault",
+          "list_approvals",
+          "list_context_packs",
+          "list_memory_tasks",
+          "list_sources",
+          "list_tasks",
+          "migrate",
+          "preview_candidate_scores",
+          "promote_candidate",
+          "query_graph",
+          "query_vault",
+          "read_approval",
+          "read_context_pack",
+          "read_memory_task",
+          "read_page",
+          "read_task",
+          "rebuild_retrieval",
+          "resume_memory_task",
+          "resume_task",
+          "retrieval_status",
+          "review_decision",
+          "search_pages",
+          "shortest_path",
+          "start_memory_task",
+          "start_task",
+          "update_graph",
+          "update_memory_task",
+          "update_task",
+          "watch_status",
+          "workspace_info"
+        ],
+        "tools_list_passed": true,
+        "profile_id": "swarmvault-codex-product-v1",
+        "required": true,
+        "probe_exit_code": 0,
+        "tool_count": 51
+      },
+      "codex_preflight": {
+        "profile_id": "swarmvault-codex-product-v1",
+        "passed": true,
+        "doctor_exit_code": 1,
+        "mcp_list_exit_code": 0,
+        "tool_preflight_exit_code": null,
+        "coverage_preflight_exit_code": null,
+        "missing_declared_filter_commands": [],
+        "forbidden_command_probe_exit_code": 0,
+        "forbidden_mcp_hits": [],
+        "forbidden_config_hits": [],
+        "visible_forbidden_commands": [],
+        "failure_reasons": [],
+        "warnings": [
+          "codex doctor exited 1; preserve the diagnostic, but use the isolated MCP/config probes and task execution as gates"
+        ],
+        "artifacts": {
+          "doctor": "sources/evaluations/workflow-sessions/prepare-terraform-lifecycle-sequence-v0--swarmvault-codex-product-v1/codex-doctor.txt",
+          "mcp_list": "sources/evaluations/workflow-sessions/prepare-terraform-lifecycle-sequence-v0--swarmvault-codex-product-v1/codex-mcp-list.txt",
+          "effective_config": "sources/evaluations/workflow-sessions/prepare-terraform-lifecycle-sequence-v0--swarmvault-codex-product-v1/codex-effective-config.toml",
+          "forbidden_command_visibility": "sources/evaluations/workflow-sessions/prepare-terraform-lifecycle-sequence-v0--swarmvault-codex-product-v1/forbidden-command-visibility.txt",
+          "tool_preflight": null,
+          "tool_coverage_preflight": null
+        }
+      },
+      "tool_warmup_exit_code": 0,
+      "protocol_path": "sources/evaluations/protocols/terraform-lifecycle-sequence-v0-swarmvault-codex-product-v1-b15780e03f9e.json",
+      "protocol_sha256": "085819c89b9b31f1cbc5cfb421e51fcffbf05123830d990dc5289cadfe5ade35",
+      "qualification_checks": {
+        "lane_exit_zero": true,
+        "prepared": true,
+        "prepare_verification": true,
+        "host_integration": true,
+        "codex_preflight": true,
+        "warmup": true,
+        "mcp_handshake": true
+      }
+    }
+  ]
+}

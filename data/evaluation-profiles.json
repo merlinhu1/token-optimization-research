@@ -1856,7 +1856,7 @@
         "assignment_proof": "provider-free MCP initialize/tools-list, guidance receipt, current hooks.json, and direct product-hook smoke checks required"
       },
       "selection_rationale": "Experiment-owner direction on 2026-07-19 after the bounded MCP-only arm received zero natural Codex uptake and the product was found to be optimized primarily for Claude Code.",
-      "compatibility_deviation": "The pinned product writes obsolete Codex .codex/settings.json tool_complete configuration. The v2 adapter maps the unchanged product hook scripts to Codex 0.144 hooks.json PreToolUse/PostToolUse and records that host adaptation explicitly; guidance content remains verbatim product-authored text.",
+      "compatibility_deviation": "The pinned product writes obsolete Codex .codex/settings.json tool_complete configuration and declares an unbounded mcp>=1.25 optional dependency even though MCP SDK 2.x removed the Server.list_tools decorator it calls. The v2 adapter maps the unchanged product hook scripts to Codex 0.144 hooks.json PreToolUse/PostToolUse, constrains the runtime to mcp>=1.25,<2, and records both host adaptations explicitly; guidance content remains verbatim product-authored text.",
       "notes": "Canonical product-guided Codex successor to the bounded MCP-only ablation. Evaluator prompts remain neutral; any routing preference comes from the pinned product-authored guidance."
     },
     {
