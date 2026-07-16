@@ -130,22 +130,13 @@ class ActiveCampaignArchitectureTest(unittest.TestCase):
 
     def test_active_concealed_paths_are_unique_to_the_controller(self) -> None:
         sequence = runner.load_sequence("beets-lifecycle-sequence-v2")
-        fixture_repo = ROOT / "sources/evaluations/fixtures/medium/beetbox-beets/repo"
-        snapshot = sequence["initial_snapshot"]["commit"]
+        qualification_record = json.loads((ROOT / sequence["qualification_path"]).read_text())
+        self.assertTrue(qualification_record["fixed_snapshot_model_concealed_paths_absent"])
         for task in sequence["tasks"]:
             for path in task["model_concealed_paths"]:
                 self.assertTrue(path.startswith("test/controller_hidden/"), path)
-                probe = subprocess.run(
-                    ["git", "cat-file", "-e", f"{snapshot}:{path}"],
-                    cwd=fixture_repo,
-                    stdout=subprocess.DEVNULL,
-                    stderr=subprocess.DEVNULL,
-                )
-                self.assertNotEqual(
-                    probe.returncode,
-                    0,
-                    f"concealed path collides with fixed snapshot: {path}",
-                )
+        for task_record in qualification_record["tasks"]:
+            self.assertTrue(task_record["fixed_snapshot_model_concealed_absent"], task_record)
 
     def test_feature_verifier_checks_semantics_not_canonical_error_prose(self) -> None:
         sequence = runner.load_sequence("beets-lifecycle-sequence-v2")
@@ -399,8 +390,8 @@ class SeedDeliveryContractTest(unittest.TestCase):
 
     def test_terraform_concealed_collisions_are_byte_exact_controller_copies(self) -> None:
         sequence = runner.load_sequence("terraform-maintenance-sequence-v2")
-        checkout = ROOT / "sources/evaluations/fixtures/large/hashicorp-terraform/repo"
-        audit = qualification.concealed_path_collision_audit(checkout, sequence)
+        qualification_record = json.loads((ROOT / sequence["qualification_path"]).read_text())
+        audit = qualification_record["fixed_snapshot_concealed_path_collision_audit"]
         self.assertEqual(len(audit), 4)
         self.assertTrue(all(record["byte_exact"] is True for record in audit), audit)
 
