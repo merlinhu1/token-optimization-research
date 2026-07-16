@@ -1,18 +1,18 @@
 ---
 name: practical-software-quality-reviewer
-description: Use after benchmark or reproduction runs to evaluate whether token savings preserved functional correctness, diagnostics, maintainability, safety, and reviewability.
+description: Use after a workflow run when optional independent model-behavior diagnostics are useful. Report source quality separately; never decide token-sample eligibility.
 ---
 # Practical Software Quality Reviewer
 
 ## Purpose
 
-Token savings are not useful if they come from under-solving, brittle patches, lost diagnostics, or poor software quality. This skill reviews task outputs as software artifacts.
+Provide an independent diagnostic review of model-produced changes. The review explains correctness, regression safety, maintainability, and scope control; it does not accept, exclude, or select a provider-token sample.
 
 ## When to Use
 
-Use after any benchmark/reproduction run that produces code, configuration, diagnosis, or a workflow change.
+Use after a benchmark/reproduction run when independent source-quality context is worth its review cost. Operationally complete runs remain token-accounting eligible whether this review is present or favorable.
 
-## Review Gates
+## Diagnostic dimensions
 
 1. **Functional correctness**
    - verifier command passes;

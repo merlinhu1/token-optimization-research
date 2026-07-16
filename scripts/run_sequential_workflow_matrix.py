@@ -78,20 +78,14 @@ def hard_baseline_usable(session: dict[str, Any] | None, root: Path = ROOT) -> b
         return False
     if interpretation.get("evaluation_validity") == "invalid-fixture":
         return False
-    verifier_failed = quality.get("final_verifier_passed") is False
-    quality_failed = (
-        quality.get("final_verifier_passed") is True
-        and interpretation.get("accepted_for_objective") is False
-        and isinstance(quality.get("quality_score"), int)
-        and quality.get("quality_score") < 4
-    )
+    # Model quality is an observed outcome, not an eligibility gate for this
+    # token-usage study. Reuse the first operationally valid provider sample for
+    # the frozen protocol rather than rerunning until the model passes.
     return (
         interpretation.get("primary_objective_hard_baseline") is True
         and interpretation.get("usable_for_primary_objective_token_comparison") is True
         and interpretation.get("operationally_completed") is True
         and interpretation.get("agent_declared_task_completion_count") == quality.get("tasks_attempted")
-        and quality.get("quality_review_status") == "reviewed"
-        and (verifier_failed or quality_failed)
         and isinstance(usage.get("total_provider_tokens"), int)
         and usage.get("total_provider_tokens", 0) > 0
         and compact_artifacts_intact(session, root)
@@ -247,7 +241,10 @@ def find_protocol(root: Path, sequence_id: str, profile_id: str) -> Path:
             and protocol.get("task_fixture", {}).get("sequence_id") == sequence_id
             and protocol.get("task_fixture", {}).get("qualification_path") == active_qualification
             and protocol.get("baseline_pool", {}).get("protocol_fingerprint") == current_fingerprint
-            and protocol.get("baseline_pool", {}).get("descriptor") == current_baseline_descriptor
+            and workflow.baseline_protocol_descriptor_compatible(
+                protocol.get("baseline_pool", {}).get("descriptor"),
+                current_baseline_descriptor,
+            )
             and selected.get("selected_profile", {}).get("profile_id") == profile_id
             and selected == current_execution
             and selected_execution.get("descriptor_sha256") == workflow._json_hash(current_execution)
@@ -267,7 +264,7 @@ def plan_workflow_jobs(
     baseline_state: Callable[[str], str],
     profile_state: Callable[[str, str], str],
 ) -> list[tuple[str, str]]:
-    """Plan one baseline lane per missing sequence or treatment lanes after review."""
+    """Plan one baseline lane per missing sequence or treatment lanes after a reusable token baseline exists."""
     if len(set(sequence_ids)) != len(sequence_ids):
         raise ValueError("duplicate sequence IDs are not allowed in one matrix")
     if len(set(treatment_profiles)) != len(treatment_profiles):
@@ -298,6 +295,28 @@ def plan_workflow_jobs(
     return jobs
 
 
+def workflow_lane_command(
+    *,
+    sequence_id: str,
+    profile_id: str,
+    protocol: Path,
+    replicate_index: int,
+    runner_args: list[str],
+) -> list[str]:
+    cmd = [
+        sys.executable,
+        "scripts/run_codex_workflow_evaluation.py",
+        "--sequence-id", sequence_id,
+        "--profile-id", profile_id,
+        "--protocol", str(protocol),
+        "--replicate-index", str(replicate_index),
+        *runner_args,
+    ]
+    if profile_id != "baseline-bare-codex":
+        cmd.extend(["--comparison-profile-id", profile_id])
+    return cmd
+
+
 def run_flow_lane(
     *,
     sequence_id: str,
@@ -324,23 +343,19 @@ def run_flow_lane(
     before_artifact_dirs = {path.name for path in artifact_root.iterdir() if path.is_dir()}
 
     protocol = find_protocol(checkout, sequence_id, treatment_profile).relative_to(checkout)
-    cmd = [
-        sys.executable,
-        "scripts/run_codex_workflow_evaluation.py",
-        "--sequence-id", sequence_id,
-        "--profile-id", treatment_profile,
-        "--protocol", str(protocol),
-        *runner_args,
-    ]
-    if treatment_profile != "baseline-bare-codex":
-        cmd.extend(["--comparison-profile-id", treatment_profile])
+    cmd = workflow_lane_command(
+        sequence_id=sequence_id,
+        profile_id=treatment_profile,
+        protocol=protocol,
+        replicate_index=replicate_index,
+        runner_args=runner_args,
+    )
     if "--prepare-only" in runner_args:
         cmd.extend(["--session-id", f"prepare-{lane_id}"])
     if source_codex_home is not None:
         cmd.extend(["--source-codex-home", str(source_codex_home)])
     env = os.environ.copy()
     env["TMPDIR"] = str(tmp)
-    env["REPLICATE_INDEX"] = str(replicate_index)
     env["SKIP_PAIR_VALIDATION"] = "1"
     env["WORKFLOW_LANE_DISABLE_AUTH_SYNC"] = "1"
     log_path = logs / "lane.log"
@@ -393,10 +408,10 @@ def artifact_merge_allowed(prepare_only: bool, lane_results: list[dict[str, Any]
 def matrix_acceptance_state(
     *, prepare_only: bool, execution_passed: bool, awaiting_quality_review: bool
 ) -> bool | None:
-    """Preparation success is not provider-backed objective acceptance."""
+    """Preparation is not evidence; model-quality review is diagnostic only."""
     if prepare_only:
         return None
-    return execution_passed and not awaiting_quality_review
+    return execution_passed
 
 
 def matrix_exit_code(
@@ -406,8 +421,6 @@ def matrix_exit_code(
     awaiting_quality_review: bool,
     accepted: bool | None,
 ) -> int:
-    if awaiting_quality_review and execution_passed:
-        return 3
     if prepare_only:
         return 0 if execution_passed else 1
     return 0 if accepted else 1
@@ -530,13 +543,13 @@ def write_hard_baseline_comparison(
         raise ValueError("hard-lane comparison requires numeric provider tokens and verified task counts")
     delta = t_tokens - b_tokens
     correctness_improved = t_passed > b_passed
-    token_efficiency_improved = t_passed >= b_passed and t_tokens < b_tokens
+    token_efficiency_improved = t_tokens < b_tokens
     comparison = {
         "schema_version": 4,
         "comparison_id": comparison_id,
         "study_id": baseline.get("study_id"),
         "experiment_group_id": treatment.get("experiment_group_id"),
-        "comparison_design": "primary-objective-hard-baseline-v1",
+        "comparison_design": "token-objective-compatible-pair-v1",
         "baseline_protocol_fingerprint": fingerprint,
         "replicate_count": 1,
         "sequence_id": seq["id"],
@@ -552,9 +565,8 @@ def write_hard_baseline_comparison(
         "treatment_verified_tasks": t_passed,
         "correctness_improved": correctness_improved,
         "token_efficiency_improved": token_efficiency_improved,
-        "treatment_outperforms_baseline": correctness_improved or (t_passed == b_passed and t_tokens < b_tokens),
-        "eligible_for_hard_lane_ranking": True,
-        "interpretation": "Primary-objective hard-lane comparison. The failed bare result remains the token baseline. A treatment is better when verified correctness improves or when equal verified correctness uses fewer provider tokens; report correctness and token usage together.",
+        "primary_token_objective_improved": token_efficiency_improved,
+        "interpretation": "Token-objective comparison. Provider-token change is the primary result. Verified-task outcomes are reported separately as diagnostic model behavior and do not gate or select the pair.",
     }
     write_json(path, comparison)
     return path
@@ -766,7 +778,7 @@ def main(argv: list[str] | None = None) -> int:
         merge_summary["validation_failed_artifacts_preserved"] = True
         published_comparisons = []
     execution_passed = lanes_passed and validation["passed"]
-    awaiting_quality_review = not args.prepare_only and merge_summary.get("merged_session_count", 0) > 0
+    awaiting_quality_review = False
     summary = {
         "plan": plan,
         "lane_results": sorted(lane_results, key=lambda item: item["sequence_id"]),

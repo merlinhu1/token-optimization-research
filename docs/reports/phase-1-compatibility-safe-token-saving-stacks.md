@@ -1,5 +1,7 @@
 # Phase 1 report: compatibility-safe token-saving stack hypotheses for AI coding agents
 
+> Historical report. This preserves the Phase 1 state and terminology at publication time. Current lifecycle-v0 execution, token eligibility, and artifact contracts are owned by `AGENTS.md`, `data/workflow-sessions.json`, and `docs/evaluations/evaluation-framework.md`; quality review is now diagnostic rather than a token-sample gate.
+
 **Date:** 2026-06-29
 **Repository:** `token-optimization-research`
 **Review status:** source-logic compatibility report; benchmark-audit and reproduction pending

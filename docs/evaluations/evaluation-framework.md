@@ -2,7 +2,7 @@
 
 ## Purpose
 
-This framework determines whether an AI-agent intervention reduces **cumulative provider-reported token use** across a realistic software-engineering workflow without reducing correctness or final software quality.
+This framework measures **cumulative provider-reported token use** across realistic software-engineering workflows. Correctness, verifier outcomes, and final software quality are reported as separate diagnostics; they do not determine which operationally valid token samples count.
 
 Monetary cost estimation is out of scope. Token use is the resource metric.
 
@@ -10,7 +10,7 @@ Monetary cost estimation is out of scope. Token use is the resource metric.
 
 The program should answer:
 
-> For a normal-user treatment configuration, does the intervention reduce total provider token use per correctness-accepted workflow while preserving software quality?
+> For a normal-user treatment configuration, how does total provider token use change relative to the compatible retained baseline?
 
 The answer must be scoped to the frozen workflow, model condition, and treatment estimand. The project does not need a language-by-language matrix to be useful.
 
@@ -22,7 +22,7 @@ The target lifecycle workflow is one persistent sequence containing:
 2. **Behavior-preserving refactor** — improve structure without changing required behavior.
 3. **Code review and correction** — inspect a realistic cumulative change, identify acceptance-critical defects, and correct them when required.
 
-Optional lanes may cover maintenance regression repair, diagnosis, migration, build repair, or documentation. The existing Fastify, Terraform, and Beets sequences are maintenance-regression evidence. They remain valid within that scope; they are not treated as the whole target population.
+Optional lanes may cover maintenance regression repair, diagnosis, migration, build repair, or documentation. The active Fastify, Terraform, and Beets sequences are lifecycle-v0 production evidence. They remain scoped workflow samples rather than the whole target population.
 
 ## Primary evaluation unit
 
@@ -45,7 +45,7 @@ Baseline and treatment sessions start from the same frozen inputs. State resets 
 |---|---|---|
 | `source-logic` | Representative implementation inspected; mechanism, fallbacks, state, and compatibility mapped. | Candidate qualification. |
 | `benchmark-audit` | Existing harness, scoring, accounting, raw output, and exclusions inspected. | Protocol design and background evidence. |
-| `reproduction` | Frozen workflow execution with provider token accounting, structured task verification, independent quality review, isolation, and recoverable artifacts. | Scoped treatment evidence. |
+| `reproduction` | Frozen workflow execution with provider token accounting, structured task-verifier diagnostics, isolation, and recoverable artifacts; independent review is optional context. | Scoped token evidence. |
 
 A single reproduction is screening evidence. Confidence grows through additional compatible replicates; the record does not pretend that one run is a population estimate.
 
@@ -57,7 +57,7 @@ Canonical records require only evidence that directly changes the token-versus-c
 |---|---|
 | Token use | Fresh input, cached input, cache-write, output, reasoning, and total provider tokens when exposed; accounting source and reconstruction formula. |
 | Task outcome | Operational exit, agent-declared completion, concealed-verifier exit, and accepted status for every task. |
-| Final quality | Independent review status, quality score, critical failures, final diff/status. |
+| Model-behavior diagnostics | Concealed-verifier outcomes for every task; optional independent review status, quality score, critical failures, and final diff/status. |
 | Treatment validity | Frozen treatment profile, documented installation/configuration evidence, and tool-isolation audit. Observed use is optional descriptive telemetry. |
 | Integrity | Frozen protocol, source/runtime identities, compact artifacts, and checksums. |
 
@@ -76,14 +76,11 @@ Operational retry count remains attached to a task because retries directly cont
 
 ## Treatment estimands
 
-Treatment configuration is part of the causal question:
+Treatment configuration is part of the causal question. Lifecycle-v0 production execution uses **available/natural-use** profiles: install each product's normal integration surface and allow it to operate naturally. That normal surface may include product-authored instructions, hooks, wrappers, proxies, MCP exposure, or other host integration; the evaluator must not add instructions that require, prefer, suggest, or calibrate tool invocation.
 
-- **available/natural-use** — install the normal integration and allow the agent to use it naturally;
-- **preferred/direct-use** — explicitly tell the agent to use the documented direct interface;
-- **mandatory-policy** — require use and measure the complete policy;
-- **integrated owner** — use a broader product-owned integration.
+Prompted preferred/direct-use and mandatory-use profiles describe distinct historical estimands, but they are not runnable production profiles in lifecycle v0 and must not be proposed as a remedy for low or unobserved explicit invocation. Historical records retain their original labels rather than being silently rewritten.
 
-None is automatically invalid. Each must be predeclared and labeled. A prompted direct-use result cannot be presented as evidence for an unprompted automatic integration.
+An explicit model-issued command count is not a universal uptake metric. Integrations may act through hooks, wrappers, proxies, instruction layers, or host/tool-result transformations. Infer mechanism activity only from instrumentation that is complete for the frozen integration contract; otherwise report the assignment-level token comparison without converting command-string absence into a no-effect claim.
 
 ## Protocol identity and cumulative evidence
 
@@ -101,10 +98,10 @@ This permits statistical evidence to accumulate over months without making every
 
 ## Interpretation rules
 
-1. Compare cumulative provider token use per accepted workflow first.
+1. Compare cumulative provider token use for compatible complete workflow sessions first; do not condition the primary metric on task acceptance.
 2. Report token components separately when available; do not convert them to money.
-3. Lower token use is not positive when correctness or independently reviewed quality is worse.
-4. Hard-lane correctness rescue and token efficiency are separate outcomes.
+3. Report correctness and independently reviewed quality as diagnostic outcomes alongside the token result, not as sample-selection gates.
+4. Hard-lane correctness and token efficiency are separate outcomes.
 5. A treatment is valid when it is installed and configured according to its documented normal-user instructions and the lane remains isolated. The estimand is availability/configuration (intent-to-treat); observed invocation is not required and must not gate, filter, or trigger reruns.
 6. Overlapping surface owners are invalid unless the overlap is explicitly disabled and verified.
 7. Single-replicate results are labeled screening evidence, not erased.

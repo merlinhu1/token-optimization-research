@@ -93,7 +93,6 @@ Code surface:
 - templates/evaluation-record.md
 - templates/evaluation-task.md
 - templates/evaluation-run-record.json
-- templates/workflow-session-record.json
 - schemas/evaluation-run-record.schema.json
 - schemas/workflow-session-record.schema.json
 - docs/tool-dossiers/**
@@ -103,12 +102,12 @@ Update truth when:
 - token-accounting boundaries, benchmark protocols, metrics, task fixtures, or evaluation artifact requirements change
 - Phase 2 benchmark plans change what counts as benchmark-audit or reproduction evidence
 
-## Software Quality Gates
+## Software Quality Diagnostics
 
 Truth documents:
 ```yaml
 truth_documents:
-  - path: docs/truthmark/engineering/research/software-quality-gates.md
+  - path: docs/truthmark/engineering/research/software-quality-diagnostics.md
     lane: engineering
     kind: engineering-contract
 ```
@@ -123,8 +122,8 @@ Code surface:
 - .agents/skills/practical-software-quality-reviewer.md
 
 Update truth when:
-- verification, quality scoring, diagnostic preservation, reviewability, or safety gates change
-- evaluation rules change how token savings are paired with software quality
+- verification, quality scoring, diagnostic preservation, reviewability, or safety diagnostics change
+- evaluation rules change how token results are reported alongside software quality
 
 ## Stack Compatibility
 
@@ -186,10 +185,14 @@ Code surface:
 - .agents/skills/**
 - .truthmark/config.yml
 - docs/truthmark/**
+- data/workflow-sessions.json
+- data/repository-fixtures.json
+- scripts/update_workflow_runbook.py
 - scripts/validate_repository.py
 - README.md
 
 Update truth when:
+- an evaluation run, protocol refresh, fixture transition, session merge/deletion, or comparison changes repository evidence state
 - repo-local agent instructions, installed local skills, Truthmark routing, or validation workflow changes
 - future agents need a different change sequence for research-truth work
 

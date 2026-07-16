@@ -33,34 +33,35 @@
 - Output tokens:
 - Reasoning tokens:
 - Total provider tokens:
-- Tokens per accepted task:
+- Tokens per verifier-passing task, diagnostic only:
 
-## Software quality gates
+## Model-behavior diagnostics
 
 - Per-task deterministic verifiers:
 - Final repository verifier:
 - Static checks:
 - Diagnostic facts that must survive:
-- Human quality rubric additions:
-- Critical failure conditions:
+- Optional source-review rubric:
+- Fixture/contract invalidity conditions:
 
 ## Procedure
 
-1. Freeze fixture, initial snapshot, task sequence, and prompts.
+1. Freeze fixture, initial snapshot, task sequence, prompts, provider/model condition, and accounting boundary.
 2. Reset repository, agent state, memory, indexes, hooks, generated config, and temporary directories once before the session.
 3. Activate baseline or treatment profile and record enabled/disabled surfaces.
 4. Run the ordered task sequence without resetting between tasks.
 5. Capture provider events, structured per-task verifier outcomes, final diff/status, treatment/isolation evidence, and recoverable artifacts without extra model reporting.
 6. Preserve declared session state between tasks.
-7. Run every concealed task verifier after the lane, then complete independent quality review.
-8. Compare cumulative provider-reported workflow token use and quality outcomes.
-9. Record failed and excluded sessions with reason codes.
+7. Retain the first operationally complete, integrity-valid provider sample. Do not rerun because of verifier or review outcomes.
+8. Record verifier results and any optional source review as diagnostics.
+9. Compare cumulative provider-reported workflow token use only within a compatible baseline pool.
+10. Record invalid or incomplete experiments with explicit reason codes; distinguish them from model-behavior failures.
 
 ## Results
 
 - Summary:
 - Cumulative provider-token result:
-- Quality result:
+- Model-behavior diagnostics:
 - State behavior result:
 - Operational result:
 - Negative findings:

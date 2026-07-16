@@ -53,7 +53,7 @@ It does not own individual tool dossiers or raw source artifacts.
 - A historical GitHub `HEAD` inspection without a recorded commit must be marked `unpinned-historical-inspection` until refreshed.
 - A repository without auditable source versioning for the inspected source is not a valid candidate for recommendation, stack construction, benchmark-audit, or reproduction.
 - `benchmark-audit` requires benchmark harness, task, scoring, token accounting, and raw-output evidence to be inspected.
-- `reproduction` requires independent continuous target-workload workflow simulation with provider-billed accounting and software-quality gates.
+- `reproduction` requires independent continuous target-workload workflow simulation with complete provider-reported accounting and execution integrity. Verifier and optional source-review outcomes are separate diagnostics.
 - Report claims must name or imply only the evidence stage that has actually been reached.
 - Stack recommendations stay hypotheses until benchmark-audit or reproduction evidence exists.
 

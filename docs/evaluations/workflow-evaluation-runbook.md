@@ -2,9 +2,9 @@
 
 This generated runbook reflects current workflow-sequence readiness.
 
-It is rendered from `data/workflow-task-sequences.json` and `data/repository-fixtures.json` by `scripts/update_workflow_runbook.py`.
+It is rendered from `data/workflow-task-sequences.json`, `data/repository-fixtures.json`, and `data/workflow-sessions.json` by `scripts/update_workflow_runbook.py`.
 
-Do not hand-edit sequence status here. Update the registries, then run:
+Do not hand-edit execution status here. Update the registries, then run:
 
 ```bash
 python3 scripts/update_workflow_runbook.py
@@ -39,7 +39,7 @@ Before changing a sequence to `active`, require:
 - one parentless model-facing Git baseline with the fixed commit inaccessible;
 - final-only concealed functional verification with no per-task controller gate;
 - controller-only task, seed, verifier, and reference assets;
-- cumulative provider usage capture, verifier integrity, isolation, and software-quality review.
+- cumulative provider usage capture, verifier integrity, isolation, structured verifier diagnostics, and optional source review.
 
 A no-model prepare for a frozen candidate is allowed:
 
@@ -52,18 +52,15 @@ python3 scripts/run_sequential_workflow_matrix.py --prepare-only "$SEQUENCE_ID"
 
 ## Paid execution
 
-Freeze one protocol per active lane, run no-model preparation for all current production lanes, then run each canonical baseline:
+Reusable baselines already exist for `fastify-lifecycle-sequence-v0` (r0, r1), `beets-lifecycle-sequence-v0` (r0, r1), `terraform-lifecycle-sequence-v0` (r0, r1). Do not rerun them. Choose one compatible treatment profile and one intended lane:
 
 ```bash
-python3 scripts/run_sequential_workflow_matrix.py fastify-lifecycle-sequence-v0 --prepare-only
-python3 scripts/run_sequential_workflow_matrix.py beets-lifecycle-sequence-v0 --prepare-only
-python3 scripts/run_sequential_workflow_matrix.py terraform-lifecycle-sequence-v0 --prepare-only
-python3 scripts/run_sequential_workflow_matrix.py fastify-lifecycle-sequence-v0
-python3 scripts/run_sequential_workflow_matrix.py beets-lifecycle-sequence-v0
-python3 scripts/run_sequential_workflow_matrix.py terraform-lifecycle-sequence-v0
+SEQUENCE_ID=replace-with-one-active-sequence-id
+PROFILE_ID=replace-with-compatible-profile-id
+python3 scripts/run_sequential_workflow_matrix.py "$SEQUENCE_ID" --treatment-profile "$PROFILE_ID"
 ```
 
-After a lane has a reviewed reusable baseline, launch its matched treatment with `python3 scripts/run_sequential_workflow_matrix.py <sequence-id> --treatment-profile <profile-id>`. Stop before treatment if that lane's baseline fails any frozen gate.
+Retain the first operationally valid provider sample for each protocol and replicate. Stop only when a sample is fixture-invalid or operationally incomplete; verifier and review outcomes are diagnostic.
 
 ## Active sequence details
 
@@ -127,8 +124,8 @@ Controller Git objects, generated checkouts, dependency environments, Codex home
 
 ## Maintenance contract
 
-- Session IDs and compact evidence are append-only.
-- Deterministic verifier success is an execution gate, not an automatic software-quality score.
-- Objective acceptance requires a recorded software-quality review.
+- Session IDs and compact evidence are retained once a provider run is operationally valid.
+- Deterministic verifier and source-review outcomes are diagnostic model-behavior evidence, not token-accounting gates.
+- Reuse the first valid provider sample for each frozen protocol and replicate; never rerun to select for a pass.
 - `python3 scripts/validate_repository.py` checks generated-runbook drift.
 - Truth docs own durable claims; this runbook is generated operator procedure.

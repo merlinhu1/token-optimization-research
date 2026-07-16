@@ -74,7 +74,7 @@ If provider execution or verifier integrity prevents final verification, each ta
 
 ## Treatment profiles
 
-Treatment estimands must be explicit. Availability/natural-use, prompted preferred direct use, mandatory policy, and integrated-owner profiles are different causal questions. Historical protocol semantics are never silently rewritten to a newer profile definition.
+Treatment estimands must be explicit. Lifecycle-v0 production profiles use availability/natural use with the product's normal integration and no evaluator-authored invocation steering. Prompted preferred direct use and mandatory policy remain historical taxonomy only; they are not runnable production remedies for low or unobserved explicit invocation. Historical protocol semantics are never silently rewritten to a newer profile definition. Explicit command absence is not interpreted as integration inactivity unless the frozen mechanism contract makes that observation complete.
 
 ## Directory convention
 

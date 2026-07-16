@@ -2,9 +2,9 @@
 
 ## Current state
 
-The repository is pre-production and has no accepted execution results. Contract design is converged on three lifecycle v0 lanes: Fastify, Beets, and Terraform. Each lane orders feature implementation, behavior-preserving refactor, and code review/correction in one persistent workflow.
+The repository is in production token-evidence collection. Fastify, Beets, and Terraform each have two retained operationally valid baselines. A Caveman `r1` treatment screen is complete across all three lanes; verifier and review results remain diagnostic rather than eligibility gates.
 
-## Exit criteria before production
+## Production entry evidence
 
 1. Every start patch independently applies to its pinned snapshot.
 2. Feature and review starts fail behavioral acceptance for the intended reason.
@@ -14,6 +14,6 @@ The repository is pre-production and has no accepted execution results. Contract
 6. Qualification evidence and frozen v0 execution contracts match registry fingerprints.
 7. Repository validation and contract tests pass.
 
-## First production step
+## Next production step
 
-Run one isolated bare baseline replicate per lane. Review correctness and final-tree quality before any treatment run or token comparison. A failed fixture or verifier contract is a fixture failure, not a model result; repair v0 before accepting evidence.
+Treat the Caveman, RTK, and Serena `r1` results as initial natural-use assignment screens, not stable population estimates. Their matched aggregate provider-token changes were -14.05%, -12.72%, and -3.27%, respectively. Preserve these first valid samples. Use preregistered compatible natural-use replication—not outcome-selected reruns, forced invocation, or post-hoc command-count reinterpretation—for the next inference step.

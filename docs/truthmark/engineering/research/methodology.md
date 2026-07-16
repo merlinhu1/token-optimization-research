@@ -16,7 +16,7 @@ It keeps methodology, report prose, claim auditing, and prior-art framing aligne
 
 This doc covers report-writing and methodology maintenance.
 
-Benchmark protocol details, quality gates, and stack compatibility are owned by neighboring truth docs.
+Benchmark protocol details, quality diagnostics, and stack compatibility are owned by neighboring truth docs.
 
 ## Current Implementation Behavior
 

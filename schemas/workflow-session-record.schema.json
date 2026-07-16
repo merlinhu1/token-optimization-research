@@ -843,33 +843,6 @@
     {
       "if": {
         "properties": {
-          "frozen_protocol": {
-            "properties": {
-              "protocol_id": {
-                "pattern": "-v3$"
-              }
-            },
-            "required": [
-              "protocol_id"
-            ]
-          }
-        },
-        "required": [
-          "frozen_protocol"
-        ]
-      },
-      "then": {
-        "required": [
-          "frozen_protocol",
-          "selected_execution",
-          "docker_image_identity",
-          "tool_adapter_identity"
-        ]
-      }
-    },
-    {
-      "if": {
-        "properties": {
           "schema_version": {
             "const": 2
           }
@@ -880,7 +853,11 @@
       },
       "then": {
         "required": [
-          "execution_integrity"
+          "execution_integrity",
+          "frozen_protocol",
+          "selected_execution",
+          "docker_image_identity",
+          "tool_adapter_identity"
         ],
         "properties": {
           "task_sequence": {
