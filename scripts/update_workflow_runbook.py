@@ -100,15 +100,22 @@ def render() -> str:
     candidate_text = "\n".join(candidate_lines) if candidate_lines else "_None._"
 
     if sequences:
-        first_sequence = sequences[0]["id"]
-        execution_text = f"""The active sequence list is non-empty. Freeze a protocol, run a no-model prepare, then run the canonical baseline first:
+        prepare_commands = "\n".join(
+            f"python3 scripts/run_sequential_workflow_matrix.py {sequence['id']} --prepare-only"
+            for sequence in sequences
+        )
+        baseline_commands = "\n".join(
+            f"python3 scripts/run_sequential_workflow_matrix.py {sequence['id']}"
+            for sequence in sequences
+        )
+        execution_text = f"""Freeze one protocol per active lane, run no-model preparation for all current production lanes, then run each canonical baseline:
 
 ```bash
-python3 scripts/run_sequential_workflow_matrix.py {first_sequence} --prepare-only
-python3 scripts/run_sequential_workflow_matrix.py {first_sequence} --treatment-profile <profile-id>
+{prepare_commands}
+{baseline_commands}
 ```
 
-Stop before treatment if the baseline fails any frozen gate."""
+After a lane has a reviewed reusable baseline, launch its matched treatment with `python3 scripts/run_sequential_workflow_matrix.py <sequence-id> --treatment-profile <profile-id>`. Stop before treatment if that lane's baseline fails any frozen gate."""
     else:
         execution_text = "Paid lane, pair, and matrix execution is disabled because no sequence is active. Planned sequences accept `--prepare-only` for fixture repair, but non-prepare runs fail before model execution."
 
