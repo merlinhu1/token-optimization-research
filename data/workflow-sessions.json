@@ -7881,7 +7881,7 @@
       "experiment_group_id": "fastify-fastify-canonical-baseline-d1be8ed202a8-sequential-workflow-r2",
       "objective": "individual_tool_effectiveness",
       "evidence_stage": "reproduction",
-      "status": "completed",
+      "status": "excluded",
       "session_role": "baseline",
       "replicate_index": 2,
       "frozen_protocol": {
@@ -8298,17 +8298,15 @@
         }
       ],
       "software_quality": {
-        "quality_review_status": "reviewed",
-        "score_1_to_5": 2,
+        "quality_review_status": "not-reviewed",
         "reviewed_on": "2026-07-16",
-        "method": "Independent compact-artifact audit, final-tree reconstruction from the pinned fixture plus composite seed and final checkpoint, controller-verifier review, full TypeScript/lint gates, and differential upstream regression testing against the pinned fixed snapshot.",
+        "method": "Post-hoc fixture-contract audit with exact final-tree reconstruction, fixed-snapshot control, focused upstream rejection-log test, and counterfactual replay under the strengthened verifier.",
         "findings": [
-          "All five concealed task verifiers passed; provider/model task exits, tool-isolation audit, verifier-integrity checks, protocol identity, and manifest checks passed.",
-          "Reconstructed final tree passed npm run test:types (16 files, 1,280 assertions) and npm run lint.",
-          "Independent focused upstream test failed on the submitted final tree: node --test --test-name-pattern=\"rejected incoming connections should be logged\" test/close.test.js reported the expected \"request aborted\" log was missing.",
-          "The same focused upstream test passed on the untouched pinned fixed snapshot, proving the missing request-aborted log is a submission regression rather than an environment/order artifact.",
-          "A separate close-test timeout in \"shutsdown while keep-alive connections are active (non-async, custom)\" reproduced on the fixed snapshot and was not attributed to the submission.",
-          "Because the observable logging regression affects existing upstream behavior outside the concealed acceptance set, the green controller outcome is quality-rejected and not objective-accepted."
+          "The original five controller verifiers passed and the compact artifact integrity checks remain valid.",
+          "The submitted final tree fails the existing upstream rejected-connection log test while the pinned fixed snapshot passes.",
+          "The original public prompt required 503 metadata and a message identifying that the server was closing, but did not disclose the acceptance-critical request-aborted compatibility identifier.",
+          "The submission implemented a server-closing message that satisfied the disclosed prompt; therefore the missing identifier is an underspecified prompt/fixture defect, not fair model-capability evidence.",
+          "The corrected current prompt now discloses the compatibility identifier and exact visible focused test; the strengthened verifier passes fixed and fails both the composite seed and historical submission."
         ],
         "review_evidence": [
           "sources/evaluations/workflow-sessions/baseline-fastify-20260715-p-d1be8ed202a8-r2/run.json",
@@ -8319,7 +8317,11 @@
         "tasks_attempted": 5,
         "tasks_passed": 5,
         "final_verifier_passed": true,
-        "functional_verifier_passed": true
+        "functional_verifier_passed": true,
+        "quality_score": null,
+        "critical_failures": [
+          "evaluation fixture invalid; historical quality rejection is not fair model-capability evidence"
+        ]
       },
       "execution_integrity": {
         "verifier_integrity_passed": true,
@@ -8336,19 +8338,25 @@
         "manifest": "sources/evaluations/workflow-sessions/baseline-fastify-20260715-p-d1be8ed202a8-r2/manifest.sha256"
       },
       "interpretation": {
-        "accepted": false,
-        "objective_metric_recorded": true,
-        "objective_claim_status": "quality-rejected-existing-upstream-regression",
-        "comparison_eligibility": "excluded",
-        "exclusion_reason": "Independent differential review proved an existing upstream close/logging test passes on the fixed snapshot and fails on the submitted final tree because the request-aborted log is missing.",
-        "notes": "Current Fastify production lane. Controller functional score is 5/5, but independent software-quality review is primary and rejects this baseline artifact. The replicate remains occupied and must not be silently rerun.",
-        "functional_tasks_passed": 5,
-        "functional_tasks_total": 5,
-        "correctness_score": 1.0,
+        "accepted_for_execution": false,
+        "accepted_for_objective": false,
+        "claim_status": "invalid-fixture",
+        "comparison_baseline_session_id": "",
+        "exclusion_reason": "Invalid prompt contract: acceptance required the request-aborted compatibility identifier, but the public task disclosed only a server-closing message requirement.",
+        "notes": "Calibration evidence only. Preserve provider-reported tokens and immutable artifacts; do not score model capability, reuse as a baseline, pair treatment, or rerun the frozen V1 contract.",
+        "scope_note": "Full warm-state lane; all five regressions were preseeded and disclosed sequentially with final-only verification.",
+        "evaluation_validity": "invalid-fixture",
+        "primary_objective_hard_baseline": false,
+        "usable_for_primary_objective_token_comparison": false,
+        "invalidity_reasons": [
+          "acceptance-critical request-aborted log identifier was not disclosed by the original prompt"
+        ],
         "primary_metric": "total_provider_tokens",
         "primary_metric_value": 78911126,
-        "paired_baseline_replicate": 2,
-        "replicate_count": 1
+        "functional_tasks_passed": 5,
+        "functional_tasks_total": 5,
+        "replicate_count": 1,
+        "comparison_eligibility": "excluded"
       }
     },
     {
