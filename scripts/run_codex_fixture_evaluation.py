@@ -59,6 +59,7 @@ FORBIDDEN_BASELINE_TERMS = [
     "cavemem",
     "cartog",
     "codescope",
+    "swarmvault",
     "sigmap",
     "jcodemunch",
     "jcodemunch-mcp",
@@ -80,6 +81,8 @@ CODESCOPE_BIN = CODESCOPE_RELEASE_ROOT / "codescope"
 CODESCOPE_SURREAL_BIN = CODESCOPE_RELEASE_ROOT / "surreal"
 CODESCOPE_NEUTRAL_MCP_SOURCE = ROOT / "scripts" / "run_codescope_neutral_mcp.py"
 CODESCOPE_NEUTRAL_MCP = Path("/opt/data/tool-candidates/codescope-adapter/run_codescope_neutral_mcp.py")
+SWARMVAULT_ROOT = Path("/opt/data/tool-candidates/swarmvault")
+SWARMVAULT_CLI = SWARMVAULT_ROOT / "packages" / "cli" / "dist" / "index.js"
 SERENA_ROOT = Path("/opt/data/tool-candidates/serena")
 TOKEN_SAVIOR_ROOT = Path("/opt/data/tool-candidates/token-savior")
 GRAPHIFY_ROOT = Path("/opt/data/tool-candidates/graphify")
@@ -192,6 +195,42 @@ TOOL_CONFIGS: dict[str, dict[str, Any]] = {
         "preflight_command": [str(CODESCOPE_BIN), "--version"],
         "default_tool_state": "cold-auto-index",
         "initialize_instructions_policy": "strip-mandatory-uptake-text",
+    },
+    "swarmvault": {
+        "display_name": "SwarmVault",
+        "lane_name": "swarmvault-owner",
+        "surface": "broad-context-owner/mcp",
+        "mcp_server": "swarmvault",
+        "allowed_terms": ["swarmvault"],
+        "data_dir_name": "swarmvault",
+        "mcp_command": "/bin/bash",
+        "mcp_args": [
+            "-lc",
+            f"cd {{tool_data_dir}}/workspace && exec {NODE_TOOLCHAIN_ROOT}/bin/node {SWARMVAULT_CLI} mcp",
+        ],
+        "env": {
+            "SWARMVAULT_OUT": ".swarmvault",
+            "SWARMVAULT_NO_NOTICES": "1",
+        },
+        "mounts": [str(SWARMVAULT_ROOT)],
+        "preflight_command": [str(NODE_TOOLCHAIN_ROOT / "bin" / "node"), str(SWARMVAULT_CLI), "--version"],
+        "default_tool_state": "warm-index",
+        "warmup": {
+            "kind": "knowledge-graph-build",
+            "command": [
+                "/bin/bash",
+                "-lc",
+                (
+                    f"set -euo pipefail; mkdir -p {{tool_data_dir}}/workspace; cd {{tool_data_dir}}/workspace; "
+                    f"{NODE_TOOLCHAIN_ROOT}/bin/node {SWARMVAULT_CLI} init --lite; "
+                    f"{NODE_TOOLCHAIN_ROOT}/bin/node {SWARMVAULT_CLI} ingest {{repo}} --max-files 500; "
+                    f"{NODE_TOOLCHAIN_ROOT}/bin/node {SWARMVAULT_CLI} compile"
+                ),
+            ],
+            "output_name": "swarmvault-warmup-output.txt",
+            "metadata_name": "swarmvault-warmup-metadata.json",
+            "timeout_seconds": 3600,
+        },
     },
     "serena": {
         "display_name": "Serena",
