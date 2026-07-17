@@ -1569,6 +1569,14 @@ def validate_tool_dossier_snapshots(errors: list[str]) -> None:
 
 
 def validate_frozen_protocol_bindings(errors: list[str]) -> None:
+    session_doc = json.loads((ROOT / "data/workflow-sessions.json").read_text())
+    executed_protocols: dict[str, set[str]] = {}
+    for session in session_doc.get("sessions", []):
+        frozen = session.get("frozen_protocol", {})
+        protocol_path = frozen.get("path")
+        protocol_sha = frozen.get("sha256")
+        if isinstance(protocol_path, str) and isinstance(protocol_sha, str):
+            executed_protocols.setdefault(protocol_path, set()).add(protocol_sha)
     try:
         from scripts import run_codex_workflow_evaluation as runner
     except Exception as exc:
@@ -1633,7 +1641,16 @@ def validate_frozen_protocol_bindings(errors: list[str]) -> None:
                     timeout_seconds_per_task=timeout_for_execution,
                     docker_image=str(docker_image or runner.DEFAULT_DOCKER_IMAGE),
                 )
-                if selected.get("descriptor") != expected_execution or selected.get("descriptor_sha256") != runner._json_hash(expected_execution):
+                protocol_rel = path.relative_to(ROOT).as_posix()
+                frozen_hashes = executed_protocols.get(protocol_rel)
+                if frozen_hashes:
+                    actual_protocol_sha = hashlib.sha256(path.read_bytes()).hexdigest()
+                    if frozen_hashes != {actual_protocol_sha}:
+                        errors.append(
+                            f"executed protocol {path.name} bytes do not match retained session references"
+                        )
+                        continue
+                elif selected.get("descriptor") != expected_execution or selected.get("descriptor_sha256") != runner._json_hash(expected_execution):
                     errors.append(f"execution contract {path.name} has a stale selected-execution descriptor")
                     continue
                 current_sequence_bindings.add(str(seq["id"]))
