@@ -4,6 +4,7 @@ import argparse
 import base64
 import hashlib
 import json
+import subprocess
 import sys
 import tempfile
 import unittest
@@ -259,6 +260,36 @@ class OpenCodeWorkflowIntegrationContractTest(unittest.TestCase):
             model_condition=condition,
         )
         self.assertEqual(command[1], "scripts/run_opencode_workflow_model_condition.py")
+
+    def test_matrix_dry_run_resolves_published_codex_baselines_after_runtime_binding(self) -> None:
+        proc = subprocess.run(
+            [
+                sys.executable,
+                "scripts/run_sequential_workflow_matrix.py",
+                "fastify-lifecycle-sequence-v0",
+                "beets-lifecycle-sequence-v0",
+                "terraform-lifecycle-sequence-v0",
+                "--replicate-index",
+                "0",
+                "--max-parallel",
+                "1",
+                "--workflow-model-condition-id",
+                self.CONDITION_ID,
+                "--workflow-model",
+                "gpt-5.6-sol",
+                "--workflow-reasoning-effort",
+                "high",
+                "--treatment-profile",
+                self.PROFILE_ID,
+                "--dry-run",
+            ],
+            cwd=ROOT,
+            text=True,
+            capture_output=True,
+        )
+        self.assertEqual(proc.returncode, 0, proc.stderr)
+        plan = json.loads(proc.stdout)
+        self.assertEqual(len(plan["jobs"]), 3)
 
     def test_runtime_profile_prompt_is_native_runtime_not_token_tool_guidance(self) -> None:
         guidance = runner.profile_prompt_guidance(self.PROFILE_ID)
