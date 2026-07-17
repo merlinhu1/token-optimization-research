@@ -2242,6 +2242,19 @@ def validate_workflow_session_contract(session: dict, canonical_profile: dict | 
                 )
 
 
+def expected_workflow_session_role(profile_id: str, canonical_profile: dict | None) -> str | None:
+    if profile_id == "baseline-bare-codex":
+        return "baseline"
+    if not isinstance(canonical_profile, dict):
+        return None
+    profile_type = canonical_profile.get("profile_type")
+    if profile_type == "tool_stack":
+        return "stack_treatment"
+    if profile_type == "replacement_runtime":
+        return "replacement_runtime"
+    return "individual_tool_treatment"
+
+
 def validate_workflow_sessions(session_doc: dict, sequence_ids: set[str], fixture_doc: dict, profiles_by_id: dict[str, dict], runtime_ids: set[str], model_condition_ids: set[str], errors: list[str]) -> None:
     if type(session_doc.get("schema_version")) is not int or session_doc.get("schema_version") != 1:
         errors.append("data/workflow-sessions.json must use schema_version 1")
@@ -2299,15 +2312,7 @@ def validate_workflow_sessions(session_doc: dict, sequence_ids: set[str], fixtur
         if profile_id and canonical_profile is None:
             errors.append(f"workflow session {sid} references unknown profile {profile_id}")
         baseline_profile = profile_id == "baseline-bare-codex"
-        expected_session_role = (
-            "baseline"
-            if baseline_profile
-            else "stack_treatment"
-            if isinstance(canonical_profile, dict) and canonical_profile.get("profile_type") == "tool_stack"
-            else "individual_tool_treatment"
-            if isinstance(canonical_profile, dict)
-            else None
-        )
+        expected_session_role = expected_workflow_session_role(profile_id, canonical_profile) if profile_id else None
         schema_version = session.get("schema_version")
         valid_schema_version = type(schema_version) is int and schema_version in {1, 2}
         if not valid_schema_version:
