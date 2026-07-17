@@ -1,7 +1,7 @@
 ---
 status: active
 truth_kind: engineering-contract
-last_reviewed: 2026-07-19
+last_reviewed: 2026-07-29
 ---
 
 # Token Accounting And Evaluation Contracts
@@ -17,7 +17,9 @@ This contract governs lifecycle-v0 provider-token samples, baseline reuse, compa
 ## Current Implementation Behavior
 
 - The active portfolio contains Fastify, Beets, and Terraform lifecycle-v0 sequences.
-- The runner captures cumulative provider usage across one persistent sequential model session.
+- The runner captures cumulative provider usage across one persistent sequential agent session.
+- Codex usage comes from provider-reported Codex JSONL snapshots. OpenCode usage comes from unique incremental `step_finish` parts; fresh input, cache read, cache write, visible output, and reasoning are normalized without counting reasoning twice.
+- Replacement-runtime protocols may bind distinct runtime-specific model-condition IDs while holding provider, model, reasoning effort, fixtures, prompts, and baseline pool fixed. The frozen protocol identifies the Codex baseline condition and replacement-runtime treatment condition separately.
 - The matrix reuses the first operationally valid baseline for a causal comparison fingerprint and replicate.
 - Repository validation requires complete provider usage, structural isolation, clean execution integrity, and recoverable compact evidence—not verifier success or source review.
 - Before any non-baseline provider launch, both repository validation and the direct runner require exact parity approval plus a current provider-free qualification receipt for every active fixture/profile protocol binding; MCP profiles additionally require non-empty `tools/list` proof.
@@ -34,6 +36,9 @@ This contract governs lifecycle-v0 provider-token samples, baseline reuse, compa
 - `data/workflow-task-sequences.json`
 - `data/workflow-sessions.json`
 - `scripts/run_codex_workflow_evaluation.py`
+- `scripts/opencode_workflow_adapter.py`
+- `scripts/extract_opencode_usage.py`
+- `scripts/workflow_model_condition_runtime.py`
 - `scripts/prepare_pinned_codex_marketplace.py`
 - `scripts/trust_codex_plugin_hooks.py`
 - `scripts/install_jcodemunch_codex_guidance.py`
@@ -62,7 +67,7 @@ The repository measures cumulative provider-reported workflow tokens under fair,
 - Concealed-verifier outcomes and source-quality reviews are diagnostic model-behavior fields. They do not gate token accounting or baseline reuse.
 - Never rerun because the model failed a verifier, produced imperfect code, or received a low review score.
 - Rerun only for experiment invalidity or incompleteness: fixture/verifier defect, wrong controller assets, corrupt/missing usage, failed isolation/integrity, or incomplete prompt execution.
-- Baseline/treatment comparisons require matching fixture, sequence, model condition, execution identity, causal comparison fingerprint, and replicate.
+- Baseline/treatment comparisons require matching fixture, sequence, provider, model, reasoning effort, causal comparison fingerprint, and replicate. Runtime/model-condition IDs must also match unless the frozen profile is explicitly a replacement-runtime treatment; in that case the runtime difference is the experimental variable and both condition IDs are frozen separately.
 - Report absolute provider-token totals with percentage changes.
 - Treatment installation/configuration is valid treatment exposure; observed use may be zero and remains descriptive.
 - A prompt/verifier/fixture defect is attributed to the fixture, not the model.
@@ -86,6 +91,9 @@ Update this document whenever token eligibility, comparison identity, provider a
 - ../../../../docs/evaluations/operations/runbook.md
 - ../../../../docs/evaluations/design/token-and-quality-policy.md
 - ../../../../scripts/run_codex_workflow_evaluation.py
+- ../../../../scripts/opencode_workflow_adapter.py
+- ../../../../scripts/extract_opencode_usage.py
+- ../../../../scripts/workflow_model_condition_runtime.py
 - ../../../../scripts/prepare_pinned_codex_marketplace.py
 - ../../../../scripts/trust_codex_plugin_hooks.py
 - ../../../../scripts/install_jcodemunch_codex_guidance.py

@@ -35,6 +35,9 @@ CODEX_RUNTIME_ROOT = Path(os.environ.get(
 CODEX_HOST_EXECUTABLE = Path(os.environ.get("TOKEN_EVAL_CODEX_EXECUTABLE", "/opt/data/.local/bin/codex"))
 CODEX_CONTAINER_RUNTIME_ROOT = Path("/opt/data/codex-runtime")
 CODEX_CONTAINER_BIN_ROOT = Path("/opt/data/codex-entry")
+OPENCODE_BIN = Path("/opt/data/tool-candidates/opencode-runtime/node_modules/opencode-ai/bin/opencode.exe")
+OPENCODE_BIN_SHA256 = "7c4d91c84d2bfdeabb59257e3490c5e5acb08f2aacb3e42f3ddc296a1c3f1aca"
+OPENCODE_ADAPTER = Path("/opt/data/tool-candidates/opencode-adapter/opencode_workflow_adapter.py")
 FORBIDDEN_BASELINE_TERMS = [
     "lean-ctx",
     "mcp_lean_ctx",
@@ -89,6 +92,7 @@ PROFILE_TOOL_CONFIG_OVERRIDES = {
     "stack-tokenjuice-jcodemunch-mcp": "tokenjuice-jcodemunch-mcp-stack",
     "artifact-ponytail-codex-plugin-v1": "ponytail-codex-plugin-v1",
     "behavior-caveman-codex-skill-v1": "caveman-codex-skill-v1",
+    "runtime-opencode-codex-product-v1": "opencode-codex-product-v1",
 }
 CODEGRAPH_BIN = Path("/opt/data/tool-candidates/codegraph/dist/bin/codegraph.js")
 CARTOG_ROOT = Path("/opt/data/tool-candidates/cartog")
@@ -132,6 +136,38 @@ PONYTAIL_MARKETPLACE_PREPARER = "{repository_root}/scripts/prepare_pinned_codex_
 CODEX_PLUGIN_HOOK_TRUSTER = "{repository_root}/scripts/trust_codex_plugin_hooks.py"
 
 TOOL_CONFIGS: dict[str, dict[str, Any]] = {
+    "opencode-codex-product-v1": {
+        "display_name": "OpenCode CLI 1.18.9",
+        "lane_name": "runtime-opencode-codex-product-v1",
+        "surface": "replacement-agent-runtime",
+        "allowed_terms": ["opencode"],
+        "data_dir_name": "opencode-runtime",
+        "mounts": [str(OPENCODE_ADAPTER)],
+        "executable": str(OPENCODE_BIN),
+        "expected_executable_sha256": OPENCODE_BIN_SHA256,
+        "binary_mount_target": str(OPENCODE_BIN),
+        "codex_wrapper": {
+            "command": "/usr/bin/python3",
+            "args": [
+                str(OPENCODE_ADAPTER),
+                "--opencode-binary",
+                str(OPENCODE_BIN),
+                "--expected-opencode-sha256",
+                OPENCODE_BIN_SHA256,
+            ],
+        },
+        "preflight_command": [
+            "/usr/bin/python3",
+            str(OPENCODE_ADAPTER),
+            "--opencode-binary",
+            str(OPENCODE_BIN),
+            "--expected-opencode-sha256",
+            OPENCODE_BIN_SHA256,
+            "--probe",
+        ],
+        "default_tool_state": "native-runtime",
+        "tool_manifest_identity": "current-file-v1",
+    },
     "lean-ctx": {
         "display_name": "LeanCTX (historical MCP-only partial profile)",
         "lane_name": "retrieval-leanctx",

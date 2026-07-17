@@ -29,6 +29,7 @@ from typing import Any
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "scripts"))
 import extract_codex_usage  # type: ignore
+import extract_opencode_usage  # type: ignore
 import run_codex_fixture_evaluation as fixture  # type: ignore
 import validate_repository as repository_validation  # type: ignore
 
@@ -93,6 +94,7 @@ SUPPORTED_WORKFLOW_TOOL_PROFILES = {
     "stack-tokenjuice-jcodemunch-mcp": "tokenjuice-jcodemunch-mcp-stack",
     "behavior-caveman-codex-skill-v1": "caveman-codex-skill-v1",
     "artifact-ponytail-codex-plugin-v1": "ponytail-codex-plugin-v1",
+    "runtime-opencode-codex-product-v1": "opencode-codex-product-v1",
 }
 
 # Existing profile protocols were qualified against this runner manifest. The
@@ -122,6 +124,8 @@ def build_profile_meta() -> dict[str, dict[str, Any]]:
                 if profile_type == "control"
                 else "stack_treatment"
                 if profile_type == "tool_stack"
+                else "replacement_runtime"
+                if profile_type == "replacement_runtime"
                 else "individual_tool_treatment"
             ),
             "profile_type": profile_type,
@@ -298,6 +302,29 @@ def profile_registry_entry(profile_id: str, root: Path = ROOT) -> dict[str, Any]
         if profile.get("id") == profile_id:
             return profile
     raise KeyError(f"workflow profile {profile_id} is missing from data/evaluation-profiles.json")
+
+
+def profile_runtime_id(profile_id: str, root: Path = ROOT) -> str:
+    return str(profile_registry_entry(profile_id, root).get("substrate") or "codex-cli")
+
+
+def runtime_agent_name(runtime_id: str) -> str:
+    return "OpenCode CLI" if runtime_id == "opencode-cli" else "Codex CLI"
+
+
+def runtime_version_from_preflight(profile_id: str, run_dir: Path) -> str:
+    if profile_runtime_id(profile_id) == "opencode-cli":
+        path = run_dir / "tool-preflight.txt"
+        if path.is_file():
+            try:
+                value = json.loads(path.read_text())
+            except json.JSONDecodeError:
+                value = {}
+            version = value.get("version") if isinstance(value, dict) else None
+            return str(version) if isinstance(version, str) else ""
+        return ""
+    smoke = (run_dir / "docker-smoke-output.txt").read_text(errors="replace") if (run_dir / "docker-smoke-output.txt").exists() else ""
+    return next((line.strip() for line in smoke.splitlines() if "codex" in line.lower() and any(ch.isdigit() for ch in line)), "")
 
 
 def assert_profile_runnable(profile_id: str, root: Path = ROOT) -> None:
@@ -1497,7 +1524,7 @@ def execution_condition_descriptor(
     role = meta["session_role"]
     baseline_fingerprint = baseline_protocol_fingerprint(seq, root)
     tool_adapter = tool_adapter_identity(profile_id, root)
-    return {
+    descriptor = {
         "version": "execution-condition-v1",
         "sequence_id": seq["id"],
         "execution_role": role,
@@ -1562,6 +1589,28 @@ def execution_condition_descriptor(
             "comparison_policy": "paired baseline and treatment must share this baseline pool fingerprint and replicate",
         },
     }
+    runtime_id = profile_runtime_id(profile_id, root)
+    if runtime_id != "codex-cli":
+        descriptor["agent_condition"] = {
+            "runtime_id": runtime_id,
+            "provider": "openai",
+            "model": DEFAULT_WORKFLOW_MODEL,
+            "model_condition_id": DEFAULT_WORKFLOW_MODEL_CONDITION_ID,
+            "reasoning_effort": DEFAULT_WORKFLOW_REASONING_EFFORT,
+            "runtime_version_condition": "captured-at-run-and-bound-to-record",
+        }
+        descriptor["runtime"]["network_isolation"] = {
+            "provider_access": True,
+            "model_shell_network_access": False,
+            "model_shell_enforcement": "seccomp denies AF_INET and AF_INET6 socket creation for the shell process and descendants",
+            "agent_web_tools": "disabled-by-permission",
+            "external_retrieval_audit": "fail-closed",
+        }
+        descriptor["runtime"]["isolation_policy"] = (
+            "fresh lane-specific agent home/XDG state; provider-only network with model shell and agent web tools disabled; "
+            "sequential one-task prompt delivery; controller seed/verifier scripts excluded while declared model-visible acceptance tests are retained"
+        )
+    return descriptor
 
 
 def sequence_model_visible_acceptance_paths(seq: dict[str, Any]) -> list[str]:
@@ -2650,7 +2699,7 @@ def base_record(session_id: str, seq: dict[str, Any], profile_id: str, project: 
             }
         },
         "agent": {
-            "runtime_id": "codex-cli",
+            "runtime_id": profile_runtime_id(profile_id),
             "model_condition_id": DEFAULT_WORKFLOW_MODEL_CONDITION_ID,
             "provider": "openai",
             "model": DEFAULT_WORKFLOW_MODEL,
@@ -2662,6 +2711,17 @@ def base_record(session_id: str, seq: dict[str, Any], profile_id: str, project: 
 
 def profile_prompt_guidance(profile_id: str) -> str:
     pmeta = PROFILE_META[profile_id]
+    if pmeta["profile_type"] == "replacement_runtime":
+        return (
+            "# Evaluation isolation contract\n\n"
+            "You are running inside the `runtime-opencode-codex-product-v1` replacement-runtime lane. "
+            "This is an OpenCode substrate condition: native shell, file, git, and repository edit operations are allowed. "
+            "Do not use external retrieval, compression, memory, MCP, external skills/plugins, subagents, or token-saving tools. "
+            "OpenCode web tools are disabled and model-launched shell commands have no network access; do not attempt curl, wget, browsers, package downloads, or any other external retrieval. "
+            "Work only inside the target repository. The controller runs concealed verification only after the full task lane; "
+            "do not inspect or modify evaluation harness files.\n\n"
+            "---\n\n"
+        )
     tool_id = pmeta.get("tool_id")
     if not tool_id:
         return (
@@ -3167,6 +3227,12 @@ def run_final_verifier(seq: dict[str, Any], record: dict[str, Any], codex_home: 
     return proc.returncode
 
 
+def build_provider_usage(profile_id: str, events_path: Path) -> dict[str, Any]:
+    if profile_runtime_id(profile_id) == "opencode-cli":
+        return extract_opencode_usage.build_summary(events_path)
+    return extract_codex_usage.build_summary(events_path)
+
+
 def concatenate_events(run_dir: Path, task_count: int) -> None:
     combined = run_dir / "codex-events.jsonl"
     with combined.open("w") as out:
@@ -3393,6 +3459,7 @@ def workflow_session_record(
     comparison_baseline_session_id: str = "",
 ) -> dict[str, Any]:
     pmeta = PROFILE_META[profile_id]
+    runtime_id = profile_runtime_id(profile_id)
     accepted = bool(summary.get("accepted"))
     if profile_id == "baseline-bare-codex" and comparison_baseline_session_id:
         raise ValueError("baseline session must not carry a comparison baseline binding")
@@ -3453,10 +3520,10 @@ def workflow_session_record(
             "component_ids": pmeta["component_ids"],
         },
         "agent": {
-            "runtime_id": "codex-cli",
+            "runtime_id": runtime_id,
             "model_condition_id": DEFAULT_WORKFLOW_MODEL_CONDITION_ID,
-            "name": "Codex CLI",
-            "version": summary.get("codex_version", ""),
+            "name": runtime_agent_name(runtime_id),
+            "version": summary.get("agent_runtime_version", summary.get("codex_version", "")),
             "provider": "openai",
             "model": DEFAULT_WORKFLOW_MODEL,
             "reasoning_effort": DEFAULT_WORKFLOW_REASONING_EFFORT,
@@ -3466,7 +3533,7 @@ def workflow_session_record(
         },
         "state_policy": sequence_doc().get("state_policy_defaults", {}),
         "cumulative_token_usage": {
-            "measurement_source": "codex-jsonl-usage-events",
+            "measurement_source": usage.get("measurement_source"),
             "fresh_input_tokens": usage.get("fresh_input_tokens"),
             "cached_input_tokens": usage.get("cached_input_tokens"),
             "cache_write_tokens": usage.get("cache_write_tokens"),
@@ -3474,7 +3541,7 @@ def workflow_session_record(
             "reasoning_tokens": usage.get("reasoning_tokens"),
             "total_provider_tokens": usage.get("total_provider_tokens"),
             "tokens_per_accepted_task": tokens_per_accepted_task,
-            "accounting_basis": "Codex-reported token volume; monetary cost estimation is out of scope",
+            "accounting_basis": f"{runtime_agent_name(runtime_id)}-reported token volume; monetary cost estimation is out of scope",
         },
         "per_task_results": task_checkpoints,
         "software_quality": {
@@ -4023,7 +4090,7 @@ def _run_one_locked(args: argparse.Namespace) -> dict[str, Any]:
     (run_dir / "verifier-integrity.json").write_text(json.dumps({"checks": verifier_integrity_checks}, indent=2) + "\n")
     verifier_integrity_passed = all(check["passed"] for check in verifier_integrity_checks)
     concatenate_events(run_dir, len(ordered_tasks))
-    usage = extract_codex_usage.build_summary(run_dir / "codex-events.jsonl")
+    usage = build_provider_usage(profile_id, run_dir / "codex-events.jsonl")
     (run_dir / "provider-usage.json").write_text(json.dumps(usage, indent=2) + "\n")
     task_checkpoints = complete_task_checkpoints(ordered_tasks, task_checkpoints)
     verifier_results: list[dict[str, Any]] = []
@@ -4058,8 +4125,7 @@ def _run_one_locked(args: argparse.Namespace) -> dict[str, Any]:
         and verifier_integrity_passed
         and not usage.get("warnings")
     )
-    smoke = (run_dir / "docker-smoke-output.txt").read_text(errors="replace") if (run_dir / "docker-smoke-output.txt").exists() else ""
-    codex_version = next((line.strip() for line in smoke.splitlines() if "codex" in line.lower() and any(ch.isdigit() for ch in line)), "")
+    agent_runtime_version = runtime_version_from_preflight(profile_id, run_dir)
     lane_contract = warm_lane_contract(seq)
     prepare_state = json.loads(seed_delivery_path(run_dir).read_text())
     concealment_verified = bool(prepare_state.get("concealment", {}).get("passed"))
@@ -4127,9 +4193,10 @@ def _run_one_locked(args: argparse.Namespace) -> dict[str, Any]:
         },
         "accepted": accepted,
         "timeout_seconds": args.timeout_per_task * len(ordered_tasks),
-        "codex_version": codex_version,
+        "codex_version": agent_runtime_version if profile_runtime_id(profile_id) == "codex-cli" else "",
+        "agent_runtime_version": agent_runtime_version,
         "token_usage": {
-            "measurement_source": "codex-jsonl-usage-events",
+            "measurement_source": usage.get("measurement_source"),
             **{key: usage.get(key) for key in PILOT_PROVIDER_USAGE_FIELDS},
         },
         "usage_warnings": usage.get("warnings"),
