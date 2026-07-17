@@ -19,6 +19,7 @@ from scripts import opencode_workflow_adapter as adapter
 from scripts import run_codex_fixture_evaluation as fixture
 from scripts import run_codex_workflow_evaluation as runner
 from scripts import run_sequential_workflow_matrix as matrix
+from scripts import validate_repository as repository_validation
 from scripts import workflow_model_condition_runtime as condition_runtime
 
 
@@ -55,6 +56,13 @@ def step_event(
 
 
 class OpenCodeWorkflowAdapterTest(unittest.TestCase):
+    def test_runtime_environment_disables_auxiliary_network_and_binds_denied_shell(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            env, _ = adapter._runtime_env(Path(tmp))
+        config = json.loads(env["OPENCODE_CONFIG_CONTENT"])
+        self.assertEqual(env["OPENCODE_DISABLE_MODELS_FETCH"], "1")
+        self.assertEqual(config["shell"], "/usr/local/bin/eval-network-denied-shell")
+
     def test_binary_hash_is_enforced_before_launch(self) -> None:
         with tempfile.TemporaryDirectory() as td:
             binary = Path(td) / "opencode"
@@ -232,6 +240,8 @@ class OpenCodeWorkflowIntegrationContractTest(unittest.TestCase):
             summary = runner.build_provider_usage(self.PROFILE_ID, events)
         self.assertEqual(summary["measurement_source"], "opencode-jsonl-step-finish-usage")
         self.assertEqual(summary["total_provider_tokens"], 15)
+        self.assertTrue(repository_validation.provider_usage_valid(summary))
+        self.assertIn("replacement_runtime", repository_validation.WORKFLOW_SESSION_ROLES)
 
     def test_model_condition_pair_uses_codex_baseline_and_opencode_treatment(self) -> None:
         selected, baseline = condition_runtime.resolve_condition_pair(ROOT, self.CONDITION_ID)
