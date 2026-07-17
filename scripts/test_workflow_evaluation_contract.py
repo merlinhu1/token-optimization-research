@@ -5,6 +5,7 @@ import concurrent.futures
 import copy
 import gzip
 import hashlib
+import importlib.util
 import inspect
 import json
 import os
@@ -4529,18 +4530,126 @@ class CorrectionContractTest(unittest.TestCase):
             }
             self.assertTrue(local_paths, profile_id)
 
-    def test_corrected_profile_artifact_labels_are_explicit_and_collision_free(self) -> None:
-        expected = {
-            "artifact-ponytail-codex-plugin-v1": "ponytail",
-            "behavior-caveman-codex-skill-v1": "caveman",
-            "retrieval-jcodemunch-codex-mcp-v2": "jcodemunch",
+    def test_runnable_profile_artifact_slugs_are_explicit_unique_and_canonical(self) -> None:
+        profile_doc = json.loads((ROOT / "data/evaluation-profiles.json").read_text())
+        non_runnable_statuses = {
+            "blocked-profile",
+            "historical-profile",
+            "deferred-profile",
+            "invalid-profile",
         }
-        labels = {
-            profile_id: runner.artifact_profile_label(profile_id)
-            for profile_id in expected
+        runnable = [
+            profile
+            for profile in profile_doc["profiles"]
+            if profile["id"] in runner.PROFILE_META
+            and profile["status"] not in non_runnable_statuses
+        ]
+        self.assertTrue(runnable)
+        for profile in runnable:
+            self.assertIn("artifact_slug", profile, profile["id"])
+            self.assertRegex(profile["artifact_slug"], r"^[a-z0-9]+(?:-[a-z0-9]+)*$")
+            self.assertEqual(runner.artifact_profile_label(profile["id"]), profile["artifact_slug"])
+        slugs = [profile["artifact_slug"] for profile in runnable]
+        self.assertEqual(len(slugs), len(set(slugs)))
+        self.assertEqual(runner.artifact_profile_label("headroom-default-codex"), "headroom")
+        self.assertEqual(runner.artifact_profile_label("terminal-headroom"), "headroom-proxy")
+        self.assertEqual(runner.artifact_profile_label("runtime-opencode-codex-product-v1"), "opencode")
+        self.assertNotIn(
+            "artifact_slug",
+            runner.profile_registry_entry("runtime-opencode-codex-product-v1"),
+        )
+
+    def test_profile_validation_rejects_missing_duplicate_and_generic_artifact_slugs(self) -> None:
+        profile_doc = {
+            "schema_version": 1,
+            "profiles": [
+                {
+                    "id": "first-profile",
+                    "profile_type": "individual_tool",
+                    "objective_scope": "individual_tool_effectiveness",
+                    "status": "screening-shortlist",
+                    "artifact_slug": "v1",
+                    "enabled_surfaces": [],
+                    "disabled_overlaps": [],
+                    "components": [],
+                    "install": {},
+                    "reset": {},
+                },
+                {
+                    "id": "second-profile",
+                    "profile_type": "individual_tool",
+                    "objective_scope": "individual_tool_effectiveness",
+                    "status": "screening-shortlist",
+                    "artifact_slug": "v1",
+                    "enabled_surfaces": [],
+                    "disabled_overlaps": [],
+                    "components": [],
+                    "install": {},
+                    "reset": {},
+                },
+                {
+                    "id": "third-profile",
+                    "profile_type": "individual_tool",
+                    "objective_scope": "individual_tool_effectiveness",
+                    "status": "screening-shortlist",
+                    "enabled_surfaces": [],
+                    "disabled_overlaps": [],
+                    "components": [],
+                    "install": {},
+                    "reset": {},
+                },
+            ],
         }
-        self.assertEqual(labels, expected)
-        self.assertEqual(len(set(labels.values())), len(labels))
+        errors: list[str] = []
+        validate_repository.validate_evaluation_profiles(profile_doc, {"fixtures": []}, errors)
+        self.assertTrue(any("generic artifact_slug" in error for error in errors), errors)
+        self.assertTrue(any("duplicate artifact_slug" in error for error in errors), errors)
+        self.assertTrue(any("missing artifact_slug" in error for error in errors), errors)
+
+    def test_current_sol_panel_is_registry_derived_complete_and_canonically_named(self) -> None:
+        generator_path = ROOT / "scripts/generate_current_evaluation_panel.py"
+        self.assertTrue(generator_path.is_file())
+        spec = importlib.util.spec_from_file_location("generate_current_evaluation_panel", generator_path)
+        assert spec is not None and spec.loader is not None
+        generator = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(generator)
+        output_name = "codex-openai-gpt-5-6-sol-high-r0-panel-results-20260729.json"
+        panel = generator.build_panel(
+            ROOT,
+            model_condition_id="codex-openai-gpt-5-6-sol-high",
+            replicate_index=0,
+            date="2026-07-29",
+        )
+        self.assertEqual(panel["audit_id"], output_name.removesuffix(".json"))
+        self.assertEqual(panel["profile_count"], 16)
+        self.assertEqual(panel["workflow_session_count"], 48)
+        self.assertEqual(panel["accepted_task_count"], 144)
+        self.assertEqual(len(panel["results_ranked_by_primary_metric"]), 16)
+        self.assertEqual(
+            {row["artifact_slug"] for row in panel["results_ranked_by_primary_metric"]},
+            {"cartog", "caveman", "codegraph", "codescope", "graphify", "headroom", "jcodemunch", "leanctx", "ponytail", "rtk", "serena", "sigmap", "snip", "swarmvault", "token-savior", "tokenjuice"},
+        )
+        output_path = ROOT / "sources/evaluations/audits" / output_name
+        self.assertEqual(json.loads(output_path.read_text()), panel)
+
+    def test_current_campaign_reports_use_stable_condition_scoped_names(self) -> None:
+        audit_root = ROOT / "sources/evaluations/audits"
+        canonical = {
+            "codex-openai-gpt-5-6-sol-high-r0-batch-01-preflight-attempt-20260729.json",
+            "codex-openai-gpt-5-6-sol-high-r0-batch-03-results-20260729.json",
+            "opencode-openai-gpt-5-6-sol-high-r0-screen-results-20260729.json",
+        }
+        legacy = {
+            "top-five-sol-high-r0-pre-provider-attempt-20260729.json",
+            "next-six-sol-high-r0-campaign-20260729.json",
+            "bare-opencode-sol-high-r0-20260729.json",
+        }
+        for name in canonical:
+            path = audit_root / name
+            self.assertTrue(path.is_file(), name)
+            self.assertEqual(json.loads(path.read_text())["audit_id"], path.stem)
+        for name in legacy:
+            self.assertFalse((audit_root / name).exists(), name)
 
     def test_generated_host_integration_identity_is_valid(self) -> None:
         identity = {

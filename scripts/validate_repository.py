@@ -448,6 +448,23 @@ FIXTURE_EVALUATION_USES = {
 }
 PROFILE_TYPES = {"control", "individual_tool", "tool_stack", "replacement_runtime", "installer_orchestrator", "comparator"}
 OBJECTIVES = {"individual_tool_effectiveness", "stack_effectiveness"}
+NON_RUNNABLE_PROFILE_STATUSES = {
+    "blocked-profile",
+    "historical-profile",
+    "deferred-profile",
+    "invalid-profile",
+}
+GENERIC_ARTIFACT_SLUGS = {
+    "codex",
+    "owner",
+    "product",
+    "profile",
+    "runtime",
+    "tool",
+    "v0",
+    "v1",
+    "v2",
+}
 EVALUATION_RECORD_TYPES = {"run", "paired_comparison", "aggregate_summary"}
 EVALUATION_RUN_ROLES = {"baseline", "individual_tool_treatment", "stack_treatment", "replacement_runtime", "audit_only"}
 EVALUATION_STATUSES = {"planned", "running", "completed", "failed", "excluded", "superseded"}
@@ -916,6 +933,7 @@ def validate_evaluation_profiles(profile_doc: dict, fixture_doc: dict, errors: l
         for profile_id in fixture.get("candidate_profiles", [])
     }
     seen: set[str] = set()
+    seen_artifact_slugs: dict[str, str] = {}
     for index, profile in enumerate(profiles):
         if not isinstance(profile, dict):
             errors.append(f"profile record at index {index} must be an object")
@@ -927,6 +945,22 @@ def validate_evaluation_profiles(profile_doc: dict, fixture_doc: dict, errors: l
         if pid in seen:
             errors.append(f"duplicate evaluation profile id: {pid}")
         seen.add(pid)
+        if profile.get("status") not in NON_RUNNABLE_PROFILE_STATUSES:
+            artifact_slug = profile.get("artifact_slug")
+            if not isinstance(artifact_slug, str) or not artifact_slug:
+                errors.append(f"runnable profile {pid} missing artifact_slug")
+            elif re.fullmatch(r"[a-z0-9]+(?:-[a-z0-9]+)*", artifact_slug) is None:
+                errors.append(f"runnable profile {pid} has invalid artifact_slug: {artifact_slug}")
+            else:
+                if artifact_slug in GENERIC_ARTIFACT_SLUGS:
+                    errors.append(f"runnable profile {pid} has generic artifact_slug: {artifact_slug}")
+                previous = seen_artifact_slugs.get(artifact_slug)
+                if previous is not None:
+                    errors.append(
+                        f"duplicate artifact_slug {artifact_slug}: runnable profiles {previous} and {pid}"
+                    )
+                else:
+                    seen_artifact_slugs[artifact_slug] = pid
         if profile.get("profile_type") not in PROFILE_TYPES:
             errors.append(f"profile {pid} has invalid profile_type: {profile.get('profile_type')}")
         if profile.get("objective_scope") not in OBJECTIVES | {"control"}:
