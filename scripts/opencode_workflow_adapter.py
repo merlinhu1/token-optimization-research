@@ -407,6 +407,7 @@ def _runtime_env(codex_home: Path) -> tuple[dict[str, str], Path]:
             "XDG_CACHE_HOME": str(xdg_cache),
             "XDG_STATE_HOME": str(xdg_state),
             "OPENCODE_DISABLE_AUTOUPDATE": "1",
+            "OPENCODE_DISABLE_MODELS_FETCH": "1",
             "OPENCODE_DISABLE_PROJECT_CONFIG": "1",
             "OPENCODE_DISABLE_EXTERNAL_SKILLS": "1",
             "OPENCODE_DISABLE_LSP_DOWNLOAD": "1",
@@ -415,6 +416,7 @@ def _runtime_env(codex_home: Path) -> tuple[dict[str, str], Path]:
                 {
                     "share": "disabled",
                     "autoupdate": False,
+                    "shell": "/usr/local/bin/eval-network-denied-shell",
                     "permission": {
                         "webfetch": "deny",
                         "websearch": "deny",
