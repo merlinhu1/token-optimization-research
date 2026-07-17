@@ -42,7 +42,7 @@ This document covers the active lifecycle-v0 portfolio and retained production b
 - jcodemunch MCP's `r1` natural-use screen used 6,697,747 tokens on Fastify (-48.78%), 17,318,314 on Beets (-0.60%), and 36,885,960 on Terraform (-14.99%). All three sessions passed 3/3 verifier tasks and are token-accounting eligible.
 - Across the matched `r1` portfolio, jcodemunch MCP used 60,902,021 tokens, a reduction of 12,991,426 tokens (-17.58%).
 - SigMap's `r1` natural-use screen used 10,570,387 tokens on Fastify (-19.17%), 19,351,542 on Beets (+11.07%), and 52,610,520 on Terraform (+21.24%). All three sessions passed 3/3 verifier tasks and are token-accounting eligible.
-- Across the matched `r1` portfolio, SigMap used 82,532,449 tokens, an increase of 8,639,002 tokens (+11.69%). It is the only initial treatment screen with an aggregate token increase.
+- Across the matched `r1` portfolio, SigMap used 82,532,449 tokens, an increase of 8,639,002 tokens (+11.69%).
 - LeanCTX's `r1` natural-use screen used 11,305,098 tokens on Fastify (-13.55%), 23,460,229 on Beets (+34.65%), and 35,342,005 on Terraform (-18.55%). All three sessions passed 3/3 verifier tasks and are token-accounting eligible.
 - Across the matched `r1` portfolio, LeanCTX used 70,107,332 tokens, a reduction of 3,786,115 tokens (-5.12%). Its lane effects are mixed and the Beets increase is substantial.
 - Snip's `r1` natural-use screen used 7,893,367 tokens on Fastify (-39.64%), 19,165,738 on Beets (+10.00%), and 32,679,643 on Terraform (-24.69%). All three sessions are operationally valid and token-accounting eligible; verifier diagnostics were 2/3, 3/3, and 3/3.
@@ -53,6 +53,10 @@ This document covers the active lifecycle-v0 portfolio and retained production b
 - Across the matched `r1` portfolio, default Headroom used 71,497,700 tokens, a reduction of 2,395,747 tokens (-3.24%). Its required proxy-only companion ablation used 77,931,962 tokens (+5.47%) with 8/9 verifier tasks passed; the ablation is not ranked as a separate full-tool screen.
 - Cartog's `r1` natural-use screen used 6,055,080 tokens on Fastify (-53.70%), 14,563,339 on Beets (-16.42%), and 39,515,464 on Terraform (-8.93%). All three sessions are operationally valid and token-accounting eligible; verifier diagnostics were 2/3, 3/3, and 3/3.
 - Across the matched `r1` portfolio, Cartog used 60,133,883 tokens, a reduction of 13,759,564 tokens (-18.62%). It reduced provider-token usage on all three lanes in this initial screen.
+- CodeScope's `r1` natural-use screen used 5,516,066 tokens on Fastify (-57.82%), 15,344,837 on Beets (-11.93%), and 64,579,065 on Terraform (+48.83%). All three sessions passed 3/3 verifier tasks and are token-accounting eligible.
+- Across the matched `r1` portfolio, CodeScope used 85,439,968 tokens, an increase of 11,546,521 tokens (+15.63%). Its large Terraform increase dominated reductions on the two medium lanes. No explicit model-issued CodeScope MCP call was observed; availability without forced invocation remains the frozen estimand.
+- SwarmVault's `r1` natural-use screen used 16,974,841 tokens on Fastify (+29.80%), 15,464,870 on Beets (-11.24%), and 28,715,407 on Terraform (-33.82%). All three sessions passed 3/3 verifier tasks and are token-accounting eligible.
+- Across the matched `r1` portfolio, SwarmVault used 61,155,118 tokens, a reduction of 12,738,329 tokens (-17.24%). Its offline heuristic warm index used the product-native deterministic 500-file cap on every lane. No explicit model-issued SwarmVault MCP call was observed; the sample is retained without forced uptake or an outcome-selected rerun.
 
 ## Evidence Boundary
 

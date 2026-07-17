@@ -1,0 +1,466 @@
+{
+  "session_id": "swarmvault-beets-20260717-p-b440da225a3a-r1",
+  "study_id": "phase-2-sequential-workflow-v1",
+  "experiment_group_id": "beetbox-beets-swarmvault-owner-b440da225a3a-sequential-workflow-r1",
+  "replicate_index": 1,
+  "frozen_protocol": {
+    "protocol_id": "beets-lifecycle-sequence-v0-swarmvault-owner-6d026a05c83a",
+    "path": "sources/evaluations/protocols/beets-lifecycle-sequence-v0-swarmvault-owner-6d026a05c83a.json",
+    "sha256": "f8e3b8da2282ea7fc0b0f822e3a30ff31f5b4c1ae0ba51d9f0faa31551aecc11"
+  },
+  "baseline_pool": {
+    "protocol_version": "baseline-pool-v1",
+    "protocol_fingerprint": "b440da225a3a",
+    "identity_policy": "frozen-protocol-and-replicate; execution date is metadata only"
+  },
+  "selected_execution": {
+    "descriptor_sha256": "54bcdd92e5ee7a9a91c7dcde003d66499f3beeaa0b1e02c3f3438631a1fd9f2b",
+    "descriptor": {
+      "version": "execution-condition-v1",
+      "sequence_id": "beets-lifecycle-sequence-v0",
+      "execution_role": "individual_tool_treatment",
+      "selected_profile": {
+        "profile_id": "swarmvault-owner",
+        "profile_type": "individual_tool",
+        "component_ids": [
+          "swarmvault-owner"
+        ],
+        "enabled_surfaces": [
+          "broad-context-owner"
+        ],
+        "disabled_overlaps": [
+          "all unlisted surfaces"
+        ],
+        "registry_entry_sha256": "665783f21e95258551b7a9c32b16b57a97ad9d6b7b7cb29003305ab483c5577d",
+        "registry_entry": {
+          "id": "swarmvault-owner",
+          "profile_type": "individual_tool",
+          "objective_scope": "individual_tool_effectiveness",
+          "status": "screening-shortlist",
+          "enabled_surfaces": [
+            "broad-context-owner"
+          ],
+          "disabled_overlaps": [
+            "all unlisted surfaces"
+          ],
+          "components": [
+            {
+              "component_id": "swarmvault-owner",
+              "surface": "broad-context-owner",
+              "role": "individual_tool"
+            }
+          ],
+          "install": {
+            "policy": "Use the source-built SwarmVault 3.20.0 CLI at pinned commit 4ce0c7cb545c. In a lane-private workspace, initialize the lite offline profile, ingest up to 500 files from the target repository with the product-native deterministic scale cap, compile with the built-in heuristic provider, and expose the official stdio MCP server without agent-rule installation."
+          },
+          "reset": {
+            "policy": "Use a fresh lane-specific Codex home for every run. Keep SwarmVault config, raw copies, wiki, graph, SQLite retrieval state, agent helpers, and inbox under the lane-private tool workspace; destroy that home after the lane."
+          },
+          "notes": "SwarmVault broad context-owner treatment using its source-built 3.20.0 CLI, offline heuristic compiler, deterministic product-native 500-file scale cap, warm lane-private vault, and unmodified 51-tool stdio MCP surface. No task-specific paths, agent rules, or uptake instructions are installed.",
+          "evaluation_protocol": {
+            "arm_label": "swarmvault-offline-heuristic-warm-index-mcp",
+            "tool_state": "warm-index",
+            "tool_use_policy": "natural",
+            "provider": "built-in-heuristic-offline",
+            "inactive_surfaces": [
+              "agent-rule installation",
+              "cloud model providers",
+              "local LLM providers",
+              "hooks",
+              "graph viewer"
+            ],
+            "installation_failure_disposition": "invalid-if-lite-init-ingest-compile-or-official-MCP-server-is-unavailable",
+            "max_files": 500,
+            "scale_policy": "Use SwarmVault's native deterministic --max-files cap to bound initialization on large repositories; no task-specific paths or patterns are selected."
+          },
+          "selection_rationale": "Explicit experiment-owner direction on 2026-07-17 to evaluate SwarmVault after CodeScope across all three active lifecycle-v0 lanes."
+        }
+      },
+      "model_facing_prompts": {
+        "rendering_contract": "sequential-model-facing-prompts-v2",
+        "profile_guidance_sha256": "9b2f1577ecb060f1bfb169b8cc141d771af2b668ace35b685080b3d4e38a5617",
+        "tasks": [
+          {
+            "task_id": "beets-lifecycle-feature-v0",
+            "order": 1,
+            "rendered_prompt_sha256": "ef6826c620ac055477413c51d5216f88b89060548bd0bbc3739acf5761ddc8b4"
+          },
+          {
+            "task_id": "beets-lifecycle-refactor-v0",
+            "order": 2,
+            "rendered_prompt_sha256": "efc524621eb27d3f8c2d07e63061d40ed2304b4a7953c0c9d4ae390b59626038"
+          },
+          {
+            "task_id": "beets-lifecycle-review-v0",
+            "order": 3,
+            "rendered_prompt_sha256": "0df0d8bcaca81970cf89cedd0adb932fefcacf558f4ff3f0af9a9f26b8c86cf6"
+          }
+        ]
+      },
+      "tool_adapter": {
+        "tool_id": "swarmvault",
+        "tool_manifest": "scripts/run_codex_fixture_evaluation.py:TOOL_CONFIGS",
+        "tool_manifest_sha256": "7f34fd5837afcdaa3596c3634c5b8a8aa84fec73f8e1bfe64c4926ce49b7e6a3",
+        "tool_config": {
+          "display_name": "SwarmVault",
+          "lane_name": "swarmvault-owner",
+          "surface": "broad-context-owner/mcp",
+          "mcp_server": "swarmvault",
+          "allowed_terms": [
+            "swarmvault"
+          ],
+          "data_dir_name": "swarmvault",
+          "mcp_command": "/bin/bash",
+          "mcp_args": [
+            "-lc",
+            "cd {tool_data_dir}/workspace && exec /opt/data/opt/node-v24.18.0-linux-x64/bin/node /opt/data/tool-candidates/swarmvault/packages/cli/dist/index.js mcp"
+          ],
+          "env": {
+            "SWARMVAULT_OUT": ".swarmvault",
+            "SWARMVAULT_NO_NOTICES": "1"
+          },
+          "mounts": [
+            "/opt/data/tool-candidates/swarmvault"
+          ],
+          "preflight_command": [
+            "/opt/data/opt/node-v24.18.0-linux-x64/bin/node",
+            "/opt/data/tool-candidates/swarmvault/packages/cli/dist/index.js",
+            "--version"
+          ],
+          "default_tool_state": "warm-index",
+          "warmup": {
+            "kind": "knowledge-graph-build",
+            "command": [
+              "/bin/bash",
+              "-lc",
+              "set -euo pipefail; mkdir -p {tool_data_dir}/workspace; cd {tool_data_dir}/workspace; /opt/data/opt/node-v24.18.0-linux-x64/bin/node /opt/data/tool-candidates/swarmvault/packages/cli/dist/index.js init --lite; /opt/data/opt/node-v24.18.0-linux-x64/bin/node /opt/data/tool-candidates/swarmvault/packages/cli/dist/index.js ingest {repo} --max-files 500; /opt/data/opt/node-v24.18.0-linux-x64/bin/node /opt/data/tool-candidates/swarmvault/packages/cli/dist/index.js compile"
+            ],
+            "output_name": "swarmvault-warmup-output.txt",
+            "metadata_name": "swarmvault-warmup-metadata.json",
+            "timeout_seconds": 3600
+          }
+        },
+        "tool_config_sha256": "674e9d2a1c9510aa3f99a3855e125ee56ad894e66f894a66ae4cb138a29d00ba",
+        "tool_state": "warm-index",
+        "tool_use_policy": "natural",
+        "command_identity": {
+          "kind": "mcp_command",
+          "command": [
+            "/bin/bash",
+            "-lc",
+            "cd {tool_data_dir}/workspace && exec /opt/data/opt/node-v24.18.0-linux-x64/bin/node /opt/data/tool-candidates/swarmvault/packages/cli/dist/index.js mcp"
+          ]
+        },
+        "binary_identity": {
+          "executable_token": "/bin/bash",
+          "resolved_path": "/bin/bash",
+          "realpath": "/usr/bin/bash",
+          "sha256": "223fe8564b60636bc738b6178d3ba9a50ef7d791266b0efae6363bb716e4c47f",
+          "metadata": {
+            "size": 1298416,
+            "mode": "-rwxr-xr-x",
+            "uid": 0,
+            "gid": 0,
+            "mtime_ns": 1772983313000000000
+          },
+          "version": {
+            "command": [
+              "/usr/bin/bash",
+              "--version"
+            ],
+            "captured": true,
+            "exit_code": 0,
+            "output": "GNU bash, version 5.2.37(1)-release (x86_64-pc-linux-gnu)\nCopyright (C) 2022 Free Software Foundation, Inc.\nLicense GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>\n\nThis is free software; you are free to change and redistribute it.\nThere is NO WARRANTY, to the extent permitted by law.",
+            "truncated": false
+          }
+        },
+        "source_identity": [
+          {
+            "path": "/opt/data/tool-candidates/swarmvault",
+            "exists": true,
+            "kind": "directory",
+            "git_head": "4ce0c7cb545c669f3cd35fc6d0300c6b088a52ea",
+            "package_json_sha256": "15c4a4b4e47a7418fb5b844195d6b80ef04f386a07ba136f7a148c9beee25a9c"
+          }
+        ]
+      },
+      "runtime": {
+        "docker_image": "token-eval-codex:latest",
+        "docker_image_identity": {
+          "image_ref": "token-eval-codex:latest",
+          "image_id": "sha256:6f86d01f2c63f5029c6bb874d8f3694c24d5cd567e3d09413eccc956ba3feafe",
+          "repo_digests": [
+            "token-eval-codex@sha256:6f86d01f2c63f5029c6bb874d8f3694c24d5cd567e3d09413eccc956ba3feafe"
+          ],
+          "repo_tags": [
+            "token-eval-codex:latest"
+          ]
+        },
+        "dockerfile_path": "sources/evaluations/fixtures/container/Dockerfile",
+        "dockerfile_sha256": "47c91967ce25014ce54879514f51d2ff0326651be1087209115eff4d358226b3",
+        "fixture_runner_path": "scripts/run_codex_fixture_evaluation.py",
+        "fixture_runner_sha256": "7f34fd5837afcdaa3596c3634c5b8a8aa84fec73f8e1bfe64c4926ce49b7e6a3",
+        "codex_entrypoint_path": "sources/evaluations/fixtures/container/codex-entrypoint.sh",
+        "codex_entrypoint_sha256": "8715fe37cb1fa3823f5f05493bc9681ce7ffc72126dfec4d64d448762c550c3c",
+        "timeout_seconds_per_task": 3600,
+        "network_isolation": {
+          "provider_access": true,
+          "model_shell_network_access": false,
+          "model_shell_enforcement": "seccomp denies AF_INET and AF_INET6 socket creation for the shell process and descendants",
+          "codex_web_search": "disabled",
+          "external_retrieval_audit": "fail-closed"
+        },
+        "isolation_policy": "fresh lane-specific Codex home/tool data; provider-only network with model shell and Codex web search disabled; sequential one-task prompt delivery; concealed tests removed before model-visible root commit"
+      },
+      "dependencies": {
+        "command": "uv sync --group test",
+        "command_sha256": "e718e73048f88b906401006442fb858a4e9e4252f387df2c938eb41755762aa8",
+        "lockfiles": []
+      },
+      "agent_condition": {
+        "runtime_id": "codex-cli",
+        "provider": "openai",
+        "model": "gpt-5.6-luna",
+        "model_condition_id": "codex-openai-gpt-5-6-luna-xhigh",
+        "reasoning_effort": "xhigh",
+        "codex_version_condition": "captured-at-run-and-bound-to-record"
+      },
+      "isolation": {
+        "prompt_delivery": "sequential-one-task-at-a-time",
+        "seed_delivery_mode": "preseeded-composite",
+        "future_tasks_visible": false,
+        "future_seed_regressions_visible": true,
+        "controller_verification": "final-only",
+        "verifier_assets_model_visible": false,
+        "model_concealed_paths": [
+          "test/controller_hidden/lifecycle/test_ftintitle_review.py",
+          "test/controller_hidden/lifecycle/test_lazy_model_storage_refactor.py",
+          "test/controller_hidden/lifecycle/test_multivalue_modify_feature.py"
+        ]
+      },
+      "baseline_pool_reference": {
+        "protocol_version": "baseline-pool-v1",
+        "protocol_fingerprint": "b440da225a3a",
+        "comparison_policy": "paired baseline and treatment must share this baseline pool fingerprint and replicate"
+      }
+    }
+  },
+  "docker_image_identity": {
+    "image_ref": "token-eval-codex:latest",
+    "image_id": "sha256:6f86d01f2c63f5029c6bb874d8f3694c24d5cd567e3d09413eccc956ba3feafe",
+    "repo_digests": [
+      "token-eval-codex@sha256:6f86d01f2c63f5029c6bb874d8f3694c24d5cd567e3d09413eccc956ba3feafe"
+    ],
+    "repo_tags": [
+      "token-eval-codex:latest"
+    ]
+  },
+  "tool_adapter_identity": {
+    "tool_id": "swarmvault",
+    "tool_manifest": "scripts/run_codex_fixture_evaluation.py:TOOL_CONFIGS",
+    "tool_manifest_sha256": "7f34fd5837afcdaa3596c3634c5b8a8aa84fec73f8e1bfe64c4926ce49b7e6a3",
+    "tool_config": {
+      "display_name": "SwarmVault",
+      "lane_name": "swarmvault-owner",
+      "surface": "broad-context-owner/mcp",
+      "mcp_server": "swarmvault",
+      "allowed_terms": [
+        "swarmvault"
+      ],
+      "data_dir_name": "swarmvault",
+      "mcp_command": "/bin/bash",
+      "mcp_args": [
+        "-lc",
+        "cd {tool_data_dir}/workspace && exec /opt/data/opt/node-v24.18.0-linux-x64/bin/node /opt/data/tool-candidates/swarmvault/packages/cli/dist/index.js mcp"
+      ],
+      "env": {
+        "SWARMVAULT_OUT": ".swarmvault",
+        "SWARMVAULT_NO_NOTICES": "1"
+      },
+      "mounts": [
+        "/opt/data/tool-candidates/swarmvault"
+      ],
+      "preflight_command": [
+        "/opt/data/opt/node-v24.18.0-linux-x64/bin/node",
+        "/opt/data/tool-candidates/swarmvault/packages/cli/dist/index.js",
+        "--version"
+      ],
+      "default_tool_state": "warm-index",
+      "warmup": {
+        "kind": "knowledge-graph-build",
+        "command": [
+          "/bin/bash",
+          "-lc",
+          "set -euo pipefail; mkdir -p {tool_data_dir}/workspace; cd {tool_data_dir}/workspace; /opt/data/opt/node-v24.18.0-linux-x64/bin/node /opt/data/tool-candidates/swarmvault/packages/cli/dist/index.js init --lite; /opt/data/opt/node-v24.18.0-linux-x64/bin/node /opt/data/tool-candidates/swarmvault/packages/cli/dist/index.js ingest {repo} --max-files 500; /opt/data/opt/node-v24.18.0-linux-x64/bin/node /opt/data/tool-candidates/swarmvault/packages/cli/dist/index.js compile"
+        ],
+        "output_name": "swarmvault-warmup-output.txt",
+        "metadata_name": "swarmvault-warmup-metadata.json",
+        "timeout_seconds": 3600
+      }
+    },
+    "tool_config_sha256": "674e9d2a1c9510aa3f99a3855e125ee56ad894e66f894a66ae4cb138a29d00ba",
+    "tool_state": "warm-index",
+    "tool_use_policy": "natural",
+    "command_identity": {
+      "kind": "mcp_command",
+      "command": [
+        "/bin/bash",
+        "-lc",
+        "cd {tool_data_dir}/workspace && exec /opt/data/opt/node-v24.18.0-linux-x64/bin/node /opt/data/tool-candidates/swarmvault/packages/cli/dist/index.js mcp"
+      ]
+    },
+    "binary_identity": {
+      "executable_token": "/bin/bash",
+      "resolved_path": "/bin/bash",
+      "realpath": "/usr/bin/bash",
+      "sha256": "223fe8564b60636bc738b6178d3ba9a50ef7d791266b0efae6363bb716e4c47f",
+      "metadata": {
+        "size": 1298416,
+        "mode": "-rwxr-xr-x",
+        "uid": 0,
+        "gid": 0,
+        "mtime_ns": 1772983313000000000
+      },
+      "version": {
+        "command": [
+          "/usr/bin/bash",
+          "--version"
+        ],
+        "captured": true,
+        "exit_code": 0,
+        "output": "GNU bash, version 5.2.37(1)-release (x86_64-pc-linux-gnu)\nCopyright (C) 2022 Free Software Foundation, Inc.\nLicense GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>\n\nThis is free software; you are free to change and redistribute it.\nThere is NO WARRANTY, to the extent permitted by law.",
+        "truncated": false
+      }
+    },
+    "source_identity": [
+      {
+        "path": "/opt/data/tool-candidates/swarmvault",
+        "exists": true,
+        "kind": "directory",
+        "git_head": "4ce0c7cb545c669f3cd35fc6d0300c6b088a52ea",
+        "package_json_sha256": "15c4a4b4e47a7418fb5b844195d6b80ef04f386a07ba136f7a148c9beee25a9c"
+      }
+    ]
+  },
+  "profile_id": "swarmvault-owner",
+  "workflow_sequence_id": "beets-lifecycle-sequence-v0",
+  "fixture_id": "medium-beetbox-beets",
+  "repository_path": "sources/evaluations/workflow-sessions/swarmvault-beets-20260717-p-b440da225a3a-r1/project/repo",
+  "codex_exit_codes": [
+    0,
+    0,
+    0
+  ],
+  "final_verifier_exit_code": 0,
+  "tool_isolation_audit_exit_code": 0,
+  "verifier_integrity_passed": true,
+  "thread_continuity_errors": [],
+  "seed_delivery": {
+    "mode": "preseeded-composite",
+    "future_seed_regressions_visible": true,
+    "preseeded_task_orders": [
+      1,
+      2,
+      3
+    ],
+    "pending_seed_orders": []
+  },
+  "accepted": true,
+  "timeout_seconds": 10800,
+  "codex_version": "codex-cli 0.144.0",
+  "token_usage": {
+    "fresh_input_tokens": 437945,
+    "cached_input_tokens": 14929920,
+    "cache_write_tokens": null,
+    "output_tokens": 97005,
+    "reasoning_tokens": 46394,
+    "total_provider_tokens": 15464870
+  },
+  "usage_warnings": [],
+  "per_task_results": [
+    {
+      "task_id": "beets-lifecycle-feature-v0",
+      "task_class": "feature-implementation",
+      "task_alias": "task-01",
+      "order": 1,
+      "agent_attempted": true,
+      "codex_exit_code": 0,
+      "controller_verification": "passed",
+      "accepted": true,
+      "task_delta": "sources/evaluations/workflow-sessions/swarmvault-beets-20260717-p-b440da225a3a-r1/task-01-agent.diff",
+      "usage_events": "sources/evaluations/workflow-sessions/swarmvault-beets-20260717-p-b440da225a3a-r1/task-01-codex-events.jsonl",
+      "operational_retry_count": 0,
+      "verifier_exit_code": 0,
+      "verifier_passed": true
+    },
+    {
+      "task_id": "beets-lifecycle-refactor-v0",
+      "task_class": "behavior-preserving-refactor",
+      "task_alias": "task-02",
+      "order": 2,
+      "agent_attempted": true,
+      "codex_exit_code": 0,
+      "controller_verification": "passed",
+      "accepted": true,
+      "task_delta": "sources/evaluations/workflow-sessions/swarmvault-beets-20260717-p-b440da225a3a-r1/task-02-agent.diff",
+      "usage_events": "sources/evaluations/workflow-sessions/swarmvault-beets-20260717-p-b440da225a3a-r1/task-02-codex-events.jsonl",
+      "operational_retry_count": 0,
+      "verifier_exit_code": 0,
+      "verifier_passed": true
+    },
+    {
+      "task_id": "beets-lifecycle-review-v0",
+      "task_class": "code-review-correction",
+      "task_alias": "task-03",
+      "order": 3,
+      "agent_attempted": true,
+      "codex_exit_code": 0,
+      "controller_verification": "passed",
+      "accepted": true,
+      "task_delta": "sources/evaluations/workflow-sessions/swarmvault-beets-20260717-p-b440da225a3a-r1/task-03-agent.diff",
+      "usage_events": "sources/evaluations/workflow-sessions/swarmvault-beets-20260717-p-b440da225a3a-r1/task-03-codex-events.jsonl",
+      "operational_retry_count": 0,
+      "verifier_exit_code": 0,
+      "verifier_passed": true
+    }
+  ],
+  "prompt_delivery": {
+    "mode": "sequential-one-task-at-a-time",
+    "future_tasks_visible": false,
+    "future_prompts_materialized_lazily": true,
+    "seed_delivery_mode": "preseeded-composite",
+    "future_seed_regressions_visible": true,
+    "controller_verification": "final-only",
+    "codex_thread_id": "019f717b-b5da-7950-b38f-b9a79db36337",
+    "task_prompt_evidence": "sources/evaluations/workflow-sessions/swarmvault-beets-20260717-p-b440da225a3a-r1/evidence.jsonl.gz"
+  },
+  "leakage_controls": {
+    "seed_origin_concealed": true,
+    "seed_patches_model_visible": false,
+    "git_baseline_true_root_at_lane_start": true,
+    "fixed_snapshot_objects_model_visible": false,
+    "pre_seed_reflog_entries_visible": false,
+    "concealment_verification_passed": true,
+    "task_directories_model_visible": false,
+    "verifier_assets_model_visible": false,
+    "model_writable_surface": "target repository plus isolated model-output directory",
+    "verifier_integrity_passed": true,
+    "verifier_integrity_evidence": "sources/evaluations/workflow-sessions/swarmvault-beets-20260717-p-b440da225a3a-r1/evidence.jsonl.gz#verifier-integrity.json",
+    "model_prompts_sanitized": true,
+    "upstream_remote_removed_from_model_facing_repo": true,
+    "broken_start_committed_as_local_baseline": true,
+    "remaining_limitations": [
+      "Future regression code is present from lane start, while future prompts and concealed acceptance assets remain controller-only.",
+      "Task semantics and verifier names may still be searchable if the model intentionally uses external network access."
+    ]
+  },
+  "artifacts": {
+    "artifact_contract": "compact-v1-four-files",
+    "run_record": "sources/evaluations/workflow-sessions/swarmvault-beets-20260717-p-b440da225a3a-r1/run.json",
+    "final_diff": "sources/evaluations/workflow-sessions/swarmvault-beets-20260717-p-b440da225a3a-r1/changes.diff",
+    "final_diff_basis": "ordered cumulative checkpoints plus final cumulative source diff from one composite root",
+    "evidence_bundle": "sources/evaluations/workflow-sessions/swarmvault-beets-20260717-p-b440da225a3a-r1/evidence.jsonl.gz",
+    "manifest": "sources/evaluations/workflow-sessions/swarmvault-beets-20260717-p-b440da225a3a-r1/manifest.sha256"
+  },
+  "run_dir": "sources/evaluations/workflow-sessions/swarmvault-beets-20260717-p-b440da225a3a-r1"
+}

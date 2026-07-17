@@ -15,7 +15,7 @@
 
 ## Summary
 
-SwarmVault is a TypeScript workspace for ingesting sources into a local vault/wiki/graph, exposing graph/search/retrieval/memory workflows through CLI/MCP and an Obsidian plugin. Source inspection confirms SQLite FTS retrieval artifacts, graph query tools, token-estimation utilities, compile/query/search surfaces, MCP tools, and health/doctor repair behavior. This dossier does not establish measured token savings.
+SwarmVault is a TypeScript workspace for ingesting sources into a local vault/wiki/graph, exposing graph/search/retrieval/memory workflows through CLI/MCP and an Obsidian plugin. Source inspection confirms SQLite FTS retrieval artifacts, graph query tools, token-estimation utilities, compile/query/search surfaces, MCP tools, and health/doctor repair behavior. A later lifecycle-v0 natural-use screen is recorded below; upstream benchmark claims remain unaudited.
 
 ## Evidence inventory
 
@@ -55,6 +55,13 @@ SwarmVault is a TypeScript workspace for ingesting sources into a local vault/wi
 
 No benchmark-audit was performed. `benchmark.ts` is present/imported in `vault.ts` and package scripts include live smoke/perf checks, but benchmark methodology/raw outputs were not inspected here. Treat any token or performance claims as unverified until benchmark artifacts are audited.
 
+## Lifecycle-v0 evaluation outcome
+
+- Source-built CLI `3.20.0` at pinned commit `4ce0c7cb545c` passed lite initialization, offline heuristic ingest/compile, 51-tool stdio MCP, workspace-info, and three-lane container preflight checks.
+- The treatment used a warm lane-private vault and SwarmVault's deterministic native `--max-files 500` scale cap. No task-specific paths, cloud/local model providers, agent rules, hooks, or viewer were enabled.
+- The first valid `r1` screen used 16,974,841 provider tokens on Fastify, 15,464,870 on Beets, and 28,715,407 on Terraform. Aggregate usage was 61,155,118 tokens, -17.24% versus the matched baseline.
+- All 9/9 verifier tasks passed. No explicit model-issued SwarmVault MCP call was observed; the natural-availability sample was retained without forced uptake or rerun selection.
+
 ## Compatibility notes
 
 SwarmVault can act as a graph/wiki/retrieval/memory authority and can expose MCP tools. In a compatibility-safe stack, avoid overlapping it with another primary graph retrieval system or memory authority without explicit routing (for example Graphify, MaestroGraph, CodeGraph, Serena, LeanCTX, or another Obsidian/agent memory layer).
@@ -75,6 +82,6 @@ SwarmVault can act as a graph/wiki/retrieval/memory authority and can expose MCP
 
 ## Next review tasks
 
-- [ ] Inspect CLI package entrypoints and install docs/scripts for exact deployment behavior.
+- [x] Inspect CLI package entrypoints and the exact source-built MCP deployment behavior.
 - [ ] Audit `benchmark.ts`, perf budgets, and any raw outputs before using benchmark wording.
-- [ ] Run a fixed source corpus through ingest/compile/search/query and measure provider-billed usage and answer quality.
+- [x] Run fixed source corpora through ingest/compile/MCP and measure provider-reported workflow usage with verifier diagnostics.
