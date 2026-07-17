@@ -1,0 +1,450 @@
+{
+  "session_id": "sigmap-terraform-20260717-p-ded8609b4172-r1",
+  "study_id": "phase-2-sequential-workflow-v1",
+  "experiment_group_id": "hashicorp-terraform-retrieval-sigmap-ded8609b4172-sequential-workflow-r1",
+  "replicate_index": 1,
+  "frozen_protocol": {
+    "protocol_id": "terraform-lifecycle-sequence-v0-retrieval-sigmap-f07a87a40951",
+    "path": "sources/evaluations/protocols/terraform-lifecycle-sequence-v0-retrieval-sigmap-f07a87a40951.json",
+    "sha256": "ce37345ca394c6217d78c858d7cf092916a543be115b46cbf407964e12695d54"
+  },
+  "baseline_pool": {
+    "protocol_version": "baseline-pool-v1",
+    "protocol_fingerprint": "ded8609b4172",
+    "identity_policy": "frozen-protocol-and-replicate; execution date is metadata only"
+  },
+  "selected_execution": {
+    "descriptor_sha256": "a6a87f1306d491f5f1f9946e9f2fe763acf9a8c60336aed351805fd7ad750afe",
+    "descriptor": {
+      "version": "execution-condition-v1",
+      "sequence_id": "terraform-lifecycle-sequence-v0",
+      "execution_role": "individual_tool_treatment",
+      "selected_profile": {
+        "profile_id": "retrieval-sigmap",
+        "profile_type": "individual_tool",
+        "component_ids": [
+          "retrieval-sigmap"
+        ],
+        "enabled_surfaces": [
+          "retrieval-context"
+        ],
+        "disabled_overlaps": [
+          "all unlisted surfaces"
+        ],
+        "registry_entry_sha256": "158a23d8d42e55304f828e9e90a25c76917db326020f4628060c18878d61d137",
+        "registry_entry": {
+          "id": "retrieval-sigmap",
+          "profile_type": "individual_tool",
+          "objective_scope": "individual_tool_effectiveness",
+          "status": "screening-shortlist",
+          "enabled_surfaces": [
+            "retrieval-context"
+          ],
+          "disabled_overlaps": [
+            "all unlisted surfaces"
+          ],
+          "components": [
+            {
+              "component_id": "retrieval-sigmap",
+              "surface": "retrieval-context",
+              "role": "individual_tool"
+            }
+          ],
+          "install": {
+            "policy": "Record exact commands, versions, generated files, and environment variables in every run record before using this profile."
+          },
+          "reset": {
+            "policy": "Record disable/uninstall commands and verify no stale index, hook, memory, cache, or generated profile survives into the next run."
+          },
+          "notes": "SigMap retrieval/governance treatment.",
+          "selection_reason": "Selected by the experiment owner for the next lifecycle-v0 natural-use screen."
+        }
+      },
+      "model_facing_prompts": {
+        "rendering_contract": "sequential-model-facing-prompts-v2",
+        "profile_guidance_sha256": "9b2f1577ecb060f1bfb169b8cc141d771af2b668ace35b685080b3d4e38a5617",
+        "tasks": [
+          {
+            "task_id": "terraform-lifecycle-feature-v0",
+            "order": 1,
+            "rendered_prompt_sha256": "ee9beba6e5286f02aa455c5a64fc351d01a675d104d29b967ff8800eccf38fc3"
+          },
+          {
+            "task_id": "terraform-lifecycle-refactor-v0",
+            "order": 2,
+            "rendered_prompt_sha256": "03c5f1278ec60898809f305121a8f121a3d203b1e07aeae982bef888faaddbda"
+          },
+          {
+            "task_id": "terraform-lifecycle-review-v0",
+            "order": 3,
+            "rendered_prompt_sha256": "d6f5dea173dfd749ca1646b9fa87f0f2dbaa5bcb2409937395ca1ff50fcfad91"
+          }
+        ]
+      },
+      "tool_adapter": {
+        "tool_id": "sigmap",
+        "tool_manifest": "scripts/run_codex_fixture_evaluation.py:TOOL_CONFIGS",
+        "tool_manifest_sha256": "6b8058a84891d2919a2583fb73d7ae78c72504476c1e0abe2ba9b4eda605eae3",
+        "tool_config": {
+          "display_name": "SigMap",
+          "lane_name": "retrieval-sigmap",
+          "surface": "retrieval/context",
+          "mcp_server": "sigmap",
+          "allowed_terms": [
+            "sigmap",
+            "gen-context"
+          ],
+          "data_dir_name": "sigmap",
+          "mcp_command": "/bin/bash",
+          "mcp_args": [
+            "-lc",
+            "cd {repo} && exec /opt/data/opt/node-v24.18.0-linux-x64/bin/node /opt/data/tool-candidates/sigmap/gen-context.js --mcp"
+          ],
+          "env": {
+            "SIGMAP_TELEMETRY": "0"
+          },
+          "mounts": [
+            "/opt/data/tool-candidates/sigmap"
+          ],
+          "default_tool_state": "warm-index",
+          "warmup": {
+            "kind": "signature-map-build",
+            "command": [
+              "/opt/data/opt/node-v24.18.0-linux-x64/bin/node",
+              "/opt/data/tool-candidates/sigmap/gen-context.js",
+              "--adapter",
+              "codex",
+              "--no-track"
+            ],
+            "cleanup_paths": [
+              ".context"
+            ],
+            "output_name": "sigmap-warmup-output.txt",
+            "metadata_name": "sigmap-warmup-metadata.json",
+            "timeout_seconds": 900
+          }
+        },
+        "tool_config_sha256": "fe01cb53778d378ffcbb7360243b4ed1e98b251df6b3072d458d9b13636fd6fc",
+        "tool_state": "warm-index",
+        "tool_use_policy": "natural",
+        "command_identity": {
+          "kind": "mcp_command",
+          "command": [
+            "/bin/bash",
+            "-lc",
+            "cd {repo} && exec /opt/data/opt/node-v24.18.0-linux-x64/bin/node /opt/data/tool-candidates/sigmap/gen-context.js --mcp"
+          ]
+        },
+        "binary_identity": {
+          "executable_token": "/bin/bash",
+          "resolved_path": "/bin/bash",
+          "realpath": "/usr/bin/bash",
+          "sha256": "223fe8564b60636bc738b6178d3ba9a50ef7d791266b0efae6363bb716e4c47f",
+          "metadata": {
+            "size": 1298416,
+            "mode": "-rwxr-xr-x",
+            "uid": 0,
+            "gid": 0,
+            "mtime_ns": 1772983313000000000
+          },
+          "version": {
+            "command": [
+              "/usr/bin/bash",
+              "--version"
+            ],
+            "captured": true,
+            "exit_code": 0,
+            "output": "GNU bash, version 5.2.37(1)-release (x86_64-pc-linux-gnu)\nCopyright (C) 2022 Free Software Foundation, Inc.\nLicense GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>\n\nThis is free software; you are free to change and redistribute it.\nThere is NO WARRANTY, to the extent permitted by law.",
+            "truncated": false
+          }
+        },
+        "source_identity": [
+          {
+            "path": "/opt/data/tool-candidates/sigmap",
+            "exists": true,
+            "kind": "directory",
+            "git_head": "b1e086cf06bc7a7622473ffe9637c122567404e0",
+            "package_json_sha256": "f8478ca025747dada0b86288f696e1ae39ea8701a5081c60f54c70eafa034963"
+          }
+        ]
+      },
+      "runtime": {
+        "docker_image": "token-eval-codex:latest",
+        "docker_image_identity": {
+          "image_ref": "token-eval-codex:latest",
+          "image_id": "sha256:6f86d01f2c63f5029c6bb874d8f3694c24d5cd567e3d09413eccc956ba3feafe",
+          "repo_digests": [
+            "token-eval-codex@sha256:6f86d01f2c63f5029c6bb874d8f3694c24d5cd567e3d09413eccc956ba3feafe"
+          ],
+          "repo_tags": [
+            "token-eval-codex:latest"
+          ]
+        },
+        "dockerfile_path": "sources/evaluations/fixtures/container/Dockerfile",
+        "dockerfile_sha256": "47c91967ce25014ce54879514f51d2ff0326651be1087209115eff4d358226b3",
+        "fixture_runner_path": "scripts/run_codex_fixture_evaluation.py",
+        "fixture_runner_sha256": "6b8058a84891d2919a2583fb73d7ae78c72504476c1e0abe2ba9b4eda605eae3",
+        "codex_entrypoint_path": "sources/evaluations/fixtures/container/codex-entrypoint.sh",
+        "codex_entrypoint_sha256": "8715fe37cb1fa3823f5f05493bc9681ce7ffc72126dfec4d64d448762c550c3c",
+        "timeout_seconds_per_task": 3600,
+        "network_isolation": {
+          "provider_access": true,
+          "model_shell_network_access": false,
+          "model_shell_enforcement": "seccomp denies AF_INET and AF_INET6 socket creation for the shell process and descendants",
+          "codex_web_search": "disabled",
+          "external_retrieval_audit": "fail-closed"
+        },
+        "isolation_policy": "fresh lane-specific Codex home/tool data; provider-only network with model shell and Codex web search disabled; sequential one-task prompt delivery; concealed tests removed before model-visible root commit"
+      },
+      "dependencies": {
+        "command": "go mod download",
+        "command_sha256": "42a8263a643ccbe692d70752ffdd8cea328fc2d3190677df1485ee06f55b350a",
+        "lockfiles": []
+      },
+      "agent_condition": {
+        "runtime_id": "codex-cli",
+        "provider": "openai",
+        "model": "gpt-5.6-luna",
+        "model_condition_id": "codex-openai-gpt-5-6-luna-xhigh",
+        "reasoning_effort": "xhigh",
+        "codex_version_condition": "captured-at-run-and-bound-to-record"
+      },
+      "isolation": {
+        "prompt_delivery": "sequential-one-task-at-a-time",
+        "seed_delivery_mode": "preseeded-composite",
+        "future_tasks_visible": false,
+        "future_seed_regressions_visible": true,
+        "controller_verification": "final-only",
+        "verifier_assets_model_visible": false,
+        "model_concealed_paths": [
+          "internal/cloud/backend_tfPolicyEvaluation_test.go",
+          "internal/cloud/lifecycle_v0_policy_summary_test.go",
+          "internal/policy/callback/lifecycle_v0_deferred_callbacks_test.go"
+        ]
+      },
+      "baseline_pool_reference": {
+        "protocol_version": "baseline-pool-v1",
+        "protocol_fingerprint": "ded8609b4172",
+        "comparison_policy": "paired baseline and treatment must share this baseline pool fingerprint and replicate"
+      }
+    }
+  },
+  "docker_image_identity": {
+    "image_ref": "token-eval-codex:latest",
+    "image_id": "sha256:6f86d01f2c63f5029c6bb874d8f3694c24d5cd567e3d09413eccc956ba3feafe",
+    "repo_digests": [
+      "token-eval-codex@sha256:6f86d01f2c63f5029c6bb874d8f3694c24d5cd567e3d09413eccc956ba3feafe"
+    ],
+    "repo_tags": [
+      "token-eval-codex:latest"
+    ]
+  },
+  "tool_adapter_identity": {
+    "tool_id": "sigmap",
+    "tool_manifest": "scripts/run_codex_fixture_evaluation.py:TOOL_CONFIGS",
+    "tool_manifest_sha256": "6b8058a84891d2919a2583fb73d7ae78c72504476c1e0abe2ba9b4eda605eae3",
+    "tool_config": {
+      "display_name": "SigMap",
+      "lane_name": "retrieval-sigmap",
+      "surface": "retrieval/context",
+      "mcp_server": "sigmap",
+      "allowed_terms": [
+        "sigmap",
+        "gen-context"
+      ],
+      "data_dir_name": "sigmap",
+      "mcp_command": "/bin/bash",
+      "mcp_args": [
+        "-lc",
+        "cd {repo} && exec /opt/data/opt/node-v24.18.0-linux-x64/bin/node /opt/data/tool-candidates/sigmap/gen-context.js --mcp"
+      ],
+      "env": {
+        "SIGMAP_TELEMETRY": "0"
+      },
+      "mounts": [
+        "/opt/data/tool-candidates/sigmap"
+      ],
+      "default_tool_state": "warm-index",
+      "warmup": {
+        "kind": "signature-map-build",
+        "command": [
+          "/opt/data/opt/node-v24.18.0-linux-x64/bin/node",
+          "/opt/data/tool-candidates/sigmap/gen-context.js",
+          "--adapter",
+          "codex",
+          "--no-track"
+        ],
+        "cleanup_paths": [
+          ".context"
+        ],
+        "output_name": "sigmap-warmup-output.txt",
+        "metadata_name": "sigmap-warmup-metadata.json",
+        "timeout_seconds": 900
+      }
+    },
+    "tool_config_sha256": "fe01cb53778d378ffcbb7360243b4ed1e98b251df6b3072d458d9b13636fd6fc",
+    "tool_state": "warm-index",
+    "tool_use_policy": "natural",
+    "command_identity": {
+      "kind": "mcp_command",
+      "command": [
+        "/bin/bash",
+        "-lc",
+        "cd {repo} && exec /opt/data/opt/node-v24.18.0-linux-x64/bin/node /opt/data/tool-candidates/sigmap/gen-context.js --mcp"
+      ]
+    },
+    "binary_identity": {
+      "executable_token": "/bin/bash",
+      "resolved_path": "/bin/bash",
+      "realpath": "/usr/bin/bash",
+      "sha256": "223fe8564b60636bc738b6178d3ba9a50ef7d791266b0efae6363bb716e4c47f",
+      "metadata": {
+        "size": 1298416,
+        "mode": "-rwxr-xr-x",
+        "uid": 0,
+        "gid": 0,
+        "mtime_ns": 1772983313000000000
+      },
+      "version": {
+        "command": [
+          "/usr/bin/bash",
+          "--version"
+        ],
+        "captured": true,
+        "exit_code": 0,
+        "output": "GNU bash, version 5.2.37(1)-release (x86_64-pc-linux-gnu)\nCopyright (C) 2022 Free Software Foundation, Inc.\nLicense GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>\n\nThis is free software; you are free to change and redistribute it.\nThere is NO WARRANTY, to the extent permitted by law.",
+        "truncated": false
+      }
+    },
+    "source_identity": [
+      {
+        "path": "/opt/data/tool-candidates/sigmap",
+        "exists": true,
+        "kind": "directory",
+        "git_head": "b1e086cf06bc7a7622473ffe9637c122567404e0",
+        "package_json_sha256": "f8478ca025747dada0b86288f696e1ae39ea8701a5081c60f54c70eafa034963"
+      }
+    ]
+  },
+  "profile_id": "retrieval-sigmap",
+  "workflow_sequence_id": "terraform-lifecycle-sequence-v0",
+  "fixture_id": "large-hashicorp-terraform",
+  "repository_path": "sources/evaluations/workflow-sessions/sigmap-terraform-20260717-p-ded8609b4172-r1/project/repo",
+  "codex_exit_codes": [
+    0,
+    0,
+    0
+  ],
+  "final_verifier_exit_code": 0,
+  "tool_isolation_audit_exit_code": 0,
+  "verifier_integrity_passed": true,
+  "thread_continuity_errors": [],
+  "seed_delivery": {
+    "mode": "preseeded-composite",
+    "future_seed_regressions_visible": true,
+    "preseeded_task_orders": [
+      1,
+      2,
+      3
+    ],
+    "pending_seed_orders": []
+  },
+  "accepted": true,
+  "timeout_seconds": 10800,
+  "codex_version": "codex-cli 0.144.0",
+  "token_usage": {
+    "fresh_input_tokens": 1062438,
+    "cached_input_tokens": 51401472,
+    "cache_write_tokens": null,
+    "output_tokens": 146610,
+    "reasoning_tokens": 65502,
+    "total_provider_tokens": 52610520
+  },
+  "usage_warnings": [],
+  "per_task_results": [
+    {
+      "task_id": "terraform-lifecycle-feature-v0",
+      "task_class": "feature-implementation",
+      "task_alias": "task-01",
+      "order": 1,
+      "agent_attempted": true,
+      "codex_exit_code": 0,
+      "controller_verification": "passed",
+      "accepted": true,
+      "task_delta": "sources/evaluations/workflow-sessions/sigmap-terraform-20260717-p-ded8609b4172-r1/task-01-agent.diff",
+      "usage_events": "sources/evaluations/workflow-sessions/sigmap-terraform-20260717-p-ded8609b4172-r1/task-01-codex-events.jsonl",
+      "operational_retry_count": 0,
+      "verifier_exit_code": 0,
+      "verifier_passed": true
+    },
+    {
+      "task_id": "terraform-lifecycle-refactor-v0",
+      "task_class": "behavior-preserving-refactor",
+      "task_alias": "task-02",
+      "order": 2,
+      "agent_attempted": true,
+      "codex_exit_code": 0,
+      "controller_verification": "passed",
+      "accepted": true,
+      "task_delta": "sources/evaluations/workflow-sessions/sigmap-terraform-20260717-p-ded8609b4172-r1/task-02-agent.diff",
+      "usage_events": "sources/evaluations/workflow-sessions/sigmap-terraform-20260717-p-ded8609b4172-r1/task-02-codex-events.jsonl",
+      "operational_retry_count": 0,
+      "verifier_exit_code": 0,
+      "verifier_passed": true
+    },
+    {
+      "task_id": "terraform-lifecycle-review-v0",
+      "task_class": "code-review-correction",
+      "task_alias": "task-03",
+      "order": 3,
+      "agent_attempted": true,
+      "codex_exit_code": 0,
+      "controller_verification": "passed",
+      "accepted": true,
+      "task_delta": "sources/evaluations/workflow-sessions/sigmap-terraform-20260717-p-ded8609b4172-r1/task-03-agent.diff",
+      "usage_events": "sources/evaluations/workflow-sessions/sigmap-terraform-20260717-p-ded8609b4172-r1/task-03-codex-events.jsonl",
+      "operational_retry_count": 0,
+      "verifier_exit_code": 0,
+      "verifier_passed": true
+    }
+  ],
+  "prompt_delivery": {
+    "mode": "sequential-one-task-at-a-time",
+    "future_tasks_visible": false,
+    "future_prompts_materialized_lazily": true,
+    "seed_delivery_mode": "preseeded-composite",
+    "future_seed_regressions_visible": true,
+    "controller_verification": "final-only",
+    "codex_thread_id": "019f6f36-cc75-7332-9355-3fb4c3dfdab7",
+    "task_prompt_evidence": "sources/evaluations/workflow-sessions/sigmap-terraform-20260717-p-ded8609b4172-r1/evidence.jsonl.gz"
+  },
+  "leakage_controls": {
+    "seed_origin_concealed": true,
+    "seed_patches_model_visible": false,
+    "git_baseline_true_root_at_lane_start": true,
+    "fixed_snapshot_objects_model_visible": false,
+    "pre_seed_reflog_entries_visible": false,
+    "concealment_verification_passed": true,
+    "task_directories_model_visible": false,
+    "verifier_assets_model_visible": false,
+    "model_writable_surface": "target repository plus isolated model-output directory",
+    "verifier_integrity_passed": true,
+    "verifier_integrity_evidence": "sources/evaluations/workflow-sessions/sigmap-terraform-20260717-p-ded8609b4172-r1/evidence.jsonl.gz#verifier-integrity.json",
+    "model_prompts_sanitized": true,
+    "upstream_remote_removed_from_model_facing_repo": true,
+    "broken_start_committed_as_local_baseline": true,
+    "remaining_limitations": [
+      "Future regression code is present from lane start, while future prompts and concealed acceptance assets remain controller-only.",
+      "Task semantics and verifier names may still be searchable if the model intentionally uses external network access."
+    ]
+  },
+  "artifacts": {
+    "artifact_contract": "compact-v1-four-files",
+    "run_record": "sources/evaluations/workflow-sessions/sigmap-terraform-20260717-p-ded8609b4172-r1/run.json",
+    "final_diff": "sources/evaluations/workflow-sessions/sigmap-terraform-20260717-p-ded8609b4172-r1/changes.diff",
+    "final_diff_basis": "ordered cumulative checkpoints plus final cumulative source diff from one composite root",
+    "evidence_bundle": "sources/evaluations/workflow-sessions/sigmap-terraform-20260717-p-ded8609b4172-r1/evidence.jsonl.gz",
+    "manifest": "sources/evaluations/workflow-sessions/sigmap-terraform-20260717-p-ded8609b4172-r1/manifest.sha256"
+  },
+  "run_dir": "sources/evaluations/workflow-sessions/sigmap-terraform-20260717-p-ded8609b4172-r1"
+}

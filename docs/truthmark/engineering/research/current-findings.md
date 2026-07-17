@@ -1,7 +1,7 @@
 ---
 status: active
 truth_kind: engineering-behavior
-last_reviewed: 2026-07-16
+last_reviewed: 2026-07-17
 ---
 
 # Current Findings
@@ -36,7 +36,15 @@ This document covers the active lifecycle-v0 portfolio and retained production b
 - Token Savior's `r1` natural-use screen used 7,583,285 tokens on Fastify (-42.01%), 17,188,521 on Beets (-1.35%), and 38,118,793 on Terraform (-12.15%). All three sessions are token-accounting eligible; verifier diagnostics were 2/3, 2/3, and 3/3, respectively.
 - Across the matched `r1` portfolio, Token Savior used 62,890,599 tokens, a reduction of 11,002,848 tokens (-14.89%). Verifier outcomes remain separate from the primary provider-token comparison.
 - Graphify's `r1` natural-use screen used 8,707,133 tokens on Fastify (-33.42%), 17,235,153 on Beets (-1.08%), and 35,845,436 on Terraform (-17.39%). All three sessions are token-accounting eligible; verifier diagnostics were 2/3, 3/3, and 3/3, respectively.
-- Across the matched `r1` portfolio, Graphify used 61,787,722 tokens, a reduction of 12,105,725 tokens (-16.38%), the largest aggregate reduction among the six initial treatment screens. This remains a single replicate per lane rather than a stable population estimate.
+- Across the matched `r1` portfolio, Graphify used 61,787,722 tokens, a reduction of 12,105,725 tokens (-16.38%). This remains a single replicate per lane rather than a stable population estimate.
+- CodeGraph's `r1` natural-use screen used 8,358,733 tokens on Fastify (-36.08%), 18,870,554 on Beets (+8.30%), and 33,993,794 on Terraform (-21.66%). All three sessions passed 3/3 verifier tasks and are token-accounting eligible.
+- Across the matched `r1` portfolio, CodeGraph used 61,223,081 tokens, a reduction of 12,670,366 tokens (-17.15%). The Beets increase makes the lane effects mixed despite the aggregate reduction.
+- jcodemunch MCP's `r1` natural-use screen used 6,697,747 tokens on Fastify (-48.78%), 17,318,314 on Beets (-0.60%), and 36,885,960 on Terraform (-14.99%). All three sessions passed 3/3 verifier tasks and are token-accounting eligible.
+- Across the matched `r1` portfolio, jcodemunch MCP used 60,902,021 tokens, a reduction of 12,991,426 tokens (-17.58%), the largest aggregate reduction among the ten initial treatment screens.
+- SigMap's `r1` natural-use screen used 10,570,387 tokens on Fastify (-19.17%), 19,351,542 on Beets (+11.07%), and 52,610,520 on Terraform (+21.24%). All three sessions passed 3/3 verifier tasks and are token-accounting eligible.
+- Across the matched `r1` portfolio, SigMap used 82,532,449 tokens, an increase of 8,639,002 tokens (+11.69%). It is the only initial treatment screen with an aggregate token increase.
+- LeanCTX's `r1` natural-use screen used 11,305,098 tokens on Fastify (-13.55%), 23,460,229 on Beets (+34.65%), and 35,342,005 on Terraform (-18.55%). All three sessions passed 3/3 verifier tasks and are token-accounting eligible.
+- Across the matched `r1` portfolio, LeanCTX used 70,107,332 tokens, a reduction of 3,786,115 tokens (-5.12%). Its lane effects are mixed and the Beets increase is substantial.
 
 ## Evidence Boundary
 
