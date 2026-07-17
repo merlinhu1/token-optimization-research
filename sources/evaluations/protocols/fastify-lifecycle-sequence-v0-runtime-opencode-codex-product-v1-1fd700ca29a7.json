@@ -1,6 +1,6 @@
 {
   "protocol_schema_version": 3,
-  "protocol_id": "fastify-lifecycle-sequence-v0-runtime-opencode-codex-product-v1-4effb93a7f6e",
+  "protocol_id": "fastify-lifecycle-sequence-v0-runtime-opencode-codex-product-v1-1fd700ca29a7",
   "status": "frozen-ready-not-run",
   "outcome": "Frozen runtime-opencode-codex-product-v1 protocol for fastify-lifecycle-sequence-v0; no provider/model run has occurred.",
   "frozen_at": "2026-07-22",
@@ -32,7 +32,7 @@
     "model": "gpt-5.6-sol",
     "model_condition_id": "opencode-openai-gpt-5-6-sol-high",
     "reasoning_effort": "high",
-    "command": "python3 scripts/run_opencode_workflow_model_condition.py --workflow-model-condition-id opencode-openai-gpt-5-6-sol-high --workflow-model gpt-5.6-sol --workflow-reasoning-effort high --sequence-id fastify-lifecycle-sequence-v0 --profile-id runtime-opencode-codex-product-v1 --timeout-per-task 3600 --protocol sources/evaluations/protocols/fastify-lifecycle-sequence-v0-runtime-opencode-codex-product-v1-4effb93a7f6e.json --docker-image token-eval-codex:latest"
+    "command": "python3 scripts/run_opencode_workflow_model_condition.py --workflow-model-condition-id opencode-openai-gpt-5-6-sol-high --workflow-model gpt-5.6-sol --workflow-reasoning-effort high --sequence-id fastify-lifecycle-sequence-v0 --profile-id runtime-opencode-codex-product-v1 --timeout-per-task 3600 --protocol sources/evaluations/protocols/fastify-lifecycle-sequence-v0-runtime-opencode-codex-product-v1-1fd700ca29a7.json --docker-image token-eval-codex:latest"
   },
   "token_accounting_boundary": {
     "fields": [
@@ -234,7 +234,7 @@
     }
   },
   "selected_execution": {
-    "descriptor_sha256": "cd4bfb257d51515af75050cdfa205bb1aee6661e4c1a4ea990af2b645dfc1611",
+    "descriptor_sha256": "8b05ba8cc889f677ba6474a643ae84374e5d3710a7003b6472abb8974d9d02bc",
     "descriptor": {
       "version": "execution-condition-v1",
       "sequence_id": "fastify-lifecycle-sequence-v0",
@@ -521,7 +521,9 @@
         "registry_status": "active-model-comparison",
         "launcher": {
           "path": "scripts/run_opencode_workflow_model_condition.py",
-          "sha256": "84993fc57fa3f4f4078dc91b9b1b59bac767e97cf51d6d1e07b69bdd275707d5"
+          "sha256": "c38d87266347dfd46c8f671ad0e22fef52841a34643b93fc769d4ebfb71ac9ce",
+          "condition_runtime_path": "scripts/workflow_model_condition_runtime.py",
+          "condition_runtime_sha256": "8bfc9e9d1bcc7c49f28564bd638d2da3cdc1044ee3debf4218a19b820e05cfc6"
         }
       }
     }

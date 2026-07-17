@@ -17,7 +17,13 @@ LAUNCHER_PATH = "scripts/run_opencode_workflow_model_condition.py"
 
 def launcher_identity() -> dict[str, str]:
     path = ROOT / LAUNCHER_PATH
-    return {"path": LAUNCHER_PATH, "sha256": hashlib.sha256(path.read_bytes()).hexdigest()}
+    runtime_path = ROOT / "scripts/workflow_model_condition_runtime.py"
+    return {
+        "path": LAUNCHER_PATH,
+        "sha256": hashlib.sha256(path.read_bytes()).hexdigest(),
+        "condition_runtime_path": "scripts/workflow_model_condition_runtime.py",
+        "condition_runtime_sha256": hashlib.sha256(runtime_path.read_bytes()).hexdigest(),
+    }
 
 
 def configure_model_condition(condition_id: str, model: str, reasoning_effort: str) -> None:
