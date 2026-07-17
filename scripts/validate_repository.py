@@ -3398,10 +3398,14 @@ def validate_frozen_protocol_bindings(errors: list[str]) -> None:
     try:
         from scripts import run_codex_workflow_evaluation as runner
         from scripts import run_codex_workflow_model_condition as model_condition_runner
+        from scripts import run_opencode_workflow_model_condition as opencode_condition_runner
+        from scripts import workflow_model_condition_runtime as condition_runtime
     except Exception as exc:
         errors.append(f"cannot import workflow runner for protocol binding validation: {exc}")
         runner = None
         model_condition_runner = None
+        opencode_condition_runner = None
+        condition_runtime = None
     current_sequence_bindings: set[str] = set()
     for path in (ROOT / "sources/evaluations/protocols").glob("*.json"):
         protocol = json.loads(path.read_text())
@@ -3469,6 +3473,7 @@ def validate_frozen_protocol_bindings(errors: list[str]) -> None:
                         errors.append(f"historical execution contract {path.name} has an inconsistent baseline-pool reference")
                     continue
                 expected_descriptor = runner.baseline_protocol_descriptor(seq)
+                condition = None
                 override = frozen_descriptor.get("model_condition_override") if isinstance(frozen_descriptor, dict) else None
                 if override is not None:
                     if not isinstance(override, dict) or model_condition_runner is None:
@@ -3551,32 +3556,64 @@ def validate_frozen_protocol_bindings(errors: list[str]) -> None:
                     docker_image=str(docker_image or runner.DEFAULT_DOCKER_IMAGE),
                 )
                 if expected_override is not None:
+                    selected_override = selected_descriptor.get("model_condition_override")
+                    selected_expected_override = expected_override
+                    selected_condition = None
+                    launcher_path = "scripts/run_codex_workflow_model_condition.py"
+                    if isinstance(selected_override, dict) and selected_override.get("runtime_id") == "opencode-cli":
+                        if condition_runtime is None or opencode_condition_runner is None:
+                            raise ValueError("OpenCode condition validator is unavailable")
+                        selected_condition, _ = condition_runtime.resolve_condition_pair(
+                            ROOT,
+                            str(selected_override.get("model_condition_id", "")),
+                        )
+                        selected_expected_override = condition_runtime.condition_override(
+                            selected_condition,
+                            opencode_condition_runner.launcher_identity(),
+                        )
+                        expected_descriptor = descriptor
+                        launcher_path = "scripts/run_opencode_workflow_model_condition.py"
+                    condition_for_execution = selected_condition or condition
+                    if not isinstance(condition_for_execution, dict):
+                        raise ValueError("selected execution has no registered model condition")
                     expected_execution["agent_condition"].update({
-                        "model": expected_override["model"],
-                        "model_condition_id": expected_override["model_condition_id"],
-                        "reasoning_effort": expected_override["reasoning_effort"],
+                        "runtime_id": condition_for_execution["runtime_id"],
+                        "provider": condition_for_execution["provider"],
+                        "model": condition_for_execution["model"],
+                        "model_condition_id": condition_for_execution["id"],
+                        "reasoning_effort": condition_for_execution["reasoning_effort"],
                     })
                     expected_execution["baseline_pool_reference"]["protocol_fingerprint"] = expected_fingerprint
-                    expected_execution["model_condition_override"] = expected_override
-                    selected_override = selected_descriptor.get("model_condition_override")
+                    expected_execution["model_condition_override"] = selected_expected_override
+                    expected_execution["runtime"]["agent_runtime_id"] = condition_for_execution["runtime_id"]
+                    expected_execution["runtime"]["model_condition"] = {
+                        "id": condition_for_execution["id"],
+                        "provider": condition_for_execution["provider"],
+                        "model": condition_for_execution["model"],
+                        "reasoning_effort": condition_for_execution["reasoning_effort"],
+                        "launcher": launcher_path,
+                    }
                     agent_block = protocol.get("baseline", {}) if selected_profile == "baseline-bare-codex" else protocol.get("treatment", {})
                     required_model_args = (
-                        "scripts/run_codex_workflow_model_condition.py",
-                        f"--workflow-model-condition-id {expected_override['model_condition_id']}",
-                        f"--workflow-model {expected_override['model']}",
-                        f"--workflow-reasoning-effort {expected_override['reasoning_effort']}",
+                        launcher_path,
+                        f"--workflow-model-condition-id {condition_for_execution['id']}",
+                        f"--workflow-model {condition_for_execution['model']}",
+                        f"--workflow-reasoning-effort {condition_for_execution['reasoning_effort']}",
                     )
-                    if selected_override != expected_override:
+                    if selected_override != selected_expected_override:
                         errors.append(f"execution contract {path.name} has inconsistent model-condition overrides")
                         continue
                     if any(required not in str(agent_block.get("command", "")) for required in required_model_args):
                         errors.append(f"execution contract {path.name} command does not bind its model-condition override")
                         continue
-                    if any(agent_block.get(key) != expected_override[override_key] for key, override_key in (
+                    agent_bindings = [
                         ("model", "model"),
-                        ("model_condition_id", "model_condition_id"),
+                        ("model_condition_id", "id"),
                         ("reasoning_effort", "reasoning_effort"),
-                    )):
+                    ]
+                    if condition_for_execution["runtime_id"] != "codex-cli":
+                        agent_bindings.append(("runtime_id", "runtime_id"))
+                    if any(agent_block.get(key) != condition_for_execution[override_key] for key, override_key in agent_bindings):
                         errors.append(f"execution contract {path.name} agent block does not bind its model-condition override")
                         continue
                 protocol_rel = path.relative_to(ROOT).as_posix()

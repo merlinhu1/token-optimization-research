@@ -33,6 +33,8 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "scripts"))
 import run_codex_workflow_evaluation as workflow  # type: ignore
 import run_codex_workflow_model_condition as model_condition_launcher  # type: ignore
+import run_opencode_workflow_model_condition as opencode_condition_launcher  # type: ignore
+import workflow_model_condition_runtime as condition_runtime  # type: ignore
 DEFAULT_LANE_ROOT = Path("/opt/data/eval-workflow-lanes")
 WORKFLOW_ARTIFACT_ROOT = Path("sources/evaluations/workflow-sessions")
 COMPACT_ARTIFACT_NAMES = {"run.json", "changes.diff", "evidence.jsonl.gz", "manifest.sha256"}
@@ -310,9 +312,15 @@ def workflow_lane_command(
     if model_condition is None:
         cmd = [sys.executable, "scripts/run_codex_workflow_evaluation.py"]
     else:
+        launcher = model_condition.get(
+            "launcher",
+            "scripts/run_opencode_workflow_model_condition.py"
+            if model_condition.get("runtime_id") == "opencode-cli"
+            else "scripts/run_codex_workflow_model_condition.py",
+        )
         cmd = [
             sys.executable,
-            "scripts/run_codex_workflow_model_condition.py",
+            launcher,
             "--workflow-model-condition-id", model_condition["id"],
             "--workflow-model", model_condition["model"],
             "--workflow-reasoning-effort", model_condition["reasoning_effort"],
@@ -1499,11 +1507,24 @@ def selected_model_condition(args: argparse.Namespace, *, configure: bool = Fals
         raise SystemExit(
             "--workflow-model-condition-id, --workflow-model, and --workflow-reasoning-effort must be supplied together"
         )
-    condition = model_condition_launcher.registered_condition(*values)
+    condition, _ = condition_runtime.resolve_condition_pair(ROOT, str(values[0]))
+    if condition.get("model") != values[1] or condition.get("reasoning_effort") != values[2]:
+        raise ValueError("registered model condition does not match the requested model/reasoning effort")
     if configure:
-        model_condition_launcher.configure_model_condition(*values)
+        launcher_module = (
+            opencode_condition_launcher
+            if condition.get("runtime_id") == "opencode-cli"
+            else model_condition_launcher
+        )
+        launcher_module.configure_model_condition(*values)
     return {
         "id": str(condition["id"]),
+        "runtime_id": str(condition["runtime_id"]),
+        "launcher": (
+            "scripts/run_opencode_workflow_model_condition.py"
+            if condition.get("runtime_id") == "opencode-cli"
+            else "scripts/run_codex_workflow_model_condition.py"
+        ),
         "model": str(condition["model"]),
         "reasoning_effort": str(condition["reasoning_effort"]),
     }

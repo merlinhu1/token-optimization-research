@@ -13,11 +13,12 @@ import json
 
 import sys
 from pathlib import Path
-from typing import Any, Callable
+from typing import Any
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 from scripts import run_codex_workflow_evaluation as runner
+from scripts import workflow_model_condition_runtime as condition_runtime
 
 
 def digest(path: Path) -> str:
@@ -35,59 +36,35 @@ def write_json(path: Path, value: object) -> None:
 
 
 MODEL_CONDITION_LAUNCHER = "scripts/run_codex_workflow_model_condition.py"
+OPENCODE_MODEL_CONDITION_LAUNCHER = "scripts/run_opencode_workflow_model_condition.py"
+BASELINE_MODEL_CONDITION: dict[str, Any] | None = None
 
 
 def registered_model_condition(condition_id: str, model: str, reasoning_effort: str) -> dict[str, Any]:
-    conditions = json.loads((ROOT / "data/evaluation-agent-runtimes.json").read_text()).get("model_conditions", [])
-    matches = [
-        item for item in conditions
-        if item.get("id") == condition_id
-        and item.get("runtime_id") == "codex-cli"
-        and item.get("provider") == "openai"
-        and item.get("model") == model
-        and item.get("reasoning_effort") == reasoning_effort
-    ]
-    if len(matches) != 1:
-        raise ValueError(
-            f"expected one registered model condition for {condition_id}/{model}/{reasoning_effort}; found {len(matches)}"
-        )
-    return matches[0]
+    selected, _ = condition_runtime.resolve_condition_pair(ROOT, condition_id)
+    if selected.get("model") != model or selected.get("reasoning_effort") != reasoning_effort:
+        raise ValueError(f"registered model condition does not match {condition_id}/{model}/{reasoning_effort}")
+    return selected
 
 
 def configure_model_condition(condition_id: str, model: str, reasoning_effort: str) -> None:
-    condition = registered_model_condition(condition_id, model, reasoning_effort)
+    global BASELINE_MODEL_CONDITION, MODEL_CONDITION_LAUNCHER
+    selected, _ = condition_runtime.resolve_condition_pair(ROOT, condition_id)
+    MODEL_CONDITION_LAUNCHER = (
+        OPENCODE_MODEL_CONDITION_LAUNCHER
+        if selected.get("runtime_id") == "opencode-cli"
+        else "scripts/run_codex_workflow_model_condition.py"
+    )
     launcher_path = ROOT / MODEL_CONDITION_LAUNCHER
-    override = {
-        "model_condition_id": condition_id,
-        "model": model,
-        "reasoning_effort": reasoning_effort,
-        "registry_status": condition.get("status"),
-        "launcher": {
+    _, BASELINE_MODEL_CONDITION = condition_runtime.configure_runner(
+        runner,
+        selected_condition_id=condition_id,
+        expected_model=model,
+        expected_reasoning_effort=reasoning_effort,
+        launcher_identity={
             "path": MODEL_CONDITION_LAUNCHER,
             "sha256": digest(launcher_path),
         },
-    }
-    runner.DEFAULT_WORKFLOW_MODEL_CONDITION_ID = condition_id
-    runner.DEFAULT_WORKFLOW_MODEL = model
-    runner.DEFAULT_WORKFLOW_REASONING_EFFORT = reasoning_effort
-
-    original_baseline: Callable[..., dict[str, Any]] = runner.baseline_protocol_descriptor
-    original_execution: Callable[..., dict[str, Any]] = runner.execution_condition_descriptor
-
-    def baseline_descriptor(*args: Any, **kwargs: Any) -> dict[str, Any]:
-        descriptor = original_baseline(*args, **kwargs)
-        descriptor["model_condition_override"] = override
-        return descriptor
-
-    def execution_descriptor(*args: Any, **kwargs: Any) -> dict[str, Any]:
-        descriptor = original_execution(*args, **kwargs)
-        descriptor["model_condition_override"] = override
-        return descriptor
-
-    runner.baseline_protocol_descriptor = baseline_descriptor
-    runner.execution_condition_descriptor = execution_descriptor
-    runner.validate_default_model_condition = lambda: registered_model_condition(
-        condition_id, model, reasoning_effort
     )
 
 
@@ -135,6 +112,7 @@ def frozen_protocol(
     command = runner_command(seq, profile_id, protocol_path, execution)
     agent = {
         "profile_id": profile_id,
+        "runtime_id": execution["agent_condition"]["runtime_id"],
         "provider": "openai",
         "model": runner.DEFAULT_WORKFLOW_MODEL,
         "model_condition_id": runner.DEFAULT_WORKFLOW_MODEL_CONDITION_ID,
@@ -143,9 +121,14 @@ def frozen_protocol(
     }
     baseline = {
         "profile_id": "baseline-bare-codex",
+        "runtime_id": descriptor.get("agent_condition", descriptor.get("agent", {}))["runtime_id"],
         "provider": "openai",
         "model": runner.DEFAULT_WORKFLOW_MODEL,
-        "model_condition_id": runner.DEFAULT_WORKFLOW_MODEL_CONDITION_ID,
+        "model_condition_id": (
+            BASELINE_MODEL_CONDITION["id"]
+            if BASELINE_MODEL_CONDITION is not None
+            else runner.DEFAULT_WORKFLOW_MODEL_CONDITION_ID
+        ),
         "reasoning_effort": runner.DEFAULT_WORKFLOW_REASONING_EFFORT,
         "command": command if profile_id == "baseline-bare-codex" else "",
     }
@@ -213,22 +196,27 @@ def main(argv: list[str] | None = None) -> int:
         raise SystemExit(
             "--workflow-model-condition-id, --workflow-model, and --workflow-reasoning-effort must be supplied together"
         )
-    if all(model_values):
-        configure_model_condition(*model_values)
-    runner.validate_default_model_condition()
     runner.assert_profile_runnable(args.profile_id)
     sequence_ids = args.sequence_ids or runner.active_sequence_ids()
+    sequences: list[dict[str, Any]] = []
     for sequence_id in sequence_ids:
         seq = runner.load_sequence(sequence_id)
         if seq.get("status") != "active":
             raise ValueError(f"cannot freeze a non-active sequence: {sequence_id}")
         if args.profile_id != "baseline-bare-codex":
+            # Validate the published Codex baseline before any replacement-runtime
+            # condition patches the selected execution descriptor.
             runner.require_baseline_v2_treatment_gate(seq, ROOT)
         current, _ = runner.qualification_is_current(seq)
         if not current:
             raise ValueError(
                 f"qualification evidence is stale for {sequence_id}; run and review generate_workflow_qualification.py explicitly"
             )
+        sequences.append(seq)
+    if all(model_values):
+        configure_model_condition(*model_values)
+    runner.validate_default_model_condition()
+    for seq in sequences:
         qualification_path = ROOT / seq["qualification_path"]
         protocol = frozen_protocol(seq, args.profile_id, qualification_path)
         path = ROOT / "sources/evaluations/protocols" / f"{protocol['protocol_id']}.json"
