@@ -57,6 +57,7 @@ SUPPORTED_WORKFLOW_TOOL_PROFILES = {
     "retrieval-codegraph": "codegraph",
     "lower-intervention-codegraph": "codegraph",
     "retrieval-cartog": "cartog",
+    "codescope-owner": "codescope",
     "retrieval-serena": "serena",
     "retrieval-graphify": "graphify",
     "retrieval-sigmap": "sigmap",
