@@ -140,6 +140,20 @@ def frozen_protocol(
         "command": command if profile_id == "baseline-bare-codex" else "",
     }
     treatment = {} if profile_id == "baseline-bare-codex" else agent
+    comparison_baseline = dict(baseline)
+    if (
+        runner.PROFILE_META.get(profile_id, {}).get("substrate") == "opencode-cli"
+        and profile_id != "runtime-opencode-codex-product-v1"
+    ):
+        comparison_baseline = {
+            "profile_id": "runtime-opencode-codex-product-v1",
+            "runtime_id": "opencode-cli",
+            "provider": "openai",
+            "model": runner.DEFAULT_WORKFLOW_MODEL,
+            "model_condition_id": runner.DEFAULT_WORKFLOW_MODEL_CONDITION_ID,
+            "reasoning_effort": runner.DEFAULT_WORKFLOW_REASONING_EFFORT,
+            "selection_policy": "sequence-pool-replicate-matched-first-valid",
+        }
     return {
         "protocol_schema_version": 3,
         "protocol_id": pid,
@@ -159,6 +173,7 @@ def frozen_protocol(
             "timeout_seconds_per_task": 3600,
         },
         "baseline": baseline,
+        "comparison_baseline": comparison_baseline,
         "treatment": treatment,
         "token_accounting_boundary": {
             "fields": [

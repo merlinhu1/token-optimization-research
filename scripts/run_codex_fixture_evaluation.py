@@ -93,6 +93,11 @@ PROFILE_TOOL_CONFIG_OVERRIDES = {
     "artifact-ponytail-codex-plugin-v1": "ponytail-codex-plugin-v1",
     "behavior-caveman-codex-skill-v1": "caveman-codex-skill-v1",
     "runtime-opencode-codex-product-v1": "opencode-codex-product-v1",
+    "terminal-tokenjuice-opencode-plugin-v1": "tokenjuice-opencode-plugin-v1",
+    "retrieval-serena-opencode-mcp-v1": "serena-opencode-mcp-v1",
+    "terminal-snip-opencode-plugin-v1": "snip-opencode-plugin-v1",
+    "retrieval-cartog-opencode-product-v1": "cartog-opencode-product-v1",
+    "integrated-headroom-opencode-product-v1": "headroom-opencode-product-v1",
 }
 CODEGRAPH_BIN = Path("/opt/data/tool-candidates/codegraph/dist/bin/codegraph.js")
 CARTOG_ROOT = Path("/opt/data/tool-candidates/cartog")
@@ -1201,6 +1206,229 @@ TOOL_CONFIGS.update({
         "mcp_handshake": {"required": True, "method": "initialize-and-tools-list", "timeout_seconds": 120},
     },
 })
+
+
+def _opencode_treatment_config(
+    treatment: str,
+    *,
+    display_name: str,
+    lane_name: str,
+    surface: str,
+    allowed_terms: list[str],
+    mounts: list[str],
+    **extra: Any,
+) -> dict[str, Any]:
+    adapter_args = [
+        str(OPENCODE_ADAPTER),
+        "--opencode-binary",
+        str(OPENCODE_BIN),
+        "--expected-opencode-sha256",
+        OPENCODE_BIN_SHA256,
+        "--treatment",
+        treatment,
+    ]
+    config: dict[str, Any] = {
+        "display_name": display_name,
+        "lane_name": lane_name,
+        "surface": surface,
+        "allowed_terms": ["opencode", *allowed_terms],
+        "data_dir_name": lane_name,
+        "mounts": [str(OPENCODE_ADAPTER), *mounts],
+        "executable": str(OPENCODE_BIN),
+        "expected_executable_sha256": OPENCODE_BIN_SHA256,
+        "binary_mount_target": str(OPENCODE_BIN),
+        "codex_wrapper": {"command": "/usr/bin/python3", "args": adapter_args},
+        "preflight_command": ["/usr/bin/python3", *adapter_args, "--probe"],
+        "tool_manifest_identity": "current-file-v1",
+    }
+    config.update(extra)
+    return config
+
+
+TOOL_CONFIGS.update(
+    {
+        "tokenjuice-opencode-plugin-v1": _opencode_treatment_config(
+            "tokenjuice",
+            display_name="TokenJuice official OpenCode plugin v1",
+            lane_name="terminal-tokenjuice-opencode-plugin-v1",
+            surface="opencode-tool-execute-after/terminal-output-compaction",
+            allowed_terms=["tokenjuice"],
+            mounts=["/opt/data/tool-candidates/tokenjuice"],
+            path_entries=["/opt/data/tool-candidates/tokenjuice/bin"],
+            env={"TOKENJUICE_TELEMETRY": "0"},
+            host_integration={
+                "install_commands": [["tokenjuice", "install", "opencode"]],
+                "verify_commands": [["tokenjuice", "doctor", "opencode"]],
+                "required_files": ["{codex_home}/xdg-config/opencode/plugins/tokenjuice.js"],
+            },
+            default_tool_state="active-native-plugin",
+        ),
+        "serena-opencode-mcp-v1": _opencode_treatment_config(
+            "serena",
+            display_name="Serena official OpenCode MCP v1",
+            lane_name="retrieval-serena-opencode-mcp-v1",
+            surface="opencode-mcp/symbolic-retrieval",
+            allowed_terms=["serena"],
+            mounts=["/opt/data/tool-candidates/serena"],
+            mcp_server="serena",
+            mcp_command=str(UV_BIN),
+            mcp_args=[
+                "tool",
+                "run",
+                "--from",
+                "/opt/data/tool-candidates/serena",
+                "serena",
+                "start-mcp-server",
+                "--project-from-cwd",
+                "--context=ide",
+                "--enable-web-dashboard",
+                "false",
+                "--open-web-dashboard",
+                "false",
+            ],
+            env={"SERENA_HOME": "{tool_data_dir}"},
+            mcp_handshake={"required": True, "method": "initialize-and-tools-list", "timeout_seconds": 120},
+            default_tool_state="cold-auto-index",
+        ),
+        "snip-opencode-plugin-v1": _opencode_treatment_config(
+            "snip",
+            display_name="Snip official community OpenCode plugin v1.6.1",
+            lane_name="terminal-snip-opencode-plugin-v1",
+            surface="opencode-tool-execute-before/shell-command-rewriting",
+            allowed_terms=["snip", "opencode-snip"],
+            mounts=[
+                "/opt/data/tool-candidates/snip",
+                "/opt/data/tool-candidates/opencode-snip-v1.6.1",
+            ],
+            path_entries=["/opt/data/tool-candidates/snip"],
+            env={"SNIP_TELEMETRY": "0"},
+            host_integration={
+                "verify_commands": [
+                    ["snip", "--version"],
+                    [
+                        "python3",
+                        "-c",
+                        "from pathlib import Path; p=Path('/opt/data/tool-candidates/opencode-snip-v1.6.1/.opencode/plugins/index.ts'); assert p.is_file(); assert 'SnipPlugin' in p.read_text()",
+                    ],
+                ],
+                "required_files": [
+                    "/opt/data/tool-candidates/opencode-snip-v1.6.1/.opencode/plugins/index.ts"
+                ],
+            },
+            default_tool_state="active-native-plugin",
+        ),
+        "cartog-opencode-product-v1": _opencode_treatment_config(
+            "cartog",
+            display_name="Cartog official OpenCode MCP product v1",
+            lane_name="retrieval-cartog-opencode-product-v1",
+            surface="opencode-mcp/structural-retrieval+live-watch",
+            allowed_terms=["cartog"],
+            mounts=["/opt/data/tool-candidates/cartog"],
+            path_entries=["/opt/data/tool-candidates/cartog/target/release"],
+            env={"CARTOG_MCP_COMPACT": "1", "CARTOG_NO_UPDATE_CHECK": "1"},
+            mcp_server="cartog",
+            mcp_command=str(CARTOG_BIN),
+            mcp_args=["serve", "--watch"],
+            host_integration={
+                "install_commands": [[str(CARTOG_BIN), "ide", "--client", "opencode", "--yes"]],
+                "verify_commands": [
+                    [
+                        "python3",
+                        "-c",
+                        "from pathlib import Path; p=Path('{codex_home}/xdg-config/opencode/opencode.json'); assert p.is_file(); assert '\"cartog\"' in p.read_text()",
+                    ]
+                ],
+                "required_files": ["{codex_home}/xdg-config/opencode/opencode.json"],
+            },
+            mcp_handshake={"required": True, "method": "initialize-and-tools-list", "timeout_seconds": 120},
+            warmup={
+                "kind": "official-init-and-structural-index",
+                "command": ["/bin/bash", "-lc", "set -euo pipefail; cartog init; cartog index ."],
+                "cleanup_paths": [".cartog", ".cartog.toml"],
+                "output_name": "cartog-warmup-output.txt",
+                "metadata_name": "cartog-warmup-metadata.json",
+                "timeout_seconds": 1200,
+            },
+            diff_exclude_paths=[".cartog", ".cartog.toml"],
+            default_tool_state="warm-structural-index+live-watch",
+        ),
+        "headroom-opencode-product-v1": _opencode_treatment_config(
+            "headroom",
+            display_name="Headroom official OpenCode integrated product v1",
+            lane_name="integrated-headroom-opencode-product-v1",
+            surface="opencode-proxy/context-compression+rtk+mcp+serena",
+            allowed_terms=["headroom", "headroom_retrieve", "rtk", "serena"],
+            mounts=[
+                "/opt/data/tool-candidates/headroom",
+                "/opt/data/tool-candidates/rtk",
+                "/opt/data/tool-candidates/serena",
+            ],
+            path_entries=["{codex_home}/home/.headroom/bin", "{codex_home}/home/.local/bin"],
+            env={
+                "HEADROOM_HOME": "{tool_data_dir}",
+                "HEADROOM_CACHE_DIR": "{tool_data_dir}/cache",
+                "HEADROOM_DISABLE_DASHBOARD": "1",
+                "HEADROOM_TELEMETRY": "0",
+                "HEADROOM_PROJECT": "{repo_slug}",
+                "OPENCODE_HOME": "{codex_home}/xdg-config/opencode",
+            },
+            host_integration={
+                "install_commands": [
+                    [
+                        str(UV_BIN),
+                        "tool",
+                        "run",
+                        "--from",
+                        str(HEADROOM_WHEEL),
+                        "--with",
+                        "mcp",
+                        "--with",
+                        "fastapi",
+                        "--with",
+                        "uvicorn<1.0",
+                        "--with",
+                        "httpx[http2]",
+                        "--with",
+                        "openai",
+                        "--with",
+                        "zstandard",
+                        "--with",
+                        "websockets",
+                        "headroom",
+                        "wrap",
+                        "opencode",
+                        "--port",
+                        "{tool_port}",
+                        "--verbose",
+                        "--prepare-only",
+                    ]
+                ],
+                "verify_commands": [
+                    [
+                        str(UV_BIN),
+                        "tool",
+                        "run",
+                        "--from",
+                        str(HEADROOM_WHEEL),
+                        "--with",
+                        "mcp",
+                        "headroom",
+                        "--version",
+                    ],
+                    [
+                        "python3",
+                        "-c",
+                        "from pathlib import Path; p=Path('{codex_home}/xdg-config/opencode/opencode.json'); assert p.is_file(); text=p.read_text(); assert 'headroom' in text and 'mcp' in text",
+                    ],
+                ],
+                "required_files": ["{codex_home}/xdg-config/opencode/opencode.json"],
+                "timeout_seconds": 600,
+            },
+            diff_exclude_paths=["AGENTS.md", ".headroom"],
+            default_tool_state="active-official-integrated-wrapper",
+        ),
+    }
+)
 
 
 def rel_or_abs(path_text: str) -> Path:

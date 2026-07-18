@@ -101,6 +101,40 @@ class OpenCodeWorkflowAdapterTest(unittest.TestCase):
             ],
         )
 
+    def test_product_integrations_bind_native_opencode_surfaces(self) -> None:
+        expected = {"bare", "tokenjuice", "serena", "snip", "cartog", "headroom"}
+        self.assertEqual(set(adapter.TREATMENT_PROFILES), expected)
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            serena_env, _ = adapter._runtime_env(root, treatment="serena", directory=root / "repo")
+            cartog_env, _ = adapter._runtime_env(root, treatment="cartog", directory=root / "repo")
+            tokenjuice_env, _ = adapter._runtime_env(root, treatment="tokenjuice", directory=root / "repo")
+        serena = json.loads(serena_env["OPENCODE_CONFIG_CONTENT"])
+        cartog = json.loads(cartog_env["OPENCODE_CONFIG_CONTENT"])
+        self.assertEqual(serena["mcp"]["serena"]["type"], "local")
+        self.assertIn("--context=ide", serena["mcp"]["serena"]["command"])
+        self.assertEqual(cartog["mcp"]["cartog"]["command"][-2:], ["serve", "--watch"])
+        self.assertNotEqual(tokenjuice_env.get("OPENCODE_DISABLE_PLUGINS"), "1")
+
+    def test_plugin_treatments_drop_pure_and_headroom_wraps_native_command(self) -> None:
+        parsed = adapter.CompatArgs(
+            model="openai/gpt-5.6-sol",
+            variant="high",
+            directory=Path("/repo"),
+            last_message_path=Path("/last"),
+            session_id=None,
+            prompt_from_stdin=False,
+            prompt="task",
+        )
+        plugin = adapter.build_opencode_command(Path("/opt/opencode"), parsed, "task", pure=False)
+        self.assertNotIn("--pure", plugin)
+        native = adapter.build_opencode_command(Path("/opt/opencode"), parsed, "task")
+        wrapped = adapter.build_headroom_command(native, port=18787)
+        self.assertIn("headroom", wrapped)
+        self.assertIn("opencode", wrapped)
+        self.assertIn("--port", wrapped)
+        self.assertEqual(wrapped[-len(native) + 1 :], native[1:])
+
     def test_auth_translation_is_private_and_preserves_rotated_auth(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
@@ -320,6 +354,102 @@ class OpenCodeWorkflowIntegrationContractTest(unittest.TestCase):
         self.assertIn("OpenCode", guidance)
         self.assertIn("native shell", guidance)
         self.assertNotIn("token-saving treatment", guidance)
+
+    def test_five_opencode_treatments_are_atomic_profile_bindings(self) -> None:
+        expected = {
+            "terminal-tokenjuice-opencode-plugin-v1": "tokenjuice-opencode-plugin-v1",
+            "retrieval-serena-opencode-mcp-v1": "serena-opencode-mcp-v1",
+            "terminal-snip-opencode-plugin-v1": "snip-opencode-plugin-v1",
+            "retrieval-cartog-opencode-product-v1": "cartog-opencode-product-v1",
+            "integrated-headroom-opencode-product-v1": "headroom-opencode-product-v1",
+        }
+        for profile_id, tool_id in expected.items():
+            with self.subTest(profile_id=profile_id):
+                self.assertEqual(runner.SUPPORTED_WORKFLOW_TOOL_PROFILES[profile_id], tool_id)
+                self.assertEqual(runner.profile_runtime_id(profile_id), "opencode-cli")
+                self.assertEqual(runner.PROFILE_META[profile_id]["session_role"], "individual_tool_treatment")
+                cfg = fixture.active_tool_config({}, profile_id)
+                assert cfg is not None
+                self.assertIn("--treatment", cfg["codex_wrapper"]["args"])
+        tokenjuice = fixture.active_tool_config({}, "terminal-tokenjuice-opencode-plugin-v1")
+        serena = fixture.active_tool_config({}, "retrieval-serena-opencode-mcp-v1")
+        snip = fixture.active_tool_config({}, "terminal-snip-opencode-plugin-v1")
+        cartog = fixture.active_tool_config({}, "retrieval-cartog-opencode-product-v1")
+        headroom = fixture.active_tool_config({}, "integrated-headroom-opencode-product-v1")
+        assert tokenjuice and serena and snip and cartog and headroom
+        self.assertEqual(tokenjuice["host_integration"]["install_commands"][0][-2:], ["install", "opencode"])
+        self.assertTrue(serena["mcp_handshake"]["required"])
+        self.assertIn("opencode-snip-v1.6.1", " ".join(snip["mounts"]))
+        self.assertEqual(
+            cartog["host_integration"]["install_commands"][0][-3:],
+            ["--client", "opencode", "--yes"],
+        )
+        self.assertIn("--prepare-only", headroom["host_integration"]["install_commands"][0])
+
+    def test_opencode_tool_treatments_reuse_bare_opencode_baseline(self) -> None:
+        sequence = runner.load_sequence("fastify-lifecycle-sequence-v0")
+        registry = json.loads((ROOT / "data/workflow-sessions.json").read_text())
+        bare = runner.find_comparison_baseline_record(
+            registry,
+            sequence,
+            "terminal-tokenjuice-opencode-plugin-v1",
+            0,
+        )
+        assert bare is not None
+        self.assertEqual(bare["profile"]["profile_id"], self.PROFILE_ID)
+        self.assertEqual(bare["agent"]["model_condition_id"], self.CONDITION_ID)
+
+    def test_opencode_tool_protocol_freezes_nested_runtime_comparator(self) -> None:
+        paths = sorted((ROOT / "sources/evaluations/protocols").glob(
+            "fastify-lifecycle-sequence-v0-terminal-tokenjuice-opencode-plugin-v1-*.json"
+        ))
+        self.assertEqual(len(paths), 1)
+        protocol = json.loads(paths[0].read_text())
+        comparator = protocol["comparison_baseline"]
+        self.assertEqual(comparator["profile_id"], self.PROFILE_ID)
+        self.assertEqual(comparator["runtime_id"], "opencode-cli")
+        self.assertEqual(comparator["model_condition_id"], self.CONDITION_ID)
+        self.assertEqual(comparator["selection_policy"], "sequence-pool-replicate-matched-first-valid")
+
+    def test_validator_accepts_only_substrate_matched_comparison_baseline(self) -> None:
+        treatment = {
+            "profile": {"profile_id": "terminal-tokenjuice-opencode-plugin-v1"},
+            "agent": {"runtime_id": "opencode-cli"},
+        }
+        opencode_baseline = {
+            "profile": {"profile_id": self.PROFILE_ID},
+            "session_role": "replacement_runtime",
+            "agent": {"runtime_id": "opencode-cli"},
+            "selected_execution": {
+                "descriptor": {
+                    "execution_role": "replacement_runtime",
+                    "selected_profile": {"profile_id": self.PROFILE_ID},
+                }
+            },
+        }
+        codex_baseline = {
+            "profile": {"profile_id": "baseline-bare-codex"},
+            "session_role": "baseline",
+            "agent": {"runtime_id": "codex-cli"},
+            "selected_execution": {
+                "descriptor": {
+                    "execution_role": "baseline",
+                    "selected_profile": {"profile_id": "baseline-bare-codex"},
+                }
+            },
+        }
+        self.assertTrue(repository_validation.comparison_baseline_matches_treatment(treatment, opencode_baseline))
+        self.assertFalse(repository_validation.comparison_baseline_matches_treatment(treatment, codex_baseline))
+        bare_runtime_treatment = {
+            "profile": {"profile_id": self.PROFILE_ID},
+            "agent": {"runtime_id": "opencode-cli"},
+        }
+        self.assertTrue(
+            repository_validation.comparison_baseline_matches_treatment(
+                bare_runtime_treatment,
+                codex_baseline,
+            )
+        )
 
 
 if __name__ == "__main__":

@@ -2289,6 +2289,33 @@ def expected_workflow_session_role(profile_id: str, canonical_profile: dict | No
     return "individual_tool_treatment"
 
 
+def comparison_baseline_matches_treatment(
+    treatment: dict[str, Any],
+    baseline: dict[str, Any],
+) -> bool:
+    treatment_runtime = treatment.get("agent", {}).get("runtime_id")
+    treatment_profile = treatment.get("profile", {}).get("profile_id")
+    if treatment_runtime == "opencode-cli" and treatment_profile != "runtime-opencode-codex-product-v1":
+        expected_profile = "runtime-opencode-codex-product-v1"
+        expected_role = "replacement_runtime"
+        expected_runtime = "opencode-cli"
+    else:
+        expected_profile = "baseline-bare-codex"
+        expected_role = "baseline"
+        expected_runtime = "codex-cli"
+    descriptor = baseline.get("selected_execution", {}).get("descriptor", {})
+    return (
+        baseline.get("profile", {}).get("profile_id") == expected_profile
+        and baseline.get("session_role") == expected_role
+        and (
+            treatment_runtime not in {"codex-cli", "opencode-cli"}
+            or baseline.get("agent", {}).get("runtime_id") == expected_runtime
+        )
+        and descriptor.get("execution_role") == expected_role
+        and descriptor.get("selected_profile", {}).get("profile_id") == expected_profile
+    )
+
+
 def validate_workflow_sessions(session_doc: dict, sequence_ids: set[str], fixture_doc: dict, profiles_by_id: dict[str, dict], runtime_ids: set[str], model_condition_ids: set[str], errors: list[str]) -> None:
     if type(session_doc.get("schema_version")) is not int or session_doc.get("schema_version") != 1:
         errors.append("data/workflow-sessions.json must use schema_version 1")
@@ -2381,13 +2408,9 @@ def validate_workflow_sessions(session_doc: dict, sequence_ids: set[str], fixtur
                 != session.get("baseline_pool", {}).get("protocol_fingerprint")
                 or baseline.get("task_sequence", {}).get("sequence_id")
                 != session.get("task_sequence", {}).get("sequence_id")
-                or baseline.get("session_role") != "baseline"
-                or baseline.get("profile", {}).get("profile_id") != "baseline-bare-codex"
+                or not comparison_baseline_matches_treatment(session, baseline)
                 or baseline.get("status") != "completed"
                 or baseline.get("interpretation", {}).get("accepted_for_objective") is not True
-                or baseline.get("selected_execution", {}).get("descriptor", {}).get("execution_role") != "baseline"
-                or baseline.get("selected_execution", {}).get("descriptor", {}).get("selected_profile", {}).get("profile_id")
-                != "baseline-bare-codex"
             ):
                 errors.append(f"workflow session {sid} comparison baseline {comparison_id} is not a canonical sequence-, pool-, and replicate-matched baseline")
         agent = session.get("agent", {})
