@@ -1,53 +1,2531 @@
 {
-  "schema_version": "official-integration-qualification-v1",
-  "qualified_at": "2026-07-18",
-  "mode": "no-provider-prepare-only",
-  "matrix_root": "/opt/data/eval-workflow-lanes/workflow-matrix-20260718T085744295994Z-p1269694-r0",
-  "matrix_execution_passed": true,
-  "repository_validation_passed": true,
-  "scope_note": "Final exact-contract Fastify smoke for each corrected integration. The runner warms profile workspace state before an MCP handshake. Beets and Terraform descriptors were generated and repository-validated; no provider-backed treatment session was launched.",
+  "schema_version": "corrected-integration-qualification-v2",
+  "audit_id": "corrected-integration-qualification-20260718",
+  "date": "2026-07-18",
+  "execution_mode": "prepare-only-no-provider",
+  "provider_calls": 0,
+  "command_contract": [
+    "--prepare-only",
+    "--no-provider",
+    "--skip-dependency-install",
+    "--skip-container-preflight",
+    "--skip-codex-preflight"
+  ],
+  "scope": {
+    "profiles": 13,
+    "fixtures": 3,
+    "lanes": 39,
+    "protocols": 39
+  },
+  "summary": {
+    "passed": 39,
+    "failed": 0,
+    "all_fixture_preparation_verified": true,
+    "all_host_integrations_verified": true,
+    "all_required_mcp_handshakes_verified": true,
+    "provider_backed_sessions_created": 0
+  },
+  "profiles": [
+    "codescope-codex-product-v1",
+    "integrated-leanctx-codex-hybrid-v1",
+    "integrated-token-savior-mcp-v1",
+    "retrieval-cartog-mcp-v1",
+    "retrieval-codegraph-codex-mcp-v1",
+    "retrieval-graphify-codex-skill-v1",
+    "retrieval-jcodemunch-mcp-direct-v1",
+    "retrieval-serena-codex-mcp-v1",
+    "retrieval-sigmap-codex-live-v1",
+    "swarmvault-codex-product-v1",
+    "terminal-rtk-codex-instructions-v1",
+    "terminal-snip-codex-hook-v1",
+    "terminal-tokenjuice-codex-hook-v1"
+  ],
   "lanes": [
     {
-      "sequence_id": "fastify-lifecycle-sequence-v0",
-      "profile_id": "terminal-tokenjuice-codex-hook-v1",
-      "lane_exit_code": 0,
-      "protocol_path": "sources/evaluations/protocols/fastify-lifecycle-sequence-v0-terminal-tokenjuice-codex-hook-v1-49c7d8982047.json",
-      "protocol_sha256": "08c8a0ac670b573ed040cc330ccdcd59399e9ef81ae5ce5682fd67d5c730eb1f",
-      "preparation_order": [
-        "host-integration",
-        "codex-preflight",
-        "tool-workspace-warmup",
-        "mcp-handshake"
-      ],
-      "host_integration_passed": true,
-      "codex_preflight_passed": true,
+      "sequence_id": "beets-lifecycle-sequence-v0",
+      "profile_id": "codescope-codex-product-v1",
+      "protocol_path": "sources/evaluations/protocols/beets-lifecycle-sequence-v0-codescope-codex-product-v1-a9fb8dbe8f19.json",
+      "protocol_sha256": "3e6267f2218bb2ecad63b08bf4b06696ce49661d8af2e55a49784fa52185a292",
+      "raw_prepare_output_sha256": "cacb938a8a16388e65e7fb2fb3b2b243a34972431dea8cff6f51bf4cd2c163f2",
+      "prepared": true,
+      "prepare_verification": {
+        "passed": true,
+        "mode": "preseeded-composite",
+        "concealment_passed": true,
+        "composite_seed_delivery_passed": true
+      },
+      "host_integration": {
+        "passed": true,
+        "skipped": false,
+        "install_exit_codes": [],
+        "verify_exit_codes": [
+          0
+        ],
+        "missing_required_files": [],
+        "required_files": []
+      },
+      "mcp_handshake": {
+        "required": true,
+        "passed": true,
+        "initialize_passed": true,
+        "tools_list_passed": true,
+        "server_name": "rmcp",
+        "protocol_version": "2025-06-18",
+        "tool_count": 37,
+        "tool_names": [
+          "api_changelog",
+          "ask",
+          "capture_insight",
+          "code_health",
+          "community_detection",
+          "context_bundle",
+          "contributors",
+          "conversations",
+          "edit_preflight",
+          "embed_functions",
+          "export_obsidian",
+          "fetch_and_index",
+          "find_callees",
+          "find_callers",
+          "graph_stats",
+          "http_analysis",
+          "impact_analysis",
+          "index_codebase",
+          "index_content",
+          "index_status",
+          "knowledge",
+          "lint",
+          "manage_adr",
+          "memory",
+          "project",
+          "raw_query",
+          "refactor",
+          "retrieve_archived",
+          "sandbox_run",
+          "search",
+          "search_indexed",
+          "semantic_search",
+          "skills",
+          "suggest_structure",
+          "supported_languages",
+          "sync_git_history",
+          "type_hierarchy"
+        ],
+        "errors": []
+      },
       "tool_warmup_exit_code": 0,
-      "mcp_handshake_required": false,
-      "mcp_handshake_skipped": true,
-      "mcp_handshake_passed": true,
-      "mcp_advertised_tool_count": 0,
-      "provider_execution_performed": false
+      "codex_preflight": {
+        "passed": null,
+        "skipped": true
+      }
+    },
+    {
+      "sequence_id": "fastify-lifecycle-sequence-v0",
+      "profile_id": "codescope-codex-product-v1",
+      "protocol_path": "sources/evaluations/protocols/fastify-lifecycle-sequence-v0-codescope-codex-product-v1-a6e6e4e0245d.json",
+      "protocol_sha256": "ddeac92913262100749da99132bae8af4ac6ff76c850165f7e798e0bb73bc14d",
+      "raw_prepare_output_sha256": "29d8ff1d9b9c8f7a522559ed038d36045a2fc8ec92a970b5348ac13a8dd8633c",
+      "prepared": true,
+      "prepare_verification": {
+        "passed": true,
+        "mode": "preseeded-composite",
+        "concealment_passed": true,
+        "composite_seed_delivery_passed": true
+      },
+      "host_integration": {
+        "passed": true,
+        "skipped": false,
+        "install_exit_codes": [],
+        "verify_exit_codes": [
+          0
+        ],
+        "missing_required_files": [],
+        "required_files": []
+      },
+      "mcp_handshake": {
+        "required": true,
+        "passed": true,
+        "initialize_passed": true,
+        "tools_list_passed": true,
+        "server_name": "rmcp",
+        "protocol_version": "2025-06-18",
+        "tool_count": 37,
+        "tool_names": [
+          "api_changelog",
+          "ask",
+          "capture_insight",
+          "code_health",
+          "community_detection",
+          "context_bundle",
+          "contributors",
+          "conversations",
+          "edit_preflight",
+          "embed_functions",
+          "export_obsidian",
+          "fetch_and_index",
+          "find_callees",
+          "find_callers",
+          "graph_stats",
+          "http_analysis",
+          "impact_analysis",
+          "index_codebase",
+          "index_content",
+          "index_status",
+          "knowledge",
+          "lint",
+          "manage_adr",
+          "memory",
+          "project",
+          "raw_query",
+          "refactor",
+          "retrieve_archived",
+          "sandbox_run",
+          "search",
+          "search_indexed",
+          "semantic_search",
+          "skills",
+          "suggest_structure",
+          "supported_languages",
+          "sync_git_history",
+          "type_hierarchy"
+        ],
+        "errors": []
+      },
+      "tool_warmup_exit_code": 0,
+      "codex_preflight": {
+        "passed": null,
+        "skipped": true
+      }
+    },
+    {
+      "sequence_id": "terraform-lifecycle-sequence-v0",
+      "profile_id": "codescope-codex-product-v1",
+      "protocol_path": "sources/evaluations/protocols/terraform-lifecycle-sequence-v0-codescope-codex-product-v1-0aadc3f696bb.json",
+      "protocol_sha256": "36dcd2f14b35a5ca8fd6b79eb36e4dafc812b1776aff642af6d50d803fecda8a",
+      "raw_prepare_output_sha256": "6c259773b6911adba6f1c4df49b1dcddf1b0ab84dc407ca02a6971f4f7880189",
+      "prepared": true,
+      "prepare_verification": {
+        "passed": true,
+        "mode": "preseeded-composite",
+        "concealment_passed": true,
+        "composite_seed_delivery_passed": true
+      },
+      "host_integration": {
+        "passed": true,
+        "skipped": false,
+        "install_exit_codes": [],
+        "verify_exit_codes": [
+          0
+        ],
+        "missing_required_files": [],
+        "required_files": []
+      },
+      "mcp_handshake": {
+        "required": true,
+        "passed": true,
+        "initialize_passed": true,
+        "tools_list_passed": true,
+        "server_name": "rmcp",
+        "protocol_version": "2025-06-18",
+        "tool_count": 37,
+        "tool_names": [
+          "api_changelog",
+          "ask",
+          "capture_insight",
+          "code_health",
+          "community_detection",
+          "context_bundle",
+          "contributors",
+          "conversations",
+          "edit_preflight",
+          "embed_functions",
+          "export_obsidian",
+          "fetch_and_index",
+          "find_callees",
+          "find_callers",
+          "graph_stats",
+          "http_analysis",
+          "impact_analysis",
+          "index_codebase",
+          "index_content",
+          "index_status",
+          "knowledge",
+          "lint",
+          "manage_adr",
+          "memory",
+          "project",
+          "raw_query",
+          "refactor",
+          "retrieve_archived",
+          "sandbox_run",
+          "search",
+          "search_indexed",
+          "semantic_search",
+          "skills",
+          "suggest_structure",
+          "supported_languages",
+          "sync_git_history",
+          "type_hierarchy"
+        ],
+        "errors": []
+      },
+      "tool_warmup_exit_code": 0,
+      "codex_preflight": {
+        "passed": null,
+        "skipped": true
+      }
+    },
+    {
+      "sequence_id": "beets-lifecycle-sequence-v0",
+      "profile_id": "integrated-leanctx-codex-hybrid-v1",
+      "protocol_path": "sources/evaluations/protocols/beets-lifecycle-sequence-v0-integrated-leanctx-codex-hybrid-v1-b8a7e2ee5bc2.json",
+      "protocol_sha256": "fd8d0e77f4c9f6e70f93fd1ace5fdd64bf5f182b042eed10867e037c5db05166",
+      "raw_prepare_output_sha256": "aaf99896a089fe3b70e0ae2b07daef9d70fd072a0bc296ab52b40678942adb36",
+      "prepared": true,
+      "prepare_verification": {
+        "passed": true,
+        "mode": "preseeded-composite",
+        "concealment_passed": true,
+        "composite_seed_delivery_passed": true
+      },
+      "host_integration": {
+        "passed": true,
+        "skipped": false,
+        "install_exit_codes": [
+          0
+        ],
+        "verify_exit_codes": [
+          0
+        ],
+        "missing_required_files": [],
+        "required_files": [
+          "{{codex_home}}/config.toml",
+          "{{codex_home}}/hooks.json",
+          "{{codex_home}}/instructions.md",
+          "{{codex_home}}/skills/lean-ctx/SKILL.md",
+          "{repo}/AGENTS.md",
+          "{repo}/LEAN-CTX.md"
+        ]
+      },
+      "mcp_handshake": {
+        "required": true,
+        "passed": true,
+        "initialize_passed": true,
+        "tools_list_passed": true,
+        "server_name": "lean-ctx",
+        "protocol_version": "2025-06-18",
+        "tool_count": 11,
+        "tool_names": [
+          "ctx_call",
+          "ctx_compose",
+          "ctx_expand",
+          "ctx_glob",
+          "ctx_graph",
+          "ctx_read",
+          "ctx_search",
+          "ctx_session",
+          "ctx_shell",
+          "ctx_tree",
+          "shell"
+        ],
+        "errors": []
+      },
+      "tool_warmup_exit_code": 0,
+      "codex_preflight": {
+        "passed": null,
+        "skipped": true
+      }
+    },
+    {
+      "sequence_id": "fastify-lifecycle-sequence-v0",
+      "profile_id": "integrated-leanctx-codex-hybrid-v1",
+      "protocol_path": "sources/evaluations/protocols/fastify-lifecycle-sequence-v0-integrated-leanctx-codex-hybrid-v1-bd1fee6b603e.json",
+      "protocol_sha256": "16445011ab65721d768532cec520898f7b0310b2721cc7e4928901482828134b",
+      "raw_prepare_output_sha256": "e0d0cc20835f56b37686935a9f7b1b0d6e82c79a220bc68a0a9b375412dba346",
+      "prepared": true,
+      "prepare_verification": {
+        "passed": true,
+        "mode": "preseeded-composite",
+        "concealment_passed": true,
+        "composite_seed_delivery_passed": true
+      },
+      "host_integration": {
+        "passed": true,
+        "skipped": false,
+        "install_exit_codes": [
+          0
+        ],
+        "verify_exit_codes": [
+          0
+        ],
+        "missing_required_files": [],
+        "required_files": [
+          "{{codex_home}}/config.toml",
+          "{{codex_home}}/hooks.json",
+          "{{codex_home}}/instructions.md",
+          "{{codex_home}}/skills/lean-ctx/SKILL.md",
+          "{repo}/AGENTS.md",
+          "{repo}/LEAN-CTX.md"
+        ]
+      },
+      "mcp_handshake": {
+        "required": true,
+        "passed": true,
+        "initialize_passed": true,
+        "tools_list_passed": true,
+        "server_name": "lean-ctx",
+        "protocol_version": "2025-06-18",
+        "tool_count": 11,
+        "tool_names": [
+          "ctx_call",
+          "ctx_compose",
+          "ctx_expand",
+          "ctx_glob",
+          "ctx_graph",
+          "ctx_read",
+          "ctx_search",
+          "ctx_session",
+          "ctx_shell",
+          "ctx_tree",
+          "shell"
+        ],
+        "errors": []
+      },
+      "tool_warmup_exit_code": 0,
+      "codex_preflight": {
+        "passed": null,
+        "skipped": true
+      }
+    },
+    {
+      "sequence_id": "terraform-lifecycle-sequence-v0",
+      "profile_id": "integrated-leanctx-codex-hybrid-v1",
+      "protocol_path": "sources/evaluations/protocols/terraform-lifecycle-sequence-v0-integrated-leanctx-codex-hybrid-v1-1c05fe108312.json",
+      "protocol_sha256": "ceee734f5587bc6bd85c03793be5e579354b1db7c2d4175c6475f268c6af0fc1",
+      "raw_prepare_output_sha256": "e34c8b702ae42e6aef815f04bd5c81e0bf5f6c44f3089ee94428959ebe30823e",
+      "prepared": true,
+      "prepare_verification": {
+        "passed": true,
+        "mode": "preseeded-composite",
+        "concealment_passed": true,
+        "composite_seed_delivery_passed": true
+      },
+      "host_integration": {
+        "passed": true,
+        "skipped": false,
+        "install_exit_codes": [
+          0
+        ],
+        "verify_exit_codes": [
+          0
+        ],
+        "missing_required_files": [],
+        "required_files": [
+          "{{codex_home}}/config.toml",
+          "{{codex_home}}/hooks.json",
+          "{{codex_home}}/instructions.md",
+          "{{codex_home}}/skills/lean-ctx/SKILL.md",
+          "{repo}/AGENTS.md",
+          "{repo}/LEAN-CTX.md"
+        ]
+      },
+      "mcp_handshake": {
+        "required": true,
+        "passed": true,
+        "initialize_passed": true,
+        "tools_list_passed": true,
+        "server_name": "lean-ctx",
+        "protocol_version": "2025-06-18",
+        "tool_count": 11,
+        "tool_names": [
+          "ctx_call",
+          "ctx_compose",
+          "ctx_expand",
+          "ctx_glob",
+          "ctx_graph",
+          "ctx_read",
+          "ctx_search",
+          "ctx_session",
+          "ctx_shell",
+          "ctx_tree",
+          "shell"
+        ],
+        "errors": []
+      },
+      "tool_warmup_exit_code": 0,
+      "codex_preflight": {
+        "passed": null,
+        "skipped": true
+      }
+    },
+    {
+      "sequence_id": "beets-lifecycle-sequence-v0",
+      "profile_id": "integrated-token-savior-mcp-v1",
+      "protocol_path": "sources/evaluations/protocols/beets-lifecycle-sequence-v0-integrated-token-savior-mcp-v1-97273088de6f.json",
+      "protocol_sha256": "d03cdbde0f733a5aa96cb21684590de149fa3ee8a380af1df7d5a7abc71141e0",
+      "raw_prepare_output_sha256": "768bb11811e5c5808177e0e942a1b32b9315e2cffc02f8d87cbaf9d8a2daa708",
+      "prepared": true,
+      "prepare_verification": {
+        "passed": true,
+        "mode": "preseeded-composite",
+        "concealment_passed": true,
+        "composite_seed_delivery_passed": true
+      },
+      "host_integration": {
+        "passed": true,
+        "skipped": true,
+        "install_exit_codes": [],
+        "verify_exit_codes": [],
+        "missing_required_files": [],
+        "required_files": []
+      },
+      "mcp_handshake": {
+        "required": true,
+        "passed": true,
+        "initialize_passed": true,
+        "tools_list_passed": true,
+        "server_name": "token-savior-recall",
+        "protocol_version": "2025-06-18",
+        "tool_count": 15,
+        "tool_names": [
+          "add_field_to_model",
+          "analyze_config",
+          "detect_breaking_changes",
+          "find_dead_code",
+          "find_semantic_duplicates",
+          "find_symbol",
+          "get_call_chain",
+          "get_entry_points",
+          "get_full_context",
+          "get_function_source",
+          "get_git_status",
+          "replace_symbol_source",
+          "search_codebase",
+          "switch_project",
+          "ts_search"
+        ],
+        "errors": []
+      },
+      "tool_warmup_exit_code": 0,
+      "codex_preflight": {
+        "passed": null,
+        "skipped": true
+      }
+    },
+    {
+      "sequence_id": "fastify-lifecycle-sequence-v0",
+      "profile_id": "integrated-token-savior-mcp-v1",
+      "protocol_path": "sources/evaluations/protocols/fastify-lifecycle-sequence-v0-integrated-token-savior-mcp-v1-b1d0859fcb84.json",
+      "protocol_sha256": "fcb1dfe4688df4fba94dcd4ebc025a28b018892a2422172d3dd735be6578dcf5",
+      "raw_prepare_output_sha256": "33c42e3f9d69739d935f45c8495da5845a8b8e511641058492ca3ada7077f770",
+      "prepared": true,
+      "prepare_verification": {
+        "passed": true,
+        "mode": "preseeded-composite",
+        "concealment_passed": true,
+        "composite_seed_delivery_passed": true
+      },
+      "host_integration": {
+        "passed": true,
+        "skipped": true,
+        "install_exit_codes": [],
+        "verify_exit_codes": [],
+        "missing_required_files": [],
+        "required_files": []
+      },
+      "mcp_handshake": {
+        "required": true,
+        "passed": true,
+        "initialize_passed": true,
+        "tools_list_passed": true,
+        "server_name": "token-savior-recall",
+        "protocol_version": "2025-06-18",
+        "tool_count": 15,
+        "tool_names": [
+          "add_field_to_model",
+          "analyze_config",
+          "detect_breaking_changes",
+          "find_dead_code",
+          "find_semantic_duplicates",
+          "find_symbol",
+          "get_call_chain",
+          "get_entry_points",
+          "get_full_context",
+          "get_function_source",
+          "get_git_status",
+          "replace_symbol_source",
+          "search_codebase",
+          "switch_project",
+          "ts_search"
+        ],
+        "errors": []
+      },
+      "tool_warmup_exit_code": 0,
+      "codex_preflight": {
+        "passed": null,
+        "skipped": true
+      }
+    },
+    {
+      "sequence_id": "terraform-lifecycle-sequence-v0",
+      "profile_id": "integrated-token-savior-mcp-v1",
+      "protocol_path": "sources/evaluations/protocols/terraform-lifecycle-sequence-v0-integrated-token-savior-mcp-v1-ed2899818ca7.json",
+      "protocol_sha256": "d19311ef81383c965f129f5b4fb86ca65fbb585146c0a329d3a9bba4e91c43a8",
+      "raw_prepare_output_sha256": "8a5f461867ad29a770f23f07765896e68810b54272679506a82465b23ee43344",
+      "prepared": true,
+      "prepare_verification": {
+        "passed": true,
+        "mode": "preseeded-composite",
+        "concealment_passed": true,
+        "composite_seed_delivery_passed": true
+      },
+      "host_integration": {
+        "passed": true,
+        "skipped": true,
+        "install_exit_codes": [],
+        "verify_exit_codes": [],
+        "missing_required_files": [],
+        "required_files": []
+      },
+      "mcp_handshake": {
+        "required": true,
+        "passed": true,
+        "initialize_passed": true,
+        "tools_list_passed": true,
+        "server_name": "token-savior-recall",
+        "protocol_version": "2025-06-18",
+        "tool_count": 15,
+        "tool_names": [
+          "add_field_to_model",
+          "analyze_config",
+          "detect_breaking_changes",
+          "find_dead_code",
+          "find_semantic_duplicates",
+          "find_symbol",
+          "get_call_chain",
+          "get_entry_points",
+          "get_full_context",
+          "get_function_source",
+          "get_git_status",
+          "replace_symbol_source",
+          "search_codebase",
+          "switch_project",
+          "ts_search"
+        ],
+        "errors": []
+      },
+      "tool_warmup_exit_code": 0,
+      "codex_preflight": {
+        "passed": null,
+        "skipped": true
+      }
+    },
+    {
+      "sequence_id": "beets-lifecycle-sequence-v0",
+      "profile_id": "retrieval-cartog-mcp-v1",
+      "protocol_path": "sources/evaluations/protocols/beets-lifecycle-sequence-v0-retrieval-cartog-mcp-v1-e9f128c07626.json",
+      "protocol_sha256": "26cd41888f85b8e9a6c54238123e263cda88ba10a597160f73bc4b996efac720",
+      "raw_prepare_output_sha256": "0063b21eed6610329f9a3095729eef0ae8cd307fcdd1694627cd1fd0b8e06369",
+      "prepared": true,
+      "prepare_verification": {
+        "passed": true,
+        "mode": "preseeded-composite",
+        "concealment_passed": true,
+        "composite_seed_delivery_passed": true
+      },
+      "host_integration": {
+        "passed": true,
+        "skipped": true,
+        "install_exit_codes": [],
+        "verify_exit_codes": [],
+        "missing_required_files": [],
+        "required_files": []
+      },
+      "mcp_handshake": {
+        "required": true,
+        "passed": true,
+        "initialize_passed": true,
+        "tools_list_passed": true,
+        "server_name": "cartog",
+        "protocol_version": "2025-06-18",
+        "tool_count": 16,
+        "tool_names": [
+          "cartog_callees",
+          "cartog_changes",
+          "cartog_context",
+          "cartog_deps",
+          "cartog_hierarchy",
+          "cartog_impact",
+          "cartog_index",
+          "cartog_map",
+          "cartog_outline",
+          "cartog_rag_index",
+          "cartog_rag_search",
+          "cartog_refs",
+          "cartog_search",
+          "cartog_stats",
+          "cartog_trace",
+          "cartog_update"
+        ],
+        "errors": []
+      },
+      "tool_warmup_exit_code": 0,
+      "codex_preflight": {
+        "passed": null,
+        "skipped": true
+      }
+    },
+    {
+      "sequence_id": "fastify-lifecycle-sequence-v0",
+      "profile_id": "retrieval-cartog-mcp-v1",
+      "protocol_path": "sources/evaluations/protocols/fastify-lifecycle-sequence-v0-retrieval-cartog-mcp-v1-ba3818649dcb.json",
+      "protocol_sha256": "ee692ac104f57a108bcc64a42cf7365b10a4aa1f536eb737f0f3aa34d2e8b260",
+      "raw_prepare_output_sha256": "c890fe91c220bc09e55a92cc279d588ee9bc272b8f22091212c24788f138ee47",
+      "prepared": true,
+      "prepare_verification": {
+        "passed": true,
+        "mode": "preseeded-composite",
+        "concealment_passed": true,
+        "composite_seed_delivery_passed": true
+      },
+      "host_integration": {
+        "passed": true,
+        "skipped": true,
+        "install_exit_codes": [],
+        "verify_exit_codes": [],
+        "missing_required_files": [],
+        "required_files": []
+      },
+      "mcp_handshake": {
+        "required": true,
+        "passed": true,
+        "initialize_passed": true,
+        "tools_list_passed": true,
+        "server_name": "cartog",
+        "protocol_version": "2025-06-18",
+        "tool_count": 16,
+        "tool_names": [
+          "cartog_callees",
+          "cartog_changes",
+          "cartog_context",
+          "cartog_deps",
+          "cartog_hierarchy",
+          "cartog_impact",
+          "cartog_index",
+          "cartog_map",
+          "cartog_outline",
+          "cartog_rag_index",
+          "cartog_rag_search",
+          "cartog_refs",
+          "cartog_search",
+          "cartog_stats",
+          "cartog_trace",
+          "cartog_update"
+        ],
+        "errors": []
+      },
+      "tool_warmup_exit_code": 0,
+      "codex_preflight": {
+        "passed": null,
+        "skipped": true
+      }
+    },
+    {
+      "sequence_id": "terraform-lifecycle-sequence-v0",
+      "profile_id": "retrieval-cartog-mcp-v1",
+      "protocol_path": "sources/evaluations/protocols/terraform-lifecycle-sequence-v0-retrieval-cartog-mcp-v1-9d0bd23c7ee6.json",
+      "protocol_sha256": "c684ec4ae4295c037a6e87ded8b510f363b6fc27c7cecc95a680061c3cc52944",
+      "raw_prepare_output_sha256": "2315f3ade81c20546714b88936ea9f64d473c3a83c56a313ee6be32907edd2a1",
+      "prepared": true,
+      "prepare_verification": {
+        "passed": true,
+        "mode": "preseeded-composite",
+        "concealment_passed": true,
+        "composite_seed_delivery_passed": true
+      },
+      "host_integration": {
+        "passed": true,
+        "skipped": true,
+        "install_exit_codes": [],
+        "verify_exit_codes": [],
+        "missing_required_files": [],
+        "required_files": []
+      },
+      "mcp_handshake": {
+        "required": true,
+        "passed": true,
+        "initialize_passed": true,
+        "tools_list_passed": true,
+        "server_name": "cartog",
+        "protocol_version": "2025-06-18",
+        "tool_count": 16,
+        "tool_names": [
+          "cartog_callees",
+          "cartog_changes",
+          "cartog_context",
+          "cartog_deps",
+          "cartog_hierarchy",
+          "cartog_impact",
+          "cartog_index",
+          "cartog_map",
+          "cartog_outline",
+          "cartog_rag_index",
+          "cartog_rag_search",
+          "cartog_refs",
+          "cartog_search",
+          "cartog_stats",
+          "cartog_trace",
+          "cartog_update"
+        ],
+        "errors": []
+      },
+      "tool_warmup_exit_code": 0,
+      "codex_preflight": {
+        "passed": null,
+        "skipped": true
+      }
+    },
+    {
+      "sequence_id": "beets-lifecycle-sequence-v0",
+      "profile_id": "retrieval-codegraph-codex-mcp-v1",
+      "protocol_path": "sources/evaluations/protocols/beets-lifecycle-sequence-v0-retrieval-codegraph-codex-mcp-v1-c5a76c824019.json",
+      "protocol_sha256": "3d635fa3020b77b242bb50ad5aa15c336226e03d3ece9697a6c6e4718afc7add",
+      "raw_prepare_output_sha256": "62f3264d6b405b102dbd6b4d2937939dfde237326c799cd4aabe3a20b082e16b",
+      "prepared": true,
+      "prepare_verification": {
+        "passed": true,
+        "mode": "preseeded-composite",
+        "concealment_passed": true,
+        "composite_seed_delivery_passed": true
+      },
+      "host_integration": {
+        "passed": true,
+        "skipped": false,
+        "install_exit_codes": [
+          0
+        ],
+        "verify_exit_codes": [
+          0
+        ],
+        "missing_required_files": [],
+        "required_files": [
+          "{{codex_home}}/config.toml",
+          "{{codex_home}}/AGENTS.md"
+        ]
+      },
+      "mcp_handshake": {
+        "required": true,
+        "passed": true,
+        "initialize_passed": true,
+        "tools_list_passed": true,
+        "server_name": "codegraph",
+        "protocol_version": "2024-11-05",
+        "tool_count": 1,
+        "tool_names": [
+          "codegraph_explore"
+        ],
+        "errors": []
+      },
+      "tool_warmup_exit_code": 0,
+      "codex_preflight": {
+        "passed": null,
+        "skipped": true
+      }
+    },
+    {
+      "sequence_id": "fastify-lifecycle-sequence-v0",
+      "profile_id": "retrieval-codegraph-codex-mcp-v1",
+      "protocol_path": "sources/evaluations/protocols/fastify-lifecycle-sequence-v0-retrieval-codegraph-codex-mcp-v1-2df6a9454972.json",
+      "protocol_sha256": "8b15e38dd933a4bd0014106de89f5da7e01a7d31a53640dfa776e380cd223063",
+      "raw_prepare_output_sha256": "1dc6949856fbed4146bdbe68302838a6faa372af9b94643932deeb845c66d759",
+      "prepared": true,
+      "prepare_verification": {
+        "passed": true,
+        "mode": "preseeded-composite",
+        "concealment_passed": true,
+        "composite_seed_delivery_passed": true
+      },
+      "host_integration": {
+        "passed": true,
+        "skipped": false,
+        "install_exit_codes": [
+          0
+        ],
+        "verify_exit_codes": [
+          0
+        ],
+        "missing_required_files": [],
+        "required_files": [
+          "{{codex_home}}/config.toml",
+          "{{codex_home}}/AGENTS.md"
+        ]
+      },
+      "mcp_handshake": {
+        "required": true,
+        "passed": true,
+        "initialize_passed": true,
+        "tools_list_passed": true,
+        "server_name": "codegraph",
+        "protocol_version": "2024-11-05",
+        "tool_count": 1,
+        "tool_names": [
+          "codegraph_explore"
+        ],
+        "errors": []
+      },
+      "tool_warmup_exit_code": 0,
+      "codex_preflight": {
+        "passed": null,
+        "skipped": true
+      }
+    },
+    {
+      "sequence_id": "terraform-lifecycle-sequence-v0",
+      "profile_id": "retrieval-codegraph-codex-mcp-v1",
+      "protocol_path": "sources/evaluations/protocols/terraform-lifecycle-sequence-v0-retrieval-codegraph-codex-mcp-v1-467535463900.json",
+      "protocol_sha256": "441b00db5d3783b7e1142882238b6fb57d5c3c9e27d9c262785a3bf252a4aa75",
+      "raw_prepare_output_sha256": "9fbdfd0e91d7588e69f9ab5074d285d8663d6fa894d03da60fd17d41376361d0",
+      "prepared": true,
+      "prepare_verification": {
+        "passed": true,
+        "mode": "preseeded-composite",
+        "concealment_passed": true,
+        "composite_seed_delivery_passed": true
+      },
+      "host_integration": {
+        "passed": true,
+        "skipped": false,
+        "install_exit_codes": [
+          0
+        ],
+        "verify_exit_codes": [
+          0
+        ],
+        "missing_required_files": [],
+        "required_files": [
+          "{{codex_home}}/config.toml",
+          "{{codex_home}}/AGENTS.md"
+        ]
+      },
+      "mcp_handshake": {
+        "required": true,
+        "passed": true,
+        "initialize_passed": true,
+        "tools_list_passed": true,
+        "server_name": "codegraph",
+        "protocol_version": "2024-11-05",
+        "tool_count": 1,
+        "tool_names": [
+          "codegraph_explore"
+        ],
+        "errors": []
+      },
+      "tool_warmup_exit_code": 0,
+      "codex_preflight": {
+        "passed": null,
+        "skipped": true
+      }
+    },
+    {
+      "sequence_id": "beets-lifecycle-sequence-v0",
+      "profile_id": "retrieval-graphify-codex-skill-v1",
+      "protocol_path": "sources/evaluations/protocols/beets-lifecycle-sequence-v0-retrieval-graphify-codex-skill-v1-412daee01099.json",
+      "protocol_sha256": "c6e04892e8888a601d29a99976820a8dcb0eba10a5596d881688efdda0dfe414",
+      "raw_prepare_output_sha256": "f97d45fd3946fcc2b5af223ed940ae6b3bdad7487f69b8c2bd10ecb9f8073032",
+      "prepared": true,
+      "prepare_verification": {
+        "passed": true,
+        "mode": "preseeded-composite",
+        "concealment_passed": true,
+        "composite_seed_delivery_passed": true
+      },
+      "host_integration": {
+        "passed": true,
+        "skipped": false,
+        "install_exit_codes": [
+          0,
+          0,
+          0
+        ],
+        "verify_exit_codes": [
+          0
+        ],
+        "missing_required_files": [],
+        "required_files": [
+          "{{codex_home}}/.config/graphify-codex-skill-v1/venv/bin/graphify",
+          "{{codex_home}}/skills/graphify/SKILL.md"
+        ]
+      },
+      "mcp_handshake": {
+        "required": false,
+        "passed": true,
+        "initialize_passed": false,
+        "tools_list_passed": false,
+        "server_name": null,
+        "protocol_version": null,
+        "tool_count": 0,
+        "tool_names": [],
+        "errors": []
+      },
+      "tool_warmup_exit_code": 0,
+      "codex_preflight": {
+        "passed": null,
+        "skipped": true
+      }
+    },
+    {
+      "sequence_id": "fastify-lifecycle-sequence-v0",
+      "profile_id": "retrieval-graphify-codex-skill-v1",
+      "protocol_path": "sources/evaluations/protocols/fastify-lifecycle-sequence-v0-retrieval-graphify-codex-skill-v1-625c54964f8b.json",
+      "protocol_sha256": "dd7c6e1aa29b3d83047598227251e1579bde68afbbe770e9761067cc224946b8",
+      "raw_prepare_output_sha256": "a0e8897086c1a4e94d4b9e4b950aa1d3055dfcf4ed0da1d26a337de074d01ad7",
+      "prepared": true,
+      "prepare_verification": {
+        "passed": true,
+        "mode": "preseeded-composite",
+        "concealment_passed": true,
+        "composite_seed_delivery_passed": true
+      },
+      "host_integration": {
+        "passed": true,
+        "skipped": false,
+        "install_exit_codes": [
+          0,
+          0,
+          0
+        ],
+        "verify_exit_codes": [
+          0
+        ],
+        "missing_required_files": [],
+        "required_files": [
+          "{{codex_home}}/.config/graphify-codex-skill-v1/venv/bin/graphify",
+          "{{codex_home}}/skills/graphify/SKILL.md"
+        ]
+      },
+      "mcp_handshake": {
+        "required": false,
+        "passed": true,
+        "initialize_passed": false,
+        "tools_list_passed": false,
+        "server_name": null,
+        "protocol_version": null,
+        "tool_count": 0,
+        "tool_names": [],
+        "errors": []
+      },
+      "tool_warmup_exit_code": 0,
+      "codex_preflight": {
+        "passed": null,
+        "skipped": true
+      }
+    },
+    {
+      "sequence_id": "terraform-lifecycle-sequence-v0",
+      "profile_id": "retrieval-graphify-codex-skill-v1",
+      "protocol_path": "sources/evaluations/protocols/terraform-lifecycle-sequence-v0-retrieval-graphify-codex-skill-v1-f39b6b89ce42.json",
+      "protocol_sha256": "8f5a35b2a62fde681c4cafaec0a5eb5f9dd54b9a64960667ac2664fd1e90b860",
+      "raw_prepare_output_sha256": "e67b9d8a738c50e268bc925c5a054331476132537b614ad91f0d59f23cf1317b",
+      "prepared": true,
+      "prepare_verification": {
+        "passed": true,
+        "mode": "preseeded-composite",
+        "concealment_passed": true,
+        "composite_seed_delivery_passed": true
+      },
+      "host_integration": {
+        "passed": true,
+        "skipped": false,
+        "install_exit_codes": [
+          0,
+          0,
+          0
+        ],
+        "verify_exit_codes": [
+          0
+        ],
+        "missing_required_files": [],
+        "required_files": [
+          "{{codex_home}}/.config/graphify-codex-skill-v1/venv/bin/graphify",
+          "{{codex_home}}/skills/graphify/SKILL.md"
+        ]
+      },
+      "mcp_handshake": {
+        "required": false,
+        "passed": true,
+        "initialize_passed": false,
+        "tools_list_passed": false,
+        "server_name": null,
+        "protocol_version": null,
+        "tool_count": 0,
+        "tool_names": [],
+        "errors": []
+      },
+      "tool_warmup_exit_code": 0,
+      "codex_preflight": {
+        "passed": null,
+        "skipped": true
+      }
+    },
+    {
+      "sequence_id": "beets-lifecycle-sequence-v0",
+      "profile_id": "retrieval-jcodemunch-mcp-direct-v1",
+      "protocol_path": "sources/evaluations/protocols/beets-lifecycle-sequence-v0-retrieval-jcodemunch-mcp-direct-v1-0de886f0a747.json",
+      "protocol_sha256": "6e1b5acf9e90f90117a74e3f685d21aa64ed57ae50c1603a4d5961695dd97fa8",
+      "raw_prepare_output_sha256": "a67d0a28b18e81414d79a7ec1ce58658959b5e6e1a92a2eda7c1afadb9596f86",
+      "prepared": true,
+      "prepare_verification": {
+        "passed": true,
+        "mode": "preseeded-composite",
+        "concealment_passed": true,
+        "composite_seed_delivery_passed": true
+      },
+      "host_integration": {
+        "passed": true,
+        "skipped": false,
+        "install_exit_codes": [
+          0,
+          0
+        ],
+        "verify_exit_codes": [
+          0
+        ],
+        "missing_required_files": [],
+        "required_files": [
+          "{{codex_home}}/.config/jcodemunch-mcp-direct-v1/venv/bin/jcodemunch-mcp"
+        ]
+      },
+      "mcp_handshake": {
+        "required": true,
+        "passed": true,
+        "initialize_passed": true,
+        "tools_list_passed": true,
+        "server_name": "jcodemunch-mcp",
+        "protocol_version": "2025-06-18",
+        "tool_count": 89,
+        "tool_names": [
+          "analyze_perf",
+          "announce_model",
+          "assemble_task_context",
+          "audit_agent_config",
+          "check_delete_safe",
+          "check_edit_safe",
+          "check_embedding_drift",
+          "check_references",
+          "check_rename_safe",
+          "diff_health_radar",
+          "digest",
+          "embed_repo",
+          "find_dead_code",
+          "find_hot_paths",
+          "find_implementations",
+          "find_importers",
+          "find_references",
+          "find_similar_symbols",
+          "find_unused_paths",
+          "get_architecture_metrics",
+          "get_blast_radius",
+          "get_call_hierarchy",
+          "get_changed_symbols",
+          "get_churn_rate",
+          "get_class_hierarchy",
+          "get_context_bundle",
+          "get_coupling_metrics",
+          "get_cross_repo_map",
+          "get_dead_code_v2",
+          "get_decorator_census",
+          "get_delivery_metrics",
+          "get_dependency_cycles",
+          "get_dependency_graph",
+          "get_endpoint_impact",
+          "get_extraction_candidates",
+          "get_file_content",
+          "get_file_outline",
+          "get_file_risk",
+          "get_file_tree",
+          "get_group_contracts",
+          "get_hotspots",
+          "get_impact_preview",
+          "get_layer_violations",
+          "get_parity_map",
+          "get_pr_risk_profile",
+          "get_project_intel",
+          "get_ranked_context",
+          "get_redaction_log",
+          "get_related_symbols",
+          "get_repo_health",
+          "get_repo_map",
+          "get_repo_outline",
+          "get_runtime_coverage",
+          "get_session_context",
+          "get_session_snapshot",
+          "get_session_stats",
+          "get_signal_chains",
+          "get_symbol_complexity",
+          "get_symbol_diff",
+          "get_symbol_importance",
+          "get_symbol_provenance",
+          "get_symbol_source",
+          "get_tectonic_map",
+          "get_untested_symbols",
+          "get_watch_status",
+          "import_runtime_signal",
+          "index_dependency",
+          "index_file",
+          "index_folder",
+          "index_repo",
+          "invalidate_cache",
+          "jcodemunch_guide",
+          "list_repos",
+          "list_workspaces",
+          "plan_refactoring",
+          "plan_turn",
+          "register_edit",
+          "render_diagram",
+          "resolve_repo",
+          "search_ast",
+          "search_columns",
+          "search_symbols",
+          "search_text",
+          "set_tool_tier",
+          "suggest_corrections",
+          "suggest_queries",
+          "summarize_repo",
+          "tune_weights",
+          "winnow_symbols"
+        ],
+        "errors": []
+      },
+      "tool_warmup_exit_code": 0,
+      "codex_preflight": {
+        "passed": null,
+        "skipped": true
+      }
     },
     {
       "sequence_id": "fastify-lifecycle-sequence-v0",
       "profile_id": "retrieval-jcodemunch-mcp-direct-v1",
-      "lane_exit_code": 0,
-      "protocol_path": "sources/evaluations/protocols/fastify-lifecycle-sequence-v0-retrieval-jcodemunch-mcp-direct-v1-d54acdf35ef7.json",
-      "protocol_sha256": "98f070b035185e38c00c85cd455cf280b737c8485e89bd258088d7fd5207b84d",
-      "preparation_order": [
-        "host-integration",
-        "codex-preflight",
-        "tool-workspace-warmup",
-        "mcp-handshake"
-      ],
-      "host_integration_passed": true,
-      "codex_preflight_passed": true,
+      "protocol_path": "sources/evaluations/protocols/fastify-lifecycle-sequence-v0-retrieval-jcodemunch-mcp-direct-v1-d9838533aa8d.json",
+      "protocol_sha256": "04d3ea0ccdd0f1a7b011f7d5edd2215e2b278fe5c7ccd266ed2516ae216c3f0c",
+      "raw_prepare_output_sha256": "fc1185518089b811c670f826c3a5334cca9a60e373c46d2c5a5b9d084a9da34b",
+      "prepared": true,
+      "prepare_verification": {
+        "passed": true,
+        "mode": "preseeded-composite",
+        "concealment_passed": true,
+        "composite_seed_delivery_passed": true
+      },
+      "host_integration": {
+        "passed": true,
+        "skipped": false,
+        "install_exit_codes": [
+          0,
+          0
+        ],
+        "verify_exit_codes": [
+          0
+        ],
+        "missing_required_files": [],
+        "required_files": [
+          "{{codex_home}}/.config/jcodemunch-mcp-direct-v1/venv/bin/jcodemunch-mcp"
+        ]
+      },
+      "mcp_handshake": {
+        "required": true,
+        "passed": true,
+        "initialize_passed": true,
+        "tools_list_passed": true,
+        "server_name": "jcodemunch-mcp",
+        "protocol_version": "2025-06-18",
+        "tool_count": 89,
+        "tool_names": [
+          "analyze_perf",
+          "announce_model",
+          "assemble_task_context",
+          "audit_agent_config",
+          "check_delete_safe",
+          "check_edit_safe",
+          "check_embedding_drift",
+          "check_references",
+          "check_rename_safe",
+          "diff_health_radar",
+          "digest",
+          "embed_repo",
+          "find_dead_code",
+          "find_hot_paths",
+          "find_implementations",
+          "find_importers",
+          "find_references",
+          "find_similar_symbols",
+          "find_unused_paths",
+          "get_architecture_metrics",
+          "get_blast_radius",
+          "get_call_hierarchy",
+          "get_changed_symbols",
+          "get_churn_rate",
+          "get_class_hierarchy",
+          "get_context_bundle",
+          "get_coupling_metrics",
+          "get_cross_repo_map",
+          "get_dead_code_v2",
+          "get_decorator_census",
+          "get_delivery_metrics",
+          "get_dependency_cycles",
+          "get_dependency_graph",
+          "get_endpoint_impact",
+          "get_extraction_candidates",
+          "get_file_content",
+          "get_file_outline",
+          "get_file_risk",
+          "get_file_tree",
+          "get_group_contracts",
+          "get_hotspots",
+          "get_impact_preview",
+          "get_layer_violations",
+          "get_parity_map",
+          "get_pr_risk_profile",
+          "get_project_intel",
+          "get_ranked_context",
+          "get_redaction_log",
+          "get_related_symbols",
+          "get_repo_health",
+          "get_repo_map",
+          "get_repo_outline",
+          "get_runtime_coverage",
+          "get_session_context",
+          "get_session_snapshot",
+          "get_session_stats",
+          "get_signal_chains",
+          "get_symbol_complexity",
+          "get_symbol_diff",
+          "get_symbol_importance",
+          "get_symbol_provenance",
+          "get_symbol_source",
+          "get_tectonic_map",
+          "get_untested_symbols",
+          "get_watch_status",
+          "import_runtime_signal",
+          "index_dependency",
+          "index_file",
+          "index_folder",
+          "index_repo",
+          "invalidate_cache",
+          "jcodemunch_guide",
+          "list_repos",
+          "list_workspaces",
+          "plan_refactoring",
+          "plan_turn",
+          "register_edit",
+          "render_diagram",
+          "resolve_repo",
+          "search_ast",
+          "search_columns",
+          "search_symbols",
+          "search_text",
+          "set_tool_tier",
+          "suggest_corrections",
+          "suggest_queries",
+          "summarize_repo",
+          "tune_weights",
+          "winnow_symbols"
+        ],
+        "errors": []
+      },
       "tool_warmup_exit_code": 0,
-      "mcp_handshake_required": true,
-      "mcp_handshake_skipped": false,
-      "mcp_handshake_passed": true,
-      "mcp_advertised_tool_count": 89,
-      "provider_execution_performed": false
+      "codex_preflight": {
+        "passed": null,
+        "skipped": true
+      }
+    },
+    {
+      "sequence_id": "terraform-lifecycle-sequence-v0",
+      "profile_id": "retrieval-jcodemunch-mcp-direct-v1",
+      "protocol_path": "sources/evaluations/protocols/terraform-lifecycle-sequence-v0-retrieval-jcodemunch-mcp-direct-v1-e5ae8583e3c6.json",
+      "protocol_sha256": "1458bae1fb98d2f8cc0f27b9cf8d9ca126e86c242741e1b18f50c1bd4cfb9973",
+      "raw_prepare_output_sha256": "d15c05b964fccf5c5f40e54bc5f7e1b75ee53412b868f3850747a51462d7d530",
+      "prepared": true,
+      "prepare_verification": {
+        "passed": true,
+        "mode": "preseeded-composite",
+        "concealment_passed": true,
+        "composite_seed_delivery_passed": true
+      },
+      "host_integration": {
+        "passed": true,
+        "skipped": false,
+        "install_exit_codes": [
+          0,
+          0
+        ],
+        "verify_exit_codes": [
+          0
+        ],
+        "missing_required_files": [],
+        "required_files": [
+          "{{codex_home}}/.config/jcodemunch-mcp-direct-v1/venv/bin/jcodemunch-mcp"
+        ]
+      },
+      "mcp_handshake": {
+        "required": true,
+        "passed": true,
+        "initialize_passed": true,
+        "tools_list_passed": true,
+        "server_name": "jcodemunch-mcp",
+        "protocol_version": "2025-06-18",
+        "tool_count": 89,
+        "tool_names": [
+          "analyze_perf",
+          "announce_model",
+          "assemble_task_context",
+          "audit_agent_config",
+          "check_delete_safe",
+          "check_edit_safe",
+          "check_embedding_drift",
+          "check_references",
+          "check_rename_safe",
+          "diff_health_radar",
+          "digest",
+          "embed_repo",
+          "find_dead_code",
+          "find_hot_paths",
+          "find_implementations",
+          "find_importers",
+          "find_references",
+          "find_similar_symbols",
+          "find_unused_paths",
+          "get_architecture_metrics",
+          "get_blast_radius",
+          "get_call_hierarchy",
+          "get_changed_symbols",
+          "get_churn_rate",
+          "get_class_hierarchy",
+          "get_context_bundle",
+          "get_coupling_metrics",
+          "get_cross_repo_map",
+          "get_dead_code_v2",
+          "get_decorator_census",
+          "get_delivery_metrics",
+          "get_dependency_cycles",
+          "get_dependency_graph",
+          "get_endpoint_impact",
+          "get_extraction_candidates",
+          "get_file_content",
+          "get_file_outline",
+          "get_file_risk",
+          "get_file_tree",
+          "get_group_contracts",
+          "get_hotspots",
+          "get_impact_preview",
+          "get_layer_violations",
+          "get_parity_map",
+          "get_pr_risk_profile",
+          "get_project_intel",
+          "get_ranked_context",
+          "get_redaction_log",
+          "get_related_symbols",
+          "get_repo_health",
+          "get_repo_map",
+          "get_repo_outline",
+          "get_runtime_coverage",
+          "get_session_context",
+          "get_session_snapshot",
+          "get_session_stats",
+          "get_signal_chains",
+          "get_symbol_complexity",
+          "get_symbol_diff",
+          "get_symbol_importance",
+          "get_symbol_provenance",
+          "get_symbol_source",
+          "get_tectonic_map",
+          "get_untested_symbols",
+          "get_watch_status",
+          "import_runtime_signal",
+          "index_dependency",
+          "index_file",
+          "index_folder",
+          "index_repo",
+          "invalidate_cache",
+          "jcodemunch_guide",
+          "list_repos",
+          "list_workspaces",
+          "plan_refactoring",
+          "plan_turn",
+          "register_edit",
+          "render_diagram",
+          "resolve_repo",
+          "search_ast",
+          "search_columns",
+          "search_symbols",
+          "search_text",
+          "set_tool_tier",
+          "suggest_corrections",
+          "suggest_queries",
+          "summarize_repo",
+          "tune_weights",
+          "winnow_symbols"
+        ],
+        "errors": []
+      },
+      "tool_warmup_exit_code": 0,
+      "codex_preflight": {
+        "passed": null,
+        "skipped": true
+      }
+    },
+    {
+      "sequence_id": "beets-lifecycle-sequence-v0",
+      "profile_id": "retrieval-serena-codex-mcp-v1",
+      "protocol_path": "sources/evaluations/protocols/beets-lifecycle-sequence-v0-retrieval-serena-codex-mcp-v1-743dcabd55f6.json",
+      "protocol_sha256": "c9f0915a989bb9f46f4709fe50a9394d4b50f33dfa377b63b87d4bf1e2172d84",
+      "raw_prepare_output_sha256": "e15457c6651cce33798cbf65d7d832cab8e4e7a158b178efa8d4fedd48b278ec",
+      "prepared": true,
+      "prepare_verification": {
+        "passed": true,
+        "mode": "preseeded-composite",
+        "concealment_passed": true,
+        "composite_seed_delivery_passed": true
+      },
+      "host_integration": {
+        "passed": true,
+        "skipped": false,
+        "install_exit_codes": [
+          0
+        ],
+        "verify_exit_codes": [
+          0
+        ],
+        "missing_required_files": [],
+        "required_files": [
+          "{{codex_home}}/config.toml"
+        ]
+      },
+      "mcp_handshake": {
+        "required": true,
+        "passed": true,
+        "initialize_passed": true,
+        "tools_list_passed": true,
+        "server_name": "Serena",
+        "protocol_version": "2025-06-18",
+        "tool_count": 23,
+        "tool_names": [
+          "activate_project",
+          "delete_memory",
+          "edit_memory",
+          "find_declaration",
+          "find_implementations",
+          "find_referencing_symbols",
+          "find_symbol",
+          "get_current_config",
+          "get_diagnostics_for_file",
+          "get_symbols_overview",
+          "initial_instructions",
+          "insert_after_symbol",
+          "insert_before_symbol",
+          "list_memories",
+          "onboarding",
+          "read_memory",
+          "rename_memory",
+          "rename_symbol",
+          "replace_in_files",
+          "replace_symbol_body",
+          "safe_delete_symbol",
+          "search_for_pattern",
+          "write_memory"
+        ],
+        "errors": []
+      },
+      "tool_warmup_exit_code": 0,
+      "codex_preflight": {
+        "passed": null,
+        "skipped": true
+      }
+    },
+    {
+      "sequence_id": "fastify-lifecycle-sequence-v0",
+      "profile_id": "retrieval-serena-codex-mcp-v1",
+      "protocol_path": "sources/evaluations/protocols/fastify-lifecycle-sequence-v0-retrieval-serena-codex-mcp-v1-ab09aeb6d277.json",
+      "protocol_sha256": "f1f3c8ef01e5773aa8dfc833b00b9694004c190deb2ceb6672665ed612b48233",
+      "raw_prepare_output_sha256": "577d8d459079639ad3997b8e73aef02b2c5bc48561107d3e2199df6331d49f7b",
+      "prepared": true,
+      "prepare_verification": {
+        "passed": true,
+        "mode": "preseeded-composite",
+        "concealment_passed": true,
+        "composite_seed_delivery_passed": true
+      },
+      "host_integration": {
+        "passed": true,
+        "skipped": false,
+        "install_exit_codes": [
+          0
+        ],
+        "verify_exit_codes": [
+          0
+        ],
+        "missing_required_files": [],
+        "required_files": [
+          "{{codex_home}}/config.toml"
+        ]
+      },
+      "mcp_handshake": {
+        "required": true,
+        "passed": true,
+        "initialize_passed": true,
+        "tools_list_passed": true,
+        "server_name": "Serena",
+        "protocol_version": "2025-06-18",
+        "tool_count": 23,
+        "tool_names": [
+          "activate_project",
+          "delete_memory",
+          "edit_memory",
+          "find_declaration",
+          "find_implementations",
+          "find_referencing_symbols",
+          "find_symbol",
+          "get_current_config",
+          "get_diagnostics_for_file",
+          "get_symbols_overview",
+          "initial_instructions",
+          "insert_after_symbol",
+          "insert_before_symbol",
+          "list_memories",
+          "onboarding",
+          "read_memory",
+          "rename_memory",
+          "rename_symbol",
+          "replace_in_files",
+          "replace_symbol_body",
+          "safe_delete_symbol",
+          "search_for_pattern",
+          "write_memory"
+        ],
+        "errors": []
+      },
+      "tool_warmup_exit_code": 0,
+      "codex_preflight": {
+        "passed": null,
+        "skipped": true
+      }
+    },
+    {
+      "sequence_id": "terraform-lifecycle-sequence-v0",
+      "profile_id": "retrieval-serena-codex-mcp-v1",
+      "protocol_path": "sources/evaluations/protocols/terraform-lifecycle-sequence-v0-retrieval-serena-codex-mcp-v1-f3ed96d65f17.json",
+      "protocol_sha256": "26af283bc0f7b681672d2824c1e0f3a63ee12bc76aa75f2513b779099b5ba8ab",
+      "raw_prepare_output_sha256": "bde86aa5da12e38405d017750a0ab311a2ad4686636b3e5dfb1e13f3cf46f33c",
+      "prepared": true,
+      "prepare_verification": {
+        "passed": true,
+        "mode": "preseeded-composite",
+        "concealment_passed": true,
+        "composite_seed_delivery_passed": true
+      },
+      "host_integration": {
+        "passed": true,
+        "skipped": false,
+        "install_exit_codes": [
+          0
+        ],
+        "verify_exit_codes": [
+          0
+        ],
+        "missing_required_files": [],
+        "required_files": [
+          "{{codex_home}}/config.toml"
+        ]
+      },
+      "mcp_handshake": {
+        "required": true,
+        "passed": true,
+        "initialize_passed": true,
+        "tools_list_passed": true,
+        "server_name": "Serena",
+        "protocol_version": "2025-06-18",
+        "tool_count": 23,
+        "tool_names": [
+          "activate_project",
+          "delete_memory",
+          "edit_memory",
+          "find_declaration",
+          "find_implementations",
+          "find_referencing_symbols",
+          "find_symbol",
+          "get_current_config",
+          "get_diagnostics_for_file",
+          "get_symbols_overview",
+          "initial_instructions",
+          "insert_after_symbol",
+          "insert_before_symbol",
+          "list_memories",
+          "onboarding",
+          "read_memory",
+          "rename_memory",
+          "rename_symbol",
+          "replace_in_files",
+          "replace_symbol_body",
+          "safe_delete_symbol",
+          "search_for_pattern",
+          "write_memory"
+        ],
+        "errors": []
+      },
+      "tool_warmup_exit_code": 0,
+      "codex_preflight": {
+        "passed": null,
+        "skipped": true
+      }
+    },
+    {
+      "sequence_id": "beets-lifecycle-sequence-v0",
+      "profile_id": "retrieval-sigmap-codex-live-v1",
+      "protocol_path": "sources/evaluations/protocols/beets-lifecycle-sequence-v0-retrieval-sigmap-codex-live-v1-57c8da33217d.json",
+      "protocol_sha256": "ede3dfefd0f16469d99f7c18538bd829d7433994c214c33793471c40669a3f84",
+      "raw_prepare_output_sha256": "fe94bd71a3c11c60605bc6810f1f7e886acf4062ce0bcd37ff193bc6019e6262",
+      "prepared": true,
+      "prepare_verification": {
+        "passed": true,
+        "mode": "preseeded-composite",
+        "concealment_passed": true,
+        "composite_seed_delivery_passed": true
+      },
+      "host_integration": {
+        "passed": true,
+        "skipped": true,
+        "install_exit_codes": [],
+        "verify_exit_codes": [],
+        "missing_required_files": [],
+        "required_files": []
+      },
+      "mcp_handshake": {
+        "required": true,
+        "passed": true,
+        "initialize_passed": true,
+        "tools_list_passed": true,
+        "server_name": "sigmap",
+        "protocol_version": "2025-06-18",
+        "tool_count": 19,
+        "tool_names": [
+          "create_checkpoint",
+          "explain_file",
+          "get_architecture_overview",
+          "get_callee_signatures",
+          "get_diff_context",
+          "get_impact",
+          "get_lines",
+          "get_map",
+          "get_routing",
+          "list_modules",
+          "query_context",
+          "read_context",
+          "read_memory",
+          "search_signatures",
+          "sigmap_notify_file_created",
+          "sigmap_notify_file_deleted",
+          "sigmap_notify_symbol_added",
+          "squeeze_output",
+          "verify_suggestion"
+        ],
+        "errors": []
+      },
+      "tool_warmup_exit_code": 0,
+      "codex_preflight": {
+        "passed": null,
+        "skipped": true
+      }
+    },
+    {
+      "sequence_id": "fastify-lifecycle-sequence-v0",
+      "profile_id": "retrieval-sigmap-codex-live-v1",
+      "protocol_path": "sources/evaluations/protocols/fastify-lifecycle-sequence-v0-retrieval-sigmap-codex-live-v1-270e0e0c384b.json",
+      "protocol_sha256": "4f7525b01926b158c443dcf004df3387f86bce98cf686826a8142c0ea7f1916b",
+      "raw_prepare_output_sha256": "6af97b9bc9475122321a2412edc54a979444b7bed5bd47323031c0b787f9429c",
+      "prepared": true,
+      "prepare_verification": {
+        "passed": true,
+        "mode": "preseeded-composite",
+        "concealment_passed": true,
+        "composite_seed_delivery_passed": true
+      },
+      "host_integration": {
+        "passed": true,
+        "skipped": true,
+        "install_exit_codes": [],
+        "verify_exit_codes": [],
+        "missing_required_files": [],
+        "required_files": []
+      },
+      "mcp_handshake": {
+        "required": true,
+        "passed": true,
+        "initialize_passed": true,
+        "tools_list_passed": true,
+        "server_name": "sigmap",
+        "protocol_version": "2025-06-18",
+        "tool_count": 19,
+        "tool_names": [
+          "create_checkpoint",
+          "explain_file",
+          "get_architecture_overview",
+          "get_callee_signatures",
+          "get_diff_context",
+          "get_impact",
+          "get_lines",
+          "get_map",
+          "get_routing",
+          "list_modules",
+          "query_context",
+          "read_context",
+          "read_memory",
+          "search_signatures",
+          "sigmap_notify_file_created",
+          "sigmap_notify_file_deleted",
+          "sigmap_notify_symbol_added",
+          "squeeze_output",
+          "verify_suggestion"
+        ],
+        "errors": []
+      },
+      "tool_warmup_exit_code": 0,
+      "codex_preflight": {
+        "passed": null,
+        "skipped": true
+      }
+    },
+    {
+      "sequence_id": "terraform-lifecycle-sequence-v0",
+      "profile_id": "retrieval-sigmap-codex-live-v1",
+      "protocol_path": "sources/evaluations/protocols/terraform-lifecycle-sequence-v0-retrieval-sigmap-codex-live-v1-bb19849023a9.json",
+      "protocol_sha256": "92b5409617705ba0bd3939acaa53be16839fdcc630823c4d8d70d536ee92e295",
+      "raw_prepare_output_sha256": "a1bfc549e2d7285a0dab23617830af20e7701212d5e568cc94eee01558f494b5",
+      "prepared": true,
+      "prepare_verification": {
+        "passed": true,
+        "mode": "preseeded-composite",
+        "concealment_passed": true,
+        "composite_seed_delivery_passed": true
+      },
+      "host_integration": {
+        "passed": true,
+        "skipped": true,
+        "install_exit_codes": [],
+        "verify_exit_codes": [],
+        "missing_required_files": [],
+        "required_files": []
+      },
+      "mcp_handshake": {
+        "required": true,
+        "passed": true,
+        "initialize_passed": true,
+        "tools_list_passed": true,
+        "server_name": "sigmap",
+        "protocol_version": "2025-06-18",
+        "tool_count": 19,
+        "tool_names": [
+          "create_checkpoint",
+          "explain_file",
+          "get_architecture_overview",
+          "get_callee_signatures",
+          "get_diff_context",
+          "get_impact",
+          "get_lines",
+          "get_map",
+          "get_routing",
+          "list_modules",
+          "query_context",
+          "read_context",
+          "read_memory",
+          "search_signatures",
+          "sigmap_notify_file_created",
+          "sigmap_notify_file_deleted",
+          "sigmap_notify_symbol_added",
+          "squeeze_output",
+          "verify_suggestion"
+        ],
+        "errors": []
+      },
+      "tool_warmup_exit_code": 0,
+      "codex_preflight": {
+        "passed": null,
+        "skipped": true
+      }
+    },
+    {
+      "sequence_id": "beets-lifecycle-sequence-v0",
+      "profile_id": "swarmvault-codex-product-v1",
+      "protocol_path": "sources/evaluations/protocols/beets-lifecycle-sequence-v0-swarmvault-codex-product-v1-8933fe8c991f.json",
+      "protocol_sha256": "e4cac88d2aa11eb2d7a2cb16c36efde87e8afcd0b360079250389a9a522ed4a1",
+      "raw_prepare_output_sha256": "b0a1fbfef8c844a067003be1ef75e25c4575431686d231b30f637609d7eec770",
+      "prepared": true,
+      "prepare_verification": {
+        "passed": true,
+        "mode": "preseeded-composite",
+        "concealment_passed": true,
+        "composite_seed_delivery_passed": true
+      },
+      "host_integration": {
+        "passed": true,
+        "skipped": true,
+        "install_exit_codes": [],
+        "verify_exit_codes": [],
+        "missing_required_files": [],
+        "required_files": []
+      },
+      "mcp_handshake": {
+        "required": true,
+        "passed": true,
+        "initialize_passed": true,
+        "tools_list_passed": true,
+        "server_name": "swarmvault",
+        "protocol_version": "2025-06-18",
+        "tool_count": 51,
+        "tool_names": [
+          "archive_candidate",
+          "auto_promote_candidates",
+          "blast_radius",
+          "build_context_pack",
+          "cluster_graph",
+          "compile_vault",
+          "consolidate",
+          "doctor_retrieval",
+          "doctor_vault",
+          "finish_memory_task",
+          "finish_task",
+          "get_community",
+          "get_hyperedges",
+          "get_neighbors",
+          "get_node",
+          "god_nodes",
+          "graph_callers",
+          "graph_report",
+          "graph_stats",
+          "graph_status",
+          "ingest_input",
+          "lint_vault",
+          "list_approvals",
+          "list_context_packs",
+          "list_memory_tasks",
+          "list_sources",
+          "list_tasks",
+          "migrate",
+          "preview_candidate_scores",
+          "promote_candidate",
+          "query_graph",
+          "query_vault",
+          "read_approval",
+          "read_context_pack",
+          "read_memory_task",
+          "read_page",
+          "read_task",
+          "rebuild_retrieval",
+          "resume_memory_task",
+          "resume_task",
+          "retrieval_status",
+          "review_decision",
+          "search_pages",
+          "shortest_path",
+          "start_memory_task",
+          "start_task",
+          "update_graph",
+          "update_memory_task",
+          "update_task",
+          "watch_status",
+          "workspace_info"
+        ],
+        "errors": []
+      },
+      "tool_warmup_exit_code": 0,
+      "codex_preflight": {
+        "passed": null,
+        "skipped": true
+      }
+    },
+    {
+      "sequence_id": "fastify-lifecycle-sequence-v0",
+      "profile_id": "swarmvault-codex-product-v1",
+      "protocol_path": "sources/evaluations/protocols/fastify-lifecycle-sequence-v0-swarmvault-codex-product-v1-d8894b104e7a.json",
+      "protocol_sha256": "f5e87ffbd4c44cfc92749f6f1796fc9805ddc9ebed253ce6e389429cd984f119",
+      "raw_prepare_output_sha256": "541dad188ab67fc12301953a1fcd6959d3dea8e25ae8fe584d2618f8382c6d88",
+      "prepared": true,
+      "prepare_verification": {
+        "passed": true,
+        "mode": "preseeded-composite",
+        "concealment_passed": true,
+        "composite_seed_delivery_passed": true
+      },
+      "host_integration": {
+        "passed": true,
+        "skipped": true,
+        "install_exit_codes": [],
+        "verify_exit_codes": [],
+        "missing_required_files": [],
+        "required_files": []
+      },
+      "mcp_handshake": {
+        "required": true,
+        "passed": true,
+        "initialize_passed": true,
+        "tools_list_passed": true,
+        "server_name": "swarmvault",
+        "protocol_version": "2025-06-18",
+        "tool_count": 51,
+        "tool_names": [
+          "archive_candidate",
+          "auto_promote_candidates",
+          "blast_radius",
+          "build_context_pack",
+          "cluster_graph",
+          "compile_vault",
+          "consolidate",
+          "doctor_retrieval",
+          "doctor_vault",
+          "finish_memory_task",
+          "finish_task",
+          "get_community",
+          "get_hyperedges",
+          "get_neighbors",
+          "get_node",
+          "god_nodes",
+          "graph_callers",
+          "graph_report",
+          "graph_stats",
+          "graph_status",
+          "ingest_input",
+          "lint_vault",
+          "list_approvals",
+          "list_context_packs",
+          "list_memory_tasks",
+          "list_sources",
+          "list_tasks",
+          "migrate",
+          "preview_candidate_scores",
+          "promote_candidate",
+          "query_graph",
+          "query_vault",
+          "read_approval",
+          "read_context_pack",
+          "read_memory_task",
+          "read_page",
+          "read_task",
+          "rebuild_retrieval",
+          "resume_memory_task",
+          "resume_task",
+          "retrieval_status",
+          "review_decision",
+          "search_pages",
+          "shortest_path",
+          "start_memory_task",
+          "start_task",
+          "update_graph",
+          "update_memory_task",
+          "update_task",
+          "watch_status",
+          "workspace_info"
+        ],
+        "errors": []
+      },
+      "tool_warmup_exit_code": 0,
+      "codex_preflight": {
+        "passed": null,
+        "skipped": true
+      }
+    },
+    {
+      "sequence_id": "terraform-lifecycle-sequence-v0",
+      "profile_id": "swarmvault-codex-product-v1",
+      "protocol_path": "sources/evaluations/protocols/terraform-lifecycle-sequence-v0-swarmvault-codex-product-v1-7bcde847117b.json",
+      "protocol_sha256": "2cfc48d006e6d97c0c308626543ccab348cb71e75bdeb045035107cf63f98e51",
+      "raw_prepare_output_sha256": "78c74ba859693e7000834d75de7e903113eb7dea65a2b4942e9ce5ab61f53d21",
+      "prepared": true,
+      "prepare_verification": {
+        "passed": true,
+        "mode": "preseeded-composite",
+        "concealment_passed": true,
+        "composite_seed_delivery_passed": true
+      },
+      "host_integration": {
+        "passed": true,
+        "skipped": true,
+        "install_exit_codes": [],
+        "verify_exit_codes": [],
+        "missing_required_files": [],
+        "required_files": []
+      },
+      "mcp_handshake": {
+        "required": true,
+        "passed": true,
+        "initialize_passed": true,
+        "tools_list_passed": true,
+        "server_name": "swarmvault",
+        "protocol_version": "2025-06-18",
+        "tool_count": 51,
+        "tool_names": [
+          "archive_candidate",
+          "auto_promote_candidates",
+          "blast_radius",
+          "build_context_pack",
+          "cluster_graph",
+          "compile_vault",
+          "consolidate",
+          "doctor_retrieval",
+          "doctor_vault",
+          "finish_memory_task",
+          "finish_task",
+          "get_community",
+          "get_hyperedges",
+          "get_neighbors",
+          "get_node",
+          "god_nodes",
+          "graph_callers",
+          "graph_report",
+          "graph_stats",
+          "graph_status",
+          "ingest_input",
+          "lint_vault",
+          "list_approvals",
+          "list_context_packs",
+          "list_memory_tasks",
+          "list_sources",
+          "list_tasks",
+          "migrate",
+          "preview_candidate_scores",
+          "promote_candidate",
+          "query_graph",
+          "query_vault",
+          "read_approval",
+          "read_context_pack",
+          "read_memory_task",
+          "read_page",
+          "read_task",
+          "rebuild_retrieval",
+          "resume_memory_task",
+          "resume_task",
+          "retrieval_status",
+          "review_decision",
+          "search_pages",
+          "shortest_path",
+          "start_memory_task",
+          "start_task",
+          "update_graph",
+          "update_memory_task",
+          "update_task",
+          "watch_status",
+          "workspace_info"
+        ],
+        "errors": []
+      },
+      "tool_warmup_exit_code": 0,
+      "codex_preflight": {
+        "passed": null,
+        "skipped": true
+      }
+    },
+    {
+      "sequence_id": "beets-lifecycle-sequence-v0",
+      "profile_id": "terminal-rtk-codex-instructions-v1",
+      "protocol_path": "sources/evaluations/protocols/beets-lifecycle-sequence-v0-terminal-rtk-codex-instructions-v1-4e319f62c600.json",
+      "protocol_sha256": "f03555139bd9952d4f70c9d23ea2da5fa199bce62946f9140709a95593e71223",
+      "raw_prepare_output_sha256": "5f444ffb8ba17aa7b8827765016bd47643523676e9744d216cadba2d8dba8c27",
+      "prepared": true,
+      "prepare_verification": {
+        "passed": true,
+        "mode": "preseeded-composite",
+        "concealment_passed": true,
+        "composite_seed_delivery_passed": true
+      },
+      "host_integration": {
+        "passed": true,
+        "skipped": false,
+        "install_exit_codes": [
+          0
+        ],
+        "verify_exit_codes": [
+          0
+        ],
+        "missing_required_files": [],
+        "required_files": [
+          "{{codex_home}}/AGENTS.md",
+          "{{codex_home}}/RTK.md"
+        ]
+      },
+      "mcp_handshake": {
+        "required": false,
+        "passed": true,
+        "initialize_passed": false,
+        "tools_list_passed": false,
+        "server_name": null,
+        "protocol_version": null,
+        "tool_count": 0,
+        "tool_names": [],
+        "errors": []
+      },
+      "tool_warmup_exit_code": 0,
+      "codex_preflight": {
+        "passed": null,
+        "skipped": true
+      }
+    },
+    {
+      "sequence_id": "fastify-lifecycle-sequence-v0",
+      "profile_id": "terminal-rtk-codex-instructions-v1",
+      "protocol_path": "sources/evaluations/protocols/fastify-lifecycle-sequence-v0-terminal-rtk-codex-instructions-v1-1d3f0c591513.json",
+      "protocol_sha256": "bde178e16e4315b7ab0915cd51b1f7eab8c122ed7a4602ecc72d235c9865ffbd",
+      "raw_prepare_output_sha256": "f3ac47b3b04abb725cc61fdcd8e5a6e28626162c782d1559adba8e6c049c02d4",
+      "prepared": true,
+      "prepare_verification": {
+        "passed": true,
+        "mode": "preseeded-composite",
+        "concealment_passed": true,
+        "composite_seed_delivery_passed": true
+      },
+      "host_integration": {
+        "passed": true,
+        "skipped": false,
+        "install_exit_codes": [
+          0
+        ],
+        "verify_exit_codes": [
+          0
+        ],
+        "missing_required_files": [],
+        "required_files": [
+          "{{codex_home}}/AGENTS.md",
+          "{{codex_home}}/RTK.md"
+        ]
+      },
+      "mcp_handshake": {
+        "required": false,
+        "passed": true,
+        "initialize_passed": false,
+        "tools_list_passed": false,
+        "server_name": null,
+        "protocol_version": null,
+        "tool_count": 0,
+        "tool_names": [],
+        "errors": []
+      },
+      "tool_warmup_exit_code": 0,
+      "codex_preflight": {
+        "passed": null,
+        "skipped": true
+      }
+    },
+    {
+      "sequence_id": "terraform-lifecycle-sequence-v0",
+      "profile_id": "terminal-rtk-codex-instructions-v1",
+      "protocol_path": "sources/evaluations/protocols/terraform-lifecycle-sequence-v0-terminal-rtk-codex-instructions-v1-419f379b4528.json",
+      "protocol_sha256": "e734f46e529110f934e746fb0b1ed926ab4c8a5ca94fca1744ab517b266a03f0",
+      "raw_prepare_output_sha256": "155764351d8c318493757e4e1c4c5aa53118e8bb0f027a1b2b59fadcb801a139",
+      "prepared": true,
+      "prepare_verification": {
+        "passed": true,
+        "mode": "preseeded-composite",
+        "concealment_passed": true,
+        "composite_seed_delivery_passed": true
+      },
+      "host_integration": {
+        "passed": true,
+        "skipped": false,
+        "install_exit_codes": [
+          0
+        ],
+        "verify_exit_codes": [
+          0
+        ],
+        "missing_required_files": [],
+        "required_files": [
+          "{{codex_home}}/AGENTS.md",
+          "{{codex_home}}/RTK.md"
+        ]
+      },
+      "mcp_handshake": {
+        "required": false,
+        "passed": true,
+        "initialize_passed": false,
+        "tools_list_passed": false,
+        "server_name": null,
+        "protocol_version": null,
+        "tool_count": 0,
+        "tool_names": [],
+        "errors": []
+      },
+      "tool_warmup_exit_code": 0,
+      "codex_preflight": {
+        "passed": null,
+        "skipped": true
+      }
+    },
+    {
+      "sequence_id": "beets-lifecycle-sequence-v0",
+      "profile_id": "terminal-snip-codex-hook-v1",
+      "protocol_path": "sources/evaluations/protocols/beets-lifecycle-sequence-v0-terminal-snip-codex-hook-v1-dd356bd831fa.json",
+      "protocol_sha256": "e35cc39a9baae5aea2d75a6f8f1eaf8ba453ccd5453d5599ff847c2d4865df82",
+      "raw_prepare_output_sha256": "e220bbb269e3a4c4047dadeddcd1a605e8f432cabf044615a7cde3bb9d995dfc",
+      "prepared": true,
+      "prepare_verification": {
+        "passed": true,
+        "mode": "preseeded-composite",
+        "concealment_passed": true,
+        "composite_seed_delivery_passed": true
+      },
+      "host_integration": {
+        "passed": true,
+        "skipped": false,
+        "install_exit_codes": [
+          0
+        ],
+        "verify_exit_codes": [
+          0
+        ],
+        "missing_required_files": [],
+        "required_files": [
+          "{{codex_home}}/hooks.json",
+          "{{codex_home}}/config.toml"
+        ]
+      },
+      "mcp_handshake": {
+        "required": false,
+        "passed": true,
+        "initialize_passed": false,
+        "tools_list_passed": false,
+        "server_name": null,
+        "protocol_version": null,
+        "tool_count": 0,
+        "tool_names": [],
+        "errors": []
+      },
+      "tool_warmup_exit_code": 0,
+      "codex_preflight": {
+        "passed": null,
+        "skipped": true
+      }
+    },
+    {
+      "sequence_id": "fastify-lifecycle-sequence-v0",
+      "profile_id": "terminal-snip-codex-hook-v1",
+      "protocol_path": "sources/evaluations/protocols/fastify-lifecycle-sequence-v0-terminal-snip-codex-hook-v1-7af6ed4966bd.json",
+      "protocol_sha256": "f896d5920516c7e9317d8caf2e3026a3c4164171667886332502675474e05b69",
+      "raw_prepare_output_sha256": "034121477ca6a50d1ec1670a8a17175e214324175e16f2a06c86471c4cdb28b0",
+      "prepared": true,
+      "prepare_verification": {
+        "passed": true,
+        "mode": "preseeded-composite",
+        "concealment_passed": true,
+        "composite_seed_delivery_passed": true
+      },
+      "host_integration": {
+        "passed": true,
+        "skipped": false,
+        "install_exit_codes": [
+          0
+        ],
+        "verify_exit_codes": [
+          0
+        ],
+        "missing_required_files": [],
+        "required_files": [
+          "{{codex_home}}/hooks.json",
+          "{{codex_home}}/config.toml"
+        ]
+      },
+      "mcp_handshake": {
+        "required": false,
+        "passed": true,
+        "initialize_passed": false,
+        "tools_list_passed": false,
+        "server_name": null,
+        "protocol_version": null,
+        "tool_count": 0,
+        "tool_names": [],
+        "errors": []
+      },
+      "tool_warmup_exit_code": 0,
+      "codex_preflight": {
+        "passed": null,
+        "skipped": true
+      }
+    },
+    {
+      "sequence_id": "terraform-lifecycle-sequence-v0",
+      "profile_id": "terminal-snip-codex-hook-v1",
+      "protocol_path": "sources/evaluations/protocols/terraform-lifecycle-sequence-v0-terminal-snip-codex-hook-v1-5f8c46a4eabc.json",
+      "protocol_sha256": "898b4700bd5e9a2afcf013c39682babc65bb7ee1b1289d082bf19783075be679",
+      "raw_prepare_output_sha256": "d0d93ad2d2c9dec1026ed649b46049270436621e676106ec64b3b421025c2eb2",
+      "prepared": true,
+      "prepare_verification": {
+        "passed": true,
+        "mode": "preseeded-composite",
+        "concealment_passed": true,
+        "composite_seed_delivery_passed": true
+      },
+      "host_integration": {
+        "passed": true,
+        "skipped": false,
+        "install_exit_codes": [
+          0
+        ],
+        "verify_exit_codes": [
+          0
+        ],
+        "missing_required_files": [],
+        "required_files": [
+          "{{codex_home}}/hooks.json",
+          "{{codex_home}}/config.toml"
+        ]
+      },
+      "mcp_handshake": {
+        "required": false,
+        "passed": true,
+        "initialize_passed": false,
+        "tools_list_passed": false,
+        "server_name": null,
+        "protocol_version": null,
+        "tool_count": 0,
+        "tool_names": [],
+        "errors": []
+      },
+      "tool_warmup_exit_code": 0,
+      "codex_preflight": {
+        "passed": null,
+        "skipped": true
+      }
+    },
+    {
+      "sequence_id": "beets-lifecycle-sequence-v0",
+      "profile_id": "terminal-tokenjuice-codex-hook-v1",
+      "protocol_path": "sources/evaluations/protocols/beets-lifecycle-sequence-v0-terminal-tokenjuice-codex-hook-v1-f77a5b3ba3ba.json",
+      "protocol_sha256": "2d0be55b921feb3e010b3e8e3420b2cbb43c4f0e76c6a8dcd49f902672d369bb",
+      "raw_prepare_output_sha256": "374b7b413fbecec250b278a1d6dd7593a27e8e1f1e997e285d4848f5192955ad",
+      "prepared": true,
+      "prepare_verification": {
+        "passed": true,
+        "mode": "preseeded-composite",
+        "concealment_passed": true,
+        "composite_seed_delivery_passed": true
+      },
+      "host_integration": {
+        "passed": true,
+        "skipped": false,
+        "install_exit_codes": [
+          0
+        ],
+        "verify_exit_codes": [
+          0
+        ],
+        "missing_required_files": [],
+        "required_files": [
+          "{{codex_home}}/hooks.json"
+        ]
+      },
+      "mcp_handshake": {
+        "required": false,
+        "passed": true,
+        "initialize_passed": false,
+        "tools_list_passed": false,
+        "server_name": null,
+        "protocol_version": null,
+        "tool_count": 0,
+        "tool_names": [],
+        "errors": []
+      },
+      "tool_warmup_exit_code": 0,
+      "codex_preflight": {
+        "passed": null,
+        "skipped": true
+      }
+    },
+    {
+      "sequence_id": "fastify-lifecycle-sequence-v0",
+      "profile_id": "terminal-tokenjuice-codex-hook-v1",
+      "protocol_path": "sources/evaluations/protocols/fastify-lifecycle-sequence-v0-terminal-tokenjuice-codex-hook-v1-3f208e2b156c.json",
+      "protocol_sha256": "65a54768b605309e4a7dcea287053d7aeb0e88d5a11f51e016697910f44e0c12",
+      "raw_prepare_output_sha256": "a8089c97345305e5a00d75bd6a2ed529a09830040748d5222a812bb006157d37",
+      "prepared": true,
+      "prepare_verification": {
+        "passed": true,
+        "mode": "preseeded-composite",
+        "concealment_passed": true,
+        "composite_seed_delivery_passed": true
+      },
+      "host_integration": {
+        "passed": true,
+        "skipped": false,
+        "install_exit_codes": [
+          0
+        ],
+        "verify_exit_codes": [
+          0
+        ],
+        "missing_required_files": [],
+        "required_files": [
+          "{{codex_home}}/hooks.json"
+        ]
+      },
+      "mcp_handshake": {
+        "required": false,
+        "passed": true,
+        "initialize_passed": false,
+        "tools_list_passed": false,
+        "server_name": null,
+        "protocol_version": null,
+        "tool_count": 0,
+        "tool_names": [],
+        "errors": []
+      },
+      "tool_warmup_exit_code": 0,
+      "codex_preflight": {
+        "passed": null,
+        "skipped": true
+      }
+    },
+    {
+      "sequence_id": "terraform-lifecycle-sequence-v0",
+      "profile_id": "terminal-tokenjuice-codex-hook-v1",
+      "protocol_path": "sources/evaluations/protocols/terraform-lifecycle-sequence-v0-terminal-tokenjuice-codex-hook-v1-d4dba635618b.json",
+      "protocol_sha256": "50b703392fdb130dc11e2f66f4afe35ed82ce748cf265232fd2f4192ca53e94e",
+      "raw_prepare_output_sha256": "9208456a1a65d0b382f1611d709dfdbfbff4e376690b50bb5f8aa10d059e0263",
+      "prepared": true,
+      "prepare_verification": {
+        "passed": true,
+        "mode": "preseeded-composite",
+        "concealment_passed": true,
+        "composite_seed_delivery_passed": true
+      },
+      "host_integration": {
+        "passed": true,
+        "skipped": false,
+        "install_exit_codes": [
+          0
+        ],
+        "verify_exit_codes": [
+          0
+        ],
+        "missing_required_files": [],
+        "required_files": [
+          "{{codex_home}}/hooks.json"
+        ]
+      },
+      "mcp_handshake": {
+        "required": false,
+        "passed": true,
+        "initialize_passed": false,
+        "tools_list_passed": false,
+        "server_name": null,
+        "protocol_version": null,
+        "tool_count": 0,
+        "tool_names": [],
+        "errors": []
+      },
+      "tool_warmup_exit_code": 0,
+      "codex_preflight": {
+        "passed": null,
+        "skipped": true
+      }
     }
+  ],
+  "notes": [
+    "Raw prepare outputs were reduced into this retained receipt; each raw output SHA-256 is recorded.",
+    "Codex provider preflight was intentionally skipped because this qualification is provider-free; direct host integration, warmup, fixture preparation, and required MCP initialize plus tools/list checks still ran.",
+    "No provider-backed corrected-profile evaluation is authorized by this receipt."
   ]
 }

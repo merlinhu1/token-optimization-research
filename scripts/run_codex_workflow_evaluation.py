@@ -54,21 +54,32 @@ PROJECT_META: dict[str, dict[str, str]] = {
 
 SUPPORTED_WORKFLOW_TOOL_PROFILES = {
     "retrieval-leanctx": "lean-ctx",
+    "integrated-leanctx-codex-hybrid-v1": "leanctx-codex-hybrid-v1",
     "retrieval-codegraph": "codegraph",
+    "retrieval-codegraph-codex-mcp-v1": "codegraph-codex-mcp-v1",
     "lower-intervention-codegraph": "codegraph",
     "retrieval-cartog": "cartog",
+    "retrieval-cartog-mcp-v1": "cartog-mcp-v1",
     "codescope-owner": "codescope",
+    "codescope-codex-product-v1": "codescope-codex-product-v1",
     "swarmvault-owner": "swarmvault",
+    "swarmvault-codex-product-v1": "swarmvault-codex-product-v1",
     "retrieval-serena": "serena",
+    "retrieval-serena-codex-mcp-v1": "serena-codex-mcp-v1",
     "retrieval-graphify": "graphify",
+    "retrieval-graphify-codex-skill-v1": "graphify-codex-skill-v1",
     "retrieval-sigmap": "sigmap",
+    "retrieval-sigmap-codex-live-v1": "sigmap-codex-live-v1",
     "retrieval-jcodemunch-mcp": "jcodemunch-mcp",
     "retrieval-jcodemunch-mcp-direct-v1": "jcodemunch-mcp-direct-v1",
     "integrated-token-savior": "token-savior",
+    "integrated-token-savior-mcp-v1": "token-savior-mcp-v1",
     "headroom-default-codex": "headroom",
     "terminal-headroom": "headroom-proxy-only",
     "terminal-rtk": "rtk",
+    "terminal-rtk-codex-instructions-v1": "rtk-codex-instructions-v1",
     "terminal-snip": "snip",
+    "terminal-snip-codex-hook-v1": "snip-codex-hook-v1",
     "terminal-lowfat": "lowfat",
     "terminal-tokenjuice": "tokenjuice",
     "terminal-tokenjuice-codex-hook-v1": "tokenjuice-codex-hook-v1",
@@ -356,22 +367,43 @@ def _lane_path(cfg: dict[str, Any], root: Path = ROOT) -> str:
         "/opt/data/opt/uv",
         str(fixture.NODE_TOOLCHAIN_ROOT / "bin"),
     ]
+    identity_home = root / ".identity-codex-home"
     for entry in cfg.get("path_entries", []):
-        rendered = str(entry).format(codex_home=root / ".identity-codex-home", home=root / ".identity-codex-home" / "home")
+        rendered = str(entry).format(
+            codex_home=identity_home,
+            home=identity_home / "home",
+            tool_data_dir=fixture.tool_data_dir(identity_home, cfg),
+        )
         if rendered not in path_entries:
             path_entries.insert(1, rendered)
     path_entries.extend(["/usr/local/sbin", "/usr/local/bin", "/usr/sbin", "/usr/bin", "/sbin", "/bin"])
     return os.pathsep.join(path_entries)
 
 
-def _version_output(path: Path) -> dict[str, Any]:
+def _version_output(path: Path, *, environment_path: str) -> dict[str, Any]:
+    env = os.environ.copy()
+    env["PATH"] = environment_path
     try:
-        proc = subprocess.run([str(path), "--version"], cwd=ROOT, text=True, capture_output=True, timeout=5, check=False)
+        proc = subprocess.run(
+            [str(path), "--version"],
+            cwd=ROOT,
+            env=env,
+            text=True,
+            capture_output=True,
+            timeout=5,
+            check=False,
+        )
     except Exception as exc:
-        return {"command": [str(path), "--version"], "captured": False, "error": type(exc).__name__}
+        return {
+            "command": [str(path), "--version"],
+            "environment_path": environment_path,
+            "captured": False,
+            "error": type(exc).__name__,
+        }
     output = (proc.stdout + proc.stderr).strip()
     return {
         "command": [str(path), "--version"],
+        "environment_path": environment_path,
         "captured": proc.returncode == 0 and bool(output),
         "exit_code": proc.returncode,
         "output": output[:2000],
@@ -411,7 +443,7 @@ def executable_identity(command: list[str], cfg: dict[str, Any], root: Path = RO
             "gid": st.st_gid,
             "mtime_ns": st.st_mtime_ns,
         },
-        "version": _version_output(real),
+        "version": _version_output(real, environment_path=_lane_path(cfg, root)),
     }
 
 

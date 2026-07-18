@@ -259,14 +259,28 @@ class ActiveCampaignArchitectureTest(unittest.TestCase):
     def test_current_production_portfolio_has_three_lanes(self) -> None:
         profiles = json.loads((ROOT / "data/evaluation-profiles.json").read_text())["profiles"]
         shortlisted = [profile["id"] for profile in profiles if profile.get("status") == "screening-shortlist"]
+        corrected = [
+            "terminal-tokenjuice-codex-hook-v1",
+            "retrieval-jcodemunch-mcp-direct-v1",
+            "terminal-rtk-codex-instructions-v1",
+            "terminal-snip-codex-hook-v1",
+            "retrieval-graphify-codex-skill-v1",
+            "retrieval-codegraph-codex-mcp-v1",
+            "integrated-leanctx-codex-hybrid-v1",
+            "retrieval-cartog-mcp-v1",
+            "codescope-codex-product-v1",
+            "swarmvault-codex-product-v1",
+            "retrieval-serena-codex-mcp-v1",
+            "retrieval-sigmap-codex-live-v1",
+            "integrated-token-savior-mcp-v1",
+        ]
         self.assertEqual(
             set(shortlisted),
             {
                 "artifact-ponytail",
                 "behavior-caveman",
                 "headroom-default-codex",
-                "retrieval-jcodemunch-mcp-direct-v1",
-                "terminal-tokenjuice-codex-hook-v1",
+                *corrected,
             },
         )
         for profile_id in shortlisted:
@@ -279,7 +293,7 @@ class ActiveCampaignArchitectureTest(unittest.TestCase):
             ["medium-fastify-fastify", "medium-beetbox-beets", "large-hashicorp-terraform"],
         )
         for fixture in active:
-            self.assertEqual(fixture["candidate_profiles"], ["baseline-bare-codex", "terminal-tokenjuice-codex-hook-v1", "retrieval-jcodemunch-mcp-direct-v1"])
+            self.assertEqual(fixture["candidate_profiles"], ["baseline-bare-codex", *corrected])
 
         medium = json.loads((ROOT / "data/medium-project-candidates.json").read_text())
         medium_active = [
@@ -406,6 +420,155 @@ class ActiveCampaignArchitectureTest(unittest.TestCase):
         probe = ROOT / descriptor["runtime"]["mcp_probe_path"]
         self.assertEqual(descriptor["runtime"]["mcp_probe_sha256"], hashlib.sha256(probe.read_bytes()).hexdigest())
 
+    def test_corrected_rtk_and_snip_profiles_bind_official_codex_integrations(self) -> None:
+        rtk_profile = "terminal-rtk-codex-instructions-v1"
+        rtk_cfg = runner.fixture.active_tool_config({}, rtk_profile)
+        assert rtk_cfg is not None
+        self.assertEqual(runner.SUPPORTED_WORKFLOW_TOOL_PROFILES[rtk_profile], "rtk-codex-instructions-v1")
+        self.assertEqual(rtk_cfg["host_integration"]["install_commands"], [["rtk", "init", "--global", "--codex"]])
+        self.assertEqual(
+            set(rtk_cfg["host_integration"]["required_files"]),
+            {"{codex_home}/AGENTS.md", "{codex_home}/RTK.md"},
+        )
+        self.assertNotIn("prompt_instructions_command", rtk_cfg)
+
+        snip_profile = "terminal-snip-codex-hook-v1"
+        snip_cfg = runner.fixture.active_tool_config({}, snip_profile)
+        assert snip_cfg is not None
+        self.assertEqual(runner.SUPPORTED_WORKFLOW_TOOL_PROFILES[snip_profile], "snip-codex-hook-v1")
+        self.assertEqual(snip_cfg["host_integration"]["install_commands"], [["snip", "init", "--agent", "codex"]])
+        self.assertTrue(snip_cfg["host_integration"]["home_dot_codex_alias"])
+        self.assertTrue(snip_cfg["codex_features"]["hooks"])
+        self.assertIn("{codex_home}/hooks.json", snip_cfg["host_integration"]["required_files"])
+        self.assertEqual(runner.fixture.codex_hook_args(snip_cfg), [])
+
+    def test_home_dot_codex_alias_targets_lane_private_codex_home(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            codex_home = Path(tmp) / "codex-home"
+            codex_home.mkdir()
+            alias = runner.fixture.prepare_home_dot_codex_alias(codex_home)
+            self.assertTrue(alias.is_symlink())
+            self.assertEqual(alias.resolve(), codex_home.resolve())
+
+    def test_corrected_graphify_codegraph_and_leanctx_profiles_bind_full_codex_integrations(self) -> None:
+        graphify_profile = "retrieval-graphify-codex-skill-v1"
+        graphify_cfg = runner.fixture.active_tool_config({}, graphify_profile)
+        assert graphify_cfg is not None
+        self.assertEqual(runner.SUPPORTED_WORKFLOW_TOOL_PROFILES[graphify_profile], "graphify-codex-skill-v1")
+        self.assertEqual(
+            graphify_cfg["host_integration"]["install_commands"][-1],
+            ["{tool_data_dir}/venv/bin/graphify", "install", "--platform", "codex"],
+        )
+        self.assertTrue(graphify_cfg["codex_features"]["hooks"])
+        self.assertTrue(graphify_cfg["codex_features"]["multi_agent"])
+        self.assertIn("graphify codex install", graphify_cfg["warmup"]["command"][-1])
+        self.assertNotIn("mcp_server", graphify_cfg)
+
+        codegraph_profile = "retrieval-codegraph-codex-mcp-v1"
+        codegraph_cfg = runner.fixture.active_tool_config({}, codegraph_profile)
+        assert codegraph_cfg is not None
+        self.assertEqual(runner.SUPPORTED_WORKFLOW_TOOL_PROFILES[codegraph_profile], "codegraph-codex-mcp-v1")
+        self.assertEqual(
+            codegraph_cfg["host_integration"]["install_commands"],
+            [[str(runner.fixture.CODEGRAPH_BIN), "install", "--target", "codex", "--location", "global", "--yes"]],
+        )
+        self.assertNotIn("--no-watch", codegraph_cfg["mcp_args"])
+        self.assertTrue(codegraph_cfg["mcp_handshake"]["required"])
+        self.assertEqual(codegraph_cfg["warmup"]["command"], [str(runner.fixture.CODEGRAPH_BIN), "init", "{repo}"])
+
+        leanctx_profile = "integrated-leanctx-codex-hybrid-v1"
+        leanctx_cfg = runner.fixture.active_tool_config({}, leanctx_profile)
+        assert leanctx_cfg is not None
+        self.assertEqual(runner.SUPPORTED_WORKFLOW_TOOL_PROFILES[leanctx_profile], "leanctx-codex-hybrid-v1")
+        self.assertEqual(leanctx_cfg["host_integration"]["install_commands"], [["/opt/data/bin/lean-ctx", "init", "--agent", "codex"]])
+        self.assertEqual(leanctx_cfg["host_integration"]["verify_commands"], [["/opt/data/bin/lean-ctx", "--version"]])
+        self.assertIn("{codex_home}/hooks.json", leanctx_cfg["host_integration"]["required_files"])
+        self.assertIn("{repo}/AGENTS.md", leanctx_cfg["host_integration"]["required_files"])
+        self.assertTrue(leanctx_cfg["mcp_handshake"]["required"])
+        self.assertEqual(leanctx_cfg["warmup"]["command"], ["/opt/data/bin/lean-ctx", "index", "build", "{repo}"])
+
+    def test_codex_config_renders_all_declared_boolean_features(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            codex_home = Path(tmp)
+            runner.fixture.write_codex_config(codex_home, {}, "retrieval-graphify-codex-skill-v1")
+            config = (codex_home / "config.toml").read_text()
+        self.assertIn("hooks = true", config)
+        self.assertIn("multi_agent = true", config)
+
+    def test_unproven_treatment_results_and_protocols_are_deleted_not_relabelled(self) -> None:
+        receipt = json.loads(
+            (ROOT / "sources/evaluations/audits/unproven-treatment-result-deletions-20260718.json").read_text()
+        )
+        sessions = json.loads((ROOT / "data/workflow-sessions.json").read_text())["sessions"]
+        active_ids = {row["session_id"] for row in sessions}
+        self.assertEqual(receipt["policy"]["baseline_relabeling"], "forbidden")
+        self.assertEqual(len(receipt["profiles"]), 6)
+        for deleted in receipt["profiles"]:
+            self.assertTrue(set(deleted["deleted_session_ids"]).isdisjoint(active_ids))
+            for relative in deleted["deleted_protocol_paths"] + deleted["deleted_comparison_paths"] + deleted["deleted_bundle_roots"]:
+                self.assertFalse((ROOT / relative).exists(), relative)
+
+    def test_graphify_identity_path_renders_lane_private_tool_data_dir(self) -> None:
+        cfg = runner.fixture.TOOL_CONFIGS["graphify-codex-skill-v1"]
+        lane_path = runner._lane_path(cfg)
+        expected = runner.fixture.tool_data_dir(ROOT / ".identity-codex-home", cfg) / "venv" / "bin"
+        self.assertIn(str(expected), lane_path.split(":"))
+
+    def test_codegraph_binary_version_identity_uses_lane_path(self) -> None:
+        cfg = runner.fixture.TOOL_CONFIGS["codegraph-codex-mcp-v1"]
+        with mock.patch.dict(runner.os.environ, {"PATH": "/usr/bin:/bin"}):
+            identity = runner.executable_identity([str(runner.fixture.CODEGRAPH_BIN), "serve", "--mcp"], cfg)
+        self.assertTrue(identity["version"]["captured"])
+        self.assertEqual(identity["version"]["output"], "1.1.1")
+        self.assertIn(str(runner.fixture.NODE_TOOLCHAIN_ROOT / "bin"), identity["version"]["environment_path"])
+
+    def test_replacements_for_unproven_profiles_require_assignment_proof_and_product_parity(self) -> None:
+        expected = {
+            "retrieval-cartog-mcp-v1": "cartog-mcp-v1",
+            "codescope-codex-product-v1": "codescope-codex-product-v1",
+            "swarmvault-codex-product-v1": "swarmvault-codex-product-v1",
+            "retrieval-serena-codex-mcp-v1": "serena-codex-mcp-v1",
+            "retrieval-sigmap-codex-live-v1": "sigmap-codex-live-v1",
+            "integrated-token-savior-mcp-v1": "token-savior-mcp-v1",
+        }
+        for profile_id, tool_id in expected.items():
+            self.assertEqual(runner.SUPPORTED_WORKFLOW_TOOL_PROFILES[profile_id], tool_id)
+            cfg = runner.fixture.active_tool_config({}, profile_id)
+            assert cfg is not None
+            self.assertTrue(cfg["mcp_handshake"]["required"], profile_id)
+
+        codescope = runner.fixture.active_tool_config({}, "codescope-codex-product-v1")
+        assert codescope is not None
+        warmup = " ".join(codescope["warmup"]["command"])
+        self.assertIn("codescope start", warmup)
+        self.assertIn("codescope init --agent codex", warmup)
+        self.assertIn("codescope stop", warmup)
+        self.assertEqual(codescope["mcp_command"], "/bin/bash")
+        self.assertIn("codescope mcp", codescope["mcp_args"][-1])
+        self.assertIn("codescope stop", codescope["mcp_args"][-1])
+
+        swarmvault = runner.fixture.active_tool_config({}, "swarmvault-codex-product-v1")
+        assert swarmvault is not None
+        swarmvault_warmup = " ".join(swarmvault["warmup"]["command"][-1:])
+        self.assertIn(" install --agent codex --hook", swarmvault_warmup)
+        self.assertTrue(swarmvault["codex_features"]["hooks"])
+
+        serena = runner.fixture.active_tool_config({}, "retrieval-serena-codex-mcp-v1")
+        assert serena is not None
+        self.assertIn("setup", serena["host_integration"]["install_commands"][0])
+        self.assertIn("codex", serena["host_integration"]["install_commands"][0])
+        self.assertIn("--project-from-cwd", serena["mcp_args"])
+        self.assertIn("--context=codex", serena["mcp_args"])
+
+        sigmap = runner.fixture.active_tool_config({}, "retrieval-sigmap-codex-live-v1")
+        assert sigmap is not None
+        self.assertIn("--watch", sigmap["mcp_args"][-1])
+        self.assertIn("--mcp", sigmap["mcp_args"][-1])
+
+        token_savior = runner.fixture.active_tool_config({}, "integrated-token-savior-mcp-v1")
+        assert token_savior is not None
+        self.assertEqual(token_savior["env"]["TOKEN_SAVIOR_CLIENT"], "codex")
+
     def test_mcp_handshake_runs_after_profile_workspace_warmup(self) -> None:
         workflow_source = inspect.getsource(runner.run_one)
         self.assertLess(
@@ -417,6 +580,11 @@ class ActiveCampaignArchitectureTest(unittest.TestCase):
             fixture_source.index("prepare_profile_workspace("),
             fixture_source.index("probe_mcp_handshake("),
         )
+
+    def test_mcp_probe_encodes_dash_prefixed_server_arguments(self) -> None:
+        source = inspect.getsource(runner.fixture.probe_mcp_handshake)
+        self.assertIn('command.append(f"--arg={arg}")', source)
+        self.assertNotIn('command.extend(["--arg", arg])', source)
 
     def test_mcp_probe_requires_at_least_one_advertised_tool(self) -> None:
         server_source = """import json,sys
@@ -458,12 +626,33 @@ for line in sys.stdin:
         by_profile = {}
         for session in sessions:
             by_profile.setdefault(session["profile"]["profile_id"], []).append(session)
+        deletion_receipts = [
+            json.loads(
+                (ROOT / "sources/evaluations/audits/invalid-treatment-result-deletions-20260718.json").read_text()
+            ),
+            json.loads(
+                (ROOT / "sources/evaluations/audits/unproven-treatment-result-deletions-20260718.json").read_text()
+            ),
+        ]
+        deleted_by_profile = {
+            row["profile_id"]: row
+            for receipt in deletion_receipts
+            for row in receipt["profiles"]
+        }
         expected_validity = {
-            "invalid-treatment-configuration": "invalid-treatment-configuration",
             "unverified-treatment-assignment": "unverified-treatment-assignment",
         }
         for item in audit["profiles"]:
-            retained = by_profile[item["profile_id"]]
+            retained = by_profile.get(item["profile_id"], [])
+            if item.get("active_corpus_action") == "deleted-under-owner-authorized-receipt":
+                self.assertEqual(item["session_ids"], [])
+                self.assertFalse(item["objective_eligible"])
+                self.assertNotIn(item["profile_id"], by_profile)
+                deleted = deleted_by_profile[item["profile_id"]]
+                self.assertEqual(sorted(item["deleted_session_ids"]), sorted(deleted["deleted_session_ids"]))
+                for relative in deleted["deleted_protocol_paths"] + deleted["deleted_comparison_paths"] + deleted["deleted_bundle_roots"]:
+                    self.assertFalse((ROOT / relative).exists(), relative)
+                continue
             self.assertEqual(sorted(item["session_ids"]), sorted(row["session_id"] for row in retained))
             self.assertEqual(
                 item["objective_eligible"],

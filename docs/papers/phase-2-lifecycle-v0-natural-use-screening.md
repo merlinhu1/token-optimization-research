@@ -1,8 +1,8 @@
 # Phase 2 report: lifecycle-v0 natural-use screening of token-saving tools for Codex workflows
 
-> **Report status:** historical provider-accounting report, superseded for treatment validity and product-effect interpretation by the [official-integration parity audit](official-integration-parity-audit.md). Tables preserve observed execution/token records; they are not a current tool ranking.
+> **Report status:** historical provider-accounting narrative, superseded for treatment validity and product-effect interpretation by the [official-integration parity audit](official-integration-parity-audit.md). Tables preserve the arithmetic reported at the time; the 42 corrupted treatment records and artifacts they described were later deleted from the active corpus under receipt and are not a current tool ranking.
 >
-> **Superseding adjudication (2026-07-18):** 42 of 54 lifecycle-v0 treatment sessions are now objective-ineligible: 24 because the evaluated configuration did not implement the pinned product's required Codex treatment, and 18 because a plausible bounded/manual MCP assignment was not positively proven. Only Caveman, Ponytail, default Headroom, and the Headroom proxy-only ablation retain eligibility for their explicitly narrower estimands.
+> **Superseding adjudication (2026-07-18):** 42 of 54 lifecycle-v0 treatment sessions were deleted from the active corpus—not relabelled as baseline: 24 because the evaluated configuration did not implement the pinned product's required Codex treatment, and 18 because a plausible bounded/manual MCP assignment was not positively proven. Only Caveman, Ponytail, default Headroom, and the Headroom proxy-only ablation retain active eligibility for their explicitly narrower estimands.
 
 **Report date:** 2026-07-18
 

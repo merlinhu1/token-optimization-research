@@ -217,7 +217,7 @@
       "reset": {
         "policy": "Use a fresh lane-specific Codex home for every run; CodeScope database, logs, and supervisor state remain under that home and are destroyed with the lane. Stop the bundled SurrealDB when the MCP adapter exits."
       },
-      "notes": "Historical CodeScope MCP sessions retained configuration/listing evidence but no required initialize/tools-list receipt and no completed MCP tool call; operational treatment assignment is unverified.",
+      "notes": "Historical CodeScope MCP sessions retained configuration/listing evidence but no required initialize/tools-list receipt and no completed MCP tool call; operational treatment assignment is unverified. Historical occupied sessions and protocols were deleted because treatment assignment was unproven.",
       "evaluation_protocol": {
         "arm_label": "codescope-neutral-mcp-cold-auto-index",
         "tool_state": "cold-auto-index",
@@ -231,7 +231,11 @@
         "installation_failure_disposition": "invalid-if-official-MCP-tools-or-auto-index-are-unavailable"
       },
       "selection_rationale": "Explicit experiment-owner direction on 2026-07-17 to evaluate CodeScope before SwarmVault across all three active lifecycle-v0 lanes.",
-      "blocked_reason": "Historical CodeScope MCP sessions retained configuration/listing evidence but no required initialize/tools-list receipt and no completed MCP tool call; operational treatment assignment is unverified."
+      "blocked_reason": "Historical CodeScope MCP sessions retained configuration/listing evidence but no required initialize/tools-list receipt and no completed MCP tool call; operational treatment assignment is unverified.",
+      "historical_results_deleted": true,
+      "historical_result_disposition": "deleted-unproven-treatment",
+      "active_corpus_result": "deleted-under-owner-authorized-receipt",
+      "superseded_by": "codescope-codex-product-v1"
     },
     {
       "id": "grace-artifact-project",
@@ -319,9 +323,13 @@
       "reset": {
         "policy": "Delete the lane-specific Codex home and run-local tool data after each run; verify no stale index, hook, memory, cache, or generated profile survives into the next run."
       },
-      "notes": "The historical optimized/thin configuration materially matched the bounded Token Savior MCP-only setup, but no retained initialize/tools-list receipt or completed MCP call positively proves server operation.",
+      "notes": "The historical optimized/thin configuration materially matched the bounded Token Savior MCP-only setup, but no retained initialize/tools-list receipt or completed MCP call positively proves server operation. Historical occupied sessions and protocols were deleted because treatment assignment was unproven.",
       "selection_reason": "Selected by the experiment owner for the next lifecycle-v0 natural-use treatment screen.",
-      "blocked_reason": "The historical optimized/thin configuration materially matched the bounded Token Savior MCP-only setup, but no retained initialize/tools-list receipt or completed MCP call positively proves server operation."
+      "blocked_reason": "The historical optimized/thin configuration materially matched the bounded Token Savior MCP-only setup, but no retained initialize/tools-list receipt or completed MCP call positively proves server operation.",
+      "historical_results_deleted": true,
+      "historical_result_disposition": "deleted-unproven-treatment",
+      "active_corpus_result": "deleted-under-owner-authorized-receipt",
+      "superseded_by": "integrated-token-savior-mcp-v1"
     },
     {
       "id": "lower-intervention-cartog",
@@ -604,9 +612,13 @@
       "reset": {
         "policy": "Record disable/uninstall commands and verify no stale index, hook, memory, cache, or generated profile survives into the next run."
       },
-      "notes": "Historical cartog MCP sessions retained configuration/listing evidence but no required initialize/tools-list receipt and no completed MCP tool call; operational treatment assignment is unverified.",
+      "notes": "Historical cartog MCP sessions retained configuration/listing evidence but no required initialize/tools-list receipt and no completed MCP tool call; operational treatment assignment is unverified. Historical occupied sessions and protocols were deleted because treatment assignment was unproven.",
       "deferred_reason": "Selected for the next lifecycle-v0 natural-use treatment round after the first ten screens, subject to production adapter qualification.",
-      "blocked_reason": "Historical cartog MCP sessions retained configuration/listing evidence but no required initialize/tools-list receipt and no completed MCP tool call; operational treatment assignment is unverified."
+      "blocked_reason": "Historical cartog MCP sessions retained configuration/listing evidence but no required initialize/tools-list receipt and no completed MCP tool call; operational treatment assignment is unverified.",
+      "historical_results_deleted": true,
+      "historical_result_disposition": "deleted-unproven-treatment",
+      "active_corpus_result": "deleted-under-owner-authorized-receipt",
+      "superseded_by": "retrieval-cartog-mcp-v1"
     },
     {
       "id": "retrieval-codegraph",
@@ -643,7 +655,12 @@
         "notes": "Primary treatment condition: no prebuilt tool state; the tool is available but optional."
       },
       "selection_reason": "First atomic lifecycle treatment: pinned local CodeGraph build is executable, installs without a native build step in the lane, supports Python retrieval, and is naturally relevant across feature, refactor, and review tasks.",
-      "blocked_reason": "Pinned CodeGraph Codex integration installs MCP plus AGENTS guidance and requires `codegraph init`; the historical profile was cold/unindexed, disabled watch, and installed no AGENTS block. No retained initialize plus tools/list receipt or completed MCP call proves the historical server delivered its initialize guidance."
+      "blocked_reason": "Pinned CodeGraph Codex integration installs MCP plus AGENTS guidance and requires `codegraph init`; the historical profile was cold/unindexed, disabled watch, and installed no AGENTS block. No retained initialize plus tools/list receipt or completed MCP call proves the historical server delivered its initialize guidance.",
+      "historical_results_deleted": true,
+      "deletion_receipt": "sources/evaluations/audits/invalid-treatment-result-deletions-20260718.json",
+      "historical_result_disposition": "deleted-invalid-treatment",
+      "active_corpus_result": "deleted-under-owner-authorized-receipt",
+      "superseded_by": "retrieval-codegraph-codex-mcp-v1"
     },
     {
       "id": "retrieval-graphify",
@@ -671,7 +688,12 @@
       },
       "notes": "Pinned Graphify Codex integration requires `graphify install --platform codex`, installing the Codex skill, project AGENTS.md, hooks, and multi_agent support; the historical profile exposed only an optional MCP server with a reduced AST-only graph. No retained initialize plus tools/list receipt or completed MCP call proves the historical optional MCP server was operational.",
       "selection_reason": "Selected by the experiment owner for the next lifecycle-v0 natural-use treatment screen.",
-      "blocked_reason": "Pinned Graphify Codex integration requires `graphify install --platform codex`, installing the Codex skill, project AGENTS.md, hooks, and multi_agent support; the historical profile exposed only an optional MCP server with a reduced AST-only graph. No retained initialize plus tools/list receipt or completed MCP call proves the historical optional MCP server was operational."
+      "blocked_reason": "Pinned Graphify Codex integration requires `graphify install --platform codex`, installing the Codex skill, project AGENTS.md, hooks, and multi_agent support; the historical profile exposed only an optional MCP server with a reduced AST-only graph. No retained initialize plus tools/list receipt or completed MCP call proves the historical optional MCP server was operational.",
+      "historical_results_deleted": true,
+      "deletion_receipt": "sources/evaluations/audits/invalid-treatment-result-deletions-20260718.json",
+      "historical_result_disposition": "deleted-invalid-treatment",
+      "active_corpus_result": "deleted-under-owner-authorized-receipt",
+      "superseded_by": "retrieval-graphify-codex-skill-v1"
     },
     {
       "id": "retrieval-leanctx",
@@ -708,7 +730,12 @@
         "notes": "Primary treatment condition: no prebuilt tool state; the tool is available but optional."
       },
       "selection_reason": "Selected by the experiment owner for the next lifecycle-v0 natural-use screen.",
-      "blocked_reason": "Pinned Lean Context Codex integration is hybrid: `lean-ctx init --agent codex` installs MCP, rules, AGENTS/LEAN-CTX guidance, and shell hooks; the historical profile exposed only a cold raw MCP entry. No retained initialize plus tools/list receipt or completed MCP call proves the historical MCP entry was operational."
+      "blocked_reason": "Pinned Lean Context Codex integration is hybrid: `lean-ctx init --agent codex` installs MCP, rules, AGENTS/LEAN-CTX guidance, and shell hooks; the historical profile exposed only a cold raw MCP entry. No retained initialize plus tools/list receipt or completed MCP call proves the historical MCP entry was operational.",
+      "historical_results_deleted": true,
+      "deletion_receipt": "sources/evaluations/audits/invalid-treatment-result-deletions-20260718.json",
+      "historical_result_disposition": "deleted-invalid-treatment",
+      "active_corpus_result": "deleted-under-owner-authorized-receipt",
+      "superseded_by": "integrated-leanctx-codex-hybrid-v1"
     },
     {
       "id": "retrieval-leanctx-warm-optional",
@@ -771,9 +798,13 @@
       "reset": {
         "policy": "Record disable/uninstall commands and verify no stale index, hook, memory, cache, or generated profile survives into the next run."
       },
-      "notes": "The historical Serena context/project setup matched the core MCP layer but disabled onboarding and memories, making it a bounded retrieval ablation; no retained initialize/tools-list receipt or completed MCP call proves operation.",
+      "notes": "The historical Serena context/project setup matched the core MCP layer but disabled onboarding and memories, making it a bounded retrieval ablation; no retained initialize/tools-list receipt or completed MCP call proves operation. Historical occupied sessions and protocols were deleted because treatment assignment was unproven.",
       "selection_rationale": "Explicit experiment-owner direction on 2026-07-16 to evaluate Serena across all three lifecycle-v0 lanes after RTK.",
-      "blocked_reason": "The historical Serena context/project setup matched the core MCP layer but disabled onboarding and memories, making it a bounded retrieval ablation; no retained initialize/tools-list receipt or completed MCP call proves operation."
+      "blocked_reason": "The historical Serena context/project setup matched the core MCP layer but disabled onboarding and memories, making it a bounded retrieval ablation; no retained initialize/tools-list receipt or completed MCP call proves operation.",
+      "historical_results_deleted": true,
+      "historical_result_disposition": "deleted-unproven-treatment",
+      "active_corpus_result": "deleted-under-owner-authorized-receipt",
+      "superseded_by": "retrieval-serena-codex-mcp-v1"
     },
     {
       "id": "retrieval-jcodemunch-mcp",
@@ -799,10 +830,14 @@
       "reset": {
         "policy": "Record disable/uninstall commands and verify no stale index, hook, memory, cache, or generated profile survives into the next run."
       },
-      "notes": "Historical neutral MCP condition used an on-demand uv launcher contrary to the pinned Codex guide and retained no initialize/tools-list handshake. Retained sessions are excluded from jcodemunch product-effect claims.",
+      "notes": "Historical neutral MCP condition used an on-demand uv launcher contrary to the pinned Codex guide and retained no initialize/tools-list handshake. Historical invalid sessions were deleted from the active corpus and are not eligible from jcodemunch product-effect claims.",
       "selection_reason": "Selected by the experiment owner for the next lifecycle-v0 natural-use screen.",
-      "blocked_reason": "Historical neutral MCP condition used an on-demand uv launcher contrary to the pinned Codex guide and retained no initialize/tools-list handshake. Retained sessions are excluded from jcodemunch product-effect claims.",
-      "superseded_by": "retrieval-jcodemunch-mcp-direct-v1"
+      "blocked_reason": "Historical neutral MCP condition used an on-demand uv launcher contrary to the pinned Codex guide and retained no initialize/tools-list handshake. Historical invalid sessions were deleted from the active corpus and are not eligible from jcodemunch product-effect claims.",
+      "superseded_by": "retrieval-jcodemunch-mcp-direct-v1",
+      "historical_results_deleted": true,
+      "deletion_receipt": "sources/evaluations/audits/invalid-treatment-result-deletions-20260718.json",
+      "historical_result_disposition": "deleted-invalid-treatment",
+      "active_corpus_result": "deleted-under-owner-authorized-receipt"
     },
     {
       "id": "retrieval-sigmap",
@@ -828,9 +863,13 @@
       "reset": {
         "policy": "Record disable/uninstall commands and verify no stale index, hook, memory, cache, or generated profile survives into the next run."
       },
-      "notes": "The historical manual TOML setup bypassed a pinned upstream Codex-installer defect and generated warm AGENTS state, but omitted watcher/git-hook freshness; no retained initialize/tools-list receipt or completed MCP call proves operation.",
+      "notes": "The historical manual TOML setup bypassed a pinned upstream Codex-installer defect and generated warm AGENTS state, but omitted watcher/git-hook freshness; no retained initialize/tools-list receipt or completed MCP call proves operation. Historical occupied sessions and protocols were deleted because treatment assignment was unproven.",
       "selection_reason": "Selected by the experiment owner for the next lifecycle-v0 natural-use screen.",
-      "blocked_reason": "The historical manual TOML setup bypassed a pinned upstream Codex-installer defect and generated warm AGENTS state, but omitted watcher/git-hook freshness; no retained initialize/tools-list receipt or completed MCP call proves operation."
+      "blocked_reason": "The historical manual TOML setup bypassed a pinned upstream Codex-installer defect and generated warm AGENTS state, but omitted watcher/git-hook freshness; no retained initialize/tools-list receipt or completed MCP call proves operation.",
+      "historical_results_deleted": true,
+      "historical_result_disposition": "deleted-unproven-treatment",
+      "active_corpus_result": "deleted-under-owner-authorized-receipt",
+      "superseded_by": "retrieval-sigmap-codex-live-v1"
     },
     {
       "id": "serena-cavemem-lightweight",
@@ -922,7 +961,7 @@
       "reset": {
         "policy": "Use a fresh lane-specific Codex home for every run. Keep SwarmVault config, raw copies, wiki, graph, SQLite retrieval state, agent helpers, and inbox under the lane-private tool workspace; destroy that home after the lane."
       },
-      "notes": "Historical SwarmVault MCP sessions retained configuration/listing evidence but no required initialize/tools-list receipt and no completed MCP tool call; operational treatment assignment is unverified.",
+      "notes": "Historical SwarmVault MCP sessions retained configuration/listing evidence but no required initialize/tools-list receipt and no completed MCP tool call; operational treatment assignment is unverified. Historical occupied sessions and protocols were deleted because treatment assignment was unproven.",
       "evaluation_protocol": {
         "arm_label": "swarmvault-offline-heuristic-warm-index-mcp",
         "tool_state": "warm-index",
@@ -940,7 +979,11 @@
         "scale_policy": "Use SwarmVault's native deterministic --max-files cap to bound initialization on large repositories; no task-specific paths or patterns are selected."
       },
       "selection_rationale": "Explicit experiment-owner direction on 2026-07-17 to evaluate SwarmVault after CodeScope across all three active lifecycle-v0 lanes.",
-      "blocked_reason": "Historical SwarmVault MCP sessions retained configuration/listing evidence but no required initialize/tools-list receipt and no completed MCP tool call; operational treatment assignment is unverified."
+      "blocked_reason": "Historical SwarmVault MCP sessions retained configuration/listing evidence but no required initialize/tools-list receipt and no completed MCP tool call; operational treatment assignment is unverified.",
+      "historical_results_deleted": true,
+      "historical_result_disposition": "deleted-unproven-treatment",
+      "active_corpus_result": "deleted-under-owner-authorized-receipt",
+      "superseded_by": "swarmvault-codex-product-v1"
     },
     {
       "id": "terminal-headroom",
@@ -1139,7 +1182,12 @@
       },
       "notes": "Pinned RTK Codex setup requires `rtk init --codex` or `rtk init --global --codex`, producing AGENTS.md plus RTK.md; the historical profile only exposed the binary on PATH. Retained task events contain zero explicit RTK commands, so path availability produced no active compaction mechanism.",
       "selection_rationale": "Explicit experiment-owner direction on 2026-07-16 to evaluate RTK across all three lifecycle-v0 lanes.",
-      "blocked_reason": "Pinned RTK Codex setup requires `rtk init --codex` or `rtk init --global --codex`, producing AGENTS.md plus RTK.md; the historical profile only exposed the binary on PATH. Retained task events contain zero explicit RTK commands, so path availability produced no active compaction mechanism."
+      "blocked_reason": "Pinned RTK Codex setup requires `rtk init --codex` or `rtk init --global --codex`, producing AGENTS.md plus RTK.md; the historical profile only exposed the binary on PATH. Retained task events contain zero explicit RTK commands, so path availability produced no active compaction mechanism.",
+      "historical_results_deleted": true,
+      "deletion_receipt": "sources/evaluations/audits/invalid-treatment-result-deletions-20260718.json",
+      "historical_result_disposition": "deleted-invalid-treatment",
+      "active_corpus_result": "deleted-under-owner-authorized-receipt",
+      "superseded_by": "terminal-rtk-codex-instructions-v1"
     },
     {
       "id": "terminal-snip",
@@ -1167,7 +1215,12 @@
       },
       "notes": "Pinned Snip source defaults to an experimental Codex hook via `snip init --agent codex`, while its safer `--mode prompt` fallback writes project AGENTS.md; the historical profile installed neither and explicitly disabled Codex hooks. Retained task events contain zero explicit Snip commands, so path availability produced no active compaction mechanism.",
       "deferred_reason": "Selected for the next lifecycle-v0 natural-use treatment round after the first ten screens.",
-      "blocked_reason": "Pinned Snip source defaults to an experimental Codex hook via `snip init --agent codex`, while its safer `--mode prompt` fallback writes project AGENTS.md; the historical profile installed neither and explicitly disabled Codex hooks. Retained task events contain zero explicit Snip commands, so path availability produced no active compaction mechanism."
+      "blocked_reason": "Pinned Snip source defaults to an experimental Codex hook via `snip init --agent codex`, while its safer `--mode prompt` fallback writes project AGENTS.md; the historical profile installed neither and explicitly disabled Codex hooks. Retained task events contain zero explicit Snip commands, so path availability produced no active compaction mechanism.",
+      "historical_results_deleted": true,
+      "deletion_receipt": "sources/evaluations/audits/invalid-treatment-result-deletions-20260718.json",
+      "historical_result_disposition": "deleted-invalid-treatment",
+      "active_corpus_result": "deleted-under-owner-authorized-receipt",
+      "superseded_by": "terminal-snip-codex-hook-v1"
     },
     {
       "id": "terminal-tokenjuice",
@@ -1193,10 +1246,14 @@
       "reset": {
         "policy": "Record disable/uninstall commands and verify no stale index, hook, memory, cache, or generated profile survives into the next run."
       },
-      "notes": "Historical CLI-only condition omitted the official `tokenjuice install codex` hook and the runner disabled Codex hooks. Retained sessions are excluded from TokenJuice product-effect claims.",
+      "notes": "Historical CLI-only condition omitted the official `tokenjuice install codex` hook and the runner disabled Codex hooks. Historical invalid sessions were deleted from the active corpus and are not eligible from TokenJuice product-effect claims.",
       "deferred_reason": "Selected for the next lifecycle-v0 natural-use treatment round after the first ten screens.",
-      "blocked_reason": "Historical CLI-only condition omitted the official `tokenjuice install codex` hook and the runner disabled Codex hooks. Retained sessions are excluded from TokenJuice product-effect claims.",
-      "superseded_by": "terminal-tokenjuice-codex-hook-v1"
+      "blocked_reason": "Historical CLI-only condition omitted the official `tokenjuice install codex` hook and the runner disabled Codex hooks. Historical invalid sessions were deleted from the active corpus and are not eligible from TokenJuice product-effect claims.",
+      "superseded_by": "terminal-tokenjuice-codex-hook-v1",
+      "historical_results_deleted": true,
+      "deletion_receipt": "sources/evaluations/audits/invalid-treatment-result-deletions-20260718.json",
+      "historical_result_disposition": "deleted-invalid-treatment",
+      "active_corpus_result": "deleted-under-owner-authorized-receipt"
     },
     {
       "id": "stack-tokenjuice-jcodemunch-mcp",
@@ -1236,9 +1293,15 @@
           "retrieval-jcodemunch-mcp": "warm-index"
         }
       },
-      "notes": "Historical stack combined the invalid TokenJuice CLI-only condition with the unverified jcodemunch launcher. Retained sessions are excluded from stack-effect claims.",
+      "notes": "Historical stack combined the invalid TokenJuice CLI-only condition with the unverified jcodemunch launcher. Historical invalid sessions were deleted from the active corpus and are not eligible from stack-effect claims.",
       "selection_reason": "Explicit experiment-owner direction on 2026-07-18 to run the first Phase 3 lifecycle-v0 stack evaluation without rerunning retained individual-tool profiles.",
-      "blocked_reason": "Historical stack combined the invalid TokenJuice CLI-only condition with the unverified jcodemunch launcher. Retained sessions are excluded from stack-effect claims."
+      "blocked_reason": "Historical stack combined the invalid TokenJuice CLI-only condition with the unverified jcodemunch launcher. Historical invalid sessions were deleted from the active corpus and are not eligible from stack-effect claims.",
+      "historical_results_deleted": true,
+      "deletion_receipt": "sources/evaluations/audits/invalid-treatment-result-deletions-20260718.json",
+      "historical_result_disposition": "deleted-invalid-treatment",
+      "active_corpus_result": "deleted-under-owner-authorized-receipt",
+      "superseded_by": null,
+      "replacement_policy": "no corrected stack until both versioned individual components have valid evidence"
     },
     {
       "id": "tokless-profile",
@@ -1358,6 +1421,381 @@
         "instruction_policy": "neutral-availability-no-product-guidance"
       },
       "notes": "Versioned correction of the historical jcodemunch technical assignment. This is an explicitly neutral MCP-availability estimand. The product universal guidance layer is not installed and would require a separate versioned instruction-policy profile."
+    },
+    {
+      "id": "terminal-rtk-codex-instructions-v1",
+      "profile_type": "individual_tool",
+      "objective_scope": "individual_tool_effectiveness",
+      "status": "screening-shortlist",
+      "enabled_surfaces": [
+        "codex-global-instructions",
+        "terminal-output"
+      ],
+      "disabled_overlaps": [
+        "all unlisted surfaces"
+      ],
+      "components": [
+        {
+          "component_id": "terminal-rtk-codex-instructions-v1",
+          "surface": "codex-global-instructions/terminal-output-compaction",
+          "role": "individual_tool"
+        }
+      ],
+      "install": {
+        "policy": "Run the pinned RTK binary with `rtk init --global --codex` against lane-private CODEX_HOME; require generated AGENTS.md and RTK.md before execution."
+      },
+      "reset": {
+        "policy": "Delete lane-private CODEX_HOME and RTK state after evidence capture; verify global instruction files cannot survive into another lane."
+      },
+      "evaluation_protocol": {
+        "tool_use_policy": "natural",
+        "tool_state": "active-instruction-layer",
+        "integration_state": "official-codex-global-instructions"
+      },
+      "notes": "Versioned correction of the historical PATH-only RTK profile. Measures the product-authored Codex instruction policy, not transparent command rewriting."
+    },
+    {
+      "id": "terminal-snip-codex-hook-v1",
+      "profile_type": "individual_tool",
+      "objective_scope": "individual_tool_effectiveness",
+      "status": "screening-shortlist",
+      "enabled_surfaces": [
+        "codex-pre-tool-use-hook",
+        "terminal-output"
+      ],
+      "disabled_overlaps": [
+        "all unlisted surfaces"
+      ],
+      "components": [
+        {
+          "component_id": "terminal-snip-codex-hook-v1",
+          "surface": "codex-pre-tool-use-hook/terminal-output-compaction",
+          "role": "individual_tool"
+        }
+      ],
+      "install": {
+        "policy": "Run the pinned Snip binary with `snip init --agent codex` in a lane-private home alias, retain hooks.json, enable Codex hooks, and require hook audit before execution."
+      },
+      "reset": {
+        "policy": "Delete lane-private CODEX_HOME, Snip filters/state, and hook files after evidence capture; verify no hook survives into another lane."
+      },
+      "evaluation_protocol": {
+        "tool_use_policy": "natural",
+        "tool_state": "cold-cli",
+        "integration_state": "official-codex-pretooluse-hook"
+      },
+      "notes": "Versioned correction of the historical PATH-only Snip profile. Uses the pinned source default Codex hook rather than the stale README prompt-only description."
+    },
+    {
+      "id": "retrieval-graphify-codex-skill-v1",
+      "profile_type": "individual_tool",
+      "objective_scope": "individual_tool_effectiveness",
+      "status": "screening-shortlist",
+      "enabled_surfaces": [
+        "retrieval-context",
+        "codex-skill",
+        "codex-project-instructions",
+        "codex-pre-tool-use-hook"
+      ],
+      "disabled_overlaps": [
+        "MCP server",
+        "all unlisted surfaces"
+      ],
+      "components": [
+        {
+          "component_id": "retrieval-graphify-codex-skill-v1",
+          "surface": "retrieval-context+codex-skill+instructions+hook",
+          "role": "individual_tool"
+        }
+      ],
+      "install": {
+        "policy": "Install the pinned Graphify wheel in a lane-private venv, run the official Codex skill installer, build the full graph, then run `graphify codex install` in the fixture checkout."
+      },
+      "reset": {
+        "policy": "Delete lane-private venv/CODEX_HOME plus graphify-out, AGENTS.md, and .codex treatment state after evidence capture."
+      },
+      "evaluation_protocol": {
+        "tool_use_policy": "natural",
+        "tool_state": "warm-index",
+        "integration_state": "official-codex-skill-and-always-on-policy",
+        "instruction_policy": "product-authored-guidance"
+      },
+      "notes": "Versioned correction of the historical optional-MCP Graphify ablation. Measures the official Codex skill, project instructions, hook, and full graph without adding an evaluator-authored MCP arm."
+    },
+    {
+      "id": "retrieval-codegraph-codex-mcp-v1",
+      "profile_type": "individual_tool",
+      "objective_scope": "individual_tool_effectiveness",
+      "status": "screening-shortlist",
+      "enabled_surfaces": [
+        "retrieval-context",
+        "mcp",
+        "codex-global-instructions",
+        "live-index-watch"
+      ],
+      "disabled_overlaps": [
+        "all unlisted surfaces"
+      ],
+      "components": [
+        {
+          "component_id": "retrieval-codegraph-codex-mcp-v1",
+          "surface": "retrieval-context+mcp+instructions+live-index",
+          "role": "individual_tool"
+        }
+      ],
+      "install": {
+        "policy": "Run the pinned CodeGraph official Codex installer in the lane-private home, initialize the full project graph, retain live watch, and require an initialize plus tools/list handshake."
+      },
+      "reset": {
+        "policy": "Delete lane-private CODEX_HOME and .codegraph state after evidence capture; verify no MCP config, instructions, daemon, or index survives."
+      },
+      "evaluation_protocol": {
+        "tool_use_policy": "natural",
+        "tool_state": "warm-index",
+        "integration_state": "official-codex-mcp-live-watch",
+        "instruction_policy": "product-authored-guidance"
+      },
+      "notes": "Versioned correction of the historical manually wired no-watch CodeGraph profile."
+    },
+    {
+      "id": "integrated-leanctx-codex-hybrid-v1",
+      "profile_type": "individual_tool",
+      "objective_scope": "individual_tool_effectiveness",
+      "status": "screening-shortlist",
+      "enabled_surfaces": [
+        "retrieval-context",
+        "mcp",
+        "codex-instructions",
+        "shell-output-compression"
+      ],
+      "disabled_overlaps": [
+        "all unlisted surfaces"
+      ],
+      "components": [
+        {
+          "component_id": "integrated-leanctx-codex-hybrid-v1",
+          "surface": "retrieval-context+mcp+instructions+shell-output-compression",
+          "role": "individual_tool"
+        }
+      ],
+      "install": {
+        "policy": "Run the pinned LeanCTX official Codex initializer against lane-private CODEX_HOME, verify with doctor, warm the repository index, and require an initialize plus tools/list handshake."
+      },
+      "reset": {
+        "policy": "Delete lane-private CODEX_HOME, LeanCTX data/index, instructions, and shell integration state after evidence capture."
+      },
+      "evaluation_protocol": {
+        "tool_use_policy": "natural",
+        "tool_state": "warm-index",
+        "integration_state": "official-codex-hybrid",
+        "instruction_policy": "product-authored-guidance"
+      },
+      "notes": "Versioned correction of the historical MCP-only LeanCTX profile. Measures the official hybrid product surface rather than a hand-wired partial ablation."
+    },
+    {
+      "id": "retrieval-cartog-mcp-v1",
+      "profile_type": "individual_tool",
+      "objective_scope": "individual_tool_effectiveness",
+      "status": "screening-shortlist",
+      "enabled_surfaces": [
+        "retrieval-context",
+        "mcp"
+      ],
+      "disabled_overlaps": [
+        "all unlisted surfaces"
+      ],
+      "components": [
+        {
+          "component_id": "retrieval-cartog-mcp-v1",
+          "surface": "retrieval-context+mcp",
+          "role": "individual_tool"
+        }
+      ],
+      "install": {
+        "policy": "Cartog official serve/index contract with retained MCP handshake proof."
+      },
+      "reset": {
+        "policy": "Delete lane-private CODEX_HOME, product state, generated repository treatment files, and background processes after evidence capture."
+      },
+      "evaluation_protocol": {
+        "tool_use_policy": "natural",
+        "tool_state": "warm-index",
+        "integration_state": "official-direct-serve-mcp",
+        "assignment_proof": "provider-free initialize plus tools/list handshake required"
+      },
+      "notes": "Versioned replacement for deleted historical results whose treatment assignment was not operationally proven."
+    },
+    {
+      "id": "codescope-codex-product-v1",
+      "profile_type": "individual_tool",
+      "objective_scope": "individual_tool_effectiveness",
+      "status": "screening-shortlist",
+      "enabled_surfaces": [
+        "broad-context-owner",
+        "mcp",
+        "official-initialize-instructions"
+      ],
+      "disabled_overlaps": [
+        "all unlisted surfaces"
+      ],
+      "components": [
+        {
+          "component_id": "codescope-codex-product-v1",
+          "surface": "broad-context-owner+mcp+official-initialize-instructions",
+          "role": "individual_tool"
+        }
+      ],
+      "install": {
+        "policy": "CodeScope official start and Codex init contract with product instructions and retained MCP handshake proof."
+      },
+      "reset": {
+        "policy": "Delete lane-private CODEX_HOME, product state, generated repository treatment files, and background processes after evidence capture."
+      },
+      "evaluation_protocol": {
+        "tool_use_policy": "natural",
+        "tool_state": "warm-index",
+        "integration_state": "official-codex-init",
+        "assignment_proof": "provider-free initialize plus tools/list handshake required"
+      },
+      "notes": "Versioned replacement for deleted historical results whose treatment assignment was not operationally proven."
+    },
+    {
+      "id": "swarmvault-codex-product-v1",
+      "profile_type": "individual_tool",
+      "objective_scope": "individual_tool_effectiveness",
+      "status": "screening-shortlist",
+      "enabled_surfaces": [
+        "broad-context-owner",
+        "mcp",
+        "codex-rules",
+        "codex-hook"
+      ],
+      "disabled_overlaps": [
+        "all unlisted surfaces"
+      ],
+      "components": [
+        {
+          "component_id": "swarmvault-codex-product-v1",
+          "surface": "broad-context-owner+mcp+codex-rules+codex-hook",
+          "role": "individual_tool"
+        }
+      ],
+      "install": {
+        "policy": "SwarmVault compiled vault plus official Codex rules/hook and retained MCP handshake proof."
+      },
+      "reset": {
+        "policy": "Delete lane-private CODEX_HOME, product state, generated repository treatment files, and background processes after evidence capture."
+      },
+      "evaluation_protocol": {
+        "tool_use_policy": "natural",
+        "tool_state": "warm-index",
+        "integration_state": "official-codex-rules-hook-mcp",
+        "assignment_proof": "provider-free initialize plus tools/list handshake required"
+      },
+      "notes": "Versioned replacement for deleted historical results whose treatment assignment was not operationally proven."
+    },
+    {
+      "id": "retrieval-serena-codex-mcp-v1",
+      "profile_type": "individual_tool",
+      "objective_scope": "individual_tool_effectiveness",
+      "status": "screening-shortlist",
+      "enabled_surfaces": [
+        "retrieval-context",
+        "mcp"
+      ],
+      "disabled_overlaps": [
+        "all unlisted surfaces"
+      ],
+      "components": [
+        {
+          "component_id": "retrieval-serena-codex-mcp-v1",
+          "surface": "retrieval-context+mcp",
+          "role": "individual_tool"
+        }
+      ],
+      "install": {
+        "policy": "Serena official `setup codex` and Codex context contract with retained MCP handshake proof."
+      },
+      "reset": {
+        "policy": "Delete lane-private CODEX_HOME, product state, generated repository treatment files, and background processes after evidence capture."
+      },
+      "evaluation_protocol": {
+        "tool_use_policy": "natural",
+        "tool_state": "cold-auto-index",
+        "integration_state": "official-codex-mcp",
+        "assignment_proof": "provider-free initialize plus tools/list handshake required"
+      },
+      "notes": "Versioned replacement for deleted historical results whose treatment assignment was not operationally proven."
+    },
+    {
+      "id": "retrieval-sigmap-codex-live-v1",
+      "profile_type": "individual_tool",
+      "objective_scope": "individual_tool_effectiveness",
+      "status": "screening-shortlist",
+      "enabled_surfaces": [
+        "retrieval-context",
+        "mcp",
+        "codex-agents",
+        "live-watch"
+      ],
+      "disabled_overlaps": [
+        "all unlisted surfaces"
+      ],
+      "components": [
+        {
+          "component_id": "retrieval-sigmap-codex-live-v1",
+          "surface": "retrieval-context+mcp+codex-agents+live-watch",
+          "role": "individual_tool"
+        }
+      ],
+      "install": {
+        "policy": "SigMap compatibility-safe Codex TOML registration, AGENTS guidance, live watcher, and retained MCP handshake proof."
+      },
+      "reset": {
+        "policy": "Delete lane-private CODEX_HOME, product state, generated repository treatment files, and background processes after evidence capture."
+      },
+      "evaluation_protocol": {
+        "tool_use_policy": "natural",
+        "tool_state": "warm-index",
+        "integration_state": "compatibility-safe-codex-live-mcp",
+        "assignment_proof": "provider-free initialize plus tools/list handshake required"
+      },
+      "notes": "Versioned replacement for deleted historical results whose treatment assignment was not operationally proven."
+    },
+    {
+      "id": "integrated-token-savior-mcp-v1",
+      "profile_type": "individual_tool",
+      "objective_scope": "individual_tool_effectiveness",
+      "status": "screening-shortlist",
+      "enabled_surfaces": [
+        "retrieval-context",
+        "memory",
+        "compact-ops",
+        "mcp"
+      ],
+      "disabled_overlaps": [
+        "all unlisted surfaces"
+      ],
+      "components": [
+        {
+          "component_id": "integrated-token-savior-mcp-v1",
+          "surface": "retrieval-context+memory+compact-ops+mcp",
+          "role": "individual_tool"
+        }
+      ],
+      "install": {
+        "policy": "Token Savior bounded official Codex MCP arm with client identity and retained MCP handshake proof."
+      },
+      "reset": {
+        "policy": "Delete lane-private CODEX_HOME, product state, generated repository treatment files, and background processes after evidence capture."
+      },
+      "evaluation_protocol": {
+        "tool_use_policy": "natural",
+        "tool_state": "cold-auto-index",
+        "integration_state": "official-bounded-codex-mcp",
+        "assignment_proof": "provider-free initialize plus tools/list handshake required"
+      },
+      "notes": "Versioned replacement for deleted historical results whose treatment assignment was not operationally proven."
     }
   ]
 }

@@ -14,9 +14,9 @@ The repository retains operationally valid Fastify, Beets, and Terraform provide
 
 Every lane uses one pinned repository snapshot and one persistent model session. The controller applies all three independently qualified start conditions before prompt 1, discloses prompts in order, preserves model/tool state, and runs all concealed verifiers after prompt 3.
 
-A 2026-07-18 official-integration audit found that 42 of 54 historical treatment sessions cannot support product-effect claims. Twenty-four used configurations that did not implement the pinned product's required Codex treatment; 18 additional sessions had plausible bounded/manual MCP setup but lacked positive operational-assignment proof. Their provider execution and token totals remain preserved as excluded forensic records. The prior TokenJuice+jcodemunch stack decision is withdrawn.
+A 2026-07-18 official-integration audit found that 42 of 54 historical treatment sessions could not support product-effect claims. Twenty-four used configurations that did not implement the pinned product's required Codex treatment; 18 more lacked positive operational-assignment proof. At the experiment owner's direction, all 42 corrupted treatment sessions, comparisons, compact bundles, and occupied protocols were deleted from the active corpus rather than relabelled as baseline. Deletion receipts preserve the adjudication and recovery commit; the prior TokenJuice+jcodemunch stack decision remains withdrawn.
 
-The currently runnable corrected treatment contracts are `terminal-tokenjuice-codex-hook-v1` and `retrieval-jcodemunch-mcp-direct-v1`. TokenJuice represents its official hook integration; jcodemunch represents neutral direct-binary MCP availability with a mandatory handshake. A product-guided jcodemunch condition would be a separate instruction-policy treatment. These contracts have completed no-provider qualification only; no corrected provider-backed treatment session has run.
+Thirteen versioned individual-tool replacements now cover every deleted historical individual condition: TokenJuice, jcodemunch, RTK, Snip, Graphify, CodeGraph, LeanCTX, Cartog, CodeScope, SwarmVault, Serena, SigMap, and Token Savior. All 39 frozen fixture-specific protocols passed provider-free preparation, host-integration, warm-state, fixture, and applicable MCP handshake gates. They remain provider-unrun; any paid rerun requires explicit authorization and the first-valid-run policy.
 
 ## Documentation
 
@@ -33,7 +33,7 @@ Start with [`docs/README.md`](docs/README.md). The main destinations are:
 - `data/workflow-task-sequences.json` — lifecycle v0 contracts.
 - `data/repository-fixtures.json` — pinned fixture readiness.
 - `sources/evaluations/fixtures/` — task prompts, start patches, controller acceptance, and generated v0 qualification evidence.
-- `data/workflow-sessions.json` — retained provider-backed token samples, diagnostic model outcomes, and experiment-invalid exclusions.
+- `data/workflow-sessions.json` — active retained provider-backed controls and objective-eligible treatment samples; corrupted treatments are represented only by deletion receipts.
 - `docs/evaluations/operations/runbook.md` — generated operator runbook.
 - `docs/papers/official-integration-parity-audit.md` — current treatment-validity and disposition authority.
 - `docs/papers/phase-2-lifecycle-v0-natural-use-screening.md` — historical provider-accounting report, retained with superseding adjudication.
