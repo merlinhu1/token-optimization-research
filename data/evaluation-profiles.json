@@ -2374,6 +2374,62 @@
         "runtime_adapter_sha256": "a2f6116cae013d39e8110c8588acde2a8ae9cd4f572fd9ce961d1542942617a4"
       },
       "notes": "Integrated product treatment, not a single-mechanism proxy ablation. Attribution is to the documented Headroom OpenCode bundle as a whole."
+    },
+    {
+      "id": "integrated-headroom-opencode-product-v2",
+      "artifact_slug": "headroom-opencode-v2",
+      "profile_type": "individual_tool",
+      "objective_scope": "individual_tool_effectiveness",
+      "status": "screening-ablation",
+      "substrate": "opencode-cli",
+      "enabled_surfaces": [
+        "headroom-proxy-context-compression",
+        "headroom-retrieve-mcp",
+        "rtk-context-tool",
+        "serena-mcp"
+      ],
+      "disabled_overlaps": [
+        "all unlisted surfaces"
+      ],
+      "components": [
+        {
+          "component_id": "integrated-headroom-opencode-product-v1",
+          "surface": "official-integrated-opencode-product",
+          "role": "individual_tool",
+          "version": "0.28.0-adapter-v2"
+        }
+      ],
+      "native_agent_tools_allowed": [
+        "opencode-native-shell-edit",
+        "opencode-native-file-read-search",
+        "git",
+        "verifier-commands"
+      ],
+      "forbidden_surfaces": [
+        "all non-Headroom-managed external plugins, MCP, skills, subagents, and web tools"
+      ],
+      "install": {
+        "policy": "Launch every OpenCode provider invocation through pinned Headroom 0.28.0 `headroom wrap opencode` with its documented default RTK, retrieve MCP, and Serena surfaces in lane-private state."
+      },
+      "reset": {
+        "policy": "Delete lane-private OpenCode XDG, Headroom proxy/cache, managed RTK/Serena/MCP configuration, auth translation, and generated artifacts after evidence capture."
+      },
+      "evaluation_protocol": {
+        "tool_use_policy": "natural",
+        "tool_state": "active-official-integrated-wrapper",
+        "integration_state": "official-headroom-opencode-product",
+        "assignment_proof": "provider-free pinned-wheel version and wrapper command proof required; provider traffic must retain OpenCode step-finish usage"
+      },
+      "source_snapshot": {
+        "repository": "headroom-ai/headroom",
+        "commit": "715ed7d200cb62c43e6ee3976ce8d3aa639ccf9f",
+        "version": "0.28.0",
+        "runtime_adapter": "/opt/data/tool-candidates/opencode-adapter-v2/opencode_workflow_adapter.py",
+        "runtime_adapter_sha256": "b115dac20547f506cd7f50a6b9147ec34bb8c6ea05cd3444d13898de9a2b50b2"
+      },
+      "notes": "Integrated product treatment, not a single-mechanism proxy ablation. Attribution is to the documented Headroom OpenCode bundle as a whole.",
+      "readiness_blockers": [],
+      "name": "Headroom OpenCode integrated product V2"
     }
   ]
 }
