@@ -19,13 +19,16 @@ This document covers the active lifecycle-v0 portfolio and retained production b
 - The runnable portfolio contains exactly three lifecycle-v0 sequences: Fastify, Beets, and Terraform.
 - Every sequence contains feature implementation, behavior-preserving refactor, and code review/correction in that order.
 - Each lane uses a composite preseeded start, sequential prompt disclosure, persistent agent/tool state, controller-only acceptance, and final-only cumulative verification.
-- Fastify contributes three retained baseline token samples: 12,950,066 tokens at `r0`, 13,077,552 at `r1`, and 7,642,570 at `r2`. All passed 3/3 verifier tasks; review fields remain diagnostic.
+- Fastify contributes three retained Luna/`xhigh` active-default baseline token samples: 12,950,066 tokens at `r0`, 13,077,552 at `r1`, and 7,642,570 at `r2`. All passed 3/3 verifier tasks; review fields remain diagnostic.
 - Invalid fixture records and stale protocols were removed at the experiment owner's explicit direction.
-- Beets contributes three retained baseline token samples: 25,369,525 tokens at `r0`, 17,423,571 at `r1`, and 17,612,278 at `r2`. All passed 3/3 verifier tasks; full-suite and review findings remain diagnostic.
+- Beets contributes three retained Luna/`xhigh` active-default baseline token samples: 25,369,525 tokens at `r0`, 17,423,571 at `r1`, and 17,612,278 at `r2`. All passed 3/3 verifier tasks; full-suite and review findings remain diagnostic.
 - The active Terraform review verifier exercises pagination through rendered policy-summary output and permits equivalent private helper structures.
-- Terraform contributes three retained baseline token samples: 33,564,150 tokens at `r0`, 43,392,324 at `r1`, and 37,499,193 at `r2`. All passed 3/3 verifier tasks; no source review is required for token eligibility.
-- The nine retained baseline samples contain 208,531,229 provider-reported workflow tokens in total. The `r2` matrix contributed 62,754,041 tokens.
-- The official-integration parity audit covers all 18 historical treatment profiles and all 54 historical treatment sessions. At the experiment owner's direction, 42 corrupted sessions and their active comparisons, compact bundles, and occupied protocols were deleted under receipt rather than relabelled as baseline. The active registry contains nine controls and 12 eligible treatment records.
+- Terraform contributes three retained Luna/`xhigh` active-default baseline token samples: 33,564,150 tokens at `r0`, 43,392,324 at `r1`, and 37,499,193 at `r2`. All passed 3/3 verifier tasks; no source review is required for token eligibility.
+- The nine Luna/`xhigh` active-default baseline samples contain 208,531,229 provider-reported workflow tokens in total. The `r2` matrix contributed 62,754,041 tokens.
+- A separate GPT-5.6 Sol/`high` model-comparison panel contributes nine valid baseline sessions and 130,385,748 provider tokens. Every session passed 3/3 tasks and final verification with zero operational retries; all compact-artifact manifests passed. A recursive diagnostics audit nevertheless found raw stderr/non-object lines in retained Codex event JSONL streams, so checksum integrity must not be read as strict nested parseability.
+- Sol/`high` used 37.47% fewer pooled provider tokens than the retained Luna/`xhigh` panel, and every sequence/replicate cell was lower. This is a descriptive compound-condition contrast, not a model-only causal estimate: effort changed from `xhigh` to `high`, and six of nine pairs froze a different fixture-runner hash.
+- The Sol variance result is mixed: Fastify CV decreased from 27.64% to 8.54% and Beets from 22.52% to 16.73%, while Terraform increased from 12.97% to 28.84% and the three-lane portfolio increased from 8.54% to 21.17%. The evidence supports lower observed token volume, not a general variance-reduction claim.
+- The official-integration parity audit covers all 18 historical treatment profiles and all 54 historical treatment sessions. At the experiment owner's direction, 42 corrupted sessions and their active comparisons, compact bundles, and occupied protocols were deleted under receipt rather than relabelled as baseline. The active registry contains 18 controls and 12 eligible treatment records.
 - Four three-lane conditions retain objective eligibility: Caveman as an always-on behavioral instruction policy, Ponytail as an always-on full-mode artifact policy, default Headroom as the pinned Codex wrapper treatment, and the Headroom proxy-only ablation.
 - Caveman used 63,510,398 tokens versus 73,893,447 matched baseline (-14.05%) with 9/9 verifier tasks. Ponytail used 72,995,721 (-1.21%) with 9/9 verifier tasks. These are narrow instruction-policy estimates, not installer/plugin lifecycle estimates.
 - Default Headroom used 71,497,700 tokens (-3.24%) with 8/9 verifier tasks; its proxy-only ablation used 77,931,962 (+5.47%) with 8/9 verifier tasks. The ablation is not a separate full-product ranking entry.
@@ -63,7 +66,9 @@ A prior artifact-packaging audit found that the now-deleted historical Graphify 
 - ../../../../sources/evaluations/audits/invalid-treatment-result-deletions-20260718.json
 - ../../../../sources/evaluations/audits/unproven-treatment-result-deletions-20260718.json
 - ../../../../sources/evaluations/audits/corrected-integration-qualification-20260718.json
+- ../../../../sources/evaluations/audits/gpt-5-6-sol-high-baseline-variance-20260718.json
 - ../../../../sources/evaluations/workflow-sessions/
 - ../../../../docs/evaluations/operations/runbook.md
+- ../../../../docs/papers/gpt-5-6-sol-high-baseline-variance-screen.md
 - ../../../../docs/papers/phase-2-lifecycle-v0-natural-use-screening.md
 - ../../../../docs/papers/phase-3-tokenjuice-jcodemunch-stack-screen.md

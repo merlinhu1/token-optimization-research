@@ -27,7 +27,12 @@ from scripts import validate_repository
 SEQUENCE_ID = "terraform-lifecycle-sequence-v0"
 
 
-def retained_protocol_path(sequence_id: str, profile_id: str, replicate_index: int = 1) -> Path:
+def retained_protocol_path(
+    sequence_id: str,
+    profile_id: str,
+    replicate_index: int = 1,
+    model_condition_id: str = "codex-openai-gpt-5-6-luna-xhigh",
+) -> Path:
     registry = json.loads((ROOT / "data/workflow-sessions.json").read_text())
     matches = [
         session
@@ -35,10 +40,11 @@ def retained_protocol_path(sequence_id: str, profile_id: str, replicate_index: i
         if session.get("task_sequence", {}).get("sequence_id") == sequence_id
         and session.get("profile", {}).get("profile_id") == profile_id
         and session.get("replicate_index") == replicate_index
+        and session.get("agent", {}).get("model_condition_id") == model_condition_id
     ]
     if len(matches) != 1:
         raise AssertionError(
-            f"expected one retained protocol for {sequence_id}/{profile_id}/r{replicate_index}; "
+            f"expected one retained protocol for {sequence_id}/{profile_id}/{model_condition_id}/r{replicate_index}; "
             f"found {[session['session_id'] for session in matches]}"
         )
     path = ROOT / matches[0]["frozen_protocol"]["path"]
@@ -145,12 +151,16 @@ class ActiveCampaignArchitectureTest(unittest.TestCase):
                 runbook,
             )
         self.assertIn('--treatment-profile "$PROFILE_ID"', runbook)
-        self.assertEqual(runbook.count("(r0, r1, r2)"), 3)
         self.assertIn(
             "Non-default model-comparison baselines are tracked separately",
             runbook,
         )
-        self.assertEqual(runbook.count("`codex-openai-gpt-5-6-sol-high` (r0)"), 3)
+        for sequence_id in completed:
+            self.assertIn(f"`{sequence_id}` (r0, r1, r2)", runbook)
+            self.assertIn(
+                f"`{sequence_id}` under `codex-openai-gpt-5-6-sol-high` (r0, r1, r2)",
+                runbook,
+            )
 
     def test_repository_surfaces_match_production_evidence_state(self) -> None:
         stale_claims = {
