@@ -34,7 +34,7 @@ An action that changes research state must update every active surface that repo
 After such an action:
 
 1. Update the machine authority first: `data/workflow-sessions.json`, `data/repository-fixtures.json`, and any affected sequence/profile registry.
-2. Regenerate `docs/evaluations/workflow-evaluation-runbook.md`; never hand-edit generated status.
+2. Regenerate `docs/evaluations/operations/runbook.md`; never hand-edit generated status.
 3. Reconcile `README.md`, `docs/evaluations/README.md`, `sources/evaluations/README.md`, `docs/research/roadmap.md`, and `docs/truthmark/engineering/research/current-findings.md` with the registry.
 4. Reconcile active prompts, templates, repo-local skills, schemas, and Truthmark docs when the contract changes. Search for the retired status, path, policy phrase, protocol/session ID, and lifecycle term.
 5. If a document or template has no distinct maintained authority or current consumer, delete it and remove its references instead of leaving a second stale workflow.

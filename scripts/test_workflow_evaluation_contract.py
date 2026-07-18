@@ -107,7 +107,7 @@ class ActiveCampaignArchitectureTest(unittest.TestCase):
         self.assertEqual(boundary["fixed_structure_exit"], 0)
 
     def test_runbook_matches_active_lifecycle_contract(self) -> None:
-        runbook = (ROOT / "docs/evaluations/workflow-evaluation-runbook.md").read_text()
+        runbook = (ROOT / "docs/evaluations/operations/runbook.md").read_text()
         self.assertNotIn("at least five causally related production files", runbook)
         exact_prepare = 'python3 scripts/run_sequential_workflow_matrix.py --prepare-only "$SEQUENCE_ID"'
         prepare_lines = [
@@ -121,7 +121,7 @@ class ActiveCampaignArchitectureTest(unittest.TestCase):
         self.assertNotIn("--skip-container-preflight", runbook)
 
     def test_runbook_does_not_offer_duplicate_baseline_commands(self) -> None:
-        runbook = (ROOT / "docs/evaluations/workflow-evaluation-runbook.md").read_text()
+        runbook = (ROOT / "docs/evaluations/operations/runbook.md").read_text()
         registry = json.loads((ROOT / "data/workflow-sessions.json").read_text())
         completed = {
             session["task_sequence"]["sequence_id"]
@@ -163,13 +163,13 @@ class ActiveCampaignArchitectureTest(unittest.TestCase):
         guidance = (ROOT / "AGENTS.md").read_text()
         self.assertIn("## Documentation lifecycle", guidance)
         self.assertIn("Update the machine authority first", guidance)
-        self.assertIn("Regenerate `docs/evaluations/workflow-evaluation-runbook.md`", guidance)
+        self.assertIn("Regenerate `docs/evaluations/operations/runbook.md`", guidance)
         self.assertIn("Preserve frozen evidence bytes", guidance)
 
     def test_production_evaluation_forbids_forced_tool_use(self) -> None:
         guidance = (ROOT / "AGENTS.md").read_text()
         evaluator_prompt = (ROOT / "prompts/evaluator.md").read_text()
-        framework = (ROOT / "docs/evaluations/evaluation-framework.md").read_text()
+        framework = (ROOT / "docs/evaluations/design/framework.md").read_text()
         runner = (ROOT / "scripts/run_codex_fixture_evaluation.py").read_text()
         self.assertIn("availability/natural-use only", guidance)
         self.assertIn("Never require, prefer, suggest, or calibrate forced invocation", guidance)

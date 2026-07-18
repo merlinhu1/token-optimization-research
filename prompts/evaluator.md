@@ -5,11 +5,11 @@ You are evaluating one token-saving treatment or compatible stack against a reta
 Read:
 
 - `AGENTS.md` for the active lifecycle, evidence, and documentation-maintenance contract;
-- `docs/evaluations/workflow-evaluation-runbook.md` for current baseline occupancy and runnable treatment commands;
-- `docs/evaluations/evaluation-framework.md` for estimand and comparison rules;
-- `docs/evaluations/token-usage-and-quality-standards.md` for token accounting and diagnostic quality fields;
-- `docs/evaluations/continuous-workflow-simulation.md` for persistent state and isolation;
-- `docs/evaluations/cumulative-result-schema.md` for the compact result contract.
+- `docs/evaluations/operations/runbook.md` for current baseline occupancy and runnable treatment commands;
+- `docs/evaluations/design/framework.md` for estimand and comparison rules;
+- `docs/evaluations/design/token-and-quality-policy.md` for token accounting and diagnostic quality fields;
+- `docs/evaluations/design/workflow-model.md` for persistent state and isolation;
+- `docs/evaluations/design/result-schema.md` for the compact result contract.
 
 Use `scripts/run_sequential_workflow_matrix.py <sequence-id> --treatment-profile <profile-id>` for paid execution. Do not rerun an occupied baseline or treatment replicate. The runner writes the compact evidence bundle under `sources/evaluations/workflow-sessions/<session-id>/` and merges its record into `data/workflow-sessions.json`.
 

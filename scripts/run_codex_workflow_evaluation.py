@@ -2583,7 +2583,7 @@ def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(
         description=__doc__,
         epilog=(
-            "Manual rerun guide: docs/evaluations/sequential-workflow-runner.md. "
+            "Manual rerun guide: docs/evaluations/operations/runner-reference.md. "
             "For shared-baseline and treatment orchestration use: "
             "python3 scripts/run_sequential_workflow_matrix.py [sequence-id] --treatment-profile <profile-id>."
         ),

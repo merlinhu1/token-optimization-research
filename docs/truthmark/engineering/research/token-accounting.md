@@ -76,7 +76,7 @@ Update this document whenever token eligibility, comparison identity, provider a
 
 - ../../../../data/workflow-task-sequences.json
 - ../../../../data/workflow-sessions.json
-- ../../../../docs/evaluations/workflow-evaluation-runbook.md
-- ../../../../docs/evaluations/token-usage-and-quality-standards.md
+- ../../../../docs/evaluations/operations/runbook.md
+- ../../../../docs/evaluations/design/token-and-quality-policy.md
 - ../../../../scripts/run_codex_workflow_evaluation.py
 - ../../../../scripts/validate_repository.py

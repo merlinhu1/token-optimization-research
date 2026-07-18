@@ -72,7 +72,7 @@ Keep this document aligned with the runner, matrix, validator, and token-account
 
 ## Source References
 
-- ../../../../docs/evaluations/token-usage-and-quality-standards.md
-- ../../../../docs/evaluations/sequential-workflow-runner.md
+- ../../../../docs/evaluations/design/token-and-quality-policy.md
+- ../../../../docs/evaluations/operations/runner-reference.md
 - ../../../../scripts/run_codex_workflow_evaluation.py
 - ../../../../scripts/run_sequential_workflow_matrix.py
