@@ -20,6 +20,7 @@ This contract governs lifecycle-v0 provider-token samples, baseline reuse, compa
 - The runner captures cumulative provider usage across one persistent sequential model session.
 - The matrix reuses the first operationally valid baseline for a causal comparison fingerprint and replicate.
 - Repository validation requires complete provider usage, structural isolation, clean execution integrity, and recoverable compact evidence—not verifier success or source review.
+- Before any non-baseline provider launch, both repository validation and the direct runner require exact parity approval plus a current provider-free qualification receipt for every active fixture/profile protocol binding; MCP profiles additionally require non-empty `tools/list` proof.
 - Three provider-backed baseline token samples are currently retained.
 
 ## Product Truth Links
@@ -49,6 +50,7 @@ The repository measures cumulative provider-reported workflow tokens under fair,
 ## Contract
 
 - Qualification proves fixture mechanics and discrimination; it is not a model result.
+- A future treatment candidate is provider-runnable only when the parity audit's approved profile set exactly matches the fixture registry and every active fixture/profile pair has one current protocol plus a protocol-hash-matched, provider-free preparation receipt. Configuration listing alone is not assignment proof.
 - Each active sequence is ordered as feature implementation, behavior-preserving refactor, and code review/correction.
 - A production lane resets repository/profile/tool/agent state before execution, preserves warm state between prompts, and records the complete provider-reported token total.
 - The first operationally complete, integrity-valid provider run for a causal protocol fingerprint and replicate is the retained token sample.

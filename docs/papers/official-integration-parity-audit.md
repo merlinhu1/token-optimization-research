@@ -68,6 +68,18 @@ Every deleted historical individual condition now has a versioned replacement. T
 
 Each replacement has three fixture-specific frozen protocols, for 39 corrected protocols total. All 39 passed provider-free fixture preparation, host-integration, warm-state, and applicable MCP initialize plus tools/list gates. Product-authored guidance is included only when normal pinned setup installs it. Evaluator-authored tool steering remains forbidden.
 
+## Future fail-closed prevention
+
+A treatment profile is no longer runnable merely because it exists in the registry or produces a frozen protocol. The repository validator and the direct provider-launch path require all of the following for the complete non-baseline candidate set:
+
+1. explicit membership in the parity audit's `approved_profile_ids` set;
+2. exactly one current frozen protocol per active fixture, bound to the profile, runner, validator, product configuration, source identity, and probe hashes;
+3. an exact protocol-path and SHA-256 match in a provider-free qualification receipt;
+4. successful fixture preparation, concealment, composite seed delivery, product warmup, and host-integration checks; and
+5. for every MCP-enabled profile, successful `initialize`, successful `tools/list`, and a non-empty advertised-tool list with no probe errors.
+
+The parity-approved set must exactly equal the fixture registry's non-baseline candidates. Any runner, validator, product configuration, source identity, or probe change makes the prior protocol/receipt binding stale and blocks provider launch until new never-run protocols are generated and the complete provider-free matrix passes again. Configuration visibility, executable presence, `codex mcp list`, and server counts remain explicitly insufficient as assignment proof.
+
 ## Consequences for prior findings
 
 - The Phase 2 aggregate tool ranking is withdrawn. Its historical report remains for provenance, but its deleted outcomes are not active evidence.

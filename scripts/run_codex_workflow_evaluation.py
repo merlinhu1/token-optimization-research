@@ -763,6 +763,12 @@ def load_protocol(path_or_id: str) -> tuple[Path, dict[str, Any]]:
 
 def validate_protocol_for_run(seq: dict[str, Any], profile_id: str, args: argparse.Namespace) -> dict[str, Any] | None:
     assert_profile_runnable(profile_id)
+    if not args.prepare_only:
+        readiness_errors = repository_validation.current_candidate_profile_launch_readiness_errors()
+        if readiness_errors:
+            raise ValueError(
+                "provider launch readiness gate failed: " + "; ".join(readiness_errors)
+            )
     if not args.protocol:
         raise ValueError("--protocol is required before any workflow setup")
     protocol_path, protocol = load_protocol(args.protocol)
