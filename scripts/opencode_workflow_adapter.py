@@ -27,6 +27,21 @@ DEFAULT_OPENCODE_BINARY = Path(
         "/opt/data/tool-candidates/opencode-runtime/node_modules/opencode-ai/bin/opencode.exe",
     )
 )
+UV_BINARY = Path("/opt/data/opt/uv/uv")
+HEADROOM_WHEEL = Path(
+    "/opt/data/tool-candidates/headroom/dist/headroom_ai-0.28.0-cp310-abi3-linux_x86_64.whl"
+)
+SERENA_ROOT = Path("/opt/data/tool-candidates/serena")
+CARTOG_BINARY = Path("/opt/data/tool-candidates/cartog/target/release/cartog")
+TREATMENT_PROFILES = {
+    "bare",
+    "tokenjuice",
+    "serena",
+    "snip",
+    "cartog",
+    "headroom",
+}
+PLUGIN_TREATMENTS = {"tokenjuice", "snip"}
 
 
 def verify_binary_sha256(binary: Path, expected_sha256: str) -> str:
@@ -142,7 +157,13 @@ def parse_codex_exec_args(args: list[str]) -> CompatArgs:
     )
 
 
-def build_opencode_command(binary: Path, parsed: CompatArgs, prompt: str) -> list[str]:
+def build_opencode_command(
+    binary: Path,
+    parsed: CompatArgs,
+    prompt: str,
+    *,
+    pure: bool = True,
+) -> list[str]:
     command = [
         str(binary),
         "run",
@@ -153,14 +174,48 @@ def build_opencode_command(binary: Path, parsed: CompatArgs, prompt: str) -> lis
         "--variant",
         parsed.variant,
         "--auto",
-        "--pure",
     ]
+    if pure:
+        command.append("--pure")
     if parsed.directory is not None:
         command.extend(["--dir", str(parsed.directory)])
     if parsed.session_id is not None:
         command.extend(["--session", parsed.session_id])
     command.append(prompt)
     return command
+
+
+def build_headroom_command(native_command: list[str], *, port: int) -> list[str]:
+    """Wrap one native OpenCode invocation with Headroom's official product command."""
+    return [
+        str(UV_BINARY),
+        "tool",
+        "run",
+        "--from",
+        str(HEADROOM_WHEEL),
+        "--with",
+        "mcp",
+        "--with",
+        "fastapi",
+        "--with",
+        "uvicorn<1.0",
+        "--with",
+        "httpx[http2]",
+        "--with",
+        "openai",
+        "--with",
+        "zstandard",
+        "--with",
+        "websockets",
+        "headroom",
+        "wrap",
+        "opencode",
+        "--port",
+        str(port),
+        "--verbose",
+        "--",
+        *native_command[1:],
+    ]
 
 
 def _decode_jwt_payload(token: str) -> dict[str, Any]:
@@ -392,7 +447,14 @@ def _read_prompt(parsed: CompatArgs) -> str:
     return prompt
 
 
-def _runtime_env(codex_home: Path) -> tuple[dict[str, str], Path]:
+def _runtime_env(
+    codex_home: Path,
+    *,
+    treatment: str = "bare",
+    directory: Path | None = None,
+) -> tuple[dict[str, str], Path]:
+    if treatment not in TREATMENT_PROFILES:
+        raise ValueError(f"unsupported OpenCode treatment profile: {treatment}")
     env = os.environ.copy()
     xdg_data = Path(env.get("XDG_DATA_HOME", codex_home / "xdg-data"))
     xdg_config = Path(env.get("XDG_CONFIG_HOME", codex_home / "xdg-config"))
@@ -400,6 +462,59 @@ def _runtime_env(codex_home: Path) -> tuple[dict[str, str], Path]:
     xdg_state = Path(env.get("XDG_STATE_HOME", codex_home / "xdg-state"))
     for path in (xdg_data, xdg_config, xdg_cache, xdg_state):
         path.mkdir(parents=True, exist_ok=True)
+    config: dict[str, Any] = {
+        "share": "disabled",
+        "autoupdate": False,
+        "shell": "/usr/local/bin/eval-network-denied-shell",
+        "permission": {
+            "webfetch": "deny",
+            "websearch": "deny",
+            "task": "deny",
+            "skill": "deny",
+            "lsp": "deny",
+            "question": "deny",
+            "external_directory": "deny",
+        },
+    }
+    if treatment == "snip":
+        config["plugin"] = [
+            "file:///opt/data/tool-candidates/opencode-snip-v1.6.1/.opencode/plugins/index.ts"
+        ]
+    elif treatment == "serena":
+        config["mcp"] = {
+            "serena": {
+                "type": "local",
+                "command": [
+                    str(UV_BINARY),
+                    "tool",
+                    "run",
+                    "--from",
+                    str(SERENA_ROOT),
+                    "serena",
+                    "start-mcp-server",
+                    "--project-from-cwd",
+                    "--context=ide",
+                    "--enable-web-dashboard",
+                    "false",
+                    "--open-web-dashboard",
+                    "false",
+                ],
+                "environment": {"SERENA_HOME": str(xdg_state / "serena")},
+                "enabled": True,
+            }
+        }
+    elif treatment == "cartog":
+        config["mcp"] = {
+            "cartog": {
+                "type": "local",
+                "command": [str(CARTOG_BINARY), "serve", "--watch"],
+                "environment": {
+                    "CARTOG_MCP_COMPACT": "1",
+                    "CARTOG_NO_UPDATE_CHECK": "1",
+                },
+                "enabled": True,
+            }
+        }
     env.update(
         {
             "XDG_DATA_HOME": str(xdg_data),
@@ -412,30 +527,23 @@ def _runtime_env(codex_home: Path) -> tuple[dict[str, str], Path]:
             "OPENCODE_DISABLE_EXTERNAL_SKILLS": "1",
             "OPENCODE_DISABLE_LSP_DOWNLOAD": "1",
             "OPENCODE_DISABLE_CLAUDE_CODE": "1",
-            "OPENCODE_CONFIG_CONTENT": json.dumps(
-                {
-                    "share": "disabled",
-                    "autoupdate": False,
-                    "shell": "/usr/local/bin/eval-network-denied-shell",
-                    "permission": {
-                        "webfetch": "deny",
-                        "websearch": "deny",
-                        "task": "deny",
-                        "skill": "deny",
-                        "lsp": "deny",
-                        "question": "deny",
-                        "external_directory": "deny",
-                    },
-                },
-                separators=(",", ":"),
-            ),
+            "OPENCODE_TREATMENT_PROFILE": treatment,
+            "OPENCODE_CONFIG_CONTENT": json.dumps(config, separators=(",", ":")),
         }
     )
+    if directory is not None:
+        env["OPENCODE_EVALUATION_DIRECTORY"] = str(directory)
     return env, xdg_data
 
 
-def probe(binary: Path, codex_home: Path, binary_sha256: str) -> int:
-    env, xdg_data = _runtime_env(codex_home)
+def probe(
+    binary: Path,
+    codex_home: Path,
+    binary_sha256: str,
+    *,
+    treatment: str = "bare",
+) -> int:
+    env, xdg_data = _runtime_env(codex_home, treatment=treatment)
     ensure_opencode_auth(codex_home / "auth.json", xdg_data)
     version = subprocess.run([str(binary), "--version"], env=env, text=True, capture_output=True, timeout=60)
     if version.returncode != 0:
@@ -443,17 +551,36 @@ def probe(binary: Path, codex_home: Path, binary_sha256: str) -> int:
         return version.returncode
     models = subprocess.run([str(binary), "models", "openai"], env=env, text=True, capture_output=True, timeout=120)
     available = {line.strip() for line in models.stdout.splitlines() if line.strip()}
+    plugin_proof: dict[str, Any] | None = None
+    if treatment in PLUGIN_TREATMENTS:
+        plugin_info = subprocess.run(
+            [str(binary), "debug", "info"],
+            env=env,
+            text=True,
+            capture_output=True,
+            timeout=120,
+        )
+        if plugin_info.returncode != 0:
+            raise RuntimeError(f"OpenCode plugin probe failed: {plugin_info.stderr.strip()}")
+        expected_plugin = "tokenjuice.js" if treatment == "tokenjuice" else "opencode-snip-v1.6.1"
+        if expected_plugin not in plugin_info.stdout:
+            raise RuntimeError(
+                f"OpenCode {treatment} plugin was not visible in debug info: {plugin_info.stdout.strip()}"
+            )
+        plugin_proof = {"expected": expected_plugin, "loaded": True}
     result = {
         "runtime": "opencode-cli",
         "version": version.stdout.strip(),
         "binary": str(binary),
         "binary_sha256": binary_sha256,
+        "treatment": treatment,
         "model_available": "openai/gpt-5.6-sol" in available,
         "project_config_disabled": True,
-        "external_plugins_disabled_by_pure_flag": True,
+        "external_plugins_disabled_by_pure_flag": treatment not in PLUGIN_TREATMENTS,
         "external_skills_disabled": True,
         "web_tools_permission": "deny",
         "subagents_permission": "deny",
+        "plugin_assignment": plugin_proof,
         "auth": {"provider": "openai", "auth_type": "oauth"},
     }
     print(json.dumps(result, indent=2))
@@ -464,6 +591,7 @@ def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(add_help=False)
     parser.add_argument("--opencode-binary", type=Path, default=DEFAULT_OPENCODE_BINARY)
     parser.add_argument("--expected-opencode-sha256", required=True)
+    parser.add_argument("--treatment", choices=sorted(TREATMENT_PROFILES), default="bare")
     parser.add_argument("--probe", action="store_true")
     known, remaining = parser.parse_known_args(argv)
     codex_home = Path(os.environ.get("CODEX_HOME", ""))
@@ -479,15 +607,42 @@ def main(argv: list[str] | None = None) -> int:
     if known.probe:
         if remaining:
             raise ValueError("--probe does not accept Codex compatibility arguments")
-        return probe(known.opencode_binary, codex_home, binary_sha256)
+        return probe(
+            known.opencode_binary,
+            codex_home,
+            binary_sha256,
+            treatment=known.treatment,
+        )
 
     parsed = parse_codex_exec_args(remaining)
     prompt = _read_prompt(parsed)
-    env, xdg_data = _runtime_env(codex_home)
+    directory = parsed.directory or Path.cwd()
+    env, xdg_data = _runtime_env(
+        codex_home,
+        treatment=known.treatment,
+        directory=directory,
+    )
     ensure_opencode_auth(codex_home / "auth.json", xdg_data)
+    native_command = build_opencode_command(
+        known.opencode_binary,
+        parsed,
+        prompt,
+        pure=known.treatment not in PLUGIN_TREATMENTS,
+    )
+    command = native_command
+    if known.treatment == "headroom":
+        runtime_bin = xdg_data / "opencode" / "runtime-bin"
+        runtime_bin.mkdir(parents=True, exist_ok=True)
+        opencode_link = runtime_bin / "opencode"
+        if opencode_link.exists() or opencode_link.is_symlink():
+            opencode_link.unlink()
+        opencode_link.symlink_to(known.opencode_binary)
+        env["PATH"] = f"{runtime_bin}:{env.get('PATH', '')}"
+        port = 18000 + int(hashlib.sha256(str(directory).encode()).hexdigest()[:4], 16) % 2000
+        command = build_headroom_command(native_command, port=port)
     proc = subprocess.run(
-        build_opencode_command(known.opencode_binary, parsed, prompt),
-        cwd=parsed.directory or Path.cwd(),
+        command,
+        cwd=directory,
         env=env,
         text=True,
         capture_output=True,
@@ -509,7 +664,9 @@ def main(argv: list[str] | None = None) -> int:
             print(json.dumps({"type": "opencode.event", "event": event}, ensure_ascii=False))
         return proc.returncode
     if non_json:
-        raise ValueError(f"OpenCode emitted non-JSON stdout in JSON mode: {non_json[:3]}")
+        if known.treatment != "headroom":
+            raise ValueError(f"OpenCode emitted non-JSON stdout in JSON mode: {non_json[:3]}")
+        sys.stderr.write("\n".join(non_json) + "\n")
     result = normalize_events(
         events,
         requested_session_id=parsed.session_id,
