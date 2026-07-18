@@ -2,7 +2,7 @@
 
 This generated runbook reflects current workflow-sequence readiness.
 
-It is rendered from `data/workflow-task-sequences.json`, `data/repository-fixtures.json`, `data/evaluation-profiles.json`, and `data/workflow-sessions.json` by `scripts/update_workflow_runbook.py`.
+It is rendered from `data/workflow-task-sequences.json`, `data/repository-fixtures.json`, `data/evaluation-profiles.json`, `data/evaluation-agent-runtimes.json`, and `data/workflow-sessions.json` by `scripts/update_workflow_runbook.py`.
 
 Do not hand-edit execution status here. Update the registries, then run:
 
@@ -54,13 +54,15 @@ python3 scripts/run_sequential_workflow_matrix.py --prepare-only "$SEQUENCE_ID"
 
 Current runnable treatment profiles: `artifact-ponytail`, `behavior-caveman`, `codescope-codex-product-v1`, `headroom-default-codex`, `integrated-leanctx-codex-hybrid-v1`, `integrated-token-savior-mcp-v1`, `retrieval-cartog-mcp-v1`, `retrieval-codegraph-codex-mcp-v1`, `retrieval-graphify-codex-skill-v1`, `retrieval-jcodemunch-mcp-direct-v1`, `retrieval-serena-codex-mcp-v1`, `retrieval-sigmap-codex-live-v1`, `swarmvault-codex-product-v1`, `terminal-rtk-codex-instructions-v1`, `terminal-snip-codex-hook-v1`, `terminal-tokenjuice-codex-hook-v1`. Historical profiles marked `historical-profile` are occupied evidence identities and cannot be rerun in place.
 
-Reusable baselines already exist for `fastify-lifecycle-sequence-v0` (r0, r0, r1, r2), `beets-lifecycle-sequence-v0` (r0, r0, r1, r2), `terraform-lifecycle-sequence-v0` (r0, r0, r1, r2). Do not rerun them. Choose one compatible treatment profile and one intended lane:
+Reusable baselines already exist for `fastify-lifecycle-sequence-v0` (r0, r1, r2), `beets-lifecycle-sequence-v0` (r0, r1, r2), `terraform-lifecycle-sequence-v0` (r0, r1, r2). Do not rerun them. Choose one compatible treatment profile and one intended lane:
 
 ```bash
 SEQUENCE_ID=replace-with-one-active-sequence-id
 PROFILE_ID=replace-with-compatible-profile-id
 python3 scripts/run_sequential_workflow_matrix.py "$SEQUENCE_ID" --treatment-profile "$PROFILE_ID"
 ```
+
+Non-default model-comparison baselines are tracked separately: `beets-lifecycle-sequence-v0` under `codex-openai-gpt-5-6-sol-high` (r0), `fastify-lifecycle-sequence-v0` under `codex-openai-gpt-5-6-sol-high` (r0), `terraform-lifecycle-sequence-v0` under `codex-openai-gpt-5-6-sol-high` (r0). They do not satisfy active-default baseline requirements or define treatment-pair reuse.
 
 Retain the first operationally valid provider sample for each protocol and replicate. Stop only when a sample is fixture-invalid or operationally incomplete; verifier and review outcomes are diagnostic.
 
