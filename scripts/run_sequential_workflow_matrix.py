@@ -1385,6 +1385,23 @@ def refresh_cumulative_usage_audit(root: Path = ROOT) -> None:
     )
 
 
+def refresh_current_sol_panel(root: Path = ROOT) -> None:
+    subprocess.run(
+        [
+            sys.executable,
+            "scripts/generate_current_evaluation_panel.py",
+            "--model-condition-id",
+            "codex-openai-gpt-5-6-sol-high",
+            "--replicate-index",
+            "0",
+            "--date",
+            "2026-07-29",
+        ],
+        cwd=root,
+        check=True,
+    )
+
+
 def controller_validation_python() -> str:
     """Return a controller Python with all validation dependencies before spend."""
     configured = os.environ.get("WORKFLOW_VALIDATION_PYTHON")
@@ -1747,6 +1764,7 @@ def main(argv: list[str] | None = None) -> int:
         refresh_generated_runbook()
         if not args.prepare_only and merge_summary.get("merged_session_count", 0):
             refresh_cumulative_usage_audit()
+            refresh_current_sol_panel()
         validation = run_validation(run_root, validation_python)
         if not args.prepare_only and not validation["passed"]:
             rollback_matrix_publication(
