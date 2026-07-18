@@ -1,0 +1,434 @@
+{
+  "protocol_schema_version": 3,
+  "protocol_id": "fastify-lifecycle-sequence-v0-terminal-snip-codex-hook-v1-ed73244d87c0",
+  "status": "frozen-ready-not-run",
+  "outcome": "Frozen terminal-snip-codex-hook-v1 protocol for fastify-lifecycle-sequence-v0; no provider/model run has occurred.",
+  "frozen_at": "2026-07-16",
+  "hypothesis": "terminal-snip-codex-hook-v1 produces reproducible provider-reported token and software-quality evidence for fastify-lifecycle-sequence-v0",
+  "evidence_stage_target": "reproduction",
+  "task_fixture": {
+    "fixture_id": "medium-fastify-fastify",
+    "sequence_id": "fastify-lifecycle-sequence-v0",
+    "repository": "https://github.com/fastify/fastify.git",
+    "snapshot": "94bcbcc6e2ef3b8e8f8e8797fe551ccbe7b942fd",
+    "qualification_path": "sources/evaluations/fixtures/medium/fastify-fastify/qualification-lifecycle-v0.json",
+    "qualification_sha256": "87068241dd67e58e6850cc65a3116be341beb3de814abc553e01920415a2c12b",
+    "timeout_seconds_per_task": 3600
+  },
+  "baseline": {
+    "profile_id": "baseline-bare-codex",
+    "provider": "openai",
+    "model": "gpt-5.6-luna",
+    "model_condition_id": "codex-openai-gpt-5-6-luna-xhigh",
+    "reasoning_effort": "xhigh",
+    "command": ""
+  },
+  "treatment": {
+    "profile_id": "terminal-snip-codex-hook-v1",
+    "provider": "openai",
+    "model": "gpt-5.6-luna",
+    "model_condition_id": "codex-openai-gpt-5-6-luna-xhigh",
+    "reasoning_effort": "xhigh",
+    "command": "python3 scripts/run_codex_workflow_evaluation.py --sequence-id fastify-lifecycle-sequence-v0 --profile-id terminal-snip-codex-hook-v1 --timeout-per-task 3600 --protocol sources/evaluations/protocols/fastify-lifecycle-sequence-v0-terminal-snip-codex-hook-v1-ed73244d87c0.json --docker-image token-eval-codex:latest"
+  },
+  "token_accounting_boundary": {
+    "fields": [
+      "fresh_input_tokens",
+      "cached_input_tokens",
+      "cache_write_tokens",
+      "output_tokens",
+      "reasoning_tokens",
+      "total_provider_tokens"
+    ]
+  },
+  "baseline_pool": {
+    "protocol_version": "baseline-pool-v1",
+    "protocol_fingerprint": "769d40697529",
+    "descriptor": {
+      "version": "baseline-pool-v1",
+      "runner_contract_version": "workflow-runner-v9",
+      "runner_sha256": "ec5d33e602e8552f78ee32c9c61c96d16336a68de075e5d05c0b16e03d4833a6",
+      "qualification_generator_sha256": "cb549c9aacc1e1401dedff37b08e0d578aa91d491556dfd5e3814d52a567efe8",
+      "validator_sha256": "693e4e81ce6c9d774326afd0a221efd6e4156dacb20c330b4157216e0a16ada0",
+      "sequence_id": "fastify-lifecycle-sequence-v0",
+      "sequence_contract": "feature-refactor-review",
+      "fixture_id": "medium-fastify-fastify",
+      "fixture_scale": "medium-project",
+      "initial_snapshot": {
+        "commit": "94bcbcc6e2ef3b8e8f8e8797fe551ccbe7b942fd",
+        "upstream": "https://github.com/fastify/fastify.git",
+        "dependency_lockfiles": [
+          {
+            "path": "package.json",
+            "sha256": "b273320af1bb4cfc0f9334457c8e3b1d035fde0da14f9db65e8ef97d361d0be3"
+          }
+        ]
+      },
+      "objective": "individual_tool_effectiveness",
+      "primary_metric": "cumulative provider-reported workflow tokens",
+      "tasks": [
+        {
+          "id": "fastify-lifecycle-feature-v0",
+          "order": 1,
+          "task_class": "feature-implementation",
+          "prompt_path": "sources/evaluations/fixtures/medium/fastify-fastify/tasks/fastify-lifecycle-feature-v0/agent-prompt.txt",
+          "prompt_sha256": "b325204fff1c81fdbef764f7c1c624c43d4c775eb913b2d11d4a4bab6aa1ccc2",
+          "seed_patch_sha256": "19035d0a5fd94a640705537cfcfc4fbc161d9ca124b08e0a8291e854fe78e578",
+          "verifier_command": "sources/evaluations/fixtures/medium/fastify-fastify/tasks/fastify-lifecycle-feature-v0/verify.sh",
+          "verifier_sha256": "799568eed4493fce3a04405917522e8b1876f224a9e4c06874de544fc27037c5",
+          "upstream_test_paths": [],
+          "compatibility_rebased_test_paths": [],
+          "expected_model_concealed_paths": [],
+          "model_concealed_paths": []
+        },
+        {
+          "id": "fastify-lifecycle-refactor-v0",
+          "order": 2,
+          "task_class": "behavior-preserving-refactor",
+          "prompt_path": "sources/evaluations/fixtures/medium/fastify-fastify/tasks/fastify-lifecycle-refactor-v0/agent-prompt.txt",
+          "prompt_sha256": "9368235d19cf540ed112fbf27ce8746eafa28f357953392139c3e54c0560e1bc",
+          "seed_patch_sha256": "fd1982e087c713640c8ab55b7875545b59a60296135e0dc847a13cea038d89d5",
+          "verifier_command": "sources/evaluations/fixtures/medium/fastify-fastify/tasks/fastify-lifecycle-refactor-v0/verify.sh",
+          "verifier_sha256": "e2acf6e7b516df4eabde50c072955e4851503bf139f5b1170f926c55a25d055b",
+          "upstream_test_paths": [],
+          "compatibility_rebased_test_paths": [],
+          "expected_model_concealed_paths": [],
+          "model_concealed_paths": []
+        },
+        {
+          "id": "fastify-lifecycle-review-v0",
+          "order": 3,
+          "task_class": "code-review-correction",
+          "prompt_path": "sources/evaluations/fixtures/medium/fastify-fastify/tasks/fastify-lifecycle-review-v0/agent-prompt.txt",
+          "prompt_sha256": "afcf8af54c18ae8ae5be6bcd87f9c104f4c32f7862a6d02e83cca03969431dcc",
+          "seed_patch_sha256": "0402a5fc7785775c034fddc539539bbbd0083d11a6f555e22f95dd992476aa3c",
+          "verifier_command": "sources/evaluations/fixtures/medium/fastify-fastify/tasks/fastify-lifecycle-review-v0/verify.sh",
+          "verifier_sha256": "75b5f53a091749072d812cb060410e8df8c6244285a94ddc422dc10826c1b647",
+          "upstream_test_paths": [],
+          "compatibility_rebased_test_paths": [],
+          "expected_model_concealed_paths": [],
+          "model_concealed_paths": [],
+          "review_patch_path": "review-change.patch",
+          "review_patch_sha256": "0402a5fc7785775c034fddc539539bbbd0083d11a6f555e22f95dd992476aa3c"
+        }
+      ],
+      "model_facing_prompts": {
+        "rendering_contract": "sequential-model-facing-prompts-v2",
+        "profile_guidance_sha256": "f1d7a2cf7b0a7c1affd8bbb04705f073332ee6efc5f8f89f019b9e0cbacec4bb",
+        "tasks": [
+          {
+            "task_id": "fastify-lifecycle-feature-v0",
+            "order": 1,
+            "rendered_prompt_sha256": "1fe89fb9203788300d9bc89267d4bbf3dd932c0c55de064293160a51ab5ce1f0"
+          },
+          {
+            "task_id": "fastify-lifecycle-refactor-v0",
+            "order": 2,
+            "rendered_prompt_sha256": "9c2087dc09a311d8f30c4f900a5d4d137ecbe5097a5c83b89ab36c73f95d39da"
+          },
+          {
+            "task_id": "fastify-lifecycle-review-v0",
+            "order": 3,
+            "rendered_prompt_sha256": "89c678d4dbdbfeb8474ce1ba90a4e5ad372f14a618eade2611ba385e2d82c05a"
+          }
+        ]
+      },
+      "qualification": {
+        "path": "sources/evaluations/fixtures/medium/fastify-fastify/qualification-lifecycle-v0.json",
+        "sha256": "87068241dd67e58e6850cc65a3116be341beb3de814abc553e01920415a2c12b"
+      },
+      "baseline_profile": {
+        "profile_id": "baseline-bare-codex",
+        "profile_type": "control",
+        "enabled_surfaces": [
+          "codex-native-shell-edit"
+        ],
+        "disabled_overlaps": [
+          "all MCP servers",
+          "all token-saving surfaces",
+          "global Codex instructions",
+          "hooks",
+          "skills/plugins",
+          "warm indexes"
+        ]
+      },
+      "agent": {
+        "runtime_id": "codex-cli",
+        "provider": "openai",
+        "model": "gpt-5.6-luna",
+        "model_condition_id": "codex-openai-gpt-5-6-luna-xhigh",
+        "reasoning_effort": "xhigh"
+      },
+      "runtime_inputs": {
+        "timeout_seconds_per_task": 3600,
+        "docker_image": "token-eval-codex:latest",
+        "docker_image_identity": {
+          "image_ref": "token-eval-codex:latest",
+          "image_id": "sha256:6f86d01f2c63f5029c6bb874d8f3694c24d5cd567e3d09413eccc956ba3feafe",
+          "repo_digests": [
+            "token-eval-codex@sha256:6f86d01f2c63f5029c6bb874d8f3694c24d5cd567e3d09413eccc956ba3feafe"
+          ],
+          "repo_tags": [
+            "token-eval-codex:latest"
+          ]
+        },
+        "dockerfile_path": "sources/evaluations/fixtures/container/Dockerfile",
+        "dockerfile_sha256": "47c91967ce25014ce54879514f51d2ff0326651be1087209115eff4d358226b3",
+        "dependency_command": "npm install --ignore-scripts --no-audit --no-fund",
+        "dependency_lockfiles": [
+          {
+            "path": "package.json",
+            "sha256": "b273320af1bb4cfc0f9334457c8e3b1d035fde0da14f9db65e8ef97d361d0be3"
+          }
+        ],
+        "codex_runtime_condition": "codex-openai-gpt-5-6-luna-xhigh"
+      },
+      "isolation": {
+        "prompt_delivery": "sequential-one-task-at-a-time",
+        "seed_delivery_mode": "preseeded-composite",
+        "future_tasks_visible": false,
+        "future_seed_regressions_visible": true,
+        "verifier_assets_model_visible": false,
+        "git_baseline_true_root_at_lane_start": true,
+        "controller_verification": "final-only",
+        "prompt_sanitizer": "sanitize_task_prompt-v1",
+        "concealment": "declared-model-concealed-paths-removed-before-root-commit",
+        "model_concealed_paths": []
+      }
+    }
+  },
+  "selected_execution": {
+    "descriptor_sha256": "c0b426648608c5001246e2a8da61e71c806b43ecb0f652ebbe8ef1dcf95a263e",
+    "descriptor": {
+      "version": "execution-condition-v1",
+      "sequence_id": "fastify-lifecycle-sequence-v0",
+      "execution_role": "individual_tool_treatment",
+      "selected_profile": {
+        "profile_id": "terminal-snip-codex-hook-v1",
+        "profile_type": "individual_tool",
+        "component_ids": [
+          "terminal-snip-codex-hook-v1"
+        ],
+        "enabled_surfaces": [
+          "codex-pre-tool-use-hook",
+          "terminal-output"
+        ],
+        "disabled_overlaps": [
+          "all unlisted surfaces"
+        ],
+        "registry_entry_sha256": "702204fa32db1d8870039e23164512291e2f88b328ddf03c96986b9e86e115e5",
+        "registry_entry": {
+          "id": "terminal-snip-codex-hook-v1",
+          "profile_type": "individual_tool",
+          "objective_scope": "individual_tool_effectiveness",
+          "status": "screening-shortlist",
+          "enabled_surfaces": [
+            "codex-pre-tool-use-hook",
+            "terminal-output"
+          ],
+          "disabled_overlaps": [
+            "all unlisted surfaces"
+          ],
+          "components": [
+            {
+              "component_id": "terminal-snip-codex-hook-v1",
+              "surface": "codex-pre-tool-use-hook/terminal-output-compaction",
+              "role": "individual_tool"
+            }
+          ],
+          "install": {
+            "policy": "Run the pinned Snip binary with `snip init --agent codex` in a lane-private home alias, retain hooks.json, enable Codex hooks, and require hook audit before execution."
+          },
+          "reset": {
+            "policy": "Delete lane-private CODEX_HOME, Snip filters/state, and hook files after evidence capture; verify no hook survives into another lane."
+          },
+          "evaluation_protocol": {
+            "tool_use_policy": "natural",
+            "tool_state": "cold-cli",
+            "integration_state": "official-codex-pretooluse-hook"
+          },
+          "notes": "Versioned correction of the historical PATH-only Snip profile. Uses the pinned source default Codex hook rather than the stale README prompt-only description."
+        }
+      },
+      "model_facing_prompts": {
+        "rendering_contract": "sequential-model-facing-prompts-v2",
+        "profile_guidance_sha256": "9b2f1577ecb060f1bfb169b8cc141d771af2b668ace35b685080b3d4e38a5617",
+        "tasks": [
+          {
+            "task_id": "fastify-lifecycle-feature-v0",
+            "order": 1,
+            "rendered_prompt_sha256": "a7bfcc78bd7a740849dbfaaa4107eec988497d5431f6d086018f0480b47de14b"
+          },
+          {
+            "task_id": "fastify-lifecycle-refactor-v0",
+            "order": 2,
+            "rendered_prompt_sha256": "9c2087dc09a311d8f30c4f900a5d4d137ecbe5097a5c83b89ab36c73f95d39da"
+          },
+          {
+            "task_id": "fastify-lifecycle-review-v0",
+            "order": 3,
+            "rendered_prompt_sha256": "89c678d4dbdbfeb8474ce1ba90a4e5ad372f14a618eade2611ba385e2d82c05a"
+          }
+        ]
+      },
+      "tool_adapter": {
+        "tool_id": "snip-codex-hook-v1",
+        "tool_manifest": "scripts/run_codex_fixture_evaluation.py:TOOL_CONFIGS",
+        "tool_manifest_sha256": "7d24bcdd7d574681c55e97000fdd633e87d51362674919406b22e1d97813f4bd",
+        "tool_config": {
+          "display_name": "Snip Codex PreToolUse hook v1",
+          "lane_name": "terminal-snip-codex-hook-v1",
+          "surface": "codex-pre-tool-use-hook/terminal-output-compaction",
+          "allowed_terms": [
+            "snip"
+          ],
+          "data_dir_name": "snip-codex-hook-v1",
+          "executable": "/opt/data/tool-candidates/snip/snip",
+          "path_entries": [
+            "/opt/data/tool-candidates/snip"
+          ],
+          "mounts": [
+            "/opt/data/tool-candidates/snip"
+          ],
+          "env": {
+            "SNIP_TELEMETRY": "0"
+          },
+          "codex_features": {
+            "hooks": true
+          },
+          "host_integration": {
+            "home_dot_codex_alias": true,
+            "install_commands": [
+              [
+                "snip",
+                "init",
+                "--agent",
+                "codex"
+              ]
+            ],
+            "verify_commands": [
+              [
+                "snip",
+                "hook-audit"
+              ]
+            ],
+            "required_files": [
+              "{codex_home}/hooks.json",
+              "{codex_home}/config.toml"
+            ]
+          },
+          "preflight_command": [
+            "snip",
+            "--version"
+          ],
+          "default_tool_state": "cold-cli"
+        },
+        "tool_config_sha256": "f504749423c4e3b3e5efef85b66ad196952704c37653b14f9f86905b2bdaccdf",
+        "tool_state": "cold-cli",
+        "tool_use_policy": "natural",
+        "command_identity": {
+          "kind": "preflight_command",
+          "command": [
+            "snip",
+            "--version"
+          ]
+        },
+        "binary_identity": {
+          "executable_token": "snip",
+          "resolved_path": "/opt/data/tool-candidates/snip/snip",
+          "realpath": "/opt/data/tool-candidates/snip/snip",
+          "sha256": "546b4e735818637f42aabcc79b357d529223385b84b28a19f28002d15d99ea5b",
+          "metadata": {
+            "size": 15056672,
+            "mode": "-rwxr-xr-x",
+            "uid": 10000,
+            "gid": 10000,
+            "mtime_ns": 1783588549482244913
+          },
+          "version": {
+            "command": [
+              "/opt/data/tool-candidates/snip/snip",
+              "--version"
+            ],
+            "environment_path": "/opt/data/.local/bin:/opt/data/tool-candidates/snip:/opt/data/opt/go/bin:/opt/data/opt/uv:/opt/data/opt/node-v24.18.0-linux-x64/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+            "captured": true,
+            "exit_code": 0,
+            "output": "snip vdev",
+            "truncated": false
+          }
+        },
+        "source_identity": [
+          {
+            "path": "/opt/data/tool-candidates/snip",
+            "exists": true,
+            "kind": "directory",
+            "git_head": "82b741b3ba504a22b609f3ac8122ade94306f6ec"
+          }
+        ]
+      },
+      "runtime": {
+        "docker_image": "token-eval-codex:latest",
+        "docker_image_identity": {
+          "image_ref": "token-eval-codex:latest",
+          "image_id": "sha256:6f86d01f2c63f5029c6bb874d8f3694c24d5cd567e3d09413eccc956ba3feafe",
+          "repo_digests": [
+            "token-eval-codex@sha256:6f86d01f2c63f5029c6bb874d8f3694c24d5cd567e3d09413eccc956ba3feafe"
+          ],
+          "repo_tags": [
+            "token-eval-codex:latest"
+          ]
+        },
+        "dockerfile_path": "sources/evaluations/fixtures/container/Dockerfile",
+        "dockerfile_sha256": "47c91967ce25014ce54879514f51d2ff0326651be1087209115eff4d358226b3",
+        "fixture_runner_path": "scripts/run_codex_fixture_evaluation.py",
+        "fixture_runner_sha256": "7d24bcdd7d574681c55e97000fdd633e87d51362674919406b22e1d97813f4bd",
+        "mcp_probe_path": "scripts/probe_mcp_stdio.py",
+        "mcp_probe_sha256": "7c06ea36ee5cac933a97140b84a41405fc99b45152388e8d7c6659136af698fd",
+        "codex_entrypoint_path": "sources/evaluations/fixtures/container/codex-entrypoint.sh",
+        "codex_entrypoint_sha256": "8715fe37cb1fa3823f5f05493bc9681ce7ffc72126dfec4d64d448762c550c3c",
+        "timeout_seconds_per_task": 3600,
+        "network_isolation": {
+          "provider_access": true,
+          "model_shell_network_access": false,
+          "model_shell_enforcement": "seccomp denies AF_INET and AF_INET6 socket creation for the shell process and descendants",
+          "codex_web_search": "disabled",
+          "external_retrieval_audit": "fail-closed"
+        },
+        "isolation_policy": "fresh lane-specific Codex home/tool data; provider-only network with model shell and Codex web search disabled; sequential one-task prompt delivery; concealed tests removed before model-visible root commit"
+      },
+      "dependencies": {
+        "command": "npm install --ignore-scripts --no-audit --no-fund",
+        "command_sha256": "7493d616f26e72b22eb5a21beafa12a6717ebf5b93a7a75e709de65e7323cc41",
+        "lockfiles": [
+          {
+            "path": "package.json",
+            "snapshot_sha256": "b273320af1bb4cfc0f9334457c8e3b1d035fde0da14f9db65e8ef97d361d0be3",
+            "current_fixture_sha256": null
+          }
+        ]
+      },
+      "agent_condition": {
+        "runtime_id": "codex-cli",
+        "provider": "openai",
+        "model": "gpt-5.6-luna",
+        "model_condition_id": "codex-openai-gpt-5-6-luna-xhigh",
+        "reasoning_effort": "xhigh",
+        "codex_version_condition": "captured-at-run-and-bound-to-record"
+      },
+      "isolation": {
+        "prompt_delivery": "sequential-one-task-at-a-time",
+        "seed_delivery_mode": "preseeded-composite",
+        "future_tasks_visible": false,
+        "future_seed_regressions_visible": true,
+        "controller_verification": "final-only",
+        "verifier_assets_model_visible": false,
+        "model_concealed_paths": []
+      },
+      "baseline_pool_reference": {
+        "protocol_version": "baseline-pool-v1",
+        "protocol_fingerprint": "769d40697529",
+        "comparison_policy": "paired baseline and treatment must share this baseline pool fingerprint and replicate"
+      }
+    }
+  }
+}
