@@ -1,7 +1,7 @@
 ---
 status: active
 truth_kind: engineering-architecture
-last_reviewed: 2026-06-29
+last_reviewed: 2026-07-18
 ---
 
 # Stack Compatibility
@@ -23,6 +23,7 @@ It does not store raw tool-source inspection notes.
 - The repository stores techniques in `data/techniques.json`.
 - The repository stores compatibility edges in `data/compatibility-edges.json`.
 - The Phase 1 report frames current stack hypotheses as compatibility-safe research candidates, not measured selections.
+- The first Phase 3 execution profile, `stack-tokenjuice-jcodemunch-mcp`, freezes TokenJuice as terminal-output owner and jcodemunch MCP as retrieval-context owner on lifecycle v0. Its individual components are retained ablations; the stack has no measured result until provider evidence is merged.
 
 ## Product Truth Links
 
@@ -66,6 +67,7 @@ This model is the repository's architecture layer for combining token-saving too
 - Decision (2026-06-26): Compatibility-safe stacks should avoid duplicate ownership of the same surface.
 - Decision (2026-06-26): Installer or orchestrator tools are evaluated separately from reducers.
 - Decision (2026-06-26): Multi-component stack claims require ablation planning before benchmark conclusions.
+- Decision (2026-07-18): The first Phase 3 stack reuses lifecycle-v0 baseline and component `r1` samples and runs only the new TokenJuice-plus-jcodemunch treatment profile.
 
 ## Rationale
 
