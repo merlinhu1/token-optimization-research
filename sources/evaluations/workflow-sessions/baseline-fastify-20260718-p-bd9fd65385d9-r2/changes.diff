@@ -1,0 +1,540 @@
+# Ordered cumulative source checkpoints. Every section is relative to the one composite broken-start root.
+
+# --- task-01-agent ---
+diff --git a/lib/handle-request.js b/lib/handle-request.js
+index d3ec986..b89f45a 100644
+--- a/lib/handle-request.js
++++ b/lib/handle-request.js
+@@ -9,12 +9,11 @@ const { setErrorStatusCode } = require('./error-status')
+ const {
+   kReplyIsError,
+   kRouteContext,
++  kRequestContentType,
+   kFourOhFourContext,
+   kSupportedHTTPMethods,
+   kDiagnosticsStore
+ } = require('./symbols')
+-const ContentType = require('./content-type')
+-
+ const channels = diagnostics.tracingChannel('fastify.request.handler')
+ 
+ function handleRequest (err, request, reply) {
+@@ -52,13 +51,13 @@ function handleRequest (err, request, reply) {
+       return
+     }
+ 
+-    const contentType = ContentType.from(ctHeader)
++    const contentType = request[kRequestContentType]
+     if (contentType.isValid === false) {
+       reply[kReplyIsError] = true
+       reply.status(415).send(new FST_ERR_CTP_INVALID_MEDIA_TYPE())
+       return
+     }
+-    request[kRouteContext].contentTypeParser.run(contentType.toString(), handler, request, reply)
++    request[kRouteContext].contentTypeParser.run(contentType, handler, request, reply)
+     return
+   }
+ 
+diff --git a/lib/request.js b/lib/request.js
+index 6ff2393..ba04188 100644
+--- a/lib/request.js
++++ b/lib/request.js
+@@ -10,6 +10,7 @@ const {
+   kSchemaController,
+   kOptions,
+   kRequestCacheValidateFns,
++  kRequestContentType,
+   kRouteContext,
+   kRequestOriginalUrl,
+   kRequestSignal,
+@@ -159,6 +160,12 @@ Object.defineProperties(Request.prototype, {
+       return this[kRouteContext].server
+     }
+   },
++  mediaType: {
++    get () {
++      const contentType = this[kRequestContentType]
++      return contentType?.isValid === true ? contentType.mediaType : undefined
++    }
++  },
+   url: {
+     get () {
+       return this.raw.url
+diff --git a/lib/route.js b/lib/route.js
+index 1cb07fa..56907e5 100644
+--- a/lib/route.js
++++ b/lib/route.js
+@@ -3,6 +3,7 @@
+ const FindMyWay = require('find-my-way')
+ const Context = require('./context')
+ const handleRequest = require('./handle-request.js')
++const ContentType = require('./content-type')
+ const { onRequestAbortHookRunner, lifecycleHooks, preParsingHookRunner, onTimeoutHookRunner, onRequestHookRunner } = require('./hooks')
+ const { normalizeSchema } = require('./schemas')
+ const { parseHeadOnSendHandlers } = require('./head-route.js')
+@@ -43,6 +44,7 @@ const {
+   kReplySerializerDefault,
+   kReplyIsError,
+   kRequestPayloadStream,
++  kRequestContentType,
+   kSchemaErrorFormatter,
+   kErrorHandler,
+   kHasBeenDecorated,
+@@ -650,6 +652,10 @@ function runPreParsing (err, request, reply) {
+   }
+ 
+   request[kRequestPayloadStream] = request.raw
++  const contentType = request.headers['content-type']
++  if (contentType !== undefined) {
++    request[kRequestContentType] = ContentType.from(contentType)
++  }
+ 
+   if (request[kRouteContext].preParsing !== null) {
+     preParsingHookRunner(request[kRouteContext].preParsing, request, reply, handleRequest.bind(request.server))
+diff --git a/lib/symbols.js b/lib/symbols.js
+index 8ddc076..ba2c60a 100644
+--- a/lib/symbols.js
++++ b/lib/symbols.js
+@@ -29,6 +29,7 @@ const keys = {
+   // Request
+   kRequest: Symbol('fastify.Request'),
+   kRequestPayloadStream: Symbol('fastify.RequestPayloadStream'),
++  kRequestContentType: Symbol('fastify.RequestContentType'),
+   kRequestAcceptVersion: Symbol('fastify.RequestAcceptVersion'),
+   kRequestCacheValidateFns: Symbol('fastify.request.cache.validateFns'),
+   kRequestOriginalUrl: Symbol('fastify.request.originalUrl'),
+diff --git a/lib/validation.js b/lib/validation.js
+index 48850b1..7cac74e 100644
+--- a/lib/validation.js
++++ b/lib/validation.js
+@@ -171,9 +171,7 @@ function validate (context, request, execution) {
+     if (typeof context[bodySchema] === 'function') {
+       validatorFunction = context[bodySchema]
+     } else if (context[bodySchema]) {
+-      // TODO: add request.contentType and reuse it here
+-      const contentType = getEssenceMediaType(request.headers['content-type'])
+-      const contentSchema = context[bodySchema][contentType]
++      const contentSchema = context[bodySchema][request.mediaType]
+       if (contentSchema) {
+         validatorFunction = contentSchema
+       }
+@@ -271,16 +269,6 @@ function wrapValidationError (result, dataVar, schemaErrorFormatter) {
+   return error
+ }
+ 
+-/**
+- * simple function to retrieve the essence media type
+- * @param {string} header
+- * @returns {string} Mimetype string.
+- */
+-function getEssenceMediaType (header) {
+-  if (!header) return ''
+-  return header.trimStart().split(/[ ;]/, 1)[0].trim().toLowerCase()
+-}
+-
+ module.exports = {
+   symbols: { bodySchema, querystringSchema, responseSchema, paramsSchema, headersSchema },
+   compileSchemasForValidation,
+diff --git a/types/request.d.ts b/types/request.d.ts
+index fabaed9..af430b7 100644
+--- a/types/request.d.ts
++++ b/types/request.d.ts
+@@ -63,6 +63,7 @@ export interface FastifyRequest<RouteGeneric extends RouteGenericInterface = Rou
+   log: Logger;
+   server: FastifyInstance;
+   body: RequestType['body'];
++  readonly mediaType: string | undefined;
+ 
+   /** in order for this to be used the user should ensure they have set the attachValidation option. */
+   validationError?: Error & { validation: any; validationContext: string };
+
+# --- task-02-agent ---
+diff --git a/lib/content-type.js b/lib/content-type.js
+index aeab8cd..38858b0 100644
+--- a/lib/content-type.js
++++ b/lib/content-type.js
+@@ -1,5 +1,7 @@
+ 'use strict'
+ 
++const { FifoMap: Fifo } = require('toad-cache')
++
+ /**
+  * keyValuePairsReg is used to split the parameters list into associated
+  * key value pairings. The leading `(?:^|;)\s*` anchor ensures the regex
+@@ -55,7 +57,12 @@ class ContentType {
+    * @returns {ContentType | undefined}
+    */
+   static from (headerValue) {
+-    return new ContentType(headerValue)
++    let contentType = ContentType.cache.get(headerValue)
++    if (contentType === undefined) {
++      contentType = new ContentType(headerValue)
++      ContentType.cache.set(headerValue, contentType)
++    }
++    return contentType
+   }
+ 
+   constructor (headerValue) {
+@@ -170,4 +177,6 @@ class ContentType {
+   }
+ }
+ 
++ContentType.cache = new Fifo(100)
++
+ module.exports = ContentType
+diff --git a/lib/handle-request.js b/lib/handle-request.js
+index d3ec986..b89f45a 100644
+--- a/lib/handle-request.js
++++ b/lib/handle-request.js
+@@ -9,12 +9,11 @@ const { setErrorStatusCode } = require('./error-status')
+ const {
+   kReplyIsError,
+   kRouteContext,
++  kRequestContentType,
+   kFourOhFourContext,
+   kSupportedHTTPMethods,
+   kDiagnosticsStore
+ } = require('./symbols')
+-const ContentType = require('./content-type')
+-
+ const channels = diagnostics.tracingChannel('fastify.request.handler')
+ 
+ function handleRequest (err, request, reply) {
+@@ -52,13 +51,13 @@ function handleRequest (err, request, reply) {
+       return
+     }
+ 
+-    const contentType = ContentType.from(ctHeader)
++    const contentType = request[kRequestContentType]
+     if (contentType.isValid === false) {
+       reply[kReplyIsError] = true
+       reply.status(415).send(new FST_ERR_CTP_INVALID_MEDIA_TYPE())
+       return
+     }
+-    request[kRouteContext].contentTypeParser.run(contentType.toString(), handler, request, reply)
++    request[kRouteContext].contentTypeParser.run(contentType, handler, request, reply)
+     return
+   }
+ 
+diff --git a/lib/request.js b/lib/request.js
+index 6ff2393..ba04188 100644
+--- a/lib/request.js
++++ b/lib/request.js
+@@ -10,6 +10,7 @@ const {
+   kSchemaController,
+   kOptions,
+   kRequestCacheValidateFns,
++  kRequestContentType,
+   kRouteContext,
+   kRequestOriginalUrl,
+   kRequestSignal,
+@@ -159,6 +160,12 @@ Object.defineProperties(Request.prototype, {
+       return this[kRouteContext].server
+     }
+   },
++  mediaType: {
++    get () {
++      const contentType = this[kRequestContentType]
++      return contentType?.isValid === true ? contentType.mediaType : undefined
++    }
++  },
+   url: {
+     get () {
+       return this.raw.url
+diff --git a/lib/route.js b/lib/route.js
+index 1cb07fa..56907e5 100644
+--- a/lib/route.js
++++ b/lib/route.js
+@@ -3,6 +3,7 @@
+ const FindMyWay = require('find-my-way')
+ const Context = require('./context')
+ const handleRequest = require('./handle-request.js')
++const ContentType = require('./content-type')
+ const { onRequestAbortHookRunner, lifecycleHooks, preParsingHookRunner, onTimeoutHookRunner, onRequestHookRunner } = require('./hooks')
+ const { normalizeSchema } = require('./schemas')
+ const { parseHeadOnSendHandlers } = require('./head-route.js')
+@@ -43,6 +44,7 @@ const {
+   kReplySerializerDefault,
+   kReplyIsError,
+   kRequestPayloadStream,
++  kRequestContentType,
+   kSchemaErrorFormatter,
+   kErrorHandler,
+   kHasBeenDecorated,
+@@ -650,6 +652,10 @@ function runPreParsing (err, request, reply) {
+   }
+ 
+   request[kRequestPayloadStream] = request.raw
++  const contentType = request.headers['content-type']
++  if (contentType !== undefined) {
++    request[kRequestContentType] = ContentType.from(contentType)
++  }
+ 
+   if (request[kRouteContext].preParsing !== null) {
+     preParsingHookRunner(request[kRouteContext].preParsing, request, reply, handleRequest.bind(request.server))
+diff --git a/lib/symbols.js b/lib/symbols.js
+index 8ddc076..ba2c60a 100644
+--- a/lib/symbols.js
++++ b/lib/symbols.js
+@@ -29,6 +29,7 @@ const keys = {
+   // Request
+   kRequest: Symbol('fastify.Request'),
+   kRequestPayloadStream: Symbol('fastify.RequestPayloadStream'),
++  kRequestContentType: Symbol('fastify.RequestContentType'),
+   kRequestAcceptVersion: Symbol('fastify.RequestAcceptVersion'),
+   kRequestCacheValidateFns: Symbol('fastify.request.cache.validateFns'),
+   kRequestOriginalUrl: Symbol('fastify.request.originalUrl'),
+diff --git a/lib/validation.js b/lib/validation.js
+index 48850b1..7cac74e 100644
+--- a/lib/validation.js
++++ b/lib/validation.js
+@@ -171,9 +171,7 @@ function validate (context, request, execution) {
+     if (typeof context[bodySchema] === 'function') {
+       validatorFunction = context[bodySchema]
+     } else if (context[bodySchema]) {
+-      // TODO: add request.contentType and reuse it here
+-      const contentType = getEssenceMediaType(request.headers['content-type'])
+-      const contentSchema = context[bodySchema][contentType]
++      const contentSchema = context[bodySchema][request.mediaType]
+       if (contentSchema) {
+         validatorFunction = contentSchema
+       }
+@@ -271,16 +269,6 @@ function wrapValidationError (result, dataVar, schemaErrorFormatter) {
+   return error
+ }
+ 
+-/**
+- * simple function to retrieve the essence media type
+- * @param {string} header
+- * @returns {string} Mimetype string.
+- */
+-function getEssenceMediaType (header) {
+-  if (!header) return ''
+-  return header.trimStart().split(/[ ;]/, 1)[0].trim().toLowerCase()
+-}
+-
+ module.exports = {
+   symbols: { bodySchema, querystringSchema, responseSchema, paramsSchema, headersSchema },
+   compileSchemasForValidation,
+diff --git a/types/request.d.ts b/types/request.d.ts
+index fabaed9..af430b7 100644
+--- a/types/request.d.ts
++++ b/types/request.d.ts
+@@ -63,6 +63,7 @@ export interface FastifyRequest<RouteGeneric extends RouteGenericInterface = Rou
+   log: Logger;
+   server: FastifyInstance;
+   body: RequestType['body'];
++  readonly mediaType: string | undefined;
+ 
+   /** in order for this to be used the user should ensure they have set the attachValidation option. */
+   validationError?: Error & { validation: any; validationContext: string };
+
+# --- task-03-agent ---
+diff --git a/fastify.js b/fastify.js
+index 7c015f9..48895f3 100644
+--- a/fastify.js
++++ b/fastify.js
+@@ -678,9 +678,9 @@ function fastify (serverOptions) {
+       error: 'Bad Request',
+       code: 'FST_ERR_MAX_PARAM_LENGTH',
+       message: `'${path}' is exceeding the max param length`,
+-      statusCode: 413
++      statusCode: 414
+     })
+-    res.writeHead(413, {
++    res.writeHead(414, {
+       'Content-Type': 'application/json',
+       'Content-Length': Buffer.byteLength(body)
+     })
+diff --git a/lib/content-type.js b/lib/content-type.js
+index aeab8cd..38858b0 100644
+--- a/lib/content-type.js
++++ b/lib/content-type.js
+@@ -1,5 +1,7 @@
+ 'use strict'
+ 
++const { FifoMap: Fifo } = require('toad-cache')
++
+ /**
+  * keyValuePairsReg is used to split the parameters list into associated
+  * key value pairings. The leading `(?:^|;)\s*` anchor ensures the regex
+@@ -55,7 +57,12 @@ class ContentType {
+    * @returns {ContentType | undefined}
+    */
+   static from (headerValue) {
+-    return new ContentType(headerValue)
++    let contentType = ContentType.cache.get(headerValue)
++    if (contentType === undefined) {
++      contentType = new ContentType(headerValue)
++      ContentType.cache.set(headerValue, contentType)
++    }
++    return contentType
+   }
+ 
+   constructor (headerValue) {
+@@ -170,4 +177,6 @@ class ContentType {
+   }
+ }
+ 
++ContentType.cache = new Fifo(100)
++
+ module.exports = ContentType
+diff --git a/lib/errors.js b/lib/errors.js
+index 1aea926..24abe8a 100644
+--- a/lib/errors.js
++++ b/lib/errors.js
+@@ -374,7 +374,7 @@ const codes = {
+   FST_ERR_MAX_PARAM_LENGTH: createError(
+     'FST_ERR_MAX_PARAM_LENGTH',
+     "'%s' is exceeding the max param length",
+-    413,
++    414,
+     URIError
+   ),
+   FST_ERR_ASYNC_CONSTRAINT: createError(
+diff --git a/lib/handle-request.js b/lib/handle-request.js
+index d3ec986..b89f45a 100644
+--- a/lib/handle-request.js
++++ b/lib/handle-request.js
+@@ -9,12 +9,11 @@ const { setErrorStatusCode } = require('./error-status')
+ const {
+   kReplyIsError,
+   kRouteContext,
++  kRequestContentType,
+   kFourOhFourContext,
+   kSupportedHTTPMethods,
+   kDiagnosticsStore
+ } = require('./symbols')
+-const ContentType = require('./content-type')
+-
+ const channels = diagnostics.tracingChannel('fastify.request.handler')
+ 
+ function handleRequest (err, request, reply) {
+@@ -52,13 +51,13 @@ function handleRequest (err, request, reply) {
+       return
+     }
+ 
+-    const contentType = ContentType.from(ctHeader)
++    const contentType = request[kRequestContentType]
+     if (contentType.isValid === false) {
+       reply[kReplyIsError] = true
+       reply.status(415).send(new FST_ERR_CTP_INVALID_MEDIA_TYPE())
+       return
+     }
+-    request[kRouteContext].contentTypeParser.run(contentType.toString(), handler, request, reply)
++    request[kRouteContext].contentTypeParser.run(contentType, handler, request, reply)
+     return
+   }
+ 
+diff --git a/lib/request.js b/lib/request.js
+index 6ff2393..ba04188 100644
+--- a/lib/request.js
++++ b/lib/request.js
+@@ -10,6 +10,7 @@ const {
+   kSchemaController,
+   kOptions,
+   kRequestCacheValidateFns,
++  kRequestContentType,
+   kRouteContext,
+   kRequestOriginalUrl,
+   kRequestSignal,
+@@ -159,6 +160,12 @@ Object.defineProperties(Request.prototype, {
+       return this[kRouteContext].server
+     }
+   },
++  mediaType: {
++    get () {
++      const contentType = this[kRequestContentType]
++      return contentType?.isValid === true ? contentType.mediaType : undefined
++    }
++  },
+   url: {
+     get () {
+       return this.raw.url
+diff --git a/lib/route.js b/lib/route.js
+index 1cb07fa..56907e5 100644
+--- a/lib/route.js
++++ b/lib/route.js
+@@ -3,6 +3,7 @@
+ const FindMyWay = require('find-my-way')
+ const Context = require('./context')
+ const handleRequest = require('./handle-request.js')
++const ContentType = require('./content-type')
+ const { onRequestAbortHookRunner, lifecycleHooks, preParsingHookRunner, onTimeoutHookRunner, onRequestHookRunner } = require('./hooks')
+ const { normalizeSchema } = require('./schemas')
+ const { parseHeadOnSendHandlers } = require('./head-route.js')
+@@ -43,6 +44,7 @@ const {
+   kReplySerializerDefault,
+   kReplyIsError,
+   kRequestPayloadStream,
++  kRequestContentType,
+   kSchemaErrorFormatter,
+   kErrorHandler,
+   kHasBeenDecorated,
+@@ -650,6 +652,10 @@ function runPreParsing (err, request, reply) {
+   }
+ 
+   request[kRequestPayloadStream] = request.raw
++  const contentType = request.headers['content-type']
++  if (contentType !== undefined) {
++    request[kRequestContentType] = ContentType.from(contentType)
++  }
+ 
+   if (request[kRouteContext].preParsing !== null) {
+     preParsingHookRunner(request[kRouteContext].preParsing, request, reply, handleRequest.bind(request.server))
+diff --git a/lib/symbols.js b/lib/symbols.js
+index 8ddc076..ba2c60a 100644
+--- a/lib/symbols.js
++++ b/lib/symbols.js
+@@ -29,6 +29,7 @@ const keys = {
+   // Request
+   kRequest: Symbol('fastify.Request'),
+   kRequestPayloadStream: Symbol('fastify.RequestPayloadStream'),
++  kRequestContentType: Symbol('fastify.RequestContentType'),
+   kRequestAcceptVersion: Symbol('fastify.RequestAcceptVersion'),
+   kRequestCacheValidateFns: Symbol('fastify.request.cache.validateFns'),
+   kRequestOriginalUrl: Symbol('fastify.request.originalUrl'),
+diff --git a/lib/validation.js b/lib/validation.js
+index 48850b1..7cac74e 100644
+--- a/lib/validation.js
++++ b/lib/validation.js
+@@ -171,9 +171,7 @@ function validate (context, request, execution) {
+     if (typeof context[bodySchema] === 'function') {
+       validatorFunction = context[bodySchema]
+     } else if (context[bodySchema]) {
+-      // TODO: add request.contentType and reuse it here
+-      const contentType = getEssenceMediaType(request.headers['content-type'])
+-      const contentSchema = context[bodySchema][contentType]
++      const contentSchema = context[bodySchema][request.mediaType]
+       if (contentSchema) {
+         validatorFunction = contentSchema
+       }
+@@ -271,16 +269,6 @@ function wrapValidationError (result, dataVar, schemaErrorFormatter) {
+   return error
+ }
+ 
+-/**
+- * simple function to retrieve the essence media type
+- * @param {string} header
+- * @returns {string} Mimetype string.
+- */
+-function getEssenceMediaType (header) {
+-  if (!header) return ''
+-  return header.trimStart().split(/[ ;]/, 1)[0].trim().toLowerCase()
+-}
+-
+ module.exports = {
+   symbols: { bodySchema, querystringSchema, responseSchema, paramsSchema, headersSchema },
+   compileSchemasForValidation,
+diff --git a/types/request.d.ts b/types/request.d.ts
+index fabaed9..af430b7 100644
+--- a/types/request.d.ts
++++ b/types/request.d.ts
+@@ -63,6 +63,7 @@ export interface FastifyRequest<RouteGeneric extends RouteGenericInterface = Rou
+   log: Logger;
+   server: FastifyInstance;
+   body: RequestType['body'];
++  readonly mediaType: string | undefined;
+ 
+   /** in order for this to be used the user should ensure they have set the attachValidation option. */
+   validationError?: Error & { validation: any; validationContext: string };
