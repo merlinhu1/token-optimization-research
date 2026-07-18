@@ -13,6 +13,7 @@ RUNBOOK = ROOT / "docs" / "evaluations" / "operations" / "runbook.md"
 SEQUENCES = ROOT / "data" / "workflow-task-sequences.json"
 FIXTURES = ROOT / "data" / "repository-fixtures.json"
 SESSIONS = ROOT / "data" / "workflow-sessions.json"
+PROFILES = ROOT / "data" / "evaluation-profiles.json"
 ARTIFACT_FILES = ("run.json", "changes.diff", "evidence.jsonl.gz", "manifest.sha256")
 
 
@@ -101,6 +102,12 @@ def render() -> str:
     candidate_text = "\n".join(candidate_lines) if candidate_lines else "_None._"
 
     session_records = load_json(SESSIONS).get("sessions", [])
+    runnable_profiles = sorted(
+        profile["id"]
+        for profile in load_json(PROFILES).get("profiles", [])
+        if profile.get("status") == "screening-shortlist"
+    )
+    runnable_profile_text = ", ".join(f"`{profile_id}`" for profile_id in runnable_profiles) or "_None_"
     reusable_baseline_replicates: dict[str, list[int]] = {}
     for session in session_records:
         sequence_id = session.get("task_sequence", {}).get("sequence_id")
@@ -123,6 +130,9 @@ def render() -> str:
 
     if sequences:
         chunks: list[str] = []
+        chunks.append(
+            f"Current runnable treatment profiles: {runnable_profile_text}. Historical profiles marked `historical-profile` are occupied evidence identities and cannot be rerun in place."
+        )
         if pending_baselines:
             prepare_commands = "\n".join(
                 f"python3 scripts/run_sequential_workflow_matrix.py {sequence['id']} --prepare-only"
@@ -160,7 +170,7 @@ def render() -> str:
 
 This generated runbook reflects current workflow-sequence readiness.
 
-It is rendered from `data/workflow-task-sequences.json`, `data/repository-fixtures.json`, and `data/workflow-sessions.json` by `scripts/update_workflow_runbook.py`.
+It is rendered from `data/workflow-task-sequences.json`, `data/repository-fixtures.json`, `data/evaluation-profiles.json`, and `data/workflow-sessions.json` by `scripts/update_workflow_runbook.py`.
 
 Do not hand-edit execution status here. Update the registries, then run:
 
@@ -171,7 +181,7 @@ python3 scripts/validate_repository.py
 
 ## Evidence boundary
 
-A valid workflow run pre-seeds every regression into one qualified composite broken root, then materializes one prompt at a time. Seed patches, task fixtures, verifier assets, controller Git objects, and fixed parents remain outside the model-visible surface; hidden functional verification runs only after all prompts complete.
+A valid workflow run pre-seeds every regression into one qualified composite broken root, then materializes one prompt at a time. Seed patches, task fixtures, verifier assets, controller Git objects, and fixed parents remain outside the model-visible surface; hidden functional verification runs only after all prompts complete. Product-effect eligibility also requires parity with the pinned official Codex integration and positive treatment-assignment evidence; MCP configuration/listing alone is insufficient.
 
 Every active task must use causally related behavioral acceptance. Unrelated exact-source restoration guards are not valid complexity.
 

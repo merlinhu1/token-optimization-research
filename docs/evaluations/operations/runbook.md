@@ -2,7 +2,7 @@
 
 This generated runbook reflects current workflow-sequence readiness.
 
-It is rendered from `data/workflow-task-sequences.json`, `data/repository-fixtures.json`, and `data/workflow-sessions.json` by `scripts/update_workflow_runbook.py`.
+It is rendered from `data/workflow-task-sequences.json`, `data/repository-fixtures.json`, `data/evaluation-profiles.json`, and `data/workflow-sessions.json` by `scripts/update_workflow_runbook.py`.
 
 Do not hand-edit execution status here. Update the registries, then run:
 
@@ -13,7 +13,7 @@ python3 scripts/validate_repository.py
 
 ## Evidence boundary
 
-A valid workflow run pre-seeds every regression into one qualified composite broken root, then materializes one prompt at a time. Seed patches, task fixtures, verifier assets, controller Git objects, and fixed parents remain outside the model-visible surface; hidden functional verification runs only after all prompts complete.
+A valid workflow run pre-seeds every regression into one qualified composite broken root, then materializes one prompt at a time. Seed patches, task fixtures, verifier assets, controller Git objects, and fixed parents remain outside the model-visible surface; hidden functional verification runs only after all prompts complete. Product-effect eligibility also requires parity with the pinned official Codex integration and positive treatment-assignment evidence; MCP configuration/listing alone is insufficient.
 
 Every active task must use causally related behavioral acceptance. Unrelated exact-source restoration guards are not valid complexity.
 
@@ -51,6 +51,8 @@ python3 scripts/run_sequential_workflow_matrix.py --prepare-only "$SEQUENCE_ID"
 `prepare-verification.json` must show every task preseeded, only task 1's prompt materialized, a clean true-root Git baseline, no fixed commit object or prior reflog, current composite qualification, and no model-visible seed or verifier assets.
 
 ## Paid execution
+
+Current runnable treatment profiles: `artifact-ponytail`, `behavior-caveman`, `headroom-default-codex`, `retrieval-jcodemunch-mcp-direct-v1`, `terminal-tokenjuice-codex-hook-v1`. Historical profiles marked `historical-profile` are occupied evidence identities and cannot be rerun in place.
 
 Reusable baselines already exist for `fastify-lifecycle-sequence-v0` (r0, r1), `beets-lifecycle-sequence-v0` (r0, r1), `terraform-lifecycle-sequence-v0` (r0, r1). Do not rerun them. Choose one compatible treatment profile and one intended lane:
 

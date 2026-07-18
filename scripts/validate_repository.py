@@ -970,6 +970,35 @@ def validate_invalid_fixture_disposition(
         errors.append(f"workflow session {sid} invalid fixture evidence must record invalidity reasons")
 
 
+def validate_invalid_treatment_disposition(
+    session: dict,
+    sid: str,
+    errors: list[str],
+) -> None:
+    interpretation = session.get("interpretation", {})
+    if not isinstance(interpretation, dict):
+        return
+    validity = interpretation.get("evaluation_validity")
+    if validity not in {"invalid-treatment-configuration", "unverified-treatment-assignment"}:
+        return
+    label = "invalid treatment configuration" if validity == "invalid-treatment-configuration" else "unverified treatment assignment"
+    if session.get("status") != "excluded":
+        errors.append(f"workflow session {sid} {label} must be excluded")
+    if interpretation.get("accepted_for_execution") is not True:
+        errors.append(f"workflow session {sid} completed ineligible treatment evidence must preserve execution acceptance")
+    if interpretation.get("accepted_for_objective") is not False:
+        errors.append(f"workflow session {sid} {label} cannot be objective-accepted")
+    if interpretation.get("primary_objective_hard_baseline") is not False:
+        errors.append(f"workflow session {sid} {label} cannot be a hard baseline")
+    if interpretation.get("usable_for_primary_objective_token_comparison") is not False:
+        errors.append(f"workflow session {sid} {label} cannot be used for token comparison")
+    if interpretation.get("comparison_baseline_session_id"):
+        errors.append(f"workflow session {sid} {label} cannot retain an active comparison baseline")
+    reasons = interpretation.get("invalidity_reasons")
+    if not isinstance(reasons, list) or not reasons or any(not isinstance(reason, str) or not reason for reason in reasons):
+        errors.append(f"workflow session {sid} {label} must record invalidity reasons")
+
+
 def validate_production_v3_schema_shape(session: dict, sid: str, errors: list[str]) -> None:
     required = (
         "schema_version",
@@ -1028,6 +1057,7 @@ def validate_production_v3_schema_shape(session: dict, sid: str, errors: list[st
     if not isinstance(session.get("per_task_results"), list):
         errors.append(f"workflow session {sid} per_task_results must be an array")
     validate_invalid_fixture_disposition(session, sid, errors)
+    validate_invalid_treatment_disposition(session, sid, errors)
     if requires_structured_task_contract(session):
         validate_structured_task_outcomes(session, sid, errors)
 
@@ -1603,10 +1633,11 @@ def validate_frozen_protocol_bindings(errors: list[str]) -> None:
         runner = None
     current_sequence_bindings: set[str] = set()
     for path in (ROOT / "sources/evaluations/protocols").glob("*.json"):
-        if "-lifecycle-sequence-v0-" not in path.name or re.search(r"-v[1-9][0-9]*-", path.name):
+        protocol = json.loads(path.read_text())
+        sequence_id = protocol.get("task_fixture", {}).get("sequence_id")
+        if not isinstance(sequence_id, str) or not sequence_id.endswith("-lifecycle-sequence-v0"):
             errors.append(f"execution contract {path.name} is not lifecycle v0")
             continue
-        protocol = json.loads(path.read_text())
         if protocol.get("status") == "frozen-ready-not-run" and "gpt-5.5" in json.dumps(protocol):
             errors.append(f"execution contract {path.name} uses unsupported gpt-5.5")
         if protocol.get("status") != "frozen-ready-not-run":
@@ -1641,11 +1672,28 @@ def validate_frozen_protocol_bindings(errors: list[str]) -> None:
                 selected = protocol.get("selected_execution", {})
                 selected_descriptor = selected.get("descriptor", {})
                 selected_profile = selected_descriptor.get("selected_profile", {}).get("profile_id")
-                try:
-                    runner.assert_profile_runnable(str(selected_profile or "baseline-bare-codex"))
-                except ValueError as exc:
-                    errors.append(f"execution contract {path.name} selects a non-runnable profile: {exc}")
-                    continue
+                protocol_rel = path.relative_to(ROOT).as_posix()
+                frozen_hashes = executed_protocols.get(protocol_rel)
+                if frozen_hashes:
+                    actual_protocol_sha = hashlib.sha256(path.read_bytes()).hexdigest()
+                    if frozen_hashes != {actual_protocol_sha}:
+                        errors.append(
+                            f"executed protocol {path.name} bytes do not match retained session references"
+                        )
+                        continue
+                profile_status = None
+                if selected_profile and selected_profile != "baseline-bare-codex":
+                    try:
+                        profile_status = runner.profile_registry_entry(str(selected_profile)).get("status")
+                    except KeyError:
+                        profile_status = None
+                historical_executed = bool(frozen_hashes) and profile_status == "historical-profile"
+                if not historical_executed:
+                    try:
+                        runner.assert_profile_runnable(str(selected_profile or "baseline-bare-codex"))
+                    except ValueError as exc:
+                        errors.append(f"execution contract {path.name} selects a non-runnable profile: {exc}")
+                        continue
                 descriptor = protocol.get("baseline_pool", {}).get("descriptor")
                 if not runner.baseline_protocol_descriptor_compatible(
                     descriptor, runner.baseline_protocol_descriptor(seq)

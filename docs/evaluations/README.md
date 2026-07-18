@@ -26,10 +26,10 @@ Start with the generated [operator runbook](operations/runbook.md).
 
 ## Current evidence
 
-The production surface is lifecycle v0 only. Fastify, Beets, and Terraform each exercise feature implementation, behavior-preserving refactoring, and code review/correction in one persistent workflow. The repository retains 60 operationally valid provider-backed sessions and 54 matched treatment comparisons.
+The production surface remains lifecycle v0: Fastify, Beets, and Terraform each exercise feature implementation, behavior-preserving refactoring, and code review/correction in one persistent workflow. The repository retains 60 completed provider-backed sessions and 54 historical treatment comparisons.
 
-Phase 3 does not introduce new tasks or rerun retained components. The first completed stack profile, `stack-tokenjuice-jcodemunch-mcp`, used the same lifecycle-v0 pool and added only a TokenJuice-plus-jcodemunch treatment session for each lane. It reduced aggregate tokens 9.12% versus bare Codex but used 27.19% more than TokenJuice alone and failed the incremental-value criterion.
+The official-integration parity audit excludes 42 of the 54 treatment sessions from objective claims while preserving their provider-accounting evidence. The historical Phase 3 TokenJuice+jcodemunch screen is withdrawn as a product-effect decision. Corrected TokenJuice and neutral direct-binary jcodemunch profiles are versioned and no-provider-qualified but have no provider-backed samples; a product-guided jcodemunch condition would require a separate instruction-policy profile.
 
-The current synthesis is the [Phase 3 TokenJuice + jcodemunch MCP stack-screen paper](../papers/phase-3-tokenjuice-jcodemunch-stack-screen.md), with component evidence in the [Phase 2 lifecycle-v0 natural-use screening paper](../papers/phase-2-lifecycle-v0-natural-use-screening.md).
+The current validity authority is the [official-integration parity audit](../papers/official-integration-parity-audit.md). Phase 2 and Phase 3 reports remain as historical accounting reports with superseding notices.
 
-Verifier and optional source-review outcomes are diagnostic; complete provider usage and execution integrity determine token-accounting eligibility. Natural availability without forced invocation remains the treatment boundary.
+Natural tool use remains unconstrained after valid assignment. Valid assignment now requires the pinned product's real Codex integration and, for MCP, a retained successful handshake. Product-authored routing guidance is part of the treatment when the pinned guide makes it part of normal setup; evaluator-authored steering remains forbidden.

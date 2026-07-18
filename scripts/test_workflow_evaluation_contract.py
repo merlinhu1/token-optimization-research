@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import copy
 import hashlib
+import inspect
 import json
 import subprocess
 import sys
@@ -263,21 +264,9 @@ class ActiveCampaignArchitectureTest(unittest.TestCase):
             {
                 "artifact-ponytail",
                 "behavior-caveman",
-                "codescope-owner",
-                "integrated-token-savior",
                 "headroom-default-codex",
-                "retrieval-cartog",
-                "retrieval-codegraph",
-                "retrieval-graphify",
-                "retrieval-jcodemunch-mcp",
-                "retrieval-leanctx",
-                "retrieval-serena",
-                "retrieval-sigmap",
-                "stack-tokenjuice-jcodemunch-mcp",
-                "swarmvault-owner",
-                "terminal-rtk",
-                "terminal-snip",
-                "terminal-tokenjuice",
+                "retrieval-jcodemunch-mcp-direct-v1",
+                "terminal-tokenjuice-codex-hook-v1",
             },
         )
         for profile_id in shortlisted:
@@ -290,7 +279,7 @@ class ActiveCampaignArchitectureTest(unittest.TestCase):
             ["medium-fastify-fastify", "medium-beetbox-beets", "large-hashicorp-terraform"],
         )
         for fixture in active:
-            self.assertEqual(fixture["candidate_profiles"], ["baseline-bare-codex", "retrieval-codegraph"])
+            self.assertEqual(fixture["candidate_profiles"], ["baseline-bare-codex", "terminal-tokenjuice-codex-hook-v1", "retrieval-jcodemunch-mcp-direct-v1"])
 
         medium = json.loads((ROOT / "data/medium-project-candidates.json").read_text())
         medium_active = [
@@ -325,14 +314,12 @@ class ActiveCampaignArchitectureTest(unittest.TestCase):
         self.assertIn("{tool_port}", wrapper_args)
         self.assertTrue({"headroom_retrieve", "rtk", "tokensave", "serena"}.issubset(proxy_only["allowed_terms"]))
 
-        runner.assert_profile_runnable("retrieval-cartog")
         cartog = runner.fixture.TOOL_CONFIGS["cartog"]
         self.assertEqual(cartog["mcp_command"], "/bin/bash")
         self.assertEqual(cartog["warmup"]["kind"], "code-graph-build")
         self.assertIn("CARTOG_AUTO_INIT", cartog["env"])
         self.assertEqual(cartog["diff_exclude_paths"], [".cartog"])
 
-        runner.assert_profile_runnable("codescope-owner")
         codescope = runner.fixture.TOOL_CONFIGS["codescope"]
         self.assertEqual(codescope["mcp_command"], "python3")
         self.assertEqual(codescope["default_tool_state"], "cold-auto-index")
@@ -368,7 +355,6 @@ class ActiveCampaignArchitectureTest(unittest.TestCase):
         self.assertNotIn("instructions", sanitized["result"])
         self.assertEqual(sanitized["result"]["serverInfo"], initialize["result"]["serverInfo"])
 
-        runner.assert_profile_runnable("swarmvault-owner")
         swarmvault = runner.fixture.TOOL_CONFIGS["swarmvault"]
         self.assertEqual(swarmvault["mcp_server"], "swarmvault")
         self.assertEqual(swarmvault["default_tool_state"], "warm-index")
@@ -385,35 +371,130 @@ class ActiveCampaignArchitectureTest(unittest.TestCase):
             runner.canonical_treatment_session_id("fastify-fastify", "swarmvault-owner", 1),
         )
 
-    def test_tokenjuice_jcodemunch_stack_composes_orthogonal_integrations(self) -> None:
-        profile_id = "stack-tokenjuice-jcodemunch-mcp"
-        tool_id = "tokenjuice-jcodemunch-mcp-stack"
-        runner.assert_profile_runnable(profile_id)
-        meta = runner.PROFILE_META[profile_id]
-        self.assertEqual(meta["profile_type"], "tool_stack")
-        self.assertEqual(meta["objective_scope"], "stack_effectiveness")
-        self.assertEqual(meta["session_role"], "stack_treatment")
-        self.assertEqual(runner.default_study_id(profile_id), "phase-3-lifecycle-v0-stack-screen")
-        self.assertEqual(
-            meta["component_ids"],
-            ["terminal-tokenjuice", "retrieval-jcodemunch-mcp"],
-        )
-        self.assertEqual(runner.SUPPORTED_WORKFLOW_TOOL_PROFILES[profile_id], tool_id)
+    def test_ineligible_historical_profiles_are_not_runnable(self) -> None:
+        historical = {
+            "terminal-tokenjuice", "terminal-rtk", "terminal-snip",
+            "retrieval-jcodemunch-mcp", "retrieval-leanctx", "retrieval-codegraph",
+            "retrieval-cartog", "codescope-owner", "swarmvault-owner",
+            "retrieval-serena", "retrieval-graphify", "retrieval-sigmap",
+            "integrated-token-savior", "stack-tokenjuice-jcodemunch-mcp",
+        }
+        for profile_id in historical:
+            with self.assertRaisesRegex(ValueError, "historical-profile"):
+                runner.assert_profile_runnable(profile_id)
 
-        cfg = runner.fixture.TOOL_CONFIGS[tool_id]
-        self.assertIs(runner.fixture.active_tool_config({}, profile_id), cfg)
-        self.assertEqual(cfg["component_tool_ids"], ["tokenjuice", "jcodemunch-mcp"])
-        self.assertEqual(cfg["executable"], str(runner.fixture.TOKENJUICE_BIN))
-        self.assertIn(str(runner.fixture.TOKENJUICE_BIN.parent), cfg["path_entries"])
-        self.assertEqual(cfg["mcp_server"], "jcodemunch")
-        self.assertIn("jcodemunch-mcp serve", cfg["mcp_args"][-1])
-        self.assertIn("TOKENJUICE_TELEMETRY", cfg["env"])
-        self.assertIn("JCODEMUNCH_LOG_LEVEL", cfg["env"])
-        self.assertIn(str(runner.fixture.TOKENJUICE_ROOT), cfg["mounts"])
-        self.assertIn(str(runner.fixture.JCODEMUNCH_WHEEL), cfg["mounts"])
-        self.assertEqual(cfg["warmup"]["kind"], "code-index-build")
-        self.assertIn("jcodemunch-mcp", cfg["warmup"]["command"])
-        self.assertEqual(runner.artifact_profile_label(profile_id), "tokenjuice-jcodemunch")
+    def test_corrected_tokenjuice_and_jcodemunch_profiles_bind_official_integrations(self) -> None:
+        token_profile = "terminal-tokenjuice-codex-hook-v1"
+        token_cfg = runner.fixture.active_tool_config({}, token_profile)
+        self.assertEqual(runner.SUPPORTED_WORKFLOW_TOOL_PROFILES[token_profile], "tokenjuice-codex-hook-v1")
+        self.assertEqual(token_cfg["host_integration"]["install_commands"], [["tokenjuice", "install", "codex"]])
+        self.assertTrue(token_cfg["codex_features"]["hooks"])
+        self.assertIn("{codex_home}/hooks.json", token_cfg["host_integration"]["required_files"])
+        self.assertEqual(runner.fixture.codex_hook_args(token_cfg), [])
+
+        jcode_profile = "retrieval-jcodemunch-mcp-direct-v1"
+        jcode_cfg = runner.fixture.active_tool_config({}, jcode_profile)
+        self.assertEqual(runner.SUPPORTED_WORKFLOW_TOOL_PROFILES[jcode_profile], "jcodemunch-mcp-direct-v1")
+        self.assertEqual(jcode_cfg["mcp_command"], "{tool_data_dir}/venv/bin/jcodemunch-mcp")
+        self.assertEqual(jcode_cfg["mcp_args"], [])
+        self.assertTrue(jcode_cfg["mcp_handshake"]["required"])
+        self.assertNotIn("tool run", " ".join(jcode_cfg["warmup"]["command"]))
+        self.assertNotIn("prompt_instructions_command", jcode_cfg)
+        descriptor = runner.execution_condition_descriptor(
+            runner.load_sequence("fastify-lifecycle-sequence-v0"), jcode_profile
+        )
+        probe = ROOT / descriptor["runtime"]["mcp_probe_path"]
+        self.assertEqual(descriptor["runtime"]["mcp_probe_sha256"], hashlib.sha256(probe.read_bytes()).hexdigest())
+
+    def test_mcp_handshake_runs_after_profile_workspace_warmup(self) -> None:
+        workflow_source = inspect.getsource(runner.run_one)
+        self.assertLess(
+            workflow_source.index("fixture.prepare_profile_workspace("),
+            workflow_source.index("fixture.probe_mcp_handshake("),
+        )
+        fixture_source = inspect.getsource(runner.fixture.main)
+        self.assertLess(
+            fixture_source.index("prepare_profile_workspace("),
+            fixture_source.index("probe_mcp_handshake("),
+        )
+
+    def test_mcp_probe_requires_at_least_one_advertised_tool(self) -> None:
+        server_source = """import json,sys
+for line in sys.stdin:
+    message=json.loads(line)
+    if message.get('method')=='initialize':
+        print(json.dumps({'jsonrpc':'2.0','id':message['id'],'result':{'protocolVersion':'2025-06-18','serverInfo':{'name':'fixture','version':'1'},'capabilities':{}}}),flush=True)
+    elif message.get('method')=='tools/list':
+        print(json.dumps({'jsonrpc':'2.0','id':message['id'],'result':{'tools':[]}}),flush=True)
+"""
+        with tempfile.TemporaryDirectory() as tmp:
+            server = Path(tmp) / "empty_mcp.py"
+            server.write_text(server_source)
+            proc = subprocess.run(
+                [
+                    sys.executable,
+                    str(ROOT / "scripts/probe_mcp_stdio.py"),
+                    "--command",
+                    sys.executable,
+                    "--arg",
+                    str(server),
+                    "--timeout",
+                    "2",
+                ],
+                text=True,
+                capture_output=True,
+                timeout=10,
+                check=False,
+            )
+        self.assertEqual(proc.returncode, 1)
+        receipt = json.loads(proc.stdout)
+        self.assertIn("tools/list advertised no tools", receipt["errors"])
+
+    def test_official_integration_audit_matches_session_dispositions(self) -> None:
+        audit = json.loads(
+            (ROOT / "sources/evaluations/audits/official-integration-parity-20260718.json").read_text()
+        )
+        sessions = json.loads((ROOT / "data/workflow-sessions.json").read_text())["sessions"]
+        by_profile = {}
+        for session in sessions:
+            by_profile.setdefault(session["profile"]["profile_id"], []).append(session)
+        expected_validity = {
+            "invalid-treatment-configuration": "invalid-treatment-configuration",
+            "unverified-treatment-assignment": "unverified-treatment-assignment",
+        }
+        for item in audit["profiles"]:
+            retained = by_profile[item["profile_id"]]
+            self.assertEqual(sorted(item["session_ids"]), sorted(row["session_id"] for row in retained))
+            self.assertEqual(
+                item["objective_eligible"],
+                all(row["interpretation"]["accepted_for_objective"] for row in retained),
+            )
+            if item["disposition"] in expected_validity:
+                self.assertTrue(
+                    all(
+                        row["interpretation"]["evaluation_validity"]
+                        == expected_validity[item["disposition"]]
+                        for row in retained
+                    )
+                )
+
+    def test_ineligible_treatment_disposition_preserves_execution_only(self) -> None:
+        for validity in ("invalid-treatment-configuration", "unverified-treatment-assignment"):
+            session = {
+                "status": "excluded",
+                "interpretation": {
+                    "evaluation_validity": validity,
+                    "accepted_for_execution": True,
+                    "accepted_for_objective": False,
+                    "primary_objective_hard_baseline": False,
+                    "usable_for_primary_objective_token_comparison": False,
+                    "comparison_baseline_session_id": "",
+                    "invalidity_reasons": ["official integration assignment was not proven"],
+                },
+            }
+            errors: list[str] = []
+            validate_repository.validate_invalid_treatment_disposition(session, "session", errors)
+            self.assertEqual(errors, [])
 
     def test_task_delta_can_exclude_treatment_owned_cache_paths(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
@@ -1363,7 +1444,7 @@ class ManifestAndProtocolContractTest(unittest.TestCase):
             docker_image=runner.DEFAULT_DOCKER_IMAGE,
         )
         with self.assertRaisesRegex(ValueError, "selected_execution|treatment_profile_id"):
-            runner.validate_protocol_for_run(seq, "retrieval-codegraph", args)
+            runner.validate_protocol_for_run(seq, "terminal-tokenjuice-codex-hook-v1", args)
 
     def test_same_docker_tag_different_image_id_rejects(self) -> None:
         seq = runner.load_sequence(SEQUENCE_ID)
@@ -1386,11 +1467,11 @@ class ManifestAndProtocolContractTest(unittest.TestCase):
         with tempfile.TemporaryDirectory() as tmp:
             protocol_path = Path(tmp) / "protocol.json"
             with mock.patch.object(runner, "docker_image_identity", return_value=image), mock.patch.object(runner, "executable_identity", return_value=binary_a):
-                protocol_path.write_text(json.dumps(self.frozen_protocol_doc(protocol_path, seq, "retrieval-codegraph"), indent=2) + "\n")
+                protocol_path.write_text(json.dumps(self.frozen_protocol_doc(protocol_path, seq, "terminal-tokenjuice-codex-hook-v1"), indent=2) + "\n")
             args = mock.Mock(protocol=str(protocol_path), prepare_only=True, no_provider=True, timeout_per_task=3600, docker_image=runner.DEFAULT_DOCKER_IMAGE)
             with mock.patch.object(runner, "docker_image_identity", return_value=image), mock.patch.object(runner, "executable_identity", return_value=binary_b):
                 with self.assertRaisesRegex(ValueError, "selected_execution"):
-                    runner.validate_protocol_for_run(seq, "retrieval-codegraph", args)
+                    runner.validate_protocol_for_run(seq, "terminal-tokenjuice-codex-hook-v1", args)
 
     def test_unresolved_treatment_executable_rejects_identity(self) -> None:
         profile_id = "unit-missing-tool-profile"
