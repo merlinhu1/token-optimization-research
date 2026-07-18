@@ -1,208 +1,205 @@
 # GPT-5.6 Sol/High Persistent-Baseline Variance Screen
 
-**Status:** descriptive model-condition screen; not confirmatory
+**Status:** corrected descriptive model-condition screen; not confirmatory
 
 **Evidence collected:** 2026-07-16 (Luna/`xhigh`) and 2026-07-18 (Sol/`high`)
 
-**Runtime:** Codex CLI 0.144.0
-
-**Workflow unit:** one persistent three-task lifecycle-v0 session
-
-**Primary metric:** provider-reported total tokens, including cached input
-
 ## Abstract
 
-Three fresh replicates of each Fastify, Beets, and Terraform persistent baseline were run with GPT-5.6 Sol at `high` reasoning. All nine Sol sessions completed without operational retry, passed all 27 task verifiers and all nine final concealed verifiers, passed isolation/integrity checks, and retained checksum-valid compact evidence bundles.
+Three accepted persistent lifecycle replicates were available for each of Fastify, Beets, and Terraform under two compound conditions:
 
-Across the nine sessions, Sol/`high` used **130,385,748** total provider tokens versus **208,531,229** for the retained Luna/`xhigh` panel, a descriptive pooled difference of **-37.47%**. The geometric mean of the three portfolio-level replicate ratios was **-38.19%**. Every sequence/replicate cell was lower under Sol/`high`.
+- GPT-5.6 Luna with `xhigh` reasoning;
+- GPT-5.6 Sol with `high` reasoning.
 
-This screen does **not** show that Sol/`high` generally reduces run-to-run variance. Fastify and Beets dispersion decreased, but Terraform dispersion increased, and the three-lane portfolio coefficient of variation increased from **8.54%** to **21.17%** because Sol replicate 0 was much larger than replicates 1 and 2. The strongest supported result is lower observed token volume in this panel, not lower variance.
+A post-run accounting audit found that the legacy extractor summed three cumulative Codex thread-usage snapshots. Codex 0.144.0 emits `ThreadTokenUsage.total` in each `turn.completed.usage` record, so the correct session total is the final cumulative snapshot for each thread, not the sum of snapshots. The raw compact bundles remain unchanged; this report uses the correction audit.
 
-## Research question and claim boundary
+After correction, the nine Sol/`high` sessions used **68,275,315 total provider tokens**, compared with **100,856,945** for Luna/`xhigh`. This is a **32.30% lower pooled total**. The geometric mean of the three paired portfolio ratios is **0.6720**, or **32.80% lower**.
 
-The screen asks whether changing the compound agent condition from GPT-5.6 Luna/`xhigh` to GPT-5.6 Sol/`high` changes token volume and descriptive run-to-run dispersion in the existing persistent baseline workflows.
+Variance did not improve uniformly. Sequence-level coefficient of variation fell for Fastify and Beets but rose for Terraform. Portfolio CV rose from **5.66%** to **16.29%**, largely because corrected Terraform r0 remained high at 15.526M tokens versus 10.962M and 10.762M in r1 and r2. The evidence supports **lower observed token volume with mixed variance**, not a general variance-reduction claim.
 
-The estimand is condition assignment for the complete workflow. Tool commands, event counts, and accumulated context are post-treatment trajectory mechanisms and are not regressed out of the primary outcome.
+## Accounting correction
 
-The evidence supports descriptive statements about these 18 retained sessions. It does not isolate model identity from reasoning effort, estimate a population variance with useful precision, or establish deployment superiority.
+The retained runner used `scripts/extract_codex_usage.py` to sum all `turn.completed.usage` blocks. That is incorrect for resumed persistent threads:
 
-## Methods
+1. Codex 0.144.0 receives `ThreadTokenUsageUpdated`, whose payload contains `total` and `last` usage.
+2. The JSONL event processor stores the notification and emits `usage_from_last_total()` at turn completion.
+3. `usage_from_last_total()` reads `token_usage.total`.
+4. Each of the three workflow tasks resumed the same thread, so its usage blocks were cumulative snapshots.
 
-### Panel
+The correction therefore:
 
-Each condition contains:
+- selects the final cumulative usage snapshot for each distinct thread;
+- sums only across distinct threads;
+- computes per-task usage by differencing consecutive cumulative snapshots from the same thread;
+- fails closed if a cumulative counter decreases;
+- preserves every historical compact bundle and legacy registry value.
 
-- three Fastify lifecycle-v0 sessions;
-- three Beets lifecycle-v0 sessions;
-- three Terraform lifecycle-v0 sessions;
-- replicates `r0`, `r1`, and `r2` for every sequence;
-- feature implementation, behavior-preserving refactor, and code-review correction in one persistent Codex thread per session.
+The correction audit covers all 30 retained workflow sessions. Every session required correction. Across that larger registry, the legacy extractor reported 624,852,758 tokens versus a corrected 312,219,452.
 
-Repository, agent home, tool state, caches, and temporary state were fresh before each session and persisted across the three tasks within that session. Prompts were disclosed sequentially. Concealed acceptance assets remained controller-only until final verification.
+Source evidence is pinned to OpenAI Codex `rust-v0.144.0`, commit `767822446c7a594caa19609ca435281a9ec67e0d`, `codex-rs/exec/src/event_processor_with_jsonl_output.rs`, lines 496–522.
 
-### Compound conditions
+## Research question
 
-| Condition ID | Model | Reasoning effort | Role |
-|---|---|---:|---|
-| `codex-openai-gpt-5-6-luna-xhigh` | `gpt-5.6-luna` | `xhigh` | retained active-default baseline |
-| `codex-openai-gpt-5-6-sol-high` | `gpt-5.6-sol` | `high` | active model-comparison baseline |
+Does changing the persistent bare-Codex baseline from Luna/`xhigh` to Sol/`high` reduce total provider-token volume or its replicate-to-replicate dispersion across the retained lifecycle workflows?
 
-The conditions must not be pooled as one baseline identity. The Sol condition has its own frozen protocols and baseline-pool fingerprints.
+This is a descriptive screen of a compound condition. It does not isolate model from reasoning effort.
 
-### Accounting
+## Evidence panel
 
-Total provider tokens equal Codex-reported input tokens plus output tokens. Fresh input is input minus cached input. Reasoning tokens are a reported subset of output tokens and are not added again.
+| Condition | Model | Effort | Sequences | Replicates | Sessions | Tasks |
+|---|---|---:|---:|---:|---:|---:|
+| Luna baseline | `gpt-5.6-luna` | `xhigh` | 3 | 3 | 9 | 27 |
+| Sol comparison | `gpt-5.6-sol` | `high` | 3 | 3 | 9 | 27 |
 
-### Nuisance-control audit
+For all 18 selected sessions:
 
-All 18 sessions used:
+- compact manifests passed: 18/18;
+- compact manifest files matched: 54/54;
+- accounting corrections reconciled task increments to final thread totals: 18/18;
+- task verifiers passed: 54/54;
+- final concealed verifiers passed: 18/18;
+- operational retries: 0;
+- tool-isolation and verifier-integrity checks passed;
+- external-retrieval hits: 0.
 
-- Codex CLI 0.144.0;
-- bare-Codex control profile with no MCP, global instructions, hooks, skills, plugins, warm indexes, or token-saving tools;
-- Docker image `sha256:6f86d01f2c63f5029c6bb874d8f3694c24d5cd567e3d09413eccc956ba3feafe`;
-- identical sequence-specific rendered prompt hashes;
-- the same sequence and replicate labels.
+Checksum validity is not the same as strict nested parseability. Recursive review checked 368 embedded JSON, JSONL, and TOML artifacts. Thirty-four Codex event JSONL artifacts contain 2,228 raw stderr or non-object physical lines, counting duplication between aggregate and per-task streams. Structured usage records remain complete and reconcile under the corrected accounting rule.
 
-A material caveat remains: Luna `r0` and `r1` froze fixture-runner hash `6b8058…`, while Luna `r2` and all Sol sessions froze `eea63c…`. The intervening runner changes expanded qualification, integration, and compact-evidence machinery. Six of nine condition pairs therefore differ in a controller implementation identity even though model-facing prompts, image, CLI, profile, and sequence are equal. Only the three `r2` pairs match every audited nuisance-control field. The full panel is useful descriptively but is not a fully blocked causal model comparison.
+## Corrected provider-token results
 
-## Evidence inventory and integrity
+### Per sequence and replicate
 
-| Condition | Sessions | Tasks passed | Final verifiers | Operational retries | Manifest files checked |
-|---|---:|---:|---:|---:|---:|
-| Luna/`xhigh` | 9 | 27/27 | 9/9 | 0 | 27/27 |
-| Sol/`high` | 9 | 27/27 | 9/9 | 0 | 27/27 |
+| Sequence | Condition | r0 | r1 | r2 | Three-replicate sum |
+|---|---|---:|---:|---:|---:|
+| Fastify | Luna/`xhigh` | 6,420,074 | 6,712,770 | 4,617,123 | 17,749,967 |
+| Fastify | Sol/`high` | 4,464,422 | 4,465,189 | 3,954,296 | 12,883,907 |
+| Beets | Luna/`xhigh` | 12,244,729 | 8,728,732 | 9,238,446 | 30,211,907 |
+| Beets | Sol/`high` | 7,048,538 | 5,284,953 | 5,808,516 | 18,142,007 |
+| Terraform | Luna/`xhigh` | 15,863,828 | 19,453,066 | 17,578,177 | 52,895,071 |
+| Terraform | Sol/`high` | 15,526,000 | 10,961,655 | 10,761,746 | 37,249,401 |
+| **Portfolio** | **Luna/`xhigh`** | **34,528,631** | **34,894,568** | **31,433,746** | **100,856,945** |
+| **Portfolio** | **Sol/`high`** | **27,038,960** | **20,711,797** | **20,524,558** | **68,275,315** |
 
-All sessions were marked valid and token-accounting eligible. All tool-isolation and verifier-integrity checks passed, and no external-retrieval hits were recorded.
+All nine sequence/replicate cells used fewer corrected tokens under Sol/`high`.
 
-Checksum validity is not the same as nested format validity. A recursive audit parsed 368 embedded JSON, JSONL, and TOML artifacts. Thirty-four Codex event JSONL artifacts contained 2,228 raw-stderr or non-object physical lines: 2,012 in the Luna bundles and 216 in the Sol bundles. The count includes duplication between aggregate and per-task event streams. Structured `provider-usage.json` records and their three usage blocks per session parsed and reconciled to every retained total, so the token accounting remains usable; strict event-level diagnostics are degraded and event-line parse failures are not compared as model behavior.
+### Component totals
 
-## Provider-token results
+| Component | Luna/`xhigh` | Sol/`high` | Pooled change |
+|---|---:|---:|---:|
+| Fresh input | 3,047,685 | 1,772,924 | −41.83% |
+| Cached input | 97,370,624 | 66,216,192 | −32.00% |
+| Output | 438,636 | 286,199 | −34.75% |
+| Reasoning subset | 210,611 | 117,484 | −44.22% |
+| **Total provider tokens** | **100,856,945** | **68,275,315** | **−32.30%** |
 
-### Replicate-level totals
+Cached input contributed 96.54% of Luna total and 96.98% of Sol total. Persistent-context replay remains the dominant accounting component.
 
-| Replicate | Condition | Fastify | Beets | Terraform | Three-lane total | Sol change vs Luna |
-|---:|---|---:|---:|---:|---:|---:|
-| r0 | Luna/`xhigh` | 12,950,066 | 25,369,525 | 33,564,150 | 71,883,741 | — |
-| r0 | Sol/`high` | 8,387,234 | 14,219,882 | 31,471,786 | 54,078,902 | -24.77% |
-| r1 | Luna/`xhigh` | 13,077,552 | 17,423,571 | 43,392,324 | 73,893,447 | — |
-| r1 | Sol/`high` | 8,097,854 | 10,350,366 | 20,018,683 | 38,466,903 | -47.94% |
-| r2 | Luna/`xhigh` | 7,642,570 | 17,612,278 | 37,499,193 | 62,754,041 | — |
-| r2 | Sol/`high` | 7,106,525 | 11,376,116 | 19,357,302 | 37,839,943 | -39.70% |
+Reasoning tokens are a subset of output tokens and are not added again to total provider tokens.
 
-All nine sequence/replicate ratios favored lower token volume under Sol/`high`:
+## Dispersion
 
-- Fastify: -35.23%, -38.08%, and -7.01%; paired geometric mean -28.02%.
-- Beets: -43.95%, -40.60%, and -35.41%; paired geometric mean -40.09%.
-- Terraform: -6.23%, -53.87%, and -48.38%; paired geometric mean -39.33%.
+### Sequence-level total-token dispersion
 
-Because six pairs differ in fixture-runner identity, these ratios are descriptive condition contrasts rather than fully matched causal estimates.
-
-### Run-to-run dispersion
-
-| Sequence/portfolio | Luna mean | Luna CV | Luna log SD | Sol mean | Sol CV | Sol log SD | Mean change |
+| Sequence | Luna mean | Luna CV | Luna log SD | Sol mean | Sol CV | Sol log SD | Mean change |
 |---|---:|---:|---:|---:|---:|---:|---:|
-| Fastify | 11,223,396 | 27.64% | 0.307 | 7,863,871 | 8.54% | 0.087 | -29.93% |
-| Beets | 20,135,125 | 22.52% | 0.214 | 11,982,121 | 16.73% | 0.163 | -40.49% |
-| Terraform | 38,151,889 | 12.97% | 0.129 | 23,615,924 | 28.84% | 0.271 | -38.10% |
-| Three-lane total | 69,510,410 | 8.54% | 0.087 | 43,461,916 | 21.17% | 0.202 | -37.47% |
+| Fastify | 5.917M | 19.18% | 0.2044 | 4.295M | 6.86% | 0.0701 | −27.41% |
+| Beets | 10.071M | 18.87% | 0.1813 | 6.047M | 14.98% | 0.1468 | −39.95% |
+| Terraform | 17.632M | 10.18% | 0.1020 | 12.416M | 21.70% | 0.2065 | −29.58% |
 
-The variance result is mixed. Sol/`high` was more stable on Fastify and Beets but less stable on Terraform and on the aggregate portfolio. With only three replicates, each coefficient of variation is highly sensitive to one trajectory.
+### Portfolio-level dispersion
 
-### Token components
+| Condition | Replicate totals | Mean | CV | Log SD |
+|---|---|---:|---:|---:|
+| Luna/`xhigh` | 34.529M, 34.895M, 31.434M | 33.619M | 5.66% | 0.0575 |
+| Sol/`high` | 27.039M, 20.712M, 20.525M | 22.758M | 16.29% | 0.1566 |
 
-| Component | Luna/`xhigh` | Sol/`high` | Sol change |
+The corrected result still rejects a blanket variance-reduction interpretation. Fastify and Beets were less dispersed, while Terraform and the aggregate portfolio were more dispersed.
+
+## Terraform Sol/High r0 forensic note
+
+Terraform r0 is a real trajectory outlier, but its legacy 31.472M total was not real session usage. The corrected total is **15,526,000**.
+
+Corrected per-task increments were:
+
+| Task | r0 | r1 | r2 |
 |---|---:|---:|---:|
-| Fresh input | 6,740,374 | 3,936,941 | -41.59% |
-| Cached input | 200,846,080 | 125,838,080 | -37.35% |
-| Output | 944,775 | 610,727 | -35.36% |
-| Reasoning subset | 453,720 | 246,443 | -45.68% |
-| Total provider tokens | 208,531,229 | 130,385,748 | -37.47% |
+| Feature implementation | 4,999,516 | 2,315,861 | 2,255,641 |
+| Behavior-preserving refactor | 5,946,754 | 4,425,306 | 4,084,274 |
+| Review correction | 4,579,730 | 4,220,488 | 4,421,831 |
 
-Cached input dominated both conditions: 96.31% of Luna total and 96.51% of Sol total. The observed reduction therefore primarily reflects shorter or fewer accumulated-context replays, not merely shorter final answers. Sol also used fewer fresh-input, output, and reasoning tokens.
+The excess is concentrated in task 1 and, through persistent context replay, task 2. r0 made more task-1 command executions and edits, ran broader focused, vet, formatting, and race checks, and produced a larger task-1 patch. It had no provider error event, no operational retry, and all concealed verifiers passed.
 
-### Task-class totals
+One diagnostics defect remains: Codex could not write the task-1 `--output-last-message` file because its parent artifact directory was absent. The final task-1 agent message is still present in the valid JSONL event stream, and tasks 2–3 resumed the same thread successfully. This affects diagnostics completeness, not provider accounting or task execution eligibility.
 
-Mean provider tokens per task across nine observations per class:
+## Paired portfolio comparison
 
-| Task class | Luna/`xhigh` mean | Sol/`high` mean | Sol change |
-|---|---:|---:|---:|
-| Feature implementation | 3,599,076 | 1,933,358 | -46.28% |
-| Behavior-preserving refactor | 8,364,733 | 4,967,801 | -40.61% |
-| Code-review correction | 11,206,327 | 7,586,146 | -32.30% |
+| Replicate | Luna/`xhigh` | Sol/`high` | Ratio | Change |
+|---|---:|---:|---:|---:|
+| r0 | 34,528,631 | 27,038,960 | 0.7831 | −21.69% |
+| r1 | 34,894,568 | 20,711,797 | 0.5936 | −40.64% |
+| r2 | 31,433,746 | 20,524,558 | 0.6529 | −34.71% |
 
-Later persistent tasks remained more expensive because they replayed more accumulated context. Sol/`high` reduced the observed mean in every task class, but the relative reduction narrowed by the final review task.
+The geometric mean paired ratio is 0.6720, corresponding to **32.80% lower** Sol/`high` usage. Because six of nine pairs differ in fixture-runner hash and the condition changes both model and effort, these paired ratios are descriptive rather than strict causal estimates.
+
+## Task-order interpretation
+
+Corrected per-task increments change the earlier order-effect interpretation. Across all workflows:
+
+| Task class | Luna mean | Sol mean |
+|---|---:|---:|
+| Feature implementation | 3.599M | 1.933M |
+| Behavior-preserving refactor | 4.766M | 3.034M |
+| Review correction | 2.842M | 2.618M |
+
+The legacy extractor made later tasks appear most expensive because each later block included all earlier thread usage. After differencing cumulative snapshots, the refactor task has the largest average incremental cost, and the review-correction task shows the smallest model-condition reduction.
 
 ## Trajectory diagnostics
 
-| Diagnostic across nine sessions | Luna/`xhigh` | Sol/`high` | Sol change |
-|---|---:|---:|---:|
-| Provider events | 1,987 | 1,289 | -35.13% |
-| Native command executions | 743 | 446 | -39.97% |
-| Native command failures | 87 | 67 | -22.99% |
-| File-change items | 103 | 75 | -27.18% |
-| Agent-message items | 152 | 154 | +1.32% |
-| Provider tool calls observed | 0 | 0 | — |
+Sol/`high` issued fewer native command executions and fewer provider events across the panel. These are plausible mechanisms for lower token usage, not covariates to remove from the primary outcome. Command counts do not explain every cell; Terraform r0 retained a heavier task-1 trajectory and persistent replay burden.
 
-“Provider tool calls observed” is the extractor's dedicated tool-call field. These bare-Codex runs instead expose shell/edit activity as native `command_execution` and `file_change` items, so zero dedicated tool calls does not mean no agent actions.
-
-The lower command and event counts are consistent with fewer model round trips and less context replay under Sol/`high`, but they are post-treatment mechanisms. The screen does not establish that command count caused the token reduction. Non-JSON event-line counts are omitted from comparison because the controller runner and event-capture implementation changed between Luna `r0`/`r1` and the later sessions.
-
-## Correctness and quality boundary
-
-All 18 sessions passed their structured task and final verifiers. That supports functional correctness on the frozen acceptance suites. Independent source-review fields remain `not-reviewed`, so this report does not claim equivalent maintainability, design quality, or merge readiness.
-
-No sample was rerun because of its token direction, tool behavior, or verifier result. Replicate 0's initial matrix exit was a post-merge controller validation defect: all three provider lanes had already completed and their first samples were retained. The protected test and generated runbook were repaired without rerunning or modifying those sessions.
+Provider tool-call counts remain zero because the bare baseline represents native shell operations as `command_execution` items rather than provider tool-call items.
 
 ## Interpretation
 
-### Supported
+The corrected evidence supports three limited statements:
 
-- In this panel, Sol/`high` used substantially fewer total provider tokens than Luna/`xhigh` in every sequence/replicate cell.
-- The reduction affected cached input, fresh input, output, and reasoning components.
-- Sol/`high` produced fewer native command and provider-event items while still passing all structured verifiers.
-- Fastify and Beets showed lower descriptive run-to-run dispersion under Sol/`high`.
+1. Sol/`high` used fewer provider tokens in every matched sequence/replicate cell.
+2. The reduction was large in pooled and paired summaries, at roughly 32–33%.
+3. Variance effects were heterogeneous: lower for Fastify and Beets, higher for Terraform and the portfolio aggregate.
 
-### Not supported
+It does not support:
 
-- A general claim that Sol/`high` reduces variance. Terraform and portfolio dispersion increased.
-- Attribution to model identity alone. Reasoning effort changed from `xhigh` to `high`.
-- A fully matched causal estimate across all replicates. Six pairs differ in fixture-runner identity and collection date.
-- Quality equivalence beyond the frozen functional verifiers.
-- A deployment recommendation from three replicates.
+- a model-only causal effect;
+- an effort-only causal effect;
+- a general claim that Sol lowers persistent-workflow variance;
+- exclusion of Terraform r0 merely because it is high;
+- continued use of legacy registry token totals without the correction overlay.
 
-## Decision use
+## Limitations
 
-The result is strong enough to justify treating Sol/`high` as a lower-token replication candidate for persistent coding workflows. It is not strong enough to conclude that the condition stabilizes run-to-run consumption.
+1. There are only three replicates per sequence and condition.
+2. Model and reasoning effort change together.
+3. Collection date was not randomized or blocked.
+4. Six of nine matched pairs use a different fixture-runner hash; only r2 is an exact runner-hash match.
+5. The correction is derived from immutable raw events and pinned Codex source semantics; historical registry and compact provider-summary values remain legacy values.
+6. Some embedded JSONL diagnostics contain raw stderr and are not strictly line-parseable.
+7. Verifier success establishes task-contract acceptance, not equivalence of implementation quality across replicas.
 
-A confirmatory follow-up should freeze one runner commit and image, block or randomize collection time, compare Luna and Sol at the same reasoning effort, and use more than three replicates. A small factorial design separating model from effort would distinguish a Sol effect from the `xhigh`→`high` effort reduction.
+## Reproduction
 
-## Claim-evidence audit
-
-| Claim | Evidence | Disposition |
-|---|---|---|
-| Nine Sol/`high` sessions completed validly | Session registry, compact bundles, manifests, matrix receipts | Supported |
-| Sol/`high` used fewer tokens in every observed cell | 9 sequence/replicate ratios | Supported descriptively |
-| Sol/`high` reduced total token volume by about 37% | Pooled total -37.47%; portfolio paired geometric mean -38.19% | Supported for this panel |
-| Sol/`high` reduced variance | Mixed sequence and portfolio CV/log-SD results | Not supported |
-| Sol is independently responsible | Model and effort changed together; runner/date mismatch | Not supported |
-| Functional correctness was preserved | 27/27 task verifiers and 9/9 final verifiers per condition | Supported on frozen suites only |
-
-## Reproducibility map
-
-- Machine-readable analysis: [`../../sources/evaluations/audits/gpt-5-6-sol-high-baseline-variance-20260718.json`](../../sources/evaluations/audits/gpt-5-6-sol-high-baseline-variance-20260718.json)
-- Analysis script: [`../../scripts/analyze_model_condition_baselines.py`](../../scripts/analyze_model_condition_baselines.py)
-- Session registry: [`../../data/workflow-sessions.json`](../../data/workflow-sessions.json)
-- Runtime/model registry: [`../../data/evaluation-agent-runtimes.json`](../../data/evaluation-agent-runtimes.json)
-- Frozen protocols: [`../../sources/evaluations/protocols/`](../../sources/evaluations/protocols/)
-- Compact session evidence: [`../../sources/evaluations/workflow-sessions/`](../../sources/evaluations/workflow-sessions/)
-
-Reproduce the analysis with:
+From the repository root:
 
 ```bash
+python3 scripts/audit_codex_cumulative_usage.py
 python3 scripts/analyze_model_condition_baselines.py
-python3 scripts/validate_repository.py
 ```
+
+Machine-readable evidence:
+
+- [Cumulative Codex usage correction audit](../../sources/evaluations/audits/codex-cumulative-usage-accounting-20260718.json)
+- [Corrected Sol/high variance audit](../../sources/evaluations/audits/gpt-5-6-sol-high-baseline-variance-20260718.json)
+- [Workflow session registry](../../data/workflow-sessions.json)
+- [Compact workflow evidence bundles](../../sources/evaluations/workflow-sessions/)
 
 ## Conclusion
 
-Sol/`high` completed all nine requested persistent baseline sessions with valid accounting and functional verification. It used markedly fewer provider tokens than the retained Luna/`xhigh` panel, with a portfolio-level descriptive reduction around 38%. The experiment does not support the original variance-reduction hypothesis: dispersion improved on two workflows but worsened on Terraform and in the aggregate. The correct takeaway is **lower observed token volume with mixed variance**, subject to the compound-condition and runner-version limitations above.
+After correcting cumulative-thread accounting, Sol/`high` used materially fewer provider tokens than Luna/`xhigh`, but the experiment still does not show general variance reduction. Terraform r0 is a valid high-trajectory sample at 15.526M corrected tokens, not a 31.472M session. The main defect was systemic extraction, not a provider failure unique to that run.

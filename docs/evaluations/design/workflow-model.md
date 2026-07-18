@@ -34,8 +34,10 @@ Future regression code may be present from lane start; future prompts and concea
 The primary metric is cumulative provider-reported workflow usage:
 
 ```text
-workflow_session_total = sum(provider-reported usage for all model-visible work in the session)
+workflow_session_total = sum(final provider-reported cumulative usage for each distinct agent thread)
 ```
+
+For Codex exec JSONL, every `turn.completed.usage` record serializes `ThreadTokenUsage.total`. Resumed turns from the same persistent thread are therefore cumulative snapshots: select the final snapshot for the session total and difference consecutive snapshots for per-task increments. Never sum same-thread snapshots. Sum final snapshots only when a workflow legitimately uses distinct threads. Fail closed if a cumulative counter decreases.
 
 Record fresh input, cached input, cache-write, output, reasoning when available, and total provider tokens. Report tokens per structured accepted task as a derived metric. Do not estimate money.
 
