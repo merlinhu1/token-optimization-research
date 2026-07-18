@@ -345,6 +345,14 @@ class ActiveCampaignArchitectureTest(unittest.TestCase):
             runner.fixture.CODESCOPE_NEUTRAL_MCP_SOURCE.read_bytes(),
         )
         self.assertTrue({str(runner.fixture.CODESCOPE_BIN), str(runner.fixture.CODESCOPE_SURREAL_BIN)}.issubset(codescope["mounts"]))
+        self.assertEqual(codescope["diff_exclude_paths"], [".fastembed_cache", ".codescope"])
+        self.assertEqual(
+            runner.treatment_diff_exclude_paths(codescope),
+            (".fastembed_cache", ".codescope"),
+        )
+
+        graphify = runner.fixture.TOOL_CONFIGS["graphify"]
+        self.assertEqual(runner.treatment_diff_exclude_paths(graphify), ("graphify-out",))
 
         initialize = {
             "jsonrpc": "2.0",
