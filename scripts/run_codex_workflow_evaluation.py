@@ -100,6 +100,7 @@ SUPPORTED_WORKFLOW_TOOL_PROFILES = {
     "terminal-snip-opencode-plugin-v1": "snip-opencode-plugin-v1",
     "retrieval-cartog-opencode-product-v1": "cartog-opencode-product-v1",
     "integrated-headroom-opencode-product-v1": "headroom-opencode-product-v1",
+    "integrated-headroom-opencode-product-v2": "headroom-opencode-product-v2",
 }
 
 # Existing profile protocols were qualified against this runner manifest. The
@@ -108,6 +109,9 @@ SUPPORTED_WORKFLOW_TOOL_PROFILES = {
 # unrelated 45-lane requalification. New profiles opt into the current file
 # hash explicitly through ``tool_manifest_identity``.
 LEGACY_TOOL_MANIFEST_SHA256 = "6fa8271b89a577706ea0bbffcc8e4521831f41b646ed9519369efee3642fe41c"
+FIXED_CURRENT_TOOL_MANIFEST_SHA256 = {
+    "integrated-headroom-opencode-product-v1": "5077500216db998b089ec9bdf8f38c82023db56314cfded233105ab625c585fe",
+}
 
 
 def build_profile_meta() -> dict[str, dict[str, Any]]:
@@ -1493,11 +1497,15 @@ def tool_adapter_identity(profile_id: str, root: Path = ROOT) -> dict[str, Any]:
         if "{repository_root}" in path_text:
             identity["path"] = path_text
         source_identity.append(identity)
-    manifest_sha256 = (
-        _protocol_file_hash(root / "scripts/run_codex_fixture_evaluation.py")
-        if cfg.get("tool_manifest_identity") == "current-file-v1"
-        else LEGACY_TOOL_MANIFEST_SHA256
-    )
+    manifest_identity = str(cfg.get("tool_manifest_identity", "legacy"))
+    if profile_id in FIXED_CURRENT_TOOL_MANIFEST_SHA256:
+        manifest_sha256 = FIXED_CURRENT_TOOL_MANIFEST_SHA256[profile_id]
+    elif manifest_identity == "current-file-v1":
+        manifest_sha256 = _protocol_file_hash(root / "scripts/run_codex_fixture_evaluation.py")
+    elif manifest_identity.startswith("fixed-sha256:"):
+        manifest_sha256 = manifest_identity.removeprefix("fixed-sha256:")
+    else:
+        manifest_sha256 = LEGACY_TOOL_MANIFEST_SHA256
     return {
         "tool_id": tool_id,
         "tool_manifest": "scripts/run_codex_fixture_evaluation.py:TOOL_CONFIGS",

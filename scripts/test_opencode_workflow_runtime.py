@@ -134,6 +134,9 @@ class OpenCodeWorkflowAdapterTest(unittest.TestCase):
         self.assertIn("opencode", wrapped)
         self.assertIn("--port", wrapped)
         self.assertEqual(wrapped[-len(native) + 1 :], native[1:])
+        self.assertIsNone(adapter.validate_non_json_stdout("headroom", ["Headroom setup complete"]))
+        with self.assertRaisesRegex(ValueError, "non-JSON stdout"):
+            adapter.validate_non_json_stdout("bare", ["unexpected noise"])
 
     def test_auth_translation_is_private_and_preserves_rotated_auth(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
@@ -361,7 +364,7 @@ class OpenCodeWorkflowIntegrationContractTest(unittest.TestCase):
             "retrieval-serena-opencode-mcp-v1": "serena-opencode-mcp-v1",
             "terminal-snip-opencode-plugin-v1": "snip-opencode-plugin-v1",
             "retrieval-cartog-opencode-product-v1": "cartog-opencode-product-v1",
-            "integrated-headroom-opencode-product-v1": "headroom-opencode-product-v1",
+            "integrated-headroom-opencode-product-v2": "headroom-opencode-product-v2",
         }
         for profile_id, tool_id in expected.items():
             with self.subTest(profile_id=profile_id):
@@ -375,7 +378,7 @@ class OpenCodeWorkflowIntegrationContractTest(unittest.TestCase):
         serena = fixture.active_tool_config({}, "retrieval-serena-opencode-mcp-v1")
         snip = fixture.active_tool_config({}, "terminal-snip-opencode-plugin-v1")
         cartog = fixture.active_tool_config({}, "retrieval-cartog-opencode-product-v1")
-        headroom = fixture.active_tool_config({}, "integrated-headroom-opencode-product-v1")
+        headroom = fixture.active_tool_config({}, "integrated-headroom-opencode-product-v2")
         assert tokenjuice and serena and snip and cartog and headroom
         self.assertEqual(tokenjuice["host_integration"]["install_commands"][0][-2:], ["install", "opencode"])
         self.assertTrue(serena["mcp_handshake"]["required"])

@@ -36,8 +36,10 @@ CODEX_HOST_EXECUTABLE = Path(os.environ.get("TOKEN_EVAL_CODEX_EXECUTABLE", "/opt
 CODEX_CONTAINER_RUNTIME_ROOT = Path("/opt/data/codex-runtime")
 CODEX_CONTAINER_BIN_ROOT = Path("/opt/data/codex-entry")
 OPENCODE_BIN = Path("/opt/data/tool-candidates/opencode-runtime/node_modules/opencode-ai/bin/opencode.exe")
+OPENCODE_BIN_V2 = Path("/opt/data/tool-candidates/opencode-runtime-v2/opencode.exe")
 OPENCODE_BIN_SHA256 = "7c4d91c84d2bfdeabb59257e3490c5e5acb08f2aacb3e42f3ddc296a1c3f1aca"
 OPENCODE_ADAPTER = Path("/opt/data/tool-candidates/opencode-adapter/opencode_workflow_adapter.py")
+OPENCODE_ADAPTER_V2 = Path("/opt/data/tool-candidates/opencode-adapter-v2/opencode_workflow_adapter.py")
 FORBIDDEN_BASELINE_TERMS = [
     "lean-ctx",
     "mcp_lean_ctx",
@@ -98,6 +100,7 @@ PROFILE_TOOL_CONFIG_OVERRIDES = {
     "terminal-snip-opencode-plugin-v1": "snip-opencode-plugin-v1",
     "retrieval-cartog-opencode-product-v1": "cartog-opencode-product-v1",
     "integrated-headroom-opencode-product-v1": "headroom-opencode-product-v1",
+    "integrated-headroom-opencode-product-v2": "headroom-opencode-product-v2",
 }
 CODEGRAPH_BIN = Path("/opt/data/tool-candidates/codegraph/dist/bin/codegraph.js")
 CARTOG_ROOT = Path("/opt/data/tool-candidates/cartog")
@@ -1429,6 +1432,42 @@ TOOL_CONFIGS.update(
         ),
     }
 )
+
+TOOL_CONFIGS["headroom-opencode-product-v2"] = {
+    **TOOL_CONFIGS["headroom-opencode-product-v1"],
+    "display_name": "Headroom official OpenCode integrated product v2",
+    "lane_name": "integrated-headroom-opencode-product-v2",
+    "data_dir_name": "integrated-headroom-opencode-product-v2",
+    "executable": str(OPENCODE_BIN_V2),
+    "binary_mount_target": str(OPENCODE_BIN_V2),
+    "mounts": [
+        str(OPENCODE_ADAPTER_V2) if value == str(OPENCODE_ADAPTER) else value
+        for value in TOOL_CONFIGS["headroom-opencode-product-v1"]["mounts"]
+    ],
+    "codex_wrapper": {
+        **TOOL_CONFIGS["headroom-opencode-product-v1"]["codex_wrapper"],
+        "args": [
+            (
+                str(OPENCODE_ADAPTER_V2)
+                if value == str(OPENCODE_ADAPTER)
+                else str(OPENCODE_BIN_V2)
+                if value == str(OPENCODE_BIN)
+                else value
+            )
+            for value in TOOL_CONFIGS["headroom-opencode-product-v1"]["codex_wrapper"]["args"]
+        ],
+    },
+    "preflight_command": [
+        (
+            str(OPENCODE_ADAPTER_V2)
+            if value == str(OPENCODE_ADAPTER)
+            else str(OPENCODE_BIN_V2)
+            if value == str(OPENCODE_BIN)
+            else value
+        )
+        for value in TOOL_CONFIGS["headroom-opencode-product-v1"]["preflight_command"]
+    ],
+}
 
 
 def rel_or_abs(path_text: str) -> Path:
