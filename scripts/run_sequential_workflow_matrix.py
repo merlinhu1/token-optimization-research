@@ -218,6 +218,17 @@ def rsync_checkout(source: Path, destination: Path) -> None:
     subprocess.run(cmd, check=True)
 
 
+def executed_protocol_paths(root: Path) -> set[str]:
+    registry = load_json(root / "data/workflow-sessions.json")
+    return {
+        str(session.get("frozen_protocol", {}).get("path"))
+        for session in registry.get("sessions", [])
+        if session.get("status") == "completed"
+        and session.get("interpretation", {}).get("accepted_for_execution") is True
+        and isinstance(session.get("frozen_protocol", {}).get("path"), str)
+    }
+
+
 def find_protocol(root: Path, sequence_id: str, profile_id: str) -> Path:
     sequences = load_json(root / "data/workflow-task-sequences.json").get("sequences", [])
     active_sequence = next((item for item in sequences if item.get("id") == sequence_id), None)
@@ -232,13 +243,16 @@ def find_protocol(root: Path, sequence_id: str, profile_id: str) -> Path:
         timeout_seconds_per_task=3600,
         docker_image=workflow.DEFAULT_DOCKER_IMAGE,
     )
+    already_executed = set() if profile_id == "baseline-bare-codex" else executed_protocol_paths(root)
     matches: list[Path] = []
     for path in (root / "sources/evaluations/protocols").glob("*.json"):
         protocol = load_json(path)
+        relative_path = path.relative_to(root).as_posix()
         selected_execution = protocol.get("selected_execution", {})
         selected = selected_execution.get("descriptor", {})
         if (
-            protocol.get("status") == "frozen-ready-not-run"
+            relative_path not in already_executed
+            and protocol.get("status") == "frozen-ready-not-run"
             and protocol.get("task_fixture", {}).get("sequence_id") == sequence_id
             and protocol.get("task_fixture", {}).get("qualification_path") == active_qualification
             and protocol.get("baseline_pool", {}).get("protocol_fingerprint") == current_fingerprint

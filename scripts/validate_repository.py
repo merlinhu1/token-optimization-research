@@ -646,8 +646,10 @@ def validate_candidate_profile_launch_readiness(
     qualification_docs: list[dict],
     protocol_docs: dict[str, dict],
     errors: list[str],
+    executed_protocol_paths: set[str] | None = None,
 ) -> None:
     """Fail closed before provider execution for every non-baseline fixture candidate."""
+    executed_protocol_paths = executed_protocol_paths or set()
     profiles_by_id = {
         profile.get("id"): profile
         for profile in profile_doc.get("profiles", [])
@@ -717,7 +719,8 @@ def validate_candidate_profile_launch_readiness(
             protocol = record.get("document", {})
             selected = protocol.get("selected_execution", {}).get("descriptor", {})
             if (
-                selected.get("sequence_id") == sequence_id
+                protocol_path not in executed_protocol_paths
+                and selected.get("sequence_id") == sequence_id
                 and selected.get("selected_profile", {}).get("profile_id") == profile_id
                 and protocol.get("status") == "frozen-ready-not-run"
             ):
@@ -793,10 +796,21 @@ def validate_candidate_profile_launch_readiness(
                 )
 
 
+def executed_protocol_paths_from_registry(workflow_sessions_doc: dict) -> set[str]:
+    return {
+        str(session.get("frozen_protocol", {}).get("path"))
+        for session in workflow_sessions_doc.get("sessions", [])
+        if session.get("status") == "completed"
+        and session.get("interpretation", {}).get("accepted_for_execution") is True
+        and isinstance(session.get("frozen_protocol", {}).get("path"), str)
+    }
+
+
 def current_candidate_profile_launch_readiness_errors(root: Path = ROOT) -> list[str]:
     profile_doc = json.loads((root / "data/evaluation-profiles.json").read_text())
     fixture_doc = json.loads((root / "data/repository-fixtures.json").read_text())
     sequence_doc = json.loads((root / "data/workflow-task-sequences.json").read_text())
+    workflow_sessions_doc = json.loads((root / "data/workflow-sessions.json").read_text())
     parity_doc = json.loads(
         (root / "sources/evaluations/audits/official-integration-parity-20260718.json").read_text()
     )
@@ -822,6 +836,7 @@ def current_candidate_profile_launch_readiness_errors(root: Path = ROOT) -> list
         qualification_docs,
         protocol_docs,
         errors,
+        executed_protocol_paths_from_registry(workflow_sessions_doc),
     )
     return errors
 
@@ -2150,6 +2165,7 @@ def main() -> int:
         qualification_docs,
         protocol_docs,
         errors,
+        executed_protocol_paths_from_registry(workflow_sessions_doc),
     )
     validate_fixture_sequence_status_consistency(workflow_sequences_doc, fixtures_doc, large_candidates_doc, medium_candidates_doc, errors)
     validate_workflow_sessions(workflow_sessions_doc, workflow_sequence_ids, fixtures_doc, profiles_by_id, runtime_ids, model_condition_ids, errors)

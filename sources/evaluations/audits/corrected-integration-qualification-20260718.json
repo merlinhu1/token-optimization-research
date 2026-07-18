@@ -24,11 +24,16 @@
     "provider_backed_sessions_created": 0
   },
   "repair_note": {
-    "root_cause": "Graphify's full virtualenv bin directory exposed the unintended graphify-mcp entrypoint on the model PATH.",
-    "fix": "Expose only a lane-private graphify symlink directory; keep the transitive graphify-mcp entrypoint off PATH.",
-    "shared_runner_protocol_impact": "All 39 unoccupied corrected-profile protocols were regenerated because the frozen descriptor binds the shared fixture-runner hash.",
-    "failed_provider_calls": 0,
-    "matrix_portability_fix": "Graphify protocol identity now binds its generated host-integrated executable contract rather than a warmup shell identity containing a checkout-specific PATH."
+    "root_causes": [
+      "Graphify's full virtualenv bin directory exposed the unintended graphify-mcp entrypoint on the model PATH.",
+      "Corrected profile IDs all ended in -v1, while artifact_profile_label selected only the final slug; this collapsed every treatment session ID to the shared v1 prefix."
+    ],
+    "fixes": [
+      "Expose only a lane-private graphify symlink directory; keep the transitive graphify-mcp entrypoint off PATH.",
+      "Bind every corrected profile to an explicit unique artifact label and exclude immutable already-executed protocols from launch selection."
+    ],
+    "shared_runner_protocol_impact": "All 39 launch protocols were regenerated; the three immutable TokenJuice protocols remain referenced only by their accepted sessions.",
+    "failed_provider_calls": 0
   },
   "profiles": [
     "terminal-tokenjuice-codex-hook-v1",
@@ -49,9 +54,9 @@
     {
       "sequence_id": "beets-lifecycle-sequence-v0",
       "profile_id": "codescope-codex-product-v1",
-      "protocol_path": "sources/evaluations/protocols/beets-lifecycle-sequence-v0-codescope-codex-product-v1-e6faf0e4fbef.json",
-      "protocol_sha256": "5b79937a05c4862f0491cd23a3957dbd05d6c1533171f981bf1344f8edde7437",
-      "raw_prepare_output_sha256": "833ed54a1de7b14feed93e8e5710971553d061a15f8a89f14418a7a4671cc8fa",
+      "protocol_path": "sources/evaluations/protocols/beets-lifecycle-sequence-v0-codescope-codex-product-v1-f9bb7ce803de.json",
+      "protocol_sha256": "e40870c4eda9b18c7cbd85e0cf515ef50f3e83702dfd840ce9cece9e907a037b",
+      "raw_prepare_output_sha256": "a845f5ea16d76c3abc0bf6750ddfc5fc9c329fb63b7bc786343f8d3f9858bbfb",
       "prepared": true,
       "prepare_verification": {
         "passed": true,
@@ -70,7 +75,7 @@
         "missing_required_files": [],
         "required_files": [],
         "artifacts": [
-          "sources/evaluations/workflow-sessions/prepare-beets-codescope-codex-product-v1-20260718T194524380516Z-p1505775/tool-host-verify-1.txt"
+          "sources/evaluations/workflow-sessions/prepare-beets-codescope-codex-product-v1-20260718T223459095964Z-p1590753/tool-host-verify-1.txt"
         ]
       },
       "mcp_handshake": {
@@ -144,10 +149,10 @@
           "codex doctor exited 1; preserve the diagnostic, but use the isolated MCP/config probes and task execution as gates"
         ],
         "artifacts": {
-          "doctor": "sources/evaluations/workflow-sessions/prepare-beets-codescope-codex-product-v1-20260718T194524380516Z-p1505775/codex-doctor.txt",
-          "mcp_list": "sources/evaluations/workflow-sessions/prepare-beets-codescope-codex-product-v1-20260718T194524380516Z-p1505775/codex-mcp-list.txt",
-          "effective_config": "sources/evaluations/workflow-sessions/prepare-beets-codescope-codex-product-v1-20260718T194524380516Z-p1505775/codex-effective-config.toml",
-          "forbidden_command_visibility": "sources/evaluations/workflow-sessions/prepare-beets-codescope-codex-product-v1-20260718T194524380516Z-p1505775/forbidden-command-visibility.txt",
+          "doctor": "sources/evaluations/workflow-sessions/prepare-beets-codescope-codex-product-v1-20260718T223459095964Z-p1590753/codex-doctor.txt",
+          "mcp_list": "sources/evaluations/workflow-sessions/prepare-beets-codescope-codex-product-v1-20260718T223459095964Z-p1590753/codex-mcp-list.txt",
+          "effective_config": "sources/evaluations/workflow-sessions/prepare-beets-codescope-codex-product-v1-20260718T223459095964Z-p1590753/codex-effective-config.toml",
+          "forbidden_command_visibility": "sources/evaluations/workflow-sessions/prepare-beets-codescope-codex-product-v1-20260718T223459095964Z-p1590753/forbidden-command-visibility.txt",
           "tool_preflight": null,
           "tool_coverage_preflight": null
         }
@@ -156,9 +161,9 @@
     {
       "sequence_id": "fastify-lifecycle-sequence-v0",
       "profile_id": "codescope-codex-product-v1",
-      "protocol_path": "sources/evaluations/protocols/fastify-lifecycle-sequence-v0-codescope-codex-product-v1-bad1818ce43e.json",
-      "protocol_sha256": "15bea31c6dfe8f634f5d8a91e63ca31cb05fa05e2926edaf362e792b11780603",
-      "raw_prepare_output_sha256": "fbab7e7344af1bc6ae95f054c289dcc1ab90370825db4e108b0a295d2057153e",
+      "protocol_path": "sources/evaluations/protocols/fastify-lifecycle-sequence-v0-codescope-codex-product-v1-9c91f5ff922a.json",
+      "protocol_sha256": "461b72abd3f97e2fd7ef47d339b632d10abb9db55d17cd062190e82b7fd6fc32",
+      "raw_prepare_output_sha256": "6ae90423d87262b2f7453436d4b4170a8f924dc782145e3b3ae6763bacf190fe",
       "prepared": true,
       "prepare_verification": {
         "passed": true,
@@ -177,7 +182,7 @@
         "missing_required_files": [],
         "required_files": [],
         "artifacts": [
-          "sources/evaluations/workflow-sessions/prepare-fastify-codescope-codex-product-v1-20260718T194506084839Z-p1505583/tool-host-verify-1.txt"
+          "sources/evaluations/workflow-sessions/prepare-fastify-codescope-codex-product-v1-20260718T223440870891Z-p1590556/tool-host-verify-1.txt"
         ]
       },
       "mcp_handshake": {
@@ -251,10 +256,10 @@
           "codex doctor exited 1; preserve the diagnostic, but use the isolated MCP/config probes and task execution as gates"
         ],
         "artifacts": {
-          "doctor": "sources/evaluations/workflow-sessions/prepare-fastify-codescope-codex-product-v1-20260718T194506084839Z-p1505583/codex-doctor.txt",
-          "mcp_list": "sources/evaluations/workflow-sessions/prepare-fastify-codescope-codex-product-v1-20260718T194506084839Z-p1505583/codex-mcp-list.txt",
-          "effective_config": "sources/evaluations/workflow-sessions/prepare-fastify-codescope-codex-product-v1-20260718T194506084839Z-p1505583/codex-effective-config.toml",
-          "forbidden_command_visibility": "sources/evaluations/workflow-sessions/prepare-fastify-codescope-codex-product-v1-20260718T194506084839Z-p1505583/forbidden-command-visibility.txt",
+          "doctor": "sources/evaluations/workflow-sessions/prepare-fastify-codescope-codex-product-v1-20260718T223440870891Z-p1590556/codex-doctor.txt",
+          "mcp_list": "sources/evaluations/workflow-sessions/prepare-fastify-codescope-codex-product-v1-20260718T223440870891Z-p1590556/codex-mcp-list.txt",
+          "effective_config": "sources/evaluations/workflow-sessions/prepare-fastify-codescope-codex-product-v1-20260718T223440870891Z-p1590556/codex-effective-config.toml",
+          "forbidden_command_visibility": "sources/evaluations/workflow-sessions/prepare-fastify-codescope-codex-product-v1-20260718T223440870891Z-p1590556/forbidden-command-visibility.txt",
           "tool_preflight": null,
           "tool_coverage_preflight": null
         }
@@ -263,9 +268,9 @@
     {
       "sequence_id": "terraform-lifecycle-sequence-v0",
       "profile_id": "codescope-codex-product-v1",
-      "protocol_path": "sources/evaluations/protocols/terraform-lifecycle-sequence-v0-codescope-codex-product-v1-9003a9fabec8.json",
-      "protocol_sha256": "10c2ab6c331d0af1affbf66af8ddcfdedd3ad567e5876f7cbb59c5fb3b9f0b4f",
-      "raw_prepare_output_sha256": "aaaf9e72d1299705f76ca92680a1703108671594e57a75b0f571e14ae62d7d7c",
+      "protocol_path": "sources/evaluations/protocols/terraform-lifecycle-sequence-v0-codescope-codex-product-v1-7b6e5068fa04.json",
+      "protocol_sha256": "35b7084b81687bbcf4707ebc8132708d0f1ee31950bad00c515709c63b919dd6",
+      "raw_prepare_output_sha256": "88395496c4df589242512fdd38599939c954a95a5b606f23c9efb1764c5bad39",
       "prepared": true,
       "prepare_verification": {
         "passed": true,
@@ -284,7 +289,7 @@
         "missing_required_files": [],
         "required_files": [],
         "artifacts": [
-          "sources/evaluations/workflow-sessions/prepare-terraform-codescope-codex-product-v1-20260718T194551245042Z-p1505960/tool-host-verify-1.txt"
+          "sources/evaluations/workflow-sessions/prepare-terraform-codescope-codex-product-v1-20260718T223526225456Z-p1590937/tool-host-verify-1.txt"
         ]
       },
       "mcp_handshake": {
@@ -358,10 +363,10 @@
           "codex doctor exited 1; preserve the diagnostic, but use the isolated MCP/config probes and task execution as gates"
         ],
         "artifacts": {
-          "doctor": "sources/evaluations/workflow-sessions/prepare-terraform-codescope-codex-product-v1-20260718T194551245042Z-p1505960/codex-doctor.txt",
-          "mcp_list": "sources/evaluations/workflow-sessions/prepare-terraform-codescope-codex-product-v1-20260718T194551245042Z-p1505960/codex-mcp-list.txt",
-          "effective_config": "sources/evaluations/workflow-sessions/prepare-terraform-codescope-codex-product-v1-20260718T194551245042Z-p1505960/codex-effective-config.toml",
-          "forbidden_command_visibility": "sources/evaluations/workflow-sessions/prepare-terraform-codescope-codex-product-v1-20260718T194551245042Z-p1505960/forbidden-command-visibility.txt",
+          "doctor": "sources/evaluations/workflow-sessions/prepare-terraform-codescope-codex-product-v1-20260718T223526225456Z-p1590937/codex-doctor.txt",
+          "mcp_list": "sources/evaluations/workflow-sessions/prepare-terraform-codescope-codex-product-v1-20260718T223526225456Z-p1590937/codex-mcp-list.txt",
+          "effective_config": "sources/evaluations/workflow-sessions/prepare-terraform-codescope-codex-product-v1-20260718T223526225456Z-p1590937/codex-effective-config.toml",
+          "forbidden_command_visibility": "sources/evaluations/workflow-sessions/prepare-terraform-codescope-codex-product-v1-20260718T223526225456Z-p1590937/forbidden-command-visibility.txt",
           "tool_preflight": null,
           "tool_coverage_preflight": null
         }
@@ -370,9 +375,9 @@
     {
       "sequence_id": "beets-lifecycle-sequence-v0",
       "profile_id": "integrated-leanctx-codex-hybrid-v1",
-      "protocol_path": "sources/evaluations/protocols/beets-lifecycle-sequence-v0-integrated-leanctx-codex-hybrid-v1-41c9f2a5f16f.json",
-      "protocol_sha256": "b16af3dfd6964f6691fd94d3e8e16ca57e7000eddc0f7eedfc98a04bc1e063c5",
-      "raw_prepare_output_sha256": "0f0529a3e012af567d1f2b41880644216477cfbbc0269f43361758e928245258",
+      "protocol_path": "sources/evaluations/protocols/beets-lifecycle-sequence-v0-integrated-leanctx-codex-hybrid-v1-bdc13ec81c1b.json",
+      "protocol_sha256": "9e9f0b64a3ea22bced8ff83e4bb53850d81b2b7cfcff43480df7a2186a467a36",
+      "raw_prepare_output_sha256": "0ea8dfd7f21ad6e75277de444fd6539bb984a1d34987f1969cae66bd096e827c",
       "prepared": true,
       "prepare_verification": {
         "passed": true,
@@ -392,16 +397,16 @@
         ],
         "missing_required_files": [],
         "required_files": [
-          "/opt/data/repos/token-optimization-research/sources/evaluations/workflow-sessions/prepare-beets-integrated-leanctx-codex-hybrid-v1-20260718T194306816682Z-p1504176/codex-homes/integrated-leanctx-codex-hybrid-v1/config.toml",
-          "/opt/data/repos/token-optimization-research/sources/evaluations/workflow-sessions/prepare-beets-integrated-leanctx-codex-hybrid-v1-20260718T194306816682Z-p1504176/codex-homes/integrated-leanctx-codex-hybrid-v1/hooks.json",
-          "/opt/data/repos/token-optimization-research/sources/evaluations/workflow-sessions/prepare-beets-integrated-leanctx-codex-hybrid-v1-20260718T194306816682Z-p1504176/codex-homes/integrated-leanctx-codex-hybrid-v1/instructions.md",
-          "/opt/data/repos/token-optimization-research/sources/evaluations/workflow-sessions/prepare-beets-integrated-leanctx-codex-hybrid-v1-20260718T194306816682Z-p1504176/codex-homes/integrated-leanctx-codex-hybrid-v1/skills/lean-ctx/SKILL.md",
-          "/opt/data/repos/token-optimization-research/sources/evaluations/workflow-sessions/prepare-beets-integrated-leanctx-codex-hybrid-v1-20260718T194306816682Z-p1504176/project/repo/AGENTS.md",
-          "/opt/data/repos/token-optimization-research/sources/evaluations/workflow-sessions/prepare-beets-integrated-leanctx-codex-hybrid-v1-20260718T194306816682Z-p1504176/project/repo/LEAN-CTX.md"
+          "/opt/data/repos/token-optimization-research/sources/evaluations/workflow-sessions/prepare-beets-integrated-leanctx-codex-hybrid-v1-20260718T223235680614Z-p1589159/codex-homes/integrated-leanctx-codex-hybrid-v1/config.toml",
+          "/opt/data/repos/token-optimization-research/sources/evaluations/workflow-sessions/prepare-beets-integrated-leanctx-codex-hybrid-v1-20260718T223235680614Z-p1589159/codex-homes/integrated-leanctx-codex-hybrid-v1/hooks.json",
+          "/opt/data/repos/token-optimization-research/sources/evaluations/workflow-sessions/prepare-beets-integrated-leanctx-codex-hybrid-v1-20260718T223235680614Z-p1589159/codex-homes/integrated-leanctx-codex-hybrid-v1/instructions.md",
+          "/opt/data/repos/token-optimization-research/sources/evaluations/workflow-sessions/prepare-beets-integrated-leanctx-codex-hybrid-v1-20260718T223235680614Z-p1589159/codex-homes/integrated-leanctx-codex-hybrid-v1/skills/lean-ctx/SKILL.md",
+          "/opt/data/repos/token-optimization-research/sources/evaluations/workflow-sessions/prepare-beets-integrated-leanctx-codex-hybrid-v1-20260718T223235680614Z-p1589159/project/repo/AGENTS.md",
+          "/opt/data/repos/token-optimization-research/sources/evaluations/workflow-sessions/prepare-beets-integrated-leanctx-codex-hybrid-v1-20260718T223235680614Z-p1589159/project/repo/LEAN-CTX.md"
         ],
         "artifacts": [
-          "sources/evaluations/workflow-sessions/prepare-beets-integrated-leanctx-codex-hybrid-v1-20260718T194306816682Z-p1504176/tool-host-install-1.txt",
-          "sources/evaluations/workflow-sessions/prepare-beets-integrated-leanctx-codex-hybrid-v1-20260718T194306816682Z-p1504176/tool-host-verify-1.txt"
+          "sources/evaluations/workflow-sessions/prepare-beets-integrated-leanctx-codex-hybrid-v1-20260718T223235680614Z-p1589159/tool-host-install-1.txt",
+          "sources/evaluations/workflow-sessions/prepare-beets-integrated-leanctx-codex-hybrid-v1-20260718T223235680614Z-p1589159/tool-host-verify-1.txt"
         ]
       },
       "mcp_handshake": {
@@ -449,10 +454,10 @@
           "codex doctor exited 1; preserve the diagnostic, but use the isolated MCP/config probes and task execution as gates"
         ],
         "artifacts": {
-          "doctor": "sources/evaluations/workflow-sessions/prepare-beets-integrated-leanctx-codex-hybrid-v1-20260718T194306816682Z-p1504176/codex-doctor.txt",
-          "mcp_list": "sources/evaluations/workflow-sessions/prepare-beets-integrated-leanctx-codex-hybrid-v1-20260718T194306816682Z-p1504176/codex-mcp-list.txt",
-          "effective_config": "sources/evaluations/workflow-sessions/prepare-beets-integrated-leanctx-codex-hybrid-v1-20260718T194306816682Z-p1504176/codex-effective-config.toml",
-          "forbidden_command_visibility": "sources/evaluations/workflow-sessions/prepare-beets-integrated-leanctx-codex-hybrid-v1-20260718T194306816682Z-p1504176/forbidden-command-visibility.txt",
+          "doctor": "sources/evaluations/workflow-sessions/prepare-beets-integrated-leanctx-codex-hybrid-v1-20260718T223235680614Z-p1589159/codex-doctor.txt",
+          "mcp_list": "sources/evaluations/workflow-sessions/prepare-beets-integrated-leanctx-codex-hybrid-v1-20260718T223235680614Z-p1589159/codex-mcp-list.txt",
+          "effective_config": "sources/evaluations/workflow-sessions/prepare-beets-integrated-leanctx-codex-hybrid-v1-20260718T223235680614Z-p1589159/codex-effective-config.toml",
+          "forbidden_command_visibility": "sources/evaluations/workflow-sessions/prepare-beets-integrated-leanctx-codex-hybrid-v1-20260718T223235680614Z-p1589159/forbidden-command-visibility.txt",
           "tool_preflight": null,
           "tool_coverage_preflight": null
         }
@@ -461,9 +466,9 @@
     {
       "sequence_id": "fastify-lifecycle-sequence-v0",
       "profile_id": "integrated-leanctx-codex-hybrid-v1",
-      "protocol_path": "sources/evaluations/protocols/fastify-lifecycle-sequence-v0-integrated-leanctx-codex-hybrid-v1-60d7ae5d39db.json",
-      "protocol_sha256": "4d273971535679c1086f238a5bf18a44c5db0d33bde53be79de123b8c7cae697",
-      "raw_prepare_output_sha256": "7bab36dbade9d7ef7f890d8bb6e7e6db46da02d5bcb1c123f4a3cc5e5299a0a7",
+      "protocol_path": "sources/evaluations/protocols/fastify-lifecycle-sequence-v0-integrated-leanctx-codex-hybrid-v1-d1f554f453ce.json",
+      "protocol_sha256": "ea4f5f29025028b6094a826c41e6a6c1974f47d3072266e4c7e63d7a8bc96e7a",
+      "raw_prepare_output_sha256": "5837c140cbbaa8a3d167d53c51be1571c303188c3792724280c004fade404279",
       "prepared": true,
       "prepare_verification": {
         "passed": true,
@@ -483,16 +488,16 @@
         ],
         "missing_required_files": [],
         "required_files": [
-          "/opt/data/repos/token-optimization-research/sources/evaluations/workflow-sessions/prepare-fastify-integrated-leanctx-codex-hybrid-v1-20260718T194255984539Z-p1503969/codex-homes/integrated-leanctx-codex-hybrid-v1/config.toml",
-          "/opt/data/repos/token-optimization-research/sources/evaluations/workflow-sessions/prepare-fastify-integrated-leanctx-codex-hybrid-v1-20260718T194255984539Z-p1503969/codex-homes/integrated-leanctx-codex-hybrid-v1/hooks.json",
-          "/opt/data/repos/token-optimization-research/sources/evaluations/workflow-sessions/prepare-fastify-integrated-leanctx-codex-hybrid-v1-20260718T194255984539Z-p1503969/codex-homes/integrated-leanctx-codex-hybrid-v1/instructions.md",
-          "/opt/data/repos/token-optimization-research/sources/evaluations/workflow-sessions/prepare-fastify-integrated-leanctx-codex-hybrid-v1-20260718T194255984539Z-p1503969/codex-homes/integrated-leanctx-codex-hybrid-v1/skills/lean-ctx/SKILL.md",
-          "/opt/data/repos/token-optimization-research/sources/evaluations/workflow-sessions/prepare-fastify-integrated-leanctx-codex-hybrid-v1-20260718T194255984539Z-p1503969/project/repo/AGENTS.md",
-          "/opt/data/repos/token-optimization-research/sources/evaluations/workflow-sessions/prepare-fastify-integrated-leanctx-codex-hybrid-v1-20260718T194255984539Z-p1503969/project/repo/LEAN-CTX.md"
+          "/opt/data/repos/token-optimization-research/sources/evaluations/workflow-sessions/prepare-fastify-integrated-leanctx-codex-hybrid-v1-20260718T223224384517Z-p1588953/codex-homes/integrated-leanctx-codex-hybrid-v1/config.toml",
+          "/opt/data/repos/token-optimization-research/sources/evaluations/workflow-sessions/prepare-fastify-integrated-leanctx-codex-hybrid-v1-20260718T223224384517Z-p1588953/codex-homes/integrated-leanctx-codex-hybrid-v1/hooks.json",
+          "/opt/data/repos/token-optimization-research/sources/evaluations/workflow-sessions/prepare-fastify-integrated-leanctx-codex-hybrid-v1-20260718T223224384517Z-p1588953/codex-homes/integrated-leanctx-codex-hybrid-v1/instructions.md",
+          "/opt/data/repos/token-optimization-research/sources/evaluations/workflow-sessions/prepare-fastify-integrated-leanctx-codex-hybrid-v1-20260718T223224384517Z-p1588953/codex-homes/integrated-leanctx-codex-hybrid-v1/skills/lean-ctx/SKILL.md",
+          "/opt/data/repos/token-optimization-research/sources/evaluations/workflow-sessions/prepare-fastify-integrated-leanctx-codex-hybrid-v1-20260718T223224384517Z-p1588953/project/repo/AGENTS.md",
+          "/opt/data/repos/token-optimization-research/sources/evaluations/workflow-sessions/prepare-fastify-integrated-leanctx-codex-hybrid-v1-20260718T223224384517Z-p1588953/project/repo/LEAN-CTX.md"
         ],
         "artifacts": [
-          "sources/evaluations/workflow-sessions/prepare-fastify-integrated-leanctx-codex-hybrid-v1-20260718T194255984539Z-p1503969/tool-host-install-1.txt",
-          "sources/evaluations/workflow-sessions/prepare-fastify-integrated-leanctx-codex-hybrid-v1-20260718T194255984539Z-p1503969/tool-host-verify-1.txt"
+          "sources/evaluations/workflow-sessions/prepare-fastify-integrated-leanctx-codex-hybrid-v1-20260718T223224384517Z-p1588953/tool-host-install-1.txt",
+          "sources/evaluations/workflow-sessions/prepare-fastify-integrated-leanctx-codex-hybrid-v1-20260718T223224384517Z-p1588953/tool-host-verify-1.txt"
         ]
       },
       "mcp_handshake": {
@@ -540,10 +545,10 @@
           "codex doctor exited 1; preserve the diagnostic, but use the isolated MCP/config probes and task execution as gates"
         ],
         "artifacts": {
-          "doctor": "sources/evaluations/workflow-sessions/prepare-fastify-integrated-leanctx-codex-hybrid-v1-20260718T194255984539Z-p1503969/codex-doctor.txt",
-          "mcp_list": "sources/evaluations/workflow-sessions/prepare-fastify-integrated-leanctx-codex-hybrid-v1-20260718T194255984539Z-p1503969/codex-mcp-list.txt",
-          "effective_config": "sources/evaluations/workflow-sessions/prepare-fastify-integrated-leanctx-codex-hybrid-v1-20260718T194255984539Z-p1503969/codex-effective-config.toml",
-          "forbidden_command_visibility": "sources/evaluations/workflow-sessions/prepare-fastify-integrated-leanctx-codex-hybrid-v1-20260718T194255984539Z-p1503969/forbidden-command-visibility.txt",
+          "doctor": "sources/evaluations/workflow-sessions/prepare-fastify-integrated-leanctx-codex-hybrid-v1-20260718T223224384517Z-p1588953/codex-doctor.txt",
+          "mcp_list": "sources/evaluations/workflow-sessions/prepare-fastify-integrated-leanctx-codex-hybrid-v1-20260718T223224384517Z-p1588953/codex-mcp-list.txt",
+          "effective_config": "sources/evaluations/workflow-sessions/prepare-fastify-integrated-leanctx-codex-hybrid-v1-20260718T223224384517Z-p1588953/codex-effective-config.toml",
+          "forbidden_command_visibility": "sources/evaluations/workflow-sessions/prepare-fastify-integrated-leanctx-codex-hybrid-v1-20260718T223224384517Z-p1588953/forbidden-command-visibility.txt",
           "tool_preflight": null,
           "tool_coverage_preflight": null
         }
@@ -552,9 +557,9 @@
     {
       "sequence_id": "terraform-lifecycle-sequence-v0",
       "profile_id": "integrated-leanctx-codex-hybrid-v1",
-      "protocol_path": "sources/evaluations/protocols/terraform-lifecycle-sequence-v0-integrated-leanctx-codex-hybrid-v1-7fb12c8a8181.json",
-      "protocol_sha256": "f62fce7f798ec311a0ec496f79c231de593715a3b1bdcd0c65b0e7920cd4e50a",
-      "raw_prepare_output_sha256": "f0ff1262cb2ef35222f2c53d2a12ba41a60e004173f7edaf687b4d87408cf009",
+      "protocol_path": "sources/evaluations/protocols/terraform-lifecycle-sequence-v0-integrated-leanctx-codex-hybrid-v1-0b784e27c3c1.json",
+      "protocol_sha256": "f5dcce1718d262a7cf0463afb443be23b67ff6e58a2e3b12c3778a2f47fc6b04",
+      "raw_prepare_output_sha256": "d4633bf5581b83e556c314be705ab3d8b5e14f0b2fb2ac6f736cca9495f131d4",
       "prepared": true,
       "prepare_verification": {
         "passed": true,
@@ -574,16 +579,16 @@
         ],
         "missing_required_files": [],
         "required_files": [
-          "/opt/data/repos/token-optimization-research/sources/evaluations/workflow-sessions/prepare-terraform-integrated-leanctx-codex-hybrid-v1-20260718T194320430668Z-p1504371/codex-homes/integrated-leanctx-codex-hybrid-v1/config.toml",
-          "/opt/data/repos/token-optimization-research/sources/evaluations/workflow-sessions/prepare-terraform-integrated-leanctx-codex-hybrid-v1-20260718T194320430668Z-p1504371/codex-homes/integrated-leanctx-codex-hybrid-v1/hooks.json",
-          "/opt/data/repos/token-optimization-research/sources/evaluations/workflow-sessions/prepare-terraform-integrated-leanctx-codex-hybrid-v1-20260718T194320430668Z-p1504371/codex-homes/integrated-leanctx-codex-hybrid-v1/instructions.md",
-          "/opt/data/repos/token-optimization-research/sources/evaluations/workflow-sessions/prepare-terraform-integrated-leanctx-codex-hybrid-v1-20260718T194320430668Z-p1504371/codex-homes/integrated-leanctx-codex-hybrid-v1/skills/lean-ctx/SKILL.md",
-          "/opt/data/repos/token-optimization-research/sources/evaluations/workflow-sessions/prepare-terraform-integrated-leanctx-codex-hybrid-v1-20260718T194320430668Z-p1504371/project/repo/AGENTS.md",
-          "/opt/data/repos/token-optimization-research/sources/evaluations/workflow-sessions/prepare-terraform-integrated-leanctx-codex-hybrid-v1-20260718T194320430668Z-p1504371/project/repo/LEAN-CTX.md"
+          "/opt/data/repos/token-optimization-research/sources/evaluations/workflow-sessions/prepare-terraform-integrated-leanctx-codex-hybrid-v1-20260718T223247683743Z-p1589352/codex-homes/integrated-leanctx-codex-hybrid-v1/config.toml",
+          "/opt/data/repos/token-optimization-research/sources/evaluations/workflow-sessions/prepare-terraform-integrated-leanctx-codex-hybrid-v1-20260718T223247683743Z-p1589352/codex-homes/integrated-leanctx-codex-hybrid-v1/hooks.json",
+          "/opt/data/repos/token-optimization-research/sources/evaluations/workflow-sessions/prepare-terraform-integrated-leanctx-codex-hybrid-v1-20260718T223247683743Z-p1589352/codex-homes/integrated-leanctx-codex-hybrid-v1/instructions.md",
+          "/opt/data/repos/token-optimization-research/sources/evaluations/workflow-sessions/prepare-terraform-integrated-leanctx-codex-hybrid-v1-20260718T223247683743Z-p1589352/codex-homes/integrated-leanctx-codex-hybrid-v1/skills/lean-ctx/SKILL.md",
+          "/opt/data/repos/token-optimization-research/sources/evaluations/workflow-sessions/prepare-terraform-integrated-leanctx-codex-hybrid-v1-20260718T223247683743Z-p1589352/project/repo/AGENTS.md",
+          "/opt/data/repos/token-optimization-research/sources/evaluations/workflow-sessions/prepare-terraform-integrated-leanctx-codex-hybrid-v1-20260718T223247683743Z-p1589352/project/repo/LEAN-CTX.md"
         ],
         "artifacts": [
-          "sources/evaluations/workflow-sessions/prepare-terraform-integrated-leanctx-codex-hybrid-v1-20260718T194320430668Z-p1504371/tool-host-install-1.txt",
-          "sources/evaluations/workflow-sessions/prepare-terraform-integrated-leanctx-codex-hybrid-v1-20260718T194320430668Z-p1504371/tool-host-verify-1.txt"
+          "sources/evaluations/workflow-sessions/prepare-terraform-integrated-leanctx-codex-hybrid-v1-20260718T223247683743Z-p1589352/tool-host-install-1.txt",
+          "sources/evaluations/workflow-sessions/prepare-terraform-integrated-leanctx-codex-hybrid-v1-20260718T223247683743Z-p1589352/tool-host-verify-1.txt"
         ]
       },
       "mcp_handshake": {
@@ -631,10 +636,10 @@
           "codex doctor exited 1; preserve the diagnostic, but use the isolated MCP/config probes and task execution as gates"
         ],
         "artifacts": {
-          "doctor": "sources/evaluations/workflow-sessions/prepare-terraform-integrated-leanctx-codex-hybrid-v1-20260718T194320430668Z-p1504371/codex-doctor.txt",
-          "mcp_list": "sources/evaluations/workflow-sessions/prepare-terraform-integrated-leanctx-codex-hybrid-v1-20260718T194320430668Z-p1504371/codex-mcp-list.txt",
-          "effective_config": "sources/evaluations/workflow-sessions/prepare-terraform-integrated-leanctx-codex-hybrid-v1-20260718T194320430668Z-p1504371/codex-effective-config.toml",
-          "forbidden_command_visibility": "sources/evaluations/workflow-sessions/prepare-terraform-integrated-leanctx-codex-hybrid-v1-20260718T194320430668Z-p1504371/forbidden-command-visibility.txt",
+          "doctor": "sources/evaluations/workflow-sessions/prepare-terraform-integrated-leanctx-codex-hybrid-v1-20260718T223247683743Z-p1589352/codex-doctor.txt",
+          "mcp_list": "sources/evaluations/workflow-sessions/prepare-terraform-integrated-leanctx-codex-hybrid-v1-20260718T223247683743Z-p1589352/codex-mcp-list.txt",
+          "effective_config": "sources/evaluations/workflow-sessions/prepare-terraform-integrated-leanctx-codex-hybrid-v1-20260718T223247683743Z-p1589352/codex-effective-config.toml",
+          "forbidden_command_visibility": "sources/evaluations/workflow-sessions/prepare-terraform-integrated-leanctx-codex-hybrid-v1-20260718T223247683743Z-p1589352/forbidden-command-visibility.txt",
           "tool_preflight": null,
           "tool_coverage_preflight": null
         }
@@ -643,9 +648,9 @@
     {
       "sequence_id": "beets-lifecycle-sequence-v0",
       "profile_id": "integrated-token-savior-mcp-v1",
-      "protocol_path": "sources/evaluations/protocols/beets-lifecycle-sequence-v0-integrated-token-savior-mcp-v1-fcbeeab9039b.json",
-      "protocol_sha256": "8c7a32ee97de094362a3539687c43417268e4ee5e0c1904225c5245a5e124aee",
-      "raw_prepare_output_sha256": "bc3f13f5171c6e14eba6113ffd1052715f6f73fcdefe9e35d02c9552d22a19a9",
+      "protocol_path": "sources/evaluations/protocols/beets-lifecycle-sequence-v0-integrated-token-savior-mcp-v1-5c4ccc7f7cf0.json",
+      "protocol_sha256": "ede783501976fbfb18d43aab581729890f97054de84373275cfc5803f667c92c",
+      "raw_prepare_output_sha256": "8f9f3bae25df1f0a7672babd7cf80e2000e9f2375a53db0521e4247eecdcf398",
       "prepared": true,
       "prepare_verification": {
         "passed": true,
@@ -711,10 +716,10 @@
           "codex doctor exited 1; preserve the diagnostic, but use the isolated MCP/config probes and task execution as gates"
         ],
         "artifacts": {
-          "doctor": "sources/evaluations/workflow-sessions/prepare-beets-integrated-token-savior-mcp-v1-20260718T200945842110Z-p1508983/codex-doctor.txt",
-          "mcp_list": "sources/evaluations/workflow-sessions/prepare-beets-integrated-token-savior-mcp-v1-20260718T200945842110Z-p1508983/codex-mcp-list.txt",
-          "effective_config": "sources/evaluations/workflow-sessions/prepare-beets-integrated-token-savior-mcp-v1-20260718T200945842110Z-p1508983/codex-effective-config.toml",
-          "forbidden_command_visibility": "sources/evaluations/workflow-sessions/prepare-beets-integrated-token-savior-mcp-v1-20260718T200945842110Z-p1508983/forbidden-command-visibility.txt",
+          "doctor": "sources/evaluations/workflow-sessions/prepare-beets-integrated-token-savior-mcp-v1-20260718T225823607808Z-p1593845/codex-doctor.txt",
+          "mcp_list": "sources/evaluations/workflow-sessions/prepare-beets-integrated-token-savior-mcp-v1-20260718T225823607808Z-p1593845/codex-mcp-list.txt",
+          "effective_config": "sources/evaluations/workflow-sessions/prepare-beets-integrated-token-savior-mcp-v1-20260718T225823607808Z-p1593845/codex-effective-config.toml",
+          "forbidden_command_visibility": "sources/evaluations/workflow-sessions/prepare-beets-integrated-token-savior-mcp-v1-20260718T225823607808Z-p1593845/forbidden-command-visibility.txt",
           "tool_preflight": null,
           "tool_coverage_preflight": null
         }
@@ -723,9 +728,9 @@
     {
       "sequence_id": "fastify-lifecycle-sequence-v0",
       "profile_id": "integrated-token-savior-mcp-v1",
-      "protocol_path": "sources/evaluations/protocols/fastify-lifecycle-sequence-v0-integrated-token-savior-mcp-v1-534820995d73.json",
-      "protocol_sha256": "da9e626688ded1000a225be1be33974163a279baf5a21f607c962d082b3b8d08",
-      "raw_prepare_output_sha256": "4d5d0d320f5264f592bc6324292532e540f090985f99bed9b4ac562d4dea5921",
+      "protocol_path": "sources/evaluations/protocols/fastify-lifecycle-sequence-v0-integrated-token-savior-mcp-v1-a701032370ed.json",
+      "protocol_sha256": "d8d5fee2fd1860d27b3938b9ffd8faeeec1e79e359b2d7e361af53141d1e987c",
+      "raw_prepare_output_sha256": "ac7631be1b84d8fc22934e4cbdc41642cfa69505015b717286f2dfe8b960058c",
       "prepared": true,
       "prepare_verification": {
         "passed": true,
@@ -791,10 +796,10 @@
           "codex doctor exited 1; preserve the diagnostic, but use the isolated MCP/config probes and task execution as gates"
         ],
         "artifacts": {
-          "doctor": "sources/evaluations/workflow-sessions/prepare-fastify-integrated-token-savior-mcp-v1-20260718T200937833169Z-p1508805/codex-doctor.txt",
-          "mcp_list": "sources/evaluations/workflow-sessions/prepare-fastify-integrated-token-savior-mcp-v1-20260718T200937833169Z-p1508805/codex-mcp-list.txt",
-          "effective_config": "sources/evaluations/workflow-sessions/prepare-fastify-integrated-token-savior-mcp-v1-20260718T200937833169Z-p1508805/codex-effective-config.toml",
-          "forbidden_command_visibility": "sources/evaluations/workflow-sessions/prepare-fastify-integrated-token-savior-mcp-v1-20260718T200937833169Z-p1508805/forbidden-command-visibility.txt",
+          "doctor": "sources/evaluations/workflow-sessions/prepare-fastify-integrated-token-savior-mcp-v1-20260718T225815716209Z-p1593671/codex-doctor.txt",
+          "mcp_list": "sources/evaluations/workflow-sessions/prepare-fastify-integrated-token-savior-mcp-v1-20260718T225815716209Z-p1593671/codex-mcp-list.txt",
+          "effective_config": "sources/evaluations/workflow-sessions/prepare-fastify-integrated-token-savior-mcp-v1-20260718T225815716209Z-p1593671/codex-effective-config.toml",
+          "forbidden_command_visibility": "sources/evaluations/workflow-sessions/prepare-fastify-integrated-token-savior-mcp-v1-20260718T225815716209Z-p1593671/forbidden-command-visibility.txt",
           "tool_preflight": null,
           "tool_coverage_preflight": null
         }
@@ -803,9 +808,9 @@
     {
       "sequence_id": "terraform-lifecycle-sequence-v0",
       "profile_id": "integrated-token-savior-mcp-v1",
-      "protocol_path": "sources/evaluations/protocols/terraform-lifecycle-sequence-v0-integrated-token-savior-mcp-v1-ba407b99a736.json",
-      "protocol_sha256": "b5c85b1b3fa514f99eb1729877cd46f72f8c1927e564400be81527cabb9f0224",
-      "raw_prepare_output_sha256": "a605a52515a99df3a60f1d007785bc550e9ec78bd7bb1b81cf940ca955dfbab8",
+      "protocol_path": "sources/evaluations/protocols/terraform-lifecycle-sequence-v0-integrated-token-savior-mcp-v1-4714095cc47a.json",
+      "protocol_sha256": "aa5cb2f42373f304dc701f3f83e5688c2955a311bbb74e33b99444cb2c16318c",
+      "raw_prepare_output_sha256": "df25bf3e59f464f033346277d0d621bde782a47a8f6466ba1255e243dfdcae9b",
       "prepared": true,
       "prepare_verification": {
         "passed": true,
@@ -871,10 +876,10 @@
           "codex doctor exited 1; preserve the diagnostic, but use the isolated MCP/config probes and task execution as gates"
         ],
         "artifacts": {
-          "doctor": "sources/evaluations/workflow-sessions/prepare-terraform-integrated-token-savior-mcp-v1-20260718T200955075867Z-p1509150/codex-doctor.txt",
-          "mcp_list": "sources/evaluations/workflow-sessions/prepare-terraform-integrated-token-savior-mcp-v1-20260718T200955075867Z-p1509150/codex-mcp-list.txt",
-          "effective_config": "sources/evaluations/workflow-sessions/prepare-terraform-integrated-token-savior-mcp-v1-20260718T200955075867Z-p1509150/codex-effective-config.toml",
-          "forbidden_command_visibility": "sources/evaluations/workflow-sessions/prepare-terraform-integrated-token-savior-mcp-v1-20260718T200955075867Z-p1509150/forbidden-command-visibility.txt",
+          "doctor": "sources/evaluations/workflow-sessions/prepare-terraform-integrated-token-savior-mcp-v1-20260718T225832492991Z-p1594011/codex-doctor.txt",
+          "mcp_list": "sources/evaluations/workflow-sessions/prepare-terraform-integrated-token-savior-mcp-v1-20260718T225832492991Z-p1594011/codex-mcp-list.txt",
+          "effective_config": "sources/evaluations/workflow-sessions/prepare-terraform-integrated-token-savior-mcp-v1-20260718T225832492991Z-p1594011/codex-effective-config.toml",
+          "forbidden_command_visibility": "sources/evaluations/workflow-sessions/prepare-terraform-integrated-token-savior-mcp-v1-20260718T225832492991Z-p1594011/forbidden-command-visibility.txt",
           "tool_preflight": null,
           "tool_coverage_preflight": null
         }
@@ -883,9 +888,9 @@
     {
       "sequence_id": "beets-lifecycle-sequence-v0",
       "profile_id": "retrieval-cartog-mcp-v1",
-      "protocol_path": "sources/evaluations/protocols/beets-lifecycle-sequence-v0-retrieval-cartog-mcp-v1-e3fc347045e9.json",
-      "protocol_sha256": "b6caa70b9795868f7e37ff75fdc8ccc85a69ff22b930bbd9e02f34194adc1562",
-      "raw_prepare_output_sha256": "8c83640f1c025bbf45a0e265a5b20e919b1c53260c5fbc2636336f53c00b9278",
+      "protocol_path": "sources/evaluations/protocols/beets-lifecycle-sequence-v0-retrieval-cartog-mcp-v1-381dd432b270.json",
+      "protocol_sha256": "1998c37a1935070e5b654f7c113e8b136b50c7cec95a831d600b26f7589463bd",
+      "raw_prepare_output_sha256": "efb6bb1b43a686e6fe8b32d9bf7aac519d029f8fd4a9f78ff4810e0c724e4826",
       "prepared": true,
       "prepare_verification": {
         "passed": true,
@@ -952,11 +957,11 @@
           "codex doctor exited 1; preserve the diagnostic, but use the isolated MCP/config probes and task execution as gates"
         ],
         "artifacts": {
-          "doctor": "sources/evaluations/workflow-sessions/prepare-beets-retrieval-cartog-mcp-v1-20260718T194410389484Z-p1504991/codex-doctor.txt",
-          "mcp_list": "sources/evaluations/workflow-sessions/prepare-beets-retrieval-cartog-mcp-v1-20260718T194410389484Z-p1504991/codex-mcp-list.txt",
-          "effective_config": "sources/evaluations/workflow-sessions/prepare-beets-retrieval-cartog-mcp-v1-20260718T194410389484Z-p1504991/codex-effective-config.toml",
-          "forbidden_command_visibility": "sources/evaluations/workflow-sessions/prepare-beets-retrieval-cartog-mcp-v1-20260718T194410389484Z-p1504991/forbidden-command-visibility.txt",
-          "tool_preflight": "sources/evaluations/workflow-sessions/prepare-beets-retrieval-cartog-mcp-v1-20260718T194410389484Z-p1504991/tool-preflight.txt",
+          "doctor": "sources/evaluations/workflow-sessions/prepare-beets-retrieval-cartog-mcp-v1-20260718T223341257673Z-p1589967/codex-doctor.txt",
+          "mcp_list": "sources/evaluations/workflow-sessions/prepare-beets-retrieval-cartog-mcp-v1-20260718T223341257673Z-p1589967/codex-mcp-list.txt",
+          "effective_config": "sources/evaluations/workflow-sessions/prepare-beets-retrieval-cartog-mcp-v1-20260718T223341257673Z-p1589967/codex-effective-config.toml",
+          "forbidden_command_visibility": "sources/evaluations/workflow-sessions/prepare-beets-retrieval-cartog-mcp-v1-20260718T223341257673Z-p1589967/forbidden-command-visibility.txt",
+          "tool_preflight": "sources/evaluations/workflow-sessions/prepare-beets-retrieval-cartog-mcp-v1-20260718T223341257673Z-p1589967/tool-preflight.txt",
           "tool_coverage_preflight": null
         }
       }
@@ -964,9 +969,9 @@
     {
       "sequence_id": "fastify-lifecycle-sequence-v0",
       "profile_id": "retrieval-cartog-mcp-v1",
-      "protocol_path": "sources/evaluations/protocols/fastify-lifecycle-sequence-v0-retrieval-cartog-mcp-v1-5873bcda58a4.json",
-      "protocol_sha256": "8e35fc8621d43c4ac9fc61e4c6ca0cc47129bbcf58708a6d7f2b417f0c18439b",
-      "raw_prepare_output_sha256": "0099710a5444ed915d2a38981274ada4803936c4f10301c4a7b6af6986a5ff85",
+      "protocol_path": "sources/evaluations/protocols/fastify-lifecycle-sequence-v0-retrieval-cartog-mcp-v1-99b0eb4785a0.json",
+      "protocol_sha256": "a4fcb5b21899f7fbe8bc431c5347654c49509ed6a6371517bda6f8d85ab51968",
+      "raw_prepare_output_sha256": "82b0d6d20214bb1d0215ac70dd0bf06781a628a5e056c6efa65b5037eccde1ab",
       "prepared": true,
       "prepare_verification": {
         "passed": true,
@@ -1033,11 +1038,11 @@
           "codex doctor exited 1; preserve the diagnostic, but use the isolated MCP/config probes and task execution as gates"
         ],
         "artifacts": {
-          "doctor": "sources/evaluations/workflow-sessions/prepare-fastify-retrieval-cartog-mcp-v1-20260718T194355835151Z-p1504797/codex-doctor.txt",
-          "mcp_list": "sources/evaluations/workflow-sessions/prepare-fastify-retrieval-cartog-mcp-v1-20260718T194355835151Z-p1504797/codex-mcp-list.txt",
-          "effective_config": "sources/evaluations/workflow-sessions/prepare-fastify-retrieval-cartog-mcp-v1-20260718T194355835151Z-p1504797/codex-effective-config.toml",
-          "forbidden_command_visibility": "sources/evaluations/workflow-sessions/prepare-fastify-retrieval-cartog-mcp-v1-20260718T194355835151Z-p1504797/forbidden-command-visibility.txt",
-          "tool_preflight": "sources/evaluations/workflow-sessions/prepare-fastify-retrieval-cartog-mcp-v1-20260718T194355835151Z-p1504797/tool-preflight.txt",
+          "doctor": "sources/evaluations/workflow-sessions/prepare-fastify-retrieval-cartog-mcp-v1-20260718T223327305221Z-p1589771/codex-doctor.txt",
+          "mcp_list": "sources/evaluations/workflow-sessions/prepare-fastify-retrieval-cartog-mcp-v1-20260718T223327305221Z-p1589771/codex-mcp-list.txt",
+          "effective_config": "sources/evaluations/workflow-sessions/prepare-fastify-retrieval-cartog-mcp-v1-20260718T223327305221Z-p1589771/codex-effective-config.toml",
+          "forbidden_command_visibility": "sources/evaluations/workflow-sessions/prepare-fastify-retrieval-cartog-mcp-v1-20260718T223327305221Z-p1589771/forbidden-command-visibility.txt",
+          "tool_preflight": "sources/evaluations/workflow-sessions/prepare-fastify-retrieval-cartog-mcp-v1-20260718T223327305221Z-p1589771/tool-preflight.txt",
           "tool_coverage_preflight": null
         }
       }
@@ -1045,9 +1050,9 @@
     {
       "sequence_id": "terraform-lifecycle-sequence-v0",
       "profile_id": "retrieval-cartog-mcp-v1",
-      "protocol_path": "sources/evaluations/protocols/terraform-lifecycle-sequence-v0-retrieval-cartog-mcp-v1-27f2b36e684d.json",
-      "protocol_sha256": "fd205a7d235d7e96dc7a5db6e43573f2c1ce68f99194e1686c8aa11afdabfc9e",
-      "raw_prepare_output_sha256": "ab73198814baa6d413f86a9bb20caa3022a4ab407dd76579c2e150954d6769ae",
+      "protocol_path": "sources/evaluations/protocols/terraform-lifecycle-sequence-v0-retrieval-cartog-mcp-v1-690167799c9f.json",
+      "protocol_sha256": "518db3216d9d675c22e2de15b67352908855ac260eec19c3c05c199598048516",
+      "raw_prepare_output_sha256": "f7c1f19a329d77ae50d8e42e4bc8843a0d37bc78ab1d48398ddcc31eff390773",
       "prepared": true,
       "prepare_verification": {
         "passed": true,
@@ -1114,11 +1119,11 @@
           "codex doctor exited 1; preserve the diagnostic, but use the isolated MCP/config probes and task execution as gates"
         ],
         "artifacts": {
-          "doctor": "sources/evaluations/workflow-sessions/prepare-terraform-retrieval-cartog-mcp-v1-20260718T194426865792Z-p1505175/codex-doctor.txt",
-          "mcp_list": "sources/evaluations/workflow-sessions/prepare-terraform-retrieval-cartog-mcp-v1-20260718T194426865792Z-p1505175/codex-mcp-list.txt",
-          "effective_config": "sources/evaluations/workflow-sessions/prepare-terraform-retrieval-cartog-mcp-v1-20260718T194426865792Z-p1505175/codex-effective-config.toml",
-          "forbidden_command_visibility": "sources/evaluations/workflow-sessions/prepare-terraform-retrieval-cartog-mcp-v1-20260718T194426865792Z-p1505175/forbidden-command-visibility.txt",
-          "tool_preflight": "sources/evaluations/workflow-sessions/prepare-terraform-retrieval-cartog-mcp-v1-20260718T194426865792Z-p1505175/tool-preflight.txt",
+          "doctor": "sources/evaluations/workflow-sessions/prepare-terraform-retrieval-cartog-mcp-v1-20260718T223357347474Z-p1590152/codex-doctor.txt",
+          "mcp_list": "sources/evaluations/workflow-sessions/prepare-terraform-retrieval-cartog-mcp-v1-20260718T223357347474Z-p1590152/codex-mcp-list.txt",
+          "effective_config": "sources/evaluations/workflow-sessions/prepare-terraform-retrieval-cartog-mcp-v1-20260718T223357347474Z-p1590152/codex-effective-config.toml",
+          "forbidden_command_visibility": "sources/evaluations/workflow-sessions/prepare-terraform-retrieval-cartog-mcp-v1-20260718T223357347474Z-p1590152/forbidden-command-visibility.txt",
+          "tool_preflight": "sources/evaluations/workflow-sessions/prepare-terraform-retrieval-cartog-mcp-v1-20260718T223357347474Z-p1590152/tool-preflight.txt",
           "tool_coverage_preflight": null
         }
       }
@@ -1126,9 +1131,9 @@
     {
       "sequence_id": "beets-lifecycle-sequence-v0",
       "profile_id": "retrieval-codegraph-codex-mcp-v1",
-      "protocol_path": "sources/evaluations/protocols/beets-lifecycle-sequence-v0-retrieval-codegraph-codex-mcp-v1-e7cb646bc84b.json",
-      "protocol_sha256": "ebb05353709cf19aa87158dc867b14966915ef5911467ad94a15dfb1d5367467",
-      "raw_prepare_output_sha256": "07fb64ca78584d26fa47a965b4e62fae43f8512ea6febcf16a3b4a2837ad3c2e",
+      "protocol_path": "sources/evaluations/protocols/beets-lifecycle-sequence-v0-retrieval-codegraph-codex-mcp-v1-1ae943b9d19b.json",
+      "protocol_sha256": "f1345b6371e0caf7169f472875c54bc063b1e6899fec371e851f93471f9831ba",
+      "raw_prepare_output_sha256": "1f88e5181f6b9838213219630ea628fae57935da510309eafacdf21441f274d2",
       "prepared": true,
       "prepare_verification": {
         "passed": true,
@@ -1148,12 +1153,12 @@
         ],
         "missing_required_files": [],
         "required_files": [
-          "/opt/data/repos/token-optimization-research/sources/evaluations/workflow-sessions/prepare-beets-retrieval-codegraph-codex-mcp-v1-20260718T194119298921Z-p1503325/codex-homes/retrieval-codegraph-codex-mcp-v1/config.toml",
-          "/opt/data/repos/token-optimization-research/sources/evaluations/workflow-sessions/prepare-beets-retrieval-codegraph-codex-mcp-v1-20260718T194119298921Z-p1503325/codex-homes/retrieval-codegraph-codex-mcp-v1/AGENTS.md"
+          "/opt/data/repos/token-optimization-research/sources/evaluations/workflow-sessions/prepare-beets-retrieval-codegraph-codex-mcp-v1-20260718T223044508947Z-p1588313/codex-homes/retrieval-codegraph-codex-mcp-v1/config.toml",
+          "/opt/data/repos/token-optimization-research/sources/evaluations/workflow-sessions/prepare-beets-retrieval-codegraph-codex-mcp-v1-20260718T223044508947Z-p1588313/codex-homes/retrieval-codegraph-codex-mcp-v1/AGENTS.md"
         ],
         "artifacts": [
-          "sources/evaluations/workflow-sessions/prepare-beets-retrieval-codegraph-codex-mcp-v1-20260718T194119298921Z-p1503325/tool-host-install-1.txt",
-          "sources/evaluations/workflow-sessions/prepare-beets-retrieval-codegraph-codex-mcp-v1-20260718T194119298921Z-p1503325/tool-host-verify-1.txt"
+          "sources/evaluations/workflow-sessions/prepare-beets-retrieval-codegraph-codex-mcp-v1-20260718T223044508947Z-p1588313/tool-host-install-1.txt",
+          "sources/evaluations/workflow-sessions/prepare-beets-retrieval-codegraph-codex-mcp-v1-20260718T223044508947Z-p1588313/tool-host-verify-1.txt"
         ]
       },
       "mcp_handshake": {
@@ -1191,10 +1196,10 @@
           "codex doctor exited 1; preserve the diagnostic, but use the isolated MCP/config probes and task execution as gates"
         ],
         "artifacts": {
-          "doctor": "sources/evaluations/workflow-sessions/prepare-beets-retrieval-codegraph-codex-mcp-v1-20260718T194119298921Z-p1503325/codex-doctor.txt",
-          "mcp_list": "sources/evaluations/workflow-sessions/prepare-beets-retrieval-codegraph-codex-mcp-v1-20260718T194119298921Z-p1503325/codex-mcp-list.txt",
-          "effective_config": "sources/evaluations/workflow-sessions/prepare-beets-retrieval-codegraph-codex-mcp-v1-20260718T194119298921Z-p1503325/codex-effective-config.toml",
-          "forbidden_command_visibility": "sources/evaluations/workflow-sessions/prepare-beets-retrieval-codegraph-codex-mcp-v1-20260718T194119298921Z-p1503325/forbidden-command-visibility.txt",
+          "doctor": "sources/evaluations/workflow-sessions/prepare-beets-retrieval-codegraph-codex-mcp-v1-20260718T223044508947Z-p1588313/codex-doctor.txt",
+          "mcp_list": "sources/evaluations/workflow-sessions/prepare-beets-retrieval-codegraph-codex-mcp-v1-20260718T223044508947Z-p1588313/codex-mcp-list.txt",
+          "effective_config": "sources/evaluations/workflow-sessions/prepare-beets-retrieval-codegraph-codex-mcp-v1-20260718T223044508947Z-p1588313/codex-effective-config.toml",
+          "forbidden_command_visibility": "sources/evaluations/workflow-sessions/prepare-beets-retrieval-codegraph-codex-mcp-v1-20260718T223044508947Z-p1588313/forbidden-command-visibility.txt",
           "tool_preflight": null,
           "tool_coverage_preflight": null
         }
@@ -1203,9 +1208,9 @@
     {
       "sequence_id": "fastify-lifecycle-sequence-v0",
       "profile_id": "retrieval-codegraph-codex-mcp-v1",
-      "protocol_path": "sources/evaluations/protocols/fastify-lifecycle-sequence-v0-retrieval-codegraph-codex-mcp-v1-418b9383d0e7.json",
-      "protocol_sha256": "4f5dcbbd603eb4603173912f8469a6c0661872ef33ca8ec92ccf47af48e5efcb",
-      "raw_prepare_output_sha256": "9aa42276903fadf049036b67c025dca53bafa28793d27a40a20a23f16e0bf5f8",
+      "protocol_path": "sources/evaluations/protocols/fastify-lifecycle-sequence-v0-retrieval-codegraph-codex-mcp-v1-a3755c684411.json",
+      "protocol_sha256": "0c33aa3bed842990de2725928775309d58e5f904100601f3709f7b591bb142c4",
+      "raw_prepare_output_sha256": "71c2676ddeec6cec6b1cf33a34de7b5a20b412e7f13c12d42cd4f55452941620",
       "prepared": true,
       "prepare_verification": {
         "passed": true,
@@ -1225,12 +1230,12 @@
         ],
         "missing_required_files": [],
         "required_files": [
-          "/opt/data/repos/token-optimization-research/sources/evaluations/workflow-sessions/prepare-fastify-retrieval-codegraph-codex-mcp-v1-20260718T194104858811Z-p1503107/codex-homes/retrieval-codegraph-codex-mcp-v1/config.toml",
-          "/opt/data/repos/token-optimization-research/sources/evaluations/workflow-sessions/prepare-fastify-retrieval-codegraph-codex-mcp-v1-20260718T194104858811Z-p1503107/codex-homes/retrieval-codegraph-codex-mcp-v1/AGENTS.md"
+          "/opt/data/repos/token-optimization-research/sources/evaluations/workflow-sessions/prepare-fastify-retrieval-codegraph-codex-mcp-v1-20260718T223030339670Z-p1588096/codex-homes/retrieval-codegraph-codex-mcp-v1/config.toml",
+          "/opt/data/repos/token-optimization-research/sources/evaluations/workflow-sessions/prepare-fastify-retrieval-codegraph-codex-mcp-v1-20260718T223030339670Z-p1588096/codex-homes/retrieval-codegraph-codex-mcp-v1/AGENTS.md"
         ],
         "artifacts": [
-          "sources/evaluations/workflow-sessions/prepare-fastify-retrieval-codegraph-codex-mcp-v1-20260718T194104858811Z-p1503107/tool-host-install-1.txt",
-          "sources/evaluations/workflow-sessions/prepare-fastify-retrieval-codegraph-codex-mcp-v1-20260718T194104858811Z-p1503107/tool-host-verify-1.txt"
+          "sources/evaluations/workflow-sessions/prepare-fastify-retrieval-codegraph-codex-mcp-v1-20260718T223030339670Z-p1588096/tool-host-install-1.txt",
+          "sources/evaluations/workflow-sessions/prepare-fastify-retrieval-codegraph-codex-mcp-v1-20260718T223030339670Z-p1588096/tool-host-verify-1.txt"
         ]
       },
       "mcp_handshake": {
@@ -1268,10 +1273,10 @@
           "codex doctor exited 1; preserve the diagnostic, but use the isolated MCP/config probes and task execution as gates"
         ],
         "artifacts": {
-          "doctor": "sources/evaluations/workflow-sessions/prepare-fastify-retrieval-codegraph-codex-mcp-v1-20260718T194104858811Z-p1503107/codex-doctor.txt",
-          "mcp_list": "sources/evaluations/workflow-sessions/prepare-fastify-retrieval-codegraph-codex-mcp-v1-20260718T194104858811Z-p1503107/codex-mcp-list.txt",
-          "effective_config": "sources/evaluations/workflow-sessions/prepare-fastify-retrieval-codegraph-codex-mcp-v1-20260718T194104858811Z-p1503107/codex-effective-config.toml",
-          "forbidden_command_visibility": "sources/evaluations/workflow-sessions/prepare-fastify-retrieval-codegraph-codex-mcp-v1-20260718T194104858811Z-p1503107/forbidden-command-visibility.txt",
+          "doctor": "sources/evaluations/workflow-sessions/prepare-fastify-retrieval-codegraph-codex-mcp-v1-20260718T223030339670Z-p1588096/codex-doctor.txt",
+          "mcp_list": "sources/evaluations/workflow-sessions/prepare-fastify-retrieval-codegraph-codex-mcp-v1-20260718T223030339670Z-p1588096/codex-mcp-list.txt",
+          "effective_config": "sources/evaluations/workflow-sessions/prepare-fastify-retrieval-codegraph-codex-mcp-v1-20260718T223030339670Z-p1588096/codex-effective-config.toml",
+          "forbidden_command_visibility": "sources/evaluations/workflow-sessions/prepare-fastify-retrieval-codegraph-codex-mcp-v1-20260718T223030339670Z-p1588096/forbidden-command-visibility.txt",
           "tool_preflight": null,
           "tool_coverage_preflight": null
         }
@@ -1280,9 +1285,9 @@
     {
       "sequence_id": "terraform-lifecycle-sequence-v0",
       "profile_id": "retrieval-codegraph-codex-mcp-v1",
-      "protocol_path": "sources/evaluations/protocols/terraform-lifecycle-sequence-v0-retrieval-codegraph-codex-mcp-v1-a5d85da719d8.json",
-      "protocol_sha256": "a663b094dfdaa268a604b4be92a7c032d5af5f9552bb47bff2e45757387e329e",
-      "raw_prepare_output_sha256": "c67952faf2205c826fcdfdd159b7c24c253bdb2ff07050b34df6264a659e4957",
+      "protocol_path": "sources/evaluations/protocols/terraform-lifecycle-sequence-v0-retrieval-codegraph-codex-mcp-v1-094473dc5fe5.json",
+      "protocol_sha256": "a65079ea3bcdd9735a824dac4db032ac8334cfc0cb60dcf0c0821e125aa06fe5",
+      "raw_prepare_output_sha256": "9e65a69371d394ab12833ac2bc4b874485a977dab22452c24a69dd172ee793c3",
       "prepared": true,
       "prepare_verification": {
         "passed": true,
@@ -1302,12 +1307,12 @@
         ],
         "missing_required_files": [],
         "required_files": [
-          "/opt/data/repos/token-optimization-research/sources/evaluations/workflow-sessions/prepare-terraform-retrieval-codegraph-codex-mcp-v1-20260718T194138014853Z-p1503534/codex-homes/retrieval-codegraph-codex-mcp-v1/config.toml",
-          "/opt/data/repos/token-optimization-research/sources/evaluations/workflow-sessions/prepare-terraform-retrieval-codegraph-codex-mcp-v1-20260718T194138014853Z-p1503534/codex-homes/retrieval-codegraph-codex-mcp-v1/AGENTS.md"
+          "/opt/data/repos/token-optimization-research/sources/evaluations/workflow-sessions/prepare-terraform-retrieval-codegraph-codex-mcp-v1-20260718T223103572743Z-p1588519/codex-homes/retrieval-codegraph-codex-mcp-v1/config.toml",
+          "/opt/data/repos/token-optimization-research/sources/evaluations/workflow-sessions/prepare-terraform-retrieval-codegraph-codex-mcp-v1-20260718T223103572743Z-p1588519/codex-homes/retrieval-codegraph-codex-mcp-v1/AGENTS.md"
         ],
         "artifacts": [
-          "sources/evaluations/workflow-sessions/prepare-terraform-retrieval-codegraph-codex-mcp-v1-20260718T194138014853Z-p1503534/tool-host-install-1.txt",
-          "sources/evaluations/workflow-sessions/prepare-terraform-retrieval-codegraph-codex-mcp-v1-20260718T194138014853Z-p1503534/tool-host-verify-1.txt"
+          "sources/evaluations/workflow-sessions/prepare-terraform-retrieval-codegraph-codex-mcp-v1-20260718T223103572743Z-p1588519/tool-host-install-1.txt",
+          "sources/evaluations/workflow-sessions/prepare-terraform-retrieval-codegraph-codex-mcp-v1-20260718T223103572743Z-p1588519/tool-host-verify-1.txt"
         ]
       },
       "mcp_handshake": {
@@ -1345,10 +1350,10 @@
           "codex doctor exited 1; preserve the diagnostic, but use the isolated MCP/config probes and task execution as gates"
         ],
         "artifacts": {
-          "doctor": "sources/evaluations/workflow-sessions/prepare-terraform-retrieval-codegraph-codex-mcp-v1-20260718T194138014853Z-p1503534/codex-doctor.txt",
-          "mcp_list": "sources/evaluations/workflow-sessions/prepare-terraform-retrieval-codegraph-codex-mcp-v1-20260718T194138014853Z-p1503534/codex-mcp-list.txt",
-          "effective_config": "sources/evaluations/workflow-sessions/prepare-terraform-retrieval-codegraph-codex-mcp-v1-20260718T194138014853Z-p1503534/codex-effective-config.toml",
-          "forbidden_command_visibility": "sources/evaluations/workflow-sessions/prepare-terraform-retrieval-codegraph-codex-mcp-v1-20260718T194138014853Z-p1503534/forbidden-command-visibility.txt",
+          "doctor": "sources/evaluations/workflow-sessions/prepare-terraform-retrieval-codegraph-codex-mcp-v1-20260718T223103572743Z-p1588519/codex-doctor.txt",
+          "mcp_list": "sources/evaluations/workflow-sessions/prepare-terraform-retrieval-codegraph-codex-mcp-v1-20260718T223103572743Z-p1588519/codex-mcp-list.txt",
+          "effective_config": "sources/evaluations/workflow-sessions/prepare-terraform-retrieval-codegraph-codex-mcp-v1-20260718T223103572743Z-p1588519/codex-effective-config.toml",
+          "forbidden_command_visibility": "sources/evaluations/workflow-sessions/prepare-terraform-retrieval-codegraph-codex-mcp-v1-20260718T223103572743Z-p1588519/forbidden-command-visibility.txt",
           "tool_preflight": null,
           "tool_coverage_preflight": null
         }
@@ -1357,9 +1362,9 @@
     {
       "sequence_id": "beets-lifecycle-sequence-v0",
       "profile_id": "retrieval-graphify-codex-skill-v1",
-      "protocol_path": "sources/evaluations/protocols/beets-lifecycle-sequence-v0-retrieval-graphify-codex-skill-v1-979c155db66a.json",
-      "protocol_sha256": "a6b1c2cb381c0f69673658634c846fedf785881ecdce2adf39e9669126c600af",
-      "raw_prepare_output_sha256": "476eab7f7d8673e72d5620b55151014306a21523308cb78abdbd7499bb73ddf9",
+      "protocol_path": "sources/evaluations/protocols/beets-lifecycle-sequence-v0-retrieval-graphify-codex-skill-v1-7a991faeedf5.json",
+      "protocol_sha256": "a64564fe383b52a06920d3a87e052478b1e979d4b2513b4cdf1f13d95a5355fb",
+      "raw_prepare_output_sha256": "de27d95b81e37af602a574d88fe23c75a2649c28113a7b3fd02683d017395980",
       "prepared": true,
       "prepare_verification": {
         "passed": true,
@@ -1383,17 +1388,17 @@
         ],
         "missing_required_files": [],
         "required_files": [
-          "/opt/data/repos/token-optimization-research/sources/evaluations/workflow-sessions/prepare-beets-retrieval-graphify-codex-skill-v1-20260718T202201433956Z-p1530808/codex-homes/retrieval-graphify-codex-skill-v1/.config/graphify-codex-skill-v1/venv/bin/graphify",
-          "/opt/data/repos/token-optimization-research/sources/evaluations/workflow-sessions/prepare-beets-retrieval-graphify-codex-skill-v1-20260718T202201433956Z-p1530808/codex-homes/retrieval-graphify-codex-skill-v1/.config/graphify-codex-skill-v1/bin/graphify",
-          "/opt/data/repos/token-optimization-research/sources/evaluations/workflow-sessions/prepare-beets-retrieval-graphify-codex-skill-v1-20260718T202201433956Z-p1530808/codex-homes/retrieval-graphify-codex-skill-v1/skills/graphify/SKILL.md"
+          "/opt/data/repos/token-optimization-research/sources/evaluations/workflow-sessions/prepare-beets-retrieval-graphify-codex-skill-v1-20260718T222751625002Z-p1587389/codex-homes/retrieval-graphify-codex-skill-v1/.config/graphify-codex-skill-v1/venv/bin/graphify",
+          "/opt/data/repos/token-optimization-research/sources/evaluations/workflow-sessions/prepare-beets-retrieval-graphify-codex-skill-v1-20260718T222751625002Z-p1587389/codex-homes/retrieval-graphify-codex-skill-v1/.config/graphify-codex-skill-v1/bin/graphify",
+          "/opt/data/repos/token-optimization-research/sources/evaluations/workflow-sessions/prepare-beets-retrieval-graphify-codex-skill-v1-20260718T222751625002Z-p1587389/codex-homes/retrieval-graphify-codex-skill-v1/skills/graphify/SKILL.md"
         ],
         "artifacts": [
-          "sources/evaluations/workflow-sessions/prepare-beets-retrieval-graphify-codex-skill-v1-20260718T202201433956Z-p1530808/tool-host-install-1.txt",
-          "sources/evaluations/workflow-sessions/prepare-beets-retrieval-graphify-codex-skill-v1-20260718T202201433956Z-p1530808/tool-host-install-2.txt",
-          "sources/evaluations/workflow-sessions/prepare-beets-retrieval-graphify-codex-skill-v1-20260718T202201433956Z-p1530808/tool-host-install-3.txt",
-          "sources/evaluations/workflow-sessions/prepare-beets-retrieval-graphify-codex-skill-v1-20260718T202201433956Z-p1530808/tool-host-install-4.txt",
-          "sources/evaluations/workflow-sessions/prepare-beets-retrieval-graphify-codex-skill-v1-20260718T202201433956Z-p1530808/tool-host-install-5.txt",
-          "sources/evaluations/workflow-sessions/prepare-beets-retrieval-graphify-codex-skill-v1-20260718T202201433956Z-p1530808/tool-host-verify-1.txt"
+          "sources/evaluations/workflow-sessions/prepare-beets-retrieval-graphify-codex-skill-v1-20260718T222751625002Z-p1587389/tool-host-install-1.txt",
+          "sources/evaluations/workflow-sessions/prepare-beets-retrieval-graphify-codex-skill-v1-20260718T222751625002Z-p1587389/tool-host-install-2.txt",
+          "sources/evaluations/workflow-sessions/prepare-beets-retrieval-graphify-codex-skill-v1-20260718T222751625002Z-p1587389/tool-host-install-3.txt",
+          "sources/evaluations/workflow-sessions/prepare-beets-retrieval-graphify-codex-skill-v1-20260718T222751625002Z-p1587389/tool-host-install-4.txt",
+          "sources/evaluations/workflow-sessions/prepare-beets-retrieval-graphify-codex-skill-v1-20260718T222751625002Z-p1587389/tool-host-install-5.txt",
+          "sources/evaluations/workflow-sessions/prepare-beets-retrieval-graphify-codex-skill-v1-20260718T222751625002Z-p1587389/tool-host-verify-1.txt"
         ]
       },
       "mcp_handshake": {
@@ -1420,10 +1425,10 @@
           "codex doctor exited 1; preserve the diagnostic, but use the isolated MCP/config probes and task execution as gates"
         ],
         "artifacts": {
-          "doctor": "sources/evaluations/workflow-sessions/prepare-beets-retrieval-graphify-codex-skill-v1-20260718T202201433956Z-p1530808/codex-doctor.txt",
-          "mcp_list": "sources/evaluations/workflow-sessions/prepare-beets-retrieval-graphify-codex-skill-v1-20260718T202201433956Z-p1530808/codex-mcp-list.txt",
-          "effective_config": "sources/evaluations/workflow-sessions/prepare-beets-retrieval-graphify-codex-skill-v1-20260718T202201433956Z-p1530808/codex-effective-config.toml",
-          "forbidden_command_visibility": "sources/evaluations/workflow-sessions/prepare-beets-retrieval-graphify-codex-skill-v1-20260718T202201433956Z-p1530808/forbidden-command-visibility.txt",
+          "doctor": "sources/evaluations/workflow-sessions/prepare-beets-retrieval-graphify-codex-skill-v1-20260718T222751625002Z-p1587389/codex-doctor.txt",
+          "mcp_list": "sources/evaluations/workflow-sessions/prepare-beets-retrieval-graphify-codex-skill-v1-20260718T222751625002Z-p1587389/codex-mcp-list.txt",
+          "effective_config": "sources/evaluations/workflow-sessions/prepare-beets-retrieval-graphify-codex-skill-v1-20260718T222751625002Z-p1587389/codex-effective-config.toml",
+          "forbidden_command_visibility": "sources/evaluations/workflow-sessions/prepare-beets-retrieval-graphify-codex-skill-v1-20260718T222751625002Z-p1587389/forbidden-command-visibility.txt",
           "tool_preflight": null,
           "tool_coverage_preflight": null
         }
@@ -1432,9 +1437,9 @@
     {
       "sequence_id": "fastify-lifecycle-sequence-v0",
       "profile_id": "retrieval-graphify-codex-skill-v1",
-      "protocol_path": "sources/evaluations/protocols/fastify-lifecycle-sequence-v0-retrieval-graphify-codex-skill-v1-c546c1276a1b.json",
-      "protocol_sha256": "3967cc838c2e393ce5ebbadb5a86b8ab7e33ab0d192ca6d676e0f26d2f8eaefe",
-      "raw_prepare_output_sha256": "c197aa3b42b2ad7b4836ca21589025232a68e5c8fb841c34d55c271a505a8ac5",
+      "protocol_path": "sources/evaluations/protocols/fastify-lifecycle-sequence-v0-retrieval-graphify-codex-skill-v1-5400f95ffdc2.json",
+      "protocol_sha256": "a571e8d28e112ce1abbef4d0e887283724557700f77ad52160ed28b5d10137b1",
+      "raw_prepare_output_sha256": "e1d1fee2899a15e06d6d3aa4e5bc2dd2a7d8498b16548cd68a357be5fc333561",
       "prepared": true,
       "prepare_verification": {
         "passed": true,
@@ -1458,17 +1463,17 @@
         ],
         "missing_required_files": [],
         "required_files": [
-          "/opt/data/repos/token-optimization-research/sources/evaluations/workflow-sessions/prepare-fastify-retrieval-graphify-codex-skill-v1-20260718T202142172165Z-p1530578/codex-homes/retrieval-graphify-codex-skill-v1/.config/graphify-codex-skill-v1/venv/bin/graphify",
-          "/opt/data/repos/token-optimization-research/sources/evaluations/workflow-sessions/prepare-fastify-retrieval-graphify-codex-skill-v1-20260718T202142172165Z-p1530578/codex-homes/retrieval-graphify-codex-skill-v1/.config/graphify-codex-skill-v1/bin/graphify",
-          "/opt/data/repos/token-optimization-research/sources/evaluations/workflow-sessions/prepare-fastify-retrieval-graphify-codex-skill-v1-20260718T202142172165Z-p1530578/codex-homes/retrieval-graphify-codex-skill-v1/skills/graphify/SKILL.md"
+          "/opt/data/repos/token-optimization-research/sources/evaluations/workflow-sessions/prepare-fastify-retrieval-graphify-codex-skill-v1-20260718T222731613010Z-p1587159/codex-homes/retrieval-graphify-codex-skill-v1/.config/graphify-codex-skill-v1/venv/bin/graphify",
+          "/opt/data/repos/token-optimization-research/sources/evaluations/workflow-sessions/prepare-fastify-retrieval-graphify-codex-skill-v1-20260718T222731613010Z-p1587159/codex-homes/retrieval-graphify-codex-skill-v1/.config/graphify-codex-skill-v1/bin/graphify",
+          "/opt/data/repos/token-optimization-research/sources/evaluations/workflow-sessions/prepare-fastify-retrieval-graphify-codex-skill-v1-20260718T222731613010Z-p1587159/codex-homes/retrieval-graphify-codex-skill-v1/skills/graphify/SKILL.md"
         ],
         "artifacts": [
-          "sources/evaluations/workflow-sessions/prepare-fastify-retrieval-graphify-codex-skill-v1-20260718T202142172165Z-p1530578/tool-host-install-1.txt",
-          "sources/evaluations/workflow-sessions/prepare-fastify-retrieval-graphify-codex-skill-v1-20260718T202142172165Z-p1530578/tool-host-install-2.txt",
-          "sources/evaluations/workflow-sessions/prepare-fastify-retrieval-graphify-codex-skill-v1-20260718T202142172165Z-p1530578/tool-host-install-3.txt",
-          "sources/evaluations/workflow-sessions/prepare-fastify-retrieval-graphify-codex-skill-v1-20260718T202142172165Z-p1530578/tool-host-install-4.txt",
-          "sources/evaluations/workflow-sessions/prepare-fastify-retrieval-graphify-codex-skill-v1-20260718T202142172165Z-p1530578/tool-host-install-5.txt",
-          "sources/evaluations/workflow-sessions/prepare-fastify-retrieval-graphify-codex-skill-v1-20260718T202142172165Z-p1530578/tool-host-verify-1.txt"
+          "sources/evaluations/workflow-sessions/prepare-fastify-retrieval-graphify-codex-skill-v1-20260718T222731613010Z-p1587159/tool-host-install-1.txt",
+          "sources/evaluations/workflow-sessions/prepare-fastify-retrieval-graphify-codex-skill-v1-20260718T222731613010Z-p1587159/tool-host-install-2.txt",
+          "sources/evaluations/workflow-sessions/prepare-fastify-retrieval-graphify-codex-skill-v1-20260718T222731613010Z-p1587159/tool-host-install-3.txt",
+          "sources/evaluations/workflow-sessions/prepare-fastify-retrieval-graphify-codex-skill-v1-20260718T222731613010Z-p1587159/tool-host-install-4.txt",
+          "sources/evaluations/workflow-sessions/prepare-fastify-retrieval-graphify-codex-skill-v1-20260718T222731613010Z-p1587159/tool-host-install-5.txt",
+          "sources/evaluations/workflow-sessions/prepare-fastify-retrieval-graphify-codex-skill-v1-20260718T222731613010Z-p1587159/tool-host-verify-1.txt"
         ]
       },
       "mcp_handshake": {
@@ -1495,10 +1500,10 @@
           "codex doctor exited 1; preserve the diagnostic, but use the isolated MCP/config probes and task execution as gates"
         ],
         "artifacts": {
-          "doctor": "sources/evaluations/workflow-sessions/prepare-fastify-retrieval-graphify-codex-skill-v1-20260718T202142172165Z-p1530578/codex-doctor.txt",
-          "mcp_list": "sources/evaluations/workflow-sessions/prepare-fastify-retrieval-graphify-codex-skill-v1-20260718T202142172165Z-p1530578/codex-mcp-list.txt",
-          "effective_config": "sources/evaluations/workflow-sessions/prepare-fastify-retrieval-graphify-codex-skill-v1-20260718T202142172165Z-p1530578/codex-effective-config.toml",
-          "forbidden_command_visibility": "sources/evaluations/workflow-sessions/prepare-fastify-retrieval-graphify-codex-skill-v1-20260718T202142172165Z-p1530578/forbidden-command-visibility.txt",
+          "doctor": "sources/evaluations/workflow-sessions/prepare-fastify-retrieval-graphify-codex-skill-v1-20260718T222731613010Z-p1587159/codex-doctor.txt",
+          "mcp_list": "sources/evaluations/workflow-sessions/prepare-fastify-retrieval-graphify-codex-skill-v1-20260718T222731613010Z-p1587159/codex-mcp-list.txt",
+          "effective_config": "sources/evaluations/workflow-sessions/prepare-fastify-retrieval-graphify-codex-skill-v1-20260718T222731613010Z-p1587159/codex-effective-config.toml",
+          "forbidden_command_visibility": "sources/evaluations/workflow-sessions/prepare-fastify-retrieval-graphify-codex-skill-v1-20260718T222731613010Z-p1587159/forbidden-command-visibility.txt",
           "tool_preflight": null,
           "tool_coverage_preflight": null
         }
@@ -1507,9 +1512,9 @@
     {
       "sequence_id": "terraform-lifecycle-sequence-v0",
       "profile_id": "retrieval-graphify-codex-skill-v1",
-      "protocol_path": "sources/evaluations/protocols/terraform-lifecycle-sequence-v0-retrieval-graphify-codex-skill-v1-d84c70b1a37d.json",
-      "protocol_sha256": "b64845d38e85b9caa7215a18723adf3f76695fca23dcd5cae6c9a6701c2c82b8",
-      "raw_prepare_output_sha256": "35cb435d1a25c0efd2d1aefdd353c5f9e32add9bb10d8cf8d9c5a7996c922d0e",
+      "protocol_path": "sources/evaluations/protocols/terraform-lifecycle-sequence-v0-retrieval-graphify-codex-skill-v1-a19587648ba5.json",
+      "protocol_sha256": "6d4de4f6bdceb4ab7c33af1a9e7f01cd867b9498302209ed3fcb0a78feb03e72",
+      "raw_prepare_output_sha256": "2fb51077327421f7eb9b8be1e04c2f0e4ec8c7cb731c5a07f61b2f21c1efca2c",
       "prepared": true,
       "prepare_verification": {
         "passed": true,
@@ -1533,17 +1538,17 @@
         ],
         "missing_required_files": [],
         "required_files": [
-          "/opt/data/repos/token-optimization-research/sources/evaluations/workflow-sessions/prepare-terraform-retrieval-graphify-codex-skill-v1-20260718T202235637358Z-p1531030/codex-homes/retrieval-graphify-codex-skill-v1/.config/graphify-codex-skill-v1/venv/bin/graphify",
-          "/opt/data/repos/token-optimization-research/sources/evaluations/workflow-sessions/prepare-terraform-retrieval-graphify-codex-skill-v1-20260718T202235637358Z-p1531030/codex-homes/retrieval-graphify-codex-skill-v1/.config/graphify-codex-skill-v1/bin/graphify",
-          "/opt/data/repos/token-optimization-research/sources/evaluations/workflow-sessions/prepare-terraform-retrieval-graphify-codex-skill-v1-20260718T202235637358Z-p1531030/codex-homes/retrieval-graphify-codex-skill-v1/skills/graphify/SKILL.md"
+          "/opt/data/repos/token-optimization-research/sources/evaluations/workflow-sessions/prepare-terraform-retrieval-graphify-codex-skill-v1-20260718T222826111776Z-p1587610/codex-homes/retrieval-graphify-codex-skill-v1/.config/graphify-codex-skill-v1/venv/bin/graphify",
+          "/opt/data/repos/token-optimization-research/sources/evaluations/workflow-sessions/prepare-terraform-retrieval-graphify-codex-skill-v1-20260718T222826111776Z-p1587610/codex-homes/retrieval-graphify-codex-skill-v1/.config/graphify-codex-skill-v1/bin/graphify",
+          "/opt/data/repos/token-optimization-research/sources/evaluations/workflow-sessions/prepare-terraform-retrieval-graphify-codex-skill-v1-20260718T222826111776Z-p1587610/codex-homes/retrieval-graphify-codex-skill-v1/skills/graphify/SKILL.md"
         ],
         "artifacts": [
-          "sources/evaluations/workflow-sessions/prepare-terraform-retrieval-graphify-codex-skill-v1-20260718T202235637358Z-p1531030/tool-host-install-1.txt",
-          "sources/evaluations/workflow-sessions/prepare-terraform-retrieval-graphify-codex-skill-v1-20260718T202235637358Z-p1531030/tool-host-install-2.txt",
-          "sources/evaluations/workflow-sessions/prepare-terraform-retrieval-graphify-codex-skill-v1-20260718T202235637358Z-p1531030/tool-host-install-3.txt",
-          "sources/evaluations/workflow-sessions/prepare-terraform-retrieval-graphify-codex-skill-v1-20260718T202235637358Z-p1531030/tool-host-install-4.txt",
-          "sources/evaluations/workflow-sessions/prepare-terraform-retrieval-graphify-codex-skill-v1-20260718T202235637358Z-p1531030/tool-host-install-5.txt",
-          "sources/evaluations/workflow-sessions/prepare-terraform-retrieval-graphify-codex-skill-v1-20260718T202235637358Z-p1531030/tool-host-verify-1.txt"
+          "sources/evaluations/workflow-sessions/prepare-terraform-retrieval-graphify-codex-skill-v1-20260718T222826111776Z-p1587610/tool-host-install-1.txt",
+          "sources/evaluations/workflow-sessions/prepare-terraform-retrieval-graphify-codex-skill-v1-20260718T222826111776Z-p1587610/tool-host-install-2.txt",
+          "sources/evaluations/workflow-sessions/prepare-terraform-retrieval-graphify-codex-skill-v1-20260718T222826111776Z-p1587610/tool-host-install-3.txt",
+          "sources/evaluations/workflow-sessions/prepare-terraform-retrieval-graphify-codex-skill-v1-20260718T222826111776Z-p1587610/tool-host-install-4.txt",
+          "sources/evaluations/workflow-sessions/prepare-terraform-retrieval-graphify-codex-skill-v1-20260718T222826111776Z-p1587610/tool-host-install-5.txt",
+          "sources/evaluations/workflow-sessions/prepare-terraform-retrieval-graphify-codex-skill-v1-20260718T222826111776Z-p1587610/tool-host-verify-1.txt"
         ]
       },
       "mcp_handshake": {
@@ -1570,10 +1575,10 @@
           "codex doctor exited 1; preserve the diagnostic, but use the isolated MCP/config probes and task execution as gates"
         ],
         "artifacts": {
-          "doctor": "sources/evaluations/workflow-sessions/prepare-terraform-retrieval-graphify-codex-skill-v1-20260718T202235637358Z-p1531030/codex-doctor.txt",
-          "mcp_list": "sources/evaluations/workflow-sessions/prepare-terraform-retrieval-graphify-codex-skill-v1-20260718T202235637358Z-p1531030/codex-mcp-list.txt",
-          "effective_config": "sources/evaluations/workflow-sessions/prepare-terraform-retrieval-graphify-codex-skill-v1-20260718T202235637358Z-p1531030/codex-effective-config.toml",
-          "forbidden_command_visibility": "sources/evaluations/workflow-sessions/prepare-terraform-retrieval-graphify-codex-skill-v1-20260718T202235637358Z-p1531030/forbidden-command-visibility.txt",
+          "doctor": "sources/evaluations/workflow-sessions/prepare-terraform-retrieval-graphify-codex-skill-v1-20260718T222826111776Z-p1587610/codex-doctor.txt",
+          "mcp_list": "sources/evaluations/workflow-sessions/prepare-terraform-retrieval-graphify-codex-skill-v1-20260718T222826111776Z-p1587610/codex-mcp-list.txt",
+          "effective_config": "sources/evaluations/workflow-sessions/prepare-terraform-retrieval-graphify-codex-skill-v1-20260718T222826111776Z-p1587610/codex-effective-config.toml",
+          "forbidden_command_visibility": "sources/evaluations/workflow-sessions/prepare-terraform-retrieval-graphify-codex-skill-v1-20260718T222826111776Z-p1587610/forbidden-command-visibility.txt",
           "tool_preflight": null,
           "tool_coverage_preflight": null
         }
@@ -1582,9 +1587,9 @@
     {
       "sequence_id": "beets-lifecycle-sequence-v0",
       "profile_id": "retrieval-jcodemunch-mcp-direct-v1",
-      "protocol_path": "sources/evaluations/protocols/beets-lifecycle-sequence-v0-retrieval-jcodemunch-mcp-direct-v1-4ee45057847f.json",
-      "protocol_sha256": "9a184c13a90beef6a8878dcada037ea4a3b6162c3cc2536021ed82853e588239",
-      "raw_prepare_output_sha256": "68cd6468a838e77dd33d43915af5440b21cb996ba9bf42d49b8db4de841b9b3b",
+      "protocol_path": "sources/evaluations/protocols/beets-lifecycle-sequence-v0-retrieval-jcodemunch-mcp-direct-v1-9789dd17f876.json",
+      "protocol_sha256": "0070f43358c3dcc599d838c8cc6473b287bc900b65240ac39e8ce2b9cc822aa9",
+      "raw_prepare_output_sha256": "86bc6bbe0334eb42fbb80ee394ff5244ab74853b0388a65d18224b679d7d3a29",
       "prepared": true,
       "prepare_verification": {
         "passed": true,
@@ -1605,12 +1610,12 @@
         ],
         "missing_required_files": [],
         "required_files": [
-          "/opt/data/repos/token-optimization-research/sources/evaluations/workflow-sessions/prepare-beets-retrieval-jcodemunch-mcp-direct-v1-20260718T193620118322Z-p1499917/codex-homes/retrieval-jcodemunch-mcp-direct-v1/.config/jcodemunch-mcp-direct-v1/venv/bin/jcodemunch-mcp"
+          "/opt/data/repos/token-optimization-research/sources/evaluations/workflow-sessions/prepare-beets-retrieval-jcodemunch-mcp-direct-v1-20260718T222538579538Z-p1584892/codex-homes/retrieval-jcodemunch-mcp-direct-v1/.config/jcodemunch-mcp-direct-v1/venv/bin/jcodemunch-mcp"
         ],
         "artifacts": [
-          "sources/evaluations/workflow-sessions/prepare-beets-retrieval-jcodemunch-mcp-direct-v1-20260718T193620118322Z-p1499917/tool-host-install-1.txt",
-          "sources/evaluations/workflow-sessions/prepare-beets-retrieval-jcodemunch-mcp-direct-v1-20260718T193620118322Z-p1499917/tool-host-install-2.txt",
-          "sources/evaluations/workflow-sessions/prepare-beets-retrieval-jcodemunch-mcp-direct-v1-20260718T193620118322Z-p1499917/tool-host-verify-1.txt"
+          "sources/evaluations/workflow-sessions/prepare-beets-retrieval-jcodemunch-mcp-direct-v1-20260718T222538579538Z-p1584892/tool-host-install-1.txt",
+          "sources/evaluations/workflow-sessions/prepare-beets-retrieval-jcodemunch-mcp-direct-v1-20260718T222538579538Z-p1584892/tool-host-install-2.txt",
+          "sources/evaluations/workflow-sessions/prepare-beets-retrieval-jcodemunch-mcp-direct-v1-20260718T222538579538Z-p1584892/tool-host-verify-1.txt"
         ]
       },
       "mcp_handshake": {
@@ -1736,10 +1741,10 @@
           "codex doctor exited 1; preserve the diagnostic, but use the isolated MCP/config probes and task execution as gates"
         ],
         "artifacts": {
-          "doctor": "sources/evaluations/workflow-sessions/prepare-beets-retrieval-jcodemunch-mcp-direct-v1-20260718T193620118322Z-p1499917/codex-doctor.txt",
-          "mcp_list": "sources/evaluations/workflow-sessions/prepare-beets-retrieval-jcodemunch-mcp-direct-v1-20260718T193620118322Z-p1499917/codex-mcp-list.txt",
-          "effective_config": "sources/evaluations/workflow-sessions/prepare-beets-retrieval-jcodemunch-mcp-direct-v1-20260718T193620118322Z-p1499917/codex-effective-config.toml",
-          "forbidden_command_visibility": "sources/evaluations/workflow-sessions/prepare-beets-retrieval-jcodemunch-mcp-direct-v1-20260718T193620118322Z-p1499917/forbidden-command-visibility.txt",
+          "doctor": "sources/evaluations/workflow-sessions/prepare-beets-retrieval-jcodemunch-mcp-direct-v1-20260718T222538579538Z-p1584892/codex-doctor.txt",
+          "mcp_list": "sources/evaluations/workflow-sessions/prepare-beets-retrieval-jcodemunch-mcp-direct-v1-20260718T222538579538Z-p1584892/codex-mcp-list.txt",
+          "effective_config": "sources/evaluations/workflow-sessions/prepare-beets-retrieval-jcodemunch-mcp-direct-v1-20260718T222538579538Z-p1584892/codex-effective-config.toml",
+          "forbidden_command_visibility": "sources/evaluations/workflow-sessions/prepare-beets-retrieval-jcodemunch-mcp-direct-v1-20260718T222538579538Z-p1584892/forbidden-command-visibility.txt",
           "tool_preflight": null,
           "tool_coverage_preflight": null
         }
@@ -1748,9 +1753,9 @@
     {
       "sequence_id": "fastify-lifecycle-sequence-v0",
       "profile_id": "retrieval-jcodemunch-mcp-direct-v1",
-      "protocol_path": "sources/evaluations/protocols/fastify-lifecycle-sequence-v0-retrieval-jcodemunch-mcp-direct-v1-1024d69a920d.json",
-      "protocol_sha256": "4713ce109d40939b8beb21fb85af84e5899b051c0620443c19857046148b89e9",
-      "raw_prepare_output_sha256": "c7109fbbd50dd7e6a31f4045450b4283c83152275876192e9ac57173e48ce24a",
+      "protocol_path": "sources/evaluations/protocols/fastify-lifecycle-sequence-v0-retrieval-jcodemunch-mcp-direct-v1-a6816d8b1460.json",
+      "protocol_sha256": "95b220415a7381595b8c21331a786cdf7fb7e52eab3e9e48d070ffa3b24f0369",
+      "raw_prepare_output_sha256": "30e60adfad22699747a7fc7484a38f3f960257cffd3520c6b5fddea048a59423",
       "prepared": true,
       "prepare_verification": {
         "passed": true,
@@ -1771,12 +1776,12 @@
         ],
         "missing_required_files": [],
         "required_files": [
-          "/opt/data/repos/token-optimization-research/sources/evaluations/workflow-sessions/prepare-fastify-retrieval-jcodemunch-mcp-direct-v1-20260718T193605891420Z-p1499704/codex-homes/retrieval-jcodemunch-mcp-direct-v1/.config/jcodemunch-mcp-direct-v1/venv/bin/jcodemunch-mcp"
+          "/opt/data/repos/token-optimization-research/sources/evaluations/workflow-sessions/prepare-fastify-retrieval-jcodemunch-mcp-direct-v1-20260718T222524632185Z-p1584674/codex-homes/retrieval-jcodemunch-mcp-direct-v1/.config/jcodemunch-mcp-direct-v1/venv/bin/jcodemunch-mcp"
         ],
         "artifacts": [
-          "sources/evaluations/workflow-sessions/prepare-fastify-retrieval-jcodemunch-mcp-direct-v1-20260718T193605891420Z-p1499704/tool-host-install-1.txt",
-          "sources/evaluations/workflow-sessions/prepare-fastify-retrieval-jcodemunch-mcp-direct-v1-20260718T193605891420Z-p1499704/tool-host-install-2.txt",
-          "sources/evaluations/workflow-sessions/prepare-fastify-retrieval-jcodemunch-mcp-direct-v1-20260718T193605891420Z-p1499704/tool-host-verify-1.txt"
+          "sources/evaluations/workflow-sessions/prepare-fastify-retrieval-jcodemunch-mcp-direct-v1-20260718T222524632185Z-p1584674/tool-host-install-1.txt",
+          "sources/evaluations/workflow-sessions/prepare-fastify-retrieval-jcodemunch-mcp-direct-v1-20260718T222524632185Z-p1584674/tool-host-install-2.txt",
+          "sources/evaluations/workflow-sessions/prepare-fastify-retrieval-jcodemunch-mcp-direct-v1-20260718T222524632185Z-p1584674/tool-host-verify-1.txt"
         ]
       },
       "mcp_handshake": {
@@ -1902,10 +1907,10 @@
           "codex doctor exited 1; preserve the diagnostic, but use the isolated MCP/config probes and task execution as gates"
         ],
         "artifacts": {
-          "doctor": "sources/evaluations/workflow-sessions/prepare-fastify-retrieval-jcodemunch-mcp-direct-v1-20260718T193605891420Z-p1499704/codex-doctor.txt",
-          "mcp_list": "sources/evaluations/workflow-sessions/prepare-fastify-retrieval-jcodemunch-mcp-direct-v1-20260718T193605891420Z-p1499704/codex-mcp-list.txt",
-          "effective_config": "sources/evaluations/workflow-sessions/prepare-fastify-retrieval-jcodemunch-mcp-direct-v1-20260718T193605891420Z-p1499704/codex-effective-config.toml",
-          "forbidden_command_visibility": "sources/evaluations/workflow-sessions/prepare-fastify-retrieval-jcodemunch-mcp-direct-v1-20260718T193605891420Z-p1499704/forbidden-command-visibility.txt",
+          "doctor": "sources/evaluations/workflow-sessions/prepare-fastify-retrieval-jcodemunch-mcp-direct-v1-20260718T222524632185Z-p1584674/codex-doctor.txt",
+          "mcp_list": "sources/evaluations/workflow-sessions/prepare-fastify-retrieval-jcodemunch-mcp-direct-v1-20260718T222524632185Z-p1584674/codex-mcp-list.txt",
+          "effective_config": "sources/evaluations/workflow-sessions/prepare-fastify-retrieval-jcodemunch-mcp-direct-v1-20260718T222524632185Z-p1584674/codex-effective-config.toml",
+          "forbidden_command_visibility": "sources/evaluations/workflow-sessions/prepare-fastify-retrieval-jcodemunch-mcp-direct-v1-20260718T222524632185Z-p1584674/forbidden-command-visibility.txt",
           "tool_preflight": null,
           "tool_coverage_preflight": null
         }
@@ -1914,9 +1919,9 @@
     {
       "sequence_id": "terraform-lifecycle-sequence-v0",
       "profile_id": "retrieval-jcodemunch-mcp-direct-v1",
-      "protocol_path": "sources/evaluations/protocols/terraform-lifecycle-sequence-v0-retrieval-jcodemunch-mcp-direct-v1-96ebe1aaca3b.json",
-      "protocol_sha256": "2873bb2fb230998bb583845c70c1148bc092b229e083baf1368d6b57b88c12a1",
-      "raw_prepare_output_sha256": "68e8ee77bc4f23f6a828163450c695cc4a1911d4dce9d4fd55aa1e12406937af",
+      "protocol_path": "sources/evaluations/protocols/terraform-lifecycle-sequence-v0-retrieval-jcodemunch-mcp-direct-v1-90a3a5b679f6.json",
+      "protocol_sha256": "3692f408d56d5b36392c888e2f80a66d4c4e829799d179a94e93a695a44c125e",
+      "raw_prepare_output_sha256": "cabb09ec93322bba5cb2f45ddd25c167b48d04680cfd296f032dc9fdef7c5b38",
       "prepared": true,
       "prepare_verification": {
         "passed": true,
@@ -1937,12 +1942,12 @@
         ],
         "missing_required_files": [],
         "required_files": [
-          "/opt/data/repos/token-optimization-research/sources/evaluations/workflow-sessions/prepare-terraform-retrieval-jcodemunch-mcp-direct-v1-20260718T193635078565Z-p1500119/codex-homes/retrieval-jcodemunch-mcp-direct-v1/.config/jcodemunch-mcp-direct-v1/venv/bin/jcodemunch-mcp"
+          "/opt/data/repos/token-optimization-research/sources/evaluations/workflow-sessions/prepare-terraform-retrieval-jcodemunch-mcp-direct-v1-20260718T222554449978Z-p1585111/codex-homes/retrieval-jcodemunch-mcp-direct-v1/.config/jcodemunch-mcp-direct-v1/venv/bin/jcodemunch-mcp"
         ],
         "artifacts": [
-          "sources/evaluations/workflow-sessions/prepare-terraform-retrieval-jcodemunch-mcp-direct-v1-20260718T193635078565Z-p1500119/tool-host-install-1.txt",
-          "sources/evaluations/workflow-sessions/prepare-terraform-retrieval-jcodemunch-mcp-direct-v1-20260718T193635078565Z-p1500119/tool-host-install-2.txt",
-          "sources/evaluations/workflow-sessions/prepare-terraform-retrieval-jcodemunch-mcp-direct-v1-20260718T193635078565Z-p1500119/tool-host-verify-1.txt"
+          "sources/evaluations/workflow-sessions/prepare-terraform-retrieval-jcodemunch-mcp-direct-v1-20260718T222554449978Z-p1585111/tool-host-install-1.txt",
+          "sources/evaluations/workflow-sessions/prepare-terraform-retrieval-jcodemunch-mcp-direct-v1-20260718T222554449978Z-p1585111/tool-host-install-2.txt",
+          "sources/evaluations/workflow-sessions/prepare-terraform-retrieval-jcodemunch-mcp-direct-v1-20260718T222554449978Z-p1585111/tool-host-verify-1.txt"
         ]
       },
       "mcp_handshake": {
@@ -2068,10 +2073,10 @@
           "codex doctor exited 1; preserve the diagnostic, but use the isolated MCP/config probes and task execution as gates"
         ],
         "artifacts": {
-          "doctor": "sources/evaluations/workflow-sessions/prepare-terraform-retrieval-jcodemunch-mcp-direct-v1-20260718T193635078565Z-p1500119/codex-doctor.txt",
-          "mcp_list": "sources/evaluations/workflow-sessions/prepare-terraform-retrieval-jcodemunch-mcp-direct-v1-20260718T193635078565Z-p1500119/codex-mcp-list.txt",
-          "effective_config": "sources/evaluations/workflow-sessions/prepare-terraform-retrieval-jcodemunch-mcp-direct-v1-20260718T193635078565Z-p1500119/codex-effective-config.toml",
-          "forbidden_command_visibility": "sources/evaluations/workflow-sessions/prepare-terraform-retrieval-jcodemunch-mcp-direct-v1-20260718T193635078565Z-p1500119/forbidden-command-visibility.txt",
+          "doctor": "sources/evaluations/workflow-sessions/prepare-terraform-retrieval-jcodemunch-mcp-direct-v1-20260718T222554449978Z-p1585111/codex-doctor.txt",
+          "mcp_list": "sources/evaluations/workflow-sessions/prepare-terraform-retrieval-jcodemunch-mcp-direct-v1-20260718T222554449978Z-p1585111/codex-mcp-list.txt",
+          "effective_config": "sources/evaluations/workflow-sessions/prepare-terraform-retrieval-jcodemunch-mcp-direct-v1-20260718T222554449978Z-p1585111/codex-effective-config.toml",
+          "forbidden_command_visibility": "sources/evaluations/workflow-sessions/prepare-terraform-retrieval-jcodemunch-mcp-direct-v1-20260718T222554449978Z-p1585111/forbidden-command-visibility.txt",
           "tool_preflight": null,
           "tool_coverage_preflight": null
         }
@@ -2080,9 +2085,9 @@
     {
       "sequence_id": "beets-lifecycle-sequence-v0",
       "profile_id": "retrieval-serena-codex-mcp-v1",
-      "protocol_path": "sources/evaluations/protocols/beets-lifecycle-sequence-v0-retrieval-serena-codex-mcp-v1-f3956bae8bfd.json",
-      "protocol_sha256": "c9ec79855fa89b00fb0b96c464254f6a7372c91e71c32a8c86a0b12f5edb8756",
-      "raw_prepare_output_sha256": "8550aa2cb7ca895db6349916f43884508af9a2586eceb42b8f0faf9ea9985686",
+      "protocol_path": "sources/evaluations/protocols/beets-lifecycle-sequence-v0-retrieval-serena-codex-mcp-v1-4f2bfed905d8.json",
+      "protocol_sha256": "c17e20178b23b66c544a1b31ee3513e506a026d5e716f1febf326d1825041e6e",
+      "raw_prepare_output_sha256": "babf6327be6f5bc490f4c348ac320d12b920924e5e136284fb244b48d79015f6",
       "prepared": true,
       "prepare_verification": {
         "passed": true,
@@ -2102,11 +2107,11 @@
         ],
         "missing_required_files": [],
         "required_files": [
-          "/opt/data/repos/token-optimization-research/sources/evaluations/workflow-sessions/prepare-beets-retrieval-serena-codex-mcp-v1-20260718T200826439996Z-p1507434/codex-homes/retrieval-serena-codex-mcp-v1/config.toml"
+          "/opt/data/repos/token-optimization-research/sources/evaluations/workflow-sessions/prepare-beets-retrieval-serena-codex-mcp-v1-20260718T225707910382Z-p1592306/codex-homes/retrieval-serena-codex-mcp-v1/config.toml"
         ],
         "artifacts": [
-          "sources/evaluations/workflow-sessions/prepare-beets-retrieval-serena-codex-mcp-v1-20260718T200826439996Z-p1507434/tool-host-install-1.txt",
-          "sources/evaluations/workflow-sessions/prepare-beets-retrieval-serena-codex-mcp-v1-20260718T200826439996Z-p1507434/tool-host-verify-1.txt"
+          "sources/evaluations/workflow-sessions/prepare-beets-retrieval-serena-codex-mcp-v1-20260718T225707910382Z-p1592306/tool-host-install-1.txt",
+          "sources/evaluations/workflow-sessions/prepare-beets-retrieval-serena-codex-mcp-v1-20260718T225707910382Z-p1592306/tool-host-verify-1.txt"
         ]
       },
       "mcp_handshake": {
@@ -2166,10 +2171,10 @@
           "codex doctor exited 1; preserve the diagnostic, but use the isolated MCP/config probes and task execution as gates"
         ],
         "artifacts": {
-          "doctor": "sources/evaluations/workflow-sessions/prepare-beets-retrieval-serena-codex-mcp-v1-20260718T200826439996Z-p1507434/codex-doctor.txt",
-          "mcp_list": "sources/evaluations/workflow-sessions/prepare-beets-retrieval-serena-codex-mcp-v1-20260718T200826439996Z-p1507434/codex-mcp-list.txt",
-          "effective_config": "sources/evaluations/workflow-sessions/prepare-beets-retrieval-serena-codex-mcp-v1-20260718T200826439996Z-p1507434/codex-effective-config.toml",
-          "forbidden_command_visibility": "sources/evaluations/workflow-sessions/prepare-beets-retrieval-serena-codex-mcp-v1-20260718T200826439996Z-p1507434/forbidden-command-visibility.txt",
+          "doctor": "sources/evaluations/workflow-sessions/prepare-beets-retrieval-serena-codex-mcp-v1-20260718T225707910382Z-p1592306/codex-doctor.txt",
+          "mcp_list": "sources/evaluations/workflow-sessions/prepare-beets-retrieval-serena-codex-mcp-v1-20260718T225707910382Z-p1592306/codex-mcp-list.txt",
+          "effective_config": "sources/evaluations/workflow-sessions/prepare-beets-retrieval-serena-codex-mcp-v1-20260718T225707910382Z-p1592306/codex-effective-config.toml",
+          "forbidden_command_visibility": "sources/evaluations/workflow-sessions/prepare-beets-retrieval-serena-codex-mcp-v1-20260718T225707910382Z-p1592306/forbidden-command-visibility.txt",
           "tool_preflight": null,
           "tool_coverage_preflight": null
         }
@@ -2178,9 +2183,9 @@
     {
       "sequence_id": "fastify-lifecycle-sequence-v0",
       "profile_id": "retrieval-serena-codex-mcp-v1",
-      "protocol_path": "sources/evaluations/protocols/fastify-lifecycle-sequence-v0-retrieval-serena-codex-mcp-v1-9ec3a09e8a02.json",
-      "protocol_sha256": "af9596ea33fd12c2bef960b357d4c9946d373d5ccbb998b94c0c9e5083a7008c",
-      "raw_prepare_output_sha256": "32c04ab9e02e8098f9c186ff7610cbb30c26dbebfba66fdc129555504a4c0407",
+      "protocol_path": "sources/evaluations/protocols/fastify-lifecycle-sequence-v0-retrieval-serena-codex-mcp-v1-9399804c638b.json",
+      "protocol_sha256": "40c452be18c83967d4d8c306c86af37956e4efdc0f089c7a6e37025f75273b3e",
+      "raw_prepare_output_sha256": "8c0d5048385d2a64354fad77e5c28f308c3a1561f0c61e1d71c0468a7d415293",
       "prepared": true,
       "prepare_verification": {
         "passed": true,
@@ -2200,11 +2205,11 @@
         ],
         "missing_required_files": [],
         "required_files": [
-          "/opt/data/repos/token-optimization-research/sources/evaluations/workflow-sessions/prepare-fastify-retrieval-serena-codex-mcp-v1-20260718T200812052526Z-p1507219/codex-homes/retrieval-serena-codex-mcp-v1/config.toml"
+          "/opt/data/repos/token-optimization-research/sources/evaluations/workflow-sessions/prepare-fastify-retrieval-serena-codex-mcp-v1-20260718T225653086563Z-p1592110/codex-homes/retrieval-serena-codex-mcp-v1/config.toml"
         ],
         "artifacts": [
-          "sources/evaluations/workflow-sessions/prepare-fastify-retrieval-serena-codex-mcp-v1-20260718T200812052526Z-p1507219/tool-host-install-1.txt",
-          "sources/evaluations/workflow-sessions/prepare-fastify-retrieval-serena-codex-mcp-v1-20260718T200812052526Z-p1507219/tool-host-verify-1.txt"
+          "sources/evaluations/workflow-sessions/prepare-fastify-retrieval-serena-codex-mcp-v1-20260718T225653086563Z-p1592110/tool-host-install-1.txt",
+          "sources/evaluations/workflow-sessions/prepare-fastify-retrieval-serena-codex-mcp-v1-20260718T225653086563Z-p1592110/tool-host-verify-1.txt"
         ]
       },
       "mcp_handshake": {
@@ -2264,10 +2269,10 @@
           "codex doctor exited 1; preserve the diagnostic, but use the isolated MCP/config probes and task execution as gates"
         ],
         "artifacts": {
-          "doctor": "sources/evaluations/workflow-sessions/prepare-fastify-retrieval-serena-codex-mcp-v1-20260718T200812052526Z-p1507219/codex-doctor.txt",
-          "mcp_list": "sources/evaluations/workflow-sessions/prepare-fastify-retrieval-serena-codex-mcp-v1-20260718T200812052526Z-p1507219/codex-mcp-list.txt",
-          "effective_config": "sources/evaluations/workflow-sessions/prepare-fastify-retrieval-serena-codex-mcp-v1-20260718T200812052526Z-p1507219/codex-effective-config.toml",
-          "forbidden_command_visibility": "sources/evaluations/workflow-sessions/prepare-fastify-retrieval-serena-codex-mcp-v1-20260718T200812052526Z-p1507219/forbidden-command-visibility.txt",
+          "doctor": "sources/evaluations/workflow-sessions/prepare-fastify-retrieval-serena-codex-mcp-v1-20260718T225653086563Z-p1592110/codex-doctor.txt",
+          "mcp_list": "sources/evaluations/workflow-sessions/prepare-fastify-retrieval-serena-codex-mcp-v1-20260718T225653086563Z-p1592110/codex-mcp-list.txt",
+          "effective_config": "sources/evaluations/workflow-sessions/prepare-fastify-retrieval-serena-codex-mcp-v1-20260718T225653086563Z-p1592110/codex-effective-config.toml",
+          "forbidden_command_visibility": "sources/evaluations/workflow-sessions/prepare-fastify-retrieval-serena-codex-mcp-v1-20260718T225653086563Z-p1592110/forbidden-command-visibility.txt",
           "tool_preflight": null,
           "tool_coverage_preflight": null
         }
@@ -2276,9 +2281,9 @@
     {
       "sequence_id": "terraform-lifecycle-sequence-v0",
       "profile_id": "retrieval-serena-codex-mcp-v1",
-      "protocol_path": "sources/evaluations/protocols/terraform-lifecycle-sequence-v0-retrieval-serena-codex-mcp-v1-ef9b869dca7e.json",
-      "protocol_sha256": "c581e4119c149cc526fa832355b256c39c2ba6745cbfd33dfb9737ceee571a16",
-      "raw_prepare_output_sha256": "6aa5ed01c2755064df02fe10491ae0b832397462d1b535ca15c460c9bd8f83a7",
+      "protocol_path": "sources/evaluations/protocols/terraform-lifecycle-sequence-v0-retrieval-serena-codex-mcp-v1-698814f9d25d.json",
+      "protocol_sha256": "6770740eaab01f13e6723938c9a6e500c0995a1ba9151596ffe070e222999252",
+      "raw_prepare_output_sha256": "870fe1abc99972a793fcef27410f44df6df1741ceaf5c65a70b61c5a94ef77ce",
       "prepared": true,
       "prepare_verification": {
         "passed": true,
@@ -2298,11 +2303,11 @@
         ],
         "missing_required_files": [],
         "required_files": [
-          "/opt/data/repos/token-optimization-research/sources/evaluations/workflow-sessions/prepare-terraform-retrieval-serena-codex-mcp-v1-20260718T200841599520Z-p1507620/codex-homes/retrieval-serena-codex-mcp-v1/config.toml"
+          "/opt/data/repos/token-optimization-research/sources/evaluations/workflow-sessions/prepare-terraform-retrieval-serena-codex-mcp-v1-20260718T225722136031Z-p1592491/codex-homes/retrieval-serena-codex-mcp-v1/config.toml"
         ],
         "artifacts": [
-          "sources/evaluations/workflow-sessions/prepare-terraform-retrieval-serena-codex-mcp-v1-20260718T200841599520Z-p1507620/tool-host-install-1.txt",
-          "sources/evaluations/workflow-sessions/prepare-terraform-retrieval-serena-codex-mcp-v1-20260718T200841599520Z-p1507620/tool-host-verify-1.txt"
+          "sources/evaluations/workflow-sessions/prepare-terraform-retrieval-serena-codex-mcp-v1-20260718T225722136031Z-p1592491/tool-host-install-1.txt",
+          "sources/evaluations/workflow-sessions/prepare-terraform-retrieval-serena-codex-mcp-v1-20260718T225722136031Z-p1592491/tool-host-verify-1.txt"
         ]
       },
       "mcp_handshake": {
@@ -2362,10 +2367,10 @@
           "codex doctor exited 1; preserve the diagnostic, but use the isolated MCP/config probes and task execution as gates"
         ],
         "artifacts": {
-          "doctor": "sources/evaluations/workflow-sessions/prepare-terraform-retrieval-serena-codex-mcp-v1-20260718T200841599520Z-p1507620/codex-doctor.txt",
-          "mcp_list": "sources/evaluations/workflow-sessions/prepare-terraform-retrieval-serena-codex-mcp-v1-20260718T200841599520Z-p1507620/codex-mcp-list.txt",
-          "effective_config": "sources/evaluations/workflow-sessions/prepare-terraform-retrieval-serena-codex-mcp-v1-20260718T200841599520Z-p1507620/codex-effective-config.toml",
-          "forbidden_command_visibility": "sources/evaluations/workflow-sessions/prepare-terraform-retrieval-serena-codex-mcp-v1-20260718T200841599520Z-p1507620/forbidden-command-visibility.txt",
+          "doctor": "sources/evaluations/workflow-sessions/prepare-terraform-retrieval-serena-codex-mcp-v1-20260718T225722136031Z-p1592491/codex-doctor.txt",
+          "mcp_list": "sources/evaluations/workflow-sessions/prepare-terraform-retrieval-serena-codex-mcp-v1-20260718T225722136031Z-p1592491/codex-mcp-list.txt",
+          "effective_config": "sources/evaluations/workflow-sessions/prepare-terraform-retrieval-serena-codex-mcp-v1-20260718T225722136031Z-p1592491/codex-effective-config.toml",
+          "forbidden_command_visibility": "sources/evaluations/workflow-sessions/prepare-terraform-retrieval-serena-codex-mcp-v1-20260718T225722136031Z-p1592491/forbidden-command-visibility.txt",
           "tool_preflight": null,
           "tool_coverage_preflight": null
         }
@@ -2374,9 +2379,9 @@
     {
       "sequence_id": "beets-lifecycle-sequence-v0",
       "profile_id": "retrieval-sigmap-codex-live-v1",
-      "protocol_path": "sources/evaluations/protocols/beets-lifecycle-sequence-v0-retrieval-sigmap-codex-live-v1-953b1f437fc3.json",
-      "protocol_sha256": "cd0e7c9408d39868b55d685f31d8124924ce77c66533320d262e15c57ebb397d",
-      "raw_prepare_output_sha256": "84a432050437b128bb8d74b6032f38ef04fe8257d1e44f7e892929e455da923b",
+      "protocol_path": "sources/evaluations/protocols/beets-lifecycle-sequence-v0-retrieval-sigmap-codex-live-v1-06173b9bb52e.json",
+      "protocol_sha256": "7448894e0c60d6971718ce7844cc5317d6dc7aaa4b52853bcb442a320115be8b",
+      "raw_prepare_output_sha256": "69ffee3d44ceca963afd521914c0c951eb779d791449160fede272bd1c134d4b",
       "prepared": true,
       "prepare_verification": {
         "passed": true,
@@ -2446,10 +2451,10 @@
           "codex doctor exited 1; preserve the diagnostic, but use the isolated MCP/config probes and task execution as gates"
         ],
         "artifacts": {
-          "doctor": "sources/evaluations/workflow-sessions/prepare-beets-retrieval-sigmap-codex-live-v1-20260718T200911826472Z-p1508224/codex-doctor.txt",
-          "mcp_list": "sources/evaluations/workflow-sessions/prepare-beets-retrieval-sigmap-codex-live-v1-20260718T200911826472Z-p1508224/codex-mcp-list.txt",
-          "effective_config": "sources/evaluations/workflow-sessions/prepare-beets-retrieval-sigmap-codex-live-v1-20260718T200911826472Z-p1508224/codex-effective-config.toml",
-          "forbidden_command_visibility": "sources/evaluations/workflow-sessions/prepare-beets-retrieval-sigmap-codex-live-v1-20260718T200911826472Z-p1508224/forbidden-command-visibility.txt",
+          "doctor": "sources/evaluations/workflow-sessions/prepare-beets-retrieval-sigmap-codex-live-v1-20260718T225751954599Z-p1593088/codex-doctor.txt",
+          "mcp_list": "sources/evaluations/workflow-sessions/prepare-beets-retrieval-sigmap-codex-live-v1-20260718T225751954599Z-p1593088/codex-mcp-list.txt",
+          "effective_config": "sources/evaluations/workflow-sessions/prepare-beets-retrieval-sigmap-codex-live-v1-20260718T225751954599Z-p1593088/codex-effective-config.toml",
+          "forbidden_command_visibility": "sources/evaluations/workflow-sessions/prepare-beets-retrieval-sigmap-codex-live-v1-20260718T225751954599Z-p1593088/forbidden-command-visibility.txt",
           "tool_preflight": null,
           "tool_coverage_preflight": null
         }
@@ -2458,9 +2463,9 @@
     {
       "sequence_id": "fastify-lifecycle-sequence-v0",
       "profile_id": "retrieval-sigmap-codex-live-v1",
-      "protocol_path": "sources/evaluations/protocols/fastify-lifecycle-sequence-v0-retrieval-sigmap-codex-live-v1-aeab31c0965c.json",
-      "protocol_sha256": "0d7ce33309fb79b5e384735ee216eeb36da645fb22bf1583437b05a4a97ddf20",
-      "raw_prepare_output_sha256": "71039191829409b918a004fb424768d5f174fb7a2320ebd346ba0ab765de5d22",
+      "protocol_path": "sources/evaluations/protocols/fastify-lifecycle-sequence-v0-retrieval-sigmap-codex-live-v1-6435f78c640f.json",
+      "protocol_sha256": "f2fbd309db44ff933954e4f57b87fa7a198925a33b8afa422a3c5f9e9318282b",
+      "raw_prepare_output_sha256": "2681dcb716e41efe3056c9cf9ae1f24f518f8f191cfd71c136355aba8ef9c4ae",
       "prepared": true,
       "prepare_verification": {
         "passed": true,
@@ -2530,10 +2535,10 @@
           "codex doctor exited 1; preserve the diagnostic, but use the isolated MCP/config probes and task execution as gates"
         ],
         "artifacts": {
-          "doctor": "sources/evaluations/workflow-sessions/prepare-fastify-retrieval-sigmap-codex-live-v1-20260718T200904317530Z-p1508038/codex-doctor.txt",
-          "mcp_list": "sources/evaluations/workflow-sessions/prepare-fastify-retrieval-sigmap-codex-live-v1-20260718T200904317530Z-p1508038/codex-mcp-list.txt",
-          "effective_config": "sources/evaluations/workflow-sessions/prepare-fastify-retrieval-sigmap-codex-live-v1-20260718T200904317530Z-p1508038/codex-effective-config.toml",
-          "forbidden_command_visibility": "sources/evaluations/workflow-sessions/prepare-fastify-retrieval-sigmap-codex-live-v1-20260718T200904317530Z-p1508038/forbidden-command-visibility.txt",
+          "doctor": "sources/evaluations/workflow-sessions/prepare-fastify-retrieval-sigmap-codex-live-v1-20260718T225744314587Z-p1592901/codex-doctor.txt",
+          "mcp_list": "sources/evaluations/workflow-sessions/prepare-fastify-retrieval-sigmap-codex-live-v1-20260718T225744314587Z-p1592901/codex-mcp-list.txt",
+          "effective_config": "sources/evaluations/workflow-sessions/prepare-fastify-retrieval-sigmap-codex-live-v1-20260718T225744314587Z-p1592901/codex-effective-config.toml",
+          "forbidden_command_visibility": "sources/evaluations/workflow-sessions/prepare-fastify-retrieval-sigmap-codex-live-v1-20260718T225744314587Z-p1592901/forbidden-command-visibility.txt",
           "tool_preflight": null,
           "tool_coverage_preflight": null
         }
@@ -2542,9 +2547,9 @@
     {
       "sequence_id": "terraform-lifecycle-sequence-v0",
       "profile_id": "retrieval-sigmap-codex-live-v1",
-      "protocol_path": "sources/evaluations/protocols/terraform-lifecycle-sequence-v0-retrieval-sigmap-codex-live-v1-d47c396f32ec.json",
-      "protocol_sha256": "6e15b8775af6c5c60b868b0bdeba4926c08c292897163ff1b4ce8c97fe18ec8f",
-      "raw_prepare_output_sha256": "757f1d9d47ca920846bdecd9d584f21ce36e8cc54b3d39d9a3a744f335ecd16c",
+      "protocol_path": "sources/evaluations/protocols/terraform-lifecycle-sequence-v0-retrieval-sigmap-codex-live-v1-666e23f3275d.json",
+      "protocol_sha256": "54fb8e22056f7d657a0fa481a17e70914250593dd4bf91941a383d96fc27110f",
+      "raw_prepare_output_sha256": "0174b8d80218414d72d4027c593e67635f12d776e49aa79fe0f1fa49faabe797",
       "prepared": true,
       "prepare_verification": {
         "passed": true,
@@ -2614,10 +2619,10 @@
           "codex doctor exited 1; preserve the diagnostic, but use the isolated MCP/config probes and task execution as gates"
         ],
         "artifacts": {
-          "doctor": "sources/evaluations/workflow-sessions/prepare-terraform-retrieval-sigmap-codex-live-v1-20260718T200921544684Z-p1508403/codex-doctor.txt",
-          "mcp_list": "sources/evaluations/workflow-sessions/prepare-terraform-retrieval-sigmap-codex-live-v1-20260718T200921544684Z-p1508403/codex-mcp-list.txt",
-          "effective_config": "sources/evaluations/workflow-sessions/prepare-terraform-retrieval-sigmap-codex-live-v1-20260718T200921544684Z-p1508403/codex-effective-config.toml",
-          "forbidden_command_visibility": "sources/evaluations/workflow-sessions/prepare-terraform-retrieval-sigmap-codex-live-v1-20260718T200921544684Z-p1508403/forbidden-command-visibility.txt",
+          "doctor": "sources/evaluations/workflow-sessions/prepare-terraform-retrieval-sigmap-codex-live-v1-20260718T225800458917Z-p1593266/codex-doctor.txt",
+          "mcp_list": "sources/evaluations/workflow-sessions/prepare-terraform-retrieval-sigmap-codex-live-v1-20260718T225800458917Z-p1593266/codex-mcp-list.txt",
+          "effective_config": "sources/evaluations/workflow-sessions/prepare-terraform-retrieval-sigmap-codex-live-v1-20260718T225800458917Z-p1593266/codex-effective-config.toml",
+          "forbidden_command_visibility": "sources/evaluations/workflow-sessions/prepare-terraform-retrieval-sigmap-codex-live-v1-20260718T225800458917Z-p1593266/forbidden-command-visibility.txt",
           "tool_preflight": null,
           "tool_coverage_preflight": null
         }
@@ -2626,9 +2631,9 @@
     {
       "sequence_id": "beets-lifecycle-sequence-v0",
       "profile_id": "swarmvault-codex-product-v1",
-      "protocol_path": "sources/evaluations/protocols/beets-lifecycle-sequence-v0-swarmvault-codex-product-v1-03d2d23eabf5.json",
-      "protocol_sha256": "81b5e26d223c31d4c0762a5a32dc8bdb3e8a11d15da0514d78a2234be96b75a1",
-      "raw_prepare_output_sha256": "47c5421df109377269f1acbd6a95d25d7b4e857eec22146ef7548d546beb09a6",
+      "protocol_path": "sources/evaluations/protocols/beets-lifecycle-sequence-v0-swarmvault-codex-product-v1-7127ef60a59c.json",
+      "protocol_sha256": "d8a68fb54a420e4f60ee4c39544f360199506ae58acc6a66cc276c2436abab40",
+      "raw_prepare_output_sha256": "aa4889a538b35cf36706d53726753017303a48b92cc1c2be8e184c03dcaf0467",
       "prepared": true,
       "prepare_verification": {
         "passed": true,
@@ -2730,10 +2735,10 @@
           "codex doctor exited 1; preserve the diagnostic, but use the isolated MCP/config probes and task execution as gates"
         ],
         "artifacts": {
-          "doctor": "sources/evaluations/workflow-sessions/prepare-beets-swarmvault-codex-product-v1-20260718T195052189909Z-p1506583/codex-doctor.txt",
-          "mcp_list": "sources/evaluations/workflow-sessions/prepare-beets-swarmvault-codex-product-v1-20260718T195052189909Z-p1506583/codex-mcp-list.txt",
-          "effective_config": "sources/evaluations/workflow-sessions/prepare-beets-swarmvault-codex-product-v1-20260718T195052189909Z-p1506583/codex-effective-config.toml",
-          "forbidden_command_visibility": "sources/evaluations/workflow-sessions/prepare-beets-swarmvault-codex-product-v1-20260718T195052189909Z-p1506583/forbidden-command-visibility.txt",
+          "doctor": "sources/evaluations/workflow-sessions/prepare-beets-swarmvault-codex-product-v1-20260718T224013302920Z-p1591534/codex-doctor.txt",
+          "mcp_list": "sources/evaluations/workflow-sessions/prepare-beets-swarmvault-codex-product-v1-20260718T224013302920Z-p1591534/codex-mcp-list.txt",
+          "effective_config": "sources/evaluations/workflow-sessions/prepare-beets-swarmvault-codex-product-v1-20260718T224013302920Z-p1591534/codex-effective-config.toml",
+          "forbidden_command_visibility": "sources/evaluations/workflow-sessions/prepare-beets-swarmvault-codex-product-v1-20260718T224013302920Z-p1591534/forbidden-command-visibility.txt",
           "tool_preflight": null,
           "tool_coverage_preflight": null
         }
@@ -2742,9 +2747,9 @@
     {
       "sequence_id": "fastify-lifecycle-sequence-v0",
       "profile_id": "swarmvault-codex-product-v1",
-      "protocol_path": "sources/evaluations/protocols/fastify-lifecycle-sequence-v0-swarmvault-codex-product-v1-8d8a07e8c397.json",
-      "protocol_sha256": "8406ce55cd3c30a98fb0747bf4fdc367b3fb5630ebbd93c013f9f4069f7d2364",
-      "raw_prepare_output_sha256": "e9f07b45d0273832f909b71a56cf8da4091cfbc7f1b33e360bcf9e8eb6e317f1",
+      "protocol_path": "sources/evaluations/protocols/fastify-lifecycle-sequence-v0-swarmvault-codex-product-v1-2f696952bee5.json",
+      "protocol_sha256": "e4b0363d636e5be4ad7976aa90cf0c1d35100e0fcbc7a1e69b8c0a5ddc2369a6",
+      "raw_prepare_output_sha256": "9fe0798d097089f34c4ea2f263c10453412cbc71c52e33b125fff96134379f9b",
       "prepared": true,
       "prepare_verification": {
         "passed": true,
@@ -2846,10 +2851,10 @@
           "codex doctor exited 1; preserve the diagnostic, but use the isolated MCP/config probes and task execution as gates"
         ],
         "artifacts": {
-          "doctor": "sources/evaluations/workflow-sessions/prepare-fastify-swarmvault-codex-product-v1-20260718T194725557718Z-p1506367/codex-doctor.txt",
-          "mcp_list": "sources/evaluations/workflow-sessions/prepare-fastify-swarmvault-codex-product-v1-20260718T194725557718Z-p1506367/codex-mcp-list.txt",
-          "effective_config": "sources/evaluations/workflow-sessions/prepare-fastify-swarmvault-codex-product-v1-20260718T194725557718Z-p1506367/codex-effective-config.toml",
-          "forbidden_command_visibility": "sources/evaluations/workflow-sessions/prepare-fastify-swarmvault-codex-product-v1-20260718T194725557718Z-p1506367/forbidden-command-visibility.txt",
+          "doctor": "sources/evaluations/workflow-sessions/prepare-fastify-swarmvault-codex-product-v1-20260718T223703851747Z-p1591345/codex-doctor.txt",
+          "mcp_list": "sources/evaluations/workflow-sessions/prepare-fastify-swarmvault-codex-product-v1-20260718T223703851747Z-p1591345/codex-mcp-list.txt",
+          "effective_config": "sources/evaluations/workflow-sessions/prepare-fastify-swarmvault-codex-product-v1-20260718T223703851747Z-p1591345/codex-effective-config.toml",
+          "forbidden_command_visibility": "sources/evaluations/workflow-sessions/prepare-fastify-swarmvault-codex-product-v1-20260718T223703851747Z-p1591345/forbidden-command-visibility.txt",
           "tool_preflight": null,
           "tool_coverage_preflight": null
         }
@@ -2858,9 +2863,9 @@
     {
       "sequence_id": "terraform-lifecycle-sequence-v0",
       "profile_id": "swarmvault-codex-product-v1",
-      "protocol_path": "sources/evaluations/protocols/terraform-lifecycle-sequence-v0-swarmvault-codex-product-v1-4b34f31f4425.json",
-      "protocol_sha256": "b43081da7a8ad74c16b3ed30eeeb2a37d38aa3e6a771d0315d06675247d9194c",
-      "raw_prepare_output_sha256": "747372da700678bdf9a1317d2d53002139685c07632f7837c07fd8ef67e19959",
+      "protocol_path": "sources/evaluations/protocols/terraform-lifecycle-sequence-v0-swarmvault-codex-product-v1-79bf1f96fde7.json",
+      "protocol_sha256": "9ba9502f4a19a3c084d2b90cbd7e812582e2d97c96135e38129069fcee16d9a7",
+      "raw_prepare_output_sha256": "d188fa6edec397f3f9ce950309cacf298b0b1fc4ebe5cfb3b7b64e72441ed8cd",
       "prepared": true,
       "prepare_verification": {
         "passed": true,
@@ -2962,10 +2967,10 @@
           "codex doctor exited 1; preserve the diagnostic, but use the isolated MCP/config probes and task execution as gates"
         ],
         "artifacts": {
-          "doctor": "sources/evaluations/workflow-sessions/prepare-terraform-swarmvault-codex-product-v1-20260718T200258358823Z-p1506812/codex-doctor.txt",
-          "mcp_list": "sources/evaluations/workflow-sessions/prepare-terraform-swarmvault-codex-product-v1-20260718T200258358823Z-p1506812/codex-mcp-list.txt",
-          "effective_config": "sources/evaluations/workflow-sessions/prepare-terraform-swarmvault-codex-product-v1-20260718T200258358823Z-p1506812/codex-effective-config.toml",
-          "forbidden_command_visibility": "sources/evaluations/workflow-sessions/prepare-terraform-swarmvault-codex-product-v1-20260718T200258358823Z-p1506812/forbidden-command-visibility.txt",
+          "doctor": "sources/evaluations/workflow-sessions/prepare-terraform-swarmvault-codex-product-v1-20260718T225214813040Z-p1591709/codex-doctor.txt",
+          "mcp_list": "sources/evaluations/workflow-sessions/prepare-terraform-swarmvault-codex-product-v1-20260718T225214813040Z-p1591709/codex-mcp-list.txt",
+          "effective_config": "sources/evaluations/workflow-sessions/prepare-terraform-swarmvault-codex-product-v1-20260718T225214813040Z-p1591709/codex-effective-config.toml",
+          "forbidden_command_visibility": "sources/evaluations/workflow-sessions/prepare-terraform-swarmvault-codex-product-v1-20260718T225214813040Z-p1591709/forbidden-command-visibility.txt",
           "tool_preflight": null,
           "tool_coverage_preflight": null
         }
@@ -2974,9 +2979,9 @@
     {
       "sequence_id": "beets-lifecycle-sequence-v0",
       "profile_id": "terminal-rtk-codex-instructions-v1",
-      "protocol_path": "sources/evaluations/protocols/beets-lifecycle-sequence-v0-terminal-rtk-codex-instructions-v1-b86a4321d930.json",
-      "protocol_sha256": "f59a5278a3f99d0943ce9d9b2dec165cf790bfecf2893d5f218aa825611403b8",
-      "raw_prepare_output_sha256": "8cd6458d8dd8b24a04d37ac5bd5a7666090376ee6ed7744035c44b6b660ec54f",
+      "protocol_path": "sources/evaluations/protocols/beets-lifecycle-sequence-v0-terminal-rtk-codex-instructions-v1-52cd5e9f2252.json",
+      "protocol_sha256": "73d319c1f5ae9f8052b5b9b2de9f7d69a570320031201b5844b7960583510649",
+      "raw_prepare_output_sha256": "fb4f58c2570219557d26d9a9388e2e0b083e453c6bfcf4a5b764d7a9b161a90e",
       "prepared": true,
       "prepare_verification": {
         "passed": true,
@@ -2996,12 +3001,12 @@
         ],
         "missing_required_files": [],
         "required_files": [
-          "/opt/data/repos/token-optimization-research/sources/evaluations/workflow-sessions/prepare-beets-terminal-rtk-codex-instructions-v1-20260718T193722062544Z-p1500744/codex-homes/terminal-rtk-codex-instructions-v1/AGENTS.md",
-          "/opt/data/repos/token-optimization-research/sources/evaluations/workflow-sessions/prepare-beets-terminal-rtk-codex-instructions-v1-20260718T193722062544Z-p1500744/codex-homes/terminal-rtk-codex-instructions-v1/RTK.md"
+          "/opt/data/repos/token-optimization-research/sources/evaluations/workflow-sessions/prepare-beets-terminal-rtk-codex-instructions-v1-20260718T222643786366Z-p1585739/codex-homes/terminal-rtk-codex-instructions-v1/AGENTS.md",
+          "/opt/data/repos/token-optimization-research/sources/evaluations/workflow-sessions/prepare-beets-terminal-rtk-codex-instructions-v1-20260718T222643786366Z-p1585739/codex-homes/terminal-rtk-codex-instructions-v1/RTK.md"
         ],
         "artifacts": [
-          "sources/evaluations/workflow-sessions/prepare-beets-terminal-rtk-codex-instructions-v1-20260718T193722062544Z-p1500744/tool-host-install-1.txt",
-          "sources/evaluations/workflow-sessions/prepare-beets-terminal-rtk-codex-instructions-v1-20260718T193722062544Z-p1500744/tool-host-verify-1.txt"
+          "sources/evaluations/workflow-sessions/prepare-beets-terminal-rtk-codex-instructions-v1-20260718T222643786366Z-p1585739/tool-host-install-1.txt",
+          "sources/evaluations/workflow-sessions/prepare-beets-terminal-rtk-codex-instructions-v1-20260718T222643786366Z-p1585739/tool-host-verify-1.txt"
         ]
       },
       "mcp_handshake": {
@@ -3028,11 +3033,11 @@
           "codex doctor exited 1; preserve the diagnostic, but use the isolated MCP/config probes and task execution as gates"
         ],
         "artifacts": {
-          "doctor": "sources/evaluations/workflow-sessions/prepare-beets-terminal-rtk-codex-instructions-v1-20260718T193722062544Z-p1500744/codex-doctor.txt",
-          "mcp_list": "sources/evaluations/workflow-sessions/prepare-beets-terminal-rtk-codex-instructions-v1-20260718T193722062544Z-p1500744/codex-mcp-list.txt",
-          "effective_config": "sources/evaluations/workflow-sessions/prepare-beets-terminal-rtk-codex-instructions-v1-20260718T193722062544Z-p1500744/codex-effective-config.toml",
-          "forbidden_command_visibility": "sources/evaluations/workflow-sessions/prepare-beets-terminal-rtk-codex-instructions-v1-20260718T193722062544Z-p1500744/forbidden-command-visibility.txt",
-          "tool_preflight": "sources/evaluations/workflow-sessions/prepare-beets-terminal-rtk-codex-instructions-v1-20260718T193722062544Z-p1500744/tool-preflight.txt",
+          "doctor": "sources/evaluations/workflow-sessions/prepare-beets-terminal-rtk-codex-instructions-v1-20260718T222643786366Z-p1585739/codex-doctor.txt",
+          "mcp_list": "sources/evaluations/workflow-sessions/prepare-beets-terminal-rtk-codex-instructions-v1-20260718T222643786366Z-p1585739/codex-mcp-list.txt",
+          "effective_config": "sources/evaluations/workflow-sessions/prepare-beets-terminal-rtk-codex-instructions-v1-20260718T222643786366Z-p1585739/codex-effective-config.toml",
+          "forbidden_command_visibility": "sources/evaluations/workflow-sessions/prepare-beets-terminal-rtk-codex-instructions-v1-20260718T222643786366Z-p1585739/forbidden-command-visibility.txt",
+          "tool_preflight": "sources/evaluations/workflow-sessions/prepare-beets-terminal-rtk-codex-instructions-v1-20260718T222643786366Z-p1585739/tool-preflight.txt",
           "tool_coverage_preflight": null
         }
       }
@@ -3040,9 +3045,9 @@
     {
       "sequence_id": "fastify-lifecycle-sequence-v0",
       "profile_id": "terminal-rtk-codex-instructions-v1",
-      "protocol_path": "sources/evaluations/protocols/fastify-lifecycle-sequence-v0-terminal-rtk-codex-instructions-v1-f4ad091d0337.json",
-      "protocol_sha256": "1af64e3973fdaafc8e71221654282592db0b2fb70f8184ffea84bfc84c613ee4",
-      "raw_prepare_output_sha256": "d292cfe46d7c5c41a4a7df34ed454f0411e5ef4345c088e54a8554b43618b46b",
+      "protocol_path": "sources/evaluations/protocols/fastify-lifecycle-sequence-v0-terminal-rtk-codex-instructions-v1-ff07f77f378a.json",
+      "protocol_sha256": "4cbcd5ac15f59127f6f2e4cca1693f0b8dd9b2592d6f46a60e9f83c6aaf2b0a8",
+      "raw_prepare_output_sha256": "d45f9101e9a1801ce9b1a93857bdcbe1a384f2083befce14c67465fcc4f3a844",
       "prepared": true,
       "prepare_verification": {
         "passed": true,
@@ -3062,12 +3067,12 @@
         ],
         "missing_required_files": [],
         "required_files": [
-          "/opt/data/repos/token-optimization-research/sources/evaluations/workflow-sessions/prepare-fastify-terminal-rtk-codex-instructions-v1-20260718T193716368163Z-p1500547/codex-homes/terminal-rtk-codex-instructions-v1/AGENTS.md",
-          "/opt/data/repos/token-optimization-research/sources/evaluations/workflow-sessions/prepare-fastify-terminal-rtk-codex-instructions-v1-20260718T193716368163Z-p1500547/codex-homes/terminal-rtk-codex-instructions-v1/RTK.md"
+          "/opt/data/repos/token-optimization-research/sources/evaluations/workflow-sessions/prepare-fastify-terminal-rtk-codex-instructions-v1-20260718T222638022867Z-p1585542/codex-homes/terminal-rtk-codex-instructions-v1/AGENTS.md",
+          "/opt/data/repos/token-optimization-research/sources/evaluations/workflow-sessions/prepare-fastify-terminal-rtk-codex-instructions-v1-20260718T222638022867Z-p1585542/codex-homes/terminal-rtk-codex-instructions-v1/RTK.md"
         ],
         "artifacts": [
-          "sources/evaluations/workflow-sessions/prepare-fastify-terminal-rtk-codex-instructions-v1-20260718T193716368163Z-p1500547/tool-host-install-1.txt",
-          "sources/evaluations/workflow-sessions/prepare-fastify-terminal-rtk-codex-instructions-v1-20260718T193716368163Z-p1500547/tool-host-verify-1.txt"
+          "sources/evaluations/workflow-sessions/prepare-fastify-terminal-rtk-codex-instructions-v1-20260718T222638022867Z-p1585542/tool-host-install-1.txt",
+          "sources/evaluations/workflow-sessions/prepare-fastify-terminal-rtk-codex-instructions-v1-20260718T222638022867Z-p1585542/tool-host-verify-1.txt"
         ]
       },
       "mcp_handshake": {
@@ -3094,11 +3099,11 @@
           "codex doctor exited 1; preserve the diagnostic, but use the isolated MCP/config probes and task execution as gates"
         ],
         "artifacts": {
-          "doctor": "sources/evaluations/workflow-sessions/prepare-fastify-terminal-rtk-codex-instructions-v1-20260718T193716368163Z-p1500547/codex-doctor.txt",
-          "mcp_list": "sources/evaluations/workflow-sessions/prepare-fastify-terminal-rtk-codex-instructions-v1-20260718T193716368163Z-p1500547/codex-mcp-list.txt",
-          "effective_config": "sources/evaluations/workflow-sessions/prepare-fastify-terminal-rtk-codex-instructions-v1-20260718T193716368163Z-p1500547/codex-effective-config.toml",
-          "forbidden_command_visibility": "sources/evaluations/workflow-sessions/prepare-fastify-terminal-rtk-codex-instructions-v1-20260718T193716368163Z-p1500547/forbidden-command-visibility.txt",
-          "tool_preflight": "sources/evaluations/workflow-sessions/prepare-fastify-terminal-rtk-codex-instructions-v1-20260718T193716368163Z-p1500547/tool-preflight.txt",
+          "doctor": "sources/evaluations/workflow-sessions/prepare-fastify-terminal-rtk-codex-instructions-v1-20260718T222638022867Z-p1585542/codex-doctor.txt",
+          "mcp_list": "sources/evaluations/workflow-sessions/prepare-fastify-terminal-rtk-codex-instructions-v1-20260718T222638022867Z-p1585542/codex-mcp-list.txt",
+          "effective_config": "sources/evaluations/workflow-sessions/prepare-fastify-terminal-rtk-codex-instructions-v1-20260718T222638022867Z-p1585542/codex-effective-config.toml",
+          "forbidden_command_visibility": "sources/evaluations/workflow-sessions/prepare-fastify-terminal-rtk-codex-instructions-v1-20260718T222638022867Z-p1585542/forbidden-command-visibility.txt",
+          "tool_preflight": "sources/evaluations/workflow-sessions/prepare-fastify-terminal-rtk-codex-instructions-v1-20260718T222638022867Z-p1585542/tool-preflight.txt",
           "tool_coverage_preflight": null
         }
       }
@@ -3106,9 +3111,9 @@
     {
       "sequence_id": "terraform-lifecycle-sequence-v0",
       "profile_id": "terminal-rtk-codex-instructions-v1",
-      "protocol_path": "sources/evaluations/protocols/terraform-lifecycle-sequence-v0-terminal-rtk-codex-instructions-v1-ea9682fd1eb6.json",
-      "protocol_sha256": "99708d3927f57bf162d6a5ae55b9cab2c344aecb0f7f98913721ca9f3e67920b",
-      "raw_prepare_output_sha256": "a5d5c659588c9578964d43f70a493ce130194213d2a115dbdaddc0dad8677eda",
+      "protocol_path": "sources/evaluations/protocols/terraform-lifecycle-sequence-v0-terminal-rtk-codex-instructions-v1-10972df3443c.json",
+      "protocol_sha256": "05e0f7de41b1febfdc396140a7c0e34e209a5a536775e2d0dd2d7c204af9a69e",
+      "raw_prepare_output_sha256": "0b2432ecd3aac18ac33c207cea8dda51883b29aaae45b91a809aa827469b8546",
       "prepared": true,
       "prepare_verification": {
         "passed": true,
@@ -3128,12 +3133,12 @@
         ],
         "missing_required_files": [],
         "required_files": [
-          "/opt/data/repos/token-optimization-research/sources/evaluations/workflow-sessions/prepare-terraform-terminal-rtk-codex-instructions-v1-20260718T193728017924Z-p1500929/codex-homes/terminal-rtk-codex-instructions-v1/AGENTS.md",
-          "/opt/data/repos/token-optimization-research/sources/evaluations/workflow-sessions/prepare-terraform-terminal-rtk-codex-instructions-v1-20260718T193728017924Z-p1500929/codex-homes/terminal-rtk-codex-instructions-v1/RTK.md"
+          "/opt/data/repos/token-optimization-research/sources/evaluations/workflow-sessions/prepare-terraform-terminal-rtk-codex-instructions-v1-20260718T222650180593Z-p1585924/codex-homes/terminal-rtk-codex-instructions-v1/AGENTS.md",
+          "/opt/data/repos/token-optimization-research/sources/evaluations/workflow-sessions/prepare-terraform-terminal-rtk-codex-instructions-v1-20260718T222650180593Z-p1585924/codex-homes/terminal-rtk-codex-instructions-v1/RTK.md"
         ],
         "artifacts": [
-          "sources/evaluations/workflow-sessions/prepare-terraform-terminal-rtk-codex-instructions-v1-20260718T193728017924Z-p1500929/tool-host-install-1.txt",
-          "sources/evaluations/workflow-sessions/prepare-terraform-terminal-rtk-codex-instructions-v1-20260718T193728017924Z-p1500929/tool-host-verify-1.txt"
+          "sources/evaluations/workflow-sessions/prepare-terraform-terminal-rtk-codex-instructions-v1-20260718T222650180593Z-p1585924/tool-host-install-1.txt",
+          "sources/evaluations/workflow-sessions/prepare-terraform-terminal-rtk-codex-instructions-v1-20260718T222650180593Z-p1585924/tool-host-verify-1.txt"
         ]
       },
       "mcp_handshake": {
@@ -3160,11 +3165,11 @@
           "codex doctor exited 1; preserve the diagnostic, but use the isolated MCP/config probes and task execution as gates"
         ],
         "artifacts": {
-          "doctor": "sources/evaluations/workflow-sessions/prepare-terraform-terminal-rtk-codex-instructions-v1-20260718T193728017924Z-p1500929/codex-doctor.txt",
-          "mcp_list": "sources/evaluations/workflow-sessions/prepare-terraform-terminal-rtk-codex-instructions-v1-20260718T193728017924Z-p1500929/codex-mcp-list.txt",
-          "effective_config": "sources/evaluations/workflow-sessions/prepare-terraform-terminal-rtk-codex-instructions-v1-20260718T193728017924Z-p1500929/codex-effective-config.toml",
-          "forbidden_command_visibility": "sources/evaluations/workflow-sessions/prepare-terraform-terminal-rtk-codex-instructions-v1-20260718T193728017924Z-p1500929/forbidden-command-visibility.txt",
-          "tool_preflight": "sources/evaluations/workflow-sessions/prepare-terraform-terminal-rtk-codex-instructions-v1-20260718T193728017924Z-p1500929/tool-preflight.txt",
+          "doctor": "sources/evaluations/workflow-sessions/prepare-terraform-terminal-rtk-codex-instructions-v1-20260718T222650180593Z-p1585924/codex-doctor.txt",
+          "mcp_list": "sources/evaluations/workflow-sessions/prepare-terraform-terminal-rtk-codex-instructions-v1-20260718T222650180593Z-p1585924/codex-mcp-list.txt",
+          "effective_config": "sources/evaluations/workflow-sessions/prepare-terraform-terminal-rtk-codex-instructions-v1-20260718T222650180593Z-p1585924/codex-effective-config.toml",
+          "forbidden_command_visibility": "sources/evaluations/workflow-sessions/prepare-terraform-terminal-rtk-codex-instructions-v1-20260718T222650180593Z-p1585924/forbidden-command-visibility.txt",
+          "tool_preflight": "sources/evaluations/workflow-sessions/prepare-terraform-terminal-rtk-codex-instructions-v1-20260718T222650180593Z-p1585924/tool-preflight.txt",
           "tool_coverage_preflight": null
         }
       }
@@ -3172,9 +3177,9 @@
     {
       "sequence_id": "beets-lifecycle-sequence-v0",
       "profile_id": "terminal-snip-codex-hook-v1",
-      "protocol_path": "sources/evaluations/protocols/beets-lifecycle-sequence-v0-terminal-snip-codex-hook-v1-4595baec2f5c.json",
-      "protocol_sha256": "5cd7780cac6c6a28dbf9e5ee11d59b46192f7b7682b2a0735427feefa716dfdb",
-      "raw_prepare_output_sha256": "ce6fdfa07b836131b2484ad8526c263f0321f9e9d1fb6466875566dd7ca6d386",
+      "protocol_path": "sources/evaluations/protocols/beets-lifecycle-sequence-v0-terminal-snip-codex-hook-v1-95dad98d08bd.json",
+      "protocol_sha256": "55524cf87e4ea91ace06399f1047b8992eab87c5a2553282c345333ec0ce6dda",
+      "raw_prepare_output_sha256": "f27c395c64af58b4727badf19016a7ef8c617fd91be1637d5931fdaa65d9922f",
       "prepared": true,
       "prepare_verification": {
         "passed": true,
@@ -3194,12 +3199,12 @@
         ],
         "missing_required_files": [],
         "required_files": [
-          "/opt/data/repos/token-optimization-research/sources/evaluations/workflow-sessions/prepare-beets-terminal-snip-codex-hook-v1-20260718T193747408535Z-p1501558/codex-homes/terminal-snip-codex-hook-v1/hooks.json",
-          "/opt/data/repos/token-optimization-research/sources/evaluations/workflow-sessions/prepare-beets-terminal-snip-codex-hook-v1-20260718T193747408535Z-p1501558/codex-homes/terminal-snip-codex-hook-v1/config.toml"
+          "/opt/data/repos/token-optimization-research/sources/evaluations/workflow-sessions/prepare-beets-terminal-snip-codex-hook-v1-20260718T222711040011Z-p1586552/codex-homes/terminal-snip-codex-hook-v1/hooks.json",
+          "/opt/data/repos/token-optimization-research/sources/evaluations/workflow-sessions/prepare-beets-terminal-snip-codex-hook-v1-20260718T222711040011Z-p1586552/codex-homes/terminal-snip-codex-hook-v1/config.toml"
         ],
         "artifacts": [
-          "sources/evaluations/workflow-sessions/prepare-beets-terminal-snip-codex-hook-v1-20260718T193747408535Z-p1501558/tool-host-install-1.txt",
-          "sources/evaluations/workflow-sessions/prepare-beets-terminal-snip-codex-hook-v1-20260718T193747408535Z-p1501558/tool-host-verify-1.txt"
+          "sources/evaluations/workflow-sessions/prepare-beets-terminal-snip-codex-hook-v1-20260718T222711040011Z-p1586552/tool-host-install-1.txt",
+          "sources/evaluations/workflow-sessions/prepare-beets-terminal-snip-codex-hook-v1-20260718T222711040011Z-p1586552/tool-host-verify-1.txt"
         ]
       },
       "mcp_handshake": {
@@ -3226,11 +3231,11 @@
           "codex doctor exited 1; preserve the diagnostic, but use the isolated MCP/config probes and task execution as gates"
         ],
         "artifacts": {
-          "doctor": "sources/evaluations/workflow-sessions/prepare-beets-terminal-snip-codex-hook-v1-20260718T193747408535Z-p1501558/codex-doctor.txt",
-          "mcp_list": "sources/evaluations/workflow-sessions/prepare-beets-terminal-snip-codex-hook-v1-20260718T193747408535Z-p1501558/codex-mcp-list.txt",
-          "effective_config": "sources/evaluations/workflow-sessions/prepare-beets-terminal-snip-codex-hook-v1-20260718T193747408535Z-p1501558/codex-effective-config.toml",
-          "forbidden_command_visibility": "sources/evaluations/workflow-sessions/prepare-beets-terminal-snip-codex-hook-v1-20260718T193747408535Z-p1501558/forbidden-command-visibility.txt",
-          "tool_preflight": "sources/evaluations/workflow-sessions/prepare-beets-terminal-snip-codex-hook-v1-20260718T193747408535Z-p1501558/tool-preflight.txt",
+          "doctor": "sources/evaluations/workflow-sessions/prepare-beets-terminal-snip-codex-hook-v1-20260718T222711040011Z-p1586552/codex-doctor.txt",
+          "mcp_list": "sources/evaluations/workflow-sessions/prepare-beets-terminal-snip-codex-hook-v1-20260718T222711040011Z-p1586552/codex-mcp-list.txt",
+          "effective_config": "sources/evaluations/workflow-sessions/prepare-beets-terminal-snip-codex-hook-v1-20260718T222711040011Z-p1586552/codex-effective-config.toml",
+          "forbidden_command_visibility": "sources/evaluations/workflow-sessions/prepare-beets-terminal-snip-codex-hook-v1-20260718T222711040011Z-p1586552/forbidden-command-visibility.txt",
+          "tool_preflight": "sources/evaluations/workflow-sessions/prepare-beets-terminal-snip-codex-hook-v1-20260718T222711040011Z-p1586552/tool-preflight.txt",
           "tool_coverage_preflight": null
         }
       }
@@ -3238,9 +3243,9 @@
     {
       "sequence_id": "fastify-lifecycle-sequence-v0",
       "profile_id": "terminal-snip-codex-hook-v1",
-      "protocol_path": "sources/evaluations/protocols/fastify-lifecycle-sequence-v0-terminal-snip-codex-hook-v1-ed73244d87c0.json",
-      "protocol_sha256": "11e162512f99e3f0313e48b6a70493828a98ca6df7b6a74fb9d70f6ea5724750",
-      "raw_prepare_output_sha256": "4435ddd115a93362f9ae86c7e7de8aba957d893d28660f363ef79a367f859fe4",
+      "protocol_path": "sources/evaluations/protocols/fastify-lifecycle-sequence-v0-terminal-snip-codex-hook-v1-d5ab94650439.json",
+      "protocol_sha256": "184e5ef50fb8bc32b849d5baf0df90550addcac5b013cf381228e97ab1991913",
+      "raw_prepare_output_sha256": "decc9504759e5c0a5cabe992eca13124f013cd37a22cba0ae5811c37467b8b3e",
       "prepared": true,
       "prepare_verification": {
         "passed": true,
@@ -3260,12 +3265,12 @@
         ],
         "missing_required_files": [],
         "required_files": [
-          "/opt/data/repos/token-optimization-research/sources/evaluations/workflow-sessions/prepare-fastify-terminal-snip-codex-hook-v1-20260718T193741435525Z-p1501358/codex-homes/terminal-snip-codex-hook-v1/hooks.json",
-          "/opt/data/repos/token-optimization-research/sources/evaluations/workflow-sessions/prepare-fastify-terminal-snip-codex-hook-v1-20260718T193741435525Z-p1501358/codex-homes/terminal-snip-codex-hook-v1/config.toml"
+          "/opt/data/repos/token-optimization-research/sources/evaluations/workflow-sessions/prepare-fastify-terminal-snip-codex-hook-v1-20260718T222705126904Z-p1586350/codex-homes/terminal-snip-codex-hook-v1/hooks.json",
+          "/opt/data/repos/token-optimization-research/sources/evaluations/workflow-sessions/prepare-fastify-terminal-snip-codex-hook-v1-20260718T222705126904Z-p1586350/codex-homes/terminal-snip-codex-hook-v1/config.toml"
         ],
         "artifacts": [
-          "sources/evaluations/workflow-sessions/prepare-fastify-terminal-snip-codex-hook-v1-20260718T193741435525Z-p1501358/tool-host-install-1.txt",
-          "sources/evaluations/workflow-sessions/prepare-fastify-terminal-snip-codex-hook-v1-20260718T193741435525Z-p1501358/tool-host-verify-1.txt"
+          "sources/evaluations/workflow-sessions/prepare-fastify-terminal-snip-codex-hook-v1-20260718T222705126904Z-p1586350/tool-host-install-1.txt",
+          "sources/evaluations/workflow-sessions/prepare-fastify-terminal-snip-codex-hook-v1-20260718T222705126904Z-p1586350/tool-host-verify-1.txt"
         ]
       },
       "mcp_handshake": {
@@ -3292,11 +3297,11 @@
           "codex doctor exited 1; preserve the diagnostic, but use the isolated MCP/config probes and task execution as gates"
         ],
         "artifacts": {
-          "doctor": "sources/evaluations/workflow-sessions/prepare-fastify-terminal-snip-codex-hook-v1-20260718T193741435525Z-p1501358/codex-doctor.txt",
-          "mcp_list": "sources/evaluations/workflow-sessions/prepare-fastify-terminal-snip-codex-hook-v1-20260718T193741435525Z-p1501358/codex-mcp-list.txt",
-          "effective_config": "sources/evaluations/workflow-sessions/prepare-fastify-terminal-snip-codex-hook-v1-20260718T193741435525Z-p1501358/codex-effective-config.toml",
-          "forbidden_command_visibility": "sources/evaluations/workflow-sessions/prepare-fastify-terminal-snip-codex-hook-v1-20260718T193741435525Z-p1501358/forbidden-command-visibility.txt",
-          "tool_preflight": "sources/evaluations/workflow-sessions/prepare-fastify-terminal-snip-codex-hook-v1-20260718T193741435525Z-p1501358/tool-preflight.txt",
+          "doctor": "sources/evaluations/workflow-sessions/prepare-fastify-terminal-snip-codex-hook-v1-20260718T222705126904Z-p1586350/codex-doctor.txt",
+          "mcp_list": "sources/evaluations/workflow-sessions/prepare-fastify-terminal-snip-codex-hook-v1-20260718T222705126904Z-p1586350/codex-mcp-list.txt",
+          "effective_config": "sources/evaluations/workflow-sessions/prepare-fastify-terminal-snip-codex-hook-v1-20260718T222705126904Z-p1586350/codex-effective-config.toml",
+          "forbidden_command_visibility": "sources/evaluations/workflow-sessions/prepare-fastify-terminal-snip-codex-hook-v1-20260718T222705126904Z-p1586350/forbidden-command-visibility.txt",
+          "tool_preflight": "sources/evaluations/workflow-sessions/prepare-fastify-terminal-snip-codex-hook-v1-20260718T222705126904Z-p1586350/tool-preflight.txt",
           "tool_coverage_preflight": null
         }
       }
@@ -3304,9 +3309,9 @@
     {
       "sequence_id": "terraform-lifecycle-sequence-v0",
       "profile_id": "terminal-snip-codex-hook-v1",
-      "protocol_path": "sources/evaluations/protocols/terraform-lifecycle-sequence-v0-terminal-snip-codex-hook-v1-37fafdca4d56.json",
-      "protocol_sha256": "6dbf3488a43f7a3c6a00478a88746aac59a4e4f6cb761eea0dc6d99b32031041",
-      "raw_prepare_output_sha256": "136dcd6bc0474d5fee563722106c7abd8ca6c0adcf06436404ec5e1c6abea6fe",
+      "protocol_path": "sources/evaluations/protocols/terraform-lifecycle-sequence-v0-terminal-snip-codex-hook-v1-767f9472b1a4.json",
+      "protocol_sha256": "8af5d64458969bb5c0a4cab60b91adb1ff8f9b88a71f8a0f8daabffa51684365",
+      "raw_prepare_output_sha256": "4cb885871c81b62ce8d693bdb39742e8b1881eb5904ee8885fb6747b7eea4382",
       "prepared": true,
       "prepare_verification": {
         "passed": true,
@@ -3326,12 +3331,12 @@
         ],
         "missing_required_files": [],
         "required_files": [
-          "/opt/data/repos/token-optimization-research/sources/evaluations/workflow-sessions/prepare-terraform-terminal-snip-codex-hook-v1-20260718T193753515524Z-p1501752/codex-homes/terminal-snip-codex-hook-v1/hooks.json",
-          "/opt/data/repos/token-optimization-research/sources/evaluations/workflow-sessions/prepare-terraform-terminal-snip-codex-hook-v1-20260718T193753515524Z-p1501752/codex-homes/terminal-snip-codex-hook-v1/config.toml"
+          "/opt/data/repos/token-optimization-research/sources/evaluations/workflow-sessions/prepare-terraform-terminal-snip-codex-hook-v1-20260718T222717263755Z-p1586745/codex-homes/terminal-snip-codex-hook-v1/hooks.json",
+          "/opt/data/repos/token-optimization-research/sources/evaluations/workflow-sessions/prepare-terraform-terminal-snip-codex-hook-v1-20260718T222717263755Z-p1586745/codex-homes/terminal-snip-codex-hook-v1/config.toml"
         ],
         "artifacts": [
-          "sources/evaluations/workflow-sessions/prepare-terraform-terminal-snip-codex-hook-v1-20260718T193753515524Z-p1501752/tool-host-install-1.txt",
-          "sources/evaluations/workflow-sessions/prepare-terraform-terminal-snip-codex-hook-v1-20260718T193753515524Z-p1501752/tool-host-verify-1.txt"
+          "sources/evaluations/workflow-sessions/prepare-terraform-terminal-snip-codex-hook-v1-20260718T222717263755Z-p1586745/tool-host-install-1.txt",
+          "sources/evaluations/workflow-sessions/prepare-terraform-terminal-snip-codex-hook-v1-20260718T222717263755Z-p1586745/tool-host-verify-1.txt"
         ]
       },
       "mcp_handshake": {
@@ -3358,11 +3363,11 @@
           "codex doctor exited 1; preserve the diagnostic, but use the isolated MCP/config probes and task execution as gates"
         ],
         "artifacts": {
-          "doctor": "sources/evaluations/workflow-sessions/prepare-terraform-terminal-snip-codex-hook-v1-20260718T193753515524Z-p1501752/codex-doctor.txt",
-          "mcp_list": "sources/evaluations/workflow-sessions/prepare-terraform-terminal-snip-codex-hook-v1-20260718T193753515524Z-p1501752/codex-mcp-list.txt",
-          "effective_config": "sources/evaluations/workflow-sessions/prepare-terraform-terminal-snip-codex-hook-v1-20260718T193753515524Z-p1501752/codex-effective-config.toml",
-          "forbidden_command_visibility": "sources/evaluations/workflow-sessions/prepare-terraform-terminal-snip-codex-hook-v1-20260718T193753515524Z-p1501752/forbidden-command-visibility.txt",
-          "tool_preflight": "sources/evaluations/workflow-sessions/prepare-terraform-terminal-snip-codex-hook-v1-20260718T193753515524Z-p1501752/tool-preflight.txt",
+          "doctor": "sources/evaluations/workflow-sessions/prepare-terraform-terminal-snip-codex-hook-v1-20260718T222717263755Z-p1586745/codex-doctor.txt",
+          "mcp_list": "sources/evaluations/workflow-sessions/prepare-terraform-terminal-snip-codex-hook-v1-20260718T222717263755Z-p1586745/codex-mcp-list.txt",
+          "effective_config": "sources/evaluations/workflow-sessions/prepare-terraform-terminal-snip-codex-hook-v1-20260718T222717263755Z-p1586745/codex-effective-config.toml",
+          "forbidden_command_visibility": "sources/evaluations/workflow-sessions/prepare-terraform-terminal-snip-codex-hook-v1-20260718T222717263755Z-p1586745/forbidden-command-visibility.txt",
+          "tool_preflight": "sources/evaluations/workflow-sessions/prepare-terraform-terminal-snip-codex-hook-v1-20260718T222717263755Z-p1586745/tool-preflight.txt",
           "tool_coverage_preflight": null
         }
       }
@@ -3370,9 +3375,9 @@
     {
       "sequence_id": "beets-lifecycle-sequence-v0",
       "profile_id": "terminal-tokenjuice-codex-hook-v1",
-      "protocol_path": "sources/evaluations/protocols/beets-lifecycle-sequence-v0-terminal-tokenjuice-codex-hook-v1-e10f234fd4a3.json",
-      "protocol_sha256": "1314212d17aa072de5076d3d6eb240167d33d987ee94a7670a4474bd905cf604",
-      "raw_prepare_output_sha256": "52cb33b78d4a813ca6a249bf3390add8d67a6c0a4c3ff9a2928bb9f612a69aa7",
+      "protocol_path": "sources/evaluations/protocols/beets-lifecycle-sequence-v0-terminal-tokenjuice-codex-hook-v1-70041b5d6fd6.json",
+      "protocol_sha256": "00788761b24fe288d89f074f4bb4fbdc1296bbd6e820a9059965dd46143364da",
+      "raw_prepare_output_sha256": "a4aca3731c961bc29fe3ad424d18e13c5173d6d78477929b204af974158c0477",
       "prepared": true,
       "prepare_verification": {
         "passed": true,
@@ -3392,11 +3397,11 @@
         ],
         "missing_required_files": [],
         "required_files": [
-          "/opt/data/repos/token-optimization-research/sources/evaluations/workflow-sessions/prepare-beets-terminal-tokenjuice-codex-hook-v1-20260718T193545041196Z-p1499088/codex-homes/terminal-tokenjuice-codex-hook-v1/hooks.json"
+          "/opt/data/repos/token-optimization-research/sources/evaluations/workflow-sessions/prepare-beets-terminal-tokenjuice-codex-hook-v1-20260718T222502838934Z-p1584056/codex-homes/terminal-tokenjuice-codex-hook-v1/hooks.json"
         ],
         "artifacts": [
-          "sources/evaluations/workflow-sessions/prepare-beets-terminal-tokenjuice-codex-hook-v1-20260718T193545041196Z-p1499088/tool-host-install-1.txt",
-          "sources/evaluations/workflow-sessions/prepare-beets-terminal-tokenjuice-codex-hook-v1-20260718T193545041196Z-p1499088/tool-host-verify-1.txt"
+          "sources/evaluations/workflow-sessions/prepare-beets-terminal-tokenjuice-codex-hook-v1-20260718T222502838934Z-p1584056/tool-host-install-1.txt",
+          "sources/evaluations/workflow-sessions/prepare-beets-terminal-tokenjuice-codex-hook-v1-20260718T222502838934Z-p1584056/tool-host-verify-1.txt"
         ]
       },
       "mcp_handshake": {
@@ -3423,11 +3428,11 @@
           "codex doctor exited 1; preserve the diagnostic, but use the isolated MCP/config probes and task execution as gates"
         ],
         "artifacts": {
-          "doctor": "sources/evaluations/workflow-sessions/prepare-beets-terminal-tokenjuice-codex-hook-v1-20260718T193545041196Z-p1499088/codex-doctor.txt",
-          "mcp_list": "sources/evaluations/workflow-sessions/prepare-beets-terminal-tokenjuice-codex-hook-v1-20260718T193545041196Z-p1499088/codex-mcp-list.txt",
-          "effective_config": "sources/evaluations/workflow-sessions/prepare-beets-terminal-tokenjuice-codex-hook-v1-20260718T193545041196Z-p1499088/codex-effective-config.toml",
-          "forbidden_command_visibility": "sources/evaluations/workflow-sessions/prepare-beets-terminal-tokenjuice-codex-hook-v1-20260718T193545041196Z-p1499088/forbidden-command-visibility.txt",
-          "tool_preflight": "sources/evaluations/workflow-sessions/prepare-beets-terminal-tokenjuice-codex-hook-v1-20260718T193545041196Z-p1499088/tool-preflight.txt",
+          "doctor": "sources/evaluations/workflow-sessions/prepare-beets-terminal-tokenjuice-codex-hook-v1-20260718T222502838934Z-p1584056/codex-doctor.txt",
+          "mcp_list": "sources/evaluations/workflow-sessions/prepare-beets-terminal-tokenjuice-codex-hook-v1-20260718T222502838934Z-p1584056/codex-mcp-list.txt",
+          "effective_config": "sources/evaluations/workflow-sessions/prepare-beets-terminal-tokenjuice-codex-hook-v1-20260718T222502838934Z-p1584056/codex-effective-config.toml",
+          "forbidden_command_visibility": "sources/evaluations/workflow-sessions/prepare-beets-terminal-tokenjuice-codex-hook-v1-20260718T222502838934Z-p1584056/forbidden-command-visibility.txt",
+          "tool_preflight": "sources/evaluations/workflow-sessions/prepare-beets-terminal-tokenjuice-codex-hook-v1-20260718T222502838934Z-p1584056/tool-preflight.txt",
           "tool_coverage_preflight": null
         }
       }
@@ -3435,9 +3440,9 @@
     {
       "sequence_id": "fastify-lifecycle-sequence-v0",
       "profile_id": "terminal-tokenjuice-codex-hook-v1",
-      "protocol_path": "sources/evaluations/protocols/fastify-lifecycle-sequence-v0-terminal-tokenjuice-codex-hook-v1-9b87ef358cfe.json",
-      "protocol_sha256": "a39a75cfa289ddc81032b86326189d99c67e78dee0fc5affe27839de12ad2c01",
-      "raw_prepare_output_sha256": "7f0e509e6552024ac59c1937cfc5b0c7e028faff6fd6dec09068c21f670fc533",
+      "protocol_path": "sources/evaluations/protocols/fastify-lifecycle-sequence-v0-terminal-tokenjuice-codex-hook-v1-a81b3975c789.json",
+      "protocol_sha256": "358b1fdbff41d423d879db13011ab135522089f95ea57736d8406af6e96a2669",
+      "raw_prepare_output_sha256": "06ba0e856a1030039b45d3da55050906aaecced153ab0b100cccb38c847d822f",
       "prepared": true,
       "prepare_verification": {
         "passed": true,
@@ -3457,11 +3462,11 @@
         ],
         "missing_required_files": [],
         "required_files": [
-          "/opt/data/repos/token-optimization-research/sources/evaluations/workflow-sessions/prepare-fastify-terminal-tokenjuice-codex-hook-v1-20260718T193538825723Z-p1498877/codex-homes/terminal-tokenjuice-codex-hook-v1/hooks.json"
+          "/opt/data/repos/token-optimization-research/sources/evaluations/workflow-sessions/prepare-fastify-terminal-tokenjuice-codex-hook-v1-20260718T222455550204Z-p1583849/codex-homes/terminal-tokenjuice-codex-hook-v1/hooks.json"
         ],
         "artifacts": [
-          "sources/evaluations/workflow-sessions/prepare-fastify-terminal-tokenjuice-codex-hook-v1-20260718T193538825723Z-p1498877/tool-host-install-1.txt",
-          "sources/evaluations/workflow-sessions/prepare-fastify-terminal-tokenjuice-codex-hook-v1-20260718T193538825723Z-p1498877/tool-host-verify-1.txt"
+          "sources/evaluations/workflow-sessions/prepare-fastify-terminal-tokenjuice-codex-hook-v1-20260718T222455550204Z-p1583849/tool-host-install-1.txt",
+          "sources/evaluations/workflow-sessions/prepare-fastify-terminal-tokenjuice-codex-hook-v1-20260718T222455550204Z-p1583849/tool-host-verify-1.txt"
         ]
       },
       "mcp_handshake": {
@@ -3488,11 +3493,11 @@
           "codex doctor exited 1; preserve the diagnostic, but use the isolated MCP/config probes and task execution as gates"
         ],
         "artifacts": {
-          "doctor": "sources/evaluations/workflow-sessions/prepare-fastify-terminal-tokenjuice-codex-hook-v1-20260718T193538825723Z-p1498877/codex-doctor.txt",
-          "mcp_list": "sources/evaluations/workflow-sessions/prepare-fastify-terminal-tokenjuice-codex-hook-v1-20260718T193538825723Z-p1498877/codex-mcp-list.txt",
-          "effective_config": "sources/evaluations/workflow-sessions/prepare-fastify-terminal-tokenjuice-codex-hook-v1-20260718T193538825723Z-p1498877/codex-effective-config.toml",
-          "forbidden_command_visibility": "sources/evaluations/workflow-sessions/prepare-fastify-terminal-tokenjuice-codex-hook-v1-20260718T193538825723Z-p1498877/forbidden-command-visibility.txt",
-          "tool_preflight": "sources/evaluations/workflow-sessions/prepare-fastify-terminal-tokenjuice-codex-hook-v1-20260718T193538825723Z-p1498877/tool-preflight.txt",
+          "doctor": "sources/evaluations/workflow-sessions/prepare-fastify-terminal-tokenjuice-codex-hook-v1-20260718T222455550204Z-p1583849/codex-doctor.txt",
+          "mcp_list": "sources/evaluations/workflow-sessions/prepare-fastify-terminal-tokenjuice-codex-hook-v1-20260718T222455550204Z-p1583849/codex-mcp-list.txt",
+          "effective_config": "sources/evaluations/workflow-sessions/prepare-fastify-terminal-tokenjuice-codex-hook-v1-20260718T222455550204Z-p1583849/codex-effective-config.toml",
+          "forbidden_command_visibility": "sources/evaluations/workflow-sessions/prepare-fastify-terminal-tokenjuice-codex-hook-v1-20260718T222455550204Z-p1583849/forbidden-command-visibility.txt",
+          "tool_preflight": "sources/evaluations/workflow-sessions/prepare-fastify-terminal-tokenjuice-codex-hook-v1-20260718T222455550204Z-p1583849/tool-preflight.txt",
           "tool_coverage_preflight": null
         }
       }
@@ -3500,9 +3505,9 @@
     {
       "sequence_id": "terraform-lifecycle-sequence-v0",
       "profile_id": "terminal-tokenjuice-codex-hook-v1",
-      "protocol_path": "sources/evaluations/protocols/terraform-lifecycle-sequence-v0-terminal-tokenjuice-codex-hook-v1-8c825780d34c.json",
-      "protocol_sha256": "3d65631094720917ee73b2f4fe178c214fe980c2c0b1431416d332185c348089",
-      "raw_prepare_output_sha256": "239fc747b4336a2e7e72183646a44cb5f291f2935a82509844a572454216a43a",
+      "protocol_path": "sources/evaluations/protocols/terraform-lifecycle-sequence-v0-terminal-tokenjuice-codex-hook-v1-ce0dce7c7a5e.json",
+      "protocol_sha256": "003246d2e77328a5002d0e4fbb82cfb277c7e670e0fb43c88d96dc37668296aa",
+      "raw_prepare_output_sha256": "8c089522f5332ad4eec76c3078bd71a31dea7d0736fee59dac0e76992a18895e",
       "prepared": true,
       "prepare_verification": {
         "passed": true,
@@ -3522,11 +3527,11 @@
         ],
         "missing_required_files": [],
         "required_files": [
-          "/opt/data/repos/token-optimization-research/sources/evaluations/workflow-sessions/prepare-terraform-terminal-tokenjuice-codex-hook-v1-20260718T193552502285Z-p1499285/codex-homes/terminal-tokenjuice-codex-hook-v1/hooks.json"
+          "/opt/data/repos/token-optimization-research/sources/evaluations/workflow-sessions/prepare-terraform-terminal-tokenjuice-codex-hook-v1-20260718T222510552546Z-p1584254/codex-homes/terminal-tokenjuice-codex-hook-v1/hooks.json"
         ],
         "artifacts": [
-          "sources/evaluations/workflow-sessions/prepare-terraform-terminal-tokenjuice-codex-hook-v1-20260718T193552502285Z-p1499285/tool-host-install-1.txt",
-          "sources/evaluations/workflow-sessions/prepare-terraform-terminal-tokenjuice-codex-hook-v1-20260718T193552502285Z-p1499285/tool-host-verify-1.txt"
+          "sources/evaluations/workflow-sessions/prepare-terraform-terminal-tokenjuice-codex-hook-v1-20260718T222510552546Z-p1584254/tool-host-install-1.txt",
+          "sources/evaluations/workflow-sessions/prepare-terraform-terminal-tokenjuice-codex-hook-v1-20260718T222510552546Z-p1584254/tool-host-verify-1.txt"
         ]
       },
       "mcp_handshake": {
@@ -3553,11 +3558,11 @@
           "codex doctor exited 1; preserve the diagnostic, but use the isolated MCP/config probes and task execution as gates"
         ],
         "artifacts": {
-          "doctor": "sources/evaluations/workflow-sessions/prepare-terraform-terminal-tokenjuice-codex-hook-v1-20260718T193552502285Z-p1499285/codex-doctor.txt",
-          "mcp_list": "sources/evaluations/workflow-sessions/prepare-terraform-terminal-tokenjuice-codex-hook-v1-20260718T193552502285Z-p1499285/codex-mcp-list.txt",
-          "effective_config": "sources/evaluations/workflow-sessions/prepare-terraform-terminal-tokenjuice-codex-hook-v1-20260718T193552502285Z-p1499285/codex-effective-config.toml",
-          "forbidden_command_visibility": "sources/evaluations/workflow-sessions/prepare-terraform-terminal-tokenjuice-codex-hook-v1-20260718T193552502285Z-p1499285/forbidden-command-visibility.txt",
-          "tool_preflight": "sources/evaluations/workflow-sessions/prepare-terraform-terminal-tokenjuice-codex-hook-v1-20260718T193552502285Z-p1499285/tool-preflight.txt",
+          "doctor": "sources/evaluations/workflow-sessions/prepare-terraform-terminal-tokenjuice-codex-hook-v1-20260718T222510552546Z-p1584254/codex-doctor.txt",
+          "mcp_list": "sources/evaluations/workflow-sessions/prepare-terraform-terminal-tokenjuice-codex-hook-v1-20260718T222510552546Z-p1584254/codex-mcp-list.txt",
+          "effective_config": "sources/evaluations/workflow-sessions/prepare-terraform-terminal-tokenjuice-codex-hook-v1-20260718T222510552546Z-p1584254/codex-effective-config.toml",
+          "forbidden_command_visibility": "sources/evaluations/workflow-sessions/prepare-terraform-terminal-tokenjuice-codex-hook-v1-20260718T222510552546Z-p1584254/forbidden-command-visibility.txt",
+          "tool_preflight": "sources/evaluations/workflow-sessions/prepare-terraform-terminal-tokenjuice-codex-hook-v1-20260718T222510552546Z-p1584254/tool-preflight.txt",
           "tool_coverage_preflight": null
         }
       }
