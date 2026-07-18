@@ -21,6 +21,7 @@ Every lane uses one pinned repository snapshot and one persistent model session.
 - `sources/evaluations/fixtures/` — task prompts, start patches, controller acceptance, and generated v0 qualification evidence.
 - `data/workflow-sessions.json` — retained provider-backed token samples, diagnostic model outcomes, and experiment-invalid exclusions.
 - `docs/evaluations/workflow-evaluation-runbook.md` — generated operator runbook.
+- `docs/reports/phase-2-lifecycle-v0-natural-use-screening.md` — production screening report for the retained baseline and treatment evidence.
 
 ## Validation
 
