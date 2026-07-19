@@ -1744,7 +1744,7 @@
       "id": "integrated-token-savior-mcp-v1",
       "profile_type": "individual_tool",
       "objective_scope": "individual_tool_effectiveness",
-      "status": "screening-shortlist",
+      "status": "screening-ablation",
       "enabled_surfaces": [
         "retrieval-context",
         "memory",
@@ -1773,7 +1773,48 @@
         "integration_state": "official-bounded-codex-mcp",
         "assignment_proof": "provider-free initialize plus tools/list handshake required"
       },
-      "notes": "Versioned replacement for deleted historical results whose treatment assignment was not operationally proven."
+      "notes": "Retained as an explicit bounded MCP-only natural-use ablation. The successful handshake exposed 15 optimized tools, but Codex issued zero Token Savior MCP calls across the retained workflow screen; product guidance and hooks were absent by design.",
+      "superseded_by": "integrated-token-savior-codex-product-v2"
+    },
+    {
+      "id": "integrated-token-savior-codex-product-v2",
+      "profile_type": "individual_tool",
+      "objective_scope": "individual_tool_effectiveness",
+      "status": "screening-shortlist",
+      "enabled_surfaces": [
+        "retrieval-context",
+        "memory",
+        "compact-ops",
+        "mcp",
+        "product-authored-codex-guidance",
+        "codex-pre-tool-use-hook",
+        "codex-post-tool-use-hook"
+      ],
+      "disabled_overlaps": [
+        "all unlisted surfaces"
+      ],
+      "components": [
+        {
+          "component_id": "token-savior-codex-product-v2",
+          "surface": "retrieval-context+memory+compact-ops+mcp+product-guidance+pre-post-tool-hooks",
+          "role": "individual_tool"
+        }
+      ],
+      "install": {
+        "policy": "Install the pinned optimized Token Savior MCP surface, materialize its product-authored CLAUDE.md guidance verbatim into repository AGENTS.md for Codex discovery, and map the unchanged product Bash rewriter/capture scripts onto the current Codex PreToolUse/PostToolUse hooks.json schema."
+      },
+      "reset": {
+        "policy": "Delete lane-private CODEX_HOME, Token Savior state, generated AGENTS.md treatment block, hook configuration, audit logs, and background processes after evidence capture."
+      },
+      "evaluation_protocol": {
+        "tool_use_policy": "product-guided-natural",
+        "tool_state": "cold-auto-index+active-guidance-and-hooks",
+        "integration_state": "product-guided-host-adapted-codex-mcp-hooks",
+        "assignment_proof": "provider-free MCP initialize/tools-list, guidance receipt, current hooks.json, and direct product-hook smoke checks required"
+      },
+      "selection_rationale": "Experiment-owner direction on 2026-07-19 after the bounded MCP-only arm received zero natural Codex uptake and the product was found to be optimized primarily for Claude Code.",
+      "compatibility_deviation": "The pinned product writes obsolete Codex .codex/settings.json tool_complete configuration. The v2 adapter maps the unchanged product hook scripts to Codex 0.144 hooks.json PreToolUse/PostToolUse and records that host adaptation explicitly; guidance content remains verbatim product-authored text.",
+      "notes": "Canonical product-guided Codex successor to the bounded MCP-only ablation. Evaluator prompts remain neutral; any routing preference comes from the pinned product-authored guidance."
     },
     {
       "id": "artifact-ponytail-codex-plugin-v1",
