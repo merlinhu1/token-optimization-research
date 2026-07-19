@@ -37,6 +37,10 @@ HEADROOM_WHEEL = Path(
 )
 SERENA_ROOT = Path("/opt/data/tool-candidates/serena")
 CARTOG_BINARY = Path("/opt/data/tool-candidates/cartog/target/release/cartog")
+NODE_BINARY = Path("/opt/data/opt/node-v24.18.0-linux-x64/bin/node")
+CODESCOPE_BINARY = Path("/opt/data/tool-candidates/codescope-release-v0.8.12/codescope")
+SWARMVAULT_CLI = Path("/opt/data/tool-candidates/swarmvault/packages/cli/dist/index.js")
+CODEGRAPH_BINARY = Path("/opt/data/tool-candidates/codegraph/dist/bin/codegraph.js")
 HEADROOM_PLUGIN = Path(
     "/opt/data/tool-candidates/headroom/plugins/opencode/dist/entry.opencode.js"
 )
@@ -47,8 +51,13 @@ TREATMENT_PROFILES = {
     "snip",
     "cartog",
     "headroom",
+    "codescope",
+    "swarmvault",
+    "graphify",
+    "rtk",
+    "codegraph",
 }
-PLUGIN_TREATMENTS = {"tokenjuice", "snip", "headroom"}
+PLUGIN_TREATMENTS = {"tokenjuice", "snip", "headroom", "swarmvault", "graphify", "rtk"}
 
 
 def verify_binary_sha256(binary: Path, expected_sha256: str) -> str:
@@ -691,6 +700,59 @@ def _runtime_env(
                 "enabled": True,
             },
         }
+    elif treatment == "codescope":
+        if directory is None:
+            raise ValueError("CodeScope treatment requires an evaluation directory")
+        config["mcp"] = {
+            "codescope": {
+                "type": "local",
+                "command": [
+                    "/bin/bash",
+                    "-lc",
+                    (
+                        f"set -euo pipefail; {CODESCOPE_BINARY} start >/dev/null; "
+                        f"trap '{CODESCOPE_BINARY} stop >/dev/null 2>&1 || true' EXIT; "
+                        f"i=0; until {CODESCOPE_BINARY} status | grep -q '^running'; "
+                        "do i=$((i+1)); [ \"$i\" -lt 50 ]; sleep 0.2; done; "
+                        f"exec {CODESCOPE_BINARY} mcp {directory}"
+                    ),
+                ],
+                "enabled": True,
+            }
+        }
+    elif treatment == "swarmvault":
+        if directory is None:
+            raise ValueError("SwarmVault treatment requires an evaluation directory")
+        plugin = directory / ".opencode" / "plugins" / "swarmvault-graph-first.js"
+        config["plugin"] = [plugin.as_uri()]
+        config["mcp"] = {
+            "swarmvault": {
+                "type": "local",
+                "command": [str(NODE_BINARY), str(SWARMVAULT_CLI), "mcp"],
+                "environment": {
+                    "SWARMVAULT_OUT": str(xdg_state / "swarmvault" / "vault"),
+                    "SWARMVAULT_NO_NOTICES": "1",
+                },
+                "enabled": True,
+            }
+        }
+    elif treatment == "graphify":
+        if directory is None:
+            raise ValueError("Graphify treatment requires an evaluation directory")
+        plugin = directory / ".opencode" / "plugins" / "graphify.js"
+        config["plugin"] = [plugin.as_uri()]
+    elif treatment == "rtk":
+        plugin = codex_home / "home" / ".config" / "opencode" / "plugins" / "rtk.ts"
+        config["plugin"] = [plugin.as_uri()]
+    elif treatment == "codegraph":
+        config["mcp"] = {
+            "codegraph": {
+                "type": "local",
+                "command": [str(NODE_BINARY), str(CODEGRAPH_BINARY), "serve", "--mcp"],
+                "environment": {"CODEGRAPH_TELEMETRY": "0"},
+                "enabled": True,
+            }
+        }
     env.update(
         {
             "XDG_DATA_HOME": str(xdg_data),
@@ -700,7 +762,7 @@ def _runtime_env(
             "OPENCODE_DISABLE_AUTOUPDATE": "1",
             "OPENCODE_DISABLE_MODELS_FETCH": "1",
             "OPENCODE_DISABLE_PROJECT_CONFIG": "1",
-            "OPENCODE_DISABLE_EXTERNAL_SKILLS": "1",
+            "OPENCODE_DISABLE_EXTERNAL_SKILLS": "0" if treatment in {"swarmvault", "graphify"} else "1",
             "OPENCODE_DISABLE_LSP_DOWNLOAD": "1",
             "OPENCODE_DISABLE_CLAUDE_CODE": "1",
             "OPENCODE_TREATMENT_PROFILE": treatment,
@@ -719,7 +781,12 @@ def probe(
     *,
     treatment: str = "bare",
 ) -> int:
-    env, xdg_data = _runtime_env(codex_home, treatment=treatment)
+    directory = Path(os.environ.get("OPENCODE_EVALUATION_DIRECTORY", Path.cwd()))
+    env, xdg_data = _runtime_env(
+        codex_home,
+        treatment=treatment,
+        directory=directory,
+    )
     ensure_opencode_auth(codex_home / "auth.json", xdg_data)
     version = subprocess.run([str(binary), "--version"], env=env, text=True, capture_output=True, timeout=60)
     if version.returncode != 0:
@@ -732,6 +799,7 @@ def probe(
         plugin_info = subprocess.run(
             [str(binary), "debug", "info"],
             env=env,
+            cwd=directory,
             text=True,
             capture_output=True,
             timeout=120,
@@ -742,6 +810,9 @@ def probe(
             "tokenjuice": "tokenjuice.js",
             "snip": "opencode-snip-v1.6.1",
             "headroom": "entry.opencode.js",
+            "swarmvault": "swarmvault-graph-first.js",
+            "graphify": "graphify.js",
+            "rtk": "rtk.ts",
         }[treatment]
         if expected_plugin not in plugin_info.stdout:
             raise RuntimeError(

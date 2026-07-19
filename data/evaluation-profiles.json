@@ -2674,6 +2674,281 @@
       "notes": "Fresh full-product successor. The official Headroom MCP is attempted without evaluator dependency pinning; its declared dependency incompatibility counts as degradation. Provider execution still fails closed when proxy traffic, effective config, native plugin, or Serena MCP activation is unproven.",
       "name": "Headroom OpenCode integrated product V3 repaired",
       "supersedes": "integrated-headroom-opencode-product-v2"
+    },
+    {
+      "profile_type": "individual_tool",
+      "objective_scope": "individual_tool_effectiveness",
+      "status": "screening-ablation",
+      "substrate": "opencode-cli",
+      "disabled_overlaps": [
+        "all unlisted surfaces"
+      ],
+      "native_agent_tools_allowed": [
+        "opencode-native-shell-edit",
+        "opencode-native-file-read-search",
+        "git",
+        "verifier-commands"
+      ],
+      "forbidden_surfaces": [
+        "all external retrieval, compression, memory, MCP, skills, plugins, subagents, and web tools except the assigned product surfaces"
+      ],
+      "reset": {
+        "policy": "Delete lane-private OpenCode XDG directories, product state, generated repository treatment files, auth translation, and background processes after evidence capture."
+      },
+      "id": "codescope-opencode-product-v1",
+      "artifact_slug": "codescope-opencode-v1",
+      "name": "CodeScope OpenCode MCP V1",
+      "enabled_surfaces": [
+        "broad-context-owner",
+        "opencode-mcp",
+        "official-initialize-instructions",
+        "warm-index"
+      ],
+      "components": [
+        {
+          "component_id": "codescope-opencode-product-v1",
+          "surface": "broad-context-owner+opencode-mcp+official-initialize-instructions+warm-index",
+          "role": "individual_tool"
+        }
+      ],
+      "install": {
+        "policy": "Run the pinned CodeScope 0.8.12 release with its bundled SurrealDB, build a lane-private warm index, register only its host-agnostic MCP server in the isolated OpenCode config, and require initialize plus tools/list before provider execution."
+      },
+      "evaluation_protocol": {
+        "tool_use_policy": "natural",
+        "tool_state": "warm-index+official-mcp-instructions",
+        "integration_state": "host-agnostic-mcp-on-opencode",
+        "assignment_proof": "provider-free exact binary identities, warm index, effective-config receipt, initialize, and tools/list required"
+      },
+      "source_snapshot": {
+        "repository": "onur-gokyildiz-bhi/codescope",
+        "version": "0.8.12",
+        "release_asset_sha256": "d6f64f7bc7bf1ab65115fdede85d794f58151c6f1414421825959eb2101165c1",
+        "runtime_adapter": "/opt/data/tool-candidates/opencode-adapter-v4/opencode_workflow_adapter.py",
+        "runtime_adapter_sha256": "e3c6e77fc22ae12a6548ee3ad92836d58c2db411ceae7c3743c370c469e6bbf7"
+      },
+      "notes": "Successive OpenCode screen selected from the live compatible shortlist. CodeScope does not name OpenCode in its installer but explicitly supports any MCP-compatible host; this profile uses the unchanged product MCP server and initialize instructions."
+    },
+    {
+      "profile_type": "individual_tool",
+      "objective_scope": "individual_tool_effectiveness",
+      "status": "screening-ablation",
+      "substrate": "opencode-cli",
+      "disabled_overlaps": [
+        "all unlisted surfaces"
+      ],
+      "native_agent_tools_allowed": [
+        "opencode-native-shell-edit",
+        "opencode-native-file-read-search",
+        "git",
+        "verifier-commands"
+      ],
+      "forbidden_surfaces": [
+        "all external retrieval, compression, memory, MCP, skills, plugins, subagents, and web tools except the assigned product surfaces"
+      ],
+      "reset": {
+        "policy": "Delete lane-private OpenCode XDG directories, product state, generated repository treatment files, auth translation, and background processes after evidence capture."
+      },
+      "id": "swarmvault-opencode-product-v1",
+      "artifact_slug": "swarmvault-opencode-v1",
+      "name": "SwarmVault OpenCode product V1",
+      "enabled_surfaces": [
+        "broad-context-owner",
+        "opencode-mcp",
+        "opencode-project-rules",
+        "opencode-native-plugin",
+        "opencode-skill",
+        "warm-index"
+      ],
+      "components": [
+        {
+          "component_id": "swarmvault-opencode-product-v1",
+          "surface": "broad-context-owner+opencode-mcp+project-rules+native-plugin+skill+warm-index",
+          "role": "individual_tool"
+        }
+      ],
+      "install": {
+        "policy": "Use pinned SwarmVault 3.20.0 compiled CLI to initialize and compile a lane-private vault and run the official `install --agent opencode --hook`; verify exact generated plugin and skill bytes and require MCP initialize plus tools/list."
+      },
+      "evaluation_protocol": {
+        "tool_use_policy": "natural",
+        "tool_state": "warm-index+active-native-plugin-and-skill",
+        "integration_state": "official-opencode-rules-skill-hook-mcp",
+        "assignment_proof": "provider-free exact compiled CLI, generated plugin and skill, effective config, warm vault, initialize, and tools/list required"
+      },
+      "source_snapshot": {
+        "repository": "SwarmVaultAI/swarmvault",
+        "commit": "4ce0c7cb545c669f3cd35fc6d0300c6b088a52ea",
+        "version": "3.20.0",
+        "runtime_adapter": "/opt/data/tool-candidates/opencode-adapter-v4/opencode_workflow_adapter.py",
+        "runtime_adapter_sha256": "e3c6e77fc22ae12a6548ee3ad92836d58c2db411ceae7c3743c370c469e6bbf7"
+      },
+      "notes": "Successive OpenCode screen selected from the live compatible shortlist; all official OpenCode surfaces are active."
+    },
+    {
+      "profile_type": "individual_tool",
+      "objective_scope": "individual_tool_effectiveness",
+      "status": "screening-ablation",
+      "substrate": "opencode-cli",
+      "disabled_overlaps": [
+        "all unlisted surfaces"
+      ],
+      "native_agent_tools_allowed": [
+        "opencode-native-shell-edit",
+        "opencode-native-file-read-search",
+        "git",
+        "verifier-commands"
+      ],
+      "forbidden_surfaces": [
+        "all external retrieval, compression, memory, MCP, skills, plugins, subagents, and web tools except the assigned product surfaces"
+      ],
+      "reset": {
+        "policy": "Delete lane-private OpenCode XDG directories, product state, generated repository treatment files, auth translation, and background processes after evidence capture."
+      },
+      "id": "retrieval-graphify-opencode-product-v1",
+      "artifact_slug": "graphify-opencode-v1",
+      "name": "Graphify OpenCode product V1",
+      "enabled_surfaces": [
+        "retrieval-context",
+        "opencode-project-skill",
+        "opencode-project-instructions",
+        "opencode-pre-tool-use-plugin",
+        "warm-graph"
+      ],
+      "components": [
+        {
+          "component_id": "retrieval-graphify-opencode-product-v1",
+          "surface": "retrieval-context+opencode-skill+instructions+native-plugin+warm-graph",
+          "role": "individual_tool"
+        }
+      ],
+      "install": {
+        "policy": "Install pinned Graphify 0.9.1 wheel into a lane-private venv, run the official OpenCode project installer, verify exact generated plugin and skill bytes, and build the full graph before provider execution."
+      },
+      "evaluation_protocol": {
+        "tool_use_policy": "natural",
+        "tool_state": "warm-graph+active-native-plugin-and-skill",
+        "integration_state": "official-opencode-skill-and-always-on-policy",
+        "instruction_policy": "product-authored-guidance",
+        "assignment_proof": "provider-free exact wheel, generated plugin and skill, effective config, and full graph required"
+      },
+      "source_snapshot": {
+        "repository": "safishamsi/graphify",
+        "commit": "199061207f6648f116fd6dbb0b2214502c55d90a",
+        "version": "0.9.1",
+        "runtime_adapter": "/opt/data/tool-candidates/opencode-adapter-v4/opencode_workflow_adapter.py",
+        "runtime_adapter_sha256": "e3c6e77fc22ae12a6548ee3ad92836d58c2db411ceae7c3743c370c469e6bbf7"
+      },
+      "notes": "Successive OpenCode screen selected from the live compatible shortlist. Uses the official OpenCode skill, AGENTS guidance, plugin, and full graph without adding an MCP arm."
+    },
+    {
+      "profile_type": "individual_tool",
+      "objective_scope": "individual_tool_effectiveness",
+      "status": "screening-ablation",
+      "substrate": "opencode-cli",
+      "disabled_overlaps": [
+        "all unlisted surfaces"
+      ],
+      "native_agent_tools_allowed": [
+        "opencode-native-shell-edit",
+        "opencode-native-file-read-search",
+        "git",
+        "verifier-commands"
+      ],
+      "forbidden_surfaces": [
+        "all external retrieval, compression, memory, MCP, skills, plugins, subagents, and web tools except the assigned product surfaces"
+      ],
+      "reset": {
+        "policy": "Delete lane-private OpenCode XDG directories, product state, generated repository treatment files, auth translation, and background processes after evidence capture."
+      },
+      "id": "terminal-rtk-opencode-plugin-v1",
+      "artifact_slug": "rtk-opencode-v1",
+      "name": "RTK OpenCode plugin V1",
+      "enabled_surfaces": [
+        "opencode-native-plugin",
+        "terminal-command-rewriting",
+        "terminal-output-compaction"
+      ],
+      "components": [
+        {
+          "component_id": "terminal-rtk-opencode-plugin-v1",
+          "surface": "opencode-native-plugin/terminal-command-rewriting+output-compaction",
+          "role": "individual_tool"
+        }
+      ],
+      "install": {
+        "policy": "Run pinned RTK 0.42.4 `rtk init --global --opencode` against the lane-private HOME; verify exact binary, source plugin, and generated plugin identities before provider execution."
+      },
+      "evaluation_protocol": {
+        "tool_use_policy": "natural",
+        "tool_state": "active-native-plugin-exact-artifact",
+        "integration_state": "official-opencode-global-plugin",
+        "assignment_proof": "provider-free exact binary, source/generated plugin, effective-config, and OpenCode debug-info proof required"
+      },
+      "source_snapshot": {
+        "repository": "rtk-ai/rtk",
+        "commit": "23aae98c5b29cd52d77061c6efd2e65e5e3cc6dd",
+        "version": "0.42.4",
+        "runtime_adapter": "/opt/data/tool-candidates/opencode-adapter-v4/opencode_workflow_adapter.py",
+        "runtime_adapter_sha256": "e3c6e77fc22ae12a6548ee3ad92836d58c2db411ceae7c3743c370c469e6bbf7"
+      },
+      "notes": "Successive OpenCode screen selected from the live compatible shortlist; measures the official command-rewriting plugin rather than the Codex instruction profile."
+    },
+    {
+      "profile_type": "individual_tool",
+      "objective_scope": "individual_tool_effectiveness",
+      "status": "screening-ablation",
+      "substrate": "opencode-cli",
+      "disabled_overlaps": [
+        "all unlisted surfaces"
+      ],
+      "native_agent_tools_allowed": [
+        "opencode-native-shell-edit",
+        "opencode-native-file-read-search",
+        "git",
+        "verifier-commands"
+      ],
+      "forbidden_surfaces": [
+        "all external retrieval, compression, memory, MCP, skills, plugins, subagents, and web tools except the assigned product surfaces"
+      ],
+      "reset": {
+        "policy": "Delete lane-private OpenCode XDG directories, product state, generated repository treatment files, auth translation, and background processes after evidence capture."
+      },
+      "id": "retrieval-codegraph-opencode-mcp-v1",
+      "artifact_slug": "codegraph-opencode-v1",
+      "name": "CodeGraph OpenCode MCP V1",
+      "enabled_surfaces": [
+        "retrieval-context",
+        "opencode-mcp",
+        "official-opencode-installer",
+        "model-runtime-cli",
+        "warm-live-index"
+      ],
+      "components": [
+        {
+          "component_id": "retrieval-codegraph-opencode-mcp-v1",
+          "surface": "retrieval-context+opencode-mcp+official-installer+model-runtime-cli+warm-live-index",
+          "role": "individual_tool"
+        }
+      ],
+      "install": {
+        "policy": "Run pinned CodeGraph 1.1.1 official local OpenCode installer, materialize the exact CLI on model PATH, initialize the project graph, and require initialize plus tools/list before provider execution."
+      },
+      "evaluation_protocol": {
+        "tool_use_policy": "natural",
+        "tool_state": "warm-live-index+official-mcp-instructions",
+        "integration_state": "official-opencode-mcp-installer-live-index",
+        "instruction_policy": "product-authored-MCP-initialize-guidance",
+        "assignment_proof": "provider-free exact compiled CLI, generated OpenCode config, model PATH, warm index, initialize, and tools/list required"
+      },
+      "source_snapshot": {
+        "repository": "colbymchenry/codegraph",
+        "commit": "4077ed19b7d8a88eba93601c0c308e59c8640f8c",
+        "version": "1.1.1",
+        "runtime_adapter": "/opt/data/tool-candidates/opencode-adapter-v4/opencode_workflow_adapter.py",
+        "runtime_adapter_sha256": "e3c6e77fc22ae12a6548ee3ad92836d58c2db411ceae7c3743c370c469e6bbf7"
+      },
+      "notes": "Next native OpenCode-eligible product after Token Savior, which is skipped because its pinned product has no OpenCode integration. Uses CodeGraph official OpenCode installer and MCP server."
     }
   ]
 }

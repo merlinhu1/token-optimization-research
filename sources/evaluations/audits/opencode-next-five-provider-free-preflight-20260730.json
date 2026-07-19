@@ -1,0 +1,194 @@
+{
+  "schema_version": 1,
+  "audit_id": "opencode-next-five-provider-free-preflight-20260730",
+  "date": "2026-07-30",
+  "provider_execution": false,
+  "replicate_index": 1,
+  "max_parallel": 1,
+  "model_condition": {
+    "id": "opencode-openai-gpt-5-6-sol-high",
+    "runtime": "opencode-cli",
+    "model": "gpt-5.6-sol",
+    "reasoning_effort": "high"
+  },
+  "profiles": [
+    "runtime-opencode-codex-product-v1",
+    "codescope-opencode-product-v1",
+    "swarmvault-opencode-product-v1",
+    "retrieval-graphify-opencode-product-v1",
+    "terminal-rtk-opencode-plugin-v1",
+    "retrieval-codegraph-opencode-mcp-v1"
+  ],
+  "sequences": [
+    "fastify-lifecycle-sequence-v0",
+    "beets-lifecycle-sequence-v0",
+    "terraform-lifecycle-sequence-v0"
+  ],
+  "planned_jobs": 18,
+  "completed_jobs": 18,
+  "all_lane_exit_codes_zero": true,
+  "lanes": [
+    {
+      "sequence_id": "beets-lifecycle-sequence-v0",
+      "profile_id": "runtime-opencode-codex-product-v1",
+      "exit_code": 0,
+      "produced_session_ids": []
+    },
+    {
+      "sequence_id": "beets-lifecycle-sequence-v0",
+      "profile_id": "codescope-opencode-product-v1",
+      "exit_code": 0,
+      "produced_session_ids": []
+    },
+    {
+      "sequence_id": "beets-lifecycle-sequence-v0",
+      "profile_id": "swarmvault-opencode-product-v1",
+      "exit_code": 0,
+      "produced_session_ids": []
+    },
+    {
+      "sequence_id": "beets-lifecycle-sequence-v0",
+      "profile_id": "retrieval-graphify-opencode-product-v1",
+      "exit_code": 0,
+      "produced_session_ids": []
+    },
+    {
+      "sequence_id": "beets-lifecycle-sequence-v0",
+      "profile_id": "terminal-rtk-opencode-plugin-v1",
+      "exit_code": 0,
+      "produced_session_ids": []
+    },
+    {
+      "sequence_id": "beets-lifecycle-sequence-v0",
+      "profile_id": "retrieval-codegraph-opencode-mcp-v1",
+      "exit_code": 0,
+      "produced_session_ids": []
+    },
+    {
+      "sequence_id": "fastify-lifecycle-sequence-v0",
+      "profile_id": "runtime-opencode-codex-product-v1",
+      "exit_code": 0,
+      "produced_session_ids": []
+    },
+    {
+      "sequence_id": "fastify-lifecycle-sequence-v0",
+      "profile_id": "codescope-opencode-product-v1",
+      "exit_code": 0,
+      "produced_session_ids": []
+    },
+    {
+      "sequence_id": "fastify-lifecycle-sequence-v0",
+      "profile_id": "swarmvault-opencode-product-v1",
+      "exit_code": 0,
+      "produced_session_ids": []
+    },
+    {
+      "sequence_id": "fastify-lifecycle-sequence-v0",
+      "profile_id": "retrieval-graphify-opencode-product-v1",
+      "exit_code": 0,
+      "produced_session_ids": []
+    },
+    {
+      "sequence_id": "fastify-lifecycle-sequence-v0",
+      "profile_id": "terminal-rtk-opencode-plugin-v1",
+      "exit_code": 0,
+      "produced_session_ids": []
+    },
+    {
+      "sequence_id": "fastify-lifecycle-sequence-v0",
+      "profile_id": "retrieval-codegraph-opencode-mcp-v1",
+      "exit_code": 0,
+      "produced_session_ids": []
+    },
+    {
+      "sequence_id": "terraform-lifecycle-sequence-v0",
+      "profile_id": "runtime-opencode-codex-product-v1",
+      "exit_code": 0,
+      "produced_session_ids": []
+    },
+    {
+      "sequence_id": "terraform-lifecycle-sequence-v0",
+      "profile_id": "codescope-opencode-product-v1",
+      "exit_code": 0,
+      "produced_session_ids": []
+    },
+    {
+      "sequence_id": "terraform-lifecycle-sequence-v0",
+      "profile_id": "swarmvault-opencode-product-v1",
+      "exit_code": 0,
+      "produced_session_ids": []
+    },
+    {
+      "sequence_id": "terraform-lifecycle-sequence-v0",
+      "profile_id": "retrieval-graphify-opencode-product-v1",
+      "exit_code": 0,
+      "produced_session_ids": []
+    },
+    {
+      "sequence_id": "terraform-lifecycle-sequence-v0",
+      "profile_id": "terminal-rtk-opencode-plugin-v1",
+      "exit_code": 0,
+      "produced_session_ids": []
+    },
+    {
+      "sequence_id": "terraform-lifecycle-sequence-v0",
+      "profile_id": "retrieval-codegraph-opencode-mcp-v1",
+      "exit_code": 0,
+      "produced_session_ids": []
+    }
+  ],
+  "validation": {
+    "passed": true,
+    "results": [
+      {
+        "command": [
+          "/opt/hermes/.venv/bin/python3",
+          "scripts/validate_repository.py"
+        ],
+        "exit_code": 0,
+        "output": "/opt/data/eval-workflow-lanes/workflow-matrix-20260730T044301681968Z-p1277871-r1/validation-1-opt-hermes-.venv-bin-python3.txt"
+      },
+      {
+        "command": [
+          "/opt/hermes/.venv/bin/python3",
+          "scripts/test_workflow_evaluation_contract.py"
+        ],
+        "exit_code": 0,
+        "output": "/opt/data/eval-workflow-lanes/workflow-matrix-20260730T044301681968Z-p1277871-r1/validation-2-opt-hermes-.venv-bin-python3.txt"
+      },
+      {
+        "command": [
+          "git",
+          "diff",
+          "--check"
+        ],
+        "exit_code": 0,
+        "output": "/opt/data/eval-workflow-lanes/workflow-matrix-20260730T044301681968Z-p1277871-r1/validation-3-git.txt"
+      },
+      {
+        "command": [
+          "/opt/data/.local/bin/truthmark",
+          "check",
+          "--json"
+        ],
+        "exit_code": 0,
+        "output": "/opt/data/eval-workflow-lanes/workflow-matrix-20260730T044301681968Z-p1277871-r1/validation-4-opt-data-.local-bin-truthmark.txt"
+      },
+      {
+        "command": [
+          "/opt/data/.local/bin/truthmark",
+          "index",
+          "--json"
+        ],
+        "exit_code": 0,
+        "output": "/opt/data/eval-workflow-lanes/workflow-matrix-20260730T044301681968Z-p1277871-r1/validation-5-opt-data-.local-bin-truthmark.txt"
+      }
+    ]
+  },
+  "matrix_summary_source": "/opt/data/eval-workflow-lanes/workflow-matrix-20260730T044301681968Z-p1277871-r1/matrix-summary.json",
+  "matrix_summary_sha256": "943f6416dc7477a42979d62244016ffed7e1a878fb6c946fccbd58f6a5477c81",
+  "authoritative_outputs_complete": true,
+  "execution_passed": true,
+  "provider_tokens_counted": false,
+  "status": "passed"
+}
