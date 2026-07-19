@@ -545,13 +545,28 @@ class ActiveCampaignArchitectureTest(unittest.TestCase):
             "integrated-headroom-opencode-product-v3",
         })
         headroom = next(item for item in audit["treatments"] if item["profile_id"] == "integrated-headroom-opencode-product-v3")
+        snip = next(item for item in audit["treatments"] if item["profile_id"] == "terminal-snip-opencode-plugin-v2")
+        cartog = next(item for item in audit["treatments"] if item["profile_id"] == "retrieval-cartog-opencode-product-v2")
         self.assertEqual(headroom["activation"]["proxy"]["request_count"], 22)
         self.assertEqual(headroom["activation"]["proxy"]["tokens_saved"], 6270)
+        self.assertFalse(headroom["activation"]["proxy"]["per_route_status_retained"])
+        self.assertFalse(headroom["activation"]["rtk_companion"]["binary_hash_retained"])
         self.assertTrue(headroom["quality"]["treatment_degradation"])
+        self.assertTrue(snip["quality"]["treatment_degradation"])
+        self.assertEqual(snip["activation"]["wrapped_bash_commands"], 7)
+        self.assertEqual(snip["activation"]["observed_corrupted_commands"], 2)
+        self.assertEqual(cartog["profile_scope_disposition"], "bounded-screening-ablation")
+        self.assertEqual(headroom["profile_scope_disposition"], "bounded-screening-ablation")
         self.assertFalse(headroom["activation"]["headroom_mcp"]["activation_passed"])
         self.assertTrue(headroom["activation"]["serena_mcp"]["activation_passed"])
         self.assertEqual(audit["execution"]["replacement_step_finish_events_reconciled"], 75)
-        self.assertEqual(audit["aggregate_quality"]["byte_identical_sessions_vs_bare_opencode"], 12)
+        self.assertEqual(audit["aggregate_quality"]["byte_identical_task_patch_sessions_vs_bare_opencode"], 12)
+        self.assertEqual(audit["aggregate_quality"]["byte_identical_final_working_tree_sessions_vs_bare_opencode"], 6)
+        self.assertEqual(audit["aggregate_quality"]["independently_quality_reviewed_sessions"], 0)
+        self.assertEqual(set(audit["aggregate_quality"]["treatment_degradation_profiles"]), {
+            "terminal-snip-opencode-plugin-v2",
+            "integrated-headroom-opencode-product-v3",
+        })
         deletion = json.loads((ROOT / "sources/evaluations/audits/invalid-opencode-treatment-result-deletions-20260729.json").read_text())
         self.assertEqual(deletion["deleted_session_count"], 12)
 
