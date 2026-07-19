@@ -1,0 +1,1073 @@
+{
+  "schema_version": 1,
+  "audit_id": "opencode-tool-treatments-sol-high-r0-screen-results-20260729",
+  "date": "2026-07-29",
+  "evidence_stage": "single-run-screening",
+  "primary_comparator": "published bare OpenCode gpt-5.6-sol/high r0",
+  "source_registry": {
+    "path": "data/workflow-sessions.json",
+    "sha256": "0929f153d537fd330ba5ea7f037e3a9c74232c4afc8594fca126ec524d20dcae"
+  },
+  "source_accounting": {
+    "path": "sources/evaluations/audits/codex-cumulative-usage-accounting-20260718.json",
+    "sha256": "59fa93c24d88a7c20d40749d69010e8e7c300328a378d207f9e8dea1393cb3c3"
+  },
+  "condition": {
+    "runtime_id": "opencode-cli",
+    "runtime_version": "1.18.9",
+    "model_condition_id": "opencode-openai-gpt-5-6-sol-high",
+    "provider": "openai",
+    "model": "gpt-5.6-sol",
+    "reasoning_effort": "high",
+    "replicate_index": 0,
+    "workflows": [
+      "fastify-lifecycle-sequence-v0",
+      "beets-lifecycle-sequence-v0",
+      "terraform-lifecycle-sequence-v0"
+    ],
+    "treatment_count": 5,
+    "valid_session_count": 15,
+    "valid_task_count": 45
+  },
+  "execution": {
+    "all_valid_sessions_accepted": true,
+    "all_manifests_verified": true,
+    "provider_rerun_for_valid_sessions": false,
+    "setup_commit": "1233a01",
+    "headroom_normalization_v2_commit": "e676f83",
+    "retained_lane_roots": [
+      "/opt/data/eval-workflow-lanes/opencode-tokenjuice-sol-high-r0-v2",
+      "/opt/data/eval-workflow-lanes/opencode-serena-sol-high-r0",
+      "/opt/data/eval-workflow-lanes/opencode-snip-sol-high-r0",
+      "/opt/data/eval-workflow-lanes/opencode-cartog-sol-high-r0",
+      "/opt/data/eval-workflow-lanes/opencode-headroom-v2-sol-high-r0",
+      "/opt/data/eval-workflow-lanes/opencode-headroom-v2-beets-valid-r0",
+      "/opt/data/eval-workflow-lanes/opencode-headroom-v2-terraform-valid-r0"
+    ]
+  },
+  "accounting": {
+    "primary_metric": "raw provider tokens",
+    "secondary_metric": "weighted token cost = fresh input + 0.1 * cached input + 6 * output",
+    "reasoning_note": "reasoning_tokens is a subset of output_tokens and is not added again"
+  },
+  "baselines": {
+    "bare_opencode": {
+      "profile_id": "runtime-opencode-codex-product-v1",
+      "session_ids": [
+        "v1-fastify-20260729-p-bb0e89ed9794-r0",
+        "v1-beets-20260729-p-fcc8438d2077-r0",
+        "v1-terraform-20260729-p-5811b463c1e9-r0"
+      ],
+      "usage": {
+        "fresh_input_tokens": 32851,
+        "cached_input_tokens": 86528,
+        "cache_write_tokens": 0,
+        "output_tokens": 2989,
+        "reasoning_tokens": 132,
+        "raw_provider_tokens": 122368,
+        "weighted_tokens": 59437.8
+      }
+    },
+    "bare_codex": {
+      "profile_id": "baseline-bare-codex",
+      "session_ids": [
+        "baseline-fastify-20260722-p-bb0e89ed9794-r0",
+        "baseline-beets-20260728-p-fcc8438d2077-r0",
+        "baseline-terraform-20260728-p-5811b463c1e9-r0"
+      ],
+      "usage": {
+        "fresh_input_tokens": 60771,
+        "cached_input_tokens": 188672,
+        "cache_write_tokens": 0,
+        "output_tokens": 3191,
+        "reasoning_tokens": 0,
+        "raw_provider_tokens": 252634,
+        "weighted_tokens": 98784.2
+      }
+    }
+  },
+  "treatments": [
+    {
+      "profile_id": "terminal-tokenjuice-opencode-plugin-v1",
+      "name": "TokenJuice",
+      "session_ids": [
+        "tokenjuice-opencode-fastify-20260729-p-bb0e89ed9794-r0",
+        "tokenjuice-opencode-beets-20260729-p-fcc8438d2077-r0",
+        "tokenjuice-opencode-terraform-20260729-p-5811b463c1e9-r0"
+      ],
+      "usage": {
+        "fresh_input_tokens": 34350,
+        "cached_input_tokens": 86528,
+        "cache_write_tokens": 0,
+        "output_tokens": 3090,
+        "reasoning_tokens": 188,
+        "raw_provider_tokens": 123968,
+        "weighted_tokens": 61542.8
+      },
+      "contrast_vs_bare_opencode": {
+        "raw_delta_tokens": 1600,
+        "raw_delta_percent": 1.31,
+        "weighted_delta": 2105.0,
+        "weighted_delta_percent": 3.54
+      },
+      "contrast_vs_bare_codex": {
+        "raw_delta_tokens": -128666,
+        "raw_delta_percent": -50.93,
+        "weighted_delta": -37241.4,
+        "weighted_delta_percent": -37.7
+      },
+      "quality": {
+        "accepted_sessions": 3,
+        "session_count": 3,
+        "accepted_tasks": 9,
+        "task_count": 9,
+        "all_final_verifiers_passed": true,
+        "all_tool_isolation_audits_passed": true,
+        "all_final_diffs_byte_identical_to_bare_opencode": true,
+        "changed_scope_degradation": false,
+        "changed_scope_note": "No changed-scope degradation observed; final diff was byte-identical to bare OpenCode in all three workflows."
+      },
+      "natural_uptake": [
+        {
+          "sequence_id": "fastify-lifecycle-sequence-v0",
+          "tool_call_counts": {
+            "bash": 3
+          },
+          "treatment_surface_calls": []
+        },
+        {
+          "sequence_id": "beets-lifecycle-sequence-v0",
+          "tool_call_counts": {
+            "bash": 3
+          },
+          "treatment_surface_calls": []
+        },
+        {
+          "sequence_id": "terraform-lifecycle-sequence-v0",
+          "tool_call_counts": {
+            "bash": 3
+          },
+          "treatment_surface_calls": []
+        }
+      ],
+      "lane_results": [
+        {
+          "sequence_id": "fastify-lifecycle-sequence-v0",
+          "baseline_session_id": "v1-fastify-20260729-p-bb0e89ed9794-r0",
+          "treatment_session_id": "tokenjuice-opencode-fastify-20260729-p-bb0e89ed9794-r0",
+          "baseline_usage": {
+            "fresh_input_tokens": 11454,
+            "cached_input_tokens": 30208,
+            "cache_write_tokens": 0,
+            "output_tokens": 1239,
+            "reasoning_tokens": 55,
+            "raw_provider_tokens": 42901,
+            "weighted_tokens": 21908.8
+          },
+          "treatment_usage": {
+            "fresh_input_tokens": 11965,
+            "cached_input_tokens": 30208,
+            "cache_write_tokens": 0,
+            "output_tokens": 1286,
+            "reasoning_tokens": 56,
+            "raw_provider_tokens": 43459,
+            "weighted_tokens": 22701.8
+          },
+          "raw_delta_tokens": 558,
+          "raw_delta_percent": 1.3,
+          "weighted_delta": 793.0,
+          "weighted_delta_percent": 3.62,
+          "accepted_tasks": 3,
+          "task_count": 3,
+          "final_diff_sha256": "acb36f8f1296ad42b67866cc22b17d78ef44d79d37473db5152a50c8b9b58e7d",
+          "baseline_final_diff_sha256": "acb36f8f1296ad42b67866cc22b17d78ef44d79d37473db5152a50c8b9b58e7d",
+          "final_diff_byte_identical_to_bare_opencode": true,
+          "manifest_path": "sources/evaluations/workflow-sessions/tokenjuice-opencode-fastify-20260729-p-bb0e89ed9794-r0/manifest.sha256"
+        },
+        {
+          "sequence_id": "beets-lifecycle-sequence-v0",
+          "baseline_session_id": "v1-beets-20260729-p-fcc8438d2077-r0",
+          "treatment_session_id": "tokenjuice-opencode-beets-20260729-p-fcc8438d2077-r0",
+          "baseline_usage": {
+            "fresh_input_tokens": 10597,
+            "cached_input_tokens": 28160,
+            "cache_write_tokens": 0,
+            "output_tokens": 923,
+            "reasoning_tokens": 33,
+            "raw_provider_tokens": 39680,
+            "weighted_tokens": 18951.0
+          },
+          "treatment_usage": {
+            "fresh_input_tokens": 10949,
+            "cached_input_tokens": 28160,
+            "cache_write_tokens": 0,
+            "output_tokens": 913,
+            "reasoning_tokens": 57,
+            "raw_provider_tokens": 40022,
+            "weighted_tokens": 19243.0
+          },
+          "raw_delta_tokens": 342,
+          "raw_delta_percent": 0.86,
+          "weighted_delta": 292.0,
+          "weighted_delta_percent": 1.54,
+          "accepted_tasks": 3,
+          "task_count": 3,
+          "final_diff_sha256": "dfe08b58b7703423bac6abf1ea702bd344113c53902e167e0e6c11fab042c17a",
+          "baseline_final_diff_sha256": "dfe08b58b7703423bac6abf1ea702bd344113c53902e167e0e6c11fab042c17a",
+          "final_diff_byte_identical_to_bare_opencode": true,
+          "manifest_path": "sources/evaluations/workflow-sessions/tokenjuice-opencode-beets-20260729-p-fcc8438d2077-r0/manifest.sha256"
+        },
+        {
+          "sequence_id": "terraform-lifecycle-sequence-v0",
+          "baseline_session_id": "v1-terraform-20260729-p-5811b463c1e9-r0",
+          "treatment_session_id": "tokenjuice-opencode-terraform-20260729-p-5811b463c1e9-r0",
+          "baseline_usage": {
+            "fresh_input_tokens": 10800,
+            "cached_input_tokens": 28160,
+            "cache_write_tokens": 0,
+            "output_tokens": 827,
+            "reasoning_tokens": 44,
+            "raw_provider_tokens": 39787,
+            "weighted_tokens": 18578.0
+          },
+          "treatment_usage": {
+            "fresh_input_tokens": 11436,
+            "cached_input_tokens": 28160,
+            "cache_write_tokens": 0,
+            "output_tokens": 891,
+            "reasoning_tokens": 75,
+            "raw_provider_tokens": 40487,
+            "weighted_tokens": 19598.0
+          },
+          "raw_delta_tokens": 700,
+          "raw_delta_percent": 1.76,
+          "weighted_delta": 1020.0,
+          "weighted_delta_percent": 5.49,
+          "accepted_tasks": 3,
+          "task_count": 3,
+          "final_diff_sha256": "615536d0a008a69b9a6dc56ac86c4c17f9cbdea8e05e0b0bed232bfdbe2815ce",
+          "baseline_final_diff_sha256": "615536d0a008a69b9a6dc56ac86c4c17f9cbdea8e05e0b0bed232bfdbe2815ce",
+          "final_diff_byte_identical_to_bare_opencode": true,
+          "manifest_path": "sources/evaluations/workflow-sessions/tokenjuice-opencode-terraform-20260729-p-5811b463c1e9-r0/manifest.sha256"
+        }
+      ]
+    },
+    {
+      "profile_id": "retrieval-serena-opencode-mcp-v1",
+      "name": "Serena",
+      "session_ids": [
+        "serena-opencode-fastify-20260729-p-bb0e89ed9794-r0",
+        "serena-opencode-beets-20260729-p-fcc8438d2077-r0",
+        "serena-opencode-terraform-20260729-p-5811b463c1e9-r0"
+      ],
+      "usage": {
+        "fresh_input_tokens": 53799,
+        "cached_input_tokens": 205824,
+        "cache_write_tokens": 0,
+        "output_tokens": 4011,
+        "reasoning_tokens": 1090,
+        "raw_provider_tokens": 263634,
+        "weighted_tokens": 98447.4
+      },
+      "contrast_vs_bare_opencode": {
+        "raw_delta_tokens": 141266,
+        "raw_delta_percent": 115.44,
+        "weighted_delta": 39009.6,
+        "weighted_delta_percent": 65.63
+      },
+      "contrast_vs_bare_codex": {
+        "raw_delta_tokens": 11000,
+        "raw_delta_percent": 4.35,
+        "weighted_delta": -336.8,
+        "weighted_delta_percent": -0.34
+      },
+      "quality": {
+        "accepted_sessions": 3,
+        "session_count": 3,
+        "accepted_tasks": 9,
+        "task_count": 9,
+        "all_final_verifiers_passed": true,
+        "all_tool_isolation_audits_passed": true,
+        "all_final_diffs_byte_identical_to_bare_opencode": false,
+        "changed_scope_degradation": true,
+        "changed_scope_note": "Serena generated .serena/.gitignore and .serena/project.yml in every repository, so final source diffs were not byte-identical to bare OpenCode despite passing all verifiers."
+      },
+      "natural_uptake": [
+        {
+          "sequence_id": "fastify-lifecycle-sequence-v0",
+          "tool_call_counts": {
+            "bash": 3,
+            "serena_initial_instructions": 1
+          },
+          "treatment_surface_calls": [
+            {
+              "tool": "serena_initial_instructions",
+              "command_prefix": ""
+            }
+          ]
+        },
+        {
+          "sequence_id": "beets-lifecycle-sequence-v0",
+          "tool_call_counts": {
+            "bash": 3,
+            "serena_initial_instructions": 1
+          },
+          "treatment_surface_calls": [
+            {
+              "tool": "serena_initial_instructions",
+              "command_prefix": ""
+            }
+          ]
+        },
+        {
+          "sequence_id": "terraform-lifecycle-sequence-v0",
+          "tool_call_counts": {
+            "bash": 3,
+            "serena_initial_instructions": 1
+          },
+          "treatment_surface_calls": [
+            {
+              "tool": "serena_initial_instructions",
+              "command_prefix": ""
+            }
+          ]
+        }
+      ],
+      "lane_results": [
+        {
+          "sequence_id": "fastify-lifecycle-sequence-v0",
+          "baseline_session_id": "v1-fastify-20260729-p-bb0e89ed9794-r0",
+          "treatment_session_id": "serena-opencode-fastify-20260729-p-bb0e89ed9794-r0",
+          "baseline_usage": {
+            "fresh_input_tokens": 11454,
+            "cached_input_tokens": 30208,
+            "cache_write_tokens": 0,
+            "output_tokens": 1239,
+            "reasoning_tokens": 55,
+            "raw_provider_tokens": 42901,
+            "weighted_tokens": 21908.8
+          },
+          "treatment_usage": {
+            "fresh_input_tokens": 18099,
+            "cached_input_tokens": 69632,
+            "cache_write_tokens": 0,
+            "output_tokens": 1426,
+            "reasoning_tokens": 237,
+            "raw_provider_tokens": 89157,
+            "weighted_tokens": 33618.2
+          },
+          "raw_delta_tokens": 46256,
+          "raw_delta_percent": 107.82,
+          "weighted_delta": 11709.4,
+          "weighted_delta_percent": 53.45,
+          "accepted_tasks": 3,
+          "task_count": 3,
+          "final_diff_sha256": "ff153334d10c764a63958e858d42a01f7bfb036fac5ec47065463d2ad9dd5072",
+          "baseline_final_diff_sha256": "acb36f8f1296ad42b67866cc22b17d78ef44d79d37473db5152a50c8b9b58e7d",
+          "final_diff_byte_identical_to_bare_opencode": false,
+          "manifest_path": "sources/evaluations/workflow-sessions/serena-opencode-fastify-20260729-p-bb0e89ed9794-r0/manifest.sha256"
+        },
+        {
+          "sequence_id": "beets-lifecycle-sequence-v0",
+          "baseline_session_id": "v1-beets-20260729-p-fcc8438d2077-r0",
+          "treatment_session_id": "serena-opencode-beets-20260729-p-fcc8438d2077-r0",
+          "baseline_usage": {
+            "fresh_input_tokens": 10597,
+            "cached_input_tokens": 28160,
+            "cache_write_tokens": 0,
+            "output_tokens": 923,
+            "reasoning_tokens": 33,
+            "raw_provider_tokens": 39680,
+            "weighted_tokens": 18951.0
+          },
+          "treatment_usage": {
+            "fresh_input_tokens": 17519,
+            "cached_input_tokens": 68608,
+            "cache_write_tokens": 0,
+            "output_tokens": 1396,
+            "reasoning_tokens": 521,
+            "raw_provider_tokens": 87523,
+            "weighted_tokens": 32755.8
+          },
+          "raw_delta_tokens": 47843,
+          "raw_delta_percent": 120.57,
+          "weighted_delta": 13804.8,
+          "weighted_delta_percent": 72.84,
+          "accepted_tasks": 3,
+          "task_count": 3,
+          "final_diff_sha256": "5d6a25f93f173a843e15346a9afe4258dac767773a81fa875894bedfe3946dc6",
+          "baseline_final_diff_sha256": "dfe08b58b7703423bac6abf1ea702bd344113c53902e167e0e6c11fab042c17a",
+          "final_diff_byte_identical_to_bare_opencode": false,
+          "manifest_path": "sources/evaluations/workflow-sessions/serena-opencode-beets-20260729-p-fcc8438d2077-r0/manifest.sha256"
+        },
+        {
+          "sequence_id": "terraform-lifecycle-sequence-v0",
+          "baseline_session_id": "v1-terraform-20260729-p-5811b463c1e9-r0",
+          "treatment_session_id": "serena-opencode-terraform-20260729-p-5811b463c1e9-r0",
+          "baseline_usage": {
+            "fresh_input_tokens": 10800,
+            "cached_input_tokens": 28160,
+            "cache_write_tokens": 0,
+            "output_tokens": 827,
+            "reasoning_tokens": 44,
+            "raw_provider_tokens": 39787,
+            "weighted_tokens": 18578.0
+          },
+          "treatment_usage": {
+            "fresh_input_tokens": 18181,
+            "cached_input_tokens": 67584,
+            "cache_write_tokens": 0,
+            "output_tokens": 1189,
+            "reasoning_tokens": 332,
+            "raw_provider_tokens": 86954,
+            "weighted_tokens": 32073.4
+          },
+          "raw_delta_tokens": 47167,
+          "raw_delta_percent": 118.55,
+          "weighted_delta": 13495.4,
+          "weighted_delta_percent": 72.64,
+          "accepted_tasks": 3,
+          "task_count": 3,
+          "final_diff_sha256": "8de3b9342da1e10554687d7e56488426308745b4ce04ad18951d26beb5c90513",
+          "baseline_final_diff_sha256": "615536d0a008a69b9a6dc56ac86c4c17f9cbdea8e05e0b0bed232bfdbe2815ce",
+          "final_diff_byte_identical_to_bare_opencode": false,
+          "manifest_path": "sources/evaluations/workflow-sessions/serena-opencode-terraform-20260729-p-5811b463c1e9-r0/manifest.sha256"
+        }
+      ]
+    },
+    {
+      "profile_id": "terminal-snip-opencode-plugin-v1",
+      "name": "Snip",
+      "session_ids": [
+        "snip-opencode-fastify-20260729-p-bb0e89ed9794-r0",
+        "snip-opencode-beets-20260729-p-fcc8438d2077-r0",
+        "snip-opencode-terraform-20260729-p-5811b463c1e9-r0"
+      ],
+      "usage": {
+        "fresh_input_tokens": 38814,
+        "cached_input_tokens": 118272,
+        "cache_write_tokens": 0,
+        "output_tokens": 4609,
+        "reasoning_tokens": 1180,
+        "raw_provider_tokens": 161695,
+        "weighted_tokens": 78295.2
+      },
+      "contrast_vs_bare_opencode": {
+        "raw_delta_tokens": 39327,
+        "raw_delta_percent": 32.14,
+        "weighted_delta": 18857.4,
+        "weighted_delta_percent": 31.73
+      },
+      "contrast_vs_bare_codex": {
+        "raw_delta_tokens": -90939,
+        "raw_delta_percent": -36.0,
+        "weighted_delta": -20489.0,
+        "weighted_delta_percent": -20.74
+      },
+      "quality": {
+        "accepted_sessions": 3,
+        "session_count": 3,
+        "accepted_tasks": 9,
+        "task_count": 9,
+        "all_final_verifiers_passed": true,
+        "all_tool_isolation_audits_passed": true,
+        "all_final_diffs_byte_identical_to_bare_opencode": true,
+        "changed_scope_degradation": false,
+        "changed_scope_note": "No changed-scope degradation observed; final diff was byte-identical to bare OpenCode in all three workflows."
+      },
+      "natural_uptake": [
+        {
+          "sequence_id": "fastify-lifecycle-sequence-v0",
+          "tool_call_counts": {
+            "apply_patch": 1,
+            "bash": 4
+          },
+          "treatment_surface_calls": [
+            {
+              "tool": "bash",
+              "command_prefix": "snip python3 - <<'PY'\nfrom pathlib import Path\np = Path(\"lib/request.js\")\ns = p."
+            },
+            {
+              "tool": "apply_patch",
+              "command_prefix": ""
+            },
+            {
+              "tool": "bash",
+              "command_prefix": "snip node --test test/baseline-v3-request-media-type.test.js"
+            },
+            {
+              "tool": "bash",
+              "command_prefix": "snip python3 - <<'PY'\nfrom pathlib import Path\np = Path(\"lib/content-type.js\")\ns"
+            },
+            {
+              "tool": "bash",
+              "command_prefix": "snip python3 - <<'PY'\nfrom pathlib import Path\nedits = {\n    \"fastify.js\": [(\"  "
+            }
+          ]
+        },
+        {
+          "sequence_id": "beets-lifecycle-sequence-v0",
+          "tool_call_counts": {
+            "bash": 5
+          },
+          "treatment_surface_calls": [
+            {
+              "tool": "bash",
+              "command_prefix": "snip python3 - <<'PY'\nfrom pathlib import Path\np = Path(\"beets/util/functemplate"
+            },
+            {
+              "tool": "bash",
+              "command_prefix": "snip python3 - <<'PY'\nfrom pathlib import Path\np = Path(\"beets/dbcore/db.py\")\ns "
+            },
+            {
+              "tool": "bash",
+              "command_prefix": "snip uv run --offline --frozen python -c \"from beets.dbcore.db import LazyDict; "
+            },
+            {
+              "tool": "bash",
+              "command_prefix": "snip uv run --offline --frozen python -c $'from beets.dbcore.db import LazyDict\\"
+            },
+            {
+              "tool": "bash",
+              "command_prefix": "snip python3 - <<'PY'\nfrom pathlib import Path\np = Path(\"beetsplug/ftintitle.py\""
+            }
+          ]
+        },
+        {
+          "sequence_id": "terraform-lifecycle-sequence-v0",
+          "tool_call_counts": {
+            "bash": 3
+          },
+          "treatment_surface_calls": []
+        }
+      ],
+      "lane_results": [
+        {
+          "sequence_id": "fastify-lifecycle-sequence-v0",
+          "baseline_session_id": "v1-fastify-20260729-p-bb0e89ed9794-r0",
+          "treatment_session_id": "snip-opencode-fastify-20260729-p-bb0e89ed9794-r0",
+          "baseline_usage": {
+            "fresh_input_tokens": 11454,
+            "cached_input_tokens": 30208,
+            "cache_write_tokens": 0,
+            "output_tokens": 1239,
+            "reasoning_tokens": 55,
+            "raw_provider_tokens": 42901,
+            "weighted_tokens": 21908.8
+          },
+          "treatment_usage": {
+            "fresh_input_tokens": 14599,
+            "cached_input_tokens": 45568,
+            "cache_write_tokens": 0,
+            "output_tokens": 1661,
+            "reasoning_tokens": 280,
+            "raw_provider_tokens": 61828,
+            "weighted_tokens": 29121.8
+          },
+          "raw_delta_tokens": 18927,
+          "raw_delta_percent": 44.12,
+          "weighted_delta": 7213.0,
+          "weighted_delta_percent": 32.92,
+          "accepted_tasks": 3,
+          "task_count": 3,
+          "final_diff_sha256": "acb36f8f1296ad42b67866cc22b17d78ef44d79d37473db5152a50c8b9b58e7d",
+          "baseline_final_diff_sha256": "acb36f8f1296ad42b67866cc22b17d78ef44d79d37473db5152a50c8b9b58e7d",
+          "final_diff_byte_identical_to_bare_opencode": true,
+          "manifest_path": "sources/evaluations/workflow-sessions/snip-opencode-fastify-20260729-p-bb0e89ed9794-r0/manifest.sha256"
+        },
+        {
+          "sequence_id": "beets-lifecycle-sequence-v0",
+          "baseline_session_id": "v1-beets-20260729-p-fcc8438d2077-r0",
+          "treatment_session_id": "snip-opencode-beets-20260729-p-fcc8438d2077-r0",
+          "baseline_usage": {
+            "fresh_input_tokens": 10597,
+            "cached_input_tokens": 28160,
+            "cache_write_tokens": 0,
+            "output_tokens": 923,
+            "reasoning_tokens": 33,
+            "raw_provider_tokens": 39680,
+            "weighted_tokens": 18951.0
+          },
+          "treatment_usage": {
+            "fresh_input_tokens": 12902,
+            "cached_input_tokens": 44544,
+            "cache_write_tokens": 0,
+            "output_tokens": 2058,
+            "reasoning_tokens": 856,
+            "raw_provider_tokens": 59504,
+            "weighted_tokens": 29704.4
+          },
+          "raw_delta_tokens": 19824,
+          "raw_delta_percent": 49.96,
+          "weighted_delta": 10753.4,
+          "weighted_delta_percent": 56.74,
+          "accepted_tasks": 3,
+          "task_count": 3,
+          "final_diff_sha256": "dfe08b58b7703423bac6abf1ea702bd344113c53902e167e0e6c11fab042c17a",
+          "baseline_final_diff_sha256": "dfe08b58b7703423bac6abf1ea702bd344113c53902e167e0e6c11fab042c17a",
+          "final_diff_byte_identical_to_bare_opencode": true,
+          "manifest_path": "sources/evaluations/workflow-sessions/snip-opencode-beets-20260729-p-fcc8438d2077-r0/manifest.sha256"
+        },
+        {
+          "sequence_id": "terraform-lifecycle-sequence-v0",
+          "baseline_session_id": "v1-terraform-20260729-p-5811b463c1e9-r0",
+          "treatment_session_id": "snip-opencode-terraform-20260729-p-5811b463c1e9-r0",
+          "baseline_usage": {
+            "fresh_input_tokens": 10800,
+            "cached_input_tokens": 28160,
+            "cache_write_tokens": 0,
+            "output_tokens": 827,
+            "reasoning_tokens": 44,
+            "raw_provider_tokens": 39787,
+            "weighted_tokens": 18578.0
+          },
+          "treatment_usage": {
+            "fresh_input_tokens": 11313,
+            "cached_input_tokens": 28160,
+            "cache_write_tokens": 0,
+            "output_tokens": 890,
+            "reasoning_tokens": 44,
+            "raw_provider_tokens": 40363,
+            "weighted_tokens": 19469.0
+          },
+          "raw_delta_tokens": 576,
+          "raw_delta_percent": 1.45,
+          "weighted_delta": 891.0,
+          "weighted_delta_percent": 4.8,
+          "accepted_tasks": 3,
+          "task_count": 3,
+          "final_diff_sha256": "615536d0a008a69b9a6dc56ac86c4c17f9cbdea8e05e0b0bed232bfdbe2815ce",
+          "baseline_final_diff_sha256": "615536d0a008a69b9a6dc56ac86c4c17f9cbdea8e05e0b0bed232bfdbe2815ce",
+          "final_diff_byte_identical_to_bare_opencode": true,
+          "manifest_path": "sources/evaluations/workflow-sessions/snip-opencode-terraform-20260729-p-5811b463c1e9-r0/manifest.sha256"
+        }
+      ]
+    },
+    {
+      "profile_id": "retrieval-cartog-opencode-product-v1",
+      "name": "Cartog",
+      "session_ids": [
+        "cartog-opencode-fastify-20260729-p-bb0e89ed9794-r0",
+        "cartog-opencode-beets-20260729-p-fcc8438d2077-r0",
+        "cartog-opencode-terraform-20260729-p-5811b463c1e9-r0"
+      ],
+      "usage": {
+        "fresh_input_tokens": 39553,
+        "cached_input_tokens": 126464,
+        "cache_write_tokens": 0,
+        "output_tokens": 2979,
+        "reasoning_tokens": 87,
+        "raw_provider_tokens": 168996,
+        "weighted_tokens": 70073.4
+      },
+      "contrast_vs_bare_opencode": {
+        "raw_delta_tokens": 46628,
+        "raw_delta_percent": 38.1,
+        "weighted_delta": 10635.6,
+        "weighted_delta_percent": 17.89
+      },
+      "contrast_vs_bare_codex": {
+        "raw_delta_tokens": -83638,
+        "raw_delta_percent": -33.11,
+        "weighted_delta": -28710.8,
+        "weighted_delta_percent": -29.06
+      },
+      "quality": {
+        "accepted_sessions": 3,
+        "session_count": 3,
+        "accepted_tasks": 9,
+        "task_count": 9,
+        "all_final_verifiers_passed": true,
+        "all_tool_isolation_audits_passed": true,
+        "all_final_diffs_byte_identical_to_bare_opencode": true,
+        "changed_scope_degradation": false,
+        "changed_scope_note": "No changed-scope degradation observed; final diff was byte-identical to bare OpenCode in all three workflows."
+      },
+      "natural_uptake": [
+        {
+          "sequence_id": "fastify-lifecycle-sequence-v0",
+          "tool_call_counts": {
+            "bash": 3
+          },
+          "treatment_surface_calls": []
+        },
+        {
+          "sequence_id": "beets-lifecycle-sequence-v0",
+          "tool_call_counts": {
+            "bash": 3
+          },
+          "treatment_surface_calls": []
+        },
+        {
+          "sequence_id": "terraform-lifecycle-sequence-v0",
+          "tool_call_counts": {
+            "bash": 3
+          },
+          "treatment_surface_calls": []
+        }
+      ],
+      "lane_results": [
+        {
+          "sequence_id": "fastify-lifecycle-sequence-v0",
+          "baseline_session_id": "v1-fastify-20260729-p-bb0e89ed9794-r0",
+          "treatment_session_id": "cartog-opencode-fastify-20260729-p-bb0e89ed9794-r0",
+          "baseline_usage": {
+            "fresh_input_tokens": 11454,
+            "cached_input_tokens": 30208,
+            "cache_write_tokens": 0,
+            "output_tokens": 1239,
+            "reasoning_tokens": 55,
+            "raw_provider_tokens": 42901,
+            "weighted_tokens": 21908.8
+          },
+          "treatment_usage": {
+            "fresh_input_tokens": 14607,
+            "cached_input_tokens": 42496,
+            "cache_write_tokens": 0,
+            "output_tokens": 1182,
+            "reasoning_tokens": 54,
+            "raw_provider_tokens": 58285,
+            "weighted_tokens": 25948.6
+          },
+          "raw_delta_tokens": 15384,
+          "raw_delta_percent": 35.86,
+          "weighted_delta": 4039.8,
+          "weighted_delta_percent": 18.44,
+          "accepted_tasks": 3,
+          "task_count": 3,
+          "final_diff_sha256": "acb36f8f1296ad42b67866cc22b17d78ef44d79d37473db5152a50c8b9b58e7d",
+          "baseline_final_diff_sha256": "acb36f8f1296ad42b67866cc22b17d78ef44d79d37473db5152a50c8b9b58e7d",
+          "final_diff_byte_identical_to_bare_opencode": true,
+          "manifest_path": "sources/evaluations/workflow-sessions/cartog-opencode-fastify-20260729-p-bb0e89ed9794-r0/manifest.sha256"
+        },
+        {
+          "sequence_id": "beets-lifecycle-sequence-v0",
+          "baseline_session_id": "v1-beets-20260729-p-fcc8438d2077-r0",
+          "treatment_session_id": "cartog-opencode-beets-20260729-p-fcc8438d2077-r0",
+          "baseline_usage": {
+            "fresh_input_tokens": 10597,
+            "cached_input_tokens": 28160,
+            "cache_write_tokens": 0,
+            "output_tokens": 923,
+            "reasoning_tokens": 33,
+            "raw_provider_tokens": 39680,
+            "weighted_tokens": 18951.0
+          },
+          "treatment_usage": {
+            "fresh_input_tokens": 12775,
+            "cached_input_tokens": 41472,
+            "cache_write_tokens": 0,
+            "output_tokens": 916,
+            "reasoning_tokens": 0,
+            "raw_provider_tokens": 55163,
+            "weighted_tokens": 22418.2
+          },
+          "raw_delta_tokens": 15483,
+          "raw_delta_percent": 39.02,
+          "weighted_delta": 3467.2,
+          "weighted_delta_percent": 18.3,
+          "accepted_tasks": 3,
+          "task_count": 3,
+          "final_diff_sha256": "dfe08b58b7703423bac6abf1ea702bd344113c53902e167e0e6c11fab042c17a",
+          "baseline_final_diff_sha256": "dfe08b58b7703423bac6abf1ea702bd344113c53902e167e0e6c11fab042c17a",
+          "final_diff_byte_identical_to_bare_opencode": true,
+          "manifest_path": "sources/evaluations/workflow-sessions/cartog-opencode-beets-20260729-p-fcc8438d2077-r0/manifest.sha256"
+        },
+        {
+          "sequence_id": "terraform-lifecycle-sequence-v0",
+          "baseline_session_id": "v1-terraform-20260729-p-5811b463c1e9-r0",
+          "treatment_session_id": "cartog-opencode-terraform-20260729-p-5811b463c1e9-r0",
+          "baseline_usage": {
+            "fresh_input_tokens": 10800,
+            "cached_input_tokens": 28160,
+            "cache_write_tokens": 0,
+            "output_tokens": 827,
+            "reasoning_tokens": 44,
+            "raw_provider_tokens": 39787,
+            "weighted_tokens": 18578.0
+          },
+          "treatment_usage": {
+            "fresh_input_tokens": 12171,
+            "cached_input_tokens": 42496,
+            "cache_write_tokens": 0,
+            "output_tokens": 881,
+            "reasoning_tokens": 33,
+            "raw_provider_tokens": 55548,
+            "weighted_tokens": 21706.6
+          },
+          "raw_delta_tokens": 15761,
+          "raw_delta_percent": 39.61,
+          "weighted_delta": 3128.6,
+          "weighted_delta_percent": 16.84,
+          "accepted_tasks": 3,
+          "task_count": 3,
+          "final_diff_sha256": "615536d0a008a69b9a6dc56ac86c4c17f9cbdea8e05e0b0bed232bfdbe2815ce",
+          "baseline_final_diff_sha256": "615536d0a008a69b9a6dc56ac86c4c17f9cbdea8e05e0b0bed232bfdbe2815ce",
+          "final_diff_byte_identical_to_bare_opencode": true,
+          "manifest_path": "sources/evaluations/workflow-sessions/cartog-opencode-terraform-20260729-p-5811b463c1e9-r0/manifest.sha256"
+        }
+      ]
+    },
+    {
+      "profile_id": "integrated-headroom-opencode-product-v2",
+      "name": "Headroom",
+      "session_ids": [
+        "headroom-opencode-v2-fastify-20260729-p-bb0e89ed9794-r0",
+        "headroom-opencode-v2-beets-20260729-p-fcc8438d2077-r0",
+        "headroom-opencode-v2-terraform-20260729-p-5811b463c1e9-r0"
+      ],
+      "usage": {
+        "fresh_input_tokens": 48067,
+        "cached_input_tokens": 106496,
+        "cache_write_tokens": 0,
+        "output_tokens": 3346,
+        "reasoning_tokens": 406,
+        "raw_provider_tokens": 157909,
+        "weighted_tokens": 78792.6
+      },
+      "contrast_vs_bare_opencode": {
+        "raw_delta_tokens": 35541,
+        "raw_delta_percent": 29.04,
+        "weighted_delta": 19354.8,
+        "weighted_delta_percent": 32.56
+      },
+      "contrast_vs_bare_codex": {
+        "raw_delta_tokens": -94725,
+        "raw_delta_percent": -37.49,
+        "weighted_delta": -19991.6,
+        "weighted_delta_percent": -20.24
+      },
+      "quality": {
+        "accepted_sessions": 3,
+        "session_count": 3,
+        "accepted_tasks": 9,
+        "task_count": 9,
+        "all_final_verifiers_passed": true,
+        "all_tool_isolation_audits_passed": true,
+        "all_final_diffs_byte_identical_to_bare_opencode": true,
+        "changed_scope_degradation": false,
+        "changed_scope_note": "No changed-scope degradation observed; final diff was byte-identical to bare OpenCode in all three workflows."
+      },
+      "natural_uptake": [
+        {
+          "sequence_id": "fastify-lifecycle-sequence-v0",
+          "tool_call_counts": {
+            "bash": 3
+          },
+          "treatment_surface_calls": [
+            {
+              "tool": "bash",
+              "command_prefix": "rtk proxy python3 - <<'PY'\nfrom pathlib import Path\np = Path(\"lib/request.js\")\ns"
+            },
+            {
+              "tool": "bash",
+              "command_prefix": "rtk proxy python3 - <<'PY'\nfrom pathlib import Path\np = Path(\"lib/content-type.j"
+            },
+            {
+              "tool": "bash",
+              "command_prefix": "rtk proxy python3 - <<'PY'\nfrom pathlib import Path\nedits = {\n    \"fastify.js\": "
+            }
+          ]
+        },
+        {
+          "sequence_id": "beets-lifecycle-sequence-v0",
+          "tool_call_counts": {
+            "bash": 3
+          },
+          "treatment_surface_calls": []
+        },
+        {
+          "sequence_id": "terraform-lifecycle-sequence-v0",
+          "tool_call_counts": {
+            "bash": 3
+          },
+          "treatment_surface_calls": []
+        }
+      ],
+      "lane_results": [
+        {
+          "sequence_id": "fastify-lifecycle-sequence-v0",
+          "baseline_session_id": "v1-fastify-20260729-p-bb0e89ed9794-r0",
+          "treatment_session_id": "headroom-opencode-v2-fastify-20260729-p-bb0e89ed9794-r0",
+          "baseline_usage": {
+            "fresh_input_tokens": 11454,
+            "cached_input_tokens": 30208,
+            "cache_write_tokens": 0,
+            "output_tokens": 1239,
+            "reasoning_tokens": 55,
+            "raw_provider_tokens": 42901,
+            "weighted_tokens": 21908.8
+          },
+          "treatment_usage": {
+            "fresh_input_tokens": 13389,
+            "cached_input_tokens": 40448,
+            "cache_write_tokens": 0,
+            "output_tokens": 1423,
+            "reasoning_tokens": 272,
+            "raw_provider_tokens": 55260,
+            "weighted_tokens": 25971.8
+          },
+          "raw_delta_tokens": 12359,
+          "raw_delta_percent": 28.81,
+          "weighted_delta": 4063.0,
+          "weighted_delta_percent": 18.55,
+          "accepted_tasks": 3,
+          "task_count": 3,
+          "final_diff_sha256": "acb36f8f1296ad42b67866cc22b17d78ef44d79d37473db5152a50c8b9b58e7d",
+          "baseline_final_diff_sha256": "acb36f8f1296ad42b67866cc22b17d78ef44d79d37473db5152a50c8b9b58e7d",
+          "final_diff_byte_identical_to_bare_opencode": true,
+          "manifest_path": "sources/evaluations/workflow-sessions/headroom-opencode-v2-fastify-20260729-p-bb0e89ed9794-r0/manifest.sha256"
+        },
+        {
+          "sequence_id": "beets-lifecycle-sequence-v0",
+          "baseline_session_id": "v1-beets-20260729-p-fcc8438d2077-r0",
+          "treatment_session_id": "headroom-opencode-v2-beets-20260729-p-fcc8438d2077-r0",
+          "baseline_usage": {
+            "fresh_input_tokens": 10597,
+            "cached_input_tokens": 28160,
+            "cache_write_tokens": 0,
+            "output_tokens": 923,
+            "reasoning_tokens": 33,
+            "raw_provider_tokens": 39680,
+            "weighted_tokens": 18951.0
+          },
+          "treatment_usage": {
+            "fresh_input_tokens": 21579,
+            "cached_input_tokens": 28672,
+            "cache_write_tokens": 0,
+            "output_tokens": 1001,
+            "reasoning_tokens": 76,
+            "raw_provider_tokens": 51252,
+            "weighted_tokens": 30452.2
+          },
+          "raw_delta_tokens": 11572,
+          "raw_delta_percent": 29.16,
+          "weighted_delta": 11501.2,
+          "weighted_delta_percent": 60.69,
+          "accepted_tasks": 3,
+          "task_count": 3,
+          "final_diff_sha256": "dfe08b58b7703423bac6abf1ea702bd344113c53902e167e0e6c11fab042c17a",
+          "baseline_final_diff_sha256": "dfe08b58b7703423bac6abf1ea702bd344113c53902e167e0e6c11fab042c17a",
+          "final_diff_byte_identical_to_bare_opencode": true,
+          "manifest_path": "sources/evaluations/workflow-sessions/headroom-opencode-v2-beets-20260729-p-fcc8438d2077-r0/manifest.sha256"
+        },
+        {
+          "sequence_id": "terraform-lifecycle-sequence-v0",
+          "baseline_session_id": "v1-terraform-20260729-p-5811b463c1e9-r0",
+          "treatment_session_id": "headroom-opencode-v2-terraform-20260729-p-5811b463c1e9-r0",
+          "baseline_usage": {
+            "fresh_input_tokens": 10800,
+            "cached_input_tokens": 28160,
+            "cache_write_tokens": 0,
+            "output_tokens": 827,
+            "reasoning_tokens": 44,
+            "raw_provider_tokens": 39787,
+            "weighted_tokens": 18578.0
+          },
+          "treatment_usage": {
+            "fresh_input_tokens": 13099,
+            "cached_input_tokens": 37376,
+            "cache_write_tokens": 0,
+            "output_tokens": 922,
+            "reasoning_tokens": 58,
+            "raw_provider_tokens": 51397,
+            "weighted_tokens": 22368.6
+          },
+          "raw_delta_tokens": 11610,
+          "raw_delta_percent": 29.18,
+          "weighted_delta": 3790.6,
+          "weighted_delta_percent": 20.4,
+          "accepted_tasks": 3,
+          "task_count": 3,
+          "final_diff_sha256": "615536d0a008a69b9a6dc56ac86c4c17f9cbdea8e05e0b0bed232bfdbe2815ce",
+          "baseline_final_diff_sha256": "615536d0a008a69b9a6dc56ac86c4c17f9cbdea8e05e0b0bed232bfdbe2815ce",
+          "final_diff_byte_identical_to_bare_opencode": true,
+          "manifest_path": "sources/evaluations/workflow-sessions/headroom-opencode-v2-terraform-20260729-p-5811b463c1e9-r0/manifest.sha256"
+        }
+      ]
+    }
+  ],
+  "ranking_vs_bare_opencode_weighted": [
+    {
+      "rank": 1,
+      "profile_id": "terminal-tokenjuice-opencode-plugin-v1",
+      "name": "TokenJuice",
+      "weighted_delta_percent": 3.54,
+      "raw_delta_percent": 1.31
+    },
+    {
+      "rank": 2,
+      "profile_id": "retrieval-cartog-opencode-product-v1",
+      "name": "Cartog",
+      "weighted_delta_percent": 17.89,
+      "raw_delta_percent": 38.1
+    },
+    {
+      "rank": 3,
+      "profile_id": "terminal-snip-opencode-plugin-v1",
+      "name": "Snip",
+      "weighted_delta_percent": 31.73,
+      "raw_delta_percent": 32.14
+    },
+    {
+      "rank": 4,
+      "profile_id": "integrated-headroom-opencode-product-v2",
+      "name": "Headroom",
+      "weighted_delta_percent": 32.56,
+      "raw_delta_percent": 29.04
+    },
+    {
+      "rank": 5,
+      "profile_id": "retrieval-serena-opencode-mcp-v1",
+      "name": "Serena",
+      "weighted_delta_percent": 65.63,
+      "raw_delta_percent": 115.44
+    }
+  ],
+  "invalid_or_nonprovider_attempts": [
+    {
+      "profile_id": "integrated-headroom-opencode-product-v1",
+      "sequence_id": "fastify-lifecycle-sequence-v0",
+      "stage": "strict-ingress",
+      "provider_backed": true,
+      "accepted": false,
+      "reason": "Headroom product setup lines entered the adapter stderr evidence stream, producing non-provider usage warnings; superseded by separately frozen v2 normalization.",
+      "retained_receipt": "/opt/data/eval-workflow-lanes/opencode-headroom-sol-high-r0/workflow-matrix-20260729T142408388180Z-p830258-r0/fastify-lifecycle-sequence-v0--integrated-headroom-opencode-product-v1/checkout/sources/evaluations/workflow-sessions/headroom-opencode-fastify-20260729-p-bb0e89ed9794-r0.strict-ingress-rejection.json"
+    },
+    {
+      "profile_id": "integrated-headroom-opencode-product-v2",
+      "sequence_id": "beets-lifecycle-sequence-v0",
+      "stage": "provider-free-preflight",
+      "provider_backed": false,
+      "accepted": false,
+      "reason": "Lane retention reset the pinned executable mode before the next combined lane; exact declared mode was restored and Beets/Terraform ran as separate certified lanes.",
+      "retained_receipt": "/opt/data/eval-workflow-lanes/opencode-headroom-v2-sol-high-r0/workflow-matrix-20260729T145819846799Z-p918752-r0/beets-lifecycle-sequence-v0--integrated-headroom-opencode-product-v2/rejected-evidence/headroom-opencode-v2-beets-20260729-p-fcc8438d2077-r0/rejection.json"
+    },
+    {
+      "profile_id": "terminal-tokenjuice-opencode-plugin-v1",
+      "stage": "publication-only",
+      "provider_backed": false,
+      "accepted": false,
+      "reason": "Initial merge rolled back because the generated current-panel source-registry checksum was stale; paid lane outputs were recovered transactionally without provider rerun.",
+      "retained_receipt": "/opt/data/eval-workflow-lanes/opencode-tokenjuice-sol-high-r0-v2/workflow-matrix-20260729T132316141913Z-p744406-r0/recovery-summary-v3.json"
+    }
+  ],
+  "interpretation": {
+    "result": "No evaluated OpenCode treatment reduced aggregate raw or weighted tokens versus bare OpenCode. TokenJuice was closest to neutral; all other treatments materially increased both metrics.",
+    "quality": "All 15 valid sessions and 45 tasks passed. Twelve final patches were byte-identical to their matched bare OpenCode patches; all three Serena lanes additionally generated .serena project configuration, which is counted as a changed-scope quality degradation.",
+    "uptake_caveat": "Natural uptake varied: Serena made one initial-instructions call per workflow; Cartog made no MCP calls; Snip wrapped shell commands in Fastify and Beets but not Terraform; Headroom used RTK wrapping in Fastify but not Beets or Terraform; TokenJuice is an automatic plugin and made no explicit model tool calls.",
+    "inference_limit": "One compatible replicate per workflow. Results are screening evidence, not a population estimate or deployment recommendation."
+  },
+  "aggregate_quality": {
+    "accepted_sessions": 15,
+    "session_count": 15,
+    "accepted_tasks": 45,
+    "task_count": 45,
+    "all_final_verifiers_passed": true,
+    "byte_identical_sessions_vs_bare_opencode": 12,
+    "non_byte_identical_sessions": 3,
+    "changed_scope_degradation_profiles": [
+      "retrieval-serena-opencode-mcp-v1"
+    ]
+  }
+}
