@@ -437,6 +437,25 @@ class ActiveCampaignArchitectureTest(unittest.TestCase):
             runbook,
         )
 
+    def test_runbook_reports_completed_opencode_treatment_screen(self) -> None:
+        runbook = (ROOT / "docs/evaluations/operations/runbook.md").read_text()
+        self.assertIn("Completed non-default OpenCode treatment screen", runbook)
+        self.assertIn(
+            "`sources/evaluations/audits/opencode-tool-treatments-sol-high-r0-screen-results-20260729.json`",
+            runbook,
+        )
+        for profile_id in (
+            "terminal-tokenjuice-opencode-plugin-v1",
+            "retrieval-serena-opencode-mcp-v1",
+            "terminal-snip-opencode-plugin-v1",
+            "retrieval-cartog-opencode-product-v1",
+            "integrated-headroom-opencode-product-v2",
+        ):
+            self.assertIn(f"`{profile_id}`", runbook)
+        self.assertIn("No current active-default treatment protocol is frozen", runbook)
+        self.assertNotIn("No current treatment protocol is frozen", runbook)
+        self.assertIn("OpenCode pools may define substrate-matched treatment reuse", runbook)
+
     def test_model_comparison_baseline_pools_are_rendered_separately(self) -> None:
         runbook = (ROOT / "docs/evaluations/operations/runbook.md").read_text()
         registry = json.loads((ROOT / "data/workflow-sessions.json").read_text())
@@ -487,6 +506,19 @@ class ActiveCampaignArchitectureTest(unittest.TestCase):
         fixtures = json.loads((ROOT / "data/repository-fixtures.json").read_text())["fixtures"]
         self.assertTrue(fixtures)
         self.assertTrue(all(item["status"] == "treatment-ready" for item in fixtures), fixtures)
+
+    def test_active_docs_surface_completed_opencode_screen(self) -> None:
+        audit_name = "opencode-tool-treatments-sol-high-r0-screen-results-20260729.json"
+        for relative in (
+            "README.md",
+            "docs/evaluations/README.md",
+            "docs/research/roadmap.md",
+            "docs/truthmark/engineering/research/current-findings.md",
+        ):
+            text = (ROOT / relative).read_text()
+            self.assertIn("122,368", text, relative)
+            self.assertIn("TokenJuice", text, relative)
+            self.assertIn(audit_name, text, relative)
 
     def test_agent_guidance_requires_evidence_driven_document_sync(self) -> None:
         guidance = (ROOT / "AGENTS.md").read_text()

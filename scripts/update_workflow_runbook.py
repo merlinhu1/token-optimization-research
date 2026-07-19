@@ -18,6 +18,10 @@ FIXTURES = ROOT / "data" / "repository-fixtures.json"
 SESSIONS = ROOT / "data" / "workflow-sessions.json"
 PROFILES = ROOT / "data" / "evaluation-profiles.json"
 AGENT_RUNTIMES = ROOT / "data" / "evaluation-agent-runtimes.json"
+OPENCODE_TREATMENT_SCREEN_AUDIT = (
+    "sources/evaluations/audits/"
+    "opencode-tool-treatments-sol-high-r0-screen-results-20260729.json"
+)
 ARTIFACT_FILES = ("run.json", "changes.diff", "evidence.jsonl.gz", "manifest.sha256")
 
 
@@ -131,12 +135,34 @@ def render() -> str:
             f"found {active_default_condition_ids}"
         )
     active_default_condition_id = active_default_condition_ids[0]
+    profile_records = load_json(PROFILES).get("profiles", [])
     runnable_profiles = sorted(
         profile["id"]
-        for profile in load_json(PROFILES).get("profiles", [])
+        for profile in profile_records
         if profile.get("status") == "screening-shortlist"
     )
     runnable_profile_text = ", ".join(f"`{profile_id}`" for profile_id in runnable_profiles) or "_None_"
+    active_sequence_ids = {str(sequence["id"]) for sequence in sequences}
+    completed_opencode_profiles: list[str] = []
+    for profile in profile_records:
+        profile_id = profile.get("id")
+        if not (
+            isinstance(profile_id, str)
+            and profile.get("status") == "screening-ablation"
+            and profile.get("substrate") == "opencode-cli"
+        ):
+            continue
+        completed_sequences = {
+            str(session.get("task_sequence", {}).get("sequence_id"))
+            for session in session_records
+            if session.get("status") == "completed"
+            and session.get("session_role") == "individual_tool_treatment"
+            and session.get("profile", {}).get("profile_id") == profile_id
+            and session.get("replicate_index") == 0
+            and session.get("interpretation", {}).get("accepted_for_objective") is True
+        }
+        if completed_sequences == active_sequence_ids:
+            completed_opencode_profiles.append(profile_id)
     current_default_pool_fingerprints = {}
     for sequence in sequences:
         gate = sequence.get("mistake_gate")
@@ -192,6 +218,17 @@ def render() -> str:
         chunks.append(
             f"Current runnable treatment profiles: {runnable_profile_text}. Historical profiles marked `historical-profile` are occupied evidence identities and cannot be rerun in place."
         )
+        if completed_opencode_profiles:
+            completed_profile_text = ", ".join(
+                f"`{profile_id}`" for profile_id in sorted(completed_opencode_profiles)
+            )
+            chunks.append(
+                "Completed non-default OpenCode treatment screen: "
+                f"{completed_profile_text}. Each profile has one accepted r0 session on every "
+                "active lifecycle-v0 sequence and is occupied evidence, not a runnable replacement "
+                "for the active-default Codex profiles. See "
+                f"`{OPENCODE_TREATMENT_SCREEN_AUDIT}`."
+            )
         blocked_gates = []
         pilot_run_states: dict[str, tuple[bool, str]] = {}
         for sequence in sequences:
@@ -283,7 +320,7 @@ def render() -> str:
                         f"python3 scripts/run_sequential_workflow_matrix.py \"$SEQUENCE_ID\" --treatment-profile \"$PROFILE_ID\" {flags} --dry-run"
                     )
                 chunks.append(
-                    f"Reusable, zero-incident-audited baselines exist for {retained_ids}. No current treatment protocol is frozen, so no paid treatment command is published. Choose one compatible profile, freeze and validate its protocol provider-free, certify the resulting exact tree, and then execute the rendered dry-run verbatim before requesting paid execution:\n\n"
+                    f"Reusable, zero-incident-audited baselines exist for {retained_ids}. No current active-default treatment protocol is frozen, so no paid treatment command is published. Choose one compatible profile, freeze and validate its protocol provider-free, certify the resulting exact tree, and then execute the rendered dry-run verbatim before requesting paid execution:\n\n"
                     f"```bash\n{'\n\n'.join(freeze_blocks)}\n```"
                 )
         if historical_default_baseline_replicates:
@@ -309,7 +346,8 @@ def render() -> str:
             chunks.append(
                 "Non-default model-comparison baselines are tracked separately: "
                 f"{comparison_ids}. They do not satisfy active-default baseline requirements "
-                "or define treatment-pair reuse."
+                "or define active-default treatment-pair reuse. OpenCode pools may define "
+                "substrate-matched treatment reuse under their own frozen protocols."
             )
         chunks.append(
             "Retain the first operationally valid provider sample for each protocol and replicate. Stop only when a sample is fixture-invalid or operationally incomplete; verifier and review outcomes are diagnostic."
