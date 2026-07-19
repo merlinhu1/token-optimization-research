@@ -2123,7 +2123,7 @@
       "artifact_slug": "tokenjuice-opencode",
       "profile_type": "individual_tool",
       "objective_scope": "individual_tool_effectiveness",
-      "status": "screening-ablation",
+      "status": "excluded",
       "substrate": "opencode-cli",
       "enabled_surfaces": [
         "opencode-tool-execute-after",
@@ -2167,7 +2167,13 @@
         "runtime_adapter": "/opt/data/tool-candidates/opencode-adapter/opencode_workflow_adapter.py",
         "runtime_adapter_sha256": "a2f6116cae013d39e8110c8588acde2a8ae9cd4f572fd9ce961d1542942617a4"
       },
-      "notes": "Atomic OpenCode-native TokenJuice treatment compared with the accepted bare OpenCode runtime on identical lifecycle workflows."
+      "notes": "Atomic OpenCode-native TokenJuice treatment compared with the accepted bare OpenCode runtime on identical lifecycle workflows.",
+      "blocked_reason": "unproven-artifact-identity-and-runtime-effect",
+      "historical_results_deleted": true,
+      "deletion_receipt": "sources/evaluations/audits/invalid-opencode-treatment-result-deletions-20260729.json",
+      "historical_result_disposition": "deleted-invalid-or-unproven-treatment",
+      "active_corpus_result": "deleted-under-owner-authorized-receipt",
+      "superseded_by": "terminal-tokenjuice-opencode-plugin-v2"
     },
     {
       "id": "retrieval-serena-opencode-mcp-v1",
@@ -2224,7 +2230,7 @@
       "artifact_slug": "snip-opencode",
       "profile_type": "individual_tool",
       "objective_scope": "individual_tool_effectiveness",
-      "status": "screening-ablation",
+      "status": "excluded",
       "substrate": "opencode-cli",
       "enabled_surfaces": [
         "opencode-tool-execute-before",
@@ -2268,14 +2274,20 @@
         "runtime_adapter": "/opt/data/tool-candidates/opencode-adapter/opencode_workflow_adapter.py",
         "runtime_adapter_sha256": "a2f6116cae013d39e8110c8588acde2a8ae9cd4f572fd9ce961d1542942617a4"
       },
-      "notes": "Atomic OpenCode-native pre-tool command-rewriting treatment compared with bare OpenCode."
+      "notes": "Atomic OpenCode-native pre-tool command-rewriting treatment compared with bare OpenCode.",
+      "blocked_reason": "unproven-cli-artifact-identity",
+      "historical_results_deleted": true,
+      "deletion_receipt": "sources/evaluations/audits/invalid-opencode-treatment-result-deletions-20260729.json",
+      "historical_result_disposition": "deleted-invalid-or-unproven-treatment",
+      "active_corpus_result": "deleted-under-owner-authorized-receipt",
+      "superseded_by": "terminal-snip-opencode-plugin-v2"
     },
     {
       "id": "retrieval-cartog-opencode-product-v1",
       "artifact_slug": "cartog-opencode",
       "profile_type": "individual_tool",
       "objective_scope": "individual_tool_effectiveness",
-      "status": "screening-ablation",
+      "status": "excluded",
       "substrate": "opencode-cli",
       "enabled_surfaces": [
         "structural-retrieval",
@@ -2320,7 +2332,13 @@
         "runtime_adapter": "/opt/data/tool-candidates/opencode-adapter/opencode_workflow_adapter.py",
         "runtime_adapter_sha256": "a2f6116cae013d39e8110c8588acde2a8ae9cd4f572fd9ce961d1542942617a4"
       },
-      "notes": "Atomic Cartog OpenCode product treatment compared with bare OpenCode; optional vector reranker remains disabled."
+      "notes": "Atomic Cartog OpenCode product treatment compared with bare OpenCode; optional vector reranker remains disabled.",
+      "blocked_reason": "invalid-missing-warm-index-and-product-guidance",
+      "historical_results_deleted": true,
+      "deletion_receipt": "sources/evaluations/audits/invalid-opencode-treatment-result-deletions-20260729.json",
+      "historical_result_disposition": "deleted-invalid-or-unproven-treatment",
+      "active_corpus_result": "deleted-under-owner-authorized-receipt",
+      "superseded_by": "retrieval-cartog-opencode-product-v2"
     },
     {
       "id": "integrated-headroom-opencode-product-v1",
@@ -2380,7 +2398,7 @@
       "artifact_slug": "headroom-opencode-v2",
       "profile_type": "individual_tool",
       "objective_scope": "individual_tool_effectiveness",
-      "status": "screening-ablation",
+      "status": "excluded",
       "substrate": "opencode-cli",
       "enabled_surfaces": [
         "headroom-proxy-context-compression",
@@ -2429,7 +2447,233 @@
       },
       "notes": "Integrated product treatment, not a single-mechanism proxy ablation. Attribution is to the documented Headroom OpenCode bundle as a whole.",
       "readiness_blockers": [],
-      "name": "Headroom OpenCode integrated product V2"
+      "name": "Headroom OpenCode integrated product V2",
+      "blocked_reason": "invalid-incomplete-wrapper-proxy-and-companion-activation",
+      "historical_results_deleted": true,
+      "deletion_receipt": "sources/evaluations/audits/invalid-opencode-treatment-result-deletions-20260729.json",
+      "historical_result_disposition": "deleted-invalid-or-unproven-treatment",
+      "active_corpus_result": "deleted-under-owner-authorized-receipt",
+      "superseded_by": "integrated-headroom-opencode-product-v3"
+    },
+    {
+      "id": "terminal-tokenjuice-opencode-plugin-v2",
+      "artifact_slug": "tokenjuice-opencode-v2",
+      "profile_type": "individual_tool",
+      "objective_scope": "individual_tool_effectiveness",
+      "status": "screening-ablation",
+      "substrate": "opencode-cli",
+      "enabled_surfaces": [
+        "opencode-tool-execute-after",
+        "terminal-output-compaction"
+      ],
+      "disabled_overlaps": [
+        "all unlisted surfaces"
+      ],
+      "components": [
+        {
+          "component_id": "terminal-tokenjuice-opencode-plugin-v2",
+          "surface": "opencode-tool-execute-after/terminal-output-compaction",
+          "role": "individual_tool"
+        }
+      ],
+      "native_agent_tools_allowed": [
+        "opencode-native-shell-edit",
+        "opencode-native-file-read-search",
+        "git",
+        "verifier-commands"
+      ],
+      "forbidden_surfaces": [
+        "all external MCP, retrieval, skills, subagents, and web tools"
+      ],
+      "install": {
+        "policy": "Run source-pinned TokenJuice 0.8.1 `tokenjuice install opencode` in the lane-private XDG home; verify launcher, compiled CLI, and generated plugin SHA-256 identities; require doctor plus OpenCode plugin debug proof before provider execution."
+      },
+      "reset": {
+        "policy": "Delete lane-private OpenCode XDG directories, TokenJuice plugin state, auth translation, and generated artifacts after evidence capture."
+      },
+      "evaluation_protocol": {
+        "tool_use_policy": "natural",
+        "tool_state": "active-native-plugin-exact-artifact",
+        "integration_state": "official-opencode-plugin",
+        "assignment_proof": "provider-free exact launcher/compiled/generated-plugin identity, installer, doctor, required-file, effective-config, and OpenCode debug-info proof required"
+      },
+      "source_snapshot": {
+        "repository": "vincentkoc/tokenjuice",
+        "commit": "49bdcf1755833ff1e02e44e6e7fe91c0fb44c16e",
+        "version": "0.8.1",
+        "runtime_adapter": "/opt/data/tool-candidates/opencode-adapter-v3/opencode_workflow_adapter.py",
+        "runtime_adapter_sha256": "dc787ae0a9038b002687ccce03ae91863c286119f79675059ffc78e88b31edd9"
+      },
+      "notes": "Fresh successor condition with exact launcher, compiled CLI, generated plugin, and adapter identities; compared with accepted bare OpenCode.",
+      "name": "TokenJuice OpenCode plugin V2 repaired",
+      "supersedes": "terminal-tokenjuice-opencode-plugin-v1"
+    },
+    {
+      "id": "terminal-snip-opencode-plugin-v2",
+      "artifact_slug": "snip-opencode-v2",
+      "profile_type": "individual_tool",
+      "objective_scope": "individual_tool_effectiveness",
+      "status": "screening-ablation",
+      "substrate": "opencode-cli",
+      "enabled_surfaces": [
+        "opencode-tool-execute-before",
+        "shell-command-rewriting"
+      ],
+      "disabled_overlaps": [
+        "all unlisted surfaces"
+      ],
+      "components": [
+        {
+          "component_id": "terminal-snip-opencode-plugin-v2",
+          "surface": "opencode-tool-execute-before/shell-command-rewriting",
+          "role": "individual_tool"
+        }
+      ],
+      "native_agent_tools_allowed": [
+        "opencode-native-shell-edit",
+        "opencode-native-file-read-search",
+        "git",
+        "verifier-commands"
+      ],
+      "forbidden_surfaces": [
+        "all external MCP, retrieval, skills, subagents, and web tools"
+      ],
+      "install": {
+        "policy": "Load opencode-snip v1.6.1 from its pinned source checkout and expose the exact SHA-256-pinned Snip CLI; retain command rewriting, including product failures, as treatment behavior."
+      },
+      "reset": {
+        "policy": "Delete lane-private OpenCode XDG plugin/session state, auth translation, Snip state, and generated artifacts after evidence capture."
+      },
+      "evaluation_protocol": {
+        "tool_use_policy": "natural",
+        "tool_state": "active-native-plugin-exact-artifact",
+        "integration_state": "official-community-opencode-plugin",
+        "assignment_proof": "provider-free exact CLI/plugin identity, effective-config, version, and OpenCode debug-info proof required"
+      },
+      "source_snapshot": {
+        "repository": "VincentHardouin/opencode-snip",
+        "tag": "v1.6.1",
+        "commit": "da1e531959a831f5a0ef6c30e1500d27493f8bc6",
+        "runtime_adapter": "/opt/data/tool-candidates/opencode-adapter-v3/opencode_workflow_adapter.py",
+        "runtime_adapter_sha256": "dc787ae0a9038b002687ccce03ae91863c286119f79675059ffc78e88b31edd9",
+        "cli_repository": "edouard-claude/snip",
+        "cli_commit": "82b741b3ba504a22b609f3ac8122ade94306f6ec"
+      },
+      "notes": "Fresh successor condition. Product command-rewriting failures count as degradation; evaluator identity/setup failures do not.",
+      "name": "Snip OpenCode plugin V2 repaired",
+      "supersedes": "terminal-snip-opencode-plugin-v1"
+    },
+    {
+      "id": "retrieval-cartog-opencode-product-v2",
+      "artifact_slug": "cartog-opencode-v2",
+      "profile_type": "individual_tool",
+      "objective_scope": "individual_tool_effectiveness",
+      "status": "screening-ablation",
+      "substrate": "opencode-cli",
+      "enabled_surfaces": [
+        "structural-retrieval",
+        "opencode-mcp",
+        "live-watch",
+        "product-authored-agent-guidance"
+      ],
+      "disabled_overlaps": [
+        "all unlisted surfaces"
+      ],
+      "components": [
+        {
+          "component_id": "retrieval-cartog-opencode-product-v2",
+          "surface": "structural-retrieval+opencode-mcp+live-watch",
+          "role": "individual_tool"
+        }
+      ],
+      "native_agent_tools_allowed": [
+        "opencode-native-shell-edit",
+        "opencode-native-file-read-search",
+        "git",
+        "verifier-commands"
+      ],
+      "forbidden_surfaces": [
+        "all external plugins, non-Cartog MCP, subagents, and web tools"
+      ],
+      "install": {
+        "policy": "Run source-pinned Cartog 0.30.1 `cartog ide --client opencode --yes`, install the product-authored agent snippet, then require `cartog init; cartog index .`, database/config state, effective config, and initialize plus tools/list proof before provider execution."
+      },
+      "reset": {
+        "policy": "Delete lane-private OpenCode XDG state, Cartog index/config/watch state, auth translation, and generated artifacts after evidence capture."
+      },
+      "evaluation_protocol": {
+        "tool_use_policy": "natural",
+        "tool_state": "warm-structural-index+live-watch",
+        "integration_state": "official-opencode-product-mcp",
+        "assignment_proof": "provider-free exact binary/guidance identity, installer/config/guidance receipt, retained warm-index state, effective-config, and initialize plus tools/list handshake required"
+      },
+      "source_snapshot": {
+        "repository": "jrollin/cartog",
+        "commit": "890d15b66b523841290a63e431a31b6f6438fc4b",
+        "version": "0.30.1",
+        "runtime_adapter": "/opt/data/tool-candidates/opencode-adapter-v3/opencode_workflow_adapter.py",
+        "runtime_adapter_sha256": "dc787ae0a9038b002687ccce03ae91863c286119f79675059ffc78e88b31edd9"
+      },
+      "notes": "Fresh full-product successor with required warm structural index, live watcher, and product-authored routing guidance; optional vector reranker remains disabled.",
+      "name": "Cartog OpenCode product V2 repaired",
+      "supersedes": "retrieval-cartog-opencode-product-v1"
+    },
+    {
+      "id": "integrated-headroom-opencode-product-v3",
+      "artifact_slug": "headroom-opencode-v3",
+      "profile_type": "individual_tool",
+      "objective_scope": "individual_tool_effectiveness",
+      "status": "screening-ablation",
+      "substrate": "opencode-cli",
+      "enabled_surfaces": [
+        "headroom-proxy-context-compression",
+        "headroom-native-opencode-plugin",
+        "headroom-retrieve-mcp",
+        "rtk-context-tool",
+        "serena-mcp"
+      ],
+      "disabled_overlaps": [
+        "all unlisted surfaces"
+      ],
+      "components": [
+        {
+          "component_id": "integrated-headroom-opencode-product-v3",
+          "surface": "official-integrated-opencode-product",
+          "role": "individual_tool",
+          "version": "0.28.0-adapter-v3"
+        }
+      ],
+      "native_agent_tools_allowed": [
+        "opencode-native-shell-edit",
+        "opencode-native-file-read-search",
+        "git",
+        "verifier-commands"
+      ],
+      "forbidden_surfaces": [
+        "all non-Headroom-managed external plugins, MCP, skills, subagents, and web tools"
+      ],
+      "install": {
+        "policy": "Launch every OpenCode provider invocation through source-pinned Headroom 0.28.0 with exact wheel/plugin/uvx/adapter identities, native plugin enabled, Headroom and Serena MCP handshakes, evaluator policy merged into product config, and request-correlated proxy receipts."
+      },
+      "reset": {
+        "policy": "Delete lane-private OpenCode XDG, Headroom proxy/cache, managed RTK/Serena/MCP configuration, auth translation, and generated artifacts after evidence capture."
+      },
+      "evaluation_protocol": {
+        "tool_use_policy": "natural",
+        "tool_state": "active-official-integrated-wrapper-exact-artifacts",
+        "integration_state": "official-headroom-opencode-product",
+        "assignment_proof": "provider-free exact-artifact, wrapper, native-plugin, Serena MCP, RTK, and effective-config proof; official Headroom MCP activation is attempted and any upstream failure counts as treatment degradation; every paid invocation requires request-correlated OpenAI gpt-5.6-sol proxy traffic"
+      },
+      "source_snapshot": {
+        "repository": "chopratejas/headroom",
+        "commit": "715ed7d200cb62c43e6ee3976ce8d3aa639ccf9f",
+        "version": "0.28.0",
+        "runtime_adapter": "/opt/data/tool-candidates/opencode-adapter-v3/opencode_workflow_adapter.py",
+        "runtime_adapter_sha256": "dc787ae0a9038b002687ccce03ae91863c286119f79675059ffc78e88b31edd9"
+      },
+      "notes": "Fresh full-product successor. The official Headroom MCP is attempted without evaluator dependency pinning; its declared dependency incompatibility counts as degradation. Provider execution still fails closed when proxy traffic, effective config, native plugin, or Serena MCP activation is unproven.",
+      "name": "Headroom OpenCode integrated product V3 repaired",
+      "supersedes": "integrated-headroom-opencode-product-v2"
     }
   ]
 }

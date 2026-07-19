@@ -17,6 +17,10 @@ import os
 import subprocess
 import sys
 import tempfile
+import threading
+import time
+import urllib.error
+import urllib.request
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
@@ -33,6 +37,9 @@ HEADROOM_WHEEL = Path(
 )
 SERENA_ROOT = Path("/opt/data/tool-candidates/serena")
 CARTOG_BINARY = Path("/opt/data/tool-candidates/cartog/target/release/cartog")
+HEADROOM_PLUGIN = Path(
+    "/opt/data/tool-candidates/headroom/plugins/opencode/dist/entry.opencode.js"
+)
 TREATMENT_PROFILES = {
     "bare",
     "tokenjuice",
@@ -41,7 +48,7 @@ TREATMENT_PROFILES = {
     "cartog",
     "headroom",
 }
-PLUGIN_TREATMENTS = {"tokenjuice", "snip"}
+PLUGIN_TREATMENTS = {"tokenjuice", "snip", "headroom"}
 
 
 def verify_binary_sha256(binary: Path, expected_sha256: str) -> str:
@@ -216,6 +223,134 @@ def build_headroom_command(native_command: list[str], *, port: int) -> list[str]
         "--",
         *native_command[1:],
     ]
+
+
+def merge_opencode_configs(base: dict[str, Any], overlay: dict[str, Any]) -> dict[str, Any]:
+    """Merge product config onto evaluator policy without dropping either surface."""
+    merged: dict[str, Any] = json.loads(json.dumps(base))
+    for key, value in overlay.items():
+        if isinstance(value, dict) and isinstance(merged.get(key), dict):
+            merged[key] = merge_opencode_configs(merged[key], value)
+        else:
+            merged[key] = value
+    return merged
+
+
+def validate_headroom_runtime_receipt(
+    receipt: dict[str, Any], *, provider: str, model: str
+) -> None:
+    """Fail closed unless a paid request is correlated to the intended route."""
+    if int(receipt.get("request_count", 0)) < 1 or not receipt.get("routes"):
+        raise ValueError("Headroom lacks request-correlated proxy traffic")
+    expected_provider = provider.lower()
+    expected_model = model.lower()
+    routes = receipt.get("routes", [])
+    if not any(
+        str(route.get("provider", "")).lower() == expected_provider
+        and expected_model in str(route.get("model", "")).lower()
+        for route in routes
+    ):
+        raise ValueError("Headroom proxy receipt has no matching provider/model route")
+
+
+def _headroom_receipt_from_stats(stats: dict[str, Any]) -> dict[str, Any]:
+    requests_value = stats.get("requests")
+    logs_value = stats.get("request_logs")
+    requests: dict[str, Any] = requests_value if isinstance(requests_value, dict) else {}
+    logs: list[Any] = logs_value if isinstance(logs_value, list) else []
+    routes = [
+        {
+            "request_id": item.get("request_id"),
+            "provider": item.get("provider"),
+            "model": item.get("model"),
+            "status": item.get("status"),
+            "input_tokens_original": item.get("input_tokens_original"),
+            "input_tokens_optimized": item.get("input_tokens_optimized"),
+            "tokens_saved": item.get("tokens_saved"),
+            "transforms_applied": item.get("transforms_applied", []),
+        }
+        for item in logs
+        if isinstance(item, dict)
+    ]
+    return {
+        "request_count": int(requests.get("total", 0) or 0),
+        "failed_requests": int(requests.get("failed", 0) or 0),
+        "requests_by_provider": requests.get("by_provider", {}),
+        "requests_by_model": requests.get("by_model", {}),
+        "routes": routes,
+        "tokens": {
+            key: stats.get("tokens", {}).get(key)
+            for key in (
+                "input",
+                "output",
+                "saved",
+                "proxy_compression_saved",
+                "cli_filtering_saved",
+            )
+        }
+        if isinstance(stats.get("tokens"), dict)
+        else {},
+    }
+
+
+def _poll_headroom_stats(port: int, stop: threading.Event, snapshots: list[dict[str, Any]]) -> None:
+    url = f"http://127.0.0.1:{port}/stats"
+    while not stop.is_set():
+        try:
+            with urllib.request.urlopen(url, timeout=1) as response:  # nosec B310 - loopback only
+                value = json.loads(response.read().decode())
+            if isinstance(value, dict):
+                snapshots.append(value)
+        except (OSError, ValueError, urllib.error.URLError):
+            pass
+        stop.wait(0.25)
+
+
+def _write_headroom_runtime_shim(
+    path: Path, *, binary: Path, base_config: dict[str, Any], receipt_path: Path
+) -> None:
+    encoded = base64.b64encode(json.dumps(base_config, separators=(",", ":")).encode()).decode()
+    script = f'''#!/usr/bin/env python3
+import base64, json, os
+from pathlib import Path
+base = json.loads(base64.b64decode({encoded!r}).decode())
+product = json.loads(os.environ.get("OPENCODE_CONFIG_CONTENT", "{{}}"))
+def merge(left, right):
+    out = json.loads(json.dumps(left))
+    for key, value in right.items():
+        if isinstance(value, dict) and isinstance(out.get(key), dict): out[key] = merge(out[key], value)
+        else: out[key] = value
+    return out
+merged = merge(base, product)
+os.environ["OPENCODE_CONFIG_CONTENT"] = json.dumps(merged, separators=(",", ":"))
+Path({str(receipt_path)!r}).write_text(json.dumps({{"effective_config": merged}}, indent=2) + "\\n")
+os.execv({str(binary)!r}, [{str(binary)!r}, *os.sys.argv[1:]])
+'''
+    path.write_text(script)
+    path.chmod(0o755)
+
+
+def _run_headroom(
+    command: list[str], *, cwd: Path, env: dict[str, str], port: int
+) -> tuple[subprocess.CompletedProcess[str], dict[str, Any]]:
+    snapshots: list[dict[str, Any]] = []
+    stop = threading.Event()
+    poller = threading.Thread(target=_poll_headroom_stats, args=(port, stop, snapshots), daemon=True)
+    proc = subprocess.Popen(
+        command,
+        cwd=cwd,
+        env=env,
+        text=True,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+    )
+    poller.start()
+    stdout, stderr = proc.communicate()
+    time.sleep(0.1)
+    stop.set()
+    poller.join(timeout=2)
+    completed = subprocess.CompletedProcess(command, proc.returncode, stdout, stderr)
+    return completed, _headroom_receipt_from_stats(snapshots[-1] if snapshots else {})
 
 
 def _decode_jwt_payload(token: str) -> dict[str, Any]:
@@ -515,6 +650,47 @@ def _runtime_env(
                 "enabled": True,
             }
         }
+    elif treatment == "headroom":
+        config["plugin"] = [HEADROOM_PLUGIN.as_uri()]
+        config["mcp"] = {
+            "headroom": {
+                "type": "local",
+                "command": [
+                    str(UV_BINARY),
+                    "tool",
+                    "run",
+                    "--from",
+                    str(HEADROOM_WHEEL),
+                    "--with",
+                    "mcp",
+                    "headroom",
+                    "mcp",
+                    "serve",
+                ],
+                "environment": {"HEADROOM_HOME": str(xdg_state / "headroom")},
+                "enabled": True,
+            },
+            "serena": {
+                "type": "local",
+                "command": [
+                    str(UV_BINARY),
+                    "tool",
+                    "run",
+                    "--from",
+                    str(SERENA_ROOT),
+                    "serena",
+                    "start-mcp-server",
+                    "--project-from-cwd",
+                    "--context=ide",
+                    "--enable-web-dashboard",
+                    "false",
+                    "--open-web-dashboard",
+                    "false",
+                ],
+                "environment": {"SERENA_HOME": str(xdg_state / "serena")},
+                "enabled": True,
+            },
+        }
     env.update(
         {
             "XDG_DATA_HOME": str(xdg_data),
@@ -562,7 +738,11 @@ def probe(
         )
         if plugin_info.returncode != 0:
             raise RuntimeError(f"OpenCode plugin probe failed: {plugin_info.stderr.strip()}")
-        expected_plugin = "tokenjuice.js" if treatment == "tokenjuice" else "opencode-snip-v1.6.1"
+        expected_plugin = {
+            "tokenjuice": "tokenjuice.js",
+            "snip": "opencode-snip-v1.6.1",
+            "headroom": "entry.opencode.js",
+        }[treatment]
         if expected_plugin not in plugin_info.stdout:
             raise RuntimeError(
                 f"OpenCode {treatment} plugin was not visible in debug info: {plugin_info.stdout.strip()}"
@@ -581,6 +761,10 @@ def probe(
         "web_tools_permission": "deny",
         "subagents_permission": "deny",
         "plugin_assignment": plugin_proof,
+        "effective_config": json.loads(env["OPENCODE_CONFIG_CONTENT"]),
+        "effective_config_sha256": hashlib.sha256(
+            env["OPENCODE_CONFIG_CONTENT"].encode()
+        ).hexdigest(),
         "auth": {"provider": "openai", "auth_type": "oauth"},
     }
     print(json.dumps(result, indent=2))
@@ -635,23 +819,38 @@ def main(argv: list[str] | None = None) -> int:
         pure=known.treatment not in PLUGIN_TREATMENTS,
     )
     command = native_command
+    headroom_receipt: dict[str, Any] | None = None
+    effective_config_receipt: dict[str, Any] | None = None
     if known.treatment == "headroom":
         runtime_bin = xdg_data / "opencode" / "runtime-bin"
         runtime_bin.mkdir(parents=True, exist_ok=True)
         opencode_link = runtime_bin / "opencode"
         if opencode_link.exists() or opencode_link.is_symlink():
             opencode_link.unlink()
-        opencode_link.symlink_to(known.opencode_binary)
+        effective_config_path = xdg_data / "opencode" / "headroom-effective-config.json"
+        base_config = json.loads(env["OPENCODE_CONFIG_CONTENT"])
+        _write_headroom_runtime_shim(
+            opencode_link,
+            binary=known.opencode_binary,
+            base_config=base_config,
+            receipt_path=effective_config_path,
+        )
         env["PATH"] = f"{runtime_bin}:{env.get('PATH', '')}"
+        env["HEADROOM_OPENCODE_PLUGIN_PATH"] = str(HEADROOM_PLUGIN)
         port = 18000 + int(hashlib.sha256(str(directory).encode()).hexdigest()[:4], 16) % 2000
+        env["HEADROOM_PROXY_URL"] = f"http://127.0.0.1:{port}"
         command = build_headroom_command(native_command, port=port)
-    proc = subprocess.run(
-        command,
-        cwd=directory,
-        env=env,
-        text=True,
-        capture_output=True,
-    )
+        proc, headroom_receipt = _run_headroom(command, cwd=directory, env=env, port=port)
+        if effective_config_path.is_file():
+            effective_config_receipt = json.loads(effective_config_path.read_text())
+    else:
+        proc = subprocess.run(
+            command,
+            cwd=directory,
+            env=env,
+            text=True,
+            capture_output=True,
+        )
     events: list[dict[str, Any]] = []
     non_json: list[str] = []
     for line in proc.stdout.splitlines():
@@ -669,6 +868,19 @@ def main(argv: list[str] | None = None) -> int:
             print(json.dumps({"type": "opencode.event", "event": event}, ensure_ascii=False))
         return proc.returncode
     validate_non_json_stdout(known.treatment, non_json)
+    if known.treatment == "headroom":
+        if headroom_receipt is None:
+            raise ValueError("Headroom runtime receipt was not collected")
+        validate_headroom_runtime_receipt(
+            headroom_receipt,
+            provider=parsed.model.split("/", 1)[0],
+            model=parsed.model.split("/", 1)[-1],
+        )
+        if effective_config_receipt is None:
+            raise ValueError("Headroom effective OpenCode config receipt is missing")
+        effective = effective_config_receipt.get("effective_config", {})
+        if not isinstance(effective, dict) or not effective.get("plugin") or not effective.get("mcp"):
+            raise ValueError("Headroom effective OpenCode config lacks native plugin or MCP routes")
     result = normalize_events(
         events,
         requested_session_id=parsed.session_id,
@@ -676,6 +888,19 @@ def main(argv: list[str] | None = None) -> int:
     )
     parsed.last_message_path.parent.mkdir(parents=True, exist_ok=True)
     parsed.last_message_path.write_text(result.last_text + ("\n" if result.last_text else ""))
+    if known.treatment == "headroom":
+        print(
+            json.dumps(
+                {
+                    "type": "opencode.treatment_receipt",
+                    "treatment": "headroom",
+                    "proxy_runtime": headroom_receipt,
+                    "effective_config": effective_config_receipt,
+                    "wrapper_stdout": non_json[-20:],
+                },
+                ensure_ascii=False,
+            )
+        )
     for event in result.normalized_events:
         print(json.dumps(event, ensure_ascii=False))
     return 0

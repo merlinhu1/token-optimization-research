@@ -20,7 +20,10 @@ PROFILES = ROOT / "data" / "evaluation-profiles.json"
 AGENT_RUNTIMES = ROOT / "data" / "evaluation-agent-runtimes.json"
 OPENCODE_TREATMENT_SCREEN_AUDIT = (
     "sources/evaluations/audits/"
-    "opencode-tool-treatments-sol-high-r0-screen-results-20260729.json"
+    "opencode-tool-treatments-sol-high-r0-repaired-screen-results-20260729.json"
+)
+OPENCODE_TREATMENT_DELETION_AUDIT = (
+    "sources/evaluations/audits/invalid-opencode-treatment-result-deletions-20260729.json"
 )
 ARTIFACT_FILES = ("run.json", "changes.diff", "evidence.jsonl.gz", "manifest.sha256")
 
@@ -222,12 +225,22 @@ def render() -> str:
             completed_profile_text = ", ".join(
                 f"`{profile_id}`" for profile_id in sorted(completed_opencode_profiles)
             )
-            chunks.append(
+            screen_audit = (
+                OPENCODE_TREATMENT_SCREEN_AUDIT
+                if (ROOT / OPENCODE_TREATMENT_SCREEN_AUDIT).is_file()
+                else OPENCODE_TREATMENT_DELETION_AUDIT
+            )
+            screen_label = (
                 "Completed non-default OpenCode treatment screen: "
-                f"{completed_profile_text}. Each profile has one accepted r0 session on every "
+                if screen_audit == OPENCODE_TREATMENT_SCREEN_AUDIT
+                else "Current valid non-default OpenCode treatment corpus: "
+            )
+            chunks.append(
+                screen_label
+                + f"{completed_profile_text}. Each profile has one accepted r0 session on every "
                 "active lifecycle-v0 sequence and is occupied evidence, not a runnable replacement "
                 "for the active-default Codex profiles. See "
-                f"`{OPENCODE_TREATMENT_SCREEN_AUDIT}`."
+                f"`{screen_audit}`."
             )
         blocked_gates = []
         pilot_run_states: dict[str, tuple[bool, str]] = {}
