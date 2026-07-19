@@ -40,6 +40,7 @@ OPENCODE_BIN_V2 = Path("/opt/data/tool-candidates/opencode-runtime-v2/opencode.e
 OPENCODE_BIN_SHA256 = "7c4d91c84d2bfdeabb59257e3490c5e5acb08f2aacb3e42f3ddc296a1c3f1aca"
 OPENCODE_ADAPTER = Path("/opt/data/tool-candidates/opencode-adapter/opencode_workflow_adapter.py")
 OPENCODE_ADAPTER_V2 = Path("/opt/data/tool-candidates/opencode-adapter-v2/opencode_workflow_adapter.py")
+OPENCODE_ADAPTER_V3 = Path("/opt/data/tool-candidates/opencode-adapter-v3/opencode_workflow_adapter.py")
 FORBIDDEN_BASELINE_TERMS = [
     "lean-ctx",
     "mcp_lean_ctx",
@@ -95,12 +96,11 @@ PROFILE_TOOL_CONFIG_OVERRIDES = {
     "artifact-ponytail-codex-plugin-v1": "ponytail-codex-plugin-v1",
     "behavior-caveman-codex-skill-v1": "caveman-codex-skill-v1",
     "runtime-opencode-codex-product-v1": "opencode-codex-product-v1",
-    "terminal-tokenjuice-opencode-plugin-v1": "tokenjuice-opencode-plugin-v1",
+    "terminal-tokenjuice-opencode-plugin-v2": "tokenjuice-opencode-plugin-v2",
     "retrieval-serena-opencode-mcp-v1": "serena-opencode-mcp-v1",
-    "terminal-snip-opencode-plugin-v1": "snip-opencode-plugin-v1",
-    "retrieval-cartog-opencode-product-v1": "cartog-opencode-product-v1",
-    "integrated-headroom-opencode-product-v1": "headroom-opencode-product-v1",
-    "integrated-headroom-opencode-product-v2": "headroom-opencode-product-v2",
+    "terminal-snip-opencode-plugin-v2": "snip-opencode-plugin-v2",
+    "retrieval-cartog-opencode-product-v2": "cartog-opencode-product-v2",
+    "integrated-headroom-opencode-product-v3": "headroom-opencode-product-v3",
 }
 CODEGRAPH_BIN = Path("/opt/data/tool-candidates/codegraph/dist/bin/codegraph.js")
 CARTOG_ROOT = Path("/opt/data/tool-candidates/cartog")
@@ -127,6 +127,9 @@ TOKENJUICE_BIN = TOKENJUICE_ROOT / "bin" / "tokenjuice"
 CAVEMAN_ROOT = Path("/opt/data/tool-candidates/caveman")
 HEADROOM_ROOT = Path("/opt/data/tool-candidates/headroom")
 HEADROOM_WHEEL = HEADROOM_ROOT / "dist" / "headroom_ai-0.28.0-cp310-abi3-linux_x86_64.whl"
+HEADROOM_OPENCODE_PLUGIN = HEADROOM_ROOT / "plugins" / "opencode" / "dist" / "entry.opencode.js"
+HEADROOM_OPENCODE_PLUGIN_CHUNK = HEADROOM_ROOT / "plugins" / "opencode" / "dist" / "chunk-2K2XKBFN.js"
+UVX_SHIM = Path("/opt/data/tool-candidates/uv-shims/uvx")
 TOKEN_SAVIOR_WHEEL = TOKEN_SAVIOR_ROOT / "dist" / "token_savior_recall-4.4.1-py3-none-any.whl"
 GRAPHIFY_WHEEL = GRAPHIFY_ROOT / "dist" / "graphifyy-0.9.1-py3-none-any.whl"
 JCODEMUNCH_WHEEL = JCODEMUNCH_ROOT / "dist" / "jcodemunch_mcp-1.108.114-py3-none-any.whl"
@@ -1219,10 +1222,11 @@ def _opencode_treatment_config(
     surface: str,
     allowed_terms: list[str],
     mounts: list[str],
+    adapter_path: Path = OPENCODE_ADAPTER,
     **extra: Any,
 ) -> dict[str, Any]:
     adapter_args = [
-        str(OPENCODE_ADAPTER),
+        str(adapter_path),
         "--opencode-binary",
         str(OPENCODE_BIN),
         "--expected-opencode-sha256",
@@ -1236,7 +1240,7 @@ def _opencode_treatment_config(
         "surface": surface,
         "allowed_terms": ["opencode", *allowed_terms],
         "data_dir_name": lane_name,
-        "mounts": [str(OPENCODE_ADAPTER), *mounts],
+        "mounts": [str(adapter_path), *mounts],
         "executable": str(OPENCODE_BIN),
         "expected_executable_sha256": OPENCODE_BIN_SHA256,
         "binary_mount_target": str(OPENCODE_BIN),
@@ -1468,6 +1472,181 @@ TOOL_CONFIGS["headroom-opencode-product-v2"] = {
         for value in TOOL_CONFIGS["headroom-opencode-product-v1"]["preflight_command"]
     ],
 }
+
+# Repaired OpenCode treatment generations. These use fresh profile identities so
+# deleted protocol/replicate identities can never be reopened.
+TOOL_CONFIGS["serena-opencode-mcp-v1"].update(
+    {
+        "artifact_identities": [
+            {
+                "path": str(SERENA_ROOT / "pyproject.toml"),
+                "sha256": "984623c307233179a641fa238593eb4b7bcf27ad7f1a38881b593ef20ae07cd8",
+                "kind": "pinned-source-manifest",
+            },
+            {
+                "path": str(UV_BIN),
+                "sha256": "dc407e8ebb7903e94580217e564e544b231f16ce2a697c247b71632bffe35b35",
+                "kind": "launcher-runtime",
+            },
+        ],
+        "effective_host_config": {"required": True, "source": "adapter-probe"},
+    }
+)
+
+TOOL_CONFIGS.update(
+    {
+        "tokenjuice-opencode-plugin-v2": _opencode_treatment_config(
+            "tokenjuice",
+            display_name="TokenJuice official OpenCode plugin v2 repaired",
+            lane_name="terminal-tokenjuice-opencode-plugin-v2",
+            surface="opencode-tool-execute-after/terminal-output-compaction",
+            allowed_terms=["tokenjuice"],
+            mounts=[str(TOKENJUICE_ROOT)],
+            adapter_path=OPENCODE_ADAPTER_V3,
+            path_entries=[str(TOKENJUICE_BIN.parent)],
+            env={"TOKENJUICE_TELEMETRY": "0"},
+            host_integration={
+                "install_commands": [["tokenjuice", "install", "opencode"]],
+                "verify_commands": [["tokenjuice", "doctor", "opencode"]],
+                "required_files": ["{codex_home}/xdg-config/opencode/plugins/tokenjuice.js"],
+            },
+            artifact_identities=[
+                {"path": str(TOKENJUICE_BIN), "sha256": "d3939a3f76f8ae5489add74453edee5e11870d25a4bd92972111f664f33bc690", "kind": "launcher"},
+                {"path": str(TOKENJUICE_ROOT / "dist/cli/main.js"), "sha256": "d588ce6332a2ac973e966806f0be66893c7606a315793c9c99862be19d02b32c", "kind": "compiled-cli"},
+            ],
+            post_install_artifacts=[
+                {
+                    "path": "{codex_home}/xdg-config/opencode/plugins/tokenjuice.js",
+                    "sha256": "331630af9834afc61f3e73d93b72343ca54ef719a46bced367fe746cb7110f7d",
+                    "retain_as": "tokenjuice-installed-plugin.js",
+                }
+            ],
+            effective_host_config={"required": True, "source": "adapter-probe"},
+            default_tool_state="active-native-plugin-exact-artifact",
+        ),
+        "snip-opencode-plugin-v2": _opencode_treatment_config(
+            "snip",
+            display_name="Snip official community OpenCode plugin v1.6.1 repaired",
+            lane_name="terminal-snip-opencode-plugin-v2",
+            surface="opencode-tool-execute-before/shell-command-rewriting",
+            allowed_terms=["snip", "opencode-snip"],
+            mounts=[str(SNIP_ROOT), "/opt/data/tool-candidates/opencode-snip-v1.6.1"],
+            adapter_path=OPENCODE_ADAPTER_V3,
+            path_entries=[str(SNIP_ROOT)],
+            env={"SNIP_TELEMETRY": "0"},
+            host_integration={
+                "verify_commands": [["snip", "--version"]],
+                "required_files": ["/opt/data/tool-candidates/opencode-snip-v1.6.1/.opencode/plugins/index.ts"],
+            },
+            artifact_identities=[
+                {"path": str(SNIP_BIN), "sha256": "546b4e735818637f42aabcc79b357d529223385b84b28a19f28002d15d99ea5b", "kind": "compiled-cli"},
+                {"path": "/opt/data/tool-candidates/opencode-snip-v1.6.1/.opencode/plugins/index.ts", "sha256": "e7b04e51dccbbeb088ebe49b34abef2d7847b0f9e2b1a933e88d59853ca2b9d0", "kind": "plugin-entry"},
+                {"path": "/opt/data/tool-candidates/opencode-snip-v1.6.1/src/index.ts", "sha256": "0f4e69958c753d36ed42810c439bb1c9716d702f53213677acef7728d6463973", "kind": "plugin-source"},
+            ],
+            effective_host_config={"required": True, "source": "adapter-probe"},
+            default_tool_state="active-native-plugin-exact-artifact",
+        ),
+        "cartog-opencode-product-v2": _opencode_treatment_config(
+            "cartog",
+            display_name="Cartog official OpenCode MCP product v2 repaired",
+            lane_name="retrieval-cartog-opencode-product-v2",
+            surface="opencode-mcp/structural-retrieval+live-watch+product-guidance",
+            allowed_terms=["cartog"],
+            mounts=[str(CARTOG_ROOT)],
+            adapter_path=OPENCODE_ADAPTER_V3,
+            path_entries=[str(CARTOG_BIN.parent)],
+            env={"CARTOG_MCP_COMPACT": "1", "CARTOG_NO_UPDATE_CHECK": "1"},
+            mcp_server="cartog",
+            mcp_command=str(CARTOG_BIN),
+            mcp_args=["serve", "--watch"],
+            host_integration={
+                "install_commands": [
+                    [str(CARTOG_BIN), "ide", "--client", "opencode", "--yes"],
+                    [
+                        "python3",
+                        "-c",
+                        "from pathlib import Path; src=Path('/opt/data/tool-candidates/cartog/docs/agent-snippet.md'); dst=Path('{repo}/AGENTS.md'); text=src.read_text(); snippet=text.split('```markdown',1)[1].split('```',1)[0].strip(); old=dst.read_text() if dst.exists() else ''; dst.write_text(old.rstrip()+'\\n\\n'+snippet+'\\n')",
+                    ],
+                ],
+                "verify_commands": [
+                    [
+                        "python3",
+                        "-c",
+                        "from pathlib import Path; c=Path('{codex_home}/xdg-config/opencode/opencode.json'); a=Path('{repo}/AGENTS.md'); assert c.is_file() and '\"cartog\"' in c.read_text().lower(); assert a.is_file() and 'prefer cartog over grep' in a.read_text().lower() and 'mcp__cartog__cartog_search' in a.read_text()",
+                    ]
+                ],
+                "required_files": ["{codex_home}/xdg-config/opencode/opencode.json", "{repo}/AGENTS.md"],
+            },
+            mcp_handshake={"required": True, "method": "initialize-and-tools-list", "timeout_seconds": 120},
+            warmup={
+                "kind": "official-init-and-structural-index",
+                "command": ["/bin/bash", "-lc", "set -euo pipefail; cartog init; cartog index ."],
+                "cleanup_paths": [".cartog", ".cartog.toml"],
+                "required_state_paths": [".cartog.toml", ".cartog/db.sqlite"],
+                "output_name": "cartog-warmup-output.txt",
+                "metadata_name": "cartog-warmup-metadata.json",
+                "timeout_seconds": 1200,
+            },
+            artifact_identities=[
+                {"path": str(CARTOG_BIN), "sha256": "f2f0f44841827fe05645f908d30e732bfd555013c57f5fc7768658aa1f9db8a7", "kind": "compiled-cli-mcp"},
+                {"path": str(CARTOG_ROOT / "docs/agent-snippet.md"), "sha256": "09e694f5953ae45a431e31a9c4121700c487a366c031a547258486e5abf49501", "kind": "product-guidance"},
+            ],
+            effective_host_config={"required": True, "source": "adapter-probe"},
+            diff_exclude_paths=[".cartog", ".cartog.toml", "AGENTS.md"],
+            default_tool_state="warm-structural-index+live-watch",
+        ),
+        "headroom-opencode-product-v3": _opencode_treatment_config(
+            "headroom",
+            display_name="Headroom official OpenCode integrated product v3 repaired",
+            lane_name="integrated-headroom-opencode-product-v3",
+            surface="opencode-proxy/context-compression+native-plugin+headroom-mcp+rtk+serena",
+            allowed_terms=["headroom", "headroom_retrieve", "rtk", "serena"],
+            mounts=[str(HEADROOM_ROOT), str(RTK_BIN.parent), str(SERENA_ROOT), str(UVX_SHIM.parent)],
+            adapter_path=OPENCODE_ADAPTER_V3,
+            path_entries=[str(UVX_SHIM.parent), "{codex_home}/home/.headroom/bin", "{codex_home}/home/.local/bin"],
+            env={
+                "HEADROOM_HOME": "{tool_data_dir}",
+                "HEADROOM_CACHE_DIR": "{tool_data_dir}/cache",
+                "HEADROOM_DISABLE_DASHBOARD": "1",
+                "HEADROOM_TELEMETRY": "0",
+                "HEADROOM_PROJECT": "{repo_slug}",
+                "HEADROOM_OPENCODE_PLUGIN_PATH": str(HEADROOM_OPENCODE_PLUGIN),
+                "OPENCODE_HOME": "{codex_home}/xdg-config/opencode",
+            },
+            host_integration=TOOL_CONFIGS["headroom-opencode-product-v1"]["host_integration"],
+            mcp_server="headroom",
+            mcp_command=str(UV_BIN),
+            mcp_args=["tool", "run", "--from", str(HEADROOM_WHEEL), "--with", "mcp", "headroom", "mcp", "serve"],
+            mcp_handshake={
+                "attempt_required": True,
+                "required": False,
+                "failure_counts_as_degradation": True,
+                "known_failure": "headroom 0.28.0 mcp serve is incompatible with its declared mcp>=1.0.0 dependency (Server.list_tools missing)",
+                "method": "initialize-and-tools-list",
+                "timeout_seconds": 120,
+            },
+            secondary_mcp_handshakes=[
+                {
+                    "server": "serena",
+                    "command": str(UV_BIN),
+                    "args": ["tool", "run", "--from", str(SERENA_ROOT), "serena", "start-mcp-server", "--project-from-cwd", "--context=ide", "--enable-web-dashboard", "false", "--open-web-dashboard", "false"],
+                    "timeout_seconds": 120,
+                }
+            ],
+            artifact_identities=[
+                {"path": str(HEADROOM_WHEEL), "sha256": "7d4b753d8a0a33aa3222178a92aede5f43c9bc7d3642397c190854d6abbfb560", "kind": "python-wheel"},
+                {"path": str(HEADROOM_OPENCODE_PLUGIN), "sha256": "957164fc98be5c7b543a249769d926b87bb0b96367ec9aaf2aee909f7d5e6d5e", "kind": "native-plugin-entry"},
+                {"path": str(HEADROOM_OPENCODE_PLUGIN_CHUNK), "sha256": "ffa23c1c62a7ddfad1e71f00afb9aac7c8a249e05ff979e930c61de2650a053f", "kind": "native-plugin-bundle"},
+                {"path": str(UVX_SHIM), "sha256": "dc407e8ebb7903e94580217e564e544b231f16ce2a697c247b71632bffe35b35", "kind": "uvx-runtime"},
+            ],
+            effective_host_config={"required": True, "source": "adapter-runtime-merged-receipt"},
+            proxy_runtime_receipt={"required": True, "provider": "openai", "model": "gpt-5.6-sol"},
+            native_plugin={"required": True, "path": str(HEADROOM_OPENCODE_PLUGIN)},
+            diff_exclude_paths=["AGENTS.md", ".headroom", ".serena"],
+            default_tool_state="active-official-integrated-wrapper-exact-artifacts",
+        ),
+    }
+)
 
 
 def rel_or_abs(path_text: str) -> Path:
@@ -2266,6 +2445,49 @@ def prepare_home_dot_codex_alias(codex_home: Path) -> Path:
     return alias
 
 
+def verify_artifact_identities(
+    cfg: dict[str, Any], record: dict[str, Any], codex_home: Path
+) -> list[dict[str, Any]]:
+    receipts: list[dict[str, Any]] = []
+    for identity in cfg.get("artifact_identities", []):
+        path = Path(render_tool_value(str(identity["path"]), record, codex_home, cfg))
+        actual = hashlib.sha256(path.read_bytes()).hexdigest() if path.is_file() else None
+        expected = str(identity["sha256"])
+        receipts.append(
+            {
+                "path": str(path),
+                "kind": identity.get("kind"),
+                "expected_sha256": expected,
+                "actual_sha256": actual,
+                "passed": actual == expected,
+            }
+        )
+    return receipts
+
+
+def retain_post_install_artifacts(
+    cfg: dict[str, Any], record: dict[str, Any], codex_home: Path, run_dir: Path
+) -> list[dict[str, Any]]:
+    receipts: list[dict[str, Any]] = []
+    for item in cfg.get("post_install_artifacts", []):
+        source = Path(render_tool_value(str(item["path"]), record, codex_home, cfg))
+        actual = hashlib.sha256(source.read_bytes()).hexdigest() if source.is_file() else None
+        expected = str(item["sha256"])
+        retained = run_dir / str(item["retain_as"])
+        if actual == expected:
+            shutil.copy2(source, retained)
+        receipts.append(
+            {
+                "source": str(source),
+                "expected_sha256": expected,
+                "actual_sha256": actual,
+                "retained_path": str(retained.relative_to(ROOT)) if retained.exists() and retained.is_relative_to(ROOT) else str(retained),
+                "passed": actual == expected and retained.is_file(),
+            }
+        )
+    return receipts
+
+
 def prepare_profile_integration(
     record: dict[str, Any],
     pid: str,
@@ -2277,14 +2499,18 @@ def prepare_profile_integration(
 ) -> dict[str, Any]:
     cfg = active_tool_config(record, pid)
     integration = (cfg or {}).get("host_integration") or {}
+    artifact_identities = verify_artifact_identities(cfg, record, codex_home) if cfg else []
+    identities_passed = all(item["passed"] for item in artifact_identities)
     if not integration:
         result = {
             "profile_id": pid,
-            "passed": True,
+            "passed": identities_passed,
             "skipped": True,
             "install_exit_codes": [],
             "verify_exit_codes": [],
             "missing_required_files": [],
+            "artifact_identities": artifact_identities,
+            "post_install_artifacts": [],
             "artifacts": [],
         }
         (run_dir / "tool-host-integration.json").write_text(json.dumps(result, indent=2) + "\n")
@@ -2346,7 +2572,13 @@ def prepare_profile_integration(
 
     required_files = [Path(render_tool_value(value, record, codex_home, cfg)) for value in integration.get("required_files", [])]
     missing_required_files = [str(path) for path in required_files if not path.is_file()]
-    passed = all(code == 0 for code in [*install_exit_codes, *verify_exit_codes]) and not missing_required_files
+    post_install_artifacts = retain_post_install_artifacts(cfg, record, codex_home, run_dir)
+    passed = (
+        identities_passed
+        and all(item["passed"] for item in post_install_artifacts)
+        and all(code == 0 for code in [*install_exit_codes, *verify_exit_codes])
+        and not missing_required_files
+    )
     result = {
         "profile_id": pid,
         "passed": passed,
@@ -2356,6 +2588,8 @@ def prepare_profile_integration(
         "verify_exit_codes": verify_exit_codes,
         "missing_required_files": missing_required_files,
         "required_files": [str(path) for path in required_files],
+        "artifact_identities": artifact_identities,
+        "post_install_artifacts": post_install_artifacts,
         "artifacts": artifacts,
     }
     (run_dir / "tool-host-integration.json").write_text(json.dumps(result, indent=2) + "\n")
@@ -2382,8 +2616,10 @@ def probe_mcp_handshake(
     cfg = active_tool_config(record, pid)
     handshake = (cfg or {}).get("mcp_handshake") or {}
     receipt_path = run_dir / "mcp-handshake.json"
-    if not handshake.get("required"):
-        result = {"profile_id": pid, "passed": True, "required": False, "skipped": True}
+    required = bool(handshake.get("required"))
+    attempt_required = bool(handshake.get("attempt_required", required))
+    if not attempt_required:
+        result = {"profile_id": pid, "passed": True, "required": required, "attempted": False, "skipped": True}
         receipt_path.write_text(json.dumps(result, indent=2) + "\n")
         return result
 
@@ -2419,10 +2655,62 @@ def probe_mcp_handshake(
         result = json.loads(receipt_path.read_text())
     except (OSError, json.JSONDecodeError):
         result = {"passed": False, "errors": ["MCP handshake probe did not emit a valid JSON receipt"]}
+    activation_passed = bool(result.get("passed")) and proc.returncode == 0
     result["profile_id"] = pid
-    result["required"] = True
+    result["required"] = required
+    result["attempted"] = True
+    result["attempt_required"] = attempt_required
     result["probe_exit_code"] = proc.returncode
-    result["passed"] = bool(result.get("passed")) and proc.returncode == 0
+    result["activation_passed"] = activation_passed
+    result["treatment_degradation"] = not activation_passed and bool(handshake.get("failure_counts_as_degradation"))
+    result["known_failure"] = handshake.get("known_failure") if not activation_passed else None
+    result["passed"] = activation_passed if required else True
+    secondary_results: list[dict[str, Any]] = []
+    for secondary in cfg.get("secondary_mcp_handshakes", []):
+        server = str(secondary["server"])
+        secondary_path = run_dir / f"mcp-handshake-{server}.json"
+        secondary_command = [
+            "python3",
+            str(probe_script),
+            "--command",
+            render_tool_value(str(secondary["command"]), record, codex_home, cfg),
+            "--cwd",
+            str(rel_or_abs(record["target"]["repository_path"])),
+            "--timeout",
+            str(secondary.get("timeout_seconds", 30)),
+        ]
+        for arg in secondary.get("args", []):
+            secondary_command.append(
+                f"--arg={render_tool_value(str(arg), record, codex_home, cfg)}"
+            )
+        secondary_proc = run_backend(
+            secondary_command,
+            backend=backend,
+            docker_image=docker_image,
+            cwd=rel_or_abs(record["target"]["repository_path"]),
+            env=env,
+            stdout_path=secondary_path,
+            timeout=int(secondary.get("timeout_seconds", 30)) + 10,
+            mounts=mounts,
+        )
+        try:
+            secondary_result = json.loads(secondary_path.read_text())
+        except (OSError, json.JSONDecodeError):
+            secondary_result = {"passed": False, "errors": ["secondary MCP handshake did not emit valid JSON"]}
+        secondary_result.update(
+            {
+                "server": server,
+                "required": True,
+                "probe_exit_code": secondary_proc.returncode,
+                "passed": bool(secondary_result.get("passed")) and secondary_proc.returncode == 0,
+            }
+        )
+        secondary_path.write_text(json.dumps(secondary_result, indent=2, sort_keys=True) + "\n")
+        secondary_results.append(secondary_result)
+    result["secondary_handshakes"] = secondary_results
+    result["passed"] = bool(result["passed"]) and all(
+        item["passed"] for item in secondary_results
+    )
     receipt_path.write_text(json.dumps(result, indent=2, sort_keys=True) + "\n")
     return result
 
@@ -2608,18 +2896,10 @@ def run_setup(record: dict[str, Any], run_dir: Path, *, backend: str, docker_ima
 
 def prepare_profile_workspace(record: dict[str, Any], pid: str, codex_home: Path, run_dir: Path, protocol: dict[str, Any], *, backend: str, docker_image: str) -> int:
     cfg = active_tool_config(record, pid)
-    if not cfg or protocol.get("tool_state") != "warm-index":
+    if not cfg:
         return 0
     warmup = cfg.get("warmup")
     if not warmup:
-        metadata = {
-            "profile_id": pid,
-            "active_tool": cfg.get("display_name"),
-            "tool_state": protocol.get("tool_state"),
-            "skipped": True,
-            "reason": "active tool has no warmup hook",
-        }
-        (run_dir / "tool-warmup-metadata.json").write_text(json.dumps(metadata, indent=2) + "\n")
         return 0
 
     repo = rel_or_abs(record["target"]["repository_path"])
@@ -2646,13 +2926,19 @@ def prepare_profile_workspace(record: dict[str, Any], pid: str, codex_home: Path
         mounts=mounts,
     )
     ended = dt.datetime.now(dt.UTC)
+    required_state_paths = [repo / str(relative) for relative in warmup.get("required_state_paths", [])]
+    missing_state_paths = [str(path) for path in required_state_paths if not path.exists()]
+    effective_exit_code = proc.returncode if proc.returncode != 0 or not missing_state_paths else 1
     metadata = {
         "profile_id": pid,
         "active_tool": cfg.get("display_name"),
         "tool_state": protocol.get("tool_state"),
         "warmup_kind": warmup.get("kind"),
         "command": command,
-        "exit_code": proc.returncode,
+        "exit_code": effective_exit_code,
+        "process_exit_code": proc.returncode,
+        "required_state_paths": [str(path) for path in required_state_paths],
+        "missing_state_paths": missing_state_paths,
         "started_at_utc": started.isoformat(),
         "ended_at_utc": ended.isoformat(),
         "wall_time_seconds": (ended - started).total_seconds(),
@@ -2662,7 +2948,7 @@ def prepare_profile_workspace(record: dict[str, Any], pid: str, codex_home: Path
     (run_dir / metadata_name).write_text(json.dumps(metadata, indent=2) + "\n")
     if metadata_name != "tool-warmup-metadata.json":
         (run_dir / "tool-warmup-metadata.json").write_text(json.dumps(metadata, indent=2) + "\n")
-    return proc.returncode
+    return effective_exit_code
 
 
 def run_codex(record: dict[str, Any], pid: str, codex_home: Path, run_dir: Path, timeout: int, protocol: dict[str, Any], *, backend: str, docker_image: str) -> int:

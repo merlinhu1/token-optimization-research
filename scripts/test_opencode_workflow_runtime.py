@@ -128,15 +128,56 @@ class OpenCodeWorkflowAdapterTest(unittest.TestCase):
         )
         plugin = adapter.build_opencode_command(Path("/opt/opencode"), parsed, "task", pure=False)
         self.assertNotIn("--pure", plugin)
-        native = adapter.build_opencode_command(Path("/opt/opencode"), parsed, "task")
+        native = adapter.build_opencode_command(Path("/opt/opencode"), parsed, "task", pure=False)
         wrapped = adapter.build_headroom_command(native, port=18787)
         self.assertIn("headroom", wrapped)
         self.assertIn("opencode", wrapped)
         self.assertIn("--port", wrapped)
+        self.assertNotIn("--pure", wrapped)
         self.assertEqual(wrapped[-len(native) + 1 :], native[1:])
         self.assertIsNone(adapter.validate_non_json_stdout("headroom", ["Headroom setup complete"]))
         with self.assertRaisesRegex(ValueError, "non-JSON stdout"):
             adapter.validate_non_json_stdout("bare", ["unexpected noise"])
+
+    def test_headroom_effective_config_merge_preserves_isolation_and_product_routes(self) -> None:
+        base = {
+            "share": "disabled",
+            "shell": "/usr/local/bin/eval-network-denied-shell",
+            "permission": {"webfetch": "deny", "task": "deny"},
+        }
+        product = {
+            "provider": {"openai": {"options": {"baseURL": "http://127.0.0.1:18787/v1"}}},
+            "mcp": {"headroom": {"type": "local", "command": ["headroom", "mcp", "serve"]}},
+            "plugin": ["/pinned/headroom-opencode.js"],
+        }
+        merged = adapter.merge_opencode_configs(base, product)
+        self.assertEqual(merged["permission"], base["permission"])
+        self.assertEqual(merged["shell"], base["shell"])
+        self.assertEqual(merged["provider"], product["provider"])
+        self.assertEqual(merged["mcp"], product["mcp"])
+        self.assertEqual(merged["plugin"], product["plugin"])
+
+    def test_headroom_runtime_receipt_requires_request_correlated_openai_traffic(self) -> None:
+        good = {
+            "request_count": 1,
+            "routes": [
+                {
+                    "provider": "openai",
+                    "model": "gpt-5.6-sol",
+                    "status": 200,
+                    "path": "/v1/responses",
+                }
+            ],
+        }
+        adapter.validate_headroom_runtime_receipt(good, provider="openai", model="gpt-5.6-sol")
+        with self.assertRaisesRegex(ValueError, "request-correlated"):
+            adapter.validate_headroom_runtime_receipt({"request_count": 0, "routes": []}, provider="openai", model="gpt-5.6-sol")
+        with self.assertRaisesRegex(ValueError, "provider/model"):
+            adapter.validate_headroom_runtime_receipt(
+                {"request_count": 1, "routes": [{"provider": "anthropic", "model": "claude", "status": 200}]},
+                provider="openai",
+                model="gpt-5.6-sol",
+            )
 
     def test_auth_translation_is_private_and_preserves_rotated_auth(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
@@ -358,14 +399,15 @@ class OpenCodeWorkflowIntegrationContractTest(unittest.TestCase):
         self.assertIn("native shell", guidance)
         self.assertNotIn("token-saving treatment", guidance)
 
-    def test_five_opencode_treatments_are_atomic_profile_bindings(self) -> None:
+    def test_repaired_opencode_treatments_are_atomic_profile_bindings(self) -> None:
         expected = {
-            "terminal-tokenjuice-opencode-plugin-v1": "tokenjuice-opencode-plugin-v1",
+            "terminal-tokenjuice-opencode-plugin-v2": "tokenjuice-opencode-plugin-v2",
             "retrieval-serena-opencode-mcp-v1": "serena-opencode-mcp-v1",
-            "terminal-snip-opencode-plugin-v1": "snip-opencode-plugin-v1",
-            "retrieval-cartog-opencode-product-v1": "cartog-opencode-product-v1",
-            "integrated-headroom-opencode-product-v2": "headroom-opencode-product-v2",
+            "terminal-snip-opencode-plugin-v2": "snip-opencode-plugin-v2",
+            "retrieval-cartog-opencode-product-v2": "cartog-opencode-product-v2",
+            "integrated-headroom-opencode-product-v3": "headroom-opencode-product-v3",
         }
+        self.assertTrue(expected.keys() <= runner.SUPPORTED_WORKFLOW_TOOL_PROFILES.keys())
         for profile_id, tool_id in expected.items():
             with self.subTest(profile_id=profile_id):
                 self.assertEqual(runner.SUPPORTED_WORKFLOW_TOOL_PROFILES[profile_id], tool_id)
@@ -374,20 +416,31 @@ class OpenCodeWorkflowIntegrationContractTest(unittest.TestCase):
                 cfg = fixture.active_tool_config({}, profile_id)
                 assert cfg is not None
                 self.assertIn("--treatment", cfg["codex_wrapper"]["args"])
-        tokenjuice = fixture.active_tool_config({}, "terminal-tokenjuice-opencode-plugin-v1")
+                self.assertTrue(cfg["artifact_identities"])
+                self.assertTrue(all(item["sha256"] for item in cfg["artifact_identities"]))
+                self.assertTrue(cfg["effective_host_config"]["required"])
+
+        tokenjuice = fixture.active_tool_config({}, "terminal-tokenjuice-opencode-plugin-v2")
         serena = fixture.active_tool_config({}, "retrieval-serena-opencode-mcp-v1")
-        snip = fixture.active_tool_config({}, "terminal-snip-opencode-plugin-v1")
-        cartog = fixture.active_tool_config({}, "retrieval-cartog-opencode-product-v1")
-        headroom = fixture.active_tool_config({}, "integrated-headroom-opencode-product-v2")
+        snip = fixture.active_tool_config({}, "terminal-snip-opencode-plugin-v2")
+        cartog = fixture.active_tool_config({}, "retrieval-cartog-opencode-product-v2")
+        headroom = fixture.active_tool_config({}, "integrated-headroom-opencode-product-v3")
         assert tokenjuice and serena and snip and cartog and headroom
         self.assertEqual(tokenjuice["host_integration"]["install_commands"][0][-2:], ["install", "opencode"])
+        self.assertIn("plugins/tokenjuice.js", tokenjuice["post_install_artifacts"][0]["path"])
         self.assertTrue(serena["mcp_handshake"]["required"])
         self.assertIn("opencode-snip-v1.6.1", " ".join(snip["mounts"]))
-        self.assertEqual(
-            cartog["host_integration"]["install_commands"][0][-3:],
-            ["--client", "opencode", "--yes"],
-        )
+        self.assertEqual(snip["artifact_identities"][0]["sha256"], "546b4e735818637f42aabcc79b357d529223385b84b28a19f28002d15d99ea5b")
+        self.assertEqual(cartog["host_integration"]["install_commands"][0][-3:], ["--client", "opencode", "--yes"])
+        self.assertIn("docs/agent-snippet.md", " ".join(cartog["host_integration"]["install_commands"][1]))
+        self.assertEqual(cartog["warmup"]["required_state_paths"], [".cartog.toml", ".cartog/db.sqlite"])
         self.assertIn("--prepare-only", headroom["host_integration"]["install_commands"][0])
+        self.assertTrue(headroom["mcp_handshake"]["attempt_required"])
+        self.assertFalse(headroom["mcp_handshake"]["required"])
+        self.assertTrue(headroom["mcp_handshake"]["failure_counts_as_degradation"])
+        self.assertEqual({item["server"] for item in headroom["secondary_mcp_handshakes"]}, {"serena"})
+        self.assertTrue(headroom["proxy_runtime_receipt"]["required"])
+        self.assertTrue(headroom["native_plugin"]["required"])
 
     def test_opencode_tool_treatments_reuse_bare_opencode_baseline(self) -> None:
         sequence = runner.load_sequence("fastify-lifecycle-sequence-v0")
@@ -395,7 +448,7 @@ class OpenCodeWorkflowIntegrationContractTest(unittest.TestCase):
         bare = runner.find_comparison_baseline_record(
             registry,
             sequence,
-            "terminal-tokenjuice-opencode-plugin-v1",
+            "terminal-tokenjuice-opencode-plugin-v2",
             0,
         )
         assert bare is not None
@@ -404,7 +457,7 @@ class OpenCodeWorkflowIntegrationContractTest(unittest.TestCase):
 
     def test_opencode_tool_protocol_freezes_nested_runtime_comparator(self) -> None:
         paths = sorted((ROOT / "sources/evaluations/protocols").glob(
-            "fastify-lifecycle-sequence-v0-terminal-tokenjuice-opencode-plugin-v1-*.json"
+            "fastify-lifecycle-sequence-v0-terminal-tokenjuice-opencode-plugin-v2-*.json"
         ))
         self.assertEqual(len(paths), 1)
         protocol = json.loads(paths[0].read_text())
@@ -416,7 +469,7 @@ class OpenCodeWorkflowIntegrationContractTest(unittest.TestCase):
 
     def test_validator_accepts_only_substrate_matched_comparison_baseline(self) -> None:
         treatment = {
-            "profile": {"profile_id": "terminal-tokenjuice-opencode-plugin-v1"},
+            "profile": {"profile_id": "terminal-tokenjuice-opencode-plugin-v2"},
             "agent": {"runtime_id": "opencode-cli"},
         }
         opencode_baseline = {

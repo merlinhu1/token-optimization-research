@@ -1,10 +1,10 @@
 {
   "protocol_schema_version": 3,
-  "protocol_id": "terraform-lifecycle-sequence-v0-integrated-headroom-opencode-product-v2-ae44417c1ede",
+  "protocol_id": "terraform-lifecycle-sequence-v0-terminal-snip-opencode-plugin-v2-4f00459e7e2f",
   "status": "frozen-ready-not-run",
-  "outcome": "Frozen integrated-headroom-opencode-product-v2 protocol for terraform-lifecycle-sequence-v0; no provider/model run has occurred.",
+  "outcome": "Frozen terminal-snip-opencode-plugin-v2 protocol for terraform-lifecycle-sequence-v0; no provider/model run has occurred.",
   "frozen_at": "2026-07-22",
-  "hypothesis": "integrated-headroom-opencode-product-v2 produces reproducible provider-reported token and software-quality evidence for terraform-lifecycle-sequence-v0",
+  "hypothesis": "terminal-snip-opencode-plugin-v2 produces reproducible provider-reported token and software-quality evidence for terraform-lifecycle-sequence-v0",
   "evidence_stage_target": "reproduction",
   "task_fixture": {
     "fixture_id": "large-hashicorp-terraform",
@@ -35,13 +35,13 @@
     "selection_policy": "sequence-pool-replicate-matched-first-valid"
   },
   "treatment": {
-    "profile_id": "integrated-headroom-opencode-product-v2",
+    "profile_id": "terminal-snip-opencode-plugin-v2",
     "runtime_id": "opencode-cli",
     "provider": "openai",
     "model": "gpt-5.6-sol",
     "model_condition_id": "opencode-openai-gpt-5-6-sol-high",
     "reasoning_effort": "high",
-    "command": "python3 scripts/run_opencode_workflow_model_condition.py --workflow-model-condition-id opencode-openai-gpt-5-6-sol-high --workflow-model gpt-5.6-sol --workflow-reasoning-effort high --sequence-id terraform-lifecycle-sequence-v0 --profile-id integrated-headroom-opencode-product-v2 --timeout-per-task 3600 --protocol sources/evaluations/protocols/terraform-lifecycle-sequence-v0-integrated-headroom-opencode-product-v2-ae44417c1ede.json --docker-image token-eval-codex:latest"
+    "command": "python3 scripts/run_opencode_workflow_model_condition.py --workflow-model-condition-id opencode-openai-gpt-5-6-sol-high --workflow-model gpt-5.6-sol --workflow-reasoning-effort high --sequence-id terraform-lifecycle-sequence-v0 --profile-id terminal-snip-opencode-plugin-v2 --timeout-per-task 3600 --protocol sources/evaluations/protocols/terraform-lifecycle-sequence-v0-terminal-snip-opencode-plugin-v2-4f00459e7e2f.json --docker-image token-eval-codex:latest"
   },
   "token_accounting_boundary": {
     "fields": [
@@ -249,48 +249,43 @@
     }
   },
   "selected_execution": {
-    "descriptor_sha256": "20e74019f057d4ee42d5a553f732a8d70a078da6b4fed96826c6fa4fa63e1615",
+    "descriptor_sha256": "a4b6896c62c986b28e0191e290665fe6e5705abde8afa1e1a7ee5374cda8991e",
     "descriptor": {
       "version": "execution-condition-v1",
       "sequence_id": "terraform-lifecycle-sequence-v0",
       "execution_role": "individual_tool_treatment",
       "selected_profile": {
-        "profile_id": "integrated-headroom-opencode-product-v2",
+        "profile_id": "terminal-snip-opencode-plugin-v2",
         "profile_type": "individual_tool",
         "component_ids": [
-          "integrated-headroom-opencode-product-v1"
+          "terminal-snip-opencode-plugin-v2"
         ],
         "enabled_surfaces": [
-          "headroom-proxy-context-compression",
-          "headroom-retrieve-mcp",
-          "rtk-context-tool",
-          "serena-mcp"
+          "opencode-tool-execute-before",
+          "shell-command-rewriting"
         ],
         "disabled_overlaps": [
           "all unlisted surfaces"
         ],
-        "registry_entry_sha256": "be3a74b215be6734b01065ea35d1cf050b0608d251017755b69939f74daff7c2",
+        "registry_entry_sha256": "624311ad7b800afe7829598802fedbd71ee833bd9c15d7fdeb9672a23e1c72ef",
         "registry_entry": {
-          "id": "integrated-headroom-opencode-product-v2",
+          "id": "terminal-snip-opencode-plugin-v2",
           "profile_type": "individual_tool",
           "objective_scope": "individual_tool_effectiveness",
           "status": "screening-ablation",
           "substrate": "opencode-cli",
           "enabled_surfaces": [
-            "headroom-proxy-context-compression",
-            "headroom-retrieve-mcp",
-            "rtk-context-tool",
-            "serena-mcp"
+            "opencode-tool-execute-before",
+            "shell-command-rewriting"
           ],
           "disabled_overlaps": [
             "all unlisted surfaces"
           ],
           "components": [
             {
-              "component_id": "integrated-headroom-opencode-product-v1",
-              "surface": "official-integrated-opencode-product",
-              "role": "individual_tool",
-              "version": "0.28.0-adapter-v2"
+              "component_id": "terminal-snip-opencode-plugin-v2",
+              "surface": "opencode-tool-execute-before/shell-command-rewriting",
+              "role": "individual_tool"
             }
           ],
           "native_agent_tools_allowed": [
@@ -300,30 +295,32 @@
             "verifier-commands"
           ],
           "forbidden_surfaces": [
-            "all non-Headroom-managed external plugins, MCP, skills, subagents, and web tools"
+            "all external MCP, retrieval, skills, subagents, and web tools"
           ],
           "install": {
-            "policy": "Launch every OpenCode provider invocation through pinned Headroom 0.28.0 `headroom wrap opencode` with its documented default RTK, retrieve MCP, and Serena surfaces in lane-private state."
+            "policy": "Load opencode-snip v1.6.1 from its pinned source checkout and expose the exact SHA-256-pinned Snip CLI; retain command rewriting, including product failures, as treatment behavior."
           },
           "reset": {
-            "policy": "Delete lane-private OpenCode XDG, Headroom proxy/cache, managed RTK/Serena/MCP configuration, auth translation, and generated artifacts after evidence capture."
+            "policy": "Delete lane-private OpenCode XDG plugin/session state, auth translation, Snip state, and generated artifacts after evidence capture."
           },
           "evaluation_protocol": {
             "tool_use_policy": "natural",
-            "tool_state": "active-official-integrated-wrapper",
-            "integration_state": "official-headroom-opencode-product",
-            "assignment_proof": "provider-free pinned-wheel version and wrapper command proof required; provider traffic must retain OpenCode step-finish usage"
+            "tool_state": "active-native-plugin-exact-artifact",
+            "integration_state": "official-community-opencode-plugin",
+            "assignment_proof": "provider-free exact CLI/plugin identity, effective-config, version, and OpenCode debug-info proof required"
           },
           "source_snapshot": {
-            "repository": "headroom-ai/headroom",
-            "commit": "715ed7d200cb62c43e6ee3976ce8d3aa639ccf9f",
-            "version": "0.28.0",
-            "runtime_adapter": "/opt/data/tool-candidates/opencode-adapter-v2/opencode_workflow_adapter.py",
-            "runtime_adapter_sha256": "b115dac20547f506cd7f50a6b9147ec34bb8c6ea05cd3444d13898de9a2b50b2"
+            "repository": "VincentHardouin/opencode-snip",
+            "tag": "v1.6.1",
+            "commit": "da1e531959a831f5a0ef6c30e1500d27493f8bc6",
+            "runtime_adapter": "/opt/data/tool-candidates/opencode-adapter-v3/opencode_workflow_adapter.py",
+            "runtime_adapter_sha256": "dc787ae0a9038b002687ccce03ae91863c286119f79675059ffc78e88b31edd9",
+            "cli_repository": "edouard-claude/snip",
+            "cli_commit": "82b741b3ba504a22b609f3ac8122ade94306f6ec"
           },
-          "notes": "Integrated product treatment, not a single-mechanism proxy ablation. Attribution is to the documented Headroom OpenCode bundle as a whole.",
-          "readiness_blockers": [],
-          "name": "Headroom OpenCode integrated product V2"
+          "notes": "Fresh successor condition. Product command-rewriting failures count as degradation; evaluator identity/setup failures do not.",
+          "name": "Snip OpenCode plugin V2 repaired",
+          "supersedes": "terminal-snip-opencode-plugin-v1"
         }
       },
       "model_facing_prompts": {
@@ -348,140 +345,105 @@
         ]
       },
       "tool_adapter": {
-        "tool_id": "headroom-opencode-product-v2",
+        "tool_id": "snip-opencode-plugin-v2",
         "tool_manifest": "scripts/run_codex_fixture_evaluation.py:TOOL_CONFIGS",
-        "tool_manifest_sha256": "7f04c9e99ccbb55dbf566c8a474ca967101ff31f2eeb77664b6877d16918e21c",
+        "tool_manifest_sha256": "ff4dee997e36af666a53ca01c1125d9c7f5d8e6651f87f6b3b2f1c13c8aa67b4",
         "tool_config": {
-          "display_name": "Headroom official OpenCode integrated product v2",
-          "lane_name": "integrated-headroom-opencode-product-v2",
-          "surface": "opencode-proxy/context-compression+rtk+mcp+serena",
+          "display_name": "Snip official community OpenCode plugin v1.6.1 repaired",
+          "lane_name": "terminal-snip-opencode-plugin-v2",
+          "surface": "opencode-tool-execute-before/shell-command-rewriting",
           "allowed_terms": [
             "opencode",
-            "headroom",
-            "headroom_retrieve",
-            "rtk",
-            "serena"
+            "snip",
+            "opencode-snip"
           ],
-          "data_dir_name": "integrated-headroom-opencode-product-v2",
+          "data_dir_name": "terminal-snip-opencode-plugin-v2",
           "mounts": [
-            "/opt/data/tool-candidates/opencode-adapter-v2/opencode_workflow_adapter.py",
-            "/opt/data/tool-candidates/headroom",
-            "/opt/data/tool-candidates/rtk",
-            "/opt/data/tool-candidates/serena"
+            "/opt/data/tool-candidates/opencode-adapter-v3/opencode_workflow_adapter.py",
+            "/opt/data/tool-candidates/snip",
+            "/opt/data/tool-candidates/opencode-snip-v1.6.1"
           ],
-          "executable": "/opt/data/tool-candidates/opencode-runtime-v2/opencode.exe",
+          "executable": "/opt/data/tool-candidates/opencode-runtime/node_modules/opencode-ai/bin/opencode.exe",
           "expected_executable_sha256": "7c4d91c84d2bfdeabb59257e3490c5e5acb08f2aacb3e42f3ddc296a1c3f1aca",
-          "binary_mount_target": "/opt/data/tool-candidates/opencode-runtime-v2/opencode.exe",
+          "binary_mount_target": "/opt/data/tool-candidates/opencode-runtime/node_modules/opencode-ai/bin/opencode.exe",
           "codex_wrapper": {
             "command": "/usr/bin/python3",
             "args": [
-              "/opt/data/tool-candidates/opencode-adapter-v2/opencode_workflow_adapter.py",
+              "/opt/data/tool-candidates/opencode-adapter-v3/opencode_workflow_adapter.py",
               "--opencode-binary",
-              "/opt/data/tool-candidates/opencode-runtime-v2/opencode.exe",
+              "/opt/data/tool-candidates/opencode-runtime/node_modules/opencode-ai/bin/opencode.exe",
               "--expected-opencode-sha256",
               "7c4d91c84d2bfdeabb59257e3490c5e5acb08f2aacb3e42f3ddc296a1c3f1aca",
               "--treatment",
-              "headroom"
+              "snip"
             ]
           },
           "preflight_command": [
             "/usr/bin/python3",
-            "/opt/data/tool-candidates/opencode-adapter-v2/opencode_workflow_adapter.py",
+            "/opt/data/tool-candidates/opencode-adapter-v3/opencode_workflow_adapter.py",
             "--opencode-binary",
-            "/opt/data/tool-candidates/opencode-runtime-v2/opencode.exe",
+            "/opt/data/tool-candidates/opencode-runtime/node_modules/opencode-ai/bin/opencode.exe",
             "--expected-opencode-sha256",
             "7c4d91c84d2bfdeabb59257e3490c5e5acb08f2aacb3e42f3ddc296a1c3f1aca",
             "--treatment",
-            "headroom",
+            "snip",
             "--probe"
           ],
           "tool_manifest_identity": "current-file-v1",
           "path_entries": [
-            "{codex_home}/home/.headroom/bin",
-            "{codex_home}/home/.local/bin"
+            "/opt/data/tool-candidates/snip"
           ],
           "env": {
-            "HEADROOM_HOME": "{tool_data_dir}",
-            "HEADROOM_CACHE_DIR": "{tool_data_dir}/cache",
-            "HEADROOM_DISABLE_DASHBOARD": "1",
-            "HEADROOM_TELEMETRY": "0",
-            "HEADROOM_PROJECT": "{repo_slug}",
-            "OPENCODE_HOME": "{codex_home}/xdg-config/opencode"
+            "SNIP_TELEMETRY": "0"
           },
           "host_integration": {
-            "install_commands": [
-              [
-                "/opt/data/opt/uv/uv",
-                "tool",
-                "run",
-                "--from",
-                "/opt/data/tool-candidates/headroom/dist/headroom_ai-0.28.0-cp310-abi3-linux_x86_64.whl",
-                "--with",
-                "mcp",
-                "--with",
-                "fastapi",
-                "--with",
-                "uvicorn<1.0",
-                "--with",
-                "httpx[http2]",
-                "--with",
-                "openai",
-                "--with",
-                "zstandard",
-                "--with",
-                "websockets",
-                "headroom",
-                "wrap",
-                "opencode",
-                "--port",
-                "{tool_port}",
-                "--verbose",
-                "--prepare-only"
-              ]
-            ],
             "verify_commands": [
               [
-                "/opt/data/opt/uv/uv",
-                "tool",
-                "run",
-                "--from",
-                "/opt/data/tool-candidates/headroom/dist/headroom_ai-0.28.0-cp310-abi3-linux_x86_64.whl",
-                "--with",
-                "mcp",
-                "headroom",
+                "snip",
                 "--version"
-              ],
-              [
-                "python3",
-                "-c",
-                "from pathlib import Path; p=Path('{codex_home}/xdg-config/opencode/opencode.json'); assert p.is_file(); text=p.read_text(); assert 'headroom' in text and 'mcp' in text"
               ]
             ],
             "required_files": [
-              "{codex_home}/xdg-config/opencode/opencode.json"
-            ],
-            "timeout_seconds": 600
+              "/opt/data/tool-candidates/opencode-snip-v1.6.1/.opencode/plugins/index.ts"
+            ]
           },
-          "diff_exclude_paths": [
-            "AGENTS.md",
-            ".headroom"
+          "artifact_identities": [
+            {
+              "path": "/opt/data/tool-candidates/snip/snip",
+              "sha256": "546b4e735818637f42aabcc79b357d529223385b84b28a19f28002d15d99ea5b",
+              "kind": "compiled-cli"
+            },
+            {
+              "path": "/opt/data/tool-candidates/opencode-snip-v1.6.1/.opencode/plugins/index.ts",
+              "sha256": "e7b04e51dccbbeb088ebe49b34abef2d7847b0f9e2b1a933e88d59853ca2b9d0",
+              "kind": "plugin-entry"
+            },
+            {
+              "path": "/opt/data/tool-candidates/opencode-snip-v1.6.1/src/index.ts",
+              "sha256": "0f4e69958c753d36ed42810c439bb1c9716d702f53213677acef7728d6463973",
+              "kind": "plugin-source"
+            }
           ],
-          "default_tool_state": "active-official-integrated-wrapper"
+          "effective_host_config": {
+            "required": true,
+            "source": "adapter-probe"
+          },
+          "default_tool_state": "active-native-plugin-exact-artifact"
         },
-        "tool_config_sha256": "d44b57ed8d84b9aca7814885fc4d3bfa144da8163d1b51648f8932e6eb2f65e8",
-        "tool_state": "active-official-integrated-wrapper",
+        "tool_config_sha256": "7c5b04a44bf3d9b107f76e629cfae8db614ad6e34098234c5bb167ac0df74b93",
+        "tool_state": "active-native-plugin-exact-artifact",
         "tool_use_policy": "natural",
         "command_identity": {
           "kind": "codex_wrapper",
           "command": [
             "/usr/bin/python3",
-            "/opt/data/tool-candidates/opencode-adapter-v2/opencode_workflow_adapter.py",
+            "/opt/data/tool-candidates/opencode-adapter-v3/opencode_workflow_adapter.py",
             "--opencode-binary",
-            "/opt/data/tool-candidates/opencode-runtime-v2/opencode.exe",
+            "/opt/data/tool-candidates/opencode-runtime/node_modules/opencode-ai/bin/opencode.exe",
             "--expected-opencode-sha256",
             "7c4d91c84d2bfdeabb59257e3490c5e5acb08f2aacb3e42f3ddc296a1c3f1aca",
             "--treatment",
-            "headroom"
+            "snip"
           ]
         },
         "binary_identity": {
@@ -501,7 +463,7 @@
               "/usr/bin/python3.13",
               "--version"
             ],
-            "environment_path": "/opt/data/.local/bin:{repository_root}/.identity-codex-home/home/.local/bin:{repository_root}/.identity-codex-home/home/.headroom/bin:/opt/data/opt/go/bin:/opt/data/opt/uv:/opt/data/opt/node-v24.18.0-linux-x64/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+            "environment_path": "/opt/data/.local/bin:/opt/data/tool-candidates/snip:/opt/data/opt/go/bin:/opt/data/opt/uv:/opt/data/opt/node-v24.18.0-linux-x64/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
             "captured": true,
             "exit_code": 0,
             "output": "Python 3.13.5",
@@ -510,28 +472,23 @@
         },
         "source_identity": [
           {
-            "path": "/opt/data/tool-candidates/headroom",
-            "exists": true,
-            "kind": "directory",
-            "git_head": "715ed7d200cb62c43e6ee3976ce8d3aa639ccf9f"
-          },
-          {
-            "path": "/opt/data/tool-candidates/opencode-adapter-v2/opencode_workflow_adapter.py",
+            "path": "/opt/data/tool-candidates/opencode-adapter-v3/opencode_workflow_adapter.py",
             "exists": true,
             "kind": "file",
-            "sha256": "b115dac20547f506cd7f50a6b9147ec34bb8c6ea05cd3444d13898de9a2b50b2"
+            "sha256": "dc787ae0a9038b002687ccce03ae91863c286119f79675059ffc78e88b31edd9"
           },
           {
-            "path": "/opt/data/tool-candidates/rtk",
+            "path": "/opt/data/tool-candidates/opencode-snip-v1.6.1",
             "exists": true,
             "kind": "directory",
-            "git_head": "23aae98c5b29cd52d77061c6efd2e65e5e3cc6dd"
+            "git_head": "da1e531959a831f5a0ef6c30e1500d27493f8bc6",
+            "package_json_sha256": "bb55496184392cafe3ec9a5ef82a6fc2fc01b6560a8613b8f901e303cb0a2b75"
           },
           {
-            "path": "/opt/data/tool-candidates/serena",
+            "path": "/opt/data/tool-candidates/snip",
             "exists": true,
             "kind": "directory",
-            "git_head": "103a17072e9b915c9c9980f946902be856695978"
+            "git_head": "82b741b3ba504a22b609f3ac8122ade94306f6ec"
           }
         ]
       },
@@ -550,7 +507,7 @@
         "dockerfile_path": "sources/evaluations/fixtures/container/Dockerfile",
         "dockerfile_sha256": "47c91967ce25014ce54879514f51d2ff0326651be1087209115eff4d358226b3",
         "fixture_runner_path": "scripts/run_codex_fixture_evaluation.py",
-        "fixture_runner_sha256": "7f04c9e99ccbb55dbf566c8a474ca967101ff31f2eeb77664b6877d16918e21c",
+        "fixture_runner_sha256": "ff4dee997e36af666a53ca01c1125d9c7f5d8e6651f87f6b3b2f1c13c8aa67b4",
         "mcp_probe_path": "scripts/probe_mcp_stdio.py",
         "mcp_probe_sha256": "7c06ea36ee5cac933a97140b84a41405fc99b45152388e8d7c6659136af698fd",
         "codex_entrypoint_path": "sources/evaluations/fixtures/container/codex-entrypoint.sh",

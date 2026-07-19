@@ -437,20 +437,45 @@ class ActiveCampaignArchitectureTest(unittest.TestCase):
             runbook,
         )
 
-    def test_runbook_reports_completed_opencode_treatment_screen(self) -> None:
+    def test_runbook_reports_current_opencode_treatment_corpus(self) -> None:
         runbook = (ROOT / "docs/evaluations/operations/runbook.md").read_text()
-        self.assertIn("Completed non-default OpenCode treatment screen", runbook)
-        self.assertIn(
-            "`sources/evaluations/audits/opencode-tool-treatments-sol-high-r0-screen-results-20260729.json`",
-            runbook,
+        registry = json.loads((ROOT / "data/workflow-sessions.json").read_text())
+        active_sequences = {
+            item["id"]
+            for item in json.loads((ROOT / "data/workflow-task-sequences.json").read_text())["sequences"]
+            if item.get("status") == "active"
+        }
+        profile_catalog = json.loads((ROOT / "data/evaluation-profiles.json").read_text())["profiles"]
+        completed_profiles = []
+        for profile in profile_catalog:
+            profile_id = profile.get("id")
+            if profile.get("status") != "screening-ablation" or profile.get("substrate") != "opencode-cli":
+                continue
+            completed = {
+                session.get("task_sequence", {}).get("sequence_id")
+                for session in registry["sessions"]
+                if session.get("status") == "completed"
+                and session.get("session_role") == "individual_tool_treatment"
+                and session.get("profile", {}).get("profile_id") == profile_id
+                and session.get("replicate_index") == 0
+                and session.get("interpretation", {}).get("accepted_for_objective") is True
+            }
+            if completed == active_sequences:
+                completed_profiles.append(profile_id)
+        repaired_audit = ROOT / "sources/evaluations/audits/opencode-tool-treatments-sol-high-r0-repaired-screen-results-20260729.json"
+        expected_audit = (
+            "sources/evaluations/audits/opencode-tool-treatments-sol-high-r0-repaired-screen-results-20260729.json"
+            if repaired_audit.is_file()
+            else "sources/evaluations/audits/invalid-opencode-treatment-result-deletions-20260729.json"
         )
-        for profile_id in (
-            "terminal-tokenjuice-opencode-plugin-v1",
-            "retrieval-serena-opencode-mcp-v1",
-            "terminal-snip-opencode-plugin-v1",
-            "retrieval-cartog-opencode-product-v1",
-            "integrated-headroom-opencode-product-v2",
-        ):
+        expected_label = (
+            "Completed non-default OpenCode treatment screen"
+            if repaired_audit.is_file()
+            else "Current valid non-default OpenCode treatment corpus"
+        )
+        self.assertIn(expected_label, runbook)
+        self.assertIn(f"`{expected_audit}`", runbook)
+        for profile_id in completed_profiles:
             self.assertIn(f"`{profile_id}`", runbook)
         self.assertIn("No current active-default treatment protocol is frozen", runbook)
         self.assertNotIn("No current treatment protocol is frozen", runbook)
@@ -507,8 +532,13 @@ class ActiveCampaignArchitectureTest(unittest.TestCase):
         self.assertTrue(fixtures)
         self.assertTrue(all(item["status"] == "treatment-ready" for item in fixtures), fixtures)
 
-    def test_active_docs_surface_completed_opencode_screen(self) -> None:
-        audit_name = "opencode-tool-treatments-sol-high-r0-screen-results-20260729.json"
+    def test_active_docs_surface_current_opencode_corpus(self) -> None:
+        repaired = ROOT / "sources/evaluations/audits/opencode-tool-treatments-sol-high-r0-repaired-screen-results-20260729.json"
+        audit_name = (
+            repaired.name
+            if repaired.is_file()
+            else "invalid-opencode-treatment-result-deletions-20260729.json"
+        )
         for relative in (
             "README.md",
             "docs/evaluations/README.md",
@@ -517,7 +547,7 @@ class ActiveCampaignArchitectureTest(unittest.TestCase):
         ):
             text = (ROOT / relative).read_text()
             self.assertIn("122,368", text, relative)
-            self.assertIn("TokenJuice", text, relative)
+            self.assertIn("Serena", text, relative)
             self.assertIn(audit_name, text, relative)
 
     def test_agent_guidance_requires_evidence_driven_document_sync(self) -> None:
@@ -1021,6 +1051,108 @@ class ActiveCampaignArchitectureTest(unittest.TestCase):
         for deleted in receipt["profiles"]:
             self.assertTrue(set(deleted["deleted_session_ids"]).isdisjoint(active_ids))
             for relative in deleted["deleted_protocol_paths"] + deleted["deleted_comparison_paths"] + deleted["deleted_bundle_roots"]:
+                self.assertFalse((ROOT / relative).exists(), relative)
+
+    def test_exact_artifact_identity_and_post_install_receipts_fail_closed(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            source = root / "tool.bin"
+            installed = root / "installed.js"
+            run_dir = root / "run"
+            run_dir.mkdir()
+            source.write_bytes(b"exact-tool")
+            installed.write_bytes(b"exact-plugin")
+            cfg = {
+                "data_dir_name": "unit",
+                "artifact_identities": [
+                    {"path": str(source), "sha256": hashlib.sha256(source.read_bytes()).hexdigest(), "kind": "unit"}
+                ],
+                "post_install_artifacts": [
+                    {"path": str(installed), "sha256": hashlib.sha256(installed.read_bytes()).hexdigest(), "retain_as": "retained.js"}
+                ],
+            }
+            record = {"target": {"repository_path": str(root)}}
+            identities = runner.fixture.verify_artifact_identities(cfg, record, root)
+            retained = runner.fixture.retain_post_install_artifacts(cfg, record, root, run_dir)
+            self.assertTrue(identities[0]["passed"])
+            self.assertTrue(retained[0]["passed"])
+            self.assertEqual((run_dir / "retained.js").read_bytes(), b"exact-plugin")
+            source.write_bytes(b"mutated")
+            self.assertFalse(runner.fixture.verify_artifact_identities(cfg, record, root)[0]["passed"])
+
+    def test_warmup_dispatches_from_declared_contract_not_one_literal_state(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            repo = root / "repo"
+            run_dir = root / "run"
+            codex_home = root / "home"
+            repo.mkdir()
+            run_dir.mkdir()
+            cfg = {
+                "display_name": "Cartog repaired",
+                "data_dir_name": "cartog-repaired",
+                "warmup": {
+                    "kind": "official-init-and-structural-index",
+                    "command": ["/bin/true"],
+                    "metadata_name": "cartog-warmup-metadata.json",
+                    "output_name": "cartog-warmup-output.txt",
+                    "required_state_paths": [],
+                },
+            }
+            record = {"target": {"repository_path": str(repo)}}
+            protocol = {"tool_state": "warm-structural-index+live-watch", "warmup_provider_tokens_counted": False}
+            completed = subprocess.CompletedProcess(["/bin/true"], 0, "", "")
+            with mock.patch.object(runner.fixture, "active_tool_config", return_value=cfg), mock.patch.object(
+                runner.fixture, "run_backend", return_value=completed
+            ) as run_backend:
+                exit_code = runner.fixture.prepare_profile_workspace(
+                    record,
+                    "retrieval-cartog-opencode-product-v2",
+                    codex_home,
+                    run_dir,
+                    protocol,
+                    backend="host",
+                    docker_image="unused",
+                )
+            self.assertEqual(exit_code, 0)
+            run_backend.assert_called_once()
+            metadata = json.loads((run_dir / "cartog-warmup-metadata.json").read_text())
+            self.assertEqual(metadata["tool_state"], "warm-structural-index+live-watch")
+            self.assertEqual(metadata["exit_code"], 0)
+
+    def test_invalid_opencode_treatment_generations_are_deleted_and_superseded(self) -> None:
+        receipt = json.loads(
+            (ROOT / "sources/evaluations/audits/invalid-opencode-treatment-result-deletions-20260729.json").read_text()
+        )
+        sessions = json.loads((ROOT / "data/workflow-sessions.json").read_text())["sessions"]
+        profiles = {
+            row["id"]: row for row in json.loads((ROOT / "data/evaluation-profiles.json").read_text())["profiles"]
+        }
+        active_ids = {row["session_id"] for row in sessions}
+        expected_replacements = {
+            "terminal-tokenjuice-opencode-plugin-v1": "terminal-tokenjuice-opencode-plugin-v2",
+            "terminal-snip-opencode-plugin-v1": "terminal-snip-opencode-plugin-v2",
+            "retrieval-cartog-opencode-product-v1": "retrieval-cartog-opencode-product-v2",
+            "integrated-headroom-opencode-product-v2": "integrated-headroom-opencode-product-v3",
+        }
+        self.assertEqual(receipt["action"], "owner-authorized-active-corpus-deletion")
+        self.assertEqual(receipt["baseline_relabeling"], "forbidden")
+        self.assertEqual(receipt["recovery_ref"], "refs/remotes/origin/backup/pre-opencode-treatment-repair-20260729")
+        self.assertEqual(receipt["recovery_commit"], "029ebedd00bb468200278dde40965ae49404155d")
+        self.assertEqual(len(receipt["profiles"]), 4)
+        self.assertEqual(sum(len(row["deleted_session_ids"]) for row in receipt["profiles"]), 12)
+        for deleted in receipt["profiles"]:
+            profile_id = deleted["profile_id"]
+            replacement = expected_replacements[profile_id]
+            self.assertEqual(deleted["replacement_profile_id"], replacement)
+            self.assertTrue(set(deleted["deleted_session_ids"]).isdisjoint(active_ids))
+            self.assertTrue(profiles[profile_id]["historical_results_deleted"])
+            self.assertEqual(profiles[profile_id]["superseded_by"], replacement)
+            for relative in (
+                deleted["deleted_protocol_paths"]
+                + deleted["deleted_comparison_paths"]
+                + deleted["deleted_bundle_roots"]
+            ):
                 self.assertFalse((ROOT / relative).exists(), relative)
 
     def test_invalid_cartog_results_are_deleted_not_relabelled(self) -> None:

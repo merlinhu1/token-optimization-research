@@ -49,7 +49,7 @@ This document covers the active lifecycle-v0 portfolio, retained production base
 - Assisted-v1, Baseline V2, and Baseline V3 evidence remain historical for their exact hashes. Baseline V3 now has three retained first-valid provider-backed controls and no treatment result. Its attempt receipts prohibit baseline reruns, and its independent audit gates each sequence separately.
 - Historical qualification receipts remain evidence only for their exact protocol hashes and do not rescue subsequently invalid treatments. The final shared-runner refresh covers all 45 current selectable natural-use lanes across 15 profiles with protocol-hash-bound provider-free preparation, host integration, warm state, concealment, and required MCP handshake gates. All 45 have matching zero-provider qualification receipts.
 - Bare OpenCode 1.18.9 with GPT-5.6 Sol/`high` retained 122,368 provider tokens and 59,437.8 weighted units across the three lifecycle-v0 workflows, with 9/9 task verifiers passing. This was 51.56% below the matched bare Codex raw total and 39.83% below its weighted total; the contrast is attributed to the runtime/tool/context condition as a whole, not to model efficiency alone.
-- A five-product OpenCode treatment screen retained 15 valid r0 sessions and 45/45 passing task verifiers. None reduced aggregate usage against bare OpenCode: TokenJuice was closest at +1.31% raw and +3.54% weighted, followed by Cartog (+38.10%, +17.89%), Snip (+32.14%, +31.73%), Headroom (+29.04%, +32.56%), and Serena (+115.44%, +65.63%). Serena also generated `.serena` project files in all three repositories, so its changed scope is counted as a quality degradation despite passing verifiers. Natural uptake was uneven, and the results remain one-replicate screening evidence rather than stable rankings.
+- A stricter installation audit withdrew the original TokenJuice, Snip, Cartog, and Headroom OpenCode generations rather than relabelling them. Bare OpenCode still retains 122,368 provider tokens and 9/9 task-verifier passes; only Serena's three original treatment sessions remain active while fresh source-pinned successors await paid execution. See `invalid-opencode-treatment-result-deletions-20260729.json` for the deletion and provider-free qualification boundary.
 
 ## Evidence Boundary
 
@@ -95,7 +95,7 @@ A prior artifact-packaging audit found that the now-deleted historical Graphify 
 - ../../../../sources/evaluations/audits/codex-cumulative-usage-accounting-20260718.json
 - ../../../../sources/evaluations/audits/gpt-5-6-sol-high-baseline-variance-20260718.json
 - ../../../../sources/evaluations/audits/opencode-openai-gpt-5-6-sol-high-r0-screen-results-20260729.json
-- ../../../../sources/evaluations/audits/opencode-tool-treatments-sol-high-r0-screen-results-20260729.json
+- ../../../../sources/evaluations/audits/invalid-opencode-treatment-result-deletions-20260729.json
 - ../../../../scripts/audit_codex_cumulative_usage.py
 - ../../../../sources/evaluations/workflow-sessions/
 - ../../../../docs/evaluations/operations/runbook.md

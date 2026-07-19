@@ -95,12 +95,18 @@ SUPPORTED_WORKFLOW_TOOL_PROFILES = {
     "behavior-caveman-codex-skill-v1": "caveman-codex-skill-v1",
     "artifact-ponytail-codex-plugin-v1": "ponytail-codex-plugin-v1",
     "runtime-opencode-codex-product-v1": "opencode-codex-product-v1",
+    # Historical OpenCode treatment IDs remain reconstructable for immutable protocols,
+    # but their profile registry status prevents rerun after deletion.
     "terminal-tokenjuice-opencode-plugin-v1": "tokenjuice-opencode-plugin-v1",
-    "retrieval-serena-opencode-mcp-v1": "serena-opencode-mcp-v1",
     "terminal-snip-opencode-plugin-v1": "snip-opencode-plugin-v1",
     "retrieval-cartog-opencode-product-v1": "cartog-opencode-product-v1",
     "integrated-headroom-opencode-product-v1": "headroom-opencode-product-v1",
     "integrated-headroom-opencode-product-v2": "headroom-opencode-product-v2",
+    "terminal-tokenjuice-opencode-plugin-v2": "tokenjuice-opencode-plugin-v2",
+    "retrieval-serena-opencode-mcp-v1": "serena-opencode-mcp-v1",
+    "terminal-snip-opencode-plugin-v2": "snip-opencode-plugin-v2",
+    "retrieval-cartog-opencode-product-v2": "cartog-opencode-product-v2",
+    "integrated-headroom-opencode-product-v3": "headroom-opencode-product-v3",
 }
 
 # Existing profile protocols were qualified against this runner manifest. The
