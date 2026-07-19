@@ -462,9 +462,9 @@ class ActiveCampaignArchitectureTest(unittest.TestCase):
             }
             if completed == active_sequences:
                 completed_profiles.append(profile_id)
-        repaired_audit = ROOT / "sources/evaluations/audits/opencode-tool-treatments-sol-high-r0-repaired-screen-results-20260729.json"
+        repaired_audit = ROOT / "sources/evaluations/audits/opencode-tool-treatments-sol-high-r0-repaired-screen-results-20260730.json"
         expected_audit = (
-            "sources/evaluations/audits/opencode-tool-treatments-sol-high-r0-repaired-screen-results-20260729.json"
+            "sources/evaluations/audits/opencode-tool-treatments-sol-high-r0-repaired-screen-results-20260730.json"
             if repaired_audit.is_file()
             else "sources/evaluations/audits/invalid-opencode-treatment-result-deletions-20260729.json"
         )
@@ -532,8 +532,31 @@ class ActiveCampaignArchitectureTest(unittest.TestCase):
         self.assertTrue(fixtures)
         self.assertTrue(all(item["status"] == "treatment-ready" for item in fixtures), fixtures)
 
+    def test_repaired_opencode_screen_is_registry_derived_and_activation_audited(self) -> None:
+        path = ROOT / "sources/evaluations/audits/opencode-tool-treatments-sol-high-r0-repaired-screen-results-20260730.json"
+        audit = json.loads(path.read_text())
+        self.assertEqual(audit["condition"]["valid_session_count"], 15)
+        self.assertEqual(audit["condition"]["valid_task_count"], 45)
+        self.assertEqual({item["profile_id"] for item in audit["treatments"]}, {
+            "terminal-tokenjuice-opencode-plugin-v2",
+            "retrieval-serena-opencode-mcp-v1",
+            "terminal-snip-opencode-plugin-v2",
+            "retrieval-cartog-opencode-product-v2",
+            "integrated-headroom-opencode-product-v3",
+        })
+        headroom = next(item for item in audit["treatments"] if item["profile_id"] == "integrated-headroom-opencode-product-v3")
+        self.assertEqual(headroom["activation"]["proxy"]["request_count"], 22)
+        self.assertEqual(headroom["activation"]["proxy"]["tokens_saved"], 6270)
+        self.assertTrue(headroom["quality"]["treatment_degradation"])
+        self.assertFalse(headroom["activation"]["headroom_mcp"]["activation_passed"])
+        self.assertTrue(headroom["activation"]["serena_mcp"]["activation_passed"])
+        self.assertEqual(audit["execution"]["replacement_step_finish_events_reconciled"], 75)
+        self.assertEqual(audit["aggregate_quality"]["byte_identical_sessions_vs_bare_opencode"], 12)
+        deletion = json.loads((ROOT / "sources/evaluations/audits/invalid-opencode-treatment-result-deletions-20260729.json").read_text())
+        self.assertEqual(deletion["deleted_session_count"], 12)
+
     def test_active_docs_surface_current_opencode_corpus(self) -> None:
-        repaired = ROOT / "sources/evaluations/audits/opencode-tool-treatments-sol-high-r0-repaired-screen-results-20260729.json"
+        repaired = ROOT / "sources/evaluations/audits/opencode-tool-treatments-sol-high-r0-repaired-screen-results-20260730.json"
         audit_name = (
             repaired.name
             if repaired.is_file()
