@@ -1,7 +1,7 @@
 ---
 status: active
 truth_kind: engineering-behavior
-last_reviewed: 2026-07-18
+last_reviewed: 2026-07-19
 ---
 
 # Current Findings
@@ -12,7 +12,7 @@ Record the repository's current decision-bearing evaluation state without overst
 
 ## Scope
 
-This document covers the active lifecycle-v0 portfolio and retained production baseline evidence. It does not claim token savings before paired treatment runs exist.
+This document covers the active lifecycle-v0 portfolio, retained production baseline evidence, accepted corrected treatment sessions, and explicit treatment deletions. Token claims require retained provider-backed sessions; setup qualification alone is not effectiveness evidence.
 
 ## Current Implementation Behavior
 
@@ -29,20 +29,21 @@ This document covers the active lifecycle-v0 portfolio and retained production b
 - A separate GPT-5.6 Sol/`high` model-comparison panel contributes nine valid baseline sessions and 68,275,315 corrected provider tokens. Every session passed 3/3 tasks and final verification with zero operational retries; all compact-artifact manifests passed. A recursive diagnostics audit nevertheless found raw stderr/non-object lines in retained Codex event JSONL streams, so checksum integrity must not be read as strict nested parseability.
 - Sol/`high` used 32.30% fewer pooled corrected provider tokens than the retained Luna/`xhigh` panel, and every sequence/replicate cell was lower. This is a descriptive compound-condition contrast, not a model-only causal estimate: effort changed from `xhigh` to `high`, and six of nine pairs froze a different fixture-runner hash.
 - The corrected Sol variance result is mixed: Fastify CV decreased from 19.18% to 6.86% and Beets from 18.87% to 14.98%, while Terraform increased from 10.18% to 21.70% and the three-lane portfolio increased from 5.66% to 16.29%. Terraform Sol/`high` r0 is a valid 15,526,000-token high-trajectory sample; its legacy 31,471,786 value was cumulative-snapshot double counting.
-- The official-integration parity audit covers all 18 historical treatment profiles and all 54 historical treatment sessions. At the experiment owner's direction, 42 corrupted sessions and their active comparisons, compact bundles, and occupied protocols were deleted under receipt rather than relabelled as baseline. The active registry contains 18 controls and 12 eligible treatment records.
-- Four three-lane conditions retain objective eligibility: Caveman as an always-on behavioral instruction policy, Ponytail as an always-on full-mode artifact policy, default Headroom as the pinned Codex wrapper treatment, and the Headroom proxy-only ablation.
-- Under corrected accounting, Caveman used 34,108,648 tokens versus 34,894,568 matched baseline (-2.25%) with 9/9 verifier tasks. Ponytail used 34,839,756 (-0.16%) with 9/9 verifier tasks. These are narrow instruction-policy estimates, not installer/plugin lifecycle estimates.
+- The official-integration parity audit covers all 18 historical treatment profiles and all 54 historical treatment sessions. At the experiment owner's direction, 48 corrupted historical sessions and their active comparisons, compact bundles, and occupied protocols were deleted under receipt rather than relabelled as baseline. After later corrected runs and owner-directed deletion of invalid CodeGraph v1, jcodemunch direct v1, Ponytail prompt-only, and Caveman prompt-emulated results, the active registry contains 18 controls and 18 eligible treatment records.
+- Two three-lane historical conditions retain objective eligibility: default Headroom as the pinned Codex wrapper treatment and the Headroom proxy-only ablation.
 - Default Headroom used 38,075,992 corrected tokens (+9.12%) with 8/9 verifier tasks; its proxy-only ablation used 36,062,796 (+3.35%) with 8/9 verifier tasks. The ablation is not a separate full-product ranking entry.
-- TokenJuice, RTK, snip, Graphify, CodeGraph, and Lean Context were invalid historical product treatments because the runner omitted required Codex hook/rules/skill/index/hybrid surfaces or otherwise materially changed the product setup.
+- TokenJuice, RTK, snip, Graphify, CodeGraph v1, Lean Context, Ponytail prompt-only, and Caveman prompt-emulated lanes were invalid historical product treatments because the runner omitted required Codex hook/rules/skill/index/hybrid surfaces or otherwise materially changed the product setup.
 - The historical jcodemunch arm was invalid because it used an on-demand launcher, retained no successful MCP handshake, and did not identify whether it represented neutral MCP availability or the separate product-guidance layer.
 - Cartog, CodeScope, SwarmVault, Serena, SigMap, and Token Savior were operationally unproven historical assignments. Their active results were deleted under the same no-baseline-relabel policy.
 - The historical TokenJuice+jcodemunch stack was deleted because both component assignments were defective or unverified; its prior “does not advance” decision is withdrawn. No corrected stack contract exists pending valid individual evidence.
-- Thirteen versioned corrected individual profiles now cover every deleted individual condition: TokenJuice, jcodemunch, RTK, snip, Graphify, CodeGraph, Lean Context, Cartog, CodeScope, SwarmVault, Serena, SigMap, and Token Savior. Each has a fixture-specific frozen protocol for Fastify, Beets, and Terraform and requires its pinned official or documented compatibility-safe Codex materialization.
-- All 39 corrected fixture/profile protocols passed provider-free preparation, host-integration, warm-state, and applicable MCP `initialize` plus non-empty `tools/list` gates. No corrected provider-backed sessions have run; historical profile IDs remain non-runnable.
+- The invalid CodeGraph result was deleted on 2026-07-19 because the official installer generated a bare `codegraph` command that the model container could not resolve; all three attempted `codegraph explore` commands exited 127. By owner direction, the corrected candidate reuses the canonical `retrieval-codegraph-codex-mcp-v1` profile ID and is distinguished by new frozen protocol hashes and fresh qualification. jcodemunch direct v1 was separately deleted because omitting the tool-author-provided Codex guidance layer made the canonical installation broken and incomplete. Its guide-faithful successor is `retrieval-jcodemunch-codex-mcp-v2`; it has provider-free setup evidence only and no product-effect result.
+- Ponytail and Caveman's six historical results were deleted on 2026-07-19 because they measured evaluator-injected prompt emulations rather than the authors' documented Codex products. Their clean successors are `artifact-ponytail-codex-plugin-v1` (official Codex plugin plus reviewed trusted lifecycle hooks) and `behavior-caveman-codex-skill-v1` (native skill installation plus documented `/caveman` session activation). These successors have provider-free setup evidence only and no product-effect result.
+- Corrected provider-backed sessions are retained for TokenJuice (24,429,098 tokens), RTK (30,835,034), Snip (32,129,378), and Graphify (51,520,635). Each profile passed 9/9 task verifiers. Deleted invalid results are not incorporated into product-effect claims.
+- The original 39-lane qualification receipt remains evidence only for its exact 2026-07-18 protocol hashes and does not rescue subsequently invalid treatments. The final shared-runner refresh covers all 45 current selectable lanes across 15 profiles with protocol-hash-bound provider-free preparation, host-integration, warm-state, concealment, and required MCP handshake gates. All 45 passed with zero provider calls; 33 pre-existing lanes, three separately qualified CodeGraph lanes, six Ponytail/Caveman lanes, and three jcodemunch v2 lanes have separate receipts bound to their exact profile sets and protocol hashes.
 
 ## Evidence Boundary
 
-Qualification proves fixture mechanics and discriminative diagnostics, not model effectiveness. Product-effect eligibility additionally requires parity with the pinned official Codex integration and positive treatment-assignment evidence. For MCP profiles, configuration/listing is not a substitute for a retained protocol handshake or completed MCP call. Immutable compact bundles and legacy registry totals remain provenance; current token claims must use the cumulative-usage correction audit. The experiment-owner-authorized treatment repair remains a separate explicit exception, with corrupted active records deleted under machine-readable receipts rather than converted into controls.
+Qualification proves fixture mechanics and discriminative diagnostics, not model effectiveness. Product-effect eligibility additionally requires parity with the pinned tool-author installation guide and positive treatment-assignment evidence. Product-authored guidance is part of the treatment whenever the guide recommends it; stripping that layer is an incomplete canonical installation, not evaluator neutrality. For MCP profiles, configuration/listing alone is not a substitute for the complete documented integration or for retained protocol evidence appropriate to that integration. Immutable compact bundles and legacy registry totals remain provenance; current token claims must use the cumulative-usage correction audit. The experiment-owner-authorized treatment repair remains a separate explicit exception, with corrupted active records deleted under machine-readable receipts rather than converted into controls.
 
 A prior Headroom proxy-only attempt was excluded as a controller-audit false positive because the audit interpreted the wrapper's explicit disabled-component startup notices as active tool exposure. The corrected first valid ablation is the only retained sample and no tokens from the excluded attempt are included in comparisons.
 
@@ -67,6 +68,10 @@ A prior artifact-packaging audit found that the now-deleted historical Graphify 
 - ../../../../sources/evaluations/audits/invalid-treatment-result-deletions-20260718.json
 - ../../../../sources/evaluations/audits/unproven-treatment-result-deletions-20260718.json
 - ../../../../sources/evaluations/audits/corrected-integration-qualification-20260718.json
+- ../../../../sources/evaluations/audits/invalid-codegraph-v1-result-deletion-20260719.json
+- ../../../../sources/evaluations/audits/corrected-integration-qualification-codegraph-20260719.json
+- ../../../../sources/evaluations/audits/invalid-jcodemunch-direct-v1-result-deletion-20260719.json
+- ../../../../sources/evaluations/audits/corrected-integration-qualification-jcodemunch-codex-mcp-v2-20260719.json
 - ../../../../sources/evaluations/audits/codex-cumulative-usage-accounting-20260718.json
 - ../../../../sources/evaluations/audits/gpt-5-6-sol-high-baseline-variance-20260718.json
 - ../../../../scripts/audit_codex_cumulative_usage.py

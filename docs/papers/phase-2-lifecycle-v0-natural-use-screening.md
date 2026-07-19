@@ -4,7 +4,7 @@
 >
 > **Accounting supersession (2026-07-18):** all persistent-session totals in this historical report sum cumulative Codex `ThreadTokenUsage.total` snapshots and are inflated. Use the [cumulative usage correction audit](../../sources/evaluations/audits/codex-cumulative-usage-accounting-20260718.json) and [current findings](../truthmark/engineering/research/current-findings.md) for active token claims. The historical tables below remain unchanged for provenance.
 >
-> **Superseding adjudication (2026-07-18):** 42 of 54 lifecycle-v0 treatment sessions were deleted from the active corpus—not relabelled as baseline: 24 because the evaluated configuration did not implement the pinned product's required Codex treatment, and 18 because a plausible bounded/manual MCP assignment was not positively proven. Only Caveman, Ponytail, default Headroom, and the Headroom proxy-only ablation retain active eligibility for their explicitly narrower estimands.
+> **Superseding adjudication (updated 2026-07-19):** all historical treatment results except the two Headroom conditions were deleted from the active corpus—not relabelled as baseline—after official-installation and assignment audits. The later Ponytail and Caveman correction removed their six prompt-emulated results as incomplete canonical installations. Their guide-faithful successors have provider-free setup evidence only and no product-effect result. Historical tables below remain unchanged for provenance.
 
 **Report date:** 2026-07-18
 
@@ -24,7 +24,7 @@ The evidence contains 57 completed provider runs: six bare-Codex baselines and 5
 
 The historical matched `r1` tables range from TokenJuice at -28.54% to CodeScope at +15.63%. Those deltas remain factual arithmetic over retained provider totals, but most named treatment assignments were later found invalid or operationally unverified. They must not be interpreted as product effects, ordered as a tool ranking, or used for recommendations.
 
-The surviving objective-eligible evidence is limited to Caveman and Ponytail as always-on product-authored instruction policies, default Headroom as the wrapper treatment, and the Headroom proxy-only ablation. Corrected TokenJuice and jcodemunch protocols have no provider-backed samples yet.
+The surviving objective-eligible historical evidence is limited to default Headroom as the wrapper treatment and its proxy-only component ablation. Later guide-faithful corrected evidence exists for TokenJuice, RTK, Snip, and Graphify. CodeGraph v1, jcodemunch direct v1, Ponytail prompt-only, and Caveman prompt-emulated results were later deleted for incomplete or unusable canonical installations; their successor profile definitions do not retroactively validate the historical samples.
 
 ## 1. Research question and claim boundary
 

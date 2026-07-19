@@ -52,7 +52,7 @@ python3 scripts/run_sequential_workflow_matrix.py --prepare-only "$SEQUENCE_ID"
 
 ## Paid execution
 
-Current runnable treatment profiles: `artifact-ponytail`, `behavior-caveman`, `codescope-codex-product-v1`, `headroom-default-codex`, `integrated-leanctx-codex-hybrid-v1`, `integrated-token-savior-mcp-v1`, `retrieval-cartog-mcp-v1`, `retrieval-codegraph-codex-mcp-v1`, `retrieval-graphify-codex-skill-v1`, `retrieval-jcodemunch-mcp-direct-v1`, `retrieval-serena-codex-mcp-v1`, `retrieval-sigmap-codex-live-v1`, `swarmvault-codex-product-v1`, `terminal-rtk-codex-instructions-v1`, `terminal-snip-codex-hook-v1`, `terminal-tokenjuice-codex-hook-v1`. Historical profiles marked `historical-profile` are occupied evidence identities and cannot be rerun in place.
+Current runnable treatment profiles: `artifact-ponytail-codex-plugin-v1`, `behavior-caveman-codex-skill-v1`, `codescope-codex-product-v1`, `headroom-default-codex`, `integrated-leanctx-codex-hybrid-v1`, `integrated-token-savior-mcp-v1`, `retrieval-cartog-mcp-v1`, `retrieval-codegraph-codex-mcp-v1`, `retrieval-graphify-codex-skill-v1`, `retrieval-jcodemunch-codex-mcp-v2`, `retrieval-serena-codex-mcp-v1`, `retrieval-sigmap-codex-live-v1`, `swarmvault-codex-product-v1`, `terminal-rtk-codex-instructions-v1`, `terminal-snip-codex-hook-v1`, `terminal-tokenjuice-codex-hook-v1`. Historical profiles marked `historical-profile` are occupied evidence identities and cannot be rerun in place.
 
 Reusable baselines already exist for `fastify-lifecycle-sequence-v0` (r0, r1, r2), `beets-lifecycle-sequence-v0` (r0, r1, r2), `terraform-lifecycle-sequence-v0` (r0, r1, r2). Do not rerun them. Choose one compatible treatment profile and one intended lane:
 

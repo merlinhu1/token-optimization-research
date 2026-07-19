@@ -16,7 +16,7 @@ Define:
 2. **Evidence target**: `benchmark-audit` or `reproduction`.
 3. **Lifecycle sequence**: sequence ID, pinned fixture/snapshot, ordered prompts, state policy, and time budget.
 4. **Compatible baseline pool**: protocol fingerprint, model/provider condition, replicate index, and retained baseline session when one exists.
-5. **Treatment identity**: profile, enabled surfaces, adapter command, binary/config hashes, isolation policy, and reset path.
+5. **Treatment identity**: profile, enabled surfaces, pinned tool-author installation guide, every author-recommended host surface (including product-authored guidance/rules/skills/hooks), adapter command, binary/config hashes, isolation policy, and reset path. Evaluator-authored steering is forbidden, but reduced or guidance-free setups must be named as ablations rather than canonical product treatments.
 6. **Token boundary**: complete provider-reported persistent workflow usage; capture fresh input, cached input, cache-write, output, reasoning, and total when available.
 7. **Operational validity**: complete execution, thread continuity, warning-free usage, fixture/contract validity, verifier integrity, tool isolation, and compact-artifact integrity.
 8. **Model-behavior diagnostics**: deterministic verifier outcomes, changed-area checks, optional source review, and critical findings. These fields do not gate token accounting or trigger reruns.
@@ -46,4 +46,5 @@ Follow the `AGENTS.md` documentation lifecycle. Update authoritative registries,
 - Changing prompts or fixtures between paired sessions.
 - Reporting prompt estimates instead of complete provider usage.
 - Treating runner PATH preflight as proof that the model-visible environment can use a treatment tool.
+- Stripping tool-author-provided guidance in the name of neutrality; faithful canonical installation includes it, while evaluator-authored steering remains forbidden.
 - Combining samples across a harness, fixture, isolation, or causal protocol change.
