@@ -36,6 +36,12 @@ DEFAULT_FORBIDDEN = [
     "cartog",
     "caveman",
 ]
+PROFILE_AUTHORED_CROSS_REFERENCE_TERMS = {
+    # Ponytail's own installed instructions recommend pairing it with Caveman
+    # for terse prose. That product-authored text is not evidence that the
+    # Caveman treatment was installed or invoked in a Ponytail lane.
+    "artifact-ponytail-codex-plugin-v1": {"caveman"},
+}
 NETWORK_CLIENT_PATTERN = re.compile(
     r"(?:^|[;&|]\s*|\b(?:lowfat|sudo|env)\s+)(?P<client>curl|wget)\b",
     re.IGNORECASE,
@@ -58,6 +64,9 @@ def forbidden_for(record: dict[str, Any]) -> tuple[list[str], set[str]]:
         set(DEFAULT_FORBIDDEN) | set(permissions.get("forbidden_tools") or [])
     )
     allowed = set(permissions.get("allowed_token_saving_tools") or [])
+    profile_id = permissions.get("profile_id")
+    if isinstance(profile_id, str):
+        allowed.update(PROFILE_AUTHORED_CROSS_REFERENCE_TERMS.get(profile_id, set()))
     return forbidden, allowed
 
 

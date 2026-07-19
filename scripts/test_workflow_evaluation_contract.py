@@ -16,6 +16,7 @@ ROOT = Path(__file__).resolve().parents[1]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
+from scripts import audit_tool_isolation
 from scripts import extract_codex_usage
 from scripts import generate_workflow_qualification as qualification
 from scripts import refresh_workflow_contracts as contract_refresh
@@ -53,6 +54,34 @@ def retained_protocol_path(
     if not path.is_file():
         raise AssertionError(f"retained frozen protocol is missing: {path}")
     return path
+
+
+class ToolIsolationAuditTest(unittest.TestCase):
+    def test_ponytail_product_authored_caveman_reference_is_not_cross_tool_use(self) -> None:
+        record = {
+            "setup": {
+                "tool_permissions": {
+                    "profile_id": "artifact-ponytail-codex-plugin-v1",
+                    "allowed_token_saving_tools": ["ponytail", "ponytail-codex-plugin-v1"],
+                }
+            }
+        }
+        forbidden, allowed = audit_tool_isolation.forbidden_for(record)
+        with tempfile.TemporaryDirectory() as tmp:
+            artifact = Path(tmp) / "events.jsonl"
+            artifact.write_text("Ponytail may be paired with Caveman for terse prose.\n")
+            self.assertEqual(audit_tool_isolation.scan_file(artifact, forbidden, allowed), [])
+
+        control = copy.deepcopy(record)
+        control["setup"]["tool_permissions"]["profile_id"] = "baseline-bare-codex"
+        forbidden, allowed = audit_tool_isolation.forbidden_for(control)
+        with tempfile.TemporaryDirectory() as tmp:
+            artifact = Path(tmp) / "events.jsonl"
+            artifact.write_text("Caveman was invoked.\n")
+            self.assertEqual(
+                [hit["term"] for hit in audit_tool_isolation.scan_file(artifact, forbidden, allowed)],
+                ["caveman"],
+            )
 
 
 class CodexUsageAccountingTest(unittest.TestCase):
