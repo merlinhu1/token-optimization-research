@@ -107,6 +107,11 @@ SUPPORTED_WORKFLOW_TOOL_PROFILES = {
     "terminal-snip-opencode-plugin-v2": "snip-opencode-plugin-v2",
     "retrieval-cartog-opencode-product-v2": "cartog-opencode-product-v2",
     "integrated-headroom-opencode-product-v3": "headroom-opencode-product-v3",
+    "codescope-opencode-product-v1": "codescope-opencode-product-v1",
+    "swarmvault-opencode-product-v1": "swarmvault-opencode-product-v1",
+    "retrieval-graphify-opencode-product-v1": "graphify-opencode-product-v1",
+    "terminal-rtk-opencode-plugin-v1": "rtk-opencode-plugin-v1",
+    "retrieval-codegraph-opencode-mcp-v1": "codegraph-opencode-mcp-v1",
 }
 
 # Existing profile protocols were qualified against this runner manifest. The
