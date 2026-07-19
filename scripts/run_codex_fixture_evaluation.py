@@ -116,7 +116,7 @@ TOKEN_SAVIOR_WHEEL = TOKEN_SAVIOR_ROOT / "dist" / "token_savior_recall-4.4.1-py3
 GRAPHIFY_WHEEL = GRAPHIFY_ROOT / "dist" / "graphifyy-0.9.1-py3-none-any.whl"
 JCODEMUNCH_WHEEL = JCODEMUNCH_ROOT / "dist" / "jcodemunch_mcp-1.108.114-py3-none-any.whl"
 JCODEMUNCH_COMMIT = "fbc14e40c7057ebc6d718fb48083d30522afe15f"
-JCODEMUNCH_GUIDANCE_INSTALLER = ROOT / "scripts" / "install_jcodemunch_codex_guidance.py"
+JCODEMUNCH_GUIDANCE_INSTALLER = "{repository_root}/scripts/install_jcodemunch_codex_guidance.py"
 SNIP_BIN = SNIP_ROOT / "snip"
 UV_BIN = Path("/opt/data/opt/uv/uv")
 RTK_BIN = Path("/opt/data/tool-candidates/rtk/target/release/rtk")
@@ -125,8 +125,8 @@ NODE_TOOLCHAIN_ROOT = Path("/opt/data/opt/node-v24.18.0-linux-x64")
 NODE_BIN = NODE_TOOLCHAIN_ROOT / "bin" / "node"
 NPX_BIN = NODE_TOOLCHAIN_ROOT / "bin" / "npx"
 PONYTAIL_COMMIT = "40e50d9e03242aa5dd53ac771950f9127362b25f"
-PONYTAIL_MARKETPLACE_PREPARER = ROOT / "scripts" / "prepare_pinned_codex_marketplace.py"
-CODEX_PLUGIN_HOOK_TRUSTER = ROOT / "scripts" / "trust_codex_plugin_hooks.py"
+PONYTAIL_MARKETPLACE_PREPARER = "{repository_root}/scripts/prepare_pinned_codex_marketplace.py"
+CODEX_PLUGIN_HOOK_TRUSTER = "{repository_root}/scripts/trust_codex_plugin_hooks.py"
 
 TOOL_CONFIGS: dict[str, dict[str, Any]] = {
     "lean-ctx": {
@@ -1187,6 +1187,7 @@ def render_tool_value(value: Any, record: dict[str, Any], codex_home: Path, cfg:
         tool_data_dir=tool_data_dir(codex_home, cfg),
         repo_slug=repo_path.name.replace("-", "_"),
         tool_port=tool_port,
+        repository_root=ROOT,
     )
 
 
@@ -1460,7 +1461,10 @@ def docker_tool_mounts(cfg: dict[str, Any] | None = None) -> list[tuple[Path, Pa
         str(NODE_TOOLCHAIN_ROOT),
     ]
     if cfg:
-        path_texts.extend(str(path) for path in cfg.get("mounts", []))
+        path_texts.extend(
+            str(path).format(repository_root=ROOT)
+            for path in cfg.get("mounts", [])
+        )
     for path_text in path_texts:
         path = Path(path_text)
         if path.exists():

@@ -2608,6 +2608,45 @@ class CorrectionContractTest(unittest.TestCase):
         self.assertNotIn("prompt_instructions_command", pony)
         self.assertNotIn("prompt_instructions_command", cave)
 
+    def test_repository_local_integration_helpers_use_portable_descriptor_paths(self) -> None:
+        pony = runner.fixture.active_tool_config({}, "artifact-ponytail-codex-plugin-v1")
+        jcodemunch = runner.fixture.active_tool_config({}, "retrieval-jcodemunch-codex-mcp-v2")
+        assert pony is not None
+        assert jcodemunch is not None
+        expected = {
+            "{repository_root}/scripts/prepare_pinned_codex_marketplace.py",
+            "{repository_root}/scripts/trust_codex_plugin_hooks.py",
+        }
+        self.assertTrue(expected.issubset(set(pony["mounts"])))
+        self.assertIn(
+            "{repository_root}/scripts/install_jcodemunch_codex_guidance.py",
+            jcodemunch["mounts"],
+        )
+        for profile_id in (
+            "artifact-ponytail-codex-plugin-v1",
+            "retrieval-jcodemunch-codex-mcp-v2",
+        ):
+            identity = runner.tool_adapter_identity(profile_id)
+            local_paths = {
+                row["path"]
+                for row in identity["source_identity"]
+                if row["path"].startswith("{repository_root}/")
+            }
+            self.assertTrue(local_paths, profile_id)
+
+    def test_corrected_profile_artifact_labels_are_explicit_and_collision_free(self) -> None:
+        expected = {
+            "artifact-ponytail-codex-plugin-v1": "ponytail",
+            "behavior-caveman-codex-skill-v1": "caveman",
+            "retrieval-jcodemunch-codex-mcp-v2": "jcodemunch",
+        }
+        labels = {
+            profile_id: runner.artifact_profile_label(profile_id)
+            for profile_id in expected
+        }
+        self.assertEqual(labels, expected)
+        self.assertEqual(len(set(labels.values())), len(labels))
+
     def test_generated_host_integration_identity_is_valid(self) -> None:
         identity = {
             "id": "generated-profile",
