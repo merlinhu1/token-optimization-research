@@ -1,0 +1,1198 @@
+# Ordered cumulative source checkpoints. Every section is relative to the one composite broken-start root.
+
+# --- task-01-agent ---
+diff --git a/internal/policy/callback/callback.go b/internal/policy/callback/callback.go
+index 8116ebd..6b0fd11 100644
+--- a/internal/policy/callback/callback.go
++++ b/internal/policy/callback/callback.go
+@@ -13,7 +13,7 @@ import (
+ 
+ type Functions struct {
+ 	GetResources  func(ctx context.Context, resource string, attrs cty.Value) ([]cty.Value, bool, error)
+-	GetDataSource func(ctx context.Context, datasource string, attrs cty.Value) (cty.Value, error)
++	GetDataSource func(ctx context.Context, datasource string, attrs cty.Value) (cty.Value, bool, error)
+ }
+ 
+ // Registry is an interface for managing callback functions for resources and
+diff --git a/internal/policy/callback/server.go b/internal/policy/callback/server.go
+index 65d2335..51d0cfc 100644
+--- a/internal/policy/callback/server.go
++++ b/internal/policy/callback/server.go
+@@ -70,7 +70,7 @@ func (s *Server) GetDataSource(ctx context.Context, request *proto.GetDataSource
+ 		err := fmt.Errorf("no callback registered for ID %d (request type: %s)", request.EvaluationRequestId, request.Type)
+ 		return nil, err
+ 	}
+-	datasource, err := functions.GetDataSource(ctx, request.Type, config)
++	datasource, isDeferred, err := functions.GetDataSource(ctx, request.Type, config)
+ 	if err != nil {
+ 		return nil, err
+ 	}
+@@ -82,7 +82,8 @@ func (s *Server) GetDataSource(ctx context.Context, request *proto.GetDataSource
+ 	}
+ 
+ 	return &proto.GetDataSourceResponse{
+-		Result: result,
++		Result:   result,
++		Deferred: isDeferred,
+ 	}, nil
+ }
+ 
+diff --git a/internal/states/sync.go b/internal/states/sync.go
+index 7f3e97c..a5bcb77 100644
+--- a/internal/states/sync.go
++++ b/internal/states/sync.go
+@@ -147,6 +147,15 @@ func (s *SyncState) ResourceInstance(addr addrs.AbsResourceInstance) *ResourceIn
+ // of the given config resource, applying the given selector function to each
+ // instance and yielding the results.
+ func ReadEachConfigResourceInstance[T any](syncState *SyncState, addr addrs.ConfigResource, selector func(*ResourceInstance) (T, bool)) iter.Seq[T] {
++	return ReadEachConfigResourceInstanceWithAddr(syncState, addr, func(_ addrs.AbsResourceInstance, inst *ResourceInstance) (T, bool) {
++		return selector(inst)
++	})
++}
++
++// ReadEachConfigResourceInstanceWithAddr is like ReadEachConfigResourceInstance,
++// but also provides the absolute address of each resource instance to the
++// selector.
++func ReadEachConfigResourceInstanceWithAddr[T any](syncState *SyncState, addr addrs.ConfigResource, selector func(addrs.AbsResourceInstance, *ResourceInstance) (T, bool)) iter.Seq[T] {
+ 	if syncState == nil {
+ 		panic("ReadEachConfigResourceInstance on nil state")
+ 	}
+@@ -162,7 +171,7 @@ func ReadEachConfigResourceInstance[T any](syncState *SyncState, addr addrs.Conf
+ 	return func(yield func(T) bool) {
+ 		for _, addr := range addrs {
+ 			val := syncState.state.ResourceInstance(addr.ResourceInstance)
+-			selected, ok := selector(val)
++			selected, ok := selector(addr.ResourceInstance, val)
+ 			if !ok {
+ 				continue
+ 			}
+diff --git a/internal/terraform/policy.go b/internal/terraform/policy.go
+index 12e8221..84f6014 100644
+--- a/internal/terraform/policy.go
++++ b/internal/terraform/policy.go
+@@ -62,7 +62,7 @@ func getResourcesForPolicyCallback(ctx EvalContext, walkOperation walkOperation,
+ 		))
+ 
+ 		defer span.End()
+-		var found []cty.Value
++		found := make([]cty.Value, 0)
+ 		var filterMap map[string]cty.Value
+ 		if !attrs.IsNull() {
+ 			filterMap = attrs.AsValueMap()
+@@ -76,6 +76,20 @@ func getResourcesForPolicyCallback(ctx EvalContext, walkOperation walkOperation,
+ 				}
+ 				addr := resource.Addr().InModule(c.Path)
+ 				schema := schema.SchemaForResourceAddr(addr.Resource)
++				var deferredInstances []addrs.AbsResourceInstance
++				if deferrals := ctx.Deferrals(); deferrals != nil {
++					for _, deferred := range deferrals.GetDeferredChanges() {
++						if deferred.Change == nil || deferred.Change.Addr.Resource.Resource.Mode != addrs.ManagedResourceMode {
++							continue
++						}
++						if deferred.Change.Addr.ConfigResource().Equal(addr) {
++							deferredInstances = append(deferredInstances, deferred.Change.Addr)
++						}
++					}
++				}
++				if len(deferredInstances) != 0 {
++					isPartialResult = true
++				}
+ 
+ 				// Now we implement a generator function that yields resource instances
+ 				// from either the state or the config, depending on the walk operation.
+@@ -83,7 +97,12 @@ func getResourcesForPolicyCallback(ctx EvalContext, walkOperation walkOperation,
+ 				var count int
+ 				if walkOperation == walkApply {
+ 					// Read each config resource instance from the state, decoding it into a cty.Value
+-					resourcesSeq = states.ReadEachConfigResourceInstance(state, addr, func(inst *states.ResourceInstance) (cty.Value, bool) {
++					resourcesSeq = states.ReadEachConfigResourceInstanceWithAddr(state, addr, func(instAddr addrs.AbsResourceInstance, inst *states.ResourceInstance) (cty.Value, bool) {
++						for _, deferredAddr := range deferredInstances {
++							if deferredAddr.Equal(instAddr) {
++								return cty.NilVal, false
++							}
++						}
+ 						if inst.Current == nil {
+ 							return cty.NilVal, false
+ 						}
+@@ -99,6 +118,16 @@ func getResourcesForPolicyCallback(ctx EvalContext, walkOperation walkOperation,
+ 					// Read each config resource change from the plan, returning the corresponding cty.Value
+ 					resourcesSeq = func(yield func(cty.Value) bool) {
+ 						for change := range plans.ReadInstancesForConfigResource(ctx.Changes(), addr) {
++							deferred := false
++							for _, deferredAddr := range deferredInstances {
++								if deferredAddr.Equal(change.Addr) {
++									deferred = true
++									break
++								}
++							}
++							if deferred {
++								continue
++							}
+ 							count++
+ 							yield(change.After)
+ 						}
+@@ -126,8 +155,8 @@ func getResourcesForPolicyCallback(ctx EvalContext, walkOperation walkOperation,
+ 	}
+ }
+ 
+-func getDataSourceForPolicyCallback(ctx EvalContext, provider providers.Interface, schema providers.GetProviderSchemaResponse, meta cty.Value) func(callbackCtx context.Context, datasource string, attrs cty.Value) (cty.Value, error) {
+-	return func(c context.Context, target string, attrs cty.Value) (cty.Value, error) {
++func getDataSourceForPolicyCallback(ctx EvalContext, provider providers.Interface, schema providers.GetProviderSchemaResponse, meta cty.Value) func(callbackCtx context.Context, datasource string, attrs cty.Value) (cty.Value, bool, error) {
++	return func(c context.Context, target string, attrs cty.Value) (cty.Value, bool, error) {
+ 		_, span := tracer().Start(c, "policy.callback.getDataSource", trace.WithAttributes(
+ 			attribute.String("policy.callback.getDataSource.type", target),
+ 		))
+@@ -135,7 +164,7 @@ func getDataSourceForPolicyCallback(ctx EvalContext, provider providers.Interfac
+ 		if datasource, ok := schema.DataSources[target]; ok {
+ 			configVal, err := datasource.Body.CoerceValue(attrs)
+ 			if err != nil {
+-				return cty.NilVal, fmt.Errorf("invalid attributes for %q: %w", target, err)
++				return cty.NilVal, false, fmt.Errorf("invalid attributes for %q: %w", target, err)
+ 			}
+ 
+ 			validateResp := provider.ValidateDataResourceConfig(providers.ValidateDataResourceConfigRequest{
+@@ -143,7 +172,7 @@ func getDataSourceForPolicyCallback(ctx EvalContext, provider providers.Interfac
+ 				Config:   configVal,
+ 			})
+ 			if err := validateResp.Diagnostics.Err(); err != nil {
+-				return cty.NilVal, fmt.Errorf("failed to validate data source configuration: %s", err)
++				return cty.NilVal, false, fmt.Errorf("failed to validate data source configuration: %s", err)
+ 			}
+ 
+ 			readResp := provider.ReadDataSource(providers.ReadDataSourceRequest{
+@@ -152,12 +181,16 @@ func getDataSourceForPolicyCallback(ctx EvalContext, provider providers.Interfac
+ 				ProviderMeta: meta,
+ 			})
+ 			if err := readResp.Diagnostics.Err(); err != nil {
+-				return cty.NilVal, fmt.Errorf("failed to read data source: %s", err)
++				return cty.NilVal, false, fmt.Errorf("failed to read data source: %s", err)
++			}
++
++			if readResp.Deferred != nil && !ctx.Deferrals().DeferralAllowed() {
++				return cty.NilVal, false, fmt.Errorf("The provider signaled a deferred action for %s, but in this context deferrals are disabled. This is a bug in the provider, please file an issue with the provider developers.", target)
+ 			}
+ 
+-			return readResp.State, nil
++			return readResp.State, readResp.Deferred != nil, nil
+ 		}
+-		return cty.NilVal, fmt.Errorf("no data source found for %s", target)
++		return cty.NilVal, false, fmt.Errorf("no data source found for %s", target)
+ 	}
+ }
+ 
+
+# --- task-02-agent ---
+diff --git a/internal/configs/parser_config_dir_test.go b/internal/configs/parser_config_dir_test.go
+index d8566eb..e45bf58 100644
+--- a/internal/configs/parser_config_dir_test.go
++++ b/internal/configs/parser_config_dir_test.go
+@@ -15,6 +15,7 @@ import (
+ 	"github.com/hashicorp/hcl/v2"
+ 
+ 	"github.com/hashicorp/terraform/internal/addrs"
++	"github.com/hashicorp/terraform/internal/getproviders/providerreqs"
+ )
+ 
+ // TestParseLoadConfigDirSuccess is a simple test that just verifies that
+@@ -323,8 +324,9 @@ func TestParserLoadConfigDirWithStateMigrations_from_state_store(t *testing.T) {
+ 		)
+ 	}
+ 	expectedConstraint := "1.0.0"
+-	if ssp.Requirement.Required.String() != expectedConstraint {
+-		t.Fatalf("unexpected version constraint, got %q, want %q", ssp.Requirement.Required.String(), expectedConstraint)
++	gotConstraints := providerreqs.VersionConstraintsString(ssp.Requirement[ssp.Type])
++	if gotConstraints != expectedConstraint {
++		t.Fatalf("unexpected version constraint, got %q, want %q", gotConstraints, expectedConstraint)
+ 	}
+ }
+ 
+diff --git a/internal/configs/state_migrate_file.go b/internal/configs/state_migrate_file.go
+index e304a3d..283022e 100644
+--- a/internal/configs/state_migrate_file.go
++++ b/internal/configs/state_migrate_file.go
+@@ -9,9 +9,9 @@ import (
+ 	"slices"
+ 
+ 	"github.com/apparentlymart/go-versions/versions"
+-	version "github.com/hashicorp/go-version"
+ 	"github.com/hashicorp/hcl/v2"
+ 	"github.com/hashicorp/terraform/internal/addrs"
++	"github.com/hashicorp/terraform/internal/getproviders/providerreqs"
+ 	"github.com/zclconf/go-cty/cty"
+ )
+ 
+@@ -26,12 +26,23 @@ import (
+ // When creating a StateMigrationInstructions struct, calling code must ensure that there
+ // are no duplicated or mutually-exclusive pieces of information in the original file(s).
+ type StateMigrationInstructions struct {
+-	StateStoreProvider *RequiredProvider
++	StateStoreProvider *StateStoreProviderRequirement
+ 	StateStore         *StateStore
+ 
+ 	Backend *Backend
+ }
+ 
++// StateStoreProviderRequirement represents the provider requirement declared
++// by a state_store_provider block. Unlike RequiredProvider, its requirement
++// data is already in the form expected by provider installation code.
++type StateStoreProviderRequirement struct {
++	Name        string
++	Source      string
++	Type        addrs.Provider
++	Requirement providerreqs.Requirements
++	DeclRange   hcl.Range
++}
++
+ // StateMigrationFile represents a single state migration file within a configuration directory.
+ // A project can include multiple files of this type, and their contents is aggregated.
+ type StateMigrationFile struct {
+@@ -188,10 +199,10 @@ func decodeFromBlock(block *hcl.Block) (*StateMigrationInstructions, hcl.Diagnos
+ 	return &fromData, diags
+ }
+ 
+-func decodeStateStoreProviderBlock(block *hcl.Block) (*RequiredProvider, hcl.Diagnostics) {
++func decodeStateStoreProviderBlock(block *hcl.Block) (*StateStoreProviderRequirement, hcl.Diagnostics) {
+ 	// state_store_provider blocks are similar to required_provider blocks but different, so we need logic
+ 	// similar to that in decodeProviderRequirementsBlock but distinct. E.g. version constraints must be
+-	// exact versions, not a range. The similarity is sufficient that we can return a RequiredProvider pointer.
++	// exact versions, not a range.
+ 
+ 	var diags hcl.Diagnostics
+ 	attrs, hclDiags := block.Body.JustAttributes()
+@@ -230,10 +241,12 @@ func decodeStateStoreProviderBlock(block *hcl.Block) (*RequiredProvider, hcl.Dia
+ 	}
+ 
+ 	// Process the data inside the object describing the provider
+-	ssProvider := RequiredProvider{
+-		Name:      localName,
+-		DeclRange: attr.Range,
++	ssProvider := StateStoreProviderRequirement{
++		Name:        localName,
++		Requirement: make(providerreqs.Requirements),
++		DeclRange:   attr.Range,
+ 	}
++	var versionConstraints providerreqs.VersionConstraints
+ 	for _, kv := range kvs {
+ 		key, keyDiags := kv.Key.Value(nil)
+ 		if keyDiags.HasErrors() {
+@@ -253,10 +266,6 @@ func decodeStateStoreProviderBlock(block *hcl.Block) (*RequiredProvider, hcl.Dia
+ 
+ 		switch key.AsString() {
+ 		case "version":
+-			vc := VersionConstraint{
+-				DeclRange: attr.Range,
+-			}
+-
+ 			versionString, valDiags := kv.Value.Value(nil)
+ 			if valDiags.HasErrors() || !versionString.Type().Equals(cty.String) {
+ 				diags = append(diags, &hcl.Diagnostic{
+@@ -280,11 +289,11 @@ func decodeStateStoreProviderBlock(block *hcl.Block) (*RequiredProvider, hcl.Dia
+ 			}
+ 
+ 			// We ensure user input can be parsed as a version, but we need to
+-			// create a constraint to be part of the returned RequiredProvider struct.
++			// create a constraint to be part of the returned requirement map.
+ 			// The constraint will pin to a specific version set by the config.
+-			constraints, err := version.NewConstraint(v.String())
++			versionConstraints, err = providerreqs.ParseVersionConstraints(v.String())
+ 			if err != nil {
+-				// NewConstraint doesn't return user-friendly errors, so we'll just
++				// ParseVersionConstraints doesn't return user-friendly errors, so we'll just
+ 				// ignore the provided error and produce our own generic one.
+ 				diags = append(diags, &hcl.Diagnostic{
+ 					Severity: hcl.DiagError,
+@@ -295,9 +304,6 @@ func decodeStateStoreProviderBlock(block *hcl.Block) (*RequiredProvider, hcl.Dia
+ 				return nil, diags
+ 			}
+ 
+-			vc.Required = constraints
+-			ssProvider.Requirement = vc
+-
+ 		case "source":
+ 			source, err := kv.Value.Value(nil)
+ 			if err != nil || !source.Type().Equals(cty.String) {
+@@ -339,6 +345,9 @@ func decodeStateStoreProviderBlock(block *hcl.Block) (*RequiredProvider, hcl.Dia
+ 		}
+ 
+ 	}
++	if !ssProvider.Type.IsZero() {
++		ssProvider.Requirement[ssProvider.Type] = versionConstraints
++	}
+ 
+ 	return &ssProvider, diags
+ }
+diff --git a/internal/policy/callback/callback.go b/internal/policy/callback/callback.go
+index 8116ebd..6b0fd11 100644
+--- a/internal/policy/callback/callback.go
++++ b/internal/policy/callback/callback.go
+@@ -13,7 +13,7 @@ import (
+ 
+ type Functions struct {
+ 	GetResources  func(ctx context.Context, resource string, attrs cty.Value) ([]cty.Value, bool, error)
+-	GetDataSource func(ctx context.Context, datasource string, attrs cty.Value) (cty.Value, error)
++	GetDataSource func(ctx context.Context, datasource string, attrs cty.Value) (cty.Value, bool, error)
+ }
+ 
+ // Registry is an interface for managing callback functions for resources and
+diff --git a/internal/policy/callback/server.go b/internal/policy/callback/server.go
+index 65d2335..51d0cfc 100644
+--- a/internal/policy/callback/server.go
++++ b/internal/policy/callback/server.go
+@@ -70,7 +70,7 @@ func (s *Server) GetDataSource(ctx context.Context, request *proto.GetDataSource
+ 		err := fmt.Errorf("no callback registered for ID %d (request type: %s)", request.EvaluationRequestId, request.Type)
+ 		return nil, err
+ 	}
+-	datasource, err := functions.GetDataSource(ctx, request.Type, config)
++	datasource, isDeferred, err := functions.GetDataSource(ctx, request.Type, config)
+ 	if err != nil {
+ 		return nil, err
+ 	}
+@@ -82,7 +82,8 @@ func (s *Server) GetDataSource(ctx context.Context, request *proto.GetDataSource
+ 	}
+ 
+ 	return &proto.GetDataSourceResponse{
+-		Result: result,
++		Result:   result,
++		Deferred: isDeferred,
+ 	}, nil
+ }
+ 
+diff --git a/internal/states/sync.go b/internal/states/sync.go
+index 7f3e97c..a5bcb77 100644
+--- a/internal/states/sync.go
++++ b/internal/states/sync.go
+@@ -147,6 +147,15 @@ func (s *SyncState) ResourceInstance(addr addrs.AbsResourceInstance) *ResourceIn
+ // of the given config resource, applying the given selector function to each
+ // instance and yielding the results.
+ func ReadEachConfigResourceInstance[T any](syncState *SyncState, addr addrs.ConfigResource, selector func(*ResourceInstance) (T, bool)) iter.Seq[T] {
++	return ReadEachConfigResourceInstanceWithAddr(syncState, addr, func(_ addrs.AbsResourceInstance, inst *ResourceInstance) (T, bool) {
++		return selector(inst)
++	})
++}
++
++// ReadEachConfigResourceInstanceWithAddr is like ReadEachConfigResourceInstance,
++// but also provides the absolute address of each resource instance to the
++// selector.
++func ReadEachConfigResourceInstanceWithAddr[T any](syncState *SyncState, addr addrs.ConfigResource, selector func(addrs.AbsResourceInstance, *ResourceInstance) (T, bool)) iter.Seq[T] {
+ 	if syncState == nil {
+ 		panic("ReadEachConfigResourceInstance on nil state")
+ 	}
+@@ -162,7 +171,7 @@ func ReadEachConfigResourceInstance[T any](syncState *SyncState, addr addrs.Conf
+ 	return func(yield func(T) bool) {
+ 		for _, addr := range addrs {
+ 			val := syncState.state.ResourceInstance(addr.ResourceInstance)
+-			selected, ok := selector(val)
++			selected, ok := selector(addr.ResourceInstance, val)
+ 			if !ok {
+ 				continue
+ 			}
+diff --git a/internal/terraform/policy.go b/internal/terraform/policy.go
+index 12e8221..84f6014 100644
+--- a/internal/terraform/policy.go
++++ b/internal/terraform/policy.go
+@@ -62,7 +62,7 @@ func getResourcesForPolicyCallback(ctx EvalContext, walkOperation walkOperation,
+ 		))
+ 
+ 		defer span.End()
+-		var found []cty.Value
++		found := make([]cty.Value, 0)
+ 		var filterMap map[string]cty.Value
+ 		if !attrs.IsNull() {
+ 			filterMap = attrs.AsValueMap()
+@@ -76,6 +76,20 @@ func getResourcesForPolicyCallback(ctx EvalContext, walkOperation walkOperation,
+ 				}
+ 				addr := resource.Addr().InModule(c.Path)
+ 				schema := schema.SchemaForResourceAddr(addr.Resource)
++				var deferredInstances []addrs.AbsResourceInstance
++				if deferrals := ctx.Deferrals(); deferrals != nil {
++					for _, deferred := range deferrals.GetDeferredChanges() {
++						if deferred.Change == nil || deferred.Change.Addr.Resource.Resource.Mode != addrs.ManagedResourceMode {
++							continue
++						}
++						if deferred.Change.Addr.ConfigResource().Equal(addr) {
++							deferredInstances = append(deferredInstances, deferred.Change.Addr)
++						}
++					}
++				}
++				if len(deferredInstances) != 0 {
++					isPartialResult = true
++				}
+ 
+ 				// Now we implement a generator function that yields resource instances
+ 				// from either the state or the config, depending on the walk operation.
+@@ -83,7 +97,12 @@ func getResourcesForPolicyCallback(ctx EvalContext, walkOperation walkOperation,
+ 				var count int
+ 				if walkOperation == walkApply {
+ 					// Read each config resource instance from the state, decoding it into a cty.Value
+-					resourcesSeq = states.ReadEachConfigResourceInstance(state, addr, func(inst *states.ResourceInstance) (cty.Value, bool) {
++					resourcesSeq = states.ReadEachConfigResourceInstanceWithAddr(state, addr, func(instAddr addrs.AbsResourceInstance, inst *states.ResourceInstance) (cty.Value, bool) {
++						for _, deferredAddr := range deferredInstances {
++							if deferredAddr.Equal(instAddr) {
++								return cty.NilVal, false
++							}
++						}
+ 						if inst.Current == nil {
+ 							return cty.NilVal, false
+ 						}
+@@ -99,6 +118,16 @@ func getResourcesForPolicyCallback(ctx EvalContext, walkOperation walkOperation,
+ 					// Read each config resource change from the plan, returning the corresponding cty.Value
+ 					resourcesSeq = func(yield func(cty.Value) bool) {
+ 						for change := range plans.ReadInstancesForConfigResource(ctx.Changes(), addr) {
++							deferred := false
++							for _, deferredAddr := range deferredInstances {
++								if deferredAddr.Equal(change.Addr) {
++									deferred = true
++									break
++								}
++							}
++							if deferred {
++								continue
++							}
+ 							count++
+ 							yield(change.After)
+ 						}
+@@ -126,8 +155,8 @@ func getResourcesForPolicyCallback(ctx EvalContext, walkOperation walkOperation,
+ 	}
+ }
+ 
+-func getDataSourceForPolicyCallback(ctx EvalContext, provider providers.Interface, schema providers.GetProviderSchemaResponse, meta cty.Value) func(callbackCtx context.Context, datasource string, attrs cty.Value) (cty.Value, error) {
+-	return func(c context.Context, target string, attrs cty.Value) (cty.Value, error) {
++func getDataSourceForPolicyCallback(ctx EvalContext, provider providers.Interface, schema providers.GetProviderSchemaResponse, meta cty.Value) func(callbackCtx context.Context, datasource string, attrs cty.Value) (cty.Value, bool, error) {
++	return func(c context.Context, target string, attrs cty.Value) (cty.Value, bool, error) {
+ 		_, span := tracer().Start(c, "policy.callback.getDataSource", trace.WithAttributes(
+ 			attribute.String("policy.callback.getDataSource.type", target),
+ 		))
+@@ -135,7 +164,7 @@ func getDataSourceForPolicyCallback(ctx EvalContext, provider providers.Interfac
+ 		if datasource, ok := schema.DataSources[target]; ok {
+ 			configVal, err := datasource.Body.CoerceValue(attrs)
+ 			if err != nil {
+-				return cty.NilVal, fmt.Errorf("invalid attributes for %q: %w", target, err)
++				return cty.NilVal, false, fmt.Errorf("invalid attributes for %q: %w", target, err)
+ 			}
+ 
+ 			validateResp := provider.ValidateDataResourceConfig(providers.ValidateDataResourceConfigRequest{
+@@ -143,7 +172,7 @@ func getDataSourceForPolicyCallback(ctx EvalContext, provider providers.Interfac
+ 				Config:   configVal,
+ 			})
+ 			if err := validateResp.Diagnostics.Err(); err != nil {
+-				return cty.NilVal, fmt.Errorf("failed to validate data source configuration: %s", err)
++				return cty.NilVal, false, fmt.Errorf("failed to validate data source configuration: %s", err)
+ 			}
+ 
+ 			readResp := provider.ReadDataSource(providers.ReadDataSourceRequest{
+@@ -152,12 +181,16 @@ func getDataSourceForPolicyCallback(ctx EvalContext, provider providers.Interfac
+ 				ProviderMeta: meta,
+ 			})
+ 			if err := readResp.Diagnostics.Err(); err != nil {
+-				return cty.NilVal, fmt.Errorf("failed to read data source: %s", err)
++				return cty.NilVal, false, fmt.Errorf("failed to read data source: %s", err)
++			}
++
++			if readResp.Deferred != nil && !ctx.Deferrals().DeferralAllowed() {
++				return cty.NilVal, false, fmt.Errorf("The provider signaled a deferred action for %s, but in this context deferrals are disabled. This is a bug in the provider, please file an issue with the provider developers.", target)
+ 			}
+ 
+-			return readResp.State, nil
++			return readResp.State, readResp.Deferred != nil, nil
+ 		}
+-		return cty.NilVal, fmt.Errorf("no data source found for %s", target)
++		return cty.NilVal, false, fmt.Errorf("no data source found for %s", target)
+ 	}
+ }
+ 
+
+# --- task-03-agent ---
+diff --git a/internal/cloud/backend_apply.go b/internal/cloud/backend_apply.go
+index 074f66f..6c17634 100644
+--- a/internal/cloud/backend_apply.go
++++ b/internal/cloud/backend_apply.go
+@@ -205,11 +205,17 @@ func (b *Cloud) opApply(stopCtx, cancelCtx context.Context, op *backendrun.Opera
+ 
+ 	r, err = b.waitForRun(stopCtx, cancelCtx, op, "apply", r, w)
+ 	if err != nil {
++		// Keep the existing wait error, while making a best effort to render any
++		// policy outcomes that were persisted before the failure.
++		_ = b.renderTFPolicyEvaluations(stopCtx, r, r != nil && len(r.PolicyPaths) > 0,
++			tfe.TFPolicyEvaluationStageTypeApply)
+ 		return &RunResult{run: r, backend: b}, err
+ 	}
+ 
+ 	err = b.renderApplyLogs(stopCtx, r)
+ 	if err != nil {
++		_ = b.renderTFPolicyEvaluations(stopCtx, r, r != nil && len(r.PolicyPaths) > 0,
++			tfe.TFPolicyEvaluationStageTypeApply)
+ 		return &RunResult{run: r, backend: b}, err
+ 	}
+ 
+diff --git a/internal/cloud/backend_plan.go b/internal/cloud/backend_plan.go
+index 5f34535..5795580 100644
+--- a/internal/cloud/backend_plan.go
++++ b/internal/cloud/backend_plan.go
+@@ -285,6 +285,10 @@ func (b *Cloud) plan(stopCtx, cancelCtx context.Context, op *backendrun.Operatio
+ 
+ 	err = b.renderPlanLogs(stopCtx, op, r)
+ 	if err != nil {
++		// Preserve the existing plan-log error, but still make a best effort to
++		// show policy outcomes that the run may already have produced.
++		_ = b.renderTFPolicyEvaluations(stopCtx, r, r != nil && len(r.PolicyPaths) > 0,
++			tfe.TFPolicyEvaluationStageTypeInit, tfe.TFPolicyEvaluationStageTypePlan)
+ 		return r, err
+ 	}
+ 
+@@ -315,18 +319,20 @@ func (b *Cloud) plan(stopCtx, cancelCtx context.Context, op *backendrun.Operatio
+ 	}
+ 
+ 	// Check any configured sentinel policies.
++	var policyCheckErr error
+ 	if len(r.PolicyChecks) > 0 {
+-		err = b.checkPolicy(stopCtx, cancelCtx, op, r)
+-		if err != nil {
+-			return r, err
+-		}
++		policyCheckErr = b.checkPolicy(stopCtx, cancelCtx, op, r)
+ 	}
+ 
+ 	// Show the Terraform policy results. Not gated on shouldRenderPlan: a failed
+ 	// mandatory policy errors the run, but the user still needs to see why.
+-	if err := b.renderTFPolicyEvaluations(stopCtx, r, len(r.PolicyPaths) > 0,
+-		tfe.TFPolicyEvaluationStageTypeInit, tfe.TFPolicyEvaluationStageTypePlan); err != nil {
+-		return r, err
++	policySummaryErr := b.renderTFPolicyEvaluations(stopCtx, r, len(r.PolicyPaths) > 0,
++		tfe.TFPolicyEvaluationStageTypeInit, tfe.TFPolicyEvaluationStageTypePlan)
++	if policyCheckErr != nil {
++		return r, policyCheckErr
++	}
++	if policySummaryErr != nil {
++		return r, policySummaryErr
+ 	}
+ 
+ 	return r, nil
+diff --git a/internal/cloud/backend_tfPolicyEvaluation.go b/internal/cloud/backend_tfPolicyEvaluation.go
+index cbae1b8..f2fdd13 100644
+--- a/internal/cloud/backend_tfPolicyEvaluation.go
++++ b/internal/cloud/backend_tfPolicyEvaluation.go
+@@ -5,6 +5,7 @@ package cloud
+ 
+ import (
+ 	"context"
++	"errors"
+ 	"fmt"
+ 	"strings"
+ 
+@@ -14,9 +15,10 @@ import (
+ // renderTFPolicyEvaluations fetches the Terraform policy evaluation outcomes for
+ // a finished run and prints a per-stage summary. A run can hold one evaluation
+ // per stage, so stages limits rendering to the given stages (empty means all).
+-// When no outcomes are available it falls back to the previous success message.
+-func (b *Cloud) renderTFPolicyEvaluations(stopCtx context.Context, r *tfe.Run, localPoliciesConfigured bool, stages ...tfe.TFPolicyEvaluationStageType) error {
+-	if b.renderer == nil {
++// The localPoliciesConfigured argument is retained by the callers for API
++// compatibility; server-side outcomes are the only source of this summary.
++func (b *Cloud) renderTFPolicyEvaluations(stopCtx context.Context, r *tfe.Run, _ bool, stages ...tfe.TFPolicyEvaluationStageType) error {
++	if b.renderer == nil || b.client == nil || b.client.Runs == nil || r == nil {
+ 		return nil
+ 	}
+ 
+@@ -30,38 +32,48 @@ func (b *Cloud) renderTFPolicyEvaluations(stopCtx context.Context, r *tfe.Run, l
+ 		Include: []tfe.RunIncludeOpt{tfe.RunTFPolicyEvaluation},
+ 	})
+ 	if err != nil {
+-		// Older TFE versions don't know this include; nothing to render.
+-		if strings.HasSuffix(err.Error(), "Invalid include parameter") {
+-			b.renderTFPolicyEvalFallback(localPoliciesConfigured)
++		// Older TFE versions don't know this include. Policy summaries are
++		// optional, so an unsupported include must not change the operation's
++		// result or produce a misleading success message.
++		if isUnsupportedTFPolicyInclude(err) {
+ 			return nil
+ 		}
+ 		return b.generalError("Failed to retrieve Terraform policy evaluations", err)
+ 	}
+ 
+-	if len(run.TFPolicyEvaluations) == 0 {
+-		b.renderTFPolicyEvalFallback(localPoliciesConfigured)
++	if run == nil || len(run.TFPolicyEvaluations) == 0 || b.client.TFPolicyEvaluationOutcomes == nil {
+ 		return nil
+ 	}
+ 
+ 	// Fetch the policy-set outcomes for each evaluation we want to show.
+ 	var rendered []tfPolicyStageOutcomes
+ 	for _, eval := range run.TFPolicyEvaluations {
+-		if eval.Status == tfe.TFPolicyEvaluationStatusUnreachable {
++		if eval == nil {
++			continue
++		}
++		if strings.EqualFold(string(eval.Status), string(tfe.TFPolicyEvaluationStatusUnreachable)) {
+ 			continue
+ 		}
+ 		if len(stageFilter) > 0 && !stageFilter[eval.StageType] {
+ 			continue
+ 		}
+ 
+-		list, err := b.client.TFPolicyEvaluationOutcomes.List(stopCtx, eval.ID, nil)
++		sets, err := b.listTFPolicyEvaluationOutcomes(stopCtx, eval.ID)
+ 		if err != nil {
+ 			return b.generalError("Failed to retrieve Terraform policy outcomes", err)
+ 		}
+-		rendered = append(rendered, tfPolicyStageOutcomes{eval: eval, sets: list.Items})
++
++		// An evaluation without any policy outcomes is not useful to render.
++		// In particular, do not turn an unreachable or empty response into a
++		// zero-policy summary.
++		sets = nonEmptyTFPolicySetOutcomes(sets)
++		if len(sets) == 0 {
++			continue
++		}
++		rendered = append(rendered, tfPolicyStageOutcomes{eval: eval, sets: sets})
+ 	}
+ 
+ 	if len(rendered) == 0 {
+-		b.renderTFPolicyEvalFallback(localPoliciesConfigured)
+ 		return nil
+ 	}
+ 
+@@ -69,6 +81,69 @@ func (b *Cloud) renderTFPolicyEvaluations(stopCtx context.Context, r *tfe.Run, l
+ 	return nil
+ }
+ 
++// listTFPolicyEvaluationOutcomes follows the pagination returned by the
++// outcomes endpoint. A single Terraform policy evaluation can have enough
++// policy sets to span multiple pages.
++func (b *Cloud) listTFPolicyEvaluationOutcomes(ctx context.Context, evaluationID string) ([]*tfe.TFPolicySetOutcome, error) {
++	options := &tfe.TFPolicyEvaluationListOptions{}
++	var outcomes []*tfe.TFPolicySetOutcome
++
++	for {
++		page, err := b.client.TFPolicyEvaluationOutcomes.List(ctx, evaluationID, options)
++		if err != nil {
++			return nil, err
++		}
++		if page == nil {
++			return outcomes, nil
++		}
++
++		outcomes = append(outcomes, page.Items...)
++		if page.Pagination == nil || page.CurrentPage >= page.TotalPages {
++			return outcomes, nil
++		}
++
++		nextPage := page.NextPage
++		// Be defensive about incomplete pagination metadata. The normal API
++		// response supplies NextPage, but advancing by one is preferable to
++		// silently dropping pages if it does not.
++		if nextPage <= page.CurrentPage {
++			nextPage = page.CurrentPage + 1
++		}
++		if nextPage > page.TotalPages {
++			return outcomes, nil
++		}
++		options.PageNumber = nextPage
++	}
++}
++
++func nonEmptyTFPolicySetOutcomes(sets []*tfe.TFPolicySetOutcome) []*tfe.TFPolicySetOutcome {
++	result := make([]*tfe.TFPolicySetOutcome, 0, len(sets))
++	for _, set := range sets {
++		if set == nil {
++			continue
++		}
++		for _, outcome := range set.Outcomes {
++			if outcome != nil {
++				result = append(result, set)
++				break
++			}
++		}
++	}
++	return result
++}
++
++func isUnsupportedTFPolicyInclude(err error) bool {
++	if errors.Is(err, tfe.ErrInvalidIncludeValue) {
++		return true
++	}
++	message := strings.ToLower(err.Error())
++	if strings.Contains(message, "invalid include parameter") {
++		return true
++	}
++	return strings.Contains(message, "include") &&
++		(strings.Contains(message, "invalid") || strings.Contains(message, "unsupported") || strings.Contains(message, "unknown"))
++}
++
+ // tfPolicyStageOutcomes pairs one stage's evaluation with its policy-set outcomes.
+ type tfPolicyStageOutcomes struct {
+ 	eval *tfe.TFPolicyEvaluation
+@@ -81,18 +156,13 @@ func (b *Cloud) writeTFPolicyEvaluations(rendered []tfPolicyStageOutcomes) {
+ 	overallFailed := false
+ 	total := 0
+ 	for _, stage := range rendered {
+-		if stage.eval.Status != tfe.TFPolicyEvaluationStatusPassed {
++		if stage.eval != nil && stage.eval.Status != tfe.TFPolicyEvaluationStatusPassed {
+ 			overallFailed = true
+ 		}
+-		total += tfPolicyEvaluationCount(stage.eval.ResultCount)
+-	}
+-
+-	// If the API didn't populate counts, count the outcomes ourselves.
+-	if total == 0 {
+-		for _, stage := range rendered {
+-			for _, set := range stage.sets {
+-				total += len(set.Outcomes)
+-			}
++		counts := tfPolicyOutcomeCounts(stage.sets)
++		total += counts.total
++		if counts.failed > 0 || counts.unknown > 0 || counts.errored > 0 {
++			overallFailed = true
+ 		}
+ 	}
+ 
+@@ -114,15 +184,27 @@ func (b *Cloud) writeTFPolicyEvaluations(rendered []tfPolicyStageOutcomes) {
+ 
+ 	for _, stage := range rendered {
+ 		stageResult := "[green]PASSED"
+-		if stage.eval.Status != tfe.TFPolicyEvaluationStatusPassed {
++		if stage.eval != nil && stage.eval.Status != tfe.TFPolicyEvaluationStatusPassed {
+ 			stageResult = "[red]" + strings.ToUpper(string(stage.eval.Status))
+ 		}
+-		print("[bold]%s stage: %s", tfPolicyStageLabel(stage.eval.StageType), stageResult)
++		stageLabel := "Unknown"
++		if stage.eval != nil {
++			stageLabel = tfPolicyStageLabel(stage.eval.StageType)
++		}
++		print("[bold]%s stage: %s", stageLabel, stageResult)
+ 		print("[dim]%s", tfPolicyStageCounts(stage.sets))
+ 
+-		for i, set := range stage.sets {
+-			print("  %c Policy set %d: [bold]%s", Arrow, i+1, set.PolicySetName)
++		policySetNumber := 0
++		for _, set := range stage.sets {
++			if set == nil {
++				continue
++			}
++			policySetNumber++
++			print("  %c Policy set %d: [bold]%s", Arrow, policySetNumber, set.PolicySetName)
+ 			for _, outcome := range set.Outcomes {
++				if outcome == nil {
++					continue
++				}
+ 				if outcome.FileName != "" {
+ 					print("    %c Policy name: [bold]%q[reset] in %s", Arrow, outcome.PolicyName, outcome.FileName)
+ 				} else {
+@@ -134,61 +216,63 @@ func (b *Cloud) writeTFPolicyEvaluations(rendered []tfPolicyStageOutcomes) {
+ 	}
+ }
+ 
+-// renderTFPolicyEvalFallback prints the previous success message, but only for
+-// runs that used local --policies paths so other runs stay silent.
+-func (b *Cloud) renderTFPolicyEvalFallback(localPoliciesConfigured bool) {
+-	if b.renderer == nil || !localPoliciesConfigured {
+-		return
++// tfPolicyStageCounts returns a breakdown line for a stage, e.g.
++// "29 total, 18 passed, 2 failed, 7 unknown". Advisory and errored are shown
++// only when present.
++func tfPolicyStageCounts(sets []*tfe.TFPolicySetOutcome) string {
++	counts := tfPolicyOutcomeCounts(sets)
++	parts := []string{
++		fmt.Sprintf("%d total", counts.total),
++		fmt.Sprintf("%d passed", counts.passed),
++		fmt.Sprintf("%d failed", counts.failed),
+ 	}
+-	b.renderer.Streams.Println(b.Colorize().Color(tfpolicyEvalSuccessful))
++	if counts.advisory > 0 {
++		parts = append(parts, fmt.Sprintf("%d advisory", counts.advisory))
++	}
++	parts = append(parts, fmt.Sprintf("%d unknown", counts.unknown))
++	if counts.errored > 0 {
++		parts = append(parts, fmt.Sprintf("%d errored", counts.errored))
++	}
++	return strings.Join(parts, ", ")
+ }
+ 
+-// tfPolicyEvaluationCount returns the total policy count for a result count.
+-func tfPolicyEvaluationCount(rc *tfe.TFPolicyEvaluationResultCount) int {
+-	if rc == nil {
+-		return 0
+-	}
+-	return rc.AdvisoryFailed + rc.MandatoryFailed + rc.Errored + rc.Passed + rc.Unknown
++type tfPolicyOutcomeCount struct {
++	total    int
++	passed   int
++	failed   int
++	advisory int
++	unknown  int
++	errored  int
+ }
+ 
+-// tfPolicyStageCounts returns a breakdown line for a stage, e.g.
+-// "29 total, 18 passed, 2 failed, 7 unknown". Advisory and errored are shown
+-// only when present.
+-func tfPolicyStageCounts(sets []*tfe.TFPolicySetOutcome) string {
+-	var total, passed, failed, advisory, unknown, errored int
++func tfPolicyOutcomeCounts(sets []*tfe.TFPolicySetOutcome) tfPolicyOutcomeCount {
++	var counts tfPolicyOutcomeCount
+ 	for _, set := range sets {
++		if set == nil {
++			continue
++		}
+ 		for _, outcome := range set.Outcomes {
+-			total++
++			if outcome == nil {
++				continue
++			}
++			counts.total++
+ 			switch strings.ToLower(outcome.Status) {
+ 			case "passed":
+-				passed++
++				counts.passed++
+ 			case "failed":
+ 				if outcome.EnforcementLevel == tfe.TFPolicyEvaluationOutcomeEnforcementLevelAdvisory {
+-					advisory++
++					counts.advisory++
+ 				} else {
+-					failed++
++					counts.failed++
+ 				}
+ 			case "unknown":
+-				unknown++
++				counts.unknown++
+ 			case "errored":
+-				errored++
++				counts.errored++
+ 			}
+ 		}
+ 	}
+-
+-	parts := []string{
+-		fmt.Sprintf("%d total", total),
+-		fmt.Sprintf("%d passed", passed),
+-		fmt.Sprintf("%d failed", failed),
+-	}
+-	if advisory > 0 {
+-		parts = append(parts, fmt.Sprintf("%d advisory", advisory))
+-	}
+-	parts = append(parts, fmt.Sprintf("%d unknown", unknown))
+-	if errored > 0 {
+-		parts = append(parts, fmt.Sprintf("%d errored", errored))
+-	}
+-	return strings.Join(parts, ", ")
++	return counts
+ }
+ 
+ // tfPolicyStageLabel returns a human-readable label for a stage.
+diff --git a/internal/configs/parser_config_dir_test.go b/internal/configs/parser_config_dir_test.go
+index d8566eb..e45bf58 100644
+--- a/internal/configs/parser_config_dir_test.go
++++ b/internal/configs/parser_config_dir_test.go
+@@ -15,6 +15,7 @@ import (
+ 	"github.com/hashicorp/hcl/v2"
+ 
+ 	"github.com/hashicorp/terraform/internal/addrs"
++	"github.com/hashicorp/terraform/internal/getproviders/providerreqs"
+ )
+ 
+ // TestParseLoadConfigDirSuccess is a simple test that just verifies that
+@@ -323,8 +324,9 @@ func TestParserLoadConfigDirWithStateMigrations_from_state_store(t *testing.T) {
+ 		)
+ 	}
+ 	expectedConstraint := "1.0.0"
+-	if ssp.Requirement.Required.String() != expectedConstraint {
+-		t.Fatalf("unexpected version constraint, got %q, want %q", ssp.Requirement.Required.String(), expectedConstraint)
++	gotConstraints := providerreqs.VersionConstraintsString(ssp.Requirement[ssp.Type])
++	if gotConstraints != expectedConstraint {
++		t.Fatalf("unexpected version constraint, got %q, want %q", gotConstraints, expectedConstraint)
+ 	}
+ }
+ 
+diff --git a/internal/configs/state_migrate_file.go b/internal/configs/state_migrate_file.go
+index e304a3d..283022e 100644
+--- a/internal/configs/state_migrate_file.go
++++ b/internal/configs/state_migrate_file.go
+@@ -9,9 +9,9 @@ import (
+ 	"slices"
+ 
+ 	"github.com/apparentlymart/go-versions/versions"
+-	version "github.com/hashicorp/go-version"
+ 	"github.com/hashicorp/hcl/v2"
+ 	"github.com/hashicorp/terraform/internal/addrs"
++	"github.com/hashicorp/terraform/internal/getproviders/providerreqs"
+ 	"github.com/zclconf/go-cty/cty"
+ )
+ 
+@@ -26,12 +26,23 @@ import (
+ // When creating a StateMigrationInstructions struct, calling code must ensure that there
+ // are no duplicated or mutually-exclusive pieces of information in the original file(s).
+ type StateMigrationInstructions struct {
+-	StateStoreProvider *RequiredProvider
++	StateStoreProvider *StateStoreProviderRequirement
+ 	StateStore         *StateStore
+ 
+ 	Backend *Backend
+ }
+ 
++// StateStoreProviderRequirement represents the provider requirement declared
++// by a state_store_provider block. Unlike RequiredProvider, its requirement
++// data is already in the form expected by provider installation code.
++type StateStoreProviderRequirement struct {
++	Name        string
++	Source      string
++	Type        addrs.Provider
++	Requirement providerreqs.Requirements
++	DeclRange   hcl.Range
++}
++
+ // StateMigrationFile represents a single state migration file within a configuration directory.
+ // A project can include multiple files of this type, and their contents is aggregated.
+ type StateMigrationFile struct {
+@@ -188,10 +199,10 @@ func decodeFromBlock(block *hcl.Block) (*StateMigrationInstructions, hcl.Diagnos
+ 	return &fromData, diags
+ }
+ 
+-func decodeStateStoreProviderBlock(block *hcl.Block) (*RequiredProvider, hcl.Diagnostics) {
++func decodeStateStoreProviderBlock(block *hcl.Block) (*StateStoreProviderRequirement, hcl.Diagnostics) {
+ 	// state_store_provider blocks are similar to required_provider blocks but different, so we need logic
+ 	// similar to that in decodeProviderRequirementsBlock but distinct. E.g. version constraints must be
+-	// exact versions, not a range. The similarity is sufficient that we can return a RequiredProvider pointer.
++	// exact versions, not a range.
+ 
+ 	var diags hcl.Diagnostics
+ 	attrs, hclDiags := block.Body.JustAttributes()
+@@ -230,10 +241,12 @@ func decodeStateStoreProviderBlock(block *hcl.Block) (*RequiredProvider, hcl.Dia
+ 	}
+ 
+ 	// Process the data inside the object describing the provider
+-	ssProvider := RequiredProvider{
+-		Name:      localName,
+-		DeclRange: attr.Range,
++	ssProvider := StateStoreProviderRequirement{
++		Name:        localName,
++		Requirement: make(providerreqs.Requirements),
++		DeclRange:   attr.Range,
+ 	}
++	var versionConstraints providerreqs.VersionConstraints
+ 	for _, kv := range kvs {
+ 		key, keyDiags := kv.Key.Value(nil)
+ 		if keyDiags.HasErrors() {
+@@ -253,10 +266,6 @@ func decodeStateStoreProviderBlock(block *hcl.Block) (*RequiredProvider, hcl.Dia
+ 
+ 		switch key.AsString() {
+ 		case "version":
+-			vc := VersionConstraint{
+-				DeclRange: attr.Range,
+-			}
+-
+ 			versionString, valDiags := kv.Value.Value(nil)
+ 			if valDiags.HasErrors() || !versionString.Type().Equals(cty.String) {
+ 				diags = append(diags, &hcl.Diagnostic{
+@@ -280,11 +289,11 @@ func decodeStateStoreProviderBlock(block *hcl.Block) (*RequiredProvider, hcl.Dia
+ 			}
+ 
+ 			// We ensure user input can be parsed as a version, but we need to
+-			// create a constraint to be part of the returned RequiredProvider struct.
++			// create a constraint to be part of the returned requirement map.
+ 			// The constraint will pin to a specific version set by the config.
+-			constraints, err := version.NewConstraint(v.String())
++			versionConstraints, err = providerreqs.ParseVersionConstraints(v.String())
+ 			if err != nil {
+-				// NewConstraint doesn't return user-friendly errors, so we'll just
++				// ParseVersionConstraints doesn't return user-friendly errors, so we'll just
+ 				// ignore the provided error and produce our own generic one.
+ 				diags = append(diags, &hcl.Diagnostic{
+ 					Severity: hcl.DiagError,
+@@ -295,9 +304,6 @@ func decodeStateStoreProviderBlock(block *hcl.Block) (*RequiredProvider, hcl.Dia
+ 				return nil, diags
+ 			}
+ 
+-			vc.Required = constraints
+-			ssProvider.Requirement = vc
+-
+ 		case "source":
+ 			source, err := kv.Value.Value(nil)
+ 			if err != nil || !source.Type().Equals(cty.String) {
+@@ -339,6 +345,9 @@ func decodeStateStoreProviderBlock(block *hcl.Block) (*RequiredProvider, hcl.Dia
+ 		}
+ 
+ 	}
++	if !ssProvider.Type.IsZero() {
++		ssProvider.Requirement[ssProvider.Type] = versionConstraints
++	}
+ 
+ 	return &ssProvider, diags
+ }
+diff --git a/internal/policy/callback/callback.go b/internal/policy/callback/callback.go
+index 8116ebd..6b0fd11 100644
+--- a/internal/policy/callback/callback.go
++++ b/internal/policy/callback/callback.go
+@@ -13,7 +13,7 @@ import (
+ 
+ type Functions struct {
+ 	GetResources  func(ctx context.Context, resource string, attrs cty.Value) ([]cty.Value, bool, error)
+-	GetDataSource func(ctx context.Context, datasource string, attrs cty.Value) (cty.Value, error)
++	GetDataSource func(ctx context.Context, datasource string, attrs cty.Value) (cty.Value, bool, error)
+ }
+ 
+ // Registry is an interface for managing callback functions for resources and
+diff --git a/internal/policy/callback/server.go b/internal/policy/callback/server.go
+index 65d2335..51d0cfc 100644
+--- a/internal/policy/callback/server.go
++++ b/internal/policy/callback/server.go
+@@ -70,7 +70,7 @@ func (s *Server) GetDataSource(ctx context.Context, request *proto.GetDataSource
+ 		err := fmt.Errorf("no callback registered for ID %d (request type: %s)", request.EvaluationRequestId, request.Type)
+ 		return nil, err
+ 	}
+-	datasource, err := functions.GetDataSource(ctx, request.Type, config)
++	datasource, isDeferred, err := functions.GetDataSource(ctx, request.Type, config)
+ 	if err != nil {
+ 		return nil, err
+ 	}
+@@ -82,7 +82,8 @@ func (s *Server) GetDataSource(ctx context.Context, request *proto.GetDataSource
+ 	}
+ 
+ 	return &proto.GetDataSourceResponse{
+-		Result: result,
++		Result:   result,
++		Deferred: isDeferred,
+ 	}, nil
+ }
+ 
+diff --git a/internal/states/sync.go b/internal/states/sync.go
+index 7f3e97c..a5bcb77 100644
+--- a/internal/states/sync.go
++++ b/internal/states/sync.go
+@@ -147,6 +147,15 @@ func (s *SyncState) ResourceInstance(addr addrs.AbsResourceInstance) *ResourceIn
+ // of the given config resource, applying the given selector function to each
+ // instance and yielding the results.
+ func ReadEachConfigResourceInstance[T any](syncState *SyncState, addr addrs.ConfigResource, selector func(*ResourceInstance) (T, bool)) iter.Seq[T] {
++	return ReadEachConfigResourceInstanceWithAddr(syncState, addr, func(_ addrs.AbsResourceInstance, inst *ResourceInstance) (T, bool) {
++		return selector(inst)
++	})
++}
++
++// ReadEachConfigResourceInstanceWithAddr is like ReadEachConfigResourceInstance,
++// but also provides the absolute address of each resource instance to the
++// selector.
++func ReadEachConfigResourceInstanceWithAddr[T any](syncState *SyncState, addr addrs.ConfigResource, selector func(addrs.AbsResourceInstance, *ResourceInstance) (T, bool)) iter.Seq[T] {
+ 	if syncState == nil {
+ 		panic("ReadEachConfigResourceInstance on nil state")
+ 	}
+@@ -162,7 +171,7 @@ func ReadEachConfigResourceInstance[T any](syncState *SyncState, addr addrs.Conf
+ 	return func(yield func(T) bool) {
+ 		for _, addr := range addrs {
+ 			val := syncState.state.ResourceInstance(addr.ResourceInstance)
+-			selected, ok := selector(val)
++			selected, ok := selector(addr.ResourceInstance, val)
+ 			if !ok {
+ 				continue
+ 			}
+diff --git a/internal/terraform/policy.go b/internal/terraform/policy.go
+index 12e8221..84f6014 100644
+--- a/internal/terraform/policy.go
++++ b/internal/terraform/policy.go
+@@ -62,7 +62,7 @@ func getResourcesForPolicyCallback(ctx EvalContext, walkOperation walkOperation,
+ 		))
+ 
+ 		defer span.End()
+-		var found []cty.Value
++		found := make([]cty.Value, 0)
+ 		var filterMap map[string]cty.Value
+ 		if !attrs.IsNull() {
+ 			filterMap = attrs.AsValueMap()
+@@ -76,6 +76,20 @@ func getResourcesForPolicyCallback(ctx EvalContext, walkOperation walkOperation,
+ 				}
+ 				addr := resource.Addr().InModule(c.Path)
+ 				schema := schema.SchemaForResourceAddr(addr.Resource)
++				var deferredInstances []addrs.AbsResourceInstance
++				if deferrals := ctx.Deferrals(); deferrals != nil {
++					for _, deferred := range deferrals.GetDeferredChanges() {
++						if deferred.Change == nil || deferred.Change.Addr.Resource.Resource.Mode != addrs.ManagedResourceMode {
++							continue
++						}
++						if deferred.Change.Addr.ConfigResource().Equal(addr) {
++							deferredInstances = append(deferredInstances, deferred.Change.Addr)
++						}
++					}
++				}
++				if len(deferredInstances) != 0 {
++					isPartialResult = true
++				}
+ 
+ 				// Now we implement a generator function that yields resource instances
+ 				// from either the state or the config, depending on the walk operation.
+@@ -83,7 +97,12 @@ func getResourcesForPolicyCallback(ctx EvalContext, walkOperation walkOperation,
+ 				var count int
+ 				if walkOperation == walkApply {
+ 					// Read each config resource instance from the state, decoding it into a cty.Value
+-					resourcesSeq = states.ReadEachConfigResourceInstance(state, addr, func(inst *states.ResourceInstance) (cty.Value, bool) {
++					resourcesSeq = states.ReadEachConfigResourceInstanceWithAddr(state, addr, func(instAddr addrs.AbsResourceInstance, inst *states.ResourceInstance) (cty.Value, bool) {
++						for _, deferredAddr := range deferredInstances {
++							if deferredAddr.Equal(instAddr) {
++								return cty.NilVal, false
++							}
++						}
+ 						if inst.Current == nil {
+ 							return cty.NilVal, false
+ 						}
+@@ -99,6 +118,16 @@ func getResourcesForPolicyCallback(ctx EvalContext, walkOperation walkOperation,
+ 					// Read each config resource change from the plan, returning the corresponding cty.Value
+ 					resourcesSeq = func(yield func(cty.Value) bool) {
+ 						for change := range plans.ReadInstancesForConfigResource(ctx.Changes(), addr) {
++							deferred := false
++							for _, deferredAddr := range deferredInstances {
++								if deferredAddr.Equal(change.Addr) {
++									deferred = true
++									break
++								}
++							}
++							if deferred {
++								continue
++							}
+ 							count++
+ 							yield(change.After)
+ 						}
+@@ -126,8 +155,8 @@ func getResourcesForPolicyCallback(ctx EvalContext, walkOperation walkOperation,
+ 	}
+ }
+ 
+-func getDataSourceForPolicyCallback(ctx EvalContext, provider providers.Interface, schema providers.GetProviderSchemaResponse, meta cty.Value) func(callbackCtx context.Context, datasource string, attrs cty.Value) (cty.Value, error) {
+-	return func(c context.Context, target string, attrs cty.Value) (cty.Value, error) {
++func getDataSourceForPolicyCallback(ctx EvalContext, provider providers.Interface, schema providers.GetProviderSchemaResponse, meta cty.Value) func(callbackCtx context.Context, datasource string, attrs cty.Value) (cty.Value, bool, error) {
++	return func(c context.Context, target string, attrs cty.Value) (cty.Value, bool, error) {
+ 		_, span := tracer().Start(c, "policy.callback.getDataSource", trace.WithAttributes(
+ 			attribute.String("policy.callback.getDataSource.type", target),
+ 		))
+@@ -135,7 +164,7 @@ func getDataSourceForPolicyCallback(ctx EvalContext, provider providers.Interfac
+ 		if datasource, ok := schema.DataSources[target]; ok {
+ 			configVal, err := datasource.Body.CoerceValue(attrs)
+ 			if err != nil {
+-				return cty.NilVal, fmt.Errorf("invalid attributes for %q: %w", target, err)
++				return cty.NilVal, false, fmt.Errorf("invalid attributes for %q: %w", target, err)
+ 			}
+ 
+ 			validateResp := provider.ValidateDataResourceConfig(providers.ValidateDataResourceConfigRequest{
+@@ -143,7 +172,7 @@ func getDataSourceForPolicyCallback(ctx EvalContext, provider providers.Interfac
+ 				Config:   configVal,
+ 			})
+ 			if err := validateResp.Diagnostics.Err(); err != nil {
+-				return cty.NilVal, fmt.Errorf("failed to validate data source configuration: %s", err)
++				return cty.NilVal, false, fmt.Errorf("failed to validate data source configuration: %s", err)
+ 			}
+ 
+ 			readResp := provider.ReadDataSource(providers.ReadDataSourceRequest{
+@@ -152,12 +181,16 @@ func getDataSourceForPolicyCallback(ctx EvalContext, provider providers.Interfac
+ 				ProviderMeta: meta,
+ 			})
+ 			if err := readResp.Diagnostics.Err(); err != nil {
+-				return cty.NilVal, fmt.Errorf("failed to read data source: %s", err)
++				return cty.NilVal, false, fmt.Errorf("failed to read data source: %s", err)
++			}
++
++			if readResp.Deferred != nil && !ctx.Deferrals().DeferralAllowed() {
++				return cty.NilVal, false, fmt.Errorf("The provider signaled a deferred action for %s, but in this context deferrals are disabled. This is a bug in the provider, please file an issue with the provider developers.", target)
+ 			}
+ 
+-			return readResp.State, nil
++			return readResp.State, readResp.Deferred != nil, nil
+ 		}
+-		return cty.NilVal, fmt.Errorf("no data source found for %s", target)
++		return cty.NilVal, false, fmt.Errorf("no data source found for %s", target)
+ 	}
+ }
+ 
