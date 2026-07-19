@@ -44,7 +44,11 @@
     "replacement_usage_records_reconciled": 12,
     "replacement_evidence_entries_scanned_for_credentials": 654,
     "credential_hits": 0,
-    "retained_serena_rerun": false
+    "retained_serena_rerun": false,
+    "replacement_cumulative_turn_completed_snapshots": 36,
+    "replacement_model_tool_use_events": 39,
+    "replacement_doctor_warning_sessions": 12,
+    "doctor_warning_disposition": "diagnostic only; isolated host/tool/MCP and execution gates passed"
   },
   "accounting": {
     "primary_metric": "raw provider tokens",
@@ -124,10 +128,12 @@
         "task_count": 9,
         "all_final_verifiers_passed": true,
         "all_tool_isolation_audits_passed": true,
-        "all_final_diffs_byte_identical_to_bare_opencode": true,
         "changed_scope_degradation": false,
         "treatment_degradation": false,
-        "degradation_note": "No changed-scope or product-activation degradation observed."
+        "degradation_note": "No changed-scope or product-activation degradation observed.",
+        "task_patch_byte_identical_to_bare_opencode": true,
+        "independent_software_quality_review": "not-reviewed",
+        "final_working_tree_byte_identical_to_bare_opencode": true
       },
       "natural_uptake": [
         {
@@ -275,8 +281,11 @@
         "plugin_loaded_in_all_sessions": true,
         "generated_plugin_sha256": "331630af9834afc61f3e73d93b72343ca54ef719a46bced367fe746cb7110f7d",
         "automatic_compaction_receipt_present": false,
-        "evidence": "sources/evaluations/workflow-sessions/tokenjuice-opencode-v2-fastify-20260729-p-bb0e89ed9794-r0/evidence.jsonl.gz#tool-host-integration.json"
-      }
+        "evidence": "sources/evaluations/workflow-sessions/tokenjuice-opencode-v2-fastify-20260729-p-bb0e89ed9794-r0/evidence.jsonl.gz#tool-host-integration.json",
+        "realized_compaction": "unobserved",
+        "post_run_transformation_counter_retained": false
+      },
+      "profile_scope_disposition": "automatic-plugin-assignment-screen"
     },
     {
       "profile_id": "retrieval-serena-opencode-mcp-v1",
@@ -314,10 +323,23 @@
         "task_count": 9,
         "all_final_verifiers_passed": true,
         "all_tool_isolation_audits_passed": true,
-        "all_final_diffs_byte_identical_to_bare_opencode": false,
         "changed_scope_degradation": true,
         "treatment_degradation": false,
-        "degradation_note": "Serena generated .serena project files in every repository."
+        "degradation_note": "Serena generated .serena project files in every repository.",
+        "task_patch_byte_identical_to_bare_opencode": false,
+        "independent_software_quality_review": "not-reviewed",
+        "final_working_tree_byte_identical_to_bare_opencode": false,
+        "product_state_outside_task_diff": {
+          "fastify-lifecycle-sequence-v0": [
+            ".serena/"
+          ],
+          "beets-lifecycle-sequence-v0": [
+            ".serena/"
+          ],
+          "terraform-lifecycle-sequence-v0": [
+            ".serena/"
+          ]
+        }
       },
       "natural_uptake": [
         {
@@ -465,7 +487,8 @@
         "mcp_handshake_passed_in_all_sessions": true,
         "serena_initial_instructions_calls": 3,
         "evidence": "sources/evaluations/workflow-sessions/serena-opencode-fastify-20260729-p-bb0e89ed9794-r0/evidence.jsonl.gz#mcp-handshake.json"
-      }
+      },
+      "profile_scope_disposition": "bounded-mcp-assignment-screen"
     },
     {
       "profile_id": "terminal-snip-opencode-plugin-v2",
@@ -503,10 +526,12 @@
         "task_count": 9,
         "all_final_verifiers_passed": true,
         "all_tool_isolation_audits_passed": true,
-        "all_final_diffs_byte_identical_to_bare_opencode": true,
         "changed_scope_degradation": false,
-        "treatment_degradation": false,
-        "degradation_note": "No changed-scope or product-activation degradation observed."
+        "treatment_degradation": true,
+        "degradation_note": "Snip rewrote seven bash commands; one Fastify heredoc and one Beets inline-Python command were corrupted. The model recovered and all final verifiers passed; no controller retry occurred.",
+        "task_patch_byte_identical_to_bare_opencode": true,
+        "independent_software_quality_review": "not-reviewed",
+        "final_working_tree_byte_identical_to_bare_opencode": true
       },
       "natural_uptake": [
         {
@@ -658,8 +683,18 @@
         ],
         "unwrapped_sequences": [
           "terraform-lifecycle-sequence-v0"
-        ]
-      }
+        ],
+        "observed_corrupted_commands": 2,
+        "corruption_sequences": [
+          "fastify-lifecycle-sequence-v0",
+          "beets-lifecycle-sequence-v0"
+        ],
+        "masked_aggregate_shell_failure_sequences": [
+          "beets-lifecycle-sequence-v0"
+        ],
+        "evaluator_fail_close_caveat": "The Beets multi-command shell returned zero after an intermediate SyntaxError; retained events expose the failure even though the aggregate shell status did not."
+      },
+      "profile_scope_disposition": "automatic-plugin-assignment-screen"
     },
     {
       "profile_id": "retrieval-cartog-opencode-product-v2",
@@ -697,10 +732,28 @@
         "task_count": 9,
         "all_final_verifiers_passed": true,
         "all_tool_isolation_audits_passed": true,
-        "all_final_diffs_byte_identical_to_bare_opencode": true,
         "changed_scope_degradation": false,
         "treatment_degradation": false,
-        "degradation_note": "No changed-scope or product-activation degradation observed."
+        "degradation_note": "Task patches and structured verifiers match bare OpenCode. Expected Cartog index/config/guidance state remained outside the task diff.",
+        "task_patch_byte_identical_to_bare_opencode": true,
+        "independent_software_quality_review": "not-reviewed",
+        "final_working_tree_byte_identical_to_bare_opencode": false,
+        "product_state_outside_task_diff": {
+          "fastify-lifecycle-sequence-v0": [
+            ".cartog.toml",
+            ".cartog/"
+          ],
+          "beets-lifecycle-sequence-v0": [
+            ".cartog.toml",
+            ".cartog/",
+            "AGENTS.md"
+          ],
+          "terraform-lifecycle-sequence-v0": [
+            ".cartog.toml",
+            ".cartog/",
+            "AGENTS.md"
+          ]
+        }
       },
       "natural_uptake": [
         {
@@ -835,8 +888,12 @@
           "sources/evaluations/workflow-sessions/cartog-opencode-v2-fastify-20260729-p-bb0e89ed9794-r0/evidence.jsonl.gz#tool-warmup-metadata.json",
           "sources/evaluations/workflow-sessions/cartog-opencode-v2-fastify-20260729-p-bb0e89ed9794-r0/evidence.jsonl.gz#mcp-handshake.json",
           "sources/evaluations/workflow-sessions/cartog-opencode-v2-fastify-20260729-p-bb0e89ed9794-r0/evidence.jsonl.gz#tool-host-integration.json"
-        ]
-      }
+        ],
+        "retention_caveat": "Source guidance identity, installation receipts, warmup output, required state-path existence, and effective config are retained; final generated AGENTS.md/index/config bytes are not copied into the compact.",
+        "eligible_for_full_product_claim": false,
+        "eligible_for_assignment_level_screen": true
+      },
+      "profile_scope_disposition": "bounded-screening-ablation"
     },
     {
       "profile_id": "integrated-headroom-opencode-product-v3",
@@ -874,10 +931,25 @@
         "task_count": 9,
         "all_final_verifiers_passed": true,
         "all_tool_isolation_audits_passed": true,
-        "all_final_diffs_byte_identical_to_bare_opencode": true,
         "changed_scope_degradation": false,
         "treatment_degradation": true,
-        "degradation_note": "Headroom official MCP failed in every lane; native plugin, Serena MCP, and request-correlated proxy remained active."
+        "degradation_note": "Headroom official MCP failed in every lane; Snip-independent task patches remained byte-identical, while generated Serena/Headroom state remained outside the task diff. Native plugin, Serena MCP, and request-correlated proxy remained active.",
+        "task_patch_byte_identical_to_bare_opencode": true,
+        "independent_software_quality_review": "not-reviewed",
+        "final_working_tree_byte_identical_to_bare_opencode": false,
+        "product_state_outside_task_diff": {
+          "fastify-lifecycle-sequence-v0": [
+            ".serena/"
+          ],
+          "beets-lifecycle-sequence-v0": [
+            ".serena/",
+            "AGENTS.md"
+          ],
+          "terraform-lifecycle-sequence-v0": [
+            ".serena/",
+            "AGENTS.md"
+          ]
+        }
       },
       "natural_uptake": [
         {
@@ -1043,13 +1115,18 @@
           },
           "transforms": {
             "openai:responses:tool_schema_compaction": 19
-          }
+          },
+          "per_route_status_retained": false,
+          "route_status_caveat": "Aggregate failed_requests is zero, but per-route status values are null; request correlation/provider/model/counts are retained while per-route success is not independently fail-closed."
         },
         "headroom_mcp": {
           "attempted_in_all_sessions": true,
           "activation_passed": false,
           "failure": "headroom-ai 0.28.0 mcp serve raises AttributeError because mcp 1.26.0 Server has no list_tools attribute",
-          "classification": "treatment degradation; evaluator did not pin around the product defect"
+          "classification": "treatment degradation; evaluator did not pin around the product defect",
+          "historical_raw_stderr_retained": false,
+          "resolved_package_inventory_retained": false,
+          "attribution_limit": "The compact retains the controller classification and failed activation receipt, but not raw historical MCP stderr or the resolved mcp package inventory. The exact Server.list_tools attribution is therefore not independently recoverable from the compact alone."
         },
         "serena_mcp": {
           "attempted_in_all_sessions": true,
@@ -1060,8 +1137,21 @@
           "sources/evaluations/workflow-sessions/headroom-opencode-v3-fastify-20260729-p-bb0e89ed9794-r0/evidence.jsonl.gz#mcp-handshake.json",
           "sources/evaluations/workflow-sessions/headroom-opencode-v3-fastify-20260729-p-bb0e89ed9794-r0/evidence.jsonl.gz#mcp-handshake-serena.json",
           "sources/evaluations/workflow-sessions/headroom-opencode-v3-fastify-20260729-p-bb0e89ed9794-r0/evidence.jsonl.gz#task-01-codex-events.jsonl"
-        ]
-      }
+        ],
+        "rtk_companion": {
+          "source_commit": "23aae98c5b29cd52d77061c6efd2e65e5e3cc6dd",
+          "binary_hash_retained": false,
+          "generated_agents_bytes_retained": false,
+          "observed_prefixed_commands": 3,
+          "observed_sequences": [
+            "beets-lifecycle-sequence-v0"
+          ],
+          "classification": "companion identity/retention gap; full-product claims remain bounded"
+        },
+        "eligible_for_full_product_claim": false,
+        "eligible_for_assignment_level_screen": true
+      },
+      "profile_scope_disposition": "bounded-screening-ablation"
     }
   ],
   "ranking_vs_bare_opencode_weighted": [
@@ -1115,9 +1205,11 @@
   ],
   "interpretation": {
     "result": "No evaluated OpenCode treatment reduced aggregate raw or weighted tokens versus bare OpenCode. TokenJuice v2 was nearest neutral; every other treatment materially increased both metrics.",
-    "quality": "All 15 sessions and 45 tasks passed. The 12 repaired treatment patches were byte-identical to matched bare OpenCode patches; all three retained Serena lanes additionally generated .serena project configuration.",
+    "quality": "All 15 sessions and 45 tasks passed, with no independent software-quality review. All 12 repaired task patches and structured final verifiers were byte-identical to matched bare OpenCode. Cartog, Headroom, and retained Serena created expected product state outside task diffs, so final working-tree parity is only 6/12 among replacements.",
     "uptake_caveat": "TokenJuice was automatic but had no per-hook compaction receipt. Snip rewrote seven bash commands in Fastify and Beets but none in Terraform. Cartog made no MCP calls. Headroom proxied 22 OpenAI requests and transformed 19, while its official MCP failed as a product degradation; Serena MCP remained active.",
-    "inference_limit": "One compatible replicate per workflow. Results are screening evidence, not a population estimate or deployment recommendation."
+    "inference_limit": "One compatible replicate per workflow. Results are screening evidence, not a population estimate or deployment recommendation.",
+    "degradations": "Snip corrupted one Fastify and one Beets command before model recovery; Headroom MCP activation failed in all three lanes. Both remain measured treatment degradations, not accounting exclusions.",
+    "claim_boundary": "Cartog v2 and Headroom v3 remain bounded screening-ablation assignments. Their provider observations are valid, but generated-state retention and Headroom companion-identity gaps preclude exact full-product claims."
   },
   "aggregate_quality": {
     "accepted_sessions": 15,
@@ -1125,13 +1217,30 @@
     "accepted_tasks": 45,
     "task_count": 45,
     "all_final_verifiers_passed": true,
-    "byte_identical_sessions_vs_bare_opencode": 12,
     "non_byte_identical_sessions": 3,
     "changed_scope_degradation_profiles": [
       "retrieval-serena-opencode-mcp-v1"
     ],
     "treatment_degradation_profiles": [
+      "terminal-snip-opencode-plugin-v2",
       "integrated-headroom-opencode-product-v3"
+    ],
+    "byte_identical_task_patch_sessions_vs_bare_opencode": 12,
+    "byte_identical_final_working_tree_sessions_vs_bare_opencode": 6,
+    "independently_quality_reviewed_sessions": 0,
+    "independent_quality_review_status": "not-reviewed",
+    "product_state_outside_task_diff_profiles": [
+      "retrieval-cartog-opencode-product-v2",
+      "integrated-headroom-opencode-product-v3",
+      "retrieval-serena-opencode-mcp-v1"
     ]
+  },
+  "publication_scope": {
+    "provider_accounting": "valid and retainable for all 15 assignment-level sessions",
+    "task_patch_parity": "12/12 replacement task patches and structured final-verifier records are byte-identical to matched bare OpenCode",
+    "working_tree_parity": "6/12 replacement final working trees are byte-identical; Cartog and Headroom retain expected product-created state outside task diffs",
+    "full_product_claims": "not supported for Cartog v2 or Headroom v3; both registry profiles are screening-ablation and have generated-state or companion-identity retention gaps",
+    "independent_software_quality": "not assessed",
+    "screening_limit": "one compatible replicate per workflow with shared retained bare OpenCode sessions"
   }
 }
