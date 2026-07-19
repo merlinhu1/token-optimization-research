@@ -705,7 +705,19 @@ def validate_candidate_profile_launch_readiness(
             lane for lane in receipt.get("lanes", []) if isinstance(lane, dict)
         )
 
+    completed_pairs: set[tuple[str, str]] = set()
+    for protocol_path in executed_protocol_paths:
+        record = protocol_docs.get(protocol_path, {})
+        protocol = record.get("document", {}) if isinstance(record, dict) else {}
+        selected = protocol.get("selected_execution", {}).get("descriptor", {})
+        sequence_id = selected.get("sequence_id")
+        profile_id = selected.get("selected_profile", {}).get("profile_id")
+        if isinstance(sequence_id, str) and isinstance(profile_id, str):
+            completed_pairs.add((sequence_id, profile_id))
+
     for sequence_id, profile_id in sorted(expected_pairs):
+        if (sequence_id, profile_id) in completed_pairs:
+            continue
         profile = profiles_by_id.get(profile_id)
         if not profile or profile.get("status") != "screening-shortlist":
             errors.append(
@@ -1293,6 +1305,16 @@ def validate_tool_adapter_identity(identity: object, expected: object, profile_i
     binary = identity.get("binary_identity")
     if not isinstance(binary, dict):
         errors.append(f"workflow session {sid} treatment production-v3 record must include tool adapter binary identity")
+    elif binary.get("kind") == "generated-by-host-integration":
+        if not isinstance(binary.get("command_template"), str) or not binary["command_template"]:
+            errors.append(f"workflow session {sid} generated treatment identity missing command_template")
+        if not isinstance(binary.get("install_commands"), list) or not binary["install_commands"]:
+            errors.append(f"workflow session {sid} generated treatment identity missing install_commands")
+        install_hash = binary.get("install_contract_sha256")
+        if not isinstance(install_hash, str) or not SHA256_RE.fullmatch(install_hash):
+            errors.append(
+                f"workflow session {sid} generated treatment identity install_contract_sha256 must be 64 lowercase hex"
+            )
     else:
         for key in ("executable_token", "resolved_path", "realpath"):
             if not isinstance(binary.get(key), str) or not binary.get(key):
