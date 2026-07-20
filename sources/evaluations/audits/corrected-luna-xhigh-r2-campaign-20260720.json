@@ -1,6 +1,6 @@
 {
   "schema_version": "corrected-luna-xhigh-r2-campaign/v2",
-  "generated_at": "2026-07-20T02:09:58.796695+00:00",
+  "generated_at": "2026-07-20T22:37:37Z",
   "campaign_id": "corrected-luna-xhigh-r2",
   "model_condition_id": "codex-openai-gpt-5-6-luna-xhigh",
   "model": "gpt-5.6-luna",
@@ -14,18 +14,18 @@
   },
   "baseline": {
     "provider_tokens_per_three-sequence_assignment": 31433746,
-    "provider_tokens_across_11_assignments": 345771206,
     "accounting_mode": "final-cumulative-total-per-thread",
-    "source": "sources/evaluations/audits/codex-cumulative-usage-accounting-20260718.json"
+    "source": "sources/evaluations/audits/codex-cumulative-usage-accounting-20260718.json",
+    "provider_tokens_across_10_assignments": 314337460
   },
   "aggregate": {
-    "profiles": 11,
-    "sessions": 33,
-    "tasks_passed": 98,
-    "tasks_attempted": 99,
-    "provider_tokens": 369127654,
-    "delta_provider_tokens": 23356448,
-    "delta_percent": 6.754885
+    "profiles": 10,
+    "sessions": 30,
+    "tasks_passed": 89,
+    "tasks_attempted": 90,
+    "provider_tokens": 338007248,
+    "delta_provider_tokens": 23669788,
+    "delta_percent": 7.530056
   },
   "profiles": [
     {
@@ -79,19 +79,6 @@
       "all_sessions_accepted_for_objective": true,
       "all_manifests_verified": true,
       "commit": "975cafc1845b80797fa085e7660e94d85bd05601"
-    },
-    {
-      "profile_id": "retrieval-cartog-mcp-v1",
-      "provider_tokens": 31120406,
-      "baseline_provider_tokens": 31433746,
-      "delta_provider_tokens": -313340,
-      "delta_percent": -0.996827,
-      "tasks_passed": 9,
-      "tasks_attempted": 9,
-      "session_count": 3,
-      "all_sessions_accepted_for_objective": true,
-      "all_manifests_verified": true,
-      "commit": "dda566591558cc0e7d51b698f6e8f663c78b14c6"
     },
     {
       "profile_id": "codescope-codex-product-v1",
@@ -185,7 +172,8 @@
   "invalid_generation_policy": {
     "codegraph_deletion_receipt": "sources/evaluations/audits/invalid-codegraph-v1-result-deletion-20260719.json",
     "jcodemunch_deletion_receipt": "sources/evaluations/audits/invalid-jcodemunch-direct-v1-result-deletion-20260719.json",
-    "deleted_invalid_generations_excluded": true
+    "deleted_invalid_generations_excluded": true,
+    "cartog_deletion_receipt": "sources/evaluations/audits/invalid-cartog-result-deletions-20260720.json"
   },
   "verification": {
     "all_profile_samples_present": true,
@@ -197,7 +185,7 @@
   "accounting_supersession": {
     "reason": "The provider-final campaign summary copied legacy baseline registry totals that summed cumulative thread snapshots. Treatment totals were already final-snapshot-correct; matched baseline totals are replaced by the cumulative-usage correction audit.",
     "authoritative_analysis": "sources/evaluations/audits/phase-2-corrected-analysis-20260720.json",
-    "authoritative_analysis_sha256": "169266ddf4d2559f37927ede86b094e804f6b8647b3cf36408de1c99920de21d",
+    "authoritative_analysis_sha256": "f509e5ae077689e5c2e115d72f3bd6843f815d748505488aa3a563a6aa0018b7",
     "legacy_baseline_provider_tokens_per_assignment": 62754041,
     "legacy_baseline_values_excluded_from_current_claims": true
   }
