@@ -999,8 +999,9 @@ def validate_workflow_task_sequences(sequence_doc: dict, fixture_doc: dict, erro
         if sequence.get("sequence_contract") != "feature-refactor-review":
             errors.append(f"workflow sequence {sid} must use the feature-refactor-review contract")
         qualification_path = str(sequence.get("qualification_path", ""))
-        if not qualification_path.endswith("/qualification-lifecycle-v0.json"):
-            errors.append(f"workflow sequence {sid} must bind qualification-lifecycle-v0.json")
+        qualification_name = Path(qualification_path).name
+        if re.fullmatch(r"qualification-lifecycle-v0(?:-[a-z0-9-]+)?\.json", qualification_name) is None:
+            errors.append(f"workflow sequence {sid} must bind a versioned qualification-lifecycle-v0 JSON artifact")
         if sequence.get("status") == "active" and sequence.get("acceptance_design") != "behavioral":
             errors.append(f"active workflow sequence {sid} must declare acceptance_design=behavioral")
         if sequence.get("status") == "active" and sequence.get("scope") != "production-primary":
@@ -1845,6 +1846,35 @@ def validate_tool_dossier_snapshots(errors: list[str]) -> None:
 def validate_frozen_protocol_bindings(errors: list[str]) -> None:
     session_doc = json.loads((ROOT / "data/workflow-sessions.json").read_text())
     executed_protocols: dict[str, set[str]] = {}
+    historical_qualification_cache: dict[tuple[str, str], bool] = {}
+
+    def historical_qualification_exists(relative_path: str, expected_sha256: str) -> bool:
+        """Verify a superseded mutable qualification through retained Git history."""
+        key = (relative_path, expected_sha256)
+        if key in historical_qualification_cache:
+            return historical_qualification_cache[key]
+        history = subprocess.run(
+            ["git", "log", "--all", "--format=%H", "--", relative_path],
+            cwd=ROOT,
+            text=True,
+            capture_output=True,
+            check=False,
+        )
+        matched = False
+        if history.returncode == 0:
+            for revision in history.stdout.splitlines():
+                blob = subprocess.run(
+                    ["git", "show", f"{revision}:{relative_path}"],
+                    cwd=ROOT,
+                    capture_output=True,
+                    check=False,
+                )
+                if blob.returncode == 0 and hashlib.sha256(blob.stdout).hexdigest() == expected_sha256:
+                    matched = True
+                    break
+        historical_qualification_cache[key] = matched
+        return matched
+
     for session in session_doc.get("sessions", []):
         frozen = session.get("frozen_protocol", {})
         protocol_path = frozen.get("path")
@@ -1876,9 +1906,8 @@ def validate_frozen_protocol_bindings(errors: list[str]) -> None:
         if not qualification_rel or not qualification_path.is_file():
             errors.append(f"frozen protocol {path.name} is missing qualification evidence")
             continue
-        actual = __import__("hashlib").sha256(qualification_path.read_bytes()).hexdigest()
-        if fixture.get("qualification_sha256") != actual:
-            errors.append(f"frozen protocol {path.name} has a stale qualification hash")
+        actual = hashlib.sha256(qualification_path.read_bytes()).hexdigest()
+        qualification_hash_matches_current_file = fixture.get("qualification_sha256") == actual
         if runner is not None:
             expected_descriptor = None
             expected_override = None
@@ -1887,11 +1916,45 @@ def validate_frozen_protocol_bindings(errors: list[str]) -> None:
                 if seq.get("status") != "active":
                     errors.append(f"execution contract {path.name} references an inactive sequence")
                     continue
+                expected_qualification_sha = str(fixture.get("qualification_sha256", ""))
+                if not qualification_hash_matches_current_file:
+                    historical_match = (
+                        qualification_rel != seq.get("qualification_path")
+                        and historical_qualification_exists(str(qualification_rel), expected_qualification_sha)
+                    )
+                    if not historical_match:
+                        errors.append(f"frozen protocol {path.name} has a stale qualification hash")
+                        continue
+                frozen_descriptor = protocol.get("baseline_pool", {}).get("descriptor", {})
+                actual_fingerprint = protocol.get("baseline_pool", {}).get("protocol_fingerprint")
+                try:
+                    frozen_fingerprint = runner.baseline_protocol_fingerprint_from_descriptor(frozen_descriptor)
+                except Exception as exc:
+                    errors.append(f"execution contract {path.name} has an invalid frozen baseline descriptor: {exc}")
+                    continue
+                if actual_fingerprint != frozen_fingerprint:
+                    errors.append(f"execution contract {path.name} has an internally inconsistent baseline fingerprint")
+                    continue
+                protocol_rel = path.relative_to(ROOT).as_posix()
+                frozen_hashes = executed_protocols.get(protocol_rel)
+                if frozen_hashes:
+                    actual_protocol_sha = hashlib.sha256(path.read_bytes()).hexdigest()
+                    if frozen_hashes != {actual_protocol_sha}:
+                        errors.append(
+                            f"executed protocol {path.name} bytes do not match retained session references"
+                        )
+                        continue
                 if qualification_rel != seq.get("qualification_path"):
-                    errors.append(f"execution contract {path.name} does not bind the selected v0 qualification")
+                    selected = protocol.get("selected_execution", {})
+                    selected_descriptor = selected.get("descriptor", {})
+                    if selected.get("descriptor_sha256") != runner._json_hash(selected_descriptor):
+                        errors.append(f"historical execution contract {path.name} has an invalid selected-execution hash")
+                        continue
+                    selected_pool = selected_descriptor.get("baseline_pool_reference", {}).get("protocol_fingerprint")
+                    if selected_pool != actual_fingerprint:
+                        errors.append(f"historical execution contract {path.name} has an inconsistent baseline-pool reference")
                     continue
                 expected_descriptor = runner.baseline_protocol_descriptor(seq)
-                frozen_descriptor = protocol.get("baseline_pool", {}).get("descriptor", {})
                 override = frozen_descriptor.get("model_condition_override") if isinstance(frozen_descriptor, dict) else None
                 if override is not None:
                     if not isinstance(override, dict) or model_condition_runner is None:
