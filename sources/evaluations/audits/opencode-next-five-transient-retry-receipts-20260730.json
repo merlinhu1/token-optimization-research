@@ -2,7 +2,7 @@
   "schema_version": 1,
   "audit_id": "opencode-next-five-transient-retry-receipts-20260730",
   "date": "2026-07-30",
-  "status": "blocked-provider-capacity",
+  "status": "graphify-terraform-retry-required",
   "incidents": [
     {
       "kind": "provider-overload",
@@ -37,8 +37,19 @@
       "preservation_result": "The matrix rejected bounded copying because the incomplete run directory contained nested runtime state, retained the complete checkout, and exited fail-closed. No canonical or rejected session was registered.",
       "accepted": false,
       "provider_usage_counted": false,
-      "cleanup": "The 3.0 GB retained matrix directory is deleted after this receipt is committed because it contains no provider usage event and is outside the authoritative corpus."
+      "cleanup": "The 3.0 GB retained matrix directory was deleted after this receipt was committed because it contained no provider usage event and was outside the authoritative corpus."
+    },
+    {
+      "kind": "graphify-warmup-disk-exhaustion",
+      "matrix_summary_external_path": "/opt/data/eval-workflow-lanes/workflow-matrix-20260730T130308062912Z-p1459709-r1/matrix-summary.json",
+      "failed_lane": "terraform-lifecycle-sequence-v0--retrieval-graphify-opencode-product-v1",
+      "rejected_evidence_external_path": "/opt/data/eval-workflow-lanes/workflow-matrix-20260730T130308062912Z-p1459709-r1/terraform-lifecycle-sequence-v0--retrieval-graphify-opencode-product-v1/rejected-evidence/graphify-opencode-v1-terraform-20260730-p-5811b463c1e9-r1",
+      "evidence": "Graphify completed AST extraction for 4,712 Terraform files, then its provider-free graph rebuild failed with `[Errno 28] No space left on device`; graph.json was absent and model execution never started.",
+      "evidence_bundle_sha256": "17de6b12560797ba02ad145e3afd498c489419c758a46fdea0eaadde25cbf083",
+      "accepted": false,
+      "provider_usage_counted": false,
+      "resolution": "The first valid Terraform SwarmVault session from the same matrix was retained. Publish it, delete duplicate/rejected lane state, recheck disk, and retry only Terraform Graphify."
     }
   ],
-  "preservation_policy": "Retain first valid Fastify and Beets samples; never rerun accepted assignments. Retry only missing assignments with the same published protocols, model condition, replicate, and bare OpenCode baseline. Do not launch another paid retry until provider capacity has recovered."
+  "preservation_policy": "Retain first valid Fastify, Beets, and Terraform samples; never rerun accepted assignments. Retry only the missing Terraform Graphify assignment with the same published protocol, model condition, replicate, and bare OpenCode baseline."
 }
