@@ -95,7 +95,7 @@ The clean successors are `artifact-ponytail-codex-plugin-v1` and `behavior-cavem
 
 ### 2026-07-20 corrected-campaign closure
 
-The 11 corrected Luna/`xhigh` assignments retained 33 sessions and 369,127,654 provider tokens against 690,294,451 tokens across the corresponding baseline assignments, a descriptive 46.53% reduction. All sessions are accepted for the token objective and all compact manifests verify; task diagnostics passed 98/99. The aggregate receipt is [`corrected-luna-xhigh-r2-campaign-20260720.json`](../../sources/evaluations/audits/corrected-luna-xhigh-r2-campaign-20260720.json), and the CodeGraph actual-use proof is [`codegraph-provider-actual-use-20260720.json`](../../sources/evaluations/audits/codegraph-provider-actual-use-20260720.json).
+The 11 corrected Luna/`xhigh` assignments retained 33 sessions and 369,127,654 provider tokens against 345,771,206 corrected tokens across the corresponding baseline assignments, a descriptive 6.75% increase. The earlier 46.53% reduction was an accounting error: the campaign summary copied legacy baseline registry totals that summed cumulative thread snapshots, while treatment totals were already final-snapshot-correct. All sessions remain accepted for the token objective and all compact manifests verify; task diagnostics passed 98/99. The corrected aggregate receipt is [`corrected-luna-xhigh-r2-campaign-20260720.json`](../../sources/evaluations/audits/corrected-luna-xhigh-r2-campaign-20260720.json), the full corrected Phase 2 analysis is [`phase-2-corrected-analysis-20260720.json`](../../sources/evaluations/audits/phase-2-corrected-analysis-20260720.json), and the CodeGraph actual-use proof is [`codegraph-provider-actual-use-20260720.json`](../../sources/evaluations/audits/codegraph-provider-actual-use-20260720.json).
 
 ## Future fail-closed prevention
 
@@ -119,4 +119,4 @@ The parity-approved set must exactly equal the fixture registry's non-baseline c
 
 ## Limits
 
-This audit determines whether the intended treatment was installed and positively assigned. It does not estimate corrected product effects. Any provider-backed corrected sample requires explicit authorization and the first-valid-run policy. Another stack may be preregistered only after both corrected component profiles have valid individual evidence.
+This audit determines whether the intended treatment was installed and positively assigned. Corrected product-effect observations are synthesized in the current Phase 2 report rather than inferred from setup evidence. Any additional provider-backed sample requires explicit authorization and prospective replicate indexing under the first-valid-run policy. Another stack requires separate preregistration and a new stack identity even though valid individual evidence now exists.

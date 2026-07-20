@@ -1,415 +1,306 @@
-# Phase 2 report: lifecycle-v0 natural-use screening of token-saving tools for Codex workflows
+# Phase 2 report: corrected lifecycle-v0 natural-use screening of token-saving tools for Codex workflows
 
-> **Report status:** historical provider-accounting narrative, superseded for treatment validity and product-effect interpretation by the [official-integration parity audit](official-integration-parity-audit.md). Tables preserve the arithmetic reported at the time; the 42 corrupted treatment records and artifacts they described were later deleted from the active corpus under receipt and are not a current tool ranking.
->
-> **Accounting supersession (2026-07-18):** all persistent-session totals in this historical report sum cumulative Codex `ThreadTokenUsage.total` snapshots and are inflated. Use the [cumulative usage correction audit](../../sources/evaluations/audits/codex-cumulative-usage-accounting-20260718.json) and [current findings](../truthmark/engineering/research/current-findings.md) for active token claims. The historical tables below remain unchanged for provenance.
->
-> **Superseding adjudication (updated 2026-07-19):** all historical treatment results except the two Headroom conditions were deleted from the active corpus—not relabelled as baseline—after official-installation and assignment audits. The later Ponytail and Caveman correction removed their six prompt-emulated results as incomplete canonical installations. Their guide-faithful successors have provider-free setup evidence only and no product-effect result. Historical tables below remain unchanged for provenance.
->
-> **Subsequent evidence update (2026-07-20):** the guide-faithful Ponytail and Caveman successors now have retained first-valid provider samples of 26,087,938 and 39,731,333 tokens respectively, each with 9/9 task verifiers. These later results supersede the “provider-free only” status above without changing the preserved historical tables.
+> **Current corrected report — 2026-07-20.** This document replaces the numerically invalid earlier Phase 2 text. The earlier version summed cumulative `ThreadTokenUsage.total` snapshots as if they were per-turn deltas and also interpreted treatment assignments that were later deleted for incomplete or unproven official integration. Git history preserves that superseded text; the tables and conclusions below use the final cumulative total per thread, retain only accepted faithful assignments, and treat structured correctness separately from the token objective.
 
-**Report date:** 2026-07-18
+**Evidence stage:** controlled reproduction screen
 
-**Evidence collection:** 2026-07-16 to 2026-07-17
+**Evidence dates:** 2026-07-16 through 2026-07-20
 
-**Evidence stage:** `reproduction`
+**Primary estimand:** provider-reported token usage under assignment to a faithfully installed treatment, with natural model uptake
 
-**Runtime/model condition:** Codex CLI, OpenAI GPT-5.6 Luna, `xhigh` reasoning
+**Model/runtime for treatment comparisons:** OpenAI Codex, GPT-5.6 Luna, `xhigh` reasoning
 
-**Primary metric:** cumulative provider-reported tokens per complete persistent workflow session
+**Workflow unit:** one persistent three-task lifecycle-v0 session per repository lane
 
 ## Abstract
 
-This report evaluates sixteen token-saving tools or bounded tool profiles, plus one required Headroom component ablation, on three frozen software-engineering lifecycle workflows. Each workflow contains feature implementation, behavior-preserving refactoring, and code review/correction in one persistent Codex session. Treatments were installed through their frozen declared integration surfaces and made available without evaluator-authored instructions to invoke, prefer, or quota them. The comparison therefore estimates assignment to the named treatment configuration, not treatment-on-the-treated behavior or an unevaluated broader product surface.
+This corrected Phase 2 screen compares 17 accepted treatment conditions—16 canonical product assignments and one explicit Headroom proxy-only ablation—against matched bare-Codex baselines on persistent Fastify, Beets, and Terraform workflows. The evidence comprises 51 treatment sessions and 153 structured task outcomes. Corrected accounting selects the final cumulative provider-usage snapshot per thread rather than summing successive snapshots. All cited compact manifests verify, and deleted invalid treatments are excluded.
 
-The evidence contains 57 completed provider runs: six bare-Codex baselines and 51 treatment executions. Every run retains provider-reported token components, structured verifier outcomes, frozen execution identity, isolation evidence, and a checksum-verified compact artifact bundle. The post-run parity audit later excluded 42 treatment sessions from objective claims while preserving their execution and token-accounting records.
+Five of 17 conditions used fewer aggregate provider tokens than their matched baseline in this one-replicate-per-lane screen: TokenJuice (-22.28%), Ponytail (-17.01%), SigMap (-9.60%), RTK (-1.90%), and Cartog (-1.00%). Only TokenJuice and SigMap were lower on all three lanes. The other 12 conditions were higher in aggregate, ranging from jcodemunch v2 at +0.38% and CodeGraph at +0.79% to Graphify at +63.90%. Across all 17 matched assignments, treatments used 582,180,587 corrected provider tokens versus 541,295,326 repeated matched-baseline tokens, a descriptive +7.55%. Structured verifiers passed 150/153 tasks; all three failures were the same Fastify feature type mismatch under different assignments.
 
-The historical matched `r1` tables range from TokenJuice at -28.54% to CodeScope at +15.63%. Those deltas remain factual arithmetic over retained provider totals, but most named treatment assignments were later found invalid or operationally unverified. They must not be interpreted as product effects, ordered as a tool ranking, or used for recommendations.
-
-The surviving objective-eligible historical evidence is limited to default Headroom as the wrapper treatment and its proxy-only component ablation. Later guide-faithful corrected evidence exists for TokenJuice, RTK, Snip, and Graphify. CodeGraph v1, jcodemunch direct v1, Ponytail prompt-only, and Caveman prompt-emulated results were later deleted for incomplete or unusable canonical installations; their successor profile definitions do not retroactively validate the historical samples.
+These observations are screening evidence, not stable tool rankings or deployment estimates. Each treatment has one accepted assignment replicate per lane, Terraform contributes more than half of the matched r2 baseline total, and cached input dominates provider usage. The report therefore identifies replication candidates and negative findings without claiming universal savings, quality equivalence, or monetary cost reduction.
 
 ## 1. Research question and claim boundary
 
-The primary question is:
+The research question is:
 
-> Under a frozen normal-user treatment configuration, how does cumulative provider-reported token use change relative to a compatible retained bare-Codex baseline on the same persistent lifecycle workflow?
+> Under natural-use assignment in persistent Codex software workflows, how does each faithfully installed token-saving treatment change provider-reported token usage relative to a compatible bare-Codex baseline, while preserving structured correctness as a separate diagnostic?
 
-The historical protocol intended an **availability/natural-use** estimand, but the parity audit established that configuration was not enough to prove assignment. A valid product treatment must materialize the product's pinned Codex integration. An MCP treatment additionally requires a retained successful handshake or completed MCP call. Product-authored routing instructions are part of the treatment when the pinned product documentation identifies them as normal integration; evaluator-authored steering remains prohibited.
+The estimand is assignment-level availability, not efficiency conditional on explicit invocation. Normal product setup—including author-provided wrappers, hooks, skills, rules, MCP wiring, and behavioral guidance—is part of the treatment. Evaluator-authored steering, forced calls, and invocation quotas are excluded. Zero explicit model-issued use remains an eligible natural-use observation after faithful installation.
 
-The report permits the following claims:
+The report supports descriptive claims for these frozen profiles, model conditions, fixtures, protocols, and first valid samples. It does **not** establish:
 
-- observed provider-token totals and component values for the frozen sessions;
-- observed paired changes against the compatible `r1` baseline;
-- structured verifier outcomes for every task;
-- integration, isolation, and artifact-integrity facts recorded by the controller;
-- descriptive cross-lane consistency and post-screening replication priorities.
+- a stable ordering across tools or future replicates;
+- a universal per-task or per-language effect;
+- causal attribution to a specific hook, tool call, or instruction surface without matching instrumentation;
+- quality equivalence from verifier passes alone;
+- local indexing, latency, or monetary cost savings;
+- deployment readiness.
 
-It does **not** permit:
+## 2. Why the earlier report was wrong
 
-- population-average token-saving percentages;
-- statistical significance or stable treatment rankings from one treatment replicate;
-- cross-model, cross-runtime, or cross-workload generalization;
-- attribution of an assignment-level change to one internal mechanism without complete mechanism instrumentation;
-- software-quality superiority from verifier outcomes alone;
-- monetary-cost or latency claims.
+Two independent defects invalidated the earlier Phase 2 interpretation.
 
-## 2. Relationship to Phase 1
+1. **Cumulative-provider accounting was summed incorrectly.** Codex emits cumulative thread snapshots. Summing each snapshot double-counted replayed history. The correction audit selects the final monotonic snapshot for each distinct thread and derives task increments by differencing successive snapshots. The active session registry retains legacy values for historical provenance in some older records; the correction audit and this report govern current accounting claims.
+2. **Several treatment identities were not faithful canonical products.** Historical sessions were deleted—not relabelled as baseline—when official-integration review found missing hooks, wrappers, skills, product guidance, handshake proof, or runtime availability. Corrected profiles were installed through their pinned author-documented surfaces and qualified without provider calls before execution.
 
-[Phase 1](phase-1-compatibility-safe-token-saving-stacks.md) mapped source-inspected mechanisms and compatibility boundaries. It established hypotheses, not measured winners. Phase 2 narrows that portfolio into isolated atomic treatment screens so each run has one declared surface owner or one explicitly bounded integrated owner.
-
-The treatment set spans four practical mechanism groups:
-
-- **terminal/tool-output owners:** RTK, Snip, and TokenJuice;
-- **retrieval/context owners:** Serena, Graphify, CodeGraph, jcodemunch MCP, SigMap, LeanCTX, and Cartog;
-- **broad or integrated owners:** Token Savior, default Headroom, CodeScope, and SwarmVault;
-- **instruction/policy treatments:** Caveman and Ponytail.
-
-Headroom also has a proxy-only component ablation. It is reported separately and is not counted as a seventeenth full-tool screen.
-
-This report does not evaluate the multi-tool stacks proposed in Phase 1. A positive atomic screen is evidence for replication of that treatment assignment, not validation of a future stack containing it.
+Existing comparison JSON files remain execution-provenance artifacts, but any baseline total copied from a legacy registry record is superseded by the deterministic cumulative-usage correction overlay. The machine-readable analysis receipt used for every number below is [`phase-2-corrected-analysis-20260720.json`](../../sources/evaluations/audits/phase-2-corrected-analysis-20260720.json).
 
 ## 3. Methods
 
-### 3.1 Workflow unit
+### 3.1 Workflow design
 
-One replicate is one complete three-task workflow session—not one task. Each lane starts from one qualified composite repository state, discloses prompts sequentially, preserves repository and agent/tool state, and runs all concealed verifiers after the final prompt.
+Each lane is a persistent three-task lifecycle-v0 sequence:
 
-| Lane | Pinned repository role | Ordered lifecycle tasks |
-|---|---|---|
-| Fastify | medium JavaScript/TypeScript framework | request media-type feature; Content-Type representation refactor; review/correction of an `onMaxParamLength` status-code change |
-| Beets | medium Python application | multivalue modify feature; lazy model-storage refactor; review/correction of an `ftintitle` metadata-hook change |
-| Terraform | large Go application | deferred policy-callback feature; state-store provider parsing refactor; review/correction of cloud policy-summary rendering |
+1. feature implementation;
+2. behavior-preserving refactor;
+3. code review and correction.
 
-The task contracts are defined in `data/workflow-task-sequences.json`; generated qualification evidence lives beside each fixture under `sources/evaluations/fixtures/`.
+Fastify, Beets, and Terraform use pinned upstream snapshots, concealed controller acceptance tests, neutral task aliases, and persistent resumed Codex sessions. Each next task is disclosed only after the preceding task and verifier boundary. The final cumulative tree is also verified. Setup, index building, and controller-side handshake checks occur outside provider-token accounting.
 
-### 3.2 Baseline and treatment conditions
+### 3.2 Baseline and treatment matching
 
-The baseline is `baseline-bare-codex`: Codex native shell, editing, plain file operations, Git, and verifier commands are allowed; MCP servers, token-saving add-ons, global instructions, hooks, plugins, skills, and warm indexes are disabled.
+Every treatment lane is paired by model condition, protocol family, sequence, and replicate index. Headroom default and its proxy-only ablation retain their first valid r1 assignments. The other 15 conditions retain first valid r2 assignments. No sample was replaced because its token result was large, its direction was unfavorable, or a callable tool received zero natural uptake.
 
-Every treatment session uses the same model condition, fixture, prompts, verifier bytes, runtime image, isolation policy, and baseline-pool fingerprint as its paired baseline. Treatment-specific configuration is frozen in the profile protocol and recorded in `tool_adapter_identity`.
+The r0 Luna baseline is retained to characterize baseline variability but is not used for a treatment comparison in this report. A separate Sol/`high` baseline panel remains a compound model-and-effort comparison and is not mixed into the Luna/`xhigh` treatment estimates.
 
-All 57 sessions used:
+### 3.3 Corrected token accounting
 
-- Codex CLI with OpenAI GPT-5.6 Luna and `xhigh` reasoning;
-- Docker image `sha256:6f86d01f2c63f5029c6bb874d8f3694c24d5cd567e3d09413eccc956ba3feafe`;
-- fresh lane-specific runtime homes and tool state as declared by the profile;
-- disabled Codex web search and model-shell network denial;
-- final-only controller verification.
+The primary metric is `total_provider_tokens` from the final cumulative usage snapshot for each distinct Codex thread. Fresh input, cached input, output, and total provider tokens are provider-reported fields. Reasoning tokens are a subset of output accounting and are **not additive** to total provider tokens.
 
-Several profiles intentionally bound claims to less than every surface offered by the upstream product:
+For each treatment profile:
 
-- Caveman is the instruction-layer behavior-policy arm; MCP-description compression, plugin hooks, and persistent mode state are inactive.
-- Token Savior uses its integrated MCP surface with external host hooks and automatic memory injection disabled.
-- CodeGraph and LeanCTX are cold optional retrieval conditions; no controller-built index is provided.
-- CodeScope retains its official MCP tools and cold auto-indexer but removes upstream mandatory-uptake wording so use remains natural; telemetry export and external embedding providers are inactive.
-- SwarmVault uses an offline heuristic warm index with its product-native deterministic 500-file cap; cloud/local model providers, hooks, agent-rule installation, and graph viewer are inactive.
-- Default Headroom is the primary wrapper condition. The separately reported `terminal-headroom` profile disables several default Headroom-managed surfaces and is explicitly proxy-only.
+- lane delta = corrected treatment total minus the matched corrected baseline total;
+- aggregate delta = the sum of three lane treatment totals minus the sum of three matched baseline totals;
+- percentage delta = aggregate delta divided by the matched baseline aggregate.
 
-Claims in this report apply to these frozen profiles, not to disabled product surfaces.
+The all-profile aggregate repeats the matched baseline once per assignment. It describes the selected panel; it is not a pooled estimate of a tool population.
 
-### 3.3 Treatment validity and use
+### 3.4 Treatment validity and uptake
 
-A treatment is valid when its frozen normal-user integration is present, configured, and isolated. Invocation is not an eligibility gate. Controller preflight is installation evidence, not causal model use. Mechanism claims are made only when the declared integration provides complete relevant instrumentation.
+Canonical product profiles include author-recommended integration surfaces needed for normal Codex use. Reduced surfaces are separately named ablations. Qualification proves installation and transport readiness, not model uptake or product effect. MCP registration is distinguished from `initialize`/`tools/list`, and both are distinguished from model-issued calls.
 
-This distinction is material for instruction layers, wrappers, proxies, hooks, and MCP servers. For example, no explicit model-issued CodeScope or SwarmVault MCP call was observed, but their valid availability samples are retained rather than rerun or steered. Their token comparisons remain assignment-level observations.
+CodeGraph has additional retained actual-use evidence: all nine tasks issued successful product calls, with 23 completed `codegraph explore` executions in total. That confirms uptake for CodeGraph but does not turn its +0.79% observation into a stable mechanism estimate. Other automatic wrappers, hooks, and instruction treatments may act without explicit model commands; absence of commands is not interpreted as absence of exposure.
 
-### 3.4 Token accounting
+### 3.5 Correctness and integrity
 
-The primary measure is `workflow_session_total`: cumulative provider-reported usage across all three model turns, including any provider-consuming retry. Every record preserves:
+Provider-token eligibility is independent of verifier success. Structured correctness outcomes are retained diagnostically and never used to rerun or select a more favorable token sample. All cited treatment and baseline compact-artifact manifests verify. Isolation audits, frozen protocol identities, provider usage, and deletion receipts define the accepted corpus.
 
-- fresh input tokens;
-- cached input tokens;
-- output tokens;
-- reasoning tokens when exposed;
-- total provider tokens;
-- accounting source and basis.
+## 4. Evidence inventory
 
-For these Codex records:
-
-```text
-total_provider_tokens = fresh_input_tokens + cached_input_tokens + output_tokens
-```
-
-Reasoning tokens are provider-exposed diagnostic detail and are not added again. Cache-write tokens were not separately exposed. Local indexing, setup time, wall-clock latency, and money are outside the primary metric.
-
-For treatment `T` and matched baseline `B`:
-
-```text
-paired_delta = T.total_provider_tokens - B.total_provider_tokens
-paired_delta_percent = paired_delta / B.total_provider_tokens × 100
-```
-
-All treatment comparisons use the compatible `r1` baseline. The extra `r0` baselines quantify observed baseline variability but are not averaged into the treatment denominator.
-
-### 3.5 Correctness and quality diagnostics
-
-Every task emits its own structured final-state outcome. Missing or duplicate outcomes fail closed. Verifier results and optional independent source review describe model behavior but do not select which operationally valid token samples count.
-
-Independent source-quality review is available for two baseline sessions; 55 sessions remain `not-reviewed`. Consequently, this report can make verifier-correctness claims but does not claim comprehensive merge-quality equivalence across treatments.
-
-### 3.6 Isolation and artifact integrity
-
-The controller records verifier integrity, external-retrieval audit results, runtime and tool identities, treatment configuration, and compact evidence locations. Each session directory contains exactly:
-
-- `run.json`;
-- `changes.diff`;
-- `evidence.jsonl.gz`;
-- `manifest.sha256`.
-
-The decision index is `data/workflow-sessions.json`. Compatible pair summaries are stored under `sources/evaluations/workflow-sessions/*-vs-*.json`.
-
-A packaging audit found that generated Graphify indexes had been included in three cumulative source diffs and a generated CodeScope embedding cache had been included in one. The four bundles were repaired under `source-diff-generated-state-exclusion-v1`. Their `run.json` records preserve the original hashes, sizes, and removed-section counts. Source changes, provider events and usage, verifier output, comparisons, and interpretation were unchanged.
-
-## 4. Evidence inventory and integrity
-
-| Evidence class | Count | Result |
+| Evidence layer | Current evidence | Disposition |
 |---|---:|---|
-| Bare baseline sessions | 6 | two per lane (`r0`, `r1`) |
-| Full-tool treatment sessions | 48 | sixteen treatments × three lanes |
-| Headroom proxy-only ablation sessions | 3 | one per lane |
-| Total workflow sessions | 57 | all operationally valid and token-accounting eligible |
-| Matched treatment comparisons | 51 | 48 full-tool + 3 ablation |
-| Structured task outcomes | 171 | 164 pass; 7 fail |
-| Tool-isolation audits | 57 | 57 pass |
-| Verifier-integrity audits | 57 | 57 pass |
-| Records with prohibited external-retrieval hits | 0 | none observed |
-| Operational retries | 0 | none recorded |
-| Manifest entries checked | 171 | 171 SHA-256 matches |
-| Artifact packaging repairs | 4 | generated treatment state removed from source-diff checkpoints; receipts retained |
-| Independent source-quality reviews | 2 | 55 sessions not reviewed |
+| Accepted Luna/`xhigh` baseline sessions | 9 | Three replicates across three repository lanes |
+| Separate Sol/`high` baseline sessions | 9 | Context only; excluded from treatment matching |
+| Accepted individual-tool treatment sessions | 51 | 17 conditions × three lanes |
+| Structured treatment task outcomes | 153 | 150 passed, three diagnostic failures |
+| Compact manifests cited by analysis | 69 sessions | All verified |
+| Deleted invalid historical treatments | Excluded | Governed by explicit deletion receipts |
+| Provider-free qualification | Passed before corrected runs | Setup evidence only; zero provider calls |
 
-Repository-level checks at finalization passed: the generated workflow runbook was current, repository validation passed, 104 contract tests passed, Truthmark reported no diagnostics, and `git diff --check` passed.
+The 51 treatment sessions are all GPT-5.6 Luna/`xhigh`. Six sessions belong to the r1 Headroom full/ablation pair; 45 belong to the r2 corrected-profile panel.
 
 ## 5. Baseline behavior
 
-### Table 1. Baseline replicates and matched `r1` components
+### Table 1. Corrected Luna/`xhigh` baseline replicates
 
-| Lane | `r0` total | `r1` total | `r1` vs `r0` | `r1` fresh | `r1` cached | `r1` output | `r1` reasoning | Verifier tasks (`r0`; `r1`) |
-|---|---:|---:|---:|---:|---:|---:|---:|---:|
-| Fastify | 12.950M | 13.078M | +0.98% | 0.471M | 12.510M | 96.9K | 52.5K | 3/3; 3/3 |
-| Beets | 25.370M | 17.424M | -31.32% | 0.659M | 16.646M | 119.0K | 58.3K | 3/3; 3/3 |
-| Terraform | 33.564M | 43.392M | +29.28% | 0.977M | 42.297M | 117.9K | 54.5K | 3/3; 3/3 |
+| Replicate | Fastify | Beets | Terraform | Aggregate provider tokens | Tasks |
+|---|---:|---:|---:|---:|---:|
+| r0 | 6,420,074 | 12,244,729 | 15,863,828 | 34,528,631 | 9/9 |
+| r1 | 6,712,770 | 8,728,732 | 19,453,066 | 34,894,568 | 9/9 |
+| r2 | 4,617,123 | 9,238,446 | 17,578,177 | 31,433,746 | 9/9 |
 
-The aggregate baseline moved from 71.884M at `r0` to 73.893M at `r1` (+2.80%), but that small aggregate difference hides substantial lane-level variation. Every paired treatment uses `r1`, so the comparisons are internally matched; the variation nevertheless demonstrates why one treatment replicate cannot establish a stable effect.
+The three aggregate baseline replicates average 33,618,982 tokens with a sample standard deviation of 1,901,294 and a coefficient of variation (CV) of 5.66%. Lane-level CVs are higher: Fastify 19.18%, Beets 18.87%, and Terraform 10.18%. This variability is material relative to several near-zero treatment deltas.
 
-The `r1` portfolio was weighted 17.70% Fastify, 23.58% Beets, and 58.72% Terraform by provider tokens. Aggregate changes are therefore dominated by Terraform. Lane-level results must accompany every aggregate value.
+The matched r2 baseline totals 31,433,746 tokens. Terraform contributes 17,578,177 tokens (55.92%), Beets 9,238,446 (29.39%), and Fastify 4,617,123 (14.69%). Aggregate signs can therefore be dominated by Terraform even when two smaller lanes move in the opposite direction.
 
-Cached input comprised 71.453M of the 73.893M matched baseline total (96.70%). The primary metric intentionally includes cached provider volume, but this composition means most observed absolute differences are changes in repeated cached context rather than visible model output.
+## 6. Corrected treatment results
 
-## 6. Treatment results
+### Table 2. Matched provider-token results
 
-### Table 2. Descriptive matched screening results
+Each lane cell shows corrected provider tokens followed by percentage change from its matched baseline. Negative percentages use fewer provider tokens.
 
-Rows are ordered by aggregate provider-token change. Negative values mean fewer provider-reported tokens than the matched `r1` baseline. “Reduced lanes” is descriptive sign consistency, not a significance test.
+| Treatment | Match | Fastify | Beets | Terraform | Aggregate | Aggregate delta | Tasks |
+|---|---:|---:|---:|---:|---:|---:|---:|
+| Headroom default Codex wrapper | r1 | 5,835,553 (-13.07%) | 13,750,119 (+57.53%) | 18,490,320 (-4.95%) | 38,075,992 | +9.12% | 8/9 |
+| Headroom proxy-only | r1 | 4,655,914 (-30.64%) | 9,099,910 (+4.25%) | 22,306,972 (+14.67%) | 36,062,796 | +3.35% | 8/9 |
+| TokenJuice | r2 | 2,759,005 (-40.24%) | 7,035,670 (-23.84%) | 14,634,423 (-16.75%) | 24,429,098 | -22.28% | 9/9 |
+| RTK | r2 | 4,409,305 (-4.50%) | 11,132,590 (+20.50%) | 15,293,139 (-13.00%) | 30,835,034 | -1.90% | 9/9 |
+| Snip | r2 | 4,445,104 (-3.73%) | 7,141,019 (-22.70%) | 20,543,255 (+16.87%) | 32,129,378 | +2.21% | 9/9 |
+| Graphify | r2 | 7,204,296 (+56.03%) | 14,405,795 (+55.93%) | 29,910,544 (+70.16%) | 51,520,635 | +63.90% | 9/9 |
+| Token Savior | r2 | 3,807,810 (-17.53%) | 11,731,406 (+26.98%) | 23,464,210 (+33.48%) | 39,003,426 | +24.08% | 9/9 |
+| Ponytail | r2 | 5,768,026 (+24.93%) | 7,078,275 (-23.38%) | 13,241,637 (-24.67%) | 26,087,938 | -17.01% | 9/9 |
+| Caveman | r2 | 8,026,762 (+73.85%) | 10,210,615 (+10.52%) | 21,493,956 (+22.28%) | 39,731,333 | +26.40% | 9/9 |
+| LeanCTX | r2 | 4,735,271 (+2.56%) | 12,500,278 (+35.31%) | 17,531,315 (-0.27%) | 34,766,864 | +10.60% | 9/9 |
+| Cartog | r2 | 5,531,588 (+19.81%) | 9,047,320 (-2.07%) | 16,541,498 (-5.90%) | 31,120,406 | -1.00% | 9/9 |
+| CodeScope | r2 | 2,576,564 (-44.20%) | 12,703,830 (+37.51%) | 17,671,148 (+0.53%) | 32,951,542 | +4.83% | 9/9 |
+| SwarmVault | r2 | 8,550,172 (+85.18%) | 7,001,834 (-24.21%) | 22,049,697 (+25.44%) | 37,601,703 | +19.62% | 9/9 |
+| Serena | r2 | 3,777,040 (-18.19%) | 9,093,649 (-1.57%) | 23,345,023 (+32.81%) | 36,215,712 | +15.21% | 9/9 |
+| SigMap | r2 | 4,318,341 (-6.47%) | 8,448,147 (-8.55%) | 15,648,958 (-10.98%) | 28,415,446 | -9.60% | 9/9 |
+| CodeGraph | r2 | 5,561,571 (+20.46%) | 8,763,423 (-5.14%) | 17,355,866 (-1.26%) | 31,680,860 | +0.79% | 9/9 |
+| jcodemunch v2 | r2 | 4,941,478 (+7.03%) | 5,452,170 (-40.98%) | 21,158,776 (+20.37%) | 31,552,424 | +0.38% | 8/9 |
 
-| Treatment | Surface / state | Fastify Δ | Beets Δ | Terraform Δ | Treatment total | Aggregate Δ | Verifier tasks | Reduced lanes |
-|---|---|---:|---:|---:|---:|---:|---:|---:|
-| TokenJuice | terminal output; cold CLI | -34.37% | +4.13% | -39.91% | 52.801M | **-28.54%** | 9/9 | 2/3 |
-| Snip | terminal output; cold CLI | -39.64% | +10.00% | -24.69% | 59.739M | **-19.16%** | 8/9 | 2/3 |
-| Cartog | retrieval; warm index | -53.70% | -16.42% | -8.93% | 60.134M | **-18.62%** | 8/9 | 3/3 |
-| jcodemunch MCP | retrieval; warm index | -48.78% | -0.60% | -14.99% | 60.902M | **-17.58%** | 9/9 | 3/3 |
-| SwarmVault | broad context; warm index | +29.80% | -11.24% | -33.82% | 61.155M | **-17.24%** | 9/9 | 2/3 |
-| CodeGraph | retrieval; cold | -36.08% | +8.30% | -21.66% | 61.223M | **-17.15%** | 9/9 | 2/3 |
-| Graphify | retrieval; warm index | -33.42% | -1.08% | -17.39% | 61.788M | **-16.38%** | 8/9 | 3/3 |
-| Token Savior | integrated MCP | -42.01% | -1.35% | -12.15% | 62.891M | **-14.89%** | 7/9 | 3/3 |
-| Caveman | instruction-layer behavior policy | -49.05% | +11.78% | -13.88% | 63.510M | **-14.05%** | 9/9 | 2/3 |
-| RTK | terminal output | -13.18% | +13.11% | -22.95% | 64.494M | **-12.72%** | 9/9 | 2/3 |
-| LeanCTX | retrieval; cold | -13.55% | +34.65% | -18.55% | 70.107M | **-5.12%** | 9/9 | 2/3 |
-| Serena | retrieval | -2.29% | -6.36% | -2.33% | 71.475M | **-3.27%** | 9/9 | 3/3 |
-| Default Headroom | broad compression / wrapper | -17.86% | +48.85% | -19.75% | 71.498M | **-3.24%** | 8/9 | 2/3 |
-| Ponytail | artifact-minimization policy | -0.63% | +32.76% | -15.03% | 72.996M | **-1.21%** | 9/9 | 2/3 |
-| SigMap | retrieval; warm index | -19.17% | +11.07% | +21.24% | 82.532M | **+11.69%** | 9/9 | 1/3 |
-| CodeScope | broad context; cold auto-index | -57.82% | -11.93% | +48.83% | 85.440M | **+15.63%** | 9/9 | 2/3 |
-| Headroom proxy-only | component ablation | -24.02% | -5.53% | +18.76% | 77.932M | **+5.47%** | 8/9 | 2/3 |
+### 6.1 Main observations
 
-The Headroom proxy-only row is an ablation and is intentionally excluded from the sixteen-tool descriptive ordering.
+- **TokenJuice** is the strongest descriptive reduction in this screen: -22.28% aggregate, lower on all three lanes, with 9/9 task verifiers.
+- **SigMap** is also lower on all three lanes: -9.60% aggregate with 9/9 task verifiers.
+- **Ponytail** is lower in aggregate (-17.01%) but mixed by lane: Fastify rises 24.93% while Beets and Terraform fall.
+- **RTK** (-1.90%) and **Cartog** (-1.00%) are near neutral relative to baseline variability and have mixed lane signs.
+- **jcodemunch v2** (+0.38%) and **CodeGraph** (+0.79%) are also near neutral in aggregate; jcodemunch has one Fastify verifier failure, while CodeGraph has 9/9 verifiers and direct actual-use proof.
+- **Graphify** is the largest descriptive increase (+63.90%) and is higher on all three lanes. **Caveman** (+26.40%) is also higher on every lane.
+- The Headroom full wrapper (+9.12%) and proxy-only ablation (+3.35%) are both higher than their r1 baseline and each has the same Fastify feature diagnostic. One sample per condition does not support attribution of their difference to the proxy surface.
 
-### 6.1 Main screening observations
+Across the 15-profile r2 panel, treatments use 508,041,799 tokens against 471,506,190 repeated matched-baseline tokens: +36,535,609, or +7.75%. Across all 17 assignments including the r1 Headroom pair, treatments use 582,180,587 against 541,295,326: +40,885,261, or +7.55%. These repeated-baseline aggregates summarize this panel only.
 
-1. **TokenJuice had the largest observed aggregate reduction.** It used 21.092M fewer provider tokens than the matched baseline (-28.54%) and passed 9/9 verifier tasks. Its Beets lane increased 4.13%, so the effect was not uniform.
-2. **jcodemunch MCP paired all-lane reductions with 9/9 verifier passes.** Its three lane changes were -48.78%, -0.60%, and -14.99%, for -17.58% aggregate.
-3. **Serena was directionally consistent but small.** It reduced every lane and passed 9/9 tasks, but its aggregate change was only -3.27%.
-4. **Cartog, Graphify, and Token Savior reduced all three lanes but had verifier failures.** Their aggregate changes were -18.62%, -16.38%, and -14.89%, with 8/9, 8/9, and 7/9 verifier passes. The token samples remain eligible, but correctness differences must remain visible.
-5. **Several large aggregate reductions were heterogeneous.** Snip, SwarmVault, CodeGraph, Caveman, and RTK each reduced aggregate tokens by more than 10% while increasing at least one lane.
-6. **SigMap and CodeScope increased aggregate tokens.** SigMap used 11.69% more; CodeScope used 15.63% more because its +48.83% Terraform result outweighed medium-lane reductions.
-7. **Headroom’s default and proxy-only conditions differed materially.** Default Headroom was -3.24% aggregate; proxy-only was +5.47%. This is one component-ablation sample, not a stable mechanism estimate.
+### Table 3. Corrected aggregate provider-token components
 
-### Table 3. Aggregate provider-token components
+Reasoning is shown diagnostically as a subset of output and must not be added to the total.
 
-| Treatment | Fresh input | Cached input | Output | Reasoning | Total | Δ total |
-|---|---:|---:|---:|---:|---:|---:|
-| Bare Codex `r1` | 2.107M | 71.453M | 333.7K | 165.2K | 73.893M | — |
-| TokenJuice | 1.717M | 50.767M | 317.1K | 156.4K | 52.801M | -28.54% |
-| Snip | 1.760M | 57.681M | 296.8K | 146.9K | 59.739M | -19.16% |
-| Cartog | 1.669M | 58.179M | 286.0K | 140.7K | 60.134M | -18.62% |
-| jcodemunch MCP | 1.888M | 58.713M | 301.1K | 148.8K | 60.902M | -17.58% |
-| SwarmVault | 2.107M | 58.755M | 293.0K | 143.5K | 61.155M | -17.24% |
-| CodeGraph | 2.075M | 58.797M | 351.5K | 169.1K | 61.223M | -17.15% |
-| Graphify | 2.007M | 59.450M | 330.9K | 148.8K | 61.788M | -16.38% |
-| Token Savior | 2.020M | 60.570M | 300.5K | 136.0K | 62.891M | -14.89% |
-| Caveman | 2.059M | 61.127M | 324.9K | 163.2K | 63.510M | -14.05% |
-| RTK | 1.850M | 62.350M | 293.7K | 148.8K | 64.494M | -12.72% |
-| LeanCTX | 2.308M | 67.482M | 317.4K | 130.0K | 70.107M | -5.12% |
-| Serena | 1.946M | 69.210M | 319.1K | 147.8K | 71.475M | -3.27% |
-| Default Headroom | 2.419M | 68.717M | 360.9K | 175.9K | 71.498M | -3.24% |
-| Ponytail | 2.213M | 70.458M | 325.4K | 157.3K | 72.996M | -1.21% |
-| SigMap | 2.122M | 80.075M | 335.5K | 162.3K | 82.532M | +11.69% |
-| CodeScope | 2.228M | 82.889M | 322.9K | 153.5K | 85.440M | +15.63% |
+| Treatment | Fresh input | Cached input | Output | Reasoning subset | Provider total |
+|---|---:|---:|---:|---:|---:|
+| Headroom default Codex wrapper | 1,272,757 | 36,630,784 | 172,451 | 81,401 | 38,075,992 |
+| Headroom proxy-only | 1,047,436 | 34,856,448 | 158,912 | 77,993 | 36,062,796 |
+| TokenJuice | 814,467 | 23,474,176 | 140,455 | 60,643 | 24,429,098 |
+| RTK | 809,083 | 29,869,568 | 156,383 | 72,933 | 30,835,034 |
+| Snip | 1,099,840 | 30,882,816 | 146,722 | 64,872 | 32,129,378 |
+| Graphify | 1,361,015 | 49,986,816 | 172,804 | 79,196 | 51,520,635 |
+| Token Savior | 981,020 | 37,852,672 | 169,734 | 87,710 | 39,003,426 |
+| Ponytail | 852,101 | 25,110,272 | 125,565 | 64,493 | 26,087,938 |
+| Caveman | 921,873 | 38,646,784 | 162,676 | 73,914 | 39,731,333 |
+| LeanCTX | 1,128,232 | 33,489,408 | 149,224 | 76,152 | 34,766,864 |
+| Cartog | 817,420 | 30,142,976 | 160,010 | 76,376 | 31,120,406 |
+| CodeScope | 832,939 | 31,977,472 | 141,131 | 63,421 | 32,951,542 |
+| SwarmVault | 1,059,184 | 36,398,592 | 143,927 | 69,286 | 37,601,703 |
+| Serena | 855,463 | 35,223,552 | 136,697 | 71,625 | 36,215,712 |
+| SigMap | 828,409 | 27,435,264 | 151,773 | 72,999 | 28,415,446 |
+| CodeGraph | 917,852 | 30,593,536 | 169,472 | 79,489 | 31,680,860 |
+| jcodemunch v2 | 835,162 | 30,611,200 | 106,062 | 59,935 | 31,552,424 |
 
-The component table shows that aggregate ordering was driven chiefly by cached input volume. Output-token differences were much smaller than total differences. This is particularly important for Caveman: the evaluated arm is a behavioral-output policy, but its -14.05% aggregate observation cannot be interpreted as a measured output-only mechanism effect because provider total was dominated by cached context.
+Cached input dominates every aggregate. Differences in visible output are much smaller than total differences, so behavioral brevity cannot be assumed to explain provider-total movement. Large effects require trajectory-level analysis of replayed context, turns, tool outputs, and product guidance before any mechanism attribution.
 
 ## 7. Correctness diagnostics
 
-Seven of 171 structured task outcomes failed. Every failure occurred on the first, feature-implementation task; later refactor and review tasks passed their individual concealed verifiers on the final cumulative tree.
+Three of 153 treatment task outcomes fail their concealed verifier. All three occur on `fastify-lifecycle-feature-v0` and report the same TypeScript mismatch: the hidden check expected `FastifyRequest.mediaType` to remain `string | undefined`, while the produced implementation exposed `string`.
 
 | Condition | Lane | Failed task | Treatment tasks passed |
 |---|---|---|---:|
-| Token Savior | Fastify | `fastify-lifecycle-feature-v0` | 2/3 |
-| Token Savior | Beets | `beets-lifecycle-feature-v0` | 2/3 |
-| Graphify | Fastify | `fastify-lifecycle-feature-v0` | 2/3 |
-| Snip | Fastify | `fastify-lifecycle-feature-v0` | 2/3 |
-| Default Headroom | Fastify | `fastify-lifecycle-feature-v0` | 2/3 |
-| Cartog | Fastify | `fastify-lifecycle-feature-v0` | 2/3 |
+| Headroom default Codex wrapper | Fastify | `fastify-lifecycle-feature-v0` | 2/3 |
 | Headroom proxy-only | Fastify | `fastify-lifecycle-feature-v0` | 2/3 |
+| jcodemunch v2 | Fastify | `fastify-lifecycle-feature-v0` | 2/3 |
 
-No causal claim is made that these tools caused the failures. With one treatment sample, each outcome combines treatment assignment and ordinary model stochasticity. The failures remain part of the evidence and are not removed to improve token results.
+The later refactor and review tasks pass their individual concealed verifiers on the final cumulative tree. No causal claim is made that these tools caused the failures; each result combines treatment assignment with ordinary model stochasticity. The failures remain accepted for the token objective and visible as quality diagnostics.
 
-All six baseline runs passed 3/3 tasks. Among the full-tool treatments, 138 of 144 task outcomes passed. The Headroom ablation passed 8/9.
+## 8. Interpretation by treatment family
 
-## 8. Interpretation by mechanism class
+### 8.1 Terminal hooks and instructions
 
-### 8.1 Terminal-output tools
+TokenJuice is lower on every lane and is the clearest replication candidate. RTK is modestly lower in aggregate but increases Beets by 20.50%. Snip is modestly higher in aggregate and increases Terraform by 16.87%. The family does not support a uniform claim from one sample each.
 
-TokenJuice, Snip, and RTK all reduced the weighted aggregate, but each increased Beets. The class therefore shows a promising aggregate signal with no uniform cross-repository effect. TokenJuice combines the largest observed aggregate reduction with complete verifier success and is a strong replication candidate. Snip’s larger reduction than RTK came with one Fastify failure. No operation-level compression percentage is substituted for the workflow totals.
+### 8.2 Retrieval and context systems
 
-### 8.2 Retrieval and context tools
+SigMap is lower on all three lanes. Cartog is near neutral with mixed signs. CodeGraph and jcodemunch are near neutral in aggregate despite materially different lane movements; CodeGraph's 23 successful product calls prove uptake but do not show that those calls caused its token result. Serena, LeanCTX, CodeScope, Token Savior, and SwarmVault are higher in aggregate. Graphify is substantially higher on every lane. Product category alone does not predict direction.
 
-Retrieval results ranged from jcodemunch MCP at -17.58% to SigMap at +11.69%. Tool category alone did not predict the sign. jcodemunch and Serena reduced all three lanes with 9/9 verifier passes; Cartog and Graphify reduced all three but each failed the Fastify feature task. CodeGraph had a substantial aggregate reduction and complete verifier success but increased Beets. LeanCTX’s -5.12% aggregate concealed a +34.65% Beets increase.
+Warm-index and graph profiles incur local setup compute and latency outside the provider-token boundary. A token result cannot be converted into end-to-end operational efficiency without measuring those costs.
 
-Warm-index profiles received their declared controller-side state preparation before model execution. The report measures provider tokens, not local indexing compute or latency. A warm-index treatment can therefore be token-efficient in this estimand while still carrying operational setup costs outside the measured boundary.
+### 8.3 Plugins and behavioral policies
 
-### 8.3 Broad and integrated owners
+Ponytail's aggregate reduction is driven by Beets and Terraform while Fastify increases. Caveman is higher on every lane. These profiles can change model trajectory through instructions, skills, or hooks without explicit callable-tool events; interpretation remains assignment-level.
 
-Token Savior reduced aggregate tokens by 14.89% but passed only 7/9 tasks. SwarmVault reduced aggregate tokens by 17.24% with 9/9 verifier passes, while varying from +29.80% on Fastify to -33.82% on Terraform. CodeScope produced the largest single-lane reduction (-57.82% on Fastify) and the largest full-tool aggregate increase (+15.63%) because Terraform rose 48.83%. Broad ownership did not create a stable direction in this first screen.
+### 8.4 Headroom full product and ablation
 
-Default Headroom’s -3.24% result and proxy-only +5.47% ablation suggest that the frozen default-wrapper condition should not be represented by its proxy component alone. Replication is required before attributing the difference to a particular Headroom surface.
-
-### 8.4 Instruction and policy treatments
-
-Caveman reduced aggregate tokens by 14.05% with 9/9 verifier passes, but increased Beets by 11.78%. Ponytail was nearly neutral in aggregate (-1.21%) while ranging from +32.76% on Beets to -15.03% on Terraform. These conditions can alter model trajectory without explicit tool calls; their evidence remains assignment-level.
+The full wrapper is +9.12% and the proxy-only ablation is +3.35% against the same r1 baseline. Both have the same 8/9 structured result. The observed difference does not isolate a stable proxy effect because each condition has one assignment replicate and the wrapper owns additional surfaces.
 
 ## 9. Threats to validity
 
-### 9.1 Single treatment replicate
+### 9.1 One treatment replicate per lane
 
-Each treatment has one complete workflow replicate per lane. There is no within-lane treatment variance estimate, confidence interval, or significance test. Descriptive ordering is not a population ranking.
+Each profile contributes one accepted assignment sample on each repository. Model trajectory variance can be comparable to the small effects near zero. Descriptive ordering must not be read as a stable rank.
 
-### 9.2 Baseline variability
+### 9.2 Baseline variability and replicate mismatch
 
-Bare-Codex `r0` to `r1` changes were +0.98% on Fastify, -31.32% on Beets, and +29.28% on Terraform. Compatible pairing controls protocol identity, but one baseline observation remains a noisy counterfactual for one treatment observation.
+Headroom conditions pair with r1; other treatments pair with r2. Each comparison is internally compatible, but cross-profile ordering also reflects the selected baseline replicate. The r0-r2 baseline CV is 5.66%, larger than several observed aggregate deltas.
 
 ### 9.3 Aggregate weighting
 
-Terraform contributed 58.72% of the matched baseline total. Large Terraform shifts can dominate reductions on both medium lanes, as CodeScope demonstrates. Every aggregate result must be read with its three lane values.
+Terraform accounts for 55.92% of the r2 baseline aggregate. Aggregate results are therefore workload-weighted, not an equal-repository average.
 
 ### 9.4 Cache-heavy accounting
 
-Cached input represented 96.70% of the matched baseline. Provider total is the preregistered primary metric, but the mechanism behind a total change may be cache and trajectory behavior rather than direct output compression.
+Cached input dominates total provider tokens. Total movement may reflect longer retained history, repeated tool output, instruction manifests, or different turn structure. Component totals alone do not identify the mechanism.
 
-### 9.5 Limited workload population
+### 9.5 Treatment heterogeneity
 
-The portfolio contains three open-source repositories, one lifecycle shape, one runtime, one model, and one reasoning setting. It does not represent all languages, agents, repository sizes, or task types.
+Wrappers, hooks, instructions, MCP servers, indexes, and behavioral policies expose different surfaces. Full products and the Headroom ablation are named separately; results should not be generalized beyond each frozen profile.
 
-### 9.6 Incomplete independent quality review
+### 9.6 Natural uptake
 
-Only two sessions have independent source-quality reviews. Structured verifier outcomes exist for all sessions, but the report cannot establish equivalent maintainability, design quality, or merge readiness across 57 final trees.
+The experiment measures availability under product-authored guidance, not forced use. Zero explicit calls can be valid. Conversely, a successful handshake or command does not prove benefit.
 
-### 9.7 Assignment versus mechanism use
+### 9.7 Correctness and independent quality
 
-The natural-use estimand is intentional, but it limits mechanism attribution. Some treatments act through wrappers, proxies, instruction layers, or generated context. Absence of a model-issued tool string does not prove inactivity; presence does not prove that observed token changes came from that call.
+Concealed verifiers provide bounded task diagnostics, not comprehensive merge-readiness review. The screen does not establish quality equivalence across treatments.
 
-### 9.8 Setup boundary
+### 9.8 Setup boundary and cost
 
-Provider tokens include model-visible workflow execution but exclude local indexing compute, setup time, and latency. Results favor the declared token objective and should not be restated as total-resource efficiency.
+Local installation, indexing, CPU time, memory, latency, and monetary pricing are outside the primary metric. Provider-token changes are not automatically cost or wall-clock changes.
 
-### 9.9 No monetary inference
+### 9.9 Limited workload population
 
-No price conversion is made. Provider-token change is not equivalent to financial savings when cache pricing, subscriptions, or provider policies differ.
+The panel covers three repository workflows and three lifecycle tasks. It does not estimate performance over all languages, repository scales, or software-engineering task classes.
 
-## 10. Decision use and replication priorities
+## 10. Decision use and next experiments
 
-The current evidence supports **replication priorities**, not product recommendations.
+This screen supports prospective replication, not deployment selection.
 
-### 10.1 High-information replication candidates
+1. **Replicate TokenJuice and SigMap first.** Both are lower on all three lanes with 9/9 verifiers and provide the strongest sign-consistent observations.
+2. **Replicate Ponytail to test sign stability.** Its aggregate reduction is large enough to matter but is mixed by lane.
+3. **Use RTK, Cartog, CodeGraph, and jcodemunch as near-neutral controls.** Their aggregate effects are small relative to baseline variation; CodeGraph additionally offers verified product uptake.
+4. **Retain negative findings.** Graphify, Caveman, Token Savior, SwarmVault, Serena, LeanCTX, CodeScope, Snip, and both Headroom conditions should not be rerun to replace unfavorable samples. Any new replicate must be prospective and separately indexed.
+5. **Keep mechanism instrumentation separate from eligibility.** Future runs should record wrapper/proxy/hook activity, MCP calls, turn counts, and setup latency where available, without forcing treatment use.
 
-- **TokenJuice:** largest aggregate reduction, 9/9 verifier tasks, but one lane increased.
-- **jcodemunch MCP:** reductions on all lanes and 9/9 verifier tasks.
-- **Cartog:** reductions on all lanes and a large aggregate change, with one verifier failure requiring diagnostic attention.
-- **CodeGraph and SwarmVault:** substantial aggregate reductions with 9/9 verifier tasks but mixed lane signs.
-- **Snip:** large aggregate reduction with one verifier failure and a Beets increase.
-
-These priorities are post-screening decisions. Any next replicate must be preregistered and compatible; it must not be selected or discarded based on whether a rerun reproduces the preferred sign.
-
-### 10.2 Consistency and boundary controls
-
-- **Serena** is useful as a low-magnitude, all-lane reduction reference.
-- **SigMap and CodeScope** are important negative observations. Replication can determine whether their aggregate increases persist or were single-sample variation.
-- **Default versus proxy-only Headroom** should remain an explicit component comparison rather than being collapsed into one result.
-
-### 10.3 Required next-step rules
-
-1. Preserve every first valid sample.
-2. Preregister additional replicate indices before execution.
-3. Reuse the same causal comparison identity; mint a new pool only for model-visible or causal contract changes.
-4. Continue natural-use assignment without evaluator-authored uptake pressure.
-5. Report every compatible replicate, including failures and sign reversals.
-6. Add independent source review for finalists and material verifier failures if making software-quality or deployment claims.
-7. Keep lane-level and token-component results alongside aggregates.
-8. Add another model/runtime condition before claiming broad agent generality.
+A future stack experiment requires a separately preregistered profile and cannot be inferred by adding individual percentages. The deleted historical TokenJuice+jcodemunch stack remains invalid and is not revived by valid individual evidence.
 
 ## 11. Claim-evidence audit
 
-| Claim | Type | Evidence path | Status | Boundary |
-|---|---|---|---|---|
-| TokenJuice had the largest observed aggregate reduction in this screen | reproduction | matched comparison JSONs; session registry | supported | descriptive ordering of one `r1` sample per lane |
-| jcodemunch and Serena reduced all three lanes with 9/9 verifier passes | reproduction | session records and structured outcomes | supported | no population or quality-superiority claim |
-| Cartog reduced all three lanes | reproduction | three Cartog comparisons | supported | one Fastify verifier failure remains visible |
-| SigMap and CodeScope increased aggregate provider tokens | reproduction | matched comparison JSONs | supported | one replicate; not stable harm estimates |
-| Removing generated Graphify/CodeScope state from source-diff checkpoints did not alter treatment results | artifact integrity | repair receipts, corrected manifests, unchanged registry result fields | supported | artifact-packaging repair only |
-| Normal-user tool availability caused the observed token deltas through one known mechanism | mechanism/causal | incomplete mechanism instrumentation | needs evidence | report only assignment-level comparisons |
-| The descriptive ordering is a stable ranking | recommendation | no replication distribution | remove | preregister compatible replicates first |
-| Any treatment is deployment-ready | recommendation | limited workloads and quality review | remove | requires broader replication and quality evidence |
-| Provider-token reduction implies money or latency reduction | recommendation | outside measured boundary | remove | no monetary or latency conversion |
+| Claim | Type | Evidence | Status / boundary |
+|---|---|---|---|
+| The earlier Phase 2 totals were inflated by cumulative-snapshot summation | Accounting | Cumulative usage correction audit plus raw provider events | Supported; corrected overlay governs |
+| TokenJuice is -22.28% in this screen | Benchmark | Corrected r2 treatment and matched baseline totals | Supported for one assignment replicate per lane |
+| SigMap is lower on all three evaluated lanes | Benchmark | Three corrected lane comparisons | Supported for this screen only |
+| The 17-profile panel is +7.55% in aggregate | Benchmark | Repeated matched-baseline aggregation | Supported descriptively; not a population effect |
+| CodeGraph was actually used | Reproduction | 23 completed product calls across all nine tasks | Supported; does not establish benefit |
+| Faithful setup was present | Compatibility | Protocol-bound qualification and integration receipts | Supported for frozen profiles; setup is not uptake |
+| Verifier success implies equal software quality | Quality | No comprehensive independent review | Unsupported; explicitly not claimed |
+| Provider-token changes imply monetary savings | Recommendation | No pricing or local-compute model | Unsupported; explicitly not claimed |
+| A stable tool ranking exists | Recommendation | One sample per profile/lane | Unsupported; replication required |
 
 ## 12. Reproducibility and evidence map
 
-Primary machine-readable authorities:
+### Machine authority
 
-- `data/workflow-task-sequences.json` — active lifecycle-v0 task contracts;
-- `data/evaluation-profiles.json` — treatment definitions and normal-use integration policies;
-- `data/workflow-sessions.json` — compact run index, token components, structured outcomes, and artifact paths;
-- `sources/evaluations/protocols/` — immutable baseline and treatment execution contracts;
-- `sources/evaluations/workflow-sessions/<session-id>/` — compact four-file run bundles;
-- `sources/evaluations/workflow-sessions/*-vs-*.json` — matched comparison records;
-- `docs/evaluations/design/token-and-quality-policy.md` — accounting and eligibility rules;
-- `docs/evaluations/design/framework.md` — estimand and interpretation contract;
-- `docs/evaluations/operations/runbook.md` — generated operational index.
+- Session registry: [`data/workflow-sessions.json`](../../data/workflow-sessions.json)
+- Treatment profile registry: [`data/evaluation-profiles.json`](../../data/evaluation-profiles.json)
+- Workflow sequence registry: [`data/workflow-task-sequences.json`](../../data/workflow-task-sequences.json)
+- Corrected Phase 2 analysis receipt: [`phase-2-corrected-analysis-20260720.json`](../../sources/evaluations/audits/phase-2-corrected-analysis-20260720.json)
+- Cumulative provider-accounting correction: [`codex-cumulative-usage-accounting-20260718.json`](../../sources/evaluations/audits/codex-cumulative-usage-accounting-20260718.json)
+- Corrected Luna/`xhigh` campaign receipt: [`corrected-luna-xhigh-r2-campaign-20260720.json`](../../sources/evaluations/audits/corrected-luna-xhigh-r2-campaign-20260720.json)
+- CodeGraph actual-use audit: [`codegraph-provider-actual-use-20260720.json`](../../sources/evaluations/audits/codegraph-provider-actual-use-20260720.json)
 
-Repository validation commands:
+### Eligibility and deletion receipts
 
-```bash
-python3 scripts/update_workflow_runbook.py --check
-python3 scripts/validate_repository.py
-python3 scripts/test_workflow_evaluation_contract.py
-truthmark check --json
-truthmark index --json
-git diff --check
-```
+- Official-integration parity audit: [`official-integration-parity-audit.md`](official-integration-parity-audit.md)
+- Invalid treatment deletion receipt: [`invalid-treatment-result-deletions-20260718.json`](../../sources/evaluations/audits/invalid-treatment-result-deletions-20260718.json)
+- Unproven treatment deletion receipt: [`unproven-treatment-result-deletions-20260718.json`](../../sources/evaluations/audits/unproven-treatment-result-deletions-20260718.json)
+- Invalid CodeGraph deletion receipt: [`invalid-codegraph-v1-result-deletion-20260719.json`](../../sources/evaluations/audits/invalid-codegraph-v1-result-deletion-20260719.json)
+- Invalid jcodemunch deletion receipt: [`invalid-jcodemunch-direct-v1-result-deletion-20260719.json`](../../sources/evaluations/audits/invalid-jcodemunch-direct-v1-result-deletion-20260719.json)
+- Invalid Ponytail/Caveman deletion receipt: [`invalid-ponytail-caveman-result-deletion-20260719.json`](../../sources/evaluations/audits/invalid-ponytail-caveman-result-deletion-20260719.json)
+
+### Execution artifacts
+
+Each accepted session has a compact directory under [`sources/evaluations/workflow-sessions/`](../../sources/evaluations/workflow-sessions/) containing `run.json`, `changes.diff`, `evidence.jsonl.gz`, and `manifest.sha256`. Pairwise derived comparison JSON files are co-located under that directory. The cumulative correction audit is authoritative when a legacy comparison copied an inflated registry total.
 
 ## 13. Conclusion
 
-The lifecycle-v0 executions remain a well-preserved provider-accounting corpus, but the post-run integration audit narrowed their scientific use. Forty-two treatment sessions cannot support product effects: some never installed the product's required Codex mechanism, while others did not retain positive MCP assignment proof.
+Correcting both provider accounting and treatment identity reverses the earlier Phase 2 story. The current 17-condition panel is not an aggregate savings result: it uses 7.55% more corrected provider tokens than its repeated matched baselines. Five conditions are lower in aggregate, but only TokenJuice and SigMap are lower on all three lanes. Twelve conditions are higher, several substantially so. Structured correctness remains high at 150/153 tasks, but it is diagnostic rather than a sample-selection gate.
 
-The current evidence therefore supports only the four eligible narrow conditions named above. Historical tables for TokenJuice, jcodemunch, RTK, snip, and the nine unverified MCP profiles are retained for forensic accounting rather than screening conclusions.
-
-The scientifically defensible next step is to qualify versioned official integrations before any new provider spend. Corrected TokenJuice and jcodemunch contracts now exist; the other excluded profiles require separate corrections and preregistration.
+The evidence supports prospective replication of sign-consistent candidates and retention of negative findings. It does not support a stable ranking, universal savings claim, or deployment recommendation.

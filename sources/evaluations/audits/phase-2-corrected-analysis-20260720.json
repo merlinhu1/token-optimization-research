@@ -1,0 +1,2293 @@
+{
+  "schema_version": "phase-2-corrected-analysis/v1",
+  "generated_at": "2026-07-20T06:51:16.453053+00:00",
+  "evidence_stage": "reproduction-screen",
+  "primary_metric": "provider-reported tokens using final cumulative total per thread",
+  "reasoning_tokens_are_subset_not_additive": true,
+  "sources": {
+    "workflow_sessions": {
+      "path": "data/workflow-sessions.json",
+      "sha256": "8790e6f86c61029a31b711e1204be4bc40e22df477b4aa772ae46198c203a6e2"
+    },
+    "cumulative_usage_audit": {
+      "path": "sources/evaluations/audits/codex-cumulative-usage-accounting-20260718.json",
+      "sha256": "7b4064720a899a5f861864626e13049ac16d6374fdbad04aba40ced9b7b65d8a"
+    }
+  },
+  "integrity": {
+    "accepted_baseline_sessions": 18,
+    "accepted_treatment_sessions": 51,
+    "all_cited_manifests_verified": true,
+    "invalid_or_deleted_treatments_excluded": true
+  },
+  "baseline_panels": [
+    {
+      "model_condition_id": "codex-openai-gpt-5-6-luna-xhigh",
+      "replicate_index": 0,
+      "session_count": 3,
+      "tasks_passed": 9,
+      "tasks_attempted": 9,
+      "corrected_usage": {
+        "fresh_input_tokens": 1098339,
+        "cached_input_tokens": 33288448,
+        "output_tokens": 141844,
+        "reasoning_tokens": 67942,
+        "total_provider_tokens": 34528631
+      },
+      "lanes": [
+        {
+          "sequence_id": "beets-lifecycle-sequence-v0",
+          "session_id": "baseline-beets-20260716-p-b440da225a3a-r0",
+          "corrected_usage": {
+            "fresh_input_tokens": 335235,
+            "cached_input_tokens": 11855360,
+            "cache_write_tokens": null,
+            "output_tokens": 54134,
+            "reasoning_tokens": 27150,
+            "total_provider_tokens": 12244729
+          },
+          "manifest_verified": true
+        },
+        {
+          "sequence_id": "fastify-lifecycle-sequence-v0",
+          "session_id": "baseline-fastify-20260716-p-769d40697529-r0",
+          "corrected_usage": {
+            "fresh_input_tokens": 207464,
+            "cached_input_tokens": 6186752,
+            "cache_write_tokens": null,
+            "output_tokens": 25858,
+            "reasoning_tokens": 14231,
+            "total_provider_tokens": 6420074
+          },
+          "manifest_verified": true
+        },
+        {
+          "sequence_id": "terraform-lifecycle-sequence-v0",
+          "session_id": "baseline-terraform-20260716-p-ded8609b4172-r0",
+          "corrected_usage": {
+            "fresh_input_tokens": 555640,
+            "cached_input_tokens": 15246336,
+            "cache_write_tokens": null,
+            "output_tokens": 61852,
+            "reasoning_tokens": 26561,
+            "total_provider_tokens": 15863828
+          },
+          "manifest_verified": true
+        }
+      ]
+    },
+    {
+      "model_condition_id": "codex-openai-gpt-5-6-luna-xhigh",
+      "replicate_index": 1,
+      "session_count": 3,
+      "tasks_passed": 9,
+      "tasks_attempted": 9,
+      "corrected_usage": {
+        "fresh_input_tokens": 974966,
+        "cached_input_tokens": 33768704,
+        "output_tokens": 150898,
+        "reasoning_tokens": 75771,
+        "total_provider_tokens": 34894568
+      },
+      "lanes": [
+        {
+          "sequence_id": "beets-lifecycle-sequence-v0",
+          "session_id": "baseline-beets-20260716-p-b440da225a3a-r1",
+          "corrected_usage": {
+            "fresh_input_tokens": 274928,
+            "cached_input_tokens": 8400896,
+            "cache_write_tokens": null,
+            "output_tokens": 52908,
+            "reasoning_tokens": 26260,
+            "total_provider_tokens": 8728732
+          },
+          "manifest_verified": true
+        },
+        {
+          "sequence_id": "fastify-lifecycle-sequence-v0",
+          "session_id": "baseline-fastify-20260716-p-769d40697529-r1",
+          "corrected_usage": {
+            "fresh_input_tokens": 208494,
+            "cached_input_tokens": 6461952,
+            "cache_write_tokens": null,
+            "output_tokens": 42324,
+            "reasoning_tokens": 23354,
+            "total_provider_tokens": 6712770
+          },
+          "manifest_verified": true
+        },
+        {
+          "sequence_id": "terraform-lifecycle-sequence-v0",
+          "session_id": "baseline-terraform-20260716-p-ded8609b4172-r1",
+          "corrected_usage": {
+            "fresh_input_tokens": 491544,
+            "cached_input_tokens": 18905856,
+            "cache_write_tokens": null,
+            "output_tokens": 55666,
+            "reasoning_tokens": 26157,
+            "total_provider_tokens": 19453066
+          },
+          "manifest_verified": true
+        }
+      ]
+    },
+    {
+      "model_condition_id": "codex-openai-gpt-5-6-luna-xhigh",
+      "replicate_index": 2,
+      "session_count": 3,
+      "tasks_passed": 9,
+      "tasks_attempted": 9,
+      "corrected_usage": {
+        "fresh_input_tokens": 974380,
+        "cached_input_tokens": 30313472,
+        "output_tokens": 145894,
+        "reasoning_tokens": 66898,
+        "total_provider_tokens": 31433746
+      },
+      "lanes": [
+        {
+          "sequence_id": "beets-lifecycle-sequence-v0",
+          "session_id": "baseline-beets-20260718-p-b440da225a3a-r2",
+          "corrected_usage": {
+            "fresh_input_tokens": 231792,
+            "cached_input_tokens": 8943616,
+            "cache_write_tokens": null,
+            "output_tokens": 63038,
+            "reasoning_tokens": 28957,
+            "total_provider_tokens": 9238446
+          },
+          "manifest_verified": true
+        },
+        {
+          "sequence_id": "fastify-lifecycle-sequence-v0",
+          "session_id": "baseline-fastify-20260718-p-769d40697529-r2",
+          "corrected_usage": {
+            "fresh_input_tokens": 273649,
+            "cached_input_tokens": 4318464,
+            "cache_write_tokens": null,
+            "output_tokens": 25010,
+            "reasoning_tokens": 10741,
+            "total_provider_tokens": 4617123
+          },
+          "manifest_verified": true
+        },
+        {
+          "sequence_id": "terraform-lifecycle-sequence-v0",
+          "session_id": "baseline-terraform-20260718-p-ded8609b4172-r2",
+          "corrected_usage": {
+            "fresh_input_tokens": 468939,
+            "cached_input_tokens": 17051392,
+            "cache_write_tokens": null,
+            "output_tokens": 57846,
+            "reasoning_tokens": 27200,
+            "total_provider_tokens": 17578177
+          },
+          "manifest_verified": true
+        }
+      ]
+    },
+    {
+      "model_condition_id": "codex-openai-gpt-5-6-sol-high",
+      "replicate_index": 0,
+      "session_count": 3,
+      "tasks_passed": 9,
+      "tasks_attempted": 9,
+      "corrected_usage": {
+        "fresh_input_tokens": 633301,
+        "cached_input_tokens": 26311936,
+        "output_tokens": 93723,
+        "reasoning_tokens": 36854,
+        "total_provider_tokens": 27038960
+      },
+      "lanes": [
+        {
+          "sequence_id": "beets-lifecycle-sequence-v0",
+          "session_id": "baseline-beets-20260718-p-be9d43b94b02-r0",
+          "corrected_usage": {
+            "fresh_input_tokens": 190868,
+            "cached_input_tokens": 6822912,
+            "cache_write_tokens": null,
+            "output_tokens": 34758,
+            "reasoning_tokens": 14260,
+            "total_provider_tokens": 7048538
+          },
+          "manifest_verified": true
+        },
+        {
+          "sequence_id": "fastify-lifecycle-sequence-v0",
+          "session_id": "baseline-fastify-20260718-p-bd9fd65385d9-r0",
+          "corrected_usage": {
+            "fresh_input_tokens": 153230,
+            "cached_input_tokens": 4287744,
+            "cache_write_tokens": null,
+            "output_tokens": 23448,
+            "reasoning_tokens": 9697,
+            "total_provider_tokens": 4464422
+          },
+          "manifest_verified": true
+        },
+        {
+          "sequence_id": "terraform-lifecycle-sequence-v0",
+          "session_id": "baseline-terraform-20260718-p-ca21cbff5ed5-r0",
+          "corrected_usage": {
+            "fresh_input_tokens": 289203,
+            "cached_input_tokens": 15201280,
+            "cache_write_tokens": null,
+            "output_tokens": 35517,
+            "reasoning_tokens": 12897,
+            "total_provider_tokens": 15526000
+          },
+          "manifest_verified": true
+        }
+      ]
+    },
+    {
+      "model_condition_id": "codex-openai-gpt-5-6-sol-high",
+      "replicate_index": 1,
+      "session_count": 3,
+      "tasks_passed": 9,
+      "tasks_attempted": 9,
+      "corrected_usage": {
+        "fresh_input_tokens": 573322,
+        "cached_input_tokens": 20043520,
+        "output_tokens": 94955,
+        "reasoning_tokens": 38954,
+        "total_provider_tokens": 20711797
+      },
+      "lanes": [
+        {
+          "sequence_id": "beets-lifecycle-sequence-v0",
+          "session_id": "baseline-beets-20260718-p-be9d43b94b02-r1",
+          "corrected_usage": {
+            "fresh_input_tokens": 189127,
+            "cached_input_tokens": 5063424,
+            "cache_write_tokens": null,
+            "output_tokens": 32402,
+            "reasoning_tokens": 14465,
+            "total_provider_tokens": 5284953
+          },
+          "manifest_verified": true
+        },
+        {
+          "sequence_id": "fastify-lifecycle-sequence-v0",
+          "session_id": "baseline-fastify-20260718-p-bd9fd65385d9-r1",
+          "corrected_usage": {
+            "fresh_input_tokens": 167165,
+            "cached_input_tokens": 4264448,
+            "cache_write_tokens": null,
+            "output_tokens": 33576,
+            "reasoning_tokens": 14291,
+            "total_provider_tokens": 4465189
+          },
+          "manifest_verified": true
+        },
+        {
+          "sequence_id": "terraform-lifecycle-sequence-v0",
+          "session_id": "baseline-terraform-20260718-p-ca21cbff5ed5-r1",
+          "corrected_usage": {
+            "fresh_input_tokens": 217030,
+            "cached_input_tokens": 10715648,
+            "cache_write_tokens": null,
+            "output_tokens": 28977,
+            "reasoning_tokens": 10198,
+            "total_provider_tokens": 10961655
+          },
+          "manifest_verified": true
+        }
+      ]
+    },
+    {
+      "model_condition_id": "codex-openai-gpt-5-6-sol-high",
+      "replicate_index": 2,
+      "session_count": 3,
+      "tasks_passed": 9,
+      "tasks_attempted": 9,
+      "corrected_usage": {
+        "fresh_input_tokens": 566301,
+        "cached_input_tokens": 19860736,
+        "output_tokens": 97521,
+        "reasoning_tokens": 41676,
+        "total_provider_tokens": 20524558
+      },
+      "lanes": [
+        {
+          "sequence_id": "beets-lifecycle-sequence-v0",
+          "session_id": "baseline-beets-20260718-p-be9d43b94b02-r2",
+          "corrected_usage": {
+            "fresh_input_tokens": 181119,
+            "cached_input_tokens": 5592064,
+            "cache_write_tokens": null,
+            "output_tokens": 35333,
+            "reasoning_tokens": 13701,
+            "total_provider_tokens": 5808516
+          },
+          "manifest_verified": true
+        },
+        {
+          "sequence_id": "fastify-lifecycle-sequence-v0",
+          "session_id": "baseline-fastify-20260718-p-bd9fd65385d9-r2",
+          "corrected_usage": {
+            "fresh_input_tokens": 150787,
+            "cached_input_tokens": 3773440,
+            "cache_write_tokens": null,
+            "output_tokens": 30069,
+            "reasoning_tokens": 14847,
+            "total_provider_tokens": 3954296
+          },
+          "manifest_verified": true
+        },
+        {
+          "sequence_id": "terraform-lifecycle-sequence-v0",
+          "session_id": "baseline-terraform-20260718-p-ca21cbff5ed5-r2",
+          "corrected_usage": {
+            "fresh_input_tokens": 234395,
+            "cached_input_tokens": 10495232,
+            "cache_write_tokens": null,
+            "output_tokens": 32119,
+            "reasoning_tokens": 13128,
+            "total_provider_tokens": 10761746
+          },
+          "manifest_verified": true
+        }
+      ]
+    }
+  ],
+  "treatments": [
+    {
+      "profile_id": "headroom-default-codex",
+      "display_name": "Headroom default Codex wrapper",
+      "mechanism_family": "wrapper/full-product",
+      "model_condition_id": "codex-openai-gpt-5-6-luna-xhigh",
+      "replicate_index": 1,
+      "session_count": 3,
+      "treatment_corrected_usage": {
+        "fresh_input_tokens": 1272757,
+        "cached_input_tokens": 36630784,
+        "output_tokens": 172451,
+        "reasoning_tokens": 81401,
+        "total_provider_tokens": 38075992
+      },
+      "matched_baseline_corrected_usage": {
+        "fresh_input_tokens": 974966,
+        "cached_input_tokens": 33768704,
+        "output_tokens": 150898,
+        "reasoning_tokens": 75771,
+        "total_provider_tokens": 34894568
+      },
+      "delta_total_provider_tokens": 3181424,
+      "delta_percent": 9.117247,
+      "tasks_passed": 8,
+      "tasks_attempted": 9,
+      "all_manifests_verified": true,
+      "lanes": [
+        {
+          "sequence_id": "beets-lifecycle-sequence-v0",
+          "treatment_session_id": "codex-beets-20260717-p-b440da225a3a-r1",
+          "baseline_session_id": "baseline-beets-20260716-p-b440da225a3a-r1",
+          "treatment_corrected_usage": {
+            "fresh_input_tokens": 261392,
+            "cached_input_tokens": 13425920,
+            "cache_write_tokens": null,
+            "output_tokens": 62807,
+            "reasoning_tokens": 31788,
+            "total_provider_tokens": 13750119
+          },
+          "baseline_corrected_usage": {
+            "fresh_input_tokens": 274928,
+            "cached_input_tokens": 8400896,
+            "cache_write_tokens": null,
+            "output_tokens": 52908,
+            "reasoning_tokens": 26260,
+            "total_provider_tokens": 8728732
+          },
+          "delta_total_provider_tokens": 5021387,
+          "delta_percent": 57.527107,
+          "tasks_passed": 3,
+          "tasks_attempted": 3,
+          "treatment_manifest_verified": true,
+          "baseline_manifest_verified": true
+        },
+        {
+          "sequence_id": "fastify-lifecycle-sequence-v0",
+          "treatment_session_id": "codex-fastify-20260717-p-769d40697529-r1",
+          "baseline_session_id": "baseline-fastify-20260716-p-769d40697529-r1",
+          "treatment_corrected_usage": {
+            "fresh_input_tokens": 249323,
+            "cached_input_tokens": 5547520,
+            "cache_write_tokens": null,
+            "output_tokens": 38710,
+            "reasoning_tokens": 18278,
+            "total_provider_tokens": 5835553
+          },
+          "baseline_corrected_usage": {
+            "fresh_input_tokens": 208494,
+            "cached_input_tokens": 6461952,
+            "cache_write_tokens": null,
+            "output_tokens": 42324,
+            "reasoning_tokens": 23354,
+            "total_provider_tokens": 6712770
+          },
+          "delta_total_provider_tokens": -877217,
+          "delta_percent": -13.067884,
+          "tasks_passed": 2,
+          "tasks_attempted": 3,
+          "treatment_manifest_verified": true,
+          "baseline_manifest_verified": true
+        },
+        {
+          "sequence_id": "terraform-lifecycle-sequence-v0",
+          "treatment_session_id": "codex-terraform-20260717-p-ded8609b4172-r1",
+          "baseline_session_id": "baseline-terraform-20260716-p-ded8609b4172-r1",
+          "treatment_corrected_usage": {
+            "fresh_input_tokens": 762042,
+            "cached_input_tokens": 17657344,
+            "cache_write_tokens": null,
+            "output_tokens": 70934,
+            "reasoning_tokens": 31335,
+            "total_provider_tokens": 18490320
+          },
+          "baseline_corrected_usage": {
+            "fresh_input_tokens": 491544,
+            "cached_input_tokens": 18905856,
+            "cache_write_tokens": null,
+            "output_tokens": 55666,
+            "reasoning_tokens": 26157,
+            "total_provider_tokens": 19453066
+          },
+          "delta_total_provider_tokens": -962746,
+          "delta_percent": -4.949071,
+          "tasks_passed": 3,
+          "tasks_attempted": 3,
+          "treatment_manifest_verified": true,
+          "baseline_manifest_verified": true
+        }
+      ]
+    },
+    {
+      "profile_id": "terminal-headroom",
+      "display_name": "Headroom proxy-only",
+      "mechanism_family": "proxy ablation",
+      "model_condition_id": "codex-openai-gpt-5-6-luna-xhigh",
+      "replicate_index": 1,
+      "session_count": 3,
+      "treatment_corrected_usage": {
+        "fresh_input_tokens": 1047436,
+        "cached_input_tokens": 34856448,
+        "output_tokens": 158912,
+        "reasoning_tokens": 77993,
+        "total_provider_tokens": 36062796
+      },
+      "matched_baseline_corrected_usage": {
+        "fresh_input_tokens": 974966,
+        "cached_input_tokens": 33768704,
+        "output_tokens": 150898,
+        "reasoning_tokens": 75771,
+        "total_provider_tokens": 34894568
+      },
+      "delta_total_provider_tokens": 1168228,
+      "delta_percent": 3.347879,
+      "tasks_passed": 8,
+      "tasks_attempted": 9,
+      "all_manifests_verified": true,
+      "lanes": [
+        {
+          "sequence_id": "beets-lifecycle-sequence-v0",
+          "treatment_session_id": "headroom-beets-20260717-p-b440da225a3a-r1",
+          "baseline_session_id": "baseline-beets-20260716-p-b440da225a3a-r1",
+          "treatment_corrected_usage": {
+            "fresh_input_tokens": 227296,
+            "cached_input_tokens": 8822016,
+            "cache_write_tokens": null,
+            "output_tokens": 50598,
+            "reasoning_tokens": 25050,
+            "total_provider_tokens": 9099910
+          },
+          "baseline_corrected_usage": {
+            "fresh_input_tokens": 274928,
+            "cached_input_tokens": 8400896,
+            "cache_write_tokens": null,
+            "output_tokens": 52908,
+            "reasoning_tokens": 26260,
+            "total_provider_tokens": 8728732
+          },
+          "delta_total_provider_tokens": 371178,
+          "delta_percent": 4.25237,
+          "tasks_passed": 3,
+          "tasks_attempted": 3,
+          "treatment_manifest_verified": true,
+          "baseline_manifest_verified": true
+        },
+        {
+          "sequence_id": "fastify-lifecycle-sequence-v0",
+          "treatment_session_id": "headroom-fastify-20260717-p-769d40697529-r1",
+          "baseline_session_id": "baseline-fastify-20260716-p-769d40697529-r1",
+          "treatment_corrected_usage": {
+            "fresh_input_tokens": 198128,
+            "cached_input_tokens": 4424448,
+            "cache_write_tokens": null,
+            "output_tokens": 33338,
+            "reasoning_tokens": 18473,
+            "total_provider_tokens": 4655914
+          },
+          "baseline_corrected_usage": {
+            "fresh_input_tokens": 208494,
+            "cached_input_tokens": 6461952,
+            "cache_write_tokens": null,
+            "output_tokens": 42324,
+            "reasoning_tokens": 23354,
+            "total_provider_tokens": 6712770
+          },
+          "delta_total_provider_tokens": -2056856,
+          "delta_percent": -30.640943,
+          "tasks_passed": 2,
+          "tasks_attempted": 3,
+          "treatment_manifest_verified": true,
+          "baseline_manifest_verified": true
+        },
+        {
+          "sequence_id": "terraform-lifecycle-sequence-v0",
+          "treatment_session_id": "headroom-terraform-20260717-p-ded8609b4172-r1",
+          "baseline_session_id": "baseline-terraform-20260716-p-ded8609b4172-r1",
+          "treatment_corrected_usage": {
+            "fresh_input_tokens": 622012,
+            "cached_input_tokens": 21609984,
+            "cache_write_tokens": null,
+            "output_tokens": 74976,
+            "reasoning_tokens": 34470,
+            "total_provider_tokens": 22306972
+          },
+          "baseline_corrected_usage": {
+            "fresh_input_tokens": 491544,
+            "cached_input_tokens": 18905856,
+            "cache_write_tokens": null,
+            "output_tokens": 55666,
+            "reasoning_tokens": 26157,
+            "total_provider_tokens": 19453066
+          },
+          "delta_total_provider_tokens": 2853906,
+          "delta_percent": 14.670726,
+          "tasks_passed": 3,
+          "tasks_attempted": 3,
+          "treatment_manifest_verified": true,
+          "baseline_manifest_verified": true
+        }
+      ]
+    },
+    {
+      "profile_id": "terminal-tokenjuice-codex-hook-v1",
+      "display_name": "TokenJuice",
+      "mechanism_family": "terminal hook",
+      "model_condition_id": "codex-openai-gpt-5-6-luna-xhigh",
+      "replicate_index": 2,
+      "session_count": 3,
+      "treatment_corrected_usage": {
+        "fresh_input_tokens": 814467,
+        "cached_input_tokens": 23474176,
+        "output_tokens": 140455,
+        "reasoning_tokens": 60643,
+        "total_provider_tokens": 24429098
+      },
+      "matched_baseline_corrected_usage": {
+        "fresh_input_tokens": 974380,
+        "cached_input_tokens": 30313472,
+        "output_tokens": 145894,
+        "reasoning_tokens": 66898,
+        "total_provider_tokens": 31433746
+      },
+      "delta_total_provider_tokens": -7004648,
+      "delta_percent": -22.283847,
+      "tasks_passed": 9,
+      "tasks_attempted": 9,
+      "all_manifests_verified": true,
+      "lanes": [
+        {
+          "sequence_id": "beets-lifecycle-sequence-v0",
+          "treatment_session_id": "v1-beets-20260718-p-b440da225a3a-r2",
+          "baseline_session_id": "baseline-beets-20260718-p-b440da225a3a-r2",
+          "treatment_corrected_usage": {
+            "fresh_input_tokens": 281158,
+            "cached_input_tokens": 6704128,
+            "cache_write_tokens": null,
+            "output_tokens": 50384,
+            "reasoning_tokens": 25046,
+            "total_provider_tokens": 7035670
+          },
+          "baseline_corrected_usage": {
+            "fresh_input_tokens": 231792,
+            "cached_input_tokens": 8943616,
+            "cache_write_tokens": null,
+            "output_tokens": 63038,
+            "reasoning_tokens": 28957,
+            "total_provider_tokens": 9238446
+          },
+          "delta_total_provider_tokens": -2202776,
+          "delta_percent": -23.843577,
+          "tasks_passed": 3,
+          "tasks_attempted": 3,
+          "treatment_manifest_verified": true,
+          "baseline_manifest_verified": true
+        },
+        {
+          "sequence_id": "fastify-lifecycle-sequence-v0",
+          "treatment_session_id": "v1-fastify-20260718-p-769d40697529-r2",
+          "baseline_session_id": "baseline-fastify-20260718-p-769d40697529-r2",
+          "treatment_corrected_usage": {
+            "fresh_input_tokens": 151245,
+            "cached_input_tokens": 2582528,
+            "cache_write_tokens": null,
+            "output_tokens": 25232,
+            "reasoning_tokens": 11105,
+            "total_provider_tokens": 2759005
+          },
+          "baseline_corrected_usage": {
+            "fresh_input_tokens": 273649,
+            "cached_input_tokens": 4318464,
+            "cache_write_tokens": null,
+            "output_tokens": 25010,
+            "reasoning_tokens": 10741,
+            "total_provider_tokens": 4617123
+          },
+          "delta_total_provider_tokens": -1858118,
+          "delta_percent": -40.244065,
+          "tasks_passed": 3,
+          "tasks_attempted": 3,
+          "treatment_manifest_verified": true,
+          "baseline_manifest_verified": true
+        },
+        {
+          "sequence_id": "terraform-lifecycle-sequence-v0",
+          "treatment_session_id": "v1-terraform-20260718-p-ded8609b4172-r2",
+          "baseline_session_id": "baseline-terraform-20260718-p-ded8609b4172-r2",
+          "treatment_corrected_usage": {
+            "fresh_input_tokens": 382064,
+            "cached_input_tokens": 14187520,
+            "cache_write_tokens": null,
+            "output_tokens": 64839,
+            "reasoning_tokens": 24492,
+            "total_provider_tokens": 14634423
+          },
+          "baseline_corrected_usage": {
+            "fresh_input_tokens": 468939,
+            "cached_input_tokens": 17051392,
+            "cache_write_tokens": null,
+            "output_tokens": 57846,
+            "reasoning_tokens": 27200,
+            "total_provider_tokens": 17578177
+          },
+          "delta_total_provider_tokens": -2943754,
+          "delta_percent": -16.74664,
+          "tasks_passed": 3,
+          "tasks_attempted": 3,
+          "treatment_manifest_verified": true,
+          "baseline_manifest_verified": true
+        }
+      ]
+    },
+    {
+      "profile_id": "terminal-rtk-codex-instructions-v1",
+      "display_name": "RTK",
+      "mechanism_family": "terminal instructions",
+      "model_condition_id": "codex-openai-gpt-5-6-luna-xhigh",
+      "replicate_index": 2,
+      "session_count": 3,
+      "treatment_corrected_usage": {
+        "fresh_input_tokens": 809083,
+        "cached_input_tokens": 29869568,
+        "output_tokens": 156383,
+        "reasoning_tokens": 72933,
+        "total_provider_tokens": 30835034
+      },
+      "matched_baseline_corrected_usage": {
+        "fresh_input_tokens": 974380,
+        "cached_input_tokens": 30313472,
+        "output_tokens": 145894,
+        "reasoning_tokens": 66898,
+        "total_provider_tokens": 31433746
+      },
+      "delta_total_provider_tokens": -598712,
+      "delta_percent": -1.904679,
+      "tasks_passed": 9,
+      "tasks_attempted": 9,
+      "all_manifests_verified": true,
+      "lanes": [
+        {
+          "sequence_id": "beets-lifecycle-sequence-v0",
+          "treatment_session_id": "rtk-beets-20260719-p-b440da225a3a-r2",
+          "baseline_session_id": "baseline-beets-20260718-p-b440da225a3a-r2",
+          "treatment_corrected_usage": {
+            "fresh_input_tokens": 251103,
+            "cached_input_tokens": 10823424,
+            "cache_write_tokens": null,
+            "output_tokens": 58063,
+            "reasoning_tokens": 27903,
+            "total_provider_tokens": 11132590
+          },
+          "baseline_corrected_usage": {
+            "fresh_input_tokens": 231792,
+            "cached_input_tokens": 8943616,
+            "cache_write_tokens": null,
+            "output_tokens": 63038,
+            "reasoning_tokens": 28957,
+            "total_provider_tokens": 9238446
+          },
+          "delta_total_provider_tokens": 1894144,
+          "delta_percent": 20.502842,
+          "tasks_passed": 3,
+          "tasks_attempted": 3,
+          "treatment_manifest_verified": true,
+          "baseline_manifest_verified": true
+        },
+        {
+          "sequence_id": "fastify-lifecycle-sequence-v0",
+          "treatment_session_id": "rtk-fastify-20260719-p-769d40697529-r2",
+          "baseline_session_id": "baseline-fastify-20260718-p-769d40697529-r2",
+          "treatment_corrected_usage": {
+            "fresh_input_tokens": 158154,
+            "cached_input_tokens": 4220160,
+            "cache_write_tokens": null,
+            "output_tokens": 30991,
+            "reasoning_tokens": 13209,
+            "total_provider_tokens": 4409305
+          },
+          "baseline_corrected_usage": {
+            "fresh_input_tokens": 273649,
+            "cached_input_tokens": 4318464,
+            "cache_write_tokens": null,
+            "output_tokens": 25010,
+            "reasoning_tokens": 10741,
+            "total_provider_tokens": 4617123
+          },
+          "delta_total_provider_tokens": -207818,
+          "delta_percent": -4.501028,
+          "tasks_passed": 3,
+          "tasks_attempted": 3,
+          "treatment_manifest_verified": true,
+          "baseline_manifest_verified": true
+        },
+        {
+          "sequence_id": "terraform-lifecycle-sequence-v0",
+          "treatment_session_id": "rtk-terraform-20260719-p-ded8609b4172-r2",
+          "baseline_session_id": "baseline-terraform-20260718-p-ded8609b4172-r2",
+          "treatment_corrected_usage": {
+            "fresh_input_tokens": 399826,
+            "cached_input_tokens": 14825984,
+            "cache_write_tokens": null,
+            "output_tokens": 67329,
+            "reasoning_tokens": 31821,
+            "total_provider_tokens": 15293139
+          },
+          "baseline_corrected_usage": {
+            "fresh_input_tokens": 468939,
+            "cached_input_tokens": 17051392,
+            "cache_write_tokens": null,
+            "output_tokens": 57846,
+            "reasoning_tokens": 27200,
+            "total_provider_tokens": 17578177
+          },
+          "delta_total_provider_tokens": -2285038,
+          "delta_percent": -12.999289,
+          "tasks_passed": 3,
+          "tasks_attempted": 3,
+          "treatment_manifest_verified": true,
+          "baseline_manifest_verified": true
+        }
+      ]
+    },
+    {
+      "profile_id": "terminal-snip-codex-hook-v1",
+      "display_name": "Snip",
+      "mechanism_family": "terminal hook",
+      "model_condition_id": "codex-openai-gpt-5-6-luna-xhigh",
+      "replicate_index": 2,
+      "session_count": 3,
+      "treatment_corrected_usage": {
+        "fresh_input_tokens": 1099840,
+        "cached_input_tokens": 30882816,
+        "output_tokens": 146722,
+        "reasoning_tokens": 64872,
+        "total_provider_tokens": 32129378
+      },
+      "matched_baseline_corrected_usage": {
+        "fresh_input_tokens": 974380,
+        "cached_input_tokens": 30313472,
+        "output_tokens": 145894,
+        "reasoning_tokens": 66898,
+        "total_provider_tokens": 31433746
+      },
+      "delta_total_provider_tokens": 695632,
+      "delta_percent": 2.21301,
+      "tasks_passed": 9,
+      "tasks_attempted": 9,
+      "all_manifests_verified": true,
+      "lanes": [
+        {
+          "sequence_id": "beets-lifecycle-sequence-v0",
+          "treatment_session_id": "snip-beets-20260719-p-b440da225a3a-r2",
+          "baseline_session_id": "baseline-beets-20260718-p-b440da225a3a-r2",
+          "treatment_corrected_usage": {
+            "fresh_input_tokens": 212874,
+            "cached_input_tokens": 6878208,
+            "cache_write_tokens": null,
+            "output_tokens": 49937,
+            "reasoning_tokens": 22624,
+            "total_provider_tokens": 7141019
+          },
+          "baseline_corrected_usage": {
+            "fresh_input_tokens": 231792,
+            "cached_input_tokens": 8943616,
+            "cache_write_tokens": null,
+            "output_tokens": 63038,
+            "reasoning_tokens": 28957,
+            "total_provider_tokens": 9238446
+          },
+          "delta_total_provider_tokens": -2097427,
+          "delta_percent": -22.703245,
+          "tasks_passed": 3,
+          "tasks_attempted": 3,
+          "treatment_manifest_verified": true,
+          "baseline_manifest_verified": true
+        },
+        {
+          "sequence_id": "fastify-lifecycle-sequence-v0",
+          "treatment_session_id": "snip-fastify-20260719-p-769d40697529-r2",
+          "baseline_session_id": "baseline-fastify-20260718-p-769d40697529-r2",
+          "treatment_corrected_usage": {
+            "fresh_input_tokens": 274234,
+            "cached_input_tokens": 4144128,
+            "cache_write_tokens": null,
+            "output_tokens": 26742,
+            "reasoning_tokens": 14518,
+            "total_provider_tokens": 4445104
+          },
+          "baseline_corrected_usage": {
+            "fresh_input_tokens": 273649,
+            "cached_input_tokens": 4318464,
+            "cache_write_tokens": null,
+            "output_tokens": 25010,
+            "reasoning_tokens": 10741,
+            "total_provider_tokens": 4617123
+          },
+          "delta_total_provider_tokens": -172019,
+          "delta_percent": -3.725675,
+          "tasks_passed": 3,
+          "tasks_attempted": 3,
+          "treatment_manifest_verified": true,
+          "baseline_manifest_verified": true
+        },
+        {
+          "sequence_id": "terraform-lifecycle-sequence-v0",
+          "treatment_session_id": "snip-terraform-20260719-p-ded8609b4172-r2",
+          "baseline_session_id": "baseline-terraform-20260718-p-ded8609b4172-r2",
+          "treatment_corrected_usage": {
+            "fresh_input_tokens": 612732,
+            "cached_input_tokens": 19860480,
+            "cache_write_tokens": null,
+            "output_tokens": 70043,
+            "reasoning_tokens": 27730,
+            "total_provider_tokens": 20543255
+          },
+          "baseline_corrected_usage": {
+            "fresh_input_tokens": 468939,
+            "cached_input_tokens": 17051392,
+            "cache_write_tokens": null,
+            "output_tokens": 57846,
+            "reasoning_tokens": 27200,
+            "total_provider_tokens": 17578177
+          },
+          "delta_total_provider_tokens": 2965078,
+          "delta_percent": 16.867949,
+          "tasks_passed": 3,
+          "tasks_attempted": 3,
+          "treatment_manifest_verified": true,
+          "baseline_manifest_verified": true
+        }
+      ]
+    },
+    {
+      "profile_id": "retrieval-graphify-codex-skill-v1",
+      "display_name": "Graphify",
+      "mechanism_family": "retrieval graph + Codex skill",
+      "model_condition_id": "codex-openai-gpt-5-6-luna-xhigh",
+      "replicate_index": 2,
+      "session_count": 3,
+      "treatment_corrected_usage": {
+        "fresh_input_tokens": 1361015,
+        "cached_input_tokens": 49986816,
+        "output_tokens": 172804,
+        "reasoning_tokens": 79196,
+        "total_provider_tokens": 51520635
+      },
+      "matched_baseline_corrected_usage": {
+        "fresh_input_tokens": 974380,
+        "cached_input_tokens": 30313472,
+        "output_tokens": 145894,
+        "reasoning_tokens": 66898,
+        "total_provider_tokens": 31433746
+      },
+      "delta_total_provider_tokens": 20086889,
+      "delta_percent": 63.902307,
+      "tasks_passed": 9,
+      "tasks_attempted": 9,
+      "all_manifests_verified": true,
+      "lanes": [
+        {
+          "sequence_id": "beets-lifecycle-sequence-v0",
+          "treatment_session_id": "graphify-beets-20260719-p-b440da225a3a-r2",
+          "baseline_session_id": "baseline-beets-20260718-p-b440da225a3a-r2",
+          "treatment_corrected_usage": {
+            "fresh_input_tokens": 414356,
+            "cached_input_tokens": 13927424,
+            "cache_write_tokens": null,
+            "output_tokens": 64015,
+            "reasoning_tokens": 29856,
+            "total_provider_tokens": 14405795
+          },
+          "baseline_corrected_usage": {
+            "fresh_input_tokens": 231792,
+            "cached_input_tokens": 8943616,
+            "cache_write_tokens": null,
+            "output_tokens": 63038,
+            "reasoning_tokens": 28957,
+            "total_provider_tokens": 9238446
+          },
+          "delta_total_provider_tokens": 5167349,
+          "delta_percent": 55.933097,
+          "tasks_passed": 3,
+          "tasks_attempted": 3,
+          "treatment_manifest_verified": true,
+          "baseline_manifest_verified": true
+        },
+        {
+          "sequence_id": "fastify-lifecycle-sequence-v0",
+          "treatment_session_id": "graphify-fastify-20260719-p-769d40697529-r2",
+          "baseline_session_id": "baseline-fastify-20260718-p-769d40697529-r2",
+          "treatment_corrected_usage": {
+            "fresh_input_tokens": 226293,
+            "cached_input_tokens": 6941952,
+            "cache_write_tokens": null,
+            "output_tokens": 36051,
+            "reasoning_tokens": 19194,
+            "total_provider_tokens": 7204296
+          },
+          "baseline_corrected_usage": {
+            "fresh_input_tokens": 273649,
+            "cached_input_tokens": 4318464,
+            "cache_write_tokens": null,
+            "output_tokens": 25010,
+            "reasoning_tokens": 10741,
+            "total_provider_tokens": 4617123
+          },
+          "delta_total_provider_tokens": 2587173,
+          "delta_percent": 56.03431,
+          "tasks_passed": 3,
+          "tasks_attempted": 3,
+          "treatment_manifest_verified": true,
+          "baseline_manifest_verified": true
+        },
+        {
+          "sequence_id": "terraform-lifecycle-sequence-v0",
+          "treatment_session_id": "graphify-terraform-20260719-p-ded8609b4172-r2",
+          "baseline_session_id": "baseline-terraform-20260718-p-ded8609b4172-r2",
+          "treatment_corrected_usage": {
+            "fresh_input_tokens": 720366,
+            "cached_input_tokens": 29117440,
+            "cache_write_tokens": null,
+            "output_tokens": 72738,
+            "reasoning_tokens": 30146,
+            "total_provider_tokens": 29910544
+          },
+          "baseline_corrected_usage": {
+            "fresh_input_tokens": 468939,
+            "cached_input_tokens": 17051392,
+            "cache_write_tokens": null,
+            "output_tokens": 57846,
+            "reasoning_tokens": 27200,
+            "total_provider_tokens": 17578177
+          },
+          "delta_total_provider_tokens": 12332367,
+          "delta_percent": 70.157258,
+          "tasks_passed": 3,
+          "tasks_attempted": 3,
+          "treatment_manifest_verified": true,
+          "baseline_manifest_verified": true
+        }
+      ]
+    },
+    {
+      "profile_id": "integrated-token-savior-mcp-v1",
+      "display_name": "Token Savior",
+      "mechanism_family": "bounded MCP integration",
+      "model_condition_id": "codex-openai-gpt-5-6-luna-xhigh",
+      "replicate_index": 2,
+      "session_count": 3,
+      "treatment_corrected_usage": {
+        "fresh_input_tokens": 981020,
+        "cached_input_tokens": 37852672,
+        "output_tokens": 169734,
+        "reasoning_tokens": 87710,
+        "total_provider_tokens": 39003426
+      },
+      "matched_baseline_corrected_usage": {
+        "fresh_input_tokens": 974380,
+        "cached_input_tokens": 30313472,
+        "output_tokens": 145894,
+        "reasoning_tokens": 66898,
+        "total_provider_tokens": 31433746
+      },
+      "delta_total_provider_tokens": 7569680,
+      "delta_percent": 24.081381,
+      "tasks_passed": 9,
+      "tasks_attempted": 9,
+      "all_manifests_verified": true,
+      "lanes": [
+        {
+          "sequence_id": "beets-lifecycle-sequence-v0",
+          "treatment_session_id": "token-savior-beets-20260719-p-b440da225a3a-r2",
+          "baseline_session_id": "baseline-beets-20260718-p-b440da225a3a-r2",
+          "treatment_corrected_usage": {
+            "fresh_input_tokens": 267893,
+            "cached_input_tokens": 11403776,
+            "cache_write_tokens": null,
+            "output_tokens": 59737,
+            "reasoning_tokens": 30863,
+            "total_provider_tokens": 11731406
+          },
+          "baseline_corrected_usage": {
+            "fresh_input_tokens": 231792,
+            "cached_input_tokens": 8943616,
+            "cache_write_tokens": null,
+            "output_tokens": 63038,
+            "reasoning_tokens": 28957,
+            "total_provider_tokens": 9238446
+          },
+          "delta_total_provider_tokens": 2492960,
+          "delta_percent": 26.984625,
+          "tasks_passed": 3,
+          "tasks_attempted": 3,
+          "treatment_manifest_verified": true,
+          "baseline_manifest_verified": true
+        },
+        {
+          "sequence_id": "fastify-lifecycle-sequence-v0",
+          "treatment_session_id": "token-savior-fastify-20260719-p-769d40697529-r2",
+          "baseline_session_id": "baseline-fastify-20260718-p-769d40697529-r2",
+          "treatment_corrected_usage": {
+            "fresh_input_tokens": 173193,
+            "cached_input_tokens": 3601152,
+            "cache_write_tokens": null,
+            "output_tokens": 33465,
+            "reasoning_tokens": 16866,
+            "total_provider_tokens": 3807810
+          },
+          "baseline_corrected_usage": {
+            "fresh_input_tokens": 273649,
+            "cached_input_tokens": 4318464,
+            "cache_write_tokens": null,
+            "output_tokens": 25010,
+            "reasoning_tokens": 10741,
+            "total_provider_tokens": 4617123
+          },
+          "delta_total_provider_tokens": -809313,
+          "delta_percent": -17.528513,
+          "tasks_passed": 3,
+          "tasks_attempted": 3,
+          "treatment_manifest_verified": true,
+          "baseline_manifest_verified": true
+        },
+        {
+          "sequence_id": "terraform-lifecycle-sequence-v0",
+          "treatment_session_id": "token-savior-terraform-20260719-p-ded8609b4172-r2",
+          "baseline_session_id": "baseline-terraform-20260718-p-ded8609b4172-r2",
+          "treatment_corrected_usage": {
+            "fresh_input_tokens": 539934,
+            "cached_input_tokens": 22847744,
+            "cache_write_tokens": null,
+            "output_tokens": 76532,
+            "reasoning_tokens": 39981,
+            "total_provider_tokens": 23464210
+          },
+          "baseline_corrected_usage": {
+            "fresh_input_tokens": 468939,
+            "cached_input_tokens": 17051392,
+            "cache_write_tokens": null,
+            "output_tokens": 57846,
+            "reasoning_tokens": 27200,
+            "total_provider_tokens": 17578177
+          },
+          "delta_total_provider_tokens": 5886033,
+          "delta_percent": 33.484889,
+          "tasks_passed": 3,
+          "tasks_attempted": 3,
+          "treatment_manifest_verified": true,
+          "baseline_manifest_verified": true
+        }
+      ]
+    },
+    {
+      "profile_id": "artifact-ponytail-codex-plugin-v1",
+      "display_name": "Ponytail",
+      "mechanism_family": "Codex plugin + lifecycle hooks",
+      "model_condition_id": "codex-openai-gpt-5-6-luna-xhigh",
+      "replicate_index": 2,
+      "session_count": 3,
+      "treatment_corrected_usage": {
+        "fresh_input_tokens": 852101,
+        "cached_input_tokens": 25110272,
+        "output_tokens": 125565,
+        "reasoning_tokens": 64493,
+        "total_provider_tokens": 26087938
+      },
+      "matched_baseline_corrected_usage": {
+        "fresh_input_tokens": 974380,
+        "cached_input_tokens": 30313472,
+        "output_tokens": 145894,
+        "reasoning_tokens": 66898,
+        "total_provider_tokens": 31433746
+      },
+      "delta_total_provider_tokens": -5345808,
+      "delta_percent": -17.006589,
+      "tasks_passed": 9,
+      "tasks_attempted": 9,
+      "all_manifests_verified": true,
+      "lanes": [
+        {
+          "sequence_id": "beets-lifecycle-sequence-v0",
+          "treatment_session_id": "ponytail-beets-20260719-p-b440da225a3a-r2",
+          "baseline_session_id": "baseline-beets-20260718-p-b440da225a3a-r2",
+          "treatment_corrected_usage": {
+            "fresh_input_tokens": 267683,
+            "cached_input_tokens": 6762496,
+            "cache_write_tokens": null,
+            "output_tokens": 48096,
+            "reasoning_tokens": 27845,
+            "total_provider_tokens": 7078275
+          },
+          "baseline_corrected_usage": {
+            "fresh_input_tokens": 231792,
+            "cached_input_tokens": 8943616,
+            "cache_write_tokens": null,
+            "output_tokens": 63038,
+            "reasoning_tokens": 28957,
+            "total_provider_tokens": 9238446
+          },
+          "delta_total_provider_tokens": -2160171,
+          "delta_percent": -23.382407,
+          "tasks_passed": 3,
+          "tasks_attempted": 3,
+          "treatment_manifest_verified": true,
+          "baseline_manifest_verified": true
+        },
+        {
+          "sequence_id": "fastify-lifecycle-sequence-v0",
+          "treatment_session_id": "ponytail-fastify-20260719-p-769d40697529-r2",
+          "baseline_session_id": "baseline-fastify-20260718-p-769d40697529-r2",
+          "treatment_corrected_usage": {
+            "fresh_input_tokens": 193186,
+            "cached_input_tokens": 5549824,
+            "cache_write_tokens": null,
+            "output_tokens": 25016,
+            "reasoning_tokens": 11669,
+            "total_provider_tokens": 5768026
+          },
+          "baseline_corrected_usage": {
+            "fresh_input_tokens": 273649,
+            "cached_input_tokens": 4318464,
+            "cache_write_tokens": null,
+            "output_tokens": 25010,
+            "reasoning_tokens": 10741,
+            "total_provider_tokens": 4617123
+          },
+          "delta_total_provider_tokens": 1150903,
+          "delta_percent": 24.926843,
+          "tasks_passed": 3,
+          "tasks_attempted": 3,
+          "treatment_manifest_verified": true,
+          "baseline_manifest_verified": true
+        },
+        {
+          "sequence_id": "terraform-lifecycle-sequence-v0",
+          "treatment_session_id": "ponytail-terraform-20260719-p-ded8609b4172-r2",
+          "baseline_session_id": "baseline-terraform-20260718-p-ded8609b4172-r2",
+          "treatment_corrected_usage": {
+            "fresh_input_tokens": 391232,
+            "cached_input_tokens": 12797952,
+            "cache_write_tokens": null,
+            "output_tokens": 52453,
+            "reasoning_tokens": 24979,
+            "total_provider_tokens": 13241637
+          },
+          "baseline_corrected_usage": {
+            "fresh_input_tokens": 468939,
+            "cached_input_tokens": 17051392,
+            "cache_write_tokens": null,
+            "output_tokens": 57846,
+            "reasoning_tokens": 27200,
+            "total_provider_tokens": 17578177
+          },
+          "delta_total_provider_tokens": -4336540,
+          "delta_percent": -24.670021,
+          "tasks_passed": 3,
+          "tasks_attempted": 3,
+          "treatment_manifest_verified": true,
+          "baseline_manifest_verified": true
+        }
+      ]
+    },
+    {
+      "profile_id": "behavior-caveman-codex-skill-v1",
+      "display_name": "Caveman",
+      "mechanism_family": "behavior skill",
+      "model_condition_id": "codex-openai-gpt-5-6-luna-xhigh",
+      "replicate_index": 2,
+      "session_count": 3,
+      "treatment_corrected_usage": {
+        "fresh_input_tokens": 921873,
+        "cached_input_tokens": 38646784,
+        "output_tokens": 162676,
+        "reasoning_tokens": 73914,
+        "total_provider_tokens": 39731333
+      },
+      "matched_baseline_corrected_usage": {
+        "fresh_input_tokens": 974380,
+        "cached_input_tokens": 30313472,
+        "output_tokens": 145894,
+        "reasoning_tokens": 66898,
+        "total_provider_tokens": 31433746
+      },
+      "delta_total_provider_tokens": 8297587,
+      "delta_percent": 26.397067,
+      "tasks_passed": 9,
+      "tasks_attempted": 9,
+      "all_manifests_verified": true,
+      "lanes": [
+        {
+          "sequence_id": "beets-lifecycle-sequence-v0",
+          "treatment_session_id": "caveman-beets-20260719-p-b440da225a3a-r2",
+          "baseline_session_id": "baseline-beets-20260718-p-b440da225a3a-r2",
+          "treatment_corrected_usage": {
+            "fresh_input_tokens": 312590,
+            "cached_input_tokens": 9840384,
+            "cache_write_tokens": null,
+            "output_tokens": 57641,
+            "reasoning_tokens": 24331,
+            "total_provider_tokens": 10210615
+          },
+          "baseline_corrected_usage": {
+            "fresh_input_tokens": 231792,
+            "cached_input_tokens": 8943616,
+            "cache_write_tokens": null,
+            "output_tokens": 63038,
+            "reasoning_tokens": 28957,
+            "total_provider_tokens": 9238446
+          },
+          "delta_total_provider_tokens": 972169,
+          "delta_percent": 10.523079,
+          "tasks_passed": 3,
+          "tasks_attempted": 3,
+          "treatment_manifest_verified": true,
+          "baseline_manifest_verified": true
+        },
+        {
+          "sequence_id": "fastify-lifecycle-sequence-v0",
+          "treatment_session_id": "caveman-fastify-20260719-p-769d40697529-r2",
+          "baseline_session_id": "baseline-fastify-20260718-p-769d40697529-r2",
+          "treatment_corrected_usage": {
+            "fresh_input_tokens": 230577,
+            "cached_input_tokens": 7752704,
+            "cache_write_tokens": null,
+            "output_tokens": 43481,
+            "reasoning_tokens": 22180,
+            "total_provider_tokens": 8026762
+          },
+          "baseline_corrected_usage": {
+            "fresh_input_tokens": 273649,
+            "cached_input_tokens": 4318464,
+            "cache_write_tokens": null,
+            "output_tokens": 25010,
+            "reasoning_tokens": 10741,
+            "total_provider_tokens": 4617123
+          },
+          "delta_total_provider_tokens": 3409639,
+          "delta_percent": 73.847697,
+          "tasks_passed": 3,
+          "tasks_attempted": 3,
+          "treatment_manifest_verified": true,
+          "baseline_manifest_verified": true
+        },
+        {
+          "sequence_id": "terraform-lifecycle-sequence-v0",
+          "treatment_session_id": "caveman-terraform-20260719-p-ded8609b4172-r2",
+          "baseline_session_id": "baseline-terraform-20260718-p-ded8609b4172-r2",
+          "treatment_corrected_usage": {
+            "fresh_input_tokens": 378706,
+            "cached_input_tokens": 21053696,
+            "cache_write_tokens": null,
+            "output_tokens": 61554,
+            "reasoning_tokens": 27403,
+            "total_provider_tokens": 21493956
+          },
+          "baseline_corrected_usage": {
+            "fresh_input_tokens": 468939,
+            "cached_input_tokens": 17051392,
+            "cache_write_tokens": null,
+            "output_tokens": 57846,
+            "reasoning_tokens": 27200,
+            "total_provider_tokens": 17578177
+          },
+          "delta_total_provider_tokens": 3915779,
+          "delta_percent": 22.276366,
+          "tasks_passed": 3,
+          "tasks_attempted": 3,
+          "treatment_manifest_verified": true,
+          "baseline_manifest_verified": true
+        }
+      ]
+    },
+    {
+      "profile_id": "integrated-leanctx-codex-hybrid-v1",
+      "display_name": "LeanCTX",
+      "mechanism_family": "hybrid retrieval integration",
+      "model_condition_id": "codex-openai-gpt-5-6-luna-xhigh",
+      "replicate_index": 2,
+      "session_count": 3,
+      "treatment_corrected_usage": {
+        "fresh_input_tokens": 1128232,
+        "cached_input_tokens": 33489408,
+        "output_tokens": 149224,
+        "reasoning_tokens": 76152,
+        "total_provider_tokens": 34766864
+      },
+      "matched_baseline_corrected_usage": {
+        "fresh_input_tokens": 974380,
+        "cached_input_tokens": 30313472,
+        "output_tokens": 145894,
+        "reasoning_tokens": 66898,
+        "total_provider_tokens": 31433746
+      },
+      "delta_total_provider_tokens": 3333118,
+      "delta_percent": 10.60363,
+      "tasks_passed": 9,
+      "tasks_attempted": 9,
+      "all_manifests_verified": true,
+      "lanes": [
+        {
+          "sequence_id": "beets-lifecycle-sequence-v0",
+          "treatment_session_id": "leanctx-beets-20260719-p-b440da225a3a-r2",
+          "baseline_session_id": "baseline-beets-20260718-p-b440da225a3a-r2",
+          "treatment_corrected_usage": {
+            "fresh_input_tokens": 448812,
+            "cached_input_tokens": 11988736,
+            "cache_write_tokens": null,
+            "output_tokens": 62730,
+            "reasoning_tokens": 30790,
+            "total_provider_tokens": 12500278
+          },
+          "baseline_corrected_usage": {
+            "fresh_input_tokens": 231792,
+            "cached_input_tokens": 8943616,
+            "cache_write_tokens": null,
+            "output_tokens": 63038,
+            "reasoning_tokens": 28957,
+            "total_provider_tokens": 9238446
+          },
+          "delta_total_provider_tokens": 3261832,
+          "delta_percent": 35.30715,
+          "tasks_passed": 3,
+          "tasks_attempted": 3,
+          "treatment_manifest_verified": true,
+          "baseline_manifest_verified": true
+        },
+        {
+          "sequence_id": "fastify-lifecycle-sequence-v0",
+          "treatment_session_id": "leanctx-fastify-20260719-p-769d40697529-r2",
+          "baseline_session_id": "baseline-fastify-20260718-p-769d40697529-r2",
+          "treatment_corrected_usage": {
+            "fresh_input_tokens": 210907,
+            "cached_input_tokens": 4499200,
+            "cache_write_tokens": null,
+            "output_tokens": 25164,
+            "reasoning_tokens": 14788,
+            "total_provider_tokens": 4735271
+          },
+          "baseline_corrected_usage": {
+            "fresh_input_tokens": 273649,
+            "cached_input_tokens": 4318464,
+            "cache_write_tokens": null,
+            "output_tokens": 25010,
+            "reasoning_tokens": 10741,
+            "total_provider_tokens": 4617123
+          },
+          "delta_total_provider_tokens": 118148,
+          "delta_percent": 2.55891,
+          "tasks_passed": 3,
+          "tasks_attempted": 3,
+          "treatment_manifest_verified": true,
+          "baseline_manifest_verified": true
+        },
+        {
+          "sequence_id": "terraform-lifecycle-sequence-v0",
+          "treatment_session_id": "leanctx-terraform-20260719-p-ded8609b4172-r2",
+          "baseline_session_id": "baseline-terraform-20260718-p-ded8609b4172-r2",
+          "treatment_corrected_usage": {
+            "fresh_input_tokens": 468513,
+            "cached_input_tokens": 17001472,
+            "cache_write_tokens": null,
+            "output_tokens": 61330,
+            "reasoning_tokens": 30574,
+            "total_provider_tokens": 17531315
+          },
+          "baseline_corrected_usage": {
+            "fresh_input_tokens": 468939,
+            "cached_input_tokens": 17051392,
+            "cache_write_tokens": null,
+            "output_tokens": 57846,
+            "reasoning_tokens": 27200,
+            "total_provider_tokens": 17578177
+          },
+          "delta_total_provider_tokens": -46862,
+          "delta_percent": -0.266592,
+          "tasks_passed": 3,
+          "tasks_attempted": 3,
+          "treatment_manifest_verified": true,
+          "baseline_manifest_verified": true
+        }
+      ]
+    },
+    {
+      "profile_id": "retrieval-cartog-mcp-v1",
+      "display_name": "Cartog",
+      "mechanism_family": "retrieval MCP",
+      "model_condition_id": "codex-openai-gpt-5-6-luna-xhigh",
+      "replicate_index": 2,
+      "session_count": 3,
+      "treatment_corrected_usage": {
+        "fresh_input_tokens": 817420,
+        "cached_input_tokens": 30142976,
+        "output_tokens": 160010,
+        "reasoning_tokens": 76376,
+        "total_provider_tokens": 31120406
+      },
+      "matched_baseline_corrected_usage": {
+        "fresh_input_tokens": 974380,
+        "cached_input_tokens": 30313472,
+        "output_tokens": 145894,
+        "reasoning_tokens": 66898,
+        "total_provider_tokens": 31433746
+      },
+      "delta_total_provider_tokens": -313340,
+      "delta_percent": -0.996827,
+      "tasks_passed": 9,
+      "tasks_attempted": 9,
+      "all_manifests_verified": true,
+      "lanes": [
+        {
+          "sequence_id": "beets-lifecycle-sequence-v0",
+          "treatment_session_id": "cartog-beets-20260719-p-b440da225a3a-r2",
+          "baseline_session_id": "baseline-beets-20260718-p-b440da225a3a-r2",
+          "treatment_corrected_usage": {
+            "fresh_input_tokens": 223299,
+            "cached_input_tokens": 8771072,
+            "cache_write_tokens": null,
+            "output_tokens": 52949,
+            "reasoning_tokens": 25800,
+            "total_provider_tokens": 9047320
+          },
+          "baseline_corrected_usage": {
+            "fresh_input_tokens": 231792,
+            "cached_input_tokens": 8943616,
+            "cache_write_tokens": null,
+            "output_tokens": 63038,
+            "reasoning_tokens": 28957,
+            "total_provider_tokens": 9238446
+          },
+          "delta_total_provider_tokens": -191126,
+          "delta_percent": -2.068811,
+          "tasks_passed": 3,
+          "tasks_attempted": 3,
+          "treatment_manifest_verified": true,
+          "baseline_manifest_verified": true
+        },
+        {
+          "sequence_id": "fastify-lifecycle-sequence-v0",
+          "treatment_session_id": "cartog-fastify-20260719-p-769d40697529-r2",
+          "baseline_session_id": "baseline-fastify-20260718-p-769d40697529-r2",
+          "treatment_corrected_usage": {
+            "fresh_input_tokens": 180940,
+            "cached_input_tokens": 5313024,
+            "cache_write_tokens": null,
+            "output_tokens": 37624,
+            "reasoning_tokens": 19588,
+            "total_provider_tokens": 5531588
+          },
+          "baseline_corrected_usage": {
+            "fresh_input_tokens": 273649,
+            "cached_input_tokens": 4318464,
+            "cache_write_tokens": null,
+            "output_tokens": 25010,
+            "reasoning_tokens": 10741,
+            "total_provider_tokens": 4617123
+          },
+          "delta_total_provider_tokens": 914465,
+          "delta_percent": 19.805948,
+          "tasks_passed": 3,
+          "tasks_attempted": 3,
+          "treatment_manifest_verified": true,
+          "baseline_manifest_verified": true
+        },
+        {
+          "sequence_id": "terraform-lifecycle-sequence-v0",
+          "treatment_session_id": "cartog-terraform-20260719-p-ded8609b4172-r2",
+          "baseline_session_id": "baseline-terraform-20260718-p-ded8609b4172-r2",
+          "treatment_corrected_usage": {
+            "fresh_input_tokens": 413181,
+            "cached_input_tokens": 16058880,
+            "cache_write_tokens": null,
+            "output_tokens": 69437,
+            "reasoning_tokens": 30988,
+            "total_provider_tokens": 16541498
+          },
+          "baseline_corrected_usage": {
+            "fresh_input_tokens": 468939,
+            "cached_input_tokens": 17051392,
+            "cache_write_tokens": null,
+            "output_tokens": 57846,
+            "reasoning_tokens": 27200,
+            "total_provider_tokens": 17578177
+          },
+          "delta_total_provider_tokens": -1036679,
+          "delta_percent": -5.897534,
+          "tasks_passed": 3,
+          "tasks_attempted": 3,
+          "treatment_manifest_verified": true,
+          "baseline_manifest_verified": true
+        }
+      ]
+    },
+    {
+      "profile_id": "codescope-codex-product-v1",
+      "display_name": "CodeScope",
+      "mechanism_family": "retrieval product integration",
+      "model_condition_id": "codex-openai-gpt-5-6-luna-xhigh",
+      "replicate_index": 2,
+      "session_count": 3,
+      "treatment_corrected_usage": {
+        "fresh_input_tokens": 832939,
+        "cached_input_tokens": 31977472,
+        "output_tokens": 141131,
+        "reasoning_tokens": 63421,
+        "total_provider_tokens": 32951542
+      },
+      "matched_baseline_corrected_usage": {
+        "fresh_input_tokens": 974380,
+        "cached_input_tokens": 30313472,
+        "output_tokens": 145894,
+        "reasoning_tokens": 66898,
+        "total_provider_tokens": 31433746
+      },
+      "delta_total_provider_tokens": 1517796,
+      "delta_percent": 4.828556,
+      "tasks_passed": 9,
+      "tasks_attempted": 9,
+      "all_manifests_verified": true,
+      "lanes": [
+        {
+          "sequence_id": "beets-lifecycle-sequence-v0",
+          "treatment_session_id": "codescope-beets-20260719-p-b440da225a3a-r2",
+          "baseline_session_id": "baseline-beets-20260718-p-b440da225a3a-r2",
+          "treatment_corrected_usage": {
+            "fresh_input_tokens": 270451,
+            "cached_input_tokens": 12370176,
+            "cache_write_tokens": null,
+            "output_tokens": 63203,
+            "reasoning_tokens": 27583,
+            "total_provider_tokens": 12703830
+          },
+          "baseline_corrected_usage": {
+            "fresh_input_tokens": 231792,
+            "cached_input_tokens": 8943616,
+            "cache_write_tokens": null,
+            "output_tokens": 63038,
+            "reasoning_tokens": 28957,
+            "total_provider_tokens": 9238446
+          },
+          "delta_total_provider_tokens": 3465384,
+          "delta_percent": 37.510464,
+          "tasks_passed": 3,
+          "tasks_attempted": 3,
+          "treatment_manifest_verified": true,
+          "baseline_manifest_verified": true
+        },
+        {
+          "sequence_id": "fastify-lifecycle-sequence-v0",
+          "treatment_session_id": "codescope-fastify-20260719-p-769d40697529-r2",
+          "baseline_session_id": "baseline-fastify-20260718-p-769d40697529-r2",
+          "treatment_corrected_usage": {
+            "fresh_input_tokens": 166459,
+            "cached_input_tokens": 2387968,
+            "cache_write_tokens": null,
+            "output_tokens": 22137,
+            "reasoning_tokens": 10800,
+            "total_provider_tokens": 2576564
+          },
+          "baseline_corrected_usage": {
+            "fresh_input_tokens": 273649,
+            "cached_input_tokens": 4318464,
+            "cache_write_tokens": null,
+            "output_tokens": 25010,
+            "reasoning_tokens": 10741,
+            "total_provider_tokens": 4617123
+          },
+          "delta_total_provider_tokens": -2040559,
+          "delta_percent": -44.195465,
+          "tasks_passed": 3,
+          "tasks_attempted": 3,
+          "treatment_manifest_verified": true,
+          "baseline_manifest_verified": true
+        },
+        {
+          "sequence_id": "terraform-lifecycle-sequence-v0",
+          "treatment_session_id": "codescope-terraform-20260719-p-ded8609b4172-r2",
+          "baseline_session_id": "baseline-terraform-20260718-p-ded8609b4172-r2",
+          "treatment_corrected_usage": {
+            "fresh_input_tokens": 396029,
+            "cached_input_tokens": 17219328,
+            "cache_write_tokens": null,
+            "output_tokens": 55791,
+            "reasoning_tokens": 25038,
+            "total_provider_tokens": 17671148
+          },
+          "baseline_corrected_usage": {
+            "fresh_input_tokens": 468939,
+            "cached_input_tokens": 17051392,
+            "cache_write_tokens": null,
+            "output_tokens": 57846,
+            "reasoning_tokens": 27200,
+            "total_provider_tokens": 17578177
+          },
+          "delta_total_provider_tokens": 92971,
+          "delta_percent": 0.5289,
+          "tasks_passed": 3,
+          "tasks_attempted": 3,
+          "treatment_manifest_verified": true,
+          "baseline_manifest_verified": true
+        }
+      ]
+    },
+    {
+      "profile_id": "swarmvault-codex-product-v1",
+      "display_name": "SwarmVault",
+      "mechanism_family": "knowledge graph + rules/hooks",
+      "model_condition_id": "codex-openai-gpt-5-6-luna-xhigh",
+      "replicate_index": 2,
+      "session_count": 3,
+      "treatment_corrected_usage": {
+        "fresh_input_tokens": 1059184,
+        "cached_input_tokens": 36398592,
+        "output_tokens": 143927,
+        "reasoning_tokens": 69286,
+        "total_provider_tokens": 37601703
+      },
+      "matched_baseline_corrected_usage": {
+        "fresh_input_tokens": 974380,
+        "cached_input_tokens": 30313472,
+        "output_tokens": 145894,
+        "reasoning_tokens": 66898,
+        "total_provider_tokens": 31433746
+      },
+      "delta_total_provider_tokens": 6167957,
+      "delta_percent": 19.622087,
+      "tasks_passed": 9,
+      "tasks_attempted": 9,
+      "all_manifests_verified": true,
+      "lanes": [
+        {
+          "sequence_id": "beets-lifecycle-sequence-v0",
+          "treatment_session_id": "swarmvault-beets-20260719-p-b440da225a3a-r2",
+          "baseline_session_id": "baseline-beets-20260718-p-b440da225a3a-r2",
+          "treatment_corrected_usage": {
+            "fresh_input_tokens": 195409,
+            "cached_input_tokens": 6760960,
+            "cache_write_tokens": null,
+            "output_tokens": 45465,
+            "reasoning_tokens": 26365,
+            "total_provider_tokens": 7001834
+          },
+          "baseline_corrected_usage": {
+            "fresh_input_tokens": 231792,
+            "cached_input_tokens": 8943616,
+            "cache_write_tokens": null,
+            "output_tokens": 63038,
+            "reasoning_tokens": 28957,
+            "total_provider_tokens": 9238446
+          },
+          "delta_total_provider_tokens": -2236612,
+          "delta_percent": -24.209829,
+          "tasks_passed": 3,
+          "tasks_attempted": 3,
+          "treatment_manifest_verified": true,
+          "baseline_manifest_verified": true
+        },
+        {
+          "sequence_id": "fastify-lifecycle-sequence-v0",
+          "treatment_session_id": "swarmvault-fastify-20260719-p-769d40697529-r2",
+          "baseline_session_id": "baseline-fastify-20260718-p-769d40697529-r2",
+          "treatment_corrected_usage": {
+            "fresh_input_tokens": 258205,
+            "cached_input_tokens": 8253696,
+            "cache_write_tokens": null,
+            "output_tokens": 38271,
+            "reasoning_tokens": 19643,
+            "total_provider_tokens": 8550172
+          },
+          "baseline_corrected_usage": {
+            "fresh_input_tokens": 273649,
+            "cached_input_tokens": 4318464,
+            "cache_write_tokens": null,
+            "output_tokens": 25010,
+            "reasoning_tokens": 10741,
+            "total_provider_tokens": 4617123
+          },
+          "delta_total_provider_tokens": 3933049,
+          "delta_percent": 85.183977,
+          "tasks_passed": 3,
+          "tasks_attempted": 3,
+          "treatment_manifest_verified": true,
+          "baseline_manifest_verified": true
+        },
+        {
+          "sequence_id": "terraform-lifecycle-sequence-v0",
+          "treatment_session_id": "swarmvault-terraform-20260719-p-ded8609b4172-r2",
+          "baseline_session_id": "baseline-terraform-20260718-p-ded8609b4172-r2",
+          "treatment_corrected_usage": {
+            "fresh_input_tokens": 605570,
+            "cached_input_tokens": 21383936,
+            "cache_write_tokens": null,
+            "output_tokens": 60191,
+            "reasoning_tokens": 23278,
+            "total_provider_tokens": 22049697
+          },
+          "baseline_corrected_usage": {
+            "fresh_input_tokens": 468939,
+            "cached_input_tokens": 17051392,
+            "cache_write_tokens": null,
+            "output_tokens": 57846,
+            "reasoning_tokens": 27200,
+            "total_provider_tokens": 17578177
+          },
+          "delta_total_provider_tokens": 4471520,
+          "delta_percent": 25.437905,
+          "tasks_passed": 3,
+          "tasks_attempted": 3,
+          "treatment_manifest_verified": true,
+          "baseline_manifest_verified": true
+        }
+      ]
+    },
+    {
+      "profile_id": "retrieval-serena-codex-mcp-v1",
+      "display_name": "Serena",
+      "mechanism_family": "retrieval MCP",
+      "model_condition_id": "codex-openai-gpt-5-6-luna-xhigh",
+      "replicate_index": 2,
+      "session_count": 3,
+      "treatment_corrected_usage": {
+        "fresh_input_tokens": 855463,
+        "cached_input_tokens": 35223552,
+        "output_tokens": 136697,
+        "reasoning_tokens": 71625,
+        "total_provider_tokens": 36215712
+      },
+      "matched_baseline_corrected_usage": {
+        "fresh_input_tokens": 974380,
+        "cached_input_tokens": 30313472,
+        "output_tokens": 145894,
+        "reasoning_tokens": 66898,
+        "total_provider_tokens": 31433746
+      },
+      "delta_total_provider_tokens": 4781966,
+      "delta_percent": 15.212842,
+      "tasks_passed": 9,
+      "tasks_attempted": 9,
+      "all_manifests_verified": true,
+      "lanes": [
+        {
+          "sequence_id": "beets-lifecycle-sequence-v0",
+          "treatment_session_id": "serena-beets-20260719-p-b440da225a3a-r2",
+          "baseline_session_id": "baseline-beets-20260718-p-b440da225a3a-r2",
+          "treatment_corrected_usage": {
+            "fresh_input_tokens": 222828,
+            "cached_input_tokens": 8810240,
+            "cache_write_tokens": null,
+            "output_tokens": 60581,
+            "reasoning_tokens": 32167,
+            "total_provider_tokens": 9093649
+          },
+          "baseline_corrected_usage": {
+            "fresh_input_tokens": 231792,
+            "cached_input_tokens": 8943616,
+            "cache_write_tokens": null,
+            "output_tokens": 63038,
+            "reasoning_tokens": 28957,
+            "total_provider_tokens": 9238446
+          },
+          "delta_total_provider_tokens": -144797,
+          "delta_percent": -1.567331,
+          "tasks_passed": 3,
+          "tasks_attempted": 3,
+          "treatment_manifest_verified": true,
+          "baseline_manifest_verified": true
+        },
+        {
+          "sequence_id": "fastify-lifecycle-sequence-v0",
+          "treatment_session_id": "serena-fastify-20260719-p-769d40697529-r2",
+          "baseline_session_id": "baseline-fastify-20260718-p-769d40697529-r2",
+          "treatment_corrected_usage": {
+            "fresh_input_tokens": 152408,
+            "cached_input_tokens": 3605248,
+            "cache_write_tokens": null,
+            "output_tokens": 19384,
+            "reasoning_tokens": 11390,
+            "total_provider_tokens": 3777040
+          },
+          "baseline_corrected_usage": {
+            "fresh_input_tokens": 273649,
+            "cached_input_tokens": 4318464,
+            "cache_write_tokens": null,
+            "output_tokens": 25010,
+            "reasoning_tokens": 10741,
+            "total_provider_tokens": 4617123
+          },
+          "delta_total_provider_tokens": -840083,
+          "delta_percent": -18.194945,
+          "tasks_passed": 3,
+          "tasks_attempted": 3,
+          "treatment_manifest_verified": true,
+          "baseline_manifest_verified": true
+        },
+        {
+          "sequence_id": "terraform-lifecycle-sequence-v0",
+          "treatment_session_id": "serena-terraform-20260719-p-ded8609b4172-r2",
+          "baseline_session_id": "baseline-terraform-20260718-p-ded8609b4172-r2",
+          "treatment_corrected_usage": {
+            "fresh_input_tokens": 480227,
+            "cached_input_tokens": 22808064,
+            "cache_write_tokens": null,
+            "output_tokens": 56732,
+            "reasoning_tokens": 28068,
+            "total_provider_tokens": 23345023
+          },
+          "baseline_corrected_usage": {
+            "fresh_input_tokens": 468939,
+            "cached_input_tokens": 17051392,
+            "cache_write_tokens": null,
+            "output_tokens": 57846,
+            "reasoning_tokens": 27200,
+            "total_provider_tokens": 17578177
+          },
+          "delta_total_provider_tokens": 5766846,
+          "delta_percent": 32.806849,
+          "tasks_passed": 3,
+          "tasks_attempted": 3,
+          "treatment_manifest_verified": true,
+          "baseline_manifest_verified": true
+        }
+      ]
+    },
+    {
+      "profile_id": "retrieval-sigmap-codex-live-v1",
+      "display_name": "SigMap",
+      "mechanism_family": "live retrieval MCP",
+      "model_condition_id": "codex-openai-gpt-5-6-luna-xhigh",
+      "replicate_index": 2,
+      "session_count": 3,
+      "treatment_corrected_usage": {
+        "fresh_input_tokens": 828409,
+        "cached_input_tokens": 27435264,
+        "output_tokens": 151773,
+        "reasoning_tokens": 72999,
+        "total_provider_tokens": 28415446
+      },
+      "matched_baseline_corrected_usage": {
+        "fresh_input_tokens": 974380,
+        "cached_input_tokens": 30313472,
+        "output_tokens": 145894,
+        "reasoning_tokens": 66898,
+        "total_provider_tokens": 31433746
+      },
+      "delta_total_provider_tokens": -3018300,
+      "delta_percent": -9.602101,
+      "tasks_passed": 9,
+      "tasks_attempted": 9,
+      "all_manifests_verified": true,
+      "lanes": [
+        {
+          "sequence_id": "beets-lifecycle-sequence-v0",
+          "treatment_session_id": "sigmap-beets-20260719-p-b440da225a3a-r2",
+          "baseline_session_id": "baseline-beets-20260718-p-b440da225a3a-r2",
+          "treatment_corrected_usage": {
+            "fresh_input_tokens": 237197,
+            "cached_input_tokens": 8155904,
+            "cache_write_tokens": null,
+            "output_tokens": 55046,
+            "reasoning_tokens": 28515,
+            "total_provider_tokens": 8448147
+          },
+          "baseline_corrected_usage": {
+            "fresh_input_tokens": 231792,
+            "cached_input_tokens": 8943616,
+            "cache_write_tokens": null,
+            "output_tokens": 63038,
+            "reasoning_tokens": 28957,
+            "total_provider_tokens": 9238446
+          },
+          "delta_total_provider_tokens": -790299,
+          "delta_percent": -8.554458,
+          "tasks_passed": 3,
+          "tasks_attempted": 3,
+          "treatment_manifest_verified": true,
+          "baseline_manifest_verified": true
+        },
+        {
+          "sequence_id": "fastify-lifecycle-sequence-v0",
+          "treatment_session_id": "sigmap-fastify-20260719-p-769d40697529-r2",
+          "baseline_session_id": "baseline-fastify-20260718-p-769d40697529-r2",
+          "treatment_corrected_usage": {
+            "fresh_input_tokens": 195263,
+            "cached_input_tokens": 4091136,
+            "cache_write_tokens": null,
+            "output_tokens": 31942,
+            "reasoning_tokens": 14080,
+            "total_provider_tokens": 4318341
+          },
+          "baseline_corrected_usage": {
+            "fresh_input_tokens": 273649,
+            "cached_input_tokens": 4318464,
+            "cache_write_tokens": null,
+            "output_tokens": 25010,
+            "reasoning_tokens": 10741,
+            "total_provider_tokens": 4617123
+          },
+          "delta_total_provider_tokens": -298782,
+          "delta_percent": -6.471173,
+          "tasks_passed": 3,
+          "tasks_attempted": 3,
+          "treatment_manifest_verified": true,
+          "baseline_manifest_verified": true
+        },
+        {
+          "sequence_id": "terraform-lifecycle-sequence-v0",
+          "treatment_session_id": "sigmap-terraform-20260719-p-ded8609b4172-r2",
+          "baseline_session_id": "baseline-terraform-20260718-p-ded8609b4172-r2",
+          "treatment_corrected_usage": {
+            "fresh_input_tokens": 395949,
+            "cached_input_tokens": 15188224,
+            "cache_write_tokens": null,
+            "output_tokens": 64785,
+            "reasoning_tokens": 30404,
+            "total_provider_tokens": 15648958
+          },
+          "baseline_corrected_usage": {
+            "fresh_input_tokens": 468939,
+            "cached_input_tokens": 17051392,
+            "cache_write_tokens": null,
+            "output_tokens": 57846,
+            "reasoning_tokens": 27200,
+            "total_provider_tokens": 17578177
+          },
+          "delta_total_provider_tokens": -1929219,
+          "delta_percent": -10.97508,
+          "tasks_passed": 3,
+          "tasks_attempted": 3,
+          "treatment_manifest_verified": true,
+          "baseline_manifest_verified": true
+        }
+      ]
+    },
+    {
+      "profile_id": "retrieval-codegraph-codex-mcp-v1",
+      "display_name": "CodeGraph",
+      "mechanism_family": "code graph MCP/CLI",
+      "model_condition_id": "codex-openai-gpt-5-6-luna-xhigh",
+      "replicate_index": 2,
+      "session_count": 3,
+      "treatment_corrected_usage": {
+        "fresh_input_tokens": 917852,
+        "cached_input_tokens": 30593536,
+        "output_tokens": 169472,
+        "reasoning_tokens": 79489,
+        "total_provider_tokens": 31680860
+      },
+      "matched_baseline_corrected_usage": {
+        "fresh_input_tokens": 974380,
+        "cached_input_tokens": 30313472,
+        "output_tokens": 145894,
+        "reasoning_tokens": 66898,
+        "total_provider_tokens": 31433746
+      },
+      "delta_total_provider_tokens": 247114,
+      "delta_percent": 0.786142,
+      "tasks_passed": 9,
+      "tasks_attempted": 9,
+      "all_manifests_verified": true,
+      "lanes": [
+        {
+          "sequence_id": "beets-lifecycle-sequence-v0",
+          "treatment_session_id": "codegraph-beets-20260720-p-b440da225a3a-r2",
+          "baseline_session_id": "baseline-beets-20260718-p-b440da225a3a-r2",
+          "treatment_corrected_usage": {
+            "fresh_input_tokens": 223765,
+            "cached_input_tokens": 8480000,
+            "cache_write_tokens": null,
+            "output_tokens": 59658,
+            "reasoning_tokens": 31619,
+            "total_provider_tokens": 8763423
+          },
+          "baseline_corrected_usage": {
+            "fresh_input_tokens": 231792,
+            "cached_input_tokens": 8943616,
+            "cache_write_tokens": null,
+            "output_tokens": 63038,
+            "reasoning_tokens": 28957,
+            "total_provider_tokens": 9238446
+          },
+          "delta_total_provider_tokens": -475023,
+          "delta_percent": -5.141806,
+          "tasks_passed": 3,
+          "tasks_attempted": 3,
+          "treatment_manifest_verified": true,
+          "baseline_manifest_verified": true
+        },
+        {
+          "sequence_id": "fastify-lifecycle-sequence-v0",
+          "treatment_session_id": "codegraph-fastify-20260719-p-769d40697529-r2",
+          "baseline_session_id": "baseline-fastify-20260718-p-769d40697529-r2",
+          "treatment_corrected_usage": {
+            "fresh_input_tokens": 216818,
+            "cached_input_tokens": 5317120,
+            "cache_write_tokens": null,
+            "output_tokens": 27633,
+            "reasoning_tokens": 11674,
+            "total_provider_tokens": 5561571
+          },
+          "baseline_corrected_usage": {
+            "fresh_input_tokens": 273649,
+            "cached_input_tokens": 4318464,
+            "cache_write_tokens": null,
+            "output_tokens": 25010,
+            "reasoning_tokens": 10741,
+            "total_provider_tokens": 4617123
+          },
+          "delta_total_provider_tokens": 944448,
+          "delta_percent": 20.455335,
+          "tasks_passed": 3,
+          "tasks_attempted": 3,
+          "treatment_manifest_verified": true,
+          "baseline_manifest_verified": true
+        },
+        {
+          "sequence_id": "terraform-lifecycle-sequence-v0",
+          "treatment_session_id": "codegraph-terraform-20260720-p-ded8609b4172-r2",
+          "baseline_session_id": "baseline-terraform-20260718-p-ded8609b4172-r2",
+          "treatment_corrected_usage": {
+            "fresh_input_tokens": 477269,
+            "cached_input_tokens": 16796416,
+            "cache_write_tokens": null,
+            "output_tokens": 82181,
+            "reasoning_tokens": 36196,
+            "total_provider_tokens": 17355866
+          },
+          "baseline_corrected_usage": {
+            "fresh_input_tokens": 468939,
+            "cached_input_tokens": 17051392,
+            "cache_write_tokens": null,
+            "output_tokens": 57846,
+            "reasoning_tokens": 27200,
+            "total_provider_tokens": 17578177
+          },
+          "delta_total_provider_tokens": -222311,
+          "delta_percent": -1.264699,
+          "tasks_passed": 3,
+          "tasks_attempted": 3,
+          "treatment_manifest_verified": true,
+          "baseline_manifest_verified": true
+        }
+      ]
+    },
+    {
+      "profile_id": "retrieval-jcodemunch-codex-mcp-v2",
+      "display_name": "jcodemunch v2",
+      "mechanism_family": "retrieval MCP + product guidance",
+      "model_condition_id": "codex-openai-gpt-5-6-luna-xhigh",
+      "replicate_index": 2,
+      "session_count": 3,
+      "treatment_corrected_usage": {
+        "fresh_input_tokens": 835162,
+        "cached_input_tokens": 30611200,
+        "output_tokens": 106062,
+        "reasoning_tokens": 59935,
+        "total_provider_tokens": 31552424
+      },
+      "matched_baseline_corrected_usage": {
+        "fresh_input_tokens": 974380,
+        "cached_input_tokens": 30313472,
+        "output_tokens": 145894,
+        "reasoning_tokens": 66898,
+        "total_provider_tokens": 31433746
+      },
+      "delta_total_provider_tokens": 118678,
+      "delta_percent": 0.37755,
+      "tasks_passed": 8,
+      "tasks_attempted": 9,
+      "all_manifests_verified": true,
+      "lanes": [
+        {
+          "sequence_id": "beets-lifecycle-sequence-v0",
+          "treatment_session_id": "jcodemunch-beets-20260720-p-b440da225a3a-r2",
+          "baseline_session_id": "baseline-beets-20260718-p-b440da225a3a-r2",
+          "treatment_corrected_usage": {
+            "fresh_input_tokens": 212797,
+            "cached_input_tokens": 5209600,
+            "cache_write_tokens": null,
+            "output_tokens": 29773,
+            "reasoning_tokens": 19253,
+            "total_provider_tokens": 5452170
+          },
+          "baseline_corrected_usage": {
+            "fresh_input_tokens": 231792,
+            "cached_input_tokens": 8943616,
+            "cache_write_tokens": null,
+            "output_tokens": 63038,
+            "reasoning_tokens": 28957,
+            "total_provider_tokens": 9238446
+          },
+          "delta_total_provider_tokens": -3786276,
+          "delta_percent": -40.983906,
+          "tasks_passed": 3,
+          "tasks_attempted": 3,
+          "treatment_manifest_verified": true,
+          "baseline_manifest_verified": true
+        },
+        {
+          "sequence_id": "fastify-lifecycle-sequence-v0",
+          "treatment_session_id": "jcodemunch-fastify-20260720-p-769d40697529-r2",
+          "baseline_session_id": "baseline-fastify-20260718-p-769d40697529-r2",
+          "treatment_corrected_usage": {
+            "fresh_input_tokens": 188724,
+            "cached_input_tokens": 4731136,
+            "cache_write_tokens": null,
+            "output_tokens": 21618,
+            "reasoning_tokens": 14181,
+            "total_provider_tokens": 4941478
+          },
+          "baseline_corrected_usage": {
+            "fresh_input_tokens": 273649,
+            "cached_input_tokens": 4318464,
+            "cache_write_tokens": null,
+            "output_tokens": 25010,
+            "reasoning_tokens": 10741,
+            "total_provider_tokens": 4617123
+          },
+          "delta_total_provider_tokens": 324355,
+          "delta_percent": 7.025046,
+          "tasks_passed": 2,
+          "tasks_attempted": 3,
+          "treatment_manifest_verified": true,
+          "baseline_manifest_verified": true
+        },
+        {
+          "sequence_id": "terraform-lifecycle-sequence-v0",
+          "treatment_session_id": "jcodemunch-terraform-20260720-p-ded8609b4172-r2",
+          "baseline_session_id": "baseline-terraform-20260718-p-ded8609b4172-r2",
+          "treatment_corrected_usage": {
+            "fresh_input_tokens": 433641,
+            "cached_input_tokens": 20670464,
+            "cache_write_tokens": null,
+            "output_tokens": 54671,
+            "reasoning_tokens": 26501,
+            "total_provider_tokens": 21158776
+          },
+          "baseline_corrected_usage": {
+            "fresh_input_tokens": 468939,
+            "cached_input_tokens": 17051392,
+            "cache_write_tokens": null,
+            "output_tokens": 57846,
+            "reasoning_tokens": 27200,
+            "total_provider_tokens": 17578177
+          },
+          "delta_total_provider_tokens": 3580599,
+          "delta_percent": 20.36957,
+          "tasks_passed": 3,
+          "tasks_attempted": 3,
+          "treatment_manifest_verified": true,
+          "baseline_manifest_verified": true
+        }
+      ]
+    }
+  ],
+  "quality_diagnostics": [
+    {
+      "profile_id": "headroom-default-codex",
+      "display_name": "Headroom default Codex wrapper",
+      "session_id": "codex-fastify-20260717-p-769d40697529-r1",
+      "sequence_id": "fastify-lifecycle-sequence-v0",
+      "task_id": "fastify-lifecycle-feature-v0",
+      "verifier_exit_code": 1,
+      "diagnostic": "Hidden TypeScript verifier expected FastifyRequest.mediaType to be string | undefined; the implementation exposed string."
+    },
+    {
+      "profile_id": "terminal-headroom",
+      "display_name": "Headroom proxy-only",
+      "session_id": "headroom-fastify-20260717-p-769d40697529-r1",
+      "sequence_id": "fastify-lifecycle-sequence-v0",
+      "task_id": "fastify-lifecycle-feature-v0",
+      "verifier_exit_code": 1,
+      "diagnostic": "Hidden TypeScript verifier expected FastifyRequest.mediaType to be string | undefined; the implementation exposed string."
+    },
+    {
+      "profile_id": "retrieval-jcodemunch-codex-mcp-v2",
+      "display_name": "jcodemunch v2",
+      "session_id": "jcodemunch-fastify-20260720-p-769d40697529-r2",
+      "sequence_id": "fastify-lifecycle-sequence-v0",
+      "task_id": "fastify-lifecycle-feature-v0",
+      "verifier_exit_code": 1,
+      "diagnostic": "Hidden TypeScript verifier expected FastifyRequest.mediaType to be string | undefined; the implementation exposed string."
+    }
+  ],
+  "descriptive_portfolios": {
+    "all_17_matched_assignments": {
+      "treatment_provider_tokens": 582180587,
+      "matched_baseline_provider_tokens": 541295326,
+      "delta_provider_tokens": 40885261,
+      "delta_percent": 7.553226,
+      "tasks_passed": 150,
+      "tasks_attempted": 153,
+      "profiles": 17
+    },
+    "r2_15_profile_panel": {
+      "treatment_provider_tokens": 508041799,
+      "matched_baseline_provider_tokens": 471506190,
+      "delta_provider_tokens": 36535609,
+      "delta_percent": 7.748702,
+      "tasks_passed": 134,
+      "tasks_attempted": 135,
+      "profiles": 15
+    },
+    "r1_headroom_panel": {
+      "treatment_provider_tokens": 74138788,
+      "matched_baseline_provider_tokens": 69789136,
+      "delta_provider_tokens": 4349652,
+      "delta_percent": 6.232563,
+      "tasks_passed": 16,
+      "tasks_attempted": 18,
+      "profiles": 2
+    }
+  },
+  "codegraph_actual_use_receipt": "sources/evaluations/audits/codegraph-provider-actual-use-20260720.json",
+  "exclusion_receipts": [
+    "sources/evaluations/audits/invalid-treatment-result-deletions-20260718.json",
+    "sources/evaluations/audits/unproven-treatment-result-deletions-20260718.json",
+    "sources/evaluations/audits/invalid-codegraph-v1-result-deletion-20260719.json",
+    "sources/evaluations/audits/invalid-jcodemunch-direct-v1-result-deletion-20260719.json",
+    "sources/evaluations/audits/invalid-ponytail-caveman-result-deletion-20260719.json"
+  ]
+}
