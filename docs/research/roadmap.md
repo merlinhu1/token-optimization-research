@@ -32,4 +32,4 @@ Do not rerun occupied natural-use samples to replace unfavorable, high-variance,
 6. Preserve first-valid assignment samples regardless of token direction or verifier outcome.
 7. Preregister any stack as a new identity; valid individual evidence does not revive the deleted historical stack or justify adding individual percentages.
 
-The natural-use and assisted studies answer different questions. Natural use estimates assignment under normal product availability; assisted-v1 estimates token usage while following a frozen implementation and validation recipe. Results must remain separate rather than being pooled as exchangeable replicates.
+The natural-use and assisted studies answer different questions. Natural use estimates assignment under normal product availability; a future assisted-v1 study would estimate token usage while following a frozen implementation and validation recipe. Results must remain separate rather than being pooled as exchangeable replicates.
