@@ -1,0 +1,28 @@
+{
+  "schema_version": 1,
+  "audit_id": "opencode-next-five-transient-retry-receipts-20260730",
+  "date": "2026-07-30",
+  "status": "terraform-retry-required",
+  "incidents": [
+    {
+      "kind": "provider-overload",
+      "matrix_summary_external_path": "/opt/data/eval-workflow-lanes/workflow-matrix-20260730T071621679318Z-p1383935-r1/matrix-summary.json",
+      "failed_lane": "beets-lifecycle-sequence-v0--swarmvault-opencode-product-v1",
+      "evidence": "OpenAI repeatedly returned `Our servers are currently overloaded. Please try again later.` before any provider usage event was accepted.",
+      "accepted": false,
+      "provider_usage_counted": false,
+      "resolution": "A later exact-selector retry succeeded. The first valid Beets SwarmVault and Graphify sessions were retained."
+    },
+    {
+      "kind": "controller-dependency-download",
+      "matrix_summary_external_path": "/opt/data/eval-workflow-lanes/workflow-matrix-20260730T081913708864Z-p1399681-r1/matrix-summary.json",
+      "failed_lane": "terraform-lifecycle-sequence-v0--swarmvault-opencode-product-v1",
+      "rejected_evidence_external_path": "/opt/data/eval-workflow-lanes/workflow-matrix-20260730T081913708864Z-p1399681-r1/terraform-lifecycle-sequence-v0--swarmvault-opencode-product-v1/rejected-evidence/swarmvault-opencode-v1-terraform-20260730-p-5811b463c1e9-r1",
+      "evidence": "Controller `go mod download` failed on proxy.golang.org HTTP/2 INTERNAL_ERROR responses while fetching pinned dependencies. Model execution never started.",
+      "accepted": false,
+      "provider_usage_counted": false,
+      "resolution": "Retry only the two missing Terraform assignments after publishing the accepted Beets sessions."
+    }
+  ],
+  "preservation_policy": "Retain first valid Fastify and Beets samples; never rerun accepted assignments. Retry only missing assignments with the same published protocols, model condition, replicate, and bare OpenCode baseline."
+}
