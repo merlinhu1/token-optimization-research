@@ -2,7 +2,7 @@
   "schema_version": 1,
   "audit_id": "opencode-next-five-transient-retry-receipts-20260730",
   "date": "2026-07-30",
-  "status": "terraform-retry-required",
+  "status": "blocked-provider-capacity",
   "incidents": [
     {
       "kind": "provider-overload",
@@ -21,8 +21,24 @@
       "evidence": "Controller `go mod download` failed on proxy.golang.org HTTP/2 INTERNAL_ERROR responses while fetching pinned dependencies. Model execution never started.",
       "accepted": false,
       "provider_usage_counted": false,
-      "resolution": "Retry only the two missing Terraform assignments after publishing the accepted Beets sessions."
+      "resolution": "A provider-free exact-tree preparation with `GODEBUG=http2client=0` subsequently passed, including native install, artifact hashes, MCP initialize, tools/list, and warmup."
+    },
+    {
+      "kind": "provider-overload-after-http1-preflight",
+      "matrix_run_external_path": "/opt/data/eval-workflow-lanes/workflow-matrix-20260730T101911602511Z-p1451900-r1",
+      "failed_lane": "terraform-lifecycle-sequence-v0--swarmvault-opencode-product-v1",
+      "evidence": "The HTTP/1 dependency transport completed successfully, but OpenAI returned overload responses on every model attempt from 2026-07-30T10:25:59Z through 2026-07-30T11:00:17Z. Task 1 produced an empty event stream and no provider usage event.",
+      "artifact_hashes": {
+        "setup-deps-output.txt": "3cb474ce01882bab8470dcac0f052845a8de32d53d9dfdd99fd8aae07ac48a79",
+        "tool-preflight.txt": "42ddf0a2a395f357f855830b9a257abdba0932f11e2239631f564c98d14def66",
+        "task-01-codex-events.jsonl": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "opencode.log": "a71aa7774197db7c7c65e1f8e90e5b48486d6f09697f65fc1c05003f779e7709"
+      },
+      "preservation_result": "The matrix rejected bounded copying because the incomplete run directory contained nested runtime state, retained the complete checkout, and exited fail-closed. No canonical or rejected session was registered.",
+      "accepted": false,
+      "provider_usage_counted": false,
+      "cleanup": "The 3.0 GB retained matrix directory is deleted after this receipt is committed because it contains no provider usage event and is outside the authoritative corpus."
     }
   ],
-  "preservation_policy": "Retain first valid Fastify and Beets samples; never rerun accepted assignments. Retry only missing assignments with the same published protocols, model condition, replicate, and bare OpenCode baseline."
+  "preservation_policy": "Retain first valid Fastify and Beets samples; never rerun accepted assignments. Retry only missing assignments with the same published protocols, model condition, replicate, and bare OpenCode baseline. Do not launch another paid retry until provider capacity has recovered."
 }
