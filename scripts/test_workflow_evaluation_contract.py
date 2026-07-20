@@ -2688,7 +2688,23 @@ class CorrectionContractTest(unittest.TestCase):
         sessions = json.loads((ROOT / "data/workflow-sessions.json").read_text())["sessions"]
         deleted_ids = {sid for row in deletion["profiles"] for sid in row["deleted_session_ids"]}
         deleted_protocols = {path for row in deletion["profiles"] for path in row["deleted_protocol_paths"]}
-        self.assertTrue(deleted_ids.isdisjoint({session["session_id"] for session in sessions}))
+        current_qualification = {
+            (lane["sequence_id"], lane["protocol_path"], lane["protocol_sha256"])
+            for lane in qualification["lanes"]
+        }
+        for session in sessions:
+            if session["session_id"] not in deleted_ids:
+                continue
+            self.assertEqual(session["profile"]["profile_id"], "retrieval-codegraph-codex-mcp-v1")
+            self.assertNotIn(session["frozen_protocol"]["path"], deleted_protocols)
+            self.assertIn(
+                (
+                    session["task_sequence"]["sequence_id"],
+                    session["frozen_protocol"]["path"],
+                    session["frozen_protocol"]["sha256"],
+                ),
+                current_qualification,
+            )
         self.assertEqual(qualification["profiles"], ["retrieval-codegraph-codex-mcp-v1"])
         self.assertTrue(deleted_protocols.isdisjoint({lane["protocol_path"] for lane in qualification["lanes"]}))
         runner.assert_profile_runnable("retrieval-codegraph-codex-mcp-v1")
