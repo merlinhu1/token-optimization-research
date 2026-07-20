@@ -9,6 +9,9 @@ from pathlib import Path
 from typing import Any
 
 ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(ROOT / "scripts"))
+import run_codex_workflow_evaluation as workflow  # type: ignore
+
 RUNBOOK = ROOT / "docs" / "evaluations" / "operations" / "runbook.md"
 SEQUENCES = ROOT / "data" / "workflow-task-sequences.json"
 FIXTURES = ROOT / "data" / "repository-fixtures.json"
@@ -121,25 +124,39 @@ def render() -> str:
         if profile.get("status") == "screening-shortlist"
     )
     runnable_profile_text = ", ".join(f"`{profile_id}`" for profile_id in runnable_profiles) or "_None_"
+    current_default_pool_fingerprints = {
+        sequence["id"]: workflow.baseline_protocol_fingerprint(sequence)
+        for sequence in sequences
+    }
     reusable_baseline_replicates: dict[str, list[int]] = {}
-    model_comparison_baseline_replicates: dict[tuple[str, str], list[int]] = {}
+    historical_default_baseline_replicates: dict[tuple[str, str], list[int]] = {}
+    model_comparison_baseline_replicates: dict[tuple[str, str, str], list[int]] = {}
     for session in session_records:
         sequence_id = session.get("task_sequence", {}).get("sequence_id")
         replicate_index = session.get("replicate_index")
         condition_id = session.get("agent", {}).get("model_condition_id")
+        pool_fingerprint = session.get("baseline_pool", {}).get("protocol_fingerprint")
         if (
             isinstance(sequence_id, str)
             and isinstance(replicate_index, int)
             and isinstance(condition_id, str)
+            and isinstance(pool_fingerprint, str)
             and session.get("status") == "completed"
             and session.get("session_role") == "baseline"
             and session.get("interpretation", {}).get("accepted_for_objective") is True
         ):
-            if condition_id == active_default_condition_id:
+            if (
+                condition_id == active_default_condition_id
+                and pool_fingerprint == current_default_pool_fingerprints.get(sequence_id)
+            ):
                 reusable_baseline_replicates.setdefault(sequence_id, []).append(replicate_index)
+            elif condition_id == active_default_condition_id:
+                historical_default_baseline_replicates.setdefault(
+                    (sequence_id, pool_fingerprint), []
+                ).append(replicate_index)
             else:
                 model_comparison_baseline_replicates.setdefault(
-                    (sequence_id, condition_id), []
+                    (sequence_id, condition_id, pool_fingerprint), []
                 ).append(replicate_index)
     reusable_baseline_sequences = set(reusable_baseline_replicates)
     pending_baselines = [
@@ -180,11 +197,23 @@ def render() -> str:
                 "python3 scripts/run_sequential_workflow_matrix.py \"$SEQUENCE_ID\" --treatment-profile \"$PROFILE_ID\"\n"
                 "```"
             )
+        if historical_default_baseline_replicates:
+            historical_ids = ", ".join(
+                f"`{sequence_id}` pool `{pool_fingerprint}` "
+                f"({', '.join(f'r{index}' for index in sorted(set(replicates)))})"
+                for (sequence_id, pool_fingerprint), replicates in sorted(
+                    historical_default_baseline_replicates.items()
+                )
+            )
+            chunks.append(
+                "Earlier active-default baseline pools are retained but are not reusable for the current contract generation: "
+                f"{historical_ids}."
+            )
         if model_comparison_baseline_replicates:
             comparison_ids = ", ".join(
-                f"`{sequence_id}` under `{condition_id}` "
+                f"`{sequence_id}` under `{condition_id}` pool `{pool_fingerprint}` "
                 f"({', '.join(f'r{index}' for index in sorted(set(replicates)))})"
-                for (sequence_id, condition_id), replicates in sorted(
+                for (sequence_id, condition_id, pool_fingerprint), replicates in sorted(
                     model_comparison_baseline_replicates.items()
                 )
             )

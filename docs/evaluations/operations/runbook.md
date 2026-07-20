@@ -54,15 +54,20 @@ python3 scripts/run_sequential_workflow_matrix.py --prepare-only "$SEQUENCE_ID"
 
 Current runnable treatment profiles: `artifact-ponytail-codex-plugin-v1`, `behavior-caveman-codex-skill-v1`, `codescope-codex-product-v1`, `headroom-default-codex`, `integrated-leanctx-codex-hybrid-v1`, `integrated-token-savior-codex-product-v2`, `retrieval-cartog-codex-product-v2`, `retrieval-codegraph-codex-mcp-v1`, `retrieval-graphify-codex-skill-v1`, `retrieval-jcodemunch-codex-mcp-v2`, `retrieval-serena-codex-mcp-v1`, `retrieval-sigmap-codex-live-v1`, `swarmvault-codex-product-v1`, `terminal-rtk-codex-instructions-v1`, `terminal-snip-codex-hook-v1`, `terminal-tokenjuice-codex-hook-v1`. Historical profiles marked `historical-profile` are occupied evidence identities and cannot be rerun in place.
 
-Reusable baselines already exist for `fastify-lifecycle-sequence-v0` (r0, r1, r2, r3), `beets-lifecycle-sequence-v0` (r0, r1, r2, r3), `terraform-lifecycle-sequence-v0` (r0, r1, r2, r3). Do not rerun them. Choose one compatible treatment profile and one intended lane:
+Prepare and run only lanes that do not yet have a reusable operational baseline:
 
 ```bash
-SEQUENCE_ID=replace-with-one-active-sequence-id
-PROFILE_ID=replace-with-compatible-profile-id
-python3 scripts/run_sequential_workflow_matrix.py "$SEQUENCE_ID" --treatment-profile "$PROFILE_ID"
+python3 scripts/run_sequential_workflow_matrix.py fastify-lifecycle-sequence-v0 --prepare-only
+python3 scripts/run_sequential_workflow_matrix.py beets-lifecycle-sequence-v0 --prepare-only
+python3 scripts/run_sequential_workflow_matrix.py terraform-lifecycle-sequence-v0 --prepare-only
+python3 scripts/run_sequential_workflow_matrix.py fastify-lifecycle-sequence-v0
+python3 scripts/run_sequential_workflow_matrix.py beets-lifecycle-sequence-v0
+python3 scripts/run_sequential_workflow_matrix.py terraform-lifecycle-sequence-v0
 ```
 
-Non-default model-comparison baselines are tracked separately: `beets-lifecycle-sequence-v0` under `codex-openai-gpt-5-6-sol-high` (r0, r1, r2), `fastify-lifecycle-sequence-v0` under `codex-openai-gpt-5-6-sol-high` (r0, r1, r2), `terraform-lifecycle-sequence-v0` under `codex-openai-gpt-5-6-sol-high` (r0, r1, r2). They do not satisfy active-default baseline requirements or define treatment-pair reuse.
+Earlier active-default baseline pools are retained but are not reusable for the current contract generation: `beets-lifecycle-sequence-v0` pool `b440da225a3a` (r0, r1, r2, r3), `fastify-lifecycle-sequence-v0` pool `769d40697529` (r0, r1, r2, r3), `terraform-lifecycle-sequence-v0` pool `ded8609b4172` (r0, r1, r2, r3).
+
+Non-default model-comparison baselines are tracked separately: `beets-lifecycle-sequence-v0` under `codex-openai-gpt-5-6-sol-high` pool `8a88427b8c16` (r0), `beets-lifecycle-sequence-v0` under `codex-openai-gpt-5-6-sol-high` pool `be9d43b94b02` (r0, r1, r2), `fastify-lifecycle-sequence-v0` under `codex-openai-gpt-5-6-sol-high` pool `bd9fd65385d9` (r0, r1, r2), `fastify-lifecycle-sequence-v0` under `codex-openai-gpt-5-6-sol-high` pool `e3f3816c31d8` (r0), `terraform-lifecycle-sequence-v0` under `codex-openai-gpt-5-6-sol-high` pool `6dbcb1227f80` (r0), `terraform-lifecycle-sequence-v0` under `codex-openai-gpt-5-6-sol-high` pool `ca21cbff5ed5` (r0, r1, r2). They do not satisfy active-default baseline requirements or define treatment-pair reuse.
 
 Retain the first operationally valid provider sample for each protocol and replicate. Stop only when a sample is fixture-invalid or operationally incomplete; verifier and review outcomes are diagnostic.
 
