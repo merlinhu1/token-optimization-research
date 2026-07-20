@@ -4,6 +4,7 @@ This directory contains completed research syntheses. These are the documents to
 
 | Paper | Status | Scope |
 |---|---|---|
+| [Luna/`xhigh` r3 Natural-Use Replication Screen](luna-xhigh-r3-natural-use-replication-screen.md) | Current replication screen | Seven frozen profiles against three fresh bare-Codex baselines; provider tokens, lane contrasts, r2 direction changes, and verifier diagnostics |
 | [GPT-5.6 Sol/High Persistent-Baseline Variance Screen](gpt-5-6-sol-high-baseline-variance-screen.md) | Current corrected descriptive model-condition screen | Three persistent baseline replicates per lane; source-backed cumulative-thread accounting, token volume, components, trajectories, and variance versus retained Luna/`xhigh` evidence |
 | [Official Integration Parity Audit](official-integration-parity-audit.md) | Current validity authority | Exact pinned Codex integration audit and session/comparison disposition |
 | [Phase 3: TokenJuice + jcodemunch MCP Stack Screen](phase-3-tokenjuice-jcodemunch-stack-screen.md) | Withdrawn product-effect and legacy-accounting screen | Historical arithmetic only; superseded treatment validity and cumulative-thread accounting |

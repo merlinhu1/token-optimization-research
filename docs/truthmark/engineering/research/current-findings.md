@@ -1,7 +1,7 @@
 ---
 status: active
 truth_kind: engineering-behavior
-last_reviewed: 2026-07-19
+last_reviewed: 2026-07-20
 ---
 
 # Current Findings
@@ -19,7 +19,7 @@ This document covers the active lifecycle-v0 portfolio, retained production base
 - The runnable portfolio contains exactly three lifecycle-v0 sequences: Fastify, Beets, and Terraform.
 - Every sequence contains feature implementation, behavior-preserving refactor, and code review/correction in that order.
 - Each lane uses a composite preseeded start, sequential prompt disclosure, persistent agent/tool state, controller-only acceptance, and final-only cumulative verification.
-- Codex 0.144.0 emits cumulative `ThreadTokenUsage.total` snapshots in every resumed `turn.completed.usage` event. The legacy extractor summed those snapshots, so all 30 retained persistent sessions carry inflated legacy totals in their immutable compact summaries and registry records. The source-backed correction audit preserves those artifacts and supplies authoritative final-per-thread session totals plus differenced per-task increments.
+- Codex 0.144.0 emits cumulative `ThreadTokenUsage.total` snapshots in every resumed `turn.completed.usage` event. The legacy extractor summed those snapshots, so the original 30 retained persistent sessions carry inflated legacy totals in their immutable compact summaries and registry records. The source-backed correction audit supplies authoritative final-per-thread totals for those records; later sessions were recorded with corrected accounting at ingestion.
 - Fastify contributes three retained Luna/`xhigh` active-default baseline token samples after correction: 6,420,074 tokens at `r0`, 6,712,770 at `r1`, and 4,617,123 at `r2`. All passed 3/3 verifier tasks; review fields remain diagnostic.
 - Invalid fixture records and stale protocols were removed at the experiment owner's explicit direction.
 - Beets contributes three corrected retained Luna/`xhigh` samples: 12,244,729 tokens at `r0`, 8,728,732 at `r1`, and 9,238,446 at `r2`. All passed 3/3 verifier tasks; full-suite and review findings remain diagnostic.
@@ -29,7 +29,7 @@ This document covers the active lifecycle-v0 portfolio, retained production base
 - A separate GPT-5.6 Sol/`high` model-comparison panel contributes nine valid baseline sessions and 68,275,315 corrected provider tokens. Every session passed 3/3 tasks and final verification with zero operational retries; all compact-artifact manifests passed. A recursive diagnostics audit nevertheless found raw stderr/non-object lines in retained Codex event JSONL streams, so checksum integrity must not be read as strict nested parseability.
 - Sol/`high` used 32.30% fewer pooled corrected provider tokens than the retained Luna/`xhigh` panel, and every sequence/replicate cell was lower. This is a descriptive compound-condition contrast, not a model-only causal estimate: effort changed from `xhigh` to `high`, and six of nine pairs froze a different fixture-runner hash.
 - The corrected Sol variance result is mixed: Fastify CV decreased from 19.18% to 6.86% and Beets from 18.87% to 14.98%, while Terraform increased from 10.18% to 21.70% and the three-lane portfolio increased from 5.66% to 16.29%. Terraform Sol/`high` r0 is a valid 15,526,000-token high-trajectory sample; its legacy 31,471,786 value was cumulative-snapshot double counting.
-- The official-integration parity audit covers all 18 historical treatment profiles and all 54 historical treatment sessions. At the experiment owner's direction, 48 corrupted historical sessions and their active comparisons, compact bundles, and occupied protocols were deleted under receipt rather than relabelled as baseline. After the corrected runs closed, the active registry contains 69 accepted records: 18 controls and 51 eligible individual-tool treatments.
+- The official-integration parity audit covers all 18 historical treatment profiles and all 54 historical treatment sessions. At the experiment owner's direction, 48 corrupted historical sessions and their active comparisons, compact bundles, and occupied protocols were deleted under receipt rather than relabelled as baseline. After the corrected runs and r3 replication closed, the active registry contains 93 accepted records: 21 controls and 72 eligible individual-tool treatments.
 - Two three-lane historical conditions retain objective eligibility: default Headroom as the pinned Codex wrapper treatment and the Headroom proxy-only ablation.
 - Default Headroom used 38,075,992 corrected tokens (+9.12%) with 8/9 verifier tasks; its proxy-only ablation used 36,062,796 (+3.35%) with 8/9 verifier tasks. The ablation is not a separate full-product ranking entry.
 - TokenJuice, RTK, snip, Graphify, CodeGraph v1, Lean Context, Ponytail prompt-only, and Caveman prompt-emulated lanes were invalid historical product treatments because the runner omitted required Codex hook/rules/skill/index/hybrid surfaces or otherwise materially changed the product setup.
@@ -40,8 +40,11 @@ This document covers the active lifecycle-v0 portfolio, retained production base
 - Ponytail and Caveman's six historical results were deleted on 2026-07-19 because they measured evaluator-injected prompt emulations rather than the authors' documented Codex products. Their clean successors are `artifact-ponytail-codex-plugin-v1` (official Codex plugin plus reviewed trusted lifecycle hooks) and `behavior-caveman-codex-skill-v1` (native skill installation plus documented `/caveman` session activation). Their first valid provider samples retained 26,087,938 and 39,731,333 tokens respectively, each with 9/9 task verifiers.
 - Corrected provider-backed sessions are retained for TokenJuice (24,429,098 tokens), RTK (30,835,034), Snip (32,129,378), and Graphify (51,520,635). Each profile passed 9/9 task verifiers. Deleted invalid results are not incorporated into product-effect claims.
 - The corrected 11-profile Luna/`xhigh` campaign retained 369,127,654 provider tokens against a corrected 11-assignment baseline total of 345,771,206, a descriptive 6.75% increase. The previously published 46.53% reduction was invalid because it reused legacy baseline totals that summed cumulative thread snapshots. The campaign passed 98/99 task verifiers; the only quality diagnostic was jcodemunch Fastify feature task's `FastifyRequest.mediaType` type mismatch. Quality remains diagnostic and did not trigger pass selection or provider reruns.
-- Across all 17 current individual-tool conditions, treatments retained 582,180,587 corrected provider tokens against 541,295,326 repeated matched-baseline tokens, a descriptive 7.55% increase, with 150/153 task verifiers. Five conditions were lower in aggregate; only TokenJuice (-22.28%) and SigMap (-9.60%) were lower on every evaluated lane. These are one-sample screening observations, not stable rankings.
-- The original 39-lane qualification receipt remains evidence only for its exact 2026-07-18 protocol hashes and does not rescue subsequently invalid treatments. The final shared-runner refresh covers all 45 current selectable lanes across 15 profiles with protocol-hash-bound provider-free preparation, host-integration, warm-state, concealment, and required MCP handshake gates. All 45 passed with zero provider calls; 33 pre-existing lanes, three separately qualified CodeGraph lanes, six Ponytail/Caveman lanes, and three jcodemunch v2 lanes have separate receipts bound to their exact profile sets and protocol hashes.
+- Across all 17 current individual-tool conditions, the corrected first natural-use screen retained 582,180,587 treatment tokens against 541,295,326 repeated matched-baseline tokens, a descriptive 7.55% increase, with 150/153 task verifiers. Five conditions were lower in aggregate; only TokenJuice (-22.28%) and SigMap (-9.60%) were lower on every evaluated lane. These are one-sample screening observations, not stable rankings.
+- A prospective r3 natural-use replication retained three fresh bare-Codex baselines and 21 first-valid treatment sessions across TokenJuice, SigMap, Ponytail, RTK, Cartog, CodeGraph, and jcodemunch-mcp v2. The seven profiles used 257,591,572 provider tokens against 236,364,772 repeated matched-baseline tokens (+8.98%) with 62/63 treatment verifiers. jcodemunch-mcp v2 (-9.93%) and Ponytail (-1.29%) were below baseline; the other five profiles ranged from +0.32% to +29.29%.
+- Five of seven profile-level directions changed between the preceding screen and r3. No stable product ranking is supported. The r3 evidence used the original natural-use prompt generation; assisted-v1 contracts were activated only after every r3 provider session completed and do not reinterpret those sessions.
+- The new assisted-v1 contracts disclose target files, implementation recipes, focused validation commands, environment limits, and stop conditions under new prompt and qualification hashes. All 24 baseline/treatment protocol lanes passed provider-free preparation with zero provider calls. They define a separate standardized-workflow estimand intended to reduce irrelevant trajectory variance.
+- The original 39-lane qualification receipt remains evidence only for its exact 2026-07-18 protocol hashes and does not rescue subsequently invalid treatments. The final shared-runner refresh covers all 45 current selectable natural-use lanes across 15 profiles with protocol-hash-bound provider-free preparation, host-integration, warm-state, concealment, and required MCP handshake gates. All 45 passed with zero provider calls; 33 pre-existing lanes, three separately qualified CodeGraph lanes, six Ponytail/Caveman lanes, and three jcodemunch v2 lanes have separate receipts bound to their exact profile sets and protocol hashes.
 
 ## Evidence Boundary
 
@@ -75,6 +78,8 @@ A prior artifact-packaging audit found that the now-deleted historical Graphify 
 - ../../../../sources/evaluations/audits/codegraph-provider-actual-use-20260720.json
 - ../../../../sources/evaluations/audits/corrected-luna-xhigh-r2-campaign-20260720.json
 - ../../../../sources/evaluations/audits/phase-2-corrected-analysis-20260720.json
+- ../../../../sources/evaluations/audits/luna-xhigh-r3-replication-screen-20260720.json
+- ../../../../sources/evaluations/audits/assisted-v1-protocol-qualification-20260720.json
 - ../../../../sources/evaluations/audits/invalid-jcodemunch-direct-v1-result-deletion-20260719.json
 - ../../../../sources/evaluations/audits/corrected-integration-qualification-jcodemunch-codex-mcp-v2-20260719.json
 - ../../../../sources/evaluations/audits/codex-cumulative-usage-accounting-20260718.json
@@ -84,4 +89,5 @@ A prior artifact-packaging audit found that the now-deleted historical Graphify 
 - ../../../../docs/evaluations/operations/runbook.md
 - ../../../../docs/papers/gpt-5-6-sol-high-baseline-variance-screen.md
 - ../../../../docs/papers/phase-2-lifecycle-v0-natural-use-screening.md
+- ../../../../docs/papers/luna-xhigh-r3-natural-use-replication-screen.md
 - ../../../../docs/papers/phase-3-tokenjuice-jcodemunch-stack-screen.md
