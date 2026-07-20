@@ -1160,7 +1160,7 @@ for line in sys.stdin:
                 "baseline-bare-codex",
             )
 
-    def test_active_protocol_remains_discoverable_after_execution(self) -> None:
+    def test_current_treatment_protocol_remains_discoverable_for_later_replicate(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
             (root / "data").mkdir()
@@ -1179,7 +1179,11 @@ for line in sys.stdin:
                 json.dumps(
                     {
                         "sessions": [
-                            {"frozen_protocol": {"path": protocol_rel}}
+                            {
+                                "status": "completed",
+                                "interpretation": {"accepted_for_execution": True},
+                                "frozen_protocol": {"path": protocol_rel},
+                            }
                         ]
                     }
                 )
@@ -1196,7 +1200,7 @@ for line in sys.stdin:
                 },
                 "selected_execution": {
                     "descriptor": {
-                        "selected_profile": {"profile_id": "baseline-bare-codex"}
+                        "selected_profile": {"profile_id": "unit-treatment"}
                     },
                     "descriptor_sha256": "unit-exec-hash",
                 },
@@ -1218,7 +1222,7 @@ for line in sys.stdin:
                     "execution_condition_descriptor",
                     return_value={
                         "selected_profile": {
-                            "profile_id": "baseline-bare-codex"
+                            "profile_id": "unit-treatment"
                         }
                     },
                 ),
@@ -1232,7 +1236,7 @@ for line in sys.stdin:
                     matrix.find_protocol(
                         root,
                         "unit-sequence",
-                        "baseline-bare-codex",
+                        "unit-treatment",
                     ),
                     root / protocol_rel,
                 )
