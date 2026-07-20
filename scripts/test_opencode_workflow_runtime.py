@@ -137,6 +137,8 @@ class OpenCodeWorkflowAdapterTest(unittest.TestCase):
         self.assertTrue(any("swarmvault-graph-first.js" in path for path in configs["swarmvault"]["plugin"]))
         self.assertTrue(any("graphify.js" in path for path in configs["graphify"]["plugin"]))
         self.assertEqual(envs["graphify"]["OPENCODE_DISABLE_EXTERNAL_SKILLS"], "0")
+        self.assertEqual(configs["swarmvault"]["permission"]["skill"], "allow")
+        self.assertEqual(configs["graphify"]["permission"]["skill"], "allow")
         self.assertTrue(any(path.endswith("/plugins/rtk.ts") for path in configs["rtk"]["plugin"]))
 
     def test_plugin_treatments_drop_pure_and_headroom_wraps_native_command(self) -> None:

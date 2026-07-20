@@ -614,7 +614,7 @@ def _runtime_env(
             "webfetch": "deny",
             "websearch": "deny",
             "task": "deny",
-            "skill": "deny",
+            "skill": "allow" if treatment in {"swarmvault", "graphify"} else "deny",
             "lsp": "deny",
             "question": "deny",
             "external_directory": "deny",
