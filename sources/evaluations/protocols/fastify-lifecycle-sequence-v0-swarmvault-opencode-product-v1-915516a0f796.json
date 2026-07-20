@@ -1,6 +1,6 @@
 {
   "protocol_schema_version": 3,
-  "protocol_id": "fastify-lifecycle-sequence-v0-swarmvault-opencode-product-v1-59a6f040dacb",
+  "protocol_id": "fastify-lifecycle-sequence-v0-swarmvault-opencode-product-v1-915516a0f796",
   "status": "frozen-ready-not-run",
   "outcome": "Frozen swarmvault-opencode-product-v1 protocol for fastify-lifecycle-sequence-v0; no provider/model run has occurred.",
   "frozen_at": "2026-07-22",
@@ -41,7 +41,7 @@
     "model": "gpt-5.6-sol",
     "model_condition_id": "opencode-openai-gpt-5-6-sol-high",
     "reasoning_effort": "high",
-    "command": "python3 scripts/run_opencode_workflow_model_condition.py --workflow-model-condition-id opencode-openai-gpt-5-6-sol-high --workflow-model gpt-5.6-sol --workflow-reasoning-effort high --sequence-id fastify-lifecycle-sequence-v0 --profile-id swarmvault-opencode-product-v1 --timeout-per-task 3600 --protocol sources/evaluations/protocols/fastify-lifecycle-sequence-v0-swarmvault-opencode-product-v1-59a6f040dacb.json --docker-image token-eval-codex:latest"
+    "command": "python3 scripts/run_opencode_workflow_model_condition.py --workflow-model-condition-id opencode-openai-gpt-5-6-sol-high --workflow-model gpt-5.6-sol --workflow-reasoning-effort high --sequence-id fastify-lifecycle-sequence-v0 --profile-id swarmvault-opencode-product-v1 --timeout-per-task 3600 --protocol sources/evaluations/protocols/fastify-lifecycle-sequence-v0-swarmvault-opencode-product-v1-915516a0f796.json --docker-image token-eval-codex:latest"
   },
   "token_accounting_boundary": {
     "fields": [
@@ -243,7 +243,7 @@
     }
   },
   "selected_execution": {
-    "descriptor_sha256": "149af6ba0be27e789c8c9fe8a3bb0def89a8462d90d69e04dca70f150f1c6f4a",
+    "descriptor_sha256": "84e1aea82e3a9eb5c4bfecd637aa33ba37c237b53103a714aef09d9f4fa53a24",
     "descriptor": {
       "version": "execution-condition-v1",
       "sequence_id": "fastify-lifecycle-sequence-v0",
@@ -265,7 +265,7 @@
         "disabled_overlaps": [
           "all unlisted surfaces"
         ],
-        "registry_entry_sha256": "ddc7c52605081451e6b2d7d4bbe5075d10a75e30979e3d29abc667d720dfbbb2",
+        "registry_entry_sha256": "78865fc9eb93b38583b5a315dbd010f19f9a6f07a22e50f9c1e3321c45a2d9d6",
         "registry_entry": {
           "profile_type": "individual_tool",
           "objective_scope": "individual_tool_effectiveness",
@@ -316,10 +316,10 @@
             "repository": "SwarmVaultAI/swarmvault",
             "commit": "4ce0c7cb545c669f3cd35fc6d0300c6b088a52ea",
             "version": "3.20.0",
-            "runtime_adapter": "/opt/data/tool-candidates/opencode-adapter-v4/opencode_workflow_adapter.py",
-            "runtime_adapter_sha256": "e3c6e77fc22ae12a6548ee3ad92836d58c2db411ceae7c3743c370c469e6bbf7"
+            "runtime_adapter": "/opt/data/tool-candidates/opencode-adapter-v5/opencode_workflow_adapter.py",
+            "runtime_adapter_sha256": "4fe90a1a85dfe47db5f5637c4cfdb07c89384b598d2c274ed0af080f3ae42352"
           },
-          "notes": "Successive OpenCode screen selected from the live compatible shortlist; all official OpenCode surfaces are active."
+          "notes": "Successive OpenCode screen selected from the live compatible shortlist; all official OpenCode surfaces are active. Corrected before accepted execution to enable only the assigned project skill in the isolated OpenCode permission map; the prior skill-disabled generation was deleted as invalid."
         }
       },
       "model_facing_prompts": {
@@ -346,7 +346,7 @@
       "tool_adapter": {
         "tool_id": "swarmvault-opencode-product-v1",
         "tool_manifest": "scripts/run_codex_fixture_evaluation.py:TOOL_CONFIGS",
-        "tool_manifest_sha256": "b0075f3dfb1235019348e8c4f862d6025ac24d2c58025320d92b535540d4b251",
+        "tool_manifest_sha256": "9fa2867ee06719ad1866ca73fb2ed79501ccb7321ab108061afcb47593c2035a",
         "tool_config": {
           "display_name": "SwarmVault official OpenCode rules, skill, hook, and MCP v1",
           "lane_name": "swarmvault-opencode-product-v1",
@@ -357,7 +357,7 @@
           ],
           "data_dir_name": "swarmvault-opencode-product-v1",
           "mounts": [
-            "/opt/data/tool-candidates/opencode-adapter-v4/opencode_workflow_adapter.py",
+            "/opt/data/tool-candidates/opencode-adapter-v5/opencode_workflow_adapter.py",
             "/opt/data/tool-candidates/swarmvault"
           ],
           "executable": "/opt/data/tool-candidates/opencode-runtime/node_modules/opencode-ai/bin/opencode.exe",
@@ -366,7 +366,7 @@
           "codex_wrapper": {
             "command": "/usr/bin/python3",
             "args": [
-              "/opt/data/tool-candidates/opencode-adapter-v4/opencode_workflow_adapter.py",
+              "/opt/data/tool-candidates/opencode-adapter-v5/opencode_workflow_adapter.py",
               "--opencode-binary",
               "/opt/data/tool-candidates/opencode-runtime/node_modules/opencode-ai/bin/opencode.exe",
               "--expected-opencode-sha256",
@@ -377,7 +377,7 @@
           },
           "preflight_command": [
             "/usr/bin/python3",
-            "/opt/data/tool-candidates/opencode-adapter-v4/opencode_workflow_adapter.py",
+            "/opt/data/tool-candidates/opencode-adapter-v5/opencode_workflow_adapter.py",
             "--opencode-binary",
             "/opt/data/tool-candidates/opencode-runtime/node_modules/opencode-ai/bin/opencode.exe",
             "--expected-opencode-sha256",
@@ -451,8 +451,8 @@
               "kind": "native-plugin-source"
             },
             {
-              "path": "/opt/data/tool-candidates/opencode-adapter-v4/opencode_workflow_adapter.py",
-              "sha256": "e3c6e77fc22ae12a6548ee3ad92836d58c2db411ceae7c3743c370c469e6bbf7",
+              "path": "/opt/data/tool-candidates/opencode-adapter-v5/opencode_workflow_adapter.py",
+              "sha256": "4fe90a1a85dfe47db5f5637c4cfdb07c89384b598d2c274ed0af080f3ae42352",
               "kind": "runtime-adapter"
             }
           ],
@@ -481,7 +481,7 @@
           ],
           "default_tool_state": "warm-index+active-native-plugin-and-skill"
         },
-        "tool_config_sha256": "d88f662f1860c4be715c55172fe8176f60343c028b1c19f2b84adb228237c1d1",
+        "tool_config_sha256": "1b5f3566de1ce335f37d69deacd8ea5902db5253999f0dd5911e87763945210b",
         "tool_state": "warm-index+active-native-plugin-and-skill",
         "tool_use_policy": "natural",
         "command_identity": {
@@ -518,10 +518,10 @@
         },
         "source_identity": [
           {
-            "path": "/opt/data/tool-candidates/opencode-adapter-v4/opencode_workflow_adapter.py",
+            "path": "/opt/data/tool-candidates/opencode-adapter-v5/opencode_workflow_adapter.py",
             "exists": true,
             "kind": "file",
-            "sha256": "e3c6e77fc22ae12a6548ee3ad92836d58c2db411ceae7c3743c370c469e6bbf7"
+            "sha256": "4fe90a1a85dfe47db5f5637c4cfdb07c89384b598d2c274ed0af080f3ae42352"
           },
           {
             "path": "/opt/data/tool-candidates/swarmvault",
@@ -547,7 +547,7 @@
         "dockerfile_path": "sources/evaluations/fixtures/container/Dockerfile",
         "dockerfile_sha256": "47c91967ce25014ce54879514f51d2ff0326651be1087209115eff4d358226b3",
         "fixture_runner_path": "scripts/run_codex_fixture_evaluation.py",
-        "fixture_runner_sha256": "b0075f3dfb1235019348e8c4f862d6025ac24d2c58025320d92b535540d4b251",
+        "fixture_runner_sha256": "9fa2867ee06719ad1866ca73fb2ed79501ccb7321ab108061afcb47593c2035a",
         "mcp_probe_path": "scripts/probe_mcp_stdio.py",
         "mcp_probe_sha256": "7c06ea36ee5cac933a97140b84a41405fc99b45152388e8d7c6659136af698fd",
         "codex_entrypoint_path": "sources/evaluations/fixtures/container/codex-entrypoint.sh",

@@ -1,6 +1,6 @@
 {
   "protocol_schema_version": 3,
-  "protocol_id": "terraform-lifecycle-sequence-v0-retrieval-graphify-opencode-product-v1-197dde2abd66",
+  "protocol_id": "terraform-lifecycle-sequence-v0-retrieval-graphify-opencode-product-v1-7a3b5bc32a63",
   "status": "frozen-ready-not-run",
   "outcome": "Frozen retrieval-graphify-opencode-product-v1 protocol for terraform-lifecycle-sequence-v0; no provider/model run has occurred.",
   "frozen_at": "2026-07-22",
@@ -41,7 +41,7 @@
     "model": "gpt-5.6-sol",
     "model_condition_id": "opencode-openai-gpt-5-6-sol-high",
     "reasoning_effort": "high",
-    "command": "python3 scripts/run_opencode_workflow_model_condition.py --workflow-model-condition-id opencode-openai-gpt-5-6-sol-high --workflow-model gpt-5.6-sol --workflow-reasoning-effort high --sequence-id terraform-lifecycle-sequence-v0 --profile-id retrieval-graphify-opencode-product-v1 --timeout-per-task 3600 --protocol sources/evaluations/protocols/terraform-lifecycle-sequence-v0-retrieval-graphify-opencode-product-v1-197dde2abd66.json --docker-image token-eval-codex:latest"
+    "command": "python3 scripts/run_opencode_workflow_model_condition.py --workflow-model-condition-id opencode-openai-gpt-5-6-sol-high --workflow-model gpt-5.6-sol --workflow-reasoning-effort high --sequence-id terraform-lifecycle-sequence-v0 --profile-id retrieval-graphify-opencode-product-v1 --timeout-per-task 3600 --protocol sources/evaluations/protocols/terraform-lifecycle-sequence-v0-retrieval-graphify-opencode-product-v1-7a3b5bc32a63.json --docker-image token-eval-codex:latest"
   },
   "token_accounting_boundary": {
     "fields": [
@@ -249,7 +249,7 @@
     }
   },
   "selected_execution": {
-    "descriptor_sha256": "65a022dbb357b78ea38c291ab767f163b20fbd8f5e6b8e194130254e680179bf",
+    "descriptor_sha256": "da6ddc9c878dea03fcc6173496ec244ce5c5741f7c17d3610b2cb7ab44b7f605",
     "descriptor": {
       "version": "execution-condition-v1",
       "sequence_id": "terraform-lifecycle-sequence-v0",
@@ -270,7 +270,7 @@
         "disabled_overlaps": [
           "all unlisted surfaces"
         ],
-        "registry_entry_sha256": "d7b57c7500531574fa607793d4e40c56cc1c590a848f33395cfcd5b04e5dab48",
+        "registry_entry_sha256": "4a683ecfec5521c153fe857a9ad44db761d5aa83bd10946fa68babfaea9935a9",
         "registry_entry": {
           "profile_type": "individual_tool",
           "objective_scope": "individual_tool_effectiveness",
@@ -321,10 +321,10 @@
             "repository": "safishamsi/graphify",
             "commit": "199061207f6648f116fd6dbb0b2214502c55d90a",
             "version": "0.9.1",
-            "runtime_adapter": "/opt/data/tool-candidates/opencode-adapter-v4/opencode_workflow_adapter.py",
-            "runtime_adapter_sha256": "e3c6e77fc22ae12a6548ee3ad92836d58c2db411ceae7c3743c370c469e6bbf7"
+            "runtime_adapter": "/opt/data/tool-candidates/opencode-adapter-v5/opencode_workflow_adapter.py",
+            "runtime_adapter_sha256": "4fe90a1a85dfe47db5f5637c4cfdb07c89384b598d2c274ed0af080f3ae42352"
           },
-          "notes": "Successive OpenCode screen selected from the live compatible shortlist. Uses the official OpenCode skill, AGENTS guidance, plugin, and full graph without adding an MCP arm."
+          "notes": "Successive OpenCode screen selected from the live compatible shortlist. Uses the official OpenCode skill, AGENTS guidance, plugin, and full graph without adding an MCP arm. Corrected before accepted execution to enable only the assigned project skill in the isolated OpenCode permission map; the prior skill-disabled generation was deleted as invalid."
         }
       },
       "model_facing_prompts": {
@@ -351,7 +351,7 @@
       "tool_adapter": {
         "tool_id": "graphify-opencode-product-v1",
         "tool_manifest": "scripts/run_codex_fixture_evaluation.py:TOOL_CONFIGS",
-        "tool_manifest_sha256": "b0075f3dfb1235019348e8c4f862d6025ac24d2c58025320d92b535540d4b251",
+        "tool_manifest_sha256": "9fa2867ee06719ad1866ca73fb2ed79501ccb7321ab108061afcb47593c2035a",
         "tool_config": {
           "display_name": "Graphify official OpenCode skill, rules, and plugin v1",
           "lane_name": "retrieval-graphify-opencode-product-v1",
@@ -363,7 +363,7 @@
           ],
           "data_dir_name": "retrieval-graphify-opencode-product-v1",
           "mounts": [
-            "/opt/data/tool-candidates/opencode-adapter-v4/opencode_workflow_adapter.py",
+            "/opt/data/tool-candidates/opencode-adapter-v5/opencode_workflow_adapter.py",
             "/opt/data/tool-candidates/graphify",
             "/opt/data/tool-candidates/graphify/dist/graphifyy-0.9.1-py3-none-any.whl"
           ],
@@ -373,7 +373,7 @@
           "codex_wrapper": {
             "command": "/usr/bin/python3",
             "args": [
-              "/opt/data/tool-candidates/opencode-adapter-v4/opencode_workflow_adapter.py",
+              "/opt/data/tool-candidates/opencode-adapter-v5/opencode_workflow_adapter.py",
               "--opencode-binary",
               "/opt/data/tool-candidates/opencode-runtime/node_modules/opencode-ai/bin/opencode.exe",
               "--expected-opencode-sha256",
@@ -384,7 +384,7 @@
           },
           "preflight_command": [
             "/usr/bin/python3",
-            "/opt/data/tool-candidates/opencode-adapter-v4/opencode_workflow_adapter.py",
+            "/opt/data/tool-candidates/opencode-adapter-v5/opencode_workflow_adapter.py",
             "--opencode-binary",
             "/opt/data/tool-candidates/opencode-runtime/node_modules/opencode-ai/bin/opencode.exe",
             "--expected-opencode-sha256",
@@ -465,8 +465,8 @@
               "kind": "python-wheel"
             },
             {
-              "path": "/opt/data/tool-candidates/opencode-adapter-v4/opencode_workflow_adapter.py",
-              "sha256": "e3c6e77fc22ae12a6548ee3ad92836d58c2db411ceae7c3743c370c469e6bbf7",
+              "path": "/opt/data/tool-candidates/opencode-adapter-v5/opencode_workflow_adapter.py",
+              "sha256": "4fe90a1a85dfe47db5f5637c4cfdb07c89384b598d2c274ed0af080f3ae42352",
               "kind": "runtime-adapter"
             }
           ],
@@ -494,14 +494,14 @@
           ],
           "default_tool_state": "warm-graph+active-native-plugin-and-skill"
         },
-        "tool_config_sha256": "f0024fa8a83a15c6e21225de4b70800ff3d4bb4ad2be65a8bf238c18bad736c5",
+        "tool_config_sha256": "f1bdbb1a023ef2ef7778851b28123d33a9dc161bb4814be872828e0c437c457b",
         "tool_state": "warm-graph+active-native-plugin-and-skill",
         "tool_use_policy": "natural",
         "command_identity": {
           "kind": "codex_wrapper",
           "command": [
             "/usr/bin/python3",
-            "/opt/data/tool-candidates/opencode-adapter-v4/opencode_workflow_adapter.py",
+            "/opt/data/tool-candidates/opencode-adapter-v5/opencode_workflow_adapter.py",
             "--opencode-binary",
             "/opt/data/tool-candidates/opencode-runtime/node_modules/opencode-ai/bin/opencode.exe",
             "--expected-opencode-sha256",
@@ -548,10 +548,10 @@
             "sha256": "9c3b01b3e7745ee67149fab54af91e4dbe4743ee9632fc3ab29de62830ca1802"
           },
           {
-            "path": "/opt/data/tool-candidates/opencode-adapter-v4/opencode_workflow_adapter.py",
+            "path": "/opt/data/tool-candidates/opencode-adapter-v5/opencode_workflow_adapter.py",
             "exists": true,
             "kind": "file",
-            "sha256": "e3c6e77fc22ae12a6548ee3ad92836d58c2db411ceae7c3743c370c469e6bbf7"
+            "sha256": "4fe90a1a85dfe47db5f5637c4cfdb07c89384b598d2c274ed0af080f3ae42352"
           }
         ]
       },
@@ -570,7 +570,7 @@
         "dockerfile_path": "sources/evaluations/fixtures/container/Dockerfile",
         "dockerfile_sha256": "47c91967ce25014ce54879514f51d2ff0326651be1087209115eff4d358226b3",
         "fixture_runner_path": "scripts/run_codex_fixture_evaluation.py",
-        "fixture_runner_sha256": "b0075f3dfb1235019348e8c4f862d6025ac24d2c58025320d92b535540d4b251",
+        "fixture_runner_sha256": "9fa2867ee06719ad1866ca73fb2ed79501ccb7321ab108061afcb47593c2035a",
         "mcp_probe_path": "scripts/probe_mcp_stdio.py",
         "mcp_probe_sha256": "7c06ea36ee5cac933a97140b84a41405fc99b45152388e8d7c6659136af698fd",
         "codex_entrypoint_path": "sources/evaluations/fixtures/container/codex-entrypoint.sh",
