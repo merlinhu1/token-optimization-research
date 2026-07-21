@@ -1,10 +1,10 @@
 {
   "protocol_schema_version": 3,
-  "protocol_id": "terraform-lifecycle-sequence-v0-retrieval-jcodemunch-opencode-product-v1-c553e26cc252",
+  "protocol_id": "terraform-lifecycle-sequence-v0-integrated-leanctx-opencode-hybrid-v1-9db8489b7919",
   "status": "frozen-ready-not-run",
-  "outcome": "Frozen retrieval-jcodemunch-opencode-product-v1 protocol for terraform-lifecycle-sequence-v0; no provider/model run has occurred.",
+  "outcome": "Frozen integrated-leanctx-opencode-hybrid-v1 protocol for terraform-lifecycle-sequence-v0; no provider/model run has occurred.",
   "frozen_at": "2026-07-22",
-  "hypothesis": "retrieval-jcodemunch-opencode-product-v1 produces reproducible provider-reported token and software-quality evidence for terraform-lifecycle-sequence-v0",
+  "hypothesis": "integrated-leanctx-opencode-hybrid-v1 produces reproducible provider-reported token and software-quality evidence for terraform-lifecycle-sequence-v0",
   "evidence_stage_target": "reproduction",
   "task_fixture": {
     "fixture_id": "large-hashicorp-terraform",
@@ -35,13 +35,13 @@
     "selection_policy": "sequence-pool-replicate-matched-first-valid"
   },
   "treatment": {
-    "profile_id": "retrieval-jcodemunch-opencode-product-v1",
+    "profile_id": "integrated-leanctx-opencode-hybrid-v1",
     "runtime_id": "opencode-cli",
     "provider": "openai",
     "model": "gpt-5.6-sol",
     "model_condition_id": "opencode-openai-gpt-5-6-sol-high",
     "reasoning_effort": "high",
-    "command": "python3 scripts/run_opencode_workflow_model_condition.py --workflow-model-condition-id opencode-openai-gpt-5-6-sol-high --workflow-model gpt-5.6-sol --workflow-reasoning-effort high --sequence-id terraform-lifecycle-sequence-v0 --profile-id retrieval-jcodemunch-opencode-product-v1 --timeout-per-task 3600 --protocol sources/evaluations/protocols/terraform-lifecycle-sequence-v0-retrieval-jcodemunch-opencode-product-v1-c553e26cc252.json --docker-image token-eval-codex:latest"
+    "command": "python3 scripts/run_opencode_workflow_model_condition.py --workflow-model-condition-id opencode-openai-gpt-5-6-sol-high --workflow-model gpt-5.6-sol --workflow-reasoning-effort high --sequence-id terraform-lifecycle-sequence-v0 --profile-id integrated-leanctx-opencode-hybrid-v1 --timeout-per-task 3600 --protocol sources/evaluations/protocols/terraform-lifecycle-sequence-v0-integrated-leanctx-opencode-hybrid-v1-9db8489b7919.json --docker-image token-eval-codex:latest"
   },
   "token_accounting_boundary": {
     "fields": [
@@ -249,27 +249,28 @@
     }
   },
   "selected_execution": {
-    "descriptor_sha256": "8d2922a50cea2c5bd8d3bdcd698124cf3b3d9156319c76fc93e90dda835d1cd0",
+    "descriptor_sha256": "bda034a391b47285524ee7c8a066708ecb9c68fc5f7a7e4c40f02694c5b06392",
     "descriptor": {
       "version": "execution-condition-v1",
       "sequence_id": "terraform-lifecycle-sequence-v0",
       "execution_role": "individual_tool_treatment",
       "selected_profile": {
-        "profile_id": "retrieval-jcodemunch-opencode-product-v1",
+        "profile_id": "integrated-leanctx-opencode-hybrid-v1",
         "profile_type": "individual_tool",
         "component_ids": [
-          "retrieval-jcodemunch-opencode-product-v1"
+          "integrated-leanctx-opencode-hybrid-v1"
         ],
         "enabled_surfaces": [
           "retrieval-context",
           "opencode-mcp",
-          "product-authored-guidance",
+          "product-authored-instructions",
+          "shell-output-compression",
           "warm-index"
         ],
         "disabled_overlaps": [
           "all unlisted surfaces"
         ],
-        "registry_entry_sha256": "628385c602ac995b9696b17613c6cb0e34df97a347de64d2cd3d33b46ccf6d69",
+        "registry_entry_sha256": "9b2c59e2409f38a880ffa697c9814e84e3dba373ffddc5614e883d448cb4cd3d",
         "registry_entry": {
           "profile_type": "individual_tool",
           "objective_scope": "individual_tool_effectiveness",
@@ -290,40 +291,40 @@
           "reset": {
             "policy": "Delete lane-private OpenCode XDG directories, product state, generated repository treatment files, auth translation, and background processes after evidence capture."
           },
-          "id": "retrieval-jcodemunch-opencode-product-v1",
-          "name": "jCodemunch OpenCode MCP product V1",
+          "id": "integrated-leanctx-opencode-hybrid-v1",
+          "name": "LeanCTX OpenCode hybrid integration V1",
           "enabled_surfaces": [
             "retrieval-context",
             "opencode-mcp",
-            "product-authored-guidance",
+            "product-authored-instructions",
+            "shell-output-compression",
             "warm-index"
           ],
           "components": [
             {
-              "component_id": "retrieval-jcodemunch-opencode-product-v1",
-              "surface": "retrieval-context+opencode-mcp+product-authored-guidance+warm-index",
+              "component_id": "integrated-leanctx-opencode-hybrid-v1",
+              "surface": "retrieval-context+opencode-mcp+instructions+shell-output-compression+warm-index",
               "role": "individual_tool"
             }
           ],
           "install": {
-            "policy": "Install the pinned jCodemunch wheel into a lane-private uv environment, install verbatim product-authored guidance, build a lane-private index, register only its local MCP server in OpenCode, and require initialize plus tools/list."
+            "policy": "Run the pinned official LeanCTX initializer with the OpenCode agent target, build its lane-private index, and require the local MCP initialize plus tools/list handshake."
           },
           "evaluation_protocol": {
             "tool_use_policy": "natural",
-            "tool_state": "warm-index+product-guidance",
-            "integration_state": "host-agnostic-mcp+product-guidance",
+            "tool_state": "warm-index+active-guidance",
+            "integration_state": "official-opencode-hybrid",
             "assignment_proof": "provider-free exact artifact identities, effective OpenCode configuration, native activation, warm state, and task/final verifiers required"
           },
           "source_snapshot": {
-            "repository": "jgravelle/jcodemunch-mcp",
-            "version": "1.108.114",
-            "source_commit": "fbc14e40c7057ebc6d718fb48083d30522afe15f",
-            "wheel_sha256": "9ae3a44c2be5709d33fa2b56c9e569906ed63906a907f89b4762a370d397ed54",
-            "guidance_sha256": "2026d09f4af85e972a5c4a9874d91bd8a8675ab7fbb44a283911fd06afd0abb2",
+            "repository": "yvgude/lean-ctx",
+            "version": "3.8.18",
+            "source_commit": "adc4e8b2e401d160906a392994c9afd7af3dfffa",
+            "binary_sha256": "475e89e495c31824ef324f92e695706ddbd890dff2c3b55b807cd1f8526c6db9",
             "runtime_adapter": "/opt/data/tool-candidates/opencode-adapter-v6/opencode_workflow_adapter.py",
             "runtime_adapter_sha256": "1b98aaec34711b3a7bb09ce269c12bb06421ab08913d06593fb6d2c6641a34a3"
           },
-          "notes": "Second successive screen: jCodemunch has a universal host-install guide and an MCP server, so this is a host-agnostic OpenCode treatment rather than a prompt-only simulation."
+          "notes": "Second successive screen: the existing LeanCTX source includes an OpenCode initializer target; the treatment uses that official hybrid surface, not the historical MCP-only partial profile."
         }
       },
       "model_facing_prompts": {
@@ -348,24 +349,27 @@
         ]
       },
       "tool_adapter": {
-        "tool_id": "jcodemunch-opencode-product-v1",
+        "tool_id": "leanctx-opencode-hybrid-v1",
         "tool_manifest": "scripts/run_codex_fixture_evaluation.py:TOOL_CONFIGS",
-        "tool_manifest_sha256": "d6623da400c401c9e9ad4fe4620bef462acd3582de538234fe61527657d6124b",
+        "tool_manifest_sha256": "fdb1c530cb6e0e7be142c18a0b78c4aea26c59863c080c7b8c61db782d42f4cc",
         "tool_config": {
-          "display_name": "jCodemunch guide-faithful OpenCode MCP v1",
-          "lane_name": "retrieval-jcodemunch-opencode-product-v1",
-          "surface": "opencode-mcp+product-authored-guidance+warm-index",
+          "display_name": "LeanCTX official OpenCode hybrid integration v1",
+          "lane_name": "integrated-leanctx-opencode-hybrid-v1",
+          "surface": "opencode-mcp+instructions+shell-output-compression+warm-index",
           "allowed_terms": [
             "opencode",
-            "jcodemunch",
-            "jcodemunch-mcp"
+            "lean-ctx",
+            "mcp_lean_ctx",
+            "ctx_read",
+            "ctx_search",
+            "ctx_shell",
+            "ctx_graph"
           ],
-          "data_dir_name": "retrieval-jcodemunch-opencode-product-v1",
+          "data_dir_name": "integrated-leanctx-opencode-hybrid-v1",
           "mounts": [
             "/opt/data/tool-candidates/opencode-adapter-v6/opencode_workflow_adapter.py",
-            "/opt/data/tool-candidates/jcodemunch-mcp",
-            "/opt/data/tool-candidates/jcodemunch-mcp/dist/jcodemunch_mcp-1.108.114-py3-none-any.whl",
-            "/opt/data/repos/token-optimization-research/scripts/install_jcodemunch_opencode_guidance.py"
+            "/opt/data/bin/lean-ctx",
+            "/opt/data/tool-candidates/lean-ctx"
           ],
           "executable": "/opt/data/tool-candidates/opencode-runtime/node_modules/opencode-ai/bin/opencode.exe",
           "expected_executable_sha256": "7c4d91c84d2bfdeabb59257e3490c5e5acb08f2aacb3e42f3ddc296a1c3f1aca",
@@ -379,7 +383,7 @@
               "--expected-opencode-sha256",
               "7c4d91c84d2bfdeabb59257e3490c5e5acb08f2aacb3e42f3ddc296a1c3f1aca",
               "--treatment",
-              "jcodemunch"
+              "leanctx"
             ]
           },
           "preflight_command": [
@@ -390,62 +394,37 @@
             "--expected-opencode-sha256",
             "7c4d91c84d2bfdeabb59257e3490c5e5acb08f2aacb3e42f3ddc296a1c3f1aca",
             "--treatment",
-            "jcodemunch",
+            "leanctx",
             "--probe"
           ],
           "tool_manifest_identity": "current-file-v1",
           "env": {
             "OPENCODE_TOOL_DATA_DIR": "{tool_data_dir}",
-            "JCODEMUNCH_LOG_LEVEL": "ERROR"
+            "LEAN_CTX_DATA_DIR": "{tool_data_dir}/leanctx"
           },
-          "path_entries": [
-            "{tool_data_dir}/venv/bin"
-          ],
           "host_integration": {
             "install_commands": [
               [
-                "/opt/data/opt/uv/uv",
-                "venv",
-                "{tool_data_dir}/venv",
-                "--python",
-                "python3"
-              ],
-              [
-                "/opt/data/opt/uv/uv",
-                "pip",
-                "install",
-                "--python",
-                "{tool_data_dir}/venv/bin/python",
-                "/opt/data/tool-candidates/jcodemunch-mcp/dist/jcodemunch_mcp-1.108.114-py3-none-any.whl"
-              ],
-              [
-                "python3",
-                "{repository_root}/scripts/install_jcodemunch_opencode_guidance.py",
-                "--source-root",
-                "/opt/data/tool-candidates/jcodemunch-mcp",
-                "--expected-commit",
-                "fbc14e40c7057ebc6d718fb48083d30522afe15f",
-                "--repo",
-                "{repo}",
-                "--receipt",
-                "{tool_data_dir}/guidance-install.json"
+                "/opt/data/bin/lean-ctx",
+                "init",
+                "--agent",
+                "opencode"
               ]
             ],
             "verify_commands": [
               [
-                "{tool_data_dir}/venv/bin/jcodemunch-mcp",
+                "/opt/data/bin/lean-ctx",
                 "--version"
               ]
             ],
             "required_files": [
-              "{tool_data_dir}/venv/bin/jcodemunch-mcp",
-              "{tool_data_dir}/guidance-install.json",
-              "{repo}/AGENTS.md"
+              "{repo}/AGENTS.md",
+              "{repo}/LEAN-CTX.md"
             ],
-            "timeout_seconds": 900
+            "timeout_seconds": 600
           },
-          "mcp_server": "jcodemunch",
-          "mcp_command": "{tool_data_dir}/venv/bin/jcodemunch-mcp",
+          "mcp_server": "lean-ctx",
+          "mcp_command": "/opt/data/bin/lean-ctx",
           "mcp_args": [],
           "mcp_handshake": {
             "required": true,
@@ -453,26 +432,27 @@
             "timeout_seconds": 120
           },
           "warmup": {
-            "kind": "product-native-code-index-build",
+            "kind": "product-native-index-build",
             "command": [
-              "{tool_data_dir}/venv/bin/jcodemunch-mcp",
+              "/opt/data/bin/lean-ctx",
               "index",
+              "build",
               "{repo}"
             ],
-            "output_name": "jcodemunch-warmup-output.txt",
-            "metadata_name": "jcodemunch-warmup-metadata.json",
-            "timeout_seconds": 1200
+            "output_name": "leanctx-warmup-output.txt",
+            "metadata_name": "leanctx-warmup-metadata.json",
+            "timeout_seconds": 1800
           },
           "artifact_identities": [
             {
-              "path": "/opt/data/tool-candidates/jcodemunch-mcp/dist/jcodemunch_mcp-1.108.114-py3-none-any.whl",
-              "sha256": "9ae3a44c2be5709d33fa2b56c9e569906ed63906a907f89b4762a370d397ed54",
-              "kind": "python-wheel"
+              "path": "/opt/data/bin/lean-ctx",
+              "sha256": "475e89e495c31824ef324f92e695706ddbd890dff2c3b55b807cd1f8526c6db9",
+              "kind": "compiled-cli-mcp"
             },
             {
-              "path": "/opt/data/tool-candidates/jcodemunch-mcp/AGENT_INSTALL_UNIVERSAL.md",
-              "sha256": "2026d09f4af85e972a5c4a9874d91bd8a8675ab7fbb44a283911fd06afd0abb2",
-              "kind": "product-guidance"
+              "path": "/opt/data/tool-candidates/lean-ctx/README.md",
+              "sha256": "3511c0d1e04eda53f9e66f7528b5179138b4e3963891c07c8749fa0c3b98f5cb",
+              "kind": "product-guidance-source"
             },
             {
               "path": "/opt/data/tool-candidates/opencode-adapter-v6/opencode_workflow_adapter.py",
@@ -485,71 +465,57 @@
             "source": "adapter-probe"
           },
           "diff_exclude_paths": [
-            "AGENTS.md"
+            "AGENTS.md",
+            "LEAN-CTX.md",
+            ".lean-ctx"
           ],
-          "default_tool_state": "warm-index+product-guidance"
+          "default_tool_state": "warm-index+active-guidance"
         },
-        "tool_config_sha256": "b1b913c8d634df5dda055c0597a7541f1729ef52950465a2c18b5d5c3934233a",
-        "tool_state": "warm-index+product-guidance",
+        "tool_config_sha256": "c8d86227527bab4859d1379f39a1ff7ba82c04dbaf5ea770b574eda7d54a9a9b",
+        "tool_state": "warm-index+active-guidance",
         "tool_use_policy": "natural",
         "command_identity": {
           "kind": "mcp_command",
           "command": [
-            "{tool_data_dir}/venv/bin/jcodemunch-mcp"
+            "/opt/data/bin/lean-ctx"
           ]
         },
         "binary_identity": {
-          "kind": "generated-by-host-integration",
-          "command_template": "{tool_data_dir}/venv/bin/jcodemunch-mcp",
-          "install_commands": [
-            [
-              "/opt/data/opt/uv/uv",
-              "venv",
-              "{tool_data_dir}/venv",
-              "--python",
-              "python3"
+          "executable_token": "/opt/data/bin/lean-ctx",
+          "resolved_path": "/opt/data/bin/lean-ctx",
+          "realpath": "/opt/data/bin/lean-ctx",
+          "sha256": "475e89e495c31824ef324f92e695706ddbd890dff2c3b55b807cd1f8526c6db9",
+          "metadata": {
+            "size": 90124616,
+            "mode": "-rwxr-xr-x",
+            "uid": 10000,
+            "gid": 10000,
+            "mtime_ns": 1783086783177197301
+          },
+          "version": {
+            "command": [
+              "/opt/data/bin/lean-ctx",
+              "--version"
             ],
-            [
-              "/opt/data/opt/uv/uv",
-              "pip",
-              "install",
-              "--python",
-              "{tool_data_dir}/venv/bin/python",
-              "/opt/data/tool-candidates/jcodemunch-mcp/dist/jcodemunch_mcp-1.108.114-py3-none-any.whl"
-            ],
-            [
-              "python3",
-              "{repository_root}/scripts/install_jcodemunch_opencode_guidance.py",
-              "--source-root",
-              "/opt/data/tool-candidates/jcodemunch-mcp",
-              "--expected-commit",
-              "fbc14e40c7057ebc6d718fb48083d30522afe15f",
-              "--repo",
-              "{repo}",
-              "--receipt",
-              "{tool_data_dir}/guidance-install.json"
-            ]
-          ],
-          "install_contract_sha256": "b9b1d2d88f039b908b38ddea75e641b931a36f024014f3927e8c48ebd74b43c4"
+            "environment_path": "/opt/data/.local/bin:/opt/data/opt/go/bin:/opt/data/opt/uv:/opt/data/opt/node-v24.18.0-linux-x64/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+            "captured": true,
+            "exit_code": 0,
+            "output": "lean-ctx 3.8.18 (official, https://github.com/yvgude/lean-ctx)",
+            "truncated": false
+          }
         },
         "source_identity": [
           {
-            "path": "/opt/data/repos/token-optimization-research/scripts/install_jcodemunch_opencode_guidance.py",
+            "path": "/opt/data/bin/lean-ctx",
             "exists": true,
             "kind": "file",
-            "sha256": "f5f7ef11f3e1194210232bbcd1be4aa96a8d2eee6ac8b605867653800ec1c1c4"
+            "sha256": "475e89e495c31824ef324f92e695706ddbd890dff2c3b55b807cd1f8526c6db9"
           },
           {
-            "path": "/opt/data/tool-candidates/jcodemunch-mcp",
+            "path": "/opt/data/tool-candidates/lean-ctx",
             "exists": true,
             "kind": "directory",
-            "git_head": "fbc14e40c7057ebc6d718fb48083d30522afe15f"
-          },
-          {
-            "path": "/opt/data/tool-candidates/jcodemunch-mcp/dist/jcodemunch_mcp-1.108.114-py3-none-any.whl",
-            "exists": true,
-            "kind": "file",
-            "sha256": "9ae3a44c2be5709d33fa2b56c9e569906ed63906a907f89b4762a370d397ed54"
+            "git_head": "adc4e8b2e401d160906a392994c9afd7af3dfffa"
           },
           {
             "path": "/opt/data/tool-candidates/opencode-adapter-v6/opencode_workflow_adapter.py",
@@ -574,7 +540,7 @@
         "dockerfile_path": "sources/evaluations/fixtures/container/Dockerfile",
         "dockerfile_sha256": "47c91967ce25014ce54879514f51d2ff0326651be1087209115eff4d358226b3",
         "fixture_runner_path": "scripts/run_codex_fixture_evaluation.py",
-        "fixture_runner_sha256": "d6623da400c401c9e9ad4fe4620bef462acd3582de538234fe61527657d6124b",
+        "fixture_runner_sha256": "fdb1c530cb6e0e7be142c18a0b78c4aea26c59863c080c7b8c61db782d42f4cc",
         "mcp_probe_path": "scripts/probe_mcp_stdio.py",
         "mcp_probe_sha256": "7c06ea36ee5cac933a97140b84a41405fc99b45152388e8d7c6659136af698fd",
         "codex_entrypoint_path": "sources/evaluations/fixtures/container/codex-entrypoint.sh",

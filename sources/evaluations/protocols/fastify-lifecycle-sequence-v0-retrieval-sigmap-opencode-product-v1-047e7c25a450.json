@@ -1,6 +1,6 @@
 {
   "protocol_schema_version": 3,
-  "protocol_id": "fastify-lifecycle-sequence-v0-retrieval-sigmap-opencode-product-v1-5e8098f7d8e9",
+  "protocol_id": "fastify-lifecycle-sequence-v0-retrieval-sigmap-opencode-product-v1-047e7c25a450",
   "status": "frozen-ready-not-run",
   "outcome": "Frozen retrieval-sigmap-opencode-product-v1 protocol for fastify-lifecycle-sequence-v0; no provider/model run has occurred.",
   "frozen_at": "2026-07-22",
@@ -41,7 +41,7 @@
     "model": "gpt-5.6-sol",
     "model_condition_id": "opencode-openai-gpt-5-6-sol-high",
     "reasoning_effort": "high",
-    "command": "python3 scripts/run_opencode_workflow_model_condition.py --workflow-model-condition-id opencode-openai-gpt-5-6-sol-high --workflow-model gpt-5.6-sol --workflow-reasoning-effort high --sequence-id fastify-lifecycle-sequence-v0 --profile-id retrieval-sigmap-opencode-product-v1 --timeout-per-task 3600 --protocol sources/evaluations/protocols/fastify-lifecycle-sequence-v0-retrieval-sigmap-opencode-product-v1-5e8098f7d8e9.json --docker-image token-eval-codex:latest"
+    "command": "python3 scripts/run_opencode_workflow_model_condition.py --workflow-model-condition-id opencode-openai-gpt-5-6-sol-high --workflow-model gpt-5.6-sol --workflow-reasoning-effort high --sequence-id fastify-lifecycle-sequence-v0 --profile-id retrieval-sigmap-opencode-product-v1 --timeout-per-task 3600 --protocol sources/evaluations/protocols/fastify-lifecycle-sequence-v0-retrieval-sigmap-opencode-product-v1-047e7c25a450.json --docker-image token-eval-codex:latest"
   },
   "token_accounting_boundary": {
     "fields": [
@@ -243,7 +243,7 @@
     }
   },
   "selected_execution": {
-    "descriptor_sha256": "da13c001dc3f1aeb5fe24125e4da9e4f1d5bf5ca4c7078e84c2280b6fd039723",
+    "descriptor_sha256": "1c2747cf4a81cf190bcc20ec2699e84cff646d4c97045ee6b4eb41dc362ba5ae",
     "descriptor": {
       "version": "execution-condition-v1",
       "sequence_id": "fastify-lifecycle-sequence-v0",
@@ -344,7 +344,7 @@
       "tool_adapter": {
         "tool_id": "sigmap-opencode-product-v1",
         "tool_manifest": "scripts/run_codex_fixture_evaluation.py:TOOL_CONFIGS",
-        "tool_manifest_sha256": "d6623da400c401c9e9ad4fe4620bef462acd3582de538234fe61527657d6124b",
+        "tool_manifest_sha256": "fdb1c530cb6e0e7be142c18a0b78c4aea26c59863c080c7b8c61db782d42f4cc",
         "tool_config": {
           "display_name": "SigMap official OpenCode MCP and context setup v1",
           "lane_name": "retrieval-sigmap-opencode-product-v1",
@@ -533,7 +533,7 @@
         "dockerfile_path": "sources/evaluations/fixtures/container/Dockerfile",
         "dockerfile_sha256": "47c91967ce25014ce54879514f51d2ff0326651be1087209115eff4d358226b3",
         "fixture_runner_path": "scripts/run_codex_fixture_evaluation.py",
-        "fixture_runner_sha256": "d6623da400c401c9e9ad4fe4620bef462acd3582de538234fe61527657d6124b",
+        "fixture_runner_sha256": "fdb1c530cb6e0e7be142c18a0b78c4aea26c59863c080c7b8c61db782d42f4cc",
         "mcp_probe_path": "scripts/probe_mcp_stdio.py",
         "mcp_probe_sha256": "7c06ea36ee5cac933a97140b84a41405fc99b45152388e8d7c6659136af698fd",
         "codex_entrypoint_path": "sources/evaluations/fixtures/container/codex-entrypoint.sh",
