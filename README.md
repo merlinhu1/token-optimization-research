@@ -4,7 +4,7 @@ Research infrastructure for measuring provider-reported token usage and software
 
 ## Current evaluation portfolio
 
-The repository retains operationally valid Fastify, Beets, and Terraform provider-token baseline samples; their verifier and review outcomes are diagnostics, not selection gates. Invalid fixture runs and stale protocols were removed at the experiment owner's direction. Terraform's current verifier exercises pagination through rendered output instead of requiring one canonical private helper name. The only runnable task contracts remain:
+The repository retains operationally valid Fastify, Beets, and Terraform provider-token evidence; verifier and review outcomes remain diagnostic for completed sessions. The active future-execution contract is the low-complexity **Baseline V2** task family. Each routine task names the exact edit, changes one or two production files, exposes focused validation, and forbids discovery and broad suites. The only runnable lifecycle identities remain:
 
 | Sequence | Fixture | Ordered stages |
 |---|---|---|
@@ -12,11 +12,11 @@ The repository retains operationally valid Fastify, Beets, and Terraform provide
 | `beets-lifecycle-sequence-v0` | Beets | feature → behavior-preserving refactor → code review |
 | `terraform-lifecycle-sequence-v0` | Terraform | feature → behavior-preserving refactor → code review |
 
-Every lane uses one pinned repository snapshot and one persistent model session. The controller applies all three independently qualified start conditions before prompt 1, discloses prompts in order, preserves model/tool state, and runs all concealed verifiers after prompt 3.
+Every lane uses one pinned repository snapshot and one persistent model session. The controller applies all three independently qualified start conditions before prompt 1, discloses prompts in order, preserves model/tool state, and runs all final verifiers after prompt 3. Baseline V2 passes provider-free qualification on all three sequences, but treatment launch is blocked until one GPT-5.6 Sol/`high` bare-model pilot is independently audited with zero unique incidents, zero corrected implementation mistakes, and zero unresolved defects.
 
 A 2026-07-18 official-integration audit and follow-up runtime review found that 48 of 54 historical treatment sessions could not support product-effect claims. At the experiment owner's direction, invalid sessions, comparisons, compact bundles, and occupied protocols were deleted from the active corpus rather than relabelled as baseline. The same policy later removed six incomplete Cartog direct-MCP sessions. Deletion receipts preserve each adjudication; the six retained original historical records are the Headroom default-wrapper and proxy-only conditions, and the prior TokenJuice+jcodemunch stack decision remains withdrawn.
 
-Sixteen eligible treatment conditions contribute 66 accepted provider-backed sessions alongside 24 controls. Every retained profile passed protocol-bound provider-free setup and assignment gates before its first valid run. The Phase 2 synthesis reports 551,060,181 treatment tokens against 509,861,580 repeated matched-baseline tokens (+8.08%) with 141/144 task verifiers. A prospective r3 screen of six eligible profiles used 216,039,299 tokens against 202,598,376 repeated fresh-baseline tokens (+6.63%) with 53/54 treatment verifiers; four of six aggregate directions changed from the preceding screen. The first solution-directed assisted-v1 Sol/`high` baseline panel retained 7,718,469 provider tokens across three accepted sessions with 9/9 task verifiers; no assisted treatment has run, so it does not yet estimate a treatment effect. These are descriptive observations, not stable rankings.
+Sixteen eligible historical treatment conditions contribute 66 accepted provider-backed sessions alongside 24 controls. The Phase 2 synthesis reports 551,060,181 treatment tokens against 509,861,580 repeated matched-baseline tokens (+8.08%) with 141/144 task verifiers. A prospective r3 screen used 216,039,299 tokens against 202,598,376 repeated fresh-baseline tokens (+6.63%) with 53/54 treatment verifiers; four of six aggregate directions changed. The assisted-v1 Sol/`high` baseline retained 7,718,469 tokens and 9/9 verifier passes, but trajectory review found substantive corrections and one surviving hidden-contract regression. It remains immutable historical evidence and is not a Baseline V2 comparison control. No assisted treatment has run.
 
 ## Documentation
 

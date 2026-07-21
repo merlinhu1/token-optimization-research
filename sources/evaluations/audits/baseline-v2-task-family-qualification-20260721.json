@@ -1,0 +1,190 @@
+{
+  "schema_version": 1,
+  "audit_id": "baseline-v2-task-family-qualification-20260721",
+  "recorded_on": "2026-07-21",
+  "task_family_generation": "baseline-v2",
+  "scope": "provider-free fixture qualification and frozen bare-model pilot contracts",
+  "decision": "Activate Baseline V2 for future execution; preserve assisted-v1 sessions and protocols as immutable historical evidence but do not launch comparable treatments from that rejected task family.",
+  "reason": "The designated strongest-model assisted-v1 pilot contained corrected implementation mistakes and one surviving hidden-contract regression, so task difficulty was nuisance variance for the provider-token estimand.",
+  "design_contract": {
+    "persistent_tasks_per_sequence": 3,
+    "ordered_classes": [
+      "feature-implementation",
+      "behavior-preserving-refactor",
+      "code-review-correction"
+    ],
+    "production_files_per_task_maximum": 3,
+    "exact_recipe_required": true,
+    "model_visible_focused_validation_required": true,
+    "discovery_and_broad_suites_forbidden": true
+  },
+  "mistake_gate": {
+    "designated_model_condition": "codex-openai-gpt-5-6-sol-high",
+    "allowed_unique_model_incidents": 0,
+    "allowed_corrected_implementation_mistakes": 0,
+    "allowed_unresolved_defects": 0,
+    "current_status": "provider-pilot-required",
+    "treatment_launch": "blocked",
+    "model": "gpt-5.6-sol",
+    "reasoning_effort": "high"
+  },
+  "provider_accounting": {
+    "provider_calls": 0,
+    "provider_tokens": 0,
+    "provider_result_available": false
+  },
+  "totals": {
+    "sequences": 3,
+    "tasks": 9,
+    "provider_free_qualified_sequences": 3,
+    "frozen_pilot_protocols": 3
+  },
+  "sequences": [
+    {
+      "sequence_id": "fastify-lifecycle-sequence-v0",
+      "qualification_path": "sources/evaluations/fixtures/medium/fastify-fastify/qualification-lifecycle-v0-baseline-v2.json",
+      "qualification_sha256": "2d569c445c3437b41fdd0c64ae6bee8fb2507a0d79551481894f1cd9fdf2e77d",
+      "task_count": 3,
+      "production_file_counts": [
+        1,
+        1,
+        2
+      ],
+      "qualification_gates": {
+        "composite_seed_merge_zero": true,
+        "composite_seeded_verifiers_nonzero": true,
+        "seeded_verifier_nonzero": true,
+        "fixed_verifier_zero": true,
+        "full_fixed_cumulative_verifier_zero": true,
+        "no_unmerged_paths": true
+      },
+      "frozen_baseline_protocols": [
+        {
+          "path": "sources/evaluations/protocols/fastify-lifecycle-sequence-v0-baseline-bare-codex-fae08febf5c7.json",
+          "protocol_id": "fastify-lifecycle-sequence-v0-baseline-bare-codex-fae08febf5c7",
+          "protocol_sha256": "9acfb5b8de694d813cf83ef6b8d29167e69f01182b42c5b524f81a9ae88fdcfc",
+          "status": "frozen-ready-not-run",
+          "baseline_pool_fingerprint": "e054ba57e60d",
+          "model_condition_id": "codex-openai-gpt-5-6-sol-high"
+        }
+      ]
+    },
+    {
+      "sequence_id": "beets-lifecycle-sequence-v0",
+      "qualification_path": "sources/evaluations/fixtures/medium/beetbox-beets/qualification-lifecycle-v0-baseline-v2.json",
+      "qualification_sha256": "5aa7347a9c244578334bd89f2698d4dd41c43359a5c45640913847cd4b3c7fa4",
+      "task_count": 3,
+      "production_file_counts": [
+        1,
+        1,
+        1
+      ],
+      "qualification_gates": {
+        "composite_seed_merge_zero": true,
+        "composite_seeded_verifiers_nonzero": true,
+        "seeded_verifier_nonzero": true,
+        "fixed_verifier_zero": true,
+        "full_fixed_cumulative_verifier_zero": true,
+        "no_unmerged_paths": true
+      },
+      "frozen_baseline_protocols": [
+        {
+          "path": "sources/evaluations/protocols/beets-lifecycle-sequence-v0-baseline-bare-codex-1dffb8bbc9c3.json",
+          "protocol_id": "beets-lifecycle-sequence-v0-baseline-bare-codex-1dffb8bbc9c3",
+          "protocol_sha256": "bfce0ad142592d444c82933ea4fc4314af0e7c1b08bd6929f88c59cad17e1b9d",
+          "status": "frozen-ready-not-run",
+          "baseline_pool_fingerprint": "c57246c6c5e4",
+          "model_condition_id": "codex-openai-gpt-5-6-sol-high"
+        }
+      ]
+    },
+    {
+      "sequence_id": "terraform-lifecycle-sequence-v0",
+      "qualification_path": "sources/evaluations/fixtures/large/hashicorp-terraform/qualification-lifecycle-v0-baseline-v2.json",
+      "qualification_sha256": "691bee9c2627450b2d254b60b0ad3e68f84d1418033948a4a9973bf0264f6777",
+      "task_count": 3,
+      "production_file_counts": [
+        2,
+        2,
+        2
+      ],
+      "qualification_gates": {
+        "composite_seed_merge_zero": true,
+        "composite_seeded_verifiers_nonzero": true,
+        "seeded_verifier_nonzero": true,
+        "fixed_verifier_zero": true,
+        "full_fixed_cumulative_verifier_zero": true,
+        "no_unmerged_paths": true
+      },
+      "frozen_baseline_protocols": [
+        {
+          "path": "sources/evaluations/protocols/terraform-lifecycle-sequence-v0-baseline-bare-codex-0af159eaed79.json",
+          "protocol_id": "terraform-lifecycle-sequence-v0-baseline-bare-codex-0af159eaed79",
+          "protocol_sha256": "2ae3d340098388f65f8090bc1fa1e13cc181d744e3084e6f5e253054e4c0be6d",
+          "status": "frozen-ready-not-run",
+          "baseline_pool_fingerprint": "768c50f9c0f0",
+          "model_condition_id": "codex-openai-gpt-5-6-sol-high"
+        }
+      ]
+    }
+  ],
+  "historical_evidence": {
+    "assisted_v1_baseline_audit": "sources/evaluations/audits/assisted-v1-sol-high-baseline-r0-20260720.json",
+    "status": "retained immutable; not a Baseline V2 comparison control"
+  },
+  "provider_free_matrix": {
+    "matrix_id": "workflow-matrix-20260721T050926430070Z-p2368266-r0",
+    "model_condition_id": "codex-openai-gpt-5-6-sol-high",
+    "model": "gpt-5.6-sol",
+    "reasoning_effort": "high",
+    "prepare_only": true,
+    "no_provider": true,
+    "provider_calls": 0,
+    "execution_passed": true,
+    "lanes": [
+      {
+        "sequence_id": "beets-lifecycle-sequence-v0",
+        "prepared": true,
+        "prepare_verification_passed": true,
+        "composite_seed_diff_sha256": "2586b9a96d627ce22e226621db78f1c7636e265318dc0e45e1424778209217ae",
+        "qualification_hash_match": true,
+        "concealment_passed": true,
+        "model_seed_or_verifier_assets": []
+      },
+      {
+        "sequence_id": "fastify-lifecycle-sequence-v0",
+        "prepared": true,
+        "prepare_verification_passed": true,
+        "composite_seed_diff_sha256": "ac4eab923081641fc398b042626ce32dbfb1f021424624279fcdfa8713af84c2",
+        "qualification_hash_match": true,
+        "concealment_passed": true,
+        "model_seed_or_verifier_assets": []
+      },
+      {
+        "sequence_id": "terraform-lifecycle-sequence-v0",
+        "prepared": true,
+        "prepare_verification_passed": true,
+        "composite_seed_diff_sha256": "48f2006b0d10fc1d365437b282e77ae856479e7b744dbce4f78d9b62b16e9842",
+        "qualification_hash_match": true,
+        "concealment_passed": true,
+        "model_seed_or_verifier_assets": []
+      }
+    ]
+  },
+  "zero_mistake_gate": {
+    "designated_model_condition": "codex-openai-gpt-5-6-sol-high",
+    "allowed_unique_model_incidents": 0,
+    "allowed_corrected_implementation_mistakes": 0,
+    "allowed_unresolved_defects": 0,
+    "status": "provider-pilot-required",
+    "treatment_launch_policy": "blocked until one first-valid strongest-model pilot is independently audited with all three counts equal to zero",
+    "model": "gpt-5.6-sol",
+    "reasoning_effort": "high",
+    "allowed_prohibited_operations": 0,
+    "allowed_unnecessary_exploration_incidents": 0,
+    "allowed_model_caused_failed_commands": 0,
+    "allowed_code_rework_events": 0,
+    "allowed_verifier_or_environment_failures": 0,
+    "incident_counting": "unique-auditable-not-command-count"
+  }
+}

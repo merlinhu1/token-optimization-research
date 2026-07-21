@@ -1,0 +1,30 @@
+Baseline V2 routine recipe — implement the one missing `request.mediaType` getter exactly as specified. This is a controlled provider-token workload, not an architecture-discovery task.
+
+## Implementation recipe
+
+Do not run discovery, search, or broad-suite commands.
+Only modify: `lib/request.js`.
+Do not modify tests.
+
+In the existing `Object.defineProperties(Request.prototype, { ... })` object, insert this property immediately before `getValidationFunction`:
+
+```js
+  mediaType: {
+    get () {
+      if (!this[kRequestContentType] && this.headers['content-type'] !== undefined) {
+        this[kRequestContentType] = ContentType.from(this.headers['content-type'])
+      }
+      return this[kRequestContentType]?.mediaType
+    }
+  },
+```
+
+Do not add imports or change any other file; the required `ContentType` and `kRequestContentType` bindings already exist.
+
+## Validation recipe
+
+Run exactly: `node -c lib/request.js && node -e "const F=require('./fastify'); const a=F(); a.get('/',r=>({mediaType:r.mediaType})); a.inject({url:'/',headers:{'content-type':'Application/JSON; Charset=UTF-8'}}).then(x=>{if(JSON.parse(x.payload).mediaType!=='application/json')process.exit(1)})"`
+
+## Stop condition
+
+Stop immediately when that command exits 0 and `git diff --name-only` lists only `lib/request.js`.

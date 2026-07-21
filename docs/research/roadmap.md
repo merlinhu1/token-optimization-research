@@ -8,7 +8,7 @@ The corrected first screen used final cumulative provider usage per thread. Acro
 
 The prospective r3 natural-use replication retains TokenJuice, SigMap, Ponytail, RTK, CodeGraph, and jcodemunch-mcp v2 against three fresh bare-Codex sessions. The six eligible profiles used 216,039,299 tokens against 202,598,376 repeated matched-baseline tokens (+6.63%), with 53/54 treatment verifiers. jcodemunch-mcp v2 (-9.93%) and Ponytail (-1.29%) were below baseline in aggregate; the other four ranged from +0.32% to +29.29%. Four of six aggregate directions changed from the preceding screen. The Cartog direct-MCP v1 results were deleted after a product-parity defect was established. The evidence therefore does not support a stable product ranking.
 
-The r3 campaign used the original natural-use task contracts. After every provider session completed, the separately qualified assisted-v1 contracts were activated. They disclose target files, intended implementation, focused validation commands, environment constraints, and stop conditions while keeping treatment configuration separate from task assistance. The 21 retained original baseline/treatment lanes and three corrected Cartog product-v2 lanes passed provider-free preparation with zero provider calls. A distinct Sol/`high` assisted-v1 baseline panel has now completed with 7,718,469 provider tokens and 9/9 task verifiers; no assisted treatment has run.
+The r3 campaign used the original natural-use contracts. The later assisted-v1 Sol/`high` baseline completed with 7,718,469 provider tokens and 9/9 verifier passes, but post-run trajectory/source review found substantive corrections and one surviving hidden-contract regression. It remains valid evidence for its frozen contract but is not an acceptable comparison control for treatment spend. Baseline V2 now replaces assisted-v1 for future execution. Its nine routine tasks retain the three persistent lifecycle stages while capping each task at one or two production files, prescribing the exact edit, exposing focused validation, and forbidding rediscovery and broad suites. Three provider-free qualifications and three frozen pilot protocols pass with zero provider calls; the provider-backed zero-mistake gate remains open.
 
 ## Production evidence now retained
 
@@ -18,18 +18,18 @@ The r3 campaign used the original natural-use task contracts. After every provid
 4. Provider accounting uses one final monotonic cumulative snapshot per distinct thread; older records are interpreted through the correction audit.
 5. Token eligibility is independent of verifier outcome; correctness remains diagnostic and did not trigger pass-selection reruns.
 6. The first and r3 natural-use screens have separate machine-readable analyses and standalone reports.
-7. Assisted-v1 prompt and qualification identities are distinct from the natural-use r3 evidence.
+7. Executed assisted-v1 prompt, qualification, protocol, and session identities remain immutable historical evidence; Baseline V2 has distinct active prompt, qualification, and protocol fingerprints.
 
 ## Next research step
 
 Do not rerun occupied natural-use samples to replace unfavorable, high-variance, or near-neutral results. New provider work must be prospective, separately indexed, and explicitly authorized.
 
-1. Continue the controlled confirmation round from the retained Sol/`high` assisted-v1 baseline, measuring provider-token usage under the same standardized solution-directed workflow.
-2. Give baseline and every comparable treatment identical task-assistance bytes. Keep product-authored treatment guidance as part of the treatment and do not add evaluator-authored tool steering.
-3. Retain the three-task persistent-session structure so the experiment continues to measure context carryover.
-4. Add treatment-appropriate telemetry for hooks, wrappers, MCP calls, turn counts, command outcomes, and setup latency without forcing uptake.
-5. Classify probe exits, environment-impossible failures, expected red tests, implementation regressions, and successful validation separately.
-6. Preserve first-valid assignment samples regardless of token direction or verifier outcome.
-7. Preregister any stack as a new identity; valid individual evidence does not revive the deleted historical stack or justify adding individual percentages.
+1. Execute exactly one explicitly authorized GPT-5.6 Sol/`high` bare-model Baseline V2 pilot; do not launch treatments first.
+2. Audit the complete trajectory and final tree. The pilot gate requires zero unique model incidents, zero corrected implementation mistakes, and zero unresolved defects; verifier green alone is insufficient.
+3. If any incident occurs, simplify or replace the responsible task and mint a new generation rather than rerunning the occupied pilot for a pass.
+4. Only after the gate passes, give baseline and comparable treatments identical Baseline V2 task-assistance bytes while preserving product-authored treatment guidance and forbidding evaluator-authored tool steering.
+5. Retain the three-task persistent-session structure and first-valid-sample policy.
+6. Keep treatment telemetry observational; do not force tool uptake.
+7. Preregister any future stack under a new identity.
 
-The natural-use and assisted studies answer different questions. Natural use estimates assignment under normal product availability; assisted-v1 estimates token usage while following a frozen implementation and validation recipe. The assisted study currently has baseline evidence only, so treatment effects remain unestimated. Results must remain separate rather than being pooled as exchangeable replicates.
+Natural-use, assisted-v1, and Baseline V2 answer different questions and are not exchangeable populations. No Baseline V2 provider result or treatment effect exists yet.
