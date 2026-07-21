@@ -1,0 +1,124 @@
+{
+  "schema_version": 1,
+  "audit_id": "opencode-successive-native-tool-selection-20260730-batch2",
+  "status": "selected-before-provider-execution",
+  "selection_rule": "The first OpenCode screen already evaluated the five eligible products selected from the live compatible shortlist. This second screen carries forward the next five remaining eligible products from the most recent compatible Codex screen, excluding products without a qualifying OpenCode surface.",
+  "previous_opencode_screen": {
+    "audit_path": "sources/evaluations/audits/opencode-successive-native-tool-selection-20260730.json",
+    "selected_profiles": [
+      "codescope-opencode-product-v1",
+      "swarmvault-opencode-product-v1",
+      "retrieval-graphify-opencode-product-v1",
+      "terminal-rtk-opencode-plugin-v1",
+      "retrieval-codegraph-opencode-mcp-v1"
+    ],
+    "accepted_result_audit": "sources/evaluations/audits/opencode-next-five-sol-high-r1-results-20260730.json"
+  },
+  "source_screen": {
+    "path": "sources/evaluations/audits/codex-openai-gpt-5-6-sol-high-r0-panel-results-20260729.json",
+    "selection_order_after_previous_screen": [
+      "retrieval-jcodemunch-codex-mcp-v2",
+      "artifact-ponytail-codex-plugin-v1",
+      "retrieval-sigmap-codex-live-v1",
+      "behavior-caveman-codex-skill-v1",
+      "integrated-leanctx-codex-hybrid-v1"
+    ],
+    "screening_claim": "screening-ablation",
+    "cross_screen_continuation": true
+  },
+  "excluded_before_selection": [
+    {
+      "profile_id": "integrated-token-savior-codex-product-v2",
+      "reason": "No qualifying local native or host-agnostic OpenCode installation surface was established in the prior selection audit."
+    },
+    {
+      "profile_id": "retrieval-serena-codex-mcp-v1",
+      "reason": "Already covered by an earlier OpenCode treatment and therefore not a next-new product."
+    },
+    {
+      "profile_id": "retrieval-cartog-codex-product-v2",
+      "reason": "Already covered by an earlier OpenCode treatment and therefore not a next-new product."
+    },
+    {
+      "profile_id": "terminal-snip-codex-hook-v1",
+      "reason": "Already covered by an earlier OpenCode treatment and therefore not a next-new product."
+    },
+    {
+      "profile_id": "terminal-tokenjuice-codex-hook-v1",
+      "reason": "Already covered by an earlier OpenCode treatment and therefore not a next-new product."
+    },
+    {
+      "profile_id": "integrated-headroom-opencode-product-v3",
+      "reason": "Historical OpenCode compatibility is blocked by the documented MCP API mismatch; no dependency pinning workaround is allowed."
+    }
+  ],
+  "selected_products": [
+    {
+      "profile_id": "retrieval-jcodemunch-opencode-product-v1",
+      "product": "jCodemunch",
+      "surface": "host-agnostic MCP plus verbatim product-authored guidance plus warm index",
+      "source_commit": "fbc14e40c7057ebc6d718fb48083d30522afe15f",
+      "version": "1.108.114",
+      "native_open_code_basis": "AGENT_INSTALL_UNIVERSAL.md provides a universal host installation contract and server.json defines the local MCP server; the treatment registers that server directly in OpenCode."
+    },
+    {
+      "profile_id": "artifact-ponytail-opencode-plugin-v1",
+      "product": "Ponytail",
+      "surface": "native .opencode plugin plus product-authored AGENTS guidance",
+      "source_commit": "c4d1925ae9b76a1b641877328209ad25cfeb5ef2",
+      "version": "4.8.3",
+      "native_open_code_basis": "The pinned checkout contains .opencode/plugins/ponytail.mjs and AGENTS.md."
+    },
+    {
+      "profile_id": "retrieval-sigmap-opencode-product-v1",
+      "product": "SigMap",
+      "surface": "standalone MCP server plus official OpenCode MCP installer plus warm context map",
+      "source_commit": "b1e086cf06bc7a7622473ffe9637c122567404e0",
+      "version": "8.9.1",
+      "native_open_code_basis": "The pinned standalone bundle explicitly lists opencode as a supported MCP client and exposes gen-context.js --mcp."
+    },
+    {
+      "profile_id": "behavior-caveman-opencode-plugin-v1",
+      "product": "Caveman",
+      "surface": "official OpenCode installer plus native plugin plus product initialization",
+      "source_commit": "0d95a81d35a9f2d123a5e9430d1cfc43d55f1bb0",
+      "version": "0.1.0",
+      "native_open_code_basis": "The pinned installer exposes --only opencode and the local source contains the OpenCode plugin implementation."
+    },
+    {
+      "profile_id": "integrated-leanctx-opencode-hybrid-v1",
+      "product": "LeanCTX",
+      "surface": "official OpenCode initializer plus local MCP plus warm index and product instructions",
+      "source_commit": "adc4e8b2e401d160906a392994c9afd7af3dfffa",
+      "version": "3.8.18",
+      "native_open_code_basis": "The pinned official binary reports LeanCTX 3.8.18 and its initializer accepts --agent opencode; the treatment uses that official target rather than the historical MCP-only partial profile."
+    }
+  ],
+  "qualification_contract": {
+    "model_condition": "opencode-openai-gpt-5-6-sol-high",
+    "model": "gpt-5.6-sol",
+    "reasoning_effort": "high",
+    "replicate_index": 2,
+    "sequences": [
+      "fastify-lifecycle-sequence-v0",
+      "beets-lifecycle-sequence-v0",
+      "terraform-lifecycle-sequence-v0"
+    ],
+    "provider_execution": "sequential --max-parallel 1",
+    "provider_free_gates": [
+      "exact source/artifact identities",
+      "lane-private install and state",
+      "effective OpenCode configuration",
+      "native plugin or MCP activation",
+      "MCP initialize plus tools/list where applicable",
+      "warm-state preparation",
+      "paid-only parity",
+      "task and final verifiers"
+    ]
+  },
+  "limitations": [
+    "The ordering is a cross-screen continuation rather than a new OpenCode-side shortlist with comparable OpenCode usage observations.",
+    "Eligibility does not imply the product will be naturally used by the model; model uptake is measured separately.",
+    "No provider execution or quality result is included in this selection audit."
+  ]
+}

@@ -43,6 +43,7 @@ OPENCODE_ADAPTER_V2 = Path("/opt/data/tool-candidates/opencode-adapter-v2/openco
 OPENCODE_ADAPTER_V3 = Path("/opt/data/tool-candidates/opencode-adapter-v3/opencode_workflow_adapter.py")
 OPENCODE_ADAPTER_V4 = Path("/opt/data/tool-candidates/opencode-adapter-v4/opencode_workflow_adapter.py")
 OPENCODE_ADAPTER_V5 = Path("/opt/data/tool-candidates/opencode-adapter-v5/opencode_workflow_adapter.py")
+OPENCODE_ADAPTER_V6 = Path("/opt/data/tool-candidates/opencode-adapter-v6/opencode_workflow_adapter.py")
 FORBIDDEN_BASELINE_TERMS = [
     "lean-ctx",
     "mcp_lean_ctx",
@@ -86,6 +87,11 @@ PROFILE_TOOL_CONFIG_OVERRIDES = {
     "retrieval-graphify-codex-skill-v1": "graphify-codex-skill-v1",
     "retrieval-codegraph-codex-mcp-v1": "codegraph-codex-mcp-v1",
     "integrated-leanctx-codex-hybrid-v1": "leanctx-codex-hybrid-v1",
+    "retrieval-jcodemunch-opencode-product-v1": "jcodemunch-opencode-product-v1",
+    "integrated-leanctx-opencode-hybrid-v1": "leanctx-opencode-hybrid-v1",
+    "retrieval-sigmap-opencode-product-v1": "sigmap-opencode-product-v1",
+    "artifact-ponytail-opencode-plugin-v1": "ponytail-opencode-plugin-v1",
+    "behavior-caveman-opencode-plugin-v1": "caveman-opencode-plugin-v1",
     "retrieval-cartog-codex-product-v2": "cartog-codex-product-v2",
     "codescope-codex-product-v1": "codescope-codex-product-v1",
     "swarmvault-codex-product-v1": "swarmvault-codex-product-v1",
@@ -132,6 +138,9 @@ LOWFAT_BIN = Path("/opt/data/tool-candidates/lowfat-bin/lowfat")
 TOKENJUICE_ROOT = Path("/opt/data/tool-candidates/tokenjuice")
 TOKENJUICE_BIN = TOKENJUICE_ROOT / "bin" / "tokenjuice"
 CAVEMAN_ROOT = Path("/opt/data/tool-candidates/caveman")
+LEANCTX_BINARY = Path("/opt/data/bin/lean-ctx")
+LEANCTX_ROOT = Path("/opt/data/tool-candidates/lean-ctx")
+PONYTAIL_ROOT = Path("/opt/data/tool-candidates/ponytail")
 HEADROOM_ROOT = Path("/opt/data/tool-candidates/headroom")
 HEADROOM_WHEEL = HEADROOM_ROOT / "dist" / "headroom_ai-0.28.0-cp310-abi3-linux_x86_64.whl"
 HEADROOM_OPENCODE_PLUGIN = HEADROOM_ROOT / "plugins" / "opencode" / "dist" / "entry.opencode.js"
@@ -1891,6 +1900,158 @@ TOOL_CONFIGS.update(
             effective_host_config={"required": True, "source": "adapter-probe"},
             diff_exclude_paths=["AGENTS.md", "opencode.jsonc", ".codegraph"],
             default_tool_state="warm-live-index+official-mcp-instructions",
+        ),
+    }
+)
+
+# Successive native OpenCode treatment batch 2. These profiles are carried
+# forward from the next compatible Codex screen because the first OpenCode
+# screen already consumed the five earlier eligible products.
+TOOL_CONFIGS.update(
+    {
+        "jcodemunch-opencode-product-v1": _opencode_treatment_config(
+            "jcodemunch",
+            display_name="jCodemunch guide-faithful OpenCode MCP v1",
+            lane_name="retrieval-jcodemunch-opencode-product-v1",
+            surface="opencode-mcp+product-authored-guidance+warm-index",
+            allowed_terms=["jcodemunch", "jcodemunch-mcp"],
+            mounts=[str(JCODEMUNCH_ROOT), str(JCODEMUNCH_WHEEL), str(ROOT / "scripts" / "install_jcodemunch_opencode_guidance.py")],
+            adapter_path=OPENCODE_ADAPTER_V6,
+            env={"OPENCODE_TOOL_DATA_DIR": "{tool_data_dir}", "JCODEMUNCH_LOG_LEVEL": "ERROR"},
+            path_entries=["{tool_data_dir}/venv/bin"],
+            host_integration={
+                "install_commands": [
+                    [str(UV_BIN), "venv", "{tool_data_dir}/venv", "--python", "python3"],
+                    [str(UV_BIN), "pip", "install", "--python", "{tool_data_dir}/venv/bin/python", str(JCODEMUNCH_WHEEL)],
+                    ["python3", "{repository_root}/scripts/install_jcodemunch_opencode_guidance.py", "--source-root", str(JCODEMUNCH_ROOT), "--expected-commit", JCODEMUNCH_COMMIT, "--repo", "{repo}", "--receipt", "{tool_data_dir}/guidance-install.json"],
+                ],
+                "verify_commands": [["{tool_data_dir}/venv/bin/jcodemunch-mcp", "--version"]],
+                "required_files": ["{tool_data_dir}/venv/bin/jcodemunch-mcp", "{tool_data_dir}/guidance-install.json", "{repo}/AGENTS.md"],
+                "timeout_seconds": 900,
+            },
+            mcp_server="jcodemunch",
+            mcp_command="{tool_data_dir}/venv/bin/jcodemunch-mcp",
+            mcp_args=[],
+            mcp_handshake={"required": True, "method": "initialize-and-tools-list", "timeout_seconds": 120},
+            warmup={"kind": "product-native-code-index-build", "command": ["{tool_data_dir}/venv/bin/jcodemunch-mcp", "index", "{repo}"], "output_name": "jcodemunch-warmup-output.txt", "metadata_name": "jcodemunch-warmup-metadata.json", "timeout_seconds": 1200},
+            artifact_identities=[
+                {"path": str(JCODEMUNCH_WHEEL), "sha256": "9ae3a44c2be5709d33fa2b56c9e569906ed63906a907f89b4762a370d397ed54", "kind": "python-wheel"},
+                {"path": str(JCODEMUNCH_ROOT / "AGENT_INSTALL_UNIVERSAL.md"), "sha256": "2026d09f4af85e972a5c4a9874d91bd8a8675ab7fbb44a283911fd06afd0abb2", "kind": "product-guidance"},
+                {"path": str(OPENCODE_ADAPTER_V6), "sha256": "1b98aaec34711b3a7bb09ce269c12bb06421ab08913d06593fb6d2c6641a34a3", "kind": "runtime-adapter"},
+            ],
+            effective_host_config={"required": True, "source": "adapter-probe"},
+            diff_exclude_paths=["AGENTS.md"],
+            default_tool_state="warm-index+product-guidance",
+        ),
+        "leanctx-opencode-hybrid-v1": _opencode_treatment_config(
+            "leanctx",
+            display_name="LeanCTX official OpenCode hybrid integration v1",
+            lane_name="integrated-leanctx-opencode-hybrid-v1",
+            surface="opencode-mcp+instructions+shell-output-compression+warm-index",
+            allowed_terms=["lean-ctx", "mcp_lean_ctx", "ctx_read", "ctx_search", "ctx_shell", "ctx_graph"],
+            mounts=[str(LEANCTX_BINARY), str(LEANCTX_ROOT)],
+            adapter_path=OPENCODE_ADAPTER_V6,
+            env={"OPENCODE_TOOL_DATA_DIR": "{tool_data_dir}", "LEAN_CTX_DATA_DIR": "{tool_data_dir}/leanctx"},
+            host_integration={
+                "install_commands": [[str(LEANCTX_BINARY), "init", "--agent", "opencode"]],
+                "verify_commands": [[str(LEANCTX_BINARY), "--version"]],
+                "required_files": ["{repo}/AGENTS.md", "{repo}/LEAN-CTX.md"],
+                "timeout_seconds": 600,
+            },
+            mcp_server="lean-ctx",
+            mcp_command=str(LEANCTX_BINARY),
+            mcp_args=[],
+            mcp_handshake={"required": True, "method": "initialize-and-tools-list", "timeout_seconds": 120},
+            warmup={"kind": "product-native-index-build", "command": [str(LEANCTX_BINARY), "index", "build", "{repo}"], "output_name": "leanctx-warmup-output.txt", "metadata_name": "leanctx-warmup-metadata.json", "timeout_seconds": 1800},
+            artifact_identities=[
+                {"path": str(LEANCTX_BINARY), "sha256": "475e89e495c31824ef324f92e695706ddbd890dff2c3b55b807cd1f8526c6db9", "kind": "compiled-cli-mcp"},
+                {"path": str(LEANCTX_ROOT / "README.md"), "sha256": "3511c0d1e04eda53f9e66f7528b5179138b4e3963891c07c8749fa0c3b98f5cb", "kind": "product-guidance-source"},
+                {"path": str(OPENCODE_ADAPTER_V6), "sha256": "1b98aaec34711b3a7bb09ce269c12bb06421ab08913d06593fb6d2c6641a34a3", "kind": "runtime-adapter"},
+            ],
+            effective_host_config={"required": True, "source": "adapter-probe"},
+            diff_exclude_paths=["AGENTS.md", "LEAN-CTX.md", ".lean-ctx"],
+            default_tool_state="warm-index+active-guidance",
+        ),
+        "sigmap-opencode-product-v1": _opencode_treatment_config(
+            "sigmap",
+            display_name="SigMap official OpenCode MCP and context setup v1",
+            lane_name="retrieval-sigmap-opencode-product-v1",
+            surface="opencode-mcp+product-setup+warm-context-map",
+            allowed_terms=["sigmap", "gen-context"],
+            mounts=[str(SIGMAP_ROOT)],
+            adapter_path=OPENCODE_ADAPTER_V6,
+            env={"OPENCODE_TOOL_DATA_DIR": "{tool_data_dir}", "SIGMAP_TELEMETRY": "0"},
+            host_integration={
+                "install_commands": [
+                    [str(NODE_BIN), str(SIGMAP_ROOT / "gen-context.js"), "mcp", "install", "opencode"],
+                ],
+                "verify_commands": [[str(NODE_BIN), str(SIGMAP_ROOT / "gen-context.js"), "--version"]],
+                "required_files": ["{repo}/.context", "{repo}/opencode.json"],
+                "timeout_seconds": 600,
+            },
+            mcp_server="sigmap",
+            mcp_command=str(NODE_BIN),
+            mcp_args=[str(SIGMAP_ROOT / "gen-context.js"), "--mcp"],
+            mcp_handshake={"required": True, "method": "initialize-and-tools-list", "timeout_seconds": 120},
+            warmup={"kind": "signature-map-build", "command": [str(NODE_BIN), str(SIGMAP_ROOT / "gen-context.js"), "--adapter", "copilot", "--no-track"], "cleanup_paths": [".context"], "output_name": "sigmap-warmup-output.txt", "metadata_name": "sigmap-warmup-metadata.json", "timeout_seconds": 1200},
+            artifact_identities=[
+                {"path": str(SIGMAP_ROOT / "gen-context.js"), "sha256": "1a920ef5dfb50f9f1a23baa7d26ab2f9329616242713a7d8734928970ad4fb59", "kind": "standalone-mcp-bundle"},
+                {"path": str(SIGMAP_ROOT / "package.json"), "sha256": "f8478ca025747dada0b86288f696e1ae39ea8701a5081c60f54c70eafa034963", "kind": "source-package"},
+                {"path": str(OPENCODE_ADAPTER_V6), "sha256": "1b98aaec34711b3a7bb09ce269c12bb06421ab08913d06593fb6d2c6641a34a3", "kind": "runtime-adapter"},
+            ],
+            effective_host_config={"required": True, "source": "adapter-probe"},
+            diff_exclude_paths=[".context", "opencode.json"],
+            default_tool_state="warm-context-map+active-mcp",
+        ),
+        "ponytail-opencode-plugin-v1": _opencode_treatment_config(
+            "ponytail",
+            display_name="Ponytail official OpenCode plugin v1",
+            lane_name="artifact-ponytail-opencode-plugin-v1",
+            surface="opencode-plugin+per-turn-rules+skills+commands",
+            allowed_terms=["ponytail"],
+            mounts=[str(PONYTAIL_ROOT)],
+            adapter_path=OPENCODE_ADAPTER_V6,
+            env={"OPENCODE_TOOL_DATA_DIR": "{tool_data_dir}"},
+            host_integration={
+                "install_commands": [["python3", "{repository_root}/scripts/install_ponytail_opencode.py", "--source-root", "/opt/data/tool-candidates/ponytail", "--repo", "{repo}", "--receipt", "{tool_data_dir}/ponytail-install.json"]],
+                "verify_commands": [["python3", "-c", "from pathlib import Path; assert Path('{repo}/.opencode/plugins/ponytail.mjs').is_file(); assert Path('{repo}/AGENTS.md').is_file()"]],
+                "required_files": ["{repo}/.opencode/plugins/ponytail.mjs", "{repo}/AGENTS.md"],
+                "timeout_seconds": 300,
+            },
+            native_plugin={"required": True, "path": "{repo}/.opencode/plugins/ponytail.mjs"},
+            artifact_identities=[
+                {"path": str(PONYTAIL_ROOT / ".opencode/plugins/ponytail.mjs"), "sha256": "e2443648e1864724f56e2a073fdf2f29199772606d9ea1c175fe06eaa3b75853", "kind": "native-plugin"},
+                {"path": str(PONYTAIL_ROOT / "AGENTS.md"), "sha256": "1cd148db944eff33bf8bb878c41a290fe85b86de3e65ac311d5d501e71a0cdbf", "kind": "product-guidance"},
+                {"path": str(OPENCODE_ADAPTER_V6), "sha256": "1b98aaec34711b3a7bb09ce269c12bb06421ab08913d06593fb6d2c6641a34a3", "kind": "runtime-adapter"},
+            ],
+            effective_host_config={"required": True, "source": "adapter-probe"},
+            diff_exclude_paths=["AGENTS.md", ".opencode"],
+            default_tool_state="active-native-plugin+per-turn-guidance",
+        ),
+        "caveman-opencode-plugin-v1": _opencode_treatment_config(
+            "caveman",
+            display_name="Caveman official OpenCode plugin and guidance v1",
+            lane_name="behavior-caveman-opencode-plugin-v1",
+            surface="opencode-plugin+prompt-reinforcement+skills+commands",
+            allowed_terms=["caveman", "cavecrew"],
+            mounts=[str(CAVEMAN_ROOT)],
+            adapter_path=OPENCODE_ADAPTER_V6,
+            env={"OPENCODE_TOOL_DATA_DIR": "{tool_data_dir}"},
+            host_integration={
+                "install_commands": [[str(NODE_BIN), str(CAVEMAN_ROOT / "bin/install.js"), "--only", "opencode", "--with-init"]],
+                "verify_commands": [[str(NODE_BIN), str(CAVEMAN_ROOT / "bin/install.js"), "--list"]],
+                "required_files": ["{codex_home}/xdg-config/opencode/plugins/caveman/plugin.js", "{repo}/AGENTS.md"],
+                "timeout_seconds": 600,
+            },
+            native_plugin={"required": True, "path": "{codex_home}/xdg-config/opencode/plugins/caveman/plugin.js"},
+            artifact_identities=[
+                {"path": str(CAVEMAN_ROOT / "src/plugins/opencode/plugin.js"), "sha256": "6d68e8dfe205354718729a5f5c9ca9d555a045af6b2cbbc3b6a84caad1076df7", "kind": "native-plugin-source"},
+                {"path": str(CAVEMAN_ROOT / "src/plugins/opencode/package.json"), "sha256": "b603811ba72eb71581db5b02045fb5f8903e3c46dcf7b40f36eeb81fbba23274", "kind": "native-plugin-package"},
+                {"path": str(OPENCODE_ADAPTER_V6), "sha256": "1b98aaec34711b3a7bb09ce269c12bb06421ab08913d06593fb6d2c6641a34a3", "kind": "runtime-adapter"},
+            ],
+            effective_host_config={"required": True, "source": "adapter-probe"},
+            diff_exclude_paths=["AGENTS.md", ".opencode"],
+            default_tool_state="active-native-plugin+per-session-guidance",
         ),
     }
 )
