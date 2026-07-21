@@ -1,10 +1,10 @@
 {
   "protocol_schema_version": 3,
-  "protocol_id": "terraform-lifecycle-sequence-v0-integrated-leanctx-opencode-hybrid-v1-9db8489b7919",
+  "protocol_id": "terraform-lifecycle-sequence-v0-artifact-ponytail-opencode-plugin-v1-ff746bfa91b7",
   "status": "frozen-ready-not-run",
-  "outcome": "Frozen integrated-leanctx-opencode-hybrid-v1 protocol for terraform-lifecycle-sequence-v0; no provider/model run has occurred.",
+  "outcome": "Frozen artifact-ponytail-opencode-plugin-v1 protocol for terraform-lifecycle-sequence-v0; no provider/model run has occurred.",
   "frozen_at": "2026-07-22",
-  "hypothesis": "integrated-leanctx-opencode-hybrid-v1 produces reproducible provider-reported token and software-quality evidence for terraform-lifecycle-sequence-v0",
+  "hypothesis": "artifact-ponytail-opencode-plugin-v1 produces reproducible provider-reported token and software-quality evidence for terraform-lifecycle-sequence-v0",
   "evidence_stage_target": "reproduction",
   "task_fixture": {
     "fixture_id": "large-hashicorp-terraform",
@@ -35,13 +35,13 @@
     "selection_policy": "sequence-pool-replicate-matched-first-valid"
   },
   "treatment": {
-    "profile_id": "integrated-leanctx-opencode-hybrid-v1",
+    "profile_id": "artifact-ponytail-opencode-plugin-v1",
     "runtime_id": "opencode-cli",
     "provider": "openai",
     "model": "gpt-5.6-sol",
     "model_condition_id": "opencode-openai-gpt-5-6-sol-high",
     "reasoning_effort": "high",
-    "command": "python3 scripts/run_opencode_workflow_model_condition.py --workflow-model-condition-id opencode-openai-gpt-5-6-sol-high --workflow-model gpt-5.6-sol --workflow-reasoning-effort high --sequence-id terraform-lifecycle-sequence-v0 --profile-id integrated-leanctx-opencode-hybrid-v1 --timeout-per-task 3600 --protocol sources/evaluations/protocols/terraform-lifecycle-sequence-v0-integrated-leanctx-opencode-hybrid-v1-9db8489b7919.json --docker-image token-eval-codex:latest"
+    "command": "python3 scripts/run_opencode_workflow_model_condition.py --workflow-model-condition-id opencode-openai-gpt-5-6-sol-high --workflow-model gpt-5.6-sol --workflow-reasoning-effort high --sequence-id terraform-lifecycle-sequence-v0 --profile-id artifact-ponytail-opencode-plugin-v1 --timeout-per-task 3600 --protocol sources/evaluations/protocols/terraform-lifecycle-sequence-v0-artifact-ponytail-opencode-plugin-v1-ff746bfa91b7.json --docker-image token-eval-codex:latest"
   },
   "token_accounting_boundary": {
     "fields": [
@@ -249,28 +249,26 @@
     }
   },
   "selected_execution": {
-    "descriptor_sha256": "bda034a391b47285524ee7c8a066708ecb9c68fc5f7a7e4c40f02694c5b06392",
+    "descriptor_sha256": "4d12a2ea782d460d2ca506695ff188af92b686038cf526b4bfb8b4108308a3f5",
     "descriptor": {
       "version": "execution-condition-v1",
       "sequence_id": "terraform-lifecycle-sequence-v0",
       "execution_role": "individual_tool_treatment",
       "selected_profile": {
-        "profile_id": "integrated-leanctx-opencode-hybrid-v1",
+        "profile_id": "artifact-ponytail-opencode-plugin-v1",
         "profile_type": "individual_tool",
         "component_ids": [
-          "integrated-leanctx-opencode-hybrid-v1"
+          "artifact-ponytail-opencode-plugin-v1"
         ],
         "enabled_surfaces": [
-          "retrieval-context",
-          "opencode-mcp",
-          "product-authored-instructions",
-          "shell-output-compression",
-          "warm-index"
+          "opencode-plugin",
+          "product-authored-skills-and-commands",
+          "per-turn-guidance"
         ],
         "disabled_overlaps": [
           "all unlisted surfaces"
         ],
-        "registry_entry_sha256": "9b2c59e2409f38a880ffa697c9814e84e3dba373ffddc5614e883d448cb4cd3d",
+        "registry_entry_sha256": "f3e930817774486c30906fed4b65b3c5dc16a37b1fd49dba67006ce16c84c121",
         "registry_entry": {
           "profile_type": "individual_tool",
           "objective_scope": "individual_tool_effectiveness",
@@ -291,40 +289,39 @@
           "reset": {
             "policy": "Delete lane-private OpenCode XDG directories, product state, generated repository treatment files, auth translation, and background processes after evidence capture."
           },
-          "id": "integrated-leanctx-opencode-hybrid-v1",
-          "name": "LeanCTX OpenCode hybrid integration V1",
+          "id": "artifact-ponytail-opencode-plugin-v1",
+          "name": "Ponytail OpenCode plugin V1",
           "enabled_surfaces": [
-            "retrieval-context",
-            "opencode-mcp",
-            "product-authored-instructions",
-            "shell-output-compression",
-            "warm-index"
+            "opencode-plugin",
+            "product-authored-skills-and-commands",
+            "per-turn-guidance"
           ],
           "components": [
             {
-              "component_id": "integrated-leanctx-opencode-hybrid-v1",
-              "surface": "retrieval-context+opencode-mcp+instructions+shell-output-compression+warm-index",
+              "component_id": "artifact-ponytail-opencode-plugin-v1",
+              "surface": "opencode-plugin+product-authored-skills+commands+per-turn-guidance",
               "role": "individual_tool"
             }
           ],
           "install": {
-            "policy": "Run the pinned official LeanCTX initializer with the OpenCode agent target, build its lane-private index, and require the local MCP initialize plus tools/list handshake."
+            "policy": "Copy the pinned Ponytail OpenCode plugin and product-authored rules into the isolated project, then require the plugin to load through OpenCode\u2019s native plugin surface."
           },
           "evaluation_protocol": {
             "tool_use_policy": "natural",
-            "tool_state": "warm-index+active-guidance",
-            "integration_state": "official-opencode-hybrid",
+            "tool_state": "active-native-plugin+per-turn-guidance",
+            "integration_state": "official-opencode-plugin+product-authored-guidance",
             "assignment_proof": "provider-free exact artifact identities, effective OpenCode configuration, native activation, warm state, and task/final verifiers required"
           },
           "source_snapshot": {
-            "repository": "yvgude/lean-ctx",
-            "version": "3.8.18",
-            "source_commit": "adc4e8b2e401d160906a392994c9afd7af3dfffa",
-            "binary_sha256": "475e89e495c31824ef324f92e695706ddbd890dff2c3b55b807cd1f8526c6db9",
+            "repository": "",
+            "version": "4.8.3",
+            "source_commit": "c4d1925ae9b76a1b641877328209ad25cfeb5ef2",
+            "plugin_sha256": "e2443648e1864724f56e2a073fdf2f29199772606d9ea1c175fe06eaa3b75853",
+            "guidance_sha256": "1cd148db944eff33bf8bb878c41a290fe85b86de3e65ac311d5d501e71a0cdbf",
             "runtime_adapter": "/opt/data/tool-candidates/opencode-adapter-v6/opencode_workflow_adapter.py",
             "runtime_adapter_sha256": "1b98aaec34711b3a7bb09ce269c12bb06421ab08913d06593fb6d2c6641a34a3"
           },
-          "notes": "Second successive screen: the existing LeanCTX source includes an OpenCode initializer target; the treatment uses that official hybrid surface, not the historical MCP-only partial profile."
+          "notes": "Second successive screen: Ponytail contains a native .opencode plugin and product-authored AGENTS guidance; no prompt-only emulation is used."
         }
       },
       "model_facing_prompts": {
@@ -349,27 +346,21 @@
         ]
       },
       "tool_adapter": {
-        "tool_id": "leanctx-opencode-hybrid-v1",
+        "tool_id": "ponytail-opencode-plugin-v1",
         "tool_manifest": "scripts/run_codex_fixture_evaluation.py:TOOL_CONFIGS",
-        "tool_manifest_sha256": "fdb1c530cb6e0e7be142c18a0b78c4aea26c59863c080c7b8c61db782d42f4cc",
+        "tool_manifest_sha256": "d00a59ad466f46e42e1ecd0d9e98e0ccd2cb89c2fc4011de66ebdecfbab1b475",
         "tool_config": {
-          "display_name": "LeanCTX official OpenCode hybrid integration v1",
-          "lane_name": "integrated-leanctx-opencode-hybrid-v1",
-          "surface": "opencode-mcp+instructions+shell-output-compression+warm-index",
+          "display_name": "Ponytail official OpenCode plugin v1",
+          "lane_name": "artifact-ponytail-opencode-plugin-v1",
+          "surface": "opencode-plugin+per-turn-rules+skills+commands",
           "allowed_terms": [
             "opencode",
-            "lean-ctx",
-            "mcp_lean_ctx",
-            "ctx_read",
-            "ctx_search",
-            "ctx_shell",
-            "ctx_graph"
+            "ponytail"
           ],
-          "data_dir_name": "integrated-leanctx-opencode-hybrid-v1",
+          "data_dir_name": "artifact-ponytail-opencode-plugin-v1",
           "mounts": [
             "/opt/data/tool-candidates/opencode-adapter-v6/opencode_workflow_adapter.py",
-            "/opt/data/bin/lean-ctx",
-            "/opt/data/tool-candidates/lean-ctx"
+            "/opt/data/ponytail"
           ],
           "executable": "/opt/data/tool-candidates/opencode-runtime/node_modules/opencode-ai/bin/opencode.exe",
           "expected_executable_sha256": "7c4d91c84d2bfdeabb59257e3490c5e5acb08f2aacb3e42f3ddc296a1c3f1aca",
@@ -383,7 +374,7 @@
               "--expected-opencode-sha256",
               "7c4d91c84d2bfdeabb59257e3490c5e5acb08f2aacb3e42f3ddc296a1c3f1aca",
               "--treatment",
-              "leanctx"
+              "ponytail"
             ]
           },
           "preflight_command": [
@@ -394,65 +385,53 @@
             "--expected-opencode-sha256",
             "7c4d91c84d2bfdeabb59257e3490c5e5acb08f2aacb3e42f3ddc296a1c3f1aca",
             "--treatment",
-            "leanctx",
+            "ponytail",
             "--probe"
           ],
           "tool_manifest_identity": "current-file-v1",
           "env": {
-            "OPENCODE_TOOL_DATA_DIR": "{tool_data_dir}",
-            "LEAN_CTX_DATA_DIR": "{tool_data_dir}/leanctx"
+            "OPENCODE_TOOL_DATA_DIR": "{tool_data_dir}"
           },
           "host_integration": {
             "install_commands": [
               [
-                "/opt/data/bin/lean-ctx",
-                "init",
-                "--agent",
-                "opencode"
+                "python3",
+                "{repository_root}/scripts/install_ponytail_opencode.py",
+                "--source-root",
+                "/opt/data/tool-candidates/ponytail",
+                "--repo",
+                "{repo}",
+                "--receipt",
+                "{tool_data_dir}/ponytail-install.json"
               ]
             ],
             "verify_commands": [
               [
-                "/opt/data/bin/lean-ctx",
-                "--version"
+                "python3",
+                "-c",
+                "from pathlib import Path; assert Path('{repo}/.opencode/plugins/ponytail.mjs').is_file(); assert Path('{repo}/AGENTS.md').is_file()"
               ]
             ],
             "required_files": [
-              "{repo}/AGENTS.md",
-              "{repo}/LEAN-CTX.md"
+              "{repo}/.opencode/plugins/ponytail.mjs",
+              "{repo}/AGENTS.md"
             ],
-            "timeout_seconds": 600
+            "timeout_seconds": 300
           },
-          "mcp_server": "lean-ctx",
-          "mcp_command": "/opt/data/bin/lean-ctx",
-          "mcp_args": [],
-          "mcp_handshake": {
+          "native_plugin": {
             "required": true,
-            "method": "initialize-and-tools-list",
-            "timeout_seconds": 120
-          },
-          "warmup": {
-            "kind": "product-native-index-build",
-            "command": [
-              "/opt/data/bin/lean-ctx",
-              "index",
-              "build",
-              "{repo}"
-            ],
-            "output_name": "leanctx-warmup-output.txt",
-            "metadata_name": "leanctx-warmup-metadata.json",
-            "timeout_seconds": 1800
+            "path": "{repo}/.opencode/plugins/ponytail.mjs"
           },
           "artifact_identities": [
             {
-              "path": "/opt/data/bin/lean-ctx",
-              "sha256": "475e89e495c31824ef324f92e695706ddbd890dff2c3b55b807cd1f8526c6db9",
-              "kind": "compiled-cli-mcp"
+              "path": "/opt/data/ponytail/.opencode/plugins/ponytail.mjs",
+              "sha256": "e2443648e1864724f56e2a073fdf2f29199772606d9ea1c175fe06eaa3b75853",
+              "kind": "native-plugin"
             },
             {
-              "path": "/opt/data/tool-candidates/lean-ctx/README.md",
-              "sha256": "3511c0d1e04eda53f9e66f7528b5179138b4e3963891c07c8749fa0c3b98f5cb",
-              "kind": "product-guidance-source"
+              "path": "/opt/data/ponytail/AGENTS.md",
+              "sha256": "1cd148db944eff33bf8bb878c41a290fe85b86de3e65ac311d5d501e71a0cdbf",
+              "kind": "product-guidance"
             },
             {
               "path": "/opt/data/tool-candidates/opencode-adapter-v6/opencode_workflow_adapter.py",
@@ -466,56 +445,57 @@
           },
           "diff_exclude_paths": [
             "AGENTS.md",
-            "LEAN-CTX.md",
-            ".lean-ctx"
+            ".opencode"
           ],
-          "default_tool_state": "warm-index+active-guidance"
+          "default_tool_state": "active-native-plugin+per-turn-guidance"
         },
-        "tool_config_sha256": "c8d86227527bab4859d1379f39a1ff7ba82c04dbaf5ea770b574eda7d54a9a9b",
-        "tool_state": "warm-index+active-guidance",
+        "tool_config_sha256": "aad699d7fd3e8898210f8b4339d335a485d82b8a45877658ed7b71d42445b518",
+        "tool_state": "active-native-plugin+per-turn-guidance",
         "tool_use_policy": "natural",
         "command_identity": {
-          "kind": "mcp_command",
+          "kind": "codex_wrapper",
           "command": [
-            "/opt/data/bin/lean-ctx"
+            "/usr/bin/python3",
+            "/opt/data/tool-candidates/opencode-adapter-v6/opencode_workflow_adapter.py",
+            "--opencode-binary",
+            "/opt/data/tool-candidates/opencode-runtime/node_modules/opencode-ai/bin/opencode.exe",
+            "--expected-opencode-sha256",
+            "7c4d91c84d2bfdeabb59257e3490c5e5acb08f2aacb3e42f3ddc296a1c3f1aca",
+            "--treatment",
+            "ponytail"
           ]
         },
         "binary_identity": {
-          "executable_token": "/opt/data/bin/lean-ctx",
-          "resolved_path": "/opt/data/bin/lean-ctx",
-          "realpath": "/opt/data/bin/lean-ctx",
-          "sha256": "475e89e495c31824ef324f92e695706ddbd890dff2c3b55b807cd1f8526c6db9",
+          "executable_token": "/usr/bin/python3",
+          "resolved_path": "/usr/bin/python3",
+          "realpath": "/usr/bin/python3.13",
+          "sha256": "4703a3d15898c0b5d81c3f939e93bdd8ca6116342093fb160ab1e01860dd7d8b",
           "metadata": {
-            "size": 90124616,
+            "size": 6812336,
             "mode": "-rwxr-xr-x",
-            "uid": 10000,
-            "gid": 10000,
-            "mtime_ns": 1783086783177197301
+            "uid": 0,
+            "gid": 0,
+            "mtime_ns": 1778015152000000000
           },
           "version": {
             "command": [
-              "/opt/data/bin/lean-ctx",
+              "/usr/bin/python3.13",
               "--version"
             ],
             "environment_path": "/opt/data/.local/bin:/opt/data/opt/go/bin:/opt/data/opt/uv:/opt/data/opt/node-v24.18.0-linux-x64/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
             "captured": true,
             "exit_code": 0,
-            "output": "lean-ctx 3.8.18 (official, https://github.com/yvgude/lean-ctx)",
+            "output": "Python 3.13.5",
             "truncated": false
           }
         },
         "source_identity": [
           {
-            "path": "/opt/data/bin/lean-ctx",
-            "exists": true,
-            "kind": "file",
-            "sha256": "475e89e495c31824ef324f92e695706ddbd890dff2c3b55b807cd1f8526c6db9"
-          },
-          {
-            "path": "/opt/data/tool-candidates/lean-ctx",
+            "path": "/opt/data/ponytail",
             "exists": true,
             "kind": "directory",
-            "git_head": "adc4e8b2e401d160906a392994c9afd7af3dfffa"
+            "git_head": "40e50d9e03242aa5dd53ac771950f9127362b25f",
+            "package_json_sha256": "6a180c19d35bcc9d08ea1b92b29c7da1ae1a1b2e3b31c73d94ac56e7fec7af01"
           },
           {
             "path": "/opt/data/tool-candidates/opencode-adapter-v6/opencode_workflow_adapter.py",
@@ -540,7 +520,7 @@
         "dockerfile_path": "sources/evaluations/fixtures/container/Dockerfile",
         "dockerfile_sha256": "47c91967ce25014ce54879514f51d2ff0326651be1087209115eff4d358226b3",
         "fixture_runner_path": "scripts/run_codex_fixture_evaluation.py",
-        "fixture_runner_sha256": "fdb1c530cb6e0e7be142c18a0b78c4aea26c59863c080c7b8c61db782d42f4cc",
+        "fixture_runner_sha256": "d00a59ad466f46e42e1ecd0d9e98e0ccd2cb89c2fc4011de66ebdecfbab1b475",
         "mcp_probe_path": "scripts/probe_mcp_stdio.py",
         "mcp_probe_sha256": "7c06ea36ee5cac933a97140b84a41405fc99b45152388e8d7c6659136af698fd",
         "codex_entrypoint_path": "sources/evaluations/fixtures/container/codex-entrypoint.sh",
