@@ -112,6 +112,11 @@ SUPPORTED_WORKFLOW_TOOL_PROFILES = {
     "retrieval-graphify-opencode-product-v1": "graphify-opencode-product-v1",
     "terminal-rtk-opencode-plugin-v1": "rtk-opencode-plugin-v1",
     "retrieval-codegraph-opencode-mcp-v1": "codegraph-opencode-mcp-v1",
+    "retrieval-jcodemunch-opencode-product-v1": "jcodemunch-opencode-product-v1",
+    "integrated-leanctx-opencode-hybrid-v1": "leanctx-opencode-hybrid-v1",
+    "retrieval-sigmap-opencode-product-v1": "sigmap-opencode-product-v1",
+    "artifact-ponytail-opencode-plugin-v1": "ponytail-opencode-plugin-v1",
+    "behavior-caveman-opencode-plugin-v1": "caveman-opencode-plugin-v1",
 }
 
 # Existing profile protocols were qualified against this runner manifest. The

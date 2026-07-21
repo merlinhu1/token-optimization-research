@@ -105,6 +105,7 @@ class OpenCodeWorkflowAdapterTest(unittest.TestCase):
         expected = {
             "bare", "tokenjuice", "serena", "snip", "cartog", "headroom",
             "codescope", "swarmvault", "graphify", "rtk", "codegraph",
+            "jcodemunch", "leanctx", "sigmap", "ponytail", "caveman",
         }
         self.assertEqual(set(adapter.TREATMENT_PROFILES), expected)
         with tempfile.TemporaryDirectory() as tmp:
@@ -126,7 +127,7 @@ class OpenCodeWorkflowAdapterTest(unittest.TestCase):
             repo.mkdir()
             configs = {}
             envs = {}
-            for treatment in ("codescope", "swarmvault", "graphify", "rtk", "codegraph"):
+            for treatment in ("codescope", "swarmvault", "graphify", "rtk", "codegraph", "jcodemunch", "leanctx", "sigmap", "ponytail", "caveman"):
                 env, _ = adapter._runtime_env(root / treatment, treatment=treatment, directory=repo)
                 envs[treatment] = env
                 configs[treatment] = json.loads(env["OPENCODE_CONFIG_CONTENT"])
@@ -140,6 +141,14 @@ class OpenCodeWorkflowAdapterTest(unittest.TestCase):
         self.assertEqual(configs["swarmvault"]["permission"]["skill"], "allow")
         self.assertEqual(configs["graphify"]["permission"]["skill"], "allow")
         self.assertTrue(any(path.endswith("/plugins/rtk.ts") for path in configs["rtk"]["plugin"]))
+        self.assertEqual(configs["jcodemunch"]["mcp"]["jcodemunch"]["type"], "local")
+        self.assertIn("jcodemunch-mcp", " ".join(configs["jcodemunch"]["mcp"]["jcodemunch"]["command"]))
+        self.assertEqual(configs["leanctx"]["mcp"]["lean-ctx"]["command"][-1], "/opt/data/bin/lean-ctx")
+        self.assertEqual(configs["sigmap"]["mcp"]["sigmap"]["command"][-1], "--mcp")
+        self.assertTrue(any(path.endswith("/plugins/ponytail.mjs") for path in configs["ponytail"]["plugin"]))
+        self.assertTrue(any("caveman" in path for path in configs["caveman"]["plugin"]))
+        for treatment in ("jcodemunch", "leanctx", "sigmap", "ponytail", "caveman"):
+            self.assertEqual(envs[treatment]["OPENCODE_DISABLE_EXTERNAL_SKILLS"], "0")
 
     def test_plugin_treatments_drop_pure_and_headroom_wraps_native_command(self) -> None:
         parsed = adapter.CompatArgs(
@@ -474,6 +483,11 @@ class OpenCodeWorkflowIntegrationContractTest(unittest.TestCase):
             "retrieval-graphify-opencode-product-v1": "graphify-opencode-product-v1",
             "terminal-rtk-opencode-plugin-v1": "rtk-opencode-plugin-v1",
             "retrieval-codegraph-opencode-mcp-v1": "codegraph-opencode-mcp-v1",
+            "retrieval-jcodemunch-opencode-product-v1": "jcodemunch-opencode-product-v1",
+            "integrated-leanctx-opencode-hybrid-v1": "leanctx-opencode-hybrid-v1",
+            "retrieval-sigmap-opencode-product-v1": "sigmap-opencode-product-v1",
+            "artifact-ponytail-opencode-plugin-v1": "ponytail-opencode-plugin-v1",
+            "behavior-caveman-opencode-plugin-v1": "caveman-opencode-plugin-v1",
         }
         self.assertTrue(expected.keys() <= runner.SUPPORTED_WORKFLOW_TOOL_PROFILES.keys())
         for profile_id, tool_id in expected.items():
@@ -514,11 +528,11 @@ class OpenCodeWorkflowIntegrationContractTest(unittest.TestCase):
             configure=True,
         )
         profile_ids = {
-            "codescope-opencode-product-v1",
-            "swarmvault-opencode-product-v1",
-            "retrieval-graphify-opencode-product-v1",
-            "terminal-rtk-opencode-plugin-v1",
-            "retrieval-codegraph-opencode-mcp-v1",
+            "retrieval-jcodemunch-opencode-product-v1",
+            "integrated-leanctx-opencode-hybrid-v1",
+            "retrieval-sigmap-opencode-product-v1",
+            "artifact-ponytail-opencode-plugin-v1",
+            "behavior-caveman-opencode-plugin-v1",
         }
         sequences = {
             "fastify-lifecycle-sequence-v0",
