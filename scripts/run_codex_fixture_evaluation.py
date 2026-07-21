@@ -1986,7 +1986,7 @@ TOOL_CONFIGS.update(
                     [str(NODE_BIN), str(SIGMAP_ROOT / "gen-context.js"), "mcp", "install", "opencode"],
                 ],
                 "verify_commands": [[str(NODE_BIN), str(SIGMAP_ROOT / "gen-context.js"), "--version"]],
-                "required_files": ["{repo}/.context", "{repo}/opencode.json"],
+                "required_files": ["{codex_home}/xdg-config/opencode/opencode.json"],
                 "timeout_seconds": 600,
             },
             mcp_server="sigmap",
