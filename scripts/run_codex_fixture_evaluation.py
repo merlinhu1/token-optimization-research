@@ -1983,10 +1983,10 @@ TOOL_CONFIGS.update(
             env={"OPENCODE_TOOL_DATA_DIR": "{tool_data_dir}", "SIGMAP_TELEMETRY": "0"},
             host_integration={
                 "install_commands": [
-                    [str(NODE_BIN), str(SIGMAP_ROOT / "gen-context.js"), "mcp", "install", "opencode"],
+                    ["/bin/bash", "-lc", "cd {repo} && exec " + str(NODE_BIN) + " " + str(SIGMAP_ROOT / "gen-context.js") + " mcp install opencode"],
                 ],
                 "verify_commands": [[str(NODE_BIN), str(SIGMAP_ROOT / "gen-context.js"), "--version"]],
-                "required_files": ["{codex_home}/xdg-config/opencode/opencode.json"],
+                "required_files": ["{repo}/opencode.json"],
                 "timeout_seconds": 600,
             },
             mcp_server="sigmap",
