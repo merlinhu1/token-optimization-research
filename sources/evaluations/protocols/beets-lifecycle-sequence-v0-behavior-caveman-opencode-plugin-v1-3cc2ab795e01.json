@@ -1,6 +1,6 @@
 {
   "protocol_schema_version": 3,
-  "protocol_id": "beets-lifecycle-sequence-v0-behavior-caveman-opencode-plugin-v1-e7b1d72eddbf",
+  "protocol_id": "beets-lifecycle-sequence-v0-behavior-caveman-opencode-plugin-v1-3cc2ab795e01",
   "status": "frozen-ready-not-run",
   "outcome": "Frozen behavior-caveman-opencode-plugin-v1 protocol for beets-lifecycle-sequence-v0; no provider/model run has occurred.",
   "frozen_at": "2026-07-22",
@@ -41,7 +41,7 @@
     "model": "gpt-5.6-sol",
     "model_condition_id": "opencode-openai-gpt-5-6-sol-high",
     "reasoning_effort": "high",
-    "command": "python3 scripts/run_opencode_workflow_model_condition.py --workflow-model-condition-id opencode-openai-gpt-5-6-sol-high --workflow-model gpt-5.6-sol --workflow-reasoning-effort high --sequence-id beets-lifecycle-sequence-v0 --profile-id behavior-caveman-opencode-plugin-v1 --timeout-per-task 3600 --protocol sources/evaluations/protocols/beets-lifecycle-sequence-v0-behavior-caveman-opencode-plugin-v1-e7b1d72eddbf.json --docker-image token-eval-codex:latest"
+    "command": "python3 scripts/run_opencode_workflow_model_condition.py --workflow-model-condition-id opencode-openai-gpt-5-6-sol-high --workflow-model gpt-5.6-sol --workflow-reasoning-effort high --sequence-id beets-lifecycle-sequence-v0 --profile-id behavior-caveman-opencode-plugin-v1 --timeout-per-task 3600 --protocol sources/evaluations/protocols/beets-lifecycle-sequence-v0-behavior-caveman-opencode-plugin-v1-3cc2ab795e01.json --docker-image token-eval-codex:latest"
   },
   "token_accounting_boundary": {
     "fields": [
@@ -238,7 +238,7 @@
     }
   },
   "selected_execution": {
-    "descriptor_sha256": "f0e436030e2e9fb3282ecce98a01d9dd3cfadeb958200b73063c0072c63e6326",
+    "descriptor_sha256": "c77418df627651bf5bea7ab4b0fa4428fb4fb4e56e78d9b640944bda33b15d7e",
     "descriptor": {
       "version": "execution-condition-v1",
       "sequence_id": "beets-lifecycle-sequence-v0",
@@ -337,7 +337,7 @@
       "tool_adapter": {
         "tool_id": "caveman-opencode-plugin-v1",
         "tool_manifest": "scripts/run_codex_fixture_evaluation.py:TOOL_CONFIGS",
-        "tool_manifest_sha256": "92a6a165e81e8b0d4ec7fc3d35a726d521e1aaa9a8b1ed3598768a39548773cd",
+        "tool_manifest_sha256": "1c7b7dd2fbe8e25c58c831c9b30dba13a6544de281ebae0c41bd5c86330e92dd",
         "tool_config": {
           "display_name": "Caveman official OpenCode plugin and guidance v1",
           "lane_name": "behavior-caveman-opencode-plugin-v1",
@@ -507,7 +507,7 @@
         "dockerfile_path": "sources/evaluations/fixtures/container/Dockerfile",
         "dockerfile_sha256": "47c91967ce25014ce54879514f51d2ff0326651be1087209115eff4d358226b3",
         "fixture_runner_path": "scripts/run_codex_fixture_evaluation.py",
-        "fixture_runner_sha256": "92a6a165e81e8b0d4ec7fc3d35a726d521e1aaa9a8b1ed3598768a39548773cd",
+        "fixture_runner_sha256": "1c7b7dd2fbe8e25c58c831c9b30dba13a6544de281ebae0c41bd5c86330e92dd",
         "mcp_probe_path": "scripts/probe_mcp_stdio.py",
         "mcp_probe_sha256": "7c06ea36ee5cac933a97140b84a41405fc99b45152388e8d7c6659136af698fd",
         "codex_entrypoint_path": "sources/evaluations/fixtures/container/codex-entrypoint.sh",
