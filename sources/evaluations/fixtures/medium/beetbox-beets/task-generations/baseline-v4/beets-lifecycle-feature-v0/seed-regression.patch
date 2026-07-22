@@ -1,0 +1,13 @@
+diff --git a/beets/util/functemplate.py b/beets/util/functemplate.py
+index a3541ab3..67b2bfb7 100644
+--- a/beets/util/functemplate.py
++++ b/beets/util/functemplate.py
+@@ -319,7 +319,7 @@ class Parser:
+ 
+             next_char = self.string[self.pos + 1]
+             if char == ESCAPE_CHAR and next_char in (
+-                self.escapable_chars + extra_special_chars
++                self.escapable_chars
+             ):
+                 # An escaped special character ($$, $}, etc.). Note that
+                 # ${ is not an escape sequence: this is ambiguous with

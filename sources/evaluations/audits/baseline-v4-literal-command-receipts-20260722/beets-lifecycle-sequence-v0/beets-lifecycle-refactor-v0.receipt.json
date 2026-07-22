@@ -1,0 +1,20 @@
+{
+  "schema_version": 1,
+  "generation": "baseline-v4",
+  "sequence_id": "beets-lifecycle-sequence-v0",
+  "task_id": "beets-lifecycle-refactor-v0",
+  "order": 2,
+  "provider_calls": 0,
+  "provider_tokens": 0,
+  "prompt_path": "sources/evaluations/fixtures/medium/beetbox-beets/task-generations/baseline-v4/beets-lifecycle-refactor-v0/agent-prompt.txt",
+  "prompt_sha256": "dba16cdc81587f6265daa6e9c93151616d3c74762851701a75067ba4afdfc9be",
+  "verifier_path": "sources/evaluations/fixtures/medium/beetbox-beets/task-generations/baseline-v4/beets-lifecycle-refactor-v0/verify.sh",
+  "verifier_sha256": "91ec98650ca43abe69b3cfee3948523aa072cf16ff9cf5254bdf243b7b9f882e",
+  "command_block": "python3 - <<'PY'\nfrom pathlib import Path\np = Path(\"beets/dbcore/db.py\")\ns = p.read_text()\nold = \"        return (key for key in self._all_keys)\\n\"\nnew = \"        return iter(self._all_keys)\\n\"\nassert s.count(old) == 1\np.write_text(s.replace(old, new))\nPY\nuv run --offline --frozen python -c \"from beets.dbcore.db import LazyDict; value=LazyDict({'a': 1}, lambda k,v:v); assert list(value)==['a']; assert type(iter(value)).__name__ == 'set_iterator'\"\nuv run --offline --frozen ruff format --check beets/dbcore/db.py",
+  "command_sha256": "ab24bfe99f5fc7aa59365e3b0698afd1eac6529cbb4a5ab62dc61030c89f6223",
+  "command_exit": 0,
+  "controller_verifier_exit": 0,
+  "log_path": "sources/evaluations/audits/baseline-v4-literal-command-receipts-20260722/beets-lifecycle-sequence-v0/beets-lifecycle-refactor-v0.log.txt",
+  "log_sha256": "5d3214ceb075c41e88fd846bf9bcd06fa5f730e1a49efc1c83fb2f397f912c16",
+  "passed": true
+}

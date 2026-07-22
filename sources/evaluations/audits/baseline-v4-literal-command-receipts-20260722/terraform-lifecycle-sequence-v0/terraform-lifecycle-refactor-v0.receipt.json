@@ -1,0 +1,20 @@
+{
+  "schema_version": 1,
+  "generation": "baseline-v4",
+  "sequence_id": "terraform-lifecycle-sequence-v0",
+  "task_id": "terraform-lifecycle-refactor-v0",
+  "order": 2,
+  "provider_calls": 0,
+  "provider_tokens": 0,
+  "prompt_path": "sources/evaluations/fixtures/large/hashicorp-terraform/task-generations/baseline-v4/terraform-lifecycle-refactor-v0/agent-prompt.txt",
+  "prompt_sha256": "9ece512714927be8094354cba647bcb38d732f0ea7de58937abd4a030e9c06f5",
+  "verifier_path": "sources/evaluations/fixtures/large/hashicorp-terraform/task-generations/baseline-v4/terraform-lifecycle-refactor-v0/verify.sh",
+  "verifier_sha256": "af2b84c19eef5d10aedf63f4615c4a8259223ff54884831f3995e51e85c4fb50",
+  "command_block": "export PATH=/opt/data/bin:/opt/data/opt/go/bin:$PATH\npython3 - <<'PY'\nfrom pathlib import Path\np = Path(\"internal/configs/state_migrate_file.go\")\ns = p.read_text()\nold = \"\\tRequirement map[addrs.Provider]providerreqs.VersionConstraints\\n\"\nnew = \"\\tRequirement providerreqs.Requirements\\n\"\nassert s.count(old) == 1\np.write_text(s.replace(old, new))\nPY\ngofmt -w internal/configs/state_migrate_file.go\ngo test ./internal/configs -run '^(TestParserLoadConfigDirWithStateMigrations_from_state_store|TestBaselineV3StateStoreRequirementNamedType)$'",
+  "command_sha256": "5bdce3b4252d80db3fd7d1cb1f678d1fb8c781a7903857f0c288655469448865",
+  "command_exit": 0,
+  "controller_verifier_exit": 0,
+  "log_path": "sources/evaluations/audits/baseline-v4-literal-command-receipts-20260722/terraform-lifecycle-sequence-v0/terraform-lifecycle-refactor-v0.log.txt",
+  "log_sha256": "567a0a5e310a3aafcb6adfcbbd59c108d2cd0f683ee8bdca6cbe34a5f15ae7f8",
+  "passed": true
+}

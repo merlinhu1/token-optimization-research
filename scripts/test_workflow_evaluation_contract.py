@@ -391,9 +391,16 @@ class ActiveCampaignArchitectureTest(unittest.TestCase):
                 )
                 grouped.setdefault(key, set()).add(session["replicate_index"])
         pilot = json.loads((ROOT / "sources/evaluations/audits/baseline-v3-pilot-zero-mistake.json").read_text())
+        sequences = json.loads((ROOT / "data/workflow-task-sequences.json").read_text())
+        active_v3 = {
+            sequence["id"]
+            for sequence in sequences["sequences"]
+            if sequence.get("task_family_generation") == "baseline-v3"
+        }
         current_pools = {
             (entry["sequence_id"], entry["baseline_pool_fingerprint"])
             for entry in pilot["sequences"]
+            if entry["sequence_id"] in active_v3 and entry.get("passed") is True
         }
         self.assertGreaterEqual(len(grouped), 6)
         for (sequence_id, pool), replicates in grouped.items():
@@ -1294,6 +1301,7 @@ for line in sys.stdin:
         provenance_only = copy.deepcopy(current)
         provenance_only["runner_sha256"] = "0" * 64
         provenance_only["validator_sha256"] = "1" * 64
+        provenance_only["qualification_generator_sha256"] = "2" * 64
         self.assertTrue(
             runner.baseline_protocol_descriptor_compatible(provenance_only, current)
         )
@@ -1571,6 +1579,21 @@ class VerifierContractTest(unittest.TestCase):
         self.assertEqual(script.count("task_status=$?"), 3)
         self.assertEqual(script.count(runner.TASK_VERIFIER_RESULT_PREFIX), 3)
         self.assertGreater(script.index('exit "$status"'), script.rfind(runner.TASK_VERIFIER_RESULT_PREFIX))
+
+    def test_v4_task_verifiers_resolve_project_repo_without_caller_environment(self) -> None:
+        document = json.loads((ROOT / "data/workflow-task-sequences.json").read_text())
+        v4_tasks = [
+            task
+            for sequence in document["sequences"]
+            if sequence.get("task_family_generation") == "baseline-v4"
+            for task in sequence["tasks"]
+        ]
+        self.assertEqual(len(v4_tasks), 6)
+        for task in v4_tasks:
+            verifier = (ROOT / task["verifier_command"]).read_text()
+            self.assertIn('PROJECT_DIR="$(cd "$TASK_DIR/../.." && pwd)"', verifier)
+            self.assertIn('cd "${WORKFLOW_REPO:-$PROJECT_DIR/repo}"', verifier)
+            self.assertNotIn("WORKFLOW_REPO is required", verifier)
 
     def test_warm_lane_contract_preseeds_all_regressions_and_verifies_once(self) -> None:
         contract = runner.warm_lane_contract({"tasks": [{"order": 1}, {"order": 2}]})
@@ -4133,14 +4156,24 @@ class CorrectionContractTest(unittest.TestCase):
 
 
 class BaselineV3LowComplexityContractTest(unittest.TestCase):
-    def test_active_sequences_bind_zero_mistake_baseline_v3_contracts(self) -> None:
+    def test_active_sequences_bind_zero_mistake_generation_contracts(self) -> None:
         document = json.loads((ROOT / "data/workflow-task-sequences.json").read_text())
         active = [sequence for sequence in document["sequences"] if sequence["status"] == "active"]
         self.assertEqual(len(active), 3)
+        expected_generations = {
+            "fastify-lifecycle-sequence-v0": "baseline-v3",
+            "beets-lifecycle-sequence-v0": "baseline-v4",
+            "terraform-lifecycle-sequence-v0": "baseline-v4",
+        }
 
         for sequence in active:
-            self.assertEqual(sequence["task_family_generation"], "baseline-v3")
-            self.assertRegex(Path(sequence["qualification_path"]).name, r"^qualification-lifecycle-v0-baseline-v3\.json$")
+            generation = expected_generations[sequence["id"]]
+            generation_label = generation.replace("baseline-v", "Baseline V")
+            self.assertEqual(sequence["task_family_generation"], generation)
+            self.assertEqual(
+                Path(sequence["qualification_path"]).name,
+                f"qualification-lifecycle-v0-{generation}.json",
+            )
             gate = sequence["mistake_gate"]
             self.assertEqual(gate["designated_model_condition"], "codex-openai-gpt-5-6-sol-high")
             self.assertEqual(gate["model"], "gpt-5.6-sol")
@@ -4158,11 +4191,14 @@ class BaselineV3LowComplexityContractTest(unittest.TestCase):
                     self.assertIs(type(value), int, (sequence["id"], key, value))
                     self.assertEqual(value, 0, (sequence["id"], key, value))
             self.assertEqual(gate["incident_counting"], "unique-auditable-not-command-count")
-            self.assertEqual(gate["pilot_audit_path"], "sources/evaluations/audits/baseline-v3-pilot-zero-mistake.json")
+            self.assertEqual(
+                gate["pilot_audit_path"],
+                f"sources/evaluations/audits/{generation}-pilot-zero-mistake.json",
+            )
             self.assertEqual(gate["status"], "provider-pilot-required")
 
             for task in sequence["tasks"]:
-                self.assertIn("/baseline-v3/", task["prompt_path"])
+                self.assertIn(f"/{generation}/", task["prompt_path"])
                 self.assertEqual(task["acceptance_visibility"], "model-visible-complete")
                 task_dir = (ROOT / task["prompt_path"]).parent
                 prompt = (ROOT / task["prompt_path"]).read_text()
@@ -4170,7 +4206,7 @@ class BaselineV3LowComplexityContractTest(unittest.TestCase):
                 for marker in ("<<'NODE'", '<<"NODE"', "<<'PY'", '<<"PY"', "<<'TS'", '<<"TS"', "workflow-hidden"):
                     self.assertFalse(marker in verifier and marker not in prompt, (sequence["id"], task["id"], marker))
                 for marker in (
-                    "Baseline V3 mechanical",
+                    f"{generation_label} mechanical",
                     "Do not discover or redesign anything.",
                     "Copy and run this command exactly:",
                     "Do not inspect, search, modify tests, run anything else, or evaluate aggregate Git state.",
@@ -4249,7 +4285,7 @@ class BaselineV3LowComplexityContractTest(unittest.TestCase):
                     self.assertEqual(command_key, "reset", (sequence["id"], command_key))
                     self.assertIn(Path(fixture["setup"]["command"]).name, script_text)
 
-    def test_generated_runbook_suppresses_occupied_v3_pilot_commands(self) -> None:
+    def test_generated_runbook_suppresses_occupied_v3_and_lists_fresh_v4_pilots(self) -> None:
         runbook = (ROOT / "docs/evaluations/operations/runbook.md").read_text()
         document = json.loads((ROOT / "data/workflow-task-sequences.json").read_text())
         flags = "--workflow-model-condition-id codex-openai-gpt-5-6-sol-high --workflow-model gpt-5.6-sol --workflow-reasoning-effort high"
@@ -4257,9 +4293,14 @@ class BaselineV3LowComplexityContractTest(unittest.TestCase):
             prepare_command = f"python3 scripts/run_sequential_workflow_matrix.py {sequence['id']} {flags} --prepare-only"
             paid_command = f"python3 scripts/run_sequential_workflow_matrix.py {sequence['id']} {flags}"
             receipt = runner.baseline_pilot_attempt_receipt_path(sequence, ROOT)
-            self.assertTrue(receipt.is_file())
-            self.assertNotIn(prepare_command, runbook)
-            self.assertNotIn(paid_command, runbook.splitlines())
+            if sequence["task_family_generation"] == "baseline-v3":
+                self.assertTrue(receipt.is_file())
+                self.assertNotIn(prepare_command, runbook)
+                self.assertNotIn(paid_command, runbook.splitlines())
+            else:
+                self.assertFalse(receipt.exists())
+                self.assertIn(prepare_command, runbook)
+                self.assertIn(paid_command, runbook.splitlines())
 
     def test_provider_free_v3_qualifications_pass_every_boundary(self) -> None:
         document = json.loads((ROOT / "data/workflow-task-sequences.json").read_text())
@@ -4650,12 +4691,18 @@ class BaselineV3LowComplexityContractTest(unittest.TestCase):
             sequences = json.loads((ROOT / sequence_rel).read_text())
             paths = {audit_rel, index_rel, sequence_rel}
             for sequence in sequences["sequences"]:
-                if sequence.get("task_family_generation") != "baseline-v3":
-                    continue
-                paths.add(Path(sequence["qualification_path"]))
+                qualification_path = str(sequence["qualification_path"])
+                if sequence.get("task_family_generation") == "baseline-v4":
+                    qualification_path = qualification_path.replace("baseline-v4", "baseline-v3")
+                paths.add(Path(qualification_path))
                 for task in sequence["tasks"]:
-                    paths.add(Path(task["prompt_path"]))
-                    paths.add(Path(task["verifier_command"]))
+                    prompt_path = str(task["prompt_path"])
+                    verifier_path = str(task["verifier_command"])
+                    if sequence.get("task_family_generation") == "baseline-v4":
+                        prompt_path = prompt_path.replace("baseline-v4", "baseline-v3")
+                        verifier_path = verifier_path.replace("baseline-v4", "baseline-v3")
+                    paths.add(Path(prompt_path))
+                    paths.add(Path(verifier_path))
             for protocol in audit["protocols"]:
                 paths.add(Path(protocol["path"]))
             for item in index["receipts"]:
@@ -5214,23 +5261,63 @@ class BaselineV3LowComplexityContractTest(unittest.TestCase):
                     baseline_run_gate=lambda _sequence: runner.baseline_v2_pilot_run_gate(sequence, authority),
                 )
 
-    def test_v3_pilot_audit_gates_each_sequence_and_all_attempts_remain_occupied(self) -> None:
+    def test_active_generation_gates_preserve_fastify_v3_and_open_fresh_v4_pilots(self) -> None:
         document = json.loads((ROOT / "data/workflow-task-sequences.json").read_text())
-        expected = {
-            "fastify-lifecycle-sequence-v0": True,
-            "beets-lifecycle-sequence-v0": False,
-            "terraform-lifecycle-sequence-v0": False,
-        }
         for sequence in document["sequences"]:
             passed, reason = runner.baseline_v2_treatment_gate(sequence, ROOT)
-            self.assertEqual(passed, expected[sequence["id"]], (sequence["id"], reason))
-            if passed:
-                self.assertIn("zero-incident", reason)
-            else:
-                self.assertIn("did not pass", reason)
             rerun_allowed, rerun_reason = runner.baseline_v2_pilot_run_gate(sequence, ROOT)
-            self.assertFalse(rerun_allowed)
-            self.assertIn("immutable attempt receipt", rerun_reason)
+            if sequence["id"] == "fastify-lifecycle-sequence-v0":
+                self.assertTrue(passed, reason)
+                self.assertIn("zero-incident", reason)
+                self.assertFalse(rerun_allowed)
+                self.assertIn("immutable attempt receipt", rerun_reason)
+            else:
+                self.assertFalse(passed)
+                self.assertIn("pilot audit is absent", reason)
+                self.assertTrue(rerun_allowed, rerun_reason)
+                self.assertIn("Baseline V4", rerun_reason)
+        for slug in ("beets", "terraform"):
+            self.assertTrue(
+                (ROOT / f"sources/evaluations/audits/baseline-v3-pilot-attempt-{slug}.json").is_file(),
+                f"missing immutable Baseline V3 receipt for {slug}",
+            )
+
+    def test_v4_qualification_audit_is_provider_free_and_current(self) -> None:
+        errors: list[str] = []
+        validate_repository.validate_baseline_v4_qualification_audit(errors)
+        self.assertEqual(errors, [])
+        audit = json.loads(
+            (ROOT / "sources/evaluations/audits/baseline-v4-task-family-qualification-20260722.json").read_text()
+        )
+        self.assertIs(type(audit["provider_calls"]), int)
+        self.assertIs(type(audit["provider_tokens"]), int)
+        self.assertEqual((audit["provider_calls"], audit["provider_tokens"]), (0, 0))
+        self.assertIs(audit["paid_pilot_authorized"], False)
+        self.assertIs(audit["treatment_unlocked"], False)
+        for record in audit["sequences"]:
+            qualification = json.loads((ROOT / record["qualification_path"]).read_text())
+            protocol = json.loads((ROOT / record["protocol_path"]).read_text())
+            self.assertEqual(qualification["task_family_generation"], "baseline-v4")
+            self.assertEqual(protocol["task_fixture"]["task_family_generation"], "baseline-v4")
+            self.assertEqual(protocol["baseline_pool"]["descriptor"]["task_family_generation"], "baseline-v4")
+
+    def test_v4_is_a_zero_mistake_generation_with_fresh_pilot_identity(self) -> None:
+        sequence = {
+            "id": "beets-lifecycle-sequence-v0",
+            "task_family_generation": "baseline-v4",
+            "mistake_gate": {
+                "pilot_audit_path": "sources/evaluations/audits/baseline-v4-pilot-zero-mistake.json",
+                "attempt_receipt_path": "sources/evaluations/audits/baseline-v4-pilot-attempt-beets.json",
+            },
+        }
+        with tempfile.TemporaryDirectory() as tmp:
+            authority = Path(tmp)
+            allowed, reason = runner.baseline_v2_pilot_run_gate(sequence, authority)
+            self.assertTrue(allowed)
+            self.assertIn("Baseline V4", reason)
+            treatment_allowed, treatment_reason = runner.baseline_v2_treatment_gate(sequence, authority)
+            self.assertFalse(treatment_allowed)
+            self.assertIn("pilot audit is absent", treatment_reason)
 
     def test_failed_v2_pilot_preserves_exact_executed_protocol_bytes(self) -> None:
         audit = json.loads(

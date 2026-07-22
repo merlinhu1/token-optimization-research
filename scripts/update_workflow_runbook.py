@@ -140,7 +140,7 @@ def render() -> str:
     current_default_pool_fingerprints = {}
     for sequence in sequences:
         gate = sequence.get("mistake_gate")
-        if sequence.get("task_family_generation") in {"baseline-v2", "baseline-v3"} and isinstance(gate, dict):
+        if sequence.get("task_family_generation") in {"baseline-v2", "baseline-v3", "baseline-v4"} and isinstance(gate, dict):
             current_protocol, _document = workflow.current_baseline_v2_protocol(sequence, gate, ROOT)
             current_default_pool_fingerprints[sequence["id"]] = current_protocol["baseline_pool_fingerprint"]
         else:
@@ -307,7 +307,7 @@ python3 scripts/validate_repository.py
 
 ## Evidence boundary
 
-A valid Baseline V3 workflow pre-seeds every regression and its focused model-visible acceptance test into one qualified composite broken root, then materializes one prompt at a time. Each prompt supplies one exact mechanical old-to-new edit command plus only its focused validation command; Beets uses the locked project environment and Terraform exports the pinned Go toolchain path explicitly. Seed patch files, controller scripts, and fixed parents remain outside the model-visible surface; final verification repeats only the commands and behavior disclosed in each prompt. Product-effect eligibility also requires parity with the pinned official Codex integration and positive treatment-assignment evidence; MCP configuration/listing alone is insufficient.
+A valid low-complexity workflow pre-seeds every regression and its focused model-visible acceptance test into one qualified composite broken root, then materializes one prompt at a time. Each prompt supplies one exact mechanical old-to-new edit command plus only its focused validation command; Beets uses the locked project environment and Terraform exports the pinned Go toolchain path explicitly. Seed patch files, controller scripts, and fixed parents remain outside the model-visible surface; final verification repeats only the commands and behavior disclosed in each prompt. Product-effect eligibility also requires parity with the pinned official Codex integration and positive treatment-assignment evidence; MCP configuration/listing alone is insufficient.
 
 Every active task must use causally related behavioral acceptance. Unrelated exact-source restoration guards are not valid complexity.
 

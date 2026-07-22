@@ -1,0 +1,20 @@
+{
+  "schema_version": 1,
+  "generation": "baseline-v4",
+  "sequence_id": "beets-lifecycle-sequence-v0",
+  "task_id": "beets-lifecycle-review-v0",
+  "order": 3,
+  "provider_calls": 0,
+  "provider_tokens": 0,
+  "prompt_path": "sources/evaluations/fixtures/medium/beetbox-beets/task-generations/baseline-v4/beets-lifecycle-review-v0/agent-prompt.txt",
+  "prompt_sha256": "41d6efa9889579eecec88c4aaa3bf10f0b5a2e71c4da00f265fc724bd68f3280",
+  "verifier_path": "sources/evaluations/fixtures/medium/beetbox-beets/task-generations/baseline-v4/beets-lifecycle-review-v0/verify.sh",
+  "verifier_sha256": "b2d5e2e83bb2b32e1baf9e7cbcd7efbf638f0dd3dbd58fe9f1d7317764def88d",
+  "command_block": "python3 - <<'PY'\nfrom pathlib import Path\np = Path(\"beetsplug/ftintitle.py\")\ns = p.read_text()\nold = \"        plugins.feat_tokens(for_artist=for_artist, custom_words=custom_words),\\n\"\nnew = \"        plugins.feat_tokens(for_artist=False, custom_words=custom_words),\\n\"\nassert s.count(old) == 1\np.write_text(s.replace(old, new))\nPY\nuv run --offline --frozen pytest -q test/plugins/test_ftintitle.py -k 'split_on_feat'\nuv run --offline --frozen ruff format --check beetsplug/ftintitle.py",
+  "command_sha256": "67fc93dcaa1187cec274890256a4115a0a758e4418d7c554f86eaf351c9d8c01",
+  "command_exit": 0,
+  "controller_verifier_exit": 0,
+  "log_path": "sources/evaluations/audits/baseline-v4-literal-command-receipts-20260722/beets-lifecycle-sequence-v0/beets-lifecycle-review-v0.log.txt",
+  "log_sha256": "a248af330a3dc0054e98d7d4fd13c838d95c9d7da3f7e8ff16590c6aa61d6cb0",
+  "passed": true
+}
