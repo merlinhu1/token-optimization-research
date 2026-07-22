@@ -224,7 +224,10 @@ def build_summary(events_path: Path) -> dict[str, Any]:
         "measurement_source": "codex-jsonl-usage-events",
         "fresh_input_tokens": fresh_input_tokens,
         "cached_input_tokens": cached_input_tokens,
-        "cache_write_tokens": None,
+        # OpenAI Codex usage exposes cached reads but no cache-write category;
+        # normalize the unsupported provider component to the exact integer zero
+        # required by the current compact-session contract.
+        "cache_write_tokens": 0,
         "output_tokens": output_tokens,
         "reasoning_tokens": reasoning_tokens,
         "total_provider_tokens": total_provider_tokens,
