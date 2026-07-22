@@ -1,19 +1,19 @@
 {
   "protocol_schema_version": 3,
-  "protocol_id": "beets-lifecycle-sequence-v0-artifact-ponytail-opencode-plugin-v1-514e2273c110",
+  "protocol_id": "fastify-lifecycle-sequence-v0-artifact-ponytail-opencode-plugin-v1-f273d585be18",
   "status": "frozen-ready-not-run",
-  "outcome": "Frozen artifact-ponytail-opencode-plugin-v1 protocol for beets-lifecycle-sequence-v0; no provider/model run has occurred.",
+  "outcome": "Frozen artifact-ponytail-opencode-plugin-v1 protocol for fastify-lifecycle-sequence-v0; no provider/model run has occurred.",
   "frozen_at": "2026-07-22",
-  "hypothesis": "artifact-ponytail-opencode-plugin-v1 produces reproducible provider-reported token and software-quality evidence for beets-lifecycle-sequence-v0",
+  "hypothesis": "artifact-ponytail-opencode-plugin-v1 produces reproducible provider-reported token and software-quality evidence for fastify-lifecycle-sequence-v0",
   "evidence_stage_target": "reproduction",
   "task_fixture": {
-    "fixture_id": "medium-beetbox-beets",
-    "sequence_id": "beets-lifecycle-sequence-v0",
-    "task_family_generation": "baseline-v4",
-    "repository": "https://github.com/beetbox/beets.git",
-    "snapshot": "9acb1ecff6c7ee0a1e83e3b983c94792345712c5",
-    "qualification_path": "sources/evaluations/fixtures/medium/beetbox-beets/qualification-lifecycle-v0-baseline-v4.json",
-    "qualification_sha256": "62d841b17636e669440ca040152d5792b08851bea6cc139a47777f89b34a3c80",
+    "fixture_id": "medium-fastify-fastify",
+    "sequence_id": "fastify-lifecycle-sequence-v0",
+    "task_family_generation": "baseline-v3",
+    "repository": "https://github.com/fastify/fastify.git",
+    "snapshot": "94bcbcc6e2ef3b8e8f8e8797fe551ccbe7b942fd",
+    "qualification_path": "sources/evaluations/fixtures/medium/fastify-fastify/qualification-lifecycle-v0-baseline-v3.json",
+    "qualification_sha256": "82bcabb399b9e7af4234b8ba4a8c12352dc4584cb838ae01bd0854b83c9d0ba1",
     "timeout_seconds_per_task": 3600
   },
   "baseline": {
@@ -41,7 +41,7 @@
     "model": "gpt-5.6-sol",
     "model_condition_id": "opencode-openai-gpt-5-6-sol-high",
     "reasoning_effort": "high",
-    "command": "python3 scripts/run_opencode_workflow_model_condition.py --workflow-model-condition-id opencode-openai-gpt-5-6-sol-high --workflow-model gpt-5.6-sol --workflow-reasoning-effort high --sequence-id beets-lifecycle-sequence-v0 --profile-id artifact-ponytail-opencode-plugin-v1 --timeout-per-task 3600 --protocol sources/evaluations/protocols/beets-lifecycle-sequence-v0-artifact-ponytail-opencode-plugin-v1-514e2273c110.json --docker-image token-eval-codex:latest"
+    "command": "python3 scripts/run_opencode_workflow_model_condition.py --workflow-model-condition-id opencode-openai-gpt-5-6-sol-high --workflow-model gpt-5.6-sol --workflow-reasoning-effort high --sequence-id fastify-lifecycle-sequence-v0 --profile-id artifact-ponytail-opencode-plugin-v1 --timeout-per-task 3600 --protocol sources/evaluations/protocols/fastify-lifecycle-sequence-v0-artifact-ponytail-opencode-plugin-v1-f273d585be18.json --docker-image token-eval-codex:latest"
   },
   "token_accounting_boundary": {
     "fields": [
@@ -55,25 +55,24 @@
   },
   "baseline_pool": {
     "protocol_version": "baseline-pool-v1",
-    "protocol_fingerprint": "fcc8438d2077",
+    "protocol_fingerprint": "bb0e89ed9794",
     "descriptor": {
       "version": "baseline-pool-v1",
-      "task_family_generation": "baseline-v4",
       "runner_contract_version": "workflow-runner-v9",
-      "runner_sha256": "a5658191022664fcba500822c66a429743a42f23bd330932a4e9499023374f42",
-      "qualification_generator_sha256": "92c9d68b3146b37dd0f4f6c0c71a20d7ef83898fec7206b8d022f06351969eb7",
-      "validator_sha256": "8e6de8f20d0403cfa206c327c044fba7c3ac6f969d1af36445dc0afad8a2ce8b",
-      "sequence_id": "beets-lifecycle-sequence-v0",
+      "runner_sha256": "7e5941f3c5689105b1f3e8693a0fde2fea2e6fd5ad1880f9da9629fd1549af1c",
+      "qualification_generator_sha256": "15463354f4b44f00c857dbbf6f06727ced966ef669aa7d2e69a7ea16324068b0",
+      "validator_sha256": "61f79485fea154580b5976251643daf231293a464d80d16164dd77a15d05d541",
+      "sequence_id": "fastify-lifecycle-sequence-v0",
       "sequence_contract": "feature-refactor-review",
-      "fixture_id": "medium-beetbox-beets",
+      "fixture_id": "medium-fastify-fastify",
       "fixture_scale": "medium-project",
       "initial_snapshot": {
-        "commit": "9acb1ecff6c7ee0a1e83e3b983c94792345712c5",
-        "upstream": "https://github.com/beetbox/beets.git",
+        "commit": "94bcbcc6e2ef3b8e8f8e8797fe551ccbe7b942fd",
+        "upstream": "https://github.com/fastify/fastify.git",
         "dependency_lockfiles": [
           {
-            "path": "uv.lock",
-            "sha256": "fbf1d7a9c84b658a2433035221ba18c57508c254d711a06f305e2f610839a45f"
+            "path": "package.json",
+            "sha256": "b273320af1bb4cfc0f9334457c8e3b1d035fde0da14f9db65e8ef97d361d0be3"
           }
         ]
       },
@@ -81,18 +80,18 @@
       "primary_metric": "cumulative provider-reported workflow tokens",
       "tasks": [
         {
-          "id": "beets-lifecycle-feature-v0",
+          "id": "fastify-lifecycle-feature-v0",
           "order": 1,
           "task_class": "feature-implementation",
-          "prompt_path": "sources/evaluations/fixtures/medium/beetbox-beets/task-generations/baseline-v4/beets-lifecycle-feature-v0/agent-prompt.txt",
-          "prompt_sha256": "9033237087b94204b279a545c0c8967229a4dfebde37ddfae401bac0b0149b53",
-          "seed_patch_sha256": "9dc1cf36d0d0120fb57f75c4579af7f1f65b80e9d80de2d2c5cbdeb69b4ac17e",
-          "verifier_command": "sources/evaluations/fixtures/medium/beetbox-beets/task-generations/baseline-v4/beets-lifecycle-feature-v0/verify.sh",
-          "verifier_sha256": "6c66323a59314d4b8390eb288a41f823b3ac1723af94f8fe771cacb2b5e88588",
+          "prompt_path": "sources/evaluations/fixtures/medium/fastify-fastify/task-generations/baseline-v3/fastify-lifecycle-feature-v0/agent-prompt.txt",
+          "prompt_sha256": "dcd5fddb44230d293297438d44ca8b97588ec2bdaaf3a68bd3af2804295da4ea",
+          "seed_patch_sha256": "18059088167f2e10de672106c367c3318c7865b29704bd2c83c9d3227fc50510",
+          "verifier_command": "sources/evaluations/fixtures/medium/fastify-fastify/task-generations/baseline-v3/fastify-lifecycle-feature-v0/verify.sh",
+          "verifier_sha256": "4d8b6c227dd364dfe0a8aee21cef3027c57ca5a312a51e2846df9b09627c8f67",
           "controller_visible_acceptance_assets": [
             {
-              "path": "sources/evaluations/fixtures/medium/beetbox-beets/task-generations/baseline-v4/beets-lifecycle-feature-v0/controller-visible/test/util/test_functemplate.py",
-              "sha256": "6806ec35748e63877d993bee3474e13dedba433ff43ca126d8efbcfa10240888"
+              "path": "sources/evaluations/fixtures/medium/fastify-fastify/task-generations/baseline-v3/fastify-lifecycle-feature-v0/controller-visible/test/baseline-v3-request-media-type.test.js",
+              "sha256": "a4a070f8047b5082db80da2b64de3beb80e8e07c166ff326c089cc38a69039fd"
             }
           ],
           "upstream_test_paths": [],
@@ -101,33 +100,38 @@
           "model_concealed_paths": []
         },
         {
-          "id": "beets-lifecycle-refactor-v0",
+          "id": "fastify-lifecycle-refactor-v0",
           "order": 2,
           "task_class": "behavior-preserving-refactor",
-          "prompt_path": "sources/evaluations/fixtures/medium/beetbox-beets/task-generations/baseline-v4/beets-lifecycle-refactor-v0/agent-prompt.txt",
-          "prompt_sha256": "dba16cdc81587f6265daa6e9c93151616d3c74762851701a75067ba4afdfc9be",
-          "seed_patch_sha256": "9bcf590139fc91987524e643bc1e6281efbe5a09cd9b2218ca31f670c391c722",
-          "verifier_command": "sources/evaluations/fixtures/medium/beetbox-beets/task-generations/baseline-v4/beets-lifecycle-refactor-v0/verify.sh",
-          "verifier_sha256": "91ec98650ca43abe69b3cfee3948523aa072cf16ff9cf5254bdf243b7b9f882e",
-          "controller_visible_acceptance_assets": [],
+          "prompt_path": "sources/evaluations/fixtures/medium/fastify-fastify/task-generations/baseline-v3/fastify-lifecycle-refactor-v0/agent-prompt.txt",
+          "prompt_sha256": "0a0867ab15d0b86404251f68c03d2aedf92f5119c614091b57faaa4758649c2d",
+          "seed_patch_sha256": "0ba999702be62ca6cd9d4ecb4c150ea926453e2a37624aaa995b1853aae0c537",
+          "verifier_command": "sources/evaluations/fixtures/medium/fastify-fastify/task-generations/baseline-v3/fastify-lifecycle-refactor-v0/verify.sh",
+          "verifier_sha256": "4a4184b351b5212bbd612400cc7997acbb42d142bce10bd2084ef66892b3c87c",
+          "controller_visible_acceptance_assets": [
+            {
+              "path": "sources/evaluations/fixtures/medium/fastify-fastify/task-generations/baseline-v3/fastify-lifecycle-refactor-v0/controller-visible/test/baseline-v3-content-type-cache.test.js",
+              "sha256": "07ee0e31054e34cc9ee3bc2dfa87d3d4d471b2afb3d3df40a776a5205937ccaf"
+            }
+          ],
           "upstream_test_paths": [],
           "compatibility_rebased_test_paths": [],
           "expected_model_concealed_paths": [],
           "model_concealed_paths": []
         },
         {
-          "id": "beets-lifecycle-review-v0",
+          "id": "fastify-lifecycle-review-v0",
           "order": 3,
           "task_class": "code-review-correction",
-          "prompt_path": "sources/evaluations/fixtures/medium/beetbox-beets/task-generations/baseline-v4/beets-lifecycle-review-v0/agent-prompt.txt",
-          "prompt_sha256": "41d6efa9889579eecec88c4aaa3bf10f0b5a2e71c4da00f265fc724bd68f3280",
-          "seed_patch_sha256": "14d8dd83706706805b8159f85871036cfb39148dd7912e66e2c8044d505cabad",
-          "verifier_command": "sources/evaluations/fixtures/medium/beetbox-beets/task-generations/baseline-v4/beets-lifecycle-review-v0/verify.sh",
-          "verifier_sha256": "b2d5e2e83bb2b32e1baf9e7cbcd7efbf638f0dd3dbd58fe9f1d7317764def88d",
+          "prompt_path": "sources/evaluations/fixtures/medium/fastify-fastify/task-generations/baseline-v3/fastify-lifecycle-review-v0/agent-prompt.txt",
+          "prompt_sha256": "a042d361586bf1efb6d43867a83086d302aaa2d2dcfb666e33bf0aaa6eb3a579",
+          "seed_patch_sha256": "32f78bffa59fa01edde1594d64615fe54564c9a204c45c251c6ac2f8c7e3e0c2",
+          "verifier_command": "sources/evaluations/fixtures/medium/fastify-fastify/task-generations/baseline-v3/fastify-lifecycle-review-v0/verify.sh",
+          "verifier_sha256": "481393dffa4f0c826dbcd86a5fb50a512b6c483abd1012cb8ab5ec934ae89fd2",
           "controller_visible_acceptance_assets": [
             {
-              "path": "sources/evaluations/fixtures/medium/beetbox-beets/task-generations/baseline-v4/beets-lifecycle-review-v0/controller-visible/test/plugins/test_ftintitle.py",
-              "sha256": "1d8ed5ab383d3c0496dc2158ae9853c0b36bca1f50276181f7d675e352abab35"
+              "path": "sources/evaluations/fixtures/medium/fastify-fastify/task-generations/baseline-v3/fastify-lifecycle-review-v0/controller-visible/test/baseline-v3-max-param.test.js",
+              "sha256": "b09d4161acf01875e9842f9454e39e8ab66e631c5fa091a09c088ef7c3d31c7f"
             }
           ],
           "upstream_test_paths": [],
@@ -135,7 +139,7 @@
           "expected_model_concealed_paths": [],
           "model_concealed_paths": [],
           "review_patch_path": "review-change.patch",
-          "review_patch_sha256": "14d8dd83706706805b8159f85871036cfb39148dd7912e66e2c8044d505cabad"
+          "review_patch_sha256": "0402a5fc7785775c034fddc539539bbbd0083d11a6f555e22f95dd992476aa3c"
         }
       ],
       "model_facing_prompts": {
@@ -143,25 +147,25 @@
         "profile_guidance_sha256": "f1d7a2cf7b0a7c1affd8bbb04705f073332ee6efc5f8f89f019b9e0cbacec4bb",
         "tasks": [
           {
-            "task_id": "beets-lifecycle-feature-v0",
+            "task_id": "fastify-lifecycle-feature-v0",
             "order": 1,
-            "rendered_prompt_sha256": "762417a29c6df8ec7df501afd125c119d72cba9a5cdc93d0950fe1d835680f6e"
+            "rendered_prompt_sha256": "a19559eae75789b46cac91e6f5e28544b289726bf29eca94a2c0ae764b83df7d"
           },
           {
-            "task_id": "beets-lifecycle-refactor-v0",
+            "task_id": "fastify-lifecycle-refactor-v0",
             "order": 2,
-            "rendered_prompt_sha256": "727cc41394c3a1215befbe097862bf1a3f78958882b21521c90f6721099413e0"
+            "rendered_prompt_sha256": "a4cdc43f80fd89b851e765b409fa99199ab30f88b4b3b1028ee97ed540cd0706"
           },
           {
-            "task_id": "beets-lifecycle-review-v0",
+            "task_id": "fastify-lifecycle-review-v0",
             "order": 3,
-            "rendered_prompt_sha256": "2ba3299daa5adc71491ee713bd4c6b6208d6b36443ac327c919fe1b9db5943a2"
+            "rendered_prompt_sha256": "d7874fd6436994b7a7f09ce348087f39d6105a7cfcb4e2ca1ac3003d7ff8c091"
           }
         ]
       },
       "qualification": {
-        "path": "sources/evaluations/fixtures/medium/beetbox-beets/qualification-lifecycle-v0-baseline-v4.json",
-        "sha256": "62d841b17636e669440ca040152d5792b08851bea6cc139a47777f89b34a3c80"
+        "path": "sources/evaluations/fixtures/medium/fastify-fastify/qualification-lifecycle-v0-baseline-v3.json",
+        "sha256": "82bcabb399b9e7af4234b8ba4a8c12352dc4584cb838ae01bd0854b83c9d0ba1"
       },
       "baseline_profile": {
         "profile_id": "baseline-bare-codex",
@@ -200,11 +204,11 @@
         },
         "dockerfile_path": "sources/evaluations/fixtures/container/Dockerfile",
         "dockerfile_sha256": "47c91967ce25014ce54879514f51d2ff0326651be1087209115eff4d358226b3",
-        "dependency_command": "uv sync --group test --frozen",
+        "dependency_command": "npm install --ignore-scripts --no-audit --no-fund",
         "dependency_lockfiles": [
           {
-            "path": "uv.lock",
-            "sha256": "fbf1d7a9c84b658a2433035221ba18c57508c254d711a06f305e2f610839a45f"
+            "path": "package.json",
+            "sha256": "b273320af1bb4cfc0f9334457c8e3b1d035fde0da14f9db65e8ef97d361d0be3"
           }
         ],
         "codex_runtime_condition": "codex-openai-gpt-5-6-sol-high"
@@ -216,8 +220,9 @@
         "future_seed_regressions_visible": true,
         "controller_verifier_scripts_and_canonical_copies_model_visible": false,
         "model_visible_acceptance_asset_paths": [
-          "test/plugins/test_ftintitle.py",
-          "test/util/test_functemplate.py"
+          "test/baseline-v3-content-type-cache.test.js",
+          "test/baseline-v3-max-param.test.js",
+          "test/baseline-v3-request-media-type.test.js"
         ],
         "git_baseline_true_root_at_lane_start": true,
         "controller_verification": "final-only",
@@ -238,10 +243,10 @@
     }
   },
   "selected_execution": {
-    "descriptor_sha256": "b2242bcfd39783401325501c66e2bebf89d0a7289961a54c7388d6d6a6456ca0",
+    "descriptor_sha256": "bbec3a8e32e822d2968050be96fd040278e37f86e0e20c35f7712461ac509c1c",
     "descriptor": {
       "version": "execution-condition-v1",
-      "sequence_id": "beets-lifecycle-sequence-v0",
+      "sequence_id": "fastify-lifecycle-sequence-v0",
       "execution_role": "individual_tool_treatment",
       "selected_profile": {
         "profile_id": "artifact-ponytail-opencode-plugin-v1",
@@ -318,26 +323,26 @@
         "profile_guidance_sha256": "cb08dba8b361975eb89669cc77d206861b05fc26b161a9215337dbb2d30a6366",
         "tasks": [
           {
-            "task_id": "beets-lifecycle-feature-v0",
+            "task_id": "fastify-lifecycle-feature-v0",
             "order": 1,
-            "rendered_prompt_sha256": "db0981ff4c4428e5213221c6024697ff64afa64d0c3020c462d39fb9b89c0257"
+            "rendered_prompt_sha256": "5ccdd6daf5427c3f1927b08795d1bd290a8c96bdff4fa3beca5b053f149b1725"
           },
           {
-            "task_id": "beets-lifecycle-refactor-v0",
+            "task_id": "fastify-lifecycle-refactor-v0",
             "order": 2,
-            "rendered_prompt_sha256": "727cc41394c3a1215befbe097862bf1a3f78958882b21521c90f6721099413e0"
+            "rendered_prompt_sha256": "a4cdc43f80fd89b851e765b409fa99199ab30f88b4b3b1028ee97ed540cd0706"
           },
           {
-            "task_id": "beets-lifecycle-review-v0",
+            "task_id": "fastify-lifecycle-review-v0",
             "order": 3,
-            "rendered_prompt_sha256": "2ba3299daa5adc71491ee713bd4c6b6208d6b36443ac327c919fe1b9db5943a2"
+            "rendered_prompt_sha256": "d7874fd6436994b7a7f09ce348087f39d6105a7cfcb4e2ca1ac3003d7ff8c091"
           }
         ]
       },
       "tool_adapter": {
         "tool_id": "ponytail-opencode-plugin-v1",
         "tool_manifest": "scripts/run_codex_fixture_evaluation.py:TOOL_CONFIGS",
-        "tool_manifest_sha256": "1c7b7dd2fbe8e25c58c831c9b30dba13a6544de281ebae0c41bd5c86330e92dd",
+        "tool_manifest_sha256": "92a6a165e81e8b0d4ec7fc3d35a726d521e1aaa9a8b1ed3598768a39548773cd",
         "tool_config": {
           "display_name": "Ponytail official OpenCode plugin v1",
           "lane_name": "artifact-ponytail-opencode-plugin-v1",
@@ -388,8 +393,6 @@
                 "{repository_root}/scripts/install_ponytail_opencode.py",
                 "--source-root",
                 "/opt/data/tool-candidates/ponytail",
-                "--expected-commit",
-                "c4d1925ae9b76a1b641877328209ad25cfeb5ef2",
                 "--repo",
                 "{repo}",
                 "--receipt",
@@ -440,7 +443,7 @@
           ],
           "default_tool_state": "active-native-plugin+per-turn-guidance"
         },
-        "tool_config_sha256": "abd2bf845132357d607c5605788e3f5692a3c36322c65cbe1db16544e92e0201",
+        "tool_config_sha256": "bdbf3783cdfcc3046c6a367bfe8e6d026ad6930bbcab42c60bb45babc0fd3483",
         "tool_state": "active-native-plugin+per-turn-guidance",
         "tool_use_policy": "natural",
         "command_identity": {
@@ -511,7 +514,7 @@
         "dockerfile_path": "sources/evaluations/fixtures/container/Dockerfile",
         "dockerfile_sha256": "47c91967ce25014ce54879514f51d2ff0326651be1087209115eff4d358226b3",
         "fixture_runner_path": "scripts/run_codex_fixture_evaluation.py",
-        "fixture_runner_sha256": "1c7b7dd2fbe8e25c58c831c9b30dba13a6544de281ebae0c41bd5c86330e92dd",
+        "fixture_runner_sha256": "92a6a165e81e8b0d4ec7fc3d35a726d521e1aaa9a8b1ed3598768a39548773cd",
         "mcp_probe_path": "scripts/probe_mcp_stdio.py",
         "mcp_probe_sha256": "7c06ea36ee5cac933a97140b84a41405fc99b45152388e8d7c6659136af698fd",
         "codex_entrypoint_path": "sources/evaluations/fixtures/container/codex-entrypoint.sh",
@@ -535,12 +538,12 @@
         }
       },
       "dependencies": {
-        "command": "uv sync --group test --frozen",
-        "command_sha256": "cef23fd45902c23f8b3e89b7c6360a401eb49c17cf36d742e5b625d5593c911b",
+        "command": "npm install --ignore-scripts --no-audit --no-fund",
+        "command_sha256": "7493d616f26e72b22eb5a21beafa12a6717ebf5b93a7a75e709de65e7323cc41",
         "lockfiles": [
           {
-            "path": "uv.lock",
-            "snapshot_sha256": "fbf1d7a9c84b658a2433035221ba18c57508c254d711a06f305e2f610839a45f",
+            "path": "package.json",
+            "snapshot_sha256": "b273320af1bb4cfc0f9334457c8e3b1d035fde0da14f9db65e8ef97d361d0be3",
             "current_fixture_sha256": null
           }
         ]
@@ -561,14 +564,15 @@
         "controller_verification": "final-only",
         "controller_verifier_scripts_and_canonical_copies_model_visible": false,
         "model_visible_acceptance_asset_paths": [
-          "test/plugins/test_ftintitle.py",
-          "test/util/test_functemplate.py"
+          "test/baseline-v3-content-type-cache.test.js",
+          "test/baseline-v3-max-param.test.js",
+          "test/baseline-v3-request-media-type.test.js"
         ],
         "model_concealed_paths": []
       },
       "baseline_pool_reference": {
         "protocol_version": "baseline-pool-v1",
-        "protocol_fingerprint": "fcc8438d2077",
+        "protocol_fingerprint": "bb0e89ed9794",
         "comparison_policy": "paired baseline and treatment must share this baseline pool fingerprint and replicate"
       },
       "model_condition_override": {
