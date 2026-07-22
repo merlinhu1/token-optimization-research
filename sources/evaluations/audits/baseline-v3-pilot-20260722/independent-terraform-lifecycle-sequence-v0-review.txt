@@ -1,0 +1,59 @@
+## Independent audit verdict
+
+```json
+{
+  "sequence_id": "terraform-lifecycle-sequence-v0",
+  "baseline_session_id": "baseline-terraform-20260722-p-5caa11b3fa2b-r0",
+  "reviewer_role": "independent",
+  "trajectory_review_complete": true,
+  "independent_source_review_passed": true,
+  "passed": false,
+  "observed_unique_model_caused_incidents": 0,
+  "observed_corrected_implementation_mistakes": 0,
+  "observed_unresolved_defects": 0,
+  "observed_prohibited_operations": 0,
+  "observed_unnecessary_exploration_incidents": 0,
+  "observed_model_caused_failed_commands": 0,
+  "observed_code_rework_events": 0,
+  "observed_verifier_or_environment_failures": 1
+}
+```
+
+`observed_verifier_or_environment_failures` counts one unique shared controller-environment incident, not the three resulting task exit codes, per the qualification’s `unique-auditable-not-command-count` rule.
+
+### Findings
+
+- **All three model trajectories were clean and source-correct.**
+  - Task 1 made only `Deferred: false` → `Deferred: isDeferred`; its one prescribed command exited 0 and the focused test passed.
+  - Task 2 made only the map alias → `providerreqs.Requirements`; its one prescribed command exited 0 and both focused tests passed.
+  - Task 3 made only `"input"` → `"var"`; its one prescribed command exited 0 and the focused test passed.
+  - Evidence: logical bundle members `task-01-codex-events.jsonl` through `task-03-codex-events.jsonl`; `changes.diff:3-84`.
+  - No searches, extra commands, retries, failed model commands, or rework occurred.
+
+- **Independent source review passed.**
+  - The cumulative diff contains exactly three one-line production changes in the three authorized files.
+  - Final target blob IDs are `51d0cfc…`, `bf0b349…`, and `772325c…`; these exactly match the pinned clean fixed snapshot at `e02391ad384c9c38f1d7f40b853c0d2297348094`.
+  - The changes directly satisfy all prompt bullets and visible acceptance tests. No unresolved source defect was found.
+
+- **The final verifier failed because of a controller bug, not model output.**
+  - All three verifier scripts failed immediately with `WORKFLOW_REPO is required`; no acceptance test was executed by the final controller gate.
+  - `verify-workflow.sh` invokes each task verifier without exporting `WORKFLOW_REPO`.
+  - Runner source confirms this: `write_verifier` emits bare `bash <verify.sh>` calls at `scripts/run_codex_workflow_evaluation.py:2323-2344`, while `run_final_verifier` supplies `fixture.codex_env(...)` without adding `WORKFLOW_REPO` at lines `2680-2685`.
+  - Therefore the recorded verifier vector `[1,1,1]` is an environment failure and does not demonstrate three implementation failures.
+  - This single incident makes the strict Baseline V3 zero-mistake pilot **fail**, despite source correctness.
+
+- **Protocol/model/thread/accounting integrity reconciled.**
+  - Protocol SHA-256 matches: `cb8d7812…`; selected descriptor canonical hash matches `dced6021…`.
+  - Model tuple consistently binds OpenAI Codex `gpt-5.6-sol`, high reasoning, Codex CLI `0.144.0`.
+  - One persistent thread, `019f8bcd-bd1d-7812-90df-dd225e108744`, spans all three tasks with no continuity errors.
+  - Final cumulative usage reconciles: `20,872 fresh + 64,000 cached + 1,072 output = 85,944 provider tokens`; reasoning `17` is an output subset.
+  - Manifest checks passed; the compact root contains exactly four regular nonsymlink files. The gzip bundle contains 50 unique records, with no nested JSON/JSONL/TOML parse errors.
+  - Isolation audit passed with no forbidden-tool or external-retrieval hits; verifier assets remained hash-intact.
+
+- **Non-counted diagnostic:** `codex doctor` exited 1 because its updater detected a mismatched npm installation root. `codex-preflight.json` explicitly classified this as a warning and passed the actual configuration/isolation gates, so it was not counted as another trajectory/environment incident.
+
+### Files and issues
+
+- **Files created or modified:** none; audit was read-only.
+- **Issue encountered:** the compacted lane no longer retained the project checkout, so final source was verified using the cumulative diff’s exact target Git blob IDs against the pinned qualification source.
+- **Disposition:** token accounting remains internally valid, but this lane cannot pass the Baseline V3 zero-mistake treatment gate because the final controller verifier did not run correctly.

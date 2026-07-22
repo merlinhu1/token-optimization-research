@@ -189,7 +189,7 @@ class CodexUsageAccountingTest(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "decreased"):
             self.summarize(events)
 
-    def test_retained_accounting_correction_covers_every_session(self) -> None:
+    def test_retained_accounting_correction_covers_its_historical_scope(self) -> None:
         registry = json.loads((ROOT / "data/workflow-sessions.json").read_text())
         audit_path = (
             ROOT
@@ -197,7 +197,12 @@ class CodexUsageAccountingTest(unittest.TestCase):
         )
         audit = json.loads(audit_path.read_text())
         rows = {row["session_id"]: row for row in audit["sessions"]}
-        self.assertEqual(rows.keys(), {session["session_id"] for session in registry["sessions"]})
+        sessions = {session["session_id"]: session for session in registry["sessions"]}
+        self.assertTrue(rows.keys() <= sessions.keys())
+        for session_id in sessions.keys() - rows.keys():
+            usage = sessions[session_id]["cumulative_token_usage"]
+            self.assertEqual(usage["measurement_source"], "codex-jsonl-usage-events")
+            self.assertIs(type(usage["cache_write_tokens"]), int)
         self.assertEqual(audit["integrity"]["correction_required_count"], sum(row["correction_required"] for row in rows.values()))
         self.assertTrue(audit["integrity"]["all_manifests_passed"])
         self.assertTrue(audit["integrity"]["all_usage_monotonic"])
@@ -351,8 +356,17 @@ class ActiveCampaignArchitectureTest(unittest.TestCase):
                 runbook,
             )
 
-        if current_ready:
+        treatment_ready = {
+            sequence_id
+            for sequence_id in current_ready
+            if runner.baseline_v2_treatment_gate(runner.load_sequence(sequence_id), ROOT)[0]
+        }
+        if treatment_ready:
+            self.assertIn('scripts/refresh_workflow_contracts.py --sequence-id "$SEQUENCE_ID"', runbook)
             self.assertIn('--treatment-profile "$PROFILE_ID"', runbook)
+            self.assertIn('--workflow-model-condition-id codex-openai-gpt-5-6-sol-high', runbook)
+            self.assertIn('--dry-run', runbook)
+            self.assertIn('no paid treatment command is published', runbook)
         else:
             self.assertNotIn('--treatment-profile "$PROFILE_ID"', runbook)
         self.assertIn(
@@ -376,13 +390,21 @@ class ActiveCampaignArchitectureTest(unittest.TestCase):
                     session["baseline_pool"]["protocol_fingerprint"],
                 )
                 grouped.setdefault(key, set()).add(session["replicate_index"])
+        pilot = json.loads((ROOT / "sources/evaluations/audits/baseline-v3-pilot-zero-mistake.json").read_text())
+        current_pools = {
+            (entry["sequence_id"], entry["baseline_pool_fingerprint"])
+            for entry in pilot["sequences"]
+        }
         self.assertGreaterEqual(len(grouped), 6)
         for (sequence_id, pool), replicates in grouped.items():
-            self.assertIn(
+            rendered = (
                 f"`{sequence_id}` under `codex-openai-gpt-5-6-sol-high` pool `{pool}` "
-                f"({', '.join(f'r{index}' for index in sorted(replicates))})",
-                runbook,
+                f"({', '.join(f'r{index}' for index in sorted(replicates))})"
             )
+            if (sequence_id, pool) in current_pools:
+                self.assertNotIn(rendered, runbook)
+            else:
+                self.assertIn(rendered, runbook)
 
     def test_repository_surfaces_match_production_evidence_state(self) -> None:
         stale_claims = {
@@ -4227,18 +4249,17 @@ class BaselineV3LowComplexityContractTest(unittest.TestCase):
                     self.assertEqual(command_key, "reset", (sequence["id"], command_key))
                     self.assertIn(Path(fixture["setup"]["command"]).name, script_text)
 
-    def test_generated_runbook_pins_v3_pilot_model_tuple(self) -> None:
+    def test_generated_runbook_suppresses_occupied_v3_pilot_commands(self) -> None:
         runbook = (ROOT / "docs/evaluations/operations/runbook.md").read_text()
         document = json.loads((ROOT / "data/workflow-task-sequences.json").read_text())
         flags = "--workflow-model-condition-id codex-openai-gpt-5-6-sol-high --workflow-model gpt-5.6-sol --workflow-reasoning-effort high"
         for sequence in document["sequences"]:
-            self.assertIn(
-                f"python3 scripts/run_sequential_workflow_matrix.py {sequence['id']} {flags} --prepare-only",
-                runbook,
-            )
+            prepare_command = f"python3 scripts/run_sequential_workflow_matrix.py {sequence['id']} {flags} --prepare-only"
             paid_command = f"python3 scripts/run_sequential_workflow_matrix.py {sequence['id']} {flags}"
-            pilot_allowed, _pilot_reason = runner.baseline_v2_pilot_run_gate(sequence, ROOT)
-            self.assertEqual(paid_command in runbook.splitlines(), pilot_allowed)
+            receipt = runner.baseline_pilot_attempt_receipt_path(sequence, ROOT)
+            self.assertTrue(receipt.is_file())
+            self.assertNotIn(prepare_command, runbook)
+            self.assertNotIn(paid_command, runbook.splitlines())
 
     def test_provider_free_v3_qualifications_pass_every_boundary(self) -> None:
         document = json.loads((ROOT / "data/workflow-task-sequences.json").read_text())
@@ -5193,19 +5214,23 @@ class BaselineV3LowComplexityContractTest(unittest.TestCase):
                     baseline_run_gate=lambda _sequence: runner.baseline_v2_pilot_run_gate(sequence, authority),
                 )
 
-    def test_v3_treatments_block_while_first_pilot_identity_is_unoccupied(self) -> None:
+    def test_v3_pilot_audit_gates_each_sequence_and_all_attempts_remain_occupied(self) -> None:
         document = json.loads((ROOT / "data/workflow-task-sequences.json").read_text())
+        expected = {
+            "fastify-lifecycle-sequence-v0": True,
+            "beets-lifecycle-sequence-v0": False,
+            "terraform-lifecycle-sequence-v0": False,
+        }
         for sequence in document["sequences"]:
             passed, reason = runner.baseline_v2_treatment_gate(sequence, ROOT)
-            self.assertFalse(passed)
-            self.assertIn("pilot audit is absent", reason)
-            rerun_allowed, rerun_reason = runner.baseline_v2_pilot_run_gate(sequence, ROOT)
-            receipt_exists = runner.baseline_pilot_attempt_receipt_path(sequence, ROOT).exists()
-            self.assertEqual(rerun_allowed, not receipt_exists)
-            if receipt_exists:
-                self.assertIn("immutable attempt receipt", rerun_reason)
+            self.assertEqual(passed, expected[sequence["id"]], (sequence["id"], reason))
+            if passed:
+                self.assertIn("zero-incident", reason)
             else:
-                self.assertIn("no prior Baseline V3 pilot attempt", rerun_reason)
+                self.assertIn("did not pass", reason)
+            rerun_allowed, rerun_reason = runner.baseline_v2_pilot_run_gate(sequence, ROOT)
+            self.assertFalse(rerun_allowed)
+            self.assertIn("immutable attempt receipt", rerun_reason)
 
     def test_failed_v2_pilot_preserves_exact_executed_protocol_bytes(self) -> None:
         audit = json.loads(
@@ -5824,7 +5849,8 @@ with tempfile.TemporaryDirectory(dir=runner.ROOT / 'sources/evaluations/protocol
         self.assertEqual(jobs, [("unit-sequence-v0", "unit-treatment")])
 
     def test_direct_treatment_runner_checks_pilot_gate_before_protocol(self) -> None:
-        sequence = json.loads((ROOT / "data/workflow-task-sequences.json").read_text())["sequences"][0]
+        sequences = json.loads((ROOT / "data/workflow-task-sequences.json").read_text())["sequences"]
+        sequence = next(item for item in sequences if not runner.baseline_v2_treatment_gate(item, ROOT)[0])
         args = mock.Mock(sequence_id=sequence["id"], profile_id="terminal-tokenjuice-codex-hook-v1", prepare_only=True)
         with (
             mock.patch.object(runner, "validate_default_model_condition"),
@@ -5835,7 +5861,8 @@ with tempfile.TemporaryDirectory(dir=runner.ROOT / 'sources/evaluations/protocol
             runner.run_one(args)
 
     def test_treatment_protocol_freeze_checks_pilot_gate_before_qualification(self) -> None:
-        sequence = json.loads((ROOT / "data/workflow-task-sequences.json").read_text())["sequences"][0]
+        sequences = json.loads((ROOT / "data/workflow-task-sequences.json").read_text())["sequences"]
+        sequence = next(item for item in sequences if not runner.baseline_v2_treatment_gate(item, ROOT)[0])
         with (
             mock.patch.object(contract_refresh.runner, "validate_default_model_condition"),
             mock.patch.object(contract_refresh.runner, "assert_profile_runnable"),

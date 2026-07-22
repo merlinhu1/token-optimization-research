@@ -1,0 +1,1330 @@
+{
+  "sequence_id": "fastify-lifecycle-sequence-v0",
+  "treatment_profile": "baseline-bare-codex",
+  "lane_id": "fastify-lifecycle-sequence-v0--baseline-bare-codex",
+  "lane_dir": "/opt/data/eval-workflow-lanes/workflow-matrix-20260722T214451970568Z-p2803024-r0/fastify-lifecycle-sequence-v0--baseline-bare-codex",
+  "run_root": "/opt/data/eval-workflow-lanes/workflow-matrix-20260722T214451970568Z-p2803024-r0",
+  "checkout": "/opt/data/eval-workflow-lanes/workflow-matrix-20260722T214451970568Z-p2803024-r0/fastify-lifecycle-sequence-v0--baseline-bare-codex/checkout",
+  "log": "/opt/data/eval-workflow-lanes/workflow-matrix-20260722T214451970568Z-p2803024-r0/fastify-lifecycle-sequence-v0--baseline-bare-codex/logs/lane.log",
+  "exit_code": 0,
+  "produced_session_ids": [
+    "baseline-fastify-20260722-p-bb0e89ed9794-r0"
+  ],
+  "expected_session_binding": {
+    "sequence_id": "fastify-lifecycle-sequence-v0",
+    "profile_id": "baseline-bare-codex",
+    "replicate_index": 0,
+    "frozen_protocol": {
+      "protocol_id": "fastify-lifecycle-sequence-v0-baseline-bare-codex-5bd0be12f9f5",
+      "path": "sources/evaluations/protocols/fastify-lifecycle-sequence-v0-baseline-bare-codex-5bd0be12f9f5.json",
+      "sha256": "c11710aeda868a697a75fa75c45209641ec4ac2c30fc3fd5abea8a2add22b0b0"
+    },
+    "baseline_pool_fingerprint": "bb0e89ed9794",
+    "selected_execution": {
+      "descriptor_sha256": "986c518b15ccc49bd6382fdc6a761baa661e9cfae03e4abf1e98ff39c50a6da4",
+      "descriptor": {
+        "version": "execution-condition-v1",
+        "sequence_id": "fastify-lifecycle-sequence-v0",
+        "execution_role": "baseline",
+        "selected_profile": {
+          "profile_id": "baseline-bare-codex",
+          "profile_type": "control",
+          "component_ids": [],
+          "enabled_surfaces": [
+            "codex-native-shell-edit"
+          ],
+          "disabled_overlaps": [
+            "all MCP servers",
+            "all token-saving surfaces",
+            "global Codex instructions",
+            "hooks",
+            "skills/plugins",
+            "warm indexes"
+          ],
+          "registry_entry_sha256": "ac6fe54b3c2150c70deb4e8c22a742e18e6f377ecbc25617053b55c557b6dea6",
+          "registry_entry": {
+            "id": "baseline-bare-codex",
+            "profile_type": "control",
+            "objective_scope": "control",
+            "status": "active-control",
+            "substrate": "codex-cli",
+            "enabled_surfaces": [
+              "codex-native-shell-edit"
+            ],
+            "disabled_overlaps": [
+              "all MCP servers",
+              "all token-saving surfaces",
+              "global Codex instructions",
+              "hooks",
+              "skills/plugins",
+              "warm indexes"
+            ],
+            "components": [],
+            "native_agent_tools_allowed": [
+              "shell_command_execution",
+              "file_editing",
+              "plain_file_read_search",
+              "git",
+              "verifier_commands"
+            ],
+            "forbidden_surfaces": [
+              "lean-ctx",
+              "codegraph",
+              "serena",
+              "rtk",
+              "lowfat",
+              "tokenjuice",
+              "repomix",
+              "mex",
+              "cavemem",
+              "cartog",
+              "all unlisted retrieval/compression/memory/token-saving tools"
+            ],
+            "install": {
+              "policy": "Run Codex from a fresh lane-specific CODEX_HOME with auth only, no MCP servers, no global instructions, no hooks, no skills/plugins, isolated HOME/PYTHONUSERBASE/XDG/TMPDIR, and a preflight artifact proving empty MCP config."
+            },
+            "reset": {
+              "policy": "Delete the lane-specific Codex home and run-local HOME/PYTHONUSERBASE/XDG/TMPDIR before each run; verify no stale indexes or generated profile files survive."
+            },
+            "notes": "Canonical Codex CLI no-MCP substrate baseline. Codex native shell/edit/file/git/verifier operations are allowed; MCP, retrieval, compression, memory, token-saving add-ons, global instructions, hooks, skills/plugins, and warm indexes are forbidden."
+          }
+        },
+        "model_facing_prompts": {
+          "rendering_contract": "sequential-model-facing-prompts-v2",
+          "profile_guidance_sha256": "f1d7a2cf7b0a7c1affd8bbb04705f073332ee6efc5f8f89f019b9e0cbacec4bb",
+          "tasks": [
+            {
+              "task_id": "fastify-lifecycle-feature-v0",
+              "order": 1,
+              "rendered_prompt_sha256": "a19559eae75789b46cac91e6f5e28544b289726bf29eca94a2c0ae764b83df7d"
+            },
+            {
+              "task_id": "fastify-lifecycle-refactor-v0",
+              "order": 2,
+              "rendered_prompt_sha256": "a4cdc43f80fd89b851e765b409fa99199ab30f88b4b3b1028ee97ed540cd0706"
+            },
+            {
+              "task_id": "fastify-lifecycle-review-v0",
+              "order": 3,
+              "rendered_prompt_sha256": "d7874fd6436994b7a7f09ce348087f39d6105a7cfcb4e2ca1ac3003d7ff8c091"
+            }
+          ]
+        },
+        "tool_adapter": {
+          "tool_id": null,
+          "tool_manifest": "baseline-native-codex-tools",
+          "tool_config": null,
+          "binary_identity": null,
+          "source_identity": []
+        },
+        "runtime": {
+          "docker_image": "token-eval-codex:latest",
+          "docker_image_identity": {
+            "image_ref": "token-eval-codex:latest",
+            "image_id": "sha256:6f86d01f2c63f5029c6bb874d8f3694c24d5cd567e3d09413eccc956ba3feafe",
+            "repo_digests": [
+              "token-eval-codex@sha256:6f86d01f2c63f5029c6bb874d8f3694c24d5cd567e3d09413eccc956ba3feafe"
+            ],
+            "repo_tags": [
+              "token-eval-codex:latest"
+            ]
+          },
+          "dockerfile_path": "sources/evaluations/fixtures/container/Dockerfile",
+          "dockerfile_sha256": "47c91967ce25014ce54879514f51d2ff0326651be1087209115eff4d358226b3",
+          "fixture_runner_path": "scripts/run_codex_fixture_evaluation.py",
+          "fixture_runner_sha256": "6fa8271b89a577706ea0bbffcc8e4521831f41b646ed9519369efee3642fe41c",
+          "mcp_probe_path": "scripts/probe_mcp_stdio.py",
+          "mcp_probe_sha256": "7c06ea36ee5cac933a97140b84a41405fc99b45152388e8d7c6659136af698fd",
+          "codex_entrypoint_path": "sources/evaluations/fixtures/container/codex-entrypoint.sh",
+          "codex_entrypoint_sha256": "8715fe37cb1fa3823f5f05493bc9681ce7ffc72126dfec4d64d448762c550c3c",
+          "timeout_seconds_per_task": 3600,
+          "network_isolation": {
+            "provider_access": true,
+            "model_shell_network_access": false,
+            "model_shell_enforcement": "seccomp denies AF_INET and AF_INET6 socket creation for the shell process and descendants",
+            "codex_web_search": "disabled",
+            "external_retrieval_audit": "fail-closed"
+          },
+          "isolation_policy": "fresh lane-specific Codex home/tool data; provider-only network with model shell and Codex web search disabled; sequential one-task prompt delivery; controller seed/verifier scripts excluded while declared model-visible acceptance tests are retained"
+        },
+        "dependencies": {
+          "command": "npm install --ignore-scripts --no-audit --no-fund",
+          "command_sha256": "7493d616f26e72b22eb5a21beafa12a6717ebf5b93a7a75e709de65e7323cc41",
+          "lockfiles": [
+            {
+              "path": "package.json",
+              "snapshot_sha256": "b273320af1bb4cfc0f9334457c8e3b1d035fde0da14f9db65e8ef97d361d0be3",
+              "current_fixture_sha256": null
+            }
+          ]
+        },
+        "agent_condition": {
+          "runtime_id": "codex-cli",
+          "provider": "openai",
+          "model": "gpt-5.6-sol",
+          "model_condition_id": "codex-openai-gpt-5-6-sol-high",
+          "reasoning_effort": "high",
+          "codex_version_condition": "captured-at-run-and-bound-to-record"
+        },
+        "isolation": {
+          "prompt_delivery": "sequential-one-task-at-a-time",
+          "seed_delivery_mode": "preseeded-composite",
+          "future_tasks_visible": false,
+          "future_seed_regressions_visible": true,
+          "controller_verification": "final-only",
+          "controller_verifier_scripts_and_canonical_copies_model_visible": false,
+          "model_visible_acceptance_asset_paths": [
+            "test/baseline-v3-content-type-cache.test.js",
+            "test/baseline-v3-max-param.test.js",
+            "test/baseline-v3-request-media-type.test.js"
+          ],
+          "model_concealed_paths": []
+        },
+        "baseline_pool_reference": {
+          "protocol_version": "baseline-pool-v1",
+          "protocol_fingerprint": "bb0e89ed9794",
+          "comparison_policy": "paired baseline and treatment must share this baseline pool fingerprint and replicate"
+        },
+        "model_condition_override": {
+          "model_condition_id": "codex-openai-gpt-5-6-sol-high",
+          "model": "gpt-5.6-sol",
+          "reasoning_effort": "high",
+          "registry_status": "active-model-comparison",
+          "launcher": {
+            "path": "scripts/run_codex_workflow_model_condition.py",
+            "sha256": "b219d8f88e5df0fd567dff4d47e9193a602b223b2b72cf0ed3ea5c67cad5aecf"
+          }
+        }
+      }
+    }
+  },
+  "failure_evidence": []
+}
+{
+  "sequence_id": "beets-lifecycle-sequence-v0",
+  "treatment_profile": "baseline-bare-codex",
+  "lane_id": "beets-lifecycle-sequence-v0--baseline-bare-codex",
+  "lane_dir": "/opt/data/eval-workflow-lanes/workflow-matrix-20260722T214451970568Z-p2803024-r0/beets-lifecycle-sequence-v0--baseline-bare-codex",
+  "run_root": "/opt/data/eval-workflow-lanes/workflow-matrix-20260722T214451970568Z-p2803024-r0",
+  "checkout": "/opt/data/eval-workflow-lanes/workflow-matrix-20260722T214451970568Z-p2803024-r0/beets-lifecycle-sequence-v0--baseline-bare-codex/checkout",
+  "log": "/opt/data/eval-workflow-lanes/workflow-matrix-20260722T214451970568Z-p2803024-r0/beets-lifecycle-sequence-v0--baseline-bare-codex/logs/lane.log",
+  "exit_code": 0,
+  "produced_session_ids": [
+    "baseline-beets-20260722-p-82943cffbb9a-r0"
+  ],
+  "expected_session_binding": {
+    "sequence_id": "beets-lifecycle-sequence-v0",
+    "profile_id": "baseline-bare-codex",
+    "replicate_index": 0,
+    "frozen_protocol": {
+      "protocol_id": "beets-lifecycle-sequence-v0-baseline-bare-codex-78c2e1f5c002",
+      "path": "sources/evaluations/protocols/beets-lifecycle-sequence-v0-baseline-bare-codex-78c2e1f5c002.json",
+      "sha256": "45336422c8bada67848966b079daf6bd70da6ba8aefa55ab465435bdcebd11d7"
+    },
+    "baseline_pool_fingerprint": "82943cffbb9a",
+    "selected_execution": {
+      "descriptor_sha256": "11e17d05c8eb7aa25a40469a7493e2118f3f65f23f91d48fde823508dbd78f8d",
+      "descriptor": {
+        "version": "execution-condition-v1",
+        "sequence_id": "beets-lifecycle-sequence-v0",
+        "execution_role": "baseline",
+        "selected_profile": {
+          "profile_id": "baseline-bare-codex",
+          "profile_type": "control",
+          "component_ids": [],
+          "enabled_surfaces": [
+            "codex-native-shell-edit"
+          ],
+          "disabled_overlaps": [
+            "all MCP servers",
+            "all token-saving surfaces",
+            "global Codex instructions",
+            "hooks",
+            "skills/plugins",
+            "warm indexes"
+          ],
+          "registry_entry_sha256": "ac6fe54b3c2150c70deb4e8c22a742e18e6f377ecbc25617053b55c557b6dea6",
+          "registry_entry": {
+            "id": "baseline-bare-codex",
+            "profile_type": "control",
+            "objective_scope": "control",
+            "status": "active-control",
+            "substrate": "codex-cli",
+            "enabled_surfaces": [
+              "codex-native-shell-edit"
+            ],
+            "disabled_overlaps": [
+              "all MCP servers",
+              "all token-saving surfaces",
+              "global Codex instructions",
+              "hooks",
+              "skills/plugins",
+              "warm indexes"
+            ],
+            "components": [],
+            "native_agent_tools_allowed": [
+              "shell_command_execution",
+              "file_editing",
+              "plain_file_read_search",
+              "git",
+              "verifier_commands"
+            ],
+            "forbidden_surfaces": [
+              "lean-ctx",
+              "codegraph",
+              "serena",
+              "rtk",
+              "lowfat",
+              "tokenjuice",
+              "repomix",
+              "mex",
+              "cavemem",
+              "cartog",
+              "all unlisted retrieval/compression/memory/token-saving tools"
+            ],
+            "install": {
+              "policy": "Run Codex from a fresh lane-specific CODEX_HOME with auth only, no MCP servers, no global instructions, no hooks, no skills/plugins, isolated HOME/PYTHONUSERBASE/XDG/TMPDIR, and a preflight artifact proving empty MCP config."
+            },
+            "reset": {
+              "policy": "Delete the lane-specific Codex home and run-local HOME/PYTHONUSERBASE/XDG/TMPDIR before each run; verify no stale indexes or generated profile files survive."
+            },
+            "notes": "Canonical Codex CLI no-MCP substrate baseline. Codex native shell/edit/file/git/verifier operations are allowed; MCP, retrieval, compression, memory, token-saving add-ons, global instructions, hooks, skills/plugins, and warm indexes are forbidden."
+          }
+        },
+        "model_facing_prompts": {
+          "rendering_contract": "sequential-model-facing-prompts-v2",
+          "profile_guidance_sha256": "f1d7a2cf7b0a7c1affd8bbb04705f073332ee6efc5f8f89f019b9e0cbacec4bb",
+          "tasks": [
+            {
+              "task_id": "beets-lifecycle-feature-v0",
+              "order": 1,
+              "rendered_prompt_sha256": "b865ee67c65b56af7784da70e97743cf14d28063c6a93768f0115b64f31525f0"
+            },
+            {
+              "task_id": "beets-lifecycle-refactor-v0",
+              "order": 2,
+              "rendered_prompt_sha256": "b980fd727c7df8ccb9855773dde060e32d78cb73240ab89d0e46f8f75f1e3a2b"
+            },
+            {
+              "task_id": "beets-lifecycle-review-v0",
+              "order": 3,
+              "rendered_prompt_sha256": "23db97f79bc8d2f42e19a668600b0602056e70c6881320420af73bbb8b956387"
+            }
+          ]
+        },
+        "tool_adapter": {
+          "tool_id": null,
+          "tool_manifest": "baseline-native-codex-tools",
+          "tool_config": null,
+          "binary_identity": null,
+          "source_identity": []
+        },
+        "runtime": {
+          "docker_image": "token-eval-codex:latest",
+          "docker_image_identity": {
+            "image_ref": "token-eval-codex:latest",
+            "image_id": "sha256:6f86d01f2c63f5029c6bb874d8f3694c24d5cd567e3d09413eccc956ba3feafe",
+            "repo_digests": [
+              "token-eval-codex@sha256:6f86d01f2c63f5029c6bb874d8f3694c24d5cd567e3d09413eccc956ba3feafe"
+            ],
+            "repo_tags": [
+              "token-eval-codex:latest"
+            ]
+          },
+          "dockerfile_path": "sources/evaluations/fixtures/container/Dockerfile",
+          "dockerfile_sha256": "47c91967ce25014ce54879514f51d2ff0326651be1087209115eff4d358226b3",
+          "fixture_runner_path": "scripts/run_codex_fixture_evaluation.py",
+          "fixture_runner_sha256": "6fa8271b89a577706ea0bbffcc8e4521831f41b646ed9519369efee3642fe41c",
+          "mcp_probe_path": "scripts/probe_mcp_stdio.py",
+          "mcp_probe_sha256": "7c06ea36ee5cac933a97140b84a41405fc99b45152388e8d7c6659136af698fd",
+          "codex_entrypoint_path": "sources/evaluations/fixtures/container/codex-entrypoint.sh",
+          "codex_entrypoint_sha256": "8715fe37cb1fa3823f5f05493bc9681ce7ffc72126dfec4d64d448762c550c3c",
+          "timeout_seconds_per_task": 3600,
+          "network_isolation": {
+            "provider_access": true,
+            "model_shell_network_access": false,
+            "model_shell_enforcement": "seccomp denies AF_INET and AF_INET6 socket creation for the shell process and descendants",
+            "codex_web_search": "disabled",
+            "external_retrieval_audit": "fail-closed"
+          },
+          "isolation_policy": "fresh lane-specific Codex home/tool data; provider-only network with model shell and Codex web search disabled; sequential one-task prompt delivery; controller seed/verifier scripts excluded while declared model-visible acceptance tests are retained"
+        },
+        "dependencies": {
+          "command": "uv sync --group test --frozen",
+          "command_sha256": "cef23fd45902c23f8b3e89b7c6360a401eb49c17cf36d742e5b625d5593c911b",
+          "lockfiles": [
+            {
+              "path": "uv.lock",
+              "snapshot_sha256": "fbf1d7a9c84b658a2433035221ba18c57508c254d711a06f305e2f610839a45f",
+              "current_fixture_sha256": null
+            }
+          ]
+        },
+        "agent_condition": {
+          "runtime_id": "codex-cli",
+          "provider": "openai",
+          "model": "gpt-5.6-sol",
+          "model_condition_id": "codex-openai-gpt-5-6-sol-high",
+          "reasoning_effort": "high",
+          "codex_version_condition": "captured-at-run-and-bound-to-record"
+        },
+        "isolation": {
+          "prompt_delivery": "sequential-one-task-at-a-time",
+          "seed_delivery_mode": "preseeded-composite",
+          "future_tasks_visible": false,
+          "future_seed_regressions_visible": true,
+          "controller_verification": "final-only",
+          "controller_verifier_scripts_and_canonical_copies_model_visible": false,
+          "model_visible_acceptance_asset_paths": [
+            "test/plugins/test_ftintitle.py",
+            "test/util/test_functemplate.py"
+          ],
+          "model_concealed_paths": []
+        },
+        "baseline_pool_reference": {
+          "protocol_version": "baseline-pool-v1",
+          "protocol_fingerprint": "82943cffbb9a",
+          "comparison_policy": "paired baseline and treatment must share this baseline pool fingerprint and replicate"
+        },
+        "model_condition_override": {
+          "model_condition_id": "codex-openai-gpt-5-6-sol-high",
+          "model": "gpt-5.6-sol",
+          "reasoning_effort": "high",
+          "registry_status": "active-model-comparison",
+          "launcher": {
+            "path": "scripts/run_codex_workflow_model_condition.py",
+            "sha256": "b219d8f88e5df0fd567dff4d47e9193a602b223b2b72cf0ed3ea5c67cad5aecf"
+          }
+        }
+      }
+    }
+  },
+  "failure_evidence": []
+}
+{
+  "sequence_id": "terraform-lifecycle-sequence-v0",
+  "treatment_profile": "baseline-bare-codex",
+  "lane_id": "terraform-lifecycle-sequence-v0--baseline-bare-codex",
+  "lane_dir": "/opt/data/eval-workflow-lanes/workflow-matrix-20260722T214451970568Z-p2803024-r0/terraform-lifecycle-sequence-v0--baseline-bare-codex",
+  "run_root": "/opt/data/eval-workflow-lanes/workflow-matrix-20260722T214451970568Z-p2803024-r0",
+  "checkout": "/opt/data/eval-workflow-lanes/workflow-matrix-20260722T214451970568Z-p2803024-r0/terraform-lifecycle-sequence-v0--baseline-bare-codex/checkout",
+  "log": "/opt/data/eval-workflow-lanes/workflow-matrix-20260722T214451970568Z-p2803024-r0/terraform-lifecycle-sequence-v0--baseline-bare-codex/logs/lane.log",
+  "exit_code": 0,
+  "produced_session_ids": [
+    "baseline-terraform-20260722-p-5caa11b3fa2b-r0"
+  ],
+  "expected_session_binding": {
+    "sequence_id": "terraform-lifecycle-sequence-v0",
+    "profile_id": "baseline-bare-codex",
+    "replicate_index": 0,
+    "frozen_protocol": {
+      "protocol_id": "terraform-lifecycle-sequence-v0-baseline-bare-codex-702e684aebaa",
+      "path": "sources/evaluations/protocols/terraform-lifecycle-sequence-v0-baseline-bare-codex-702e684aebaa.json",
+      "sha256": "cb8d78120fc11a301d40f07303167ef30f212d5351993208703fa6d9ee645f28"
+    },
+    "baseline_pool_fingerprint": "5caa11b3fa2b",
+    "selected_execution": {
+      "descriptor_sha256": "dced6021bfd4b572dcda6a23fa285da8e67e60d198aaace893c16cffea2f7650",
+      "descriptor": {
+        "version": "execution-condition-v1",
+        "sequence_id": "terraform-lifecycle-sequence-v0",
+        "execution_role": "baseline",
+        "selected_profile": {
+          "profile_id": "baseline-bare-codex",
+          "profile_type": "control",
+          "component_ids": [],
+          "enabled_surfaces": [
+            "codex-native-shell-edit"
+          ],
+          "disabled_overlaps": [
+            "all MCP servers",
+            "all token-saving surfaces",
+            "global Codex instructions",
+            "hooks",
+            "skills/plugins",
+            "warm indexes"
+          ],
+          "registry_entry_sha256": "ac6fe54b3c2150c70deb4e8c22a742e18e6f377ecbc25617053b55c557b6dea6",
+          "registry_entry": {
+            "id": "baseline-bare-codex",
+            "profile_type": "control",
+            "objective_scope": "control",
+            "status": "active-control",
+            "substrate": "codex-cli",
+            "enabled_surfaces": [
+              "codex-native-shell-edit"
+            ],
+            "disabled_overlaps": [
+              "all MCP servers",
+              "all token-saving surfaces",
+              "global Codex instructions",
+              "hooks",
+              "skills/plugins",
+              "warm indexes"
+            ],
+            "components": [],
+            "native_agent_tools_allowed": [
+              "shell_command_execution",
+              "file_editing",
+              "plain_file_read_search",
+              "git",
+              "verifier_commands"
+            ],
+            "forbidden_surfaces": [
+              "lean-ctx",
+              "codegraph",
+              "serena",
+              "rtk",
+              "lowfat",
+              "tokenjuice",
+              "repomix",
+              "mex",
+              "cavemem",
+              "cartog",
+              "all unlisted retrieval/compression/memory/token-saving tools"
+            ],
+            "install": {
+              "policy": "Run Codex from a fresh lane-specific CODEX_HOME with auth only, no MCP servers, no global instructions, no hooks, no skills/plugins, isolated HOME/PYTHONUSERBASE/XDG/TMPDIR, and a preflight artifact proving empty MCP config."
+            },
+            "reset": {
+              "policy": "Delete the lane-specific Codex home and run-local HOME/PYTHONUSERBASE/XDG/TMPDIR before each run; verify no stale indexes or generated profile files survive."
+            },
+            "notes": "Canonical Codex CLI no-MCP substrate baseline. Codex native shell/edit/file/git/verifier operations are allowed; MCP, retrieval, compression, memory, token-saving add-ons, global instructions, hooks, skills/plugins, and warm indexes are forbidden."
+          }
+        },
+        "model_facing_prompts": {
+          "rendering_contract": "sequential-model-facing-prompts-v2",
+          "profile_guidance_sha256": "f1d7a2cf7b0a7c1affd8bbb04705f073332ee6efc5f8f89f019b9e0cbacec4bb",
+          "tasks": [
+            {
+              "task_id": "terraform-lifecycle-feature-v0",
+              "order": 1,
+              "rendered_prompt_sha256": "a896ea899b49e1eb0fc88fb02ab42c9767686b64d8a827622e87a926e0ae2232"
+            },
+            {
+              "task_id": "terraform-lifecycle-refactor-v0",
+              "order": 2,
+              "rendered_prompt_sha256": "a123fe92ccd8ad53bbbf5dbd0479155c066bb611e31901fa0f2b85b914dc05ad"
+            },
+            {
+              "task_id": "terraform-lifecycle-review-v0",
+              "order": 3,
+              "rendered_prompt_sha256": "01a2f6a29d7b0d9cff959e3ceb99e164122dece0fa24ccd6fbf66e3a68a167e4"
+            }
+          ]
+        },
+        "tool_adapter": {
+          "tool_id": null,
+          "tool_manifest": "baseline-native-codex-tools",
+          "tool_config": null,
+          "binary_identity": null,
+          "source_identity": []
+        },
+        "runtime": {
+          "docker_image": "token-eval-codex:latest",
+          "docker_image_identity": {
+            "image_ref": "token-eval-codex:latest",
+            "image_id": "sha256:6f86d01f2c63f5029c6bb874d8f3694c24d5cd567e3d09413eccc956ba3feafe",
+            "repo_digests": [
+              "token-eval-codex@sha256:6f86d01f2c63f5029c6bb874d8f3694c24d5cd567e3d09413eccc956ba3feafe"
+            ],
+            "repo_tags": [
+              "token-eval-codex:latest"
+            ]
+          },
+          "dockerfile_path": "sources/evaluations/fixtures/container/Dockerfile",
+          "dockerfile_sha256": "47c91967ce25014ce54879514f51d2ff0326651be1087209115eff4d358226b3",
+          "fixture_runner_path": "scripts/run_codex_fixture_evaluation.py",
+          "fixture_runner_sha256": "6fa8271b89a577706ea0bbffcc8e4521831f41b646ed9519369efee3642fe41c",
+          "mcp_probe_path": "scripts/probe_mcp_stdio.py",
+          "mcp_probe_sha256": "7c06ea36ee5cac933a97140b84a41405fc99b45152388e8d7c6659136af698fd",
+          "codex_entrypoint_path": "sources/evaluations/fixtures/container/codex-entrypoint.sh",
+          "codex_entrypoint_sha256": "8715fe37cb1fa3823f5f05493bc9681ce7ffc72126dfec4d64d448762c550c3c",
+          "timeout_seconds_per_task": 3600,
+          "network_isolation": {
+            "provider_access": true,
+            "model_shell_network_access": false,
+            "model_shell_enforcement": "seccomp denies AF_INET and AF_INET6 socket creation for the shell process and descendants",
+            "codex_web_search": "disabled",
+            "external_retrieval_audit": "fail-closed"
+          },
+          "isolation_policy": "fresh lane-specific Codex home/tool data; provider-only network with model shell and Codex web search disabled; sequential one-task prompt delivery; controller seed/verifier scripts excluded while declared model-visible acceptance tests are retained"
+        },
+        "dependencies": {
+          "command": "go mod download",
+          "command_sha256": "42a8263a643ccbe692d70752ffdd8cea328fc2d3190677df1485ee06f55b350a",
+          "lockfiles": [
+            {
+              "path": "go.sum",
+              "snapshot_sha256": "be9ec949db0a0b135197f2c78b6d9821d764cc9b8c362b4860e3d5a1e9c74b9e",
+              "current_fixture_sha256": null
+            }
+          ]
+        },
+        "agent_condition": {
+          "runtime_id": "codex-cli",
+          "provider": "openai",
+          "model": "gpt-5.6-sol",
+          "model_condition_id": "codex-openai-gpt-5-6-sol-high",
+          "reasoning_effort": "high",
+          "codex_version_condition": "captured-at-run-and-bound-to-record"
+        },
+        "isolation": {
+          "prompt_delivery": "sequential-one-task-at-a-time",
+          "seed_delivery_mode": "preseeded-composite",
+          "future_tasks_visible": false,
+          "future_seed_regressions_visible": true,
+          "controller_verification": "final-only",
+          "controller_verifier_scripts_and_canonical_copies_model_visible": false,
+          "model_visible_acceptance_asset_paths": [
+            "internal/addrs/baseline_v3_checkable_test.go",
+            "internal/configs/baseline_v3_requirement_type_test.go",
+            "internal/configs/parser_config_dir_test.go",
+            "internal/policy/callback/baseline_v3_deferred_test.go"
+          ],
+          "model_concealed_paths": []
+        },
+        "baseline_pool_reference": {
+          "protocol_version": "baseline-pool-v1",
+          "protocol_fingerprint": "5caa11b3fa2b",
+          "comparison_policy": "paired baseline and treatment must share this baseline pool fingerprint and replicate"
+        },
+        "model_condition_override": {
+          "model_condition_id": "codex-openai-gpt-5-6-sol-high",
+          "model": "gpt-5.6-sol",
+          "reasoning_effort": "high",
+          "registry_status": "active-model-comparison",
+          "launcher": {
+            "path": "scripts/run_codex_workflow_model_condition.py",
+            "sha256": "b219d8f88e5df0fd567dff4d47e9193a602b223b2b72cf0ed3ea5c67cad5aecf"
+          }
+        }
+      }
+    }
+  },
+  "failure_evidence": []
+}
+wrote docs/evaluations/operations/runbook.md
+{
+  "output": "/opt/data/repos/token-optimization-research/sources/evaluations/audits/codex-cumulative-usage-accounting-20260718.json",
+  "sessions": 93,
+  "corrections": 27,
+  "legacy_total": 1223028347,
+  "corrected_total": 977952756
+}
+{
+  "plan": {
+    "sequences": [
+      "fastify-lifecycle-sequence-v0",
+      "beets-lifecycle-sequence-v0",
+      "terraform-lifecycle-sequence-v0"
+    ],
+    "treatment_profiles": [],
+    "jobs": [
+      {
+        "sequence_id": "fastify-lifecycle-sequence-v0",
+        "profile_id": "baseline-bare-codex",
+        "protocol": "sources/evaluations/protocols/fastify-lifecycle-sequence-v0-baseline-bare-codex-5bd0be12f9f5.json"
+      },
+      {
+        "sequence_id": "beets-lifecycle-sequence-v0",
+        "profile_id": "baseline-bare-codex",
+        "protocol": "sources/evaluations/protocols/beets-lifecycle-sequence-v0-baseline-bare-codex-78c2e1f5c002.json"
+      },
+      {
+        "sequence_id": "terraform-lifecycle-sequence-v0",
+        "profile_id": "baseline-bare-codex",
+        "protocol": "sources/evaluations/protocols/terraform-lifecycle-sequence-v0-baseline-bare-codex-702e684aebaa.json"
+      }
+    ],
+    "max_parallel": 1,
+    "replicate_index": 0,
+    "model_condition": {
+      "id": "codex-openai-gpt-5-6-sol-high",
+      "model": "gpt-5.6-sol",
+      "reasoning_effort": "high"
+    },
+    "lane_root": "/opt/data/eval-workflow-lanes/workflow-matrix-20260722T214451970568Z-p2803024-r0",
+    "runner_args": []
+  },
+  "lane_results": [
+    {
+      "sequence_id": "beets-lifecycle-sequence-v0",
+      "treatment_profile": "baseline-bare-codex",
+      "lane_id": "beets-lifecycle-sequence-v0--baseline-bare-codex",
+      "lane_dir": "/opt/data/eval-workflow-lanes/workflow-matrix-20260722T214451970568Z-p2803024-r0/beets-lifecycle-sequence-v0--baseline-bare-codex",
+      "run_root": "/opt/data/eval-workflow-lanes/workflow-matrix-20260722T214451970568Z-p2803024-r0",
+      "checkout": "/opt/data/eval-workflow-lanes/workflow-matrix-20260722T214451970568Z-p2803024-r0/beets-lifecycle-sequence-v0--baseline-bare-codex/checkout",
+      "log": "/opt/data/eval-workflow-lanes/workflow-matrix-20260722T214451970568Z-p2803024-r0/beets-lifecycle-sequence-v0--baseline-bare-codex/logs/lane.log",
+      "exit_code": 0,
+      "produced_session_ids": [
+        "baseline-beets-20260722-p-82943cffbb9a-r0"
+      ],
+      "expected_session_binding": {
+        "sequence_id": "beets-lifecycle-sequence-v0",
+        "profile_id": "baseline-bare-codex",
+        "replicate_index": 0,
+        "frozen_protocol": {
+          "protocol_id": "beets-lifecycle-sequence-v0-baseline-bare-codex-78c2e1f5c002",
+          "path": "sources/evaluations/protocols/beets-lifecycle-sequence-v0-baseline-bare-codex-78c2e1f5c002.json",
+          "sha256": "45336422c8bada67848966b079daf6bd70da6ba8aefa55ab465435bdcebd11d7"
+        },
+        "baseline_pool_fingerprint": "82943cffbb9a",
+        "selected_execution": {
+          "descriptor_sha256": "11e17d05c8eb7aa25a40469a7493e2118f3f65f23f91d48fde823508dbd78f8d",
+          "descriptor": {
+            "version": "execution-condition-v1",
+            "sequence_id": "beets-lifecycle-sequence-v0",
+            "execution_role": "baseline",
+            "selected_profile": {
+              "profile_id": "baseline-bare-codex",
+              "profile_type": "control",
+              "component_ids": [],
+              "enabled_surfaces": [
+                "codex-native-shell-edit"
+              ],
+              "disabled_overlaps": [
+                "all MCP servers",
+                "all token-saving surfaces",
+                "global Codex instructions",
+                "hooks",
+                "skills/plugins",
+                "warm indexes"
+              ],
+              "registry_entry_sha256": "ac6fe54b3c2150c70deb4e8c22a742e18e6f377ecbc25617053b55c557b6dea6",
+              "registry_entry": {
+                "id": "baseline-bare-codex",
+                "profile_type": "control",
+                "objective_scope": "control",
+                "status": "active-control",
+                "substrate": "codex-cli",
+                "enabled_surfaces": [
+                  "codex-native-shell-edit"
+                ],
+                "disabled_overlaps": [
+                  "all MCP servers",
+                  "all token-saving surfaces",
+                  "global Codex instructions",
+                  "hooks",
+                  "skills/plugins",
+                  "warm indexes"
+                ],
+                "components": [],
+                "native_agent_tools_allowed": [
+                  "shell_command_execution",
+                  "file_editing",
+                  "plain_file_read_search",
+                  "git",
+                  "verifier_commands"
+                ],
+                "forbidden_surfaces": [
+                  "lean-ctx",
+                  "codegraph",
+                  "serena",
+                  "rtk",
+                  "lowfat",
+                  "tokenjuice",
+                  "repomix",
+                  "mex",
+                  "cavemem",
+                  "cartog",
+                  "all unlisted retrieval/compression/memory/token-saving tools"
+                ],
+                "install": {
+                  "policy": "Run Codex from a fresh lane-specific CODEX_HOME with auth only, no MCP servers, no global instructions, no hooks, no skills/plugins, isolated HOME/PYTHONUSERBASE/XDG/TMPDIR, and a preflight artifact proving empty MCP config."
+                },
+                "reset": {
+                  "policy": "Delete the lane-specific Codex home and run-local HOME/PYTHONUSERBASE/XDG/TMPDIR before each run; verify no stale indexes or generated profile files survive."
+                },
+                "notes": "Canonical Codex CLI no-MCP substrate baseline. Codex native shell/edit/file/git/verifier operations are allowed; MCP, retrieval, compression, memory, token-saving add-ons, global instructions, hooks, skills/plugins, and warm indexes are forbidden."
+              }
+            },
+            "model_facing_prompts": {
+              "rendering_contract": "sequential-model-facing-prompts-v2",
+              "profile_guidance_sha256": "f1d7a2cf7b0a7c1affd8bbb04705f073332ee6efc5f8f89f019b9e0cbacec4bb",
+              "tasks": [
+                {
+                  "task_id": "beets-lifecycle-feature-v0",
+                  "order": 1,
+                  "rendered_prompt_sha256": "b865ee67c65b56af7784da70e97743cf14d28063c6a93768f0115b64f31525f0"
+                },
+                {
+                  "task_id": "beets-lifecycle-refactor-v0",
+                  "order": 2,
+                  "rendered_prompt_sha256": "b980fd727c7df8ccb9855773dde060e32d78cb73240ab89d0e46f8f75f1e3a2b"
+                },
+                {
+                  "task_id": "beets-lifecycle-review-v0",
+                  "order": 3,
+                  "rendered_prompt_sha256": "23db97f79bc8d2f42e19a668600b0602056e70c6881320420af73bbb8b956387"
+                }
+              ]
+            },
+            "tool_adapter": {
+              "tool_id": null,
+              "tool_manifest": "baseline-native-codex-tools",
+              "tool_config": null,
+              "binary_identity": null,
+              "source_identity": []
+            },
+            "runtime": {
+              "docker_image": "token-eval-codex:latest",
+              "docker_image_identity": {
+                "image_ref": "token-eval-codex:latest",
+                "image_id": "sha256:6f86d01f2c63f5029c6bb874d8f3694c24d5cd567e3d09413eccc956ba3feafe",
+                "repo_digests": [
+                  "token-eval-codex@sha256:6f86d01f2c63f5029c6bb874d8f3694c24d5cd567e3d09413eccc956ba3feafe"
+                ],
+                "repo_tags": [
+                  "token-eval-codex:latest"
+                ]
+              },
+              "dockerfile_path": "sources/evaluations/fixtures/container/Dockerfile",
+              "dockerfile_sha256": "47c91967ce25014ce54879514f51d2ff0326651be1087209115eff4d358226b3",
+              "fixture_runner_path": "scripts/run_codex_fixture_evaluation.py",
+              "fixture_runner_sha256": "6fa8271b89a577706ea0bbffcc8e4521831f41b646ed9519369efee3642fe41c",
+              "mcp_probe_path": "scripts/probe_mcp_stdio.py",
+              "mcp_probe_sha256": "7c06ea36ee5cac933a97140b84a41405fc99b45152388e8d7c6659136af698fd",
+              "codex_entrypoint_path": "sources/evaluations/fixtures/container/codex-entrypoint.sh",
+              "codex_entrypoint_sha256": "8715fe37cb1fa3823f5f05493bc9681ce7ffc72126dfec4d64d448762c550c3c",
+              "timeout_seconds_per_task": 3600,
+              "network_isolation": {
+                "provider_access": true,
+                "model_shell_network_access": false,
+                "model_shell_enforcement": "seccomp denies AF_INET and AF_INET6 socket creation for the shell process and descendants",
+                "codex_web_search": "disabled",
+                "external_retrieval_audit": "fail-closed"
+              },
+              "isolation_policy": "fresh lane-specific Codex home/tool data; provider-only network with model shell and Codex web search disabled; sequential one-task prompt delivery; controller seed/verifier scripts excluded while declared model-visible acceptance tests are retained"
+            },
+            "dependencies": {
+              "command": "uv sync --group test --frozen",
+              "command_sha256": "cef23fd45902c23f8b3e89b7c6360a401eb49c17cf36d742e5b625d5593c911b",
+              "lockfiles": [
+                {
+                  "path": "uv.lock",
+                  "snapshot_sha256": "fbf1d7a9c84b658a2433035221ba18c57508c254d711a06f305e2f610839a45f",
+                  "current_fixture_sha256": null
+                }
+              ]
+            },
+            "agent_condition": {
+              "runtime_id": "codex-cli",
+              "provider": "openai",
+              "model": "gpt-5.6-sol",
+              "model_condition_id": "codex-openai-gpt-5-6-sol-high",
+              "reasoning_effort": "high",
+              "codex_version_condition": "captured-at-run-and-bound-to-record"
+            },
+            "isolation": {
+              "prompt_delivery": "sequential-one-task-at-a-time",
+              "seed_delivery_mode": "preseeded-composite",
+              "future_tasks_visible": false,
+              "future_seed_regressions_visible": true,
+              "controller_verification": "final-only",
+              "controller_verifier_scripts_and_canonical_copies_model_visible": false,
+              "model_visible_acceptance_asset_paths": [
+                "test/plugins/test_ftintitle.py",
+                "test/util/test_functemplate.py"
+              ],
+              "model_concealed_paths": []
+            },
+            "baseline_pool_reference": {
+              "protocol_version": "baseline-pool-v1",
+              "protocol_fingerprint": "82943cffbb9a",
+              "comparison_policy": "paired baseline and treatment must share this baseline pool fingerprint and replicate"
+            },
+            "model_condition_override": {
+              "model_condition_id": "codex-openai-gpt-5-6-sol-high",
+              "model": "gpt-5.6-sol",
+              "reasoning_effort": "high",
+              "registry_status": "active-model-comparison",
+              "launcher": {
+                "path": "scripts/run_codex_workflow_model_condition.py",
+                "sha256": "b219d8f88e5df0fd567dff4d47e9193a602b223b2b72cf0ed3ea5c67cad5aecf"
+              }
+            }
+          }
+        }
+      },
+      "failure_evidence": []
+    },
+    {
+      "sequence_id": "fastify-lifecycle-sequence-v0",
+      "treatment_profile": "baseline-bare-codex",
+      "lane_id": "fastify-lifecycle-sequence-v0--baseline-bare-codex",
+      "lane_dir": "/opt/data/eval-workflow-lanes/workflow-matrix-20260722T214451970568Z-p2803024-r0/fastify-lifecycle-sequence-v0--baseline-bare-codex",
+      "run_root": "/opt/data/eval-workflow-lanes/workflow-matrix-20260722T214451970568Z-p2803024-r0",
+      "checkout": "/opt/data/eval-workflow-lanes/workflow-matrix-20260722T214451970568Z-p2803024-r0/fastify-lifecycle-sequence-v0--baseline-bare-codex/checkout",
+      "log": "/opt/data/eval-workflow-lanes/workflow-matrix-20260722T214451970568Z-p2803024-r0/fastify-lifecycle-sequence-v0--baseline-bare-codex/logs/lane.log",
+      "exit_code": 0,
+      "produced_session_ids": [
+        "baseline-fastify-20260722-p-bb0e89ed9794-r0"
+      ],
+      "expected_session_binding": {
+        "sequence_id": "fastify-lifecycle-sequence-v0",
+        "profile_id": "baseline-bare-codex",
+        "replicate_index": 0,
+        "frozen_protocol": {
+          "protocol_id": "fastify-lifecycle-sequence-v0-baseline-bare-codex-5bd0be12f9f5",
+          "path": "sources/evaluations/protocols/fastify-lifecycle-sequence-v0-baseline-bare-codex-5bd0be12f9f5.json",
+          "sha256": "c11710aeda868a697a75fa75c45209641ec4ac2c30fc3fd5abea8a2add22b0b0"
+        },
+        "baseline_pool_fingerprint": "bb0e89ed9794",
+        "selected_execution": {
+          "descriptor_sha256": "986c518b15ccc49bd6382fdc6a761baa661e9cfae03e4abf1e98ff39c50a6da4",
+          "descriptor": {
+            "version": "execution-condition-v1",
+            "sequence_id": "fastify-lifecycle-sequence-v0",
+            "execution_role": "baseline",
+            "selected_profile": {
+              "profile_id": "baseline-bare-codex",
+              "profile_type": "control",
+              "component_ids": [],
+              "enabled_surfaces": [
+                "codex-native-shell-edit"
+              ],
+              "disabled_overlaps": [
+                "all MCP servers",
+                "all token-saving surfaces",
+                "global Codex instructions",
+                "hooks",
+                "skills/plugins",
+                "warm indexes"
+              ],
+              "registry_entry_sha256": "ac6fe54b3c2150c70deb4e8c22a742e18e6f377ecbc25617053b55c557b6dea6",
+              "registry_entry": {
+                "id": "baseline-bare-codex",
+                "profile_type": "control",
+                "objective_scope": "control",
+                "status": "active-control",
+                "substrate": "codex-cli",
+                "enabled_surfaces": [
+                  "codex-native-shell-edit"
+                ],
+                "disabled_overlaps": [
+                  "all MCP servers",
+                  "all token-saving surfaces",
+                  "global Codex instructions",
+                  "hooks",
+                  "skills/plugins",
+                  "warm indexes"
+                ],
+                "components": [],
+                "native_agent_tools_allowed": [
+                  "shell_command_execution",
+                  "file_editing",
+                  "plain_file_read_search",
+                  "git",
+                  "verifier_commands"
+                ],
+                "forbidden_surfaces": [
+                  "lean-ctx",
+                  "codegraph",
+                  "serena",
+                  "rtk",
+                  "lowfat",
+                  "tokenjuice",
+                  "repomix",
+                  "mex",
+                  "cavemem",
+                  "cartog",
+                  "all unlisted retrieval/compression/memory/token-saving tools"
+                ],
+                "install": {
+                  "policy": "Run Codex from a fresh lane-specific CODEX_HOME with auth only, no MCP servers, no global instructions, no hooks, no skills/plugins, isolated HOME/PYTHONUSERBASE/XDG/TMPDIR, and a preflight artifact proving empty MCP config."
+                },
+                "reset": {
+                  "policy": "Delete the lane-specific Codex home and run-local HOME/PYTHONUSERBASE/XDG/TMPDIR before each run; verify no stale indexes or generated profile files survive."
+                },
+                "notes": "Canonical Codex CLI no-MCP substrate baseline. Codex native shell/edit/file/git/verifier operations are allowed; MCP, retrieval, compression, memory, token-saving add-ons, global instructions, hooks, skills/plugins, and warm indexes are forbidden."
+              }
+            },
+            "model_facing_prompts": {
+              "rendering_contract": "sequential-model-facing-prompts-v2",
+              "profile_guidance_sha256": "f1d7a2cf7b0a7c1affd8bbb04705f073332ee6efc5f8f89f019b9e0cbacec4bb",
+              "tasks": [
+                {
+                  "task_id": "fastify-lifecycle-feature-v0",
+                  "order": 1,
+                  "rendered_prompt_sha256": "a19559eae75789b46cac91e6f5e28544b289726bf29eca94a2c0ae764b83df7d"
+                },
+                {
+                  "task_id": "fastify-lifecycle-refactor-v0",
+                  "order": 2,
+                  "rendered_prompt_sha256": "a4cdc43f80fd89b851e765b409fa99199ab30f88b4b3b1028ee97ed540cd0706"
+                },
+                {
+                  "task_id": "fastify-lifecycle-review-v0",
+                  "order": 3,
+                  "rendered_prompt_sha256": "d7874fd6436994b7a7f09ce348087f39d6105a7cfcb4e2ca1ac3003d7ff8c091"
+                }
+              ]
+            },
+            "tool_adapter": {
+              "tool_id": null,
+              "tool_manifest": "baseline-native-codex-tools",
+              "tool_config": null,
+              "binary_identity": null,
+              "source_identity": []
+            },
+            "runtime": {
+              "docker_image": "token-eval-codex:latest",
+              "docker_image_identity": {
+                "image_ref": "token-eval-codex:latest",
+                "image_id": "sha256:6f86d01f2c63f5029c6bb874d8f3694c24d5cd567e3d09413eccc956ba3feafe",
+                "repo_digests": [
+                  "token-eval-codex@sha256:6f86d01f2c63f5029c6bb874d8f3694c24d5cd567e3d09413eccc956ba3feafe"
+                ],
+                "repo_tags": [
+                  "token-eval-codex:latest"
+                ]
+              },
+              "dockerfile_path": "sources/evaluations/fixtures/container/Dockerfile",
+              "dockerfile_sha256": "47c91967ce25014ce54879514f51d2ff0326651be1087209115eff4d358226b3",
+              "fixture_runner_path": "scripts/run_codex_fixture_evaluation.py",
+              "fixture_runner_sha256": "6fa8271b89a577706ea0bbffcc8e4521831f41b646ed9519369efee3642fe41c",
+              "mcp_probe_path": "scripts/probe_mcp_stdio.py",
+              "mcp_probe_sha256": "7c06ea36ee5cac933a97140b84a41405fc99b45152388e8d7c6659136af698fd",
+              "codex_entrypoint_path": "sources/evaluations/fixtures/container/codex-entrypoint.sh",
+              "codex_entrypoint_sha256": "8715fe37cb1fa3823f5f05493bc9681ce7ffc72126dfec4d64d448762c550c3c",
+              "timeout_seconds_per_task": 3600,
+              "network_isolation": {
+                "provider_access": true,
+                "model_shell_network_access": false,
+                "model_shell_enforcement": "seccomp denies AF_INET and AF_INET6 socket creation for the shell process and descendants",
+                "codex_web_search": "disabled",
+                "external_retrieval_audit": "fail-closed"
+              },
+              "isolation_policy": "fresh lane-specific Codex home/tool data; provider-only network with model shell and Codex web search disabled; sequential one-task prompt delivery; controller seed/verifier scripts excluded while declared model-visible acceptance tests are retained"
+            },
+            "dependencies": {
+              "command": "npm install --ignore-scripts --no-audit --no-fund",
+              "command_sha256": "7493d616f26e72b22eb5a21beafa12a6717ebf5b93a7a75e709de65e7323cc41",
+              "lockfiles": [
+                {
+                  "path": "package.json",
+                  "snapshot_sha256": "b273320af1bb4cfc0f9334457c8e3b1d035fde0da14f9db65e8ef97d361d0be3",
+                  "current_fixture_sha256": null
+                }
+              ]
+            },
+            "agent_condition": {
+              "runtime_id": "codex-cli",
+              "provider": "openai",
+              "model": "gpt-5.6-sol",
+              "model_condition_id": "codex-openai-gpt-5-6-sol-high",
+              "reasoning_effort": "high",
+              "codex_version_condition": "captured-at-run-and-bound-to-record"
+            },
+            "isolation": {
+              "prompt_delivery": "sequential-one-task-at-a-time",
+              "seed_delivery_mode": "preseeded-composite",
+              "future_tasks_visible": false,
+              "future_seed_regressions_visible": true,
+              "controller_verification": "final-only",
+              "controller_verifier_scripts_and_canonical_copies_model_visible": false,
+              "model_visible_acceptance_asset_paths": [
+                "test/baseline-v3-content-type-cache.test.js",
+                "test/baseline-v3-max-param.test.js",
+                "test/baseline-v3-request-media-type.test.js"
+              ],
+              "model_concealed_paths": []
+            },
+            "baseline_pool_reference": {
+              "protocol_version": "baseline-pool-v1",
+              "protocol_fingerprint": "bb0e89ed9794",
+              "comparison_policy": "paired baseline and treatment must share this baseline pool fingerprint and replicate"
+            },
+            "model_condition_override": {
+              "model_condition_id": "codex-openai-gpt-5-6-sol-high",
+              "model": "gpt-5.6-sol",
+              "reasoning_effort": "high",
+              "registry_status": "active-model-comparison",
+              "launcher": {
+                "path": "scripts/run_codex_workflow_model_condition.py",
+                "sha256": "b219d8f88e5df0fd567dff4d47e9193a602b223b2b72cf0ed3ea5c67cad5aecf"
+              }
+            }
+          }
+        }
+      },
+      "failure_evidence": []
+    },
+    {
+      "sequence_id": "terraform-lifecycle-sequence-v0",
+      "treatment_profile": "baseline-bare-codex",
+      "lane_id": "terraform-lifecycle-sequence-v0--baseline-bare-codex",
+      "lane_dir": "/opt/data/eval-workflow-lanes/workflow-matrix-20260722T214451970568Z-p2803024-r0/terraform-lifecycle-sequence-v0--baseline-bare-codex",
+      "run_root": "/opt/data/eval-workflow-lanes/workflow-matrix-20260722T214451970568Z-p2803024-r0",
+      "checkout": "/opt/data/eval-workflow-lanes/workflow-matrix-20260722T214451970568Z-p2803024-r0/terraform-lifecycle-sequence-v0--baseline-bare-codex/checkout",
+      "log": "/opt/data/eval-workflow-lanes/workflow-matrix-20260722T214451970568Z-p2803024-r0/terraform-lifecycle-sequence-v0--baseline-bare-codex/logs/lane.log",
+      "exit_code": 0,
+      "produced_session_ids": [
+        "baseline-terraform-20260722-p-5caa11b3fa2b-r0"
+      ],
+      "expected_session_binding": {
+        "sequence_id": "terraform-lifecycle-sequence-v0",
+        "profile_id": "baseline-bare-codex",
+        "replicate_index": 0,
+        "frozen_protocol": {
+          "protocol_id": "terraform-lifecycle-sequence-v0-baseline-bare-codex-702e684aebaa",
+          "path": "sources/evaluations/protocols/terraform-lifecycle-sequence-v0-baseline-bare-codex-702e684aebaa.json",
+          "sha256": "cb8d78120fc11a301d40f07303167ef30f212d5351993208703fa6d9ee645f28"
+        },
+        "baseline_pool_fingerprint": "5caa11b3fa2b",
+        "selected_execution": {
+          "descriptor_sha256": "dced6021bfd4b572dcda6a23fa285da8e67e60d198aaace893c16cffea2f7650",
+          "descriptor": {
+            "version": "execution-condition-v1",
+            "sequence_id": "terraform-lifecycle-sequence-v0",
+            "execution_role": "baseline",
+            "selected_profile": {
+              "profile_id": "baseline-bare-codex",
+              "profile_type": "control",
+              "component_ids": [],
+              "enabled_surfaces": [
+                "codex-native-shell-edit"
+              ],
+              "disabled_overlaps": [
+                "all MCP servers",
+                "all token-saving surfaces",
+                "global Codex instructions",
+                "hooks",
+                "skills/plugins",
+                "warm indexes"
+              ],
+              "registry_entry_sha256": "ac6fe54b3c2150c70deb4e8c22a742e18e6f377ecbc25617053b55c557b6dea6",
+              "registry_entry": {
+                "id": "baseline-bare-codex",
+                "profile_type": "control",
+                "objective_scope": "control",
+                "status": "active-control",
+                "substrate": "codex-cli",
+                "enabled_surfaces": [
+                  "codex-native-shell-edit"
+                ],
+                "disabled_overlaps": [
+                  "all MCP servers",
+                  "all token-saving surfaces",
+                  "global Codex instructions",
+                  "hooks",
+                  "skills/plugins",
+                  "warm indexes"
+                ],
+                "components": [],
+                "native_agent_tools_allowed": [
+                  "shell_command_execution",
+                  "file_editing",
+                  "plain_file_read_search",
+                  "git",
+                  "verifier_commands"
+                ],
+                "forbidden_surfaces": [
+                  "lean-ctx",
+                  "codegraph",
+                  "serena",
+                  "rtk",
+                  "lowfat",
+                  "tokenjuice",
+                  "repomix",
+                  "mex",
+                  "cavemem",
+                  "cartog",
+                  "all unlisted retrieval/compression/memory/token-saving tools"
+                ],
+                "install": {
+                  "policy": "Run Codex from a fresh lane-specific CODEX_HOME with auth only, no MCP servers, no global instructions, no hooks, no skills/plugins, isolated HOME/PYTHONUSERBASE/XDG/TMPDIR, and a preflight artifact proving empty MCP config."
+                },
+                "reset": {
+                  "policy": "Delete the lane-specific Codex home and run-local HOME/PYTHONUSERBASE/XDG/TMPDIR before each run; verify no stale indexes or generated profile files survive."
+                },
+                "notes": "Canonical Codex CLI no-MCP substrate baseline. Codex native shell/edit/file/git/verifier operations are allowed; MCP, retrieval, compression, memory, token-saving add-ons, global instructions, hooks, skills/plugins, and warm indexes are forbidden."
+              }
+            },
+            "model_facing_prompts": {
+              "rendering_contract": "sequential-model-facing-prompts-v2",
+              "profile_guidance_sha256": "f1d7a2cf7b0a7c1affd8bbb04705f073332ee6efc5f8f89f019b9e0cbacec4bb",
+              "tasks": [
+                {
+                  "task_id": "terraform-lifecycle-feature-v0",
+                  "order": 1,
+                  "rendered_prompt_sha256": "a896ea899b49e1eb0fc88fb02ab42c9767686b64d8a827622e87a926e0ae2232"
+                },
+                {
+                  "task_id": "terraform-lifecycle-refactor-v0",
+                  "order": 2,
+                  "rendered_prompt_sha256": "a123fe92ccd8ad53bbbf5dbd0479155c066bb611e31901fa0f2b85b914dc05ad"
+                },
+                {
+                  "task_id": "terraform-lifecycle-review-v0",
+                  "order": 3,
+                  "rendered_prompt_sha256": "01a2f6a29d7b0d9cff959e3ceb99e164122dece0fa24ccd6fbf66e3a68a167e4"
+                }
+              ]
+            },
+            "tool_adapter": {
+              "tool_id": null,
+              "tool_manifest": "baseline-native-codex-tools",
+              "tool_config": null,
+              "binary_identity": null,
+              "source_identity": []
+            },
+            "runtime": {
+              "docker_image": "token-eval-codex:latest",
+              "docker_image_identity": {
+                "image_ref": "token-eval-codex:latest",
+                "image_id": "sha256:6f86d01f2c63f5029c6bb874d8f3694c24d5cd567e3d09413eccc956ba3feafe",
+                "repo_digests": [
+                  "token-eval-codex@sha256:6f86d01f2c63f5029c6bb874d8f3694c24d5cd567e3d09413eccc956ba3feafe"
+                ],
+                "repo_tags": [
+                  "token-eval-codex:latest"
+                ]
+              },
+              "dockerfile_path": "sources/evaluations/fixtures/container/Dockerfile",
+              "dockerfile_sha256": "47c91967ce25014ce54879514f51d2ff0326651be1087209115eff4d358226b3",
+              "fixture_runner_path": "scripts/run_codex_fixture_evaluation.py",
+              "fixture_runner_sha256": "6fa8271b89a577706ea0bbffcc8e4521831f41b646ed9519369efee3642fe41c",
+              "mcp_probe_path": "scripts/probe_mcp_stdio.py",
+              "mcp_probe_sha256": "7c06ea36ee5cac933a97140b84a41405fc99b45152388e8d7c6659136af698fd",
+              "codex_entrypoint_path": "sources/evaluations/fixtures/container/codex-entrypoint.sh",
+              "codex_entrypoint_sha256": "8715fe37cb1fa3823f5f05493bc9681ce7ffc72126dfec4d64d448762c550c3c",
+              "timeout_seconds_per_task": 3600,
+              "network_isolation": {
+                "provider_access": true,
+                "model_shell_network_access": false,
+                "model_shell_enforcement": "seccomp denies AF_INET and AF_INET6 socket creation for the shell process and descendants",
+                "codex_web_search": "disabled",
+                "external_retrieval_audit": "fail-closed"
+              },
+              "isolation_policy": "fresh lane-specific Codex home/tool data; provider-only network with model shell and Codex web search disabled; sequential one-task prompt delivery; controller seed/verifier scripts excluded while declared model-visible acceptance tests are retained"
+            },
+            "dependencies": {
+              "command": "go mod download",
+              "command_sha256": "42a8263a643ccbe692d70752ffdd8cea328fc2d3190677df1485ee06f55b350a",
+              "lockfiles": [
+                {
+                  "path": "go.sum",
+                  "snapshot_sha256": "be9ec949db0a0b135197f2c78b6d9821d764cc9b8c362b4860e3d5a1e9c74b9e",
+                  "current_fixture_sha256": null
+                }
+              ]
+            },
+            "agent_condition": {
+              "runtime_id": "codex-cli",
+              "provider": "openai",
+              "model": "gpt-5.6-sol",
+              "model_condition_id": "codex-openai-gpt-5-6-sol-high",
+              "reasoning_effort": "high",
+              "codex_version_condition": "captured-at-run-and-bound-to-record"
+            },
+            "isolation": {
+              "prompt_delivery": "sequential-one-task-at-a-time",
+              "seed_delivery_mode": "preseeded-composite",
+              "future_tasks_visible": false,
+              "future_seed_regressions_visible": true,
+              "controller_verification": "final-only",
+              "controller_verifier_scripts_and_canonical_copies_model_visible": false,
+              "model_visible_acceptance_asset_paths": [
+                "internal/addrs/baseline_v3_checkable_test.go",
+                "internal/configs/baseline_v3_requirement_type_test.go",
+                "internal/configs/parser_config_dir_test.go",
+                "internal/policy/callback/baseline_v3_deferred_test.go"
+              ],
+              "model_concealed_paths": []
+            },
+            "baseline_pool_reference": {
+              "protocol_version": "baseline-pool-v1",
+              "protocol_fingerprint": "5caa11b3fa2b",
+              "comparison_policy": "paired baseline and treatment must share this baseline pool fingerprint and replicate"
+            },
+            "model_condition_override": {
+              "model_condition_id": "codex-openai-gpt-5-6-sol-high",
+              "model": "gpt-5.6-sol",
+              "reasoning_effort": "high",
+              "registry_status": "active-model-comparison",
+              "launcher": {
+                "path": "scripts/run_codex_workflow_model_condition.py",
+                "sha256": "b219d8f88e5df0fd567dff4d47e9193a602b223b2b72cf0ed3ea5c67cad5aecf"
+              }
+            }
+          }
+        }
+      },
+      "failure_evidence": []
+    }
+  ],
+  "merge": {
+    "merged_session_count": 3,
+    "copied_artifact_count": 3,
+    "merged_session_ids": [
+      "baseline-fastify-20260722-p-bb0e89ed9794-r0",
+      "baseline-beets-20260722-p-82943cffbb9a-r0",
+      "baseline-terraform-20260722-p-5caa11b3fa2b-r0"
+    ],
+    "copied_artifacts": [
+      "sources/evaluations/workflow-sessions/baseline-fastify-20260722-p-bb0e89ed9794-r0",
+      "sources/evaluations/workflow-sessions/baseline-beets-20260722-p-82943cffbb9a-r0",
+      "sources/evaluations/workflow-sessions/baseline-terraform-20260722-p-5caa11b3fa2b-r0"
+    ],
+    "skipped": "one or more lanes failed",
+    "registry_replacement_attempted": true,
+    "rejected_session_ids": [],
+    "rejected_lane_errors": [],
+    "rolled_back_after_validation_failure": true
+  },
+  "published_comparisons": [],
+  "validation": {
+    "passed": false,
+    "results": [
+      {
+        "command": [
+          "/opt/hermes/.venv/bin/python3",
+          "scripts/validate_repository.py"
+        ],
+        "exit_code": 0,
+        "output": "/opt/data/eval-workflow-lanes/workflow-matrix-20260722T214451970568Z-p2803024-r0/validation-1-opt-hermes-.venv-bin-python3.txt"
+      },
+      {
+        "command": [
+          "/opt/hermes/.venv/bin/python3",
+          "scripts/test_workflow_evaluation_contract.py"
+        ],
+        "exit_code": 1,
+        "output": "/opt/data/eval-workflow-lanes/workflow-matrix-20260722T214451970568Z-p2803024-r0/validation-2-opt-hermes-.venv-bin-python3.txt"
+      },
+      {
+        "command": [
+          "git",
+          "diff",
+          "--check"
+        ],
+        "exit_code": 0,
+        "output": "/opt/data/eval-workflow-lanes/workflow-matrix-20260722T214451970568Z-p2803024-r0/validation-3-git.txt"
+      },
+      {
+        "command": [
+          "/opt/data/.local/bin/truthmark",
+          "check",
+          "--json"
+        ],
+        "exit_code": 0,
+        "output": "/opt/data/eval-workflow-lanes/workflow-matrix-20260722T214451970568Z-p2803024-r0/validation-4-opt-data-.local-bin-truthmark.txt"
+      },
+      {
+        "command": [
+          "/opt/data/.local/bin/truthmark",
+          "index",
+          "--json"
+        ],
+        "exit_code": 0,
+        "output": "/opt/data/eval-workflow-lanes/workflow-matrix-20260722T214451970568Z-p2803024-r0/validation-5-opt-data-.local-bin-truthmark.txt"
+      }
+    ]
+  },
+  "authoritative_outputs_complete": true,
+  "execution_passed": false,
+  "awaiting_quality_review": false,
+  "accepted": false
+}
