@@ -1,10 +1,10 @@
 {
   "protocol_schema_version": 3,
-  "protocol_id": "fastify-lifecycle-sequence-v0-integrated-leanctx-opencode-hybrid-v1-b119729c2bd8",
+  "protocol_id": "fastify-lifecycle-sequence-v0-behavior-caveman-opencode-plugin-v1-05ae21c729c3",
   "status": "frozen-ready-not-run",
-  "outcome": "Frozen integrated-leanctx-opencode-hybrid-v1 protocol for fastify-lifecycle-sequence-v0; no provider/model run has occurred.",
+  "outcome": "Frozen behavior-caveman-opencode-plugin-v1 protocol for fastify-lifecycle-sequence-v0; no provider/model run has occurred.",
   "frozen_at": "2026-07-22",
-  "hypothesis": "integrated-leanctx-opencode-hybrid-v1 produces reproducible provider-reported token and software-quality evidence for fastify-lifecycle-sequence-v0",
+  "hypothesis": "behavior-caveman-opencode-plugin-v1 produces reproducible provider-reported token and software-quality evidence for fastify-lifecycle-sequence-v0",
   "evidence_stage_target": "reproduction",
   "task_fixture": {
     "fixture_id": "medium-fastify-fastify",
@@ -35,13 +35,13 @@
     "selection_policy": "sequence-pool-replicate-matched-first-valid"
   },
   "treatment": {
-    "profile_id": "integrated-leanctx-opencode-hybrid-v1",
+    "profile_id": "behavior-caveman-opencode-plugin-v1",
     "runtime_id": "opencode-cli",
     "provider": "openai",
     "model": "gpt-5.6-sol",
     "model_condition_id": "opencode-openai-gpt-5-6-sol-high",
     "reasoning_effort": "high",
-    "command": "python3 scripts/run_opencode_workflow_model_condition.py --workflow-model-condition-id opencode-openai-gpt-5-6-sol-high --workflow-model gpt-5.6-sol --workflow-reasoning-effort high --sequence-id fastify-lifecycle-sequence-v0 --profile-id integrated-leanctx-opencode-hybrid-v1 --timeout-per-task 3600 --protocol sources/evaluations/protocols/fastify-lifecycle-sequence-v0-integrated-leanctx-opencode-hybrid-v1-b119729c2bd8.json --docker-image token-eval-codex:latest"
+    "command": "python3 scripts/run_opencode_workflow_model_condition.py --workflow-model-condition-id opencode-openai-gpt-5-6-sol-high --workflow-model gpt-5.6-sol --workflow-reasoning-effort high --sequence-id fastify-lifecycle-sequence-v0 --profile-id behavior-caveman-opencode-plugin-v1 --timeout-per-task 3600 --protocol sources/evaluations/protocols/fastify-lifecycle-sequence-v0-behavior-caveman-opencode-plugin-v1-05ae21c729c3.json --docker-image token-eval-codex:latest"
   },
   "token_accounting_boundary": {
     "fields": [
@@ -243,28 +243,26 @@
     }
   },
   "selected_execution": {
-    "descriptor_sha256": "bf1d42bbd05e0c310eba60caf6519615db85cb39da4f2d3066538f14d46e5bd4",
+    "descriptor_sha256": "478f95887af7ff5c31c5d618aa0556d0f1f43d3ba71e86620e9e8d73cdec0a63",
     "descriptor": {
       "version": "execution-condition-v1",
       "sequence_id": "fastify-lifecycle-sequence-v0",
       "execution_role": "individual_tool_treatment",
       "selected_profile": {
-        "profile_id": "integrated-leanctx-opencode-hybrid-v1",
+        "profile_id": "behavior-caveman-opencode-plugin-v1",
         "profile_type": "individual_tool",
         "component_ids": [
-          "integrated-leanctx-opencode-hybrid-v1"
+          "behavior-caveman-opencode-plugin-v1"
         ],
         "enabled_surfaces": [
-          "retrieval-context",
-          "opencode-mcp",
-          "product-authored-instructions",
-          "shell-output-compression",
-          "warm-index"
+          "opencode-plugin",
+          "prompt-reinforcement",
+          "product-authored-init"
         ],
         "disabled_overlaps": [
           "all unlisted surfaces"
         ],
-        "registry_entry_sha256": "9b2c59e2409f38a880ffa697c9814e84e3dba373ffddc5614e883d448cb4cd3d",
+        "registry_entry_sha256": "ef6344ec420ee21c58361c5f02ecc03b9301598be1353d4fa1169d38719b909b",
         "registry_entry": {
           "profile_type": "individual_tool",
           "objective_scope": "individual_tool_effectiveness",
@@ -285,40 +283,39 @@
           "reset": {
             "policy": "Delete lane-private OpenCode XDG directories, product state, generated repository treatment files, auth translation, and background processes after evidence capture."
           },
-          "id": "integrated-leanctx-opencode-hybrid-v1",
-          "name": "LeanCTX OpenCode hybrid integration V1",
+          "id": "behavior-caveman-opencode-plugin-v1",
+          "name": "Caveman OpenCode plugin and guidance V1",
           "enabled_surfaces": [
-            "retrieval-context",
-            "opencode-mcp",
-            "product-authored-instructions",
-            "shell-output-compression",
-            "warm-index"
+            "opencode-plugin",
+            "prompt-reinforcement",
+            "product-authored-init"
           ],
           "components": [
             {
-              "component_id": "integrated-leanctx-opencode-hybrid-v1",
-              "surface": "retrieval-context+opencode-mcp+instructions+shell-output-compression+warm-index",
+              "component_id": "behavior-caveman-opencode-plugin-v1",
+              "surface": "opencode-plugin+prompt-reinforcement+product-authored-init",
               "role": "individual_tool"
             }
           ],
           "install": {
-            "policy": "Run the pinned official LeanCTX initializer with the OpenCode agent target, build its lane-private index, and require the local MCP initialize plus tools/list handshake."
+            "policy": "Run Caveman\u2019s pinned installer with the OpenCode target and product initialization enabled, then require the installed native plugin and repo guidance in the isolated lane."
           },
           "evaluation_protocol": {
             "tool_use_policy": "natural",
-            "tool_state": "warm-index+active-guidance",
-            "integration_state": "official-opencode-hybrid",
+            "tool_state": "active-native-plugin+per-session-guidance",
+            "integration_state": "official-opencode-plugin+product-init",
             "assignment_proof": "provider-free exact artifact identities, effective OpenCode configuration, native activation, warm state, and task/final verifiers required"
           },
           "source_snapshot": {
-            "repository": "yvgude/lean-ctx",
-            "version": "3.8.18",
-            "source_commit": "adc4e8b2e401d160906a392994c9afd7af3dfffa",
-            "binary_sha256": "475e89e495c31824ef324f92e695706ddbd890dff2c3b55b807cd1f8526c6db9",
+            "repository": "JuliusBrussee/caveman",
+            "version": "0.1.0",
+            "source_commit": "0d95a81d35a9f2d123a5e9430d1cfc43d55f1bb0",
+            "plugin_sha256": "6d68e8dfe205354718729a5f5c9ca9d555a045af6b2cbbc3b6a84caad1076df7",
+            "package_sha256": "b603811ba72eb71581db5b02045fb5f8903e3c46dcf7b40f36eeb81fbba23274",
             "runtime_adapter": "/opt/data/tool-candidates/opencode-adapter-v6/opencode_workflow_adapter.py",
             "runtime_adapter_sha256": "1b98aaec34711b3a7bb09ce269c12bb06421ab08913d06593fb6d2c6641a34a3"
           },
-          "notes": "Second successive screen: the existing LeanCTX source includes an OpenCode initializer target; the treatment uses that official hybrid surface, not the historical MCP-only partial profile."
+          "notes": "Second successive screen: Caveman\u2019s local installer exposes an explicit OpenCode target and writes the native plugin under the OpenCode XDG configuration surface."
         }
       },
       "model_facing_prompts": {
@@ -343,27 +340,22 @@
         ]
       },
       "tool_adapter": {
-        "tool_id": "leanctx-opencode-hybrid-v1",
+        "tool_id": "caveman-opencode-plugin-v1",
         "tool_manifest": "scripts/run_codex_fixture_evaluation.py:TOOL_CONFIGS",
-        "tool_manifest_sha256": "7cd02eac5bea432f8963ad3ae5f1f0e0b661513da817639e721c155700916279",
+        "tool_manifest_sha256": "a205cf4b44bf8cada40e03c5c863a5e4bf4d9de4facbb2a72ddf134509a5564d",
         "tool_config": {
-          "display_name": "LeanCTX official OpenCode hybrid integration v1",
-          "lane_name": "integrated-leanctx-opencode-hybrid-v1",
-          "surface": "opencode-mcp+instructions+shell-output-compression+warm-index",
+          "display_name": "Caveman official OpenCode plugin and guidance v1",
+          "lane_name": "behavior-caveman-opencode-plugin-v1",
+          "surface": "opencode-plugin+prompt-reinforcement+skills+commands",
           "allowed_terms": [
             "opencode",
-            "lean-ctx",
-            "mcp_lean_ctx",
-            "ctx_read",
-            "ctx_search",
-            "ctx_shell",
-            "ctx_graph"
+            "caveman",
+            "cavecrew"
           ],
-          "data_dir_name": "integrated-leanctx-opencode-hybrid-v1",
+          "data_dir_name": "behavior-caveman-opencode-plugin-v1",
           "mounts": [
             "/opt/data/tool-candidates/opencode-adapter-v6/opencode_workflow_adapter.py",
-            "/opt/data/bin/lean-ctx",
-            "/opt/data/tool-candidates/lean-ctx"
+            "/opt/data/tool-candidates/caveman"
           ],
           "executable": "/opt/data/tool-candidates/opencode-runtime/node_modules/opencode-ai/bin/opencode.exe",
           "expected_executable_sha256": "7c4d91c84d2bfdeabb59257e3490c5e5acb08f2aacb3e42f3ddc296a1c3f1aca",
@@ -377,7 +369,7 @@
               "--expected-opencode-sha256",
               "7c4d91c84d2bfdeabb59257e3490c5e5acb08f2aacb3e42f3ddc296a1c3f1aca",
               "--treatment",
-              "leanctx"
+              "caveman"
             ]
           },
           "preflight_command": [
@@ -388,65 +380,50 @@
             "--expected-opencode-sha256",
             "7c4d91c84d2bfdeabb59257e3490c5e5acb08f2aacb3e42f3ddc296a1c3f1aca",
             "--treatment",
-            "leanctx",
+            "caveman",
             "--probe"
           ],
           "tool_manifest_identity": "current-file-v1",
           "env": {
-            "OPENCODE_TOOL_DATA_DIR": "{tool_data_dir}",
-            "LEAN_CTX_DATA_DIR": "{tool_data_dir}/leanctx"
+            "OPENCODE_TOOL_DATA_DIR": "{tool_data_dir}"
           },
           "host_integration": {
             "install_commands": [
               [
-                "/opt/data/bin/lean-ctx",
-                "init",
-                "--agent",
-                "opencode"
+                "/opt/data/opt/node-v24.18.0-linux-x64/bin/node",
+                "/opt/data/tool-candidates/caveman/bin/install.js",
+                "--only",
+                "opencode",
+                "--with-init"
               ]
             ],
             "verify_commands": [
               [
-                "/opt/data/bin/lean-ctx",
-                "--version"
+                "/opt/data/opt/node-v24.18.0-linux-x64/bin/node",
+                "/opt/data/tool-candidates/caveman/bin/install.js",
+                "--list"
               ]
             ],
             "required_files": [
-              "{repo}/AGENTS.md",
-              "{repo}/LEAN-CTX.md"
+              "{codex_home}/xdg-config/opencode/plugins/caveman/plugin.js",
+              "{repo}/AGENTS.md"
             ],
             "timeout_seconds": 600
           },
-          "mcp_server": "lean-ctx",
-          "mcp_command": "/opt/data/bin/lean-ctx",
-          "mcp_args": [],
-          "mcp_handshake": {
+          "native_plugin": {
             "required": true,
-            "method": "initialize-and-tools-list",
-            "timeout_seconds": 120
-          },
-          "warmup": {
-            "kind": "product-native-index-build",
-            "command": [
-              "/opt/data/bin/lean-ctx",
-              "index",
-              "build",
-              "{repo}"
-            ],
-            "output_name": "leanctx-warmup-output.txt",
-            "metadata_name": "leanctx-warmup-metadata.json",
-            "timeout_seconds": 1800
+            "path": "{codex_home}/xdg-config/opencode/plugins/caveman/plugin.js"
           },
           "artifact_identities": [
             {
-              "path": "/opt/data/bin/lean-ctx",
-              "sha256": "475e89e495c31824ef324f92e695706ddbd890dff2c3b55b807cd1f8526c6db9",
-              "kind": "compiled-cli-mcp"
+              "path": "/opt/data/tool-candidates/caveman/src/plugins/opencode/plugin.js",
+              "sha256": "6d68e8dfe205354718729a5f5c9ca9d555a045af6b2cbbc3b6a84caad1076df7",
+              "kind": "native-plugin-source"
             },
             {
-              "path": "/opt/data/tool-candidates/lean-ctx/README.md",
-              "sha256": "3511c0d1e04eda53f9e66f7528b5179138b4e3963891c07c8749fa0c3b98f5cb",
-              "kind": "product-guidance-source"
+              "path": "/opt/data/tool-candidates/caveman/src/plugins/opencode/package.json",
+              "sha256": "b603811ba72eb71581db5b02045fb5f8903e3c46dcf7b40f36eeb81fbba23274",
+              "kind": "native-plugin-package"
             },
             {
               "path": "/opt/data/tool-candidates/opencode-adapter-v6/opencode_workflow_adapter.py",
@@ -460,56 +437,57 @@
           },
           "diff_exclude_paths": [
             "AGENTS.md",
-            "LEAN-CTX.md",
-            ".lean-ctx"
+            ".opencode"
           ],
-          "default_tool_state": "warm-index+active-guidance"
+          "default_tool_state": "active-native-plugin+per-session-guidance"
         },
-        "tool_config_sha256": "c8d86227527bab4859d1379f39a1ff7ba82c04dbaf5ea770b574eda7d54a9a9b",
-        "tool_state": "warm-index+active-guidance",
+        "tool_config_sha256": "8e391de6848a9d69e337d80c6682cafeef4585417522c4c861a5ce42b74cbd86",
+        "tool_state": "active-native-plugin+per-session-guidance",
         "tool_use_policy": "natural",
         "command_identity": {
-          "kind": "mcp_command",
+          "kind": "codex_wrapper",
           "command": [
-            "/opt/data/bin/lean-ctx"
+            "/usr/bin/python3",
+            "/opt/data/tool-candidates/opencode-adapter-v6/opencode_workflow_adapter.py",
+            "--opencode-binary",
+            "/opt/data/tool-candidates/opencode-runtime/node_modules/opencode-ai/bin/opencode.exe",
+            "--expected-opencode-sha256",
+            "7c4d91c84d2bfdeabb59257e3490c5e5acb08f2aacb3e42f3ddc296a1c3f1aca",
+            "--treatment",
+            "caveman"
           ]
         },
         "binary_identity": {
-          "executable_token": "/opt/data/bin/lean-ctx",
-          "resolved_path": "/opt/data/bin/lean-ctx",
-          "realpath": "/opt/data/bin/lean-ctx",
-          "sha256": "475e89e495c31824ef324f92e695706ddbd890dff2c3b55b807cd1f8526c6db9",
+          "executable_token": "/usr/bin/python3",
+          "resolved_path": "/usr/bin/python3",
+          "realpath": "/usr/bin/python3.13",
+          "sha256": "4703a3d15898c0b5d81c3f939e93bdd8ca6116342093fb160ab1e01860dd7d8b",
           "metadata": {
-            "size": 90124616,
+            "size": 6812336,
             "mode": "-rwxr-xr-x",
-            "uid": 10000,
-            "gid": 10000,
-            "mtime_ns": 1783086783177197301
+            "uid": 0,
+            "gid": 0,
+            "mtime_ns": 1778015152000000000
           },
           "version": {
             "command": [
-              "/opt/data/bin/lean-ctx",
+              "/usr/bin/python3.13",
               "--version"
             ],
             "environment_path": "/opt/data/.local/bin:/opt/data/opt/go/bin:/opt/data/opt/uv:/opt/data/opt/node-v24.18.0-linux-x64/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
             "captured": true,
             "exit_code": 0,
-            "output": "lean-ctx 3.8.18 (official, https://github.com/yvgude/lean-ctx)",
+            "output": "Python 3.13.5",
             "truncated": false
           }
         },
         "source_identity": [
           {
-            "path": "/opt/data/bin/lean-ctx",
-            "exists": true,
-            "kind": "file",
-            "sha256": "475e89e495c31824ef324f92e695706ddbd890dff2c3b55b807cd1f8526c6db9"
-          },
-          {
-            "path": "/opt/data/tool-candidates/lean-ctx",
+            "path": "/opt/data/tool-candidates/caveman",
             "exists": true,
             "kind": "directory",
-            "git_head": "adc4e8b2e401d160906a392994c9afd7af3dfffa"
+            "git_head": "0d95a81d35a9f2d123a5e9430d1cfc43d55f1bb0",
+            "package_json_sha256": "3f9a34e4224efcad6e53a7cdef3c93869b77d932e2757c29fdaf0f63cfb2ad5f"
           },
           {
             "path": "/opt/data/tool-candidates/opencode-adapter-v6/opencode_workflow_adapter.py",
@@ -534,7 +512,7 @@
         "dockerfile_path": "sources/evaluations/fixtures/container/Dockerfile",
         "dockerfile_sha256": "47c91967ce25014ce54879514f51d2ff0326651be1087209115eff4d358226b3",
         "fixture_runner_path": "scripts/run_codex_fixture_evaluation.py",
-        "fixture_runner_sha256": "7cd02eac5bea432f8963ad3ae5f1f0e0b661513da817639e721c155700916279",
+        "fixture_runner_sha256": "a205cf4b44bf8cada40e03c5c863a5e4bf4d9de4facbb2a72ddf134509a5564d",
         "mcp_probe_path": "scripts/probe_mcp_stdio.py",
         "mcp_probe_sha256": "7c06ea36ee5cac933a97140b84a41405fc99b45152388e8d7c6659136af698fd",
         "codex_entrypoint_path": "sources/evaluations/fixtures/container/codex-entrypoint.sh",
