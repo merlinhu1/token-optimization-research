@@ -1,5 +1,3 @@
-# Fastify Baseline V2 task family
+# fastify-fastify Baseline V2 task family — historical
 
-Active lifecycle-v0 generation for future execution. The persistent sequence remains feature → behavior-preserving refactor → review/correction, but every task is a routine exact edit over one or two production files with a focused model-visible test whose command is repeated exactly by final verification. No discovery, concealed assertion, or broad suite is part of the workload.
-
-Provider-free qualification passes. Treatment protocol freezing, preparation, and execution are machine-blocked until the designated GPT-5.6 Sol/`high` bare-model pilot is independently audited with every required incident count equal to zero.
+Baseline V2 is a superseded, non-rerunnable generation retained only for failure analysis and historical protocol reconciliation. It is not an active or future-execution surface. Active provider-free-qualified tasks live under `../baseline-v3/`; no paid Baseline V3 or treatment run is authorized by this note.

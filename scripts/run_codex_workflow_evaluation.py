@@ -51,7 +51,7 @@ PROJECT_META: dict[str, dict[str, str]] = {
     },
     "medium-beetbox-beets": {
         "project_id": "beetbox-beets",
-        "dependency_command": "uv sync --group test",
+        "dependency_command": "uv sync --group test --frozen",
     },
 }
 
@@ -650,37 +650,87 @@ def pilot_session_artifacts_valid(session: dict[str, Any], root: Path = ROOT) ->
     )
 
 
+def baseline_pilot_attempt_receipt_path(seq: dict[str, Any], root: Path = ROOT) -> Path:
+    gate = seq.get("mistake_gate")
+    receipt_rel = gate.get("attempt_receipt_path") if isinstance(gate, dict) else None
+    if not isinstance(receipt_rel, str) or not receipt_rel:
+        raise ValueError(f"missing pilot attempt_receipt_path for {seq.get('id')}")
+    receipt_path = root / receipt_rel
+    if not receipt_path.resolve().is_relative_to(root.resolve()):
+        raise ValueError(f"pilot attempt receipt escapes authority root for {seq.get('id')}")
+    return receipt_path
+
+
+def reserve_baseline_pilot_attempt(
+    seq: dict[str, Any],
+    *,
+    root: Path = ROOT,
+    orchestrator: str,
+) -> dict[str, Any]:
+    """Atomically occupy one paid pilot identity before any provider task starts."""
+    identity, protocol = current_baseline_v2_protocol(seq, seq["mistake_gate"], root)
+    receipt = {
+        "schema_version": 1,
+        "attempt_status": "reserved-before-provider-task",
+        "task_family_generation": seq.get("task_family_generation"),
+        "sequence_id": seq.get("id"),
+        "replicate_index": 0,
+        "profile_id": "baseline-bare-codex",
+        "model_condition_id": seq["mistake_gate"].get("designated_model_condition"),
+        "model": seq["mistake_gate"].get("model"),
+        "reasoning_effort": seq["mistake_gate"].get("reasoning_effort"),
+        "orchestrator": orchestrator,
+        "reserved_at": dt.datetime.now(dt.UTC).isoformat(),
+        "frozen_protocol": identity,
+        "baseline_pool_fingerprint": protocol.get("baseline_pool", {}).get("protocol_fingerprint"),
+        "provider_result": None,
+        "immutable_identity_receipt": True,
+    }
+    atomic_create_json(baseline_pilot_attempt_receipt_path(seq, root), receipt)
+    return receipt
+
+
 def baseline_v2_pilot_run_gate(
     seq: dict[str, Any],
     root: Path = ROOT,
 ) -> tuple[bool, str]:
     """Permit one provider pilot per declared audit identity; never pass-select reruns."""
-    if seq.get("task_family_generation") != "baseline-v2":
-        return True, "not a Baseline V2 sequence"
+    generation = seq.get("task_family_generation")
+    if generation not in {"baseline-v2", "baseline-v3"}:
+        return True, "not a zero-mistake baseline sequence"
+    label = str(generation).replace("baseline-v", "Baseline V")
     gate = seq.get("mistake_gate")
     audit_rel = gate.get("pilot_audit_path") if isinstance(gate, dict) else None
+    if generation == "baseline-v3":
+        try:
+            receipt_path = baseline_pilot_attempt_receipt_path(seq, root)
+        except ValueError as exc:
+            return False, str(exc)
+        if receipt_path.exists():
+            return False, f"paid pilot identity is occupied by immutable attempt receipt: {receipt_path.relative_to(root)}"
     if not isinstance(audit_rel, str) or not audit_rel:
-        return False, "missing Baseline V2 pilot_audit_path"
+        return False, f"missing {label} pilot_audit_path"
     audit_path = root / audit_rel
     if not audit_path.exists():
-        return True, "no prior Baseline V2 pilot attempt is recorded"
+        return True, f"no prior {label} pilot attempt is recorded"
     try:
         audit = json.loads(audit_path.read_text())
     except (OSError, ValueError) as exc:
-        return False, f"existing Baseline V2 pilot audit is unreadable: {exc}"
+        return False, f"existing {label} pilot audit is unreadable: {exc}"
     return False, (
-        f"Baseline V2 pilot identity is occupied by audit status={audit.get('status', 'unknown')!r} "
+        f"{label} pilot identity is occupied by audit status={audit.get('status', 'unknown')!r} "
         f"at {audit_rel}; preserve it and mint a simpler generation/audit identity before any new provider run"
     )
 
 
 def baseline_v2_treatment_gate(seq: dict[str, Any], root: Path = ROOT) -> tuple[bool, str]:
-    """Fail closed until an independently audited zero-incident Baseline V2 pilot exists."""
-    if seq.get("task_family_generation") != "baseline-v2":
-        return True, "not a Baseline V2 sequence"
+    """Fail closed until an independently audited zero-incident baseline pilot exists."""
+    generation = seq.get("task_family_generation")
+    if generation not in {"baseline-v2", "baseline-v3"}:
+        return True, "not a zero-mistake baseline sequence"
     gate = seq.get("mistake_gate")
     if not isinstance(gate, dict):
-        return False, "missing Baseline V2 mistake gate"
+        return False, f"missing {generation} mistake gate"
     audit_rel = gate.get("pilot_audit_path")
     if not isinstance(audit_rel, str) or not audit_rel:
         return False, "missing pilot_audit_path"
@@ -691,7 +741,7 @@ def baseline_v2_treatment_gate(seq: dict[str, Any], root: Path = ROOT) -> tuple[
         audit = json.loads(audit_path.read_text())
     except (OSError, ValueError) as exc:
         return False, f"pilot audit is unreadable: {exc}"
-    if audit.get("schema_version") != 1 or audit.get("task_family_generation") != "baseline-v2":
+    if audit.get("schema_version") != 1 or audit.get("task_family_generation") != generation:
         return False, "pilot audit schema or task-family generation is invalid"
     entries = [
         entry for entry in audit.get("sequences", [])
@@ -854,8 +904,8 @@ def baseline_v2_treatment_gate(seq: dict[str, Any], root: Path = ROOT) -> tuple[
         )
     ]
     if len(slot_sessions) != 1 or slot_sessions[0].get("session_id") != session_id:
-        return False, "current Baseline V2 r0 slot is absent, ambiguous, or was rerun"
-    return True, "independently audited zero-incident Baseline V2 pilot"
+        return False, f"current {generation} r0 slot is absent, ambiguous, or was rerun"
+    return True, f"independently audited zero-incident {generation} pilot"
 
 
 def require_baseline_v2_treatment_gate(seq: dict[str, Any], root: Path = ROOT) -> None:
@@ -1414,7 +1464,7 @@ def validate_protocol_for_run(seq: dict[str, Any], profile_id: str, args: argpar
     expected_execution_hash = _json_hash(expected_execution)
     selected_execution = protocol.get("selected_execution", {})
     errors: list[str] = []
-    if seq.get("task_family_generation") == "baseline-v2":
+    if seq.get("task_family_generation") in {"baseline-v2", "baseline-v3"}:
         expected_protocol_id = canonical_protocol_id(
             seq,
             profile_id,
@@ -1552,7 +1602,7 @@ def reviewed_session_reuse_state(session: dict[str, Any] | None, root: Path = RO
         ),
         {},
     )
-    if sequence_definition.get("task_family_generation") == "baseline-v2":
+    if sequence_definition.get("task_family_generation") in {"baseline-v2", "baseline-v3"}:
         verifier_visibility_valid = (
             leakage.get("controller_verifier_scripts_and_canonical_copies_model_visible") is False
             and leakage.get("model_visible_acceptance_asset_paths")
@@ -1655,7 +1705,7 @@ def find_canonical_baseline_record(registry: dict[str, Any], seq: dict[str, Any]
             or selected_descriptor.get("selected_profile", {}).get("profile_id") != "baseline-bare-codex"
         ):
             continue
-        if seq.get("task_family_generation") == "baseline-v2" and not expected_identity_loaded:
+        if seq.get("task_family_generation") in {"baseline-v2", "baseline-v3"} and not expected_identity_loaded:
             expected_protocol_identity, expected_protocol = current_baseline_v2_protocol(
                 seq, seq["mistake_gate"], ROOT
             )
@@ -2189,10 +2239,15 @@ def render_task_prompt(
             "Complete only the current task. Repository, agent, tool, index, and cache state continue unchanged except for your own work.",
             "",
         ])
+    validation_guidance = (
+        "Run only the exact command block in the current task prompt. It includes the complete focused acceptance for this task. Do not rerun earlier checks or inspect aggregate Git state; preserve earlier edits and stop when the block exits 0."
+        if seq.get("task_family_generation") in {"baseline-v2", "baseline-v3"}
+        else "Run the repository's model-visible behavioral and type checks for the current and previously disclosed work. Do not stop after syntax checks when executable validation is available. The controller runs concealed verification only after the final task prompt."
+    )
     preface.extend([
         f"## Current task {order}: {task_alias(order)}",
         "",
-        "Run the repository's model-visible behavioral and type checks for the current and previously disclosed work. Do not stop after syntax checks when executable validation is available. The controller runs concealed verification only after the final task prompt.",
+        validation_guidance,
         "",
         prompt_text,
     ])
@@ -2460,8 +2515,9 @@ def validate_run_safety_args(args: argparse.Namespace) -> None:
 def docker_setup_deps(seq: dict[str, Any], record: dict[str, Any], codex_home: Path, run_dir: Path, docker_image: str) -> int:
     repo = ROOT / record["target"]["repository_path"]
     env = fixture.codex_env(codex_home, containerized=True)
+    env["PATH"] = "/opt/data/bin:/opt/data/opt/go/bin:" + env.get("PATH", "")
     mounts = fixture.container_mounts_for_record(record, codex_home, include_repo=True)
-    cmd = ["bash", "-lc", PROJECT_META[seq["fixture_id"]]["dependency_command"]]
+    cmd = ["bash", "-c", PROJECT_META[seq["fixture_id"]]["dependency_command"]]
     proc = fixture.run_backend(cmd, backend="docker", docker_image=docker_image, cwd=repo, env=env, stdout_path=run_dir / "setup-deps-output.txt", timeout=2400, mounts=mounts)
     return proc.returncode
 
@@ -3050,6 +3106,31 @@ def update_registry(record: dict[str, Any]) -> None:
         tmp.unlink(missing_ok=True)
 
 
+def publish_session_after_strict_ingress(record: dict[str, Any], run_dir: Path) -> None:
+    """Publish only a compact session that passes the same strict ingress used by matrix merge."""
+    if not pilot_session_artifacts_valid(record, ROOT):
+        rejection_receipt = run_dir.parent / f"{record['session_id']}.strict-ingress-rejection.json"
+        atomic_create_json(
+            rejection_receipt,
+            {
+                "schema_version": 1,
+                "status": "rejected-before-registry-publication",
+                "session_id": record["session_id"],
+                "artifact_root": record.get("artifacts", {}).get("root"),
+                "pilot_attempt_receipt": str(
+                    baseline_pilot_attempt_receipt_path(load_sequence(record["task_sequence"]["sequence_id"]))
+                ),
+                "reason": "strict compact artifact ingress validation failed",
+                "source_evidence_retained": str(run_dir),
+            },
+        )
+        raise RuntimeError(
+            f"strict compact artifact ingress validation failed for {record['session_id']}; "
+            f"evidence retained at {run_dir} and identity remains occupied"
+        )
+    update_registry(record)
+
+
 def freshish_tokens(record: dict[str, Any]) -> int | float | None:
     usage = record.get("cumulative_token_usage", {})
     fresh = usage.get("fresh_input_tokens")
@@ -3087,7 +3168,7 @@ def atomic_create_json(path: Path, data: Any) -> None:
         try:
             os.link(temporary_path, path)
         except FileExistsError as exc:
-            raise FileExistsError(f"workflow comparison already exists; refusing overwrite: {path}") from exc
+            raise FileExistsError(f"atomic JSON target already exists; refusing overwrite: {path}") from exc
         directory_fd = os.open(path.parent, os.O_RDONLY)
         try:
             os.fsync(directory_fd)
@@ -3329,6 +3410,9 @@ def _run_one_locked(args: argparse.Namespace) -> dict[str, Any]:
         shutil.rmtree(run_dir)
         return result
 
+    if profile_id == "baseline-bare-codex" and seq.get("task_family_generation") == "baseline-v3":
+        reserve_baseline_pilot_attempt(seq, root=ROOT, orchestrator="direct-runner")
+
     thread_id: str | None = None
     codex_exit_codes: list[int] = []
     task_checkpoints: list[dict[str, Any]] = []
@@ -3447,7 +3531,7 @@ def _run_one_locked(args: argparse.Namespace) -> dict[str, Any]:
     }
     acceptance_visibility_limit = (
         "Future regression code and declared focused acceptance tests are present from lane start; future prompts, seed patches, and controller verifier scripts remain controller-only."
-        if seq.get("task_family_generation") == "baseline-v2"
+        if seq.get("task_family_generation") in {"baseline-v2", "baseline-v3"}
         else "Future regression code is present from lane start, while future prompts and concealed acceptance assets remain controller-only."
     )
     leakage_controls = {
@@ -3530,7 +3614,7 @@ def _run_one_locked(args: argparse.Namespace) -> dict[str, Any]:
     write_evidence_bundle(run_dir)
     remove_noncompact_artifacts(run_dir)
     write_manifest(run_dir)
-    update_registry(session_record)
+    publish_session_after_strict_ingress(session_record, run_dir)
     write_comparison_if_ready(seq, study_id, args.replicate_index, comparison_profile_id) if comparison_profile_id else None
     print(json.dumps(summary, indent=2), flush=True)
     return summary

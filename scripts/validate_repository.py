@@ -14,19 +14,19 @@ ROOT = Path(__file__).resolve().parents[1]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
-BASELINE_V2_ACCEPTANCE_ASSET_PATHS = {
-    "fastify-lifecycle-feature-v0": ["test/baseline-v2-request-media-type.test.js"],
-    "fastify-lifecycle-refactor-v0": ["test/baseline-v2-content-type-cache.test.js"],
-    "fastify-lifecycle-review-v0": ["test/baseline-v2-max-param.test.js"],
+BASELINE_V3_ACCEPTANCE_ASSET_PATHS = {
+    "fastify-lifecycle-feature-v0": ["test/baseline-v3-request-media-type.test.js"],
+    "fastify-lifecycle-refactor-v0": ["test/baseline-v3-content-type-cache.test.js"],
+    "fastify-lifecycle-review-v0": ["test/baseline-v3-max-param.test.js"],
     "beets-lifecycle-feature-v0": ["test/util/test_functemplate.py"],
     "beets-lifecycle-refactor-v0": [],
     "beets-lifecycle-review-v0": ["test/plugins/test_ftintitle.py"],
-    "terraform-lifecycle-feature-v0": ["internal/policy/callback/baseline_v2_deferred_test.go"],
+    "terraform-lifecycle-feature-v0": ["internal/policy/callback/baseline_v3_deferred_test.go"],
     "terraform-lifecycle-refactor-v0": [
         "internal/configs/parser_config_dir_test.go",
-        "internal/configs/baseline_v2_requirement_type_test.go",
+        "internal/configs/baseline_v3_requirement_type_test.go",
     ],
-    "terraform-lifecycle-review-v0": ["internal/addrs/baseline_v2_checkable_test.go"],
+    "terraform-lifecycle-review-v0": ["internal/addrs/baseline_v3_checkable_test.go"],
 }
 
 PROVIDER_USAGE_FIELDS = (
@@ -179,7 +179,7 @@ def current_provider_usage_contract(session: dict) -> bool:
     except (OSError, json.JSONDecodeError):
         return False
     return str(protocol.get("task_fixture", {}).get("qualification_path", "")).endswith(
-        "-baseline-v2.json"
+        "-baseline-v3.json"
     )
 
 
@@ -612,6 +612,30 @@ def validate_qualification(sequence: dict, errors: list[str]) -> None:
         errors.append(f"active workflow sequence {sid} missing generated qualification evidence: {rel or '<unset>'}")
         return
     q = load_json(rel)
+
+    def qualification_numeric_types_valid(value: object, parent_key: str = "") -> bool:
+        if isinstance(value, dict):
+            for key, child in value.items():
+                if key == "schema_version" or key.endswith(("_exit", "_count", "_order")):
+                    if type(child) is not int:
+                        return False
+                if key.endswith(("_exits", "_counts")):
+                    if isinstance(child, dict):
+                        if any(type(item) is not int for item in child.values()):
+                            return False
+                    elif isinstance(child, list):
+                        if any(type(item) is not int for item in child):
+                            return False
+                    else:
+                        return False
+                if not qualification_numeric_types_valid(child, key):
+                    return False
+        elif isinstance(value, list):
+            return all(qualification_numeric_types_valid(item, parent_key) for item in value)
+        return True
+
+    if not qualification_numeric_types_valid(q):
+        errors.append(f"qualification {rel} decision-bearing numeric evidence must use strict non-boolean integers")
     ordered = sorted(sequence["tasks"], key=lambda item: item["order"])
     controller_hidden = (ROOT / ordered[0]["prompt_path"]).parent.parents[1] / "controller-hidden"
     expected_controller_hidden_sha = task_directory_sha256(controller_hidden) if controller_hidden.is_dir() else None
@@ -626,17 +650,17 @@ def validate_qualification(sequence: dict, errors: list[str]) -> None:
         for task in ordered
     }
     required_true = ("seeded_verifier_nonzero", "fixed_verifier_zero", "full_fixed_cumulative_verifier_zero", "composite_seed_merge_zero", "composite_seeded_verifiers_nonzero", "no_unmerged_paths", "all_expected_model_concealment_declared")
-    if sequence.get("task_family_generation") == "baseline-v2":
+    if sequence.get("task_family_generation") == "baseline-v3":
         required_true += ("no_model_concealed_acceptance_assets", "all_acceptance_behavior_model_visible", "model_visible_acceptance_assets_match_verifier_copies")
         if q.get("no_model_visible_acceptance_assets") is not False:
-            errors.append(f"qualification {rel} must not claim Baseline V2 acceptance assets are absent from the model")
+            errors.append(f"qualification {rel} must not claim Baseline V3 acceptance assets are absent from the model")
         if q.get("acceptance_visibility") != "model-visible-complete":
-            errors.append(f"qualification {rel} must record complete model-visible Baseline V2 acceptance")
+            errors.append(f"qualification {rel} must record complete model-visible Baseline V3 acceptance")
         expected_asset_count = sum(
-            len(BASELINE_V2_ACCEPTANCE_ASSET_PATHS[task["id"]]) for task in ordered
+            len(BASELINE_V3_ACCEPTANCE_ASSET_PATHS[task["id"]]) for task in ordered
         )
         if expected_asset_count < 1 or q.get("expected_model_visible_acceptance_asset_count") != expected_asset_count:
-            errors.append(f"qualification {rel} must record the complete nonempty Baseline V2 acceptance-asset set")
+            errors.append(f"qualification {rel} must record the complete nonempty Baseline V3 acceptance-asset set")
     else:
         required_true += ("no_model_visible_acceptance_assets",)
     if sequence.get("status") == "active":
@@ -682,7 +706,7 @@ def validate_qualification(sequence: dict, errors: list[str]) -> None:
         files = production_by_task[task["id"]]
         hashes = {name: hashlib.sha256((task_dir / name).read_bytes()).hexdigest() for name in ("agent-prompt.txt", "seed-regression.patch", "verify.sh")}
         controller_visible = task_dir / "controller-visible"
-        expected_acceptance_paths = BASELINE_V2_ACCEPTANCE_ASSET_PATHS.get(task["id"], [])
+        expected_acceptance_paths = BASELINE_V3_ACCEPTANCE_ASSET_PATHS.get(task["id"], [])
         controller_visible_assets = [
             {
                 "path": str(Path("controller-visible") / path_text),
@@ -692,7 +716,12 @@ def validate_qualification(sequence: dict, errors: list[str]) -> None:
             for path_text in expected_acceptance_paths
             if (controller_visible / path_text).is_file()
         ]
-        if not set(record.get("production_files", [])) or record.get("production_file_count", 0) < 1:
+        production_file_count = record.get("production_file_count")
+        if (
+            not set(record.get("production_files", []))
+            or type(production_file_count) is not int
+            or production_file_count < 1
+        ):
             errors.append(f"qualification {rel} task {task['id']} records no production/type files")
         if record.get("task_id") != task["id"] or record.get("production_files") != files or record.get("production_file_count") != len(files) or record.get("agent_prompt_sha256") != hashes["agent-prompt.txt"] or record.get("seed_patch_sha256") != hashes["seed-regression.patch"] or record.get("verifier_sha256") != hashes["verify.sh"] or record.get("controller_visible_acceptance_assets") != controller_visible_assets or record.get("model_visible_acceptance_asset_paths") != expected_acceptance_paths or len(controller_visible_assets) != len(expected_acceptance_paths) or record.get("task_directory_sha256") != task_directory_sha256(task_dir):
             errors.append(f"qualification {rel} task {task['id']} has stale hashes, files, or count")
@@ -1244,10 +1273,10 @@ def validate_workflow_task_sequences(sequence_doc: dict, fixture_doc: dict, erro
         return set()
     fixtures = fixture_doc.get("fixtures", [])
     fixture_ids = {fixture.get("id") for fixture in fixtures}
-    required_v2_blocker = "Baseline V2 strongest-model provider pilot must complete with all eight required observed categories recorded as strict integer zero before treatment launch."
+    required_v3_blocker = "Baseline V3 strongest-model provider pilot must complete with all eight required observed categories recorded as strict integer zero before treatment launch."
     for fixture in fixtures:
-        if required_v2_blocker not in fixture.get("blockers", []):
-            errors.append(f"repository fixture {fixture.get('id')} must state the complete strict eight-category Baseline V2 blocker")
+        if required_v3_blocker not in fixture.get("blockers", []):
+            errors.append(f"repository fixture {fixture.get('id')} must state the complete strict eight-category Baseline V3 blocker")
     sequence_ids: set[str] = set()
     for index, sequence in enumerate(sequences):
         if not isinstance(sequence, dict):
@@ -1268,8 +1297,8 @@ def validate_workflow_task_sequences(sequence_doc: dict, fixture_doc: dict, erro
             errors.append(f"workflow sequence {sid} must use the feature-refactor-review contract")
         is_active = sequence.get("status") == "active"
         if is_active:
-            if sequence.get("task_family_generation") != "baseline-v2":
-                errors.append(f"active workflow sequence {sid} must bind task_family_generation=baseline-v2")
+            if sequence.get("task_family_generation") != "baseline-v3":
+                errors.append(f"active workflow sequence {sid} must bind task_family_generation=baseline-v3")
             gate = sequence.get("mistake_gate")
             expected_gate = {
                 "designated_model_condition": "codex-openai-gpt-5-6-sol-high",
@@ -1284,7 +1313,8 @@ def validate_workflow_task_sequences(sequence_doc: dict, fixture_doc: dict, erro
                 "allowed_code_rework_events": 0,
                 "allowed_verifier_or_environment_failures": 0,
                 "incident_counting": "unique-auditable-not-command-count",
-                "pilot_audit_path": "sources/evaluations/audits/baseline-v2-pilot-zero-mistake.json",
+                "pilot_audit_path": "sources/evaluations/audits/baseline-v3-pilot-zero-mistake.json",
+                "attempt_receipt_path": f"sources/evaluations/audits/baseline-v3-pilot-attempt-{str(sid).split('-lifecycle-sequence-v0')[0]}.json",
                 "status": "provider-pilot-required",
                 "treatment_launch_policy": "blocked until one first-valid strongest-model pilot is independently audited with all eight required observed counts equal to integer zero",
             }
@@ -1295,15 +1325,53 @@ def validate_workflow_task_sequences(sequence_doc: dict, fixture_doc: dict, erro
                 and all(type(gate.get(key)) is int and gate.get(key) == 0 for key in allowed_gate_fields)
             )
             if not gate_values_match:
-                errors.append(f"active workflow sequence {sid} must preserve the Baseline V2 zero-mistake gate with strict integer-zero allowances")
+                errors.append(f"active workflow sequence {sid} must preserve the Baseline V3 zero-mistake gate with strict integer-zero allowances")
+            required_lockfiles = {
+                "medium-fastify-fastify": {"package.json": "b273320af1bb4cfc0f9334457c8e3b1d035fde0da14f9db65e8ef97d361d0be3"},
+                "medium-beetbox-beets": {"uv.lock": "fbf1d7a9c84b658a2433035221ba18c57508c254d711a06f305e2f610839a45f"},
+                "large-hashicorp-terraform": {"go.sum": "be9ec949db0a0b135197f2c78b6d9821d764cc9b8c362b4860e3d5a1e9c74b9e"},
+            }
+            observed_lockfiles = {
+                str(item.get("path")): str(item.get("sha256"))
+                for item in sequence.get("initial_snapshot", {}).get("dependency_lockfiles", [])
+                if isinstance(item, dict)
+            }
+            if observed_lockfiles != required_lockfiles.get(str(sequence.get("fixture_id")), {}):
+                errors.append(f"active workflow sequence {sid} must bind its exact Baseline V3 dependency lock inputs")
+            if sequence.get("fixture_id") == "medium-beetbox-beets":
+                setup_text = (ROOT / "sources/evaluations/fixtures/medium/beetbox-beets/setup.sh").read_text()
+                if "uv sync --group test --frozen" not in setup_text:
+                    errors.append("Beets Baseline V3 setup must enforce uv.lock with --frozen")
+            if isinstance(gate, dict):
+                receipt_rel = gate.get("attempt_receipt_path")
+                receipt_path = ROOT / str(receipt_rel)
+                if receipt_path.exists():
+                    try:
+                        receipt = json.loads(receipt_path.read_text())
+                    except (OSError, json.JSONDecodeError) as exc:
+                        errors.append(f"active workflow sequence {sid} pilot attempt receipt is unreadable: {exc}")
+                    else:
+                        expected_receipt_identity = {
+                            "schema_version": 1,
+                            "task_family_generation": "baseline-v3",
+                            "sequence_id": sid,
+                            "replicate_index": 0,
+                            "profile_id": "baseline-bare-codex",
+                            "model_condition_id": expected_gate["designated_model_condition"],
+                            "model": expected_gate["model"],
+                            "reasoning_effort": expected_gate["reasoning_effort"],
+                            "immutable_identity_receipt": True,
+                        }
+                        if any(receipt.get(key) != value for key, value in expected_receipt_identity.items()):
+                            errors.append(f"active workflow sequence {sid} pilot attempt receipt identity is invalid")
             if "declared focused acceptance tests" not in str(sequence.get("reset_policy", "")):
                 errors.append(f"active workflow sequence {sid} reset policy must retain declared model-visible acceptance tests")
             if "complete acceptance behavior stays model-visible" not in str(sequence.get("seed_patch_policy", "")):
                 errors.append(f"active workflow sequence {sid} seed policy must not describe acceptance as controller-only")
         qualification_path = str(sequence.get("qualification_path", ""))
         qualification_name = Path(qualification_path).name
-        if is_active and qualification_name != "qualification-lifecycle-v0-baseline-v2.json":
-            errors.append(f"active workflow sequence {sid} must bind qualification-lifecycle-v0-baseline-v2.json")
+        if is_active and qualification_name != "qualification-lifecycle-v0-baseline-v3.json":
+            errors.append(f"active workflow sequence {sid} must bind qualification-lifecycle-v0-baseline-v3.json")
         elif re.fullmatch(r"qualification-lifecycle-v0(?:-[a-z0-9-]+)?\.json", qualification_name) is None:
             errors.append(f"workflow sequence {sid} must bind a versioned qualification-lifecycle-v0 JSON artifact")
         if sequence.get("status") == "active" and sequence.get("acceptance_design") != "behavioral":
@@ -1372,15 +1440,14 @@ def validate_workflow_task_sequences(sequence_doc: dict, fixture_doc: dict, erro
                         errors.append(f"active workflow sequence {sid} task {tid} seed patch has no production/type files")
                     prompt_text = (ROOT / prompt_path).read_text() if prompt_path else ""
                     required_markers = (
-                        "Baseline V2 routine recipe",
-                        "Do not run discovery, search, or broad-suite commands.",
-                        "Only modify:",
-                        "Run exactly:",
-                        "Stop immediately when",
-                        "Do not modify tests.",
+                        "Baseline V3 mechanical",
+                        "Do not discover or redesign anything.",
+                        "Copy and run this command exactly:",
+                        "Do not inspect, search, modify tests, run anything else, or evaluate aggregate Git state.",
+                        "stop immediately when it exits 0",
                     )
-                    if "/baseline-v2/" not in str(prompt_path) or any(marker not in prompt_text for marker in required_markers):
-                        errors.append(f"active workflow sequence {sid} task {tid} must use the complete Baseline V2 routine prompt contract")
+                    if "/baseline-v3/" not in str(prompt_path) or any(marker not in prompt_text for marker in required_markers):
+                        errors.append(f"active workflow sequence {sid} task {tid} must use the complete Baseline V3 routine prompt contract")
                     target_production = [
                         path
                         for path in production
@@ -1388,7 +1455,7 @@ def validate_workflow_task_sequences(sequence_doc: dict, fixture_doc: dict, erro
                     ]
                     expected_changed = task.get("expected_changed_paths")
                     if not isinstance(expected_changed, list) or sorted(expected_changed) != sorted(target_production) or not 1 <= len(target_production) <= 3:
-                        errors.append(f"active workflow sequence {sid} task {tid} must declare one-to-three exact Baseline V2 production targets")
+                        errors.append(f"active workflow sequence {sid} task {tid} must declare one-to-three exact Baseline V3 production targets")
                     anchors = task.get("model_visible_validation_anchors")
                     acceptance_asset_paths = task.get("model_visible_acceptance_asset_paths")
                     verifier_text = verifier_path.read_text() if verifier_path.is_file() else ""
@@ -1399,13 +1466,13 @@ def validate_workflow_task_sequences(sequence_doc: dict, fixture_doc: dict, erro
                         errors.append(f"active workflow sequence {sid} task {tid} contains undisclosed inline verifier assertions")
                     if not isinstance(anchors, list) or not anchors or any(anchor not in prompt_text or anchor not in verifier_text for anchor in anchors):
                         errors.append(f"active workflow sequence {sid} task {tid} must bind complete model-visible focused validation anchors")
-                    expected_acceptance_assets = BASELINE_V2_ACCEPTANCE_ASSET_PATHS.get(str(tid))
+                    expected_acceptance_assets = BASELINE_V3_ACCEPTANCE_ASSET_PATHS.get(str(tid))
                     if (
                         expected_acceptance_assets is None
                         or not isinstance(acceptance_asset_paths, list)
                         or acceptance_asset_paths != expected_acceptance_assets
                     ):
-                        errors.append(f"active workflow sequence {sid} task {tid} must declare the exact file-backed Baseline V2 acceptance assets")
+                        errors.append(f"active workflow sequence {sid} task {tid} must declare the exact file-backed Baseline V3 acceptance assets")
                     elif not isinstance(anchors, list) or any(
                         asset not in anchors
                         or asset not in prompt_text
@@ -1415,7 +1482,7 @@ def validate_workflow_task_sequences(sequence_doc: dict, fixture_doc: dict, erro
                     ):
                         errors.append(f"active workflow sequence {sid} task {tid} has missing or unbound canonical acceptance assets")
                     if task.get("model_concealed_paths"):
-                        errors.append(f"active workflow sequence {sid} task {tid} must not hide Baseline V2 validation behavior")
+                        errors.append(f"active workflow sequence {sid} task {tid} must not hide Baseline V3 validation behavior")
                     if verifier_uses_source_identity(task_dir):
                         errors.append(f"active workflow sequence {sid} task {tid} uses exact-source supplemental guards instead of behavioral acceptance")
                     review_patch_name = task.get("review_patch_path")
@@ -1471,11 +1538,31 @@ def validate_fixture_sequence_status_consistency(
     medium_candidates_doc: dict,
     errors: list[str],
 ) -> None:
-    statuses = {
-        sequence.get("id"): sequence.get("status")
+    sequences = {
+        sequence.get("id"): sequence
         for sequence in workflow_doc.get("sequences", [])
         if sequence.get("id")
     }
+    statuses = {sequence_id: sequence.get("status") for sequence_id, sequence in sequences.items()}
+    for label, candidate_doc in (
+        ("large candidate", large_candidates_doc),
+        ("medium candidate", medium_candidates_doc),
+    ):
+        records = candidate_doc.get("candidates", [])
+        expected_count = sum(record.get("qualification_status") == "active-reproduction-flow" for record in records)
+        policy = candidate_doc.get("selection_policy", {})
+        if policy.get("active_fixture_count") != expected_count:
+            errors.append(f"{label} selection policy active_fixture_count must equal {expected_count}")
+        target_matrix = str(policy.get("target_matrix", "")).lower()
+        active_names = {
+            str(record.get("github", "")).rsplit("/", 1)[-1].lower()
+            for record in records
+            if record.get("qualification_status") == "active-reproduction-flow"
+        }
+        if any(name and name not in target_matrix for name in active_names) or any(
+            phrase in target_matrix for phrase in ("retired", "no active", "zero active")
+        ):
+            errors.append(f"{label} selection policy target_matrix must name every active fixture without retired-state prose")
     surfaces = [
         ("fixture", fixtures_doc.get("fixtures", [])),
         ("large candidate", large_candidates_doc.get("candidates", [])),
@@ -1493,6 +1580,29 @@ def validate_fixture_sequence_status_consistency(
             qualification = record.get("qualification_status")
             if active and qualification != "active-reproduction-flow":
                 errors.append(f"{label} {record.get('id')} must be active-reproduction-flow when sequence {sequence_id} is active")
+            if active and record.get("qualification_evidence") != sequences[sequence_id].get("qualification_path"):
+                errors.append(
+                    f"{label} {record.get('id')} must reference the active qualification for {sequence_id}"
+                )
+            if active and label == "fixture":
+                qualification_path = Path(str(sequences[sequence_id].get("qualification_path", "")))
+                fixture_root = ROOT / qualification_path.parent
+                fixture_readme = fixture_root / "README.md"
+                tasks_readme = fixture_root / "tasks/README.md"
+                v2_readme = fixture_root / "task-generations/baseline-v2/README.md"
+                try:
+                    fixture_text = fixture_readme.read_text()
+                    tasks_text = tasks_readme.read_text()
+                    v2_text = v2_readme.read_text()
+                except OSError as exc:
+                    errors.append(f"fixture {record.get('id')} active-generation documentation is unreadable: {exc}")
+                else:
+                    if qualification_path.name not in fixture_text or "baseline-v3" not in fixture_text:
+                        errors.append(f"fixture {record.get('id')} README does not identify the active Baseline V3 qualification")
+                    if "active Baseline V3" not in tasks_text:
+                        errors.append(f"fixture {record.get('id')} tasks README does not identify the active Baseline V3 generation")
+                    if "Active lifecycle-v0 generation" in v2_text or "future execution" in v2_text:
+                        errors.append(f"fixture {record.get('id')} Baseline V2 README incorrectly presents a retired generation as active")
             if not active and qualification == "active-reproduction-flow":
                 errors.append(f"{label} {record.get('id')} cannot be active-reproduction-flow while sequence {sequence_id} is {statuses[sequence_id]}")
             if not active and record.get("active_profiles"):
@@ -2347,31 +2457,261 @@ def validate_tool_dossier_snapshots(errors: list[str]) -> None:
                 )
 
 
-def validate_baseline_v2_qualification_audit(errors: list[str]) -> None:
+def validate_retired_baseline_v2_audit(errors: list[str]) -> None:
     audit_path = ROOT / "sources/evaluations/audits/baseline-v2-task-family-qualification-20260721.json"
+    pilot_path = ROOT / "sources/evaluations/audits/baseline-v2-pilot-zero-mistake.json"
+    try:
+        audit = json.loads(audit_path.read_text())
+        pilot = json.loads(pilot_path.read_text())
+    except (OSError, json.JSONDecodeError) as exc:
+        errors.append(f"retired Baseline V2 authority cannot be read: {exc}")
+        return
+    supersession = audit.get("supersession", {})
+    retired_valid = (
+        audit.get("task_family_generation") == "baseline-v2"
+        and str(audit.get("decision", "")).startswith("Retire Baseline V2 permanently")
+        and supersession.get("status") == "retired-failed-pilot-identity-occupied"
+        and supersession.get("superseded_by_generation") == "baseline-v3"
+        and supersession.get("paid_pilot_audit") == "sources/evaluations/audits/baseline-v2-pilot-zero-mistake.json"
+        and supersession.get("paid_pilot_passed") is False
+        and supersession.get("rerun_allowed") is False
+        and supersession.get("treatment_launch_allowed") is False
+        and audit.get("mistake_gate", {}).get("status") == "failed-pilot-identity-occupied"
+        and audit.get("zero_mistake_gate", {}).get("status") == "failed-pilot-identity-occupied"
+        and audit.get("treatment_gate", {}).get("status") == "blocked-failed-pilot-identity-occupied"
+        and audit.get("treatment_gate", {}).get("pilot_audit_present") is True
+        and audit.get("protocols") == []
+        and audit.get("totals", {}).get("frozen_pilot_protocols") == 0
+        and all(item.get("frozen_baseline_protocols") == [] for item in audit.get("sequences", []))
+        and pilot.get("passed") is False
+        and pilot.get("status") == "failed-operationally-invalid"
+        and pilot.get("publication_status") == "rolled-back-no-sessions-or-comparisons-published"
+    )
+    if not retired_valid:
+        errors.append("retired Baseline V2 qualification authority is stale, runnable, dangling, or inconsistent with its failed pilot")
+
+
+def validate_baseline_v3_qualification_audit(errors: list[str]) -> None:
+    audit_path = ROOT / "sources/evaluations/audits/baseline-v3-task-family-qualification-20260722.json"
     try:
         audit = json.loads(audit_path.read_text())
         sequences_doc = json.loads((ROOT / "data/workflow-task-sequences.json").read_text())
     except (OSError, json.JSONDecodeError) as exc:
-        errors.append(f"Baseline V2 qualification audit cannot be read: {exc}")
+        errors.append(f"Baseline V3 qualification audit cannot be read: {exc}")
         return
     active_sequences = {
         item.get("id"): item
         for item in sequences_doc.get("sequences", [])
-        if item.get("status") == "active" and item.get("task_family_generation") == "baseline-v2"
+        if item.get("status") == "active" and item.get("task_family_generation") == "baseline-v3"
     }
-    audit_sequences = {
-        item.get("sequence_id"): item
-        for item in audit.get("sequences", [])
-        if isinstance(item, dict)
+
+    strict_numeric_keys = {
+        "schema_version",
+        "persistent_tasks_per_sequence",
+        "production_files_per_task_maximum",
+        "task_count",
+        "expected_model_visible_acceptance_asset_count",
+        "provider_free_qualified_sequences",
+        "frozen_pilot_protocols",
+        "provider_free_lanes",
+        "prepared_lanes",
+        "undisclosed_inline_verifier_assertions",
+        "contract_tests",
+        "contract_tests_passed",
+        "truthmark_diagnostics",
+        "prepare_matrix_lanes",
+        "prepare_matrix_passed",
+        "order",
+        "prompt_command_exit",
+        "controller_verifier_exit",
+        "receipt_count",
+        "post_reservation_contract_tests",
+        "dependency_bootstrap_lanes",
+        "literal_command_tasks",
+        "controller_verifier_tasks",
     }
-    current_refs = {
-        item.get("sequence_id"): item
-        for item in audit.get("protocols", [])
-        if isinstance(item, dict)
+
+    def validate_provider_free_numbers(value: object, path: str = "audit") -> None:
+        if isinstance(value, dict):
+            for key, child in value.items():
+                child_path = f"{path}.{key}"
+                numeric_scalar = (
+                    key in strict_numeric_keys
+                    or key.startswith("allowed_")
+                    or (path == "audit.totals" and key in {"sequences", "tasks"})
+                )
+                if numeric_scalar and type(child) is not int:
+                    errors.append(f"Baseline V3 decision-bearing numeric field must be a strict non-boolean integer: {child_path}")
+                if key == "production_file_counts" and (
+                    not isinstance(child, list) or any(type(item) is not int for item in child)
+                ):
+                    errors.append(f"Baseline V3 production file counts must be strict non-boolean integers: {child_path}")
+                if key in {"provider_calls", "provider_tokens"} and (type(child) is not int or child != 0):
+                    errors.append(f"Baseline V3 provider-free numeric field must be strict integer zero: {child_path}")
+                validate_provider_free_numbers(child, child_path)
+        elif isinstance(value, list):
+            for index, child in enumerate(value):
+                validate_provider_free_numbers(child, f"{path}[{index}]")
+
+    validate_provider_free_numbers(audit)
+    audit_sequence_items = [item for item in audit.get("sequences", []) if isinstance(item, dict)]
+    protocol_items = [item for item in audit.get("protocols", []) if isinstance(item, dict)]
+    audit_sequence_ids = [item.get("sequence_id") for item in audit_sequence_items]
+    protocol_sequence_ids = [item.get("sequence_id") for item in protocol_items]
+    audit_sequences = {item.get("sequence_id"): item for item in audit_sequence_items}
+    current_refs = {item.get("sequence_id"): item for item in protocol_items}
+    rehearsal = audit.get("literal_prompt_command_rehearsal")
+    rehearsal_items = (
+        [item for item in rehearsal.get("sequences", []) if isinstance(item, dict)]
+        if isinstance(rehearsal, dict)
+        else []
+    )
+    rehearsal_sequence_ids = [item.get("sequence_id") for item in rehearsal_items]
+    rehearsal_sequences = {item.get("sequence_id"): item for item in rehearsal_items}
+    multiplicity_valid = all(
+        len(items) == len(active_sequences)
+        and len(ids) == len(set(ids))
+        for items, ids in (
+            (audit_sequence_items, audit_sequence_ids),
+            (protocol_items, protocol_sequence_ids),
+            (rehearsal_items, rehearsal_sequence_ids),
+        )
+    )
+    if not multiplicity_valid:
+        errors.append("Baseline V3 qualification audit must not contain missing or duplicate sequence identities")
+    if (
+        not isinstance(rehearsal, dict)
+        or rehearsal.get("status") != "passed"
+        or type(rehearsal.get("provider_calls")) is not int
+        or rehearsal.get("provider_calls") != 0
+        or type(rehearsal.get("provider_tokens")) is not int
+        or rehearsal.get("provider_tokens") != 0
+        or set(rehearsal_sequences) != set(active_sequences)
+    ):
+        errors.append("Baseline V3 qualification audit must record one zero-provider passed literal prompt-command rehearsal for every active sequence")
+    else:
+        for sequence_id, sequence in active_sequences.items():
+            expected = [
+                (str(task["id"]), int(task["order"]), 0, 0, True)
+                for task in sorted(sequence.get("tasks", []), key=lambda item: int(item["order"]))
+            ]
+            observed = [
+                (
+                    str(task.get("task_id")),
+                    task.get("order"),
+                    task.get("prompt_command_exit"),
+                    task.get("controller_verifier_exit"),
+                    task.get("model_visible_focused_test_selected"),
+                )
+                for task in rehearsal_sequences[sequence_id].get("tasks", [])
+                if isinstance(task, dict)
+            ]
+            numeric_values_valid = all(
+                type(value) is int
+                for row in observed
+                for value in row[1:4]
+            )
+            if observed != expected or not numeric_values_valid:
+                errors.append(f"Baseline V3 literal prompt-command rehearsal is incomplete for {sequence_id}")
+
+    receipt_index_path = ROOT / "sources/evaluations/audits/baseline-v3-literal-command-receipts-20260722/index.json"
+    try:
+        receipt_index = json.loads(receipt_index_path.read_text())
+    except (OSError, json.JSONDecodeError) as exc:
+        errors.append(f"Baseline V3 immutable literal-command receipt index is unreadable: {exc}")
+        receipt_index = {}
+    expected_tasks = {
+        str(task["id"]): (sequence_id, task, sequence)
+        for sequence_id, sequence in active_sequences.items()
+        for task in sequence.get("tasks", [])
     }
+    receipt_items = [item for item in receipt_index.get("receipts", []) if isinstance(item, dict)]
+    receipt_task_ids = [str(item.get("task_id")) for item in receipt_items]
+    if (
+        type(receipt_index.get("schema_version")) is not int
+        or receipt_index.get("schema_version") != 1
+        or receipt_index.get("passed") is not True
+        or type(receipt_index.get("provider_calls")) is not int
+        or receipt_index.get("provider_calls") != 0
+        or type(receipt_index.get("provider_tokens")) is not int
+        or receipt_index.get("provider_tokens") != 0
+        or type(receipt_index.get("receipt_count")) is not int
+        or receipt_index.get("receipt_count") != len(expected_tasks)
+        or len(receipt_items) != len(expected_tasks)
+        or len(receipt_task_ids) != len(set(receipt_task_ids))
+        or set(receipt_task_ids) != set(expected_tasks)
+    ):
+        errors.append("Baseline V3 immutable literal-command receipt index must cover each active task exactly once with zero provider use")
+    else:
+        expected_image_id = "sha256:6f86d01f2c63f5029c6bb874d8f3694c24d5cd567e3d09413eccc956ba3feafe"
+        for item in receipt_items:
+            task_id = str(item["task_id"])
+            sequence_id, task, sequence = expected_tasks[task_id]
+            receipt_path = ROOT / str(item.get("path"))
+            try:
+                receipt_bytes = receipt_path.read_bytes()
+                receipt = json.loads(receipt_bytes)
+            except (OSError, json.JSONDecodeError) as exc:
+                errors.append(f"Baseline V3 literal-command receipt {task_id} is unreadable: {exc}")
+                continue
+            prompt_path = ROOT / str(task.get("prompt_path"))
+            verifier_path = ROOT / str(task.get("verifier_command"))
+            prompt_text = prompt_path.read_text()
+            command_match = re.search(r"```bash\n(.*?)\n```", prompt_text, re.S)
+            command_block = command_match.group(1) if command_match else ""
+            selected_names = (
+                sorted(set(re.findall(r"Test[A-Za-z0-9_]+", command_block)))
+                if sequence_id == "terraform-lifecycle-sequence-v0"
+                else []
+            )
+            literal = receipt.get("literal_command", {})
+            verifier = receipt.get("controller_verifier", {})
+            bootstrap = receipt.get("production_bootstrap", {})
+            command_log = ROOT / str(literal.get("log_path"))
+            verifier_log = ROOT / str(verifier.get("log_path"))
+            bootstrap_log = ROOT / str(bootstrap.get("log_path"))
+            hashes_valid = all(
+                path.is_file() and hashlib.sha256(path.read_bytes()).hexdigest() == expected_hash
+                for path, expected_hash in (
+                    (receipt_path, str(item.get("sha256"))),
+                    (prompt_path, str(literal.get("prompt_sha256"))),
+                    (verifier_path, str(verifier.get("sha256"))),
+                    (command_log, str(literal.get("log_sha256"))),
+                    (verifier_log, str(verifier.get("log_sha256"))),
+                    (bootstrap_log, str(bootstrap.get("log_sha256"))),
+                )
+            )
+            receipt_valid = (
+                type(receipt.get("schema_version")) is int
+                and receipt.get("schema_version") == 1
+                and receipt.get("passed") is True
+                and type(receipt.get("provider_calls")) is int
+                and receipt.get("provider_calls") == 0
+                and type(receipt.get("provider_tokens")) is int
+                and receipt.get("provider_tokens") == 0
+                and receipt.get("sequence_id") == sequence_id
+                and receipt.get("task_id") == task_id
+                and type(receipt.get("task_order")) is int
+                and receipt.get("task_order") == task.get("order")
+                and receipt.get("fixture_commit") == sequence.get("initial_snapshot", {}).get("commit")
+                and receipt.get("dependency_lockfiles") == sequence.get("initial_snapshot", {}).get("dependency_lockfiles")
+                and receipt.get("container", {}).get("image_id") == expected_image_id
+                and bootstrap.get("shell") == ["bash", "-c"]
+                and type(bootstrap.get("exit_code")) is int
+                and bootstrap.get("exit_code") == 0
+                and literal.get("command_block") == command_block
+                and literal.get("command_sha256") == hashlib.sha256((command_block + "\n").encode()).hexdigest()
+                and type(literal.get("exit_code")) is int
+                and literal.get("exit_code") == 0
+                and literal.get("selected_test_names") == selected_names
+                and type(verifier.get("exit_code")) is int
+                and verifier.get("exit_code") == 0
+                and hashes_valid
+            )
+            if not receipt_valid:
+                errors.append(f"Baseline V3 immutable literal-command receipt is invalid for {task_id}")
     if set(audit_sequences) != set(active_sequences) or set(current_refs) != set(active_sequences):
-        errors.append("Baseline V2 qualification audit must cover exactly the active sequences")
+        errors.append("Baseline V3 qualification audit must cover exactly the active sequences")
         return
     for sequence_id, sequence in active_sequences.items():
         entry = audit_sequences[sequence_id]
@@ -2379,21 +2719,21 @@ def validate_baseline_v2_qualification_audit(errors: list[str]) -> None:
         frozen_refs = entry.get("frozen_baseline_protocols")
         protocol_rel = current_ref.get("path")
         if not isinstance(protocol_rel, str) or not protocol_rel:
-            errors.append(f"Baseline V2 audit {sequence_id} current protocol path is missing")
+            errors.append(f"Baseline V3 audit {sequence_id} current protocol path is missing")
             continue
         protocol_path = ROOT / protocol_rel
         try:
             protocol_bytes = protocol_path.read_bytes()
             protocol = json.loads(protocol_bytes)
         except (OSError, json.JSONDecodeError) as exc:
-            errors.append(f"Baseline V2 audit {sequence_id} current protocol is unreadable: {exc}")
+            errors.append(f"Baseline V3 audit {sequence_id} current protocol is unreadable: {exc}")
             continue
         qualification_rel = sequence.get("qualification_path")
         qualification_path = ROOT / str(qualification_rel)
         try:
             qualification_sha = hashlib.sha256(qualification_path.read_bytes()).hexdigest()
         except OSError as exc:
-            errors.append(f"Baseline V2 audit {sequence_id} qualification is unreadable: {exc}")
+            errors.append(f"Baseline V3 audit {sequence_id} qualification is unreadable: {exc}")
             continue
         protocol_sha = hashlib.sha256(protocol_bytes).hexdigest()
         protocol_id = protocol.get("protocol_id")
@@ -2416,11 +2756,16 @@ def validate_baseline_v2_qualification_audit(errors: list[str]) -> None:
             "path": protocol_rel,
             "sha256": protocol_sha,
         }:
-            errors.append(f"Baseline V2 audit {sequence_id} current protocol reference is stale")
+            errors.append(f"Baseline V3 audit {sequence_id} current protocol reference is stale")
         if frozen_refs != [expected_frozen]:
-            errors.append(f"Baseline V2 audit {sequence_id} frozen baseline protocol reference is stale")
+            errors.append(f"Baseline V3 audit {sequence_id} frozen baseline protocol reference is stale")
+        if (
+            entry.get("current_protocol_id") != protocol_id
+            or entry.get("current_protocol_path") != protocol_rel
+        ):
+            errors.append(f"Baseline V3 audit {sequence_id} per-sequence current protocol binding is stale")
         if entry.get("qualification_path") != qualification_rel or entry.get("qualification_sha256") != qualification_sha:
-            errors.append(f"Baseline V2 audit {sequence_id} qualification reference is stale")
+            errors.append(f"Baseline V3 audit {sequence_id} qualification reference is stale")
         task_fixture = protocol.get("task_fixture", {})
         if (
             protocol_id != protocol_path.stem
@@ -2428,7 +2773,7 @@ def validate_baseline_v2_qualification_audit(errors: list[str]) -> None:
             or task_fixture.get("qualification_sha256") != qualification_sha
             or model_condition_id != "codex-openai-gpt-5-6-sol-high"
         ):
-            errors.append(f"Baseline V2 audit {sequence_id} does not identify the current canonical pilot protocol")
+            errors.append(f"Baseline V3 audit {sequence_id} does not identify the current canonical pilot protocol")
     prepare = audit.get("latest_prepare_matrix")
     if prepare != {
         "evidence_classification": "non-authoritative-scratch",
@@ -2438,7 +2783,7 @@ def validate_baseline_v2_qualification_audit(errors: list[str]) -> None:
         "provider_calls": 0,
         "provider_tokens": 0,
     }:
-        errors.append("Baseline V2 qualification audit prepare-matrix note must remain non-authoritative scratch metadata")
+        errors.append("Baseline V3 qualification audit prepare-matrix note must remain non-authoritative scratch metadata")
 
 
 def validate_frozen_protocol_bindings(errors: list[str]) -> None:
@@ -2862,7 +3207,8 @@ def main() -> int:
     validate_fixture_sequence_status_consistency(workflow_sequences_doc, fixtures_doc, large_candidates_doc, medium_candidates_doc, errors)
     validate_workflow_sessions(workflow_sessions_doc, workflow_sequence_ids, fixtures_doc, profiles_by_id, runtime_ids, model_condition_ids, errors)
     validate_document_lifecycle(workflow_sessions_doc, fixtures_doc, workflow_sequences_doc, errors)
-    validate_baseline_v2_qualification_audit(errors)
+    validate_retired_baseline_v2_audit(errors)
+    validate_baseline_v3_qualification_audit(errors)
     validate_frozen_protocol_bindings(errors)
     for path in (ROOT / "data/workflow-task-sequences.json", ROOT / "templates/evaluation-run-record.json"):
         if "gpt-5.5" in path.read_text():

@@ -1,0 +1,52 @@
+{
+  "schema_version": 1,
+  "evidence_classification": "provider-free-production-container-rehearsal",
+  "date": "2026-07-22",
+  "sequence_id": "fastify-lifecycle-sequence-v0",
+  "task_id": "fastify-lifecycle-refactor-v0",
+  "task_order": 2,
+  "fixture_commit": "94bcbcc6e2ef3b8e8f8e8797fe551ccbe7b942fd",
+  "dependency_lockfiles": [
+    {
+      "path": "package.json",
+      "sha256": "b273320af1bb4cfc0f9334457c8e3b1d035fde0da14f9db65e8ef97d361d0be3"
+    }
+  ],
+  "container": {
+    "image_ref": "token-eval-codex:latest",
+    "image_id": "sha256:6f86d01f2c63f5029c6bb874d8f3694c24d5cd567e3d09413eccc956ba3feafe",
+    "repo_digest": "token-eval-codex@sha256:6f86d01f2c63f5029c6bb874d8f3694c24d5cd567e3d09413eccc956ba3feafe"
+  },
+  "production_bootstrap": {
+    "shell": [
+      "bash",
+      "-c"
+    ],
+    "command": "npm install --ignore-scripts --no-audit --no-fund",
+    "path_prefix": "/opt/data/bin:/opt/data/opt/go/bin",
+    "exit_code": 0,
+    "log_path": "sources/evaluations/audits/baseline-v3-literal-command-receipts-20260722/fastify-lifecycle-sequence-v0/setup-deps-output.txt",
+    "log_sha256": "4956e00aca46c3e977cee8cd25f750b06a77213e0d699dffd366f788d8b43209"
+  },
+  "literal_command": {
+    "prompt_path": "sources/evaluations/fixtures/medium/fastify-fastify/task-generations/baseline-v3/fastify-lifecycle-refactor-v0/agent-prompt.txt",
+    "prompt_sha256": "0a0867ab15d0b86404251f68c03d2aedf92f5119c614091b57faaa4758649c2d",
+    "command_block": "python3 - <<'PY'\nfrom pathlib import Path\np = Path(\"lib/content-type.js\")\ns = p.read_text()\nreplacements = [\n    (\"'use strict'\\n\\n/**\", \"'use strict'\\n\\nconst { LruMap: Lru } = require('toad-cache')\\n\\n/**\"),\n    (\"const subtypeNameReg = /^[\\\\w!#$%&'*+.^`|~-]+\\\\s*$/\\n\\n/**\\n * ContentType parses\", \"const subtypeNameReg = /^[\\\\w!#$%&'*+.^`|~-]+\\\\s*$/\\n\\n/**\\n * Content-Type internal shared cache\\n * @type {Lru<ContentType>}\\n */\\nconst cache = new Lru(100)\\n\\n/**\\n * ContentType parses\"),\n    (\"  static from (headerValue) {\\n    return new ContentType(headerValue)\\n  }\\n\", \"  static get cache () { return cache }\\n\\n  static from (headerValue) {\\n    let contentType = cache.get(headerValue)\\n    if (contentType !== undefined) return contentType\\n    contentType = new ContentType(headerValue)\\n    cache.set(headerValue, contentType)\\n    return contentType\\n  }\\n\"),\n]\nfor old, new in replacements:\n    assert s.count(old) == 1, old\n    s = s.replace(old, new)\np.write_text(s)\nPY\nnode --test test/baseline-v3-content-type-cache.test.js",
+    "command_sha256": "8e62e4b76dee4cca867d1470df470f451efdb319ca9ea270cc7cc62ecb15c251",
+    "exit_code": 0,
+    "log_path": "sources/evaluations/audits/baseline-v3-literal-command-receipts-20260722/fastify-lifecycle-sequence-v0/fastify-lifecycle-refactor-v0.command.log",
+    "log_sha256": "d1c2cba9aa0fc25338dcd0551ca83d7bd69fad37f9ba15ede955fe454af33563",
+    "selected_test_names": []
+  },
+  "controller_verifier": {
+    "path": "sources/evaluations/fixtures/medium/fastify-fastify/task-generations/baseline-v3/fastify-lifecycle-refactor-v0/verify.sh",
+    "sha256": "4a4184b351b5212bbd612400cc7997acbb42d142bce10bd2084ef66892b3c87c",
+    "exit_code": 0,
+    "log_path": "sources/evaluations/audits/baseline-v3-literal-command-receipts-20260722/fastify-lifecycle-sequence-v0/fastify-lifecycle-refactor-v0.verifier.log",
+    "log_sha256": "ce5cf1b641e433a72b3f95074e086bb888e5740026db2909247e7639d5ea2f8a"
+  },
+  "persistent_cumulative_workflow": true,
+  "provider_calls": 0,
+  "provider_tokens": 0,
+  "passed": true
+}

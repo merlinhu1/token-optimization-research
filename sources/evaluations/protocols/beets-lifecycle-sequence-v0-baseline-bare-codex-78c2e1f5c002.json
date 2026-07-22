@@ -1,9 +1,9 @@
 {
   "protocol_schema_version": 3,
-  "protocol_id": "beets-lifecycle-sequence-v0-baseline-bare-codex-a1440ab93fb0",
+  "protocol_id": "beets-lifecycle-sequence-v0-baseline-bare-codex-78c2e1f5c002",
   "status": "frozen-ready-not-run",
   "outcome": "Frozen baseline-bare-codex protocol for beets-lifecycle-sequence-v0; no provider/model run has occurred.",
-  "frozen_at": "2026-07-21",
+  "frozen_at": "2026-07-22",
   "hypothesis": "baseline-bare-codex produces reproducible provider-reported token and software-quality evidence for beets-lifecycle-sequence-v0",
   "evidence_stage_target": "reproduction",
   "task_fixture": {
@@ -11,8 +11,8 @@
     "sequence_id": "beets-lifecycle-sequence-v0",
     "repository": "https://github.com/beetbox/beets.git",
     "snapshot": "9acb1ecff6c7ee0a1e83e3b983c94792345712c5",
-    "qualification_path": "sources/evaluations/fixtures/medium/beetbox-beets/qualification-lifecycle-v0-baseline-v2.json",
-    "qualification_sha256": "58b8953f6d923ea19feb4aa12dd064eedfeac5332ae9c99295ccd9ddc391b28d",
+    "qualification_path": "sources/evaluations/fixtures/medium/beetbox-beets/qualification-lifecycle-v0-baseline-v3.json",
+    "qualification_sha256": "2fe2688b0d2d5c4030e34cfdf4ef09508dd2f4f34c6efc07bcf9092550dfca06",
     "timeout_seconds_per_task": 3600
   },
   "baseline": {
@@ -21,7 +21,7 @@
     "model": "gpt-5.6-sol",
     "model_condition_id": "codex-openai-gpt-5-6-sol-high",
     "reasoning_effort": "high",
-    "command": "python3 scripts/run_codex_workflow_model_condition.py --workflow-model-condition-id codex-openai-gpt-5-6-sol-high --workflow-model gpt-5.6-sol --workflow-reasoning-effort high --sequence-id beets-lifecycle-sequence-v0 --profile-id baseline-bare-codex --timeout-per-task 3600 --protocol sources/evaluations/protocols/beets-lifecycle-sequence-v0-baseline-bare-codex-a1440ab93fb0.json --docker-image token-eval-codex:latest"
+    "command": "python3 scripts/run_codex_workflow_model_condition.py --workflow-model-condition-id codex-openai-gpt-5-6-sol-high --workflow-model gpt-5.6-sol --workflow-reasoning-effort high --sequence-id beets-lifecycle-sequence-v0 --profile-id baseline-bare-codex --timeout-per-task 3600 --protocol sources/evaluations/protocols/beets-lifecycle-sequence-v0-baseline-bare-codex-78c2e1f5c002.json --docker-image token-eval-codex:latest"
   },
   "treatment": {},
   "token_accounting_boundary": {
@@ -36,13 +36,13 @@
   },
   "baseline_pool": {
     "protocol_version": "baseline-pool-v1",
-    "protocol_fingerprint": "57c6571e446a",
+    "protocol_fingerprint": "82943cffbb9a",
     "descriptor": {
       "version": "baseline-pool-v1",
       "runner_contract_version": "workflow-runner-v9",
-      "runner_sha256": "96aa516f8b50023252fdf0d2f71234605146affadad72fc744aa73339c4a5f8b",
-      "qualification_generator_sha256": "43ee9b9f286284a416d6bb462cb0ed0a5e39168baf5604c8098a0099ed9cae00",
-      "validator_sha256": "37007c8af09decadebf5ccce035cc743c4089925c03d4cb42fa221d27f423664",
+      "runner_sha256": "7e5941f3c5689105b1f3e8693a0fde2fea2e6fd5ad1880f9da9629fd1549af1c",
+      "qualification_generator_sha256": "15463354f4b44f00c857dbbf6f06727ced966ef669aa7d2e69a7ea16324068b0",
+      "validator_sha256": "61f79485fea154580b5976251643daf231293a464d80d16164dd77a15d05d541",
       "sequence_id": "beets-lifecycle-sequence-v0",
       "sequence_contract": "feature-refactor-review",
       "fixture_id": "medium-beetbox-beets",
@@ -50,7 +50,12 @@
       "initial_snapshot": {
         "commit": "9acb1ecff6c7ee0a1e83e3b983c94792345712c5",
         "upstream": "https://github.com/beetbox/beets.git",
-        "dependency_lockfiles": []
+        "dependency_lockfiles": [
+          {
+            "path": "uv.lock",
+            "sha256": "fbf1d7a9c84b658a2433035221ba18c57508c254d711a06f305e2f610839a45f"
+          }
+        ]
       },
       "objective": "individual_tool_effectiveness",
       "primary_metric": "cumulative provider-reported workflow tokens",
@@ -59,14 +64,14 @@
           "id": "beets-lifecycle-feature-v0",
           "order": 1,
           "task_class": "feature-implementation",
-          "prompt_path": "sources/evaluations/fixtures/medium/beetbox-beets/task-generations/baseline-v2/beets-lifecycle-feature-v0/agent-prompt.txt",
-          "prompt_sha256": "a9353ed0ca5b0ea93f642a75b6a241abbbb77ca43acdc80f42df3407a6581810",
+          "prompt_path": "sources/evaluations/fixtures/medium/beetbox-beets/task-generations/baseline-v3/beets-lifecycle-feature-v0/agent-prompt.txt",
+          "prompt_sha256": "0bf7c07d6df95e0b59383407b4e3d0ab0fd0a024348d1ba0f8ea33b35b200941",
           "seed_patch_sha256": "9dc1cf36d0d0120fb57f75c4579af7f1f65b80e9d80de2d2c5cbdeb69b4ac17e",
-          "verifier_command": "sources/evaluations/fixtures/medium/beetbox-beets/task-generations/baseline-v2/beets-lifecycle-feature-v0/verify.sh",
-          "verifier_sha256": "1aebdb4421f6d1ceb0366ecb01ca0781c07471bab3f7b25650af6e69a357c9ca",
+          "verifier_command": "sources/evaluations/fixtures/medium/beetbox-beets/task-generations/baseline-v3/beets-lifecycle-feature-v0/verify.sh",
+          "verifier_sha256": "0a880fd5215214f4ccc8abec7ae81a6ebac86ffc784938b4eef73186e924f436",
           "controller_visible_acceptance_assets": [
             {
-              "path": "sources/evaluations/fixtures/medium/beetbox-beets/task-generations/baseline-v2/beets-lifecycle-feature-v0/controller-visible/test/util/test_functemplate.py",
+              "path": "sources/evaluations/fixtures/medium/beetbox-beets/task-generations/baseline-v3/beets-lifecycle-feature-v0/controller-visible/test/util/test_functemplate.py",
               "sha256": "6806ec35748e63877d993bee3474e13dedba433ff43ca126d8efbcfa10240888"
             }
           ],
@@ -79,11 +84,11 @@
           "id": "beets-lifecycle-refactor-v0",
           "order": 2,
           "task_class": "behavior-preserving-refactor",
-          "prompt_path": "sources/evaluations/fixtures/medium/beetbox-beets/task-generations/baseline-v2/beets-lifecycle-refactor-v0/agent-prompt.txt",
-          "prompt_sha256": "5a4b1f90abd1acc6f1ad3360783512a5b8167536f9f01468ca0784a4efa5638b",
+          "prompt_path": "sources/evaluations/fixtures/medium/beetbox-beets/task-generations/baseline-v3/beets-lifecycle-refactor-v0/agent-prompt.txt",
+          "prompt_sha256": "f848ff57718529c6f49b3915a00e0f8f18c854d32ab73f82ce2f9749b18a7031",
           "seed_patch_sha256": "9bcf590139fc91987524e643bc1e6281efbe5a09cd9b2218ca31f670c391c722",
-          "verifier_command": "sources/evaluations/fixtures/medium/beetbox-beets/task-generations/baseline-v2/beets-lifecycle-refactor-v0/verify.sh",
-          "verifier_sha256": "bcb4f4b9578e1250d6a44a74e347c75bb5e9fa5659117ed3812a5c57b731e402",
+          "verifier_command": "sources/evaluations/fixtures/medium/beetbox-beets/task-generations/baseline-v3/beets-lifecycle-refactor-v0/verify.sh",
+          "verifier_sha256": "efd04514db31bf0a7df4119218f79bf87b0c4ec603106e408a42f0d24b5b8d9b",
           "controller_visible_acceptance_assets": [],
           "upstream_test_paths": [],
           "compatibility_rebased_test_paths": [],
@@ -94,14 +99,14 @@
           "id": "beets-lifecycle-review-v0",
           "order": 3,
           "task_class": "code-review-correction",
-          "prompt_path": "sources/evaluations/fixtures/medium/beetbox-beets/task-generations/baseline-v2/beets-lifecycle-review-v0/agent-prompt.txt",
-          "prompt_sha256": "1321246f7b37e6a87e291767da5dc37295731344f78cfd823f6390a3dc124856",
+          "prompt_path": "sources/evaluations/fixtures/medium/beetbox-beets/task-generations/baseline-v3/beets-lifecycle-review-v0/agent-prompt.txt",
+          "prompt_sha256": "86d9d7892be55f7ec28b4a4b4da3533fbbe651966298cb48dd8bc31c9d76f352",
           "seed_patch_sha256": "14d8dd83706706805b8159f85871036cfb39148dd7912e66e2c8044d505cabad",
-          "verifier_command": "sources/evaluations/fixtures/medium/beetbox-beets/task-generations/baseline-v2/beets-lifecycle-review-v0/verify.sh",
-          "verifier_sha256": "252fc390a39d809382d295e9da4cf380caac580e896cc25fb94776a744e3001b",
+          "verifier_command": "sources/evaluations/fixtures/medium/beetbox-beets/task-generations/baseline-v3/beets-lifecycle-review-v0/verify.sh",
+          "verifier_sha256": "a5b28a788abeb8f34830c98181d1327fffd3b720514d8cb350d7f9b864b13e0c",
           "controller_visible_acceptance_assets": [
             {
-              "path": "sources/evaluations/fixtures/medium/beetbox-beets/task-generations/baseline-v2/beets-lifecycle-review-v0/controller-visible/test/plugins/test_ftintitle.py",
+              "path": "sources/evaluations/fixtures/medium/beetbox-beets/task-generations/baseline-v3/beets-lifecycle-review-v0/controller-visible/test/plugins/test_ftintitle.py",
               "sha256": "1d8ed5ab383d3c0496dc2158ae9853c0b36bca1f50276181f7d675e352abab35"
             }
           ],
@@ -120,23 +125,23 @@
           {
             "task_id": "beets-lifecycle-feature-v0",
             "order": 1,
-            "rendered_prompt_sha256": "e96eac68b018d20d8fd74d96c71d2b7f2bb4a19572e98847027c0a054c7a39fd"
+            "rendered_prompt_sha256": "b865ee67c65b56af7784da70e97743cf14d28063c6a93768f0115b64f31525f0"
           },
           {
             "task_id": "beets-lifecycle-refactor-v0",
             "order": 2,
-            "rendered_prompt_sha256": "49398ee41365478a9d1927801d480dd183fd3e8fccca4140b32ed1bfa9f05980"
+            "rendered_prompt_sha256": "b980fd727c7df8ccb9855773dde060e32d78cb73240ab89d0e46f8f75f1e3a2b"
           },
           {
             "task_id": "beets-lifecycle-review-v0",
             "order": 3,
-            "rendered_prompt_sha256": "f0dc6f04f391445a755371c03114e33eab59fbae8d4fedae5f70ea0c5035823c"
+            "rendered_prompt_sha256": "23db97f79bc8d2f42e19a668600b0602056e70c6881320420af73bbb8b956387"
           }
         ]
       },
       "qualification": {
-        "path": "sources/evaluations/fixtures/medium/beetbox-beets/qualification-lifecycle-v0-baseline-v2.json",
-        "sha256": "58b8953f6d923ea19feb4aa12dd064eedfeac5332ae9c99295ccd9ddc391b28d"
+        "path": "sources/evaluations/fixtures/medium/beetbox-beets/qualification-lifecycle-v0-baseline-v3.json",
+        "sha256": "2fe2688b0d2d5c4030e34cfdf4ef09508dd2f4f34c6efc07bcf9092550dfca06"
       },
       "baseline_profile": {
         "profile_id": "baseline-bare-codex",
@@ -175,8 +180,13 @@
         },
         "dockerfile_path": "sources/evaluations/fixtures/container/Dockerfile",
         "dockerfile_sha256": "47c91967ce25014ce54879514f51d2ff0326651be1087209115eff4d358226b3",
-        "dependency_command": "uv sync --group test",
-        "dependency_lockfiles": [],
+        "dependency_command": "uv sync --group test --frozen",
+        "dependency_lockfiles": [
+          {
+            "path": "uv.lock",
+            "sha256": "fbf1d7a9c84b658a2433035221ba18c57508c254d711a06f305e2f610839a45f"
+          }
+        ],
         "codex_runtime_condition": "codex-openai-gpt-5-6-sol-high"
       },
       "isolation": {
@@ -208,7 +218,7 @@
     }
   },
   "selected_execution": {
-    "descriptor_sha256": "cddd9d1bbcfd963aa98960ca02d2be525f74dbb63285fc9b1c7ff52726a1eb36",
+    "descriptor_sha256": "11e17d05c8eb7aa25a40469a7493e2118f3f65f23f91d48fde823508dbd78f8d",
     "descriptor": {
       "version": "execution-condition-v1",
       "sequence_id": "beets-lifecycle-sequence-v0",
@@ -283,17 +293,17 @@
           {
             "task_id": "beets-lifecycle-feature-v0",
             "order": 1,
-            "rendered_prompt_sha256": "e96eac68b018d20d8fd74d96c71d2b7f2bb4a19572e98847027c0a054c7a39fd"
+            "rendered_prompt_sha256": "b865ee67c65b56af7784da70e97743cf14d28063c6a93768f0115b64f31525f0"
           },
           {
             "task_id": "beets-lifecycle-refactor-v0",
             "order": 2,
-            "rendered_prompt_sha256": "49398ee41365478a9d1927801d480dd183fd3e8fccca4140b32ed1bfa9f05980"
+            "rendered_prompt_sha256": "b980fd727c7df8ccb9855773dde060e32d78cb73240ab89d0e46f8f75f1e3a2b"
           },
           {
             "task_id": "beets-lifecycle-review-v0",
             "order": 3,
-            "rendered_prompt_sha256": "f0dc6f04f391445a755371c03114e33eab59fbae8d4fedae5f70ea0c5035823c"
+            "rendered_prompt_sha256": "23db97f79bc8d2f42e19a668600b0602056e70c6881320420af73bbb8b956387"
           }
         ]
       },
@@ -335,9 +345,15 @@
         "isolation_policy": "fresh lane-specific Codex home/tool data; provider-only network with model shell and Codex web search disabled; sequential one-task prompt delivery; controller seed/verifier scripts excluded while declared model-visible acceptance tests are retained"
       },
       "dependencies": {
-        "command": "uv sync --group test",
-        "command_sha256": "e718e73048f88b906401006442fb858a4e9e4252f387df2c938eb41755762aa8",
-        "lockfiles": []
+        "command": "uv sync --group test --frozen",
+        "command_sha256": "cef23fd45902c23f8b3e89b7c6360a401eb49c17cf36d742e5b625d5593c911b",
+        "lockfiles": [
+          {
+            "path": "uv.lock",
+            "snapshot_sha256": "fbf1d7a9c84b658a2433035221ba18c57508c254d711a06f305e2f610839a45f",
+            "current_fixture_sha256": null
+          }
+        ]
       },
       "agent_condition": {
         "runtime_id": "codex-cli",
@@ -362,7 +378,7 @@
       },
       "baseline_pool_reference": {
         "protocol_version": "baseline-pool-v1",
-        "protocol_fingerprint": "57c6571e446a",
+        "protocol_fingerprint": "82943cffbb9a",
         "comparison_policy": "paired baseline and treatment must share this baseline pool fingerprint and replicate"
       },
       "model_condition_override": {

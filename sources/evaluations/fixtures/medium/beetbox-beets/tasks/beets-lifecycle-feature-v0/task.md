@@ -1,3 +1,3 @@
-# Add incremental modification for multi-value fields
+# Restore escaped function-template separators
 
-Implement a genuine CLI feature: `beet modify` supports `+=` and `-=` assignments for list-valued fields while retaining ordinary `=` behavior.
+Apply the Baseline V3 one-file mechanical correction in `beets/util/functemplate.py`. The complete active prompt and focused acceptance command are in `task-generations/baseline-v3/beets-lifecycle-feature-v0/`.

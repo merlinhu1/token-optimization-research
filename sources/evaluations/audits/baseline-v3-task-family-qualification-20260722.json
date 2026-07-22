@@ -1,0 +1,530 @@
+{
+  "schema_version": 1,
+  "audit_id": "baseline-v3-task-family-qualification-20260722",
+  "recorded_on": "2026-07-22",
+  "task_family_generation": "baseline-v3",
+  "scope": "provider-free fixture qualification and frozen bare-model pilot contracts",
+  "decision": "Activate Baseline V3 for a future explicitly authorized first pilot; preserve the failed Baseline V2 attempt and all historical evidence immutably.",
+  "reason": "The failed V2 pilot exposed non-portable commands, an incorrect Beets setup snapshot, contradictory cumulative Git-state stop conditions, zero-test Terraform filters, and controller ingress/evidence defects. V3 uses exact current-task command blocks, the pinned fixture snapshots, verified model-visible tests, immutable attempt receipts, and atomic rejected-evidence preservation; all claims are rehearsed provider-free before spend.",
+  "design_contract": {
+    "persistent_tasks_per_sequence": 3,
+    "ordered_classes": [
+      "feature-implementation",
+      "behavior-preserving-refactor",
+      "code-review-correction"
+    ],
+    "production_files_per_task_maximum": 3,
+    "exact_recipe_required": true,
+    "model_visible_focused_validation_required": true,
+    "discovery_and_broad_suites_forbidden": true
+  },
+  "mistake_gate": {
+    "designated_model_condition": "codex-openai-gpt-5-6-sol-high",
+    "allowed_unique_model_incidents": 0,
+    "allowed_corrected_implementation_mistakes": 0,
+    "allowed_unresolved_defects": 0,
+    "status": "provider-pilot-required",
+    "treatment_launch_policy": "blocked until one first-valid strongest-model pilot is independently audited with all eight required observed counts equal to integer zero",
+    "model": "gpt-5.6-sol",
+    "reasoning_effort": "high",
+    "allowed_prohibited_operations": 0,
+    "allowed_unnecessary_exploration_incidents": 0,
+    "allowed_model_caused_failed_commands": 0,
+    "allowed_code_rework_events": 0,
+    "allowed_verifier_or_environment_failures": 0,
+    "incident_counting": "unique-auditable-not-command-count",
+    "pilot_audit_path": "sources/evaluations/audits/baseline-v3-pilot-zero-mistake.json",
+    "current_status": "provider-pilot-required",
+    "treatment_launch": "blocked"
+  },
+  "provider_accounting": {
+    "provider_calls": 0,
+    "provider_tokens": 0,
+    "provider_result_available": false
+  },
+  "totals": {
+    "sequences": 3,
+    "tasks": 9,
+    "provider_free_qualified_sequences": 3,
+    "frozen_pilot_protocols": 3
+  },
+  "sequences": [
+    {
+      "sequence_id": "fastify-lifecycle-sequence-v0",
+      "qualification_path": "sources/evaluations/fixtures/medium/fastify-fastify/qualification-lifecycle-v0-baseline-v3.json",
+      "qualification_sha256": "82bcabb399b9e7af4234b8ba4a8c12352dc4584cb838ae01bd0854b83c9d0ba1",
+      "task_count": 3,
+      "production_file_counts": [
+        1,
+        1,
+        2
+      ],
+      "qualification_gates": {
+        "composite_seed_merge_zero": true,
+        "composite_seeded_verifiers_nonzero": true,
+        "seeded_verifier_nonzero": true,
+        "fixed_verifier_zero": true,
+        "full_fixed_cumulative_verifier_zero": true,
+        "no_unmerged_paths": true
+      },
+      "frozen_baseline_protocols": [
+        {
+          "path": "sources/evaluations/protocols/fastify-lifecycle-sequence-v0-baseline-bare-codex-5bd0be12f9f5.json",
+          "protocol_id": "fastify-lifecycle-sequence-v0-baseline-bare-codex-5bd0be12f9f5",
+          "protocol_sha256": "c11710aeda868a697a75fa75c45209641ec4ac2c30fc3fd5abea8a2add22b0b0",
+          "status": "frozen-ready-not-run",
+          "baseline_pool_fingerprint": "bb0e89ed9794",
+          "qualification_sha256": "82bcabb399b9e7af4234b8ba4a8c12352dc4584cb838ae01bd0854b83c9d0ba1",
+          "selected_execution_sha256": "986c518b15ccc49bd6382fdc6a761baa661e9cfae03e4abf1e98ff39c50a6da4",
+          "model_condition_id": "codex-openai-gpt-5-6-sol-high"
+        }
+      ],
+      "acceptance_visibility": "model-visible-complete",
+      "all_acceptance_behavior_model_visible": true,
+      "no_model_concealed_acceptance_assets": true,
+      "no_model_visible_acceptance_assets": false,
+      "model_visible_acceptance_assets_match_verifier_copies": true,
+      "controller_visible_acceptance_assets": {
+        "fastify-lifecycle-feature-v0": [
+          {
+            "path": "controller-visible/test/baseline-v3-request-media-type.test.js",
+            "model_visible_path": "test/baseline-v3-request-media-type.test.js",
+            "sha256": "a4a070f8047b5082db80da2b64de3beb80e8e07c166ff326c089cc38a69039fd"
+          }
+        ],
+        "fastify-lifecycle-refactor-v0": [
+          {
+            "path": "controller-visible/test/baseline-v3-content-type-cache.test.js",
+            "model_visible_path": "test/baseline-v3-content-type-cache.test.js",
+            "sha256": "07ee0e31054e34cc9ee3bc2dfa87d3d4d471b2afb3d3df40a776a5205937ccaf"
+          }
+        ],
+        "fastify-lifecycle-review-v0": [
+          {
+            "path": "controller-visible/test/baseline-v3-max-param.test.js",
+            "model_visible_path": "test/baseline-v3-max-param.test.js",
+            "sha256": "b09d4161acf01875e9842f9454e39e8ab66e631c5fa091a09c088ef7c3d31c7f"
+          }
+        ]
+      },
+      "expected_model_visible_acceptance_asset_count": 3,
+      "current_protocol_id": "fastify-lifecycle-sequence-v0-baseline-bare-codex-5bd0be12f9f5",
+      "current_protocol_path": "sources/evaluations/protocols/fastify-lifecycle-sequence-v0-baseline-bare-codex-5bd0be12f9f5.json"
+    },
+    {
+      "sequence_id": "beets-lifecycle-sequence-v0",
+      "qualification_path": "sources/evaluations/fixtures/medium/beetbox-beets/qualification-lifecycle-v0-baseline-v3.json",
+      "qualification_sha256": "2fe2688b0d2d5c4030e34cfdf4ef09508dd2f4f34c6efc07bcf9092550dfca06",
+      "task_count": 3,
+      "production_file_counts": [
+        1,
+        1,
+        1
+      ],
+      "qualification_gates": {
+        "composite_seed_merge_zero": true,
+        "composite_seeded_verifiers_nonzero": true,
+        "seeded_verifier_nonzero": true,
+        "fixed_verifier_zero": true,
+        "full_fixed_cumulative_verifier_zero": true,
+        "no_unmerged_paths": true
+      },
+      "frozen_baseline_protocols": [
+        {
+          "path": "sources/evaluations/protocols/beets-lifecycle-sequence-v0-baseline-bare-codex-78c2e1f5c002.json",
+          "protocol_id": "beets-lifecycle-sequence-v0-baseline-bare-codex-78c2e1f5c002",
+          "protocol_sha256": "45336422c8bada67848966b079daf6bd70da6ba8aefa55ab465435bdcebd11d7",
+          "status": "frozen-ready-not-run",
+          "baseline_pool_fingerprint": "82943cffbb9a",
+          "qualification_sha256": "2fe2688b0d2d5c4030e34cfdf4ef09508dd2f4f34c6efc07bcf9092550dfca06",
+          "selected_execution_sha256": "11e17d05c8eb7aa25a40469a7493e2118f3f65f23f91d48fde823508dbd78f8d",
+          "model_condition_id": "codex-openai-gpt-5-6-sol-high"
+        }
+      ],
+      "acceptance_visibility": "model-visible-complete",
+      "all_acceptance_behavior_model_visible": true,
+      "no_model_concealed_acceptance_assets": true,
+      "no_model_visible_acceptance_assets": false,
+      "model_visible_acceptance_assets_match_verifier_copies": true,
+      "controller_visible_acceptance_assets": {
+        "beets-lifecycle-feature-v0": [
+          {
+            "path": "controller-visible/test/util/test_functemplate.py",
+            "model_visible_path": "test/util/test_functemplate.py",
+            "sha256": "6806ec35748e63877d993bee3474e13dedba433ff43ca126d8efbcfa10240888"
+          }
+        ],
+        "beets-lifecycle-refactor-v0": [],
+        "beets-lifecycle-review-v0": [
+          {
+            "path": "controller-visible/test/plugins/test_ftintitle.py",
+            "model_visible_path": "test/plugins/test_ftintitle.py",
+            "sha256": "1d8ed5ab383d3c0496dc2158ae9853c0b36bca1f50276181f7d675e352abab35"
+          }
+        ]
+      },
+      "expected_model_visible_acceptance_asset_count": 2,
+      "current_protocol_id": "beets-lifecycle-sequence-v0-baseline-bare-codex-78c2e1f5c002",
+      "current_protocol_path": "sources/evaluations/protocols/beets-lifecycle-sequence-v0-baseline-bare-codex-78c2e1f5c002.json"
+    },
+    {
+      "sequence_id": "terraform-lifecycle-sequence-v0",
+      "qualification_path": "sources/evaluations/fixtures/large/hashicorp-terraform/qualification-lifecycle-v0-baseline-v3.json",
+      "qualification_sha256": "adcb5d10d1f9f26e4a7fa3b3f5736fdfd67bc72753e593d58750520d136dfa29",
+      "task_count": 3,
+      "production_file_counts": [
+        1,
+        1,
+        1
+      ],
+      "qualification_gates": {
+        "composite_seed_merge_zero": true,
+        "composite_seeded_verifiers_nonzero": true,
+        "seeded_verifier_nonzero": true,
+        "fixed_verifier_zero": true,
+        "full_fixed_cumulative_verifier_zero": true,
+        "no_unmerged_paths": true
+      },
+      "frozen_baseline_protocols": [
+        {
+          "path": "sources/evaluations/protocols/terraform-lifecycle-sequence-v0-baseline-bare-codex-702e684aebaa.json",
+          "protocol_id": "terraform-lifecycle-sequence-v0-baseline-bare-codex-702e684aebaa",
+          "protocol_sha256": "cb8d78120fc11a301d40f07303167ef30f212d5351993208703fa6d9ee645f28",
+          "status": "frozen-ready-not-run",
+          "baseline_pool_fingerprint": "5caa11b3fa2b",
+          "qualification_sha256": "adcb5d10d1f9f26e4a7fa3b3f5736fdfd67bc72753e593d58750520d136dfa29",
+          "selected_execution_sha256": "dced6021bfd4b572dcda6a23fa285da8e67e60d198aaace893c16cffea2f7650",
+          "model_condition_id": "codex-openai-gpt-5-6-sol-high"
+        }
+      ],
+      "acceptance_visibility": "model-visible-complete",
+      "all_acceptance_behavior_model_visible": true,
+      "no_model_concealed_acceptance_assets": true,
+      "no_model_visible_acceptance_assets": false,
+      "model_visible_acceptance_assets_match_verifier_copies": true,
+      "controller_visible_acceptance_assets": {
+        "terraform-lifecycle-feature-v0": [
+          {
+            "path": "controller-visible/internal/policy/callback/baseline_v3_deferred_test.go",
+            "model_visible_path": "internal/policy/callback/baseline_v3_deferred_test.go",
+            "sha256": "75ca0f1a697a9bd0c23767cd07672b36621be2813afb9e0b571c2c21f820f988"
+          }
+        ],
+        "terraform-lifecycle-refactor-v0": [
+          {
+            "path": "controller-visible/internal/configs/parser_config_dir_test.go",
+            "model_visible_path": "internal/configs/parser_config_dir_test.go",
+            "sha256": "400097f0e6f777d9fbccd97a22121e2e77ddfda8afbe4385984e5f6eb9a47235"
+          },
+          {
+            "path": "controller-visible/internal/configs/baseline_v3_requirement_type_test.go",
+            "model_visible_path": "internal/configs/baseline_v3_requirement_type_test.go",
+            "sha256": "e30459345de1fefcd3e50ee6fd900db5fe5e7e65bac4eb5ca5e9ed2a38a4999c"
+          }
+        ],
+        "terraform-lifecycle-review-v0": [
+          {
+            "path": "controller-visible/internal/addrs/baseline_v3_checkable_test.go",
+            "model_visible_path": "internal/addrs/baseline_v3_checkable_test.go",
+            "sha256": "db7b1b01d4ea394a07c16c76ebe13c042cb4507302dbd0a9809fa1ce30f91df3"
+          }
+        ]
+      },
+      "expected_model_visible_acceptance_asset_count": 4,
+      "current_protocol_id": "terraform-lifecycle-sequence-v0-baseline-bare-codex-702e684aebaa",
+      "current_protocol_path": "sources/evaluations/protocols/terraform-lifecycle-sequence-v0-baseline-bare-codex-702e684aebaa.json"
+    }
+  ],
+  "historical_evidence": {
+    "assisted_v1_baseline_audit": "sources/evaluations/audits/assisted-v1-sol-high-baseline-r0-20260720.json",
+    "status": "retained immutable; not a Baseline V3 comparison control",
+    "failed_baseline_v2_pilot_audit": "sources/evaluations/audits/baseline-v2-pilot-zero-mistake.json"
+  },
+  "provider_free_matrix": {
+    "matrix_id": "workflow-matrix-20260722T170649904510Z-p2793158-r0",
+    "evidence_classification": "non-authoritative-scratch",
+    "repository_artifact": null,
+    "model_condition_id": "codex-openai-gpt-5-6-sol-high",
+    "model": "gpt-5.6-sol",
+    "reasoning_effort": "high",
+    "prepare_only": true,
+    "no_provider": true,
+    "provider_calls": 0,
+    "provider_tokens": 0,
+    "execution_passed": true,
+    "prepared_lanes": 3,
+    "status": "passed"
+  },
+  "zero_mistake_gate": {
+    "designated_model_condition": "codex-openai-gpt-5-6-sol-high",
+    "allowed_unique_model_incidents": 0,
+    "allowed_corrected_implementation_mistakes": 0,
+    "allowed_unresolved_defects": 0,
+    "status": "provider-pilot-required",
+    "treatment_launch_policy": "blocked until one first-valid strongest-model pilot is independently audited with all eight required observed counts equal to integer zero",
+    "model": "gpt-5.6-sol",
+    "reasoning_effort": "high",
+    "allowed_prohibited_operations": 0,
+    "allowed_unnecessary_exploration_incidents": 0,
+    "allowed_model_caused_failed_commands": 0,
+    "allowed_code_rework_events": 0,
+    "allowed_verifier_or_environment_failures": 0,
+    "incident_counting": "unique-auditable-not-command-count",
+    "pilot_audit_path": "sources/evaluations/audits/baseline-v3-pilot-zero-mistake.json"
+  },
+  "treatment_gate": {
+    "status": "blocked-pending-pilot-audit",
+    "pilot_audit_path": "sources/evaluations/audits/baseline-v3-pilot-zero-mistake.json",
+    "pilot_audit_present": false,
+    "enforced_at": [
+      "treatment-protocol-freeze",
+      "matrix-treatment-plan",
+      "direct-treatment-runner"
+    ],
+    "fail_closed": true,
+    "required_zero_count_fields": [
+      "observed_unique_model_caused_incidents",
+      "observed_corrected_implementation_mistakes",
+      "observed_unresolved_defects",
+      "observed_prohibited_operations",
+      "observed_unnecessary_exploration_incidents",
+      "observed_model_caused_failed_commands",
+      "observed_code_rework_events",
+      "observed_verifier_or_environment_failures"
+    ],
+    "exact_binding_requirements": [
+      "exactly one attempted session in the current sequence/baseline-profile/exact-protocol/pool/r0 coordinate, regardless of mislabeled role or stale selected execution, and it is the audit-selected session",
+      "all ordered task results have successful agent and controller exits, passed controller verification, acceptance, and zero operational retries",
+      "software-quality aggregates exactly match all tasks attempted/passed and both final/functional verifier outcomes passed",
+      "canonical codex-jsonl-usage-events evidence includes all six provider-token fields with strict types, valid arithmetic, and an exact run-record/registry match",
+      "OpenAI Codex runtime identity plus baseline-bare-codex execution role and selected profile",
+      "exact Docker and tool-adapter identities matching current selected execution and compact run record",
+      "canonical distinct artifact-key mapping to run.json, changes.diff, evidence.jsonl.gz, and manifest.sha256 with exactly-once manifest coverage and verified digests",
+      "protocol ID and path cryptographically recomputed from the exact current baseline and selected-execution descriptors",
+      "current designated Sol/high protocol bytes and SHA-256",
+      "current qualification SHA-256",
+      "current baseline-pool fingerprint",
+      "current selected-execution descriptor SHA-256",
+      "controller verifier scripts and canonical copies remain hidden while every declared focused acceptance-test path is model-visible",
+      "all required observed counts are JSON integer zero",
+      "one shared production lock spans direct-run slot checking through compact-artifact publication and atomic registry slot recheck; matrix children inherit the same held lock",
+      "matrix planning has no weaker hard-baseline fallback and delegates baseline reuse exclusively to the canonical session predicate",
+      "compact artifact roots contain exactly four nonsymlink regular files with no undeclared files, directories, or symlinks",
+      "registry, selected execution, and compact run record bind the exact runtime/provider/model/model-condition/reasoning tuple",
+      "direct Baseline V3 execution requires the canonical protocol ID, filename, repository-relative path, and descriptor identity before setup or provider spend",
+      "direct treatment execution requires a reusable canonical same-sequence/pool/replicate baseline before setup or provider spend",
+      "matrix publication atomically rereads and replaces the registry and rejects full provider-slot collisions across retained and batch records",
+      "canonical reusable baselines bind top-level baseline role/profile and selected-execution baseline role/profile",
+      "compact artifact roots equal sources/evaluations/workflow-sessions/<session_id> exactly",
+      "accepted schema-v2 treatments require a resolved canonical sequence/pool/replicate-matched baseline session binding",
+      "matrix lane returns bind exactly to the planned sequence/profile/replicate/protocol/pool/selected-execution tuple before artifact copy",
+      "matrix artifact ingress validates declared canonical paths, exact root entries, manifest hashes, run-record equality, and runtime identity before publication",
+      "matrix publication and generated-authority updates roll back atomically on any exception or post-publication validation failure",
+      "canonical non-baseline selected-execution roles equal their profile session role, including individual_tool_treatment and stack_treatment",
+      "compact evidence bundles are nonempty bounded valid gzip streams of unique relative-path JSONL evidence objects",
+      "replicate indexes and decision-bearing provider-token totals require exact non-boolean JSON integers",
+      "matrix publication tracks artifact, registry replacement, and comparison mutations before each side effect",
+      "post-publication repository validation includes the workflow contract suite before acceptance",
+      "repository and runtime ingress share one total- and per-record-bounded canonical gzip JSONL evidence validator",
+      "accepted treatments resolve only to an error-free canonical schema-v2 baseline with exact protocol, selected execution, provider usage, and intact compact evidence",
+      "nonbaseline execution roles equal the exact canonical profile-derived individual_tool_treatment or stack_treatment role",
+      "all provider-token components and replicate indexes are exact non-boolean integers with canonical token arithmetic",
+      "matrix rollback catches process-level interrupts, tracks mutations before side effects, aggregates rollback errors, and publishes comparisons atomically without overwrite"
+    ]
+  },
+  "acceptance_visibility": {
+    "status": "model-visible-complete",
+    "model_concealed_paths": [],
+    "undisclosed_inline_verifier_assertions": 0
+  },
+  "protocols": [
+    {
+      "sequence_id": "fastify-lifecycle-sequence-v0",
+      "protocol_id": "fastify-lifecycle-sequence-v0-baseline-bare-codex-5bd0be12f9f5",
+      "path": "sources/evaluations/protocols/fastify-lifecycle-sequence-v0-baseline-bare-codex-5bd0be12f9f5.json",
+      "sha256": "c11710aeda868a697a75fa75c45209641ec4ac2c30fc3fd5abea8a2add22b0b0"
+    },
+    {
+      "sequence_id": "beets-lifecycle-sequence-v0",
+      "protocol_id": "beets-lifecycle-sequence-v0-baseline-bare-codex-78c2e1f5c002",
+      "path": "sources/evaluations/protocols/beets-lifecycle-sequence-v0-baseline-bare-codex-78c2e1f5c002.json",
+      "sha256": "45336422c8bada67848966b079daf6bd70da6ba8aefa55ab465435bdcebd11d7"
+    },
+    {
+      "sequence_id": "terraform-lifecycle-sequence-v0",
+      "protocol_id": "terraform-lifecycle-sequence-v0-baseline-bare-codex-702e684aebaa",
+      "path": "sources/evaluations/protocols/terraform-lifecycle-sequence-v0-baseline-bare-codex-702e684aebaa.json",
+      "sha256": "cb8d78120fc11a301d40f07303167ef30f212d5351993208703fa6d9ee645f28"
+    }
+  ],
+  "latest_prepare_matrix": {
+    "evidence_classification": "non-authoritative-scratch",
+    "repository_artifact": null,
+    "provider_free_lanes": 3,
+    "prepared_lanes": 3,
+    "provider_calls": 0,
+    "provider_tokens": 0
+  },
+  "validation": {
+    "contract_tests": 225,
+    "contract_tests_passed": 225,
+    "repository_validation": "passed",
+    "truthmark_diagnostics": 0,
+    "prepare_matrix_lanes": 3,
+    "prepare_matrix_passed": 3,
+    "provider_calls": 0,
+    "provider_tokens": 0,
+    "strict_numeric_mutation_coverage": "every current Baseline V3 audit and qualification integer, plus receipt/index schema, order, count, provider, and exit integers, rejects false, true, 0.0, string-zero, and null substitutions without exceptions"
+  },
+  "literal_prompt_command_rehearsal": {
+    "status": "passed",
+    "provider_calls": 0,
+    "provider_tokens": 0,
+    "method": "For each sequence, reset the pinned checkout, retain installed locked dependencies, apply each seed patch in order, execute the sole bash block copied verbatim from that task prompt, then run the controller verifier against the same cumulative tree.",
+    "environment_bindings": {
+      "beets": "uv run --offline --frozen uses the project lock and .venv; --no-project is forbidden",
+      "terraform": "PATH explicitly prepends /opt/data/bin and /opt/data/opt/go/bin in both prompts and verifiers"
+    },
+    "sequences": [
+      {
+        "sequence_id": "fastify-lifecycle-sequence-v0",
+        "tasks": [
+          {
+            "task_id": "fastify-lifecycle-feature-v0",
+            "order": 1,
+            "prompt_command_exit": 0,
+            "controller_verifier_exit": 0,
+            "model_visible_focused_test_selected": true
+          },
+          {
+            "task_id": "fastify-lifecycle-refactor-v0",
+            "order": 2,
+            "prompt_command_exit": 0,
+            "controller_verifier_exit": 0,
+            "model_visible_focused_test_selected": true
+          },
+          {
+            "task_id": "fastify-lifecycle-review-v0",
+            "order": 3,
+            "prompt_command_exit": 0,
+            "controller_verifier_exit": 0,
+            "model_visible_focused_test_selected": true
+          }
+        ]
+      },
+      {
+        "sequence_id": "beets-lifecycle-sequence-v0",
+        "tasks": [
+          {
+            "task_id": "beets-lifecycle-feature-v0",
+            "order": 1,
+            "prompt_command_exit": 0,
+            "controller_verifier_exit": 0,
+            "model_visible_focused_test_selected": true
+          },
+          {
+            "task_id": "beets-lifecycle-refactor-v0",
+            "order": 2,
+            "prompt_command_exit": 0,
+            "controller_verifier_exit": 0,
+            "model_visible_focused_test_selected": true
+          },
+          {
+            "task_id": "beets-lifecycle-review-v0",
+            "order": 3,
+            "prompt_command_exit": 0,
+            "controller_verifier_exit": 0,
+            "model_visible_focused_test_selected": true
+          }
+        ]
+      },
+      {
+        "sequence_id": "terraform-lifecycle-sequence-v0",
+        "tasks": [
+          {
+            "task_id": "terraform-lifecycle-feature-v0",
+            "order": 1,
+            "prompt_command_exit": 0,
+            "controller_verifier_exit": 0,
+            "model_visible_focused_test_selected": true,
+            "selected_test_names": [
+              "TestBaselineV3DeferredDataSource"
+            ]
+          },
+          {
+            "task_id": "terraform-lifecycle-refactor-v0",
+            "order": 2,
+            "prompt_command_exit": 0,
+            "controller_verifier_exit": 0,
+            "model_visible_focused_test_selected": true,
+            "selected_test_names": [
+              "TestBaselineV3StateStoreRequirementNamedType",
+              "TestParserLoadConfigDirWithStateMigrations_from_state_store"
+            ]
+          },
+          {
+            "task_id": "terraform-lifecycle-review-v0",
+            "order": 3,
+            "prompt_command_exit": 0,
+            "controller_verifier_exit": 0,
+            "model_visible_focused_test_selected": true,
+            "selected_test_names": [
+              "TestBaselineV3ParseInputVariableCheckable"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "beets_setup_reset_rehearsal": {
+    "status": "passed",
+    "provider_calls": 0,
+    "expected_commit": "9acb1ecff6c7ee0a1e83e3b983c94792345712c5",
+    "setup_observed_commit": "9acb1ecff6c7ee0a1e83e3b983c94792345712c5",
+    "reset_observed_commit": "9acb1ecff6c7ee0a1e83e3b983c94792345712c5"
+  },
+  "pilot_attempt_reservation_rehearsal": {
+    "status": "passed",
+    "provider_calls": 0,
+    "provider_tokens": 0,
+    "receipt_count": 3,
+    "receipt_schema_valid": true,
+    "post_reservation_repository_validation": "passed",
+    "post_reservation_contract_tests": 205,
+    "direct_launch_gate_tested": true,
+    "matrix_launch_gate_tested": true,
+    "generated_runbook_removed_paid_commands": true,
+    "source_tree": "isolated exact-tree clone"
+  },
+  "production_container_rehearsal": {
+    "status": "passed",
+    "date": "2026-07-22",
+    "container_image_id": "sha256:6f86d01f2c63f5029c6bb874d8f3694c24d5cd567e3d09413eccc956ba3feafe",
+    "dependency_bootstrap_shell": [
+      "bash",
+      "-c"
+    ],
+    "dependency_bootstrap_lanes": 3,
+    "literal_command_tasks": 9,
+    "controller_verifier_tasks": 9,
+    "receipt_index_path": "sources/evaluations/audits/baseline-v3-literal-command-receipts-20260722/index.json",
+    "provider_calls": 0,
+    "provider_tokens": 0
+  },
+  "controller_safety_rehearsal": {
+    "status": "passed",
+    "date": "2026-07-22",
+    "provider_calls": 0,
+    "prelaunch_lane_cleanup_prohibition": true,
+    "post_child_base_exception_preservation": true,
+    "ambiguous_artifact_checkout_retention": true,
+    "symlinked_artifact_ancestor_retention": true,
+    "destination_collision_retention": true,
+    "post_rename_fsync_retry_retention": true,
+    "parallel_preservation_reference_counting": true,
+    "strict_boolean_numeric_rejection": true,
+    "symlinked_registry_retention": true,
+    "symlinked_rejected_evidence_destination_retention": true,
+    "symlinked_run_root_ancestor_rejected_before_write": true
+  }
+}
