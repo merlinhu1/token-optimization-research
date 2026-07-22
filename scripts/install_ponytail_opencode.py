@@ -5,17 +5,22 @@ import argparse
 import hashlib
 import json
 import shutil
+import subprocess
 from pathlib import Path
 
 
 def main() -> int:
     p = argparse.ArgumentParser()
     p.add_argument("--source-root", type=Path, required=True)
+    p.add_argument("--expected-commit", required=True)
     p.add_argument("--repo", type=Path, required=True)
     p.add_argument("--receipt", type=Path, required=True)
     args = p.parse_args()
     source = args.source_root.resolve()
     repo = args.repo.resolve()
+    actual_commit = subprocess.check_output(["git", "-C", str(source), "rev-parse", "HEAD"], text=True).strip()
+    if actual_commit != args.expected_commit:
+        raise SystemExit(f"Ponytail source commit mismatch: expected {args.expected_commit}, got {actual_commit}")
     source_plugin = source / ".opencode/plugins/ponytail.mjs"
     source_rules = source / "AGENTS.md"
     if not source_plugin.is_file() or not source_rules.is_file():
