@@ -19,11 +19,11 @@ In the existing `Object.defineProperties(Request.prototype, { ... })` object, in
   },
 ```
 
-Do not add imports or change any other file; the required `ContentType` and `kRequestContentType` bindings already exist.
+Do not add imports or change any other file; the required `ContentType` and `kRequestContentType` bindings already exist. The visible focused test covers normalization to `application/json`, hook and handler access, and body-schema rejection.
 
 ## Validation recipe
 
-Run exactly: `node -c lib/request.js && node -e "const F=require('./fastify'); const a=F(); a.get('/',r=>({mediaType:r.mediaType})); a.inject({url:'/',headers:{'content-type':'Application/JSON; Charset=UTF-8'}}).then(x=>{if(JSON.parse(x.payload).mediaType!=='application/json')process.exit(1)})"`
+Run exactly: `node --test test/baseline-v2-request-media-type.test.js`
 
 ## Stop condition
 

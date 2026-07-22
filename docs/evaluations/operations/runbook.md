@@ -13,7 +13,7 @@ python3 scripts/validate_repository.py
 
 ## Evidence boundary
 
-A valid workflow run pre-seeds every regression into one qualified composite broken root, then materializes one prompt at a time. Seed patches, task fixtures, verifier assets, controller Git objects, and fixed parents remain outside the model-visible surface; hidden functional verification runs only after all prompts complete. Product-effect eligibility also requires parity with the pinned official Codex integration and positive treatment-assignment evidence; MCP configuration/listing alone is insufficient.
+A valid Baseline V2 workflow pre-seeds every regression and its focused model-visible acceptance test into one qualified composite broken root, then materializes one prompt at a time. Seed patch files, controller scripts, and fixed parents remain outside the model-visible surface; final verification repeats only the commands and behavior disclosed in each prompt. Product-effect eligibility also requires parity with the pinned official Codex integration and positive treatment-assignment evidence; MCP configuration/listing alone is insufficient.
 
 Every active task must use causally related behavioral acceptance. Unrelated exact-source restoration guards are not valid complexity.
 
@@ -37,9 +37,10 @@ Before changing a sequence to `active`, require:
 - behavioral seeded-fail/fixed-pass gates;
 - a conflict-free composite seed whose task verifiers all fail at lane start;
 - one parentless model-facing Git baseline with the fixed commit inaccessible;
-- final-only concealed functional verification with no per-task controller gate;
-- controller-only task, seed, verifier, and reference assets;
-- cumulative provider usage capture, verifier integrity, isolation, structured verifier diagnostics, and optional source review.
+- final-only execution of focused acceptance whose complete behavior and command are model-visible;
+- controller-only seed patch files and fixed references, with no undisclosed acceptance assertions;
+- cumulative provider usage capture, verifier integrity, isolation, structured verifier diagnostics, and optional source review;
+- a machine-validated independent pilot audit with every required incident count equal to zero before any treatment protocol can be frozen, prepared, or run.
 
 A no-model prepare for a frozen candidate is allowed:
 
@@ -48,11 +49,13 @@ SEQUENCE_ID=<frozen-sequence-id>
 python3 scripts/run_sequential_workflow_matrix.py --prepare-only "$SEQUENCE_ID"
 ```
 
-`prepare-verification.json` must show every task preseeded, only task 1's prompt materialized, a clean true-root Git baseline, no fixed commit object or prior reflog, current composite qualification, and no model-visible seed or verifier assets.
+`prepare-verification.json` must show every task preseeded, only task 1's prompt materialized, a clean true-root Git baseline, no fixed commit object or prior reflog, current composite qualification, no controller seed/verifier files in the model root, and the declared focused acceptance tests visible.
 
 ## Paid execution
 
 Current runnable treatment profiles: `artifact-ponytail-codex-plugin-v1`, `behavior-caveman-codex-skill-v1`, `codescope-codex-product-v1`, `headroom-default-codex`, `integrated-leanctx-codex-hybrid-v1`, `integrated-token-savior-codex-product-v2`, `retrieval-cartog-codex-product-v2`, `retrieval-codegraph-codex-mcp-v1`, `retrieval-graphify-codex-skill-v1`, `retrieval-jcodemunch-codex-mcp-v2`, `retrieval-serena-codex-mcp-v1`, `retrieval-sigmap-codex-live-v1`, `swarmvault-codex-product-v1`, `terminal-rtk-codex-instructions-v1`, `terminal-snip-codex-hook-v1`, `terminal-tokenjuice-codex-hook-v1`. Historical profiles marked `historical-profile` are occupied evidence identities and cannot be rerun in place.
+
+Treatment protocol freezing, preparation, and execution are machine-blocked for `fastify-lifecycle-sequence-v0` (pilot audit is absent: sources/evaluations/audits/baseline-v2-pilot-zero-mistake.json), `beets-lifecycle-sequence-v0` (pilot audit is absent: sources/evaluations/audits/baseline-v2-pilot-zero-mistake.json), `terraform-lifecycle-sequence-v0` (pilot audit is absent: sources/evaluations/audits/baseline-v2-pilot-zero-mistake.json). Only the designated baseline pilot may run before its independent zero-incident audit passes.
 
 Prepare and run only lanes that do not yet have a reusable operational baseline:
 
@@ -77,7 +80,7 @@ Retain the first operationally valid provider sample for each protocol and repli
 
 - Fixture: `medium-fastify-fastify`
 - Primary metric: cumulative provider-reported workflow tokens
-- Reset policy: Reset once before the lane; preseed the missing feature, behavior-preserving structural debt, and flawed review candidate into one concealed composite root; preserve repository, Git, tool, index, cache, generated configuration, memory, and agent state across prompts; run every concealed verifier after the final prompt.
+- Reset policy: Reset once before the lane; preseed the missing feature, behavior-preserving structural debt, flawed review candidate, and declared focused acceptance tests into one composite root; preserve repository, Git, tool, index, cache, generated configuration, memory, and agent state across prompts; repeat every disclosed verifier command after the final prompt.
 
 | Order | Task | Prompt | Verifier |
 |---:|---|---|---|
@@ -89,7 +92,7 @@ Retain the first operationally valid provider sample for each protocol and repli
 
 - Fixture: `medium-beetbox-beets`
 - Primary metric: cumulative provider-reported workflow tokens
-- Reset policy: Reset once before the lane; preseed the missing feature, behavior-preserving structural debt, and flawed review candidate into one concealed composite root; preserve repository, Git, tool, index, cache, generated configuration, memory, and agent state across prompts; run every concealed verifier after the final prompt.
+- Reset policy: Reset once before the lane; preseed the missing feature, behavior-preserving structural debt, flawed review candidate, and declared focused acceptance tests into one composite root; preserve repository, Git, tool, index, cache, generated configuration, memory, and agent state across prompts; repeat every disclosed verifier command after the final prompt.
 
 | Order | Task | Prompt | Verifier |
 |---:|---|---|---|
@@ -101,7 +104,7 @@ Retain the first operationally valid provider sample for each protocol and repli
 
 - Fixture: `large-hashicorp-terraform`
 - Primary metric: cumulative provider-reported workflow tokens
-- Reset policy: Reset once before the lane; preseed the missing feature, behavior-preserving structural debt, and flawed review candidate into one concealed composite root; preserve repository, Git, tool, index, cache, generated configuration, memory, and agent state across prompts; run every concealed verifier after the final prompt.
+- Reset policy: Reset once before the lane; preseed the missing feature, behavior-preserving structural debt, flawed review candidate, and declared focused acceptance tests into one composite root; preserve repository, Git, tool, index, cache, generated configuration, memory, and agent state across prompts; repeat every disclosed verifier command after the final prompt.
 
 | Order | Task | Prompt | Verifier |
 |---:|---|---|---|

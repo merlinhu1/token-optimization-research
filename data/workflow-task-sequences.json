@@ -31,8 +31,8 @@
       ],
       "objective": "individual_tool_effectiveness",
       "primary_metric": "cumulative provider-reported workflow tokens",
-      "reset_policy": "Reset once before the lane; preseed the missing feature, behavior-preserving structural debt, and flawed review candidate into one concealed composite root; preserve repository, Git, tool, index, cache, generated configuration, memory, and agent state across prompts; run every concealed verifier after the final prompt.",
-      "seed_patch_policy": "Controller merges all three independently qualified lifecycle start conditions into one composite broken start before provider execution. Prompts are disclosed sequentially; the proposed review patch is disclosed only with task 3; acceptance assets remain controller-only; every verifier runs after the final prompt.",
+      "reset_policy": "Reset once before the lane; preseed the missing feature, behavior-preserving structural debt, flawed review candidate, and declared focused acceptance tests into one composite root; preserve repository, Git, tool, index, cache, generated configuration, memory, and agent state across prompts; repeat every disclosed verifier command after the final prompt.",
+      "seed_patch_policy": "Controller merges all three independently qualified lifecycle start conditions and model-visible acceptance tests into one composite broken start before provider execution. Prompts are disclosed sequentially; the proposed review patch is disclosed only with task 3; controller seed patch files and verifier scripts remain controller-only while complete acceptance behavior stays model-visible; every verifier repeats only disclosed commands after the final prompt.",
       "protocol_freeze_date": "2026-07-21",
       "production_lane": "current-production-v0-baseline-v2",
       "qualification_path": "sources/evaluations/fixtures/medium/fastify-fastify/qualification-lifecycle-v0-baseline-v2.json",
@@ -63,7 +63,11 @@
             "lib/request.js"
           ],
           "model_visible_validation_anchors": [
-            "request.mediaType"
+            "test/baseline-v2-request-media-type.test.js"
+          ],
+          "acceptance_visibility": "model-visible-complete",
+          "model_visible_acceptance_asset_paths": [
+            "test/baseline-v2-request-media-type.test.js"
           ]
         },
         {
@@ -79,7 +83,11 @@
             "lib/content-type.js"
           ],
           "model_visible_validation_anchors": [
-            "ContentType.cache"
+            "test/baseline-v2-content-type-cache.test.js"
+          ],
+          "acceptance_visibility": "model-visible-complete",
+          "model_visible_acceptance_asset_paths": [
+            "test/baseline-v2-content-type-cache.test.js"
           ]
         },
         {
@@ -97,7 +105,11 @@
             "lib/errors.js"
           ],
           "model_visible_validation_anchors": [
-            "FST_ERR_MAX_PARAM_LENGTH"
+            "test/baseline-v2-max-param.test.js"
+          ],
+          "acceptance_visibility": "model-visible-complete",
+          "model_visible_acceptance_asset_paths": [
+            "test/baseline-v2-max-param.test.js"
           ]
         }
       ],
@@ -111,7 +123,7 @@
         "allowed_corrected_implementation_mistakes": 0,
         "allowed_unresolved_defects": 0,
         "status": "provider-pilot-required",
-        "treatment_launch_policy": "blocked until one first-valid strongest-model pilot is independently audited with all three counts equal to zero",
+        "treatment_launch_policy": "blocked until one first-valid strongest-model pilot is independently audited with all eight required observed counts equal to integer zero",
         "model": "gpt-5.6-sol",
         "reasoning_effort": "high",
         "allowed_prohibited_operations": 0,
@@ -119,7 +131,8 @@
         "allowed_model_caused_failed_commands": 0,
         "allowed_code_rework_events": 0,
         "allowed_verifier_or_environment_failures": 0,
-        "incident_counting": "unique-auditable-not-command-count"
+        "incident_counting": "unique-auditable-not-command-count",
+        "pilot_audit_path": "sources/evaluations/audits/baseline-v2-pilot-zero-mistake.json"
       }
     },
     {
@@ -133,8 +146,8 @@
       ],
       "objective": "individual_tool_effectiveness",
       "primary_metric": "cumulative provider-reported workflow tokens",
-      "reset_policy": "Reset once before the lane; preseed the missing feature, behavior-preserving structural debt, and flawed review candidate into one concealed composite root; preserve repository, Git, tool, index, cache, generated configuration, memory, and agent state across prompts; run every concealed verifier after the final prompt.",
-      "seed_patch_policy": "Controller merges all three independently qualified lifecycle start conditions into one composite broken start before provider execution. Prompts are disclosed sequentially; the proposed review patch is disclosed only with task 3; acceptance assets remain controller-only; every verifier runs after the final prompt.",
+      "reset_policy": "Reset once before the lane; preseed the missing feature, behavior-preserving structural debt, flawed review candidate, and declared focused acceptance tests into one composite root; preserve repository, Git, tool, index, cache, generated configuration, memory, and agent state across prompts; repeat every disclosed verifier command after the final prompt.",
+      "seed_patch_policy": "Controller merges all three independently qualified lifecycle start conditions and model-visible acceptance tests into one composite broken start before provider execution. Prompts are disclosed sequentially; the proposed review patch is disclosed only with task 3; controller seed patch files and verifier scripts remain controller-only while complete acceptance behavior stays model-visible; every verifier repeats only disclosed commands after the final prompt.",
       "protocol_freeze_date": "2026-07-21",
       "production_lane": "current-production-v0-baseline-v2",
       "qualification_path": "sources/evaluations/fixtures/medium/beetbox-beets/qualification-lifecycle-v0-baseline-v2.json",
@@ -161,6 +174,10 @@
           ],
           "model_visible_validation_anchors": [
             "test/util/test_functemplate.py"
+          ],
+          "acceptance_visibility": "model-visible-complete",
+          "model_visible_acceptance_asset_paths": [
+            "test/util/test_functemplate.py"
           ]
         },
         {
@@ -177,7 +194,9 @@
           ],
           "model_visible_validation_anchors": [
             "LazyDict"
-          ]
+          ],
+          "acceptance_visibility": "model-visible-complete",
+          "model_visible_acceptance_asset_paths": []
         },
         {
           "id": "beets-lifecycle-review-v0",
@@ -194,6 +213,10 @@
           ],
           "model_visible_validation_anchors": [
             "test/plugins/test_ftintitle.py"
+          ],
+          "acceptance_visibility": "model-visible-complete",
+          "model_visible_acceptance_asset_paths": [
+            "test/plugins/test_ftintitle.py"
           ]
         }
       ],
@@ -207,7 +230,7 @@
         "allowed_corrected_implementation_mistakes": 0,
         "allowed_unresolved_defects": 0,
         "status": "provider-pilot-required",
-        "treatment_launch_policy": "blocked until one first-valid strongest-model pilot is independently audited with all three counts equal to zero",
+        "treatment_launch_policy": "blocked until one first-valid strongest-model pilot is independently audited with all eight required observed counts equal to integer zero",
         "model": "gpt-5.6-sol",
         "reasoning_effort": "high",
         "allowed_prohibited_operations": 0,
@@ -215,7 +238,8 @@
         "allowed_model_caused_failed_commands": 0,
         "allowed_code_rework_events": 0,
         "allowed_verifier_or_environment_failures": 0,
-        "incident_counting": "unique-auditable-not-command-count"
+        "incident_counting": "unique-auditable-not-command-count",
+        "pilot_audit_path": "sources/evaluations/audits/baseline-v2-pilot-zero-mistake.json"
       }
     },
     {
@@ -229,8 +253,8 @@
       ],
       "objective": "individual_tool_effectiveness",
       "primary_metric": "cumulative provider-reported workflow tokens",
-      "reset_policy": "Reset once before the lane; preseed the missing feature, behavior-preserving structural debt, and flawed review candidate into one concealed composite root; preserve repository, Git, tool, index, cache, generated configuration, memory, and agent state across prompts; run every concealed verifier after the final prompt.",
-      "seed_patch_policy": "Controller merges all three independently qualified lifecycle start conditions into one composite broken start before provider execution. Prompts are disclosed sequentially; the proposed review patch is disclosed only with task 3; acceptance assets remain controller-only; every verifier runs after the final prompt.",
+      "reset_policy": "Reset once before the lane; preseed the missing feature, behavior-preserving structural debt, flawed review candidate, and declared focused acceptance tests into one composite root; preserve repository, Git, tool, index, cache, generated configuration, memory, and agent state across prompts; repeat every disclosed verifier command after the final prompt.",
+      "seed_patch_policy": "Controller merges all three independently qualified lifecycle start conditions and model-visible acceptance tests into one composite broken start before provider execution. Prompts are disclosed sequentially; the proposed review patch is disclosed only with task 3; controller seed patch files and verifier scripts remain controller-only while complete acceptance behavior stays model-visible; every verifier repeats only disclosed commands after the final prompt.",
       "protocol_freeze_date": "2026-07-21",
       "production_lane": "current-production-v0-baseline-v2",
       "qualification_path": "sources/evaluations/fixtures/large/hashicorp-terraform/qualification-lifecycle-v0-baseline-v2.json",
@@ -257,6 +281,10 @@
           ],
           "model_visible_validation_anchors": [
             "internal/policy/callback/baseline_v2_deferred_test.go"
+          ],
+          "acceptance_visibility": "model-visible-complete",
+          "model_visible_acceptance_asset_paths": [
+            "internal/policy/callback/baseline_v2_deferred_test.go"
           ]
         },
         {
@@ -273,6 +301,12 @@
           ],
           "model_visible_validation_anchors": [
             "TestParserLoadConfigDirWithStateMigrations_from_state_store",
+            "internal/configs/parser_config_dir_test.go",
+            "internal/configs/baseline_v2_requirement_type_test.go"
+          ],
+          "acceptance_visibility": "model-visible-complete",
+          "model_visible_acceptance_asset_paths": [
+            "internal/configs/parser_config_dir_test.go",
             "internal/configs/baseline_v2_requirement_type_test.go"
           ]
         },
@@ -291,6 +325,10 @@
           ],
           "model_visible_validation_anchors": [
             "internal/addrs/baseline_v2_checkable_test.go"
+          ],
+          "acceptance_visibility": "model-visible-complete",
+          "model_visible_acceptance_asset_paths": [
+            "internal/addrs/baseline_v2_checkable_test.go"
           ]
         }
       ],
@@ -304,7 +342,7 @@
         "allowed_corrected_implementation_mistakes": 0,
         "allowed_unresolved_defects": 0,
         "status": "provider-pilot-required",
-        "treatment_launch_policy": "blocked until one first-valid strongest-model pilot is independently audited with all three counts equal to zero",
+        "treatment_launch_policy": "blocked until one first-valid strongest-model pilot is independently audited with all eight required observed counts equal to integer zero",
         "model": "gpt-5.6-sol",
         "reasoning_effort": "high",
         "allowed_prohibited_operations": 0,
@@ -312,7 +350,8 @@
         "allowed_model_caused_failed_commands": 0,
         "allowed_code_rework_events": 0,
         "allowed_verifier_or_environment_failures": 0,
-        "incident_counting": "unique-auditable-not-command-count"
+        "incident_counting": "unique-auditable-not-command-count",
+        "pilot_audit_path": "sources/evaluations/audits/baseline-v2-pilot-zero-mistake.json"
       }
     }
   ]

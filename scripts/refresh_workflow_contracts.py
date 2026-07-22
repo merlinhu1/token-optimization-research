@@ -115,23 +115,7 @@ def runner_command(
 
 
 def protocol_id(seq: dict[str, Any], profile_id: str) -> str:
-    execution = runner.execution_condition_descriptor(
-        seq,
-        profile_id,
-        timeout_seconds_per_task=3600,
-        docker_image=runner.DEFAULT_DOCKER_IMAGE,
-    )
-    identity = {
-        "baseline_protocol": runner.baseline_protocol_descriptor(seq),
-        "selected_execution": execution,
-    }
-    return "-".join(
-        (
-            runner.safe_profile_key(seq["id"]),
-            runner.safe_profile_key(profile_id),
-            runner._json_hash(identity)[:12],
-        )
-    )
+    return runner.canonical_protocol_id(seq, profile_id)
 
 
 def frozen_protocol(
@@ -237,6 +221,8 @@ def main(argv: list[str] | None = None) -> int:
         seq = runner.load_sequence(sequence_id)
         if seq.get("status") != "active":
             raise ValueError(f"cannot freeze a non-active sequence: {sequence_id}")
+        if args.profile_id != "baseline-bare-codex":
+            runner.require_baseline_v2_treatment_gate(seq, ROOT)
         current, _ = runner.qualification_is_current(seq)
         if not current:
             raise ValueError(
