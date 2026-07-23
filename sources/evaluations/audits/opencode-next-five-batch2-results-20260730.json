@@ -1,0 +1,546 @@
+{
+  "schema_version": 1,
+  "audit_id": "opencode-next-five-batch2-results-20260730",
+  "status": "accepted-complete-single-run-screening",
+  "model_condition_id": "opencode-openai-gpt-5-6-sol-high",
+  "replicate_index": 1,
+  "weighted_formula": "fresh_input_tokens + 0.1 * cached_input_tokens + 6 * output_tokens; reasoning_tokens are a subset of output_tokens and are not added again",
+  "baseline": {
+    "profile_id": "runtime-opencode-codex-product-v1",
+    "accepted_sessions": 3,
+    "task_verifiers_passed": 9,
+    "task_verifiers_total": 9,
+    "final_verifiers_passed": 3,
+    "final_verifiers_total": 3,
+    "usage": {
+      "fresh_input_tokens": 39995,
+      "cached_input_tokens": 79872,
+      "cache_write_tokens": 0,
+      "output_tokens": 3127,
+      "reasoning_tokens": 169,
+      "total_provider_tokens": 122994
+    },
+    "weighted_tokens": 66744.2,
+    "evidence_member_count": 153,
+    "usage_events_reconciled_exactly": true,
+    "manifests_passed": true
+  },
+  "results_ranked_by_weighted_tokens": [
+    {
+      "profile_id": "behavior-caveman-opencode-plugin-v1",
+      "display_name": "Caveman",
+      "artifact_slug": "caveman-opencode-v1",
+      "accepted_sessions": 3,
+      "accepted_accounting_tasks": 9,
+      "task_verifiers_passed": 9,
+      "task_verifiers_total": 9,
+      "final_verifiers_passed": 3,
+      "final_verifiers_total": 3,
+      "usage": {
+        "fresh_input_tokens": 40385,
+        "cached_input_tokens": 86016,
+        "cache_write_tokens": 0,
+        "output_tokens": 3082,
+        "reasoning_tokens": 185,
+        "total_provider_tokens": 129483
+      },
+      "weighted_tokens": 67478.6,
+      "weighted_delta_vs_bare_percent": 1.1003,
+      "model_tool_calls": {
+        "bash": 9
+      },
+      "evidence_member_count": 159,
+      "usage_events_reconciled_exactly": true,
+      "manifests_passed": true
+    },
+    {
+      "profile_id": "retrieval-sigmap-opencode-product-v1",
+      "display_name": "SigMap",
+      "artifact_slug": "sigmap-opencode-v1",
+      "accepted_sessions": 3,
+      "accepted_accounting_tasks": 9,
+      "task_verifiers_passed": 9,
+      "task_verifiers_total": 9,
+      "final_verifiers_passed": 3,
+      "final_verifiers_total": 3,
+      "usage": {
+        "fresh_input_tokens": 46929,
+        "cached_input_tokens": 105472,
+        "cache_write_tokens": 0,
+        "output_tokens": 3020,
+        "reasoning_tokens": 153,
+        "total_provider_tokens": 155421
+      },
+      "weighted_tokens": 75596.2,
+      "weighted_delta_vs_bare_percent": 13.2626,
+      "model_tool_calls": {
+        "bash": 9
+      },
+      "evidence_member_count": 168,
+      "usage_events_reconciled_exactly": true,
+      "manifests_passed": true
+    },
+    {
+      "profile_id": "terminal-lowfat-opencode-plugin-v1",
+      "display_name": "LowFat",
+      "artifact_slug": "lowfat-opencode-v1",
+      "accepted_sessions": 3,
+      "accepted_accounting_tasks": 9,
+      "task_verifiers_passed": 9,
+      "task_verifiers_total": 9,
+      "final_verifiers_passed": 3,
+      "final_verifiers_total": 3,
+      "usage": {
+        "fresh_input_tokens": 53341,
+        "cached_input_tokens": 67584,
+        "cache_write_tokens": 0,
+        "output_tokens": 3220,
+        "reasoning_tokens": 212,
+        "total_provider_tokens": 124145
+      },
+      "weighted_tokens": 79419.4,
+      "weighted_delta_vs_bare_percent": 18.9907,
+      "model_tool_calls": {
+        "bash": 9
+      },
+      "evidence_member_count": 162,
+      "usage_events_reconciled_exactly": true,
+      "manifests_passed": true
+    },
+    {
+      "profile_id": "integrated-leanctx-opencode-hybrid-v2",
+      "display_name": "LeanCTX",
+      "artifact_slug": "leanctx-opencode-v2",
+      "accepted_sessions": 3,
+      "accepted_accounting_tasks": 9,
+      "task_verifiers_passed": 7,
+      "task_verifiers_total": 9,
+      "final_verifiers_passed": 2,
+      "final_verifiers_total": 3,
+      "usage": {
+        "fresh_input_tokens": 55392,
+        "cached_input_tokens": 179200,
+        "cache_write_tokens": 0,
+        "output_tokens": 5895,
+        "reasoning_tokens": 1506,
+        "total_provider_tokens": 240487
+      },
+      "weighted_tokens": 108682.0,
+      "weighted_delta_vs_bare_percent": 62.8336,
+      "model_tool_calls": {
+        "lean-ctx_ctx_shell": 3,
+        "lean-ctx_ctx_call": 4,
+        "bash": 6
+      },
+      "evidence_member_count": 177,
+      "usage_events_reconciled_exactly": true,
+      "manifests_passed": true
+    },
+    {
+      "profile_id": "retrieval-jcodemunch-opencode-product-v1",
+      "display_name": "jCodemunch",
+      "artifact_slug": "jcodemunch-opencode-v1",
+      "accepted_sessions": 3,
+      "accepted_accounting_tasks": 9,
+      "task_verifiers_passed": 9,
+      "task_verifiers_total": 9,
+      "final_verifiers_passed": 3,
+      "final_verifiers_total": 3,
+      "usage": {
+        "fresh_input_tokens": 87032,
+        "cached_input_tokens": 358912,
+        "cache_write_tokens": 0,
+        "output_tokens": 3086,
+        "reasoning_tokens": 173,
+        "total_provider_tokens": 449030
+      },
+      "weighted_tokens": 141439.2,
+      "weighted_delta_vs_bare_percent": 111.9123,
+      "model_tool_calls": {
+        "bash": 9
+      },
+      "evidence_member_count": 174,
+      "usage_events_reconciled_exactly": true,
+      "manifests_passed": true
+    }
+  ],
+  "treatment_totals": {
+    "accepted_sessions": 15,
+    "accounting_tasks": 45,
+    "task_verifiers_passed": 43,
+    "task_verifiers_total": 45,
+    "final_verifiers_passed": 14,
+    "final_verifiers_total": 15,
+    "total_provider_tokens": 1098566,
+    "weighted_tokens": 472615.4,
+    "evidence_member_count": 840,
+    "all_usage_events_reconciled_exactly": true,
+    "all_manifests_passed": true
+  },
+  "native_activation_and_use": {
+    "all_15_sessions_retained_provider_free_install_and_runtime_preflight_receipts": true,
+    "model_issued_product_tool_calls": {
+      "LeanCTX": {
+        "lean-ctx_ctx_shell": 3,
+        "lean-ctx_ctx_call": 4
+      },
+      "jCodemunch": {},
+      "SigMap": {},
+      "Caveman": {},
+      "LowFat": {}
+    },
+    "interpretation": "Caveman and LowFat are automatic native plugins; a zero model-issued product call count does not by itself mean the plugin failed to load. jCodemunch and SigMap exposed MCP tools but the model did not select them."
+  },
+  "session_reconciliation": [
+    {
+      "session_id": "jcodemunch-opencode-v1-fastify-20260730-p-bb0e89ed9794-r1",
+      "sequence_id": "fastify-lifecycle-sequence-v0",
+      "usage": {
+        "fresh_input_tokens": 30052,
+        "cached_input_tokens": 120320,
+        "cache_write_tokens": 0,
+        "output_tokens": 1215,
+        "reasoning_tokens": 68,
+        "total_provider_tokens": 151587
+      },
+      "usage_events_reconciled_exactly": true,
+      "manifest_passed": true,
+      "evidence_member_count": 58,
+      "task_verifiers_passed": 3,
+      "task_count": 3,
+      "final_verifier_passed": true,
+      "model_tool_calls": {
+        "bash": 3
+      },
+      "cumulative_turn_events": 3,
+      "cumulative_usage_monotonic": true
+    },
+    {
+      "session_id": "jcodemunch-opencode-v1-beets-20260730-p-fcc8438d2077-r1",
+      "sequence_id": "beets-lifecycle-sequence-v0",
+      "usage": {
+        "fresh_input_tokens": 28373,
+        "cached_input_tokens": 119296,
+        "cache_write_tokens": 0,
+        "output_tokens": 968,
+        "reasoning_tokens": 51,
+        "total_provider_tokens": 148637
+      },
+      "usage_events_reconciled_exactly": true,
+      "manifest_passed": true,
+      "evidence_member_count": 58,
+      "task_verifiers_passed": 3,
+      "task_count": 3,
+      "final_verifier_passed": true,
+      "model_tool_calls": {
+        "bash": 3
+      },
+      "cumulative_turn_events": 3,
+      "cumulative_usage_monotonic": true
+    },
+    {
+      "session_id": "jcodemunch-opencode-v1-terraform-20260730-p-5811b463c1e9-r1",
+      "sequence_id": "terraform-lifecycle-sequence-v0",
+      "usage": {
+        "fresh_input_tokens": 28607,
+        "cached_input_tokens": 119296,
+        "cache_write_tokens": 0,
+        "output_tokens": 903,
+        "reasoning_tokens": 54,
+        "total_provider_tokens": 148806
+      },
+      "usage_events_reconciled_exactly": true,
+      "manifest_passed": true,
+      "evidence_member_count": 58,
+      "task_verifiers_passed": 3,
+      "task_count": 3,
+      "final_verifier_passed": true,
+      "model_tool_calls": {
+        "bash": 3
+      },
+      "cumulative_turn_events": 3,
+      "cumulative_usage_monotonic": true
+    },
+    {
+      "session_id": "leanctx-opencode-v2-fastify-20260730-p-bb0e89ed9794-r1",
+      "sequence_id": "fastify-lifecycle-sequence-v0",
+      "usage": {
+        "fresh_input_tokens": 17604,
+        "cached_input_tokens": 73216,
+        "cache_write_tokens": 0,
+        "output_tokens": 3109,
+        "reasoning_tokens": 966,
+        "total_provider_tokens": 93929
+      },
+      "usage_events_reconciled_exactly": true,
+      "manifest_passed": true,
+      "evidence_member_count": 59,
+      "task_verifiers_passed": 1,
+      "task_count": 3,
+      "final_verifier_passed": false,
+      "model_tool_calls": {
+        "lean-ctx_ctx_shell": 1,
+        "lean-ctx_ctx_call": 4
+      },
+      "cumulative_turn_events": 3,
+      "cumulative_usage_monotonic": true
+    },
+    {
+      "session_id": "leanctx-opencode-v2-beets-20260730-p-fcc8438d2077-r1",
+      "sequence_id": "beets-lifecycle-sequence-v0",
+      "usage": {
+        "fresh_input_tokens": 13475,
+        "cached_input_tokens": 56320,
+        "cache_write_tokens": 0,
+        "output_tokens": 1269,
+        "reasoning_tokens": 199,
+        "total_provider_tokens": 71064
+      },
+      "usage_events_reconciled_exactly": true,
+      "manifest_passed": true,
+      "evidence_member_count": 59,
+      "task_verifiers_passed": 3,
+      "task_count": 3,
+      "final_verifier_passed": true,
+      "model_tool_calls": {
+        "lean-ctx_ctx_shell": 1,
+        "bash": 3
+      },
+      "cumulative_turn_events": 3,
+      "cumulative_usage_monotonic": true
+    },
+    {
+      "session_id": "leanctx-opencode-v2-terraform-20260730-p-5811b463c1e9-r1",
+      "sequence_id": "terraform-lifecycle-sequence-v0",
+      "usage": {
+        "fresh_input_tokens": 24313,
+        "cached_input_tokens": 49664,
+        "cache_write_tokens": 0,
+        "output_tokens": 1517,
+        "reasoning_tokens": 341,
+        "total_provider_tokens": 75494
+      },
+      "usage_events_reconciled_exactly": true,
+      "manifest_passed": true,
+      "evidence_member_count": 59,
+      "task_verifiers_passed": 3,
+      "task_count": 3,
+      "final_verifier_passed": true,
+      "model_tool_calls": {
+        "lean-ctx_ctx_shell": 1,
+        "bash": 3
+      },
+      "cumulative_turn_events": 3,
+      "cumulative_usage_monotonic": true
+    },
+    {
+      "session_id": "sigmap-opencode-v1-fastify-20260730-p-bb0e89ed9794-r1",
+      "sequence_id": "fastify-lifecycle-sequence-v0",
+      "usage": {
+        "fresh_input_tokens": 14083,
+        "cached_input_tokens": 38400,
+        "cache_write_tokens": 0,
+        "output_tokens": 1170,
+        "reasoning_tokens": 55,
+        "total_provider_tokens": 53653
+      },
+      "usage_events_reconciled_exactly": true,
+      "manifest_passed": true,
+      "evidence_member_count": 56,
+      "task_verifiers_passed": 3,
+      "task_count": 3,
+      "final_verifier_passed": true,
+      "model_tool_calls": {
+        "bash": 3
+      },
+      "cumulative_turn_events": 3,
+      "cumulative_usage_monotonic": true
+    },
+    {
+      "session_id": "sigmap-opencode-v1-beets-20260730-p-fcc8438d2077-r1",
+      "sequence_id": "beets-lifecycle-sequence-v0",
+      "usage": {
+        "fresh_input_tokens": 19926,
+        "cached_input_tokens": 29696,
+        "cache_write_tokens": 0,
+        "output_tokens": 884,
+        "reasoning_tokens": 44,
+        "total_provider_tokens": 50506
+      },
+      "usage_events_reconciled_exactly": true,
+      "manifest_passed": true,
+      "evidence_member_count": 56,
+      "task_verifiers_passed": 3,
+      "task_count": 3,
+      "final_verifier_passed": true,
+      "model_tool_calls": {
+        "bash": 3
+      },
+      "cumulative_turn_events": 3,
+      "cumulative_usage_monotonic": true
+    },
+    {
+      "session_id": "sigmap-opencode-v1-terraform-20260730-p-5811b463c1e9-r1",
+      "sequence_id": "terraform-lifecycle-sequence-v0",
+      "usage": {
+        "fresh_input_tokens": 12920,
+        "cached_input_tokens": 37376,
+        "cache_write_tokens": 0,
+        "output_tokens": 966,
+        "reasoning_tokens": 54,
+        "total_provider_tokens": 51262
+      },
+      "usage_events_reconciled_exactly": true,
+      "manifest_passed": true,
+      "evidence_member_count": 56,
+      "task_verifiers_passed": 3,
+      "task_count": 3,
+      "final_verifier_passed": true,
+      "model_tool_calls": {
+        "bash": 3
+      },
+      "cumulative_turn_events": 3,
+      "cumulative_usage_monotonic": true
+    },
+    {
+      "session_id": "caveman-opencode-v1-fastify-20260730-p-bb0e89ed9794-r1",
+      "sequence_id": "fastify-lifecycle-sequence-v0",
+      "usage": {
+        "fresh_input_tokens": 11739,
+        "cached_input_tokens": 32256,
+        "cache_write_tokens": 0,
+        "output_tokens": 1248,
+        "reasoning_tokens": 84,
+        "total_provider_tokens": 45243
+      },
+      "usage_events_reconciled_exactly": true,
+      "manifest_passed": true,
+      "evidence_member_count": 53,
+      "task_verifiers_passed": 3,
+      "task_count": 3,
+      "final_verifier_passed": true,
+      "model_tool_calls": {
+        "bash": 3
+      },
+      "cumulative_turn_events": 3,
+      "cumulative_usage_monotonic": true
+    },
+    {
+      "session_id": "caveman-opencode-v1-beets-20260730-p-fcc8438d2077-r1",
+      "sequence_id": "beets-lifecycle-sequence-v0",
+      "usage": {
+        "fresh_input_tokens": 10759,
+        "cached_input_tokens": 30208,
+        "cache_write_tokens": 0,
+        "output_tokens": 926,
+        "reasoning_tokens": 32,
+        "total_provider_tokens": 41893
+      },
+      "usage_events_reconciled_exactly": true,
+      "manifest_passed": true,
+      "evidence_member_count": 53,
+      "task_verifiers_passed": 3,
+      "task_count": 3,
+      "final_verifier_passed": true,
+      "model_tool_calls": {
+        "bash": 3
+      },
+      "cumulative_turn_events": 3,
+      "cumulative_usage_monotonic": true
+    },
+    {
+      "session_id": "caveman-opencode-v1-terraform-20260730-p-5811b463c1e9-r1",
+      "sequence_id": "terraform-lifecycle-sequence-v0",
+      "usage": {
+        "fresh_input_tokens": 17887,
+        "cached_input_tokens": 23552,
+        "cache_write_tokens": 0,
+        "output_tokens": 908,
+        "reasoning_tokens": 69,
+        "total_provider_tokens": 42347
+      },
+      "usage_events_reconciled_exactly": true,
+      "manifest_passed": true,
+      "evidence_member_count": 53,
+      "task_verifiers_passed": 3,
+      "task_count": 3,
+      "final_verifier_passed": true,
+      "model_tool_calls": {
+        "bash": 3
+      },
+      "cumulative_turn_events": 3,
+      "cumulative_usage_monotonic": true
+    },
+    {
+      "session_id": "lowfat-opencode-v1-fastify-20260730-p-bb0e89ed9794-r1",
+      "sequence_id": "fastify-lifecycle-sequence-v0",
+      "usage": {
+        "fresh_input_tokens": 19498,
+        "cached_input_tokens": 22528,
+        "cache_write_tokens": 0,
+        "output_tokens": 1261,
+        "reasoning_tokens": 70,
+        "total_provider_tokens": 43287
+      },
+      "usage_events_reconciled_exactly": true,
+      "manifest_passed": true,
+      "evidence_member_count": 54,
+      "task_verifiers_passed": 3,
+      "task_count": 3,
+      "final_verifier_passed": true,
+      "model_tool_calls": {
+        "bash": 3
+      },
+      "cumulative_turn_events": 3,
+      "cumulative_usage_monotonic": true
+    },
+    {
+      "session_id": "lowfat-opencode-v1-beets-20260730-p-fcc8438d2077-r1",
+      "sequence_id": "beets-lifecycle-sequence-v0",
+      "usage": {
+        "fresh_input_tokens": 16765,
+        "cached_input_tokens": 22528,
+        "cache_write_tokens": 0,
+        "output_tokens": 991,
+        "reasoning_tokens": 86,
+        "total_provider_tokens": 40284
+      },
+      "usage_events_reconciled_exactly": true,
+      "manifest_passed": true,
+      "evidence_member_count": 54,
+      "task_verifiers_passed": 3,
+      "task_count": 3,
+      "final_verifier_passed": true,
+      "model_tool_calls": {
+        "bash": 3
+      },
+      "cumulative_turn_events": 3,
+      "cumulative_usage_monotonic": true
+    },
+    {
+      "session_id": "lowfat-opencode-v1-terraform-20260730-p-5811b463c1e9-r1",
+      "sequence_id": "terraform-lifecycle-sequence-v0",
+      "usage": {
+        "fresh_input_tokens": 17078,
+        "cached_input_tokens": 22528,
+        "cache_write_tokens": 0,
+        "output_tokens": 968,
+        "reasoning_tokens": 56,
+        "total_provider_tokens": 40574
+      },
+      "usage_events_reconciled_exactly": true,
+      "manifest_passed": true,
+      "evidence_member_count": 54,
+      "task_verifiers_passed": 3,
+      "task_count": 3,
+      "final_verifier_passed": true,
+      "model_tool_calls": {
+        "bash": 3
+      },
+      "cumulative_turn_events": 3,
+      "cumulative_usage_monotonic": true
+    }
+  ],
+  "excluded_incidents_audit": "sources/evaluations/audits/opencode-next-five-batch2-qualification-and-retry-receipts-20260730.json",
+  "claim_limit": "Single-run matched screen. Provider tokens are primary; verifier failures are reported as degradation and do not erase measured provider usage."
+}

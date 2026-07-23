@@ -4,6 +4,7 @@ This directory contains completed research syntheses. These are the documents to
 
 | Paper | Status | Scope |
 |---|---|---|
+| [Successive OpenCode r1 Screen](opencode-successive-next-five-r1-screen.md) | Current single-replicate screening report | jCodemunch, LeanCTX, SigMap, Caveman, and LowFat against shared fresh bare OpenCode; provider tokens, verifier degradation, activation, and uptake |
 | [Luna/`xhigh` r3 Natural-Use Replication Screen](luna-xhigh-r3-natural-use-replication-screen.md) | Current replication screen | Seven frozen profiles against three fresh bare-Codex baselines; provider tokens, lane contrasts, r2 direction changes, and verifier diagnostics |
 | [GPT-5.6 Sol/High Persistent-Baseline Variance Screen](gpt-5-6-sol-high-baseline-variance-screen.md) | Current corrected descriptive model-condition screen | Three persistent baseline replicates per lane; source-backed cumulative-thread accounting, token volume, components, trajectories, and variance versus retained Luna/`xhigh` evidence |
 | [Official Integration Parity Audit](official-integration-parity-audit.md) | Current validity authority | Exact pinned Codex integration audit and session/comparison disposition |
