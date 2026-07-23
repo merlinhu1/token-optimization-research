@@ -1269,6 +1269,8 @@ def validate_evaluations(evaluation_doc: dict, fixture_doc: dict, profile_ids: s
 
 
 def validate_workflow_task_sequences(sequence_doc: dict, fixture_doc: dict, errors: list[str]) -> set[str]:
+    from scripts import run_codex_workflow_evaluation as workflow
+
     if sequence_doc.get("schema_version") != 1:
         errors.append("data/workflow-task-sequences.json must use schema_version 1")
     sequences = sequence_doc.get("sequences")
@@ -1285,6 +1287,11 @@ def validate_workflow_task_sequences(sequence_doc: dict, fixture_doc: dict, erro
     for fixture in fixtures:
         generation = str(generation_by_fixture.get(fixture.get("id"), "baseline-v3"))
         generation_label = generation.replace("baseline-v", "Baseline V")
+        current_family = fixture.get("current_task_family")
+        if not isinstance(current_family, dict) or current_family.get("generation") != generation:
+            errors.append(
+                f"repository fixture {fixture.get('id')} current_task_family generation must match active sequence generation {generation}"
+            )
         required_blocker = f"{generation_label} strongest-model provider pilot must complete with all eight required observed categories recorded as strict integer zero before treatment launch."
         if required_blocker not in fixture.get("blockers", []):
             errors.append(f"repository fixture {fixture.get('id')} must state the complete strict eight-category {generation_label} blocker")
@@ -1330,6 +1337,8 @@ def validate_workflow_task_sequences(sequence_doc: dict, fixture_doc: dict, erro
                 "status": "provider-pilot-required",
                 "treatment_launch_policy": "blocked until one first-valid strongest-model pilot is independently audited with all eight required observed counts equal to integer zero",
             }
+            if generation == "baseline-v4":
+                expected_gate["pilot_authorization_path"] = "sources/evaluations/audits/baseline-v4-task-family-qualification-20260722.json"
             allowed_gate_fields = [key for key in expected_gate if key.startswith("allowed_")]
             gate_values_match = (
                 isinstance(gate, dict)
@@ -1338,6 +1347,18 @@ def validate_workflow_task_sequences(sequence_doc: dict, fixture_doc: dict, erro
             )
             if not gate_values_match:
                 errors.append(f"active workflow sequence {sid} must preserve the {generation} zero-mistake gate with strict integer-zero allowances")
+            if isinstance(gate, dict):
+                for field in ("pilot_audit_path", "attempt_receipt_path", "pilot_authorization_path"):
+                    if field not in gate:
+                        continue
+                    relative = gate.get(field)
+                    if not isinstance(relative, str) or not relative:
+                        errors.append(f"active workflow sequence {sid} {field} must be a non-empty repository-relative path")
+                        continue
+                    try:
+                        workflow.repository_authority_path(ROOT, relative, field)
+                    except ValueError:
+                        errors.append(f"active workflow sequence {sid} {field} escapes the repository authority root")
             required_lockfiles = {
                 "medium-fastify-fastify": {"package.json": "b273320af1bb4cfc0f9334457c8e3b1d035fde0da14f9db65e8ef97d361d0be3"},
                 "medium-beetbox-beets": {"uv.lock": "fbf1d7a9c84b658a2433035221ba18c57508c254d711a06f305e2f610839a45f"},
@@ -1725,7 +1746,7 @@ def validate_production_v3_schema_shape(session: dict, sid: str, errors: list[st
     for key in required:
         if key not in session:
             errors.append(f"workflow session {sid} production-v3 record missing schema field {key}")
-    if session.get("schema_version") not in {1, 2}:
+    if type(session.get("schema_version")) is not int or session.get("schema_version") not in {1, 2}:
         errors.append(f"workflow session {sid} schema_version must be 1 or 2")
     if session.get("record_type") != "workflow_session":
         errors.append(f"workflow session {sid} record_type must be workflow_session")
@@ -1890,7 +1911,7 @@ def validate_production_v3_identity(session: dict, run_record: dict | None, sid:
 
 
 def requires_structured_task_contract(session: dict) -> bool:
-    return session.get("schema_version") == 2
+    return type(session.get("schema_version")) is int and session.get("schema_version") == 2
 
 
 def validate_structured_task_outcomes(session: dict, sid: str, errors: list[str]) -> None:
@@ -2133,7 +2154,7 @@ def validate_workflow_session_contract(session: dict, canonical_profile: dict | 
             errors.append(
                 f"workflow session {sid} token-objective acceptance requires a completed, execution-accepted, and structurally isolated provider run"
             )
-        if session.get("schema_version") == 2:
+        if requires_structured_task_contract(session):
             integrity = session.get("execution_integrity", {})
             if (
                 not isinstance(integrity, dict)
@@ -2212,7 +2233,11 @@ def validate_workflow_sessions(session_doc: dict, sequence_ids: set[str], fixtur
             if isinstance(canonical_profile, dict)
             else None
         )
-        strict_session_contract = session.get("schema_version") == 2
+        schema_version = session.get("schema_version")
+        valid_schema_version = type(schema_version) is int and schema_version in {1, 2}
+        if not valid_schema_version:
+            errors.append(f"workflow session {sid} schema_version must be 1 or 2")
+        strict_session_contract = requires_structured_task_contract(session)
         if strict_session_contract and profile_id and session.get("session_role") != expected_session_role:
             errors.append(
                 f"workflow session {sid} role/profile mismatch: {session.get('session_role')} vs {profile_id}"
@@ -2277,7 +2302,7 @@ def validate_workflow_sessions(session_doc: dict, sequence_ids: set[str], fixtur
                 frozen_protocol_doc = json.loads(frozen_protocol_path.read_text())
             except (OSError, json.JSONDecodeError):
                 frozen_protocol_doc = {}
-            strict_compact_contract = session.get("schema_version") == 2
+            strict_compact_contract = requires_structured_task_contract(session)
             if (
                 strict_compact_contract
                 and artifacts.get("root") is not None
@@ -2956,8 +2981,18 @@ def validate_baseline_v4_evidence_identity(
             record = records_by_sequence[sequence_id]
             binding = item.get("expected_session_binding", {})
             frozen = binding.get("frozen_protocol", {}) if isinstance(binding, dict) else {}
+            try:
+                protocol = json.loads(
+                    (ROOT / str(record.get("protocol_path"))).read_text(),
+                    object_pairs_hook=_json_object_without_duplicate_keys,
+                )
+            except (OSError, ValueError, json.JSONDecodeError) as exc:
+                errors.append(f"Baseline V4 prepare protocol cannot be loaded for {sequence_id}: {exc}")
+                protocol = {}
             if (
-                type(item.get("exit_code")) is not int
+                item.get("treatment_profile") != "baseline-bare-codex"
+                or item.get("lane_id") != f"{sequence_id}--baseline-bare-codex"
+                or type(item.get("exit_code")) is not int
                 or item.get("exit_code") != 0
                 or item.get("produced_session_ids") != []
                 or item.get("failure_evidence") != []
@@ -2969,6 +3004,7 @@ def validate_baseline_v4_evidence_identity(
                 or frozen.get("path") != record.get("protocol_path")
                 or frozen.get("sha256") != record.get("protocol_sha256")
                 or binding.get("baseline_pool_fingerprint") != record.get("baseline_pool_fingerprint")
+                or binding.get("selected_execution") != protocol.get("selected_execution")
             ):
                 errors.append(f"Baseline V4 prepare lane identity is invalid for {sequence_id}")
     merge = summary.get("merge", {})
@@ -2987,11 +3023,23 @@ def validate_baseline_v4_evidence_identity(
         errors.append("Baseline V4 prepare summary must prove a provider-free, publication-free prepare-only result")
     validation = summary.get("validation", {})
     validation_results = validation.get("results") if isinstance(validation, dict) else None
-    if validation.get("passed") is not True or not isinstance(validation_results, list) or len(validation_results) != 5 or any(
-        not isinstance(item, dict) or type(item.get("exit_code")) is not int or item.get("exit_code") != 0
-        for item in validation_results
+    expected_validation_commands = [
+        ["/opt/hermes/.venv/bin/python", "scripts/validate_repository.py"],
+        ["/opt/hermes/.venv/bin/python", "scripts/test_workflow_evaluation_contract.py"],
+        ["git", "diff", "--check"],
+        ["/opt/data/.local/bin/truthmark", "check", "--json"],
+        ["/opt/data/.local/bin/truthmark", "index", "--json"],
+    ]
+    if (
+        validation.get("passed") is not True
+        or not isinstance(validation_results, list)
+        or [item.get("command") for item in validation_results if isinstance(item, dict)] != expected_validation_commands
+        or any(
+            not isinstance(item, dict) or type(item.get("exit_code")) is not int or item.get("exit_code") != 0
+            for item in validation_results
+        )
     ):
-        errors.append("Baseline V4 prepare summary validation results are incomplete or nonzero")
+        errors.append("Baseline V4 prepare summary validation commands or results are incomplete, noncanonical, or nonzero")
 
 
 def validate_baseline_v4_qualification_audit(errors: list[str]) -> None:
