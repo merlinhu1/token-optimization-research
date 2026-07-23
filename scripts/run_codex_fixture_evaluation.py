@@ -44,6 +44,7 @@ OPENCODE_ADAPTER_V3 = Path("/opt/data/tool-candidates/opencode-adapter-v3/openco
 OPENCODE_ADAPTER_V4 = Path("/opt/data/tool-candidates/opencode-adapter-v4/opencode_workflow_adapter.py")
 OPENCODE_ADAPTER_V5 = Path("/opt/data/tool-candidates/opencode-adapter-v5/opencode_workflow_adapter.py")
 OPENCODE_ADAPTER_V6 = Path("/opt/data/tool-candidates/opencode-adapter-v6/opencode_workflow_adapter.py")
+OPENCODE_ADAPTER_V7 = Path("/opt/data/tool-candidates/opencode-adapter-v7/opencode_workflow_adapter.py")
 FORBIDDEN_BASELINE_TERMS = [
     "lean-ctx",
     "mcp_lean_ctx",
@@ -89,9 +90,11 @@ PROFILE_TOOL_CONFIG_OVERRIDES = {
     "integrated-leanctx-codex-hybrid-v1": "leanctx-codex-hybrid-v1",
     "retrieval-jcodemunch-opencode-product-v1": "jcodemunch-opencode-product-v1",
     "integrated-leanctx-opencode-hybrid-v1": "leanctx-opencode-hybrid-v1",
+    "integrated-leanctx-opencode-hybrid-v2": "leanctx-opencode-hybrid-v1",
     "retrieval-sigmap-opencode-product-v1": "sigmap-opencode-product-v1",
     "artifact-ponytail-opencode-plugin-v1": "ponytail-opencode-plugin-v1",
     "behavior-caveman-opencode-plugin-v1": "caveman-opencode-plugin-v1",
+    "terminal-lowfat-opencode-plugin-v1": "lowfat-opencode-plugin-v1",
     "retrieval-cartog-codex-product-v2": "cartog-codex-product-v2",
     "codescope-codex-product-v1": "codescope-codex-product-v1",
     "swarmvault-codex-product-v1": "swarmvault-codex-product-v1",
@@ -1950,12 +1953,15 @@ TOOL_CONFIGS.update(
             surface="opencode-mcp+instructions+shell-output-compression+warm-index",
             allowed_terms=["lean-ctx", "mcp_lean_ctx", "ctx_read", "ctx_search", "ctx_shell", "ctx_graph"],
             mounts=[str(LEANCTX_BINARY), str(LEANCTX_ROOT)],
-            adapter_path=OPENCODE_ADAPTER_V6,
+            adapter_path=OPENCODE_ADAPTER_V7,
             env={"OPENCODE_TOOL_DATA_DIR": "{tool_data_dir}", "LEAN_CTX_DATA_DIR": "{tool_data_dir}/leanctx"},
             host_integration={
-                "install_commands": [[str(LEANCTX_BINARY), "init", "--agent", "opencode"]],
+                "install_commands": [
+                    [str(LEANCTX_BINARY), "init", "--agent", "opencode"],
+                    ["/bin/bash", "-lc", "set -e; mkdir -p {codex_home}/xdg-config/opencode; cp {codex_home}/home/.config/opencode/AGENTS.md {codex_home}/xdg-config/opencode/AGENTS.md; cp {codex_home}/home/.config/opencode/opencode.json {codex_home}/xdg-config/opencode/opencode.json"],
+                ],
                 "verify_commands": [[str(LEANCTX_BINARY), "--version"]],
-                "required_files": ["{repo}/AGENTS.md", "{repo}/LEAN-CTX.md"],
+                "required_files": ["{codex_home}/xdg-config/opencode/AGENTS.md", "{codex_home}/xdg-config/opencode/opencode.json"],
                 "timeout_seconds": 600,
             },
             mcp_server="lean-ctx",
@@ -1966,7 +1972,11 @@ TOOL_CONFIGS.update(
             artifact_identities=[
                 {"path": str(LEANCTX_BINARY), "sha256": "475e89e495c31824ef324f92e695706ddbd890dff2c3b55b807cd1f8526c6db9", "kind": "compiled-cli-mcp"},
                 {"path": str(LEANCTX_ROOT / "README.md"), "sha256": "3511c0d1e04eda53f9e66f7528b5179138b4e3963891c07c8749fa0c3b98f5cb", "kind": "product-guidance-source"},
-                {"path": str(OPENCODE_ADAPTER_V6), "sha256": "1b98aaec34711b3a7bb09ce269c12bb06421ab08913d06593fb6d2c6641a34a3", "kind": "runtime-adapter"},
+                {"path": str(OPENCODE_ADAPTER_V7), "sha256": "e559c52ef4ef8a7e6b02cd03bfc2b86c2da039da493969d21f1ebbeb116c1f15", "kind": "runtime-adapter"},
+            ],
+            post_install_artifacts=[
+                {"path": "{codex_home}/xdg-config/opencode/AGENTS.md", "sha256": "8d52b53942d6ab1178ddaeafc8df555e74925659565bcf4bddfbba44e94d11b7", "retain_as": "leanctx-opencode-AGENTS.md"},
+                {"path": "{codex_home}/xdg-config/opencode/opencode.json", "sha256": "c429860c056e9469335ef48d4f66cb54886b8e45db8486dabcb1afa433de9d5c", "retain_as": "leanctx-opencode-config.json"},
             ],
             effective_host_config={"required": True, "source": "adapter-probe"},
             diff_exclude_paths=["AGENTS.md", "LEAN-CTX.md", ".lean-ctx"],
@@ -2052,6 +2062,34 @@ TOOL_CONFIGS.update(
             effective_host_config={"required": True, "source": "adapter-probe"},
             diff_exclude_paths=["AGENTS.md", ".opencode"],
             default_tool_state="active-native-plugin+per-session-guidance",
+        ),
+        "lowfat-opencode-plugin-v1": _opencode_treatment_config(
+            "lowfat",
+            display_name="LowFat official OpenCode plugin v1",
+            lane_name="terminal-lowfat-opencode-plugin-v1",
+            surface="opencode-native-tool-execute-before/terminal-command-rewriting",
+            allowed_terms=["opencode", "lowfat"],
+            mounts=[str(LOWFAT_ROOT), str(LOWFAT_BIN)],
+            adapter_path=OPENCODE_ADAPTER_V7,
+            path_entries=[str(LOWFAT_BIN.parent)],
+            env={"LOWFAT_TELEMETRY": "0"},
+            host_integration={
+                "install_commands": [[str(LOWFAT_BIN), "opencode", "install"]],
+                "verify_commands": [[str(LOWFAT_BIN), "--version"]],
+                "required_files": ["{codex_home}/xdg-config/opencode/plugins/lowfat.ts"],
+                "timeout_seconds": 300,
+            },
+            native_plugin={"required": True, "path": "{codex_home}/xdg-config/opencode/plugins/lowfat.ts"},
+            artifact_identities=[
+                {"path": str(LOWFAT_BIN), "sha256": "609e9e42d9f01b9b1c4203dc00197498c65a629453d07927cbd68cea83980558", "kind": "official-release-binary"},
+                {"path": str(LOWFAT_ROOT / "crates/lowfat/embedded/opencode/lowfat.ts"), "sha256": "49a6d53d34f40a00a1d8ebdccffee5d73572db22319ee5a99959429b634bf6ed", "kind": "native-plugin-source"},
+                {"path": str(OPENCODE_ADAPTER_V7), "sha256": "e559c52ef4ef8a7e6b02cd03bfc2b86c2da039da493969d21f1ebbeb116c1f15", "kind": "runtime-adapter"},
+            ],
+            post_install_artifacts=[
+                {"path": "{codex_home}/xdg-config/opencode/plugins/lowfat.ts", "sha256": "49a6d53d34f40a00a1d8ebdccffee5d73572db22319ee5a99959429b634bf6ed", "retain_as": "lowfat-installed-plugin.ts"},
+            ],
+            effective_host_config={"required": True, "source": "adapter-probe"},
+            default_tool_state="active-native-plugin-exact-artifact",
         ),
     }
 )

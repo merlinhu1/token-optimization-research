@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "audit_id": "opencode-successive-native-tool-selection-20260730-batch2",
-  "status": "selected-before-provider-execution",
+  "status": "corrected-after-independent-runtime-qualification",
   "selection_rule": "The first OpenCode screen already evaluated the five eligible products selected from the live compatible shortlist. This second screen carries forward the next five remaining eligible products from the most recent compatible Codex screen, excluding products without a qualifying OpenCode surface.",
   "previous_opencode_screen": {
     "audit_path": "sources/evaluations/audits/opencode-successive-native-tool-selection-20260730.json",
@@ -21,7 +21,8 @@
       "artifact-ponytail-codex-plugin-v1",
       "retrieval-sigmap-codex-live-v1",
       "behavior-caveman-codex-skill-v1",
-      "integrated-leanctx-codex-hybrid-v1"
+      "integrated-leanctx-codex-hybrid-v1",
+      "terminal-lowfat-codex-hook-v1"
     ],
     "screening_claim": "screening-ablation",
     "cross_screen_continuation": true
@@ -50,6 +51,10 @@
     {
       "profile_id": "integrated-headroom-opencode-product-v3",
       "reason": "Historical OpenCode compatibility is blocked by the documented MCP API mismatch; no dependency pinning workaround is allowed."
+    },
+    {
+      "profile_id": "artifact-ponytail-opencode-plugin-v1",
+      "reason": "Independent live OpenCode 1.18.9 probes rejected both the pinned 4.8.3 snapshot and release 4.8.4: the native plugin fails to load with `path must be a string or a file descriptor`. Structural unit tests and AGENTS-only fallback do not qualify as equivalent native activation."
     }
   ],
   "selected_products": [
@@ -59,15 +64,7 @@
       "surface": "host-agnostic MCP plus verbatim product-authored guidance plus warm index",
       "source_commit": "fbc14e40c7057ebc6d718fb48083d30522afe15f",
       "version": "1.108.114",
-      "native_open_code_basis": "AGENT_INSTALL_UNIVERSAL.md provides a universal host installation contract and server.json defines the local MCP server; the treatment registers that server directly in OpenCode."
-    },
-    {
-      "profile_id": "artifact-ponytail-opencode-plugin-v1",
-      "product": "Ponytail",
-      "surface": "native .opencode plugin plus product-authored AGENTS guidance",
-      "source_commit": "c4d1925ae9b76a1b641877328209ad25cfeb5ef2",
-      "version": "4.8.3",
-      "native_open_code_basis": "The pinned checkout contains .opencode/plugins/ponytail.mjs and AGENTS.md."
+      "native_open_code_basis": "Explicit conditional host-agnostic MCP arm: the exact OpenCode local-MCP configuration, initialize/tools-list handshake, verbatim universal product guidance, and warm index are retained. jCodemunch has no first-class OpenCode installer and is not described as a native OpenCode integration."
     },
     {
       "profile_id": "retrieval-sigmap-opencode-product-v1",
@@ -86,19 +83,27 @@
       "native_open_code_basis": "The pinned installer exposes --only opencode and the local source contains the OpenCode plugin implementation."
     },
     {
-      "profile_id": "integrated-leanctx-opencode-hybrid-v1",
+      "profile_id": "integrated-leanctx-opencode-hybrid-v2",
       "product": "LeanCTX",
       "surface": "official OpenCode initializer plus local MCP plus warm index and product instructions",
       "source_commit": "adc4e8b2e401d160906a392994c9afd7af3dfffa",
       "version": "3.8.18",
-      "native_open_code_basis": "The pinned official binary reports LeanCTX 3.8.18 and its initializer accepts --agent opencode; the treatment uses that official target rather than the historical MCP-only partial profile."
+      "native_open_code_basis": "Corrected official OpenCode condition: product-generated config and AGENTS guidance are copied byte-for-byte from ~/.config/opencode into the lane-active isolated XDG root; direct MCP handshake and warm index are required."
+    },
+    {
+      "profile_id": "terminal-lowfat-opencode-plugin-v1",
+      "product": "LowFat",
+      "surface": "official native OpenCode tool.execute.before plugin plus terminal-command rewriting",
+      "source_commit": "b9f6f99d02e5774296305a591bfb13ef24548c38",
+      "version": "0.8.0",
+      "native_open_code_basis": "The source-pinned official 0.8.0 release binary installs ~/.config/opencode/plugins/lowfat.ts. The installed bytes match the pinned source plugin hash, and OpenCode 1.18.9 loads it without plugin errors when the binary is mounted on PATH."
     }
   ],
   "qualification_contract": {
     "model_condition": "opencode-openai-gpt-5-6-sol-high",
     "model": "gpt-5.6-sol",
     "reasoning_effort": "high",
-    "replicate_index": 2,
+    "replicate_index": 1,
     "sequences": [
       "fastify-lifecycle-sequence-v0",
       "beets-lifecycle-sequence-v0",
@@ -117,8 +122,9 @@
     ]
   },
   "limitations": [
-    "The ordering is a cross-screen continuation rather than a new OpenCode-side shortlist with comparable OpenCode usage observations.",
-    "Eligibility does not imply the product will be naturally used by the model; model uptake is measured separately.",
-    "No provider execution or quality result is included in this selection audit."
+    "The ordering is a cross-screen continuation; Ponytail was skipped only after independent live runtime qualification disproved native activation.",
+    "jCodemunch is an explicitly declared host-agnostic MCP arm, not a first-class native OpenCode installer treatment.",
+    "Eligibility does not imply natural model uptake; model-issued product calls and automatic hook activity are measured separately.",
+    "The first LeanCTX launch used an inactive guidance path and produced no provider usage; it is an invalid infrastructure attempt, not a product result."
   ]
 }

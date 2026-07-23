@@ -3009,7 +3009,7 @@
     {
       "profile_type": "individual_tool",
       "objective_scope": "individual_tool_effectiveness",
-      "status": "screening-ablation",
+      "status": "invalid-profile",
       "substrate": "opencode-cli",
       "disabled_overlaps": [
         "all unlisted surfaces"
@@ -3060,7 +3060,7 @@
         "runtime_adapter": "/opt/data/tool-candidates/opencode-adapter-v6/opencode_workflow_adapter.py",
         "runtime_adapter_sha256": "1b98aaec34711b3a7bb09ce269c12bb06421ab08913d06593fb6d2c6641a34a3"
       },
-      "notes": "Second successive screen: the existing LeanCTX source includes an OpenCode initializer target; the treatment uses that official hybrid surface, not the historical MCP-only partial profile."
+      "notes": "Invalid first OpenCode setup: lean-ctx init wrote guidance under HOME/.config while the active lane used a distinct XDG_CONFIG_HOME. The inactive guidance path and zero-usage OpenCode exit-86 attempt are not a product result."
     },
     {
       "profile_type": "individual_tool",
@@ -3121,7 +3121,7 @@
     {
       "profile_type": "individual_tool",
       "objective_scope": "individual_tool_effectiveness",
-      "status": "screening-ablation",
+      "status": "invalid-profile",
       "substrate": "opencode-cli",
       "disabled_overlaps": [
         "all unlisted surfaces"
@@ -3171,7 +3171,7 @@
         "runtime_adapter": "/opt/data/tool-candidates/opencode-adapter-v6/opencode_workflow_adapter.py",
         "runtime_adapter_sha256": "1b98aaec34711b3a7bb09ce269c12bb06421ab08913d06593fb6d2c6641a34a3"
       },
-      "notes": "Second successive screen: Ponytail contains a native .opencode plugin and product-authored AGENTS guidance; no prompt-only emulation is used."
+      "notes": "Excluded from the second successive OpenCode screen: both the pinned 4.8.3 snapshot and release 4.8.4 fail live plugin loading under OpenCode 1.18.9 with `path must be a string or a file descriptor`; structural tests and instruction-only fallback are not equivalent to native activation."
     },
     {
       "profile_type": "individual_tool",
@@ -3227,6 +3227,117 @@
         "runtime_adapter_sha256": "1b98aaec34711b3a7bb09ce269c12bb06421ab08913d06593fb6d2c6641a34a3"
       },
       "notes": "Second successive screen: Caveman\u2019s local installer exposes an explicit OpenCode target and writes the native plugin under the OpenCode XDG configuration surface."
+    },
+    {
+      "profile_type": "individual_tool",
+      "objective_scope": "individual_tool_effectiveness",
+      "status": "screening-ablation",
+      "substrate": "opencode-cli",
+      "disabled_overlaps": [
+        "all unlisted surfaces"
+      ],
+      "native_agent_tools_allowed": [
+        "opencode-native-shell-edit",
+        "opencode-native-file-read-search",
+        "git",
+        "verifier-commands"
+      ],
+      "forbidden_surfaces": [
+        "all external retrieval, compression, memory, MCP, skills, plugins, subagents, and web tools except the assigned product surfaces"
+      ],
+      "reset": {
+        "policy": "Delete lane-private OpenCode XDG directories, product state, generated repository treatment files, auth translation, and background processes after evidence capture."
+      },
+      "id": "terminal-lowfat-opencode-plugin-v1",
+      "artifact_slug": "lowfat-opencode-v1",
+      "name": "LowFat OpenCode plugin V1",
+      "enabled_surfaces": [
+        "opencode-plugin",
+        "terminal-command-rewriting"
+      ],
+      "components": [
+        {
+          "component_id": "terminal-lowfat-opencode-plugin-v1",
+          "surface": "opencode-native-tool-execute-before/terminal-command-rewriting",
+          "role": "individual_tool"
+        }
+      ],
+      "install": {
+        "policy": "Run the pinned LowFat 0.8.0 binary\u2019s official `lowfat opencode install` command in the isolated XDG configuration and require the exact installed native plugin."
+      },
+      "evaluation_protocol": {
+        "tool_use_policy": "natural",
+        "tool_state": "active-native-plugin-exact-artifact",
+        "integration_state": "official-opencode-plugin",
+        "assignment_proof": "provider-free exact artifact identities, live plugin activation, effective OpenCode configuration, task/final verifiers, and installation receipt required"
+      },
+      "source_snapshot": {
+        "repository": "zdk/lowfat",
+        "version": "0.8.0",
+        "source_commit": "b9f6f99d02e5774296305a591bfb13ef24548c38",
+        "release_archive_sha256": "dccc2cfabe341873a7d8ca11cc6a250bb304792ff31773c86e4a58cbc01be36e",
+        "binary_sha256": "609e9e42d9f01b9b1c4203dc00197498c65a629453d07927cbd68cea83980558",
+        "plugin_sha256": "49a6d53d34f40a00a1d8ebdccffee5d73572db22319ee5a99959429b634bf6ed",
+        "runtime_adapter": "/opt/data/tool-candidates/opencode-adapter-v7/opencode_workflow_adapter.py",
+        "runtime_adapter_sha256": "e559c52ef4ef8a7e6b02cd03bfc2b86c2da039da493969d21f1ebbeb116c1f15"
+      },
+      "notes": "Replacement for runtime-incompatible Ponytail in the second successive screen. The official 0.8.0 release binary installs the exact source-pinned OpenCode plugin and a live OpenCode 1.18.9 debug-config probe loads it without plugin errors when the binary is present on PATH."
+    },
+    {
+      "profile_type": "individual_tool",
+      "objective_scope": "individual_tool_effectiveness",
+      "status": "screening-ablation",
+      "substrate": "opencode-cli",
+      "disabled_overlaps": [
+        "all unlisted surfaces"
+      ],
+      "native_agent_tools_allowed": [
+        "opencode-native-shell-edit",
+        "opencode-native-file-read-search",
+        "git",
+        "verifier-commands"
+      ],
+      "forbidden_surfaces": [
+        "all external retrieval, compression, memory, MCP, skills, plugins, subagents, and web tools except the assigned product surfaces"
+      ],
+      "reset": {
+        "policy": "Delete lane-private OpenCode XDG directories, product state, generated repository treatment files, auth translation, and background processes after evidence capture."
+      },
+      "id": "integrated-leanctx-opencode-hybrid-v2",
+      "artifact_slug": "leanctx-opencode-v2",
+      "name": "LeanCTX OpenCode hybrid integration V2",
+      "enabled_surfaces": [
+        "retrieval-context",
+        "opencode-mcp",
+        "product-authored-instructions",
+        "shell-output-compression",
+        "warm-index"
+      ],
+      "components": [
+        {
+          "component_id": "integrated-leanctx-opencode-hybrid-v2",
+          "surface": "opencode-mcp+product-generated-instructions+shell-output-compression+warm-index",
+          "role": "individual_tool"
+        }
+      ],
+      "install": {
+        "policy": "Run the pinned official LeanCTX initializer with the OpenCode agent target, build its lane-private index, and require the local MCP initialize plus tools/list handshake."
+      },
+      "evaluation_protocol": {
+        "tool_use_policy": "natural",
+        "tool_state": "warm-index+active-guidance",
+        "integration_state": "official-opencode-hybrid",
+        "assignment_proof": "provider-free exact artifact identities, effective OpenCode configuration, native activation, warm state, and task/final verifiers required"
+      },
+      "source_snapshot": {
+        "repository": "yvgude/lean-ctx",
+        "version": "3.8.18",
+        "source_commit": "adc4e8b2e401d160906a392994c9afd7af3dfffa",
+        "binary_sha256": "475e89e495c31824ef324f92e695706ddbd890dff2c3b55b807cd1f8526c6db9",
+        "runtime_adapter": "/opt/data/tool-candidates/opencode-adapter-v7/opencode_workflow_adapter.py",
+        "runtime_adapter_sha256": "e559c52ef4ef8a7e6b02cd03bfc2b86c2da039da493969d21f1ebbeb116c1f15"
+      },
+      "notes": "Corrected official OpenCode integration: the product-generated ~/.config/opencode configuration and AGENTS guidance are copied byte-for-byte into the lane-active isolated XDG root, with MCP handshake and warm index retained."
     }
   ]
 }

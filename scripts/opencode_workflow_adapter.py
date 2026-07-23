@@ -46,6 +46,7 @@ LEANCTX_BINARY = Path("/opt/data/bin/lean-ctx")
 SIGMAP_ROOT = Path("/opt/data/tool-candidates/sigmap")
 PONYTAIL_ROOT = Path("/opt/data/tool-candidates/ponytail")
 CAVEMAN_ROOT = Path("/opt/data/tool-candidates/caveman")
+LOWFAT_BINARY = Path("/opt/data/tool-candidates/lowfat-bin/lowfat")
 HEADROOM_PLUGIN = Path(
     "/opt/data/tool-candidates/headroom/plugins/opencode/dist/entry.opencode.js"
 )
@@ -66,10 +67,11 @@ TREATMENT_PROFILES = {
     "sigmap",
     "ponytail",
     "caveman",
+    "lowfat",
 }
 PLUGIN_TREATMENTS = {
     "tokenjuice", "snip", "headroom", "swarmvault", "graphify", "rtk",
-    "ponytail", "caveman",
+    "ponytail", "caveman", "lowfat",
 }
 GUIDED_TREATMENTS = {"jcodemunch", "leanctx", "sigmap", "ponytail", "caveman"}
 
@@ -805,6 +807,9 @@ def _runtime_env(
     elif treatment == "caveman":
         plugin = xdg_config / "opencode" / "plugins" / "caveman" / "plugin.js"
         config["plugin"] = [plugin.as_uri()]
+    elif treatment == "lowfat":
+        plugin = xdg_config / "opencode" / "plugins" / "lowfat.ts"
+        config["plugin"] = [plugin.as_uri()]
     env.update(
         {
             "XDG_DATA_HOME": str(xdg_data),
@@ -868,6 +873,7 @@ def probe(
             "rtk": "rtk.ts",
             "ponytail": "ponytail.mjs",
             "caveman": "caveman",
+            "lowfat": "lowfat.ts",
         }[treatment]
         if expected_plugin not in plugin_info.stdout:
             raise RuntimeError(
