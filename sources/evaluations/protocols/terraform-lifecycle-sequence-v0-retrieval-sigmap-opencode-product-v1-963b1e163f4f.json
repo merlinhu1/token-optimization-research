@@ -1,19 +1,19 @@
 {
   "protocol_schema_version": 3,
-  "protocol_id": "beets-lifecycle-sequence-v0-codescope-opencode-product-v1-7f15e2950776",
+  "protocol_id": "terraform-lifecycle-sequence-v0-retrieval-sigmap-opencode-product-v1-963b1e163f4f",
   "status": "frozen-ready-not-run",
-  "outcome": "Frozen codescope-opencode-product-v1 protocol for beets-lifecycle-sequence-v0; no provider/model run has occurred.",
+  "outcome": "Frozen retrieval-sigmap-opencode-product-v1 protocol for terraform-lifecycle-sequence-v0; no provider/model run has occurred.",
   "frozen_at": "2026-07-22",
-  "hypothesis": "codescope-opencode-product-v1 produces reproducible provider-reported token and software-quality evidence for beets-lifecycle-sequence-v0",
+  "hypothesis": "retrieval-sigmap-opencode-product-v1 produces reproducible provider-reported token and software-quality evidence for terraform-lifecycle-sequence-v0",
   "evidence_stage_target": "reproduction",
   "task_fixture": {
-    "fixture_id": "medium-beetbox-beets",
-    "sequence_id": "beets-lifecycle-sequence-v0",
+    "fixture_id": "large-hashicorp-terraform",
+    "sequence_id": "terraform-lifecycle-sequence-v0",
     "task_family_generation": "baseline-v4",
-    "repository": "https://github.com/beetbox/beets.git",
-    "snapshot": "9acb1ecff6c7ee0a1e83e3b983c94792345712c5",
-    "qualification_path": "sources/evaluations/fixtures/medium/beetbox-beets/qualification-lifecycle-v0-baseline-v4.json",
-    "qualification_sha256": "62d841b17636e669440ca040152d5792b08851bea6cc139a47777f89b34a3c80",
+    "repository": "https://github.com/hashicorp/terraform.git",
+    "snapshot": "e02391ad384c9c38f1d7f40b853c0d2297348094",
+    "qualification_path": "sources/evaluations/fixtures/large/hashicorp-terraform/qualification-lifecycle-v0-baseline-v4.json",
+    "qualification_sha256": "08a37382172643a0d4d4dc4c1f43751b4774c63c576419dde715849c30b1d96b",
     "timeout_seconds_per_task": 3600
   },
   "baseline": {
@@ -35,13 +35,13 @@
     "selection_policy": "sequence-pool-replicate-matched-first-valid"
   },
   "treatment": {
-    "profile_id": "codescope-opencode-product-v1",
+    "profile_id": "retrieval-sigmap-opencode-product-v1",
     "runtime_id": "opencode-cli",
     "provider": "openai",
     "model": "gpt-5.6-sol",
     "model_condition_id": "opencode-openai-gpt-5-6-sol-high",
     "reasoning_effort": "high",
-    "command": "python3 scripts/run_opencode_workflow_model_condition.py --workflow-model-condition-id opencode-openai-gpt-5-6-sol-high --workflow-model gpt-5.6-sol --workflow-reasoning-effort high --sequence-id beets-lifecycle-sequence-v0 --profile-id codescope-opencode-product-v1 --timeout-per-task 3600 --protocol sources/evaluations/protocols/beets-lifecycle-sequence-v0-codescope-opencode-product-v1-7f15e2950776.json --docker-image token-eval-codex:latest"
+    "command": "python3 scripts/run_opencode_workflow_model_condition.py --workflow-model-condition-id opencode-openai-gpt-5-6-sol-high --workflow-model gpt-5.6-sol --workflow-reasoning-effort high --sequence-id terraform-lifecycle-sequence-v0 --profile-id retrieval-sigmap-opencode-product-v1 --timeout-per-task 3600 --protocol sources/evaluations/protocols/terraform-lifecycle-sequence-v0-retrieval-sigmap-opencode-product-v1-963b1e163f4f.json --docker-image token-eval-codex:latest"
   },
   "token_accounting_boundary": {
     "fields": [
@@ -55,7 +55,7 @@
   },
   "baseline_pool": {
     "protocol_version": "baseline-pool-v1",
-    "protocol_fingerprint": "fcc8438d2077",
+    "protocol_fingerprint": "5811b463c1e9",
     "descriptor": {
       "version": "baseline-pool-v1",
       "task_family_generation": "baseline-v4",
@@ -63,17 +63,17 @@
       "runner_sha256": "a5658191022664fcba500822c66a429743a42f23bd330932a4e9499023374f42",
       "qualification_generator_sha256": "92c9d68b3146b37dd0f4f6c0c71a20d7ef83898fec7206b8d022f06351969eb7",
       "validator_sha256": "8e6de8f20d0403cfa206c327c044fba7c3ac6f969d1af36445dc0afad8a2ce8b",
-      "sequence_id": "beets-lifecycle-sequence-v0",
+      "sequence_id": "terraform-lifecycle-sequence-v0",
       "sequence_contract": "feature-refactor-review",
-      "fixture_id": "medium-beetbox-beets",
-      "fixture_scale": "medium-project",
+      "fixture_id": "large-hashicorp-terraform",
+      "fixture_scale": "large-project",
       "initial_snapshot": {
-        "commit": "9acb1ecff6c7ee0a1e83e3b983c94792345712c5",
-        "upstream": "https://github.com/beetbox/beets.git",
+        "commit": "e02391ad384c9c38f1d7f40b853c0d2297348094",
+        "upstream": "https://github.com/hashicorp/terraform.git",
         "dependency_lockfiles": [
           {
-            "path": "uv.lock",
-            "sha256": "fbf1d7a9c84b658a2433035221ba18c57508c254d711a06f305e2f610839a45f"
+            "path": "go.sum",
+            "sha256": "be9ec949db0a0b135197f2c78b6d9821d764cc9b8c362b4860e3d5a1e9c74b9e"
           }
         ]
       },
@@ -81,18 +81,18 @@
       "primary_metric": "cumulative provider-reported workflow tokens",
       "tasks": [
         {
-          "id": "beets-lifecycle-feature-v0",
+          "id": "terraform-lifecycle-feature-v0",
           "order": 1,
           "task_class": "feature-implementation",
-          "prompt_path": "sources/evaluations/fixtures/medium/beetbox-beets/task-generations/baseline-v4/beets-lifecycle-feature-v0/agent-prompt.txt",
-          "prompt_sha256": "9033237087b94204b279a545c0c8967229a4dfebde37ddfae401bac0b0149b53",
-          "seed_patch_sha256": "9dc1cf36d0d0120fb57f75c4579af7f1f65b80e9d80de2d2c5cbdeb69b4ac17e",
-          "verifier_command": "sources/evaluations/fixtures/medium/beetbox-beets/task-generations/baseline-v4/beets-lifecycle-feature-v0/verify.sh",
-          "verifier_sha256": "6c66323a59314d4b8390eb288a41f823b3ac1723af94f8fe771cacb2b5e88588",
+          "prompt_path": "sources/evaluations/fixtures/large/hashicorp-terraform/task-generations/baseline-v4/terraform-lifecycle-feature-v0/agent-prompt.txt",
+          "prompt_sha256": "8052449811cdde0de9b8dac90b2a9e152a12c5a4a5bf75d4a809a15d4286f0da",
+          "seed_patch_sha256": "650cdad86a78661e72f231b3971dbc725cbb0b16bfb0531ae798c507586bc546",
+          "verifier_command": "sources/evaluations/fixtures/large/hashicorp-terraform/task-generations/baseline-v4/terraform-lifecycle-feature-v0/verify.sh",
+          "verifier_sha256": "deacfb232db76122e9c4d0c938eccd60f33e5c45daba3f90f2100147854f20c5",
           "controller_visible_acceptance_assets": [
             {
-              "path": "sources/evaluations/fixtures/medium/beetbox-beets/task-generations/baseline-v4/beets-lifecycle-feature-v0/controller-visible/test/util/test_functemplate.py",
-              "sha256": "6806ec35748e63877d993bee3474e13dedba433ff43ca126d8efbcfa10240888"
+              "path": "sources/evaluations/fixtures/large/hashicorp-terraform/task-generations/baseline-v4/terraform-lifecycle-feature-v0/controller-visible/internal/policy/callback/baseline_v3_deferred_test.go",
+              "sha256": "75ca0f1a697a9bd0c23767cd07672b36621be2813afb9e0b571c2c21f820f988"
             }
           ],
           "upstream_test_paths": [],
@@ -101,33 +101,42 @@
           "model_concealed_paths": []
         },
         {
-          "id": "beets-lifecycle-refactor-v0",
+          "id": "terraform-lifecycle-refactor-v0",
           "order": 2,
           "task_class": "behavior-preserving-refactor",
-          "prompt_path": "sources/evaluations/fixtures/medium/beetbox-beets/task-generations/baseline-v4/beets-lifecycle-refactor-v0/agent-prompt.txt",
-          "prompt_sha256": "dba16cdc81587f6265daa6e9c93151616d3c74762851701a75067ba4afdfc9be",
-          "seed_patch_sha256": "9bcf590139fc91987524e643bc1e6281efbe5a09cd9b2218ca31f670c391c722",
-          "verifier_command": "sources/evaluations/fixtures/medium/beetbox-beets/task-generations/baseline-v4/beets-lifecycle-refactor-v0/verify.sh",
-          "verifier_sha256": "91ec98650ca43abe69b3cfee3948523aa072cf16ff9cf5254bdf243b7b9f882e",
-          "controller_visible_acceptance_assets": [],
+          "prompt_path": "sources/evaluations/fixtures/large/hashicorp-terraform/task-generations/baseline-v4/terraform-lifecycle-refactor-v0/agent-prompt.txt",
+          "prompt_sha256": "9ece512714927be8094354cba647bcb38d732f0ea7de58937abd4a030e9c06f5",
+          "seed_patch_sha256": "c65103202aa6386409631275fa10be98bb72bf7cabe52ddf114468949f24610f",
+          "verifier_command": "sources/evaluations/fixtures/large/hashicorp-terraform/task-generations/baseline-v4/terraform-lifecycle-refactor-v0/verify.sh",
+          "verifier_sha256": "af2b84c19eef5d10aedf63f4615c4a8259223ff54884831f3995e51e85c4fb50",
+          "controller_visible_acceptance_assets": [
+            {
+              "path": "sources/evaluations/fixtures/large/hashicorp-terraform/task-generations/baseline-v4/terraform-lifecycle-refactor-v0/controller-visible/internal/configs/baseline_v3_requirement_type_test.go",
+              "sha256": "e30459345de1fefcd3e50ee6fd900db5fe5e7e65bac4eb5ca5e9ed2a38a4999c"
+            },
+            {
+              "path": "sources/evaluations/fixtures/large/hashicorp-terraform/task-generations/baseline-v4/terraform-lifecycle-refactor-v0/controller-visible/internal/configs/parser_config_dir_test.go",
+              "sha256": "400097f0e6f777d9fbccd97a22121e2e77ddfda8afbe4385984e5f6eb9a47235"
+            }
+          ],
           "upstream_test_paths": [],
           "compatibility_rebased_test_paths": [],
           "expected_model_concealed_paths": [],
           "model_concealed_paths": []
         },
         {
-          "id": "beets-lifecycle-review-v0",
+          "id": "terraform-lifecycle-review-v0",
           "order": 3,
           "task_class": "code-review-correction",
-          "prompt_path": "sources/evaluations/fixtures/medium/beetbox-beets/task-generations/baseline-v4/beets-lifecycle-review-v0/agent-prompt.txt",
-          "prompt_sha256": "41d6efa9889579eecec88c4aaa3bf10f0b5a2e71c4da00f265fc724bd68f3280",
-          "seed_patch_sha256": "14d8dd83706706805b8159f85871036cfb39148dd7912e66e2c8044d505cabad",
-          "verifier_command": "sources/evaluations/fixtures/medium/beetbox-beets/task-generations/baseline-v4/beets-lifecycle-review-v0/verify.sh",
-          "verifier_sha256": "b2d5e2e83bb2b32e1baf9e7cbcd7efbf638f0dd3dbd58fe9f1d7317764def88d",
+          "prompt_path": "sources/evaluations/fixtures/large/hashicorp-terraform/task-generations/baseline-v4/terraform-lifecycle-review-v0/agent-prompt.txt",
+          "prompt_sha256": "7428704e5938b2f8a746ccf24d4fb01a7e99e5ee5a0327abe4304bcd7d3fbb47",
+          "seed_patch_sha256": "89eeb75d4ccf1a274eb053c65d4a6c6d949253206235e7000bf99527947f5095",
+          "verifier_command": "sources/evaluations/fixtures/large/hashicorp-terraform/task-generations/baseline-v4/terraform-lifecycle-review-v0/verify.sh",
+          "verifier_sha256": "61dd3afe0ae32d8e11db631b8aa93eef0a15767f4ea0735d04438cb88bd4518c",
           "controller_visible_acceptance_assets": [
             {
-              "path": "sources/evaluations/fixtures/medium/beetbox-beets/task-generations/baseline-v4/beets-lifecycle-review-v0/controller-visible/test/plugins/test_ftintitle.py",
-              "sha256": "1d8ed5ab383d3c0496dc2158ae9853c0b36bca1f50276181f7d675e352abab35"
+              "path": "sources/evaluations/fixtures/large/hashicorp-terraform/task-generations/baseline-v4/terraform-lifecycle-review-v0/controller-visible/internal/addrs/baseline_v3_checkable_test.go",
+              "sha256": "db7b1b01d4ea394a07c16c76ebe13c042cb4507302dbd0a9809fa1ce30f91df3"
             }
           ],
           "upstream_test_paths": [],
@@ -135,7 +144,7 @@
           "expected_model_concealed_paths": [],
           "model_concealed_paths": [],
           "review_patch_path": "review-change.patch",
-          "review_patch_sha256": "14d8dd83706706805b8159f85871036cfb39148dd7912e66e2c8044d505cabad"
+          "review_patch_sha256": "9820e02bdbf682b7e5559e42ba8bf3799d4f22018d31cb8cd1621223c371cfcd"
         }
       ],
       "model_facing_prompts": {
@@ -143,25 +152,25 @@
         "profile_guidance_sha256": "f1d7a2cf7b0a7c1affd8bbb04705f073332ee6efc5f8f89f019b9e0cbacec4bb",
         "tasks": [
           {
-            "task_id": "beets-lifecycle-feature-v0",
+            "task_id": "terraform-lifecycle-feature-v0",
             "order": 1,
-            "rendered_prompt_sha256": "762417a29c6df8ec7df501afd125c119d72cba9a5cdc93d0950fe1d835680f6e"
+            "rendered_prompt_sha256": "f5bb145484b20e90054bcb8160de9688ee985b237e3a03b40c5dacb6638980dc"
           },
           {
-            "task_id": "beets-lifecycle-refactor-v0",
+            "task_id": "terraform-lifecycle-refactor-v0",
             "order": 2,
-            "rendered_prompt_sha256": "727cc41394c3a1215befbe097862bf1a3f78958882b21521c90f6721099413e0"
+            "rendered_prompt_sha256": "6a1c7a09e43d141088f3ca871ac3744ed78e332713fe854118b51b0989b77c7c"
           },
           {
-            "task_id": "beets-lifecycle-review-v0",
+            "task_id": "terraform-lifecycle-review-v0",
             "order": 3,
-            "rendered_prompt_sha256": "2ba3299daa5adc71491ee713bd4c6b6208d6b36443ac327c919fe1b9db5943a2"
+            "rendered_prompt_sha256": "6b854332fdd04a97f65eb2aef312dcf61e37a8521f4b8fa324ccef2c9ddde7a4"
           }
         ]
       },
       "qualification": {
-        "path": "sources/evaluations/fixtures/medium/beetbox-beets/qualification-lifecycle-v0-baseline-v4.json",
-        "sha256": "62d841b17636e669440ca040152d5792b08851bea6cc139a47777f89b34a3c80"
+        "path": "sources/evaluations/fixtures/large/hashicorp-terraform/qualification-lifecycle-v0-baseline-v4.json",
+        "sha256": "08a37382172643a0d4d4dc4c1f43751b4774c63c576419dde715849c30b1d96b"
       },
       "baseline_profile": {
         "profile_id": "baseline-bare-codex",
@@ -200,11 +209,11 @@
         },
         "dockerfile_path": "sources/evaluations/fixtures/container/Dockerfile",
         "dockerfile_sha256": "47c91967ce25014ce54879514f51d2ff0326651be1087209115eff4d358226b3",
-        "dependency_command": "uv sync --group test --frozen",
+        "dependency_command": "go mod download",
         "dependency_lockfiles": [
           {
-            "path": "uv.lock",
-            "sha256": "fbf1d7a9c84b658a2433035221ba18c57508c254d711a06f305e2f610839a45f"
+            "path": "go.sum",
+            "sha256": "be9ec949db0a0b135197f2c78b6d9821d764cc9b8c362b4860e3d5a1e9c74b9e"
           }
         ],
         "codex_runtime_condition": "codex-openai-gpt-5-6-sol-high"
@@ -216,8 +225,10 @@
         "future_seed_regressions_visible": true,
         "controller_verifier_scripts_and_canonical_copies_model_visible": false,
         "model_visible_acceptance_asset_paths": [
-          "test/plugins/test_ftintitle.py",
-          "test/util/test_functemplate.py"
+          "internal/addrs/baseline_v3_checkable_test.go",
+          "internal/configs/baseline_v3_requirement_type_test.go",
+          "internal/configs/parser_config_dir_test.go",
+          "internal/policy/callback/baseline_v3_deferred_test.go"
         ],
         "git_baseline_true_root_at_lane_start": true,
         "controller_verification": "final-only",
@@ -238,27 +249,27 @@
     }
   },
   "selected_execution": {
-    "descriptor_sha256": "252725696926a5410d63daee9d763f1a59064c0c8e2b1bd487d1fa7b750a5b76",
+    "descriptor_sha256": "50725b781046d5fc9c727851d226b65c5630bdb0fcd2b00cb9aac574411f9566",
     "descriptor": {
       "version": "execution-condition-v1",
-      "sequence_id": "beets-lifecycle-sequence-v0",
+      "sequence_id": "terraform-lifecycle-sequence-v0",
       "execution_role": "individual_tool_treatment",
       "selected_profile": {
-        "profile_id": "codescope-opencode-product-v1",
+        "profile_id": "retrieval-sigmap-opencode-product-v1",
         "profile_type": "individual_tool",
         "component_ids": [
-          "codescope-opencode-product-v1"
+          "retrieval-sigmap-opencode-product-v1"
         ],
         "enabled_surfaces": [
-          "broad-context-owner",
+          "retrieval-context",
           "opencode-mcp",
-          "official-initialize-instructions",
-          "warm-index"
+          "product-setup",
+          "warm-context-map"
         ],
         "disabled_overlaps": [
           "all unlisted surfaces"
         ],
-        "registry_entry_sha256": "bef86c2e27815840852c4957f2f87eed36238809916e5916c038d98e562acd54",
+        "registry_entry_sha256": "02f5f6d2216431ecb9f6c88f52b8abf6c32894fd1c55701b0e09b5f51362e16b",
         "registry_entry": {
           "profile_type": "individual_tool",
           "objective_scope": "individual_tool_effectiveness",
@@ -279,38 +290,40 @@
           "reset": {
             "policy": "Delete lane-private OpenCode XDG directories, product state, generated repository treatment files, auth translation, and background processes after evidence capture."
           },
-          "id": "codescope-opencode-product-v1",
-          "name": "CodeScope OpenCode MCP V1",
+          "id": "retrieval-sigmap-opencode-product-v1",
+          "name": "SigMap OpenCode MCP and context setup V1",
           "enabled_surfaces": [
-            "broad-context-owner",
+            "retrieval-context",
             "opencode-mcp",
-            "official-initialize-instructions",
-            "warm-index"
+            "product-setup",
+            "warm-context-map"
           ],
           "components": [
             {
-              "component_id": "codescope-opencode-product-v1",
-              "surface": "broad-context-owner+opencode-mcp+official-initialize-instructions+warm-index",
+              "component_id": "retrieval-sigmap-opencode-product-v1",
+              "surface": "retrieval-context+opencode-mcp+product-setup+warm-context-map",
               "role": "individual_tool"
             }
           ],
           "install": {
-            "policy": "Run the pinned CodeScope 0.8.12 release with its bundled SurrealDB, build a lane-private warm index, register only its host-agnostic MCP server in the isolated OpenCode config, and require initialize plus tools/list before provider execution."
+            "policy": "Run the pinned standalone SigMap bundle\u2019s official OpenCode MCP installer, build its product context map with the copilot-compatible adapter, and require initialize plus tools/list."
           },
           "evaluation_protocol": {
             "tool_use_policy": "natural",
-            "tool_state": "warm-index+official-mcp-instructions",
-            "integration_state": "host-agnostic-mcp-on-opencode",
-            "assignment_proof": "provider-free exact binary identities, warm index, effective-config receipt, initialize, and tools/list required"
+            "tool_state": "warm-context-map+active-mcp",
+            "integration_state": "official-opencode-mcp+product-setup",
+            "assignment_proof": "provider-free exact artifact identities, effective OpenCode configuration, native activation, warm state, and task/final verifiers required"
           },
           "source_snapshot": {
-            "repository": "onur-gokyildiz-bhi/codescope",
-            "version": "0.8.12",
-            "release_asset_sha256": "d6f64f7bc7bf1ab65115fdede85d794f58151c6f1414421825959eb2101165c1",
-            "runtime_adapter": "/opt/data/tool-candidates/opencode-adapter-v4/opencode_workflow_adapter.py",
-            "runtime_adapter_sha256": "e3c6e77fc22ae12a6548ee3ad92836d58c2db411ceae7c3743c370c469e6bbf7"
+            "repository": "",
+            "version": "8.9.1",
+            "source_commit": "b1e086cf06bc7a7622473ffe9637c122567404e0",
+            "bundle_sha256": "1a920ef5dfb50f9f1a23baa7d26ab2f9329616242713a7d8734928970ad4fb59",
+            "package_sha256": "f8478ca025747dada0b86288f696e1ae39ea8701a5081c60f54c70eafa034963",
+            "runtime_adapter": "/opt/data/tool-candidates/opencode-adapter-v6/opencode_workflow_adapter.py",
+            "runtime_adapter_sha256": "1b98aaec34711b3a7bb09ce269c12bb06421ab08913d06593fb6d2c6641a34a3"
           },
-          "notes": "Successive OpenCode screen selected from the live compatible shortlist. CodeScope does not name OpenCode in its installer but explicitly supports any MCP-compatible host; this profile uses the unchanged product MCP server and initialize instructions."
+          "notes": "Second successive screen: SigMap is a zero-dependency standalone MCP/context bundle and explicitly supports the OpenCode MCP client."
         }
       },
       "model_facing_prompts": {
@@ -318,39 +331,39 @@
         "profile_guidance_sha256": "cb08dba8b361975eb89669cc77d206861b05fc26b161a9215337dbb2d30a6366",
         "tasks": [
           {
-            "task_id": "beets-lifecycle-feature-v0",
+            "task_id": "terraform-lifecycle-feature-v0",
             "order": 1,
-            "rendered_prompt_sha256": "db0981ff4c4428e5213221c6024697ff64afa64d0c3020c462d39fb9b89c0257"
+            "rendered_prompt_sha256": "0c7a1ae29db926cb00a0d6692e684dbf2088a40fc5d5d513fcba2601fb7690d1"
           },
           {
-            "task_id": "beets-lifecycle-refactor-v0",
+            "task_id": "terraform-lifecycle-refactor-v0",
             "order": 2,
-            "rendered_prompt_sha256": "727cc41394c3a1215befbe097862bf1a3f78958882b21521c90f6721099413e0"
+            "rendered_prompt_sha256": "6a1c7a09e43d141088f3ca871ac3744ed78e332713fe854118b51b0989b77c7c"
           },
           {
-            "task_id": "beets-lifecycle-review-v0",
+            "task_id": "terraform-lifecycle-review-v0",
             "order": 3,
-            "rendered_prompt_sha256": "2ba3299daa5adc71491ee713bd4c6b6208d6b36443ac327c919fe1b9db5943a2"
+            "rendered_prompt_sha256": "6b854332fdd04a97f65eb2aef312dcf61e37a8521f4b8fa324ccef2c9ddde7a4"
           }
         ]
       },
       "tool_adapter": {
-        "tool_id": "codescope-opencode-product-v1",
+        "tool_id": "sigmap-opencode-product-v1",
         "tool_manifest": "scripts/run_codex_fixture_evaluation.py:TOOL_CONFIGS",
-        "tool_manifest_sha256": "9fa2867ee06719ad1866ca73fb2ed79501ccb7321ab108061afcb47593c2035a",
+        "tool_manifest_sha256": "830d6f7575ca7c8fe0102c09f754e1c24f0490e445eceec8d16fd18894880f37",
         "tool_config": {
-          "display_name": "CodeScope host-agnostic MCP on OpenCode v1",
-          "lane_name": "codescope-opencode-product-v1",
-          "surface": "opencode-mcp/official-initialize-instructions+warm-index",
+          "display_name": "SigMap official OpenCode MCP and context setup v1",
+          "lane_name": "retrieval-sigmap-opencode-product-v1",
+          "surface": "opencode-mcp+product-setup+warm-context-map",
           "allowed_terms": [
             "opencode",
-            "codescope"
+            "sigmap",
+            "gen-context"
           ],
-          "data_dir_name": "codescope-opencode-product-v1",
+          "data_dir_name": "retrieval-sigmap-opencode-product-v1",
           "mounts": [
-            "/opt/data/tool-candidates/opencode-adapter-v4/opencode_workflow_adapter.py",
-            "/opt/data/tool-candidates/codescope-release-v0.8.12/codescope",
-            "/opt/data/tool-candidates/codescope-release-v0.8.12/surreal"
+            "/opt/data/tool-candidates/opencode-adapter-v6/opencode_workflow_adapter.py",
+            "/opt/data/tool-candidates/sigmap"
           ],
           "executable": "/opt/data/tool-candidates/opencode-runtime/node_modules/opencode-ai/bin/opencode.exe",
           "expected_executable_sha256": "7c4d91c84d2bfdeabb59257e3490c5e5acb08f2aacb3e42f3ddc296a1c3f1aca",
@@ -358,78 +371,92 @@
           "codex_wrapper": {
             "command": "/usr/bin/python3",
             "args": [
-              "/opt/data/tool-candidates/opencode-adapter-v4/opencode_workflow_adapter.py",
+              "/opt/data/tool-candidates/opencode-adapter-v6/opencode_workflow_adapter.py",
               "--opencode-binary",
               "/opt/data/tool-candidates/opencode-runtime/node_modules/opencode-ai/bin/opencode.exe",
               "--expected-opencode-sha256",
               "7c4d91c84d2bfdeabb59257e3490c5e5acb08f2aacb3e42f3ddc296a1c3f1aca",
               "--treatment",
-              "codescope"
+              "sigmap"
             ]
           },
           "preflight_command": [
             "/usr/bin/python3",
-            "/opt/data/tool-candidates/opencode-adapter-v4/opencode_workflow_adapter.py",
+            "/opt/data/tool-candidates/opencode-adapter-v6/opencode_workflow_adapter.py",
             "--opencode-binary",
             "/opt/data/tool-candidates/opencode-runtime/node_modules/opencode-ai/bin/opencode.exe",
             "--expected-opencode-sha256",
             "7c4d91c84d2bfdeabb59257e3490c5e5acb08f2aacb3e42f3ddc296a1c3f1aca",
             "--treatment",
-            "codescope",
+            "sigmap",
             "--probe"
           ],
           "tool_manifest_identity": "current-file-v1",
-          "path_entries": [
-            "/opt/data/tool-candidates/codescope-release-v0.8.12"
-          ],
           "env": {
-            "CODESCOPE_DB_PATH": "{tool_data_dir}/db",
-            "OPENCODE_EVALUATION_DIRECTORY": "{repo}"
+            "OPENCODE_TOOL_DATA_DIR": "{tool_data_dir}",
+            "SIGMAP_TELEMETRY": "0"
           },
           "host_integration": {
+            "install_commands": [
+              [
+                "/bin/bash",
+                "-lc",
+                "cd {repo} && exec /opt/data/opt/node-v24.18.0-linux-x64/bin/node /opt/data/tool-candidates/sigmap/gen-context.js mcp install opencode"
+              ]
+            ],
             "verify_commands": [
               [
-                "/opt/data/tool-candidates/codescope-release-v0.8.12/codescope",
+                "/opt/data/opt/node-v24.18.0-linux-x64/bin/node",
+                "/opt/data/tool-candidates/sigmap/gen-context.js",
                 "--version"
               ]
-            ]
+            ],
+            "required_files": [
+              "{repo}/opencode.json"
+            ],
+            "timeout_seconds": 600
           },
-          "mcp_server": "codescope",
-          "mcp_command": "/bin/bash",
+          "mcp_server": "sigmap",
+          "mcp_command": "/opt/data/opt/node-v24.18.0-linux-x64/bin/node",
           "mcp_args": [
-            "-lc",
-            "set -euo pipefail; /opt/data/tool-candidates/codescope-release-v0.8.12/codescope start >/dev/null; trap '/opt/data/tool-candidates/codescope-release-v0.8.12/codescope stop >/dev/null 2>&1 || true' EXIT; i=0; until /opt/data/tool-candidates/codescope-release-v0.8.12/codescope status | grep -q '^running'; do i=$((i+1)); [ \"$i\" -lt 50 ]; sleep 0.2; done; exec /opt/data/tool-candidates/codescope-release-v0.8.12/codescope mcp {repo}"
+            "/opt/data/tool-candidates/sigmap/gen-context.js",
+            "--mcp"
           ],
           "mcp_handshake": {
             "required": true,
             "method": "initialize-and-tools-list",
-            "timeout_seconds": 180
+            "timeout_seconds": 120
           },
           "warmup": {
-            "kind": "official-surreal-start-and-index",
+            "kind": "signature-map-build",
             "command": [
-              "/bin/bash",
-              "-lc",
-              "set -euo pipefail; /opt/data/tool-candidates/codescope-release-v0.8.12/codescope start >/dev/null; trap '/opt/data/tool-candidates/codescope-release-v0.8.12/codescope stop >/dev/null 2>&1 || true' EXIT; i=0; until /opt/data/tool-candidates/codescope-release-v0.8.12/codescope status | grep -q '^running'; do i=$((i+1)); [ \"$i\" -lt 50 ]; sleep 0.2; done; /opt/data/tool-candidates/codescope-release-v0.8.12/codescope index {repo}"
+              "/opt/data/opt/node-v24.18.0-linux-x64/bin/node",
+              "/opt/data/tool-candidates/sigmap/gen-context.js",
+              "--adapter",
+              "copilot",
+              "--no-track"
             ],
-            "output_name": "codescope-warmup-output.txt",
-            "metadata_name": "codescope-warmup-metadata.json",
-            "timeout_seconds": 3600
+            "cleanup_paths": [
+              ".context"
+            ],
+            "output_name": "sigmap-warmup-output.txt",
+            "metadata_name": "sigmap-warmup-metadata.json",
+            "timeout_seconds": 1200
           },
           "artifact_identities": [
             {
-              "path": "/opt/data/tool-candidates/codescope-release-v0.8.12/codescope",
-              "sha256": "d6f64f7bc7bf1ab65115fdede85d794f58151c6f1414421825959eb2101165c1",
-              "kind": "compiled-cli-mcp"
+              "path": "/opt/data/tool-candidates/sigmap/gen-context.js",
+              "sha256": "1a920ef5dfb50f9f1a23baa7d26ab2f9329616242713a7d8734928970ad4fb59",
+              "kind": "standalone-mcp-bundle"
             },
             {
-              "path": "/opt/data/tool-candidates/codescope-release-v0.8.12/surreal",
-              "sha256": "a9a5e9e36e4f6fe922e1991a4fb0ea1ee4fe90819c5e3a8dce238a56666e8cec",
-              "kind": "bundled-database"
+              "path": "/opt/data/tool-candidates/sigmap/package.json",
+              "sha256": "f8478ca025747dada0b86288f696e1ae39ea8701a5081c60f54c70eafa034963",
+              "kind": "source-package"
             },
             {
-              "path": "/opt/data/tool-candidates/opencode-adapter-v4/opencode_workflow_adapter.py",
-              "sha256": "e3c6e77fc22ae12a6548ee3ad92836d58c2db411ceae7c3743c370c469e6bbf7",
+              "path": "/opt/data/tool-candidates/opencode-adapter-v6/opencode_workflow_adapter.py",
+              "sha256": "1b98aaec34711b3a7bb09ce269c12bb06421ab08913d06593fb6d2c6641a34a3",
               "kind": "runtime-adapter"
             }
           ],
@@ -437,61 +464,60 @@
             "required": true,
             "source": "adapter-probe"
           },
-          "default_tool_state": "warm-index+official-mcp-instructions"
+          "diff_exclude_paths": [
+            ".context",
+            "opencode.json"
+          ],
+          "default_tool_state": "warm-context-map+active-mcp"
         },
-        "tool_config_sha256": "7be1c903a40c747bf463d9fda0da0d0ea14cd7cbe474528025deee0d5a92df22",
-        "tool_state": "warm-index+official-mcp-instructions",
+        "tool_config_sha256": "37c6fa3e0c4b87d0318030fc0038a1d45e84f01972678f10f4da5391c46a1f24",
+        "tool_state": "warm-context-map+active-mcp",
         "tool_use_policy": "natural",
         "command_identity": {
           "kind": "mcp_command",
           "command": [
-            "/bin/bash",
-            "-lc",
-            "set -euo pipefail; /opt/data/tool-candidates/codescope-release-v0.8.12/codescope start >/dev/null; trap '/opt/data/tool-candidates/codescope-release-v0.8.12/codescope stop >/dev/null 2>&1 || true' EXIT; i=0; until /opt/data/tool-candidates/codescope-release-v0.8.12/codescope status | grep -q '^running'; do i=$((i+1)); [ \"$i\" -lt 50 ]; sleep 0.2; done; exec /opt/data/tool-candidates/codescope-release-v0.8.12/codescope mcp {repo}"
+            "/opt/data/opt/node-v24.18.0-linux-x64/bin/node",
+            "/opt/data/tool-candidates/sigmap/gen-context.js",
+            "--mcp"
           ]
         },
         "binary_identity": {
-          "executable_token": "/bin/bash",
-          "resolved_path": "/bin/bash",
-          "realpath": "/usr/bin/bash",
-          "sha256": "223fe8564b60636bc738b6178d3ba9a50ef7d791266b0efae6363bb716e4c47f",
+          "executable_token": "/opt/data/opt/node-v24.18.0-linux-x64/bin/node",
+          "resolved_path": "/opt/data/opt/node-v24.18.0-linux-x64/bin/node",
+          "realpath": "/opt/data/opt/node-v24.18.0-linux-x64/bin/node",
+          "sha256": "41a74efb34cbde5c7632cdac0cf8bd1a14d0b8d73dc1e82755014d9a9ce70f5c",
           "metadata": {
-            "size": 1298416,
+            "size": 123655872,
             "mode": "-rwxr-xr-x",
-            "uid": 0,
-            "gid": 0,
-            "mtime_ns": 1772983313000000000
+            "uid": 10000,
+            "gid": 10000,
+            "mtime_ns": 1782236933000000000
           },
           "version": {
             "command": [
-              "/usr/bin/bash",
+              "/opt/data/opt/node-v24.18.0-linux-x64/bin/node",
               "--version"
             ],
-            "environment_path": "/opt/data/.local/bin:/opt/data/tool-candidates/codescope-release-v0.8.12:/opt/data/opt/go/bin:/opt/data/opt/uv:/opt/data/opt/node-v24.18.0-linux-x64/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+            "environment_path": "/opt/data/.local/bin:/opt/data/opt/go/bin:/opt/data/opt/uv:/opt/data/opt/node-v24.18.0-linux-x64/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
             "captured": true,
             "exit_code": 0,
-            "output": "GNU bash, version 5.2.37(1)-release (x86_64-pc-linux-gnu)\nCopyright (C) 2022 Free Software Foundation, Inc.\nLicense GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>\n\nThis is free software; you are free to change and redistribute it.\nThere is NO WARRANTY, to the extent permitted by law.",
+            "output": "v24.18.0",
             "truncated": false
           }
         },
         "source_identity": [
           {
-            "path": "/opt/data/tool-candidates/codescope-release-v0.8.12/codescope",
+            "path": "/opt/data/tool-candidates/opencode-adapter-v6/opencode_workflow_adapter.py",
             "exists": true,
             "kind": "file",
-            "sha256": "d6f64f7bc7bf1ab65115fdede85d794f58151c6f1414421825959eb2101165c1"
+            "sha256": "1b98aaec34711b3a7bb09ce269c12bb06421ab08913d06593fb6d2c6641a34a3"
           },
           {
-            "path": "/opt/data/tool-candidates/codescope-release-v0.8.12/surreal",
+            "path": "/opt/data/tool-candidates/sigmap",
             "exists": true,
-            "kind": "file",
-            "sha256": "a9a5e9e36e4f6fe922e1991a4fb0ea1ee4fe90819c5e3a8dce238a56666e8cec"
-          },
-          {
-            "path": "/opt/data/tool-candidates/opencode-adapter-v4/opencode_workflow_adapter.py",
-            "exists": true,
-            "kind": "file",
-            "sha256": "e3c6e77fc22ae12a6548ee3ad92836d58c2db411ceae7c3743c370c469e6bbf7"
+            "kind": "directory",
+            "git_head": "b1e086cf06bc7a7622473ffe9637c122567404e0",
+            "package_json_sha256": "f8478ca025747dada0b86288f696e1ae39ea8701a5081c60f54c70eafa034963"
           }
         ]
       },
@@ -510,7 +536,7 @@
         "dockerfile_path": "sources/evaluations/fixtures/container/Dockerfile",
         "dockerfile_sha256": "47c91967ce25014ce54879514f51d2ff0326651be1087209115eff4d358226b3",
         "fixture_runner_path": "scripts/run_codex_fixture_evaluation.py",
-        "fixture_runner_sha256": "9fa2867ee06719ad1866ca73fb2ed79501ccb7321ab108061afcb47593c2035a",
+        "fixture_runner_sha256": "830d6f7575ca7c8fe0102c09f754e1c24f0490e445eceec8d16fd18894880f37",
         "mcp_probe_path": "scripts/probe_mcp_stdio.py",
         "mcp_probe_sha256": "7c06ea36ee5cac933a97140b84a41405fc99b45152388e8d7c6659136af698fd",
         "codex_entrypoint_path": "sources/evaluations/fixtures/container/codex-entrypoint.sh",
@@ -534,12 +560,12 @@
         }
       },
       "dependencies": {
-        "command": "uv sync --group test --frozen",
-        "command_sha256": "cef23fd45902c23f8b3e89b7c6360a401eb49c17cf36d742e5b625d5593c911b",
+        "command": "go mod download",
+        "command_sha256": "42a8263a643ccbe692d70752ffdd8cea328fc2d3190677df1485ee06f55b350a",
         "lockfiles": [
           {
-            "path": "uv.lock",
-            "snapshot_sha256": "fbf1d7a9c84b658a2433035221ba18c57508c254d711a06f305e2f610839a45f",
+            "path": "go.sum",
+            "snapshot_sha256": "be9ec949db0a0b135197f2c78b6d9821d764cc9b8c362b4860e3d5a1e9c74b9e",
             "current_fixture_sha256": null
           }
         ]
@@ -560,14 +586,16 @@
         "controller_verification": "final-only",
         "controller_verifier_scripts_and_canonical_copies_model_visible": false,
         "model_visible_acceptance_asset_paths": [
-          "test/plugins/test_ftintitle.py",
-          "test/util/test_functemplate.py"
+          "internal/addrs/baseline_v3_checkable_test.go",
+          "internal/configs/baseline_v3_requirement_type_test.go",
+          "internal/configs/parser_config_dir_test.go",
+          "internal/policy/callback/baseline_v3_deferred_test.go"
         ],
         "model_concealed_paths": []
       },
       "baseline_pool_reference": {
         "protocol_version": "baseline-pool-v1",
-        "protocol_fingerprint": "fcc8438d2077",
+        "protocol_fingerprint": "5811b463c1e9",
         "comparison_policy": "paired baseline and treatment must share this baseline pool fingerprint and replicate"
       },
       "model_condition_override": {

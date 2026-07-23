@@ -1,19 +1,19 @@
 {
   "protocol_schema_version": 3,
-  "protocol_id": "terraform-lifecycle-sequence-v0-behavior-caveman-opencode-plugin-v1-438508e4ea3d",
+  "protocol_id": "beets-lifecycle-sequence-v0-retrieval-jcodemunch-opencode-product-v1-8db298d58698",
   "status": "frozen-ready-not-run",
-  "outcome": "Frozen behavior-caveman-opencode-plugin-v1 protocol for terraform-lifecycle-sequence-v0; no provider/model run has occurred.",
+  "outcome": "Frozen retrieval-jcodemunch-opencode-product-v1 protocol for beets-lifecycle-sequence-v0; no provider/model run has occurred.",
   "frozen_at": "2026-07-22",
-  "hypothesis": "behavior-caveman-opencode-plugin-v1 produces reproducible provider-reported token and software-quality evidence for terraform-lifecycle-sequence-v0",
+  "hypothesis": "retrieval-jcodemunch-opencode-product-v1 produces reproducible provider-reported token and software-quality evidence for beets-lifecycle-sequence-v0",
   "evidence_stage_target": "reproduction",
   "task_fixture": {
-    "fixture_id": "large-hashicorp-terraform",
-    "sequence_id": "terraform-lifecycle-sequence-v0",
+    "fixture_id": "medium-beetbox-beets",
+    "sequence_id": "beets-lifecycle-sequence-v0",
     "task_family_generation": "baseline-v4",
-    "repository": "https://github.com/hashicorp/terraform.git",
-    "snapshot": "e02391ad384c9c38f1d7f40b853c0d2297348094",
-    "qualification_path": "sources/evaluations/fixtures/large/hashicorp-terraform/qualification-lifecycle-v0-baseline-v4.json",
-    "qualification_sha256": "08a37382172643a0d4d4dc4c1f43751b4774c63c576419dde715849c30b1d96b",
+    "repository": "https://github.com/beetbox/beets.git",
+    "snapshot": "9acb1ecff6c7ee0a1e83e3b983c94792345712c5",
+    "qualification_path": "sources/evaluations/fixtures/medium/beetbox-beets/qualification-lifecycle-v0-baseline-v4.json",
+    "qualification_sha256": "62d841b17636e669440ca040152d5792b08851bea6cc139a47777f89b34a3c80",
     "timeout_seconds_per_task": 3600
   },
   "baseline": {
@@ -35,13 +35,13 @@
     "selection_policy": "sequence-pool-replicate-matched-first-valid"
   },
   "treatment": {
-    "profile_id": "behavior-caveman-opencode-plugin-v1",
+    "profile_id": "retrieval-jcodemunch-opencode-product-v1",
     "runtime_id": "opencode-cli",
     "provider": "openai",
     "model": "gpt-5.6-sol",
     "model_condition_id": "opencode-openai-gpt-5-6-sol-high",
     "reasoning_effort": "high",
-    "command": "python3 scripts/run_opencode_workflow_model_condition.py --workflow-model-condition-id opencode-openai-gpt-5-6-sol-high --workflow-model gpt-5.6-sol --workflow-reasoning-effort high --sequence-id terraform-lifecycle-sequence-v0 --profile-id behavior-caveman-opencode-plugin-v1 --timeout-per-task 3600 --protocol sources/evaluations/protocols/terraform-lifecycle-sequence-v0-behavior-caveman-opencode-plugin-v1-438508e4ea3d.json --docker-image token-eval-codex:latest"
+    "command": "python3 scripts/run_opencode_workflow_model_condition.py --workflow-model-condition-id opencode-openai-gpt-5-6-sol-high --workflow-model gpt-5.6-sol --workflow-reasoning-effort high --sequence-id beets-lifecycle-sequence-v0 --profile-id retrieval-jcodemunch-opencode-product-v1 --timeout-per-task 3600 --protocol sources/evaluations/protocols/beets-lifecycle-sequence-v0-retrieval-jcodemunch-opencode-product-v1-8db298d58698.json --docker-image token-eval-codex:latest"
   },
   "token_accounting_boundary": {
     "fields": [
@@ -55,7 +55,7 @@
   },
   "baseline_pool": {
     "protocol_version": "baseline-pool-v1",
-    "protocol_fingerprint": "5811b463c1e9",
+    "protocol_fingerprint": "fcc8438d2077",
     "descriptor": {
       "version": "baseline-pool-v1",
       "task_family_generation": "baseline-v4",
@@ -63,17 +63,17 @@
       "runner_sha256": "a5658191022664fcba500822c66a429743a42f23bd330932a4e9499023374f42",
       "qualification_generator_sha256": "92c9d68b3146b37dd0f4f6c0c71a20d7ef83898fec7206b8d022f06351969eb7",
       "validator_sha256": "8e6de8f20d0403cfa206c327c044fba7c3ac6f969d1af36445dc0afad8a2ce8b",
-      "sequence_id": "terraform-lifecycle-sequence-v0",
+      "sequence_id": "beets-lifecycle-sequence-v0",
       "sequence_contract": "feature-refactor-review",
-      "fixture_id": "large-hashicorp-terraform",
-      "fixture_scale": "large-project",
+      "fixture_id": "medium-beetbox-beets",
+      "fixture_scale": "medium-project",
       "initial_snapshot": {
-        "commit": "e02391ad384c9c38f1d7f40b853c0d2297348094",
-        "upstream": "https://github.com/hashicorp/terraform.git",
+        "commit": "9acb1ecff6c7ee0a1e83e3b983c94792345712c5",
+        "upstream": "https://github.com/beetbox/beets.git",
         "dependency_lockfiles": [
           {
-            "path": "go.sum",
-            "sha256": "be9ec949db0a0b135197f2c78b6d9821d764cc9b8c362b4860e3d5a1e9c74b9e"
+            "path": "uv.lock",
+            "sha256": "fbf1d7a9c84b658a2433035221ba18c57508c254d711a06f305e2f610839a45f"
           }
         ]
       },
@@ -81,18 +81,18 @@
       "primary_metric": "cumulative provider-reported workflow tokens",
       "tasks": [
         {
-          "id": "terraform-lifecycle-feature-v0",
+          "id": "beets-lifecycle-feature-v0",
           "order": 1,
           "task_class": "feature-implementation",
-          "prompt_path": "sources/evaluations/fixtures/large/hashicorp-terraform/task-generations/baseline-v4/terraform-lifecycle-feature-v0/agent-prompt.txt",
-          "prompt_sha256": "8052449811cdde0de9b8dac90b2a9e152a12c5a4a5bf75d4a809a15d4286f0da",
-          "seed_patch_sha256": "650cdad86a78661e72f231b3971dbc725cbb0b16bfb0531ae798c507586bc546",
-          "verifier_command": "sources/evaluations/fixtures/large/hashicorp-terraform/task-generations/baseline-v4/terraform-lifecycle-feature-v0/verify.sh",
-          "verifier_sha256": "deacfb232db76122e9c4d0c938eccd60f33e5c45daba3f90f2100147854f20c5",
+          "prompt_path": "sources/evaluations/fixtures/medium/beetbox-beets/task-generations/baseline-v4/beets-lifecycle-feature-v0/agent-prompt.txt",
+          "prompt_sha256": "9033237087b94204b279a545c0c8967229a4dfebde37ddfae401bac0b0149b53",
+          "seed_patch_sha256": "9dc1cf36d0d0120fb57f75c4579af7f1f65b80e9d80de2d2c5cbdeb69b4ac17e",
+          "verifier_command": "sources/evaluations/fixtures/medium/beetbox-beets/task-generations/baseline-v4/beets-lifecycle-feature-v0/verify.sh",
+          "verifier_sha256": "6c66323a59314d4b8390eb288a41f823b3ac1723af94f8fe771cacb2b5e88588",
           "controller_visible_acceptance_assets": [
             {
-              "path": "sources/evaluations/fixtures/large/hashicorp-terraform/task-generations/baseline-v4/terraform-lifecycle-feature-v0/controller-visible/internal/policy/callback/baseline_v3_deferred_test.go",
-              "sha256": "75ca0f1a697a9bd0c23767cd07672b36621be2813afb9e0b571c2c21f820f988"
+              "path": "sources/evaluations/fixtures/medium/beetbox-beets/task-generations/baseline-v4/beets-lifecycle-feature-v0/controller-visible/test/util/test_functemplate.py",
+              "sha256": "6806ec35748e63877d993bee3474e13dedba433ff43ca126d8efbcfa10240888"
             }
           ],
           "upstream_test_paths": [],
@@ -101,42 +101,33 @@
           "model_concealed_paths": []
         },
         {
-          "id": "terraform-lifecycle-refactor-v0",
+          "id": "beets-lifecycle-refactor-v0",
           "order": 2,
           "task_class": "behavior-preserving-refactor",
-          "prompt_path": "sources/evaluations/fixtures/large/hashicorp-terraform/task-generations/baseline-v4/terraform-lifecycle-refactor-v0/agent-prompt.txt",
-          "prompt_sha256": "9ece512714927be8094354cba647bcb38d732f0ea7de58937abd4a030e9c06f5",
-          "seed_patch_sha256": "c65103202aa6386409631275fa10be98bb72bf7cabe52ddf114468949f24610f",
-          "verifier_command": "sources/evaluations/fixtures/large/hashicorp-terraform/task-generations/baseline-v4/terraform-lifecycle-refactor-v0/verify.sh",
-          "verifier_sha256": "af2b84c19eef5d10aedf63f4615c4a8259223ff54884831f3995e51e85c4fb50",
-          "controller_visible_acceptance_assets": [
-            {
-              "path": "sources/evaluations/fixtures/large/hashicorp-terraform/task-generations/baseline-v4/terraform-lifecycle-refactor-v0/controller-visible/internal/configs/baseline_v3_requirement_type_test.go",
-              "sha256": "e30459345de1fefcd3e50ee6fd900db5fe5e7e65bac4eb5ca5e9ed2a38a4999c"
-            },
-            {
-              "path": "sources/evaluations/fixtures/large/hashicorp-terraform/task-generations/baseline-v4/terraform-lifecycle-refactor-v0/controller-visible/internal/configs/parser_config_dir_test.go",
-              "sha256": "400097f0e6f777d9fbccd97a22121e2e77ddfda8afbe4385984e5f6eb9a47235"
-            }
-          ],
+          "prompt_path": "sources/evaluations/fixtures/medium/beetbox-beets/task-generations/baseline-v4/beets-lifecycle-refactor-v0/agent-prompt.txt",
+          "prompt_sha256": "dba16cdc81587f6265daa6e9c93151616d3c74762851701a75067ba4afdfc9be",
+          "seed_patch_sha256": "9bcf590139fc91987524e643bc1e6281efbe5a09cd9b2218ca31f670c391c722",
+          "verifier_command": "sources/evaluations/fixtures/medium/beetbox-beets/task-generations/baseline-v4/beets-lifecycle-refactor-v0/verify.sh",
+          "verifier_sha256": "91ec98650ca43abe69b3cfee3948523aa072cf16ff9cf5254bdf243b7b9f882e",
+          "controller_visible_acceptance_assets": [],
           "upstream_test_paths": [],
           "compatibility_rebased_test_paths": [],
           "expected_model_concealed_paths": [],
           "model_concealed_paths": []
         },
         {
-          "id": "terraform-lifecycle-review-v0",
+          "id": "beets-lifecycle-review-v0",
           "order": 3,
           "task_class": "code-review-correction",
-          "prompt_path": "sources/evaluations/fixtures/large/hashicorp-terraform/task-generations/baseline-v4/terraform-lifecycle-review-v0/agent-prompt.txt",
-          "prompt_sha256": "7428704e5938b2f8a746ccf24d4fb01a7e99e5ee5a0327abe4304bcd7d3fbb47",
-          "seed_patch_sha256": "89eeb75d4ccf1a274eb053c65d4a6c6d949253206235e7000bf99527947f5095",
-          "verifier_command": "sources/evaluations/fixtures/large/hashicorp-terraform/task-generations/baseline-v4/terraform-lifecycle-review-v0/verify.sh",
-          "verifier_sha256": "61dd3afe0ae32d8e11db631b8aa93eef0a15767f4ea0735d04438cb88bd4518c",
+          "prompt_path": "sources/evaluations/fixtures/medium/beetbox-beets/task-generations/baseline-v4/beets-lifecycle-review-v0/agent-prompt.txt",
+          "prompt_sha256": "41d6efa9889579eecec88c4aaa3bf10f0b5a2e71c4da00f265fc724bd68f3280",
+          "seed_patch_sha256": "14d8dd83706706805b8159f85871036cfb39148dd7912e66e2c8044d505cabad",
+          "verifier_command": "sources/evaluations/fixtures/medium/beetbox-beets/task-generations/baseline-v4/beets-lifecycle-review-v0/verify.sh",
+          "verifier_sha256": "b2d5e2e83bb2b32e1baf9e7cbcd7efbf638f0dd3dbd58fe9f1d7317764def88d",
           "controller_visible_acceptance_assets": [
             {
-              "path": "sources/evaluations/fixtures/large/hashicorp-terraform/task-generations/baseline-v4/terraform-lifecycle-review-v0/controller-visible/internal/addrs/baseline_v3_checkable_test.go",
-              "sha256": "db7b1b01d4ea394a07c16c76ebe13c042cb4507302dbd0a9809fa1ce30f91df3"
+              "path": "sources/evaluations/fixtures/medium/beetbox-beets/task-generations/baseline-v4/beets-lifecycle-review-v0/controller-visible/test/plugins/test_ftintitle.py",
+              "sha256": "1d8ed5ab383d3c0496dc2158ae9853c0b36bca1f50276181f7d675e352abab35"
             }
           ],
           "upstream_test_paths": [],
@@ -144,7 +135,7 @@
           "expected_model_concealed_paths": [],
           "model_concealed_paths": [],
           "review_patch_path": "review-change.patch",
-          "review_patch_sha256": "9820e02bdbf682b7e5559e42ba8bf3799d4f22018d31cb8cd1621223c371cfcd"
+          "review_patch_sha256": "14d8dd83706706805b8159f85871036cfb39148dd7912e66e2c8044d505cabad"
         }
       ],
       "model_facing_prompts": {
@@ -152,25 +143,25 @@
         "profile_guidance_sha256": "f1d7a2cf7b0a7c1affd8bbb04705f073332ee6efc5f8f89f019b9e0cbacec4bb",
         "tasks": [
           {
-            "task_id": "terraform-lifecycle-feature-v0",
+            "task_id": "beets-lifecycle-feature-v0",
             "order": 1,
-            "rendered_prompt_sha256": "f5bb145484b20e90054bcb8160de9688ee985b237e3a03b40c5dacb6638980dc"
+            "rendered_prompt_sha256": "762417a29c6df8ec7df501afd125c119d72cba9a5cdc93d0950fe1d835680f6e"
           },
           {
-            "task_id": "terraform-lifecycle-refactor-v0",
+            "task_id": "beets-lifecycle-refactor-v0",
             "order": 2,
-            "rendered_prompt_sha256": "6a1c7a09e43d141088f3ca871ac3744ed78e332713fe854118b51b0989b77c7c"
+            "rendered_prompt_sha256": "727cc41394c3a1215befbe097862bf1a3f78958882b21521c90f6721099413e0"
           },
           {
-            "task_id": "terraform-lifecycle-review-v0",
+            "task_id": "beets-lifecycle-review-v0",
             "order": 3,
-            "rendered_prompt_sha256": "6b854332fdd04a97f65eb2aef312dcf61e37a8521f4b8fa324ccef2c9ddde7a4"
+            "rendered_prompt_sha256": "2ba3299daa5adc71491ee713bd4c6b6208d6b36443ac327c919fe1b9db5943a2"
           }
         ]
       },
       "qualification": {
-        "path": "sources/evaluations/fixtures/large/hashicorp-terraform/qualification-lifecycle-v0-baseline-v4.json",
-        "sha256": "08a37382172643a0d4d4dc4c1f43751b4774c63c576419dde715849c30b1d96b"
+        "path": "sources/evaluations/fixtures/medium/beetbox-beets/qualification-lifecycle-v0-baseline-v4.json",
+        "sha256": "62d841b17636e669440ca040152d5792b08851bea6cc139a47777f89b34a3c80"
       },
       "baseline_profile": {
         "profile_id": "baseline-bare-codex",
@@ -209,11 +200,11 @@
         },
         "dockerfile_path": "sources/evaluations/fixtures/container/Dockerfile",
         "dockerfile_sha256": "47c91967ce25014ce54879514f51d2ff0326651be1087209115eff4d358226b3",
-        "dependency_command": "go mod download",
+        "dependency_command": "uv sync --group test --frozen",
         "dependency_lockfiles": [
           {
-            "path": "go.sum",
-            "sha256": "be9ec949db0a0b135197f2c78b6d9821d764cc9b8c362b4860e3d5a1e9c74b9e"
+            "path": "uv.lock",
+            "sha256": "fbf1d7a9c84b658a2433035221ba18c57508c254d711a06f305e2f610839a45f"
           }
         ],
         "codex_runtime_condition": "codex-openai-gpt-5-6-sol-high"
@@ -225,10 +216,8 @@
         "future_seed_regressions_visible": true,
         "controller_verifier_scripts_and_canonical_copies_model_visible": false,
         "model_visible_acceptance_asset_paths": [
-          "internal/addrs/baseline_v3_checkable_test.go",
-          "internal/configs/baseline_v3_requirement_type_test.go",
-          "internal/configs/parser_config_dir_test.go",
-          "internal/policy/callback/baseline_v3_deferred_test.go"
+          "test/plugins/test_ftintitle.py",
+          "test/util/test_functemplate.py"
         ],
         "git_baseline_true_root_at_lane_start": true,
         "controller_verification": "final-only",
@@ -249,26 +238,27 @@
     }
   },
   "selected_execution": {
-    "descriptor_sha256": "4f929150aa21955a801bcccaa653b283e45ef7eaa96eab911112ffd6120ffe02",
+    "descriptor_sha256": "0aa00035279ac19976a15e5a32d316654fbd7b77ecf0ab8a7a35740f8558dc8c",
     "descriptor": {
       "version": "execution-condition-v1",
-      "sequence_id": "terraform-lifecycle-sequence-v0",
+      "sequence_id": "beets-lifecycle-sequence-v0",
       "execution_role": "individual_tool_treatment",
       "selected_profile": {
-        "profile_id": "behavior-caveman-opencode-plugin-v1",
+        "profile_id": "retrieval-jcodemunch-opencode-product-v1",
         "profile_type": "individual_tool",
         "component_ids": [
-          "behavior-caveman-opencode-plugin-v1"
+          "retrieval-jcodemunch-opencode-product-v1"
         ],
         "enabled_surfaces": [
-          "opencode-plugin",
-          "prompt-reinforcement",
-          "product-authored-init"
+          "retrieval-context",
+          "opencode-mcp",
+          "product-authored-guidance",
+          "warm-index"
         ],
         "disabled_overlaps": [
           "all unlisted surfaces"
         ],
-        "registry_entry_sha256": "ef6344ec420ee21c58361c5f02ecc03b9301598be1353d4fa1169d38719b909b",
+        "registry_entry_sha256": "628385c602ac995b9696b17613c6cb0e34df97a347de64d2cd3d33b46ccf6d69",
         "registry_entry": {
           "profile_type": "individual_tool",
           "objective_scope": "individual_tool_effectiveness",
@@ -289,39 +279,40 @@
           "reset": {
             "policy": "Delete lane-private OpenCode XDG directories, product state, generated repository treatment files, auth translation, and background processes after evidence capture."
           },
-          "id": "behavior-caveman-opencode-plugin-v1",
-          "name": "Caveman OpenCode plugin and guidance V1",
+          "id": "retrieval-jcodemunch-opencode-product-v1",
+          "name": "jCodemunch OpenCode MCP product V1",
           "enabled_surfaces": [
-            "opencode-plugin",
-            "prompt-reinforcement",
-            "product-authored-init"
+            "retrieval-context",
+            "opencode-mcp",
+            "product-authored-guidance",
+            "warm-index"
           ],
           "components": [
             {
-              "component_id": "behavior-caveman-opencode-plugin-v1",
-              "surface": "opencode-plugin+prompt-reinforcement+product-authored-init",
+              "component_id": "retrieval-jcodemunch-opencode-product-v1",
+              "surface": "retrieval-context+opencode-mcp+product-authored-guidance+warm-index",
               "role": "individual_tool"
             }
           ],
           "install": {
-            "policy": "Run Caveman\u2019s pinned installer with the OpenCode target and product initialization enabled, then require the installed native plugin and repo guidance in the isolated lane."
+            "policy": "Install the pinned jCodemunch wheel into a lane-private uv environment, install verbatim product-authored guidance, build a lane-private index, register only its local MCP server in OpenCode, and require initialize plus tools/list."
           },
           "evaluation_protocol": {
             "tool_use_policy": "natural",
-            "tool_state": "active-native-plugin+per-session-guidance",
-            "integration_state": "official-opencode-plugin+product-init",
+            "tool_state": "warm-index+product-guidance",
+            "integration_state": "host-agnostic-mcp+product-guidance",
             "assignment_proof": "provider-free exact artifact identities, effective OpenCode configuration, native activation, warm state, and task/final verifiers required"
           },
           "source_snapshot": {
-            "repository": "JuliusBrussee/caveman",
-            "version": "0.1.0",
-            "source_commit": "0d95a81d35a9f2d123a5e9430d1cfc43d55f1bb0",
-            "plugin_sha256": "6d68e8dfe205354718729a5f5c9ca9d555a045af6b2cbbc3b6a84caad1076df7",
-            "package_sha256": "b603811ba72eb71581db5b02045fb5f8903e3c46dcf7b40f36eeb81fbba23274",
+            "repository": "jgravelle/jcodemunch-mcp",
+            "version": "1.108.114",
+            "source_commit": "fbc14e40c7057ebc6d718fb48083d30522afe15f",
+            "wheel_sha256": "9ae3a44c2be5709d33fa2b56c9e569906ed63906a907f89b4762a370d397ed54",
+            "guidance_sha256": "2026d09f4af85e972a5c4a9874d91bd8a8675ab7fbb44a283911fd06afd0abb2",
             "runtime_adapter": "/opt/data/tool-candidates/opencode-adapter-v6/opencode_workflow_adapter.py",
             "runtime_adapter_sha256": "1b98aaec34711b3a7bb09ce269c12bb06421ab08913d06593fb6d2c6641a34a3"
           },
-          "notes": "Second successive screen: Caveman\u2019s local installer exposes an explicit OpenCode target and writes the native plugin under the OpenCode XDG configuration surface."
+          "notes": "Second successive screen: jCodemunch has a universal host-install guide and an MCP server, so this is a host-agnostic OpenCode treatment rather than a prompt-only simulation."
         }
       },
       "model_facing_prompts": {
@@ -329,39 +320,41 @@
         "profile_guidance_sha256": "cb08dba8b361975eb89669cc77d206861b05fc26b161a9215337dbb2d30a6366",
         "tasks": [
           {
-            "task_id": "terraform-lifecycle-feature-v0",
+            "task_id": "beets-lifecycle-feature-v0",
             "order": 1,
-            "rendered_prompt_sha256": "0c7a1ae29db926cb00a0d6692e684dbf2088a40fc5d5d513fcba2601fb7690d1"
+            "rendered_prompt_sha256": "db0981ff4c4428e5213221c6024697ff64afa64d0c3020c462d39fb9b89c0257"
           },
           {
-            "task_id": "terraform-lifecycle-refactor-v0",
+            "task_id": "beets-lifecycle-refactor-v0",
             "order": 2,
-            "rendered_prompt_sha256": "6a1c7a09e43d141088f3ca871ac3744ed78e332713fe854118b51b0989b77c7c"
+            "rendered_prompt_sha256": "727cc41394c3a1215befbe097862bf1a3f78958882b21521c90f6721099413e0"
           },
           {
-            "task_id": "terraform-lifecycle-review-v0",
+            "task_id": "beets-lifecycle-review-v0",
             "order": 3,
-            "rendered_prompt_sha256": "6b854332fdd04a97f65eb2aef312dcf61e37a8521f4b8fa324ccef2c9ddde7a4"
+            "rendered_prompt_sha256": "2ba3299daa5adc71491ee713bd4c6b6208d6b36443ac327c919fe1b9db5943a2"
           }
         ]
       },
       "tool_adapter": {
-        "tool_id": "caveman-opencode-plugin-v1",
+        "tool_id": "jcodemunch-opencode-product-v1",
         "tool_manifest": "scripts/run_codex_fixture_evaluation.py:TOOL_CONFIGS",
-        "tool_manifest_sha256": "302581d5a9dd4cc28868aa9fa0376ad423bfcf47f141f7bd4ba7cbc0c9fb80c3",
+        "tool_manifest_sha256": "830d6f7575ca7c8fe0102c09f754e1c24f0490e445eceec8d16fd18894880f37",
         "tool_config": {
-          "display_name": "Caveman official OpenCode plugin and guidance v1",
-          "lane_name": "behavior-caveman-opencode-plugin-v1",
-          "surface": "opencode-plugin+prompt-reinforcement+skills+commands",
+          "display_name": "jCodemunch guide-faithful OpenCode MCP v1",
+          "lane_name": "retrieval-jcodemunch-opencode-product-v1",
+          "surface": "opencode-mcp+product-authored-guidance+warm-index",
           "allowed_terms": [
             "opencode",
-            "caveman",
-            "cavecrew"
+            "jcodemunch",
+            "jcodemunch-mcp"
           ],
-          "data_dir_name": "behavior-caveman-opencode-plugin-v1",
+          "data_dir_name": "retrieval-jcodemunch-opencode-product-v1",
           "mounts": [
             "/opt/data/tool-candidates/opencode-adapter-v6/opencode_workflow_adapter.py",
-            "/opt/data/tool-candidates/caveman"
+            "/opt/data/tool-candidates/jcodemunch-mcp",
+            "/opt/data/tool-candidates/jcodemunch-mcp/dist/jcodemunch_mcp-1.108.114-py3-none-any.whl",
+            "{repository_root}/scripts/install_jcodemunch_opencode_guidance.py"
           ],
           "executable": "/opt/data/tool-candidates/opencode-runtime/node_modules/opencode-ai/bin/opencode.exe",
           "expected_executable_sha256": "7c4d91c84d2bfdeabb59257e3490c5e5acb08f2aacb3e42f3ddc296a1c3f1aca",
@@ -375,7 +368,7 @@
               "--expected-opencode-sha256",
               "7c4d91c84d2bfdeabb59257e3490c5e5acb08f2aacb3e42f3ddc296a1c3f1aca",
               "--treatment",
-              "caveman"
+              "jcodemunch"
             ]
           },
           "preflight_command": [
@@ -386,50 +379,89 @@
             "--expected-opencode-sha256",
             "7c4d91c84d2bfdeabb59257e3490c5e5acb08f2aacb3e42f3ddc296a1c3f1aca",
             "--treatment",
-            "caveman",
+            "jcodemunch",
             "--probe"
           ],
           "tool_manifest_identity": "current-file-v1",
           "env": {
-            "OPENCODE_TOOL_DATA_DIR": "{tool_data_dir}"
+            "OPENCODE_TOOL_DATA_DIR": "{tool_data_dir}",
+            "JCODEMUNCH_LOG_LEVEL": "ERROR"
           },
+          "path_entries": [
+            "{tool_data_dir}/venv/bin"
+          ],
           "host_integration": {
             "install_commands": [
               [
-                "/opt/data/opt/node-v24.18.0-linux-x64/bin/node",
-                "/opt/data/tool-candidates/caveman/bin/install.js",
-                "--only",
-                "opencode",
-                "--with-init"
+                "/opt/data/opt/uv/uv",
+                "venv",
+                "{tool_data_dir}/venv",
+                "--python",
+                "python3"
+              ],
+              [
+                "/opt/data/opt/uv/uv",
+                "pip",
+                "install",
+                "--python",
+                "{tool_data_dir}/venv/bin/python",
+                "/opt/data/tool-candidates/jcodemunch-mcp/dist/jcodemunch_mcp-1.108.114-py3-none-any.whl"
+              ],
+              [
+                "python3",
+                "{repository_root}/scripts/install_jcodemunch_opencode_guidance.py",
+                "--source-root",
+                "/opt/data/tool-candidates/jcodemunch-mcp",
+                "--expected-commit",
+                "fbc14e40c7057ebc6d718fb48083d30522afe15f",
+                "--repo",
+                "{repo}",
+                "--receipt",
+                "{tool_data_dir}/guidance-install.json"
               ]
             ],
             "verify_commands": [
               [
-                "/opt/data/opt/node-v24.18.0-linux-x64/bin/node",
-                "/opt/data/tool-candidates/caveman/bin/install.js",
-                "--list"
+                "{tool_data_dir}/venv/bin/jcodemunch-mcp",
+                "--version"
               ]
             ],
             "required_files": [
-              "{codex_home}/xdg-config/opencode/plugins/caveman/plugin.js",
+              "{tool_data_dir}/venv/bin/jcodemunch-mcp",
+              "{tool_data_dir}/guidance-install.json",
               "{repo}/AGENTS.md"
             ],
-            "timeout_seconds": 600
+            "timeout_seconds": 900
           },
-          "native_plugin": {
+          "mcp_server": "jcodemunch",
+          "mcp_command": "{tool_data_dir}/venv/bin/jcodemunch-mcp",
+          "mcp_args": [],
+          "mcp_handshake": {
             "required": true,
-            "path": "{codex_home}/xdg-config/opencode/plugins/caveman/plugin.js"
+            "method": "initialize-and-tools-list",
+            "timeout_seconds": 120
+          },
+          "warmup": {
+            "kind": "product-native-code-index-build",
+            "command": [
+              "{tool_data_dir}/venv/bin/jcodemunch-mcp",
+              "index",
+              "{repo}"
+            ],
+            "output_name": "jcodemunch-warmup-output.txt",
+            "metadata_name": "jcodemunch-warmup-metadata.json",
+            "timeout_seconds": 1200
           },
           "artifact_identities": [
             {
-              "path": "/opt/data/tool-candidates/caveman/src/plugins/opencode/plugin.js",
-              "sha256": "6d68e8dfe205354718729a5f5c9ca9d555a045af6b2cbbc3b6a84caad1076df7",
-              "kind": "native-plugin-source"
+              "path": "/opt/data/tool-candidates/jcodemunch-mcp/dist/jcodemunch_mcp-1.108.114-py3-none-any.whl",
+              "sha256": "9ae3a44c2be5709d33fa2b56c9e569906ed63906a907f89b4762a370d397ed54",
+              "kind": "python-wheel"
             },
             {
-              "path": "/opt/data/tool-candidates/caveman/src/plugins/opencode/package.json",
-              "sha256": "b603811ba72eb71581db5b02045fb5f8903e3c46dcf7b40f36eeb81fbba23274",
-              "kind": "native-plugin-package"
+              "path": "/opt/data/tool-candidates/jcodemunch-mcp/AGENT_INSTALL_UNIVERSAL.md",
+              "sha256": "2026d09f4af85e972a5c4a9874d91bd8a8675ab7fbb44a283911fd06afd0abb2",
+              "kind": "product-guidance"
             },
             {
               "path": "/opt/data/tool-candidates/opencode-adapter-v6/opencode_workflow_adapter.py",
@@ -442,64 +474,77 @@
             "source": "adapter-probe"
           },
           "diff_exclude_paths": [
-            "AGENTS.md",
-            ".opencode"
+            "AGENTS.md"
           ],
-          "default_tool_state": "active-native-plugin+per-session-guidance"
+          "default_tool_state": "warm-index+product-guidance"
         },
-        "tool_config_sha256": "8e391de6848a9d69e337d80c6682cafeef4585417522c4c861a5ce42b74cbd86",
-        "tool_state": "active-native-plugin+per-session-guidance",
+        "tool_config_sha256": "fa606d1fd85e5baaf5532777588732088dea917a3ec05560ea891c540387fb9d",
+        "tool_state": "warm-index+product-guidance",
         "tool_use_policy": "natural",
         "command_identity": {
-          "kind": "codex_wrapper",
+          "kind": "mcp_command",
           "command": [
-            "/usr/bin/python3",
-            "/opt/data/tool-candidates/opencode-adapter-v6/opencode_workflow_adapter.py",
-            "--opencode-binary",
-            "/opt/data/tool-candidates/opencode-runtime/node_modules/opencode-ai/bin/opencode.exe",
-            "--expected-opencode-sha256",
-            "7c4d91c84d2bfdeabb59257e3490c5e5acb08f2aacb3e42f3ddc296a1c3f1aca",
-            "--treatment",
-            "caveman"
+            "{tool_data_dir}/venv/bin/jcodemunch-mcp"
           ]
         },
         "binary_identity": {
-          "executable_token": "/usr/bin/python3",
-          "resolved_path": "/usr/bin/python3",
-          "realpath": "/usr/bin/python3.13",
-          "sha256": "4703a3d15898c0b5d81c3f939e93bdd8ca6116342093fb160ab1e01860dd7d8b",
-          "metadata": {
-            "size": 6812336,
-            "mode": "-rwxr-xr-x",
-            "uid": 0,
-            "gid": 0,
-            "mtime_ns": 1778015152000000000
-          },
-          "version": {
-            "command": [
-              "/usr/bin/python3.13",
-              "--version"
+          "kind": "generated-by-host-integration",
+          "command_template": "{tool_data_dir}/venv/bin/jcodemunch-mcp",
+          "install_commands": [
+            [
+              "/opt/data/opt/uv/uv",
+              "venv",
+              "{tool_data_dir}/venv",
+              "--python",
+              "python3"
             ],
-            "environment_path": "/opt/data/.local/bin:/opt/data/opt/go/bin:/opt/data/opt/uv:/opt/data/opt/node-v24.18.0-linux-x64/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
-            "captured": true,
-            "exit_code": 0,
-            "output": "Python 3.13.5",
-            "truncated": false
-          }
+            [
+              "/opt/data/opt/uv/uv",
+              "pip",
+              "install",
+              "--python",
+              "{tool_data_dir}/venv/bin/python",
+              "/opt/data/tool-candidates/jcodemunch-mcp/dist/jcodemunch_mcp-1.108.114-py3-none-any.whl"
+            ],
+            [
+              "python3",
+              "{repository_root}/scripts/install_jcodemunch_opencode_guidance.py",
+              "--source-root",
+              "/opt/data/tool-candidates/jcodemunch-mcp",
+              "--expected-commit",
+              "fbc14e40c7057ebc6d718fb48083d30522afe15f",
+              "--repo",
+              "{repo}",
+              "--receipt",
+              "{tool_data_dir}/guidance-install.json"
+            ]
+          ],
+          "install_contract_sha256": "b9b1d2d88f039b908b38ddea75e641b931a36f024014f3927e8c48ebd74b43c4"
         },
         "source_identity": [
           {
-            "path": "/opt/data/tool-candidates/caveman",
+            "path": "/opt/data/tool-candidates/jcodemunch-mcp",
             "exists": true,
             "kind": "directory",
-            "git_head": "0d95a81d35a9f2d123a5e9430d1cfc43d55f1bb0",
-            "package_json_sha256": "3f9a34e4224efcad6e53a7cdef3c93869b77d932e2757c29fdaf0f63cfb2ad5f"
+            "git_head": "fbc14e40c7057ebc6d718fb48083d30522afe15f"
+          },
+          {
+            "path": "/opt/data/tool-candidates/jcodemunch-mcp/dist/jcodemunch_mcp-1.108.114-py3-none-any.whl",
+            "exists": true,
+            "kind": "file",
+            "sha256": "9ae3a44c2be5709d33fa2b56c9e569906ed63906a907f89b4762a370d397ed54"
           },
           {
             "path": "/opt/data/tool-candidates/opencode-adapter-v6/opencode_workflow_adapter.py",
             "exists": true,
             "kind": "file",
             "sha256": "1b98aaec34711b3a7bb09ce269c12bb06421ab08913d06593fb6d2c6641a34a3"
+          },
+          {
+            "path": "{repository_root}/scripts/install_jcodemunch_opencode_guidance.py",
+            "exists": true,
+            "kind": "file",
+            "sha256": "f5f7ef11f3e1194210232bbcd1be4aa96a8d2eee6ac8b605867653800ec1c1c4"
           }
         ]
       },
@@ -518,7 +563,7 @@
         "dockerfile_path": "sources/evaluations/fixtures/container/Dockerfile",
         "dockerfile_sha256": "47c91967ce25014ce54879514f51d2ff0326651be1087209115eff4d358226b3",
         "fixture_runner_path": "scripts/run_codex_fixture_evaluation.py",
-        "fixture_runner_sha256": "302581d5a9dd4cc28868aa9fa0376ad423bfcf47f141f7bd4ba7cbc0c9fb80c3",
+        "fixture_runner_sha256": "830d6f7575ca7c8fe0102c09f754e1c24f0490e445eceec8d16fd18894880f37",
         "mcp_probe_path": "scripts/probe_mcp_stdio.py",
         "mcp_probe_sha256": "7c06ea36ee5cac933a97140b84a41405fc99b45152388e8d7c6659136af698fd",
         "codex_entrypoint_path": "sources/evaluations/fixtures/container/codex-entrypoint.sh",
@@ -542,12 +587,12 @@
         }
       },
       "dependencies": {
-        "command": "go mod download",
-        "command_sha256": "42a8263a643ccbe692d70752ffdd8cea328fc2d3190677df1485ee06f55b350a",
+        "command": "uv sync --group test --frozen",
+        "command_sha256": "cef23fd45902c23f8b3e89b7c6360a401eb49c17cf36d742e5b625d5593c911b",
         "lockfiles": [
           {
-            "path": "go.sum",
-            "snapshot_sha256": "be9ec949db0a0b135197f2c78b6d9821d764cc9b8c362b4860e3d5a1e9c74b9e",
+            "path": "uv.lock",
+            "snapshot_sha256": "fbf1d7a9c84b658a2433035221ba18c57508c254d711a06f305e2f610839a45f",
             "current_fixture_sha256": null
           }
         ]
@@ -568,16 +613,14 @@
         "controller_verification": "final-only",
         "controller_verifier_scripts_and_canonical_copies_model_visible": false,
         "model_visible_acceptance_asset_paths": [
-          "internal/addrs/baseline_v3_checkable_test.go",
-          "internal/configs/baseline_v3_requirement_type_test.go",
-          "internal/configs/parser_config_dir_test.go",
-          "internal/policy/callback/baseline_v3_deferred_test.go"
+          "test/plugins/test_ftintitle.py",
+          "test/util/test_functemplate.py"
         ],
         "model_concealed_paths": []
       },
       "baseline_pool_reference": {
         "protocol_version": "baseline-pool-v1",
-        "protocol_fingerprint": "5811b463c1e9",
+        "protocol_fingerprint": "fcc8438d2077",
         "comparison_policy": "paired baseline and treatment must share this baseline pool fingerprint and replicate"
       },
       "model_condition_override": {

@@ -3467,6 +3467,27 @@ def validate_frozen_protocol_bindings(errors: list[str]) -> None:
         protocol_sha = frozen.get("sha256")
         if isinstance(protocol_path, str) and isinstance(protocol_sha, str):
             executed_protocols.setdefault(protocol_path, set()).add(protocol_sha)
+
+    # Provider-free preparation and rejected-attempt audits also freeze protocol
+    # bytes. Treat those receipts as immutable historical bindings instead of
+    # demanding that they match the current mutable runner descriptor.
+    def retain_audit_protocols(value: object) -> None:
+        if isinstance(value, dict):
+            protocol_path = value.get("protocol_path")
+            protocol_sha = value.get("protocol_sha256")
+            if isinstance(protocol_path, str) and isinstance(protocol_sha, str):
+                executed_protocols.setdefault(protocol_path, set()).add(protocol_sha)
+            for child in value.values():
+                retain_audit_protocols(child)
+        elif isinstance(value, list):
+            for child in value:
+                retain_audit_protocols(child)
+
+    for audit_path in (ROOT / "sources/evaluations/audits").glob("*.json"):
+        try:
+            retain_audit_protocols(json.loads(audit_path.read_text()))
+        except (OSError, json.JSONDecodeError):
+            continue
     try:
         from scripts import run_codex_workflow_evaluation as runner
         from scripts import run_codex_workflow_model_condition as model_condition_runner

@@ -1,10 +1,10 @@
 {
   "protocol_schema_version": 3,
-  "protocol_id": "beets-lifecycle-sequence-v0-integrated-headroom-opencode-product-v1-f734cb598d73",
+  "protocol_id": "beets-lifecycle-sequence-v0-retrieval-sigmap-opencode-product-v1-d0748b904e30",
   "status": "frozen-ready-not-run",
-  "outcome": "Frozen integrated-headroom-opencode-product-v1 protocol for beets-lifecycle-sequence-v0; no provider/model run has occurred.",
+  "outcome": "Frozen retrieval-sigmap-opencode-product-v1 protocol for beets-lifecycle-sequence-v0; no provider/model run has occurred.",
   "frozen_at": "2026-07-22",
-  "hypothesis": "integrated-headroom-opencode-product-v1 produces reproducible provider-reported token and software-quality evidence for beets-lifecycle-sequence-v0",
+  "hypothesis": "retrieval-sigmap-opencode-product-v1 produces reproducible provider-reported token and software-quality evidence for beets-lifecycle-sequence-v0",
   "evidence_stage_target": "reproduction",
   "task_fixture": {
     "fixture_id": "medium-beetbox-beets",
@@ -35,13 +35,13 @@
     "selection_policy": "sequence-pool-replicate-matched-first-valid"
   },
   "treatment": {
-    "profile_id": "integrated-headroom-opencode-product-v1",
+    "profile_id": "retrieval-sigmap-opencode-product-v1",
     "runtime_id": "opencode-cli",
     "provider": "openai",
     "model": "gpt-5.6-sol",
     "model_condition_id": "opencode-openai-gpt-5-6-sol-high",
     "reasoning_effort": "high",
-    "command": "python3 scripts/run_opencode_workflow_model_condition.py --workflow-model-condition-id opencode-openai-gpt-5-6-sol-high --workflow-model gpt-5.6-sol --workflow-reasoning-effort high --sequence-id beets-lifecycle-sequence-v0 --profile-id integrated-headroom-opencode-product-v1 --timeout-per-task 3600 --protocol sources/evaluations/protocols/beets-lifecycle-sequence-v0-integrated-headroom-opencode-product-v1-f734cb598d73.json --docker-image token-eval-codex:latest"
+    "command": "python3 scripts/run_opencode_workflow_model_condition.py --workflow-model-condition-id opencode-openai-gpt-5-6-sol-high --workflow-model gpt-5.6-sol --workflow-reasoning-effort high --sequence-id beets-lifecycle-sequence-v0 --profile-id retrieval-sigmap-opencode-product-v1 --timeout-per-task 3600 --protocol sources/evaluations/protocols/beets-lifecycle-sequence-v0-retrieval-sigmap-opencode-product-v1-d0748b904e30.json --docker-image token-eval-codex:latest"
   },
   "token_accounting_boundary": {
     "fields": [
@@ -238,48 +238,34 @@
     }
   },
   "selected_execution": {
-    "descriptor_sha256": "22d05a3f5e444ef17d555fce1dc873b89d308c2c7461b8afc26b6e61be4133cd",
+    "descriptor_sha256": "5d411c7e40580eba2e6809305acf4d81fa3801073b338166066461ea2f0089af",
     "descriptor": {
       "version": "execution-condition-v1",
       "sequence_id": "beets-lifecycle-sequence-v0",
       "execution_role": "individual_tool_treatment",
       "selected_profile": {
-        "profile_id": "integrated-headroom-opencode-product-v1",
+        "profile_id": "retrieval-sigmap-opencode-product-v1",
         "profile_type": "individual_tool",
         "component_ids": [
-          "integrated-headroom-opencode-product-v1"
+          "retrieval-sigmap-opencode-product-v1"
         ],
         "enabled_surfaces": [
-          "headroom-proxy-context-compression",
-          "headroom-retrieve-mcp",
-          "rtk-context-tool",
-          "serena-mcp"
+          "retrieval-context",
+          "opencode-mcp",
+          "product-setup",
+          "warm-context-map"
         ],
         "disabled_overlaps": [
           "all unlisted surfaces"
         ],
-        "registry_entry_sha256": "fb012725970965b7a3f0bc84493bf239579bd5a524332c4cd4b1984cc6d2d8b9",
+        "registry_entry_sha256": "02f5f6d2216431ecb9f6c88f52b8abf6c32894fd1c55701b0e09b5f51362e16b",
         "registry_entry": {
-          "id": "integrated-headroom-opencode-product-v1",
           "profile_type": "individual_tool",
           "objective_scope": "individual_tool_effectiveness",
           "status": "screening-ablation",
           "substrate": "opencode-cli",
-          "enabled_surfaces": [
-            "headroom-proxy-context-compression",
-            "headroom-retrieve-mcp",
-            "rtk-context-tool",
-            "serena-mcp"
-          ],
           "disabled_overlaps": [
             "all unlisted surfaces"
-          ],
-          "components": [
-            {
-              "component_id": "integrated-headroom-opencode-product-v1",
-              "surface": "official-integrated-opencode-product",
-              "role": "individual_tool"
-            }
           ],
           "native_agent_tools_allowed": [
             "opencode-native-shell-edit",
@@ -288,28 +274,45 @@
             "verifier-commands"
           ],
           "forbidden_surfaces": [
-            "all non-Headroom-managed external plugins, MCP, skills, subagents, and web tools"
+            "all external retrieval, compression, memory, MCP, skills, plugins, subagents, and web tools except the assigned product surfaces"
+          ],
+          "reset": {
+            "policy": "Delete lane-private OpenCode XDG directories, product state, generated repository treatment files, auth translation, and background processes after evidence capture."
+          },
+          "id": "retrieval-sigmap-opencode-product-v1",
+          "name": "SigMap OpenCode MCP and context setup V1",
+          "enabled_surfaces": [
+            "retrieval-context",
+            "opencode-mcp",
+            "product-setup",
+            "warm-context-map"
+          ],
+          "components": [
+            {
+              "component_id": "retrieval-sigmap-opencode-product-v1",
+              "surface": "retrieval-context+opencode-mcp+product-setup+warm-context-map",
+              "role": "individual_tool"
+            }
           ],
           "install": {
-            "policy": "Launch every OpenCode provider invocation through pinned Headroom 0.28.0 `headroom wrap opencode` with its documented default RTK, retrieve MCP, and Serena surfaces in lane-private state."
-          },
-          "reset": {
-            "policy": "Delete lane-private OpenCode XDG, Headroom proxy/cache, managed RTK/Serena/MCP configuration, auth translation, and generated artifacts after evidence capture."
+            "policy": "Run the pinned standalone SigMap bundle\u2019s official OpenCode MCP installer, build its product context map with the copilot-compatible adapter, and require initialize plus tools/list."
           },
           "evaluation_protocol": {
             "tool_use_policy": "natural",
-            "tool_state": "active-official-integrated-wrapper",
-            "integration_state": "official-headroom-opencode-product",
-            "assignment_proof": "provider-free pinned-wheel version and wrapper command proof required; provider traffic must retain OpenCode step-finish usage"
+            "tool_state": "warm-context-map+active-mcp",
+            "integration_state": "official-opencode-mcp+product-setup",
+            "assignment_proof": "provider-free exact artifact identities, effective OpenCode configuration, native activation, warm state, and task/final verifiers required"
           },
           "source_snapshot": {
-            "repository": "headroom-ai/headroom",
-            "commit": "715ed7d200cb62c43e6ee3976ce8d3aa639ccf9f",
-            "version": "0.28.0",
-            "runtime_adapter": "/opt/data/tool-candidates/opencode-adapter/opencode_workflow_adapter.py",
-            "runtime_adapter_sha256": "a2f6116cae013d39e8110c8588acde2a8ae9cd4f572fd9ce961d1542942617a4"
+            "repository": "",
+            "version": "8.9.1",
+            "source_commit": "b1e086cf06bc7a7622473ffe9637c122567404e0",
+            "bundle_sha256": "1a920ef5dfb50f9f1a23baa7d26ab2f9329616242713a7d8734928970ad4fb59",
+            "package_sha256": "f8478ca025747dada0b86288f696e1ae39ea8701a5081c60f54c70eafa034963",
+            "runtime_adapter": "/opt/data/tool-candidates/opencode-adapter-v6/opencode_workflow_adapter.py",
+            "runtime_adapter_sha256": "1b98aaec34711b3a7bb09ce269c12bb06421ab08913d06593fb6d2c6641a34a3"
           },
-          "notes": "Integrated product treatment, not a single-mechanism proxy ablation. Attribution is to the documented Headroom OpenCode bundle as a whole."
+          "notes": "Second successive screen: SigMap is a zero-dependency standalone MCP/context bundle and explicitly supports the OpenCode MCP client."
         }
       },
       "model_facing_prompts": {
@@ -334,26 +337,22 @@
         ]
       },
       "tool_adapter": {
-        "tool_id": "headroom-opencode-product-v1",
+        "tool_id": "sigmap-opencode-product-v1",
         "tool_manifest": "scripts/run_codex_fixture_evaluation.py:TOOL_CONFIGS",
-        "tool_manifest_sha256": "5077500216db998b089ec9bdf8f38c82023db56314cfded233105ab625c585fe",
+        "tool_manifest_sha256": "830d6f7575ca7c8fe0102c09f754e1c24f0490e445eceec8d16fd18894880f37",
         "tool_config": {
-          "display_name": "Headroom official OpenCode integrated product v1",
-          "lane_name": "integrated-headroom-opencode-product-v1",
-          "surface": "opencode-proxy/context-compression+rtk+mcp+serena",
+          "display_name": "SigMap official OpenCode MCP and context setup v1",
+          "lane_name": "retrieval-sigmap-opencode-product-v1",
+          "surface": "opencode-mcp+product-setup+warm-context-map",
           "allowed_terms": [
             "opencode",
-            "headroom",
-            "headroom_retrieve",
-            "rtk",
-            "serena"
+            "sigmap",
+            "gen-context"
           ],
-          "data_dir_name": "integrated-headroom-opencode-product-v1",
+          "data_dir_name": "retrieval-sigmap-opencode-product-v1",
           "mounts": [
-            "/opt/data/tool-candidates/opencode-adapter/opencode_workflow_adapter.py",
-            "/opt/data/tool-candidates/headroom",
-            "/opt/data/tool-candidates/rtk",
-            "/opt/data/tool-candidates/serena"
+            "/opt/data/tool-candidates/opencode-adapter-v6/opencode_workflow_adapter.py",
+            "/opt/data/tool-candidates/sigmap"
           ],
           "executable": "/opt/data/tool-candidates/opencode-runtime/node_modules/opencode-ai/bin/opencode.exe",
           "expected_executable_sha256": "7c4d91c84d2bfdeabb59257e3490c5e5acb08f2aacb3e42f3ddc296a1c3f1aca",
@@ -361,163 +360,153 @@
           "codex_wrapper": {
             "command": "/usr/bin/python3",
             "args": [
-              "/opt/data/tool-candidates/opencode-adapter/opencode_workflow_adapter.py",
+              "/opt/data/tool-candidates/opencode-adapter-v6/opencode_workflow_adapter.py",
               "--opencode-binary",
               "/opt/data/tool-candidates/opencode-runtime/node_modules/opencode-ai/bin/opencode.exe",
               "--expected-opencode-sha256",
               "7c4d91c84d2bfdeabb59257e3490c5e5acb08f2aacb3e42f3ddc296a1c3f1aca",
               "--treatment",
-              "headroom"
+              "sigmap"
             ]
           },
           "preflight_command": [
             "/usr/bin/python3",
-            "/opt/data/tool-candidates/opencode-adapter/opencode_workflow_adapter.py",
+            "/opt/data/tool-candidates/opencode-adapter-v6/opencode_workflow_adapter.py",
             "--opencode-binary",
             "/opt/data/tool-candidates/opencode-runtime/node_modules/opencode-ai/bin/opencode.exe",
             "--expected-opencode-sha256",
             "7c4d91c84d2bfdeabb59257e3490c5e5acb08f2aacb3e42f3ddc296a1c3f1aca",
             "--treatment",
-            "headroom",
+            "sigmap",
             "--probe"
           ],
           "tool_manifest_identity": "current-file-v1",
-          "path_entries": [
-            "{codex_home}/home/.headroom/bin",
-            "{codex_home}/home/.local/bin"
-          ],
           "env": {
-            "HEADROOM_HOME": "{tool_data_dir}",
-            "HEADROOM_CACHE_DIR": "{tool_data_dir}/cache",
-            "HEADROOM_DISABLE_DASHBOARD": "1",
-            "HEADROOM_TELEMETRY": "0",
-            "HEADROOM_PROJECT": "{repo_slug}",
-            "OPENCODE_HOME": "{codex_home}/xdg-config/opencode"
+            "OPENCODE_TOOL_DATA_DIR": "{tool_data_dir}",
+            "SIGMAP_TELEMETRY": "0"
           },
           "host_integration": {
             "install_commands": [
               [
-                "/opt/data/opt/uv/uv",
-                "tool",
-                "run",
-                "--from",
-                "/opt/data/tool-candidates/headroom/dist/headroom_ai-0.28.0-cp310-abi3-linux_x86_64.whl",
-                "--with",
-                "mcp",
-                "--with",
-                "fastapi",
-                "--with",
-                "uvicorn<1.0",
-                "--with",
-                "httpx[http2]",
-                "--with",
-                "openai",
-                "--with",
-                "zstandard",
-                "--with",
-                "websockets",
-                "headroom",
-                "wrap",
-                "opencode",
-                "--port",
-                "{tool_port}",
-                "--verbose",
-                "--prepare-only"
+                "/bin/bash",
+                "-lc",
+                "cd {repo} && exec /opt/data/opt/node-v24.18.0-linux-x64/bin/node /opt/data/tool-candidates/sigmap/gen-context.js mcp install opencode"
               ]
             ],
             "verify_commands": [
               [
-                "/opt/data/opt/uv/uv",
-                "tool",
-                "run",
-                "--from",
-                "/opt/data/tool-candidates/headroom/dist/headroom_ai-0.28.0-cp310-abi3-linux_x86_64.whl",
-                "--with",
-                "mcp",
-                "headroom",
+                "/opt/data/opt/node-v24.18.0-linux-x64/bin/node",
+                "/opt/data/tool-candidates/sigmap/gen-context.js",
                 "--version"
-              ],
-              [
-                "python3",
-                "-c",
-                "from pathlib import Path; p=Path('{codex_home}/xdg-config/opencode/opencode.json'); assert p.is_file(); text=p.read_text(); assert 'headroom' in text and 'mcp' in text"
               ]
             ],
             "required_files": [
-              "{codex_home}/xdg-config/opencode/opencode.json"
+              "{repo}/opencode.json"
             ],
             "timeout_seconds": 600
           },
-          "diff_exclude_paths": [
-            "AGENTS.md",
-            ".headroom"
+          "mcp_server": "sigmap",
+          "mcp_command": "/opt/data/opt/node-v24.18.0-linux-x64/bin/node",
+          "mcp_args": [
+            "/opt/data/tool-candidates/sigmap/gen-context.js",
+            "--mcp"
           ],
-          "default_tool_state": "active-official-integrated-wrapper"
+          "mcp_handshake": {
+            "required": true,
+            "method": "initialize-and-tools-list",
+            "timeout_seconds": 120
+          },
+          "warmup": {
+            "kind": "signature-map-build",
+            "command": [
+              "/opt/data/opt/node-v24.18.0-linux-x64/bin/node",
+              "/opt/data/tool-candidates/sigmap/gen-context.js",
+              "--adapter",
+              "copilot",
+              "--no-track"
+            ],
+            "cleanup_paths": [
+              ".context"
+            ],
+            "output_name": "sigmap-warmup-output.txt",
+            "metadata_name": "sigmap-warmup-metadata.json",
+            "timeout_seconds": 1200
+          },
+          "artifact_identities": [
+            {
+              "path": "/opt/data/tool-candidates/sigmap/gen-context.js",
+              "sha256": "1a920ef5dfb50f9f1a23baa7d26ab2f9329616242713a7d8734928970ad4fb59",
+              "kind": "standalone-mcp-bundle"
+            },
+            {
+              "path": "/opt/data/tool-candidates/sigmap/package.json",
+              "sha256": "f8478ca025747dada0b86288f696e1ae39ea8701a5081c60f54c70eafa034963",
+              "kind": "source-package"
+            },
+            {
+              "path": "/opt/data/tool-candidates/opencode-adapter-v6/opencode_workflow_adapter.py",
+              "sha256": "1b98aaec34711b3a7bb09ce269c12bb06421ab08913d06593fb6d2c6641a34a3",
+              "kind": "runtime-adapter"
+            }
+          ],
+          "effective_host_config": {
+            "required": true,
+            "source": "adapter-probe"
+          },
+          "diff_exclude_paths": [
+            ".context",
+            "opencode.json"
+          ],
+          "default_tool_state": "warm-context-map+active-mcp"
         },
-        "tool_config_sha256": "1e3a3a3eaa8aed670ab016c56ce4242c42f1625a9c25d3438734bdddbffef901",
-        "tool_state": "active-official-integrated-wrapper",
+        "tool_config_sha256": "37c6fa3e0c4b87d0318030fc0038a1d45e84f01972678f10f4da5391c46a1f24",
+        "tool_state": "warm-context-map+active-mcp",
         "tool_use_policy": "natural",
         "command_identity": {
-          "kind": "codex_wrapper",
+          "kind": "mcp_command",
           "command": [
-            "/usr/bin/python3",
-            "/opt/data/tool-candidates/opencode-adapter/opencode_workflow_adapter.py",
-            "--opencode-binary",
-            "/opt/data/tool-candidates/opencode-runtime/node_modules/opencode-ai/bin/opencode.exe",
-            "--expected-opencode-sha256",
-            "7c4d91c84d2bfdeabb59257e3490c5e5acb08f2aacb3e42f3ddc296a1c3f1aca",
-            "--treatment",
-            "headroom"
+            "/opt/data/opt/node-v24.18.0-linux-x64/bin/node",
+            "/opt/data/tool-candidates/sigmap/gen-context.js",
+            "--mcp"
           ]
         },
         "binary_identity": {
-          "executable_token": "/usr/bin/python3",
-          "resolved_path": "/usr/bin/python3",
-          "realpath": "/usr/bin/python3.13",
-          "sha256": "4703a3d15898c0b5d81c3f939e93bdd8ca6116342093fb160ab1e01860dd7d8b",
+          "executable_token": "/opt/data/opt/node-v24.18.0-linux-x64/bin/node",
+          "resolved_path": "/opt/data/opt/node-v24.18.0-linux-x64/bin/node",
+          "realpath": "/opt/data/opt/node-v24.18.0-linux-x64/bin/node",
+          "sha256": "41a74efb34cbde5c7632cdac0cf8bd1a14d0b8d73dc1e82755014d9a9ce70f5c",
           "metadata": {
-            "size": 6812336,
+            "size": 123655872,
             "mode": "-rwxr-xr-x",
-            "uid": 0,
-            "gid": 0,
-            "mtime_ns": 1778015152000000000
+            "uid": 10000,
+            "gid": 10000,
+            "mtime_ns": 1782236933000000000
           },
           "version": {
             "command": [
-              "/usr/bin/python3.13",
+              "/opt/data/opt/node-v24.18.0-linux-x64/bin/node",
               "--version"
             ],
-            "environment_path": "/opt/data/.local/bin:{repository_root}/.identity-codex-home/home/.local/bin:{repository_root}/.identity-codex-home/home/.headroom/bin:/opt/data/opt/go/bin:/opt/data/opt/uv:/opt/data/opt/node-v24.18.0-linux-x64/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+            "environment_path": "/opt/data/.local/bin:/opt/data/opt/go/bin:/opt/data/opt/uv:/opt/data/opt/node-v24.18.0-linux-x64/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
             "captured": true,
             "exit_code": 0,
-            "output": "Python 3.13.5",
+            "output": "v24.18.0",
             "truncated": false
           }
         },
         "source_identity": [
           {
-            "path": "/opt/data/tool-candidates/headroom",
-            "exists": true,
-            "kind": "directory",
-            "git_head": "715ed7d200cb62c43e6ee3976ce8d3aa639ccf9f"
-          },
-          {
-            "path": "/opt/data/tool-candidates/opencode-adapter/opencode_workflow_adapter.py",
+            "path": "/opt/data/tool-candidates/opencode-adapter-v6/opencode_workflow_adapter.py",
             "exists": true,
             "kind": "file",
-            "sha256": "a2f6116cae013d39e8110c8588acde2a8ae9cd4f572fd9ce961d1542942617a4"
+            "sha256": "1b98aaec34711b3a7bb09ce269c12bb06421ab08913d06593fb6d2c6641a34a3"
           },
           {
-            "path": "/opt/data/tool-candidates/rtk",
+            "path": "/opt/data/tool-candidates/sigmap",
             "exists": true,
             "kind": "directory",
-            "git_head": "23aae98c5b29cd52d77061c6efd2e65e5e3cc6dd"
-          },
-          {
-            "path": "/opt/data/tool-candidates/serena",
-            "exists": true,
-            "kind": "directory",
-            "git_head": "103a17072e9b915c9c9980f946902be856695978"
+            "git_head": "b1e086cf06bc7a7622473ffe9637c122567404e0",
+            "package_json_sha256": "f8478ca025747dada0b86288f696e1ae39ea8701a5081c60f54c70eafa034963"
           }
         ]
       },
@@ -536,7 +525,7 @@
         "dockerfile_path": "sources/evaluations/fixtures/container/Dockerfile",
         "dockerfile_sha256": "47c91967ce25014ce54879514f51d2ff0326651be1087209115eff4d358226b3",
         "fixture_runner_path": "scripts/run_codex_fixture_evaluation.py",
-        "fixture_runner_sha256": "5077500216db998b089ec9bdf8f38c82023db56314cfded233105ab625c585fe",
+        "fixture_runner_sha256": "830d6f7575ca7c8fe0102c09f754e1c24f0490e445eceec8d16fd18894880f37",
         "mcp_probe_path": "scripts/probe_mcp_stdio.py",
         "mcp_probe_sha256": "7c06ea36ee5cac933a97140b84a41405fc99b45152388e8d7c6659136af698fd",
         "codex_entrypoint_path": "sources/evaluations/fixtures/container/codex-entrypoint.sh",

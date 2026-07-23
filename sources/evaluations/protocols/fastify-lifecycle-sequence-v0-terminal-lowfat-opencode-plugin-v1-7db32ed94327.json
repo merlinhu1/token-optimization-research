@@ -1,10 +1,10 @@
 {
   "protocol_schema_version": 3,
-  "protocol_id": "fastify-lifecycle-sequence-v0-artifact-ponytail-opencode-plugin-v1-cfdbe8dfd46c",
+  "protocol_id": "fastify-lifecycle-sequence-v0-terminal-lowfat-opencode-plugin-v1-7db32ed94327",
   "status": "frozen-ready-not-run",
-  "outcome": "Frozen artifact-ponytail-opencode-plugin-v1 protocol for fastify-lifecycle-sequence-v0; no provider/model run has occurred.",
+  "outcome": "Frozen terminal-lowfat-opencode-plugin-v1 protocol for fastify-lifecycle-sequence-v0; no provider/model run has occurred.",
   "frozen_at": "2026-07-22",
-  "hypothesis": "artifact-ponytail-opencode-plugin-v1 produces reproducible provider-reported token and software-quality evidence for fastify-lifecycle-sequence-v0",
+  "hypothesis": "terminal-lowfat-opencode-plugin-v1 produces reproducible provider-reported token and software-quality evidence for fastify-lifecycle-sequence-v0",
   "evidence_stage_target": "reproduction",
   "task_fixture": {
     "fixture_id": "medium-fastify-fastify",
@@ -35,13 +35,13 @@
     "selection_policy": "sequence-pool-replicate-matched-first-valid"
   },
   "treatment": {
-    "profile_id": "artifact-ponytail-opencode-plugin-v1",
+    "profile_id": "terminal-lowfat-opencode-plugin-v1",
     "runtime_id": "opencode-cli",
     "provider": "openai",
     "model": "gpt-5.6-sol",
     "model_condition_id": "opencode-openai-gpt-5-6-sol-high",
     "reasoning_effort": "high",
-    "command": "python3 scripts/run_opencode_workflow_model_condition.py --workflow-model-condition-id opencode-openai-gpt-5-6-sol-high --workflow-model gpt-5.6-sol --workflow-reasoning-effort high --sequence-id fastify-lifecycle-sequence-v0 --profile-id artifact-ponytail-opencode-plugin-v1 --timeout-per-task 3600 --protocol sources/evaluations/protocols/fastify-lifecycle-sequence-v0-artifact-ponytail-opencode-plugin-v1-cfdbe8dfd46c.json --docker-image token-eval-codex:latest"
+    "command": "python3 scripts/run_opencode_workflow_model_condition.py --workflow-model-condition-id opencode-openai-gpt-5-6-sol-high --workflow-model gpt-5.6-sol --workflow-reasoning-effort high --sequence-id fastify-lifecycle-sequence-v0 --profile-id terminal-lowfat-opencode-plugin-v1 --timeout-per-task 3600 --protocol sources/evaluations/protocols/fastify-lifecycle-sequence-v0-terminal-lowfat-opencode-plugin-v1-7db32ed94327.json --docker-image token-eval-codex:latest"
   },
   "token_accounting_boundary": {
     "fields": [
@@ -243,26 +243,25 @@
     }
   },
   "selected_execution": {
-    "descriptor_sha256": "b230195b43964b8c63a15a89f1cb520da5218ea51dbe09aff3af77f5fa605f16",
+    "descriptor_sha256": "b4d200a0b6a7bcd8dc38c3f97cc217b9a32734aebd64c3d3fddae3a6093c1309",
     "descriptor": {
       "version": "execution-condition-v1",
       "sequence_id": "fastify-lifecycle-sequence-v0",
       "execution_role": "individual_tool_treatment",
       "selected_profile": {
-        "profile_id": "artifact-ponytail-opencode-plugin-v1",
+        "profile_id": "terminal-lowfat-opencode-plugin-v1",
         "profile_type": "individual_tool",
         "component_ids": [
-          "artifact-ponytail-opencode-plugin-v1"
+          "terminal-lowfat-opencode-plugin-v1"
         ],
         "enabled_surfaces": [
           "opencode-plugin",
-          "product-authored-skills-and-commands",
-          "per-turn-guidance"
+          "terminal-command-rewriting"
         ],
         "disabled_overlaps": [
           "all unlisted surfaces"
         ],
-        "registry_entry_sha256": "f3e930817774486c30906fed4b65b3c5dc16a37b1fd49dba67006ce16c84c121",
+        "registry_entry_sha256": "243ad94aab831db4cb9fbdd1b231efc8cb80b74ee6fb15728799e7e5edc008eb",
         "registry_entry": {
           "profile_type": "individual_tool",
           "objective_scope": "individual_tool_effectiveness",
@@ -283,39 +282,39 @@
           "reset": {
             "policy": "Delete lane-private OpenCode XDG directories, product state, generated repository treatment files, auth translation, and background processes after evidence capture."
           },
-          "id": "artifact-ponytail-opencode-plugin-v1",
-          "name": "Ponytail OpenCode plugin V1",
+          "id": "terminal-lowfat-opencode-plugin-v1",
+          "name": "LowFat OpenCode plugin V1",
           "enabled_surfaces": [
             "opencode-plugin",
-            "product-authored-skills-and-commands",
-            "per-turn-guidance"
+            "terminal-command-rewriting"
           ],
           "components": [
             {
-              "component_id": "artifact-ponytail-opencode-plugin-v1",
-              "surface": "opencode-plugin+product-authored-skills+commands+per-turn-guidance",
+              "component_id": "terminal-lowfat-opencode-plugin-v1",
+              "surface": "opencode-native-tool-execute-before/terminal-command-rewriting",
               "role": "individual_tool"
             }
           ],
           "install": {
-            "policy": "Copy the pinned Ponytail OpenCode plugin and product-authored rules into the isolated project, then require the plugin to load through OpenCode\u2019s native plugin surface."
+            "policy": "Run the pinned LowFat 0.8.0 binary\u2019s official `lowfat opencode install` command in the isolated XDG configuration and require the exact installed native plugin."
           },
           "evaluation_protocol": {
             "tool_use_policy": "natural",
-            "tool_state": "active-native-plugin+per-turn-guidance",
-            "integration_state": "official-opencode-plugin+product-authored-guidance",
-            "assignment_proof": "provider-free exact artifact identities, effective OpenCode configuration, native activation, warm state, and task/final verifiers required"
+            "tool_state": "active-native-plugin-exact-artifact",
+            "integration_state": "official-opencode-plugin",
+            "assignment_proof": "provider-free exact artifact identities, live plugin activation, effective OpenCode configuration, task/final verifiers, and installation receipt required"
           },
           "source_snapshot": {
-            "repository": "",
-            "version": "4.8.3",
-            "source_commit": "c4d1925ae9b76a1b641877328209ad25cfeb5ef2",
-            "plugin_sha256": "e2443648e1864724f56e2a073fdf2f29199772606d9ea1c175fe06eaa3b75853",
-            "guidance_sha256": "1cd148db944eff33bf8bb878c41a290fe85b86de3e65ac311d5d501e71a0cdbf",
-            "runtime_adapter": "/opt/data/tool-candidates/opencode-adapter-v6/opencode_workflow_adapter.py",
-            "runtime_adapter_sha256": "1b98aaec34711b3a7bb09ce269c12bb06421ab08913d06593fb6d2c6641a34a3"
+            "repository": "zdk/lowfat",
+            "version": "0.8.0",
+            "source_commit": "b9f6f99d02e5774296305a591bfb13ef24548c38",
+            "release_archive_sha256": "dccc2cfabe341873a7d8ca11cc6a250bb304792ff31773c86e4a58cbc01be36e",
+            "binary_sha256": "609e9e42d9f01b9b1c4203dc00197498c65a629453d07927cbd68cea83980558",
+            "plugin_sha256": "49a6d53d34f40a00a1d8ebdccffee5d73572db22319ee5a99959429b634bf6ed",
+            "runtime_adapter": "/opt/data/tool-candidates/opencode-adapter-v7/opencode_workflow_adapter.py",
+            "runtime_adapter_sha256": "e559c52ef4ef8a7e6b02cd03bfc2b86c2da039da493969d21f1ebbeb116c1f15"
           },
-          "notes": "Second successive screen: Ponytail contains a native .opencode plugin and product-authored AGENTS guidance; no prompt-only emulation is used."
+          "notes": "Replacement for runtime-incompatible Ponytail in the second successive screen. The official 0.8.0 release binary installs the exact source-pinned OpenCode plugin and a live OpenCode 1.18.9 debug-config probe loads it without plugin errors when the binary is present on PATH."
         }
       },
       "model_facing_prompts": {
@@ -340,21 +339,23 @@
         ]
       },
       "tool_adapter": {
-        "tool_id": "ponytail-opencode-plugin-v1",
+        "tool_id": "lowfat-opencode-plugin-v1",
         "tool_manifest": "scripts/run_codex_fixture_evaluation.py:TOOL_CONFIGS",
-        "tool_manifest_sha256": "302581d5a9dd4cc28868aa9fa0376ad423bfcf47f141f7bd4ba7cbc0c9fb80c3",
+        "tool_manifest_sha256": "830d6f7575ca7c8fe0102c09f754e1c24f0490e445eceec8d16fd18894880f37",
         "tool_config": {
-          "display_name": "Ponytail official OpenCode plugin v1",
-          "lane_name": "artifact-ponytail-opencode-plugin-v1",
-          "surface": "opencode-plugin+per-turn-rules+skills+commands",
+          "display_name": "LowFat official OpenCode plugin v1",
+          "lane_name": "terminal-lowfat-opencode-plugin-v1",
+          "surface": "opencode-native-tool-execute-before/terminal-command-rewriting",
           "allowed_terms": [
             "opencode",
-            "ponytail"
+            "opencode",
+            "lowfat"
           ],
-          "data_dir_name": "artifact-ponytail-opencode-plugin-v1",
+          "data_dir_name": "terminal-lowfat-opencode-plugin-v1",
           "mounts": [
-            "/opt/data/tool-candidates/opencode-adapter-v6/opencode_workflow_adapter.py",
-            "/opt/data/tool-candidates/ponytail"
+            "/opt/data/tool-candidates/opencode-adapter-v7/opencode_workflow_adapter.py",
+            "/opt/data/tool-candidates/lowfat",
+            "/opt/data/tool-candidates/lowfat-bin/lowfat"
           ],
           "executable": "/opt/data/tool-candidates/opencode-runtime/node_modules/opencode-ai/bin/opencode.exe",
           "expected_executable_sha256": "7c4d91c84d2bfdeabb59257e3490c5e5acb08f2aacb3e42f3ddc296a1c3f1aca",
@@ -362,96 +363,100 @@
           "codex_wrapper": {
             "command": "/usr/bin/python3",
             "args": [
-              "/opt/data/tool-candidates/opencode-adapter-v6/opencode_workflow_adapter.py",
+              "/opt/data/tool-candidates/opencode-adapter-v7/opencode_workflow_adapter.py",
               "--opencode-binary",
               "/opt/data/tool-candidates/opencode-runtime/node_modules/opencode-ai/bin/opencode.exe",
               "--expected-opencode-sha256",
               "7c4d91c84d2bfdeabb59257e3490c5e5acb08f2aacb3e42f3ddc296a1c3f1aca",
               "--treatment",
-              "ponytail"
+              "lowfat"
             ]
           },
           "preflight_command": [
             "/usr/bin/python3",
-            "/opt/data/tool-candidates/opencode-adapter-v6/opencode_workflow_adapter.py",
+            "/opt/data/tool-candidates/opencode-adapter-v7/opencode_workflow_adapter.py",
             "--opencode-binary",
             "/opt/data/tool-candidates/opencode-runtime/node_modules/opencode-ai/bin/opencode.exe",
             "--expected-opencode-sha256",
             "7c4d91c84d2bfdeabb59257e3490c5e5acb08f2aacb3e42f3ddc296a1c3f1aca",
             "--treatment",
-            "ponytail",
+            "lowfat",
             "--probe"
           ],
           "tool_manifest_identity": "current-file-v1",
+          "path_entries": [
+            "/opt/data/tool-candidates/lowfat-bin"
+          ],
           "env": {
-            "OPENCODE_TOOL_DATA_DIR": "{tool_data_dir}"
+            "LOWFAT_TELEMETRY": "0"
           },
           "host_integration": {
             "install_commands": [
               [
-                "/bin/bash",
-                "-lc",
-                "set -e; mkdir -p {repo}/.opencode/plugins; cp /opt/data/tool-candidates/ponytail/.opencode/plugins/ponytail.mjs {repo}/.opencode/plugins/ponytail.mjs; printf '\\n\\n# Ponytail product guidance (verbatim)\\n' >> {repo}/AGENTS.md; cat /opt/data/tool-candidates/ponytail/AGENTS.md >> {repo}/AGENTS.md"
+                "/opt/data/tool-candidates/lowfat-bin/lowfat",
+                "opencode",
+                "install"
               ]
             ],
             "verify_commands": [
               [
-                "python3",
-                "-c",
-                "from pathlib import Path; assert Path('{repo}/.opencode/plugins/ponytail.mjs').is_file(); assert Path('{repo}/AGENTS.md').is_file()"
+                "/opt/data/tool-candidates/lowfat-bin/lowfat",
+                "--version"
               ]
             ],
             "required_files": [
-              "{repo}/.opencode/plugins/ponytail.mjs",
-              "{repo}/AGENTS.md"
+              "{codex_home}/xdg-config/opencode/plugins/lowfat.ts"
             ],
             "timeout_seconds": 300
           },
           "native_plugin": {
             "required": true,
-            "path": "{repo}/.opencode/plugins/ponytail.mjs"
+            "path": "{codex_home}/xdg-config/opencode/plugins/lowfat.ts"
           },
           "artifact_identities": [
             {
-              "path": "/opt/data/tool-candidates/ponytail/.opencode/plugins/ponytail.mjs",
-              "sha256": "e2443648e1864724f56e2a073fdf2f29199772606d9ea1c175fe06eaa3b75853",
-              "kind": "native-plugin"
+              "path": "/opt/data/tool-candidates/lowfat-bin/lowfat",
+              "sha256": "609e9e42d9f01b9b1c4203dc00197498c65a629453d07927cbd68cea83980558",
+              "kind": "official-release-binary"
             },
             {
-              "path": "/opt/data/tool-candidates/ponytail/AGENTS.md",
-              "sha256": "1cd148db944eff33bf8bb878c41a290fe85b86de3e65ac311d5d501e71a0cdbf",
-              "kind": "product-guidance"
+              "path": "/opt/data/tool-candidates/lowfat/crates/lowfat/embedded/opencode/lowfat.ts",
+              "sha256": "49a6d53d34f40a00a1d8ebdccffee5d73572db22319ee5a99959429b634bf6ed",
+              "kind": "native-plugin-source"
             },
             {
-              "path": "/opt/data/tool-candidates/opencode-adapter-v6/opencode_workflow_adapter.py",
-              "sha256": "1b98aaec34711b3a7bb09ce269c12bb06421ab08913d06593fb6d2c6641a34a3",
+              "path": "/opt/data/tool-candidates/opencode-adapter-v7/opencode_workflow_adapter.py",
+              "sha256": "e559c52ef4ef8a7e6b02cd03bfc2b86c2da039da493969d21f1ebbeb116c1f15",
               "kind": "runtime-adapter"
+            }
+          ],
+          "post_install_artifacts": [
+            {
+              "path": "{codex_home}/xdg-config/opencode/plugins/lowfat.ts",
+              "sha256": "49a6d53d34f40a00a1d8ebdccffee5d73572db22319ee5a99959429b634bf6ed",
+              "retain_as": "lowfat-installed-plugin.ts"
             }
           ],
           "effective_host_config": {
             "required": true,
             "source": "adapter-probe"
           },
-          "diff_exclude_paths": [
-            "AGENTS.md",
-            ".opencode"
-          ],
-          "default_tool_state": "active-native-plugin+per-turn-guidance"
+          "default_tool_state": "active-native-plugin-exact-artifact"
         },
-        "tool_config_sha256": "86b3bc90220f83b8c24b71048e99b9ed45c5b929adaa46bda89a50f30e0f85e7",
-        "tool_state": "active-native-plugin+per-turn-guidance",
+        "tool_config_sha256": "8afb79ba8856ead4c5294d48bffb693e5ae1c275edd1faf538dc5039a29e6f82",
+        "tool_state": "active-native-plugin-exact-artifact",
         "tool_use_policy": "natural",
         "command_identity": {
           "kind": "codex_wrapper",
           "command": [
             "/usr/bin/python3",
-            "/opt/data/tool-candidates/opencode-adapter-v6/opencode_workflow_adapter.py",
+            "/opt/data/tool-candidates/opencode-adapter-v7/opencode_workflow_adapter.py",
             "--opencode-binary",
             "/opt/data/tool-candidates/opencode-runtime/node_modules/opencode-ai/bin/opencode.exe",
             "--expected-opencode-sha256",
             "7c4d91c84d2bfdeabb59257e3490c5e5acb08f2aacb3e42f3ddc296a1c3f1aca",
             "--treatment",
-            "ponytail"
+            "lowfat"
           ]
         },
         "binary_identity": {
@@ -471,7 +476,7 @@
               "/usr/bin/python3.13",
               "--version"
             ],
-            "environment_path": "/opt/data/.local/bin:/opt/data/opt/go/bin:/opt/data/opt/uv:/opt/data/opt/node-v24.18.0-linux-x64/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+            "environment_path": "/opt/data/.local/bin:/opt/data/tool-candidates/lowfat-bin:/opt/data/opt/go/bin:/opt/data/opt/uv:/opt/data/opt/node-v24.18.0-linux-x64/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
             "captured": true,
             "exit_code": 0,
             "output": "Python 3.13.5",
@@ -480,17 +485,22 @@
         },
         "source_identity": [
           {
-            "path": "/opt/data/tool-candidates/opencode-adapter-v6/opencode_workflow_adapter.py",
-            "exists": true,
-            "kind": "file",
-            "sha256": "1b98aaec34711b3a7bb09ce269c12bb06421ab08913d06593fb6d2c6641a34a3"
-          },
-          {
-            "path": "/opt/data/tool-candidates/ponytail",
+            "path": "/opt/data/tool-candidates/lowfat",
             "exists": true,
             "kind": "directory",
-            "git_head": "c4d1925ae9b76a1b641877328209ad25cfeb5ef2",
-            "package_json_sha256": "540faa921966db4d8b587a71a04912ef8b91da3a2509fadb8bf06638cc901cdf"
+            "git_head": "b9f6f99d02e5774296305a591bfb13ef24548c38"
+          },
+          {
+            "path": "/opt/data/tool-candidates/lowfat-bin/lowfat",
+            "exists": true,
+            "kind": "file",
+            "sha256": "609e9e42d9f01b9b1c4203dc00197498c65a629453d07927cbd68cea83980558"
+          },
+          {
+            "path": "/opt/data/tool-candidates/opencode-adapter-v7/opencode_workflow_adapter.py",
+            "exists": true,
+            "kind": "file",
+            "sha256": "e559c52ef4ef8a7e6b02cd03bfc2b86c2da039da493969d21f1ebbeb116c1f15"
           }
         ]
       },
@@ -509,7 +519,7 @@
         "dockerfile_path": "sources/evaluations/fixtures/container/Dockerfile",
         "dockerfile_sha256": "47c91967ce25014ce54879514f51d2ff0326651be1087209115eff4d358226b3",
         "fixture_runner_path": "scripts/run_codex_fixture_evaluation.py",
-        "fixture_runner_sha256": "302581d5a9dd4cc28868aa9fa0376ad423bfcf47f141f7bd4ba7cbc0c9fb80c3",
+        "fixture_runner_sha256": "830d6f7575ca7c8fe0102c09f754e1c24f0490e445eceec8d16fd18894880f37",
         "mcp_probe_path": "scripts/probe_mcp_stdio.py",
         "mcp_probe_sha256": "7c06ea36ee5cac933a97140b84a41405fc99b45152388e8d7c6659136af698fd",
         "codex_entrypoint_path": "sources/evaluations/fixtures/container/codex-entrypoint.sh",
