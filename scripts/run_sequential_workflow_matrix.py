@@ -36,6 +36,10 @@ import run_codex_workflow_model_condition as model_condition_launcher  # type: i
 import run_opencode_workflow_model_condition as opencode_condition_launcher  # type: ignore
 import workflow_model_condition_runtime as condition_runtime  # type: ignore
 DEFAULT_LANE_ROOT = Path("/opt/data/eval-workflow-lanes")
+OPENCODE_BASELINE_AUTHORITY_REL = Path(
+    "sources/evaluations/audits/opencode-dcp-qualification-and-r2-authorization-20260730.json"
+)
+OPENCODE_BASELINE_ATTEMPT_DIR = Path("sources/evaluations/audits/opencode-bare-r2-attempts")
 WORKFLOW_ARTIFACT_ROOT = Path("sources/evaluations/workflow-sessions")
 COMPACT_ARTIFACT_NAMES = {"run.json", "changes.diff", "evidence.jsonl.gz", "manifest.sha256"}
 
@@ -257,6 +261,7 @@ def plan_workflow_jobs(
     profile_state: Callable[[str, str], str],
     baseline_run_gate: Callable[[str], tuple[bool, str]],
     treatment_gate: Callable[[str], tuple[bool, str]] | None = None,
+    baseline_profile_id: str = "baseline-bare-codex",
 ) -> list[tuple[str, str]]:
     """Plan baselines or treatments only after a reusable baseline and explicit pilot gate."""
     if len(set(sequence_ids)) != len(sequence_ids):
@@ -271,7 +276,7 @@ def plan_workflow_jobs(
                 passed, reason = baseline_run_gate(sequence_id)
                 if not passed:
                     raise ValueError(f"baseline provider run is blocked for {sequence_id}: {reason}")
-                jobs.append((sequence_id, "baseline-bare-codex"))
+                jobs.append((sequence_id, baseline_profile_id))
             else:
                 raise ValueError(f"baseline for {sequence_id} is {state}; no new baseline run is needed")
         elif state == "reusable":
@@ -292,12 +297,89 @@ def plan_workflow_jobs(
             passed, reason = baseline_run_gate(sequence_id)
             if not passed:
                 raise ValueError(f"baseline provider run is blocked for {sequence_id}: {reason}")
-            jobs.append((sequence_id, "baseline-bare-codex"))
+            jobs.append((sequence_id, baseline_profile_id))
         else:
             raise ValueError(
                 f"baseline for {sequence_id} is {state}; review it or choose a new replicate before treatment execution"
             )
     return jobs
+
+
+def opencode_baseline_attempt_path(
+    sequence_id: str,
+    replicate_index: int,
+    root: Path = ROOT,
+) -> Path:
+    lane = sequence_id.removesuffix("-lifecycle-sequence-v0")
+    return root / OPENCODE_BASELINE_ATTEMPT_DIR / f"{lane}-r{replicate_index}.json"
+
+
+def opencode_baseline_run_gate(
+    registry: dict[str, Any],
+    sequence_id: str,
+    replicate_index: int,
+    root: Path = ROOT,
+) -> tuple[bool, str]:
+    authority_path = root / OPENCODE_BASELINE_AUTHORITY_REL
+    if not authority_path.is_file():
+        return False, f"missing OpenCode baseline authority: {OPENCODE_BASELINE_AUTHORITY_REL}"
+    try:
+        authority = load_json(authority_path)
+    except (OSError, ValueError) as exc:
+        return False, f"unreadable OpenCode baseline authority: {exc}"
+    owner = authority.get("owner_authorization", {})
+    contract = authority.get("execution_contract", {})
+    if not (
+        authority.get("status") == "qualified-ready-for-provider-execution"
+        and owner.get("message_id") == "1532521147327971438"
+        and owner.get("authorized_new_bare_replicate_index") == replicate_index == 2
+        and contract.get("model_condition_id") == "opencode-openai-gpt-5-6-sol-high"
+        and contract.get("baseline_profile_id") == "runtime-opencode-codex-product-v1"
+        and contract.get("sequential_max_parallel") == 1
+    ):
+        return False, "OpenCode baseline authority does not match the requested identity"
+    receipt = opencode_baseline_attempt_path(sequence_id, replicate_index, root)
+    if receipt.exists():
+        return False, (
+            "OpenCode baseline identity is occupied by immutable attempt receipt: "
+            f"{receipt.relative_to(root)}"
+        )
+    sequence = workflow.load_sequence(sequence_id)
+    occupied = workflow.find_pool_profile_record(
+        registry,
+        sequence,
+        "runtime-opencode-codex-product-v1",
+        replicate_index,
+    )
+    if occupied is not None:
+        return False, f"OpenCode baseline identity is occupied by session {occupied.get('session_id')}"
+    return True, "owner-authorized OpenCode r2 baseline is unoccupied"
+
+
+def reserve_opencode_baseline_attempt(
+    *,
+    sequence_id: str,
+    replicate_index: int,
+    expected_session_binding: dict[str, Any],
+    run_root: Path,
+) -> Path:
+    path = opencode_baseline_attempt_path(sequence_id, replicate_index, ROOT)
+    payload = {
+        "schema_version": 1,
+        "attempt_status": "reserved-before-provider-task",
+        "sequence_id": sequence_id,
+        "replicate_index": replicate_index,
+        "profile_id": "runtime-opencode-codex-product-v1",
+        "model_condition_id": "opencode-openai-gpt-5-6-sol-high",
+        "owner_authorization_message_id": "1532521147327971438",
+        "orchestrator": str(run_root),
+        "reserved_at": dt.datetime.now(dt.UTC).isoformat(),
+        "expected_session_binding": expected_session_binding,
+        "provider_result": None,
+        "immutable_identity_receipt": True,
+    }
+    workflow.atomic_create_json(path, payload)
+    return path
 
 
 def workflow_lane_command(
@@ -332,7 +414,7 @@ def workflow_lane_command(
         "--replicate-index", str(replicate_index),
         *runner_args,
     ])
-    if profile_id != "baseline-bare-codex":
+    if profile_id not in {"baseline-bare-codex", "runtime-opencode-codex-product-v1"}:
         cmd.extend(["--comparison-profile-id", profile_id])
     return cmd
 
@@ -422,6 +504,17 @@ def run_flow_lane(
     tmp.mkdir(parents=True, exist_ok=True)
     try:
         with log_path.open("w") as log:
+            if (
+                provider_capable
+                and production_lock_fd is not None
+                and treatment_profile == "runtime-opencode-codex-product-v1"
+            ):
+                reserve_opencode_baseline_attempt(
+                    sequence_id=sequence_id,
+                    replicate_index=replicate_index,
+                    expected_session_binding=expected_session_binding,
+                    run_root=lane_root,
+                )
             if provider_capable and production_lock_fd is not None and treatment_profile == "baseline-bare-codex":
                 parent_sequence = workflow.load_sequence(sequence_id)
                 if parent_sequence.get("task_family_generation") in {"baseline-v3", "baseline-v4"}:
@@ -1585,11 +1678,25 @@ def main(argv: list[str] | None = None) -> int:
     production_lock_fd = None
     treatment_profiles = args.treatment_profiles or []
     registry = load_json(ROOT / "data/workflow-sessions.json")
+    opencode_baseline = (
+        isinstance(model_condition, dict) and model_condition.get("runtime_id") == "opencode-cli"
+    )
+    baseline_profile_id = (
+        "runtime-opencode-codex-product-v1" if opencode_baseline else "baseline-bare-codex"
+    )
 
     def baseline_state(sequence_id: str) -> str:
         if args.prepare_only:
             return "missing"
         sequence = workflow.load_sequence(sequence_id)
+        if opencode_baseline:
+            session = workflow.find_pool_profile_record(
+                registry,
+                sequence,
+                baseline_profile_id,
+                args.replicate_index,
+            )
+            return workflow.reviewed_session_reuse_state(session, ROOT)
         return baseline_campaign_state(registry, sequence, args.replicate_index, ROOT)
 
     def profile_state(sequence_id: str, profile_id: str) -> str:
@@ -1601,6 +1708,13 @@ def main(argv: list[str] | None = None) -> int:
         return workflow.baseline_v2_treatment_gate(workflow.load_sequence(sequence_id), ROOT)
 
     def baseline_run_gate(sequence_id: str) -> tuple[bool, str]:
+        if opencode_baseline:
+            return opencode_baseline_run_gate(
+                registry,
+                sequence_id,
+                args.replicate_index,
+                ROOT,
+            )
         return workflow.baseline_v2_pilot_run_gate(
             workflow.load_sequence(sequence_id),
             ROOT,
@@ -1622,6 +1736,7 @@ def main(argv: list[str] | None = None) -> int:
             profile_state=profile_state,
             treatment_gate=treatment_gate,
             baseline_run_gate=baseline_run_gate,
+            baseline_profile_id=baseline_profile_id,
         )
     )
     for sequence_id, profile_id in jobs:
@@ -1634,7 +1749,7 @@ def main(argv: list[str] | None = None) -> int:
     serialized_replication_jobs = [
         (sequence_id, profile_id)
         for sequence_id, profile_id in jobs
-        if profile_id == "baseline-bare-codex"
+        if profile_id in {"baseline-bare-codex", "runtime-opencode-codex-product-v1"}
         and args.replicate_index > 0
         and workflow.load_sequence(sequence_id).get("task_family_generation") in {"baseline-v3", "baseline-v4"}
     ]
