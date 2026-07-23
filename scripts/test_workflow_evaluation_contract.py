@@ -5283,6 +5283,20 @@ class BaselineV3LowComplexityContractTest(unittest.TestCase):
                 f"missing immutable Baseline V3 receipt for {slug}",
             )
 
+    def test_workflow_authority_describes_mixed_generations_and_completed_fastify_pilot(self) -> None:
+        document = json.loads((ROOT / "data/workflow-task-sequences.json").read_text())
+        self.assertIn("Baseline V3/V4", document["description"])
+        sequences = {sequence["id"]: sequence for sequence in document["sequences"]}
+        fastify = sequences["fastify-lifecycle-sequence-v0"]
+        self.assertEqual(fastify["task_family_generation"], "baseline-v3")
+        self.assertEqual(fastify["readiness_blockers"], [])
+        self.assertEqual(runner.baseline_v2_treatment_gate(fastify, ROOT)[0], True)
+        for sequence_id in ("beets-lifecycle-sequence-v0", "terraform-lifecycle-sequence-v0"):
+            sequence = sequences[sequence_id]
+            blockers = " ".join(sequence["readiness_blockers"])
+            self.assertIn("Baseline V4", blockers)
+            self.assertNotIn("Baseline V3 pilot not yet executed", blockers)
+
     def test_v4_active_authorities_are_generation_consistent(self) -> None:
         sequences = json.loads((ROOT / "data/workflow-task-sequences.json").read_text())["sequences"]
         fixtures = {
