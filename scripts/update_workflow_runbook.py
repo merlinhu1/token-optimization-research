@@ -201,14 +201,25 @@ def render() -> str:
                 blocked_gates.append(f"`{sequence['id']}` ({gate_reason})")
         if blocked_gates:
             any_pilot_allowed = any(allowed for allowed, _reason in pilot_run_states.values())
+            authorization_blocked = [
+                sequence_id
+                for sequence_id, (allowed, reason) in pilot_run_states.items()
+                if not allowed and "not authorized" in reason
+            ]
+            if authorization_blocked:
+                suffix = (
+                    ". Paid pilot execution is not authorized for "
+                    + ", ".join(f"`{sequence_id}`" for sequence_id in authorization_blocked)
+                    + "; provider-capable commands are suppressed until the explicit authorization authority is updated."
+                )
+            elif any_pilot_allowed:
+                suffix = ". Only an unoccupied designated baseline pilot identity may run before its independent zero-incident audit passes."
+            else:
+                suffix = ". The designated pilot identities are occupied by immutable attempt evidence and their completed audits. Failed classifications are permanent for this generation; correcting a lane requires a new generation and new identities."
             chunks.append(
                 "Treatment protocol freezing, preparation, and execution are machine-blocked for "
                 + ", ".join(blocked_gates)
-                + (
-                    ". Only an unoccupied designated baseline pilot identity may run before its independent zero-incident audit passes."
-                    if any_pilot_allowed
-                    else ". The designated pilot identities are occupied by immutable attempt evidence and their completed audits. Failed classifications are permanent for this generation; correcting a lane requires a new generation and new identities."
-                )
+                + suffix
             )
         if pending_baselines:
             prepare_commands = "\n".join(
