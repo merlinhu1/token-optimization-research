@@ -45,6 +45,7 @@ OPENCODE_ADAPTER_V4 = Path("/opt/data/tool-candidates/opencode-adapter-v4/openco
 OPENCODE_ADAPTER_V5 = Path("/opt/data/tool-candidates/opencode-adapter-v5/opencode_workflow_adapter.py")
 OPENCODE_ADAPTER_V6 = Path("/opt/data/tool-candidates/opencode-adapter-v6/opencode_workflow_adapter.py")
 OPENCODE_ADAPTER_V7 = Path("/opt/data/tool-candidates/opencode-adapter-v7/opencode_workflow_adapter.py")
+OPENCODE_ADAPTER_V8 = Path("/opt/data/tool-candidates/opencode-adapter-v8/opencode_workflow_adapter.py")
 FORBIDDEN_BASELINE_TERMS = [
     "lean-ctx",
     "mcp_lean_ctx",
@@ -77,6 +78,7 @@ FORBIDDEN_BASELINE_TERMS = [
     "lowfat",
     "tokenjuice",
     "caveman",
+    "dcp",
 ]
 BASELINE_CODEX_NO_MCP_PROFILES = {"baseline-codex-no-mcp"}
 PROFILE_TOOL_CONFIG_OVERRIDES = {
@@ -95,6 +97,7 @@ PROFILE_TOOL_CONFIG_OVERRIDES = {
     "artifact-ponytail-opencode-plugin-v1": "ponytail-opencode-plugin-v1",
     "behavior-caveman-opencode-plugin-v1": "caveman-opencode-plugin-v1",
     "terminal-lowfat-opencode-plugin-v1": "lowfat-opencode-plugin-v1",
+    "context-dcp-opencode-plugin-v1": "dcp-opencode-plugin-v1",
     "retrieval-cartog-codex-product-v2": "cartog-codex-product-v2",
     "codescope-codex-product-v1": "codescope-codex-product-v1",
     "swarmvault-codex-product-v1": "swarmvault-codex-product-v1",
@@ -144,6 +147,7 @@ CAVEMAN_ROOT = Path("/opt/data/tool-candidates/caveman")
 LEANCTX_BINARY = Path("/opt/data/bin/lean-ctx")
 LEANCTX_ROOT = Path("/opt/data/tool-candidates/lean-ctx")
 PONYTAIL_ROOT = Path("/opt/data/tool-candidates/ponytail")
+DCP_ROOT = Path("/opt/data/tool-candidates/opencode-dcp")
 HEADROOM_ROOT = Path("/opt/data/tool-candidates/headroom")
 HEADROOM_WHEEL = HEADROOM_ROOT / "dist" / "headroom_ai-0.28.0-cp310-abi3-linux_x86_64.whl"
 HEADROOM_OPENCODE_PLUGIN = HEADROOM_ROOT / "plugins" / "opencode" / "dist" / "entry.opencode.js"
@@ -2090,6 +2094,39 @@ TOOL_CONFIGS.update(
             ],
             effective_host_config={"required": True, "source": "adapter-probe"},
             default_tool_state="active-native-plugin-exact-artifact",
+        ),
+        "dcp-opencode-plugin-v1": _opencode_treatment_config(
+            "dcp",
+            display_name="Dynamic Context Pruning official OpenCode plugin v3.1.14",
+            lane_name="context-dcp-opencode-plugin-v1",
+            surface="opencode-native-context-pruning+compress-tool+automatic-cleanup",
+            allowed_terms=["opencode", "dcp", "compress"],
+            mounts=[str(DCP_ROOT)],
+            adapter_path=OPENCODE_ADAPTER_V8,
+            env={"OPENCODE_TOOL_DATA_DIR": "{tool_data_dir}"},
+            host_integration={
+                "controller_install_commands": [[str(OPENCODE_BIN), "plugin", "@tarquinen/opencode-dcp@3.1.14", "--global"]],
+                "required_files": [
+                    "{codex_home}/xdg-config/opencode/opencode.jsonc",
+                    "{codex_home}/xdg-config/opencode/tui.json",
+                    "{codex_home}/xdg-cache/opencode/packages/@tarquinen/opencode-dcp@3.1.14/node_modules/@tarquinen/opencode-dcp/dist/index.js",
+                ],
+                "timeout_seconds": 600,
+            },
+            native_plugin={"required": True, "path": "{codex_home}/xdg-cache/opencode/packages/@tarquinen/opencode-dcp@3.1.14/node_modules/@tarquinen/opencode-dcp/dist/index.js"},
+            artifact_identities=[
+                {"path": str(DCP_ROOT / "package.json"), "sha256": "9b7f126d0f5bbe06f1b17b583e0cbc7b2e66d556a58d646574319dc65d3d410e", "kind": "source-package"},
+                {"path": str(DCP_ROOT / "package-lock.json"), "sha256": "cae2ac00ee6abc966e7132732fb975fe0c1d5e5494c2ac48c7cf566718aa5a98", "kind": "source-lock"},
+                {"path": str(DCP_ROOT / "README.md"), "sha256": "1905a791ba86ea0f8cd8771364f7c5a8e6a3634ecb636df4eeede1614530b882", "kind": "product-guidance"},
+                {"path": str(OPENCODE_ADAPTER_V8), "sha256": "d5fcd88e033767659da3acf17486273059cd566c29475c274349d2214428545c", "kind": "runtime-adapter"},
+            ],
+            post_install_artifacts=[
+                {"path": "{codex_home}/xdg-config/opencode/opencode.jsonc", "sha256": "9b8a141b67efdf6fbcb1123f859cdc5acc41e35ab795fb8385029ff508221dd9", "retain_as": "dcp-opencode-config.jsonc"},
+                {"path": "{codex_home}/xdg-config/opencode/tui.json", "sha256": "0149ceca7dfcbed690669efd026606124f175fed423b2067dd1a8f0c0a1262c0", "retain_as": "dcp-opencode-tui.json"},
+                {"path": "{codex_home}/xdg-cache/opencode/packages/@tarquinen/opencode-dcp@3.1.14/node_modules/@tarquinen/opencode-dcp/dist/index.js", "sha256": "1e70b38527d6c604d9437bb447a67c857cd6f0cfe02f4fa69b69729e2ef57432", "retain_as": "dcp-installed-plugin.js"},
+            ],
+            effective_host_config={"required": True, "source": "adapter-probe"},
+            default_tool_state="active-native-plugin+automatic-cleanup+model-visible-compress",
         ),
     }
 )
