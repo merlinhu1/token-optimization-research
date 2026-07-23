@@ -1,6 +1,6 @@
 {
   "protocol_schema_version": 3,
-  "protocol_id": "terraform-lifecycle-sequence-v0-integrated-leanctx-opencode-hybrid-v1-f5141f4cbcd4",
+  "protocol_id": "terraform-lifecycle-sequence-v0-integrated-leanctx-opencode-hybrid-v1-6cf04ddbe6c9",
   "status": "frozen-ready-not-run",
   "outcome": "Frozen integrated-leanctx-opencode-hybrid-v1 protocol for terraform-lifecycle-sequence-v0; no provider/model run has occurred.",
   "frozen_at": "2026-07-22",
@@ -41,7 +41,7 @@
     "model": "gpt-5.6-sol",
     "model_condition_id": "opencode-openai-gpt-5-6-sol-high",
     "reasoning_effort": "high",
-    "command": "python3 scripts/run_opencode_workflow_model_condition.py --workflow-model-condition-id opencode-openai-gpt-5-6-sol-high --workflow-model gpt-5.6-sol --workflow-reasoning-effort high --sequence-id terraform-lifecycle-sequence-v0 --profile-id integrated-leanctx-opencode-hybrid-v1 --timeout-per-task 3600 --protocol sources/evaluations/protocols/terraform-lifecycle-sequence-v0-integrated-leanctx-opencode-hybrid-v1-f5141f4cbcd4.json --docker-image token-eval-codex:latest"
+    "command": "python3 scripts/run_opencode_workflow_model_condition.py --workflow-model-condition-id opencode-openai-gpt-5-6-sol-high --workflow-model gpt-5.6-sol --workflow-reasoning-effort high --sequence-id terraform-lifecycle-sequence-v0 --profile-id integrated-leanctx-opencode-hybrid-v1 --timeout-per-task 3600 --protocol sources/evaluations/protocols/terraform-lifecycle-sequence-v0-integrated-leanctx-opencode-hybrid-v1-6cf04ddbe6c9.json --docker-image token-eval-codex:latest"
   },
   "token_accounting_boundary": {
     "fields": [
@@ -249,7 +249,7 @@
     }
   },
   "selected_execution": {
-    "descriptor_sha256": "8c92d3a1f86b93826c314c45597300bfcfd0b0b1319ba9b45a37808a4319d923",
+    "descriptor_sha256": "4bf53bd3049cd36059eb25d37dc67c3b7f75b24621e1a0eb694f750b80ab9c78",
     "descriptor": {
       "version": "execution-condition-v1",
       "sequence_id": "terraform-lifecycle-sequence-v0",
@@ -351,7 +351,7 @@
       "tool_adapter": {
         "tool_id": "leanctx-opencode-hybrid-v1",
         "tool_manifest": "scripts/run_codex_fixture_evaluation.py:TOOL_CONFIGS",
-        "tool_manifest_sha256": "92a6a165e81e8b0d4ec7fc3d35a726d521e1aaa9a8b1ed3598768a39548773cd",
+        "tool_manifest_sha256": "302581d5a9dd4cc28868aa9fa0376ad423bfcf47f141f7bd4ba7cbc0c9fb80c3",
         "tool_config": {
           "display_name": "LeanCTX official OpenCode hybrid integration v1",
           "lane_name": "integrated-leanctx-opencode-hybrid-v1",
@@ -540,7 +540,7 @@
         "dockerfile_path": "sources/evaluations/fixtures/container/Dockerfile",
         "dockerfile_sha256": "47c91967ce25014ce54879514f51d2ff0326651be1087209115eff4d358226b3",
         "fixture_runner_path": "scripts/run_codex_fixture_evaluation.py",
-        "fixture_runner_sha256": "92a6a165e81e8b0d4ec7fc3d35a726d521e1aaa9a8b1ed3598768a39548773cd",
+        "fixture_runner_sha256": "302581d5a9dd4cc28868aa9fa0376ad423bfcf47f141f7bd4ba7cbc0c9fb80c3",
         "mcp_probe_path": "scripts/probe_mcp_stdio.py",
         "mcp_probe_sha256": "7c06ea36ee5cac933a97140b84a41405fc99b45152388e8d7c6659136af698fd",
         "codex_entrypoint_path": "sources/evaluations/fixtures/container/codex-entrypoint.sh",
