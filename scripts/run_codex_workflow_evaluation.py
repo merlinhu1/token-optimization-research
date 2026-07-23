@@ -119,6 +119,7 @@ SUPPORTED_WORKFLOW_TOOL_PROFILES = {
     "artifact-ponytail-opencode-plugin-v1": "ponytail-opencode-plugin-v1",
     "behavior-caveman-opencode-plugin-v1": "caveman-opencode-plugin-v1",
     "terminal-lowfat-opencode-plugin-v1": "lowfat-opencode-plugin-v1",
+    "context-dcp-opencode-plugin-v1": "dcp-opencode-plugin-v1",
 }
 
 # Existing profile protocols were qualified against this runner manifest. The

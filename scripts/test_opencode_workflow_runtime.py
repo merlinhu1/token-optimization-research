@@ -105,7 +105,7 @@ class OpenCodeWorkflowAdapterTest(unittest.TestCase):
         expected = {
             "bare", "tokenjuice", "serena", "snip", "cartog", "headroom",
             "codescope", "swarmvault", "graphify", "rtk", "codegraph",
-            "jcodemunch", "leanctx", "sigmap", "ponytail", "caveman", "lowfat",
+            "jcodemunch", "leanctx", "sigmap", "ponytail", "caveman", "lowfat", "dcp",
         }
         self.assertEqual(set(adapter.TREATMENT_PROFILES), expected)
         with tempfile.TemporaryDirectory() as tmp:
@@ -127,7 +127,7 @@ class OpenCodeWorkflowAdapterTest(unittest.TestCase):
             repo.mkdir()
             configs = {}
             envs = {}
-            for treatment in ("codescope", "swarmvault", "graphify", "rtk", "codegraph", "jcodemunch", "leanctx", "sigmap", "ponytail", "caveman", "lowfat"):
+            for treatment in ("codescope", "swarmvault", "graphify", "rtk", "codegraph", "jcodemunch", "leanctx", "sigmap", "ponytail", "caveman", "lowfat", "dcp"):
                 env, _ = adapter._runtime_env(root / treatment, treatment=treatment, directory=repo)
                 envs[treatment] = env
                 configs[treatment] = json.loads(env["OPENCODE_CONFIG_CONTENT"])
@@ -148,6 +148,7 @@ class OpenCodeWorkflowAdapterTest(unittest.TestCase):
         self.assertTrue(any(path.endswith("/plugins/ponytail.mjs") for path in configs["ponytail"]["plugin"]))
         self.assertTrue(any("caveman" in path for path in configs["caveman"]["plugin"]))
         self.assertTrue(any(path.endswith("/plugins/lowfat.ts") for path in configs["lowfat"]["plugin"]))
+        self.assertEqual(configs["dcp"]["plugin"], ["@tarquinen/opencode-dcp@3.1.14"])
         for treatment in ("jcodemunch", "leanctx", "sigmap", "ponytail", "caveman"):
             self.assertEqual(envs[treatment]["OPENCODE_DISABLE_EXTERNAL_SKILLS"], "0")
 
@@ -491,6 +492,7 @@ class OpenCodeWorkflowIntegrationContractTest(unittest.TestCase):
             "artifact-ponytail-opencode-plugin-v1": "ponytail-opencode-plugin-v1",
             "behavior-caveman-opencode-plugin-v1": "caveman-opencode-plugin-v1",
             "terminal-lowfat-opencode-plugin-v1": "lowfat-opencode-plugin-v1",
+            "context-dcp-opencode-plugin-v1": "dcp-opencode-plugin-v1",
         }
         self.assertTrue(expected.keys() <= runner.SUPPORTED_WORKFLOW_TOOL_PROFILES.keys())
         for profile_id, tool_id in expected.items():
@@ -521,7 +523,7 @@ class OpenCodeWorkflowIntegrationContractTest(unittest.TestCase):
         self.assertIn("--opencode", rtk["host_integration"]["install_commands"][0])
         self.assertNotIn("OPENCODE_EVALUATION_DIRECTORY", rtk["env"])
 
-    def test_next_five_protocols_freeze_the_fresh_opencode_comparator(self) -> None:
+    def test_current_dcp_protocols_freeze_the_fresh_opencode_comparator(self) -> None:
         matrix.selected_model_condition(
             argparse.Namespace(
                 workflow_model_condition_id=self.CONDITION_ID,
@@ -530,13 +532,7 @@ class OpenCodeWorkflowIntegrationContractTest(unittest.TestCase):
             ),
             configure=True,
         )
-        profile_ids = {
-            "retrieval-jcodemunch-opencode-product-v1",
-            "integrated-leanctx-opencode-hybrid-v2",
-            "retrieval-sigmap-opencode-product-v1",
-            "terminal-lowfat-opencode-plugin-v1",
-            "behavior-caveman-opencode-plugin-v1",
-        }
+        profile_ids = {"context-dcp-opencode-plugin-v1"}
         sequences = {
             "fastify-lifecycle-sequence-v0",
             "beets-lifecycle-sequence-v0",

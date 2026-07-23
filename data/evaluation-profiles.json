@@ -3338,6 +3338,66 @@
         "runtime_adapter_sha256": "e559c52ef4ef8a7e6b02cd03bfc2b86c2da039da493969d21f1ebbeb116c1f15"
       },
       "notes": "Corrected official OpenCode integration: the product-generated ~/.config/opencode configuration and AGENTS guidance are copied byte-for-byte into the lane-active isolated XDG root, with MCP handshake and warm index retained."
+    },
+    {
+      "profile_type": "individual_tool",
+      "objective_scope": "individual_tool_effectiveness",
+      "status": "screening-ablation",
+      "substrate": "opencode-cli",
+      "disabled_overlaps": [
+        "all unlisted surfaces"
+      ],
+      "native_agent_tools_allowed": [
+        "opencode-native-shell-edit",
+        "opencode-native-file-read-search",
+        "git",
+        "verifier-commands",
+        "dcp-compress-tool"
+      ],
+      "forbidden_surfaces": [
+        "all external retrieval, compression, memory, MCP, skills, plugins, subagents, and web tools except the assigned DCP plugin surfaces"
+      ],
+      "reset": {
+        "policy": "Delete lane-private OpenCode XDG configuration, package cache, DCP state, auth translation, and generated evaluation artifacts after evidence capture."
+      },
+      "id": "context-dcp-opencode-plugin-v1",
+      "artifact_slug": "dcp-opencode-v1",
+      "name": "Dynamic Context Pruning OpenCode plugin V3.1.14",
+      "enabled_surfaces": [
+        "opencode-plugin",
+        "model-visible-compress-tool",
+        "automatic-deduplication",
+        "automatic-error-input-purging",
+        "context-nudges"
+      ],
+      "components": [
+        {
+          "component_id": "context-dcp-opencode-plugin-v1",
+          "surface": "opencode-native-context-pruning+compress-tool+automatic-cleanup",
+          "role": "individual_tool"
+        }
+      ],
+      "install": {
+        "policy": "Run OpenCode's official plugin installer with the exact pinned package spec `@tarquinen/opencode-dcp@3.1.14` in the lane-private XDG root; require server and TUI registration, exact installed server-entrypoint hash, and live OpenCode debug-config plugin proof."
+      },
+      "evaluation_protocol": {
+        "tool_use_policy": "natural",
+        "tool_state": "active-native-plugin+automatic-cleanup+model-visible-compress",
+        "integration_state": "official-opencode-plugin-default-configuration",
+        "assignment_proof": "provider-free exact source, lock, installer outputs, installed entrypoint, effective configuration, and live native activation proof required"
+      },
+      "source_snapshot": {
+        "repository": "Opencode-DCP/opencode-dynamic-context-pruning",
+        "version": "3.1.14",
+        "tag": "v3.1.14",
+        "source_commit": "85b6f5ceba144fee9e65eb28dc36cab1b960e418",
+        "package_sha256": "9b7f126d0f5bbe06f1b17b583e0cbc7b2e66d556a58d646574319dc65d3d410e",
+        "package_lock_sha256": "cae2ac00ee6abc966e7132732fb975fe0c1d5e5494c2ac48c7cf566718aa5a98",
+        "installed_plugin_sha256": "1e70b38527d6c604d9437bb447a67c857cd6f0cfe02f4fa69b69729e2ef57432",
+        "runtime_adapter": "/opt/data/tool-candidates/opencode-adapter-v8/opencode_workflow_adapter.py",
+        "runtime_adapter_sha256": "d5fcd88e033767659da3acf17486273059cd566c29475c274349d2214428545c"
+      },
+      "notes": "Owner-authorized fresh OpenCode screen. Default DCP configuration is preserved; evaluator-authored compression steering and manual slash-command activation are forbidden."
     }
   ]
 }
