@@ -4067,6 +4067,7 @@ def _run_one_locked(args: argparse.Namespace) -> dict[str, Any]:
     if seq["fixture_id"] not in PROJECT_META:
         raise ValueError(f"No runner metadata for fixture {seq['fixture_id']}")
     profile_id = args.profile_id
+    baseline_control_profile = profile_id in {"baseline-bare-codex", "baseline-claude-code-no-mcp"}
     if profile_id not in PROFILE_META:
         raise ValueError(f"No runner metadata for profile {profile_id}")
     standalone_opencode_control = standalone_opencode_control_authorized(
@@ -4074,14 +4075,14 @@ def _run_one_locked(args: argparse.Namespace) -> dict[str, Any]:
         args.replicate_index,
         ROOT,
     )
-    if profile_id != "baseline-bare-codex" and not standalone_opencode_control:
+    if not baseline_control_profile and not standalone_opencode_control:
         require_baseline_v2_treatment_gate(seq, ROOT)
     validate_protocol_for_run(seq, profile_id, args)
     comparison_baseline_session_id = ""
     if not args.prepare_only:
         registry = json.loads((ROOT / "data/workflow-sessions.json").read_text())
         assert_pool_slot_available(registry, seq, profile_id, args.replicate_index)
-        if profile_id != "baseline-bare-codex" and not standalone_opencode_control:
+        if not baseline_control_profile and not standalone_opencode_control:
             comparison_baseline_session_id = require_reusable_treatment_baseline(
                 registry,
                 seq,
