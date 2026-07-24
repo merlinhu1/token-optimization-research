@@ -1446,12 +1446,23 @@ def publish_ready_comparisons(
     return published
 
 
-PROTECTED_CONTROL_PLANE_FILES = workflow.PAID_LAUNCH_PROTECTED_FILES
+PROTECTED_CONTROL_PLANE_FILES = workflow.PAID_LAUNCH_PROTECTED_FILES + (
+    Path("scripts/test_opencode_workflow_runtime.py"),
+)
 
 
 def restore_protected_control_plane_files(root: Path = ROOT) -> None:
     for relative in PROTECTED_CONTROL_PLANE_FILES:
         if not (root / relative).is_file():
+            tracked = subprocess.run(
+                ["git", "cat-file", "-e", f"HEAD:{relative.as_posix()}"],
+                cwd=root,
+                text=True,
+                capture_output=True,
+                check=False,
+            )
+            if tracked.returncode != 0:
+                continue
             subprocess.run(
                 [
                     "git", "restore", "--source=HEAD", "--staged", "--worktree",
