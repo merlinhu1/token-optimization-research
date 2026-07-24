@@ -2,7 +2,8 @@
   "schema_version": 1,
   "audit_id": "opencode-serena-jcodemunch-token-inflation-analysis-20260730",
   "date": "2026-07-30",
-  "status": "evidence-reconciled-awaiting-independent-cross-check",
+  "status": "evidence-reconciled-independent-cross-check-passed",
+  "independent_cross_check_date": "2026-07-31",
   "question": "Why did Serena and jCodemunch use substantially more provider tokens than their matched bare OpenCode controls?",
   "accounting": {
     "weighted_formula": "fresh_input + 0.1 * cached_input + 6 * output",
@@ -54,7 +55,7 @@
       "later_cache_read_range_tokens": [8704, 13824],
       "matched_bare_later_cache_read_range_tokens": [4608, 7680]
     },
-    "finding": "Serena paid for 22 MCP tool schemas on every provider request and added one extra model step per lane to call `serena_initial_instructions`. Each call returned about 7.55k characters that entered subsequent context. The model then used ordinary bash rather than Serena's symbolic retrieval tools. The inflation is therefore primarily repeated input-context overhead plus the extra instructions turn, not unusually long model output.",
+    "finding": "Serena exposed a 22-tool MCP catalog and added one extra model step per lane to call `serena_initial_instructions`. Each call returned about 7.55k characters that entered subsequent context. The model then used ordinary bash rather than Serena's symbolic retrieval tools. The inflation is therefore primarily repeated treatment-added input context plus the extra instructions turn, not unusually long model output; raw request payloads were not retained to allocate exact shares to serialized tool schemas versus other fixed context.",
     "confidence": "high for observed decomposition and behavior; causal shares between schema text and other fixed system context are not separately identified"
   },
   "jcodemunch": {
@@ -99,9 +100,10 @@
       "first_step_fresh_input_tokens_by_lane": [23624, 23591, 23624],
       "matched_bare_first_step_fresh_input_tokens_by_lane": [5500, 5467, 5500],
       "later_cache_read_range_tokens": [23040, 25088],
-      "matched_bare_later_cache_read_range_tokens": [4608, 7680]
+      "matched_bare_later_cache_read_range_tokens": [0, 7680],
+      "matched_bare_positive_later_cache_read_range_tokens": [4608, 7680]
     },
-    "finding": "jCodemunch exposed an 89-tool MCP catalog and installed 6,156 characters of product-authored guidance. The model issued no jCodemunch calls and used the same six provider steps and three ordinary bash calls per lane as bare OpenCode. Output was actually 41 tokens lower than baseline. The excess is therefore fixed tool-schema/guidance context repeatedly processed and cache-read without natural product uptake.",
+    "finding": "jCodemunch exposed an 89-tool MCP catalog and installed 6,156 characters of product-authored guidance. The model issued no jCodemunch calls and used the same six provider steps and three ordinary bash calls per lane as bare OpenCode. Output was actually 41 tokens lower than baseline. The excess is therefore fixed treatment-added context repeatedly processed and cache-read without natural product uptake; the catalog, guidance, and initialization context are the most likely constituents, but raw request payloads were not retained to identify their exact shares.",
     "confidence": "high for observed decomposition and behavior; the exact split between 89 tool schemas, guidance, and other fixed context is not separately identified"
   },
   "cross_tool_conclusion": {
@@ -129,7 +131,13 @@
       "codex-events.jsonl",
       "mcp-handshake.json",
       "task-prompts/task-01.md",
-      "tool-host-integration.json"
+      "tool-host-integration.json",
+      "tool-host-install-3.txt"
+    ],
+    "guidance_reconstruction_inputs": [
+      "scripts/install_jcodemunch_opencode_guidance.py",
+      "/opt/data/tool-candidates/jcodemunch-mcp/src/jcodemunch_mcp/cli/init.py",
+      "/opt/data/tool-candidates/jcodemunch-mcp/AGENT_INSTALL_UNIVERSAL.md"
     ]
   }
 }

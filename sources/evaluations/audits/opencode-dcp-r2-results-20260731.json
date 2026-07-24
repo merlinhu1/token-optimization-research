@@ -1,0 +1,179 @@
+{
+  "schema_version": 1,
+  "audit_id": "opencode-dcp-r2-results-20260731",
+  "date": "2026-07-31",
+  "status": "accepted-single-run-screening-zero-explicit-compression-uptake",
+  "independent_cross_check_date": "2026-07-31",
+  "independent_cross_check_disposition": "passed after correcting candidate identity, rendered prompt-hash parity, automatic-hook observability, and static-context attribution scope",
+  "source_registry_sha256": "a061a2e0fe470693528db11d4b08707176e3fac45eeb4f651cfa30124aef68c3",
+  "profile_id": "context-dcp-opencode-plugin-v1",
+  "model_condition_id": "opencode-openai-gpt-5-6-sol-high",
+  "model": "gpt-5.6-sol",
+  "reasoning_effort": "high",
+  "replicate_index": 2,
+  "max_parallel": 1,
+  "candidate": {
+    "repository": "Opencode-DCP/opencode-dynamic-context-pruning",
+    "tag": "v3.1.14",
+    "commit": "85b6f5ceba144fee9e65eb28dc36cab1b960e418",
+    "npm_package": "@tarquinen/opencode-dcp",
+    "version": "3.1.14",
+    "installed_entrypoint_sha256": "1e70b38527d6c604d9437bb447a67c857cd6f0cfe02f4fa69b69729e2ef57432",
+    "qualification_audit": "sources/evaluations/audits/opencode-dcp-qualification-and-r2-authorization-20260730.json"
+  },
+  "accounting": {
+    "weighted_formula": "fresh_input + 0.1 * cached_input + 6 * output",
+    "reasoning_policy": "reasoning is a subset of output and is not added again"
+  },
+  "sessions": [
+    {
+      "sequence_id": "fastify-lifecycle-sequence-v0",
+      "baseline_session_id": "opencode-fastify-20260730-p-bb0e89ed9794-r2",
+      "treatment_session_id": "dcp-opencode-v1-fastify-20260731-p-bb0e89ed9794-r2",
+      "baseline_usage": {
+        "fresh_input_tokens": 11559,
+        "cached_input_tokens": 30208,
+        "output_tokens": 1199,
+        "total_provider_tokens": 42966,
+        "weighted_units": 21773.8
+      },
+      "treatment_usage": {
+        "fresh_input_tokens": 21719,
+        "cached_input_tokens": 28672,
+        "output_tokens": 1221,
+        "reasoning_tokens": 60,
+        "total_provider_tokens": 51612,
+        "weighted_units": 31912.2
+      },
+      "delta": {
+        "raw_tokens": 8646,
+        "raw_percent": 20.122887864823348,
+        "weighted_units": 10138.4,
+        "weighted_percent": 46.562382312687745
+      },
+      "task_verifiers": "3/3",
+      "final_verifier_exit_code": 0,
+      "manifest_sha256": "c3df54ef6ff6a7731a082c13188670c4045894495bba3bee8152fcd1c1bbe2a5"
+    },
+    {
+      "sequence_id": "beets-lifecycle-sequence-v0",
+      "baseline_session_id": "opencode-beets-20260730-p-fcc8438d2077-r2",
+      "treatment_session_id": "dcp-opencode-v1-beets-20260731-p-fcc8438d2077-r2",
+      "baseline_usage": {
+        "fresh_input_tokens": 16289,
+        "cached_input_tokens": 22528,
+        "output_tokens": 913,
+        "total_provider_tokens": 39730,
+        "weighted_units": 24019.8
+      },
+      "treatment_usage": {
+        "fresh_input_tokens": 12500,
+        "cached_input_tokens": 35328,
+        "output_tokens": 1024,
+        "reasoning_tokens": 76,
+        "total_provider_tokens": 48852,
+        "weighted_units": 22176.8
+      },
+      "delta": {
+        "raw_tokens": 9122,
+        "raw_percent": 22.95997986408256,
+        "weighted_units": -1843.0,
+        "weighted_percent": -7.6728365764910595
+      },
+      "task_verifiers": "3/3",
+      "final_verifier_exit_code": 0,
+      "manifest_sha256": "7a9a3b219a0d5c8eed7eb3434202f3b35f2fdc3f2b97369e05f7435416251ae7"
+    },
+    {
+      "sequence_id": "terraform-lifecycle-sequence-v0",
+      "baseline_session_id": "opencode-terraform-20260730-p-5811b463c1e9-r2",
+      "treatment_session_id": "dcp-opencode-v1-terraform-20260731-p-5811b463c1e9-r2",
+      "baseline_usage": {
+        "fresh_input_tokens": 17996,
+        "cached_input_tokens": 21504,
+        "output_tokens": 976,
+        "total_provider_tokens": 40476,
+        "weighted_units": 26002.4
+      },
+      "treatment_usage": {
+        "fresh_input_tokens": 10580,
+        "cached_input_tokens": 37376,
+        "output_tokens": 927,
+        "reasoning_tokens": 58,
+        "total_provider_tokens": 48883,
+        "weighted_units": 19879.6
+      },
+      "delta": {
+        "raw_tokens": 8407,
+        "raw_percent": 20.770333036861356,
+        "weighted_units": -6122.8,
+        "weighted_percent": -23.5470571947205
+      },
+      "task_verifiers": "3/3",
+      "final_verifier_exit_code": 0,
+      "manifest_sha256": "b7e876993c675989af07175aec0ecb402a6577e70c2998b770519cbcb4961b8c"
+    }
+  ],
+  "aggregate": {
+    "accepted_sessions": 3,
+    "task_verifiers_passed": 9,
+    "task_verifiers_total": 9,
+    "final_verifiers_passed": 3,
+    "final_verifiers_total": 3,
+    "baseline": {
+      "fresh_input_tokens": 45844,
+      "cached_input_tokens": 74240,
+      "output_tokens": 3088,
+      "total_provider_tokens": 123172,
+      "weighted_units": 71796.0
+    },
+    "treatment": {
+      "fresh_input_tokens": 44799,
+      "cached_input_tokens": 101376,
+      "output_tokens": 3172,
+      "reasoning_tokens": 194,
+      "total_provider_tokens": 149347,
+      "weighted_units": 73968.6
+    },
+    "delta": {
+      "fresh_input_tokens": -1045,
+      "cached_input_tokens": 27136,
+      "output_tokens": 84,
+      "total_provider_tokens": 26175,
+      "raw_percent": 21.25077127918682,
+      "weighted_units": 2172.6,
+      "weighted_percent": 3.0260738759819494
+    }
+  },
+  "activation_and_integrity": {
+    "native_plugin_loaded": "3/3",
+    "plugin_identity": "@tarquinen/opencode-dcp@3.1.14",
+    "source_artifact_checks": "12/12",
+    "post_install_artifact_checks": "9/9",
+    "isolation_audits": "3/3 passed with zero violations",
+    "model_visible_compress_calls": 0,
+    "model_visible_product_calls": 0,
+    "native_bash_calls": 9,
+    "automatic_pruning_events_observed": 0,
+    "automatic_hook_invocation_count": "unobserved",
+    "host_wiring_caveat": "The official installer generated and hash-matched the expected config. The evaluated adapter set OPENCODE_DISABLE_PROJECT_CONFIG=1 and re-injected the exact pinned plugin through OPENCODE_CONFIG_CONTENT, so this proves semantically equivalent frozen OpenCode wiring rather than direct paid-process consumption of the generated installer config.",
+    "exact_task_patch_parity": "9/9 baseline-treatment task patches byte-identical",
+    "compact_evidence_members": 165,
+    "compact_manifests": "3/3"
+  },
+  "comparisons": [
+    "sources/evaluations/workflow-sessions/baseline-fastify-20260731-vs-dcp-opencode-v1-p-bb0e89ed9794-r2.json",
+    "sources/evaluations/workflow-sessions/baseline-beets-20260731-vs-dcp-opencode-v1-p-fcc8438d2077-r2.json",
+    "sources/evaluations/workflow-sessions/baseline-terraform-20260731-vs-dcp-opencode-v1-p-5811b463c1e9-r2.json"
+  ],
+  "incidents": [
+    {
+      "type": "derived comparison publication omission",
+      "provider_calls": 0,
+      "provider_tokens": 0,
+      "description": "The controller published Fastify and Terraform comparison records but omitted Beets after dynamic control-plane fingerprint drift during post-run cleanup. The Beets comparison was regenerated from the two immutable accepted fcc8438d2077 session records; no provider result or session was changed.",
+      "correction": "Comparison publication now prefers the retained treatment session's frozen baseline-pool fingerprint over a recomputed current-control-plane fingerprint. A regression test binds the Beets r2 comparison to fcc8438d2077."
+    }
+  ],
+  "interpretation": "DCP was natively loaded and all quality gates passed, but these short three-task workflows produced no model-visible compress call or observed automatic pruning event. All nine treatment patches exactly matched the bare OpenCode patches. DCP increased raw provider tokens by 21.25% on every workflow and aggregate weighted usage by 3.03%; per-workflow weighted changes were mixed because cache placement shifted. This is a valid no-natural-uptake single-run screen, not evidence that DCP cannot help longer or more repetitive sessions and not eligible for ranking."
+}

@@ -3861,17 +3861,48 @@ def atomic_create_json(path: Path, data: Any) -> None:
 def write_comparison_if_ready(seq: dict[str, Any], study_id: str, replicate_index: int, treatment_profile_id: str) -> dict[str, Any] | None:
     registry = json.loads((ROOT / "data/workflow-sessions.json").read_text())
     project_id = PROJECT_META[seq["fixture_id"]]["project_id"]
-    protocol_fingerprint = baseline_protocol_fingerprint(seq)
+    current_protocol_fingerprint = baseline_protocol_fingerprint(seq)
     comparison_key = safe_profile_key(treatment_profile_id)
-    group_id = treatment_experiment_group_id(project_id, treatment_profile_id, replicate_index, protocol_fingerprint)
+    treatment_candidates = [
+        session
+        for session in registry.get("sessions", [])
+        if session.get("task_sequence", {}).get("sequence_id") == seq["id"]
+        and session.get("profile", {}).get("profile_id") == treatment_profile_id
+        and session.get("replicate_index") == replicate_index
+    ]
+    treatment = treatment_candidates[0] if len(treatment_candidates) == 1 else None
+    frozen_protocol_fingerprint = (
+        treatment.get("baseline_pool", {}).get("protocol_fingerprint")
+        if isinstance(treatment, dict)
+        else None
+    )
+    protocol_fingerprint = (
+        frozen_protocol_fingerprint
+        if isinstance(frozen_protocol_fingerprint, str) and frozen_protocol_fingerprint
+        else current_protocol_fingerprint
+    )
+    group_id = (
+        treatment.get("experiment_group_id")
+        if isinstance(treatment, dict) and isinstance(treatment.get("experiment_group_id"), str)
+        else treatment_experiment_group_id(project_id, treatment_profile_id, replicate_index, protocol_fingerprint)
+    )
     baseline = find_comparison_baseline_record(
         registry,
         seq,
         treatment_profile_id,
         replicate_index,
     )
-    sessions = [s for s in registry.get("sessions", []) if s.get("experiment_group_id") == group_id]
-    treatment = next((s for s in sessions if s.get("profile", {}).get("profile_id") == treatment_profile_id and s.get("baseline_pool", {}).get("protocol_fingerprint") == protocol_fingerprint), None)
+    if treatment is None:
+        sessions = [s for s in registry.get("sessions", []) if s.get("experiment_group_id") == group_id]
+        treatment = next(
+            (
+                s
+                for s in sessions
+                if s.get("profile", {}).get("profile_id") == treatment_profile_id
+                and s.get("baseline_pool", {}).get("protocol_fingerprint") == protocol_fingerprint
+            ),
+            None,
+        )
     if not baseline or not treatment:
         return None
     if reviewed_session_reuse_state(baseline, ROOT) != "reusable" or reviewed_session_reuse_state(treatment, ROOT) != "reusable":
