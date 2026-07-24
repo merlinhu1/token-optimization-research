@@ -37,6 +37,7 @@ def write_json(path: Path, value: object) -> None:
 
 MODEL_CONDITION_LAUNCHER = "scripts/run_codex_workflow_model_condition.py"
 OPENCODE_MODEL_CONDITION_LAUNCHER = "scripts/run_opencode_workflow_model_condition.py"
+CLAUDE_MODEL_CONDITION_LAUNCHER = "scripts/run_claude_code_workflow_model_condition.py"
 BASELINE_MODEL_CONDITION: dict[str, Any] | None = None
 
 
@@ -50,17 +51,16 @@ def registered_model_condition(condition_id: str, model: str, reasoning_effort: 
 def configure_model_condition(condition_id: str, model: str, reasoning_effort: str) -> None:
     global BASELINE_MODEL_CONDITION, MODEL_CONDITION_LAUNCHER
     selected, _ = condition_runtime.resolve_condition_pair(ROOT, condition_id)
-    MODEL_CONDITION_LAUNCHER = (
-        OPENCODE_MODEL_CONDITION_LAUNCHER
-        if selected.get("runtime_id") == "opencode-cli"
-        else "scripts/run_codex_workflow_model_condition.py"
-    )
+    MODEL_CONDITION_LAUNCHER = {
+        "opencode-cli": OPENCODE_MODEL_CONDITION_LAUNCHER,
+        "claude-code": CLAUDE_MODEL_CONDITION_LAUNCHER,
+    }.get(selected.get("runtime_id"), "scripts/run_codex_workflow_model_condition.py")
     launcher_path = ROOT / MODEL_CONDITION_LAUNCHER
     launcher_identity = {
         "path": MODEL_CONDITION_LAUNCHER,
         "sha256": digest(launcher_path),
     }
-    if selected.get("runtime_id") == "opencode-cli":
+    if selected.get("runtime_id") in {"opencode-cli", "claude-code"}:
         runtime_path = ROOT / "scripts/workflow_model_condition_runtime.py"
         launcher_identity.update({
             "condition_runtime_path": "scripts/workflow_model_condition_runtime.py",
@@ -117,29 +117,35 @@ def frozen_protocol(
         docker_image=runner.DEFAULT_DOCKER_IMAGE,
     )
     command = runner_command(seq, profile_id, protocol_path, execution)
+    selected_agent = execution["agent_condition"]
     agent = {
         "profile_id": profile_id,
-        "runtime_id": execution["agent_condition"]["runtime_id"],
-        "provider": "openai",
-        "model": runner.DEFAULT_WORKFLOW_MODEL,
-        "model_condition_id": runner.DEFAULT_WORKFLOW_MODEL_CONDITION_ID,
-        "reasoning_effort": runner.DEFAULT_WORKFLOW_REASONING_EFFORT,
+        "runtime_id": selected_agent["runtime_id"],
+        "provider": selected_agent.get("provider"),
+        "model": selected_agent.get("model"),
+        "model_condition_id": selected_agent.get("model_condition_id"),
+        "reasoning_effort": selected_agent.get("reasoning_effort"),
         "command": command,
     }
+    baseline_profile_id = (
+        "baseline-claude-code-no-mcp"
+        if selected_agent.get("runtime_id") == "claude-code"
+        else "baseline-bare-codex"
+    )
     baseline = {
-        "profile_id": "baseline-bare-codex",
+        "profile_id": baseline_profile_id,
         "runtime_id": descriptor.get("agent_condition", descriptor.get("agent", {}))["runtime_id"],
-        "provider": "openai",
-        "model": runner.DEFAULT_WORKFLOW_MODEL,
+        "provider": descriptor.get("agent_condition", descriptor.get("agent", {})).get("provider"),
+        "model": selected_agent.get("model"),
         "model_condition_id": (
             BASELINE_MODEL_CONDITION["id"]
             if BASELINE_MODEL_CONDITION is not None
             else runner.DEFAULT_WORKFLOW_MODEL_CONDITION_ID
         ),
-        "reasoning_effort": runner.DEFAULT_WORKFLOW_REASONING_EFFORT,
-        "command": command if profile_id == "baseline-bare-codex" else "",
+        "reasoning_effort": selected_agent.get("reasoning_effort"),
+        "command": command if profile_id == baseline_profile_id else "",
     }
-    treatment = {} if profile_id == "baseline-bare-codex" else agent
+    treatment = {} if profile_id == baseline_profile_id else agent
     comparison_baseline = dict(baseline)
     if (
         runner.PROFILE_META.get(profile_id, {}).get("substrate") == "opencode-cli"
@@ -226,9 +232,11 @@ def main(argv: list[str] | None = None) -> int:
         if seq.get("status") != "active":
             raise ValueError(f"cannot freeze a non-active sequence: {sequence_id}")
         if args.profile_id != "baseline-bare-codex":
-            # Validate the published Codex baseline before any replacement-runtime
-            # condition patches the selected execution descriptor.
-            runner.require_baseline_v2_treatment_gate(seq, ROOT)
+            selected_runtime = runner.profile_runtime_id(args.profile_id)
+            if selected_runtime not in {"claude-code"}:
+                # Validate the published Codex baseline before replacement-runtime
+                # conditions patch the selected execution descriptor.
+                runner.require_baseline_v2_treatment_gate(seq, ROOT)
         current, _ = runner.qualification_is_current(seq)
         if not current:
             raise ValueError(

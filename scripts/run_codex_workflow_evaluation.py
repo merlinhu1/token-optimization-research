@@ -30,6 +30,8 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "scripts"))
 import extract_codex_usage  # type: ignore
 import extract_opencode_usage  # type: ignore
+import extract_claude_code_usage  # type: ignore
+import claude_code_workflow_adapter  # type: ignore
 import run_codex_fixture_evaluation as fixture  # type: ignore
 import validate_repository as repository_validation  # type: ignore
 
@@ -140,7 +142,11 @@ def build_profile_meta() -> dict[str, dict[str, Any]]:
     catalog_path = ROOT / "data/evaluation-profiles.json"
     catalog = json.loads(catalog_path.read_text())
     canonical = {profile["id"]: profile for profile in catalog.get("profiles", [])}
-    supported = {"baseline-bare-codex": None, **SUPPORTED_WORKFLOW_TOOL_PROFILES}
+    supported = {
+        "baseline-bare-codex": None,
+        "baseline-claude-code-no-mcp": None,
+        **SUPPORTED_WORKFLOW_TOOL_PROFILES,
+    }
     profiles: dict[str, dict[str, Any]] = {}
     for profile_id, tool_id in supported.items():
         source = canonical.get(profile_id)
@@ -348,12 +354,26 @@ def profile_runtime_id(profile_id: str, root: Path = ROOT) -> str:
 
 
 def runtime_agent_name(runtime_id: str) -> str:
-    return "OpenCode CLI" if runtime_id == "opencode-cli" else "Codex CLI"
+    return {
+        "codex-cli": "Codex CLI",
+        "opencode-cli": "OpenCode CLI",
+        "claude-code": "Claude Code",
+    }.get(runtime_id, runtime_id)
 
 
 def runtime_version_from_preflight(profile_id: str, run_dir: Path) -> str:
     if profile_runtime_id(profile_id) == "opencode-cli":
         path = run_dir / "tool-preflight.txt"
+        if path.is_file():
+            try:
+                value = json.loads(path.read_text())
+            except json.JSONDecodeError:
+                value = {}
+            version = value.get("version") if isinstance(value, dict) else None
+            return str(version) if isinstance(version, str) else ""
+        return ""
+    if profile_runtime_id(profile_id) == "claude-code":
+        path = run_dir / "claude-code-preflight.json"
         if path.is_file():
             try:
                 value = json.loads(path.read_text())
@@ -1987,7 +2007,8 @@ def validate_protocol_for_run(seq: dict[str, Any], profile_id: str, args: argpar
         errors.append("timeout")
     if selected_execution.get("descriptor", {}).get("runtime", {}).get("docker_image") != args.docker_image:
         errors.append("docker_image")
-    if profile_id == "baseline-bare-codex":
+    control_profile = profile_id in {"baseline-bare-codex", "baseline-claude-code-no-mcp"}
+    if control_profile:
         if baseline_block.get("profile_id") != profile_id:
             errors.append("profile_id")
         if treatment_block.get("profile_id"):
@@ -1997,8 +2018,13 @@ def validate_protocol_for_run(seq: dict[str, Any], profile_id: str, args: argpar
             errors.append("baseline_only_descriptor")
         if treatment_block.get("profile_id") != profile_id:
             errors.append("treatment_profile_id")
-    agent_block = baseline_block if profile_id == "baseline-bare-codex" else treatment_block
-    if agent_block.get("provider") != "openai" or agent_block.get("model") != DEFAULT_WORKFLOW_MODEL or agent_block.get("reasoning_effort") != DEFAULT_WORKFLOW_REASONING_EFFORT:
+    agent_block = baseline_block if control_profile else treatment_block
+    expected_agent = expected_execution.get("agent_condition", {})
+    if (
+        agent_block.get("provider") != expected_agent.get("provider")
+        or agent_block.get("model") != expected_agent.get("model")
+        or agent_block.get("reasoning_effort") != expected_agent.get("reasoning_effort")
+    ):
         errors.append("agent")
     command = str(agent_block.get("command", ""))
     for required in (
@@ -2802,7 +2828,13 @@ def base_record(session_id: str, seq: dict[str, Any], profile_id: str, project: 
         "agent": {
             "runtime_id": profile_runtime_id(profile_id),
             "model_condition_id": DEFAULT_WORKFLOW_MODEL_CONDITION_ID,
-            "provider": "openai",
+            "provider": (
+                "openrouter"
+                if DEFAULT_WORKFLOW_MODEL_CONDITION_ID.startswith("claude-code-openrouter-")
+                else "anthropic"
+                if profile_runtime_id(profile_id) == "claude-code"
+                else "openai"
+            ),
             "model": DEFAULT_WORKFLOW_MODEL,
             "reasoning_effort": DEFAULT_WORKFLOW_REASONING_EFFORT,
         },
@@ -2825,6 +2857,16 @@ def profile_prompt_guidance(profile_id: str) -> str:
         )
     tool_id = pmeta.get("tool_id")
     if not tool_id:
+        if pmeta.get("substrate") == "claude-code":
+            return (
+                "# Evaluation isolation contract\n\n"
+                "You are running inside the `baseline-claude-code-no-mcp` control lane using bare Claude Code. "
+                "Native shell, file, git, and repository edit operations are allowed. "
+                "Do not use external retrieval, compression, memory, MCP, external skills/plugins, or token-saving tools. "
+                "Claude Code web and agent tools are disabled and model-launched shell commands have no network access; do not attempt curl, wget, browsers, package downloads, or any other external retrieval. "
+                "Work only inside the target repository. The controller runs concealed verification only after the full task lane; "
+                "do not inspect or modify evaluation harness files.\n\n---\n\n"
+            )
         return (
             "# Evaluation isolation contract\n\n"
             "You are running inside the `baseline-bare-codex` control lane. "
@@ -3256,6 +3298,18 @@ def run_codex_task(
     thread_id: str | None,
     operational_retries: int = MAX_CODEX_OPERATIONAL_RETRIES,
 ) -> tuple[int, str | None, dict[str, Any] | None]:
+    if profile_runtime_id(profile_id) == "claude-code":
+        return claude_code_workflow_adapter.run_task(
+            record=record,
+            claude_home=codex_home,
+            run_dir=run_dir,
+            docker_image=docker_image,
+            prompt_path=prompt_path,
+            events_path=output_path,
+            session_id=thread_id,
+            timeout=timeout,
+            fixture=fixture,
+        )
     cfg = fixture.active_tool_config(record, profile_id)
     repo = ROOT / record["target"]["repository_path"]
     wrapper = (cfg or {}).get("codex_wrapper") if cfg else None
@@ -3329,21 +3383,26 @@ def run_final_verifier(seq: dict[str, Any], record: dict[str, Any], codex_home: 
 
 
 def build_provider_usage(profile_id: str, events_path: Path) -> dict[str, Any]:
-    if profile_runtime_id(profile_id) == "opencode-cli":
+    runtime_id = profile_runtime_id(profile_id)
+    if runtime_id == "opencode-cli":
         return extract_opencode_usage.build_summary(events_path)
+    if runtime_id == "claude-code":
+        return extract_claude_code_usage.build_summary(events_path)
     return extract_codex_usage.build_summary(events_path)
 
 
-def concatenate_events(run_dir: Path, task_count: int) -> None:
-    combined = run_dir / "codex-events.jsonl"
+def concatenate_events(run_dir: Path, task_count: int, *, runtime_id: str = "codex-cli") -> Path:
+    stem = "claude-events" if runtime_id == "claude-code" else "codex-events"
+    combined = run_dir / f"{stem}.jsonl"
     with combined.open("w") as out:
         for order in range(1, task_count + 1):
-            path = run_dir / f"task-{order:02d}-codex-events.jsonl"
+            path = run_dir / f"task-{order:02d}-{stem}.jsonl"
             if path.exists():
                 text = path.read_text(errors="replace")
                 out.write(text)
                 if text and not text.endswith("\n"):
                     out.write("\n")
+    return combined
 
 
 def capture_diff(record: dict[str, Any], run_dir: Path) -> None:
@@ -3372,7 +3431,9 @@ def capture_diff(record: dict[str, Any], run_dir: Path) -> None:
 
 
 def audit(record_path: Path, run_dir: Path) -> int:
-    artifacts = [str(record_path), str(run_dir / "codex-events.jsonl"), str(run_dir / "codex-mcp-list.txt"), str(run_dir / "codex-effective-config.toml")]
+    artifacts = [str(record_path)]
+    artifacts.extend(str(path) for path in sorted(run_dir.glob("*events.jsonl")))
+    artifacts.extend(str(path) for path in (run_dir / "codex-mcp-list.txt", run_dir / "codex-effective-config.toml") if path.exists())
     artifacts.extend(str(path) for path in sorted((run_dir / "task-prompts").glob("task-*.md")))
     return fixture.run([
         sys.executable,
@@ -4089,11 +4150,16 @@ def _run_one_locked(args: argparse.Namespace) -> dict[str, Any]:
     (run_dir / "evaluation-protocol.json").write_text(json.dumps(protocol, indent=2) + "\n")
 
     codex_home_root = run_dir / "codex-homes"
-    codex_home = fixture.prepare_codex_home(record, profile_id, run_dir, args.source_codex_home, codex_home_root, copy_auth=True)
+    runtime_id = profile_runtime_id(profile_id)
+    codex_home = (
+        fixture.prepare_claude_home(profile_id, run_dir, codex_home_root)
+        if runtime_id == "claude-code"
+        else fixture.prepare_codex_home(record, profile_id, run_dir, args.source_codex_home, codex_home_root, copy_auth=True)
+    )
     cfg = fixture.active_tool_config(record, profile_id)
 
     if not args.skip_container_preflight:
-        container_preflight = fixture.check_container_runtime("docker", runtime_docker_image, run_dir, False, build_image=False, dockerfile=fixture.DEFAULT_DOCKERFILE, codex_home=codex_home, cfg=cfg)
+        container_preflight = fixture.check_container_runtime("docker", runtime_docker_image, run_dir, False, build_image=False, dockerfile=fixture.DEFAULT_DOCKERFILE, codex_home=codex_home, cfg=cfg, agent_runtime=runtime_id)
         if not container_preflight.get("passed"):
             return finalize_failed_attempt({"session_id": session_id, "profile_id": profile_id, "accepted": False, "stage": "container-preflight", "run_dir": rel(run_dir), "container_preflight": container_preflight}, record, run_dir)
     integration = fixture.prepare_profile_integration(
@@ -4108,7 +4174,11 @@ def _run_one_locked(args: argparse.Namespace) -> dict[str, Any]:
         return finalize_failed_attempt({"session_id": session_id, "profile_id": profile_id, "accepted": False, "stage": "host-integration", "run_dir": rel(run_dir), "host_integration": integration}, record, run_dir)
     preflight: dict[str, Any] = {"passed": None, "skipped": True}
     if not args.skip_codex_preflight:
-        preflight = fixture.preflight_codex(record, codex_home, profile_id, run_dir, backend="docker", docker_image=runtime_docker_image)
+        preflight = (
+            fixture.preflight_claude_code(record, codex_home, profile_id, run_dir, backend="docker", docker_image=runtime_docker_image)
+            if runtime_id == "claude-code"
+            else fixture.preflight_codex(record, codex_home, profile_id, run_dir, backend="docker", docker_image=runtime_docker_image)
+        )
         redact_auth_sync(run_dir)
         if not preflight.get("passed"):
             return finalize_failed_attempt({"session_id": session_id, "profile_id": profile_id, "accepted": False, "stage": "codex-preflight", "run_dir": rel(run_dir), "preflight": preflight}, record, run_dir)
@@ -4196,8 +4266,9 @@ def _run_one_locked(args: argparse.Namespace) -> dict[str, Any]:
             order,
             task_prompt(seq, profile_id, run_dir, order, first_task=order == 1),
         )
-        events_path = run_dir / f"task-{order:02d}-codex-events.jsonl"
-        last_message_path = model_output_dir / f"task-{order:02d}-codex-last-message.txt"
+        event_stem = "claude-events" if runtime_id == "claude-code" else "codex-events"
+        events_path = run_dir / f"task-{order:02d}-{event_stem}.jsonl"
+        last_message_path = model_output_dir / f"task-{order:02d}-{event_stem.replace('events', 'last-message')}.txt"
         requested_thread_id = thread_id
         code, thread_id, continuity_error = run_codex_task(
             record,
@@ -4260,8 +4331,8 @@ def _run_one_locked(args: argparse.Namespace) -> dict[str, Any]:
     verifier_integrity_checks.append(final_integrity)
     (run_dir / "verifier-integrity.json").write_text(json.dumps({"checks": verifier_integrity_checks}, indent=2) + "\n")
     verifier_integrity_passed = all(check["passed"] for check in verifier_integrity_checks)
-    concatenate_events(run_dir, len(ordered_tasks))
-    usage = build_provider_usage(profile_id, run_dir / "codex-events.jsonl")
+    events_artifact = concatenate_events(run_dir, len(ordered_tasks), runtime_id=runtime_id)
+    usage = build_provider_usage(profile_id, events_artifact)
     (run_dir / "provider-usage.json").write_text(json.dumps(usage, indent=2) + "\n")
     task_checkpoints = complete_task_checkpoints(ordered_tasks, task_checkpoints)
     verifier_results: list[dict[str, Any]] = []

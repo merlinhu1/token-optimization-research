@@ -73,10 +73,16 @@ def resolve_condition_pair(root: Path, selected_id: str) -> tuple[dict[str, Any]
     if len(selected_matches) != 1:
         raise ValueError(f"model condition must resolve exactly once: {selected_id}")
     selected = selected_matches[0]
-    if selected.get("provider") != "openai":
-        raise ValueError("workflow model condition must use the OpenAI provider")
     if selected.get("runtime_id") == "codex-cli":
         return selected, selected
+    # OpenCode is paired with a published Codex control; Claude Code starts its
+    # own bare-runtime control pool and must never borrow an incompatible one.
+    if selected.get("runtime_id") == "claude-code":
+        if selected.get("provider") not in {"anthropic", "openrouter"}:
+            raise ValueError("Claude Code conditions must use Anthropic-compatible provider")
+        return selected, selected
+    if selected.get("provider") != "openai":
+        raise ValueError("replacement workflow conditions must use a supported provider")
     baseline_matches = [
         item
         for item in conditions
@@ -167,12 +173,26 @@ def configure_runner(
             raise ValueError(f"registered model condition drifted: {selected['id']}")
 
     def baseline_descriptor(sequence: dict[str, Any], root: Path = runner.ROOT) -> dict[str, Any]:
-        if selected["runtime_id"] != "codex-cli":
+        if selected["runtime_id"] == "opencode-cli":
             return published_baseline_descriptor(
                 Path(root), str(sequence["id"]), str(baseline["id"])
             )
         descriptor = original_baseline_descriptor(sequence, root)
-        apply_agent_condition(descriptor["agent_condition"], baseline)
+        if selected["runtime_id"] == "claude-code":
+            profile = runner.profile_registry_entry("baseline-claude-code-no-mcp", Path(root))
+            descriptor["baseline_profile"] = {
+                "profile_id": "baseline-claude-code-no-mcp",
+                "profile_type": profile["profile_type"],
+                "enabled_surfaces": profile.get("enabled_surfaces", []),
+                "disabled_overlaps": profile.get("disabled_overlaps", []),
+            }
+            descriptor["model_facing_prompts"] = runner.model_facing_prompt_descriptor(
+                sequence, "baseline-claude-code-no-mcp", Path(root)
+            )
+            descriptor["runtime_inputs"]["claude_runtime_condition"] = selected["id"]
+            descriptor["runtime_inputs"].pop("codex_runtime_condition", None)
+        agent_key = "agent_condition" if "agent_condition" in descriptor else "agent"
+        apply_agent_condition(descriptor[agent_key], baseline)
         descriptor["runtime_inputs"]["model_condition_id"] = baseline["id"]
         descriptor["runtime_inputs"]["model_condition_launcher"] = launcher_path
         descriptor["model_condition_override"] = condition_override(baseline, launcher_identity)
