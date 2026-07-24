@@ -35,12 +35,6 @@ from scripts import run_codex_workflow_evaluation as runner
 from scripts import run_codex_workflow_model_condition as model_condition_runner
 from scripts import run_sequential_workflow_matrix as matrix
 from scripts import validate_repository
-from scripts.test_opencode_workflow_runtime import (
-    OpenCodeUsageAccountingTest,
-    OpenCodeWorkflowAdapterTest,
-    OpenCodeWorkflowIntegrationContractTest,
-)
-
 
 SEQUENCE_ID = "terraform-lifecycle-sequence-v0"
 
