@@ -81,6 +81,7 @@ Code surface:
 - scripts/audit_tool_isolation.py
 - scripts/extract_codex_usage.py
 - scripts/extract_opencode_usage.py
+- scripts/extract_claude_code_usage.py
 - scripts/generate_current_evaluation_panel.py
 - scripts/generate_workflow_qualification.py
 - scripts/install_cartog_codex_product.py
@@ -89,6 +90,7 @@ Code surface:
 - scripts/install_ponytail_opencode.py
 - scripts/install_token_savior_codex_product.py
 - scripts/opencode_workflow_adapter.py
+- scripts/claude_code_workflow_adapter.py
 - scripts/prepare_pinned_codex_marketplace.py
 - scripts/probe_mcp_stdio.py
 - scripts/probe_token_savior_codex_hooks.py
@@ -98,9 +100,9 @@ Code surface:
 - scripts/run_codex_fixture_evaluation.py
 - scripts/run_codex_workflow_evaluation.py
 - scripts/run_codex_workflow_model_condition.py
+- scripts/run_claude_code_workflow_model_condition.py
 - scripts/run_opencode_workflow_model_condition.py
 - scripts/run_sequential_workflow_matrix.py
-- scripts/test_opencode_workflow_runtime.py
 - scripts/test_workflow_evaluation_contract.py
 - scripts/trust_codex_plugin_hooks.py
 - scripts/update_workflow_runbook.py

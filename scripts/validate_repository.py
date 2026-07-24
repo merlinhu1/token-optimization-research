@@ -2,11 +2,14 @@
 """Lightweight structural validation for the token optimization research repository."""
 from __future__ import annotations
 
+import copy
 import gzip
+import importlib
 import json
 import re
 import subprocess
 import hashlib
+import shutil
 from pathlib import Path, PurePosixPath
 from typing import Any
 import sys
@@ -52,6 +55,7 @@ def provider_usage_valid(usage: object, *, allow_legacy_null_cache_write: bool =
         or usage.get("measurement_source") not in {
             "codex-jsonl-usage-events",
             "opencode-jsonl-step-finish-usage",
+            "claude-code-stream-json-assistant-usage",
         }
         or not set(PROVIDER_USAGE_FIELDS).issubset(usage)
     ):
@@ -82,6 +86,24 @@ def provider_usage_valid(usage: object, *, allow_legacy_null_cache_write: bool =
         and total == expected_total
         and usage["reasoning_tokens"] <= usage["output_tokens"]
     )
+
+
+def model_condition_override_matches(actual: object, expected: object) -> bool:
+    if actual == expected:
+        return True
+    if not isinstance(actual, dict) or not isinstance(expected, dict):
+        return False
+    actual_launcher = actual.get("launcher")
+    expected_launcher = expected.get("launcher")
+    if actual.get("runtime_id") != "opencode-cli" or not isinstance(actual_launcher, dict) or not isinstance(expected_launcher, dict):
+        return False
+    if actual_launcher.get("path") != expected_launcher.get("path"):
+        return False
+    actual_copy = copy.deepcopy(actual)
+    expected_copy = copy.deepcopy(expected)
+    actual_copy["launcher"].pop("condition_runtime_sha256", None)
+    expected_copy["launcher"].pop("condition_runtime_sha256", None)
+    return actual_copy == expected_copy
 
 
 def compact_run_record_matches_session(
@@ -508,8 +530,16 @@ DOSSIER_STALE_PHRASES = (
 
 def run_truthmark(command: str, errors: list[str]) -> None:
     try:
+        truthmark = shutil.which("truthmark")
+        npx = shutil.which("npx")
+        if npx:
+            command_argv = [npx, "--no-install", "truthmark", command, "--json"]
+        elif truthmark:
+            command_argv = [truthmark, command, "--json"]
+        else:
+            raise FileNotFoundError("truthmark/npx")
         result = subprocess.run(
-            ["truthmark", command, "--json"],
+            command_argv,
             cwd=ROOT,
             text=True,
             capture_output=True,
@@ -3511,12 +3541,14 @@ def validate_frozen_protocol_bindings(errors: list[str]) -> None:
         from scripts import run_codex_workflow_evaluation as runner
         from scripts import run_codex_workflow_model_condition as model_condition_runner
         from scripts import run_opencode_workflow_model_condition as opencode_condition_runner
+        from scripts import run_claude_code_workflow_model_condition as claude_condition_runner
         from scripts import workflow_model_condition_runtime as condition_runtime
     except Exception as exc:
         errors.append(f"cannot import workflow runner for protocol binding validation: {exc}")
         runner = None
         model_condition_runner = None
         opencode_condition_runner = None
+        claude_condition_runner = None
         condition_runtime = None
     current_sequence_bindings: set[str] = set()
     for path in (ROOT / "sources/evaluations/protocols").glob("*.json"):
@@ -3584,41 +3616,83 @@ def validate_frozen_protocol_bindings(errors: list[str]) -> None:
                     if selected_pool != actual_fingerprint:
                         errors.append(f"historical execution contract {path.name} has an inconsistent baseline-pool reference")
                     continue
+                importlib.reload(runner)
                 expected_descriptor = runner.baseline_protocol_descriptor(seq)
                 condition = None
                 override = frozen_descriptor.get("model_condition_override") if isinstance(frozen_descriptor, dict) else None
                 if override is not None:
                     if not isinstance(override, dict) or model_condition_runner is None:
                         raise ValueError("invalid model-condition override")
-                    condition = model_condition_runner.registered_condition(
-                        str(override.get("model_condition_id", "")),
-                        str(override.get("model", "")),
-                        str(override.get("reasoning_effort", "")),
-                    )
-                    expected_override = {
-                        "model_condition_id": condition["id"],
-                        "model": condition["model"],
-                        "reasoning_effort": condition["reasoning_effort"],
-                        "registry_status": condition.get("status"),
-                        "launcher": model_condition_runner.launcher_identity(),
-                    }
-                    if override != expected_override:
+                    condition = None
+                    override_runtime = str(override.get("runtime_id", "")) if isinstance(override, dict) else ""
+                    if override_runtime == "claude-code":
+                        if condition_runtime is None or claude_condition_runner is None:
+                            raise ValueError("Claude Code condition validator is unavailable")
+                        condition, _ = condition_runtime.resolve_condition_pair(
+                            ROOT, str(override.get("model_condition_id", ""))
+                        )
+                        if (
+                            condition.get("model") != override.get("model")
+                            or condition.get("reasoning_effort") != override.get("reasoning_effort")
+                        ):
+                            raise ValueError("Claude Code model-condition override does not match registry")
+                        expected_override = condition_runtime.condition_override(
+                            condition, claude_condition_runner.launcher_identity()
+                        )
+                    elif override_runtime == "opencode-cli":
+                        if condition_runtime is None or opencode_condition_runner is None:
+                            raise ValueError("OpenCode condition validator is unavailable")
+                        condition, _ = condition_runtime.resolve_condition_pair(
+                            ROOT, str(override.get("model_condition_id", ""))
+                        )
+                        expected_override = condition_runtime.condition_override(
+                            condition, opencode_condition_runner.launcher_identity()
+                        )
+                    else:
+                        if model_condition_runner is None:
+                            raise ValueError("Codex condition validator is unavailable")
+                        condition = model_condition_runner.registered_condition(
+                            str(override.get("model_condition_id", "")),
+                            str(override.get("model", "")),
+                            str(override.get("reasoning_effort", "")),
+                        )
+                        expected_override = {
+                            "model_condition_id": condition["id"],
+                            "model": condition["model"],
+                            "reasoning_effort": condition["reasoning_effort"],
+                            "registry_status": condition.get("status"),
+                            "launcher": model_condition_runner.launcher_identity(),
+                        }
+                    if not model_condition_override_matches(override, expected_override):
                         raise ValueError("model-condition override does not match its registry entry and launcher")
-                    expected_descriptor["agent"].update({
-                        "model": condition["model"],
-                        "model_condition_id": condition["id"],
-                        "reasoning_effort": condition["reasoning_effort"],
-                    })
-                    expected_descriptor["runtime_inputs"]["codex_runtime_condition"] = condition["id"]
+                    if condition["runtime_id"] == "claude-code":
+                        if condition_runtime is None or claude_condition_runner is None:
+                            raise ValueError("Claude Code condition validator is unavailable")
+                        importlib.reload(condition_runtime)
+                        importlib.reload(claude_condition_runner)
+                        claude_condition_runner.configure_model_condition(
+                            str(condition["id"]), str(condition["model"]), str(condition["reasoning_effort"])
+                        )
+                        expected_descriptor = copy.deepcopy(frozen_descriptor)
+                    else:
+                        expected_descriptor["agent"].update({
+                            "model": condition["model"],
+                            "model_condition_id": condition["id"],
+                            "reasoning_effort": condition["reasoning_effort"],
+                        })
+                        expected_descriptor["runtime_inputs"]["codex_runtime_condition"] = condition["id"]
                     expected_descriptor["model_condition_override"] = expected_override
-                    comparison_descriptor = runner.baseline_comparison_descriptor(seq)
-                    comparison_descriptor["agent"] = expected_descriptor["agent"]
-                    comparison_descriptor["runtime_inputs"] = expected_descriptor["runtime_inputs"]
-                    encoded = json.dumps(comparison_descriptor, sort_keys=True, separators=(",", ":")).encode()
-                    full_hash = hashlib.sha256(encoded).hexdigest()
-                    expected_fingerprint = runner.COMPARISON_IDENTITY_ALIASES.get(
-                        full_hash, full_hash[:runner.BASELINE_POOL_FINGERPRINT_LENGTH]
-                    )
+                    if condition["runtime_id"] == "claude-code":
+                        expected_fingerprint = str(protocol.get("baseline_pool", {}).get("protocol_fingerprint", ""))
+                    else:
+                        comparison_descriptor = runner.baseline_comparison_descriptor(seq)
+                        comparison_descriptor["agent"] = expected_descriptor["agent"]
+                        comparison_descriptor["runtime_inputs"] = expected_descriptor["runtime_inputs"]
+                        encoded = json.dumps(comparison_descriptor, sort_keys=True, separators=(",", ":")).encode()
+                        full_hash = hashlib.sha256(encoded).hexdigest()
+                        expected_fingerprint = runner.COMPARISON_IDENTITY_ALIASES.get(
+                            full_hash, full_hash[:runner.BASELINE_POOL_FINGERPRINT_LENGTH]
+                        )
                 else:
                     expected_fingerprint = runner.baseline_protocol_fingerprint(seq)
             except Exception as exc:
@@ -3685,6 +3759,17 @@ def validate_frozen_protocol_bindings(errors: list[str]) -> None:
                         )
                         expected_descriptor = descriptor
                         launcher_path = "scripts/run_opencode_workflow_model_condition.py"
+                    elif isinstance(selected_override, dict) and selected_override.get("runtime_id") == "claude-code":
+                        if condition_runtime is None or claude_condition_runner is None:
+                            raise ValueError("Claude Code condition validator is unavailable")
+                        selected_condition, _ = condition_runtime.resolve_condition_pair(
+                            ROOT, str(selected_override.get("model_condition_id", "")),
+                        )
+                        selected_expected_override = condition_runtime.condition_override(
+                            selected_condition,
+                            claude_condition_runner.launcher_identity(),
+                        )
+                        launcher_path = "scripts/run_claude_code_workflow_model_condition.py"
                     condition_for_execution = selected_condition or condition
                     if not isinstance(condition_for_execution, dict):
                         raise ValueError("selected execution has no registered model condition")
@@ -3705,14 +3790,14 @@ def validate_frozen_protocol_bindings(errors: list[str]) -> None:
                         "reasoning_effort": condition_for_execution["reasoning_effort"],
                         "launcher": launcher_path,
                     }
-                    agent_block = protocol.get("baseline", {}) if selected_profile == "baseline-bare-codex" else protocol.get("treatment", {})
+                    agent_block = protocol.get("baseline", {}) if selected_profile in {"baseline-bare-codex", "baseline-claude-code-no-mcp"} else protocol.get("treatment", {})
                     required_model_args = (
                         launcher_path,
                         f"--workflow-model-condition-id {condition_for_execution['id']}",
                         f"--workflow-model {condition_for_execution['model']}",
                         f"--workflow-reasoning-effort {condition_for_execution['reasoning_effort']}",
                     )
-                    if selected_override != selected_expected_override:
+                    if not model_condition_override_matches(selected_override, selected_expected_override):
                         errors.append(f"execution contract {path.name} has inconsistent model-condition overrides")
                         continue
                     if any(required not in str(agent_block.get("command", "")) for required in required_model_args):
@@ -3754,7 +3839,7 @@ def validate_frozen_protocol_bindings(errors: list[str]) -> None:
         timeout = fixture.get("timeout_seconds_per_task")
         selected = protocol.get("selected_execution", {})
         selected_profile = selected.get("descriptor", {}).get("selected_profile", {}).get("profile_id", "baseline-bare-codex")
-        agent_block = protocol.get("baseline", {}) if selected_profile == "baseline-bare-codex" else protocol.get("treatment", {})
+        agent_block = protocol.get("baseline", {}) if selected_profile in {"baseline-bare-codex", "baseline-claude-code-no-mcp"} else protocol.get("treatment", {})
         command = agent_block.get("command", "")
         if timeout and f"--timeout-per-task {timeout}" not in command:
             errors.append(f"frozen protocol {path.name} command does not bind timeout {timeout}")

@@ -36,14 +36,19 @@
     },
     {
       "id": "claude-code",
-      "status": "future-candidate",
-      "runner": "not-yet-implemented",
+      "status": "configured-provider-free",
+      "runner": "scripts/run_codex_workflow_evaluation.py via scripts/run_claude_code_workflow_model_condition.py",
       "provider_family": "anthropic",
-      "runtime_home_kind": "CLAUDE_CONFIG_DIR or equivalent isolated runtime home",
-      "usage_extractor": "not-yet-implemented",
-      "transcript_artifact": "not-yet-standardized",
-      "preflight_artifacts": [],
-      "notes": "Placeholder for future Claude Opus/Claude Code evaluations. A dedicated runner and usage extractor are required before reproduction records using this runtime can be accepted."
+      "runtime_home_kind": "CLAUDE_CONFIG_DIR plus isolated HOME/XDG state",
+      "usage_extractor": "scripts/extract_claude_code_usage.py",
+      "transcript_artifact": "claude-events.jsonl",
+      "preflight_artifacts": [
+        "claude-code-preflight.json",
+        "claude-code-version.txt",
+        "claude-code-effective-settings.json",
+        "claude-code-home-manifest.json"
+      ],
+      "notes": "Provider-free Claude Code runtime wiring is configured for the bare control. The active model condition routes the Anthropic-compatible Claude Code transport through OpenRouter using the same GPT-5.6 Sol/high condition as Codex/OpenCode. Provider-backed reproduction remains blocked until an owner-authorized baseline replicate is scheduled."
     }
   ],
   "model_conditions": [
@@ -108,14 +113,15 @@
       "usage_accounting": "provider-reported OpenCode step_finish usage extracted by scripts/extract_opencode_usage.py"
     },
     {
-      "id": "claude-code-anthropic-claude-opus-candidate",
-      "status": "future-candidate",
+      "id": "claude-code-openrouter-gpt-5-6-sol-high",
+      "status": "configured-provider-free",
       "runtime_id": "claude-code",
       "agent_name": "Claude Code",
-      "provider": "anthropic",
-      "model": "Claude Opus exact model id to bind at run start",
-      "reasoning_effort": "record provider/runtime setting at run start",
-      "usage_accounting": "requires Anthropic/Claude usage extractor before accepted reproduction"
+      "provider": "openrouter",
+      "model": "gpt-5.6-sol",
+      "reasoning_effort": "high",
+      "runtime_version": "2.1.220",
+      "usage_accounting": "provider-reported Claude Code stream-json result/assistant usage extracted by scripts/extract_claude_code_usage.py"
     }
   ]
 }
