@@ -2394,7 +2394,18 @@ def validate_workflow_sessions(session_doc: dict, sequence_ids: set[str], fixtur
         interpretation = session.get("interpretation", {}) if isinstance(session.get("interpretation"), dict) else {}
         comparison_id = interpretation.get("comparison_baseline_session_id")
         accepted_for_objective = interpretation.get("accepted_for_objective") is True
-        if strict_session_contract and not baseline_profile and accepted_for_objective and not comparison_id:
+        standalone_runtime_control = (
+            profile_id == "runtime-opencode-codex-product-v1"
+            and interpretation.get("standalone_runtime_control") is True
+            and not comparison_id
+        )
+        if (
+            strict_session_contract
+            and not baseline_profile
+            and accepted_for_objective
+            and not comparison_id
+            and not standalone_runtime_control
+        ):
             errors.append(f"accepted treatment workflow session {sid} requires a comparison baseline binding")
         if strict_session_contract and baseline_profile and comparison_id:
             errors.append(f"baseline workflow session {sid} must not carry a comparison baseline binding")
@@ -2538,7 +2549,15 @@ def validate_workflow_sessions(session_doc: dict, sequence_ids: set[str], fixtur
             continue
         profile_id = session.get("profile", {}).get("profile_id")
         interpretation = session.get("interpretation", {})
-        if profile_id == "baseline-bare-codex" or interpretation.get("accepted_for_objective") is not True:
+        if (
+            profile_id == "baseline-bare-codex"
+            or interpretation.get("accepted_for_objective") is not True
+            or (
+                profile_id == "runtime-opencode-codex-product-v1"
+                and interpretation.get("standalone_runtime_control") is True
+                and not interpretation.get("comparison_baseline_session_id")
+            )
+        ):
             continue
         sid = session.get("session_id") or session.get("id")
         comparison_id = interpretation.get("comparison_baseline_session_id")
