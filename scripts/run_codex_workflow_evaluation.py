@@ -3622,15 +3622,16 @@ def workflow_session_record(
 ) -> dict[str, Any]:
     pmeta = PROFILE_META[profile_id]
     runtime_id = profile_runtime_id(profile_id)
-    accepted = bool(summary.get("accepted"))
-    if profile_id == "baseline-bare-codex" and comparison_baseline_session_id:
+    baseline_control_profile = profile_id in {"baseline-bare-codex", "baseline-claude-code-no-mcp"}
+    if baseline_control_profile and comparison_baseline_session_id:
         raise ValueError("baseline session must not carry a comparison baseline binding")
+    accepted = bool(summary.get("accepted"))
     standalone_opencode_control = (
         profile_id == "runtime-opencode-codex-product-v1"
         and not comparison_baseline_session_id
     )
     if (
-        profile_id != "baseline-bare-codex"
+        not baseline_control_profile
         and accepted
         and not comparison_baseline_session_id
         and not standalone_opencode_control
@@ -3641,6 +3642,13 @@ def workflow_session_record(
     audit_result = json.loads(audit_path.read_text()) if audit_path.exists() else {}
     total_provider_tokens = usage.get("total_provider_tokens")
     tokens_per_accepted_task = (total_provider_tokens / tasks_passed) if tasks_passed and isinstance(total_provider_tokens, (int, float)) else None
+    raw_agent_condition = summary.get("agent_condition")
+    agent_condition: dict[str, Any] = dict(raw_agent_condition) if isinstance(raw_agent_condition, dict) else {}
+    agent_provider = str(agent_condition.get("provider") or ("openrouter" if runtime_id == "claude-code" else "openai"))
+    agent_model = str(agent_condition.get("model") or ("gpt-5.6-sol" if runtime_id == "claude-code" else DEFAULT_WORKFLOW_MODEL))
+    agent_reasoning_effort = agent_condition.get("reasoning_effort") or (
+        "high" if runtime_id == "claude-code" else DEFAULT_WORKFLOW_REASONING_EFFORT
+    )
     return {
         "schema_version": 2,
         "session_id": summary["session_id"],
@@ -3692,12 +3700,12 @@ def workflow_session_record(
         },
         "agent": {
             "runtime_id": runtime_id,
-            "model_condition_id": DEFAULT_WORKFLOW_MODEL_CONDITION_ID,
+            "model_condition_id": agent_condition.get("model_condition_id") or DEFAULT_WORKFLOW_MODEL_CONDITION_ID,
             "name": runtime_agent_name(runtime_id),
             "version": summary.get("agent_runtime_version", summary.get("codex_version", "")),
-            "provider": "openai",
-            "model": DEFAULT_WORKFLOW_MODEL,
-            "reasoning_effort": DEFAULT_WORKFLOW_REASONING_EFFORT,
+            "provider": agent_provider,
+            "model": agent_model,
+            "reasoning_effort": agent_reasoning_effort,
             "temperature": None,
             "max_turns": None,
             "time_budget_seconds": summary.get("timeout_seconds"),
@@ -3744,7 +3752,7 @@ def workflow_session_record(
             "notes": "Provider-backed lane completed with clean integrity; verifier and review outcomes are diagnostic model-behavior evidence and do not gate token accounting." if accepted else "Lane did not complete operationally; exclude it from token accounting.",
             "scope_note": "Full warm-state lane; all regressions are preseeded, prompts are disclosed sequentially, and controller verification runs only after the final prompt; declared acceptance assertions remain model-visible.",
             "evaluation_validity": "valid" if accepted else "operationally-invalid",
-            "primary_objective_hard_baseline": accepted and profile_id == "baseline-bare-codex",
+            "primary_objective_hard_baseline": accepted and baseline_control_profile,
             "usable_for_primary_objective_token_comparison": accepted,
             "operationally_completed": accepted,
             "agent_declared_task_completion_count": sum(
