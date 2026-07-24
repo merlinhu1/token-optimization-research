@@ -1,28 +1,28 @@
 {
   "schema_version": 1,
   "attempt_status": "completed-accepted",
-  "sequence_id": "fastify-lifecycle-sequence-v0",
+  "sequence_id": "terraform-lifecycle-sequence-v0",
   "replicate_index": 2,
   "profile_id": "runtime-opencode-codex-product-v1",
   "model_condition_id": "opencode-openai-gpt-5-6-sol-high",
   "owner_authorization_message_id": "1532521147327971438",
-  "orchestrator": "/opt/data/eval-workflow-lanes/opencode-bare-r2/workflow-matrix-20260730T233925777049Z-p2092632-r2",
-  "reserved_at": "2026-07-30T23:39:34.922650+00:00",
+  "orchestrator": "/opt/data/eval-workflow-lanes/opencode-bare-r2-missing/workflow-matrix-20260730T235122976267Z-p2123109-r2",
+  "reserved_at": "2026-07-30T23:52:50.641766+00:00",
   "expected_session_binding": {
-    "sequence_id": "fastify-lifecycle-sequence-v0",
+    "sequence_id": "terraform-lifecycle-sequence-v0",
     "profile_id": "runtime-opencode-codex-product-v1",
     "replicate_index": 2,
     "frozen_protocol": {
-      "protocol_id": "fastify-lifecycle-sequence-v0-runtime-opencode-codex-product-v1-7c13d56dbc8d",
-      "path": "sources/evaluations/protocols/fastify-lifecycle-sequence-v0-runtime-opencode-codex-product-v1-7c13d56dbc8d.json",
-      "sha256": "0ece0b74c18f7e595d14cb20c4bd17e3f05728c65a05a28d69b30b36a14e6dda"
+      "protocol_id": "terraform-lifecycle-sequence-v0-runtime-opencode-codex-product-v1-0c7ac2678bd3",
+      "path": "sources/evaluations/protocols/terraform-lifecycle-sequence-v0-runtime-opencode-codex-product-v1-0c7ac2678bd3.json",
+      "sha256": "ec14f19b8f08b6228decde5057c34bad70236c4108513b2c37648dec3fd19394"
     },
-    "baseline_pool_fingerprint": "bb0e89ed9794",
+    "baseline_pool_fingerprint": "5811b463c1e9",
     "selected_execution": {
-      "descriptor_sha256": "c3ccdb545cb679dd42e901e8e04b575f72cdce34a2642d00175055807a4ba703",
+      "descriptor_sha256": "47103874816c8115d427b9ffa9d1f488be4e33b986680c08596f713fe5c6a978",
       "descriptor": {
         "version": "execution-condition-v1",
-        "sequence_id": "fastify-lifecycle-sequence-v0",
+        "sequence_id": "terraform-lifecycle-sequence-v0",
         "execution_role": "replacement_runtime",
         "selected_profile": {
           "profile_id": "runtime-opencode-codex-product-v1",
@@ -118,19 +118,19 @@
           "profile_guidance_sha256": "914f55f4b9a0305fc6b23a1c23c88319397e0fd1b041d68505e71e2ad0321fb8",
           "tasks": [
             {
-              "task_id": "fastify-lifecycle-feature-v0",
+              "task_id": "terraform-lifecycle-feature-v0",
               "order": 1,
-              "rendered_prompt_sha256": "233b673a671bd35b65a06e152b2c14fded98c0e21bb2a46a8c338257215daa43"
+              "rendered_prompt_sha256": "fc91bcff786726aaa9b7c4612ba2b8cb6cc7316863de100fac03eb235abd9da8"
             },
             {
-              "task_id": "fastify-lifecycle-refactor-v0",
+              "task_id": "terraform-lifecycle-refactor-v0",
               "order": 2,
-              "rendered_prompt_sha256": "a4cdc43f80fd89b851e765b409fa99199ab30f88b4b3b1028ee97ed540cd0706"
+              "rendered_prompt_sha256": "6a1c7a09e43d141088f3ca871ac3744ed78e332713fe854118b51b0989b77c7c"
             },
             {
-              "task_id": "fastify-lifecycle-review-v0",
+              "task_id": "terraform-lifecycle-review-v0",
               "order": 3,
-              "rendered_prompt_sha256": "d7874fd6436994b7a7f09ce348087f39d6105a7cfcb4e2ca1ac3003d7ff8c091"
+              "rendered_prompt_sha256": "6b854332fdd04a97f65eb2aef312dcf61e37a8521f4b8fa324ccef2c9ddde7a4"
             }
           ]
         },
@@ -260,12 +260,12 @@
           }
         },
         "dependencies": {
-          "command": "npm install --ignore-scripts --no-audit --no-fund",
-          "command_sha256": "7493d616f26e72b22eb5a21beafa12a6717ebf5b93a7a75e709de65e7323cc41",
+          "command": "go mod download",
+          "command_sha256": "42a8263a643ccbe692d70752ffdd8cea328fc2d3190677df1485ee06f55b350a",
           "lockfiles": [
             {
-              "path": "package.json",
-              "snapshot_sha256": "b273320af1bb4cfc0f9334457c8e3b1d035fde0da14f9db65e8ef97d361d0be3",
+              "path": "go.sum",
+              "snapshot_sha256": "be9ec949db0a0b135197f2c78b6d9821d764cc9b8c362b4860e3d5a1e9c74b9e",
               "current_fixture_sha256": null
             }
           ]
@@ -286,15 +286,16 @@
           "controller_verification": "final-only",
           "controller_verifier_scripts_and_canonical_copies_model_visible": false,
           "model_visible_acceptance_asset_paths": [
-            "test/baseline-v3-content-type-cache.test.js",
-            "test/baseline-v3-max-param.test.js",
-            "test/baseline-v3-request-media-type.test.js"
+            "internal/addrs/baseline_v3_checkable_test.go",
+            "internal/configs/baseline_v3_requirement_type_test.go",
+            "internal/configs/parser_config_dir_test.go",
+            "internal/policy/callback/baseline_v3_deferred_test.go"
           ],
           "model_concealed_paths": []
         },
         "baseline_pool_reference": {
           "protocol_version": "baseline-pool-v1",
-          "protocol_fingerprint": "bb0e89ed9794",
+          "protocol_fingerprint": "5811b463c1e9",
           "comparison_policy": "paired baseline and treatment must share this baseline pool fingerprint and replicate"
         },
         "model_condition_override": {
@@ -316,8 +317,8 @@
   },
   "provider_result": {
     "accepted": true,
-    "session_id": "opencode-fastify-20260730-p-bb0e89ed9794-r2",
-    "total_provider_tokens": 42966
+    "session_id": "opencode-terraform-20260730-p-5811b463c1e9-r2",
+    "total_provider_tokens": 40476
   },
   "immutable_identity_receipt": true
 }

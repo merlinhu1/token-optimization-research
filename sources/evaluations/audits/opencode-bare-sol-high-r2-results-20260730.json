@@ -1,0 +1,106 @@
+{
+  "schema_version": 1,
+  "audit_id": "opencode-bare-sol-high-r2-results-20260730",
+  "date": "2026-07-30",
+  "status": "accepted-fresh-bare-opencode-control",
+  "owner_authorization_message_id": "1532521147327971438",
+  "profile_id": "runtime-opencode-codex-product-v1",
+  "model_condition_id": "opencode-openai-gpt-5-6-sol-high",
+  "model": "gpt-5.6-sol",
+  "reasoning_effort": "high",
+  "replicate_index": 2,
+  "max_parallel": 1,
+  "accounting": {
+    "weighted_formula": "fresh_input + 0.1 * cached_input + 6 * output",
+    "reasoning_policy": "reasoning is a subset of output and is not added again"
+  },
+  "sessions": [
+    {
+      "sequence_id": "fastify-lifecycle-sequence-v0",
+      "session_id": "opencode-fastify-20260730-p-bb0e89ed9794-r2",
+      "usage": {
+        "fresh_input_tokens": 11559,
+        "cached_input_tokens": 30208,
+        "output_tokens": 1199,
+        "reasoning_tokens": 85,
+        "total_provider_tokens": 42966,
+        "weighted_units": 21773.8
+      },
+      "task_verifiers": "3/3",
+      "final_verifier_exit_code": 0,
+      "evidence_members": 51,
+      "manifest_sha256": "0ff7b867b5916fc8e0b4f13e9f5b324dc8e5188000db2cb44fc0b0f7eee9a724",
+      "control_binding": "retained replacement-runtime comparison to the existing Codex r2 control; also eligible as the matched bare OpenCode control"
+    },
+    {
+      "sequence_id": "beets-lifecycle-sequence-v0",
+      "session_id": "opencode-beets-20260730-p-fcc8438d2077-r2",
+      "usage": {
+        "fresh_input_tokens": 16289,
+        "cached_input_tokens": 22528,
+        "output_tokens": 913,
+        "reasoning_tokens": 0,
+        "total_provider_tokens": 39730,
+        "weighted_units": 24019.8
+      },
+      "task_verifiers": "3/3",
+      "final_verifier_exit_code": 0,
+      "evidence_members": 51,
+      "manifest_sha256": "0a3af27f21e787d8effa8943505254b11d251f8fd5e5b34745218c0709da38fd",
+      "control_binding": "owner-authorized standalone bare OpenCode control"
+    },
+    {
+      "sequence_id": "terraform-lifecycle-sequence-v0",
+      "session_id": "opencode-terraform-20260730-p-5811b463c1e9-r2",
+      "usage": {
+        "fresh_input_tokens": 17996,
+        "cached_input_tokens": 21504,
+        "output_tokens": 976,
+        "reasoning_tokens": 50,
+        "total_provider_tokens": 40476,
+        "weighted_units": 26002.4
+      },
+      "task_verifiers": "3/3",
+      "final_verifier_exit_code": 0,
+      "evidence_members": 51,
+      "manifest_sha256": "4930df1262fe276c9e84142fd35805ec7696c002d5636195def992b1ed3c70df",
+      "control_binding": "owner-authorized standalone bare OpenCode control"
+    }
+  ],
+  "aggregate": {
+    "accepted_sessions": 3,
+    "task_verifiers_passed": 9,
+    "task_verifiers_total": 9,
+    "final_verifiers_passed": 3,
+    "final_verifiers_total": 3,
+    "fresh_input_tokens": 45844,
+    "cached_input_tokens": 74240,
+    "output_tokens": 3088,
+    "reasoning_tokens": 135,
+    "total_provider_tokens": 123172,
+    "weighted_units": 71796.0
+  },
+  "replicate_comparison": {
+    "versus_r1": {
+      "raw_delta_tokens": 178,
+      "raw_delta_percent": 0.14472250678894127,
+      "weighted_delta_units": 5051.8,
+      "weighted_delta_percent": 7.568897372355954
+    },
+    "versus_r0": {
+      "raw_delta_tokens": 804,
+      "raw_delta_percent": 0.6570345188284588,
+      "weighted_delta_units": 12358.2,
+      "weighted_delta_percent": 20.791819347284047
+    }
+  },
+  "incidents": [
+    {
+      "type": "pre-provider controller contract defect",
+      "provider_calls": 0,
+      "provider_tokens": 0,
+      "receipt": "sources/evaluations/audits/opencode-bare-r2-preprovider-controller-rejection-20260730.json"
+    }
+  ],
+  "interpretation": "The fresh bare OpenCode control is accepted. Raw usage was stable across all three retained bare replicates; r2 was only 0.14% above r1 and 0.66% above r0. Weighted usage was higher because the component mix shifted toward fresh input. This single fresh control is the matched comparator for the DCP r2 screen."
+}
