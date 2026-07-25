@@ -4,8 +4,8 @@
   "recorded_on": "2026-07-22",
   "task_family_generation": "baseline-v3",
   "scope": "provider-free fixture qualification and frozen bare-model pilot contracts",
-  "decision": "Activate Baseline V3 for a future explicitly authorized first pilot; preserve the failed Baseline V2 attempt and all historical evidence immutably.",
-  "reason": "The failed V2 pilot exposed non-portable commands, an incorrect Beets setup snapshot, contradictory cumulative Git-state stop conditions, zero-test Terraform filters, and controller ingress/evidence defects. V3 uses exact current-task command blocks, the pinned fixture snapshots, verified model-visible tests, immutable attempt receipts, and atomic rejected-evidence preservation; all claims are rehearsed provider-free before spend.",
+  "decision": "Baseline V3 qualification was completed; the later Fastify pilot passed its independent zero-incident audit, while failed Beets and Terraform V3 identities remain preserved and are superseded only by provider-free Baseline V4 successors.",
+  "reason": "The failed V2 pilot exposed non-portable commands, an incorrect Beets setup snapshot, contradictory cumulative Git-state stop conditions, zero-test Terraform filters, and controller ingress/evidence defects. V3 uses exact current-task command blocks, the pinned fixture snapshots, verified model-visible tests, immutable attempt receipts, and atomic rejected-evidence preservation; all claims are rehearsed provider-free before spend. The later Baseline V3 pilot retained Fastify as the sole zero-incident V3 lane; Beets and Terraform V3 failures remain immutable verifier-environment incidents.",
   "design_contract": {
     "persistent_tasks_per_sequence": 3,
     "ordered_classes": [
@@ -23,8 +23,8 @@
     "allowed_unique_model_incidents": 0,
     "allowed_corrected_implementation_mistakes": 0,
     "allowed_unresolved_defects": 0,
-    "status": "provider-pilot-required",
-    "treatment_launch_policy": "blocked until one first-valid strongest-model pilot is independently audited with all eight required observed counts equal to integer zero",
+    "status": "mixed-fastify-passed-beets-terraform-failed-preserved",
+    "treatment_launch_policy": "Fastify is eligible for treatment protocol freeze after its independent zero-incident audit; Beets and Terraform Baseline V3 remain ineligible and non-rerunnable.",
     "model": "gpt-5.6-sol",
     "reasoning_effort": "high",
     "allowed_prohibited_operations": 0,
@@ -34,8 +34,8 @@
     "allowed_verifier_or_environment_failures": 0,
     "incident_counting": "unique-auditable-not-command-count",
     "pilot_audit_path": "sources/evaluations/audits/baseline-v3-pilot-zero-mistake.json",
-    "current_status": "provider-pilot-required",
-    "treatment_launch": "blocked"
+    "current_status": "mixed-fastify-passed-beets-terraform-failed-preserved",
+    "treatment_launch": "fastify-eligible-only"
   },
   "provider_accounting": {
     "provider_calls": 0,
@@ -109,7 +109,8 @@
       },
       "expected_model_visible_acceptance_asset_count": 3,
       "current_protocol_id": "fastify-lifecycle-sequence-v0-baseline-bare-codex-5bd0be12f9f5",
-      "current_protocol_path": "sources/evaluations/protocols/fastify-lifecycle-sequence-v0-baseline-bare-codex-5bd0be12f9f5.json"
+      "current_protocol_path": "sources/evaluations/protocols/fastify-lifecycle-sequence-v0-baseline-bare-codex-5bd0be12f9f5.json",
+      "execution_status": "executed-passed-zero-incident"
     },
     {
       "sequence_id": "beets-lifecycle-sequence-v0",
@@ -164,8 +165,11 @@
         ]
       },
       "expected_model_visible_acceptance_asset_count": 2,
-      "current_protocol_id": "beets-lifecycle-sequence-v0-baseline-bare-codex-78c2e1f5c002",
-      "current_protocol_path": "sources/evaluations/protocols/beets-lifecycle-sequence-v0-baseline-bare-codex-78c2e1f5c002.json"
+      "execution_status": "executed-failed-preserved",
+      "superseded_by": {
+        "task_family_generation": "baseline-v4",
+        "reason": "preserved Baseline V3 controller-environment failure; active successor owns current protocol"
+      }
     },
     {
       "sequence_id": "terraform-lifecycle-sequence-v0",
@@ -231,8 +235,11 @@
         ]
       },
       "expected_model_visible_acceptance_asset_count": 4,
-      "current_protocol_id": "terraform-lifecycle-sequence-v0-baseline-bare-codex-702e684aebaa",
-      "current_protocol_path": "sources/evaluations/protocols/terraform-lifecycle-sequence-v0-baseline-bare-codex-702e684aebaa.json"
+      "execution_status": "executed-failed-preserved",
+      "superseded_by": {
+        "task_family_generation": "baseline-v4",
+        "reason": "preserved Baseline V3 controller-environment failure; active successor owns current protocol"
+      }
     }
   ],
   "historical_evidence": {
@@ -260,8 +267,8 @@
     "allowed_unique_model_incidents": 0,
     "allowed_corrected_implementation_mistakes": 0,
     "allowed_unresolved_defects": 0,
-    "status": "provider-pilot-required",
-    "treatment_launch_policy": "blocked until one first-valid strongest-model pilot is independently audited with all eight required observed counts equal to integer zero",
+    "status": "mixed-fastify-passed-beets-terraform-failed-preserved",
+    "treatment_launch_policy": "Fastify is eligible for treatment protocol freeze after its independent zero-incident audit; Beets and Terraform Baseline V3 remain ineligible and non-rerunnable.",
     "model": "gpt-5.6-sol",
     "reasoning_effort": "high",
     "allowed_prohibited_operations": 0,
@@ -273,9 +280,9 @@
     "pilot_audit_path": "sources/evaluations/audits/baseline-v3-pilot-zero-mistake.json"
   },
   "treatment_gate": {
-    "status": "blocked-pending-pilot-audit",
+    "status": "fastify-eligible-v3-beets-terraform-ineligible",
     "pilot_audit_path": "sources/evaluations/audits/baseline-v3-pilot-zero-mistake.json",
-    "pilot_audit_present": false,
+    "pilot_audit_present": true,
     "enforced_at": [
       "treatment-protocol-freeze",
       "matrix-treatment-plan",
@@ -330,7 +337,8 @@
       "nonbaseline execution roles equal the exact canonical profile-derived individual_tool_treatment or stack_treatment role",
       "all provider-token components and replicate indexes are exact non-boolean integers with canonical token arithmetic",
       "matrix rollback catches process-level interrupts, tracks mutations before side effects, aggregates rollback errors, and publishes comparisons atomically without overwrite"
-    ]
+    ],
+    "scope_note": "Fastify is eligible for treatment protocol freeze after its independent zero-incident audit; Beets and Terraform Baseline V3 remain ineligible and non-rerunnable."
   },
   "acceptance_visibility": {
     "status": "model-visible-complete",
@@ -343,18 +351,6 @@
       "protocol_id": "fastify-lifecycle-sequence-v0-baseline-bare-codex-5bd0be12f9f5",
       "path": "sources/evaluations/protocols/fastify-lifecycle-sequence-v0-baseline-bare-codex-5bd0be12f9f5.json",
       "sha256": "c11710aeda868a697a75fa75c45209641ec4ac2c30fc3fd5abea8a2add22b0b0"
-    },
-    {
-      "sequence_id": "beets-lifecycle-sequence-v0",
-      "protocol_id": "beets-lifecycle-sequence-v0-baseline-bare-codex-78c2e1f5c002",
-      "path": "sources/evaluations/protocols/beets-lifecycle-sequence-v0-baseline-bare-codex-78c2e1f5c002.json",
-      "sha256": "45336422c8bada67848966b079daf6bd70da6ba8aefa55ab465435bdcebd11d7"
-    },
-    {
-      "sequence_id": "terraform-lifecycle-sequence-v0",
-      "protocol_id": "terraform-lifecycle-sequence-v0-baseline-bare-codex-702e684aebaa",
-      "path": "sources/evaluations/protocols/terraform-lifecycle-sequence-v0-baseline-bare-codex-702e684aebaa.json",
-      "sha256": "cb8d78120fc11a301d40f07303167ef30f212d5351993208703fa6d9ee645f28"
     }
   ],
   "latest_prepare_matrix": {
@@ -526,5 +522,25 @@
     "symlinked_registry_retention": true,
     "symlinked_rejected_evidence_destination_retention": true,
     "symlinked_run_root_ancestor_rejected_before_write": true
-  }
+  },
+  "historical_protocols": [
+    {
+      "sequence_id": "fastify-lifecycle-sequence-v0",
+      "protocol_id": "fastify-lifecycle-sequence-v0-baseline-bare-codex-5bd0be12f9f5",
+      "path": "sources/evaluations/protocols/fastify-lifecycle-sequence-v0-baseline-bare-codex-5bd0be12f9f5.json",
+      "sha256": "c11710aeda868a697a75fa75c45209641ec4ac2c30fc3fd5abea8a2add22b0b0"
+    },
+    {
+      "sequence_id": "beets-lifecycle-sequence-v0",
+      "protocol_id": "beets-lifecycle-sequence-v0-baseline-bare-codex-78c2e1f5c002",
+      "path": "sources/evaluations/protocols/beets-lifecycle-sequence-v0-baseline-bare-codex-78c2e1f5c002.json",
+      "sha256": "45336422c8bada67848966b079daf6bd70da6ba8aefa55ab465435bdcebd11d7"
+    },
+    {
+      "sequence_id": "terraform-lifecycle-sequence-v0",
+      "protocol_id": "terraform-lifecycle-sequence-v0-baseline-bare-codex-702e684aebaa",
+      "path": "sources/evaluations/protocols/terraform-lifecycle-sequence-v0-baseline-bare-codex-702e684aebaa.json",
+      "sha256": "cb8d78120fc11a301d40f07303167ef30f212d5351993208703fa6d9ee645f28"
+    }
+  ]
 }

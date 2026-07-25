@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "description": "The production lifecycle-v0 portfolio uses the low-complexity Baseline V3 task family: three persistent feature-refactor-review workflows with exact mechanical edit commands, one-to-two production files per task, model-visible focused validation, and a zero-model-incident strongest-model pilot gate before treatment spend.",
+  "description": "The production lifecycle-v0 portfolio uses low-complexity Baseline V3/V4 task families: retained Baseline V3 for Fastify and provider-free-qualified Baseline V4 successors for Beets and Terraform, with three persistent feature-refactor-review workflows, exact mechanical edit commands, one-to-two production files per task, model-visible focused validation, and a zero-model-incident strongest-model pilot gate before treatment spend.",
   "state_policy_defaults": {
     "reset_before_session": [
       "repository working tree",
@@ -26,9 +26,7 @@
       "acceptance_design": "behavioral",
       "scope": "production-primary",
       "sequence_contract": "feature-refactor-review",
-      "readiness_blockers": [
-        "provider-backed strongest-model zero-mistake Baseline V3 pilot not yet executed"
-      ],
+      "readiness_blockers": [],
       "objective": "individual_tool_effectiveness",
       "primary_metric": "cumulative provider-reported workflow tokens",
       "reset_policy": "Reset once before the lane; preseed the missing feature, behavior-preserving structural debt, flawed review candidate, and declared focused acceptance tests into one composite root; preserve repository, Git, tool, index, cache, generated configuration, memory, and agent state across prompts; repeat every disclosed verifier command after the final prompt.",
@@ -122,8 +120,8 @@
         "allowed_unique_model_incidents": 0,
         "allowed_corrected_implementation_mistakes": 0,
         "allowed_unresolved_defects": 0,
-        "status": "provider-pilot-required",
-        "treatment_launch_policy": "blocked until one first-valid strongest-model pilot is independently audited with all eight required observed counts equal to integer zero",
+        "status": "passed-zero-incident",
+        "treatment_launch_policy": "eligible for treatment protocol freeze after the first-valid strongest-model pilot passed an independent audit with all eight required observed counts equal to integer zero",
         "model": "gpt-5.6-sol",
         "reasoning_effort": "high",
         "allowed_prohibited_operations": 0,
@@ -143,15 +141,15 @@
       "scope": "production-primary",
       "sequence_contract": "feature-refactor-review",
       "readiness_blockers": [
-        "provider-backed strongest-model zero-mistake Baseline V3 pilot not yet executed"
+        "provider-backed strongest-model zero-mistake Baseline V4 pilot is not authorized or executed"
       ],
       "objective": "individual_tool_effectiveness",
       "primary_metric": "cumulative provider-reported workflow tokens",
       "reset_policy": "Reset once before the lane; preseed the missing feature, behavior-preserving structural debt, flawed review candidate, and declared focused acceptance tests into one composite root; preserve repository, Git, tool, index, cache, generated configuration, memory, and agent state across prompts; repeat every disclosed verifier command after the final prompt.",
       "seed_patch_policy": "Controller merges all three independently qualified lifecycle start conditions and model-visible acceptance tests into one composite broken start before provider execution. Prompts are disclosed sequentially; the proposed review patch is disclosed only with task 3; controller seed patch files and verifier scripts remain controller-only while complete acceptance behavior stays model-visible; every verifier repeats only disclosed commands after the final prompt.",
       "protocol_freeze_date": "2026-07-22",
-      "production_lane": "current-production-v0-baseline-v3",
-      "qualification_path": "sources/evaluations/fixtures/medium/beetbox-beets/qualification-lifecycle-v0-baseline-v3.json",
+      "production_lane": "current-production-v0-baseline-v4",
+      "qualification_path": "sources/evaluations/fixtures/medium/beetbox-beets/qualification-lifecycle-v0-baseline-v4.json",
       "qualification_date": "2026-07-22",
       "fixture_id": "medium-beetbox-beets",
       "fixture_scale": "medium-project",
@@ -170,8 +168,8 @@
           "id": "beets-lifecycle-feature-v0",
           "order": 1,
           "task_class": "feature-implementation",
-          "prompt_path": "sources/evaluations/fixtures/medium/beetbox-beets/task-generations/baseline-v3/beets-lifecycle-feature-v0/agent-prompt.txt",
-          "verifier_command": "sources/evaluations/fixtures/medium/beetbox-beets/task-generations/baseline-v3/beets-lifecycle-feature-v0/verify.sh",
+          "prompt_path": "sources/evaluations/fixtures/medium/beetbox-beets/task-generations/baseline-v4/beets-lifecycle-feature-v0/agent-prompt.txt",
+          "verifier_command": "sources/evaluations/fixtures/medium/beetbox-beets/task-generations/baseline-v4/beets-lifecycle-feature-v0/verify.sh",
           "upstream_test_paths": [],
           "compatibility_rebased_test_paths": [],
           "model_concealed_paths": [],
@@ -190,8 +188,8 @@
           "id": "beets-lifecycle-refactor-v0",
           "order": 2,
           "task_class": "behavior-preserving-refactor",
-          "prompt_path": "sources/evaluations/fixtures/medium/beetbox-beets/task-generations/baseline-v3/beets-lifecycle-refactor-v0/agent-prompt.txt",
-          "verifier_command": "sources/evaluations/fixtures/medium/beetbox-beets/task-generations/baseline-v3/beets-lifecycle-refactor-v0/verify.sh",
+          "prompt_path": "sources/evaluations/fixtures/medium/beetbox-beets/task-generations/baseline-v4/beets-lifecycle-refactor-v0/agent-prompt.txt",
+          "verifier_command": "sources/evaluations/fixtures/medium/beetbox-beets/task-generations/baseline-v4/beets-lifecycle-refactor-v0/verify.sh",
           "upstream_test_paths": [],
           "compatibility_rebased_test_paths": [],
           "model_concealed_paths": [],
@@ -208,8 +206,8 @@
           "id": "beets-lifecycle-review-v0",
           "order": 3,
           "task_class": "code-review-correction",
-          "prompt_path": "sources/evaluations/fixtures/medium/beetbox-beets/task-generations/baseline-v3/beets-lifecycle-review-v0/agent-prompt.txt",
-          "verifier_command": "sources/evaluations/fixtures/medium/beetbox-beets/task-generations/baseline-v3/beets-lifecycle-review-v0/verify.sh",
+          "prompt_path": "sources/evaluations/fixtures/medium/beetbox-beets/task-generations/baseline-v4/beets-lifecycle-review-v0/agent-prompt.txt",
+          "verifier_command": "sources/evaluations/fixtures/medium/beetbox-beets/task-generations/baseline-v4/beets-lifecycle-review-v0/verify.sh",
           "upstream_test_paths": [],
           "compatibility_rebased_test_paths": [],
           "model_concealed_paths": [],
@@ -226,10 +224,10 @@
           ]
         }
       ],
-      "conversion_note": "Baseline V3 supersedes the failed, unpublished Baseline V2 pilot identity with exact mechanical edit commands while preserving all V2 failure evidence and executed protocol bytes.",
-      "complexity_note": "Baseline V3 makes every task a deterministic old-to-new replacement command followed only by complete model-visible focused validation; no discovery or implementation choice remains.",
+      "conversion_note": "Baseline V4 preserves the Baseline V3 workload under new identities and corrects only the Beets/Terraform task-verifier repository fallback; all failed V2 and occupied V3 evidence remains immutable.",
+      "complexity_note": "Baseline V4 preserves the Baseline V3 deterministic old-to-new replacement commands and complete model-visible focused validation; no discovery or implementation choice remains.",
       "complexity_bar": "The fixed snapshot must pass, each seed must fail semantic or structural acceptance as appropriate, and treatment launch remains blocked until the strongest-model pilot has literally zero unique model incidents.",
-      "task_family_generation": "baseline-v3",
+      "task_family_generation": "baseline-v4",
       "mistake_gate": {
         "designated_model_condition": "codex-openai-gpt-5-6-sol-high",
         "allowed_unique_model_incidents": 0,
@@ -245,8 +243,9 @@
         "allowed_code_rework_events": 0,
         "allowed_verifier_or_environment_failures": 0,
         "incident_counting": "unique-auditable-not-command-count",
-        "pilot_audit_path": "sources/evaluations/audits/baseline-v3-pilot-zero-mistake.json",
-        "attempt_receipt_path": "sources/evaluations/audits/baseline-v3-pilot-attempt-beets.json"
+        "pilot_audit_path": "sources/evaluations/audits/baseline-v4-pilot-zero-mistake.json",
+        "attempt_receipt_path": "sources/evaluations/audits/baseline-v4-pilot-attempt-beets.json",
+        "pilot_authorization_path": "sources/evaluations/audits/baseline-v4-task-family-qualification-20260722.json"
       }
     },
     {
@@ -256,15 +255,15 @@
       "scope": "production-primary",
       "sequence_contract": "feature-refactor-review",
       "readiness_blockers": [
-        "provider-backed strongest-model zero-mistake Baseline V3 pilot not yet executed"
+        "provider-backed strongest-model zero-mistake Baseline V4 pilot is not authorized or executed"
       ],
       "objective": "individual_tool_effectiveness",
       "primary_metric": "cumulative provider-reported workflow tokens",
       "reset_policy": "Reset once before the lane; preseed the missing feature, behavior-preserving structural debt, flawed review candidate, and declared focused acceptance tests into one composite root; preserve repository, Git, tool, index, cache, generated configuration, memory, and agent state across prompts; repeat every disclosed verifier command after the final prompt.",
       "seed_patch_policy": "Controller merges all three independently qualified lifecycle start conditions and model-visible acceptance tests into one composite broken start before provider execution. Prompts are disclosed sequentially; the proposed review patch is disclosed only with task 3; controller seed patch files and verifier scripts remain controller-only while complete acceptance behavior stays model-visible; every verifier repeats only disclosed commands after the final prompt.",
       "protocol_freeze_date": "2026-07-22",
-      "production_lane": "current-production-v0-baseline-v3",
-      "qualification_path": "sources/evaluations/fixtures/large/hashicorp-terraform/qualification-lifecycle-v0-baseline-v3.json",
+      "production_lane": "current-production-v0-baseline-v4",
+      "qualification_path": "sources/evaluations/fixtures/large/hashicorp-terraform/qualification-lifecycle-v0-baseline-v4.json",
       "qualification_date": "2026-07-22",
       "fixture_id": "large-hashicorp-terraform",
       "fixture_scale": "large-project",
@@ -283,8 +282,8 @@
           "id": "terraform-lifecycle-feature-v0",
           "order": 1,
           "task_class": "feature-implementation",
-          "prompt_path": "sources/evaluations/fixtures/large/hashicorp-terraform/task-generations/baseline-v3/terraform-lifecycle-feature-v0/agent-prompt.txt",
-          "verifier_command": "sources/evaluations/fixtures/large/hashicorp-terraform/task-generations/baseline-v3/terraform-lifecycle-feature-v0/verify.sh",
+          "prompt_path": "sources/evaluations/fixtures/large/hashicorp-terraform/task-generations/baseline-v4/terraform-lifecycle-feature-v0/agent-prompt.txt",
+          "verifier_command": "sources/evaluations/fixtures/large/hashicorp-terraform/task-generations/baseline-v4/terraform-lifecycle-feature-v0/verify.sh",
           "upstream_test_paths": [],
           "compatibility_rebased_test_paths": [],
           "model_concealed_paths": [],
@@ -303,8 +302,8 @@
           "id": "terraform-lifecycle-refactor-v0",
           "order": 2,
           "task_class": "behavior-preserving-refactor",
-          "prompt_path": "sources/evaluations/fixtures/large/hashicorp-terraform/task-generations/baseline-v3/terraform-lifecycle-refactor-v0/agent-prompt.txt",
-          "verifier_command": "sources/evaluations/fixtures/large/hashicorp-terraform/task-generations/baseline-v3/terraform-lifecycle-refactor-v0/verify.sh",
+          "prompt_path": "sources/evaluations/fixtures/large/hashicorp-terraform/task-generations/baseline-v4/terraform-lifecycle-refactor-v0/agent-prompt.txt",
+          "verifier_command": "sources/evaluations/fixtures/large/hashicorp-terraform/task-generations/baseline-v4/terraform-lifecycle-refactor-v0/verify.sh",
           "upstream_test_paths": [],
           "compatibility_rebased_test_paths": [],
           "model_concealed_paths": [],
@@ -326,8 +325,8 @@
           "id": "terraform-lifecycle-review-v0",
           "order": 3,
           "task_class": "code-review-correction",
-          "prompt_path": "sources/evaluations/fixtures/large/hashicorp-terraform/task-generations/baseline-v3/terraform-lifecycle-review-v0/agent-prompt.txt",
-          "verifier_command": "sources/evaluations/fixtures/large/hashicorp-terraform/task-generations/baseline-v3/terraform-lifecycle-review-v0/verify.sh",
+          "prompt_path": "sources/evaluations/fixtures/large/hashicorp-terraform/task-generations/baseline-v4/terraform-lifecycle-review-v0/agent-prompt.txt",
+          "verifier_command": "sources/evaluations/fixtures/large/hashicorp-terraform/task-generations/baseline-v4/terraform-lifecycle-review-v0/verify.sh",
           "upstream_test_paths": [],
           "compatibility_rebased_test_paths": [],
           "model_concealed_paths": [],
@@ -344,10 +343,10 @@
           ]
         }
       ],
-      "conversion_note": "Baseline V3 supersedes the failed, unpublished Baseline V2 pilot identity with exact mechanical edit commands while preserving all V2 failure evidence and executed protocol bytes.",
-      "complexity_note": "Baseline V3 makes every task a deterministic old-to-new replacement command followed only by complete model-visible focused validation; no discovery or implementation choice remains.",
+      "conversion_note": "Baseline V4 preserves the Baseline V3 workload under new identities and corrects only the Beets/Terraform task-verifier repository fallback; all failed V2 and occupied V3 evidence remains immutable.",
+      "complexity_note": "Baseline V4 preserves the Baseline V3 deterministic old-to-new replacement commands and complete model-visible focused validation; no discovery or implementation choice remains.",
       "complexity_bar": "The fixed snapshot must pass, each seed must fail semantic or structural acceptance as appropriate, and treatment launch remains blocked until the strongest-model pilot has literally zero unique model incidents.",
-      "task_family_generation": "baseline-v3",
+      "task_family_generation": "baseline-v4",
       "mistake_gate": {
         "designated_model_condition": "codex-openai-gpt-5-6-sol-high",
         "allowed_unique_model_incidents": 0,
@@ -363,8 +362,9 @@
         "allowed_code_rework_events": 0,
         "allowed_verifier_or_environment_failures": 0,
         "incident_counting": "unique-auditable-not-command-count",
-        "pilot_audit_path": "sources/evaluations/audits/baseline-v3-pilot-zero-mistake.json",
-        "attempt_receipt_path": "sources/evaluations/audits/baseline-v3-pilot-attempt-terraform.json"
+        "pilot_audit_path": "sources/evaluations/audits/baseline-v4-pilot-zero-mistake.json",
+        "attempt_receipt_path": "sources/evaluations/audits/baseline-v4-pilot-attempt-terraform.json",
+        "pilot_authorization_path": "sources/evaluations/audits/baseline-v4-task-family-qualification-20260722.json"
       }
     }
   ]

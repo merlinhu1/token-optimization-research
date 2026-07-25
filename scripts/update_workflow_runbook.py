@@ -140,7 +140,7 @@ def render() -> str:
     current_default_pool_fingerprints = {}
     for sequence in sequences:
         gate = sequence.get("mistake_gate")
-        if sequence.get("task_family_generation") in {"baseline-v2", "baseline-v3"} and isinstance(gate, dict):
+        if sequence.get("task_family_generation") in {"baseline-v2", "baseline-v3", "baseline-v4"} and isinstance(gate, dict):
             current_protocol, _document = workflow.current_baseline_v2_protocol(sequence, gate, ROOT)
             current_default_pool_fingerprints[sequence["id"]] = current_protocol["baseline_pool_fingerprint"]
         else:
@@ -201,14 +201,25 @@ def render() -> str:
                 blocked_gates.append(f"`{sequence['id']}` ({gate_reason})")
         if blocked_gates:
             any_pilot_allowed = any(allowed for allowed, _reason in pilot_run_states.values())
+            authorization_blocked = [
+                sequence_id
+                for sequence_id, (allowed, reason) in pilot_run_states.items()
+                if not allowed and "not authorized" in reason
+            ]
+            if authorization_blocked:
+                suffix = (
+                    ". Paid pilot execution is not authorized for "
+                    + ", ".join(f"`{sequence_id}`" for sequence_id in authorization_blocked)
+                    + "; provider-capable commands are suppressed until the explicit authorization authority is updated."
+                )
+            elif any_pilot_allowed:
+                suffix = ". Only an unoccupied designated baseline pilot identity may run before its independent zero-incident audit passes."
+            else:
+                suffix = ". The designated pilot identities are occupied by immutable attempt evidence and their completed audits. Failed classifications are permanent for this generation; correcting a lane requires a new generation and new identities."
             chunks.append(
                 "Treatment protocol freezing, preparation, and execution are machine-blocked for "
                 + ", ".join(blocked_gates)
-                + (
-                    ". Only an unoccupied designated baseline pilot identity may run before its independent zero-incident audit passes."
-                    if any_pilot_allowed
-                    else ". The designated pilot identities are occupied by immutable attempt evidence and their completed audits. Failed classifications are permanent for this generation; correcting a lane requires a new generation and new identities."
-                )
+                + suffix
             )
         if pending_baselines:
             prepare_commands = "\n".join(
@@ -307,7 +318,7 @@ python3 scripts/validate_repository.py
 
 ## Evidence boundary
 
-A valid Baseline V3 workflow pre-seeds every regression and its focused model-visible acceptance test into one qualified composite broken root, then materializes one prompt at a time. Each prompt supplies one exact mechanical old-to-new edit command plus only its focused validation command; Beets uses the locked project environment and Terraform exports the pinned Go toolchain path explicitly. Seed patch files, controller scripts, and fixed parents remain outside the model-visible surface; final verification repeats only the commands and behavior disclosed in each prompt. Product-effect eligibility also requires parity with the pinned official Codex integration and positive treatment-assignment evidence; MCP configuration/listing alone is insufficient.
+A valid low-complexity workflow pre-seeds every regression and its focused model-visible acceptance test into one qualified composite broken root, then materializes one prompt at a time. Each prompt supplies one exact mechanical old-to-new edit command plus only its focused validation command; Beets uses the locked project environment and Terraform exports the pinned Go toolchain path explicitly. Seed patch files, controller scripts, and fixed parents remain outside the model-visible surface; final verification repeats only the commands and behavior disclosed in each prompt. Product-effect eligibility also requires parity with the pinned official Codex integration and positive treatment-assignment evidence; MCP configuration/listing alone is insufficient.
 
 Every active task must use causally related behavioral acceptance. Unrelated exact-source restoration guards are not valid complexity.
 
