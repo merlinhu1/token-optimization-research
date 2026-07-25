@@ -42,7 +42,7 @@ OPENCODE_BASELINE_AUTHORITY_REL = Path(
 )
 OPENCODE_BASELINE_ATTEMPT_DIR = Path("sources/evaluations/audits/opencode-bare-r2-attempts")
 CLAUDE_BASELINE_AUTHORITY_REL = Path(
-    "sources/evaluations/audits/claude-code-sol-high-baseline-authorization-20260731.json"
+    "sources/evaluations/audits/claude-code-sol-high-normal-baseline-authorization-20260731.json"
 )
 WORKFLOW_ARTIFACT_ROOT = Path("sources/evaluations/workflow-sessions")
 COMPACT_ARTIFACT_NAMES = {"run.json", "changes.diff", "evidence.jsonl.gz", "manifest.sha256"}

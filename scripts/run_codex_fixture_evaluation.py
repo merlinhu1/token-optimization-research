@@ -2438,13 +2438,11 @@ def prepare_claude_home(pid: str, run_dir: Path, home_root: Path) -> Path:
         "profile_id": pid,
         "runtime_id": "claude-code",
         "claude_home": str(claude_home),
-        "bare_mode": True,
+        "normal_mode": True,
         "copied_global_instructions": False,
         "copied_skills_or_plugins": False,
         "hooks_enabled": False,
         "mcp_servers": [],
-        "auto_memory": False,
-        "background_prefetch": False,
     }
     (run_dir / "claude-code-home-manifest.json").write_text(json.dumps(manifest, indent=2) + "\n")
     return claude_home
@@ -2515,7 +2513,7 @@ def claude_env(agent_home: Path, *, containerized: bool = False) -> dict[str, st
     config_dir = agent_home / "claude-config"
     config_dir.mkdir(parents=True, exist_ok=True)
     env["CLAUDE_CONFIG_DIR"] = str(config_dir)
-    env["CLAUDE_CODE_SIMPLE"] = "1"
+    env.pop("CLAUDE_CODE_SIMPLE", None)
     env["CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC"] = "1"
     isolated_bin = agent_home / "runtime-bin"
     if not containerized:
@@ -3279,7 +3277,7 @@ def preflight_claude_code(
     backend: str,
     docker_image: str,
 ) -> dict[str, Any]:
-    """Prove the bare Claude Code surface without making a provider request."""
+    """Prove the normal Claude Code control surface without making a provider request."""
     env = claude_env(claude_home, containerized=backend == "docker")
     apply_model_network_isolation(env)
     mounts = container_mounts_for_record(record, claude_home, include_repo=True)
@@ -3297,7 +3295,7 @@ def preflight_claude_code(
     )
     version_text = version_path.read_text(errors="replace") if version_path.exists() else ""
     help_text = help_path.read_text(errors="replace") if help_path.exists() else ""
-    required = ["--bare", "--output-format", "stream-json", "--model", "--tools", "--resume"]
+    required = ["--output-format", "stream-json", "--model", "--tools", "--resume"]
     passed = version.returncode == 0 and help_result.returncode == 0 and all(item in help_text for item in required)
     result = {
         "runtime_id": "claude-code",
@@ -3309,20 +3307,19 @@ def preflight_claude_code(
         "help_exit_code": help_result.returncode,
         "required_cli_surfaces": required,
         "missing_cli_surfaces": [item for item in required if item not in help_text],
-        "bare_mode": True,
+        "normal_mode": True,
         "mcp_servers": [],
         "model": record.get("agent", {}).get("model"),
     }
     (run_dir / "claude-code-preflight.json").write_text(json.dumps(result, indent=2) + "\n")
     (run_dir / "claude-code-effective-settings.json").write_text(json.dumps({
-        "bare": True,
+        "bare": False,
+        "normal_mode": True,
         "permission_mode": "bypassPermissions",
         "tools": ["Bash", "Edit", "Read", "Grep", "Glob"],
         "mcp_config": [],
         "plugins": [],
         "skills": [],
-        "auto_memory": False,
-        "background_prefetch": False,
     }, indent=2) + "\n")
     return result
 

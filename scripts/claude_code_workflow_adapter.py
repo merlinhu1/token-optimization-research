@@ -36,7 +36,6 @@ def stream_continuity(events_path: Path, requested_session_id: str | None) -> tu
 def command(*, model: str, prompt: str, session_id: str | None = None) -> list[str]:
     args = [
         "claude",
-        "--bare",
         "--print",
         "--verbose",
         "--output-format", "stream-json",

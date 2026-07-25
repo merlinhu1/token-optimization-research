@@ -2860,7 +2860,7 @@ def profile_prompt_guidance(profile_id: str) -> str:
         if pmeta.get("substrate") == "claude-code":
             return (
                 "# Evaluation isolation contract\n\n"
-                "You are running inside the `baseline-claude-code-no-mcp` control lane using bare Claude Code. "
+                "You are running inside the `baseline-claude-code-no-mcp` control lane using normal Claude Code with no evaluator-installed tool treatment. "
                 "Native shell, file, git, and repository edit operations are allowed. "
                 "Do not use external retrieval, compression, memory, MCP, external skills/plugins, or token-saving tools. "
                 "Claude Code web and agent tools are disabled and model-launched shell commands have no network access; do not attempt curl, wget, browsers, package downloads, or any other external retrieval. "
