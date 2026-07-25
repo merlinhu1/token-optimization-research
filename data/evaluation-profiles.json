@@ -69,7 +69,8 @@
       "status": "configured-provider-free",
       "substrate": "claude-code",
       "enabled_surfaces": [
-        "claude-code-native-shell-edit"
+        "claude-code-native-shell-edit",
+        "project-claude-md-instruction-discovery"
       ],
       "disabled_overlaps": [
         "all MCP servers",
@@ -101,19 +102,19 @@
         "all unlisted retrieval/compression/memory/token-saving tools"
       ],
       "install": {
-        "policy": "Run normal Claude Code from a fresh lane-specific runtime home/config with auth only; install no evaluator-authored MCP servers, plugins, skills, hooks, memory, retrieval, compression, or other tool-treatment surfaces. Keep HOME/PYTHONUSERBASE/XDG/TMPDIR isolated and record preflight artifacts proving the normal native runtime surface."
+        "policy": "Run normal Claude Code from a fresh lane-specific runtime home/config with auth only; materialize the fixture project's AGENTS.md byte-for-byte as project CLAUDE.md so Claude's normal project-instruction discovery loads the same guidance available to the Codex/OpenCode workflows. Install no evaluator-authored MCP servers, plugins, skills, hooks, memory, retrieval, compression, or other tool-treatment surfaces. Keep HOME/PYTHONUSERBASE/XDG/TMPDIR isolated and record hashes plus preflight artifacts proving the instruction pair and normal native runtime surface."
       },
       "reset": {
-        "policy": "Delete the lane-specific Claude runtime home and run-local HOME/PYTHONUSERBASE/XDG/TMPDIR before each run; verify no stale indexes, generated profile files, hooks, skills, or memory survive."
+        "policy": "Delete the lane-specific Claude runtime home, generated project CLAUDE.md, lane-local Git exclude entry, and run-local HOME/PYTHONUSERBASE/XDG/TMPDIR before each run; verify no stale indexes, generated profile files, hooks, skills, or memory survive."
       },
       "evaluation_protocol": {
         "tool_use_policy": "none",
         "tool_state": "native-runtime",
         "integration_state": "official-claude-code-normal-mode",
-        "instruction_policy": "Normal Claude Code invocation with no evaluator-installed tool treatment, MCP, plugins, skills, hooks, memory, retrieval, or compression surfaces",
+        "instruction_policy": "Normal Claude Code invocation with project AGENTS.md materialized byte-for-byte as CLAUDE.md for native project-instruction discovery; no evaluator-installed tool treatment, MCP, plugins, skills, hooks, memory, retrieval, or compression surfaces",
         "assignment_proof": "provider-free pinned-binary/version/model/tools/settings/isolation probe required"
       },
-      "notes": "Normal Claude Code control routed through the existing OpenRouter GPT-5.6 Sol/high condition used by the Codex and OpenCode comparison lanes. No evaluator-authored tool treatment is installed; provider-free qualification is required before any provider-backed reproduction."
+      "notes": "Normal Claude Code control routed through the existing OpenRouter GPT-5.6 Sol/high condition used by the Codex and OpenCode comparison lanes. The workflow project's AGENTS.md is copied exactly to CLAUDE.md for native discovery; no evaluator-authored tool treatment is installed. Provider-free qualification is required before any provider-backed reproduction."
     },
     {
       "id": "broad-compression-owner",
