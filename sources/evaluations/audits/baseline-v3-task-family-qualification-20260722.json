@@ -109,7 +109,8 @@
       },
       "expected_model_visible_acceptance_asset_count": 3,
       "current_protocol_id": "fastify-lifecycle-sequence-v0-baseline-bare-codex-5bd0be12f9f5",
-      "current_protocol_path": "sources/evaluations/protocols/fastify-lifecycle-sequence-v0-baseline-bare-codex-5bd0be12f9f5.json"
+      "current_protocol_path": "sources/evaluations/protocols/fastify-lifecycle-sequence-v0-baseline-bare-codex-5bd0be12f9f5.json",
+      "execution_status": "executed-passed-zero-incident"
     },
     {
       "sequence_id": "beets-lifecycle-sequence-v0",
@@ -164,8 +165,11 @@
         ]
       },
       "expected_model_visible_acceptance_asset_count": 2,
-      "current_protocol_id": "beets-lifecycle-sequence-v0-baseline-bare-codex-78c2e1f5c002",
-      "current_protocol_path": "sources/evaluations/protocols/beets-lifecycle-sequence-v0-baseline-bare-codex-78c2e1f5c002.json"
+      "execution_status": "executed-failed-preserved",
+      "superseded_by": {
+        "task_family_generation": "baseline-v4",
+        "reason": "preserved Baseline V3 controller-environment failure; active successor owns current protocol"
+      }
     },
     {
       "sequence_id": "terraform-lifecycle-sequence-v0",
@@ -231,8 +235,11 @@
         ]
       },
       "expected_model_visible_acceptance_asset_count": 4,
-      "current_protocol_id": "terraform-lifecycle-sequence-v0-baseline-bare-codex-702e684aebaa",
-      "current_protocol_path": "sources/evaluations/protocols/terraform-lifecycle-sequence-v0-baseline-bare-codex-702e684aebaa.json"
+      "execution_status": "executed-failed-preserved",
+      "superseded_by": {
+        "task_family_generation": "baseline-v4",
+        "reason": "preserved Baseline V3 controller-environment failure; active successor owns current protocol"
+      }
     }
   ],
   "historical_evidence": {
@@ -344,18 +351,6 @@
       "protocol_id": "fastify-lifecycle-sequence-v0-baseline-bare-codex-5bd0be12f9f5",
       "path": "sources/evaluations/protocols/fastify-lifecycle-sequence-v0-baseline-bare-codex-5bd0be12f9f5.json",
       "sha256": "c11710aeda868a697a75fa75c45209641ec4ac2c30fc3fd5abea8a2add22b0b0"
-    },
-    {
-      "sequence_id": "beets-lifecycle-sequence-v0",
-      "protocol_id": "beets-lifecycle-sequence-v0-baseline-bare-codex-78c2e1f5c002",
-      "path": "sources/evaluations/protocols/beets-lifecycle-sequence-v0-baseline-bare-codex-78c2e1f5c002.json",
-      "sha256": "45336422c8bada67848966b079daf6bd70da6ba8aefa55ab465435bdcebd11d7"
-    },
-    {
-      "sequence_id": "terraform-lifecycle-sequence-v0",
-      "protocol_id": "terraform-lifecycle-sequence-v0-baseline-bare-codex-702e684aebaa",
-      "path": "sources/evaluations/protocols/terraform-lifecycle-sequence-v0-baseline-bare-codex-702e684aebaa.json",
-      "sha256": "cb8d78120fc11a301d40f07303167ef30f212d5351993208703fa6d9ee645f28"
     }
   ],
   "latest_prepare_matrix": {
@@ -527,5 +522,25 @@
     "symlinked_registry_retention": true,
     "symlinked_rejected_evidence_destination_retention": true,
     "symlinked_run_root_ancestor_rejected_before_write": true
-  }
+  },
+  "historical_protocols": [
+    {
+      "sequence_id": "fastify-lifecycle-sequence-v0",
+      "protocol_id": "fastify-lifecycle-sequence-v0-baseline-bare-codex-5bd0be12f9f5",
+      "path": "sources/evaluations/protocols/fastify-lifecycle-sequence-v0-baseline-bare-codex-5bd0be12f9f5.json",
+      "sha256": "c11710aeda868a697a75fa75c45209641ec4ac2c30fc3fd5abea8a2add22b0b0"
+    },
+    {
+      "sequence_id": "beets-lifecycle-sequence-v0",
+      "protocol_id": "beets-lifecycle-sequence-v0-baseline-bare-codex-78c2e1f5c002",
+      "path": "sources/evaluations/protocols/beets-lifecycle-sequence-v0-baseline-bare-codex-78c2e1f5c002.json",
+      "sha256": "45336422c8bada67848966b079daf6bd70da6ba8aefa55ab465435bdcebd11d7"
+    },
+    {
+      "sequence_id": "terraform-lifecycle-sequence-v0",
+      "protocol_id": "terraform-lifecycle-sequence-v0-baseline-bare-codex-702e684aebaa",
+      "path": "sources/evaluations/protocols/terraform-lifecycle-sequence-v0-baseline-bare-codex-702e684aebaa.json",
+      "sha256": "cb8d78120fc11a301d40f07303167ef30f212d5351993208703fa6d9ee645f28"
+    }
+  ]
 }
