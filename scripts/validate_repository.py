@@ -56,6 +56,7 @@ def provider_usage_valid(usage: object, *, allow_legacy_null_cache_write: bool =
             "codex-jsonl-usage-events",
             "opencode-jsonl-step-finish-usage",
             "claude-code-stream-json-assistant-usage",
+            "claude-code-stream-json-result-usage",
         }
         or not set(PROVIDER_USAGE_FIELDS).issubset(usage)
     ):
