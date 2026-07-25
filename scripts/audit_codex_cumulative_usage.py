@@ -200,10 +200,15 @@ def main(argv: list[str] | None = None) -> int:
     args = parser.parse_args(argv)
 
     registry = json.loads((ROOT / "data/workflow-sessions.json").read_text())
-    rows = [session_correction(session) for session in registry["sessions"]]
+    codex_sessions = [
+        session
+        for session in registry["sessions"]
+        if session.get("agent", {}).get("runtime_id") in {None, "codex-cli"}
+    ]
+    rows = [session_correction(session) for session in codex_sessions]
     required = [row for row in rows if row["correction_required"]]
-    if len(rows) != len(registry["sessions"]):
-        raise ValueError("not every retained workflow session was audited")
+    if len(rows) != len(codex_sessions):
+        raise ValueError("not every retained Codex workflow session was audited")
     if any(row["accounting_mode"] != "final-cumulative-total-per-thread" for row in rows):
         raise ValueError("every retained workflow must have attributable thread-level usage")
 
