@@ -2581,7 +2581,7 @@ def validate_workflow_sessions(session_doc: dict, sequence_ids: set[str], fixtur
         profile_id = session.get("profile", {}).get("profile_id")
         interpretation = session.get("interpretation", {})
         if (
-            profile_id == "baseline-bare-codex"
+            profile_id in {"baseline-bare-codex", "baseline-claude-code-no-mcp"}
             or interpretation.get("accepted_for_objective") is not True
             or (
                 profile_id == "runtime-opencode-codex-product-v1"
