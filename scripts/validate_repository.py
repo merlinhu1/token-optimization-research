@@ -2308,7 +2308,7 @@ def validate_workflow_session_contract(session: dict, canonical_profile: dict | 
 
 
 def expected_workflow_session_role(profile_id: str, canonical_profile: dict | None) -> str | None:
-    if profile_id == "baseline-bare-codex":
+    if profile_id in {"baseline-bare-codex", "baseline-claude-code-no-mcp"}:
         return "baseline"
     if not isinstance(canonical_profile, dict):
         return None
@@ -2403,7 +2403,7 @@ def validate_workflow_sessions(session_doc: dict, sequence_ids: set[str], fixtur
         canonical_profile = profiles_by_id.get(profile_id) if profile_id else None
         if profile_id and canonical_profile is None:
             errors.append(f"workflow session {sid} references unknown profile {profile_id}")
-        baseline_profile = profile_id == "baseline-bare-codex"
+        baseline_profile = profile_id in {"baseline-bare-codex", "baseline-claude-code-no-mcp"}
         expected_session_role = expected_workflow_session_role(profile_id, canonical_profile) if profile_id else None
         schema_version = session.get("schema_version")
         valid_schema_version = type(schema_version) is int and schema_version in {1, 2}
