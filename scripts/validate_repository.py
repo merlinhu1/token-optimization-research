@@ -1934,7 +1934,7 @@ def validate_docker_identity(identity: object, expected: object, sid: str, error
 
 
 def validate_tool_adapter_identity(identity: object, expected: object, profile_id: str | None, sid: str, errors: list[str]) -> None:
-    if profile_id == "baseline-bare-codex":
+    if profile_id in {"baseline-bare-codex", "baseline-claude-code-no-mcp"}:
         if identity is not None:
             errors.append(f"workflow session {sid} baseline production-v3 record must not publish a treatment tool identity")
         return
