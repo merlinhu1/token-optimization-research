@@ -260,7 +260,11 @@ class CodexUsageAccountingTest(unittest.TestCase):
             usage = sessions[session_id]["cumulative_token_usage"]
             self.assertIn(
                 usage["measurement_source"],
-                {"codex-jsonl-usage-events", "opencode-jsonl-step-finish-usage"},
+                {
+                "codex-jsonl-usage-events",
+                "opencode-jsonl-step-finish-usage",
+                "claude-code-stream-json-result-usage",
+            },
             )
             self.assertIs(type(usage["cache_write_tokens"]), int)
         self.assertEqual(audit["integrity"]["correction_required_count"], sum(row["correction_required"] for row in rows.values()))
