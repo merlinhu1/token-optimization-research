@@ -4426,7 +4426,7 @@ def _run_one_locked(args: argparse.Namespace) -> dict[str, Any]:
         "selected_execution": selected_execution,
         "agent_condition": selected_descriptor.get("agent_condition"),
         "docker_image_identity": selected_descriptor.get("runtime", {}).get("docker_image_identity"),
-        "tool_adapter_identity": selected_descriptor.get("tool_adapter") if profile_id != "baseline-bare-codex" else None,
+        "tool_adapter_identity": selected_descriptor.get("tool_adapter") if not baseline_control_profile else None,
         "profile_id": profile_id,
         "workflow_sequence_id": seq["id"],
         "fixture_id": seq["fixture_id"],
