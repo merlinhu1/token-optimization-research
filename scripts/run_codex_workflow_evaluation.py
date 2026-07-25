@@ -2757,12 +2757,17 @@ def create_project(seq: dict[str, Any], project: Path, run_dir: Path, *, conceal
         raise RuntimeError("composite seed delivery, qualification, or concealment verification failed")
 
 
-def treatment_diff_exclude_paths(cfg: dict[str, Any] | None) -> tuple[str, ...]:
-    if not cfg:
+def treatment_diff_exclude_paths(
+    cfg: dict[str, Any] | None,
+    profile_id: str | None = None,
+) -> tuple[str, ...]:
+    if not cfg and profile_id != "baseline-claude-code-no-mcp":
         return ()
-    paths = [str(path) for path in cfg.get("diff_exclude_paths", [])]
-    warmup = cfg.get("warmup") or {}
+    paths = [str(path) for path in (cfg or {}).get("diff_exclude_paths", [])]
+    warmup = (cfg or {}).get("warmup") or {}
     paths.extend(str(path) for path in warmup.get("cleanup_paths", []))
+    if profile_id == "baseline-claude-code-no-mcp":
+        paths.append("CLAUDE.md")
     return tuple(dict.fromkeys(paths))
 
 
@@ -3427,7 +3432,10 @@ def capture_diff(record: dict[str, Any], run_dir: Path) -> None:
                     out.write("\n")
         return
     run(["git", "diff", "--stat"], cwd=repo, stdout=run_dir / "final-diffstat.txt", timeout=60)
-    run(["git", "diff", "--binary"], cwd=repo, stdout=run_dir / "changes.diff", timeout=120)
+    pathspec = ["."]
+    if record.get("profile", {}).get("profile_id") == "baseline-claude-code-no-mcp":
+        pathspec.append(":(exclude)CLAUDE.md")
+    run(["git", "diff", "--binary", "--", *pathspec], cwd=repo, stdout=run_dir / "changes.diff", timeout=120)
 
 
 def audit(record_path: Path, run_dir: Path) -> int:
@@ -4146,9 +4154,14 @@ def _run_one_locked(args: argparse.Namespace) -> dict[str, Any]:
     prompt_dir.mkdir(exist_ok=True)
 
     create_project(seq, project, run_dir, conceal_seed_origin=not args.no_conceal_seed_origin)
+    instruction_manifest = None
+    if profile_id == "baseline-claude-code-no-mcp":
+        instruction_manifest = fixture.prepare_claude_project_instructions(project / "repo", run_dir)
     verifier = write_verifier(seq, run_dir, project)
     expected_verifier_hashes = snapshot_verifier_hashes(seq, run_dir, run_dir)
     record = base_record(session_id, seq, profile_id, project, run_dir)
+    if instruction_manifest is not None:
+        record["setup"]["project_instruction_files"] = instruction_manifest
     record["task"]["verifier_command"] = rel(verifier)
     record_path = run_dir / "run-record-input.json"
     record_path.write_text(json.dumps(record, indent=2) + "\n")
@@ -4295,7 +4308,7 @@ def _run_one_locked(args: argparse.Namespace) -> dict[str, Any]:
         codex_exit_codes.append(code)
         redact_auth_sync(run_dir)
         cfg = fixture.active_tool_config(record, profile_id)
-        excluded_paths = treatment_diff_exclude_paths(cfg)
+        excluded_paths = treatment_diff_exclude_paths(cfg, profile_id)
         capture_task_delta(project / "repo", run_dir, order, excluded_paths)
         integrity = {"stage": f"after-task-{order:02d}", **check_verifier_integrity(expected_verifier_hashes)}
         verifier_integrity_checks.append(integrity)
