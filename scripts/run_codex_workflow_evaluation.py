@@ -714,10 +714,9 @@ def pilot_session_artifacts_valid(session: dict[str, Any], root: Path = ROOT) ->
                 or type(invalid_usage.get("cache_write_tokens")) is not int
             ):
                 return False
-    elif (
-        not pilot_provider_usage_valid(usage) or not pilot_provider_usage_valid(run_usage)
-    ):
-        return False
+    else:
+        if not pilot_provider_usage_valid(usage) or not pilot_provider_usage_valid(run_usage):
+            return False
     if any(run_usage.get(key) != usage.get(key) for key in ("measurement_source", *PILOT_PROVIDER_USAGE_FIELDS)):
         return False
     selected_descriptor = session.get("selected_execution", {}).get("descriptor", {})

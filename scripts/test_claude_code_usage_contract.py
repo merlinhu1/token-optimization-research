@@ -104,6 +104,15 @@ class ClaudeUsageContractTest(unittest.TestCase):
         summary = extract_claude_code_usage.build_summary(
             self.write_events(
                 [
+                    self.assistant(
+                        "zero-assistant",
+                        {
+                            "input_tokens": 0,
+                            "output_tokens": 0,
+                            "cache_creation_input_tokens": None,
+                            "cache_read_input_tokens": None,
+                        },
+                    ),
                     {
                         "type": "result",
                         "usage": {
@@ -112,6 +121,14 @@ class ClaudeUsageContractTest(unittest.TestCase):
                             "cache_read_input_tokens": 40,
                             "output_tokens": 5,
                         },
+                        "modelUsage": {
+                            "gpt-5.6-sol": {
+                                "inputTokens": 12,
+                                "cacheReadInputTokens": 40,
+                                "cacheCreationInputTokens": 8,
+                                "outputTokens": 5,
+                            }
+                        },
                     }
                 ]
             )
@@ -119,11 +136,30 @@ class ClaudeUsageContractTest(unittest.TestCase):
         self.assertEqual(summary["fresh_input_tokens"], 20)
         self.assertEqual(summary["cache_write_tokens"], 8)
         self.assertEqual(summary["total_provider_tokens"], 65)
+        self.assertEqual(summary["measurement_source"], "claude-code-stream-json-result-usage")
+        self.assertTrue(
+            validate_repository.provider_usage_valid(
+                {
+                    "measurement_source": summary["measurement_source"],
+                    **{
+                        key: summary[key]
+                        for key in validate_repository.PROVIDER_USAGE_FIELDS
+                    },
+                    "provider_usage_details": summary["provider_usage_details"],
+                }
+            )
+        )
         self.assertEqual(
             summary["provider_usage_details"]["accounting_mode"],
             "result-usage-fallback-no-assistant-usage",
         )
-        self.assertTrue(summary["warnings"])
+        self.assertIn("Complete final result usage", summary["provider_usage_details"]["accounting_note"])
+        self.assertEqual(
+            summary["provider_usage_details"]["result_raw_model_usage_token_field_totals"]["gpt-5.6-sol.inputTokens"],
+            12,
+        )
+        self.assertEqual(len(summary["provider_usage_details"]["result_raw_usage_blocks"]), 1)
+        self.assertFalse(summary["warnings"])
 
     def test_parent_cache_creation_aggregate_wins_without_double_counting_nested_breakdown(self) -> None:
         summary = extract_claude_code_usage.build_summary(
