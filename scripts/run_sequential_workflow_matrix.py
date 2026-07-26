@@ -295,7 +295,7 @@ def claude_baseline_run_gate(
         set(authority) == expected_keys
         and authority.get("schema_version") == 1
         and authority.get("campaign_id") == "claude-code-sol-high-baseline-20260731"
-        and authority.get("authorized_by_owner_message_id") == "1532719573890109570"
+        and authority.get("authorized_by_owner_message_id") == "1532773213061255369"
         and authority.get("authorized_on") == "2026-07-31"
         and authority.get("paid_baseline_execution_authorized") is True
         and authority.get("authorized_replicate_index") == 0
@@ -1629,8 +1629,8 @@ def controller_validation_python() -> str:
 
 def run_validation(summary_dir: Path, validation_python: str | None = None) -> dict[str, Any]:
     truthmark_candidates = [
-        shutil.which("truthmark"),
         "/opt/data/.local/bin/truthmark",
+        shutil.which("truthmark"),
         str(Path.home() / ".local/bin/truthmark"),
     ]
     truthmark = next(
