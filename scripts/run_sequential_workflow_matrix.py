@@ -493,6 +493,8 @@ def workflow_lane_command(
             "launcher",
             "scripts/run_opencode_workflow_model_condition.py"
             if model_condition.get("runtime_id") == "opencode-cli"
+            else "scripts/run_claude_code_workflow_model_condition.py"
+            if model_condition.get("runtime_id") == "claude-code"
             else "scripts/run_codex_workflow_model_condition.py",
         )
         cmd = [
