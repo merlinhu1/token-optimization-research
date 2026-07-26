@@ -7145,6 +7145,8 @@ with tempfile.TemporaryDirectory(dir=runner.ROOT / 'sources/evaluations/protocol
                     key: candidate["cumulative_token_usage"].get(key)
                     for key in ("measurement_source", *runner.PILOT_PROVIDER_USAGE_FIELDS)
                 }
+                if "provider_usage_details" in candidate["cumulative_token_usage"]:
+                    run_record["token_usage"]["provider_usage_details"] = candidate["cumulative_token_usage"]["provider_usage_details"]
                 run_record["agent_condition"] = {
                     key: candidate["agent"].get(key)
                     for key in ("runtime_id", "provider", "model", "model_condition_id", "reasoning_effort")
