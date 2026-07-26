@@ -1076,10 +1076,18 @@ def protocol_matches_active_sequence(protocol: dict, sequence: dict) -> bool:
         .get("agent_condition", {})
     )
     mistake_gate = sequence.get("mistake_gate", {})
+    allowed_model_conditions = {
+        str(mistake_gate.get("designated_model_condition")),
+        *{
+            str(condition)
+            for condition in mistake_gate.get("allowed_treatment_model_conditions", [])
+            if condition
+        },
+    }
     return (
         task_fixture.get("sequence_id") == sequence.get("id")
         and task_fixture.get("qualification_path") == sequence.get("qualification_path")
-        and agent_condition.get("model_condition_id") == mistake_gate.get("designated_model_condition")
+        and agent_condition.get("model_condition_id") in allowed_model_conditions
         and agent_condition.get("model") == mistake_gate.get("model")
         and agent_condition.get("reasoning_effort") == mistake_gate.get("reasoning_effort")
     )

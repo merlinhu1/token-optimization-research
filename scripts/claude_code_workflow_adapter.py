@@ -64,9 +64,11 @@ def run_task(
     fixture: Any,
 ) -> tuple[int, str | None, dict[str, Any] | None]:
     repo = fixture.rel_or_abs(record["target"]["repository_path"])
-    env = fixture.claude_env(claude_home, containerized=True)
+    profile_id = str((record.get("profile") or {}).get("profile_id") or "")
+    cfg = fixture.active_tool_config(record, profile_id)
+    env = fixture.claude_env(claude_home, containerized=True, cfg=cfg)
     fixture.apply_model_network_isolation(env)
-    mounts = fixture.container_mounts_for_record(record, claude_home, include_repo=True)
+    mounts = fixture.container_mounts_for_record(record, claude_home, include_repo=True, cfg=cfg)
     cmd = command(model=str(record.get("agent", {}).get("model", "claude-sonnet-5")), prompt=prompt_path.read_text(), session_id=session_id)
     proc = fixture.run_backend(
         cmd,
