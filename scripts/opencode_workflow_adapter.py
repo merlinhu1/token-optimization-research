@@ -464,22 +464,29 @@ def step_usage(part: dict[str, Any]) -> dict[str, int]:
     cache = tokens.get("cache")
     if not isinstance(cache, dict):
         raise ValueError("OpenCode step_finish part is missing cache usage")
-    fresh = _token(tokens.get("input"), "input")
+    input_tokens = _token(tokens.get("input"), "input")
     output = _token(tokens.get("output"), "output")
     reasoning = _token(tokens.get("reasoning"), "reasoning")
     cached = _token(cache.get("read"), "cache.read")
     cache_write = _token(cache.get("write"), "cache.write")
-    total = fresh + cached + cache_write + output + reasoning
+    # OpenCode exposes cache writes separately from input.  The canonical
+    # contract defines fresh input as all non-cache-read input, so cache writes
+    # are included in fresh_input_tokens while remaining an explicit audit
+    # subset.  Do not add cache_write again to total_provider_tokens.
+    fresh = input_tokens + cache_write
+    normalized_output = output + reasoning
+    total = fresh + cached + normalized_output
     declared_total = tokens.get("total")
-    if declared_total is not None and _token(declared_total, "total") != total:
+    raw_total = input_tokens + cached + cache_write + output + reasoning
+    if declared_total is not None and _token(declared_total, "total") != raw_total:
         raise ValueError(
-            f"OpenCode usage total does not match components: {declared_total} != {total}"
+            f"OpenCode usage total does not match components: {declared_total} != {raw_total}"
         )
     return {
         "fresh_input_tokens": fresh,
         "cached_input_tokens": cached,
         "cache_write_tokens": cache_write,
-        "output_tokens": output + reasoning,
+        "output_tokens": normalized_output,
         "reasoning_tokens": reasoning,
         "total_provider_tokens": total,
     }
@@ -581,8 +588,7 @@ def normalize_events(
             "type": "turn.completed",
             "usage": {
                 "input_tokens": cumulative["fresh_input_tokens"]
-                + cumulative["cached_input_tokens"]
-                + cumulative["cache_write_tokens"],
+                + cumulative["cached_input_tokens"],
                 "cached_input_tokens": cumulative["cached_input_tokens"],
                 "cache_write_tokens": cumulative["cache_write_tokens"],
                 "output_tokens": cumulative["output_tokens"],

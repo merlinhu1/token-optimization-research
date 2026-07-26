@@ -4,7 +4,7 @@
   "date": "2026-07-29",
   "source_registry": {
     "path": "data/workflow-sessions.json",
-    "sha256": "a4527609a55b30c431bb00d166a5f571c8cf60ef21bc0ebdd613a29b39630c9c"
+    "sha256": "ae45b7ad0b8da40771746669749551d1e16d4c0d52a0eece9f774d25b9fafd74"
   },
   "condition": {
     "runtime_id": "codex-cli",
@@ -19,7 +19,7 @@
       "terraform-lifecycle-sequence-v0"
     ],
     "primary_metric": "raw_provider_tokens",
-    "secondary_metric": "weighted_tokens = fresh input + 0.1 * cached input + 6 * output"
+    "secondary_metric": "weighted_tokens = fresh input (input_tokens + cache_creation_input_tokens) + 0.1 * cached input + 6 * output"
   },
   "profile_count": 16,
   "workflow_session_count": 48,

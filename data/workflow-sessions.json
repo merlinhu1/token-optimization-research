@@ -130211,7 +130211,7 @@
       "experiment_group_id": "fastify-fastify-baseline-claude-code-no-mcp-2e0426814326-sequential-workflow-r0",
       "objective": "individual_tool_effectiveness",
       "evidence_stage": "reproduction",
-      "status": "completed",
+      "status": "excluded",
       "session_role": "baseline",
       "replicate_index": 0,
       "frozen_protocol": {
@@ -130634,18 +130634,23 @@
       },
       "interpretation": {
         "accepted_for_execution": true,
-        "accepted_for_objective": true,
-        "claim_status": "token-accounting-eligible",
+        "accepted_for_objective": false,
+        "claim_status": "excluded-accounting-invalid",
         "comparison_baseline_session_id": "",
         "standalone_runtime_control": false,
-        "exclusion_reason": "",
-        "notes": "Provider-backed lane completed with clean integrity; verifier and review outcomes are diagnostic model-behavior evidence and do not gate token accounting.",
+        "exclusion_reason": "Claude Code token accounting was extracted from result usage rather than authoritative assistant usage, and the compact artifacts do not retain cache-creation fields needed to recompute fresh input.",
+        "notes": "Execution and verifier evidence are retained, but this session is excluded from token comparison until a fresh authorized run or surviving raw usage evidence is available.",
         "scope_note": "Full warm-state lane; all regressions are preseeded, prompts are disclosed sequentially, and controller verification runs only after the final prompt; declared acceptance assertions remain model-visible.",
-        "evaluation_validity": "valid",
-        "primary_objective_hard_baseline": true,
-        "usable_for_primary_objective_token_comparison": true,
-        "operationally_completed": true,
-        "agent_declared_task_completion_count": 3
+        "evaluation_validity": "invalid-accounting",
+        "primary_objective_hard_baseline": false,
+        "usable_for_primary_objective_token_comparison": false,
+        "operationally_completed": false,
+        "agent_declared_task_completion_count": 3,
+        "invalidity_reasons": [
+          "measurement source is claude-code-stream-json-result-usage rather than authoritative assistant usage",
+          "fresh_input_tokens omitted cache_creation_input_tokens",
+          "compact evidence does not retain raw Claude usage events for correction"
+        ]
       }
     },
     {
@@ -130657,7 +130662,7 @@
       "experiment_group_id": "beetbox-beets-baseline-claude-code-no-mcp-2fd6c85014dc-sequential-workflow-r0",
       "objective": "individual_tool_effectiveness",
       "evidence_stage": "reproduction",
-      "status": "completed",
+      "status": "excluded",
       "session_role": "baseline",
       "replicate_index": 0,
       "frozen_protocol": {
@@ -131078,18 +131083,23 @@
       },
       "interpretation": {
         "accepted_for_execution": true,
-        "accepted_for_objective": true,
-        "claim_status": "token-accounting-eligible",
+        "accepted_for_objective": false,
+        "claim_status": "excluded-accounting-invalid",
         "comparison_baseline_session_id": "",
         "standalone_runtime_control": false,
-        "exclusion_reason": "",
-        "notes": "Provider-backed lane completed with clean integrity; verifier and review outcomes are diagnostic model-behavior evidence and do not gate token accounting.",
+        "exclusion_reason": "Claude Code token accounting was extracted from result usage rather than authoritative assistant usage, and the compact artifacts do not retain cache-creation fields needed to recompute fresh input.",
+        "notes": "Execution and verifier evidence are retained, but this session is excluded from token comparison until a fresh authorized run or surviving raw usage evidence is available.",
         "scope_note": "Full warm-state lane; all regressions are preseeded, prompts are disclosed sequentially, and controller verification runs only after the final prompt; declared acceptance assertions remain model-visible.",
-        "evaluation_validity": "valid",
-        "primary_objective_hard_baseline": true,
-        "usable_for_primary_objective_token_comparison": true,
-        "operationally_completed": true,
-        "agent_declared_task_completion_count": 3
+        "evaluation_validity": "invalid-accounting",
+        "primary_objective_hard_baseline": false,
+        "usable_for_primary_objective_token_comparison": false,
+        "operationally_completed": false,
+        "agent_declared_task_completion_count": 3,
+        "invalidity_reasons": [
+          "measurement source is claude-code-stream-json-result-usage rather than authoritative assistant usage",
+          "fresh_input_tokens omitted cache_creation_input_tokens",
+          "compact evidence does not retain raw Claude usage events for correction"
+        ]
       }
     },
     {
@@ -131101,7 +131111,7 @@
       "experiment_group_id": "hashicorp-terraform-baseline-claude-code-no-mcp-938e4812b1d4-sequential-workflow-r0",
       "objective": "individual_tool_effectiveness",
       "evidence_stage": "reproduction",
-      "status": "completed",
+      "status": "excluded",
       "session_role": "baseline",
       "replicate_index": 0,
       "frozen_protocol": {
@@ -131526,18 +131536,23 @@
       },
       "interpretation": {
         "accepted_for_execution": true,
-        "accepted_for_objective": true,
-        "claim_status": "token-accounting-eligible",
+        "accepted_for_objective": false,
+        "claim_status": "excluded-accounting-invalid",
         "comparison_baseline_session_id": "",
         "standalone_runtime_control": false,
-        "exclusion_reason": "",
-        "notes": "Provider-backed lane completed with clean integrity; verifier and review outcomes are diagnostic model-behavior evidence and do not gate token accounting.",
+        "exclusion_reason": "Claude Code token accounting was extracted from result usage rather than authoritative assistant usage, and the compact artifacts do not retain cache-creation fields needed to recompute fresh input.",
+        "notes": "Execution and verifier evidence are retained, but this session is excluded from token comparison until a fresh authorized run or surviving raw usage evidence is available.",
         "scope_note": "Full warm-state lane; all regressions are preseeded, prompts are disclosed sequentially, and controller verification runs only after the final prompt; declared acceptance assertions remain model-visible.",
-        "evaluation_validity": "valid",
-        "primary_objective_hard_baseline": true,
-        "usable_for_primary_objective_token_comparison": true,
-        "operationally_completed": true,
-        "agent_declared_task_completion_count": 3
+        "evaluation_validity": "invalid-accounting",
+        "primary_objective_hard_baseline": false,
+        "usable_for_primary_objective_token_comparison": false,
+        "operationally_completed": false,
+        "agent_declared_task_completion_count": 3,
+        "invalidity_reasons": [
+          "measurement source is claude-code-stream-json-result-usage rather than authoritative assistant usage",
+          "fresh_input_tokens omitted cache_creation_input_tokens",
+          "compact evidence does not retain raw Claude usage events for correction"
+        ]
       }
     }
   ]
