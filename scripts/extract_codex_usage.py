@@ -170,6 +170,19 @@ def sum_key(blocks: list[dict[str, Any]], key: str) -> int | None:
     return sum(values) if values else None
 
 
+def token_field_totals(blocks: list[dict[str, Any]]) -> dict[str, int]:
+    totals: dict[str, int] = {}
+    for block in blocks:
+        usage = block.get("usage", {})
+        if not isinstance(usage, dict):
+            continue
+        for key, value in usage.items():
+            number = numeric(value)
+            if number is not None and "token" in str(key).lower():
+                totals[str(key)] = totals.get(str(key), 0) + number
+    return dict(sorted(totals.items()))
+
+
 def count_tool_calls(events: list[dict[str, Any]]) -> int:
     count = 0
     for event in events:
@@ -240,10 +253,18 @@ def build_summary(events_path: Path) -> dict[str, Any]:
             "reasoning_output_tokens": reasoning_tokens,
             "total_tokens_formula": "input_tokens + output_tokens unless Codex emits total_tokens",
             "accounting_mode": accounting_mode,
-            "source_semantics": "Codex exec turn.completed.usage serializes ThreadTokenUsage.total",
+            "source_semantics": "Codex exec turn.completed.usage serializes ThreadTokenUsage.total; fresh input subtracts cached reads.",
             "usage_blocks": blocks,
             "effective_usage_blocks": effective_blocks,
             "incremental_usage_blocks": incremental_blocks,
+        },
+        "provider_usage_details": {
+            "runtime": "codex-cli",
+            "accounting_mode": accounting_mode,
+            "raw_token_field_totals": token_field_totals(effective_blocks),
+            "incremental_raw_token_field_totals": token_field_totals(incremental_blocks),
+            "fresh_input_formula": "input_tokens - cached_input_tokens",
+            "reasoning_tokens_available": reasoning_tokens is not None,
         },
         "agent_behavior": {
             "turns": event_types.get("turn.completed"),

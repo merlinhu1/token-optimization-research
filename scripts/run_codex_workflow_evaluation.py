@@ -700,7 +700,23 @@ def pilot_session_artifacts_valid(session: dict[str, Any], root: Path = ROOT) ->
         return False
     usage = session.get("cumulative_token_usage", {})
     run_usage = run_record.get("token_usage", {}) if isinstance(run_record, dict) else {}
-    if not pilot_provider_usage_valid(usage) or not pilot_provider_usage_valid(run_usage):
+    accounting_invalid = (
+        isinstance(session.get("interpretation"), dict)
+        and session["interpretation"].get("evaluation_validity") == "invalid-accounting"
+    )
+    if accounting_invalid:
+        for invalid_usage in (usage, run_usage):
+            if not isinstance(invalid_usage, dict):
+                return False
+            invalid_fields = [invalid_usage.get(key) for key in PILOT_PROVIDER_USAGE_FIELDS]
+            if (
+                any(type(value) is not int or value < 0 for value in invalid_fields)
+                or type(invalid_usage.get("cache_write_tokens")) is not int
+            ):
+                return False
+    elif (
+        not pilot_provider_usage_valid(usage) or not pilot_provider_usage_valid(run_usage)
+    ):
         return False
     if any(run_usage.get(key) != usage.get(key) for key in ("measurement_source", *PILOT_PROVIDER_USAGE_FIELDS)):
         return False
@@ -3727,6 +3743,7 @@ def workflow_session_record(
             "output_tokens": usage.get("output_tokens"),
             "reasoning_tokens": usage.get("reasoning_tokens"),
             "total_provider_tokens": usage.get("total_provider_tokens"),
+            "provider_usage_details": usage.get("provider_usage_details"),
             "tokens_per_accepted_task": tokens_per_accepted_task,
             "accounting_basis": f"{runtime_agent_name(runtime_id)}-reported token volume; monetary cost estimation is out of scope",
         },
@@ -4462,6 +4479,7 @@ def _run_one_locked(args: argparse.Namespace) -> dict[str, Any]:
         "token_usage": {
             "measurement_source": usage.get("measurement_source"),
             **{key: usage.get(key) for key in PILOT_PROVIDER_USAGE_FIELDS},
+            "provider_usage_details": usage.get("provider_usage_details"),
         },
         "usage_warnings": usage.get("warnings"),
         "per_task_results": task_checkpoints,

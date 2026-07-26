@@ -263,6 +263,7 @@ class CodexUsageAccountingTest(unittest.TestCase):
                 {
                 "codex-jsonl-usage-events",
                 "opencode-jsonl-step-finish-usage",
+                "claude-code-stream-json-assistant-usage",
                 "claude-code-stream-json-result-usage",
             },
             )
@@ -7108,6 +7109,7 @@ with tempfile.TemporaryDirectory(dir=runner.ROOT / 'sources/evaluations/protocol
             for item in reversed(registry["sessions"])
             if item.get("session_role") == "baseline"
             and item.get("artifacts", {}).get("artifact_contract") == "compact-v1-four-files"
+            and item.get("interpretation", {}).get("accepted_for_objective") is True
             and (ROOT / item.get("artifacts", {}).get("run_record", "missing")).is_file()
         )
         source = (ROOT / session["artifacts"]["run_record"]).parent

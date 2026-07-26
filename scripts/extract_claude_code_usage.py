@@ -1,12 +1,25 @@
 #!/usr/bin/env python3
-"""Extract provider-token usage from Claude Code ``--output-format stream-json``.
+"""Extract lossless provider usage from a Claude Code stream-json event file.
 
-Claude Code emits an ``assistant`` event for each provider message and a final
-``result`` event for the turn. The assistant message usage blocks are the
-accounting source because the final result can be cumulative or model-aggregated
-and must not be added a second time. Thinking-token detail is not exposed by the
-CLI usage object, so reasoning_tokens is explicitly zero rather than inferred.
+Claude/Anthropic reports input usage in separate dimensions:
+
+* ``input_tokens``: non-cached input tokens;
+* ``cache_creation_input_tokens`` (including nested ephemeral cache fields):
+  input tokens newly written to the prompt cache;
+* ``cache_read_input_tokens``: input tokens read from the prompt cache; and
+* ``output_tokens``: generated output tokens.
+
+The canonical evaluation contract calls the first two dimensions together
+``fresh_input_tokens``.  ``cache_write_tokens`` remains available as an
+explicit audit component, but is a subset of ``fresh_input_tokens`` and must
+not be added to ``total_provider_tokens`` a second time.
+
+Claude's assistant messages are the primary accounting source.  A final
+``result`` event may summarize or aggregate a different scope, so result usage
+is retained as diagnostic metadata and is only used as a clearly warned
+fallback when no assistant usage exists.
 """
+
 from __future__ import annotations
 
 import argparse
@@ -25,149 +38,237 @@ def load_events(path: Path) -> tuple[list[dict[str, Any]], list[str]]:
         try:
             value = json.loads(line)
         except json.JSONDecodeError:
-            non_json.append(line[:500])
+            non_json.append(line)
             continue
         if isinstance(value, dict):
             events.append(value)
     return events, non_json
 
 
-def nonnegative_int(value: Any, field: str) -> int:
-    if value is None:
-        return 0
-    if isinstance(value, bool) or not isinstance(value, int) or value < 0:
-        raise ValueError(f"Claude Code usage {field} must be a non-negative integer")
-    return value
+def usage_value(usage: dict[str, Any], *keys: str) -> int:
+    for key in keys:
+        value = usage.get(key)
+        if type(value) is int and value >= 0:
+            return value
+    return 0
 
 
-def usage_block(message: dict[str, Any], event_index: int) -> dict[str, Any] | None:
-    usage = message.get("usage")
+def nested_usage_value(usage: dict[str, Any], key: str) -> int:
+    value = usage.get(key)
+    if isinstance(value, dict):
+        return sum(
+            item
+            for item in value.values()
+            if type(item) is int and item >= 0
+        )
+    return usage_value(usage, key)
+
+
+def cache_creation_tokens(usage: dict[str, Any]) -> int:
+    """Return all cache-creation input tokens without dropping subcategories."""
+    explicit = usage.get("cache_creation_input_tokens")
+    if type(explicit) is int and explicit >= 0:
+        # The provider's parent aggregate is authoritative for arithmetic. The
+        # nested ephemeral fields remain in provider_usage_details and are
+        # checked for visibility, but must not replace or double-count it.
+        return explicit
+    nested = usage.get("cache_creation")
+    if isinstance(nested, dict):
+        return sum(
+            value
+            for key, value in nested.items()
+            if "token" in str(key).lower() and type(value) is int and value >= 0
+        )
+    return 0
+
+
+def numeric_token_fields(value: Any, prefix: str = "") -> dict[str, int]:
+    """Collect every numeric provider field whose key denotes token usage."""
+    totals: dict[str, int] = {}
+    if isinstance(value, dict):
+        for key, child in value.items():
+            path = f"{prefix}.{key}" if prefix else str(key)
+            if "token" in str(key).lower() and type(child) is int and child >= 0:
+                totals[path] = totals.get(path, 0) + child
+            elif isinstance(child, (dict, list)):
+                for nested_path, nested_value in numeric_token_fields(child, path).items():
+                    totals[nested_path] = totals.get(nested_path, 0) + nested_value
+    elif isinstance(value, list):
+        for index, child in enumerate(value):
+            for nested_path, nested_value in numeric_token_fields(child, f"{prefix}[{index}]").items():
+                totals[nested_path] = totals.get(nested_path, 0) + nested_value
+    return totals
+
+
+def usage_block(event: dict[str, Any]) -> dict[str, Any] | None:
+    message = event.get("message")
+    usage: Any = None
+    if isinstance(message, dict) and isinstance(message.get("usage"), dict):
+        usage = message["usage"]
+    elif isinstance(event.get("usage"), dict):
+        usage = event["usage"]
     if not isinstance(usage, dict):
         return None
-    fresh = nonnegative_int(usage.get("input_tokens", 0), "input_tokens")
-    cached = nonnegative_int(usage.get("cache_read_input_tokens", 0), "cache_read_input_tokens")
-    cache_creation = usage.get("cache_creation")
-    if isinstance(cache_creation, dict):
-        cache_write = sum(
-            nonnegative_int(cache_creation.get(key, 0), f"cache_creation.{key}")
-            for key in ("ephemeral_5m_input_tokens", "ephemeral_1h_input_tokens")
-        )
-    else:
-        cache_write = nonnegative_int(usage.get("cache_creation_input_tokens", 0), "cache_creation_input_tokens")
-    output = nonnegative_int(usage.get("output_tokens", 0), "output_tokens")
+
+    input_tokens = usage_value(usage, "input_tokens")
+    cache_read = usage_value(usage, "cache_read_input_tokens", "cached_input_tokens")
+    cache_write = cache_creation_tokens(usage)
+    output = usage_value(usage, "output_tokens")
+    reasoning = usage_value(usage, "reasoning_tokens", "reasoning_output_tokens")
+    fresh = input_tokens + cache_write
+    total = fresh + cache_read + output
+    reported_total = usage_value(usage, "total_tokens", "total_provider_tokens")
     return {
-        "event_index": event_index,
-        "message_id": str(message.get("id") or f"assistant-event-{event_index}"),
-        "usage": {
-            "fresh_input_tokens": fresh,
-            "cached_input_tokens": cached,
-            "cache_write_tokens": cache_write,
-            "output_tokens": output,
-            "reasoning_tokens": 0,
-            "total_provider_tokens": fresh + cached + cache_write + output,
-        },
+        "input_tokens": input_tokens,
+        "cache_read_input_tokens": cache_read,
+        "cache_creation_input_tokens": cache_write,
+        "output_tokens": output,
+        "reasoning_tokens": reasoning,
+        "fresh_input_tokens": fresh,
+        "cached_input_tokens": cache_read,
+        "cache_write_tokens": cache_write,
+        "total_provider_tokens": total,
+        "reported_total_tokens": reported_total if reported_total else None,
         "raw_usage": usage,
+        "raw_token_fields": numeric_token_fields(usage),
+        "event_type": str(event.get("type") or "unknown"),
+        "message_id": message.get("id") if isinstance(message, dict) else None,
     }
+
+
+def usage_blocks(events: list[dict[str, Any]], event_type: str) -> list[dict[str, Any]]:
+    blocks: list[dict[str, Any]] = []
+    seen_message_ids: set[str] = set()
+    for event in events:
+        if event.get("type") != event_type:
+            continue
+        block = usage_block(event)
+        if block is None:
+            continue
+        message_id = block.get("message_id")
+        if isinstance(message_id, str) and message_id:
+            if message_id in seen_message_ids:
+                continue
+            seen_message_ids.add(message_id)
+        blocks.append(block)
+    return blocks
+
+
+def sum_key(blocks: list[dict[str, Any]], key: str) -> int:
+    return sum(int(block.get(key) or 0) for block in blocks)
+
+
+def sum_raw_token_fields(blocks: list[dict[str, Any]]) -> dict[str, int]:
+    totals: dict[str, int] = {}
+    for block in blocks:
+        for key, value in block.get("raw_token_fields", {}).items():
+            totals[key] = totals.get(key, 0) + int(value)
+    return dict(sorted(totals.items()))
+
+
+def reported_totals(blocks: list[dict[str, Any]]) -> int | None:
+    values = [block["reported_total_tokens"] for block in blocks if block.get("reported_total_tokens") is not None]
+    return sum(values) if values else None
 
 
 def build_summary(events_path: Path) -> dict[str, Any]:
-    events, non_json = load_events(events_path)
-    blocks: list[dict[str, Any]] = []
-    result_blocks: list[dict[str, Any]] = []
-    seen: set[str] = set()
-    sessions: set[str] = set()
-    event_types: dict[str, int] = {}
-    tool_calls = 0
-    result_events: list[dict[str, Any]] = []
-    for index, event in enumerate(events):
-        kind = str(event.get("type") or "unknown")
-        event_types[kind] = event_types.get(kind, 0) + 1
-        session_id = event.get("session_id")
-        if isinstance(session_id, str) and session_id:
-            sessions.add(session_id)
-        if kind == "assistant":
-            message = event.get("message")
-            if isinstance(message, dict):
-                block = usage_block(message, index)
-                if block is not None and block["message_id"] not in seen:
-                    blocks.append(block)
-                    seen.add(block["message_id"])
-                content = message.get("content")
-                if isinstance(content, list):
-                    tool_calls += sum(
-                        isinstance(item, dict) and item.get("type") == "tool_use"
-                        for item in content
-                    )
-        elif kind == "result":
-            result_events.append(event)
-            block = usage_block(event, index)
-            if block is not None:
-                result_blocks.append(block)
+    events, non_json_lines = load_events(events_path)
+    assistant_blocks = usage_blocks(events, "assistant")
+    result_blocks = usage_blocks(events, "result")
 
-    accounting_blocks = result_blocks or blocks
-    accounting_mode = "sum-result-event-usage" if result_blocks else "sum-unique-assistant-message-usage"
-    accounting_source = (
-        "claude-code-stream-json-result-usage" if result_blocks else "claude-code-stream-json-assistant-usage"
-    )
-    cumulative = {
-        "fresh_input_tokens": sum(item["usage"]["fresh_input_tokens"] for item in accounting_blocks),
-        "cached_input_tokens": sum(item["usage"]["cached_input_tokens"] for item in accounting_blocks),
-        "cache_write_tokens": sum(item["usage"]["cache_write_tokens"] for item in accounting_blocks),
-        "output_tokens": sum(item["usage"]["output_tokens"] for item in accounting_blocks),
-        "reasoning_tokens": 0,
-        "total_provider_tokens": sum(item["usage"]["total_provider_tokens"] for item in accounting_blocks),
-    }
     warnings: list[str] = []
-    if not blocks:
-        warnings.append("No Claude Code assistant usage blocks found; token fields are null.")
-    if non_json:
-        warnings.append("Claude Code stream-json contains non-JSON lines.")
-    failed = [event for event in result_events if event.get("is_error") is True or event.get("subtype") == "error"]
-    if failed:
-        warnings.append("Claude Code emitted an error result event.")
-    values: dict[str, int | None] = {
-        key: value if accounting_blocks else None for key, value in cumulative.items()
+    if assistant_blocks:
+        effective_blocks = assistant_blocks
+        accounting_mode = "sum-unique-assistant-message-usage"
+    elif result_blocks:
+        effective_blocks = result_blocks
+        accounting_mode = "result-usage-fallback-no-assistant-usage"
+        warnings.append(
+            "No assistant usage blocks found; result usage was used only as a fallback and may be aggregated."
+        )
+    else:
+        effective_blocks = []
+        accounting_mode = "no-usage-blocks"
+        warnings.append("No Claude usage blocks found; token fields are zero and not decision-ready.")
+
+    fresh_input_tokens = sum_key(effective_blocks, "fresh_input_tokens")
+    cached_input_tokens = sum_key(effective_blocks, "cached_input_tokens")
+    cache_write_tokens = sum_key(effective_blocks, "cache_write_tokens")
+    output_tokens = sum_key(effective_blocks, "output_tokens")
+    reasoning_tokens = sum_key(effective_blocks, "reasoning_tokens")
+    total_provider_tokens = fresh_input_tokens + cached_input_tokens + output_tokens
+
+    provider_reported_total = reported_totals(effective_blocks)
+    if provider_reported_total is not None and provider_reported_total != total_provider_tokens:
+        warnings.append(
+            "Provider-reported total_tokens differs from the normalized component total; both values are retained."
+        )
+
+    reasoning_available = any(
+        "reasoning_tokens" in block.get("raw_token_fields", {})
+        or "reasoning_output_tokens" in block.get("raw_token_fields", {})
+        for block in effective_blocks
+    )
+    provider_usage_details = {
+        "runtime": "claude-code",
+        "accounting_mode": accounting_mode,
+        "assistant_usage_block_count": len(assistant_blocks),
+        "result_usage_block_count": len(result_blocks),
+        "result_usage_counted": not assistant_blocks and bool(result_blocks),
+        "reasoning_tokens_available": reasoning_available,
+        "canonical_components": {
+            "input_tokens": sum_key(effective_blocks, "input_tokens"),
+            "cache_creation_input_tokens": cache_write_tokens,
+            "cache_read_input_tokens": cached_input_tokens,
+            "output_tokens": output_tokens,
+            "reasoning_tokens": reasoning_tokens,
+        },
+        "raw_token_field_totals": sum_raw_token_fields(effective_blocks),
+        "result_raw_token_field_totals": sum_raw_token_fields(result_blocks),
+        "provider_reported_total_tokens": provider_reported_total,
+        "normalized_formula": "fresh_input_tokens + cached_input_tokens + output_tokens",
+        "fresh_input_formula": "input_tokens + cache_creation_input_tokens",
     }
+
+    event_types: dict[str, int] = {}
+    for event in events:
+        event_type = str(event.get("type") or "unknown")
+        event_types[event_type] = event_types.get(event_type, 0) + 1
+
     return {
-        "schema_version": 1,
+        "schema_version": 3,
         "source": "claude-code-stream-json",
         "source_artifact": str(events_path),
         "extracted_at_utc": dt.datetime.now(dt.UTC).isoformat(),
-        "measurement_source": accounting_source,
-        **values,
+        "measurement_source": "claude-code-stream-json-assistant-usage",
+        "fresh_input_tokens": fresh_input_tokens,
+        "cached_input_tokens": cached_input_tokens,
+        "cache_write_tokens": cache_write_tokens,
+        "output_tokens": output_tokens,
+        "reasoning_tokens": reasoning_tokens,
+        "total_provider_tokens": total_provider_tokens,
         "raw_artifact_tokens": None,
         "transformed_artifact_tokens": None,
-        "claude_code_usage": {
-            "accounting_mode": accounting_mode,
-            "source_semantics": (
-                "Claude Code result-event usage is summed once per result event when present; "
-                "otherwise assistant message usage is summed once per unique message id."
-            ),
-            "session_ids": sorted(sessions),
-            "assistant_usage_blocks": blocks,
-            "result_usage_blocks": result_blocks,
-            "result_event_count": len(result_events),
-            "reasoning_tokens_available": False,
-        },
+        "provider_usage_details": provider_usage_details,
         "agent_behavior": {
-            "turns": len(blocks),
-            "tool_calls_observed": tool_calls,
+            "turns": event_types.get("result", 0),
+            "tool_calls_observed": sum(
+                1
+                for event in events
+                if isinstance(event.get("message"), dict)
+                and event["message"].get("role") == "assistant"
+                and isinstance(event["message"].get("content"), list)
+                and any(
+                    isinstance(item, dict) and item.get("type") == "tool_use"
+                    for item in event["message"]["content"]
+                )
+            ),
             "event_count": len(events),
             "event_types": event_types,
-            "non_json_line_count": len(non_json),
-            "result_events": [
-                {
-                    "subtype": event.get("subtype"),
-                    "is_error": event.get("is_error"),
-                    "stop_reason": event.get("stop_reason"),
-                    "num_turns": event.get("num_turns"),
-                    "model_usage_present": bool(event.get("modelUsage")),
-                }
-                for event in result_events
-            ],
+            "non_json_line_count": len(non_json_lines),
         },
         "warnings": warnings,
-        "non_json_line_samples": non_json[:10],
+        "non_json_line_samples": non_json_lines[:10],
     }
 
 

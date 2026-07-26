@@ -2,10 +2,11 @@
 """Extract normalized provider usage from OpenCode ``run --format json`` evidence.
 
 OpenCode emits one ``step_finish`` part per provider turn. Its token fields are
-incremental: ``input`` is fresh input after cache subtraction, ``cache.read``
-and ``cache.write`` are separate input components, ``output`` excludes hidden
-reasoning, and ``reasoning`` is therefore added to output for compatibility
-with the repository's provider-token contract.
+incremental: ``input`` is non-cache input, ``cache.read`` and ``cache.write``
+are separate input components, ``output`` excludes hidden reasoning, and
+``reasoning`` is therefore added to output for compatibility with the
+repository's provider-token contract. Canonical fresh input includes both
+``input`` and ``cache.write``.
 """
 from __future__ import annotations
 
@@ -43,6 +44,23 @@ def raw_opencode_event(event: dict[str, Any]) -> dict[str, Any] | None:
         return None
     raw = event.get("event")
     return raw if isinstance(raw, dict) else None
+
+
+def raw_token_field_totals(blocks: list[dict[str, Any]]) -> dict[str, int]:
+    totals: dict[str, int] = {}
+    for block in blocks:
+        raw_tokens = block.get("raw_tokens")
+        if not isinstance(raw_tokens, dict):
+            continue
+        for key, value in raw_tokens.items():
+            if type(value) is int and value >= 0 and "token" in str(key).lower():
+                totals[str(key)] = totals.get(str(key), 0) + value
+            if key == "cache" and isinstance(value, dict):
+                for nested_key, nested_value in value.items():
+                    if type(nested_value) is int and nested_value >= 0 and "token" in str(nested_key).lower():
+                        path = f"cache.{nested_key}"
+                        totals[path] = totals.get(path, 0) + nested_value
+    return dict(sorted(totals.items()))
 
 
 def build_summary(events_path: Path) -> dict[str, Any]:
@@ -126,7 +144,18 @@ def build_summary(events_path: Path) -> dict[str, Any]:
             "session_ids": sorted(sessions),
             "unique_step_finish_parts": len(raw_step_blocks),
             "usage_blocks": raw_step_blocks,
-            "total_tokens_formula": "fresh_input + cached_input + cache_write + output_including_reasoning",
+            "total_tokens_formula": "fresh_input + cached_input + output_including_reasoning; fresh_input includes cache_write",
+        },
+        "provider_usage_details": {
+            "runtime": "opencode-cli",
+            "accounting_mode": "sum-unique-incremental-step-finish-parts",
+            "raw_token_field_totals": raw_token_field_totals(raw_step_blocks),
+            "fresh_input_formula": "input + cache.write",
+            "reasoning_tokens_available": any(
+                isinstance(block.get("raw_tokens"), dict)
+                and type(block["raw_tokens"].get("reasoning")) is int
+                for block in raw_step_blocks
+            ),
         },
         "agent_behavior": {
             "turns": len(raw_step_blocks),
