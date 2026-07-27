@@ -1897,7 +1897,7 @@ def main(argv: list[str] | None = None) -> int:
         {
             "sequence_id": sequence_id,
             "profile_id": profile,
-            "protocol": str(find_protocol(ROOT, sequence_id, profile).relative_to(ROOT)),
+            "protocol": str(find_protocol(ROOT, sequence_id, profile, model_condition_override=model_condition).relative_to(ROOT)),
         }
         for sequence_id, profile in jobs
     ]
