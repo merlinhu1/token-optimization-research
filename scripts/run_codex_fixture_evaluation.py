@@ -2596,7 +2596,16 @@ def claude_env(
             env[key] = value
     config_dir = agent_home / "claude-config"
     config_dir.mkdir(parents=True, exist_ok=True)
-    env["CLAUDE_CONFIG_DIR"] = str(config_dir)
+    claude_config = agent_home / "claude-config"
+    claude_config.mkdir(parents=True, exist_ok=True)
+    claude_dir = agent_home / "home" / ".claude"
+    claude_dir.parent.mkdir(parents=True, exist_ok=True)
+    if claude_dir.exists() or claude_dir.is_symlink():
+        if not claude_dir.is_symlink() or claude_dir.resolve() != claude_config.resolve():
+            raise RuntimeError(f"unexpected lane-private Claude config path: {claude_dir}")
+    else:
+        claude_dir.symlink_to(claude_config, target_is_directory=True)
+    env["CLAUDE_CONFIG_DIR"] = str(claude_config)
     env.pop("CLAUDE_CODE_SIMPLE", None)
     env["CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC"] = "1"
     isolated_bin = agent_home / "runtime-bin"
