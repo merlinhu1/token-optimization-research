@@ -3154,11 +3154,12 @@ def prepare_profile_integration(
         return result
 
     assert cfg is not None
+    integration_backend = str(cfg.get("host_integration_backend") or backend)
     if integration.get("home_dot_codex_alias"):
         prepare_home_dot_codex_alias(codex_home)
     runtime_id = str((record.get("agent") or {}).get("runtime_id") or "codex-cli")
     env = (
-        claude_env(codex_home, containerized=backend == "docker", cfg=cfg)
+        claude_env(codex_home, containerized=integration_backend == "docker", cfg=cfg)
         if runtime_id == "claude-code"
         else codex_env(codex_home, containerized=backend == "docker", cfg=cfg)
     )
@@ -3191,7 +3192,6 @@ def prepare_profile_integration(
         ("install", integration.get("install_commands", []), install_exit_codes),
         ("verify", integration.get("verify_commands", []), verify_exit_codes),
     )
-    integration_backend = str(cfg.get("host_integration_backend") or backend)
     for phase, commands, exits in backend_phases:
         for index, raw_command in enumerate(commands, start=1):
             command = [render_tool_value(part, record, codex_home, cfg) for part in raw_command]
