@@ -1449,6 +1449,7 @@ def _tool_command_spec(cfg: dict[str, Any]) -> dict[str, Any] | None:
 
 def _lane_path(cfg: dict[str, Any], root: Path = ROOT) -> str:
     path_entries = [
+        "/opt/data/bin",
         str(fixture.CODEX_HOST_EXECUTABLE.parent),
         "/opt/data/opt/go/bin",
         "/opt/data/opt/uv",
