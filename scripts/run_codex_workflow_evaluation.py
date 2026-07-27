@@ -4172,7 +4172,7 @@ def _run_one_locked(args: argparse.Namespace) -> dict[str, Any]:
 
     create_project(seq, project, run_dir, conceal_seed_origin=not args.no_conceal_seed_origin)
     instruction_manifest = None
-    if profile_id == "baseline-claude-code-no-mcp":
+    if profile_runtime_id(profile_id) == "claude-code":
         instruction_manifest = fixture.prepare_claude_project_instructions(project / "repo", run_dir)
     verifier = write_verifier(seq, run_dir, project)
     expected_verifier_hashes = snapshot_verifier_hashes(seq, run_dir, run_dir)
