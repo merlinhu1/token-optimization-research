@@ -2872,6 +2872,16 @@ def docker_command(
     # Keep the network enabled because Codex must reach the model provider. The
     # container boundary is for filesystem/process isolation, not offline replay.
     docker_cmd.append(image)
+    if cmd and cmd[0] == "claude":
+        # The controller-side Claude binary is bind-mounted read-only. Docker
+        # may mark that bind noexec, so copy it into the container filesystem
+        # before invoking it; the bytes and pinned identity remain unchanged.
+        args = shlex.join(cmd[1:])
+        cmd = [
+            "bash",
+            "-lc",
+            f"cp {shlex.quote(str(CLAUDE_CONTAINER_BIN))} /tmp/claude-workflow-bin && chmod 755 /tmp/claude-workflow-bin && exec /tmp/claude-workflow-bin {args}",
+        ]
     docker_cmd.extend(cmd)
     return docker_cmd
 
@@ -2966,11 +2976,16 @@ def check_container_runtime(
             add_mount(smoke_mounts, codex_home, mode="rw")
         smoke_output = run_dir / "docker-smoke-output.txt"
         smoke_program = "claude" if agent_runtime == "claude-code" else "codex"
+        smoke_script = (
+            f"set -euo pipefail; id; python3 --version; git --version; cp {shlex.quote(str(CLAUDE_CONTAINER_BIN))} /tmp/claude-workflow-bin; chmod 755 /tmp/claude-workflow-bin; command -v /tmp/claude-workflow-bin; /tmp/claude-workflow-bin --version"
+            if agent_runtime == "claude-code"
+            else f"set -euo pipefail; id; python3 --version; git --version; command -v {smoke_program}; {smoke_program} --version"
+        )
         smoke_cmd = docker_command(
             [
                 "bash",
                 "-lc",
-                f"set -euo pipefail; id; python3 --version; git --version; command -v {smoke_program}; {smoke_program} --version",
+                smoke_script,
             ],
             image=docker_image,
             cwd=codex_home / "home" if codex_home else ROOT,
