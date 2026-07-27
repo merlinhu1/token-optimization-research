@@ -910,6 +910,7 @@ TOOL_CONFIGS: dict[str, dict[str, Any]] = {
         "mounts": [str(RTK_BIN.parent)],
         "env": {"RTK_TELEMETRY": "0"},
         "claude_features": {"hooks": True},
+        "host_integration_backend": "host",
         "host_integration": {
             "install_commands": [
                 [
@@ -3190,13 +3191,14 @@ def prepare_profile_integration(
         ("install", integration.get("install_commands", []), install_exit_codes),
         ("verify", integration.get("verify_commands", []), verify_exit_codes),
     )
+    integration_backend = str(cfg.get("host_integration_backend") or backend)
     for phase, commands, exits in backend_phases:
         for index, raw_command in enumerate(commands, start=1):
             command = [render_tool_value(part, record, codex_home, cfg) for part in raw_command]
             artifact = run_dir / f"tool-host-{phase}-{index}.txt"
             proc = run_backend(
                 command,
-                backend=backend,
+                backend=integration_backend,
                 docker_image=docker_image,
                 cwd=rel_or_abs(record["target"]["repository_path"]) if record.get("target") else codex_home / "home",
                 env=env,
