@@ -1,0 +1,517 @@
+{
+  "controller_provenance": {
+    "agent_guidance_sha256": "5dc10bb2fac83f0394fc1ee99f6f85cf38897d974cc86809bb8a4fcad2997c5e",
+    "evaluator_prompt_sha256": "4339c5c727e4f5b817b93c0e5a5fe48b40a7d6a6cf24bb20b2afffe319329b0a",
+    "fixture_runner_sha256": "59e50d5f8a84a389883a529fe643740aa0d4036c7df61648d6c8bbca010e2d3d",
+    "matrix_runner_sha256": "74f884b414ec1c7d20ae16cfa63439c930b51b107275210e8e8805b01f87adb9",
+    "workflow_runner_sha256": "9a54add1a816ed992aa33cc4beac41dfa9eded712c588c766a0265b0f982aa10"
+  },
+  "created_at": "2026-08-01T00:00:00+00:00",
+  "date": "2026-08-01",
+  "execution_mode": "prepare-only-no-provider",
+  "failures": [],
+  "lanes": [
+    {
+      "codex_preflight": {
+        "help_exit_code": 0,
+        "hooks_enabled": true,
+        "mcp_servers": [],
+        "missing_cli_surfaces": [],
+        "model": "gpt-5.6-sol",
+        "normal_mode": true,
+        "passed": true,
+        "profile_id": "terminal-rtk-claude-code-hook-v1",
+        "project_instruction_files": {
+          "byte_identical": true,
+          "discovered_as": "CLAUDE.md",
+          "manifest": {
+            "byte_identical": true,
+            "claude_auto_discovery_expected": true,
+            "destination_path": "CLAUDE.md",
+            "destination_sha256": "5dc10bb2fac83f0394fc1ee99f6f85cf38897d974cc86809bb8a4fcad2997c5e",
+            "evaluator_authored_guidance": false,
+            "git_status_policy": "lane-local-git-info-exclude",
+            "materialization": "exact-copy-of-existing-AGENTS.md-guidance",
+            "runtime_id": "claude-code",
+            "source_path": "AGENTS.md",
+            "source_scope": "evaluation-root",
+            "source_sha256": "5dc10bb2fac83f0394fc1ee99f6f85cf38897d974cc86809bb8a4fcad2997c5e"
+          },
+          "passed": true,
+          "source": "AGENTS.md"
+        },
+        "provider_request_made": false,
+        "required_cli_surfaces": [
+          "--output-format",
+          "stream-json",
+          "--model",
+          "--tools",
+          "--resume"
+        ],
+        "runtime_id": "claude-code",
+        "version": "2.1.220 (Claude Code)",
+        "version_exit_code": 0
+      },
+      "host_integration": {
+        "artifact_identities": [],
+        "artifacts": [
+          "sources/evaluations/workflow-sessions/prepare-fastify-lifecycle-sequence-v0--terminal-rtk-claude-code-hook-v1/tool-host-install-1.txt",
+          "sources/evaluations/workflow-sessions/prepare-fastify-lifecycle-sequence-v0--terminal-rtk-claude-code-hook-v1/tool-host-verify-1.txt"
+        ],
+        "controller_install_exit_codes": [],
+        "install_exit_codes": [
+          0
+        ],
+        "missing_required_files": [],
+        "passed": true,
+        "post_install_artifacts": [],
+        "profile_id": "terminal-rtk-claude-code-hook-v1",
+        "required_files": [
+          "/opt/data/eval-workflow-lanes/workflow-matrix-20260801T034953744925Z-p3162025-r0/fastify-lifecycle-sequence-v0--terminal-rtk-claude-code-hook-v1/checkout/sources/evaluations/workflow-sessions/prepare-fastify-lifecycle-sequence-v0--terminal-rtk-claude-code-hook-v1/codex-homes/terminal-rtk-claude-code-hook-v1/claude-config/settings.json",
+          "/opt/data/eval-workflow-lanes/workflow-matrix-20260801T034953744925Z-p3162025-r0/fastify-lifecycle-sequence-v0--terminal-rtk-claude-code-hook-v1/checkout/sources/evaluations/workflow-sessions/prepare-fastify-lifecycle-sequence-v0--terminal-rtk-claude-code-hook-v1/codex-homes/terminal-rtk-claude-code-hook-v1/claude-config/CLAUDE.md",
+          "/opt/data/eval-workflow-lanes/workflow-matrix-20260801T034953744925Z-p3162025-r0/fastify-lifecycle-sequence-v0--terminal-rtk-claude-code-hook-v1/checkout/sources/evaluations/workflow-sessions/prepare-fastify-lifecycle-sequence-v0--terminal-rtk-claude-code-hook-v1/codex-homes/terminal-rtk-claude-code-hook-v1/claude-config/RTK.md"
+        ],
+        "skipped": false,
+        "verify_exit_codes": [
+          0
+        ]
+      },
+      "matrix_lane_log": "/opt/data/eval-workflow-lanes/workflow-matrix-20260801T034953744925Z-p3162025-r0/fastify-lifecycle-sequence-v0--terminal-rtk-claude-code-hook-v1/logs/lane.log",
+      "mcp_handshake": {
+        "attempted": false,
+        "passed": true,
+        "profile_id": "terminal-rtk-claude-code-hook-v1",
+        "required": false,
+        "skipped": true
+      },
+      "prepare_verification": {
+        "composite_seed_delivery": {
+          "composite_diff_sha256": "ac4eab923081641fc398b042626ce32dbfb1f021424624279fcdfa8713af84c2",
+          "merged_task_orders": [
+            1,
+            2,
+            3
+          ],
+          "mode": "preseeded-composite",
+          "model_concealed_paths": [],
+          "model_concealed_paths_present": [],
+          "model_repo_seed_or_verifier_assets": [],
+          "passed": true,
+          "preseeded_task_orders": [
+            1,
+            2,
+            3
+          ]
+        },
+        "composite_seed_delivery_passed": true,
+        "concealment": {
+          "fixed_snapshot_object_present": false,
+          "head": "242b177ca3d9d6738d14dba3d7efb94858014d48",
+          "head_is_root": true,
+          "leaked_git_admin_paths": [],
+          "model_concealed_paths": [],
+          "model_concealed_paths_present": [],
+          "order": 1,
+          "passed": true,
+          "reachable_commit_count": 1,
+          "reflog_oids": [
+            "242b177ca3d9d6738d14dba3d7efb94858014d48"
+          ],
+          "remotes": [],
+          "unreachable_objects": [],
+          "working_tree_clean": true
+        },
+        "concealment_passed": true,
+        "controller_verification": "final-only",
+        "diff_basis": "ordered-task-checkpoints-plus-final-cumulative-diff",
+        "fixed_composite_qualification": {
+          "composite_seed_diff_hash_matches": true,
+          "composite_seed_diff_sha256": "ac4eab923081641fc398b042626ce32dbfb1f021424624279fcdfa8713af84c2",
+          "composite_seed_merge_zero": true,
+          "composite_seeded_verifiers_nonzero": true,
+          "full_fixed_cumulative_verifier_zero": true,
+          "passed": true,
+          "path": "sources/evaluations/fixtures/medium/fastify-fastify/qualification-lifecycle-v0-baseline-v3.json",
+          "runtime_composite_seed_diff_sha256": "ac4eab923081641fc398b042626ce32dbfb1f021424624279fcdfa8713af84c2"
+        },
+        "fixed_snapshot_oid": "94bcbcc6e2ef3b8e8f8e8797fe551ccbe7b942fd",
+        "future_seed_regressions_visible": true,
+        "mode": "preseeded-composite",
+        "passed": true,
+        "pending_seed_orders": [],
+        "preseeded_task_orders": [
+          1,
+          2,
+          3
+        ],
+        "seed_patches_model_visible": false,
+        "stage_seed_delivery": {
+          "composite_diff_sha256": "ac4eab923081641fc398b042626ce32dbfb1f021424624279fcdfa8713af84c2",
+          "merged_task_orders": [
+            1,
+            2,
+            3
+          ],
+          "mode": "preseeded-composite",
+          "model_concealed_paths": [],
+          "model_concealed_paths_present": [],
+          "model_repo_seed_or_verifier_assets": [],
+          "passed": true,
+          "preseeded_task_orders": [
+            1,
+            2,
+            3
+          ]
+        }
+      },
+      "prepared": true,
+      "profile_id": "terminal-rtk-claude-code-hook-v1",
+      "protocol_path": "sources/evaluations/protocols/fastify-lifecycle-sequence-v0-terminal-rtk-claude-code-hook-v1-ca41d652d0bc.json",
+      "protocol_sha256": "4db7bbe346e59c6fdd9b7d9ff91aeb10bbed1949bd3b797b96bb22eeaaca3728",
+      "sequence_id": "fastify-lifecycle-sequence-v0",
+      "session_id": "prepare-fastify-lifecycle-sequence-v0--terminal-rtk-claude-code-hook-v1",
+      "tool_warmup_exit_code": 0
+    },
+    {
+      "codex_preflight": {
+        "help_exit_code": 0,
+        "hooks_enabled": true,
+        "mcp_servers": [],
+        "missing_cli_surfaces": [],
+        "model": "gpt-5.6-sol",
+        "normal_mode": true,
+        "passed": true,
+        "profile_id": "terminal-rtk-claude-code-hook-v1",
+        "project_instruction_files": {
+          "byte_identical": true,
+          "discovered_as": "CLAUDE.md",
+          "manifest": {
+            "byte_identical": true,
+            "claude_auto_discovery_expected": true,
+            "destination_path": "CLAUDE.md",
+            "destination_sha256": "5dc10bb2fac83f0394fc1ee99f6f85cf38897d974cc86809bb8a4fcad2997c5e",
+            "evaluator_authored_guidance": false,
+            "git_status_policy": "lane-local-git-info-exclude",
+            "materialization": "exact-copy-of-existing-AGENTS.md-guidance",
+            "runtime_id": "claude-code",
+            "source_path": "AGENTS.md",
+            "source_scope": "evaluation-root",
+            "source_sha256": "5dc10bb2fac83f0394fc1ee99f6f85cf38897d974cc86809bb8a4fcad2997c5e"
+          },
+          "passed": true,
+          "source": "AGENTS.md"
+        },
+        "provider_request_made": false,
+        "required_cli_surfaces": [
+          "--output-format",
+          "stream-json",
+          "--model",
+          "--tools",
+          "--resume"
+        ],
+        "runtime_id": "claude-code",
+        "version": "2.1.220 (Claude Code)",
+        "version_exit_code": 0
+      },
+      "host_integration": {
+        "artifact_identities": [],
+        "artifacts": [
+          "sources/evaluations/workflow-sessions/prepare-beets-lifecycle-sequence-v0--terminal-rtk-claude-code-hook-v1/tool-host-install-1.txt",
+          "sources/evaluations/workflow-sessions/prepare-beets-lifecycle-sequence-v0--terminal-rtk-claude-code-hook-v1/tool-host-verify-1.txt"
+        ],
+        "controller_install_exit_codes": [],
+        "install_exit_codes": [
+          0
+        ],
+        "missing_required_files": [],
+        "passed": true,
+        "post_install_artifacts": [],
+        "profile_id": "terminal-rtk-claude-code-hook-v1",
+        "required_files": [
+          "/opt/data/eval-workflow-lanes/workflow-matrix-20260801T034953744925Z-p3162025-r0/beets-lifecycle-sequence-v0--terminal-rtk-claude-code-hook-v1/checkout/sources/evaluations/workflow-sessions/prepare-beets-lifecycle-sequence-v0--terminal-rtk-claude-code-hook-v1/codex-homes/terminal-rtk-claude-code-hook-v1/claude-config/settings.json",
+          "/opt/data/eval-workflow-lanes/workflow-matrix-20260801T034953744925Z-p3162025-r0/beets-lifecycle-sequence-v0--terminal-rtk-claude-code-hook-v1/checkout/sources/evaluations/workflow-sessions/prepare-beets-lifecycle-sequence-v0--terminal-rtk-claude-code-hook-v1/codex-homes/terminal-rtk-claude-code-hook-v1/claude-config/CLAUDE.md",
+          "/opt/data/eval-workflow-lanes/workflow-matrix-20260801T034953744925Z-p3162025-r0/beets-lifecycle-sequence-v0--terminal-rtk-claude-code-hook-v1/checkout/sources/evaluations/workflow-sessions/prepare-beets-lifecycle-sequence-v0--terminal-rtk-claude-code-hook-v1/codex-homes/terminal-rtk-claude-code-hook-v1/claude-config/RTK.md"
+        ],
+        "skipped": false,
+        "verify_exit_codes": [
+          0
+        ]
+      },
+      "matrix_lane_log": "/opt/data/eval-workflow-lanes/workflow-matrix-20260801T034953744925Z-p3162025-r0/beets-lifecycle-sequence-v0--terminal-rtk-claude-code-hook-v1/logs/lane.log",
+      "mcp_handshake": {
+        "attempted": false,
+        "passed": true,
+        "profile_id": "terminal-rtk-claude-code-hook-v1",
+        "required": false,
+        "skipped": true
+      },
+      "prepare_verification": {
+        "composite_seed_delivery": {
+          "composite_diff_sha256": "2586b9a96d627ce22e226621db78f1c7636e265318dc0e45e1424778209217ae",
+          "merged_task_orders": [
+            1,
+            2,
+            3
+          ],
+          "mode": "preseeded-composite",
+          "model_concealed_paths": [],
+          "model_concealed_paths_present": [],
+          "model_repo_seed_or_verifier_assets": [],
+          "passed": true,
+          "preseeded_task_orders": [
+            1,
+            2,
+            3
+          ]
+        },
+        "composite_seed_delivery_passed": true,
+        "concealment": {
+          "fixed_snapshot_object_present": false,
+          "head": "f216de1855c4c088f72c33c24f7662ffcf918e8f",
+          "head_is_root": true,
+          "leaked_git_admin_paths": [],
+          "model_concealed_paths": [],
+          "model_concealed_paths_present": [],
+          "order": 1,
+          "passed": true,
+          "reachable_commit_count": 1,
+          "reflog_oids": [
+            "f216de1855c4c088f72c33c24f7662ffcf918e8f"
+          ],
+          "remotes": [],
+          "unreachable_objects": [],
+          "working_tree_clean": true
+        },
+        "concealment_passed": true,
+        "controller_verification": "final-only",
+        "diff_basis": "ordered-task-checkpoints-plus-final-cumulative-diff",
+        "fixed_composite_qualification": {
+          "composite_seed_diff_hash_matches": true,
+          "composite_seed_diff_sha256": "2586b9a96d627ce22e226621db78f1c7636e265318dc0e45e1424778209217ae",
+          "composite_seed_merge_zero": true,
+          "composite_seeded_verifiers_nonzero": true,
+          "full_fixed_cumulative_verifier_zero": true,
+          "passed": true,
+          "path": "sources/evaluations/fixtures/medium/beetbox-beets/qualification-lifecycle-v0-baseline-v4.json",
+          "runtime_composite_seed_diff_sha256": "2586b9a96d627ce22e226621db78f1c7636e265318dc0e45e1424778209217ae"
+        },
+        "fixed_snapshot_oid": "9acb1ecff6c7ee0a1e83e3b983c94792345712c5",
+        "future_seed_regressions_visible": true,
+        "mode": "preseeded-composite",
+        "passed": true,
+        "pending_seed_orders": [],
+        "preseeded_task_orders": [
+          1,
+          2,
+          3
+        ],
+        "seed_patches_model_visible": false,
+        "stage_seed_delivery": {
+          "composite_diff_sha256": "2586b9a96d627ce22e226621db78f1c7636e265318dc0e45e1424778209217ae",
+          "merged_task_orders": [
+            1,
+            2,
+            3
+          ],
+          "mode": "preseeded-composite",
+          "model_concealed_paths": [],
+          "model_concealed_paths_present": [],
+          "model_repo_seed_or_verifier_assets": [],
+          "passed": true,
+          "preseeded_task_orders": [
+            1,
+            2,
+            3
+          ]
+        }
+      },
+      "prepared": true,
+      "profile_id": "terminal-rtk-claude-code-hook-v1",
+      "protocol_path": "sources/evaluations/protocols/beets-lifecycle-sequence-v0-terminal-rtk-claude-code-hook-v1-97ee44469ca0.json",
+      "protocol_sha256": "f2ef5c0680bb3ede21daf0234ea4c7701799c797efa1b8bd4d7500f68b4db3d9",
+      "sequence_id": "beets-lifecycle-sequence-v0",
+      "session_id": "prepare-beets-lifecycle-sequence-v0--terminal-rtk-claude-code-hook-v1",
+      "tool_warmup_exit_code": 0
+    },
+    {
+      "codex_preflight": {
+        "help_exit_code": 0,
+        "hooks_enabled": true,
+        "mcp_servers": [],
+        "missing_cli_surfaces": [],
+        "model": "gpt-5.6-sol",
+        "normal_mode": true,
+        "passed": true,
+        "profile_id": "terminal-rtk-claude-code-hook-v1",
+        "project_instruction_files": {
+          "byte_identical": true,
+          "discovered_as": "CLAUDE.md",
+          "manifest": {
+            "byte_identical": true,
+            "claude_auto_discovery_expected": true,
+            "destination_path": "CLAUDE.md",
+            "destination_sha256": "5dc10bb2fac83f0394fc1ee99f6f85cf38897d974cc86809bb8a4fcad2997c5e",
+            "evaluator_authored_guidance": false,
+            "git_status_policy": "lane-local-git-info-exclude",
+            "materialization": "exact-copy-of-existing-AGENTS.md-guidance",
+            "runtime_id": "claude-code",
+            "source_path": "AGENTS.md",
+            "source_scope": "evaluation-root",
+            "source_sha256": "5dc10bb2fac83f0394fc1ee99f6f85cf38897d974cc86809bb8a4fcad2997c5e"
+          },
+          "passed": true,
+          "source": "AGENTS.md"
+        },
+        "provider_request_made": false,
+        "required_cli_surfaces": [
+          "--output-format",
+          "stream-json",
+          "--model",
+          "--tools",
+          "--resume"
+        ],
+        "runtime_id": "claude-code",
+        "version": "2.1.220 (Claude Code)",
+        "version_exit_code": 0
+      },
+      "host_integration": {
+        "artifact_identities": [],
+        "artifacts": [
+          "sources/evaluations/workflow-sessions/prepare-terraform-lifecycle-sequence-v0--terminal-rtk-claude-code-hook-v1/tool-host-install-1.txt",
+          "sources/evaluations/workflow-sessions/prepare-terraform-lifecycle-sequence-v0--terminal-rtk-claude-code-hook-v1/tool-host-verify-1.txt"
+        ],
+        "controller_install_exit_codes": [],
+        "install_exit_codes": [
+          0
+        ],
+        "missing_required_files": [],
+        "passed": true,
+        "post_install_artifacts": [],
+        "profile_id": "terminal-rtk-claude-code-hook-v1",
+        "required_files": [
+          "/opt/data/eval-workflow-lanes/workflow-matrix-20260801T034953744925Z-p3162025-r0/terraform-lifecycle-sequence-v0--terminal-rtk-claude-code-hook-v1/checkout/sources/evaluations/workflow-sessions/prepare-terraform-lifecycle-sequence-v0--terminal-rtk-claude-code-hook-v1/codex-homes/terminal-rtk-claude-code-hook-v1/claude-config/settings.json",
+          "/opt/data/eval-workflow-lanes/workflow-matrix-20260801T034953744925Z-p3162025-r0/terraform-lifecycle-sequence-v0--terminal-rtk-claude-code-hook-v1/checkout/sources/evaluations/workflow-sessions/prepare-terraform-lifecycle-sequence-v0--terminal-rtk-claude-code-hook-v1/codex-homes/terminal-rtk-claude-code-hook-v1/claude-config/CLAUDE.md",
+          "/opt/data/eval-workflow-lanes/workflow-matrix-20260801T034953744925Z-p3162025-r0/terraform-lifecycle-sequence-v0--terminal-rtk-claude-code-hook-v1/checkout/sources/evaluations/workflow-sessions/prepare-terraform-lifecycle-sequence-v0--terminal-rtk-claude-code-hook-v1/codex-homes/terminal-rtk-claude-code-hook-v1/claude-config/RTK.md"
+        ],
+        "skipped": false,
+        "verify_exit_codes": [
+          0
+        ]
+      },
+      "matrix_lane_log": "/opt/data/eval-workflow-lanes/workflow-matrix-20260801T034953744925Z-p3162025-r0/terraform-lifecycle-sequence-v0--terminal-rtk-claude-code-hook-v1/logs/lane.log",
+      "mcp_handshake": {
+        "attempted": false,
+        "passed": true,
+        "profile_id": "terminal-rtk-claude-code-hook-v1",
+        "required": false,
+        "skipped": true
+      },
+      "prepare_verification": {
+        "composite_seed_delivery": {
+          "composite_diff_sha256": "48f2006b0d10fc1d365437b282e77ae856479e7b744dbce4f78d9b62b16e9842",
+          "merged_task_orders": [
+            1,
+            2,
+            3
+          ],
+          "mode": "preseeded-composite",
+          "model_concealed_paths": [],
+          "model_concealed_paths_present": [],
+          "model_repo_seed_or_verifier_assets": [],
+          "passed": true,
+          "preseeded_task_orders": [
+            1,
+            2,
+            3
+          ]
+        },
+        "composite_seed_delivery_passed": true,
+        "concealment": {
+          "fixed_snapshot_object_present": false,
+          "head": "eb6f894aa7557c7f0612b92d33485c56adf05acf",
+          "head_is_root": true,
+          "leaked_git_admin_paths": [],
+          "model_concealed_paths": [],
+          "model_concealed_paths_present": [],
+          "order": 1,
+          "passed": true,
+          "reachable_commit_count": 1,
+          "reflog_oids": [
+            "eb6f894aa7557c7f0612b92d33485c56adf05acf"
+          ],
+          "remotes": [],
+          "unreachable_objects": [],
+          "working_tree_clean": true
+        },
+        "concealment_passed": true,
+        "controller_verification": "final-only",
+        "diff_basis": "ordered-task-checkpoints-plus-final-cumulative-diff",
+        "fixed_composite_qualification": {
+          "composite_seed_diff_hash_matches": true,
+          "composite_seed_diff_sha256": "48f2006b0d10fc1d365437b282e77ae856479e7b744dbce4f78d9b62b16e9842",
+          "composite_seed_merge_zero": true,
+          "composite_seeded_verifiers_nonzero": true,
+          "full_fixed_cumulative_verifier_zero": true,
+          "passed": true,
+          "path": "sources/evaluations/fixtures/large/hashicorp-terraform/qualification-lifecycle-v0-baseline-v4.json",
+          "runtime_composite_seed_diff_sha256": "48f2006b0d10fc1d365437b282e77ae856479e7b744dbce4f78d9b62b16e9842"
+        },
+        "fixed_snapshot_oid": "e02391ad384c9c38f1d7f40b853c0d2297348094",
+        "future_seed_regressions_visible": true,
+        "mode": "preseeded-composite",
+        "passed": true,
+        "pending_seed_orders": [],
+        "preseeded_task_orders": [
+          1,
+          2,
+          3
+        ],
+        "seed_patches_model_visible": false,
+        "stage_seed_delivery": {
+          "composite_diff_sha256": "48f2006b0d10fc1d365437b282e77ae856479e7b744dbce4f78d9b62b16e9842",
+          "merged_task_orders": [
+            1,
+            2,
+            3
+          ],
+          "mode": "preseeded-composite",
+          "model_concealed_paths": [],
+          "model_concealed_paths_present": [],
+          "model_repo_seed_or_verifier_assets": [],
+          "passed": true,
+          "preseeded_task_orders": [
+            1,
+            2,
+            3
+          ]
+        }
+      },
+      "prepared": true,
+      "profile_id": "terminal-rtk-claude-code-hook-v1",
+      "protocol_path": "sources/evaluations/protocols/terraform-lifecycle-sequence-v0-terminal-rtk-claude-code-hook-v1-5d070a6c28c8.json",
+      "protocol_sha256": "e30fc0eb99aa78389638ace0197541c9b0a2894b12048a72f64e12d3ea3bff77",
+      "sequence_id": "terraform-lifecycle-sequence-v0",
+      "session_id": "prepare-terraform-lifecycle-sequence-v0--terminal-rtk-claude-code-hook-v1",
+      "tool_warmup_exit_code": 0
+    }
+  ],
+  "matrix_run_root": "/opt/data/eval-workflow-lanes/workflow-matrix-20260801T034953744925Z-p3162025-r0",
+  "no_provider": true,
+  "profiles": [
+    "terminal-rtk-claude-code-hook-v1"
+  ],
+  "provider_calls": 0,
+  "purpose": "Provider-free qualification of the Claude Code RTK treatment using the official RTK Claude PreToolUse hook and global RTK instruction layer before any provider-backed evaluation.",
+  "schema_version": 1,
+  "sequences": [
+    "fastify-lifecycle-sequence-v0",
+    "beets-lifecycle-sequence-v0",
+    "terraform-lifecycle-sequence-v0"
+  ],
+  "summary": {
+    "expected": 3,
+    "failed": 0,
+    "passed": 3,
+    "provider_backed_sessions_created": 0
+  }
+}
