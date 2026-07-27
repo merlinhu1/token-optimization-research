@@ -1,6 +1,6 @@
 {
   "protocol_schema_version": 3,
-  "protocol_id": "beets-lifecycle-sequence-v0-terminal-rtk-claude-code-hook-v1-0d397f980c82",
+  "protocol_id": "beets-lifecycle-sequence-v0-terminal-rtk-claude-code-hook-v1-97ee44469ca0",
   "status": "frozen-ready-not-run",
   "outcome": "Frozen terminal-rtk-claude-code-hook-v1 protocol for beets-lifecycle-sequence-v0; no provider/model run has occurred.",
   "frozen_at": "2026-07-22",
@@ -41,7 +41,7 @@
     "model": "gpt-5.6-sol",
     "model_condition_id": "claude-code-openrouter-gpt-5-6-sol-high",
     "reasoning_effort": "high",
-    "command": "python3 scripts/run_claude_code_workflow_model_condition.py --workflow-model-condition-id claude-code-openrouter-gpt-5-6-sol-high --workflow-model gpt-5.6-sol --workflow-reasoning-effort high --sequence-id beets-lifecycle-sequence-v0 --profile-id terminal-rtk-claude-code-hook-v1 --timeout-per-task 3600 --protocol sources/evaluations/protocols/beets-lifecycle-sequence-v0-terminal-rtk-claude-code-hook-v1-0d397f980c82.json --docker-image token-eval-codex:latest"
+    "command": "python3 scripts/run_claude_code_workflow_model_condition.py --workflow-model-condition-id claude-code-openrouter-gpt-5-6-sol-high --workflow-model gpt-5.6-sol --workflow-reasoning-effort high --sequence-id beets-lifecycle-sequence-v0 --profile-id terminal-rtk-claude-code-hook-v1 --timeout-per-task 3600 --protocol sources/evaluations/protocols/beets-lifecycle-sequence-v0-terminal-rtk-claude-code-hook-v1-97ee44469ca0.json --docker-image token-eval-codex:latest"
   },
   "token_accounting_boundary": {
     "fields": [
@@ -246,7 +246,7 @@
     }
   },
   "selected_execution": {
-    "descriptor_sha256": "044dd6f2c7b42aa80e4143e2a278a599991ab20d1ce727471ee672c69eb28e62",
+    "descriptor_sha256": "ef610cf06e69df811fd761aeda3e47535cc1db3ba19f20d6f085f4235c7f656b",
     "descriptor": {
       "version": "execution-condition-v1",
       "sequence_id": "beets-lifecycle-sequence-v0",
@@ -268,11 +268,12 @@
           "MCP servers",
           "other token-saving tools"
         ],
-        "registry_entry_sha256": "5ccd60da5c754f86ef41365a9213bce6e22fd7e520112df49a7e9baf93bf4443",
+        "registry_entry_sha256": "d69ef30aff2acb7dd942f6f6344f4e57fbf971d8856e59b36216b2b9c60218e6",
         "registry_entry": {
           "id": "terminal-rtk-claude-code-hook-v1",
           "profile_type": "individual_tool",
           "objective_scope": "individual_tool_effectiveness",
+          "substrate": "claude-code",
           "status": "screening-shortlist",
           "enabled_surfaces": [
             "claude-code-pre-tool-use-hook",
@@ -450,10 +451,10 @@
           "provider_access": true,
           "model_shell_network_access": false,
           "model_shell_enforcement": "seccomp denies AF_INET and AF_INET6 socket creation for the shell process and descendants",
-          "codex_web_search": "disabled",
+          "agent_web_tools": "disabled-by-permission",
           "external_retrieval_audit": "fail-closed"
         },
-        "isolation_policy": "fresh lane-specific Codex home/tool data; provider-only network with model shell and Codex web search disabled; sequential one-task prompt delivery; controller seed/verifier scripts excluded while declared model-visible acceptance tests are retained",
+        "isolation_policy": "fresh lane-specific agent home/XDG state; provider-only network with model shell and agent web tools disabled; sequential one-task prompt delivery; controller seed/verifier scripts excluded while declared model-visible acceptance tests are retained",
         "agent_runtime_id": "claude-code",
         "model_condition": {
           "id": "claude-code-openrouter-gpt-5-6-sol-high",
