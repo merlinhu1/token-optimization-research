@@ -1,0 +1,35 @@
+{
+  "schema_version": 1,
+  "campaign_id": "current-low-complexity-beets-r3-replacement-20260728",
+  "authorized_by_owner_message_id": "1531806010350633101",
+  "authorized_on": "2026-07-28",
+  "paid_baseline_replication_authorized": true,
+  "authorized_replicate_indexes": [
+    3
+  ],
+  "sequence_order": [
+    "beets-lifecycle-sequence-v0"
+  ],
+  "serialization_required": true,
+  "allowed_paid_baseline_runs": 1,
+  "allowed_model_turns": 3,
+  "model_condition": {
+    "id": "codex-openai-gpt-5-6-sol-high",
+    "model": "gpt-5.6-sol",
+    "reasoning_effort": "high"
+  },
+  "first_valid_sample_policy": true,
+  "rerun_after_attempt_receipt": false,
+  "provider_calls": 0,
+  "provider_tokens": 0,
+  "sequences": [
+    {
+      "sequence_id": "beets-lifecycle-sequence-v0",
+      "task_family_generation": "baseline-v4",
+      "protocol_path": "sources/evaluations/protocols/beets-lifecycle-sequence-v0-baseline-bare-codex-de39716463bf.json",
+      "protocol_sha256": "cf6d53501d23e3f5f62d1c6eb53f7cad8f6c00559946c5e5d315fb5266007ba0",
+      "baseline_pool_fingerprint": "fcc8438d2077"
+    }
+  ],
+  "notes": "Owner message 1531806010350633101 authorizes exactly one new Beets-only paid replacement identity after the immutable r2 attempt failed before provider execution. This authority does not reopen Beets r2 and does not authorize Fastify r3 or Terraform r3."
+}

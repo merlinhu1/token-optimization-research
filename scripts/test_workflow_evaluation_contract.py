@@ -4623,7 +4623,7 @@ class BaselineV3LowComplexityContractTest(unittest.TestCase):
                 self.assertNotIn("Only an unoccupied designated baseline pilot identity may run", runbook)
         else:
             self.assertIn("Paid pilot execution is not authorized", runbook)
-        for replicate_index in (1, 2):
+        for replicate_index in (1, 2, 3):
             runnable = [
                 sequence
                 for sequence in document["sequences"]
@@ -5686,7 +5686,7 @@ class BaselineV3LowComplexityContractTest(unittest.TestCase):
             prepare_only=False,
             profile_id="baseline-bare-codex",
             sequence_id=sequence["id"],
-            replicate_index=3,
+            replicate_index=4,
         )
         with mock.patch.object(runner, "load_sequence", return_value=sequence), \
              mock.patch.object(runner, "acquire_provider_production_lock") as acquire_lock, \
@@ -5707,13 +5707,37 @@ class BaselineV3LowComplexityContractTest(unittest.TestCase):
                 with self.assertRaisesRegex(ValueError, "not authorized"):
                     matrix.main([
                         "beets-lifecycle-sequence-v0",
-                        "--replicate-index", "3",
+                        "--replicate-index", "4",
                         "--lane-root", str(lane_root),
                     ])
             self.assertFalse(lane_root.exists())
             acquire_lock.assert_not_called()
             reserve_attempt.assert_not_called()
             run_lane.assert_not_called()
+
+    def test_beets_r3_replacement_authority_opens_only_one_unoccupied_identity(self) -> None:
+        sequences = {
+            item["id"]: item
+            for item in json.loads((ROOT / "data/workflow-task-sequences.json").read_text())["sequences"]
+        }
+        authority = runner.load_beets_r3_replacement_authority(ROOT)
+        self.assertEqual(authority["authorized_by_owner_message_id"], "1531806010350633101")
+        self.assertEqual(authority["authorized_replicate_indexes"], [3])
+        self.assertEqual(authority["allowed_paid_baseline_runs"], 1)
+        self.assertEqual(authority["allowed_model_turns"], 3)
+        binding, receipt = runner.baseline_replication_binding(
+            sequences["beets-lifecycle-sequence-v0"], 3, ROOT
+        )
+        self.assertEqual(binding["sequence_id"], "beets-lifecycle-sequence-v0")
+        self.assertEqual(receipt.relative_to(ROOT).as_posix(), runner.BEETS_R3_REPLACEMENT_ATTEMPT_REL)
+        self.assertFalse(receipt.exists())
+        allowed, reason = runner.baseline_v2_pilot_run_gate(
+            sequences["beets-lifecycle-sequence-v0"], ROOT, 3
+        )
+        self.assertTrue(allowed, reason)
+        for sequence_id in ("fastify-lifecycle-sequence-v0", "terraform-lifecycle-sequence-v0"):
+            with self.assertRaisesRegex(ValueError, "covers only"):
+                runner.baseline_replication_binding(sequences[sequence_id], 3, ROOT)
 
     def test_strict_replication_authority_rejects_every_decision_field_mutation(self) -> None:
         source_authority = ROOT / runner.BASELINE_REPLICATION_AUTHORITY_REL
@@ -5757,6 +5781,51 @@ class BaselineV3LowComplexityContractTest(unittest.TestCase):
                         "invalid authorization, scope, budget, model, or policy|stale nested binding",
                     ):
                         runner.load_current_baseline_replication_authority(root)
+
+    def test_beets_r3_replacement_authority_rejects_scope_budget_and_binding_mutation(self) -> None:
+        source_authority = ROOT / runner.BEETS_R3_REPLACEMENT_AUTHORITY_REL
+        original = json.loads(source_authority.read_text())
+        beets = runner.load_sequence("beets-lifecycle-sequence-v0")
+        frozen_identity, frozen_protocol = runner.current_baseline_v2_protocol(
+            beets, beets["mistake_gate"], ROOT
+        )
+        mutations = {
+            "owner": lambda doc: doc.__setitem__("authorized_by_owner_message_id", "wrong"),
+            "sequence": lambda doc: doc.__setitem__("sequence_order", ["fastify-lifecycle-sequence-v0"]),
+            "index": lambda doc: doc.__setitem__("authorized_replicate_indexes", [2]),
+            "index-bool": lambda doc: doc.__setitem__("authorized_replicate_indexes", [True]),
+            "runs": lambda doc: doc.__setitem__("allowed_paid_baseline_runs", 2),
+            "turns": lambda doc: doc.__setitem__("allowed_model_turns", 6),
+            "serialization": lambda doc: doc.__setitem__("serialization_required", False),
+            "rerun": lambda doc: doc.__setitem__("rerun_after_attempt_receipt", True),
+            "provider": lambda doc: doc.__setitem__("provider_tokens", 1),
+            "binding": lambda doc: doc["sequences"][0].__setitem__("protocol_sha256", "0" * 64),
+        }
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            authority_path = root / runner.BEETS_R3_REPLACEMENT_AUTHORITY_REL
+            authority_path.parent.mkdir(parents=True)
+            sequence_path = root / "data/workflow-task-sequences.json"
+            sequence_path.parent.mkdir(parents=True)
+            shutil.copy2(ROOT / "data/workflow-task-sequences.json", sequence_path)
+            shutil.copytree(
+                ROOT / "sources/evaluations/protocols",
+                root / "sources/evaluations/protocols",
+            )
+            for label, mutate in mutations.items():
+                with self.subTest(label=label):
+                    changed = copy.deepcopy(original)
+                    mutate(changed)
+                    authority_path.write_text(json.dumps(changed, indent=2) + "\n")
+                    with mock.patch.object(
+                        runner,
+                        "current_baseline_v2_protocol",
+                        return_value=(frozen_identity, frozen_protocol),
+                    ), self.assertRaisesRegex(
+                        ValueError,
+                        "invalid authorization, scope, budget, model, or policy|stale nested binding",
+                    ):
+                        runner.load_beets_r3_replacement_authority(root)
 
     def test_real_matrix_paid_branch_rejects_mutated_authority_before_lane_root(self) -> None:
         probe_context = published_unoccupied_probe_worktree()
@@ -5866,7 +5935,9 @@ class BaselineV3LowComplexityContractTest(unittest.TestCase):
                 else:
                     self.assertTrue(gate_allowed, gate_reason)
                 receipts.add(receipt)
-            self.assertFalse(runner.baseline_v2_pilot_run_gate(sequence, ROOT, 3)[0])
+            r3_allowed = runner.baseline_v2_pilot_run_gate(sequence, ROOT, 3)[0]
+            self.assertEqual(r3_allowed, sequence["id"] == "beets-lifecycle-sequence-v0")
+            self.assertFalse(runner.baseline_v2_pilot_run_gate(sequence, ROOT, 4)[0])
         self.assertEqual(len(receipts), 6)
 
     def test_v4_canonical_protocol_identity_ignores_noncausal_provenance_hashes(self) -> None:
