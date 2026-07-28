@@ -1,0 +1,75 @@
+{
+  "schema_version": 1,
+  "provider_calls": 0,
+  "provider_tokens": 0,
+  "source_matrix_summary": "/opt/data/eval-workflow-lanes/workflow-matrix-20260728T140706909793Z-p3249263-r0/matrix-summary.json",
+  "source_session_id": "baseline-terraform-20260728-p-5811b463c1e9-r0",
+  "source_lane_exit_code": 0,
+  "source_matrix_rolled_back_after_validation_failure": true,
+  "recovery_reason": "post-merge tests encoded only the partial V4 pilot state; no provider rerun",
+  "merge": {
+    "merged_session_count": 1,
+    "copied_artifact_count": 1,
+    "merged_session_ids": [
+      "baseline-terraform-20260728-p-5811b463c1e9-r0"
+    ],
+    "copied_artifacts": [
+      "sources/evaluations/workflow-sessions/baseline-terraform-20260728-p-5811b463c1e9-r0"
+    ],
+    "registry_replacement_attempted": true,
+    "rejected_session_ids": [],
+    "rejected_lane_errors": []
+  },
+  "published_comparisons": [],
+  "validation": {
+    "passed": true,
+    "results": [
+      {
+        "command": [
+          "/opt/hermes/.venv/bin/python3",
+          "scripts/validate_repository.py"
+        ],
+        "exit_code": 0,
+        "output": "/opt/data/eval-workflow-lanes/workflow-matrix-20260728T140706909793Z-p3249263-r0/publication-recovery-20260728/validation-1-opt-hermes-.venv-bin-python3.txt"
+      },
+      {
+        "command": [
+          "/opt/hermes/.venv/bin/python3",
+          "scripts/test_workflow_evaluation_contract.py"
+        ],
+        "exit_code": 0,
+        "output": "/opt/data/eval-workflow-lanes/workflow-matrix-20260728T140706909793Z-p3249263-r0/publication-recovery-20260728/validation-2-opt-hermes-.venv-bin-python3.txt"
+      },
+      {
+        "command": [
+          "git",
+          "diff",
+          "--check"
+        ],
+        "exit_code": 0,
+        "output": "/opt/data/eval-workflow-lanes/workflow-matrix-20260728T140706909793Z-p3249263-r0/publication-recovery-20260728/validation-3-git.txt"
+      },
+      {
+        "command": [
+          "/opt/data/.local/bin/truthmark",
+          "check",
+          "--json"
+        ],
+        "exit_code": 0,
+        "output": "/opt/data/eval-workflow-lanes/workflow-matrix-20260728T140706909793Z-p3249263-r0/publication-recovery-20260728/validation-4-opt-data-.local-bin-truthmark.txt"
+      },
+      {
+        "command": [
+          "/opt/data/.local/bin/truthmark",
+          "index",
+          "--json"
+        ],
+        "exit_code": 0,
+        "output": "/opt/data/eval-workflow-lanes/workflow-matrix-20260728T140706909793Z-p3249263-r0/publication-recovery-20260728/validation-5-opt-data-.local-bin-truthmark.txt"
+      }
+    ]
+  },
+  "authoritative_outputs_complete": true,
+  "execution_passed": true,
+  "accepted": true
+}

@@ -1,0 +1,93 @@
+## Audit verdict
+
+- **Terraform Baseline V4 eight-category zero-incident gate: PASS**
+- **Controller-publication disposition: FAIL / rolled back**
+  - **1 unique controller state-transition incident**
+  - **3 failing contract assertions**
+  - This publication incident is separate from—and does not increment—the eight model-trajectory fields.
+- The paid identity is occupied; **no provider rerun is allowed or needed**.
+
+Audit was frozen to commit `9b9e4d27a6bbc8eedde76f467e95d42274c492d0`, tree `65836934e56355d548d930016501963427304ae4`.
+
+### Exact eight-field result
+
+| Baseline V4 field | Count |
+|---|---:|
+| `observed_unique_model_caused_incidents` | **0** |
+| `observed_corrected_implementation_mistakes` | **0** |
+| `observed_unresolved_defects` | **0** |
+| `observed_prohibited_operations` | **0** |
+| `observed_unnecessary_exploration_incidents` | **0** |
+| `observed_model_caused_failed_commands` | **0** |
+| `observed_code_rework_events` | **0** |
+| `observed_verifier_or_environment_failures` | **0** |
+
+These are the exact fields defined by `sources/evaluations/audits/baseline-v4-pilot-zero-mistake.json:56-63`.
+
+## Trajectory findings
+
+- **3 turns**, one continuous thread: `019fa90d-a705-7430-a061-2e7873d1be37`.
+- **21 provider events**, **0 non-JSON lines**.
+- **3 command starts**, **3 completions**, all exit `0`.
+- **0 retries**, **0 extra commands**, **0 failed commands**.
+- Prompt fenced payloads matched executed `bash -lc` payloads byte-for-byte:
+
+| Task | Prompt/event records | Payload SHA-256 | Exact |
+|---|---|---|---|
+| 1 | records 43 / 35 | `a142cdd6cbc4ee83550a36bfc899ef972142d0b1d233c5c31c001427025183a4` | yes |
+| 2 | records 44 / 38 | `a6bde665c2472706d4eceef6d11c500cf42fd4a56cf4327709793414f45bf800` | yes |
+| 3 | records 45 / 41 | `c1477f9e2cd9a5187f74f6ec1e5ff11ed42aa5b1bc33fbe521940087b88d6dd4` | yes |
+
+Citations: `evidence.jsonl.gz` records 35/38/41 events 4–5 and records 43–45 fenced blocks.
+
+- Cumulative checkpoint paths were exactly:
+  1. `internal/policy/callback/server.go`
+  2. prior file plus `internal/configs/state_migrate_file.go`
+  3. prior two plus `internal/addrs/checkable.go`
+- Each task introduced exactly its prescribed one-line replacement. Repeated prior files were preserved cumulative work, not rework.
+  Evidence: compressed records 34, 37, 40; `changes.diff:3-85`.
+
+## Integrity and verification
+
+- Compact manifest: **3/3 hashes verified**:
+  - `changes.diff`: `615536d0…815ce`
+  - `evidence.jsonl.gz`: `a7d31d4e…d2e3f`
+  - `run.json`: `3008a84a…c5c7`
+  Citation: `manifest.sha256:1-3`.
+- Evidence bundle: **50 records**, all unique safe paths; outer JSONL valid; all 16 embedded JSON documents and all 4 embedded JSONLs valid.
+- Hash bindings reconciled:
+  - protocol: `c421c23d…6e73`
+  - qualification: `08a37382…96b`
+  - selected execution: `23c31e3a…54e3`
+  - all three rendered prompt hashes matched.
+- Matrix-parent and direct-child receipts differ only in orchestrator and reservation timestamp; generation, sequence, replicate, profile, model condition, protocol, qualification, pool, and selected-execution identities all match.
+  Citations: repository attempt receipt `:1-24`; checkout attempt receipt `:1-24`.
+- Verifiers:
+  - Codex exits: **3/3 zero**
+  - final task verifiers: **3/3 passed**
+  - verifier-integrity checkpoints: **4/4 passed**
+  - tool isolation: passed; **0 forbidden-tool**, external-retrieval, or pass-through hits
+  - thread-continuity errors: **0**
+  Citations: `lane.log:217-225,249-300`; compressed records 12–13, 47, 49.
+- `codex doctor` exited `1`, but the preserved preflight explicitly passed with no failure reasons and classified this as a non-gating diagnostic. The prior passing Beets pilot had the same diagnostic disposition, so it is **not** a verifier/environment incident. Citation: Terraform compressed record 6; prior Beets compressed record 6.
+- Provider accounting: **32,623 fresh input + 54,272 cached input + 916 output = 87,811 total**, with zero cache-write tokens, zero provider-reported reasoning-output subset telemetry, and no warnings. The zero subset value does not establish absence of model reasoning. Citation: `lane.log:239-248`; compressed record 21.
+
+## Separate publication rollback
+
+- Lane execution exited `0`.
+- Strict ingress merged **1 session**, copied **1 artifact**, and rejected **0 sessions**.
+- Post-publication validation then failed and rolled the registry back.
+  Citation: `matrix-summary.json:24-45,229-295`.
+- Exact validation results: repository validator `0`, contract suite `1`, diff check `0`, Truthmark check `0`, Truthmark index `0`.
+- The contract suite had **3 assertions** failing around one unsupported transitional state—Terraform was occupied but awaiting audit:
+  1. treatment gate expected an audit entry immediately upon receipt;
+  2. runbook still expected a generic unoccupied-pilot message;
+  3. workflow authority still expected “authorized but not executed or independently audited.”
+  Citation: `validation-2-opt-hermes-.venv-bin-python3.txt:1-38`.
+- Classification: **1 controller-publication incident, 3 failing assertions, registry rolled back**. It does not alter the zero model-trajectory counts.
+
+## Files and issues
+
+- **Files created or modified by this audit: none.**
+- **Provider/model calls: none.**
+- Concurrent recovery/publication edits appeared in the repository during review; I did not attribute them to this audit and remained frozen to the specified commit and preserved lane evidence. The compact bundle’s manifest still verified unchanged at final recheck.
