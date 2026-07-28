@@ -67,7 +67,7 @@ def run_task(
     profile_id = str((record.get("profile") or {}).get("profile_id") or "")
     cfg = fixture.active_tool_config(record, profile_id)
     env = fixture.claude_env(claude_home, containerized=True, cfg=cfg)
-    fixture.apply_model_network_isolation(env)
+    fixture.apply_model_network_isolation(env, prepend_denied_shell_to_path=False)
     mounts = fixture.container_mounts_for_record(record, claude_home, include_repo=True, cfg=cfg)
     cmd = command(model=str(record.get("agent", {}).get("model", "claude-sonnet-5")), prompt=prompt_path.read_text(), session_id=session_id)
     proc = fixture.run_backend(
