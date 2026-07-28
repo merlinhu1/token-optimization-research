@@ -38,6 +38,9 @@ DATE = dt.datetime.now(dt.UTC).date().isoformat()
 COMPACT_ARTIFACT_NAMES = {"run.json", "changes.diff", "evidence.jsonl.gz", "manifest.sha256"}
 PRODUCTION_LOCK_PATH = Path("/opt/data/eval-workflow-lanes/.production.lock")
 PRODUCTION_LOCK_FD_ENV = "WORKFLOW_PRODUCTION_LOCK_FD"
+TRUSTED_REPOSITORY_ORIGIN = "git@github.com:merlinhu1/token-optimization-research.git"
+TRUSTED_REPOSITORY_UPSTREAM = "origin/phase-3"
+TRUSTED_REPOSITORY_REF = "refs/heads/phase-3"
 
 PROJECT_META: dict[str, dict[str, str]] = {
     "medium-fastify-fastify": {
@@ -695,6 +698,151 @@ def baseline_pilot_attempt_receipt_path(seq: dict[str, Any], root: Path = ROOT) 
     return repository_authority_path(root, receipt_rel, f"pilot attempt receipt for {seq.get('id')}")
 
 
+BASELINE_REPLICATION_AUTHORITY_REL = "sources/evaluations/audits/current-low-complexity-baseline-r1-r2-authorization-20260728.json"
+BASELINE_REPLICATION_MODEL_CONDITION = {
+    "id": "codex-openai-gpt-5-6-sol-high",
+    "model": "gpt-5.6-sol",
+    "reasoning_effort": "high",
+}
+BASELINE_REPLICATION_TOP_LEVEL_KEYS = {
+    "schema_version", "campaign_id", "authorized_by_owner_message_id", "authorized_on",
+    "paid_baseline_replication_authorized", "authorized_replicate_indexes", "sequence_order",
+    "serialization_required", "allowed_paid_baseline_runs", "allowed_model_turns", "model_condition",
+    "first_valid_sample_policy", "rerun_after_attempt_receipt", "provider_calls", "provider_tokens",
+    "sequences", "notes",
+}
+BASELINE_REPLICATION_BINDING_KEYS = {
+    "sequence_id", "task_family_generation", "protocol_path", "protocol_sha256", "baseline_pool_fingerprint",
+}
+
+
+def _json_without_duplicate_keys(pairs: list[tuple[str, Any]]) -> dict[str, Any]:
+    result: dict[str, Any] = {}
+    for key, value in pairs:
+        if key in result:
+            raise ValueError(f"duplicate JSON key: {key}")
+        result[key] = value
+    return result
+
+
+def load_current_baseline_replication_authority(root: Path = ROOT) -> dict[str, Any]:
+    """Strictly validate every decision-bearing field before any campaign spend."""
+    path = repository_authority_path(root, BASELINE_REPLICATION_AUTHORITY_REL, "baseline replication authorization")
+    try:
+        authority = json.loads(path.read_text(), object_pairs_hook=_json_without_duplicate_keys)
+        sequence_doc = json.loads(
+            (root / "data/workflow-task-sequences.json").read_text(),
+            object_pairs_hook=_json_without_duplicate_keys,
+        )
+    except (OSError, ValueError, json.JSONDecodeError) as exc:
+        raise ValueError(f"baseline replication authority is unreadable: {exc}") from exc
+    active_sequences = [item for item in sequence_doc.get("sequences", []) if item.get("status") == "active"]
+    expected_order = [item.get("id") for item in active_sequences]
+    records = authority.get("sequences")
+    replicate_indexes = authority.get("authorized_replicate_indexes")
+    strict_header = (
+        set(authority) == BASELINE_REPLICATION_TOP_LEVEL_KEYS
+        and authority.get("schema_version") == 1
+        and type(authority.get("schema_version")) is int
+        and authority.get("campaign_id") == "current-low-complexity-baseline-r1-r2-20260728"
+        and authority.get("authorized_by_owner_message_id") == "1531674305564508322"
+        and authority.get("authorized_on") == "2026-07-28"
+        and authority.get("paid_baseline_replication_authorized") is True
+        and isinstance(replicate_indexes, list)
+        and len(replicate_indexes) == 2
+        and all(type(item) is int for item in replicate_indexes)
+        and replicate_indexes == [1, 2]
+        and authority.get("sequence_order") == expected_order
+        and authority.get("serialization_required") is True
+        and type(authority.get("allowed_paid_baseline_runs")) is int
+        and authority.get("allowed_paid_baseline_runs") == len(active_sequences) * 2 == 6
+        and type(authority.get("allowed_model_turns")) is int
+        and authority.get("allowed_model_turns") == sum(len(item.get("tasks", [])) for item in active_sequences) * 2 == 18
+        and authority.get("model_condition") == BASELINE_REPLICATION_MODEL_CONDITION
+        and authority.get("first_valid_sample_policy") is True
+        and authority.get("rerun_after_attempt_receipt") is False
+        and type(authority.get("provider_calls")) is int
+        and authority.get("provider_calls") == 0
+        and type(authority.get("provider_tokens")) is int
+        and authority.get("provider_tokens") == 0
+        and isinstance(authority.get("notes"), str)
+        and bool(authority.get("notes"))
+    )
+    strict_records = (
+        isinstance(records, list)
+        and len(records) == len(active_sequences)
+        and all(isinstance(item, dict) and set(item) == BASELINE_REPLICATION_BINDING_KEYS for item in records)
+        and [item.get("sequence_id") for item in records] == expected_order
+    )
+    if not strict_header or not strict_records:
+        raise ValueError("baseline replication authority has invalid authorization, scope, budget, model, or policy")
+    assert isinstance(records, list)
+    for sequence, binding in zip(active_sequences, records, strict=True):
+        identity, protocol = current_baseline_v2_protocol(sequence, sequence["mistake_gate"], root)
+        expected_binding = {
+            "sequence_id": sequence.get("id"),
+            "task_family_generation": sequence.get("task_family_generation"),
+            "protocol_path": identity["path"],
+            "protocol_sha256": identity["sha256"],
+            "baseline_pool_fingerprint": protocol.get("baseline_pool", {}).get("protocol_fingerprint"),
+        }
+        gate_model = {
+            "id": sequence.get("mistake_gate", {}).get("designated_model_condition"),
+            "model": sequence.get("mistake_gate", {}).get("model"),
+            "reasoning_effort": sequence.get("mistake_gate", {}).get("reasoning_effort"),
+        }
+        if binding != expected_binding or gate_model != authority["model_condition"]:
+            raise ValueError(f"baseline replication authority has stale nested binding for {sequence.get('id')}")
+    return authority
+
+
+def baseline_replication_binding(
+    seq: dict[str, Any],
+    replicate_index: int,
+    root: Path = ROOT,
+) -> tuple[dict[str, Any], Path]:
+    """Validate one explicitly authorized current-panel r1/r2 identity."""
+    authority = load_current_baseline_replication_authority(root)
+    if type(replicate_index) is not int or replicate_index not in authority["authorized_replicate_indexes"]:
+        raise ValueError("baseline replication is not authorized for this replicate index")
+    matches = [
+        item for item in authority.get("sequences", [])
+        if isinstance(item, dict) and item.get("sequence_id") == seq.get("id")
+    ]
+    if len(matches) != 1:
+        raise ValueError(f"baseline replication authority lacks one binding for {seq.get('id')}")
+    binding = matches[0]
+    identity, protocol = current_baseline_v2_protocol(seq, seq["mistake_gate"], root)
+    expected = {
+        "task_family_generation": seq.get("task_family_generation"),
+        "protocol_path": identity["path"],
+        "protocol_sha256": identity["sha256"],
+        "baseline_pool_fingerprint": protocol.get("baseline_pool", {}).get("protocol_fingerprint"),
+    }
+    if any(binding.get(key) != value for key, value in expected.items()):
+        raise ValueError(f"baseline replication authority binding is stale for {seq.get('id')}")
+    gate_model = {
+        "id": seq.get("mistake_gate", {}).get("designated_model_condition"),
+        "model": seq.get("mistake_gate", {}).get("model"),
+        "reasoning_effort": seq.get("mistake_gate", {}).get("reasoning_effort"),
+    }
+    if gate_model != authority["model_condition"]:
+        raise ValueError(f"baseline replication model binding is stale for {seq.get('id')}")
+    slug = str(seq.get("id", "")).removesuffix("-lifecycle-sequence-v0")
+    receipt_rel = f"sources/evaluations/audits/current-low-complexity-baseline-r1-r2-attempts/{slug}-r{replicate_index}.json"
+    return binding, repository_authority_path(root, receipt_rel, "baseline replication attempt receipt")
+
+
+def baseline_attempt_receipt_path(
+    seq: dict[str, Any],
+    replicate_index: int,
+    root: Path = ROOT,
+) -> Path:
+    if replicate_index == 0:
+        return baseline_pilot_attempt_receipt_path(seq, root)
+    return baseline_replication_binding(seq, replicate_index, root)[1]
+
+
 def require_zero_mistake_pilot_replicate(
     seq: dict[str, Any],
     profile_id: str,
@@ -702,13 +850,23 @@ def require_zero_mistake_pilot_replicate(
     *,
     prepare_only: bool,
 ) -> None:
-    """Bind the one authorized zero-mistake pilot to its declared r0 identity."""
+    """Bind paid current-panel baselines to an explicitly authorized replicate."""
     if prepare_only or profile_id != "baseline-bare-codex":
         return
-    if seq.get("task_family_generation") in {"baseline-v3", "baseline-v4"} and (
-        type(replicate_index) is not int or replicate_index != 0
-    ):
-        raise ValueError("Baseline V3/V4 paid pilots require replicate_index=0")
+    if seq.get("task_family_generation") in {"baseline-v3", "baseline-v4"}:
+        if type(replicate_index) is not int:
+            raise ValueError("Baseline V3/V4 paid baselines require an integer replicate_index")
+        if replicate_index == 0:
+            return
+        authority = load_current_baseline_replication_authority(ROOT)
+        baseline_replication_binding(seq, replicate_index, ROOT)
+        selected_model_condition = {
+            "id": DEFAULT_WORKFLOW_MODEL_CONDITION_ID,
+            "model": DEFAULT_WORKFLOW_MODEL,
+            "reasoning_effort": DEFAULT_WORKFLOW_REASONING_EFFORT,
+        }
+        if selected_model_condition != authority["model_condition"]:
+            raise ValueError("baseline replication launch model does not match the strict authorization")
 
 
 def reserve_baseline_pilot_attempt(
@@ -743,21 +901,30 @@ def reserve_baseline_pilot_attempt(
         "provider_result": None,
         "immutable_identity_receipt": True,
     }
-    atomic_create_json(baseline_pilot_attempt_receipt_path(seq, root), receipt)
+    atomic_create_json(baseline_attempt_receipt_path(seq, replicate_index, root), receipt)
     return receipt
 
 
 def baseline_v2_pilot_run_gate(
     seq: dict[str, Any],
     root: Path = ROOT,
+    replicate_index: int = 0,
 ) -> tuple[bool, str]:
-    """Permit one provider pilot per declared audit identity; never pass-select reruns."""
+    """Permit one provider run per declared identity; never pass-select reruns."""
     generation = seq.get("task_family_generation")
     if generation not in {"baseline-v2", "baseline-v3", "baseline-v4"}:
         return True, "not a zero-mistake baseline sequence"
     label = str(generation).replace("baseline-v", "Baseline V")
     gate = seq.get("mistake_gate")
     audit_rel = gate.get("pilot_audit_path") if isinstance(gate, dict) else None
+    if generation in {"baseline-v3", "baseline-v4"} and replicate_index != 0:
+        try:
+            _binding, receipt_path = baseline_replication_binding(seq, replicate_index, root)
+        except ValueError as exc:
+            return False, str(exc)
+        if receipt_path.exists():
+            return False, f"paid baseline replication identity is occupied by immutable attempt receipt: {receipt_path.relative_to(root)}"
+        return True, f"current-panel r{replicate_index} baseline is explicitly authorized and unoccupied"
     if generation in {"baseline-v3", "baseline-v4"}:
         try:
             receipt_path = baseline_pilot_attempt_receipt_path(seq, root)
@@ -1585,12 +1752,29 @@ def validate_protocol_for_run(seq: dict[str, Any], profile_id: str, args: argpar
             baseline_descriptor=expected_descriptor,
             selected_execution=expected_execution,
         )
-        expected_protocol_path = ROOT / "sources/evaluations/protocols" / f"{expected_protocol_id}.json"
+        accepted_protocol_ids = {expected_protocol_id}
+        frozen_descriptor = protocol.get("baseline_pool", {}).get("descriptor")
+        frozen_execution = selected_execution.get("descriptor")
         if (
-            protocol.get("protocol_id") != expected_protocol_id
+            seq.get("task_family_generation") == "baseline-v3"
+            and baseline_protocol_descriptor_compatible(frozen_descriptor, expected_descriptor)
+            and frozen_execution == expected_execution
+        ):
+            accepted_protocol_ids.add(
+                canonical_protocol_id(
+                    seq,
+                    profile_id,
+                    baseline_descriptor=frozen_descriptor,
+                    selected_execution=frozen_execution,
+                )
+            )
+        protocol_id = protocol.get("protocol_id")
+        expected_protocol_path = ROOT / "sources/evaluations/protocols" / f"{protocol_id}.json"
+        if (
+            protocol_id not in accepted_protocol_ids
             or protocol_path.absolute() != expected_protocol_path.absolute()
             or protocol_path.is_symlink()
-            or protocol_path.name != f"{expected_protocol_id}.json"
+            or protocol_path.name != f"{protocol_id}.json"
         ):
             errors.append("canonical_protocol_identity")
     if fixture_block.get("sequence_id") != seq["id"]:
@@ -1886,6 +2070,87 @@ def controller_git_dir(run_dir: Path) -> Path:
 
 def seed_delivery_path(run_dir: Path) -> Path:
     return run_dir / "seed-delivery.json"
+
+
+AMBIENT_GIT_OBJECT_ENV_VARS = (
+    "GIT_ALTERNATE_OBJECT_DIRECTORIES",
+    "GIT_OBJECT_DIRECTORY",
+    "GIT_DIR",
+    "GIT_WORK_TREE",
+    "GIT_INDEX_FILE",
+)
+PAID_LAUNCH_PROTECTED_FILES = (Path("scripts/test_workflow_evaluation_contract.py"),)
+
+
+def clear_ambient_git_object_environment() -> None:
+    """Prevent caller Git plumbing from contaminating isolation or launch gates."""
+    for name in AMBIENT_GIT_OBJECT_ENV_VARS:
+        os.environ.pop(name, None)
+
+
+def paid_launch_checkout_errors(root: Path = ROOT) -> list[str]:
+    """Require an exact clean checkout of its published upstream before spend."""
+    errors: list[str] = []
+    for relative in PAID_LAUNCH_PROTECTED_FILES:
+        if not (root / relative).is_file():
+            errors.append(f"protected control-plane file is absent: {relative}")
+    status = subprocess.run(
+        ["git", "status", "--porcelain=v1", "--untracked-files=all"],
+        cwd=root,
+        text=True,
+        capture_output=True,
+        check=False,
+    )
+    if status.returncode != 0:
+        errors.append("repository status is unreadable")
+    elif status.stdout.strip():
+        errors.append("repository checkout is not clean")
+    head = subprocess.run(
+        ["git", "rev-parse", "HEAD"], cwd=root, text=True, capture_output=True, check=False
+    )
+    upstream = subprocess.run(
+        ["git", "rev-parse", "@{upstream}"], cwd=root, text=True, capture_output=True, check=False
+    )
+    if head.returncode != 0 or upstream.returncode != 0:
+        errors.append("repository HEAD or published upstream is unreadable")
+    elif head.stdout.strip() != upstream.stdout.strip():
+        errors.append("repository HEAD is not the published upstream commit")
+    origin = subprocess.run(
+        ["git", "remote", "get-url", "origin"], cwd=root, text=True, capture_output=True, check=False
+    )
+    upstream_name = subprocess.run(
+        ["git", "rev-parse", "--abbrev-ref", "--symbolic-full-name", "@{upstream}"],
+        cwd=root,
+        text=True,
+        capture_output=True,
+        check=False,
+    )
+    if origin.returncode != 0 or origin.stdout.strip() != TRUSTED_REPOSITORY_ORIGIN:
+        errors.append("repository origin is not the trusted publication remote")
+    if upstream_name.returncode != 0 or upstream_name.stdout.strip() != TRUSTED_REPOSITORY_UPSTREAM:
+        errors.append("repository upstream is not the trusted publication branch")
+    if head.returncode == 0 and origin.returncode == 0 and origin.stdout.strip() == TRUSTED_REPOSITORY_ORIGIN:
+        remote = subprocess.run(
+            ["git", "ls-remote", "origin", TRUSTED_REPOSITORY_REF],
+            cwd=root,
+            text=True,
+            capture_output=True,
+            check=False,
+        )
+        remote_lines = [line.split() for line in remote.stdout.splitlines() if line.strip()]
+        if (
+            remote.returncode != 0
+            or remote_lines != [[head.stdout.strip(), TRUSTED_REPOSITORY_REF]]
+        ):
+            errors.append("repository HEAD is not independently confirmed on the trusted publication remote")
+    return errors
+
+
+def certified_published_launch_commit(root: Path = ROOT) -> str:
+    errors = paid_launch_checkout_errors(root)
+    if errors:
+        raise ValueError("paid launch checkout gate failed: " + "; ".join(errors))
+    return subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=root, text=True).strip()
 
 
 def configure_model_git(repo: Path) -> None:
@@ -2726,6 +2991,7 @@ def run_codex_task(
     *,
     timeout: int,
     thread_id: str | None,
+    operational_retries: int = MAX_CODEX_OPERATIONAL_RETRIES,
 ) -> tuple[int, str | None, dict[str, Any] | None]:
     cfg = fixture.active_tool_config(record, profile_id)
     repo = ROOT / record["target"]["repository_path"]
@@ -2770,7 +3036,7 @@ def run_codex_task(
     if continuity_error is not None:
         code = THREAD_CONTINUITY_FAILURE_EXIT_CODE
     remaining_timeout = max(0, int(deadline - time.monotonic()))
-    if code != 0 and remaining_timeout > 0 and MAX_CODEX_OPERATIONAL_RETRIES > 0 and captured_thread and continuity_error is None and retryable_codex_operational_failure(output_path):
+    if code != 0 and remaining_timeout > 0 and operational_retries > 0 and captured_thread and continuity_error is None and retryable_codex_operational_failure(output_path):
         retry_prompt = prompt_path.with_name(f"{prompt_path.stem}-operational-retry-01.md")
         retry_prompt.write_text(
             "The previous turn ended because Codex emitted a malformed tool call before completion. "
@@ -3148,23 +3414,42 @@ def workflow_session_record(
     }
 
 
+def inherited_provider_production_lock_fd() -> int | None:
+    """Validate the matrix-held lock capability inherited by a child lane."""
+    inherited = os.environ.get(PRODUCTION_LOCK_FD_ENV)
+    if inherited is None:
+        return None
+    try:
+        fd = int(inherited)
+        held = os.fstat(fd)
+        expected = PRODUCTION_LOCK_PATH.stat()
+    except (OSError, TypeError, ValueError) as exc:
+        raise RuntimeError("invalid inherited workflow production lock") from exc
+    if (held.st_dev, held.st_ino) != (expected.st_dev, expected.st_ino):
+        raise RuntimeError("inherited workflow production lock points to the wrong file")
+    probe_fd = os.open(PRODUCTION_LOCK_PATH, os.O_RDONLY)
+    try:
+        try:
+            fcntl.flock(probe_fd, fcntl.LOCK_EX | fcntl.LOCK_NB)
+        except BlockingIOError:
+            pass
+        else:
+            fcntl.flock(probe_fd, fcntl.LOCK_UN)
+            raise RuntimeError("inherited workflow production lock was not held before child launch")
+    finally:
+        os.close(probe_fd)
+    try:
+        fcntl.flock(fd, fcntl.LOCK_EX | fcntl.LOCK_NB)
+    except BlockingIOError as exc:
+        raise RuntimeError("inherited workflow production lock is not held by this matrix") from exc
+    return fd
+
+
 def acquire_provider_production_lock() -> int:
     """Acquire, or verify inheritance of, the shared provider-production lock."""
-    inherited = os.environ.get(PRODUCTION_LOCK_FD_ENV)
-    if inherited is not None:
-        try:
-            fd = int(inherited)
-            held = os.fstat(fd)
-            expected = PRODUCTION_LOCK_PATH.stat()
-        except (OSError, TypeError, ValueError) as exc:
-            raise RuntimeError("invalid inherited workflow production lock") from exc
-        if (held.st_dev, held.st_ino) != (expected.st_dev, expected.st_ino):
-            raise RuntimeError("inherited workflow production lock points to the wrong file")
-        try:
-            fcntl.flock(fd, fcntl.LOCK_EX | fcntl.LOCK_NB)
-        except BlockingIOError as exc:
-            raise RuntimeError("inherited workflow production lock is not held by this matrix") from exc
-        return fd
+    inherited_fd = inherited_provider_production_lock_fd()
+    if inherited_fd is not None:
+        return inherited_fd
     PRODUCTION_LOCK_PATH.parent.mkdir(parents=True, exist_ok=True)
     fd = os.open(PRODUCTION_LOCK_PATH, os.O_CREAT | os.O_RDWR, 0o600)
     try:
@@ -3352,6 +3637,7 @@ def write_comparison_if_ready(seq: dict[str, Any], study_id: str, replicate_inde
 
 def run_one(args: argparse.Namespace) -> dict[str, Any]:
     """Serialize every direct provider run from slot check through publication."""
+    clear_ambient_git_object_environment()
     if args.prepare_only:
         return _run_one_locked(args)
     selected_sequence = load_sequence(args.sequence_id)
@@ -3361,10 +3647,22 @@ def run_one(args: argparse.Namespace) -> dict[str, Any]:
         args.replicate_index,
         prepare_only=False,
     )
+    current_baseline_replication = (
+        args.profile_id == "baseline-bare-codex"
+        and args.replicate_index in {1, 2}
+        and selected_sequence.get("task_family_generation") in {"baseline-v3", "baseline-v4"}
+    )
+    if current_baseline_replication:
+        checkout_errors = paid_launch_checkout_errors(ROOT)
+        if checkout_errors:
+            raise ValueError("paid launch checkout gate failed: " + "; ".join(checkout_errors))
     lock_fd = acquire_provider_production_lock()
     try:
         if args.profile_id == "baseline-bare-codex":
-            pilot_allowed, pilot_reason = baseline_v2_pilot_run_gate(selected_sequence)
+            pilot_allowed, pilot_reason = baseline_v2_pilot_run_gate(
+                selected_sequence,
+                replicate_index=args.replicate_index,
+            )
             if not pilot_allowed:
                 raise ValueError(f"baseline provider run is blocked: {pilot_reason}")
         return _run_one_locked(args)
@@ -3544,6 +3842,13 @@ def _run_one_locked(args: argparse.Namespace) -> dict[str, Any]:
     thread_continuity_errors: list[dict[str, Any]] = []
     verifier_integrity_checks: list[dict[str, Any]] = []
     model_output_dir = model_output_directory(run_dir)
+    operational_retries = (
+        0
+        if profile_id == "baseline-bare-codex"
+        and args.replicate_index in {1, 2}
+        and seq.get("task_family_generation") in {"baseline-v3", "baseline-v4"}
+        else MAX_CODEX_OPERATIONAL_RETRIES
+    )
     for task in ordered_tasks:
         order = int(task["order"])
         prompt_path = materialize_task_prompt(
@@ -3554,7 +3859,19 @@ def _run_one_locked(args: argparse.Namespace) -> dict[str, Any]:
         events_path = run_dir / f"task-{order:02d}-codex-events.jsonl"
         last_message_path = model_output_dir / f"task-{order:02d}-codex-last-message.txt"
         requested_thread_id = thread_id
-        code, thread_id, continuity_error = run_codex_task(record, profile_id, codex_home, run_dir, runtime_docker_image, prompt_path, events_path, last_message_path, timeout=args.timeout_per_task, thread_id=requested_thread_id)
+        code, thread_id, continuity_error = run_codex_task(
+            record,
+            profile_id,
+            codex_home,
+            run_dir,
+            runtime_docker_image,
+            prompt_path,
+            events_path,
+            last_message_path,
+            timeout=args.timeout_per_task,
+            thread_id=requested_thread_id,
+            operational_retries=operational_retries,
+        )
         codex_exit_codes.append(code)
         redact_auth_sync(run_dir)
         cfg = fixture.active_tool_config(record, profile_id)

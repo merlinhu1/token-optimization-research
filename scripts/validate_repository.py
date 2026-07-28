@@ -3107,6 +3107,61 @@ def validate_baseline_v4_evidence_identity(
         errors.append("Baseline V4 prepare summary validation commands or results are incomplete, noncanonical, or nonzero")
 
 
+def validate_current_baseline_replication_authority(errors: list[str]) -> None:
+    from scripts import run_codex_workflow_evaluation as workflow
+
+    try:
+        authority = workflow.load_current_baseline_replication_authority(ROOT)
+        sequence_doc = json.loads((ROOT / "data/workflow-task-sequences.json").read_text())
+    except (OSError, ValueError, json.JSONDecodeError) as exc:
+        errors.append(f"current baseline replication authority is unreadable or invalid: {exc}")
+        return
+    sequences = [item for item in sequence_doc.get("sequences", []) if item.get("status") == "active"]
+    expected_order = [item.get("id") for item in sequences]
+    if authority.get("sequence_order") != expected_order:
+        errors.append("current baseline replication authority sequence order does not match all active lanes")
+    records = authority.get("sequences")
+    if not isinstance(records, list) or len(records) != len(sequences):
+        errors.append("current baseline replication authority must bind every active lane exactly once")
+        return
+    seen_receipts: set[Path] = set()
+    for sequence in sequences:
+        for replicate_index in (1, 2):
+            try:
+                binding, receipt_path = workflow.baseline_replication_binding(sequence, replicate_index, ROOT)
+            except ValueError as exc:
+                errors.append(str(exc))
+                continue
+            if binding.get("sequence_id") != sequence.get("id"):
+                errors.append(f"current baseline replication binding mismatch for {sequence.get('id')}")
+            seen_receipts.add(receipt_path)
+            if not receipt_path.exists():
+                continue
+            try:
+                receipt = json.loads(receipt_path.read_text(), object_pairs_hook=_json_object_without_duplicate_keys)
+            except (OSError, ValueError, json.JSONDecodeError) as exc:
+                errors.append(f"baseline replication attempt receipt is unreadable: {exc}")
+                continue
+            expected = {
+                "task_family_generation": binding.get("task_family_generation"),
+                "sequence_id": sequence.get("id"),
+                "replicate_index": replicate_index,
+                "profile_id": "baseline-bare-codex",
+                "model_condition_id": authority["model_condition"]["id"],
+                "model": authority["model_condition"]["model"],
+                "reasoning_effort": authority["model_condition"]["reasoning_effort"],
+                "baseline_pool_fingerprint": binding.get("baseline_pool_fingerprint"),
+                "immutable_identity_receipt": True,
+            }
+            if any(receipt.get(key) != value for key, value in expected.items()):
+                errors.append(f"baseline replication attempt receipt identity mismatch: {receipt_path.relative_to(ROOT)}")
+    attempt_root = ROOT / "sources/evaluations/audits/current-low-complexity-baseline-r1-r2-attempts"
+    actual_receipts = set(attempt_root.glob("*.json")) if attempt_root.is_dir() else set()
+    extras = sorted(path.relative_to(ROOT).as_posix() for path in actual_receipts - seen_receipts)
+    if extras:
+        errors.append(f"unexpected baseline replication attempt receipts: {extras}")
+
+
 def validate_baseline_v4_qualification_audit(errors: list[str]) -> None:
     audit_path = ROOT / "sources/evaluations/audits/baseline-v4-task-family-qualification-20260722.json"
     try:
@@ -3674,6 +3729,7 @@ def main() -> int:
     validate_retired_baseline_v2_audit(errors)
     validate_baseline_v3_qualification_audit(errors)
     validate_baseline_v4_qualification_audit(errors)
+    validate_current_baseline_replication_authority(errors)
     validate_frozen_protocol_bindings(errors)
     for path in (ROOT / "data/workflow-task-sequences.json", ROOT / "templates/evaluation-run-record.json"):
         if "gpt-5.5" in path.read_text():
