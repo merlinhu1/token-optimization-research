@@ -2427,6 +2427,10 @@ def comparison_baseline_matches_treatment(
         expected_profile = "runtime-opencode-codex-product-v1"
         expected_role = "replacement_runtime"
         expected_runtime = "opencode-cli"
+    elif treatment_runtime == "claude-code" and treatment_profile != "baseline-claude-code-no-mcp":
+        expected_profile = "baseline-claude-code-no-mcp"
+        expected_role = "baseline"
+        expected_runtime = "claude-code"
     else:
         expected_profile = "baseline-bare-codex"
         expected_role = "baseline"
