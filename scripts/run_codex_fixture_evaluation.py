@@ -2607,7 +2607,7 @@ def claude_env(
         claude_dir.symlink_to(claude_config, target_is_directory=True)
     env["CLAUDE_CONFIG_DIR"] = str(claude_config)
     env.pop("CLAUDE_CODE_SIMPLE", None)
-    env.setdefault("CLAUDE_CODE_MAX_OUTPUT_TOKENS", "12000")
+    env.setdefault("CLAUDE_CODE_MAX_OUTPUT_TOKENS", "8000")
     env["CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC"] = "1"
     isolated_bin = agent_home / "runtime-bin"
     isolated_bin.mkdir(parents=True, exist_ok=True)
