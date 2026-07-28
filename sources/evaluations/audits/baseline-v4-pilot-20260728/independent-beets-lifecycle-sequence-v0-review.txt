@@ -1,0 +1,41 @@
+## Independent verdict: **PASS — zero-incident gate**
+
+| Baseline V3 incident field | Exact count | Evidence |
+|---|---:|---|
+| `unique_model_incidents` / `observed_unique_model_caused_incidents` | **0** | All three task streams contain one prescribed command, one successful completion, and no correction or retry: `evidence.jsonl.gz` logical records **35, 38, 41**, events 3–7. |
+| `corrected_implementation_mistakes` | **0** | Each first edit was correct; the cumulative diff contains only the three prescribed one-line repairs: `changes.diff:3-85`. |
+| `unresolved_defects` | **0** | All three final task verifiers passed: `evidence.jsonl.gz` records **12–13**; `run.json:247-298`. |
+| `prohibited_operations` | **0** | Executed payloads exactly match the three prompt command blocks; no inspection, search, network retrieval, extra commands, or forbidden tools. See evidence records **35, 38, 41, 43–45, 47**. |
+| `unnecessary_exploration_incidents` | **0** | Three turns, exactly three command executions, with only brief intent/completion messages and no exploratory activity. |
+| `model_caused_failed_commands` | **0** | Codex exits were `[0, 0, 0]`: `run.json:215-219`; every completed `command_execution` also records exit `0`. |
+| `code_rework_events` | **0** | Each task added exactly its intended file change while preserving prior edits; no backtracking or replacement of earlier work: `changes.diff:3-85`. |
+| `verifier_or_environment_failures` | **0** | Per-task verifier exits and final verifier were all `0`; verifier integrity and tool isolation passed; no continuity errors: `run.json:220-234,247-298`, evidence records **13, 47, 49**. |
+
+### Integrity reconciliation
+
+- Compact manifest reverified: `changes.diff`, `evidence.jsonl.gz`, and `run.json` all **OK**.
+- Evidence contained **50 unique safe paths** and valid gzip JSONL.
+- Protocol, qualification, selected-execution, and all three rendered-prompt hashes recomputed exactly.
+- One continuous thread: `019fa844-d783-7ae3-95b6-54dfd6fbb088`.
+- Session was accepted, lane exit was `0`, and provider accounting reconciled to **88,200 tokens**: 17,833 fresh input, 69,376 cached input, 991 output (`run.json:234-245`; evidence record **21**).
+- The preserved `codex doctor` exit `1` was an explicitly non-gating update-path diagnostic; `codex-preflight.json` itself passed. Under the Baseline V3 counting precedent, this is not a task verifier/environment incident.
+
+### Separate controller publication result
+
+The matrix publication boundary **failed independently of the model trajectory**:
+
+- Lane exit `0` and produced the expected session: `matrix-summary.json:24-35`.
+- Publication was rolled back after repository validation: `matrix-summary.json:227-240`.
+- Only the contract suite failed; repository validation, diff check, and both Truthmark checks exited `0`: `matrix-summary.json:243-289`.
+- The suite reported **three stale occupied-state assertions**:
+  1. current V4 pool rendered as if historical;
+  2. V4 attempt receipt incorrectly expected absent;
+  3. nonzero-replicate test expected a replicate error even though the occupied receipt correctly blocked first.
+  Evidence: `validation-2-opt-hermes-.venv-bin-python.txt:1-36`.
+
+These are **one controller publication rollback event involving three contract-test expectation bugs**, not model incidents and not part of the eight zero-incident counts.
+
+### Files and issues
+
+- **Files created or modified by me:** none.
+- Concurrent publication/recovery edits appeared in the main worktree during this read-only audit. I therefore grounded the verdict in commit `8833821d15f5a28d88fd52717b818bdf84202937` and the preserved lane artifacts rather than the changing worktree.

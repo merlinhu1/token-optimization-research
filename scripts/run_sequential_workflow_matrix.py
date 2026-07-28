@@ -1193,6 +1193,7 @@ def merge_lanes(
             summary["copied_artifact_count"] = len(copied_artifacts)
             summary["merged_session_ids"] = [session["session_id"] for session in merged_sessions]
         if merged_sessions:
+            summary.pop("skipped", None)
             summary["registry_replacement_attempted"] = True
             merge_registry(merged_sessions)
     except BaseException:

@@ -797,6 +797,18 @@ def baseline_v2_pilot_run_gate(
         audit = json.loads(audit_path.read_text())
     except (OSError, ValueError) as exc:
         return False, f"existing {label} pilot audit is unreadable: {exc}"
+    entries = audit.get("sequences")
+    if (
+        type(audit.get("schema_version")) is not int
+        or audit.get("schema_version") != 1
+        or audit.get("task_family_generation") != generation
+        or not isinstance(entries, list)
+        or not all(isinstance(entry, dict) for entry in entries)
+    ):
+        return False, f"existing {label} pilot audit is invalid"
+    matching = [entry for entry in entries if entry.get("sequence_id") == seq.get("id")]
+    if not matching:
+        return True, f"no prior {label} pilot attempt is recorded for {seq.get('id')}"
     return False, (
         f"{label} pilot identity is occupied by audit status={audit.get('status', 'unknown')!r} "
         f"at {audit_rel}; preserve it and mint a simpler generation/audit identity before any new provider run"
