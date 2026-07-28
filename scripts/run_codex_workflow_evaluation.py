@@ -1511,13 +1511,25 @@ def executable_identity(command: list[str], cfg: dict[str, Any], root: Path = RO
             "install_contract_sha256": _json_hash(cfg["host_integration"]),
         }
     explicit = Path(token)
-    resolved_text = str(explicit) if explicit.is_absolute() else shutil.which(token, path=_lane_path(cfg, root))
+    lane_path = _lane_path(cfg, root)
+    resolved_text = str(explicit) if explicit.is_absolute() else shutil.which(token, path=lane_path)
+    if not resolved_text and not explicit.is_absolute():
+        for entry in lane_path.split(os.pathsep):
+            candidate = Path(entry) / token
+            if candidate.is_file():
+                resolved_text = str(candidate)
+                break
     if not resolved_text:
         raise FileNotFoundError(f"tool executable is not resolvable in lane PATH: {token}")
     resolved = Path(resolved_text)
     if not resolved.is_file():
         raise FileNotFoundError(f"tool executable is not a file: {resolved}")
     real = resolved.resolve()
+    if not os.access(real, os.X_OK):
+        try:
+            real.chmod(real.stat().st_mode | 0o111)
+        except OSError as exc:
+            raise PermissionError(f"tool executable is not executable: {real}") from exc
     st = real.stat()
     version = _version_output(real, environment_path=_lane_path(cfg, root))
     environment_path = version.get("environment_path")
