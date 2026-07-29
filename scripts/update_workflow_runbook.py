@@ -275,7 +275,7 @@ def render() -> str:
             )
         if pending_baselines:
             prepare_commands = "\n".join(
-                f"python3 scripts/run_sequential_workflow_matrix.py {sequence['id']} {sequence_model_flags(sequence)} --prepare-only".replace("  ", " ")
+                f"python3 scripts/run_sequential_workflow_matrix.py {sequence['id']} --max-parallel 1 {sequence_model_flags(sequence)} --prepare-only".replace("  ", " ")
                 for sequence in pending_baselines
             )
             runnable_pending = [
@@ -283,7 +283,7 @@ def render() -> str:
                 if pilot_run_states.get(sequence["id"], (True, ""))[0]
             ]
             baseline_commands = "\n".join(
-                f"python3 scripts/run_sequential_workflow_matrix.py {sequence['id']} {sequence_model_flags(sequence)}".rstrip()
+                f"python3 scripts/run_sequential_workflow_matrix.py {sequence['id']} --max-parallel 1 {sequence_model_flags(sequence)}".rstrip()
                 for sequence in runnable_pending
             )
             command_block = prepare_commands + (f"\n{baseline_commands}" if baseline_commands else "")
@@ -332,7 +332,7 @@ def render() -> str:
                         "PROFILE_ID=replace-with-compatible-profile-id\n"
                         f"python3 scripts/refresh_workflow_contracts.py --sequence-id \"$SEQUENCE_ID\" --profile-id \"$PROFILE_ID\" {flags}\n"
                         "python3 scripts/validate_repository.py\n"
-                        f"python3 scripts/run_sequential_workflow_matrix.py \"$SEQUENCE_ID\" --treatment-profile \"$PROFILE_ID\" {flags} --dry-run"
+                        f"python3 scripts/run_sequential_workflow_matrix.py \"$SEQUENCE_ID\" --treatment-profile \"$PROFILE_ID\" --max-parallel 1 {flags} --dry-run"
                     )
                 chunks.append(
                     f"Reusable, zero-incident-audited baselines exist for {retained_ids}. No current active-default treatment protocol is frozen, so no paid treatment command is published. Choose one compatible profile, freeze and validate its protocol provider-free, certify the resulting exact tree, and then execute the rendered dry-run verbatim before requesting paid execution:\n\n"
@@ -424,7 +424,7 @@ A no-model prepare for a frozen candidate is allowed:
 
 ```bash
 SEQUENCE_ID={prepare_sequence_id}
-python3 scripts/run_sequential_workflow_matrix.py "$SEQUENCE_ID" {prepare_model_flags} --prepare-only
+python3 scripts/run_sequential_workflow_matrix.py "$SEQUENCE_ID" --max-parallel 1 {prepare_model_flags} --prepare-only
 ```
 
 `prepare-verification.json` must show every task preseeded, only task 1's prompt materialized, a clean true-root Git baseline, no fixed commit object or prior reflog, current composite qualification including recorded seeded compiler outcomes and passing repaired/project-wide compilation boundaries, no controller seed/verifier files in the model root, no injected acceptance-test assets, and no controller compile command or scoring-policy disclosure in the current task prompt.

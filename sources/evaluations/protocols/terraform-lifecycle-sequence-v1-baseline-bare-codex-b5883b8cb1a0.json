@@ -1,19 +1,19 @@
 {
   "protocol_schema_version": 3,
-  "protocol_id": "fastify-lifecycle-sequence-v1-baseline-bare-codex-8e3bb6822696",
+  "protocol_id": "terraform-lifecycle-sequence-v1-baseline-bare-codex-b5883b8cb1a0",
   "status": "frozen-ready-not-run",
-  "outcome": "Frozen baseline-bare-codex protocol for fastify-lifecycle-sequence-v1; no provider/model run has occurred.",
+  "outcome": "Frozen baseline-bare-codex protocol for terraform-lifecycle-sequence-v1; no provider/model run has occurred.",
   "frozen_at": "2026-08-01",
-  "hypothesis": "baseline-bare-codex produces reproducible provider-reported token and software-quality evidence for fastify-lifecycle-sequence-v1",
+  "hypothesis": "baseline-bare-codex produces reproducible provider-reported token and software-quality evidence for terraform-lifecycle-sequence-v1",
   "evidence_stage_target": "reproduction",
   "task_fixture": {
-    "fixture_id": "medium-fastify-fastify",
-    "sequence_id": "fastify-lifecycle-sequence-v1",
+    "fixture_id": "large-hashicorp-terraform",
+    "sequence_id": "terraform-lifecycle-sequence-v1",
     "task_family_generation": "lifecycle-v1",
-    "repository": "https://github.com/fastify/fastify.git",
-    "snapshot": "94bcbcc6e2ef3b8e8f8e8797fe551ccbe7b942fd",
-    "qualification_path": "sources/evaluations/fixtures/medium/fastify-fastify/qualification-lifecycle-v1.json",
-    "qualification_sha256": "340ffbd669ed98b5fec72c195d8c65eb8e72b6f52015a8ef9abd296a0bcb1d0e",
+    "repository": "https://github.com/hashicorp/terraform.git",
+    "snapshot": "e02391ad384c9c38f1d7f40b853c0d2297348094",
+    "qualification_path": "sources/evaluations/fixtures/large/hashicorp-terraform/qualification-lifecycle-v1.json",
+    "qualification_sha256": "02133f582967b73eac8f95caeff4d4af6bbf4c6f747020ef2249c3908a43c532",
     "timeout_seconds_per_task": 3600
   },
   "baseline": {
@@ -23,7 +23,7 @@
     "model": "gpt-5.6-sol",
     "model_condition_id": "codex-openai-gpt-5-6-sol-high",
     "reasoning_effort": "high",
-    "command": "python3 scripts/run_codex_workflow_model_condition.py --workflow-model-condition-id codex-openai-gpt-5-6-sol-high --workflow-model gpt-5.6-sol --workflow-reasoning-effort high --sequence-id fastify-lifecycle-sequence-v1 --profile-id baseline-bare-codex --timeout-per-task 3600 --protocol sources/evaluations/protocols/fastify-lifecycle-sequence-v1-baseline-bare-codex-8e3bb6822696.json --docker-image token-eval-codex:latest"
+    "command": "python3 scripts/run_codex_workflow_model_condition.py --workflow-model-condition-id codex-openai-gpt-5-6-sol-high --workflow-model gpt-5.6-sol --workflow-reasoning-effort high --sequence-id terraform-lifecycle-sequence-v1 --profile-id baseline-bare-codex --timeout-per-task 3600 --protocol sources/evaluations/protocols/terraform-lifecycle-sequence-v1-baseline-bare-codex-b5883b8cb1a0.json --docker-image token-eval-codex:latest"
   },
   "comparison_baseline": {
     "profile_id": "baseline-bare-codex",
@@ -32,7 +32,7 @@
     "model": "gpt-5.6-sol",
     "model_condition_id": "codex-openai-gpt-5-6-sol-high",
     "reasoning_effort": "high",
-    "command": "python3 scripts/run_codex_workflow_model_condition.py --workflow-model-condition-id codex-openai-gpt-5-6-sol-high --workflow-model gpt-5.6-sol --workflow-reasoning-effort high --sequence-id fastify-lifecycle-sequence-v1 --profile-id baseline-bare-codex --timeout-per-task 3600 --protocol sources/evaluations/protocols/fastify-lifecycle-sequence-v1-baseline-bare-codex-8e3bb6822696.json --docker-image token-eval-codex:latest"
+    "command": "python3 scripts/run_codex_workflow_model_condition.py --workflow-model-condition-id codex-openai-gpt-5-6-sol-high --workflow-model gpt-5.6-sol --workflow-reasoning-effort high --sequence-id terraform-lifecycle-sequence-v1 --profile-id baseline-bare-codex --timeout-per-task 3600 --protocol sources/evaluations/protocols/terraform-lifecycle-sequence-v1-baseline-bare-codex-b5883b8cb1a0.json --docker-image token-eval-codex:latest"
   },
   "treatment": {},
   "token_accounting_boundary": {
@@ -47,25 +47,25 @@
   },
   "baseline_pool": {
     "protocol_version": "baseline-pool-v1",
-    "protocol_fingerprint": "b7412adb32b6",
+    "protocol_fingerprint": "6b6551928c4d",
     "descriptor": {
       "version": "baseline-pool-v1",
       "task_family_generation": "lifecycle-v1",
       "runner_contract_version": "workflow-runner-v10",
-      "runner_sha256": "5b1281c0f04470e179001ad752dc55c21d1eae245b4c57f6496925a08a534dc4",
+      "runner_sha256": "cf8c2edc92df6029e051aec96dc089fc226672260c8ce286f5d3403552518797",
       "qualification_generator_sha256": "a0c871d2a500a3fe6a11b78ef4ec20ef29cf12f5db44fdae53344e4327ec559b",
       "validator_sha256": "32d677ae10bf2364845a6eac88ec3ab95d0a76fea9a52b608e91e590f1ef69d2",
-      "sequence_id": "fastify-lifecycle-sequence-v1",
+      "sequence_id": "terraform-lifecycle-sequence-v1",
       "sequence_contract": "feature-refactor-review",
-      "fixture_id": "medium-fastify-fastify",
-      "fixture_scale": "medium-project",
+      "fixture_id": "large-hashicorp-terraform",
+      "fixture_scale": "large-project",
       "initial_snapshot": {
-        "commit": "94bcbcc6e2ef3b8e8f8e8797fe551ccbe7b942fd",
-        "upstream": "https://github.com/fastify/fastify.git",
+        "commit": "e02391ad384c9c38f1d7f40b853c0d2297348094",
+        "upstream": "https://github.com/hashicorp/terraform.git",
         "dependency_lockfiles": [
           {
-            "path": "package.json",
-            "sha256": "b273320af1bb4cfc0f9334457c8e3b1d035fde0da14f9db65e8ef97d361d0be3"
+            "path": "go.sum",
+            "sha256": "be9ec949db0a0b135197f2c78b6d9821d764cc9b8c362b4860e3d5a1e9c74b9e"
           }
         ]
       },
@@ -79,21 +79,21 @@
         "tests_required": false,
         "source_review_required": false
       },
-      "project_compile_command": "find lib -type f -name '*.js' -print0 | sort -z | xargs -0 -n1 node --check && node --check fastify.js",
+      "project_compile_command": "export PATH=/opt/data/bin:/opt/data/opt/go/bin:$PATH; GOTOOLCHAIN=auto go test -run '^$' ./...",
       "tasks": [
         {
-          "id": "fastify-lifecycle-feature-v1",
+          "id": "terraform-lifecycle-feature-v1",
           "order": 1,
           "task_class": "feature-implementation",
-          "prompt_path": "sources/evaluations/fixtures/medium/fastify-fastify/task-generations/lifecycle-v1/fastify-lifecycle-feature-v1/agent-prompt.txt",
-          "prompt_sha256": "9258119ac5720ab9309a2960ffe7ad94fd11a922e2139899bf9cc582f9df947e",
-          "seed_patch_sha256": "590bc68fde7b7ece291517f21fa63ef56cdd40b42a11015bc4184b88835db8b3",
-          "verifier_command": "sources/evaluations/fixtures/medium/fastify-fastify/task-generations/lifecycle-v1/fastify-lifecycle-feature-v1/verify.sh",
-          "verifier_sha256": "70a1969e7f1fa86695c831b23a7a8b2dff6f73e73f3403767307d46fa914ab01",
-          "compile_command": "node --check lib/request.js",
+          "prompt_path": "sources/evaluations/fixtures/large/hashicorp-terraform/task-generations/lifecycle-v1/terraform-lifecycle-feature-v1/agent-prompt.txt",
+          "prompt_sha256": "77442d96dce398e8656fa236b7f08d3943581b1726ef242fda2ea917d1392d2b",
+          "seed_patch_sha256": "e74faf9367021fd35a66155f001377671ab4e18345eb30739ab3af8e1ff92e04",
+          "verifier_command": "sources/evaluations/fixtures/large/hashicorp-terraform/task-generations/lifecycle-v1/terraform-lifecycle-feature-v1/verify.sh",
+          "verifier_sha256": "171cddc740c8ad371e3cd869f8b860ae74b6602d107bf6cbf0dc7971789f6959",
+          "compile_command": "export PATH=/opt/data/bin:/opt/data/opt/go/bin:$PATH; GOTOOLCHAIN=auto go test -run '^$' ./internal/policy/callback",
           "acceptance_visibility": "controller-only-compile-policy",
           "expected_changed_paths": [
-            "lib/request.js"
+            "internal/policy/callback/server.go"
           ],
           "controller_visible_acceptance_assets": [],
           "upstream_test_paths": [],
@@ -102,18 +102,18 @@
           "model_concealed_paths": []
         },
         {
-          "id": "fastify-lifecycle-refactor-v1",
+          "id": "terraform-lifecycle-refactor-v1",
           "order": 2,
           "task_class": "behavior-preserving-refactor",
-          "prompt_path": "sources/evaluations/fixtures/medium/fastify-fastify/task-generations/lifecycle-v1/fastify-lifecycle-refactor-v1/agent-prompt.txt",
-          "prompt_sha256": "59ba625ac7bd4bef4e30f605dff3ff967b3b4d2b3bfa24486f9c3fcca181b67d",
-          "seed_patch_sha256": "fd1982e087c713640c8ab55b7875545b59a60296135e0dc847a13cea038d89d5",
-          "verifier_command": "sources/evaluations/fixtures/medium/fastify-fastify/task-generations/lifecycle-v1/fastify-lifecycle-refactor-v1/verify.sh",
-          "verifier_sha256": "56f0a8ad81e525ac7afc8e31806f18d6575758ccbc5d468217dee45dd248cdb9",
-          "compile_command": "node --check lib/content-type.js",
+          "prompt_path": "sources/evaluations/fixtures/large/hashicorp-terraform/task-generations/lifecycle-v1/terraform-lifecycle-refactor-v1/agent-prompt.txt",
+          "prompt_sha256": "2a8d2f0610ce93483c35b9d05f3e93eca1e579bfa0f049bd70f04ca70f286327",
+          "seed_patch_sha256": "b2b4e19476620a6579c435c7b898cca97fe036b4a6d3d54f08080a3dad5699ce",
+          "verifier_command": "sources/evaluations/fixtures/large/hashicorp-terraform/task-generations/lifecycle-v1/terraform-lifecycle-refactor-v1/verify.sh",
+          "verifier_sha256": "07dfbdd0983d33f80a2a5851215e082277af42a272dfefae6da31e4ab199a0a6",
+          "compile_command": "export PATH=/opt/data/bin:/opt/data/opt/go/bin:$PATH; GOTOOLCHAIN=auto go test -run '^$' ./internal/configs",
           "acceptance_visibility": "controller-only-compile-policy",
           "expected_changed_paths": [
-            "lib/content-type.js"
+            "internal/configs/state_migrate_file.go"
           ],
           "controller_visible_acceptance_assets": [],
           "upstream_test_paths": [],
@@ -122,19 +122,18 @@
           "model_concealed_paths": []
         },
         {
-          "id": "fastify-lifecycle-review-v1",
+          "id": "terraform-lifecycle-review-v1",
           "order": 3,
           "task_class": "code-review-correction",
-          "prompt_path": "sources/evaluations/fixtures/medium/fastify-fastify/task-generations/lifecycle-v1/fastify-lifecycle-review-v1/agent-prompt.txt",
-          "prompt_sha256": "948a4cd3519e2fce58b530f888861cd3da797faa6ff25ab413df2dfd4ef1a4b5",
-          "seed_patch_sha256": "0402a5fc7785775c034fddc539539bbbd0083d11a6f555e22f95dd992476aa3c",
-          "verifier_command": "sources/evaluations/fixtures/medium/fastify-fastify/task-generations/lifecycle-v1/fastify-lifecycle-review-v1/verify.sh",
-          "verifier_sha256": "43583a187ed1382065ead27172cf85daccddcae21a454b9118a77bb7523555b5",
-          "compile_command": "node --check fastify.js && node --check lib/errors.js",
+          "prompt_path": "sources/evaluations/fixtures/large/hashicorp-terraform/task-generations/lifecycle-v1/terraform-lifecycle-review-v1/agent-prompt.txt",
+          "prompt_sha256": "f5f624794bcd45304d247ff5cd08fce294127565179a6428ad2b671974129cb4",
+          "seed_patch_sha256": "9820e02bdbf682b7e5559e42ba8bf3799d4f22018d31cb8cd1621223c371cfcd",
+          "verifier_command": "sources/evaluations/fixtures/large/hashicorp-terraform/task-generations/lifecycle-v1/terraform-lifecycle-review-v1/verify.sh",
+          "verifier_sha256": "16a1a354a0fd3ea1cbec36fee91b759358138747603f33f4aa33192f720f5b2c",
+          "compile_command": "export PATH=/opt/data/bin:/opt/data/opt/go/bin:$PATH; GOTOOLCHAIN=auto go test -run '^$' ./internal/addrs",
           "acceptance_visibility": "controller-only-compile-policy",
           "expected_changed_paths": [
-            "fastify.js",
-            "lib/errors.js"
+            "internal/addrs/checkable.go"
           ],
           "controller_visible_acceptance_assets": [],
           "upstream_test_paths": [],
@@ -142,33 +141,33 @@
           "expected_model_concealed_paths": [],
           "model_concealed_paths": [],
           "review_patch_path": "review-change.patch",
-          "review_patch_sha256": "0402a5fc7785775c034fddc539539bbbd0083d11a6f555e22f95dd992476aa3c"
+          "review_patch_sha256": "9820e02bdbf682b7e5559e42ba8bf3799d4f22018d31cb8cd1621223c371cfcd"
         }
       ],
       "model_facing_prompts": {
         "rendering_contract": "sequential-model-facing-prompts-v2",
-        "profile_guidance_sha256": "f1d7a2cf7b0a7c1affd8bbb04705f073332ee6efc5f8f89f019b9e0cbacec4bb",
+        "profile_guidance_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
         "tasks": [
           {
-            "task_id": "fastify-lifecycle-feature-v1",
+            "task_id": "terraform-lifecycle-feature-v1",
             "order": 1,
-            "rendered_prompt_sha256": "de68e5a0c9c117cdf67a18f854166053f75e2ca8288c465c991c8724f336e12b"
+            "rendered_prompt_sha256": "b49c00e68608139fda3f2127048e0839da90e4c7f2f77c4238336788f0295bda"
           },
           {
-            "task_id": "fastify-lifecycle-refactor-v1",
+            "task_id": "terraform-lifecycle-refactor-v1",
             "order": 2,
-            "rendered_prompt_sha256": "c736a654037ea087c972057a81b596310fa8bf573a12a72e0e62c63f9bb5397d"
+            "rendered_prompt_sha256": "8a6cb42e5cd2c7a4b67ef1c0af4dd289c3ea6b717042e67940470c6a81d6bff4"
           },
           {
-            "task_id": "fastify-lifecycle-review-v1",
+            "task_id": "terraform-lifecycle-review-v1",
             "order": 3,
-            "rendered_prompt_sha256": "386c6435b3538f3a87624a9810276d1b1620eb6cedf140e65dc8b01f624a972d"
+            "rendered_prompt_sha256": "b274a9089a1d806b9b00f447906debc452e9a2b48c7d99b6f191bd5e6555b1ff"
           }
         ]
       },
       "qualification": {
-        "path": "sources/evaluations/fixtures/medium/fastify-fastify/qualification-lifecycle-v1.json",
-        "sha256": "340ffbd669ed98b5fec72c195d8c65eb8e72b6f52015a8ef9abd296a0bcb1d0e"
+        "path": "sources/evaluations/fixtures/large/hashicorp-terraform/qualification-lifecycle-v1.json",
+        "sha256": "02133f582967b73eac8f95caeff4d4af6bbf4c6f747020ef2249c3908a43c532"
       },
       "baseline_profile": {
         "profile_id": "baseline-bare-codex",
@@ -208,11 +207,11 @@
         },
         "dockerfile_path": "sources/evaluations/fixtures/container/Dockerfile",
         "dockerfile_sha256": "47c91967ce25014ce54879514f51d2ff0326651be1087209115eff4d358226b3",
-        "dependency_command": "npm install --ignore-scripts --no-audit --no-fund",
+        "dependency_command": "go mod download",
         "dependency_lockfiles": [
           {
-            "path": "package.json",
-            "sha256": "b273320af1bb4cfc0f9334457c8e3b1d035fde0da14f9db65e8ef97d361d0be3"
+            "path": "go.sum",
+            "sha256": "be9ec949db0a0b135197f2c78b6d9821d764cc9b8c362b4860e3d5a1e9c74b9e"
           }
         ],
         "codex_runtime_condition": "codex-openai-gpt-5-6-sol-high",
@@ -255,10 +254,10 @@
     }
   },
   "selected_execution": {
-    "descriptor_sha256": "421bd2343062a57f95cba008b358311ec8e3ba65bea8e0cd8373869aaf692bef",
+    "descriptor_sha256": "66363c3d9fe81aa8239e07802e446fa7dc7f68a4108c1616f496a9756d7292b5",
     "descriptor": {
       "version": "execution-condition-v1",
-      "sequence_id": "fastify-lifecycle-sequence-v1",
+      "sequence_id": "terraform-lifecycle-sequence-v1",
       "execution_role": "baseline",
       "selected_profile": {
         "profile_id": "baseline-bare-codex",
@@ -325,22 +324,22 @@
       },
       "model_facing_prompts": {
         "rendering_contract": "sequential-model-facing-prompts-v2",
-        "profile_guidance_sha256": "f1d7a2cf7b0a7c1affd8bbb04705f073332ee6efc5f8f89f019b9e0cbacec4bb",
+        "profile_guidance_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
         "tasks": [
           {
-            "task_id": "fastify-lifecycle-feature-v1",
+            "task_id": "terraform-lifecycle-feature-v1",
             "order": 1,
-            "rendered_prompt_sha256": "de68e5a0c9c117cdf67a18f854166053f75e2ca8288c465c991c8724f336e12b"
+            "rendered_prompt_sha256": "b49c00e68608139fda3f2127048e0839da90e4c7f2f77c4238336788f0295bda"
           },
           {
-            "task_id": "fastify-lifecycle-refactor-v1",
+            "task_id": "terraform-lifecycle-refactor-v1",
             "order": 2,
-            "rendered_prompt_sha256": "c736a654037ea087c972057a81b596310fa8bf573a12a72e0e62c63f9bb5397d"
+            "rendered_prompt_sha256": "8a6cb42e5cd2c7a4b67ef1c0af4dd289c3ea6b717042e67940470c6a81d6bff4"
           },
           {
-            "task_id": "fastify-lifecycle-review-v1",
+            "task_id": "terraform-lifecycle-review-v1",
             "order": 3,
-            "rendered_prompt_sha256": "386c6435b3538f3a87624a9810276d1b1620eb6cedf140e65dc8b01f624a972d"
+            "rendered_prompt_sha256": "b274a9089a1d806b9b00f447906debc452e9a2b48c7d99b6f191bd5e6555b1ff"
           }
         ]
       },
@@ -390,12 +389,12 @@
         }
       },
       "dependencies": {
-        "command": "npm install --ignore-scripts --no-audit --no-fund",
-        "command_sha256": "7493d616f26e72b22eb5a21beafa12a6717ebf5b93a7a75e709de65e7323cc41",
+        "command": "go mod download",
+        "command_sha256": "42a8263a643ccbe692d70752ffdd8cea328fc2d3190677df1485ee06f55b350a",
         "lockfiles": [
           {
-            "path": "package.json",
-            "snapshot_sha256": "b273320af1bb4cfc0f9334457c8e3b1d035fde0da14f9db65e8ef97d361d0be3",
+            "path": "go.sum",
+            "snapshot_sha256": "be9ec949db0a0b135197f2c78b6d9821d764cc9b8c362b4860e3d5a1e9c74b9e",
             "current_fixture_sha256": null
           }
         ]
@@ -420,7 +419,7 @@
       },
       "baseline_pool_reference": {
         "protocol_version": "baseline-pool-v1",
-        "protocol_fingerprint": "b7412adb32b6",
+        "protocol_fingerprint": "6b6551928c4d",
         "comparison_policy": "paired baseline and treatment must share this baseline pool fingerprint and replicate"
       },
       "model_condition_override": {
