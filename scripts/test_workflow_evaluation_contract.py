@@ -399,7 +399,7 @@ class ActiveCampaignArchitectureTest(unittest.TestCase):
         gate = sequence["mistake_gate"]
         exact_prepare = (
             'python3 scripts/run_sequential_workflow_matrix.py "$SEQUENCE_ID" '
-            f'--workflow-model-condition-id {gate["designated_model_condition"]} '
+            f'--max-parallel 1 --workflow-model-condition-id {gate["designated_model_condition"]} '
             f'--workflow-model {gate["model"]} --workflow-reasoning-effort {gate["reasoning_effort"]} --prepare-only'
         )
         prepare_lines = [
@@ -4743,6 +4743,36 @@ class LifecycleV1CompileOnlyContractTest(unittest.TestCase):
                 self.assertEqual(task["acceptance_visibility"], "controller-only-compile-policy")
                 self.assertEqual(task["model_visible_validation_anchors"], [])
 
+    def test_lifecycle_v1_prompts_do_not_disclose_evaluator_profile_or_lane(self) -> None:
+        sequence = runner.load_sequence("fastify-lifecycle-sequence-v1")
+        first_task = min(sequence["tasks"], key=lambda task: int(task["order"]))
+        prompt = (ROOT / first_task["prompt_path"]).read_text()
+        rendered = runner.render_task_prompt(
+            sequence,
+            "baseline-bare-codex",
+            int(first_task["order"]),
+            prompt,
+            first_task=True,
+        )
+        for marker in (
+            "# Evaluation isolation contract",
+            "baseline-bare-codex",
+            "control lane",
+            "Codex substrate baseline",
+        ):
+            self.assertNotIn(marker, rendered)
+        descriptor = runner.model_facing_prompt_descriptor(sequence, "baseline-bare-codex")
+        self.assertEqual(
+            descriptor["profile_guidance_sha256"],
+            hashlib.sha256(b"").hexdigest(),
+        )
+
+        historical = runner.load_sequence("fastify-lifecycle-sequence-v0")
+        self.assertIn(
+            "baseline-bare-codex",
+            runner.model_facing_profile_guidance(historical, "baseline-bare-codex"),
+        )
+
     def test_active_sequences_use_searchable_compile_only_tasks(self) -> None:
         document = json.loads((ROOT / "data/workflow-task-sequences.json").read_text())
         sequences = [item for item in document["sequences"] if item["status"] == "active"]
@@ -4826,6 +4856,7 @@ class LifecycleV1CompileOnlyContractTest(unittest.TestCase):
                 sys.executable,
                 "scripts/run_sequential_workflow_matrix.py",
                 "fastify-lifecycle-sequence-v1",
+                "--max-parallel", "1",
                 "--workflow-model-condition-id", "codex-openai-gpt-5-6-sol-high",
                 "--workflow-model", "gpt-5.6-sol",
                 "--workflow-reasoning-effort", "high",
@@ -4840,6 +4871,7 @@ class LifecycleV1CompileOnlyContractTest(unittest.TestCase):
         self.assertEqual(result.returncode, 0, result.stderr)
         plan = json.loads(result.stdout)
         self.assertEqual(plan["jobs"][0]["sequence_id"], "fastify-lifecycle-sequence-v1")
+        self.assertEqual(plan["max_parallel"], 1)
         self.assertTrue(
             plan["jobs"][0]["protocol"].startswith(
                 "sources/evaluations/protocols/fastify-lifecycle-sequence-v1-baseline-bare-codex-"
@@ -4907,8 +4939,8 @@ class BaselineV3LowComplexityContractTest(unittest.TestCase):
         document = json.loads((ROOT / "data/workflow-task-sequences.json").read_text())
         flags = "--workflow-model-condition-id codex-openai-gpt-5-6-sol-high --workflow-model gpt-5.6-sol --workflow-reasoning-effort high"
         for sequence in active_lifecycle_v1_sequences(document):
-            prepare = f"python3 scripts/run_sequential_workflow_matrix.py {sequence['id']} {flags} --prepare-only"
-            paid = f"python3 scripts/run_sequential_workflow_matrix.py {sequence['id']} {flags}"
+            prepare = f"python3 scripts/run_sequential_workflow_matrix.py {sequence['id']} --max-parallel 1 {flags} --prepare-only"
+            paid = f"python3 scripts/run_sequential_workflow_matrix.py {sequence['id']} --max-parallel 1 {flags}"
             self.assertIn(prepare, runbook)
             self.assertNotIn(paid, runbook.splitlines())
             allowed, reason = runner.baseline_v2_pilot_run_gate(sequence, ROOT, 0)
