@@ -1,5 +1,5 @@
 {
-  "schema_version": 1,
+  "schema_version": 2,
   "generation": "baseline-v5",
   "date": "2026-08-01",
   "scope": [
@@ -7,9 +7,13 @@
     "beets-lifecycle-sequence-v0",
     "terraform-lifecycle-sequence-v0"
   ],
+  "agent_prompt_contract": "normal-software-objective-complete-correct-implementation",
   "acceptance_gate": "affected-component-compilation",
+  "acceptance_visibility": "controller-only",
   "quality_diagnostics_gate": false,
+  "seeded_compile_qualification": "each standalone and composite seeded compiler outcome must be exit 0 or 1; collection and infrastructure failures are invalid",
+  "fixed_compile_qualification": "every cumulative repaired component and the final project-wide compile command must exit 0",
   "provider_free_qualification_required": true,
   "paid_pilot_authorized": false,
-  "authorization_note": "This artifact records the new compile-only task-family contract. It does not authorize provider spend. Authorize the first-valid GPT-5.6 Sol/high baseline pilot only after all three provider-free qualification artifacts and frozen baseline protocols are current."
+  "authorization_note": "This artifact records the controller-only compile assessment and normal agent task contract. It does not authorize provider spend. Authorize the first-valid GPT-5.6 Sol/high baseline pilot only after all three provider-free qualification artifacts and frozen baseline protocols are current."
 }

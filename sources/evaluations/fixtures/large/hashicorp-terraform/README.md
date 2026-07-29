@@ -5,6 +5,6 @@
 - Sequence: `terraform-lifecycle-sequence-v0`
 - Active generation: `baseline-v5`
 - Qualification: `qualification-lifecycle-v0-baseline-v5.json`
-- Stages: policy-callback feature compilation → configuration refactor compilation → address review compilation
+- Stages: deferred policy callback propagation → provider-requirements refactor → checkable-address review
 
-The controller applies all three Baseline V5 production seeds before prompt 1, evaluates all three affected-package compile commands after prompt 3, and then compiles every Go package with tests disabled. Component and final project compilation are the sole pass/fail gates; tests, behavior, style, and source-review quality are diagnostics only.
+The controller applies all three semantic regressions before prompt 1. Agents receive normal engineering objectives and are expected to implement them correctly; evaluator scoring and compile commands are not model-facing. After prompt 3, the controller runs all affected-package compile commands and compiles every Go package with tests disabled. Component and final project compilation are the internal pass/fail gates; tests, behavior, style, and source-review quality are diagnostics.

@@ -393,9 +393,9 @@ python3 scripts/validate_repository.py
 
 ## Evidence boundary
 
-A valid Baseline V5 workflow pre-seeds every two-file compile regression into one qualified composite broken root, then materializes one prompt at a time. Each prompt describes the affected component without an exact edit recipe, permits normal repository search and inspection, and discloses only its affected-component compile command. Beets uses the locked project environment and Terraform binds the snapshot-required Go toolchain explicitly. Seed patch files, controller scripts, and fixed parents remain outside the model-visible surface; final verification repeats the three component compile commands and then executes the frozen project-wide compile command. Product-effect eligibility also requires parity with the pinned official integration and positive treatment-assignment evidence; configuration/listing alone is insufficient.
+A valid Baseline V5 workflow pre-seeds three authentic semantic regressions from completed upstream behavior into one qualified composite start, then materializes one normal software-engineering prompt at a time. Each prompt states the requested outcome, permits repository search and related-code inspection, and expects a complete correct implementation without disclosing evaluator scoring or controller commands. Beets uses the locked project environment and Terraform binds the snapshot-required Go toolchain explicitly. Seed patch files, controller scripts, fixed parents, affected-component compile commands, and the final project-wide compile command remain outside the model-visible surface. Product-effect eligibility also requires parity with the pinned official integration and positive treatment-assignment evidence; configuration/listing alone is insufficient.
 
-Every active task uses compile-only acceptance. Unit tests, behavioral fidelity, style, maintainability, and source review remain diagnostic and do not determine task pass/fail.
+Internally, every active task uses compilation-only acceptance. Unit tests, behavioral fidelity, style, maintainability, and source review remain diagnostic and do not determine evaluator pass/fail. This internal policy must never be presented as an agent instruction.
 
 ## Active sequences
 
@@ -409,13 +409,13 @@ Every active task uses compile-only acceptance. Unit tests, behavioral fidelity,
 
 Before changing a sequence to `active`, require:
 
-- two causally related production files per task;
-- standalone seeded compile failure and fixed compile success for every task;
-- a conflict-free composite seed whose task compile verifiers all fail at lane start;
+- one or two semantic production targets per task, restored to completed upstream behavior;
+- standalone seed application and repair round-trips, with seeded compiler outcomes limited to 0 or 1 and repaired compilation succeeding;
+- a conflict-free composite semantic seed whose controller compile outcomes are all 0 or 1 at lane start;
 - one parentless model-facing Git baseline with the fixed commit inaccessible;
-- prompts that permit repository search and withhold exact edit recipes;
-- one model-visible affected-component compile command per task and no injected acceptance-test assets;
-- one frozen project-wide compile command after the three component verifiers;
+- prompts that state complete software objectives, permit repository discovery, and withhold controller scoring;
+- no model-visible compile commands or injected acceptance-test assets;
+- controller-only affected-component compile commands plus one frozen project-wide compile command;
 - controller-only seed patch files and fixed references;
 - cumulative provider usage capture, verifier integrity, isolation, structured compile outcomes, and optional quality diagnostics;
 - a machine-validated compile-passing provider pilot before any treatment protocol can be frozen, prepared, or run.
@@ -427,7 +427,7 @@ SEQUENCE_ID={prepare_sequence_id}
 python3 scripts/run_sequential_workflow_matrix.py "$SEQUENCE_ID" {prepare_model_flags} --prepare-only
 ```
 
-`prepare-verification.json` must show every task preseeded, only task 1's prompt materialized, a clean true-root Git baseline, no fixed commit object or prior reflog, current composite qualification including a passing project-wide compile boundary, no controller seed/verifier files in the model root, no injected acceptance-test assets, and the current task's affected-component compile command visible.
+`prepare-verification.json` must show every task preseeded, only task 1's prompt materialized, a clean true-root Git baseline, no fixed commit object or prior reflog, current composite qualification including recorded seeded compiler outcomes and passing repaired/project-wide compilation boundaries, no controller seed/verifier files in the model root, no injected acceptance-test assets, and no controller compile command or scoring-policy disclosure in the current task prompt.
 
 ## Paid execution
 

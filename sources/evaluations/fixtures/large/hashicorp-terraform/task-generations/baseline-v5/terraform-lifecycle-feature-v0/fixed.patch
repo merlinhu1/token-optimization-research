@@ -1,20 +1,13 @@
-diff --git b/internal/policy/callback/callback.go a/internal/policy/callback/callback.go
-index 0eaf0e8dc..6b0fd1187 100644
---- b/internal/policy/callback/callback.go
-+++ a/internal/policy/callback/callback.go
-@@ -64,5 +64,3 @@ func (s *InternalRegistry) Get(id uint32) (Functions, bool) {
- func (s *InternalRegistry) NextID() uint32 {
- 	return atomic.AddUint32(&s.counter, 1)
- }
--
--var _ = __workflow_feature_compile_break__
 diff --git b/internal/policy/callback/server.go a/internal/policy/callback/server.go
-index 3f2828c3c..51d0cfccd 100644
+index 6db70085fcc23b72122b14068fd6254a6a3d201f..51d0cfccda0f0ab180867cd7309719033d6e23a8 100644
 --- b/internal/policy/callback/server.go
 +++ a/internal/policy/callback/server.go
-@@ -92,5 +92,3 @@ func (s *Server) Stop() {
- 		s.Grpc.GracefulStop()
- 	}
+@@ -83,7 +83,7 @@ func (s *Server) GetDataSource(ctx context.Context, request *proto.GetDataSource
+ 
+ 	return &proto.GetDataSourceResponse{
+ 		Result:   result,
+-		Deferred: false,
++		Deferred: isDeferred,
+ 	}, nil
  }
--
--var _ = __workflow_feature_compile_break__
+ 

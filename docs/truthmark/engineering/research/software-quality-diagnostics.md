@@ -50,7 +50,7 @@ Token-eligibility state plus separately recorded model-behavior diagnostics.
 - Exclude and rerun only for fixture/contract invalidity, missing or corrupt provider usage, broken isolation/integrity, or operationally incomplete prompt execution.
 - Record component and project compile pass/fail status separately from optional broader quality diagnostics.
 - Independent review is optional diagnostic evidence. Unreviewed runs keep `quality_score: null` but remain token-eligible when execution integrity is valid.
-- Baseline V5 prompts disclose only the affected component and compile command, not one canonical implementation shape.
+- Baseline V5 prompts state the requested engineering outcome and expect correct implementation; affected-component compile commands and scoring policy remain controller-only.
 - Preserve diagnostics, final diffs, safety observations, and review notes so token effects can be interpreted alongside observed behavior.
 
 ## Rationale

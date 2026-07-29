@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "description": "The production lifecycle-v0 portfolio uses Baseline V5 compile-only task families for Fastify, Beets, and Terraform: three persistent feature-refactor-review workflows, two causally related production files per task, discovery-oriented prompts without exact edit recipes, model-visible affected-component compile commands, and a compile-passing strongest-model pilot gate before treatment spend.",
+  "description": "The production lifecycle-v0 portfolio uses Baseline V5 for Fastify, Beets, and Terraform: three persistent feature-refactor-review workflows with authentic semantic tasks, normal repository discovery, controller-only compilation assessment, and a strongest-model pilot before treatment spend.",
   "state_policy_defaults": {
     "reset_before_session": [
       "repository working tree",
@@ -31,10 +31,10 @@
       ],
       "objective": "individual_tool_effectiveness",
       "primary_metric": "cumulative provider-reported workflow tokens",
-      "reset_policy": "Each task reset reverses only its generation-local production seed. No acceptance tests are injected; the visible affected-component compile command is the sole pass/fail gate.",
-      "seed_patch_policy": "All three generation-local production regressions are applied as one composite broken start before task 1; prompts remain lazy and final verification runs once after the final prompt. Future seed regressions remain visible from the start. Baseline V5 compile commands stay model-visible, while unit tests, behavior, style, and source review are diagnostics only.",
+      "reset_policy": "Each task reset reverses only its generation-local semantic production regression. No acceptance tests are injected. A controller-only affected-component compile command determines evaluator pass/fail and is not disclosed as the agent task objective.",
+      "seed_patch_policy": "All three generation-local semantic production regressions are applied as one composite start before task 1; prompts remain lazy and final controller verification runs once after the final prompt. Future task regressions remain visible from the start. Model-facing prompts describe the software objective and expect a complete correct implementation; controller compile policy and broader diagnostic treatment are not disclosed.",
       "protocol_freeze_date": "2026-08-01",
-      "production_lane": "current-production-v0-baseline-v3",
+      "production_lane": "current-production-v0-baseline-v5",
       "qualification_path": "sources/evaluations/fixtures/medium/fastify-fastify/qualification-lifecycle-v0-baseline-v5.json",
       "qualification_date": "2026-08-01",
       "fixture_id": "medium-fastify-fastify",
@@ -60,15 +60,12 @@
           "compatibility_rebased_test_paths": [],
           "model_concealed_paths": [],
           "expected_changed_paths": [
-            "lib/request.js",
-            "lib/reply.js"
+            "lib/request.js"
           ],
-          "model_visible_validation_anchors": [
-            "node --check lib/request.js && node --check lib/reply.js"
-          ],
-          "acceptance_visibility": "model-visible-compile-only",
+          "model_visible_validation_anchors": [],
+          "acceptance_visibility": "controller-only-compile-policy",
           "model_visible_acceptance_asset_paths": [],
-          "compile_command": "node --check lib/request.js && node --check lib/reply.js"
+          "compile_command": "node --check lib/request.js"
         },
         {
           "id": "fastify-lifecycle-refactor-v0",
@@ -80,15 +77,12 @@
           "compatibility_rebased_test_paths": [],
           "model_concealed_paths": [],
           "expected_changed_paths": [
-            "lib/content-type.js",
-            "lib/content-type-parser.js"
+            "lib/content-type.js"
           ],
-          "model_visible_validation_anchors": [
-            "node --check lib/content-type.js && node --check lib/content-type-parser.js"
-          ],
-          "acceptance_visibility": "model-visible-compile-only",
+          "model_visible_validation_anchors": [],
+          "acceptance_visibility": "controller-only-compile-policy",
           "model_visible_acceptance_asset_paths": [],
-          "compile_command": "node --check lib/content-type.js && node --check lib/content-type-parser.js"
+          "compile_command": "node --check lib/content-type.js"
         },
         {
           "id": "fastify-lifecycle-review-v0",
@@ -104,17 +98,15 @@
             "fastify.js",
             "lib/errors.js"
           ],
-          "model_visible_validation_anchors": [
-            "node --check fastify.js && node --check lib/errors.js"
-          ],
-          "acceptance_visibility": "model-visible-compile-only",
+          "model_visible_validation_anchors": [],
+          "acceptance_visibility": "controller-only-compile-policy",
           "model_visible_acceptance_asset_paths": [],
           "compile_command": "node --check fastify.js && node --check lib/errors.js"
         }
       ],
-      "conversion_note": "Baseline V3 supersedes the failed, unpublished Baseline V2 pilot identity with exact mechanical edit commands while preserving all V2 failure evidence and executed protocol bytes.",
-      "complexity_note": "Baseline V3 makes every task a deterministic old-to-new replacement command followed only by complete model-visible focused validation; no discovery or implementation choice remains.",
-      "complexity_bar": "The fixed snapshot must pass, each seed must fail semantic or structural acceptance as appropriate, and treatment launch remains blocked until the strongest-model pilot has literally zero unique model incidents.",
+      "conversion_note": "Baseline V5 replaces the recipe-driven active selector with authentic semantic tasks and normal repository discovery while preserving every executed Baseline V3/V4 contract and result byte-for-byte.",
+      "complexity_note": "Baseline V5 removes exact edit recipes and target-file restrictions. Agents must inspect the repository, understand the requested behavior, and implement a coherent repair in the persistent workflow.",
+      "complexity_bar": "Model-facing tasks must state the complete software objective without exposing evaluator scoring. Controller acceptance requires affected-component compilation after each task and project-wide compilation after the workflow; all broader quality evidence remains diagnostic.",
       "task_family_generation": "baseline-v5",
       "mistake_gate": {
         "designated_model_condition": "codex-openai-gpt-5-6-sol-high",
@@ -130,6 +122,7 @@
       },
       "acceptance_policy": {
         "gate": "affected-component-compilation",
+        "visibility": "controller-only",
         "quality_diagnostics_gate": false,
         "tests_required": false,
         "source_review_required": false
@@ -147,10 +140,10 @@
       ],
       "objective": "individual_tool_effectiveness",
       "primary_metric": "cumulative provider-reported workflow tokens",
-      "reset_policy": "Each task reset reverses only its generation-local production seed. No acceptance tests are injected; the visible affected-component compile command is the sole pass/fail gate.",
-      "seed_patch_policy": "All three generation-local production regressions are applied as one composite broken start before task 1; prompts remain lazy and final verification runs once after the final prompt. Future seed regressions remain visible from the start. Baseline V5 compile commands stay model-visible, while unit tests, behavior, style, and source review are diagnostics only.",
+      "reset_policy": "Each task reset reverses only its generation-local semantic production regression. No acceptance tests are injected. A controller-only affected-component compile command determines evaluator pass/fail and is not disclosed as the agent task objective.",
+      "seed_patch_policy": "All three generation-local semantic production regressions are applied as one composite start before task 1; prompts remain lazy and final controller verification runs once after the final prompt. Future task regressions remain visible from the start. Model-facing prompts describe the software objective and expect a complete correct implementation; controller compile policy and broader diagnostic treatment are not disclosed.",
       "protocol_freeze_date": "2026-08-01",
-      "production_lane": "current-production-v0-baseline-v4",
+      "production_lane": "current-production-v0-baseline-v5",
       "qualification_path": "sources/evaluations/fixtures/medium/beetbox-beets/qualification-lifecycle-v0-baseline-v5.json",
       "qualification_date": "2026-08-01",
       "fixture_id": "medium-beetbox-beets",
@@ -176,15 +169,12 @@
           "compatibility_rebased_test_paths": [],
           "model_concealed_paths": [],
           "expected_changed_paths": [
-            "beets/util/functemplate.py",
-            "beets/util/pathformats.py"
+            "beets/util/functemplate.py"
           ],
-          "model_visible_validation_anchors": [
-            "uv run --offline --frozen python -m py_compile beets/util/functemplate.py beets/util/pathformats.py"
-          ],
-          "acceptance_visibility": "model-visible-compile-only",
+          "model_visible_validation_anchors": [],
+          "acceptance_visibility": "controller-only-compile-policy",
           "model_visible_acceptance_asset_paths": [],
-          "compile_command": "uv run --offline --frozen python -m py_compile beets/util/functemplate.py beets/util/pathformats.py"
+          "compile_command": "uv run --offline --frozen python -m py_compile beets/util/functemplate.py"
         },
         {
           "id": "beets-lifecycle-refactor-v0",
@@ -196,15 +186,12 @@
           "compatibility_rebased_test_paths": [],
           "model_concealed_paths": [],
           "expected_changed_paths": [
-            "beets/dbcore/db.py",
-            "beets/dbcore/query.py"
+            "beets/dbcore/db.py"
           ],
-          "model_visible_validation_anchors": [
-            "uv run --offline --frozen python -m py_compile beets/dbcore/db.py beets/dbcore/query.py"
-          ],
-          "acceptance_visibility": "model-visible-compile-only",
+          "model_visible_validation_anchors": [],
+          "acceptance_visibility": "controller-only-compile-policy",
           "model_visible_acceptance_asset_paths": [],
-          "compile_command": "uv run --offline --frozen python -m py_compile beets/dbcore/db.py beets/dbcore/query.py"
+          "compile_command": "uv run --offline --frozen python -m py_compile beets/dbcore/db.py"
         },
         {
           "id": "beets-lifecycle-review-v0",
@@ -217,20 +204,17 @@
           "model_concealed_paths": [],
           "review_patch_path": "review-change.patch",
           "expected_changed_paths": [
-            "beetsplug/ftintitle.py",
-            "beetsplug/duplicates.py"
+            "beetsplug/ftintitle.py"
           ],
-          "model_visible_validation_anchors": [
-            "uv run --offline --frozen python -m py_compile beetsplug/ftintitle.py beetsplug/duplicates.py"
-          ],
-          "acceptance_visibility": "model-visible-compile-only",
+          "model_visible_validation_anchors": [],
+          "acceptance_visibility": "controller-only-compile-policy",
           "model_visible_acceptance_asset_paths": [],
-          "compile_command": "uv run --offline --frozen python -m py_compile beetsplug/ftintitle.py beetsplug/duplicates.py"
+          "compile_command": "uv run --offline --frozen python -m py_compile beetsplug/ftintitle.py"
         }
       ],
-      "conversion_note": "Baseline V4 preserves the Baseline V3 workload under new identities and corrects only the Beets/Terraform task-verifier repository fallback; all failed V2 and occupied V3 evidence remains immutable.",
-      "complexity_note": "Baseline V4 preserves the Baseline V3 deterministic old-to-new replacement commands and complete model-visible focused validation; no discovery or implementation choice remains.",
-      "complexity_bar": "The fixed snapshot must pass, each seed must fail semantic or structural acceptance as appropriate, and treatment launch remains blocked until the strongest-model pilot has literally zero unique model incidents.",
+      "conversion_note": "Baseline V5 replaces the recipe-driven active selector with authentic semantic tasks and normal repository discovery while preserving every executed Baseline V3/V4 contract and result byte-for-byte.",
+      "complexity_note": "Baseline V5 removes exact edit recipes and target-file restrictions. Agents must inspect the repository, understand the requested behavior, and implement a coherent repair in the persistent workflow.",
+      "complexity_bar": "Model-facing tasks must state the complete software objective without exposing evaluator scoring. Controller acceptance requires affected-component compilation after each task and project-wide compilation after the workflow; all broader quality evidence remains diagnostic.",
       "task_family_generation": "baseline-v5",
       "mistake_gate": {
         "designated_model_condition": "codex-openai-gpt-5-6-sol-high",
@@ -246,6 +230,7 @@
       },
       "acceptance_policy": {
         "gate": "affected-component-compilation",
+        "visibility": "controller-only",
         "quality_diagnostics_gate": false,
         "tests_required": false,
         "source_review_required": false
@@ -263,10 +248,10 @@
       ],
       "objective": "individual_tool_effectiveness",
       "primary_metric": "cumulative provider-reported workflow tokens",
-      "reset_policy": "Each task reset reverses only its generation-local production seed. No acceptance tests are injected; the visible affected-component compile command is the sole pass/fail gate.",
-      "seed_patch_policy": "All three generation-local production regressions are applied as one composite broken start before task 1; prompts remain lazy and final verification runs once after the final prompt. Future seed regressions remain visible from the start. Baseline V5 compile commands stay model-visible, while unit tests, behavior, style, and source review are diagnostics only.",
+      "reset_policy": "Each task reset reverses only its generation-local semantic production regression. No acceptance tests are injected. A controller-only affected-component compile command determines evaluator pass/fail and is not disclosed as the agent task objective.",
+      "seed_patch_policy": "All three generation-local semantic production regressions are applied as one composite start before task 1; prompts remain lazy and final controller verification runs once after the final prompt. Future task regressions remain visible from the start. Model-facing prompts describe the software objective and expect a complete correct implementation; controller compile policy and broader diagnostic treatment are not disclosed.",
       "protocol_freeze_date": "2026-08-01",
-      "production_lane": "current-production-v0-baseline-v4",
+      "production_lane": "current-production-v0-baseline-v5",
       "qualification_path": "sources/evaluations/fixtures/large/hashicorp-terraform/qualification-lifecycle-v0-baseline-v5.json",
       "qualification_date": "2026-08-01",
       "fixture_id": "large-hashicorp-terraform",
@@ -292,13 +277,10 @@
           "compatibility_rebased_test_paths": [],
           "model_concealed_paths": [],
           "expected_changed_paths": [
-            "internal/policy/callback/server.go",
-            "internal/policy/callback/callback.go"
+            "internal/policy/callback/server.go"
           ],
-          "model_visible_validation_anchors": [
-            "export PATH=/opt/data/bin:/opt/data/opt/go/bin:$PATH; GOTOOLCHAIN=auto go test -run '^$' ./internal/policy/callback"
-          ],
-          "acceptance_visibility": "model-visible-compile-only",
+          "model_visible_validation_anchors": [],
+          "acceptance_visibility": "controller-only-compile-policy",
           "model_visible_acceptance_asset_paths": [],
           "compile_command": "export PATH=/opt/data/bin:/opt/data/opt/go/bin:$PATH; GOTOOLCHAIN=auto go test -run '^$' ./internal/policy/callback"
         },
@@ -312,13 +294,10 @@
           "compatibility_rebased_test_paths": [],
           "model_concealed_paths": [],
           "expected_changed_paths": [
-            "internal/configs/state_migrate_file.go",
-            "internal/configs/state_store.go"
+            "internal/configs/state_migrate_file.go"
           ],
-          "model_visible_validation_anchors": [
-            "export PATH=/opt/data/bin:/opt/data/opt/go/bin:$PATH; GOTOOLCHAIN=auto go test -run '^$' ./internal/configs"
-          ],
-          "acceptance_visibility": "model-visible-compile-only",
+          "model_visible_validation_anchors": [],
+          "acceptance_visibility": "controller-only-compile-policy",
           "model_visible_acceptance_asset_paths": [],
           "compile_command": "export PATH=/opt/data/bin:/opt/data/opt/go/bin:$PATH; GOTOOLCHAIN=auto go test -run '^$' ./internal/configs"
         },
@@ -333,20 +312,17 @@
           "model_concealed_paths": [],
           "review_patch_path": "review-change.patch",
           "expected_changed_paths": [
-            "internal/addrs/checkable.go",
-            "internal/addrs/check.go"
+            "internal/addrs/checkable.go"
           ],
-          "model_visible_validation_anchors": [
-            "export PATH=/opt/data/bin:/opt/data/opt/go/bin:$PATH; GOTOOLCHAIN=auto go test -run '^$' ./internal/addrs"
-          ],
-          "acceptance_visibility": "model-visible-compile-only",
+          "model_visible_validation_anchors": [],
+          "acceptance_visibility": "controller-only-compile-policy",
           "model_visible_acceptance_asset_paths": [],
           "compile_command": "export PATH=/opt/data/bin:/opt/data/opt/go/bin:$PATH; GOTOOLCHAIN=auto go test -run '^$' ./internal/addrs"
         }
       ],
-      "conversion_note": "Baseline V4 preserves the Baseline V3 workload under new identities and corrects only the Beets/Terraform task-verifier repository fallback; all failed V2 and occupied V3 evidence remains immutable.",
-      "complexity_note": "Baseline V4 preserves the Baseline V3 deterministic old-to-new replacement commands and complete model-visible focused validation; no discovery or implementation choice remains.",
-      "complexity_bar": "The fixed snapshot must pass, each seed must fail semantic or structural acceptance as appropriate, and treatment launch remains blocked until the strongest-model pilot has literally zero unique model incidents.",
+      "conversion_note": "Baseline V5 replaces the recipe-driven active selector with authentic semantic tasks and normal repository discovery while preserving every executed Baseline V3/V4 contract and result byte-for-byte.",
+      "complexity_note": "Baseline V5 removes exact edit recipes and target-file restrictions. Agents must inspect the repository, understand the requested behavior, and implement a coherent repair in the persistent workflow.",
+      "complexity_bar": "Model-facing tasks must state the complete software objective without exposing evaluator scoring. Controller acceptance requires affected-component compilation after each task and project-wide compilation after the workflow; all broader quality evidence remains diagnostic.",
       "task_family_generation": "baseline-v5",
       "mistake_gate": {
         "designated_model_condition": "codex-openai-gpt-5-6-sol-high",
@@ -362,6 +338,7 @@
       },
       "acceptance_policy": {
         "gate": "affected-component-compilation",
+        "visibility": "controller-only",
         "quality_diagnostics_gate": false,
         "tests_required": false,
         "source_review_required": false

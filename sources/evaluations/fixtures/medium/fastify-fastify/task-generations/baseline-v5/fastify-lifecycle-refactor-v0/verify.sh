@@ -4,5 +4,5 @@ TASK_DIR="$(cd "$(dirname "$0")" && pwd)"
 PROJECT_DIR="$(cd "$TASK_DIR/../.." && pwd)"
 cd "${WORKFLOW_REPO:-$PROJECT_DIR/repo}"
 
-# Baseline V5 compile-only acceptance: no semantic tests or source-shape checks.
-node --check lib/content-type.js && node --check lib/content-type-parser.js
+# Controller-only Baseline V5 compilation assessment. This policy is not model-facing.
+node --check lib/content-type.js

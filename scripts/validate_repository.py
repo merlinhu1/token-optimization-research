@@ -765,8 +765,12 @@ def validate_qualification(sequence: dict, errors: list[str]) -> None:
         ]
         for task in ordered
     }
-    required_true = ("seeded_verifier_nonzero", "fixed_verifier_zero", "full_fixed_cumulative_verifier_zero", "composite_seed_merge_zero", "composite_seeded_verifiers_nonzero", "no_unmerged_paths", "all_expected_model_concealment_declared")
     generation = sequence.get("task_family_generation")
+    required_true = ("fixed_verifier_zero", "full_fixed_cumulative_verifier_zero", "composite_seed_merge_zero", "no_unmerged_paths", "all_expected_model_concealment_declared")
+    if generation == "baseline-v5":
+        required_true += ("seeded_compile_outcomes_valid", "composite_seed_compile_outcomes_valid")
+    else:
+        required_true += ("seeded_verifier_nonzero", "composite_seeded_verifiers_nonzero")
     if generation in {"baseline-v3", "baseline-v4"}:
         required_true += ("no_model_concealed_acceptance_assets", "all_acceptance_behavior_model_visible", "model_visible_acceptance_assets_match_verifier_copies")
         if generation == "baseline-v4":
@@ -786,15 +790,19 @@ def validate_qualification(sequence: dict, errors: list[str]) -> None:
         required_true += (
             "no_model_visible_acceptance_assets",
             "no_model_concealed_acceptance_assets",
-            "all_acceptance_behavior_model_visible",
+            "controller_compile_policy_not_model_facing",
             "model_visible_acceptance_assets_match_verifier_copies",
             "aggregate_verifier_environment_passed",
             "project_compile_passed",
         )
+        if q.get("schema_version") != 5:
+            errors.append(f"qualification {rel} must use schema_version=5 for controller-only Baseline V5")
         if q.get("task_family_generation") != "baseline-v5":
             errors.append(f"qualification {rel} must bind task_family_generation=baseline-v5")
-        if q.get("acceptance_visibility") != "model-visible-compile-only":
-            errors.append(f"qualification {rel} must record model-visible compile-only acceptance")
+        if q.get("acceptance_visibility") != "controller-only-compile-policy":
+            errors.append(f"qualification {rel} must record controller-only compile policy visibility")
+        if q.get("all_acceptance_behavior_model_visible") is not False:
+            errors.append(f"qualification {rel} must not claim internal acceptance behavior is model-visible")
         if q.get("expected_model_visible_acceptance_asset_count") != 0:
             errors.append(f"qualification {rel} compile-only acceptance must not require file-backed test assets")
         if q.get("project_compile_command") != sequence.get("project_compile_command"):
@@ -807,9 +815,19 @@ def validate_qualification(sequence: dict, errors: list[str]) -> None:
         errors.append(f"qualification {rel} snapshot, date, or task order is stale")
     if any(q.get(field) is not True for field in required_true):
         errors.append(f"qualification {rel} must record every executable gate as true")
-    if set(q.get("composite_seed_verifier_exits", {}).values()) != {1}:
+    composite_seed_exits = q.get("composite_seed_verifier_exits", {})
+    if generation == "baseline-v5":
+        composite_seed_exits_invalid = (
+            set(composite_seed_exits) != {task["id"] for task in ordered}
+            or any(code not in {0, 1} for code in composite_seed_exits.values())
+        )
+        expected_seeded_exit = None
+    else:
+        composite_seed_exits_invalid = set(composite_seed_exits.values()) != {1}
+        expected_seeded_exit = 1
+    if composite_seed_exits_invalid:
         errors.append(
-            f"qualification {rel} seeded verifiers must fail acceptance with exit 1, not collection or infrastructure"
+            f"qualification {rel} seeded verifiers must record only compiler pass/fail exits, not collection or infrastructure failures"
         )
     boundaries = q.get("cumulative_boundaries", [])
     boundary_invalid = len(boundaries) != len(ordered)
@@ -819,7 +837,11 @@ def validate_qualification(sequence: dict, errors: list[str]) -> None:
                 boundary.get("task_id") != task["id"]
                 or boundary.get("seed_apply_check_exit") != 0
                 or boundary.get("seed_apply_exit") != 0
-                or boundary.get("seeded_verifier_exit") != 1
+                or (
+                    boundary.get("seeded_verifier_exit") not in {0, 1}
+                    if generation == "baseline-v5"
+                    else boundary.get("seeded_verifier_exit") != expected_seeded_exit
+                )
                 or boundary.get("repair_apply_check_exit") != 0
                 or boundary.get("repair_apply_exit") != 0
                 or any(code != 0 for code in boundary.get("retained_verifier_exits", {}).values())
@@ -1661,10 +1683,12 @@ def validate_workflow_task_sequences(sequence_doc: dict, fixture_doc: dict, erro
                         if any(receipt.get(key) != value for key, value in expected_receipt_identity.items()):
                             errors.append(f"active workflow sequence {sid} pilot attempt receipt identity is invalid")
             if generation == "baseline-v5":
-                if "compile command is the sole pass/fail gate" not in str(sequence.get("reset_policy", "")):
-                    errors.append(f"active workflow sequence {sid} reset policy must bind compile-only acceptance")
-                if "compile commands stay model-visible" not in str(sequence.get("seed_patch_policy", "")):
-                    errors.append(f"active workflow sequence {sid} seed policy must keep compile acceptance model-visible")
+                reset_policy = str(sequence.get("reset_policy", ""))
+                seed_policy = str(sequence.get("seed_patch_policy", ""))
+                if "controller-only affected-component compile command" not in reset_policy or "not disclosed" not in reset_policy:
+                    errors.append(f"active workflow sequence {sid} reset policy must bind undisclosed controller-only compilation assessment")
+                if "Model-facing prompts describe the software objective" not in seed_policy or "not disclosed" not in seed_policy:
+                    errors.append(f"active workflow sequence {sid} seed policy must keep controller scoring out of the agent task")
             else:
                 if "declared focused acceptance tests" not in str(sequence.get("reset_policy", "")):
                     errors.append(f"active workflow sequence {sid} reset policy must retain declared model-visible acceptance tests")
@@ -1683,6 +1707,7 @@ def validate_workflow_task_sequences(sequence_doc: dict, fixture_doc: dict, erro
                 errors.append(f"active workflow sequence {sid} must declare acceptance_design={expected_design}")
             if expected_design == "compile-only" and sequence.get("acceptance_policy") != {
                 "gate": "affected-component-compilation",
+                "visibility": "controller-only",
                 "quality_diagnostics_gate": False,
                 "tests_required": False,
                 "source_review_required": False,
@@ -1770,38 +1795,43 @@ def validate_workflow_task_sequences(sequence_doc: dict, fixture_doc: dict, erro
                     verifier_text = verifier_path.read_text() if verifier_path.is_file() else ""
                     if generation == "baseline-v5":
                         required_markers = (
-                            "Baseline V5 compile-only",
-                            "Search and inspect the repository as needed.",
-                            "Compilation is the only acceptance gate.",
-                            "diagnostics only and do not determine pass/fail",
+                            "Implement the task completely and correctly.",
+                            "Search and inspect the repository as needed",
+                            "run relevant existing tests and checks when practical",
                         )
                         forbidden_markers = (
+                            "compile-only",
+                            "only acceptance gate",
+                            "sole pass/fail gate",
+                            "diagnostics only",
+                            "do not determine pass/fail",
+                            "stop when the command exits 0",
                             "Do not discover or redesign anything.",
                             "Copy and run this command exactly:",
                             "Do not inspect, search",
                             "p.write_text(",
                         )
+                        compile_command = task.get("compile_command")
                         if (
                             generation_path not in str(prompt_path)
                             or any(marker not in prompt_text for marker in required_markers)
-                            or any(marker in prompt_text for marker in forbidden_markers)
+                            or any(marker.lower() in prompt_text.lower() for marker in forbidden_markers)
+                            or (isinstance(compile_command, str) and compile_command in prompt_text)
                         ):
-                            errors.append(f"active workflow sequence {sid} task {tid} must use the complete Baseline V5 searchable compile-only prompt contract")
-                        if not isinstance(expected_changed, list) or sorted(expected_changed) != sorted(target_production) or not 2 <= len(target_production) <= 3:
-                            errors.append(f"active workflow sequence {sid} task {tid} must declare two-to-three exact Baseline V5 production targets")
-                        compile_command = task.get("compile_command")
+                            errors.append(f"active workflow sequence {sid} task {tid} must use the complete Baseline V5 software-objective prompt contract without controller scoring policy")
+                        if not isinstance(expected_changed, list) or sorted(expected_changed) != sorted(target_production) or not 1 <= len(target_production) <= 2:
+                            errors.append(f"active workflow sequence {sid} task {tid} must declare one-to-two exact Baseline V5 semantic production targets")
                         if (
                             not isinstance(compile_command, str)
                             or not compile_command
-                            or compile_command not in prompt_text
                             or compile_command not in verifier_text
-                            or anchors != [compile_command]
+                            or anchors != []
                         ):
-                            errors.append(f"active workflow sequence {sid} task {tid} must bind one visible affected-component compile command")
-                        if task.get("acceptance_visibility") != "model-visible-compile-only":
-                            errors.append(f"active workflow sequence {sid} task {tid} must declare model-visible compile-only acceptance")
+                            errors.append(f"active workflow sequence {sid} task {tid} must bind one controller-only affected-component compile command")
+                        if task.get("acceptance_visibility") != "controller-only-compile-policy":
+                            errors.append(f"active workflow sequence {sid} task {tid} must declare controller-only compile policy visibility")
                         if acceptance_asset_paths != []:
-                            errors.append(f"active workflow sequence {sid} task {tid} compile-only acceptance must not inject test assets")
+                            errors.append(f"active workflow sequence {sid} task {tid} compile-only controller assessment must not inject test assets")
                     else:
                         required_markers = (
                             f"{generation_label} mechanical",
@@ -1834,7 +1864,11 @@ def validate_workflow_task_sequences(sequence_doc: dict, fixture_doc: dict, erro
                     undisclosed_inline_markers = ("<<'NODE'", '<<"NODE"', "<<'PY'", '<<"PY"', "<<'TS'", '<<"TS"', "workflow-hidden")
                     if any(marker in verifier_text and marker not in prompt_text for marker in undisclosed_inline_markers):
                         errors.append(f"active workflow sequence {sid} task {tid} contains undisclosed inline verifier assertions")
-                    if not isinstance(anchors, list) or not anchors or any(anchor not in prompt_text or anchor not in verifier_text for anchor in anchors):
+                    if generation != "baseline-v5" and (
+                        not isinstance(anchors, list)
+                        or not anchors
+                        or any(anchor not in prompt_text or anchor not in verifier_text for anchor in anchors)
+                    ):
                         errors.append(f"active workflow sequence {sid} task {tid} must bind complete model-visible validation anchors")
                     if task.get("model_concealed_paths"):
                         errors.append(f"active workflow sequence {sid} task {tid} must not hide active validation behavior")
@@ -1874,10 +1908,16 @@ def validate_workflow_task_sequences(sequence_doc: dict, fixture_doc: dict, erro
         "ordered transitions",
     )
     for sequence in active:
-        policy = str(sequence.get("seed_patch_policy", "")).lower()
-        if "composite broken start" not in policy or "final prompt" not in policy:
+        seed_policy = str(sequence.get("seed_patch_policy", "")).lower()
+        if sequence.get("task_family_generation") == "baseline-v5":
+            if (
+                "applied as one composite start before task 1" not in seed_policy
+                or "final controller verification runs once after the final prompt" not in seed_policy
+            ):
+                errors.append(f"active workflow sequence {sequence.get('id')} must declare semantic pre-seeding and final-only controller verification")
+        elif "composite broken start" not in seed_policy or "final prompt" not in seed_policy:
             errors.append(f"active workflow sequence {sequence.get('id')} must declare composite pre-seeding and final-only verification")
-        if any(phrase in policy for phrase in forbidden_contract_phrases):
+        if any(phrase in seed_policy for phrase in forbidden_contract_phrases):
             errors.append(f"active workflow sequence {sequence.get('id')} describes a non-v0 seed-delivery contract")
     for surface in ("README.md", "docs/research/roadmap.md"):
         text = (ROOT / surface).read_text().lower()
@@ -4203,15 +4243,18 @@ def validate_baseline_v5_authorization(errors: list[str]) -> None:
     }
     if (
         type(audit.get("schema_version")) is not int
-        or audit.get("schema_version") != 1
+        or audit.get("schema_version") != 2
         or audit.get("generation") != "baseline-v5"
         or set(audit.get("scope", [])) != expected_scope
+        or audit.get("agent_prompt_contract") != "normal-software-objective-complete-correct-implementation"
         or audit.get("acceptance_gate") != "affected-component-compilation"
+        or audit.get("acceptance_visibility") != "controller-only"
         or audit.get("quality_diagnostics_gate") is not False
+        or "exit 0 or 1" not in str(audit.get("seeded_compile_qualification", ""))
         or audit.get("provider_free_qualification_required") is not True
         or audit.get("paid_pilot_authorized") is not False
     ):
-        errors.append("Baseline V5 authorization audit must bind compile-only acceptance and deny provider spend")
+        errors.append("Baseline V5 authorization audit must bind normal agent objectives, controller-only compile assessment, and deny provider spend")
 
 
 def main() -> int:

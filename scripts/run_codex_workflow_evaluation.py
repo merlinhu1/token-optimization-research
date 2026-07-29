@@ -1732,7 +1732,7 @@ def execution_condition_descriptor(
             "external_retrieval_audit": "fail-closed",
         }
         acceptance_materialization = (
-            "visible affected-component compile commands retained; no acceptance-test assets injected"
+            "controller-only affected-component compile commands retained; no acceptance-test assets injected; agent prompts carry normal software objectives"
             if seq.get("task_family_generation") == "baseline-v5"
             else "declared model-visible acceptance tests retained"
         )
@@ -3054,7 +3054,7 @@ def render_task_prompt(
     generation = seq.get("task_family_generation")
     if generation == "baseline-v5":
         validation_guidance = (
-            "Search and inspect the repository as needed. Run the visible affected-component compile command from the current task prompt. Compilation is the only acceptance gate; tests, behavior, style, and source-review quality are diagnostics only. Preserve earlier edits and stop when the compile command exits 0."
+            "Complete the requested software change correctly. Search and inspect the repository as needed, including related definitions and call sites. Validate the implementation with relevant existing tests and checks when practical. Preserve earlier task edits in the persistent checkout; do not stop after merely making the touched files parse or compile."
         )
     elif generation in {"baseline-v2", "baseline-v3", "baseline-v4"}:
         validation_guidance = (
@@ -4581,7 +4581,7 @@ def _run_one_locked(args: argparse.Namespace) -> dict[str, Any]:
     generation = seq.get("task_family_generation")
     if generation == "baseline-v5":
         acceptance_visibility_limit = (
-            "Future regression code is present from lane start. Visible affected-component compile commands are the only acceptance gates; no acceptance-test assets are injected. Future prompts, seed patches, and controller verifier scripts remain controller-only."
+            "Future semantic regression code is present from lane start. Agent prompts state normal software objectives and do not disclose controller scoring. Affected-component compile commands and controller verifier scripts remain controller-only; no acceptance-test assets are injected."
         )
     elif generation in {"baseline-v2", "baseline-v3", "baseline-v4"}:
         acceptance_visibility_limit = (
