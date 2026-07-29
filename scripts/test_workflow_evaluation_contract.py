@@ -97,11 +97,15 @@ def current_protocol_path(sequence_id: str, profile_id: str = "baseline-bare-cod
     matches = []
     for path in (ROOT / "sources/evaluations/protocols").glob("*.json"):
         protocol = json.loads(path.read_text())
+        protocol_profile_id = (
+            protocol.get("treatment", {}).get("profile_id")
+            or protocol.get("baseline", {}).get("profile_id")
+        )
         if (
             protocol.get("status") == "frozen-ready-not-run"
             and protocol.get("task_fixture", {}).get("sequence_id") == sequence_id
             and protocol.get("task_fixture", {}).get("qualification_path") == sequence["qualification_path"]
-            and protocol.get("baseline", {}).get("profile_id") == profile_id
+            and protocol_profile_id == profile_id
             and protocol.get("baseline", {}).get("model_condition_id") == gate["designated_model_condition"]
         ):
             matches.append(path)
