@@ -95,6 +95,11 @@ SUPPORTED_WORKFLOW_TOOL_PROFILES = {
     "behavior-caveman-codex-skill-v1": "caveman-codex-skill-v1",
     "artifact-ponytail-codex-plugin-v1": "ponytail-codex-plugin-v1",
     "runtime-opencode-codex-product-v1": "opencode-codex-product-v1",
+    "terminal-tokenjuice-opencode-plugin-v1": "tokenjuice-opencode-plugin-v1",
+    "retrieval-serena-opencode-mcp-v1": "serena-opencode-mcp-v1",
+    "terminal-snip-opencode-plugin-v1": "snip-opencode-plugin-v1",
+    "retrieval-cartog-opencode-product-v1": "cartog-opencode-product-v1",
+    "integrated-headroom-opencode-product-v1": "headroom-opencode-product-v1",
 }
 
 # Existing profile protocols were qualified against this runner manifest. The
@@ -138,6 +143,7 @@ def build_profile_meta() -> dict[str, dict[str, Any]]:
             "tool_state": str(protocol.get("tool_state", (cfg or {}).get("default_tool_state", "none"))),
             "tool_use_policy": str(protocol.get("tool_use_policy", "natural" if tool_id else "none")),
             "tool_id": tool_id,
+            "substrate": str(source.get("substrate", "codex-cli")),
         }
     return profiles
 
@@ -2108,13 +2114,62 @@ def require_reusable_treatment_baseline(
     seq: dict[str, Any],
     replicate_index: int,
     root: Path = ROOT,
+    *,
+    profile_id: str = "",
 ) -> dict[str, Any]:
-    baseline = find_canonical_baseline_record(registry, seq, replicate_index)
+    baseline = (
+        find_comparison_baseline_record(registry, seq, profile_id, replicate_index)
+        if profile_id
+        else find_canonical_baseline_record(registry, seq, replicate_index)
+    )
     if baseline is None or reviewed_session_reuse_state(baseline, root) != "reusable":
+        if not profile_id:
+            raise ValueError(
+                f"treatment execution requires a reusable canonical baseline for {seq['id']} r{replicate_index}"
+            )
+        expected_profile = (
+            "runtime-opencode-codex-product-v1"
+            if PROFILE_META.get(profile_id, {}).get("substrate") == "opencode-cli"
+            else "baseline-bare-codex"
+        )
         raise ValueError(
-            f"treatment execution requires a reusable canonical baseline for {seq['id']} r{replicate_index}"
+            f"treatment execution requires reusable baseline {expected_profile} "
+            f"for {seq['id']} r{replicate_index}"
         )
     return baseline
+
+
+def find_comparison_baseline_record(
+    registry: dict[str, Any],
+    seq: dict[str, Any],
+    profile_id: str,
+    replicate_index: int,
+) -> dict[str, Any] | None:
+    meta = PROFILE_META.get(profile_id, {})
+    if meta.get("substrate") != "opencode-cli" or profile_id == "runtime-opencode-codex-product-v1":
+        return find_canonical_baseline_record(registry, seq, replicate_index)
+    matches = []
+    for session in registry.get("sessions", []):
+        if session.get("schema_version") != 2:
+            continue
+        if session.get("profile", {}).get("profile_id") != "runtime-opencode-codex-product-v1":
+            continue
+        if session.get("agent", {}).get("runtime_id") != "opencode-cli":
+            continue
+        if session.get("replicate_index") != replicate_index:
+            continue
+        if session.get("task_sequence", {}).get("sequence_id") != seq["id"]:
+            continue
+        if session.get("status") not in (None, "completed"):
+            continue
+        if session.get("interpretation", {}).get("accepted_for_objective") is True:
+            matches.append(session)
+    if len(matches) > 1:
+        raise RuntimeError(
+            f"ambiguous bare OpenCode baseline for {seq['id']} r{replicate_index}: "
+            f"{[item['session_id'] for item in matches]}"
+        )
+    return matches[0] if matches else None
 
 
 def find_canonical_baseline_record(registry: dict[str, Any], seq: dict[str, Any], replicate_index: int) -> dict[str, Any] | None:
@@ -3741,7 +3796,12 @@ def write_comparison_if_ready(seq: dict[str, Any], study_id: str, replicate_inde
     protocol_fingerprint = baseline_protocol_fingerprint(seq)
     comparison_key = safe_profile_key(treatment_profile_id)
     group_id = treatment_experiment_group_id(project_id, treatment_profile_id, replicate_index, protocol_fingerprint)
-    baseline = find_canonical_baseline_record(registry, seq, replicate_index)
+    baseline = find_comparison_baseline_record(
+        registry,
+        seq,
+        treatment_profile_id,
+        replicate_index,
+    )
     sessions = [s for s in registry.get("sessions", []) if s.get("experiment_group_id") == group_id]
     treatment = next((s for s in sessions if s.get("profile", {}).get("profile_id") == treatment_profile_id and s.get("baseline_pool", {}).get("protocol_fingerprint") == protocol_fingerprint), None)
     if not baseline or not treatment:
@@ -3754,14 +3814,25 @@ def write_comparison_if_ready(seq: dict[str, Any], study_id: str, replicate_inde
     b_freshish = freshish_tokens(baseline)
     t_freshish = freshish_tokens(treatment)
     freshish_delta = t_freshish - b_freshish if isinstance(b_freshish, (int, float)) and isinstance(t_freshish, (int, float)) else None
+    baseline_profile_id = baseline.get("profile", {}).get("profile_id")
+    nested_runtime_baseline = baseline_profile_id == "runtime-opencode-codex-product-v1"
     comparison = {
         "schema_version": 3,
         "comparison_id": f"baseline-{artifact_lane_label(project_id)}-{DATE.replace('-', '')}-vs-{artifact_profile_label(treatment_profile_id)}-p-{protocol_fingerprint}-r{replicate_index}",
         "study_id": study_id,
         "objective": treatment.get("objective"),
         "experiment_group_id": group_id,
-        "comparison_design": "protocol-bound-shared-baseline-v3",
-        "baseline_reuse_policy": "one operationally valid canonical baseline-bare-codex provider sample per causal comparison fingerprint and replicate is shared by all treatment comparisons; verifier/review outcomes and execution date do not select the sample",
+        "comparison_design": (
+            "protocol-bound-shared-runtime-baseline-v1"
+            if nested_runtime_baseline
+            else "protocol-bound-shared-baseline-v3"
+        ),
+        "baseline_reuse_policy": (
+            "one accepted bare OpenCode runtime sample per sequence, protocol fingerprint, and replicate is shared by OpenCode-native tool treatments"
+            if nested_runtime_baseline
+            else "one operationally valid canonical baseline-bare-codex provider sample per causal comparison fingerprint and replicate is shared by all treatment comparisons; verifier/review outcomes and execution date do not select the sample"
+        ),
+        "baseline_profile_id": baseline_profile_id,
         "baseline_protocol_fingerprint": protocol_fingerprint,
         "replicate_count": 1,
         "uncertainty": None,
@@ -3847,7 +3918,11 @@ def _run_one_locked(args: argparse.Namespace) -> dict[str, Any]:
         assert_pool_slot_available(registry, seq, profile_id, args.replicate_index)
         if profile_id != "baseline-bare-codex":
             comparison_baseline_session_id = require_reusable_treatment_baseline(
-                registry, seq, args.replicate_index, ROOT
+                registry,
+                seq,
+                args.replicate_index,
+                ROOT,
+                profile_id=profile_id,
             )["session_id"]
     project_id = PROJECT_META[seq["fixture_id"]]["project_id"]
     protocol_fingerprint = baseline_protocol_fingerprint(seq)
