@@ -2013,6 +2013,73 @@
         "universal_guide_sha256": "2026d09f4af85e972a5c4a9874d91bd8a8675ab7fbb44a283911fd06afd0abb2"
       },
       "notes": "Guide-faithful replacement for the deleted direct-v1 treatment. The evaluator adds no prompt steering: the lane installs verbatim jcodemunch policy and universal-guide excerpts into Codex AGENTS.md and records their source hashes."
+    },
+    {
+      "id": "runtime-opencode-codex-product-v1",
+      "profile_type": "replacement_runtime",
+      "objective_scope": "individual_tool_effectiveness",
+      "status": "screening-ablation",
+      "substrate": "opencode-cli",
+      "enabled_surfaces": [
+        "opencode-native-shell-edit",
+        "opencode-native-file-read-search"
+      ],
+      "disabled_overlaps": [
+        "all MCP servers",
+        "all token-saving surfaces",
+        "project and global OpenCode instructions",
+        "external plugins",
+        "external skills",
+        "subagents",
+        "web fetch and web search",
+        "warm indexes"
+      ],
+      "components": [
+        {
+          "component_id": "runtime-opencode-codex-product-v1",
+          "surface": "replacement-agent-runtime",
+          "role": "replacement_runtime"
+        }
+      ],
+      "native_agent_tools_allowed": [
+        "shell_command_execution",
+        "file_editing",
+        "plain_file_read_search",
+        "git",
+        "verifier_commands"
+      ],
+      "forbidden_surfaces": [
+        "external retrieval",
+        "MCP",
+        "external skills/plugins",
+        "subagents",
+        "all unlisted retrieval/compression/memory/token-saving tools"
+      ],
+      "install": {
+        "policy": "Run official opencode-ai 1.18.9 from the pinned npm binary behind the workflow controller's runtime adapter; translate only lane-private OpenAI OAuth, disable project config/external plugins/external skills/subagents/web tools, and preserve provider-only model-shell network isolation."
+      },
+      "reset": {
+        "policy": "Delete the lane-private OpenCode XDG data/config/cache/state, translated auth, session database, adapter accounting state, and generated evaluation artifacts after evidence capture."
+      },
+      "evaluation_protocol": {
+        "tool_use_policy": "none",
+        "tool_state": "native-runtime",
+        "integration_state": "official-opencode-cli-via-controller-runtime-adapter",
+        "instruction_policy": "no-project-or-global-instructions",
+        "assignment_proof": "provider-free pinned-binary/version/model/auth-shape/config/isolation probe required"
+      },
+      "source_snapshot": {
+        "repository": "anomalyco/opencode",
+        "tag": "v1.18.9",
+        "commit": "4da7bb44c84e013fa53e9c5d02ac753d1435c81a",
+        "npm_package": "opencode-ai",
+        "version": "1.18.9",
+        "binary": "/opt/data/tool-candidates/opencode-runtime/node_modules/opencode-ai/bin/opencode.exe",
+        "binary_sha256": "7c4d91c84d2bfdeabb59257e3490c5e5acb08f2aacb3e42f3ddc296a1c3f1aca",
+        "runtime_adapter": "/opt/data/tool-candidates/opencode-adapter/opencode_workflow_adapter.py",
+        "runtime_adapter_sha256": "56ebb565c3d079af1431c4babf096e0042b75a4d19e2cfbb2e9e912434ac1e55"
+      },
+      "notes": "Replacement-runtime treatment comparing official OpenCode with the canonical bare Codex baseline on the same provider, model, reasoning effort, fixtures, prompts, and controller verification."
     }
   ]
 }
