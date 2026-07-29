@@ -1714,6 +1714,7 @@ def main(argv: list[str] | None = None) -> int:
     authority_paths = (
         ROOT / "docs/evaluations/operations/runbook.md",
         ROOT / "sources/evaluations/audits/codex-cumulative-usage-accounting-20260718.json",
+        ROOT / "sources/evaluations/audits/codex-openai-gpt-5-6-sol-high-r0-panel-results-20260729.json",
     )
     authority_snapshots = (
         {path: path.read_bytes() for path in authority_paths}
