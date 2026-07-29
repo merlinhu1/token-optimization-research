@@ -934,6 +934,24 @@ def validate_evaluation_profiles(profile_doc: dict, fixture_doc: dict, errors: l
     return seen
 
 
+def protocol_matches_active_sequence(protocol: dict, sequence: dict) -> bool:
+    """Return whether an unexecuted protocol belongs to the active fixture/model generation."""
+    task_fixture = protocol.get("task_fixture", {})
+    agent_condition = (
+        protocol.get("selected_execution", {})
+        .get("descriptor", {})
+        .get("agent_condition", {})
+    )
+    mistake_gate = sequence.get("mistake_gate", {})
+    return (
+        task_fixture.get("sequence_id") == sequence.get("id")
+        and task_fixture.get("qualification_path") == sequence.get("qualification_path")
+        and agent_condition.get("model_condition_id") == mistake_gate.get("designated_model_condition")
+        and agent_condition.get("model") == mistake_gate.get("model")
+        and agent_condition.get("reasoning_effort") == mistake_gate.get("reasoning_effort")
+    )
+
+
 def validate_candidate_profile_launch_readiness(
     profile_doc: dict,
     fixture_doc: dict,
@@ -968,6 +986,7 @@ def validate_candidate_profile_launch_readiness(
         )
 
     active_sequences_by_fixture: dict[str, list[str]] = {}
+    active_sequences_by_id: dict[str, dict] = {}
     for sequence in sequence_doc.get("sequences", []):
         if not isinstance(sequence, dict) or sequence.get("status") != "active":
             continue
@@ -975,6 +994,7 @@ def validate_candidate_profile_launch_readiness(
         sequence_id = sequence.get("id")
         if isinstance(fixture_id, str) and isinstance(sequence_id, str):
             active_sequences_by_fixture.setdefault(fixture_id, []).append(sequence_id)
+            active_sequences_by_id[sequence_id] = sequence
 
     expected_pairs: set[tuple[str, str]] = set()
     for fixture in fixture_doc.get("fixtures", []):
@@ -1031,6 +1051,7 @@ def validate_candidate_profile_launch_readiness(
                 and selected.get("sequence_id") == sequence_id
                 and selected.get("selected_profile", {}).get("profile_id") == profile_id
                 and protocol.get("status") == "frozen-ready-not-run"
+                and protocol_matches_active_sequence(protocol, active_sequences_by_id[sequence_id])
             ):
                 matching_protocols.append((protocol_path, record))
         if len(matching_protocols) != 1:
