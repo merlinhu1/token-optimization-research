@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "description": "The production lifecycle-v0 portfolio uses low-complexity Baseline V3/V4 task families: retained Baseline V3 for Fastify and provider-free-qualified Baseline V4 successors for Beets and Terraform, with three persistent feature-refactor-review workflows, exact mechanical edit commands, one-to-two production files per task, model-visible focused validation, and a zero-model-incident strongest-model pilot gate before treatment spend.",
+  "description": "The production lifecycle-v0 portfolio uses Baseline V5 compile-only task families for Fastify, Beets, and Terraform: three persistent feature-refactor-review workflows, two causally related production files per task, discovery-oriented prompts without exact edit recipes, model-visible affected-component compile commands, and a compile-passing strongest-model pilot gate before treatment spend.",
   "state_policy_defaults": {
     "reset_before_session": [
       "repository working tree",
@@ -23,18 +23,20 @@
     {
       "id": "fastify-lifecycle-sequence-v0",
       "status": "active",
-      "acceptance_design": "behavioral",
+      "acceptance_design": "compile-only",
       "scope": "production-primary",
       "sequence_contract": "feature-refactor-review",
-      "readiness_blockers": [],
+      "readiness_blockers": [
+        "provider-backed strongest-model compile-only Baseline V5 pilot is not authorized or executed"
+      ],
       "objective": "individual_tool_effectiveness",
       "primary_metric": "cumulative provider-reported workflow tokens",
-      "reset_policy": "Reset once before the lane; preseed the missing feature, behavior-preserving structural debt, flawed review candidate, and declared focused acceptance tests into one composite root; preserve repository, Git, tool, index, cache, generated configuration, memory, and agent state across prompts; repeat every disclosed verifier command after the final prompt.",
-      "seed_patch_policy": "Controller merges all three independently qualified lifecycle start conditions and model-visible acceptance tests into one composite broken start before provider execution. Prompts are disclosed sequentially; the proposed review patch is disclosed only with task 3; controller seed patch files and verifier scripts remain controller-only while complete acceptance behavior stays model-visible; every verifier repeats only disclosed commands after the final prompt.",
-      "protocol_freeze_date": "2026-07-22",
+      "reset_policy": "Each task reset reverses only its generation-local production seed. No acceptance tests are injected; the visible affected-component compile command is the sole pass/fail gate.",
+      "seed_patch_policy": "All three generation-local production regressions are applied as one composite broken start before task 1; prompts remain lazy and final verification runs once after the final prompt. Future seed regressions remain visible from the start. Baseline V5 compile commands stay model-visible, while unit tests, behavior, style, and source review are diagnostics only.",
+      "protocol_freeze_date": "2026-08-01",
       "production_lane": "current-production-v0-baseline-v3",
-      "qualification_path": "sources/evaluations/fixtures/medium/fastify-fastify/qualification-lifecycle-v0-baseline-v3.json",
-      "qualification_date": "2026-07-22",
+      "qualification_path": "sources/evaluations/fixtures/medium/fastify-fastify/qualification-lifecycle-v0-baseline-v5.json",
+      "qualification_date": "2026-08-01",
       "fixture_id": "medium-fastify-fastify",
       "fixture_scale": "medium-project",
       "initial_snapshot": {
@@ -52,48 +54,48 @@
           "id": "fastify-lifecycle-feature-v0",
           "order": 1,
           "task_class": "feature-implementation",
-          "prompt_path": "sources/evaluations/fixtures/medium/fastify-fastify/task-generations/baseline-v3/fastify-lifecycle-feature-v0/agent-prompt.txt",
-          "verifier_command": "sources/evaluations/fixtures/medium/fastify-fastify/task-generations/baseline-v3/fastify-lifecycle-feature-v0/verify.sh",
+          "prompt_path": "sources/evaluations/fixtures/medium/fastify-fastify/task-generations/baseline-v5/fastify-lifecycle-feature-v0/agent-prompt.txt",
+          "verifier_command": "sources/evaluations/fixtures/medium/fastify-fastify/task-generations/baseline-v5/fastify-lifecycle-feature-v0/verify.sh",
           "upstream_test_paths": [],
           "compatibility_rebased_test_paths": [],
           "model_concealed_paths": [],
           "expected_changed_paths": [
-            "lib/request.js"
+            "lib/request.js",
+            "lib/reply.js"
           ],
           "model_visible_validation_anchors": [
-            "test/baseline-v3-request-media-type.test.js"
+            "node --check lib/request.js && node --check lib/reply.js"
           ],
-          "acceptance_visibility": "model-visible-complete",
-          "model_visible_acceptance_asset_paths": [
-            "test/baseline-v3-request-media-type.test.js"
-          ]
+          "acceptance_visibility": "model-visible-compile-only",
+          "model_visible_acceptance_asset_paths": [],
+          "compile_command": "node --check lib/request.js && node --check lib/reply.js"
         },
         {
           "id": "fastify-lifecycle-refactor-v0",
           "order": 2,
           "task_class": "behavior-preserving-refactor",
-          "prompt_path": "sources/evaluations/fixtures/medium/fastify-fastify/task-generations/baseline-v3/fastify-lifecycle-refactor-v0/agent-prompt.txt",
-          "verifier_command": "sources/evaluations/fixtures/medium/fastify-fastify/task-generations/baseline-v3/fastify-lifecycle-refactor-v0/verify.sh",
+          "prompt_path": "sources/evaluations/fixtures/medium/fastify-fastify/task-generations/baseline-v5/fastify-lifecycle-refactor-v0/agent-prompt.txt",
+          "verifier_command": "sources/evaluations/fixtures/medium/fastify-fastify/task-generations/baseline-v5/fastify-lifecycle-refactor-v0/verify.sh",
           "upstream_test_paths": [],
           "compatibility_rebased_test_paths": [],
           "model_concealed_paths": [],
           "expected_changed_paths": [
-            "lib/content-type.js"
+            "lib/content-type.js",
+            "lib/content-type-parser.js"
           ],
           "model_visible_validation_anchors": [
-            "test/baseline-v3-content-type-cache.test.js"
+            "node --check lib/content-type.js && node --check lib/content-type-parser.js"
           ],
-          "acceptance_visibility": "model-visible-complete",
-          "model_visible_acceptance_asset_paths": [
-            "test/baseline-v3-content-type-cache.test.js"
-          ]
+          "acceptance_visibility": "model-visible-compile-only",
+          "model_visible_acceptance_asset_paths": [],
+          "compile_command": "node --check lib/content-type.js && node --check lib/content-type-parser.js"
         },
         {
           "id": "fastify-lifecycle-review-v0",
           "order": 3,
           "task_class": "code-review-correction",
-          "prompt_path": "sources/evaluations/fixtures/medium/fastify-fastify/task-generations/baseline-v3/fastify-lifecycle-review-v0/agent-prompt.txt",
-          "verifier_command": "sources/evaluations/fixtures/medium/fastify-fastify/task-generations/baseline-v3/fastify-lifecycle-review-v0/verify.sh",
+          "prompt_path": "sources/evaluations/fixtures/medium/fastify-fastify/task-generations/baseline-v5/fastify-lifecycle-review-v0/agent-prompt.txt",
+          "verifier_command": "sources/evaluations/fixtures/medium/fastify-fastify/task-generations/baseline-v5/fastify-lifecycle-review-v0/verify.sh",
           "upstream_test_paths": [],
           "compatibility_rebased_test_paths": [],
           "model_concealed_paths": [],
@@ -103,55 +105,54 @@
             "lib/errors.js"
           ],
           "model_visible_validation_anchors": [
-            "test/baseline-v3-max-param.test.js"
+            "node --check fastify.js && node --check lib/errors.js"
           ],
-          "acceptance_visibility": "model-visible-complete",
-          "model_visible_acceptance_asset_paths": [
-            "test/baseline-v3-max-param.test.js"
-          ]
+          "acceptance_visibility": "model-visible-compile-only",
+          "model_visible_acceptance_asset_paths": [],
+          "compile_command": "node --check fastify.js && node --check lib/errors.js"
         }
       ],
       "conversion_note": "Baseline V3 supersedes the failed, unpublished Baseline V2 pilot identity with exact mechanical edit commands while preserving all V2 failure evidence and executed protocol bytes.",
       "complexity_note": "Baseline V3 makes every task a deterministic old-to-new replacement command followed only by complete model-visible focused validation; no discovery or implementation choice remains.",
       "complexity_bar": "The fixed snapshot must pass, each seed must fail semantic or structural acceptance as appropriate, and treatment launch remains blocked until the strongest-model pilot has literally zero unique model incidents.",
-      "task_family_generation": "baseline-v3",
+      "task_family_generation": "baseline-v5",
       "mistake_gate": {
         "designated_model_condition": "codex-openai-gpt-5-6-sol-high",
-        "allowed_treatment_model_conditions": [
-          "claude-code-openrouter-gpt-5-6-sol-high"
-        ],
-        "allowed_unique_model_incidents": 0,
-        "allowed_corrected_implementation_mistakes": 0,
-        "allowed_unresolved_defects": 0,
-        "status": "passed-zero-incident",
-        "treatment_launch_policy": "eligible for treatment protocol freeze after the first-valid strongest-model pilot passed an independent audit with all eight required observed counts equal to integer zero",
         "model": "gpt-5.6-sol",
         "reasoning_effort": "high",
-        "allowed_prohibited_operations": 0,
-        "allowed_unnecessary_exploration_incidents": 0,
-        "allowed_model_caused_failed_commands": 0,
-        "allowed_code_rework_events": 0,
-        "allowed_verifier_or_environment_failures": 0,
-        "incident_counting": "unique-auditable-not-command-count",
-        "pilot_audit_path": "sources/evaluations/audits/baseline-v3-pilot-zero-mistake.json",
-        "attempt_receipt_path": "sources/evaluations/audits/baseline-v3-pilot-attempt-fastify.json"
-      }
+        "compile_required": true,
+        "quality_diagnostics_gate": false,
+        "pilot_audit_path": "sources/evaluations/audits/baseline-v5-pilot-compile-only.json",
+        "attempt_receipt_path": "sources/evaluations/audits/baseline-v5-pilot-attempt-fastify.json",
+        "pilot_authorization_path": "sources/evaluations/audits/baseline-v5-task-family-qualification-20260801.json",
+        "status": "provider-pilot-required",
+        "treatment_launch_policy": "blocked until one first-valid strongest-model pilot completes every task and every affected-component compile verifier exits zero; all other quality findings are diagnostic only"
+      },
+      "acceptance_policy": {
+        "gate": "affected-component-compilation",
+        "quality_diagnostics_gate": false,
+        "tests_required": false,
+        "source_review_required": false
+      },
+      "project_compile_command": "find lib -type f -name '*.js' -print0 | sort -z | xargs -0 -n1 node --check && node --check fastify.js"
     },
     {
       "id": "beets-lifecycle-sequence-v0",
       "status": "active",
-      "acceptance_design": "behavioral",
+      "acceptance_design": "compile-only",
       "scope": "production-primary",
       "sequence_contract": "feature-refactor-review",
-      "readiness_blockers": [],
+      "readiness_blockers": [
+        "provider-backed strongest-model compile-only Baseline V5 pilot is not authorized or executed"
+      ],
       "objective": "individual_tool_effectiveness",
       "primary_metric": "cumulative provider-reported workflow tokens",
-      "reset_policy": "Reset once before the lane; preseed the missing feature, behavior-preserving structural debt, flawed review candidate, and declared focused acceptance tests into one composite root; preserve repository, Git, tool, index, cache, generated configuration, memory, and agent state across prompts; repeat every disclosed verifier command after the final prompt.",
-      "seed_patch_policy": "Controller merges all three independently qualified lifecycle start conditions and model-visible acceptance tests into one composite broken start before provider execution. Prompts are disclosed sequentially; the proposed review patch is disclosed only with task 3; controller seed patch files and verifier scripts remain controller-only while complete acceptance behavior stays model-visible; every verifier repeats only disclosed commands after the final prompt.",
-      "protocol_freeze_date": "2026-07-22",
+      "reset_policy": "Each task reset reverses only its generation-local production seed. No acceptance tests are injected; the visible affected-component compile command is the sole pass/fail gate.",
+      "seed_patch_policy": "All three generation-local production regressions are applied as one composite broken start before task 1; prompts remain lazy and final verification runs once after the final prompt. Future seed regressions remain visible from the start. Baseline V5 compile commands stay model-visible, while unit tests, behavior, style, and source review are diagnostics only.",
+      "protocol_freeze_date": "2026-08-01",
       "production_lane": "current-production-v0-baseline-v4",
-      "qualification_path": "sources/evaluations/fixtures/medium/beetbox-beets/qualification-lifecycle-v0-baseline-v4.json",
-      "qualification_date": "2026-07-22",
+      "qualification_path": "sources/evaluations/fixtures/medium/beetbox-beets/qualification-lifecycle-v0-baseline-v5.json",
+      "qualification_date": "2026-08-01",
       "fixture_id": "medium-beetbox-beets",
       "fixture_scale": "medium-project",
       "initial_snapshot": {
@@ -169,104 +170,105 @@
           "id": "beets-lifecycle-feature-v0",
           "order": 1,
           "task_class": "feature-implementation",
-          "prompt_path": "sources/evaluations/fixtures/medium/beetbox-beets/task-generations/baseline-v4/beets-lifecycle-feature-v0/agent-prompt.txt",
-          "verifier_command": "sources/evaluations/fixtures/medium/beetbox-beets/task-generations/baseline-v4/beets-lifecycle-feature-v0/verify.sh",
+          "prompt_path": "sources/evaluations/fixtures/medium/beetbox-beets/task-generations/baseline-v5/beets-lifecycle-feature-v0/agent-prompt.txt",
+          "verifier_command": "sources/evaluations/fixtures/medium/beetbox-beets/task-generations/baseline-v5/beets-lifecycle-feature-v0/verify.sh",
           "upstream_test_paths": [],
           "compatibility_rebased_test_paths": [],
           "model_concealed_paths": [],
           "expected_changed_paths": [
-            "beets/util/functemplate.py"
+            "beets/util/functemplate.py",
+            "beets/util/pathformats.py"
           ],
           "model_visible_validation_anchors": [
-            "test/util/test_functemplate.py"
+            "uv run --offline --frozen python -m py_compile beets/util/functemplate.py beets/util/pathformats.py"
           ],
-          "acceptance_visibility": "model-visible-complete",
-          "model_visible_acceptance_asset_paths": [
-            "test/util/test_functemplate.py"
-          ]
+          "acceptance_visibility": "model-visible-compile-only",
+          "model_visible_acceptance_asset_paths": [],
+          "compile_command": "uv run --offline --frozen python -m py_compile beets/util/functemplate.py beets/util/pathformats.py"
         },
         {
           "id": "beets-lifecycle-refactor-v0",
           "order": 2,
           "task_class": "behavior-preserving-refactor",
-          "prompt_path": "sources/evaluations/fixtures/medium/beetbox-beets/task-generations/baseline-v4/beets-lifecycle-refactor-v0/agent-prompt.txt",
-          "verifier_command": "sources/evaluations/fixtures/medium/beetbox-beets/task-generations/baseline-v4/beets-lifecycle-refactor-v0/verify.sh",
+          "prompt_path": "sources/evaluations/fixtures/medium/beetbox-beets/task-generations/baseline-v5/beets-lifecycle-refactor-v0/agent-prompt.txt",
+          "verifier_command": "sources/evaluations/fixtures/medium/beetbox-beets/task-generations/baseline-v5/beets-lifecycle-refactor-v0/verify.sh",
           "upstream_test_paths": [],
           "compatibility_rebased_test_paths": [],
           "model_concealed_paths": [],
           "expected_changed_paths": [
-            "beets/dbcore/db.py"
+            "beets/dbcore/db.py",
+            "beets/dbcore/query.py"
           ],
           "model_visible_validation_anchors": [
-            "LazyDict"
+            "uv run --offline --frozen python -m py_compile beets/dbcore/db.py beets/dbcore/query.py"
           ],
-          "acceptance_visibility": "model-visible-complete",
-          "model_visible_acceptance_asset_paths": []
+          "acceptance_visibility": "model-visible-compile-only",
+          "model_visible_acceptance_asset_paths": [],
+          "compile_command": "uv run --offline --frozen python -m py_compile beets/dbcore/db.py beets/dbcore/query.py"
         },
         {
           "id": "beets-lifecycle-review-v0",
           "order": 3,
           "task_class": "code-review-correction",
-          "prompt_path": "sources/evaluations/fixtures/medium/beetbox-beets/task-generations/baseline-v4/beets-lifecycle-review-v0/agent-prompt.txt",
-          "verifier_command": "sources/evaluations/fixtures/medium/beetbox-beets/task-generations/baseline-v4/beets-lifecycle-review-v0/verify.sh",
+          "prompt_path": "sources/evaluations/fixtures/medium/beetbox-beets/task-generations/baseline-v5/beets-lifecycle-review-v0/agent-prompt.txt",
+          "verifier_command": "sources/evaluations/fixtures/medium/beetbox-beets/task-generations/baseline-v5/beets-lifecycle-review-v0/verify.sh",
           "upstream_test_paths": [],
           "compatibility_rebased_test_paths": [],
           "model_concealed_paths": [],
           "review_patch_path": "review-change.patch",
           "expected_changed_paths": [
-            "beetsplug/ftintitle.py"
+            "beetsplug/ftintitle.py",
+            "beetsplug/duplicates.py"
           ],
           "model_visible_validation_anchors": [
-            "test/plugins/test_ftintitle.py"
+            "uv run --offline --frozen python -m py_compile beetsplug/ftintitle.py beetsplug/duplicates.py"
           ],
-          "acceptance_visibility": "model-visible-complete",
-          "model_visible_acceptance_asset_paths": [
-            "test/plugins/test_ftintitle.py"
-          ]
+          "acceptance_visibility": "model-visible-compile-only",
+          "model_visible_acceptance_asset_paths": [],
+          "compile_command": "uv run --offline --frozen python -m py_compile beetsplug/ftintitle.py beetsplug/duplicates.py"
         }
       ],
       "conversion_note": "Baseline V4 preserves the Baseline V3 workload under new identities and corrects only the Beets/Terraform task-verifier repository fallback; all failed V2 and occupied V3 evidence remains immutable.",
       "complexity_note": "Baseline V4 preserves the Baseline V3 deterministic old-to-new replacement commands and complete model-visible focused validation; no discovery or implementation choice remains.",
       "complexity_bar": "The fixed snapshot must pass, each seed must fail semantic or structural acceptance as appropriate, and treatment launch remains blocked until the strongest-model pilot has literally zero unique model incidents.",
-      "task_family_generation": "baseline-v4",
+      "task_family_generation": "baseline-v5",
       "mistake_gate": {
         "designated_model_condition": "codex-openai-gpt-5-6-sol-high",
-        "allowed_treatment_model_conditions": [
-          "claude-code-openrouter-gpt-5-6-sol-high"
-        ],
-        "allowed_unique_model_incidents": 0,
-        "allowed_corrected_implementation_mistakes": 0,
-        "allowed_unresolved_defects": 0,
-        "status": "passed-zero-incident",
-        "treatment_launch_policy": "eligible for treatment protocol freeze after the first-valid strongest-model pilot passed an independent audit with all eight required observed counts equal to integer zero",
         "model": "gpt-5.6-sol",
         "reasoning_effort": "high",
-        "allowed_prohibited_operations": 0,
-        "allowed_unnecessary_exploration_incidents": 0,
-        "allowed_model_caused_failed_commands": 0,
-        "allowed_code_rework_events": 0,
-        "allowed_verifier_or_environment_failures": 0,
-        "incident_counting": "unique-auditable-not-command-count",
-        "pilot_audit_path": "sources/evaluations/audits/baseline-v4-pilot-zero-mistake.json",
-        "attempt_receipt_path": "sources/evaluations/audits/baseline-v4-pilot-attempt-beets.json",
-        "pilot_authorization_path": "sources/evaluations/audits/baseline-v4-task-family-qualification-20260722.json"
-      }
+        "compile_required": true,
+        "quality_diagnostics_gate": false,
+        "pilot_audit_path": "sources/evaluations/audits/baseline-v5-pilot-compile-only.json",
+        "attempt_receipt_path": "sources/evaluations/audits/baseline-v5-pilot-attempt-beets.json",
+        "pilot_authorization_path": "sources/evaluations/audits/baseline-v5-task-family-qualification-20260801.json",
+        "status": "provider-pilot-required",
+        "treatment_launch_policy": "blocked until one first-valid strongest-model pilot completes every task and every affected-component compile verifier exits zero; all other quality findings are diagnostic only"
+      },
+      "acceptance_policy": {
+        "gate": "affected-component-compilation",
+        "quality_diagnostics_gate": false,
+        "tests_required": false,
+        "source_review_required": false
+      },
+      "project_compile_command": "uv run --offline --frozen python -c \"import ast, pathlib; [ast.parse(p.read_text(), filename=str(p)) for root in ('beets', 'beetsplug') for p in pathlib.Path(root).rglob('*.py')]\""
     },
     {
       "id": "terraform-lifecycle-sequence-v0",
       "status": "active",
-      "acceptance_design": "behavioral",
+      "acceptance_design": "compile-only",
       "scope": "production-primary",
       "sequence_contract": "feature-refactor-review",
-      "readiness_blockers": [],
+      "readiness_blockers": [
+        "provider-backed strongest-model compile-only Baseline V5 pilot is not authorized or executed"
+      ],
       "objective": "individual_tool_effectiveness",
       "primary_metric": "cumulative provider-reported workflow tokens",
-      "reset_policy": "Reset once before the lane; preseed the missing feature, behavior-preserving structural debt, flawed review candidate, and declared focused acceptance tests into one composite root; preserve repository, Git, tool, index, cache, generated configuration, memory, and agent state across prompts; repeat every disclosed verifier command after the final prompt.",
-      "seed_patch_policy": "Controller merges all three independently qualified lifecycle start conditions and model-visible acceptance tests into one composite broken start before provider execution. Prompts are disclosed sequentially; the proposed review patch is disclosed only with task 3; controller seed patch files and verifier scripts remain controller-only while complete acceptance behavior stays model-visible; every verifier repeats only disclosed commands after the final prompt.",
-      "protocol_freeze_date": "2026-07-22",
+      "reset_policy": "Each task reset reverses only its generation-local production seed. No acceptance tests are injected; the visible affected-component compile command is the sole pass/fail gate.",
+      "seed_patch_policy": "All three generation-local production regressions are applied as one composite broken start before task 1; prompts remain lazy and final verification runs once after the final prompt. Future seed regressions remain visible from the start. Baseline V5 compile commands stay model-visible, while unit tests, behavior, style, and source review are diagnostics only.",
+      "protocol_freeze_date": "2026-08-01",
       "production_lane": "current-production-v0-baseline-v4",
-      "qualification_path": "sources/evaluations/fixtures/large/hashicorp-terraform/qualification-lifecycle-v0-baseline-v4.json",
-      "qualification_date": "2026-07-22",
+      "qualification_path": "sources/evaluations/fixtures/large/hashicorp-terraform/qualification-lifecycle-v0-baseline-v5.json",
+      "qualification_date": "2026-08-01",
       "fixture_id": "large-hashicorp-terraform",
       "fixture_scale": "large-project",
       "initial_snapshot": {
@@ -284,93 +286,87 @@
           "id": "terraform-lifecycle-feature-v0",
           "order": 1,
           "task_class": "feature-implementation",
-          "prompt_path": "sources/evaluations/fixtures/large/hashicorp-terraform/task-generations/baseline-v4/terraform-lifecycle-feature-v0/agent-prompt.txt",
-          "verifier_command": "sources/evaluations/fixtures/large/hashicorp-terraform/task-generations/baseline-v4/terraform-lifecycle-feature-v0/verify.sh",
+          "prompt_path": "sources/evaluations/fixtures/large/hashicorp-terraform/task-generations/baseline-v5/terraform-lifecycle-feature-v0/agent-prompt.txt",
+          "verifier_command": "sources/evaluations/fixtures/large/hashicorp-terraform/task-generations/baseline-v5/terraform-lifecycle-feature-v0/verify.sh",
           "upstream_test_paths": [],
           "compatibility_rebased_test_paths": [],
           "model_concealed_paths": [],
           "expected_changed_paths": [
-            "internal/policy/callback/server.go"
+            "internal/policy/callback/server.go",
+            "internal/policy/callback/callback.go"
           ],
           "model_visible_validation_anchors": [
-            "internal/policy/callback/baseline_v3_deferred_test.go"
+            "export PATH=/opt/data/bin:/opt/data/opt/go/bin:$PATH; GOTOOLCHAIN=auto go test -run '^$' ./internal/policy/callback"
           ],
-          "acceptance_visibility": "model-visible-complete",
-          "model_visible_acceptance_asset_paths": [
-            "internal/policy/callback/baseline_v3_deferred_test.go"
-          ]
+          "acceptance_visibility": "model-visible-compile-only",
+          "model_visible_acceptance_asset_paths": [],
+          "compile_command": "export PATH=/opt/data/bin:/opt/data/opt/go/bin:$PATH; GOTOOLCHAIN=auto go test -run '^$' ./internal/policy/callback"
         },
         {
           "id": "terraform-lifecycle-refactor-v0",
           "order": 2,
           "task_class": "behavior-preserving-refactor",
-          "prompt_path": "sources/evaluations/fixtures/large/hashicorp-terraform/task-generations/baseline-v4/terraform-lifecycle-refactor-v0/agent-prompt.txt",
-          "verifier_command": "sources/evaluations/fixtures/large/hashicorp-terraform/task-generations/baseline-v4/terraform-lifecycle-refactor-v0/verify.sh",
+          "prompt_path": "sources/evaluations/fixtures/large/hashicorp-terraform/task-generations/baseline-v5/terraform-lifecycle-refactor-v0/agent-prompt.txt",
+          "verifier_command": "sources/evaluations/fixtures/large/hashicorp-terraform/task-generations/baseline-v5/terraform-lifecycle-refactor-v0/verify.sh",
           "upstream_test_paths": [],
           "compatibility_rebased_test_paths": [],
           "model_concealed_paths": [],
           "expected_changed_paths": [
-            "internal/configs/state_migrate_file.go"
+            "internal/configs/state_migrate_file.go",
+            "internal/configs/state_store.go"
           ],
           "model_visible_validation_anchors": [
-            "TestParserLoadConfigDirWithStateMigrations_from_state_store",
-            "internal/configs/parser_config_dir_test.go",
-            "internal/configs/baseline_v3_requirement_type_test.go"
+            "export PATH=/opt/data/bin:/opt/data/opt/go/bin:$PATH; GOTOOLCHAIN=auto go test -run '^$' ./internal/configs"
           ],
-          "acceptance_visibility": "model-visible-complete",
-          "model_visible_acceptance_asset_paths": [
-            "internal/configs/parser_config_dir_test.go",
-            "internal/configs/baseline_v3_requirement_type_test.go"
-          ]
+          "acceptance_visibility": "model-visible-compile-only",
+          "model_visible_acceptance_asset_paths": [],
+          "compile_command": "export PATH=/opt/data/bin:/opt/data/opt/go/bin:$PATH; GOTOOLCHAIN=auto go test -run '^$' ./internal/configs"
         },
         {
           "id": "terraform-lifecycle-review-v0",
           "order": 3,
           "task_class": "code-review-correction",
-          "prompt_path": "sources/evaluations/fixtures/large/hashicorp-terraform/task-generations/baseline-v4/terraform-lifecycle-review-v0/agent-prompt.txt",
-          "verifier_command": "sources/evaluations/fixtures/large/hashicorp-terraform/task-generations/baseline-v4/terraform-lifecycle-review-v0/verify.sh",
+          "prompt_path": "sources/evaluations/fixtures/large/hashicorp-terraform/task-generations/baseline-v5/terraform-lifecycle-review-v0/agent-prompt.txt",
+          "verifier_command": "sources/evaluations/fixtures/large/hashicorp-terraform/task-generations/baseline-v5/terraform-lifecycle-review-v0/verify.sh",
           "upstream_test_paths": [],
           "compatibility_rebased_test_paths": [],
           "model_concealed_paths": [],
           "review_patch_path": "review-change.patch",
           "expected_changed_paths": [
-            "internal/addrs/checkable.go"
+            "internal/addrs/checkable.go",
+            "internal/addrs/check.go"
           ],
           "model_visible_validation_anchors": [
-            "internal/addrs/baseline_v3_checkable_test.go"
+            "export PATH=/opt/data/bin:/opt/data/opt/go/bin:$PATH; GOTOOLCHAIN=auto go test -run '^$' ./internal/addrs"
           ],
-          "acceptance_visibility": "model-visible-complete",
-          "model_visible_acceptance_asset_paths": [
-            "internal/addrs/baseline_v3_checkable_test.go"
-          ]
+          "acceptance_visibility": "model-visible-compile-only",
+          "model_visible_acceptance_asset_paths": [],
+          "compile_command": "export PATH=/opt/data/bin:/opt/data/opt/go/bin:$PATH; GOTOOLCHAIN=auto go test -run '^$' ./internal/addrs"
         }
       ],
       "conversion_note": "Baseline V4 preserves the Baseline V3 workload under new identities and corrects only the Beets/Terraform task-verifier repository fallback; all failed V2 and occupied V3 evidence remains immutable.",
       "complexity_note": "Baseline V4 preserves the Baseline V3 deterministic old-to-new replacement commands and complete model-visible focused validation; no discovery or implementation choice remains.",
       "complexity_bar": "The fixed snapshot must pass, each seed must fail semantic or structural acceptance as appropriate, and treatment launch remains blocked until the strongest-model pilot has literally zero unique model incidents.",
-      "task_family_generation": "baseline-v4",
+      "task_family_generation": "baseline-v5",
       "mistake_gate": {
         "designated_model_condition": "codex-openai-gpt-5-6-sol-high",
-        "allowed_treatment_model_conditions": [
-          "claude-code-openrouter-gpt-5-6-sol-high"
-        ],
-        "allowed_unique_model_incidents": 0,
-        "allowed_corrected_implementation_mistakes": 0,
-        "allowed_unresolved_defects": 0,
-        "status": "passed-zero-incident",
-        "treatment_launch_policy": "eligible for treatment protocol freeze after the first-valid strongest-model pilot passed an independent audit with all eight required observed counts equal to integer zero",
         "model": "gpt-5.6-sol",
         "reasoning_effort": "high",
-        "allowed_prohibited_operations": 0,
-        "allowed_unnecessary_exploration_incidents": 0,
-        "allowed_model_caused_failed_commands": 0,
-        "allowed_code_rework_events": 0,
-        "allowed_verifier_or_environment_failures": 0,
-        "incident_counting": "unique-auditable-not-command-count",
-        "pilot_audit_path": "sources/evaluations/audits/baseline-v4-pilot-zero-mistake.json",
-        "attempt_receipt_path": "sources/evaluations/audits/baseline-v4-pilot-attempt-terraform.json",
-        "pilot_authorization_path": "sources/evaluations/audits/baseline-v4-task-family-qualification-20260722.json"
-      }
+        "compile_required": true,
+        "quality_diagnostics_gate": false,
+        "pilot_audit_path": "sources/evaluations/audits/baseline-v5-pilot-compile-only.json",
+        "attempt_receipt_path": "sources/evaluations/audits/baseline-v5-pilot-attempt-terraform.json",
+        "pilot_authorization_path": "sources/evaluations/audits/baseline-v5-task-family-qualification-20260801.json",
+        "status": "provider-pilot-required",
+        "treatment_launch_policy": "blocked until one first-valid strongest-model pilot completes every task and every affected-component compile verifier exits zero; all other quality findings are diagnostic only"
+      },
+      "acceptance_policy": {
+        "gate": "affected-component-compilation",
+        "quality_diagnostics_gate": false,
+        "tests_required": false,
+        "source_review_required": false
+      },
+      "project_compile_command": "export PATH=/opt/data/bin:/opt/data/opt/go/bin:$PATH; GOTOOLCHAIN=auto go test -run '^$' ./..."
     }
   ]
 }

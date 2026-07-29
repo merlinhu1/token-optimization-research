@@ -28,10 +28,12 @@ candidate repositories
 | `candidate-fixture` | A repository may support an evaluation task, but one or more readiness fields remain incomplete. | Identify repository source, task class, primary token-waste surface, setup/reset/verifier blockers or commands, and artifact policy. |
 | `qualified-fixture` | The repository has enough concrete setup, reset, verifier, prompt, and snapshot information for a protocol to be frozen. | Verify setup, reset, verifier, fixture snapshot, prompt path or prompt policy, and artifact paths. |
 | `baseline-run` | A substrate baseline, such as Codex no-MCP for additive Codex experiments, has been run and preserved for this fixture. | Store baseline transcript, verifier output, environment record, usage record when available, and reset notes. |
-| `treatment-ready` | The fixture has a baseline and can be used for one or more treatment profiles. | Baseline artifacts exist, reset is repeatable, and treatment install/disable boundaries are understood. |
+| `treatment-ready` | The fixture has at least one retained operational baseline and understood treatment boundaries; the current task generation may still block new treatments. | Baseline artifacts exist, reset is repeatable, treatment install/disable boundaries are understood, and the active generation's own pilot gate is evaluated separately. |
 | `retired-fixture` | The repository should no longer be used for new evaluation runs. | Record reason, such as unstable dependencies, weak verifier, inaccessible platform, or superseded fixture. |
 
 ## Task classes
+
+The table below is the general fixture taxonomy. Active Baseline V5 retains the first three labels for workflow order and task context, but their pass/fail contract is compilation-only: two related production-file compile failures, one affected-component compile command per task, and one final project-wide compile command. The semantic expectations below remain diagnostics for V5 rather than acceptance gates.
 
 | Task class | Token-waste target | Minimum verifier expectation |
 |---|---|---|

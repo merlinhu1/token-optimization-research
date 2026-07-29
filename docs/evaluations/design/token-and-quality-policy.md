@@ -49,7 +49,7 @@ A positive artifact reduction ratio is not sufficient for a positive workflow re
 
 ## Structured task outcomes
 
-Every controller verifier runs against the final cumulative repository, regardless of earlier failures. The historical Baseline V2 and active Baseline V3/V4 zero-mistake generations keep their complete focused acceptance assertions model-visible and check candidate copies against integrity-bound canonical bytes; earlier generations may use concealed assertions. Record for each task:
+Every controller verifier runs against the final cumulative repository, regardless of earlier failures. The active Baseline V5 generation exposes one affected-component compile command per task, injects no acceptance-test assets, and runs one project-wide compile command after all three task verifiers. Per-task component compilation and final project compilation are the sole pass/fail gates; tests, behavior, style, and source-review quality are diagnostics only. Historical Baseline V2/V3/V4 assertions remain immutable evidence for their executed protocols. Record for each task:
 
 - `task_id` and `order`;
 - agent operational exit and declared-completion state;
@@ -63,9 +63,9 @@ Every controller verifier runs against the final cumulative repository, regardle
 
 The research objective is provider-reported workflow token usage under fair, disclosed software-engineering tasks. An operationally complete, integrity-valid provider run is eligible regardless of whether the sampled model passes the controller verifiers.
 
-Solution-directed task assistance is permitted and preferred when it reduces irrelevant search, validation, and correction variance. The frozen prompt may disclose the intended solution path, exact focused checks, environment constraints, and stop condition, provided the same recipe is used for compatible baseline and treatment sessions and must not require or prefer treatment-tool invocation. This project does not use solution discovery as a model-intelligence outcome.
+Baseline V5 prompts describe the affected component and compile gate without disclosing an exact edit recipe. Normal repository search and inspection are allowed. The same prompt and compile command must be used for compatible baseline and treatment sessions and must not require or prefer treatment-tool invocation. Historical **Solution-directed task assistance** generations remain valid only for their frozen protocols.
 
-A verifier may enforce disclosed observable behavior, compatibility, safety, and explicitly public structural contracts. It must not require canonical prose, local parameter names, source identity, or one implementation shape unless that exact requirement is disclosed and necessary. Verifier outcomes are recorded as model-behavior diagnostics, not used to select which token samples count.
+The Baseline V5 verifier enforces only the disclosed affected-component compile commands plus the frozen project-wide compile command after task 3. Unit tests, behavioral fidelity, style, maintainability, and source review may still be recorded, but they are diagnostics and cannot change task pass/fail or select which provider-token sample counts.
 
 Repair prompt/verifier/fixture mismatches in the sole v0 contract. Mark runs produced by an invalid fixture `evaluation_validity: invalid-fixture` and exclude them. Never replace an otherwise valid run merely because model output failed or received a low review score.
 
@@ -75,7 +75,7 @@ Correctness and independent quality are classified to interpret each token sampl
 
 | Quality dimension | Diagnostic check |
 |---|---|
-| Functional correctness | Structured concealed outcomes cover every task on the final cumulative repository. |
+| Functional correctness | Baseline V5 records affected-component compilation as the acceptance gate; broader behavior and tests are diagnostic. |
 | Diagnostic fidelity | Repair/review tasks preserve actionable evidence when required. |
 | Code quality | Final diff is conventional and does not bypass validation. |
 | Maintainability | New abstractions, config, and generated files are assessed. |
