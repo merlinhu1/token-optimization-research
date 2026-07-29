@@ -145,6 +145,7 @@ def configure_runner(
     original_validate = runner.validate_default_model_condition
     original_baseline_descriptor = runner.baseline_protocol_descriptor
     original_execution_descriptor = runner.execution_condition_descriptor
+    original_current_baseline_protocol = runner.current_baseline_v2_protocol
     original_baseline_treatment_gate = runner.baseline_v2_treatment_gate
     original_require_treatment_gate = runner.require_baseline_v2_treatment_gate
 
@@ -214,9 +215,21 @@ def configure_runner(
             setattr(runner, "baseline_protocol_descriptor", current_baseline)
             setattr(runner, "execution_condition_descriptor", current_execution)
 
+    def current_baseline_protocol(*args: Any, **kwargs: Any) -> tuple[str, dict[str, Any]]:
+        current_baseline = runner.baseline_protocol_descriptor
+        current_execution = runner.execution_condition_descriptor
+        setattr(runner, "baseline_protocol_descriptor", original_baseline_descriptor)
+        setattr(runner, "execution_condition_descriptor", original_execution_descriptor)
+        try:
+            return original_current_baseline_protocol(*args, **kwargs)
+        finally:
+            setattr(runner, "baseline_protocol_descriptor", current_baseline)
+            setattr(runner, "execution_condition_descriptor", current_execution)
+
     setattr(runner, "validate_default_model_condition", validate_condition)
     setattr(runner, "baseline_protocol_descriptor", baseline_descriptor)
     setattr(runner, "execution_condition_descriptor", execution_descriptor)
+    setattr(runner, "current_baseline_v2_protocol", current_baseline_protocol)
     setattr(runner, "baseline_v2_treatment_gate", baseline_treatment_gate)
     setattr(runner, "require_baseline_v2_treatment_gate", require_treatment_gate)
     # Keep a handle only for diagnostic callers that need to prove this is a

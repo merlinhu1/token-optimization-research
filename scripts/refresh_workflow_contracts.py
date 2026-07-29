@@ -56,15 +56,22 @@ def configure_model_condition(condition_id: str, model: str, reasoning_effort: s
         else "scripts/run_codex_workflow_model_condition.py"
     )
     launcher_path = ROOT / MODEL_CONDITION_LAUNCHER
+    launcher_identity = {
+        "path": MODEL_CONDITION_LAUNCHER,
+        "sha256": digest(launcher_path),
+    }
+    if selected.get("runtime_id") == "opencode-cli":
+        runtime_path = ROOT / "scripts/workflow_model_condition_runtime.py"
+        launcher_identity.update({
+            "condition_runtime_path": "scripts/workflow_model_condition_runtime.py",
+            "condition_runtime_sha256": digest(runtime_path),
+        })
     _, BASELINE_MODEL_CONDITION = condition_runtime.configure_runner(
         runner,
         selected_condition_id=condition_id,
         expected_model=model,
         expected_reasoning_effort=reasoning_effort,
-        launcher_identity={
-            "path": MODEL_CONDITION_LAUNCHER,
-            "sha256": digest(launcher_path),
-        },
+        launcher_identity=launcher_identity,
     )
 
 
