@@ -4,5 +4,5 @@ TASK_DIR="$(cd "$(dirname "$0")" && pwd)"
 PROJECT_DIR="$(cd "$TASK_DIR/../.." && pwd)"
 cd "${WORKFLOW_REPO:-$PROJECT_DIR/repo}"
 
-# Controller-only Baseline V5 compilation assessment. This policy is not model-facing.
-node --check fastify.js && node --check lib/errors.js
+# Controller-only Lifecycle V1 compilation assessment. This policy is not model-facing.
+uv run --offline --frozen python -m py_compile beetsplug/ftintitle.py

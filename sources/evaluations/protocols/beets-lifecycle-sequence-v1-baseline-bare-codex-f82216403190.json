@@ -1,19 +1,19 @@
 {
   "protocol_schema_version": 3,
-  "protocol_id": "terraform-lifecycle-sequence-v0-baseline-bare-codex-8663e0d6aee4",
+  "protocol_id": "beets-lifecycle-sequence-v1-baseline-bare-codex-f82216403190",
   "status": "frozen-ready-not-run",
-  "outcome": "Frozen baseline-bare-codex protocol for terraform-lifecycle-sequence-v0; no provider/model run has occurred.",
+  "outcome": "Frozen baseline-bare-codex protocol for beets-lifecycle-sequence-v1; no provider/model run has occurred.",
   "frozen_at": "2026-08-01",
-  "hypothesis": "baseline-bare-codex produces reproducible provider-reported token and software-quality evidence for terraform-lifecycle-sequence-v0",
+  "hypothesis": "baseline-bare-codex produces reproducible provider-reported token and software-quality evidence for beets-lifecycle-sequence-v1",
   "evidence_stage_target": "reproduction",
   "task_fixture": {
-    "fixture_id": "large-hashicorp-terraform",
-    "sequence_id": "terraform-lifecycle-sequence-v0",
-    "task_family_generation": "baseline-v5",
-    "repository": "https://github.com/hashicorp/terraform.git",
-    "snapshot": "e02391ad384c9c38f1d7f40b853c0d2297348094",
-    "qualification_path": "sources/evaluations/fixtures/large/hashicorp-terraform/qualification-lifecycle-v0-baseline-v5.json",
-    "qualification_sha256": "0e82050714fa57edb1d4a46ff7bd7629164bbdd5f10d2e2bd96dd87c5afde373",
+    "fixture_id": "medium-beetbox-beets",
+    "sequence_id": "beets-lifecycle-sequence-v1",
+    "task_family_generation": "lifecycle-v1",
+    "repository": "https://github.com/beetbox/beets.git",
+    "snapshot": "9acb1ecff6c7ee0a1e83e3b983c94792345712c5",
+    "qualification_path": "sources/evaluations/fixtures/medium/beetbox-beets/qualification-lifecycle-v1.json",
+    "qualification_sha256": "03b30282786a471edadc80ed7cc4842c7c9bfdc912de61b9ce0bdeb66d3b494d",
     "timeout_seconds_per_task": 3600
   },
   "baseline": {
@@ -23,7 +23,7 @@
     "model": "gpt-5.6-sol",
     "model_condition_id": "codex-openai-gpt-5-6-sol-high",
     "reasoning_effort": "high",
-    "command": "python3 scripts/run_codex_workflow_model_condition.py --workflow-model-condition-id codex-openai-gpt-5-6-sol-high --workflow-model gpt-5.6-sol --workflow-reasoning-effort high --sequence-id terraform-lifecycle-sequence-v0 --profile-id baseline-bare-codex --timeout-per-task 3600 --protocol sources/evaluations/protocols/terraform-lifecycle-sequence-v0-baseline-bare-codex-8663e0d6aee4.json --docker-image token-eval-codex:latest"
+    "command": "python3 scripts/run_codex_workflow_model_condition.py --workflow-model-condition-id codex-openai-gpt-5-6-sol-high --workflow-model gpt-5.6-sol --workflow-reasoning-effort high --sequence-id beets-lifecycle-sequence-v1 --profile-id baseline-bare-codex --timeout-per-task 3600 --protocol sources/evaluations/protocols/beets-lifecycle-sequence-v1-baseline-bare-codex-f82216403190.json --docker-image token-eval-codex:latest"
   },
   "comparison_baseline": {
     "profile_id": "baseline-bare-codex",
@@ -32,7 +32,7 @@
     "model": "gpt-5.6-sol",
     "model_condition_id": "codex-openai-gpt-5-6-sol-high",
     "reasoning_effort": "high",
-    "command": "python3 scripts/run_codex_workflow_model_condition.py --workflow-model-condition-id codex-openai-gpt-5-6-sol-high --workflow-model gpt-5.6-sol --workflow-reasoning-effort high --sequence-id terraform-lifecycle-sequence-v0 --profile-id baseline-bare-codex --timeout-per-task 3600 --protocol sources/evaluations/protocols/terraform-lifecycle-sequence-v0-baseline-bare-codex-8663e0d6aee4.json --docker-image token-eval-codex:latest"
+    "command": "python3 scripts/run_codex_workflow_model_condition.py --workflow-model-condition-id codex-openai-gpt-5-6-sol-high --workflow-model gpt-5.6-sol --workflow-reasoning-effort high --sequence-id beets-lifecycle-sequence-v1 --profile-id baseline-bare-codex --timeout-per-task 3600 --protocol sources/evaluations/protocols/beets-lifecycle-sequence-v1-baseline-bare-codex-f82216403190.json --docker-image token-eval-codex:latest"
   },
   "treatment": {},
   "token_accounting_boundary": {
@@ -47,25 +47,25 @@
   },
   "baseline_pool": {
     "protocol_version": "baseline-pool-v1",
-    "protocol_fingerprint": "f6234781c7b8",
+    "protocol_fingerprint": "d68fc4dadfe7",
     "descriptor": {
       "version": "baseline-pool-v1",
-      "task_family_generation": "baseline-v5",
+      "task_family_generation": "lifecycle-v1",
       "runner_contract_version": "workflow-runner-v10",
-      "runner_sha256": "8b8dae910394a3c5828ddd28b2227c0f41bfe8492642139a14b4087e5797933c",
-      "qualification_generator_sha256": "bb0a05a2c1d11b6e2bdc4212b10360a8c41d3e18cedd86dfcde21ee452f775e5",
-      "validator_sha256": "bff2c3798008b3fd966ab3d084d77481ec76b5dbb25c898fbbc8d4e2b9baa621",
-      "sequence_id": "terraform-lifecycle-sequence-v0",
+      "runner_sha256": "5b1281c0f04470e179001ad752dc55c21d1eae245b4c57f6496925a08a534dc4",
+      "qualification_generator_sha256": "a0c871d2a500a3fe6a11b78ef4ec20ef29cf12f5db44fdae53344e4327ec559b",
+      "validator_sha256": "32d677ae10bf2364845a6eac88ec3ab95d0a76fea9a52b608e91e590f1ef69d2",
+      "sequence_id": "beets-lifecycle-sequence-v1",
       "sequence_contract": "feature-refactor-review",
-      "fixture_id": "large-hashicorp-terraform",
-      "fixture_scale": "large-project",
+      "fixture_id": "medium-beetbox-beets",
+      "fixture_scale": "medium-project",
       "initial_snapshot": {
-        "commit": "e02391ad384c9c38f1d7f40b853c0d2297348094",
-        "upstream": "https://github.com/hashicorp/terraform.git",
+        "commit": "9acb1ecff6c7ee0a1e83e3b983c94792345712c5",
+        "upstream": "https://github.com/beetbox/beets.git",
         "dependency_lockfiles": [
           {
-            "path": "go.sum",
-            "sha256": "be9ec949db0a0b135197f2c78b6d9821d764cc9b8c362b4860e3d5a1e9c74b9e"
+            "path": "uv.lock",
+            "sha256": "fbf1d7a9c84b658a2433035221ba18c57508c254d711a06f305e2f610839a45f"
           }
         ]
       },
@@ -79,21 +79,21 @@
         "tests_required": false,
         "source_review_required": false
       },
-      "project_compile_command": "export PATH=/opt/data/bin:/opt/data/opt/go/bin:$PATH; GOTOOLCHAIN=auto go test -run '^$' ./...",
+      "project_compile_command": "uv run --offline --frozen python -c \"import ast, pathlib; [ast.parse(p.read_text(), filename=str(p)) for root in ('beets', 'beetsplug') for p in pathlib.Path(root).rglob('*.py')]\"",
       "tasks": [
         {
-          "id": "terraform-lifecycle-feature-v0",
+          "id": "beets-lifecycle-feature-v1",
           "order": 1,
           "task_class": "feature-implementation",
-          "prompt_path": "sources/evaluations/fixtures/large/hashicorp-terraform/task-generations/baseline-v5/terraform-lifecycle-feature-v0/agent-prompt.txt",
-          "prompt_sha256": "77442d96dce398e8656fa236b7f08d3943581b1726ef242fda2ea917d1392d2b",
-          "seed_patch_sha256": "e74faf9367021fd35a66155f001377671ab4e18345eb30739ab3af8e1ff92e04",
-          "verifier_command": "sources/evaluations/fixtures/large/hashicorp-terraform/task-generations/baseline-v5/terraform-lifecycle-feature-v0/verify.sh",
-          "verifier_sha256": "f3b31ac54850ff02a646c30eae5e67cacb15a181f72fe105bff67b88d4434680",
-          "compile_command": "export PATH=/opt/data/bin:/opt/data/opt/go/bin:$PATH; GOTOOLCHAIN=auto go test -run '^$' ./internal/policy/callback",
+          "prompt_path": "sources/evaluations/fixtures/medium/beetbox-beets/task-generations/lifecycle-v1/beets-lifecycle-feature-v1/agent-prompt.txt",
+          "prompt_sha256": "de2a6d38d4bff0027866e665816d47d39f3e98e0b73e1e74645bae14c918821b",
+          "seed_patch_sha256": "9dc1cf36d0d0120fb57f75c4579af7f1f65b80e9d80de2d2c5cbdeb69b4ac17e",
+          "verifier_command": "sources/evaluations/fixtures/medium/beetbox-beets/task-generations/lifecycle-v1/beets-lifecycle-feature-v1/verify.sh",
+          "verifier_sha256": "5a5028a8debfc2260145947a81a53dd6644e08abcd7d45ee4c41fadcdcb351b0",
+          "compile_command": "uv run --offline --frozen python -m py_compile beets/util/functemplate.py",
           "acceptance_visibility": "controller-only-compile-policy",
           "expected_changed_paths": [
-            "internal/policy/callback/server.go"
+            "beets/util/functemplate.py"
           ],
           "controller_visible_acceptance_assets": [],
           "upstream_test_paths": [],
@@ -102,18 +102,18 @@
           "model_concealed_paths": []
         },
         {
-          "id": "terraform-lifecycle-refactor-v0",
+          "id": "beets-lifecycle-refactor-v1",
           "order": 2,
           "task_class": "behavior-preserving-refactor",
-          "prompt_path": "sources/evaluations/fixtures/large/hashicorp-terraform/task-generations/baseline-v5/terraform-lifecycle-refactor-v0/agent-prompt.txt",
-          "prompt_sha256": "2a8d2f0610ce93483c35b9d05f3e93eca1e579bfa0f049bd70f04ca70f286327",
-          "seed_patch_sha256": "b2b4e19476620a6579c435c7b898cca97fe036b4a6d3d54f08080a3dad5699ce",
-          "verifier_command": "sources/evaluations/fixtures/large/hashicorp-terraform/task-generations/baseline-v5/terraform-lifecycle-refactor-v0/verify.sh",
-          "verifier_sha256": "c5ff5527b5d2f6670bb3bda427bcbf35cb885a47545981cd162cec5ae709cbb3",
-          "compile_command": "export PATH=/opt/data/bin:/opt/data/opt/go/bin:$PATH; GOTOOLCHAIN=auto go test -run '^$' ./internal/configs",
+          "prompt_path": "sources/evaluations/fixtures/medium/beetbox-beets/task-generations/lifecycle-v1/beets-lifecycle-refactor-v1/agent-prompt.txt",
+          "prompt_sha256": "b6555b12ec7ef275bfd7c595ead918b3203051aa7bbad2e82dd99b76b0472be8",
+          "seed_patch_sha256": "9bcf590139fc91987524e643bc1e6281efbe5a09cd9b2218ca31f670c391c722",
+          "verifier_command": "sources/evaluations/fixtures/medium/beetbox-beets/task-generations/lifecycle-v1/beets-lifecycle-refactor-v1/verify.sh",
+          "verifier_sha256": "ca092d6431225d9b8f6aedef8bb8d0c8c50a403ca6441291a54425d9c5c9faf5",
+          "compile_command": "uv run --offline --frozen python -m py_compile beets/dbcore/db.py",
           "acceptance_visibility": "controller-only-compile-policy",
           "expected_changed_paths": [
-            "internal/configs/state_migrate_file.go"
+            "beets/dbcore/db.py"
           ],
           "controller_visible_acceptance_assets": [],
           "upstream_test_paths": [],
@@ -122,18 +122,18 @@
           "model_concealed_paths": []
         },
         {
-          "id": "terraform-lifecycle-review-v0",
+          "id": "beets-lifecycle-review-v1",
           "order": 3,
           "task_class": "code-review-correction",
-          "prompt_path": "sources/evaluations/fixtures/large/hashicorp-terraform/task-generations/baseline-v5/terraform-lifecycle-review-v0/agent-prompt.txt",
-          "prompt_sha256": "f5f624794bcd45304d247ff5cd08fce294127565179a6428ad2b671974129cb4",
-          "seed_patch_sha256": "9820e02bdbf682b7e5559e42ba8bf3799d4f22018d31cb8cd1621223c371cfcd",
-          "verifier_command": "sources/evaluations/fixtures/large/hashicorp-terraform/task-generations/baseline-v5/terraform-lifecycle-review-v0/verify.sh",
-          "verifier_sha256": "a54cdf89c1ffa2a6450bf97f164a80b7dc9a9d5a40ea9166bf31325b12c7a502",
-          "compile_command": "export PATH=/opt/data/bin:/opt/data/opt/go/bin:$PATH; GOTOOLCHAIN=auto go test -run '^$' ./internal/addrs",
+          "prompt_path": "sources/evaluations/fixtures/medium/beetbox-beets/task-generations/lifecycle-v1/beets-lifecycle-review-v1/agent-prompt.txt",
+          "prompt_sha256": "88d48e9fba771d9f5e02a3341975f746768412e64e9dffa615cc5dd35cad11f4",
+          "seed_patch_sha256": "14d8dd83706706805b8159f85871036cfb39148dd7912e66e2c8044d505cabad",
+          "verifier_command": "sources/evaluations/fixtures/medium/beetbox-beets/task-generations/lifecycle-v1/beets-lifecycle-review-v1/verify.sh",
+          "verifier_sha256": "7ad4e01e8a7b2ecd2852e8985cef05840fa0a9d1ce9f775a87ccf35be7ff98dd",
+          "compile_command": "uv run --offline --frozen python -m py_compile beetsplug/ftintitle.py",
           "acceptance_visibility": "controller-only-compile-policy",
           "expected_changed_paths": [
-            "internal/addrs/checkable.go"
+            "beetsplug/ftintitle.py"
           ],
           "controller_visible_acceptance_assets": [],
           "upstream_test_paths": [],
@@ -141,7 +141,7 @@
           "expected_model_concealed_paths": [],
           "model_concealed_paths": [],
           "review_patch_path": "review-change.patch",
-          "review_patch_sha256": "9820e02bdbf682b7e5559e42ba8bf3799d4f22018d31cb8cd1621223c371cfcd"
+          "review_patch_sha256": "14d8dd83706706805b8159f85871036cfb39148dd7912e66e2c8044d505cabad"
         }
       ],
       "model_facing_prompts": {
@@ -149,25 +149,25 @@
         "profile_guidance_sha256": "f1d7a2cf7b0a7c1affd8bbb04705f073332ee6efc5f8f89f019b9e0cbacec4bb",
         "tasks": [
           {
-            "task_id": "terraform-lifecycle-feature-v0",
+            "task_id": "beets-lifecycle-feature-v1",
             "order": 1,
-            "rendered_prompt_sha256": "28f33d5f86c69e07e331ed00237c7824860845b567ed3bf72e862deba3a15c38"
+            "rendered_prompt_sha256": "5194996827750c33d23eaad9596701c0930b4e565ccf6efa8bd5bb29e7254ab1"
           },
           {
-            "task_id": "terraform-lifecycle-refactor-v0",
+            "task_id": "beets-lifecycle-refactor-v1",
             "order": 2,
-            "rendered_prompt_sha256": "37a85c6aa3cf175d446a7f6cf1298649c07c31610dd2e29812b2b6eec641b23b"
+            "rendered_prompt_sha256": "69cd7d8bf2eeba073fafc156982916dcbb68df92ca06a869039c9bbb728255f9"
           },
           {
-            "task_id": "terraform-lifecycle-review-v0",
+            "task_id": "beets-lifecycle-review-v1",
             "order": 3,
-            "rendered_prompt_sha256": "2d6305834d64af730dadf64048cdc6b9d1d7b610080bd304815792025bf5b75f"
+            "rendered_prompt_sha256": "1586356a85a2cbdd70fa6d545d16063df49a1f2d455cf07646cb943a691770d0"
           }
         ]
       },
       "qualification": {
-        "path": "sources/evaluations/fixtures/large/hashicorp-terraform/qualification-lifecycle-v0-baseline-v5.json",
-        "sha256": "0e82050714fa57edb1d4a46ff7bd7629164bbdd5f10d2e2bd96dd87c5afde373"
+        "path": "sources/evaluations/fixtures/medium/beetbox-beets/qualification-lifecycle-v1.json",
+        "sha256": "03b30282786a471edadc80ed7cc4842c7c9bfdc912de61b9ce0bdeb66d3b494d"
       },
       "baseline_profile": {
         "profile_id": "baseline-bare-codex",
@@ -207,11 +207,11 @@
         },
         "dockerfile_path": "sources/evaluations/fixtures/container/Dockerfile",
         "dockerfile_sha256": "47c91967ce25014ce54879514f51d2ff0326651be1087209115eff4d358226b3",
-        "dependency_command": "go mod download",
+        "dependency_command": "uv sync --group test --frozen",
         "dependency_lockfiles": [
           {
-            "path": "go.sum",
-            "sha256": "be9ec949db0a0b135197f2c78b6d9821d764cc9b8c362b4860e3d5a1e9c74b9e"
+            "path": "uv.lock",
+            "sha256": "fbf1d7a9c84b658a2433035221ba18c57508c254d711a06f305e2f610839a45f"
           }
         ],
         "codex_runtime_condition": "codex-openai-gpt-5-6-sol-high",
@@ -248,16 +248,16 @@
         "registry_status": "active-model-comparison",
         "launcher": {
           "path": "scripts/run_codex_workflow_model_condition.py",
-          "sha256": "b219d8f88e5df0fd567dff4d47e9193a602b223b2b72cf0ed3ea5c67cad5aecf"
+          "sha256": "1432d8583491c5505c4cbf95695e8288584492d2c14026dfd3322d4050852edc"
         }
       }
     }
   },
   "selected_execution": {
-    "descriptor_sha256": "67ad01fb9ebf92af0a26c27baa2d809b985b206bb2da28b4c1e6eb9b3ad63228",
+    "descriptor_sha256": "3a820ab342acaf677531b31f91cf763230f3ce98662f7df2e4aa37381c298a18",
     "descriptor": {
       "version": "execution-condition-v1",
-      "sequence_id": "terraform-lifecycle-sequence-v0",
+      "sequence_id": "beets-lifecycle-sequence-v1",
       "execution_role": "baseline",
       "selected_profile": {
         "profile_id": "baseline-bare-codex",
@@ -327,19 +327,19 @@
         "profile_guidance_sha256": "f1d7a2cf7b0a7c1affd8bbb04705f073332ee6efc5f8f89f019b9e0cbacec4bb",
         "tasks": [
           {
-            "task_id": "terraform-lifecycle-feature-v0",
+            "task_id": "beets-lifecycle-feature-v1",
             "order": 1,
-            "rendered_prompt_sha256": "28f33d5f86c69e07e331ed00237c7824860845b567ed3bf72e862deba3a15c38"
+            "rendered_prompt_sha256": "5194996827750c33d23eaad9596701c0930b4e565ccf6efa8bd5bb29e7254ab1"
           },
           {
-            "task_id": "terraform-lifecycle-refactor-v0",
+            "task_id": "beets-lifecycle-refactor-v1",
             "order": 2,
-            "rendered_prompt_sha256": "37a85c6aa3cf175d446a7f6cf1298649c07c31610dd2e29812b2b6eec641b23b"
+            "rendered_prompt_sha256": "69cd7d8bf2eeba073fafc156982916dcbb68df92ca06a869039c9bbb728255f9"
           },
           {
-            "task_id": "terraform-lifecycle-review-v0",
+            "task_id": "beets-lifecycle-review-v1",
             "order": 3,
-            "rendered_prompt_sha256": "2d6305834d64af730dadf64048cdc6b9d1d7b610080bd304815792025bf5b75f"
+            "rendered_prompt_sha256": "1586356a85a2cbdd70fa6d545d16063df49a1f2d455cf07646cb943a691770d0"
           }
         ]
       },
@@ -389,12 +389,12 @@
         }
       },
       "dependencies": {
-        "command": "go mod download",
-        "command_sha256": "42a8263a643ccbe692d70752ffdd8cea328fc2d3190677df1485ee06f55b350a",
+        "command": "uv sync --group test --frozen",
+        "command_sha256": "cef23fd45902c23f8b3e89b7c6360a401eb49c17cf36d742e5b625d5593c911b",
         "lockfiles": [
           {
-            "path": "go.sum",
-            "snapshot_sha256": "be9ec949db0a0b135197f2c78b6d9821d764cc9b8c362b4860e3d5a1e9c74b9e",
+            "path": "uv.lock",
+            "snapshot_sha256": "fbf1d7a9c84b658a2433035221ba18c57508c254d711a06f305e2f610839a45f",
             "current_fixture_sha256": null
           }
         ]
@@ -419,7 +419,7 @@
       },
       "baseline_pool_reference": {
         "protocol_version": "baseline-pool-v1",
-        "protocol_fingerprint": "f6234781c7b8",
+        "protocol_fingerprint": "d68fc4dadfe7",
         "comparison_policy": "paired baseline and treatment must share this baseline pool fingerprint and replicate"
       },
       "model_condition_override": {
@@ -431,7 +431,7 @@
         "registry_status": "active-model-comparison",
         "launcher": {
           "path": "scripts/run_codex_workflow_model_condition.py",
-          "sha256": "b219d8f88e5df0fd567dff4d47e9193a602b223b2b72cf0ed3ea5c67cad5aecf"
+          "sha256": "1432d8583491c5505c4cbf95695e8288584492d2c14026dfd3322d4050852edc"
         }
       }
     }
