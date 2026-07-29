@@ -2101,6 +2101,10 @@ def find_canonical_baseline_record(registry: dict[str, Any], seq: dict[str, Any]
             expected_protocol_identity, expected_protocol = current_baseline_v2_protocol(
                 seq, seq["mistake_gate"], ROOT
             )
+            expected_protocol_identity = {
+                key: expected_protocol_identity[key]
+                for key in ("protocol_id", "path", "sha256")
+            }
             expected_selected_execution = expected_protocol["selected_execution"]
             expected_identity_loaded = True
         if expected_protocol_identity is not None and (

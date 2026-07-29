@@ -1,10 +1,10 @@
 {
   "protocol_schema_version": 3,
-  "protocol_id": "fastify-lifecycle-sequence-v0-terminal-tokenjuice-codex-hook-v1-09a1e62bc8b2",
+  "protocol_id": "fastify-lifecycle-sequence-v0-terminal-rtk-codex-instructions-v1-1c1e0e1c3a58",
   "status": "frozen-ready-not-run",
-  "outcome": "Frozen terminal-tokenjuice-codex-hook-v1 protocol for fastify-lifecycle-sequence-v0; no provider/model run has occurred.",
+  "outcome": "Frozen terminal-rtk-codex-instructions-v1 protocol for fastify-lifecycle-sequence-v0; no provider/model run has occurred.",
   "frozen_at": "2026-07-22",
-  "hypothesis": "terminal-tokenjuice-codex-hook-v1 produces reproducible provider-reported token and software-quality evidence for fastify-lifecycle-sequence-v0",
+  "hypothesis": "terminal-rtk-codex-instructions-v1 produces reproducible provider-reported token and software-quality evidence for fastify-lifecycle-sequence-v0",
   "evidence_stage_target": "reproduction",
   "task_fixture": {
     "fixture_id": "medium-fastify-fastify",
@@ -25,12 +25,12 @@
     "command": ""
   },
   "treatment": {
-    "profile_id": "terminal-tokenjuice-codex-hook-v1",
+    "profile_id": "terminal-rtk-codex-instructions-v1",
     "provider": "openai",
     "model": "gpt-5.6-sol",
     "model_condition_id": "codex-openai-gpt-5-6-sol-high",
     "reasoning_effort": "high",
-    "command": "python3 scripts/run_codex_workflow_model_condition.py --workflow-model-condition-id codex-openai-gpt-5-6-sol-high --workflow-model gpt-5.6-sol --workflow-reasoning-effort high --sequence-id fastify-lifecycle-sequence-v0 --profile-id terminal-tokenjuice-codex-hook-v1 --timeout-per-task 3600 --protocol sources/evaluations/protocols/fastify-lifecycle-sequence-v0-terminal-tokenjuice-codex-hook-v1-09a1e62bc8b2.json --docker-image token-eval-codex:latest"
+    "command": "python3 scripts/run_codex_workflow_model_condition.py --workflow-model-condition-id codex-openai-gpt-5-6-sol-high --workflow-model gpt-5.6-sol --workflow-reasoning-effort high --sequence-id fastify-lifecycle-sequence-v0 --profile-id terminal-rtk-codex-instructions-v1 --timeout-per-task 3600 --protocol sources/evaluations/protocols/fastify-lifecycle-sequence-v0-terminal-rtk-codex-instructions-v1-1c1e0e1c3a58.json --docker-image token-eval-codex:latest"
   },
   "token_accounting_boundary": {
     "fields": [
@@ -49,7 +49,7 @@
       "version": "baseline-pool-v1",
       "task_family_generation": "baseline-v3",
       "runner_contract_version": "workflow-runner-v9",
-      "runner_sha256": "30e41bcaad32c16ea5577c992aac6333225c3a53bf94b9f85ea60f4ad2b714f3",
+      "runner_sha256": "a8e44a164c391c8cf4795331ee2891dfc6360e76595d86f9a91287edd6b3978c",
       "qualification_generator_sha256": "92c9d68b3146b37dd0f4f6c0c71a20d7ef83898fec7206b8d022f06351969eb7",
       "validator_sha256": "ccfc9139c7b93285ad7a848663ea31ab70b940fb4fbb2ab082b231f61f4a2b96",
       "sequence_id": "fastify-lifecycle-sequence-v0",
@@ -233,32 +233,32 @@
     }
   },
   "selected_execution": {
-    "descriptor_sha256": "3c9f0b7636bb276bcef355a0e39657478457728d905cf39eb6d6979e041e38f4",
+    "descriptor_sha256": "c0671d871581d70989d3e350cc2773562274f5787b1742f0ab2b04ee8f383a9a",
     "descriptor": {
       "version": "execution-condition-v1",
       "sequence_id": "fastify-lifecycle-sequence-v0",
       "execution_role": "individual_tool_treatment",
       "selected_profile": {
-        "profile_id": "terminal-tokenjuice-codex-hook-v1",
+        "profile_id": "terminal-rtk-codex-instructions-v1",
         "profile_type": "individual_tool",
         "component_ids": [
-          "terminal-tokenjuice-codex-hook-v1"
+          "terminal-rtk-codex-instructions-v1"
         ],
         "enabled_surfaces": [
-          "codex-post-tool-use-hook",
+          "codex-global-instructions",
           "terminal-output"
         ],
         "disabled_overlaps": [
           "all unlisted surfaces"
         ],
-        "registry_entry_sha256": "d68abdb6553deb2321bb41870fa4aa3fe689c0a6e313a835858c44cbc878b878",
+        "registry_entry_sha256": "09169e7cfe82ac626baf50e5fb6fdec8525e91e983e4e8dacee62192b5899069",
         "registry_entry": {
-          "id": "terminal-tokenjuice-codex-hook-v1",
+          "id": "terminal-rtk-codex-instructions-v1",
           "profile_type": "individual_tool",
           "objective_scope": "individual_tool_effectiveness",
           "status": "screening-shortlist",
           "enabled_surfaces": [
-            "codex-post-tool-use-hook",
+            "codex-global-instructions",
             "terminal-output"
           ],
           "disabled_overlaps": [
@@ -266,23 +266,23 @@
           ],
           "components": [
             {
-              "component_id": "terminal-tokenjuice-codex-hook-v1",
-              "surface": "codex-post-tool-use-hook/terminal-output-compaction",
+              "component_id": "terminal-rtk-codex-instructions-v1",
+              "surface": "codex-global-instructions/terminal-output-compaction",
               "role": "individual_tool"
             }
           ],
           "install": {
-            "policy": "Use the pinned TokenJuice binary to run `tokenjuice install codex` against the lane-private CODEX_HOME, retain hooks.json, enable Codex hooks, and require `tokenjuice doctor codex` to pass before provider execution."
+            "policy": "Run the pinned RTK binary with `rtk init --global --codex` against lane-private CODEX_HOME; require generated AGENTS.md and RTK.md before execution."
           },
           "reset": {
-            "policy": "Delete the lane-private CODEX_HOME and TokenJuice state after evidence capture; verify hooks.json and hook history cannot survive into another lane."
+            "policy": "Delete lane-private CODEX_HOME and RTK state after evidence capture; verify global instruction files cannot survive into another lane."
           },
           "evaluation_protocol": {
             "tool_use_policy": "natural",
-            "tool_state": "cold-cli",
-            "integration_state": "official-codex-hook"
+            "tool_state": "active-instruction-layer",
+            "integration_state": "official-codex-global-instructions"
           },
-          "notes": "Corrected versioned TokenJuice profile. Supersedes the CLI-only historical profile for product-effect claims; does not rewrite its evidence."
+          "notes": "Versioned correction of the historical PATH-only RTK profile. Measures the product-authored Codex instruction policy, not transparent command rewriting."
         }
       },
       "model_facing_prompts": {
@@ -307,96 +307,97 @@
         ]
       },
       "tool_adapter": {
-        "tool_id": "tokenjuice-codex-hook-v1",
+        "tool_id": "rtk-codex-instructions-v1",
         "tool_manifest": "scripts/run_codex_fixture_evaluation.py:TOOL_CONFIGS",
         "tool_manifest_sha256": "6fa8271b89a577706ea0bbffcc8e4521831f41b646ed9519369efee3642fe41c",
         "tool_config": {
-          "display_name": "TokenJuice Codex hook v1",
-          "lane_name": "terminal-tokenjuice-codex-hook-v1",
-          "surface": "codex-post-tool-use-hook/terminal-output-compaction",
+          "display_name": "RTK Codex global instruction policy v1",
+          "lane_name": "terminal-rtk-codex-instructions-v1",
+          "surface": "codex-global-instructions/terminal-output-compaction",
           "allowed_terms": [
-            "tokenjuice"
+            "rtk"
           ],
-          "data_dir_name": "tokenjuice-codex-hook-v1",
-          "executable": "/opt/data/tool-candidates/tokenjuice/bin/tokenjuice",
+          "data_dir_name": "rtk-codex-instructions-v1",
+          "executable": "/opt/data/tool-candidates/rtk/target/release/rtk",
           "path_entries": [
-            "/opt/data/tool-candidates/tokenjuice/bin"
+            "/opt/data/tool-candidates/rtk/target/release"
           ],
           "mounts": [
-            "/opt/data/tool-candidates/tokenjuice"
+            "/opt/data/tool-candidates/rtk/target/release"
           ],
+          "binary_mount_target": "/usr/local/bin/rtk",
           "env": {
-            "TOKENJUICE_TELEMETRY": "0"
-          },
-          "codex_features": {
-            "hooks": true
+            "RTK_TELEMETRY": "0"
           },
           "host_integration": {
             "install_commands": [
               [
-                "tokenjuice",
-                "install",
-                "codex"
+                "rtk",
+                "init",
+                "--global",
+                "--codex"
               ]
             ],
             "verify_commands": [
               [
-                "tokenjuice",
-                "doctor",
-                "codex"
+                "rtk",
+                "init",
+                "--global",
+                "--codex",
+                "--dry-run"
               ]
             ],
             "required_files": [
-              "{codex_home}/hooks.json"
+              "{codex_home}/AGENTS.md",
+              "{codex_home}/RTK.md"
             ]
           },
           "preflight_command": [
-            "tokenjuice",
+            "rtk",
             "--version"
           ],
-          "default_tool_state": "cold-cli"
+          "default_tool_state": "active-instruction-layer"
         },
-        "tool_config_sha256": "ae1533be8109f2cdaf09ae83165aa36153210b262c1768b4265f44e33f6ddb2c",
-        "tool_state": "cold-cli",
+        "tool_config_sha256": "dabefc064fc87d3d022683c2c1e8a8c3a5256679f343e444c90c7fa22ae45be2",
+        "tool_state": "active-instruction-layer",
         "tool_use_policy": "natural",
         "command_identity": {
           "kind": "preflight_command",
           "command": [
-            "tokenjuice",
+            "rtk",
             "--version"
           ]
         },
         "binary_identity": {
-          "executable_token": "tokenjuice",
-          "resolved_path": "/opt/data/tool-candidates/tokenjuice/bin/tokenjuice",
-          "realpath": "/opt/data/tool-candidates/tokenjuice/bin/tokenjuice",
-          "sha256": "d3939a3f76f8ae5489add74453edee5e11870d25a4bd92972111f664f33bc690",
+          "executable_token": "rtk",
+          "resolved_path": "/opt/data/tool-candidates/rtk/target/release/rtk",
+          "realpath": "/opt/data/tool-candidates/rtk/target/release/rtk",
+          "sha256": "6a5f761863fc184217e6c1ae5336dd969868ad79f24e701a3efbd090a435f2ae",
           "metadata": {
-            "size": 128,
+            "size": 8534448,
             "mode": "-rwxr-xr-x",
             "uid": 10000,
             "gid": 10000,
-            "mtime_ns": 1783105655084864002
+            "mtime_ns": 1783030976951158921
           },
           "version": {
             "command": [
-              "/opt/data/tool-candidates/tokenjuice/bin/tokenjuice",
+              "/opt/data/tool-candidates/rtk/target/release/rtk",
               "--version"
             ],
-            "environment_path": "/opt/data/.local/bin:/opt/data/tool-candidates/tokenjuice/bin:/opt/data/opt/go/bin:/opt/data/opt/uv:/opt/data/opt/node-v24.18.0-linux-x64/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+            "environment_path": "/opt/data/.local/bin:/opt/data/tool-candidates/rtk/target/release:/opt/data/opt/go/bin:/opt/data/opt/uv:/opt/data/opt/node-v24.18.0-linux-x64/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
             "captured": true,
             "exit_code": 0,
-            "output": "0.8.1",
+            "output": "rtk 0.42.4",
             "truncated": false
           }
         },
         "source_identity": [
           {
-            "path": "/opt/data/tool-candidates/tokenjuice",
+            "path": "/opt/data/tool-candidates/rtk/target/release",
             "exists": true,
             "kind": "directory",
-            "git_head": "49bdcf1755833ff1e02e44e6e7fe91c0fb44c16e",
-            "package_json_sha256": "420cce726d4d710bfc59e5059a4e4d4f1d52fcaafe71663e2a7077bb41e9eafe"
+            "git_head": "23aae98c5b29cd52d77061c6efd2e65e5e3cc6dd"
           }
         ]
       },
