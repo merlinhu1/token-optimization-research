@@ -79,6 +79,16 @@ def expected_task_concealed_paths(task: dict) -> list[str]:
     return sorted(expected)
 
 
+def expected_model_visible_acceptance_paths(sequence: dict, task: dict) -> list[str]:
+    """Return file-backed acceptance assets for the active task generation."""
+    if sequence.get("task_family_generation") == "baseline-v5":
+        return []
+    paths = validation.BASELINE_V3_ACCEPTANCE_ASSET_PATHS.get(task["id"])
+    if paths is None:
+        raise SystemExit(f"{task['id']} has no declared model-visible acceptance asset contract")
+    return paths
+
+
 def omitted_expected_concealment(task: dict) -> list[str]:
     declared = {str(path) for path in task.get("model_concealed_paths", [])}
     return sorted(set(expected_task_concealed_paths(task)) - declared)
@@ -192,10 +202,10 @@ def main() -> int:
         patch = task_dir / "seed-regression.patch"
         verifier = task_dir / "verify.sh"
         controller_visible = task_dir / "controller-visible"
-        expected_acceptance_paths = validation.BASELINE_V3_ACCEPTANCE_ASSET_PATHS.get(task["id"])
+        expected_acceptance_paths = expected_model_visible_acceptance_paths(sequence, task)
         declared_acceptance_paths = task.get("model_visible_acceptance_asset_paths")
-        if expected_acceptance_paths is None or declared_acceptance_paths != expected_acceptance_paths:
-            raise SystemExit(f"{task['id']} does not declare the exact low-complexity baseline file-backed acceptance assets")
+        if declared_acceptance_paths != expected_acceptance_paths:
+            raise SystemExit(f"{task['id']} does not declare the exact model-visible acceptance assets")
         controller_visible_acceptance_assets = [
             {
                 "path": str(Path("controller-visible") / path_text),
@@ -214,7 +224,10 @@ def main() -> int:
         task_collision_audit = [record for record in collision_audit if record["path"] in task_concealed]
         seed_check = call(["git", "apply", "--check", str(patch)], checkout)
         seed_apply = call(["git", "apply", str(patch)], checkout) if seed_check == 0 else 1
-        is_refactor = task.get("task_class") == "behavior-preserving-refactor"
+        is_refactor = (
+            task.get("task_class") == "behavior-preserving-refactor"
+            and sequence.get("task_family_generation") != "baseline-v5"
+        )
         seeded_behavior_exit = (
             call(["bash", str(verifier), "behavior"], checkout, env=qualification_env)
             if is_refactor and seed_apply == 0
@@ -312,7 +325,7 @@ def main() -> int:
         expected_visible_asset_count = 0
         for task in ordered:
             task_dir = (ROOT / task["prompt_path"]).parent
-            acceptance_paths = validation.BASELINE_V3_ACCEPTANCE_ASSET_PATHS[task["id"]]
+            acceptance_paths = expected_model_visible_acceptance_paths(sequence, task)
             expected_visible_asset_count += len(acceptance_paths)
             for path_text in acceptance_paths:
                 controller_visible = task_dir / "controller-visible" / path_text
@@ -323,8 +336,7 @@ def main() -> int:
                     and model_visible.read_bytes() == controller_visible.read_bytes()
                 )
         visible_acceptance_assets_byte_exact = (
-            expected_visible_asset_count > 0
-            and len(visible_asset_checks) == expected_visible_asset_count
+            len(visible_asset_checks) == expected_visible_asset_count
             and all(visible_asset_checks)
         )
         composite_diff = subprocess.run(
@@ -374,7 +386,7 @@ def main() -> int:
             text=True,
             capture_output=True,
             check=False,
-            timeout=300,
+            timeout=2400 if sequence.get("task_family_generation") == "baseline-v5" else 300,
         )
         aggregate_verifier_exit = aggregate_result.returncode
         for line in aggregate_result.stdout.splitlines():
@@ -388,10 +400,14 @@ def main() -> int:
     )
     unmerged = not out(["git", "diff", "--name-only", "--diff-filter=U"], checkout)
     hidden = all(not (checkout / path).exists() for path in concealed_paths(sequence))
-    is_baseline_v2 = sequence.get("task_family_generation") in {"baseline-v2", "baseline-v3", "baseline-v4"}
+    generation = sequence.get("task_family_generation")
+    is_baseline_v2 = generation in {"baseline-v2", "baseline-v3", "baseline-v4", "baseline-v5"}
+    expected_acceptance_visibility = (
+        "model-visible-compile-only" if generation == "baseline-v5" else "model-visible-complete"
+    )
     undisclosed_inline_markers = ("<<'NODE'", '<<"NODE"', "<<'PY'", '<<"PY"', "<<'TS'", '<<"TS"', "workflow-hidden")
     all_acceptance_behavior_model_visible = all(
-        task.get("acceptance_visibility") == "model-visible-complete"
+        task.get("acceptance_visibility") == expected_acceptance_visibility
         and all(
             marker not in (ROOT / task["verifier_command"]).read_text()
             or marker in (ROOT / task["prompt_path"]).read_text()
@@ -434,15 +450,19 @@ def main() -> int:
         "aggregate_verifier_exit": aggregate_verifier_exit,
         "aggregate_verifier_task_exits": aggregate_verifier_task_exits,
         "aggregate_verifier_environment_passed": aggregate_verifier_environment_passed,
+        "project_compile_command": sequence.get("project_compile_command"),
+        "project_compile_passed": aggregate_verifier_environment_passed,
 
         "no_unmerged_paths": unmerged,
-        "no_model_visible_acceptance_assets": False if is_baseline_v2 else hidden,
+        "no_model_visible_acceptance_assets": (
+            True if generation == "baseline-v5" else False if is_baseline_v2 else hidden
+        ),
         "no_model_concealed_acceptance_assets": hidden,
-        "acceptance_visibility": "model-visible-complete" if all_acceptance_behavior_model_visible else "incomplete",
+        "acceptance_visibility": expected_acceptance_visibility if all_acceptance_behavior_model_visible else "incomplete",
         "all_acceptance_behavior_model_visible": all_acceptance_behavior_model_visible,
         "model_visible_acceptance_assets_match_verifier_copies": visible_acceptance_assets_byte_exact,
         "expected_model_visible_acceptance_asset_count": sum(
-            len(validation.BASELINE_V3_ACCEPTANCE_ASSET_PATHS[task["id"]]) for task in ordered
+            len(expected_model_visible_acceptance_paths(sequence, task)) for task in ordered
         ),
         "all_expected_model_concealment_declared": all(record["declared_concealment_matches_expected"] for record in records),
     }
@@ -459,9 +479,13 @@ def main() -> int:
     required = ("seeded_verifier_nonzero", "fixed_verifier_zero", "full_fixed_cumulative_verifier_zero", "composite_seed_merge_zero", "composite_seeded_verifiers_nonzero", "no_unmerged_paths", "all_expected_model_concealment_declared")
     if is_baseline_v2:
         required += ("no_model_concealed_acceptance_assets", "all_acceptance_behavior_model_visible", "model_visible_acceptance_assets_match_verifier_copies")
-        if sequence.get("task_family_generation") == "baseline-v4":
+        if generation == "baseline-v5":
+            required += ("no_model_visible_acceptance_assets",)
+        if generation in {"baseline-v4", "baseline-v5"}:
             required += ("aggregate_verifier_environment_passed",)
-        if payload["acceptance_visibility"] != "model-visible-complete":
+        if generation == "baseline-v5":
+            required += ("project_compile_passed",)
+        if payload["acceptance_visibility"] != expected_acceptance_visibility:
             return 1
     else:
         required += ("no_model_visible_acceptance_assets",)

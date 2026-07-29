@@ -1,7 +1,7 @@
 ---
 status: active
 truth_kind: engineering-contract
-last_reviewed: 2026-07-16
+last_reviewed: 2026-08-01
 ---
 
 # Software Quality Diagnostics
@@ -12,14 +12,15 @@ Define software-quality evidence as diagnostic context for the repository's prim
 
 ## Scope
 
-This contract covers concealed-verifier outcomes, optional source review, quality scores, and the boundary between sampled model behavior and experiment invalidity.
+This contract covers Baseline V5 compile acceptance, broader software-quality diagnostics, optional source review, quality scores, and the boundary between sampled model behavior and experiment invalidity.
 
 ## Current Implementation Behavior
 
-- Workflow records retain structured verifier outcomes for every task.
-- `quality_review_status` and `quality_score` are optional diagnostics.
-- Runner, matrix, and repository validation accept operationally valid provider samples without requiring verifier success or review.
-- Baseline reuse keeps the first valid sample for each causal protocol fingerprint and replicate.
+- Workflow records retain structured affected-component compile outcomes for every task and one final project-wide compile outcome.
+- Component compilation gates per-task acceptance; final project compilation gates workflow acceptance and treatment unlock.
+- Unit tests, behavioral fidelity, style, maintainability, exact source shape, `quality_review_status`, and `quality_score` are optional diagnostics.
+- Runner, matrix, and repository validation retain the first operationally valid provider token sample even when compilation or broader quality diagnostics fail.
+- Baseline reuse for token accounting keeps that first valid sample; treatment launch still requires the V5 compile gate to pass.
 
 ## Product Truth Links
 
@@ -42,14 +43,14 @@ Token-eligibility state plus separately recorded model-behavior diagnostics.
 
 ## Contract
 
-- Verifier and review outcomes describe the model behavior observed in a retained sample.
-- Model quality does not gate token accounting, baseline reuse, or baseline/treatment pairing.
-- Keep the first operationally valid provider sample for each frozen causal protocol and replicate, even when its verifier fails or review score is low.
-- Never rerun merely to obtain passing code or a better review score; that selects on model performance and biases token evidence.
+- Baseline V5 compile outcomes determine task/workflow acceptance and treatment unlock; they do not determine token-sample retention.
+- Broader tests and review outcomes describe the model behavior observed in a retained sample and never gate token accounting.
+- Keep the first operationally valid provider sample for each frozen causal protocol and replicate, even when compilation fails or the review score is low.
+- Never rerun merely to obtain compiling code or a better review score; that selects on model performance and biases token evidence.
 - Exclude and rerun only for fixture/contract invalidity, missing or corrupt provider usage, broken isolation/integrity, or operationally incomplete prompt execution.
-- Record verifier pass/fail/blocked status and structured task outcomes without converting them into eligibility gates.
+- Record component and project compile pass/fail status separately from optional broader quality diagnostics.
 - Independent review is optional diagnostic evidence. Unreviewed runs keep `quality_score: null` but remain token-eligible when execution integrity is valid.
-- Prompt and verifier requirements target disclosed public behavior, compatibility, or safety—not canonical private symbols or one hidden implementation shape.
+- Baseline V5 prompts disclose only the affected component and compile command, not one canonical implementation shape.
 - Preserve diagnostics, final diffs, safety observations, and review notes so token effects can be interpreted alongside observed behavior.
 
 ## Rationale

@@ -1,7 +1,7 @@
 ---
 status: active
 truth_kind: engineering-contract
-last_reviewed: 2026-07-31
+last_reviewed: 2026-08-01
 ---
 
 # Token Accounting And Evaluation Contracts
@@ -16,7 +16,9 @@ This contract governs lifecycle-v0 provider-token samples, baseline reuse, compa
 
 ## Current Implementation Behavior
 
-- The active portfolio contains Fastify, Beets, and Terraform lifecycle-v0 sequences.
+- The active portfolio contains Fastify, Beets, and Terraform lifecycle-v0 sequences under Baseline V5.
+- Baseline V5 tasks seed two related production-file compile failures, permit repository discovery, and expose one affected-component compile command without an exact edit recipe.
+- Component compilation gates per-task acceptance; a frozen project-wide compile command gates final workflow acceptance and treatment unlock. Tests, behavior, style, maintainability, exact source shape, and source review remain diagnostic.
 - The runner captures cumulative provider usage across one persistent sequential agent session.
 - Codex usage comes from provider-reported Codex JSONL snapshots. OpenCode usage comes from unique incremental `step_finish` parts; fresh input, cache read, cache write, visible output, and reasoning are normalized without counting reasoning twice.
 - Replacement-runtime protocols may bind distinct runtime-specific model-condition IDs while holding provider, model, reasoning effort, fixtures, prompts, and baseline pool fixed. The frozen protocol identifies the Codex baseline condition and replacement-runtime treatment condition separately.
@@ -24,8 +26,8 @@ This contract governs lifecycle-v0 provider-token samples, baseline reuse, compa
 - Repository validation requires complete provider usage, structural isolation, clean execution integrity, and recoverable compact evidence—not verifier success or source review.
 - Before any non-baseline provider launch, both repository validation and the direct runner require exact parity approval plus a current provider-free qualification receipt for every active fixture/profile protocol binding; MCP profiles additionally require non-empty `tools/list` proof.
 - Canonical treatment profiles install every author-recommended Codex surface, including product-authored guidance, native skills/plugins, and reviewed hooks; reduced or prompt-emulated setups are ablations or invalid assignments, not product treatments.
-- The final shared-runner qualification covers 45 current selectable fixture/profile bindings across 15 profiles with zero provider calls.
-- Eighteen provider-backed baseline records are currently retained.
+- The historical shared-runner qualification covered 45 fixture/profile bindings across 15 profiles with zero provider calls; those receipts do not authorize Baseline V5 treatments.
+- Thirty-eight provider-backed baseline records are retained under earlier frozen contracts; Baseline V5 has no provider-backed session yet.
 
 ## Product Truth Links
 
@@ -66,7 +68,7 @@ The repository measures cumulative provider-reported workflow tokens under fair,
 - Each active sequence is ordered as feature implementation, behavior-preserving refactor, and code review/correction.
 - A production lane resets repository/profile/tool/agent state before execution, preserves warm state between prompts, and records the complete provider-reported token total.
 - The first operationally complete, integrity-valid provider run for a causal protocol fingerprint and replicate is the retained token sample.
-- Concealed-verifier outcomes and source-quality reviews are diagnostic model-behavior fields. They do not gate token accounting or baseline reuse.
+- Baseline V5 compile outcomes gate task/workflow acceptance and treatment unlock, but not token-sample retention. Broader test, behavior, style, exact-source, and source-review diagnostics do not trigger reruns.
 - Never rerun because the model failed a verifier, produced imperfect code, or received a low review score.
 - Rerun only for experiment invalidity or incompleteness: fixture/verifier defect, wrong controller assets, corrupt/missing usage, failed isolation/integrity, or incomplete prompt execution.
 - Baseline/treatment comparisons require matching fixture, sequence, provider, model, reasoning effort, causal comparison fingerprint, and replicate. Runtime/model-condition IDs must also match unless the frozen profile is explicitly a replacement-runtime treatment; in that case the runtime difference is the experimental variable and both condition IDs are frozen separately.

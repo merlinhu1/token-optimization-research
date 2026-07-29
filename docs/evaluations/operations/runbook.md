@@ -13,9 +13,9 @@ python3 scripts/validate_repository.py
 
 ## Evidence boundary
 
-A valid low-complexity workflow pre-seeds every regression and its focused model-visible acceptance test into one qualified composite broken root, then materializes one prompt at a time. Each prompt supplies one exact mechanical old-to-new edit command plus only its focused validation command; Beets uses the locked project environment and Terraform exports the pinned Go toolchain path explicitly. Seed patch files, controller scripts, and fixed parents remain outside the model-visible surface; final verification repeats only the commands and behavior disclosed in each prompt. Product-effect eligibility also requires parity with the pinned official Codex integration and positive treatment-assignment evidence; MCP configuration/listing alone is insufficient.
+A valid Baseline V5 workflow pre-seeds every two-file compile regression into one qualified composite broken root, then materializes one prompt at a time. Each prompt describes the affected component without an exact edit recipe, permits normal repository search and inspection, and discloses only its affected-component compile command. Beets uses the locked project environment and Terraform binds the snapshot-required Go toolchain explicitly. Seed patch files, controller scripts, and fixed parents remain outside the model-visible surface; final verification repeats the three component compile commands and then executes the frozen project-wide compile command. Product-effect eligibility also requires parity with the pinned official integration and positive treatment-assignment evidence; configuration/listing alone is insufficient.
 
-Every active task must use causally related behavioral acceptance. Unrelated exact-source restoration guards are not valid complexity.
+Every active task uses compile-only acceptance. Unit tests, behavioral fidelity, style, maintainability, and source review remain diagnostic and do not determine task pass/fail.
 
 ## Active sequences
 
@@ -33,14 +33,16 @@ _None._
 
 Before changing a sequence to `active`, require:
 
-- the smallest causally related production surface that satisfies explicit semantic acceptance, with no arbitrary changed-file minimum;
-- behavioral seeded-fail/fixed-pass gates;
-- a conflict-free composite seed whose task verifiers all fail at lane start;
+- two causally related production files per task;
+- standalone seeded compile failure and fixed compile success for every task;
+- a conflict-free composite seed whose task compile verifiers all fail at lane start;
 - one parentless model-facing Git baseline with the fixed commit inaccessible;
-- final-only execution of focused acceptance whose complete behavior and command are model-visible;
-- controller-only seed patch files and fixed references, with no undisclosed acceptance assertions;
-- cumulative provider usage capture, verifier integrity, isolation, structured verifier diagnostics, and optional source review;
-- a machine-validated independent pilot audit with every required incident count equal to zero before any treatment protocol can be frozen, prepared, or run.
+- prompts that permit repository search and withhold exact edit recipes;
+- one model-visible affected-component compile command per task and no injected acceptance-test assets;
+- one frozen project-wide compile command after the three component verifiers;
+- controller-only seed patch files and fixed references;
+- cumulative provider usage capture, verifier integrity, isolation, structured compile outcomes, and optional quality diagnostics;
+- a machine-validated compile-passing provider pilot before any treatment protocol can be frozen, prepared, or run.
 
 A no-model prepare for a frozen candidate is allowed:
 
@@ -49,7 +51,7 @@ SEQUENCE_ID=fastify-lifecycle-sequence-v0
 python3 scripts/run_sequential_workflow_matrix.py "$SEQUENCE_ID" --workflow-model-condition-id codex-openai-gpt-5-6-sol-high --workflow-model gpt-5.6-sol --workflow-reasoning-effort high --prepare-only
 ```
 
-`prepare-verification.json` must show every task preseeded, only task 1's prompt materialized, a clean true-root Git baseline, no fixed commit object or prior reflog, current composite qualification, no controller seed/verifier files in the model root, and the declared focused acceptance tests visible.
+`prepare-verification.json` must show every task preseeded, only task 1's prompt materialized, a clean true-root Git baseline, no fixed commit object or prior reflog, current composite qualification including a passing project-wide compile boundary, no controller seed/verifier files in the model root, no injected acceptance-test assets, and the current task's affected-component compile command visible.
 
 ## Paid execution
 
@@ -57,31 +59,19 @@ Current runnable treatment profiles: `artifact-ponytail-codex-plugin-v1`, `behav
 
 Completed non-default OpenCode treatment screen: `integrated-headroom-opencode-product-v3`, `retrieval-cartog-opencode-product-v2`, `retrieval-serena-opencode-mcp-v1`, `terminal-snip-opencode-plugin-v2`, `terminal-tokenjuice-opencode-plugin-v2`. Each profile has one accepted r0 session on every active lifecycle-v0 sequence and is occupied evidence, not a runnable replacement for the active-default Codex profiles. See `sources/evaluations/audits/opencode-tool-treatments-sol-high-r0-repaired-screen-results-20260730.json`.
 
-Reusable, zero-incident-audited baselines exist for `fastify-lifecycle-sequence-v0` (r0, r1, r2), `beets-lifecycle-sequence-v0` (r0, r1, r3), `terraform-lifecycle-sequence-v0` (r0, r1, r2). No current active-default treatment protocol is frozen, so no paid treatment command is published. Choose one compatible profile, freeze and validate its protocol provider-free, certify the resulting exact tree, and then execute the rendered dry-run verbatim before requesting paid execution:
+Treatment protocol freezing, preparation, and execution are machine-blocked for `fastify-lifecycle-sequence-v0` (pilot audit is absent: sources/evaluations/audits/baseline-v5-pilot-compile-only.json), `beets-lifecycle-sequence-v0` (pilot audit is absent: sources/evaluations/audits/baseline-v5-pilot-compile-only.json), `terraform-lifecycle-sequence-v0` (pilot audit is absent: sources/evaluations/audits/baseline-v5-pilot-compile-only.json). Paid pilot execution is not authorized for `fastify-lifecycle-sequence-v0`, `beets-lifecycle-sequence-v0`, `terraform-lifecycle-sequence-v0`; provider-capable commands are suppressed until the explicit authorization authority is updated.
+
+Provider-free preparation remains available for lanes without a reusable operational baseline; paid commands are listed only for unoccupied pilot identities:
 
 ```bash
-SEQUENCE_ID=fastify-lifecycle-sequence-v0
-PROFILE_ID=replace-with-compatible-profile-id
-python3 scripts/refresh_workflow_contracts.py --sequence-id "$SEQUENCE_ID" --profile-id "$PROFILE_ID" --workflow-model-condition-id codex-openai-gpt-5-6-sol-high --workflow-model gpt-5.6-sol --workflow-reasoning-effort high
-python3 scripts/validate_repository.py
-python3 scripts/run_sequential_workflow_matrix.py "$SEQUENCE_ID" --treatment-profile "$PROFILE_ID" --workflow-model-condition-id codex-openai-gpt-5-6-sol-high --workflow-model gpt-5.6-sol --workflow-reasoning-effort high --dry-run
-
-SEQUENCE_ID=beets-lifecycle-sequence-v0
-PROFILE_ID=replace-with-compatible-profile-id
-python3 scripts/refresh_workflow_contracts.py --sequence-id "$SEQUENCE_ID" --profile-id "$PROFILE_ID" --workflow-model-condition-id codex-openai-gpt-5-6-sol-high --workflow-model gpt-5.6-sol --workflow-reasoning-effort high
-python3 scripts/validate_repository.py
-python3 scripts/run_sequential_workflow_matrix.py "$SEQUENCE_ID" --treatment-profile "$PROFILE_ID" --workflow-model-condition-id codex-openai-gpt-5-6-sol-high --workflow-model gpt-5.6-sol --workflow-reasoning-effort high --dry-run
-
-SEQUENCE_ID=terraform-lifecycle-sequence-v0
-PROFILE_ID=replace-with-compatible-profile-id
-python3 scripts/refresh_workflow_contracts.py --sequence-id "$SEQUENCE_ID" --profile-id "$PROFILE_ID" --workflow-model-condition-id codex-openai-gpt-5-6-sol-high --workflow-model gpt-5.6-sol --workflow-reasoning-effort high
-python3 scripts/validate_repository.py
-python3 scripts/run_sequential_workflow_matrix.py "$SEQUENCE_ID" --treatment-profile "$PROFILE_ID" --workflow-model-condition-id codex-openai-gpt-5-6-sol-high --workflow-model gpt-5.6-sol --workflow-reasoning-effort high --dry-run
+python3 scripts/run_sequential_workflow_matrix.py fastify-lifecycle-sequence-v0 --workflow-model-condition-id codex-openai-gpt-5-6-sol-high --workflow-model gpt-5.6-sol --workflow-reasoning-effort high --prepare-only
+python3 scripts/run_sequential_workflow_matrix.py beets-lifecycle-sequence-v0 --workflow-model-condition-id codex-openai-gpt-5-6-sol-high --workflow-model gpt-5.6-sol --workflow-reasoning-effort high --prepare-only
+python3 scripts/run_sequential_workflow_matrix.py terraform-lifecycle-sequence-v0 --workflow-model-condition-id codex-openai-gpt-5-6-sol-high --workflow-model gpt-5.6-sol --workflow-reasoning-effort high --prepare-only
 ```
 
 Earlier active-default baseline pools are retained but are not reusable for the current contract generation: `beets-lifecycle-sequence-v0` pool `b440da225a3a` (r0, r1, r2, r3), `fastify-lifecycle-sequence-v0` pool `769d40697529` (r0, r1, r2, r3), `terraform-lifecycle-sequence-v0` pool `ded8609b4172` (r0, r1, r2, r3).
 
-Non-default model-comparison baselines are tracked separately: `beets-lifecycle-sequence-v0` under `claude-code-openrouter-gpt-5-6-sol-high` pool `2fd6c85014dc` (r0), `beets-lifecycle-sequence-v0` under `codex-openai-gpt-5-6-sol-high` pool `82943cffbb9a` (r0), `beets-lifecycle-sequence-v0` under `codex-openai-gpt-5-6-sol-high` pool `8a88427b8c16` (r0), `beets-lifecycle-sequence-v0` under `codex-openai-gpt-5-6-sol-high` pool `be9d43b94b02` (r0, r1, r2), `fastify-lifecycle-sequence-v0` under `claude-code-openrouter-gpt-5-6-sol-high` pool `2e0426814326` (r0), `fastify-lifecycle-sequence-v0` under `codex-openai-gpt-5-6-sol-high` pool `bd9fd65385d9` (r0, r1, r2), `fastify-lifecycle-sequence-v0` under `codex-openai-gpt-5-6-sol-high` pool `e3f3816c31d8` (r0), `terraform-lifecycle-sequence-v0` under `claude-code-openrouter-gpt-5-6-sol-high` pool `938e4812b1d4` (r0), `terraform-lifecycle-sequence-v0` under `codex-openai-gpt-5-6-sol-high` pool `5caa11b3fa2b` (r0), `terraform-lifecycle-sequence-v0` under `codex-openai-gpt-5-6-sol-high` pool `6dbcb1227f80` (r0), `terraform-lifecycle-sequence-v0` under `codex-openai-gpt-5-6-sol-high` pool `ca21cbff5ed5` (r0, r1, r2). They do not satisfy active-default baseline requirements or define active-default treatment-pair reuse. OpenCode pools may define substrate-matched treatment reuse under their own frozen protocols.
+Non-default model-comparison baselines are tracked separately: `beets-lifecycle-sequence-v0` under `claude-code-openrouter-gpt-5-6-sol-high` pool `2fd6c85014dc` (r0), `beets-lifecycle-sequence-v0` under `codex-openai-gpt-5-6-sol-high` pool `82943cffbb9a` (r0), `beets-lifecycle-sequence-v0` under `codex-openai-gpt-5-6-sol-high` pool `8a88427b8c16` (r0), `beets-lifecycle-sequence-v0` under `codex-openai-gpt-5-6-sol-high` pool `be9d43b94b02` (r0, r1, r2), `beets-lifecycle-sequence-v0` under `codex-openai-gpt-5-6-sol-high` pool `fcc8438d2077` (r0, r1, r3), `fastify-lifecycle-sequence-v0` under `claude-code-openrouter-gpt-5-6-sol-high` pool `2e0426814326` (r0), `fastify-lifecycle-sequence-v0` under `codex-openai-gpt-5-6-sol-high` pool `bb0e89ed9794` (r0, r1, r2), `fastify-lifecycle-sequence-v0` under `codex-openai-gpt-5-6-sol-high` pool `bd9fd65385d9` (r0, r1, r2), `fastify-lifecycle-sequence-v0` under `codex-openai-gpt-5-6-sol-high` pool `e3f3816c31d8` (r0), `terraform-lifecycle-sequence-v0` under `claude-code-openrouter-gpt-5-6-sol-high` pool `938e4812b1d4` (r0), `terraform-lifecycle-sequence-v0` under `codex-openai-gpt-5-6-sol-high` pool `5811b463c1e9` (r0, r1, r2), `terraform-lifecycle-sequence-v0` under `codex-openai-gpt-5-6-sol-high` pool `5caa11b3fa2b` (r0), `terraform-lifecycle-sequence-v0` under `codex-openai-gpt-5-6-sol-high` pool `6dbcb1227f80` (r0), `terraform-lifecycle-sequence-v0` under `codex-openai-gpt-5-6-sol-high` pool `ca21cbff5ed5` (r0, r1, r2). They do not satisfy active-default baseline requirements or define active-default treatment-pair reuse. OpenCode pools may define substrate-matched treatment reuse under their own frozen protocols.
 
 Retain the first operationally valid provider sample for each protocol and replicate. Stop only when a sample is fixture-invalid or operationally incomplete; verifier and review outcomes are diagnostic.
 
@@ -91,37 +81,40 @@ Retain the first operationally valid provider sample for each protocol and repli
 
 - Fixture: `medium-fastify-fastify`
 - Primary metric: cumulative provider-reported workflow tokens
-- Reset policy: Reset once before the lane; preseed the missing feature, behavior-preserving structural debt, flawed review candidate, and declared focused acceptance tests into one composite root; preserve repository, Git, tool, index, cache, generated configuration, memory, and agent state across prompts; repeat every disclosed verifier command after the final prompt.
+- Reset policy: Each task reset reverses only its generation-local production seed. No acceptance tests are injected; the visible affected-component compile command is the sole pass/fail gate.
+- Final project compile: `find lib -type f -name '*.js' -print0 | sort -z | xargs -0 -n1 node --check && node --check fastify.js`
 
 | Order | Task | Prompt | Verifier |
 |---:|---|---|---|
-| 1 | `fastify-lifecycle-feature-v0` | `sources/evaluations/fixtures/medium/fastify-fastify/task-generations/baseline-v3/fastify-lifecycle-feature-v0/agent-prompt.txt` | `sources/evaluations/fixtures/medium/fastify-fastify/task-generations/baseline-v3/fastify-lifecycle-feature-v0/verify.sh` |
-| 2 | `fastify-lifecycle-refactor-v0` | `sources/evaluations/fixtures/medium/fastify-fastify/task-generations/baseline-v3/fastify-lifecycle-refactor-v0/agent-prompt.txt` | `sources/evaluations/fixtures/medium/fastify-fastify/task-generations/baseline-v3/fastify-lifecycle-refactor-v0/verify.sh` |
-| 3 | `fastify-lifecycle-review-v0` | `sources/evaluations/fixtures/medium/fastify-fastify/task-generations/baseline-v3/fastify-lifecycle-review-v0/agent-prompt.txt` | `sources/evaluations/fixtures/medium/fastify-fastify/task-generations/baseline-v3/fastify-lifecycle-review-v0/verify.sh` |
+| 1 | `fastify-lifecycle-feature-v0` | `sources/evaluations/fixtures/medium/fastify-fastify/task-generations/baseline-v5/fastify-lifecycle-feature-v0/agent-prompt.txt` | `sources/evaluations/fixtures/medium/fastify-fastify/task-generations/baseline-v5/fastify-lifecycle-feature-v0/verify.sh` |
+| 2 | `fastify-lifecycle-refactor-v0` | `sources/evaluations/fixtures/medium/fastify-fastify/task-generations/baseline-v5/fastify-lifecycle-refactor-v0/agent-prompt.txt` | `sources/evaluations/fixtures/medium/fastify-fastify/task-generations/baseline-v5/fastify-lifecycle-refactor-v0/verify.sh` |
+| 3 | `fastify-lifecycle-review-v0` | `sources/evaluations/fixtures/medium/fastify-fastify/task-generations/baseline-v5/fastify-lifecycle-review-v0/agent-prompt.txt` | `sources/evaluations/fixtures/medium/fastify-fastify/task-generations/baseline-v5/fastify-lifecycle-review-v0/verify.sh` |
 
 ### `beets-lifecycle-sequence-v0`
 
 - Fixture: `medium-beetbox-beets`
 - Primary metric: cumulative provider-reported workflow tokens
-- Reset policy: Reset once before the lane; preseed the missing feature, behavior-preserving structural debt, flawed review candidate, and declared focused acceptance tests into one composite root; preserve repository, Git, tool, index, cache, generated configuration, memory, and agent state across prompts; repeat every disclosed verifier command after the final prompt.
+- Reset policy: Each task reset reverses only its generation-local production seed. No acceptance tests are injected; the visible affected-component compile command is the sole pass/fail gate.
+- Final project compile: `uv run --offline --frozen python -c "import ast, pathlib; [ast.parse(p.read_text(), filename=str(p)) for root in ('beets', 'beetsplug') for p in pathlib.Path(root).rglob('*.py')]"`
 
 | Order | Task | Prompt | Verifier |
 |---:|---|---|---|
-| 1 | `beets-lifecycle-feature-v0` | `sources/evaluations/fixtures/medium/beetbox-beets/task-generations/baseline-v4/beets-lifecycle-feature-v0/agent-prompt.txt` | `sources/evaluations/fixtures/medium/beetbox-beets/task-generations/baseline-v4/beets-lifecycle-feature-v0/verify.sh` |
-| 2 | `beets-lifecycle-refactor-v0` | `sources/evaluations/fixtures/medium/beetbox-beets/task-generations/baseline-v4/beets-lifecycle-refactor-v0/agent-prompt.txt` | `sources/evaluations/fixtures/medium/beetbox-beets/task-generations/baseline-v4/beets-lifecycle-refactor-v0/verify.sh` |
-| 3 | `beets-lifecycle-review-v0` | `sources/evaluations/fixtures/medium/beetbox-beets/task-generations/baseline-v4/beets-lifecycle-review-v0/agent-prompt.txt` | `sources/evaluations/fixtures/medium/beetbox-beets/task-generations/baseline-v4/beets-lifecycle-review-v0/verify.sh` |
+| 1 | `beets-lifecycle-feature-v0` | `sources/evaluations/fixtures/medium/beetbox-beets/task-generations/baseline-v5/beets-lifecycle-feature-v0/agent-prompt.txt` | `sources/evaluations/fixtures/medium/beetbox-beets/task-generations/baseline-v5/beets-lifecycle-feature-v0/verify.sh` |
+| 2 | `beets-lifecycle-refactor-v0` | `sources/evaluations/fixtures/medium/beetbox-beets/task-generations/baseline-v5/beets-lifecycle-refactor-v0/agent-prompt.txt` | `sources/evaluations/fixtures/medium/beetbox-beets/task-generations/baseline-v5/beets-lifecycle-refactor-v0/verify.sh` |
+| 3 | `beets-lifecycle-review-v0` | `sources/evaluations/fixtures/medium/beetbox-beets/task-generations/baseline-v5/beets-lifecycle-review-v0/agent-prompt.txt` | `sources/evaluations/fixtures/medium/beetbox-beets/task-generations/baseline-v5/beets-lifecycle-review-v0/verify.sh` |
 
 ### `terraform-lifecycle-sequence-v0`
 
 - Fixture: `large-hashicorp-terraform`
 - Primary metric: cumulative provider-reported workflow tokens
-- Reset policy: Reset once before the lane; preseed the missing feature, behavior-preserving structural debt, flawed review candidate, and declared focused acceptance tests into one composite root; preserve repository, Git, tool, index, cache, generated configuration, memory, and agent state across prompts; repeat every disclosed verifier command after the final prompt.
+- Reset policy: Each task reset reverses only its generation-local production seed. No acceptance tests are injected; the visible affected-component compile command is the sole pass/fail gate.
+- Final project compile: `export PATH=/opt/data/bin:/opt/data/opt/go/bin:$PATH; GOTOOLCHAIN=auto go test -run '^$' ./...`
 
 | Order | Task | Prompt | Verifier |
 |---:|---|---|---|
-| 1 | `terraform-lifecycle-feature-v0` | `sources/evaluations/fixtures/large/hashicorp-terraform/task-generations/baseline-v4/terraform-lifecycle-feature-v0/agent-prompt.txt` | `sources/evaluations/fixtures/large/hashicorp-terraform/task-generations/baseline-v4/terraform-lifecycle-feature-v0/verify.sh` |
-| 2 | `terraform-lifecycle-refactor-v0` | `sources/evaluations/fixtures/large/hashicorp-terraform/task-generations/baseline-v4/terraform-lifecycle-refactor-v0/agent-prompt.txt` | `sources/evaluations/fixtures/large/hashicorp-terraform/task-generations/baseline-v4/terraform-lifecycle-refactor-v0/verify.sh` |
-| 3 | `terraform-lifecycle-review-v0` | `sources/evaluations/fixtures/large/hashicorp-terraform/task-generations/baseline-v4/terraform-lifecycle-review-v0/agent-prompt.txt` | `sources/evaluations/fixtures/large/hashicorp-terraform/task-generations/baseline-v4/terraform-lifecycle-review-v0/verify.sh` |
+| 1 | `terraform-lifecycle-feature-v0` | `sources/evaluations/fixtures/large/hashicorp-terraform/task-generations/baseline-v5/terraform-lifecycle-feature-v0/agent-prompt.txt` | `sources/evaluations/fixtures/large/hashicorp-terraform/task-generations/baseline-v5/terraform-lifecycle-feature-v0/verify.sh` |
+| 2 | `terraform-lifecycle-refactor-v0` | `sources/evaluations/fixtures/large/hashicorp-terraform/task-generations/baseline-v5/terraform-lifecycle-refactor-v0/agent-prompt.txt` | `sources/evaluations/fixtures/large/hashicorp-terraform/task-generations/baseline-v5/terraform-lifecycle-refactor-v0/verify.sh` |
+| 3 | `terraform-lifecycle-review-v0` | `sources/evaluations/fixtures/large/hashicorp-terraform/task-generations/baseline-v5/terraform-lifecycle-review-v0/agent-prompt.txt` | `sources/evaluations/fixtures/large/hashicorp-terraform/task-generations/baseline-v5/terraform-lifecycle-review-v0/verify.sh` |
 
 ## Artifact contract
 

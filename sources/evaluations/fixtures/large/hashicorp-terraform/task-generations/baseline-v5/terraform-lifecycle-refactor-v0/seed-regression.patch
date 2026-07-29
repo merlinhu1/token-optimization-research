@@ -1,0 +1,20 @@
+diff --git a/internal/configs/state_migrate_file.go b/internal/configs/state_migrate_file.go
+index bf0b349db..38e260991 100644
+--- a/internal/configs/state_migrate_file.go
++++ b/internal/configs/state_migrate_file.go
+@@ -377,3 +377,5 @@ func badVersionConstraintErrorDiag(version string, subject *hcl.Range) *hcl.Diag
+ 		Subject:  subject,
+ 	}
+ }
++
++var _ = __workflow_refactor_compile_break__
+diff --git a/internal/configs/state_store.go b/internal/configs/state_store.go
+index aab1bad87..24c365776 100644
+--- a/internal/configs/state_store.go
++++ b/internal/configs/state_store.go
+@@ -366,3 +366,5 @@ func (b *StateStore) Hash(stateStoreSchema *configschema.Block, providerSchema *
+ 	})
+ 	return toHash.Hash(), diags
+ }
++
++var _ = __workflow_refactor_compile_break__
