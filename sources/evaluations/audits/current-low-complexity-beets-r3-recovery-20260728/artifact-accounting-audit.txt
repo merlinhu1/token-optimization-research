@@ -1,0 +1,42 @@
+# Beets r3 independent compact-artifact and accounting audit
+
+Audit snapshot timing: this independent audit ran after the original paid publication rollback and before the later successful provider-free recovery at controller commit `d5dfab55e42f913c1b2a20b12daa282b0e65bf15`. Statements below that the canonical registry had 100 sessions and the canonical compact was absent describe that pre-recovery snapshot. The successful recovery is bound separately by `../current-low-complexity-beets-r3-recovery-20260728.json`, which records 101 sessions, byte-identical source/destination compact hashes, passing validation, and zero provider calls during recovery.
+
+## Audit verdict: PASS for preserved compact artifact and accounting
+
+- **Compact root:** exactly four regular, nonsymlink files:
+  - `changes.diff` — `dfe08b58…042c17a`
+  - `evidence.jsonl.gz` — `19415d81…1eb48bb`
+  - `run.json` — `1b15fe5f…2df327`
+  - `manifest.sha256`
+- Manifest covers exactly the three non-manifest files; all SHA-256 digests recomputed successfully.
+- Gzip/JSONL validated: 50 records, 63,647 uncompressed bytes, 50 unique canonical relative POSIX paths, no malformed/duplicate paths.
+- Nested payloads all parsed: 16 JSON files, 4 JSONL files containing 42 valid lines, and 1 TOML file.
+- No high-confidence API keys, tokens, private keys, credential assignments, or other secrets found. `source_auth_home` is explicitly `[REDACTED]`.
+
+## Provider accounting
+
+All three cumulative snapshots belong to the same thread and are monotonic. Selecting only the final cumulative snapshot gives:
+
+- Fresh input: **32,177**
+- Cached input: **54,272**
+- Cache write: **0**
+- Output: **921**
+- Reasoning: **0** — nonadditive
+- Raw provider total: **87,370**
+- Weighted: `32177 + 0.1×54272 + 6×921` = **43,130.2**
+
+These values match `provider-usage.json`, `run.json`, and the child registry exactly.
+
+## Identity and rollback consistency
+
+- `run.json` exactly matches the child registry session under the repository’s compact-session matcher.
+- Child registry contains **101** sessions, with Beets r3 present exactly once.
+- Receipt, run, registry, and matrix summary agree on sequence, profile, replicate `3`, pool `fcc8438d2077`, model condition, protocol, and selected-execution hash.
+- Protocol hash, qualification hash, and canonical descriptor hash all recomputed successfully.
+- The receipt remains an intentional immutable pre-provider occupancy receipt with `provider_result: null`.
+- **State at this audit snapshot:** canonical registry had **100** sessions; Beets r3 and its compact root were absent there, while the source compact remained intact in the child checkout. The later successful recovery disposition is recorded in the timing note above.
+- Matrix lane execution exited `0`, but initial publication was rolled back after two post-merge contract-test failures caused by the newly occupied receipt. The original matrix is correctly marked unaccepted; this is not a compact-artifact or accounting defect.
+
+**Files created or modified by auditor:** none.
+**Provider calls by auditor:** none.

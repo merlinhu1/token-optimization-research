@@ -1,0 +1,95 @@
+{
+  "schema_version": 1,
+  "recovery_id": "current-low-complexity-beets-r3-provider-free-recovery-20260728",
+  "launch_commit": "52b8c1a78e2a19ebaea07bc898d538915446be19",
+  "recovery_controller_commit": "d5dfab55e42f913c1b2a20b12daa282b0e65bf15",
+  "matrix_root": "/opt/data/eval-workflow-lanes/workflow-matrix-20260728T235644300879Z-p3753351-r3",
+  "matrix_summary_sha256": "9a2180a3d46f2a3a50c1ba6728649c5c3fff356cacc0af71f8c4b519e7cc68ef",
+  "session_id": "baseline-beets-20260728-p-fcc8438d2077-r3",
+  "parent_attempt_receipt": "sources/evaluations/audits/current-low-complexity-beets-r3-replacement-attempt-20260728.json",
+  "parent_attempt_receipt_sha256": "469ce5f838b109d03672e77bb0e36f40d0a8e89091a7a28f287d7ed7c42db46c",
+  "child_attempt_receipt_sha256": "2e4685064d4c90b0f36c9088f4d669ff1f8df6134d34ded488b37fa6e287b7b4",
+  "recovery_reason": "paid lane completed and strict merge succeeded; canonical publication rolled back only because pre-launch tests incorrectly required the now-occupied r3 receipt to remain absent",
+  "source_compact_hashes": {
+    "changes.diff": "dfe08b58b7703423bac6abf1ea702bd344113c53902e167e0e6c11fab042c17a",
+    "evidence.jsonl.gz": "19415d81f8fa26e6c39fab8d18d2af320ac476de7c130cd48c07d567c1eb48bb",
+    "manifest.sha256": "f49e78e51c609199c067f0a46aa2c1880044bf00cb0d86630e2ff6fe7e3ced08",
+    "run.json": "1b15fe5f7010820765629b28bad3a32b4deeeeddc91ff9f78e1447ba1e2df327"
+  },
+  "destination_compact_hashes": {
+    "changes.diff": "dfe08b58b7703423bac6abf1ea702bd344113c53902e167e0e6c11fab042c17a",
+    "evidence.jsonl.gz": "19415d81f8fa26e6c39fab8d18d2af320ac476de7c130cd48c07d567c1eb48bb",
+    "manifest.sha256": "f49e78e51c609199c067f0a46aa2c1880044bf00cb0d86630e2ff6fe7e3ced08",
+    "run.json": "1b15fe5f7010820765629b28bad3a32b4deeeeddc91ff9f78e1447ba1e2df327"
+  },
+  "registry_session_count_before": 100,
+  "registry_session_count_after": 101,
+  "provider_calls_during_recovery": 0,
+  "provider_tokens_during_recovery": 0,
+  "usage": {
+    "measurement_source": "codex-jsonl-usage-events",
+    "fresh_input_tokens": 32177,
+    "cached_input_tokens": 54272,
+    "cache_write_tokens": 0,
+    "output_tokens": 921,
+    "reasoning_tokens": 0,
+    "total_provider_tokens": 87370
+  },
+  "weighted_token_cost": 43130.2,
+  "validation": {
+    "passed": true,
+    "results": [
+      {
+        "command": [
+          "/opt/hermes/.venv/bin/python3",
+          "scripts/validate_repository.py"
+        ],
+        "exit_code": 0,
+        "output": "/opt/data/eval-workflow-lanes/workflow-matrix-20260728T235644300879Z-p3753351-r3/recovery-validation/validation-1-opt-hermes-.venv-bin-python3.txt"
+      },
+      {
+        "command": [
+          "/opt/hermes/.venv/bin/python3",
+          "scripts/test_workflow_evaluation_contract.py"
+        ],
+        "exit_code": 0,
+        "output": "/opt/data/eval-workflow-lanes/workflow-matrix-20260728T235644300879Z-p3753351-r3/recovery-validation/validation-2-opt-hermes-.venv-bin-python3.txt"
+      },
+      {
+        "command": [
+          "git",
+          "diff",
+          "--check"
+        ],
+        "exit_code": 0,
+        "output": "/opt/data/eval-workflow-lanes/workflow-matrix-20260728T235644300879Z-p3753351-r3/recovery-validation/validation-3-git.txt"
+      },
+      {
+        "command": [
+          "/opt/data/.local/bin/truthmark",
+          "check",
+          "--json"
+        ],
+        "exit_code": 0,
+        "output": "/opt/data/eval-workflow-lanes/workflow-matrix-20260728T235644300879Z-p3753351-r3/recovery-validation/validation-4-opt-data-.local-bin-truthmark.txt"
+      },
+      {
+        "command": [
+          "/opt/data/.local/bin/truthmark",
+          "index",
+          "--json"
+        ],
+        "exit_code": 0,
+        "output": "/opt/data/eval-workflow-lanes/workflow-matrix-20260728T235644300879Z-p3753351-r3/recovery-validation/validation-5-opt-data-.local-bin-truthmark.txt"
+      }
+    ]
+  },
+  "same_identity_rerun_permitted": false,
+  "independent_audits": {
+    "trajectory": "sources/evaluations/audits/current-low-complexity-beets-r3-recovery-20260728/trajectory-audit.txt",
+    "artifact_and_accounting": "sources/evaluations/audits/current-low-complexity-beets-r3-recovery-20260728/artifact-accounting-audit.txt",
+    "trajectory_verdict": "GO \u2014 operationally valid, zero-incident, token-eligible; same-identity paid rerun prohibited",
+    "artifact_accounting_verdict": "PASS",
+    "audit_snapshot_timing": "after original publication rollback and before successful provider-free recovery"
+  }
+}
