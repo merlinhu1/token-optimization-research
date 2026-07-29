@@ -3040,6 +3040,24 @@ raise SystemExit(1)
         runner.write_manifest(run_dir)
         return session, protocol_path
 
+    def test_lifecycle_v1_controller_only_acceptance_visibility_requires_empty_model_assets(self) -> None:
+        with tempfile.TemporaryDirectory(dir=ROOT) as tmp:
+            session, _ = self.production_v3_fixture(Path(tmp))
+            session["status"] = "completed"
+            session["task_sequence"]["sequence_id"] = "fastify-lifecycle-sequence-v1"
+            leakage = session["task_sequence"]["leakage_controls"]
+            leakage.pop("verifier_assets_model_visible")
+            leakage["controller_verifier_scripts_and_canonical_copies_model_visible"] = False
+            leakage["model_visible_acceptance_asset_paths"] = []
+            errors: list[str] = []
+            validate_repository.validate_workflow_session_contract(session, None, errors)
+            self.assertFalse(any("must distinguish hidden controller verifier" in error for error in errors), errors)
+
+            leakage["model_visible_acceptance_asset_paths"] = ["test/visible-acceptance.js"]
+            errors = []
+            validate_repository.validate_workflow_session_contract(session, None, errors)
+            self.assertTrue(any("must distinguish hidden controller verifier" in error for error in errors), errors)
+
     def production_v3_errors(
         self,
         session: dict,
@@ -4938,15 +4956,20 @@ class BaselineV3LowComplexityContractTest(unittest.TestCase):
         runbook = (ROOT / "docs/evaluations/operations/runbook.md").read_text()
         document = json.loads((ROOT / "data/workflow-task-sequences.json").read_text())
         flags = "--workflow-model-condition-id codex-openai-gpt-5-6-sol-high --workflow-model gpt-5.6-sol --workflow-reasoning-effort high"
+        any_unoccupied_pilot = False
         for sequence in active_lifecycle_v1_sequences(document):
             prepare = f"python3 scripts/run_sequential_workflow_matrix.py {sequence['id']} --max-parallel 1 {flags} --prepare-only"
             paid = f"python3 scripts/run_sequential_workflow_matrix.py {sequence['id']} --max-parallel 1 {flags}"
-            self.assertIn(prepare, runbook)
-            self.assertIn(paid, runbook.splitlines())
             allowed, reason = runner.baseline_v2_pilot_run_gate(sequence, ROOT, 0)
-            self.assertIs(allowed, True)
-            self.assertIn("no prior", reason)
-        self.assertIn("Only an unoccupied designated baseline pilot identity may run", runbook)
+            if allowed:
+                any_unoccupied_pilot = True
+                self.assertIn(prepare, runbook)
+                self.assertIn(paid, runbook.splitlines())
+                self.assertIn("no prior", reason)
+            else:
+                self.assertNotIn(paid, runbook.splitlines())
+        if any_unoccupied_pilot:
+            self.assertIn("Only an unoccupied designated baseline pilot identity may run", runbook)
 
     def test_provider_free_lifecycle_v1_qualifications_pass_every_required_boundary(self) -> None:
         document = json.loads((ROOT / "data/workflow-task-sequences.json").read_text())

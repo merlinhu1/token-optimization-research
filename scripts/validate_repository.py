@@ -2478,13 +2478,18 @@ def validate_workflow_session_contract(session: dict, canonical_profile: dict | 
             isinstance(leakage_controls, dict)
             and "controller_verifier_scripts_and_canonical_copies_model_visible" in leakage_controls
         )
+        lifecycle_v1 = str(sequence.get("sequence_id", "")).endswith("-lifecycle-sequence-v1")
         verifier_visibility_valid = (
             isinstance(leakage_controls, dict)
             and (
                 (
                     leakage_controls.get("controller_verifier_scripts_and_canonical_copies_model_visible") is False
                     and isinstance(leakage_controls.get("model_visible_acceptance_asset_paths"), list)
-                    and bool(leakage_controls.get("model_visible_acceptance_asset_paths"))
+                    and (
+                        not leakage_controls.get("model_visible_acceptance_asset_paths")
+                        if lifecycle_v1
+                        else bool(leakage_controls.get("model_visible_acceptance_asset_paths"))
+                    )
                 )
                 if precise_visibility
                 else leakage_controls.get("verifier_assets_model_visible") is False
