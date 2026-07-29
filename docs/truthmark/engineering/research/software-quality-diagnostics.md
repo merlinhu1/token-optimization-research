@@ -12,7 +12,7 @@ Define software-quality evidence as diagnostic context for the repository's prim
 
 ## Scope
 
-This contract covers Baseline V5 compile acceptance, broader software-quality diagnostics, optional source review, quality scores, and the boundary between sampled model behavior and experiment invalidity.
+This contract covers Lifecycle V1 compile acceptance, broader software-quality diagnostics, optional source review, quality scores, and the boundary between sampled model behavior and experiment invalidity.
 
 ## Current Implementation Behavior
 
@@ -20,7 +20,7 @@ This contract covers Baseline V5 compile acceptance, broader software-quality di
 - Component compilation gates per-task acceptance; final project compilation gates workflow acceptance and treatment unlock.
 - Unit tests, behavioral fidelity, style, maintainability, exact source shape, `quality_review_status`, and `quality_score` are optional diagnostics.
 - Runner, matrix, and repository validation retain the first operationally valid provider token sample even when compilation or broader quality diagnostics fail.
-- Baseline reuse for token accounting keeps that first valid sample; treatment launch still requires the V5 compile gate to pass.
+- Baseline reuse for token accounting keeps that first valid sample; treatment launch still requires the Lifecycle V1 compile gate to pass.
 
 ## Product Truth Links
 
@@ -43,14 +43,14 @@ Token-eligibility state plus separately recorded model-behavior diagnostics.
 
 ## Contract
 
-- Baseline V5 compile outcomes determine task/workflow acceptance and treatment unlock; they do not determine token-sample retention.
+- Lifecycle V1 compile outcomes determine task/workflow acceptance and treatment unlock; they do not determine token-sample retention.
 - Broader tests and review outcomes describe the model behavior observed in a retained sample and never gate token accounting.
 - Keep the first operationally valid provider sample for each frozen causal protocol and replicate, even when compilation fails or the review score is low.
 - Never rerun merely to obtain compiling code or a better review score; that selects on model performance and biases token evidence.
 - Exclude and rerun only for fixture/contract invalidity, missing or corrupt provider usage, broken isolation/integrity, or operationally incomplete prompt execution.
 - Record component and project compile pass/fail status separately from optional broader quality diagnostics.
 - Independent review is optional diagnostic evidence. Unreviewed runs keep `quality_score: null` but remain token-eligible when execution integrity is valid.
-- Baseline V5 prompts state the requested engineering outcome and expect correct implementation; affected-component compile commands and scoring policy remain controller-only.
+- Lifecycle V1 prompts state the requested engineering outcome and expect correct implementation; affected-component compile commands and scoring policy remain controller-only.
 - Preserve diagnostics, final diffs, safety observations, and review notes so token effects can be interpreted alongside observed behavior.
 
 ## Rationale

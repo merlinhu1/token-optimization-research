@@ -7,10 +7,11 @@ import hashlib
 import json
 import sys
 from pathlib import Path
-from typing import Any, Callable
+from typing import Any
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "scripts"))
+import workflow_model_condition_runtime as condition_runtime  # type: ignore
 import run_codex_workflow_evaluation as runner  # type: ignore
 
 LAUNCHER_PATH = "scripts/run_codex_workflow_model_condition.py"
@@ -37,37 +38,14 @@ def registered_condition(condition_id: str, model: str, reasoning_effort: str) -
 
 
 def configure_model_condition(condition_id: str, model: str, reasoning_effort: str) -> None:
-    condition = registered_condition(condition_id, model, reasoning_effort)
-    override = {
-        "model_condition_id": condition_id,
-        "model": model,
-        "reasoning_effort": reasoning_effort,
-        "registry_status": condition.get("status"),
-        "launcher": launcher_identity(),
-    }
-    runner.DEFAULT_WORKFLOW_MODEL_CONDITION_ID = condition_id
-    runner.DEFAULT_WORKFLOW_MODEL = model
-    runner.DEFAULT_WORKFLOW_REASONING_EFFORT = reasoning_effort
-
-    original_baseline: Callable[..., dict[str, Any]] = runner.baseline_protocol_descriptor
-    original_execution: Callable[..., dict[str, Any]] = runner.execution_condition_descriptor
-
-    def baseline_descriptor(*args: Any, **kwargs: Any) -> dict[str, Any]:
-        descriptor = original_baseline(*args, **kwargs)
-        descriptor["model_condition_override"] = override
-        return descriptor
-
-    def execution_descriptor(*args: Any, **kwargs: Any) -> dict[str, Any]:
-        descriptor = original_execution(*args, **kwargs)
-        descriptor["model_condition_override"] = override
-        return descriptor
-
-    def validate_selected_condition() -> None:
-        registered_condition(condition_id, model, reasoning_effort)
-
-    runner.baseline_protocol_descriptor = baseline_descriptor
-    runner.execution_condition_descriptor = execution_descriptor
-    runner.validate_default_model_condition = validate_selected_condition
+    registered_condition(condition_id, model, reasoning_effort)
+    condition_runtime.configure_runner(
+        runner,
+        selected_condition_id=condition_id,
+        expected_model=model,
+        expected_reasoning_effort=reasoning_effort,
+        launcher_identity=launcher_identity(),
+    )
 
 
 def parse_args(argv: list[str] | None = None) -> tuple[argparse.Namespace, list[str]]:

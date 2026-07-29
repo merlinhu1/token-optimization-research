@@ -436,7 +436,7 @@ def canonical_protocol_id(
         root=root,
     )
     baseline = baseline_descriptor or baseline_protocol_descriptor(seq, root)
-    if seq.get("task_family_generation") in {"baseline-v4", "baseline-v5"}:
+    if seq.get("task_family_generation") in {"baseline-v4", "lifecycle-v1"}:
         baseline = {
             key: value
             for key, value in baseline.items()
@@ -600,7 +600,7 @@ def current_baseline_v2_protocol(
             )
             and fixture_block.get("sequence_id") == seq.get("id")
             and (
-                seq.get("task_family_generation") not in {"baseline-v4", "baseline-v5"}
+                seq.get("task_family_generation") not in {"baseline-v4", "lifecycle-v1"}
                 or fixture_block.get("task_family_generation") == seq.get("task_family_generation")
             )
             and fixture_block.get("fixture_id") == seq.get("fixture_id")
@@ -1005,8 +1005,8 @@ def baseline_replication_authority(
     replicate_index: int,
     root: Path = ROOT,
 ) -> dict[str, Any]:
-    if seq.get("task_family_generation") == "baseline-v5":
-        raise ValueError(f"Baseline V5 replicate {replicate_index} requires explicit authority")
+    if seq.get("task_family_generation") == "lifecycle-v1":
+        raise ValueError(f"Lifecycle V1 replicate {replicate_index} requires explicit authority")
     if replicate_index == 3:
         if seq.get("id") != "beets-lifecycle-sequence-v0":
             raise ValueError("r3 replacement authority covers only beets-lifecycle-sequence-v0")
@@ -1074,7 +1074,7 @@ def require_zero_mistake_pilot_replicate(
     """Bind paid current-panel baselines to an explicitly authorized replicate."""
     if prepare_only or profile_id != "baseline-bare-codex":
         return
-    if seq.get("task_family_generation") in {"baseline-v3", "baseline-v4", "baseline-v5"}:
+    if seq.get("task_family_generation") in {"baseline-v3", "baseline-v4", "lifecycle-v1"}:
         if type(replicate_index) is not int:
             raise ValueError("Baseline V3/V4 paid baselines require an integer replicate_index")
         if replicate_index == 0:
@@ -1133,12 +1133,12 @@ def baseline_v2_pilot_run_gate(
 ) -> tuple[bool, str]:
     """Permit one provider run per declared identity; never pass-select reruns."""
     generation = seq.get("task_family_generation")
-    if generation not in {"baseline-v2", "baseline-v3", "baseline-v4", "baseline-v5"}:
+    if generation not in {"baseline-v2", "baseline-v3", "baseline-v4", "lifecycle-v1"}:
         return False, f"unsupported baseline task family generation requires explicit authority: {generation!r}"
     label = str(generation).replace("baseline-v", "Baseline V")
     gate = seq.get("mistake_gate")
     audit_rel = gate.get("pilot_audit_path") if isinstance(gate, dict) else None
-    if generation in {"baseline-v3", "baseline-v4", "baseline-v5"} and replicate_index != 0:
+    if generation in {"baseline-v3", "baseline-v4", "lifecycle-v1"} and replicate_index != 0:
         try:
             _binding, receipt_path = baseline_replication_binding(seq, replicate_index, root)
         except ValueError as exc:
@@ -1146,14 +1146,14 @@ def baseline_v2_pilot_run_gate(
         if receipt_path.exists():
             return False, f"paid baseline replication identity is occupied by immutable attempt receipt: {receipt_path.relative_to(root)}"
         return True, f"current-panel r{replicate_index} baseline is explicitly authorized and unoccupied"
-    if generation in {"baseline-v3", "baseline-v4", "baseline-v5"}:
+    if generation in {"baseline-v3", "baseline-v4", "lifecycle-v1"}:
         try:
             receipt_path = baseline_pilot_attempt_receipt_path(seq, root)
         except ValueError as exc:
             return False, str(exc)
         if receipt_path.exists():
             return False, f"paid pilot identity is occupied by immutable attempt receipt: {receipt_path.relative_to(root)}"
-    if generation in {"baseline-v4", "baseline-v5"}:
+    if generation in {"baseline-v4", "lifecycle-v1"}:
         authorization_rel = gate.get("pilot_authorization_path") if isinstance(gate, dict) else None
         if not isinstance(authorization_rel, str) or not authorization_rel:
             return False, f"{label} paid pilot is not authorized: missing pilot_authorization_path"
@@ -1206,7 +1206,7 @@ def baseline_v2_pilot_run_gate(
 def baseline_v2_treatment_gate(seq: dict[str, Any], root: Path = ROOT) -> tuple[bool, str]:
     """Fail closed until an independently audited zero-incident baseline pilot exists."""
     generation = seq.get("task_family_generation")
-    if generation not in {"baseline-v2", "baseline-v3", "baseline-v4", "baseline-v5"}:
+    if generation not in {"baseline-v2", "baseline-v3", "baseline-v4", "lifecycle-v1"}:
         return True, "not a zero-mistake baseline sequence"
     gate = seq.get("mistake_gate")
     if not isinstance(gate, dict):
@@ -1237,7 +1237,7 @@ def baseline_v2_treatment_gate(seq: dict[str, Any], root: Path = ROOT) -> tuple[
     if len(entries) != 1:
         return False, f"pilot audit must contain exactly one entry for {seq.get('id')}"
     entry = entries[0]
-    if generation == "baseline-v5":
+    if generation == "lifecycle-v1":
         if entry.get("passed") is not True or entry.get("compile_passed") is not True:
             return False, "compile-only pilot did not pass every affected-component compile verifier"
     else:
@@ -1254,7 +1254,7 @@ def baseline_v2_treatment_gate(seq: dict[str, Any], root: Path = ROOT) -> tuple[
     }
     if entry.get("model_condition") != expected_condition:
         return False, "pilot audit model condition does not match the designated gate tuple"
-    if generation != "baseline-v5":
+    if generation != "lifecycle-v1":
         invalid_counts = {
             field: entry.get(field)
             for field in PILOT_ZERO_COUNT_FIELDS
@@ -1323,7 +1323,7 @@ def baseline_v2_treatment_gate(seq: dict[str, Any], root: Path = ROOT) -> tuple[
         or software_quality.get("tasks_passed") != len(ordered_tasks)
         or software_quality.get("final_verifier_passed") is not True
         or software_quality.get("functional_verifier_passed") is not True
-        or (generation == "baseline-v5" and software_quality.get("project_compile_passed") is not True)
+        or (generation == "lifecycle-v1" and software_quality.get("project_compile_passed") is not True)
         or not isinstance(per_task_results, list)
         or len(per_task_results) != len(ordered_tasks)
         or not task_identity_complete
@@ -1403,8 +1403,8 @@ def baseline_v2_treatment_gate(seq: dict[str, Any], root: Path = ROOT) -> tuple[
     slot_sessions = [item for item in slot_candidates if item.get("replicate_index") == 0]
     if len(slot_sessions) != 1 or slot_sessions[0].get("session_id") != session_id:
         return False, f"current {generation} r0 slot is absent, ambiguous, or was rerun"
-    if generation == "baseline-v5":
-        return True, "audited compile-passing baseline-v5 pilot"
+    if generation == "lifecycle-v1":
+        return True, "audited compile-passing lifecycle-v1 pilot"
     return True, f"independently audited zero-incident {generation} pilot"
 
 
@@ -1733,7 +1733,7 @@ def execution_condition_descriptor(
         }
         acceptance_materialization = (
             "controller-only affected-component compile commands retained; no acceptance-test assets injected; agent prompts carry normal software objectives"
-            if seq.get("task_family_generation") == "baseline-v5"
+            if seq.get("task_family_generation") == "lifecycle-v1"
             else "declared model-visible acceptance tests retained"
         )
         descriptor["runtime"]["isolation_policy"] = (
@@ -2030,7 +2030,7 @@ def validate_protocol_for_run(seq: dict[str, Any], profile_id: str, args: argpar
     expected_execution_hash = _json_hash(expected_execution)
     selected_execution = protocol.get("selected_execution", {})
     errors: list[str] = []
-    if seq.get("task_family_generation") in {"baseline-v2", "baseline-v3", "baseline-v4", "baseline-v5"}:
+    if seq.get("task_family_generation") in {"baseline-v2", "baseline-v3", "baseline-v4", "lifecycle-v1"}:
         expected_protocol_id = canonical_protocol_id(
             seq,
             profile_id,
@@ -2172,7 +2172,7 @@ def reviewed_session_reuse_state(session: dict[str, Any] | None, root: Path = RO
         ),
         {},
     )
-    if sequence_definition.get("task_family_generation") in {"baseline-v2", "baseline-v3", "baseline-v4", "baseline-v5"}:
+    if sequence_definition.get("task_family_generation") in {"baseline-v2", "baseline-v3", "baseline-v4", "lifecycle-v1"}:
         verifier_visibility_valid = (
             leakage.get("controller_verifier_scripts_and_canonical_copies_model_visible") is False
             and leakage.get("model_visible_acceptance_asset_paths")
@@ -2400,7 +2400,7 @@ def find_canonical_baseline_record(registry: dict[str, Any], seq: dict[str, Any]
             or selected_descriptor.get("selected_profile", {}).get("profile_id") != "baseline-bare-codex"
         ):
             continue
-        if seq.get("task_family_generation") in {"baseline-v2", "baseline-v3", "baseline-v4", "baseline-v5"} and not expected_identity_loaded:
+        if seq.get("task_family_generation") in {"baseline-v2", "baseline-v3", "baseline-v4", "lifecycle-v1"} and not expected_identity_loaded:
             expected_protocol_identity, expected_protocol = current_baseline_v2_protocol(
                 seq, seq["mistake_gate"], ROOT
             )
@@ -3052,7 +3052,7 @@ def render_task_prompt(
             "",
         ])
     generation = seq.get("task_family_generation")
-    if generation == "baseline-v5":
+    if generation == "lifecycle-v1":
         validation_guidance = (
             "Complete the requested software change correctly. Search and inspect the repository as needed, including related definitions and call sites. Validate the implementation with relevant existing tests and checks when practical. Preserve earlier task edits in the persistent checkout; do not stop after merely making the touched files parse or compile."
         )
@@ -4228,7 +4228,7 @@ def run_one(args: argparse.Namespace) -> dict[str, Any]:
     current_baseline_replication = (
         args.profile_id == "baseline-bare-codex"
         and args.replicate_index > 0
-        and selected_sequence.get("task_family_generation") in {"baseline-v3", "baseline-v4", "baseline-v5"}
+        and selected_sequence.get("task_family_generation") in {"baseline-v3", "baseline-v4", "lifecycle-v1"}
     )
     if current_baseline_replication:
         checkout_errors = paid_launch_checkout_errors(ROOT)
@@ -4435,7 +4435,7 @@ def _run_one_locked(args: argparse.Namespace) -> dict[str, Any]:
         shutil.rmtree(run_dir)
         return result
 
-    if profile_id == "baseline-bare-codex" and seq.get("task_family_generation") in {"baseline-v3", "baseline-v4", "baseline-v5"}:
+    if profile_id == "baseline-bare-codex" and seq.get("task_family_generation") in {"baseline-v3", "baseline-v4", "lifecycle-v1"}:
         reserve_baseline_pilot_attempt(
             seq,
             root=ROOT,
@@ -4453,7 +4453,7 @@ def _run_one_locked(args: argparse.Namespace) -> dict[str, Any]:
         0
         if profile_id == "baseline-bare-codex"
         and args.replicate_index > 0
-        and seq.get("task_family_generation") in {"baseline-v3", "baseline-v4", "baseline-v5"}
+        and seq.get("task_family_generation") in {"baseline-v3", "baseline-v4", "lifecycle-v1"}
         else MAX_CODEX_OPERATIONAL_RETRIES
     )
     for task in ordered_tasks:
@@ -4579,7 +4579,7 @@ def _run_one_locked(args: argparse.Namespace) -> dict[str, Any]:
         "task_prompt_evidence": rel(run_dir / "evidence.jsonl.gz"),
     }
     generation = seq.get("task_family_generation")
-    if generation == "baseline-v5":
+    if generation == "lifecycle-v1":
         acceptance_visibility_limit = (
             "Future semantic regression code is present from lane start. Agent prompts state normal software objectives and do not disclose controller scoring. Affected-component compile commands and controller verifier scripts remain controller-only; no acceptance-test assets are injected."
         )
