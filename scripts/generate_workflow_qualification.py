@@ -195,7 +195,7 @@ def main() -> int:
     ordered = sorted(sequence["tasks"], key=lambda item: item["order"])
     records = []
     boundaries = []
-    seeded_fail = fixed_pass = True
+    seeded_fail = seeded_compile_zero = seeded_compile_outcomes_valid = fixed_pass = True
 
     for index, task in enumerate(ordered):
         task_dir = (ROOT / task["prompt_path"]).parent
@@ -262,6 +262,8 @@ def main() -> int:
             fixed_behavior_exit == 0 and fixed_structure_exit == 0
         )
         seeded_fail &= seeded_exit == 1 and refactor_seed_qualified
+        seeded_compile_zero &= seeded_exit == 0
+        seeded_compile_outcomes_valid &= seeded_exit in {0, 1}
         fixed_pass &= (
             restore_apply == 0
             and refactor_fixed_qualified
@@ -308,6 +310,8 @@ def main() -> int:
 
     composite_seed_merge_zero = False
     composite_seeded_verifiers_nonzero = False
+    composite_seeded_compile_zero = False
+    composite_seed_compile_outcomes_valid = False
     composite_seed_diff_sha256 = ""
     composite_seed_verifier_exits: dict[str, int] = {}
     composite_seed_error = ""
@@ -353,6 +357,12 @@ def main() -> int:
         }
         composite_seeded_verifiers_nonzero = bool(composite_diff.strip()) and all(
             code == 1 for code in composite_seed_verifier_exits.values()
+        )
+        composite_seeded_compile_zero = bool(composite_diff.strip()) and all(
+            code == 0 for code in composite_seed_verifier_exits.values()
+        )
+        composite_seed_compile_outcomes_valid = bool(composite_diff.strip()) and all(
+            code in {0, 1} for code in composite_seed_verifier_exits.values()
         )
     except Exception as exc:
         composite_seed_error = str(exc)
@@ -403,26 +413,55 @@ def main() -> int:
     generation = sequence.get("task_family_generation")
     is_baseline_v2 = generation in {"baseline-v2", "baseline-v3", "baseline-v4", "baseline-v5"}
     expected_acceptance_visibility = (
-        "model-visible-compile-only" if generation == "baseline-v5" else "model-visible-complete"
+        "controller-only-compile-policy" if generation == "baseline-v5" else "model-visible-complete"
     )
     undisclosed_inline_markers = ("<<'NODE'", '<<"NODE"', "<<'PY'", '<<"PY"', "<<'TS'", '<<"TS"', "workflow-hidden")
-    all_acceptance_behavior_model_visible = all(
-        task.get("acceptance_visibility") == expected_acceptance_visibility
-        and all(
-            marker not in (ROOT / task["verifier_command"]).read_text()
-            or marker in (ROOT / task["prompt_path"]).read_text()
-            for marker in undisclosed_inline_markers
+    if generation == "baseline-v5":
+        forbidden_agent_markers = (
+            "compile-only",
+            "only acceptance gate",
+            "sole pass/fail gate",
+            "diagnostics only",
+            "do not determine pass/fail",
+            "stop when the command exits 0",
         )
-        and all(
-            anchor in (ROOT / task["prompt_path"]).read_text()
-            and anchor in (ROOT / task["verifier_command"]).read_text()
-            for anchor in task.get("model_visible_validation_anchors", [])
+        controller_compile_policy_not_model_facing = all(
+            task.get("acceptance_visibility") == expected_acceptance_visibility
+            and task.get("model_visible_validation_anchors") == []
+            and str(task.get("compile_command", "")) not in (ROOT / task["prompt_path"]).read_text()
+            and all(marker not in (ROOT / task["prompt_path"]).read_text().lower() for marker in forbidden_agent_markers)
+            and all(
+                marker not in runner.render_task_prompt(
+                    sequence,
+                    "baseline-bare-codex",
+                    int(task["order"]),
+                    (ROOT / task["prompt_path"]).read_text(),
+                    first_task=int(task["order"]) == 1,
+                ).lower()
+                for marker in forbidden_agent_markers
+            )
+            for task in ordered
         )
-        for task in ordered
-    )
+        all_acceptance_behavior_model_visible = False
+    else:
+        controller_compile_policy_not_model_facing = False
+        all_acceptance_behavior_model_visible = all(
+            task.get("acceptance_visibility") == expected_acceptance_visibility
+            and all(
+                marker not in (ROOT / task["verifier_command"]).read_text()
+                or marker in (ROOT / task["prompt_path"]).read_text()
+                for marker in undisclosed_inline_markers
+            )
+            and all(
+                anchor in (ROOT / task["prompt_path"]).read_text()
+                and anchor in (ROOT / task["verifier_command"]).read_text()
+                for anchor in task.get("model_visible_validation_anchors", [])
+            )
+            for task in ordered
+        )
     controller_hidden = (ROOT / ordered[0]["prompt_path"]).parent.parents[1] / "controller-hidden"
     payload = {
-        "schema_version": 4,
+        "schema_version": 5 if generation == "baseline-v5" else 4,
         "task_family_generation": sequence.get("task_family_generation"),
         "controller_hidden_sha256": validation.task_directory_sha256(controller_hidden) if controller_hidden.is_dir() else None,
         "qualified_on": sequence["qualification_date"],
@@ -441,10 +480,14 @@ def main() -> int:
         "cumulative_boundaries": boundaries,
         "composite_seed_merge_zero": composite_seed_merge_zero,
         "composite_seeded_verifiers_nonzero": composite_seeded_verifiers_nonzero,
+        "composite_seeded_compile_zero": composite_seeded_compile_zero,
+        "composite_seed_compile_outcomes_valid": composite_seed_compile_outcomes_valid,
         "composite_seed_verifier_exits": composite_seed_verifier_exits,
         "composite_seed_diff_sha256": composite_seed_diff_sha256,
         "composite_seed_error": composite_seed_error,
         "seeded_verifier_nonzero": seeded_fail,
+        "seeded_compile_zero": seeded_compile_zero,
+        "seeded_compile_outcomes_valid": seeded_compile_outcomes_valid,
         "fixed_verifier_zero": fixed_pass,
         "full_fixed_cumulative_verifier_zero": cumulative,
         "aggregate_verifier_exit": aggregate_verifier_exit,
@@ -458,7 +501,10 @@ def main() -> int:
             True if generation == "baseline-v5" else False if is_baseline_v2 else hidden
         ),
         "no_model_concealed_acceptance_assets": hidden,
-        "acceptance_visibility": expected_acceptance_visibility if all_acceptance_behavior_model_visible else "incomplete",
+        "acceptance_visibility": expected_acceptance_visibility if (
+            controller_compile_policy_not_model_facing if generation == "baseline-v5" else all_acceptance_behavior_model_visible
+        ) else "incomplete",
+        "controller_compile_policy_not_model_facing": controller_compile_policy_not_model_facing,
         "all_acceptance_behavior_model_visible": all_acceptance_behavior_model_visible,
         "model_visible_acceptance_assets_match_verifier_copies": visible_acceptance_assets_byte_exact,
         "expected_model_visible_acceptance_asset_count": sum(
@@ -476,11 +522,20 @@ def main() -> int:
 
     payload["task_binding"] = {"algorithm": "sha256(path\\0bytes\\0; lexical recursive task directory order)", "task_directories": {record["task_id"]: record["task_directory_sha256"] for record in records}}
     write_qualification_atomically(output, payload)
-    required = ("seeded_verifier_nonzero", "fixed_verifier_zero", "full_fixed_cumulative_verifier_zero", "composite_seed_merge_zero", "composite_seeded_verifiers_nonzero", "no_unmerged_paths", "all_expected_model_concealment_declared")
+    required = ("fixed_verifier_zero", "full_fixed_cumulative_verifier_zero", "composite_seed_merge_zero", "no_unmerged_paths", "all_expected_model_concealment_declared")
+    if generation == "baseline-v5":
+        required += ("seeded_compile_outcomes_valid", "composite_seed_compile_outcomes_valid")
+    else:
+        required += ("seeded_verifier_nonzero", "composite_seeded_verifiers_nonzero")
     if is_baseline_v2:
-        required += ("no_model_concealed_acceptance_assets", "all_acceptance_behavior_model_visible", "model_visible_acceptance_assets_match_verifier_copies")
+        required += ("no_model_concealed_acceptance_assets", "model_visible_acceptance_assets_match_verifier_copies")
         if generation == "baseline-v5":
-            required += ("no_model_visible_acceptance_assets",)
+            required += (
+                "no_model_visible_acceptance_assets",
+                "controller_compile_policy_not_model_facing",
+            )
+        else:
+            required += ("all_acceptance_behavior_model_visible",)
         if generation in {"baseline-v4", "baseline-v5"}:
             required += ("aggregate_verifier_environment_passed",)
         if generation == "baseline-v5":

@@ -13,12 +13,12 @@ The primary lane measures cumulative provider usage after model and tool state w
 3. materialize and send task 1 only;
 4. capture its provider events and cumulative source checkpoint without running a controller verifier;
 5. resume the same Codex thread with each later prompt while preserving source, tool, index, cache, profile, and agent state;
-6. after every prompt completes, run the complete controller verifier suite once against the cumulative final repository; active Baseline V5 executes the three disclosed affected-component compile commands and then one frozen project-wide compile command, while historical V2/V3/V4 protocols retain their frozen acceptance contracts;
+6. after every prompt completes, run the complete controller verifier suite once against the cumulative final repository; active Baseline V5 executes three controller-only affected-component compile commands and then one frozen project-wide compile command, while historical V2/V3/V4 protocols retain their frozen acceptance contracts;
 7. extract cumulative provider tokens and retain the ordered checkpoints plus final diff.
 
 Future prompts remain controller-only until their turn. Future regression code is present from lane start. The model container does not mount task fixtures, seed patches, controller Git objects, or verifier scripts. Controller verifier hashes are checked during the lane, but functional verification provides no intermediate feedback and never truncates a lane.
 
-Executed Baseline V3/V4 wrappers, qualifications, protocols, and provider evidence are immutable historical records and must not be rewritten for the new task contract. Baseline V5 gives all three projects new task directories, qualifications, pool fingerprints, and protocols. Each task seeds two production-file compile failures, permits normal search and inspection, and exposes only its affected-component compile command. No acceptance tests are injected. Provider-free qualification must prove standalone seeded compile failure/fixed success, conflict-free composite seeding, cumulative component-compile success, aggregate verifier execution, and the fully repaired project's final compile command before a pilot can be authorized.
+Executed Baseline V3/V4 wrappers, qualifications, protocols, and provider evidence are immutable historical records and must not be rewritten for the new task contract. Baseline V5 gives all three projects new task directories, qualifications, pool fingerprints, and protocols. Each task seeds an authentic semantic regression from completed upstream behavior and gives the agent a normal software-engineering objective that expects correct implementation through repository discovery and related-code inspection. Controller scoring and compile commands are not model-facing, and no acceptance tests are injected. Provider-free qualification must prove clean standalone seed/fix round-trips, conflict-free composite seeding, controller compilation on seeded and repaired states, aggregate verifier execution, and the fully repaired project's final compile command before a pilot can be authorized.
 
 The matrix takes a global production lock before provider-capable planning and passes the locked file descriptor to its isolated lane runners. Immediately before an authorized current-generation baseline matrix launches provider-capable jobs, it atomically creates immutable generation-specific per-sequence attempt receipts in the controller authority; direct runners reserve the same identity after all preflights and before the first provider task. Both planning paths reject any existing receipt, so strict-ingress rejection or process interruption cannot reopen a paid slot for pass-selection. Direct provider runners acquire the same global lock before checking slot availability and hold it through compact-artifact publication and the atomic registry slot recheck. Accepted treatments resolve their comparison ID only to an error-free canonical schema-v2 baseline with exact protocol, selected-execution, provider-usage, and compact-evidence identity. Matrix publication binds each returned record to its planned sequence/profile/replicate/protocol/pool/selected-execution tuple, verifies its exact compact bundle before copying, immediately tracks every copied artifact, registry replacement attempt, and comparison path, rereads the registry under the lock, rejects full-slot collisions across retained and batch records, and uses durable same-directory atomic publication. Any publication interruption—including `KeyboardInterrupt` or `SystemExit`—or post-publication validation failure, including a failure in the repository contract suite, triggers best-effort restoration of the prior registry and generated authorities and removal of every tracked artifact/comparison. This prevents concurrent or misclassified session IDs from consuming a sample slot. Rejected compact evidence is copied into a unique sibling temporary directory, fsynced, and atomically renamed before cleanup. If preservation cannot complete, a durable sentinel suppresses checkout cleanup so the complete source remains recoverable. Disposable lane checkouts are otherwise removed unless `--keep-lanes` is set.
 
@@ -28,11 +28,11 @@ Fastify, Terraform, and Beets are the active primary sequences under Baseline V5
 
 An active sequence must have:
 
-- two-file, causally related compile-repair tasks;
-- standalone seeded compile failure/fixed compile success for every task;
-- a deterministic conflict-free composite seed;
-- evidence that every task compile verifier fails against the composite broken start;
-- evidence that every compile verifier passes after cumulative repairs;
+- authentic semantic regression tasks with one or two production targets;
+- clean standalone seed/fix round-trips with seeded compiler outcomes limited to 0 or 1 and fixed compilation succeeding;
+- a deterministic conflict-free composite semantic seed;
+- evidence that every composite seeded compiler outcome is 0 or 1 and every repaired compile verifier exits zero;
+- model-facing prompts that state complete software objectives without scoring-policy or compile-command disclosure;
 - clean model-facing prompt sequencing and verifier isolation.
 
 For an activated sequence, verify the runner and container from the repository root:
@@ -53,7 +53,8 @@ Run `--prepare-only` after any fixture, verifier, prompt, runner, or isolation c
 - task fixtures, seed patches, and verifier scripts remain controller-only;
 - the model-facing Git repository has one clean parentless commit and no remote;
 - the fixed snapshot object is absent from the model-facing object database and reflog;
-- qualification proves composite-seeded failure and full-fixed cumulative success.
+- qualification proves composite semantic seed application, records seeded controller compiler outcomes, and verifies full-fixed cumulative/project-wide success;
+- the current agent prompt contains no controller compile command or internal scoring-policy disclosure.
 
 Preparation does not call the model and does not authorize a paid run.
 

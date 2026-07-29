@@ -1,5 +1,5 @@
 {
-  "schema_version": 4,
+  "schema_version": 5,
   "task_family_generation": "baseline-v5",
   "controller_hidden_sha256": null,
   "qualified_on": "2026-08-01",
@@ -31,15 +31,14 @@
   "tasks": [
     {
       "task_id": "terraform-lifecycle-feature-v0",
-      "seed_patch_sha256": "7bd00a983aaa2aa0b176a6aa98cb1b5e8d7dd0a55d5a3b6a9a3ec1f543f9c1b7",
-      "verifier_sha256": "3087c4ec772fab7cea455654699dfaca1d3b475b5583a83e73ab75865c47934c",
+      "seed_patch_sha256": "e74faf9367021fd35a66155f001377671ab4e18345eb30739ab3af8e1ff92e04",
+      "verifier_sha256": "f3b31ac54850ff02a646c30eae5e67cacb15a181f72fe105bff67b88d4434680",
       "controller_visible_acceptance_assets": [],
       "model_visible_acceptance_asset_paths": [],
       "production_files": [
-        "internal/policy/callback/callback.go",
         "internal/policy/callback/server.go"
       ],
-      "production_file_count": 2,
+      "production_file_count": 1,
       "expected_model_concealed_paths": [],
       "model_concealed_paths": [],
       "omitted_expected_model_concealed_paths": [],
@@ -48,20 +47,19 @@
       "fixed_snapshot_model_concealed_absent": true,
       "fixed_snapshot_model_concealed_safe": true,
       "fixed_snapshot_concealed_path_collision_audit": [],
-      "agent_prompt_sha256": "fe169b3ac6f982edfc6878a62fb4bfbeb9772da9bf3a2324760b5d9a4ca68791",
-      "task_directory_sha256": "463eaf5c917ce186604477891f0a783c3d83e4860fbd0e0e100b98a8a177c08d"
+      "agent_prompt_sha256": "77442d96dce398e8656fa236b7f08d3943581b1726ef242fda2ea917d1392d2b",
+      "task_directory_sha256": "5f5b4a0c9d0617812d95796f1f5b3ecf77fe6e1f1b3fad10cc1870ea3f95a2aa"
     },
     {
       "task_id": "terraform-lifecycle-refactor-v0",
-      "seed_patch_sha256": "34b415049a7218886cc3e090fbd35304e9be2601cc682397c98f3d051950ff01",
-      "verifier_sha256": "7003b8763c06f9677f3ce024ff270a1aad491bc5eeeddc70033b2d1b9497324f",
+      "seed_patch_sha256": "b2b4e19476620a6579c435c7b898cca97fe036b4a6d3d54f08080a3dad5699ce",
+      "verifier_sha256": "c5ff5527b5d2f6670bb3bda427bcbf35cb885a47545981cd162cec5ae709cbb3",
       "controller_visible_acceptance_assets": [],
       "model_visible_acceptance_asset_paths": [],
       "production_files": [
-        "internal/configs/state_migrate_file.go",
-        "internal/configs/state_store.go"
+        "internal/configs/state_migrate_file.go"
       ],
-      "production_file_count": 2,
+      "production_file_count": 1,
       "expected_model_concealed_paths": [],
       "model_concealed_paths": [],
       "omitted_expected_model_concealed_paths": [],
@@ -70,20 +68,19 @@
       "fixed_snapshot_model_concealed_absent": true,
       "fixed_snapshot_model_concealed_safe": true,
       "fixed_snapshot_concealed_path_collision_audit": [],
-      "agent_prompt_sha256": "905e7692fce49ef669d84a2bedef876616da9d7cb2d267e0ebe0b2904ee3ef15",
-      "task_directory_sha256": "c7c3f74f152f7984e9f8e30299614bb6b3400fa4bbe8534eec9269bb02a6b92e"
+      "agent_prompt_sha256": "2a8d2f0610ce93483c35b9d05f3e93eca1e579bfa0f049bd70f04ca70f286327",
+      "task_directory_sha256": "97f40733d27323ff5de0700ad6bef4294211d215c142e170954f2e857e6226ef"
     },
     {
       "task_id": "terraform-lifecycle-review-v0",
-      "seed_patch_sha256": "bb4dfd50f9334f9d4fe8076ac54c6c2cca42a6b8c35f728fd6aa607a32550f07",
-      "verifier_sha256": "e6670ca295354310e808950ba0cb63afcd9e294a74fc10516877d61404d854c1",
+      "seed_patch_sha256": "9820e02bdbf682b7e5559e42ba8bf3799d4f22018d31cb8cd1621223c371cfcd",
+      "verifier_sha256": "a54cdf89c1ffa2a6450bf97f164a80b7dc9a9d5a40ea9166bf31325b12c7a502",
       "controller_visible_acceptance_assets": [],
       "model_visible_acceptance_asset_paths": [],
       "production_files": [
-        "internal/addrs/check.go",
         "internal/addrs/checkable.go"
       ],
-      "production_file_count": 2,
+      "production_file_count": 1,
       "expected_model_concealed_paths": [],
       "model_concealed_paths": [],
       "omitted_expected_model_concealed_paths": [],
@@ -92,8 +89,8 @@
       "fixed_snapshot_model_concealed_absent": true,
       "fixed_snapshot_model_concealed_safe": true,
       "fixed_snapshot_concealed_path_collision_audit": [],
-      "agent_prompt_sha256": "e21ff438172536f3d2ac4fe34fb85248e823070b6502438ce4dad2c3159f9495",
-      "task_directory_sha256": "1c52fccb691d6de70f8fa88813a25c03d9855b3e2cb5958cd4892e2a51014a25"
+      "agent_prompt_sha256": "f5f624794bcd45304d247ff5cd08fce294127565179a6428ad2b671974129cb4",
+      "task_directory_sha256": "ffdc496b08166bb151ddeb4939465fe25b094ad664373d42deedba9b231eee80"
     }
   ],
   "cumulative_boundaries": [
@@ -112,7 +109,7 @@
       "task_id": "terraform-lifecycle-refactor-v0",
       "seed_apply_check_exit": 0,
       "seed_apply_exit": 0,
-      "seeded_verifier_exit": 1,
+      "seeded_verifier_exit": 0,
       "repair_apply_check_exit": 0,
       "repair_apply_exit": 0,
       "retained_verifier_exits": {
@@ -124,7 +121,7 @@
       "task_id": "terraform-lifecycle-review-v0",
       "seed_apply_check_exit": 0,
       "seed_apply_exit": 0,
-      "seeded_verifier_exit": 1,
+      "seeded_verifier_exit": 0,
       "repair_apply_check_exit": 0,
       "repair_apply_exit": 0,
       "retained_verifier_exits": {
@@ -135,15 +132,19 @@
     }
   ],
   "composite_seed_merge_zero": true,
-  "composite_seeded_verifiers_nonzero": true,
+  "composite_seeded_verifiers_nonzero": false,
+  "composite_seeded_compile_zero": false,
+  "composite_seed_compile_outcomes_valid": true,
   "composite_seed_verifier_exits": {
     "terraform-lifecycle-feature-v0": 1,
-    "terraform-lifecycle-refactor-v0": 1,
-    "terraform-lifecycle-review-v0": 1
+    "terraform-lifecycle-refactor-v0": 0,
+    "terraform-lifecycle-review-v0": 0
   },
-  "composite_seed_diff_sha256": "ebc01118cd921a20fd47a6d1578cbb4a3501909b840cc94c78ce9c3f21f7dd06",
+  "composite_seed_diff_sha256": "48f2006b0d10fc1d365437b282e77ae856479e7b744dbce4f78d9b62b16e9842",
   "composite_seed_error": "",
-  "seeded_verifier_nonzero": true,
+  "seeded_verifier_nonzero": false,
+  "seeded_compile_zero": false,
+  "seeded_compile_outcomes_valid": true,
   "fixed_verifier_zero": true,
   "full_fixed_cumulative_verifier_zero": true,
   "aggregate_verifier_exit": 0,
@@ -158,8 +159,9 @@
   "no_unmerged_paths": true,
   "no_model_visible_acceptance_assets": true,
   "no_model_concealed_acceptance_assets": true,
-  "acceptance_visibility": "model-visible-compile-only",
-  "all_acceptance_behavior_model_visible": true,
+  "acceptance_visibility": "controller-only-compile-policy",
+  "controller_compile_policy_not_model_facing": true,
+  "all_acceptance_behavior_model_visible": false,
   "model_visible_acceptance_assets_match_verifier_copies": true,
   "expected_model_visible_acceptance_asset_count": 0,
   "all_expected_model_concealment_declared": true,
@@ -168,9 +170,9 @@
   "task_binding": {
     "algorithm": "sha256(path\\0bytes\\0; lexical recursive task directory order)",
     "task_directories": {
-      "terraform-lifecycle-feature-v0": "463eaf5c917ce186604477891f0a783c3d83e4860fbd0e0e100b98a8a177c08d",
-      "terraform-lifecycle-refactor-v0": "c7c3f74f152f7984e9f8e30299614bb6b3400fa4bbe8534eec9269bb02a6b92e",
-      "terraform-lifecycle-review-v0": "1c52fccb691d6de70f8fa88813a25c03d9855b3e2cb5958cd4892e2a51014a25"
+      "terraform-lifecycle-feature-v0": "5f5b4a0c9d0617812d95796f1f5b3ecf77fe6e1f1b3fad10cc1870ea3f95a2aa",
+      "terraform-lifecycle-refactor-v0": "97f40733d27323ff5de0700ad6bef4294211d215c142e170954f2e857e6226ef",
+      "terraform-lifecycle-review-v0": "ffdc496b08166bb151ddeb4939465fe25b094ad664373d42deedba9b231eee80"
     }
   }
 }

@@ -1,15 +1,9 @@
-# Baseline V5 compile-only feature implementation task
+# Restore normalized request media-type support
 
-The affected component contains a partial feature implementation change that no longer compiles.
+Fastify requests must expose the normalized media type from the incoming `Content-Type` header through `request.mediaType`. Restore the complete feature so the value is available during validation and request handling, remains `undefined` when the header is absent, and continues to use the existing Content-Type parsing behavior.
 
-Find the affected production code, inspect relevant definitions and usages, and restore compilation. Search and inspect the repository as needed. Choose the smallest reasonable repair, but do not assume an exact source shape is required. Do not modify tests, generated files, dependency locks, or evaluation controls.
+Preserve the public request API and existing request lifecycle behavior.
 
-Compilation is the only acceptance gate. Unit-test results, style, behavioral fidelity, and source-review quality are diagnostics only and do not determine pass/fail.
+Implement the task completely and correctly. Search and inspect the repository as needed, including related definitions and call sites. Choose the smallest coherent repair, run relevant existing tests and checks when practical, and preserve earlier task work in the persistent checkout.
 
-Use this command to check the affected component:
-
-```bash
-node --check lib/request.js && node --check lib/reply.js
-```
-
-Stop when the command exits 0. Do not run network-dependent commands.
+Do not modify tests, generated files, dependency locks, or evaluation controls. Do not use network-dependent commands.

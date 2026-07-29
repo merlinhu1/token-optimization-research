@@ -22,7 +22,7 @@ The target lifecycle workflow is one persistent sequence containing:
 2. **Behavior-preserving refactor** — improve structure without changing required behavior.
 3. **Code review and correction** — inspect a realistic cumulative change, identify acceptance-critical defects, and correct them when required.
 
-Optional lanes may cover maintenance regression repair, diagnosis, migration, build repair, or documentation. The active Fastify, Terraform, and Beets sequences are lifecycle-v0 production evidence under Baseline V5: each task is a discovery-oriented two-file compile repair with a visible affected-component compile command, and the final workflow must also pass a frozen project-wide compile command. Unit tests, behavioral fidelity, style, exact source shape, and source review are diagnostics. These sequences remain scoped workflow samples rather than the whole target population.
+Optional lanes may cover maintenance regression repair, diagnosis, migration, build repair, or documentation. The active Fastify, Terraform, and Beets sequences are lifecycle-v0 production evidence under Baseline V5: each task pre-seeds an authentic semantic regression and presents a normal engineering objective that expects a complete correct implementation through repository discovery. Affected-component and final project-wide compilation are controller-only scoring gates; unit tests, behavioral fidelity, style, exact source shape, and source review are diagnostics. The agent is never instructed to optimize for the internal compile-only policy. These sequences remain scoped workflow samples rather than the whole target population.
 
 ## Primary evaluation unit
 

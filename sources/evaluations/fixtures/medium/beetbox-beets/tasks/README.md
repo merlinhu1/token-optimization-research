@@ -1,7 +1,7 @@
 # Beets lifecycle v0 — active Baseline V5 tasks
 
-1. `beets-lifecycle-feature-v0` — inspect and restore compilation across two utility modules.
-2. `beets-lifecycle-refactor-v0` — inspect and restore compilation across two database-core modules.
-3. `beets-lifecycle-review-v0` — inspect and correct a proposed plugin change until both modules compile.
+1. `beets-lifecycle-feature-v0` — restore escaped separators in function-template arguments.
+2. `beets-lifecycle-refactor-v0` — remove the unnecessary LazyDict iterator layer without behavioral drift.
+3. `beets-lifecycle-review-v0` — review and correct featuring-token selection in ftintitle.
 
-The active model-facing contracts are under `task-generations/baseline-v5/`. Each task permits normal search and inspection, changes two production files, and exposes only its affected-component compile command. The controller applies all three start patches before prompt 1 and runs all compile verifiers after prompt 3.
+The active model-facing contracts are under `task-generations/baseline-v5/`. Each prompt states a complete software objective, permits normal search and related-code inspection, and expects a correct implementation and relevant validation. The controller applies all three semantic start patches before prompt 1 and runs controller-only compile verifiers after prompt 3.

@@ -17,8 +17,8 @@ This contract governs lifecycle-v0 provider-token samples, baseline reuse, compa
 ## Current Implementation Behavior
 
 - The active portfolio contains Fastify, Beets, and Terraform lifecycle-v0 sequences under Baseline V5.
-- Baseline V5 tasks seed two related production-file compile failures, permit repository discovery, and expose one affected-component compile command without an exact edit recipe.
-- Component compilation gates per-task acceptance; a frozen project-wide compile command gates final workflow acceptance and treatment unlock. Tests, behavior, style, maintainability, exact source shape, and source review remain diagnostic.
+- Baseline V5 tasks seed authentic semantic regressions, require agents to complete normal software-engineering objectives correctly, and permit repository discovery without exposing controller scoring.
+- Controller-only component compilation gates per-task acceptance; a controller-only frozen project-wide compile command gates final workflow acceptance and treatment unlock. Tests, behavior, style, maintainability, exact source shape, and source review remain diagnostic. This internal boundary is never included in agent instructions.
 - The runner captures cumulative provider usage across one persistent sequential agent session.
 - Codex usage comes from provider-reported Codex JSONL snapshots. OpenCode usage comes from unique incremental `step_finish` parts; fresh input, cache read, cache write, visible output, and reasoning are normalized without counting reasoning twice.
 - Replacement-runtime protocols may bind distinct runtime-specific model-condition IDs while holding provider, model, reasoning effort, fixtures, prompts, and baseline pool fixed. The frozen protocol identifies the Codex baseline condition and replacement-runtime treatment condition separately.

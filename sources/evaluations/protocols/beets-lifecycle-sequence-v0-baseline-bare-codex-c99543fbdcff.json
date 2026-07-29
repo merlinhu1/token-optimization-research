@@ -1,6 +1,6 @@
 {
   "protocol_schema_version": 3,
-  "protocol_id": "beets-lifecycle-sequence-v0-baseline-bare-codex-af2cc291f4df",
+  "protocol_id": "beets-lifecycle-sequence-v0-baseline-bare-codex-c99543fbdcff",
   "status": "frozen-ready-not-run",
   "outcome": "Frozen baseline-bare-codex protocol for beets-lifecycle-sequence-v0; no provider/model run has occurred.",
   "frozen_at": "2026-08-01",
@@ -13,7 +13,7 @@
     "repository": "https://github.com/beetbox/beets.git",
     "snapshot": "9acb1ecff6c7ee0a1e83e3b983c94792345712c5",
     "qualification_path": "sources/evaluations/fixtures/medium/beetbox-beets/qualification-lifecycle-v0-baseline-v5.json",
-    "qualification_sha256": "b6d4d5a4707474817e0b351a440f65c5f1e8105ab90975de3a18a1bcfde20271",
+    "qualification_sha256": "10e68b2c0a7cd358b20ee2008b265e598de06341d1a3f7db5f51c5768dbfb82d",
     "timeout_seconds_per_task": 3600
   },
   "baseline": {
@@ -23,7 +23,7 @@
     "model": "gpt-5.6-sol",
     "model_condition_id": "codex-openai-gpt-5-6-sol-high",
     "reasoning_effort": "high",
-    "command": "python3 scripts/run_codex_workflow_model_condition.py --workflow-model-condition-id codex-openai-gpt-5-6-sol-high --workflow-model gpt-5.6-sol --workflow-reasoning-effort high --sequence-id beets-lifecycle-sequence-v0 --profile-id baseline-bare-codex --timeout-per-task 3600 --protocol sources/evaluations/protocols/beets-lifecycle-sequence-v0-baseline-bare-codex-af2cc291f4df.json --docker-image token-eval-codex:latest"
+    "command": "python3 scripts/run_codex_workflow_model_condition.py --workflow-model-condition-id codex-openai-gpt-5-6-sol-high --workflow-model gpt-5.6-sol --workflow-reasoning-effort high --sequence-id beets-lifecycle-sequence-v0 --profile-id baseline-bare-codex --timeout-per-task 3600 --protocol sources/evaluations/protocols/beets-lifecycle-sequence-v0-baseline-bare-codex-c99543fbdcff.json --docker-image token-eval-codex:latest"
   },
   "comparison_baseline": {
     "profile_id": "baseline-bare-codex",
@@ -32,7 +32,7 @@
     "model": "gpt-5.6-sol",
     "model_condition_id": "codex-openai-gpt-5-6-sol-high",
     "reasoning_effort": "high",
-    "command": "python3 scripts/run_codex_workflow_model_condition.py --workflow-model-condition-id codex-openai-gpt-5-6-sol-high --workflow-model gpt-5.6-sol --workflow-reasoning-effort high --sequence-id beets-lifecycle-sequence-v0 --profile-id baseline-bare-codex --timeout-per-task 3600 --protocol sources/evaluations/protocols/beets-lifecycle-sequence-v0-baseline-bare-codex-af2cc291f4df.json --docker-image token-eval-codex:latest"
+    "command": "python3 scripts/run_codex_workflow_model_condition.py --workflow-model-condition-id codex-openai-gpt-5-6-sol-high --workflow-model gpt-5.6-sol --workflow-reasoning-effort high --sequence-id beets-lifecycle-sequence-v0 --profile-id baseline-bare-codex --timeout-per-task 3600 --protocol sources/evaluations/protocols/beets-lifecycle-sequence-v0-baseline-bare-codex-c99543fbdcff.json --docker-image token-eval-codex:latest"
   },
   "treatment": {},
   "token_accounting_boundary": {
@@ -47,14 +47,14 @@
   },
   "baseline_pool": {
     "protocol_version": "baseline-pool-v1",
-    "protocol_fingerprint": "34279aa8c1ba",
+    "protocol_fingerprint": "5d4dd08647eb",
     "descriptor": {
       "version": "baseline-pool-v1",
       "task_family_generation": "baseline-v5",
       "runner_contract_version": "workflow-runner-v10",
-      "runner_sha256": "98ba54de7e88b12edf75890184e69f3842bc4fab985c5c7b08ec80c5dcf02eaa",
-      "qualification_generator_sha256": "53864b470ca258f8ee756a609c30b7e93e5043a16cafa260744a35f21dfb5171",
-      "validator_sha256": "e6520a6840b44bf9b6e19ab8ed9977a03e41b23ec97fce413dbc4a0ca390f2f9",
+      "runner_sha256": "8b8dae910394a3c5828ddd28b2227c0f41bfe8492642139a14b4087e5797933c",
+      "qualification_generator_sha256": "bb0a05a2c1d11b6e2bdc4212b10360a8c41d3e18cedd86dfcde21ee452f775e5",
+      "validator_sha256": "bff2c3798008b3fd966ab3d084d77481ec76b5dbb25c898fbbc8d4e2b9baa621",
       "sequence_id": "beets-lifecycle-sequence-v0",
       "sequence_contract": "feature-refactor-review",
       "fixture_id": "medium-beetbox-beets",
@@ -74,6 +74,7 @@
       "acceptance_design": "compile-only",
       "acceptance_policy": {
         "gate": "affected-component-compilation",
+        "visibility": "controller-only",
         "quality_diagnostics_gate": false,
         "tests_required": false,
         "source_review_required": false
@@ -85,15 +86,14 @@
           "order": 1,
           "task_class": "feature-implementation",
           "prompt_path": "sources/evaluations/fixtures/medium/beetbox-beets/task-generations/baseline-v5/beets-lifecycle-feature-v0/agent-prompt.txt",
-          "prompt_sha256": "85de5604173655bc0421cc73349c17e78974cc30ff816c51300d301f193520da",
-          "seed_patch_sha256": "99fcc39dafb0ace870c6292d91b0c439fa98e224053c2b2b1c7552bf06e9351b",
+          "prompt_sha256": "de2a6d38d4bff0027866e665816d47d39f3e98e0b73e1e74645bae14c918821b",
+          "seed_patch_sha256": "9dc1cf36d0d0120fb57f75c4579af7f1f65b80e9d80de2d2c5cbdeb69b4ac17e",
           "verifier_command": "sources/evaluations/fixtures/medium/beetbox-beets/task-generations/baseline-v5/beets-lifecycle-feature-v0/verify.sh",
-          "verifier_sha256": "482ca256a03a260d42f1026be268acb52987c0c42a0eba77777a758088d3a2a7",
-          "compile_command": "uv run --offline --frozen python -m py_compile beets/util/functemplate.py beets/util/pathformats.py",
-          "acceptance_visibility": "model-visible-compile-only",
+          "verifier_sha256": "e1a44f27e1d5d305aff563e3d10444c1b402d31a0837903b52625b19ee14b2d9",
+          "compile_command": "uv run --offline --frozen python -m py_compile beets/util/functemplate.py",
+          "acceptance_visibility": "controller-only-compile-policy",
           "expected_changed_paths": [
-            "beets/util/functemplate.py",
-            "beets/util/pathformats.py"
+            "beets/util/functemplate.py"
           ],
           "controller_visible_acceptance_assets": [],
           "upstream_test_paths": [],
@@ -106,15 +106,14 @@
           "order": 2,
           "task_class": "behavior-preserving-refactor",
           "prompt_path": "sources/evaluations/fixtures/medium/beetbox-beets/task-generations/baseline-v5/beets-lifecycle-refactor-v0/agent-prompt.txt",
-          "prompt_sha256": "e725506e24c488833bba79dd878288ff07908b6de4fd23b91597920c130cced9",
-          "seed_patch_sha256": "b4bab2c1c751b73e45ef0763a4ba485f3223e5f75ae88393fb2ad5d2b7eca307",
+          "prompt_sha256": "b6555b12ec7ef275bfd7c595ead918b3203051aa7bbad2e82dd99b76b0472be8",
+          "seed_patch_sha256": "9bcf590139fc91987524e643bc1e6281efbe5a09cd9b2218ca31f670c391c722",
           "verifier_command": "sources/evaluations/fixtures/medium/beetbox-beets/task-generations/baseline-v5/beets-lifecycle-refactor-v0/verify.sh",
-          "verifier_sha256": "a69f17ccf418212b16d0c3d81c73fe9d2e8bbba567aca56a8f62ba2c28a6fcef",
-          "compile_command": "uv run --offline --frozen python -m py_compile beets/dbcore/db.py beets/dbcore/query.py",
-          "acceptance_visibility": "model-visible-compile-only",
+          "verifier_sha256": "5e47ccd8656295e5edb674f68f466857f2bc4d306a52d191ca919a3f3e3c688a",
+          "compile_command": "uv run --offline --frozen python -m py_compile beets/dbcore/db.py",
+          "acceptance_visibility": "controller-only-compile-policy",
           "expected_changed_paths": [
-            "beets/dbcore/db.py",
-            "beets/dbcore/query.py"
+            "beets/dbcore/db.py"
           ],
           "controller_visible_acceptance_assets": [],
           "upstream_test_paths": [],
@@ -127,14 +126,13 @@
           "order": 3,
           "task_class": "code-review-correction",
           "prompt_path": "sources/evaluations/fixtures/medium/beetbox-beets/task-generations/baseline-v5/beets-lifecycle-review-v0/agent-prompt.txt",
-          "prompt_sha256": "7fca5c9dfc9dccf14f51f624dce5593e1db04e57c74f2caff7c4438d1c2cebd5",
-          "seed_patch_sha256": "4a31e2600090b85084e92495d5fe2483cc14f5643af430a32c109fd6b5db71c7",
+          "prompt_sha256": "88d48e9fba771d9f5e02a3341975f746768412e64e9dffa615cc5dd35cad11f4",
+          "seed_patch_sha256": "14d8dd83706706805b8159f85871036cfb39148dd7912e66e2c8044d505cabad",
           "verifier_command": "sources/evaluations/fixtures/medium/beetbox-beets/task-generations/baseline-v5/beets-lifecycle-review-v0/verify.sh",
-          "verifier_sha256": "f20152e02e812f6e088e01f23fdd5c285a56a75dcbfad4451e0f4ddb75776285",
-          "compile_command": "uv run --offline --frozen python -m py_compile beetsplug/ftintitle.py beetsplug/duplicates.py",
-          "acceptance_visibility": "model-visible-compile-only",
+          "verifier_sha256": "34ea0f496613649e40846a8d9afe946285075e80c2993894464eb11a09a7652a",
+          "compile_command": "uv run --offline --frozen python -m py_compile beetsplug/ftintitle.py",
+          "acceptance_visibility": "controller-only-compile-policy",
           "expected_changed_paths": [
-            "beetsplug/duplicates.py",
             "beetsplug/ftintitle.py"
           ],
           "controller_visible_acceptance_assets": [],
@@ -143,7 +141,7 @@
           "expected_model_concealed_paths": [],
           "model_concealed_paths": [],
           "review_patch_path": "review-change.patch",
-          "review_patch_sha256": "4a31e2600090b85084e92495d5fe2483cc14f5643af430a32c109fd6b5db71c7"
+          "review_patch_sha256": "14d8dd83706706805b8159f85871036cfb39148dd7912e66e2c8044d505cabad"
         }
       ],
       "model_facing_prompts": {
@@ -153,23 +151,23 @@
           {
             "task_id": "beets-lifecycle-feature-v0",
             "order": 1,
-            "rendered_prompt_sha256": "4102ac33145d7629bb437cd45e4aeb25fc90cd2a64d656ef0e766a31033b50b4"
+            "rendered_prompt_sha256": "7d1f66e20a2fc15b5656bc4bb5019b0bd4b635848954160390fb5a92edc03f9e"
           },
           {
             "task_id": "beets-lifecycle-refactor-v0",
             "order": 2,
-            "rendered_prompt_sha256": "a24b791d9e39d2e82e2b3d1406ad9914c3f15b8fee0d8c043ec813a01b7a4dd3"
+            "rendered_prompt_sha256": "01ba8aba36851f2af9c024806f3182456541f48c0bb99e54bdc0123f030a3f7f"
           },
           {
             "task_id": "beets-lifecycle-review-v0",
             "order": 3,
-            "rendered_prompt_sha256": "98fc5ea43a1a99509f759bd663bffcda56e109e0545ceb7f3fe0c5ff71c7685f"
+            "rendered_prompt_sha256": "0a64f33f048a3ef62e6dea47aef0f97483bc74819ef04b481d9df578b714f67f"
           }
         ]
       },
       "qualification": {
         "path": "sources/evaluations/fixtures/medium/beetbox-beets/qualification-lifecycle-v0-baseline-v5.json",
-        "sha256": "b6d4d5a4707474817e0b351a440f65c5f1e8105ab90975de3a18a1bcfde20271"
+        "sha256": "10e68b2c0a7cd358b20ee2008b265e598de06341d1a3f7db5f51c5768dbfb82d"
       },
       "baseline_profile": {
         "profile_id": "baseline-bare-codex",
@@ -230,6 +228,7 @@
         "acceptance_design": "compile-only",
         "acceptance_policy": {
           "gate": "affected-component-compilation",
+          "visibility": "controller-only",
           "quality_diagnostics_gate": false,
           "tests_required": false,
           "source_review_required": false
@@ -255,7 +254,7 @@
     }
   },
   "selected_execution": {
-    "descriptor_sha256": "d20cb057e8e080eca76aafa901857a752ae355fb1ab2da69f0a3bcf4607f53a1",
+    "descriptor_sha256": "655081faae85d0bd8aa8c276e64c2d6bc0bb005e1df21d2cca33e297d6ecda79",
     "descriptor": {
       "version": "execution-condition-v1",
       "sequence_id": "beets-lifecycle-sequence-v0",
@@ -330,17 +329,17 @@
           {
             "task_id": "beets-lifecycle-feature-v0",
             "order": 1,
-            "rendered_prompt_sha256": "4102ac33145d7629bb437cd45e4aeb25fc90cd2a64d656ef0e766a31033b50b4"
+            "rendered_prompt_sha256": "7d1f66e20a2fc15b5656bc4bb5019b0bd4b635848954160390fb5a92edc03f9e"
           },
           {
             "task_id": "beets-lifecycle-refactor-v0",
             "order": 2,
-            "rendered_prompt_sha256": "a24b791d9e39d2e82e2b3d1406ad9914c3f15b8fee0d8c043ec813a01b7a4dd3"
+            "rendered_prompt_sha256": "01ba8aba36851f2af9c024806f3182456541f48c0bb99e54bdc0123f030a3f7f"
           },
           {
             "task_id": "beets-lifecycle-review-v0",
             "order": 3,
-            "rendered_prompt_sha256": "98fc5ea43a1a99509f759bd663bffcda56e109e0545ceb7f3fe0c5ff71c7685f"
+            "rendered_prompt_sha256": "0a64f33f048a3ef62e6dea47aef0f97483bc74819ef04b481d9df578b714f67f"
           }
         ]
       },
@@ -420,7 +419,7 @@
       },
       "baseline_pool_reference": {
         "protocol_version": "baseline-pool-v1",
-        "protocol_fingerprint": "34279aa8c1ba",
+        "protocol_fingerprint": "5d4dd08647eb",
         "comparison_policy": "paired baseline and treatment must share this baseline pool fingerprint and replicate"
       },
       "model_condition_override": {

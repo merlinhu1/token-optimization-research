@@ -369,15 +369,15 @@ class ActiveCampaignArchitectureTest(unittest.TestCase):
         self.assertIn("## Proposed change under review", review)
         self.assertIn("diff --git", review)
 
-    def test_refactor_qualification_uses_compile_only_boundaries(self) -> None:
+    def test_refactor_qualification_uses_controller_compile_boundaries(self) -> None:
         sequence = runner.load_sequence("beets-lifecycle-sequence-v0")
         qualification = json.loads((ROOT / sequence["qualification_path"]).read_text())
         boundary = next(item for item in qualification["cumulative_boundaries"] if item["task_id"] == "beets-lifecycle-refactor-v0")
         self.assertNotIn("seeded_behavior_exit", boundary)
         self.assertNotIn("seeded_structure_exit", boundary)
-        self.assertNotEqual(boundary["seeded_verifier_exit"], 0)
+        self.assertEqual(boundary["seeded_verifier_exit"], 0)
         self.assertEqual(boundary["retained_verifier_exits"]["beets-lifecycle-refactor-v0"], 0)
-        self.assertEqual(qualification["acceptance_visibility"], "model-visible-compile-only")
+        self.assertEqual(qualification["acceptance_visibility"], "controller-only-compile-policy")
 
     def test_runbook_matches_active_lifecycle_contract(self) -> None:
         runbook = (ROOT / "docs/evaluations/operations/runbook.md").read_text()
@@ -674,16 +674,17 @@ class ActiveCampaignArchitectureTest(unittest.TestCase):
         for task_record in qualification_record["tasks"]:
             self.assertTrue(task_record["fixed_snapshot_model_concealed_absent"], task_record)
 
-    def test_feature_verifier_enforces_only_visible_compilation(self) -> None:
+    def test_feature_verifier_keeps_compilation_controller_only(self) -> None:
         sequence = runner.load_sequence("beets-lifecycle-sequence-v0")
         feature = sorted(sequence["tasks"], key=lambda task: task["order"])[0]
         prompt = (ROOT / feature["prompt_path"]).read_text()
         verifier = (ROOT / feature["verifier_command"]).read_text()
         self.assertEqual(feature["model_concealed_paths"], [])
         self.assertEqual(feature["model_visible_acceptance_asset_paths"], [])
-        self.assertIn(feature["compile_command"], prompt)
+        self.assertNotIn(feature["compile_command"], prompt)
         self.assertIn(feature["compile_command"], verifier)
-        self.assertIn("Compilation is the only acceptance gate", prompt)
+        self.assertNotIn("acceptance gate", prompt)
+        self.assertNotIn("pass/fail", prompt)
         self.assertNotIn("test/util/test_functemplate.py", verifier)
         self.assertNotIn("read_text", verifier)
 
@@ -1728,18 +1729,21 @@ class SeedDeliveryContractTest(unittest.TestCase):
             for anchor in task["model_visible_validation_anchors"]:
                 self.assertIn(anchor, verifier)
 
-    def test_active_qualifications_prove_composite_broken_start(self) -> None:
+    def test_active_qualifications_prove_composite_semantic_start(self) -> None:
         sequences = json.loads((ROOT / "data/workflow-task-sequences.json").read_text())["sequences"]
         for sequence in sequences:
             if sequence.get("status") != "active":
                 continue
             qualification = json.loads((ROOT / sequence["qualification_path"]).read_text())
             self.assertTrue(qualification["composite_seed_merge_zero"])
-            self.assertTrue(qualification["composite_seeded_verifiers_nonzero"])
+            self.assertTrue(qualification["composite_seed_compile_outcomes_valid"])
             self.assertEqual(
-                set(qualification["composite_seed_verifier_exits"].values()),
-                {1},
-                "seeded tasks must fail acceptance, not collection or infrastructure",
+                set(qualification["composite_seed_verifier_exits"]),
+                {task["id"] for task in sequence["tasks"]},
+            )
+            self.assertTrue(
+                all(code in {0, 1} for code in qualification["composite_seed_verifier_exits"].values()),
+                "seeded tasks must record compiler pass/fail, not collection or infrastructure failures",
             )
             self.assertTrue(qualification["full_fixed_cumulative_verifier_zero"])
             self.assertTrue(qualification["fixed_snapshot_model_concealed_paths_safe"])
@@ -2009,22 +2013,24 @@ class VerifierContractTest(unittest.TestCase):
         self.assertIn("Preserve all previously repaired behavior", prompt)
         self.assertIn("Do not stop after syntax checks", prompt)
 
-    def test_active_prompts_name_visible_compile_contracts(self) -> None:
+    def test_active_prompts_describe_software_objectives_not_controller_scoring(self) -> None:
         for sequence_id in runner.active_sequence_ids():
             sequence = runner.load_sequence(sequence_id)
             for task in sequence["tasks"]:
                 prompt = (ROOT / task["prompt_path"]).read_text()
-                self.assertIn(task["compile_command"], prompt, task["id"])
+                self.assertNotIn(task["compile_command"], prompt, task["id"])
                 self.assertIn("Search and inspect the repository as needed", prompt, task["id"])
-                self.assertIn("Compilation is the only acceptance gate", prompt, task["id"])
+                self.assertIn("Implement the task completely and correctly", prompt, task["id"])
+                self.assertNotIn("acceptance gate", prompt, task["id"])
+                self.assertNotIn("pass/fail", prompt, task["id"])
 
-    def test_all_active_prompts_explain_compile_acceptance_without_inaccessible_claims(self) -> None:
+    def test_all_active_prompts_avoid_inaccessible_controller_claims(self) -> None:
         for sequence_id in runner.active_sequence_ids():
             for task in runner.load_sequence(sequence_id)["tasks"]:
                 prompt = (ROOT / task["prompt_path"]).read_text()
-                self.assertRegex(prompt.lower(), r"compilation|compile", task["id"])
                 self.assertNotIn("Use the fixture verifier", prompt, task["id"])
                 self.assertNotIn("seeded with the regression", prompt, task["id"])
+                self.assertNotIn("controller-only", prompt, task["id"])
 
     def test_schema_requires_composite_v0_delivery(self) -> None:
         schema = json.loads((ROOT / "schemas/workflow-session-record.schema.json").read_text())
@@ -2236,17 +2242,18 @@ class VerifierContractTest(unittest.TestCase):
             changed = runner.baseline_protocol_fingerprint(sequence)
         self.assertNotEqual(original, changed)
 
-    def test_active_task_prompts_withhold_solution_recipes_and_bind_compile_commands(self) -> None:
+    def test_active_task_prompts_withhold_solution_recipes_and_controller_scoring(self) -> None:
         for sequence_id in runner.active_sequence_ids():
             sequence = runner.load_sequence(sequence_id)
             for index, task in enumerate(sorted(sequence["tasks"], key=lambda item: int(item["order"]))):
                 source = (ROOT / task["prompt_path"]).read_text()
                 self.assertNotIn("## Implementation recipe", source, task["id"])
                 self.assertNotIn("exact command block", source, task["id"])
-                self.assertIn(task["compile_command"], source, task["id"])
+                self.assertNotIn(task["compile_command"], source, task["id"])
+                self.assertIn("Implement the task completely and correctly", source, task["id"])
                 rendered = runner.render_task_prompt(sequence, "baseline-bare-codex", int(task["order"]), source, first_task=index == 0)
                 self.assertIn("Search and inspect the repository as needed", rendered, task["id"])
-                self.assertIn(task["compile_command"], rendered, task["id"])
+                self.assertNotIn(task["compile_command"], rendered, task["id"])
 
     def test_execution_integrity_preserves_pass_through_command_hits(self) -> None:
         hits = [{"tool": "lowfat", "command": "unknown-command"}]
@@ -2320,12 +2327,12 @@ class ActiveAcceptanceContractTest(unittest.TestCase):
             sequence = runner.load_sequence(sequence_id)
             self.assertEqual(sequence["acceptance_design"], "compile-only")
             qualification = json.loads((ROOT / sequence["qualification_path"]).read_text())
-            self.assertEqual(qualification["acceptance_visibility"], "model-visible-compile-only")
+            self.assertEqual(qualification["acceptance_visibility"], "controller-only-compile-policy")
             records = {item["task_id"]: item for item in qualification["tasks"]}
             for task in sequence["tasks"]:
                 patch_path = ROOT / Path(task["prompt_path"]).parent / "seed-regression.patch"
                 production = [path for path in validate_repository.patch_paths(patch_path) if validate_repository.is_production_path(path)]
-                self.assertGreaterEqual(len(set(production)), 2, task["id"])
+                self.assertGreaterEqual(len(set(production)), 1, task["id"])
                 self.assertEqual(records[task["id"]]["production_files"], production)
                 self.assertEqual(records[task["id"]]["controller_visible_acceptance_assets"], [])
                 self.assertEqual(records[task["id"]]["model_concealed_paths"], [])
@@ -3642,7 +3649,7 @@ class MatrixLifecycleContractTest(unittest.TestCase):
             )
             self.assertTrue((destination / "sources/evaluations/audits/retained-audit.json").is_file())
 
-    def test_current_replication_rejects_parallel_paid_plan_before_lane_root(self) -> None:
+    def test_v5_replication_rejects_before_parallel_plan_or_lane_root(self) -> None:
         with published_unoccupied_probe_worktree() as probe:
             result = subprocess.run(
                 [
@@ -3662,7 +3669,7 @@ class MatrixLifecycleContractTest(unittest.TestCase):
                 check=False,
             )
         self.assertNotEqual(result.returncode, 0)
-        self.assertIn("requires --max-parallel 1", result.stderr + result.stdout)
+        self.assertIn("Baseline V5 replicate 1 requires explicit authority", result.stderr + result.stdout)
 
     def test_paid_launch_checkout_gate_requires_clean_published_head(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
@@ -4698,6 +4705,34 @@ class CorrectionContractTest(unittest.TestCase):
 
 
 class BaselineV5CompileOnlyContractTest(unittest.TestCase):
+    def test_internal_compile_policy_is_not_model_facing(self) -> None:
+        document = json.loads((ROOT / "data/workflow-task-sequences.json").read_text())
+        sequences = [item for item in document["sequences"] if item["status"] == "active"]
+        forbidden = (
+            "compile-only",
+            "only acceptance gate",
+            "sole pass/fail gate",
+            "diagnostics only",
+            "do not determine pass/fail",
+            "stop when the command exits 0",
+        )
+        for sequence in sequences:
+            for task in sequence["tasks"]:
+                prompt = (ROOT / task["prompt_path"]).read_text()
+                rendered = runner.render_task_prompt(
+                    sequence,
+                    "baseline-bare-codex",
+                    int(task["order"]),
+                    prompt,
+                    first_task=int(task["order"]) == 1,
+                )
+                for marker in forbidden:
+                    self.assertNotIn(marker, prompt.lower(), (task["id"], marker))
+                    self.assertNotIn(marker, rendered.lower(), (task["id"], marker))
+                self.assertNotIn(task["compile_command"], prompt, task["id"])
+                self.assertEqual(task["acceptance_visibility"], "controller-only-compile-policy")
+                self.assertEqual(task["model_visible_validation_anchors"], [])
+
     def test_active_sequences_use_searchable_compile_only_tasks(self) -> None:
         document = json.loads((ROOT / "data/workflow-task-sequences.json").read_text())
         sequences = [item for item in document["sequences"] if item["status"] == "active"]
@@ -4709,6 +4744,7 @@ class BaselineV5CompileOnlyContractTest(unittest.TestCase):
                 sequence["acceptance_policy"],
                 {
                     "gate": "affected-component-compilation",
+                    "visibility": "controller-only",
                     "quality_diagnostics_gate": False,
                     "tests_required": False,
                     "source_review_required": False,
@@ -4730,25 +4766,26 @@ class BaselineV5CompileOnlyContractTest(unittest.TestCase):
                 verifier = (ROOT / task["verifier_command"]).read_text()
                 compile_command = task["compile_command"]
 
-                self.assertIn("Baseline V5", prompt)
-                self.assertIn("Search and inspect the repository as needed.", prompt)
-                self.assertIn("Compilation is the only acceptance gate.", prompt)
-                self.assertIn(compile_command, prompt)
+                self.assertIn("Search and inspect the repository as needed", prompt)
+                self.assertIn("Implement the task completely and correctly", prompt)
+                self.assertNotIn(compile_command, prompt)
                 self.assertIn(compile_command, verifier)
+                self.assertNotIn("acceptance gate", prompt)
+                self.assertNotIn("pass/fail", prompt)
                 self.assertNotIn("Run only the exact command block", prompt)
                 self.assertNotIn("Do not inspect, search", prompt)
                 self.assertNotIn("Do not discover or redesign", prompt)
                 self.assertNotIn("Only `", prompt)
-                self.assertEqual(task["acceptance_visibility"], "model-visible-compile-only")
+                self.assertEqual(task["acceptance_visibility"], "controller-only-compile-policy")
                 self.assertEqual(task["model_visible_acceptance_asset_paths"], [])
-                self.assertEqual(task["model_visible_validation_anchors"], [compile_command])
+                self.assertEqual(task["model_visible_validation_anchors"], [])
                 self.assertEqual(task["upstream_test_paths"], [])
                 self.assertEqual(task["compatibility_rebased_test_paths"], [])
                 self.assertEqual(task["model_concealed_paths"], [])
-                self.assertGreaterEqual(len(task["expected_changed_paths"]), 2)
-                self.assertLessEqual(len(task["expected_changed_paths"]), 3)
+                self.assertGreaterEqual(len(task["expected_changed_paths"]), 1)
+                self.assertLessEqual(len(task["expected_changed_paths"]), 2)
                 self.assertFalse((task_dir / "controller-visible").exists())
-                self.assertIn("compile-only acceptance", verifier)
+                self.assertIn("Controller-only Baseline V5 compilation assessment", verifier)
 
                 production_paths = [
                     path
@@ -4758,8 +4795,8 @@ class BaselineV5CompileOnlyContractTest(unittest.TestCase):
                     if validate_repository.is_production_path(path)
                 ]
                 self.assertEqual(sorted(production_paths), sorted(task["expected_changed_paths"]))
-                self.assertGreaterEqual(len(production_paths), 2)
-                self.assertLessEqual(len(production_paths), 3)
+                self.assertGreaterEqual(len(production_paths), 1)
+                self.assertLessEqual(len(production_paths), 2)
 
     def test_project_compile_result_is_structured_and_fail_closed(self) -> None:
         sequence = runner.load_sequence("fastify-lifecycle-sequence-v0")
@@ -4790,26 +4827,27 @@ class BaselineV3LowComplexityContractTest(unittest.TestCase):
             self.assertEqual(gate["status"], "provider-pilot-required")
             for task in sequence["tasks"]:
                 self.assertIn("/baseline-v5/", task["prompt_path"])
-                self.assertEqual(task["acceptance_visibility"], "model-visible-compile-only")
+                self.assertEqual(task["acceptance_visibility"], "controller-only-compile-policy")
                 self.assertEqual(task["model_visible_acceptance_asset_paths"], [])
                 self.assertEqual(task["model_concealed_paths"], [])
-                self.assertEqual(task["model_visible_validation_anchors"], [task["compile_command"]])
+                self.assertEqual(task["model_visible_validation_anchors"], [])
 
-    def test_v5_prompts_bind_portable_compile_commands(self) -> None:
+    def test_v5_prompts_bind_normal_engineering_objectives(self) -> None:
         document = json.loads((ROOT / "data/workflow-task-sequences.json").read_text())
         for sequence in document["sequences"]:
             for task in sequence["tasks"]:
                 prompt = (ROOT / task["prompt_path"]).read_text()
                 verifier = (ROOT / task["verifier_command"]).read_text()
-                self.assertEqual(prompt.count("```bash"), 1, task["id"])
-                self.assertEqual(prompt.count("```"), 2, task["id"])
-                self.assertIn("Stop when the command exits 0", prompt, task["id"])
-                self.assertIn(task["compile_command"], prompt, task["id"])
+                self.assertEqual(prompt.count("```bash"), 0, task["id"])
+                self.assertEqual(prompt.count("```"), 0, task["id"])
+                self.assertNotIn("Stop when the command exits 0", prompt, task["id"])
+                self.assertNotIn(task["compile_command"], prompt, task["id"])
                 self.assertIn(task["compile_command"], verifier, task["id"])
                 rendered = runner.render_task_prompt(sequence, "baseline-bare-codex", int(task["order"]), prompt, first_task=int(task["order"]) == 1)
                 self.assertIn("Search and inspect the repository as needed", rendered, task["id"])
-                if sequence["fixture_id"] == "medium-beetbox-beets": self.assertIn("uv run --offline --frozen", prompt)
-                if sequence["fixture_id"] == "large-hashicorp-terraform": self.assertIn("GOTOOLCHAIN=auto", prompt)
+                self.assertIn("Complete the requested software change correctly", rendered, task["id"])
+                self.assertNotIn("acceptance gate", rendered, task["id"])
+                self.assertNotIn("diagnostics only", rendered, task["id"])
 
     def test_active_fixture_setup_and_reset_pin_the_sequence_snapshot(self) -> None:
         document = json.loads((ROOT / "data/workflow-task-sequences.json").read_text())
@@ -4842,20 +4880,20 @@ class BaselineV3LowComplexityContractTest(unittest.TestCase):
             self.assertIn("not authorized", reason)
         self.assertIn("Paid pilot execution is not authorized", runbook)
 
-    def test_provider_free_v3_qualifications_pass_every_boundary(self) -> None:
+    def test_provider_free_v5_qualifications_pass_every_required_boundary(self) -> None:
         document = json.loads((ROOT / "data/workflow-task-sequences.json").read_text())
         for sequence in document["sequences"]:
             qualification = json.loads((ROOT / sequence["qualification_path"]).read_text())
             for key in (
                 "composite_seed_merge_zero",
-                "composite_seeded_verifiers_nonzero",
-                "seeded_verifier_nonzero",
+                "seeded_compile_outcomes_valid",
+                "composite_seed_compile_outcomes_valid",
                 "fixed_verifier_zero",
                 "full_fixed_cumulative_verifier_zero",
                 "no_unmerged_paths",
             ):
                 self.assertIs(qualification[key], True, (sequence["id"], key))
-            self.assertTrue(all(task["production_file_count"] <= 3 for task in qualification["tasks"]))
+            self.assertTrue(all(task["production_file_count"] <= 2 for task in qualification["tasks"]))
 
     def test_v3_audit_records_all_nine_literal_prompt_command_rehearsals(self) -> None:
         audit = json.loads(
@@ -5820,67 +5858,32 @@ class BaselineV3LowComplexityContractTest(unittest.TestCase):
                     ):
                         runner.load_beets_r3_replacement_authority(root)
 
-    def test_real_matrix_paid_branch_rejects_mutated_authority_before_lane_root(self) -> None:
-        probe_context = published_unoccupied_probe_worktree()
-        probe = probe_context.__enter__()
-        authority_path = probe / runner.BASELINE_REPLICATION_AUTHORITY_REL
-        original_bytes = authority_path.read_bytes()
-        original = json.loads(original_bytes)
-        mutations = {
-            "serialization_required": lambda doc: doc.__setitem__("serialization_required", False),
-            "allowed_paid_baseline_runs": lambda doc: doc.__setitem__("allowed_paid_baseline_runs", 7),
-            "allowed_model_turns": lambda doc: doc.__setitem__("allowed_model_turns", 19),
-            "first_valid_sample_policy": lambda doc: doc.__setitem__("first_valid_sample_policy", False),
-            "rerun_after_attempt_receipt": lambda doc: doc.__setitem__("rerun_after_attempt_receipt", True),
-            "provider_calls": lambda doc: doc.__setitem__("provider_calls", 1),
-            "provider_tokens": lambda doc: doc.__setitem__("provider_tokens", 1),
-            "indexes_true": lambda doc: doc.__setitem__("authorized_replicate_indexes", [True, 2]),
-            "indexes_false": lambda doc: doc.__setitem__("authorized_replicate_indexes", [False, 2]),
-            "indexes_float": lambda doc: doc.__setitem__("authorized_replicate_indexes", [1.0, 2]),
-            "indexes_string": lambda doc: doc.__setitem__("authorized_replicate_indexes", ["1", 2]),
-            "indexes_null": lambda doc: doc.__setitem__("authorized_replicate_indexes", [None, 2]),
-            "sibling_sequence": lambda doc: doc["sequences"][0].__setitem__("sequence_id", "wrong-sequence"),
-            "sibling_generation": lambda doc: doc["sequences"][0].__setitem__("task_family_generation", "baseline-v999"),
-            "sibling_protocol_path": lambda doc: doc["sequences"][0].__setitem__("protocol_path", "sources/evaluations/protocols/wrong.json"),
-            "sibling_protocol_sha": lambda doc: doc["sequences"][0].__setitem__("protocol_sha256", "0" * 64),
-            "sibling_pool": lambda doc: doc["sequences"][0].__setitem__("baseline_pool_fingerprint", "000000000000"),
-        }
-        try:
-            for field, mutate in mutations.items():
-                with self.subTest(field=field), tempfile.TemporaryDirectory() as tmp:
-                    changed = copy.deepcopy(original)
-                    mutate(changed)
-                    authority_path.write_text(json.dumps(changed, indent=2) + "\n")
-                    lane_root = Path(tmp) / "lanes"
-                    result = subprocess.run(
-                        [
-                            sys.executable,
-                            "scripts/run_sequential_workflow_matrix.py",
-                            "beets-lifecycle-sequence-v0",
-                            "--replicate-index", "1",
-                            "--max-parallel", "1",
-                            "--workflow-model-condition-id", "codex-openai-gpt-5-6-sol-high",
-                            "--workflow-model", "gpt-5.6-sol",
-                            "--workflow-reasoning-effort", "high",
-                            "--lane-root", str(lane_root),
-                            "--dry-run",
-                        ],
-                        cwd=probe,
-                        text=True,
-                        capture_output=True,
-                        check=False,
-                    )
-                    self.assertNotEqual(result.returncode, 0, field)
-                    self.assertRegex(
-                        result.stderr + result.stdout,
-                        "invalid authorization, scope, budget, model, or policy|stale nested binding",
-                    )
-                    self.assertFalse(lane_root.exists())
-        finally:
-            authority_path.write_bytes(original_bytes)
-            probe_context.__exit__(None, None, None)
+    def test_real_matrix_v5_rejects_replication_before_historical_authority_or_lane_root(self) -> None:
+        with published_unoccupied_probe_worktree() as probe, tempfile.TemporaryDirectory() as tmp:
+            lane_root = Path(tmp) / "lanes"
+            result = subprocess.run(
+                [
+                    sys.executable,
+                    "scripts/run_sequential_workflow_matrix.py",
+                    "beets-lifecycle-sequence-v0",
+                    "--replicate-index", "1",
+                    "--max-parallel", "1",
+                    "--workflow-model-condition-id", "codex-openai-gpt-5-6-sol-high",
+                    "--workflow-model", "gpt-5.6-sol",
+                    "--workflow-reasoning-effort", "high",
+                    "--lane-root", str(lane_root),
+                    "--dry-run",
+                ],
+                cwd=probe,
+                text=True,
+                capture_output=True,
+                check=False,
+            )
+            self.assertNotEqual(result.returncode, 0)
+            self.assertIn("Baseline V5 replicate 1 requires explicit authority", result.stderr + result.stdout)
+            self.assertFalse(lane_root.exists())
 
-    def test_matrix_rejects_unapproved_model_before_lane_root_or_receipt(self) -> None:
+    def test_v5_replication_rejects_before_unapproved_model_or_lane_root(self) -> None:
         with published_unoccupied_probe_worktree() as probe:
             result = subprocess.run(
                 [
@@ -5900,7 +5903,7 @@ class BaselineV3LowComplexityContractTest(unittest.TestCase):
                 check=False,
             )
         self.assertNotEqual(result.returncode, 0)
-        self.assertIn("launch model does not match", result.stderr + result.stdout)
+        self.assertIn("Baseline V5 replicate 1 requires explicit authority", result.stderr + result.stdout)
 
     def test_retired_replication_authority_does_not_authorize_v5(self) -> None:
         self.assertTrue((ROOT / runner.BASELINE_REPLICATION_AUTHORITY_REL).is_file())
@@ -6888,9 +6891,13 @@ with tempfile.TemporaryDirectory(dir=runner.ROOT / 'sources/evaluations/protocol
         for sequence in document["sequences"]:
             record = json.loads((ROOT / sequence["qualification_path"]).read_text())
             self.assertEqual(record["task_family_generation"], "baseline-v5")
-            self.assertEqual(record["acceptance_visibility"], "model-visible-compile-only")
+            self.assertEqual(record["acceptance_visibility"], "controller-only-compile-policy")
             self.assertIs(record["no_model_visible_acceptance_assets"], True)
-            self.assertIs(record["all_acceptance_behavior_model_visible"], True)
+            self.assertIs(record["controller_compile_policy_not_model_facing"], True)
+            self.assertIs(record["all_acceptance_behavior_model_visible"], False)
+            self.assertIs(record["seeded_compile_outcomes_valid"], True)
+            self.assertIs(record["composite_seed_compile_outcomes_valid"], True)
+            self.assertTrue(all(code in {0, 1} for code in record["composite_seed_verifier_exits"].values()))
             self.assertIs(record["model_visible_acceptance_assets_match_verifier_copies"], True)
             self.assertIs(record["no_model_concealed_acceptance_assets"], True)
             self.assertEqual(record["expected_model_visible_acceptance_asset_count"], 0)

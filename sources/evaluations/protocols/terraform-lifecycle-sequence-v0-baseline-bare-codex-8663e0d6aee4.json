@@ -1,6 +1,6 @@
 {
   "protocol_schema_version": 3,
-  "protocol_id": "terraform-lifecycle-sequence-v0-baseline-bare-codex-96b34681a42a",
+  "protocol_id": "terraform-lifecycle-sequence-v0-baseline-bare-codex-8663e0d6aee4",
   "status": "frozen-ready-not-run",
   "outcome": "Frozen baseline-bare-codex protocol for terraform-lifecycle-sequence-v0; no provider/model run has occurred.",
   "frozen_at": "2026-08-01",
@@ -13,7 +13,7 @@
     "repository": "https://github.com/hashicorp/terraform.git",
     "snapshot": "e02391ad384c9c38f1d7f40b853c0d2297348094",
     "qualification_path": "sources/evaluations/fixtures/large/hashicorp-terraform/qualification-lifecycle-v0-baseline-v5.json",
-    "qualification_sha256": "a2cc3888b42f9bcd61ea8b846f6f325540950ed744734cc143a855b4abcd9ce7",
+    "qualification_sha256": "0e82050714fa57edb1d4a46ff7bd7629164bbdd5f10d2e2bd96dd87c5afde373",
     "timeout_seconds_per_task": 3600
   },
   "baseline": {
@@ -23,7 +23,7 @@
     "model": "gpt-5.6-sol",
     "model_condition_id": "codex-openai-gpt-5-6-sol-high",
     "reasoning_effort": "high",
-    "command": "python3 scripts/run_codex_workflow_model_condition.py --workflow-model-condition-id codex-openai-gpt-5-6-sol-high --workflow-model gpt-5.6-sol --workflow-reasoning-effort high --sequence-id terraform-lifecycle-sequence-v0 --profile-id baseline-bare-codex --timeout-per-task 3600 --protocol sources/evaluations/protocols/terraform-lifecycle-sequence-v0-baseline-bare-codex-96b34681a42a.json --docker-image token-eval-codex:latest"
+    "command": "python3 scripts/run_codex_workflow_model_condition.py --workflow-model-condition-id codex-openai-gpt-5-6-sol-high --workflow-model gpt-5.6-sol --workflow-reasoning-effort high --sequence-id terraform-lifecycle-sequence-v0 --profile-id baseline-bare-codex --timeout-per-task 3600 --protocol sources/evaluations/protocols/terraform-lifecycle-sequence-v0-baseline-bare-codex-8663e0d6aee4.json --docker-image token-eval-codex:latest"
   },
   "comparison_baseline": {
     "profile_id": "baseline-bare-codex",
@@ -32,7 +32,7 @@
     "model": "gpt-5.6-sol",
     "model_condition_id": "codex-openai-gpt-5-6-sol-high",
     "reasoning_effort": "high",
-    "command": "python3 scripts/run_codex_workflow_model_condition.py --workflow-model-condition-id codex-openai-gpt-5-6-sol-high --workflow-model gpt-5.6-sol --workflow-reasoning-effort high --sequence-id terraform-lifecycle-sequence-v0 --profile-id baseline-bare-codex --timeout-per-task 3600 --protocol sources/evaluations/protocols/terraform-lifecycle-sequence-v0-baseline-bare-codex-96b34681a42a.json --docker-image token-eval-codex:latest"
+    "command": "python3 scripts/run_codex_workflow_model_condition.py --workflow-model-condition-id codex-openai-gpt-5-6-sol-high --workflow-model gpt-5.6-sol --workflow-reasoning-effort high --sequence-id terraform-lifecycle-sequence-v0 --profile-id baseline-bare-codex --timeout-per-task 3600 --protocol sources/evaluations/protocols/terraform-lifecycle-sequence-v0-baseline-bare-codex-8663e0d6aee4.json --docker-image token-eval-codex:latest"
   },
   "treatment": {},
   "token_accounting_boundary": {
@@ -47,14 +47,14 @@
   },
   "baseline_pool": {
     "protocol_version": "baseline-pool-v1",
-    "protocol_fingerprint": "4d56ba4d926e",
+    "protocol_fingerprint": "f6234781c7b8",
     "descriptor": {
       "version": "baseline-pool-v1",
       "task_family_generation": "baseline-v5",
       "runner_contract_version": "workflow-runner-v10",
-      "runner_sha256": "98ba54de7e88b12edf75890184e69f3842bc4fab985c5c7b08ec80c5dcf02eaa",
-      "qualification_generator_sha256": "53864b470ca258f8ee756a609c30b7e93e5043a16cafa260744a35f21dfb5171",
-      "validator_sha256": "e6520a6840b44bf9b6e19ab8ed9977a03e41b23ec97fce413dbc4a0ca390f2f9",
+      "runner_sha256": "8b8dae910394a3c5828ddd28b2227c0f41bfe8492642139a14b4087e5797933c",
+      "qualification_generator_sha256": "bb0a05a2c1d11b6e2bdc4212b10360a8c41d3e18cedd86dfcde21ee452f775e5",
+      "validator_sha256": "bff2c3798008b3fd966ab3d084d77481ec76b5dbb25c898fbbc8d4e2b9baa621",
       "sequence_id": "terraform-lifecycle-sequence-v0",
       "sequence_contract": "feature-refactor-review",
       "fixture_id": "large-hashicorp-terraform",
@@ -74,6 +74,7 @@
       "acceptance_design": "compile-only",
       "acceptance_policy": {
         "gate": "affected-component-compilation",
+        "visibility": "controller-only",
         "quality_diagnostics_gate": false,
         "tests_required": false,
         "source_review_required": false
@@ -85,14 +86,13 @@
           "order": 1,
           "task_class": "feature-implementation",
           "prompt_path": "sources/evaluations/fixtures/large/hashicorp-terraform/task-generations/baseline-v5/terraform-lifecycle-feature-v0/agent-prompt.txt",
-          "prompt_sha256": "fe169b3ac6f982edfc6878a62fb4bfbeb9772da9bf3a2324760b5d9a4ca68791",
-          "seed_patch_sha256": "7bd00a983aaa2aa0b176a6aa98cb1b5e8d7dd0a55d5a3b6a9a3ec1f543f9c1b7",
+          "prompt_sha256": "77442d96dce398e8656fa236b7f08d3943581b1726ef242fda2ea917d1392d2b",
+          "seed_patch_sha256": "e74faf9367021fd35a66155f001377671ab4e18345eb30739ab3af8e1ff92e04",
           "verifier_command": "sources/evaluations/fixtures/large/hashicorp-terraform/task-generations/baseline-v5/terraform-lifecycle-feature-v0/verify.sh",
-          "verifier_sha256": "3087c4ec772fab7cea455654699dfaca1d3b475b5583a83e73ab75865c47934c",
+          "verifier_sha256": "f3b31ac54850ff02a646c30eae5e67cacb15a181f72fe105bff67b88d4434680",
           "compile_command": "export PATH=/opt/data/bin:/opt/data/opt/go/bin:$PATH; GOTOOLCHAIN=auto go test -run '^$' ./internal/policy/callback",
-          "acceptance_visibility": "model-visible-compile-only",
+          "acceptance_visibility": "controller-only-compile-policy",
           "expected_changed_paths": [
-            "internal/policy/callback/callback.go",
             "internal/policy/callback/server.go"
           ],
           "controller_visible_acceptance_assets": [],
@@ -106,15 +106,14 @@
           "order": 2,
           "task_class": "behavior-preserving-refactor",
           "prompt_path": "sources/evaluations/fixtures/large/hashicorp-terraform/task-generations/baseline-v5/terraform-lifecycle-refactor-v0/agent-prompt.txt",
-          "prompt_sha256": "905e7692fce49ef669d84a2bedef876616da9d7cb2d267e0ebe0b2904ee3ef15",
-          "seed_patch_sha256": "34b415049a7218886cc3e090fbd35304e9be2601cc682397c98f3d051950ff01",
+          "prompt_sha256": "2a8d2f0610ce93483c35b9d05f3e93eca1e579bfa0f049bd70f04ca70f286327",
+          "seed_patch_sha256": "b2b4e19476620a6579c435c7b898cca97fe036b4a6d3d54f08080a3dad5699ce",
           "verifier_command": "sources/evaluations/fixtures/large/hashicorp-terraform/task-generations/baseline-v5/terraform-lifecycle-refactor-v0/verify.sh",
-          "verifier_sha256": "7003b8763c06f9677f3ce024ff270a1aad491bc5eeeddc70033b2d1b9497324f",
+          "verifier_sha256": "c5ff5527b5d2f6670bb3bda427bcbf35cb885a47545981cd162cec5ae709cbb3",
           "compile_command": "export PATH=/opt/data/bin:/opt/data/opt/go/bin:$PATH; GOTOOLCHAIN=auto go test -run '^$' ./internal/configs",
-          "acceptance_visibility": "model-visible-compile-only",
+          "acceptance_visibility": "controller-only-compile-policy",
           "expected_changed_paths": [
-            "internal/configs/state_migrate_file.go",
-            "internal/configs/state_store.go"
+            "internal/configs/state_migrate_file.go"
           ],
           "controller_visible_acceptance_assets": [],
           "upstream_test_paths": [],
@@ -127,14 +126,13 @@
           "order": 3,
           "task_class": "code-review-correction",
           "prompt_path": "sources/evaluations/fixtures/large/hashicorp-terraform/task-generations/baseline-v5/terraform-lifecycle-review-v0/agent-prompt.txt",
-          "prompt_sha256": "e21ff438172536f3d2ac4fe34fb85248e823070b6502438ce4dad2c3159f9495",
-          "seed_patch_sha256": "bb4dfd50f9334f9d4fe8076ac54c6c2cca42a6b8c35f728fd6aa607a32550f07",
+          "prompt_sha256": "f5f624794bcd45304d247ff5cd08fce294127565179a6428ad2b671974129cb4",
+          "seed_patch_sha256": "9820e02bdbf682b7e5559e42ba8bf3799d4f22018d31cb8cd1621223c371cfcd",
           "verifier_command": "sources/evaluations/fixtures/large/hashicorp-terraform/task-generations/baseline-v5/terraform-lifecycle-review-v0/verify.sh",
-          "verifier_sha256": "e6670ca295354310e808950ba0cb63afcd9e294a74fc10516877d61404d854c1",
+          "verifier_sha256": "a54cdf89c1ffa2a6450bf97f164a80b7dc9a9d5a40ea9166bf31325b12c7a502",
           "compile_command": "export PATH=/opt/data/bin:/opt/data/opt/go/bin:$PATH; GOTOOLCHAIN=auto go test -run '^$' ./internal/addrs",
-          "acceptance_visibility": "model-visible-compile-only",
+          "acceptance_visibility": "controller-only-compile-policy",
           "expected_changed_paths": [
-            "internal/addrs/check.go",
             "internal/addrs/checkable.go"
           ],
           "controller_visible_acceptance_assets": [],
@@ -143,7 +141,7 @@
           "expected_model_concealed_paths": [],
           "model_concealed_paths": [],
           "review_patch_path": "review-change.patch",
-          "review_patch_sha256": "bb4dfd50f9334f9d4fe8076ac54c6c2cca42a6b8c35f728fd6aa607a32550f07"
+          "review_patch_sha256": "9820e02bdbf682b7e5559e42ba8bf3799d4f22018d31cb8cd1621223c371cfcd"
         }
       ],
       "model_facing_prompts": {
@@ -153,23 +151,23 @@
           {
             "task_id": "terraform-lifecycle-feature-v0",
             "order": 1,
-            "rendered_prompt_sha256": "86434acbcc38dd7419a1ac36912ef937e0809dfef5e3017865c3236b963f4b27"
+            "rendered_prompt_sha256": "28f33d5f86c69e07e331ed00237c7824860845b567ed3bf72e862deba3a15c38"
           },
           {
             "task_id": "terraform-lifecycle-refactor-v0",
             "order": 2,
-            "rendered_prompt_sha256": "8bdf75bb0898188a1b8f6c033139cd4522ddde8ab94828f0bf51978d00ef5a0a"
+            "rendered_prompt_sha256": "37a85c6aa3cf175d446a7f6cf1298649c07c31610dd2e29812b2b6eec641b23b"
           },
           {
             "task_id": "terraform-lifecycle-review-v0",
             "order": 3,
-            "rendered_prompt_sha256": "9d372da1d15ae6fc10069e498b5b343694cb6141a4bcb759fdb0623437780d34"
+            "rendered_prompt_sha256": "2d6305834d64af730dadf64048cdc6b9d1d7b610080bd304815792025bf5b75f"
           }
         ]
       },
       "qualification": {
         "path": "sources/evaluations/fixtures/large/hashicorp-terraform/qualification-lifecycle-v0-baseline-v5.json",
-        "sha256": "a2cc3888b42f9bcd61ea8b846f6f325540950ed744734cc143a855b4abcd9ce7"
+        "sha256": "0e82050714fa57edb1d4a46ff7bd7629164bbdd5f10d2e2bd96dd87c5afde373"
       },
       "baseline_profile": {
         "profile_id": "baseline-bare-codex",
@@ -230,6 +228,7 @@
         "acceptance_design": "compile-only",
         "acceptance_policy": {
           "gate": "affected-component-compilation",
+          "visibility": "controller-only",
           "quality_diagnostics_gate": false,
           "tests_required": false,
           "source_review_required": false
@@ -255,7 +254,7 @@
     }
   },
   "selected_execution": {
-    "descriptor_sha256": "2ad1d0e2da63b4912e587b9c931c3044221c42012bf167349f0853c7f5e37662",
+    "descriptor_sha256": "67ad01fb9ebf92af0a26c27baa2d809b985b206bb2da28b4c1e6eb9b3ad63228",
     "descriptor": {
       "version": "execution-condition-v1",
       "sequence_id": "terraform-lifecycle-sequence-v0",
@@ -330,17 +329,17 @@
           {
             "task_id": "terraform-lifecycle-feature-v0",
             "order": 1,
-            "rendered_prompt_sha256": "86434acbcc38dd7419a1ac36912ef937e0809dfef5e3017865c3236b963f4b27"
+            "rendered_prompt_sha256": "28f33d5f86c69e07e331ed00237c7824860845b567ed3bf72e862deba3a15c38"
           },
           {
             "task_id": "terraform-lifecycle-refactor-v0",
             "order": 2,
-            "rendered_prompt_sha256": "8bdf75bb0898188a1b8f6c033139cd4522ddde8ab94828f0bf51978d00ef5a0a"
+            "rendered_prompt_sha256": "37a85c6aa3cf175d446a7f6cf1298649c07c31610dd2e29812b2b6eec641b23b"
           },
           {
             "task_id": "terraform-lifecycle-review-v0",
             "order": 3,
-            "rendered_prompt_sha256": "9d372da1d15ae6fc10069e498b5b343694cb6141a4bcb759fdb0623437780d34"
+            "rendered_prompt_sha256": "2d6305834d64af730dadf64048cdc6b9d1d7b610080bd304815792025bf5b75f"
           }
         ]
       },
@@ -420,7 +419,7 @@
       },
       "baseline_pool_reference": {
         "protocol_version": "baseline-pool-v1",
-        "protocol_fingerprint": "4d56ba4d926e",
+        "protocol_fingerprint": "f6234781c7b8",
         "comparison_policy": "paired baseline and treatment must share this baseline pool fingerprint and replicate"
       },
       "model_condition_override": {
