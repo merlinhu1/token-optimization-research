@@ -92,7 +92,7 @@ def parse_codex_exec_args(args: list[str]) -> CompatArgs:
         if item == "--model":
             model, index = _value_after(args, index, item)
             continue
-        if item == "-c":
+        if item in {"-c", "--config"}:
             value, index = _value_after(args, index, item)
             if value.startswith("model_reasoning_effort="):
                 variant = value.split("=", 1)[1].strip().strip('"').strip("'")

@@ -67,8 +67,8 @@ class OpenCodeWorkflowAdapterTest(unittest.TestCase):
     def test_parses_first_and_resume_codex_exec_shapes(self) -> None:
         first = adapter.parse_codex_exec_args(
             [
-                "exec", "--model", "gpt-5.6-sol", "-c", 'model_reasoning_effort="high"',
-                "--strict-config", "-c", 'web_search="disabled"', "--json", "--color", "never",
+                "exec", "--model", "gpt-5.6-sol", "--config", 'model_reasoning_effort="high"',
+                "--strict-config", "--config", 'web_search="disabled"', "--json", "--color", "never",
                 "--disable", "hooks", "--ignore-rules", "--cd", "/workspace/repo",
                 "--output-last-message", "/workspace/output.txt", "-",
             ]
