@@ -49,7 +49,10 @@ LEGACY_RUN_ACCEPTANCE_MISMATCH_SESSION_IDS = {
 def provider_usage_valid(usage: object, *, allow_legacy_null_cache_write: bool = False) -> bool:
     if (
         not isinstance(usage, dict)
-        or usage.get("measurement_source") != "codex-jsonl-usage-events"
+        or usage.get("measurement_source") not in {
+            "codex-jsonl-usage-events",
+            "opencode-jsonl-step-finish-usage",
+        }
         or not set(PROVIDER_USAGE_FIELDS).issubset(usage)
     ):
         return False
@@ -449,7 +452,14 @@ EVALUATION_RECORD_TYPES = {"run", "paired_comparison", "aggregate_summary"}
 EVALUATION_RUN_ROLES = {"baseline", "individual_tool_treatment", "stack_treatment", "replacement_runtime", "audit_only"}
 EVALUATION_STATUSES = {"planned", "running", "completed", "failed", "excluded", "superseded"}
 WORKFLOW_EVIDENCE_TYPES = {"workflow-simulation", "workflow-ablation", "sanity-check"}
-WORKFLOW_SESSION_ROLES = {"baseline", "individual_tool_treatment", "stack_treatment", "ablation", "sanity_check"}
+WORKFLOW_SESSION_ROLES = {
+    "baseline",
+    "individual_tool_treatment",
+    "stack_treatment",
+    "replacement_runtime",
+    "ablation",
+    "sanity_check",
+}
 SHA256_RE = re.compile(r"^[a-f0-9]{64}$")
 DOCKER_IMAGE_ID_RE = re.compile(r"^sha256:[a-f0-9]{64}$")
 REPO_DIGEST_RE = re.compile(r"^.+@sha256:[a-f0-9]{64}$")
