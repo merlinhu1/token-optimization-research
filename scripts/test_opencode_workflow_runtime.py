@@ -210,6 +210,12 @@ class OpenCodeWorkflowIntegrationContractTest(unittest.TestCase):
         self.assertEqual(cfg["default_tool_state"], "native-runtime")
         self.assertEqual(cfg["preflight_command"][-1], "--probe")
         self.assertEqual(meta["tool_use_policy"], "none")
+        profile_catalog = json.loads((ROOT / "data/evaluation-profiles.json").read_text())
+        profile = next(item for item in profile_catalog["profiles"] if item["id"] == self.PROFILE_ID)
+        self.assertEqual(
+            repository_validation.expected_workflow_session_role(self.PROFILE_ID, profile),
+            "replacement_runtime",
+        )
 
     def test_registry_binds_opencode_runtime_and_sol_high_condition(self) -> None:
         registry = json.loads((ROOT / "data/evaluation-agent-runtimes.json").read_text())
@@ -299,7 +305,15 @@ class OpenCodeWorkflowIntegrationContractTest(unittest.TestCase):
         )
         self.assertEqual(proc.returncode, 0, proc.stderr)
         plan = json.loads(proc.stdout)
-        self.assertEqual(len(plan["jobs"]), 3)
+        registry = json.loads((ROOT / "data/workflow-sessions.json").read_text())
+        occupied = {
+            item.get("task_sequence", {}).get("sequence_id")
+            for item in registry.get("sessions", [])
+            if item.get("profile", {}).get("profile_id") == self.PROFILE_ID
+            and item.get("replicate_index") == 0
+            and item.get("agent", {}).get("model_condition_id") == self.CONDITION_ID
+        }
+        self.assertEqual(len(plan["jobs"]), 3 - len(occupied))
 
     def test_runtime_profile_prompt_is_native_runtime_not_token_tool_guidance(self) -> None:
         guidance = runner.profile_prompt_guidance(self.PROFILE_ID)
