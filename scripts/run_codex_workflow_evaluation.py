@@ -296,12 +296,19 @@ def _json_hash(value: Any) -> str:
     return hashlib.sha256(json.dumps(value, sort_keys=True, separators=(",", ":")).encode()).hexdigest()
 
 
-def profile_registry_entry(profile_id: str, root: Path = ROOT) -> dict[str, Any]:
+def profile_catalog_entry(profile_id: str, root: Path = ROOT) -> dict[str, Any]:
     catalog = json.loads((root / "data/evaluation-profiles.json").read_text())
     for profile in catalog.get("profiles", []):
         if profile.get("id") == profile_id:
             return profile
     raise KeyError(f"workflow profile {profile_id} is missing from data/evaluation-profiles.json")
+
+
+def profile_registry_entry(profile_id: str, root: Path = ROOT) -> dict[str, Any]:
+    entry = dict(profile_catalog_entry(profile_id, root))
+    # Reporting labels must not alter frozen execution/profile identity.
+    entry.pop("artifact_slug", None)
+    return entry
 
 
 def profile_runtime_id(profile_id: str, root: Path = ROOT) -> str:
@@ -1996,31 +2003,12 @@ def artifact_lane_label(project_id: str) -> str:
     return project_id.rsplit("-", 1)[-1]
 
 
-def artifact_profile_label(profile_id: str) -> str:
-    explicit = {
-        "codescope-owner": "codescope",
-        "swarmvault-owner": "swarmvault",
-        "stack-tokenjuice-jcodemunch-mcp": "tokenjuice-jcodemunch",
-        "terminal-tokenjuice-codex-hook-v1": "tokenjuice",
-        "terminal-rtk-codex-instructions-v1": "rtk",
-        "terminal-snip-codex-hook-v1": "snip",
-        "retrieval-graphify-codex-skill-v1": "graphify",
-        "retrieval-codegraph-codex-mcp-v1": "codegraph",
-        "integrated-leanctx-codex-hybrid-v1": "leanctx",
-        "retrieval-cartog-codex-product-v2": "cartog-product",
-        "codescope-codex-product-v1": "codescope",
-        "swarmvault-codex-product-v1": "swarmvault",
-        "retrieval-serena-codex-mcp-v1": "serena",
-        "retrieval-sigmap-codex-live-v1": "sigmap",
-        "integrated-token-savior-mcp-v1": "token-savior",
-        "integrated-token-savior-codex-product-v2": "token-savior",
-        "artifact-ponytail-codex-plugin-v1": "ponytail",
-        "behavior-caveman-codex-skill-v1": "caveman",
-        "retrieval-jcodemunch-codex-mcp-v2": "jcodemunch",
-    }
-    if profile_id == "baseline-bare-codex":
-        return "baseline"
-    return explicit.get(profile_id, safe_profile_key(profile_id).rsplit("-", 1)[-1])
+def artifact_profile_label(profile_id: str, root: Path = ROOT) -> str:
+    profile = profile_catalog_entry(profile_id, root)
+    slug = profile.get("artifact_slug")
+    if not isinstance(slug, str) or re.fullmatch(r"[a-z0-9]+(?:-[a-z0-9]+)*", slug) is None:
+        raise ValueError(f"workflow profile {profile_id} is missing a valid explicit artifact_slug")
+    return slug
 
 
 def canonical_baseline_session_id(project_id: str, replicate_index: int, protocol_fingerprint: str = "unfrozen", *, run_date: str = DATE) -> str:

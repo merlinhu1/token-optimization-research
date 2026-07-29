@@ -81,6 +81,7 @@ Code surface:
 - scripts/audit_tool_isolation.py
 - scripts/extract_codex_usage.py
 - scripts/extract_opencode_usage.py
+- scripts/generate_current_evaluation_panel.py
 - scripts/generate_workflow_qualification.py
 - scripts/install_cartog_codex_product.py
 - scripts/install_jcodemunch_codex_guidance.py
