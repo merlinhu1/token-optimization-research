@@ -587,6 +587,11 @@ def probe(
     return 0 if models.returncode == 0 and result["model_available"] else 1
 
 
+def validate_non_json_stdout(treatment: str, lines: list[str]) -> None:
+    if lines and treatment != "headroom":
+        raise ValueError(f"OpenCode emitted non-JSON stdout in JSON mode: {lines[:3]}")
+
+
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(add_help=False)
     parser.add_argument("--opencode-binary", type=Path, default=DEFAULT_OPENCODE_BINARY)
@@ -663,10 +668,7 @@ def main(argv: list[str] | None = None) -> int:
         for event in events:
             print(json.dumps({"type": "opencode.event", "event": event}, ensure_ascii=False))
         return proc.returncode
-    if non_json:
-        if known.treatment != "headroom":
-            raise ValueError(f"OpenCode emitted non-JSON stdout in JSON mode: {non_json[:3]}")
-        sys.stderr.write("\n".join(non_json) + "\n")
+    validate_non_json_stdout(known.treatment, non_json)
     result = normalize_events(
         events,
         requested_session_id=parsed.session_id,
