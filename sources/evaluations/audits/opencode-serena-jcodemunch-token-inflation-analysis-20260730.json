@@ -1,0 +1,135 @@
+{
+  "schema_version": 1,
+  "audit_id": "opencode-serena-jcodemunch-token-inflation-analysis-20260730",
+  "date": "2026-07-30",
+  "status": "evidence-reconciled-awaiting-independent-cross-check",
+  "question": "Why did Serena and jCodemunch use substantially more provider tokens than their matched bare OpenCode controls?",
+  "accounting": {
+    "weighted_formula": "fresh_input + 0.1 * cached_input + 6 * output",
+    "reasoning_policy": "reasoning is a subset of output and is not added again",
+    "measurement_source": "opencode-jsonl-step-finish-usage"
+  },
+  "serena": {
+    "profile_id": "retrieval-serena-opencode-mcp-v1",
+    "replicate_index": 0,
+    "matched_baseline": {
+      "fresh_input_tokens": 32851,
+      "cached_input_tokens": 86528,
+      "output_tokens": 2989,
+      "raw_provider_tokens": 122368,
+      "weighted_units": 59437.8
+    },
+    "treatment": {
+      "fresh_input_tokens": 53799,
+      "cached_input_tokens": 205824,
+      "output_tokens": 4011,
+      "raw_provider_tokens": 263634,
+      "weighted_units": 98447.4,
+      "raw_delta_percent": 115.44,
+      "weighted_delta_percent": 65.63
+    },
+    "absolute_delta": {
+      "fresh_input_tokens": 20948,
+      "cached_input_tokens": 119296,
+      "output_tokens": 1022,
+      "raw_provider_tokens": 141266,
+      "weighted_units": 39009.6
+    },
+    "raw_delta_composition_percent": {
+      "fresh_input": 14.83,
+      "cached_input": 84.45,
+      "output": 0.72
+    },
+    "observed_mechanism": {
+      "mcp_tool_schemas_exposed_per_lane": 22,
+      "bare_steps_per_lane": 6,
+      "serena_steps_per_lane": 7,
+      "product_calls": 3,
+      "product_call_name": "serena_initial_instructions",
+      "product_calls_per_lane": 1,
+      "instruction_output_chars_by_lane": [7553, 7545, 7549],
+      "ordinary_bash_calls_per_lane": 3,
+      "first_step_fresh_input_tokens_by_lane": [9746, 9713, 9746],
+      "matched_bare_first_step_fresh_input_tokens_by_lane": [5497, 5464, 5497],
+      "later_cache_read_range_tokens": [8704, 13824],
+      "matched_bare_later_cache_read_range_tokens": [4608, 7680]
+    },
+    "finding": "Serena paid for 22 MCP tool schemas on every provider request and added one extra model step per lane to call `serena_initial_instructions`. Each call returned about 7.55k characters that entered subsequent context. The model then used ordinary bash rather than Serena's symbolic retrieval tools. The inflation is therefore primarily repeated input-context overhead plus the extra instructions turn, not unusually long model output.",
+    "confidence": "high for observed decomposition and behavior; causal shares between schema text and other fixed system context are not separately identified"
+  },
+  "jcodemunch": {
+    "profile_id": "retrieval-jcodemunch-opencode-product-v1",
+    "replicate_index": 1,
+    "matched_baseline": {
+      "fresh_input_tokens": 39995,
+      "cached_input_tokens": 79872,
+      "output_tokens": 3127,
+      "raw_provider_tokens": 122994,
+      "weighted_units": 66744.2
+    },
+    "treatment": {
+      "fresh_input_tokens": 87032,
+      "cached_input_tokens": 358912,
+      "output_tokens": 3086,
+      "raw_provider_tokens": 449030,
+      "weighted_units": 141439.2,
+      "raw_delta_percent": 265.08,
+      "weighted_delta_percent": 111.91
+    },
+    "absolute_delta": {
+      "fresh_input_tokens": 47037,
+      "cached_input_tokens": 279040,
+      "output_tokens": -41,
+      "raw_provider_tokens": 326036,
+      "weighted_units": 74695.0
+    },
+    "raw_delta_composition_percent": {
+      "fresh_input": 14.43,
+      "cached_input": 85.59,
+      "output": -0.01
+    },
+    "observed_mechanism": {
+      "mcp_tool_schemas_exposed_per_lane": 89,
+      "installed_product_guidance_chars": 6156,
+      "installed_product_guidance_words": 915,
+      "bare_steps_per_lane": 6,
+      "jcodemunch_steps_per_lane": 6,
+      "product_calls": 0,
+      "ordinary_bash_calls_per_lane": 3,
+      "first_step_fresh_input_tokens_by_lane": [23624, 23591, 23624],
+      "matched_bare_first_step_fresh_input_tokens_by_lane": [5500, 5467, 5500],
+      "later_cache_read_range_tokens": [23040, 25088],
+      "matched_bare_later_cache_read_range_tokens": [4608, 7680]
+    },
+    "finding": "jCodemunch exposed an 89-tool MCP catalog and installed 6,156 characters of product-authored guidance. The model issued no jCodemunch calls and used the same six provider steps and three ordinary bash calls per lane as bare OpenCode. Output was actually 41 tokens lower than baseline. The excess is therefore fixed tool-schema/guidance context repeatedly processed and cache-read without natural product uptake.",
+    "confidence": "high for observed decomposition and behavior; the exact split between 89 tool schemas, guidance, and other fixed context is not separately identified"
+  },
+  "cross_tool_conclusion": {
+    "raw_inflation_primary_component": "cached input",
+    "serena_cached_share_of_raw_delta_percent": 84.45,
+    "jcodemunch_cached_share_of_raw_delta_percent": 85.59,
+    "output_length_primary_cause": false,
+    "quality_explanation": "All 18 task verifiers across these six treatment sessions passed, so verifier failure or retry loops do not explain the token increase.",
+    "scope": "single-replicate descriptive mechanism analysis; not a population estimate"
+  },
+  "evidence": {
+    "registry": "data/workflow-sessions.json",
+    "serena_session_prefixes": [
+      "serena-opencode-fastify-20260729-p-bb0e89ed9794-r0",
+      "serena-opencode-beets-20260729-p-fcc8438d2077-r0",
+      "serena-opencode-terraform-20260729-p-5811b463c1e9-r0"
+    ],
+    "jcodemunch_session_prefixes": [
+      "jcodemunch-opencode-v1-fastify-20260730-p-bb0e89ed9794-r1",
+      "jcodemunch-opencode-v1-beets-20260730-p-fcc8438d2077-r1",
+      "jcodemunch-opencode-v1-terraform-20260730-p-5811b463c1e9-r1"
+    ],
+    "compact_members_used": [
+      "provider-usage.json",
+      "codex-events.jsonl",
+      "mcp-handshake.json",
+      "task-prompts/task-01.md",
+      "tool-host-integration.json"
+    ]
+  }
+}
