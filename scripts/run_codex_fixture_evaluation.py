@@ -42,6 +42,7 @@ OPENCODE_ADAPTER = Path("/opt/data/tool-candidates/opencode-adapter/opencode_wor
 OPENCODE_ADAPTER_V2 = Path("/opt/data/tool-candidates/opencode-adapter-v2/opencode_workflow_adapter.py")
 OPENCODE_ADAPTER_V3 = Path("/opt/data/tool-candidates/opencode-adapter-v3/opencode_workflow_adapter.py")
 OPENCODE_ADAPTER_V4 = Path("/opt/data/tool-candidates/opencode-adapter-v4/opencode_workflow_adapter.py")
+OPENCODE_ADAPTER_V5 = Path("/opt/data/tool-candidates/opencode-adapter-v5/opencode_workflow_adapter.py")
 FORBIDDEN_BASELINE_TERMS = [
     "lean-ctx",
     "mcp_lean_ctx",
@@ -1721,7 +1722,7 @@ TOOL_CONFIGS.update(
             surface="opencode-mcp+project-rules+native-plugin+skill",
             allowed_terms=["swarmvault"],
             mounts=[str(SWARMVAULT_ROOT)],
-            adapter_path=OPENCODE_ADAPTER_V4,
+            adapter_path=OPENCODE_ADAPTER_V5,
             path_entries=[str(NODE_TOOLCHAIN_ROOT / "bin")],
             env={
                 "SWARMVAULT_OUT": "{tool_data_dir}/vault",
@@ -1760,7 +1761,7 @@ TOOL_CONFIGS.update(
             artifact_identities=[
                 {"path": str(SWARMVAULT_CLI), "sha256": "a61088ae9ceba5af3e0c0c5be12a214d5ab23ed2d5292d662723f84f72d7818c", "kind": "compiled-cli-mcp"},
                 {"path": str(SWARMVAULT_ROOT / "packages/engine/dist/hooks/opencode.js"), "sha256": "492ee1ff509698aac8c76dc9736f11aaf35da1b3134cb5d5f743856aa1bb7416", "kind": "native-plugin-source"},
-                {"path": str(OPENCODE_ADAPTER_V4), "sha256": "e3c6e77fc22ae12a6548ee3ad92836d58c2db411ceae7c3743c370c469e6bbf7", "kind": "runtime-adapter"},
+                {"path": str(OPENCODE_ADAPTER_V5), "sha256": "4fe90a1a85dfe47db5f5637c4cfdb07c89384b598d2c274ed0af080f3ae42352", "kind": "runtime-adapter"},
             ],
             post_install_artifacts=[
                 {"path": "{repo}/.opencode/plugins/swarmvault-graph-first.js", "sha256": "492ee1ff509698aac8c76dc9736f11aaf35da1b3134cb5d5f743856aa1bb7416", "retain_as": "swarmvault-installed-plugin.js"},
@@ -1778,7 +1779,7 @@ TOOL_CONFIGS.update(
             surface="opencode-project-skill+rules+native-pretool-plugin+warm-graph",
             allowed_terms=["graphify", "graphify-mcp"],
             mounts=[str(GRAPHIFY_ROOT), str(GRAPHIFY_WHEEL)],
-            adapter_path=OPENCODE_ADAPTER_V4,
+            adapter_path=OPENCODE_ADAPTER_V5,
             path_entries=["{tool_data_dir}/venv/bin"],
             env={"OPENCODE_EVALUATION_DIRECTORY": "{repo}"},
             host_integration={
@@ -1807,7 +1808,7 @@ TOOL_CONFIGS.update(
             },
             artifact_identities=[
                 {"path": str(GRAPHIFY_WHEEL), "sha256": "9c3b01b3e7745ee67149fab54af91e4dbe4743ee9632fc3ab29de62830ca1802", "kind": "python-wheel"},
-                {"path": str(OPENCODE_ADAPTER_V4), "sha256": "e3c6e77fc22ae12a6548ee3ad92836d58c2db411ceae7c3743c370c469e6bbf7", "kind": "runtime-adapter"},
+                {"path": str(OPENCODE_ADAPTER_V5), "sha256": "4fe90a1a85dfe47db5f5637c4cfdb07c89384b598d2c274ed0af080f3ae42352", "kind": "runtime-adapter"},
             ],
             post_install_artifacts=[
                 {"path": "{repo}/.opencode/plugins/graphify.js", "sha256": "b025b1d64b905d48cf6188392d003be971f9933e8f893d22f671c5f2428ecddb", "retain_as": "graphify-installed-plugin.js"},
