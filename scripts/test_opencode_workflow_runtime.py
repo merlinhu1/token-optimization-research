@@ -390,6 +390,19 @@ class OpenCodeWorkflowIntegrationContractTest(unittest.TestCase):
             model_condition=condition,
         )
         self.assertEqual(command[1], "scripts/run_opencode_workflow_model_condition.py")
+        self.assertNotIn("--comparison-profile-id", command)
+
+    def test_matrix_plans_a_missing_opencode_control_as_the_runtime_profile(self) -> None:
+        jobs = matrix.plan_workflow_jobs(
+            ["fastify-lifecycle-sequence-v0"],
+            ["context-dcp-opencode-plugin-v1"],
+            baseline_state=lambda _sequence: "missing",
+            profile_state=lambda _sequence, _profile: "missing",
+            baseline_run_gate=lambda _sequence: (True, "authorized"),
+            treatment_gate=lambda _sequence: (True, "qualified"),
+            baseline_profile_id=self.PROFILE_ID,
+        )
+        self.assertEqual(jobs, [("fastify-lifecycle-sequence-v0", self.PROFILE_ID)])
 
     def test_matrix_dry_run_resolves_published_codex_baselines_after_runtime_binding(self) -> None:
         proc = subprocess.run(
