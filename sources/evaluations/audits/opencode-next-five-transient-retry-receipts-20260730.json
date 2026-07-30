@@ -2,7 +2,7 @@
   "schema_version": 1,
   "audit_id": "opencode-next-five-transient-retry-receipts-20260730",
   "date": "2026-07-30",
-  "status": "graphify-terraform-retry-required",
+  "status": "completed",
   "incidents": [
     {
       "kind": "provider-overload",
@@ -48,8 +48,14 @@
       "evidence_bundle_sha256": "17de6b12560797ba02ad145e3afd498c489419c758a46fdea0eaadde25cbf083",
       "accepted": false,
       "provider_usage_counted": false,
-      "resolution": "The first valid Terraform SwarmVault session from the same matrix was retained. Publish it, delete duplicate/rejected lane state, recheck disk, and retry only Terraform Graphify."
+      "resolution": "The first valid Terraform SwarmVault session from the same matrix was retained. Duplicate/rejected lane state was deleted, 5.6 GB free space was confirmed, and a one-profile Terraform Graphify retry completed successfully without changing protocol, model, task, or treatment identity."
     }
   ],
-  "preservation_policy": "Retain first valid Fastify, Beets, and Terraform samples; never rerun accepted assignments. Retry only the missing Terraform Graphify assignment with the same published protocol, model condition, replicate, and bare OpenCode baseline."
+  "final_resolution": {
+    "accepted_session_id": "graphify-opencode-v1-terraform-20260730-p-5811b463c1e9-r1",
+    "campaign_sessions_accepted": 18,
+    "campaign_tasks_accepted": 54,
+    "invalid_or_rejected_provider_usage_counted": false
+  },
+  "preservation_policy": "First valid Fastify, Beets, and Terraform samples were retained; no accepted assignment was rerun. Only missing assignments were retried with the same published protocol, model condition, replicate, and bare OpenCode baseline."
 }
