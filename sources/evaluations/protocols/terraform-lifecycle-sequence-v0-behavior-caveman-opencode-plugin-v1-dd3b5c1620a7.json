@@ -1,10 +1,10 @@
 {
   "protocol_schema_version": 3,
-  "protocol_id": "terraform-lifecycle-sequence-v0-retrieval-jcodemunch-opencode-product-v1-685cc6070ec9",
+  "protocol_id": "terraform-lifecycle-sequence-v0-behavior-caveman-opencode-plugin-v1-dd3b5c1620a7",
   "status": "frozen-ready-not-run",
-  "outcome": "Frozen retrieval-jcodemunch-opencode-product-v1 protocol for terraform-lifecycle-sequence-v0; no provider/model run has occurred.",
+  "outcome": "Frozen behavior-caveman-opencode-plugin-v1 protocol for terraform-lifecycle-sequence-v0; no provider/model run has occurred.",
   "frozen_at": "2026-07-22",
-  "hypothesis": "retrieval-jcodemunch-opencode-product-v1 produces reproducible provider-reported token and software-quality evidence for terraform-lifecycle-sequence-v0",
+  "hypothesis": "behavior-caveman-opencode-plugin-v1 produces reproducible provider-reported token and software-quality evidence for terraform-lifecycle-sequence-v0",
   "evidence_stage_target": "reproduction",
   "task_fixture": {
     "fixture_id": "large-hashicorp-terraform",
@@ -35,13 +35,13 @@
     "selection_policy": "sequence-pool-replicate-matched-first-valid"
   },
   "treatment": {
-    "profile_id": "retrieval-jcodemunch-opencode-product-v1",
+    "profile_id": "behavior-caveman-opencode-plugin-v1",
     "runtime_id": "opencode-cli",
     "provider": "openai",
     "model": "gpt-5.6-sol",
     "model_condition_id": "opencode-openai-gpt-5-6-sol-high",
     "reasoning_effort": "high",
-    "command": "python3 scripts/run_opencode_workflow_model_condition.py --workflow-model-condition-id opencode-openai-gpt-5-6-sol-high --workflow-model gpt-5.6-sol --workflow-reasoning-effort high --sequence-id terraform-lifecycle-sequence-v0 --profile-id retrieval-jcodemunch-opencode-product-v1 --timeout-per-task 3600 --protocol sources/evaluations/protocols/terraform-lifecycle-sequence-v0-retrieval-jcodemunch-opencode-product-v1-685cc6070ec9.json --docker-image token-eval-codex:latest"
+    "command": "python3 scripts/run_opencode_workflow_model_condition.py --workflow-model-condition-id opencode-openai-gpt-5-6-sol-high --workflow-model gpt-5.6-sol --workflow-reasoning-effort high --sequence-id terraform-lifecycle-sequence-v0 --profile-id behavior-caveman-opencode-plugin-v1 --timeout-per-task 3600 --protocol sources/evaluations/protocols/terraform-lifecycle-sequence-v0-behavior-caveman-opencode-plugin-v1-dd3b5c1620a7.json --docker-image token-eval-codex:latest"
   },
   "token_accounting_boundary": {
     "fields": [
@@ -249,27 +249,26 @@
     }
   },
   "selected_execution": {
-    "descriptor_sha256": "27574e0a8086c6825ba5de84dae26df3c34ef1d7893276070c391b238398634d",
+    "descriptor_sha256": "27cdc58dfb0e8d2c067ba86164c69e333e0a4711d9333e3944bad36cf20f6a22",
     "descriptor": {
       "version": "execution-condition-v1",
       "sequence_id": "terraform-lifecycle-sequence-v0",
       "execution_role": "individual_tool_treatment",
       "selected_profile": {
-        "profile_id": "retrieval-jcodemunch-opencode-product-v1",
+        "profile_id": "behavior-caveman-opencode-plugin-v1",
         "profile_type": "individual_tool",
         "component_ids": [
-          "retrieval-jcodemunch-opencode-product-v1"
+          "behavior-caveman-opencode-plugin-v1"
         ],
         "enabled_surfaces": [
-          "retrieval-context",
-          "opencode-mcp",
-          "product-authored-guidance",
-          "warm-index"
+          "opencode-plugin",
+          "prompt-reinforcement",
+          "product-authored-init"
         ],
         "disabled_overlaps": [
           "all unlisted surfaces"
         ],
-        "registry_entry_sha256": "628385c602ac995b9696b17613c6cb0e34df97a347de64d2cd3d33b46ccf6d69",
+        "registry_entry_sha256": "ef6344ec420ee21c58361c5f02ecc03b9301598be1353d4fa1169d38719b909b",
         "registry_entry": {
           "profile_type": "individual_tool",
           "objective_scope": "individual_tool_effectiveness",
@@ -290,40 +289,39 @@
           "reset": {
             "policy": "Delete lane-private OpenCode XDG directories, product state, generated repository treatment files, auth translation, and background processes after evidence capture."
           },
-          "id": "retrieval-jcodemunch-opencode-product-v1",
-          "name": "jCodemunch OpenCode MCP product V1",
+          "id": "behavior-caveman-opencode-plugin-v1",
+          "name": "Caveman OpenCode plugin and guidance V1",
           "enabled_surfaces": [
-            "retrieval-context",
-            "opencode-mcp",
-            "product-authored-guidance",
-            "warm-index"
+            "opencode-plugin",
+            "prompt-reinforcement",
+            "product-authored-init"
           ],
           "components": [
             {
-              "component_id": "retrieval-jcodemunch-opencode-product-v1",
-              "surface": "retrieval-context+opencode-mcp+product-authored-guidance+warm-index",
+              "component_id": "behavior-caveman-opencode-plugin-v1",
+              "surface": "opencode-plugin+prompt-reinforcement+product-authored-init",
               "role": "individual_tool"
             }
           ],
           "install": {
-            "policy": "Install the pinned jCodemunch wheel into a lane-private uv environment, install verbatim product-authored guidance, build a lane-private index, register only its local MCP server in OpenCode, and require initialize plus tools/list."
+            "policy": "Run Caveman\u2019s pinned installer with the OpenCode target and product initialization enabled, then require the installed native plugin and repo guidance in the isolated lane."
           },
           "evaluation_protocol": {
             "tool_use_policy": "natural",
-            "tool_state": "warm-index+product-guidance",
-            "integration_state": "host-agnostic-mcp+product-guidance",
+            "tool_state": "active-native-plugin+per-session-guidance",
+            "integration_state": "official-opencode-plugin+product-init",
             "assignment_proof": "provider-free exact artifact identities, effective OpenCode configuration, native activation, warm state, and task/final verifiers required"
           },
           "source_snapshot": {
-            "repository": "jgravelle/jcodemunch-mcp",
-            "version": "1.108.114",
-            "source_commit": "fbc14e40c7057ebc6d718fb48083d30522afe15f",
-            "wheel_sha256": "9ae3a44c2be5709d33fa2b56c9e569906ed63906a907f89b4762a370d397ed54",
-            "guidance_sha256": "2026d09f4af85e972a5c4a9874d91bd8a8675ab7fbb44a283911fd06afd0abb2",
+            "repository": "JuliusBrussee/caveman",
+            "version": "0.1.0",
+            "source_commit": "0d95a81d35a9f2d123a5e9430d1cfc43d55f1bb0",
+            "plugin_sha256": "6d68e8dfe205354718729a5f5c9ca9d555a045af6b2cbbc3b6a84caad1076df7",
+            "package_sha256": "b603811ba72eb71581db5b02045fb5f8903e3c46dcf7b40f36eeb81fbba23274",
             "runtime_adapter": "/opt/data/tool-candidates/opencode-adapter-v6/opencode_workflow_adapter.py",
             "runtime_adapter_sha256": "1b98aaec34711b3a7bb09ce269c12bb06421ab08913d06593fb6d2c6641a34a3"
           },
-          "notes": "Second successive screen: jCodemunch has a universal host-install guide and an MCP server, so this is a host-agnostic OpenCode treatment rather than a prompt-only simulation."
+          "notes": "Second successive screen: Caveman\u2019s local installer exposes an explicit OpenCode target and writes the native plugin under the OpenCode XDG configuration surface."
         }
       },
       "model_facing_prompts": {
@@ -348,24 +346,22 @@
         ]
       },
       "tool_adapter": {
-        "tool_id": "jcodemunch-opencode-product-v1",
+        "tool_id": "caveman-opencode-plugin-v1",
         "tool_manifest": "scripts/run_codex_fixture_evaluation.py:TOOL_CONFIGS",
-        "tool_manifest_sha256": "a205cf4b44bf8cada40e03c5c863a5e4bf4d9de4facbb2a72ddf134509a5564d",
+        "tool_manifest_sha256": "92a6a165e81e8b0d4ec7fc3d35a726d521e1aaa9a8b1ed3598768a39548773cd",
         "tool_config": {
-          "display_name": "jCodemunch guide-faithful OpenCode MCP v1",
-          "lane_name": "retrieval-jcodemunch-opencode-product-v1",
-          "surface": "opencode-mcp+product-authored-guidance+warm-index",
+          "display_name": "Caveman official OpenCode plugin and guidance v1",
+          "lane_name": "behavior-caveman-opencode-plugin-v1",
+          "surface": "opencode-plugin+prompt-reinforcement+skills+commands",
           "allowed_terms": [
             "opencode",
-            "jcodemunch",
-            "jcodemunch-mcp"
+            "caveman",
+            "cavecrew"
           ],
-          "data_dir_name": "retrieval-jcodemunch-opencode-product-v1",
+          "data_dir_name": "behavior-caveman-opencode-plugin-v1",
           "mounts": [
             "/opt/data/tool-candidates/opencode-adapter-v6/opencode_workflow_adapter.py",
-            "/opt/data/tool-candidates/jcodemunch-mcp",
-            "/opt/data/tool-candidates/jcodemunch-mcp/dist/jcodemunch_mcp-1.108.114-py3-none-any.whl",
-            "{repository_root}/scripts/install_jcodemunch_opencode_guidance.py"
+            "/opt/data/tool-candidates/caveman"
           ],
           "executable": "/opt/data/tool-candidates/opencode-runtime/node_modules/opencode-ai/bin/opencode.exe",
           "expected_executable_sha256": "7c4d91c84d2bfdeabb59257e3490c5e5acb08f2aacb3e42f3ddc296a1c3f1aca",
@@ -379,7 +375,7 @@
               "--expected-opencode-sha256",
               "7c4d91c84d2bfdeabb59257e3490c5e5acb08f2aacb3e42f3ddc296a1c3f1aca",
               "--treatment",
-              "jcodemunch"
+              "caveman"
             ]
           },
           "preflight_command": [
@@ -390,89 +386,50 @@
             "--expected-opencode-sha256",
             "7c4d91c84d2bfdeabb59257e3490c5e5acb08f2aacb3e42f3ddc296a1c3f1aca",
             "--treatment",
-            "jcodemunch",
+            "caveman",
             "--probe"
           ],
           "tool_manifest_identity": "current-file-v1",
           "env": {
-            "OPENCODE_TOOL_DATA_DIR": "{tool_data_dir}",
-            "JCODEMUNCH_LOG_LEVEL": "ERROR"
+            "OPENCODE_TOOL_DATA_DIR": "{tool_data_dir}"
           },
-          "path_entries": [
-            "{tool_data_dir}/venv/bin"
-          ],
           "host_integration": {
             "install_commands": [
               [
-                "/opt/data/opt/uv/uv",
-                "venv",
-                "{tool_data_dir}/venv",
-                "--python",
-                "python3"
-              ],
-              [
-                "/opt/data/opt/uv/uv",
-                "pip",
-                "install",
-                "--python",
-                "{tool_data_dir}/venv/bin/python",
-                "/opt/data/tool-candidates/jcodemunch-mcp/dist/jcodemunch_mcp-1.108.114-py3-none-any.whl"
-              ],
-              [
-                "python3",
-                "{repository_root}/scripts/install_jcodemunch_opencode_guidance.py",
-                "--source-root",
-                "/opt/data/tool-candidates/jcodemunch-mcp",
-                "--expected-commit",
-                "fbc14e40c7057ebc6d718fb48083d30522afe15f",
-                "--repo",
-                "{repo}",
-                "--receipt",
-                "{tool_data_dir}/guidance-install.json"
+                "/opt/data/opt/node-v24.18.0-linux-x64/bin/node",
+                "/opt/data/tool-candidates/caveman/bin/install.js",
+                "--only",
+                "opencode",
+                "--with-init"
               ]
             ],
             "verify_commands": [
               [
-                "{tool_data_dir}/venv/bin/jcodemunch-mcp",
-                "--version"
+                "/opt/data/opt/node-v24.18.0-linux-x64/bin/node",
+                "/opt/data/tool-candidates/caveman/bin/install.js",
+                "--list"
               ]
             ],
             "required_files": [
-              "{tool_data_dir}/venv/bin/jcodemunch-mcp",
-              "{tool_data_dir}/guidance-install.json",
+              "{codex_home}/xdg-config/opencode/plugins/caveman/plugin.js",
               "{repo}/AGENTS.md"
             ],
-            "timeout_seconds": 900
+            "timeout_seconds": 600
           },
-          "mcp_server": "jcodemunch",
-          "mcp_command": "{tool_data_dir}/venv/bin/jcodemunch-mcp",
-          "mcp_args": [],
-          "mcp_handshake": {
+          "native_plugin": {
             "required": true,
-            "method": "initialize-and-tools-list",
-            "timeout_seconds": 120
-          },
-          "warmup": {
-            "kind": "product-native-code-index-build",
-            "command": [
-              "{tool_data_dir}/venv/bin/jcodemunch-mcp",
-              "index",
-              "{repo}"
-            ],
-            "output_name": "jcodemunch-warmup-output.txt",
-            "metadata_name": "jcodemunch-warmup-metadata.json",
-            "timeout_seconds": 1200
+            "path": "{codex_home}/xdg-config/opencode/plugins/caveman/plugin.js"
           },
           "artifact_identities": [
             {
-              "path": "/opt/data/tool-candidates/jcodemunch-mcp/dist/jcodemunch_mcp-1.108.114-py3-none-any.whl",
-              "sha256": "9ae3a44c2be5709d33fa2b56c9e569906ed63906a907f89b4762a370d397ed54",
-              "kind": "python-wheel"
+              "path": "/opt/data/tool-candidates/caveman/src/plugins/opencode/plugin.js",
+              "sha256": "6d68e8dfe205354718729a5f5c9ca9d555a045af6b2cbbc3b6a84caad1076df7",
+              "kind": "native-plugin-source"
             },
             {
-              "path": "/opt/data/tool-candidates/jcodemunch-mcp/AGENT_INSTALL_UNIVERSAL.md",
-              "sha256": "2026d09f4af85e972a5c4a9874d91bd8a8675ab7fbb44a283911fd06afd0abb2",
-              "kind": "product-guidance"
+              "path": "/opt/data/tool-candidates/caveman/src/plugins/opencode/package.json",
+              "sha256": "b603811ba72eb71581db5b02045fb5f8903e3c46dcf7b40f36eeb81fbba23274",
+              "kind": "native-plugin-package"
             },
             {
               "path": "/opt/data/tool-candidates/opencode-adapter-v6/opencode_workflow_adapter.py",
@@ -485,77 +442,64 @@
             "source": "adapter-probe"
           },
           "diff_exclude_paths": [
-            "AGENTS.md"
+            "AGENTS.md",
+            ".opencode"
           ],
-          "default_tool_state": "warm-index+product-guidance"
+          "default_tool_state": "active-native-plugin+per-session-guidance"
         },
-        "tool_config_sha256": "fa606d1fd85e5baaf5532777588732088dea917a3ec05560ea891c540387fb9d",
-        "tool_state": "warm-index+product-guidance",
+        "tool_config_sha256": "8e391de6848a9d69e337d80c6682cafeef4585417522c4c861a5ce42b74cbd86",
+        "tool_state": "active-native-plugin+per-session-guidance",
         "tool_use_policy": "natural",
         "command_identity": {
-          "kind": "mcp_command",
+          "kind": "codex_wrapper",
           "command": [
-            "{tool_data_dir}/venv/bin/jcodemunch-mcp"
+            "/usr/bin/python3",
+            "/opt/data/tool-candidates/opencode-adapter-v6/opencode_workflow_adapter.py",
+            "--opencode-binary",
+            "/opt/data/tool-candidates/opencode-runtime/node_modules/opencode-ai/bin/opencode.exe",
+            "--expected-opencode-sha256",
+            "7c4d91c84d2bfdeabb59257e3490c5e5acb08f2aacb3e42f3ddc296a1c3f1aca",
+            "--treatment",
+            "caveman"
           ]
         },
         "binary_identity": {
-          "kind": "generated-by-host-integration",
-          "command_template": "{tool_data_dir}/venv/bin/jcodemunch-mcp",
-          "install_commands": [
-            [
-              "/opt/data/opt/uv/uv",
-              "venv",
-              "{tool_data_dir}/venv",
-              "--python",
-              "python3"
+          "executable_token": "/usr/bin/python3",
+          "resolved_path": "/usr/bin/python3",
+          "realpath": "/usr/bin/python3.13",
+          "sha256": "4703a3d15898c0b5d81c3f939e93bdd8ca6116342093fb160ab1e01860dd7d8b",
+          "metadata": {
+            "size": 6812336,
+            "mode": "-rwxr-xr-x",
+            "uid": 0,
+            "gid": 0,
+            "mtime_ns": 1778015152000000000
+          },
+          "version": {
+            "command": [
+              "/usr/bin/python3.13",
+              "--version"
             ],
-            [
-              "/opt/data/opt/uv/uv",
-              "pip",
-              "install",
-              "--python",
-              "{tool_data_dir}/venv/bin/python",
-              "/opt/data/tool-candidates/jcodemunch-mcp/dist/jcodemunch_mcp-1.108.114-py3-none-any.whl"
-            ],
-            [
-              "python3",
-              "{repository_root}/scripts/install_jcodemunch_opencode_guidance.py",
-              "--source-root",
-              "/opt/data/tool-candidates/jcodemunch-mcp",
-              "--expected-commit",
-              "fbc14e40c7057ebc6d718fb48083d30522afe15f",
-              "--repo",
-              "{repo}",
-              "--receipt",
-              "{tool_data_dir}/guidance-install.json"
-            ]
-          ],
-          "install_contract_sha256": "b9b1d2d88f039b908b38ddea75e641b931a36f024014f3927e8c48ebd74b43c4"
+            "environment_path": "/opt/data/.local/bin:/opt/data/opt/go/bin:/opt/data/opt/uv:/opt/data/opt/node-v24.18.0-linux-x64/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+            "captured": true,
+            "exit_code": 0,
+            "output": "Python 3.13.5",
+            "truncated": false
+          }
         },
         "source_identity": [
           {
-            "path": "/opt/data/tool-candidates/jcodemunch-mcp",
+            "path": "/opt/data/tool-candidates/caveman",
             "exists": true,
             "kind": "directory",
-            "git_head": "fbc14e40c7057ebc6d718fb48083d30522afe15f"
-          },
-          {
-            "path": "/opt/data/tool-candidates/jcodemunch-mcp/dist/jcodemunch_mcp-1.108.114-py3-none-any.whl",
-            "exists": true,
-            "kind": "file",
-            "sha256": "9ae3a44c2be5709d33fa2b56c9e569906ed63906a907f89b4762a370d397ed54"
+            "git_head": "0d95a81d35a9f2d123a5e9430d1cfc43d55f1bb0",
+            "package_json_sha256": "3f9a34e4224efcad6e53a7cdef3c93869b77d932e2757c29fdaf0f63cfb2ad5f"
           },
           {
             "path": "/opt/data/tool-candidates/opencode-adapter-v6/opencode_workflow_adapter.py",
             "exists": true,
             "kind": "file",
             "sha256": "1b98aaec34711b3a7bb09ce269c12bb06421ab08913d06593fb6d2c6641a34a3"
-          },
-          {
-            "path": "{repository_root}/scripts/install_jcodemunch_opencode_guidance.py",
-            "exists": true,
-            "kind": "file",
-            "sha256": "f5f7ef11f3e1194210232bbcd1be4aa96a8d2eee6ac8b605867653800ec1c1c4"
           }
         ]
       },
@@ -574,7 +518,7 @@
         "dockerfile_path": "sources/evaluations/fixtures/container/Dockerfile",
         "dockerfile_sha256": "47c91967ce25014ce54879514f51d2ff0326651be1087209115eff4d358226b3",
         "fixture_runner_path": "scripts/run_codex_fixture_evaluation.py",
-        "fixture_runner_sha256": "a205cf4b44bf8cada40e03c5c863a5e4bf4d9de4facbb2a72ddf134509a5564d",
+        "fixture_runner_sha256": "92a6a165e81e8b0d4ec7fc3d35a726d521e1aaa9a8b1ed3598768a39548773cd",
         "mcp_probe_path": "scripts/probe_mcp_stdio.py",
         "mcp_probe_sha256": "7c06ea36ee5cac933a97140b84a41405fc99b45152388e8d7c6659136af698fd",
         "codex_entrypoint_path": "sources/evaluations/fixtures/container/codex-entrypoint.sh",
