@@ -1327,6 +1327,85 @@ def atomic_write_json(path: Path, data: Any) -> None:
         tmp.unlink(missing_ok=True)
 
 
+def merge_lifecycle_v1_replication_attempt_receipt(
+    checkout: Path,
+    expected: dict[str, Any],
+    replicate_index: int,
+) -> str | None:
+    """Retain an occupied Lifecycle V1 r1 identity even if later publication rolls back."""
+    sequence_id = expected.get("sequence_id")
+    if (
+        replicate_index != 1
+        or expected.get("profile_id") != "baseline-bare-codex"
+        or not isinstance(sequence_id, str)
+        or not sequence_id.endswith("-lifecycle-sequence-v1")
+    ):
+        return None
+    receipt_rel = (
+        Path(workflow.LIFECYCLE_V1_REPLICATION_ATTEMPT_DIR)
+        / f"{sequence_id.removesuffix('-lifecycle-sequence-v1')}-r1.json"
+    )
+    source = checkout / receipt_rel
+    if not nonsymlink_file_within(checkout, source):
+        raise UnsafeLaneOutputError("Lifecycle V1 r1 attempt receipt is missing, symlinked, escaped, or unsafe")
+    source_bytes = source.read_bytes()
+    try:
+        receipt = json.loads(source_bytes)
+    except (UnicodeDecodeError, json.JSONDecodeError) as exc:
+        raise ValueError(f"Lifecycle V1 r1 attempt receipt is unreadable: {exc}") from exc
+    frozen = receipt.get("frozen_protocol")
+    expected_frozen = expected.get("frozen_protocol")
+    selected = expected.get("selected_execution")
+    expected_keys = {
+        "schema_version", "attempt_status", "task_family_generation", "sequence_id", "replicate_index",
+        "profile_id", "model_condition_id", "model", "reasoning_effort", "orchestrator", "reserved_at",
+        "frozen_protocol", "baseline_pool_fingerprint", "provider_result", "immutable_identity_receipt",
+    }
+    receipt_is_exact = (
+        isinstance(receipt, dict)
+        and set(receipt) == expected_keys
+        and receipt.get("schema_version") == 1
+        and receipt.get("attempt_status") == "reserved-before-provider-task"
+        and receipt.get("task_family_generation") == "lifecycle-v1"
+        and receipt.get("sequence_id") == sequence_id
+        and receipt.get("replicate_index") == 1
+        and receipt.get("profile_id") == "baseline-bare-codex"
+        and receipt.get("model_condition_id") == "codex-openai-gpt-5-6-sol-high"
+        and receipt.get("model") == "gpt-5.6-sol"
+        and receipt.get("reasoning_effort") == "high"
+        and isinstance(receipt.get("orchestrator"), str)
+        and bool(receipt.get("orchestrator"))
+        and isinstance(receipt.get("reserved_at"), str)
+        and bool(receipt.get("reserved_at"))
+        and receipt.get("provider_result") is None
+        and receipt.get("immutable_identity_receipt") is True
+        and receipt.get("baseline_pool_fingerprint") == expected.get("baseline_pool_fingerprint")
+        and isinstance(frozen, dict)
+        and isinstance(expected_frozen, dict)
+        and frozen.get("protocol_id") == expected_frozen.get("protocol_id")
+        and frozen.get("path") == expected_frozen.get("path")
+        and frozen.get("sha256") == expected_frozen.get("sha256")
+        and frozen.get("baseline_pool_fingerprint") == expected.get("baseline_pool_fingerprint")
+        and isinstance(frozen.get("qualification_sha256"), str)
+        and len(frozen["qualification_sha256"]) == 64
+        and isinstance(selected, dict)
+        and frozen.get("selected_execution_sha256") == selected.get("descriptor_sha256")
+    )
+    if not receipt_is_exact:
+        raise ValueError("Lifecycle V1 r1 attempt receipt does not match its planned identity")
+    target = ROOT / receipt_rel
+    if target.exists():
+        if not nonsymlink_file_within(ROOT, target):
+            raise UnsafeLaneOutputError("existing Lifecycle V1 r1 attempt receipt is symlinked, escaped, or unsafe")
+        if target.read_bytes() != source_bytes:
+            raise FileExistsError(f"Lifecycle V1 r1 attempt receipt differs from retained identity: {receipt_rel}")
+    else:
+        if not ensure_nonsymlink_directory_ancestry(target.parent):
+            raise UnsafeLaneOutputError("Lifecycle V1 r1 attempt receipt parent is unsafe")
+        atomic_write_bytes(target, source_bytes)
+    return receipt_rel.as_posix()
+
+
 def merge_registry(sessions: list[dict[str, Any]]) -> None:
     path = ROOT / "data/workflow-sessions.json"
     doc = load_json(path)
@@ -1358,10 +1437,12 @@ def merge_lanes(
 ) -> dict[str, Any]:
     merged_sessions: list[dict[str, Any]] = []
     copied_artifacts: list[str] = []
+    copied_attempt_receipts: list[str] = []
     summary = transaction if transaction is not None else {}
     summary.update(
         merged_session_count=0,
         copied_artifact_count=0,
+        copied_attempt_receipts=copied_attempt_receipts,
         merged_session_ids=[],
         copied_artifacts=copied_artifacts,
         registry_replacement_attempted=False,
@@ -1371,6 +1452,23 @@ def merge_lanes(
     try:
         for result in lane_results:
             checkout = Path(result["checkout"])
+            try:
+                copied_receipt = merge_lifecycle_v1_replication_attempt_receipt(
+                    checkout,
+                    result["expected_session_binding"],
+                    replicate_index,
+                )
+            except BaseException:
+                lane_dir = result.get("lane_dir")
+                if isinstance(lane_dir, str) and Path(lane_dir).is_dir():
+                    retain_lane_checkout(
+                        Path(lane_dir),
+                        str(result.get("lane_id", result.get("sequence_id", "lane"))),
+                        "Lifecycle V1 r1 attempt-receipt ingress failed",
+                    )
+                raise
+            if copied_receipt is not None:
+                copied_attempt_receipts.append(copied_receipt)
             produced_session_ids = set(result.get("produced_session_ids", []))
             try:
                 sessions = lane_session_records(

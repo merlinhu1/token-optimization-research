@@ -4068,6 +4068,59 @@ class MatrixLifecycleContractTest(unittest.TestCase):
             self.assertFalse(artifact.exists())
             self.assertEqual(runbook.read_bytes(), b"original\n")
 
+    def test_lifecycle_v1_replication_receipt_survives_publication_rollback(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp) / "primary"
+            checkout = Path(tmp) / "lane"
+            expected = {
+                "sequence_id": "fastify-lifecycle-sequence-v1",
+                "profile_id": "baseline-bare-codex",
+                "replicate_index": 1,
+                "frozen_protocol": {
+                    "protocol_id": "unit-protocol",
+                    "path": "sources/evaluations/protocols/unit.json",
+                    "sha256": "a" * 64,
+                },
+                "baseline_pool_fingerprint": "unit-pool",
+                "selected_execution": {"descriptor_sha256": "b" * 64, "descriptor": {}},
+            }
+            receipt = {
+                "schema_version": 1,
+                "attempt_status": "reserved-before-provider-task",
+                "task_family_generation": "lifecycle-v1",
+                "sequence_id": expected["sequence_id"],
+                "replicate_index": 1,
+                "profile_id": "baseline-bare-codex",
+                "model_condition_id": "codex-openai-gpt-5-6-sol-high",
+                "model": "gpt-5.6-sol",
+                "reasoning_effort": "high",
+                "orchestrator": "direct-runner",
+                "reserved_at": "2026-08-02T00:00:00+00:00",
+                "frozen_protocol": {
+                    **expected["frozen_protocol"],
+                    "qualification_sha256": "c" * 64,
+                    "baseline_pool_fingerprint": "unit-pool",
+                    "selected_execution_sha256": "b" * 64,
+                },
+                "baseline_pool_fingerprint": "unit-pool",
+                "provider_result": None,
+                "immutable_identity_receipt": True,
+            }
+            source = checkout / "sources/evaluations/audits/lifecycle-v1-codex-sol-high-r1-attempts/fastify-r1.json"
+            source.parent.mkdir(parents=True)
+            source.write_text(json.dumps(receipt) + "\n")
+            registry = root / "data/workflow-sessions.json"
+            registry.parent.mkdir(parents=True)
+            before = b'{"sessions": []}\n'
+            registry.write_bytes(before)
+            with mock.patch.object(matrix, "ROOT", root):
+                copied = matrix.merge_lifecycle_v1_replication_attempt_receipt(checkout, expected, 1)
+                target = root / copied
+                self.assertEqual(target.read_bytes(), source.read_bytes())
+                matrix.rollback_matrix_publication(registry, before, {"copied_artifacts": []}, [], {})
+            self.assertTrue(target.is_file())
+            self.assertEqual(json.loads(target.read_text()), receipt)
+
     def test_partial_comparison_publication_is_tracked_for_rollback(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
