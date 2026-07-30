@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "audit_id": "opencode-next-five-batch2-qualification-and-retry-receipts-20260730",
-  "status": "corrected-batch-qualified-provider-execution-in-progress",
+  "status": "provider-execution-in-progress-10-of-15-accepted",
   "accepted_attempts": [
     {
       "profile_id": "retrieval-jcodemunch-opencode-product-v1",
@@ -46,5 +46,26 @@
     "jCodemunch is an explicitly declared host-agnostic MCP arm, not a first-class native OpenCode installer.",
     "LowFat 0.8.0 replaces Ponytail and uses its official native OpenCode plugin installer.",
     "No rejected or invalid attempt contributes accepted accounting."
+  ],
+  "accepted_session_count": 10,
+  "execution_incidents": [
+    {
+      "sequence_id": "terraform-lifecycle-sequence-v0",
+      "profile_id": "retrieval-jcodemunch-opencode-product-v1",
+      "session_id": "jcodemunch-opencode-v1-terraform-20260730-p-5811b463c1e9-r1",
+      "provider_usage_accepted": false,
+      "stage": "setup-deps",
+      "reason": "Go module extraction failed with no space left on device before provider execution; rejected compact evidence retained under the matrix lane root."
+    },
+    {
+      "cleanup": "reclaimed regenerable scratch/cache only",
+      "before_available_bytes": 4386918400,
+      "after_available_bytes": 7043002368,
+      "removed": [
+        "/opt/data/eval-workflow-lanes/opencode-five-preflight-r0",
+        "/opt/data/eval-workflow-lanes/opencode-five-preflight-r0-v2",
+        "/opt/data/home/.cache/puccinialin"
+      ]
+    }
   ]
 }
