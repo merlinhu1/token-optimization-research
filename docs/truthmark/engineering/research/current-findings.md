@@ -1,7 +1,7 @@
 ---
 status: active
 truth_kind: engineering-behavior
-last_reviewed: 2026-07-31
+last_reviewed: 2026-08-02
 ---
 
 # Current Findings
@@ -16,10 +16,10 @@ This document covers the active two-lane Lifecycle V1 portfolio, retained produc
 
 ## Current Implementation Behavior
 
-- The runnable portfolio contains exactly two Lifecycle V1 sequences—Fastify and Beets. Terraform's incomplete V1 r0 is retired from current launch and retained only as a rejected historical receipt.
+- The runnable portfolio contains exactly two Lifecycle V1 sequences—Fastify and Beets. Terraform's owner-declared-invalid V1 r0 was removed under a machine-readable invalidation receipt and has no current launch path.
 - Every active sequence contains feature implementation, behavior-preserving refactor, and code review/correction in that order; every task seeds an authentic semantic regression from completed upstream behavior and asks the agent to implement the requested outcome correctly through normal repository search and related-code inspection.
 - Each active lane uses a composite preseeded start, sequential prompt disclosure, persistent agent/tool state, and final-only cumulative verification. Affected-component and project-wide compilation are controller-only pass/fail gates and are not disclosed as agent instructions. No acceptance-test assets are injected; tests, behavior, style, maintainability, and source review are diagnostic only.
-- Provider-free Lifecycle V1 qualification passes all standalone seed/fix round-trips, composite application, controller compilation, cumulative, aggregate, and project-wide boundaries. Fastify and Beets retain GPT-5.6 Sol/`high` bare-Codex r0 pilots, while treatment remains blocked pending the required pilot audit. Terraform's frozen V1 protocol, qualification, tasks, and rejected evidence are immutable historical records and cannot authorize a rerun or treatment.
+- Provider-free Lifecycle V1 qualification passes all standalone seed/fix round-trips, composite application, controller compilation, cumulative, aggregate, and project-wide boundaries. Fastify and Beets retain GPT-5.6 Sol/`high` bare-Codex r0 pilots, while treatment remains blocked pending the required pilot audit. Terraform's invalid V1 r0 frozen protocol and raw evidence were removed; retained task and qualification sources cannot authorize a rerun or treatment.
 - Codex 0.144.0 emits cumulative `ThreadTokenUsage.total` snapshots in every resumed `turn.completed.usage` event. The legacy extractor summed those snapshots, so the original 30 retained persistent sessions carry inflated legacy totals in their immutable compact summaries and registry records. The source-backed correction audit supplies authoritative final-per-thread totals for those records; later sessions were recorded with corrected accounting at ingestion.
 - Fastify contributes three retained Luna/`xhigh` active-default baseline token samples after correction: 6,420,074 tokens at `r0`, 6,712,770 at `r1`, and 4,617,123 at `r2`. All passed 3/3 verifier tasks; review fields remain diagnostic.
 - Invalid fixture records and stale protocols were removed at the experiment owner's explicit direction.
