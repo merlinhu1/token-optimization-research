@@ -102,7 +102,10 @@ class OpenCodeWorkflowAdapterTest(unittest.TestCase):
         )
 
     def test_product_integrations_bind_native_opencode_surfaces(self) -> None:
-        expected = {"bare", "tokenjuice", "serena", "snip", "cartog", "headroom"}
+        expected = {
+            "bare", "tokenjuice", "serena", "snip", "cartog", "headroom",
+            "codescope", "swarmvault", "graphify", "rtk", "codegraph",
+        }
         self.assertEqual(set(adapter.TREATMENT_PROFILES), expected)
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
@@ -115,6 +118,26 @@ class OpenCodeWorkflowAdapterTest(unittest.TestCase):
         self.assertIn("--context=ide", serena["mcp"]["serena"]["command"])
         self.assertEqual(cartog["mcp"]["cartog"]["command"][-2:], ["serve", "--watch"])
         self.assertNotEqual(tokenjuice_env.get("OPENCODE_DISABLE_PLUGINS"), "1")
+
+    def test_next_batch_uses_native_opencode_mcp_and_plugin_surfaces(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            repo = root / "repo"
+            repo.mkdir()
+            configs = {}
+            envs = {}
+            for treatment in ("codescope", "swarmvault", "graphify", "rtk", "codegraph"):
+                env, _ = adapter._runtime_env(root / treatment, treatment=treatment, directory=repo)
+                envs[treatment] = env
+                configs[treatment] = json.loads(env["OPENCODE_CONFIG_CONTENT"])
+        self.assertEqual(configs["codescope"]["mcp"]["codescope"]["type"], "local")
+        self.assertIn("codescope", " ".join(configs["codescope"]["mcp"]["codescope"]["command"]))
+        self.assertEqual(configs["codegraph"]["mcp"]["codegraph"]["command"][-2:], ["serve", "--mcp"])
+        self.assertIn("swarmvault", configs["swarmvault"]["mcp"])
+        self.assertTrue(any("swarmvault-graph-first.js" in path for path in configs["swarmvault"]["plugin"]))
+        self.assertTrue(any("graphify.js" in path for path in configs["graphify"]["plugin"]))
+        self.assertEqual(envs["graphify"]["OPENCODE_DISABLE_EXTERNAL_SKILLS"], "0")
+        self.assertTrue(any(path.endswith("/plugins/rtk.ts") for path in configs["rtk"]["plugin"]))
 
     def test_plugin_treatments_drop_pure_and_headroom_wraps_native_command(self) -> None:
         parsed = adapter.CompatArgs(
@@ -441,6 +464,91 @@ class OpenCodeWorkflowIntegrationContractTest(unittest.TestCase):
         self.assertEqual({item["server"] for item in headroom["secondary_mcp_handshakes"]}, {"serena"})
         self.assertTrue(headroom["proxy_runtime_receipt"]["required"])
         self.assertTrue(headroom["native_plugin"]["required"])
+
+    def test_next_five_opencode_profiles_are_native_and_artifact_bound(self) -> None:
+        expected = {
+            "codescope-opencode-product-v1": "codescope-opencode-product-v1",
+            "swarmvault-opencode-product-v1": "swarmvault-opencode-product-v1",
+            "retrieval-graphify-opencode-product-v1": "graphify-opencode-product-v1",
+            "terminal-rtk-opencode-plugin-v1": "rtk-opencode-plugin-v1",
+            "retrieval-codegraph-opencode-mcp-v1": "codegraph-opencode-mcp-v1",
+        }
+        self.assertTrue(expected.keys() <= runner.SUPPORTED_WORKFLOW_TOOL_PROFILES.keys())
+        for profile_id, tool_id in expected.items():
+            with self.subTest(profile_id=profile_id):
+                self.assertEqual(runner.SUPPORTED_WORKFLOW_TOOL_PROFILES[profile_id], tool_id)
+                self.assertEqual(runner.profile_runtime_id(profile_id), "opencode-cli")
+                cfg = fixture.active_tool_config({}, profile_id)
+                assert cfg is not None
+                self.assertIn("--treatment", cfg["codex_wrapper"]["args"])
+                self.assertTrue(cfg["artifact_identities"])
+                self.assertTrue(all(item["sha256"] for item in cfg["artifact_identities"]))
+                self.assertTrue(cfg["effective_host_config"]["required"])
+        codescope = fixture.active_tool_config({}, "codescope-opencode-product-v1")
+        swarmvault = fixture.active_tool_config({}, "swarmvault-opencode-product-v1")
+        graphify = fixture.active_tool_config({}, "retrieval-graphify-opencode-product-v1")
+        rtk = fixture.active_tool_config({}, "terminal-rtk-opencode-plugin-v1")
+        codegraph = fixture.active_tool_config({}, "retrieval-codegraph-opencode-mcp-v1")
+        assert codescope and swarmvault and graphify and rtk and codegraph
+        self.assertTrue(codescope["mcp_handshake"]["required"])
+        self.assertTrue(swarmvault["mcp_handshake"]["required"])
+        self.assertTrue(codegraph["mcp_handshake"]["required"])
+        self.assertTrue(swarmvault["preflight_requires_project"])
+        self.assertTrue(graphify["preflight_requires_project"])
+        self.assertIn("graphify-mcp", graphify["allowed_terms"])
+        self.assertNotIn("mcp_server", graphify)
+        self.assertIn("install --agent opencode --hook", " ".join(swarmvault["host_integration"]["install_commands"][0]))
+        self.assertIn("--platform opencode --project", " ".join(" ".join(command) for command in graphify["host_integration"]["install_commands"]))
+        self.assertIn("--opencode", rtk["host_integration"]["install_commands"][0])
+        self.assertNotIn("OPENCODE_EVALUATION_DIRECTORY", rtk["env"])
+
+    def test_next_five_protocols_freeze_the_fresh_opencode_comparator(self) -> None:
+        matrix.selected_model_condition(
+            argparse.Namespace(
+                workflow_model_condition_id=self.CONDITION_ID,
+                workflow_model="gpt-5.6-sol",
+                workflow_reasoning_effort="high",
+            ),
+            configure=True,
+        )
+        profile_ids = {
+            "codescope-opencode-product-v1",
+            "swarmvault-opencode-product-v1",
+            "retrieval-graphify-opencode-product-v1",
+            "terminal-rtk-opencode-plugin-v1",
+            "retrieval-codegraph-opencode-mcp-v1",
+        }
+        sequences = {
+            "fastify-lifecycle-sequence-v0",
+            "beets-lifecycle-sequence-v0",
+            "terraform-lifecycle-sequence-v0",
+        }
+        for profile_id in profile_ids:
+            for sequence_id in sequences:
+                with self.subTest(profile_id=profile_id, sequence_id=sequence_id):
+                    path = matrix.find_protocol(ROOT, sequence_id, profile_id)
+                    protocol = json.loads(path.read_text())
+                    self.assertEqual(protocol["status"], "frozen-ready-not-run")
+                    self.assertEqual(protocol["treatment"]["runtime_id"], "opencode-cli")
+                    self.assertEqual(protocol["treatment"]["model_condition_id"], self.CONDITION_ID)
+                    self.assertEqual(protocol["comparison_baseline"]["profile_id"], self.PROFILE_ID)
+                    self.assertEqual(protocol["comparison_baseline"]["runtime_id"], "opencode-cli")
+                    self.assertEqual(protocol["comparison_baseline"]["model_condition_id"], self.CONDITION_ID)
+
+    def test_successive_selection_skips_token_savior_without_opencode_surface(self) -> None:
+        catalog = json.loads((ROOT / "data/evaluation-profiles.json").read_text())
+        profiles = {item["id"]: item for item in catalog["profiles"]}
+        selected = {
+            "codescope-opencode-product-v1",
+            "swarmvault-opencode-product-v1",
+            "retrieval-graphify-opencode-product-v1",
+            "terminal-rtk-opencode-plugin-v1",
+            "retrieval-codegraph-opencode-mcp-v1",
+        }
+        self.assertTrue(selected <= profiles.keys())
+        self.assertNotIn("integrated-token-savior-opencode-product-v1", profiles)
+        self.assertIn("Token Savior", profiles["retrieval-codegraph-opencode-mcp-v1"]["notes"])
+        self.assertTrue(all(profiles[profile_id]["substrate"] == "opencode-cli" for profile_id in selected))
 
     def test_opencode_tool_treatments_reuse_bare_opencode_baseline(self) -> None:
         sequence = runner.load_sequence("fastify-lifecycle-sequence-v0")

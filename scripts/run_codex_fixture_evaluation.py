@@ -41,6 +41,7 @@ OPENCODE_BIN_SHA256 = "7c4d91c84d2bfdeabb59257e3490c5e5acb08f2aacb3e42f3ddc296a1
 OPENCODE_ADAPTER = Path("/opt/data/tool-candidates/opencode-adapter/opencode_workflow_adapter.py")
 OPENCODE_ADAPTER_V2 = Path("/opt/data/tool-candidates/opencode-adapter-v2/opencode_workflow_adapter.py")
 OPENCODE_ADAPTER_V3 = Path("/opt/data/tool-candidates/opencode-adapter-v3/opencode_workflow_adapter.py")
+OPENCODE_ADAPTER_V4 = Path("/opt/data/tool-candidates/opencode-adapter-v4/opencode_workflow_adapter.py")
 FORBIDDEN_BASELINE_TERMS = [
     "lean-ctx",
     "mcp_lean_ctx",
@@ -101,6 +102,11 @@ PROFILE_TOOL_CONFIG_OVERRIDES = {
     "terminal-snip-opencode-plugin-v2": "snip-opencode-plugin-v2",
     "retrieval-cartog-opencode-product-v2": "cartog-opencode-product-v2",
     "integrated-headroom-opencode-product-v3": "headroom-opencode-product-v3",
+    "codescope-opencode-product-v1": "codescope-opencode-product-v1",
+    "swarmvault-opencode-product-v1": "swarmvault-opencode-product-v1",
+    "retrieval-graphify-opencode-product-v1": "graphify-opencode-product-v1",
+    "terminal-rtk-opencode-plugin-v1": "rtk-opencode-plugin-v1",
+    "retrieval-codegraph-opencode-mcp-v1": "codegraph-opencode-mcp-v1",
 }
 CODEGRAPH_BIN = Path("/opt/data/tool-candidates/codegraph/dist/bin/codegraph.js")
 CARTOG_ROOT = Path("/opt/data/tool-candidates/cartog")
@@ -1648,6 +1654,246 @@ TOOL_CONFIGS.update(
     }
 )
 
+# Successive native OpenCode treatment batch. The selection follows the live
+# compatible-screen ordering after excluding Token Savior because the pinned
+# product has no OpenCode integration surface; CodeGraph is the next eligible
+# product with an official OpenCode installer.
+TOOL_CONFIGS.update(
+    {
+        "codescope-opencode-product-v1": _opencode_treatment_config(
+            "codescope",
+            display_name="CodeScope host-agnostic MCP on OpenCode v1",
+            lane_name="codescope-opencode-product-v1",
+            surface="opencode-mcp/official-initialize-instructions+warm-index",
+            allowed_terms=["codescope"],
+            mounts=[str(CODESCOPE_BIN), str(CODESCOPE_SURREAL_BIN)],
+            adapter_path=OPENCODE_ADAPTER_V4,
+            path_entries=[str(CODESCOPE_RELEASE_ROOT)],
+            env={
+                "CODESCOPE_DB_PATH": "{tool_data_dir}/db",
+                "OPENCODE_EVALUATION_DIRECTORY": "{repo}",
+            },
+            host_integration={
+                "verify_commands": [[str(CODESCOPE_BIN), "--version"]],
+            },
+            mcp_server="codescope",
+            mcp_command="/bin/bash",
+            mcp_args=[
+                "-lc",
+                (
+                    f"set -euo pipefail; {CODESCOPE_BIN} start >/dev/null; "
+                    f"trap '{CODESCOPE_BIN} stop >/dev/null 2>&1 || true' EXIT; "
+                    f"i=0; until {CODESCOPE_BIN} status | grep -q '^running'; "
+                    "do i=$((i+1)); [ \"$i\" -lt 50 ]; sleep 0.2; done; "
+                    f"exec {CODESCOPE_BIN} mcp {{repo}}"
+                ),
+            ],
+            mcp_handshake={"required": True, "method": "initialize-and-tools-list", "timeout_seconds": 180},
+            warmup={
+                "kind": "official-surreal-start-and-index",
+                "command": [
+                    "/bin/bash",
+                    "-lc",
+                    (
+                        f"set -euo pipefail; {CODESCOPE_BIN} start >/dev/null; "
+                        f"trap '{CODESCOPE_BIN} stop >/dev/null 2>&1 || true' EXIT; "
+                        f"i=0; until {CODESCOPE_BIN} status | grep -q '^running'; "
+                        "do i=$((i+1)); [ \"$i\" -lt 50 ]; sleep 0.2; done; "
+                        f"{CODESCOPE_BIN} index {{repo}}"
+                    ),
+                ],
+                "output_name": "codescope-warmup-output.txt",
+                "metadata_name": "codescope-warmup-metadata.json",
+                "timeout_seconds": 3600,
+            },
+            artifact_identities=[
+                {"path": str(CODESCOPE_BIN), "sha256": "d6f64f7bc7bf1ab65115fdede85d794f58151c6f1414421825959eb2101165c1", "kind": "compiled-cli-mcp"},
+                {"path": str(CODESCOPE_SURREAL_BIN), "sha256": "a9a5e9e36e4f6fe922e1991a4fb0ea1ee4fe90819c5e3a8dce238a56666e8cec", "kind": "bundled-database"},
+                {"path": str(OPENCODE_ADAPTER_V4), "sha256": "e3c6e77fc22ae12a6548ee3ad92836d58c2db411ceae7c3743c370c469e6bbf7", "kind": "runtime-adapter"},
+            ],
+            effective_host_config={"required": True, "source": "adapter-probe"},
+            default_tool_state="warm-index+official-mcp-instructions",
+        ),
+        "swarmvault-opencode-product-v1": _opencode_treatment_config(
+            "swarmvault",
+            display_name="SwarmVault official OpenCode rules, skill, hook, and MCP v1",
+            lane_name="swarmvault-opencode-product-v1",
+            surface="opencode-mcp+project-rules+native-plugin+skill",
+            allowed_terms=["swarmvault"],
+            mounts=[str(SWARMVAULT_ROOT)],
+            adapter_path=OPENCODE_ADAPTER_V4,
+            path_entries=[str(NODE_TOOLCHAIN_ROOT / "bin")],
+            env={
+                "SWARMVAULT_OUT": "{tool_data_dir}/vault",
+                "SWARMVAULT_NO_NOTICES": "1",
+                "OPENCODE_EVALUATION_DIRECTORY": "{repo}",
+            },
+            host_integration={
+                "install_commands": [[
+                    "/bin/bash",
+                    "-lc",
+                    f"set -euo pipefail; {NODE_BIN} {SWARMVAULT_CLI} init --lite; {NODE_BIN} {SWARMVAULT_CLI} install --agent opencode --hook",
+                ]],
+                "verify_commands": [[str(NODE_BIN), str(SWARMVAULT_CLI), "--version"]],
+                "required_files": [
+                    "{repo}/AGENTS.md",
+                    "{repo}/.opencode/opencode.json",
+                    "{repo}/.opencode/plugins/swarmvault-graph-first.js",
+                    "{repo}/.opencode/skills/swarmvault/SKILL.md",
+                ],
+            },
+            mcp_server="swarmvault",
+            mcp_command=str(NODE_BIN),
+            mcp_args=[str(SWARMVAULT_CLI), "mcp"],
+            mcp_handshake={"required": True, "method": "initialize-and-tools-list", "timeout_seconds": 180},
+            warmup={
+                "kind": "official-vault-ingest-and-compile",
+                "command": [
+                    "/bin/bash",
+                    "-lc",
+                    f"set -euo pipefail; {NODE_BIN} {SWARMVAULT_CLI} ingest {{repo}} --max-files 500; {NODE_BIN} {SWARMVAULT_CLI} compile",
+                ],
+                "output_name": "swarmvault-warmup-output.txt",
+                "metadata_name": "swarmvault-warmup-metadata.json",
+                "timeout_seconds": 3600,
+            },
+            artifact_identities=[
+                {"path": str(SWARMVAULT_CLI), "sha256": "a61088ae9ceba5af3e0c0c5be12a214d5ab23ed2d5292d662723f84f72d7818c", "kind": "compiled-cli-mcp"},
+                {"path": str(SWARMVAULT_ROOT / "packages/engine/dist/hooks/opencode.js"), "sha256": "492ee1ff509698aac8c76dc9736f11aaf35da1b3134cb5d5f743856aa1bb7416", "kind": "native-plugin-source"},
+                {"path": str(OPENCODE_ADAPTER_V4), "sha256": "e3c6e77fc22ae12a6548ee3ad92836d58c2db411ceae7c3743c370c469e6bbf7", "kind": "runtime-adapter"},
+            ],
+            post_install_artifacts=[
+                {"path": "{repo}/.opencode/plugins/swarmvault-graph-first.js", "sha256": "492ee1ff509698aac8c76dc9736f11aaf35da1b3134cb5d5f743856aa1bb7416", "retain_as": "swarmvault-installed-plugin.js"},
+                {"path": "{repo}/.opencode/skills/swarmvault/SKILL.md", "sha256": "c0a8cf9c84a8bb9c00bfeb2ba9a1c61e33b2b650fde999788bafa5f4161dedac", "retain_as": "swarmvault-installed-skill.md"},
+            ],
+            effective_host_config={"required": True, "source": "adapter-probe"},
+            preflight_requires_project=True,
+            diff_exclude_paths=["AGENTS.md", ".opencode", "swarmvault.config.json", "swarmvault.schema.md"],
+            default_tool_state="warm-index+active-native-plugin-and-skill",
+        ),
+        "graphify-opencode-product-v1": _opencode_treatment_config(
+            "graphify",
+            display_name="Graphify official OpenCode skill, rules, and plugin v1",
+            lane_name="retrieval-graphify-opencode-product-v1",
+            surface="opencode-project-skill+rules+native-pretool-plugin+warm-graph",
+            allowed_terms=["graphify", "graphify-mcp"],
+            mounts=[str(GRAPHIFY_ROOT), str(GRAPHIFY_WHEEL)],
+            adapter_path=OPENCODE_ADAPTER_V4,
+            path_entries=["{tool_data_dir}/venv/bin"],
+            env={"OPENCODE_EVALUATION_DIRECTORY": "{repo}"},
+            host_integration={
+                "install_commands": [
+                    [str(UV_BIN), "venv", "{tool_data_dir}/venv", "--python", "python3"],
+                    [str(UV_BIN), "pip", "install", "--python", "{tool_data_dir}/venv/bin/python", str(GRAPHIFY_WHEEL)],
+                    ["{tool_data_dir}/venv/bin/graphify", "install", "--platform", "opencode", "--project"],
+                ],
+                "verify_commands": [["{tool_data_dir}/venv/bin/graphify", "--version"]],
+                "required_files": [
+                    "{repo}/AGENTS.md",
+                    "{repo}/.opencode/opencode.json",
+                    "{repo}/.opencode/plugins/graphify.js",
+                    "{repo}/.opencode/skills/graphify/SKILL.md",
+                ],
+                "timeout_seconds": 600,
+            },
+            warmup={
+                "kind": "official-code-graph-build",
+                "command": ["{tool_data_dir}/venv/bin/graphify", "update", "{repo}", "--no-cluster", "--force"],
+                "cleanup_paths": ["graphify-out"],
+                "required_state_paths": ["graphify-out/graph.json"],
+                "output_name": "graphify-warmup-output.txt",
+                "metadata_name": "graphify-warmup-metadata.json",
+                "timeout_seconds": 1200,
+            },
+            artifact_identities=[
+                {"path": str(GRAPHIFY_WHEEL), "sha256": "9c3b01b3e7745ee67149fab54af91e4dbe4743ee9632fc3ab29de62830ca1802", "kind": "python-wheel"},
+                {"path": str(OPENCODE_ADAPTER_V4), "sha256": "e3c6e77fc22ae12a6548ee3ad92836d58c2db411ceae7c3743c370c469e6bbf7", "kind": "runtime-adapter"},
+            ],
+            post_install_artifacts=[
+                {"path": "{repo}/.opencode/plugins/graphify.js", "sha256": "b025b1d64b905d48cf6188392d003be971f9933e8f893d22f671c5f2428ecddb", "retain_as": "graphify-installed-plugin.js"},
+                {"path": "{repo}/.opencode/skills/graphify/SKILL.md", "sha256": "f404e0adab83af433af2c807ffe27966231b0bdbb7a7ab9d6e15efadf5cd3314", "retain_as": "graphify-installed-skill.md"},
+            ],
+            effective_host_config={"required": True, "source": "adapter-probe"},
+            preflight_requires_project=True,
+            diff_exclude_paths=["AGENTS.md", ".opencode", "graphify-out"],
+            default_tool_state="warm-graph+active-native-plugin-and-skill",
+        ),
+        "rtk-opencode-plugin-v1": _opencode_treatment_config(
+            "rtk",
+            display_name="RTK official OpenCode plugin v1",
+            lane_name="terminal-rtk-opencode-plugin-v1",
+            surface="opencode-native-tool-execute-before/terminal-command-rewriting",
+            allowed_terms=["rtk"],
+            mounts=[str(RTK_BIN.parent), str(RTK_BIN.parents[2] / "hooks/opencode/rtk.ts")],
+            adapter_path=OPENCODE_ADAPTER_V4,
+            path_entries=[str(RTK_BIN.parent)],
+            env={"RTK_TELEMETRY": "0"},
+            host_integration={
+                "install_commands": [[str(RTK_BIN), "init", "--global", "--opencode"]],
+                "verify_commands": [[str(RTK_BIN), "init", "--global", "--opencode", "--dry-run"]],
+                "required_files": ["{codex_home}/home/.config/opencode/plugins/rtk.ts"],
+            },
+            artifact_identities=[
+                {"path": str(RTK_BIN), "sha256": "6a5f761863fc184217e6c1ae5336dd969868ad79f24e701a3efbd090a435f2ae", "kind": "compiled-cli"},
+                {"path": str(RTK_BIN.parents[2] / "hooks/opencode/rtk.ts"), "sha256": "6530c131946c84892f9522abd68d4e513e1e658d8ddbad1f59388c86ebbcb6bb", "kind": "native-plugin-source"},
+                {"path": str(OPENCODE_ADAPTER_V4), "sha256": "e3c6e77fc22ae12a6548ee3ad92836d58c2db411ceae7c3743c370c469e6bbf7", "kind": "runtime-adapter"},
+            ],
+            post_install_artifacts=[
+                {"path": "{codex_home}/home/.config/opencode/plugins/rtk.ts", "sha256": "6530c131946c84892f9522abd68d4e513e1e658d8ddbad1f59388c86ebbcb6bb", "retain_as": "rtk-installed-plugin.ts"},
+            ],
+            effective_host_config={"required": True, "source": "adapter-probe"},
+            default_tool_state="active-native-plugin-exact-artifact",
+        ),
+        "codegraph-opencode-mcp-v1": _opencode_treatment_config(
+            "codegraph",
+            display_name="CodeGraph official OpenCode MCP product v1",
+            lane_name="retrieval-codegraph-opencode-mcp-v1",
+            surface="opencode-mcp+official-installer+warm-live-index",
+            allowed_terms=["codegraph"],
+            mounts=[str(CODEGRAPH_BIN.parent.parent.parent)],
+            adapter_path=OPENCODE_ADAPTER_V4,
+            path_entries=["{tool_data_dir}/bin"],
+            env={"CODEGRAPH_TELEMETRY": "0", "OPENCODE_EVALUATION_DIRECTORY": "{repo}"},
+            host_integration={
+                "install_commands": [
+                    ["mkdir", "-p", "{tool_data_dir}/bin"],
+                    [
+                        "/bin/bash",
+                        "-lc",
+                        f"printf '%s\\n' '#!/bin/sh' 'exec {NODE_BIN} {CODEGRAPH_BIN} \"$@\"' > {{tool_data_dir}}/bin/codegraph && chmod 755 {{tool_data_dir}}/bin/codegraph",
+                    ],
+                    ["{tool_data_dir}/bin/codegraph", "install", "--target", "opencode", "--location", "local", "--yes"],
+                ],
+                "verify_commands": [["{tool_data_dir}/bin/codegraph", "--version"]],
+                "required_files": ["{tool_data_dir}/bin/codegraph", "{repo}/opencode.jsonc", "{repo}/AGENTS.md"],
+            },
+            mcp_server="codegraph",
+            mcp_command=str(NODE_BIN),
+            mcp_args=[str(CODEGRAPH_BIN), "serve", "--mcp"],
+            mcp_handshake={"required": True, "method": "initialize-and-tools-list", "timeout_seconds": 180},
+            warmup={
+                "kind": "official-codegraph-index",
+                "command": ["{tool_data_dir}/bin/codegraph", "init", "{repo}"],
+                "cleanup_paths": [".codegraph"],
+                "required_state_paths": [".codegraph"],
+                "output_name": "codegraph-warmup-output.txt",
+                "metadata_name": "codegraph-warmup-metadata.json",
+                "timeout_seconds": 1200,
+            },
+            artifact_identities=[
+                {"path": str(CODEGRAPH_BIN), "sha256": "7cb7ae2a31d1c30a11d2b3190f89a7f9c2db3886ad5903affdc080bd7922755e", "kind": "compiled-cli-mcp"},
+                {"path": str(OPENCODE_ADAPTER_V4), "sha256": "e3c6e77fc22ae12a6548ee3ad92836d58c2db411ceae7c3743c370c469e6bbf7", "kind": "runtime-adapter"},
+            ],
+            post_install_artifacts=[
+                {"path": "{repo}/opencode.jsonc", "sha256": "578c6965fb0902811aeb1e9607bcf4c41aa0de3e25a0fdfbe0b7a838a31496a1", "retain_as": "codegraph-installed-opencode.jsonc"},
+            ],
+            effective_host_config={"required": True, "source": "adapter-probe"},
+            diff_exclude_paths=["AGENTS.md", "opencode.jsonc", ".codegraph"],
+            default_tool_state="warm-live-index+official-mcp-instructions",
+        ),
+    }
+)
+
 
 def rel_or_abs(path_text: str) -> Path:
     path = Path(path_text)
@@ -2726,6 +2972,10 @@ def preflight_codex(record: dict[str, Any], codex_home: Path, pid: str, run_dir:
 
     mounts = docker_tool_mounts(cfg)
     add_mount(mounts, codex_home, mode="rw")
+    preflight_cwd = codex_home / "home"
+    if cfg and cfg.get("preflight_requires_project"):
+        preflight_cwd = rel_or_abs(record["target"]["repository_path"])
+        add_mount(mounts, preflight_cwd, mode="rw")
     doctor = run_backend(["codex", "doctor", "--summary"], backend=backend, docker_image=docker_image, cwd=codex_home / "home", env=env, stdout_path=doctor_path, timeout=120, mounts=mounts)
     mcp = run_backend(["codex", "mcp", "list"], backend=backend, docker_image=docker_image, cwd=codex_home / "home", env=env, stdout_path=mcp_path, timeout=120, mounts=mounts)
     shutil.copy2(codex_home / "config.toml", config_path)
@@ -2779,7 +3029,7 @@ def preflight_codex(record: dict[str, Any], codex_home: Path, pid: str, run_dir:
         failure_reasons.append(f"{pid} profile did not expose expected MCP server {cfg['mcp_server']} in preflight")
     if cfg and cfg.get("preflight_command"):
         tool_preflight_path = run_dir / "tool-preflight.txt"
-        tool_preflight = run_backend([str(x) for x in cfg["preflight_command"]], backend=backend, docker_image=docker_image, cwd=codex_home / "home", env=env, stdout_path=tool_preflight_path, timeout=120, mounts=mounts)
+        tool_preflight = run_backend([str(x) for x in cfg["preflight_command"]], backend=backend, docker_image=docker_image, cwd=preflight_cwd, env=env, stdout_path=tool_preflight_path, timeout=120, mounts=mounts)
         if tool_preflight.returncode != 0:
             passed = False
             failure_reasons.append(f"{cfg['display_name']} preflight exited {tool_preflight.returncode}")
