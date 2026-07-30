@@ -1915,7 +1915,7 @@ TOOL_CONFIGS.update(
             lane_name="retrieval-jcodemunch-opencode-product-v1",
             surface="opencode-mcp+product-authored-guidance+warm-index",
             allowed_terms=["jcodemunch", "jcodemunch-mcp"],
-            mounts=[str(JCODEMUNCH_ROOT), str(JCODEMUNCH_WHEEL), str(ROOT / "scripts" / "install_jcodemunch_opencode_guidance.py")],
+            mounts=[str(JCODEMUNCH_ROOT), str(JCODEMUNCH_WHEEL), "{repository_root}/scripts/install_jcodemunch_opencode_guidance.py"],
             adapter_path=OPENCODE_ADAPTER_V6,
             env={"OPENCODE_TOOL_DATA_DIR": "{tool_data_dir}", "JCODEMUNCH_LOG_LEVEL": "ERROR"},
             path_entries=["{tool_data_dir}/venv/bin"],
