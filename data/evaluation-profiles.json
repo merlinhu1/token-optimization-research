@@ -2949,6 +2949,284 @@
         "runtime_adapter_sha256": "e3c6e77fc22ae12a6548ee3ad92836d58c2db411ceae7c3743c370c469e6bbf7"
       },
       "notes": "Next native OpenCode-eligible product after Token Savior, which is skipped because its pinned product has no OpenCode integration. Uses CodeGraph official OpenCode installer and MCP server."
+    },
+    {
+      "profile_type": "individual_tool",
+      "objective_scope": "individual_tool_effectiveness",
+      "status": "screening-ablation",
+      "substrate": "opencode-cli",
+      "disabled_overlaps": [
+        "all unlisted surfaces"
+      ],
+      "native_agent_tools_allowed": [
+        "opencode-native-shell-edit",
+        "opencode-native-file-read-search",
+        "git",
+        "verifier-commands"
+      ],
+      "forbidden_surfaces": [
+        "all external retrieval, compression, memory, MCP, skills, plugins, subagents, and web tools except the assigned product surfaces"
+      ],
+      "reset": {
+        "policy": "Delete lane-private OpenCode XDG directories, product state, generated repository treatment files, auth translation, and background processes after evidence capture."
+      },
+      "id": "retrieval-jcodemunch-opencode-product-v1",
+      "artifact_slug": "jcodemunch-opencode-v1",
+      "name": "jCodemunch OpenCode MCP product V1",
+      "enabled_surfaces": [
+        "retrieval-context",
+        "opencode-mcp",
+        "product-authored-guidance",
+        "warm-index"
+      ],
+      "components": [
+        {
+          "component_id": "retrieval-jcodemunch-opencode-product-v1",
+          "surface": "retrieval-context+opencode-mcp+product-authored-guidance+warm-index",
+          "role": "individual_tool"
+        }
+      ],
+      "install": {
+        "policy": "Install the pinned jCodemunch wheel into a lane-private uv environment, install verbatim product-authored guidance, build a lane-private index, register only its local MCP server in OpenCode, and require initialize plus tools/list."
+      },
+      "evaluation_protocol": {
+        "tool_use_policy": "natural",
+        "tool_state": "warm-index+product-guidance",
+        "integration_state": "host-agnostic-mcp+product-guidance",
+        "assignment_proof": "provider-free exact artifact identities, effective OpenCode configuration, native activation, warm state, and task/final verifiers required"
+      },
+      "source_snapshot": {
+        "repository": "jgravelle/jcodemunch-mcp",
+        "version": "1.108.114",
+        "source_commit": "fbc14e40c7057ebc6d718fb48083d30522afe15f",
+        "wheel_sha256": "9ae3a44c2be5709d33fa2b56c9e569906ed63906a907f89b4762a370d397ed54",
+        "guidance_sha256": "2026d09f4af85e972a5c4a9874d91bd8a8675ab7fbb44a283911fd06afd0abb2",
+        "runtime_adapter": "/opt/data/tool-candidates/opencode-adapter-v6/opencode_workflow_adapter.py",
+        "runtime_adapter_sha256": "1b98aaec34711b3a7bb09ce269c12bb06421ab08913d06593fb6d2c6641a34a3"
+      },
+      "notes": "Second successive screen: jCodemunch has a universal host-install guide and an MCP server, so this is a host-agnostic OpenCode treatment rather than a prompt-only simulation."
+    },
+    {
+      "profile_type": "individual_tool",
+      "objective_scope": "individual_tool_effectiveness",
+      "status": "screening-ablation",
+      "substrate": "opencode-cli",
+      "disabled_overlaps": [
+        "all unlisted surfaces"
+      ],
+      "native_agent_tools_allowed": [
+        "opencode-native-shell-edit",
+        "opencode-native-file-read-search",
+        "git",
+        "verifier-commands"
+      ],
+      "forbidden_surfaces": [
+        "all external retrieval, compression, memory, MCP, skills, plugins, subagents, and web tools except the assigned product surfaces"
+      ],
+      "reset": {
+        "policy": "Delete lane-private OpenCode XDG directories, product state, generated repository treatment files, auth translation, and background processes after evidence capture."
+      },
+      "id": "integrated-leanctx-opencode-hybrid-v1",
+      "artifact_slug": "leanctx-opencode-v1",
+      "name": "LeanCTX OpenCode hybrid integration V1",
+      "enabled_surfaces": [
+        "retrieval-context",
+        "opencode-mcp",
+        "product-authored-instructions",
+        "shell-output-compression",
+        "warm-index"
+      ],
+      "components": [
+        {
+          "component_id": "integrated-leanctx-opencode-hybrid-v1",
+          "surface": "retrieval-context+opencode-mcp+instructions+shell-output-compression+warm-index",
+          "role": "individual_tool"
+        }
+      ],
+      "install": {
+        "policy": "Run the pinned official LeanCTX initializer with the OpenCode agent target, build its lane-private index, and require the local MCP initialize plus tools/list handshake."
+      },
+      "evaluation_protocol": {
+        "tool_use_policy": "natural",
+        "tool_state": "warm-index+active-guidance",
+        "integration_state": "official-opencode-hybrid",
+        "assignment_proof": "provider-free exact artifact identities, effective OpenCode configuration, native activation, warm state, and task/final verifiers required"
+      },
+      "source_snapshot": {
+        "repository": "yvgude/lean-ctx",
+        "version": "3.8.18",
+        "source_commit": "adc4e8b2e401d160906a392994c9afd7af3dfffa",
+        "binary_sha256": "475e89e495c31824ef324f92e695706ddbd890dff2c3b55b807cd1f8526c6db9",
+        "runtime_adapter": "/opt/data/tool-candidates/opencode-adapter-v6/opencode_workflow_adapter.py",
+        "runtime_adapter_sha256": "1b98aaec34711b3a7bb09ce269c12bb06421ab08913d06593fb6d2c6641a34a3"
+      },
+      "notes": "Second successive screen: the existing LeanCTX source includes an OpenCode initializer target; the treatment uses that official hybrid surface, not the historical MCP-only partial profile."
+    },
+    {
+      "profile_type": "individual_tool",
+      "objective_scope": "individual_tool_effectiveness",
+      "status": "screening-ablation",
+      "substrate": "opencode-cli",
+      "disabled_overlaps": [
+        "all unlisted surfaces"
+      ],
+      "native_agent_tools_allowed": [
+        "opencode-native-shell-edit",
+        "opencode-native-file-read-search",
+        "git",
+        "verifier-commands"
+      ],
+      "forbidden_surfaces": [
+        "all external retrieval, compression, memory, MCP, skills, plugins, subagents, and web tools except the assigned product surfaces"
+      ],
+      "reset": {
+        "policy": "Delete lane-private OpenCode XDG directories, product state, generated repository treatment files, auth translation, and background processes after evidence capture."
+      },
+      "id": "retrieval-sigmap-opencode-product-v1",
+      "artifact_slug": "sigmap-opencode-v1",
+      "name": "SigMap OpenCode MCP and context setup V1",
+      "enabled_surfaces": [
+        "retrieval-context",
+        "opencode-mcp",
+        "product-setup",
+        "warm-context-map"
+      ],
+      "components": [
+        {
+          "component_id": "retrieval-sigmap-opencode-product-v1",
+          "surface": "retrieval-context+opencode-mcp+product-setup+warm-context-map",
+          "role": "individual_tool"
+        }
+      ],
+      "install": {
+        "policy": "Run the pinned standalone SigMap bundle\u2019s official OpenCode MCP installer, build its product context map with the copilot-compatible adapter, and require initialize plus tools/list."
+      },
+      "evaluation_protocol": {
+        "tool_use_policy": "natural",
+        "tool_state": "warm-context-map+active-mcp",
+        "integration_state": "official-opencode-mcp+product-setup",
+        "assignment_proof": "provider-free exact artifact identities, effective OpenCode configuration, native activation, warm state, and task/final verifiers required"
+      },
+      "source_snapshot": {
+        "repository": "",
+        "version": "8.9.1",
+        "source_commit": "b1e086cf06bc7a7622473ffe9637c122567404e0",
+        "bundle_sha256": "1a920ef5dfb50f9f1a23baa7d26ab2f9329616242713a7d8734928970ad4fb59",
+        "package_sha256": "f8478ca025747dada0b86288f696e1ae39ea8701a5081c60f54c70eafa034963",
+        "runtime_adapter": "/opt/data/tool-candidates/opencode-adapter-v6/opencode_workflow_adapter.py",
+        "runtime_adapter_sha256": "1b98aaec34711b3a7bb09ce269c12bb06421ab08913d06593fb6d2c6641a34a3"
+      },
+      "notes": "Second successive screen: SigMap is a zero-dependency standalone MCP/context bundle and explicitly supports the OpenCode MCP client."
+    },
+    {
+      "profile_type": "individual_tool",
+      "objective_scope": "individual_tool_effectiveness",
+      "status": "screening-ablation",
+      "substrate": "opencode-cli",
+      "disabled_overlaps": [
+        "all unlisted surfaces"
+      ],
+      "native_agent_tools_allowed": [
+        "opencode-native-shell-edit",
+        "opencode-native-file-read-search",
+        "git",
+        "verifier-commands"
+      ],
+      "forbidden_surfaces": [
+        "all external retrieval, compression, memory, MCP, skills, plugins, subagents, and web tools except the assigned product surfaces"
+      ],
+      "reset": {
+        "policy": "Delete lane-private OpenCode XDG directories, product state, generated repository treatment files, auth translation, and background processes after evidence capture."
+      },
+      "id": "artifact-ponytail-opencode-plugin-v1",
+      "artifact_slug": "ponytail-opencode-v1",
+      "name": "Ponytail OpenCode plugin V1",
+      "enabled_surfaces": [
+        "opencode-plugin",
+        "product-authored-skills-and-commands",
+        "per-turn-guidance"
+      ],
+      "components": [
+        {
+          "component_id": "artifact-ponytail-opencode-plugin-v1",
+          "surface": "opencode-plugin+product-authored-skills+commands+per-turn-guidance",
+          "role": "individual_tool"
+        }
+      ],
+      "install": {
+        "policy": "Copy the pinned Ponytail OpenCode plugin and product-authored rules into the isolated project, then require the plugin to load through OpenCode\u2019s native plugin surface."
+      },
+      "evaluation_protocol": {
+        "tool_use_policy": "natural",
+        "tool_state": "active-native-plugin+per-turn-guidance",
+        "integration_state": "official-opencode-plugin+product-authored-guidance",
+        "assignment_proof": "provider-free exact artifact identities, effective OpenCode configuration, native activation, warm state, and task/final verifiers required"
+      },
+      "source_snapshot": {
+        "repository": "",
+        "version": "4.8.3",
+        "source_commit": "c4d1925ae9b76a1b641877328209ad25cfeb5ef2",
+        "plugin_sha256": "e2443648e1864724f56e2a073fdf2f29199772606d9ea1c175fe06eaa3b75853",
+        "guidance_sha256": "1cd148db944eff33bf8bb878c41a290fe85b86de3e65ac311d5d501e71a0cdbf",
+        "runtime_adapter": "/opt/data/tool-candidates/opencode-adapter-v6/opencode_workflow_adapter.py",
+        "runtime_adapter_sha256": "1b98aaec34711b3a7bb09ce269c12bb06421ab08913d06593fb6d2c6641a34a3"
+      },
+      "notes": "Second successive screen: Ponytail contains a native .opencode plugin and product-authored AGENTS guidance; no prompt-only emulation is used."
+    },
+    {
+      "profile_type": "individual_tool",
+      "objective_scope": "individual_tool_effectiveness",
+      "status": "screening-ablation",
+      "substrate": "opencode-cli",
+      "disabled_overlaps": [
+        "all unlisted surfaces"
+      ],
+      "native_agent_tools_allowed": [
+        "opencode-native-shell-edit",
+        "opencode-native-file-read-search",
+        "git",
+        "verifier-commands"
+      ],
+      "forbidden_surfaces": [
+        "all external retrieval, compression, memory, MCP, skills, plugins, subagents, and web tools except the assigned product surfaces"
+      ],
+      "reset": {
+        "policy": "Delete lane-private OpenCode XDG directories, product state, generated repository treatment files, auth translation, and background processes after evidence capture."
+      },
+      "id": "behavior-caveman-opencode-plugin-v1",
+      "artifact_slug": "caveman-opencode-v1",
+      "name": "Caveman OpenCode plugin and guidance V1",
+      "enabled_surfaces": [
+        "opencode-plugin",
+        "prompt-reinforcement",
+        "product-authored-init"
+      ],
+      "components": [
+        {
+          "component_id": "behavior-caveman-opencode-plugin-v1",
+          "surface": "opencode-plugin+prompt-reinforcement+product-authored-init",
+          "role": "individual_tool"
+        }
+      ],
+      "install": {
+        "policy": "Run Caveman\u2019s pinned installer with the OpenCode target and product initialization enabled, then require the installed native plugin and repo guidance in the isolated lane."
+      },
+      "evaluation_protocol": {
+        "tool_use_policy": "natural",
+        "tool_state": "active-native-plugin+per-session-guidance",
+        "integration_state": "official-opencode-plugin+product-init",
+        "assignment_proof": "provider-free exact artifact identities, effective OpenCode configuration, native activation, warm state, and task/final verifiers required"
+      },
+      "source_snapshot": {
+        "repository": "JuliusBrussee/caveman",
+        "version": "0.1.0",
+        "source_commit": "0d95a81d35a9f2d123a5e9430d1cfc43d55f1bb0",
+        "plugin_sha256": "6d68e8dfe205354718729a5f5c9ca9d555a045af6b2cbbc3b6a84caad1076df7",
+        "package_sha256": "b603811ba72eb71581db5b02045fb5f8903e3c46dcf7b40f36eeb81fbba23274",
+        "runtime_adapter": "/opt/data/tool-candidates/opencode-adapter-v6/opencode_workflow_adapter.py",
+        "runtime_adapter_sha256": "1b98aaec34711b3a7bb09ce269c12bb06421ab08913d06593fb6d2c6641a34a3"
+      },
+      "notes": "Second successive screen: Caveman\u2019s local installer exposes an explicit OpenCode target and writes the native plugin under the OpenCode XDG configuration surface."
     }
   ]
 }

@@ -41,6 +41,11 @@ NODE_BINARY = Path("/opt/data/opt/node-v24.18.0-linux-x64/bin/node")
 CODESCOPE_BINARY = Path("/opt/data/tool-candidates/codescope-release-v0.8.12/codescope")
 SWARMVAULT_CLI = Path("/opt/data/tool-candidates/swarmvault/packages/cli/dist/index.js")
 CODEGRAPH_BINARY = Path("/opt/data/tool-candidates/codegraph/dist/bin/codegraph.js")
+JCODEMUNCH_ROOT = Path("/opt/data/tool-candidates/jcodemunch-mcp")
+LEANCTX_BINARY = Path("/opt/data/bin/lean-ctx")
+SIGMAP_ROOT = Path("/opt/data/tool-candidates/sigmap")
+PONYTAIL_ROOT = Path("/opt/data/tool-candidates/ponytail")
+CAVEMAN_ROOT = Path("/opt/data/tool-candidates/caveman")
 HEADROOM_PLUGIN = Path(
     "/opt/data/tool-candidates/headroom/plugins/opencode/dist/entry.opencode.js"
 )
@@ -56,8 +61,17 @@ TREATMENT_PROFILES = {
     "graphify",
     "rtk",
     "codegraph",
+    "jcodemunch",
+    "leanctx",
+    "sigmap",
+    "ponytail",
+    "caveman",
 }
-PLUGIN_TREATMENTS = {"tokenjuice", "snip", "headroom", "swarmvault", "graphify", "rtk"}
+PLUGIN_TREATMENTS = {
+    "tokenjuice", "snip", "headroom", "swarmvault", "graphify", "rtk",
+    "ponytail", "caveman",
+}
+GUIDED_TREATMENTS = {"jcodemunch", "leanctx", "sigmap", "ponytail", "caveman"}
 
 
 def verify_binary_sha256(binary: Path, expected_sha256: str) -> str:
@@ -753,6 +767,44 @@ def _runtime_env(
                 "enabled": True,
             }
         }
+    elif treatment == "jcodemunch":
+        tool_data = Path(env.get("OPENCODE_TOOL_DATA_DIR", xdg_data / "jcodemunch"))
+        config["mcp"] = {
+            "jcodemunch": {
+                "type": "local",
+                "command": [str(tool_data / "venv" / "bin" / "jcodemunch-mcp")],
+                "environment": {
+                    "CODE_INDEX_PATH": str(tool_data / "index"),
+                    "JCODEMUNCH_LOG_LEVEL": "ERROR",
+                },
+                "enabled": True,
+            }
+        }
+    elif treatment == "leanctx":
+        config["mcp"] = {
+            "lean-ctx": {
+                "type": "local",
+                "command": [str(LEANCTX_BINARY)],
+                "environment": {"LEAN_CTX_DATA_DIR": str(xdg_data / "leanctx")},
+                "enabled": True,
+            }
+        }
+    elif treatment == "sigmap":
+        config["mcp"] = {
+            "sigmap": {
+                "type": "local",
+                "command": [str(NODE_BINARY), str(SIGMAP_ROOT / "gen-context.js"), "--mcp"],
+                "environment": {"SIGMAP_NO_TELEMETRY": "1"},
+                "enabled": True,
+            }
+        }
+    elif treatment == "ponytail":
+        if directory is None:
+            raise ValueError("Ponytail treatment requires an evaluation directory")
+        config["plugin"] = [(directory / ".opencode" / "plugins" / "ponytail.mjs").as_uri()]
+    elif treatment == "caveman":
+        plugin = xdg_config / "opencode" / "plugins" / "caveman" / "plugin.js"
+        config["plugin"] = [plugin.as_uri()]
     env.update(
         {
             "XDG_DATA_HOME": str(xdg_data),
@@ -762,10 +814,11 @@ def _runtime_env(
             "OPENCODE_DISABLE_AUTOUPDATE": "1",
             "OPENCODE_DISABLE_MODELS_FETCH": "1",
             "OPENCODE_DISABLE_PROJECT_CONFIG": "1",
-            "OPENCODE_DISABLE_EXTERNAL_SKILLS": "0" if treatment in {"swarmvault", "graphify"} else "1",
+            "OPENCODE_DISABLE_EXTERNAL_SKILLS": "0" if treatment in {"swarmvault", "graphify", *GUIDED_TREATMENTS} else "1",
             "OPENCODE_DISABLE_LSP_DOWNLOAD": "1",
             "OPENCODE_DISABLE_CLAUDE_CODE": "1",
             "OPENCODE_TREATMENT_PROFILE": treatment,
+            "OPENCODE_TOOL_DATA_DIR": env.get("OPENCODE_TOOL_DATA_DIR", str(xdg_data / treatment)),
             "OPENCODE_CONFIG_CONTENT": json.dumps(config, separators=(",", ":")),
         }
     )
@@ -813,6 +866,8 @@ def probe(
             "swarmvault": "swarmvault-graph-first.js",
             "graphify": "graphify.js",
             "rtk": "rtk.ts",
+            "ponytail": "ponytail.mjs",
+            "caveman": "caveman",
         }[treatment]
         if expected_plugin not in plugin_info.stdout:
             raise RuntimeError(
@@ -828,7 +883,7 @@ def probe(
         "model_available": "openai/gpt-5.6-sol" in available,
         "project_config_disabled": True,
         "external_plugins_disabled_by_pure_flag": treatment not in PLUGIN_TREATMENTS,
-        "external_skills_disabled": True,
+        "external_skills_disabled": treatment not in {"swarmvault", "graphify", *GUIDED_TREATMENTS},
         "web_tools_permission": "deny",
         "subagents_permission": "deny",
         "plugin_assignment": plugin_proof,
@@ -887,7 +942,7 @@ def main(argv: list[str] | None = None) -> int:
         known.opencode_binary,
         parsed,
         prompt,
-        pure=known.treatment not in PLUGIN_TREATMENTS,
+        pure=known.treatment not in (PLUGIN_TREATMENTS | GUIDED_TREATMENTS),
     )
     command = native_command
     headroom_receipt: dict[str, Any] | None = None
