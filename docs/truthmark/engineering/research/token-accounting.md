@@ -12,11 +12,11 @@ Define the production estimand and separate experiment validity from sampled mod
 
 ## Scope
 
-This contract governs lifecycle-v0 provider-token samples, baseline reuse, compatible treatment comparisons, and exclusion/rerun boundaries.
+This contract governs active Lifecycle V1 provider-token samples, retained lifecycle-v0 baseline reuse, compatible treatment comparisons, and exclusion/rerun boundaries.
 
 ## Current Implementation Behavior
 
-- The active portfolio contains Fastify, Beets, and Terraform lifecycle-v0 sequences under Lifecycle V1.
+- The active portfolio contains the Fastify and Beets Lifecycle V1 sequences. Terraform's incomplete V1 r0 is rejected historical evidence and has no active rerun or treatment path.
 - Lifecycle V1 tasks seed authentic semantic regressions, require agents to complete normal software-engineering objectives correctly, and permit repository discovery without exposing controller scoring.
 - Controller-only component compilation gates per-task acceptance; a controller-only frozen project-wide compile command gates final workflow acceptance and treatment unlock. Tests, behavior, style, maintainability, exact source shape, and source review remain diagnostic. This internal boundary is never included in agent instructions.
 - The runner captures cumulative provider usage across one persistent sequential agent session.
@@ -27,7 +27,7 @@ This contract governs lifecycle-v0 provider-token samples, baseline reuse, compa
 - Before any non-baseline provider launch, both repository validation and the direct runner require exact parity approval plus a current provider-free qualification receipt for every active fixture/profile protocol binding; MCP profiles additionally require non-empty `tools/list` proof.
 - Canonical treatment profiles install every author-recommended Codex surface, including product-authored guidance, native skills/plugins, and reviewed hooks; reduced or prompt-emulated setups are ablations or invalid assignments, not product treatments.
 - The historical shared-runner qualification covered 45 fixture/profile bindings across 15 profiles with zero provider calls; those receipts do not authorize Lifecycle V1 treatments.
-- Thirty-eight provider-backed baseline records are retained under earlier frozen contracts; Lifecycle V1 has no provider-backed session yet.
+- Thirty-eight provider-backed baseline records are retained under earlier frozen contracts; Fastify and Beets additionally retain one accepted Lifecycle V1 r0 pilot each, while Terraform V1 r0 remains rejected historical evidence.
 
 ## Product Truth Links
 

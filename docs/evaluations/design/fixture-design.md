@@ -33,7 +33,7 @@ candidate repositories
 
 ## Task classes
 
-The table below is the general fixture taxonomy. Active Lifecycle V1 retains the first three labels as genuine model-facing engineering objectives. Each task seeds an authentic semantic regression and tells the agent to implement the requested behavior correctly; normal repository discovery and relevant validation are expected. Internally, affected-component and final project-wide compilation determine evaluator pass/fail, while the semantic expectations below remain diagnostics. The internal scoring distinction and controller commands are not model-facing.
+The table below is the general fixture taxonomy. Active Lifecycle V1 uses the first three task classes as genuine model-facing engineering objectives. Each task seeds an authentic semantic regression and tells the agent to implement the requested behavior correctly; normal repository discovery and relevant validation are expected. Internally, affected-component and final project-wide compilation determine evaluator pass/fail, while the semantic expectations below remain diagnostics. The internal scoring distinction and controller commands are not model-facing.
 
 | Task class | Token-waste target | Minimum verifier expectation |
 |---|---|---|
@@ -57,7 +57,7 @@ Each fixture record in `data/repository-fixtures.json` must include:
 - `id`: stable kebab-case fixture ID.
 - `status`: one lifecycle state.
 - `fixture_scale`: `synthetic-micro`, `recorded-diagnostic`, `medium-project`, or `large-project`.
-- `evaluation_use`: `calibration`, `diagnostic-preservation`, `primary-candidate`, or `primary-objective`.
+- `evaluation_use`: `calibration`, `diagnostic-preservation`, `historical-evidence`, `primary-candidate`, or `primary-objective`.
 - `repository`: repository ID, path, or URL.
 - `snapshot`: commit, tag, archive, or explicit snapshot policy.
 - `task_classes`: one or more supported task classes.
