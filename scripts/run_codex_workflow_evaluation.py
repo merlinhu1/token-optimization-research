@@ -47,6 +47,9 @@ TRUSTED_REPOSITORY_REF = "refs/heads/phase-3"
 OPENCODE_STANDALONE_R2_AUTHORITY_REL = Path(
     "sources/evaluations/audits/opencode-dcp-qualification-and-r2-authorization-20260730.json"
 )
+OPENCODE_LIFECYCLE_V1_R1_AUTHORITY_REL = Path(
+    "sources/evaluations/audits/lifecycle-v1-opencode-sol-high-r1-authorization-20260802.json"
+)
 
 PROJECT_META: dict[str, dict[str, str]] = {
     "medium-fastify-fastify": {
@@ -2357,14 +2360,38 @@ def standalone_opencode_control_authorized(
     profile_id: str,
     replicate_index: int,
     root: Path = ROOT,
+    *,
+    sequence_id: str = "",
+    model_condition_id: str | None = None,
 ) -> bool:
+    selected_condition = model_condition_id or DEFAULT_WORKFLOW_MODEL_CONDITION_ID
     if (
         profile_id != "runtime-opencode-codex-product-v1"
-        or replicate_index != 2
-        or DEFAULT_WORKFLOW_MODEL_CONDITION_ID != "opencode-openai-gpt-5-6-sol-high"
+        or selected_condition != "opencode-openai-gpt-5-6-sol-high"
     ):
         return False
-    path = root / OPENCODE_STANDALONE_R2_AUTHORITY_REL
+    if replicate_index == 2:
+        path = root / OPENCODE_STANDALONE_R2_AUTHORITY_REL
+        try:
+            authority = json.loads(path.read_text())
+        except (OSError, ValueError):
+            return False
+        owner = authority.get("owner_authorization", {})
+        contract = authority.get("execution_contract", {})
+        return bool(
+            authority.get("status") == "qualified-ready-for-provider-execution"
+            and owner.get("message_id") == "1532521147327971438"
+            and owner.get("authorized_new_bare_replicate_index") == 2
+            and contract.get("baseline_profile_id") == profile_id
+            and contract.get("model_condition_id") == selected_condition
+            and contract.get("sequential_max_parallel") == 1
+        )
+    if replicate_index != 1 or sequence_id not in {
+        "fastify-lifecycle-sequence-v1",
+        "beets-lifecycle-sequence-v1",
+    }:
+        return False
+    path = root / OPENCODE_LIFECYCLE_V1_R1_AUTHORITY_REL
     try:
         authority = json.loads(path.read_text())
     except (OSError, ValueError):
@@ -2373,11 +2400,30 @@ def standalone_opencode_control_authorized(
     contract = authority.get("execution_contract", {})
     return bool(
         authority.get("status") == "qualified-ready-for-provider-execution"
-        and owner.get("message_id") == "1532521147327971438"
-        and owner.get("authorized_new_bare_replicate_index") == 2
+        and owner == {
+            "source": "discord",
+            "message_id": "1533309463484694750",
+            "request": "Run V1 lifecycle evaluation with OpenCode and GPT sol high (though codex subscription)",
+            "authorized_new_runtime_replicate_index": 1,
+        }
+        and contract.get("task_family_generation") == "lifecycle-v1"
+        and contract.get("sequence_order") == [
+            "fastify-lifecycle-sequence-v1",
+            "beets-lifecycle-sequence-v1",
+        ]
+        and contract.get("replicate_index") == 1
+        and contract.get("runtime") == "opencode-cli"
+        and contract.get("model_condition_id") == selected_condition
+        and contract.get("model") == "gpt-5.6-sol"
+        and contract.get("reasoning_effort") == "high"
         and contract.get("baseline_profile_id") == profile_id
-        and contract.get("model_condition_id") == DEFAULT_WORKFLOW_MODEL_CONDITION_ID
         and contract.get("sequential_max_parallel") == 1
+        and contract.get("allowed_paid_baseline_runs") == 2
+        and contract.get("allowed_model_turns") == 6
+        and contract.get("first_valid_sample_policy") is True
+        and contract.get("rerun_after_attempt_receipt") is False
+        and contract.get("provider_calls") == 0
+        and contract.get("provider_tokens") == 0
     )
 
 
@@ -4377,6 +4423,7 @@ def _run_one_locked(args: argparse.Namespace) -> dict[str, Any]:
         profile_id,
         args.replicate_index,
         ROOT,
+        sequence_id=seq["id"],
     )
     if not baseline_control_profile and not standalone_opencode_control:
         require_baseline_v2_treatment_gate(seq, ROOT)

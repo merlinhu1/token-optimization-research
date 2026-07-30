@@ -89,6 +89,10 @@ def published_unoccupied_probe_worktree():
         probe / "sources/evaluations/audits/current-low-complexity-baseline-r1-r2-attempts",
         ignore_errors=True,
     )
+    shutil.rmtree(
+        probe / "sources/evaluations/audits/lifecycle-v1-codex-sol-high-r1-attempts",
+        ignore_errors=True,
+    )
     try:
         yield probe
     finally:
@@ -6043,6 +6047,45 @@ class BaselineV3LowComplexityContractTest(unittest.TestCase):
                 self.assertEqual(receipt["frozen_protocol"]["path"], identity["path"])
                 self.assertEqual(receipt["frozen_protocol"]["sha256"], identity["sha256"])
                 self.assertEqual(receipt["baseline_pool_fingerprint"], protocol["baseline_pool"]["protocol_fingerprint"])
+
+    def test_opencode_lifecycle_v1_r1_authority_is_sequence_scoped(self) -> None:
+        authority_path = ROOT / "sources/evaluations/audits/lifecycle-v1-opencode-sol-high-r1-authorization-20260802.json"
+        self.assertTrue(authority_path.is_file())
+        authority = json.loads(authority_path.read_text())
+        self.assertEqual(authority["owner_authorization"]["message_id"], "1533309463484694750")
+        self.assertEqual(
+            authority["execution_contract"]["sequence_order"],
+            ["fastify-lifecycle-sequence-v1", "beets-lifecycle-sequence-v1"],
+        )
+        for sequence_id in authority["execution_contract"]["sequence_order"]:
+            self.assertTrue(
+                runner.standalone_opencode_control_authorized(
+                    "runtime-opencode-codex-product-v1",
+                    1,
+                    ROOT,
+                    sequence_id=sequence_id,
+                    model_condition_id="opencode-openai-gpt-5-6-sol-high",
+                )
+            )
+        self.assertFalse(
+            runner.standalone_opencode_control_authorized(
+                "runtime-opencode-codex-product-v1",
+                1,
+                ROOT,
+                sequence_id="fastify-lifecycle-sequence-v0",
+                model_condition_id="opencode-openai-gpt-5-6-sol-high",
+            )
+        )
+        registry = json.loads((ROOT / "data/workflow-sessions.json").read_text())
+        for sequence_id in authority["execution_contract"]["sequence_order"]:
+            passed, reason = matrix.opencode_baseline_run_gate(registry, sequence_id, 1, ROOT)
+            self.assertTrue(passed, reason)
+            self.assertEqual(
+                matrix.opencode_baseline_attempt_path(sequence_id, 1, ROOT).relative_to(ROOT).as_posix(),
+                "sources/evaluations/audits/lifecycle-v1-opencode-sol-high-r1-attempts/"
+                + sequence_id.removesuffix("-lifecycle-sequence-v1")
+                + "-r1.json",
+            )
 
     def test_strict_replication_authority_rejects_every_decision_field_mutation(self) -> None:
         source_authority = ROOT / runner.BASELINE_REPLICATION_AUTHORITY_REL

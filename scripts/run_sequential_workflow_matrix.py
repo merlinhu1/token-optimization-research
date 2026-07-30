@@ -41,6 +41,9 @@ OPENCODE_BASELINE_AUTHORITY_REL = Path(
     "sources/evaluations/audits/opencode-dcp-qualification-and-r2-authorization-20260730.json"
 )
 OPENCODE_BASELINE_ATTEMPT_DIR = Path("sources/evaluations/audits/opencode-bare-r2-attempts")
+OPENCODE_LIFECYCLE_V1_R1_ATTEMPT_DIR = Path(
+    "sources/evaluations/audits/lifecycle-v1-opencode-sol-high-r1-attempts"
+)
 CLAUDE_BASELINE_AUTHORITY_REL = Path(
     "sources/evaluations/audits/claude-code-sol-high-normal-baseline-authorization-20260731.json"
 )
@@ -414,6 +417,9 @@ def opencode_baseline_attempt_path(
     replicate_index: int,
     root: Path = ROOT,
 ) -> Path:
+    if sequence_id.endswith("-lifecycle-sequence-v1"):
+        lane = sequence_id.removesuffix("-lifecycle-sequence-v1")
+        return root / OPENCODE_LIFECYCLE_V1_R1_ATTEMPT_DIR / f"{lane}-r{replicate_index}.json"
     lane = sequence_id.removesuffix("-lifecycle-sequence-v0")
     return root / OPENCODE_BASELINE_ATTEMPT_DIR / f"{lane}-r{replicate_index}.json"
 
@@ -424,24 +430,63 @@ def opencode_baseline_run_gate(
     replicate_index: int,
     root: Path = ROOT,
 ) -> tuple[bool, str]:
-    authority_path = root / OPENCODE_BASELINE_AUTHORITY_REL
-    if not authority_path.is_file():
-        return False, f"missing OpenCode baseline authority: {OPENCODE_BASELINE_AUTHORITY_REL}"
-    try:
-        authority = load_json(authority_path)
-    except (OSError, ValueError) as exc:
-        return False, f"unreadable OpenCode baseline authority: {exc}"
-    owner = authority.get("owner_authorization", {})
-    contract = authority.get("execution_contract", {})
-    if not (
-        authority.get("status") == "qualified-ready-for-provider-execution"
-        and owner.get("message_id") == "1532521147327971438"
-        and owner.get("authorized_new_bare_replicate_index") == replicate_index == 2
-        and contract.get("model_condition_id") == "opencode-openai-gpt-5-6-sol-high"
-        and contract.get("baseline_profile_id") == "runtime-opencode-codex-product-v1"
-        and contract.get("sequential_max_parallel") == 1
-    ):
-        return False, "OpenCode baseline authority does not match the requested identity"
+    if sequence_id.endswith("-lifecycle-sequence-v1"):
+        if not workflow.standalone_opencode_control_authorized(
+            "runtime-opencode-codex-product-v1",
+            replicate_index,
+            root,
+            sequence_id=sequence_id,
+            model_condition_id="opencode-openai-gpt-5-6-sol-high",
+        ):
+            return False, "Lifecycle V1 OpenCode authority does not match the requested identity"
+        authority_path = root / workflow.OPENCODE_LIFECYCLE_V1_R1_AUTHORITY_REL
+        try:
+            authority = load_json(authority_path)
+        except (OSError, ValueError) as exc:
+            return False, f"unreadable Lifecycle V1 OpenCode authority: {exc}"
+        matches = [
+            item
+            for item in authority.get("frozen_protocols", [])
+            if isinstance(item, dict) and item.get("sequence_id") == sequence_id
+        ]
+        if len(matches) != 1 or set(matches[0]) != {
+            "sequence_id", "protocol_path", "protocol_sha256", "baseline_pool_fingerprint"
+        }:
+            return False, "Lifecycle V1 OpenCode authority does not bind exactly one frozen protocol"
+        frozen = matches[0]
+        protocol_path = root / str(frozen["protocol_path"])
+        try:
+            protocol_raw = protocol_path.read_bytes()
+            protocol = json.loads(protocol_raw)
+        except (OSError, ValueError) as exc:
+            return False, f"unreadable authorized Lifecycle V1 OpenCode protocol: {exc}"
+        if (
+            hashlib.sha256(protocol_raw).hexdigest() != frozen["protocol_sha256"]
+            or protocol.get("baseline_pool", {}).get("protocol_fingerprint")
+            != frozen["baseline_pool_fingerprint"]
+        ):
+            return False, "Lifecycle V1 OpenCode protocol hash or baseline pool drifted from authority"
+        ready_reason = "owner-authorized Lifecycle V1 OpenCode r1 baseline is unoccupied"
+    else:
+        authority_path = root / OPENCODE_BASELINE_AUTHORITY_REL
+        if not authority_path.is_file():
+            return False, f"missing OpenCode baseline authority: {OPENCODE_BASELINE_AUTHORITY_REL}"
+        try:
+            authority = load_json(authority_path)
+        except (OSError, ValueError) as exc:
+            return False, f"unreadable OpenCode baseline authority: {exc}"
+        owner = authority.get("owner_authorization", {})
+        contract = authority.get("execution_contract", {})
+        if not (
+            authority.get("status") == "qualified-ready-for-provider-execution"
+            and owner.get("message_id") == "1532521147327971438"
+            and owner.get("authorized_new_bare_replicate_index") == replicate_index == 2
+            and contract.get("model_condition_id") == "opencode-openai-gpt-5-6-sol-high"
+            and contract.get("baseline_profile_id") == "runtime-opencode-codex-product-v1"
+            and contract.get("sequential_max_parallel") == 1
+        ):
+            return False, "OpenCode baseline authority does not match the requested identity"
+        ready_reason = "owner-authorized OpenCode r2 baseline is unoccupied"
     receipt = opencode_baseline_attempt_path(sequence_id, replicate_index, root)
     if receipt.exists():
         return False, (
@@ -457,7 +502,7 @@ def opencode_baseline_run_gate(
     )
     if occupied is not None:
         return False, f"OpenCode baseline identity is occupied by session {occupied.get('session_id')}"
-    return True, "owner-authorized OpenCode r2 baseline is unoccupied"
+    return True, ready_reason
 
 
 def reserve_opencode_baseline_attempt(
@@ -468,6 +513,7 @@ def reserve_opencode_baseline_attempt(
     run_root: Path,
 ) -> Path:
     path = opencode_baseline_attempt_path(sequence_id, replicate_index, ROOT)
+    lifecycle_v1 = sequence_id.endswith("-lifecycle-sequence-v1")
     payload = {
         "schema_version": 1,
         "attempt_status": "reserved-before-provider-task",
@@ -475,13 +521,18 @@ def reserve_opencode_baseline_attempt(
         "replicate_index": replicate_index,
         "profile_id": "runtime-opencode-codex-product-v1",
         "model_condition_id": "opencode-openai-gpt-5-6-sol-high",
-        "owner_authorization_message_id": "1532521147327971438",
+        "owner_authorization_message_id": (
+            "1533309463484694750" if lifecycle_v1 else "1532521147327971438"
+        ),
         "orchestrator": str(run_root),
         "reserved_at": dt.datetime.now(dt.UTC).isoformat(),
         "expected_session_binding": expected_session_binding,
         "provider_result": None,
         "immutable_identity_receipt": True,
     }
+    if lifecycle_v1:
+        payload["task_family_generation"] = "lifecycle-v1"
+        payload["authority_path"] = str(workflow.OPENCODE_LIFECYCLE_V1_R1_AUTHORITY_REL)
     workflow.atomic_create_json(path, payload)
     return path
 
