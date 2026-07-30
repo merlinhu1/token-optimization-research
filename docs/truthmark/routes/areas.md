@@ -85,6 +85,8 @@ Code surface:
 - scripts/generate_workflow_qualification.py
 - scripts/install_cartog_codex_product.py
 - scripts/install_jcodemunch_codex_guidance.py
+- scripts/install_jcodemunch_opencode_guidance.py
+- scripts/install_ponytail_opencode.py
 - scripts/install_token_savior_codex_product.py
 - scripts/opencode_workflow_adapter.py
 - scripts/prepare_pinned_codex_marketplace.py
