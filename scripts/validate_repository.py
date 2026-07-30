@@ -4332,6 +4332,11 @@ def validate_lifecycle_v1_authorization(errors: list[str]) -> None:
     ):
         errors.append("Lifecycle V1 authorization audit must bind normal agent objectives, controller-only compile assessment, and the explicit bounded pilot authority")
 
+    try:
+        workflow.load_lifecycle_v1_replication_authority(ROOT)
+    except ValueError as exc:
+        errors.append(f"Lifecycle V1 r1 replication authority is invalid: {exc}")
+
     invalidation_path = ROOT / "sources/evaluations/audits/lifecycle-v1-terraform-invalidated-20260802.json"
     try:
         invalidation = json.loads(invalidation_path.read_text(), object_pairs_hook=_json_object_without_duplicate_keys)

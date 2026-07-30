@@ -5823,13 +5823,13 @@ class BaselineV3LowComplexityContractTest(unittest.TestCase):
             self.assertNotIn(name, env)
         self.assertEqual(env["TMPDIR"], "/tmp/unit-lane")
 
-    def test_direct_current_replication_rejects_invalid_authority_before_lock(self) -> None:
+    def test_direct_current_replication_rejects_unapproved_identity_before_lock(self) -> None:
         sequence = runner.load_sequence("beets-lifecycle-sequence-v1")
         args = argparse.Namespace(
             prepare_only=False,
             profile_id="baseline-bare-codex",
             sequence_id=sequence["id"],
-            replicate_index=1,
+            replicate_index=2,
         )
         with mock.patch.object(runner, "load_sequence", return_value=sequence), \
              mock.patch.object(runner, "acquire_provider_production_lock") as acquire_lock, \
@@ -5945,6 +5945,38 @@ class BaselineV3LowComplexityContractTest(unittest.TestCase):
         self.assertTrue((ROOT / runner.BEETS_R3_REPLACEMENT_AUTHORITY_REL).is_file())
         sequence = runner.load_sequence("beets-lifecycle-sequence-v1")
         with self.assertRaisesRegex(ValueError, "Lifecycle V1 replicate 3 requires explicit authority"): runner.baseline_replication_binding(sequence, 3, ROOT)
+
+    def test_lifecycle_v1_r1_replication_authority_is_exact_and_unoccupied(self) -> None:
+        authority = runner.load_lifecycle_v1_replication_authority(ROOT)
+        self.assertEqual(authority["authorized_replicate_indexes"], [1])
+        self.assertEqual(
+            authority["sequence_order"],
+            ["fastify-lifecycle-sequence-v1", "beets-lifecycle-sequence-v1"],
+        )
+        self.assertTrue(authority["serialization_required"])
+        self.assertEqual(authority["allowed_paid_baseline_runs"], 2)
+        self.assertEqual(authority["allowed_model_turns"], 6)
+        for sequence_id in authority["sequence_order"]:
+            sequence = runner.load_sequence(sequence_id)
+            binding, receipt_path = runner.baseline_replication_binding(sequence, 1, ROOT)
+            identity, protocol = runner.current_baseline_v2_protocol(sequence, sequence["mistake_gate"], ROOT)
+            self.assertEqual(
+                binding,
+                {
+                    "sequence_id": sequence_id,
+                    "task_family_generation": "lifecycle-v1",
+                    "protocol_path": identity["path"],
+                    "protocol_sha256": identity["sha256"],
+                    "baseline_pool_fingerprint": protocol["baseline_pool"]["protocol_fingerprint"],
+                },
+            )
+            self.assertEqual(
+                receipt_path.relative_to(ROOT).as_posix(),
+                "sources/evaluations/audits/lifecycle-v1-codex-sol-high-r1-attempts/"
+                + sequence_id.removesuffix("-lifecycle-sequence-v1")
+                + "-r1.json",
+            )
+            self.assertFalse(receipt_path.exists())
 
     def test_strict_replication_authority_rejects_every_decision_field_mutation(self) -> None:
         source_authority = ROOT / runner.BASELINE_REPLICATION_AUTHORITY_REL
@@ -6078,12 +6110,13 @@ class BaselineV3LowComplexityContractTest(unittest.TestCase):
         self.assertNotEqual(result.returncode, 0)
         self.assertIn("Lifecycle V1 replicate 1 requires explicit authority", result.stderr + result.stdout)
 
-    def test_retired_replication_authority_does_not_authorize_lifecycle_v1(self) -> None:
+    def test_unapproved_lifecycle_v1_replication_identities_remain_blocked(self) -> None:
         self.assertTrue((ROOT / runner.BASELINE_REPLICATION_AUTHORITY_REL).is_file())
         for sequence_id in runner.active_sequence_ids():
             sequence = runner.load_sequence(sequence_id)
-            for replicate_index in (1, 2, 3, 4):
-                with self.assertRaisesRegex(ValueError, "requires explicit authority"): runner.baseline_replication_binding(sequence, replicate_index, ROOT)
+            for replicate_index in (2, 3, 4):
+                with self.assertRaisesRegex(ValueError, "requires explicit authority"):
+                    runner.baseline_replication_binding(sequence, replicate_index, ROOT)
 
     def test_lifecycle_v1_canonical_protocol_identity_ignores_noncausal_provenance_hashes(self) -> None:
         for sequence_id in runner.active_sequence_ids():
