@@ -2464,14 +2464,13 @@ class ManifestAndProtocolContractTest(unittest.TestCase):
         )
         with self.assertRaises(KeyError):
             runner.load_sequence("terraform-lifecycle-sequence-v1")
-        retirement = json.loads(
-            (ROOT / "sources/evaluations/audits/lifecycle-v1-terraform-retirement-20260802.json").read_text()
+        invalidation = json.loads(
+            (ROOT / "sources/evaluations/audits/lifecycle-v1-terraform-invalidated-20260802.json").read_text()
         )
-        self.assertEqual(retirement["active_lifecycle_v1_sequence_ids"], runner.active_sequence_ids())
-        self.assertFalse(retirement["rerun_or_treatment_authorized"])
-        self.assertTrue(
-            (ROOT / retirement["retained_historical_evidence"]["rejected_evidence_path"] / "manifest.sha256").is_file()
-        )
+        self.assertEqual(invalidation["active_lifecycle_v1_sequence_ids"], runner.active_sequence_ids())
+        self.assertFalse(invalidation["result_was_accepted_for_objective"])
+        for artifact in invalidation["removed_artifacts"]:
+            self.assertFalse((ROOT / artifact["path"]).exists())
         sequence = runner.load_sequence("beets-lifecycle-sequence-v1")
         self.assertEqual(
             [task["id"] for task in sequence["tasks"]],
