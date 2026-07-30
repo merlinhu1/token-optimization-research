@@ -1,6 +1,6 @@
 {
   "protocol_schema_version": 3,
-  "protocol_id": "terraform-lifecycle-sequence-v0-retrieval-jcodemunch-opencode-product-v1-914f7d54370a",
+  "protocol_id": "terraform-lifecycle-sequence-v0-retrieval-jcodemunch-opencode-product-v1-d0650ad49249",
   "status": "frozen-ready-not-run",
   "outcome": "Frozen retrieval-jcodemunch-opencode-product-v1 protocol for terraform-lifecycle-sequence-v0; no provider/model run has occurred.",
   "frozen_at": "2026-07-22",
@@ -41,7 +41,7 @@
     "model": "gpt-5.6-sol",
     "model_condition_id": "opencode-openai-gpt-5-6-sol-high",
     "reasoning_effort": "high",
-    "command": "python3 scripts/run_opencode_workflow_model_condition.py --workflow-model-condition-id opencode-openai-gpt-5-6-sol-high --workflow-model gpt-5.6-sol --workflow-reasoning-effort high --sequence-id terraform-lifecycle-sequence-v0 --profile-id retrieval-jcodemunch-opencode-product-v1 --timeout-per-task 3600 --protocol sources/evaluations/protocols/terraform-lifecycle-sequence-v0-retrieval-jcodemunch-opencode-product-v1-914f7d54370a.json --docker-image token-eval-codex:latest"
+    "command": "python3 scripts/run_opencode_workflow_model_condition.py --workflow-model-condition-id opencode-openai-gpt-5-6-sol-high --workflow-model gpt-5.6-sol --workflow-reasoning-effort high --sequence-id terraform-lifecycle-sequence-v0 --profile-id retrieval-jcodemunch-opencode-product-v1 --timeout-per-task 3600 --protocol sources/evaluations/protocols/terraform-lifecycle-sequence-v0-retrieval-jcodemunch-opencode-product-v1-d0650ad49249.json --docker-image token-eval-codex:latest"
   },
   "token_accounting_boundary": {
     "fields": [
@@ -249,7 +249,7 @@
     }
   },
   "selected_execution": {
-    "descriptor_sha256": "46991df8c55d8c1db25be0f416233e9f0728270c0480e5872c2c2e456460ea4b",
+    "descriptor_sha256": "3adb044c883eb484bd5f96b31c4d231daccfa2ca9d482f8a5f2ad61a7bf76af1",
     "descriptor": {
       "version": "execution-condition-v1",
       "sequence_id": "terraform-lifecycle-sequence-v0",
@@ -350,7 +350,7 @@
       "tool_adapter": {
         "tool_id": "jcodemunch-opencode-product-v1",
         "tool_manifest": "scripts/run_codex_fixture_evaluation.py:TOOL_CONFIGS",
-        "tool_manifest_sha256": "fdb1c530cb6e0e7be142c18a0b78c4aea26c59863c080c7b8c61db782d42f4cc",
+        "tool_manifest_sha256": "d00a59ad466f46e42e1ecd0d9e98e0ccd2cb89c2fc4011de66ebdecfbab1b475",
         "tool_config": {
           "display_name": "jCodemunch guide-faithful OpenCode MCP v1",
           "lane_name": "retrieval-jcodemunch-opencode-product-v1",
@@ -574,7 +574,7 @@
         "dockerfile_path": "sources/evaluations/fixtures/container/Dockerfile",
         "dockerfile_sha256": "47c91967ce25014ce54879514f51d2ff0326651be1087209115eff4d358226b3",
         "fixture_runner_path": "scripts/run_codex_fixture_evaluation.py",
-        "fixture_runner_sha256": "fdb1c530cb6e0e7be142c18a0b78c4aea26c59863c080c7b8c61db782d42f4cc",
+        "fixture_runner_sha256": "d00a59ad466f46e42e1ecd0d9e98e0ccd2cb89c2fc4011de66ebdecfbab1b475",
         "mcp_probe_path": "scripts/probe_mcp_stdio.py",
         "mcp_probe_sha256": "7c06ea36ee5cac933a97140b84a41405fc99b45152388e8d7c6659136af698fd",
         "codex_entrypoint_path": "sources/evaluations/fixtures/container/codex-entrypoint.sh",
