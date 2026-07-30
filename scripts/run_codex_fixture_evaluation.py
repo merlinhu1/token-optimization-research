@@ -2013,7 +2013,7 @@ TOOL_CONFIGS.update(
             adapter_path=OPENCODE_ADAPTER_V6,
             env={"OPENCODE_TOOL_DATA_DIR": "{tool_data_dir}"},
             host_integration={
-                "install_commands": [["python3", "{repository_root}/scripts/install_ponytail_opencode.py", "--source-root", "/opt/data/tool-candidates/ponytail", "--expected-commit", PONYTAIL_COMMIT, "--repo", "{repo}", "--receipt", "{tool_data_dir}/ponytail-install.json"]],
+                "install_commands": [["python3", "{repository_root}/scripts/install_ponytail_opencode.py", "--source-root", "/opt/data/tool-candidates/ponytail", "--repo", "{repo}", "--receipt", "{tool_data_dir}/ponytail-install.json"]],
                 "verify_commands": [["python3", "-c", "from pathlib import Path; assert Path('{repo}/.opencode/plugins/ponytail.mjs').is_file(); assert Path('{repo}/AGENTS.md').is_file()"]],
                 "required_files": ["{repo}/.opencode/plugins/ponytail.mjs", "{repo}/AGENTS.md"],
                 "timeout_seconds": 300,
