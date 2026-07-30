@@ -1,10 +1,10 @@
 {
   "protocol_schema_version": 3,
-  "protocol_id": "terraform-lifecycle-sequence-v0-behavior-caveman-opencode-plugin-v1-11972ea75e7a",
+  "protocol_id": "terraform-lifecycle-sequence-v0-artifact-ponytail-opencode-plugin-v1-12173466b756",
   "status": "frozen-ready-not-run",
-  "outcome": "Frozen behavior-caveman-opencode-plugin-v1 protocol for terraform-lifecycle-sequence-v0; no provider/model run has occurred.",
+  "outcome": "Frozen artifact-ponytail-opencode-plugin-v1 protocol for terraform-lifecycle-sequence-v0; no provider/model run has occurred.",
   "frozen_at": "2026-07-22",
-  "hypothesis": "behavior-caveman-opencode-plugin-v1 produces reproducible provider-reported token and software-quality evidence for terraform-lifecycle-sequence-v0",
+  "hypothesis": "artifact-ponytail-opencode-plugin-v1 produces reproducible provider-reported token and software-quality evidence for terraform-lifecycle-sequence-v0",
   "evidence_stage_target": "reproduction",
   "task_fixture": {
     "fixture_id": "large-hashicorp-terraform",
@@ -35,13 +35,13 @@
     "selection_policy": "sequence-pool-replicate-matched-first-valid"
   },
   "treatment": {
-    "profile_id": "behavior-caveman-opencode-plugin-v1",
+    "profile_id": "artifact-ponytail-opencode-plugin-v1",
     "runtime_id": "opencode-cli",
     "provider": "openai",
     "model": "gpt-5.6-sol",
     "model_condition_id": "opencode-openai-gpt-5-6-sol-high",
     "reasoning_effort": "high",
-    "command": "python3 scripts/run_opencode_workflow_model_condition.py --workflow-model-condition-id opencode-openai-gpt-5-6-sol-high --workflow-model gpt-5.6-sol --workflow-reasoning-effort high --sequence-id terraform-lifecycle-sequence-v0 --profile-id behavior-caveman-opencode-plugin-v1 --timeout-per-task 3600 --protocol sources/evaluations/protocols/terraform-lifecycle-sequence-v0-behavior-caveman-opencode-plugin-v1-11972ea75e7a.json --docker-image token-eval-codex:latest"
+    "command": "python3 scripts/run_opencode_workflow_model_condition.py --workflow-model-condition-id opencode-openai-gpt-5-6-sol-high --workflow-model gpt-5.6-sol --workflow-reasoning-effort high --sequence-id terraform-lifecycle-sequence-v0 --profile-id artifact-ponytail-opencode-plugin-v1 --timeout-per-task 3600 --protocol sources/evaluations/protocols/terraform-lifecycle-sequence-v0-artifact-ponytail-opencode-plugin-v1-12173466b756.json --docker-image token-eval-codex:latest"
   },
   "token_accounting_boundary": {
     "fields": [
@@ -249,26 +249,26 @@
     }
   },
   "selected_execution": {
-    "descriptor_sha256": "e9d3680463491048b9a6ba1e646bfc7dd09b52659f685d25f58a23de709ae078",
+    "descriptor_sha256": "a1219f576dfc4ed0bf9c4c24a2b611ff17cc74be3685f271ae53e16f43a12e75",
     "descriptor": {
       "version": "execution-condition-v1",
       "sequence_id": "terraform-lifecycle-sequence-v0",
       "execution_role": "individual_tool_treatment",
       "selected_profile": {
-        "profile_id": "behavior-caveman-opencode-plugin-v1",
+        "profile_id": "artifact-ponytail-opencode-plugin-v1",
         "profile_type": "individual_tool",
         "component_ids": [
-          "behavior-caveman-opencode-plugin-v1"
+          "artifact-ponytail-opencode-plugin-v1"
         ],
         "enabled_surfaces": [
           "opencode-plugin",
-          "prompt-reinforcement",
-          "product-authored-init"
+          "product-authored-skills-and-commands",
+          "per-turn-guidance"
         ],
         "disabled_overlaps": [
           "all unlisted surfaces"
         ],
-        "registry_entry_sha256": "ef6344ec420ee21c58361c5f02ecc03b9301598be1353d4fa1169d38719b909b",
+        "registry_entry_sha256": "f3e930817774486c30906fed4b65b3c5dc16a37b1fd49dba67006ce16c84c121",
         "registry_entry": {
           "profile_type": "individual_tool",
           "objective_scope": "individual_tool_effectiveness",
@@ -289,39 +289,39 @@
           "reset": {
             "policy": "Delete lane-private OpenCode XDG directories, product state, generated repository treatment files, auth translation, and background processes after evidence capture."
           },
-          "id": "behavior-caveman-opencode-plugin-v1",
-          "name": "Caveman OpenCode plugin and guidance V1",
+          "id": "artifact-ponytail-opencode-plugin-v1",
+          "name": "Ponytail OpenCode plugin V1",
           "enabled_surfaces": [
             "opencode-plugin",
-            "prompt-reinforcement",
-            "product-authored-init"
+            "product-authored-skills-and-commands",
+            "per-turn-guidance"
           ],
           "components": [
             {
-              "component_id": "behavior-caveman-opencode-plugin-v1",
-              "surface": "opencode-plugin+prompt-reinforcement+product-authored-init",
+              "component_id": "artifact-ponytail-opencode-plugin-v1",
+              "surface": "opencode-plugin+product-authored-skills+commands+per-turn-guidance",
               "role": "individual_tool"
             }
           ],
           "install": {
-            "policy": "Run Caveman\u2019s pinned installer with the OpenCode target and product initialization enabled, then require the installed native plugin and repo guidance in the isolated lane."
+            "policy": "Copy the pinned Ponytail OpenCode plugin and product-authored rules into the isolated project, then require the plugin to load through OpenCode\u2019s native plugin surface."
           },
           "evaluation_protocol": {
             "tool_use_policy": "natural",
-            "tool_state": "active-native-plugin+per-session-guidance",
-            "integration_state": "official-opencode-plugin+product-init",
+            "tool_state": "active-native-plugin+per-turn-guidance",
+            "integration_state": "official-opencode-plugin+product-authored-guidance",
             "assignment_proof": "provider-free exact artifact identities, effective OpenCode configuration, native activation, warm state, and task/final verifiers required"
           },
           "source_snapshot": {
-            "repository": "JuliusBrussee/caveman",
-            "version": "0.1.0",
-            "source_commit": "0d95a81d35a9f2d123a5e9430d1cfc43d55f1bb0",
-            "plugin_sha256": "6d68e8dfe205354718729a5f5c9ca9d555a045af6b2cbbc3b6a84caad1076df7",
-            "package_sha256": "b603811ba72eb71581db5b02045fb5f8903e3c46dcf7b40f36eeb81fbba23274",
+            "repository": "",
+            "version": "4.8.3",
+            "source_commit": "c4d1925ae9b76a1b641877328209ad25cfeb5ef2",
+            "plugin_sha256": "e2443648e1864724f56e2a073fdf2f29199772606d9ea1c175fe06eaa3b75853",
+            "guidance_sha256": "1cd148db944eff33bf8bb878c41a290fe85b86de3e65ac311d5d501e71a0cdbf",
             "runtime_adapter": "/opt/data/tool-candidates/opencode-adapter-v6/opencode_workflow_adapter.py",
             "runtime_adapter_sha256": "1b98aaec34711b3a7bb09ce269c12bb06421ab08913d06593fb6d2c6641a34a3"
           },
-          "notes": "Second successive screen: Caveman\u2019s local installer exposes an explicit OpenCode target and writes the native plugin under the OpenCode XDG configuration surface."
+          "notes": "Second successive screen: Ponytail contains a native .opencode plugin and product-authored AGENTS guidance; no prompt-only emulation is used."
         }
       },
       "model_facing_prompts": {
@@ -346,22 +346,21 @@
         ]
       },
       "tool_adapter": {
-        "tool_id": "caveman-opencode-plugin-v1",
+        "tool_id": "ponytail-opencode-plugin-v1",
         "tool_manifest": "scripts/run_codex_fixture_evaluation.py:TOOL_CONFIGS",
-        "tool_manifest_sha256": "1c7b7dd2fbe8e25c58c831c9b30dba13a6544de281ebae0c41bd5c86330e92dd",
+        "tool_manifest_sha256": "92a6a165e81e8b0d4ec7fc3d35a726d521e1aaa9a8b1ed3598768a39548773cd",
         "tool_config": {
-          "display_name": "Caveman official OpenCode plugin and guidance v1",
-          "lane_name": "behavior-caveman-opencode-plugin-v1",
-          "surface": "opencode-plugin+prompt-reinforcement+skills+commands",
+          "display_name": "Ponytail official OpenCode plugin v1",
+          "lane_name": "artifact-ponytail-opencode-plugin-v1",
+          "surface": "opencode-plugin+per-turn-rules+skills+commands",
           "allowed_terms": [
             "opencode",
-            "caveman",
-            "cavecrew"
+            "ponytail"
           ],
-          "data_dir_name": "behavior-caveman-opencode-plugin-v1",
+          "data_dir_name": "artifact-ponytail-opencode-plugin-v1",
           "mounts": [
             "/opt/data/tool-candidates/opencode-adapter-v6/opencode_workflow_adapter.py",
-            "/opt/data/tool-candidates/caveman"
+            "/opt/data/tool-candidates/ponytail"
           ],
           "executable": "/opt/data/tool-candidates/opencode-runtime/node_modules/opencode-ai/bin/opencode.exe",
           "expected_executable_sha256": "7c4d91c84d2bfdeabb59257e3490c5e5acb08f2aacb3e42f3ddc296a1c3f1aca",
@@ -375,7 +374,7 @@
               "--expected-opencode-sha256",
               "7c4d91c84d2bfdeabb59257e3490c5e5acb08f2aacb3e42f3ddc296a1c3f1aca",
               "--treatment",
-              "caveman"
+              "ponytail"
             ]
           },
           "preflight_command": [
@@ -386,7 +385,7 @@
             "--expected-opencode-sha256",
             "7c4d91c84d2bfdeabb59257e3490c5e5acb08f2aacb3e42f3ddc296a1c3f1aca",
             "--treatment",
-            "caveman",
+            "ponytail",
             "--probe"
           ],
           "tool_manifest_identity": "current-file-v1",
@@ -396,40 +395,43 @@
           "host_integration": {
             "install_commands": [
               [
-                "/opt/data/opt/node-v24.18.0-linux-x64/bin/node",
-                "/opt/data/tool-candidates/caveman/bin/install.js",
-                "--only",
-                "opencode",
-                "--with-init"
+                "python3",
+                "{repository_root}/scripts/install_ponytail_opencode.py",
+                "--source-root",
+                "/opt/data/tool-candidates/ponytail",
+                "--repo",
+                "{repo}",
+                "--receipt",
+                "{tool_data_dir}/ponytail-install.json"
               ]
             ],
             "verify_commands": [
               [
-                "/opt/data/opt/node-v24.18.0-linux-x64/bin/node",
-                "/opt/data/tool-candidates/caveman/bin/install.js",
-                "--list"
+                "python3",
+                "-c",
+                "from pathlib import Path; assert Path('{repo}/.opencode/plugins/ponytail.mjs').is_file(); assert Path('{repo}/AGENTS.md').is_file()"
               ]
             ],
             "required_files": [
-              "{codex_home}/xdg-config/opencode/plugins/caveman/plugin.js",
+              "{repo}/.opencode/plugins/ponytail.mjs",
               "{repo}/AGENTS.md"
             ],
-            "timeout_seconds": 600
+            "timeout_seconds": 300
           },
           "native_plugin": {
             "required": true,
-            "path": "{codex_home}/xdg-config/opencode/plugins/caveman/plugin.js"
+            "path": "{repo}/.opencode/plugins/ponytail.mjs"
           },
           "artifact_identities": [
             {
-              "path": "/opt/data/tool-candidates/caveman/src/plugins/opencode/plugin.js",
-              "sha256": "6d68e8dfe205354718729a5f5c9ca9d555a045af6b2cbbc3b6a84caad1076df7",
-              "kind": "native-plugin-source"
+              "path": "/opt/data/tool-candidates/ponytail/.opencode/plugins/ponytail.mjs",
+              "sha256": "e2443648e1864724f56e2a073fdf2f29199772606d9ea1c175fe06eaa3b75853",
+              "kind": "native-plugin"
             },
             {
-              "path": "/opt/data/tool-candidates/caveman/src/plugins/opencode/package.json",
-              "sha256": "b603811ba72eb71581db5b02045fb5f8903e3c46dcf7b40f36eeb81fbba23274",
-              "kind": "native-plugin-package"
+              "path": "/opt/data/tool-candidates/ponytail/AGENTS.md",
+              "sha256": "1cd148db944eff33bf8bb878c41a290fe85b86de3e65ac311d5d501e71a0cdbf",
+              "kind": "product-guidance"
             },
             {
               "path": "/opt/data/tool-candidates/opencode-adapter-v6/opencode_workflow_adapter.py",
@@ -445,10 +447,10 @@
             "AGENTS.md",
             ".opencode"
           ],
-          "default_tool_state": "active-native-plugin+per-session-guidance"
+          "default_tool_state": "active-native-plugin+per-turn-guidance"
         },
-        "tool_config_sha256": "8e391de6848a9d69e337d80c6682cafeef4585417522c4c861a5ce42b74cbd86",
-        "tool_state": "active-native-plugin+per-session-guidance",
+        "tool_config_sha256": "bdbf3783cdfcc3046c6a367bfe8e6d026ad6930bbcab42c60bb45babc0fd3483",
+        "tool_state": "active-native-plugin+per-turn-guidance",
         "tool_use_policy": "natural",
         "command_identity": {
           "kind": "codex_wrapper",
@@ -460,7 +462,7 @@
             "--expected-opencode-sha256",
             "7c4d91c84d2bfdeabb59257e3490c5e5acb08f2aacb3e42f3ddc296a1c3f1aca",
             "--treatment",
-            "caveman"
+            "ponytail"
           ]
         },
         "binary_identity": {
@@ -489,17 +491,17 @@
         },
         "source_identity": [
           {
-            "path": "/opt/data/tool-candidates/caveman",
-            "exists": true,
-            "kind": "directory",
-            "git_head": "0d95a81d35a9f2d123a5e9430d1cfc43d55f1bb0",
-            "package_json_sha256": "3f9a34e4224efcad6e53a7cdef3c93869b77d932e2757c29fdaf0f63cfb2ad5f"
-          },
-          {
             "path": "/opt/data/tool-candidates/opencode-adapter-v6/opencode_workflow_adapter.py",
             "exists": true,
             "kind": "file",
             "sha256": "1b98aaec34711b3a7bb09ce269c12bb06421ab08913d06593fb6d2c6641a34a3"
+          },
+          {
+            "path": "/opt/data/tool-candidates/ponytail",
+            "exists": true,
+            "kind": "directory",
+            "git_head": "c4d1925ae9b76a1b641877328209ad25cfeb5ef2",
+            "package_json_sha256": "540faa921966db4d8b587a71a04912ef8b91da3a2509fadb8bf06638cc901cdf"
           }
         ]
       },
@@ -518,7 +520,7 @@
         "dockerfile_path": "sources/evaluations/fixtures/container/Dockerfile",
         "dockerfile_sha256": "47c91967ce25014ce54879514f51d2ff0326651be1087209115eff4d358226b3",
         "fixture_runner_path": "scripts/run_codex_fixture_evaluation.py",
-        "fixture_runner_sha256": "1c7b7dd2fbe8e25c58c831c9b30dba13a6544de281ebae0c41bd5c86330e92dd",
+        "fixture_runner_sha256": "92a6a165e81e8b0d4ec7fc3d35a726d521e1aaa9a8b1ed3598768a39548773cd",
         "mcp_probe_path": "scripts/probe_mcp_stdio.py",
         "mcp_probe_sha256": "7c06ea36ee5cac933a97140b84a41405fc99b45152388e8d7c6659136af698fd",
         "codex_entrypoint_path": "sources/evaluations/fixtures/container/codex-entrypoint.sh",
