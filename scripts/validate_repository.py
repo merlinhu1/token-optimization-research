@@ -1500,16 +1500,16 @@ def validate_workflow_task_sequences(sequence_doc: dict, fixture_doc: dict, erro
         sequence for sequence in sequences
         if isinstance(sequence, dict) and sequence.get("status") == "active"
     ]
-    generation_by_fixture = {
-        sequence.get("fixture_id"): sequence.get("task_family_generation")
-        for sequence in active_sequences
-    }
     sequence_by_fixture = {
         sequence.get("fixture_id"): sequence
         for sequence in active_sequences
     }
     for fixture in fixtures:
-        generation = str(generation_by_fixture.get(fixture.get("id"), "baseline-v3"))
+        sequence = sequence_by_fixture.get(fixture.get("id"))
+        if not isinstance(sequence, dict):
+            # Retired fixtures may retain immutable evidence but have no current launch authority.
+            continue
+        generation = str(sequence.get("task_family_generation"))
         generation_label = generation.replace("baseline-v", "Baseline V")
         current_family = fixture.get("current_task_family")
         if not isinstance(current_family, dict) or current_family.get("generation") != generation:
@@ -1937,8 +1937,12 @@ def validate_workflow_task_sequences(sequence_doc: dict, fixture_doc: dict, erro
         if sequence.get("status") == "active" and len(production_by_task) == len(tasks):
             validate_qualification(sequence, errors)
     active = [sequence for sequence in sequences if sequence.get("status") == "active"]
-    if len(active) != 3:
-        errors.append(f"production lifecycle-v1 portfolio must contain exactly three active sequences, found {len(active)}")
+    expected_active_ids = ["fastify-lifecycle-sequence-v1", "beets-lifecycle-sequence-v1"]
+    if [sequence.get("id") for sequence in active] != expected_active_ids:
+        errors.append(
+            "production lifecycle-v1 portfolio must contain exactly the two active sequences "
+            f"{expected_active_ids}, found {[sequence.get('id') for sequence in active]}"
+        )
     if len({sequence.get("fixture_id") for sequence in active}) != len(active):
         errors.append("each lifecycle v1 sequence must own a distinct fixture")
     forbidden_contract_phrases = (
@@ -3909,7 +3913,15 @@ def validate_frozen_protocol_bindings(errors: list[str]) -> None:
             expected_descriptor = None
             expected_override = None
             try:
-                seq = runner.load_sequence(str(fixture.get("sequence_id")))
+                try:
+                    seq = runner.load_sequence(str(fixture.get("sequence_id")))
+                except KeyError:
+                    protocol_rel = path.relative_to(ROOT).as_posix()
+                    if protocol_rel == "sources/evaluations/protocols/terraform-lifecycle-sequence-v1-baseline-bare-codex-b5883b8cb1a0.json":
+                        # This exact frozen protocol is retired historical evidence. Its path and
+                        # digest are fail-closed by validate_lifecycle_v1_authorization().
+                        continue
+                    raise
                 sequence_status = seq.get("status")
                 if sequence_status not in {"active", "historical"}:
                     errors.append(f"execution contract {path.name} references an unknown sequence status")
@@ -4270,7 +4282,8 @@ def validate_document_lifecycle(
         non_ready = [
             fixture_id
             for fixture_id in sorted(completed_fixture_ids)
-            if fixtures_by_id.get(fixture_id, {}).get("status") != "treatment-ready"
+            if fixtures_by_id.get(fixture_id, {}).get("evaluation_use") == "primary-objective"
+            and fixtures_by_id.get(fixture_id, {}).get("status") != "treatment-ready"
         ]
         if non_ready:
             errors.append(
@@ -4320,6 +4333,53 @@ def validate_lifecycle_v1_authorization(errors: list[str]) -> None:
         or audit.get("pilot_authorization") != workflow.LIFECYCLE_V1_PILOT_AUTHORIZATION
     ):
         errors.append("Lifecycle V1 authorization audit must bind normal agent objectives, controller-only compile assessment, and the explicit bounded pilot authority")
+
+    retirement_path = ROOT / "sources/evaluations/audits/lifecycle-v1-terraform-retirement-20260802.json"
+    try:
+        retirement = json.loads(retirement_path.read_text(), object_pairs_hook=_json_object_without_duplicate_keys)
+        sequence_doc = json.loads((ROOT / "data/workflow-task-sequences.json").read_text(), object_pairs_hook=_json_object_without_duplicate_keys)
+    except (OSError, ValueError, json.JSONDecodeError) as exc:
+        errors.append(f"Lifecycle V1 Terraform retirement receipt cannot be read: {exc}")
+        return
+    active_ids = [
+        sequence.get("id")
+        for sequence in sequence_doc.get("sequences", [])
+        if sequence.get("status") == "active" and sequence.get("task_family_generation") == "lifecycle-v1"
+    ]
+    retained = retirement.get("retained_historical_evidence")
+    expected_retained_paths = {
+        "qualification_path": "sources/evaluations/fixtures/large/hashicorp-terraform/qualification-lifecycle-v1.json",
+        "frozen_protocol_path": "sources/evaluations/protocols/terraform-lifecycle-sequence-v1-baseline-bare-codex-b5883b8cb1a0.json",
+        "rejected_evidence_path": "sources/evaluations/audits/terraform-lifecycle-r0-rejected-evidence-20260802",
+    }
+    retained_hashes_match = isinstance(retained, dict)
+    if isinstance(retained, dict):
+        retained_hashes_match = (
+            all(retained.get(key) == value for key, value in expected_retained_paths.items())
+            and retained.get("qualification_sha256") == hashlib.sha256((ROOT / expected_retained_paths["qualification_path"]).read_bytes()).hexdigest()
+            and retained.get("frozen_protocol_sha256") == hashlib.sha256((ROOT / expected_retained_paths["frozen_protocol_path"]).read_bytes()).hexdigest()
+            and retained.get("rejected_evidence_manifest_sha256") == hashlib.sha256((ROOT / expected_retained_paths["rejected_evidence_path"] / "manifest.sha256").read_bytes()).hexdigest()
+        )
+    if (
+        set(retirement) != {
+            "schema_version", "retired_by_owner_message_id", "retired_on", "retired_sequence_id", "disposition",
+            "active_lifecycle_v1_sequence_ids", "provider_calls", "rerun_or_treatment_authorized",
+            "retained_historical_evidence", "note",
+        }
+        or type(retirement.get("schema_version")) is not int
+        or retirement.get("schema_version") != 1
+        or retirement.get("retired_by_owner_message_id") != "1533285015792779414"
+        or retirement.get("retired_on") != "2026-08-02"
+        or retirement.get("retired_sequence_id") != "terraform-lifecycle-sequence-v1"
+        or retirement.get("disposition") != "retired-from-active-lifecycle-v1-portfolio"
+        or retirement.get("active_lifecycle_v1_sequence_ids") != ["fastify-lifecycle-sequence-v1", "beets-lifecycle-sequence-v1"]
+        or active_ids != retirement.get("active_lifecycle_v1_sequence_ids")
+        or type(retirement.get("provider_calls")) is not int
+        or retirement.get("provider_calls") != 0
+        or retirement.get("rerun_or_treatment_authorized") is not False
+        or not retained_hashes_match
+    ):
+        errors.append("Lifecycle V1 Terraform retirement receipt must preserve rejected evidence and bind exactly the two active lanes")
 
 
 def main() -> int:
