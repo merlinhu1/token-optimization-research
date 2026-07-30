@@ -47,6 +47,7 @@ SIGMAP_ROOT = Path("/opt/data/tool-candidates/sigmap")
 PONYTAIL_ROOT = Path("/opt/data/tool-candidates/ponytail")
 CAVEMAN_ROOT = Path("/opt/data/tool-candidates/caveman")
 LOWFAT_BINARY = Path("/opt/data/tool-candidates/lowfat-bin/lowfat")
+DCP_PACKAGE = "@tarquinen/opencode-dcp@3.1.14"
 HEADROOM_PLUGIN = Path(
     "/opt/data/tool-candidates/headroom/plugins/opencode/dist/entry.opencode.js"
 )
@@ -68,10 +69,11 @@ TREATMENT_PROFILES = {
     "ponytail",
     "caveman",
     "lowfat",
+    "dcp",
 }
 PLUGIN_TREATMENTS = {
     "tokenjuice", "snip", "headroom", "swarmvault", "graphify", "rtk",
-    "ponytail", "caveman", "lowfat",
+    "ponytail", "caveman", "lowfat", "dcp",
 }
 GUIDED_TREATMENTS = {"jcodemunch", "leanctx", "sigmap", "ponytail", "caveman"}
 
@@ -810,6 +812,8 @@ def _runtime_env(
     elif treatment == "lowfat":
         plugin = xdg_config / "opencode" / "plugins" / "lowfat.ts"
         config["plugin"] = [plugin.as_uri()]
+    elif treatment == "dcp":
+        config["plugin"] = [DCP_PACKAGE]
     env.update(
         {
             "XDG_DATA_HOME": str(xdg_data),
@@ -874,6 +878,7 @@ def probe(
             "ponytail": "ponytail.mjs",
             "caveman": "caveman",
             "lowfat": "lowfat.ts",
+            "dcp": DCP_PACKAGE,
         }[treatment]
         if expected_plugin not in plugin_info.stdout:
             raise RuntimeError(
