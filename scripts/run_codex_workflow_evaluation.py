@@ -1191,7 +1191,17 @@ def baseline_v2_pilot_run_gate(
             return False, f"{label} paid pilot is not authorized by {authorization_rel}"
         if generation == "lifecycle-v1":
             if authorization.get("pilot_authorization") != LIFECYCLE_V1_PILOT_AUTHORIZATION:
-                return False, f"{label} paid pilot authorization has invalid Lifecycle V1 scope"
+                return False, f"{label} paid pilot authorization has an invalid Lifecycle V1 scope"
+            pilot_attempts = authorization.get("pilot_attempts")
+            if pilot_attempts is not None:
+                if not isinstance(pilot_attempts, dict):
+                    return False, f"{label} paid pilot attempt ledger is malformed"
+                attempt = pilot_attempts.get(str(seq.get("id")))
+                if attempt is not None:
+                    if not isinstance(attempt, dict) or attempt.get("status") not in {"accepted", "rejected"}:
+                        return False, f"{label} paid pilot attempt ledger entry is malformed"
+                    return False, f"{label} paid pilot r{replicate_index} was already consumed as {attempt['status']}"
+
     if not isinstance(audit_rel, str) or not audit_rel:
         return False, f"missing {label} pilot_audit_path"
     try:
