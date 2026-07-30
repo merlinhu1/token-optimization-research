@@ -1871,7 +1871,7 @@ def main(argv: list[str] | None = None) -> int:
         for sequence_id, profile_id in jobs
         if profile_id in {"baseline-bare-codex", "baseline-claude-code-no-mcp", "runtime-opencode-codex-product-v1"}
         and args.replicate_index > 0
-        and workflow.load_sequence(sequence_id).get("task_family_generation") in {"baseline-v3", "baseline-v4"}
+        and workflow.load_sequence(sequence_id).get("task_family_generation") in {"baseline-v3", "baseline-v4", "lifecycle-v1"}
     ]
     if serialized_replication_jobs and args.max_parallel != 1:
         raise SystemExit("owner-authorized current baseline replication requires --max-parallel 1")

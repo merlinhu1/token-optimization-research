@@ -3713,7 +3713,7 @@ class MatrixLifecycleContractTest(unittest.TestCase):
             )
             self.assertTrue((destination / "sources/evaluations/audits/retained-audit.json").is_file())
 
-    def test_lifecycle_v1_replication_rejects_before_parallel_plan_or_lane_root(self) -> None:
+    def test_lifecycle_v1_replication_requires_serial_plan_before_lane_root(self) -> None:
         with published_unoccupied_probe_worktree() as probe:
             result = subprocess.run(
                 [
@@ -3733,7 +3733,7 @@ class MatrixLifecycleContractTest(unittest.TestCase):
                 check=False,
             )
         self.assertNotEqual(result.returncode, 0)
-        self.assertIn("Lifecycle V1 replicate 1 requires explicit authority", result.stderr + result.stdout)
+        self.assertIn("owner-authorized current baseline replication requires --max-parallel 1", result.stderr + result.stdout)
 
     def test_paid_launch_checkout_gate_requires_clean_published_head(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
@@ -5946,7 +5946,7 @@ class BaselineV3LowComplexityContractTest(unittest.TestCase):
         sequence = runner.load_sequence("beets-lifecycle-sequence-v1")
         with self.assertRaisesRegex(ValueError, "Lifecycle V1 replicate 3 requires explicit authority"): runner.baseline_replication_binding(sequence, 3, ROOT)
 
-    def test_lifecycle_v1_r1_replication_authority_is_exact_and_unoccupied(self) -> None:
+    def test_lifecycle_v1_r1_replication_authority_binds_dedicated_receipts(self) -> None:
         authority = runner.load_lifecycle_v1_replication_authority(ROOT)
         self.assertEqual(authority["authorized_replicate_indexes"], [1])
         self.assertEqual(
@@ -5976,7 +5976,20 @@ class BaselineV3LowComplexityContractTest(unittest.TestCase):
                 + sequence_id.removesuffix("-lifecycle-sequence-v1")
                 + "-r1.json",
             )
-            self.assertFalse(receipt_path.exists())
+            if receipt_path.exists():
+                receipt = json.loads(receipt_path.read_text())
+                self.assertEqual(receipt["attempt_status"], "reserved-before-provider-task")
+                self.assertEqual(receipt["sequence_id"], sequence_id)
+                self.assertEqual(receipt["replicate_index"], 1)
+                self.assertEqual(receipt["profile_id"], "baseline-bare-codex")
+                self.assertEqual(receipt["model_condition_id"], "codex-openai-gpt-5-6-sol-high")
+                self.assertEqual(receipt["model"], "gpt-5.6-sol")
+                self.assertEqual(receipt["reasoning_effort"], "high")
+                self.assertTrue(receipt["immutable_identity_receipt"])
+                self.assertEqual(receipt["frozen_protocol"]["protocol_id"], identity["protocol_id"])
+                self.assertEqual(receipt["frozen_protocol"]["path"], identity["path"])
+                self.assertEqual(receipt["frozen_protocol"]["sha256"], identity["sha256"])
+                self.assertEqual(receipt["baseline_pool_fingerprint"], protocol["baseline_pool"]["protocol_fingerprint"])
 
     def test_strict_replication_authority_rejects_every_decision_field_mutation(self) -> None:
         source_authority = ROOT / runner.BASELINE_REPLICATION_AUTHORITY_REL
@@ -6063,7 +6076,7 @@ class BaselineV3LowComplexityContractTest(unittest.TestCase):
                     ):
                         runner.load_beets_r3_replacement_authority(root)
 
-    def test_real_matrix_lifecycle_v1_rejects_replication_before_historical_authority_or_lane_root(self) -> None:
+    def test_real_matrix_lifecycle_v1_r1_plan_requires_current_authority(self) -> None:
         with published_unoccupied_probe_worktree() as probe, tempfile.TemporaryDirectory() as tmp:
             lane_root = Path(tmp) / "lanes"
             result = subprocess.run(
@@ -6084,8 +6097,20 @@ class BaselineV3LowComplexityContractTest(unittest.TestCase):
                 capture_output=True,
                 check=False,
             )
-            self.assertNotEqual(result.returncode, 0)
-            self.assertIn("Lifecycle V1 replicate 1 requires explicit authority", result.stderr + result.stdout)
+            self.assertEqual(result.returncode, 0, result.stderr + result.stdout)
+            plan = json.loads(result.stdout)
+            self.assertEqual(plan["replicate_index"], 1)
+            self.assertEqual(plan["max_parallel"], 1)
+            self.assertEqual(
+                plan["jobs"],
+                [
+                    {
+                        "sequence_id": "beets-lifecycle-sequence-v1",
+                        "profile_id": "baseline-bare-codex",
+                        "protocol": "sources/evaluations/protocols/beets-lifecycle-sequence-v1-baseline-bare-codex-1628ca6eee6a.json",
+                    }
+                ],
+            )
             self.assertFalse(lane_root.exists())
 
     def test_lifecycle_v1_replication_rejects_before_unapproved_model_or_lane_root(self) -> None:
@@ -6108,7 +6133,7 @@ class BaselineV3LowComplexityContractTest(unittest.TestCase):
                 check=False,
             )
         self.assertNotEqual(result.returncode, 0)
-        self.assertIn("Lifecycle V1 replicate 1 requires explicit authority", result.stderr + result.stdout)
+        self.assertIn("baseline replication launch model does not match the strict authorization", result.stderr + result.stdout)
 
     def test_unapproved_lifecycle_v1_replication_identities_remain_blocked(self) -> None:
         self.assertTrue((ROOT / runner.BASELINE_REPLICATION_AUTHORITY_REL).is_file())
