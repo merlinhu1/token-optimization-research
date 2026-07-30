@@ -1592,14 +1592,26 @@ def validate_workflow_task_sequences(sequence_doc: dict, fixture_doc: dict, erro
                 }
                 authorization_path = ROOT / expected_gate["pilot_authorization_path"]
                 try:
-                    paid_pilot_authorized = json.loads(authorization_path.read_text()).get("paid_pilot_authorized") is True
+                    authorization = json.loads(authorization_path.read_text())
+                    paid_pilot_authorized = authorization.get("paid_pilot_authorized") is True
+                    pilot_attempt = (
+                        authorization.get("pilot_attempts", {}).get(sid)
+                        if isinstance(authorization.get("pilot_attempts"), dict)
+                        else None
+                    )
                 except (OSError, json.JSONDecodeError):
                     paid_pilot_authorized = False
-                expected_blocker = (
-                    "provider-backed strongest-model compile-only Lifecycle V1 pilot is authorized but not executed"
-                    if paid_pilot_authorized
-                    else "provider-backed strongest-model compile-only Lifecycle V1 pilot is not authorized or executed"
-                )
+                    pilot_attempt = None
+                if isinstance(pilot_attempt, dict) and pilot_attempt.get("status") == "accepted":
+                    expected_blocker = "provider-backed strongest-model compile-only Lifecycle V1 pilot executed; treatment audit is pending"
+                elif isinstance(pilot_attempt, dict) and pilot_attempt.get("status") == "rejected":
+                    expected_blocker = "provider-backed strongest-model compile-only Lifecycle V1 r0 pilot attempt was rejected; explicit owner reauthorization is required"
+                else:
+                    expected_blocker = (
+                        "provider-backed strongest-model compile-only Lifecycle V1 pilot is authorized but not executed"
+                        if paid_pilot_authorized
+                        else "provider-backed strongest-model compile-only Lifecycle V1 pilot is not authorized or executed"
+                    )
                 if sequence.get("readiness_blockers") != [expected_blocker]:
                     errors.append(f"active workflow sequence {sid} readiness blocker must state: {expected_blocker}")
                 gate_values_match = isinstance(gate, dict) and gate == expected_gate
