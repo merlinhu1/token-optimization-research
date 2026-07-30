@@ -42,6 +42,9 @@ PRODUCTION_LOCK_FD_ENV = "WORKFLOW_PRODUCTION_LOCK_FD"
 TRUSTED_REPOSITORY_ORIGIN = "git@github.com:merlinhu1/token-optimization-research.git"
 TRUSTED_REPOSITORY_UPSTREAM = "origin/phase-3"
 TRUSTED_REPOSITORY_REF = "refs/heads/phase-3"
+OPENCODE_STANDALONE_R2_AUTHORITY_REL = Path(
+    "sources/evaluations/audits/opencode-dcp-qualification-and-r2-authorization-20260730.json"
+)
 
 PROJECT_META: dict[str, dict[str, str]] = {
     "medium-fastify-fastify": {
@@ -2136,6 +2139,34 @@ def assert_pool_slot_available(
         )
 
 
+def standalone_opencode_control_authorized(
+    profile_id: str,
+    replicate_index: int,
+    root: Path = ROOT,
+) -> bool:
+    if (
+        profile_id != "runtime-opencode-codex-product-v1"
+        or replicate_index != 2
+        or DEFAULT_WORKFLOW_MODEL_CONDITION_ID != "opencode-openai-gpt-5-6-sol-high"
+    ):
+        return False
+    path = root / OPENCODE_STANDALONE_R2_AUTHORITY_REL
+    try:
+        authority = json.loads(path.read_text())
+    except (OSError, ValueError):
+        return False
+    owner = authority.get("owner_authorization", {})
+    contract = authority.get("execution_contract", {})
+    return bool(
+        authority.get("status") == "qualified-ready-for-provider-execution"
+        and owner.get("message_id") == "1532521147327971438"
+        and owner.get("authorized_new_bare_replicate_index") == 2
+        and contract.get("baseline_profile_id") == profile_id
+        and contract.get("model_condition_id") == DEFAULT_WORKFLOW_MODEL_CONDITION_ID
+        and contract.get("sequential_max_parallel") == 1
+    )
+
+
 def require_reusable_treatment_baseline(
     registry: dict[str, Any],
     seq: dict[str, Any],
@@ -3533,7 +3564,16 @@ def workflow_session_record(
     accepted = bool(summary.get("accepted"))
     if profile_id == "baseline-bare-codex" and comparison_baseline_session_id:
         raise ValueError("baseline session must not carry a comparison baseline binding")
-    if profile_id != "baseline-bare-codex" and accepted and not comparison_baseline_session_id:
+    standalone_opencode_control = (
+        profile_id == "runtime-opencode-codex-product-v1"
+        and not comparison_baseline_session_id
+    )
+    if (
+        profile_id != "baseline-bare-codex"
+        and accepted
+        and not comparison_baseline_session_id
+        and not standalone_opencode_control
+    ):
         raise ValueError("accepted treatment session requires a comparison baseline binding")
     tasks_passed = functional_task_count(task_checkpoints=task_checkpoints)
     audit_path = run_dir / "tool-isolation-audit.json"
@@ -3638,6 +3678,7 @@ def workflow_session_record(
             "accepted_for_objective": accepted,
             "claim_status": "token-accounting-eligible" if accepted else "operationally-invalid",
             "comparison_baseline_session_id": comparison_baseline_session_id,
+            "standalone_runtime_control": standalone_opencode_control,
             "exclusion_reason": "" if accepted else f"codex_exit_codes={codex_exit_codes}; audit_exit={audit_code}; thread_continuity_errors={summary.get('thread_continuity_errors', [])}; usage_warnings={usage.get('warnings')}",
             "notes": "Provider-backed lane completed with clean integrity; verifier and review outcomes are diagnostic model-behavior evidence and do not gate token accounting." if accepted else "Lane did not complete operationally; exclude it from token accounting.",
             "scope_note": "Full warm-state lane; all regressions are preseeded, prompts are disclosed sequentially, and controller verification runs only after the final prompt; declared acceptance assertions remain model-visible.",
@@ -3936,14 +3977,19 @@ def _run_one_locked(args: argparse.Namespace) -> dict[str, Any]:
     profile_id = args.profile_id
     if profile_id not in PROFILE_META:
         raise ValueError(f"No runner metadata for profile {profile_id}")
-    if profile_id != "baseline-bare-codex":
+    standalone_opencode_control = standalone_opencode_control_authorized(
+        profile_id,
+        args.replicate_index,
+        ROOT,
+    )
+    if profile_id != "baseline-bare-codex" and not standalone_opencode_control:
         require_baseline_v2_treatment_gate(seq, ROOT)
     validate_protocol_for_run(seq, profile_id, args)
     comparison_baseline_session_id = ""
     if not args.prepare_only:
         registry = json.loads((ROOT / "data/workflow-sessions.json").read_text())
         assert_pool_slot_available(registry, seq, profile_id, args.replicate_index)
-        if profile_id != "baseline-bare-codex":
+        if profile_id != "baseline-bare-codex" and not standalone_opencode_control:
             comparison_baseline_session_id = require_reusable_treatment_baseline(
                 registry,
                 seq,
@@ -3969,7 +4015,11 @@ def _run_one_locked(args: argparse.Namespace) -> dict[str, Any]:
         "identity_policy": "frozen-protocol-and-replicate; execution date is metadata only",
     }
     study_id = args.study_id or default_study_id(profile_id)
-    comparison_profile_id = args.comparison_profile_id or (profile_id if profile_id != "baseline-bare-codex" else "")
+    comparison_profile_id = (
+        ""
+        if standalone_opencode_control
+        else args.comparison_profile_id or (profile_id if profile_id != "baseline-bare-codex" else "")
+    )
     if args.prepare_only and not args.session_id:
         stamp = dt.datetime.now(dt.UTC).strftime("%Y%m%dT%H%M%S%fZ")
         args.session_id = f"prepare-{artifact_lane_label(project_id)}-{safe_profile_key(profile_id)}-{stamp}-p{os.getpid()}"
