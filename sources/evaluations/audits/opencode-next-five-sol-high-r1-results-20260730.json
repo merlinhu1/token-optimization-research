@@ -89,6 +89,8 @@
     "Single replicate per workflow/profile; uncertainty is not estimated.",
     "CodeScope uses its unchanged host-agnostic MCP surface because the product has no candidate-authored OpenCode installer.",
     "Natural-use uptake was zero explicit assigned-product calls for CodeScope, SwarmVault, RTK, and CodeGraph; Graphify showed automatic plugin guidance injection but no query command.",
+    "Loaded-plugin proof does not establish hook invocation: SwarmVault and RTK hook invocation counts are unobserved, while RTK produced no visible command rewrite or compaction receipt.",
+    "CodeScope's binary release is pinned but has no retained source-commit/build linkage; CodeGraph's generated PATH wrapper and AGENTS/instruction bytes were existence-checked but not retained and hash-bound.",
     "Absolute totals across this campaign are compatible because all six conditions use the same OpenCode runtime/model/reasoning/replicate/workflow generation and fresh shared r1 baseline.",
     "Provider token totals are volume measurements, not monetary cost estimates."
   ],
@@ -124,10 +126,15 @@
     "git_status_byte_identical_to_matched_fresh_bare": 6,
     "git_status_comparisons": 15,
     "graphify_automatic_guidance_commands": 9,
+    "graphify_visible_guidance_prefixes": 12,
     "manifest_files_verified": 54,
     "model_bash_nonzero": 0,
     "model_tool_errors": 0,
     "native_step_finish_usage_events": 108,
+    "synthetic_cumulative_turn_snapshots": 54,
+    "parsed_jsonl_events": 466,
+    "safe_unique_evidence_members": 1011,
+    "staged_verifier_integrity_checks_passed": 72,
     "normalized_final_verifier_comparisons": 15,
     "normalized_final_verifier_records_equal_to_matched_fresh_bare": 15,
     "protocol_hashes_verified": 18,
@@ -360,15 +367,35 @@
       "weighted_delta_tokens": 290.0
     }
   ],
+  "independent_cross_checks": {
+    "auditor_count": 3,
+    "audited_commit": "727b7da41592b61371286a6423e5e69e50c0d8a9",
+    "scope": [
+      "accounting, manifests, frozen protocols, and first-valid disposition",
+      "native activation, pinned identity, runtime uptake, and provenance",
+      "verifiers, command parity, product state, and matched comparisons"
+    ],
+    "verdict": "All three read-only audits accepted the 18-session evidence corpus and numerical results. Publication-completeness findings were resolved by committing this aggregate audit and updating active Markdown surfaces in af33eb7; the additional caveats from those audits are incorporated here."
+  },
   "model_execution_diagnostics": {
+    "completed_model_tools": 54,
+    "completed_model_tools_all_native_bash": true,
     "explicit_assigned_product_tool_calls": 0,
     "graphify_automatic_guidance_commands": 9,
+    "graphify_visible_guidance_prefixes": 12,
+    "graphify_duplicate_prefix_pattern": "The third command in each of the three lanes carried the reminder twice; stripping all reminder prefixes yields the exact matched bare commands 9/9.",
     "model_bash_nonzero_exit_calls": 0,
     "model_tool_errors": 0,
     "treatment_induced_command_corruption_observed": false
   },
   "native_activation": {
     "instrumentation_caveat": "Adapter-v5 tool-preflight records hard-code external_skills_disabled=true even for corrected SwarmVault and Graphify lanes. Their retained effective_config permission.skill=allow, loaded plugin/skill bytes, and successful activation evidence are authoritative; the stale boolean must not be used to claim disabled skills.",
+    "provenance_and_scope_caveats": [
+      "Generic codex-effective-config.toml, codex-mcp-list.txt, and codex-doctor.txt controller artifacts are not native OpenCode activation proof; tool-preflight.txt effective_config and standalone MCP handshake receipts are authoritative.",
+      "Project configuration was disabled for isolation and the adapter re-injected the exact assigned MCP/plugin entries, so evidence supports official installer execution plus semantically equivalent frozen runtime wiring rather than direct runtime consumption of every generated official config file.",
+      "CodeScope and SwarmVault warmup metadata declare no required state paths, and warm index/vault bytes were not retained or hash-bound; successful commands and required-path checks support screening activation, not exact index-state reproduction.",
+      "The current CodeGraph source checkout has a tracked deleted __pycache__ file. The historical compiled artifact hash remains exact, but the current checkout is not a clean source-to-build reconstruction witness."
+    ],
     "interpretation": {
       "codescope-opencode-product-v1": "Pinned unchanged CodeScope MCP server installed, initialized, listed tools, and built warm state in all three lanes. No model-issued CodeScope MCP call was observed.",
       "retrieval-codegraph-opencode-mcp-v1": "Official OpenCode MCP installation, initialize/tools-list, and warm live index passed in all three lanes. No model-issued CodeGraph MCP call was observed.",
@@ -433,18 +460,21 @@
     "product_state_examples": {
       "codegraph": [
         ".codegraph/",
-        "opencode.jsonc"
+        "opencode.jsonc",
+        "AGENTS.md in Beets and Terraform"
       ],
       "graphify": [
         ".opencode/",
-        "graphify-out/"
+        "graphify-out/",
+        "AGENTS.md in Beets and Terraform"
       ],
       "swarmvault": [
         "wiki/index.md",
         "wiki/log.md",
         ".opencode/",
         "swarmvault.config.json",
-        "swarmvault.schema.md"
+        "swarmvault.schema.md",
+        "AGENTS.md in Beets and Terraform"
       ]
     },
     "quality_boundary": "All task and final verifiers passed, but no independent maintainability, design, or general software-quality review was performed.",
@@ -578,8 +608,10 @@
   "retry_and_exclusion_policy": {
     "accepted_assignment_reruns": 0,
     "controller_dependency_failures": "model execution never started and not counted",
+    "deleted_external_failure_evidence_caveat": "Raw external matrix evidence for zero-spend overload/dependency/disk incidents was deleted after committed receipts; those zero-spend claims now depend on the receipts rather than independently re-readable raw bundles.",
     "graphify_disk_exhaustion": "provider-free warmup failed before model execution and not counted",
-    "invalid_skill_disabled_generation": "deleted before accepted execution and not counted",
+    "invalid_skill_disabled_generation": "Six paid V4 SwarmVault/Graphify sessions totaling 306,487 raw and 152,792.2 weighted tokens were deleted before accepted execution and are not counted.",
+    "invalid_generation_identity_collision": "Those six invalid generations reused the same session IDs later assigned to corrected V5 runs. Session ID alone is provenance-ambiguous; the retained V5 adapter and frozen protocol hashes identify the accepted bytes. The invalid receipt does not retain the deleted protocol hashes or manifests.",
     "provider_overload_attempts": "no provider usage event and not counted",
     "receipt": "sources/evaluations/audits/opencode-next-five-transient-retry-receipts-20260730.json"
   },
