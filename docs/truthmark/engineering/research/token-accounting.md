@@ -1,7 +1,7 @@
 ---
 status: active
 truth_kind: engineering-contract
-last_reviewed: 2026-07-29
+last_reviewed: 2026-07-30
 ---
 
 # Token Accounting And Evaluation Contracts
@@ -70,6 +70,7 @@ The repository measures cumulative provider-reported workflow tokens under fair,
 - Baseline/treatment comparisons require matching fixture, sequence, provider, model, reasoning effort, causal comparison fingerprint, and replicate. Runtime/model-condition IDs must also match unless the frozen profile is explicitly a replacement-runtime treatment; in that case the runtime difference is the experimental variable and both condition IDs are frozen separately.
 - Report absolute provider-token totals with percentage changes.
 - Treatment installation/configuration is valid treatment exposure; observed use may be zero and remains descriptive.
+- OpenCode automatic-plugin activation and model-issued product-tool uptake are reported separately. A loaded automatic plugin may validly record zero model-issued product calls; an exposed MCP surface with zero selected calls is also a valid natural-use result.
 - A prompt/verifier/fixture defect is attributed to the fixture, not the model.
 
 ## Compatibility Rules
@@ -98,4 +99,5 @@ Update this document whenever token eligibility, comparison identity, provider a
 - ../../../../scripts/trust_codex_plugin_hooks.py
 - ../../../../scripts/install_jcodemunch_codex_guidance.py
 - ../../../../sources/evaluations/audits/corrected-integration-qualification-jcodemunch-codex-mcp-v2-20260719.json
+- ../../../../sources/evaluations/audits/opencode-next-five-batch2-results-20260730.json
 - ../../../../scripts/validate_repository.py
