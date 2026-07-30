@@ -1,0 +1,43 @@
+{
+  "schema_version": 1,
+  "campaign_id": "lifecycle-v1-codex-sol-high-r1-20260802",
+  "authorized_by_owner_message_id": "1533297158743265280",
+  "authorized_on": "2026-08-02",
+  "paid_baseline_replication_authorized": true,
+  "authorized_replicate_indexes": [
+    1
+  ],
+  "sequence_order": [
+    "fastify-lifecycle-sequence-v1",
+    "beets-lifecycle-sequence-v1"
+  ],
+  "serialization_required": true,
+  "allowed_paid_baseline_runs": 2,
+  "allowed_model_turns": 6,
+  "model_condition": {
+    "id": "codex-openai-gpt-5-6-sol-high",
+    "model": "gpt-5.6-sol",
+    "reasoning_effort": "high"
+  },
+  "first_valid_sample_policy": true,
+  "rerun_after_attempt_receipt": false,
+  "provider_calls": 0,
+  "provider_tokens": 0,
+  "sequences": [
+    {
+      "sequence_id": "fastify-lifecycle-sequence-v1",
+      "task_family_generation": "lifecycle-v1",
+      "protocol_path": "sources/evaluations/protocols/fastify-lifecycle-sequence-v1-baseline-bare-codex-9efd14aaab01.json",
+      "protocol_sha256": "514f62bc5300fd6f4395a32bae88c7bc5c44ea56992d0f935102e1b5cb31e9de",
+      "baseline_pool_fingerprint": "72ac148f730b"
+    },
+    {
+      "sequence_id": "beets-lifecycle-sequence-v1",
+      "task_family_generation": "lifecycle-v1",
+      "protocol_path": "sources/evaluations/protocols/beets-lifecycle-sequence-v1-baseline-bare-codex-1628ca6eee6a.json",
+      "protocol_sha256": "cef4bca1d3caf76c138e9417b5692d701978dc7d88ebed14d71bfb6c029de5c8",
+      "baseline_pool_fingerprint": "d8cfc5066f76"
+    }
+  ],
+  "notes": "Owner authorized one new r1 bare-Codex GPT-5.6 Sol/high baseline for each active Lifecycle V1 lane. Runs are serialized, r0 remains immutable, each r1 identity may execute at most once, and no treatment authority is created."
+}
