@@ -41,8 +41,11 @@ OPENCODE_BASELINE_AUTHORITY_REL = Path(
     "sources/evaluations/audits/opencode-dcp-qualification-and-r2-authorization-20260730.json"
 )
 OPENCODE_BASELINE_ATTEMPT_DIR = Path("sources/evaluations/audits/opencode-bare-r2-attempts")
-OPENCODE_LIFECYCLE_V1_R1_ATTEMPT_DIR = Path(
+OPENCODE_LIFECYCLE_V1_R1_ATTEMPT_DIR = (
     "sources/evaluations/audits/lifecycle-v1-opencode-sol-high-r1-attempts"
+)
+OPENCODE_LIFECYCLE_V1_R1_RECOVERY_AUTHORITY_REL = (
+    "sources/evaluations/audits/lifecycle-v1-opencode-sol-high-r1-fastify-no-provider-recovery-authorization-20260802.json"
 )
 CLAUDE_BASELINE_AUTHORITY_REL = Path(
     "sources/evaluations/audits/claude-code-sol-high-normal-baseline-authorization-20260731.json"
@@ -424,6 +427,60 @@ def opencode_baseline_attempt_path(
     return root / OPENCODE_BASELINE_ATTEMPT_DIR / f"{lane}-r{replicate_index}.json"
 
 
+def opencode_lifecycle_v1_r1_no_provider_recovery_authorized(
+    sequence_id: str,
+    replicate_index: int,
+    root: Path = ROOT,
+) -> bool:
+    """Allow exactly the owner-authorized Fastify r1 retry after local no-provider proof."""
+    if sequence_id != "fastify-lifecycle-sequence-v1" or replicate_index != 1:
+        return False
+    receipt_rel = (
+        "sources/evaluations/audits/lifecycle-v1-opencode-sol-high-r1-attempts/fastify-r1.json"
+    )
+    receipt_path = root / receipt_rel
+    authority_path = root / OPENCODE_LIFECYCLE_V1_R1_RECOVERY_AUTHORITY_REL
+    try:
+        receipt_raw = receipt_path.read_bytes()
+        receipt = json.loads(receipt_raw)
+        authority = json.loads(authority_path.read_text())
+    except (OSError, ValueError, json.JSONDecodeError):
+        return False
+    expected_receipt = {
+        "attempt_status": "reserved-before-provider-task",
+        "sequence_id": sequence_id,
+        "replicate_index": 1,
+        "profile_id": "runtime-opencode-codex-product-v1",
+        "model_condition_id": "opencode-openai-gpt-5-6-sol-high",
+        "provider_result": None,
+    }
+    contract = authority.get("recovery_contract")
+    return bool(
+        isinstance(receipt, dict)
+        and all(receipt.get(key) == value for key, value in expected_receipt.items())
+        and authority.get("schema_version") == 1
+        and authority.get("status") == "owner-authorized-no-provider-recovery"
+        and authority.get("owner_recovery_authorization") == {
+            "source": "discord",
+            "authorization_prompt_message_id": "1533351879592120481",
+            "message_id": "1533353885559816214",
+            "selection": "2",
+        }
+        and isinstance(contract, dict)
+        and contract == {
+            "sequence_id": sequence_id,
+            "replicate_index": 1,
+            "profile_id": "runtime-opencode-codex-product-v1",
+            "model_condition_id": "opencode-openai-gpt-5-6-sol-high",
+            "original_attempt_receipt_path": receipt_rel,
+            "original_attempt_receipt_sha256": hashlib.sha256(receipt_raw).hexdigest(),
+            "provider_execution_disposition": "locally-proven-no-provider-subprocess",
+            "authorized_provider_run_count": 1,
+            "same_replicate_recovery": True,
+        }
+    )
+
+
 def opencode_baseline_run_gate(
     registry: dict[str, Any],
     sequence_id: str,
@@ -489,10 +546,15 @@ def opencode_baseline_run_gate(
         ready_reason = "owner-authorized OpenCode r2 baseline is unoccupied"
     receipt = opencode_baseline_attempt_path(sequence_id, replicate_index, root)
     if receipt.exists():
-        return False, (
-            "OpenCode baseline identity is occupied by immutable attempt receipt: "
-            f"{receipt.relative_to(root)}"
-        )
+        if opencode_lifecycle_v1_r1_no_provider_recovery_authorized(
+            sequence_id, replicate_index, root
+        ):
+            ready_reason = "owner-authorized same-r1 recovery after locally proven no-provider subprocess boundary"
+        else:
+            return False, (
+                "OpenCode baseline identity is occupied by immutable attempt receipt: "
+                f"{receipt.relative_to(root)}"
+            )
     sequence = workflow.load_sequence(sequence_id)
     occupied = workflow.find_pool_profile_record(
         registry,
@@ -514,6 +576,12 @@ def reserve_opencode_baseline_attempt(
 ) -> Path:
     path = opencode_baseline_attempt_path(sequence_id, replicate_index, ROOT)
     lifecycle_v1 = sequence_id.endswith("-lifecycle-sequence-v1")
+    if path.exists():
+        if lifecycle_v1 and opencode_lifecycle_v1_r1_no_provider_recovery_authorized(
+            sequence_id, replicate_index, ROOT
+        ):
+            return path
+        raise FileExistsError(f"immutable OpenCode baseline attempt receipt already exists: {path}")
     payload = {
         "schema_version": 1,
         "attempt_status": "reserved-before-provider-task",

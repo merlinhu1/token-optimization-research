@@ -1847,6 +1847,13 @@ def execution_condition_descriptor(
             "agent_web_tools": "disabled-by-permission",
             "external_retrieval_audit": "fail-closed",
         }
+        if runtime_id == "opencode-cli":
+            descriptor["runtime"].update({
+                "workflow_controller_path": "scripts/run_codex_workflow_evaluation.py",
+                "workflow_controller_sha256": _protocol_file_hash(root / "scripts/run_codex_workflow_evaluation.py"),
+                "matrix_controller_path": "scripts/run_sequential_workflow_matrix.py",
+                "matrix_controller_sha256": _protocol_file_hash(root / "scripts/run_sequential_workflow_matrix.py"),
+            })
         acceptance_materialization = (
             "controller-only affected-component compile commands retained; no acceptance-test assets injected; agent prompts carry normal software objectives"
             if seq.get("task_family_generation") == "lifecycle-v1"
@@ -3658,6 +3665,7 @@ def run_codex_task(
             tool_port = 18000 + int(hashlib.sha256(str(repo.resolve()).encode()).hexdigest()[:8], 16) % 20000
             wrapper_args = [
                 str(part).format(
+                    repository_root=ROOT,
                     repo=repo,
                     codex_home=codex_home,
                     tool_data_dir=data_dir,
