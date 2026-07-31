@@ -915,6 +915,23 @@ class ActiveCampaignArchitectureTest(unittest.TestCase):
         self.assertEqual(len(receipt["superseded_unoccupied_protocols"]), 2)
         for binding in receipt["superseded_unoccupied_protocols"]:
             self.assertFalse((ROOT / binding["path"]).exists())
+            self.assertTrue(binding["replacement_path"].endswith(".json"))
+            self.assertEqual(len(binding["replacement_sha256"]), 64)
+
+    def test_opencode_lifecycle_v1_runtime_model_condition_supersession_is_retained(self) -> None:
+        receipt = json.loads(
+            (
+                ROOT
+                / "sources/evaluations/audits/lifecycle-v1-opencode-sol-high-r1-runtime-model-condition-supersession-20260802.json"
+            ).read_text()
+        )
+        self.assertEqual(receipt["provider_calls"], 0)
+        self.assertEqual(receipt["provider_tokens"], 0)
+        self.assertFalse(receipt["identity_occupied"])
+        self.assertTrue(receipt["same_identity_retry_permitted"])
+        self.assertEqual(len(receipt["superseded_unoccupied_protocols"]), 2)
+        for binding in receipt["superseded_unoccupied_protocols"]:
+            self.assertFalse((ROOT / binding["path"]).exists())
             replacement = ROOT / binding["replacement_path"]
             self.assertTrue(replacement.is_file())
             self.assertEqual(
@@ -6124,6 +6141,19 @@ class BaselineV3LowComplexityContractTest(unittest.TestCase):
             authority["execution_contract"]["sequence_order"],
             ["fastify-lifecycle-sequence-v1", "beets-lifecycle-sequence-v1"],
         )
+        for binding in authority["frozen_protocols"]:
+            protocol = json.loads((ROOT / binding["protocol_path"]).read_text())
+            self.assertEqual(
+                protocol["treatment"]["model_condition_id"],
+                authority["execution_contract"]["model_condition_id"],
+            )
+            self.assertEqual(
+                protocol["treatment"]["model"], authority["execution_contract"]["model"]
+            )
+            self.assertEqual(
+                protocol["treatment"]["reasoning_effort"],
+                authority["execution_contract"]["reasoning_effort"],
+            )
         for sequence_id in authority["execution_contract"]["sequence_order"]:
             self.assertTrue(
                 runner.standalone_opencode_control_authorized(
