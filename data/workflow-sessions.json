@@ -127852,6 +127852,2355 @@
         "operationally_completed": true,
         "agent_declared_task_completion_count": 3
       }
+    },
+    {
+      "schema_version": 2,
+      "session_id": "dcp-opencode-v1-fastify-20260731-p-bb0e89ed9794-r2",
+      "record_type": "workflow_session",
+      "evidence_type": "workflow-simulation",
+      "study_id": "phase-2-sequential-workflow-v1",
+      "experiment_group_id": "fastify-fastify-context-dcp-opencode-plugin-v1-bb0e89ed9794-sequential-workflow-r2",
+      "objective": "individual_tool_effectiveness",
+      "evidence_stage": "reproduction",
+      "status": "completed",
+      "session_role": "individual_tool_treatment",
+      "replicate_index": 2,
+      "frozen_protocol": {
+        "protocol_id": "fastify-lifecycle-sequence-v0-context-dcp-opencode-plugin-v1-064ad3962906",
+        "path": "sources/evaluations/protocols/fastify-lifecycle-sequence-v0-context-dcp-opencode-plugin-v1-064ad3962906.json",
+        "sha256": "9b1ee13fec6be054c688d35d0def81c242a1c337a4ad4eab57725942e455d762"
+      },
+      "baseline_pool": {
+        "protocol_version": "baseline-pool-v1",
+        "protocol_fingerprint": "bb0e89ed9794",
+        "identity_policy": "frozen-protocol-and-replicate; execution date is metadata only"
+      },
+      "selected_execution": {
+        "descriptor_sha256": "4726f23dcb2d2d7565c9f5ca7c29742d64269c32fbac6c33f8a82ed6974744e3",
+        "descriptor": {
+          "version": "execution-condition-v1",
+          "sequence_id": "fastify-lifecycle-sequence-v0",
+          "execution_role": "individual_tool_treatment",
+          "selected_profile": {
+            "profile_id": "context-dcp-opencode-plugin-v1",
+            "profile_type": "individual_tool",
+            "component_ids": [
+              "context-dcp-opencode-plugin-v1"
+            ],
+            "enabled_surfaces": [
+              "opencode-plugin",
+              "model-visible-compress-tool",
+              "automatic-deduplication",
+              "automatic-error-input-purging",
+              "context-nudges"
+            ],
+            "disabled_overlaps": [
+              "all unlisted surfaces"
+            ],
+            "registry_entry_sha256": "cd4ce1db716ad307c4264bf08fb4e81bc68d2d00e12385a74a4130655494d8e9",
+            "registry_entry": {
+              "profile_type": "individual_tool",
+              "objective_scope": "individual_tool_effectiveness",
+              "status": "screening-ablation",
+              "substrate": "opencode-cli",
+              "disabled_overlaps": [
+                "all unlisted surfaces"
+              ],
+              "native_agent_tools_allowed": [
+                "opencode-native-shell-edit",
+                "opencode-native-file-read-search",
+                "git",
+                "verifier-commands",
+                "dcp-compress-tool"
+              ],
+              "forbidden_surfaces": [
+                "all external retrieval, compression, memory, MCP, skills, plugins, subagents, and web tools except the assigned DCP plugin surfaces"
+              ],
+              "reset": {
+                "policy": "Delete lane-private OpenCode XDG configuration, package cache, DCP state, auth translation, and generated evaluation artifacts after evidence capture."
+              },
+              "id": "context-dcp-opencode-plugin-v1",
+              "name": "Dynamic Context Pruning OpenCode plugin V3.1.14",
+              "enabled_surfaces": [
+                "opencode-plugin",
+                "model-visible-compress-tool",
+                "automatic-deduplication",
+                "automatic-error-input-purging",
+                "context-nudges"
+              ],
+              "components": [
+                {
+                  "component_id": "context-dcp-opencode-plugin-v1",
+                  "surface": "opencode-native-context-pruning+compress-tool+automatic-cleanup",
+                  "role": "individual_tool"
+                }
+              ],
+              "install": {
+                "policy": "Run OpenCode's official plugin installer with the exact pinned package spec `@tarquinen/opencode-dcp@3.1.14` in the lane-private XDG root; require server and TUI registration, exact installed server-entrypoint hash, and live OpenCode debug-config plugin proof."
+              },
+              "evaluation_protocol": {
+                "tool_use_policy": "natural",
+                "tool_state": "active-native-plugin+automatic-cleanup+model-visible-compress",
+                "integration_state": "official-opencode-plugin-default-configuration",
+                "assignment_proof": "provider-free exact source, lock, installer outputs, installed entrypoint, effective configuration, and live native activation proof required"
+              },
+              "source_snapshot": {
+                "repository": "Opencode-DCP/opencode-dynamic-context-pruning",
+                "version": "3.1.14",
+                "tag": "v3.1.14",
+                "source_commit": "85b6f5ceba144fee9e65eb28dc36cab1b960e418",
+                "package_sha256": "9b7f126d0f5bbe06f1b17b583e0cbc7b2e66d556a58d646574319dc65d3d410e",
+                "package_lock_sha256": "cae2ac00ee6abc966e7132732fb975fe0c1d5e5494c2ac48c7cf566718aa5a98",
+                "installed_plugin_sha256": "1e70b38527d6c604d9437bb447a67c857cd6f0cfe02f4fa69b69729e2ef57432",
+                "runtime_adapter": "/opt/data/tool-candidates/opencode-adapter-v8/opencode_workflow_adapter.py",
+                "runtime_adapter_sha256": "d5fcd88e033767659da3acf17486273059cd566c29475c274349d2214428545c"
+              },
+              "notes": "Owner-authorized fresh OpenCode screen. Default DCP configuration is preserved; evaluator-authored compression steering and manual slash-command activation are forbidden."
+            }
+          },
+          "model_facing_prompts": {
+            "rendering_contract": "sequential-model-facing-prompts-v2",
+            "profile_guidance_sha256": "cb08dba8b361975eb89669cc77d206861b05fc26b161a9215337dbb2d30a6366",
+            "tasks": [
+              {
+                "task_id": "fastify-lifecycle-feature-v0",
+                "order": 1,
+                "rendered_prompt_sha256": "5ccdd6daf5427c3f1927b08795d1bd290a8c96bdff4fa3beca5b053f149b1725"
+              },
+              {
+                "task_id": "fastify-lifecycle-refactor-v0",
+                "order": 2,
+                "rendered_prompt_sha256": "a4cdc43f80fd89b851e765b409fa99199ab30f88b4b3b1028ee97ed540cd0706"
+              },
+              {
+                "task_id": "fastify-lifecycle-review-v0",
+                "order": 3,
+                "rendered_prompt_sha256": "d7874fd6436994b7a7f09ce348087f39d6105a7cfcb4e2ca1ac3003d7ff8c091"
+              }
+            ]
+          },
+          "tool_adapter": {
+            "tool_id": "dcp-opencode-plugin-v1",
+            "tool_manifest": "scripts/run_codex_fixture_evaluation.py:TOOL_CONFIGS",
+            "tool_manifest_sha256": "d23f4703446f9576628088eed9d9443515b02aea983cc86ad1e1a77b6088ec97",
+            "tool_config": {
+              "display_name": "Dynamic Context Pruning official OpenCode plugin v3.1.14",
+              "lane_name": "context-dcp-opencode-plugin-v1",
+              "surface": "opencode-native-context-pruning+compress-tool+automatic-cleanup",
+              "allowed_terms": [
+                "opencode",
+                "opencode",
+                "dcp",
+                "compress"
+              ],
+              "data_dir_name": "context-dcp-opencode-plugin-v1",
+              "mounts": [
+                "/opt/data/tool-candidates/opencode-adapter-v8/opencode_workflow_adapter.py",
+                "/opt/data/tool-candidates/opencode-dcp"
+              ],
+              "executable": "/opt/data/tool-candidates/opencode-runtime/node_modules/opencode-ai/bin/opencode.exe",
+              "expected_executable_sha256": "7c4d91c84d2bfdeabb59257e3490c5e5acb08f2aacb3e42f3ddc296a1c3f1aca",
+              "binary_mount_target": "/opt/data/tool-candidates/opencode-runtime/node_modules/opencode-ai/bin/opencode.exe",
+              "codex_wrapper": {
+                "command": "/usr/bin/python3",
+                "args": [
+                  "/opt/data/tool-candidates/opencode-adapter-v8/opencode_workflow_adapter.py",
+                  "--opencode-binary",
+                  "/opt/data/tool-candidates/opencode-runtime/node_modules/opencode-ai/bin/opencode.exe",
+                  "--expected-opencode-sha256",
+                  "7c4d91c84d2bfdeabb59257e3490c5e5acb08f2aacb3e42f3ddc296a1c3f1aca",
+                  "--treatment",
+                  "dcp"
+                ]
+              },
+              "preflight_command": [
+                "/usr/bin/python3",
+                "/opt/data/tool-candidates/opencode-adapter-v8/opencode_workflow_adapter.py",
+                "--opencode-binary",
+                "/opt/data/tool-candidates/opencode-runtime/node_modules/opencode-ai/bin/opencode.exe",
+                "--expected-opencode-sha256",
+                "7c4d91c84d2bfdeabb59257e3490c5e5acb08f2aacb3e42f3ddc296a1c3f1aca",
+                "--treatment",
+                "dcp",
+                "--probe"
+              ],
+              "tool_manifest_identity": "current-file-v1",
+              "env": {
+                "OPENCODE_TOOL_DATA_DIR": "{tool_data_dir}"
+              },
+              "host_integration": {
+                "controller_install_commands": [
+                  [
+                    "/opt/data/tool-candidates/opencode-runtime/node_modules/opencode-ai/bin/opencode.exe",
+                    "plugin",
+                    "@tarquinen/opencode-dcp@3.1.14",
+                    "--global"
+                  ]
+                ],
+                "required_files": [
+                  "{codex_home}/xdg-config/opencode/opencode.jsonc",
+                  "{codex_home}/xdg-config/opencode/tui.json",
+                  "{codex_home}/xdg-cache/opencode/packages/@tarquinen/opencode-dcp@3.1.14/node_modules/@tarquinen/opencode-dcp/dist/index.js"
+                ],
+                "timeout_seconds": 600
+              },
+              "native_plugin": {
+                "required": true,
+                "path": "{codex_home}/xdg-cache/opencode/packages/@tarquinen/opencode-dcp@3.1.14/node_modules/@tarquinen/opencode-dcp/dist/index.js"
+              },
+              "artifact_identities": [
+                {
+                  "path": "/opt/data/tool-candidates/opencode-dcp/package.json",
+                  "sha256": "9b7f126d0f5bbe06f1b17b583e0cbc7b2e66d556a58d646574319dc65d3d410e",
+                  "kind": "source-package"
+                },
+                {
+                  "path": "/opt/data/tool-candidates/opencode-dcp/package-lock.json",
+                  "sha256": "cae2ac00ee6abc966e7132732fb975fe0c1d5e5494c2ac48c7cf566718aa5a98",
+                  "kind": "source-lock"
+                },
+                {
+                  "path": "/opt/data/tool-candidates/opencode-dcp/README.md",
+                  "sha256": "1905a791ba86ea0f8cd8771364f7c5a8e6a3634ecb636df4eeede1614530b882",
+                  "kind": "product-guidance"
+                },
+                {
+                  "path": "/opt/data/tool-candidates/opencode-adapter-v8/opencode_workflow_adapter.py",
+                  "sha256": "d5fcd88e033767659da3acf17486273059cd566c29475c274349d2214428545c",
+                  "kind": "runtime-adapter"
+                }
+              ],
+              "post_install_artifacts": [
+                {
+                  "path": "{codex_home}/xdg-config/opencode/opencode.jsonc",
+                  "sha256": "9b8a141b67efdf6fbcb1123f859cdc5acc41e35ab795fb8385029ff508221dd9",
+                  "retain_as": "dcp-opencode-config.jsonc"
+                },
+                {
+                  "path": "{codex_home}/xdg-config/opencode/tui.json",
+                  "sha256": "0149ceca7dfcbed690669efd026606124f175fed423b2067dd1a8f0c0a1262c0",
+                  "retain_as": "dcp-opencode-tui.json"
+                },
+                {
+                  "path": "{codex_home}/xdg-cache/opencode/packages/@tarquinen/opencode-dcp@3.1.14/node_modules/@tarquinen/opencode-dcp/dist/index.js",
+                  "sha256": "1e70b38527d6c604d9437bb447a67c857cd6f0cfe02f4fa69b69729e2ef57432",
+                  "retain_as": "dcp-installed-plugin.js"
+                }
+              ],
+              "effective_host_config": {
+                "required": true,
+                "source": "adapter-probe"
+              },
+              "default_tool_state": "active-native-plugin+automatic-cleanup+model-visible-compress"
+            },
+            "tool_config_sha256": "432287fcca70cc2d6fa3056c213a34b88060af748a59a9b0055da17591040afc",
+            "tool_state": "active-native-plugin+automatic-cleanup+model-visible-compress",
+            "tool_use_policy": "natural",
+            "command_identity": {
+              "kind": "codex_wrapper",
+              "command": [
+                "/usr/bin/python3",
+                "/opt/data/tool-candidates/opencode-adapter-v8/opencode_workflow_adapter.py",
+                "--opencode-binary",
+                "/opt/data/tool-candidates/opencode-runtime/node_modules/opencode-ai/bin/opencode.exe",
+                "--expected-opencode-sha256",
+                "7c4d91c84d2bfdeabb59257e3490c5e5acb08f2aacb3e42f3ddc296a1c3f1aca",
+                "--treatment",
+                "dcp"
+              ]
+            },
+            "binary_identity": {
+              "executable_token": "/usr/bin/python3",
+              "resolved_path": "/usr/bin/python3",
+              "realpath": "/usr/bin/python3.13",
+              "sha256": "4703a3d15898c0b5d81c3f939e93bdd8ca6116342093fb160ab1e01860dd7d8b",
+              "metadata": {
+                "size": 6812336,
+                "mode": "-rwxr-xr-x",
+                "uid": 0,
+                "gid": 0,
+                "mtime_ns": 1778015152000000000
+              },
+              "version": {
+                "command": [
+                  "/usr/bin/python3.13",
+                  "--version"
+                ],
+                "environment_path": "/opt/data/.local/bin:/opt/data/opt/go/bin:/opt/data/opt/uv:/opt/data/opt/node-v24.18.0-linux-x64/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+                "captured": true,
+                "exit_code": 0,
+                "output": "Python 3.13.5",
+                "truncated": false
+              }
+            },
+            "source_identity": [
+              {
+                "path": "/opt/data/tool-candidates/opencode-adapter-v8/opencode_workflow_adapter.py",
+                "exists": true,
+                "kind": "file",
+                "sha256": "d5fcd88e033767659da3acf17486273059cd566c29475c274349d2214428545c"
+              },
+              {
+                "path": "/opt/data/tool-candidates/opencode-dcp",
+                "exists": true,
+                "kind": "directory",
+                "git_head": "85b6f5ceba144fee9e65eb28dc36cab1b960e418",
+                "package_json_sha256": "9b7f126d0f5bbe06f1b17b583e0cbc7b2e66d556a58d646574319dc65d3d410e"
+              }
+            ]
+          },
+          "runtime": {
+            "docker_image": "token-eval-codex:latest",
+            "docker_image_identity": {
+              "image_ref": "token-eval-codex:latest",
+              "image_id": "sha256:6f86d01f2c63f5029c6bb874d8f3694c24d5cd567e3d09413eccc956ba3feafe",
+              "repo_digests": [
+                "token-eval-codex@sha256:6f86d01f2c63f5029c6bb874d8f3694c24d5cd567e3d09413eccc956ba3feafe"
+              ],
+              "repo_tags": [
+                "token-eval-codex:latest"
+              ]
+            },
+            "dockerfile_path": "sources/evaluations/fixtures/container/Dockerfile",
+            "dockerfile_sha256": "47c91967ce25014ce54879514f51d2ff0326651be1087209115eff4d358226b3",
+            "fixture_runner_path": "scripts/run_codex_fixture_evaluation.py",
+            "fixture_runner_sha256": "d23f4703446f9576628088eed9d9443515b02aea983cc86ad1e1a77b6088ec97",
+            "mcp_probe_path": "scripts/probe_mcp_stdio.py",
+            "mcp_probe_sha256": "7c06ea36ee5cac933a97140b84a41405fc99b45152388e8d7c6659136af698fd",
+            "codex_entrypoint_path": "sources/evaluations/fixtures/container/codex-entrypoint.sh",
+            "codex_entrypoint_sha256": "8715fe37cb1fa3823f5f05493bc9681ce7ffc72126dfec4d64d448762c550c3c",
+            "timeout_seconds_per_task": 3600,
+            "network_isolation": {
+              "provider_access": true,
+              "model_shell_network_access": false,
+              "model_shell_enforcement": "seccomp denies AF_INET and AF_INET6 socket creation for the shell process and descendants",
+              "agent_web_tools": "disabled-by-permission",
+              "external_retrieval_audit": "fail-closed"
+            },
+            "isolation_policy": "fresh lane-specific agent home/XDG state; provider-only network with model shell and agent web tools disabled; sequential one-task prompt delivery; controller seed/verifier scripts excluded while declared model-visible acceptance tests are retained",
+            "agent_runtime_id": "opencode-cli",
+            "model_condition": {
+              "id": "opencode-openai-gpt-5-6-sol-high",
+              "provider": "openai",
+              "model": "gpt-5.6-sol",
+              "reasoning_effort": "high",
+              "launcher": "scripts/run_opencode_workflow_model_condition.py"
+            }
+          },
+          "dependencies": {
+            "command": "npm install --ignore-scripts --no-audit --no-fund",
+            "command_sha256": "7493d616f26e72b22eb5a21beafa12a6717ebf5b93a7a75e709de65e7323cc41",
+            "lockfiles": [
+              {
+                "path": "package.json",
+                "snapshot_sha256": "b273320af1bb4cfc0f9334457c8e3b1d035fde0da14f9db65e8ef97d361d0be3",
+                "current_fixture_sha256": null
+              }
+            ]
+          },
+          "agent_condition": {
+            "runtime_id": "opencode-cli",
+            "provider": "openai",
+            "model": "gpt-5.6-sol",
+            "model_condition_id": "opencode-openai-gpt-5-6-sol-high",
+            "reasoning_effort": "high",
+            "runtime_version_condition": "captured-at-run-and-bound-to-record"
+          },
+          "isolation": {
+            "prompt_delivery": "sequential-one-task-at-a-time",
+            "seed_delivery_mode": "preseeded-composite",
+            "future_tasks_visible": false,
+            "future_seed_regressions_visible": true,
+            "controller_verification": "final-only",
+            "controller_verifier_scripts_and_canonical_copies_model_visible": false,
+            "model_visible_acceptance_asset_paths": [
+              "test/baseline-v3-content-type-cache.test.js",
+              "test/baseline-v3-max-param.test.js",
+              "test/baseline-v3-request-media-type.test.js"
+            ],
+            "model_concealed_paths": []
+          },
+          "baseline_pool_reference": {
+            "protocol_version": "baseline-pool-v1",
+            "protocol_fingerprint": "bb0e89ed9794",
+            "comparison_policy": "paired baseline and treatment must share this baseline pool fingerprint and replicate"
+          },
+          "model_condition_override": {
+            "model_condition_id": "opencode-openai-gpt-5-6-sol-high",
+            "runtime_id": "opencode-cli",
+            "provider": "openai",
+            "model": "gpt-5.6-sol",
+            "reasoning_effort": "high",
+            "registry_status": "active-model-comparison",
+            "launcher": {
+              "path": "scripts/run_opencode_workflow_model_condition.py",
+              "sha256": "c38d87266347dfd46c8f671ad0e22fef52841a34643b93fc769d4ebfb71ac9ce",
+              "condition_runtime_path": "scripts/workflow_model_condition_runtime.py",
+              "condition_runtime_sha256": "8bfc9e9d1bcc7c49f28564bd638d2da3cdc1044ee3debf4218a19b820e05cfc6"
+            }
+          }
+        }
+      },
+      "docker_image_identity": {
+        "image_ref": "token-eval-codex:latest",
+        "image_id": "sha256:6f86d01f2c63f5029c6bb874d8f3694c24d5cd567e3d09413eccc956ba3feafe",
+        "repo_digests": [
+          "token-eval-codex@sha256:6f86d01f2c63f5029c6bb874d8f3694c24d5cd567e3d09413eccc956ba3feafe"
+        ],
+        "repo_tags": [
+          "token-eval-codex:latest"
+        ]
+      },
+      "tool_adapter_identity": {
+        "tool_id": "dcp-opencode-plugin-v1",
+        "tool_manifest": "scripts/run_codex_fixture_evaluation.py:TOOL_CONFIGS",
+        "tool_manifest_sha256": "d23f4703446f9576628088eed9d9443515b02aea983cc86ad1e1a77b6088ec97",
+        "tool_config": {
+          "display_name": "Dynamic Context Pruning official OpenCode plugin v3.1.14",
+          "lane_name": "context-dcp-opencode-plugin-v1",
+          "surface": "opencode-native-context-pruning+compress-tool+automatic-cleanup",
+          "allowed_terms": [
+            "opencode",
+            "opencode",
+            "dcp",
+            "compress"
+          ],
+          "data_dir_name": "context-dcp-opencode-plugin-v1",
+          "mounts": [
+            "/opt/data/tool-candidates/opencode-adapter-v8/opencode_workflow_adapter.py",
+            "/opt/data/tool-candidates/opencode-dcp"
+          ],
+          "executable": "/opt/data/tool-candidates/opencode-runtime/node_modules/opencode-ai/bin/opencode.exe",
+          "expected_executable_sha256": "7c4d91c84d2bfdeabb59257e3490c5e5acb08f2aacb3e42f3ddc296a1c3f1aca",
+          "binary_mount_target": "/opt/data/tool-candidates/opencode-runtime/node_modules/opencode-ai/bin/opencode.exe",
+          "codex_wrapper": {
+            "command": "/usr/bin/python3",
+            "args": [
+              "/opt/data/tool-candidates/opencode-adapter-v8/opencode_workflow_adapter.py",
+              "--opencode-binary",
+              "/opt/data/tool-candidates/opencode-runtime/node_modules/opencode-ai/bin/opencode.exe",
+              "--expected-opencode-sha256",
+              "7c4d91c84d2bfdeabb59257e3490c5e5acb08f2aacb3e42f3ddc296a1c3f1aca",
+              "--treatment",
+              "dcp"
+            ]
+          },
+          "preflight_command": [
+            "/usr/bin/python3",
+            "/opt/data/tool-candidates/opencode-adapter-v8/opencode_workflow_adapter.py",
+            "--opencode-binary",
+            "/opt/data/tool-candidates/opencode-runtime/node_modules/opencode-ai/bin/opencode.exe",
+            "--expected-opencode-sha256",
+            "7c4d91c84d2bfdeabb59257e3490c5e5acb08f2aacb3e42f3ddc296a1c3f1aca",
+            "--treatment",
+            "dcp",
+            "--probe"
+          ],
+          "tool_manifest_identity": "current-file-v1",
+          "env": {
+            "OPENCODE_TOOL_DATA_DIR": "{tool_data_dir}"
+          },
+          "host_integration": {
+            "controller_install_commands": [
+              [
+                "/opt/data/tool-candidates/opencode-runtime/node_modules/opencode-ai/bin/opencode.exe",
+                "plugin",
+                "@tarquinen/opencode-dcp@3.1.14",
+                "--global"
+              ]
+            ],
+            "required_files": [
+              "{codex_home}/xdg-config/opencode/opencode.jsonc",
+              "{codex_home}/xdg-config/opencode/tui.json",
+              "{codex_home}/xdg-cache/opencode/packages/@tarquinen/opencode-dcp@3.1.14/node_modules/@tarquinen/opencode-dcp/dist/index.js"
+            ],
+            "timeout_seconds": 600
+          },
+          "native_plugin": {
+            "required": true,
+            "path": "{codex_home}/xdg-cache/opencode/packages/@tarquinen/opencode-dcp@3.1.14/node_modules/@tarquinen/opencode-dcp/dist/index.js"
+          },
+          "artifact_identities": [
+            {
+              "path": "/opt/data/tool-candidates/opencode-dcp/package.json",
+              "sha256": "9b7f126d0f5bbe06f1b17b583e0cbc7b2e66d556a58d646574319dc65d3d410e",
+              "kind": "source-package"
+            },
+            {
+              "path": "/opt/data/tool-candidates/opencode-dcp/package-lock.json",
+              "sha256": "cae2ac00ee6abc966e7132732fb975fe0c1d5e5494c2ac48c7cf566718aa5a98",
+              "kind": "source-lock"
+            },
+            {
+              "path": "/opt/data/tool-candidates/opencode-dcp/README.md",
+              "sha256": "1905a791ba86ea0f8cd8771364f7c5a8e6a3634ecb636df4eeede1614530b882",
+              "kind": "product-guidance"
+            },
+            {
+              "path": "/opt/data/tool-candidates/opencode-adapter-v8/opencode_workflow_adapter.py",
+              "sha256": "d5fcd88e033767659da3acf17486273059cd566c29475c274349d2214428545c",
+              "kind": "runtime-adapter"
+            }
+          ],
+          "post_install_artifacts": [
+            {
+              "path": "{codex_home}/xdg-config/opencode/opencode.jsonc",
+              "sha256": "9b8a141b67efdf6fbcb1123f859cdc5acc41e35ab795fb8385029ff508221dd9",
+              "retain_as": "dcp-opencode-config.jsonc"
+            },
+            {
+              "path": "{codex_home}/xdg-config/opencode/tui.json",
+              "sha256": "0149ceca7dfcbed690669efd026606124f175fed423b2067dd1a8f0c0a1262c0",
+              "retain_as": "dcp-opencode-tui.json"
+            },
+            {
+              "path": "{codex_home}/xdg-cache/opencode/packages/@tarquinen/opencode-dcp@3.1.14/node_modules/@tarquinen/opencode-dcp/dist/index.js",
+              "sha256": "1e70b38527d6c604d9437bb447a67c857cd6f0cfe02f4fa69b69729e2ef57432",
+              "retain_as": "dcp-installed-plugin.js"
+            }
+          ],
+          "effective_host_config": {
+            "required": true,
+            "source": "adapter-probe"
+          },
+          "default_tool_state": "active-native-plugin+automatic-cleanup+model-visible-compress"
+        },
+        "tool_config_sha256": "432287fcca70cc2d6fa3056c213a34b88060af748a59a9b0055da17591040afc",
+        "tool_state": "active-native-plugin+automatic-cleanup+model-visible-compress",
+        "tool_use_policy": "natural",
+        "command_identity": {
+          "kind": "codex_wrapper",
+          "command": [
+            "/usr/bin/python3",
+            "/opt/data/tool-candidates/opencode-adapter-v8/opencode_workflow_adapter.py",
+            "--opencode-binary",
+            "/opt/data/tool-candidates/opencode-runtime/node_modules/opencode-ai/bin/opencode.exe",
+            "--expected-opencode-sha256",
+            "7c4d91c84d2bfdeabb59257e3490c5e5acb08f2aacb3e42f3ddc296a1c3f1aca",
+            "--treatment",
+            "dcp"
+          ]
+        },
+        "binary_identity": {
+          "executable_token": "/usr/bin/python3",
+          "resolved_path": "/usr/bin/python3",
+          "realpath": "/usr/bin/python3.13",
+          "sha256": "4703a3d15898c0b5d81c3f939e93bdd8ca6116342093fb160ab1e01860dd7d8b",
+          "metadata": {
+            "size": 6812336,
+            "mode": "-rwxr-xr-x",
+            "uid": 0,
+            "gid": 0,
+            "mtime_ns": 1778015152000000000
+          },
+          "version": {
+            "command": [
+              "/usr/bin/python3.13",
+              "--version"
+            ],
+            "environment_path": "/opt/data/.local/bin:/opt/data/opt/go/bin:/opt/data/opt/uv:/opt/data/opt/node-v24.18.0-linux-x64/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+            "captured": true,
+            "exit_code": 0,
+            "output": "Python 3.13.5",
+            "truncated": false
+          }
+        },
+        "source_identity": [
+          {
+            "path": "/opt/data/tool-candidates/opencode-adapter-v8/opencode_workflow_adapter.py",
+            "exists": true,
+            "kind": "file",
+            "sha256": "d5fcd88e033767659da3acf17486273059cd566c29475c274349d2214428545c"
+          },
+          {
+            "path": "/opt/data/tool-candidates/opencode-dcp",
+            "exists": true,
+            "kind": "directory",
+            "git_head": "85b6f5ceba144fee9e65eb28dc36cab1b960e418",
+            "package_json_sha256": "9b7f126d0f5bbe06f1b17b583e0cbc7b2e66d556a58d646574319dc65d3d410e"
+          }
+        ]
+      },
+      "date": "2026-07-31",
+      "target": {
+        "fixture_id": "medium-fastify-fastify",
+        "fixture_scale": "medium-project",
+        "project_id": "fastify-fastify",
+        "repository_path": "sources/evaluations/workflow-sessions/dcp-opencode-v1-fastify-20260731-p-bb0e89ed9794-r2/project/repo",
+        "initial_snapshot": {
+          "commit": "94bcbcc6e2ef3b8e8f8e8797fe551ccbe7b942fd",
+          "branch": "detached",
+          "fixture_hash": ""
+        }
+      },
+      "task_sequence": {
+        "sequence_id": "fastify-lifecycle-sequence-v0",
+        "sequence_contract": "feature-refactor-review",
+        "task_ids": [
+          "fastify-lifecycle-feature-v0",
+          "fastify-lifecycle-refactor-v0",
+          "fastify-lifecycle-review-v0"
+        ],
+        "task_classes": [
+          "feature-implementation",
+          "behavior-preserving-refactor",
+          "code-review-correction"
+        ],
+        "reset_policy": "reset source checkout, profile home, tool state, indexes, caches, generated config, and agent home before the lane; preserve repository, thread, tool, index, cache, and agent state across every sequential prompt",
+        "prompt_delivery": {
+          "mode": "sequential-one-task-at-a-time",
+          "future_tasks_visible": false,
+          "future_prompts_materialized_lazily": true,
+          "seed_delivery_mode": "preseeded-composite",
+          "future_seed_regressions_visible": true,
+          "controller_verification": "final-only",
+          "codex_thread_id": "ses_04a85db53ffeMQ8hO6AdyfjPgO",
+          "task_prompt_evidence": "sources/evaluations/workflow-sessions/dcp-opencode-v1-fastify-20260731-p-bb0e89ed9794-r2/evidence.jsonl.gz"
+        },
+        "leakage_controls": {
+          "seed_origin_concealed": true,
+          "seed_patches_model_visible": false,
+          "git_baseline_true_root_at_lane_start": true,
+          "fixed_snapshot_objects_model_visible": false,
+          "pre_seed_reflog_entries_visible": false,
+          "concealment_verification_passed": true,
+          "task_directories_model_visible": false,
+          "controller_verifier_scripts_and_canonical_copies_model_visible": false,
+          "model_visible_acceptance_asset_paths": [
+            "test/baseline-v3-content-type-cache.test.js",
+            "test/baseline-v3-max-param.test.js",
+            "test/baseline-v3-request-media-type.test.js"
+          ],
+          "model_writable_surface": "target repository plus isolated model-output directory",
+          "verifier_integrity_passed": true,
+          "verifier_integrity_evidence": "sources/evaluations/workflow-sessions/dcp-opencode-v1-fastify-20260731-p-bb0e89ed9794-r2/evidence.jsonl.gz#verifier-integrity.json",
+          "model_prompts_sanitized": true,
+          "upstream_remote_removed_from_model_facing_repo": true,
+          "broken_start_committed_as_local_baseline": true,
+          "remaining_limitations": [
+            "Future regression code and declared focused acceptance tests are present from lane start; future prompts, seed patches, and controller verifier scripts remain controller-only.",
+            "Task semantics and verifier names may still be searchable if the model intentionally uses external network access."
+          ]
+        }
+      },
+      "profile": {
+        "profile_id": "context-dcp-opencode-plugin-v1",
+        "profile_type": "individual_tool",
+        "enabled_surfaces": [
+          "opencode-plugin",
+          "model-visible-compress-tool",
+          "automatic-deduplication",
+          "automatic-error-input-purging",
+          "context-nudges"
+        ],
+        "disabled_overlaps": [
+          "all unlisted surfaces"
+        ],
+        "component_ids": [
+          "context-dcp-opencode-plugin-v1"
+        ]
+      },
+      "agent": {
+        "runtime_id": "opencode-cli",
+        "model_condition_id": "opencode-openai-gpt-5-6-sol-high",
+        "name": "OpenCode CLI",
+        "version": "1.18.9",
+        "provider": "openai",
+        "model": "gpt-5.6-sol",
+        "reasoning_effort": "high",
+        "temperature": null,
+        "max_turns": null,
+        "time_budget_seconds": 10800
+      },
+      "state_policy": {
+        "reset_before_session": [
+          "repository working tree",
+          "profile home",
+          "tool indexes and caches",
+          "generated config",
+          "agent home",
+          "temporary directories"
+        ],
+        "persist_between_tasks": [
+          "repository source working tree and model-facing Git metadata from one composite broken-start root",
+          "tool indexes and caches",
+          "generated config",
+          "agent home",
+          "memory/state stores enabled by the active profile",
+          "run artifacts"
+        ]
+      },
+      "cumulative_token_usage": {
+        "measurement_source": "opencode-jsonl-step-finish-usage",
+        "fresh_input_tokens": 21719,
+        "cached_input_tokens": 28672,
+        "cache_write_tokens": 0,
+        "output_tokens": 1221,
+        "reasoning_tokens": 60,
+        "total_provider_tokens": 51612,
+        "tokens_per_accepted_task": 17204.0,
+        "accounting_basis": "OpenCode CLI-reported token volume; monetary cost estimation is out of scope"
+      },
+      "per_task_results": [
+        {
+          "task_id": "fastify-lifecycle-feature-v0",
+          "task_class": "feature-implementation",
+          "task_alias": "task-01",
+          "order": 1,
+          "agent_attempted": true,
+          "codex_exit_code": 0,
+          "thread_continuity_passed": true,
+          "thread_id": "ses_04a85db53ffeMQ8hO6AdyfjPgO",
+          "controller_verification": "passed",
+          "accepted": true,
+          "task_delta": "sources/evaluations/workflow-sessions/dcp-opencode-v1-fastify-20260731-p-bb0e89ed9794-r2/task-01-agent.diff",
+          "usage_events": "sources/evaluations/workflow-sessions/dcp-opencode-v1-fastify-20260731-p-bb0e89ed9794-r2/task-01-codex-events.jsonl",
+          "operational_retry_count": 0,
+          "verifier_exit_code": 0,
+          "verifier_passed": true
+        },
+        {
+          "task_id": "fastify-lifecycle-refactor-v0",
+          "task_class": "behavior-preserving-refactor",
+          "task_alias": "task-02",
+          "order": 2,
+          "agent_attempted": true,
+          "codex_exit_code": 0,
+          "thread_continuity_passed": true,
+          "thread_id": "ses_04a85db53ffeMQ8hO6AdyfjPgO",
+          "controller_verification": "passed",
+          "accepted": true,
+          "task_delta": "sources/evaluations/workflow-sessions/dcp-opencode-v1-fastify-20260731-p-bb0e89ed9794-r2/task-02-agent.diff",
+          "usage_events": "sources/evaluations/workflow-sessions/dcp-opencode-v1-fastify-20260731-p-bb0e89ed9794-r2/task-02-codex-events.jsonl",
+          "operational_retry_count": 0,
+          "verifier_exit_code": 0,
+          "verifier_passed": true
+        },
+        {
+          "task_id": "fastify-lifecycle-review-v0",
+          "task_class": "code-review-correction",
+          "task_alias": "task-03",
+          "order": 3,
+          "agent_attempted": true,
+          "codex_exit_code": 0,
+          "thread_continuity_passed": true,
+          "thread_id": "ses_04a85db53ffeMQ8hO6AdyfjPgO",
+          "controller_verification": "passed",
+          "accepted": true,
+          "task_delta": "sources/evaluations/workflow-sessions/dcp-opencode-v1-fastify-20260731-p-bb0e89ed9794-r2/task-03-agent.diff",
+          "usage_events": "sources/evaluations/workflow-sessions/dcp-opencode-v1-fastify-20260731-p-bb0e89ed9794-r2/task-03-codex-events.jsonl",
+          "operational_retry_count": 0,
+          "verifier_exit_code": 0,
+          "verifier_passed": true
+        }
+      ],
+      "software_quality": {
+        "tasks_attempted": 3,
+        "tasks_agent_claimed_complete": 3,
+        "tasks_passed": 3,
+        "final_verifier_command": "sources/evaluations/workflow-sessions/dcp-opencode-v1-fastify-20260731-p-bb0e89ed9794-r2/verify-workflow.sh",
+        "final_verifier_passed": true,
+        "functional_verifier_passed": true,
+        "quality_review_status": "not-reviewed",
+        "quality_score": null,
+        "critical_failures": []
+      },
+      "execution_integrity": {
+        "verifier_integrity_passed": true,
+        "tool_isolation_audit_passed": true,
+        "external_retrieval_hits": [],
+        "pass_through_tool_command_hits": []
+      },
+      "artifacts": {
+        "artifact_contract": "compact-v1-four-files",
+        "root": "sources/evaluations/workflow-sessions/dcp-opencode-v1-fastify-20260731-p-bb0e89ed9794-r2",
+        "run_record": "sources/evaluations/workflow-sessions/dcp-opencode-v1-fastify-20260731-p-bb0e89ed9794-r2/run.json",
+        "final_diff": "sources/evaluations/workflow-sessions/dcp-opencode-v1-fastify-20260731-p-bb0e89ed9794-r2/changes.diff",
+        "final_diff_basis": "ordered cumulative checkpoints plus final cumulative source diff from one composite root",
+        "evidence_bundle": "sources/evaluations/workflow-sessions/dcp-opencode-v1-fastify-20260731-p-bb0e89ed9794-r2/evidence.jsonl.gz",
+        "manifest": "sources/evaluations/workflow-sessions/dcp-opencode-v1-fastify-20260731-p-bb0e89ed9794-r2/manifest.sha256"
+      },
+      "interpretation": {
+        "accepted_for_execution": true,
+        "accepted_for_objective": true,
+        "claim_status": "token-accounting-eligible",
+        "comparison_baseline_session_id": "opencode-fastify-20260730-p-bb0e89ed9794-r2",
+        "standalone_runtime_control": false,
+        "exclusion_reason": "",
+        "notes": "Provider-backed lane completed with clean integrity; verifier and review outcomes are diagnostic model-behavior evidence and do not gate token accounting.",
+        "scope_note": "Full warm-state lane; all regressions are preseeded, prompts are disclosed sequentially, and controller verification runs only after the final prompt; declared acceptance assertions remain model-visible.",
+        "evaluation_validity": "valid",
+        "primary_objective_hard_baseline": false,
+        "usable_for_primary_objective_token_comparison": true,
+        "operationally_completed": true,
+        "agent_declared_task_completion_count": 3
+      }
+    },
+    {
+      "schema_version": 2,
+      "session_id": "dcp-opencode-v1-beets-20260731-p-fcc8438d2077-r2",
+      "record_type": "workflow_session",
+      "evidence_type": "workflow-simulation",
+      "study_id": "phase-2-sequential-workflow-v1",
+      "experiment_group_id": "beetbox-beets-context-dcp-opencode-plugin-v1-fcc8438d2077-sequential-workflow-r2",
+      "objective": "individual_tool_effectiveness",
+      "evidence_stage": "reproduction",
+      "status": "completed",
+      "session_role": "individual_tool_treatment",
+      "replicate_index": 2,
+      "frozen_protocol": {
+        "protocol_id": "beets-lifecycle-sequence-v0-context-dcp-opencode-plugin-v1-3ef7a1ff9fa8",
+        "path": "sources/evaluations/protocols/beets-lifecycle-sequence-v0-context-dcp-opencode-plugin-v1-3ef7a1ff9fa8.json",
+        "sha256": "ba4a14d08b76bea1cf6d1a10e3bd64f41eb55ba3d0edc4de871aa896d28daad6"
+      },
+      "baseline_pool": {
+        "protocol_version": "baseline-pool-v1",
+        "protocol_fingerprint": "fcc8438d2077",
+        "identity_policy": "frozen-protocol-and-replicate; execution date is metadata only"
+      },
+      "selected_execution": {
+        "descriptor_sha256": "dbf4028260df625424c480c4bd341d7d69f2bede7a74c4c97dfaf5204143379f",
+        "descriptor": {
+          "version": "execution-condition-v1",
+          "sequence_id": "beets-lifecycle-sequence-v0",
+          "execution_role": "individual_tool_treatment",
+          "selected_profile": {
+            "profile_id": "context-dcp-opencode-plugin-v1",
+            "profile_type": "individual_tool",
+            "component_ids": [
+              "context-dcp-opencode-plugin-v1"
+            ],
+            "enabled_surfaces": [
+              "opencode-plugin",
+              "model-visible-compress-tool",
+              "automatic-deduplication",
+              "automatic-error-input-purging",
+              "context-nudges"
+            ],
+            "disabled_overlaps": [
+              "all unlisted surfaces"
+            ],
+            "registry_entry_sha256": "cd4ce1db716ad307c4264bf08fb4e81bc68d2d00e12385a74a4130655494d8e9",
+            "registry_entry": {
+              "profile_type": "individual_tool",
+              "objective_scope": "individual_tool_effectiveness",
+              "status": "screening-ablation",
+              "substrate": "opencode-cli",
+              "disabled_overlaps": [
+                "all unlisted surfaces"
+              ],
+              "native_agent_tools_allowed": [
+                "opencode-native-shell-edit",
+                "opencode-native-file-read-search",
+                "git",
+                "verifier-commands",
+                "dcp-compress-tool"
+              ],
+              "forbidden_surfaces": [
+                "all external retrieval, compression, memory, MCP, skills, plugins, subagents, and web tools except the assigned DCP plugin surfaces"
+              ],
+              "reset": {
+                "policy": "Delete lane-private OpenCode XDG configuration, package cache, DCP state, auth translation, and generated evaluation artifacts after evidence capture."
+              },
+              "id": "context-dcp-opencode-plugin-v1",
+              "name": "Dynamic Context Pruning OpenCode plugin V3.1.14",
+              "enabled_surfaces": [
+                "opencode-plugin",
+                "model-visible-compress-tool",
+                "automatic-deduplication",
+                "automatic-error-input-purging",
+                "context-nudges"
+              ],
+              "components": [
+                {
+                  "component_id": "context-dcp-opencode-plugin-v1",
+                  "surface": "opencode-native-context-pruning+compress-tool+automatic-cleanup",
+                  "role": "individual_tool"
+                }
+              ],
+              "install": {
+                "policy": "Run OpenCode's official plugin installer with the exact pinned package spec `@tarquinen/opencode-dcp@3.1.14` in the lane-private XDG root; require server and TUI registration, exact installed server-entrypoint hash, and live OpenCode debug-config plugin proof."
+              },
+              "evaluation_protocol": {
+                "tool_use_policy": "natural",
+                "tool_state": "active-native-plugin+automatic-cleanup+model-visible-compress",
+                "integration_state": "official-opencode-plugin-default-configuration",
+                "assignment_proof": "provider-free exact source, lock, installer outputs, installed entrypoint, effective configuration, and live native activation proof required"
+              },
+              "source_snapshot": {
+                "repository": "Opencode-DCP/opencode-dynamic-context-pruning",
+                "version": "3.1.14",
+                "tag": "v3.1.14",
+                "source_commit": "85b6f5ceba144fee9e65eb28dc36cab1b960e418",
+                "package_sha256": "9b7f126d0f5bbe06f1b17b583e0cbc7b2e66d556a58d646574319dc65d3d410e",
+                "package_lock_sha256": "cae2ac00ee6abc966e7132732fb975fe0c1d5e5494c2ac48c7cf566718aa5a98",
+                "installed_plugin_sha256": "1e70b38527d6c604d9437bb447a67c857cd6f0cfe02f4fa69b69729e2ef57432",
+                "runtime_adapter": "/opt/data/tool-candidates/opencode-adapter-v8/opencode_workflow_adapter.py",
+                "runtime_adapter_sha256": "d5fcd88e033767659da3acf17486273059cd566c29475c274349d2214428545c"
+              },
+              "notes": "Owner-authorized fresh OpenCode screen. Default DCP configuration is preserved; evaluator-authored compression steering and manual slash-command activation are forbidden."
+            }
+          },
+          "model_facing_prompts": {
+            "rendering_contract": "sequential-model-facing-prompts-v2",
+            "profile_guidance_sha256": "cb08dba8b361975eb89669cc77d206861b05fc26b161a9215337dbb2d30a6366",
+            "tasks": [
+              {
+                "task_id": "beets-lifecycle-feature-v0",
+                "order": 1,
+                "rendered_prompt_sha256": "db0981ff4c4428e5213221c6024697ff64afa64d0c3020c462d39fb9b89c0257"
+              },
+              {
+                "task_id": "beets-lifecycle-refactor-v0",
+                "order": 2,
+                "rendered_prompt_sha256": "727cc41394c3a1215befbe097862bf1a3f78958882b21521c90f6721099413e0"
+              },
+              {
+                "task_id": "beets-lifecycle-review-v0",
+                "order": 3,
+                "rendered_prompt_sha256": "2ba3299daa5adc71491ee713bd4c6b6208d6b36443ac327c919fe1b9db5943a2"
+              }
+            ]
+          },
+          "tool_adapter": {
+            "tool_id": "dcp-opencode-plugin-v1",
+            "tool_manifest": "scripts/run_codex_fixture_evaluation.py:TOOL_CONFIGS",
+            "tool_manifest_sha256": "d23f4703446f9576628088eed9d9443515b02aea983cc86ad1e1a77b6088ec97",
+            "tool_config": {
+              "display_name": "Dynamic Context Pruning official OpenCode plugin v3.1.14",
+              "lane_name": "context-dcp-opencode-plugin-v1",
+              "surface": "opencode-native-context-pruning+compress-tool+automatic-cleanup",
+              "allowed_terms": [
+                "opencode",
+                "opencode",
+                "dcp",
+                "compress"
+              ],
+              "data_dir_name": "context-dcp-opencode-plugin-v1",
+              "mounts": [
+                "/opt/data/tool-candidates/opencode-adapter-v8/opencode_workflow_adapter.py",
+                "/opt/data/tool-candidates/opencode-dcp"
+              ],
+              "executable": "/opt/data/tool-candidates/opencode-runtime/node_modules/opencode-ai/bin/opencode.exe",
+              "expected_executable_sha256": "7c4d91c84d2bfdeabb59257e3490c5e5acb08f2aacb3e42f3ddc296a1c3f1aca",
+              "binary_mount_target": "/opt/data/tool-candidates/opencode-runtime/node_modules/opencode-ai/bin/opencode.exe",
+              "codex_wrapper": {
+                "command": "/usr/bin/python3",
+                "args": [
+                  "/opt/data/tool-candidates/opencode-adapter-v8/opencode_workflow_adapter.py",
+                  "--opencode-binary",
+                  "/opt/data/tool-candidates/opencode-runtime/node_modules/opencode-ai/bin/opencode.exe",
+                  "--expected-opencode-sha256",
+                  "7c4d91c84d2bfdeabb59257e3490c5e5acb08f2aacb3e42f3ddc296a1c3f1aca",
+                  "--treatment",
+                  "dcp"
+                ]
+              },
+              "preflight_command": [
+                "/usr/bin/python3",
+                "/opt/data/tool-candidates/opencode-adapter-v8/opencode_workflow_adapter.py",
+                "--opencode-binary",
+                "/opt/data/tool-candidates/opencode-runtime/node_modules/opencode-ai/bin/opencode.exe",
+                "--expected-opencode-sha256",
+                "7c4d91c84d2bfdeabb59257e3490c5e5acb08f2aacb3e42f3ddc296a1c3f1aca",
+                "--treatment",
+                "dcp",
+                "--probe"
+              ],
+              "tool_manifest_identity": "current-file-v1",
+              "env": {
+                "OPENCODE_TOOL_DATA_DIR": "{tool_data_dir}"
+              },
+              "host_integration": {
+                "controller_install_commands": [
+                  [
+                    "/opt/data/tool-candidates/opencode-runtime/node_modules/opencode-ai/bin/opencode.exe",
+                    "plugin",
+                    "@tarquinen/opencode-dcp@3.1.14",
+                    "--global"
+                  ]
+                ],
+                "required_files": [
+                  "{codex_home}/xdg-config/opencode/opencode.jsonc",
+                  "{codex_home}/xdg-config/opencode/tui.json",
+                  "{codex_home}/xdg-cache/opencode/packages/@tarquinen/opencode-dcp@3.1.14/node_modules/@tarquinen/opencode-dcp/dist/index.js"
+                ],
+                "timeout_seconds": 600
+              },
+              "native_plugin": {
+                "required": true,
+                "path": "{codex_home}/xdg-cache/opencode/packages/@tarquinen/opencode-dcp@3.1.14/node_modules/@tarquinen/opencode-dcp/dist/index.js"
+              },
+              "artifact_identities": [
+                {
+                  "path": "/opt/data/tool-candidates/opencode-dcp/package.json",
+                  "sha256": "9b7f126d0f5bbe06f1b17b583e0cbc7b2e66d556a58d646574319dc65d3d410e",
+                  "kind": "source-package"
+                },
+                {
+                  "path": "/opt/data/tool-candidates/opencode-dcp/package-lock.json",
+                  "sha256": "cae2ac00ee6abc966e7132732fb975fe0c1d5e5494c2ac48c7cf566718aa5a98",
+                  "kind": "source-lock"
+                },
+                {
+                  "path": "/opt/data/tool-candidates/opencode-dcp/README.md",
+                  "sha256": "1905a791ba86ea0f8cd8771364f7c5a8e6a3634ecb636df4eeede1614530b882",
+                  "kind": "product-guidance"
+                },
+                {
+                  "path": "/opt/data/tool-candidates/opencode-adapter-v8/opencode_workflow_adapter.py",
+                  "sha256": "d5fcd88e033767659da3acf17486273059cd566c29475c274349d2214428545c",
+                  "kind": "runtime-adapter"
+                }
+              ],
+              "post_install_artifacts": [
+                {
+                  "path": "{codex_home}/xdg-config/opencode/opencode.jsonc",
+                  "sha256": "9b8a141b67efdf6fbcb1123f859cdc5acc41e35ab795fb8385029ff508221dd9",
+                  "retain_as": "dcp-opencode-config.jsonc"
+                },
+                {
+                  "path": "{codex_home}/xdg-config/opencode/tui.json",
+                  "sha256": "0149ceca7dfcbed690669efd026606124f175fed423b2067dd1a8f0c0a1262c0",
+                  "retain_as": "dcp-opencode-tui.json"
+                },
+                {
+                  "path": "{codex_home}/xdg-cache/opencode/packages/@tarquinen/opencode-dcp@3.1.14/node_modules/@tarquinen/opencode-dcp/dist/index.js",
+                  "sha256": "1e70b38527d6c604d9437bb447a67c857cd6f0cfe02f4fa69b69729e2ef57432",
+                  "retain_as": "dcp-installed-plugin.js"
+                }
+              ],
+              "effective_host_config": {
+                "required": true,
+                "source": "adapter-probe"
+              },
+              "default_tool_state": "active-native-plugin+automatic-cleanup+model-visible-compress"
+            },
+            "tool_config_sha256": "432287fcca70cc2d6fa3056c213a34b88060af748a59a9b0055da17591040afc",
+            "tool_state": "active-native-plugin+automatic-cleanup+model-visible-compress",
+            "tool_use_policy": "natural",
+            "command_identity": {
+              "kind": "codex_wrapper",
+              "command": [
+                "/usr/bin/python3",
+                "/opt/data/tool-candidates/opencode-adapter-v8/opencode_workflow_adapter.py",
+                "--opencode-binary",
+                "/opt/data/tool-candidates/opencode-runtime/node_modules/opencode-ai/bin/opencode.exe",
+                "--expected-opencode-sha256",
+                "7c4d91c84d2bfdeabb59257e3490c5e5acb08f2aacb3e42f3ddc296a1c3f1aca",
+                "--treatment",
+                "dcp"
+              ]
+            },
+            "binary_identity": {
+              "executable_token": "/usr/bin/python3",
+              "resolved_path": "/usr/bin/python3",
+              "realpath": "/usr/bin/python3.13",
+              "sha256": "4703a3d15898c0b5d81c3f939e93bdd8ca6116342093fb160ab1e01860dd7d8b",
+              "metadata": {
+                "size": 6812336,
+                "mode": "-rwxr-xr-x",
+                "uid": 0,
+                "gid": 0,
+                "mtime_ns": 1778015152000000000
+              },
+              "version": {
+                "command": [
+                  "/usr/bin/python3.13",
+                  "--version"
+                ],
+                "environment_path": "/opt/data/.local/bin:/opt/data/opt/go/bin:/opt/data/opt/uv:/opt/data/opt/node-v24.18.0-linux-x64/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+                "captured": true,
+                "exit_code": 0,
+                "output": "Python 3.13.5",
+                "truncated": false
+              }
+            },
+            "source_identity": [
+              {
+                "path": "/opt/data/tool-candidates/opencode-adapter-v8/opencode_workflow_adapter.py",
+                "exists": true,
+                "kind": "file",
+                "sha256": "d5fcd88e033767659da3acf17486273059cd566c29475c274349d2214428545c"
+              },
+              {
+                "path": "/opt/data/tool-candidates/opencode-dcp",
+                "exists": true,
+                "kind": "directory",
+                "git_head": "85b6f5ceba144fee9e65eb28dc36cab1b960e418",
+                "package_json_sha256": "9b7f126d0f5bbe06f1b17b583e0cbc7b2e66d556a58d646574319dc65d3d410e"
+              }
+            ]
+          },
+          "runtime": {
+            "docker_image": "token-eval-codex:latest",
+            "docker_image_identity": {
+              "image_ref": "token-eval-codex:latest",
+              "image_id": "sha256:6f86d01f2c63f5029c6bb874d8f3694c24d5cd567e3d09413eccc956ba3feafe",
+              "repo_digests": [
+                "token-eval-codex@sha256:6f86d01f2c63f5029c6bb874d8f3694c24d5cd567e3d09413eccc956ba3feafe"
+              ],
+              "repo_tags": [
+                "token-eval-codex:latest"
+              ]
+            },
+            "dockerfile_path": "sources/evaluations/fixtures/container/Dockerfile",
+            "dockerfile_sha256": "47c91967ce25014ce54879514f51d2ff0326651be1087209115eff4d358226b3",
+            "fixture_runner_path": "scripts/run_codex_fixture_evaluation.py",
+            "fixture_runner_sha256": "d23f4703446f9576628088eed9d9443515b02aea983cc86ad1e1a77b6088ec97",
+            "mcp_probe_path": "scripts/probe_mcp_stdio.py",
+            "mcp_probe_sha256": "7c06ea36ee5cac933a97140b84a41405fc99b45152388e8d7c6659136af698fd",
+            "codex_entrypoint_path": "sources/evaluations/fixtures/container/codex-entrypoint.sh",
+            "codex_entrypoint_sha256": "8715fe37cb1fa3823f5f05493bc9681ce7ffc72126dfec4d64d448762c550c3c",
+            "timeout_seconds_per_task": 3600,
+            "network_isolation": {
+              "provider_access": true,
+              "model_shell_network_access": false,
+              "model_shell_enforcement": "seccomp denies AF_INET and AF_INET6 socket creation for the shell process and descendants",
+              "agent_web_tools": "disabled-by-permission",
+              "external_retrieval_audit": "fail-closed"
+            },
+            "isolation_policy": "fresh lane-specific agent home/XDG state; provider-only network with model shell and agent web tools disabled; sequential one-task prompt delivery; controller seed/verifier scripts excluded while declared model-visible acceptance tests are retained",
+            "agent_runtime_id": "opencode-cli",
+            "model_condition": {
+              "id": "opencode-openai-gpt-5-6-sol-high",
+              "provider": "openai",
+              "model": "gpt-5.6-sol",
+              "reasoning_effort": "high",
+              "launcher": "scripts/run_opencode_workflow_model_condition.py"
+            }
+          },
+          "dependencies": {
+            "command": "uv sync --group test --frozen",
+            "command_sha256": "cef23fd45902c23f8b3e89b7c6360a401eb49c17cf36d742e5b625d5593c911b",
+            "lockfiles": [
+              {
+                "path": "uv.lock",
+                "snapshot_sha256": "fbf1d7a9c84b658a2433035221ba18c57508c254d711a06f305e2f610839a45f",
+                "current_fixture_sha256": null
+              }
+            ]
+          },
+          "agent_condition": {
+            "runtime_id": "opencode-cli",
+            "provider": "openai",
+            "model": "gpt-5.6-sol",
+            "model_condition_id": "opencode-openai-gpt-5-6-sol-high",
+            "reasoning_effort": "high",
+            "runtime_version_condition": "captured-at-run-and-bound-to-record"
+          },
+          "isolation": {
+            "prompt_delivery": "sequential-one-task-at-a-time",
+            "seed_delivery_mode": "preseeded-composite",
+            "future_tasks_visible": false,
+            "future_seed_regressions_visible": true,
+            "controller_verification": "final-only",
+            "controller_verifier_scripts_and_canonical_copies_model_visible": false,
+            "model_visible_acceptance_asset_paths": [
+              "test/plugins/test_ftintitle.py",
+              "test/util/test_functemplate.py"
+            ],
+            "model_concealed_paths": []
+          },
+          "baseline_pool_reference": {
+            "protocol_version": "baseline-pool-v1",
+            "protocol_fingerprint": "fcc8438d2077",
+            "comparison_policy": "paired baseline and treatment must share this baseline pool fingerprint and replicate"
+          },
+          "model_condition_override": {
+            "model_condition_id": "opencode-openai-gpt-5-6-sol-high",
+            "runtime_id": "opencode-cli",
+            "provider": "openai",
+            "model": "gpt-5.6-sol",
+            "reasoning_effort": "high",
+            "registry_status": "active-model-comparison",
+            "launcher": {
+              "path": "scripts/run_opencode_workflow_model_condition.py",
+              "sha256": "c38d87266347dfd46c8f671ad0e22fef52841a34643b93fc769d4ebfb71ac9ce",
+              "condition_runtime_path": "scripts/workflow_model_condition_runtime.py",
+              "condition_runtime_sha256": "8bfc9e9d1bcc7c49f28564bd638d2da3cdc1044ee3debf4218a19b820e05cfc6"
+            }
+          }
+        }
+      },
+      "docker_image_identity": {
+        "image_ref": "token-eval-codex:latest",
+        "image_id": "sha256:6f86d01f2c63f5029c6bb874d8f3694c24d5cd567e3d09413eccc956ba3feafe",
+        "repo_digests": [
+          "token-eval-codex@sha256:6f86d01f2c63f5029c6bb874d8f3694c24d5cd567e3d09413eccc956ba3feafe"
+        ],
+        "repo_tags": [
+          "token-eval-codex:latest"
+        ]
+      },
+      "tool_adapter_identity": {
+        "tool_id": "dcp-opencode-plugin-v1",
+        "tool_manifest": "scripts/run_codex_fixture_evaluation.py:TOOL_CONFIGS",
+        "tool_manifest_sha256": "d23f4703446f9576628088eed9d9443515b02aea983cc86ad1e1a77b6088ec97",
+        "tool_config": {
+          "display_name": "Dynamic Context Pruning official OpenCode plugin v3.1.14",
+          "lane_name": "context-dcp-opencode-plugin-v1",
+          "surface": "opencode-native-context-pruning+compress-tool+automatic-cleanup",
+          "allowed_terms": [
+            "opencode",
+            "opencode",
+            "dcp",
+            "compress"
+          ],
+          "data_dir_name": "context-dcp-opencode-plugin-v1",
+          "mounts": [
+            "/opt/data/tool-candidates/opencode-adapter-v8/opencode_workflow_adapter.py",
+            "/opt/data/tool-candidates/opencode-dcp"
+          ],
+          "executable": "/opt/data/tool-candidates/opencode-runtime/node_modules/opencode-ai/bin/opencode.exe",
+          "expected_executable_sha256": "7c4d91c84d2bfdeabb59257e3490c5e5acb08f2aacb3e42f3ddc296a1c3f1aca",
+          "binary_mount_target": "/opt/data/tool-candidates/opencode-runtime/node_modules/opencode-ai/bin/opencode.exe",
+          "codex_wrapper": {
+            "command": "/usr/bin/python3",
+            "args": [
+              "/opt/data/tool-candidates/opencode-adapter-v8/opencode_workflow_adapter.py",
+              "--opencode-binary",
+              "/opt/data/tool-candidates/opencode-runtime/node_modules/opencode-ai/bin/opencode.exe",
+              "--expected-opencode-sha256",
+              "7c4d91c84d2bfdeabb59257e3490c5e5acb08f2aacb3e42f3ddc296a1c3f1aca",
+              "--treatment",
+              "dcp"
+            ]
+          },
+          "preflight_command": [
+            "/usr/bin/python3",
+            "/opt/data/tool-candidates/opencode-adapter-v8/opencode_workflow_adapter.py",
+            "--opencode-binary",
+            "/opt/data/tool-candidates/opencode-runtime/node_modules/opencode-ai/bin/opencode.exe",
+            "--expected-opencode-sha256",
+            "7c4d91c84d2bfdeabb59257e3490c5e5acb08f2aacb3e42f3ddc296a1c3f1aca",
+            "--treatment",
+            "dcp",
+            "--probe"
+          ],
+          "tool_manifest_identity": "current-file-v1",
+          "env": {
+            "OPENCODE_TOOL_DATA_DIR": "{tool_data_dir}"
+          },
+          "host_integration": {
+            "controller_install_commands": [
+              [
+                "/opt/data/tool-candidates/opencode-runtime/node_modules/opencode-ai/bin/opencode.exe",
+                "plugin",
+                "@tarquinen/opencode-dcp@3.1.14",
+                "--global"
+              ]
+            ],
+            "required_files": [
+              "{codex_home}/xdg-config/opencode/opencode.jsonc",
+              "{codex_home}/xdg-config/opencode/tui.json",
+              "{codex_home}/xdg-cache/opencode/packages/@tarquinen/opencode-dcp@3.1.14/node_modules/@tarquinen/opencode-dcp/dist/index.js"
+            ],
+            "timeout_seconds": 600
+          },
+          "native_plugin": {
+            "required": true,
+            "path": "{codex_home}/xdg-cache/opencode/packages/@tarquinen/opencode-dcp@3.1.14/node_modules/@tarquinen/opencode-dcp/dist/index.js"
+          },
+          "artifact_identities": [
+            {
+              "path": "/opt/data/tool-candidates/opencode-dcp/package.json",
+              "sha256": "9b7f126d0f5bbe06f1b17b583e0cbc7b2e66d556a58d646574319dc65d3d410e",
+              "kind": "source-package"
+            },
+            {
+              "path": "/opt/data/tool-candidates/opencode-dcp/package-lock.json",
+              "sha256": "cae2ac00ee6abc966e7132732fb975fe0c1d5e5494c2ac48c7cf566718aa5a98",
+              "kind": "source-lock"
+            },
+            {
+              "path": "/opt/data/tool-candidates/opencode-dcp/README.md",
+              "sha256": "1905a791ba86ea0f8cd8771364f7c5a8e6a3634ecb636df4eeede1614530b882",
+              "kind": "product-guidance"
+            },
+            {
+              "path": "/opt/data/tool-candidates/opencode-adapter-v8/opencode_workflow_adapter.py",
+              "sha256": "d5fcd88e033767659da3acf17486273059cd566c29475c274349d2214428545c",
+              "kind": "runtime-adapter"
+            }
+          ],
+          "post_install_artifacts": [
+            {
+              "path": "{codex_home}/xdg-config/opencode/opencode.jsonc",
+              "sha256": "9b8a141b67efdf6fbcb1123f859cdc5acc41e35ab795fb8385029ff508221dd9",
+              "retain_as": "dcp-opencode-config.jsonc"
+            },
+            {
+              "path": "{codex_home}/xdg-config/opencode/tui.json",
+              "sha256": "0149ceca7dfcbed690669efd026606124f175fed423b2067dd1a8f0c0a1262c0",
+              "retain_as": "dcp-opencode-tui.json"
+            },
+            {
+              "path": "{codex_home}/xdg-cache/opencode/packages/@tarquinen/opencode-dcp@3.1.14/node_modules/@tarquinen/opencode-dcp/dist/index.js",
+              "sha256": "1e70b38527d6c604d9437bb447a67c857cd6f0cfe02f4fa69b69729e2ef57432",
+              "retain_as": "dcp-installed-plugin.js"
+            }
+          ],
+          "effective_host_config": {
+            "required": true,
+            "source": "adapter-probe"
+          },
+          "default_tool_state": "active-native-plugin+automatic-cleanup+model-visible-compress"
+        },
+        "tool_config_sha256": "432287fcca70cc2d6fa3056c213a34b88060af748a59a9b0055da17591040afc",
+        "tool_state": "active-native-plugin+automatic-cleanup+model-visible-compress",
+        "tool_use_policy": "natural",
+        "command_identity": {
+          "kind": "codex_wrapper",
+          "command": [
+            "/usr/bin/python3",
+            "/opt/data/tool-candidates/opencode-adapter-v8/opencode_workflow_adapter.py",
+            "--opencode-binary",
+            "/opt/data/tool-candidates/opencode-runtime/node_modules/opencode-ai/bin/opencode.exe",
+            "--expected-opencode-sha256",
+            "7c4d91c84d2bfdeabb59257e3490c5e5acb08f2aacb3e42f3ddc296a1c3f1aca",
+            "--treatment",
+            "dcp"
+          ]
+        },
+        "binary_identity": {
+          "executable_token": "/usr/bin/python3",
+          "resolved_path": "/usr/bin/python3",
+          "realpath": "/usr/bin/python3.13",
+          "sha256": "4703a3d15898c0b5d81c3f939e93bdd8ca6116342093fb160ab1e01860dd7d8b",
+          "metadata": {
+            "size": 6812336,
+            "mode": "-rwxr-xr-x",
+            "uid": 0,
+            "gid": 0,
+            "mtime_ns": 1778015152000000000
+          },
+          "version": {
+            "command": [
+              "/usr/bin/python3.13",
+              "--version"
+            ],
+            "environment_path": "/opt/data/.local/bin:/opt/data/opt/go/bin:/opt/data/opt/uv:/opt/data/opt/node-v24.18.0-linux-x64/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+            "captured": true,
+            "exit_code": 0,
+            "output": "Python 3.13.5",
+            "truncated": false
+          }
+        },
+        "source_identity": [
+          {
+            "path": "/opt/data/tool-candidates/opencode-adapter-v8/opencode_workflow_adapter.py",
+            "exists": true,
+            "kind": "file",
+            "sha256": "d5fcd88e033767659da3acf17486273059cd566c29475c274349d2214428545c"
+          },
+          {
+            "path": "/opt/data/tool-candidates/opencode-dcp",
+            "exists": true,
+            "kind": "directory",
+            "git_head": "85b6f5ceba144fee9e65eb28dc36cab1b960e418",
+            "package_json_sha256": "9b7f126d0f5bbe06f1b17b583e0cbc7b2e66d556a58d646574319dc65d3d410e"
+          }
+        ]
+      },
+      "date": "2026-07-31",
+      "target": {
+        "fixture_id": "medium-beetbox-beets",
+        "fixture_scale": "medium-project",
+        "project_id": "beetbox-beets",
+        "repository_path": "sources/evaluations/workflow-sessions/dcp-opencode-v1-beets-20260731-p-fcc8438d2077-r2/project/repo",
+        "initial_snapshot": {
+          "commit": "9acb1ecff6c7ee0a1e83e3b983c94792345712c5",
+          "branch": "detached",
+          "fixture_hash": ""
+        }
+      },
+      "task_sequence": {
+        "sequence_id": "beets-lifecycle-sequence-v0",
+        "sequence_contract": "feature-refactor-review",
+        "task_ids": [
+          "beets-lifecycle-feature-v0",
+          "beets-lifecycle-refactor-v0",
+          "beets-lifecycle-review-v0"
+        ],
+        "task_classes": [
+          "feature-implementation",
+          "behavior-preserving-refactor",
+          "code-review-correction"
+        ],
+        "reset_policy": "reset source checkout, profile home, tool state, indexes, caches, generated config, and agent home before the lane; preserve repository, thread, tool, index, cache, and agent state across every sequential prompt",
+        "prompt_delivery": {
+          "mode": "sequential-one-task-at-a-time",
+          "future_tasks_visible": false,
+          "future_prompts_materialized_lazily": true,
+          "seed_delivery_mode": "preseeded-composite",
+          "future_seed_regressions_visible": true,
+          "controller_verification": "final-only",
+          "codex_thread_id": "ses_04a8472b3ffeYG6UB9G6cuQYMa",
+          "task_prompt_evidence": "sources/evaluations/workflow-sessions/dcp-opencode-v1-beets-20260731-p-fcc8438d2077-r2/evidence.jsonl.gz"
+        },
+        "leakage_controls": {
+          "seed_origin_concealed": true,
+          "seed_patches_model_visible": false,
+          "git_baseline_true_root_at_lane_start": true,
+          "fixed_snapshot_objects_model_visible": false,
+          "pre_seed_reflog_entries_visible": false,
+          "concealment_verification_passed": true,
+          "task_directories_model_visible": false,
+          "controller_verifier_scripts_and_canonical_copies_model_visible": false,
+          "model_visible_acceptance_asset_paths": [
+            "test/plugins/test_ftintitle.py",
+            "test/util/test_functemplate.py"
+          ],
+          "model_writable_surface": "target repository plus isolated model-output directory",
+          "verifier_integrity_passed": true,
+          "verifier_integrity_evidence": "sources/evaluations/workflow-sessions/dcp-opencode-v1-beets-20260731-p-fcc8438d2077-r2/evidence.jsonl.gz#verifier-integrity.json",
+          "model_prompts_sanitized": true,
+          "upstream_remote_removed_from_model_facing_repo": true,
+          "broken_start_committed_as_local_baseline": true,
+          "remaining_limitations": [
+            "Future regression code and declared focused acceptance tests are present from lane start; future prompts, seed patches, and controller verifier scripts remain controller-only.",
+            "Task semantics and verifier names may still be searchable if the model intentionally uses external network access."
+          ]
+        }
+      },
+      "profile": {
+        "profile_id": "context-dcp-opencode-plugin-v1",
+        "profile_type": "individual_tool",
+        "enabled_surfaces": [
+          "opencode-plugin",
+          "model-visible-compress-tool",
+          "automatic-deduplication",
+          "automatic-error-input-purging",
+          "context-nudges"
+        ],
+        "disabled_overlaps": [
+          "all unlisted surfaces"
+        ],
+        "component_ids": [
+          "context-dcp-opencode-plugin-v1"
+        ]
+      },
+      "agent": {
+        "runtime_id": "opencode-cli",
+        "model_condition_id": "opencode-openai-gpt-5-6-sol-high",
+        "name": "OpenCode CLI",
+        "version": "1.18.9",
+        "provider": "openai",
+        "model": "gpt-5.6-sol",
+        "reasoning_effort": "high",
+        "temperature": null,
+        "max_turns": null,
+        "time_budget_seconds": 10800
+      },
+      "state_policy": {
+        "reset_before_session": [
+          "repository working tree",
+          "profile home",
+          "tool indexes and caches",
+          "generated config",
+          "agent home",
+          "temporary directories"
+        ],
+        "persist_between_tasks": [
+          "repository source working tree and model-facing Git metadata from one composite broken-start root",
+          "tool indexes and caches",
+          "generated config",
+          "agent home",
+          "memory/state stores enabled by the active profile",
+          "run artifacts"
+        ]
+      },
+      "cumulative_token_usage": {
+        "measurement_source": "opencode-jsonl-step-finish-usage",
+        "fresh_input_tokens": 12500,
+        "cached_input_tokens": 35328,
+        "cache_write_tokens": 0,
+        "output_tokens": 1024,
+        "reasoning_tokens": 76,
+        "total_provider_tokens": 48852,
+        "tokens_per_accepted_task": 16284.0,
+        "accounting_basis": "OpenCode CLI-reported token volume; monetary cost estimation is out of scope"
+      },
+      "per_task_results": [
+        {
+          "task_id": "beets-lifecycle-feature-v0",
+          "task_class": "feature-implementation",
+          "task_alias": "task-01",
+          "order": 1,
+          "agent_attempted": true,
+          "codex_exit_code": 0,
+          "thread_continuity_passed": true,
+          "thread_id": "ses_04a8472b3ffeYG6UB9G6cuQYMa",
+          "controller_verification": "passed",
+          "accepted": true,
+          "task_delta": "sources/evaluations/workflow-sessions/dcp-opencode-v1-beets-20260731-p-fcc8438d2077-r2/task-01-agent.diff",
+          "usage_events": "sources/evaluations/workflow-sessions/dcp-opencode-v1-beets-20260731-p-fcc8438d2077-r2/task-01-codex-events.jsonl",
+          "operational_retry_count": 0,
+          "verifier_exit_code": 0,
+          "verifier_passed": true
+        },
+        {
+          "task_id": "beets-lifecycle-refactor-v0",
+          "task_class": "behavior-preserving-refactor",
+          "task_alias": "task-02",
+          "order": 2,
+          "agent_attempted": true,
+          "codex_exit_code": 0,
+          "thread_continuity_passed": true,
+          "thread_id": "ses_04a8472b3ffeYG6UB9G6cuQYMa",
+          "controller_verification": "passed",
+          "accepted": true,
+          "task_delta": "sources/evaluations/workflow-sessions/dcp-opencode-v1-beets-20260731-p-fcc8438d2077-r2/task-02-agent.diff",
+          "usage_events": "sources/evaluations/workflow-sessions/dcp-opencode-v1-beets-20260731-p-fcc8438d2077-r2/task-02-codex-events.jsonl",
+          "operational_retry_count": 0,
+          "verifier_exit_code": 0,
+          "verifier_passed": true
+        },
+        {
+          "task_id": "beets-lifecycle-review-v0",
+          "task_class": "code-review-correction",
+          "task_alias": "task-03",
+          "order": 3,
+          "agent_attempted": true,
+          "codex_exit_code": 0,
+          "thread_continuity_passed": true,
+          "thread_id": "ses_04a8472b3ffeYG6UB9G6cuQYMa",
+          "controller_verification": "passed",
+          "accepted": true,
+          "task_delta": "sources/evaluations/workflow-sessions/dcp-opencode-v1-beets-20260731-p-fcc8438d2077-r2/task-03-agent.diff",
+          "usage_events": "sources/evaluations/workflow-sessions/dcp-opencode-v1-beets-20260731-p-fcc8438d2077-r2/task-03-codex-events.jsonl",
+          "operational_retry_count": 0,
+          "verifier_exit_code": 0,
+          "verifier_passed": true
+        }
+      ],
+      "software_quality": {
+        "tasks_attempted": 3,
+        "tasks_agent_claimed_complete": 3,
+        "tasks_passed": 3,
+        "final_verifier_command": "sources/evaluations/workflow-sessions/dcp-opencode-v1-beets-20260731-p-fcc8438d2077-r2/verify-workflow.sh",
+        "final_verifier_passed": true,
+        "functional_verifier_passed": true,
+        "quality_review_status": "not-reviewed",
+        "quality_score": null,
+        "critical_failures": []
+      },
+      "execution_integrity": {
+        "verifier_integrity_passed": true,
+        "tool_isolation_audit_passed": true,
+        "external_retrieval_hits": [],
+        "pass_through_tool_command_hits": []
+      },
+      "artifacts": {
+        "artifact_contract": "compact-v1-four-files",
+        "root": "sources/evaluations/workflow-sessions/dcp-opencode-v1-beets-20260731-p-fcc8438d2077-r2",
+        "run_record": "sources/evaluations/workflow-sessions/dcp-opencode-v1-beets-20260731-p-fcc8438d2077-r2/run.json",
+        "final_diff": "sources/evaluations/workflow-sessions/dcp-opencode-v1-beets-20260731-p-fcc8438d2077-r2/changes.diff",
+        "final_diff_basis": "ordered cumulative checkpoints plus final cumulative source diff from one composite root",
+        "evidence_bundle": "sources/evaluations/workflow-sessions/dcp-opencode-v1-beets-20260731-p-fcc8438d2077-r2/evidence.jsonl.gz",
+        "manifest": "sources/evaluations/workflow-sessions/dcp-opencode-v1-beets-20260731-p-fcc8438d2077-r2/manifest.sha256"
+      },
+      "interpretation": {
+        "accepted_for_execution": true,
+        "accepted_for_objective": true,
+        "claim_status": "token-accounting-eligible",
+        "comparison_baseline_session_id": "opencode-beets-20260730-p-fcc8438d2077-r2",
+        "standalone_runtime_control": false,
+        "exclusion_reason": "",
+        "notes": "Provider-backed lane completed with clean integrity; verifier and review outcomes are diagnostic model-behavior evidence and do not gate token accounting.",
+        "scope_note": "Full warm-state lane; all regressions are preseeded, prompts are disclosed sequentially, and controller verification runs only after the final prompt; declared acceptance assertions remain model-visible.",
+        "evaluation_validity": "valid",
+        "primary_objective_hard_baseline": false,
+        "usable_for_primary_objective_token_comparison": true,
+        "operationally_completed": true,
+        "agent_declared_task_completion_count": 3
+      }
+    },
+    {
+      "schema_version": 2,
+      "session_id": "dcp-opencode-v1-terraform-20260731-p-5811b463c1e9-r2",
+      "record_type": "workflow_session",
+      "evidence_type": "workflow-simulation",
+      "study_id": "phase-2-sequential-workflow-v1",
+      "experiment_group_id": "hashicorp-terraform-context-dcp-opencode-plugin-v1-5811b463c1e9-sequential-workflow-r2",
+      "objective": "individual_tool_effectiveness",
+      "evidence_stage": "reproduction",
+      "status": "completed",
+      "session_role": "individual_tool_treatment",
+      "replicate_index": 2,
+      "frozen_protocol": {
+        "protocol_id": "terraform-lifecycle-sequence-v0-context-dcp-opencode-plugin-v1-e74856d6a039",
+        "path": "sources/evaluations/protocols/terraform-lifecycle-sequence-v0-context-dcp-opencode-plugin-v1-e74856d6a039.json",
+        "sha256": "ebbe657f26c260a316a0c4debe99f052de0f72dce64922b02a1bcbb137fbe82f"
+      },
+      "baseline_pool": {
+        "protocol_version": "baseline-pool-v1",
+        "protocol_fingerprint": "5811b463c1e9",
+        "identity_policy": "frozen-protocol-and-replicate; execution date is metadata only"
+      },
+      "selected_execution": {
+        "descriptor_sha256": "5f2d3ab4c679e3a7bd20f5dd2cd2688ed22dfe60123e18d0e039a15500a12f54",
+        "descriptor": {
+          "version": "execution-condition-v1",
+          "sequence_id": "terraform-lifecycle-sequence-v0",
+          "execution_role": "individual_tool_treatment",
+          "selected_profile": {
+            "profile_id": "context-dcp-opencode-plugin-v1",
+            "profile_type": "individual_tool",
+            "component_ids": [
+              "context-dcp-opencode-plugin-v1"
+            ],
+            "enabled_surfaces": [
+              "opencode-plugin",
+              "model-visible-compress-tool",
+              "automatic-deduplication",
+              "automatic-error-input-purging",
+              "context-nudges"
+            ],
+            "disabled_overlaps": [
+              "all unlisted surfaces"
+            ],
+            "registry_entry_sha256": "cd4ce1db716ad307c4264bf08fb4e81bc68d2d00e12385a74a4130655494d8e9",
+            "registry_entry": {
+              "profile_type": "individual_tool",
+              "objective_scope": "individual_tool_effectiveness",
+              "status": "screening-ablation",
+              "substrate": "opencode-cli",
+              "disabled_overlaps": [
+                "all unlisted surfaces"
+              ],
+              "native_agent_tools_allowed": [
+                "opencode-native-shell-edit",
+                "opencode-native-file-read-search",
+                "git",
+                "verifier-commands",
+                "dcp-compress-tool"
+              ],
+              "forbidden_surfaces": [
+                "all external retrieval, compression, memory, MCP, skills, plugins, subagents, and web tools except the assigned DCP plugin surfaces"
+              ],
+              "reset": {
+                "policy": "Delete lane-private OpenCode XDG configuration, package cache, DCP state, auth translation, and generated evaluation artifacts after evidence capture."
+              },
+              "id": "context-dcp-opencode-plugin-v1",
+              "name": "Dynamic Context Pruning OpenCode plugin V3.1.14",
+              "enabled_surfaces": [
+                "opencode-plugin",
+                "model-visible-compress-tool",
+                "automatic-deduplication",
+                "automatic-error-input-purging",
+                "context-nudges"
+              ],
+              "components": [
+                {
+                  "component_id": "context-dcp-opencode-plugin-v1",
+                  "surface": "opencode-native-context-pruning+compress-tool+automatic-cleanup",
+                  "role": "individual_tool"
+                }
+              ],
+              "install": {
+                "policy": "Run OpenCode's official plugin installer with the exact pinned package spec `@tarquinen/opencode-dcp@3.1.14` in the lane-private XDG root; require server and TUI registration, exact installed server-entrypoint hash, and live OpenCode debug-config plugin proof."
+              },
+              "evaluation_protocol": {
+                "tool_use_policy": "natural",
+                "tool_state": "active-native-plugin+automatic-cleanup+model-visible-compress",
+                "integration_state": "official-opencode-plugin-default-configuration",
+                "assignment_proof": "provider-free exact source, lock, installer outputs, installed entrypoint, effective configuration, and live native activation proof required"
+              },
+              "source_snapshot": {
+                "repository": "Opencode-DCP/opencode-dynamic-context-pruning",
+                "version": "3.1.14",
+                "tag": "v3.1.14",
+                "source_commit": "85b6f5ceba144fee9e65eb28dc36cab1b960e418",
+                "package_sha256": "9b7f126d0f5bbe06f1b17b583e0cbc7b2e66d556a58d646574319dc65d3d410e",
+                "package_lock_sha256": "cae2ac00ee6abc966e7132732fb975fe0c1d5e5494c2ac48c7cf566718aa5a98",
+                "installed_plugin_sha256": "1e70b38527d6c604d9437bb447a67c857cd6f0cfe02f4fa69b69729e2ef57432",
+                "runtime_adapter": "/opt/data/tool-candidates/opencode-adapter-v8/opencode_workflow_adapter.py",
+                "runtime_adapter_sha256": "d5fcd88e033767659da3acf17486273059cd566c29475c274349d2214428545c"
+              },
+              "notes": "Owner-authorized fresh OpenCode screen. Default DCP configuration is preserved; evaluator-authored compression steering and manual slash-command activation are forbidden."
+            }
+          },
+          "model_facing_prompts": {
+            "rendering_contract": "sequential-model-facing-prompts-v2",
+            "profile_guidance_sha256": "cb08dba8b361975eb89669cc77d206861b05fc26b161a9215337dbb2d30a6366",
+            "tasks": [
+              {
+                "task_id": "terraform-lifecycle-feature-v0",
+                "order": 1,
+                "rendered_prompt_sha256": "0c7a1ae29db926cb00a0d6692e684dbf2088a40fc5d5d513fcba2601fb7690d1"
+              },
+              {
+                "task_id": "terraform-lifecycle-refactor-v0",
+                "order": 2,
+                "rendered_prompt_sha256": "6a1c7a09e43d141088f3ca871ac3744ed78e332713fe854118b51b0989b77c7c"
+              },
+              {
+                "task_id": "terraform-lifecycle-review-v0",
+                "order": 3,
+                "rendered_prompt_sha256": "6b854332fdd04a97f65eb2aef312dcf61e37a8521f4b8fa324ccef2c9ddde7a4"
+              }
+            ]
+          },
+          "tool_adapter": {
+            "tool_id": "dcp-opencode-plugin-v1",
+            "tool_manifest": "scripts/run_codex_fixture_evaluation.py:TOOL_CONFIGS",
+            "tool_manifest_sha256": "d23f4703446f9576628088eed9d9443515b02aea983cc86ad1e1a77b6088ec97",
+            "tool_config": {
+              "display_name": "Dynamic Context Pruning official OpenCode plugin v3.1.14",
+              "lane_name": "context-dcp-opencode-plugin-v1",
+              "surface": "opencode-native-context-pruning+compress-tool+automatic-cleanup",
+              "allowed_terms": [
+                "opencode",
+                "opencode",
+                "dcp",
+                "compress"
+              ],
+              "data_dir_name": "context-dcp-opencode-plugin-v1",
+              "mounts": [
+                "/opt/data/tool-candidates/opencode-adapter-v8/opencode_workflow_adapter.py",
+                "/opt/data/tool-candidates/opencode-dcp"
+              ],
+              "executable": "/opt/data/tool-candidates/opencode-runtime/node_modules/opencode-ai/bin/opencode.exe",
+              "expected_executable_sha256": "7c4d91c84d2bfdeabb59257e3490c5e5acb08f2aacb3e42f3ddc296a1c3f1aca",
+              "binary_mount_target": "/opt/data/tool-candidates/opencode-runtime/node_modules/opencode-ai/bin/opencode.exe",
+              "codex_wrapper": {
+                "command": "/usr/bin/python3",
+                "args": [
+                  "/opt/data/tool-candidates/opencode-adapter-v8/opencode_workflow_adapter.py",
+                  "--opencode-binary",
+                  "/opt/data/tool-candidates/opencode-runtime/node_modules/opencode-ai/bin/opencode.exe",
+                  "--expected-opencode-sha256",
+                  "7c4d91c84d2bfdeabb59257e3490c5e5acb08f2aacb3e42f3ddc296a1c3f1aca",
+                  "--treatment",
+                  "dcp"
+                ]
+              },
+              "preflight_command": [
+                "/usr/bin/python3",
+                "/opt/data/tool-candidates/opencode-adapter-v8/opencode_workflow_adapter.py",
+                "--opencode-binary",
+                "/opt/data/tool-candidates/opencode-runtime/node_modules/opencode-ai/bin/opencode.exe",
+                "--expected-opencode-sha256",
+                "7c4d91c84d2bfdeabb59257e3490c5e5acb08f2aacb3e42f3ddc296a1c3f1aca",
+                "--treatment",
+                "dcp",
+                "--probe"
+              ],
+              "tool_manifest_identity": "current-file-v1",
+              "env": {
+                "OPENCODE_TOOL_DATA_DIR": "{tool_data_dir}"
+              },
+              "host_integration": {
+                "controller_install_commands": [
+                  [
+                    "/opt/data/tool-candidates/opencode-runtime/node_modules/opencode-ai/bin/opencode.exe",
+                    "plugin",
+                    "@tarquinen/opencode-dcp@3.1.14",
+                    "--global"
+                  ]
+                ],
+                "required_files": [
+                  "{codex_home}/xdg-config/opencode/opencode.jsonc",
+                  "{codex_home}/xdg-config/opencode/tui.json",
+                  "{codex_home}/xdg-cache/opencode/packages/@tarquinen/opencode-dcp@3.1.14/node_modules/@tarquinen/opencode-dcp/dist/index.js"
+                ],
+                "timeout_seconds": 600
+              },
+              "native_plugin": {
+                "required": true,
+                "path": "{codex_home}/xdg-cache/opencode/packages/@tarquinen/opencode-dcp@3.1.14/node_modules/@tarquinen/opencode-dcp/dist/index.js"
+              },
+              "artifact_identities": [
+                {
+                  "path": "/opt/data/tool-candidates/opencode-dcp/package.json",
+                  "sha256": "9b7f126d0f5bbe06f1b17b583e0cbc7b2e66d556a58d646574319dc65d3d410e",
+                  "kind": "source-package"
+                },
+                {
+                  "path": "/opt/data/tool-candidates/opencode-dcp/package-lock.json",
+                  "sha256": "cae2ac00ee6abc966e7132732fb975fe0c1d5e5494c2ac48c7cf566718aa5a98",
+                  "kind": "source-lock"
+                },
+                {
+                  "path": "/opt/data/tool-candidates/opencode-dcp/README.md",
+                  "sha256": "1905a791ba86ea0f8cd8771364f7c5a8e6a3634ecb636df4eeede1614530b882",
+                  "kind": "product-guidance"
+                },
+                {
+                  "path": "/opt/data/tool-candidates/opencode-adapter-v8/opencode_workflow_adapter.py",
+                  "sha256": "d5fcd88e033767659da3acf17486273059cd566c29475c274349d2214428545c",
+                  "kind": "runtime-adapter"
+                }
+              ],
+              "post_install_artifacts": [
+                {
+                  "path": "{codex_home}/xdg-config/opencode/opencode.jsonc",
+                  "sha256": "9b8a141b67efdf6fbcb1123f859cdc5acc41e35ab795fb8385029ff508221dd9",
+                  "retain_as": "dcp-opencode-config.jsonc"
+                },
+                {
+                  "path": "{codex_home}/xdg-config/opencode/tui.json",
+                  "sha256": "0149ceca7dfcbed690669efd026606124f175fed423b2067dd1a8f0c0a1262c0",
+                  "retain_as": "dcp-opencode-tui.json"
+                },
+                {
+                  "path": "{codex_home}/xdg-cache/opencode/packages/@tarquinen/opencode-dcp@3.1.14/node_modules/@tarquinen/opencode-dcp/dist/index.js",
+                  "sha256": "1e70b38527d6c604d9437bb447a67c857cd6f0cfe02f4fa69b69729e2ef57432",
+                  "retain_as": "dcp-installed-plugin.js"
+                }
+              ],
+              "effective_host_config": {
+                "required": true,
+                "source": "adapter-probe"
+              },
+              "default_tool_state": "active-native-plugin+automatic-cleanup+model-visible-compress"
+            },
+            "tool_config_sha256": "432287fcca70cc2d6fa3056c213a34b88060af748a59a9b0055da17591040afc",
+            "tool_state": "active-native-plugin+automatic-cleanup+model-visible-compress",
+            "tool_use_policy": "natural",
+            "command_identity": {
+              "kind": "codex_wrapper",
+              "command": [
+                "/usr/bin/python3",
+                "/opt/data/tool-candidates/opencode-adapter-v8/opencode_workflow_adapter.py",
+                "--opencode-binary",
+                "/opt/data/tool-candidates/opencode-runtime/node_modules/opencode-ai/bin/opencode.exe",
+                "--expected-opencode-sha256",
+                "7c4d91c84d2bfdeabb59257e3490c5e5acb08f2aacb3e42f3ddc296a1c3f1aca",
+                "--treatment",
+                "dcp"
+              ]
+            },
+            "binary_identity": {
+              "executable_token": "/usr/bin/python3",
+              "resolved_path": "/usr/bin/python3",
+              "realpath": "/usr/bin/python3.13",
+              "sha256": "4703a3d15898c0b5d81c3f939e93bdd8ca6116342093fb160ab1e01860dd7d8b",
+              "metadata": {
+                "size": 6812336,
+                "mode": "-rwxr-xr-x",
+                "uid": 0,
+                "gid": 0,
+                "mtime_ns": 1778015152000000000
+              },
+              "version": {
+                "command": [
+                  "/usr/bin/python3.13",
+                  "--version"
+                ],
+                "environment_path": "/opt/data/.local/bin:/opt/data/opt/go/bin:/opt/data/opt/uv:/opt/data/opt/node-v24.18.0-linux-x64/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+                "captured": true,
+                "exit_code": 0,
+                "output": "Python 3.13.5",
+                "truncated": false
+              }
+            },
+            "source_identity": [
+              {
+                "path": "/opt/data/tool-candidates/opencode-adapter-v8/opencode_workflow_adapter.py",
+                "exists": true,
+                "kind": "file",
+                "sha256": "d5fcd88e033767659da3acf17486273059cd566c29475c274349d2214428545c"
+              },
+              {
+                "path": "/opt/data/tool-candidates/opencode-dcp",
+                "exists": true,
+                "kind": "directory",
+                "git_head": "85b6f5ceba144fee9e65eb28dc36cab1b960e418",
+                "package_json_sha256": "9b7f126d0f5bbe06f1b17b583e0cbc7b2e66d556a58d646574319dc65d3d410e"
+              }
+            ]
+          },
+          "runtime": {
+            "docker_image": "token-eval-codex:latest",
+            "docker_image_identity": {
+              "image_ref": "token-eval-codex:latest",
+              "image_id": "sha256:6f86d01f2c63f5029c6bb874d8f3694c24d5cd567e3d09413eccc956ba3feafe",
+              "repo_digests": [
+                "token-eval-codex@sha256:6f86d01f2c63f5029c6bb874d8f3694c24d5cd567e3d09413eccc956ba3feafe"
+              ],
+              "repo_tags": [
+                "token-eval-codex:latest"
+              ]
+            },
+            "dockerfile_path": "sources/evaluations/fixtures/container/Dockerfile",
+            "dockerfile_sha256": "47c91967ce25014ce54879514f51d2ff0326651be1087209115eff4d358226b3",
+            "fixture_runner_path": "scripts/run_codex_fixture_evaluation.py",
+            "fixture_runner_sha256": "d23f4703446f9576628088eed9d9443515b02aea983cc86ad1e1a77b6088ec97",
+            "mcp_probe_path": "scripts/probe_mcp_stdio.py",
+            "mcp_probe_sha256": "7c06ea36ee5cac933a97140b84a41405fc99b45152388e8d7c6659136af698fd",
+            "codex_entrypoint_path": "sources/evaluations/fixtures/container/codex-entrypoint.sh",
+            "codex_entrypoint_sha256": "8715fe37cb1fa3823f5f05493bc9681ce7ffc72126dfec4d64d448762c550c3c",
+            "timeout_seconds_per_task": 3600,
+            "network_isolation": {
+              "provider_access": true,
+              "model_shell_network_access": false,
+              "model_shell_enforcement": "seccomp denies AF_INET and AF_INET6 socket creation for the shell process and descendants",
+              "agent_web_tools": "disabled-by-permission",
+              "external_retrieval_audit": "fail-closed"
+            },
+            "isolation_policy": "fresh lane-specific agent home/XDG state; provider-only network with model shell and agent web tools disabled; sequential one-task prompt delivery; controller seed/verifier scripts excluded while declared model-visible acceptance tests are retained",
+            "agent_runtime_id": "opencode-cli",
+            "model_condition": {
+              "id": "opencode-openai-gpt-5-6-sol-high",
+              "provider": "openai",
+              "model": "gpt-5.6-sol",
+              "reasoning_effort": "high",
+              "launcher": "scripts/run_opencode_workflow_model_condition.py"
+            }
+          },
+          "dependencies": {
+            "command": "go mod download",
+            "command_sha256": "42a8263a643ccbe692d70752ffdd8cea328fc2d3190677df1485ee06f55b350a",
+            "lockfiles": [
+              {
+                "path": "go.sum",
+                "snapshot_sha256": "be9ec949db0a0b135197f2c78b6d9821d764cc9b8c362b4860e3d5a1e9c74b9e",
+                "current_fixture_sha256": null
+              }
+            ]
+          },
+          "agent_condition": {
+            "runtime_id": "opencode-cli",
+            "provider": "openai",
+            "model": "gpt-5.6-sol",
+            "model_condition_id": "opencode-openai-gpt-5-6-sol-high",
+            "reasoning_effort": "high",
+            "runtime_version_condition": "captured-at-run-and-bound-to-record"
+          },
+          "isolation": {
+            "prompt_delivery": "sequential-one-task-at-a-time",
+            "seed_delivery_mode": "preseeded-composite",
+            "future_tasks_visible": false,
+            "future_seed_regressions_visible": true,
+            "controller_verification": "final-only",
+            "controller_verifier_scripts_and_canonical_copies_model_visible": false,
+            "model_visible_acceptance_asset_paths": [
+              "internal/addrs/baseline_v3_checkable_test.go",
+              "internal/configs/baseline_v3_requirement_type_test.go",
+              "internal/configs/parser_config_dir_test.go",
+              "internal/policy/callback/baseline_v3_deferred_test.go"
+            ],
+            "model_concealed_paths": []
+          },
+          "baseline_pool_reference": {
+            "protocol_version": "baseline-pool-v1",
+            "protocol_fingerprint": "5811b463c1e9",
+            "comparison_policy": "paired baseline and treatment must share this baseline pool fingerprint and replicate"
+          },
+          "model_condition_override": {
+            "model_condition_id": "opencode-openai-gpt-5-6-sol-high",
+            "runtime_id": "opencode-cli",
+            "provider": "openai",
+            "model": "gpt-5.6-sol",
+            "reasoning_effort": "high",
+            "registry_status": "active-model-comparison",
+            "launcher": {
+              "path": "scripts/run_opencode_workflow_model_condition.py",
+              "sha256": "c38d87266347dfd46c8f671ad0e22fef52841a34643b93fc769d4ebfb71ac9ce",
+              "condition_runtime_path": "scripts/workflow_model_condition_runtime.py",
+              "condition_runtime_sha256": "8bfc9e9d1bcc7c49f28564bd638d2da3cdc1044ee3debf4218a19b820e05cfc6"
+            }
+          }
+        }
+      },
+      "docker_image_identity": {
+        "image_ref": "token-eval-codex:latest",
+        "image_id": "sha256:6f86d01f2c63f5029c6bb874d8f3694c24d5cd567e3d09413eccc956ba3feafe",
+        "repo_digests": [
+          "token-eval-codex@sha256:6f86d01f2c63f5029c6bb874d8f3694c24d5cd567e3d09413eccc956ba3feafe"
+        ],
+        "repo_tags": [
+          "token-eval-codex:latest"
+        ]
+      },
+      "tool_adapter_identity": {
+        "tool_id": "dcp-opencode-plugin-v1",
+        "tool_manifest": "scripts/run_codex_fixture_evaluation.py:TOOL_CONFIGS",
+        "tool_manifest_sha256": "d23f4703446f9576628088eed9d9443515b02aea983cc86ad1e1a77b6088ec97",
+        "tool_config": {
+          "display_name": "Dynamic Context Pruning official OpenCode plugin v3.1.14",
+          "lane_name": "context-dcp-opencode-plugin-v1",
+          "surface": "opencode-native-context-pruning+compress-tool+automatic-cleanup",
+          "allowed_terms": [
+            "opencode",
+            "opencode",
+            "dcp",
+            "compress"
+          ],
+          "data_dir_name": "context-dcp-opencode-plugin-v1",
+          "mounts": [
+            "/opt/data/tool-candidates/opencode-adapter-v8/opencode_workflow_adapter.py",
+            "/opt/data/tool-candidates/opencode-dcp"
+          ],
+          "executable": "/opt/data/tool-candidates/opencode-runtime/node_modules/opencode-ai/bin/opencode.exe",
+          "expected_executable_sha256": "7c4d91c84d2bfdeabb59257e3490c5e5acb08f2aacb3e42f3ddc296a1c3f1aca",
+          "binary_mount_target": "/opt/data/tool-candidates/opencode-runtime/node_modules/opencode-ai/bin/opencode.exe",
+          "codex_wrapper": {
+            "command": "/usr/bin/python3",
+            "args": [
+              "/opt/data/tool-candidates/opencode-adapter-v8/opencode_workflow_adapter.py",
+              "--opencode-binary",
+              "/opt/data/tool-candidates/opencode-runtime/node_modules/opencode-ai/bin/opencode.exe",
+              "--expected-opencode-sha256",
+              "7c4d91c84d2bfdeabb59257e3490c5e5acb08f2aacb3e42f3ddc296a1c3f1aca",
+              "--treatment",
+              "dcp"
+            ]
+          },
+          "preflight_command": [
+            "/usr/bin/python3",
+            "/opt/data/tool-candidates/opencode-adapter-v8/opencode_workflow_adapter.py",
+            "--opencode-binary",
+            "/opt/data/tool-candidates/opencode-runtime/node_modules/opencode-ai/bin/opencode.exe",
+            "--expected-opencode-sha256",
+            "7c4d91c84d2bfdeabb59257e3490c5e5acb08f2aacb3e42f3ddc296a1c3f1aca",
+            "--treatment",
+            "dcp",
+            "--probe"
+          ],
+          "tool_manifest_identity": "current-file-v1",
+          "env": {
+            "OPENCODE_TOOL_DATA_DIR": "{tool_data_dir}"
+          },
+          "host_integration": {
+            "controller_install_commands": [
+              [
+                "/opt/data/tool-candidates/opencode-runtime/node_modules/opencode-ai/bin/opencode.exe",
+                "plugin",
+                "@tarquinen/opencode-dcp@3.1.14",
+                "--global"
+              ]
+            ],
+            "required_files": [
+              "{codex_home}/xdg-config/opencode/opencode.jsonc",
+              "{codex_home}/xdg-config/opencode/tui.json",
+              "{codex_home}/xdg-cache/opencode/packages/@tarquinen/opencode-dcp@3.1.14/node_modules/@tarquinen/opencode-dcp/dist/index.js"
+            ],
+            "timeout_seconds": 600
+          },
+          "native_plugin": {
+            "required": true,
+            "path": "{codex_home}/xdg-cache/opencode/packages/@tarquinen/opencode-dcp@3.1.14/node_modules/@tarquinen/opencode-dcp/dist/index.js"
+          },
+          "artifact_identities": [
+            {
+              "path": "/opt/data/tool-candidates/opencode-dcp/package.json",
+              "sha256": "9b7f126d0f5bbe06f1b17b583e0cbc7b2e66d556a58d646574319dc65d3d410e",
+              "kind": "source-package"
+            },
+            {
+              "path": "/opt/data/tool-candidates/opencode-dcp/package-lock.json",
+              "sha256": "cae2ac00ee6abc966e7132732fb975fe0c1d5e5494c2ac48c7cf566718aa5a98",
+              "kind": "source-lock"
+            },
+            {
+              "path": "/opt/data/tool-candidates/opencode-dcp/README.md",
+              "sha256": "1905a791ba86ea0f8cd8771364f7c5a8e6a3634ecb636df4eeede1614530b882",
+              "kind": "product-guidance"
+            },
+            {
+              "path": "/opt/data/tool-candidates/opencode-adapter-v8/opencode_workflow_adapter.py",
+              "sha256": "d5fcd88e033767659da3acf17486273059cd566c29475c274349d2214428545c",
+              "kind": "runtime-adapter"
+            }
+          ],
+          "post_install_artifacts": [
+            {
+              "path": "{codex_home}/xdg-config/opencode/opencode.jsonc",
+              "sha256": "9b8a141b67efdf6fbcb1123f859cdc5acc41e35ab795fb8385029ff508221dd9",
+              "retain_as": "dcp-opencode-config.jsonc"
+            },
+            {
+              "path": "{codex_home}/xdg-config/opencode/tui.json",
+              "sha256": "0149ceca7dfcbed690669efd026606124f175fed423b2067dd1a8f0c0a1262c0",
+              "retain_as": "dcp-opencode-tui.json"
+            },
+            {
+              "path": "{codex_home}/xdg-cache/opencode/packages/@tarquinen/opencode-dcp@3.1.14/node_modules/@tarquinen/opencode-dcp/dist/index.js",
+              "sha256": "1e70b38527d6c604d9437bb447a67c857cd6f0cfe02f4fa69b69729e2ef57432",
+              "retain_as": "dcp-installed-plugin.js"
+            }
+          ],
+          "effective_host_config": {
+            "required": true,
+            "source": "adapter-probe"
+          },
+          "default_tool_state": "active-native-plugin+automatic-cleanup+model-visible-compress"
+        },
+        "tool_config_sha256": "432287fcca70cc2d6fa3056c213a34b88060af748a59a9b0055da17591040afc",
+        "tool_state": "active-native-plugin+automatic-cleanup+model-visible-compress",
+        "tool_use_policy": "natural",
+        "command_identity": {
+          "kind": "codex_wrapper",
+          "command": [
+            "/usr/bin/python3",
+            "/opt/data/tool-candidates/opencode-adapter-v8/opencode_workflow_adapter.py",
+            "--opencode-binary",
+            "/opt/data/tool-candidates/opencode-runtime/node_modules/opencode-ai/bin/opencode.exe",
+            "--expected-opencode-sha256",
+            "7c4d91c84d2bfdeabb59257e3490c5e5acb08f2aacb3e42f3ddc296a1c3f1aca",
+            "--treatment",
+            "dcp"
+          ]
+        },
+        "binary_identity": {
+          "executable_token": "/usr/bin/python3",
+          "resolved_path": "/usr/bin/python3",
+          "realpath": "/usr/bin/python3.13",
+          "sha256": "4703a3d15898c0b5d81c3f939e93bdd8ca6116342093fb160ab1e01860dd7d8b",
+          "metadata": {
+            "size": 6812336,
+            "mode": "-rwxr-xr-x",
+            "uid": 0,
+            "gid": 0,
+            "mtime_ns": 1778015152000000000
+          },
+          "version": {
+            "command": [
+              "/usr/bin/python3.13",
+              "--version"
+            ],
+            "environment_path": "/opt/data/.local/bin:/opt/data/opt/go/bin:/opt/data/opt/uv:/opt/data/opt/node-v24.18.0-linux-x64/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+            "captured": true,
+            "exit_code": 0,
+            "output": "Python 3.13.5",
+            "truncated": false
+          }
+        },
+        "source_identity": [
+          {
+            "path": "/opt/data/tool-candidates/opencode-adapter-v8/opencode_workflow_adapter.py",
+            "exists": true,
+            "kind": "file",
+            "sha256": "d5fcd88e033767659da3acf17486273059cd566c29475c274349d2214428545c"
+          },
+          {
+            "path": "/opt/data/tool-candidates/opencode-dcp",
+            "exists": true,
+            "kind": "directory",
+            "git_head": "85b6f5ceba144fee9e65eb28dc36cab1b960e418",
+            "package_json_sha256": "9b7f126d0f5bbe06f1b17b583e0cbc7b2e66d556a58d646574319dc65d3d410e"
+          }
+        ]
+      },
+      "date": "2026-07-31",
+      "target": {
+        "fixture_id": "large-hashicorp-terraform",
+        "fixture_scale": "large-project",
+        "project_id": "hashicorp-terraform",
+        "repository_path": "sources/evaluations/workflow-sessions/dcp-opencode-v1-terraform-20260731-p-5811b463c1e9-r2/project/repo",
+        "initial_snapshot": {
+          "commit": "e02391ad384c9c38f1d7f40b853c0d2297348094",
+          "branch": "detached",
+          "fixture_hash": ""
+        }
+      },
+      "task_sequence": {
+        "sequence_id": "terraform-lifecycle-sequence-v0",
+        "sequence_contract": "feature-refactor-review",
+        "task_ids": [
+          "terraform-lifecycle-feature-v0",
+          "terraform-lifecycle-refactor-v0",
+          "terraform-lifecycle-review-v0"
+        ],
+        "task_classes": [
+          "feature-implementation",
+          "behavior-preserving-refactor",
+          "code-review-correction"
+        ],
+        "reset_policy": "reset source checkout, profile home, tool state, indexes, caches, generated config, and agent home before the lane; preserve repository, thread, tool, index, cache, and agent state across every sequential prompt",
+        "prompt_delivery": {
+          "mode": "sequential-one-task-at-a-time",
+          "future_tasks_visible": false,
+          "future_prompts_materialized_lazily": true,
+          "seed_delivery_mode": "preseeded-composite",
+          "future_seed_regressions_visible": true,
+          "controller_verification": "final-only",
+          "codex_thread_id": "ses_04a827861ffe9YtBpuEg6N2Fgg",
+          "task_prompt_evidence": "sources/evaluations/workflow-sessions/dcp-opencode-v1-terraform-20260731-p-5811b463c1e9-r2/evidence.jsonl.gz"
+        },
+        "leakage_controls": {
+          "seed_origin_concealed": true,
+          "seed_patches_model_visible": false,
+          "git_baseline_true_root_at_lane_start": true,
+          "fixed_snapshot_objects_model_visible": false,
+          "pre_seed_reflog_entries_visible": false,
+          "concealment_verification_passed": true,
+          "task_directories_model_visible": false,
+          "controller_verifier_scripts_and_canonical_copies_model_visible": false,
+          "model_visible_acceptance_asset_paths": [
+            "internal/addrs/baseline_v3_checkable_test.go",
+            "internal/configs/baseline_v3_requirement_type_test.go",
+            "internal/configs/parser_config_dir_test.go",
+            "internal/policy/callback/baseline_v3_deferred_test.go"
+          ],
+          "model_writable_surface": "target repository plus isolated model-output directory",
+          "verifier_integrity_passed": true,
+          "verifier_integrity_evidence": "sources/evaluations/workflow-sessions/dcp-opencode-v1-terraform-20260731-p-5811b463c1e9-r2/evidence.jsonl.gz#verifier-integrity.json",
+          "model_prompts_sanitized": true,
+          "upstream_remote_removed_from_model_facing_repo": true,
+          "broken_start_committed_as_local_baseline": true,
+          "remaining_limitations": [
+            "Future regression code and declared focused acceptance tests are present from lane start; future prompts, seed patches, and controller verifier scripts remain controller-only.",
+            "Task semantics and verifier names may still be searchable if the model intentionally uses external network access."
+          ]
+        }
+      },
+      "profile": {
+        "profile_id": "context-dcp-opencode-plugin-v1",
+        "profile_type": "individual_tool",
+        "enabled_surfaces": [
+          "opencode-plugin",
+          "model-visible-compress-tool",
+          "automatic-deduplication",
+          "automatic-error-input-purging",
+          "context-nudges"
+        ],
+        "disabled_overlaps": [
+          "all unlisted surfaces"
+        ],
+        "component_ids": [
+          "context-dcp-opencode-plugin-v1"
+        ]
+      },
+      "agent": {
+        "runtime_id": "opencode-cli",
+        "model_condition_id": "opencode-openai-gpt-5-6-sol-high",
+        "name": "OpenCode CLI",
+        "version": "1.18.9",
+        "provider": "openai",
+        "model": "gpt-5.6-sol",
+        "reasoning_effort": "high",
+        "temperature": null,
+        "max_turns": null,
+        "time_budget_seconds": 10800
+      },
+      "state_policy": {
+        "reset_before_session": [
+          "repository working tree",
+          "profile home",
+          "tool indexes and caches",
+          "generated config",
+          "agent home",
+          "temporary directories"
+        ],
+        "persist_between_tasks": [
+          "repository source working tree and model-facing Git metadata from one composite broken-start root",
+          "tool indexes and caches",
+          "generated config",
+          "agent home",
+          "memory/state stores enabled by the active profile",
+          "run artifacts"
+        ]
+      },
+      "cumulative_token_usage": {
+        "measurement_source": "opencode-jsonl-step-finish-usage",
+        "fresh_input_tokens": 10580,
+        "cached_input_tokens": 37376,
+        "cache_write_tokens": 0,
+        "output_tokens": 927,
+        "reasoning_tokens": 58,
+        "total_provider_tokens": 48883,
+        "tokens_per_accepted_task": 16294.333333333334,
+        "accounting_basis": "OpenCode CLI-reported token volume; monetary cost estimation is out of scope"
+      },
+      "per_task_results": [
+        {
+          "task_id": "terraform-lifecycle-feature-v0",
+          "task_class": "feature-implementation",
+          "task_alias": "task-01",
+          "order": 1,
+          "agent_attempted": true,
+          "codex_exit_code": 0,
+          "thread_continuity_passed": true,
+          "thread_id": "ses_04a827861ffe9YtBpuEg6N2Fgg",
+          "controller_verification": "passed",
+          "accepted": true,
+          "task_delta": "sources/evaluations/workflow-sessions/dcp-opencode-v1-terraform-20260731-p-5811b463c1e9-r2/task-01-agent.diff",
+          "usage_events": "sources/evaluations/workflow-sessions/dcp-opencode-v1-terraform-20260731-p-5811b463c1e9-r2/task-01-codex-events.jsonl",
+          "operational_retry_count": 0,
+          "verifier_exit_code": 0,
+          "verifier_passed": true
+        },
+        {
+          "task_id": "terraform-lifecycle-refactor-v0",
+          "task_class": "behavior-preserving-refactor",
+          "task_alias": "task-02",
+          "order": 2,
+          "agent_attempted": true,
+          "codex_exit_code": 0,
+          "thread_continuity_passed": true,
+          "thread_id": "ses_04a827861ffe9YtBpuEg6N2Fgg",
+          "controller_verification": "passed",
+          "accepted": true,
+          "task_delta": "sources/evaluations/workflow-sessions/dcp-opencode-v1-terraform-20260731-p-5811b463c1e9-r2/task-02-agent.diff",
+          "usage_events": "sources/evaluations/workflow-sessions/dcp-opencode-v1-terraform-20260731-p-5811b463c1e9-r2/task-02-codex-events.jsonl",
+          "operational_retry_count": 0,
+          "verifier_exit_code": 0,
+          "verifier_passed": true
+        },
+        {
+          "task_id": "terraform-lifecycle-review-v0",
+          "task_class": "code-review-correction",
+          "task_alias": "task-03",
+          "order": 3,
+          "agent_attempted": true,
+          "codex_exit_code": 0,
+          "thread_continuity_passed": true,
+          "thread_id": "ses_04a827861ffe9YtBpuEg6N2Fgg",
+          "controller_verification": "passed",
+          "accepted": true,
+          "task_delta": "sources/evaluations/workflow-sessions/dcp-opencode-v1-terraform-20260731-p-5811b463c1e9-r2/task-03-agent.diff",
+          "usage_events": "sources/evaluations/workflow-sessions/dcp-opencode-v1-terraform-20260731-p-5811b463c1e9-r2/task-03-codex-events.jsonl",
+          "operational_retry_count": 0,
+          "verifier_exit_code": 0,
+          "verifier_passed": true
+        }
+      ],
+      "software_quality": {
+        "tasks_attempted": 3,
+        "tasks_agent_claimed_complete": 3,
+        "tasks_passed": 3,
+        "final_verifier_command": "sources/evaluations/workflow-sessions/dcp-opencode-v1-terraform-20260731-p-5811b463c1e9-r2/verify-workflow.sh",
+        "final_verifier_passed": true,
+        "functional_verifier_passed": true,
+        "quality_review_status": "not-reviewed",
+        "quality_score": null,
+        "critical_failures": []
+      },
+      "execution_integrity": {
+        "verifier_integrity_passed": true,
+        "tool_isolation_audit_passed": true,
+        "external_retrieval_hits": [],
+        "pass_through_tool_command_hits": []
+      },
+      "artifacts": {
+        "artifact_contract": "compact-v1-four-files",
+        "root": "sources/evaluations/workflow-sessions/dcp-opencode-v1-terraform-20260731-p-5811b463c1e9-r2",
+        "run_record": "sources/evaluations/workflow-sessions/dcp-opencode-v1-terraform-20260731-p-5811b463c1e9-r2/run.json",
+        "final_diff": "sources/evaluations/workflow-sessions/dcp-opencode-v1-terraform-20260731-p-5811b463c1e9-r2/changes.diff",
+        "final_diff_basis": "ordered cumulative checkpoints plus final cumulative source diff from one composite root",
+        "evidence_bundle": "sources/evaluations/workflow-sessions/dcp-opencode-v1-terraform-20260731-p-5811b463c1e9-r2/evidence.jsonl.gz",
+        "manifest": "sources/evaluations/workflow-sessions/dcp-opencode-v1-terraform-20260731-p-5811b463c1e9-r2/manifest.sha256"
+      },
+      "interpretation": {
+        "accepted_for_execution": true,
+        "accepted_for_objective": true,
+        "claim_status": "token-accounting-eligible",
+        "comparison_baseline_session_id": "opencode-terraform-20260730-p-5811b463c1e9-r2",
+        "standalone_runtime_control": false,
+        "exclusion_reason": "",
+        "notes": "Provider-backed lane completed with clean integrity; verifier and review outcomes are diagnostic model-behavior evidence and do not gate token accounting.",
+        "scope_note": "Full warm-state lane; all regressions are preseeded, prompts are disclosed sequentially, and controller verification runs only after the final prompt; declared acceptance assertions remain model-visible.",
+        "evaluation_validity": "valid",
+        "primary_objective_hard_baseline": false,
+        "usable_for_primary_objective_token_comparison": true,
+        "operationally_completed": true,
+        "agent_declared_task_completion_count": 3
+      }
     }
   ]
 }

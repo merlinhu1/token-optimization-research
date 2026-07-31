@@ -9,6 +9,7 @@ import sys
 import tempfile
 import unittest
 from pathlib import Path
+from unittest import mock
 
 ROOT = Path(__file__).resolve().parents[1]
 if str(ROOT) not in sys.path:
@@ -403,6 +404,31 @@ class OpenCodeWorkflowIntegrationContractTest(unittest.TestCase):
             baseline_profile_id=self.PROFILE_ID,
         )
         self.assertEqual(jobs, [("fastify-lifecycle-sequence-v0", self.PROFILE_ID)])
+
+    def test_comparison_publication_uses_the_retained_frozen_fingerprint(self) -> None:
+        matrix.selected_model_condition(
+            argparse.Namespace(
+                workflow_model_condition_id=self.CONDITION_ID,
+                workflow_model="gpt-5.6-sol",
+                workflow_reasoning_effort="high",
+            )
+        )
+        sequence = runner.load_sequence("beets-lifecycle-sequence-v0")
+        with mock.patch.object(runner, "atomic_create_json") as create:
+            comparison = runner.write_comparison_if_ready(
+                sequence,
+                "phase-2-sequential-workflow-v1",
+                2,
+                "context-dcp-opencode-plugin-v1",
+            )
+        self.assertIsNotNone(comparison)
+        assert comparison is not None
+        self.assertEqual(comparison["baseline_protocol_fingerprint"], "fcc8438d2077")
+        self.assertEqual(
+            comparison["treatment_session_id"],
+            "dcp-opencode-v1-beets-20260731-p-fcc8438d2077-r2",
+        )
+        create.assert_called_once()
 
     def test_matrix_dry_run_resolves_published_codex_baselines_after_runtime_binding(self) -> None:
         proc = subprocess.run(
