@@ -167,7 +167,7 @@ def build_panel(
             "replicate_index": replicate_index,
             "workflows": list(SEQUENCES),
             "primary_metric": "raw_provider_tokens",
-            "secondary_metric": "weighted_tokens = fresh input + 0.1 * cached input + 6 * output",
+            "secondary_metric": "weighted_tokens = fresh input (input_tokens + cache_creation_input_tokens) + 0.1 * cached input + 6 * output",
         },
         "profile_count": len(rows),
         "workflow_session_count": len(rows) * len(SEQUENCES),

@@ -56,7 +56,6 @@ def provider_usage_valid(usage: object, *, allow_legacy_null_cache_write: bool =
             "codex-jsonl-usage-events",
             "opencode-jsonl-step-finish-usage",
             "claude-code-stream-json-assistant-usage",
-            "claude-code-stream-json-result-usage",
         }
         or not set(PROVIDER_USAGE_FIELDS).issubset(usage)
     ):
@@ -74,11 +73,42 @@ def provider_usage_valid(usage: object, *, allow_legacy_null_cache_write: bool =
         cache_write_value = cache_write
     else:
         return False
+    # cache_write_tokens is an explicit audit subset of fresh_input_tokens,
+    # not an additional provider-token dimension for total arithmetic.
+    if cache_write_value > usage["fresh_input_tokens"]:
+        return False
+    measurement_source = usage["measurement_source"]
+    if measurement_source == "claude-code-stream-json-assistant-usage":
+        details = usage.get("provider_usage_details")
+        if not isinstance(details, dict):
+            return False
+        if details.get("fresh_input_formula") != "input_tokens + cache_creation_input_tokens":
+            return False
+        components = details.get("canonical_components")
+        if not isinstance(components, dict):
+            return False
+        for key in (
+            "input_tokens",
+            "cache_creation_input_tokens",
+            "cache_read_input_tokens",
+            "output_tokens",
+            "reasoning_tokens",
+        ):
+            value = components.get(key)
+            if type(value) is not int or value < 0:
+                return False
+        if components["input_tokens"] + components["cache_creation_input_tokens"] != usage["fresh_input_tokens"]:
+            return False
+        if components["cache_read_input_tokens"] != usage["cached_input_tokens"]:
+            return False
+        if components["output_tokens"] != usage["output_tokens"]:
+            return False
+        if components["reasoning_tokens"] != usage["reasoning_tokens"]:
+            return False
     total = usage.get("total_provider_tokens")
     expected_total = (
         usage["fresh_input_tokens"]
         + usage["cached_input_tokens"]
-        + cache_write_value
         + usage["output_tokens"]
     )
     return (
@@ -123,16 +153,28 @@ def compact_run_record_matches_session(
     usage_keys = PROVIDER_USAGE_FIELDS
     if any(run_usage.get(key) != usage.get(key) for key in usage_keys):
         return False
+    if (
+        "provider_usage_details" in usage
+        or "provider_usage_details" in run_usage
+    ) and run_usage.get("provider_usage_details") != usage.get("provider_usage_details"):
+        return False
     run_usage_for_validation = dict(run_usage)
     run_usage_for_validation["measurement_source"] = run_usage.get(
         "measurement_source",
         usage.get("measurement_source"),
     )
     interpretation = session.get("interpretation", {})
+    accounting_invalid = (
+        isinstance(interpretation, dict)
+        and interpretation.get("evaluation_validity") == "invalid-accounting"
+    )
     usage_is_decision_bearing = (
-        current_contract
-        or require_accepted
-        or (isinstance(interpretation, dict) and interpretation.get("accepted_for_objective") is True)
+        not accounting_invalid
+        and (
+            current_contract
+            or require_accepted
+            or (isinstance(interpretation, dict) and interpretation.get("accepted_for_objective") is True)
+        )
     )
     if usage_is_decision_bearing and (
         not provider_usage_valid(
@@ -1824,6 +1866,36 @@ def validate_invalid_fixture_disposition(
         errors.append(f"workflow session {sid} invalid fixture evidence must record invalidity reasons")
 
 
+def validate_invalid_accounting_disposition(
+    session: dict,
+    sid: str,
+    errors: list[str],
+) -> None:
+    interpretation = session.get("interpretation", {})
+    if not isinstance(interpretation, dict):
+        return
+    if interpretation.get("evaluation_validity") != "invalid-accounting":
+        return
+    if session.get("status") != "excluded":
+        errors.append(f"workflow session {sid} invalid accounting evidence must be excluded")
+    if interpretation.get("accepted_for_execution") is not True:
+        errors.append(f"workflow session {sid} invalid accounting evidence must preserve execution acceptance")
+    for key in (
+        "accepted_for_objective",
+        "primary_objective_hard_baseline",
+        "usable_for_primary_objective_token_comparison",
+        "operationally_completed",
+    ):
+        if interpretation.get(key) is not False:
+            errors.append(f"workflow session {sid} invalid accounting evidence cannot be used as objective evidence")
+    if interpretation.get("comparison_baseline_session_id"):
+        errors.append(f"workflow session {sid} invalid accounting evidence cannot retain an active comparison baseline")
+    reasons = interpretation.get("invalidity_reasons")
+    if not isinstance(reasons, list) or not reasons or any(not isinstance(reason, str) or not reason for reason in reasons):
+        errors.append(f"workflow session {sid} invalid accounting evidence must record invalidity reasons")
+
+
+
 def validate_invalid_treatment_disposition(
     session: dict,
     sid: str,
@@ -1911,6 +1983,7 @@ def validate_production_v3_schema_shape(session: dict, sid: str, errors: list[st
     if not isinstance(session.get("per_task_results"), list):
         errors.append(f"workflow session {sid} per_task_results must be an array")
     validate_invalid_fixture_disposition(session, sid, errors)
+    validate_invalid_accounting_disposition(session, sid, errors)
     validate_invalid_treatment_disposition(session, sid, errors)
     if requires_structured_task_contract(session):
         validate_structured_task_outcomes(session, sid, errors)

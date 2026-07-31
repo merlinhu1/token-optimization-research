@@ -1,7 +1,7 @@
 ---
 status: active
 truth_kind: engineering-contract
-last_reviewed: 2026-07-30
+last_reviewed: 2026-07-31
 ---
 
 # Token Accounting And Evaluation Contracts
@@ -36,8 +36,10 @@ This contract governs lifecycle-v0 provider-token samples, baseline reuse, compa
 - `data/workflow-task-sequences.json`
 - `data/workflow-sessions.json`
 - `scripts/run_codex_workflow_evaluation.py`
+- `scripts/extract_claude_code_usage.py`
 - `scripts/opencode_workflow_adapter.py`
 - `scripts/extract_opencode_usage.py`
+- `scripts/validate_repository.py`
 - `scripts/workflow_model_condition_runtime.py`
 - `scripts/prepare_pinned_codex_marketplace.py`
 - `scripts/trust_codex_plugin_hooks.py`
@@ -73,6 +75,33 @@ The repository measures cumulative provider-reported workflow tokens under fair,
 - OpenCode automatic-plugin activation and model-issued product-tool uptake are reported separately. A loaded automatic plugin may validly record zero model-issued product calls; an exposed MCP surface with zero selected calls is also a valid natural-use result.
 - A prompt/verifier/fixture defect is attributed to the fixture, not the model.
 
+## Token Component Contract
+
+Every normalized provider usage record must preserve these dimensions:
+
+```text
+fresh_input_tokens  = provider non-cache input_tokens
+                    + provider cache-creation input tokens
+cached_input_tokens = provider cache-read input tokens
+cache_write_tokens  = cache-creation input tokens (an explicit audit subset of fresh input)
+output_tokens       = provider output tokens, including any reasoning output
+reasoning_tokens    = reasoning-token subset when the provider reports it; otherwise exact zero with availability recorded
+
+total_provider_tokens = fresh_input_tokens + cached_input_tokens + output_tokens
+```
+
+`cache_write_tokens` must never be added to `total_provider_tokens` a second time. The secondary comparison metric is:
+
+```text
+weighted_tokens = fresh_input_tokens + 0.1 × cached_input_tokens + 6 × output_tokens
+```
+
+For Claude/Anthropic usage, `fresh_input_tokens` is specifically `input_tokens + cache_creation_input_tokens`, while `cache_read_input_tokens` remains cached input. Nested cache-creation categories such as ephemeral five-minute and one-hour fields must be retained and summed without counting a parent aggregate twice. Claude assistant-message usage blocks are authoritative; a result event is only a warned fallback because its usage may be cumulative or aggregated. All numeric provider fields whose names contain `token` are retained in `provider_usage_details`, including fields not currently used by the normalized arithmetic.
+
+## Token Eligibility And Missing Evidence
+
+A provider-backed session is not eligible for token comparison when its usage source, cache dimensions, raw token-bearing details, or arithmetic cannot be verified. Missing raw usage cannot be converted to zero. Such a session remains retained for execution evidence but must be excluded from the primary token comparison with an explicit `invalid-accounting` disposition. Corrected totals require surviving raw usage evidence or a newly authorized run; they must never be inferred from compact records that omitted a token dimension.
+
 ## Compatibility Rules
 
 Full runner and validator hashes remain frozen provenance. Reporting, registry, validator, and post-run classification changes do not split a comparison pool when causal/model-visible execution inputs and `runner_contract_version` are unchanged.
@@ -92,6 +121,7 @@ Update this document whenever token eligibility, comparison identity, provider a
 - ../../../../docs/evaluations/operations/runbook.md
 - ../../../../docs/evaluations/design/token-and-quality-policy.md
 - ../../../../scripts/run_codex_workflow_evaluation.py
+- ../../../../scripts/extract_claude_code_usage.py
 - ../../../../scripts/opencode_workflow_adapter.py
 - ../../../../scripts/extract_opencode_usage.py
 - ../../../../scripts/workflow_model_condition_runtime.py
