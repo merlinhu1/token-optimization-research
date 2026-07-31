@@ -2448,6 +2448,55 @@ def prepare_claude_home(pid: str, run_dir: Path, home_root: Path) -> Path:
     return claude_home
 
 
+def prepare_claude_project_instructions(
+    repo: Path,
+    run_dir: Path,
+    instruction_source: Path | None = None,
+) -> dict[str, Any]:
+    """Expose the existing project guidance through Claude Code discovery."""
+    project_source = repo / "AGENTS.md"
+    source = instruction_source or (project_source if project_source.is_file() else ROOT / "AGENTS.md")
+    destination = repo / "CLAUDE.md"
+    if not source.is_file():
+        raise RuntimeError(f"Claude normal-mode setup requires project instructions: {source}")
+    source_bytes = source.read_bytes()
+    if destination.exists() and destination.read_bytes() != source_bytes:
+        raise RuntimeError(f"existing project CLAUDE.md does not match instruction source: {destination}")
+    destination.write_bytes(source_bytes)
+
+    exclude_path = repo / ".git" / "info" / "exclude"
+    exclude_path.parent.mkdir(parents=True, exist_ok=True)
+    existing_exclude = exclude_path.read_text(errors="replace") if exclude_path.exists() else ""
+    marker = "# workflow-eval Claude project instructions"
+    if marker not in existing_exclude:
+        suffix = "" if not existing_exclude or existing_exclude.endswith("\n") else "\n"
+        exclude_path.write_text(
+            existing_exclude + suffix + f"{marker}\n/CLAUDE.md\n"
+        )
+
+    source_hash = hashlib.sha256(source_bytes).hexdigest()
+    destination_hash = hashlib.sha256(destination.read_bytes()).hexdigest()
+    source_scope = "project-repo" if source == project_source else "evaluation-root"
+    source_path = str(source.relative_to(ROOT)) if source.is_relative_to(ROOT) else source.name
+    manifest = {
+        "runtime_id": "claude-code",
+        "materialization": "exact-copy-of-existing-AGENTS.md-guidance",
+        "source_scope": source_scope,
+        "source_path": source_path,
+        "destination_path": "CLAUDE.md",
+        "source_sha256": source_hash,
+        "destination_sha256": destination_hash,
+        "byte_identical": source_hash == destination_hash,
+        "claude_auto_discovery_expected": True,
+        "evaluator_authored_guidance": False,
+        "git_status_policy": "lane-local-git-info-exclude",
+    }
+    (run_dir / "claude-code-instruction-manifest.json").write_text(
+        json.dumps(manifest, indent=2) + "\n"
+    )
+    return manifest
+
+
 def codex_env(codex_home: Path, *, containerized: bool = False, cfg: dict[str, Any] | None = None) -> dict[str, str]:
     env = os.environ.copy()
     env["CODEX_HOME"] = str(codex_home)
@@ -3281,6 +3330,29 @@ def preflight_claude_code(
     env = claude_env(claude_home, containerized=backend == "docker")
     apply_model_network_isolation(env)
     mounts = container_mounts_for_record(record, claude_home, include_repo=True)
+    repo = Path(rel_or_abs(record["target"]["repository_path"]))
+    instruction_destination = repo / "CLAUDE.md"
+    instruction_manifest_path = run_dir / "claude-code-instruction-manifest.json"
+    instruction_manifest: dict[str, Any] = {}
+    if instruction_manifest_path.is_file():
+        instruction_manifest = json.loads(instruction_manifest_path.read_text())
+    source_scope = instruction_manifest.get("source_scope")
+    source_path = instruction_manifest.get("source_path")
+    if source_scope == "project-repo" and isinstance(source_path, str):
+        instruction_source = repo / source_path
+    elif source_scope == "evaluation-root" and isinstance(source_path, str):
+        instruction_source = ROOT / source_path
+    else:
+        instruction_source = Path()
+    source_bytes = instruction_source.read_bytes() if instruction_source.is_file() else b""
+    destination_bytes = instruction_destination.read_bytes() if instruction_destination.is_file() else b""
+    instruction_passed = (
+        instruction_source.is_file()
+        and instruction_destination.is_file()
+        and source_bytes == destination_bytes
+        and instruction_manifest.get("byte_identical") is True
+        and instruction_manifest.get("claude_auto_discovery_expected") is True
+    )
     version_path = run_dir / "claude-code-version.txt"
     help_path = run_dir / "claude-code-help.txt"
     version = run_backend(
@@ -3296,7 +3368,7 @@ def preflight_claude_code(
     version_text = version_path.read_text(errors="replace") if version_path.exists() else ""
     help_text = help_path.read_text(errors="replace") if help_path.exists() else ""
     required = ["--output-format", "stream-json", "--model", "--tools", "--resume"]
-    passed = version.returncode == 0 and help_result.returncode == 0 and all(item in help_text for item in required)
+    passed = instruction_passed and version.returncode == 0 and help_result.returncode == 0 and all(item in help_text for item in required)
     result = {
         "runtime_id": "claude-code",
         "profile_id": pid,
@@ -3308,6 +3380,13 @@ def preflight_claude_code(
         "required_cli_surfaces": required,
         "missing_cli_surfaces": [item for item in required if item not in help_text],
         "normal_mode": True,
+        "project_instruction_files": {
+            "passed": instruction_passed,
+            "source": "AGENTS.md",
+            "discovered_as": "CLAUDE.md",
+            "byte_identical": source_bytes == destination_bytes,
+            "manifest": instruction_manifest,
+        },
         "mcp_servers": [],
         "model": record.get("agent", {}).get("model"),
     }

@@ -1,6 +1,6 @@
 {
   "protocol_schema_version": 3,
-  "protocol_id": "terraform-lifecycle-sequence-v0-baseline-claude-code-no-mcp-211fa2ada236",
+  "protocol_id": "terraform-lifecycle-sequence-v0-baseline-claude-code-no-mcp-3477f48a6f54",
   "status": "frozen-ready-not-run",
   "outcome": "Frozen baseline-claude-code-no-mcp protocol for terraform-lifecycle-sequence-v0; no provider/model run has occurred.",
   "frozen_at": "2026-07-22",
@@ -23,7 +23,7 @@
     "model": "gpt-5.6-sol",
     "model_condition_id": "claude-code-openrouter-gpt-5-6-sol-high",
     "reasoning_effort": "high",
-    "command": "python3 scripts/run_claude_code_workflow_model_condition.py --workflow-model-condition-id claude-code-openrouter-gpt-5-6-sol-high --workflow-model gpt-5.6-sol --workflow-reasoning-effort high --sequence-id terraform-lifecycle-sequence-v0 --profile-id baseline-claude-code-no-mcp --timeout-per-task 3600 --protocol sources/evaluations/protocols/terraform-lifecycle-sequence-v0-baseline-claude-code-no-mcp-211fa2ada236.json --docker-image token-eval-codex:latest"
+    "command": "python3 scripts/run_claude_code_workflow_model_condition.py --workflow-model-condition-id claude-code-openrouter-gpt-5-6-sol-high --workflow-model gpt-5.6-sol --workflow-reasoning-effort high --sequence-id terraform-lifecycle-sequence-v0 --profile-id baseline-claude-code-no-mcp --timeout-per-task 3600 --protocol sources/evaluations/protocols/terraform-lifecycle-sequence-v0-baseline-claude-code-no-mcp-3477f48a6f54.json --docker-image token-eval-codex:latest"
   },
   "comparison_baseline": {
     "profile_id": "baseline-claude-code-no-mcp",
@@ -32,7 +32,7 @@
     "model": "gpt-5.6-sol",
     "model_condition_id": "claude-code-openrouter-gpt-5-6-sol-high",
     "reasoning_effort": "high",
-    "command": "python3 scripts/run_claude_code_workflow_model_condition.py --workflow-model-condition-id claude-code-openrouter-gpt-5-6-sol-high --workflow-model gpt-5.6-sol --workflow-reasoning-effort high --sequence-id terraform-lifecycle-sequence-v0 --profile-id baseline-claude-code-no-mcp --timeout-per-task 3600 --protocol sources/evaluations/protocols/terraform-lifecycle-sequence-v0-baseline-claude-code-no-mcp-211fa2ada236.json --docker-image token-eval-codex:latest"
+    "command": "python3 scripts/run_claude_code_workflow_model_condition.py --workflow-model-condition-id claude-code-openrouter-gpt-5-6-sol-high --workflow-model gpt-5.6-sol --workflow-reasoning-effort high --sequence-id terraform-lifecycle-sequence-v0 --profile-id baseline-claude-code-no-mcp --timeout-per-task 3600 --protocol sources/evaluations/protocols/terraform-lifecycle-sequence-v0-baseline-claude-code-no-mcp-3477f48a6f54.json --docker-image token-eval-codex:latest"
   },
   "treatment": {},
   "token_accounting_boundary": {
@@ -47,12 +47,12 @@
   },
   "baseline_pool": {
     "protocol_version": "baseline-pool-v1",
-    "protocol_fingerprint": "1115d0826e71",
+    "protocol_fingerprint": "938e4812b1d4",
     "descriptor": {
       "version": "baseline-pool-v1",
       "task_family_generation": "baseline-v4",
       "runner_contract_version": "workflow-runner-v9",
-      "runner_sha256": "395302ded9100ce47c8c10352ca55be963797e717c03151c944a3a903e699a74",
+      "runner_sha256": "3886d42d15c1ebaa9c62226dcf1c487c24c20f948df018a2a178a25b64c744c9",
       "qualification_generator_sha256": "92c9d68b3146b37dd0f4f6c0c71a20d7ef83898fec7206b8d022f06351969eb7",
       "validator_sha256": "f5de7467c5f62e98e6db493d2fe0837bb253451207af6f049cf8910f097702d1",
       "sequence_id": "terraform-lifecycle-sequence-v0",
@@ -168,7 +168,8 @@
         "profile_id": "baseline-claude-code-no-mcp",
         "profile_type": "control",
         "enabled_surfaces": [
-          "claude-code-native-shell-edit"
+          "claude-code-native-shell-edit",
+          "project-claude-md-instruction-discovery"
         ],
         "disabled_overlaps": [
           "all MCP servers",
@@ -248,7 +249,7 @@
     }
   },
   "selected_execution": {
-    "descriptor_sha256": "27609429b3922d31810896a632d9af8a67be1c74833219dc0920b0443aeb8f8c",
+    "descriptor_sha256": "ead286e727239d9b67c8169e8a5ab1ea25ba60b1ba0cb3b55fce415472596a8a",
     "descriptor": {
       "version": "execution-condition-v1",
       "sequence_id": "terraform-lifecycle-sequence-v0",
@@ -258,7 +259,8 @@
         "profile_type": "control",
         "component_ids": [],
         "enabled_surfaces": [
-          "claude-code-native-shell-edit"
+          "claude-code-native-shell-edit",
+          "project-claude-md-instruction-discovery"
         ],
         "disabled_overlaps": [
           "all MCP servers",
@@ -268,7 +270,7 @@
           "skills/plugins",
           "warm indexes"
         ],
-        "registry_entry_sha256": "70a6f27b20740dcb79af0c4e17e345d1aaa9373fb48147df55ce7b197435ff3b",
+        "registry_entry_sha256": "74564dd06d3fcfbf22d67e6146368bc4f2e42e6c0b12fa8e5e73d0690d75477e",
         "registry_entry": {
           "id": "baseline-claude-code-no-mcp",
           "profile_type": "control",
@@ -276,7 +278,8 @@
           "status": "configured-provider-free",
           "substrate": "claude-code",
           "enabled_surfaces": [
-            "claude-code-native-shell-edit"
+            "claude-code-native-shell-edit",
+            "project-claude-md-instruction-discovery"
           ],
           "disabled_overlaps": [
             "all MCP servers",
@@ -308,19 +311,19 @@
             "all unlisted retrieval/compression/memory/token-saving tools"
           ],
           "install": {
-            "policy": "Run normal Claude Code from a fresh lane-specific runtime home/config with auth only; install no evaluator-authored MCP servers, plugins, skills, hooks, memory, retrieval, compression, or other tool-treatment surfaces. Keep HOME/PYTHONUSERBASE/XDG/TMPDIR isolated and record preflight artifacts proving the normal native runtime surface."
+            "policy": "Run normal Claude Code from a fresh lane-specific runtime home/config with auth only; materialize the fixture project's AGENTS.md byte-for-byte as project CLAUDE.md so Claude's normal project-instruction discovery loads the same guidance available to the Codex/OpenCode workflows. Install no evaluator-authored MCP servers, plugins, skills, hooks, memory, retrieval, compression, or other tool-treatment surfaces. Keep HOME/PYTHONUSERBASE/XDG/TMPDIR isolated and record hashes plus preflight artifacts proving the instruction pair and normal native runtime surface."
           },
           "reset": {
-            "policy": "Delete the lane-specific Claude runtime home and run-local HOME/PYTHONUSERBASE/XDG/TMPDIR before each run; verify no stale indexes, generated profile files, hooks, skills, or memory survive."
+            "policy": "Delete the lane-specific Claude runtime home, generated project CLAUDE.md, lane-local Git exclude entry, and run-local HOME/PYTHONUSERBASE/XDG/TMPDIR before each run; verify no stale indexes, generated profile files, hooks, skills, or memory survive."
           },
           "evaluation_protocol": {
             "tool_use_policy": "none",
             "tool_state": "native-runtime",
             "integration_state": "official-claude-code-normal-mode",
-            "instruction_policy": "Normal Claude Code invocation with no evaluator-installed tool treatment, MCP, plugins, skills, hooks, memory, retrieval, or compression surfaces",
+            "instruction_policy": "Normal Claude Code invocation with project AGENTS.md materialized byte-for-byte as CLAUDE.md for native project-instruction discovery; no evaluator-installed tool treatment, MCP, plugins, skills, hooks, memory, retrieval, or compression surfaces",
             "assignment_proof": "provider-free pinned-binary/version/model/tools/settings/isolation probe required"
           },
-          "notes": "Normal Claude Code control routed through the existing OpenRouter GPT-5.6 Sol/high condition used by the Codex and OpenCode comparison lanes. No evaluator-authored tool treatment is installed; provider-free qualification is required before any provider-backed reproduction."
+          "notes": "Normal Claude Code control routed through the existing OpenRouter GPT-5.6 Sol/high condition used by the Codex and OpenCode comparison lanes. The workflow project's AGENTS.md is copied exactly to CLAUDE.md for native discovery; no evaluator-authored tool treatment is installed. Provider-free qualification is required before any provider-backed reproduction."
         }
       },
       "model_facing_prompts": {
@@ -425,7 +428,7 @@
       },
       "baseline_pool_reference": {
         "protocol_version": "baseline-pool-v1",
-        "protocol_fingerprint": "1115d0826e71",
+        "protocol_fingerprint": "938e4812b1d4",
         "comparison_policy": "paired baseline and treatment must share this baseline pool fingerprint and replicate"
       },
       "model_condition_override": {

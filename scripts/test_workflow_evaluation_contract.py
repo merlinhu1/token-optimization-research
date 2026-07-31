@@ -284,6 +284,43 @@ class CodexUsageAccountingTest(unittest.TestCase):
         )
 
 
+class ClaudeInstructionMaterializationTest(unittest.TestCase):
+    def test_project_agents_is_materialized_as_exact_claude_guidance(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            repo = root / "repo"
+            run_dir = root / "run"
+            (repo / ".git" / "info").mkdir(parents=True)
+            run_dir.mkdir()
+            guidance = "# Project instructions\n\nUse the repository's native workflow.\n"
+            (repo / "AGENTS.md").write_text(guidance)
+
+            manifest = runner.fixture.prepare_claude_project_instructions(repo, run_dir)
+
+            self.assertEqual((repo / "CLAUDE.md").read_text(), guidance)
+            self.assertTrue(manifest["byte_identical"])
+            self.assertTrue(manifest["claude_auto_discovery_expected"])
+            self.assertEqual(manifest["source_sha256"], manifest["destination_sha256"])
+            self.assertIn("/CLAUDE.md", (repo / ".git" / "info" / "exclude").read_text())
+            self.assertEqual(
+                runner.treatment_diff_exclude_paths(None, "baseline-claude-code-no-mcp"),
+                ("CLAUDE.md",),
+            )
+
+    def test_project_agents_is_required_for_claude_control_setup(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            repo = Path(tmp) / "repo"
+            run_dir = Path(tmp) / "run"
+            repo.mkdir()
+            run_dir.mkdir()
+            with self.assertRaisesRegex(RuntimeError, "requires project instructions"):
+                runner.fixture.prepare_claude_project_instructions(
+                    repo,
+                    run_dir,
+                    instruction_source=repo / "AGENTS.md",
+                )
+
+
 class ActiveCampaignArchitectureTest(unittest.TestCase):
     def test_all_lifecycle_sequences_cover_the_v0_task_mix(self) -> None:
         sequences = json.loads((ROOT / "data/workflow-task-sequences.json").read_text())["sequences"]
