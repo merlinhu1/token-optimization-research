@@ -33,6 +33,8 @@ def load_events(path: Path) -> tuple[list[dict[str, Any]], list[str]]:
 
 
 def nonnegative_int(value: Any, field: str) -> int:
+    if value is None:
+        return 0
     if isinstance(value, bool) or not isinstance(value, int) or value < 0:
         raise ValueError(f"Claude Code usage {field} must be a non-negative integer")
     return value
@@ -71,6 +73,7 @@ def usage_block(message: dict[str, Any], event_index: int) -> dict[str, Any] | N
 def build_summary(events_path: Path) -> dict[str, Any]:
     events, non_json = load_events(events_path)
     blocks: list[dict[str, Any]] = []
+    result_blocks: list[dict[str, Any]] = []
     seen: set[str] = set()
     sessions: set[str] = set()
     event_types: dict[str, int] = {}
@@ -97,14 +100,22 @@ def build_summary(events_path: Path) -> dict[str, Any]:
                     )
         elif kind == "result":
             result_events.append(event)
+            block = usage_block(event, index)
+            if block is not None:
+                result_blocks.append(block)
 
+    accounting_blocks = result_blocks or blocks
+    accounting_mode = "sum-result-event-usage" if result_blocks else "sum-unique-assistant-message-usage"
+    accounting_source = (
+        "claude-code-stream-json-result-usage" if result_blocks else "claude-code-stream-json-assistant-usage"
+    )
     cumulative = {
-        "fresh_input_tokens": sum(item["usage"]["fresh_input_tokens"] for item in blocks),
-        "cached_input_tokens": sum(item["usage"]["cached_input_tokens"] for item in blocks),
-        "cache_write_tokens": sum(item["usage"]["cache_write_tokens"] for item in blocks),
-        "output_tokens": sum(item["usage"]["output_tokens"] for item in blocks),
+        "fresh_input_tokens": sum(item["usage"]["fresh_input_tokens"] for item in accounting_blocks),
+        "cached_input_tokens": sum(item["usage"]["cached_input_tokens"] for item in accounting_blocks),
+        "cache_write_tokens": sum(item["usage"]["cache_write_tokens"] for item in accounting_blocks),
+        "output_tokens": sum(item["usage"]["output_tokens"] for item in accounting_blocks),
         "reasoning_tokens": 0,
-        "total_provider_tokens": sum(item["usage"]["total_provider_tokens"] for item in blocks),
+        "total_provider_tokens": sum(item["usage"]["total_provider_tokens"] for item in accounting_blocks),
     }
     warnings: list[str] = []
     if not blocks:
@@ -115,22 +126,26 @@ def build_summary(events_path: Path) -> dict[str, Any]:
     if failed:
         warnings.append("Claude Code emitted an error result event.")
     values: dict[str, int | None] = {
-        key: value if blocks else None for key, value in cumulative.items()
+        key: value if accounting_blocks else None for key, value in cumulative.items()
     }
     return {
         "schema_version": 1,
         "source": "claude-code-stream-json",
         "source_artifact": str(events_path),
         "extracted_at_utc": dt.datetime.now(dt.UTC).isoformat(),
-        "measurement_source": "claude-code-stream-json-assistant-usage",
+        "measurement_source": accounting_source,
         **values,
         "raw_artifact_tokens": None,
         "transformed_artifact_tokens": None,
         "claude_code_usage": {
-            "accounting_mode": "sum-unique-assistant-message-usage",
-            "source_semantics": "Claude Code assistant message usage is summed once per unique message id; final result/modelUsage is metadata only.",
+            "accounting_mode": accounting_mode,
+            "source_semantics": (
+                "Claude Code result-event usage is summed once per result event when present; "
+                "otherwise assistant message usage is summed once per unique message id."
+            ),
             "session_ids": sorted(sessions),
             "assistant_usage_blocks": blocks,
+            "result_usage_blocks": result_blocks,
             "result_event_count": len(result_events),
             "reasoning_tokens_available": False,
         },
