@@ -6452,6 +6452,25 @@ class BaselineV3LowComplexityContractTest(unittest.TestCase):
         )
         self.assertEqual(recovery["recovery_protocol"], fastify)
 
+    def test_opencode_lifecycle_v1_r1_no_provider_recovery_result_binds_published_session(self) -> None:
+        receipt = json.loads((
+            ROOT
+            / "sources/evaluations/audits/lifecycle-v1-opencode-sol-high-r1-fastify-no-provider-recovery-result-20260802.json"
+        ).read_text())
+        self.assertEqual(receipt["status"], "accepted-and-published")
+        self.assertTrue(receipt["recovered_execution"]["accepted"])
+        self.assertEqual(receipt["recovered_execution"]["tasks_accepted"], 3)
+        self.assertEqual(
+            receipt["recovered_execution"]["provider_usage"]["total_provider_tokens"],
+            1805580,
+        )
+        for artifact in receipt["published_artifacts"].values():
+            path = ROOT / artifact["path"]
+            self.assertTrue(path.is_file(), artifact["path"])
+            self.assertEqual(
+                hashlib.sha256(path.read_bytes()).hexdigest(), artifact["sha256"]
+            )
+
     def test_strict_replication_authority_rejects_every_decision_field_mutation(self) -> None:
         source_authority = ROOT / runner.BASELINE_REPLICATION_AUTHORITY_REL
         source_sequences = ROOT / "data/workflow-task-sequences.json"
