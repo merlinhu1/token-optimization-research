@@ -1,6 +1,6 @@
 {
   "protocol_schema_version": 3,
-  "protocol_id": "beets-lifecycle-sequence-v1-runtime-opencode-codex-product-v1-7485baa20092",
+  "protocol_id": "beets-lifecycle-sequence-v1-runtime-opencode-codex-product-v1-cb99b195664b",
   "status": "frozen-ready-not-run",
   "outcome": "Frozen runtime-opencode-codex-product-v1 protocol for beets-lifecycle-sequence-v1; no provider/model run has occurred.",
   "frozen_at": "2026-08-01",
@@ -36,12 +36,12 @@
   },
   "treatment": {
     "profile_id": "runtime-opencode-codex-product-v1",
-    "runtime_id": "codex-cli",
+    "runtime_id": "opencode-cli",
     "provider": "openai",
     "model": "gpt-5.6-sol",
-    "model_condition_id": "codex-openai-gpt-5-6-sol-high",
+    "model_condition_id": "opencode-openai-gpt-5-6-sol-high",
     "reasoning_effort": "high",
-    "command": "python3 scripts/run_codex_workflow_model_condition.py --workflow-model-condition-id codex-openai-gpt-5-6-sol-high --workflow-model gpt-5.6-sol --workflow-reasoning-effort high --sequence-id beets-lifecycle-sequence-v1 --profile-id runtime-opencode-codex-product-v1 --timeout-per-task 3600 --protocol sources/evaluations/protocols/beets-lifecycle-sequence-v1-runtime-opencode-codex-product-v1-7485baa20092.json --docker-image token-eval-codex:latest"
+    "command": "python3 scripts/run_opencode_workflow_model_condition.py --workflow-model-condition-id opencode-openai-gpt-5-6-sol-high --workflow-model gpt-5.6-sol --workflow-reasoning-effort high --sequence-id beets-lifecycle-sequence-v1 --profile-id runtime-opencode-codex-product-v1 --timeout-per-task 3600 --protocol sources/evaluations/protocols/beets-lifecycle-sequence-v1-runtime-opencode-codex-product-v1-cb99b195664b.json --docker-image token-eval-codex:latest"
   },
   "token_accounting_boundary": {
     "fields": [
@@ -60,9 +60,9 @@
       "version": "baseline-pool-v1",
       "task_family_generation": "lifecycle-v1",
       "runner_contract_version": "workflow-runner-v10",
-      "runner_sha256": "4031ab229bcaf203560dd6ba00af2a9534bacfb3c14c261cd660ebde46b9aa17",
+      "runner_sha256": "cf8c2edc92df6029e051aec96dc089fc226672260c8ce286f5d3403552518797",
       "qualification_generator_sha256": "a0c871d2a500a3fe6a11b78ef4ec20ef29cf12f5db44fdae53344e4327ec559b",
-      "validator_sha256": "d36827a909bfbfc742d2dd33d1b1f4087f617e1c6a890d6fdbbe9b40711ebfd1",
+      "validator_sha256": "32d677ae10bf2364845a6eac88ec3ab95d0a76fea9a52b608e91e590f1ef69d2",
       "sequence_id": "beets-lifecycle-sequence-v1",
       "sequence_contract": "feature-refactor-review",
       "fixture_id": "medium-beetbox-beets",
@@ -262,7 +262,7 @@
     }
   },
   "selected_execution": {
-    "descriptor_sha256": "08054d88fb5437552deed53527ffab4634b45f09f2f6f72d8ea887060903200a",
+    "descriptor_sha256": "3d31323bc9df8fe5814af8fa8db02ca8ca77f1e61f7a40e496e606a35db4a957",
     "descriptor": {
       "version": "execution-condition-v1",
       "sequence_id": "beets-lifecycle-sequence-v1",
@@ -493,13 +493,13 @@
           "external_retrieval_audit": "fail-closed"
         },
         "isolation_policy": "fresh lane-specific agent home/XDG state; provider-only network with model shell and agent web tools disabled; sequential one-task prompt delivery; controller seed/verifier scripts excluded while controller-only affected-component compile commands retained; no acceptance-test assets injected; agent prompts carry normal software objectives",
-        "agent_runtime_id": "codex-cli",
+        "agent_runtime_id": "opencode-cli",
         "model_condition": {
-          "id": "codex-openai-gpt-5-6-sol-high",
+          "id": "opencode-openai-gpt-5-6-sol-high",
           "provider": "openai",
           "model": "gpt-5.6-sol",
           "reasoning_effort": "high",
-          "launcher": "scripts/run_codex_workflow_model_condition.py"
+          "launcher": "scripts/run_opencode_workflow_model_condition.py"
         }
       },
       "dependencies": {
@@ -514,12 +514,12 @@
         ]
       },
       "agent_condition": {
-        "runtime_id": "codex-cli",
+        "runtime_id": "opencode-cli",
         "provider": "openai",
         "model": "gpt-5.6-sol",
-        "model_condition_id": "codex-openai-gpt-5-6-sol-high",
+        "model_condition_id": "opencode-openai-gpt-5-6-sol-high",
         "reasoning_effort": "high",
-        "codex_version_condition": "captured-at-run-and-bound-to-record"
+        "runtime_version_condition": "captured-at-run-and-bound-to-record"
       },
       "isolation": {
         "prompt_delivery": "sequential-one-task-at-a-time",
@@ -537,15 +537,17 @@
         "comparison_policy": "paired baseline and treatment must share this baseline pool fingerprint and replicate"
       },
       "model_condition_override": {
-        "model_condition_id": "codex-openai-gpt-5-6-sol-high",
-        "runtime_id": "codex-cli",
+        "model_condition_id": "opencode-openai-gpt-5-6-sol-high",
+        "runtime_id": "opencode-cli",
         "provider": "openai",
         "model": "gpt-5.6-sol",
         "reasoning_effort": "high",
         "registry_status": "active-model-comparison",
         "launcher": {
-          "path": "scripts/run_codex_workflow_model_condition.py",
-          "sha256": "1432d8583491c5505c4cbf95695e8288584492d2c14026dfd3322d4050852edc"
+          "path": "scripts/run_opencode_workflow_model_condition.py",
+          "sha256": "c38d87266347dfd46c8f671ad0e22fef52841a34643b93fc769d4ebfb71ac9ce",
+          "condition_runtime_path": "scripts/workflow_model_condition_runtime.py",
+          "condition_runtime_sha256": "01479bd991417d9f5bb5fcef513e1beee3f1f05512ab818429cac24e0ebde866"
         }
       }
     }
