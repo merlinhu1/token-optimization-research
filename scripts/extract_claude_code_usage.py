@@ -110,14 +110,26 @@ def usage_block(event: dict[str, Any]) -> dict[str, Any] | None:
     if not isinstance(usage, dict):
         return None
 
-    input_tokens = usage_value(usage, "input_tokens")
-    cache_read = usage_value(usage, "cache_read_input_tokens", "cached_input_tokens")
+    input_tokens = usage.get("input_tokens")
+    cache_read = usage.get("cache_read_input_tokens", usage.get("cached_input_tokens"))
     cache_write = cache_creation_tokens(usage)
-    output = usage_value(usage, "output_tokens")
-    reasoning = usage_value(usage, "reasoning_tokens", "reasoning_output_tokens")
+    output = usage.get("output_tokens")
+    reasoning = usage.get("reasoning_tokens", usage.get("reasoning_output_tokens"))
+    if (
+        type(input_tokens) is not int or input_tokens < 0
+        or type(cache_read) is not int or cache_read < 0
+        or type(cache_write) is not int or cache_write < 0
+        or type(output) is not int or output < 0
+        or (reasoning is not None and (type(reasoning) is not int or reasoning < 0))
+    ):
+        return None
+    reasoning = reasoning if type(reasoning) is int else 0
     fresh = input_tokens + cache_write
     total = fresh + cache_read + output
-    reported_total = usage_value(usage, "total_tokens", "total_provider_tokens")
+    reported_total = usage.get("total_tokens", usage.get("total_provider_tokens"))
+    if not isinstance(usage.get("cache_creation_input_tokens"), int) or not isinstance(usage.get("cache_read_input_tokens"), int):
+        if cache_write == 0 and cache_read == 0:
+            return None
     return {
         "input_tokens": input_tokens,
         "cache_read_input_tokens": cache_read,
@@ -128,9 +140,11 @@ def usage_block(event: dict[str, Any]) -> dict[str, Any] | None:
         "cached_input_tokens": cache_read,
         "cache_write_tokens": cache_write,
         "total_provider_tokens": total,
-        "reported_total_tokens": reported_total if reported_total else None,
+        "reported_total_tokens": reported_total if type(reported_total) is int and reported_total >= 0 else None,
         "raw_usage": usage,
         "raw_token_fields": numeric_token_fields(usage),
+        "raw_model_usage": event.get("modelUsage") if isinstance(event.get("modelUsage"), dict) else {},
+        "raw_model_usage_token_fields": numeric_token_fields(event.get("modelUsage")),
         "event_type": str(event.get("type") or "unknown"),
         "message_id": message.get("id") if isinstance(message, dict) else None,
     }
@@ -166,6 +180,26 @@ def sum_raw_token_fields(blocks: list[dict[str, Any]]) -> dict[str, int]:
     return dict(sorted(totals.items()))
 
 
+def sum_raw_model_usage_token_fields(blocks: list[dict[str, Any]]) -> dict[str, int]:
+    totals: dict[str, int] = {}
+    for block in blocks:
+        for key, value in block.get("raw_model_usage_token_fields", {}).items():
+            totals[key] = totals.get(key, 0) + int(value)
+    return dict(sorted(totals.items()))
+
+
+def raw_usage_blocks(blocks: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    return [
+        {
+            "event_type": block.get("event_type"),
+            "message_id": block.get("message_id"),
+            "usage": block.get("raw_usage", {}),
+            "model_usage": block.get("raw_model_usage", {}),
+        }
+        for block in blocks
+    ]
+
+
 def reported_totals(blocks: list[dict[str, Any]]) -> int | None:
     values = [block["reported_total_tokens"] for block in blocks if block.get("reported_total_tokens") is not None]
     return sum(values) if values else None
@@ -183,13 +217,18 @@ def build_summary(events_path: Path) -> dict[str, Any]:
     elif result_blocks:
         effective_blocks = result_blocks
         accounting_mode = "result-usage-fallback-no-assistant-usage"
-        warnings.append(
-            "No assistant usage blocks found; result usage was used only as a fallback and may be aggregated."
-        )
     else:
         effective_blocks = []
         accounting_mode = "no-usage-blocks"
         warnings.append("No Claude usage blocks found; token fields are zero and not decision-ready.")
+
+    measurement_source = (
+        "claude-code-stream-json-assistant-usage"
+        if accounting_mode == "sum-unique-assistant-message-usage"
+        else "claude-code-stream-json-result-usage"
+    )
+    if measurement_source == "claude-code-stream-json-assistant-usage" and sum_key(effective_blocks, "total_provider_tokens") == 0:
+        warnings.append("Assistant usage was present but yielded zero provider tokens; treating the lane as invalid-accounting until raw assistant usage can be reconciled.")
 
     fresh_input_tokens = sum_key(effective_blocks, "fresh_input_tokens")
     cached_input_tokens = sum_key(effective_blocks, "cached_input_tokens")
@@ -212,6 +251,11 @@ def build_summary(events_path: Path) -> dict[str, Any]:
     provider_usage_details = {
         "runtime": "claude-code",
         "accounting_mode": accounting_mode,
+        "accounting_note": (
+            "Complete final result usage used because assistant blocks lacked provider token dimensions; retain result scope as provenance."
+            if accounting_mode == "result-usage-fallback-no-assistant-usage"
+            else ""
+        ),
         "assistant_usage_block_count": len(assistant_blocks),
         "result_usage_block_count": len(result_blocks),
         "result_usage_counted": not assistant_blocks and bool(result_blocks),
@@ -225,6 +269,10 @@ def build_summary(events_path: Path) -> dict[str, Any]:
         },
         "raw_token_field_totals": sum_raw_token_fields(effective_blocks),
         "result_raw_token_field_totals": sum_raw_token_fields(result_blocks),
+        "raw_model_usage_token_field_totals": sum_raw_model_usage_token_fields(effective_blocks),
+        "result_raw_model_usage_token_field_totals": sum_raw_model_usage_token_fields(result_blocks),
+        "raw_usage_blocks": raw_usage_blocks(effective_blocks),
+        "result_raw_usage_blocks": raw_usage_blocks(result_blocks),
         "provider_reported_total_tokens": provider_reported_total,
         "normalized_formula": "fresh_input_tokens + cached_input_tokens + output_tokens",
         "fresh_input_formula": "input_tokens + cache_creation_input_tokens",
@@ -240,7 +288,7 @@ def build_summary(events_path: Path) -> dict[str, Any]:
         "source": "claude-code-stream-json",
         "source_artifact": str(events_path),
         "extracted_at_utc": dt.datetime.now(dt.UTC).isoformat(),
-        "measurement_source": "claude-code-stream-json-assistant-usage",
+        "measurement_source": measurement_source,
         "fresh_input_tokens": fresh_input_tokens,
         "cached_input_tokens": cached_input_tokens,
         "cache_write_tokens": cache_write_tokens,

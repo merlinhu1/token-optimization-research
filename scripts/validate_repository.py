@@ -56,6 +56,7 @@ def provider_usage_valid(usage: object, *, allow_legacy_null_cache_write: bool =
             "codex-jsonl-usage-events",
             "opencode-jsonl-step-finish-usage",
             "claude-code-stream-json-assistant-usage",
+            "claude-code-stream-json-result-usage",
         }
         or not set(PROVIDER_USAGE_FIELDS).issubset(usage)
     ):
@@ -78,11 +79,23 @@ def provider_usage_valid(usage: object, *, allow_legacy_null_cache_write: bool =
     if cache_write_value > usage["fresh_input_tokens"]:
         return False
     measurement_source = usage["measurement_source"]
-    if measurement_source == "claude-code-stream-json-assistant-usage":
+    if measurement_source in {
+        "claude-code-stream-json-assistant-usage",
+        "claude-code-stream-json-result-usage",
+    }:
         details = usage.get("provider_usage_details")
         if not isinstance(details, dict):
             return False
         if details.get("fresh_input_formula") != "input_tokens + cache_creation_input_tokens":
+            return False
+        expected_mode = (
+            "sum-unique-assistant-message-usage"
+            if measurement_source == "claude-code-stream-json-assistant-usage"
+            else "result-usage-fallback-no-assistant-usage"
+        )
+        if details.get("accounting_mode") != expected_mode:
+            return False
+        if details.get("result_usage_counted") is not (measurement_source == "claude-code-stream-json-result-usage"):
             return False
         components = details.get("canonical_components")
         if not isinstance(components, dict):
@@ -111,12 +124,15 @@ def provider_usage_valid(usage: object, *, allow_legacy_null_cache_write: bool =
         + usage["cached_input_tokens"]
         + usage["output_tokens"]
     )
-    return (
-        type(total) is int
-        and total > 0
-        and total == expected_total
-        and usage["reasoning_tokens"] <= usage["output_tokens"]
-    )
+    if type(total) is not int or total < 0:
+        return False
+    if total != expected_total:
+        return False
+    if usage["reasoning_tokens"] > usage["output_tokens"]:
+        return False
+    if measurement_source == "claude-code-stream-json-assistant-usage" and total == 0:
+        return False
+    return True
 
 
 def model_condition_override_matches(actual: object, expected: object) -> bool:
