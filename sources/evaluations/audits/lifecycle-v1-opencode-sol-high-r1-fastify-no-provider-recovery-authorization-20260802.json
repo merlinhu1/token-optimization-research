@@ -1,0 +1,55 @@
+{
+  "schema_version": 1,
+  "audit_id": "lifecycle-v1-opencode-sol-high-r1-fastify-no-provider-recovery-authorization-20260802",
+  "status": "owner-authorized-no-provider-recovery",
+  "owner_recovery_authorization": {
+    "source": "discord",
+    "authorization_prompt_message_id": "1533351879592120481",
+    "message_id": "1533353885559816214",
+    "selection": "2"
+  },
+  "recovery_contract": {
+    "sequence_id": "fastify-lifecycle-sequence-v1",
+    "replicate_index": 1,
+    "profile_id": "runtime-opencode-codex-product-v1",
+    "model_condition_id": "opencode-openai-gpt-5-6-sol-high",
+    "original_attempt_receipt_path": "sources/evaluations/audits/lifecycle-v1-opencode-sol-high-r1-attempts/fastify-r1.json",
+    "original_attempt_receipt_sha256": "6c7753dfb9e4c2fe23da9d766178e4ac3e4542ac3c7f02be56c2316d11353e6a",
+    "provider_execution_disposition": "locally-proven-no-provider-subprocess",
+    "authorized_provider_run_count": 1,
+    "same_replicate_recovery": true
+  },
+  "original_authority_path": "sources/evaluations/audits/lifecycle-v1-opencode-sol-high-r1-authorization-20260802.json",
+  "original_failed_protocol": {
+    "sequence_id": "fastify-lifecycle-sequence-v1",
+    "protocol_path": "sources/evaluations/protocols/fastify-lifecycle-sequence-v1-runtime-opencode-codex-product-v1-950c9897f1c3.json",
+    "protocol_sha256": "8d82a25710dfe3ebe7991f1a5c648ff4e579218ad0c303c6c7ca41d092a9af19",
+    "baseline_pool_fingerprint": "72ac148f730b"
+  },
+  "recovery_protocol": {
+    "sequence_id": "fastify-lifecycle-sequence-v1",
+    "protocol_path": "sources/evaluations/protocols/fastify-lifecycle-sequence-v1-runtime-opencode-codex-product-v1-e84e2aa085d9.json",
+    "protocol_sha256": "2520f69673ca9d011c4fd2fb5dd5f53489a0151f1229cf62e7994dea009940e3",
+    "baseline_pool_fingerprint": "72ac148f730b"
+  },
+  "local_zero_provider_evidence": {
+    "matrix_run_root": "/opt/data/eval-workflow-lanes/lifecycle-v1-opencode-sol-high-r1-fastify-paid-20260802T055000Z/workflow-matrix-20260802T054722385269Z-p3827935-r1",
+    "retained_checkout": "/opt/data/eval-workflow-lanes/lifecycle-v1-opencode-sol-high-r1-fastify-paid-20260802T055000Z/workflow-matrix-20260802T054722385269Z-p3827935-r1/fastify-lifecycle-sequence-v1--runtime-opencode-codex-product-v1/checkout",
+    "lane_log_sha256": "5a4c61d22d25254d67f24bea6d90903f9b2177bed674803dc1ad90b246b05d70",
+    "tool_preflight_sha256": "ba4b5d0c8217392df5cf8f741bc46d949cda26c3804ae0ab2b78b8d71358b3f4",
+    "failure_boundary": "run_codex_task wrapper argument rendering raised KeyError: repository_root before fixture.run_backend, the provider subprocess boundary",
+    "missing_provider_artifacts": [
+      "task-01-codex-events.jsonl",
+      "provider-usage.json",
+      "run.json",
+      "changes.diff",
+      "manifest.sha256"
+    ],
+    "active_container_mounting_checkout": false,
+    "provider_calls": 0,
+    "provider_tokens": 0,
+    "accepted_session_ids": []
+  },
+  "repair_scope": "Render repository_root in the real OpenCode wrapper-command boundary, bind workflow and matrix controller hashes into frozen protocols, refreeze both Lifecycle V1 OpenCode protocols, and rerun exact no-provider preparation before the one authorized Fastify r1 recovery.",
+  "beets_disposition": "not authorized by this recovery authority; retain serial fail-stop until Fastify has an accepted published result"
+}

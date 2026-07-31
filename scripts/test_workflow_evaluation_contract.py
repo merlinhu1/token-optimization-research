@@ -915,6 +915,22 @@ class ActiveCampaignArchitectureTest(unittest.TestCase):
             commands[-1][1], str(ROOT / "scripts/opencode_workflow_adapter.py")
         )
 
+    def test_workflow_protocol_binds_task_and_matrix_controller_sources(self) -> None:
+        descriptor = runner.execution_condition_descriptor(
+            runner.load_sequence("fastify-lifecycle-sequence-v1"),
+            "runtime-opencode-codex-product-v1",
+        )
+        runtime = descriptor["runtime"]
+        for label, path in {
+            "workflow_controller": "scripts/run_codex_workflow_evaluation.py",
+            "matrix_controller": "scripts/run_sequential_workflow_matrix.py",
+        }.items():
+            self.assertEqual(runtime[f"{label}_path"], path)
+            self.assertEqual(
+                runtime[f"{label}_sha256"],
+                hashlib.sha256((ROOT / path).read_bytes()).hexdigest(),
+            )
+
     def test_opencode_lifecycle_v1_unspent_protocol_supersession_is_retained(self) -> None:
         receipt = json.loads(
             (
@@ -981,6 +997,48 @@ class ActiveCampaignArchitectureTest(unittest.TestCase):
         for binding in receipt["superseded_unoccupied_protocols"]:
             self.assertFalse((ROOT / binding["path"]).exists())
             replacement = ROOT / binding["replacement_path"]
+            self.assertTrue(replacement.is_file())
+            self.assertEqual(
+                hashlib.sha256(replacement.read_bytes()).hexdigest(),
+                binding["replacement_sha256"],
+            )
+
+    def test_opencode_lifecycle_v1_workflow_controller_provenance_supersession_is_retained(self) -> None:
+        receipt = json.loads(
+            (
+                ROOT
+                / "sources/evaluations/audits/lifecycle-v1-opencode-sol-high-r1-workflow-controller-provenance-supersession-20260802.json"
+            ).read_text()
+        )
+        self.assertEqual(receipt["provider_calls"], 0)
+        self.assertEqual(receipt["provider_tokens"], 0)
+        self.assertEqual(len(receipt["superseded_unexecuted_protocols"]), 2)
+        for binding in receipt["superseded_unexecuted_protocols"]:
+            original = ROOT / binding["path"]
+            replacement = ROOT / binding["replacement_path"]
+            self.assertEqual(
+                original.is_file(), binding["protocol_file_retained"], binding["path"]
+            )
+            self.assertTrue(replacement.is_file())
+            self.assertEqual(
+                hashlib.sha256(replacement.read_bytes()).hexdigest(),
+                binding["replacement_sha256"],
+            )
+
+    def test_opencode_lifecycle_v1_runtime_scope_supersession_is_retained(self) -> None:
+        receipt = json.loads(
+            (
+                ROOT
+                / "sources/evaluations/audits/lifecycle-v1-opencode-sol-high-r1-runtime-scope-supersession-20260802.json"
+            ).read_text()
+        )
+        self.assertEqual(receipt["provider_calls"], 0)
+        self.assertEqual(receipt["provider_tokens"], 0)
+        self.assertEqual(len(receipt["superseded_unexecuted_protocols"]), 2)
+        for binding in receipt["superseded_unexecuted_protocols"]:
+            original = ROOT / binding["path"]
+            replacement = ROOT / binding["replacement_path"]
+            self.assertFalse(original.exists(), binding["path"])
             self.assertTrue(replacement.is_file())
             self.assertEqual(
                 hashlib.sha256(replacement.read_bytes()).hexdigest(),
@@ -2071,6 +2129,56 @@ class VerifierContractTest(unittest.TestCase):
             usage_blocks = runner.extract_codex_usage.usage_blocks(combined_events)
             self.assertEqual([block["usage"]["input_tokens"] for block in usage_blocks], [2, 1])
             self.assertTrue((root / "task-01-operational-retry-01.md").is_file())
+
+    def test_opencode_task_renders_repository_root_in_wrapper_args(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            prompt = root / "task-01.md"
+            prompt.write_text("Repair the task.\n")
+            events = root / "task-01-codex-events.jsonl"
+            cfg = {
+                "data_dir_name": "opencode-runtime",
+                "codex_wrapper": {
+                    "command": "/usr/bin/python3",
+                    "args": ["{repository_root}/scripts/opencode_workflow_adapter.py"],
+                },
+            }
+            commands: list[list[str]] = []
+
+            def fake_backend(command, **kwargs):
+                commands.append(list(command))
+                Path(kwargs["stdout_path"]).write_text("\n".join([
+                    json.dumps({"type": "thread.started", "thread_id": "thread-1"}),
+                    json.dumps({"type": "turn.completed", "usage": {"input_tokens": 1}}),
+                ]) + "\n")
+                return mock.Mock(returncode=0)
+
+            with (
+                mock.patch.object(runner.fixture, "active_tool_config", return_value=cfg),
+                mock.patch.object(runner.fixture, "codex_env", return_value={}),
+                mock.patch.object(runner.fixture, "tool_env_for_record", return_value={}),
+                mock.patch.object(runner.fixture, "tool_data_dir", return_value=root / "tool-data"),
+                mock.patch.object(runner, "codex_base_cmd", return_value=["codex", "exec"]),
+                mock.patch.object(runner, "model_mounts_for_record", return_value=[]),
+                mock.patch.object(runner.fixture, "run_backend", side_effect=fake_backend),
+            ):
+                code, thread, continuity_error = runner.run_codex_task(
+                    {"target": {"repository_path": "."}},
+                    "runtime-opencode-codex-product-v1",
+                    root / "codex-home",
+                    root,
+                    "image",
+                    prompt,
+                    events,
+                    root / "last-message.txt",
+                    timeout=60,
+                    thread_id=None,
+                    operational_retries=0,
+                )
+        self.assertEqual((code, thread, continuity_error), (0, "thread-1", None))
+        self.assertEqual(
+            commands[0][1], str(ROOT / "scripts/opencode_workflow_adapter.py")
+        )
 
     def test_current_replication_turn_budget_disables_operational_retry(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
@@ -6231,6 +6339,118 @@ class BaselineV3LowComplexityContractTest(unittest.TestCase):
                 + sequence_id.removesuffix("-lifecycle-sequence-v1")
                 + "-r1.json",
             )
+
+    def test_opencode_lifecycle_v1_r1_no_provider_recovery_requires_exact_authority(self) -> None:
+        sequence_id = "fastify-lifecycle-sequence-v1"
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            receipt_rel = (
+                "sources/evaluations/audits/lifecycle-v1-opencode-sol-high-r1-attempts/fastify-r1.json"
+            )
+            receipt_path = root / receipt_rel
+            receipt_path.parent.mkdir(parents=True)
+            receipt_path.write_text(json.dumps({
+                "attempt_status": "reserved-before-provider-task",
+                "sequence_id": sequence_id,
+                "replicate_index": 1,
+                "profile_id": "runtime-opencode-codex-product-v1",
+                "model_condition_id": "opencode-openai-gpt-5-6-sol-high",
+                "provider_result": None,
+            }))
+            authority_path = root / matrix.OPENCODE_LIFECYCLE_V1_R1_RECOVERY_AUTHORITY_REL
+            authority_path.parent.mkdir(parents=True, exist_ok=True)
+            authority_path.write_text(json.dumps({
+                "schema_version": 1,
+                "status": "owner-authorized-no-provider-recovery",
+                "owner_recovery_authorization": {
+                    "source": "discord",
+                    "authorization_prompt_message_id": "1533351879592120481",
+                    "message_id": "1533353885559816214",
+                    "selection": "2",
+                },
+                "recovery_contract": {
+                    "sequence_id": sequence_id,
+                    "replicate_index": 1,
+                    "profile_id": "runtime-opencode-codex-product-v1",
+                    "model_condition_id": "opencode-openai-gpt-5-6-sol-high",
+                    "original_attempt_receipt_path": receipt_rel,
+                    "original_attempt_receipt_sha256": hashlib.sha256(receipt_path.read_bytes()).hexdigest(),
+                    "provider_execution_disposition": "locally-proven-no-provider-subprocess",
+                    "authorized_provider_run_count": 1,
+                    "same_replicate_recovery": True,
+                },
+            }))
+            self.assertTrue(
+                matrix.opencode_lifecycle_v1_r1_no_provider_recovery_authorized(
+                    sequence_id, 1, root
+                )
+            )
+            self.assertFalse(
+                matrix.opencode_lifecycle_v1_r1_no_provider_recovery_authorized(
+                    "beets-lifecycle-sequence-v1", 1, root
+                )
+            )
+            protocol_rel = "sources/evaluations/protocols/fastify-recovery.json"
+            protocol_path = root / protocol_rel
+            protocol_path.parent.mkdir(parents=True, exist_ok=True)
+            protocol_path.write_text(json.dumps({"baseline_pool": {"protocol_fingerprint": "pool"}}))
+            baseline_authority_path = root / runner.OPENCODE_LIFECYCLE_V1_R1_AUTHORITY_REL
+            baseline_authority_path.parent.mkdir(parents=True, exist_ok=True)
+            baseline_authority_path.write_text(json.dumps({
+                "frozen_protocols": [{
+                    "sequence_id": sequence_id,
+                    "protocol_path": protocol_rel,
+                    "protocol_sha256": hashlib.sha256(protocol_path.read_bytes()).hexdigest(),
+                    "baseline_pool_fingerprint": "pool",
+                }],
+            }))
+            with mock.patch.object(matrix.workflow, "standalone_opencode_control_authorized", return_value=True):
+                passed, reason = matrix.opencode_baseline_run_gate(
+                    {"sessions": []}, sequence_id, 1, root
+                )
+            self.assertTrue(passed, reason)
+            self.assertIn("same-r1 recovery", reason)
+            with (
+                mock.patch.object(matrix, "ROOT", root),
+                mock.patch.object(
+                    matrix, "opencode_lifecycle_v1_r1_no_provider_recovery_authorized", return_value=True
+                ),
+            ):
+                reused_path = matrix.reserve_opencode_baseline_attempt(
+                    sequence_id=sequence_id,
+                    replicate_index=1,
+                    expected_session_binding={},
+                    run_root=root / "recovery-run",
+                )
+            self.assertEqual(reused_path, receipt_path)
+
+    def test_opencode_lifecycle_v1_r1_no_provider_recovery_authority_binds_live_evidence(self) -> None:
+        recovery = json.loads((
+            ROOT / matrix.OPENCODE_LIFECYCLE_V1_R1_RECOVERY_AUTHORITY_REL
+        ).read_text())
+        self.assertEqual(recovery["status"], "owner-authorized-no-provider-recovery")
+        self.assertEqual(
+            recovery["owner_recovery_authorization"]["message_id"], "1533353885559816214"
+        )
+        contract = recovery["recovery_contract"]
+        receipt = ROOT / contract["original_attempt_receipt_path"]
+        self.assertTrue(receipt.is_file())
+        self.assertEqual(
+            contract["original_attempt_receipt_sha256"],
+            hashlib.sha256(receipt.read_bytes()).hexdigest(),
+        )
+        self.assertEqual(
+            contract["provider_execution_disposition"],
+            "locally-proven-no-provider-subprocess",
+        )
+        authorization = json.loads((
+            ROOT / runner.OPENCODE_LIFECYCLE_V1_R1_AUTHORITY_REL
+        ).read_text())
+        fastify = next(
+            item for item in authorization["frozen_protocols"]
+            if item["sequence_id"] == "fastify-lifecycle-sequence-v1"
+        )
+        self.assertEqual(recovery["recovery_protocol"], fastify)
 
     def test_strict_replication_authority_rejects_every_decision_field_mutation(self) -> None:
         source_authority = ROOT / runner.BASELINE_REPLICATION_AUTHORITY_REL
