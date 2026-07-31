@@ -66,7 +66,7 @@
       "artifact_slug": "baseline-claude-code",
       "profile_type": "control",
       "objective_scope": "control",
-      "status": "future-candidate-control",
+      "status": "configured-provider-free",
       "substrate": "claude-code",
       "enabled_surfaces": [
         "claude-code-native-shell-edit"
@@ -106,7 +106,14 @@
       "reset": {
         "policy": "Delete the lane-specific Claude runtime home and run-local HOME/PYTHONUSERBASE/XDG/TMPDIR before each run; verify no stale indexes, generated profile files, hooks, skills, or memory survive."
       },
-      "notes": "Future Claude Code no-MCP substrate baseline for Claude Opus/Anthropic model-condition studies. Requires a dedicated runner and usage extractor before reproduction records can be accepted."
+      "evaluation_protocol": {
+        "tool_use_policy": "none",
+        "tool_state": "native-runtime",
+        "integration_state": "official-claude-code-bare-mode",
+        "instruction_policy": "Claude Code --bare; no CLAUDE.md, hooks, plugins, skills, MCP, auto-memory, or background prefetch",
+        "assignment_proof": "provider-free pinned-binary/version/model/tools/settings/isolation probe required"
+      },
+      "notes": "Bare Claude Code control routed through the existing OpenRouter GPT-5.6 Sol/high condition used by the Codex and OpenCode comparison lanes. Provider-free qualified only; no provider-backed baseline result exists yet."
     },
     {
       "id": "broad-compression-owner",

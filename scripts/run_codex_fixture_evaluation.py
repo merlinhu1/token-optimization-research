@@ -35,6 +35,9 @@ CODEX_RUNTIME_ROOT = Path(os.environ.get(
 CODEX_HOST_EXECUTABLE = Path(os.environ.get("TOKEN_EVAL_CODEX_EXECUTABLE", "/opt/data/.local/bin/codex"))
 CODEX_CONTAINER_RUNTIME_ROOT = Path("/opt/data/codex-runtime")
 CODEX_CONTAINER_BIN_ROOT = Path("/opt/data/codex-entry")
+CLAUDE_HOST_EXECUTABLE = Path(os.environ.get("TOKEN_EVAL_CLAUDE_EXECUTABLE", "/opt/data/.local/bin/claude"))
+CLAUDE_CONTAINER_BIN = Path("/opt/data/claude-entry/claude")
+CLAUDE_OPENROUTER_ENV_FILE = Path(os.environ.get("TOKEN_EVAL_CLAUDE_OPENROUTER_ENV", "/opt/data/home/.config/claude-code/openrouter.env"))
 OPENCODE_BIN = Path("/opt/data/tool-candidates/opencode-runtime/node_modules/opencode-ai/bin/opencode.exe")
 OPENCODE_BIN_V2 = Path("/opt/data/tool-candidates/opencode-runtime-v2/opencode.exe")
 OPENCODE_BIN_SHA256 = "7c4d91c84d2bfdeabb59257e3490c5e5acb08f2aacb3e42f3ddc296a1c3f1aca"
@@ -2421,6 +2424,32 @@ def prepare_codex_home(record: dict[str, Any], pid: str, run_dir: Path, source_h
     return codex_home
 
 
+def prepare_claude_home(pid: str, run_dir: Path, home_root: Path) -> Path:
+    """Create a lane-private Claude Code home without copying global state."""
+    claude_home = home_root / pid
+    if claude_home.exists():
+        make_tree_writable(claude_home)
+        shutil.rmtree(claude_home, onexc=make_writable_for_removal)
+    claude_home.mkdir(parents=True)
+    for subdir in ["home", "python-userbase", "xdg-cache", "xdg-config", "xdg-data", "tmp", "claude-config"]:
+        (claude_home / subdir).mkdir(parents=True, exist_ok=True)
+    manifest = {
+        "created_at_utc": dt.datetime.now(dt.UTC).isoformat(),
+        "profile_id": pid,
+        "runtime_id": "claude-code",
+        "claude_home": str(claude_home),
+        "bare_mode": True,
+        "copied_global_instructions": False,
+        "copied_skills_or_plugins": False,
+        "hooks_enabled": False,
+        "mcp_servers": [],
+        "auto_memory": False,
+        "background_prefetch": False,
+    }
+    (run_dir / "claude-code-home-manifest.json").write_text(json.dumps(manifest, indent=2) + "\n")
+    return claude_home
+
+
 def codex_env(codex_home: Path, *, containerized: bool = False, cfg: dict[str, Any] | None = None) -> dict[str, str]:
     env = os.environ.copy()
     env["CODEX_HOME"] = str(codex_home)
@@ -2466,6 +2495,37 @@ def codex_env(codex_home: Path, *, containerized: bool = False, cfg: dict[str, A
     else:
         path_entries.append(env.get("PATH", ""))
     env["PATH"] = ":".join(path_entries)
+    return env
+
+
+def claude_env(agent_home: Path, *, containerized: bool = False) -> dict[str, str]:
+    """Create isolated Claude Code HOME/XDG/config state for one lane."""
+    env = codex_env(agent_home, containerized=containerized)
+    if CLAUDE_OPENROUTER_ENV_FILE.is_file():
+        for line in CLAUDE_OPENROUTER_ENV_FILE.read_text(errors="replace").splitlines():
+            match = re.match(r"^\s*export\s+([A-Za-z_][A-Za-z0-9_]*)=(.*)\s*$", line)
+            if not match:
+                continue
+            key, raw = match.groups()
+            value = raw.strip()
+            if len(value) >= 2 and value[0] == value[-1] and value[0] in "'\"":
+                value = value[1:-1]
+            value = re.sub(r"\$([A-Za-z_][A-Za-z0-9_]*)", lambda m: env.get(m.group(1), ""), value)
+            env[key] = value
+    config_dir = agent_home / "claude-config"
+    config_dir.mkdir(parents=True, exist_ok=True)
+    env["CLAUDE_CONFIG_DIR"] = str(config_dir)
+    env["CLAUDE_CODE_SIMPLE"] = "1"
+    env["CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC"] = "1"
+    isolated_bin = agent_home / "runtime-bin"
+    if not containerized:
+        isolated_bin.mkdir(parents=True, exist_ok=True)
+        link = isolated_bin / "claude"
+        if not link.exists():
+            link.symlink_to(CLAUDE_HOST_EXECUTABLE)
+        env["PATH"] = f"{isolated_bin}:{env['PATH']}"
+    else:
+        env["PATH"] = f"{CLAUDE_CONTAINER_BIN.parent}:{env['PATH']}"
     return env
 
 
@@ -2523,6 +2583,14 @@ DOCKER_ENV_KEYS = [
     "SHELL",
     "LEAN_CTX_DATA_DIR",
     "CODEGRAPH_TELEMETRY",
+    "CLAUDE_CONFIG_DIR",
+    "CLAUDE_CODE_SIMPLE",
+    "CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC",
+    "ANTHROPIC_BASE_URL",
+    "ANTHROPIC_AUTH_TOKEN",
+    "ANTHROPIC_API_KEY",
+    "ANTHROPIC_DEFAULT_SONNET_MODEL",
+    "OPENROUTER_API_KEY",
 ]
 
 
@@ -2548,6 +2616,8 @@ def docker_tool_mounts(cfg: dict[str, Any] | None = None) -> list[tuple[Path, Pa
     codex_wrapper = ROOT / "sources/evaluations/fixtures/container/codex-entrypoint.sh"
     if codex_wrapper.exists():
         mounts.append((codex_wrapper, CODEX_CONTAINER_BIN_ROOT / "codex", "ro"))
+    if CLAUDE_HOST_EXECUTABLE.is_file():
+        mounts.append((CLAUDE_HOST_EXECUTABLE, CLAUDE_CONTAINER_BIN, "ro"))
     path_texts = [
         "/opt/data/dotnet",
         "/opt/data/opt/go",
@@ -2746,6 +2816,7 @@ def check_container_runtime(
     dockerfile: Path = DEFAULT_DOCKERFILE,
     codex_home: Path | None = None,
     cfg: dict[str, Any] | None = None,
+    agent_runtime: str = "codex-cli",
 ) -> dict[str, Any]:
     result: dict[str, Any] = {
         "execution_backend": backend,
@@ -2798,16 +2869,17 @@ def check_container_runtime(
 
     if not result["failure_reasons"]:
         ensure_codex_native_binary_executable()
-        smoke_env = codex_env(codex_home, containerized=True, cfg=cfg) if codex_home else os.environ.copy()
+        smoke_env = (claude_env(codex_home, containerized=True) if agent_runtime == "claude-code" else codex_env(codex_home, containerized=True, cfg=cfg)) if codex_home else os.environ.copy()
         smoke_mounts = docker_tool_mounts(cfg)
         if codex_home:
             add_mount(smoke_mounts, codex_home, mode="rw")
         smoke_output = run_dir / "docker-smoke-output.txt"
+        smoke_program = "claude" if agent_runtime == "claude-code" else "codex"
         smoke_cmd = docker_command(
             [
                 "bash",
                 "-lc",
-                "set -euo pipefail; id; python3 --version; git --version; command -v codex; codex --version",
+                f"set -euo pipefail; id; python3 --version; git --version; command -v {smoke_program}; {smoke_program} --version",
             ],
             image=docker_image,
             cwd=codex_home / "home" if codex_home else ROOT,
@@ -3195,6 +3267,63 @@ def probe_mcp_handshake(
         item["passed"] for item in secondary_results
     )
     receipt_path.write_text(json.dumps(result, indent=2, sort_keys=True) + "\n")
+    return result
+
+
+def preflight_claude_code(
+    record: dict[str, Any],
+    claude_home: Path,
+    pid: str,
+    run_dir: Path,
+    *,
+    backend: str,
+    docker_image: str,
+) -> dict[str, Any]:
+    """Prove the bare Claude Code surface without making a provider request."""
+    env = claude_env(claude_home, containerized=backend == "docker")
+    apply_model_network_isolation(env)
+    mounts = container_mounts_for_record(record, claude_home, include_repo=True)
+    version_path = run_dir / "claude-code-version.txt"
+    help_path = run_dir / "claude-code-help.txt"
+    version = run_backend(
+        ["claude", "--version"], backend=backend, docker_image=docker_image,
+        cwd=rel_or_abs(record["target"]["repository_path"]), env=env,
+        stdout_path=version_path, timeout=120, mounts=mounts,
+    )
+    help_result = run_backend(
+        ["claude", "--help"], backend=backend, docker_image=docker_image,
+        cwd=rel_or_abs(record["target"]["repository_path"]), env=env,
+        stdout_path=help_path, timeout=120, mounts=mounts,
+    )
+    version_text = version_path.read_text(errors="replace") if version_path.exists() else ""
+    help_text = help_path.read_text(errors="replace") if help_path.exists() else ""
+    required = ["--bare", "--output-format", "stream-json", "--model", "--tools", "--resume"]
+    passed = version.returncode == 0 and help_result.returncode == 0 and all(item in help_text for item in required)
+    result = {
+        "runtime_id": "claude-code",
+        "profile_id": pid,
+        "passed": passed,
+        "provider_request_made": False,
+        "version": version_text.strip(),
+        "version_exit_code": version.returncode,
+        "help_exit_code": help_result.returncode,
+        "required_cli_surfaces": required,
+        "missing_cli_surfaces": [item for item in required if item not in help_text],
+        "bare_mode": True,
+        "mcp_servers": [],
+        "model": record.get("agent", {}).get("model"),
+    }
+    (run_dir / "claude-code-preflight.json").write_text(json.dumps(result, indent=2) + "\n")
+    (run_dir / "claude-code-effective-settings.json").write_text(json.dumps({
+        "bare": True,
+        "permission_mode": "bypassPermissions",
+        "tools": ["Bash", "Edit", "Read", "Grep", "Glob"],
+        "mcp_config": [],
+        "plugins": [],
+        "skills": [],
+        "auto_memory": False,
+        "background_prefetch": False,
+    }, indent=2) + "\n")
     return result
 
 

@@ -34,12 +34,16 @@ sys.path.insert(0, str(ROOT / "scripts"))
 import run_codex_workflow_evaluation as workflow  # type: ignore
 import run_codex_workflow_model_condition as model_condition_launcher  # type: ignore
 import run_opencode_workflow_model_condition as opencode_condition_launcher  # type: ignore
+import run_claude_code_workflow_model_condition as claude_condition_launcher  # type: ignore
 import workflow_model_condition_runtime as condition_runtime  # type: ignore
 DEFAULT_LANE_ROOT = Path("/opt/data/eval-workflow-lanes")
 OPENCODE_BASELINE_AUTHORITY_REL = Path(
     "sources/evaluations/audits/opencode-dcp-qualification-and-r2-authorization-20260730.json"
 )
 OPENCODE_BASELINE_ATTEMPT_DIR = Path("sources/evaluations/audits/opencode-bare-r2-attempts")
+CLAUDE_BASELINE_AUTHORITY_REL = Path(
+    "sources/evaluations/audits/claude-code-sol-high-baseline-authorization-20260731.json"
+)
 WORKFLOW_ARTIFACT_ROOT = Path("sources/evaluations/workflow-sessions")
 COMPACT_ARTIFACT_NAMES = {"run.json", "changes.diff", "evidence.jsonl.gz", "manifest.sha256"}
 
@@ -61,24 +65,32 @@ def baseline_reuse_state(session: dict[str, Any] | None, root: Path = ROOT) -> s
     return workflow.reviewed_session_reuse_state(session, root)
 
 
-def find_baseline_record(registry: dict[str, Any], seq: dict[str, Any], replicate_index: int) -> dict[str, Any] | None:
-    return workflow.find_canonical_baseline_record(registry, seq, replicate_index)
+def find_baseline_record(
+    registry: dict[str, Any],
+    seq: dict[str, Any],
+    replicate_index: int,
+    profile_id: str = "baseline-bare-codex",
+) -> dict[str, Any] | None:
+    if profile_id == "baseline-bare-codex":
+        return workflow.find_canonical_baseline_record(registry, seq, replicate_index)
+    return workflow.find_pool_profile_record(registry, seq, profile_id, replicate_index)
 
 
 def baseline_campaign_state(
     registry: dict[str, Any],
     seq: dict[str, Any],
     replicate_index: int,
+    baseline_profile_id: str = "baseline-bare-codex",
     root: Path = ROOT,
 ) -> str:
     """Separate reusable-baseline selection from replicate occupancy."""
-    baseline = find_baseline_record(registry, seq, replicate_index)
+    baseline = find_baseline_record(registry, seq, replicate_index, baseline_profile_id)
     if baseline is not None:
         return baseline_reuse_state(baseline, root)
     occupied = workflow.find_pool_profile_record(
         registry,
         seq,
-        "baseline-bare-codex",
+        baseline_profile_id,
         replicate_index,
     )
     return workflow.reviewed_session_reuse_state(occupied, root)
@@ -253,6 +265,89 @@ def find_protocol(root: Path, sequence_id: str, profile_id: str) -> Path:
     return matches[0]
 
 
+def claude_baseline_run_gate(
+    registry: dict[str, Any],
+    sequence_id: str,
+    replicate_index: int,
+    root: Path = ROOT,
+) -> tuple[bool, str]:
+    path = root / CLAUDE_BASELINE_AUTHORITY_REL
+    if not path.is_file():
+        return False, f"missing Claude Code baseline authority: {CLAUDE_BASELINE_AUTHORITY_REL}"
+    try:
+        authority = load_json(path)
+    except (OSError, ValueError) as exc:
+        return False, f"unreadable Claude Code baseline authority: {exc}"
+    expected_sequences = [
+        item["id"]
+        for item in load_json(root / "data/workflow-task-sequences.json").get("sequences", [])
+        if item.get("status") == "active"
+    ]
+    expected_keys = {
+        "schema_version", "campaign_id", "authorized_by_owner_message_id", "authorized_on",
+        "paid_baseline_execution_authorized", "authorized_replicate_index", "sequence_order",
+        "max_parallel", "allowed_paid_baseline_runs", "allowed_model_turns", "serialization_required",
+        "model_condition", "first_valid_sample_policy", "rerun_after_attempt_receipt", "provider_calls",
+        "provider_tokens", "sequences", "notes",
+    }
+    model = authority.get("model_condition", {})
+    header_ok = (
+        set(authority) == expected_keys
+        and authority.get("schema_version") == 1
+        and authority.get("campaign_id") == "claude-code-sol-high-baseline-20260731"
+        and authority.get("authorized_by_owner_message_id") == "1532719573890109570"
+        and authority.get("authorized_on") == "2026-07-31"
+        and authority.get("paid_baseline_execution_authorized") is True
+        and authority.get("authorized_replicate_index") == 0
+        and authority.get("sequence_order") == expected_sequences
+        and authority.get("max_parallel") == 3
+        and authority.get("allowed_paid_baseline_runs") == len(expected_sequences)
+        and authority.get("allowed_model_turns") == sum(
+            len(workflow.load_sequence(item).get("tasks", [])) for item in expected_sequences
+        )
+        and authority.get("serialization_required") is False
+        and model == {
+            "id": "claude-code-openrouter-gpt-5-6-sol-high",
+            "runtime_id": "claude-code",
+            "provider": "openrouter",
+            "model": "gpt-5.6-sol",
+            "reasoning_effort": "high",
+        }
+        and authority.get("first_valid_sample_policy") is True
+        and authority.get("rerun_after_attempt_receipt") is False
+        and authority.get("provider_calls") == 0
+        and authority.get("provider_tokens") == 0
+        and isinstance(authority.get("notes"), str)
+        and bool(authority.get("notes"))
+    )
+    records = authority.get("sequences")
+    records_ok = isinstance(records, list) and [item.get("sequence_id") for item in records] == expected_sequences
+    if not header_ok or not records_ok or replicate_index != 0 or sequence_id not in expected_sequences:
+        return False, "Claude Code baseline authority does not match the requested identity, scope, or budget"
+    bindings = {item.get("sequence_id"): item for item in records}
+    for active_id in expected_sequences:
+        binding = bindings.get(active_id)
+        if not isinstance(binding, dict):
+            return False, f"Claude Code authority is missing sequence binding: {active_id}"
+        protocol_path = root / str(binding.get("protocol_path", ""))
+        if not protocol_path.is_file():
+            return False, f"Claude Code authority protocol is missing: {binding.get('protocol_path')}"
+        protocol_sha = hashlib.sha256(protocol_path.read_bytes()).hexdigest()
+        protocol = load_json(protocol_path)
+        if (
+            protocol_sha != binding.get("protocol_sha256")
+            or protocol.get("status") != "frozen-ready-not-run"
+            or protocol.get("baseline_pool", {}).get("protocol_fingerprint") != binding.get("baseline_pool_fingerprint")
+        ):
+            return False, f"Claude Code authority has stale protocol binding: {active_id}"
+    occupied = workflow.find_pool_profile_record(
+        registry, workflow.load_sequence(sequence_id), "baseline-claude-code-no-mcp", replicate_index
+    )
+    if occupied is not None:
+        return False, f"Claude Code baseline identity is already occupied by session {occupied.get('session_id')}"
+    return True, "owner-authorized Claude Code Sol/high baseline is unoccupied"
+
+
 def plan_workflow_jobs(
     sequence_ids: list[str],
     treatment_profiles: list[str],
@@ -414,7 +509,7 @@ def workflow_lane_command(
         "--replicate-index", str(replicate_index),
         *runner_args,
     ])
-    if profile_id not in {"baseline-bare-codex", "runtime-opencode-codex-product-v1"}:
+    if profile_id not in {"baseline-bare-codex", "baseline-claude-code-no-mcp", "runtime-opencode-codex-product-v1"}:
         cmd.extend(["--comparison-profile-id", profile_id])
     return cmd
 
@@ -1632,20 +1727,18 @@ def selected_model_condition(args: argparse.Namespace, *, configure: bool = Fals
     if condition.get("model") != values[1] or condition.get("reasoning_effort") != values[2]:
         raise ValueError("registered model condition does not match the requested model/reasoning effort")
     if configure:
-        launcher_module = (
-            opencode_condition_launcher
-            if condition.get("runtime_id") == "opencode-cli"
-            else model_condition_launcher
-        )
+        launcher_module = {
+            "opencode-cli": opencode_condition_launcher,
+            "claude-code": claude_condition_launcher,
+        }.get(condition.get("runtime_id"), model_condition_launcher)
         launcher_module.configure_model_condition(*values)
     return {
         "id": str(condition["id"]),
         "runtime_id": str(condition["runtime_id"]),
-        "launcher": (
-            "scripts/run_opencode_workflow_model_condition.py"
-            if condition.get("runtime_id") == "opencode-cli"
-            else "scripts/run_codex_workflow_model_condition.py"
-        ),
+        "launcher": {
+            "opencode-cli": "scripts/run_opencode_workflow_model_condition.py",
+            "claude-code": "scripts/run_claude_code_workflow_model_condition.py",
+        }.get(str(condition.get("runtime_id")), "scripts/run_codex_workflow_model_condition.py"),
         "model": str(condition["model"]),
         "reasoning_effort": str(condition["reasoning_effort"]),
     }
@@ -1689,26 +1782,30 @@ def main(argv: list[str] | None = None) -> int:
     production_lock_fd = None
     treatment_profiles = args.treatment_profiles or []
     registry = load_json(ROOT / "data/workflow-sessions.json")
-    opencode_baseline = (
-        isinstance(model_condition, dict) and model_condition.get("runtime_id") == "opencode-cli"
+    replacement_runtime = (
+        isinstance(model_condition, dict)
+        and model_condition.get("runtime_id") in {"opencode-cli", "claude-code"}
     )
     baseline_profile_id = (
-        "runtime-opencode-codex-product-v1" if opencode_baseline else "baseline-bare-codex"
+        "runtime-opencode-codex-product-v1"
+        if isinstance(model_condition, dict) and model_condition.get("runtime_id") == "opencode-cli"
+        else "baseline-claude-code-no-mcp"
+        if isinstance(model_condition, dict) and model_condition.get("runtime_id") == "claude-code"
+        else "baseline-bare-codex"
     )
 
     def baseline_state(sequence_id: str) -> str:
         if args.prepare_only:
             return "missing"
         sequence = workflow.load_sequence(sequence_id)
-        if opencode_baseline:
+        if replacement_runtime:
             session = workflow.find_pool_profile_record(
-                registry,
-                sequence,
-                baseline_profile_id,
-                args.replicate_index,
+                registry, sequence, baseline_profile_id, args.replicate_index
             )
             return workflow.reviewed_session_reuse_state(session, ROOT)
-        return baseline_campaign_state(registry, sequence, args.replicate_index, ROOT)
+        return baseline_campaign_state(
+            registry, sequence, args.replicate_index, baseline_profile_id, ROOT
+        )
 
     def profile_state(sequence_id: str, profile_id: str) -> str:
         sequence = workflow.load_sequence(sequence_id)
@@ -1719,17 +1816,18 @@ def main(argv: list[str] | None = None) -> int:
         return workflow.baseline_v2_treatment_gate(workflow.load_sequence(sequence_id), ROOT)
 
     def baseline_run_gate(sequence_id: str) -> tuple[bool, str]:
-        if opencode_baseline:
+        if isinstance(model_condition, dict) and model_condition.get("runtime_id") == "opencode-cli":
             return opencode_baseline_run_gate(
-                registry,
-                sequence_id,
-                args.replicate_index,
-                ROOT,
+                registry, sequence_id, args.replicate_index, ROOT
+            )
+        if isinstance(model_condition, dict) and model_condition.get("runtime_id") == "claude-code":
+            if args.dry_run:
+                return True, "dry-run only; no provider spend"
+            return claude_baseline_run_gate(
+                registry, sequence_id, args.replicate_index, ROOT
             )
         return workflow.baseline_v2_pilot_run_gate(
-            workflow.load_sequence(sequence_id),
-            ROOT,
-            args.replicate_index,
+            workflow.load_sequence(sequence_id), ROOT, args.replicate_index
         )
 
     if args.prepare_only and treatment_profiles:
@@ -1738,7 +1836,7 @@ def main(argv: list[str] | None = None) -> int:
             if not passed:
                 raise ValueError(f"treatments are blocked for {sequence_id}: {reason}")
     jobs = (
-        [(sequence_id, profile) for sequence_id in sequences for profile in (treatment_profiles or ["baseline-bare-codex"])]
+        [(sequence_id, profile) for sequence_id in sequences for profile in (treatment_profiles or [baseline_profile_id])]
         if args.prepare_only
         else plan_workflow_jobs(
             sequences,
@@ -1760,7 +1858,7 @@ def main(argv: list[str] | None = None) -> int:
     serialized_replication_jobs = [
         (sequence_id, profile_id)
         for sequence_id, profile_id in jobs
-        if profile_id in {"baseline-bare-codex", "runtime-opencode-codex-product-v1"}
+        if profile_id in {"baseline-bare-codex", "baseline-claude-code-no-mcp", "runtime-opencode-codex-product-v1"}
         and args.replicate_index > 0
         and workflow.load_sequence(sequence_id).get("task_family_generation") in {"baseline-v3", "baseline-v4"}
     ]
