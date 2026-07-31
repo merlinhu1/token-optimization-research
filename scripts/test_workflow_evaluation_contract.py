@@ -884,6 +884,37 @@ class ActiveCampaignArchitectureTest(unittest.TestCase):
         identity = runner.tool_adapter_identity("runtime-opencode-codex-product-v1")
         self.assertEqual(identity["source_identity"][0]["path"], adapter)
 
+    def test_opencode_preflight_renders_repository_root_adapter_path(self) -> None:
+        record = {"target": {"repository_path": str(ROOT)}, "agent": {}}
+        with tempfile.TemporaryDirectory(dir=ROOT) as tmp:
+            codex_home = Path(tmp) / "codex-home"
+            codex_home.mkdir()
+            (codex_home / "config.toml").write_text("")
+            run_dir = Path(tmp) / "run"
+            run_dir.mkdir()
+            commands: list[list[str]] = []
+
+            def fake_run_backend(command, **kwargs):
+                commands.append(list(command))
+                kwargs["stdout_path"].write_text("")
+                return mock.Mock(returncode=0)
+
+            with mock.patch.object(runner.fixture, "ensure_codex_native_binary_executable"), mock.patch.object(
+                runner.fixture, "run_backend", side_effect=fake_run_backend
+            ):
+                result = runner.fixture.preflight_codex(
+                    record,
+                    codex_home,
+                    "runtime-opencode-codex-product-v1",
+                    run_dir,
+                    backend="local",
+                    docker_image="unused",
+                )
+        self.assertTrue(result["passed"])
+        self.assertEqual(
+            commands[-1][1], str(ROOT / "scripts/opencode_workflow_adapter.py")
+        )
+
     def test_opencode_lifecycle_v1_unspent_protocol_supersession_is_retained(self) -> None:
         receipt = json.loads(
             (
@@ -923,6 +954,23 @@ class ActiveCampaignArchitectureTest(unittest.TestCase):
             (
                 ROOT
                 / "sources/evaluations/audits/lifecycle-v1-opencode-sol-high-r1-runtime-model-condition-supersession-20260802.json"
+            ).read_text()
+        )
+        self.assertEqual(receipt["provider_calls"], 0)
+        self.assertEqual(receipt["provider_tokens"], 0)
+        self.assertFalse(receipt["identity_occupied"])
+        self.assertTrue(receipt["same_identity_retry_permitted"])
+        self.assertEqual(len(receipt["superseded_unoccupied_protocols"]), 2)
+        for binding in receipt["superseded_unoccupied_protocols"]:
+            self.assertFalse((ROOT / binding["path"]).exists())
+            self.assertTrue(binding["replacement_path"].endswith(".json"))
+            self.assertEqual(len(binding["replacement_sha256"]), 64)
+
+    def test_opencode_lifecycle_v1_preflight_command_rendering_supersession_is_retained(self) -> None:
+        receipt = json.loads(
+            (
+                ROOT
+                / "sources/evaluations/audits/lifecycle-v1-opencode-sol-high-r1-preflight-command-rendering-supersession-20260802.json"
             ).read_text()
         )
         self.assertEqual(receipt["provider_calls"], 0)

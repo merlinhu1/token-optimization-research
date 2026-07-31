@@ -1,0 +1,38 @@
+{
+  "schema_version": 1,
+  "audit_id": "lifecycle-v1-opencode-sol-high-r1-preflight-command-rendering-supersession-20260802",
+  "date": "2026-08-02",
+  "scope": "Lifecycle V1 OpenCode GPT-5.6 Sol/high r1 baseline",
+  "disposition": "superseded-before-provider-and-before-attempt-receipt-reservation",
+  "provider_calls": 0,
+  "provider_tokens": 0,
+  "identity_occupied": false,
+  "same_identity_retry_permitted": true,
+  "failure_stage": "provider-free isolated codex-preflight tool command rendering",
+  "failure": "The serialized Fastify r1 no-provider preparation reached the OpenCode preflight but invoked the portable adapter literal {repository_root}/scripts/opencode_workflow_adapter.py without rendering it to the lane checkout. Python therefore searched below the isolated agent home and exited 2. The earlier r0 preparation used the default replicate index and was diagnostic only; the r1 run reproduced the same no-provider command-rendering failure under the authorized identity.",
+  "evidence": {
+    "authorized_r1_lane_root": "/opt/data/eval-workflow-lanes/workflow-matrix-20260802T053430349476Z-p3811789-r1",
+    "authorized_r1_lane_log": "/opt/data/eval-workflow-lanes/workflow-matrix-20260802T053430349476Z-p3811789-r1/fastify-lifecycle-sequence-v1--runtime-opencode-codex-product-v1/logs/lane.log",
+    "attempt_receipt_created": false,
+    "produced_session_ids": []
+  },
+  "fix": "preflight_codex now renders every configured preflight command through render_tool_value before launch, so {repository_root} resolves to the isolated checkout while the frozen source identity remains portable.",
+  "superseded_unoccupied_protocols": [
+    {
+      "path": "sources/evaluations/protocols/fastify-lifecycle-sequence-v1-runtime-opencode-codex-product-v1-3bb0694f4630.json",
+      "sha256": "501f6467388ad4ba85c13ee50da130f0527fc53fd289e8a149f8576d6e315d8f",
+      "reason": "preflight command placeholders were not rendered in the isolated checkout",
+      "replacement_path": "sources/evaluations/protocols/fastify-lifecycle-sequence-v1-runtime-opencode-codex-product-v1-950c9897f1c3.json",
+      "replacement_sha256": "8d82a25710dfe3ebe7991f1a5c648ff4e579218ad0c303c6c7ca41d092a9af19"
+    },
+    {
+      "path": "sources/evaluations/protocols/beets-lifecycle-sequence-v1-runtime-opencode-codex-product-v1-cb99b195664b.json",
+      "sha256": "36e45a4594f95dec32e9218eed81fab621d061575231a86961137634ccdad5c6",
+      "reason": "preflight command placeholders were not rendered in the isolated checkout",
+      "replacement_path": "sources/evaluations/protocols/beets-lifecycle-sequence-v1-runtime-opencode-codex-product-v1-5d5d7943b303.json",
+      "replacement_sha256": "a4180857e420741694cc52478005a1e1c5a438cf4337a2cd9e57189c86bcb153"
+    }
+  ],
+  "replacement_authority": "sources/evaluations/audits/lifecycle-v1-opencode-sol-high-r1-authorization-20260802.json",
+  "operational_retries": 0
+}
