@@ -872,6 +872,36 @@ class ActiveCampaignArchitectureTest(unittest.TestCase):
             runner.canonical_treatment_session_id("fastify-fastify", "swarmvault-owner", 1),
         )
 
+    def test_opencode_baseline_profile_uses_live_pinned_runtime(self) -> None:
+        opencode = runner.fixture.TOOL_CONFIGS["opencode-codex-product-v1"]
+        adapter = ROOT / "scripts/opencode_workflow_adapter.py"
+        self.assertEqual(opencode["executable"], "/opt/data/.local/bin/opencode")
+        self.assertEqual(opencode["mounts"], [str(adapter)])
+        self.assertEqual(opencode["binary_mount_target"], "/opt/data/.local/bin/opencode")
+        self.assertEqual(opencode["codex_wrapper"]["args"][0], str(adapter))
+        self.assertEqual(opencode["preflight_command"][1], str(adapter))
+
+    def test_opencode_lifecycle_v1_unspent_protocol_supersession_is_retained(self) -> None:
+        receipt = json.loads(
+            (
+                ROOT
+                / "sources/evaluations/audits/lifecycle-v1-opencode-sol-high-r1-preprovider-supersession-20260802.json"
+            ).read_text()
+        )
+        self.assertEqual(receipt["provider_calls"], 0)
+        self.assertEqual(receipt["provider_tokens"], 0)
+        self.assertFalse(receipt["identity_occupied"])
+        self.assertTrue(receipt["same_identity_retry_permitted"])
+        self.assertEqual(len(receipt["superseded_unoccupied_protocols"]), 2)
+        for binding in receipt["superseded_unoccupied_protocols"]:
+            self.assertFalse((ROOT / binding["path"]).exists())
+            replacement = ROOT / binding["replacement_path"]
+            self.assertTrue(replacement.is_file())
+            self.assertEqual(
+                hashlib.sha256(replacement.read_bytes()).hexdigest(),
+                binding["replacement_sha256"],
+            )
+
     def test_ineligible_historical_profiles_are_not_runnable(self) -> None:
         historical = {
             "terminal-tokenjuice", "terminal-rtk", "terminal-snip",
