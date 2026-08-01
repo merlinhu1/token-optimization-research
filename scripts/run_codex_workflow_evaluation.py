@@ -2229,7 +2229,9 @@ def require_reusable_treatment_baseline(
                 f"treatment execution requires a reusable canonical baseline for {seq['id']} r{replicate_index}"
             )
         expected_profile = (
-            "runtime-opencode-codex-product-v1"
+            "baseline-claude-code-no-mcp"
+            if PROFILE_META.get(profile_id, {}).get("substrate") == "claude-code"
+            else "runtime-opencode-codex-product-v1"
             if PROFILE_META.get(profile_id, {}).get("substrate") == "opencode-cli"
             else "baseline-bare-codex"
         )
@@ -2247,7 +2249,10 @@ def find_comparison_baseline_record(
     replicate_index: int,
 ) -> dict[str, Any] | None:
     meta = PROFILE_META.get(profile_id, {})
-    if meta.get("substrate") != "opencode-cli" or profile_id == "runtime-opencode-codex-product-v1":
+    substrate = meta.get("substrate")
+    if substrate == "claude-code":
+        return find_claude_baseline_record(registry, seq, replicate_index)
+    if substrate != "opencode-cli" or profile_id == "runtime-opencode-codex-product-v1":
         return find_canonical_baseline_record(registry, seq, replicate_index)
     matches = []
     for session in registry.get("sessions", []):
@@ -2268,6 +2273,49 @@ def find_comparison_baseline_record(
     if len(matches) > 1:
         raise RuntimeError(
             f"ambiguous bare OpenCode baseline for {seq['id']} r{replicate_index}: "
+            f"{[item['session_id'] for item in matches]}"
+        )
+    return matches[0] if matches else None
+
+
+def find_claude_baseline_record(
+    registry: dict[str, Any],
+    seq: dict[str, Any],
+    replicate_index: int,
+) -> dict[str, Any] | None:
+    """Find the reusable Claude Code no-MCP baseline for the given sequence/replicate."""
+    protocol_fingerprint = baseline_protocol_fingerprint(seq)
+    matches = []
+    for session in registry.get("sessions", []):
+        if session.get("schema_version") != 2:
+            continue
+        if session.get("baseline_pool", {}).get("protocol_fingerprint") != protocol_fingerprint:
+            continue
+        if session.get("session_role") != "baseline":
+            continue
+        if session.get("profile", {}).get("profile_id") != "baseline-claude-code-no-mcp":
+            continue
+        selected_descriptor = session.get("selected_execution", {}).get("descriptor", {})
+        if (
+            selected_descriptor.get("execution_role") != "baseline"
+            or selected_descriptor.get("selected_profile", {}).get("profile_id") != "baseline-claude-code-no-mcp"
+        ):
+            continue
+        if session.get("replicate_index") != replicate_index:
+            continue
+        if session.get("task_sequence", {}).get("sequence_id") != seq["id"]:
+            continue
+        if session.get("status") not in (None, "completed"):
+            continue
+        interpretation = session.get("interpretation", {})
+        accepted = interpretation.get("accepted_for_execution")
+        if accepted is None:
+            accepted = interpretation.get("accepted_for_objective")
+        if accepted is True:
+            matches.append(session)
+    if len(matches) > 1:
+        raise RuntimeError(
+            f"ambiguous Claude Code baseline for {seq['id']} r{replicate_index}: "
             f"{[item['session_id'] for item in matches]}"
         )
     return matches[0] if matches else None
