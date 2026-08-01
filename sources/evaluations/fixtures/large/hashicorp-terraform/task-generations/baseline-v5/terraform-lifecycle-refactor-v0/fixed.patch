@@ -1,20 +1,13 @@
 diff --git b/internal/configs/state_migrate_file.go a/internal/configs/state_migrate_file.go
-index 38e260991..bf0b349db 100644
+index e15c5637bb49f03c4e3b49aef51bdbac89c3efa4..bf0b349db84ec2e8a4618297d5729229cff40db3 100644
 --- b/internal/configs/state_migrate_file.go
 +++ a/internal/configs/state_migrate_file.go
-@@ -377,5 +377,3 @@ func badVersionConstraintErrorDiag(version string, subject *hcl.Range) *hcl.Diag
- 		Subject:  subject,
- 	}
+@@ -41,7 +41,7 @@ type StateStoreProviderRequirement struct {
+ 
+ 	// Requirement represents the single provider used for state storage.
+ 	// By parsing data into this field it can easily be passed to functions for provider download, which expect a providerreqs.Requirements argument.
+-	Requirement map[addrs.Provider]providerreqs.VersionConstraints
++	Requirement providerreqs.Requirements
  }
--
--var _ = __workflow_refactor_compile_break__
-diff --git b/internal/configs/state_store.go a/internal/configs/state_store.go
-index 24c365776..aab1bad87 100644
---- b/internal/configs/state_store.go
-+++ a/internal/configs/state_store.go
-@@ -366,5 +366,3 @@ func (b *StateStore) Hash(stateStoreSchema *configschema.Block, providerSchema *
- 	})
- 	return toHash.Hash(), diags
- }
--
--var _ = __workflow_refactor_compile_break__
+ 
+ // StateMigrationFile represents a single state migration file within a configuration directory.

@@ -1,15 +1,9 @@
-# Baseline V5 compile-only code-review correction task
+# Correct featuring-token selection in ftintitle
 
-The affected component contains a partial code-review correction change that no longer compiles. A proposed change is already present in the working tree; correct it rather than merely describing the problem.
+Review and correct the proposed featuring-token change already present in the working tree. The first split pass must recognize only explicit featuring markers such as `ft`, `feat`, and `featuring`; generic artist separators such as `&` belong only to the later artist fallback.
 
-Find the affected production code, inspect relevant definitions and usages, and restore compilation. Search and inspect the repository as needed. Choose the smallest reasonable repair, but do not assume an exact source shape is required. Do not modify tests, generated files, dependency locks, or evaluation controls.
+Make the correction in code, preserve custom featuring words, and keep title handling from splitting on generic artist separators.
 
-Compilation is the only acceptance gate. Unit-test results, style, behavioral fidelity, and source-review quality are diagnostics only and do not determine pass/fail.
+Implement the task completely and correctly. Search and inspect the repository as needed, including related definitions and call sites. Choose the smallest coherent repair, run relevant existing tests and checks when practical, and preserve earlier task work in the persistent checkout.
 
-Use this command to check the affected component:
-
-```bash
-uv run --offline --frozen python -m py_compile beetsplug/ftintitle.py beetsplug/duplicates.py
-```
-
-Stop when the command exits 0. Do not run network-dependent commands.
+Do not modify tests, generated files, dependency locks, or evaluation controls. Do not use network-dependent commands.

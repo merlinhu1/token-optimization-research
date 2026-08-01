@@ -1,22 +1,13 @@
 diff --git b/beets/dbcore/db.py a/beets/dbcore/db.py
-index 2af66318..78c44323 100755
+index ff57aaf92b89b389840fe4255445d098e50c3e90..78c443239ba20cec5f8cd2bfb462c906c7dda625 100755
 --- b/beets/dbcore/db.py
 +++ a/beets/dbcore/db.py
-@@ -1,6 +1,3 @@
--def __workflow_refactor_compile_break__(:
--    pass
--
- """The central Model and Database constructs for DBCore."""
+@@ -189,7 +189,7 @@ class LazyDict(UserDict[str, Any]):
  
- from __future__ import annotations
-diff --git b/beets/dbcore/query.py a/beets/dbcore/query.py
-index 936c0bc8..d480b015 100644
---- b/beets/dbcore/query.py
-+++ a/beets/dbcore/query.py
-@@ -1,6 +1,3 @@
--def __workflow_refactor_compile_break__(:
--    pass
--
- """The Query type hierarchy for DBCore."""
+     def __iter__(self) -> Iterator[str]:
+         """Iterate over the available field names (excluding computed fields)."""
+-        return (key for key in self._all_keys)
++        return iter(self._all_keys)
  
- from __future__ import annotations
+     def __len__(self) -> int:
+         return len(self._all_keys)

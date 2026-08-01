@@ -1,20 +1,19 @@
-diff --git a/lib/reply.js b/lib/reply.js
-index 66f5c8d2..2288d198 100644
---- a/lib/reply.js
-+++ b/lib/reply.js
-@@ -1,4 +1,5 @@
- 'use strict'
-+const __workflow_feature_compile_break = ;
- 
- const eos = require('node:stream').finished
- 
 diff --git a/lib/request.js b/lib/request.js
-index ebf686ca..36fde612 100644
+index ebf686ca5620847ff4de2ee22a5a80fb4c67ea60..13b308559b46c6fb3a5543e4583cbefdb636c784 100644
 --- a/lib/request.js
 +++ b/lib/request.js
-@@ -1,4 +1,5 @@
- 'use strict'
-+const __workflow_feature_compile_break = ;
- 
- const proxyAddr = require('@fastify/proxy-addr')
- const {
+@@ -284,14 +284,6 @@ Object.defineProperties(Request.prototype, {
+       this.additionalHeaders = headers
+     }
+   },
+-  mediaType: {
+-    get () {
+-      if (!this[kRequestContentType] && this.headers['content-type'] !== undefined) {
+-        this[kRequestContentType] = ContentType.from(this.headers['content-type'])
+-      }
+-      return this[kRequestContentType]?.mediaType
+-    }
+-  },
+   getValidationFunction: {
+     value: function (httpPartOrSchema) {
+       if (typeof httpPartOrSchema === 'string') {

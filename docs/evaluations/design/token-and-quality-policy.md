@@ -49,7 +49,7 @@ A positive artifact reduction ratio is not sufficient for a positive workflow re
 
 ## Structured task outcomes
 
-Every controller verifier runs against the final cumulative repository, regardless of earlier failures. The active Baseline V5 generation exposes one affected-component compile command per task, injects no acceptance-test assets, and runs one project-wide compile command after all three task verifiers. Per-task component compilation and final project compilation are the sole pass/fail gates; tests, behavior, style, and source-review quality are diagnostics only. Historical Baseline V2/V3/V4 assertions remain immutable evidence for their executed protocols. Record for each task:
+Every controller verifier runs against the final cumulative repository, regardless of earlier failures. The active Baseline V5 generation keeps one affected-component compile command per task and one final project-wide compile command controller-only and injects no acceptance-test assets. Per-task component compilation and final project compilation are the sole internal pass/fail gates; tests, behavior, style, and source-review quality are diagnostics only. Historical Baseline V2/V3/V4 assertions remain immutable evidence for their executed protocols. Record for each task:
 
 - `task_id` and `order`;
 - agent operational exit and declared-completion state;
@@ -63,9 +63,9 @@ Every controller verifier runs against the final cumulative repository, regardle
 
 The research objective is provider-reported workflow token usage under fair, disclosed software-engineering tasks. An operationally complete, integrity-valid provider run is eligible regardless of whether the sampled model passes the controller verifiers.
 
-Baseline V5 prompts describe the affected component and compile gate without disclosing an exact edit recipe. Normal repository search and inspection are allowed. The same prompt and compile command must be used for compatible baseline and treatment sessions and must not require or prefer treatment-tool invocation. Historical **Solution-directed task assistance** generations remain valid only for their frozen protocols.
+Baseline V5 prompts describe complete software-engineering objectives and expect the agent to implement them correctly through normal repository search, related-code inspection, and relevant validation. They do not disclose controller scoring or compile commands. Compatible baseline and treatment sessions must use identical prompt bytes and internal verifier commands and must not require or prefer treatment-tool invocation. Historical **Solution-directed task assistance** generations remain valid only for their frozen protocols.
 
-The Baseline V5 verifier enforces only the disclosed affected-component compile commands plus the frozen project-wide compile command after task 3. Unit tests, behavioral fidelity, style, maintainability, and source review may still be recorded, but they are diagnostics and cannot change task pass/fail or select which provider-token sample counts.
+The Baseline V5 verifier internally enforces affected-component compilation plus the frozen project-wide compile command after task 3. Unit tests, behavioral fidelity, style, maintainability, and source review may still be recorded, but they are diagnostics and cannot change task pass/fail or select which provider-token sample counts. This internal quality-assessment policy must not be presented as an instruction to the agent.
 
 Repair prompt/verifier/fixture mismatches in the sole v0 contract. Mark runs produced by an invalid fixture `evaluation_validity: invalid-fixture` and exclude them. Never replace an otherwise valid run merely because model output failed or received a low review score.
 
