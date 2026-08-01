@@ -2620,9 +2620,16 @@ def claude_env(
     return env
 
 
-def apply_model_network_isolation(env: dict[str, str]) -> None:
-    """Route Codex shell commands through the image's seccomp wrapper."""
+def apply_model_network_isolation(env: dict[str, str], *, prepend_denied_shell_to_path: bool = True) -> None:
+    """Route model shell commands through the image's seccomp wrapper.
+
+    Claude Code uses PATH for part of its own runtime initialization and provider
+    path. Keep its explicit SHELL bound to the denied wrapper, but allow callers
+    to avoid shadowing every `bash` lookup for the parent process.
+    """
     env["SHELL"] = MODEL_NETWORK_DENIED_SHELL
+    if not prepend_denied_shell_to_path:
+        return
     path_entries = env.get("PATH", "").split(":")
     if MODEL_NETWORK_DENIED_BIN not in path_entries:
         env["PATH"] = ":".join([MODEL_NETWORK_DENIED_BIN, *path_entries])
