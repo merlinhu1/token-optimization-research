@@ -4034,11 +4034,52 @@ class ModelConditionLauncherContractTest(unittest.TestCase):
 class MatrixLifecycleContractTest(unittest.TestCase):
     def test_claude_lifecycle_v1_authority_opens_only_for_the_unoccupied_authorized_slot(self) -> None:
         registry = {"sessions": []}
-        with mock.patch.object(matrix.workflow, "find_pool_profile_record", return_value=None):
-            passed, reason = matrix.claude_baseline_run_gate(
-                registry, "fastify-lifecycle-sequence-v1", 0, ROOT
-            )
+        with tempfile.TemporaryDirectory() as tmp:
+            unoccupied = Path(tmp) / "no-receipt.json"
+            with (
+                mock.patch.object(matrix.workflow, "find_pool_profile_record", return_value=None),
+                mock.patch.object(matrix, "claude_lifecycle_v1_attempt_path", return_value=unoccupied),
+            ):
+                passed, reason = matrix.claude_baseline_run_gate(
+                    registry, "fastify-lifecycle-sequence-v1", 0, ROOT
+                )
         self.assertTrue(passed, reason)
+
+    def test_refreshes_lifecycle_v1_opencode_panel_after_registry_mutation(self) -> None:
+        with mock.patch.object(matrix.subprocess, "run") as run:
+            matrix.refresh_lifecycle_v1_opencode_sol_high_r1_panel(ROOT)
+        run.assert_called_once_with(
+            [
+                sys.executable,
+                "scripts/generate_current_evaluation_panel.py",
+                "--model-condition-id", "opencode-openai-gpt-5-6-sol-high",
+                "--replicate-index", "1",
+                "--date", "2026-08-02",
+                "--sequence-id", "fastify-lifecycle-sequence-v1",
+                "--sequence-id", "beets-lifecycle-sequence-v1",
+            ],
+            cwd=ROOT,
+            check=True,
+        )
+
+    def test_retained_claude_lifecycle_v1_recovery_rejects_parallel_or_wrong_plan(self) -> None:
+        summary = {
+            "plan": {
+                "sequences": list(matrix.CLAUDE_LIFECYCLE_V1_SEQUENCE_ORDER),
+                "max_parallel": 2,
+                "replicate_index": 0,
+                "model_condition": {
+                    "runtime_id": "claude-code",
+                    "id": "claude-code-openrouter-gpt-5-6-sol-high",
+                    "model": "gpt-5.6-sol",
+                    "reasoning_effort": "high",
+                },
+                "runner_args": [],
+            },
+            "lane_results": [],
+        }
+        with self.assertRaisesRegex(ValueError, "serialized"):
+            matrix.retained_claude_lifecycle_v1_recovery_lanes(summary, ROOT)
 
     def test_claude_lifecycle_v1_requires_serial_plan_before_lane_root(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
