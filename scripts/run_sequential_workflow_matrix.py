@@ -2082,6 +2082,7 @@ def refresh_lifecycle_v1_opencode_sol_high_r1_panel(root: Path = ROOT) -> None:
             "--model-condition-id", "opencode-openai-gpt-5-6-sol-high",
             "--replicate-index", "1",
             "--date", "2026-08-02",
+            "--output", "sources/evaluations/audits/lifecycle-v1-opencode-sol-high-r1-weighted-panel-results-20260802.json",
             "--sequence-id", "fastify-lifecycle-sequence-v1",
             "--sequence-id", "beets-lifecycle-sequence-v1",
         ],
