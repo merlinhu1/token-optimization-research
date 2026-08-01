@@ -2,29 +2,29 @@
 
 ## Evaluation contract
 
-This repository's sole evaluation portfolio is lifecycle v0:
+This repository's active evaluation portfolio is Lifecycle V1; lifecycle V0 is retained only as historical evidence:
 
 1. feature implementation;
 2. behavior-preserving refactor;
 3. code review/correction.
 
-Every active sequence, task ID, qualification file, and current execution contract must be v0. Do not add any non-v0 lane record or parallel compatibility surface. Accepted production records are immutable. Rejected or excluded records may be deleted only by explicit experiment-owner direction, together with their artifact roots and unreferenced protocols.
+Every active sequence, task ID, qualification file, and current execution contract must be V1. Do not create a parallel active V0 or other compatibility lane. Accepted production records are immutable historical evidence. Rejected or excluded records may be deleted only by explicit experiment-owner direction, together with their artifact roots and unreferenced protocols.
 
 ## Fixture design
 
 - Pin the upstream repository commit.
 - Build authentic tasks from upstream code/history.
 - Start patches must be independently applicable and compose without overlap.
-- Active Baseline V5 tasks seed authentic semantic regressions from completed upstream behavior in one or two production files. Seed patches must apply independently and compose cleanly; standalone and composite seeded compiler outcomes may be either 0 or 1 but must be recorded without infrastructure failure. Every cumulative repaired state and the fully repaired project-wide snapshot must compile.
-- Model-facing Baseline V5 prompts state the software objective and expected behavior, permit normal repository search and related-code inspection, expect a complete correct implementation, and forbid changes to tests, generated files, dependency locks, or evaluation controls. They must not disclose controller compile commands, evaluator scoring, or the internal acceptance policy.
+- Active Lifecycle V1 tasks seed authentic semantic regressions from completed upstream behavior in one or two production files. Seed patches must apply independently and compose cleanly; standalone and composite seeded compiler outcomes may be either 0 or 1 but must be recorded without infrastructure failure. Every cumulative repaired state and the fully repaired project-wide snapshot must compile.
+- Model-facing Lifecycle V1 prompts state the software objective and expected behavior, permit normal repository search and related-code inspection, expect a complete correct implementation, and forbid changes to tests, generated files, dependency locks, or evaluation controls. They must not disclose controller compile commands, evaluator scoring, or the internal acceptance policy.
 - Internally, compilation is the only active task/workflow acceptance gate. Unit tests, behavioral fidelity, style, maintainability, exact source shape, and source review are diagnostic only; that distinction belongs in controller metadata and documentation, never in the agent instruction.
-- Historical **Solution-directed task assistance** remains valid only for executed frozen V2/V3/V4 protocols; it must not be copied into active V5 prompts. Compatible baseline and treatment sessions must still receive identical task-assistance bytes and must not require or prefer treatment-tool invocation.
+- Historical **Solution-directed task assistance** remains valid only for executed frozen V2/V3/V4 protocols; it must not be copied into active Lifecycle V1 prompts. Compatible baseline and treatment sessions must still receive identical task-assistance bytes and must not require or prefer treatment-tool invocation.
 - Review tasks include the exact proposed patch under review.
 - Run all component compile verifiers and the project-wide compile verifier after the final prompt in one persistent workflow.
 
 ## Evidence and execution
 
-Qualification JSON is generated executable evidence; never hand-edit it. Production runs require provider-reported cumulative tokens and isolated baseline/treatment conditions. Baseline V5 component and project compilation gate task/workflow acceptance and treatment unlock, but do not gate provider-token sample retention. Broader verifier and source-review outcomes are diagnostic and must not trigger pass-selection reruns. Do not infer a token result from qualification readiness.
+Qualification JSON is generated executable evidence; never hand-edit it. Production runs require provider-reported cumulative tokens and isolated baseline/treatment conditions. Lifecycle V1 component and project compilation gate task/workflow acceptance and treatment unlock, but do not gate provider-token sample retention. Broader verifier and source-review outcomes are diagnostic and must not trigger pass-selection reruns. Do not infer a token result from qualification readiness.
 
 Lifecycle-v0 treatment execution is availability/natural-use only after faithful product installation. Install every tool-author-recommended normal integration surface—including its own hooks, wrappers, proxies, MCP exposure, product-authored instructions, rules, or skills. Evaluator-authored steering, quotas, and forced calls are forbidden, but evaluator neutrality must never remove or contradict the product's own guidance. Server-only, guidance-free, or otherwise reduced setups are explicit ablations rather than canonical product treatments. Zero explicit model-issued tool commands after faithful installation remains a valid observed outcome because the intervention may operate below or around the model-visible command surface. Preserve the first valid assignment sample and interpret mechanism evidence only from instrumentation appropriate to the declared integration.
 

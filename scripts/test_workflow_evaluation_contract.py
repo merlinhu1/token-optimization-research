@@ -39,6 +39,18 @@ from scripts import validate_repository
 SEQUENCE_ID = "terraform-lifecycle-sequence-v0"
 
 
+def active_lifecycle_v1_sequences(document: dict | None = None) -> list[dict]:
+    if document is None:
+        document = json.loads((ROOT / "data/workflow-task-sequences.json").read_text())
+    assert document is not None
+    return [
+        sequence
+        for sequence in document.get("sequences", [])
+        if sequence.get("status") == "active"
+        and sequence.get("task_family_generation") == "lifecycle-v1"
+    ]
+
+
 @contextmanager
 def published_unoccupied_probe_worktree():
     """Yield published bytes without mutable paid-attempt receipts, then remove them safely."""
@@ -52,9 +64,9 @@ def published_unoccupied_probe_worktree():
     registry_path = probe / "data/workflow-sessions.json"
     registry = json.loads(registry_path.read_text())
     current_sequences = {
-        "fastify-lifecycle-sequence-v0",
-        "beets-lifecycle-sequence-v0",
-        "terraform-lifecycle-sequence-v0",
+        "fastify-lifecycle-sequence-v1",
+        "beets-lifecycle-sequence-v1",
+        "terraform-lifecycle-sequence-v1",
     }
     removed = [
         session
@@ -340,7 +352,7 @@ class ActiveCampaignArchitectureTest(unittest.TestCase):
                 "code-review-correction",
             ]
             self.assertEqual([task["task_class"] for task in ordered], expected_classes)
-            self.assertTrue(all(task["id"].endswith("-v0") for task in ordered))
+            self.assertTrue(all(task["id"].endswith("-v1") for task in ordered))
             descriptor = runner.baseline_protocol_descriptor(sequence)
             self.assertEqual(descriptor["sequence_contract"], "feature-refactor-review")
             self.assertEqual([task["task_class"] for task in descriptor["tasks"]], expected_classes)
@@ -350,7 +362,7 @@ class ActiveCampaignArchitectureTest(unittest.TestCase):
             self.assertNotIn("review_patch_sha256", descriptor["tasks"][0])
 
     def test_review_patch_is_disclosed_only_with_the_review_prompt(self) -> None:
-        sequence = runner.load_sequence("beets-lifecycle-sequence-v0")
+        sequence = runner.load_sequence("beets-lifecycle-sequence-v1")
         review_task = sorted(sequence["tasks"], key=lambda task: task["order"])[2]
         source_dir = (ROOT / review_task["prompt_path"]).parent
         with tempfile.TemporaryDirectory() as tmp:
@@ -370,13 +382,13 @@ class ActiveCampaignArchitectureTest(unittest.TestCase):
         self.assertIn("diff --git", review)
 
     def test_refactor_qualification_uses_controller_compile_boundaries(self) -> None:
-        sequence = runner.load_sequence("beets-lifecycle-sequence-v0")
+        sequence = runner.load_sequence("beets-lifecycle-sequence-v1")
         qualification = json.loads((ROOT / sequence["qualification_path"]).read_text())
-        boundary = next(item for item in qualification["cumulative_boundaries"] if item["task_id"] == "beets-lifecycle-refactor-v0")
+        boundary = next(item for item in qualification["cumulative_boundaries"] if item["task_id"] == "beets-lifecycle-refactor-v1")
         self.assertNotIn("seeded_behavior_exit", boundary)
         self.assertNotIn("seeded_structure_exit", boundary)
         self.assertEqual(boundary["seeded_verifier_exit"], 0)
-        self.assertEqual(boundary["retained_verifier_exits"]["beets-lifecycle-refactor-v0"], 0)
+        self.assertEqual(boundary["retained_verifier_exits"]["beets-lifecycle-refactor-v1"], 0)
         self.assertEqual(qualification["acceptance_visibility"], "controller-only-compile-policy")
 
     def test_runbook_matches_active_lifecycle_contract(self) -> None:
@@ -473,12 +485,12 @@ class ActiveCampaignArchitectureTest(unittest.TestCase):
             runbook,
         )
 
-    def test_runbook_reports_v5_pilot_block_and_historical_treatment_corpus(self) -> None:
+    def test_runbook_reports_lifecycle_v1_pilot_block_and_preserved_historical_corpus(self) -> None:
         runbook = (ROOT / "docs/evaluations/operations/runbook.md").read_text()
-        self.assertIn("Completed non-default OpenCode treatment screen", runbook)
-        self.assertIn("`sources/evaluations/audits/opencode-tool-treatments-sol-high-r0-repaired-screen-results-20260730.json`", runbook)
+        self.assertTrue((ROOT / "sources/evaluations/audits/opencode-tool-treatments-sol-high-r0-repaired-screen-results-20260730.json").is_file())
+        self.assertIn("Historical profiles marked `historical-profile`", runbook)
         self.assertIn("Treatment protocol freezing, preparation, and execution are machine-blocked", runbook)
-        self.assertIn("baseline-v5-pilot-compile-only.json", runbook)
+        self.assertIn("lifecycle-v1-pilot-compile-only.json", runbook)
         self.assertIn("Earlier active-default baseline pools are retained but are not reusable for the current contract generation", runbook)
         self.assertIn("OpenCode pools may define substrate-matched treatment reuse", runbook)
 
@@ -500,9 +512,7 @@ class ActiveCampaignArchitectureTest(unittest.TestCase):
                 grouped.setdefault(key, set()).add(session["replicate_index"])
         sequences = json.loads((ROOT / "data/workflow-task-sequences.json").read_text())
         current_pools = set()
-        for sequence in sequences["sequences"]:
-            if sequence.get("task_family_generation") not in {"baseline-v2", "baseline-v3", "baseline-v4"}:
-                continue
+        for sequence in active_lifecycle_v1_sequences(sequences):
             protocol, _document = runner.current_baseline_v2_protocol(
                 sequence,
                 sequence.get("mistake_gate", {}),
@@ -665,7 +675,7 @@ class ActiveCampaignArchitectureTest(unittest.TestCase):
         self.assertFalse(any("minimum is 5" in error for error in errors), errors)
 
     def test_active_concealed_paths_are_unique_to_the_controller(self) -> None:
-        sequence = runner.load_sequence("beets-lifecycle-sequence-v0")
+        sequence = runner.load_sequence("beets-lifecycle-sequence-v1")
         qualification_record = json.loads((ROOT / sequence["qualification_path"]).read_text())
         self.assertTrue(qualification_record["fixed_snapshot_model_concealed_paths_absent"])
         for task in sequence["tasks"]:
@@ -675,7 +685,7 @@ class ActiveCampaignArchitectureTest(unittest.TestCase):
             self.assertTrue(task_record["fixed_snapshot_model_concealed_absent"], task_record)
 
     def test_feature_verifier_keeps_compilation_controller_only(self) -> None:
-        sequence = runner.load_sequence("beets-lifecycle-sequence-v0")
+        sequence = runner.load_sequence("beets-lifecycle-sequence-v1")
         feature = sorted(sequence["tasks"], key=lambda task: task["order"])[0]
         prompt = (ROOT / feature["prompt_path"]).read_text()
         verifier = (ROOT / feature["verifier_command"]).read_text()
@@ -851,12 +861,12 @@ class ActiveCampaignArchitectureTest(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, "historical-profile"):
                 runner.assert_profile_runnable(profile_id)
 
-    def test_future_candidate_profiles_fail_closed_without_current_v5_pilot(self) -> None:
+    def test_future_candidate_profiles_fail_closed_without_current_lifecycle_v1_pilot(self) -> None:
         profile_id = "integrated-token-savior-codex-product-v2"
         protocols = [json.loads(path.read_text()) for path in (ROOT / "sources/evaluations/protocols").glob("*.json")]
         for sequence_id in runner.active_sequence_ids():
             sequence = runner.load_sequence(sequence_id)
-            self.assertEqual(sequence["task_family_generation"], "baseline-v5")
+            self.assertEqual(sequence["task_family_generation"], "lifecycle-v1")
             self.assertFalse(any(
                 protocol.get("selected_execution", {}).get("descriptor", {}).get("selected_profile", {}).get("profile_id") == profile_id
                 and validate_repository.protocol_matches_active_sequence(protocol, sequence)
@@ -1505,8 +1515,8 @@ for line in sys.stdin:
             r"^replacement-lifecycle-sequence-v0-baseline-bare-codex-[a-f0-9]{12}$",
         )
 
-    def test_v5_protocol_id_ignores_noncausal_controller_provenance(self) -> None:
-        sequence = runner.load_sequence("fastify-lifecycle-sequence-v0")
+    def test_lifecycle_v1_protocol_id_ignores_noncausal_controller_provenance(self) -> None:
+        sequence = runner.load_sequence("fastify-lifecycle-sequence-v1")
         original_descriptor = runner.baseline_protocol_descriptor(sequence)
         original_execution = runner.execution_condition_descriptor(sequence, "baseline-bare-codex", timeout_seconds_per_task=3600)
         original = runner.canonical_protocol_id(sequence, "baseline-bare-codex", baseline_descriptor=original_descriptor, selected_execution=original_execution)
@@ -1806,9 +1816,9 @@ class VerifierContractTest(unittest.TestCase):
         self.assertEqual(script.count(runner.TASK_VERIFIER_RESULT_PREFIX), 3)
         self.assertGreater(script.index('exit "$status"'), script.rfind(runner.TASK_VERIFIER_RESULT_PREFIX))
 
-    def test_v5_task_verifiers_resolve_project_repo_without_caller_environment(self) -> None:
+    def test_lifecycle_v1_task_verifiers_resolve_project_repo_without_caller_environment(self) -> None:
         document = json.loads((ROOT / "data/workflow-task-sequences.json").read_text())
-        tasks = [task for sequence in document["sequences"] if sequence.get("task_family_generation") == "baseline-v5" for task in sequence["tasks"]]
+        tasks = [task for sequence in document["sequences"] if sequence.get("task_family_generation") == "lifecycle-v1" for task in sequence["tasks"]]
         self.assertEqual(len(tasks), 9)
         for task in tasks:
             verifier = (ROOT / task["verifier_command"]).read_text()
@@ -2424,32 +2434,32 @@ class ManifestAndProtocolContractTest(unittest.TestCase):
         self.assertEqual(
             runner.active_sequence_ids(),
             [
-                "fastify-lifecycle-sequence-v0",
-                "beets-lifecycle-sequence-v0",
-                "terraform-lifecycle-sequence-v0",
+                "fastify-lifecycle-sequence-v1",
+                "beets-lifecycle-sequence-v1",
+                "terraform-lifecycle-sequence-v1",
             ],
         )
-        sequence = runner.load_sequence("beets-lifecycle-sequence-v0")
+        sequence = runner.load_sequence("beets-lifecycle-sequence-v1")
         self.assertEqual(
             [task["id"] for task in sequence["tasks"]],
             [
-                "beets-lifecycle-feature-v0",
-                "beets-lifecycle-refactor-v0",
-                "beets-lifecycle-review-v0",
+                "beets-lifecycle-feature-v1",
+                "beets-lifecycle-refactor-v1",
+                "beets-lifecycle-review-v1",
             ],
         )
         self.assertEqual([task["order"] for task in sequence["tasks"]], [1, 2, 3])
 
     def test_active_sequences_bind_current_qualifications(self) -> None:
-        sequence = runner.load_sequence("beets-lifecycle-sequence-v0")
+        sequence = runner.load_sequence("beets-lifecycle-sequence-v1")
         self.assertRegex(
             Path(sequence["qualification_path"]).name,
-            r"^qualification-lifecycle-v0(?:-[a-z0-9-]+)?\.json$",
+            r"^qualification-lifecycle-v1\.json$",
         )
 
     def test_current_protocol_fingerprint_matches_runner(self) -> None:
-        sequence = runner.load_sequence("beets-lifecycle-sequence-v0")
-        protocol_path = current_protocol_path("beets-lifecycle-sequence-v0")
+        sequence = runner.load_sequence("beets-lifecycle-sequence-v1")
+        protocol_path = current_protocol_path("beets-lifecycle-sequence-v1")
         protocol = json.loads(protocol_path.read_text())
         descriptor = protocol["baseline_pool"]["descriptor"]
         expected = runner.baseline_protocol_fingerprint_from_descriptor(descriptor)
@@ -3649,13 +3659,13 @@ class MatrixLifecycleContractTest(unittest.TestCase):
             )
             self.assertTrue((destination / "sources/evaluations/audits/retained-audit.json").is_file())
 
-    def test_v5_replication_rejects_before_parallel_plan_or_lane_root(self) -> None:
+    def test_lifecycle_v1_replication_rejects_before_parallel_plan_or_lane_root(self) -> None:
         with published_unoccupied_probe_worktree() as probe:
             result = subprocess.run(
                 [
                     sys.executable,
                     "scripts/run_sequential_workflow_matrix.py",
-                    "beets-lifecycle-sequence-v0",
+                    "beets-lifecycle-sequence-v1",
                     "--replicate-index", "1",
                     "--max-parallel", "3",
                     "--workflow-model-condition-id", "codex-openai-gpt-5-6-sol-high",
@@ -3669,7 +3679,7 @@ class MatrixLifecycleContractTest(unittest.TestCase):
                 check=False,
             )
         self.assertNotEqual(result.returncode, 0)
-        self.assertIn("Baseline V5 replicate 1 requires explicit authority", result.stderr + result.stdout)
+        self.assertIn("Lifecycle V1 replicate 1 requires explicit authority", result.stderr + result.stdout)
 
     def test_paid_launch_checkout_gate_requires_clean_published_head(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
@@ -4704,7 +4714,7 @@ class CorrectionContractTest(unittest.TestCase):
         self.assertLess(audit, validate)
 
 
-class BaselineV5CompileOnlyContractTest(unittest.TestCase):
+class LifecycleV1CompileOnlyContractTest(unittest.TestCase):
     def test_internal_compile_policy_is_not_model_facing(self) -> None:
         document = json.loads((ROOT / "data/workflow-task-sequences.json").read_text())
         sequences = [item for item in document["sequences"] if item["status"] == "active"]
@@ -4738,7 +4748,7 @@ class BaselineV5CompileOnlyContractTest(unittest.TestCase):
         sequences = [item for item in document["sequences"] if item["status"] == "active"]
         self.assertEqual(len(sequences), 3)
         for sequence in sequences:
-            self.assertEqual(sequence["task_family_generation"], "baseline-v5")
+            self.assertEqual(sequence["task_family_generation"], "lifecycle-v1")
             self.assertEqual(sequence["acceptance_design"], "compile-only")
             self.assertEqual(
                 sequence["acceptance_policy"],
@@ -4785,7 +4795,7 @@ class BaselineV5CompileOnlyContractTest(unittest.TestCase):
                 self.assertGreaterEqual(len(task["expected_changed_paths"]), 1)
                 self.assertLessEqual(len(task["expected_changed_paths"]), 2)
                 self.assertFalse((task_dir / "controller-visible").exists())
-                self.assertIn("Controller-only Baseline V5 compilation assessment", verifier)
+                self.assertIn("Controller-only Lifecycle V1 compilation assessment", verifier)
 
                 production_paths = [
                     path
@@ -4799,7 +4809,7 @@ class BaselineV5CompileOnlyContractTest(unittest.TestCase):
                 self.assertLessEqual(len(production_paths), 2)
 
     def test_project_compile_result_is_structured_and_fail_closed(self) -> None:
-        sequence = runner.load_sequence("fastify-lifecycle-sequence-v0")
+        sequence = runner.load_sequence("fastify-lifecycle-sequence-v1")
         with tempfile.TemporaryDirectory() as tmp:
             output = Path(tmp) / "final-verifier-output.txt"
             output.write_text(f"{runner.PROJECT_COMPILE_RESULT_PREFIX}\t0\n")
@@ -4810,15 +4820,41 @@ class BaselineV5CompileOnlyContractTest(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, "exactly one project-wide compile outcome"):
                 runner.parse_project_compile_result(sequence, output)
 
+    def test_provider_free_matrix_dry_run_resolves_the_current_lifecycle_v1_protocol(self) -> None:
+        result = subprocess.run(
+            [
+                sys.executable,
+                "scripts/run_sequential_workflow_matrix.py",
+                "fastify-lifecycle-sequence-v1",
+                "--workflow-model-condition-id", "codex-openai-gpt-5-6-sol-high",
+                "--workflow-model", "gpt-5.6-sol",
+                "--workflow-reasoning-effort", "high",
+                "--prepare-only",
+                "--dry-run",
+            ],
+            cwd=ROOT,
+            text=True,
+            capture_output=True,
+            check=False,
+        )
+        self.assertEqual(result.returncode, 0, result.stderr)
+        plan = json.loads(result.stdout)
+        self.assertEqual(plan["jobs"][0]["sequence_id"], "fastify-lifecycle-sequence-v1")
+        self.assertTrue(
+            plan["jobs"][0]["protocol"].startswith(
+                "sources/evaluations/protocols/fastify-lifecycle-sequence-v1-baseline-bare-codex-"
+            )
+        )
+
 
 class BaselineV3LowComplexityContractTest(unittest.TestCase):
-    def test_active_sequences_bind_v5_compile_only_generation_contracts(self) -> None:
+    def test_active_sequences_bind_lifecycle_v1_compile_only_generation_contracts(self) -> None:
         document = json.loads((ROOT / "data/workflow-task-sequences.json").read_text())
         active = [sequence for sequence in document["sequences"] if sequence["status"] == "active"]
         self.assertEqual(len(active), 3)
         for sequence in active:
-            self.assertEqual(sequence["task_family_generation"], "baseline-v5")
-            self.assertEqual(Path(sequence["qualification_path"]).name, "qualification-lifecycle-v0-baseline-v5.json")
+            self.assertEqual(sequence["task_family_generation"], "lifecycle-v1")
+            self.assertEqual(Path(sequence["qualification_path"]).name, "qualification-lifecycle-v1.json")
             self.assertEqual(sequence["acceptance_design"], "compile-only")
             gate = sequence["mistake_gate"]
             self.assertEqual(gate["designated_model_condition"], "codex-openai-gpt-5-6-sol-high")
@@ -4826,15 +4862,15 @@ class BaselineV3LowComplexityContractTest(unittest.TestCase):
             self.assertIs(gate["quality_diagnostics_gate"], False)
             self.assertEqual(gate["status"], "provider-pilot-required")
             for task in sequence["tasks"]:
-                self.assertIn("/baseline-v5/", task["prompt_path"])
+                self.assertIn("/lifecycle-v1/", task["prompt_path"])
                 self.assertEqual(task["acceptance_visibility"], "controller-only-compile-policy")
                 self.assertEqual(task["model_visible_acceptance_asset_paths"], [])
                 self.assertEqual(task["model_concealed_paths"], [])
                 self.assertEqual(task["model_visible_validation_anchors"], [])
 
-    def test_v5_prompts_bind_normal_engineering_objectives(self) -> None:
+    def test_lifecycle_v1_prompts_bind_normal_engineering_objectives(self) -> None:
         document = json.loads((ROOT / "data/workflow-task-sequences.json").read_text())
-        for sequence in document["sequences"]:
+        for sequence in active_lifecycle_v1_sequences(document):
             for task in sequence["tasks"]:
                 prompt = (ROOT / task["prompt_path"]).read_text()
                 verifier = (ROOT / task["verifier_command"]).read_text()
@@ -4855,7 +4891,7 @@ class BaselineV3LowComplexityContractTest(unittest.TestCase):
             item["id"]: item
             for item in json.loads((ROOT / "data/repository-fixtures.json").read_text())["fixtures"]
         }
-        for sequence in document["sequences"]:
+        for sequence in active_lifecycle_v1_sequences(document):
             fixture = fixtures[sequence["fixture_id"]]
             commit = fixture["snapshot"]["commit"]
             self.assertEqual(sequence["initial_snapshot"]["commit"], commit)
@@ -4866,11 +4902,11 @@ class BaselineV3LowComplexityContractTest(unittest.TestCase):
                     self.assertEqual(command_key, "reset", (sequence["id"], command_key))
                     self.assertIn(Path(fixture["setup"]["command"]).name, script_text)
 
-    def test_generated_runbook_matches_v5_pilot_authorization(self) -> None:
+    def test_generated_runbook_matches_lifecycle_v1_pilot_authorization(self) -> None:
         runbook = (ROOT / "docs/evaluations/operations/runbook.md").read_text()
         document = json.loads((ROOT / "data/workflow-task-sequences.json").read_text())
         flags = "--workflow-model-condition-id codex-openai-gpt-5-6-sol-high --workflow-model gpt-5.6-sol --workflow-reasoning-effort high"
-        for sequence in document["sequences"]:
+        for sequence in active_lifecycle_v1_sequences(document):
             prepare = f"python3 scripts/run_sequential_workflow_matrix.py {sequence['id']} {flags} --prepare-only"
             paid = f"python3 scripts/run_sequential_workflow_matrix.py {sequence['id']} {flags}"
             self.assertIn(prepare, runbook)
@@ -4880,9 +4916,9 @@ class BaselineV3LowComplexityContractTest(unittest.TestCase):
             self.assertIn("not authorized", reason)
         self.assertIn("Paid pilot execution is not authorized", runbook)
 
-    def test_provider_free_v5_qualifications_pass_every_required_boundary(self) -> None:
+    def test_provider_free_lifecycle_v1_qualifications_pass_every_required_boundary(self) -> None:
         document = json.loads((ROOT / "data/workflow-task-sequences.json").read_text())
-        for sequence in document["sequences"]:
+        for sequence in active_lifecycle_v1_sequences(document):
             qualification = json.loads((ROOT / sequence["qualification_path"]).read_text())
             for key in (
                 "composite_seed_merge_zero",
@@ -5275,12 +5311,12 @@ class BaselineV3LowComplexityContractTest(unittest.TestCase):
             self.assertFalse((lane_dir / "rejected-evidence/internal-session").exists())
             matrix.CLEANUP_PROHIBITED_LANE_DIRS.discard(lane_dir.resolve())
 
-    def test_v5_authorization_validator_rejects_noninteger_schema(self) -> None:
-        source = ROOT / "sources/evaluations/audits/baseline-v5-task-family-qualification-20260801.json"
+    def test_lifecycle_v1_authorization_validator_rejects_noninteger_schema(self) -> None:
+        source = ROOT / "sources/evaluations/audits/lifecycle-v1-task-family-qualification-20260801.json"
         with tempfile.TemporaryDirectory() as tmp:
             temp_root = Path(tmp); destination = temp_root / source.relative_to(ROOT); destination.parent.mkdir(parents=True); audit = json.loads(source.read_text()); audit["schema_version"] = False; destination.write_text(json.dumps(audit))
             errors: list[str] = []
-            with mock.patch.object(validate_repository, "ROOT", temp_root): validate_repository.validate_baseline_v5_authorization(errors)
+            with mock.patch.object(validate_repository, "ROOT", temp_root): validate_repository.validate_lifecycle_v1_authorization(errors)
             self.assertTrue(any("deny provider spend" in error for error in errors), errors)
 
     def test_v3_qualification_numeric_evidence_rejects_non_integer_mutations(self) -> None:
@@ -5678,7 +5714,7 @@ class BaselineV3LowComplexityContractTest(unittest.TestCase):
         self.assertEqual(env["TMPDIR"], "/tmp/unit-lane")
 
     def test_direct_current_replication_rejects_invalid_authority_before_lock(self) -> None:
-        sequence = runner.load_sequence("beets-lifecycle-sequence-v0")
+        sequence = runner.load_sequence("beets-lifecycle-sequence-v1")
         args = argparse.Namespace(
             prepare_only=False,
             profile_id="baseline-bare-codex",
@@ -5694,7 +5730,7 @@ class BaselineV3LowComplexityContractTest(unittest.TestCase):
         locked.assert_not_called()
 
     def test_direct_current_replication_rejects_unpublished_checkout_before_lock(self) -> None:
-        sequence = runner.load_sequence("beets-lifecycle-sequence-v0")
+        sequence = runner.load_sequence("beets-lifecycle-sequence-v1")
         args = argparse.Namespace(
             prepare_only=False,
             profile_id="baseline-bare-codex",
@@ -5714,7 +5750,7 @@ class BaselineV3LowComplexityContractTest(unittest.TestCase):
         locked.assert_not_called()
 
     def test_prelocked_standalone_cannot_bypass_published_checkout_gate(self) -> None:
-        sequence = runner.load_sequence("beets-lifecycle-sequence-v0")
+        sequence = runner.load_sequence("beets-lifecycle-sequence-v1")
         args = argparse.Namespace(
             prepare_only=False,
             profile_id="baseline-bare-codex",
@@ -5750,25 +5786,25 @@ class BaselineV3LowComplexityContractTest(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, "requires explicit authority"): runner.run_one(args)
         acquire_lock.assert_not_called(); locked.assert_not_called()
 
-    def test_direct_current_baseline_rejects_unauthorized_v5_pilot_before_lock(self) -> None:
-        sequence = runner.load_sequence("beets-lifecycle-sequence-v0")
+    def test_direct_current_baseline_rejects_unauthorized_lifecycle_v1_pilot_before_lock(self) -> None:
+        sequence = runner.load_sequence("beets-lifecycle-sequence-v1")
         args = argparse.Namespace(prepare_only=False, profile_id="baseline-bare-codex", sequence_id=sequence["id"], replicate_index=0)
         with mock.patch.object(runner, "load_sequence", return_value=sequence), mock.patch.object(runner, "acquire_provider_production_lock") as acquire_lock, mock.patch.object(runner, "_run_one_locked") as locked:
             with self.assertRaisesRegex(ValueError, "not authorized"): runner.run_one(args)
         acquire_lock.assert_not_called(); locked.assert_not_called()
 
-    def test_matrix_current_baseline_rejects_unauthorized_v5_pilot_before_lane_root(self) -> None:
+    def test_matrix_current_baseline_rejects_unauthorized_lifecycle_v1_pilot_before_lane_root(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             lane_root = Path(tmp) / "lanes"
-            with mock.patch.object(matrix, "controller_validation_python", return_value=sys.executable), mock.patch.object(matrix.workflow, "baseline_v2_pilot_run_gate", return_value=(False, "paid Baseline V5 pilot execution is not authorized")), mock.patch.object(matrix, "acquire_production_lock") as acquire_lock, mock.patch.object(matrix.workflow, "reserve_baseline_pilot_attempt") as reserve_attempt, mock.patch.object(matrix, "run_flow_lane") as run_lane:
+            with mock.patch.object(matrix, "controller_validation_python", return_value=sys.executable), mock.patch.object(matrix.workflow, "baseline_v2_pilot_run_gate", return_value=(False, "paid Lifecycle V1 pilot execution is not authorized")), mock.patch.object(matrix, "acquire_production_lock") as acquire_lock, mock.patch.object(matrix.workflow, "reserve_baseline_pilot_attempt") as reserve_attempt, mock.patch.object(matrix, "run_flow_lane") as run_lane:
                 with self.assertRaisesRegex(ValueError, "not authorized"):
-                    matrix.main(["beets-lifecycle-sequence-v0", "--replicate-index", "0", "--lane-root", str(lane_root)])
+                    matrix.main(["beets-lifecycle-sequence-v1", "--replicate-index", "0", "--lane-root", str(lane_root)])
             self.assertFalse(lane_root.exists()); acquire_lock.assert_not_called(); reserve_attempt.assert_not_called(); run_lane.assert_not_called()
 
-    def test_retired_beets_r3_authority_does_not_authorize_v5(self) -> None:
+    def test_retired_beets_r3_authority_does_not_authorize_lifecycle_v1(self) -> None:
         self.assertTrue((ROOT / runner.BEETS_R3_REPLACEMENT_AUTHORITY_REL).is_file())
-        sequence = runner.load_sequence("beets-lifecycle-sequence-v0")
-        with self.assertRaisesRegex(ValueError, "Baseline V5 replicate 3 requires explicit authority"): runner.baseline_replication_binding(sequence, 3, ROOT)
+        sequence = runner.load_sequence("beets-lifecycle-sequence-v1")
+        with self.assertRaisesRegex(ValueError, "Lifecycle V1 replicate 3 requires explicit authority"): runner.baseline_replication_binding(sequence, 3, ROOT)
 
     def test_strict_replication_authority_rejects_every_decision_field_mutation(self) -> None:
         source_authority = ROOT / runner.BASELINE_REPLICATION_AUTHORITY_REL
@@ -5816,10 +5852,7 @@ class BaselineV3LowComplexityContractTest(unittest.TestCase):
     def test_beets_r3_replacement_authority_rejects_scope_budget_and_binding_mutation(self) -> None:
         source_authority = ROOT / runner.BEETS_R3_REPLACEMENT_AUTHORITY_REL
         original = json.loads(source_authority.read_text())
-        beets = runner.load_sequence("beets-lifecycle-sequence-v0")
-        frozen_identity, frozen_protocol = runner.current_baseline_v2_protocol(
-            beets, beets["mistake_gate"], ROOT
-        )
+        frozen_identity, frozen_protocol = {}, {}
         mutations = {
             "owner": lambda doc: doc.__setitem__("authorized_by_owner_message_id", "wrong"),
             "sequence": lambda doc: doc.__setitem__("sequence_order", ["fastify-lifecycle-sequence-v0"]),
@@ -5858,14 +5891,14 @@ class BaselineV3LowComplexityContractTest(unittest.TestCase):
                     ):
                         runner.load_beets_r3_replacement_authority(root)
 
-    def test_real_matrix_v5_rejects_replication_before_historical_authority_or_lane_root(self) -> None:
+    def test_real_matrix_lifecycle_v1_rejects_replication_before_historical_authority_or_lane_root(self) -> None:
         with published_unoccupied_probe_worktree() as probe, tempfile.TemporaryDirectory() as tmp:
             lane_root = Path(tmp) / "lanes"
             result = subprocess.run(
                 [
                     sys.executable,
                     "scripts/run_sequential_workflow_matrix.py",
-                    "beets-lifecycle-sequence-v0",
+                    "beets-lifecycle-sequence-v1",
                     "--replicate-index", "1",
                     "--max-parallel", "1",
                     "--workflow-model-condition-id", "codex-openai-gpt-5-6-sol-high",
@@ -5880,16 +5913,16 @@ class BaselineV3LowComplexityContractTest(unittest.TestCase):
                 check=False,
             )
             self.assertNotEqual(result.returncode, 0)
-            self.assertIn("Baseline V5 replicate 1 requires explicit authority", result.stderr + result.stdout)
+            self.assertIn("Lifecycle V1 replicate 1 requires explicit authority", result.stderr + result.stdout)
             self.assertFalse(lane_root.exists())
 
-    def test_v5_replication_rejects_before_unapproved_model_or_lane_root(self) -> None:
+    def test_lifecycle_v1_replication_rejects_before_unapproved_model_or_lane_root(self) -> None:
         with published_unoccupied_probe_worktree() as probe:
             result = subprocess.run(
                 [
                     sys.executable,
                     "scripts/run_sequential_workflow_matrix.py",
-                    "beets-lifecycle-sequence-v0",
+                    "beets-lifecycle-sequence-v1",
                     "--replicate-index", "1",
                     "--max-parallel", "1",
                     "--workflow-model-condition-id", "codex-openai-gpt-5-6-luna-xhigh",
@@ -5903,16 +5936,16 @@ class BaselineV3LowComplexityContractTest(unittest.TestCase):
                 check=False,
             )
         self.assertNotEqual(result.returncode, 0)
-        self.assertIn("Baseline V5 replicate 1 requires explicit authority", result.stderr + result.stdout)
+        self.assertIn("Lifecycle V1 replicate 1 requires explicit authority", result.stderr + result.stdout)
 
-    def test_retired_replication_authority_does_not_authorize_v5(self) -> None:
+    def test_retired_replication_authority_does_not_authorize_lifecycle_v1(self) -> None:
         self.assertTrue((ROOT / runner.BASELINE_REPLICATION_AUTHORITY_REL).is_file())
         for sequence_id in runner.active_sequence_ids():
             sequence = runner.load_sequence(sequence_id)
             for replicate_index in (1, 2, 3, 4):
                 with self.assertRaisesRegex(ValueError, "requires explicit authority"): runner.baseline_replication_binding(sequence, replicate_index, ROOT)
 
-    def test_v5_canonical_protocol_identity_ignores_noncausal_provenance_hashes(self) -> None:
+    def test_lifecycle_v1_canonical_protocol_identity_ignores_noncausal_provenance_hashes(self) -> None:
         for sequence_id in runner.active_sequence_ids():
             sequence = runner.load_sequence(sequence_id); descriptor = runner.baseline_protocol_descriptor(sequence); execution = runner.execution_condition_descriptor(sequence, "baseline-bare-codex"); mutated = copy.deepcopy(descriptor)
             for field in runner.NON_CAUSAL_PROTOCOL_PROVENANCE_FIELDS: mutated[field] = "f" * 64
@@ -5979,30 +6012,30 @@ class BaselineV3LowComplexityContractTest(unittest.TestCase):
                     baseline_run_gate=lambda _sequence: runner.baseline_v2_pilot_run_gate(sequence, authority),
                 )
 
-    def test_active_generation_gates_block_until_v5_compile_pilot(self) -> None:
+    def test_active_generation_gates_block_until_lifecycle_v1_compile_pilot(self) -> None:
         document = json.loads((ROOT / "data/workflow-task-sequences.json").read_text())
-        for sequence in document["sequences"]:
+        for sequence in active_lifecycle_v1_sequences(document):
             passed, reason = runner.baseline_v2_treatment_gate(sequence, ROOT)
             pilot_allowed, pilot_reason = runner.baseline_v2_pilot_run_gate(sequence, ROOT, 0)
             self.assertIs(passed, False)
             self.assertIn("pilot audit is absent", reason)
             self.assertIs(pilot_allowed, False)
             self.assertIn("not authorized", pilot_reason)
-            self.assertEqual(sequence["readiness_blockers"], ["provider-backed strongest-model compile-only Baseline V5 pilot is not authorized or executed"])
+            self.assertEqual(sequence["readiness_blockers"], ["provider-backed strongest-model compile-only Lifecycle V1 pilot is not authorized or executed"])
 
-    def test_workflow_authority_describes_v5_compile_only_pilot_gate(self) -> None:
+    def test_workflow_authority_describes_lifecycle_v1_compile_only_pilot_gate(self) -> None:
         document = json.loads((ROOT / "data/workflow-task-sequences.json").read_text())
-        self.assertIn("Baseline V5", document["description"])
+        self.assertIn("Lifecycle V1", document["description"])
         fixtures = {item["id"]: item for item in json.loads((ROOT / "data/repository-fixtures.json").read_text())["fixtures"]}
-        for sequence in document["sequences"]:
-            self.assertEqual(sequence["task_family_generation"], "baseline-v5")
+        for sequence in active_lifecycle_v1_sequences(document):
+            self.assertEqual(sequence["task_family_generation"], "lifecycle-v1")
             self.assertEqual(sequence["mistake_gate"]["status"], "provider-pilot-required")
             self.assertFalse(runner.baseline_v2_treatment_gate(sequence, ROOT)[0])
             fixture = fixtures[sequence["fixture_id"]]
-            self.assertEqual(fixture["current_task_family"]["generation"], "baseline-v5")
+            self.assertEqual(fixture["current_task_family"]["generation"], "lifecycle-v1")
             self.assertEqual(fixture["current_task_family"]["provider_pilot_status"], "required")
         for relative in ("docs/evaluations/design/token-and-quality-policy.md", "docs/evaluations/design/workflow-model.md", "docs/evaluations/operations/fixture-guide.md"):
-            self.assertIn("Baseline V5", (ROOT / relative).read_text(), relative)
+            self.assertIn("Lifecycle V1", (ROOT / relative).read_text(), relative)
 
     def test_v4_active_authorities_are_generation_consistent(self) -> None:
         sequences = json.loads((ROOT / "data/workflow-task-sequences.json").read_text())["sequences"]
@@ -6019,7 +6052,7 @@ class BaselineV3LowComplexityContractTest(unittest.TestCase):
             self.assertIn("Baseline V4", sequence["conversion_note"])
             self.assertIn("Baseline V3", sequence["conversion_note"])
             fixture = fixtures[sequence["fixture_id"]]
-            self.assertEqual(fixture["current_task_family"]["generation"], "baseline-v4")
+            self.assertEqual(fixture["current_task_family"]["generation"], "lifecycle-v1")
             self.assertIn("/baseline-v4/", fixture["prompt"]["path"])
             self.assertIn("Baseline V4", fixture["prompt"]["prompt_policy"])
             task_root = (ROOT / fixture["prompt"]["path"]).parents[2] / "tasks"
@@ -6033,12 +6066,7 @@ class BaselineV3LowComplexityContractTest(unittest.TestCase):
                 for lane in fixture["future_evaluation_lanes"]
                 if lane.get("status", "").startswith("blocked-baseline-")
             ]
-            treatment_ready, _reason = runner.baseline_v2_treatment_gate(sequence, ROOT)
-            if treatment_ready:
-                self.assertEqual(blocked, [])
-            else:
-                self.assertTrue(blocked)
-                self.assertEqual(set(blocked), {"blocked-baseline-v4-pilot"})
+            self.assertEqual(blocked, [])
         for path in (
             ROOT / "sources/evaluations/fixtures/medium/beetbox-beets/task-generations/baseline-v2/README.md",
             ROOT / "sources/evaluations/fixtures/large/hashicorp-terraform/task-generations/baseline-v2/README.md",
@@ -6058,9 +6086,9 @@ class BaselineV3LowComplexityContractTest(unittest.TestCase):
             self.assertIn("only by the generation label", text)
             self.assertIn("command blocks", text)
 
-    def test_v5_authorization_paths_are_repository_contained(self) -> None:
+    def test_lifecycle_v1_authorization_paths_are_repository_contained(self) -> None:
         sequence_doc = json.loads((ROOT / "data/workflow-task-sequences.json").read_text()); fixture_doc = json.loads((ROOT / "data/repository-fixtures.json").read_text()); mutated = copy.deepcopy(sequence_doc)
-        mutated["sequences"][0]["mistake_gate"]["pilot_authorization_path"] = "../external-authorization.json"
+        next(sequence for sequence in mutated["sequences"] if sequence["status"] == "active")["mistake_gate"]["pilot_authorization_path"] = "../external-authorization.json"
         errors: list[str] = []; validate_repository.validate_workflow_task_sequences(mutated, fixture_doc, errors)
         self.assertTrue(any("compile-only gate" in error for error in errors), errors)
 
@@ -6089,7 +6117,7 @@ class BaselineV3LowComplexityContractTest(unittest.TestCase):
         active_v4 = [
             sequence
             for sequence in json.loads((ROOT / "data/workflow-task-sequences.json").read_text())["sequences"]
-            if sequence.get("task_family_generation") == "baseline-v4"
+            if sequence.get("status") == "active" and sequence.get("task_family_generation") == "baseline-v4"
         ]
         self.assertIs(
             audit["treatment_unlocked"],
@@ -6179,8 +6207,8 @@ class BaselineV3LowComplexityContractTest(unittest.TestCase):
             self.assertEqual(lane_log["frozen_protocol"]["protocol_id"], executed["protocol_id"])
             self.assertEqual(lane_log["frozen_protocol"]["sha256"], executed["sha256"])
 
-    def test_current_v5_frozen_protocol_accepts_only_noncausal_provenance_drift(self) -> None:
-        sequence = runner.load_sequence("fastify-lifecycle-sequence-v0")
+    def test_current_lifecycle_v1_frozen_protocol_accepts_only_noncausal_provenance_drift(self) -> None:
+        sequence = runner.load_sequence("fastify-lifecycle-sequence-v1")
         identity, protocol = runner.current_baseline_v2_protocol(sequence, sequence["mistake_gate"], ROOT)
         self.assertTrue((ROOT / identity["path"]).is_file())
         descriptor = protocol["baseline_pool"]["descriptor"]
@@ -6202,7 +6230,7 @@ import run_codex_workflow_evaluation as runner
 import run_codex_workflow_model_condition as condition
 condition.configure_model_condition('codex-openai-gpt-5-6-sol-high', 'gpt-5.6-sol', 'high')
 document = json.loads((runner.ROOT / 'data/workflow-task-sequences.json').read_text())
-for sequence in document['sequences']:
+for sequence in [item for item in document['sequences'] if item['status'] == 'active']:
     identity, protocol = runner.current_baseline_v2_protocol(sequence, sequence['mistake_gate'], runner.ROOT)
     assert identity['protocol_id'] == protocol['protocol_id']
     assert identity['path'].endswith(identity['protocol_id'] + '.json')
@@ -6211,7 +6239,7 @@ for sequence in document['sequences']:
         assert 'verifier_assets_model_visible' not in isolation
         assert isolation['controller_verifier_scripts_and_canonical_copies_model_visible'] is False
         assert isolation['model_visible_acceptance_asset_paths'] == runner.sequence_model_visible_acceptance_paths(sequence)
-print(len(document['sequences']))
+print(len([item for item in document['sequences'] if item['status'] == 'active']))
 """
         result = subprocess.run(
             [sys.executable, "-c", script],
@@ -6229,7 +6257,7 @@ from pathlib import Path
 from scripts import run_codex_workflow_evaluation as runner
 from scripts import run_codex_workflow_model_condition as launcher
 launcher.configure_model_condition('codex-openai-gpt-5-6-sol-high', 'gpt-5.6-sol', 'high')
-sequence = runner.load_sequence('fastify-lifecycle-sequence-v0')
+sequence = runner.load_sequence('fastify-lifecycle-sequence-v1')
 identity, protocol = runner.current_baseline_v2_protocol(sequence, sequence['mistake_gate'], runner.ROOT)
 with tempfile.TemporaryDirectory(dir=runner.ROOT / 'sources/evaluations/protocols') as temp:
     fake_path = Path(temp) / 'arbitrarily-renamed-protocol.json'
@@ -6823,8 +6851,7 @@ with tempfile.TemporaryDirectory(dir=runner.ROOT / 'sources/evaluations/protocol
         self.assertEqual(jobs, [("unit-sequence-v0", "unit-treatment")])
 
     def test_direct_treatment_runner_checks_pilot_gate_before_protocol(self) -> None:
-        sequences = json.loads((ROOT / "data/workflow-task-sequences.json").read_text())["sequences"]
-        sequence = sequences[0]
+        sequence = active_lifecycle_v1_sequences()[0]
         args = mock.Mock(sequence_id=sequence["id"], profile_id="terminal-tokenjuice-codex-hook-v1", prepare_only=True)
         with (
             mock.patch.object(runner, "validate_default_model_condition"),
@@ -6836,8 +6863,7 @@ with tempfile.TemporaryDirectory(dir=runner.ROOT / 'sources/evaluations/protocol
             runner.run_one(args)
 
     def test_treatment_protocol_freeze_checks_pilot_gate_before_qualification(self) -> None:
-        sequences = json.loads((ROOT / "data/workflow-task-sequences.json").read_text())["sequences"]
-        sequence = sequences[0]
+        sequence = active_lifecycle_v1_sequences()[0]
         with (
             mock.patch.object(contract_refresh.runner, "validate_default_model_condition"),
             mock.patch.object(contract_refresh.runner, "assert_profile_runnable"),
@@ -6886,11 +6912,11 @@ with tempfile.TemporaryDirectory(dir=runner.ROOT / 'sources/evaluations/protocol
                     self.assertEqual(result.returncode, 1, (task["id"], result.stdout, result.stderr))
                     self.assertRegex(result.stderr, r"(?:differs from canonical bytes|acceptance test is missing)")
 
-    def test_provider_free_v5_qualification_records_compile_only_acceptance(self) -> None:
+    def test_provider_free_lifecycle_v1_qualification_records_compile_only_acceptance(self) -> None:
         document = json.loads((ROOT / "data/workflow-task-sequences.json").read_text())
-        for sequence in document["sequences"]:
+        for sequence in active_lifecycle_v1_sequences(document):
             record = json.loads((ROOT / sequence["qualification_path"]).read_text())
-            self.assertEqual(record["task_family_generation"], "baseline-v5")
+            self.assertEqual(record["task_family_generation"], "lifecycle-v1")
             self.assertEqual(record["acceptance_visibility"], "controller-only-compile-policy")
             self.assertIs(record["no_model_visible_acceptance_assets"], True)
             self.assertIs(record["controller_compile_policy_not_model_facing"], True)
@@ -6904,16 +6930,16 @@ with tempfile.TemporaryDirectory(dir=runner.ROOT / 'sources/evaluations/protocol
             for task in sequence["tasks"]:
                 self.assertEqual(task["model_visible_acceptance_asset_paths"], [])
 
-    def test_repository_validator_rejects_missing_v5_compile_declaration(self) -> None:
+    def test_repository_validator_rejects_missing_lifecycle_v1_compile_declaration(self) -> None:
         document = json.loads((ROOT / "data/workflow-task-sequences.json").read_text()); fixtures = json.loads((ROOT / "data/repository-fixtures.json").read_text())
-        document["sequences"][0]["tasks"][0]["compile_command"] = ""
+        next(sequence for sequence in document["sequences"] if sequence["status"] == "active")["tasks"][0]["compile_command"] = ""
         errors: list[str] = []; validate_repository.validate_workflow_task_sequences(document, fixtures, errors)
         self.assertTrue(any("compile command" in error for error in errors), errors)
 
-    def test_repository_validator_rejects_quality_gated_v5_acceptance(self) -> None:
+    def test_repository_validator_rejects_quality_gated_lifecycle_v1_acceptance(self) -> None:
         source = json.loads((ROOT / "data/workflow-task-sequences.json").read_text()); fixtures = json.loads((ROOT / "data/repository-fixtures.json").read_text())
         for field, value in (("compile_required", False), ("quality_diagnostics_gate", True)):
-            document = copy.deepcopy(source); document["sequences"][0]["mistake_gate"][field] = value
+            document = copy.deepcopy(source); next(sequence for sequence in document["sequences"] if sequence["status"] == "active")["mistake_gate"][field] = value
             errors: list[str] = []; validate_repository.validate_workflow_task_sequences(document, fixtures, errors)
             self.assertTrue(any("compile-only gate" in error for error in errors), (field, errors))
 
