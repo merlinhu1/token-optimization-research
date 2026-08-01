@@ -89,6 +89,7 @@ PROFILE_TOOL_CONFIG_OVERRIDES = {
     "terminal-headroom": "headroom-proxy-only",
     "terminal-tokenjuice-codex-hook-v1": "tokenjuice-codex-hook-v1",
     "terminal-rtk-codex-instructions-v1": "rtk-codex-instructions-v1",
+    "terminal-rtk-claude-code-hook-v1": "rtk-claude-code-hook-v1",
     "terminal-snip-codex-hook-v1": "snip-codex-hook-v1",
     "retrieval-graphify-codex-skill-v1": "graphify-codex-skill-v1",
     "retrieval-codegraph-codex-mcp-v1": "codegraph-codex-mcp-v1",
@@ -875,9 +876,8 @@ TOOL_CONFIGS: dict[str, dict[str, Any]] = {
         "allowed_terms": ["rtk"],
         "data_dir_name": "rtk",
         "executable": str(RTK_BIN),
-        "path_entries": [str(RTK_BIN.parent)],
+        "path_entries": [str(RTK_BIN.parent), "/opt"],
         "mounts": [str(RTK_BIN.parent)],
-        "binary_mount_target": "/usr/local/bin/rtk",
         "env": {"RTK_TELEMETRY": "0"},
         "preflight_command": ["rtk", "--version"],
     },
@@ -888,9 +888,8 @@ TOOL_CONFIGS: dict[str, dict[str, Any]] = {
         "allowed_terms": ["rtk"],
         "data_dir_name": "rtk-codex-instructions-v1",
         "executable": str(RTK_BIN),
-        "path_entries": [str(RTK_BIN.parent)],
+        "path_entries": [str(RTK_BIN.parent), "/opt"],
         "mounts": [str(RTK_BIN.parent)],
-        "binary_mount_target": "/usr/local/bin/rtk",
         "env": {"RTK_TELEMETRY": "0"},
         "host_integration": {
             "install_commands": [["rtk", "init", "--global", "--codex"]],
@@ -899,6 +898,36 @@ TOOL_CONFIGS: dict[str, dict[str, Any]] = {
         },
         "preflight_command": ["rtk", "--version"],
         "default_tool_state": "active-instruction-layer",
+    },
+    "rtk-claude-code-hook-v1": {
+        "display_name": "RTK Claude Code native hook and instruction policy v1",
+        "lane_name": "terminal-rtk-claude-code-hook-v1",
+        "surface": "claude-code-pre-tool-use-hook/terminal-output-compaction",
+        "allowed_terms": ["rtk"],
+        "data_dir_name": "rtk-claude-code-hook-v1",
+        "executable": str(RTK_BIN),
+        "path_entries": ["{codex_home}/runtime-bin", str(RTK_BIN.parent)],
+        "mounts": [str(RTK_BIN.parent)],
+        "env": {"RTK_TELEMETRY": "0"},
+        "claude_features": {"hooks": True},
+        "host_integration": {
+            "install_commands": [
+                [
+                    "/bin/sh",
+                    "-lc",
+                    f"mkdir -p {{codex_home}}/runtime-bin && cp {RTK_BIN} {{codex_home}}/runtime-bin/rtk && chmod 755 {{codex_home}}/runtime-bin/rtk && {{codex_home}}/runtime-bin/rtk init --global --auto-patch",
+                ],
+            ],
+            "verify_commands": [["{codex_home}/runtime-bin/rtk", "init", "--show"]],
+            "required_files": [
+                "{codex_home}/claude-config/settings.json",
+                "{codex_home}/claude-config/CLAUDE.md",
+                "{codex_home}/claude-config/RTK.md",
+            ],
+            "timeout_seconds": 120,
+        },
+        "preflight_command": ["rtk", "--version"],
+        "default_tool_state": "active-hook-and-instruction-layer",
     },
     "caveman": {
         "display_name": "Caveman",
@@ -2545,9 +2574,14 @@ def codex_env(codex_home: Path, *, containerized: bool = False, cfg: dict[str, A
     return env
 
 
-def claude_env(agent_home: Path, *, containerized: bool = False) -> dict[str, str]:
+def claude_env(
+    agent_home: Path,
+    *,
+    containerized: bool = False,
+    cfg: dict[str, Any] | None = None,
+) -> dict[str, str]:
     """Create isolated Claude Code HOME/XDG/config state for one lane."""
-    env = codex_env(agent_home, containerized=containerized)
+    env = codex_env(agent_home, containerized=containerized, cfg=cfg)
     if CLAUDE_OPENROUTER_ENV_FILE.is_file():
         for line in CLAUDE_OPENROUTER_ENV_FILE.read_text(errors="replace").splitlines():
             match = re.match(r"^\s*export\s+([A-Za-z_][A-Za-z0-9_]*)=(.*)\s*$", line)
@@ -2565,8 +2599,8 @@ def claude_env(agent_home: Path, *, containerized: bool = False) -> dict[str, st
     env.pop("CLAUDE_CODE_SIMPLE", None)
     env["CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC"] = "1"
     isolated_bin = agent_home / "runtime-bin"
+    isolated_bin.mkdir(parents=True, exist_ok=True)
     if not containerized:
-        isolated_bin.mkdir(parents=True, exist_ok=True)
         link = isolated_bin / "claude"
         if not link.exists():
             link.symlink_to(CLAUDE_HOST_EXECUTABLE)
@@ -3121,7 +3155,12 @@ def prepare_profile_integration(
     assert cfg is not None
     if integration.get("home_dot_codex_alias"):
         prepare_home_dot_codex_alias(codex_home)
-    env = codex_env(codex_home, containerized=backend == "docker", cfg=cfg)
+    runtime_id = str((record.get("agent") or {}).get("runtime_id") or "codex-cli")
+    env = (
+        claude_env(codex_home, containerized=backend == "docker", cfg=cfg)
+        if runtime_id == "claude-code"
+        else codex_env(codex_home, containerized=backend == "docker", cfg=cfg)
+    )
     env.update(tool_env_for_record(record, pid, codex_home))
     mounts = container_mounts_for_record(record, codex_home, include_repo=True, cfg=cfg)
     artifacts: list[str] = []
@@ -3196,13 +3235,17 @@ def prepare_profile_integration(
     }
     (run_dir / "tool-host-integration.json").write_text(json.dumps(result, indent=2) + "\n")
 
-    manifest_path = run_dir / "codex-home-manifest.json"
-    if manifest_path.is_file():
-        manifest = json.loads(manifest_path.read_text())
-        manifest["hooks_enabled"] = bool(cfg.get("codex_features", {}).get("hooks", False))
-        manifest["host_integration_prepared"] = passed
-        manifest["host_integration_receipt"] = str((run_dir / "tool-host-integration.json").relative_to(ROOT))
-        manifest_path.write_text(json.dumps(manifest, indent=2) + "\n")
+    for manifest_name in ("codex-home-manifest.json", "claude-code-home-manifest.json"):
+        manifest_path = run_dir / manifest_name
+        if manifest_path.is_file():
+            manifest = json.loads(manifest_path.read_text())
+            manifest["hooks_enabled"] = bool(
+                cfg.get("codex_features", {}).get("hooks", False)
+                or cfg.get("claude_features", {}).get("hooks", False)
+            )
+            manifest["host_integration_prepared"] = passed
+            manifest["host_integration_receipt"] = str((run_dir / "tool-host-integration.json").relative_to(ROOT))
+            manifest_path.write_text(json.dumps(manifest, indent=2) + "\n")
     return result
 
 
@@ -3325,11 +3368,12 @@ def preflight_claude_code(
     *,
     backend: str,
     docker_image: str,
+    cfg: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
     """Prove the normal Claude Code control surface without making a provider request."""
-    env = claude_env(claude_home, containerized=backend == "docker")
+    env = claude_env(claude_home, containerized=backend == "docker", cfg=cfg)
     apply_model_network_isolation(env)
-    mounts = container_mounts_for_record(record, claude_home, include_repo=True)
+    mounts = container_mounts_for_record(record, claude_home, include_repo=True, cfg=cfg)
     repo = Path(rel_or_abs(record["target"]["repository_path"]))
     instruction_destination = repo / "CLAUDE.md"
     instruction_manifest_path = run_dir / "claude-code-instruction-manifest.json"
@@ -3368,6 +3412,7 @@ def preflight_claude_code(
     version_text = version_path.read_text(errors="replace") if version_path.exists() else ""
     help_text = help_path.read_text(errors="replace") if help_path.exists() else ""
     required = ["--output-format", "stream-json", "--model", "--tools", "--resume"]
+    hooks_enabled = bool((cfg or {}).get("claude_features", {}).get("hooks", False))
     passed = instruction_passed and version.returncode == 0 and help_result.returncode == 0 and all(item in help_text for item in required)
     result = {
         "runtime_id": "claude-code",
@@ -3380,6 +3425,7 @@ def preflight_claude_code(
         "required_cli_surfaces": required,
         "missing_cli_surfaces": [item for item in required if item not in help_text],
         "normal_mode": True,
+        "hooks_enabled": hooks_enabled,
         "project_instruction_files": {
             "passed": instruction_passed,
             "source": "AGENTS.md",
@@ -3394,6 +3440,7 @@ def preflight_claude_code(
     (run_dir / "claude-code-effective-settings.json").write_text(json.dumps({
         "bare": False,
         "normal_mode": True,
+        "hooks_enabled": hooks_enabled,
         "permission_mode": "bypassPermissions",
         "tools": ["Bash", "Edit", "Read", "Grep", "Glob"],
         "mcp_config": [],

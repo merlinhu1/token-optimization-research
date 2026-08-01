@@ -91,6 +91,7 @@ SUPPORTED_WORKFLOW_TOOL_PROFILES = {
     "terminal-headroom": "headroom-proxy-only",
     "terminal-rtk": "rtk",
     "terminal-rtk-codex-instructions-v1": "rtk-codex-instructions-v1",
+    "terminal-rtk-claude-code-hook-v1": "rtk-claude-code-hook-v1",
     "terminal-snip": "snip",
     "terminal-snip-codex-hook-v1": "snip-codex-hook-v1",
     "terminal-lowfat": "lowfat",
@@ -4213,7 +4214,15 @@ def _run_one_locked(args: argparse.Namespace) -> dict[str, Any]:
     preflight: dict[str, Any] = {"passed": None, "skipped": True}
     if not args.skip_codex_preflight:
         preflight = (
-            fixture.preflight_claude_code(record, codex_home, profile_id, run_dir, backend="docker", docker_image=runtime_docker_image)
+            fixture.preflight_claude_code(
+                record,
+                codex_home,
+                profile_id,
+                run_dir,
+                backend="docker",
+                docker_image=runtime_docker_image,
+                cfg=cfg,
+            )
             if runtime_id == "claude-code"
             else fixture.preflight_codex(record, codex_home, profile_id, run_dir, backend="docker", docker_image=runtime_docker_image)
         )

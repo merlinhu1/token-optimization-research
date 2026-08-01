@@ -736,6 +736,7 @@ class ActiveCampaignArchitectureTest(unittest.TestCase):
         corrected = [
             "terminal-tokenjuice-codex-hook-v1",
             "terminal-rtk-codex-instructions-v1",
+            "terminal-rtk-claude-code-hook-v1",
             "terminal-snip-codex-hook-v1",
             "retrieval-graphify-codex-skill-v1",
             "retrieval-codegraph-codex-mcp-v1",
@@ -1056,6 +1057,31 @@ class ActiveCampaignArchitectureTest(unittest.TestCase):
         self.assertTrue(snip_cfg["codex_features"]["hooks"])
         self.assertIn("{codex_home}/hooks.json", snip_cfg["host_integration"]["required_files"])
         self.assertEqual(runner.fixture.codex_hook_args(snip_cfg), [])
+
+    def test_claude_rtk_profile_binds_official_claude_integration(self) -> None:
+        profile = "terminal-rtk-claude-code-hook-v1"
+        cfg = runner.fixture.active_tool_config({}, profile)
+        assert cfg is not None
+        self.assertEqual(runner.SUPPORTED_WORKFLOW_TOOL_PROFILES[profile], "rtk-claude-code-hook-v1")
+        self.assertEqual(
+            cfg["host_integration"]["install_commands"],
+            [
+                [
+                    "/bin/sh",
+                    "-lc",
+                    "mkdir -p {codex_home}/runtime-bin && cp /opt/data/tool-candidates/rtk/target/release/rtk {codex_home}/runtime-bin/rtk && chmod 755 {codex_home}/runtime-bin/rtk && {codex_home}/runtime-bin/rtk init --global --auto-patch",
+                ],
+            ],
+        )
+        self.assertTrue(cfg["claude_features"]["hooks"])
+        self.assertEqual(
+            set(cfg["host_integration"]["required_files"]),
+            {
+                "{codex_home}/claude-config/settings.json",
+                "{codex_home}/claude-config/CLAUDE.md",
+                "{codex_home}/claude-config/RTK.md",
+            },
+        )
 
     def test_home_dot_codex_alias_targets_lane_private_codex_home(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
@@ -4946,7 +4972,7 @@ class BaselineV3LowComplexityContractTest(unittest.TestCase):
             self.assertEqual(gate["allowed_code_rework_events"], 0)
             self.assertEqual(gate["allowed_verifier_or_environment_failures"], 0)
             for key, value in gate.items():
-                if key.startswith("allowed_"):
+                if key.startswith("allowed_") and key != "allowed_treatment_model_conditions":
                     self.assertIs(type(value), int, (sequence["id"], key, value))
                     self.assertEqual(value, 0, (sequence["id"], key, value))
             self.assertEqual(gate["incident_counting"], "unique-auditable-not-command-count")
@@ -7697,7 +7723,8 @@ with tempfile.TemporaryDirectory(dir=runner.ROOT / 'sources/evaluations/protocol
         expected_mistake_gate = {
             key: value
             for key, value in document["sequences"][0]["mistake_gate"].items()
-            if key.startswith("allowed_") or key in {"designated_model_condition", "model", "reasoning_effort"}
+            if (key.startswith("allowed_") and key != "allowed_treatment_model_conditions")
+            or key in {"designated_model_condition", "model", "reasoning_effort"}
         }
         for key, value in expected_mistake_gate.items():
             self.assertEqual(audit["mistake_gate"].get(key), value)

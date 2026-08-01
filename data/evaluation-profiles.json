@@ -1498,6 +1498,43 @@
       "notes": "Versioned correction of the historical PATH-only RTK profile. Measures the product-authored Codex instruction policy, not transparent command rewriting."
     },
     {
+      "id": "terminal-rtk-claude-code-hook-v1",
+      "artifact_slug": "rtk-claude-code",
+      "profile_type": "individual_tool",
+      "objective_scope": "individual_tool_effectiveness",
+      "status": "screening-shortlist",
+      "enabled_surfaces": [
+        "claude-code-pre-tool-use-hook",
+        "terminal-output",
+        "claude-code-global-instructions"
+      ],
+      "disabled_overlaps": [
+        "all unlisted surfaces",
+        "Codex RTK instructions",
+        "MCP servers",
+        "other token-saving tools"
+      ],
+      "components": [
+        {
+          "component_id": "terminal-rtk-claude-code-hook-v1",
+          "surface": "claude-code-pre-tool-use-hook/terminal-output-compaction",
+          "role": "individual_tool"
+        }
+      ],
+      "install": {
+        "policy": "Run pinned RTK 0.42.4 `rtk init --global --auto-patch` with lane-private CLAUDE_CONFIG_DIR; require the generated Claude settings hook, RTK.md, and global CLAUDE.md before execution."
+      },
+      "reset": {
+        "policy": "Delete lane-private Claude config, RTK hook/settings, RTK.md, global CLAUDE.md, cache, and generated state after evidence capture; verify no RTK state survives into another lane."
+      },
+      "evaluation_protocol": {
+        "tool_use_policy": "natural",
+        "tool_state": "active-hook-and-instruction-layer",
+        "integration_state": "official-claude-code-global-hook"
+      },
+      "notes": "Claude Code-specific RTK treatment. Measures the official native Claude PreToolUse hook and product-authored global instruction layer, separate from terminal-rtk-codex-instructions-v1."
+    },
+    {
       "id": "terminal-snip-codex-hook-v1",
       "artifact_slug": "snip",
       "profile_type": "individual_tool",
