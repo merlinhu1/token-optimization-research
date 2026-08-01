@@ -4081,6 +4081,23 @@ class MatrixLifecycleContractTest(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "serialized"):
             matrix.retained_claude_lifecycle_v1_recovery_lanes(summary, ROOT)
 
+    def test_expected_session_binding_accepts_root_relative_frozen_protocol(self) -> None:
+        binding = matrix.expected_session_binding_for_protocol(
+            sequence_id="fastify-lifecycle-sequence-v1",
+            profile_id="baseline-claude-code-no-mcp",
+            replicate_index=0,
+            protocol_path=Path(
+                "sources/evaluations/protocols/"
+                "fastify-lifecycle-sequence-v1-baseline-claude-code-no-mcp-7f37bc63691b.json"
+            ),
+            root=ROOT,
+        )
+        self.assertEqual(
+            binding["frozen_protocol"]["path"],
+            "sources/evaluations/protocols/"
+            "fastify-lifecycle-sequence-v1-baseline-claude-code-no-mcp-7f37bc63691b.json",
+        )
+
     def test_claude_lifecycle_v1_requires_serial_plan_before_lane_root(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             lane_root = Path(tmp) / "lanes"

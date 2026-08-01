@@ -837,8 +837,9 @@ def expected_session_binding_for_protocol(
     root: Path,
 ) -> dict[str, Any]:
     """Bind an immutable parent receipt to the exact frozen protocol bytes."""
-    relative_protocol = protocol_path.relative_to(root)
-    protocol_doc = load_json(protocol_path)
+    absolute_protocol = protocol_path if protocol_path.is_absolute() else root / protocol_path
+    relative_protocol = absolute_protocol.relative_to(root)
+    protocol_doc = load_json(absolute_protocol)
     return {
         "sequence_id": sequence_id,
         "profile_id": profile_id,
