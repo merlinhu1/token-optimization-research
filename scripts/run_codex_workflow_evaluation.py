@@ -3016,6 +3016,13 @@ def profile_prompt_guidance(profile_id: str) -> str:
     )
 
 
+def model_facing_profile_guidance(seq: dict[str, Any], profile_id: str) -> str:
+    """Return only profile guidance that belongs in this generation's model prompt."""
+    if seq.get("task_family_generation") == "lifecycle-v1":
+        return ""
+    return profile_prompt_guidance(profile_id)
+
+
 def render_task_prompt(
     seq: dict[str, Any],
     profile_id: str,
@@ -3027,7 +3034,7 @@ def render_task_prompt(
 ) -> str:
     preface: list[str] = []
     if first_task:
-        preface.append(profile_prompt_guidance(profile_id))
+        preface.append(model_facing_profile_guidance(seq, profile_id))
         preface.extend([
             f"# Sequential workflow session: {seq['id']}",
             "",
@@ -3108,7 +3115,7 @@ def model_facing_prompt_descriptor(
     seq: dict[str, Any], profile_id: str, root: Path = ROOT
 ) -> dict[str, Any]:
     """Hash the exact deterministic prompt bytes visible to the model."""
-    guidance = profile_prompt_guidance(profile_id)
+    guidance = model_facing_profile_guidance(seq, profile_id)
     prompts: list[dict[str, Any]] = []
     for index, task in enumerate(sorted(seq.get("tasks", []), key=lambda item: int(item["order"]))):
         order = int(task["order"])
