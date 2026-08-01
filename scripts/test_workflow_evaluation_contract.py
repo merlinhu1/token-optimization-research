@@ -4032,6 +4032,132 @@ class ModelConditionLauncherContractTest(unittest.TestCase):
 
 
 class MatrixLifecycleContractTest(unittest.TestCase):
+    def test_claude_lifecycle_v1_authority_opens_only_for_the_unoccupied_authorized_slot(self) -> None:
+        registry = {"sessions": []}
+        with mock.patch.object(matrix.workflow, "find_pool_profile_record", return_value=None):
+            passed, reason = matrix.claude_baseline_run_gate(
+                registry, "fastify-lifecycle-sequence-v1", 0, ROOT
+            )
+        self.assertTrue(passed, reason)
+
+    def test_claude_lifecycle_v1_requires_serial_plan_before_lane_root(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            lane_root = Path(tmp) / "lanes"
+            result = subprocess.run(
+                [
+                    sys.executable,
+                    "scripts/run_sequential_workflow_matrix.py",
+                    "fastify-lifecycle-sequence-v1",
+                    "--max-parallel", "2",
+                    "--workflow-model-condition-id", "claude-code-openrouter-gpt-5-6-sol-high",
+                    "--workflow-model", "gpt-5.6-sol",
+                    "--workflow-reasoning-effort", "high",
+                    "--prepare-only",
+                    "--dry-run",
+                    "--lane-root", str(lane_root),
+                ],
+                cwd=ROOT,
+                text=True,
+                capture_output=True,
+                check=False,
+            )
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn(
+            "owner-authorized Claude Code Lifecycle V1 requires --max-parallel 1",
+            result.stderr + result.stdout,
+        )
+        self.assertFalse(lane_root.exists())
+
+    def test_claude_lifecycle_v1_turn_budget_disables_operational_retries(self) -> None:
+        self.assertEqual(
+            runner.operational_retry_budget(
+                "baseline-claude-code-no-mcp", 0, {"task_family_generation": "lifecycle-v1"}
+            ),
+            0,
+        )
+
+    def test_claude_lifecycle_v1_attempt_receipt_is_immutable_before_provider_work(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            binding = {
+                "sequence_id": "fastify-lifecycle-sequence-v1",
+                "profile_id": "baseline-claude-code-no-mcp",
+                "replicate_index": 0,
+                "frozen_protocol": {
+                    "protocol_id": "protocol",
+                    "path": "sources/evaluations/protocols/protocol.json",
+                    "sha256": "a" * 64,
+                },
+                "baseline_pool_fingerprint": "pool",
+                "selected_execution": {"descriptor_sha256": "b" * 64},
+            }
+            first = matrix.reserve_claude_lifecycle_v1_attempt(
+                sequence_id="fastify-lifecycle-sequence-v1",
+                replicate_index=0,
+                expected_session_binding=binding,
+                run_root=root / "run",
+                root=root,
+            )
+            receipt = json.loads(first.read_text())
+            self.assertEqual(receipt["attempt_status"], "reserved-before-provider-task")
+            self.assertEqual(receipt["expected_session_binding"], binding)
+            with self.assertRaises(FileExistsError):
+                matrix.reserve_claude_lifecycle_v1_attempt(
+                    sequence_id="fastify-lifecycle-sequence-v1",
+                    replicate_index=0,
+                    expected_session_binding=binding,
+                    run_root=root / "run",
+                    root=root,
+                )
+
+    def test_claude_lifecycle_v1_parent_reserves_before_clone(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            run_root = root / "matrix"
+            protocol = {
+                "protocol_id": "unit-protocol",
+                "baseline_pool": {"protocol_fingerprint": "unit-pool"},
+                "selected_execution": {"descriptor_sha256": "d" * 64},
+            }
+            (root / "protocol.json").write_text(json.dumps(protocol))
+            receipt = root / matrix.CLAUDE_LIFECYCLE_V1_ATTEMPT_DIR / "fastify-r0.json"
+
+            def clone(destination: Path, _commit: str) -> None:
+                self.assertTrue(receipt.is_file())
+                (destination / "data").mkdir(parents=True)
+                (destination / "data/workflow-sessions.json").write_text('{"sessions": []}\n')
+                (destination / matrix.WORKFLOW_ARTIFACT_ROOT).mkdir(parents=True)
+                (destination / "protocol.json").write_text(json.dumps(protocol))
+
+            with (
+                mock.patch.object(matrix, "ROOT", root),
+                mock.patch.object(matrix, "find_protocol", side_effect=lambda checkout, *_args, **_kwargs: checkout / "protocol.json"),
+                mock.patch.object(matrix, "clone_published_checkout", side_effect=clone),
+                mock.patch.object(matrix, "workflow_lane_command", return_value=["unit-child"]),
+                mock.patch.object(matrix.subprocess, "run", return_value=subprocess.CompletedProcess([], 1)),
+            ):
+                result = matrix.run_flow_lane(
+                    sequence_id="fastify-lifecycle-sequence-v1",
+                    treatment_profile="baseline-claude-code-no-mcp",
+                    lane_root=run_root,
+                    replicate_index=0,
+                    runner_args=[],
+                    source_codex_home=None,
+                    production_lock_fd=123,
+                    published_launch_commit="unit-published",
+                )
+            self.assertEqual(result["exit_code"], 1)
+            self.assertTrue(receipt.is_file())
+
+    def test_claude_lifecycle_v1_direct_provider_launch_is_rejected_without_matrix_lock(self) -> None:
+        with mock.patch.object(runner, "inherited_provider_production_lock_fd", return_value=None):
+            with self.assertRaisesRegex(ValueError, "must be launched through the serial matrix"):
+                runner.require_claude_lifecycle_v1_matrix_launch(
+                    "baseline-claude-code-no-mcp",
+                    {"task_family_generation": "lifecycle-v1"},
+                    prepare_only=False,
+                )
+
     def test_serial_lane_execution_is_fail_stop_and_does_not_prequeue(self) -> None:
         jobs = [("fastify", "baseline"), ("beets", "baseline"), ("terraform", "baseline")]
         calls: list[tuple[str, str]] = []

@@ -1,0 +1,43 @@
+{
+  "schema_version": 1,
+  "campaign_id": "claude-code-lifecycle-v1-sol-high-r0-20260802",
+  "authorized_by_owner_message_id": "1533397324384964609",
+  "authorized_on": "2026-08-02",
+  "authorized_source_commit": "3db3d833355e9b541ff936f1b466d8646e12a833",
+  "paid_baseline_execution_authorized": true,
+  "authorized_replicate_index": 0,
+  "sequence_order": [
+    "fastify-lifecycle-sequence-v1",
+    "beets-lifecycle-sequence-v1"
+  ],
+  "max_parallel": 1,
+  "allowed_paid_baseline_runs": 2,
+  "allowed_model_turns": 6,
+  "serialization_required": true,
+  "model_condition": {
+    "id": "claude-code-openrouter-gpt-5-6-sol-high",
+    "runtime_id": "claude-code",
+    "provider": "openrouter",
+    "model": "gpt-5.6-sol",
+    "reasoning_effort": "high"
+  },
+  "first_valid_sample_policy": true,
+  "rerun_after_attempt_receipt": false,
+  "provider_calls": 0,
+  "provider_tokens": 0,
+  "sequences": [
+    {
+      "sequence_id": "fastify-lifecycle-sequence-v1",
+      "protocol_path": "sources/evaluations/protocols/fastify-lifecycle-sequence-v1-baseline-claude-code-no-mcp-7f37bc63691b.json",
+      "protocol_sha256": "50deb0174d3ec76807b349b5fff02e5a3abb108fc60810f265ba665545697679",
+      "baseline_pool_fingerprint": "9596a3c4032d"
+    },
+    {
+      "sequence_id": "beets-lifecycle-sequence-v1",
+      "protocol_path": "sources/evaluations/protocols/beets-lifecycle-sequence-v1-baseline-claude-code-no-mcp-2574ac33d48f.json",
+      "protocol_sha256": "15fe992197a1a862474a6507543eb437d404215c7a0504066e54ff86330e4d6b",
+      "baseline_pool_fingerprint": "9a5946763429"
+    }
+  ],
+  "notes": "Owner authorization from Discord message 1533397324384964609 for exactly one serial r0 normal-mode Claude Code baseline per Lifecycle V1 sequence using OpenRouter GPT-5.6 Sol/high. The authority permits six initial task turns only: operational retries are disabled. Retain the first operationally valid sample and never rerun an identity after its immutable attempt receipt is created."
+}
