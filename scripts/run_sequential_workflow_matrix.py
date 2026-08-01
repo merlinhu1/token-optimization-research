@@ -220,7 +220,12 @@ def clone_published_checkout(destination: Path, expected_commit: str) -> None:
         raise RuntimeError("published lane checkout certification failed: " + "; ".join(errors))
 
 
-def find_protocol(root: Path, sequence_id: str, profile_id: str) -> Path:
+def find_protocol(
+    root: Path,
+    sequence_id: str,
+    profile_id: str,
+    model_condition_override: dict[str, str] | None = None,
+) -> Path:
     sequences = load_json(root / "data/workflow-task-sequences.json").get("sequences", [])
     active_sequence = next((item for item in sequences if item.get("id") == sequence_id), None)
     if not isinstance(active_sequence, dict) or active_sequence.get("status") != "active":
@@ -228,6 +233,10 @@ def find_protocol(root: Path, sequence_id: str, profile_id: str) -> Path:
     active_qualification = active_sequence.get("qualification_path")
     current_fingerprint = workflow.baseline_protocol_fingerprint(active_sequence)
     current_baseline_descriptor = workflow.baseline_protocol_descriptor(active_sequence)
+    if model_condition_override:
+        setattr(workflow, "DEFAULT_WORKFLOW_MODEL_CONDITION_ID", model_condition_override.get("id", model_condition_override.get("model_condition_id", "")))
+        setattr(workflow, "DEFAULT_WORKFLOW_MODEL", model_condition_override.get("model", ""))
+        setattr(workflow, "DEFAULT_WORKFLOW_REASONING_EFFORT", model_condition_override.get("reasoning_effort", ""))
     current_execution = workflow.execution_condition_descriptor(
         active_sequence,
         profile_id,
