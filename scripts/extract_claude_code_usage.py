@@ -211,7 +211,9 @@ def build_summary(events_path: Path) -> dict[str, Any]:
     result_blocks = usage_blocks(events, "result")
 
     warnings: list[str] = []
-    if assistant_blocks:
+    assistant_has_provider_tokens = sum_key(assistant_blocks, "total_provider_tokens") > 0
+    result_has_provider_tokens = sum_key(result_blocks, "total_provider_tokens") > 0
+    if assistant_blocks and (assistant_has_provider_tokens or not result_has_provider_tokens):
         effective_blocks = assistant_blocks
         accounting_mode = "sum-unique-assistant-message-usage"
     elif result_blocks:
@@ -258,7 +260,7 @@ def build_summary(events_path: Path) -> dict[str, Any]:
         ),
         "assistant_usage_block_count": len(assistant_blocks),
         "result_usage_block_count": len(result_blocks),
-        "result_usage_counted": not assistant_blocks and bool(result_blocks),
+        "result_usage_counted": accounting_mode == "result-usage-fallback-no-assistant-usage",
         "reasoning_tokens_available": reasoning_available,
         "canonical_components": {
             "input_tokens": sum_key(effective_blocks, "input_tokens"),
