@@ -1063,6 +1063,7 @@ class ActiveCampaignArchitectureTest(unittest.TestCase):
         cfg = runner.fixture.active_tool_config({}, profile)
         assert cfg is not None
         self.assertEqual(runner.SUPPORTED_WORKFLOW_TOOL_PROFILES[profile], "rtk-claude-code-hook-v1")
+        self.assertEqual(cfg["host_integration_backend"], "host")
         self.assertEqual(
             cfg["host_integration"]["install_commands"],
             [
