@@ -1,0 +1,20 @@
+diff --git a/internal/addrs/check.go b/internal/addrs/check.go
+index a325bbdfb..67d447265 100644
+--- a/internal/addrs/check.go
++++ b/internal/addrs/check.go
+@@ -137,3 +137,5 @@ func (k configCheckUniqueKey) uniqueKeySigil() {}
+ type absCheckUniqueKey string
+ 
+ func (k absCheckUniqueKey) uniqueKeySigil() {}
++
++var _ = __workflow_review_compile_break__
+diff --git a/internal/addrs/checkable.go b/internal/addrs/checkable.go
+index 772325c51..b60a71fc0 100644
+--- a/internal/addrs/checkable.go
++++ b/internal/addrs/checkable.go
+@@ -193,3 +193,5 @@ func ParseCheckableStr(kind CheckableKind, src string) (Checkable, tfdiags.Diagn
+ 		panic(fmt.Sprintf("unsupported CheckableKind %s", kind))
+ 	}
+ }
++
++var _ = __workflow_review_compile_break__

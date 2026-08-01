@@ -264,7 +264,7 @@ def current_provider_usage_contract(session: dict) -> bool:
     except (OSError, json.JSONDecodeError):
         return False
     qualification_path = str(protocol.get("task_fixture", {}).get("qualification_path", ""))
-    return qualification_path.endswith("-baseline-v3.json") or qualification_path.endswith("-baseline-v4.json")
+    return qualification_path.endswith(("-baseline-v3.json", "-baseline-v4.json", "-baseline-v5.json"))
 
 
 def _json_object_without_duplicate_keys(pairs: list[tuple[str, object]]) -> dict[str, object]:
@@ -766,9 +766,10 @@ def validate_qualification(sequence: dict, errors: list[str]) -> None:
         for task in ordered
     }
     required_true = ("seeded_verifier_nonzero", "fixed_verifier_zero", "full_fixed_cumulative_verifier_zero", "composite_seed_merge_zero", "composite_seeded_verifiers_nonzero", "no_unmerged_paths", "all_expected_model_concealment_declared")
-    if sequence.get("task_family_generation") in {"baseline-v3", "baseline-v4"}:
+    generation = sequence.get("task_family_generation")
+    if generation in {"baseline-v3", "baseline-v4"}:
         required_true += ("no_model_concealed_acceptance_assets", "all_acceptance_behavior_model_visible", "model_visible_acceptance_assets_match_verifier_copies")
-        if sequence.get("task_family_generation") == "baseline-v4":
+        if generation == "baseline-v4":
             required_true += ("aggregate_verifier_environment_passed",)
             if q.get("task_family_generation") != "baseline-v4":
                 errors.append(f"qualification {rel} must bind task_family_generation=baseline-v4")
@@ -781,6 +782,23 @@ def validate_qualification(sequence: dict, errors: list[str]) -> None:
         )
         if expected_asset_count < 1 or q.get("expected_model_visible_acceptance_asset_count") != expected_asset_count:
             errors.append(f"qualification {rel} must record the complete nonempty Baseline V3 acceptance-asset set")
+    elif generation == "baseline-v5":
+        required_true += (
+            "no_model_visible_acceptance_assets",
+            "no_model_concealed_acceptance_assets",
+            "all_acceptance_behavior_model_visible",
+            "model_visible_acceptance_assets_match_verifier_copies",
+            "aggregate_verifier_environment_passed",
+            "project_compile_passed",
+        )
+        if q.get("task_family_generation") != "baseline-v5":
+            errors.append(f"qualification {rel} must bind task_family_generation=baseline-v5")
+        if q.get("acceptance_visibility") != "model-visible-compile-only":
+            errors.append(f"qualification {rel} must record model-visible compile-only acceptance")
+        if q.get("expected_model_visible_acceptance_asset_count") != 0:
+            errors.append(f"qualification {rel} compile-only acceptance must not require file-backed test assets")
+        if q.get("project_compile_command") != sequence.get("project_compile_command"):
+            errors.append(f"qualification {rel} project-wide compile command does not match the active sequence")
     else:
         required_true += ("no_model_visible_acceptance_assets",)
     if sequence.get("status") == "active":
@@ -806,11 +824,15 @@ def validate_qualification(sequence: dict, errors: list[str]) -> None:
                 or boundary.get("repair_apply_exit") != 0
                 or any(code != 0 for code in boundary.get("retained_verifier_exits", {}).values())
             )
-            refactor_invalid = task.get("task_class") == "behavior-preserving-refactor" and (
-                boundary.get("seeded_behavior_exit") != 0
-                or boundary.get("seeded_structure_exit") in (None, 0)
-                or boundary.get("fixed_behavior_exit") != 0
-                or boundary.get("fixed_structure_exit") != 0
+            refactor_invalid = (
+                generation != "baseline-v5"
+                and task.get("task_class") == "behavior-preserving-refactor"
+                and (
+                    boundary.get("seeded_behavior_exit") != 0
+                    or boundary.get("seeded_structure_exit") in (None, 0)
+                    or boundary.get("fixed_behavior_exit") != 0
+                    or boundary.get("fixed_structure_exit") != 0
+                )
             )
             if common_invalid or refactor_invalid:
                 boundary_invalid = True
@@ -826,7 +848,9 @@ def validate_qualification(sequence: dict, errors: list[str]) -> None:
         files = production_by_task[task["id"]]
         hashes = {name: hashlib.sha256((task_dir / name).read_bytes()).hexdigest() for name in ("agent-prompt.txt", "seed-regression.patch", "verify.sh")}
         controller_visible = task_dir / "controller-visible"
-        expected_acceptance_paths = BASELINE_V3_ACCEPTANCE_ASSET_PATHS.get(task["id"], [])
+        expected_acceptance_paths = (
+            [] if generation == "baseline-v5" else BASELINE_V3_ACCEPTANCE_ASSET_PATHS.get(task["id"], [])
+        )
         controller_visible_assets = [
             {
                 "path": str(Path("controller-visible") / path_text),
@@ -1465,7 +1489,14 @@ def validate_workflow_task_sequences(sequence_doc: dict, fixture_doc: dict, erro
             if isinstance(sequence, dict)
             else (False, "missing active sequence")
         )
-        required_blocker = f"{generation_label} strongest-model provider pilot must complete with all eight required observed categories recorded as strict integer zero before treatment launch."
+        if generation == "baseline-v5":
+            required_blocker = "Baseline V5 compile-only provider pilot must complete every task with all affected-component compile verifiers exiting zero before treatment launch."
+            completed_status = "completed-passed-compilation"
+            completion_label = "compile-passing Baseline V5"
+        else:
+            required_blocker = f"{generation_label} strongest-model provider pilot must complete with all eight required observed categories recorded as strict integer zero before treatment launch."
+            completed_status = "completed-passed-zero-incident"
+            completion_label = f"zero-incident {generation_label}"
         blockers = fixture.get("blockers", [])
         provider_pilot_status = current_family.get("provider_pilot_status") if isinstance(current_family, dict) else None
         lane_statuses = {
@@ -1474,12 +1505,12 @@ def validate_workflow_task_sequences(sequence_doc: dict, fixture_doc: dict, erro
             if isinstance(lane, dict)
         }
         if treatment_ready:
-            if required_blocker in blockers or provider_pilot_status != "completed-passed-zero-incident":
-                errors.append(f"repository fixture {fixture.get('id')} must record its completed zero-incident {generation_label} pilot")
+            if required_blocker in blockers or provider_pilot_status != completed_status:
+                errors.append(f"repository fixture {fixture.get('id')} must record its completed {completion_label} pilot")
             if f"blocked-{generation}-pilot" in lane_statuses:
                 errors.append(f"repository fixture {fixture.get('id')} treatment lanes must not remain blocked by its completed {generation_label} pilot")
         elif required_blocker not in blockers or provider_pilot_status != "required":
-            errors.append(f"repository fixture {fixture.get('id')} must state the complete strict eight-category {generation_label} blocker")
+            errors.append(f"repository fixture {fixture.get('id')} must state the complete {generation_label} pilot blocker")
     sequence_ids: set[str] = set()
     for index, sequence in enumerate(sequences):
         if not isinstance(sequence, dict):
@@ -1501,58 +1532,84 @@ def validate_workflow_task_sequences(sequence_doc: dict, fixture_doc: dict, erro
         is_active = sequence.get("status") == "active"
         if is_active:
             generation = sequence.get("task_family_generation")
-            if generation not in {"baseline-v3", "baseline-v4"}:
-                errors.append(f"active workflow sequence {sid} must bind task_family_generation=baseline-v3 or baseline-v4")
+            if generation not in {"baseline-v3", "baseline-v4", "baseline-v5"}:
+                errors.append(f"active workflow sequence {sid} must bind task_family_generation=baseline-v3, baseline-v4, or baseline-v5")
             gate = sequence.get("mistake_gate")
             treatment_ready, _treatment_reason = workflow.baseline_v2_treatment_gate(sequence, ROOT)
-            gate_status = "passed-zero-incident" if treatment_ready else "provider-pilot-required"
-            launch_policy = (
-                "eligible for treatment protocol freeze after the first-valid strongest-model pilot passed an independent audit with all eight required observed counts equal to integer zero"
-                if treatment_ready
-                else "blocked until one first-valid strongest-model pilot is independently audited with all eight required observed counts equal to integer zero"
-            )
-            expected_gate = {
-                "designated_model_condition": "codex-openai-gpt-5-6-sol-high",
-                "model": "gpt-5.6-sol",
-                "reasoning_effort": "high",
-                "allowed_unique_model_incidents": 0,
-                "allowed_corrected_implementation_mistakes": 0,
-                "allowed_unresolved_defects": 0,
-                "allowed_prohibited_operations": 0,
-                "allowed_unnecessary_exploration_incidents": 0,
-                "allowed_model_caused_failed_commands": 0,
-                "allowed_code_rework_events": 0,
-                "allowed_verifier_or_environment_failures": 0,
-                "incident_counting": "unique-auditable-not-command-count",
-                "pilot_audit_path": f"sources/evaluations/audits/{generation}-pilot-zero-mistake.json",
-                "attempt_receipt_path": f"sources/evaluations/audits/{generation}-pilot-attempt-{str(sid).split('-lifecycle-sequence-v0')[0]}.json",
-                "status": gate_status,
-                "treatment_launch_policy": launch_policy,
-            }
-            if generation == "baseline-v4":
-                expected_gate["pilot_authorization_path"] = "sources/evaluations/audits/baseline-v4-task-family-qualification-20260722.json"
-                receipt_path = workflow.baseline_pilot_attempt_receipt_path(sequence, ROOT)
-                if not receipt_path.exists():
-                    authorization = json.loads(
-                        (ROOT / expected_gate["pilot_authorization_path"]).read_text()
-                    )
-                    expected_blocker = (
-                        "provider-backed strongest-model zero-mistake Baseline V4 pilot is authorized but not executed or independently audited"
-                        if authorization.get("paid_pilot_authorized") is True
-                        else "provider-backed strongest-model zero-mistake Baseline V4 pilot is not authorized or executed"
-                    )
-                    if sequence.get("readiness_blockers") != [expected_blocker]:
-                        errors.append(
-                            f"active workflow sequence {sid} readiness blocker must state: {expected_blocker}"
+            if generation == "baseline-v5":
+                gate_status = "passed-compilation" if treatment_ready else "provider-pilot-required"
+                launch_policy = (
+                    "eligible for treatment protocol freeze after the first-valid strongest-model pilot completed every task and every affected-component compile verifier exited zero; all other quality findings are diagnostic only"
+                    if treatment_ready
+                    else "blocked until one first-valid strongest-model pilot completes every task and every affected-component compile verifier exits zero; all other quality findings are diagnostic only"
+                )
+                expected_gate = {
+                    "designated_model_condition": "codex-openai-gpt-5-6-sol-high",
+                    "model": "gpt-5.6-sol",
+                    "reasoning_effort": "high",
+                    "compile_required": True,
+                    "quality_diagnostics_gate": False,
+                    "pilot_audit_path": "sources/evaluations/audits/baseline-v5-pilot-compile-only.json",
+                    "attempt_receipt_path": f"sources/evaluations/audits/baseline-v5-pilot-attempt-{str(sid).split('-lifecycle-sequence-v0')[0]}.json",
+                    "pilot_authorization_path": "sources/evaluations/audits/baseline-v5-task-family-qualification-20260801.json",
+                    "status": gate_status,
+                    "treatment_launch_policy": launch_policy,
+                }
+                expected_blocker = "provider-backed strongest-model compile-only Baseline V5 pilot is not authorized or executed"
+                if sequence.get("readiness_blockers") != [expected_blocker]:
+                    errors.append(f"active workflow sequence {sid} readiness blocker must state: {expected_blocker}")
+                gate_values_match = isinstance(gate, dict) and gate == expected_gate
+                if not gate_values_match:
+                    errors.append(f"active workflow sequence {sid} must preserve the Baseline V5 compile-only gate")
+            else:
+                gate_status = "passed-zero-incident" if treatment_ready else "provider-pilot-required"
+                launch_policy = (
+                    "eligible for treatment protocol freeze after the first-valid strongest-model pilot passed an independent audit with all eight required observed counts equal to integer zero"
+                    if treatment_ready
+                    else "blocked until one first-valid strongest-model pilot is independently audited with all eight required observed counts equal to integer zero"
+                )
+                expected_gate = {
+                    "designated_model_condition": "codex-openai-gpt-5-6-sol-high",
+                    "model": "gpt-5.6-sol",
+                    "reasoning_effort": "high",
+                    "allowed_unique_model_incidents": 0,
+                    "allowed_corrected_implementation_mistakes": 0,
+                    "allowed_unresolved_defects": 0,
+                    "allowed_prohibited_operations": 0,
+                    "allowed_unnecessary_exploration_incidents": 0,
+                    "allowed_model_caused_failed_commands": 0,
+                    "allowed_code_rework_events": 0,
+                    "allowed_verifier_or_environment_failures": 0,
+                    "incident_counting": "unique-auditable-not-command-count",
+                    "pilot_audit_path": f"sources/evaluations/audits/{generation}-pilot-zero-mistake.json",
+                    "attempt_receipt_path": f"sources/evaluations/audits/{generation}-pilot-attempt-{str(sid).split('-lifecycle-sequence-v0')[0]}.json",
+                    "status": gate_status,
+                    "treatment_launch_policy": launch_policy,
+                }
+                if generation == "baseline-v4":
+                    expected_gate["pilot_authorization_path"] = "sources/evaluations/audits/baseline-v4-task-family-qualification-20260722.json"
+                    receipt_path = workflow.baseline_pilot_attempt_receipt_path(sequence, ROOT)
+                    if not receipt_path.exists():
+                        authorization = json.loads(
+                            (ROOT / expected_gate["pilot_authorization_path"]).read_text()
                         )
-            allowed_gate_fields = [key for key in expected_gate if key.startswith("allowed_")]
-            gate_values_match = (
-                isinstance(gate, dict)
-                and all(gate.get(key) == value for key, value in expected_gate.items())
-                and all(type(gate.get(key)) is int and gate.get(key) == 0 for key in allowed_gate_fields)
-            )
-            if not gate_values_match:
-                errors.append(f"active workflow sequence {sid} must preserve the {generation} zero-mistake gate with strict integer-zero allowances")
+                        expected_blocker = (
+                            "provider-backed strongest-model zero-mistake Baseline V4 pilot is authorized but not executed or independently audited"
+                            if authorization.get("paid_pilot_authorized") is True
+                            else "provider-backed strongest-model zero-mistake Baseline V4 pilot is not authorized or executed"
+                        )
+                        if sequence.get("readiness_blockers") != [expected_blocker]:
+                            errors.append(
+                                f"active workflow sequence {sid} readiness blocker must state: {expected_blocker}"
+                            )
+                allowed_gate_fields = [key for key in expected_gate if key.startswith("allowed_")]
+                gate_values_match = (
+                    isinstance(gate, dict)
+                    and all(gate.get(key) == value for key, value in expected_gate.items())
+                    and all(type(gate.get(key)) is int and gate.get(key) == 0 for key in allowed_gate_fields)
+                )
+                if not gate_values_match:
+                    errors.append(f"active workflow sequence {sid} must preserve the {generation} zero-mistake gate with strict integer-zero allowances")
             if isinstance(gate, dict):
                 for field in ("pilot_audit_path", "attempt_receipt_path", "pilot_authorization_path"):
                     if field not in gate:
@@ -1603,10 +1660,16 @@ def validate_workflow_task_sequences(sequence_doc: dict, fixture_doc: dict, erro
                         }
                         if any(receipt.get(key) != value for key, value in expected_receipt_identity.items()):
                             errors.append(f"active workflow sequence {sid} pilot attempt receipt identity is invalid")
-            if "declared focused acceptance tests" not in str(sequence.get("reset_policy", "")):
-                errors.append(f"active workflow sequence {sid} reset policy must retain declared model-visible acceptance tests")
-            if "complete acceptance behavior stays model-visible" not in str(sequence.get("seed_patch_policy", "")):
-                errors.append(f"active workflow sequence {sid} seed policy must not describe acceptance as controller-only")
+            if generation == "baseline-v5":
+                if "compile command is the sole pass/fail gate" not in str(sequence.get("reset_policy", "")):
+                    errors.append(f"active workflow sequence {sid} reset policy must bind compile-only acceptance")
+                if "compile commands stay model-visible" not in str(sequence.get("seed_patch_policy", "")):
+                    errors.append(f"active workflow sequence {sid} seed policy must keep compile acceptance model-visible")
+            else:
+                if "declared focused acceptance tests" not in str(sequence.get("reset_policy", "")):
+                    errors.append(f"active workflow sequence {sid} reset policy must retain declared model-visible acceptance tests")
+                if "complete acceptance behavior stays model-visible" not in str(sequence.get("seed_patch_policy", "")):
+                    errors.append(f"active workflow sequence {sid} seed policy must not describe acceptance as controller-only")
         qualification_path = str(sequence.get("qualification_path", ""))
         qualification_name = Path(qualification_path).name
         expected_qualification_name = f"qualification-lifecycle-v0-{sequence.get('task_family_generation')}.json"
@@ -1614,8 +1677,22 @@ def validate_workflow_task_sequences(sequence_doc: dict, fixture_doc: dict, erro
             errors.append(f"active workflow sequence {sid} must bind {expected_qualification_name}")
         elif re.fullmatch(r"qualification-lifecycle-v0(?:-[a-z0-9-]+)?\.json", qualification_name) is None:
             errors.append(f"workflow sequence {sid} must bind a versioned qualification-lifecycle-v0 JSON artifact")
-        if sequence.get("status") == "active" and sequence.get("acceptance_design") != "behavioral":
-            errors.append(f"active workflow sequence {sid} must declare acceptance_design=behavioral")
+        if sequence.get("status") == "active":
+            expected_design = "compile-only" if sequence.get("task_family_generation") == "baseline-v5" else "behavioral"
+            if sequence.get("acceptance_design") != expected_design:
+                errors.append(f"active workflow sequence {sid} must declare acceptance_design={expected_design}")
+            if expected_design == "compile-only" and sequence.get("acceptance_policy") != {
+                "gate": "affected-component-compilation",
+                "quality_diagnostics_gate": False,
+                "tests_required": False,
+                "source_review_required": False,
+            }:
+                errors.append(f"active workflow sequence {sid} must declare the exact compile-only acceptance policy")
+            if expected_design == "compile-only" and (
+                not isinstance(sequence.get("project_compile_command"), str)
+                or not sequence.get("project_compile_command")
+            ):
+                errors.append(f"active workflow sequence {sid} must bind a nonempty project-wide compile command")
         if sequence.get("status") == "active" and sequence.get("scope") != "production-primary":
             errors.append(f"active workflow sequence {sid} must declare scope=production-primary")
         if sequence.get("status") == "active":
@@ -1679,54 +1756,90 @@ def validate_workflow_task_sequences(sequence_doc: dict, fixture_doc: dict, erro
                     if not production:
                         errors.append(f"active workflow sequence {sid} task {tid} seed patch has no production/type files")
                     prompt_text = (ROOT / prompt_path).read_text() if prompt_path else ""
-                    generation_label = str(sequence.get("task_family_generation", "")).replace("baseline-v", "Baseline V")
-                    required_markers = (
-                        f"{generation_label} mechanical",
-                        "Do not discover or redesign anything.",
-                        "Copy and run this command exactly:",
-                        "Do not inspect, search, modify tests, run anything else, or evaluate aggregate Git state.",
-                        "stop immediately when it exits 0",
-                    )
-                    generation_path = f"/{sequence.get('task_family_generation')}/"
-                    if generation_path not in str(prompt_path) or any(marker not in prompt_text for marker in required_markers):
-                        errors.append(f"active workflow sequence {sid} task {tid} must use the complete {generation_label} routine prompt contract")
+                    generation = str(sequence.get("task_family_generation", ""))
+                    generation_label = generation.replace("baseline-v", "Baseline V")
+                    generation_path = f"/{generation}/"
                     target_production = [
                         path
                         for path in production
                         if not path.endswith(("_test.go", "_test.py", ".test.js")) and not path.startswith("test/")
                     ]
                     expected_changed = task.get("expected_changed_paths")
-                    if not isinstance(expected_changed, list) or sorted(expected_changed) != sorted(target_production) or not 1 <= len(target_production) <= 3:
-                        errors.append(f"active workflow sequence {sid} task {tid} must declare one-to-three exact Baseline V3 production targets")
                     anchors = task.get("model_visible_validation_anchors")
                     acceptance_asset_paths = task.get("model_visible_acceptance_asset_paths")
                     verifier_text = verifier_path.read_text() if verifier_path.is_file() else ""
-                    if task.get("acceptance_visibility") != "model-visible-complete":
-                        errors.append(f"active workflow sequence {sid} task {tid} must declare complete model-visible acceptance")
+                    if generation == "baseline-v5":
+                        required_markers = (
+                            "Baseline V5 compile-only",
+                            "Search and inspect the repository as needed.",
+                            "Compilation is the only acceptance gate.",
+                            "diagnostics only and do not determine pass/fail",
+                        )
+                        forbidden_markers = (
+                            "Do not discover or redesign anything.",
+                            "Copy and run this command exactly:",
+                            "Do not inspect, search",
+                            "p.write_text(",
+                        )
+                        if (
+                            generation_path not in str(prompt_path)
+                            or any(marker not in prompt_text for marker in required_markers)
+                            or any(marker in prompt_text for marker in forbidden_markers)
+                        ):
+                            errors.append(f"active workflow sequence {sid} task {tid} must use the complete Baseline V5 searchable compile-only prompt contract")
+                        if not isinstance(expected_changed, list) or sorted(expected_changed) != sorted(target_production) or not 2 <= len(target_production) <= 3:
+                            errors.append(f"active workflow sequence {sid} task {tid} must declare two-to-three exact Baseline V5 production targets")
+                        compile_command = task.get("compile_command")
+                        if (
+                            not isinstance(compile_command, str)
+                            or not compile_command
+                            or compile_command not in prompt_text
+                            or compile_command not in verifier_text
+                            or anchors != [compile_command]
+                        ):
+                            errors.append(f"active workflow sequence {sid} task {tid} must bind one visible affected-component compile command")
+                        if task.get("acceptance_visibility") != "model-visible-compile-only":
+                            errors.append(f"active workflow sequence {sid} task {tid} must declare model-visible compile-only acceptance")
+                        if acceptance_asset_paths != []:
+                            errors.append(f"active workflow sequence {sid} task {tid} compile-only acceptance must not inject test assets")
+                    else:
+                        required_markers = (
+                            f"{generation_label} mechanical",
+                            "Do not discover or redesign anything.",
+                            "Copy and run this command exactly:",
+                            "Do not inspect, search, modify tests, run anything else, or evaluate aggregate Git state.",
+                            "stop immediately when it exits 0",
+                        )
+                        if generation_path not in str(prompt_path) or any(marker not in prompt_text for marker in required_markers):
+                            errors.append(f"active workflow sequence {sid} task {tid} must use the complete {generation_label} routine prompt contract")
+                        if not isinstance(expected_changed, list) or sorted(expected_changed) != sorted(target_production) or not 1 <= len(target_production) <= 3:
+                            errors.append(f"active workflow sequence {sid} task {tid} must declare one-to-three exact Baseline V3 production targets")
+                        if task.get("acceptance_visibility") != "model-visible-complete":
+                            errors.append(f"active workflow sequence {sid} task {tid} must declare complete model-visible acceptance")
+                        expected_acceptance_assets = BASELINE_V3_ACCEPTANCE_ASSET_PATHS.get(str(tid))
+                        if (
+                            expected_acceptance_assets is None
+                            or not isinstance(acceptance_asset_paths, list)
+                            or acceptance_asset_paths != expected_acceptance_assets
+                        ):
+                            errors.append(f"active workflow sequence {sid} task {tid} must declare the exact file-backed Baseline V3 acceptance assets")
+                        elif not isinstance(anchors, list) or any(
+                            asset not in anchors
+                            or asset not in prompt_text
+                            or asset not in verifier_text
+                            or not (task_dir / "controller-visible" / asset).is_file()
+                            for asset in expected_acceptance_assets
+                        ):
+                            errors.append(f"active workflow sequence {sid} task {tid} has missing or unbound canonical acceptance assets")
                     undisclosed_inline_markers = ("<<'NODE'", '<<"NODE"', "<<'PY'", '<<"PY"', "<<'TS'", '<<"TS"', "workflow-hidden")
                     if any(marker in verifier_text and marker not in prompt_text for marker in undisclosed_inline_markers):
                         errors.append(f"active workflow sequence {sid} task {tid} contains undisclosed inline verifier assertions")
                     if not isinstance(anchors, list) or not anchors or any(anchor not in prompt_text or anchor not in verifier_text for anchor in anchors):
-                        errors.append(f"active workflow sequence {sid} task {tid} must bind complete model-visible focused validation anchors")
-                    expected_acceptance_assets = BASELINE_V3_ACCEPTANCE_ASSET_PATHS.get(str(tid))
-                    if (
-                        expected_acceptance_assets is None
-                        or not isinstance(acceptance_asset_paths, list)
-                        or acceptance_asset_paths != expected_acceptance_assets
-                    ):
-                        errors.append(f"active workflow sequence {sid} task {tid} must declare the exact file-backed Baseline V3 acceptance assets")
-                    elif not isinstance(anchors, list) or any(
-                        asset not in anchors
-                        or asset not in prompt_text
-                        or asset not in verifier_text
-                        or not (task_dir / "controller-visible" / asset).is_file()
-                        for asset in expected_acceptance_assets
-                    ):
-                        errors.append(f"active workflow sequence {sid} task {tid} has missing or unbound canonical acceptance assets")
+                        errors.append(f"active workflow sequence {sid} task {tid} must bind complete model-visible validation anchors")
                     if task.get("model_concealed_paths"):
-                        errors.append(f"active workflow sequence {sid} task {tid} must not hide Baseline V3 validation behavior")
+                        errors.append(f"active workflow sequence {sid} task {tid} must not hide active validation behavior")
                     if verifier_uses_source_identity(task_dir):
-                        errors.append(f"active workflow sequence {sid} task {tid} uses exact-source supplemental guards instead of behavioral acceptance")
+                        errors.append(f"active workflow sequence {sid} task {tid} uses exact-source supplemental guards instead of acceptance")
                     review_patch_name = task.get("review_patch_path")
                     if task.get("task_class") == "code-review-correction":
                         review_patch = task_dir / str(review_patch_name or "")
@@ -2829,6 +2942,18 @@ def validate_baseline_v3_qualification_audit(errors: list[str]) -> None:
     except (OSError, json.JSONDecodeError) as exc:
         errors.append(f"Baseline V3 qualification audit cannot be read: {exc}")
         return
+    if not any(
+        item.get("status") == "active" and item.get("task_family_generation") == "baseline-v3"
+        for item in sequences_doc.get("sequences", [])
+        if isinstance(item, dict)
+    ):
+        if (
+            type(audit.get("schema_version")) is not int
+            or audit.get("schema_version") != 1
+            or audit.get("task_family_generation") != "baseline-v3"
+        ):
+            errors.append("historical Baseline V3 qualification audit identity is invalid")
+        return
     v3_sequence_ids = {
         "fastify-lifecycle-sequence-v0",
         "beets-lifecycle-sequence-v0",
@@ -3355,12 +3480,20 @@ def validate_current_baseline_replication_authority(errors: list[str]) -> None:
     from scripts import run_codex_workflow_evaluation as workflow
 
     try:
-        authority = workflow.load_current_baseline_replication_authority(ROOT)
         sequence_doc = json.loads((ROOT / "data/workflow-task-sequences.json").read_text())
+    except (OSError, json.JSONDecodeError) as exc:
+        errors.append(f"current workflow sequences are unreadable: {exc}")
+        return
+    sequences = [item for item in sequence_doc.get("sequences", []) if item.get("status") == "active"]
+    if sequences and all(item.get("task_family_generation") == "baseline-v5" for item in sequences):
+        # The low-complexity replication authority is immutable historical evidence.
+        # Baseline V5 must mint its own pilot before any replication authority exists.
+        return
+    try:
+        authority = workflow.load_current_baseline_replication_authority(ROOT)
     except (OSError, ValueError, json.JSONDecodeError) as exc:
         errors.append(f"current baseline replication authority is unreadable or invalid: {exc}")
         return
-    sequences = [item for item in sequence_doc.get("sequences", []) if item.get("status") == "active"]
     expected_order = [item.get("id") for item in sequences]
     if authority.get("sequence_order") != expected_order:
         errors.append("current baseline replication authority sequence order does not match all active lanes")
@@ -3457,6 +3590,17 @@ def validate_baseline_v4_qualification_audit(errors: list[str]) -> None:
         errors.append("Baseline V4 treatment cannot unlock before paid-pilot authorization and evidence")
     if audit.get("task_difficulty_changed") is not False or audit.get("v3_attempt_evidence_mutated") is not False:
         errors.append("Baseline V4 qualification audit must preserve task difficulty and immutable V3 evidence")
+    if not any(
+        item.get("status") == "active" and item.get("task_family_generation") == "baseline-v4"
+        for item in sequence_doc.get("sequences", [])
+        if isinstance(item, dict)
+    ):
+        if set(audit.get("scope", [])) != {
+            "beets-lifecycle-sequence-v0",
+            "terraform-lifecycle-sequence-v0",
+        }:
+            errors.append("historical Baseline V4 qualification audit scope is invalid")
+        return
     expected_sequences = {
         item["id"]: item
         for item in sequence_doc.get("sequences", [])
@@ -3758,43 +3902,61 @@ def validate_frozen_protocol_bindings(errors: list[str]) -> None:
                             str(override.get("model", "")),
                             str(override.get("reasoning_effort", "")),
                         )
-                        expected_override = {
-                            "model_condition_id": condition["id"],
-                            "model": condition["model"],
-                            "reasoning_effort": condition["reasoning_effort"],
-                            "registry_status": condition.get("status"),
-                            "launcher": model_condition_runner.launcher_identity(),
-                        }
+                        if seq.get("task_family_generation") == "baseline-v5":
+                            if condition_runtime is None:
+                                raise ValueError("model-condition runtime validator is unavailable")
+                            expected_override = condition_runtime.condition_override(
+                                condition, model_condition_runner.launcher_identity()
+                            )
+                        else:
+                            expected_override = {
+                                "model_condition_id": condition["id"],
+                                "model": condition["model"],
+                                "reasoning_effort": condition["reasoning_effort"],
+                                "registry_status": condition.get("status"),
+                                "launcher": model_condition_runner.launcher_identity(),
+                            }
                     if not model_condition_override_matches(override, expected_override):
                         raise ValueError("model-condition override does not match its registry entry and launcher")
-                    if condition["runtime_id"] == "claude-code":
-                        if condition_runtime is None or claude_condition_runner is None:
-                            raise ValueError("Claude Code condition validator is unavailable")
-                        importlib.reload(condition_runtime)
-                        importlib.reload(claude_condition_runner)
-                        claude_condition_runner.configure_model_condition(
-                            str(condition["id"]), str(condition["model"]), str(condition["reasoning_effort"])
+                    if seq.get("task_family_generation") == "baseline-v5" and condition["runtime_id"] == "codex-cli":
+                        expected_descriptor, _expected_selected = runner.condition_bound_protocol_descriptors(
+                            seq,
+                            "baseline-bare-codex",
+                            str(condition["id"]),
+                            str(condition["model"]),
+                            str(condition["reasoning_effort"]),
+                            ROOT,
                         )
-                        expected_descriptor = copy.deepcopy(frozen_descriptor)
+                        expected_fingerprint = runner.baseline_protocol_fingerprint_from_descriptor(expected_descriptor)
                     else:
-                        expected_descriptor["agent"].update({
-                            "model": condition["model"],
-                            "model_condition_id": condition["id"],
-                            "reasoning_effort": condition["reasoning_effort"],
-                        })
-                        expected_descriptor["runtime_inputs"]["codex_runtime_condition"] = condition["id"]
-                    expected_descriptor["model_condition_override"] = expected_override
-                    if condition["runtime_id"] == "claude-code":
-                        expected_fingerprint = str(protocol.get("baseline_pool", {}).get("protocol_fingerprint", ""))
-                    else:
-                        comparison_descriptor = runner.baseline_comparison_descriptor(seq)
-                        comparison_descriptor["agent"] = expected_descriptor["agent"]
-                        comparison_descriptor["runtime_inputs"] = expected_descriptor["runtime_inputs"]
-                        encoded = json.dumps(comparison_descriptor, sort_keys=True, separators=(",", ":")).encode()
-                        full_hash = hashlib.sha256(encoded).hexdigest()
-                        expected_fingerprint = runner.COMPARISON_IDENTITY_ALIASES.get(
-                            full_hash, full_hash[:runner.BASELINE_POOL_FINGERPRINT_LENGTH]
-                        )
+                        if condition["runtime_id"] == "claude-code":
+                            if condition_runtime is None or claude_condition_runner is None:
+                                raise ValueError("Claude Code condition validator is unavailable")
+                            importlib.reload(condition_runtime)
+                            importlib.reload(claude_condition_runner)
+                            claude_condition_runner.configure_model_condition(
+                                str(condition["id"]), str(condition["model"]), str(condition["reasoning_effort"])
+                            )
+                            expected_descriptor = copy.deepcopy(frozen_descriptor)
+                        else:
+                            expected_descriptor["agent"].update({
+                                "model": condition["model"],
+                                "model_condition_id": condition["id"],
+                                "reasoning_effort": condition["reasoning_effort"],
+                            })
+                            expected_descriptor["runtime_inputs"]["codex_runtime_condition"] = condition["id"]
+                        expected_descriptor["model_condition_override"] = expected_override
+                        if condition["runtime_id"] == "claude-code":
+                            expected_fingerprint = str(protocol.get("baseline_pool", {}).get("protocol_fingerprint", ""))
+                        else:
+                            comparison_descriptor = runner.baseline_comparison_descriptor(seq)
+                            comparison_descriptor["agent"] = expected_descriptor["agent"]
+                            comparison_descriptor["runtime_inputs"] = expected_descriptor["runtime_inputs"]
+                            encoded = json.dumps(comparison_descriptor, sort_keys=True, separators=(",", ":")).encode()
+                            full_hash = hashlib.sha256(encoded).hexdigest()
+                            expected_fingerprint = runner.COMPARISON_IDENTITY_ALIASES.get(
+                                full_hash, full_hash[:runner.BASELINE_POOL_FINGERPRINT_LENGTH]
+                            )
                 else:
                     expected_fingerprint = runner.baseline_protocol_fingerprint(seq)
             except Exception as exc:
@@ -4027,6 +4189,31 @@ def validate_document_lifecycle(
             errors.append(f"retired duplicate evaluation surface still exists: {rel}")
 
 
+def validate_baseline_v5_authorization(errors: list[str]) -> None:
+    path = ROOT / "sources/evaluations/audits/baseline-v5-task-family-qualification-20260801.json"
+    try:
+        audit = json.loads(path.read_text(), object_pairs_hook=_json_object_without_duplicate_keys)
+    except (OSError, ValueError, json.JSONDecodeError) as exc:
+        errors.append(f"Baseline V5 authorization audit cannot be read: {exc}")
+        return
+    expected_scope = {
+        "fastify-lifecycle-sequence-v0",
+        "beets-lifecycle-sequence-v0",
+        "terraform-lifecycle-sequence-v0",
+    }
+    if (
+        type(audit.get("schema_version")) is not int
+        or audit.get("schema_version") != 1
+        or audit.get("generation") != "baseline-v5"
+        or set(audit.get("scope", [])) != expected_scope
+        or audit.get("acceptance_gate") != "affected-component-compilation"
+        or audit.get("quality_diagnostics_gate") is not False
+        or audit.get("provider_free_qualification_required") is not True
+        or audit.get("paid_pilot_authorized") is not False
+    ):
+        errors.append("Baseline V5 authorization audit must bind compile-only acceptance and deny provider spend")
+
+
 def main() -> int:
     errors: list[str] = []
     for rel in REQUIRED_PATHS + LOCAL_SKILL_ARTIFACTS + TRUTHMARK_ARTIFACTS:
@@ -4118,6 +4305,7 @@ def main() -> int:
     validate_retired_baseline_v2_audit(errors)
     validate_baseline_v3_qualification_audit(errors)
     validate_baseline_v4_qualification_audit(errors)
+    validate_baseline_v5_authorization(errors)
     validate_current_baseline_replication_authority(errors)
     validate_frozen_protocol_bindings(errors)
     for path in (ROOT / "data/workflow-task-sequences.json", ROOT / "templates/evaluation-run-record.json"):

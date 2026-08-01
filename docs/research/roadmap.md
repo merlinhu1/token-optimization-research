@@ -2,7 +2,9 @@
 
 ## Current state
 
-The corrected first natural-use screen and its prospective six-profile eligible replication are complete. Fastify, Beets, and Terraform retain four eligible GPT-5.6 Luna/`xhigh` bare-Codex baselines each (`r0`–`r3`). The historical natural-use Sol/`high` panel contributes nine controls, the assisted-v1 Sol/`high` panel adds three separate controls, the Baseline V3 pilot adds three first-valid controls, Baseline V4 adds independently audited Beets and Terraform controls under corrected low-complexity fingerprints, the current-panel r1 replication adds three controls, valid r2 lanes add Fastify and Terraform, and the distinct Beets r3 replacement completes the low-complexity three-run panel. The active registry contains 167 accepted sessions: 35 baselines, 3 replacement-runtime OpenCode controls, and 129 individual-tool treatments. Invalid sessions were deleted rather than relabelled as baseline, with explicit receipts preserving the adjudications.
+The active execution contract is Baseline V5 across Fastify, Beets, and Terraform: discovery-oriented two-file compile repairs, affected-component compile commands per task, and one final project-wide compile gate. Provider-free qualification passes, but the three frozen GPT-5.6 Sol/`high` baseline protocols are unexecuted and paid pilot execution is not authorized.
+
+The corrected first natural-use screen and its prospective six-profile eligible replication are complete. Fastify, Beets, and Terraform retain four eligible GPT-5.6 Luna/`xhigh` bare-Codex baselines each (`r0`–`r3`). The historical natural-use Sol/`high` panel contributes nine controls, the assisted-v1 Sol/`high` panel adds three separate controls, the Baseline V3 pilot adds three first-valid controls, Baseline V4 adds independently audited Beets and Terraform controls under corrected low-complexity fingerprints, the current-panel r1 replication adds three controls, valid r2 lanes add Fastify and Terraform, and the distinct Beets r3 replacement completes the low-complexity three-run panel. The registry contains 212 accepted sessions: 38 baselines, 9 replacement-runtime controls, and 165 individual-tool treatments. Invalid sessions were deleted rather than relabelled as baseline, with explicit receipts preserving the adjudications.
 
 The corrected first screen used final cumulative provider usage per thread. Across 16 eligible matched assignments, treatments retained 551,060,181 provider tokens against 509,861,580 repeated matched-baseline tokens (+8.08%), with 141/144 task verifiers. TokenJuice (-22.28%) and SigMap (-9.60%) were the only conditions below baseline on all three repositories in that screen.
 
@@ -30,12 +32,12 @@ The next-five OpenCode r1 screen is complete against a fresh 122,994-token / 66,
 
 Do not rerun occupied natural-use samples to replace unfavorable, high-variance, or near-neutral results. New provider work must be prospective, separately indexed, and explicitly authorized.
 
-1. Keep failed Baseline V2 and non-passing Baseline V3 pilot identities immutable; never rerun them to replace diagnostic outcomes.
-2. Use the independent V3 zero-incident audit for Fastify and the independent V4 audit for Beets and Terraform as their sole per-sequence treatment gates.
-3. Preserve the V4 task, qualification, protocol, preparation, receipt, compact session, and audit identities exactly; never rerun either occupied V4 r0.
+1. Preserve every Baseline V2/V3/V4 task, qualification, protocol, receipt, compact session, and audit identity exactly; never rewrite or rerun an occupied historical identity.
+2. Keep Baseline V5 paid pilot execution blocked until the experiment owner explicitly authorizes the three unoccupied r0 identities.
+3. After authorization, retain the first operationally valid Baseline V5 sample per sequence and require all component compile outcomes plus final project compilation to pass before treatment protocol freeze.
 4. Give any authorized treatment and its compatible control identical task-assistance bytes while preserving product-authored treatment guidance and forbidding evaluator-authored tool steering.
 5. Retain the three-task persistent-session structure and first-valid-sample policy.
 6. Keep treatment telemetry observational; do not force tool uptake.
 7. Preregister any future stack under a new identity.
 
-Natural-use, assisted-v1, Baseline V2, Baseline V3, and Baseline V4 answer different questions and are not exchangeable populations. Baseline V2 has one failed, unpublished provider-backed attempt. Baseline V3 has retained controls under its exact contract but no treatment result; only Fastify passed its per-sequence treatment gate. Baseline V4 has retained, zero-incident-audited Beets and Terraform controls but no treatment result. The valid mixed-generation controls now contain three runs per lane: 783,883 provider tokens and 322,096.0 weighted token-cost units under `fresh + 0.1×cached + 6×output`.
+Natural-use, assisted-v1, Baseline V2, Baseline V3, Baseline V4, and Baseline V5 answer different questions and are not exchangeable populations. Baseline V2 has one failed, unpublished provider-backed attempt. Baseline V3 and V4 retain historical controls under their exact contracts. Baseline V5 currently has provider-free qualification and frozen unexecuted protocols only—no provider sample or treatment result. The historical mixed-generation panel contains three runs per lane: 783,883 provider tokens and 322,096.0 weighted token-cost units under `fresh + 0.1×cached + 6×output`.

@@ -15,15 +15,16 @@ Every active sequence, task ID, qualification file, and current execution contra
 - Pin the upstream repository commit.
 - Build authentic tasks from upstream code/history.
 - Start patches must be independently applicable and compose without overlap.
-- Feature and review start states fail semantic acceptance.
-- Refactor starts must pass behavior acceptance and fail only the disclosed structural/performance gate.
-- Model-facing prompts may disclose the intended implementation recipe, target files and symbols, exact focused validation commands, environment constraints, and a stop condition. Solution-directed task assistance is a workload control for provider-token measurement; it must be identical across compatible baseline and treatment sessions and must not require or prefer treatment-tool invocation.
+- Active Baseline V5 tasks seed compile failures in exactly two related production files. Every task's affected-component compile command must fail on its standalone and composite seeded state and pass after its cumulative repair; the fully repaired snapshot must also pass the frozen project-wide compile command.
+- Model-facing Baseline V5 prompts describe the affected component, withhold the exact edit recipe, permit normal repository search and inspection, disclose the affected-component compile command, and forbid changes to tests, generated files, dependency locks, or evaluation controls.
+- Compilation is the only active task/workflow acceptance gate. Unit tests, behavioral fidelity, style, maintainability, exact source shape, and source review are diagnostic only.
+- Historical **Solution-directed task assistance** remains valid only for executed frozen V2/V3/V4 protocols; it must not be copied into active V5 prompts. Compatible baseline and treatment sessions must still receive identical task-assistance bytes and must not require or prefer treatment-tool invocation.
 - Review tasks include the exact proposed patch under review.
-- Run all concealed verifiers after the final prompt in one persistent workflow.
+- Run all component compile verifiers and the project-wide compile verifier after the final prompt in one persistent workflow.
 
 ## Evidence and execution
 
-Qualification JSON is generated executable evidence; never hand-edit it. Production runs require provider-reported cumulative tokens and isolated baseline/treatment conditions. Verifier and source-review outcomes are diagnostic and must not gate token accounting or trigger pass-selection reruns. Do not infer a token result from qualification readiness.
+Qualification JSON is generated executable evidence; never hand-edit it. Production runs require provider-reported cumulative tokens and isolated baseline/treatment conditions. Baseline V5 component and project compilation gate task/workflow acceptance and treatment unlock, but do not gate provider-token sample retention. Broader verifier and source-review outcomes are diagnostic and must not trigger pass-selection reruns. Do not infer a token result from qualification readiness.
 
 Lifecycle-v0 treatment execution is availability/natural-use only after faithful product installation. Install every tool-author-recommended normal integration surface—including its own hooks, wrappers, proxies, MCP exposure, product-authored instructions, rules, or skills. Evaluator-authored steering, quotas, and forced calls are forbidden, but evaluator neutrality must never remove or contradict the product's own guidance. Server-only, guidance-free, or otherwise reduced setups are explicit ablations rather than canonical product treatments. Zero explicit model-issued tool commands after faithful installation remains a valid observed outcome because the intervention may operate below or around the model-visible command surface. Preserve the first valid assignment sample and interpret mechanism evidence only from instrumentation appropriate to the declared integration.
 

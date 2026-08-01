@@ -93,6 +93,8 @@ def render_tasks(sequences: list[dict[str, Any]]) -> str:
         chunks.append(f"- Fixture: `{sequence['fixture_id']}`")
         chunks.append(f"- Primary metric: {sequence.get('primary_metric', '')}")
         chunks.append(f"- Reset policy: {sequence.get('reset_policy', '')}")
+        if sequence.get("project_compile_command"):
+            chunks.append(f"- Final project compile: `{sequence['project_compile_command']}`")
         chunks.append("")
         chunks.append("| Order | Task | Prompt | Verifier |")
         chunks.append("|---:|---|---|---|")
@@ -169,7 +171,7 @@ def render() -> str:
     current_default_pool_fingerprints = {}
     for sequence in sequences:
         gate = sequence.get("mistake_gate")
-        if sequence.get("task_family_generation") in {"baseline-v2", "baseline-v3", "baseline-v4"} and isinstance(gate, dict):
+        if sequence.get("task_family_generation") in {"baseline-v2", "baseline-v3", "baseline-v4", "baseline-v5"} and isinstance(gate, dict):
             current_protocol, _document = workflow.current_baseline_v2_protocol(sequence, gate, ROOT)
             current_default_pool_fingerprints[sequence["id"]] = current_protocol["baseline_pool_fingerprint"]
         else:
@@ -391,9 +393,9 @@ python3 scripts/validate_repository.py
 
 ## Evidence boundary
 
-A valid low-complexity workflow pre-seeds every regression and its focused model-visible acceptance test into one qualified composite broken root, then materializes one prompt at a time. Each prompt supplies one exact mechanical old-to-new edit command plus only its focused validation command; Beets uses the locked project environment and Terraform exports the pinned Go toolchain path explicitly. Seed patch files, controller scripts, and fixed parents remain outside the model-visible surface; final verification repeats only the commands and behavior disclosed in each prompt. Product-effect eligibility also requires parity with the pinned official Codex integration and positive treatment-assignment evidence; MCP configuration/listing alone is insufficient.
+A valid Baseline V5 workflow pre-seeds every two-file compile regression into one qualified composite broken root, then materializes one prompt at a time. Each prompt describes the affected component without an exact edit recipe, permits normal repository search and inspection, and discloses only its affected-component compile command. Beets uses the locked project environment and Terraform binds the snapshot-required Go toolchain explicitly. Seed patch files, controller scripts, and fixed parents remain outside the model-visible surface; final verification repeats the three component compile commands and then executes the frozen project-wide compile command. Product-effect eligibility also requires parity with the pinned official integration and positive treatment-assignment evidence; configuration/listing alone is insufficient.
 
-Every active task must use causally related behavioral acceptance. Unrelated exact-source restoration guards are not valid complexity.
+Every active task uses compile-only acceptance. Unit tests, behavioral fidelity, style, maintainability, and source review remain diagnostic and do not determine task pass/fail.
 
 ## Active sequences
 
@@ -407,14 +409,16 @@ Every active task must use causally related behavioral acceptance. Unrelated exa
 
 Before changing a sequence to `active`, require:
 
-- the smallest causally related production surface that satisfies explicit semantic acceptance, with no arbitrary changed-file minimum;
-- behavioral seeded-fail/fixed-pass gates;
-- a conflict-free composite seed whose task verifiers all fail at lane start;
+- two causally related production files per task;
+- standalone seeded compile failure and fixed compile success for every task;
+- a conflict-free composite seed whose task compile verifiers all fail at lane start;
 - one parentless model-facing Git baseline with the fixed commit inaccessible;
-- final-only execution of focused acceptance whose complete behavior and command are model-visible;
-- controller-only seed patch files and fixed references, with no undisclosed acceptance assertions;
-- cumulative provider usage capture, verifier integrity, isolation, structured verifier diagnostics, and optional source review;
-- a machine-validated independent pilot audit with every required incident count equal to zero before any treatment protocol can be frozen, prepared, or run.
+- prompts that permit repository search and withhold exact edit recipes;
+- one model-visible affected-component compile command per task and no injected acceptance-test assets;
+- one frozen project-wide compile command after the three component verifiers;
+- controller-only seed patch files and fixed references;
+- cumulative provider usage capture, verifier integrity, isolation, structured compile outcomes, and optional quality diagnostics;
+- a machine-validated compile-passing provider pilot before any treatment protocol can be frozen, prepared, or run.
 
 A no-model prepare for a frozen candidate is allowed:
 
@@ -423,7 +427,7 @@ SEQUENCE_ID={prepare_sequence_id}
 python3 scripts/run_sequential_workflow_matrix.py "$SEQUENCE_ID" {prepare_model_flags} --prepare-only
 ```
 
-`prepare-verification.json` must show every task preseeded, only task 1's prompt materialized, a clean true-root Git baseline, no fixed commit object or prior reflog, current composite qualification, no controller seed/verifier files in the model root, and the declared focused acceptance tests visible.
+`prepare-verification.json` must show every task preseeded, only task 1's prompt materialized, a clean true-root Git baseline, no fixed commit object or prior reflog, current composite qualification including a passing project-wide compile boundary, no controller seed/verifier files in the model root, no injected acceptance-test assets, and the current task's affected-component compile command visible.
 
 ## Paid execution
 
