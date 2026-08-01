@@ -2835,7 +2835,7 @@ def ensure_codex_native_binary_executable() -> None:
     codex_root = CODEX_RUNTIME_ROOT / "node_modules"
     if not codex_root.exists():
         return
-    for binary in codex_root.glob("@openai/codex-*/vendor/*/bin/codex"):
+    for binary in [CODEX_HOST_EXECUTABLE, *codex_root.glob("@openai/codex-*/vendor/*/bin/codex")]:
         try:
             mode = binary.stat().st_mode
             binary.chmod(mode | 0o111)
