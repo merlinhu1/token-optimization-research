@@ -6332,13 +6332,21 @@ class BaselineV3LowComplexityContractTest(unittest.TestCase):
         registry = json.loads((ROOT / "data/workflow-sessions.json").read_text())
         for sequence_id in authority["execution_contract"]["sequence_order"]:
             passed, reason = matrix.opencode_baseline_run_gate(registry, sequence_id, 1, ROOT)
-            self.assertTrue(passed, reason)
+            attempt_path = matrix.opencode_baseline_attempt_path(sequence_id, 1, ROOT)
             self.assertEqual(
-                matrix.opencode_baseline_attempt_path(sequence_id, 1, ROOT).relative_to(ROOT).as_posix(),
+                attempt_path.relative_to(ROOT).as_posix(),
                 "sources/evaluations/audits/lifecycle-v1-opencode-sol-high-r1-attempts/"
                 + sequence_id.removesuffix("-lifecycle-sequence-v1")
                 + "-r1.json",
             )
+            recovery_authorized = matrix.opencode_lifecycle_v1_r1_no_provider_recovery_authorized(
+                sequence_id, 1, ROOT
+            )
+            if attempt_path.is_file() and not recovery_authorized:
+                self.assertFalse(passed)
+                self.assertIn("identity is occupied by immutable attempt receipt", reason)
+            else:
+                self.assertTrue(passed, reason)
 
     def test_opencode_lifecycle_v1_r1_no_provider_recovery_requires_exact_authority(self) -> None:
         sequence_id = "fastify-lifecycle-sequence-v1"
