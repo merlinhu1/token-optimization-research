@@ -28,6 +28,7 @@ if str(ROOT) not in sys.path:
 
 from scripts import audit_tool_isolation
 from scripts import extract_codex_usage
+from scripts import generate_current_evaluation_panel as current_panel
 from scripts import generate_workflow_qualification as qualification
 from scripts import refresh_workflow_contracts as contract_refresh
 from scripts import run_codescope_neutral_mcp as codescope_adapter
@@ -2966,6 +2967,155 @@ class ManifestAndProtocolContractTest(unittest.TestCase):
                 runner.find_canonical_baseline_record({"sessions": [session]}, sequence, 0),
                 session,
             )
+
+    def test_canonical_baseline_lookup_uses_frozen_pool_when_live_descriptor_drifts(self) -> None:
+        sequence = {
+            "id": "unit-sequence",
+            "task_family_generation": "lifecycle-v1",
+            "mistake_gate": {},
+        }
+        identity = {"protocol_id": "canonical", "path": "protocols/canonical.json", "sha256": "a" * 64}
+        selected = {
+            "descriptor_sha256": "b" * 64,
+            "descriptor": {
+                "execution_role": "baseline",
+                "selected_profile": {"profile_id": "baseline-bare-codex"},
+            },
+        }
+        session = {
+            "schema_version": 2,
+            "session_id": "frozen-baseline",
+            "session_role": "baseline",
+            "status": "completed",
+            "replicate_index": 1,
+            "task_sequence": {"sequence_id": "unit-sequence"},
+            "profile": {"profile_id": "baseline-bare-codex"},
+            "baseline_pool": {"protocol_fingerprint": "frozen-pool"},
+            "frozen_protocol": identity,
+            "selected_execution": selected,
+            "interpretation": {"accepted_for_execution": True},
+        }
+        with mock.patch.object(runner, "baseline_protocol_fingerprint", return_value="live-pool"), \
+             mock.patch.object(
+                 runner,
+                 "current_baseline_v2_protocol",
+                 return_value=(
+                     identity,
+                     {
+                         "baseline_pool": {"protocol_fingerprint": "frozen-pool"},
+                         "selected_execution": selected,
+                     },
+                 ),
+             ):
+            self.assertIs(
+                runner.find_canonical_baseline_record({"sessions": [session]}, sequence, 1),
+                session,
+            )
+
+    def test_v1_opencode_panel_resolves_matched_baselines_and_matches_checked_in_audit(self) -> None:
+        sequence_ids = (
+            "fastify-lifecycle-sequence-v1",
+            "beets-lifecycle-sequence-v1",
+        )
+        panel = current_panel.build_panel(
+            ROOT,
+            model_condition_id="opencode-openai-gpt-5-6-sol-high",
+            replicate_index=1,
+            date="2026-08-02",
+            sequence_ids=sequence_ids,
+        )
+        self.assertEqual(panel["condition"]["workflows"], list(sequence_ids))
+        self.assertEqual(panel["baseline"]["session_ids"], [
+            "baseline-fastify-20260802-p-72ac148f730b-r1",
+            "baseline-beets-20260802-p-d8cfc5066f76-r1",
+        ])
+        self.assertEqual(panel["baseline"]["usage"]["weighted_tokens"], 537428.6)
+        self.assertEqual(panel["results_ranked_by_primary_metric"], [{
+            "profile_id": "runtime-opencode-codex-product-v1",
+            "artifact_slug": "opencode",
+            "session_ids": [
+                "opencode-fastify-20260802-p-72ac148f730b-r1",
+                "opencode-beets-20260802-p-d8cfc5066f76-r1",
+            ],
+            "workflow_count": 2,
+            "accepted_task_count": 6,
+            "usage": {
+                "fresh_input_tokens": 203852,
+                "cached_input_tokens": 3646976,
+                "output_tokens": 27084,
+                "reasoning_tokens": 7571,
+                "raw_provider_tokens": 3877912,
+                "weighted_tokens": 731053.6,
+            },
+            "raw_delta_vs_baseline_percent": 44.18,
+            "weighted_delta_vs_baseline_percent": 36.03,
+            "raw_rank": 1,
+        }])
+        audit_path = ROOT / "sources/evaluations/audits/lifecycle-v1-opencode-sol-high-r1-weighted-panel-results-20260802.json"
+        self.assertEqual(json.loads(audit_path.read_text()), panel)
+
+    def test_pool_profile_lookup_uses_canonical_frozen_pool_when_live_descriptor_drifts(self) -> None:
+        sequence = {
+            "id": "unit-sequence",
+            "task_family_generation": "lifecycle-v1",
+        }
+        baseline = {
+            "session_id": "frozen-baseline",
+            "baseline_pool": {"protocol_fingerprint": "frozen-pool"},
+        }
+        treatment = {
+            "schema_version": 2,
+            "session_id": "frozen-treatment",
+            "baseline_pool": {"protocol_fingerprint": "frozen-pool"},
+            "replicate_index": 1,
+            "task_sequence": {"sequence_id": "unit-sequence"},
+            "profile": {"profile_id": "runtime-opencode-codex-product-v1"},
+        }
+        with mock.patch.object(runner, "baseline_protocol_fingerprint", return_value="live-pool"), \
+             mock.patch.object(runner, "find_canonical_baseline_record", return_value=baseline):
+            self.assertIs(
+                runner.find_pool_profile_record(
+                    {"sessions": [treatment]},
+                    sequence,
+                    "runtime-opencode-codex-product-v1",
+                    1,
+                ),
+                treatment,
+            )
+
+    def test_comparison_publication_reports_frozen_pool_path(self) -> None:
+        sequence = {"id": "unit-sequence", "fixture_id": "unit"}
+        baseline = {"baseline_pool": {"protocol_fingerprint": "frozen-pool"}}
+        treatment = {"baseline_pool": {"protocol_fingerprint": "frozen-pool"}}
+        comparison_id = "baseline-unit-20260802-vs-opencode-p-frozen-pool-r1"
+        with tempfile.TemporaryDirectory() as tmp:
+            with mock.patch.object(matrix, "ROOT", Path(tmp)), \
+                 mock.patch.object(matrix, "WORKFLOW_ARTIFACT_ROOT", Path("comparisons")), \
+                 mock.patch.object(matrix, "load_json", return_value={"sessions": []}), \
+                 mock.patch.object(matrix.workflow, "load_sequence", return_value=sequence), \
+                 mock.patch.object(matrix, "find_baseline_record", return_value=baseline), \
+                 mock.patch.object(matrix, "baseline_reuse_state", return_value="reusable"), \
+                 mock.patch.object(matrix.workflow, "find_pool_profile_record", return_value=treatment), \
+                 mock.patch.object(matrix.workflow, "reviewed_session_reuse_state", return_value="reusable"), \
+                 mock.patch.object(matrix.workflow, "baseline_protocol_fingerprint", return_value="live-pool"), \
+                 mock.patch.object(matrix.workflow, "artifact_lane_label", return_value="unit"), \
+                 mock.patch.object(matrix.workflow, "artifact_profile_label", return_value="opencode"), \
+                 mock.patch.dict(matrix.workflow.PROJECT_META, {"unit": {"project_id": "unit"}}, clear=True), \
+                 mock.patch.object(matrix.workflow, "write_comparison_if_ready", return_value={"comparison_id": comparison_id}) as write_comparison:
+                self.assertEqual(
+                    matrix.publish_ready_comparisons(
+                        ["unit-sequence"],
+                        ["runtime-opencode-codex-product-v1"],
+                        1,
+                    ),
+                    [f"comparisons/{comparison_id}.json"],
+                )
+                write_comparison.assert_called_once_with(
+                    sequence,
+                    "phase-2-sequential-workflow-v1",
+                    1,
+                    "runtime-opencode-codex-product-v1",
+                )
 
     def test_session_builder_rejects_unpaired_accepted_treatment(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
@@ -6233,7 +6383,7 @@ class BaselineV3LowComplexityContractTest(unittest.TestCase):
     def test_matrix_current_baseline_rejects_unauthorized_lifecycle_v1_pilot_before_lane_root(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             lane_root = Path(tmp) / "lanes"
-            with mock.patch.object(matrix, "controller_validation_python", return_value=sys.executable), mock.patch.object(matrix.workflow, "baseline_v2_pilot_run_gate", return_value=(False, "paid Lifecycle V1 pilot execution is not authorized")), mock.patch.object(matrix, "acquire_production_lock") as acquire_lock, mock.patch.object(matrix.workflow, "reserve_baseline_pilot_attempt") as reserve_attempt, mock.patch.object(matrix, "run_flow_lane") as run_lane:
+            with mock.patch.object(matrix, "controller_validation_python", return_value=sys.executable), mock.patch.object(matrix, "baseline_campaign_state", return_value="missing"), mock.patch.object(matrix.workflow, "baseline_v2_pilot_run_gate", return_value=(False, "paid Lifecycle V1 pilot execution is not authorized")), mock.patch.object(matrix, "acquire_production_lock") as acquire_lock, mock.patch.object(matrix.workflow, "reserve_baseline_pilot_attempt") as reserve_attempt, mock.patch.object(matrix, "run_flow_lane") as run_lane:
                 with self.assertRaisesRegex(ValueError, "not authorized"):
                     matrix.main(["beets-lifecycle-sequence-v1", "--replicate-index", "0", "--lane-root", str(lane_root)])
             self.assertFalse(lane_root.exists()); acquire_lock.assert_not_called(); reserve_attempt.assert_not_called(); run_lane.assert_not_called()
@@ -6331,7 +6481,8 @@ class BaselineV3LowComplexityContractTest(unittest.TestCase):
         )
         registry = json.loads((ROOT / "data/workflow-sessions.json").read_text())
         for sequence_id in authority["execution_contract"]["sequence_order"]:
-            passed, reason = matrix.opencode_baseline_run_gate(registry, sequence_id, 1, ROOT)
+            with mock.patch.object(matrix.workflow, "find_pool_profile_record", return_value=None):
+                passed, reason = matrix.opencode_baseline_run_gate(registry, sequence_id, 1, ROOT)
             attempt_path = matrix.opencode_baseline_attempt_path(sequence_id, 1, ROOT)
             self.assertEqual(
                 attempt_path.relative_to(ROOT).as_posix(),

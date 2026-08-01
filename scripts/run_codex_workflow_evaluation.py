@@ -2336,6 +2336,15 @@ def treatment_experiment_group_id(project_id: str, treatment_profile_id: str, re
 
 def find_pool_profile_record(registry: dict[str, Any], seq: dict[str, Any], profile_id: str, replicate_index: int) -> dict[str, Any] | None:
     fingerprint = baseline_protocol_fingerprint(seq)
+    if seq.get("task_family_generation") == "lifecycle-v1":
+        canonical_baseline = find_canonical_baseline_record(registry, seq, replicate_index)
+        frozen_pool_fingerprint = (
+            canonical_baseline.get("baseline_pool", {}).get("protocol_fingerprint")
+            if canonical_baseline is not None
+            else None
+        )
+        if isinstance(frozen_pool_fingerprint, str) and frozen_pool_fingerprint:
+            fingerprint = frozen_pool_fingerprint
     matches = [
         session for session in registry.get("sessions", [])
         if session.get("schema_version") == 2
@@ -2549,7 +2558,18 @@ def find_canonical_baseline_record(registry: dict[str, Any], seq: dict[str, Any]
     protocol_fingerprint = baseline_protocol_fingerprint(seq)
     expected_protocol_identity: dict[str, Any] | None = None
     expected_selected_execution: dict[str, Any] | None = None
-    expected_identity_loaded = False
+    if seq.get("task_family_generation") == "lifecycle-v1":
+        expected_protocol_identity, expected_protocol = current_baseline_v2_protocol(
+            seq, seq["mistake_gate"], ROOT
+        )
+        expected_protocol_identity = {
+            key: expected_protocol_identity[key]
+            for key in ("protocol_id", "path", "sha256")
+        }
+        frozen_pool_fingerprint = expected_protocol.get("baseline_pool", {}).get("protocol_fingerprint")
+        if isinstance(frozen_pool_fingerprint, str) and frozen_pool_fingerprint:
+            protocol_fingerprint = frozen_pool_fingerprint
+        expected_selected_execution = expected_protocol["selected_execution"]
     matches = []
     for session in registry.get("sessions", []):
         if session.get("schema_version") != 2:
@@ -2566,16 +2586,6 @@ def find_canonical_baseline_record(registry: dict[str, Any], seq: dict[str, Any]
             or selected_descriptor.get("selected_profile", {}).get("profile_id") != "baseline-bare-codex"
         ):
             continue
-        if seq.get("task_family_generation") in {"baseline-v2", "baseline-v3", "baseline-v4", "lifecycle-v1"} and not expected_identity_loaded:
-            expected_protocol_identity, expected_protocol = current_baseline_v2_protocol(
-                seq, seq["mistake_gate"], ROOT
-            )
-            expected_protocol_identity = {
-                key: expected_protocol_identity[key]
-                for key in ("protocol_id", "path", "sha256")
-            }
-            expected_selected_execution = expected_protocol["selected_execution"]
-            expected_identity_loaded = True
         if expected_protocol_identity is not None and (
             session.get("frozen_protocol") != expected_protocol_identity
             or session.get("selected_execution") != expected_selected_execution

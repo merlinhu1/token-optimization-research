@@ -1753,7 +1753,14 @@ def publish_ready_comparisons(
             if treatment is None or workflow.reviewed_session_reuse_state(treatment, ROOT) != "reusable":
                 continue
             project_id = workflow.PROJECT_META[seq["fixture_id"]]["project_id"]
-            fingerprint = workflow.baseline_protocol_fingerprint(seq)
+            frozen_pool_fingerprint = treatment.get("baseline_pool", {}).get("protocol_fingerprint")
+            if not isinstance(frozen_pool_fingerprint, str) or not frozen_pool_fingerprint:
+                frozen_pool_fingerprint = baseline.get("baseline_pool", {}).get("protocol_fingerprint")
+            fingerprint = (
+                frozen_pool_fingerprint
+                if isinstance(frozen_pool_fingerprint, str) and frozen_pool_fingerprint
+                else workflow.baseline_protocol_fingerprint(seq)
+            )
             comparison_id = (
                 f"baseline-{workflow.artifact_lane_label(project_id)}-{workflow.DATE.replace('-', '')}"
                 f"-vs-{workflow.artifact_profile_label(profile_id)}-p-{fingerprint}-r{replicate_index}"
