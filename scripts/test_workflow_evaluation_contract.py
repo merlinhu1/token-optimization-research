@@ -6811,7 +6811,12 @@ class BaselineV3LowComplexityContractTest(unittest.TestCase):
         passed, reason = matrix.opencode_baseline_run_gate(
             registry, "beets-lifecycle-sequence-v1", 2, ROOT, r2_beets_retry=True
         )
-        self.assertTrue(passed, reason)
+        retry_receipt = matrix.opencode_lifecycle_v1_r2_beets_retry_attempt_path(ROOT)
+        if retry_receipt.exists():
+            self.assertFalse(passed)
+            self.assertIn("identity is occupied by immutable attempt receipt", reason)
+        else:
+            self.assertTrue(passed, reason)
         self.assertFalse(
             matrix.opencode_baseline_run_gate(
                 registry, "fastify-lifecycle-sequence-v1", 2, ROOT, r2_beets_retry=True
