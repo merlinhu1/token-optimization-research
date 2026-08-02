@@ -4218,7 +4218,7 @@ class MatrixLifecycleContractTest(unittest.TestCase):
                 "selected_execution": {"descriptor_sha256": "d" * 64},
             }
             (root / "protocol.json").write_text(json.dumps(protocol))
-            authority_path = root / runner.OPENCODE_LIFECYCLE_V1_R0_AUTHORITY_REL
+            authority_path = root / runner.opencode_lifecycle_v1_authority_rel(0)
             authority_path.parent.mkdir(parents=True)
             authority_path.write_text(json.dumps({
                 "owner_authorization": {"message_id": "1533480540332888284"},
@@ -6738,9 +6738,17 @@ class BaselineV3LowComplexityContractTest(unittest.TestCase):
                 self.assertTrue(passed, reason)
 
     def test_opencode_lifecycle_v1_r0_authority_is_sequence_scoped(self) -> None:
-        authority_path = ROOT / "sources/evaluations/audits/lifecycle-v1-opencode-sol-high-r0-authorization-20260802.json"
+        authority_path = ROOT / runner.opencode_lifecycle_v1_authority_rel(0)
+        self.assertEqual(
+            authority_path.relative_to(ROOT).as_posix(),
+            "sources/evaluations/audits/lifecycle-v1-opencode-sol-high-r0-authorization-supersession-20260802.json",
+        )
         self.assertTrue(authority_path.is_file())
         authority = json.loads(authority_path.read_text())
+        self.assertEqual(
+            authority["supersedes"]["authority_path"],
+            "sources/evaluations/audits/lifecycle-v1-opencode-sol-high-r0-authorization-20260802.json",
+        )
         self.assertEqual(authority["owner_authorization"]["message_id"], "1533480540332888284")
         self.assertEqual(
             authority["execution_contract"]["sequence_order"],
