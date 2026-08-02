@@ -34,6 +34,8 @@ from scripts import refresh_workflow_contracts as contract_refresh
 from scripts import run_codescope_neutral_mcp as codescope_adapter
 from scripts import run_codex_workflow_evaluation as runner
 from scripts import run_codex_workflow_model_condition as model_condition_runner
+from scripts import run_opencode_openrouter_workflow_model_condition as opencode_openrouter_condition
+from scripts import run_opencode_workflow_model_condition as opencode_condition_runner
 from scripts import run_sequential_workflow_matrix as matrix
 from scripts import validate_repository
 
@@ -884,6 +886,59 @@ class ActiveCampaignArchitectureTest(unittest.TestCase):
         self.assertEqual(opencode["preflight_command"][1], adapter)
         identity = runner.tool_adapter_identity("runtime-opencode-codex-product-v1")
         self.assertEqual(identity["source_identity"][0]["path"], adapter)
+
+    def test_opencode_openrouter_lifecycle_v1_is_a_separate_provider_free_control(self) -> None:
+        condition = next(
+            item for item in json.loads((ROOT / "data/evaluation-agent-runtimes.json").read_text())["model_conditions"]
+            if item["id"] == "opencode-openrouter-gpt-5-6-sol-high"
+        )
+        self.assertEqual(
+            {key: condition[key] for key in ("id", "runtime_id", "provider", "model", "reasoning_effort", "status")},
+            {
+                "id": "opencode-openrouter-gpt-5-6-sol-high",
+                "runtime_id": "opencode-cli",
+                "provider": "openrouter",
+                "model": "gpt-5.6-sol",
+                "reasoning_effort": "high",
+                "status": "configured-provider-free",
+            },
+        )
+        profile = runner.profile_registry_entry("baseline-opencode-openrouter-no-mcp")
+        self.assertEqual(profile["profile_type"], "control")
+        self.assertEqual(profile["status"], "configured-provider-free")
+        self.assertEqual(profile["substrate"], "opencode-cli")
+        config = runner.fixture.TOOL_CONFIGS["opencode-openrouter-product-v1"]
+        self.assertIn("--provider", config["codex_wrapper"]["args"])
+        self.assertIn("openrouter", config["codex_wrapper"]["args"])
+        self.assertIn("openrouter/openai/gpt-5.6-sol", config["codex_wrapper"]["args"])
+        selected = opencode_openrouter_condition.registered_condition(ROOT)
+        self.assertEqual(selected["provider"], "openrouter")
+
+        script = """
+from scripts import run_codex_workflow_evaluation as runner
+from scripts import run_opencode_openrouter_workflow_model_condition as launcher
+launcher.configure_runner(runner)
+seq = runner.load_sequence('fastify-lifecycle-sequence-v1')
+baseline = runner.baseline_protocol_descriptor(seq)
+execution = runner.execution_condition_descriptor(seq, 'baseline-opencode-openrouter-no-mcp')
+assert baseline['baseline_profile']['profile_id'] == 'baseline-opencode-openrouter-no-mcp'
+assert baseline['agent']['provider'] == 'openrouter'
+assert baseline['agent']['model_condition_id'] == 'opencode-openrouter-gpt-5-6-sol-high'
+assert execution['agent_condition']['provider'] == 'openrouter'
+assert execution['model_condition_override']['launcher']['path'] == 'scripts/run_opencode_openrouter_workflow_model_condition.py'
+print('ok')
+"""
+        result = subprocess.run([sys.executable, "-c", script], cwd=ROOT, text=True, capture_output=True)
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertEqual(result.stdout.strip(), "ok")
+
+    def test_openrouter_provider_execution_requires_new_bounded_authorization(self) -> None:
+        args = argparse.Namespace(
+            profile_id="baseline-opencode-openrouter-no-mcp",
+            prepare_only=False,
+        )
+        with self.assertRaisesRegex(ValueError, "configured provider-free only"):
+            runner.run_one(args)
 
     def test_opencode_preflight_renders_repository_root_adapter_path(self) -> None:
         record = {"target": {"repository_path": str(ROOT)}, "agent": {}}

@@ -200,6 +200,16 @@ class ClaudeUsageContractTest(unittest.TestCase):
 
 
 class OpenCodeUsageContractTest(unittest.TestCase):
+    def test_openrouter_route_requires_the_explicit_opencode_model_namespace(self) -> None:
+        self.assertEqual(
+            opencode_workflow_adapter.provider_route(
+                "openrouter", "openrouter/openai/gpt-5.6-sol"
+            ),
+            ("openrouter", "openrouter/openai/gpt-5.6-sol"),
+        )
+        with self.assertRaisesRegex(ValueError, "OpenRouter"):
+            opencode_workflow_adapter.provider_route("openrouter", "openai/gpt-5.6-sol")
+
     def test_last_message_write_creates_parent(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             target = Path(tmp) / "model-output" / "last.txt"

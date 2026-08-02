@@ -22,6 +22,7 @@ This contract governs active Lifecycle V1 provider-token samples, retained lifec
 - The runner captures cumulative provider usage across one persistent sequential agent session.
 - Codex usage comes from provider-reported Codex JSONL snapshots. OpenCode usage comes from unique incremental `step_finish` parts; fresh input, cache read, cache write, visible output, and reasoning are normalized without counting reasoning twice.
 - Replacement-runtime protocols may bind distinct runtime-specific model-condition IDs while holding provider, model, reasoning effort, fixtures, prompts, and baseline pool fixed. The frozen protocol identifies the Codex baseline condition and replacement-runtime treatment condition separately.
+- OpenCode/OpenRouter Sol/high is a separately frozen, provider-free Lifecycle V1 control configuration. It has its own OpenRouter model namespace and baseline pool; it is neither a Codex-provider control nor a cross-provider token-treatment comparison. A provider-backed run remains blocked until a separate bounded authorization binds protocol hashes and a spend budget.
 - The matrix reuses the first operationally valid baseline for a causal comparison fingerprint and replicate.
 - Repository validation requires complete provider usage, structural isolation, clean execution integrity, and recoverable compact evidence—not verifier success or source review.
 - Before any non-baseline provider launch, both repository validation and the direct runner require exact parity approval plus a current provider-free qualification receipt for every active fixture/profile protocol binding; MCP profiles additionally require non-empty `tools/list` proof.
@@ -38,6 +39,7 @@ This contract governs active Lifecycle V1 provider-token samples, retained lifec
 - `data/workflow-task-sequences.json`
 - `data/workflow-sessions.json`
 - `scripts/run_codex_workflow_evaluation.py`
+- `scripts/run_opencode_openrouter_workflow_model_condition.py`
 - `scripts/extract_claude_code_usage.py`
 - `scripts/opencode_workflow_adapter.py`
 - `scripts/extract_opencode_usage.py`
@@ -123,6 +125,7 @@ Update this document whenever token eligibility, comparison identity, provider a
 - ../../../../docs/evaluations/operations/runbook.md
 - ../../../../docs/evaluations/design/token-and-quality-policy.md
 - ../../../../scripts/run_codex_workflow_evaluation.py
+- ../../../../scripts/run_opencode_openrouter_workflow_model_condition.py
 - ../../../../scripts/extract_claude_code_usage.py
 - ../../../../scripts/opencode_workflow_adapter.py
 - ../../../../scripts/extract_opencode_usage.py

@@ -171,6 +171,7 @@ def build_profile_meta() -> dict[str, dict[str, Any]]:
     supported = {
         "baseline-bare-codex": None,
         "baseline-claude-code-no-mcp": None,
+        "baseline-opencode-openrouter-no-mcp": "opencode-openrouter-product-v1",
         **SUPPORTED_WORKFLOW_TOOL_PROFILES,
     }
     profiles: dict[str, dict[str, Any]] = {}
@@ -2257,7 +2258,11 @@ def validate_protocol_for_run(seq: dict[str, Any], profile_id: str, args: argpar
         errors.append("timeout")
     if selected_execution.get("descriptor", {}).get("runtime", {}).get("docker_image") != args.docker_image:
         errors.append("docker_image")
-    control_profile = profile_id in {"baseline-bare-codex", "baseline-claude-code-no-mcp"}
+    control_profile = profile_id in {
+        "baseline-bare-codex",
+        "baseline-claude-code-no-mcp",
+        "baseline-opencode-openrouter-no-mcp",
+    }
     if control_profile:
         if baseline_block.get("profile_id") != profile_id:
             errors.append("profile_id")
@@ -4045,7 +4050,11 @@ def workflow_session_record(
 ) -> dict[str, Any]:
     pmeta = PROFILE_META[profile_id]
     runtime_id = profile_runtime_id(profile_id)
-    baseline_control_profile = profile_id in {"baseline-bare-codex", "baseline-claude-code-no-mcp"}
+    baseline_control_profile = profile_id in {
+        "baseline-bare-codex",
+        "baseline-claude-code-no-mcp",
+        "baseline-opencode-openrouter-no-mcp",
+    }
     if baseline_control_profile and comparison_baseline_session_id:
         raise ValueError("baseline session must not carry a comparison baseline binding")
     accepted = bool(summary.get("accepted"))
@@ -4505,6 +4514,10 @@ def run_one(args: argparse.Namespace) -> dict[str, Any]:
     clear_ambient_git_object_environment()
     if args.prepare_only:
         return _run_one_locked(args)
+    if args.profile_id == "baseline-opencode-openrouter-no-mcp":
+        raise ValueError(
+            "OpenRouter Lifecycle V1 is configured provider-free only; a separate owner authorization is required before any provider-backed run"
+        )
     selected_sequence = load_sequence(args.sequence_id)
     require_claude_lifecycle_v1_matrix_launch(
         args.profile_id,
@@ -4554,7 +4567,11 @@ def _run_one_locked(args: argparse.Namespace) -> dict[str, Any]:
     if seq["fixture_id"] not in PROJECT_META:
         raise ValueError(f"No runner metadata for fixture {seq['fixture_id']}")
     profile_id = args.profile_id
-    baseline_control_profile = profile_id in {"baseline-bare-codex", "baseline-claude-code-no-mcp"}
+    baseline_control_profile = profile_id in {
+        "baseline-bare-codex",
+        "baseline-claude-code-no-mcp",
+        "baseline-opencode-openrouter-no-mcp",
+    }
     if profile_id not in PROFILE_META:
         raise ValueError(f"No runner metadata for profile {profile_id}")
     standalone_opencode_control = standalone_opencode_control_authorized(
