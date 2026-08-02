@@ -62,10 +62,8 @@ Treatment protocol freezing, preparation, and execution are machine-blocked for 
 Provider-free preparation remains available for lanes without a reusable operational baseline; paid commands are listed only for unoccupied pilot identities:
 
 ```bash
-python3 scripts/run_sequential_workflow_matrix.py fastify-lifecycle-sequence-v1 --max-parallel 1 --workflow-model-condition-id codex-openai-gpt-5-6-sol-high --workflow-model gpt-5.6-sol --workflow-reasoning-effort high --prepare-only
 python3 scripts/run_sequential_workflow_matrix.py beets-lifecycle-sequence-v1 --max-parallel 1 --workflow-model-condition-id codex-openai-gpt-5-6-sol-high --workflow-model gpt-5.6-sol --workflow-reasoning-effort high --prepare-only
 python3 scripts/run_sequential_workflow_matrix.py terraform-lifecycle-sequence-v1 --max-parallel 1 --workflow-model-condition-id codex-openai-gpt-5-6-sol-high --workflow-model gpt-5.6-sol --workflow-reasoning-effort high --prepare-only
-python3 scripts/run_sequential_workflow_matrix.py fastify-lifecycle-sequence-v1 --max-parallel 1 --workflow-model-condition-id codex-openai-gpt-5-6-sol-high --workflow-model gpt-5.6-sol --workflow-reasoning-effort high
 python3 scripts/run_sequential_workflow_matrix.py beets-lifecycle-sequence-v1 --max-parallel 1 --workflow-model-condition-id codex-openai-gpt-5-6-sol-high --workflow-model gpt-5.6-sol --workflow-reasoning-effort high
 python3 scripts/run_sequential_workflow_matrix.py terraform-lifecycle-sequence-v1 --max-parallel 1 --workflow-model-condition-id codex-openai-gpt-5-6-sol-high --workflow-model gpt-5.6-sol --workflow-reasoning-effort high
 ```
