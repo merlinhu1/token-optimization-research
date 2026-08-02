@@ -6777,10 +6777,10 @@ class BaselineV3LowComplexityContractTest(unittest.TestCase):
                     model_condition_id="opencode-openai-gpt-5-6-sol-high",
                 )
             )
+            attempt_path = matrix.opencode_baseline_attempt_path(sequence_id, 0, ROOT)
             with mock.patch.object(matrix.workflow, "find_pool_profile_record", return_value=None):
                 passed, reason = matrix.opencode_baseline_run_gate(registry, sequence_id, 0, ROOT)
-            self.assertTrue(passed, reason)
-            attempt_path = matrix.opencode_baseline_attempt_path(sequence_id, 0, ROOT)
+            self.assertEqual(passed, not attempt_path.is_file(), reason)
             self.assertEqual(
                 attempt_path.relative_to(ROOT).as_posix(),
                 "sources/evaluations/audits/lifecycle-v1-opencode-sol-high-r0-attempts/"
