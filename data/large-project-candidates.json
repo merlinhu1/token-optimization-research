@@ -1,28 +1,25 @@
 {
   "schema_version": 1,
-  "description": "Large-project candidates bound only to the v0 lifecycle portfolio.",
+  "description": "Large-project candidate retained as historical Lifecycle V1 evidence; no active large workflow is selected.",
   "selection_policy": {
     "include": "Large, active, public repositories with substantial software-engineering task surfaces and feasible subsystem-scoped verification.",
     "exclude": "User-owned/local personal projects, toy fixtures, archived repositories, and projects where no bounded verifier can be frozen.",
     "promotion_required": "Clone/pin a clean snapshot, freeze one task prompt, freeze setup/reset/verifier commands, and record blocker-free raw artifact paths before marking primary-objective.",
-    "active_fixture_count": 1,
-    "target_matrix": "One active large workflow: Terraform (Go)."
+    "active_fixture_count": 0,
+    "target_matrix": "Historical Terraform evidence only."
   },
   "candidates": [
     {
       "id": "large-hashicorp-terraform",
-      "status": "production-qualified",
-      "workflow_sequence_id": "terraform-lifecycle-sequence-v1",
-      "qualification_status": "active-reproduction-flow",
+      "status": "historical-evidence",
+      "qualification_status": "historical-evidence",
       "qualification_evidence": "sources/evaluations/fixtures/large/hashicorp-terraform/qualification-lifecycle-v1.json",
       "tasks": [
         "terraform-lifecycle-feature-v1",
         "terraform-lifecycle-refactor-v1",
         "terraform-lifecycle-review-v1"
       ],
-      "active_profiles": [
-        "baseline-bare-codex"
-      ],
+      "active_profiles": [],
       "github": "hashicorp/terraform",
       "url": "https://github.com/hashicorp/terraform",
       "language": "Go",
@@ -30,7 +27,7 @@
       "default_branch": "main",
       "setup_policy": "Use the pinned Go toolchain and run go mod download before bounded verification.",
       "verifier_policy": "Use bounded Go test selectors for the controller-held regression closure plus the task verifier; do not run the full repository test suite for every replicate.",
-      "selection_status": "production-fixture"
+      "selection_status": "historical-evidence"
     }
   ]
 }
