@@ -4208,11 +4208,64 @@ class MatrixLifecycleContractTest(unittest.TestCase):
             self.assertEqual(result["exit_code"], 1)
             self.assertTrue(receipt.is_file())
 
+    def test_opencode_lifecycle_v1_parent_reserves_before_clone(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            run_root = root / "matrix"
+            protocol = {
+                "protocol_id": "unit-protocol",
+                "baseline_pool": {"protocol_fingerprint": "unit-pool"},
+                "selected_execution": {"descriptor_sha256": "d" * 64},
+            }
+            (root / "protocol.json").write_text(json.dumps(protocol))
+            authority_path = root / runner.OPENCODE_LIFECYCLE_V1_R0_AUTHORITY_REL
+            authority_path.parent.mkdir(parents=True)
+            authority_path.write_text(json.dumps({
+                "owner_authorization": {"message_id": "1533480540332888284"},
+            }))
+            receipt = root / matrix.OPENCODE_LIFECYCLE_V1_ATTEMPT_DIRS[0] / "fastify-r0.json"
+
+            def clone(destination: Path, _commit: str) -> None:
+                self.assertTrue(receipt.is_file())
+                (destination / "data").mkdir(parents=True)
+                (destination / "data/workflow-sessions.json").write_text('{"sessions": []}\n')
+                (destination / matrix.WORKFLOW_ARTIFACT_ROOT).mkdir(parents=True)
+                (destination / "protocol.json").write_text(json.dumps(protocol))
+
+            with (
+                mock.patch.object(matrix, "ROOT", root),
+                mock.patch.object(matrix, "find_protocol", side_effect=lambda checkout, *_args, **_kwargs: checkout / "protocol.json"),
+                mock.patch.object(matrix, "clone_published_checkout", side_effect=clone),
+                mock.patch.object(matrix, "workflow_lane_command", return_value=["unit-child"]),
+                mock.patch.object(matrix.subprocess, "run", return_value=subprocess.CompletedProcess([], 1)),
+            ):
+                result = matrix.run_flow_lane(
+                    sequence_id="fastify-lifecycle-sequence-v1",
+                    treatment_profile="runtime-opencode-codex-product-v1",
+                    lane_root=run_root,
+                    replicate_index=0,
+                    runner_args=[],
+                    source_codex_home=None,
+                    production_lock_fd=123,
+                    published_launch_commit="unit-published",
+                )
+            self.assertEqual(result["exit_code"], 1)
+            self.assertTrue(receipt.is_file())
+
     def test_claude_lifecycle_v1_direct_provider_launch_is_rejected_without_matrix_lock(self) -> None:
         with mock.patch.object(runner, "inherited_provider_production_lock_fd", return_value=None):
             with self.assertRaisesRegex(ValueError, "must be launched through the serial matrix"):
                 runner.require_claude_lifecycle_v1_matrix_launch(
                     "baseline-claude-code-no-mcp",
+                    {"task_family_generation": "lifecycle-v1"},
+                    prepare_only=False,
+                )
+
+    def test_opencode_lifecycle_v1_direct_provider_launch_is_rejected_without_matrix_lock(self) -> None:
+        with mock.patch.object(runner, "inherited_provider_production_lock_fd", return_value=None):
+            with self.assertRaisesRegex(ValueError, "must be launched through the serial matrix"):
+                runner.require_opencode_lifecycle_v1_matrix_launch(
+                    "runtime-opencode-codex-product-v1",
                     {"task_family_generation": "lifecycle-v1"},
                     prepare_only=False,
                 )
@@ -6683,6 +6736,49 @@ class BaselineV3LowComplexityContractTest(unittest.TestCase):
                 self.assertIn("identity is occupied by immutable attempt receipt", reason)
             else:
                 self.assertTrue(passed, reason)
+
+    def test_opencode_lifecycle_v1_r0_authority_is_sequence_scoped(self) -> None:
+        authority_path = ROOT / "sources/evaluations/audits/lifecycle-v1-opencode-sol-high-r0-authorization-20260802.json"
+        self.assertTrue(authority_path.is_file())
+        authority = json.loads(authority_path.read_text())
+        self.assertEqual(authority["owner_authorization"]["message_id"], "1533480540332888284")
+        self.assertEqual(
+            authority["execution_contract"]["sequence_order"],
+            ["fastify-lifecycle-sequence-v1", "beets-lifecycle-sequence-v1"],
+        )
+        self.assertEqual(authority["execution_contract"]["replicate_index"], 0)
+        self.assertEqual(authority["execution_contract"]["sequential_max_parallel"], 1)
+        for binding in authority["frozen_protocols"]:
+            protocol = json.loads((ROOT / binding["protocol_path"]).read_text())
+            self.assertEqual(
+                protocol["treatment"]["model_condition_id"],
+                authority["execution_contract"]["model_condition_id"],
+            )
+            self.assertEqual(
+                hashlib.sha256((ROOT / binding["protocol_path"]).read_bytes()).hexdigest(),
+                binding["protocol_sha256"],
+            )
+        registry = json.loads((ROOT / "data/workflow-sessions.json").read_text())
+        for sequence_id in authority["execution_contract"]["sequence_order"]:
+            self.assertTrue(
+                runner.standalone_opencode_control_authorized(
+                    "runtime-opencode-codex-product-v1",
+                    0,
+                    ROOT,
+                    sequence_id=sequence_id,
+                    model_condition_id="opencode-openai-gpt-5-6-sol-high",
+                )
+            )
+            with mock.patch.object(matrix.workflow, "find_pool_profile_record", return_value=None):
+                passed, reason = matrix.opencode_baseline_run_gate(registry, sequence_id, 0, ROOT)
+            self.assertTrue(passed, reason)
+            attempt_path = matrix.opencode_baseline_attempt_path(sequence_id, 0, ROOT)
+            self.assertEqual(
+                attempt_path.relative_to(ROOT).as_posix(),
+                "sources/evaluations/audits/lifecycle-v1-opencode-sol-high-r0-attempts/"
+                + sequence_id.removesuffix("-lifecycle-sequence-v1")
+                + "-r0.json",
+            )
 
     def test_opencode_lifecycle_v1_r1_no_provider_recovery_requires_exact_authority(self) -> None:
         sequence_id = "fastify-lifecycle-sequence-v1"

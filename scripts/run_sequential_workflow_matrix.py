@@ -41,9 +41,11 @@ OPENCODE_BASELINE_AUTHORITY_REL = Path(
     "sources/evaluations/audits/opencode-dcp-qualification-and-r2-authorization-20260730.json"
 )
 OPENCODE_BASELINE_ATTEMPT_DIR = Path("sources/evaluations/audits/opencode-bare-r2-attempts")
-OPENCODE_LIFECYCLE_V1_R1_ATTEMPT_DIR = (
-    "sources/evaluations/audits/lifecycle-v1-opencode-sol-high-r1-attempts"
-)
+OPENCODE_LIFECYCLE_V1_ATTEMPT_DIRS = {
+    0: Path("sources/evaluations/audits/lifecycle-v1-opencode-sol-high-r0-attempts"),
+    1: Path("sources/evaluations/audits/lifecycle-v1-opencode-sol-high-r1-attempts"),
+}
+OPENCODE_LIFECYCLE_V1_R1_ATTEMPT_DIR = OPENCODE_LIFECYCLE_V1_ATTEMPT_DIRS[1]
 OPENCODE_LIFECYCLE_V1_R1_RECOVERY_AUTHORITY_REL = (
     "sources/evaluations/audits/lifecycle-v1-opencode-sol-high-r1-fastify-no-provider-recovery-authorization-20260802.json"
 )
@@ -605,8 +607,12 @@ def opencode_baseline_attempt_path(
     root: Path = ROOT,
 ) -> Path:
     if sequence_id.endswith("-lifecycle-sequence-v1"):
+        try:
+            attempt_dir = OPENCODE_LIFECYCLE_V1_ATTEMPT_DIRS[replicate_index]
+        except KeyError as exc:
+            raise ValueError(f"no OpenCode Lifecycle V1 attempt identity for r{replicate_index}") from exc
         lane = sequence_id.removesuffix("-lifecycle-sequence-v1")
-        return root / OPENCODE_LIFECYCLE_V1_R1_ATTEMPT_DIR / f"{lane}-r{replicate_index}.json"
+        return root / attempt_dir / f"{lane}-r{replicate_index}.json"
     lane = sequence_id.removesuffix("-lifecycle-sequence-v0")
     return root / OPENCODE_BASELINE_ATTEMPT_DIR / f"{lane}-r{replicate_index}.json"
 
@@ -680,7 +686,11 @@ def opencode_baseline_run_gate(
             model_condition_id="opencode-openai-gpt-5-6-sol-high",
         ):
             return False, "Lifecycle V1 OpenCode authority does not match the requested identity"
-        authority_path = root / workflow.OPENCODE_LIFECYCLE_V1_R1_AUTHORITY_REL
+        try:
+            authority_rel = workflow.opencode_lifecycle_v1_authority_rel(replicate_index)
+        except ValueError as exc:
+            return False, str(exc)
+        authority_path = root / authority_rel
         try:
             authority = load_json(authority_path)
         except (OSError, ValueError) as exc:
@@ -707,7 +717,7 @@ def opencode_baseline_run_gate(
             != frozen["baseline_pool_fingerprint"]
         ):
             return False, "Lifecycle V1 OpenCode protocol hash or baseline pool drifted from authority"
-        ready_reason = "owner-authorized Lifecycle V1 OpenCode r1 baseline is unoccupied"
+        ready_reason = f"owner-authorized Lifecycle V1 OpenCode r{replicate_index} baseline is unoccupied"
     else:
         authority_path = root / OPENCODE_BASELINE_AUTHORITY_REL
         if not authority_path.is_file():
@@ -758,14 +768,23 @@ def reserve_opencode_baseline_attempt(
     expected_session_binding: dict[str, Any],
     run_root: Path,
 ) -> Path:
-    path = opencode_baseline_attempt_path(sequence_id, replicate_index, ROOT)
     lifecycle_v1 = sequence_id.endswith("-lifecycle-sequence-v1")
+    path = opencode_baseline_attempt_path(sequence_id, replicate_index, ROOT)
     if path.exists():
         if lifecycle_v1 and opencode_lifecycle_v1_r1_no_provider_recovery_authorized(
             sequence_id, replicate_index, ROOT
         ):
             return path
         raise FileExistsError(f"immutable OpenCode baseline attempt receipt already exists: {path}")
+    authority_rel: Path | None = None
+    owner_authorization_message_id = "1532521147327971438"
+    if lifecycle_v1:
+        authority_rel = workflow.opencode_lifecycle_v1_authority_rel(replicate_index)
+        authority = load_json(ROOT / authority_rel)
+        owner = authority.get("owner_authorization", {})
+        owner_authorization_message_id = owner.get("message_id") if isinstance(owner, dict) else ""
+        if not isinstance(owner_authorization_message_id, str) or not owner_authorization_message_id:
+            raise ValueError("Lifecycle V1 OpenCode authority lacks an owner message ID")
     payload = {
         "schema_version": 1,
         "attempt_status": "reserved-before-provider-task",
@@ -773,9 +792,7 @@ def reserve_opencode_baseline_attempt(
         "replicate_index": replicate_index,
         "profile_id": "runtime-opencode-codex-product-v1",
         "model_condition_id": "opencode-openai-gpt-5-6-sol-high",
-        "owner_authorization_message_id": (
-            "1533309463484694750" if lifecycle_v1 else "1532521147327971438"
-        ),
+        "owner_authorization_message_id": owner_authorization_message_id,
         "orchestrator": str(run_root),
         "reserved_at": dt.datetime.now(dt.UTC).isoformat(),
         "expected_session_binding": expected_session_binding,
@@ -784,7 +801,7 @@ def reserve_opencode_baseline_attempt(
     }
     if lifecycle_v1:
         payload["task_family_generation"] = "lifecycle-v1"
-        payload["authority_path"] = str(workflow.OPENCODE_LIFECYCLE_V1_R1_AUTHORITY_REL)
+        payload["authority_path"] = str(authority_rel)
     workflow.atomic_create_json(path, payload)
     return path
 
@@ -877,6 +894,31 @@ def run_flow_lane(
     if provider_capable and not published_launch_commit:
         raise ValueError("provider-capable lane requires a certified published launch commit")
     parent_claude_receipt_binding: dict[str, Any] | None = None
+    parent_opencode_receipt_binding: dict[str, Any] | None = None
+    if (
+        provider_capable
+        and treatment_profile == "runtime-opencode-codex-product-v1"
+        and sequence_id.endswith("-lifecycle-sequence-v1")
+    ):
+        parent_protocol = find_protocol(
+            ROOT,
+            sequence_id,
+            treatment_profile,
+            model_condition_override=model_condition,
+        )
+        parent_opencode_receipt_binding = expected_session_binding_for_protocol(
+            sequence_id=sequence_id,
+            profile_id=treatment_profile,
+            replicate_index=replicate_index,
+            protocol_path=parent_protocol,
+            root=ROOT,
+        )
+        reserve_opencode_baseline_attempt(
+            sequence_id=sequence_id,
+            replicate_index=replicate_index,
+            expected_session_binding=parent_opencode_receipt_binding,
+            run_root=lane_root,
+        )
     if (
         provider_capable
         and treatment_profile == "baseline-claude-code-no-mcp"
@@ -923,11 +965,11 @@ def run_flow_lane(
         root=checkout,
     )
     if (
-        parent_claude_receipt_binding is not None
-        and expected_session_binding != parent_claude_receipt_binding
+        (parent_claude_receipt_binding is not None and expected_session_binding != parent_claude_receipt_binding)
+        or (parent_opencode_receipt_binding is not None and expected_session_binding != parent_opencode_receipt_binding)
     ):
         raise UnsafeLaneOutputError(
-            "Claude Code Lifecycle V1 child protocol does not match the parent-reserved identity"
+            "Lifecycle V1 child protocol does not match the parent-reserved identity"
         )
     cmd = workflow_lane_command(
         sequence_id=sequence_id,
@@ -966,17 +1008,6 @@ def run_flow_lane(
     tmp.mkdir(parents=True, exist_ok=True)
     try:
         with log_path.open("w") as log:
-            if (
-                provider_capable
-                and production_lock_fd is not None
-                and treatment_profile == "runtime-opencode-codex-product-v1"
-            ):
-                reserve_opencode_baseline_attempt(
-                    sequence_id=sequence_id,
-                    replicate_index=replicate_index,
-                    expected_session_binding=expected_session_binding,
-                    run_root=lane_root,
-                )
             if provider_capable and production_lock_fd is not None and treatment_profile == "baseline-bare-codex":
                 parent_sequence = workflow.load_sequence(sequence_id)
                 if parent_sequence.get("task_family_generation") in {"baseline-v3", "baseline-v4"}:
@@ -2560,7 +2591,13 @@ def main(argv: list[str] | None = None) -> int:
         (sequence_id, profile_id)
         for sequence_id, profile_id in jobs
         if profile_id in {"baseline-bare-codex", "baseline-claude-code-no-mcp", "runtime-opencode-codex-product-v1"}
-        and args.replicate_index > 0
+        and (
+            args.replicate_index > 0
+            or (
+                profile_id == "runtime-opencode-codex-product-v1"
+                and workflow.load_sequence(sequence_id).get("task_family_generation") == "lifecycle-v1"
+            )
+        )
         and workflow.load_sequence(sequence_id).get("task_family_generation") in {"baseline-v3", "baseline-v4", "lifecycle-v1"}
     ]
     if serialized_replication_jobs and args.max_parallel != 1:
