@@ -6801,6 +6801,23 @@ class BaselineV3LowComplexityContractTest(unittest.TestCase):
             )
         )
 
+    def test_opencode_lifecycle_v1_r2_beets_retry_is_exactly_scoped(self) -> None:
+        registry = json.loads((ROOT / "data/workflow-sessions.json").read_text())
+        self.assertTrue(matrix.opencode_lifecycle_v1_r2_beets_retry_authorized(ROOT))
+        self.assertEqual(
+            matrix.opencode_lifecycle_v1_r2_beets_retry_attempt_path(ROOT).relative_to(ROOT).as_posix(),
+            "sources/evaluations/audits/lifecycle-v1-opencode-sol-high-r2-attempts/beets-r2-retry-1.json",
+        )
+        passed, reason = matrix.opencode_baseline_run_gate(
+            registry, "beets-lifecycle-sequence-v1", 2, ROOT, r2_beets_retry=True
+        )
+        self.assertTrue(passed, reason)
+        self.assertFalse(
+            matrix.opencode_baseline_run_gate(
+                registry, "fastify-lifecycle-sequence-v1", 2, ROOT, r2_beets_retry=True
+            )[0]
+        )
+
     def test_opencode_lifecycle_v1_r1_no_provider_recovery_requires_exact_authority(self) -> None:
         sequence_id = "fastify-lifecycle-sequence-v1"
         with tempfile.TemporaryDirectory() as tmp:

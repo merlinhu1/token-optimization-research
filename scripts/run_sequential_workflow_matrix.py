@@ -50,6 +50,12 @@ OPENCODE_LIFECYCLE_V1_R1_ATTEMPT_DIR = OPENCODE_LIFECYCLE_V1_ATTEMPT_DIRS[1]
 OPENCODE_LIFECYCLE_V1_R1_RECOVERY_AUTHORITY_REL = (
     "sources/evaluations/audits/lifecycle-v1-opencode-sol-high-r1-fastify-no-provider-recovery-authorization-20260802.json"
 )
+OPENCODE_LIFECYCLE_V1_R2_BEETS_RETRY_AUTHORITY_REL = (
+    "sources/evaluations/audits/lifecycle-v1-opencode-sol-high-r2-beets-retry-authorization-20260802.json"
+)
+OPENCODE_LIFECYCLE_V1_R2_BEETS_RETRY_ATTEMPT_REL = (
+    "sources/evaluations/audits/lifecycle-v1-opencode-sol-high-r2-attempts/beets-r2-retry-1.json"
+)
 CLAUDE_BASELINE_AUTHORITY_REL = Path(
     "sources/evaluations/audits/claude-code-sol-high-normal-baseline-authorization-20260731.json"
 )
@@ -672,13 +678,112 @@ def opencode_lifecycle_v1_r1_no_provider_recovery_authorized(
     )
 
 
+
+def opencode_lifecycle_v1_r2_beets_retry_authorized(root: Path = ROOT) -> bool:
+    """Authorize one distinct r2 Beets retry without reusing its failed receipt."""
+    sequence_id = "beets-lifecycle-sequence-v1"
+    original_receipt_rel = (
+        "sources/evaluations/audits/lifecycle-v1-opencode-sol-high-r2-attempts/beets-r2.json"
+    )
+    rejection_rel = (
+        "sources/evaluations/audits/lifecycle-v1-opencode-sol-high-r2-beets-ingress-rejection-20260802.json"
+    )
+    fastify_session_id = "opencode-fastify-20260802-p-72ac148f730b-r2"
+    try:
+        original_receipt = (root / original_receipt_rel).read_bytes()
+        rejection = (root / rejection_rel).read_bytes()
+        authority = load_json(root / OPENCODE_LIFECYCLE_V1_R2_BEETS_RETRY_AUTHORITY_REL)
+        registry = load_json(root / "data/workflow-sessions.json")
+    except (OSError, ValueError, json.JSONDecodeError):
+        return False
+    original = json.loads(original_receipt)
+    fastify = next(
+        (session for session in registry.get("sessions", []) if session.get("session_id") == fastify_session_id),
+        None,
+    )
+    contract = authority.get("retry_contract")
+    bindings = authority.get("frozen_protocols")
+    if not (
+        isinstance(original, dict)
+        and original.get("attempt_status") == "reserved-before-provider-task"
+        and original.get("sequence_id") == sequence_id
+        and original.get("replicate_index") == 2
+        and original.get("profile_id") == "runtime-opencode-codex-product-v1"
+        and original.get("model_condition_id") == "opencode-openai-gpt-5-6-sol-high"
+        and isinstance(fastify, dict)
+        and fastify.get("interpretation", {}).get("accepted_for_objective") is True
+        and workflow.pilot_session_artifacts_valid(fastify, root)
+        and authority.get("schema_version") == 1
+        and authority.get("status") == "qualified-ready-for-provider-execution"
+        and authority.get("owner_authorization") == {
+            "source": "discord",
+            "message_id": "1533506744347656284",
+            "request": "I want you to fix the R2 beets and not create R3. Re run the fixed R2 beets",
+            "authorized_action": "one-r2-beets-retry-1-only",
+        }
+        and contract == {
+            "sequence_id": sequence_id,
+            "replicate_index": 2,
+            "profile_id": "runtime-opencode-codex-product-v1",
+            "model_condition_id": "opencode-openai-gpt-5-6-sol-high",
+            "model": "gpt-5.6-sol",
+            "reasoning_effort": "high",
+            "serial_predecessor_session_id": fastify_session_id,
+            "original_attempt_receipt_path": original_receipt_rel,
+            "original_attempt_receipt_sha256": hashlib.sha256(original_receipt).hexdigest(),
+            "original_rejection_audit_path": rejection_rel,
+            "original_rejection_audit_sha256": hashlib.sha256(rejection).hexdigest(),
+            "retry_attempt_receipt_path": str(OPENCODE_LIFECYCLE_V1_R2_BEETS_RETRY_ATTEMPT_REL),
+            "authorized_provider_lane_runs": 1,
+            "authorized_model_turns": 3,
+            "same_replicate_lane_completion": True,
+            "new_replicate_index": None,
+            "rerun_after_attempt_receipt": False,
+        }
+        and isinstance(bindings, list)
+        and len(bindings) == 1
+        and isinstance(bindings[0], dict)
+        and set(bindings[0]) == {
+            "sequence_id", "protocol_path", "protocol_sha256", "baseline_pool_fingerprint"
+        }
+        and bindings[0].get("sequence_id") == sequence_id
+    ):
+        return False
+    binding = bindings[0]
+    try:
+        protocol_raw = (root / str(binding["protocol_path"])).read_bytes()
+        protocol = json.loads(protocol_raw)
+    except (OSError, ValueError, json.JSONDecodeError):
+        return False
+    return bool(
+        hashlib.sha256(protocol_raw).hexdigest() == binding.get("protocol_sha256")
+        and protocol.get("baseline_pool", {}).get("protocol_fingerprint")
+        == binding.get("baseline_pool_fingerprint")
+    )
+
+
+def opencode_lifecycle_v1_r2_beets_retry_attempt_path(root: Path = ROOT) -> Path:
+    return root / OPENCODE_LIFECYCLE_V1_R2_BEETS_RETRY_ATTEMPT_REL
+
+
 def opencode_baseline_run_gate(
     registry: dict[str, Any],
     sequence_id: str,
     replicate_index: int,
     root: Path = ROOT,
+    *,
+    r2_beets_retry: bool = False,
 ) -> tuple[bool, str]:
-    if sequence_id.endswith("-lifecycle-sequence-v1"):
+    if r2_beets_retry:
+        if (
+            sequence_id != "beets-lifecycle-sequence-v1"
+            or replicate_index != 2
+            or not opencode_lifecycle_v1_r2_beets_retry_authorized(root)
+        ):
+            return False, "r2 Beets retry does not match its exact owner authorization"
+        authority = load_json(root / OPENCODE_LIFECYCLE_V1_R2_BEETS_RETRY_AUTHORITY_REL)
+        ready_reason = "owner-authorized distinct r2 Beets retry-1 is unoccupied"
+    elif sequence_id.endswith("-lifecycle-sequence-v1"):
         if not workflow.standalone_opencode_control_authorized(
             "runtime-opencode-codex-product-v1",
             replicate_index,
@@ -688,36 +793,9 @@ def opencode_baseline_run_gate(
         ):
             return False, "Lifecycle V1 OpenCode authority does not match the requested identity"
         try:
-            authority_rel = workflow.opencode_lifecycle_v1_authority_rel(replicate_index)
-        except ValueError as exc:
-            return False, str(exc)
-        authority_path = root / authority_rel
-        try:
-            authority = load_json(authority_path)
+            authority = load_json(root / workflow.opencode_lifecycle_v1_authority_rel(replicate_index))
         except (OSError, ValueError) as exc:
             return False, f"unreadable Lifecycle V1 OpenCode authority: {exc}"
-        matches = [
-            item
-            for item in authority.get("frozen_protocols", [])
-            if isinstance(item, dict) and item.get("sequence_id") == sequence_id
-        ]
-        if len(matches) != 1 or set(matches[0]) != {
-            "sequence_id", "protocol_path", "protocol_sha256", "baseline_pool_fingerprint"
-        }:
-            return False, "Lifecycle V1 OpenCode authority does not bind exactly one frozen protocol"
-        frozen = matches[0]
-        protocol_path = root / str(frozen["protocol_path"])
-        try:
-            protocol_raw = protocol_path.read_bytes()
-            protocol = json.loads(protocol_raw)
-        except (OSError, ValueError) as exc:
-            return False, f"unreadable authorized Lifecycle V1 OpenCode protocol: {exc}"
-        if (
-            hashlib.sha256(protocol_raw).hexdigest() != frozen["protocol_sha256"]
-            or protocol.get("baseline_pool", {}).get("protocol_fingerprint")
-            != frozen["baseline_pool_fingerprint"]
-        ):
-            return False, "Lifecycle V1 OpenCode protocol hash or baseline pool drifted from authority"
         ready_reason = f"owner-authorized Lifecycle V1 OpenCode r{replicate_index} baseline is unoccupied"
     else:
         authority_path = root / OPENCODE_BASELINE_AUTHORITY_REL
@@ -739,9 +817,37 @@ def opencode_baseline_run_gate(
         ):
             return False, "OpenCode baseline authority does not match the requested identity"
         ready_reason = "owner-authorized OpenCode r2 baseline is unoccupied"
-    receipt = opencode_baseline_attempt_path(sequence_id, replicate_index, root)
+
+    if sequence_id.endswith("-lifecycle-sequence-v1"):
+        matches = [
+            item
+            for item in authority.get("frozen_protocols", [])
+            if isinstance(item, dict) and item.get("sequence_id") == sequence_id
+        ]
+        if len(matches) != 1 or set(matches[0]) != {
+            "sequence_id", "protocol_path", "protocol_sha256", "baseline_pool_fingerprint"
+        }:
+            return False, "Lifecycle V1 OpenCode authority does not bind exactly one frozen protocol"
+        frozen = matches[0]
+        try:
+            protocol_raw = (root / str(frozen["protocol_path"])).read_bytes()
+            protocol = json.loads(protocol_raw)
+        except (OSError, ValueError) as exc:
+            return False, f"unreadable authorized Lifecycle V1 OpenCode protocol: {exc}"
+        if (
+            hashlib.sha256(protocol_raw).hexdigest() != frozen["protocol_sha256"]
+            or protocol.get("baseline_pool", {}).get("protocol_fingerprint")
+            != frozen["baseline_pool_fingerprint"]
+        ):
+            return False, "Lifecycle V1 OpenCode protocol hash or baseline pool drifted from authority"
+
+    receipt = (
+        opencode_lifecycle_v1_r2_beets_retry_attempt_path(root)
+        if r2_beets_retry
+        else opencode_baseline_attempt_path(sequence_id, replicate_index, root)
+    )
     if receipt.exists():
-        if opencode_lifecycle_v1_r1_no_provider_recovery_authorized(
+        if not r2_beets_retry and opencode_lifecycle_v1_r1_no_provider_recovery_authorized(
             sequence_id, replicate_index, root
         ):
             ready_reason = "owner-authorized same-r1 recovery after locally proven no-provider subprocess boundary"
@@ -768,9 +874,19 @@ def reserve_opencode_baseline_attempt(
     replicate_index: int,
     expected_session_binding: dict[str, Any],
     run_root: Path,
+    r2_beets_retry: bool = False,
 ) -> Path:
     lifecycle_v1 = sequence_id.endswith("-lifecycle-sequence-v1")
-    path = opencode_baseline_attempt_path(sequence_id, replicate_index, ROOT)
+    if r2_beets_retry:
+        if (
+            sequence_id != "beets-lifecycle-sequence-v1"
+            or replicate_index != 2
+            or not opencode_lifecycle_v1_r2_beets_retry_authorized(ROOT)
+        ):
+            raise ValueError("r2 Beets retry reservation does not match its exact authority")
+        path = opencode_lifecycle_v1_r2_beets_retry_attempt_path(ROOT)
+    else:
+        path = opencode_baseline_attempt_path(sequence_id, replicate_index, ROOT)
     if path.exists():
         if lifecycle_v1 and opencode_lifecycle_v1_r1_no_provider_recovery_authorized(
             sequence_id, replicate_index, ROOT
@@ -780,7 +896,11 @@ def reserve_opencode_baseline_attempt(
     authority_rel: Path | None = None
     owner_authorization_message_id = "1532521147327971438"
     if lifecycle_v1:
-        authority_rel = workflow.opencode_lifecycle_v1_authority_rel(replicate_index)
+        authority_rel = (
+            Path(OPENCODE_LIFECYCLE_V1_R2_BEETS_RETRY_AUTHORITY_REL)
+            if r2_beets_retry
+            else workflow.opencode_lifecycle_v1_authority_rel(replicate_index)
+        )
         authority = load_json(ROOT / authority_rel)
         owner = authority.get("owner_authorization", {})
         owner_authorization_message_id = owner.get("message_id") if isinstance(owner, dict) else ""
@@ -803,6 +923,9 @@ def reserve_opencode_baseline_attempt(
     if lifecycle_v1:
         payload["task_family_generation"] = "lifecycle-v1"
         payload["authority_path"] = str(authority_rel)
+    if r2_beets_retry:
+        payload["retry_attempt_of"] = "sources/evaluations/audits/lifecycle-v1-opencode-sol-high-r2-attempts/beets-r2.json"
+        payload["retry_attempt_number"] = 1
     workflow.atomic_create_json(path, payload)
     return path
 
@@ -883,6 +1006,7 @@ def run_flow_lane(
     model_condition: dict[str, str] | None = None,
     production_lock_fd: int | None = None,
     published_launch_commit: str | None = None,
+    r2_beets_retry: bool = False,
 ) -> dict[str, Any]:
     lane_id = safe_name(f"{sequence_id}--{treatment_profile}")
     lane_dir = lane_root / lane_id
@@ -892,6 +1016,12 @@ def run_flow_lane(
     logs.mkdir(parents=True, exist_ok=True)
     tmp.mkdir(parents=True, exist_ok=True)
     provider_capable = "--no-provider" not in runner_args
+    if r2_beets_retry and (
+        sequence_id != "beets-lifecycle-sequence-v1"
+        or treatment_profile != "runtime-opencode-codex-product-v1"
+        or replicate_index != 2
+    ):
+        raise ValueError("r2 Beets retry mode permits only bare OpenCode Beets r2")
     if provider_capable and not published_launch_commit:
         raise ValueError("provider-capable lane requires a certified published launch commit")
     parent_claude_receipt_binding: dict[str, Any] | None = None
@@ -919,6 +1049,7 @@ def run_flow_lane(
             replicate_index=replicate_index,
             expected_session_binding=parent_opencode_receipt_binding,
             run_root=lane_root,
+            r2_beets_retry=r2_beets_retry,
         )
     if (
         provider_capable
@@ -2471,6 +2602,11 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser.add_argument("--dry-run", action="store_true")
     parser.add_argument("--keep-lanes", action="store_true", help="keep lane checkouts after successful merge for debugging")
     parser.add_argument(
+        "--r2-beets-retry",
+        action="store_true",
+        help="execute exactly one separately-authorized Beets r2 retry after retained evidence ingress failure",
+    )
+    parser.add_argument(
         "--recover-retained-claude-lifecycle-v1-run-root",
         type=Path,
         help="controller-only recovery of one retained paid Claude Code Lifecycle V1 run; never invokes a provider",
@@ -2526,6 +2662,26 @@ def main(argv: list[str] | None = None) -> int:
         if isinstance(model_condition, dict) and model_condition.get("runtime_id") == "claude-code"
         else "baseline-bare-codex"
     )
+    if args.r2_beets_retry:
+        if (
+            sequences != ["beets-lifecycle-sequence-v1"]
+            or args.replicate_index != 2
+            or args.max_parallel != 1
+            or treatment_profiles
+            or not isinstance(model_condition, dict)
+            or model_condition != {
+                "id": "opencode-openai-gpt-5-6-sol-high",
+                "runtime_id": "opencode-cli",
+                "launcher": "scripts/run_opencode_workflow_model_condition.py",
+                "model": "gpt-5.6-sol",
+                "reasoning_effort": "high",
+            }
+            or not opencode_lifecycle_v1_r2_beets_retry_authorized(ROOT)
+        ):
+            raise SystemExit(
+                "--r2-beets-retry requires exactly Beets r2, bare OpenCode Sol/high, --max-parallel 1, "
+                "no treatment profile, and its exact owner authorization"
+            )
 
     def baseline_state(sequence_id: str) -> str:
         if args.prepare_only:
@@ -2551,7 +2707,11 @@ def main(argv: list[str] | None = None) -> int:
     def baseline_run_gate(sequence_id: str) -> tuple[bool, str]:
         if isinstance(model_condition, dict) and model_condition.get("runtime_id") == "opencode-cli":
             return opencode_baseline_run_gate(
-                registry, sequence_id, args.replicate_index, ROOT
+                registry,
+                sequence_id,
+                args.replicate_index,
+                ROOT,
+                r2_beets_retry=args.r2_beets_retry,
             )
         if isinstance(model_condition, dict) and model_condition.get("runtime_id") == "claude-code":
             if args.dry_run:
@@ -2663,6 +2823,7 @@ def main(argv: list[str] | None = None) -> int:
             model_condition=model_condition,
             production_lock_fd=production_lock_fd,
             published_launch_commit=published_launch_commit,
+            r2_beets_retry=args.r2_beets_retry,
         )
 
     lane_results = execute_lane_jobs(
