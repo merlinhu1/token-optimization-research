@@ -437,7 +437,7 @@ class ActiveCampaignArchitectureTest(unittest.TestCase):
                 f"--workflow-model-condition-id {model_condition_id} "
                 f"--workflow-model {gate['model']} --workflow-reasoning-effort {gate['reasoning_effort']}"
             )
-            baseline_command = f"python3 scripts/run_sequential_workflow_matrix.py {sequence_id} {flags}\n"
+            baseline_command = f"python3 scripts/run_sequential_workflow_matrix.py {sequence_id} --max-parallel 1 {flags}\n"
             pilot_allowed, _pilot_reason = runner.baseline_v2_pilot_run_gate(sequence, ROOT)
             if matching:
                 current_ready.add(sequence_id)
@@ -4942,11 +4942,11 @@ class BaselineV3LowComplexityContractTest(unittest.TestCase):
             prepare = f"python3 scripts/run_sequential_workflow_matrix.py {sequence['id']} --max-parallel 1 {flags} --prepare-only"
             paid = f"python3 scripts/run_sequential_workflow_matrix.py {sequence['id']} --max-parallel 1 {flags}"
             self.assertIn(prepare, runbook)
-            self.assertNotIn(paid, runbook.splitlines())
+            self.assertIn(paid, runbook.splitlines())
             allowed, reason = runner.baseline_v2_pilot_run_gate(sequence, ROOT, 0)
-            self.assertIs(allowed, False)
-            self.assertIn("not authorized", reason)
-        self.assertIn("Paid pilot execution is not authorized", runbook)
+            self.assertIs(allowed, True)
+            self.assertIn("no prior", reason)
+        self.assertIn("Only an unoccupied designated baseline pilot identity may run", runbook)
 
     def test_provider_free_lifecycle_v1_qualifications_pass_every_required_boundary(self) -> None:
         document = json.loads((ROOT / "data/workflow-task-sequences.json").read_text())
@@ -5349,7 +5349,7 @@ class BaselineV3LowComplexityContractTest(unittest.TestCase):
             temp_root = Path(tmp); destination = temp_root / source.relative_to(ROOT); destination.parent.mkdir(parents=True); audit = json.loads(source.read_text()); audit["schema_version"] = False; destination.write_text(json.dumps(audit))
             errors: list[str] = []
             with mock.patch.object(validate_repository, "ROOT", temp_root): validate_repository.validate_lifecycle_v1_authorization(errors)
-            self.assertTrue(any("deny provider spend" in error for error in errors), errors)
+            self.assertTrue(any("explicit bounded pilot authority" in error for error in errors), errors)
 
     def test_v3_qualification_numeric_evidence_rejects_non_integer_mutations(self) -> None:
         sequences = json.loads((ROOT / "data/workflow-task-sequences.json").read_text())["sequences"]
@@ -5818,12 +5818,34 @@ class BaselineV3LowComplexityContractTest(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, "requires explicit authority"): runner.run_one(args)
         acquire_lock.assert_not_called(); locked.assert_not_called()
 
-    def test_direct_current_baseline_rejects_unauthorized_lifecycle_v1_pilot_before_lock(self) -> None:
+    def test_lifecycle_v1_schema_v2_authority_permits_only_paid_pilot(self) -> None:
         sequence = runner.load_sequence("beets-lifecycle-sequence-v1")
-        args = argparse.Namespace(prepare_only=False, profile_id="baseline-bare-codex", sequence_id=sequence["id"], replicate_index=0)
-        with mock.patch.object(runner, "load_sequence", return_value=sequence), mock.patch.object(runner, "acquire_provider_production_lock") as acquire_lock, mock.patch.object(runner, "_run_one_locked") as locked:
-            with self.assertRaisesRegex(ValueError, "not authorized"): runner.run_one(args)
-        acquire_lock.assert_not_called(); locked.assert_not_called()
+        authority = json.loads(
+            (ROOT / sequence["mistake_gate"]["pilot_authorization_path"]).read_text()
+        )
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            authority_path = root / sequence["mistake_gate"]["pilot_authorization_path"]
+            authority_path.parent.mkdir(parents=True)
+
+            denied = copy.deepcopy(authority)
+            denied["paid_pilot_authorized"] = False
+            authority_path.write_text(json.dumps(denied))
+            allowed, reason = runner.baseline_v2_pilot_run_gate(sequence, root)
+            self.assertFalse(allowed)
+            self.assertIn("not authorized", reason)
+
+            malformed = copy.deepcopy(authority)
+            malformed["pilot_authorization"]["allowed_model_turns"] = 10
+            authority_path.write_text(json.dumps(malformed))
+            allowed, reason = runner.baseline_v2_pilot_run_gate(sequence, root)
+            self.assertFalse(allowed)
+            self.assertIn("invalid Lifecycle V1 scope", reason)
+
+            authority_path.write_text(json.dumps(authority))
+            allowed, reason = runner.baseline_v2_pilot_run_gate(sequence, root)
+            self.assertTrue(allowed)
+            self.assertIn("no prior", reason)
 
     def test_matrix_current_baseline_rejects_unauthorized_lifecycle_v1_pilot_before_lane_root(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
@@ -6051,9 +6073,9 @@ class BaselineV3LowComplexityContractTest(unittest.TestCase):
             pilot_allowed, pilot_reason = runner.baseline_v2_pilot_run_gate(sequence, ROOT, 0)
             self.assertIs(passed, False)
             self.assertIn("pilot audit is absent", reason)
-            self.assertIs(pilot_allowed, False)
-            self.assertIn("not authorized", pilot_reason)
-            self.assertEqual(sequence["readiness_blockers"], ["provider-backed strongest-model compile-only Lifecycle V1 pilot is not authorized or executed"])
+            self.assertIs(pilot_allowed, True)
+            self.assertIn("no prior", pilot_reason)
+            self.assertEqual(sequence["readiness_blockers"], ["provider-backed strongest-model compile-only Lifecycle V1 pilot is authorized but not executed"])
 
     def test_workflow_authority_describes_lifecycle_v1_compile_only_pilot_gate(self) -> None:
         document = json.loads((ROOT / "data/workflow-task-sequences.json").read_text())

@@ -1590,7 +1590,16 @@ def validate_workflow_task_sequences(sequence_doc: dict, fixture_doc: dict, erro
                     "status": gate_status,
                     "treatment_launch_policy": launch_policy,
                 }
-                expected_blocker = "provider-backed strongest-model compile-only Lifecycle V1 pilot is not authorized or executed"
+                authorization_path = ROOT / expected_gate["pilot_authorization_path"]
+                try:
+                    paid_pilot_authorized = json.loads(authorization_path.read_text()).get("paid_pilot_authorized") is True
+                except (OSError, json.JSONDecodeError):
+                    paid_pilot_authorized = False
+                expected_blocker = (
+                    "provider-backed strongest-model compile-only Lifecycle V1 pilot is authorized but not executed"
+                    if paid_pilot_authorized
+                    else "provider-backed strongest-model compile-only Lifecycle V1 pilot is not authorized or executed"
+                )
                 if sequence.get("readiness_blockers") != [expected_blocker]:
                     errors.append(f"active workflow sequence {sid} readiness blocker must state: {expected_blocker}")
                 gate_values_match = isinstance(gate, dict) and gate == expected_gate
@@ -4261,6 +4270,8 @@ def validate_document_lifecycle(
 
 
 def validate_lifecycle_v1_authorization(errors: list[str]) -> None:
+    from scripts import run_codex_workflow_evaluation as workflow
+
     path = ROOT / "sources/evaluations/audits/lifecycle-v1-task-family-qualification-20260801.json"
     try:
         audit = json.loads(path.read_text(), object_pairs_hook=_json_object_without_duplicate_keys)
@@ -4283,9 +4294,10 @@ def validate_lifecycle_v1_authorization(errors: list[str]) -> None:
         or audit.get("quality_diagnostics_gate") is not False
         or "exit 0 or 1" not in str(audit.get("seeded_compile_qualification", ""))
         or audit.get("provider_free_qualification_required") is not True
-        or audit.get("paid_pilot_authorized") is not False
+        or audit.get("paid_pilot_authorized") is not True
+        or audit.get("pilot_authorization") != workflow.LIFECYCLE_V1_PILOT_AUTHORIZATION
     ):
-        errors.append("Lifecycle V1 authorization audit must bind normal agent objectives, controller-only compile assessment, and deny provider spend")
+        errors.append("Lifecycle V1 authorization audit must bind normal agent objectives, controller-only compile assessment, and the explicit bounded pilot authority")
 
 
 def main() -> int:

@@ -831,6 +831,21 @@ BASELINE_REPLICATION_MODEL_CONDITION = {
     "model": "gpt-5.6-sol",
     "reasoning_effort": "high",
 }
+LIFECYCLE_V1_PILOT_AUTHORIZATION = {
+    "authorized_by_owner_message_id": "1533263215067140148",
+    "authorized_on": "2026-08-02",
+    "model_condition": BASELINE_REPLICATION_MODEL_CONDITION,
+    "replicate_index": 0,
+    "sequence_order": [
+        "fastify-lifecycle-sequence-v1",
+        "beets-lifecycle-sequence-v1",
+        "terraform-lifecycle-sequence-v1",
+    ],
+    "serialization_required": True,
+    "allowed_paid_baseline_runs": 3,
+    "allowed_model_turns": 9,
+    "rerun_after_attempt_receipt": False,
+}
 BASELINE_REPLICATION_TOP_LEVEL_KEYS = {
     "schema_version", "campaign_id", "authorized_by_owner_message_id", "authorized_on",
     "paid_baseline_replication_authorized", "authorized_replicate_indexes", "sequence_order",
@@ -1166,13 +1181,17 @@ def baseline_v2_pilot_run_gate(
             authorization = json.loads(authorization_path.read_text())
         except (OSError, ValueError) as exc:
             return False, f"{label} paid pilot is not authorized: authorization authority is unreadable: {exc}"
+        expected_authorization_schema = 2 if generation == "lifecycle-v1" else 1
         if (
             type(authorization.get("schema_version")) is not int
-            or authorization.get("schema_version") != 1
+            or authorization.get("schema_version") != expected_authorization_schema
             or authorization.get("generation") != generation
             or authorization.get("paid_pilot_authorized") is not True
         ):
             return False, f"{label} paid pilot is not authorized by {authorization_rel}"
+        if generation == "lifecycle-v1":
+            if authorization.get("pilot_authorization") != LIFECYCLE_V1_PILOT_AUTHORIZATION:
+                return False, f"{label} paid pilot authorization has invalid Lifecycle V1 scope"
     if not isinstance(audit_rel, str) or not audit_rel:
         return False, f"missing {label} pilot_audit_path"
     try:
