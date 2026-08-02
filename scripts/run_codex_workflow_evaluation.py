@@ -56,9 +56,13 @@ OPENCODE_LIFECYCLE_V1_R0_AUTHORITY_SUPERSESSION_REL = Path(
 OPENCODE_LIFECYCLE_V1_R1_AUTHORITY_REL = Path(
     "sources/evaluations/audits/lifecycle-v1-opencode-sol-high-r1-authorization-20260802.json"
 )
+OPENCODE_LIFECYCLE_V1_R2_AUTHORITY_REL = Path(
+    "sources/evaluations/audits/lifecycle-v1-opencode-sol-high-r2-authorization-20260802.json"
+)
 OPENCODE_LIFECYCLE_V1_AUTHORITY_RELS = {
     0: OPENCODE_LIFECYCLE_V1_R0_AUTHORITY_SUPERSESSION_REL,
     1: OPENCODE_LIFECYCLE_V1_R1_AUTHORITY_REL,
+    2: OPENCODE_LIFECYCLE_V1_R2_AUTHORITY_REL,
 }
 
 
@@ -2434,7 +2438,10 @@ def standalone_opencode_control_authorized(
         or selected_condition != "opencode-openai-gpt-5-6-sol-high"
     ):
         return False
-    if replicate_index == 2:
+    if replicate_index == 2 and sequence_id not in {
+        "fastify-lifecycle-sequence-v1",
+        "beets-lifecycle-sequence-v1",
+    }:
         path = root / OPENCODE_STANDALONE_R2_AUTHORITY_REL
         try:
             authority = json.loads(path.read_text())
@@ -2475,6 +2482,13 @@ def standalone_opencode_control_authorized(
             "message_id": "1533309463484694750",
             "request": "Run V1 lifecycle evaluation with OpenCode and GPT sol high (though codex subscription)",
             "authorized_new_runtime_replicate_index": 1,
+        },
+        2: {
+            "source": "discord",
+            "message_id": "1533480540332888284",
+            "request": "I want to run bare OpenCode with Sol high again on V1 lifecycle",
+            "authorized_new_runtime_replicate_index": 2,
+            "authorization_context": "fresh-r2-full-serial-run selected after r0 ingress rejection",
         },
     }[replicate_index]
     owner = authority.get("owner_authorization", {})
