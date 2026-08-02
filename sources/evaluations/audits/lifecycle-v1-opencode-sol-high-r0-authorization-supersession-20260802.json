@@ -1,0 +1,53 @@
+{
+  "schema_version": 1,
+  "audit_id": "lifecycle-v1-opencode-sol-high-r0-authorization-supersession-20260802",
+  "date": "2026-08-02",
+  "status": "qualified-ready-for-provider-execution",
+  "supersedes": {
+    "authority_path": "sources/evaluations/audits/lifecycle-v1-opencode-sol-high-r0-authorization-20260802.json",
+    "authority_sha256": "4c87322fc47bafe3657e3b0a8f663a54dcc81c524ab97668b64e02e26aaa3560",
+    "provider_execution_disposition": "no-provider-subprocess",
+    "reason": "The original authority was published before the final serial-controller safety correction. This replacement preserves the owner-requested r0 scope while binding the final controller bytes and fresh frozen protocols before any provider task."
+  },
+  "owner_authorization": {
+    "source": "discord",
+    "message_id": "1533480540332888284",
+    "request": "I want to run bare OpenCode with Sol high again on V1 lifecycle",
+    "authorized_new_runtime_replicate_index": 0
+  },
+  "execution_contract": {
+    "task_family_generation": "lifecycle-v1",
+    "sequence_order": [
+      "fastify-lifecycle-sequence-v1",
+      "beets-lifecycle-sequence-v1"
+    ],
+    "replicate_index": 0,
+    "runtime": "opencode-cli",
+    "model_condition_id": "opencode-openai-gpt-5-6-sol-high",
+    "model": "gpt-5.6-sol",
+    "reasoning_effort": "high",
+    "baseline_profile_id": "runtime-opencode-codex-product-v1",
+    "sequential_max_parallel": 1,
+    "allowed_paid_baseline_runs": 2,
+    "allowed_model_turns": 6,
+    "first_valid_sample_policy": true,
+    "rerun_after_attempt_receipt": false,
+    "provider_calls": 0,
+    "provider_tokens": 0
+  },
+  "frozen_protocols": [
+    {
+      "sequence_id": "fastify-lifecycle-sequence-v1",
+      "protocol_path": "sources/evaluations/protocols/fastify-lifecycle-sequence-v1-runtime-opencode-codex-product-v1-7712cdd11d0b.json",
+      "protocol_sha256": "ccc4b9e6865a27269cccf85b2c10d493304d05d695bab6a9ae266babdb60d690",
+      "baseline_pool_fingerprint": "72ac148f730b"
+    },
+    {
+      "sequence_id": "beets-lifecycle-sequence-v1",
+      "protocol_path": "sources/evaluations/protocols/beets-lifecycle-sequence-v1-runtime-opencode-codex-product-v1-8555aeefdfeb.json",
+      "protocol_sha256": "caf6231618cd32f5bbdb9bed190d6727aef4811335d4b8476fa915a2d9b6f446",
+      "baseline_pool_fingerprint": "d8cfc5066f76"
+    }
+  ],
+  "notes": "This no-provider supersession preserves the owner-authorized bare-OpenCode GPT-5.6 Sol/high Lifecycle V1 r0 scope and replaces only stale pre-launch protocol bindings. Fastify must precede Beets; each lane has one immutable attempt identity and no treatment authority is created."
+}
