@@ -3044,6 +3044,10 @@ raise SystemExit(1)
         with tempfile.TemporaryDirectory(dir=ROOT) as tmp:
             session, _ = self.production_v3_fixture(Path(tmp))
             session["status"] = "completed"
+            session["interpretation"].update(
+                accepted_for_execution=True,
+                accepted_for_objective=True,
+            )
             session["task_sequence"]["sequence_id"] = "fastify-lifecycle-sequence-v1"
             leakage = session["task_sequence"]["leakage_controls"]
             leakage.pop("verifier_assets_model_visible")
@@ -4955,11 +4959,23 @@ class BaselineV3LowComplexityContractTest(unittest.TestCase):
     def test_generated_runbook_matches_lifecycle_v1_pilot_authorization(self) -> None:
         runbook = (ROOT / "docs/evaluations/operations/runbook.md").read_text()
         document = json.loads((ROOT / "data/workflow-task-sequences.json").read_text())
+        registry = json.loads((ROOT / "data/workflow-sessions.json").read_text())
         flags = "--workflow-model-condition-id codex-openai-gpt-5-6-sol-high --workflow-model gpt-5.6-sol --workflow-reasoning-effort high"
         any_unoccupied_pilot = False
         for sequence in active_lifecycle_v1_sequences(document):
             prepare = f"python3 scripts/run_sequential_workflow_matrix.py {sequence['id']} --max-parallel 1 {flags} --prepare-only"
             paid = f"python3 scripts/run_sequential_workflow_matrix.py {sequence['id']} --max-parallel 1 {flags}"
+            completed_baseline = any(
+                session.get("status") == "completed"
+                and session.get("session_role") == "baseline"
+                and session.get("task_sequence", {}).get("sequence_id") == sequence["id"]
+                and session.get("agent", {}).get("model_condition_id") == "codex-openai-gpt-5-6-sol-high"
+                and session.get("interpretation", {}).get("accepted_for_objective") is True
+                for session in registry.get("sessions", [])
+            )
+            if completed_baseline:
+                self.assertNotIn(paid, runbook.splitlines())
+                continue
             allowed, reason = runner.baseline_v2_pilot_run_gate(sequence, ROOT, 0)
             if allowed:
                 any_unoccupied_pilot = True
