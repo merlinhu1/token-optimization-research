@@ -199,22 +199,14 @@ class ClaudeUsageContractTest(unittest.TestCase):
 
 
 class OpenCodeUsageContractTest(unittest.TestCase):
+    def test_last_message_write_creates_parent(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            target = Path(tmp) / "model-output" / "last.txt"
+            opencode_workflow_adapter.write_last_message(target, "done")
+            self.assertEqual(target.read_text(), "done\n")
     def test_cache_write_is_in_fresh_and_not_added_twice(self) -> None:
-        usage = opencode_workflow_adapter.step_usage(
-            {
-                "tokens": {
-                    "input": 100,
-                    "output": 20,
-                    "reasoning": 5,
-                    "cache": {"read": 300, "write": 40},
-                    "total": 465,
-                }
-            }
-        )
-        self.assertEqual(usage["fresh_input_tokens"], 140)
-        self.assertEqual(usage["cache_write_tokens"], 40)
-        self.assertEqual(usage["output_tokens"], 25)
-        self.assertEqual(usage["total_provider_tokens"], 465)
+        usage = opencode_workflow_adapter.step_usage({"tokens": {"input": 100, "output": 20, "reasoning": 5, "cache": {"read": 300, "write": 40}, "total": 465}})
+        self.assertEqual((usage["fresh_input_tokens"], usage["cache_write_tokens"], usage["output_tokens"], usage["total_provider_tokens"]), (140, 40, 25, 465))
 
 
 if __name__ == "__main__":
