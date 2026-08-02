@@ -10,7 +10,7 @@ from pathlib import Path
 from typing import Any
 
 ROOT = Path(__file__).resolve().parents[1]
-SEQUENCES = (
+DEFAULT_SEQUENCES = (
     "fastify-lifecycle-sequence-v0",
     "beets-lifecycle-sequence-v0",
     "terraform-lifecycle-sequence-v0",
@@ -61,6 +61,7 @@ def build_panel(
     model_condition_id: str,
     replicate_index: int,
     date: str,
+    sequence_ids: tuple[str, ...] = DEFAULT_SEQUENCES,
 ) -> dict[str, Any]:
     registry_path = root / "data/workflow-sessions.json"
     profile_path = root / "data/evaluation-profiles.json"
@@ -71,6 +72,31 @@ def build_panel(
     }
     treatments: dict[str, list[dict[str, Any]]] = defaultdict(list)
     sessions_by_id = {session["session_id"]: session for session in sessions}
+
+    def baseline_for(session: dict[str, Any]) -> dict[str, Any]:
+        cited_id = session.get("interpretation", {}).get("comparison_baseline_session_id")
+        if cited_id:
+            return sessions_by_id[cited_id]
+        pool_fingerprint = session.get("baseline_pool", {}).get("protocol_fingerprint")
+        matches = [
+            candidate
+            for candidate in sessions
+            if candidate.get("session_role") == "baseline"
+            and candidate.get("profile", {}).get("profile_id") == "baseline-bare-codex"
+            and candidate.get("replicate_index") == session.get("replicate_index")
+            and candidate.get("task_sequence", {}).get("sequence_id")
+            == session.get("task_sequence", {}).get("sequence_id")
+            and candidate.get("baseline_pool", {}).get("protocol_fingerprint")
+            == pool_fingerprint
+            and candidate.get("status") == "completed"
+            and candidate.get("interpretation", {}).get("accepted_for_objective") is True
+        ]
+        if len(matches) != 1:
+            raise ValueError(
+                f"could not resolve one baseline for {session['session_id']}"
+            )
+        return matches[0]
+
     for session in sessions:
         if (
             session.get("agent", {}).get("model_condition_id") == model_condition_id
@@ -84,19 +110,21 @@ def build_panel(
     rows: list[dict[str, Any]] = []
     baseline_ids: set[str] = set()
     for profile_id, profile_sessions in treatments.items():
+        profile_sessions = [
+            session
+            for session in profile_sessions
+            if session["task_sequence"]["sequence_id"] in sequence_ids
+        ]
         by_sequence = {
             session["task_sequence"]["sequence_id"]: session
             for session in profile_sessions
         }
-        if set(by_sequence) != set(SEQUENCES) or len(profile_sessions) != len(SEQUENCES):
+        if set(by_sequence) != set(sequence_ids) or len(profile_sessions) != len(sequence_ids):
             continue
-        ordered = [by_sequence[sequence] for sequence in SEQUENCES]
+        ordered = [by_sequence[sequence] for sequence in sequence_ids]
         usage = summed_usage(ordered)
-        cited_baselines = {
-            session["interpretation"]["comparison_baseline_session_id"]
-            for session in ordered
-        }
-        if len(cited_baselines) != len(SEQUENCES):
+        cited_baselines = {baseline_for(session)["session_id"] for session in ordered}
+        if len(cited_baselines) != len(sequence_ids):
             raise ValueError(f"{profile_id} does not cite one baseline per sequence")
         baseline_ids.update(cited_baselines)
         profile = profiles[profile_id]
@@ -124,9 +152,9 @@ def build_panel(
         session["task_sequence"]["sequence_id"]: session
         for session in baseline_sessions
     }
-    if set(baseline_by_sequence) != set(SEQUENCES) or len(baseline_sessions) != len(SEQUENCES):
+    if set(baseline_by_sequence) != set(sequence_ids) or len(baseline_sessions) != len(sequence_ids):
         raise ValueError("panel does not resolve to one shared baseline per workflow")
-    ordered_baselines = [baseline_by_sequence[sequence] for sequence in SEQUENCES]
+    ordered_baselines = [baseline_by_sequence[sequence] for sequence in sequence_ids]
     baseline_usage = summed_usage(ordered_baselines)
 
     rows.sort(key=lambda row: (row["usage"]["raw_provider_tokens"], row["profile_id"]))
@@ -165,12 +193,12 @@ def build_panel(
             "model": agent["model"],
             "reasoning_effort": agent["reasoning_effort"],
             "replicate_index": replicate_index,
-            "workflows": list(SEQUENCES),
+            "workflows": list(sequence_ids),
             "primary_metric": "raw_provider_tokens",
             "secondary_metric": "weighted_tokens = fresh input (input_tokens + cache_creation_input_tokens) + 0.1 * cached input + 6 * output",
         },
         "profile_count": len(rows),
-        "workflow_session_count": len(rows) * len(SEQUENCES),
+        "workflow_session_count": len(rows) * len(sequence_ids),
         "accepted_task_count": sum(int(row["accepted_task_count"]) for row in rows),
         "baseline": {
             "profile_id": "baseline-bare-codex",
@@ -185,7 +213,11 @@ def build_panel(
             "treatment_weighted_tokens": panel_weighted,
             "repeated_baseline_weighted_tokens": repeated_baseline_weighted,
             "weighted_delta_percent": pct_delta(panel_weighted, repeated_baseline_weighted),
-            "independence_note": "The same three baseline sessions are repeated for every profile; this aggregate is descriptive, not a panel of independent controls.",
+            "independence_note": (
+                "The same three baseline sessions are repeated for every profile; this aggregate is descriptive, not a panel of independent controls."
+                if sequence_ids == DEFAULT_SEQUENCES
+                else "The same baseline sessions are repeated for every profile; this aggregate is descriptive, not a panel of independent controls."
+            ),
         },
     }
 
@@ -195,17 +227,27 @@ def main() -> int:
     parser.add_argument("--model-condition-id", required=True)
     parser.add_argument("--replicate-index", type=int, required=True)
     parser.add_argument("--date", required=True)
+    parser.add_argument(
+        "--sequence-id",
+        dest="sequence_ids",
+        action="append",
+        help="Workflow sequence to include; repeat for a multi-workflow panel (defaults to active V0 panel).",
+    )
     parser.add_argument("--output", type=Path)
     args = parser.parse_args()
+    sequence_ids = tuple(args.sequence_ids) if args.sequence_ids else DEFAULT_SEQUENCES
     panel = build_panel(
         ROOT,
         model_condition_id=args.model_condition_id,
         replicate_index=args.replicate_index,
         date=args.date,
+        sequence_ids=sequence_ids,
     )
     output = args.output or ROOT / "sources/evaluations/audits" / f"{panel['audit_id']}.json"
+    if not output.is_absolute():
+        output = ROOT / output
     output.write_text(json.dumps(panel, indent=2) + "\n")
-    print(output.relative_to(ROOT))
+    print(output.relative_to(ROOT) if output.is_relative_to(ROOT) else output)
     return 0
 
 
