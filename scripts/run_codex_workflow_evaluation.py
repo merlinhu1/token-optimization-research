@@ -47,9 +47,24 @@ TRUSTED_REPOSITORY_REF = "refs/heads/phase-3"
 OPENCODE_STANDALONE_R2_AUTHORITY_REL = Path(
     "sources/evaluations/audits/opencode-dcp-qualification-and-r2-authorization-20260730.json"
 )
+OPENCODE_LIFECYCLE_V1_R0_AUTHORITY_REL = Path(
+    "sources/evaluations/audits/lifecycle-v1-opencode-sol-high-r0-authorization-20260802.json"
+)
 OPENCODE_LIFECYCLE_V1_R1_AUTHORITY_REL = Path(
     "sources/evaluations/audits/lifecycle-v1-opencode-sol-high-r1-authorization-20260802.json"
 )
+OPENCODE_LIFECYCLE_V1_AUTHORITY_RELS = {
+    0: OPENCODE_LIFECYCLE_V1_R0_AUTHORITY_REL,
+    1: OPENCODE_LIFECYCLE_V1_R1_AUTHORITY_REL,
+}
+
+
+def opencode_lifecycle_v1_authority_rel(replicate_index: int) -> Path:
+    """Return the separately owner-authorized Lifecycle V1 OpenCode authority."""
+    try:
+        return OPENCODE_LIFECYCLE_V1_AUTHORITY_RELS[replicate_index]
+    except KeyError as exc:
+        raise ValueError(f"no OpenCode Lifecycle V1 authority for r{replicate_index}") from exc
 
 PROJECT_META: dict[str, dict[str, str]] = {
     "medium-fastify-fastify": {
@@ -204,6 +219,12 @@ def operational_retry_budget(
         profile_id == "baseline-bare-codex"
         and replicate_index > 0
         and generation in {"baseline-v3", "baseline-v4", "lifecycle-v1"}
+    ):
+        return 0
+    if (
+        profile_id == "runtime-opencode-codex-product-v1"
+        and replicate_index in OPENCODE_LIFECYCLE_V1_AUTHORITY_RELS
+        and generation == "lifecycle-v1"
     ):
         return 0
     if (
@@ -2426,32 +2447,44 @@ def standalone_opencode_control_authorized(
             and contract.get("model_condition_id") == selected_condition
             and contract.get("sequential_max_parallel") == 1
         )
-    if replicate_index != 1 or sequence_id not in {
-        "fastify-lifecycle-sequence-v1",
-        "beets-lifecycle-sequence-v1",
-    }:
+    if (
+        replicate_index not in OPENCODE_LIFECYCLE_V1_AUTHORITY_RELS
+        or sequence_id not in {
+            "fastify-lifecycle-sequence-v1",
+            "beets-lifecycle-sequence-v1",
+        }
+    ):
         return False
-    path = root / OPENCODE_LIFECYCLE_V1_R1_AUTHORITY_REL
+    path = root / opencode_lifecycle_v1_authority_rel(replicate_index)
     try:
         authority = json.loads(path.read_text())
     except (OSError, ValueError):
         return False
-    owner = authority.get("owner_authorization", {})
-    contract = authority.get("execution_contract", {})
-    return bool(
-        authority.get("status") == "qualified-ready-for-provider-execution"
-        and owner == {
+    expected_owner = {
+        0: {
+            "source": "discord",
+            "message_id": "1533480540332888284",
+            "request": "I want to run bare OpenCode with Sol high again on V1 lifecycle",
+            "authorized_new_runtime_replicate_index": 0,
+        },
+        1: {
             "source": "discord",
             "message_id": "1533309463484694750",
             "request": "Run V1 lifecycle evaluation with OpenCode and GPT sol high (though codex subscription)",
             "authorized_new_runtime_replicate_index": 1,
-        }
+        },
+    }[replicate_index]
+    owner = authority.get("owner_authorization", {})
+    contract = authority.get("execution_contract", {})
+    return bool(
+        authority.get("status") == "qualified-ready-for-provider-execution"
+        and owner == expected_owner
         and contract.get("task_family_generation") == "lifecycle-v1"
         and contract.get("sequence_order") == [
             "fastify-lifecycle-sequence-v1",
             "beets-lifecycle-sequence-v1",
         ]
-        and contract.get("replicate_index") == 1
+        and contract.get("replicate_index") == replicate_index
         and contract.get("runtime") == "opencode-cli"
         and contract.get("model_condition_id") == selected_condition
         and contract.get("model") == "gpt-5.6-sol"
@@ -4195,6 +4228,24 @@ def require_claude_lifecycle_v1_matrix_launch(
         )
 
 
+def require_opencode_lifecycle_v1_matrix_launch(
+    profile_id: str,
+    sequence: dict[str, Any],
+    *,
+    prepare_only: bool,
+) -> None:
+    """Keep paid bare-OpenCode Lifecycle V1 execution behind the serial matrix."""
+    if (
+        not prepare_only
+        and profile_id == "runtime-opencode-codex-product-v1"
+        and sequence.get("task_family_generation") == "lifecycle-v1"
+        and inherited_provider_production_lock_fd() is None
+    ):
+        raise ValueError(
+            "OpenCode Lifecycle V1 provider execution must be launched through the serial matrix"
+        )
+
+
 def acquire_provider_production_lock() -> int:
     """Acquire, or verify inheritance of, the shared provider-production lock."""
     inherited_fd = inherited_provider_production_lock_fd()
@@ -4439,6 +4490,11 @@ def run_one(args: argparse.Namespace) -> dict[str, Any]:
         return _run_one_locked(args)
     selected_sequence = load_sequence(args.sequence_id)
     require_claude_lifecycle_v1_matrix_launch(
+        args.profile_id,
+        selected_sequence,
+        prepare_only=False,
+    )
+    require_opencode_lifecycle_v1_matrix_launch(
         args.profile_id,
         selected_sequence,
         prepare_only=False,

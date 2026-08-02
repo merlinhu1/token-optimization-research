@@ -210,6 +210,7 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser.add_argument("--workflow-model-condition-id")
     parser.add_argument("--workflow-model")
     parser.add_argument("--workflow-reasoning-effort")
+    parser.add_argument("--replicate-index", type=int, default=1)
     return parser.parse_args(argv)
 
 
@@ -235,7 +236,7 @@ def main(argv: list[str] | None = None) -> int:
             selected_runtime = runner.profile_runtime_id(args.profile_id)
             standalone_opencode_control = runner.standalone_opencode_control_authorized(
                 args.profile_id,
-                1,
+                args.replicate_index,
                 ROOT,
                 sequence_id=sequence_id,
                 model_condition_id=args.workflow_model_condition_id,
