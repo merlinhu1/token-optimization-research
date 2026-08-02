@@ -3553,7 +3553,16 @@ def preflight_codex(record: dict[str, Any], codex_home: Path, pid: str, run_dir:
         failure_reasons.append(f"{pid} profile did not expose expected MCP server {cfg['mcp_server']} in preflight")
     if cfg and cfg.get("preflight_command"):
         tool_preflight_path = run_dir / "tool-preflight.txt"
-        tool_preflight = run_backend([str(x) for x in cfg["preflight_command"]], backend=backend, docker_image=docker_image, cwd=preflight_cwd, env=env, stdout_path=tool_preflight_path, timeout=120, mounts=mounts)
+        tool_preflight = run_backend(
+            [render_tool_value(x, record, codex_home, cfg) for x in cfg["preflight_command"]],
+            backend=backend,
+            docker_image=docker_image,
+            cwd=preflight_cwd,
+            env=env,
+            stdout_path=tool_preflight_path,
+            timeout=120,
+            mounts=mounts,
+        )
         if tool_preflight.returncode != 0:
             passed = False
             failure_reasons.append(f"{cfg['display_name']} preflight exited {tool_preflight.returncode}")
