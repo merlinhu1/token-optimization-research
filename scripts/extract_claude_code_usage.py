@@ -83,12 +83,23 @@ def cache_creation_tokens(usage: dict[str, Any]) -> int:
 
 
 def numeric_token_fields(value: Any, prefix: str = "") -> dict[str, int]:
-    """Collect every numeric provider field whose key denotes token usage."""
+    """Collect numeric *usage* fields whose key denotes token usage.
+
+    Response-capacity metadata such as ``maxOutputTokens`` is not metered
+    usage and must stay out of the diagnostic totals.
+    """
     totals: dict[str, int] = {}
+    non_usage_token_keys = {"maxoutputtokens", "maximumoutputtokens", "contextwindowtokens"}
     if isinstance(value, dict):
         for key, child in value.items():
             path = f"{prefix}.{key}" if prefix else str(key)
-            if "token" in str(key).lower() and type(child) is int and child >= 0:
+            normalized_key = "".join(character for character in str(key).lower() if character.isalnum())
+            if (
+                "token" in str(key).lower()
+                and normalized_key not in non_usage_token_keys
+                and type(child) is int
+                and child >= 0
+            ):
                 totals[path] = totals.get(path, 0) + child
             elif isinstance(child, (dict, list)):
                 for nested_path, nested_value in numeric_token_fields(child, path).items():
