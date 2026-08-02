@@ -3913,15 +3913,7 @@ def validate_frozen_protocol_bindings(errors: list[str]) -> None:
             expected_descriptor = None
             expected_override = None
             try:
-                try:
-                    seq = runner.load_sequence(str(fixture.get("sequence_id")))
-                except KeyError:
-                    protocol_rel = path.relative_to(ROOT).as_posix()
-                    if protocol_rel == "sources/evaluations/protocols/terraform-lifecycle-sequence-v1-baseline-bare-codex-b5883b8cb1a0.json":
-                        # This exact frozen protocol is retired historical evidence. Its path and
-                        # digest are fail-closed by validate_lifecycle_v1_authorization().
-                        continue
-                    raise
+                seq = runner.load_sequence(str(fixture.get("sequence_id")))
                 sequence_status = seq.get("status")
                 if sequence_status not in {"active", "historical"}:
                     errors.append(f"execution contract {path.name} references an unknown sequence status")
@@ -4318,6 +4310,11 @@ def validate_lifecycle_v1_authorization(errors: list[str]) -> None:
         "beets-lifecycle-sequence-v1",
         "terraform-lifecycle-sequence-v1",
     }
+    expected_invalidated_attempt = {
+        "status": "invalidated-and-removed",
+        "invalidation_receipt_path": "sources/evaluations/audits/lifecycle-v1-terraform-invalidated-20260802.json",
+        "removed_rejected_evidence_manifest_sha256": "dd5b467577294994ca56271123030f2e52273233dad9a87d1f17d7d540df6e8f",
+    }
     if (
         type(audit.get("schema_version")) is not int
         or audit.get("schema_version") != 2
@@ -4331,55 +4328,56 @@ def validate_lifecycle_v1_authorization(errors: list[str]) -> None:
         or audit.get("provider_free_qualification_required") is not True
         or audit.get("paid_pilot_authorized") is not True
         or audit.get("pilot_authorization") != workflow.LIFECYCLE_V1_PILOT_AUTHORIZATION
+        or audit.get("pilot_attempts", {}).get("terraform-lifecycle-sequence-v1") != expected_invalidated_attempt
     ):
         errors.append("Lifecycle V1 authorization audit must bind normal agent objectives, controller-only compile assessment, and the explicit bounded pilot authority")
 
-    retirement_path = ROOT / "sources/evaluations/audits/lifecycle-v1-terraform-retirement-20260802.json"
+    invalidation_path = ROOT / "sources/evaluations/audits/lifecycle-v1-terraform-invalidated-20260802.json"
     try:
-        retirement = json.loads(retirement_path.read_text(), object_pairs_hook=_json_object_without_duplicate_keys)
+        invalidation = json.loads(invalidation_path.read_text(), object_pairs_hook=_json_object_without_duplicate_keys)
         sequence_doc = json.loads((ROOT / "data/workflow-task-sequences.json").read_text(), object_pairs_hook=_json_object_without_duplicate_keys)
     except (OSError, ValueError, json.JSONDecodeError) as exc:
-        errors.append(f"Lifecycle V1 Terraform retirement receipt cannot be read: {exc}")
+        errors.append(f"Lifecycle V1 Terraform invalidation receipt cannot be read: {exc}")
         return
     active_ids = [
         sequence.get("id")
         for sequence in sequence_doc.get("sequences", [])
         if sequence.get("status") == "active" and sequence.get("task_family_generation") == "lifecycle-v1"
     ]
-    retained = retirement.get("retained_historical_evidence")
-    expected_retained_paths = {
-        "qualification_path": "sources/evaluations/fixtures/large/hashicorp-terraform/qualification-lifecycle-v1.json",
-        "frozen_protocol_path": "sources/evaluations/protocols/terraform-lifecycle-sequence-v1-baseline-bare-codex-b5883b8cb1a0.json",
-        "rejected_evidence_path": "sources/evaluations/audits/terraform-lifecycle-r0-rejected-evidence-20260802",
-    }
-    retained_hashes_match = isinstance(retained, dict)
-    if isinstance(retained, dict):
-        retained_hashes_match = (
-            all(retained.get(key) == value for key, value in expected_retained_paths.items())
-            and retained.get("qualification_sha256") == hashlib.sha256((ROOT / expected_retained_paths["qualification_path"]).read_bytes()).hexdigest()
-            and retained.get("frozen_protocol_sha256") == hashlib.sha256((ROOT / expected_retained_paths["frozen_protocol_path"]).read_bytes()).hexdigest()
-            and retained.get("rejected_evidence_manifest_sha256") == hashlib.sha256((ROOT / expected_retained_paths["rejected_evidence_path"] / "manifest.sha256").read_bytes()).hexdigest()
-        )
+    removed_artifacts = [
+        {
+            "path": "sources/evaluations/audits/lifecycle-v1-terraform-retirement-20260802.json",
+            "sha256": "1ce68dbbfbe88d2935a907258fcf1b89942ffaa8636bbcea576ecc8d777c2913",
+        },
+        {
+            "path": "sources/evaluations/protocols/terraform-lifecycle-sequence-v1-baseline-bare-codex-b5883b8cb1a0.json",
+            "sha256": "8753d0ed7c3b87616d4ed2201553d357d553e7b93e4e9b7da7b4c3c8ad045c5a",
+        },
+        {
+            "path": "sources/evaluations/audits/terraform-lifecycle-r0-rejected-evidence-20260802",
+            "manifest_sha256": "dd5b467577294994ca56271123030f2e52273233dad9a87d1f17d7d540df6e8f",
+        },
+    ]
     if (
-        set(retirement) != {
-            "schema_version", "retired_by_owner_message_id", "retired_on", "retired_sequence_id", "disposition",
-            "active_lifecycle_v1_sequence_ids", "provider_calls", "rerun_or_treatment_authorized",
-            "retained_historical_evidence", "note",
+        set(invalidation) != {
+            "schema_version", "invalidated_by_owner_message_id", "invalidated_on", "invalidated_sequence_id", "disposition",
+            "active_lifecycle_v1_sequence_ids", "result_was_accepted_for_objective", "initial_authorization_path",
+            "removed_artifacts", "note",
         }
-        or type(retirement.get("schema_version")) is not int
-        or retirement.get("schema_version") != 1
-        or retirement.get("retired_by_owner_message_id") != "1533285015792779414"
-        or retirement.get("retired_on") != "2026-08-02"
-        or retirement.get("retired_sequence_id") != "terraform-lifecycle-sequence-v1"
-        or retirement.get("disposition") != "retired-from-active-lifecycle-v1-portfolio"
-        or retirement.get("active_lifecycle_v1_sequence_ids") != ["fastify-lifecycle-sequence-v1", "beets-lifecycle-sequence-v1"]
-        or active_ids != retirement.get("active_lifecycle_v1_sequence_ids")
-        or type(retirement.get("provider_calls")) is not int
-        or retirement.get("provider_calls") != 0
-        or retirement.get("rerun_or_treatment_authorized") is not False
-        or not retained_hashes_match
+        or type(invalidation.get("schema_version")) is not int
+        or invalidation.get("schema_version") != 1
+        or invalidation.get("invalidated_by_owner_message_id") != "1533293091967074385"
+        or invalidation.get("invalidated_on") != "2026-08-02"
+        or invalidation.get("invalidated_sequence_id") != "terraform-lifecycle-sequence-v1"
+        or invalidation.get("disposition") != "owner-declared-invalid-result-removed"
+        or invalidation.get("active_lifecycle_v1_sequence_ids") != ["fastify-lifecycle-sequence-v1", "beets-lifecycle-sequence-v1"]
+        or active_ids != invalidation.get("active_lifecycle_v1_sequence_ids")
+        or invalidation.get("result_was_accepted_for_objective") is not False
+        or invalidation.get("initial_authorization_path") != "sources/evaluations/audits/lifecycle-v1-task-family-qualification-20260801.json"
+        or invalidation.get("removed_artifacts") != removed_artifacts
+        or any((ROOT / artifact["path"]).exists() for artifact in removed_artifacts)
     ):
-        errors.append("Lifecycle V1 Terraform retirement receipt must preserve rejected evidence and bind exactly the two active lanes")
+        errors.append("Lifecycle V1 Terraform invalidation receipt must remove the invalid result and bind exactly the two active lanes")
 
 
 def main() -> int:
