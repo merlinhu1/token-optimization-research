@@ -875,18 +875,37 @@ class ActiveCampaignArchitectureTest(unittest.TestCase):
 
     def test_opencode_baseline_profile_uses_live_pinned_runtime(self) -> None:
         opencode = runner.fixture.TOOL_CONFIGS["opencode-codex-product-v1"]
-        adapter = ROOT / "scripts/opencode_workflow_adapter.py"
+        adapter = "{repository_root}/scripts/opencode_workflow_adapter.py"
         self.assertEqual(opencode["executable"], "/opt/data/.local/bin/opencode")
-        self.assertEqual(opencode["mounts"], [str(adapter)])
+        self.assertEqual(opencode["mounts"], [adapter])
         self.assertEqual(opencode["binary_mount_target"], "/opt/data/.local/bin/opencode")
-        self.assertEqual(opencode["codex_wrapper"]["args"][0], str(adapter))
-        self.assertEqual(opencode["preflight_command"][1], str(adapter))
+        self.assertEqual(opencode["codex_wrapper"]["args"][0], adapter)
+        self.assertEqual(opencode["preflight_command"][1], adapter)
+        identity = runner.tool_adapter_identity("runtime-opencode-codex-product-v1")
+        self.assertEqual(identity["source_identity"][0]["path"], adapter)
 
     def test_opencode_lifecycle_v1_unspent_protocol_supersession_is_retained(self) -> None:
         receipt = json.loads(
             (
                 ROOT
                 / "sources/evaluations/audits/lifecycle-v1-opencode-sol-high-r1-preprovider-supersession-20260802.json"
+            ).read_text()
+        )
+        self.assertEqual(receipt["provider_calls"], 0)
+        self.assertEqual(receipt["provider_tokens"], 0)
+        self.assertFalse(receipt["identity_occupied"])
+        self.assertTrue(receipt["same_identity_retry_permitted"])
+        self.assertEqual(len(receipt["superseded_unoccupied_protocols"]), 2)
+        for binding in receipt["superseded_unoccupied_protocols"]:
+            self.assertFalse((ROOT / binding["path"]).exists())
+            self.assertTrue(binding["replacement_path"].endswith(".json"))
+            self.assertEqual(len(binding["replacement_sha256"]), 64)
+
+    def test_opencode_lifecycle_v1_checkout_portability_supersession_is_retained(self) -> None:
+        receipt = json.loads(
+            (
+                ROOT
+                / "sources/evaluations/audits/lifecycle-v1-opencode-sol-high-r1-checkout-portability-supersession-20260802.json"
             ).read_text()
         )
         self.assertEqual(receipt["provider_calls"], 0)
