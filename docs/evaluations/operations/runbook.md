@@ -56,7 +56,21 @@ python3 scripts/run_sequential_workflow_matrix.py "$SEQUENCE_ID" --max-parallel 
 
 Current runnable treatment profiles: `artifact-ponytail-codex-plugin-v1`, `behavior-caveman-codex-skill-v1`, `codescope-codex-product-v1`, `headroom-default-codex`, `integrated-leanctx-codex-hybrid-v1`, `integrated-token-savior-codex-product-v2`, `retrieval-cartog-codex-product-v2`, `retrieval-codegraph-codex-mcp-v1`, `retrieval-graphify-codex-skill-v1`, `retrieval-jcodemunch-codex-mcp-v2`, `retrieval-serena-codex-mcp-v1`, `retrieval-sigmap-codex-live-v1`, `swarmvault-codex-product-v1`, `terminal-rtk-claude-code-hook-v1`, `terminal-rtk-codex-instructions-v1`, `terminal-snip-codex-hook-v1`, `terminal-tokenjuice-codex-hook-v1`. Historical profiles marked `historical-profile` are occupied evidence identities and cannot be rerun in place.
 
-Treatment protocol freezing, preparation, and execution are machine-blocked for `fastify-lifecycle-sequence-v1` (pilot audit is absent: sources/evaluations/audits/lifecycle-v1-pilot-compile-only.json), `beets-lifecycle-sequence-v1` (pilot audit is absent: sources/evaluations/audits/lifecycle-v1-pilot-compile-only.json). The designated pilot identities are occupied by immutable attempt evidence. Any sequence without a passing audit remains treatment-blocked; failed classifications are permanent for this generation and require new identities.
+Reusable, zero-incident-audited baselines exist for `fastify-lifecycle-sequence-v1` (r0, r1), `beets-lifecycle-sequence-v1` (r0, r1). No current active-default treatment protocol is frozen, so no paid treatment command is published. Choose one compatible profile, freeze and validate its protocol provider-free, certify the resulting exact tree, and then execute the rendered dry-run verbatim before requesting paid execution:
+
+```bash
+SEQUENCE_ID=fastify-lifecycle-sequence-v1
+PROFILE_ID=replace-with-compatible-profile-id
+python3 scripts/refresh_workflow_contracts.py --sequence-id "$SEQUENCE_ID" --profile-id "$PROFILE_ID" --workflow-model-condition-id codex-openai-gpt-5-6-sol-high --workflow-model gpt-5.6-sol --workflow-reasoning-effort high
+python3 scripts/validate_repository.py
+python3 scripts/run_sequential_workflow_matrix.py "$SEQUENCE_ID" --treatment-profile "$PROFILE_ID" --max-parallel 1 --workflow-model-condition-id codex-openai-gpt-5-6-sol-high --workflow-model gpt-5.6-sol --workflow-reasoning-effort high --dry-run
+
+SEQUENCE_ID=beets-lifecycle-sequence-v1
+PROFILE_ID=replace-with-compatible-profile-id
+python3 scripts/refresh_workflow_contracts.py --sequence-id "$SEQUENCE_ID" --profile-id "$PROFILE_ID" --workflow-model-condition-id codex-openai-gpt-5-6-sol-high --workflow-model gpt-5.6-sol --workflow-reasoning-effort high
+python3 scripts/validate_repository.py
+python3 scripts/run_sequential_workflow_matrix.py "$SEQUENCE_ID" --treatment-profile "$PROFILE_ID" --max-parallel 1 --workflow-model-condition-id codex-openai-gpt-5-6-sol-high --workflow-model gpt-5.6-sol --workflow-reasoning-effort high --dry-run
+```
 
 Earlier active-default baseline pools are retained but are not reusable for the current contract generation: `beets-lifecycle-sequence-v0` pool `b440da225a3a` (r0, r1, r2, r3), `fastify-lifecycle-sequence-v0` pool `769d40697529` (r0, r1, r2, r3), `terraform-lifecycle-sequence-v0` pool `ded8609b4172` (r0, r1, r2, r3).
 

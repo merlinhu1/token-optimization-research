@@ -1197,11 +1197,14 @@ def validate_candidate_profile_launch_readiness(
         if not isinstance(fixture, dict):
             continue
         sequence_ids = active_sequences_by_fixture.get(str(fixture.get("id")), [])
-        for profile_id in fixture.get("candidate_profiles", []):
-            if profile_id == "baseline-bare-codex":
+        for lane in fixture.get("future_evaluation_lanes", []):
+            if not isinstance(lane, dict) or lane.get("status") != "ready-for-paid-launch":
+                continue
+            profile_id = lane.get("id")
+            if not isinstance(profile_id, str) or profile_id == "baseline-bare-codex":
                 continue
             for sequence_id in sequence_ids:
-                expected_pairs.add((sequence_id, str(profile_id)))
+                expected_pairs.add((sequence_id, profile_id))
 
     eligible_lanes: list[dict] = []
     for receipt in qualification_docs:
@@ -1602,18 +1605,26 @@ def validate_workflow_task_sequences(sequence_doc: dict, fixture_doc: dict, erro
                 except (OSError, json.JSONDecodeError):
                     paid_pilot_authorized = False
                     pilot_attempt = None
-                if isinstance(pilot_attempt, dict) and pilot_attempt.get("status") == "accepted":
-                    expected_blocker = "provider-backed strongest-model compile-only Lifecycle V1 pilot executed; treatment audit is pending"
+                if treatment_ready:
+                    expected_readiness_blockers: list[str] = []
+                elif isinstance(pilot_attempt, dict) and pilot_attempt.get("status") == "accepted":
+                    expected_readiness_blockers = [
+                        "provider-backed strongest-model compile-only Lifecycle V1 pilot executed; treatment audit is pending"
+                    ]
                 elif isinstance(pilot_attempt, dict) and pilot_attempt.get("status") == "rejected":
-                    expected_blocker = "provider-backed strongest-model compile-only Lifecycle V1 r0 pilot attempt was rejected; explicit owner reauthorization is required"
+                    expected_readiness_blockers = [
+                        "provider-backed strongest-model compile-only Lifecycle V1 r0 pilot attempt was rejected; explicit owner reauthorization is required"
+                    ]
                 else:
-                    expected_blocker = (
+                    expected_readiness_blockers = [
                         "provider-backed strongest-model compile-only Lifecycle V1 pilot is authorized but not executed"
                         if paid_pilot_authorized
                         else "provider-backed strongest-model compile-only Lifecycle V1 pilot is not authorized or executed"
+                    ]
+                if sequence.get("readiness_blockers") != expected_readiness_blockers:
+                    errors.append(
+                        f"active workflow sequence {sid} readiness blockers must state: {expected_readiness_blockers}"
                     )
-                if sequence.get("readiness_blockers") != [expected_blocker]:
-                    errors.append(f"active workflow sequence {sid} readiness blocker must state: {expected_blocker}")
                 gate_values_match = isinstance(gate, dict) and gate == expected_gate
                 if not gate_values_match:
                     errors.append(f"active workflow sequence {sid} must preserve the Lifecycle V1 compile-only gate")

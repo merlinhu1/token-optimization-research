@@ -491,12 +491,13 @@ class ActiveCampaignArchitectureTest(unittest.TestCase):
             runbook,
         )
 
-    def test_runbook_reports_lifecycle_v1_pilot_block_and_preserved_historical_corpus(self) -> None:
+    def test_runbook_reports_lifecycle_v1_pilot_completion_and_preserved_historical_corpus(self) -> None:
         runbook = (ROOT / "docs/evaluations/operations/runbook.md").read_text()
         self.assertTrue((ROOT / "sources/evaluations/audits/opencode-tool-treatments-sol-high-r0-repaired-screen-results-20260730.json").is_file())
+        self.assertTrue((ROOT / "sources/evaluations/audits/lifecycle-v1-pilot-compile-only.json").is_file())
         self.assertIn("Historical profiles marked `historical-profile`", runbook)
-        self.assertIn("Treatment protocol freezing, preparation, and execution are machine-blocked", runbook)
-        self.assertIn("lifecycle-v1-pilot-compile-only.json", runbook)
+        self.assertIn("Current runnable treatment profiles", runbook)
+        self.assertIn('scripts/refresh_workflow_contracts.py --sequence-id "$SEQUENCE_ID"', runbook)
         self.assertIn("Earlier active-default baseline pools are retained but are not reusable for the current contract generation", runbook)
         self.assertIn("OpenCode pools may define substrate-matched treatment reuse", runbook)
 
@@ -931,7 +932,7 @@ class ActiveCampaignArchitectureTest(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, "historical-profile"):
                 runner.assert_profile_runnable(profile_id)
 
-    def test_future_candidate_profiles_fail_closed_without_current_lifecycle_v1_pilot(self) -> None:
+    def test_active_lifecycle_v1_sequences_have_a_valid_compile_pilot_gate(self) -> None:
         profile_id = "integrated-token-savior-codex-product-v2"
         protocols = [json.loads(path.read_text()) for path in (ROOT / "sources/evaluations/protocols").glob("*.json")]
         for sequence_id in runner.active_sequence_ids():
@@ -943,8 +944,8 @@ class ActiveCampaignArchitectureTest(unittest.TestCase):
                 for protocol in protocols
             ))
             ready, reason = runner.baseline_v2_treatment_gate(sequence, ROOT)
-            self.assertIs(ready, False)
-            self.assertIn("pilot audit is absent", reason)
+            self.assertIs(ready, True, reason)
+            self.assertIn("audited compile-passing lifecycle-v1 pilot", reason)
 
     def test_provider_launch_rechecks_candidate_readiness_gate(self) -> None:
         args = runner.argparse.Namespace(prepare_only=False, protocol=None)
@@ -4955,7 +4956,7 @@ class LifecycleV1CompileOnlyContractTest(unittest.TestCase):
             gate = sequence["mistake_gate"]
             self.assertTrue(gate["compile_required"])
             self.assertFalse(gate["quality_diagnostics_gate"])
-            self.assertEqual(gate["status"], "provider-pilot-required")
+            self.assertEqual(gate["status"], "passed-compilation")
             self.assertIn("compile", gate["treatment_launch_policy"])
             self.assertTrue(sequence["project_compile_command"])
             qualification = json.loads((ROOT / sequence["qualification_path"]).read_text())
@@ -5057,7 +5058,7 @@ class BaselineV3LowComplexityContractTest(unittest.TestCase):
             self.assertEqual(gate["designated_model_condition"], "codex-openai-gpt-5-6-sol-high")
             self.assertIs(gate["compile_required"], True)
             self.assertIs(gate["quality_diagnostics_gate"], False)
-            self.assertEqual(gate["status"], "provider-pilot-required")
+            self.assertEqual(gate["status"], "passed-compilation")
             for task in sequence["tasks"]:
                 self.assertIn("/lifecycle-v1/", task["prompt_path"])
                 self.assertEqual(task["acceptance_visibility"], "controller-only-compile-policy")
@@ -6353,24 +6354,20 @@ class BaselineV3LowComplexityContractTest(unittest.TestCase):
                     baseline_run_gate=lambda _sequence: runner.baseline_v2_pilot_run_gate(sequence, authority),
                 )
 
-    def test_active_generation_gates_block_until_lifecycle_v1_compile_pilot(self) -> None:
+    def test_active_generation_gates_open_after_lifecycle_v1_compile_pilot(self) -> None:
         document = json.loads((ROOT / "data/workflow-task-sequences.json").read_text())
         expected_attempt_status = {
             "fastify-lifecycle-sequence-v1": "accepted",
             "beets-lifecycle-sequence-v1": "accepted",
         }
-        expected_blockers = {
-            "fastify-lifecycle-sequence-v1": "provider-backed strongest-model compile-only Lifecycle V1 pilot executed; treatment audit is pending",
-            "beets-lifecycle-sequence-v1": "provider-backed strongest-model compile-only Lifecycle V1 pilot executed; treatment audit is pending",
-        }
         for sequence in active_lifecycle_v1_sequences(document):
             passed, reason = runner.baseline_v2_treatment_gate(sequence, ROOT)
             pilot_allowed, pilot_reason = runner.baseline_v2_pilot_run_gate(sequence, ROOT, 0)
-            self.assertIs(passed, False)
-            self.assertIn("pilot audit is absent", reason)
+            self.assertIs(passed, True, reason)
+            self.assertIn("audited compile-passing lifecycle-v1 pilot", reason)
             self.assertIs(pilot_allowed, False)
             self.assertIn(f"already consumed as {expected_attempt_status[sequence['id']]}", pilot_reason)
-            self.assertEqual(sequence["readiness_blockers"], [expected_blockers[sequence["id"]]])
+            self.assertEqual(sequence["readiness_blockers"], [])
 
     def test_workflow_authority_describes_lifecycle_v1_compile_only_pilot_gate(self) -> None:
         document = json.loads((ROOT / "data/workflow-task-sequences.json").read_text())
@@ -6378,11 +6375,15 @@ class BaselineV3LowComplexityContractTest(unittest.TestCase):
         fixtures = {item["id"]: item for item in json.loads((ROOT / "data/repository-fixtures.json").read_text())["fixtures"]}
         for sequence in active_lifecycle_v1_sequences(document):
             self.assertEqual(sequence["task_family_generation"], "lifecycle-v1")
-            self.assertEqual(sequence["mistake_gate"]["status"], "provider-pilot-required")
-            self.assertFalse(runner.baseline_v2_treatment_gate(sequence, ROOT)[0])
+            self.assertEqual(sequence["mistake_gate"]["status"], "passed-compilation")
+            self.assertTrue(runner.baseline_v2_treatment_gate(sequence, ROOT)[0])
             fixture = fixtures[sequence["fixture_id"]]
             self.assertEqual(fixture["current_task_family"]["generation"], "lifecycle-v1")
-            self.assertEqual(fixture["current_task_family"]["provider_pilot_status"], "required")
+            self.assertEqual(fixture["current_task_family"]["provider_pilot_status"], "completed-passed-compilation")
+            self.assertFalse(any(
+                lane.get("status") == "blocked-lifecycle-v1-pilot"
+                for lane in fixture["future_evaluation_lanes"]
+            ))
         for relative in ("docs/evaluations/design/token-and-quality-policy.md", "docs/evaluations/design/workflow-model.md", "docs/evaluations/operations/fixture-guide.md"):
             self.assertIn("Lifecycle V1", (ROOT / relative).read_text(), relative)
 
