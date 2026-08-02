@@ -919,17 +919,26 @@ def validate_non_json_stdout(treatment: str, lines: list[str]) -> None:
         raise ValueError(f"OpenCode emitted non-JSON stdout in JSON mode: {lines[:3]}")
 
 
+LAST_MESSAGE_WRITE_ATTEMPTS = 8
+LAST_MESSAGE_WRITE_RETRY_SECONDS = 0.05
+
+
 def write_last_message(path: Path, text: str) -> None:
-    """Persist model output despite one transient mounted-parent disappearance."""
+    """Persist model output across transient model-output mount replacement.
+
+    This is post-provider evidence ingress: retrying this filesystem operation
+    must never invoke the provider or repeat a model turn.
+    """
     payload = text + ("\n" if text else "")
-    for attempt in range(2):
+    for attempt in range(LAST_MESSAGE_WRITE_ATTEMPTS):
         path.parent.mkdir(parents=True, exist_ok=True)
         try:
             path.write_text(payload)
             return
         except FileNotFoundError:
-            if attempt:
+            if attempt + 1 == LAST_MESSAGE_WRITE_ATTEMPTS:
                 raise
+            time.sleep(LAST_MESSAGE_WRITE_RETRY_SECONDS)
 
 
 def main(argv: list[str] | None = None) -> int:
