@@ -1,6 +1,6 @@
 {
   "protocol_schema_version": 3,
-  "protocol_id": "fastify-lifecycle-sequence-v1-runtime-opencode-codex-product-v1-422c18a00963",
+  "protocol_id": "fastify-lifecycle-sequence-v1-runtime-opencode-codex-product-v1-d7884852f6c5",
   "status": "frozen-ready-not-run",
   "outcome": "Frozen runtime-opencode-codex-product-v1 protocol for fastify-lifecycle-sequence-v1; no provider/model run has occurred.",
   "frozen_at": "2026-08-01",
@@ -41,7 +41,7 @@
     "model": "gpt-5.6-sol",
     "model_condition_id": "opencode-openai-gpt-5-6-sol-high",
     "reasoning_effort": "high",
-    "command": "python3 scripts/run_opencode_workflow_model_condition.py --workflow-model-condition-id opencode-openai-gpt-5-6-sol-high --workflow-model gpt-5.6-sol --workflow-reasoning-effort high --sequence-id fastify-lifecycle-sequence-v1 --profile-id runtime-opencode-codex-product-v1 --timeout-per-task 3600 --protocol sources/evaluations/protocols/fastify-lifecycle-sequence-v1-runtime-opencode-codex-product-v1-422c18a00963.json --docker-image token-eval-codex:latest"
+    "command": "python3 scripts/run_opencode_workflow_model_condition.py --workflow-model-condition-id opencode-openai-gpt-5-6-sol-high --workflow-model gpt-5.6-sol --workflow-reasoning-effort high --sequence-id fastify-lifecycle-sequence-v1 --profile-id runtime-opencode-codex-product-v1 --timeout-per-task 3600 --protocol sources/evaluations/protocols/fastify-lifecycle-sequence-v1-runtime-opencode-codex-product-v1-d7884852f6c5.json --docker-image token-eval-codex:latest"
   },
   "token_accounting_boundary": {
     "fields": [
@@ -263,7 +263,7 @@
     }
   },
   "selected_execution": {
-    "descriptor_sha256": "d032e3e330ca5d05ab302c064ae058944d1199fa1f254a8c7d331a1d186627cc",
+    "descriptor_sha256": "f6be1b5278fea6572873e0f7435ef449a41142efd6661576a172c8814007d9fc",
     "descriptor": {
       "version": "execution-condition-v1",
       "sequence_id": "fastify-lifecycle-sequence-v1",
@@ -381,7 +381,7 @@
       "tool_adapter": {
         "tool_id": "opencode-codex-product-v1",
         "tool_manifest": "scripts/run_codex_fixture_evaluation.py:TOOL_CONFIGS",
-        "tool_manifest_sha256": "abf7fc886f709ca2222730ebc10e124dfc0f5a94936715ff96fca207b4f5d32e",
+        "tool_manifest_sha256": "80406a53698ba13079cb8603f240f4a19d75d2a73cb60ae5932a15de56061488",
         "tool_config": {
           "display_name": "OpenCode CLI 1.18.9",
           "lane_name": "runtime-opencode-codex-product-v1",
@@ -391,26 +391,26 @@
           ],
           "data_dir_name": "opencode-runtime",
           "mounts": [
-            "/opt/data/tool-candidates/opencode-adapter/opencode_workflow_adapter.py"
+            "/opt/data/repos/token-optimization-research/scripts/opencode_workflow_adapter.py"
           ],
-          "executable": "/opt/data/tool-candidates/opencode-runtime/node_modules/opencode-ai/bin/opencode.exe",
+          "executable": "/opt/data/.local/bin/opencode",
           "expected_executable_sha256": "7c4d91c84d2bfdeabb59257e3490c5e5acb08f2aacb3e42f3ddc296a1c3f1aca",
-          "binary_mount_target": "/opt/data/tool-candidates/opencode-runtime/node_modules/opencode-ai/bin/opencode.exe",
+          "binary_mount_target": "/opt/data/.local/bin/opencode",
           "codex_wrapper": {
             "command": "/usr/bin/python3",
             "args": [
-              "/opt/data/tool-candidates/opencode-adapter/opencode_workflow_adapter.py",
+              "/opt/data/repos/token-optimization-research/scripts/opencode_workflow_adapter.py",
               "--opencode-binary",
-              "/opt/data/tool-candidates/opencode-runtime/node_modules/opencode-ai/bin/opencode.exe",
+              "/opt/data/.local/bin/opencode",
               "--expected-opencode-sha256",
               "7c4d91c84d2bfdeabb59257e3490c5e5acb08f2aacb3e42f3ddc296a1c3f1aca"
             ]
           },
           "preflight_command": [
             "/usr/bin/python3",
-            "/opt/data/tool-candidates/opencode-adapter/opencode_workflow_adapter.py",
+            "/opt/data/repos/token-optimization-research/scripts/opencode_workflow_adapter.py",
             "--opencode-binary",
-            "/opt/data/tool-candidates/opencode-runtime/node_modules/opencode-ai/bin/opencode.exe",
+            "/opt/data/.local/bin/opencode",
             "--expected-opencode-sha256",
             "7c4d91c84d2bfdeabb59257e3490c5e5acb08f2aacb3e42f3ddc296a1c3f1aca",
             "--probe"
@@ -418,16 +418,16 @@
           "default_tool_state": "native-runtime",
           "tool_manifest_identity": "current-file-v1"
         },
-        "tool_config_sha256": "9222bc22d677e4523f66c81746f50b0a790a1e9486521e3355ae25e583434d34",
+        "tool_config_sha256": "8338536327060c79661d63d2779f05f1186ae7a2ca999b9eeaef2a87035a8b85",
         "tool_state": "native-runtime",
         "tool_use_policy": "none",
         "command_identity": {
           "kind": "codex_wrapper",
           "command": [
             "/usr/bin/python3",
-            "/opt/data/tool-candidates/opencode-adapter/opencode_workflow_adapter.py",
+            "/opt/data/repos/token-optimization-research/scripts/opencode_workflow_adapter.py",
             "--opencode-binary",
-            "/opt/data/tool-candidates/opencode-runtime/node_modules/opencode-ai/bin/opencode.exe",
+            "/opt/data/.local/bin/opencode",
             "--expected-opencode-sha256",
             "7c4d91c84d2bfdeabb59257e3490c5e5acb08f2aacb3e42f3ddc296a1c3f1aca"
           ]
@@ -458,8 +458,10 @@
         },
         "source_identity": [
           {
-            "path": "/opt/data/tool-candidates/opencode-adapter/opencode_workflow_adapter.py",
-            "exists": false
+            "path": "/opt/data/repos/token-optimization-research/scripts/opencode_workflow_adapter.py",
+            "exists": true,
+            "kind": "file",
+            "sha256": "1782fa9ef0977ae254548edc8fb75f947b1173fb77f9fffb07398b8f5de0b902"
           }
         ]
       },
@@ -478,7 +480,7 @@
         "dockerfile_path": "sources/evaluations/fixtures/container/Dockerfile",
         "dockerfile_sha256": "47c91967ce25014ce54879514f51d2ff0326651be1087209115eff4d358226b3",
         "fixture_runner_path": "scripts/run_codex_fixture_evaluation.py",
-        "fixture_runner_sha256": "abf7fc886f709ca2222730ebc10e124dfc0f5a94936715ff96fca207b4f5d32e",
+        "fixture_runner_sha256": "80406a53698ba13079cb8603f240f4a19d75d2a73cb60ae5932a15de56061488",
         "mcp_probe_path": "scripts/probe_mcp_stdio.py",
         "mcp_probe_sha256": "7c06ea36ee5cac933a97140b84a41405fc99b45152388e8d7c6659136af698fd",
         "codex_entrypoint_path": "sources/evaluations/fixtures/container/codex-entrypoint.sh",
