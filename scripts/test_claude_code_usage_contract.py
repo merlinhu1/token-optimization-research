@@ -6,6 +6,7 @@ from __future__ import annotations
 import json
 import tempfile
 import unittest
+from unittest import mock
 from pathlib import Path
 
 import extract_claude_code_usage
@@ -204,6 +205,29 @@ class OpenCodeUsageContractTest(unittest.TestCase):
             target = Path(tmp) / "model-output" / "last.txt"
             opencode_workflow_adapter.write_last_message(target, "done")
             self.assertEqual(target.read_text(), "done\n")
+
+    def test_last_message_write_retries_replaced_parent_without_provider_action(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            target = Path(tmp) / "model-output" / "last.txt"
+            original_write = Path.write_text
+            attempts = 0
+
+            def transient_write(path: Path, text: str, *args: object, **kwargs: object) -> int:
+                nonlocal attempts
+                if path == target and attempts < 3:
+                    attempts += 1
+                    raise FileNotFoundError("simulated mount replacement")
+                return original_write(path, text, *args, **kwargs)
+
+            with (
+                mock.patch.object(Path, "write_text", new=transient_write),
+                mock.patch.object(opencode_workflow_adapter.time, "sleep") as sleep,
+            ):
+                opencode_workflow_adapter.write_last_message(target, "recovered")
+            self.assertEqual(attempts, 3)
+            self.assertEqual(sleep.call_count, 3)
+            self.assertEqual(target.read_text(), "recovered\n")
+
     def test_cache_write_is_in_fresh_and_not_added_twice(self) -> None:
         usage = opencode_workflow_adapter.step_usage({"tokens": {"input": 100, "output": 20, "reasoning": 5, "cache": {"read": 300, "write": 40}, "total": 465}})
         self.assertEqual((usage["fresh_input_tokens"], usage["cache_write_tokens"], usage["output_tokens"], usage["total_provider_tokens"]), (140, 40, 25, 465))
