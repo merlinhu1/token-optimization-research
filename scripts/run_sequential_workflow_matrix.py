@@ -50,6 +50,23 @@ OPENCODE_LIFECYCLE_V1_R1_RECOVERY_AUTHORITY_REL = (
 CLAUDE_BASELINE_AUTHORITY_REL = Path(
     "sources/evaluations/audits/claude-code-sol-high-normal-baseline-authorization-20260731.json"
 )
+CLAUDE_LIFECYCLE_V1_AUTHORITY_REL = Path(
+    "sources/evaluations/audits/claude-code-lifecycle-v1-sol-high-r0-authorization-20260802.json"
+)
+CLAUDE_LIFECYCLE_V1_ATTEMPT_DIR = Path(
+    "sources/evaluations/audits/claude-code-lifecycle-v1-sol-high-r0-attempts"
+)
+CLAUDE_LIFECYCLE_V1_SEQUENCE_ORDER = (
+    "fastify-lifecycle-sequence-v1",
+    "beets-lifecycle-sequence-v1",
+)
+CLAUDE_LIFECYCLE_V1_MODEL_CONDITION = {
+    "id": "claude-code-openrouter-gpt-5-6-sol-high",
+    "runtime_id": "claude-code",
+    "provider": "openrouter",
+    "model": "gpt-5.6-sol",
+    "reasoning_effort": "high",
+}
 WORKFLOW_ARTIFACT_ROOT = Path("sources/evaluations/workflow-sessions")
 COMPACT_ARTIFACT_NAMES = {"run.json", "changes.diff", "evidence.jsonl.gz", "manifest.sha256"}
 
@@ -280,12 +297,179 @@ def find_protocol(
     return matches[0]
 
 
+def claude_lifecycle_v1_attempt_path(
+    sequence_id: str,
+    replicate_index: int,
+    root: Path = ROOT,
+) -> Path:
+    if sequence_id not in CLAUDE_LIFECYCLE_V1_SEQUENCE_ORDER or replicate_index != 0:
+        raise ValueError("Claude Code Lifecycle V1 attempt identity is not authorized")
+    lane = sequence_id.removesuffix("-lifecycle-sequence-v1")
+    return root / CLAUDE_LIFECYCLE_V1_ATTEMPT_DIR / f"{lane}-r0.json"
+
+
+def claude_lifecycle_v1_run_gate(
+    registry: dict[str, Any],
+    sequence_id: str,
+    replicate_index: int,
+    root: Path = ROOT,
+) -> tuple[bool, str]:
+    """Validate the owner-bound Claude Code Lifecycle V1 provider authority."""
+    path = root / CLAUDE_LIFECYCLE_V1_AUTHORITY_REL
+    if not path.is_file():
+        return False, f"missing Claude Code Lifecycle V1 authority: {CLAUDE_LIFECYCLE_V1_AUTHORITY_REL}"
+    try:
+        authority = load_json(path)
+    except (OSError, ValueError) as exc:
+        return False, f"unreadable Claude Code Lifecycle V1 authority: {exc}"
+    expected_keys = {
+        "schema_version", "campaign_id", "authorized_by_owner_message_id", "authorized_on",
+        "authorized_source_commit", "paid_baseline_execution_authorized", "authorized_replicate_index",
+        "sequence_order", "max_parallel", "allowed_paid_baseline_runs", "allowed_model_turns",
+        "serialization_required", "model_condition", "first_valid_sample_policy",
+        "rerun_after_attempt_receipt", "provider_calls", "provider_tokens", "sequences", "notes",
+    }
+    records = authority.get("sequences")
+    header_ok = (
+        isinstance(authority, dict)
+        and set(authority) == expected_keys
+        and authority.get("schema_version") == 1
+        and authority.get("campaign_id") == "claude-code-lifecycle-v1-sol-high-r0-20260802"
+        and authority.get("authorized_by_owner_message_id") == "1533397324384964609"
+        and authority.get("authorized_on") == "2026-08-02"
+        and isinstance(authority.get("authorized_source_commit"), str)
+        and len(authority["authorized_source_commit"]) == 40
+        and authority.get("paid_baseline_execution_authorized") is True
+        and authority.get("authorized_replicate_index") == 0
+        and authority.get("sequence_order") == list(CLAUDE_LIFECYCLE_V1_SEQUENCE_ORDER)
+        and authority.get("max_parallel") == 1
+        and authority.get("allowed_paid_baseline_runs") == len(CLAUDE_LIFECYCLE_V1_SEQUENCE_ORDER)
+        and authority.get("allowed_model_turns") == sum(
+            len(workflow.load_sequence(item).get("tasks", []))
+            for item in CLAUDE_LIFECYCLE_V1_SEQUENCE_ORDER
+        )
+        and authority.get("serialization_required") is True
+        and authority.get("model_condition") == CLAUDE_LIFECYCLE_V1_MODEL_CONDITION
+        and authority.get("first_valid_sample_policy") is True
+        and authority.get("rerun_after_attempt_receipt") is False
+        and type(authority.get("provider_calls")) is int
+        and authority.get("provider_calls") == 0
+        and type(authority.get("provider_tokens")) is int
+        and authority.get("provider_tokens") == 0
+        and isinstance(authority.get("notes"), str)
+        and bool(authority.get("notes"))
+    )
+    binding_keys = {
+        "sequence_id", "protocol_path", "protocol_sha256", "baseline_pool_fingerprint",
+    }
+    records_ok = (
+        isinstance(records, list)
+        and len(records) == len(CLAUDE_LIFECYCLE_V1_SEQUENCE_ORDER)
+        and all(isinstance(item, dict) and set(item) == binding_keys for item in records)
+        and [item.get("sequence_id") for item in records] == list(CLAUDE_LIFECYCLE_V1_SEQUENCE_ORDER)
+    )
+    if (
+        not header_ok
+        or not records_ok
+        or replicate_index != 0
+        or sequence_id not in CLAUDE_LIFECYCLE_V1_SEQUENCE_ORDER
+    ):
+        return False, "Claude Code Lifecycle V1 authority does not match the requested identity, scope, or budget"
+    bindings = {item["sequence_id"]: item for item in records}
+    for active_id in CLAUDE_LIFECYCLE_V1_SEQUENCE_ORDER:
+        binding = bindings[active_id]
+        protocol_path = root / str(binding["protocol_path"])
+        try:
+            protocol_raw = protocol_path.read_bytes()
+            protocol = json.loads(protocol_raw)
+        except (OSError, UnicodeDecodeError, json.JSONDecodeError) as exc:
+            return False, f"Claude Code Lifecycle V1 authority protocol is unreadable: {active_id}: {exc}"
+        descriptor = protocol.get("selected_execution", {}).get("descriptor", {})
+        agent = descriptor.get("agent_condition", {}) if isinstance(descriptor, dict) else {}
+        if (
+            hashlib.sha256(protocol_raw).hexdigest() != binding["protocol_sha256"]
+            or protocol.get("status") != "frozen-ready-not-run"
+            or protocol.get("task_fixture", {}).get("sequence_id") != active_id
+            or protocol.get("baseline_pool", {}).get("protocol_fingerprint")
+            != binding["baseline_pool_fingerprint"]
+            or descriptor.get("selected_profile", {}).get("profile_id") != "baseline-claude-code-no-mcp"
+            or agent != {
+                "runtime_id": "claude-code",
+                "provider": "openrouter",
+                "model": "gpt-5.6-sol",
+                "model_condition_id": "claude-code-openrouter-gpt-5-6-sol-high",
+                "reasoning_effort": "high",
+                "runtime_version_condition": "captured-at-run-and-bound-to-record",
+            }
+        ):
+            return False, f"Claude Code Lifecycle V1 authority has stale protocol binding: {active_id}"
+    try:
+        receipt = claude_lifecycle_v1_attempt_path(sequence_id, replicate_index, root)
+    except ValueError as exc:
+        return False, str(exc)
+    if receipt.exists():
+        return False, f"Claude Code Lifecycle V1 identity is occupied by immutable attempt receipt: {receipt.relative_to(root)}"
+    occupied = workflow.find_pool_profile_record(
+        registry,
+        workflow.load_sequence(sequence_id),
+        "baseline-claude-code-no-mcp",
+        replicate_index,
+    )
+    if occupied is not None:
+        return False, f"Claude Code Lifecycle V1 identity is already occupied by session {occupied.get('session_id')}"
+    return True, "owner-authorized Claude Code Lifecycle V1 Sol/high baseline is unoccupied"
+
+
+def reserve_claude_lifecycle_v1_attempt(
+    *,
+    sequence_id: str,
+    replicate_index: int,
+    expected_session_binding: dict[str, Any],
+    run_root: Path,
+    root: Path = ROOT,
+) -> Path:
+    """Reserve one immutable Claude Code Lifecycle V1 identity before a lane clone."""
+    if (
+        expected_session_binding.get("sequence_id") != sequence_id
+        or expected_session_binding.get("profile_id") != "baseline-claude-code-no-mcp"
+        or expected_session_binding.get("replicate_index") != replicate_index
+        or not isinstance(expected_session_binding.get("frozen_protocol"), dict)
+        or not isinstance(expected_session_binding.get("selected_execution"), dict)
+    ):
+        raise ValueError("Claude Code Lifecycle V1 receipt binding does not match the requested identity")
+    path = claude_lifecycle_v1_attempt_path(sequence_id, replicate_index, root)
+    if path.exists():
+        raise FileExistsError(f"immutable Claude Code Lifecycle V1 attempt receipt already exists: {path}")
+    payload = {
+        "schema_version": 1,
+        "attempt_status": "reserved-before-provider-task",
+        "task_family_generation": "lifecycle-v1",
+        "sequence_id": sequence_id,
+        "replicate_index": replicate_index,
+        "profile_id": "baseline-claude-code-no-mcp",
+        "model_condition_id": "claude-code-openrouter-gpt-5-6-sol-high",
+        "model": "gpt-5.6-sol",
+        "reasoning_effort": "high",
+        "owner_authorization_message_id": "1533397324384964609",
+        "authority_path": str(CLAUDE_LIFECYCLE_V1_AUTHORITY_REL),
+        "orchestrator": str(run_root),
+        "reserved_at": dt.datetime.now(dt.UTC).isoformat(),
+        "expected_session_binding": expected_session_binding,
+        "provider_result": None,
+        "immutable_identity_receipt": True,
+    }
+    workflow.atomic_create_json(path, payload)
+    return path
+
+
 def claude_baseline_run_gate(
     registry: dict[str, Any],
     sequence_id: str,
     replicate_index: int,
     root: Path = ROOT,
 ) -> tuple[bool, str]:
+    if sequence_id in CLAUDE_LIFECYCLE_V1_SEQUENCE_ORDER:
+        return claude_lifecycle_v1_run_gate(registry, sequence_id, replicate_index, root)
     path = root / CLAUDE_BASELINE_AUTHORITY_REL
     if not path.is_file():
         return False, f"missing Claude Code baseline authority: {CLAUDE_BASELINE_AUTHORITY_REL}"
@@ -644,6 +828,31 @@ def workflow_lane_command(
     return cmd
 
 
+def expected_session_binding_for_protocol(
+    *,
+    sequence_id: str,
+    profile_id: str,
+    replicate_index: int,
+    protocol_path: Path,
+    root: Path,
+) -> dict[str, Any]:
+    """Bind an immutable parent receipt to the exact frozen protocol bytes."""
+    relative_protocol = protocol_path.relative_to(root)
+    protocol_doc = load_json(protocol_path)
+    return {
+        "sequence_id": sequence_id,
+        "profile_id": profile_id,
+        "replicate_index": replicate_index,
+        "frozen_protocol": {
+            "protocol_id": protocol_doc["protocol_id"],
+            "path": str(relative_protocol),
+            "sha256": hashlib.sha256(protocol_path.read_bytes()).hexdigest(),
+        },
+        "baseline_pool_fingerprint": protocol_doc["baseline_pool"]["protocol_fingerprint"],
+        "selected_execution": protocol_doc["selected_execution"],
+    }
+
+
 def run_flow_lane(
     *,
     sequence_id: str,
@@ -664,9 +873,35 @@ def run_flow_lane(
     logs.mkdir(parents=True, exist_ok=True)
     tmp.mkdir(parents=True, exist_ok=True)
     provider_capable = "--no-provider" not in runner_args
+    if provider_capable and not published_launch_commit:
+        raise ValueError("provider-capable lane requires a certified published launch commit")
+    parent_claude_receipt_binding: dict[str, Any] | None = None
+    if (
+        provider_capable
+        and treatment_profile == "baseline-claude-code-no-mcp"
+        and sequence_id in CLAUDE_LIFECYCLE_V1_SEQUENCE_ORDER
+    ):
+        parent_protocol = find_protocol(
+            ROOT,
+            sequence_id,
+            treatment_profile,
+            model_condition_override=model_condition,
+        )
+        parent_claude_receipt_binding = expected_session_binding_for_protocol(
+            sequence_id=sequence_id,
+            profile_id=treatment_profile,
+            replicate_index=replicate_index,
+            protocol_path=parent_protocol,
+            root=ROOT,
+        )
+        reserve_claude_lifecycle_v1_attempt(
+            sequence_id=sequence_id,
+            replicate_index=replicate_index,
+            expected_session_binding=parent_claude_receipt_binding,
+            run_root=lane_root,
+            root=ROOT,
+        )
     if provider_capable:
-        if not published_launch_commit:
-            raise ValueError("provider-capable lane requires a certified published launch commit")
         clone_published_checkout(checkout, published_launch_commit)
     else:
         rsync_checkout(ROOT, checkout)
@@ -679,19 +914,20 @@ def run_flow_lane(
     before_artifact_entries = {path.name for path in artifact_root.iterdir()}
 
     protocol = find_protocol(checkout, sequence_id, treatment_profile).relative_to(checkout)
-    protocol_doc = load_json(checkout / protocol)
-    expected_session_binding = {
-        "sequence_id": sequence_id,
-        "profile_id": treatment_profile,
-        "replicate_index": replicate_index,
-        "frozen_protocol": {
-            "protocol_id": protocol_doc["protocol_id"],
-            "path": str(protocol),
-            "sha256": hashlib.sha256((checkout / protocol).read_bytes()).hexdigest(),
-        },
-        "baseline_pool_fingerprint": protocol_doc["baseline_pool"]["protocol_fingerprint"],
-        "selected_execution": protocol_doc["selected_execution"],
-    }
+    expected_session_binding = expected_session_binding_for_protocol(
+        sequence_id=sequence_id,
+        profile_id=treatment_profile,
+        replicate_index=replicate_index,
+        protocol_path=checkout / protocol,
+        root=checkout,
+    )
+    if (
+        parent_claude_receipt_binding is not None
+        and expected_session_binding != parent_claude_receipt_binding
+    ):
+        raise UnsafeLaneOutputError(
+            "Claude Code Lifecycle V1 child protocol does not match the parent-reserved identity"
+        )
     cmd = workflow_lane_command(
         sequence_id=sequence_id,
         profile_id=treatment_profile,
@@ -2011,6 +2247,13 @@ def main(argv: list[str] | None = None) -> int:
         raise SystemExit(f"Unknown/non-active sequence IDs: {unknown}; active={sorted(valid)}")
     if args.max_parallel < 1:
         raise SystemExit("--max-parallel must be >= 1")
+    if (
+        isinstance(model_condition, dict)
+        and model_condition.get("runtime_id") == "claude-code"
+        and any(sequence_id in CLAUDE_LIFECYCLE_V1_SEQUENCE_ORDER for sequence_id in sequences)
+        and args.max_parallel != 1
+    ):
+        raise SystemExit("owner-authorized Claude Code Lifecycle V1 requires --max-parallel 1")
     if args.lane_root.exists() and not nonsymlink_directory_ancestry(args.lane_root):
         raise ValueError("lane root contains a symlink or non-directory ancestor")
 

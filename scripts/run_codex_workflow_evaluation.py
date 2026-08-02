@@ -191,6 +191,30 @@ DEFAULT_WORKFLOW_MODEL = "gpt-5.6-luna"
 DEFAULT_WORKFLOW_REASONING_EFFORT = "xhigh"
 RUNNER_CONTRACT_VERSION = "workflow-runner-v10"
 MAX_CODEX_OPERATIONAL_RETRIES = 1
+
+
+def operational_retry_budget(
+    profile_id: str,
+    replicate_index: int,
+    sequence: dict[str, Any],
+) -> int:
+    """Return the authorized operational-retry ceiling for one paid task sequence."""
+    generation = sequence.get("task_family_generation")
+    if (
+        profile_id == "baseline-bare-codex"
+        and replicate_index > 0
+        and generation in {"baseline-v3", "baseline-v4", "lifecycle-v1"}
+    ):
+        return 0
+    if (
+        profile_id == "baseline-claude-code-no-mcp"
+        and replicate_index == 0
+        and generation == "lifecycle-v1"
+    ):
+        return 0
+    return MAX_CODEX_OPERATIONAL_RETRIES
+
+
 THREAD_CONTINUITY_FAILURE_EXIT_CODE = 86
 TASK_VERIFIER_RESULT_PREFIX = "__WORKFLOW_TASK_RESULT__"
 PROJECT_COMPILE_RESULT_PREFIX = "WORKFLOW_PROJECT_COMPILE_RESULT"
@@ -4153,6 +4177,24 @@ def inherited_provider_production_lock_fd() -> int | None:
     return fd
 
 
+def require_claude_lifecycle_v1_matrix_launch(
+    profile_id: str,
+    sequence: dict[str, Any],
+    *,
+    prepare_only: bool,
+) -> None:
+    """Keep paid Claude Code Lifecycle V1 execution behind the matrix authority boundary."""
+    if (
+        not prepare_only
+        and profile_id == "baseline-claude-code-no-mcp"
+        and sequence.get("task_family_generation") == "lifecycle-v1"
+        and inherited_provider_production_lock_fd() is None
+    ):
+        raise ValueError(
+            "Claude Code Lifecycle V1 provider execution must be launched through the serial matrix"
+        )
+
+
 def acquire_provider_production_lock() -> int:
     """Acquire, or verify inheritance of, the shared provider-production lock."""
     inherited_fd = inherited_provider_production_lock_fd()
@@ -4396,6 +4438,11 @@ def run_one(args: argparse.Namespace) -> dict[str, Any]:
     if args.prepare_only:
         return _run_one_locked(args)
     selected_sequence = load_sequence(args.sequence_id)
+    require_claude_lifecycle_v1_matrix_launch(
+        args.profile_id,
+        selected_sequence,
+        prepare_only=False,
+    )
     require_zero_mistake_pilot_replicate(
         selected_sequence,
         args.profile_id,
@@ -4634,13 +4681,7 @@ def _run_one_locked(args: argparse.Namespace) -> dict[str, Any]:
     thread_continuity_errors: list[dict[str, Any]] = []
     verifier_integrity_checks: list[dict[str, Any]] = []
     model_output_dir = model_output_directory(run_dir)
-    operational_retries = (
-        0
-        if profile_id == "baseline-bare-codex"
-        and args.replicate_index > 0
-        and seq.get("task_family_generation") in {"baseline-v3", "baseline-v4", "lifecycle-v1"}
-        else MAX_CODEX_OPERATIONAL_RETRIES
-    )
+    operational_retries = operational_retry_budget(profile_id, args.replicate_index, seq)
     for task in ordered_tasks:
         order = int(task["order"])
         prompt_path = materialize_task_prompt(
