@@ -127,6 +127,7 @@ class ClaudeUsageContractTest(unittest.TestCase):
                                 "cacheReadInputTokens": 40,
                                 "cacheCreationInputTokens": 8,
                                 "outputTokens": 5,
+                                "maxOutputTokens": 32000,
                             }
                         },
                     }
@@ -157,6 +158,12 @@ class ClaudeUsageContractTest(unittest.TestCase):
         self.assertEqual(
             summary["provider_usage_details"]["result_raw_model_usage_token_field_totals"]["gpt-5.6-sol.inputTokens"],
             12,
+        )
+        # A maximum-output budget is not observed usage and must not appear in
+        # the diagnostic usage-token totals.
+        self.assertNotIn(
+            "gpt-5.6-sol.maxOutputTokens",
+            summary["provider_usage_details"]["result_raw_model_usage_token_field_totals"],
         )
         self.assertEqual(len(summary["provider_usage_details"]["result_raw_usage_blocks"]), 1)
         self.assertFalse(summary["warnings"])
