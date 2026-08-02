@@ -902,6 +902,23 @@ class ActiveCampaignArchitectureTest(unittest.TestCase):
                 binding["replacement_sha256"],
             )
 
+    def test_opencode_lifecycle_v1_preflight_rejection_is_retained_without_spend(self) -> None:
+        receipt = json.loads(
+            (
+                ROOT
+                / "sources/evaluations/audits/lifecycle-v1-opencode-sol-high-r1-checkout-preflight-rejection-20260802.json"
+            ).read_text()
+        )
+        self.assertEqual(receipt["provider_calls"], 0)
+        self.assertEqual(receipt["provider_tokens"], 0)
+        self.assertFalse(receipt["identity_occupied"])
+        self.assertTrue(receipt["same_identity_retry_permitted"])
+        self.assertEqual(receipt["failure_stage"], "child protocol validation before adapter launch")
+        self.assertEqual(
+            receipt["required_prerequisite"],
+            "sources/evaluations/audits/lifecycle-v1-pilot-compile-only.json",
+        )
+
     def test_ineligible_historical_profiles_are_not_runnable(self) -> None:
         historical = {
             "terminal-tokenjuice", "terminal-rtk", "terminal-snip",
