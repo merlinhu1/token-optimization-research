@@ -6788,6 +6788,19 @@ class BaselineV3LowComplexityContractTest(unittest.TestCase):
                 + "-r0.json",
             )
 
+    def test_opencode_lifecycle_v1_r2_has_a_distinct_authority_path(self) -> None:
+        self.assertEqual(
+            runner.opencode_lifecycle_v1_authority_rel(2).name,
+            "lifecycle-v1-opencode-sol-high-r2-authorization-20260802.json",
+        )
+        self.assertTrue(
+            runner.standalone_opencode_control_authorized(
+                "runtime-opencode-codex-product-v1", 2, ROOT,
+                sequence_id="fastify-lifecycle-sequence-v1",
+                model_condition_id="opencode-openai-gpt-5-6-sol-high",
+            )
+        )
+
     def test_opencode_lifecycle_v1_r1_no_provider_recovery_requires_exact_authority(self) -> None:
         sequence_id = "fastify-lifecycle-sequence-v1"
         with tempfile.TemporaryDirectory() as tmp:

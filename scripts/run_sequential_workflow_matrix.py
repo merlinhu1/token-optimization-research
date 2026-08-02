@@ -44,6 +44,7 @@ OPENCODE_BASELINE_ATTEMPT_DIR = Path("sources/evaluations/audits/opencode-bare-r
 OPENCODE_LIFECYCLE_V1_ATTEMPT_DIRS = {
     0: Path("sources/evaluations/audits/lifecycle-v1-opencode-sol-high-r0-attempts"),
     1: Path("sources/evaluations/audits/lifecycle-v1-opencode-sol-high-r1-attempts"),
+    2: Path("sources/evaluations/audits/lifecycle-v1-opencode-sol-high-r2-attempts"),
 }
 OPENCODE_LIFECYCLE_V1_R1_ATTEMPT_DIR = OPENCODE_LIFECYCLE_V1_ATTEMPT_DIRS[1]
 OPENCODE_LIFECYCLE_V1_R1_RECOVERY_AUTHORITY_REL = (
