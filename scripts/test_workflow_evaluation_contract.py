@@ -5862,6 +5862,7 @@ class BaselineV3LowComplexityContractTest(unittest.TestCase):
         authority = json.loads(
             (ROOT / sequence["mistake_gate"]["pilot_authorization_path"]).read_text()
         )
+        authority.pop("pilot_attempts", None)
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
             authority_path = root / sequence["mistake_gate"]["pilot_authorization_path"]
@@ -5885,6 +5886,13 @@ class BaselineV3LowComplexityContractTest(unittest.TestCase):
             allowed, reason = runner.baseline_v2_pilot_run_gate(sequence, root)
             self.assertTrue(allowed)
             self.assertIn("no prior", reason)
+
+            consumed = copy.deepcopy(authority)
+            consumed["pilot_attempts"] = {sequence["id"]: {"status": "rejected"}}
+            authority_path.write_text(json.dumps(consumed))
+            allowed, reason = runner.baseline_v2_pilot_run_gate(sequence, root)
+            self.assertFalse(allowed)
+            self.assertIn("already consumed as rejected", reason)
 
     def test_matrix_current_baseline_rejects_unauthorized_lifecycle_v1_pilot_before_lane_root(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
@@ -6107,14 +6115,24 @@ class BaselineV3LowComplexityContractTest(unittest.TestCase):
 
     def test_active_generation_gates_block_until_lifecycle_v1_compile_pilot(self) -> None:
         document = json.loads((ROOT / "data/workflow-task-sequences.json").read_text())
+        expected_attempt_status = {
+            "fastify-lifecycle-sequence-v1": "accepted",
+            "beets-lifecycle-sequence-v1": "accepted",
+            "terraform-lifecycle-sequence-v1": "rejected",
+        }
+        expected_blockers = {
+            "fastify-lifecycle-sequence-v1": "provider-backed strongest-model compile-only Lifecycle V1 pilot executed; treatment audit is pending",
+            "beets-lifecycle-sequence-v1": "provider-backed strongest-model compile-only Lifecycle V1 pilot executed; treatment audit is pending",
+            "terraform-lifecycle-sequence-v1": "provider-backed strongest-model compile-only Lifecycle V1 r0 pilot attempt was rejected; explicit owner reauthorization is required",
+        }
         for sequence in active_lifecycle_v1_sequences(document):
             passed, reason = runner.baseline_v2_treatment_gate(sequence, ROOT)
             pilot_allowed, pilot_reason = runner.baseline_v2_pilot_run_gate(sequence, ROOT, 0)
             self.assertIs(passed, False)
             self.assertIn("pilot audit is absent", reason)
-            self.assertIs(pilot_allowed, True)
-            self.assertIn("no prior", pilot_reason)
-            self.assertEqual(sequence["readiness_blockers"], ["provider-backed strongest-model compile-only Lifecycle V1 pilot is authorized but not executed"])
+            self.assertIs(pilot_allowed, False)
+            self.assertIn(f"already consumed as {expected_attempt_status[sequence['id']]}", pilot_reason)
+            self.assertEqual(sequence["readiness_blockers"], [expected_blockers[sequence["id"]]])
 
     def test_workflow_authority_describes_lifecycle_v1_compile_only_pilot_gate(self) -> None:
         document = json.loads((ROOT / "data/workflow-task-sequences.json").read_text())
