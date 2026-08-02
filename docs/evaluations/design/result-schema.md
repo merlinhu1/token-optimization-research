@@ -19,7 +19,7 @@ The primary metric is cumulative provider-reported token use across a persistent
 
 ## Replicate semantics
 
-A replicate is one complete execution of an ordered workflow sequence. A workflow with three tasks has three structured task outcomes but remains one replicate.
+A replicate is one complete execution of an ordered workflow sequence. A workflow with three tasks has three structured task outcomes but remains one replicate. Its `replicate_index` is an immutable **runtime-local attempt label**; do not assume the same `rN` across different runtimes denotes a comparison pair.
 
 Replicates are cumulative evidence:
 
@@ -42,6 +42,10 @@ A comparison pool is defined by causal/model-visible inputs:
 Full runner, validator, generator, and schema hashes remain in the frozen protocol for provenance. Reporting-only implementation changes do not split a comparison pool. A change to a causal/model-visible input produces a new comparison identity.
 
 The active pools retain their existing fingerprints through guarded causal-identity aliases so accumulated runs remain pairable after framework-only repairs.
+
+### Cross-runtime accepted-order pairing
+
+When one runtime has an excluded attempt and the other does not, `replicate_index` cannot be used as the cross-runtime key. The accepted treatment record must instead carry both `interpretation.comparison_baseline_session_id` and `interpretation.comparison_pair`, which names an `accepted-replicate-ordinal` and the two runtime-local labels. The validator requires matching pool, sequence, model-facing prompt hashes, model, reasoning effort, and accepted compact evidence before accepting that cross-index binding. See [Lifecycle V1 accepted-replicate pairing](lifecycle-v1-accepted-replicate-pairing.md) for the current map.
 
 ## Required decision fields
 

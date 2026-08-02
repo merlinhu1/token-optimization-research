@@ -1,0 +1,94 @@
+{
+  "schema_version": 1,
+  "audit_id": "opencode-openai-gpt-5-6-sol-high-accepted-pair-02-panel-results-20260802",
+  "date": "2026-08-02",
+  "source_registry": {
+    "path": "data/workflow-sessions.json",
+    "sha256": "ebc5f47a4fd68d450f2d263d17cc3305d555e6d52b7baab3b9538fc16e635570"
+  },
+  "condition": {
+    "runtime_id": "opencode-cli",
+    "model_condition_id": "opencode-openai-gpt-5-6-sol-high",
+    "provider": "openai",
+    "model": "gpt-5.6-sol",
+    "reasoning_effort": "high",
+    "workflows": [
+      "fastify-lifecycle-sequence-v1",
+      "beets-lifecycle-sequence-v1"
+    ],
+    "primary_metric": "raw_provider_tokens",
+    "secondary_metric": "weighted_tokens = fresh input (input_tokens + cache_creation_input_tokens) + 0.1 * cached input + 6 * output",
+    "comparison_pair": {
+      "id": "lifecycle-v1-sol-high-accepted-pair-02",
+      "basis": "accepted-replicate-ordinal",
+      "accepted_replicate_ordinal": 2,
+      "treatment_runtime_replicate_index": 2,
+      "baseline_runtime_replicate_index": 1
+    },
+    "treatment_runtime_replicate_index": 2
+  },
+  "profile_count": 1,
+  "workflow_session_count": 2,
+  "accepted_task_count": 6,
+  "baseline": {
+    "profile_id": "baseline-bare-codex",
+    "session_ids": [
+      "baseline-fastify-20260802-p-72ac148f730b-r1",
+      "baseline-beets-20260802-p-d8cfc5066f76-r1"
+    ],
+    "usage": {
+      "fresh_input_tokens": 177497,
+      "cached_input_tokens": 2493696,
+      "output_tokens": 18427,
+      "reasoning_tokens": 7365,
+      "raw_provider_tokens": 2689620,
+      "weighted_tokens": 537428.6
+    },
+    "comparison_pair": {
+      "id": "lifecycle-v1-sol-high-accepted-pair-02",
+      "basis": "accepted-replicate-ordinal",
+      "accepted_replicate_ordinal": 2,
+      "treatment_runtime_replicate_index": 2,
+      "baseline_runtime_replicate_index": 1
+    }
+  },
+  "results_ranked_by_primary_metric": [
+    {
+      "profile_id": "runtime-opencode-codex-product-v1",
+      "artifact_slug": "opencode",
+      "session_ids": [
+        "opencode-fastify-20260802-p-72ac148f730b-r2",
+        "opencode-beets-20260802-p-d8cfc5066f76-r2"
+      ],
+      "workflow_count": 2,
+      "accepted_task_count": 6,
+      "usage": {
+        "fresh_input_tokens": 227252,
+        "cached_input_tokens": 3994624,
+        "output_tokens": 31113,
+        "reasoning_tokens": 10501,
+        "raw_provider_tokens": 4252989,
+        "weighted_tokens": 813392.4
+      },
+      "comparison_pair": {
+        "id": "lifecycle-v1-sol-high-accepted-pair-02",
+        "basis": "accepted-replicate-ordinal",
+        "accepted_replicate_ordinal": 2,
+        "treatment_runtime_replicate_index": 2,
+        "baseline_runtime_replicate_index": 1
+      },
+      "raw_delta_vs_baseline_percent": 58.13,
+      "weighted_delta_vs_baseline_percent": 51.35,
+      "raw_rank": 1
+    }
+  ],
+  "descriptive_panel_aggregate": {
+    "treatment_raw_provider_tokens": 4252989,
+    "repeated_baseline_raw_provider_tokens": 2689620,
+    "raw_delta_percent": 58.13,
+    "treatment_weighted_tokens": 813392.4,
+    "repeated_baseline_weighted_tokens": 537428.6,
+    "weighted_delta_percent": 51.35,
+    "independence_note": "The same 2 baseline sessions are repeated for every profile; this aggregate is descriptive, not a panel of independent controls."
+  }
+}

@@ -62,6 +62,7 @@ def build_panel(
     replicate_index: int,
     date: str,
     sequence_ids: tuple[str, ...] = DEFAULT_SEQUENCES,
+    comparison_pair_id: str | None = None,
 ) -> dict[str, Any]:
     registry_path = root / "data/workflow-sessions.json"
     profile_path = root / "data/evaluation-profiles.json"
@@ -109,6 +110,7 @@ def build_panel(
 
     rows: list[dict[str, Any]] = []
     baseline_ids: set[str] = set()
+    panel_pair: dict[str, Any] | None = None
     for profile_id, profile_sessions in treatments.items():
         profile_sessions = [
             session
@@ -122,6 +124,20 @@ def build_panel(
         if set(by_sequence) != set(sequence_ids) or len(profile_sessions) != len(sequence_ids):
             continue
         ordered = [by_sequence[sequence] for sequence in sequence_ids]
+        if comparison_pair_id:
+            pairs = [session.get("interpretation", {}).get("comparison_pair") for session in ordered]
+            if not all(isinstance(pair, dict) and pair.get("id") == comparison_pair_id for pair in pairs):
+                raise ValueError(
+                    f"{profile_id} does not have the requested comparison pair {comparison_pair_id} "
+                    "for every workflow"
+                )
+            candidate_pair = pairs[0]
+            if any(pair != candidate_pair for pair in pairs[1:]):
+                raise ValueError(f"{profile_id} has inconsistent comparison-pair metadata")
+            if panel_pair is None:
+                panel_pair = candidate_pair
+            elif panel_pair != candidate_pair:
+                raise ValueError("panel cannot combine distinct accepted-replicate pairs")
         usage = summed_usage(ordered)
         cited_baselines = {baseline_for(session)["session_id"] for session in ordered}
         if len(cited_baselines) != len(sequence_ids):
@@ -131,22 +147,25 @@ def build_panel(
         slug = profile.get("artifact_slug")
         if not isinstance(slug, str) or not slug:
             raise ValueError(f"{profile_id} is missing artifact_slug")
-        rows.append(
-            {
-                "profile_id": profile_id,
-                "artifact_slug": slug,
-                "session_ids": [session["session_id"] for session in ordered],
-                "workflow_count": len(ordered),
-                "accepted_task_count": sum(
-                    int(session["software_quality"]["tasks_passed"])
-                    for session in ordered
-                ),
-                "usage": usage,
-            }
-        )
+        row = {
+            "profile_id": profile_id,
+            "artifact_slug": slug,
+            "session_ids": [session["session_id"] for session in ordered],
+            "workflow_count": len(ordered),
+            "accepted_task_count": sum(
+                int(session["software_quality"]["tasks_passed"])
+                for session in ordered
+            ),
+            "usage": usage,
+        }
+        if comparison_pair_id:
+            row["comparison_pair"] = candidate_pair
+        rows.append(row)
 
     if not rows:
         raise ValueError("no complete accepted treatment profiles matched the requested panel")
+    if comparison_pair_id and panel_pair is None:
+        raise ValueError("requested comparison pair did not resolve to accepted pair metadata")
     baseline_sessions = [sessions_by_id[session_id] for session_id in sorted(baseline_ids)]
     baseline_by_sequence = {
         session["task_sequence"]["sequence_id"]: session
@@ -174,10 +193,34 @@ def build_panel(
     repeated_baseline_raw = int(baseline_usage["raw_provider_tokens"]) * len(rows)
     repeated_baseline_weighted = round(float(baseline_usage["weighted_tokens"]) * len(rows), 1)
     compact_date = date.replace("-", "")
-    audit_id = f"{model_condition_id}-r{replicate_index}-panel-results-{compact_date}"
+    audit_scope = (
+        f"accepted-pair-{panel_pair['accepted_replicate_ordinal']:02d}"
+        if panel_pair
+        else f"r{replicate_index}"
+    )
+    audit_id = f"{model_condition_id}-{audit_scope}-panel-results-{compact_date}"
     first = rows[0]
     first_session = sessions_by_id[first["session_ids"][0]]
     agent = first_session["agent"]
+    condition = {
+        "runtime_id": agent["runtime_id"],
+        "model_condition_id": model_condition_id,
+        "provider": agent["provider"],
+        "model": agent["model"],
+        "reasoning_effort": agent["reasoning_effort"],
+    }
+    if not panel_pair:
+        condition["replicate_index"] = replicate_index
+    condition.update({
+        "workflows": list(sequence_ids),
+        "primary_metric": "raw_provider_tokens",
+        "secondary_metric": "weighted_tokens = fresh input (input_tokens + cache_creation_input_tokens) + 0.1 * cached input + 6 * output",
+    })
+    if panel_pair:
+        condition.update({
+            "comparison_pair": panel_pair,
+            "treatment_runtime_replicate_index": replicate_index,
+        })
     return {
         "schema_version": 1,
         "audit_id": audit_id,
@@ -186,17 +229,7 @@ def build_panel(
             "path": "data/workflow-sessions.json",
             "sha256": sha256(registry_path),
         },
-        "condition": {
-            "runtime_id": agent["runtime_id"],
-            "model_condition_id": model_condition_id,
-            "provider": agent["provider"],
-            "model": agent["model"],
-            "reasoning_effort": agent["reasoning_effort"],
-            "replicate_index": replicate_index,
-            "workflows": list(sequence_ids),
-            "primary_metric": "raw_provider_tokens",
-            "secondary_metric": "weighted_tokens = fresh input (input_tokens + cache_creation_input_tokens) + 0.1 * cached input + 6 * output",
-        },
+        "condition": condition,
         "profile_count": len(rows),
         "workflow_session_count": len(rows) * len(sequence_ids),
         "accepted_task_count": sum(int(row["accepted_task_count"]) for row in rows),
@@ -204,6 +237,7 @@ def build_panel(
             "profile_id": "baseline-bare-codex",
             "session_ids": [session["session_id"] for session in ordered_baselines],
             "usage": baseline_usage,
+            **({"comparison_pair": panel_pair} if panel_pair else {}),
         },
         "results_ranked_by_primary_metric": rows,
         "descriptive_panel_aggregate": {
@@ -216,7 +250,10 @@ def build_panel(
             "independence_note": (
                 "The same three baseline sessions are repeated for every profile; this aggregate is descriptive, not a panel of independent controls."
                 if sequence_ids == DEFAULT_SEQUENCES
-                else "The same baseline sessions are repeated for every profile; this aggregate is descriptive, not a panel of independent controls."
+                else (
+                    f"The same {len(ordered_baselines)} baseline sessions are repeated for every profile; "
+                    "this aggregate is descriptive, not a panel of independent controls."
+                )
             ),
         },
     }
@@ -233,6 +270,7 @@ def main() -> int:
         action="append",
         help="Workflow sequence to include; repeat for a multi-workflow panel (defaults to active V0 panel).",
     )
+    parser.add_argument("--comparison-pair-id", help="Explicit accepted-replicate pair identifier for cross-runtime panels.")
     parser.add_argument("--output", type=Path)
     args = parser.parse_args()
     sequence_ids = tuple(args.sequence_ids) if args.sequence_ids else DEFAULT_SEQUENCES
@@ -242,6 +280,7 @@ def main() -> int:
         replicate_index=args.replicate_index,
         date=args.date,
         sequence_ids=sequence_ids,
+        comparison_pair_id=args.comparison_pair_id,
     )
     output = args.output or ROOT / "sources/evaluations/audits" / f"{panel['audit_id']}.json"
     if not output.is_absolute():
