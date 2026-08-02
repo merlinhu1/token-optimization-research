@@ -50,11 +50,14 @@ OPENCODE_STANDALONE_R2_AUTHORITY_REL = Path(
 OPENCODE_LIFECYCLE_V1_R0_AUTHORITY_REL = Path(
     "sources/evaluations/audits/lifecycle-v1-opencode-sol-high-r0-authorization-20260802.json"
 )
+OPENCODE_LIFECYCLE_V1_R0_AUTHORITY_SUPERSESSION_REL = Path(
+    "sources/evaluations/audits/lifecycle-v1-opencode-sol-high-r0-authorization-supersession-20260802.json"
+)
 OPENCODE_LIFECYCLE_V1_R1_AUTHORITY_REL = Path(
     "sources/evaluations/audits/lifecycle-v1-opencode-sol-high-r1-authorization-20260802.json"
 )
 OPENCODE_LIFECYCLE_V1_AUTHORITY_RELS = {
-    0: OPENCODE_LIFECYCLE_V1_R0_AUTHORITY_REL,
+    0: OPENCODE_LIFECYCLE_V1_R0_AUTHORITY_SUPERSESSION_REL,
     1: OPENCODE_LIFECYCLE_V1_R1_AUTHORITY_REL,
 }
 
