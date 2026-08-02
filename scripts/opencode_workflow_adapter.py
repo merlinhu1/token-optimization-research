@@ -919,6 +919,19 @@ def validate_non_json_stdout(treatment: str, lines: list[str]) -> None:
         raise ValueError(f"OpenCode emitted non-JSON stdout in JSON mode: {lines[:3]}")
 
 
+def write_last_message(path: Path, text: str) -> None:
+    """Persist model output despite one transient mounted-parent disappearance."""
+    payload = text + ("\n" if text else "")
+    for attempt in range(2):
+        path.parent.mkdir(parents=True, exist_ok=True)
+        try:
+            path.write_text(payload)
+            return
+        except FileNotFoundError:
+            if attempt:
+                raise
+
+
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(add_help=False)
     parser.add_argument("--opencode-binary", type=Path, default=DEFAULT_OPENCODE_BINARY)
@@ -1029,8 +1042,7 @@ def main(argv: list[str] | None = None) -> int:
         requested_session_id=parsed.session_id,
         state_path=xdg_data / "opencode" / "workflow-usage-state.json",
     )
-    parsed.last_message_path.parent.mkdir(parents=True, exist_ok=True)
-    parsed.last_message_path.write_text(result.last_text + ("\n" if result.last_text else ""))
+    write_last_message(parsed.last_message_path, result.last_text)
     if known.treatment == "headroom":
         print(
             json.dumps(
