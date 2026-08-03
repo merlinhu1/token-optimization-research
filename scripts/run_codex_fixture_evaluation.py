@@ -170,7 +170,7 @@ PONYTAIL_ROOT = Path("/opt/data/tool-candidates/ponytail")
 NODE_TOOLCHAIN_ROOT = Path("/opt/data/opt/node-v24.18.0-linux-x64")
 NODE_BIN = NODE_TOOLCHAIN_ROOT / "bin" / "node"
 NPX_BIN = NODE_TOOLCHAIN_ROOT / "bin" / "npx"
-PONYTAIL_COMMIT = "c4d1925ae9b76a1b641877328209ad25cfeb5ef2"
+PONYTAIL_COMMIT = "40e50d9e03242aa5dd53ac771950f9127362b25f"
 PONYTAIL_MARKETPLACE_PREPARER = "{repository_root}/scripts/prepare_pinned_codex_marketplace.py"
 CODEX_PLUGIN_HOOK_TRUSTER = "{repository_root}/scripts/trust_codex_plugin_hooks.py"
 
