@@ -95,6 +95,6 @@ Do not ask the agent for extra reporting to collect these metrics. When a specif
 - One replicate is one complete multi-task workflow execution.
 - A single replicate is retained and labeled screening evidence; it is not confused with a single task.
 - Retain the first operationally valid provider sample for each protocol/replicate; additional compatible replicates add evidence rather than replace earlier runs.
-- Pair baseline and treatment by comparison identity and replicate index.
+- Pair baseline and treatment by comparison identity and explicit baseline binding. Raw `replicate_index` values are runtime-local; use a validated accepted-replicate ordinal when accepted labels differ across runtimes.
 - Report every valid observed pair, including verifier failures and low-quality outputs, with those outcomes clearly labeled.
 - Never rank treatments from incomparable or fixture-invalid protocols. Do not discard a compatible pair because model quality differs.
