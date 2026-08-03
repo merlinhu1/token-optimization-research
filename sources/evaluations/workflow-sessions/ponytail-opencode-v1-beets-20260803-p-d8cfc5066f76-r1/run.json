@@ -1,0 +1,671 @@
+{
+  "session_id": "ponytail-opencode-v1-beets-20260803-p-d8cfc5066f76-r1",
+  "study_id": "phase-2-sequential-workflow-v1",
+  "experiment_group_id": "beetbox-beets-artifact-ponytail-opencode-plugin-v1-d8cfc5066f76-sequential-workflow-r1",
+  "replicate_index": 1,
+  "frozen_protocol": {
+    "protocol_id": "beets-lifecycle-sequence-v1-artifact-ponytail-opencode-plugin-v1-9e411c5429c7",
+    "path": "sources/evaluations/protocols/beets-lifecycle-sequence-v1-artifact-ponytail-opencode-plugin-v1-9e411c5429c7.json",
+    "sha256": "8f6221a25d725b65f381d4d27ecffd4233b4a72648a2d6dede0c9a1bc9ca913d"
+  },
+  "baseline_pool": {
+    "protocol_version": "baseline-pool-v1",
+    "protocol_fingerprint": "d8cfc5066f76",
+    "identity_policy": "frozen-protocol-and-replicate; execution date is metadata only"
+  },
+  "selected_execution": {
+    "descriptor_sha256": "66e84394db8b289320b0424bd504527204dcd291a91689baf4cf30bcdf9d33f8",
+    "descriptor": {
+      "version": "execution-condition-v1",
+      "sequence_id": "beets-lifecycle-sequence-v1",
+      "execution_role": "individual_tool_treatment",
+      "selected_profile": {
+        "profile_id": "artifact-ponytail-opencode-plugin-v1",
+        "profile_type": "individual_tool",
+        "component_ids": [
+          "artifact-ponytail-opencode-plugin-v1"
+        ],
+        "enabled_surfaces": [
+          "opencode-plugin",
+          "product-authored-skills-and-commands",
+          "per-turn-guidance"
+        ],
+        "disabled_overlaps": [
+          "all unlisted surfaces"
+        ],
+        "registry_entry_sha256": "8209dad6cf6de350929b39bb940b9218fe9c2a124d0cb9a98e5bc597661afb36",
+        "registry_entry": {
+          "profile_type": "individual_tool",
+          "objective_scope": "individual_tool_effectiveness",
+          "status": "screening-ablation",
+          "substrate": "opencode-cli",
+          "disabled_overlaps": [
+            "all unlisted surfaces"
+          ],
+          "native_agent_tools_allowed": [
+            "opencode-native-shell-edit",
+            "opencode-native-file-read-search",
+            "git",
+            "verifier-commands"
+          ],
+          "forbidden_surfaces": [
+            "all external retrieval, compression, memory, MCP, skills, plugins, subagents, and web tools except the assigned product surfaces"
+          ],
+          "reset": {
+            "policy": "Delete lane-private OpenCode XDG directories, product state, generated repository treatment files, auth translation, and background processes after evidence capture."
+          },
+          "id": "artifact-ponytail-opencode-plugin-v1",
+          "name": "Ponytail OpenCode plugin V1",
+          "enabled_surfaces": [
+            "opencode-plugin",
+            "product-authored-skills-and-commands",
+            "per-turn-guidance"
+          ],
+          "components": [
+            {
+              "component_id": "artifact-ponytail-opencode-plugin-v1",
+              "surface": "opencode-plugin+product-authored-skills+commands+per-turn-guidance",
+              "role": "individual_tool"
+            }
+          ],
+          "install": {
+            "policy": "Copy the pinned Ponytail OpenCode plugin and product-authored rules into the isolated project, then require the plugin to load through OpenCode\u2019s native plugin surface."
+          },
+          "evaluation_protocol": {
+            "tool_use_policy": "natural",
+            "tool_state": "active-native-plugin+per-turn-guidance",
+            "integration_state": "official-opencode-plugin+product-authored-guidance",
+            "assignment_proof": "provider-free exact artifact identities, effective OpenCode configuration, native activation, warm state, and task/final verifiers required"
+          },
+          "source_snapshot": {
+            "repository": "",
+            "version": "4.8.4",
+            "source_commit": "40e50d9e03242aa5dd53ac771950f9127362b25f",
+            "plugin_sha256": "e2443648e1864724f56e2a073fdf2f29199772606d9ea1c175fe06eaa3b75853",
+            "guidance_sha256": "1cd148db944eff33bf8bb878c41a290fe85b86de3e65ac311d5d501e71a0cdbf",
+            "runtime_adapter": "/opt/data/tool-candidates/opencode-adapter-v6/opencode_workflow_adapter.py",
+            "runtime_adapter_sha256": "1b98aaec34711b3a7bb09ce269c12bb06421ab08913d06593fb6d2c6641a34a3"
+          },
+          "notes": "Requalified on 2026-08-03: the pinned Ponytail 4.8.4 native OpenCode plugin loaded successfully under OpenCode 1.18.9 through adapter-v6, with the exact plugin/guidance hashes recorded above and no instruction-only substitute."
+        }
+      },
+      "model_facing_prompts": {
+        "rendering_contract": "sequential-model-facing-prompts-v2",
+        "profile_guidance_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "tasks": [
+          {
+            "task_id": "beets-lifecycle-feature-v1",
+            "order": 1,
+            "rendered_prompt_sha256": "fd11c28e91be7826ff049748f7a84a5f0bd3137f9add35b498d50b39aea8548c"
+          },
+          {
+            "task_id": "beets-lifecycle-refactor-v1",
+            "order": 2,
+            "rendered_prompt_sha256": "69cd7d8bf2eeba073fafc156982916dcbb68df92ca06a869039c9bbb728255f9"
+          },
+          {
+            "task_id": "beets-lifecycle-review-v1",
+            "order": 3,
+            "rendered_prompt_sha256": "1586356a85a2cbdd70fa6d545d16063df49a1f2d455cf07646cb943a691770d0"
+          }
+        ]
+      },
+      "tool_adapter": {
+        "tool_id": "ponytail-opencode-plugin-v1",
+        "tool_manifest": "scripts/run_codex_fixture_evaluation.py:TOOL_CONFIGS",
+        "tool_manifest_sha256": "e781270d2a751d6e81468af5a628832120b63ba497ad5cee8270448794642bee",
+        "tool_config": {
+          "display_name": "Ponytail official OpenCode plugin v1",
+          "lane_name": "artifact-ponytail-opencode-plugin-v1",
+          "surface": "opencode-plugin+per-turn-rules+skills+commands",
+          "allowed_terms": [
+            "opencode",
+            "ponytail"
+          ],
+          "data_dir_name": "artifact-ponytail-opencode-plugin-v1",
+          "mounts": [
+            "/opt/data/tool-candidates/opencode-adapter-v6/opencode_workflow_adapter.py",
+            "/opt/data/tool-candidates/ponytail"
+          ],
+          "executable": "/opt/data/.local/bin/opencode",
+          "expected_executable_sha256": "7c4d91c84d2bfdeabb59257e3490c5e5acb08f2aacb3e42f3ddc296a1c3f1aca",
+          "binary_mount_target": "/opt/data/.local/bin/opencode",
+          "codex_wrapper": {
+            "command": "/usr/bin/python3",
+            "args": [
+              "/opt/data/tool-candidates/opencode-adapter-v6/opencode_workflow_adapter.py",
+              "--opencode-binary",
+              "/opt/data/.local/bin/opencode",
+              "--expected-opencode-sha256",
+              "7c4d91c84d2bfdeabb59257e3490c5e5acb08f2aacb3e42f3ddc296a1c3f1aca",
+              "--treatment",
+              "ponytail"
+            ]
+          },
+          "preflight_command": [
+            "/usr/bin/python3",
+            "/opt/data/tool-candidates/opencode-adapter-v6/opencode_workflow_adapter.py",
+            "--opencode-binary",
+            "/opt/data/.local/bin/opencode",
+            "--expected-opencode-sha256",
+            "7c4d91c84d2bfdeabb59257e3490c5e5acb08f2aacb3e42f3ddc296a1c3f1aca",
+            "--treatment",
+            "ponytail",
+            "--probe"
+          ],
+          "tool_manifest_identity": "current-file-v1",
+          "env": {
+            "OPENCODE_TOOL_DATA_DIR": "{tool_data_dir}"
+          },
+          "host_integration": {
+            "install_commands": [
+              [
+                "/bin/bash",
+                "-lc",
+                "set -e; mkdir -p {repo}/.opencode/plugins; cp /opt/data/tool-candidates/ponytail/.opencode/plugins/ponytail.mjs {repo}/.opencode/plugins/ponytail.mjs; printf '\\n\\n# Ponytail product guidance (verbatim)\\n' >> {repo}/AGENTS.md; cat /opt/data/tool-candidates/ponytail/AGENTS.md >> {repo}/AGENTS.md"
+              ]
+            ],
+            "verify_commands": [
+              [
+                "python3",
+                "-c",
+                "from pathlib import Path; assert Path('{repo}/.opencode/plugins/ponytail.mjs').is_file(); assert Path('{repo}/AGENTS.md').is_file()"
+              ]
+            ],
+            "required_files": [
+              "{repo}/.opencode/plugins/ponytail.mjs",
+              "{repo}/AGENTS.md"
+            ],
+            "timeout_seconds": 300
+          },
+          "native_plugin": {
+            "required": true,
+            "path": "{repo}/.opencode/plugins/ponytail.mjs"
+          },
+          "artifact_identities": [
+            {
+              "path": "/opt/data/tool-candidates/ponytail/.opencode/plugins/ponytail.mjs",
+              "sha256": "e2443648e1864724f56e2a073fdf2f29199772606d9ea1c175fe06eaa3b75853",
+              "kind": "native-plugin"
+            },
+            {
+              "path": "/opt/data/tool-candidates/ponytail/AGENTS.md",
+              "sha256": "1cd148db944eff33bf8bb878c41a290fe85b86de3e65ac311d5d501e71a0cdbf",
+              "kind": "product-guidance"
+            },
+            {
+              "path": "/opt/data/tool-candidates/opencode-adapter-v6/opencode_workflow_adapter.py",
+              "sha256": "1b98aaec34711b3a7bb09ce269c12bb06421ab08913d06593fb6d2c6641a34a3",
+              "kind": "runtime-adapter"
+            }
+          ],
+          "effective_host_config": {
+            "required": true,
+            "source": "adapter-probe"
+          },
+          "diff_exclude_paths": [
+            "AGENTS.md",
+            ".opencode"
+          ],
+          "default_tool_state": "active-native-plugin+per-turn-guidance"
+        },
+        "tool_config_sha256": "b2b84bbb7ee8c0ee18dba1939def14cc3d2137428e245ba09eac8997a4f017b4",
+        "tool_state": "active-native-plugin+per-turn-guidance",
+        "tool_use_policy": "natural",
+        "command_identity": {
+          "kind": "codex_wrapper",
+          "command": [
+            "/usr/bin/python3",
+            "/opt/data/tool-candidates/opencode-adapter-v6/opencode_workflow_adapter.py",
+            "--opencode-binary",
+            "/opt/data/.local/bin/opencode",
+            "--expected-opencode-sha256",
+            "7c4d91c84d2bfdeabb59257e3490c5e5acb08f2aacb3e42f3ddc296a1c3f1aca",
+            "--treatment",
+            "ponytail"
+          ]
+        },
+        "binary_identity": {
+          "executable_token": "/usr/bin/python3",
+          "resolved_path": "/usr/bin/python3",
+          "realpath": "/usr/bin/python3.13",
+          "sha256": "4703a3d15898c0b5d81c3f939e93bdd8ca6116342093fb160ab1e01860dd7d8b",
+          "metadata": {
+            "size": 6812336,
+            "mode": "-rwxr-xr-x",
+            "uid": 0,
+            "gid": 0,
+            "mtime_ns": 1778015152000000000
+          },
+          "version": {
+            "command": [
+              "/usr/bin/python3.13",
+              "--version"
+            ],
+            "environment_path": "/opt/data/bin:/opt/data/.local/bin:/opt/data/opt/go/bin:/opt/data/opt/uv:/opt/data/opt/node-v24.18.0-linux-x64/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+            "captured": true,
+            "exit_code": 0,
+            "output": "Python 3.13.5",
+            "truncated": false
+          }
+        },
+        "source_identity": [
+          {
+            "path": "/opt/data/tool-candidates/opencode-adapter-v6/opencode_workflow_adapter.py",
+            "exists": true,
+            "kind": "file",
+            "sha256": "1b98aaec34711b3a7bb09ce269c12bb06421ab08913d06593fb6d2c6641a34a3"
+          },
+          {
+            "path": "/opt/data/tool-candidates/ponytail",
+            "exists": true,
+            "kind": "directory",
+            "git_head": "40e50d9e03242aa5dd53ac771950f9127362b25f",
+            "package_json_sha256": "6a180c19d35bcc9d08ea1b92b29c7da1ae1a1b2e3b31c73d94ac56e7fec7af01"
+          }
+        ]
+      },
+      "runtime": {
+        "docker_image": "token-eval-codex:latest",
+        "docker_image_identity": {
+          "image_ref": "token-eval-codex:latest",
+          "image_id": "sha256:6f86d01f2c63f5029c6bb874d8f3694c24d5cd567e3d09413eccc956ba3feafe",
+          "repo_digests": [
+            "token-eval-codex@sha256:6f86d01f2c63f5029c6bb874d8f3694c24d5cd567e3d09413eccc956ba3feafe"
+          ],
+          "repo_tags": [
+            "token-eval-codex:latest"
+          ]
+        },
+        "dockerfile_path": "sources/evaluations/fixtures/container/Dockerfile",
+        "dockerfile_sha256": "47c91967ce25014ce54879514f51d2ff0326651be1087209115eff4d358226b3",
+        "fixture_runner_path": "scripts/run_codex_fixture_evaluation.py",
+        "fixture_runner_sha256": "e781270d2a751d6e81468af5a628832120b63ba497ad5cee8270448794642bee",
+        "mcp_probe_path": "scripts/probe_mcp_stdio.py",
+        "mcp_probe_sha256": "7c06ea36ee5cac933a97140b84a41405fc99b45152388e8d7c6659136af698fd",
+        "codex_entrypoint_path": "sources/evaluations/fixtures/container/codex-entrypoint.sh",
+        "codex_entrypoint_sha256": "8715fe37cb1fa3823f5f05493bc9681ce7ffc72126dfec4d64d448762c550c3c",
+        "timeout_seconds_per_task": 3600,
+        "network_isolation": {
+          "provider_access": true,
+          "model_shell_network_access": false,
+          "model_shell_enforcement": "seccomp denies AF_INET and AF_INET6 socket creation for the shell process and descendants",
+          "agent_web_tools": "disabled-by-permission",
+          "external_retrieval_audit": "fail-closed"
+        },
+        "isolation_policy": "fresh lane-specific agent home/XDG state; provider-only network with model shell and agent web tools disabled; sequential one-task prompt delivery; controller seed/verifier scripts excluded while controller-only affected-component compile commands retained; no acceptance-test assets injected; agent prompts carry normal software objectives",
+        "workflow_controller_path": "scripts/run_codex_workflow_evaluation.py",
+        "workflow_controller_sha256": "28877c277ab23ae221461967179080651b48fa0027493b3304a9b994106540ee",
+        "matrix_controller_path": "scripts/run_sequential_workflow_matrix.py",
+        "matrix_controller_sha256": "51afde9bc3a75afc1b510c48cb256d826fa02a968b660fbdefc35b036ac23b78",
+        "agent_runtime_id": "opencode-cli",
+        "model_condition": {
+          "id": "opencode-openai-gpt-5-6-sol-high",
+          "provider": "openai",
+          "model": "gpt-5.6-sol",
+          "reasoning_effort": "high",
+          "launcher": "scripts/run_opencode_workflow_model_condition.py"
+        }
+      },
+      "dependencies": {
+        "command": "uv sync --group test --frozen",
+        "command_sha256": "cef23fd45902c23f8b3e89b7c6360a401eb49c17cf36d742e5b625d5593c911b",
+        "lockfiles": [
+          {
+            "path": "uv.lock",
+            "snapshot_sha256": "fbf1d7a9c84b658a2433035221ba18c57508c254d711a06f305e2f610839a45f",
+            "current_fixture_sha256": null
+          }
+        ]
+      },
+      "agent_condition": {
+        "runtime_id": "opencode-cli",
+        "provider": "openai",
+        "model": "gpt-5.6-sol",
+        "model_condition_id": "opencode-openai-gpt-5-6-sol-high",
+        "reasoning_effort": "high",
+        "runtime_version_condition": "captured-at-run-and-bound-to-record"
+      },
+      "isolation": {
+        "prompt_delivery": "sequential-one-task-at-a-time",
+        "seed_delivery_mode": "preseeded-composite",
+        "future_tasks_visible": false,
+        "future_seed_regressions_visible": true,
+        "controller_verification": "final-only",
+        "controller_verifier_scripts_and_canonical_copies_model_visible": false,
+        "model_visible_acceptance_asset_paths": [],
+        "model_concealed_paths": []
+      },
+      "baseline_pool_reference": {
+        "protocol_version": "baseline-pool-v1",
+        "protocol_fingerprint": "d8cfc5066f76",
+        "comparison_policy": "paired baseline and treatment must share this baseline pool fingerprint and replicate"
+      },
+      "model_condition_override": {
+        "model_condition_id": "opencode-openai-gpt-5-6-sol-high",
+        "runtime_id": "opencode-cli",
+        "provider": "openai",
+        "model": "gpt-5.6-sol",
+        "reasoning_effort": "high",
+        "registry_status": "active-model-comparison",
+        "launcher": {
+          "path": "scripts/run_opencode_workflow_model_condition.py",
+          "sha256": "c38d87266347dfd46c8f671ad0e22fef52841a34643b93fc769d4ebfb71ac9ce",
+          "condition_runtime_path": "scripts/workflow_model_condition_runtime.py",
+          "condition_runtime_sha256": "01479bd991417d9f5bb5fcef513e1beee3f1f05512ab818429cac24e0ebde866"
+        }
+      }
+    }
+  },
+  "agent_condition": {
+    "runtime_id": "opencode-cli",
+    "provider": "openai",
+    "model": "gpt-5.6-sol",
+    "model_condition_id": "opencode-openai-gpt-5-6-sol-high",
+    "reasoning_effort": "high",
+    "runtime_version_condition": "captured-at-run-and-bound-to-record"
+  },
+  "docker_image_identity": {
+    "image_ref": "token-eval-codex:latest",
+    "image_id": "sha256:6f86d01f2c63f5029c6bb874d8f3694c24d5cd567e3d09413eccc956ba3feafe",
+    "repo_digests": [
+      "token-eval-codex@sha256:6f86d01f2c63f5029c6bb874d8f3694c24d5cd567e3d09413eccc956ba3feafe"
+    ],
+    "repo_tags": [
+      "token-eval-codex:latest"
+    ]
+  },
+  "tool_adapter_identity": {
+    "tool_id": "ponytail-opencode-plugin-v1",
+    "tool_manifest": "scripts/run_codex_fixture_evaluation.py:TOOL_CONFIGS",
+    "tool_manifest_sha256": "e781270d2a751d6e81468af5a628832120b63ba497ad5cee8270448794642bee",
+    "tool_config": {
+      "display_name": "Ponytail official OpenCode plugin v1",
+      "lane_name": "artifact-ponytail-opencode-plugin-v1",
+      "surface": "opencode-plugin+per-turn-rules+skills+commands",
+      "allowed_terms": [
+        "opencode",
+        "ponytail"
+      ],
+      "data_dir_name": "artifact-ponytail-opencode-plugin-v1",
+      "mounts": [
+        "/opt/data/tool-candidates/opencode-adapter-v6/opencode_workflow_adapter.py",
+        "/opt/data/tool-candidates/ponytail"
+      ],
+      "executable": "/opt/data/.local/bin/opencode",
+      "expected_executable_sha256": "7c4d91c84d2bfdeabb59257e3490c5e5acb08f2aacb3e42f3ddc296a1c3f1aca",
+      "binary_mount_target": "/opt/data/.local/bin/opencode",
+      "codex_wrapper": {
+        "command": "/usr/bin/python3",
+        "args": [
+          "/opt/data/tool-candidates/opencode-adapter-v6/opencode_workflow_adapter.py",
+          "--opencode-binary",
+          "/opt/data/.local/bin/opencode",
+          "--expected-opencode-sha256",
+          "7c4d91c84d2bfdeabb59257e3490c5e5acb08f2aacb3e42f3ddc296a1c3f1aca",
+          "--treatment",
+          "ponytail"
+        ]
+      },
+      "preflight_command": [
+        "/usr/bin/python3",
+        "/opt/data/tool-candidates/opencode-adapter-v6/opencode_workflow_adapter.py",
+        "--opencode-binary",
+        "/opt/data/.local/bin/opencode",
+        "--expected-opencode-sha256",
+        "7c4d91c84d2bfdeabb59257e3490c5e5acb08f2aacb3e42f3ddc296a1c3f1aca",
+        "--treatment",
+        "ponytail",
+        "--probe"
+      ],
+      "tool_manifest_identity": "current-file-v1",
+      "env": {
+        "OPENCODE_TOOL_DATA_DIR": "{tool_data_dir}"
+      },
+      "host_integration": {
+        "install_commands": [
+          [
+            "/bin/bash",
+            "-lc",
+            "set -e; mkdir -p {repo}/.opencode/plugins; cp /opt/data/tool-candidates/ponytail/.opencode/plugins/ponytail.mjs {repo}/.opencode/plugins/ponytail.mjs; printf '\\n\\n# Ponytail product guidance (verbatim)\\n' >> {repo}/AGENTS.md; cat /opt/data/tool-candidates/ponytail/AGENTS.md >> {repo}/AGENTS.md"
+          ]
+        ],
+        "verify_commands": [
+          [
+            "python3",
+            "-c",
+            "from pathlib import Path; assert Path('{repo}/.opencode/plugins/ponytail.mjs').is_file(); assert Path('{repo}/AGENTS.md').is_file()"
+          ]
+        ],
+        "required_files": [
+          "{repo}/.opencode/plugins/ponytail.mjs",
+          "{repo}/AGENTS.md"
+        ],
+        "timeout_seconds": 300
+      },
+      "native_plugin": {
+        "required": true,
+        "path": "{repo}/.opencode/plugins/ponytail.mjs"
+      },
+      "artifact_identities": [
+        {
+          "path": "/opt/data/tool-candidates/ponytail/.opencode/plugins/ponytail.mjs",
+          "sha256": "e2443648e1864724f56e2a073fdf2f29199772606d9ea1c175fe06eaa3b75853",
+          "kind": "native-plugin"
+        },
+        {
+          "path": "/opt/data/tool-candidates/ponytail/AGENTS.md",
+          "sha256": "1cd148db944eff33bf8bb878c41a290fe85b86de3e65ac311d5d501e71a0cdbf",
+          "kind": "product-guidance"
+        },
+        {
+          "path": "/opt/data/tool-candidates/opencode-adapter-v6/opencode_workflow_adapter.py",
+          "sha256": "1b98aaec34711b3a7bb09ce269c12bb06421ab08913d06593fb6d2c6641a34a3",
+          "kind": "runtime-adapter"
+        }
+      ],
+      "effective_host_config": {
+        "required": true,
+        "source": "adapter-probe"
+      },
+      "diff_exclude_paths": [
+        "AGENTS.md",
+        ".opencode"
+      ],
+      "default_tool_state": "active-native-plugin+per-turn-guidance"
+    },
+    "tool_config_sha256": "b2b84bbb7ee8c0ee18dba1939def14cc3d2137428e245ba09eac8997a4f017b4",
+    "tool_state": "active-native-plugin+per-turn-guidance",
+    "tool_use_policy": "natural",
+    "command_identity": {
+      "kind": "codex_wrapper",
+      "command": [
+        "/usr/bin/python3",
+        "/opt/data/tool-candidates/opencode-adapter-v6/opencode_workflow_adapter.py",
+        "--opencode-binary",
+        "/opt/data/.local/bin/opencode",
+        "--expected-opencode-sha256",
+        "7c4d91c84d2bfdeabb59257e3490c5e5acb08f2aacb3e42f3ddc296a1c3f1aca",
+        "--treatment",
+        "ponytail"
+      ]
+    },
+    "binary_identity": {
+      "executable_token": "/usr/bin/python3",
+      "resolved_path": "/usr/bin/python3",
+      "realpath": "/usr/bin/python3.13",
+      "sha256": "4703a3d15898c0b5d81c3f939e93bdd8ca6116342093fb160ab1e01860dd7d8b",
+      "metadata": {
+        "size": 6812336,
+        "mode": "-rwxr-xr-x",
+        "uid": 0,
+        "gid": 0,
+        "mtime_ns": 1778015152000000000
+      },
+      "version": {
+        "command": [
+          "/usr/bin/python3.13",
+          "--version"
+        ],
+        "environment_path": "/opt/data/bin:/opt/data/.local/bin:/opt/data/opt/go/bin:/opt/data/opt/uv:/opt/data/opt/node-v24.18.0-linux-x64/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+        "captured": true,
+        "exit_code": 0,
+        "output": "Python 3.13.5",
+        "truncated": false
+      }
+    },
+    "source_identity": [
+      {
+        "path": "/opt/data/tool-candidates/opencode-adapter-v6/opencode_workflow_adapter.py",
+        "exists": true,
+        "kind": "file",
+        "sha256": "1b98aaec34711b3a7bb09ce269c12bb06421ab08913d06593fb6d2c6641a34a3"
+      },
+      {
+        "path": "/opt/data/tool-candidates/ponytail",
+        "exists": true,
+        "kind": "directory",
+        "git_head": "40e50d9e03242aa5dd53ac771950f9127362b25f",
+        "package_json_sha256": "6a180c19d35bcc9d08ea1b92b29c7da1ae1a1b2e3b31c73d94ac56e7fec7af01"
+      }
+    ]
+  },
+  "profile_id": "artifact-ponytail-opencode-plugin-v1",
+  "workflow_sequence_id": "beets-lifecycle-sequence-v1",
+  "fixture_id": "medium-beetbox-beets",
+  "repository_path": "sources/evaluations/workflow-sessions/ponytail-opencode-v1-beets-20260803-p-d8cfc5066f76-r1/project/repo",
+  "codex_exit_codes": [
+    0,
+    0,
+    0
+  ],
+  "final_verifier_exit_code": 0,
+  "tool_isolation_audit_exit_code": 0,
+  "verifier_integrity_passed": true,
+  "thread_continuity_errors": [],
+  "seed_delivery": {
+    "mode": "preseeded-composite",
+    "future_seed_regressions_visible": true,
+    "preseeded_task_orders": [
+      1,
+      2,
+      3
+    ],
+    "pending_seed_orders": []
+  },
+  "accepted": true,
+  "timeout_seconds": 10800,
+  "codex_version": "",
+  "agent_runtime_version": "1.18.9",
+  "token_usage": {
+    "measurement_source": "opencode-jsonl-step-finish-usage",
+    "fresh_input_tokens": 100597,
+    "cached_input_tokens": 1669120,
+    "cache_write_tokens": 0,
+    "output_tokens": 11596,
+    "reasoning_tokens": 4837,
+    "total_provider_tokens": 1781313,
+    "provider_usage_details": {
+      "runtime": "opencode-cli",
+      "accounting_mode": "sum-unique-incremental-step-finish-parts",
+      "raw_token_field_totals": {},
+      "fresh_input_formula": "input + cache.write",
+      "reasoning_tokens_available": true
+    }
+  },
+  "usage_warnings": [],
+  "per_task_results": [
+    {
+      "task_id": "beets-lifecycle-feature-v1",
+      "task_class": "feature-implementation",
+      "task_alias": "task-01",
+      "order": 1,
+      "agent_attempted": true,
+      "codex_exit_code": 0,
+      "thread_continuity_passed": true,
+      "thread_id": "ses_03669f01effes0A0XxkolxsZzd",
+      "controller_verification": "passed",
+      "accepted": true,
+      "task_delta": "sources/evaluations/workflow-sessions/ponytail-opencode-v1-beets-20260803-p-d8cfc5066f76-r1/task-01-agent.diff",
+      "usage_events": "sources/evaluations/workflow-sessions/ponytail-opencode-v1-beets-20260803-p-d8cfc5066f76-r1/task-01-codex-events.jsonl",
+      "operational_retry_count": 0,
+      "verifier_exit_code": 0,
+      "verifier_passed": true
+    },
+    {
+      "task_id": "beets-lifecycle-refactor-v1",
+      "task_class": "behavior-preserving-refactor",
+      "task_alias": "task-02",
+      "order": 2,
+      "agent_attempted": true,
+      "codex_exit_code": 0,
+      "thread_continuity_passed": true,
+      "thread_id": "ses_03669f01effes0A0XxkolxsZzd",
+      "controller_verification": "passed",
+      "accepted": true,
+      "task_delta": "sources/evaluations/workflow-sessions/ponytail-opencode-v1-beets-20260803-p-d8cfc5066f76-r1/task-02-agent.diff",
+      "usage_events": "sources/evaluations/workflow-sessions/ponytail-opencode-v1-beets-20260803-p-d8cfc5066f76-r1/task-02-codex-events.jsonl",
+      "operational_retry_count": 0,
+      "verifier_exit_code": 0,
+      "verifier_passed": true
+    },
+    {
+      "task_id": "beets-lifecycle-review-v1",
+      "task_class": "code-review-correction",
+      "task_alias": "task-03",
+      "order": 3,
+      "agent_attempted": true,
+      "codex_exit_code": 0,
+      "thread_continuity_passed": true,
+      "thread_id": "ses_03669f01effes0A0XxkolxsZzd",
+      "controller_verification": "passed",
+      "accepted": true,
+      "task_delta": "sources/evaluations/workflow-sessions/ponytail-opencode-v1-beets-20260803-p-d8cfc5066f76-r1/task-03-agent.diff",
+      "usage_events": "sources/evaluations/workflow-sessions/ponytail-opencode-v1-beets-20260803-p-d8cfc5066f76-r1/task-03-codex-events.jsonl",
+      "operational_retry_count": 0,
+      "verifier_exit_code": 0,
+      "verifier_passed": true
+    }
+  ],
+  "prompt_delivery": {
+    "mode": "sequential-one-task-at-a-time",
+    "future_tasks_visible": false,
+    "future_prompts_materialized_lazily": true,
+    "seed_delivery_mode": "preseeded-composite",
+    "future_seed_regressions_visible": true,
+    "controller_verification": "final-only",
+    "codex_thread_id": "ses_03669f01effes0A0XxkolxsZzd",
+    "task_prompt_evidence": "sources/evaluations/workflow-sessions/ponytail-opencode-v1-beets-20260803-p-d8cfc5066f76-r1/evidence.jsonl.gz"
+  },
+  "leakage_controls": {
+    "seed_origin_concealed": true,
+    "seed_patches_model_visible": false,
+    "git_baseline_true_root_at_lane_start": true,
+    "fixed_snapshot_objects_model_visible": false,
+    "pre_seed_reflog_entries_visible": false,
+    "concealment_verification_passed": true,
+    "task_directories_model_visible": false,
+    "controller_verifier_scripts_and_canonical_copies_model_visible": false,
+    "model_visible_acceptance_asset_paths": [],
+    "model_writable_surface": "target repository plus isolated model-output directory",
+    "verifier_integrity_passed": true,
+    "verifier_integrity_evidence": "sources/evaluations/workflow-sessions/ponytail-opencode-v1-beets-20260803-p-d8cfc5066f76-r1/evidence.jsonl.gz#verifier-integrity.json",
+    "model_prompts_sanitized": true,
+    "upstream_remote_removed_from_model_facing_repo": true,
+    "broken_start_committed_as_local_baseline": true,
+    "remaining_limitations": [
+      "Future semantic regression code is present from lane start. Agent prompts state normal software objectives and do not disclose controller scoring. Affected-component compile commands and controller verifier scripts remain controller-only; no acceptance-test assets are injected.",
+      "Task semantics and verifier names may still be searchable if the model intentionally uses external network access."
+    ]
+  },
+  "artifacts": {
+    "artifact_contract": "compact-v1-four-files",
+    "root": "sources/evaluations/workflow-sessions/ponytail-opencode-v1-beets-20260803-p-d8cfc5066f76-r1",
+    "run_record": "sources/evaluations/workflow-sessions/ponytail-opencode-v1-beets-20260803-p-d8cfc5066f76-r1/run.json",
+    "final_diff": "sources/evaluations/workflow-sessions/ponytail-opencode-v1-beets-20260803-p-d8cfc5066f76-r1/changes.diff",
+    "final_diff_basis": "ordered cumulative checkpoints plus final cumulative source diff from one composite root",
+    "evidence_bundle": "sources/evaluations/workflow-sessions/ponytail-opencode-v1-beets-20260803-p-d8cfc5066f76-r1/evidence.jsonl.gz",
+    "manifest": "sources/evaluations/workflow-sessions/ponytail-opencode-v1-beets-20260803-p-d8cfc5066f76-r1/manifest.sha256"
+  },
+  "run_dir": "sources/evaluations/workflow-sessions/ponytail-opencode-v1-beets-20260803-p-d8cfc5066f76-r1"
+}
