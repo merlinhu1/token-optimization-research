@@ -4176,9 +4176,9 @@ def execution_integrity_record(
 
 
 def summary_tool_adapter_identity(profile_id: str, selected_descriptor: dict[str, Any]) -> dict[str, Any] | None:
-    """Retain the adapter identity for any OpenCode runtime, including its control."""
+    """Retain the frozen adapter identity for every declared tool treatment."""
     adapter = selected_descriptor.get("tool_adapter")
-    return adapter if profile_runtime_id(profile_id) == "opencode-cli" and isinstance(adapter, dict) else None
+    return adapter if isinstance(adapter, dict) else None
 
 
 def repair_openrouter_ingress_summary(summary: dict[str, Any]) -> dict[str, Any]:

@@ -1,10 +1,10 @@
 {
   "protocol_schema_version": 3,
-  "protocol_id": "beets-lifecycle-sequence-v1-behavior-caveman-opencode-plugin-v1-91788386b4c0",
+  "protocol_id": "beets-lifecycle-sequence-v1-retrieval-serena-opencode-mcp-v1-e8592f871504",
   "status": "frozen-ready-not-run",
-  "outcome": "Frozen behavior-caveman-opencode-plugin-v1 protocol for beets-lifecycle-sequence-v1; no provider/model run has occurred.",
+  "outcome": "Frozen retrieval-serena-opencode-mcp-v1 protocol for beets-lifecycle-sequence-v1; no provider/model run has occurred.",
   "frozen_at": "2026-08-01",
-  "hypothesis": "behavior-caveman-opencode-plugin-v1 produces reproducible provider-reported token and software-quality evidence for beets-lifecycle-sequence-v1",
+  "hypothesis": "retrieval-serena-opencode-mcp-v1 produces reproducible provider-reported token and software-quality evidence for beets-lifecycle-sequence-v1",
   "evidence_stage_target": "reproduction",
   "task_fixture": {
     "fixture_id": "medium-beetbox-beets",
@@ -35,13 +35,13 @@
     "selection_policy": "sequence-pool-replicate-matched-first-valid"
   },
   "treatment": {
-    "profile_id": "behavior-caveman-opencode-plugin-v1",
+    "profile_id": "retrieval-serena-opencode-mcp-v1",
     "runtime_id": "opencode-cli",
     "provider": "openai",
     "model": "gpt-5.6-sol",
     "model_condition_id": "opencode-openai-gpt-5-6-sol-high",
     "reasoning_effort": "high",
-    "command": "python3 scripts/run_opencode_workflow_model_condition.py --workflow-model-condition-id opencode-openai-gpt-5-6-sol-high --workflow-model gpt-5.6-sol --workflow-reasoning-effort high --sequence-id beets-lifecycle-sequence-v1 --profile-id behavior-caveman-opencode-plugin-v1 --timeout-per-task 3600 --protocol sources/evaluations/protocols/beets-lifecycle-sequence-v1-behavior-caveman-opencode-plugin-v1-91788386b4c0.json --docker-image token-eval-codex:latest"
+    "command": "python3 scripts/run_opencode_workflow_model_condition.py --workflow-model-condition-id opencode-openai-gpt-5-6-sol-high --workflow-model gpt-5.6-sol --workflow-reasoning-effort high --sequence-id beets-lifecycle-sequence-v1 --profile-id retrieval-serena-opencode-mcp-v1 --timeout-per-task 3600 --protocol sources/evaluations/protocols/beets-lifecycle-sequence-v1-retrieval-serena-opencode-mcp-v1-e8592f871504.json --docker-image token-eval-codex:latest"
   },
   "token_accounting_boundary": {
     "fields": [
@@ -262,33 +262,44 @@
     }
   },
   "selected_execution": {
-    "descriptor_sha256": "ef108c7b288c42f703b0326803fe293092f4140cb35d56e88d77c2389e1f4013",
+    "descriptor_sha256": "c69fec209120c65f48c6f06e09bcf4eab57b2d7b9dfac3c23b8273501b6770ee",
     "descriptor": {
       "version": "execution-condition-v1",
       "sequence_id": "beets-lifecycle-sequence-v1",
       "execution_role": "individual_tool_treatment",
       "selected_profile": {
-        "profile_id": "behavior-caveman-opencode-plugin-v1",
+        "profile_id": "retrieval-serena-opencode-mcp-v1",
         "profile_type": "individual_tool",
         "component_ids": [
-          "behavior-caveman-opencode-plugin-v1"
+          "retrieval-serena-opencode-mcp-v1"
         ],
         "enabled_surfaces": [
-          "opencode-plugin",
-          "prompt-reinforcement",
-          "product-authored-init"
+          "retrieval-context",
+          "opencode-mcp"
         ],
         "disabled_overlaps": [
           "all unlisted surfaces"
         ],
-        "registry_entry_sha256": "ef6344ec420ee21c58361c5f02ecc03b9301598be1353d4fa1169d38719b909b",
+        "registry_entry_sha256": "cce8ffa6188c8274fc8e7fc476ab4b5e62404d6c521fea6ef14946dd399a2b24",
         "registry_entry": {
+          "id": "retrieval-serena-opencode-mcp-v1",
           "profile_type": "individual_tool",
           "objective_scope": "individual_tool_effectiveness",
           "status": "screening-ablation",
           "substrate": "opencode-cli",
+          "enabled_surfaces": [
+            "retrieval-context",
+            "opencode-mcp"
+          ],
           "disabled_overlaps": [
             "all unlisted surfaces"
+          ],
+          "components": [
+            {
+              "component_id": "retrieval-serena-opencode-mcp-v1",
+              "surface": "symbolic-retrieval+opencode-mcp",
+              "role": "individual_tool"
+            }
           ],
           "native_agent_tools_allowed": [
             "opencode-native-shell-edit",
@@ -297,44 +308,27 @@
             "verifier-commands"
           ],
           "forbidden_surfaces": [
-            "all external retrieval, compression, memory, MCP, skills, plugins, subagents, and web tools except the assigned product surfaces"
-          ],
-          "reset": {
-            "policy": "Delete lane-private OpenCode XDG directories, product state, generated repository treatment files, auth translation, and background processes after evidence capture."
-          },
-          "id": "behavior-caveman-opencode-plugin-v1",
-          "name": "Caveman OpenCode plugin and guidance V1",
-          "enabled_surfaces": [
-            "opencode-plugin",
-            "prompt-reinforcement",
-            "product-authored-init"
-          ],
-          "components": [
-            {
-              "component_id": "behavior-caveman-opencode-plugin-v1",
-              "surface": "opencode-plugin+prompt-reinforcement+product-authored-init",
-              "role": "individual_tool"
-            }
+            "all external plugins, non-Serena MCP, subagents, and web tools"
           ],
           "install": {
-            "policy": "Run Caveman\u2019s pinned installer with the OpenCode target and product initialization enabled, then require the installed native plugin and repo guidance in the isolated lane."
+            "policy": "Bind the pinned Serena source as one OpenCode local MCP server with project-from-cwd and generic IDE context; require initialize plus tools/list handshake before provider execution."
+          },
+          "reset": {
+            "policy": "Delete lane-private OpenCode XDG and Serena state, indexes, auth translation, and generated artifacts after evidence capture."
           },
           "evaluation_protocol": {
             "tool_use_policy": "natural",
-            "tool_state": "active-native-plugin+per-session-guidance",
-            "integration_state": "official-opencode-plugin+product-init",
-            "assignment_proof": "provider-free exact artifact identities, effective OpenCode configuration, native activation, warm state, and task/final verifiers required"
+            "tool_state": "cold-auto-index",
+            "integration_state": "official-local-opencode-mcp",
+            "assignment_proof": "provider-free OpenCode config proof plus initialize and tools/list handshake required"
           },
           "source_snapshot": {
-            "repository": "JuliusBrussee/caveman",
-            "version": "0.1.0",
-            "source_commit": "0d95a81d35a9f2d123a5e9430d1cfc43d55f1bb0",
-            "plugin_sha256": "6d68e8dfe205354718729a5f5c9ca9d555a045af6b2cbbc3b6a84caad1076df7",
-            "package_sha256": "b603811ba72eb71581db5b02045fb5f8903e3c46dcf7b40f36eeb81fbba23274",
-            "runtime_adapter": "/opt/data/tool-candidates/opencode-adapter-v6/opencode_workflow_adapter.py",
-            "runtime_adapter_sha256": "1b98aaec34711b3a7bb09ce269c12bb06421ab08913d06593fb6d2c6641a34a3"
+            "repository": "oraios/serena",
+            "commit": "103a17072e9b915c9c9980f946902be856695978",
+            "runtime_adapter": "/opt/data/tool-candidates/opencode-adapter/opencode_workflow_adapter.py",
+            "runtime_adapter_sha256": "a2f6116cae013d39e8110c8588acde2a8ae9cd4f572fd9ce961d1542942617a4"
           },
-          "notes": "Second successive screen: Caveman\u2019s local installer exposes an explicit OpenCode target and writes the native plugin under the OpenCode XDG configuration surface."
+          "notes": "Atomic symbolic-retrieval treatment compared with bare OpenCode; zero natural uptake remains valid."
         }
       },
       "model_facing_prompts": {
@@ -359,22 +353,21 @@
         ]
       },
       "tool_adapter": {
-        "tool_id": "caveman-opencode-plugin-v1",
+        "tool_id": "serena-opencode-mcp-v1",
         "tool_manifest": "scripts/run_codex_fixture_evaluation.py:TOOL_CONFIGS",
         "tool_manifest_sha256": "e781270d2a751d6e81468af5a628832120b63ba497ad5cee8270448794642bee",
         "tool_config": {
-          "display_name": "Caveman official OpenCode plugin and guidance v1",
-          "lane_name": "behavior-caveman-opencode-plugin-v1",
-          "surface": "opencode-plugin+prompt-reinforcement+skills+commands",
+          "display_name": "Serena official OpenCode MCP v1",
+          "lane_name": "retrieval-serena-opencode-mcp-v1",
+          "surface": "opencode-mcp/symbolic-retrieval",
           "allowed_terms": [
             "opencode",
-            "caveman",
-            "cavecrew"
+            "serena"
           ],
-          "data_dir_name": "behavior-caveman-opencode-plugin-v1",
+          "data_dir_name": "retrieval-serena-opencode-mcp-v1",
           "mounts": [
-            "/opt/data/tool-candidates/opencode-adapter-v6/opencode_workflow_adapter.py",
-            "/opt/data/tool-candidates/caveman"
+            "{repository_root}/scripts/opencode_workflow_adapter.py",
+            "/opt/data/tool-candidates/serena"
           ],
           "executable": "/opt/data/.local/bin/opencode",
           "expected_executable_sha256": "7c4d91c84d2bfdeabb59257e3490c5e5acb08f2aacb3e42f3ddc296a1c3f1aca",
@@ -382,137 +375,126 @@
           "codex_wrapper": {
             "command": "/usr/bin/python3",
             "args": [
-              "/opt/data/tool-candidates/opencode-adapter-v6/opencode_workflow_adapter.py",
+              "{repository_root}/scripts/opencode_workflow_adapter.py",
               "--opencode-binary",
               "/opt/data/.local/bin/opencode",
               "--expected-opencode-sha256",
               "7c4d91c84d2bfdeabb59257e3490c5e5acb08f2aacb3e42f3ddc296a1c3f1aca",
               "--treatment",
-              "caveman"
+              "serena"
             ]
           },
           "preflight_command": [
             "/usr/bin/python3",
-            "/opt/data/tool-candidates/opencode-adapter-v6/opencode_workflow_adapter.py",
+            "{repository_root}/scripts/opencode_workflow_adapter.py",
             "--opencode-binary",
             "/opt/data/.local/bin/opencode",
             "--expected-opencode-sha256",
             "7c4d91c84d2bfdeabb59257e3490c5e5acb08f2aacb3e42f3ddc296a1c3f1aca",
             "--treatment",
-            "caveman",
+            "serena",
             "--probe"
           ],
           "tool_manifest_identity": "current-file-v1",
+          "mcp_server": "serena",
+          "mcp_command": "/opt/data/opt/uv/uv",
+          "mcp_args": [
+            "tool",
+            "run",
+            "--from",
+            "/opt/data/tool-candidates/serena",
+            "serena",
+            "start-mcp-server",
+            "--project-from-cwd",
+            "--context=ide",
+            "--enable-web-dashboard",
+            "false",
+            "--open-web-dashboard",
+            "false"
+          ],
           "env": {
-            "OPENCODE_TOOL_DATA_DIR": "{tool_data_dir}"
+            "SERENA_HOME": "{tool_data_dir}"
           },
-          "host_integration": {
-            "install_commands": [
-              [
-                "/opt/data/opt/node-v24.18.0-linux-x64/bin/node",
-                "/opt/data/tool-candidates/caveman/bin/install.js",
-                "--only",
-                "opencode",
-                "--with-init"
-              ]
-            ],
-            "verify_commands": [
-              [
-                "/opt/data/opt/node-v24.18.0-linux-x64/bin/node",
-                "/opt/data/tool-candidates/caveman/bin/install.js",
-                "--list"
-              ]
-            ],
-            "required_files": [
-              "{codex_home}/xdg-config/opencode/plugins/caveman/plugin.js",
-              "{repo}/AGENTS.md"
-            ],
-            "timeout_seconds": 600
-          },
-          "native_plugin": {
+          "mcp_handshake": {
             "required": true,
-            "path": "{codex_home}/xdg-config/opencode/plugins/caveman/plugin.js"
+            "method": "initialize-and-tools-list",
+            "timeout_seconds": 120
           },
+          "default_tool_state": "cold-auto-index",
           "artifact_identities": [
             {
-              "path": "/opt/data/tool-candidates/caveman/src/plugins/opencode/plugin.js",
-              "sha256": "6d68e8dfe205354718729a5f5c9ca9d555a045af6b2cbbc3b6a84caad1076df7",
-              "kind": "native-plugin-source"
+              "path": "/opt/data/tool-candidates/serena/pyproject.toml",
+              "sha256": "984623c307233179a641fa238593eb4b7bcf27ad7f1a38881b593ef20ae07cd8",
+              "kind": "pinned-source-manifest"
             },
             {
-              "path": "/opt/data/tool-candidates/caveman/src/plugins/opencode/package.json",
-              "sha256": "b603811ba72eb71581db5b02045fb5f8903e3c46dcf7b40f36eeb81fbba23274",
-              "kind": "native-plugin-package"
-            },
-            {
-              "path": "/opt/data/tool-candidates/opencode-adapter-v6/opencode_workflow_adapter.py",
-              "sha256": "1b98aaec34711b3a7bb09ce269c12bb06421ab08913d06593fb6d2c6641a34a3",
-              "kind": "runtime-adapter"
+              "path": "/opt/data/opt/uv/uv",
+              "sha256": "dc407e8ebb7903e94580217e564e544b231f16ce2a697c247b71632bffe35b35",
+              "kind": "launcher-runtime"
             }
           ],
           "effective_host_config": {
             "required": true,
             "source": "adapter-probe"
-          },
-          "diff_exclude_paths": [
-            "AGENTS.md",
-            ".opencode"
-          ],
-          "default_tool_state": "active-native-plugin+per-session-guidance"
+          }
         },
-        "tool_config_sha256": "f63b3064f38f7e23395164f0c01ad66de9a8785c3c85c4b0414ab81f2e8e31cf",
-        "tool_state": "active-native-plugin+per-session-guidance",
+        "tool_config_sha256": "2b36e13f15f2159620b0525341d4a28d2158fa707f9c7a863aa141644c0d02d2",
+        "tool_state": "cold-auto-index",
         "tool_use_policy": "natural",
         "command_identity": {
-          "kind": "codex_wrapper",
+          "kind": "mcp_command",
           "command": [
-            "/usr/bin/python3",
-            "/opt/data/tool-candidates/opencode-adapter-v6/opencode_workflow_adapter.py",
-            "--opencode-binary",
-            "/opt/data/.local/bin/opencode",
-            "--expected-opencode-sha256",
-            "7c4d91c84d2bfdeabb59257e3490c5e5acb08f2aacb3e42f3ddc296a1c3f1aca",
-            "--treatment",
-            "caveman"
+            "/opt/data/opt/uv/uv",
+            "tool",
+            "run",
+            "--from",
+            "/opt/data/tool-candidates/serena",
+            "serena",
+            "start-mcp-server",
+            "--project-from-cwd",
+            "--context=ide",
+            "--enable-web-dashboard",
+            "false",
+            "--open-web-dashboard",
+            "false"
           ]
         },
         "binary_identity": {
-          "executable_token": "/usr/bin/python3",
-          "resolved_path": "/usr/bin/python3",
-          "realpath": "/usr/bin/python3.13",
-          "sha256": "4703a3d15898c0b5d81c3f939e93bdd8ca6116342093fb160ab1e01860dd7d8b",
+          "executable_token": "/opt/data/opt/uv/uv",
+          "resolved_path": "/opt/data/opt/uv/uv",
+          "realpath": "/opt/data/opt/uv/uv",
+          "sha256": "dc407e8ebb7903e94580217e564e544b231f16ce2a697c247b71632bffe35b35",
           "metadata": {
-            "size": 6812336,
+            "size": 58002784,
             "mode": "-rwxr-xr-x",
-            "uid": 0,
-            "gid": 0,
-            "mtime_ns": 1778015152000000000
+            "uid": 10000,
+            "gid": 10000,
+            "mtime_ns": 1783498937309771510
           },
           "version": {
             "command": [
-              "/usr/bin/python3.13",
+              "/opt/data/opt/uv/uv",
               "--version"
             ],
             "environment_path": "/opt/data/bin:/opt/data/.local/bin:/opt/data/opt/go/bin:/opt/data/opt/uv:/opt/data/opt/node-v24.18.0-linux-x64/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
             "captured": true,
             "exit_code": 0,
-            "output": "Python 3.13.5",
+            "output": "uv 0.11.6 (x86_64-unknown-linux-musl)",
             "truncated": false
           }
         },
         "source_identity": [
           {
-            "path": "/opt/data/tool-candidates/caveman",
+            "path": "/opt/data/tool-candidates/serena",
             "exists": true,
             "kind": "directory",
-            "git_head": "0d95a81d35a9f2d123a5e9430d1cfc43d55f1bb0",
-            "package_json_sha256": "3f9a34e4224efcad6e53a7cdef3c93869b77d932e2757c29fdaf0f63cfb2ad5f"
+            "git_head": "103a17072e9b915c9c9980f946902be856695978"
           },
           {
-            "path": "/opt/data/tool-candidates/opencode-adapter-v6/opencode_workflow_adapter.py",
+            "path": "{repository_root}/scripts/opencode_workflow_adapter.py",
             "exists": true,
             "kind": "file",
-            "sha256": "1b98aaec34711b3a7bb09ce269c12bb06421ab08913d06593fb6d2c6641a34a3"
+            "sha256": "e7dbe311ae1ac75ebcc0838512e84efe80282f15b7a69c2db13d7f8e92fc3a3c"
           }
         ]
       },
@@ -546,7 +528,7 @@
         },
         "isolation_policy": "fresh lane-specific agent home/XDG state; provider-only network with model shell and agent web tools disabled; sequential one-task prompt delivery; controller seed/verifier scripts excluded while controller-only affected-component compile commands retained; no acceptance-test assets injected; agent prompts carry normal software objectives",
         "workflow_controller_path": "scripts/run_codex_workflow_evaluation.py",
-        "workflow_controller_sha256": "501e37b7cbafc7558836d42f1550deb7d7231caa1378d310d848bdaf1e1e548d",
+        "workflow_controller_sha256": "28877c277ab23ae221461967179080651b48fa0027493b3304a9b994106540ee",
         "matrix_controller_path": "scripts/run_sequential_workflow_matrix.py",
         "matrix_controller_sha256": "51afde9bc3a75afc1b510c48cb256d826fa02a968b660fbdefc35b036ac23b78",
         "agent_runtime_id": "opencode-cli",
