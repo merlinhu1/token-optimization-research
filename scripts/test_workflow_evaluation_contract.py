@@ -3196,6 +3196,36 @@ class ManifestAndProtocolContractTest(unittest.TestCase):
                 treatment,
             )
 
+    def test_openrouter_ingress_repair_only_fills_missing_adapter_identity(self) -> None:
+        summary = {
+            "profile_id": "baseline-opencode-openrouter-no-mcp",
+            "agent_condition": {
+                "runtime_id": "opencode-cli",
+                "provider": "openrouter",
+                "model": "gpt-5.6-sol",
+                "model_condition_id": "opencode-openrouter-gpt-5-6-sol-high",
+                "reasoning_effort": "high",
+                "runtime_version_condition": "captured-at-run-and-bound-to-record",
+            },
+            "tool_adapter_identity": None,
+            "selected_execution": {"descriptor": {"tool_adapter": {"tool_id": "opencode-openrouter-product-v1"}}},
+        }
+        repaired = runner.repair_openrouter_ingress_summary(summary)
+        self.assertIsNone(summary["tool_adapter_identity"])
+        self.assertEqual(
+            repaired["tool_adapter_identity"],
+            summary["selected_execution"]["descriptor"]["tool_adapter"],
+        )
+
+    def test_openrouter_baseline_summary_retains_adapter_identity(self) -> None:
+        descriptor = {"tool_adapter": {"tool_id": "opencode-openrouter-product-v1"}}
+        self.assertEqual(
+            runner.summary_tool_adapter_identity(
+                "baseline-opencode-openrouter-no-mcp", descriptor
+            ),
+            descriptor["tool_adapter"],
+        )
+
     def test_openrouter_control_pool_slot_does_not_require_codex_control(self) -> None:
         sequence = {"id": "unit-sequence", "task_family_generation": "lifecycle-v1"}
         with mock.patch.object(runner, "baseline_protocol_fingerprint", return_value="openrouter-pool"), \
