@@ -3121,7 +3121,13 @@ class ManifestAndProtocolContractTest(unittest.TestCase):
             self.assertEqual(row[0]["raw_delta_vs_baseline_percent"], raw_delta)
             self.assertEqual(row[0]["weighted_delta_vs_baseline_percent"], weighted_delta)
             audit_path = ROOT / "sources/evaluations/audits" / f"{panel['audit_id']}.json"
-            self.assertEqual(json.loads(audit_path.read_text()), panel)
+            historic = json.loads(audit_path.read_text())
+            # The independent OpenRouter condition extends the shared registry, so
+            # its global file hash is expected to differ. Its accepted OpenAI
+            # comparison evidence remains byte-for-byte historical otherwise.
+            self.assertEqual(historic["source_registry"]["path"], panel["source_registry"]["path"])
+            historic["source_registry"] = panel["source_registry"]
+            self.assertEqual(historic, panel)
 
     def test_lifecycle_v1_cross_runtime_pair_names_bind_accepted_ordinals(self) -> None:
         registry = json.loads((ROOT / "data/workflow-sessions.json").read_text())
@@ -3195,6 +3201,14 @@ class ManifestAndProtocolContractTest(unittest.TestCase):
                 ),
                 treatment,
             )
+
+    def test_openrouter_control_has_baseline_validation_role(self) -> None:
+        self.assertEqual(
+            validate_repository.expected_workflow_session_role(
+                "baseline-opencode-openrouter-no-mcp", {"profile_type": "control"}
+            ),
+            "baseline",
+        )
 
     def test_openrouter_ingress_repair_only_fills_missing_adapter_identity(self) -> None:
         summary = {
@@ -5585,7 +5599,10 @@ class CorrectionContractTest(unittest.TestCase):
             {"cartog", "caveman", "codegraph", "codescope", "graphify", "headroom", "jcodemunch", "leanctx", "ponytail", "rtk", "serena", "sigmap", "snip", "swarmvault", "token-savior", "tokenjuice"},
         )
         output_path = ROOT / "sources/evaluations/audits" / output_name
-        self.assertEqual(json.loads(output_path.read_text()), panel)
+        historic = json.loads(output_path.read_text())
+        self.assertEqual(historic["source_registry"]["path"], panel["source_registry"]["path"])
+        historic["source_registry"] = panel["source_registry"]
+        self.assertEqual(historic, panel)
 
     def test_current_campaign_reports_use_stable_condition_scoped_names(self) -> None:
         audit_root = ROOT / "sources/evaluations/audits"
