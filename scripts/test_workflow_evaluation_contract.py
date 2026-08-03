@@ -932,13 +932,17 @@ print('ok')
         self.assertEqual(result.returncode, 0, result.stderr)
         self.assertEqual(result.stdout.strip(), "ok")
 
-    def test_openrouter_provider_execution_requires_new_bounded_authorization(self) -> None:
+    def test_openrouter_provider_execution_requires_a_bound_authority(self) -> None:
         args = argparse.Namespace(
             profile_id="baseline-opencode-openrouter-no-mcp",
             prepare_only=False,
+            sequence_id="fastify-lifecycle-sequence-v1",
+            replicate_index=0,
+            session_id="baseline-opencode-openrouter-fastify-20260803-p-f85684d4777d-r0",
         )
-        with self.assertRaisesRegex(ValueError, "configured provider-free only"):
-            runner.run_one(args)
+        with mock.patch.object(runner, "OPENROUTER_LIFECYCLE_V1_AUTHORITY_REL", "missing.json"):
+            with self.assertRaisesRegex(ValueError, "OpenRouter Lifecycle V1 authorization"):
+                runner.run_one(args)
 
     def test_opencode_preflight_renders_repository_root_adapter_path(self) -> None:
         record = {"target": {"repository_path": str(ROOT)}, "agent": {}}
@@ -3196,7 +3200,7 @@ class ManifestAndProtocolContractTest(unittest.TestCase):
         sequence = {"id": "unit-sequence", "fixture_id": "unit"}
         baseline = {"baseline_pool": {"protocol_fingerprint": "frozen-pool"}}
         treatment = {"baseline_pool": {"protocol_fingerprint": "frozen-pool"}}
-        comparison_id = "baseline-unit-20260802-vs-opencode-p-frozen-pool-r1"
+        comparison_id = f"baseline-unit-{matrix.workflow.DATE.replace('-', '')}-vs-opencode-p-frozen-pool-r1"
         with tempfile.TemporaryDirectory() as tmp:
             with mock.patch.object(matrix, "ROOT", Path(tmp)), \
                  mock.patch.object(matrix, "WORKFLOW_ARTIFACT_ROOT", Path("comparisons")), \
