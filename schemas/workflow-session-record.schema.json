@@ -87,7 +87,8 @@
     },
     "replicate_index": {
       "type": "integer",
-      "minimum": 0
+      "minimum": 0,
+      "description": "Runtime-local immutable attempt label. Do not use it to pair different runtimes unless interpretation.comparison_pair explicitly binds accepted-replicate ordinals."
     },
     "baseline_pool": {
       "type": "object",
@@ -865,6 +866,26 @@
         },
         "exclusion_reason": {
           "type": "string"
+        },
+        "comparison_baseline_session_id": {
+          "type": "string"
+        },
+        "comparison_pair": {
+          "type": "object",
+          "required": [
+            "id",
+            "basis",
+            "accepted_replicate_ordinal",
+            "treatment_runtime_replicate_index",
+            "baseline_runtime_replicate_index"
+          ],
+          "properties": {
+            "id": {"type": "string"},
+            "basis": {"const": "accepted-replicate-ordinal"},
+            "accepted_replicate_ordinal": {"type": "integer", "minimum": 1},
+            "treatment_runtime_replicate_index": {"type": "integer", "minimum": 0},
+            "baseline_runtime_replicate_index": {"type": "integer", "minimum": 0}
+          }
         }
       }
     }

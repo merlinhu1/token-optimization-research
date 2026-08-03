@@ -211,6 +211,16 @@ def render() -> str:
                     (sequence_id, condition_id, pool_fingerprint), []
                 ).append(replicate_index)
     reusable_baseline_sequences = set(reusable_baseline_replicates)
+    accepted_cross_runtime_pairs = sorted(
+        {
+            str(pair["id"])
+            for session in session_records
+            if session.get("status") == "completed"
+            and session.get("interpretation", {}).get("accepted_for_objective") is True
+            and isinstance((pair := session.get("interpretation", {}).get("comparison_pair")), dict)
+            and isinstance(pair.get("id"), str)
+        }
+    )
     pending_baselines = [
         sequence for sequence in sequences if sequence["id"] not in reusable_baseline_sequences
     ]
@@ -363,6 +373,13 @@ def render() -> str:
                 f"{comparison_ids}. They do not satisfy active-default baseline requirements "
                 "or define active-default treatment-pair reuse. OpenCode pools may define "
                 "substrate-matched treatment reuse under their own frozen protocols."
+            )
+        if accepted_cross_runtime_pairs:
+            pair_names = ", ".join(f"`{pair_id}`" for pair_id in accepted_cross_runtime_pairs)
+            chunks.append(
+                "Cross-runtime comparison names use accepted-replicate ordinal, not matching raw "
+                "runtime-local `rN` labels. Current explicit pairs are "
+                f"{pair_names}. See `docs/evaluations/design/lifecycle-v1-accepted-replicate-pairing.md`."
             )
         chunks.append(
             "Retain the first operationally valid provider sample for each protocol and replicate. Stop only when a sample is fixture-invalid or operationally incomplete; verifier and review outcomes are diagnostic."

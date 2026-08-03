@@ -3012,47 +3012,101 @@ class ManifestAndProtocolContractTest(unittest.TestCase):
                 session,
             )
 
-    def test_v1_opencode_panel_resolves_matched_baselines_and_matches_checked_in_audit(self) -> None:
+    def test_v1_opencode_panels_use_accepted_ordinal_pair_names(self) -> None:
         sequence_ids = (
             "fastify-lifecycle-sequence-v1",
             "beets-lifecycle-sequence-v1",
         )
-        panel = current_panel.build_panel(
-            ROOT,
-            model_condition_id="opencode-openai-gpt-5-6-sol-high",
-            replicate_index=1,
-            date="2026-08-02",
-            sequence_ids=sequence_ids,
+        expected = (
+            (
+                1,
+                "lifecycle-v1-sol-high-accepted-pair-01",
+                [
+                    "baseline-fastify-20260802-p-72ac148f730b-r0",
+                    "baseline-beets-20260802-p-d8cfc5066f76-r0",
+                ],
+                516037.8,
+                57.27,
+                41.67,
+            ),
+            (
+                2,
+                "lifecycle-v1-sol-high-accepted-pair-02",
+                [
+                    "baseline-fastify-20260802-p-72ac148f730b-r1",
+                    "baseline-beets-20260802-p-d8cfc5066f76-r1",
+                ],
+                537428.6,
+                58.13,
+                51.35,
+            ),
         )
-        self.assertEqual(panel["condition"]["workflows"], list(sequence_ids))
-        self.assertEqual(panel["baseline"]["session_ids"], [
-            "baseline-fastify-20260802-p-72ac148f730b-r1",
-            "baseline-beets-20260802-p-d8cfc5066f76-r1",
-        ])
-        self.assertEqual(panel["baseline"]["usage"]["weighted_tokens"], 537428.6)
-        self.assertEqual(panel["results_ranked_by_primary_metric"], [{
-            "profile_id": "runtime-opencode-codex-product-v1",
-            "artifact_slug": "opencode",
-            "session_ids": [
-                "opencode-fastify-20260802-p-72ac148f730b-r1",
-                "opencode-beets-20260802-p-d8cfc5066f76-r1",
-            ],
-            "workflow_count": 2,
-            "accepted_task_count": 6,
-            "usage": {
-                "fresh_input_tokens": 203852,
-                "cached_input_tokens": 3646976,
-                "output_tokens": 27084,
-                "reasoning_tokens": 7571,
-                "raw_provider_tokens": 3877912,
-                "weighted_tokens": 731053.6,
-            },
-            "raw_delta_vs_baseline_percent": 44.18,
-            "weighted_delta_vs_baseline_percent": 36.03,
-            "raw_rank": 1,
-        }])
-        audit_path = ROOT / "sources/evaluations/audits/lifecycle-v1-opencode-sol-high-r1-weighted-panel-results-20260802.json"
-        self.assertEqual(json.loads(audit_path.read_text()), panel)
+        for ordinal, pair_id, baseline_ids, baseline_weighted, raw_delta, weighted_delta in expected:
+            panel = current_panel.build_panel(
+                ROOT,
+                model_condition_id="opencode-openai-gpt-5-6-sol-high",
+                replicate_index=ordinal,
+                comparison_pair_id=pair_id,
+                date="2026-08-02",
+                sequence_ids=sequence_ids,
+            )
+            self.assertEqual(panel["audit_id"], f"opencode-openai-gpt-5-6-sol-high-accepted-pair-{ordinal:02d}-panel-results-20260802")
+            self.assertEqual(panel["condition"]["comparison_pair"]["id"], pair_id)
+            self.assertEqual(panel["condition"]["treatment_runtime_replicate_index"], ordinal)
+            self.assertNotIn("replicate_index", panel["condition"])
+            self.assertEqual(panel["baseline"]["session_ids"], baseline_ids)
+            self.assertEqual(panel["baseline"]["usage"]["weighted_tokens"], baseline_weighted)
+            row = panel["results_ranked_by_primary_metric"]
+            self.assertEqual(len(row), 1)
+            self.assertEqual(row[0]["comparison_pair"]["id"], pair_id)
+            self.assertEqual(row[0]["raw_delta_vs_baseline_percent"], raw_delta)
+            self.assertEqual(row[0]["weighted_delta_vs_baseline_percent"], weighted_delta)
+            audit_path = ROOT / "sources/evaluations/audits" / f"{panel['audit_id']}.json"
+            self.assertEqual(json.loads(audit_path.read_text()), panel)
+
+    def test_lifecycle_v1_cross_runtime_pair_names_bind_accepted_ordinals(self) -> None:
+        registry = json.loads((ROOT / "data/workflow-sessions.json").read_text())
+        sessions = {session["session_id"]: session for session in registry["sessions"]}
+        expected = {
+            "opencode-fastify-20260802-p-72ac148f730b-r1": (
+                "baseline-fastify-20260802-p-72ac148f730b-r0",
+                "lifecycle-v1-sol-high-accepted-pair-01",
+                1,
+            ),
+            "opencode-beets-20260802-p-d8cfc5066f76-r1": (
+                "baseline-beets-20260802-p-d8cfc5066f76-r0",
+                "lifecycle-v1-sol-high-accepted-pair-01",
+                1,
+            ),
+            "opencode-fastify-20260802-p-72ac148f730b-r2": (
+                "baseline-fastify-20260802-p-72ac148f730b-r1",
+                "lifecycle-v1-sol-high-accepted-pair-02",
+                2,
+            ),
+            "opencode-beets-20260802-p-d8cfc5066f76-r2": (
+                "baseline-beets-20260802-p-d8cfc5066f76-r1",
+                "lifecycle-v1-sol-high-accepted-pair-02",
+                2,
+            ),
+        }
+        for treatment_id, (baseline_id, pair_id, ordinal) in expected.items():
+            treatment = sessions[treatment_id]
+            baseline = sessions[baseline_id]
+            pair = treatment["interpretation"]["comparison_pair"]
+            self.assertEqual(treatment["interpretation"]["comparison_baseline_session_id"], baseline_id)
+            self.assertEqual(pair["id"], pair_id)
+            self.assertEqual(pair["accepted_replicate_ordinal"], ordinal)
+            self.assertTrue(
+                validate_repository.comparison_replicate_binding_matches(treatment, baseline)
+            )
+        malformed = copy.deepcopy(sessions["opencode-fastify-20260802-p-72ac148f730b-r1"])
+        malformed["interpretation"]["comparison_pair"]["baseline_runtime_replicate_index"] = 1
+        self.assertFalse(
+            validate_repository.comparison_replicate_binding_matches(
+                malformed,
+                sessions["baseline-fastify-20260802-p-72ac148f730b-r0"],
+            )
+        )
 
     def test_pool_profile_lookup_uses_canonical_frozen_pool_when_live_descriptor_drifts(self) -> None:
         sequence = {
@@ -4045,22 +4099,43 @@ class MatrixLifecycleContractTest(unittest.TestCase):
                 )
         self.assertTrue(passed, reason)
 
-    def test_refreshes_lifecycle_v1_opencode_panel_after_registry_mutation(self) -> None:
+    def test_refreshes_lifecycle_v1_opencode_accepted_pair_panels_after_registry_mutation(self) -> None:
         with mock.patch.object(matrix.subprocess, "run") as run:
-            matrix.refresh_lifecycle_v1_opencode_sol_high_r1_panel(ROOT)
-        run.assert_called_once_with(
+            matrix.refresh_lifecycle_v1_opencode_sol_high_pair_panels(ROOT)
+        self.assertEqual(
+            run.call_args_list,
             [
-                sys.executable,
-                "scripts/generate_current_evaluation_panel.py",
-                "--model-condition-id", "opencode-openai-gpt-5-6-sol-high",
-                "--replicate-index", "1",
-                "--date", "2026-08-02",
-                "--output", "sources/evaluations/audits/lifecycle-v1-opencode-sol-high-r1-weighted-panel-results-20260802.json",
-                "--sequence-id", "fastify-lifecycle-sequence-v1",
-                "--sequence-id", "beets-lifecycle-sequence-v1",
+                mock.call(
+                    [
+                        sys.executable,
+                        "scripts/generate_current_evaluation_panel.py",
+                        "--model-condition-id", "opencode-openai-gpt-5-6-sol-high",
+                        "--replicate-index", "1",
+                        "--comparison-pair-id", "lifecycle-v1-sol-high-accepted-pair-01",
+                        "--date", "2026-08-02",
+                        "--output", "sources/evaluations/audits/opencode-openai-gpt-5-6-sol-high-accepted-pair-01-panel-results-20260802.json",
+                        "--sequence-id", "fastify-lifecycle-sequence-v1",
+                        "--sequence-id", "beets-lifecycle-sequence-v1",
+                    ],
+                    cwd=ROOT,
+                    check=True,
+                ),
+                mock.call(
+                    [
+                        sys.executable,
+                        "scripts/generate_current_evaluation_panel.py",
+                        "--model-condition-id", "opencode-openai-gpt-5-6-sol-high",
+                        "--replicate-index", "2",
+                        "--comparison-pair-id", "lifecycle-v1-sol-high-accepted-pair-02",
+                        "--date", "2026-08-02",
+                        "--output", "sources/evaluations/audits/opencode-openai-gpt-5-6-sol-high-accepted-pair-02-panel-results-20260802.json",
+                        "--sequence-id", "fastify-lifecycle-sequence-v1",
+                        "--sequence-id", "beets-lifecycle-sequence-v1",
+                    ],
+                    cwd=ROOT,
+                    check=True,
+                ),
             ],
-            cwd=ROOT,
-            check=True,
         )
 
     def test_retained_claude_lifecycle_v1_recovery_rejects_parallel_or_wrong_plan(self) -> None:

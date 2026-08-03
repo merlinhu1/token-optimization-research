@@ -2236,22 +2236,28 @@ def refresh_current_sol_panel(root: Path = ROOT) -> None:
     )
 
 
-def refresh_lifecycle_v1_opencode_sol_high_r1_panel(root: Path = ROOT) -> None:
-    """Refresh the checked-in V1 OpenCode panel after any registry mutation."""
-    subprocess.run(
-        [
-            sys.executable,
-            "scripts/generate_current_evaluation_panel.py",
-            "--model-condition-id", "opencode-openai-gpt-5-6-sol-high",
-            "--replicate-index", "1",
-            "--date", "2026-08-02",
-            "--output", "sources/evaluations/audits/lifecycle-v1-opencode-sol-high-r1-weighted-panel-results-20260802.json",
-            "--sequence-id", "fastify-lifecycle-sequence-v1",
-            "--sequence-id", "beets-lifecycle-sequence-v1",
-        ],
-        cwd=root,
-        check=True,
+def refresh_lifecycle_v1_opencode_sol_high_pair_panels(root: Path = ROOT) -> None:
+    """Refresh the canonical accepted-ordinal V1 OpenCode/Codex pair panels."""
+    pairs = (
+        (1, "lifecycle-v1-sol-high-accepted-pair-01"),
+        (2, "lifecycle-v1-sol-high-accepted-pair-02"),
     )
+    for replicate_index, pair_id in pairs:
+        subprocess.run(
+            [
+                sys.executable,
+                "scripts/generate_current_evaluation_panel.py",
+                "--model-condition-id", "opencode-openai-gpt-5-6-sol-high",
+                "--replicate-index", str(replicate_index),
+                "--comparison-pair-id", pair_id,
+                "--date", "2026-08-02",
+                "--output", f"sources/evaluations/audits/opencode-openai-gpt-5-6-sol-high-accepted-pair-{replicate_index:02d}-panel-results-20260802.json",
+                "--sequence-id", "fastify-lifecycle-sequence-v1",
+                "--sequence-id", "beets-lifecycle-sequence-v1",
+            ],
+            cwd=root,
+            check=True,
+        )
 
 
 def retained_claude_lifecycle_v1_recovery_lanes(
@@ -2461,7 +2467,8 @@ def recover_retained_claude_lifecycle_v1_run(run_root: Path) -> int:
         ROOT / "docs/evaluations/operations/runbook.md",
         ROOT / "sources/evaluations/audits/codex-cumulative-usage-accounting-20260718.json",
         ROOT / "sources/evaluations/audits/codex-openai-gpt-5-6-sol-high-r0-panel-results-20260729.json",
-        ROOT / "sources/evaluations/audits/lifecycle-v1-opencode-sol-high-r1-weighted-panel-results-20260802.json",
+        ROOT / "sources/evaluations/audits/opencode-openai-gpt-5-6-sol-high-accepted-pair-01-panel-results-20260802.json",
+        ROOT / "sources/evaluations/audits/opencode-openai-gpt-5-6-sol-high-accepted-pair-02-panel-results-20260802.json",
     )
     authority_snapshots = {path: path.read_bytes() for path in authority_paths}
     merge_summary: dict[str, Any] = {}
@@ -2483,7 +2490,7 @@ def recover_retained_claude_lifecycle_v1_run(run_root: Path) -> int:
         refresh_generated_runbook()
         refresh_cumulative_usage_audit()
         refresh_current_sol_panel()
-        refresh_lifecycle_v1_opencode_sol_high_r1_panel()
+        refresh_lifecycle_v1_opencode_sol_high_pair_panels()
         validation = run_validation(run_root)
         if not validation["passed"]:
             raise RuntimeError("retained recovery post-publication validation failed")
@@ -2839,7 +2846,8 @@ def main(argv: list[str] | None = None) -> int:
         ROOT / "docs/evaluations/operations/runbook.md",
         ROOT / "sources/evaluations/audits/codex-cumulative-usage-accounting-20260718.json",
         ROOT / "sources/evaluations/audits/codex-openai-gpt-5-6-sol-high-r0-panel-results-20260729.json",
-        ROOT / "sources/evaluations/audits/lifecycle-v1-opencode-sol-high-r1-weighted-panel-results-20260802.json",
+        ROOT / "sources/evaluations/audits/opencode-openai-gpt-5-6-sol-high-accepted-pair-01-panel-results-20260802.json",
+        ROOT / "sources/evaluations/audits/opencode-openai-gpt-5-6-sol-high-accepted-pair-02-panel-results-20260802.json",
     )
     authority_snapshots = (
         {path: path.read_bytes() for path in authority_paths}
@@ -2891,7 +2899,7 @@ def main(argv: list[str] | None = None) -> int:
         if not args.prepare_only and merge_summary.get("merged_session_count", 0):
             refresh_cumulative_usage_audit()
             refresh_current_sol_panel()
-            refresh_lifecycle_v1_opencode_sol_high_r1_panel()
+            refresh_lifecycle_v1_opencode_sol_high_pair_panels()
         validation = run_validation(run_root, validation_python)
         if not args.prepare_only and not validation["passed"]:
             rollback_matrix_publication(

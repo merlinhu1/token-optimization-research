@@ -2634,6 +2634,60 @@ def expected_workflow_session_role(profile_id: str, canonical_profile: dict | No
     return "individual_tool_treatment"
 
 
+def comparison_replicate_binding_matches(
+    treatment: dict[str, Any],
+    baseline: dict[str, Any],
+) -> bool:
+    """Validate either same-index pairing or the explicit V1 accepted-order map.
+
+    ``replicate_index`` is a runtime-local attempt identity.  It is only a
+    comparison identity when both conditions use the same accepted-attempt
+    numbering.  Lifecycle V1 OpenCode lost r0 before objective acceptance, so
+    its accepted r1/r2 runs pair with bare-Codex r0/r1 by accepted ordinal.
+    """
+    treatment_index = treatment.get("replicate_index")
+    baseline_index = baseline.get("replicate_index")
+    if type(treatment_index) is not int or type(baseline_index) is not int:
+        return False
+    pair = treatment.get("interpretation", {}).get("comparison_pair")
+    if treatment_index == baseline_index:
+        return pair in (None, {})
+    if not isinstance(pair, dict):
+        return False
+    ordinal = pair.get("accepted_replicate_ordinal")
+    treatment_prompts = (
+        treatment.get("selected_execution", {})
+        .get("descriptor", {})
+        .get("model_facing_prompts", {})
+        .get("tasks", [])
+    )
+    baseline_prompts = (
+        baseline.get("selected_execution", {})
+        .get("descriptor", {})
+        .get("model_facing_prompts", {})
+        .get("tasks", [])
+    )
+    return (
+        treatment.get("profile", {}).get("profile_id") == "runtime-opencode-codex-product-v1"
+        and treatment.get("agent", {}).get("model_condition_id") == "opencode-openai-gpt-5-6-sol-high"
+        and baseline.get("profile", {}).get("profile_id") == "baseline-bare-codex"
+        and baseline.get("agent", {}).get("model_condition_id") == "codex-openai-gpt-5-6-sol-high"
+        and treatment.get("task_sequence", {}).get("sequence_id")
+        in {"fastify-lifecycle-sequence-v1", "beets-lifecycle-sequence-v1"}
+        and treatment.get("agent", {}).get("model") == baseline.get("agent", {}).get("model") == "gpt-5.6-sol"
+        and treatment.get("agent", {}).get("reasoning_effort")
+        == baseline.get("agent", {}).get("reasoning_effort")
+        == "high"
+        and isinstance(ordinal, int)
+        and ordinal >= 1
+        and pair.get("id") == f"lifecycle-v1-sol-high-accepted-pair-{ordinal:02d}"
+        and pair.get("basis") == "accepted-replicate-ordinal"
+        and pair.get("treatment_runtime_replicate_index") == treatment_index == ordinal
+        and pair.get("baseline_runtime_replicate_index") == baseline_index == ordinal - 1
+        and treatment_prompts == baseline_prompts
+    )
+
+
 def comparison_baseline_matches_treatment(
     treatment: dict[str, Any],
     baseline: dict[str, Any],
@@ -2763,7 +2817,7 @@ def validate_workflow_sessions(session_doc: dict, sequence_ids: set[str], fixtur
             if baseline is None:
                 errors.append(f"workflow session {sid} references missing comparison baseline {comparison_id}")
             elif (
-                baseline.get("replicate_index") != session.get("replicate_index")
+                not comparison_replicate_binding_matches(session, baseline)
                 or baseline.get("baseline_pool", {}).get("protocol_fingerprint")
                 != session.get("baseline_pool", {}).get("protocol_fingerprint")
                 or baseline.get("task_sequence", {}).get("sequence_id")
@@ -2772,7 +2826,9 @@ def validate_workflow_sessions(session_doc: dict, sequence_ids: set[str], fixtur
                 or baseline.get("status") != "completed"
                 or baseline.get("interpretation", {}).get("accepted_for_objective") is not True
             ):
-                errors.append(f"workflow session {sid} comparison baseline {comparison_id} is not a canonical sequence-, pool-, and replicate-matched baseline")
+                errors.append(
+                    f"workflow session {sid} comparison baseline {comparison_id} is not a canonical sequence-, pool-, and accepted-replicate-matched baseline"
+                )
         agent = session.get("agent", {})
         if isinstance(agent, dict):
             runtime_id = agent.get("runtime_id")
