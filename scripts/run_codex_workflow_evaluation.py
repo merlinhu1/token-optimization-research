@@ -4175,6 +4175,39 @@ def execution_integrity_record(
     }
 
 
+def summary_tool_adapter_identity(profile_id: str, selected_descriptor: dict[str, Any]) -> dict[str, Any] | None:
+    """Retain the adapter identity for any OpenCode runtime, including its control."""
+    adapter = selected_descriptor.get("tool_adapter")
+    return adapter if profile_runtime_id(profile_id) == "opencode-cli" and isinstance(adapter, dict) else None
+
+
+def repair_openrouter_ingress_summary(summary: dict[str, Any]) -> dict[str, Any]:
+    """Apply the one narrowly-audited metadata repair permitted after an OpenRouter run."""
+    repaired = json.loads(json.dumps(summary))
+    if (
+        repaired.get("profile_id") != OPENROUTER_LIFECYCLE_V1_PROFILE_ID
+        or repaired.get("agent_condition") != {
+            "runtime_id": "opencode-cli",
+            "provider": "openrouter",
+            "model": "gpt-5.6-sol",
+            "model_condition_id": "opencode-openrouter-gpt-5-6-sol-high",
+            "reasoning_effort": "high",
+            "runtime_version_condition": "captured-at-run-and-bound-to-record",
+        }
+        or repaired.get("tool_adapter_identity") is not None
+        or not isinstance(repaired.get("selected_execution"), dict)
+    ):
+        raise ValueError("OpenRouter strict-ingress repair scope does not match the known missing-adapter failure")
+    descriptor = repaired["selected_execution"].get("descriptor")
+    if not isinstance(descriptor, dict):
+        raise ValueError("OpenRouter strict-ingress repair lacks a selected execution descriptor")
+    identity = summary_tool_adapter_identity(OPENROUTER_LIFECYCLE_V1_PROFILE_ID, descriptor)
+    if not identity:
+        raise ValueError("OpenRouter strict-ingress repair lacks the frozen adapter identity")
+    repaired["tool_adapter_identity"] = identity
+    return repaired
+
+
 def workflow_session_record(
     seq: dict[str, Any],
     summary: dict[str, Any],
@@ -4472,6 +4505,131 @@ def update_registry(record: dict[str, Any]) -> None:
         os.replace(tmp, path)
     finally:
         tmp.unlink(missing_ok=True)
+
+
+def restore_compact_evidence_sources(run_dir: Path) -> None:
+    """Temporarily materialize an already-validated evidence bundle for local recovery."""
+    bundle = run_dir / "evidence.jsonl.gz"
+    if not evidence_bundle_valid(bundle):
+        raise ValueError("compact evidence bundle is invalid; refusing metadata recovery")
+    root = run_dir.resolve()
+    created: list[Path] = []
+    try:
+        with gzip.open(bundle, "rt", encoding="utf-8") as source:
+            for line in source:
+                entry = json.loads(line, object_pairs_hook=_json_without_duplicate_keys)
+                if set(entry) != {"path", "content"} or not isinstance(entry["path"], str) or not isinstance(entry["content"], str):
+                    raise ValueError("compact evidence bundle has an invalid record")
+                relative = Path(entry["path"])
+                if (
+                    relative.is_absolute()
+                    or "\\" in entry["path"]
+                    or not relative.parts
+                    or any(part in {"", ".", ".."} for part in relative.parts)
+                    or relative.name in COMPACT_ARTIFACT_NAMES
+                ):
+                    raise ValueError("compact evidence bundle has an unsafe recovery path")
+                target = run_dir / relative
+                target.parent.mkdir(parents=True, exist_ok=True)
+                resolved = target.resolve()
+                resolved.relative_to(root)
+                if target.exists() or target.is_symlink():
+                    raise ValueError(f"compact evidence recovery would overwrite {relative}")
+                target.write_text(entry["content"])
+                created.append(target)
+    except BaseException:
+        for target in reversed(created):
+            target.unlink(missing_ok=True)
+        for parent in sorted({target.parent for target in created}, key=lambda value: len(value.parts), reverse=True):
+            try:
+                parent.rmdir()
+            except OSError:
+                pass
+        raise
+
+
+def recover_openrouter_lifecycle_v1_strict_ingress(session_id: str, root: Path = ROOT) -> dict[str, Any]:
+    """Publish a completed OpenRouter lane after the known missing-adapter ingress defect.
+
+    This is recovery only: it never starts an adapter, provider call, or task.
+    """
+    if not isinstance(session_id, str) or not session_id:
+        raise ValueError("OpenRouter strict-ingress recovery requires a session ID")
+    registry_path = root / "data/workflow-sessions.json"
+    registry = json.loads(registry_path.read_text())
+    if any(item.get("session_id") == session_id for item in registry.get("sessions", [])):
+        raise ValueError("OpenRouter strict-ingress recovery refuses an already-published session")
+    run_dir = root / "sources/evaluations/workflow-sessions" / session_id
+    run_path = run_dir / "run.json"
+    summary = json.loads(run_path.read_text(), object_pairs_hook=_json_without_duplicate_keys)
+    sequence_id = summary.get("workflow_sequence_id")
+    if not isinstance(sequence_id, str):
+        raise ValueError("OpenRouter strict-ingress recovery lacks a workflow sequence")
+    seq = load_sequence(sequence_id)
+    authority, binding = openrouter_lifecycle_v1_binding(seq, root)
+    del authority
+    if (
+        binding.get("session_id") != session_id
+        or summary.get("frozen_protocol") != {
+            "protocol_id": Path(binding["protocol_path"]).stem,
+            "path": binding["protocol_path"],
+            "sha256": binding["protocol_sha256"],
+        }
+        or summary.get("replicate_index") != 0
+        or summary.get("accepted") is not True
+    ):
+        raise ValueError("OpenRouter strict-ingress recovery does not match the authorized frozen lane")
+    attempt_receipt = repository_authority_path(root, binding["attempt_receipt_path"], "OpenRouter attempt receipt")
+    receipt = json.loads(attempt_receipt.read_text(), object_pairs_hook=_json_without_duplicate_keys)
+    if (
+        receipt.get("attempt_status") != "reserved-before-provider-task"
+        or receipt.get("expected_session_id") != session_id
+        or receipt.get("provider_result") is not None
+        or receipt.get("immutable_identity_receipt") is not True
+    ):
+        raise ValueError("OpenRouter strict-ingress recovery requires the original immutable r0 attempt receipt")
+    repaired_summary = repair_openrouter_ingress_summary(summary)
+    original_run_sha256 = hashlib.sha256(run_path.read_bytes()).hexdigest()
+    restore_compact_evidence_sources(run_dir)
+    try:
+        usage = dict(repaired_summary["token_usage"])
+        usage["warnings"] = repaired_summary.get("usage_warnings", [])
+        session_record = workflow_session_record(
+            seq,
+            repaired_summary,
+            run_dir,
+            OPENROUTER_LIFECYCLE_V1_PROFILE_ID,
+            repaired_summary["codex_exit_codes"],
+            repaired_summary["final_verifier_exit_code"],
+            repaired_summary["tool_isolation_audit_exit_code"],
+            usage,
+            repaired_summary["per_task_results"],
+            prompt_delivery=repaired_summary["prompt_delivery"],
+            leakage_controls=repaired_summary["leakage_controls"],
+        )
+    finally:
+        remove_noncompact_artifacts(run_dir)
+    run_path.write_text(json.dumps(repaired_summary, indent=2) + "\n")
+    write_manifest(run_dir)
+    if not pilot_session_artifacts_valid(session_record, root):
+        raise RuntimeError("OpenRouter strict-ingress metadata repair did not satisfy compact ingress")
+    recovery_receipt = run_dir.parent / f"{session_id}.strict-ingress-recovery.json"
+    atomic_create_json(
+        recovery_receipt,
+        {
+            "schema_version": 1,
+            "status": "repaired-and-ready-for-registry-publication",
+            "session_id": session_id,
+            "attempt_receipt_path": binding["attempt_receipt_path"],
+            "repair_scope": "filled the missing OpenCode adapter identity from the frozen selected-execution descriptor; provider task output and usage were not changed",
+            "original_run_sha256": original_run_sha256,
+            "repaired_run_sha256": hashlib.sha256(run_path.read_bytes()).hexdigest(),
+            "provider_calls_added_by_recovery": 0,
+            "provider_tokens_added_by_recovery": 0,
+        },
+    )
+    publish_session_after_strict_ingress(session_record, run_dir)
+    return session_record
 
 
 def publish_session_after_strict_ingress(record: dict[str, Any], run_dir: Path) -> None:
@@ -5083,7 +5241,7 @@ def _run_one_locked(args: argparse.Namespace) -> dict[str, Any]:
         "selected_execution": selected_execution,
         "agent_condition": selected_descriptor.get("agent_condition"),
         "docker_image_identity": selected_descriptor.get("runtime", {}).get("docker_image_identity"),
-        "tool_adapter_identity": selected_descriptor.get("tool_adapter") if not baseline_control_profile else None,
+        "tool_adapter_identity": summary_tool_adapter_identity(profile_id, selected_descriptor),
         "profile_id": profile_id,
         "workflow_sequence_id": seq["id"],
         "fixture_id": seq["fixture_id"],
