@@ -78,6 +78,28 @@ PLUGIN_TREATMENTS = {
 GUIDED_TREATMENTS = {"jcodemunch", "leanctx", "sigmap", "ponytail", "caveman"}
 
 
+def provider_route(provider: str, model: str) -> tuple[str, str]:
+    """Validate the provider-specific OpenCode model namespace without secrets."""
+    routes = {
+        "openai": "openai/gpt-5.6-sol",
+        "openrouter": "openrouter/openai/gpt-5.6-sol",
+    }
+    expected = routes.get(provider)
+    if expected is None:
+        raise ValueError(f"unsupported OpenCode provider route: {provider}")
+    if model != expected:
+        provider_label = "OpenRouter" if provider == "openrouter" else "OpenAI"
+        raise ValueError(
+            f"{provider_label} must use the exact OpenCode model namespace {expected}; got {model}"
+        )
+    return provider, model
+
+
+def provider_api_key_available(provider: str, env: dict[str, str]) -> bool:
+    """Check only key presence; no credential value may enter an artifact."""
+    return bool(env.get("OPENROUTER_API_KEY")) if provider == "openrouter" else True
+
+
 def verify_binary_sha256(binary: Path, expected_sha256: str) -> str:
     if not binary.is_file():
         raise ValueError(f"OpenCode binary is missing: {binary}")
@@ -197,6 +219,7 @@ def build_opencode_command(
     prompt: str,
     *,
     pure: bool = True,
+    provider_model: str | None = None,
 ) -> list[str]:
     command = [
         str(binary),
@@ -204,7 +227,7 @@ def build_opencode_command(
         "--format",
         "json",
         "--model",
-        parsed.model,
+        provider_model or parsed.model,
         "--variant",
         parsed.variant,
         "--auto",
@@ -619,10 +642,13 @@ def _runtime_env(
     codex_home: Path,
     *,
     treatment: str = "bare",
+    provider: str = "openai",
     directory: Path | None = None,
 ) -> tuple[dict[str, str], Path]:
     if treatment not in TREATMENT_PROFILES:
         raise ValueError(f"unsupported OpenCode treatment profile: {treatment}")
+    if provider not in {"openai", "openrouter"}:
+        raise ValueError(f"unsupported OpenCode provider route: {provider}")
     env = os.environ.copy()
     xdg_data = Path(env.get("XDG_DATA_HOME", codex_home / "xdg-data"))
     xdg_config = Path(env.get("XDG_CONFIG_HOME", codex_home / "xdg-config"))
@@ -848,19 +874,26 @@ def probe(
     binary_sha256: str,
     *,
     treatment: str = "bare",
+    provider: str = "openai",
+    provider_model: str = "openai/gpt-5.6-sol",
 ) -> int:
+    provider, provider_model = provider_route(provider, provider_model)
     directory = Path(os.environ.get("OPENCODE_EVALUATION_DIRECTORY", Path.cwd()))
     env, xdg_data = _runtime_env(
         codex_home,
         treatment=treatment,
+        provider=provider,
         directory=directory,
     )
-    ensure_opencode_auth(codex_home / "auth.json", xdg_data)
+    if provider == "openai":
+        ensure_opencode_auth(codex_home / "auth.json", xdg_data)
+    elif not provider_api_key_available(provider, env):
+        raise ValueError("OPENROUTER_API_KEY is required for the OpenRouter evaluation route")
     version = subprocess.run([str(binary), "--version"], env=env, text=True, capture_output=True, timeout=60)
     if version.returncode != 0:
         sys.stderr.write(version.stderr)
         return version.returncode
-    models = subprocess.run([str(binary), "models", "openai"], env=env, text=True, capture_output=True, timeout=120)
+    models = subprocess.run([str(binary), "models", provider], env=env, text=True, capture_output=True, timeout=120)
     available = {line.strip() for line in models.stdout.splitlines() if line.strip()}
     plugin_proof: dict[str, Any] | None = None
     if treatment in PLUGIN_TREATMENTS:
@@ -897,7 +930,9 @@ def probe(
         "binary": str(binary),
         "binary_sha256": binary_sha256,
         "treatment": treatment,
-        "model_available": "openai/gpt-5.6-sol" in available,
+        "provider": provider,
+        "provider_model": provider_model,
+        "model_available": provider_model in available,
         "project_config_disabled": True,
         "external_plugins_disabled_by_pure_flag": treatment not in PLUGIN_TREATMENTS,
         "external_skills_disabled": treatment not in {"swarmvault", "graphify", *GUIDED_TREATMENTS},
@@ -908,7 +943,11 @@ def probe(
         "effective_config_sha256": hashlib.sha256(
             env["OPENCODE_CONFIG_CONTENT"].encode()
         ).hexdigest(),
-        "auth": {"provider": "openai", "auth_type": "oauth"},
+        "auth": (
+            {"provider": "openai", "auth_type": "oauth"}
+            if provider == "openai"
+            else {"provider": "openrouter", "auth_type": "environment-api-key", "key_available": True}
+        ),
     }
     print(json.dumps(result, indent=2))
     return 0 if models.returncode == 0 and result["model_available"] else 1
@@ -946,12 +985,15 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--opencode-binary", type=Path, default=DEFAULT_OPENCODE_BINARY)
     parser.add_argument("--expected-opencode-sha256", required=True)
     parser.add_argument("--treatment", choices=sorted(TREATMENT_PROFILES), default="bare")
+    parser.add_argument("--provider", choices=("openai", "openrouter"), default="openai")
+    parser.add_argument("--provider-model", default="openai/gpt-5.6-sol")
     parser.add_argument("--probe", action="store_true")
     known, remaining = parser.parse_known_args(argv)
     codex_home = Path(os.environ.get("CODEX_HOME", ""))
     if not str(codex_home):
         raise ValueError("CODEX_HOME is required for isolated OpenCode execution")
     try:
+        provider, provider_model = provider_route(known.provider, known.provider_model)
         binary_sha256 = verify_binary_sha256(
             known.opencode_binary,
             str(known.expected_opencode_sha256),
@@ -966,22 +1008,33 @@ def main(argv: list[str] | None = None) -> int:
             codex_home,
             binary_sha256,
             treatment=known.treatment,
+            provider=provider,
+            provider_model=provider_model,
         )
 
     parsed = parse_codex_exec_args(remaining)
+    if parsed.model.rsplit("/", 1)[-1] != provider_model.rsplit("/", 1)[-1]:
+        raise ValueError(
+            f"Codex compatibility model {parsed.model} does not match the selected provider route {provider_model}"
+        )
     prompt = _read_prompt(parsed)
     directory = parsed.directory or Path.cwd()
     env, xdg_data = _runtime_env(
         codex_home,
         treatment=known.treatment,
+        provider=provider,
         directory=directory,
     )
-    ensure_opencode_auth(codex_home / "auth.json", xdg_data)
+    if provider == "openai":
+        ensure_opencode_auth(codex_home / "auth.json", xdg_data)
+    elif not provider_api_key_available(provider, env):
+        raise ValueError("OPENROUTER_API_KEY is required for the OpenRouter evaluation route")
     native_command = build_opencode_command(
         known.opencode_binary,
         parsed,
         prompt,
         pure=known.treatment not in (PLUGIN_TREATMENTS | GUIDED_TREATMENTS),
+        provider_model=provider_model,
     )
     command = native_command
     headroom_receipt: dict[str, Any] | None = None

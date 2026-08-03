@@ -3946,6 +3946,7 @@ def validate_frozen_protocol_bindings(errors: list[str]) -> None:
     try:
         from scripts import run_codex_workflow_evaluation as runner
         from scripts import run_codex_workflow_model_condition as model_condition_runner
+        from scripts import run_opencode_openrouter_workflow_model_condition as opencode_openrouter_condition_runner
         from scripts import run_opencode_workflow_model_condition as opencode_condition_runner
         from scripts import run_claude_code_workflow_model_condition as claude_condition_runner
         from scripts import workflow_model_condition_runtime as condition_runtime
@@ -3953,6 +3954,7 @@ def validate_frozen_protocol_bindings(errors: list[str]) -> None:
         errors.append(f"cannot import workflow runner for protocol binding validation: {exc}")
         runner = None
         model_condition_runner = None
+        opencode_openrouter_condition_runner = None
         opencode_condition_runner = None
         claude_condition_runner = None
         condition_runtime = None
@@ -4059,14 +4061,22 @@ def validate_frozen_protocol_bindings(errors: list[str]) -> None:
                             condition, claude_condition_runner.launcher_identity()
                         )
                     elif override_runtime == "opencode-cli":
-                        if condition_runtime is None or opencode_condition_runner is None:
-                            raise ValueError("OpenCode condition validator is unavailable")
-                        condition, _ = condition_runtime.resolve_condition_pair(
-                            ROOT, str(override.get("model_condition_id", ""))
-                        )
-                        expected_override = condition_runtime.condition_override(
-                            condition, opencode_condition_runner.launcher_identity()
-                        )
+                        condition_id = str(override.get("model_condition_id", ""))
+                        if condition_id == "opencode-openrouter-gpt-5-6-sol-high":
+                            if opencode_openrouter_condition_runner is None:
+                                raise ValueError("OpenCode/OpenRouter condition validator is unavailable")
+                            condition = opencode_openrouter_condition_runner.registered_condition(ROOT)
+                            opencode_openrouter_condition_runner.configure_runner(runner)
+                            expected_override = opencode_openrouter_condition_runner.condition_override(condition)
+                            expected_descriptor = runner.baseline_protocol_descriptor(seq)
+                            expected_fingerprint = runner.baseline_protocol_fingerprint(seq)
+                        else:
+                            if condition_runtime is None or opencode_condition_runner is None:
+                                raise ValueError("OpenCode condition validator is unavailable")
+                            condition, _ = condition_runtime.resolve_condition_pair(ROOT, condition_id)
+                            expected_override = condition_runtime.condition_override(
+                                condition, opencode_condition_runner.launcher_identity()
+                            )
                     else:
                         if model_condition_runner is None:
                             raise ValueError("Codex condition validator is unavailable")
@@ -4102,7 +4112,10 @@ def validate_frozen_protocol_bindings(errors: list[str]) -> None:
                         )
                         expected_fingerprint = runner.baseline_protocol_fingerprint_from_descriptor(expected_descriptor)
                     else:
-                        if condition["runtime_id"] == "claude-code":
+                        if condition["id"] == "opencode-openrouter-gpt-5-6-sol-high":
+                            # Dedicated launcher already bound the independent provider control.
+                            pass
+                        elif condition["runtime_id"] == "claude-code":
                             if condition_runtime is None or claude_condition_runner is None:
                                 raise ValueError("Claude Code condition validator is unavailable")
                             importlib.reload(condition_runtime)
@@ -4119,7 +4132,9 @@ def validate_frozen_protocol_bindings(errors: list[str]) -> None:
                             })
                             expected_descriptor["runtime_inputs"]["codex_runtime_condition"] = condition["id"]
                         expected_descriptor["model_condition_override"] = expected_override
-                        if condition["runtime_id"] == "claude-code":
+                        if condition["id"] == "opencode-openrouter-gpt-5-6-sol-high":
+                            pass
+                        elif condition["runtime_id"] == "claude-code":
                             expected_fingerprint = str(protocol.get("baseline_pool", {}).get("protocol_fingerprint", ""))
                         else:
                             comparison_descriptor = runner.baseline_comparison_descriptor(seq)
@@ -4184,18 +4199,25 @@ def validate_frozen_protocol_bindings(errors: list[str]) -> None:
                     selected_condition = None
                     launcher_path = "scripts/run_codex_workflow_model_condition.py"
                     if isinstance(selected_override, dict) and selected_override.get("runtime_id") == "opencode-cli":
-                        if condition_runtime is None or opencode_condition_runner is None:
-                            raise ValueError("OpenCode condition validator is unavailable")
-                        selected_condition, _ = condition_runtime.resolve_condition_pair(
-                            ROOT,
-                            str(selected_override.get("model_condition_id", "")),
-                        )
-                        selected_expected_override = condition_runtime.condition_override(
-                            selected_condition,
-                            opencode_condition_runner.launcher_identity(),
-                        )
-                        expected_descriptor = descriptor
-                        launcher_path = "scripts/run_opencode_workflow_model_condition.py"
+                        selected_condition_id = str(selected_override.get("model_condition_id", ""))
+                        if selected_condition_id == "opencode-openrouter-gpt-5-6-sol-high":
+                            if opencode_openrouter_condition_runner is None:
+                                raise ValueError("OpenCode/OpenRouter condition validator is unavailable")
+                            selected_condition = opencode_openrouter_condition_runner.registered_condition(ROOT)
+                            selected_expected_override = opencode_openrouter_condition_runner.condition_override(selected_condition)
+                            launcher_path = "scripts/run_opencode_openrouter_workflow_model_condition.py"
+                        else:
+                            if condition_runtime is None or opencode_condition_runner is None:
+                                raise ValueError("OpenCode condition validator is unavailable")
+                            selected_condition, _ = condition_runtime.resolve_condition_pair(
+                                ROOT, selected_condition_id
+                            )
+                            selected_expected_override = condition_runtime.condition_override(
+                                selected_condition,
+                                opencode_condition_runner.launcher_identity(),
+                            )
+                            expected_descriptor = descriptor
+                            launcher_path = "scripts/run_opencode_workflow_model_condition.py"
                     elif isinstance(selected_override, dict) and selected_override.get("runtime_id") == "claude-code":
                         if condition_runtime is None or claude_condition_runner is None:
                             raise ValueError("Claude Code condition validator is unavailable")
@@ -4227,7 +4249,7 @@ def validate_frozen_protocol_bindings(errors: list[str]) -> None:
                         "reasoning_effort": condition_for_execution["reasoning_effort"],
                         "launcher": launcher_path,
                     }
-                    agent_block = protocol.get("baseline", {}) if selected_profile in {"baseline-bare-codex", "baseline-claude-code-no-mcp"} else protocol.get("treatment", {})
+                    agent_block = protocol.get("baseline", {}) if selected_profile in {"baseline-bare-codex", "baseline-claude-code-no-mcp", "baseline-opencode-openrouter-no-mcp"} else protocol.get("treatment", {})
                     required_model_args = (
                         launcher_path,
                         f"--workflow-model-condition-id {condition_for_execution['id']}",
@@ -4276,7 +4298,7 @@ def validate_frozen_protocol_bindings(errors: list[str]) -> None:
         timeout = fixture.get("timeout_seconds_per_task")
         selected = protocol.get("selected_execution", {})
         selected_profile = selected.get("descriptor", {}).get("selected_profile", {}).get("profile_id", "baseline-bare-codex")
-        agent_block = protocol.get("baseline", {}) if selected_profile in {"baseline-bare-codex", "baseline-claude-code-no-mcp"} else protocol.get("treatment", {})
+        agent_block = protocol.get("baseline", {}) if selected_profile in {"baseline-bare-codex", "baseline-claude-code-no-mcp", "baseline-opencode-openrouter-no-mcp"} else protocol.get("treatment", {})
         command = agent_block.get("command", "")
         if timeout and f"--timeout-per-task {timeout}" not in command:
             errors.append(f"frozen protocol {path.name} command does not bind timeout {timeout}")

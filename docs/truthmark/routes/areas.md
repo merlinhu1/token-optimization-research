@@ -102,6 +102,7 @@ Code surface:
 - scripts/run_codex_workflow_model_condition.py
 - scripts/run_claude_code_workflow_model_condition.py
 - scripts/run_opencode_workflow_model_condition.py
+- scripts/run_opencode_openrouter_workflow_model_condition.py
 - scripts/run_sequential_workflow_matrix.py
 - scripts/test_workflow_evaluation_contract.py
 - scripts/test_claude_code_usage_contract.py

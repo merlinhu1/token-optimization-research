@@ -114,6 +114,7 @@ PROFILE_TOOL_CONFIG_OVERRIDES = {
     "artifact-ponytail-codex-plugin-v1": "ponytail-codex-plugin-v1",
     "behavior-caveman-codex-skill-v1": "caveman-codex-skill-v1",
     "runtime-opencode-codex-product-v1": "opencode-codex-product-v1",
+    "baseline-opencode-openrouter-no-mcp": "opencode-openrouter-product-v1",
     "terminal-tokenjuice-opencode-plugin-v2": "tokenjuice-opencode-plugin-v2",
     "retrieval-serena-opencode-mcp-v1": "serena-opencode-mcp-v1",
     "terminal-snip-opencode-plugin-v2": "snip-opencode-plugin-v2",
@@ -2164,6 +2165,32 @@ TOOL_CONFIGS.update(
     }
 )
 
+# A standalone provider control: shares the pinned OpenCode binary and narrow
+# compatibility adapter but must take OpenRouter's explicit model namespace.
+TOOL_CONFIGS["opencode-openrouter-product-v1"] = {
+    **TOOL_CONFIGS["opencode-codex-product-v1"],
+    "display_name": "OpenCode CLI 1.18.9 via OpenRouter",
+    "lane_name": "baseline-opencode-openrouter-no-mcp",
+    "surface": "replacement-agent-runtime/openrouter-provider-control",
+    "data_dir_name": "baseline-opencode-openrouter-no-mcp",
+    "auth_provider": "openrouter",
+    "codex_wrapper": {
+        **TOOL_CONFIGS["opencode-codex-product-v1"]["codex_wrapper"],
+        "args": [
+            *TOOL_CONFIGS["opencode-codex-product-v1"]["codex_wrapper"]["args"],
+            "--provider", "openrouter",
+            "--provider-model", "openrouter/openai/gpt-5.6-sol",
+        ],
+    },
+    "preflight_command": [
+        *TOOL_CONFIGS["opencode-codex-product-v1"]["preflight_command"][:-1],
+        "--provider", "openrouter",
+        "--provider-model", "openrouter/openai/gpt-5.6-sol",
+        "--probe",
+    ],
+    "tool_manifest_identity": "current-file-v1",
+}
+
 
 def rel_or_abs(path_text: str) -> Path:
     path = Path(path_text)
@@ -2402,22 +2429,34 @@ def prepare_codex_home(record: dict[str, Any], pid: str, run_dir: Path, source_h
         shutil.rmtree(codex_home, onexc=make_writable_for_removal)
     codex_home.mkdir(parents=True)
 
-    auths = auth_candidates(source_home)
-    if not auths:
-        raise FileNotFoundError(
-            f"No Codex auth file found under {source_home}, ~/.codex, or /opt/data/home/.codex. "
-            "Run `codex login` first, then rerun this evaluation."
-        )
-    # Host mode symlinks auth to avoid copying secrets. Container mode copies auth into
-    # the ephemeral Codex home so the container does not need the controller
-    # account home mounted. The copied file is never written into run artifacts.
-    auth_materialization = "copy-ephemeral" if copy_auth else "symlink-controller-home"
-    auth_dest = codex_home / auths[0].name
-    if copy_auth:
-        shutil.copy2(auths[0], auth_dest)
-        os.chmod(auth_dest, 0o600)
+    cfg = active_tool_config(record, pid)
+    auth_provider = str((cfg or {}).get("auth_provider", "codex"))
+    auths: list[Path] = []
+    auth_link_name: str | None = None
+    if auth_provider == "openrouter":
+        if not os.environ.get("OPENROUTER_API_KEY"):
+            raise FileNotFoundError(
+                "OPENROUTER_API_KEY is required for the isolated OpenCode/OpenRouter evaluation setup"
+            )
+        auth_materialization = "inherited-environment-api-key"
     else:
-        os.symlink(auths[0], auth_dest)
+        auths = auth_candidates(source_home)
+        if not auths:
+            raise FileNotFoundError(
+                f"No Codex auth file found under {source_home}, ~/.codex, or /opt/data/home/.codex. "
+                "Run `codex login` first, then rerun this evaluation."
+            )
+        # Host mode symlinks auth to avoid copying secrets. Container mode copies auth into
+        # the ephemeral Codex home so the container does not need the controller
+        # account home mounted. The copied file is never written into run artifacts.
+        auth_materialization = "copy-ephemeral" if copy_auth else "symlink-controller-home"
+        auth_dest = codex_home / auths[0].name
+        if copy_auth:
+            shutil.copy2(auths[0], auth_dest)
+            os.chmod(auth_dest, 0o600)
+        else:
+            os.symlink(auths[0], auth_dest)
+        auth_link_name = auths[0].name
 
     for subdir in ["home", "python-userbase", "xdg-cache", "xdg-config", "xdg-data", "tmp"]:
         (codex_home / subdir).mkdir(parents=True, exist_ok=True)
@@ -2439,8 +2478,9 @@ def prepare_codex_home(record: dict[str, Any], pid: str, run_dir: Path, source_h
         "created_at_utc": dt.datetime.now(dt.UTC).isoformat(),
         "profile_id": pid,
         "codex_home": str(codex_home),
-        "source_auth_home": str(source_home),
-        "auth_link_name": auths[0].name,
+        "auth_provider": auth_provider,
+        "source_auth_home": str(source_home) if auth_provider != "openrouter" else None,
+        "auth_link_name": auth_link_name,
         "auth_materialization": auth_materialization,
         "copied_global_instructions": False,
         "copied_skills_or_plugins": False,
