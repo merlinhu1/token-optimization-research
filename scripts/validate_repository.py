@@ -2622,11 +2622,12 @@ def validate_workflow_session_contract(session: dict, canonical_profile: dict | 
 
 
 def expected_workflow_session_role(profile_id: str, canonical_profile: dict | None) -> str | None:
-    if profile_id in {"baseline-bare-codex", "baseline-claude-code-no-mcp"}:
-        return "baseline"
+    del profile_id
     if not isinstance(canonical_profile, dict):
         return None
     profile_type = canonical_profile.get("profile_type")
+    if profile_type == "control":
+        return "baseline"
     if profile_type == "tool_stack":
         return "stack_treatment"
     if profile_type == "replacement_runtime":
@@ -2775,8 +2776,8 @@ def validate_workflow_sessions(session_doc: dict, sequence_ids: set[str], fixtur
         canonical_profile = profiles_by_id.get(profile_id) if profile_id else None
         if profile_id and canonical_profile is None:
             errors.append(f"workflow session {sid} references unknown profile {profile_id}")
-        baseline_profile = profile_id in {"baseline-bare-codex", "baseline-claude-code-no-mcp"}
         expected_session_role = expected_workflow_session_role(profile_id, canonical_profile) if profile_id else None
+        baseline_profile = expected_session_role == "baseline"
         schema_version = session.get("schema_version")
         valid_schema_version = type(schema_version) is int and schema_version in {1, 2}
         if not valid_schema_version:
@@ -2953,9 +2954,11 @@ def validate_workflow_sessions(session_doc: dict, sequence_ids: set[str], fixtur
         if not isinstance(session, dict) or session.get("schema_version") != 2:
             continue
         profile_id = session.get("profile", {}).get("profile_id")
+        canonical_profile = profiles_by_id.get(profile_id) if isinstance(profile_id, str) else None
         interpretation = session.get("interpretation", {})
         if (
-            profile_id in {"baseline-bare-codex", "baseline-claude-code-no-mcp"}
+            isinstance(canonical_profile, dict)
+            and canonical_profile.get("profile_type") == "control"
             or interpretation.get("accepted_for_objective") is not True
             or (
                 profile_id == "runtime-opencode-codex-product-v1"
