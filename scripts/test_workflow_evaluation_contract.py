@@ -3196,6 +3196,16 @@ class ManifestAndProtocolContractTest(unittest.TestCase):
                 treatment,
             )
 
+    def test_openrouter_control_pool_slot_does_not_require_codex_control(self) -> None:
+        sequence = {"id": "unit-sequence", "task_family_generation": "lifecycle-v1"}
+        with mock.patch.object(runner, "baseline_protocol_fingerprint", return_value="openrouter-pool"), \
+             mock.patch.object(runner, "find_canonical_baseline_record", side_effect=AssertionError("must not look up Codex")):
+            self.assertIsNone(
+                runner.find_pool_profile_record(
+                    {"sessions": []}, sequence, "baseline-opencode-openrouter-no-mcp", 0
+                )
+            )
+
     def test_comparison_publication_reports_frozen_pool_path(self) -> None:
         sequence = {"id": "unit-sequence", "fixture_id": "unit"}
         baseline = {"baseline_pool": {"protocol_fingerprint": "frozen-pool"}}

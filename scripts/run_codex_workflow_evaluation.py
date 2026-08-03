@@ -2532,7 +2532,10 @@ def treatment_experiment_group_id(project_id: str, treatment_profile_id: str, re
 
 def find_pool_profile_record(registry: dict[str, Any], seq: dict[str, Any], profile_id: str, replicate_index: int) -> dict[str, Any] | None:
     fingerprint = baseline_protocol_fingerprint(seq)
-    if seq.get("task_family_generation") == "lifecycle-v1":
+    if (
+        seq.get("task_family_generation") == "lifecycle-v1"
+        and profile_id != OPENROUTER_LIFECYCLE_V1_PROFILE_ID
+    ):
         canonical_baseline = find_canonical_baseline_record(registry, seq, replicate_index)
         frozen_pool_fingerprint = (
             canonical_baseline.get("baseline_pool", {}).get("protocol_fingerprint")
