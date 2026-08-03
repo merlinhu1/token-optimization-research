@@ -882,6 +882,8 @@ def baseline_pilot_attempt_receipt_path(seq: dict[str, Any], root: Path = ROOT) 
 BASELINE_REPLICATION_AUTHORITY_REL = "sources/evaluations/audits/current-low-complexity-baseline-r1-r2-authorization-20260728.json"
 LIFECYCLE_V1_REPLICATION_AUTHORITY_REL = "sources/evaluations/audits/lifecycle-v1-codex-sol-high-r1-authorization-20260802.json"
 LIFECYCLE_V1_REPLICATION_ATTEMPT_DIR = "sources/evaluations/audits/lifecycle-v1-codex-sol-high-r1-attempts"
+OPENROUTER_LIFECYCLE_V1_AUTHORITY_REL = "sources/evaluations/audits/lifecycle-v1-opencode-openrouter-sol-high-r0-authorization-20260803.json"
+OPENROUTER_LIFECYCLE_V1_ATTEMPT_DIR = "sources/evaluations/audits/lifecycle-v1-opencode-openrouter-sol-high-r0-attempts"
 BEETS_R3_REPLACEMENT_AUTHORITY_REL = "sources/evaluations/audits/current-low-complexity-beets-r3-replacement-authorization-20260728.json"
 BEETS_R3_REPLACEMENT_ATTEMPT_REL = "sources/evaluations/audits/current-low-complexity-beets-r3-replacement-attempt-20260728.json"
 BASELINE_REPLICATION_MODEL_CONDITION = {
@@ -1071,6 +1073,143 @@ def load_lifecycle_v1_replication_authority(root: Path = ROOT) -> dict[str, Any]
         if binding != expected_binding or gate_model != authority["model_condition"]:
             raise ValueError(f"Lifecycle V1 r1 replication authority has stale nested binding for {sequence.get('id')}")
     return authority
+
+
+OPENROUTER_LIFECYCLE_V1_PROFILE_ID = "baseline-opencode-openrouter-no-mcp"
+OPENROUTER_LIFECYCLE_V1_MODEL = {
+    "id": "opencode-openrouter-gpt-5-6-sol-high",
+    "runtime_id": "opencode-cli",
+    "provider": "openrouter",
+    "model": "gpt-5.6-sol",
+    "reasoning_effort": "high",
+    "opencode_model_namespace": "openrouter/openai/gpt-5.6-sol",
+}
+OPENROUTER_LIFECYCLE_V1_ORDER = ["fastify-lifecycle-sequence-v1", "beets-lifecycle-sequence-v1"]
+
+
+def load_openrouter_lifecycle_v1_authority(root: Path = ROOT) -> dict[str, Any]:
+    """Validate Merlin's single, serial OpenRouter r0 execution authority."""
+    path = repository_authority_path(root, OPENROUTER_LIFECYCLE_V1_AUTHORITY_REL, "OpenRouter Lifecycle V1 authorization")
+    try:
+        authority = json.loads(path.read_text(), object_pairs_hook=_json_without_duplicate_keys)
+    except (OSError, ValueError, json.JSONDecodeError) as exc:
+        raise ValueError(f"OpenRouter Lifecycle V1 authorization is unreadable: {exc}") from exc
+    expected_keys = {
+        "schema_version", "campaign_id", "authorized_by_owner_message_id", "authorized_on",
+        "authorized_source_commit", "paid_baseline_execution_authorized", "authorized_replicate_index",
+        "sequence_order", "max_parallel", "allowed_paid_baseline_runs", "allowed_model_turns",
+        "serialization_required", "model_condition", "first_valid_sample_policy",
+        "rerun_after_attempt_receipt", "provider_calls", "provider_tokens", "sequences", "notes",
+    }
+    if (
+        set(authority) != expected_keys
+        or authority.get("schema_version") != 1
+        or authority.get("campaign_id") != "lifecycle-v1-opencode-openrouter-sol-high-r0-20260803"
+        or authority.get("authorized_by_owner_message_id") != "1533765740459462807"
+        or authority.get("authorized_on") != "2026-08-03"
+        or authority.get("paid_baseline_execution_authorized") is not True
+        or authority.get("authorized_replicate_index") != 0
+        or authority.get("sequence_order") != OPENROUTER_LIFECYCLE_V1_ORDER
+        or authority.get("max_parallel") != 1
+        or authority.get("allowed_paid_baseline_runs") != 2
+        or authority.get("allowed_model_turns") != 6
+        or authority.get("serialization_required") is not True
+        or authority.get("model_condition") != OPENROUTER_LIFECYCLE_V1_MODEL
+        or authority.get("first_valid_sample_policy") is not True
+        or authority.get("rerun_after_attempt_receipt") is not False
+        or authority.get("provider_calls") != 0
+        or authority.get("provider_tokens") != 0
+        or not isinstance(authority.get("authorized_source_commit"), str)
+        or len(authority["authorized_source_commit"]) != 40
+        or not isinstance(authority.get("notes"), str)
+        or not authority["notes"]
+    ):
+        raise ValueError("OpenRouter Lifecycle V1 authorization has invalid scope, model, budget, or policy")
+    bindings = authority.get("sequences")
+    binding_keys = {"sequence_id", "protocol_path", "protocol_sha256", "baseline_pool_fingerprint", "session_id", "attempt_receipt_path"}
+    if (
+        not isinstance(bindings, list) or len(bindings) != 2
+        or [item.get("sequence_id") if isinstance(item, dict) else None for item in bindings] != OPENROUTER_LIFECYCLE_V1_ORDER
+        or any(not isinstance(item, dict) or set(item) != binding_keys for item in bindings)
+    ):
+        raise ValueError("OpenRouter Lifecycle V1 authorization has invalid sequence bindings")
+    for binding in bindings:
+        protocol_path = repository_authority_path(root, binding["protocol_path"], "OpenRouter frozen protocol")
+        try:
+            payload = protocol_path.read_bytes()
+            protocol = json.loads(payload, object_pairs_hook=_json_without_duplicate_keys)
+        except (OSError, ValueError, json.JSONDecodeError) as exc:
+            raise ValueError(f"OpenRouter Lifecycle V1 protocol is unreadable for {binding['sequence_id']}: {exc}") from exc
+        agent = protocol.get("baseline", {})
+        expected_receipt = f"{OPENROUTER_LIFECYCLE_V1_ATTEMPT_DIR}/{binding['sequence_id'].removesuffix('-lifecycle-sequence-v1')}-r0.json"
+        if (
+            hashlib.sha256(payload).hexdigest() != binding["protocol_sha256"]
+            or protocol.get("status") != "frozen-ready-not-run"
+            or protocol.get("task_fixture", {}).get("sequence_id") != binding["sequence_id"]
+            or protocol.get("baseline_pool", {}).get("protocol_fingerprint") != binding["baseline_pool_fingerprint"]
+            or agent.get("profile_id") != OPENROUTER_LIFECYCLE_V1_PROFILE_ID
+            or agent.get("runtime_id") != OPENROUTER_LIFECYCLE_V1_MODEL["runtime_id"]
+            or agent.get("provider") != OPENROUTER_LIFECYCLE_V1_MODEL["provider"]
+            or agent.get("model") != OPENROUTER_LIFECYCLE_V1_MODEL["model"]
+            or agent.get("model_condition_id") != OPENROUTER_LIFECYCLE_V1_MODEL["id"]
+            or agent.get("reasoning_effort") != OPENROUTER_LIFECYCLE_V1_MODEL["reasoning_effort"]
+            or binding["attempt_receipt_path"] != expected_receipt
+        ):
+            raise ValueError(f"OpenRouter Lifecycle V1 authorization has stale binding for {binding['sequence_id']}")
+    return authority
+
+
+def openrouter_lifecycle_v1_binding(seq: dict[str, Any], root: Path = ROOT) -> tuple[dict[str, Any], dict[str, Any]]:
+    authority = load_openrouter_lifecycle_v1_authority(root)
+    bindings = [item for item in authority["sequences"] if item["sequence_id"] == seq.get("id")]
+    if len(bindings) != 1:
+        raise ValueError(f"OpenRouter Lifecycle V1 authorization does not cover {seq.get('id')}")
+    return authority, bindings[0]
+
+
+def require_openrouter_lifecycle_v1_launch(args: argparse.Namespace, seq: dict[str, Any], root: Path = ROOT) -> dict[str, Any]:
+    authority, binding = openrouter_lifecycle_v1_binding(seq, root)
+    if args.profile_id != OPENROUTER_LIFECYCLE_V1_PROFILE_ID or args.replicate_index != 0 or args.session_id != binding["session_id"]:
+        raise ValueError("OpenRouter Lifecycle V1 launch does not match its authorized profile, replicate, or session identity")
+    if {
+        "id": DEFAULT_WORKFLOW_MODEL_CONDITION_ID,
+        "model": DEFAULT_WORKFLOW_MODEL,
+        "reasoning_effort": DEFAULT_WORKFLOW_REASONING_EFFORT,
+    } != {"id": OPENROUTER_LIFECYCLE_V1_MODEL["id"], "model": OPENROUTER_LIFECYCLE_V1_MODEL["model"], "reasoning_effort": OPENROUTER_LIFECYCLE_V1_MODEL["reasoning_effort"]}:
+        raise ValueError("OpenRouter Lifecycle V1 launch model does not match its authorization")
+    receipt_path = repository_authority_path(root, binding["attempt_receipt_path"], "OpenRouter attempt receipt")
+    if receipt_path.exists():
+        raise ValueError("OpenRouter Lifecycle V1 identity is already occupied by an immutable attempt receipt")
+    index = authority["sequence_order"].index(seq["id"])
+    if index:
+        previous = next(item for item in authority["sequences"] if item["sequence_id"] == authority["sequence_order"][index - 1])
+        registry = json.loads((root / "data/workflow-sessions.json").read_text())
+        prior = [item for item in registry.get("sessions", []) if item.get("session_id") == previous["session_id"]]
+        if len(prior) != 1 or prior[0].get("status") != "completed":
+            raise ValueError("OpenRouter Lifecycle V1 requires the prior authorized sequence to complete first")
+    return binding
+
+
+def reserve_openrouter_lifecycle_v1_attempt(seq: dict[str, Any], session_id: str, root: Path = ROOT) -> None:
+    authority, binding = openrouter_lifecycle_v1_binding(seq, root)
+    if session_id != binding["session_id"]:
+        raise ValueError("OpenRouter attempt reservation does not match the authorized session identity")
+    receipt = {
+        "schema_version": 1,
+        "attempt_status": "reserved-before-provider-task",
+        "sequence_id": seq["id"],
+        "replicate_index": 0,
+        "profile_id": OPENROUTER_LIFECYCLE_V1_PROFILE_ID,
+        "model_condition_id": OPENROUTER_LIFECYCLE_V1_MODEL["id"],
+        "owner_authorization_message_id": authority["authorized_by_owner_message_id"],
+        "expected_session_id": session_id,
+        "frozen_protocol": {"path": binding["protocol_path"], "sha256": binding["protocol_sha256"]},
+        "baseline_pool_fingerprint": binding["baseline_pool_fingerprint"],
+        "allowed_model_turns": authority["allowed_model_turns"],
+        "provider_result": None,
+        "immutable_identity_receipt": True,
+    }
+    atomic_create_json(repository_authority_path(root, binding["attempt_receipt_path"], "OpenRouter attempt receipt"), receipt)
 
 
 def load_beets_r3_replacement_authority(root: Path = ROOT) -> dict[str, Any]:
@@ -4514,11 +4653,12 @@ def run_one(args: argparse.Namespace) -> dict[str, Any]:
     clear_ambient_git_object_environment()
     if args.prepare_only:
         return _run_one_locked(args)
-    if args.profile_id == "baseline-opencode-openrouter-no-mcp":
-        raise ValueError(
-            "OpenRouter Lifecycle V1 is configured provider-free only; a separate owner authorization is required before any provider-backed run"
-        )
     selected_sequence = load_sequence(args.sequence_id)
+    if args.profile_id == OPENROUTER_LIFECYCLE_V1_PROFILE_ID:
+        require_openrouter_lifecycle_v1_launch(args, selected_sequence)
+        checkout_errors = paid_launch_checkout_errors(ROOT)
+        if checkout_errors:
+            raise ValueError("OpenRouter paid launch checkout gate failed: " + "; ".join(checkout_errors))
     require_claude_lifecycle_v1_matrix_launch(
         args.profile_id,
         selected_sequence,
@@ -4764,6 +4904,8 @@ def _run_one_locked(args: argparse.Namespace) -> dict[str, Any]:
             orchestrator="direct-runner",
             replicate_index=args.replicate_index,
         )
+    if profile_id == OPENROUTER_LIFECYCLE_V1_PROFILE_ID:
+        reserve_openrouter_lifecycle_v1_attempt(seq, session_id, ROOT)
 
     thread_id: str | None = None
     codex_exit_codes: list[int] = []

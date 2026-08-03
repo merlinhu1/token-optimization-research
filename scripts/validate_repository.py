@@ -4425,6 +4425,10 @@ def validate_lifecycle_v1_authorization(errors: list[str]) -> None:
         workflow.load_lifecycle_v1_replication_authority(ROOT)
     except ValueError as exc:
         errors.append(f"Lifecycle V1 r1 replication authority is invalid: {exc}")
+    try:
+        workflow.load_openrouter_lifecycle_v1_authority(ROOT)
+    except ValueError as exc:
+        errors.append(f"OpenRouter Lifecycle V1 r0 authorization is invalid: {exc}")
 
     invalidation_path = ROOT / "sources/evaluations/audits/lifecycle-v1-terraform-invalidated-20260802.json"
     try:
