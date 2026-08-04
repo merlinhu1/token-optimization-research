@@ -1,0 +1,36 @@
+{
+  "authorization_id": "lifecycle-v1-sol-high-tool-treatment-campaign-20260803-repaired",
+  "authorization_schema_version": 1,
+  "immutable_existing_evidence": true,
+  "model_condition": {
+    "model": "gpt-5.6-sol",
+    "provider": "openai",
+    "reasoning_effort": "high"
+  },
+  "no_provider_spend_during_repair": true,
+  "owner_authorization": "User explicitly directed repair and resumption of the requested evaluation campaign.",
+  "preflight_audit": "sources/evaluations/audits/lifecycle-v1-sol-high-tool-treatment-campaign-repaired-preflight-20260803.json",
+  "provider_spend_guard": "Only the resolved 18-workflow scope may launch; one profile/sequence lane at a time; OpenCode Ponytail is excluded by its existing profile status.",
+  "scope": {
+    "codex_profiles": [
+      "terminal-rtk-codex-instructions-v1",
+      "retrieval-serena-codex-mcp-v1",
+      "terminal-tokenjuice-codex-hook-v1",
+      "artifact-ponytail-codex-plugin-v1",
+      "behavior-caveman-codex-skill-v1"
+    ],
+    "opencode_ponytail": {
+      "profile_id": "artifact-ponytail-opencode-plugin-v1",
+      "reason": "profile registry explicitly records native OpenCode plugin loading failure under OpenCode 1.18.9; no fallback or substitute permitted",
+      "status": "excluded"
+    },
+    "opencode_profiles": [
+      "terminal-rtk-opencode-plugin-v1",
+      "retrieval-serena-opencode-mcp-v1",
+      "terminal-tokenjuice-opencode-plugin-v2",
+      "behavior-caveman-opencode-plugin-v1"
+    ],
+    "provider_ready_workflows": 18
+  },
+  "status": "owner-authorized-provider-capable"
+}

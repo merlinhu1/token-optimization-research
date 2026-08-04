@@ -1,0 +1,280 @@
+{
+  "audit_id": "lifecycle-v1-sol-high-tool-treatment-campaign-repaired-preflight-20260803",
+  "audit_schema_version": 1,
+  "campaign": {
+    "provider": "openai",
+    "requested_model": "gpt-5.6-sol",
+    "requested_reasoning_effort": "high",
+    "requested_runtime_families": [
+      "codex-cli",
+      "opencode-cli"
+    ],
+    "requested_treatments": [
+      "RTK",
+      "Serena",
+      "TokenJuice",
+      "Ponytail",
+      "Caveman"
+    ],
+    "sequences": [
+      "fastify-lifecycle-sequence-v1",
+      "beets-lifecycle-sequence-v1"
+    ]
+  },
+  "gates": {
+    "contract_tests": "passed: 322 tests",
+    "git_diff_check": "passed",
+    "repository_validation": "passed",
+    "runbook_check": "passed",
+    "truthmark_check": "passed using /opt/data/.local/bin/truthmark",
+    "truthmark_index": "passed using /opt/data/.local/bin/truthmark"
+  },
+  "protocols": [
+    {
+      "model_condition_id": "codex-openai-gpt-5-6-sol-high",
+      "path": "sources/evaluations/protocols/beets-lifecycle-sequence-v1-artifact-ponytail-codex-plugin-v1-8a809eec18c7.json",
+      "profile_id": "artifact-ponytail-codex-plugin-v1",
+      "protocol_id": "beets-lifecycle-sequence-v1-artifact-ponytail-codex-plugin-v1-8a809eec18c7",
+      "sequence_id": "beets-lifecycle-sequence-v1",
+      "sha256": "3a7485389987ce238b5dc1f9579afb0fb10d3073594589420a61b104014fe183"
+    },
+    {
+      "model_condition_id": "codex-openai-gpt-5-6-sol-high",
+      "path": "sources/evaluations/protocols/beets-lifecycle-sequence-v1-behavior-caveman-codex-skill-v1-327615aa960d.json",
+      "profile_id": "behavior-caveman-codex-skill-v1",
+      "protocol_id": "beets-lifecycle-sequence-v1-behavior-caveman-codex-skill-v1-327615aa960d",
+      "sequence_id": "beets-lifecycle-sequence-v1",
+      "sha256": "32d338df6c52a4bb4a725f3ee8e503fd7087cc9855f8b8e634674df8482683b6"
+    },
+    {
+      "model_condition_id": "opencode-openai-gpt-5-6-sol-high",
+      "path": "sources/evaluations/protocols/beets-lifecycle-sequence-v1-behavior-caveman-opencode-plugin-v1-91788386b4c0.json",
+      "profile_id": "behavior-caveman-opencode-plugin-v1",
+      "protocol_id": "beets-lifecycle-sequence-v1-behavior-caveman-opencode-plugin-v1-91788386b4c0",
+      "sequence_id": "beets-lifecycle-sequence-v1",
+      "sha256": "6f22a5ec2716ef6faea4feea33507706cce92650f531129424a9bd65787a78e3"
+    },
+    {
+      "model_condition_id": "codex-openai-gpt-5-6-sol-high",
+      "path": "sources/evaluations/protocols/beets-lifecycle-sequence-v1-retrieval-serena-codex-mcp-v1-4776ae818b6e.json",
+      "profile_id": "retrieval-serena-codex-mcp-v1",
+      "protocol_id": "beets-lifecycle-sequence-v1-retrieval-serena-codex-mcp-v1-4776ae818b6e",
+      "sequence_id": "beets-lifecycle-sequence-v1",
+      "sha256": "4d64a796327c2b258922c6b6778e2e7e8a4ca8413cc6a833a007c5c991791d53"
+    },
+    {
+      "model_condition_id": "opencode-openai-gpt-5-6-sol-high",
+      "path": "sources/evaluations/protocols/beets-lifecycle-sequence-v1-retrieval-serena-opencode-mcp-v1-4b8d4490ed37.json",
+      "profile_id": "retrieval-serena-opencode-mcp-v1",
+      "protocol_id": "beets-lifecycle-sequence-v1-retrieval-serena-opencode-mcp-v1-4b8d4490ed37",
+      "sequence_id": "beets-lifecycle-sequence-v1",
+      "sha256": "ac134d7e5369ed722e1d1e4ff4bbdb4719fb85cb6aaf946ef8f76d15b241a467"
+    },
+    {
+      "model_condition_id": "codex-openai-gpt-5-6-sol-high",
+      "path": "sources/evaluations/protocols/beets-lifecycle-sequence-v1-terminal-rtk-codex-instructions-v1-e21bbf6f2a27.json",
+      "profile_id": "terminal-rtk-codex-instructions-v1",
+      "protocol_id": "beets-lifecycle-sequence-v1-terminal-rtk-codex-instructions-v1-e21bbf6f2a27",
+      "sequence_id": "beets-lifecycle-sequence-v1",
+      "sha256": "86e8599ebfa5abd47d8a4e1ab43d742850707dc48a55ee35c8f25d807cec4086"
+    },
+    {
+      "model_condition_id": "opencode-openai-gpt-5-6-sol-high",
+      "path": "sources/evaluations/protocols/beets-lifecycle-sequence-v1-terminal-rtk-opencode-plugin-v1-9cb83fe8c168.json",
+      "profile_id": "terminal-rtk-opencode-plugin-v1",
+      "protocol_id": "beets-lifecycle-sequence-v1-terminal-rtk-opencode-plugin-v1-9cb83fe8c168",
+      "sequence_id": "beets-lifecycle-sequence-v1",
+      "sha256": "520fbd91478a560053953a2f7384c8a7f742ffb308e70930f6600083675d0503"
+    },
+    {
+      "model_condition_id": "codex-openai-gpt-5-6-sol-high",
+      "path": "sources/evaluations/protocols/beets-lifecycle-sequence-v1-terminal-tokenjuice-codex-hook-v1-36ef5bcfaf83.json",
+      "profile_id": "terminal-tokenjuice-codex-hook-v1",
+      "protocol_id": "beets-lifecycle-sequence-v1-terminal-tokenjuice-codex-hook-v1-36ef5bcfaf83",
+      "sequence_id": "beets-lifecycle-sequence-v1",
+      "sha256": "9a6523b87c09a8179edafd1251a74ec6b664c689c0a27a000c026a663297baa4"
+    },
+    {
+      "model_condition_id": "opencode-openai-gpt-5-6-sol-high",
+      "path": "sources/evaluations/protocols/beets-lifecycle-sequence-v1-terminal-tokenjuice-opencode-plugin-v2-9a576e7a33e9.json",
+      "profile_id": "terminal-tokenjuice-opencode-plugin-v2",
+      "protocol_id": "beets-lifecycle-sequence-v1-terminal-tokenjuice-opencode-plugin-v2-9a576e7a33e9",
+      "sequence_id": "beets-lifecycle-sequence-v1",
+      "sha256": "6d784f178fd0d5e8e8ed301245be073ed31994b66cdb61d845c85005a4ac8da6"
+    },
+    {
+      "model_condition_id": "codex-openai-gpt-5-6-sol-high",
+      "path": "sources/evaluations/protocols/fastify-lifecycle-sequence-v1-artifact-ponytail-codex-plugin-v1-f5fe9befc691.json",
+      "profile_id": "artifact-ponytail-codex-plugin-v1",
+      "protocol_id": "fastify-lifecycle-sequence-v1-artifact-ponytail-codex-plugin-v1-f5fe9befc691",
+      "sequence_id": "fastify-lifecycle-sequence-v1",
+      "sha256": "cc8f71f6ab4ce275ab6d4a1a5c8738cf16dc3433d56cdee0d0b379959f2f6e69"
+    },
+    {
+      "model_condition_id": "codex-openai-gpt-5-6-sol-high",
+      "path": "sources/evaluations/protocols/fastify-lifecycle-sequence-v1-behavior-caveman-codex-skill-v1-24547782ed76.json",
+      "profile_id": "behavior-caveman-codex-skill-v1",
+      "protocol_id": "fastify-lifecycle-sequence-v1-behavior-caveman-codex-skill-v1-24547782ed76",
+      "sequence_id": "fastify-lifecycle-sequence-v1",
+      "sha256": "2b35207ff625f7ba5e2d2ee95f373de78ed0dedb92385be3617ff5d3447c3e8b"
+    },
+    {
+      "model_condition_id": "opencode-openai-gpt-5-6-sol-high",
+      "path": "sources/evaluations/protocols/fastify-lifecycle-sequence-v1-behavior-caveman-opencode-plugin-v1-a95de4e10b21.json",
+      "profile_id": "behavior-caveman-opencode-plugin-v1",
+      "protocol_id": "fastify-lifecycle-sequence-v1-behavior-caveman-opencode-plugin-v1-a95de4e10b21",
+      "sequence_id": "fastify-lifecycle-sequence-v1",
+      "sha256": "f852becd36261cfe5b63b47bb6e2af2c0361ed0bac3081f6badb7a570f166834"
+    },
+    {
+      "model_condition_id": "codex-openai-gpt-5-6-sol-high",
+      "path": "sources/evaluations/protocols/fastify-lifecycle-sequence-v1-retrieval-serena-codex-mcp-v1-fa1cbb1c880a.json",
+      "profile_id": "retrieval-serena-codex-mcp-v1",
+      "protocol_id": "fastify-lifecycle-sequence-v1-retrieval-serena-codex-mcp-v1-fa1cbb1c880a",
+      "sequence_id": "fastify-lifecycle-sequence-v1",
+      "sha256": "938d2a6fe1c9cab6b244f7617f477811fadcb511519910caca343642e0095e6d"
+    },
+    {
+      "model_condition_id": "opencode-openai-gpt-5-6-sol-high",
+      "path": "sources/evaluations/protocols/fastify-lifecycle-sequence-v1-retrieval-serena-opencode-mcp-v1-6e6b884f07ce.json",
+      "profile_id": "retrieval-serena-opencode-mcp-v1",
+      "protocol_id": "fastify-lifecycle-sequence-v1-retrieval-serena-opencode-mcp-v1-6e6b884f07ce",
+      "sequence_id": "fastify-lifecycle-sequence-v1",
+      "sha256": "4a6839a3a05af507154d34c45066b2f5a51c004e7a8c55fe1080de5db6b127fe"
+    },
+    {
+      "model_condition_id": "codex-openai-gpt-5-6-sol-high",
+      "path": "sources/evaluations/protocols/fastify-lifecycle-sequence-v1-terminal-rtk-codex-instructions-v1-f6fc4bb08a7e.json",
+      "profile_id": "terminal-rtk-codex-instructions-v1",
+      "protocol_id": "fastify-lifecycle-sequence-v1-terminal-rtk-codex-instructions-v1-f6fc4bb08a7e",
+      "sequence_id": "fastify-lifecycle-sequence-v1",
+      "sha256": "96647fb47c2554410479de50ccd118ca19cca86e6900d1af57640361b2a4a92b"
+    },
+    {
+      "model_condition_id": "opencode-openai-gpt-5-6-sol-high",
+      "path": "sources/evaluations/protocols/fastify-lifecycle-sequence-v1-terminal-rtk-opencode-plugin-v1-1d340c1babad.json",
+      "profile_id": "terminal-rtk-opencode-plugin-v1",
+      "protocol_id": "fastify-lifecycle-sequence-v1-terminal-rtk-opencode-plugin-v1-1d340c1babad",
+      "sequence_id": "fastify-lifecycle-sequence-v1",
+      "sha256": "9eb72235e4963b8f12c6d28fc40e96a25a146b99c9e8235956a2f876cb5fdbcf"
+    },
+    {
+      "model_condition_id": "codex-openai-gpt-5-6-sol-high",
+      "path": "sources/evaluations/protocols/fastify-lifecycle-sequence-v1-terminal-tokenjuice-codex-hook-v1-c50fc0b04c78.json",
+      "profile_id": "terminal-tokenjuice-codex-hook-v1",
+      "protocol_id": "fastify-lifecycle-sequence-v1-terminal-tokenjuice-codex-hook-v1-c50fc0b04c78",
+      "sequence_id": "fastify-lifecycle-sequence-v1",
+      "sha256": "8c18b1725371d8556890e725ffacc0e646158a7c8a4f390bb93e22c0f473b6b5"
+    },
+    {
+      "model_condition_id": "opencode-openai-gpt-5-6-sol-high",
+      "path": "sources/evaluations/protocols/fastify-lifecycle-sequence-v1-terminal-tokenjuice-opencode-plugin-v2-5fd5b99377fb.json",
+      "profile_id": "terminal-tokenjuice-opencode-plugin-v2",
+      "protocol_id": "fastify-lifecycle-sequence-v1-terminal-tokenjuice-opencode-plugin-v2-5fd5b99377fb",
+      "sequence_id": "fastify-lifecycle-sequence-v1",
+      "sha256": "d6de1e3bcae162abd94575a3a63749e573fb1b1362823cf73fb13bbad33ef526"
+    }
+  ],
+  "provider_free_preflight": {
+    "profile_count": 9,
+    "profile_results": [
+      {
+        "exit_code": 0,
+        "profile_id": "terminal-rtk-codex-instructions-v1"
+      },
+      {
+        "exit_code": 0,
+        "profile_id": "retrieval-serena-codex-mcp-v1"
+      },
+      {
+        "exit_code": 0,
+        "profile_id": "terminal-tokenjuice-codex-hook-v1"
+      },
+      {
+        "exit_code": 0,
+        "profile_id": "artifact-ponytail-codex-plugin-v1"
+      },
+      {
+        "exit_code": 0,
+        "profile_id": "behavior-caveman-codex-skill-v1"
+      },
+      {
+        "exit_code": 0,
+        "profile_id": "terminal-rtk-opencode-plugin-v1"
+      },
+      {
+        "exit_code": 0,
+        "profile_id": "retrieval-serena-opencode-mcp-v1"
+      },
+      {
+        "exit_code": 0,
+        "profile_id": "terminal-tokenjuice-opencode-plugin-v2"
+      },
+      {
+        "exit_code": 0,
+        "profile_id": "behavior-caveman-opencode-plugin-v1"
+      }
+    ],
+    "provider_calls": 0,
+    "provider_tokens": 0,
+    "runner_controller": "serial Python controller /opt/data/run_lifecycle_v1_preflight_repaired.py",
+    "session_ids": [],
+    "status": "passed",
+    "workflow_count": 18
+  },
+  "recorded_at": "2026-08-03T16:12:27.048413+00:00",
+  "repair": {
+    "ponytail_source": {
+      "commit": "40e50d9e03242aa5dd53ac771950f9127362b25f",
+      "path": "/opt/data/tool-candidates/ponytail",
+      "version": "4.8.4"
+    },
+    "recovered_runtime_adapters": [
+      {
+        "path": "/opt/data/tool-candidates/opencode-adapter-v3/opencode_workflow_adapter.py",
+        "sha256": "dc787ae0a9038b002687ccce03ae91863c286119f79675059ffc78e88b31edd9",
+        "source_commit": "19696b6950b32ab9e40f15c0abf7dced88d207d8"
+      },
+      {
+        "path": "/opt/data/tool-candidates/opencode-adapter-v4/opencode_workflow_adapter.py",
+        "sha256": "e3c6e77fc22ae12a6548ee3ad92836d58c2db411ceae7c3743c370c469e6bbf7",
+        "source_commit": "6e1c910fa1c01a13dad1a84f075b698acf674589"
+      },
+      {
+        "path": "/opt/data/tool-candidates/opencode-adapter-v6/opencode_workflow_adapter.py",
+        "sha256": "1b98aaec34711b3a7bb09ce269c12bb06421ab08913d06593fb6d2c6641a34a3",
+        "source_commit": "694b52561b2d866277c34213fa143284e32bcedd"
+      }
+    ],
+    "runner_change": {
+      "change": "PONYTAIL_COMMIT corrected from stale c4d1925... to profile-bound 40e50d9...",
+      "path": "scripts/run_codex_fixture_evaluation.py",
+      "sha256": "e781270d2a751d6e81468af5a628832120b63ba497ad5cee8270448794642bee"
+    }
+  },
+  "repository_registry_before_provider_spend": {
+    "new_target_session_ids": [],
+    "workflow_session_count": 224
+  },
+  "resolved_scope": {
+    "codex_profiles": [
+      "terminal-rtk-codex-instructions-v1",
+      "retrieval-serena-codex-mcp-v1",
+      "terminal-tokenjuice-codex-hook-v1",
+      "artifact-ponytail-codex-plugin-v1",
+      "behavior-caveman-codex-skill-v1"
+    ],
+    "opencode_ponytail": {
+      "profile_id": "artifact-ponytail-opencode-plugin-v1",
+      "reason": "profile registry explicitly records native OpenCode plugin loading failure under OpenCode 1.18.9; no fallback or substitute permitted",
+      "status": "excluded"
+    },
+    "opencode_profiles": [
+      "terminal-rtk-opencode-plugin-v1",
+      "retrieval-serena-opencode-mcp-v1",
+      "terminal-tokenjuice-opencode-plugin-v2",
+      "behavior-caveman-opencode-plugin-v1"
+    ],
+    "provider_ready_workflows": 18
+  }
+}
