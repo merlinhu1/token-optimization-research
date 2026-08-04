@@ -127,10 +127,9 @@ def build_panel(
         if comparison_pair_id:
             pairs = [session.get("interpretation", {}).get("comparison_pair") for session in ordered]
             if not all(isinstance(pair, dict) and pair.get("id") == comparison_pair_id for pair in pairs):
-                raise ValueError(
-                    f"{profile_id} does not have the requested comparison pair {comparison_pair_id} "
-                    "for every workflow"
-                )
+                # A registry can contain complete sessions from other accepted
+                # pairs; ordinal-specific panels must select, not reject, them.
+                continue
             candidate_pair = pairs[0]
             if any(pair != candidate_pair for pair in pairs[1:]):
                 raise ValueError(f"{profile_id} has inconsistent comparison-pair metadata")
