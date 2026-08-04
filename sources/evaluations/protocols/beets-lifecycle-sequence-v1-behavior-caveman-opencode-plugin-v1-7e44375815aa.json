@@ -1,10 +1,10 @@
 {
   "protocol_schema_version": 3,
-  "protocol_id": "beets-lifecycle-sequence-v1-terminal-rtk-opencode-plugin-v1-9cb83fe8c168",
+  "protocol_id": "beets-lifecycle-sequence-v1-behavior-caveman-opencode-plugin-v1-7e44375815aa",
   "status": "frozen-ready-not-run",
-  "outcome": "Frozen terminal-rtk-opencode-plugin-v1 protocol for beets-lifecycle-sequence-v1; no provider/model run has occurred.",
+  "outcome": "Frozen behavior-caveman-opencode-plugin-v1 protocol for beets-lifecycle-sequence-v1; no provider/model run has occurred.",
   "frozen_at": "2026-08-01",
-  "hypothesis": "terminal-rtk-opencode-plugin-v1 produces reproducible provider-reported token and software-quality evidence for beets-lifecycle-sequence-v1",
+  "hypothesis": "behavior-caveman-opencode-plugin-v1 produces reproducible provider-reported token and software-quality evidence for beets-lifecycle-sequence-v1",
   "evidence_stage_target": "reproduction",
   "task_fixture": {
     "fixture_id": "medium-beetbox-beets",
@@ -35,13 +35,13 @@
     "selection_policy": "sequence-pool-replicate-matched-first-valid"
   },
   "treatment": {
-    "profile_id": "terminal-rtk-opencode-plugin-v1",
+    "profile_id": "behavior-caveman-opencode-plugin-v1",
     "runtime_id": "opencode-cli",
     "provider": "openai",
     "model": "gpt-5.6-sol",
     "model_condition_id": "opencode-openai-gpt-5-6-sol-high",
     "reasoning_effort": "high",
-    "command": "python3 scripts/run_opencode_workflow_model_condition.py --workflow-model-condition-id opencode-openai-gpt-5-6-sol-high --workflow-model gpt-5.6-sol --workflow-reasoning-effort high --sequence-id beets-lifecycle-sequence-v1 --profile-id terminal-rtk-opencode-plugin-v1 --timeout-per-task 3600 --protocol sources/evaluations/protocols/beets-lifecycle-sequence-v1-terminal-rtk-opencode-plugin-v1-9cb83fe8c168.json --docker-image token-eval-codex:latest"
+    "command": "python3 scripts/run_opencode_workflow_model_condition.py --workflow-model-condition-id opencode-openai-gpt-5-6-sol-high --workflow-model gpt-5.6-sol --workflow-reasoning-effort high --sequence-id beets-lifecycle-sequence-v1 --profile-id behavior-caveman-opencode-plugin-v1 --timeout-per-task 3600 --protocol sources/evaluations/protocols/beets-lifecycle-sequence-v1-behavior-caveman-opencode-plugin-v1-7e44375815aa.json --docker-image token-eval-codex:latest"
   },
   "token_accounting_boundary": {
     "fields": [
@@ -262,26 +262,26 @@
     }
   },
   "selected_execution": {
-    "descriptor_sha256": "213dfeab876b2ff6a89890dc93ff6eb8171e9f20bdbee5ef891ae4bba6bb949e",
+    "descriptor_sha256": "bab0207070b40befb556092186e3768511234271f915d77ff996194d2df90fe6",
     "descriptor": {
       "version": "execution-condition-v1",
       "sequence_id": "beets-lifecycle-sequence-v1",
       "execution_role": "individual_tool_treatment",
       "selected_profile": {
-        "profile_id": "terminal-rtk-opencode-plugin-v1",
+        "profile_id": "behavior-caveman-opencode-plugin-v1",
         "profile_type": "individual_tool",
         "component_ids": [
-          "terminal-rtk-opencode-plugin-v1"
+          "behavior-caveman-opencode-plugin-v1"
         ],
         "enabled_surfaces": [
-          "opencode-native-plugin",
-          "terminal-command-rewriting",
-          "terminal-output-compaction"
+          "opencode-plugin",
+          "prompt-reinforcement",
+          "product-authored-init"
         ],
         "disabled_overlaps": [
           "all unlisted surfaces"
         ],
-        "registry_entry_sha256": "2d6942ae78abb75acdd130d5c67985c25e7ee4f8d18b67b3c7e7d0c3df63e824",
+        "registry_entry_sha256": "ef6344ec420ee21c58361c5f02ecc03b9301598be1353d4fa1169d38719b909b",
         "registry_entry": {
           "profile_type": "individual_tool",
           "objective_scope": "individual_tool_effectiveness",
@@ -302,37 +302,39 @@
           "reset": {
             "policy": "Delete lane-private OpenCode XDG directories, product state, generated repository treatment files, auth translation, and background processes after evidence capture."
           },
-          "id": "terminal-rtk-opencode-plugin-v1",
-          "name": "RTK OpenCode plugin V1",
+          "id": "behavior-caveman-opencode-plugin-v1",
+          "name": "Caveman OpenCode plugin and guidance V1",
           "enabled_surfaces": [
-            "opencode-native-plugin",
-            "terminal-command-rewriting",
-            "terminal-output-compaction"
+            "opencode-plugin",
+            "prompt-reinforcement",
+            "product-authored-init"
           ],
           "components": [
             {
-              "component_id": "terminal-rtk-opencode-plugin-v1",
-              "surface": "opencode-native-plugin/terminal-command-rewriting+output-compaction",
+              "component_id": "behavior-caveman-opencode-plugin-v1",
+              "surface": "opencode-plugin+prompt-reinforcement+product-authored-init",
               "role": "individual_tool"
             }
           ],
           "install": {
-            "policy": "Run pinned RTK 0.42.4 `rtk init --global --opencode` against the lane-private HOME; verify exact binary, source plugin, and generated plugin identities before provider execution."
+            "policy": "Run Caveman\u2019s pinned installer with the OpenCode target and product initialization enabled, then require the installed native plugin and repo guidance in the isolated lane."
           },
           "evaluation_protocol": {
             "tool_use_policy": "natural",
-            "tool_state": "active-native-plugin-exact-artifact",
-            "integration_state": "official-opencode-global-plugin",
-            "assignment_proof": "provider-free exact binary, source/generated plugin, effective-config, and OpenCode debug-info proof required"
+            "tool_state": "active-native-plugin+per-session-guidance",
+            "integration_state": "official-opencode-plugin+product-init",
+            "assignment_proof": "provider-free exact artifact identities, effective OpenCode configuration, native activation, warm state, and task/final verifiers required"
           },
           "source_snapshot": {
-            "repository": "rtk-ai/rtk",
-            "commit": "23aae98c5b29cd52d77061c6efd2e65e5e3cc6dd",
-            "version": "0.42.4",
-            "runtime_adapter": "/opt/data/tool-candidates/opencode-adapter-v4/opencode_workflow_adapter.py",
-            "runtime_adapter_sha256": "e3c6e77fc22ae12a6548ee3ad92836d58c2db411ceae7c3743c370c469e6bbf7"
+            "repository": "JuliusBrussee/caveman",
+            "version": "0.1.0",
+            "source_commit": "0d95a81d35a9f2d123a5e9430d1cfc43d55f1bb0",
+            "plugin_sha256": "6d68e8dfe205354718729a5f5c9ca9d555a045af6b2cbbc3b6a84caad1076df7",
+            "package_sha256": "b603811ba72eb71581db5b02045fb5f8903e3c46dcf7b40f36eeb81fbba23274",
+            "runtime_adapter": "/opt/data/tool-candidates/opencode-adapter-v6/opencode_workflow_adapter.py",
+            "runtime_adapter_sha256": "1b98aaec34711b3a7bb09ce269c12bb06421ab08913d06593fb6d2c6641a34a3"
           },
-          "notes": "Successive OpenCode screen selected from the live compatible shortlist; measures the official command-rewriting plugin rather than the Codex instruction profile."
+          "notes": "Second successive screen: Caveman\u2019s local installer exposes an explicit OpenCode target and writes the native plugin under the OpenCode XDG configuration surface."
         }
       },
       "model_facing_prompts": {
@@ -357,22 +359,22 @@
         ]
       },
       "tool_adapter": {
-        "tool_id": "rtk-opencode-plugin-v1",
+        "tool_id": "caveman-opencode-plugin-v1",
         "tool_manifest": "scripts/run_codex_fixture_evaluation.py:TOOL_CONFIGS",
         "tool_manifest_sha256": "e781270d2a751d6e81468af5a628832120b63ba497ad5cee8270448794642bee",
         "tool_config": {
-          "display_name": "RTK official OpenCode plugin v1",
-          "lane_name": "terminal-rtk-opencode-plugin-v1",
-          "surface": "opencode-native-tool-execute-before/terminal-command-rewriting",
+          "display_name": "Caveman official OpenCode plugin and guidance v1",
+          "lane_name": "behavior-caveman-opencode-plugin-v1",
+          "surface": "opencode-plugin+prompt-reinforcement+skills+commands",
           "allowed_terms": [
             "opencode",
-            "rtk"
+            "caveman",
+            "cavecrew"
           ],
-          "data_dir_name": "terminal-rtk-opencode-plugin-v1",
+          "data_dir_name": "behavior-caveman-opencode-plugin-v1",
           "mounts": [
-            "/opt/data/tool-candidates/opencode-adapter-v4/opencode_workflow_adapter.py",
-            "/opt/data/tool-candidates/rtk/target/release",
-            "/opt/data/tool-candidates/rtk/hooks/opencode/rtk.ts"
+            "/opt/data/tool-candidates/opencode-adapter-v6/opencode_workflow_adapter.py",
+            "/opt/data/tool-candidates/caveman"
           ],
           "executable": "/opt/data/.local/bin/opencode",
           "expected_executable_sha256": "7c4d91c84d2bfdeabb59257e3490c5e5acb08f2aacb3e42f3ddc296a1c3f1aca",
@@ -380,99 +382,98 @@
           "codex_wrapper": {
             "command": "/usr/bin/python3",
             "args": [
-              "/opt/data/tool-candidates/opencode-adapter-v4/opencode_workflow_adapter.py",
+              "/opt/data/tool-candidates/opencode-adapter-v6/opencode_workflow_adapter.py",
               "--opencode-binary",
               "/opt/data/.local/bin/opencode",
               "--expected-opencode-sha256",
               "7c4d91c84d2bfdeabb59257e3490c5e5acb08f2aacb3e42f3ddc296a1c3f1aca",
               "--treatment",
-              "rtk"
+              "caveman"
             ]
           },
           "preflight_command": [
             "/usr/bin/python3",
-            "/opt/data/tool-candidates/opencode-adapter-v4/opencode_workflow_adapter.py",
+            "/opt/data/tool-candidates/opencode-adapter-v6/opencode_workflow_adapter.py",
             "--opencode-binary",
             "/opt/data/.local/bin/opencode",
             "--expected-opencode-sha256",
             "7c4d91c84d2bfdeabb59257e3490c5e5acb08f2aacb3e42f3ddc296a1c3f1aca",
             "--treatment",
-            "rtk",
+            "caveman",
             "--probe"
           ],
           "tool_manifest_identity": "current-file-v1",
-          "path_entries": [
-            "/opt/data/tool-candidates/rtk/target/release"
-          ],
           "env": {
-            "RTK_TELEMETRY": "0"
+            "OPENCODE_TOOL_DATA_DIR": "{tool_data_dir}"
           },
           "host_integration": {
             "install_commands": [
               [
-                "/opt/data/tool-candidates/rtk/target/release/rtk",
-                "init",
-                "--global",
-                "--opencode"
+                "/opt/data/opt/node-v24.18.0-linux-x64/bin/node",
+                "/opt/data/tool-candidates/caveman/bin/install.js",
+                "--only",
+                "opencode",
+                "--with-init"
               ]
             ],
             "verify_commands": [
               [
-                "/opt/data/tool-candidates/rtk/target/release/rtk",
-                "init",
-                "--global",
-                "--opencode",
-                "--dry-run"
+                "/opt/data/opt/node-v24.18.0-linux-x64/bin/node",
+                "/opt/data/tool-candidates/caveman/bin/install.js",
+                "--list"
               ]
             ],
             "required_files": [
-              "{codex_home}/home/.config/opencode/plugins/rtk.ts"
-            ]
+              "{codex_home}/xdg-config/opencode/plugins/caveman/plugin.js",
+              "{repo}/AGENTS.md"
+            ],
+            "timeout_seconds": 600
+          },
+          "native_plugin": {
+            "required": true,
+            "path": "{codex_home}/xdg-config/opencode/plugins/caveman/plugin.js"
           },
           "artifact_identities": [
             {
-              "path": "/opt/data/tool-candidates/rtk/target/release/rtk",
-              "sha256": "6a5f761863fc184217e6c1ae5336dd969868ad79f24e701a3efbd090a435f2ae",
-              "kind": "compiled-cli"
-            },
-            {
-              "path": "/opt/data/tool-candidates/rtk/hooks/opencode/rtk.ts",
-              "sha256": "6530c131946c84892f9522abd68d4e513e1e658d8ddbad1f59388c86ebbcb6bb",
+              "path": "/opt/data/tool-candidates/caveman/src/plugins/opencode/plugin.js",
+              "sha256": "6d68e8dfe205354718729a5f5c9ca9d555a045af6b2cbbc3b6a84caad1076df7",
               "kind": "native-plugin-source"
             },
             {
-              "path": "/opt/data/tool-candidates/opencode-adapter-v4/opencode_workflow_adapter.py",
-              "sha256": "e3c6e77fc22ae12a6548ee3ad92836d58c2db411ceae7c3743c370c469e6bbf7",
-              "kind": "runtime-adapter"
-            }
-          ],
-          "post_install_artifacts": [
+              "path": "/opt/data/tool-candidates/caveman/src/plugins/opencode/package.json",
+              "sha256": "b603811ba72eb71581db5b02045fb5f8903e3c46dcf7b40f36eeb81fbba23274",
+              "kind": "native-plugin-package"
+            },
             {
-              "path": "{codex_home}/home/.config/opencode/plugins/rtk.ts",
-              "sha256": "6530c131946c84892f9522abd68d4e513e1e658d8ddbad1f59388c86ebbcb6bb",
-              "retain_as": "rtk-installed-plugin.ts"
+              "path": "/opt/data/tool-candidates/opencode-adapter-v6/opencode_workflow_adapter.py",
+              "sha256": "1b98aaec34711b3a7bb09ce269c12bb06421ab08913d06593fb6d2c6641a34a3",
+              "kind": "runtime-adapter"
             }
           ],
           "effective_host_config": {
             "required": true,
             "source": "adapter-probe"
           },
-          "default_tool_state": "active-native-plugin-exact-artifact"
+          "diff_exclude_paths": [
+            "AGENTS.md",
+            ".opencode"
+          ],
+          "default_tool_state": "active-native-plugin+per-session-guidance"
         },
-        "tool_config_sha256": "61e9f95c5e424189cbee6f04478d524f70bb72cf9ec7b7b7246d1fa254d96b9d",
-        "tool_state": "active-native-plugin-exact-artifact",
+        "tool_config_sha256": "f63b3064f38f7e23395164f0c01ad66de9a8785c3c85c4b0414ab81f2e8e31cf",
+        "tool_state": "active-native-plugin+per-session-guidance",
         "tool_use_policy": "natural",
         "command_identity": {
           "kind": "codex_wrapper",
           "command": [
             "/usr/bin/python3",
-            "/opt/data/tool-candidates/opencode-adapter-v4/opencode_workflow_adapter.py",
+            "/opt/data/tool-candidates/opencode-adapter-v6/opencode_workflow_adapter.py",
             "--opencode-binary",
             "/opt/data/.local/bin/opencode",
             "--expected-opencode-sha256",
             "7c4d91c84d2bfdeabb59257e3490c5e5acb08f2aacb3e42f3ddc296a1c3f1aca",
             "--treatment",
-            "rtk"
+            "caveman"
           ]
         },
         "binary_identity": {
@@ -492,7 +493,7 @@
               "/usr/bin/python3.13",
               "--version"
             ],
-            "environment_path": "/opt/data/bin:/opt/data/tool-candidates/rtk/target/release:/opt/data/.local/bin:/opt/data/opt/go/bin:/opt/data/opt/uv:/opt/data/opt/node-v24.18.0-linux-x64/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+            "environment_path": "/opt/data/bin:/opt/data/.local/bin:/opt/data/opt/go/bin:/opt/data/opt/uv:/opt/data/opt/node-v24.18.0-linux-x64/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
             "captured": true,
             "exit_code": 0,
             "output": "Python 3.13.5",
@@ -501,22 +502,17 @@
         },
         "source_identity": [
           {
-            "path": "/opt/data/tool-candidates/opencode-adapter-v4/opencode_workflow_adapter.py",
-            "exists": true,
-            "kind": "file",
-            "sha256": "e3c6e77fc22ae12a6548ee3ad92836d58c2db411ceae7c3743c370c469e6bbf7"
-          },
-          {
-            "path": "/opt/data/tool-candidates/rtk/hooks/opencode/rtk.ts",
-            "exists": true,
-            "kind": "file",
-            "sha256": "6530c131946c84892f9522abd68d4e513e1e658d8ddbad1f59388c86ebbcb6bb"
-          },
-          {
-            "path": "/opt/data/tool-candidates/rtk/target/release",
+            "path": "/opt/data/tool-candidates/caveman",
             "exists": true,
             "kind": "directory",
-            "git_head": "23aae98c5b29cd52d77061c6efd2e65e5e3cc6dd"
+            "git_head": "0d95a81d35a9f2d123a5e9430d1cfc43d55f1bb0",
+            "package_json_sha256": "3f9a34e4224efcad6e53a7cdef3c93869b77d932e2757c29fdaf0f63cfb2ad5f"
+          },
+          {
+            "path": "/opt/data/tool-candidates/opencode-adapter-v6/opencode_workflow_adapter.py",
+            "exists": true,
+            "kind": "file",
+            "sha256": "1b98aaec34711b3a7bb09ce269c12bb06421ab08913d06593fb6d2c6641a34a3"
           }
         ]
       },
@@ -550,7 +546,7 @@
         },
         "isolation_policy": "fresh lane-specific agent home/XDG state; provider-only network with model shell and agent web tools disabled; sequential one-task prompt delivery; controller seed/verifier scripts excluded while controller-only affected-component compile commands retained; no acceptance-test assets injected; agent prompts carry normal software objectives",
         "workflow_controller_path": "scripts/run_codex_workflow_evaluation.py",
-        "workflow_controller_sha256": "501e37b7cbafc7558836d42f1550deb7d7231caa1378d310d848bdaf1e1e548d",
+        "workflow_controller_sha256": "28877c277ab23ae221461967179080651b48fa0027493b3304a9b994106540ee",
         "matrix_controller_path": "scripts/run_sequential_workflow_matrix.py",
         "matrix_controller_sha256": "51afde9bc3a75afc1b510c48cb256d826fa02a968b660fbdefc35b036ac23b78",
         "agent_runtime_id": "opencode-cli",
