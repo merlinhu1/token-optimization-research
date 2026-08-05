@@ -3221,7 +3221,7 @@
     {
       "profile_type": "individual_tool",
       "objective_scope": "individual_tool_effectiveness",
-      "status": "invalid-profile",
+      "status": "screening-ablation",
       "substrate": "opencode-cli",
       "disabled_overlaps": [
         "all unlisted surfaces"
@@ -3264,14 +3264,14 @@
       },
       "source_snapshot": {
         "repository": "",
-        "version": "4.8.3",
-        "source_commit": "c4d1925ae9b76a1b641877328209ad25cfeb5ef2",
+        "version": "4.8.4",
+        "source_commit": "40e50d9e03242aa5dd53ac771950f9127362b25f",
         "plugin_sha256": "e2443648e1864724f56e2a073fdf2f29199772606d9ea1c175fe06eaa3b75853",
         "guidance_sha256": "1cd148db944eff33bf8bb878c41a290fe85b86de3e65ac311d5d501e71a0cdbf",
         "runtime_adapter": "/opt/data/tool-candidates/opencode-adapter-v6/opencode_workflow_adapter.py",
         "runtime_adapter_sha256": "1b98aaec34711b3a7bb09ce269c12bb06421ab08913d06593fb6d2c6641a34a3"
       },
-      "notes": "Excluded from the second successive OpenCode screen: both the pinned 4.8.3 snapshot and release 4.8.4 fail live plugin loading under OpenCode 1.18.9 with `path must be a string or a file descriptor`; structural tests and instruction-only fallback are not equivalent to native activation."
+      "notes": "Requalified on 2026-08-03: the pinned Ponytail 4.8.4 native OpenCode plugin loaded successfully under OpenCode 1.18.9 through adapter-v6, with the exact plugin/guidance hashes recorded above and no instruction-only substitute."
     },
     {
       "profile_type": "individual_tool",

@@ -1,0 +1,46 @@
+{
+  "schema_version": 1,
+  "audit_id": "opencode-ponytail-native-requalification-20260803",
+  "generated_at": "2026-08-03",
+  "qualification_type": "provider-free-native-plugin-requalification",
+  "profile_id": "artifact-ponytail-opencode-plugin-v1",
+  "status": "qualified-provider-free",
+  "provider_calls": 0,
+  "runtime": {
+    "id": "opencode-cli",
+    "version": "1.18.9",
+    "binary": "/opt/data/.local/bin/opencode",
+    "binary_sha256": "7c4d91c84d2bfdeabb59257e3490c5e5acb08f2aacb3e42f3ddc296a1c3f1aca",
+    "adapter": "/opt/data/tool-candidates/opencode-adapter-v6/opencode_workflow_adapter.py",
+    "adapter_sha256": "1b98aaec34711b3a7bb09ce269c12bb06421ab08913d06593fb6d2c6641a34a3"
+  },
+  "source_snapshot": {
+    "version": "4.8.4",
+    "commit": "40e50d9e03242aa5dd53ac771950f9127362b25f",
+    "plugin_path": "/opt/data/tool-candidates/ponytail/.opencode/plugins/ponytail.mjs",
+    "plugin_sha256": "e2443648e1864724f56e2a073fdf2f29199772606d9ea1c175fe06eaa3b75853",
+    "guidance_path": "/opt/data/tool-candidates/ponytail/AGENTS.md",
+    "guidance_sha256": "1cd148db944eff33bf8bb878c41a290fe85b86de3e65ac311d5d501e71a0cdbf",
+    "package_config_path": "/opt/data/tool-candidates/ponytail/opencode.json",
+    "package_config_sha256": "e922d7e549d937fd1b057e75611be35d7e27e52c47e86b41073c3a5f32aedc59"
+  },
+  "probe": {
+    "command": "python3 /opt/data/tool-candidates/opencode-adapter-v6/opencode_workflow_adapter.py --opencode-binary /opt/data/.local/bin/opencode --expected-opencode-sha256 [REDACTED] --treatment ponytail --probe",
+    "model_condition": "opencode-openai-gpt-5-6-sol-high",
+    "model_available": true,
+    "plugin_assignment": {
+      "expected": "ponytail.mjs",
+      "loaded": true
+    },
+    "project_config_disabled": true,
+    "web_tools_permission": "deny",
+    "subagents_permission": "deny",
+    "effective_config_sha256": "eb1867447a8bc3ec12bea2dd994bd265a2a5633cbf24bc5318de3548dda2598d",
+    "auth": {
+      "provider": "openai",
+      "auth_type": "oauth",
+      "secret_values_recorded": false
+    }
+  },
+  "decision": "The native Ponytail OpenCode plugin is qualified for serial Lifecycle V1 provider execution; no generic adapter or instruction-only substitute was used."
+}
