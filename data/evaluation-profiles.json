@@ -177,7 +177,9 @@
       "objective_scope": "individual_tool_effectiveness",
       "status": "configured-provider-free",
       "substrate": "oh-my-pi",
-      "enabled_surfaces": ["oh-my-pi-native-shell-edit"],
+      "enabled_surfaces": [
+        "oh-my-pi-native-shell-edit"
+      ],
       "disabled_overlaps": [
         "all MCP servers",
         "all evaluator-installed token-saving surfaces",
@@ -3552,6 +3554,94 @@
         "runtime_adapter_sha256": "d5fcd88e033767659da3acf17486273059cd566c29475c274349d2214428545c"
       },
       "notes": "Owner-authorized fresh OpenCode screen. Default DCP configuration is preserved; evaluator-authored compression steering and manual slash-command activation are forbidden."
+    },
+    {
+      "id": "retrieval-sdl-mcp-codex-product-v1",
+      "artifact_slug": "sdl-mcp-codex-v1",
+      "profile_type": "individual_tool",
+      "objective_scope": "individual_tool_effectiveness",
+      "substrate": "codex-cli",
+      "status": "screening-ablation",
+      "enabled_surfaces": [
+        "retrieval-context",
+        "mcp",
+        "codex-project-guidance",
+        "codex-hooks",
+        "warm-local-index",
+        "local-embedding-models"
+      ],
+      "disabled_overlaps": [
+        "all unlisted surfaces",
+        "other retrieval authorities",
+        "terminal-output compactors",
+        "memory tools"
+      ],
+      "components": [
+        {
+          "component_id": "retrieval-sdl-mcp-codex-product-v1",
+          "surface": "retrieval-context+mcp+codex-guidance+codex-hooks",
+          "role": "individual_tool"
+        }
+      ],
+      "install": {
+        "policy": "Use the pinned SDL-MCP 0.13.2 source archive with normal npm lifecycle installation, native addon/tree-sitter verification, pinned embedding models, and build hashes. For each lane run the product command `sdl-mcp init -y --repo-path <repo> --client codex --enforce-agent-tools --auto-index`, while binding the generated MCP server to the pinned source checkout rather than npx/latest."
+      },
+      "reset": {
+        "policy": "Delete lane-private CODEX_HOME, SDL-MCP config/database/cache copies, generated AGENTS.md/CODEX.md/SDL.md/.codex assets, and background processes after evidence capture; preserve run artifacts and source hashes."
+      },
+      "evaluation_protocol": {
+        "tool_use_policy": "natural",
+        "tool_state": "warm-index",
+        "integration_state": "official-codex-init-enforce-agent-tools+source-pinned-mcp",
+        "instruction_policy": "product-authored SDL-MCP guidance and hooks; evaluator adds no invocation requirement or preference",
+        "assignment_proof": "provider-free artifact identity, init/doctor, generated guidance/hooks, and initialize plus tools/list receipt required"
+      },
+      "selection_rationale": "Owner-authorized source-logic candidate after repository and installation audit; evaluated alone as the retrieval authority.",
+      "notes": "The source's generated codex-mcp-config.json normally uses npx sdl-mcp. The evaluation adapter replaces only that launch binding with the exact pinned compiled server and records the deviation; product-authored guidance and hooks remain unchanged. SDL-MCP's own savings meter is not provider-token evidence."
+    },
+    {
+      "id": "retrieval-sdl-mcp-opencode-product-v1",
+      "artifact_slug": "sdl-mcp-opencode-v1",
+      "profile_type": "individual_tool",
+      "objective_scope": "individual_tool_effectiveness",
+      "substrate": "opencode-cli",
+      "status": "screening-ablation",
+      "enabled_surfaces": [
+        "retrieval-context",
+        "mcp",
+        "opencode-project-guidance",
+        "opencode-plugin",
+        "warm-local-index",
+        "local-embedding-models"
+      ],
+      "disabled_overlaps": [
+        "all unlisted surfaces",
+        "other retrieval authorities",
+        "terminal-output compactors",
+        "memory tools"
+      ],
+      "components": [
+        {
+          "component_id": "retrieval-sdl-mcp-opencode-product-v1",
+          "surface": "retrieval-context+mcp+opencode-guidance+opencode-plugin",
+          "role": "individual_tool"
+        }
+      ],
+      "install": {
+        "policy": "Use the same pinned SDL-MCP source installation and run the product command `sdl-mcp init -y --repo-path <repo> --client opencode --enforce-agent-tools --auto-index`. The OpenCode adapter supplies the exact pinned compiled server while retaining generated OPENCODE.md, SDL.md, and enforce-sdl.ts."
+      },
+      "reset": {
+        "policy": "Delete lane-private OpenCode/Codex compatibility home, SDL-MCP config/database/cache copies, generated OPENCODE.md/AGENTS.md/SDL.md/opencode.json/.opencode assets, and background processes after evidence capture; preserve run artifacts and source hashes."
+      },
+      "evaluation_protocol": {
+        "tool_use_policy": "natural",
+        "tool_state": "warm-index",
+        "integration_state": "official-opencode-init-enforce-agent-tools+source-pinned-mcp",
+        "instruction_policy": "product-authored SDL-MCP guidance and plugin; evaluator adds no invocation requirement or preference",
+        "assignment_proof": "provider-free artifact identity, init/doctor, generated guidance/plugin, and initialize plus tools/list receipt required"
+      },
+      "selection_rationale": "Prepared as the second runtime lane after Codex, preserving runtime/provider separation.",
+      "notes": "The adapter keeps OpenCode project-config loading disabled to prevent the generated npx/latest binding from bypassing the pinned source; it injects an equivalent source-pinned MCP block and loads the product-generated enforce-sdl plugin explicitly. This is a recorded compatibility deviation, not a claim of byte-identical installer behavior."
     }
   ]
 }
