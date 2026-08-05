@@ -171,6 +171,60 @@
       "notes": "Normal OpenCode no-MCP control using OpenRouter's GPT-5.6 Sol/high route. This is an independent provider/runtime condition, not a Codex control or a cross-provider token-treatment comparison. Provider-backed reproduction remains blocked until a separate owner authorization explicitly permits a bounded run."
     },
     {
+      "id": "runtime-oh-my-pi-codex-subscription-v1",
+      "artifact_slug": "oh-my-pi-codex-subscription",
+      "profile_type": "replacement_runtime",
+      "objective_scope": "individual_tool_effectiveness",
+      "status": "configured-provider-free",
+      "substrate": "oh-my-pi",
+      "enabled_surfaces": ["oh-my-pi-native-shell-edit"],
+      "disabled_overlaps": [
+        "all MCP servers",
+        "all evaluator-installed token-saving surfaces",
+        "global OMP instructions",
+        "extensions",
+        "skills",
+        "rules",
+        "LSP",
+        "PTY",
+        "warm indexes"
+      ],
+      "components": [],
+      "native_agent_tools_allowed": [
+        "shell_command_execution",
+        "file_editing",
+        "plain_file_read_search",
+        "git",
+        "verifier_commands"
+      ],
+      "forbidden_surfaces": [
+        "MCP",
+        "browser",
+        "web search",
+        "subagents",
+        "skills",
+        "extensions",
+        "rules",
+        "LSP",
+        "PTY",
+        "all unlisted retrieval/compression/memory/token-saving tools"
+      ],
+      "install": {
+        "policy": "Use the checksum-verified Oh My Pi v17.2.7 Linux release. Run bare omp with isolated HOME/XDG/TMPDIR, native openai-codex OAuth only, no extensions/skills/rules/LSP/PTY, and only native coding tools. OAuth is copied into the ephemeral lane from TOKEN_EVAL_OMP_HOME; preparation may prove the binary and auth boundary without provider calls."
+      },
+      "reset": {
+        "policy": "Delete the lane-specific OMP home, .omp session directory, XDG state, caches, generated config, and temporary files before each run; preserve no global OMP instructions, extensions, skills, rules, or indexes."
+      },
+      "evaluation_protocol": {
+        "tool_use_policy": "none",
+        "tool_state": "native-runtime",
+        "integration_state": "oh-my-pi-bare-openai-codex-oauth",
+        "instruction_policy": "Bare Oh My Pi native mode with no evaluator-installed extensions, skills, rules, MCP, web, browser, subagents, LSP, PTY, memory, retrieval, compression, or token-saving surfaces",
+        "assignment_proof": "provider-free pinned-binary/SHA-256/OAuth-boundary/tools/isolation probe required"
+      },
+      "notes": "Distinct bare Oh My Pi runtime condition. It is not treated as Codex CLI or OpenCode; provider-token accounting is accepted only from OMP assistant-message usage and one persistent OMP session per lifecycle sequence."
+    },
+    {
       "id": "broad-compression-owner",
       "profile_type": "individual_tool",
       "objective_scope": "individual_tool_effectiveness",
@@ -3379,7 +3433,7 @@
         "binary_sha256": "609e9e42d9f01b9b1c4203dc00197498c65a629453d07927cbd68cea83980558",
         "plugin_sha256": "49a6d53d34f40a00a1d8ebdccffee5d73572db22319ee5a99959429b634bf6ed",
         "runtime_adapter": "/opt/data/tool-candidates/opencode-adapter-v7/opencode_workflow_adapter.py",
-        "runtime_adapter_sha256": "e559c52ef4ef8a7e6b02cd03bfc2b86c2da039da493969d21f1ebbeb116c1f15"
+        "runtime_adapter_sha256": "e7dbe311ae1ac75ebcc0838512e84efe80282f15b7a69c2db13d7f8e92fc3a3c"
       },
       "notes": "Replacement for runtime-incompatible Ponytail in the second successive screen. The official 0.8.0 release binary installs the exact source-pinned OpenCode plugin and a live OpenCode 1.18.9 debug-config probe loads it without plugin errors when the binary is present on PATH."
     },

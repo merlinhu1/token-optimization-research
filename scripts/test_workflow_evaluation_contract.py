@@ -1137,14 +1137,22 @@ print('ok')
     def test_active_lifecycle_v1_sequences_have_a_valid_compile_pilot_gate(self) -> None:
         profile_id = "integrated-token-savior-codex-product-v2"
         protocols = [json.loads(path.read_text()) for path in (ROOT / "sources/evaluations/protocols").glob("*.json")]
+        native_qualification = ROOT / "sources/evaluations/audits/codex-token-savior-native-requalification-20260805.json"
         for sequence_id in runner.active_sequence_ids():
             sequence = runner.load_sequence(sequence_id)
             self.assertEqual(sequence["task_family_generation"], "lifecycle-v1")
-            self.assertFalse(any(
-                protocol.get("selected_execution", {}).get("descriptor", {}).get("selected_profile", {}).get("profile_id") == profile_id
-                and validate_repository.protocol_matches_active_sequence(protocol, sequence)
+            active_token_savior = [
+                protocol
                 for protocol in protocols
-            ))
+                if protocol.get("selected_execution", {}).get("descriptor", {}).get("selected_profile", {}).get("profile_id") == profile_id
+                and validate_repository.protocol_matches_active_sequence(protocol, sequence)
+            ]
+            if active_token_savior:
+                self.assertTrue(native_qualification.is_file())
+                qualification = json.loads(native_qualification.read_text())
+                self.assertTrue(qualification.get("passed"))
+                self.assertEqual(qualification.get("provider_calls"), 0)
+                self.assertTrue(all(protocol.get("status") == "frozen-ready-not-run" for protocol in active_token_savior))
             ready, reason = runner.baseline_v2_treatment_gate(sequence, ROOT)
             self.assertIs(ready, True, reason)
             self.assertIn("audited compile-passing lifecycle-v1 pilot", reason)

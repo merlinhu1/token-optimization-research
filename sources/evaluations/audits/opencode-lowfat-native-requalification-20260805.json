@@ -1,0 +1,55 @@
+{
+  "schema_version": 1,
+  "audit_id": "opencode-lowfat-native-requalification-20260805",
+  "qualification": "accepted",
+  "provider_calls": 0,
+  "provider_tokens": 0,
+  "runtime": {
+    "name": "opencode-cli",
+    "version": "1.18.9",
+    "binary": "/opt/data/.local/bin/opencode",
+    "binary_sha256": "7c4d91c84d2bfdeabb59257e3490c5e5acb08f2aacb3e42f3ddc296a1c3f1aca",
+    "adapter": "/opt/data/tool-candidates/opencode-adapter-v7/opencode_workflow_adapter.py",
+    "adapter_sha256": "e7dbe311ae1ac75ebcc0838512e84efe80282f15b7a69c2db13d7f8e92fc3a3c",
+    "adapter_source": "/opt/data/repos/token-optimization-research/scripts/opencode_workflow_adapter.py"
+  },
+  "tool": {
+    "name": "LowFat",
+    "version": "0.8.0",
+    "source_repository": "zdk/lowfat",
+    "source_commit": "b9f6f99d02e5774296305a591bfb13ef24548c38",
+    "binary": "/opt/data/tool-candidates/lowfat-bin/lowfat",
+    "binary_sha256": "609e9e42d9f01b9b1c4203dc00197498c65a629453d07927cbd68cea83980558",
+    "native_plugin_source": "/opt/data/tool-candidates/lowfat/crates/lowfat/embedded/opencode/lowfat.ts",
+    "native_plugin_sha256": "49a6d53d34f40a00a1d8ebdccffee5d73572db22319ee5a99959429b634bf6ed"
+  },
+  "probe": {
+    "command": "python3 opencode_workflow_adapter.py --opencode-binary /opt/data/.local/bin/opencode --expected-opencode-sha256 [REDACTED] --treatment lowfat --probe",
+    "provider": "openai",
+    "provider_model": "openai/gpt-5.6-sol",
+    "model_available": true,
+    "project_config_disabled": true,
+    "external_plugins_disabled_by_pure_flag": false,
+    "external_skills_disabled": true,
+    "web_tools_permission": "deny",
+    "subagents_permission": "deny",
+    "plugin_assignment": {
+      "expected": "lowfat.ts",
+      "loaded": true
+    },
+    "auth_type": "oauth"
+  },
+  "controller_preflight": {
+    "mode": "prepare-only",
+    "host_integration_passed": true,
+    "install_exit_codes": [0],
+    "verify_exit_codes": [0],
+    "missing_required_files": [],
+    "required_plugin": "lowfat.ts",
+    "installed_plugin_sha256": "49a6d53d34f40a00a1d8ebdccffee5d73572db22319ee5a99959429b634bf6ed",
+    "runtime_adapter_sha256": "e7dbe311ae1ac75ebcc0838512e84efe80282f15b7a69c2db13d7f8e92fc3a3c",
+    "provider_calls": 0,
+    "provider_tokens": 0,
+    "artifact_root": "sources/evaluations/runs/planned-opencode-lowfat-native-preflight-20260805"
+  },
+  "interpretation": "The native LowFat OpenCode plugin and the restored pinned runtime adapter loaded successfully in provider-free qualification. The adapter source is the repository-tracked native treatment adapter; no generic adapter or instruction-only substitute was used."}
