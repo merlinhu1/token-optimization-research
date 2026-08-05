@@ -1,0 +1,172 @@
+# Ordered cumulative source checkpoints. Every section is relative to the one composite broken-start root.
+
+# --- task-01-agent ---
+diff --git a/lib/request.js b/lib/request.js
+index 13b3085..f374603 100644
+--- a/lib/request.js
++++ b/lib/request.js
+@@ -284,6 +284,17 @@ Object.defineProperties(Request.prototype, {
+       this.additionalHeaders = headers
+     }
+   },
++  mediaType: {
++    get () {
++      if (this[kRequestContentType] === undefined) {
++        const contentType = this.headers['content-type']
++        if (contentType !== undefined) {
++          this[kRequestContentType] = ContentType.from(contentType)
++        }
++      }
++      return this[kRequestContentType]?.mediaType
++    }
++  },
+   getValidationFunction: {
+     value: function (httpPartOrSchema) {
+       if (typeof httpPartOrSchema === 'string') {
+
+# --- task-02-agent ---
+diff --git a/lib/content-type.js b/lib/content-type.js
+index aeab8cd..ecbb9cf 100644
+--- a/lib/content-type.js
++++ b/lib/content-type.js
+@@ -1,5 +1,7 @@
+ 'use strict'
+ 
++const { FifoMap } = require('toad-cache')
++
+ /**
+  * keyValuePairsReg is used to split the parameters list into associated
+  * key value pairings. The leading `(?:^|;)\s*` anchor ensures the regex
+@@ -42,6 +44,8 @@ const subtypeNameReg = /^[\w!#$%&'*+.^`|~-]+\s*$/
+  * @see https://httpwg.org/specs/rfc9110.html#parameter
+  */
+ class ContentType {
++  static cache = new FifoMap(100)
++
+   #valid = false
+   #empty = true
+   #type = ''
+@@ -55,7 +59,12 @@ class ContentType {
+    * @returns {ContentType | undefined}
+    */
+   static from (headerValue) {
+-    return new ContentType(headerValue)
++    let contentType = ContentType.cache.get(headerValue)
++    if (contentType === undefined) {
++      contentType = new ContentType(headerValue)
++      ContentType.cache.set(headerValue, contentType)
++    }
++    return contentType
+   }
+ 
+   constructor (headerValue) {
+diff --git a/lib/request.js b/lib/request.js
+index 13b3085..f374603 100644
+--- a/lib/request.js
++++ b/lib/request.js
+@@ -284,6 +284,17 @@ Object.defineProperties(Request.prototype, {
+       this.additionalHeaders = headers
+     }
+   },
++  mediaType: {
++    get () {
++      if (this[kRequestContentType] === undefined) {
++        const contentType = this.headers['content-type']
++        if (contentType !== undefined) {
++          this[kRequestContentType] = ContentType.from(contentType)
++        }
++      }
++      return this[kRequestContentType]?.mediaType
++    }
++  },
+   getValidationFunction: {
+     value: function (httpPartOrSchema) {
+       if (typeof httpPartOrSchema === 'string') {
+
+# --- task-03-agent ---
+diff --git a/fastify.js b/fastify.js
+index 7c015f9..48895f3 100644
+--- a/fastify.js
++++ b/fastify.js
+@@ -678,9 +678,9 @@ function fastify (serverOptions) {
+       error: 'Bad Request',
+       code: 'FST_ERR_MAX_PARAM_LENGTH',
+       message: `'${path}' is exceeding the max param length`,
+-      statusCode: 413
++      statusCode: 414
+     })
+-    res.writeHead(413, {
++    res.writeHead(414, {
+       'Content-Type': 'application/json',
+       'Content-Length': Buffer.byteLength(body)
+     })
+diff --git a/lib/content-type.js b/lib/content-type.js
+index aeab8cd..ecbb9cf 100644
+--- a/lib/content-type.js
++++ b/lib/content-type.js
+@@ -1,5 +1,7 @@
+ 'use strict'
+ 
++const { FifoMap } = require('toad-cache')
++
+ /**
+  * keyValuePairsReg is used to split the parameters list into associated
+  * key value pairings. The leading `(?:^|;)\s*` anchor ensures the regex
+@@ -42,6 +44,8 @@ const subtypeNameReg = /^[\w!#$%&'*+.^`|~-]+\s*$/
+  * @see https://httpwg.org/specs/rfc9110.html#parameter
+  */
+ class ContentType {
++  static cache = new FifoMap(100)
++
+   #valid = false
+   #empty = true
+   #type = ''
+@@ -55,7 +59,12 @@ class ContentType {
+    * @returns {ContentType | undefined}
+    */
+   static from (headerValue) {
+-    return new ContentType(headerValue)
++    let contentType = ContentType.cache.get(headerValue)
++    if (contentType === undefined) {
++      contentType = new ContentType(headerValue)
++      ContentType.cache.set(headerValue, contentType)
++    }
++    return contentType
+   }
+ 
+   constructor (headerValue) {
+diff --git a/lib/errors.js b/lib/errors.js
+index 1aea926..24abe8a 100644
+--- a/lib/errors.js
++++ b/lib/errors.js
+@@ -374,7 +374,7 @@ const codes = {
+   FST_ERR_MAX_PARAM_LENGTH: createError(
+     'FST_ERR_MAX_PARAM_LENGTH',
+     "'%s' is exceeding the max param length",
+-    413,
++    414,
+     URIError
+   ),
+   FST_ERR_ASYNC_CONSTRAINT: createError(
+diff --git a/lib/request.js b/lib/request.js
+index 13b3085..f374603 100644
+--- a/lib/request.js
++++ b/lib/request.js
+@@ -284,6 +284,17 @@ Object.defineProperties(Request.prototype, {
+       this.additionalHeaders = headers
+     }
+   },
++  mediaType: {
++    get () {
++      if (this[kRequestContentType] === undefined) {
++        const contentType = this.headers['content-type']
++        if (contentType !== undefined) {
++          this[kRequestContentType] = ContentType.from(contentType)
++        }
++      }
++      return this[kRequestContentType]?.mediaType
++    }
++  },
+   getValidationFunction: {
+     value: function (httpPartOrSchema) {
+       if (typeof httpPartOrSchema === 'string') {

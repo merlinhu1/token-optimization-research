@@ -4,7 +4,7 @@
   "date": "2026-08-05",
   "source_registry": {
     "path": "data/workflow-sessions.json",
-    "sha256": "03b9feeeba02349c1ffc14fb6736cbe3eaf35de25dd57a8f3c5a7c4fe68c68a4"
+    "sha256": "2a24d8f70d0e4a50927ce68f5498008bfce3c28f92bb0e70aefbec2533604a00"
   },
   "condition": {
     "runtime_id": "opencode-cli",
@@ -116,11 +116,10 @@
     "requested_tools": [
       "jCodeMunch",
       "CodeGraph",
-      "SigMap"
+      "SigMap",
+      "LowFat",
+      "Token Savior"
     ],
-    "excluded_profiles": [
-      "historical or non-requested profiles"
-    ],
-    "panel_scope": "requested completed profiles only; OpenCode baseline-only control remapped in temporary resolver input"
+    "panel_scope": "one requested profile or requested completed retrieval profiles only; replacement-runtime baselines resolved per runtime"
   }
 }

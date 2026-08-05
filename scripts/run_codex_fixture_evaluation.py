@@ -2121,7 +2121,7 @@ TOOL_CONFIGS.update(
             artifact_identities=[
                 {"path": str(LOWFAT_BIN), "sha256": "609e9e42d9f01b9b1c4203dc00197498c65a629453d07927cbd68cea83980558", "kind": "official-release-binary"},
                 {"path": str(LOWFAT_ROOT / "crates/lowfat/embedded/opencode/lowfat.ts"), "sha256": "49a6d53d34f40a00a1d8ebdccffee5d73572db22319ee5a99959429b634bf6ed", "kind": "native-plugin-source"},
-                {"path": str(OPENCODE_ADAPTER_V7), "sha256": "e559c52ef4ef8a7e6b02cd03bfc2b86c2da039da493969d21f1ebbeb116c1f15", "kind": "runtime-adapter"},
+                {"path": str(OPENCODE_ADAPTER_V7), "sha256": "e7dbe311ae1ac75ebcc0838512e84efe80282f15b7a69c2db13d7f8e92fc3a3c", "kind": "runtime-adapter"},
             ],
             post_install_artifacts=[
                 {"path": "{codex_home}/xdg-config/opencode/plugins/lowfat.ts", "sha256": "49a6d53d34f40a00a1d8ebdccffee5d73572db22319ee5a99959429b634bf6ed", "retain_as": "lowfat-installed-plugin.ts"},
