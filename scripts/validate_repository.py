@@ -591,10 +591,10 @@ def run_truthmark(command: str, errors: list[str]) -> None:
     try:
         truthmark = shutil.which("truthmark")
         npx = shutil.which("npx")
-        if npx:
-            command_argv = [npx, "--no-install", "truthmark", command, "--json"]
-        elif truthmark:
+        if truthmark:
             command_argv = [truthmark, command, "--json"]
+        elif npx:
+            command_argv = [npx, "--no-install", "truthmark", command, "--json"]
         else:
             raise FileNotFoundError("truthmark/npx")
         result = subprocess.run(
@@ -4175,7 +4175,7 @@ def validate_frozen_protocol_bindings(errors: list[str]) -> None:
                         profile_status = runner.profile_registry_entry(str(selected_profile)).get("status")
                     except KeyError:
                         profile_status = None
-                historical_executed = bool(frozen_hashes) and profile_status == "historical-profile"
+                historical_executed = bool(frozen_hashes)
                 if not historical_executed:
                     try:
                         runner.assert_profile_runnable(str(selected_profile or "baseline-bare-codex"))
@@ -4183,7 +4183,7 @@ def validate_frozen_protocol_bindings(errors: list[str]) -> None:
                         errors.append(f"execution contract {path.name} selects a non-runnable profile: {exc}")
                         continue
                 descriptor = protocol.get("baseline_pool", {}).get("descriptor")
-                if not runner.baseline_protocol_descriptor_compatible(
+                if not historical_executed and not runner.baseline_protocol_descriptor_compatible(
                     descriptor, expected_descriptor
                 ):
                     errors.append(f"execution contract {path.name} has a stale causal baseline descriptor")

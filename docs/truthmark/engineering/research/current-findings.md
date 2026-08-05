@@ -1,6 +1,10 @@
 ---
 status: active
-truth_kind: engineering-behavior
+truth_kind: behavior
+doc_type: behavior
+source_of_truth:
+  - ../../../../data/workflow-sessions.json
+  - ../../../../docs/research/roadmap.md
 last_reviewed: 2026-08-02
 ---
 
@@ -116,3 +120,15 @@ A prior artifact-packaging audit found that the now-deleted historical Graphify 
 - ../../../../docs/papers/luna-xhigh-r3-natural-use-replication-screen.md
 - ../../../../docs/papers/phase-3-tokenjuice-jcodemunch-stack-screen.md
 - ../../../../docs/papers/opencode-dcp-r2-and-token-inflation-analysis.md
+
+## Product Decisions
+
+Current findings remain evidence-stage qualified: historical and single-run screening observations are not promoted to stable rankings without compatible replication.
+
+## Current Behavior
+
+The active research contract uses Lifecycle V1 Fastify and Beets workflows, provider-reported cumulative usage, structured compile/verifier diagnostics, and immutable compact evidence.
+
+## Rationale
+
+Separating evidence stages from rankings prevents single-run or historical observations from being overinterpreted as general tool efficacy.

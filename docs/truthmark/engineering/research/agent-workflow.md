@@ -1,6 +1,10 @@
 ---
 status: active
-truth_kind: engineering-workflow
+truth_kind: workflow
+doc_type: workflow
+source_of_truth:
+  - ../../../../AGENTS.md
+  - ../../../../.truthmark/config.yml
 last_reviewed: 2026-07-16
 ---
 
@@ -79,3 +83,15 @@ Apply the synchronization workflow after an evaluation run, qualification/protoc
 - ../../../../scripts/validate_repository.py
 - ../../../../scripts/update_workflow_runbook.py
 - ../../routes/areas.md
+
+## Product Decisions
+
+Repository changes follow the machine registries and generated runbook as the authoritative execution record; Truthmark routing remains documentation metadata and does not override evaluation controls.
+
+## Current Behavior
+
+Research-truth changes are synchronized after code and registry changes, with validation and artifact-preservation checks required before publication.
+
+## Rationale
+
+Centralizing execution state in registries and generated views prevents stale prose from being mistaken for provider-backed evidence.
