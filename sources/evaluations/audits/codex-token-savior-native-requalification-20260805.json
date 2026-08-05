@@ -1,0 +1,31 @@
+{
+  "schema_version": 1,
+  "provider_calls": 0,
+  "provider_tokens": 0,
+  "passed": true,
+  "source_root": "/opt/data/tool-candidates/token-savior",
+  "source_hooks": {
+    "pre_tool_use": {
+      "path": "/opt/data/tool-candidates/token-savior/hooks/bash_rewriter_hook.py",
+      "sha256": "34a315894db062d9427a0334e7c334036486bc212593072d863dd5baeb57c53b"
+    },
+    "post_tool_use": {
+      "path": "/opt/data/tool-candidates/token-savior/hooks/tool_capture_hook.py",
+      "sha256": "4872e2848db80bf8d017b2cd6a60ec6734a1a65f87bd7fd2b035655d30e09f52"
+    }
+  },
+  "codex_event_contract": "Codex 0.144 PreToolUse/PostToolUse command-hook JSON",
+  "pre_tool_use": {
+    "passed": true,
+    "input_command": "git status",
+    "rewritten_command": "git status --porcelain=v2 --branch",
+    "stderr": ""
+  },
+  "post_tool_use": {
+    "passed": true,
+    "input_bytes": 2802,
+    "additional_context": "[token-savior:compact] pytest output 2802B -> 19B (99% saved). Compact rendering:\n100 passed in 1.23s",
+    "stderr": ""
+  },
+  "passed": true
+}
