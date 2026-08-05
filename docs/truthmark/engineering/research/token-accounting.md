@@ -1,6 +1,10 @@
 ---
 status: active
-truth_kind: engineering-contract
+truth_kind: contract
+doc_type: contract
+source_of_truth:
+  - ../../../../data/workflow-sessions.json
+  - ../../../../scripts/run_codex_workflow_evaluation.py
 last_reviewed: 2026-08-02
 ---
 
@@ -136,3 +140,15 @@ Update this document whenever token eligibility, comparison identity, provider a
 - ../../../../sources/evaluations/audits/corrected-integration-qualification-jcodemunch-codex-mcp-v2-20260719.json
 - ../../../../sources/evaluations/audits/opencode-next-five-batch2-results-20260730.json
 - ../../../../scripts/validate_repository.py
+
+## Product Decisions
+
+Token comparisons use one final monotonic cumulative provider snapshot per distinct thread and compare only compatible baseline pools; weighted units are fresh input plus 0.1 times cached input plus 6 times output.
+
+## Current Behavior
+
+Lifecycle V1 sessions bind model condition, protocol fingerprint, profile identity, task artifacts, usage receipts, and compact manifests before publication.
+
+## Rationale
+
+A single monotonic provider receipt and compatible baseline binding are required to distinguish accounting integrity from causal efficiency claims.

@@ -1,7 +1,10 @@
 ---
 status: active
 doc_type: route-index
-last_reviewed: 2026-07-18
+source_of_truth:
+  - ../../.truthmark/config.yml
+  - ../../AGENTS.md
+last_reviewed: 2026-08-05
 ---
 
 # Truthmark Areas
@@ -13,7 +16,7 @@ Truth documents:
 truth_documents:
   - path: docs/truthmark/engineering/research/evidence-stages.md
     lane: engineering
-    kind: engineering-contract
+    kind: contract
 ```
 
 Code surface:
@@ -39,7 +42,7 @@ Truth documents:
 truth_documents:
   - path: docs/truthmark/engineering/research/methodology.md
     lane: engineering
-    kind: engineering-workflow
+    kind: workflow
 ```
 
 Code surface:
@@ -67,7 +70,7 @@ Truth documents:
 truth_documents:
   - path: docs/truthmark/engineering/research/token-accounting.md
     lane: engineering
-    kind: engineering-contract
+    kind: contract
 ```
 
 Code surface:
@@ -132,7 +135,7 @@ Truth documents:
 truth_documents:
   - path: docs/truthmark/engineering/research/software-quality-diagnostics.md
     lane: engineering
-    kind: engineering-contract
+    kind: contract
 ```
 
 Code surface:
@@ -155,7 +158,7 @@ Truth documents:
 truth_documents:
   - path: docs/truthmark/engineering/research/stack-compatibility.md
     lane: engineering
-    kind: engineering-architecture
+    kind: architecture
 ```
 
 Code surface:
@@ -178,7 +181,7 @@ Truth documents:
 truth_documents:
   - path: docs/truthmark/engineering/research/current-findings.md
     lane: engineering
-    kind: engineering-behavior
+    kind: behavior
 ```
 
 Code surface:
@@ -200,7 +203,7 @@ Truth documents:
 truth_documents:
   - path: docs/truthmark/engineering/research/agent-workflow.md
     lane: engineering
-    kind: engineering-workflow
+    kind: workflow
 ```
 
 Code surface:
@@ -212,6 +215,9 @@ Code surface:
 - data/repository-fixtures.json
 - scripts/update_workflow_runbook.py
 - scripts/validate_repository.py
+- scripts/extract_oh_my_pi_usage.py
+- scripts/oh_my_pi_workflow_adapter.py
+- scripts/run_oh_my_pi_workflow_model_condition.py
 - README.md
 
 Update truth when:
@@ -229,9 +235,3 @@ Code surface:
 
 Update truth when:
 - Truthmark requires a child route file for generated hierarchy metadata
-
-## Source References
-
-- ../../../.truthmark/config.yml
-- ../../../AGENTS.md
-- ../../../docs/methodology/report-writing-patterns.md
