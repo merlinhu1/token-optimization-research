@@ -1,6 +1,10 @@
 ---
 status: active
-truth_kind: engineering-contract
+truth_kind: contract
+doc_type: contract
+source_of_truth:
+  - ../../../../docs/evaluations/design/token-and-quality-policy.md
+  - ../../../../scripts/run_codex_workflow_evaluation.py
 last_reviewed: 2026-08-01
 ---
 
@@ -77,3 +81,7 @@ Keep this document aligned with the runner, matrix, validator, and token-account
 - ../../../../docs/evaluations/operations/runner-reference.md
 - ../../../../scripts/run_codex_workflow_evaluation.py
 - ../../../../scripts/run_sequential_workflow_matrix.py
+
+## Product Decisions
+
+Provider-token eligibility and software-quality diagnostics remain separate: compile and verifier outcomes are retained alongside token accounting but do not justify hidden reruns or result selection.
