@@ -1,0 +1,173 @@
+{
+  "schema_version": 1,
+  "audit_id": "requested-five-tools-lifecycle-v1-20260805",
+  "date": "2026-08-05",
+  "request": [
+    "jCodeMunch",
+    "LowFat",
+    "CodeGraph",
+    "SigMap",
+    "Token Savior"
+  ],
+  "model_conditions": {
+    "Codex": "codex-openai-gpt-5-6-sol-high",
+    "OpenCode": "opencode-openai-gpt-5-6-sol-high"
+  },
+  "sequences": [
+    "fastify-lifecycle-sequence-v1",
+    "beets-lifecycle-sequence-v1"
+  ],
+  "replicates": {
+    "Codex": 0,
+    "OpenCode": 1
+  },
+  "usage_formula": "fresh input + 0.1 * cached input + 6 * output",
+  "source_registry": {
+    "path": "data/workflow-sessions.json",
+    "sha256": "03b9feeeba02349c1ffc14fb6736cbe3eaf35de25dd57a8f3c5a7c4fe68c68a4"
+  },
+  "completed": [
+    {
+      "tool": "jCodeMunch",
+      "runtime": "Codex",
+      "profile_id": "retrieval-jcodemunch-codex-mcp-v2",
+      "sessions": [
+        "jcodemunch-fastify-20260805-p-72ac148f730b-r0",
+        "jcodemunch-beets-20260805-p-d8cfc5066f76-r0"
+      ],
+      "workflow_count": 2,
+      "tasks_passed": 6,
+      "raw_provider_tokens": 3733995,
+      "weighted_tokens": 662871.8,
+      "all_accepted": true
+    },
+    {
+      "tool": "jCodeMunch",
+      "runtime": "OpenCode",
+      "profile_id": "retrieval-jcodemunch-opencode-product-v1",
+      "sessions": [
+        "jcodemunch-opencode-v1-fastify-20260805-p-72ac148f730b-r1",
+        "jcodemunch-opencode-v1-beets-20260805-p-d8cfc5066f76-r1"
+      ],
+      "workflow_count": 2,
+      "tasks_passed": 6,
+      "raw_provider_tokens": 3966615,
+      "weighted_tokens": 706663.0,
+      "all_accepted": true
+    },
+    {
+      "tool": "CodeGraph",
+      "runtime": "Codex",
+      "profile_id": "retrieval-codegraph-codex-mcp-v1",
+      "sessions": [
+        "codegraph-fastify-20260805-p-72ac148f730b-r0",
+        "codegraph-beets-20260805-p-d8cfc5066f76-r0"
+      ],
+      "workflow_count": 2,
+      "tasks_passed": 6,
+      "raw_provider_tokens": 4195650,
+      "weighted_tokens": 767449.2,
+      "all_accepted": true
+    },
+    {
+      "tool": "CodeGraph",
+      "runtime": "OpenCode",
+      "profile_id": "retrieval-codegraph-opencode-mcp-v1",
+      "sessions": [
+        "codegraph-opencode-v1-fastify-20260805-p-72ac148f730b-r1",
+        "codegraph-opencode-v1-beets-20260805-p-d8cfc5066f76-r1"
+      ],
+      "workflow_count": 2,
+      "tasks_passed": 6,
+      "raw_provider_tokens": 3011143,
+      "weighted_tokens": 615969.8,
+      "all_accepted": true
+    },
+    {
+      "tool": "SigMap",
+      "runtime": "Codex",
+      "profile_id": "retrieval-sigmap-codex-live-v1",
+      "sessions": [
+        "sigmap-fastify-20260805-p-72ac148f730b-r0",
+        "sigmap-beets-20260805-p-d8cfc5066f76-r0"
+      ],
+      "workflow_count": 2,
+      "tasks_passed": 6,
+      "raw_provider_tokens": 3296226,
+      "weighted_tokens": 659199.2,
+      "all_accepted": true
+    },
+    {
+      "tool": "SigMap",
+      "runtime": "OpenCode",
+      "profile_id": "retrieval-sigmap-opencode-product-v1",
+      "sessions": [
+        "sigmap-opencode-v1-fastify-20260805-p-72ac148f730b-r1",
+        "sigmap-opencode-v1-beets-20260805-p-d8cfc5066f76-r1"
+      ],
+      "workflow_count": 2,
+      "tasks_passed": 6,
+      "raw_provider_tokens": 3870183,
+      "weighted_tokens": 749629.6,
+      "all_accepted": true
+    }
+  ],
+  "aggregate": {
+    "authorized_completed_workflows": 12,
+    "accepted_tasks": 36,
+    "raw_provider_tokens": 22073812,
+    "weighted_tokens": 4161782.6,
+    "provider_spend_blocked_workflows": 4,
+    "provider_spend_for_blocked": 0
+  },
+  "blocked": [
+    {
+      "tool": "LowFat",
+      "runtime": "Codex",
+      "status": "blocked",
+      "reason": "No qualified native Codex Lifecycle V1 profile. Existing terminal-lowfat record is historical PATH-only; the shell-integrated profile is blocked and cannot be substituted.",
+      "provider_spend": 0,
+      "evidence": [
+        "data/evaluation-profiles.json:terminal-lowfat",
+        "data/evaluation-profiles.json:terminal-lowfat-shell-integrated-v0.8.0"
+      ]
+    },
+    {
+      "tool": "LowFat",
+      "runtime": "OpenCode",
+      "status": "blocked-before-provider",
+      "reason": "Frozen profile requires opencode-adapter-v7, but /opt/data/tool-candidates/opencode-adapter-v7/opencode_workflow_adapter.py is absent. Fastify preflight exited 1; Beets was not launched because the same prerequisite is missing.",
+      "provider_spend": 0,
+      "protocol": "sources/evaluations/protocols/fastify-lifecycle-sequence-v1-terminal-lowfat-opencode-plugin-v1-b698370e21d2.json",
+      "evidence": [
+        "terminal preflight source_identity: adapter-v7 exists=false"
+      ]
+    },
+    {
+      "tool": "Token Savior",
+      "runtime": "Codex",
+      "status": "blocked-by-contract-gate",
+      "reason": "Current Lifecycle V1 contract test forbids an active Token Savior Codex protocol until the compile-pilot/treatment unlock is satisfied. No V1 protocol was paid-run.",
+      "provider_spend": 0,
+      "evidence": [
+        "scripts/test_workflow_evaluation_contract.py: active Token Savior protocol gate"
+      ]
+    },
+    {
+      "tool": "Token Savior",
+      "runtime": "OpenCode",
+      "status": "blocked",
+      "reason": "No native OpenCode Token Savior profile or adapter exists in the supported OpenCode treatment manifest. Generic MCP substitution is not authorized.",
+      "provider_spend": 0,
+      "evidence": [
+        "scripts/run_codex_fixture_evaluation.py:TOOL_CONFIGS",
+        "data/evaluation-profiles.json"
+      ]
+    }
+  ],
+  "comparison_panels": [
+    "sources/evaluations/audits/requested-panel-codex-sol-high-lifecycle-v1-20260805.json",
+    "sources/evaluations/audits/requested-panel-opencode-sol-high-lifecycle-v1-20260805.json"
+  ],
+  "interpretation": "Single replicate per runtime/sequence is screening evidence, not a population ranking; prior and cross-runtime totals are not causal without prompt, cache, tool, and trajectory normalization."
+}
