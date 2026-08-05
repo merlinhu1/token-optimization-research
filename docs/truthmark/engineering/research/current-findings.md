@@ -116,7 +116,7 @@ A prior artifact-packaging audit found that the now-deleted historical Graphify 
 - ../../../../sources/evaluations/workflow-sessions/
 - ../../../../docs/evaluations/operations/runbook.md
 - ../../../../docs/papers/gpt-5-6-sol-high-baseline-variance-screen.md
-- ../../../../docs/papers/phase-2-lifecycle-v0-natural-use-screening.md
+- ../../../../docs/papers/phase-2-lifecycle-v1-natural-use-screening.md
 - ../../../../docs/papers/luna-xhigh-r3-natural-use-replication-screen.md
 - ../../../../docs/papers/phase-3-tokenjuice-jcodemunch-stack-screen.md
 - ../../../../docs/papers/opencode-dcp-r2-and-token-inflation-analysis.md
