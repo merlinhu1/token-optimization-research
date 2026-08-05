@@ -1,0 +1,493 @@
+#!/usr/bin/env python3
+"""Generate the standalone Phase 2 Lifecycle V1 report and SVG figures."""
+from __future__ import annotations
+
+import hashlib
+import html
+import json
+from collections import defaultdict
+from pathlib import Path
+
+ROOT = Path(__file__).resolve().parents[1]
+REGISTRY_PATH = ROOT / "data/workflow-sessions.json"
+REPORT_PATH = ROOT / "docs/papers/phase-2-lifecycle-v1-natural-use-screening.md"
+DATA_PATH = ROOT / "sources/evaluations/audits/phase-2-lifecycle-v1-report-data-20260807.json"
+FIGURES = ROOT / "docs/papers/figures"
+
+SEQUENCES = {
+    "fastify": "fastify-lifecycle-sequence-v1",
+    "beets": "beets-lifecycle-sequence-v1",
+}
+DISPLAY = {
+    "terminal-rtk-codex-instructions-v1": "RTK",
+    "terminal-rtk-opencode-plugin-v1": "RTK",
+    "retrieval-serena-codex-mcp-v1": "Serena",
+    "retrieval-serena-opencode-mcp-v1": "Serena",
+    "terminal-tokenjuice-codex-hook-v1": "TokenJuice",
+    "terminal-tokenjuice-opencode-plugin-v2": "TokenJuice",
+    "artifact-ponytail-codex-plugin-v1": "Ponytail",
+    "artifact-ponytail-opencode-plugin-v1": "Ponytail",
+    "behavior-caveman-codex-skill-v1": "Caveman",
+    "behavior-caveman-opencode-plugin-v1": "Caveman",
+    "retrieval-jcodemunch-codex-mcp-v2": "jCodeMunch",
+    "retrieval-jcodemunch-opencode-product-v1": "jCodeMunch",
+    "retrieval-codegraph-codex-mcp-v1": "CodeGraph",
+    "retrieval-codegraph-opencode-mcp-v1": "CodeGraph",
+    "retrieval-sigmap-codex-live-v1": "SigMap",
+    "retrieval-sigmap-opencode-product-v1": "SigMap",
+    "terminal-lowfat-opencode-plugin-v1": "LowFat",
+    "integrated-token-savior-codex-product-v2": "Token Savior",
+}
+TOOL_ORDER = [
+    "RTK", "Serena", "TokenJuice", "Ponytail", "Caveman",
+    "jCodeMunch", "CodeGraph", "SigMap", "LowFat", "Token Savior",
+]
+BASELINE_IDS = {
+    ("codex-cli", "fastify"): "baseline-fastify-20260802-p-72ac148f730b-r0",
+    ("codex-cli", "beets"): "baseline-beets-20260802-p-d8cfc5066f76-r0",
+    ("opencode-cli", "fastify"): "opencode-fastify-20260802-p-72ac148f730b-r1",
+    ("opencode-cli", "beets"): "opencode-beets-20260802-p-d8cfc5066f76-r1",
+}
+BLOCKED = [
+    {
+        "tool": "LowFat",
+        "runtime": "Codex",
+        "status": "blocked before provider execution",
+        "reason": "No qualified native Codex integration; no PATH-only or generic adapter substitution.",
+    },
+    {
+        "tool": "Token Savior",
+        "runtime": "OpenCode",
+        "status": "blocked before provider execution",
+        "reason": "No qualified native OpenCode integration; no generic adapter substitution.",
+    },
+]
+
+
+def usage(row: dict) -> dict[str, int]:
+    source = row["cumulative_token_usage"]
+    return {key: int(source.get(key) or 0) for key in (
+        "fresh_input_tokens", "cached_input_tokens", "output_tokens",
+        "reasoning_tokens", "total_provider_tokens",
+    )}
+
+
+def weighted(tokens: dict[str, int]) -> float:
+    return tokens["fresh_input_tokens"] + 0.1 * tokens["cached_input_tokens"] + 6 * tokens["output_tokens"]
+
+
+def runtime(row: dict) -> str:
+    descriptor = row.get("selected_execution", {}).get("descriptor", {})
+    return (
+        descriptor.get("runtime", {}).get("agent_runtime_id")
+        or descriptor.get("agent_condition", {}).get("runtime_id")
+    )
+
+
+def profile_id(row: dict) -> str:
+    return row["selected_execution"]["descriptor"]["selected_profile"]["profile_id"]
+
+
+def sequence_name(row: dict) -> str:
+    sequence_id = row["task_sequence"]["sequence_id"]
+    for name, value in SEQUENCES.items():
+        if sequence_id == value:
+            return name
+    raise ValueError(f"unexpected sequence: {sequence_id}")
+
+
+def passed_tasks(row: dict) -> int:
+    return sum(1 for item in row.get("per_task_results", []) if item.get("verifier_passed") is True)
+
+
+def pct(value: float) -> str:
+    return f"{value:+.2f}%"
+
+
+def integer(value: int | float) -> str:
+    return f"{int(round(value)):,}"
+
+
+def one_decimal(value: float) -> str:
+    return f"{value:,.1f}"
+
+
+def esc(value: object) -> str:
+    return html.escape(str(value), quote=True)
+
+
+def svg_text(x: float, y: float, text: str, size: int = 13, anchor: str = "start", fill: str = "#243447", weight: str = "400") -> str:
+    return f'<text x="{x:.1f}" y="{y:.1f}" font-family="Arial,Helvetica,sans-serif" font-size="{size}px" text-anchor="{anchor}" fill="{fill}" font-weight="{weight}">{esc(text)}</text>'
+
+
+def write_runtime_chart(rows: list[dict]) -> None:
+    selected = sorted(rows, key=lambda row: (0 if row["runtime"] == "codex-cli" else 1, TOOL_ORDER.index(row["tool"])))
+    width, height = 1120, 690
+    left, right, top = 235, 900, 88
+    row_height = 28
+    x_min, x_max = -40, 95
+    scale = (right - left) / (x_max - x_min)
+    zero = left - x_min * scale
+    parts = [f'<svg xmlns="http://www.w3.org/2000/svg" width="{width}" height="{height}" viewBox="0 0 {width} {height}">']
+    parts.append('<rect width="100%" height="100%" fill="white"/>')
+    parts.append(svg_text(28, 34, "Weighted token-cost change versus matched runtime baseline", 20, weight="700"))
+    parts.append(svg_text(28, 58, "Positive values indicate higher weighted usage; negative values indicate lower usage.", 13, fill="#536579"))
+    for tick in range(-40, 101, 20):
+        x = left + (tick - x_min) * scale
+        parts.append(f'<line x1="{x:.1f}" y1="{top-18}" x2="{x:.1f}" y2="{top + len(selected)*row_height}" stroke="#dfe6ee" stroke-width="1"/>')
+        parts.append(svg_text(x, top - 27, f"{tick:+d}%", 11, "middle", "#536579"))
+    parts.append(f'<line x1="{zero:.1f}" y1="{top-18}" x2="{zero:.1f}" y2="{top + len(selected)*row_height}" stroke="#243447" stroke-width="2"/>')
+    for index, row in enumerate(selected):
+        y = top + index * row_height
+        if index == 9:
+            parts.append(f'<line x1="28" y1="{y-15}" x2="1060" y2="{y-15}" stroke="#8b98a8" stroke-width="2"/>')
+        label = f"{('Codex' if row['runtime'] == 'codex-cli' else 'OpenCode')} · {row['tool']}"
+        parts.append(svg_text(left - 12, y + 5, label, 12, "end"))
+        value = row["weighted_delta_pct"]
+        x_value = zero + value * scale
+        x = min(zero, x_value)
+        bar_width = abs(x_value - zero)
+        fill = "#b94a48" if value >= 0 else "#16807a"
+        parts.append(f'<rect x="{x:.1f}" y="{y-9}" width="{max(bar_width,1):.1f}" height="18" rx="3" fill="{fill}"/>')
+        anchor = "start" if value >= 0 else "end"
+        label_x = x_value + (7 if value >= 0 else -7)
+        parts.append(svg_text(label_x, y + 5, pct(value), 12, anchor, fill, "700"))
+    parts.append(svg_text(zero, top + len(selected)*row_height + 38, "Matched baseline", 12, "middle", "#536579"))
+    parts.append('</svg>')
+    (FIGURES / "phase-2-lifecycle-v1-runtime-contrast.svg").write_text("\n".join(parts), encoding="utf-8")
+
+
+def write_heatmap(rows: list[dict]) -> None:
+    by_key = {(row["tool"], row["runtime"]): row for row in rows}
+    width, height = 1060, 570
+    left, top, cell_w, cell_h = 255, 95, 170, 38
+    cols = [("codex-cli", "fastify", "Codex\nFastify"), ("codex-cli", "beets", "Codex\nBeets"), ("opencode-cli", "fastify", "OpenCode\nFastify"), ("opencode-cli", "beets", "OpenCode\nBeets")]
+    parts = [f'<svg xmlns="http://www.w3.org/2000/svg" width="{width}" height="{height}" viewBox="0 0 {width} {height}">']
+    parts.append('<rect width="100%" height="100%" fill="white"/>')
+    parts.append(svg_text(28, 34, "Sequence-level weighted token-cost change", 20, weight="700"))
+    parts.append(svg_text(28, 58, "The two cells under each runtime show Fastify and Beets; color indicates direction, not statistical significance.", 13, fill="#536579"))
+    for index, (_, _, label) in enumerate(cols):
+        x = left + index * cell_w + cell_w / 2
+        first, second = label.split("\n")
+        parts.append(svg_text(x, top - 28, first, 12, "middle", "#243447", "700"))
+        parts.append(svg_text(x, top - 12, second, 12, "middle", "#243447", "700"))
+    for row_index, tool in enumerate(TOOL_ORDER):
+        y = top + row_index * cell_h
+        parts.append(svg_text(left - 14, y + 24, tool, 13, "end"))
+        for col_index, (runtime, lane, _) in enumerate(cols):
+            row = by_key.get((tool, runtime))
+            x = left + col_index * cell_w
+            if row is None:
+                fill = "#eef2f5"
+                label = "blocked"
+            else:
+                value = row["sequence_delta_pct"][lane]
+                intensity = min(abs(value) / 70, 1)
+                if value >= 0:
+                    fill = f"rgb({190 + int(45*intensity)},{235 - int(115*intensity)},{228 - int(115*intensity)})"
+                else:
+                    fill = f"rgb({220 - int(80*intensity)},{242 - int(75*intensity)},{238 - int(60*intensity)})"
+                label = pct(value)
+            parts.append(f'<rect x="{x:.1f}" y="{y:.1f}" width="{cell_w-6}" height="{cell_h-5}" rx="4" fill="{fill}" stroke="white"/>')
+            parts.append(svg_text(x + (cell_w-6)/2, y + 23, label, 12, "middle", "#243447", "700"))
+    parts.append(svg_text(28, height - 27, "Source: current accepted Lifecycle V1 registry; one treatment assignment per product/runtime and sequence.", 11, fill="#536579"))
+    parts.append('</svg>')
+    (FIGURES / "phase-2-lifecycle-v1-sequence-heatmap.svg").write_text("\n".join(parts), encoding="utf-8")
+
+
+def write_component_chart(aggregates: dict[str, dict]) -> None:
+    width, height = 1000, 420
+    left, right, top, bottom = 105, 925, 88, 335
+    y_min, y_max = -1_250_000, 1_750_000
+    scale = (bottom - top) / (y_max - y_min)
+    def y(value: float) -> float:
+        return bottom - (value - y_min) * scale
+    zero = y(0)
+    categories = [("Fresh input", "fresh_delta", "#4f81bd"), ("Cached input × 0.1", "cached_weighted_delta", "#8064a2"), ("Output × 6", "output_weighted_delta", "#c0504d")]
+    parts = [f'<svg xmlns="http://www.w3.org/2000/svg" width="{width}" height="{height}" viewBox="0 0 {width} {height}">']
+    parts.append('<rect width="100%" height="100%" fill="white"/>')
+    parts.append(svg_text(28, 34, "Weighted-cost component differences", 20, weight="700"))
+    parts.append(svg_text(28, 58, "Each bar is treatment minus the repeated matched baseline; reasoning is not added separately.", 13, fill="#536579"))
+    for tick in (-1_000_000, -500_000, 0, 500_000, 1_000_000, 1_500_000):
+        yy = y(tick)
+        parts.append(f'<line x1="{left}" y1="{yy:.1f}" x2="{right}" y2="{yy:.1f}" stroke="#dfe6ee" stroke-width="1"/>')
+        parts.append(svg_text(left - 10, yy + 4, f"{tick/1_000_000:+.1f}M", 11, "end", "#536579"))
+    parts.append(f'<line x1="{left}" y1="{zero:.1f}" x2="{right}" y2="{zero:.1f}" stroke="#243447" stroke-width="2"/>')
+    centers = [335, 685]
+    for center, runtime_name, runtime_key in zip(centers, ("Codex", "OpenCode"), ("codex-cli", "opencode-cli")):
+        parts.append(svg_text(center, bottom + 42, runtime_name, 14, "middle", "#243447", "700"))
+        for offset, (label, key, fill) in zip((-72, 0, 72), categories):
+            value = aggregates[runtime_key][key]
+            x = center + offset - 24
+            yy = y(value)
+            top_y = min(yy, zero)
+            h = abs(yy - zero)
+            parts.append(f'<rect x="{x:.1f}" y="{top_y:.1f}" width="48" height="{max(h,1):.1f}" rx="3" fill="{fill}"/>')
+            parts.append(svg_text(x + 24, top_y - 7 if value >= 0 else top_y + h + 16, f"{value/1_000_000:+.2f}M", 10, "middle", fill, "700"))
+    legend_x = 760
+    for i, (label, _, fill) in enumerate(categories):
+        x = legend_x + i*75
+        parts.append(f'<rect x="{x}" y="{height-30}" width="12" height="12" fill="{fill}"/>')
+        parts.append(svg_text(x+16, height-20, label.split()[0], 10, fill="#536579"))
+    parts.append('</svg>')
+    (FIGURES / "phase-2-lifecycle-v1-component-deltas.svg").write_text("\n".join(parts), encoding="utf-8")
+
+
+def build_dataset() -> dict:
+    raw = REGISTRY_PATH.read_bytes()
+    registry = json.loads(raw)
+    rows = registry["sessions"]
+    by_id = {row["session_id"]: row for row in rows}
+    treatments = [
+        row for row in rows
+        if row.get("session_role") == "individual_tool_treatment"
+        and row.get("task_sequence", {}).get("sequence_id") in SEQUENCES.values()
+        and (row.get("interpretation", {}).get("usable_for_primary_objective_token_comparison", True))
+    ]
+    if len(treatments) != 36:
+        raise RuntimeError(f"expected 36 accepted V1 treatment sessions, found {len(treatments)}")
+    if sum(passed_tasks(row) for row in treatments) != 108:
+        raise RuntimeError("V1 task acceptance count changed; inspect registry before regenerating")
+    baselines = {
+        key: by_id[session_id]
+        for key, session_id in BASELINE_IDS.items()
+    }
+    grouped: dict[tuple[str, str], list[dict]] = defaultdict(list)
+    for row in treatments:
+        grouped[(runtime(row), DISPLAY[profile_id(row)])].append(row)
+
+    condition_rows: list[dict] = []
+    for (runtime_id, tool), group in sorted(grouped.items()):
+        treatment_components = {key: sum(usage(row)[key] for row in group) for key in usage(group[0])}
+        baseline_components = {key: sum(usage(baselines[(runtime_id, sequence_name(row))])[key] for row in group) for key in usage(group[0])}
+        sequence_delta = {}
+        for lane in SEQUENCES:
+            treatment = next(row for row in group if sequence_name(row) == lane)
+            baseline = baselines[(runtime_id, lane)]
+            sequence_delta[lane] = round(100 * (weighted(usage(treatment)) / weighted(usage(baseline)) - 1), 2)
+        treatment_weighted = weighted(treatment_components)
+        baseline_weighted = weighted(baseline_components)
+        condition_rows.append({
+            "runtime": runtime_id,
+            "runtime_display": "Codex" if runtime_id == "codex-cli" else "OpenCode",
+            "tool": tool,
+            "profile_ids": sorted({profile_id(row) for row in group}),
+            "session_ids": [row["session_id"] for row in sorted(group, key=sequence_name)],
+            "sessions": len(group),
+            "accepted_tasks": sum(passed_tasks(row) for row in group),
+            "raw_provider_tokens": treatment_components["total_provider_tokens"],
+            "weighted_tokens": round(treatment_weighted, 1),
+            "baseline_raw_provider_tokens": baseline_components["total_provider_tokens"],
+            "baseline_weighted_tokens": round(baseline_weighted, 1),
+            "raw_delta_pct": round(100 * (treatment_components["total_provider_tokens"] / baseline_components["total_provider_tokens"] - 1), 2),
+            "weighted_delta_pct": round(100 * (treatment_weighted / baseline_weighted - 1), 2),
+            "sequence_delta_pct": sequence_delta,
+            "components": treatment_components,
+            "baseline_components": baseline_components,
+        })
+
+    aggregate_rows = {}
+    for runtime_id in ("codex-cli", "opencode-cli"):
+        selected = [row for row in condition_rows if row["runtime"] == runtime_id]
+        treatment = {key: sum(row["components"][key] for row in selected) for key in usage(treatments[0])}
+        baseline = {key: sum(row["baseline_components"][key] for row in selected) for key in usage(treatments[0])}
+        aggregate_rows[runtime_id] = {
+            "runtime_display": "Codex" if runtime_id == "codex-cli" else "OpenCode",
+            "conditions": len(selected),
+            "sessions": sum(row["sessions"] for row in selected),
+            "accepted_tasks": sum(row["accepted_tasks"] for row in selected),
+            "treatment": treatment,
+            "repeated_baseline": baseline,
+            "treatment_weighted": round(weighted(treatment), 1),
+            "baseline_weighted": round(weighted(baseline), 1),
+            "raw_delta_pct": round(100 * (treatment["total_provider_tokens"] / baseline["total_provider_tokens"] - 1), 2),
+            "weighted_delta_pct": round(100 * (weighted(treatment) / weighted(baseline) - 1), 2),
+            "fresh_delta": treatment["fresh_input_tokens"] - baseline["fresh_input_tokens"],
+            "cached_delta": treatment["cached_input_tokens"] - baseline["cached_input_tokens"],
+            "cached_weighted_delta": round(0.1 * (treatment["cached_input_tokens"] - baseline["cached_input_tokens"]), 1),
+            "output_delta": treatment["output_tokens"] - baseline["output_tokens"],
+            "output_weighted_delta": 6 * (treatment["output_tokens"] - baseline["output_tokens"]),
+            "reasoning_delta": treatment["reasoning_tokens"] - baseline["reasoning_tokens"],
+        }
+    dataset = {
+        "schema_version": 1,
+        "report_id": "phase-2-lifecycle-v1-natural-use-screening",
+        "evidence_snapshot": "2026-08-05",
+        "source_registry": {"path": "data/workflow-sessions.json", "sha256": hashlib.sha256(raw).hexdigest()},
+        "model_condition": {
+            "Codex": "codex-openai-gpt-5-6-sol-high",
+            "OpenCode": "opencode-openai-gpt-5-6-sol-high",
+        },
+        "sequences": list(SEQUENCES),
+        "usage_formula": "fresh input + 0.1 * cached input + 6 * output",
+        "treatment_condition_count": len(condition_rows),
+        "treatment_session_count": len(treatments),
+        "accepted_task_count": sum(passed_tasks(row) for row in treatments),
+        "conditions": condition_rows,
+        "aggregates": aggregate_rows,
+        "blocked": BLOCKED,
+    }
+    return dataset
+
+
+def report_markdown(data: dict) -> str:
+    conditions = data["conditions"]
+    by_tool = {(row["tool"], row["runtime"]): row for row in conditions}
+    codex = data["aggregates"]["codex-cli"]
+    opencode = data["aggregates"]["opencode-cli"]
+    codex_base = codex["repeated_baseline"]
+    open_base = opencode["repeated_baseline"]
+    blocked_lines = "\n".join(f"- **{item['tool']} / {item['runtime']}:** {item['reason']}" for item in BLOCKED)
+    table_lines = []
+    for tool in TOOL_ORDER:
+        c = by_tool.get((tool, "codex-cli"))
+        o = by_tool.get((tool, "opencode-cli"))
+        c_tasks = f"{c['accepted_tasks']}/6" if c else "blocked"
+        o_tasks = f"{o['accepted_tasks']}/6" if o else "blocked"
+        table_lines.append(f"| {tool} | {pct(c['weighted_delta_pct']) if c else '—'} | {pct(o['weighted_delta_pct']) if o else '—'} | {pct(c['raw_delta_pct']) if c else '—'} | {pct(o['raw_delta_pct']) if o else '—'} | {c_tasks} | {o_tasks} |")
+
+    component_lines = []
+    for runtime_id, aggregate in (("codex-cli", codex), ("opencode-cli", opencode)):
+        treatment = aggregate["treatment"]
+        baseline = aggregate["repeated_baseline"]
+        component_lines.extend([
+            f"| {aggregate['runtime_display']} | Fresh input | {integer(treatment['fresh_input_tokens'])} | {integer(baseline['fresh_input_tokens'])} | {integer(treatment['fresh_input_tokens'] - baseline['fresh_input_tokens'])} |",
+            f"| {aggregate['runtime_display']} | Cached input | {integer(treatment['cached_input_tokens'])} | {integer(baseline['cached_input_tokens'])} | {integer(treatment['cached_input_tokens'] - baseline['cached_input_tokens'])} |",
+            f"| {aggregate['runtime_display']} | Output | {integer(treatment['output_tokens'])} | {integer(baseline['output_tokens'])} | {integer(treatment['output_tokens'] - baseline['output_tokens'])} |",
+            f"| {aggregate['runtime_display']} | Raw provider tokens | {integer(treatment['total_provider_tokens'])} | {integer(baseline['total_provider_tokens'])} | {integer(treatment['total_provider_tokens'] - baseline['total_provider_tokens'])} |",
+            f"| {aggregate['runtime_display']} | Weighted token cost | {one_decimal(aggregate['treatment_weighted'])} | {one_decimal(aggregate['baseline_weighted'])} | {one_decimal(aggregate['treatment_weighted'] - aggregate['baseline_weighted'])} |",
+        ])
+
+    return f"""# Phase 2: Lifecycle V1 natural-use screening of token-saving integrations
+
+## Executive summary
+
+- **Scope:** 18 accepted product/runtime conditions, 36 persistent workflow sessions, and 108 accepted task outcomes across Fastify and Beets.
+- **Codex:** nine product profiles used **32,960,518 raw provider tokens** and **6,223,979.8 weighted token-cost units**, versus **22,192,524** and **4,644,340.2** for repeated bare-Codex baselines: **+48.52% raw, +34.01% weighted**.
+- **OpenCode:** nine product profiles used **27,628,957 raw provider tokens** and **5,417,264.0 weighted units**, versus **34,901,208** and **6,579,482.4** for the matched no-treatment OpenCode runtime control: **−20.84% raw, −17.66% weighted**.
+- **Correctness:** all 108 accepted V1 tasks passed the active compile-based acceptance checks. Quality and maintainability were diagnostic, not token-eligibility gates.
+- **Conclusion:** the screen shows a strong runtime × integration interaction. It does **not** establish a universally effective token-saving product or a stable ranking.
+
+![Weighted token-cost change by runtime and product](figures/phase-2-lifecycle-v1-runtime-contrast.svg)
+
+## Research question
+
+Does assigning a documented token-saving integration reduce provider token usage in a realistic persistent coding workflow, relative to the matched no-treatment condition for the same runtime?
+
+The estimand is assignment to the installed, native product surface under natural use. The evaluator did not require tool calls, minimum uptake, or a passing implementation to retain a token sample.
+
+## Experimental design
+
+| Item | Definition |
+|---|---|
+| Workflow | Fastify and Beets; feature implementation, behavior-preserving refactor, code review/correction |
+| Session model | Three sequential tasks in one persistent agent session |
+| Codex condition | Codex CLI, OpenAI GPT-5.6 Sol, `high` reasoning; bare-Codex matched baseline |
+| OpenCode condition | OpenCode CLI 1.18.9, OpenAI GPT-5.6 Sol, `high` reasoning; native no-treatment runtime control |
+| Treatment policy | Pinned native integration; natural use; no evaluator-forced invocation |
+| Primary measure | Raw provider-reported token volume |
+| Secondary measure | `fresh input + 0.1 × cached input + 6 × output` |
+| Accounting | Reasoning is an output subset and is not added again |
+| Evidence snapshot | 2026-08-05; registry SHA-256 `{data['source_registry']['sha256']}` |
+
+The same two baseline sessions are repeated descriptively across conditions within each runtime. Repetition does not create independent controls. Codex and OpenCode are reported separately because their runtime surfaces, event schemas, and control conditions differ.
+
+## Results
+
+### Aggregate runtime results
+
+| Runtime | Conditions | Treatment sessions | Tasks | Treatment raw | Repeated baseline raw | Raw change | Treatment weighted | Baseline weighted | Weighted change |
+|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|
+| Codex | 9 | 18 | 54/54 | {integer(codex['treatment']['total_provider_tokens'])} | {integer(codex['repeated_baseline']['total_provider_tokens'])} | {pct(codex['raw_delta_pct'])} | {one_decimal(codex['treatment_weighted'])} | {one_decimal(codex['baseline_weighted'])} | {pct(codex['weighted_delta_pct'])} |
+| OpenCode | 9 | 18 | 54/54 | {integer(opencode['treatment']['total_provider_tokens'])} | {integer(opencode['repeated_baseline']['total_provider_tokens'])} | {pct(opencode['raw_delta_pct'])} | {one_decimal(opencode['treatment_weighted'])} | {one_decimal(opencode['baseline_weighted'])} | {pct(opencode['weighted_delta_pct'])} |
+
+### Product/runtime contrasts
+
+| Product | Codex weighted | OpenCode weighted | Codex raw | OpenCode raw | Codex tasks | OpenCode tasks |
+|---|---:|---:|---:|---:|---:|---:|
+{chr(10).join(table_lines)}
+
+Negative values indicate lower treatment usage. The table is descriptive; it is not a stable product ranking.
+
+![Sequence-level weighted token-cost change](figures/phase-2-lifecycle-v1-sequence-heatmap.svg)
+
+### Token accounting decomposition
+
+| Runtime | Component | Treatment | Repeated baseline | Difference |
+|---|---|---:|---:|---:|
+{chr(10).join(component_lines)}
+
+In Codex, the weighted increase is distributed across fresh input, cached input, and output. In OpenCode, all three components decrease in aggregate; the cached-input reduction contributes most of the weighted reduction.
+
+![Weighted-cost component differences](figures/phase-2-lifecycle-v1-component-deltas.svg)
+
+## Interpretation
+
+### Codex
+
+- No Codex profile reduced weighted usage in this screen.
+- Serena was approximately neutral at **+0.83%**; TokenJuice was **+8.37%**; the remaining profiles were higher by **+27.74% to +86.96%**.
+- RTK’s official Codex setup was used: `rtk init --global --codex`, lane-private `AGENTS.md` and `RTK.md`, and a pinned binary. Codex has an instruction-based integration rather than RTK’s automatic hook. The trace used many RTK prefixes, but unsupported forms such as `rtk rg` and `rtk sed` should be treated as passthrough rather than specialized filters.
+- Caveman’s skills installed successfully, but the trace did not show behavioral activation. Its intended compression targets natural-language responses while coding commands, code, and reasoning remain in the workflow context.
+
+### OpenCode
+
+- Eight of nine OpenCode profiles reduced weighted usage; SigMap was slightly higher at **+2.54%**.
+- The largest reductions were TokenJuice (**−28.49%**), RTK (**−26.12%**), Serena (**−26.03%**), and Caveman (**−27.43%**).
+- These are OpenCode-native integration observations. They should not be transferred to bare Codex, where the integration surface and trajectory differ.
+
+### Runtime interaction
+
+The direction changes are systematic rather than a single outlier: the Codex aggregate increased by 34.01% weighted, while the OpenCode aggregate decreased by 17.66%. This is evidence of runtime-specific behavior, not proof that one runtime or product caused the full difference. Prompt serialization, caching, tool routing, command trajectories, and runtime accounting semantics remain potential contributors.
+
+## Blocked combinations
+
+{blocked_lines}
+
+These combinations consumed no provider tokens and are excluded from the treatment totals.
+
+## Limitations
+
+- Each product/runtime condition has one treatment assignment per workflow; there is no within-condition replicate.
+- Repeated baselines are descriptive and do not provide 18 independent control pairs.
+- The two workflows cover only TypeScript and Python projects; results may not generalize to other repositories or task families.
+- Raw and weighted measures answer different questions. Weighted cost is a declared diagnostic convention, not monetary cost.
+- Provider usage does not identify which exact prompt, cached context, tool result, or trajectory step produced a difference.
+- Compile/verifier success does not establish equal maintainability, correctness outside the tested contracts, latency, CPU cost, memory cost, or operational cost.
+- Cross-runtime contrasts are screening evidence. They are not a causal comparison of Codex versus OpenCode.
+
+## Conclusion
+
+Lifecycle V1 shows that token-saving integrations can reduce provider usage in one runtime and increase it in another. In this screen, all nine Codex treatment conditions were at or above the matched weighted baseline, while eight of nine OpenCode conditions were below it. The result supports runtime-specific replication and better trajectory instrumentation—not a universal token-saving claim or deployment recommendation.
+
+## Data availability
+
+- Authoritative registry: [`data/workflow-sessions.json`](../../data/workflow-sessions.json)
+- Derived report dataset: [`phase-2-lifecycle-v1-report-data-20260807.json`](../../sources/evaluations/audits/phase-2-lifecycle-v1-report-data-20260807.json)
+- Accepted requested-tool audit: [`requested-five-tools-lifecycle-v1-20260805.json`](../../sources/evaluations/audits/requested-five-tools-lifecycle-v1-20260805.json)
+- Codex panel: [`current-panel-codex-sol-high-lifecycle-v1-20260805.json`](../../sources/evaluations/audits/current-panel-codex-sol-high-lifecycle-v1-20260805.json)
+- OpenCode panel: [`requested-panel-opencode-sol-high-lifecycle-v1-20260805.json`](../../sources/evaluations/audits/requested-panel-opencode-sol-high-lifecycle-v1-20260805.json)
+- Compact workflow evidence: [`sources/evaluations/workflow-sessions/`](../../sources/evaluations/workflow-sessions/)
+"""
+
+
+def main() -> None:
+    FIGURES.mkdir(parents=True, exist_ok=True)
+    data = build_dataset()
+    DATA_PATH.write_text(json.dumps(data, indent=2) + "\n", encoding="utf-8")
+    write_runtime_chart(data["conditions"])
+    write_heatmap(data["conditions"])
+    write_component_chart(data["aggregates"])
+    REPORT_PATH.write_text(report_markdown(data), encoding="utf-8")
+    print(json.dumps({
+        "report": str(REPORT_PATH.relative_to(ROOT)),
+        "data": str(DATA_PATH.relative_to(ROOT)),
+        "figures": sorted(str(path.relative_to(ROOT)) for path in FIGURES.glob("phase-2-lifecycle-v1-*.svg")),
+        "conditions": data["treatment_condition_count"],
+        "sessions": data["treatment_session_count"],
+        "tasks": data["accepted_task_count"],
+    }, indent=2))
+
+
+if __name__ == "__main__":
+    main()
