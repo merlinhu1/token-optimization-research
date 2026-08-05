@@ -90,6 +90,8 @@ PROJECT_META: dict[str, dict[str, str]] = {
 }
 
 SUPPORTED_WORKFLOW_TOOL_PROFILES = {
+    "retrieval-sdl-mcp-codex-product-v1": "sdl-mcp-codex-product-v1",
+    "retrieval-sdl-mcp-opencode-product-v1": "sdl-mcp-opencode-product-v1",
     "retrieval-leanctx": "lean-ctx",
     "integrated-leanctx-codex-hybrid-v1": "leanctx-codex-hybrid-v1",
     "retrieval-codegraph": "codegraph",
