@@ -16,7 +16,7 @@ Truth documents:
 truth_documents:
   - path: docs/truthmark/engineering/research/evidence-stages.md
     lane: engineering
-    kind: engineering-contract
+    kind: contract
 ```
 
 Code surface:
@@ -42,7 +42,7 @@ Truth documents:
 truth_documents:
   - path: docs/truthmark/engineering/research/methodology.md
     lane: engineering
-    kind: engineering-workflow
+    kind: workflow
 ```
 
 Code surface:
@@ -70,7 +70,7 @@ Truth documents:
 truth_documents:
   - path: docs/truthmark/engineering/research/token-accounting.md
     lane: engineering
-    kind: engineering-contract
+    kind: contract
 ```
 
 Code surface:
@@ -107,6 +107,7 @@ Code surface:
 - scripts/run_opencode_workflow_model_condition.py
 - scripts/run_opencode_openrouter_workflow_model_condition.py
 - scripts/run_sequential_workflow_matrix.py
+- scripts/test_workflow_evaluation_contract.py
 - scripts/test_claude_code_usage_contract.py
 - scripts/trust_codex_plugin_hooks.py
 - scripts/update_workflow_runbook.py
@@ -134,7 +135,7 @@ Truth documents:
 truth_documents:
   - path: docs/truthmark/engineering/research/software-quality-diagnostics.md
     lane: engineering
-    kind: engineering-contract
+    kind: contract
 ```
 
 Code surface:
@@ -157,7 +158,7 @@ Truth documents:
 truth_documents:
   - path: docs/truthmark/engineering/research/stack-compatibility.md
     lane: engineering
-    kind: engineering-architecture
+    kind: architecture
 ```
 
 Code surface:
@@ -180,7 +181,7 @@ Truth documents:
 truth_documents:
   - path: docs/truthmark/engineering/research/current-findings.md
     lane: engineering
-    kind: engineering-behavior
+    kind: behavior
 ```
 
 Code surface:
@@ -202,7 +203,7 @@ Truth documents:
 truth_documents:
   - path: docs/truthmark/engineering/research/agent-workflow.md
     lane: engineering
-    kind: engineering-workflow
+    kind: workflow
 ```
 
 Code surface:

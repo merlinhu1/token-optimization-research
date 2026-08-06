@@ -1,6 +1,6 @@
 ---
 status: active
-truth_kind: engineering-workflow
+truth_kind: workflow
 doc_type: workflow
 source_of_truth:
   - ../../../../AGENTS.md
@@ -84,7 +84,7 @@ Apply the synchronization workflow after an evaluation run, qualification/protoc
 - ../../../../scripts/update_workflow_runbook.py
 - ../../routes/areas.md
 
-## Engineering Decisions
+## Product Decisions
 
 Repository changes follow the machine registries and generated runbook as the authoritative execution record; Truthmark routing remains documentation metadata and does not override evaluation controls.
 

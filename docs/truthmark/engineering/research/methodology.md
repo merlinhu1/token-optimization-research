@@ -1,6 +1,6 @@
 ---
 status: active
-truth_kind: engineering-workflow
+truth_kind: workflow
 doc_type: workflow
 source_of_truth:
   - ../../../../docs/methodology/README.md
@@ -108,6 +108,6 @@ Its main quality risk is over-scoped claims, not lack of prose polish.
 - ../../../../.agents/skills/citation-light-prior-art-mapper.md
 - ../../../../.agents/skills/figure-table-planner.md
 
-## Engineering Decisions
+## Product Decisions
 
 Research reports must distinguish mechanism, compatibility, benchmark, reproduction, and recommendation claims and must preserve claim-evidence traceability.
