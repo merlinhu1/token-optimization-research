@@ -15,25 +15,25 @@ Truth documents:
 ```yaml
 truth_documents:
   - path: docs/truthmark/engineering/research/agent-workflow.md
-    kind: engineering-workflow
+    kind: workflow
     lane: engineering
   - path: docs/truthmark/engineering/research/current-findings.md
-    kind: engineering-behavior
+    kind: behavior
     lane: engineering
   - path: docs/truthmark/engineering/research/evidence-stages.md
-    kind: engineering-contract
+    kind: contract
     lane: engineering
   - path: docs/truthmark/engineering/research/methodology.md
-    kind: engineering-workflow
+    kind: workflow
     lane: engineering
   - path: docs/truthmark/engineering/research/software-quality-diagnostics.md
-    kind: engineering-contract
+    kind: contract
     lane: engineering
   - path: docs/truthmark/engineering/research/stack-compatibility.md
-    kind: engineering-architecture
+    kind: architecture
     lane: engineering
   - path: docs/truthmark/engineering/research/token-accounting.md
-    kind: engineering-contract
+    kind: contract
     lane: engineering
 ```
 

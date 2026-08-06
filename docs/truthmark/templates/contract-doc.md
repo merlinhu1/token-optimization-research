@@ -1,7 +1,7 @@
 ---
 status: active
 doc_type: contract
-truth_kind: engineering-contract
+truth_kind: contract
 last_reviewed: 2026-08-05
 source_of_truth:
   - {{source_of_truth}}

@@ -1,7 +1,7 @@
 ---
 status: active
 doc_type: architecture
-truth_kind: engineering-architecture
+truth_kind: architecture
 last_reviewed: 2026-08-05
 source_of_truth:
   - {{source_of_truth}}
