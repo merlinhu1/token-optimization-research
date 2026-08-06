@@ -2401,8 +2401,8 @@ def controller_validation_python() -> str:
 
 def run_validation(summary_dir: Path, validation_python: str | None = None) -> dict[str, Any]:
     truthmark_candidates = [
-        "/opt/data/.local/bin/truthmark",
         shutil.which("truthmark"),
+        "/opt/data/.local/bin/truthmark",
         str(Path.home() / ".local/bin/truthmark"),
     ]
     truthmark = next(
