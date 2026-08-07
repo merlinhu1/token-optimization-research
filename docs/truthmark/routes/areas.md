@@ -16,7 +16,7 @@ Truth documents:
 truth_documents:
   - path: docs/truthmark/engineering/research/evidence-stages.md
     lane: engineering
-    kind: contract
+    kind: engineering-contract
 ```
 
 Code surface:
@@ -42,7 +42,7 @@ Truth documents:
 truth_documents:
   - path: docs/truthmark/engineering/research/methodology.md
     lane: engineering
-    kind: workflow
+    kind: engineering-workflow
 ```
 
 Code surface:
@@ -70,7 +70,7 @@ Truth documents:
 truth_documents:
   - path: docs/truthmark/engineering/research/token-accounting.md
     lane: engineering
-    kind: contract
+    kind: engineering-contract
 ```
 
 Code surface:
@@ -107,7 +107,6 @@ Code surface:
 - scripts/run_opencode_workflow_model_condition.py
 - scripts/run_opencode_openrouter_workflow_model_condition.py
 - scripts/run_sequential_workflow_matrix.py
-- scripts/test_workflow_evaluation_contract.py
 - scripts/test_claude_code_usage_contract.py
 - scripts/trust_codex_plugin_hooks.py
 - scripts/update_workflow_runbook.py
@@ -135,7 +134,7 @@ Truth documents:
 truth_documents:
   - path: docs/truthmark/engineering/research/software-quality-diagnostics.md
     lane: engineering
-    kind: contract
+    kind: engineering-contract
 ```
 
 Code surface:
@@ -158,7 +157,7 @@ Truth documents:
 truth_documents:
   - path: docs/truthmark/engineering/research/stack-compatibility.md
     lane: engineering
-    kind: architecture
+    kind: engineering-architecture
 ```
 
 Code surface:
@@ -181,7 +180,7 @@ Truth documents:
 truth_documents:
   - path: docs/truthmark/engineering/research/current-findings.md
     lane: engineering
-    kind: behavior
+    kind: engineering-behavior
 ```
 
 Code surface:
@@ -203,7 +202,7 @@ Truth documents:
 truth_documents:
   - path: docs/truthmark/engineering/research/agent-workflow.md
     lane: engineering
-    kind: workflow
+    kind: engineering-workflow
 ```
 
 Code surface:
@@ -215,9 +214,6 @@ Code surface:
 - data/repository-fixtures.json
 - scripts/update_workflow_runbook.py
 - scripts/validate_repository.py
-- scripts/extract_oh_my_pi_usage.py
-- scripts/oh_my_pi_workflow_adapter.py
-- scripts/run_oh_my_pi_workflow_model_condition.py
 - README.md
 
 Update truth when:
