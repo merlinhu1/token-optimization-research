@@ -11,7 +11,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 REGISTRY_PATH = ROOT / "data/workflow-sessions.json"
 REPORT_PATH = ROOT / "docs/papers/phase-2-lifecycle-v1-natural-use-screening.md"
-DATA_PATH = ROOT / "sources/evaluations/audits/phase-2-lifecycle-v1-report-data-20260807.json"
+DATA_PATH = ROOT / "sources/evaluations/audits/phase-2-lifecycle-v1-report-data-20260808.json"
 FIGURES = ROOT / "docs/papers/figures"
 
 SEQUENCES = {
@@ -38,16 +38,113 @@ DISPLAY = {
     "terminal-lowfat-opencode-plugin-v1": "LowFat",
     "integrated-token-savior-codex-product-v2": "Token Savior",
     "retrieval-graphify-codex-skill-v1": "Graphify",
+    "retrieval-graphify-opencode-product-v1": "Graphify",
     "integrated-leanctx-codex-hybrid-v1": "LeanCTX",
+    "integrated-leanctx-opencode-hybrid-v2": "LeanCTX",
     "terminal-snip-codex-hook-v1": "Snip",
+    "terminal-snip-opencode-plugin-v2": "Snip",
     "retrieval-cartog-codex-product-v2": "Cartog",
     "codescope-codex-product-v1": "CodeScope",
+    "codescope-opencode-product-v1": "CodeScope",
 }
 TOOL_ORDER = [
     "RTK", "Serena", "TokenJuice", "Ponytail", "Caveman",
     "jCodeMunch", "CodeGraph", "SigMap", "LowFat", "Token Savior",
     "Graphify", "LeanCTX", "Snip", "Cartog", "CodeScope",
 ]
+TOOL_DISCUSSION = {
+    "RTK": (
+        "[RTK](../tool-dossiers/rtk-ai-rtk.md) rewrites eligible shell commands through guarded, "
+        "command-specific output filters. The runtime split is consistent with integration depth: OpenCode can "
+        "apply its native plugin automatically, while the Codex arm depended on routing instructions and included "
+        "unsupported `rtk rg` and `rtk sed` forms that passed through. This is a mechanism-consistent inference, "
+        "not a causal attribution."
+    ),
+    "Serena": (
+        "[Serena](../tool-dossiers/oraios-serena.md) uses language-server-style MCP tools to retrieve symbols instead "
+        "of broad files. Its near-neutral Codex result suggests that retrieval savings approximately balanced the "
+        "MCP and trajectory overhead there; the OpenCode reduction is consistent with more effective targeted "
+        "retrieval, but the retained runs do not isolate tool uptake from runtime behavior."
+    ),
+    "TokenJuice": (
+        "[TokenJuice](../tool-dossiers/vincentkoc-tokenjuice.md) applies rule-driven command-output reducers through "
+        "host hooks or plugins. The OpenCode reduction is consistent with automatic interception reducing terminal "
+        "context, while the Codex increase indicates that any filtered output was outweighed by hook, cache, or "
+        "trajectory effects in that runtime."
+    ),
+    "Ponytail": (
+        "[Ponytail](../tool-dossiers/dietrichgebert-ponytail.md) changes implementation policy toward smaller, simpler "
+        "artifacts rather than compressing an input stream. That can reduce generated code or prose, but its persistent "
+        "instructions can also change planning and tool trajectories. The opposite runtime directions therefore fit "
+        "activation and trajectory differences better than a uniform compression effect."
+    ),
+    "Caveman": (
+        "[Caveman](../tool-dossiers/juliusbrussee-caveman.md) primarily compresses assistant prose, not shell output or "
+        "retrieved code. The Codex trace did not show clear behavioral activation, so fixed guidance and unchanged tool "
+        "context could dominate there. The OpenCode reduction is compatible with terser responses or a shorter "
+        "trajectory, but the run does not identify which mechanism produced it."
+    ),
+    "jCodeMunch": (
+        "[jCodeMunch](../tool-dossiers/jgravelle-jcodemunch-mcp.md) offers token-budgeted symbol retrieval through a "
+        "large MCP schema and installed guidance. The small OpenCode reduction and larger Codex increase are consistent "
+        "with fixed schema/guidance overhead being repaid only when retrieval displaces enough native reading; these "
+        "runs do not provide a no-guidance or tool-uptake ablation."
+    ),
+    "CodeGraph": (
+        "[CodeGraph](../tool-dossiers/cognitx-leyton-codegraph.md) replaces broad source exploration with bounded graph "
+        "queries over a prebuilt Neo4j index. The OpenCode reduction is consistent with focused queries displacing file "
+        "reads, whereas the Codex increase suggests that graph instructions, returned context, or extra turns exceeded "
+        "the avoided reads."
+    ),
+    "SigMap": (
+        "[SigMap](../tool-dossiers/manojmallick-sigmap.md) exposes signatures, dependency maps, routing, and session "
+        "memory. Neither runtime showed a meaningful reduction: the OpenCode result was close to neutral and Codex was "
+        "higher. A plausible explanation is that these small tasks were already navigable with native search, leaving "
+        "index, MCP, and returned-map overhead without enough displaced context."
+    ),
+    "LowFat": (
+        "[LowFat](../tool-dossiers/zdk-lowfat.md) automatically filters supported command output and preserves raw "
+        "failure logs. Its OpenCode reduction is consistent with a narrow automatic layer saving terminal context "
+        "without requiring a model retrieval decision. Coverage is limited to supported commands, and no qualified "
+        "Codex condition exists for a runtime comparison."
+    ),
+    "Token Savior": (
+        "[Token Savior](../tool-dossiers/mibayy-token-savior.md) combines retrieval, indexing, memory, compact summaries, "
+        "and optional Bash rewriting. Its large Codex increase is consistent with a broad multi-surface integration "
+        "adding schemas, state, and tool turns faster than it removed context. Because the treatment is integrated, "
+        "this screen cannot identify which component drove the increase."
+    ),
+    "Graphify": (
+        "[Graphify](../tool-dossiers/safishamsi-graphify.md) supplies a warm graph plus host-specific skills, instructions, "
+        "and plugins. OpenCode's always-on policy can place graph guidance directly on shell calls, which may help explain "
+        "its reduction; the Codex increase is consistent with graph and guidance overhead without enough displaced "
+        "reading. The cross-runtime contrast remains descriptive."
+    ),
+    "LeanCTX": (
+        "[LeanCTX](../tool-dossiers/yvgude-lean-ctx.md) is a broad hybrid layer spanning MCP retrieval, compressed reads, "
+        "search, shell output, memory, and a warm index. Both runtimes used more weighted tokens, consistent with its "
+        "multi-surface context and extra interaction costs exceeding any local compression. A component ablation would "
+        "be required to distinguish retrieval, shell, and guidance effects."
+    ),
+    "Snip": (
+        "[Snip](../tool-dossiers/edouard-claude-snip.md) rewrites supported shell producers through command-specific "
+        "filters. The OpenCode reduction is consistent with effective automatic interception, while the Codex increase "
+        "suggests lower rewrite coverage, pass-throughs, or a longer recovery trajectory. The retained evidence does not "
+        "separate those possibilities."
+    ),
+    "Cartog": (
+        "[Cartog](../tool-dossiers/jrollin-cartog.md) provides indexed graph navigation and token-bounded task-context "
+        "bundles. The Codex increase indicates that indexing guidance, query responses, or longer tool chains exceeded "
+        "the broad reads they may have replaced. OpenCode was excluded before provider execution because the pinned "
+        "binary failed artifact-identity verification, so that absence is not a performance result."
+    ),
+    "CodeScope": (
+        "[CodeScope](../tool-dossiers/onur-gokyildiz-bhi-codescope.md) combines graph/search tools with large-output "
+        "archiving and optional compaction. Its OpenCode result was effectively neutral and Codex was modestly higher, "
+        "consistent with bounded retrieval roughly balancing setup, schema, and tool-call overhead in one runtime but "
+        "not the other. A near-zero single-run delta should not be read as a stable win."
+    ),
+}
 BASELINE_IDS = {
     ("codex-cli", "fastify"): "baseline-fastify-20260802-p-72ac148f730b-r0",
     ("codex-cli", "beets"): "baseline-beets-20260802-p-d8cfc5066f76-r0",
@@ -66,6 +163,12 @@ BLOCKED = [
         "runtime": "OpenCode",
         "status": "blocked before provider execution",
         "reason": "No qualified native OpenCode integration; no generic adapter substitution.",
+    },
+    {
+        "tool": "Cartog",
+        "runtime": "OpenCode",
+        "status": "blocked before provider execution",
+        "reason": "The pinned native binary did not reproduce the frozen artifact identity; no provider execution was attempted.",
     },
 ]
 
@@ -118,6 +221,27 @@ def one_decimal(value: float) -> str:
     return f"{value:,.1f}"
 
 
+def dominant_component(row: dict) -> str:
+    treatment = row["components"]
+    baseline = row["baseline_components"]
+    deltas = {
+        "fresh input": treatment["fresh_input_tokens"] - baseline["fresh_input_tokens"],
+        "cached input × 0.1": 0.1 * (treatment["cached_input_tokens"] - baseline["cached_input_tokens"]),
+        "output × 6": 6 * (treatment["output_tokens"] - baseline["output_tokens"]),
+    }
+    label, value = max(deltas.items(), key=lambda item: abs(item[1]))
+    return f"largest component: {label} {value:+,.1f} units"
+
+
+def tool_result_summary(tool: str, by_tool: dict[tuple[str, str], dict]) -> str:
+    results = []
+    for runtime_id, display in (("codex-cli", "Codex"), ("opencode-cli", "OpenCode")):
+        row = by_tool.get((tool, runtime_id))
+        if row:
+            results.append(f"{display} {pct(row['weighted_delta_pct'])} ({dominant_component(row)})")
+    return f"**Measured outcome:** {'; '.join(results)}."
+
+
 def esc(value: object) -> str:
     return html.escape(str(value), quote=True)
 
@@ -128,9 +252,10 @@ def svg_text(x: float, y: float, text: str, size: int = 13, anchor: str = "start
 
 def write_runtime_chart(rows: list[dict]) -> None:
     selected = sorted(rows, key=lambda row: (0 if row["runtime"] == "codex-cli" else 1, TOOL_ORDER.index(row["tool"])))
-    width, height = 1120, 690
+    width = 1120
     left, right, top = 235, 900, 88
     row_height = 28
+    height = top + len(selected) * row_height + 70
     x_min, x_max = -40, 95
     scale = (right - left) / (x_max - x_min)
     zero = left - x_min * scale
@@ -145,7 +270,7 @@ def write_runtime_chart(rows: list[dict]) -> None:
     parts.append(f'<line x1="{zero:.1f}" y1="{top-18}" x2="{zero:.1f}" y2="{top + len(selected)*row_height}" stroke="#243447" stroke-width="2"/>')
     for index, row in enumerate(selected):
         y = top + index * row_height
-        if index == 9:
+        if index and row["runtime"] != selected[index - 1]["runtime"]:
             parts.append(f'<line x1="28" y1="{y-15}" x2="1060" y2="{y-15}" stroke="#8b98a8" stroke-width="2"/>')
         label = f"{('Codex' if row['runtime'] == 'codex-cli' else 'OpenCode')} · {row['tool']}"
         parts.append(svg_text(left - 12, y + 5, label, 12, "end"))
@@ -165,8 +290,8 @@ def write_runtime_chart(rows: list[dict]) -> None:
 
 def write_heatmap(rows: list[dict]) -> None:
     by_key = {(row["tool"], row["runtime"]): row for row in rows}
-    width, height = 1060, 570
     left, top, cell_w, cell_h = 255, 95, 170, 38
+    width, height = 1060, top + len(TOOL_ORDER) * cell_h + 50
     cols = [("codex-cli", "fastify", "Codex\nFastify"), ("codex-cli", "beets", "Codex\nBeets"), ("opencode-cli", "fastify", "OpenCode\nFastify"), ("opencode-cli", "beets", "OpenCode\nBeets")]
     parts = [f'<svg xmlns="http://www.w3.org/2000/svg" width="{width}" height="{height}" viewBox="0 0 {width} {height}">']
     parts.append('<rect width="100%" height="100%" fill="white"/>')
@@ -331,7 +456,7 @@ def build_dataset() -> dict:
     dataset = {
         "schema_version": 1,
         "report_id": "phase-2-lifecycle-v1-natural-use-screening",
-        "evidence_snapshot": "2026-08-07",
+        "evidence_snapshot": "2026-08-08",
         "source_registry": {"path": "data/workflow-sessions.json", "sha256": hashlib.sha256(raw).hexdigest()},
         "model_condition": {
             "Codex": "codex-openai-gpt-5-6-sol-high",
@@ -357,6 +482,12 @@ def report_markdown(data: dict) -> str:
     codex_base = codex["repeated_baseline"]
     open_base = opencode["repeated_baseline"]
     blocked_lines = "\n".join(f"- **{item['tool']} / {item['runtime']}:** {item['reason']}" for item in BLOCKED)
+    if set(TOOL_DISCUSSION) != set(TOOL_ORDER):
+        raise RuntimeError("every reported tool must have exactly one discussion entry")
+    discussion_lines = "\n\n".join(
+        f"#### {tool}\n\n{tool_result_summary(tool, by_tool)} {TOOL_DISCUSSION[tool]}"
+        for tool in TOOL_ORDER
+    )
     table_lines = []
     for tool in TOOL_ORDER:
         c = by_tool.get((tool, "codex-cli"))
@@ -421,7 +552,7 @@ The estimand is assignment to the installed, native product surface under natura
 | Treatment policy | Pinned native integration; natural use; no evaluator-forced invocation |
 | Primary measure | Weighted token cost |
 | Accounting | `fresh input + 0.1 × cached input + 6 × output`; reasoning is an output subset and is not added again |
-| Evidence snapshot | 2026-08-07; registry SHA-256 `{data['source_registry']['sha256']}` |
+| Evidence snapshot | {data['evidence_snapshot']}; registry SHA-256 `{data['source_registry']['sha256']}` |
 
 The same two baseline sessions are repeated descriptively across conditions within each runtime. Repetition does not create independent controls. Codex and OpenCode are reported separately because their runtime surfaces, event schemas, and control conditions differ.
 
@@ -460,8 +591,6 @@ In Codex, the weighted increase is distributed across fresh input, cached input,
 
 - {codex_reduced} of {codex_conditions} Codex profiles reduced weighted token cost in this screen.
 - These Codex observations are descriptive screening evidence; they do not establish a stable product ranking.
-- RTK’s official Codex setup was used: `rtk init --global --codex`, lane-private `AGENTS.md` and `RTK.md`, and a pinned binary. Codex has an instruction-based integration rather than RTK’s automatic hook.
-- Caveman’s skills installed successfully, but the trace did not show behavioral activation. Its intended compression targets natural-language responses while coding commands, code, and reasoning remain in the workflow context.
 
 ### OpenCode
 
@@ -471,6 +600,12 @@ In Codex, the weighted increase is distributed across fresh input, cached input,
 ### Runtime interaction
 
 The Codex aggregate changed by {pct(codex['weighted_delta_pct'])} weighted, while the OpenCode aggregate changed by {pct(opencode['weighted_delta_pct'])}. This is evidence of runtime-specific behavior, not proof that one runtime or product caused the full difference. Prompt serialization, caching, tool routing, command trajectories, and runtime accounting semantics remain potential contributors.
+
+### Per-tool discussion
+
+The measured component differences below identify where weighted cost changed; they do not establish why it changed. Mechanism explanations are source- and trace-grounded hypotheses that would require targeted ablations or replication to become causal claims.
+
+{discussion_lines}
 
 ## Blocked combinations
 
@@ -495,7 +630,7 @@ Lifecycle V1 shows that token-saving integrations can reduce **weighted token co
 ## Data availability
 
 - Authoritative registry: [`data/workflow-sessions.json`](../../data/workflow-sessions.json)
-- Derived report dataset: [`phase-2-lifecycle-v1-report-data-20260807.json`](../../sources/evaluations/audits/phase-2-lifecycle-v1-report-data-20260807.json)
+- Derived report dataset: [`phase-2-lifecycle-v1-report-data-20260808.json`](../../sources/evaluations/audits/phase-2-lifecycle-v1-report-data-20260808.json)
 - Cumulative Codex usage audit: [`codex-cumulative-usage-accounting-20260718.json`](../../sources/evaluations/audits/codex-cumulative-usage-accounting-20260718.json)
 - Compact workflow evidence: [`sources/evaluations/workflow-sessions/`](../../sources/evaluations/workflow-sessions/)
 """

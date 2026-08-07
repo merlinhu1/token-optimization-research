@@ -1,6 +1,6 @@
 ---
 status: active
-truth_kind: architecture
+truth_kind: engineering-architecture
 doc_type: architecture
 source_of_truth:
   - ../../../../data/compatibility-edges.json
@@ -101,6 +101,6 @@ Surface ownership makes stack design testable and reviewable.
 - ../../../../docs/papers/phase-1-compatibility-safe-token-saving-stacks.md
 - ../../../../.agents/skills/stack-ablation-planner.md
 
-## Product Decisions
+## Engineering Decisions
 
 A compatibility-safe stack assigns one clear owner to each token-relevant surface; overlapping retrieval, compaction, memory, hook, or proxy tools require explicit ablation identities.
