@@ -37,10 +37,16 @@ DISPLAY = {
     "retrieval-sigmap-opencode-product-v1": "SigMap",
     "terminal-lowfat-opencode-plugin-v1": "LowFat",
     "integrated-token-savior-codex-product-v2": "Token Savior",
+    "retrieval-graphify-codex-skill-v1": "Graphify",
+    "integrated-leanctx-codex-hybrid-v1": "LeanCTX",
+    "terminal-snip-codex-hook-v1": "Snip",
+    "retrieval-cartog-codex-product-v2": "Cartog",
+    "codescope-codex-product-v1": "CodeScope",
 }
 TOOL_ORDER = [
     "RTK", "Serena", "TokenJuice", "Ponytail", "Caveman",
     "jCodeMunch", "CodeGraph", "SigMap", "LowFat", "Token Savior",
+    "Graphify", "LeanCTX", "Snip", "Cartog", "CodeScope",
 ]
 BASELINE_IDS = {
     ("codex-cli", "fastify"): "baseline-fastify-20260802-p-72ac148f730b-r0",
@@ -238,16 +244,29 @@ def build_dataset() -> dict:
     registry = json.loads(raw)
     rows = registry["sessions"]
     by_id = {row["session_id"]: row for row in rows}
-    treatments = [
+    candidates = [
         row for row in rows
         if row.get("session_role") == "individual_tool_treatment"
         and row.get("task_sequence", {}).get("sequence_id") in SEQUENCES.values()
         and (row.get("interpretation", {}).get("usable_for_primary_objective_token_comparison", True))
     ]
-    if len(treatments) != 36:
-        raise RuntimeError(f"expected 36 accepted V1 treatment sessions, found {len(treatments)}")
-    if sum(passed_tasks(row) for row in treatments) != 108:
-        raise RuntimeError("V1 task acceptance count changed; inspect registry before regenerating")
+    candidate_groups: dict[tuple[str, str], list[dict]] = defaultdict(list)
+    for row in candidates:
+        candidate_groups[(runtime(row), profile_id(row))].append(row)
+    paired_keys = {
+        key for key, group in candidate_groups.items()
+        if len(group) == len(SEQUENCES)
+        and {sequence_name(row) for row in group} == set(SEQUENCES)
+    }
+    treatments = [
+        row for row in candidates
+        if (runtime(row), profile_id(row)) in paired_keys
+    ]
+    if len(treatments) % len(SEQUENCES) != 0:
+        raise RuntimeError(f"paired V1 treatment selection is not sequence-complete: {len(treatments)} sessions")
+    expected_tasks = len(treatments) * 3
+    if sum(passed_tasks(row) for row in treatments) != expected_tasks:
+        raise RuntimeError(f"V1 task acceptance count changed; expected {expected_tasks} accepted tasks")
     baselines = {
         key: by_id[session_id]
         for key, session_id in BASELINE_IDS.items()
@@ -312,7 +331,7 @@ def build_dataset() -> dict:
     dataset = {
         "schema_version": 1,
         "report_id": "phase-2-lifecycle-v1-natural-use-screening",
-        "evidence_snapshot": "2026-08-05",
+        "evidence_snapshot": "2026-08-07",
         "source_registry": {"path": "data/workflow-sessions.json", "sha256": hashlib.sha256(raw).hexdigest()},
         "model_condition": {
             "Codex": "codex-openai-gpt-5-6-sol-high",
@@ -344,35 +363,50 @@ def report_markdown(data: dict) -> str:
         o = by_tool.get((tool, "opencode-cli"))
         c_tasks = f"{c['accepted_tasks']}/6" if c else "blocked"
         o_tasks = f"{o['accepted_tasks']}/6" if o else "blocked"
-        table_lines.append(f"| {tool} | {pct(c['weighted_delta_pct']) if c else '—'} | {pct(o['weighted_delta_pct']) if o else '—'} | {pct(c['raw_delta_pct']) if c else '—'} | {pct(o['raw_delta_pct']) if o else '—'} | {c_tasks} | {o_tasks} |")
+        table_lines.append(f"| {tool} | {pct(c['weighted_delta_pct']) if c else '—'} | {pct(o['weighted_delta_pct']) if o else '—'} | {c_tasks} | {o_tasks} |")
 
     component_lines = []
     for runtime_id, aggregate in (("codex-cli", codex), ("opencode-cli", opencode)):
         treatment = aggregate["treatment"]
         baseline = aggregate["repeated_baseline"]
+        treatment_components = {
+            "fresh_input": treatment["fresh_input_tokens"],
+            "cached_input": 0.1 * treatment["cached_input_tokens"],
+            "output": 6 * treatment["output_tokens"],
+        }
+        baseline_components = {
+            "fresh_input": baseline["fresh_input_tokens"],
+            "cached_input": 0.1 * baseline["cached_input_tokens"],
+            "output": 6 * baseline["output_tokens"],
+        }
         component_lines.extend([
-            f"| {aggregate['runtime_display']} | Fresh input | {integer(treatment['fresh_input_tokens'])} | {integer(baseline['fresh_input_tokens'])} | {integer(treatment['fresh_input_tokens'] - baseline['fresh_input_tokens'])} |",
-            f"| {aggregate['runtime_display']} | Cached input | {integer(treatment['cached_input_tokens'])} | {integer(baseline['cached_input_tokens'])} | {integer(treatment['cached_input_tokens'] - baseline['cached_input_tokens'])} |",
-            f"| {aggregate['runtime_display']} | Output | {integer(treatment['output_tokens'])} | {integer(baseline['output_tokens'])} | {integer(treatment['output_tokens'] - baseline['output_tokens'])} |",
-            f"| {aggregate['runtime_display']} | Raw provider tokens | {integer(treatment['total_provider_tokens'])} | {integer(baseline['total_provider_tokens'])} | {integer(treatment['total_provider_tokens'] - baseline['total_provider_tokens'])} |",
+            f"| {aggregate['runtime_display']} | Fresh input | {one_decimal(treatment_components['fresh_input'])} | {one_decimal(baseline_components['fresh_input'])} | {one_decimal(treatment_components['fresh_input'] - baseline_components['fresh_input'])} |",
+            f"| {aggregate['runtime_display']} | Cached input × 0.1 | {one_decimal(treatment_components['cached_input'])} | {one_decimal(baseline_components['cached_input'])} | {one_decimal(treatment_components['cached_input'] - baseline_components['cached_input'])} |",
+            f"| {aggregate['runtime_display']} | Output × 6 | {one_decimal(treatment_components['output'])} | {one_decimal(baseline_components['output'])} | {one_decimal(treatment_components['output'] - baseline_components['output'])} |",
             f"| {aggregate['runtime_display']} | Weighted token cost | {one_decimal(aggregate['treatment_weighted'])} | {one_decimal(aggregate['baseline_weighted'])} | {one_decimal(aggregate['treatment_weighted'] - aggregate['baseline_weighted'])} |",
         ])
 
+    codex_conditions = codex["conditions"]
+    opencode_conditions = opencode["conditions"]
+    codex_tasks = codex["accepted_tasks"]
+    opencode_tasks = opencode["accepted_tasks"]
+    codex_reduced = sum(row["runtime"] == "codex-cli" and row["weighted_delta_pct"] < 0 for row in conditions)
+    opencode_reduced = sum(row["runtime"] == "opencode-cli" and row["weighted_delta_pct"] < 0 for row in conditions)
     return f"""# Phase 2: Lifecycle V1 natural-use screening of token-saving integrations
 
 ## Executive summary
 
-- **Scope:** 18 accepted product/runtime conditions, 36 persistent workflow sessions, and 108 accepted task outcomes across Fastify and Beets.
-- **Codex:** nine product profiles used **32,960,518 raw provider tokens** and **6,223,979.8 weighted token-cost units**, versus **22,192,524** and **4,644,340.2** for repeated bare-Codex baselines: **+48.52% raw, +34.01% weighted**.
-- **OpenCode:** nine product profiles used **27,628,957 raw provider tokens** and **5,417,264.0 weighted units**, versus **34,901,208** and **6,579,482.4** for the matched no-treatment OpenCode runtime control: **−20.84% raw, −17.66% weighted**.
-- **Correctness:** all 108 accepted V1 tasks passed the active compile-based acceptance checks. Quality and maintainability were diagnostic, not token-eligibility gates.
+- **Scope:** {data['treatment_condition_count']} matched product/runtime conditions, {data['treatment_session_count']} persistent workflow sessions, and {data['accepted_task_count']} accepted task outcomes across Fastify and Beets.
+- **Codex:** {codex_conditions} product profiles used **{one_decimal(codex['treatment_weighted'])} weighted token-cost units**, versus **{one_decimal(codex['baseline_weighted'])}** for repeated bare-Codex baselines: **{pct(codex['weighted_delta_pct'])}**.
+- **OpenCode:** {opencode_conditions} product profiles used **{one_decimal(opencode['treatment_weighted'])} weighted token-cost units**, versus **{one_decimal(opencode['baseline_weighted'])}** for the matched no-treatment OpenCode runtime control: **{pct(opencode['weighted_delta_pct'])}**.
+- **Correctness:** all {data['accepted_task_count']} accepted V1 tasks passed the active compile-based acceptance checks. Quality and maintainability were diagnostic, not token-eligibility gates.
 - **Conclusion:** the screen shows a strong runtime × integration interaction. It does **not** establish a universally effective token-saving product or a stable ranking.
 
 ![Weighted token-cost change by runtime and product](figures/phase-2-lifecycle-v1-runtime-contrast.svg)
 
 ## Research question
 
-Does assigning a documented token-saving integration reduce provider token usage in a realistic persistent coding workflow, relative to the matched no-treatment condition for the same runtime?
+Does assigning a documented token-saving integration reduce **weighted token cost** in a realistic persistent coding workflow, relative to the matched no-treatment condition for the same runtime?
 
 The estimand is assignment to the installed, native product surface under natural use. The evaluator did not require tool calls, minimum uptake, or a passing implementation to retain a token sample.
 
@@ -385,10 +419,9 @@ The estimand is assignment to the installed, native product surface under natura
 | Codex condition | Codex CLI, OpenAI GPT-5.6 Sol, `high` reasoning; bare-Codex matched baseline |
 | OpenCode condition | OpenCode CLI 1.18.9, OpenAI GPT-5.6 Sol, `high` reasoning; native no-treatment runtime control |
 | Treatment policy | Pinned native integration; natural use; no evaluator-forced invocation |
-| Primary measure | Raw provider-reported token volume |
-| Secondary measure | `fresh input + 0.1 × cached input + 6 × output` |
-| Accounting | Reasoning is an output subset and is not added again |
-| Evidence snapshot | 2026-08-05; registry SHA-256 `{data['source_registry']['sha256']}` |
+| Primary measure | Weighted token cost |
+| Accounting | `fresh input + 0.1 × cached input + 6 × output`; reasoning is an output subset and is not added again |
+| Evidence snapshot | 2026-08-07; registry SHA-256 `{data['source_registry']['sha256']}` |
 
 The same two baseline sessions are repeated descriptively across conditions within each runtime. Repetition does not create independent controls. Codex and OpenCode are reported separately because their runtime surfaces, event schemas, and control conditions differ.
 
@@ -396,15 +429,15 @@ The same two baseline sessions are repeated descriptively across conditions with
 
 ### Aggregate runtime results
 
-| Runtime | Conditions | Treatment sessions | Tasks | Treatment raw | Repeated baseline raw | Raw change | Treatment weighted | Baseline weighted | Weighted change |
-|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|
-| Codex | 9 | 18 | 54/54 | {integer(codex['treatment']['total_provider_tokens'])} | {integer(codex['repeated_baseline']['total_provider_tokens'])} | {pct(codex['raw_delta_pct'])} | {one_decimal(codex['treatment_weighted'])} | {one_decimal(codex['baseline_weighted'])} | {pct(codex['weighted_delta_pct'])} |
-| OpenCode | 9 | 18 | 54/54 | {integer(opencode['treatment']['total_provider_tokens'])} | {integer(opencode['repeated_baseline']['total_provider_tokens'])} | {pct(opencode['raw_delta_pct'])} | {one_decimal(opencode['treatment_weighted'])} | {one_decimal(opencode['baseline_weighted'])} | {pct(opencode['weighted_delta_pct'])} |
+| Runtime | Conditions | Treatment sessions | Tasks | Treatment weighted cost | Baseline weighted cost | Weighted change |
+|---|---:|---:|---:|---:|---:|---:|
+| Codex | {codex_conditions} | {codex['sessions']} | {codex_tasks}/{codex_tasks} | {one_decimal(codex['treatment_weighted'])} | {one_decimal(codex['baseline_weighted'])} | {pct(codex['weighted_delta_pct'])} |
+| OpenCode | {opencode_conditions} | {opencode['sessions']} | {opencode_tasks}/{opencode_tasks} | {one_decimal(opencode['treatment_weighted'])} | {one_decimal(opencode['baseline_weighted'])} | {pct(opencode['weighted_delta_pct'])} |
 
 ### Product/runtime contrasts
 
-| Product | Codex weighted | OpenCode weighted | Codex raw | OpenCode raw | Codex tasks | OpenCode tasks |
-|---|---:|---:|---:|---:|---:|---:|
+| Product | Codex weighted Δ | OpenCode weighted Δ | Codex tasks | OpenCode tasks |
+|---|---:|---:|---:|---:|
 {chr(10).join(table_lines)}
 
 Negative values indicate lower treatment usage. The table is descriptive; it is not a stable product ranking.
@@ -425,48 +458,45 @@ In Codex, the weighted increase is distributed across fresh input, cached input,
 
 ### Codex
 
-- No Codex profile reduced weighted usage in this screen.
-- Serena was approximately neutral at **+0.83%**; TokenJuice was **+8.37%**; the remaining profiles were higher by **+27.74% to +86.96%**.
-- RTK’s official Codex setup was used: `rtk init --global --codex`, lane-private `AGENTS.md` and `RTK.md`, and a pinned binary. Codex has an instruction-based integration rather than RTK’s automatic hook. The trace used many RTK prefixes, but unsupported forms such as `rtk rg` and `rtk sed` should be treated as passthrough rather than specialized filters.
+- {codex_reduced} of {codex_conditions} Codex profiles reduced weighted token cost in this screen.
+- These Codex observations are descriptive screening evidence; they do not establish a stable product ranking.
+- RTK’s official Codex setup was used: `rtk init --global --codex`, lane-private `AGENTS.md` and `RTK.md`, and a pinned binary. Codex has an instruction-based integration rather than RTK’s automatic hook.
 - Caveman’s skills installed successfully, but the trace did not show behavioral activation. Its intended compression targets natural-language responses while coding commands, code, and reasoning remain in the workflow context.
 
 ### OpenCode
 
-- Eight of nine OpenCode profiles reduced weighted usage; SigMap was slightly higher at **+2.54%**.
-- The largest reductions were TokenJuice (**−28.49%**), RTK (**−26.12%**), Serena (**−26.03%**), and Caveman (**−27.43%**).
+- {opencode_reduced} of {opencode_conditions} OpenCode profiles reduced weighted token cost in this screen.
 - These are OpenCode-native integration observations. They should not be transferred to bare Codex, where the integration surface and trajectory differ.
 
 ### Runtime interaction
 
-The direction changes are systematic rather than a single outlier: the Codex aggregate increased by 34.01% weighted, while the OpenCode aggregate decreased by 17.66%. This is evidence of runtime-specific behavior, not proof that one runtime or product caused the full difference. Prompt serialization, caching, tool routing, command trajectories, and runtime accounting semantics remain potential contributors.
+The Codex aggregate changed by {pct(codex['weighted_delta_pct'])} weighted, while the OpenCode aggregate changed by {pct(opencode['weighted_delta_pct'])}. This is evidence of runtime-specific behavior, not proof that one runtime or product caused the full difference. Prompt serialization, caching, tool routing, command trajectories, and runtime accounting semantics remain potential contributors.
 
 ## Blocked combinations
 
 {blocked_lines}
 
-These combinations consumed no provider tokens and are excluded from the treatment totals.
+These combinations produced no provider-backed treatment result and are excluded from the treatment totals.
 
 ## Limitations
 
 - Each product/runtime condition has one treatment assignment per workflow; there is no within-condition replicate.
-- Repeated baselines are descriptive and do not provide 18 independent control pairs.
+- Repeated baselines are descriptive and do not provide {codex_conditions + opencode_conditions} independent control pairs.
 - The two workflows cover only TypeScript and Python projects; results may not generalize to other repositories or task families.
-- Raw and weighted measures answer different questions. Weighted cost is a declared diagnostic convention, not monetary cost.
-- Provider usage does not identify which exact prompt, cached context, tool result, or trajectory step produced a difference.
+- Weighted token cost is the sole outcome reported here. It is a declared accounting convention, not monetary cost.
+- The weighted account does not identify which exact prompt, cached context, tool result, or trajectory step produced a difference.
 - Compile/verifier success does not establish equal maintainability, correctness outside the tested contracts, latency, CPU cost, memory cost, or operational cost.
 - Cross-runtime contrasts are screening evidence. They are not a causal comparison of Codex versus OpenCode.
 
 ## Conclusion
 
-Lifecycle V1 shows that token-saving integrations can reduce provider usage in one runtime and increase it in another. In this screen, all nine Codex treatment conditions were at or above the matched weighted baseline, while eight of nine OpenCode conditions were below it. The result supports runtime-specific replication and better trajectory instrumentation—not a universal token-saving claim or deployment recommendation.
+Lifecycle V1 shows that token-saving integrations can reduce **weighted token cost** in one runtime and increase it in another. In this screen, {codex_reduced} of {codex_conditions} Codex treatment conditions and {opencode_reduced} of {opencode_conditions} OpenCode conditions were below the matched weighted baseline. The result supports runtime-specific replication and better trajectory instrumentation—not a universal token-saving claim or deployment recommendation.
 
 ## Data availability
 
 - Authoritative registry: [`data/workflow-sessions.json`](../../data/workflow-sessions.json)
 - Derived report dataset: [`phase-2-lifecycle-v1-report-data-20260807.json`](../../sources/evaluations/audits/phase-2-lifecycle-v1-report-data-20260807.json)
-- Accepted requested-tool audit: [`requested-five-tools-lifecycle-v1-20260805.json`](../../sources/evaluations/audits/requested-five-tools-lifecycle-v1-20260805.json)
-- Codex panel: [`current-panel-codex-sol-high-lifecycle-v1-20260805.json`](../../sources/evaluations/audits/current-panel-codex-sol-high-lifecycle-v1-20260805.json)
-- OpenCode panel: [`requested-panel-opencode-sol-high-lifecycle-v1-20260805.json`](../../sources/evaluations/audits/requested-panel-opencode-sol-high-lifecycle-v1-20260805.json)
+- Cumulative Codex usage audit: [`codex-cumulative-usage-accounting-20260718.json`](../../sources/evaluations/audits/codex-cumulative-usage-accounting-20260718.json)
 - Compact workflow evidence: [`sources/evaluations/workflow-sessions/`](../../sources/evaluations/workflow-sessions/)
 """
 
