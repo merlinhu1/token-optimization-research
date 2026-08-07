@@ -16,7 +16,7 @@ Truth documents:
 truth_documents:
   - path: docs/truthmark/engineering/research/evidence-stages.md
     lane: engineering
-    kind: contract
+    kind: engineering-contract
 ```
 
 Code surface:
@@ -42,7 +42,7 @@ Truth documents:
 truth_documents:
   - path: docs/truthmark/engineering/research/methodology.md
     lane: engineering
-    kind: workflow
+    kind: engineering-workflow
 ```
 
 Code surface:
@@ -50,6 +50,7 @@ Code surface:
 - docs/research/**
 - docs/papers/**
 - docs/reference/research-standards.md
+- scripts/generate_phase2_v1_report.py
 - prompts/researcher.md
 - prompts/paper-writer.md
 - templates/report.md
@@ -70,7 +71,7 @@ Truth documents:
 truth_documents:
   - path: docs/truthmark/engineering/research/token-accounting.md
     lane: engineering
-    kind: contract
+    kind: engineering-contract
 ```
 
 Code surface:
@@ -135,7 +136,7 @@ Truth documents:
 truth_documents:
   - path: docs/truthmark/engineering/research/software-quality-diagnostics.md
     lane: engineering
-    kind: contract
+    kind: engineering-contract
 ```
 
 Code surface:
@@ -158,7 +159,7 @@ Truth documents:
 truth_documents:
   - path: docs/truthmark/engineering/research/stack-compatibility.md
     lane: engineering
-    kind: architecture
+    kind: engineering-architecture
 ```
 
 Code surface:
@@ -181,7 +182,7 @@ Truth documents:
 truth_documents:
   - path: docs/truthmark/engineering/research/current-findings.md
     lane: engineering
-    kind: behavior
+    kind: engineering-behavior
 ```
 
 Code surface:
@@ -203,7 +204,7 @@ Truth documents:
 truth_documents:
   - path: docs/truthmark/engineering/research/agent-workflow.md
     lane: engineering
-    kind: workflow
+    kind: engineering-workflow
 ```
 
 Code surface:
@@ -215,9 +216,6 @@ Code surface:
 - data/repository-fixtures.json
 - scripts/update_workflow_runbook.py
 - scripts/validate_repository.py
-- scripts/extract_oh_my_pi_usage.py
-- scripts/oh_my_pi_workflow_adapter.py
-- scripts/run_oh_my_pi_workflow_model_condition.py
 - README.md
 
 Update truth when:
