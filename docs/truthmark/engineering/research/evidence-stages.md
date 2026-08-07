@@ -1,6 +1,6 @@
 ---
 status: active
-truth_kind: engineering-contract
+truth_kind: contract
 doc_type: contract
 source_of_truth:
   - ../../../../docs/methodology/README.md
@@ -98,6 +98,6 @@ Evidence stages keep polished research prose aligned with inspected or measured 
 - ../../../../scripts/audit_dossier_snapshots.py
 - ../../../../templates/tool-dossier.md
 
-## Engineering Decisions
+## Product Decisions
 
 Evidence-stage promotion requires source-grounded provenance and the repository’s documented validation contract; source inspection alone cannot establish token-saving effectiveness.

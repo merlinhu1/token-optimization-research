@@ -1,6 +1,6 @@
 ---
 status: active
-truth_kind: engineering-contract
+truth_kind: contract
 doc_type: contract
 source_of_truth:
   - ../../../../data/workflow-sessions.json
@@ -141,7 +141,7 @@ Update this document whenever token eligibility, comparison identity, provider a
 - ../../../../sources/evaluations/audits/opencode-next-five-batch2-results-20260730.json
 - ../../../../scripts/validate_repository.py
 
-## Engineering Decisions
+## Product Decisions
 
 Token comparisons use one final monotonic cumulative provider snapshot per distinct thread and compare only compatible baseline pools; weighted units are fresh input plus 0.1 times cached input plus 6 times output.
 

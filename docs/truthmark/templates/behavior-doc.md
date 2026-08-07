@@ -1,7 +1,7 @@
 ---
 status: active
 doc_type: behavior
-truth_kind: engineering-behavior
+truth_kind: behavior
 last_reviewed: 2026-08-05
 source_of_truth:
   - {{source_of_truth}}
