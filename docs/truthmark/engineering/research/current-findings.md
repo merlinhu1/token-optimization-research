@@ -5,7 +5,7 @@ doc_type: behavior
 source_of_truth:
   - ../../../../data/workflow-sessions.json
   - ../../../../docs/research/roadmap.md
-last_reviewed: 2026-08-02
+last_reviewed: 2026-08-08
 ---
 
 # Current Findings
@@ -23,7 +23,8 @@ This document covers the active two-lane Lifecycle V1 portfolio, retained produc
 - The runnable portfolio contains exactly two Lifecycle V1 sequences—Fastify and Beets. Terraform's owner-declared-invalid V1 r0 was removed under a machine-readable invalidation receipt and has no current launch path.
 - Every active sequence contains feature implementation, behavior-preserving refactor, and code review/correction in that order; every task seeds an authentic semantic regression from completed upstream behavior and asks the agent to implement the requested outcome correctly through normal repository search and related-code inspection.
 - Each active lane uses a composite preseeded start, sequential prompt disclosure, persistent agent/tool state, and final-only cumulative verification. Affected-component and project-wide compilation are controller-only pass/fail gates and are not disclosed as agent instructions. No acceptance-test assets are injected; tests, behavior, style, maintainability, and source review are diagnostic only.
-- Provider-free Lifecycle V1 qualification passes all standalone seed/fix round-trips, composite application, controller compilation, cumulative, aggregate, and project-wide boundaries. Fastify and Beets retain GPT-5.6 Sol/`high` bare-Codex r0 pilots, while treatment remains blocked pending the required pilot audit. Terraform's invalid V1 r0 frozen protocol and raw evidence were removed; retained task and qualification sources cannot authorize a rerun or treatment.
+- Provider-free Lifecycle V1 qualification passes all standalone seed/fix round-trips, composite application, controller compilation, cumulative, aggregate, and project-wide boundaries. Fastify and Beets retain GPT-5.6 Sol/`high` bare-Codex r0 pilots. The 2026-08-08 OpenCode screen then completed eight accepted treatment lanes for Graphify, LeanCTX, Snip, and CodeScope across both workflows; every lane passed its three task verifiers and retained provider usage. Cartog was explicitly excluded before provider execution because its pinned native binary did not reproduce the frozen artifact identity.
+- The 2026-08-08 OpenCode observations are single-replicate and `eligible_for_ranking: false`. Against matched bare OpenCode samples, two-sequence weighted deltas were Graphify -12.49%, LeanCTX +16.33%, Snip -26.61%, and CodeScope -0.52%. Raw and weighted totals, immutable run records, comparisons, and protocol references are recorded in `docs/papers/opencode-four-tool-lifecycle-v1-screen-20260808.md`; no pass-selected reruns were performed.
 - Codex 0.144.0 emits cumulative `ThreadTokenUsage.total` snapshots in every resumed `turn.completed.usage` event. The legacy extractor summed those snapshots, so the original 30 retained persistent sessions carry inflated legacy totals in their immutable compact summaries and registry records. The source-backed correction audit supplies authoritative final-per-thread totals for those records; later sessions were recorded with corrected accounting at ingestion.
 - Fastify contributes three retained Luna/`xhigh` active-default baseline token samples after correction: 6,420,074 tokens at `r0`, 6,712,770 at `r1`, and 4,617,123 at `r2`. All passed 3/3 verifier tasks; review fields remain diagnostic.
 - Invalid fixture records and stale protocols were removed at the experiment owner's explicit direction.
