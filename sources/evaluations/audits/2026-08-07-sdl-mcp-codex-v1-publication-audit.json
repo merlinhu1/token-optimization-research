@@ -1,0 +1,78 @@
+{
+  "schema_version": 1,
+  "artifact_type": "workflow-evaluation-accepted-publication-audit",
+  "recorded_at": "2026-08-07",
+  "candidate": "GlitterKill/sdl-mcp",
+  "candidate_version": "0.13.2",
+  "candidate_commit": "6e8d6b43c023ae300f501b31bce397e7b3f0cc3d",
+  "evaluation_sequence": "Codex V1 first; OpenCode deferred",
+  "publication_commit": "a082c573c4f1e52e4c48af4a5bf5dcb0ff267ff4",
+  "sequence_id": "fastify-lifecycle-sequence-v1",
+  "profile_id": "retrieval-sdl-mcp-codex-product-v1",
+  "replicate_index": 1,
+  "model_condition": {
+    "id": "codex-openai-gpt-5-6-sol-high",
+    "runtime": "codex-cli",
+    "provider": "openai",
+    "model": "gpt-5.6-sol",
+    "reasoning_effort": "high",
+    "codex_version": "codex-cli 0.145.0"
+  },
+  "session_id": "sdl-mcp-codex-v1-fastify-20260807-p-72ac148f730b-r1",
+  "execution_status": "completed-authoritative",
+  "session_acceptance": true,
+  "publication_status": "accepted-after-retained-evidence-revalidation",
+  "matrix_execution_passed": false,
+  "revalidation": {
+    "text_fix_commit": "b4ffbdd6",
+    "repository_validation": "passed",
+    "truthmark_check_errors": 0,
+    "truthmark_index_errors": 0,
+    "workflow_contract_tests": 322,
+    "artifact_hashes_reverified": true
+  },
+  "tasks": {
+    "passed": 3,
+    "total": 3,
+    "codex_exit_codes": [0, 0, 0],
+    "final_verifier_exit_code": 0,
+    "tool_isolation_audit_exit_code": 0
+  },
+  "provider_usage": {
+    "baseline_total_provider_tokens": 1462656,
+    "treatment_total_provider_tokens": 1337596,
+    "delta_total_provider_tokens": -125060,
+    "delta_percent": -8.550199089874857,
+    "baseline_freshish_tokens": 104832,
+    "treatment_freshish_tokens": 96508,
+    "delta_freshish_tokens": -8324,
+    "delta_freshish_percent": -7.940323565323565,
+    "measurement_source": "Codex JSONL usage events; provider-reported cumulative totals"
+  },
+  "setup": {
+    "source_install": "normal npm lifecycle installation passed; native/tree-sitter setup passed; pinned embedding models downloaded into isolated cache",
+    "codex_lane_setup": "Fastify init/index/guidance/hooks/MCP handshake passed",
+    "mcp_handshake": "initialize-and-tools-list passed; seven SDL-MCP tools advertised",
+    "tool_state": "warm-index"
+  },
+  "raw_artifacts": {
+    "run_root": "/opt/data/eval-workflow-lanes/workflow-matrix-20260807T151514196279Z-p630231-r1",
+    "run_record": "/opt/data/eval-workflow-lanes/workflow-matrix-20260807T151514196279Z-p630231-r1/fastify-lifecycle-sequence-v1--retrieval-sdl-mcp-codex-product-v1/checkout/sources/evaluations/workflow-sessions/sdl-mcp-codex-v1-fastify-20260807-p-72ac148f730b-r1/run.json",
+    "run_record_sha256": "860f0a0d225989214386eb21ba7b27815c489c2e0499f1d377a5dae25b3d1fb0",
+    "evidence_bundle": "/opt/data/eval-workflow-lanes/workflow-matrix-20260807T151514196279Z-p630231-r1/fastify-lifecycle-sequence-v1--retrieval-sdl-mcp-codex-product-v1/checkout/sources/evaluations/workflow-sessions/sdl-mcp-codex-v1-fastify-20260807-p-72ac148f730b-r1/evidence.jsonl.gz",
+    "evidence_bundle_sha256": "2e73de1808e2736d9d6ac07c2aadee7a41b4ac21e9a0e001b9649f6e008e798e",
+    "final_diff": "/opt/data/eval-workflow-lanes/workflow-matrix-20260807T151514196279Z-p630231-r1/fastify-lifecycle-sequence-v1--retrieval-sdl-mcp-codex-product-v1/checkout/sources/evaluations/workflow-sessions/sdl-mcp-codex-v1-fastify-20260807-p-72ac148f730b-r1/changes.diff",
+    "final_diff_sha256": "5d4ec074c831e5521039ef4e3b792362947e769b070a90b34b093fb28cb6671f",
+    "comparison_receipt": "/opt/data/eval-workflow-lanes/workflow-matrix-20260807T151514196279Z-p630231-r1/fastify-lifecycle-sequence-v1--retrieval-sdl-mcp-codex-product-v1/checkout/sources/evaluations/workflow-sessions/baseline-fastify-20260807-vs-sdl-mcp-codex-v1-p-72ac148f730b-r1.json"
+  },
+  "historical_publication_blockers": [
+    "validate_repository.py failed because the existing .truthmark/config.yml uses unsupported Truthmark schema fields and platform value gemini-cli",
+    "truthmark check --json failed on the same pre-existing .truthmark/config.yml schema errors",
+    "truthmark index --json failed on the same pre-existing .truthmark/config.yml schema errors"
+  ],
+  "scope_decisions": {
+    "beets": "blocked before provider spend: SDL-MCP 0.13.2 init/index was killed or segfaulted on the Beets fixture during native/provider-first indexing",
+    "opencode": "not run; intentionally deferred after the accepted Codex screening sample to avoid an unnecessary second provider spend while Beets remains blocked",
+    "token_claim": "single-run screening observation; accepted and published as auditable evidence, but not a population estimate or stable ranking"
+  }
+}
