@@ -1,6 +1,6 @@
 ---
 status: active
-truth_kind: behavior
+truth_kind: engineering-behavior
 doc_type: behavior
 source_of_truth:
   - ../../../../data/workflow-sessions.json
@@ -122,7 +122,7 @@ A prior artifact-packaging audit found that the now-deleted historical Graphify 
 - ../../../../docs/papers/phase-3-tokenjuice-jcodemunch-stack-screen.md
 - ../../../../docs/papers/opencode-dcp-r2-and-token-inflation-analysis.md
 
-## Product Decisions
+## Engineering Decisions
 
 Current findings remain evidence-stage qualified: historical and single-run screening observations are not promoted to stable rankings without compatible replication.
 
