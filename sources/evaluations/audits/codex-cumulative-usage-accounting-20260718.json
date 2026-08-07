@@ -2,7 +2,7 @@
   "schema_version": 1,
   "evidence_through_date": "2026-08-07",
   "scope": {
-    "session_count": 178,
+    "session_count": 180,
     "policy": "preserve immutable compact bundles; derive final cumulative total per Codex thread",
     "legacy_defect": "scripts/extract_codex_usage.py summed cumulative turn.completed snapshots from resumed threads",
     "corrected_semantics": "select the final ThreadTokenUsage.total snapshot per thread and sum only across distinct threads"
@@ -17,16 +17,16 @@
     "upstream_url": "https://github.com/openai/codex/blob/rust-v0.144.0/codex-rs/exec/src/event_processor_with_jsonl_output.rs#L496-L522"
   },
   "integrity": {
-    "audited_session_count": 178,
-    "correction_required_count": 112,
+    "audited_session_count": 180,
+    "correction_required_count": 114,
     "all_manifests_passed": true,
     "all_usage_monotonic": true,
     "all_usage_blocks_attributed_to_threads": true,
     "raw_compact_bundles_mutated": false
   },
   "aggregate": {
-    "legacy_total_provider_tokens": 1280025590,
-    "corrected_total_provider_tokens": 1034949999,
+    "legacy_total_provider_tokens": 1284361047,
+    "corrected_total_provider_tokens": 1039285456,
     "legacy_overcount_tokens": 245075591,
     "by_profile_id": {
       "artifact-ponytail-codex-plugin-v1": {
@@ -70,9 +70,9 @@
         "corrected_total_provider_tokens": 39003426
       },
       "retrieval-cartog-codex-product-v2": {
-        "session_count": 3,
-        "legacy_total_provider_tokens": 279727,
-        "corrected_total_provider_tokens": 279727
+        "session_count": 5,
+        "legacy_total_provider_tokens": 4615184,
+        "corrected_total_provider_tokens": 4615184
       },
       "retrieval-codegraph-codex-mcp-v1": {
         "session_count": 11,
@@ -137,9 +137,9 @@
         "corrected_total_provider_tokens": 901722821
       },
       "codex-openai-gpt-5-6-sol-high": {
-        "session_count": 100,
-        "legacy_total_provider_tokens": 195337611,
-        "corrected_total_provider_tokens": 133227178
+        "session_count": 102,
+        "legacy_total_provider_tokens": 199673068,
+        "corrected_total_provider_tokens": 137562635
       }
     }
   },
@@ -24265,6 +24265,278 @@
             "path": "run.json",
             "expected_sha256": "adfda4ce83418e0d066180e57ad5c3d012b70920d35d2b7a92d30e32dd485816",
             "actual_sha256": "adfda4ce83418e0d066180e57ad5c3d012b70920d35d2b7a92d30e32dd485816",
+            "passed": true
+          }
+        ]
+      }
+    },
+    {
+      "session_id": "cartog-fastify-20260807-p-72ac148f730b-r0",
+      "date": "2026-08-07",
+      "sequence_id": "fastify-lifecycle-sequence-v1",
+      "replicate_index": 0,
+      "profile_id": "retrieval-cartog-codex-product-v2",
+      "model_condition_id": "codex-openai-gpt-5-6-sol-high",
+      "model": "gpt-5.6-sol",
+      "reasoning_effort": "high",
+      "accounting_mode": "final-cumulative-total-per-thread",
+      "accounting_warnings": [],
+      "raw_usage_block_count": 3,
+      "effective_usage_block_count": 1,
+      "thread_ids": [
+        "019fdd60-9dda-7170-8ae7-c06f837a333e"
+      ],
+      "legacy_registry_usage": {
+        "fresh_input_tokens": 117190,
+        "cached_input_tokens": 2472960,
+        "cache_write_tokens": 0,
+        "output_tokens": 17661,
+        "reasoning_tokens": 6926,
+        "total_provider_tokens": 2607811
+      },
+      "corrected_usage": {
+        "fresh_input_tokens": 117190,
+        "cached_input_tokens": 2472960,
+        "cache_write_tokens": null,
+        "output_tokens": 17661,
+        "reasoning_tokens": 6926,
+        "total_provider_tokens": 2607811
+      },
+      "legacy_overcount_tokens": 0,
+      "legacy_inflation_factor": 1.0,
+      "correction_required": true,
+      "tasks": [
+        {
+          "task_id": "fastify-lifecycle-feature-v1",
+          "task_class": "feature-implementation",
+          "order": 1,
+          "thread_id": "019fdd60-9dda-7170-8ae7-c06f837a333e",
+          "legacy_cumulative_snapshot": {
+            "fresh_input_tokens": 65530,
+            "cached_input_tokens": 959744,
+            "cache_write_tokens": null,
+            "output_tokens": 8343,
+            "reasoning_tokens": 3343,
+            "total_provider_tokens": 1033617
+          },
+          "corrected_incremental_usage": {
+            "fresh_input_tokens": 65530,
+            "cached_input_tokens": 959744,
+            "cache_write_tokens": null,
+            "output_tokens": 8343,
+            "reasoning_tokens": 3343,
+            "total_provider_tokens": 1033617
+          }
+        },
+        {
+          "task_id": "fastify-lifecycle-refactor-v1",
+          "task_class": "behavior-preserving-refactor",
+          "order": 2,
+          "thread_id": "019fdd60-9dda-7170-8ae7-c06f837a333e",
+          "legacy_cumulative_snapshot": {
+            "fresh_input_tokens": 93571,
+            "cached_input_tokens": 1873664,
+            "cache_write_tokens": null,
+            "output_tokens": 14569,
+            "reasoning_tokens": 6099,
+            "total_provider_tokens": 1981804
+          },
+          "corrected_incremental_usage": {
+            "fresh_input_tokens": 28041,
+            "cached_input_tokens": 913920,
+            "cache_write_tokens": null,
+            "output_tokens": 6226,
+            "reasoning_tokens": 2756,
+            "total_provider_tokens": 948187
+          }
+        },
+        {
+          "task_id": "fastify-lifecycle-review-v1",
+          "task_class": "code-review-correction",
+          "order": 3,
+          "thread_id": "019fdd60-9dda-7170-8ae7-c06f837a333e",
+          "legacy_cumulative_snapshot": {
+            "fresh_input_tokens": 117190,
+            "cached_input_tokens": 2472960,
+            "cache_write_tokens": null,
+            "output_tokens": 17661,
+            "reasoning_tokens": 6926,
+            "total_provider_tokens": 2607811
+          },
+          "corrected_incremental_usage": {
+            "fresh_input_tokens": 23619,
+            "cached_input_tokens": 599296,
+            "cache_write_tokens": null,
+            "output_tokens": 3092,
+            "reasoning_tokens": 827,
+            "total_provider_tokens": 626007
+          }
+        }
+      ],
+      "raw_event_diagnostics": {
+        "valid_event_count": 184,
+        "invalid_or_non_object_line_count": 13,
+        "invalid_or_non_object_line_samples": [
+          "2026-08-07T17:58:44.673548Z ERROR rmcp::transport::worker: worker quit with fatal: Transport channel closed, when UnexpectedServerResponse(\"HTTP 503: upstream connect error or disconnect/reset before headers. reset reason: remote connection failure\")",
+          "2026-08-07T18:01:49.853704Z ERROR codex_models_manager::manager: failed to refresh available models: timeout waiting for child process to exit",
+          "2026-08-07T18:04:56.071797Z ERROR codex_models_manager::manager: failed to refresh available models: timeout waiting for child process to exit",
+          "2026-08-07T18:08:09.977781Z ERROR codex_models_manager::manager: failed to refresh available models: timeout waiting for child process to exit",
+          "2026-08-07T18:11:22.889153Z ERROR codex_models_manager::manager: failed to refresh available models: timeout waiting for child process to exit"
+        ],
+        "missing_model_output_artifacts": []
+      },
+      "manifest": {
+        "passed": true,
+        "checks": [
+          {
+            "path": "changes.diff",
+            "expected_sha256": "f4cb653f44f441b4191f53895f05f44d253b7efe8a091b43bdb73c49b8250b6c",
+            "actual_sha256": "f4cb653f44f441b4191f53895f05f44d253b7efe8a091b43bdb73c49b8250b6c",
+            "passed": true
+          },
+          {
+            "path": "evidence.jsonl.gz",
+            "expected_sha256": "42f7000fe79f61788dada516b0f488349711c16ca7cdbb757364cfad585d0ad9",
+            "actual_sha256": "42f7000fe79f61788dada516b0f488349711c16ca7cdbb757364cfad585d0ad9",
+            "passed": true
+          },
+          {
+            "path": "run.json",
+            "expected_sha256": "036bc40c96f449f003983fa7e239f63d85f7ae0efc6fb3075f5188c72bfb0524",
+            "actual_sha256": "036bc40c96f449f003983fa7e239f63d85f7ae0efc6fb3075f5188c72bfb0524",
+            "passed": true
+          }
+        ]
+      }
+    },
+    {
+      "session_id": "cartog-beets-20260807-p-d8cfc5066f76-r0",
+      "date": "2026-08-07",
+      "sequence_id": "beets-lifecycle-sequence-v1",
+      "replicate_index": 0,
+      "profile_id": "retrieval-cartog-codex-product-v2",
+      "model_condition_id": "codex-openai-gpt-5-6-sol-high",
+      "model": "gpt-5.6-sol",
+      "reasoning_effort": "high",
+      "accounting_mode": "final-cumulative-total-per-thread",
+      "accounting_warnings": [],
+      "raw_usage_block_count": 3,
+      "effective_usage_block_count": 1,
+      "thread_ids": [
+        "019fdd89-70ad-7461-9161-f61290616478"
+      ],
+      "legacy_registry_usage": {
+        "fresh_input_tokens": 87026,
+        "cached_input_tokens": 1629952,
+        "cache_write_tokens": 0,
+        "output_tokens": 10668,
+        "reasoning_tokens": 5027,
+        "total_provider_tokens": 1727646
+      },
+      "corrected_usage": {
+        "fresh_input_tokens": 87026,
+        "cached_input_tokens": 1629952,
+        "cache_write_tokens": null,
+        "output_tokens": 10668,
+        "reasoning_tokens": 5027,
+        "total_provider_tokens": 1727646
+      },
+      "legacy_overcount_tokens": 0,
+      "legacy_inflation_factor": 1.0,
+      "correction_required": true,
+      "tasks": [
+        {
+          "task_id": "beets-lifecycle-feature-v1",
+          "task_class": "feature-implementation",
+          "order": 1,
+          "thread_id": "019fdd89-70ad-7461-9161-f61290616478",
+          "legacy_cumulative_snapshot": {
+            "fresh_input_tokens": 61382,
+            "cached_input_tokens": 589824,
+            "cache_write_tokens": null,
+            "output_tokens": 7248,
+            "reasoning_tokens": 4417,
+            "total_provider_tokens": 658454
+          },
+          "corrected_incremental_usage": {
+            "fresh_input_tokens": 61382,
+            "cached_input_tokens": 589824,
+            "cache_write_tokens": null,
+            "output_tokens": 7248,
+            "reasoning_tokens": 4417,
+            "total_provider_tokens": 658454
+          }
+        },
+        {
+          "task_id": "beets-lifecycle-refactor-v1",
+          "task_class": "behavior-preserving-refactor",
+          "order": 2,
+          "thread_id": "019fdd89-70ad-7461-9161-f61290616478",
+          "legacy_cumulative_snapshot": {
+            "fresh_input_tokens": 71352,
+            "cached_input_tokens": 1105664,
+            "cache_write_tokens": null,
+            "output_tokens": 8863,
+            "reasoning_tokens": 4702,
+            "total_provider_tokens": 1185879
+          },
+          "corrected_incremental_usage": {
+            "fresh_input_tokens": 9970,
+            "cached_input_tokens": 515840,
+            "cache_write_tokens": null,
+            "output_tokens": 1615,
+            "reasoning_tokens": 285,
+            "total_provider_tokens": 527425
+          }
+        },
+        {
+          "task_id": "beets-lifecycle-review-v1",
+          "task_class": "code-review-correction",
+          "order": 3,
+          "thread_id": "019fdd89-70ad-7461-9161-f61290616478",
+          "legacy_cumulative_snapshot": {
+            "fresh_input_tokens": 87026,
+            "cached_input_tokens": 1629952,
+            "cache_write_tokens": null,
+            "output_tokens": 10668,
+            "reasoning_tokens": 5027,
+            "total_provider_tokens": 1727646
+          },
+          "corrected_incremental_usage": {
+            "fresh_input_tokens": 15674,
+            "cached_input_tokens": 524288,
+            "cache_write_tokens": null,
+            "output_tokens": 1805,
+            "reasoning_tokens": 325,
+            "total_provider_tokens": 541767
+          }
+        }
+      ],
+      "raw_event_diagnostics": {
+        "valid_event_count": 89,
+        "invalid_or_non_object_line_count": 0,
+        "invalid_or_non_object_line_samples": [],
+        "missing_model_output_artifacts": []
+      },
+      "manifest": {
+        "passed": true,
+        "checks": [
+          {
+            "path": "changes.diff",
+            "expected_sha256": "dfe08b58b7703423bac6abf1ea702bd344113c53902e167e0e6c11fab042c17a",
+            "actual_sha256": "dfe08b58b7703423bac6abf1ea702bd344113c53902e167e0e6c11fab042c17a",
+            "passed": true
+          },
+          {
+            "path": "evidence.jsonl.gz",
+            "expected_sha256": "bc382fecae6800c698e6e9ab8c18ecd1a4370081a6d7226c864cf79011a04af7",
+            "actual_sha256": "bc382fecae6800c698e6e9ab8c18ecd1a4370081a6d7226c864cf79011a04af7",
+            "passed": true
+          },
+          {
+            "path": "run.json",
+            "expected_sha256": "50b55cc9382da932aa52045e5f24cc1bb79de2478a1ca85d57d5025181d0fca5",
+            "actual_sha256": "50b55cc9382da932aa52045e5f24cc1bb79de2478a1ca85d57d5025181d0fca5",
             "passed": true
           }
         ]
