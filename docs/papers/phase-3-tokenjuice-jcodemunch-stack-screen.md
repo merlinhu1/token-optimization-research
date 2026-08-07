@@ -201,4 +201,4 @@ Do not move directly to another stack based on these historical component rankin
 - Frozen protocols: [`sources/evaluations/protocols/`](../../sources/evaluations/protocols/)
 - Compact run evidence: [`sources/evaluations/workflow-sessions/`](../../sources/evaluations/workflow-sessions/)
 - Evaluation framework: [`docs/evaluations/design/framework.md`](../evaluations/design/framework.md)
-- Phase 2 component screen: [`docs/papers/phase-2-lifecycle-v0-natural-use-screening.md`](phase-2-lifecycle-v0-natural-use-screening.md)
+- Phase 2 component screen: [`docs/papers/phase-2-lifecycle-v1-natural-use-screening.md`](phase-2-lifecycle-v1-natural-use-screening.md)

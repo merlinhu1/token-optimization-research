@@ -401,7 +401,7 @@ REQUIRED_PATHS = [
     "templates/research-paper-outline.md",
     "docs/papers/README.md",
     "docs/papers/phase-1-compatibility-safe-token-saving-stacks.md",
-    "docs/papers/phase-2-lifecycle-v0-natural-use-screening.md",
+    "docs/papers/phase-2-lifecycle-v1-natural-use-screening.md",
     "docs/reference/research-standards.md",
     "docs/research/README.md",
     "docs/research/roadmap.md",

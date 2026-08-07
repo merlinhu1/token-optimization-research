@@ -45,7 +45,7 @@ Start with [`docs/README.md`](docs/README.md). The main destinations are:
 - `data/workflow-sessions.json` — active retained provider-backed controls and objective-eligible treatment samples; corrupted treatments are represented only by deletion receipts.
 - `docs/evaluations/operations/runbook.md` — generated operator runbook.
 - `docs/papers/official-integration-parity-audit.md` — current treatment-validity and disposition authority.
-- `docs/papers/phase-2-lifecycle-v0-natural-use-screening.md` — corrected first natural-use screen.
+- `docs/papers/phase-2-lifecycle-v1-natural-use-screening.md` — current standalone Lifecycle V1 natural-use screening report.
 - `docs/papers/luna-xhigh-r3-natural-use-replication-screen.md` — prospective six-profile eligible natural-use replication screen.
 
 ## Validation
