@@ -29,6 +29,7 @@ This contract governs active Lifecycle V1 provider-token samples, retained lifec
 - OpenCode/OpenRouter Sol/high is a separately frozen, provider-free Lifecycle V1 control configuration. It has its own OpenRouter model namespace and baseline pool; it is neither a Codex-provider control nor a cross-provider token-treatment comparison. A provider-backed run remains blocked until a separate bounded authorization binds protocol hashes and a spend budget.
 - Direct-Anthropic Claude Code has two completed separate conditions: `claude-code-anthropic-sonnet-5-high` binds Claude Code 2.1.220, `claude-sonnet-5`, and `high` effort for 897,108.2 weighted units; `claude-code-anthropic-opus-5-high` binds the same runtime, `claude-opus-5`, and `high` effort for 1,167,276.7 weighted units. Opus used 30.12% more weighted token cost than Sonnet, and Sonnet was already 73.85% above matched Codex and 22.71% above matched OpenCode weighted baselines, so Sonnet is the selected model for treatment experiments. Both use first-party transport without OpenRouter across six task turns; the owner account is materialized only into a lane-private `CLAUDE_CONFIG_DIR` through `TOKEN_EVAL_CLAUDE_ACCOUNT_HOME`. Provider-free qualification now covers all 30 native Sonnet treatment lanes for 15 profiles, and the serialized treatment matrix is separately owner-authorized; SDL-MCP remains excluded for its Codex-only installer surface.
 - Claude Code invocations bind `--model`, `--effort`, and a strict lane-private MCP configuration when the treatment declares an MCP server. Direct-account preflight records non-secret authentication status and rejects OpenRouter endpoints/status, and Claude stream-json usage remains subject to the existing provider-reported extraction contract.
+- After each successful direct-account Claude task, the runner atomically carries a changed lane-private `.credentials.json` back to the explicitly supplied account home and records a path-redacted sync receipt. Failed Claude tasks never overwrite the source credential snapshot; direct-Anthropic production matrices remain serialized so separate lanes cannot race the account refresh state.
 - The matrix reuses the first operationally valid baseline for a causal comparison fingerprint and replicate.
 - Direct-Anthropic Claude Code treatment matrices reuse the accepted same-condition Claude baseline pool; they do not fall back to the canonical Codex pool.
 - Direct-Anthropic Sonnet treatment lanes reserve an immutable per-sequence/profile attempt receipt before provider work. The first matrix retained Fastify/RTK at 2,110,452 provider tokens (331,508.9 weighted units); Fastify/Cartog reached the provider but failed authentication with zero tokens, remains occupied, and is excluded from registry and aggregate claims. Remaining lanes require refreshed credentials and cannot reuse the occupied Cartog identity.
@@ -157,7 +158,7 @@ Update this document whenever token eligibility, comparison identity, provider a
 
 ## Engineering Decisions
 
-Token comparisons use one final monotonic cumulative provider snapshot per distinct thread and compare only compatible baseline pools; weighted units are fresh input plus 0.1 times cached input plus 6 times output.
+Token comparisons use one final monotonic cumulative provider snapshot per distinct thread and compare only compatible baseline pools; weighted units are fresh input plus 0.1 times cached input plus 6 times output. Direct-account Claude matrices propagate refreshed OAuth bytes only after successful tasks and execute serially.
 
 ## Current Behavior
 
@@ -165,4 +166,4 @@ Lifecycle V1 sessions bind model condition, protocol fingerprint, profile identi
 
 ## Rationale
 
-A single monotonic provider receipt and compatible baseline binding are required to distinguish accounting integrity from causal efficiency claims.
+A single monotonic provider receipt and compatible baseline binding are required to distinguish accounting integrity from causal efficiency claims. Successful-task-only OAuth propagation prevents one isolated lane from invalidating the next lane's copied refresh token without allowing an authentication failure to replace the owner credential snapshot.
