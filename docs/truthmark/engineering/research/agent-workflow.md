@@ -25,7 +25,7 @@ This workflow covers repository-local agent instructions, evaluation state chang
 - `.truthmark/config.yml` declares `docs/truthmark` as the Truthmark workspace.
 - Truthmark routes connect code, data, prompts, and documentation to bounded durable truth docs.
 - `scripts/validate_repository.py` and `scripts/update_workflow_runbook.py --check` enforce repository and generated-runbook consistency.
-- Direct-Anthropic Claude Code Lifecycle V1 preparation and the completed Fastify/Beets baseline pair are recorded in frozen audit authority, registry, and compact evidence files; the owner account is accepted only through `TOKEN_EVAL_CLAUDE_ACCOUNT_HOME`, copied ephemerally into the lane, and never retained in evidence. Treatment execution remains blocked pending native-surface qualification and separate authorization.
+- Direct-Anthropic Claude Code Lifecycle V1 preparation and the completed Fastify/Beets baseline pairs for Sonnet 5 and Opus 5 are recorded in frozen audit authority, registry, and compact evidence files; the owner account is accepted only through `TOKEN_EVAL_CLAUDE_ACCOUNT_HOME`, copied ephemerally into the lane, and never retained in evidence. Treatment execution remains blocked pending native-surface qualification and separate authorization.
 
 ## Product Truth Links
 
@@ -87,6 +87,8 @@ Apply the synchronization workflow after an evaluation run, qualification/protoc
 - ../../../../scripts/claude_code_workflow_adapter.py
 - ../../../../sources/evaluations/audits/claude-code-anthropic-sonnet-5-high-lifecycle-v1-protocol-preparation-20260808.json
 - ../../../../sources/evaluations/audits/claude-code-anthropic-sonnet-5-high-lifecycle-v1-baseline-authorization-20260808.json
+- ../../../../sources/evaluations/audits/claude-code-anthropic-opus-5-high-lifecycle-v1-protocol-preparation-20260808.json
+- ../../../../sources/evaluations/audits/claude-code-anthropic-opus-5-high-lifecycle-v1-baseline-authorization-20260808.json
 - ../../routes/areas.md
 
 ## Engineering Decisions

@@ -18,8 +18,16 @@ FIXTURES = ROOT / "data" / "repository-fixtures.json"
 SESSIONS = ROOT / "data" / "workflow-sessions.json"
 PROFILES = ROOT / "data" / "evaluation-profiles.json"
 AGENT_RUNTIMES = ROOT / "data" / "evaluation-agent-runtimes.json"
-CLAUDE_DIRECT_PREPARATION = ROOT / "sources" / "evaluations" / "audits" / "claude-code-anthropic-sonnet-5-high-lifecycle-v1-protocol-preparation-20260808.json"
-CLAUDE_DIRECT_AUTHORIZATION = ROOT / "sources" / "evaluations" / "audits" / "claude-code-anthropic-sonnet-5-high-lifecycle-v1-baseline-authorization-20260808.json"
+CLAUDE_DIRECT_CAMPAIGNS = (
+    (
+        ROOT / "sources" / "evaluations" / "audits" / "claude-code-anthropic-sonnet-5-high-lifecycle-v1-protocol-preparation-20260808.json",
+        ROOT / "sources" / "evaluations" / "audits" / "claude-code-anthropic-sonnet-5-high-lifecycle-v1-baseline-authorization-20260808.json",
+    ),
+    (
+        ROOT / "sources" / "evaluations" / "audits" / "claude-code-anthropic-opus-5-high-lifecycle-v1-protocol-preparation-20260808.json",
+        ROOT / "sources" / "evaluations" / "audits" / "claude-code-anthropic-opus-5-high-lifecycle-v1-baseline-authorization-20260808.json",
+    ),
+)
 OPENCODE_TREATMENT_SCREEN_AUDIT = (
     "sources/evaluations/audits/"
     "opencode-tool-treatments-sol-high-r0-repaired-screen-results-20260730.json"
@@ -35,37 +43,44 @@ def load_json(path: Path) -> dict[str, Any]:
 
 
 def claude_direct_preparation_text() -> str:
-    if not CLAUDE_DIRECT_PREPARATION.is_file():
+    sections = []
+    for preparation_path, authorization_path in CLAUDE_DIRECT_CAMPAIGNS:
+        if not preparation_path.is_file():
+            continue
+        preparation = load_json(preparation_path)
+        condition = preparation.get("model_condition", {})
+        tools = preparation.get("tools", [])
+        protocol_count = sum(len(item.get("protocols", [])) for item in tools if isinstance(item, dict))
+        shared = preparation.get("shared_protocol") or {}
+        baseline_count = len(shared.get("baseline_protocols", []))
+        if not baseline_count:
+            baseline_count = len((preparation.get("source_scope") or {}).get("protocols", []))
+        authorization = load_json(authorization_path) if authorization_path.is_file() else {}
+        if (
+            authorization.get("status") == "owner-authorized-provider-run"
+            and authorization.get("execution_status") == "completed"
+        ):
+            completed = ", ".join(str(item) for item in authorization.get("completed_sequences", []))
+            execution_line = (
+                f"Baseline-only execution completed for `{completed}` with "
+                f"{authorization.get('provider_tokens', 0):,} provider tokens; treatment execution remains blocked."
+            )
+        elif authorization.get("status") == "owner-authorized-provider-run":
+            execution_line = (
+                f"Baseline-only execution is owner-authorized under `{authorization_path.relative_to(ROOT)}`; "
+                "run Fastify then Beets at r0 with one lane at a time. Treatment execution remains blocked."
+            )
+        else:
+            execution_line = "Execution remains blocked until the owner account, native-surface qualification, and serialized owner authorization are present."
+        sections.append("\n".join([
+            f"Authority: `{preparation_path.relative_to(ROOT)}` (`{preparation.get('status')}`).",
+            f"Condition: `{condition.get('id')}` — `{condition.get('provider')}/{condition.get('model')}` with `{condition.get('reasoning_effort')}` effort.",
+            f"Prepared treatment profiles: {len(tools)} ({protocol_count} treatment plus {baseline_count} baseline frozen provider-free protocol files across the active Fastify and Beets sequences).",
+            execution_line,
+        ]))
+    if not sections:
         return "_No direct-Anthropic Claude Code preparation authority is present._"
-    preparation = load_json(CLAUDE_DIRECT_PREPARATION)
-    condition = preparation.get("model_condition", {})
-    tools = preparation.get("tools", [])
-    protocol_count = sum(len(item.get("protocols", [])) for item in tools if isinstance(item, dict))
-    baseline_count = len((preparation.get("shared_protocol") or {}).get("baseline_protocols", []))
-    authorization = load_json(CLAUDE_DIRECT_AUTHORIZATION) if CLAUDE_DIRECT_AUTHORIZATION.is_file() else {}
-    if (
-        authorization.get("status") == "owner-authorized-provider-run"
-        and authorization.get("execution_status") == "completed"
-    ):
-        completed = ", ".join(str(item) for item in authorization.get("completed_sequences", []))
-        execution_line = (
-            f"Baseline-only execution completed for `{completed}` with "
-            f"{authorization.get('provider_tokens', 0):,} provider tokens; treatment execution remains blocked."
-        )
-    elif authorization.get("status") == "owner-authorized-provider-run":
-        execution_line = (
-            f"Baseline-only execution is owner-authorized under `{CLAUDE_DIRECT_AUTHORIZATION.relative_to(ROOT)}`; "
-            "run Fastify then Beets at r0 with one lane at a time. Treatment execution remains blocked."
-        )
-    else:
-        execution_line = "Execution remains blocked until the owner account, native-surface qualification, and serialized owner authorization are present."
-    return "\n".join([
-        f"Authority: `{CLAUDE_DIRECT_PREPARATION.relative_to(ROOT)}` (`{preparation.get('status')}`).",
-        f"Condition: `{condition.get('id')}` — `{condition.get('provider')}/{condition.get('model')}` with `{condition.get('reasoning_effort')}` effort.",
-        f"Prepared treatment profiles: {len(tools)} ({protocol_count} treatment plus {baseline_count} baseline frozen provider-free protocol files across the active Fastify and Beets sequences).",
-        execution_line,
-        "Account setup uses `TOKEN_EVAL_CLAUDE_ACCOUNT_HOME`; credentials are copied only into an ephemeral lane and never retained in evidence.",
-    ])
+    return "\n\n".join(sections) + "\n\nAccount setup uses `TOKEN_EVAL_CLAUDE_ACCOUNT_HOME`; credentials are copied only into an ephemeral lane and never retained in evidence."
 
 
 def fixture_map() -> dict[str, dict[str, Any]]:
