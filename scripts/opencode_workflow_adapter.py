@@ -38,6 +38,8 @@ HEADROOM_WHEEL = Path(
 SERENA_ROOT = Path("/opt/data/tool-candidates/serena")
 CARTOG_BINARY = Path("/opt/data/tool-candidates/cartog/target/release/cartog")
 NODE_BINARY = Path("/opt/data/opt/node-v24.18.0-linux-x64/bin/node")
+SDL_MCP_ROOT = Path("/opt/data/tool-candidates/sdl-mcp")
+SDL_MCP_MAIN = SDL_MCP_ROOT / "dist" / "main.js"
 CODESCOPE_BINARY = Path("/opt/data/tool-candidates/codescope-release-v0.8.12/codescope")
 SWARMVAULT_CLI = Path("/opt/data/tool-candidates/swarmvault/packages/cli/dist/index.js")
 CODEGRAPH_BINARY = Path("/opt/data/tool-candidates/codegraph/dist/bin/codegraph.js")
@@ -70,12 +72,13 @@ TREATMENT_PROFILES = {
     "caveman",
     "lowfat",
     "dcp",
+    "sdl-mcp",
 }
 PLUGIN_TREATMENTS = {
     "tokenjuice", "snip", "headroom", "swarmvault", "graphify", "rtk",
     "ponytail", "caveman", "lowfat", "dcp",
 }
-GUIDED_TREATMENTS = {"jcodemunch", "leanctx", "sigmap", "ponytail", "caveman"}
+GUIDED_TREATMENTS = {"jcodemunch", "leanctx", "sigmap", "ponytail", "caveman", "sdl-mcp"}
 
 
 def provider_route(provider: str, model: str) -> tuple[str, str]:
@@ -674,6 +677,22 @@ def _runtime_env(
         config["plugin"] = [
             "file:///opt/data/tool-candidates/opencode-snip-v1.6.1/.opencode/plugins/index.ts"
         ]
+    elif treatment == "sdl-mcp":
+        sdl_data = xdg_data / "sdl-mcp"
+        config["plugin"] = [(directory / ".opencode" / "plugins" / "enforce-sdl.ts").as_uri()] if directory is not None else []
+        config["mcp"] = {
+            "sdl-mcp": {
+                "type": "local",
+                "command": [str(NODE_BINARY), str(SDL_MCP_MAIN), "serve", "--stdio"],
+                "environment": {
+                    "SDL_CONFIG": str(sdl_data / "sdlmcp.config.json"),
+                    "SDL_CONFIG_HOME": str(sdl_data),
+                    "SDL_GRAPH_DB_PATH": str(sdl_data / "sdl-mcp-graph.lbug"),
+                    "SDL_MCP_SKIP_SETUP_WIZARD": "1",
+                },
+                "enabled": True,
+            }
+        }
     elif treatment == "serena":
         config["mcp"] = {
             "serena": {

@@ -1,10 +1,10 @@
 {
   "schema_version": 1,
   "report_id": "phase-2-lifecycle-v1-natural-use-screening",
-  "evidence_snapshot": "2026-08-05",
+  "evidence_snapshot": "2026-08-07",
   "source_registry": {
     "path": "data/workflow-sessions.json",
-    "sha256": "2a24d8f70d0e4a50927ce68f5498008bfce3c28f92bb0e70aefbec2533604a00"
+    "sha256": "dd5b72d37e6159726ba9d79a7103a762f395ecd64acc3acc1b9fe58941b6348f"
   },
   "model_condition": {
     "Codex": "codex-openai-gpt-5-6-sol-high",
@@ -15,10 +15,48 @@
     "beets"
   ],
   "usage_formula": "fresh input + 0.1 * cached input + 6 * output",
-  "treatment_condition_count": 18,
-  "treatment_session_count": 36,
-  "accepted_task_count": 108,
+  "treatment_condition_count": 23,
+  "treatment_session_count": 46,
+  "accepted_task_count": 138,
   "conditions": [
+    {
+      "runtime": "codex-cli",
+      "runtime_display": "Codex",
+      "tool": "Cartog",
+      "profile_ids": [
+        "retrieval-cartog-codex-product-v2"
+      ],
+      "session_ids": [
+        "cartog-beets-20260807-p-d8cfc5066f76-r0",
+        "cartog-fastify-20260807-p-72ac148f730b-r0"
+      ],
+      "sessions": 2,
+      "accepted_tasks": 6,
+      "raw_provider_tokens": 4335457,
+      "weighted_tokens": 784481.2,
+      "baseline_raw_provider_tokens": 2465836,
+      "baseline_weighted_tokens": 516037.8,
+      "raw_delta_pct": 75.82,
+      "weighted_delta_pct": 52.02,
+      "sequence_delta_pct": {
+        "fastify": 75.68,
+        "beets": 26.49
+      },
+      "components": {
+        "fresh_input_tokens": 204216,
+        "cached_input_tokens": 4102912,
+        "output_tokens": 28329,
+        "reasoning_tokens": 11953,
+        "total_provider_tokens": 4335457
+      },
+      "baseline_components": {
+        "fresh_input_tokens": 172419,
+        "cached_input_tokens": 2274048,
+        "output_tokens": 19369,
+        "reasoning_tokens": 6965,
+        "total_provider_tokens": 2465836
+      }
+    },
     {
       "runtime": "codex-cli",
       "runtime_display": "Codex",
@@ -86,6 +124,120 @@
         "output_tokens": 25236,
         "reasoning_tokens": 11696,
         "total_provider_tokens": 4195650
+      },
+      "baseline_components": {
+        "fresh_input_tokens": 172419,
+        "cached_input_tokens": 2274048,
+        "output_tokens": 19369,
+        "reasoning_tokens": 6965,
+        "total_provider_tokens": 2465836
+      }
+    },
+    {
+      "runtime": "codex-cli",
+      "runtime_display": "Codex",
+      "tool": "CodeScope",
+      "profile_ids": [
+        "codescope-codex-product-v1"
+      ],
+      "session_ids": [
+        "codescope-beets-20260807-p-d8cfc5066f76-r0",
+        "codescope-fastify-20260807-p-72ac148f730b-r0"
+      ],
+      "sessions": 2,
+      "accepted_tasks": 6,
+      "raw_provider_tokens": 2891913,
+      "weighted_tokens": 574556.0,
+      "baseline_raw_provider_tokens": 2465836,
+      "baseline_weighted_tokens": 516037.8,
+      "raw_delta_pct": 17.28,
+      "weighted_delta_pct": 11.34,
+      "sequence_delta_pct": {
+        "fastify": 25.11,
+        "beets": -3.52
+      },
+      "components": {
+        "fresh_input_tokens": 174482,
+        "cached_input_tokens": 2695680,
+        "output_tokens": 21751,
+        "reasoning_tokens": 7416,
+        "total_provider_tokens": 2891913
+      },
+      "baseline_components": {
+        "fresh_input_tokens": 172419,
+        "cached_input_tokens": 2274048,
+        "output_tokens": 19369,
+        "reasoning_tokens": 6965,
+        "total_provider_tokens": 2465836
+      }
+    },
+    {
+      "runtime": "codex-cli",
+      "runtime_display": "Codex",
+      "tool": "Graphify",
+      "profile_ids": [
+        "retrieval-graphify-codex-skill-v1"
+      ],
+      "session_ids": [
+        "graphify-beets-20260807-p-d8cfc5066f76-r0",
+        "graphify-fastify-20260807-p-72ac148f730b-r0"
+      ],
+      "sessions": 2,
+      "accepted_tasks": 6,
+      "raw_provider_tokens": 4699674,
+      "weighted_tokens": 879600.0,
+      "baseline_raw_provider_tokens": 2465836,
+      "baseline_weighted_tokens": 516037.8,
+      "raw_delta_pct": 90.59,
+      "weighted_delta_pct": 70.45,
+      "sequence_delta_pct": {
+        "fastify": 93.86,
+        "beets": 45.2
+      },
+      "components": {
+        "fresh_input_tokens": 249788,
+        "cached_input_tokens": 4418560,
+        "output_tokens": 31326,
+        "reasoning_tokens": 10358,
+        "total_provider_tokens": 4699674
+      },
+      "baseline_components": {
+        "fresh_input_tokens": 172419,
+        "cached_input_tokens": 2274048,
+        "output_tokens": 19369,
+        "reasoning_tokens": 6965,
+        "total_provider_tokens": 2465836
+      }
+    },
+    {
+      "runtime": "codex-cli",
+      "runtime_display": "Codex",
+      "tool": "LeanCTX",
+      "profile_ids": [
+        "integrated-leanctx-codex-hybrid-v1"
+      ],
+      "session_ids": [
+        "leanctx-beets-20260807-p-d8cfc5066f76-r0",
+        "leanctx-fastify-20260807-p-72ac148f730b-r0"
+      ],
+      "sessions": 2,
+      "accepted_tasks": 6,
+      "raw_provider_tokens": 3601712,
+      "weighted_tokens": 677272.8,
+      "baseline_raw_provider_tokens": 2465836,
+      "baseline_weighted_tokens": 516037.8,
+      "raw_delta_pct": 46.06,
+      "weighted_delta_pct": 31.24,
+      "sequence_delta_pct": {
+        "fastify": 29.26,
+        "beets": 33.39
+      },
+      "components": {
+        "fresh_input_tokens": 207300,
+        "cached_input_tokens": 3372288,
+        "output_tokens": 22124,
+        "reasoning_tokens": 11179,
+        "total_provider_tokens": 3601712
       },
       "baseline_components": {
         "fresh_input_tokens": 172419,
@@ -238,6 +390,44 @@
         "output_tokens": 21730,
         "reasoning_tokens": 9519,
         "total_provider_tokens": 3296226
+      },
+      "baseline_components": {
+        "fresh_input_tokens": 172419,
+        "cached_input_tokens": 2274048,
+        "output_tokens": 19369,
+        "reasoning_tokens": 6965,
+        "total_provider_tokens": 2465836
+      }
+    },
+    {
+      "runtime": "codex-cli",
+      "runtime_display": "Codex",
+      "tool": "Snip",
+      "profile_ids": [
+        "terminal-snip-codex-hook-v1"
+      ],
+      "session_ids": [
+        "snip-beets-20260807-p-d8cfc5066f76-r0",
+        "snip-fastify-20260807-p-72ac148f730b-r0"
+      ],
+      "sessions": 2,
+      "accepted_tasks": 6,
+      "raw_provider_tokens": 3303546,
+      "weighted_tokens": 620724.2,
+      "baseline_raw_provider_tokens": 2465836,
+      "baseline_weighted_tokens": 516037.8,
+      "raw_delta_pct": 33.97,
+      "weighted_delta_pct": 20.29,
+      "sequence_delta_pct": {
+        "fastify": 32.57,
+        "beets": 7.03
+      },
+      "components": {
+        "fresh_input_tokens": 194911,
+        "cached_input_tokens": 3089152,
+        "output_tokens": 19483,
+        "reasoning_tokens": 5973,
+        "total_provider_tokens": 3303546
       },
       "baseline_components": {
         "fresh_input_tokens": 172419,
@@ -707,33 +897,33 @@
   "aggregates": {
     "codex-cli": {
       "runtime_display": "Codex",
-      "conditions": 9,
-      "sessions": 18,
-      "accepted_tasks": 54,
+      "conditions": 14,
+      "sessions": 28,
+      "accepted_tasks": 84,
       "treatment": {
-        "fresh_input_tokens": 1867009,
-        "cached_input_tokens": 30882048,
-        "output_tokens": 211461,
-        "reasoning_tokens": 88182,
-        "total_provider_tokens": 32960518
+        "fresh_input_tokens": 2897706,
+        "cached_input_tokens": 48560640,
+        "output_tokens": 334474,
+        "reasoning_tokens": 135061,
+        "total_provider_tokens": 51792820
       },
       "repeated_baseline": {
-        "fresh_input_tokens": 1551771,
-        "cached_input_tokens": 20466432,
-        "output_tokens": 174321,
-        "reasoning_tokens": 62685,
-        "total_provider_tokens": 22192524
+        "fresh_input_tokens": 2413866,
+        "cached_input_tokens": 31836672,
+        "output_tokens": 271166,
+        "reasoning_tokens": 97510,
+        "total_provider_tokens": 34521704
       },
-      "treatment_weighted": 6223979.8,
-      "baseline_weighted": 4644340.2,
-      "raw_delta_pct": 48.52,
-      "weighted_delta_pct": 34.01,
-      "fresh_delta": 315238,
-      "cached_delta": 10415616,
-      "cached_weighted_delta": 1041561.6,
-      "output_delta": 37140,
-      "output_weighted_delta": 222840,
-      "reasoning_delta": 25497
+      "treatment_weighted": 9760614.0,
+      "baseline_weighted": 7224529.2,
+      "raw_delta_pct": 50.03,
+      "weighted_delta_pct": 35.1,
+      "fresh_delta": 483840,
+      "cached_delta": 16723968,
+      "cached_weighted_delta": 1672396.8,
+      "output_delta": 63308,
+      "output_weighted_delta": 379848,
+      "reasoning_delta": 37551
     },
     "opencode-cli": {
       "runtime_display": "OpenCode",

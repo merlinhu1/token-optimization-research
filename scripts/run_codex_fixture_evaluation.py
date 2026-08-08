@@ -82,9 +82,12 @@ FORBIDDEN_BASELINE_TERMS = [
     "tokenjuice",
     "caveman",
     "dcp",
+    "sdl-mcp",
 ]
 BASELINE_CODEX_NO_MCP_PROFILES = {"baseline-codex-no-mcp"}
 PROFILE_TOOL_CONFIG_OVERRIDES = {
+    "retrieval-sdl-mcp-codex-product-v1": "sdl-mcp-codex-product-v1",
+    "retrieval-sdl-mcp-opencode-product-v1": "sdl-mcp-opencode-product-v1",
     "headroom-default-codex": "headroom",
     "terminal-headroom": "headroom-proxy-only",
     "terminal-tokenjuice-codex-hook-v1": "tokenjuice-codex-hook-v1",
@@ -170,11 +173,114 @@ PONYTAIL_ROOT = Path("/opt/data/tool-candidates/ponytail")
 NODE_TOOLCHAIN_ROOT = Path("/opt/data/opt/node-v24.18.0-linux-x64")
 NODE_BIN = NODE_TOOLCHAIN_ROOT / "bin" / "node"
 NPX_BIN = NODE_TOOLCHAIN_ROOT / "bin" / "npx"
+SDL_MCP_ROOT = Path("/opt/data/tool-candidates/sdl-mcp")
+SDL_MCP_INSTALL_HOME = Path("/opt/data/tool-candidates/sdl-mcp-install-home")
+SDL_MCP_MAIN = SDL_MCP_ROOT / "dist" / "main.js"
+SDL_MCP_CLI = SDL_MCP_ROOT / "dist" / "cli" / "index.js"
+SDL_MCP_NATIVE = SDL_MCP_ROOT / "node_modules/sdl-mcp-native-linux-x64-gnu/sdl-mcp-native.linux-x64-gnu.node"
+SDL_MCP_LADYBUG = SDL_MCP_ROOT / "node_modules/@ladybugdb/core-linux-x64/lbugjs.node"
 PONYTAIL_COMMIT = "40e50d9e03242aa5dd53ac771950f9127362b25f"
 PONYTAIL_MARKETPLACE_PREPARER = "{repository_root}/scripts/prepare_pinned_codex_marketplace.py"
 CODEX_PLUGIN_HOOK_TRUSTER = "{repository_root}/scripts/trust_codex_plugin_hooks.py"
 
 TOOL_CONFIGS: dict[str, dict[str, Any]] = {
+    "sdl-mcp-codex-product-v1": {
+        "display_name": "SDL-MCP 0.13.2 official Codex setup",
+        "lane_name": "retrieval-sdl-mcp-codex-product-v1",
+        "surface": "retrieval/context+mcp+codex-guidance+codex-hooks",
+        "mcp_server": "sdl-mcp",
+        "allowed_terms": ["sdl-mcp", "sdl", "runtimeExecute", "sdl.context", "sdl.retrieve", "sdl.workflow"],
+        "data_dir_name": "sdl-mcp-codex-product-v1",
+        "mcp_command": str(NODE_BIN),
+        "mcp_args": [str(SDL_MCP_MAIN), "serve", "--stdio"],
+        "env": {
+            "SDL_CONFIG": "{tool_data_dir}/sdlmcp.config.json",
+            "SDL_CONFIG_HOME": "{tool_data_dir}",
+            "SDL_GRAPH_DB_PATH": "{tool_data_dir}/sdl-mcp-graph.lbug",
+            "SDL_MCP_SKIP_SETUP_WIZARD": "1",
+        },
+        "mounts": [str(SDL_MCP_ROOT), str(SDL_MCP_INSTALL_HOME)],
+        "diff_exclude_paths": [
+            "AGENTS.md", "CODEX.md", "SDL.md", "codex-mcp-config.json", ".codex",
+        ],
+        "codex_features": {"hooks": True},
+        "host_integration": {
+            "install_commands": [
+                ["/bin/bash", "-lc", "set -euo pipefail; mkdir -p {codex_home}/home/.cache/sdl-mcp; cp -a /opt/data/tool-candidates/sdl-mcp-install-home/.cache/sdl-mcp/models {codex_home}/home/.cache/sdl-mcp/"],
+                [str(NODE_BIN), str(SDL_MCP_CLI), "init", "-y", "--repo-path", "{repo}", "--client", "codex", "--enforce-agent-tools", "--auto-index", "--config", "{tool_data_dir}/sdlmcp.config.json"],
+            ],
+            "verify_commands": [
+                [str(NODE_BIN), str(SDL_MCP_CLI), "version", "--config", "{tool_data_dir}/sdlmcp.config.json"],
+                [str(NODE_BIN), str(SDL_MCP_CLI), "doctor", "--config", "{tool_data_dir}/sdlmcp.config.json"],
+            ],
+            "required_files": [
+                str(SDL_MCP_ROOT / "package.json"), str(SDL_MCP_ROOT / "package-lock.json"),
+                str(SDL_MCP_CLI), str(SDL_MCP_MAIN), str(SDL_MCP_NATIVE), str(SDL_MCP_LADYBUG),
+                "{tool_data_dir}/sdlmcp.config.json", "{codex_home}/config.toml",
+                "{repo}/AGENTS.md", "{repo}/CODEX.md", "{repo}/SDL.md",
+                "{repo}/.codex/config.toml", "{repo}/.codex/hooks.json",
+                "{repo}/.codex/hooks/load-sdl-skill.mjs", "{repo}/.codex/hooks/force-sdl-mcp.mjs",
+            ],
+            "timeout_seconds": 1800,
+        },
+        "artifact_identities": [
+            {"path": str(SDL_MCP_ROOT / "package.json"), "sha256": "610be2ef31f79c66c330b3605aa2ceb8bce94fe9cb1e1fada1ee70f6dfd78cd1", "kind": "source-manifest"},
+            {"path": str(SDL_MCP_ROOT / "package-lock.json"), "sha256": "c74182a87adc5b7d14a9981a392410cee6eb4b782fa802e77c2e7a055dd55465", "kind": "lockfile"},
+            {"path": str(SDL_MCP_MAIN), "sha256": "ce884fc3e1f3191c9a5c8adfaa03d9dab9ea73013b893db6f8ede8355408a4c7", "kind": "compiled-server"},
+            {"path": str(SDL_MCP_CLI), "sha256": "b9e33355f5673c730c0e530de2ff7edd8d5dafbe41ea628e072a6446f35fe681", "kind": "compiled-cli"},
+            {"path": str(SDL_MCP_NATIVE), "sha256": "b1929acef9c7e2755e5f991265dc64e034b6c200034f422e309a8590bc55869e", "kind": "native-addon"},
+            {"path": str(SDL_MCP_LADYBUG), "sha256": "28a59bb37cd9c55d78bf106f8765c6122c27a3308493fc49bc7897cae8eef826", "kind": "ladybug-addon"},
+        ],
+        "mcp_handshake": {"required": True, "method": "initialize-and-tools-list", "timeout_seconds": 90},
+        "default_tool_state": "warm-index",
+    },
+    "sdl-mcp-opencode-product-v1": {
+        "display_name": "SDL-MCP 0.13.2 official OpenCode setup",
+        "lane_name": "retrieval-sdl-mcp-opencode-product-v1",
+        "surface": "retrieval/context+mcp+opencode-guidance+opencode-plugin",
+        "mcp_server": "sdl-mcp",
+        "allowed_terms": ["sdl-mcp", "sdl", "runtimeExecute", "sdl.context", "sdl.retrieve", "sdl.workflow"],
+        "data_dir_name": "sdl-mcp-opencode-product-v1",
+        "mcp_command": str(NODE_BIN),
+        "mcp_args": [str(SDL_MCP_MAIN), "serve", "--stdio"],
+        "env": {
+            "SDL_CONFIG": "{tool_data_dir}/sdlmcp.config.json",
+            "SDL_CONFIG_HOME": "{tool_data_dir}",
+            "SDL_GRAPH_DB_PATH": "{tool_data_dir}/sdl-mcp-graph.lbug",
+            "SDL_MCP_SKIP_SETUP_WIZARD": "1",
+        },
+        "mounts": [str(SDL_MCP_ROOT), str(SDL_MCP_INSTALL_HOME)],
+        "diff_exclude_paths": [
+            "AGENTS.md", "OPENCODE.md", "SDL.md", "opencode.json", ".opencode",
+        ],
+        "host_integration": {
+            "install_commands": [
+                ["/bin/bash", "-lc", "set -euo pipefail; mkdir -p {codex_home}/home/.cache/sdl-mcp; cp -a /opt/data/tool-candidates/sdl-mcp-install-home/.cache/sdl-mcp/models {codex_home}/home/.cache/sdl-mcp/"],
+                [str(NODE_BIN), str(SDL_MCP_CLI), "init", "-y", "--repo-path", "{repo}", "--client", "opencode", "--enforce-agent-tools", "--auto-index", "--config", "{tool_data_dir}/sdlmcp.config.json"],
+            ],
+            "verify_commands": [
+                [str(NODE_BIN), str(SDL_MCP_CLI), "version", "--config", "{tool_data_dir}/sdlmcp.config.json"],
+                [str(NODE_BIN), str(SDL_MCP_CLI), "doctor", "--config", "{tool_data_dir}/sdlmcp.config.json"],
+            ],
+            "required_files": [
+                str(SDL_MCP_ROOT / "package.json"), str(SDL_MCP_ROOT / "package-lock.json"),
+                str(SDL_MCP_CLI), str(SDL_MCP_MAIN), str(SDL_MCP_NATIVE), str(SDL_MCP_LADYBUG),
+                "{tool_data_dir}/sdlmcp.config.json", "{repo}/AGENTS.md", "{repo}/OPENCODE.md",
+                "{repo}/SDL.md", "{repo}/opencode.json", "{repo}/.opencode/plugins/enforce-sdl.ts",
+            ],
+            "timeout_seconds": 1800,
+        },
+        "artifact_identities": [
+            {"path": str(SDL_MCP_ROOT / "package.json"), "sha256": "610be2ef31f79c66c330b3605aa2ceb8bce94fe9cb1e1fada1ee70f6dfd78cd1", "kind": "source-manifest"},
+            {"path": str(SDL_MCP_ROOT / "package-lock.json"), "sha256": "c74182a87adc5b7d14a9981a392410cee6eb4b782fa802e77c2e7a055dd55465", "kind": "lockfile"},
+            {"path": str(SDL_MCP_MAIN), "sha256": "ce884fc3e1f3191c9a5c8adfaa03d9dab9ea73013b893db6f8ede8355408a4c7", "kind": "compiled-server"},
+            {"path": str(SDL_MCP_CLI), "sha256": "b9e33355f5673c730c0e530de2ff7edd8d5dafbe41ea628e072a6446f35fe681", "kind": "compiled-cli"},
+            {"path": str(SDL_MCP_NATIVE), "sha256": "b1929acef9c7e2755e5f991265dc64e034b6c200034f422e309a8590bc55869e", "kind": "native-addon"},
+            {"path": str(SDL_MCP_LADYBUG), "sha256": "28a59bb37cd9c55d78bf106f8765c6122c27a3308493fc49bc7897cae8eef826", "kind": "ladybug-addon"},
+        ],
+        "mcp_handshake": {"required": True, "method": "initialize-and-tools-list", "timeout_seconds": 90},
+        "default_tool_state": "warm-index",
+    },
     "opencode-codex-product-v1": {
         "display_name": "OpenCode CLI 1.18.9",
         "lane_name": "runtime-opencode-codex-product-v1",
