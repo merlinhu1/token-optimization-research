@@ -903,6 +903,8 @@ OPENROUTER_LIFECYCLE_V1_AUTHORITY_REL = "sources/evaluations/audits/lifecycle-v1
 OPENROUTER_LIFECYCLE_V1_ATTEMPT_DIR = "sources/evaluations/audits/lifecycle-v1-opencode-openrouter-sol-high-r0-attempts"
 DIRECT_CLAUDE_LIFECYCLE_V1_AUTHORITY_REL = "sources/evaluations/audits/claude-code-anthropic-sonnet-5-high-lifecycle-v1-baseline-authorization-20260808.json"
 DIRECT_CLAUDE_LIFECYCLE_V1_ATTEMPT_DIR = "sources/evaluations/audits/claude-code-anthropic-sonnet-5-high-lifecycle-v1-attempts"
+DIRECT_CLAUDE_LIFECYCLE_V1_TREATMENT_AUTHORITY_REL = "sources/evaluations/audits/claude-code-anthropic-sonnet-5-high-lifecycle-v1-treatment-authorization-20260808.json"
+DIRECT_CLAUDE_LIFECYCLE_V1_TREATMENT_QUALIFICATION_REL = "sources/evaluations/audits/corrected-integration-qualification-claude-code-anthropic-sonnet-5-high-lifecycle-v1-20260808.json"
 DIRECT_CLAUDE_LIFECYCLE_V1_PROFILE_ID = "baseline-claude-code-no-mcp"
 DIRECT_CLAUDE_LIFECYCLE_V1_MODEL = {
     "id": "claude-code-anthropic-sonnet-5-high",
@@ -2361,9 +2363,12 @@ def validate_protocol_for_run(seq: dict[str, Any], profile_id: str, args: argpar
     assert_profile_runnable(profile_id)
     if not args.prepare_only and profile_runtime_id(profile_id) == "claude-code":
         profile = profile_registry_entry(profile_id)
-        if profile.get("status") == "protocol-prepared":
+        if (
+            profile.get("status") == "protocol-prepared"
+            and not claude_anthropic_sonnet_treatment_authorized(seq, profile_id)
+        ):
             raise ValueError(
-                f"Claude Code profile {profile_id} is protocol-prepared only; complete native-surface qualification and refresh its protocol before provider execution"
+                f"Claude Code profile {profile_id} is protocol-prepared only; complete native-surface qualification and separate treatment authorization before provider execution"
             )
     if not args.prepare_only:
         readiness_errors = repository_validation.current_candidate_profile_launch_readiness_errors()
@@ -2500,6 +2505,85 @@ def frozen_runtime_image_ref(protocol: dict[str, Any]) -> str:
 
 def qualification_is_current(seq: dict[str, Any]) -> tuple[bool, dict[str, Any]]:
     return repository_validation.qualification_is_current(seq)
+
+
+def claude_anthropic_sonnet_treatment_authorized(
+    seq: dict[str, Any],
+    profile_id: str,
+    root: Path = ROOT,
+) -> bool:
+    """Require the bounded owner authorization and exact no-provider qualification receipt."""
+    if (
+        seq.get("task_family_generation") != "lifecycle-v1"
+        or seq.get("id") not in DIRECT_CLAUDE_LIFECYCLE_V1_SEQUENCE_ORDER
+        or profile_id == DIRECT_CLAUDE_LIFECYCLE_V1_PROFILE_ID
+        or DEFAULT_WORKFLOW_MODEL_CONDITION_ID != DIRECT_CLAUDE_LIFECYCLE_V1_MODEL["id"]
+    ):
+        return False
+    try:
+        authority = json.loads(
+            (root / DIRECT_CLAUDE_LIFECYCLE_V1_TREATMENT_AUTHORITY_REL).read_text()
+        )
+        qualification_path = root / DIRECT_CLAUDE_LIFECYCLE_V1_TREATMENT_QUALIFICATION_REL
+        qualification = json.loads(qualification_path.read_text())
+    except (OSError, ValueError, json.JSONDecodeError):
+        return False
+    if (
+        authority.get("schema_version") != 1
+        or authority.get("status") != "owner-authorized-provider-capable"
+        or authority.get("campaign_id") != "claude-code-anthropic-sonnet-5-high-lifecycle-v1"
+        or authority.get("task_family_generation") != "lifecycle-v1"
+        or authority.get("replicate_index") != 0
+        or authority.get("sequence_order") != list(DIRECT_CLAUDE_LIFECYCLE_V1_SEQUENCE_ORDER)
+        or authority.get("max_parallel") != 1
+        or authority.get("serialization_required") is not True
+        or authority.get("model_condition") != DIRECT_CLAUDE_LIFECYCLE_V1_MODEL
+        or authority.get("first_valid_sample_policy") is not True
+        or authority.get("rerun_after_attempt_receipt") is not False
+        or authority.get("provider_calls") != 0
+        or authority.get("provider_tokens") != 0
+        or not isinstance(authority.get("profiles"), list)
+        or profile_id not in authority["profiles"]
+        or len(authority["profiles"]) != 15
+        or authority.get("qualification_receipt_path") != DIRECT_CLAUDE_LIFECYCLE_V1_TREATMENT_QUALIFICATION_REL
+        or hashlib.sha256(qualification_path.read_bytes()).hexdigest()
+        != authority.get("qualification_receipt_sha256")
+    ):
+        return False
+    expected_turns = sum(
+        len(load_sequence(sequence_id).get("tasks", []))
+        for sequence_id in DIRECT_CLAUDE_LIFECYCLE_V1_SEQUENCE_ORDER
+    ) * len(authority["profiles"])
+    if (
+        authority.get("allowed_paid_treatment_runs") != len(authority["profiles"]) * len(DIRECT_CLAUDE_LIFECYCLE_V1_SEQUENCE_ORDER)
+        or authority.get("allowed_model_turns") != expected_turns
+        or qualification.get("execution_mode") != "prepare-only-no-provider"
+        or qualification.get("provider_calls") != 0
+        or qualification.get("summary", {}).get("provider_backed_sessions_created") != 0
+        or qualification.get("summary", {}).get("failed") != 0
+    ):
+        return False
+    lanes = [
+        lane
+        for lane in qualification.get("lanes", [])
+        if isinstance(lane, dict)
+        and lane.get("sequence_id") == seq.get("id")
+        and lane.get("profile_id") == profile_id
+    ]
+    if len(lanes) != 1:
+        return False
+    lane = lanes[0]
+    checks = lane.get("qualification_checks")
+    return (
+        isinstance(checks, dict)
+        and checks
+        and all(value is True for value in checks.values())
+        and lane.get("protocol_path")
+        and lane.get("protocol_sha256")
+        and (root / str(lane["protocol_path"])).is_file()
+        and hashlib.sha256((root / str(lane["protocol_path"])).read_bytes()).hexdigest()
+        == lane["protocol_sha256"]
+    )
 
 
 def artifact_lane_label(project_id: str) -> str:
