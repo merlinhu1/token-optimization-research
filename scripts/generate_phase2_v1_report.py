@@ -151,6 +151,24 @@ BASELINE_IDS = {
     ("opencode-cli", "fastify"): "opencode-fastify-20260802-p-72ac148f730b-r1",
     ("opencode-cli", "beets"): "opencode-beets-20260802-p-d8cfc5066f76-r1",
 }
+CLAUDE_BASELINE_IDS = {
+    "Sonnet 5": {
+        "condition_id": "claude-code-anthropic-sonnet-5-high",
+        "model": "claude-sonnet-5",
+        "session_ids": [
+            "baseline-claude-code-fastify-20260808-p-70516277e342-r0",
+            "baseline-claude-code-beets-20260808-p-ab14b9edcf57-r0",
+        ],
+    },
+    "Opus 5": {
+        "condition_id": "claude-code-anthropic-opus-5-high",
+        "model": "claude-opus-5",
+        "session_ids": [
+            "baseline-claude-code-fastify-20260808-p-5e155b3359d4-r0",
+            "baseline-claude-code-beets-20260808-p-73f4146eb5f6-r0",
+        ],
+    },
+}
 BLOCKED = [
     {
         "tool": "LowFat",
@@ -207,6 +225,40 @@ def sequence_name(row: dict) -> str:
 
 def passed_tasks(row: dict) -> int:
     return sum(1 for item in row.get("per_task_results", []) if item.get("verifier_passed") is True)
+
+
+def claude_baseline_summary(by_id: dict[str, dict], baselines: dict[tuple[str, str], dict]) -> dict:
+    summaries = {}
+    for label, spec in CLAUDE_BASELINE_IDS.items():
+        rows = [by_id[session_id] for session_id in spec["session_ids"]]
+        if {sequence_name(row) for row in rows} != set(SEQUENCES):
+            raise RuntimeError(f"Claude baseline selection is not sequence-complete: {label}")
+        totals = {key: sum(usage(row)[key] for row in rows) for key in usage(rows[0])}
+        summaries[label] = {
+            "condition_id": spec["condition_id"],
+            "model": spec["model"],
+            "session_ids": spec["session_ids"],
+            "sessions": len(rows),
+            "provider_tokens": totals["total_provider_tokens"],
+            "weighted_tokens": round(weighted(totals), 1),
+        }
+    codex_totals = {key: sum(usage(baselines[("codex-cli", lane)])[key] for lane in SEQUENCES) for key in usage(next(iter(baselines.values())))}
+    opencode_totals = {key: sum(usage(baselines[("opencode-cli", lane)])[key] for lane in SEQUENCES) for key in usage(next(iter(baselines.values())))}
+    sonnet_tokens = summaries["Sonnet 5"]["weighted_tokens"]
+    opus_tokens = summaries["Opus 5"]["weighted_tokens"]
+    summaries["matched_baselines"] = {
+        "codex_provider_tokens": codex_totals["total_provider_tokens"],
+        "opencode_provider_tokens": opencode_totals["total_provider_tokens"],
+        "codex_weighted_tokens": round(weighted(codex_totals), 1),
+        "opencode_weighted_tokens": round(weighted(opencode_totals), 1),
+    }
+    summaries["selection"] = {
+        "selected_condition_id": CLAUDE_BASELINE_IDS["Sonnet 5"]["condition_id"],
+        "opus_vs_sonnet_weighted_pct": round(100 * (opus_tokens / sonnet_tokens - 1), 2),
+        "sonnet_vs_codex_weighted_pct": round(100 * (sonnet_tokens / summaries["matched_baselines"]["codex_weighted_tokens"] - 1), 2),
+        "sonnet_vs_opencode_weighted_pct": round(100 * (sonnet_tokens / summaries["matched_baselines"]["opencode_weighted_tokens"] - 1), 2),
+    }
+    return summaries
 
 
 def pct(value: float) -> str:
@@ -396,6 +448,7 @@ def build_dataset() -> dict:
         key: by_id[session_id]
         for key, session_id in BASELINE_IDS.items()
     }
+    claude_baselines = claude_baseline_summary(by_id, baselines)
     grouped: dict[tuple[str, str], list[dict]] = defaultdict(list)
     for row in treatments:
         grouped[(runtime(row), DISPLAY[profile_id(row)])].append(row)
@@ -462,6 +515,7 @@ def build_dataset() -> dict:
             "Codex": "codex-openai-gpt-5-6-sol-high",
             "OpenCode": "opencode-openai-gpt-5-6-sol-high",
         },
+        "claude_code_baseline_selection": claude_baselines,
         "sequences": list(SEQUENCES),
         "usage_formula": "fresh input + 0.1 * cached input + 6 * output",
         "treatment_condition_count": len(condition_rows),
@@ -479,6 +533,7 @@ def report_markdown(data: dict) -> str:
     by_tool = {(row["tool"], row["runtime"]): row for row in conditions}
     codex = data["aggregates"]["codex-cli"]
     opencode = data["aggregates"]["opencode-cli"]
+    claude = data["claude_code_baseline_selection"]
     codex_base = codex["repeated_baseline"]
     open_base = opencode["repeated_baseline"]
     blocked_lines = "\n".join(f"- **{item['tool']} / {item['runtime']}:** {item['reason']}" for item in BLOCKED)
@@ -600,6 +655,17 @@ In Codex, the weighted increase is distributed across fresh input, cached input,
 ### Runtime interaction
 
 The Codex aggregate changed by {pct(codex['weighted_delta_pct'])} weighted, while the OpenCode aggregate changed by {pct(opencode['weighted_delta_pct'])}. This is evidence of runtime-specific behavior, not proof that one runtime or product caused the full difference. Prompt serialization, caching, tool routing, command trajectories, and runtime accounting semantics remain potential contributors.
+
+### Claude Code baseline model selection
+
+As a separate model-selection experiment, direct first-party Anthropic Claude Code baselines ran the same Fastify and Beets Lifecycle V1 workflows with Sonnet 5/high and Opus 5/high. These baseline-only runs are not included in the 27 product/runtime treatment conditions above.
+
+| Claude Code baseline | Weighted token cost across Fastify + Beets | Difference versus Sonnet 5 |
+|---|---:|---:|
+| Sonnet 5/high | {one_decimal(claude['Sonnet 5']['weighted_tokens'])} | — |
+| Opus 5/high | {one_decimal(claude['Opus 5']['weighted_tokens'])} | {pct(claude['selection']['opus_vs_sonnet_weighted_pct'])} |
+
+The Sonnet 5 baseline used {pct(claude['selection']['sonnet_vs_codex_weighted_pct'])} more weighted token cost than the matched Codex baseline pair ({one_decimal(claude['matched_baselines']['codex_weighted_tokens'])}) and {pct(claude['selection']['sonnet_vs_opencode_weighted_pct'])} more than the matched OpenCode baseline pair ({one_decimal(claude['matched_baselines']['opencode_weighted_tokens'])}). Because Opus 5 used materially more weighted token cost than Sonnet 5, while Claude Code already carries higher weighted baseline usage than both comparison runtimes, subsequent Claude Code treatment experiments continue with Sonnet 5/high. Opus 5 remains a completed baseline-only reference; this is a model-selection decision, not a treatment-effect estimate.
 
 ### Per-tool discussion
 

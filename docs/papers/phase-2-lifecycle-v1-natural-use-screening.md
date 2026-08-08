@@ -27,7 +27,7 @@ The estimand is assignment to the installed, native product surface under natura
 | Treatment policy | Pinned native integration; natural use; no evaluator-forced invocation |
 | Primary measure | Weighted token cost |
 | Accounting | `fresh input + 0.1 × cached input + 6 × output`; reasoning is an output subset and is not added again |
-| Evidence snapshot | 2026-08-08; registry SHA-256 `0d9435b48dfe5ef8337dddc9dfceccbcb2d4e1b8649062fc462e66d7178f745f` |
+| Evidence snapshot | 2026-08-08; registry SHA-256 `324073e05a3aa79868515561714647bae1301eb4ab26b5ffb36f5c6b4764d359` |
 
 The same two baseline sessions are repeated descriptively across conditions within each runtime. Repetition does not create independent controls. Codex and OpenCode are reported separately because their runtime surfaces, event schemas, and control conditions differ.
 
@@ -96,6 +96,17 @@ In Codex, the weighted increase is distributed across fresh input, cached input,
 ### Runtime interaction
 
 The Codex aggregate changed by +35.10% weighted, while the OpenCode aggregate changed by -14.02%. This is evidence of runtime-specific behavior, not proof that one runtime or product caused the full difference. Prompt serialization, caching, tool routing, command trajectories, and runtime accounting semantics remain potential contributors.
+
+### Claude Code baseline model selection
+
+As a separate model-selection experiment, direct first-party Anthropic Claude Code baselines ran the same Fastify and Beets Lifecycle V1 workflows with Sonnet 5/high and Opus 5/high. These baseline-only runs are not included in the 27 product/runtime treatment conditions above.
+
+| Claude Code baseline | Weighted token cost across Fastify + Beets | Difference versus Sonnet 5 |
+|---|---:|---:|
+| Sonnet 5/high | 897,108.2 | — |
+| Opus 5/high | 1,167,276.7 | +30.12% |
+
+The Sonnet 5 baseline used +73.85% more weighted token cost than the matched Codex baseline pair (516,037.8) and +22.71% more than the matched OpenCode baseline pair (731,053.6). Because Opus 5 used materially more weighted token cost than Sonnet 5, while Claude Code already carries higher weighted baseline usage than both comparison runtimes, subsequent Claude Code treatment experiments continue with Sonnet 5/high. Opus 5 remains a completed baseline-only reference; this is a model-selection decision, not a treatment-effect estimate.
 
 ### Per-tool discussion
 

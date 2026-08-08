@@ -18,7 +18,7 @@ Record the repository's current decision-bearing evaluation state without overst
 
 This document covers the active two-lane Lifecycle V1 portfolio, retained production baseline evidence, accepted corrected treatment sessions, and explicit treatment deletions. Token claims require retained provider-backed sessions; setup qualification alone is not effectiveness evidence.
 
-Direct-Anthropic Claude Code completed bounded baseline populations for `claude-code-anthropic-sonnet-5-high` (`claude-sonnet-5`, 6,207,153 provider tokens) and `claude-code-anthropic-opus-5-high` (`claude-opus-5`, 7,333,190 provider tokens), each across Fastify and Beets for six task turns. Sonnet freezes 32 treatment protocols; the Opus campaign is baseline-only and leaves treatment protocols unchanged. Treatment protocols remain provider-free pending native-surface qualification and separate treatment authorization.
+Direct-Anthropic Claude Code completed bounded baseline populations for `claude-code-anthropic-sonnet-5-high` (`claude-sonnet-5`, 897,108.2 weighted units) and `claude-code-anthropic-opus-5-high` (`claude-opus-5`, 1,167,276.7 weighted units), each across Fastify and Beets for six task turns. Opus used 30.12% more weighted token cost than Sonnet, and Sonnet was already 73.85% above matched Codex and 22.71% above matched OpenCode weighted baselines; Sonnet therefore remains the selected model for treatment experiments. Sonnet freezes 32 treatment protocols; the Opus campaign is baseline-only and leaves treatment protocols unchanged. Treatment protocols remain provider-free pending native-surface qualification and separate treatment authorization.
 
 ## Current Implementation Behavior
 

@@ -5,7 +5,7 @@ doc_type: workflow
 source_of_truth:
   - ../../../../docs/methodology/README.md
   - ../../../../docs/research/tool-research-strategy.md
-last_reviewed: 2026-06-30
+last_reviewed: 2026-08-08
 ---
 
 # Methodology And Reporting Workflow
@@ -30,6 +30,7 @@ Benchmark protocol details, quality diagnostics, and stack compatibility are own
 - Discovery coverage audits are required before claiming a candidate set is complete, primary, recommended, or representative.
 - High-signal leads discovered by coverage audits stay visible in repository data and backlog even when they remain non-decision-bearing `lead` evidence.
 - Repositories without auditable source versioning are excluded from valid candidate sets until refreshed against a pinned source snapshot.
+- The generated Phase 2 report includes a supplemental Claude Code baseline model-selection section. It derives weighted token cost (`fresh + 0.1×cached + 6×output`) for Sonnet 5 and Opus 5 from pinned registry session IDs, compares it with the matched Codex/OpenCode baselines, and excludes these baseline-only runs from treatment aggregates.
 
 ## Product Truth Links
 

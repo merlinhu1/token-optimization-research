@@ -27,7 +27,7 @@ Baseline-only execution completed for `fastify-lifecycle-sequence-v1, beets-life
 Authority: `sources/evaluations/audits/claude-code-anthropic-opus-5-high-lifecycle-v1-protocol-preparation-20260808.json` (`frozen-provider-free-protocols-account-pending`).
 Condition: `claude-code-anthropic-opus-5-high` — `anthropic/claude-opus-5` with `high` effort.
 Prepared treatment profiles: 0 (0 treatment plus 2 baseline frozen provider-free protocol files across the active Fastify and Beets sequences).
-Baseline-only execution completed for `fastify-lifecycle-sequence-v1, beets-lifecycle-sequence-v1` with 7,333,190 provider tokens; treatment execution remains blocked.
+Baseline-only execution completed for `fastify-lifecycle-sequence-v1, beets-lifecycle-sequence-v1` with 7,343,190 provider tokens; treatment execution remains blocked.
 
 Account setup uses `TOKEN_EVAL_CLAUDE_ACCOUNT_HOME`; credentials are copied only into an ephemeral lane and never retained in evidence.
 
