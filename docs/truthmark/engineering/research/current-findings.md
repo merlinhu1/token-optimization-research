@@ -18,6 +18,8 @@ Record the repository's current decision-bearing evaluation state without overst
 
 This document covers the active two-lane Lifecycle V1 portfolio, retained production baseline evidence, accepted corrected treatment sessions, and explicit treatment deletions. Token claims require retained provider-backed sessions; setup qualification alone is not effectiveness evidence.
 
+Direct-Anthropic Claude Code is a prepared population with a bounded baseline authorization: the `claude-code-anthropic-sonnet-5-high` condition freezes `claude-sonnet-5` with `high` effort and 32 treatment protocols across Fastify and Beets for the Phase 2 tools plus SDL-MCP. Fastify and Beets r0 baseline execution is authorized serially; treatment protocols remain provider-free pending native-surface qualification and separate treatment authorization.
+
 ## Current Implementation Behavior
 
 - The runnable portfolio contains exactly two Lifecycle V1 sequences—Fastify and Beets. Terraform's owner-declared-invalid V1 r0 was removed under a machine-readable invalidation receipt and has no current launch path.
@@ -113,6 +115,7 @@ A prior artifact-packaging audit found that the now-deleted historical Graphify 
 - ../../../../sources/evaluations/audits/opencode-bare-sol-high-r2-results-20260730.json
 - ../../../../sources/evaluations/audits/opencode-dcp-r2-results-20260731.json
 - ../../../../sources/evaluations/audits/opencode-serena-jcodemunch-token-inflation-analysis-20260730.json
+- ../../../../sources/evaluations/audits/claude-code-anthropic-sonnet-5-high-lifecycle-v1-protocol-preparation-20260808.json
 - ../../../../scripts/audit_codex_cumulative_usage.py
 - ../../../../sources/evaluations/workflow-sessions/
 - ../../../../docs/evaluations/operations/runbook.md

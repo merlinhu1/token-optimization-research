@@ -1,0 +1,508 @@
+{
+  "protocol_schema_version": 3,
+  "protocol_id": "beets-lifecycle-sequence-v1-artifact-ponytail-claude-code-plugin-v1-aab24fde2edf",
+  "status": "frozen-ready-not-run",
+  "outcome": "Frozen artifact-ponytail-claude-code-plugin-v1 protocol for beets-lifecycle-sequence-v1; no provider/model run has occurred.",
+  "frozen_at": "2026-08-01",
+  "hypothesis": "artifact-ponytail-claude-code-plugin-v1 produces reproducible provider-reported token and software-quality evidence for beets-lifecycle-sequence-v1",
+  "evidence_stage_target": "reproduction",
+  "task_fixture": {
+    "fixture_id": "medium-beetbox-beets",
+    "sequence_id": "beets-lifecycle-sequence-v1",
+    "task_family_generation": "lifecycle-v1",
+    "repository": "https://github.com/beetbox/beets.git",
+    "snapshot": "9acb1ecff6c7ee0a1e83e3b983c94792345712c5",
+    "qualification_path": "sources/evaluations/fixtures/medium/beetbox-beets/qualification-lifecycle-v1.json",
+    "qualification_sha256": "03b30282786a471edadc80ed7cc4842c7c9bfdc912de61b9ce0bdeb66d3b494d",
+    "timeout_seconds_per_task": 3600
+  },
+  "baseline": {
+    "profile_id": "baseline-claude-code-no-mcp",
+    "runtime_id": "claude-code",
+    "provider": "anthropic",
+    "model": "claude-sonnet-5",
+    "model_condition_id": "claude-code-anthropic-sonnet-5-high",
+    "reasoning_effort": "high",
+    "command": ""
+  },
+  "comparison_baseline": {
+    "profile_id": "baseline-claude-code-no-mcp",
+    "runtime_id": "claude-code",
+    "provider": "anthropic",
+    "model": "claude-sonnet-5",
+    "model_condition_id": "claude-code-anthropic-sonnet-5-high",
+    "reasoning_effort": "high",
+    "command": ""
+  },
+  "treatment": {
+    "profile_id": "artifact-ponytail-claude-code-plugin-v1",
+    "runtime_id": "claude-code",
+    "provider": "anthropic",
+    "model": "claude-sonnet-5",
+    "model_condition_id": "claude-code-anthropic-sonnet-5-high",
+    "reasoning_effort": "high",
+    "command": "python3 scripts/run_claude_code_workflow_model_condition.py --workflow-model-condition-id claude-code-anthropic-sonnet-5-high --workflow-model claude-sonnet-5 --workflow-reasoning-effort high --sequence-id beets-lifecycle-sequence-v1 --profile-id artifact-ponytail-claude-code-plugin-v1 --timeout-per-task 3600 --protocol sources/evaluations/protocols/beets-lifecycle-sequence-v1-artifact-ponytail-claude-code-plugin-v1-aab24fde2edf.json --docker-image token-eval-codex:latest"
+  },
+  "token_accounting_boundary": {
+    "fields": [
+      "fresh_input_tokens",
+      "cached_input_tokens",
+      "cache_write_tokens",
+      "output_tokens",
+      "reasoning_tokens",
+      "total_provider_tokens"
+    ]
+  },
+  "baseline_pool": {
+    "protocol_version": "baseline-pool-v1",
+    "protocol_fingerprint": "ab14b9edcf57",
+    "descriptor": {
+      "version": "baseline-pool-v1",
+      "task_family_generation": "lifecycle-v1",
+      "runner_contract_version": "workflow-runner-v10",
+      "runner_sha256": "d81e3c111054bfeb43e515efadb65e291e0c8647832f3ee2edf170d50f29e600",
+      "qualification_generator_sha256": "a0c871d2a500a3fe6a11b78ef4ec20ef29cf12f5db44fdae53344e4327ec559b",
+      "validator_sha256": "a992aa7d5e304dd87dabd8973f92e40bf182ce59398f41ab705a3a27251248f2",
+      "sequence_id": "beets-lifecycle-sequence-v1",
+      "sequence_contract": "feature-refactor-review",
+      "fixture_id": "medium-beetbox-beets",
+      "fixture_scale": "medium-project",
+      "initial_snapshot": {
+        "commit": "9acb1ecff6c7ee0a1e83e3b983c94792345712c5",
+        "upstream": "https://github.com/beetbox/beets.git",
+        "dependency_lockfiles": [
+          {
+            "path": "uv.lock",
+            "sha256": "fbf1d7a9c84b658a2433035221ba18c57508c254d711a06f305e2f610839a45f"
+          }
+        ]
+      },
+      "objective": "individual_tool_effectiveness",
+      "primary_metric": "cumulative provider-reported workflow tokens",
+      "acceptance_design": "compile-only",
+      "acceptance_policy": {
+        "gate": "affected-component-compilation",
+        "visibility": "controller-only",
+        "quality_diagnostics_gate": false,
+        "tests_required": false,
+        "source_review_required": false
+      },
+      "project_compile_command": "uv run --offline --frozen python -c \"import ast, pathlib; [ast.parse(p.read_text(), filename=str(p)) for root in ('beets', 'beetsplug') for p in pathlib.Path(root).rglob('*.py')]\"",
+      "tasks": [
+        {
+          "id": "beets-lifecycle-feature-v1",
+          "order": 1,
+          "task_class": "feature-implementation",
+          "prompt_path": "sources/evaluations/fixtures/medium/beetbox-beets/task-generations/lifecycle-v1/beets-lifecycle-feature-v1/agent-prompt.txt",
+          "prompt_sha256": "de2a6d38d4bff0027866e665816d47d39f3e98e0b73e1e74645bae14c918821b",
+          "seed_patch_sha256": "9dc1cf36d0d0120fb57f75c4579af7f1f65b80e9d80de2d2c5cbdeb69b4ac17e",
+          "verifier_command": "sources/evaluations/fixtures/medium/beetbox-beets/task-generations/lifecycle-v1/beets-lifecycle-feature-v1/verify.sh",
+          "verifier_sha256": "5a5028a8debfc2260145947a81a53dd6644e08abcd7d45ee4c41fadcdcb351b0",
+          "compile_command": "uv run --offline --frozen python -m py_compile beets/util/functemplate.py",
+          "acceptance_visibility": "controller-only-compile-policy",
+          "expected_changed_paths": [
+            "beets/util/functemplate.py"
+          ],
+          "controller_visible_acceptance_assets": [],
+          "upstream_test_paths": [],
+          "compatibility_rebased_test_paths": [],
+          "expected_model_concealed_paths": [],
+          "model_concealed_paths": []
+        },
+        {
+          "id": "beets-lifecycle-refactor-v1",
+          "order": 2,
+          "task_class": "behavior-preserving-refactor",
+          "prompt_path": "sources/evaluations/fixtures/medium/beetbox-beets/task-generations/lifecycle-v1/beets-lifecycle-refactor-v1/agent-prompt.txt",
+          "prompt_sha256": "b6555b12ec7ef275bfd7c595ead918b3203051aa7bbad2e82dd99b76b0472be8",
+          "seed_patch_sha256": "9bcf590139fc91987524e643bc1e6281efbe5a09cd9b2218ca31f670c391c722",
+          "verifier_command": "sources/evaluations/fixtures/medium/beetbox-beets/task-generations/lifecycle-v1/beets-lifecycle-refactor-v1/verify.sh",
+          "verifier_sha256": "ca092d6431225d9b8f6aedef8bb8d0c8c50a403ca6441291a54425d9c5c9faf5",
+          "compile_command": "uv run --offline --frozen python -m py_compile beets/dbcore/db.py",
+          "acceptance_visibility": "controller-only-compile-policy",
+          "expected_changed_paths": [
+            "beets/dbcore/db.py"
+          ],
+          "controller_visible_acceptance_assets": [],
+          "upstream_test_paths": [],
+          "compatibility_rebased_test_paths": [],
+          "expected_model_concealed_paths": [],
+          "model_concealed_paths": []
+        },
+        {
+          "id": "beets-lifecycle-review-v1",
+          "order": 3,
+          "task_class": "code-review-correction",
+          "prompt_path": "sources/evaluations/fixtures/medium/beetbox-beets/task-generations/lifecycle-v1/beets-lifecycle-review-v1/agent-prompt.txt",
+          "prompt_sha256": "88d48e9fba771d9f5e02a3341975f746768412e64e9dffa615cc5dd35cad11f4",
+          "seed_patch_sha256": "14d8dd83706706805b8159f85871036cfb39148dd7912e66e2c8044d505cabad",
+          "verifier_command": "sources/evaluations/fixtures/medium/beetbox-beets/task-generations/lifecycle-v1/beets-lifecycle-review-v1/verify.sh",
+          "verifier_sha256": "7ad4e01e8a7b2ecd2852e8985cef05840fa0a9d1ce9f775a87ccf35be7ff98dd",
+          "compile_command": "uv run --offline --frozen python -m py_compile beetsplug/ftintitle.py",
+          "acceptance_visibility": "controller-only-compile-policy",
+          "expected_changed_paths": [
+            "beetsplug/ftintitle.py"
+          ],
+          "controller_visible_acceptance_assets": [],
+          "upstream_test_paths": [],
+          "compatibility_rebased_test_paths": [],
+          "expected_model_concealed_paths": [],
+          "model_concealed_paths": [],
+          "review_patch_path": "review-change.patch",
+          "review_patch_sha256": "14d8dd83706706805b8159f85871036cfb39148dd7912e66e2c8044d505cabad"
+        }
+      ],
+      "model_facing_prompts": {
+        "rendering_contract": "sequential-model-facing-prompts-v2",
+        "profile_guidance_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "tasks": [
+          {
+            "task_id": "beets-lifecycle-feature-v1",
+            "order": 1,
+            "rendered_prompt_sha256": "fd11c28e91be7826ff049748f7a84a5f0bd3137f9add35b498d50b39aea8548c"
+          },
+          {
+            "task_id": "beets-lifecycle-refactor-v1",
+            "order": 2,
+            "rendered_prompt_sha256": "69cd7d8bf2eeba073fafc156982916dcbb68df92ca06a869039c9bbb728255f9"
+          },
+          {
+            "task_id": "beets-lifecycle-review-v1",
+            "order": 3,
+            "rendered_prompt_sha256": "1586356a85a2cbdd70fa6d545d16063df49a1f2d455cf07646cb943a691770d0"
+          }
+        ]
+      },
+      "qualification": {
+        "path": "sources/evaluations/fixtures/medium/beetbox-beets/qualification-lifecycle-v1.json",
+        "sha256": "03b30282786a471edadc80ed7cc4842c7c9bfdc912de61b9ce0bdeb66d3b494d"
+      },
+      "baseline_profile": {
+        "profile_id": "baseline-claude-code-no-mcp",
+        "profile_type": "control",
+        "enabled_surfaces": [
+          "claude-code-native-shell-edit",
+          "project-claude-md-instruction-discovery"
+        ],
+        "disabled_overlaps": [
+          "all MCP servers",
+          "all token-saving surfaces",
+          "global Claude instructions",
+          "hooks",
+          "skills/plugins",
+          "warm indexes"
+        ]
+      },
+      "agent": {
+        "runtime_id": "claude-code",
+        "provider": "anthropic",
+        "model": "claude-sonnet-5",
+        "model_condition_id": "claude-code-anthropic-sonnet-5-high",
+        "reasoning_effort": "high",
+        "runtime_version_condition": "captured-at-run-and-bound-to-record"
+      },
+      "runtime_inputs": {
+        "timeout_seconds_per_task": 3600,
+        "docker_image": "token-eval-codex:latest",
+        "docker_image_identity": {
+          "image_ref": "token-eval-codex:latest",
+          "image_id": "sha256:6f86d01f2c63f5029c6bb874d8f3694c24d5cd567e3d09413eccc956ba3feafe",
+          "repo_digests": [
+            "token-eval-codex@sha256:6f86d01f2c63f5029c6bb874d8f3694c24d5cd567e3d09413eccc956ba3feafe"
+          ],
+          "repo_tags": [
+            "token-eval-codex:latest"
+          ]
+        },
+        "dockerfile_path": "sources/evaluations/fixtures/container/Dockerfile",
+        "dockerfile_sha256": "47c91967ce25014ce54879514f51d2ff0326651be1087209115eff4d358226b3",
+        "dependency_command": "uv sync --group test --frozen",
+        "dependency_lockfiles": [
+          {
+            "path": "uv.lock",
+            "sha256": "fbf1d7a9c84b658a2433035221ba18c57508c254d711a06f305e2f610839a45f"
+          }
+        ],
+        "claude_runtime_condition": "claude-code-anthropic-sonnet-5-high",
+        "model_condition_id": "claude-code-anthropic-sonnet-5-high",
+        "model_condition_launcher": "scripts/run_claude_code_workflow_model_condition.py"
+      },
+      "isolation": {
+        "prompt_delivery": "sequential-one-task-at-a-time",
+        "seed_delivery_mode": "preseeded-composite",
+        "future_tasks_visible": false,
+        "future_seed_regressions_visible": true,
+        "controller_verifier_scripts_and_canonical_copies_model_visible": false,
+        "model_visible_acceptance_asset_paths": [],
+        "acceptance_design": "compile-only",
+        "acceptance_policy": {
+          "gate": "affected-component-compilation",
+          "visibility": "controller-only",
+          "quality_diagnostics_gate": false,
+          "tests_required": false,
+          "source_review_required": false
+        },
+        "git_baseline_true_root_at_lane_start": true,
+        "controller_verification": "final-only",
+        "prompt_sanitizer": "sanitize_task_prompt-v1",
+        "concealment": "declared-model-concealed-paths-removed-before-root-commit",
+        "model_concealed_paths": []
+      },
+      "model_condition_override": {
+        "model_condition_id": "claude-code-anthropic-sonnet-5-high",
+        "runtime_id": "claude-code",
+        "provider": "anthropic",
+        "model": "claude-sonnet-5",
+        "reasoning_effort": "high",
+        "registry_status": "configured-provider-free",
+        "launcher": {
+          "path": "scripts/run_claude_code_workflow_model_condition.py",
+          "sha256": "6a3f81ff751cd8219cd93ee33753d6efb25fff779f6228dc3c822f98e2fa436f",
+          "condition_runtime_path": "scripts/workflow_model_condition_runtime.py",
+          "condition_runtime_sha256": "01479bd991417d9f5bb5fcef513e1beee3f1f05512ab818429cac24e0ebde866"
+        }
+      }
+    }
+  },
+  "selected_execution": {
+    "descriptor_sha256": "2f715b13489ed89e3534ed1d719e178901e2c3eed1c7b332728c55a5760ea33f",
+    "descriptor": {
+      "version": "execution-condition-v1",
+      "sequence_id": "beets-lifecycle-sequence-v1",
+      "execution_role": "individual_tool_treatment",
+      "selected_profile": {
+        "profile_id": "artifact-ponytail-claude-code-plugin-v1",
+        "profile_type": "individual_tool",
+        "component_ids": [
+          "artifact-ponytail-claude-code-plugin-v1"
+        ],
+        "enabled_surfaces": [
+          "claude-code-native-plugin+skills+hooks"
+        ],
+        "disabled_overlaps": [
+          "all unlisted surfaces",
+          "other token-saving tools",
+          "OpenRouter transport"
+        ],
+        "registry_entry_sha256": "4e5793bfeec8689bb0546d4a16bab53bc27000edc9faa16ff62ff2f015e80331",
+        "registry_entry": {
+          "id": "artifact-ponytail-claude-code-plugin-v1",
+          "profile_type": "individual_tool",
+          "objective_scope": "individual_tool_effectiveness",
+          "substrate": "claude-code",
+          "status": "protocol-prepared",
+          "enabled_surfaces": [
+            "claude-code-native-plugin+skills+hooks"
+          ],
+          "disabled_overlaps": [
+            "all unlisted surfaces",
+            "other token-saving tools",
+            "OpenRouter transport"
+          ],
+          "components": [
+            {
+              "component_id": "artifact-ponytail-claude-code-plugin-v1",
+              "surface": "native-plugin+skills+hooks",
+              "role": "individual_tool"
+            }
+          ],
+          "install": {
+            "policy": "Use the pinned Ponytail source snapshot from artifact-ponytail-codex-plugin-v1 and install every product-authored Claude Code surface it documents (MCP, hooks, skills, plugins, rules, and guidance) into the lane-private CLAUDE_CONFIG_DIR. Require provider-free artifact, configuration, and handshake proofs before any Anthropic request."
+          },
+          "reset": {
+            "policy": "Delete the lane-private Claude config, tool state, indexes, generated guidance, hooks, plugins, and background processes after evidence capture; retain only immutable run artifacts and source hashes."
+          },
+          "evaluation_protocol": {
+            "tool_use_policy": "natural",
+            "tool_state": "qualification-pending",
+            "integration_state": "official-claude-code-native-surface-qualified-before-provider",
+            "instruction_policy": "product-authored guidance only; no evaluator-authored invocation steering",
+            "assignment_proof": "provider-free pinned source, exact Claude configuration, native activation, and required MCP/hooks/skills/plugin smoke checks"
+          },
+          "source_profiles": [
+            "artifact-ponytail-codex-plugin-v1"
+          ],
+          "notes": "Claude Code preparation profile for Ponytail; source profile artifact-ponytail-codex-plugin-v1. Provider execution remains blocked until the native Claude surface is qualified in isolation."
+        }
+      },
+      "model_facing_prompts": {
+        "rendering_contract": "sequential-model-facing-prompts-v2",
+        "profile_guidance_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "tasks": [
+          {
+            "task_id": "beets-lifecycle-feature-v1",
+            "order": 1,
+            "rendered_prompt_sha256": "fd11c28e91be7826ff049748f7a84a5f0bd3137f9add35b498d50b39aea8548c"
+          },
+          {
+            "task_id": "beets-lifecycle-refactor-v1",
+            "order": 2,
+            "rendered_prompt_sha256": "69cd7d8bf2eeba073fafc156982916dcbb68df92ca06a869039c9bbb728255f9"
+          },
+          {
+            "task_id": "beets-lifecycle-review-v1",
+            "order": 3,
+            "rendered_prompt_sha256": "1586356a85a2cbdd70fa6d545d16063df49a1f2d455cf07646cb943a691770d0"
+          }
+        ]
+      },
+      "tool_adapter": {
+        "tool_id": "ponytail",
+        "tool_manifest": "scripts/run_codex_fixture_evaluation.py:TOOL_CONFIGS",
+        "tool_manifest_sha256": "628c7082e57d39a6eb2ffcea7b854633dd201145c55107083864580bb659df14",
+        "tool_config": {
+          "display_name": "Ponytail",
+          "lane_name": "artifact-ponytail",
+          "surface": "artifact/code-minimization-policy",
+          "allowed_terms": [
+            "ponytail"
+          ],
+          "data_dir_name": "ponytail",
+          "mounts": [
+            "/opt/data/tool-candidates/ponytail"
+          ],
+          "preflight_command": [
+            "node",
+            "-e",
+            "const {getPonytailInstructions}=require('/opt/data/ponytail/hooks/ponytail-instructions.js'); console.log(getPonytailInstructions('full').split('\\n')[0]);"
+          ],
+          "prompt_instructions_command": [
+            "node",
+            "-e",
+            "const {getFallbackInstructions}=require('/opt/data/ponytail/hooks/ponytail-instructions.js'); console.log(getFallbackInstructions('full'));"
+          ]
+        },
+        "tool_config_sha256": "4b79e1568cd9d4383bd553a938da335b8e632b651a8281e181e6ffce307dea2d",
+        "tool_state": "qualification-pending",
+        "tool_use_policy": "natural",
+        "command_identity": {
+          "kind": "preflight_command",
+          "command": [
+            "node",
+            "-e",
+            "const {getPonytailInstructions}=require('/opt/data/ponytail/hooks/ponytail-instructions.js'); console.log(getPonytailInstructions('full').split('\\n')[0]);"
+          ]
+        },
+        "binary_identity": {
+          "executable_token": "node",
+          "resolved_path": "/opt/data/bin/node",
+          "realpath": "/opt/data/opt/node-v24.18.0-linux-x64/bin/node",
+          "sha256": "41a74efb34cbde5c7632cdac0cf8bd1a14d0b8d73dc1e82755014d9a9ce70f5c",
+          "metadata": {
+            "size": 123655872,
+            "mode": "-rwxr-xr-x",
+            "uid": 10000,
+            "gid": 10000,
+            "mtime_ns": 1782236933000000000
+          },
+          "version": {
+            "command": [
+              "/opt/data/opt/node-v24.18.0-linux-x64/bin/node",
+              "--version"
+            ],
+            "environment_path": "/opt/data/bin:/opt/data/.local/bin:/opt/data/opt/go/bin:/opt/data/opt/uv:/opt/data/opt/node-v24.18.0-linux-x64/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+            "captured": true,
+            "exit_code": 0,
+            "output": "v24.18.0",
+            "truncated": false
+          }
+        },
+        "source_identity": [
+          {
+            "path": "/opt/data/tool-candidates/ponytail",
+            "exists": true,
+            "kind": "directory",
+            "git_head": "40e50d9e03242aa5dd53ac771950f9127362b25f",
+            "package_json_sha256": "6a180c19d35bcc9d08ea1b92b29c7da1ae1a1b2e3b31c73d94ac56e7fec7af01"
+          }
+        ]
+      },
+      "runtime": {
+        "docker_image": "token-eval-codex:latest",
+        "docker_image_identity": {
+          "image_ref": "token-eval-codex:latest",
+          "image_id": "sha256:6f86d01f2c63f5029c6bb874d8f3694c24d5cd567e3d09413eccc956ba3feafe",
+          "repo_digests": [
+            "token-eval-codex@sha256:6f86d01f2c63f5029c6bb874d8f3694c24d5cd567e3d09413eccc956ba3feafe"
+          ],
+          "repo_tags": [
+            "token-eval-codex:latest"
+          ]
+        },
+        "dockerfile_path": "sources/evaluations/fixtures/container/Dockerfile",
+        "dockerfile_sha256": "47c91967ce25014ce54879514f51d2ff0326651be1087209115eff4d358226b3",
+        "fixture_runner_path": "scripts/run_codex_fixture_evaluation.py",
+        "fixture_runner_sha256": "628c7082e57d39a6eb2ffcea7b854633dd201145c55107083864580bb659df14",
+        "mcp_probe_path": "scripts/probe_mcp_stdio.py",
+        "mcp_probe_sha256": "7c06ea36ee5cac933a97140b84a41405fc99b45152388e8d7c6659136af698fd",
+        "codex_entrypoint_path": "sources/evaluations/fixtures/container/codex-entrypoint.sh",
+        "codex_entrypoint_sha256": "8715fe37cb1fa3823f5f05493bc9681ce7ffc72126dfec4d64d448762c550c3c",
+        "timeout_seconds_per_task": 3600,
+        "network_isolation": {
+          "provider_access": true,
+          "model_shell_network_access": false,
+          "model_shell_enforcement": "seccomp denies AF_INET and AF_INET6 socket creation for the shell process and descendants",
+          "agent_web_tools": "disabled-by-permission",
+          "external_retrieval_audit": "fail-closed"
+        },
+        "isolation_policy": "fresh lane-specific agent home/XDG state; provider-only network with model shell and agent web tools disabled; sequential one-task prompt delivery; controller seed/verifier scripts excluded while controller-only affected-component compile commands retained; no acceptance-test assets injected; agent prompts carry normal software objectives",
+        "agent_runtime_id": "claude-code",
+        "model_condition": {
+          "id": "claude-code-anthropic-sonnet-5-high",
+          "provider": "anthropic",
+          "model": "claude-sonnet-5",
+          "reasoning_effort": "high",
+          "launcher": "scripts/run_claude_code_workflow_model_condition.py"
+        }
+      },
+      "dependencies": {
+        "command": "uv sync --group test --frozen",
+        "command_sha256": "cef23fd45902c23f8b3e89b7c6360a401eb49c17cf36d742e5b625d5593c911b",
+        "lockfiles": [
+          {
+            "path": "uv.lock",
+            "snapshot_sha256": "fbf1d7a9c84b658a2433035221ba18c57508c254d711a06f305e2f610839a45f",
+            "current_fixture_sha256": null
+          }
+        ]
+      },
+      "agent_condition": {
+        "runtime_id": "claude-code",
+        "provider": "anthropic",
+        "model": "claude-sonnet-5",
+        "model_condition_id": "claude-code-anthropic-sonnet-5-high",
+        "reasoning_effort": "high",
+        "runtime_version_condition": "captured-at-run-and-bound-to-record"
+      },
+      "isolation": {
+        "prompt_delivery": "sequential-one-task-at-a-time",
+        "seed_delivery_mode": "preseeded-composite",
+        "future_tasks_visible": false,
+        "future_seed_regressions_visible": true,
+        "controller_verification": "final-only",
+        "controller_verifier_scripts_and_canonical_copies_model_visible": false,
+        "model_visible_acceptance_asset_paths": [],
+        "model_concealed_paths": []
+      },
+      "baseline_pool_reference": {
+        "protocol_version": "baseline-pool-v1",
+        "protocol_fingerprint": "ab14b9edcf57",
+        "comparison_policy": "paired baseline and treatment must share this baseline pool fingerprint and replicate"
+      },
+      "model_condition_override": {
+        "model_condition_id": "claude-code-anthropic-sonnet-5-high",
+        "runtime_id": "claude-code",
+        "provider": "anthropic",
+        "model": "claude-sonnet-5",
+        "reasoning_effort": "high",
+        "registry_status": "configured-provider-free",
+        "launcher": {
+          "path": "scripts/run_claude_code_workflow_model_condition.py",
+          "sha256": "6a3f81ff751cd8219cd93ee33753d6efb25fff779f6228dc3c822f98e2fa436f",
+          "condition_runtime_path": "scripts/workflow_model_condition_runtime.py",
+          "condition_runtime_sha256": "01479bd991417d9f5bb5fcef513e1beee3f1f05512ab818429cac24e0ebde866"
+        }
+      }
+    }
+  }
+}

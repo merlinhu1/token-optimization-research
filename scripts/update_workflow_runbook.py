@@ -18,6 +18,8 @@ FIXTURES = ROOT / "data" / "repository-fixtures.json"
 SESSIONS = ROOT / "data" / "workflow-sessions.json"
 PROFILES = ROOT / "data" / "evaluation-profiles.json"
 AGENT_RUNTIMES = ROOT / "data" / "evaluation-agent-runtimes.json"
+CLAUDE_DIRECT_PREPARATION = ROOT / "sources" / "evaluations" / "audits" / "claude-code-anthropic-sonnet-5-high-lifecycle-v1-protocol-preparation-20260808.json"
+CLAUDE_DIRECT_AUTHORIZATION = ROOT / "sources" / "evaluations" / "audits" / "claude-code-anthropic-sonnet-5-high-lifecycle-v1-baseline-authorization-20260808.json"
 OPENCODE_TREATMENT_SCREEN_AUDIT = (
     "sources/evaluations/audits/"
     "opencode-tool-treatments-sol-high-r0-repaired-screen-results-20260730.json"
@@ -30,6 +32,31 @@ ARTIFACT_FILES = ("run.json", "changes.diff", "evidence.jsonl.gz", "manifest.sha
 
 def load_json(path: Path) -> dict[str, Any]:
     return json.loads(path.read_text(encoding="utf-8"))
+
+
+def claude_direct_preparation_text() -> str:
+    if not CLAUDE_DIRECT_PREPARATION.is_file():
+        return "_No direct-Anthropic Claude Code preparation authority is present._"
+    preparation = load_json(CLAUDE_DIRECT_PREPARATION)
+    condition = preparation.get("model_condition", {})
+    tools = preparation.get("tools", [])
+    protocol_count = sum(len(item.get("protocols", [])) for item in tools if isinstance(item, dict))
+    baseline_count = len((preparation.get("shared_protocol") or {}).get("baseline_protocols", []))
+    authorization = load_json(CLAUDE_DIRECT_AUTHORIZATION) if CLAUDE_DIRECT_AUTHORIZATION.is_file() else {}
+    if authorization.get("status") == "owner-authorized-provider-run":
+        execution_line = (
+            f"Baseline-only execution is owner-authorized under `{CLAUDE_DIRECT_AUTHORIZATION.relative_to(ROOT)}`; "
+            "run Fastify then Beets at r0 with one lane at a time. Treatment execution remains blocked."
+        )
+    else:
+        execution_line = "Execution remains blocked until the owner account, native-surface qualification, and serialized owner authorization are present."
+    return "\n".join([
+        f"Authority: `{CLAUDE_DIRECT_PREPARATION.relative_to(ROOT)}` (`{preparation.get('status')}`).",
+        f"Condition: `{condition.get('id')}` — `{condition.get('provider')}/{condition.get('model')}` with `{condition.get('reasoning_effort')}` effort.",
+        f"Prepared treatment profiles: {len(tools)} ({protocol_count} treatment plus {baseline_count} baseline frozen provider-free protocol files across the active Fastify and Beets sequences).",
+        execution_line,
+        "Account setup uses `TOKEN_EVAL_CLAUDE_ACCOUNT_HOME`; credentials are copied only into an ephemeral lane and never retained in evidence.",
+    ])
 
 
 def fixture_map() -> dict[str, dict[str, Any]]:
@@ -414,6 +441,10 @@ A valid active Lifecycle V1 workflow pre-seeds three authentic semantic regressi
 
 Internally, every active task uses compilation-only acceptance. Unit tests, behavioral fidelity, style, maintainability, and source review remain diagnostic and do not determine evaluator pass/fail. This internal policy must never be presented as an agent instruction.
 
+## Claude Code direct-Anthropic preparation
+
+{claude_direct_preparation_text()}
+
 ## Active sequences
 
 {active_table}
@@ -435,7 +466,7 @@ Before changing a sequence to `active`, require:
 - controller-only affected-component compile commands plus one frozen project-wide compile command;
 - controller-only seed patch files and fixed references;
 - cumulative provider usage capture, verifier integrity, isolation, structured compile outcomes, and optional quality diagnostics;
-- a machine-validated compile-passing provider pilot before any treatment protocol can be frozen, prepared, or run.
+- a machine-validated compile-passing provider pilot before any treatment provider execution or treatment unlock; provider-free protocol preparation may be frozen while native integration qualification and owner authorization remain pending.
 
 A no-model prepare for a frozen candidate is allowed:
 

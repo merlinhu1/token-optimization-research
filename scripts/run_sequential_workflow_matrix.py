@@ -76,6 +76,16 @@ CLAUDE_LIFECYCLE_V1_MODEL_CONDITION = {
     "model": "gpt-5.6-sol",
     "reasoning_effort": "high",
 }
+CLAUDE_ANTHROPIC_SONNET_5_HIGH_CONDITION_ID = "claude-code-anthropic-sonnet-5-high"
+CLAUDE_ANTHROPIC_PREPARATION_REL = Path(
+    "sources/evaluations/audits/claude-code-anthropic-sonnet-5-high-lifecycle-v1-protocol-preparation-20260808.json"
+)
+CLAUDE_ANTHROPIC_AUTHORIZATION_REL = Path(
+    "sources/evaluations/audits/claude-code-anthropic-sonnet-5-high-lifecycle-v1-baseline-authorization-20260808.json"
+)
+CLAUDE_ANTHROPIC_ATTEMPT_DIR = Path(
+    "sources/evaluations/audits/claude-code-anthropic-sonnet-5-high-lifecycle-v1-attempts"
+)
 WORKFLOW_ARTIFACT_ROOT = Path("sources/evaluations/workflow-sessions")
 COMPACT_ARTIFACT_NAMES = {"run.json", "changes.diff", "evidence.jsonl.gz", "manifest.sha256"}
 
@@ -310,11 +320,12 @@ def claude_lifecycle_v1_attempt_path(
     sequence_id: str,
     replicate_index: int,
     root: Path = ROOT,
+    attempt_dir: Path = CLAUDE_LIFECYCLE_V1_ATTEMPT_DIR,
 ) -> Path:
     if sequence_id not in CLAUDE_LIFECYCLE_V1_SEQUENCE_ORDER or replicate_index != 0:
         raise ValueError("Claude Code Lifecycle V1 attempt identity is not authorized")
     lane = sequence_id.removesuffix("-lifecycle-sequence-v1")
-    return root / CLAUDE_LIFECYCLE_V1_ATTEMPT_DIR / f"{lane}-r0.json"
+    return root / attempt_dir / f"{lane}-r0.json"
 
 
 def claude_lifecycle_v1_run_gate(
@@ -436,6 +447,10 @@ def reserve_claude_lifecycle_v1_attempt(
     expected_session_binding: dict[str, Any],
     run_root: Path,
     root: Path = ROOT,
+    model_condition: dict[str, str] | None = None,
+    authority_rel: Path = CLAUDE_LIFECYCLE_V1_AUTHORITY_REL,
+    attempt_dir: Path = CLAUDE_LIFECYCLE_V1_ATTEMPT_DIR,
+    owner_authorization_message_id: str = "1533397324384964609",
 ) -> Path:
     """Reserve one immutable Claude Code Lifecycle V1 identity before a lane clone."""
     if (
@@ -446,7 +461,8 @@ def reserve_claude_lifecycle_v1_attempt(
         or not isinstance(expected_session_binding.get("selected_execution"), dict)
     ):
         raise ValueError("Claude Code Lifecycle V1 receipt binding does not match the requested identity")
-    path = claude_lifecycle_v1_attempt_path(sequence_id, replicate_index, root)
+    condition = model_condition or CLAUDE_LIFECYCLE_V1_MODEL_CONDITION
+    path = claude_lifecycle_v1_attempt_path(sequence_id, replicate_index, root, attempt_dir)
     if path.exists():
         raise FileExistsError(f"immutable Claude Code Lifecycle V1 attempt receipt already exists: {path}")
     payload = {
@@ -456,11 +472,11 @@ def reserve_claude_lifecycle_v1_attempt(
         "sequence_id": sequence_id,
         "replicate_index": replicate_index,
         "profile_id": "baseline-claude-code-no-mcp",
-        "model_condition_id": "claude-code-openrouter-gpt-5-6-sol-high",
-        "model": "gpt-5.6-sol",
-        "reasoning_effort": "high",
-        "owner_authorization_message_id": "1533397324384964609",
-        "authority_path": str(CLAUDE_LIFECYCLE_V1_AUTHORITY_REL),
+        "model_condition_id": condition["id"],
+        "model": condition["model"],
+        "reasoning_effort": condition["reasoning_effort"],
+        "owner_authorization_message_id": owner_authorization_message_id,
+        "authority_path": str(authority_rel),
         "orchestrator": str(run_root),
         "reserved_at": dt.datetime.now(dt.UTC).isoformat(),
         "expected_session_binding": expected_session_binding,
@@ -476,7 +492,116 @@ def claude_baseline_run_gate(
     sequence_id: str,
     replicate_index: int,
     root: Path = ROOT,
+    model_condition_id: str | None = None,
 ) -> tuple[bool, str]:
+    if model_condition_id == CLAUDE_ANTHROPIC_SONNET_5_HIGH_CONDITION_ID:
+        preparation_path = root / CLAUDE_ANTHROPIC_PREPARATION_REL
+        if not preparation_path.is_file():
+            return False, f"missing direct-Anthropic Claude Code preparation authority: {CLAUDE_ANTHROPIC_PREPARATION_REL}"
+        try:
+            preparation = load_json(preparation_path)
+        except (OSError, ValueError) as exc:
+            return False, f"unreadable direct-Anthropic Claude Code preparation authority: {exc}"
+        condition = preparation.get("model_condition", {})
+        if (
+            preparation.get("status") != "frozen-provider-free-protocols-account-pending"
+            or condition.get("id") != CLAUDE_ANTHROPIC_SONNET_5_HIGH_CONDITION_ID
+            or condition.get("runtime_id") != "claude-code"
+            or condition.get("provider") != "anthropic"
+            or condition.get("model") != "claude-sonnet-5"
+            or condition.get("reasoning_effort") != "high"
+        ):
+            return False, "direct-Anthropic Claude Code preparation authority is not the frozen Sonnet 5/high identity"
+        authorization_path = root / CLAUDE_ANTHROPIC_AUTHORIZATION_REL
+        if not authorization_path.is_file():
+            return False, f"missing direct-Anthropic Claude Code baseline authorization: {CLAUDE_ANTHROPIC_AUTHORIZATION_REL}"
+        try:
+            authorization = load_json(authorization_path)
+        except (OSError, ValueError) as exc:
+            return False, f"unreadable direct-Anthropic Claude Code baseline authorization: {exc}"
+        account_home = os.environ.get("TOKEN_EVAL_CLAUDE_ACCOUNT_HOME")
+        if not account_home or not Path(account_home).is_dir():
+            return False, "direct-Anthropic Claude Code account home is not supplied through TOKEN_EVAL_CLAUDE_ACCOUNT_HOME"
+        expected_protocols = {
+            item.get("sequence_id"): item
+            for item in authorization.get("protocols", [])
+            if isinstance(item, dict)
+        }
+        expected_order = list(CLAUDE_LIFECYCLE_V1_SEQUENCE_ORDER)
+        header_ok = (
+            authorization.get("schema_version") == 1
+            and authorization.get("status") == "owner-authorized-provider-run"
+            and authorization.get("campaign_id") == "claude-code-anthropic-sonnet-5-high-lifecycle-v1"
+            and authorization.get("task_family_generation") == "lifecycle-v1"
+            and authorization.get("authorized_replicate_index") == 0
+            and authorization.get("sequence_order") == expected_order
+            and authorization.get("max_parallel") == 1
+            and authorization.get("allowed_paid_baseline_runs") == 2
+            and authorization.get("allowed_model_turns") == 6
+            and authorization.get("serialization_required") is True
+            and authorization.get("model_condition") == {
+                "id": CLAUDE_ANTHROPIC_SONNET_5_HIGH_CONDITION_ID,
+                "runtime_id": "claude-code",
+                "provider": "anthropic",
+                "model": "claude-sonnet-5",
+                "reasoning_effort": "high",
+            }
+            and authorization.get("first_valid_sample_policy") is True
+            and authorization.get("rerun_after_attempt_receipt") is False
+            and authorization.get("provider_calls") == 0
+            and authorization.get("provider_tokens") == 0
+            and isinstance(authorization.get("notes"), str)
+            and bool(authorization.get("notes"))
+            and [item.get("sequence_id") for item in authorization.get("protocols", []) if isinstance(item, dict)] == expected_order
+        )
+        if not header_ok or set(expected_protocols) != set(CLAUDE_LIFECYCLE_V1_SEQUENCE_ORDER):
+            return False, "direct-Anthropic Claude Code baseline authorization does not match the bounded identity, scope, or budget"
+        for active_id in CLAUDE_LIFECYCLE_V1_SEQUENCE_ORDER:
+            binding = expected_protocols[active_id]
+            protocol_path = root / str(binding.get("protocol_path", ""))
+            try:
+                protocol_raw = protocol_path.read_bytes()
+                protocol = json.loads(protocol_raw)
+            except (OSError, UnicodeDecodeError, json.JSONDecodeError) as exc:
+                return False, f"direct-Anthropic baseline protocol is unreadable: {active_id}: {exc}"
+            descriptor = protocol.get("selected_execution", {}).get("descriptor", {})
+            agent = descriptor.get("agent_condition", {}) if isinstance(descriptor, dict) else {}
+            if (
+                hashlib.sha256(protocol_raw).hexdigest() != binding.get("protocol_sha256")
+                or protocol.get("status") != "frozen-ready-not-run"
+                or protocol.get("task_fixture", {}).get("sequence_id") != active_id
+                or protocol.get("baseline_pool", {}).get("protocol_fingerprint") != binding.get("baseline_pool_fingerprint")
+                or descriptor.get("selected_profile", {}).get("profile_id") != "baseline-claude-code-no-mcp"
+                or agent != {
+                    "runtime_id": "claude-code",
+                    "provider": "anthropic",
+                    "model": "claude-sonnet-5",
+                    "model_condition_id": CLAUDE_ANTHROPIC_SONNET_5_HIGH_CONDITION_ID,
+                    "reasoning_effort": "high",
+                    "runtime_version_condition": "captured-at-run-and-bound-to-record",
+                }
+            ):
+                return False, f"direct-Anthropic baseline authorization has stale protocol binding: {active_id}"
+        try:
+            receipt = claude_lifecycle_v1_attempt_path(
+                sequence_id,
+                replicate_index,
+                root,
+                CLAUDE_ANTHROPIC_ATTEMPT_DIR,
+            )
+        except ValueError as exc:
+            return False, str(exc)
+        if receipt.exists():
+            return False, f"direct-Anthropic Claude Code identity is occupied by immutable attempt receipt: {receipt.relative_to(root)}"
+        occupied = workflow.find_pool_profile_record(
+            registry,
+            workflow.load_sequence(sequence_id),
+            "baseline-claude-code-no-mcp",
+            replicate_index,
+        )
+        if occupied is not None:
+            return False, f"direct-Anthropic Claude Code identity is already occupied by session {occupied.get('session_id')}"
+        return True, "owner-authorized direct-Anthropic Claude Code Sonnet 5/high baseline is unoccupied"
     if sequence_id in CLAUDE_LIFECYCLE_V1_SEQUENCE_ORDER:
         return claude_lifecycle_v1_run_gate(registry, sequence_id, replicate_index, root)
     path = root / CLAUDE_BASELINE_AUTHORITY_REL
@@ -1075,6 +1200,30 @@ def run_flow_lane(
             expected_session_binding=parent_claude_receipt_binding,
             run_root=lane_root,
             root=ROOT,
+            model_condition=(
+                model_condition
+                if isinstance(model_condition, dict)
+                and model_condition.get("id") == CLAUDE_ANTHROPIC_SONNET_5_HIGH_CONDITION_ID
+                else None
+            ),
+            authority_rel=(
+                CLAUDE_ANTHROPIC_AUTHORIZATION_REL
+                if isinstance(model_condition, dict)
+                and model_condition.get("id") == CLAUDE_ANTHROPIC_SONNET_5_HIGH_CONDITION_ID
+                else CLAUDE_LIFECYCLE_V1_AUTHORITY_REL
+            ),
+            attempt_dir=(
+                CLAUDE_ANTHROPIC_ATTEMPT_DIR
+                if isinstance(model_condition, dict)
+                and model_condition.get("id") == CLAUDE_ANTHROPIC_SONNET_5_HIGH_CONDITION_ID
+                else CLAUDE_LIFECYCLE_V1_ATTEMPT_DIR
+            ),
+            owner_authorization_message_id=(
+                "user-request-current-session"
+                if isinstance(model_condition, dict)
+                and model_condition.get("id") == CLAUDE_ANTHROPIC_SONNET_5_HIGH_CONDITION_ID
+                else "1533397324384964609"
+            ),
         )
     if provider_capable:
         clone_published_checkout(checkout, published_launch_commit)
@@ -2724,7 +2873,11 @@ def main(argv: list[str] | None = None) -> int:
             if args.dry_run:
                 return True, "dry-run only; no provider spend"
             return claude_baseline_run_gate(
-                registry, sequence_id, args.replicate_index, ROOT
+                registry,
+                sequence_id,
+                args.replicate_index,
+                ROOT,
+                model_condition_id=str(model_condition.get("id")),
             )
         return workflow.baseline_v2_pilot_run_gate(
             workflow.load_sequence(sequence_id), ROOT, args.replicate_index

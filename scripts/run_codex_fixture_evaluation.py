@@ -38,6 +38,7 @@ CODEX_CONTAINER_BIN_ROOT = Path("/opt/data/codex-entry")
 CLAUDE_HOST_EXECUTABLE = Path(os.environ.get("TOKEN_EVAL_CLAUDE_EXECUTABLE", "/opt/data/.local/bin/claude"))
 CLAUDE_CONTAINER_BIN = Path("/opt/data/claude-entry/claude")
 CLAUDE_OPENROUTER_ENV_FILE = Path(os.environ.get("TOKEN_EVAL_CLAUDE_OPENROUTER_ENV", "/opt/data/home/.config/claude-code/openrouter.env"))
+CLAUDE_ACCOUNT_HOME_ENV = "TOKEN_EVAL_CLAUDE_ACCOUNT_HOME"
 OPENCODE_BIN = Path(os.environ.get("TOKEN_EVAL_OPENCODE_EXECUTABLE", "/opt/data/.local/bin/opencode"))
 OPENCODE_BIN_V2 = Path("/opt/data/tool-candidates/opencode-runtime-v2/opencode.exe")
 OPENCODE_BIN_SHA256 = "7c4d91c84d2bfdeabb59257e3490c5e5acb08f2aacb3e42f3ddc296a1c3f1aca"
@@ -93,6 +94,21 @@ PROFILE_TOOL_CONFIG_OVERRIDES = {
     "terminal-tokenjuice-codex-hook-v1": "tokenjuice-codex-hook-v1",
     "terminal-rtk-codex-instructions-v1": "rtk-codex-instructions-v1",
     "terminal-rtk-claude-code-hook-v1": "rtk-claude-code-hook-v1",
+    "retrieval-cartog-claude-code-product-v1": "cartog",
+    "behavior-caveman-claude-code-skill-v1": "caveman",
+    "retrieval-codegraph-claude-code-mcp-v1": "codegraph",
+    "codescope-claude-code-mcp-v1": "codescope",
+    "retrieval-graphify-claude-code-skill-v1": "graphify",
+    "integrated-leanctx-claude-code-hybrid-v1": "lean-ctx",
+    "terminal-lowfat-claude-code-hook-v1": "lowfat",
+    "artifact-ponytail-claude-code-plugin-v1": "ponytail",
+    "retrieval-serena-claude-code-mcp-v1": "serena",
+    "retrieval-sigmap-claude-code-mcp-v1": "sigmap",
+    "terminal-snip-claude-code-hook-v1": "snip",
+    "integrated-token-savior-claude-code-product-v1": "token-savior",
+    "terminal-tokenjuice-claude-code-hook-v1": "tokenjuice",
+    "retrieval-jcodemunch-claude-code-mcp-v1": "jcodemunch-mcp",
+    "retrieval-sdl-mcp-claude-code-product-v1": "sdl-mcp-codex-product-v1",
     "terminal-snip-codex-hook-v1": "snip-codex-hook-v1",
     "retrieval-graphify-codex-skill-v1": "graphify-codex-skill-v1",
     "retrieval-codegraph-codex-mcp-v1": "codegraph-codex-mcp-v1",
@@ -2453,6 +2469,39 @@ def render_mcp_args(record: dict[str, Any], codex_home: Path, cfg: dict[str, Any
     return [render_tool_value(arg, record, codex_home, cfg) for arg in cfg.get("mcp_args", [])]
 
 
+def prepare_claude_mcp_config(
+    record: dict[str, Any],
+    pid: str,
+    claude_home: Path,
+) -> Path | None:
+    """Materialize one lane-private Claude MCP file from the pinned tool config."""
+    cfg = active_tool_config(record, pid)
+    server = str((cfg or {}).get("mcp_server") or "")
+    if not cfg or not server:
+        return None
+    command = render_tool_value(str(cfg.get("mcp_command", "")), record, claude_home, cfg)
+    if not command:
+        raise ValueError(f"Claude MCP profile {pid} has no server command")
+    config_path = claude_home / "claude-config" / "mcp.json"
+    config_path.write_text(json.dumps({
+        "mcpServers": {
+            server: {
+                "type": "stdio",
+                "command": command,
+                "args": render_mcp_args(record, claude_home, cfg),
+                "env": render_tool_env(
+                    claude_home,
+                    cfg,
+                    rel_or_abs(record["target"]["repository_path"])
+                    if record.get("target")
+                    else ROOT,
+                ),
+            }
+        }
+    }, indent=2) + "\n")
+    return config_path
+
+
 def write_codex_config(codex_home: Path, record: dict[str, Any], pid: str) -> None:
     cfg = active_tool_config(record, pid)
     declared_features = dict((cfg or {}).get("codex_features", {}))
@@ -2600,8 +2649,23 @@ def prepare_codex_home(record: dict[str, Any], pid: str, run_dir: Path, source_h
     return codex_home
 
 
-def prepare_claude_home(pid: str, run_dir: Path, home_root: Path) -> Path:
-    """Create a lane-private Claude Code home without copying global state."""
+def _claude_account_credential(source_home: Path) -> Path | None:
+    """Resolve the Claude OAuth file without copying unrelated account state."""
+    candidates = [
+        source_home / ".credentials.json",
+        source_home / ".claude" / ".credentials.json",
+    ]
+    return next((path for path in candidates if path.is_file()), None)
+
+
+def prepare_claude_home(
+    pid: str,
+    run_dir: Path,
+    home_root: Path,
+    *,
+    provider: str = "openrouter",
+) -> Path:
+    """Create isolated Claude state and copy only an explicitly supplied OAuth file."""
     claude_home = home_root / pid
     if claude_home.exists():
         make_tree_writable(claude_home)
@@ -2609,16 +2673,40 @@ def prepare_claude_home(pid: str, run_dir: Path, home_root: Path) -> Path:
     claude_home.mkdir(parents=True)
     for subdir in ["home", "python-userbase", "xdg-cache", "xdg-config", "xdg-data", "tmp", "claude-config"]:
         (claude_home / subdir).mkdir(parents=True, exist_ok=True)
+    auth_materialization = "none"
+    auth_source_home: str | None = None
+    auth_file: str | None = None
+    if provider == "anthropic":
+        source_value = os.environ.get(CLAUDE_ACCOUNT_HOME_ENV)
+        credential = _claude_account_credential(Path(source_value).expanduser()) if source_value else None
+        if credential is not None:
+            destination = claude_home / "claude-config" / ".credentials.json"
+            shutil.copy2(credential, destination)
+            os.chmod(destination, 0o600)
+            auth_materialization = "copy-ephemeral-oauth-file"
+            auth_source_home = str(Path(source_value).expanduser())
+            auth_file = credential.name
+        elif not (os.environ.get("ANTHROPIC_API_KEY") or os.environ.get("ANTHROPIC_AUTH_TOKEN")):
+            raise FileNotFoundError(
+                f"{CLAUDE_ACCOUNT_HOME_ENV} must point to a Claude account home containing .credentials.json "
+                "for the direct Anthropic condition (or provide ANTHROPIC_API_KEY/ANTHROPIC_AUTH_TOKEN)."
+            )
+        else:
+            auth_materialization = "inherited-anthropic-environment-credential"
     manifest = {
         "created_at_utc": dt.datetime.now(dt.UTC).isoformat(),
         "profile_id": pid,
         "runtime_id": "claude-code",
+        "provider": provider,
         "claude_home": str(claude_home),
         "normal_mode": True,
         "copied_global_instructions": False,
         "copied_skills_or_plugins": False,
         "hooks_enabled": False,
         "mcp_servers": [],
+        "auth_materialization": auth_materialization,
+        "auth_source_home": auth_source_home,
+        "auth_file": auth_file,
     }
     (run_dir / "claude-code-home-manifest.json").write_text(json.dumps(manifest, indent=2) + "\n")
     return claude_home
@@ -2726,10 +2814,11 @@ def claude_env(
     *,
     containerized: bool = False,
     cfg: dict[str, Any] | None = None,
+    provider: str = "openrouter",
 ) -> dict[str, str]:
     """Create isolated Claude Code HOME/XDG/config state for one lane."""
     env = codex_env(agent_home, containerized=containerized, cfg=cfg)
-    if CLAUDE_OPENROUTER_ENV_FILE.is_file():
+    if provider == "openrouter" and CLAUDE_OPENROUTER_ENV_FILE.is_file():
         for line in CLAUDE_OPENROUTER_ENV_FILE.read_text(errors="replace").splitlines():
             match = re.match(r"^\s*export\s+([A-Za-z_][A-Za-z0-9_]*)=(.*)\s*$", line)
             if not match:
@@ -2740,6 +2829,13 @@ def claude_env(
                 value = value[1:-1]
             value = re.sub(r"\$([A-Za-z_][A-Za-z0-9_]*)", lambda m: env.get(m.group(1), ""), value)
             env[key] = value
+    elif provider == "anthropic":
+        # Do not let an inherited OpenRouter key or endpoint silently change the
+        # direct-account transport. API credentials may still be supplied by the
+        # owner through ANTHROPIC_API_KEY/ANTHROPIC_AUTH_TOKEN; the CLI uses its
+        # first-party endpoint by default.
+        env.pop("OPENROUTER_API_KEY", None)
+        env.pop("ANTHROPIC_BASE_URL", None)
     config_dir = agent_home / "claude-config"
     config_dir.mkdir(parents=True, exist_ok=True)
     claude_config = agent_home / "claude-config"
@@ -3073,6 +3169,7 @@ def check_container_runtime(
     codex_home: Path | None = None,
     cfg: dict[str, Any] | None = None,
     agent_runtime: str = "codex-cli",
+    provider: str = "openrouter",
 ) -> dict[str, Any]:
     result: dict[str, Any] = {
         "execution_backend": backend,
@@ -3125,7 +3222,7 @@ def check_container_runtime(
 
     if not result["failure_reasons"]:
         ensure_codex_native_binary_executable()
-        smoke_env = (claude_env(codex_home, containerized=True) if agent_runtime == "claude-code" else codex_env(codex_home, containerized=True, cfg=cfg)) if codex_home else os.environ.copy()
+        smoke_env = (claude_env(codex_home, containerized=True, provider=provider) if agent_runtime == "claude-code" else codex_env(codex_home, containerized=True, cfg=cfg)) if codex_home else os.environ.copy()
         smoke_mounts = docker_tool_mounts(cfg)
         if codex_home:
             add_mount(smoke_mounts, codex_home, mode="rw")
@@ -3314,6 +3411,12 @@ def prepare_profile_integration(
     docker_image: str,
 ) -> dict[str, Any]:
     cfg = active_tool_config(record, pid)
+    runtime_id = str((record.get("agent") or {}).get("runtime_id") or "codex-cli")
+    claude_mcp_config = (
+        prepare_claude_mcp_config(record, pid, codex_home)
+        if runtime_id == "claude-code"
+        else None
+    )
     integration = (cfg or {}).get("host_integration") or {}
     artifact_identities = verify_artifact_identities(cfg, record, codex_home) if cfg else []
     identities_passed = all(item["passed"] for item in artifact_identities)
@@ -3328,6 +3431,7 @@ def prepare_profile_integration(
             "artifact_identities": artifact_identities,
             "post_install_artifacts": [],
             "artifacts": [],
+            "claude_mcp_config": str(claude_mcp_config) if claude_mcp_config else None,
         }
         (run_dir / "tool-host-integration.json").write_text(json.dumps(result, indent=2) + "\n")
         return result
@@ -3336,9 +3440,13 @@ def prepare_profile_integration(
     integration_backend = str(cfg.get("host_integration_backend") or backend)
     if integration.get("home_dot_codex_alias"):
         prepare_home_dot_codex_alias(codex_home)
-    runtime_id = str((record.get("agent") or {}).get("runtime_id") or "codex-cli")
     env = (
-        claude_env(codex_home, containerized=integration_backend == "docker", cfg=cfg)
+        claude_env(
+            codex_home,
+            containerized=integration_backend == "docker",
+            cfg=cfg,
+            provider=str((record.get("agent") or {}).get("provider") or "openrouter"),
+        )
         if runtime_id == "claude-code"
         else codex_env(codex_home, containerized=backend == "docker", cfg=cfg)
     )
@@ -3413,6 +3521,7 @@ def prepare_profile_integration(
         "artifact_identities": artifact_identities,
         "post_install_artifacts": post_install_artifacts,
         "artifacts": artifacts,
+        "claude_mcp_config": str(claude_mcp_config) if claude_mcp_config else None,
     }
     (run_dir / "tool-host-integration.json").write_text(json.dumps(result, indent=2) + "\n")
 
@@ -3552,7 +3661,8 @@ def preflight_claude_code(
     cfg: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
     """Prove the normal Claude Code control surface without making a provider request."""
-    env = claude_env(claude_home, containerized=backend == "docker", cfg=cfg)
+    provider = str((record.get("agent") or {}).get("provider") or "openrouter")
+    env = claude_env(claude_home, containerized=backend == "docker", cfg=cfg, provider=provider)
     apply_model_network_isolation(env)
     mounts = container_mounts_for_record(record, claude_home, include_repo=True, cfg=cfg)
     repo = Path(rel_or_abs(record["target"]["repository_path"]))
@@ -3592,9 +3702,48 @@ def preflight_claude_code(
     )
     version_text = version_path.read_text(errors="replace") if version_path.exists() else ""
     help_text = help_path.read_text(errors="replace") if help_path.exists() else ""
-    required = ["--output-format", "stream-json", "--model", "--tools", "--resume"]
+    required = ["--output-format", "stream-json", "--model", "--effort", "--tools", "--resume"]
     hooks_enabled = bool((cfg or {}).get("claude_features", {}).get("hooks", False))
-    passed = instruction_passed and version.returncode == 0 and help_result.returncode == 0 and all(item in help_text for item in required)
+    auth_status: dict[str, Any] = {"checked": False, "passed": True}
+    if provider == "anthropic":
+        auth_raw = claude_home / "tmp" / "claude-auth-status.json"
+        auth_probe = run_backend(
+            ["claude", "auth", "status", "--json"],
+            backend=backend,
+            docker_image=docker_image,
+            cwd=rel_or_abs(record["target"]["repository_path"]),
+            env=env,
+            stdout_path=auth_raw,
+            timeout=120,
+            mounts=mounts,
+        )
+        try:
+            raw_status = json.loads(auth_raw.read_text()) if auth_raw.is_file() else {}
+        except json.JSONDecodeError:
+            raw_status = {}
+        finally:
+            auth_raw.unlink(missing_ok=True)
+        auth_status = {
+            "checked": True,
+            "passed": (
+                auth_probe.returncode == 0
+                and raw_status.get("loggedIn") is True
+                and str(raw_status.get("apiProvider") or "").lower()
+                not in {"openrouter", "openrouter-compatible"}
+            ),
+            "exit_code": auth_probe.returncode,
+            "logged_in": raw_status.get("loggedIn") is True,
+            "auth_method": raw_status.get("authMethod"),
+            "api_provider": raw_status.get("apiProvider"),
+            "subscription_type": raw_status.get("subscriptionType"),
+        }
+    passed = (
+        instruction_passed
+        and version.returncode == 0
+        and help_result.returncode == 0
+        and all(item in help_text for item in required)
+        and bool(auth_status.get("passed"))
+    )
     result = {
         "runtime_id": "claude-code",
         "profile_id": pid,
@@ -3605,6 +3754,8 @@ def preflight_claude_code(
         "help_exit_code": help_result.returncode,
         "required_cli_surfaces": required,
         "missing_cli_surfaces": [item for item in required if item not in help_text],
+        "provider": provider,
+        "authentication": auth_status,
         "normal_mode": True,
         "hooks_enabled": hooks_enabled,
         "project_instruction_files": {
@@ -3621,10 +3772,15 @@ def preflight_claude_code(
     (run_dir / "claude-code-effective-settings.json").write_text(json.dumps({
         "bare": False,
         "normal_mode": True,
+        "provider": provider,
+        "model": record.get("agent", {}).get("model"),
+        "effort": record.get("agent", {}).get("reasoning_effort"),
         "hooks_enabled": hooks_enabled,
         "permission_mode": "bypassPermissions",
         "tools": ["Bash", "Edit", "Read", "Grep", "Glob"],
-        "mcp_config": [],
+        "mcp_config": [
+            str(claude_home / "claude-config" / "mcp.json")
+        ] if (claude_home / "claude-config" / "mcp.json").is_file() else [],
         "plugins": [],
         "skills": [],
     }, indent=2) + "\n")
