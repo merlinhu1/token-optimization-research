@@ -206,6 +206,39 @@
     }
 
     .figure img { width: 100%; }
+    .chart-hint {
+      display: none;
+      margin: 0 0 .55rem;
+      color: var(--muted);
+      font-size: .76rem;
+      font-weight: 750;
+      letter-spacing: .04em;
+      text-transform: uppercase;
+    }
+
+    .chart-scroll {
+      overflow-x: auto;
+      padding: .35rem;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: white;
+      overscroll-behavior-inline: contain;
+      scroll-padding-inline: .35rem;
+      scrollbar-color: var(--green) #eceae4;
+      scrollbar-width: thin;
+    }
+
+    .chart-scroll:focus-visible {
+      outline: 3px solid rgb(8 127 91 / 35%);
+      outline-offset: 3px;
+    }
+
+    .chart-scroll img {
+      width: 100%;
+      min-width: 920px;
+      max-width: none;
+    }
+
     figcaption { margin-top: 1rem; color: var(--muted); font-size: .86rem; }
 
     .method-grid, .mechanism-grid {
@@ -323,6 +356,7 @@
       .number:nth-child(4) { border-top: 1px solid rgb(255 255 255 / 18%); }
       .method-grid, .mechanism-grid { grid-template-columns: 1fr; }
       .tool-notes, .data-panel { grid-template-columns: 1fr; }
+      .chart-hint { display: flex; align-items: center; gap: .4rem; }
     }
 
     @media (max-width: 560px) {
@@ -393,7 +427,10 @@
         </div>
         <div class="callout"><p><strong>What the data supports:</strong> token-saving integrations should be evaluated in the exact runtime and integration surface where they will be deployed.</p></div>
         <figure class="figure">
-          <img src="papers/figures/phase-2-lifecycle-v1-runtime-contrast.svg" alt="Bar chart showing weighted token-cost changes for each product in Codex and OpenCode. Codex conditions are all at or above baseline while most OpenCode conditions are below baseline.">
+          <p class="chart-hint"><span aria-hidden="true">↔</span> Swipe horizontally to inspect the full chart</p>
+          <div class="chart-scroll" role="group" aria-label="Wide chart; scroll horizontally to inspect all labels" tabindex="0">
+            <img src="papers/figures/phase-2-lifecycle-v1-runtime-contrast.svg" alt="Bar chart showing weighted token-cost changes for each product in Codex and OpenCode. Codex conditions are all at or above baseline while most OpenCode conditions are below baseline.">
+          </div>
           <figcaption>Weighted token-cost change by runtime and product. Negative values are lower than the matched baseline. Missing values are blocked combinations, not zero effects.</figcaption>
         </figure>
       </div>
@@ -447,7 +484,10 @@
         </div>
         <p class="legend">Arrows show direction relative to the matched runtime baseline, not product quality. “Blocked” means no qualified provider-backed condition was run.</p>
         <figure class="figure">
-          <img src="papers/figures/phase-2-lifecycle-v1-sequence-heatmap.svg" alt="Heatmap of sequence-level weighted token-cost change for every product and runtime condition.">
+          <p class="chart-hint"><span aria-hidden="true">↔</span> Swipe horizontally to inspect the full chart</p>
+          <div class="chart-scroll" role="group" aria-label="Wide chart; scroll horizontally to inspect all labels" tabindex="0">
+            <img src="papers/figures/phase-2-lifecycle-v1-sequence-heatmap.svg" alt="Heatmap of sequence-level weighted token-cost change for every product and runtime condition.">
+          </div>
           <figcaption>Sequence-level outcomes show that the aggregate runtime split is not driven by a single product.</figcaption>
         </figure>
       </div>
@@ -500,7 +540,10 @@
           <p>Weighted token cost is a declared accounting convention—not dollars: fresh input + 0.1 × cached input + 6 × output. Reasoning is already included within output and is not added twice.</p>
         </div>
         <figure class="figure">
-          <img src="papers/figures/phase-2-lifecycle-v1-component-deltas.svg" alt="Chart decomposing the aggregate Codex increase and OpenCode decrease into fresh input, weighted cached input, and weighted output components.">
+          <p class="chart-hint"><span aria-hidden="true">↔</span> Swipe horizontally to inspect the full chart</p>
+          <div class="chart-scroll" role="group" aria-label="Wide chart; scroll horizontally to inspect all labels" tabindex="0">
+            <img src="papers/figures/phase-2-lifecycle-v1-component-deltas.svg" alt="Chart decomposing the aggregate Codex increase and OpenCode decrease into fresh input, weighted cached input, and weighted output components.">
+          </div>
           <figcaption>Codex increased across all three weighted components. OpenCode decreased across all three, with cached-input reduction contributing most.</figcaption>
         </figure>
       </div>
