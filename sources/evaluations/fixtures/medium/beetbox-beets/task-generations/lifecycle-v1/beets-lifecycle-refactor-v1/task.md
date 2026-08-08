@@ -1,0 +1,9 @@
+# Remove the unnecessary LazyDict iterator layer
+
+Complete the behavior-preserving `LazyDict` iteration refactor. Iteration over available field names should return the underlying collection iterator directly instead of wrapping it in an unnecessary generator expression.
+
+Preserve key ordering, membership, laziness, and all externally observable mapping behavior.
+
+Implement the task completely and correctly. Search and inspect the repository as needed, including related definitions and call sites. Choose the smallest coherent repair, run relevant existing tests and checks when practical, and preserve earlier task work in the persistent checkout.
+
+Do not modify tests, generated files, dependency locks, or evaluation controls. Do not use network-dependent commands.

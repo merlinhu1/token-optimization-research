@@ -1,0 +1,179 @@
+{
+  "schema_version": 1,
+  "audit_id": "opencode-openai-gpt-5-6-sol-high-r0-screen-results-20260729",
+  "date": "2026-07-29",
+  "evidence_stage": "single-run-screening",
+  "launch_commit": "5a322a4fdbb21d3a7919e87effd328213e0e391d",
+  "recovery_fix_commit": "7da0f1a13a291b208156eda09befd7bdf2fe349e",
+  "source_registry": {
+    "path": "data/workflow-sessions.json",
+    "sha256": "0a1d8cbdf09efc98be8a0ae3b630c29abd9172de4d0ad0daaf0a748899aeaf39"
+  },
+  "source_accounting": {
+    "path": "sources/evaluations/audits/codex-cumulative-usage-accounting-20260718.json",
+    "sha256": "3e8e2540d7c1a308f7ca273afe41af509610e5459d46d1e9fec1a856693bceeb"
+  },
+  "condition": {
+    "profile_id": "runtime-opencode-codex-product-v1",
+    "runtime_id": "opencode-cli",
+    "runtime_version": "1.18.9",
+    "model_condition_id": "opencode-openai-gpt-5-6-sol-high",
+    "provider": "openai",
+    "model": "gpt-5.6-sol",
+    "reasoning_effort": "high",
+    "replicate_index": 0,
+    "workflows": [
+      "fastify-lifecycle-sequence-v0",
+      "beets-lifecycle-sequence-v0",
+      "terraform-lifecycle-sequence-v0"
+    ]
+  },
+  "execution": {
+    "matrix_id": "workflow-matrix-20260729T111127445343Z-p568933-r0",
+    "lane_count": 3,
+    "workflow_session_count": 3,
+    "accepted_task_count": 9,
+    "task_count": 9,
+    "all_lane_exit_codes_zero": true,
+    "all_manifests_passed": true,
+    "provider_rerun": false,
+    "publication_recovery": "retained accepted lane outputs merged transactionally after publication-only validator correction"
+  },
+  "accounting": {
+    "primary_metric": "raw provider tokens",
+    "secondary_metric": "weighted token cost = fresh input + 0.1 * cached input + 6 * output",
+    "reasoning_note": "reasoning_tokens is a subset of output_tokens and is not added again",
+    "source_note": "corrected accounting rows used symmetrically; null cache-write attribution is filled from immutable registry usage and excluded from weighted cost"
+  },
+  "baseline": {
+    "profile_id": "baseline-bare-codex",
+    "session_ids": [
+      "baseline-fastify-20260722-p-bb0e89ed9794-r0",
+      "baseline-beets-20260728-p-fcc8438d2077-r0",
+      "baseline-terraform-20260728-p-5811b463c1e9-r0"
+    ],
+    "usage": {
+      "fresh_input_tokens": 60771,
+      "cached_input_tokens": 188672,
+      "output_tokens": 3191,
+      "reasoning_tokens": 0,
+      "raw_provider_tokens": 252634,
+      "weighted_tokens": 98784.2
+    }
+  },
+  "treatment": {
+    "profile_id": "runtime-opencode-codex-product-v1",
+    "session_ids": [
+      "v1-fastify-20260729-p-bb0e89ed9794-r0",
+      "v1-beets-20260729-p-fcc8438d2077-r0",
+      "v1-terraform-20260729-p-5811b463c1e9-r0"
+    ],
+    "usage": {
+      "fresh_input_tokens": 32851,
+      "cached_input_tokens": 86528,
+      "output_tokens": 2989,
+      "reasoning_tokens": 132,
+      "raw_provider_tokens": 122368,
+      "weighted_tokens": 59437.8
+    }
+  },
+  "aggregate_contrast": {
+    "raw_delta_tokens": -130266,
+    "raw_delta_percent": -51.56,
+    "weighted_delta": -39346.4,
+    "weighted_delta_percent": -39.83
+  },
+  "lane_results": [
+    {
+      "sequence_id": "fastify-lifecycle-sequence-v0",
+      "baseline_session_id": "baseline-fastify-20260722-p-bb0e89ed9794-r0",
+      "treatment_session_id": "v1-fastify-20260729-p-bb0e89ed9794-r0",
+      "baseline_usage": {
+        "fresh_input_tokens": 10315,
+        "cached_input_tokens": 65024,
+        "cache_write_tokens": 0,
+        "output_tokens": 1284,
+        "reasoning_tokens": 0,
+        "raw_provider_tokens": 76623,
+        "weighted_tokens": 24521.4
+      },
+      "treatment_usage": {
+        "fresh_input_tokens": 11454,
+        "cached_input_tokens": 30208,
+        "cache_write_tokens": 0,
+        "output_tokens": 1239,
+        "reasoning_tokens": 55,
+        "raw_provider_tokens": 42901,
+        "weighted_tokens": 21908.8
+      },
+      "raw_delta_tokens": -33722,
+      "raw_delta_percent": -44.01,
+      "weighted_delta": -2612.6,
+      "weighted_delta_percent": -10.65,
+      "accepted_tasks": 3,
+      "task_count": 3,
+      "manifest_path": "sources/evaluations/workflow-sessions/v1-fastify-20260729-p-bb0e89ed9794-r0/manifest.sha256"
+    },
+    {
+      "sequence_id": "beets-lifecycle-sequence-v0",
+      "baseline_session_id": "baseline-beets-20260728-p-fcc8438d2077-r0",
+      "treatment_session_id": "v1-beets-20260729-p-fcc8438d2077-r0",
+      "baseline_usage": {
+        "fresh_input_tokens": 17833,
+        "cached_input_tokens": 69376,
+        "cache_write_tokens": 0,
+        "output_tokens": 991,
+        "reasoning_tokens": 0,
+        "raw_provider_tokens": 88200,
+        "weighted_tokens": 30716.6
+      },
+      "treatment_usage": {
+        "fresh_input_tokens": 10597,
+        "cached_input_tokens": 28160,
+        "cache_write_tokens": 0,
+        "output_tokens": 923,
+        "reasoning_tokens": 33,
+        "raw_provider_tokens": 39680,
+        "weighted_tokens": 18951.0
+      },
+      "raw_delta_tokens": -48520,
+      "raw_delta_percent": -55.01,
+      "weighted_delta": -11765.6,
+      "weighted_delta_percent": -38.3,
+      "accepted_tasks": 3,
+      "task_count": 3,
+      "manifest_path": "sources/evaluations/workflow-sessions/v1-beets-20260729-p-fcc8438d2077-r0/manifest.sha256"
+    },
+    {
+      "sequence_id": "terraform-lifecycle-sequence-v0",
+      "baseline_session_id": "baseline-terraform-20260728-p-5811b463c1e9-r0",
+      "treatment_session_id": "v1-terraform-20260729-p-5811b463c1e9-r0",
+      "baseline_usage": {
+        "fresh_input_tokens": 32623,
+        "cached_input_tokens": 54272,
+        "cache_write_tokens": 0,
+        "output_tokens": 916,
+        "reasoning_tokens": 0,
+        "raw_provider_tokens": 87811,
+        "weighted_tokens": 43546.2
+      },
+      "treatment_usage": {
+        "fresh_input_tokens": 10800,
+        "cached_input_tokens": 28160,
+        "cache_write_tokens": 0,
+        "output_tokens": 827,
+        "reasoning_tokens": 44,
+        "raw_provider_tokens": 39787,
+        "weighted_tokens": 18578.0
+      },
+      "raw_delta_tokens": -48024,
+      "raw_delta_percent": -54.69,
+      "weighted_delta": -24968.2,
+      "weighted_delta_percent": -57.34,
+      "accepted_tasks": 3,
+      "task_count": 3,
+      "manifest_path": "sources/evaluations/workflow-sessions/v1-terraform-20260729-p-5811b463c1e9-r0/manifest.sha256"
+    }
+  ],
+  "interpretation": "One compatible replicate per workflow. Bare OpenCode used fewer raw provider tokens and fewer weighted token-cost units than the matched bare Codex baseline in all three evaluated workflows. This is screening evidence, not a population estimate or deployment recommendation."
+}

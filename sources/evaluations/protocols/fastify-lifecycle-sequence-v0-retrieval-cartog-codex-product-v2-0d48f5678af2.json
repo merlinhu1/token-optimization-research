@@ -1,0 +1,494 @@
+{
+  "protocol_schema_version": 3,
+  "protocol_id": "fastify-lifecycle-sequence-v0-retrieval-cartog-codex-product-v2-0d48f5678af2",
+  "status": "frozen-ready-not-run",
+  "outcome": "Frozen retrieval-cartog-codex-product-v2 protocol for fastify-lifecycle-sequence-v0; no provider/model run has occurred.",
+  "frozen_at": "2026-07-16",
+  "hypothesis": "retrieval-cartog-codex-product-v2 produces reproducible provider-reported token and software-quality evidence for fastify-lifecycle-sequence-v0",
+  "evidence_stage_target": "reproduction",
+  "task_fixture": {
+    "fixture_id": "medium-fastify-fastify",
+    "sequence_id": "fastify-lifecycle-sequence-v0",
+    "repository": "https://github.com/fastify/fastify.git",
+    "snapshot": "94bcbcc6e2ef3b8e8f8e8797fe551ccbe7b942fd",
+    "qualification_path": "sources/evaluations/fixtures/medium/fastify-fastify/qualification-lifecycle-v0-assisted-v1.json",
+    "qualification_sha256": "f38427f355f46373b2131319b4c4215621699e0b7ac80f6ab64265e6ba2af1b4",
+    "timeout_seconds_per_task": 3600
+  },
+  "baseline": {
+    "profile_id": "baseline-bare-codex",
+    "provider": "openai",
+    "model": "gpt-5.6-luna",
+    "model_condition_id": "codex-openai-gpt-5-6-luna-xhigh",
+    "reasoning_effort": "xhigh",
+    "command": ""
+  },
+  "treatment": {
+    "profile_id": "retrieval-cartog-codex-product-v2",
+    "provider": "openai",
+    "model": "gpt-5.6-luna",
+    "model_condition_id": "codex-openai-gpt-5-6-luna-xhigh",
+    "reasoning_effort": "xhigh",
+    "command": "python3 scripts/run_codex_workflow_evaluation.py --sequence-id fastify-lifecycle-sequence-v0 --profile-id retrieval-cartog-codex-product-v2 --timeout-per-task 3600 --protocol sources/evaluations/protocols/fastify-lifecycle-sequence-v0-retrieval-cartog-codex-product-v2-0d48f5678af2.json --docker-image token-eval-codex:latest"
+  },
+  "token_accounting_boundary": {
+    "fields": [
+      "fresh_input_tokens",
+      "cached_input_tokens",
+      "cache_write_tokens",
+      "output_tokens",
+      "reasoning_tokens",
+      "total_provider_tokens"
+    ]
+  },
+  "baseline_pool": {
+    "protocol_version": "baseline-pool-v1",
+    "protocol_fingerprint": "945e28fddad2",
+    "descriptor": {
+      "version": "baseline-pool-v1",
+      "runner_contract_version": "workflow-runner-v9",
+      "runner_sha256": "6e2c6f1bb6803cdbd1862b7868fca4a62f10aa384b7b313e7027ca98d5d6fc7d",
+      "qualification_generator_sha256": "cb549c9aacc1e1401dedff37b08e0d578aa91d491556dfd5e3814d52a567efe8",
+      "validator_sha256": "fb9d4b83d60999caf36d63bdc4c692af20941fac312271508e8856ab80e784e2",
+      "sequence_id": "fastify-lifecycle-sequence-v0",
+      "sequence_contract": "feature-refactor-review",
+      "fixture_id": "medium-fastify-fastify",
+      "fixture_scale": "medium-project",
+      "initial_snapshot": {
+        "commit": "94bcbcc6e2ef3b8e8f8e8797fe551ccbe7b942fd",
+        "upstream": "https://github.com/fastify/fastify.git",
+        "dependency_lockfiles": [
+          {
+            "path": "package.json",
+            "sha256": "b273320af1bb4cfc0f9334457c8e3b1d035fde0da14f9db65e8ef97d361d0be3"
+          }
+        ]
+      },
+      "objective": "individual_tool_effectiveness",
+      "primary_metric": "cumulative provider-reported workflow tokens",
+      "tasks": [
+        {
+          "id": "fastify-lifecycle-feature-v0",
+          "order": 1,
+          "task_class": "feature-implementation",
+          "prompt_path": "sources/evaluations/fixtures/medium/fastify-fastify/tasks/fastify-lifecycle-feature-v0/agent-prompt.txt",
+          "prompt_sha256": "6a7919c9fc64583aa639c5861be772d8b986e2150d99c7cc522e51f738cec185",
+          "seed_patch_sha256": "19035d0a5fd94a640705537cfcfc4fbc161d9ca124b08e0a8291e854fe78e578",
+          "verifier_command": "sources/evaluations/fixtures/medium/fastify-fastify/tasks/fastify-lifecycle-feature-v0/verify.sh",
+          "verifier_sha256": "799568eed4493fce3a04405917522e8b1876f224a9e4c06874de544fc27037c5",
+          "upstream_test_paths": [],
+          "compatibility_rebased_test_paths": [],
+          "expected_model_concealed_paths": [],
+          "model_concealed_paths": []
+        },
+        {
+          "id": "fastify-lifecycle-refactor-v0",
+          "order": 2,
+          "task_class": "behavior-preserving-refactor",
+          "prompt_path": "sources/evaluations/fixtures/medium/fastify-fastify/tasks/fastify-lifecycle-refactor-v0/agent-prompt.txt",
+          "prompt_sha256": "da764b5ce011256b6105b192096755871f2d55cc172f6122468aa1a7cc658259",
+          "seed_patch_sha256": "fd1982e087c713640c8ab55b7875545b59a60296135e0dc847a13cea038d89d5",
+          "verifier_command": "sources/evaluations/fixtures/medium/fastify-fastify/tasks/fastify-lifecycle-refactor-v0/verify.sh",
+          "verifier_sha256": "e2acf6e7b516df4eabde50c072955e4851503bf139f5b1170f926c55a25d055b",
+          "upstream_test_paths": [],
+          "compatibility_rebased_test_paths": [],
+          "expected_model_concealed_paths": [],
+          "model_concealed_paths": []
+        },
+        {
+          "id": "fastify-lifecycle-review-v0",
+          "order": 3,
+          "task_class": "code-review-correction",
+          "prompt_path": "sources/evaluations/fixtures/medium/fastify-fastify/tasks/fastify-lifecycle-review-v0/agent-prompt.txt",
+          "prompt_sha256": "ffcbf6ffaab25fa0f3c6eed64ddd03bec7fedcc23b0ee056430797e4970bce21",
+          "seed_patch_sha256": "0402a5fc7785775c034fddc539539bbbd0083d11a6f555e22f95dd992476aa3c",
+          "verifier_command": "sources/evaluations/fixtures/medium/fastify-fastify/tasks/fastify-lifecycle-review-v0/verify.sh",
+          "verifier_sha256": "75b5f53a091749072d812cb060410e8df8c6244285a94ddc422dc10826c1b647",
+          "upstream_test_paths": [],
+          "compatibility_rebased_test_paths": [],
+          "expected_model_concealed_paths": [],
+          "model_concealed_paths": [],
+          "review_patch_path": "review-change.patch",
+          "review_patch_sha256": "0402a5fc7785775c034fddc539539bbbd0083d11a6f555e22f95dd992476aa3c"
+        }
+      ],
+      "model_facing_prompts": {
+        "rendering_contract": "sequential-model-facing-prompts-v2",
+        "profile_guidance_sha256": "f1d7a2cf7b0a7c1affd8bbb04705f073332ee6efc5f8f89f019b9e0cbacec4bb",
+        "tasks": [
+          {
+            "task_id": "fastify-lifecycle-feature-v0",
+            "order": 1,
+            "rendered_prompt_sha256": "1673c0ab5dff92284dee52fabd879f0d43404768e8d9c1b48980028e0344665f"
+          },
+          {
+            "task_id": "fastify-lifecycle-refactor-v0",
+            "order": 2,
+            "rendered_prompt_sha256": "924a519a0b3d4d4aaf65602a24c5ad2de783f245531d9ec4aa66072eb32f3dd5"
+          },
+          {
+            "task_id": "fastify-lifecycle-review-v0",
+            "order": 3,
+            "rendered_prompt_sha256": "9e36e1ce3e17871da21a277508213d544881988a5e51be9984e47f3e8fcebb10"
+          }
+        ]
+      },
+      "qualification": {
+        "path": "sources/evaluations/fixtures/medium/fastify-fastify/qualification-lifecycle-v0-assisted-v1.json",
+        "sha256": "f38427f355f46373b2131319b4c4215621699e0b7ac80f6ab64265e6ba2af1b4"
+      },
+      "baseline_profile": {
+        "profile_id": "baseline-bare-codex",
+        "profile_type": "control",
+        "enabled_surfaces": [
+          "codex-native-shell-edit"
+        ],
+        "disabled_overlaps": [
+          "all MCP servers",
+          "all token-saving surfaces",
+          "global Codex instructions",
+          "hooks",
+          "skills/plugins",
+          "warm indexes"
+        ]
+      },
+      "agent": {
+        "runtime_id": "codex-cli",
+        "provider": "openai",
+        "model": "gpt-5.6-luna",
+        "model_condition_id": "codex-openai-gpt-5-6-luna-xhigh",
+        "reasoning_effort": "xhigh"
+      },
+      "runtime_inputs": {
+        "timeout_seconds_per_task": 3600,
+        "docker_image": "token-eval-codex:latest",
+        "docker_image_identity": {
+          "image_ref": "token-eval-codex:latest",
+          "image_id": "sha256:6f86d01f2c63f5029c6bb874d8f3694c24d5cd567e3d09413eccc956ba3feafe",
+          "repo_digests": [
+            "token-eval-codex@sha256:6f86d01f2c63f5029c6bb874d8f3694c24d5cd567e3d09413eccc956ba3feafe"
+          ],
+          "repo_tags": [
+            "token-eval-codex:latest"
+          ]
+        },
+        "dockerfile_path": "sources/evaluations/fixtures/container/Dockerfile",
+        "dockerfile_sha256": "47c91967ce25014ce54879514f51d2ff0326651be1087209115eff4d358226b3",
+        "dependency_command": "npm install --ignore-scripts --no-audit --no-fund",
+        "dependency_lockfiles": [
+          {
+            "path": "package.json",
+            "sha256": "b273320af1bb4cfc0f9334457c8e3b1d035fde0da14f9db65e8ef97d361d0be3"
+          }
+        ],
+        "codex_runtime_condition": "codex-openai-gpt-5-6-luna-xhigh"
+      },
+      "isolation": {
+        "prompt_delivery": "sequential-one-task-at-a-time",
+        "seed_delivery_mode": "preseeded-composite",
+        "future_tasks_visible": false,
+        "future_seed_regressions_visible": true,
+        "verifier_assets_model_visible": false,
+        "git_baseline_true_root_at_lane_start": true,
+        "controller_verification": "final-only",
+        "prompt_sanitizer": "sanitize_task_prompt-v1",
+        "concealment": "declared-model-concealed-paths-removed-before-root-commit",
+        "model_concealed_paths": []
+      }
+    }
+  },
+  "selected_execution": {
+    "descriptor_sha256": "512c642e214f91862c1eaeb7ba02da9573a2aa4334de2258797cf708df5428ae",
+    "descriptor": {
+      "version": "execution-condition-v1",
+      "sequence_id": "fastify-lifecycle-sequence-v0",
+      "execution_role": "individual_tool_treatment",
+      "selected_profile": {
+        "profile_id": "retrieval-cartog-codex-product-v2",
+        "profile_type": "individual_tool",
+        "component_ids": [
+          "retrieval-cartog-codex-product-v2"
+        ],
+        "enabled_surfaces": [
+          "retrieval-context",
+          "mcp",
+          "codex-project-instructions",
+          "model-runtime-cli",
+          "live-index-watch"
+        ],
+        "disabled_overlaps": [
+          "all unlisted surfaces"
+        ],
+        "registry_entry_sha256": "0f605722554be93b9c3a041a2310a1bc93fa82780aa0f4a7bc11e5cbce096e03",
+        "registry_entry": {
+          "id": "retrieval-cartog-codex-product-v2",
+          "profile_type": "individual_tool",
+          "objective_scope": "individual_tool_effectiveness",
+          "status": "screening-shortlist",
+          "enabled_surfaces": [
+            "retrieval-context",
+            "mcp",
+            "codex-project-instructions",
+            "model-runtime-cli",
+            "live-index-watch"
+          ],
+          "disabled_overlaps": [
+            "all unlisted surfaces"
+          ],
+          "components": [
+            {
+              "component_id": "retrieval-cartog-codex-product-v2",
+              "surface": "retrieval-context+mcp+codex-agents+model-runtime-cli+live-watch",
+              "role": "individual_tool"
+            }
+          ],
+          "install": {
+            "policy": "Run the pinned Cartog official Codex installer (`cartog ide --client codex --yes`), preserve the product-authored AGENTS routing snippet verbatim, expose the pinned binary on the model-runtime PATH, initialize the project, build the structural index, and serve with live watch."
+          },
+          "reset": {
+            "policy": "Delete lane-private CODEX_HOME, PATH shim, project AGENTS managed block, .cartog.toml, .cartog index state, and watcher processes after evidence capture."
+          },
+          "evaluation_protocol": {
+            "tool_use_policy": "natural-after-product-authored-guidance",
+            "tool_state": "warm-structural-index",
+            "integration_state": "official-codex-ide+product-authored-agents-guidance+model-runtime-cli+live-watch",
+            "assignment_proof": "official installer receipt, guidance hash, model-runtime executable probe, initialize plus tools/list handshake, and index/watcher preparation required",
+            "rag_scope": "structural graph plus FTS5; optional local vector/reranker tier is not prepared"
+          },
+          "notes": "Versioned guide-faithful successor to deleted retrieval-cartog-mcp-v1. Product-authored routing is treatment configuration, not evaluator-authored steering."
+        }
+      },
+      "model_facing_prompts": {
+        "rendering_contract": "sequential-model-facing-prompts-v2",
+        "profile_guidance_sha256": "cb08dba8b361975eb89669cc77d206861b05fc26b161a9215337dbb2d30a6366",
+        "tasks": [
+          {
+            "task_id": "fastify-lifecycle-feature-v0",
+            "order": 1,
+            "rendered_prompt_sha256": "6d81f7e8d874dfe72de02ffb7e1ebbbf1a631a724542f3058ebca68c6bd04f4c"
+          },
+          {
+            "task_id": "fastify-lifecycle-refactor-v0",
+            "order": 2,
+            "rendered_prompt_sha256": "924a519a0b3d4d4aaf65602a24c5ad2de783f245531d9ec4aa66072eb32f3dd5"
+          },
+          {
+            "task_id": "fastify-lifecycle-review-v0",
+            "order": 3,
+            "rendered_prompt_sha256": "9e36e1ce3e17871da21a277508213d544881988a5e51be9984e47f3e8fcebb10"
+          }
+        ]
+      },
+      "tool_adapter": {
+        "tool_id": "cartog-codex-product-v2",
+        "tool_manifest": "scripts/run_codex_fixture_evaluation.py:TOOL_CONFIGS",
+        "tool_manifest_sha256": "6fa8271b89a577706ea0bbffcc8e4521831f41b646ed9519369efee3642fe41c",
+        "tool_config": {
+          "display_name": "Cartog product-guided Codex integration v2",
+          "lane_name": "retrieval-cartog-codex-product-v2",
+          "surface": "retrieval/context+mcp-live-watch+model-runtime-cli+product-authored-agents-guidance",
+          "mcp_server": "cartog",
+          "mcp_config_via_host_integration": true,
+          "allowed_terms": [
+            "cartog"
+          ],
+          "data_dir_name": "cartog-codex-product-v2",
+          "mcp_command": "{tool_data_dir}/bin/cartog",
+          "mcp_args": [
+            "serve",
+            "--watch"
+          ],
+          "path_entries": [
+            "{tool_data_dir}/bin"
+          ],
+          "env": {
+            "CARTOG_MCP_COMPACT": "1",
+            "CARTOG_NO_UPDATE_CHECK": "1"
+          },
+          "mounts": [
+            "/opt/data/tool-candidates/cartog",
+            "{repository_root}/scripts/install_cartog_codex_product.py"
+          ],
+          "diff_exclude_paths": [
+            ".cartog",
+            ".cartog.toml",
+            "AGENTS.md"
+          ],
+          "host_integration": {
+            "home_dot_codex_alias": true,
+            "controller_install_commands": [
+              [
+                "python3",
+                "{repository_root}/scripts/install_cartog_codex_product.py",
+                "--source-root",
+                "/opt/data/tool-candidates/cartog",
+                "--expected-commit",
+                "890d15b66b523841290a63e431a31b6f6438fc4b",
+                "--repo",
+                "{repo}",
+                "--binary-source",
+                "/opt/data/tool-candidates/cartog/target/release/cartog",
+                "--binary-destination",
+                "{tool_data_dir}/bin/cartog",
+                "--receipt",
+                "{tool_data_dir}/cartog-codex-product-installation.json"
+              ]
+            ],
+            "install_commands": [
+              [
+                "{tool_data_dir}/bin/cartog",
+                "ide",
+                "--client",
+                "codex",
+                "--yes"
+              ]
+            ],
+            "verify_commands": [
+              [
+                "python3",
+                "-c",
+                "from pathlib import Path; a=Path('AGENTS.md').read_text(); c=Path('{codex_home}/config.toml').read_text(); assert 'CARTOG_PRODUCT_GUIDANCE_BEGIN' in a; assert 'prefer cartog over grep' in a; assert 'args = [\\\"serve\\\", \\\"--watch\\\"]' in c"
+              ]
+            ],
+            "required_files": [
+              "{tool_data_dir}/bin/cartog",
+              "{tool_data_dir}/cartog-codex-product-installation.json",
+              "{repo}/AGENTS.md",
+              "{codex_home}/config.toml"
+            ],
+            "timeout_seconds": 300
+          },
+          "preflight_command": [
+            "/bin/bash",
+            "-lc",
+            "command -v cartog && cartog --version"
+          ],
+          "mcp_handshake": {
+            "required": true,
+            "method": "initialize-and-tools-list",
+            "timeout_seconds": 60
+          },
+          "default_tool_state": "warm-structural-index+active-guidance+live-watch",
+          "warmup": {
+            "kind": "official-init-and-structural-index",
+            "command": [
+              "/bin/bash",
+              "-lc",
+              "set -euo pipefail; cartog init; cartog index ."
+            ],
+            "cleanup_paths": [
+              ".cartog",
+              ".cartog.toml"
+            ],
+            "output_name": "cartog-warmup-output.txt",
+            "metadata_name": "cartog-warmup-metadata.json",
+            "timeout_seconds": 1200
+          },
+          "canonical_scope": "The product-authored Codex MCP installer, live watcher, model-runtime CLI, and documented AGENTS routing snippet are active. The optional local vector/reranker tier is not prepared; documented structural and FTS5 retrieval remain available."
+        },
+        "tool_config_sha256": "a1f650f2e6e169334d4fd87f2432b6a86dcaa15c835a569000cd73dccbaba470",
+        "tool_state": "warm-structural-index",
+        "tool_use_policy": "natural-after-product-authored-guidance",
+        "command_identity": {
+          "kind": "mcp_command",
+          "command": [
+            "{tool_data_dir}/bin/cartog",
+            "serve",
+            "--watch"
+          ]
+        },
+        "binary_identity": {
+          "kind": "generated-by-host-integration",
+          "command_template": "{tool_data_dir}/bin/cartog",
+          "install_commands": [
+            [
+              "{tool_data_dir}/bin/cartog",
+              "ide",
+              "--client",
+              "codex",
+              "--yes"
+            ]
+          ],
+          "install_contract_sha256": "115b185c81abd08407c3914a94102769431992f51de02aaf905936fdc7830eab"
+        },
+        "source_identity": [
+          {
+            "path": "/opt/data/tool-candidates/cartog",
+            "exists": true,
+            "kind": "directory",
+            "git_head": "890d15b66b523841290a63e431a31b6f6438fc4b"
+          },
+          {
+            "path": "{repository_root}/scripts/install_cartog_codex_product.py",
+            "exists": true,
+            "kind": "file",
+            "sha256": "4087a3ad841c58adba4e8954a7fe6b3cb88655285a72149b885799b087b8aced"
+          }
+        ]
+      },
+      "runtime": {
+        "docker_image": "token-eval-codex:latest",
+        "docker_image_identity": {
+          "image_ref": "token-eval-codex:latest",
+          "image_id": "sha256:6f86d01f2c63f5029c6bb874d8f3694c24d5cd567e3d09413eccc956ba3feafe",
+          "repo_digests": [
+            "token-eval-codex@sha256:6f86d01f2c63f5029c6bb874d8f3694c24d5cd567e3d09413eccc956ba3feafe"
+          ],
+          "repo_tags": [
+            "token-eval-codex:latest"
+          ]
+        },
+        "dockerfile_path": "sources/evaluations/fixtures/container/Dockerfile",
+        "dockerfile_sha256": "47c91967ce25014ce54879514f51d2ff0326651be1087209115eff4d358226b3",
+        "fixture_runner_path": "scripts/run_codex_fixture_evaluation.py",
+        "fixture_runner_sha256": "6fa8271b89a577706ea0bbffcc8e4521831f41b646ed9519369efee3642fe41c",
+        "mcp_probe_path": "scripts/probe_mcp_stdio.py",
+        "mcp_probe_sha256": "7c06ea36ee5cac933a97140b84a41405fc99b45152388e8d7c6659136af698fd",
+        "codex_entrypoint_path": "sources/evaluations/fixtures/container/codex-entrypoint.sh",
+        "codex_entrypoint_sha256": "8715fe37cb1fa3823f5f05493bc9681ce7ffc72126dfec4d64d448762c550c3c",
+        "timeout_seconds_per_task": 3600,
+        "network_isolation": {
+          "provider_access": true,
+          "model_shell_network_access": false,
+          "model_shell_enforcement": "seccomp denies AF_INET and AF_INET6 socket creation for the shell process and descendants",
+          "codex_web_search": "disabled",
+          "external_retrieval_audit": "fail-closed"
+        },
+        "isolation_policy": "fresh lane-specific Codex home/tool data; provider-only network with model shell and Codex web search disabled; sequential one-task prompt delivery; concealed tests removed before model-visible root commit"
+      },
+      "dependencies": {
+        "command": "npm install --ignore-scripts --no-audit --no-fund",
+        "command_sha256": "7493d616f26e72b22eb5a21beafa12a6717ebf5b93a7a75e709de65e7323cc41",
+        "lockfiles": [
+          {
+            "path": "package.json",
+            "snapshot_sha256": "b273320af1bb4cfc0f9334457c8e3b1d035fde0da14f9db65e8ef97d361d0be3",
+            "current_fixture_sha256": null
+          }
+        ]
+      },
+      "agent_condition": {
+        "runtime_id": "codex-cli",
+        "provider": "openai",
+        "model": "gpt-5.6-luna",
+        "model_condition_id": "codex-openai-gpt-5-6-luna-xhigh",
+        "reasoning_effort": "xhigh",
+        "codex_version_condition": "captured-at-run-and-bound-to-record"
+      },
+      "isolation": {
+        "prompt_delivery": "sequential-one-task-at-a-time",
+        "seed_delivery_mode": "preseeded-composite",
+        "future_tasks_visible": false,
+        "future_seed_regressions_visible": true,
+        "controller_verification": "final-only",
+        "verifier_assets_model_visible": false,
+        "model_concealed_paths": []
+      },
+      "baseline_pool_reference": {
+        "protocol_version": "baseline-pool-v1",
+        "protocol_fingerprint": "945e28fddad2",
+        "comparison_policy": "paired baseline and treatment must share this baseline pool fingerprint and replicate"
+      }
+    }
+  }
+}

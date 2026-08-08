@@ -1,0 +1,118 @@
+# Ordered cumulative source checkpoints. Every section is relative to the one composite broken-start root.
+
+# --- task-01-agent ---
+diff --git a/.gitignore b/.gitignore
+index 90ba87c..ff39eab 100644
+--- a/.gitignore
++++ b/.gitignore
+@@ -26,3 +26,6 @@ coverage.txt
+ # IDEs
+ .vscode/
+ .zed/
++
++# Codescope MCP config (user-specific paths)
++.mcp.json
+diff --git a/internal/policy/callback/server.go b/internal/policy/callback/server.go
+index 6db7008..51d0cfc 100644
+--- a/internal/policy/callback/server.go
++++ b/internal/policy/callback/server.go
+@@ -83,7 +83,7 @@ func (s *Server) GetDataSource(ctx context.Context, request *proto.GetDataSource
+ 
+ 	return &proto.GetDataSourceResponse{
+ 		Result:   result,
+-		Deferred: false,
++		Deferred: isDeferred,
+ 	}, nil
+ }
+ 
+
+# --- task-02-agent ---
+diff --git a/.gitignore b/.gitignore
+index 90ba87c..ff39eab 100644
+--- a/.gitignore
++++ b/.gitignore
+@@ -26,3 +26,6 @@ coverage.txt
+ # IDEs
+ .vscode/
+ .zed/
++
++# Codescope MCP config (user-specific paths)
++.mcp.json
+diff --git a/internal/configs/state_migrate_file.go b/internal/configs/state_migrate_file.go
+index e15c563..bf0b349 100644
+--- a/internal/configs/state_migrate_file.go
++++ b/internal/configs/state_migrate_file.go
+@@ -41,7 +41,7 @@ type StateStoreProviderRequirement struct {
+ 
+ 	// Requirement represents the single provider used for state storage.
+ 	// By parsing data into this field it can easily be passed to functions for provider download, which expect a providerreqs.Requirements argument.
+-	Requirement map[addrs.Provider]providerreqs.VersionConstraints
++	Requirement providerreqs.Requirements
+ }
+ 
+ // StateMigrationFile represents a single state migration file within a configuration directory.
+diff --git a/internal/policy/callback/server.go b/internal/policy/callback/server.go
+index 6db7008..51d0cfc 100644
+--- a/internal/policy/callback/server.go
++++ b/internal/policy/callback/server.go
+@@ -83,7 +83,7 @@ func (s *Server) GetDataSource(ctx context.Context, request *proto.GetDataSource
+ 
+ 	return &proto.GetDataSourceResponse{
+ 		Result:   result,
+-		Deferred: false,
++		Deferred: isDeferred,
+ 	}, nil
+ }
+ 
+
+# --- task-03-agent ---
+diff --git a/.gitignore b/.gitignore
+index 90ba87c..ff39eab 100644
+--- a/.gitignore
++++ b/.gitignore
+@@ -26,3 +26,6 @@ coverage.txt
+ # IDEs
+ .vscode/
+ .zed/
++
++# Codescope MCP config (user-specific paths)
++.mcp.json
+diff --git a/internal/addrs/checkable.go b/internal/addrs/checkable.go
+index d776c40..772325c 100644
+--- a/internal/addrs/checkable.go
++++ b/internal/addrs/checkable.go
+@@ -182,7 +182,7 @@ func ParseCheckableStr(kind CheckableKind, src string) (Checkable, tfdiags.Diagn
+ 		return Check{Name: name}.Absolute(path), diags
+ 
+ 	case CheckableInputVariable:
+-		name, nameDiags := getCheckableName("input", "variable value")
++		name, nameDiags := getCheckableName("var", "variable value")
+ 		diags = diags.Append(nameDiags)
+ 		if diags.HasErrors() {
+ 			return nil, diags
+diff --git a/internal/configs/state_migrate_file.go b/internal/configs/state_migrate_file.go
+index e15c563..bf0b349 100644
+--- a/internal/configs/state_migrate_file.go
++++ b/internal/configs/state_migrate_file.go
+@@ -41,7 +41,7 @@ type StateStoreProviderRequirement struct {
+ 
+ 	// Requirement represents the single provider used for state storage.
+ 	// By parsing data into this field it can easily be passed to functions for provider download, which expect a providerreqs.Requirements argument.
+-	Requirement map[addrs.Provider]providerreqs.VersionConstraints
++	Requirement providerreqs.Requirements
+ }
+ 
+ // StateMigrationFile represents a single state migration file within a configuration directory.
+diff --git a/internal/policy/callback/server.go b/internal/policy/callback/server.go
+index 6db7008..51d0cfc 100644
+--- a/internal/policy/callback/server.go
++++ b/internal/policy/callback/server.go
+@@ -83,7 +83,7 @@ func (s *Server) GetDataSource(ctx context.Context, request *proto.GetDataSource
+ 
+ 	return &proto.GetDataSourceResponse{
+ 		Result:   result,
+-		Deferred: false,
++		Deferred: isDeferred,
+ 	}, nil
+ }
+ 

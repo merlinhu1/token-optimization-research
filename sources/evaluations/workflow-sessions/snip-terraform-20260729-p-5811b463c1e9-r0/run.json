@@ -1,0 +1,514 @@
+{
+  "session_id": "snip-terraform-20260729-p-5811b463c1e9-r0",
+  "study_id": "phase-2-sequential-workflow-v1",
+  "experiment_group_id": "hashicorp-terraform-terminal-snip-codex-hook-v1-5811b463c1e9-sequential-workflow-r0",
+  "replicate_index": 0,
+  "frozen_protocol": {
+    "protocol_id": "terraform-lifecycle-sequence-v0-terminal-snip-codex-hook-v1-16d6d699ec15",
+    "path": "sources/evaluations/protocols/terraform-lifecycle-sequence-v0-terminal-snip-codex-hook-v1-16d6d699ec15.json",
+    "sha256": "5628c4d7f65ec950534384a13e36c6d68a3dcd4e8ebd526b38d5761a468b0d41"
+  },
+  "baseline_pool": {
+    "protocol_version": "baseline-pool-v1",
+    "protocol_fingerprint": "5811b463c1e9",
+    "identity_policy": "frozen-protocol-and-replicate; execution date is metadata only"
+  },
+  "selected_execution": {
+    "descriptor_sha256": "4f9f21a399a3867fde4d29fdf94a4fe7cb15af07191482634538742bd3e7231a",
+    "descriptor": {
+      "version": "execution-condition-v1",
+      "sequence_id": "terraform-lifecycle-sequence-v0",
+      "execution_role": "individual_tool_treatment",
+      "selected_profile": {
+        "profile_id": "terminal-snip-codex-hook-v1",
+        "profile_type": "individual_tool",
+        "component_ids": [
+          "terminal-snip-codex-hook-v1"
+        ],
+        "enabled_surfaces": [
+          "codex-pre-tool-use-hook",
+          "terminal-output"
+        ],
+        "disabled_overlaps": [
+          "all unlisted surfaces"
+        ],
+        "registry_entry_sha256": "702204fa32db1d8870039e23164512291e2f88b328ddf03c96986b9e86e115e5",
+        "registry_entry": {
+          "id": "terminal-snip-codex-hook-v1",
+          "profile_type": "individual_tool",
+          "objective_scope": "individual_tool_effectiveness",
+          "status": "screening-shortlist",
+          "enabled_surfaces": [
+            "codex-pre-tool-use-hook",
+            "terminal-output"
+          ],
+          "disabled_overlaps": [
+            "all unlisted surfaces"
+          ],
+          "components": [
+            {
+              "component_id": "terminal-snip-codex-hook-v1",
+              "surface": "codex-pre-tool-use-hook/terminal-output-compaction",
+              "role": "individual_tool"
+            }
+          ],
+          "install": {
+            "policy": "Run the pinned Snip binary with `snip init --agent codex` in a lane-private home alias, retain hooks.json, enable Codex hooks, and require hook audit before execution."
+          },
+          "reset": {
+            "policy": "Delete lane-private CODEX_HOME, Snip filters/state, and hook files after evidence capture; verify no hook survives into another lane."
+          },
+          "evaluation_protocol": {
+            "tool_use_policy": "natural",
+            "tool_state": "cold-cli",
+            "integration_state": "official-codex-pretooluse-hook"
+          },
+          "notes": "Versioned correction of the historical PATH-only Snip profile. Uses the pinned source default Codex hook rather than the stale README prompt-only description."
+        }
+      },
+      "model_facing_prompts": {
+        "rendering_contract": "sequential-model-facing-prompts-v2",
+        "profile_guidance_sha256": "cb08dba8b361975eb89669cc77d206861b05fc26b161a9215337dbb2d30a6366",
+        "tasks": [
+          {
+            "task_id": "terraform-lifecycle-feature-v0",
+            "order": 1,
+            "rendered_prompt_sha256": "0c7a1ae29db926cb00a0d6692e684dbf2088a40fc5d5d513fcba2601fb7690d1"
+          },
+          {
+            "task_id": "terraform-lifecycle-refactor-v0",
+            "order": 2,
+            "rendered_prompt_sha256": "6a1c7a09e43d141088f3ca871ac3744ed78e332713fe854118b51b0989b77c7c"
+          },
+          {
+            "task_id": "terraform-lifecycle-review-v0",
+            "order": 3,
+            "rendered_prompt_sha256": "6b854332fdd04a97f65eb2aef312dcf61e37a8521f4b8fa324ccef2c9ddde7a4"
+          }
+        ]
+      },
+      "tool_adapter": {
+        "tool_id": "snip-codex-hook-v1",
+        "tool_manifest": "scripts/run_codex_fixture_evaluation.py:TOOL_CONFIGS",
+        "tool_manifest_sha256": "6fa8271b89a577706ea0bbffcc8e4521831f41b646ed9519369efee3642fe41c",
+        "tool_config": {
+          "display_name": "Snip Codex PreToolUse hook v1",
+          "lane_name": "terminal-snip-codex-hook-v1",
+          "surface": "codex-pre-tool-use-hook/terminal-output-compaction",
+          "allowed_terms": [
+            "snip"
+          ],
+          "data_dir_name": "snip-codex-hook-v1",
+          "executable": "/opt/data/tool-candidates/snip/snip",
+          "path_entries": [
+            "/opt/data/tool-candidates/snip"
+          ],
+          "mounts": [
+            "/opt/data/tool-candidates/snip"
+          ],
+          "env": {
+            "SNIP_TELEMETRY": "0"
+          },
+          "codex_features": {
+            "hooks": true
+          },
+          "host_integration": {
+            "home_dot_codex_alias": true,
+            "install_commands": [
+              [
+                "snip",
+                "init",
+                "--agent",
+                "codex"
+              ]
+            ],
+            "verify_commands": [
+              [
+                "snip",
+                "hook-audit"
+              ]
+            ],
+            "required_files": [
+              "{codex_home}/hooks.json",
+              "{codex_home}/config.toml"
+            ]
+          },
+          "preflight_command": [
+            "snip",
+            "--version"
+          ],
+          "default_tool_state": "cold-cli"
+        },
+        "tool_config_sha256": "f504749423c4e3b3e5efef85b66ad196952704c37653b14f9f86905b2bdaccdf",
+        "tool_state": "cold-cli",
+        "tool_use_policy": "natural",
+        "command_identity": {
+          "kind": "preflight_command",
+          "command": [
+            "snip",
+            "--version"
+          ]
+        },
+        "binary_identity": {
+          "executable_token": "snip",
+          "resolved_path": "/opt/data/tool-candidates/snip/snip",
+          "realpath": "/opt/data/tool-candidates/snip/snip",
+          "sha256": "546b4e735818637f42aabcc79b357d529223385b84b28a19f28002d15d99ea5b",
+          "metadata": {
+            "size": 15056672,
+            "mode": "-rwxr-xr-x",
+            "uid": 10000,
+            "gid": 10000,
+            "mtime_ns": 1783588549482244913
+          },
+          "version": {
+            "command": [
+              "/opt/data/tool-candidates/snip/snip",
+              "--version"
+            ],
+            "environment_path": "/opt/data/.local/bin:/opt/data/tool-candidates/snip:/opt/data/opt/go/bin:/opt/data/opt/uv:/opt/data/opt/node-v24.18.0-linux-x64/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+            "captured": true,
+            "exit_code": 0,
+            "output": "snip vdev",
+            "truncated": false
+          }
+        },
+        "source_identity": [
+          {
+            "path": "/opt/data/tool-candidates/snip",
+            "exists": true,
+            "kind": "directory",
+            "git_head": "82b741b3ba504a22b609f3ac8122ade94306f6ec"
+          }
+        ]
+      },
+      "runtime": {
+        "docker_image": "token-eval-codex:latest",
+        "docker_image_identity": {
+          "image_ref": "token-eval-codex:latest",
+          "image_id": "sha256:6f86d01f2c63f5029c6bb874d8f3694c24d5cd567e3d09413eccc956ba3feafe",
+          "repo_digests": [
+            "token-eval-codex@sha256:6f86d01f2c63f5029c6bb874d8f3694c24d5cd567e3d09413eccc956ba3feafe"
+          ],
+          "repo_tags": [
+            "token-eval-codex:latest"
+          ]
+        },
+        "dockerfile_path": "sources/evaluations/fixtures/container/Dockerfile",
+        "dockerfile_sha256": "47c91967ce25014ce54879514f51d2ff0326651be1087209115eff4d358226b3",
+        "fixture_runner_path": "scripts/run_codex_fixture_evaluation.py",
+        "fixture_runner_sha256": "6fa8271b89a577706ea0bbffcc8e4521831f41b646ed9519369efee3642fe41c",
+        "mcp_probe_path": "scripts/probe_mcp_stdio.py",
+        "mcp_probe_sha256": "7c06ea36ee5cac933a97140b84a41405fc99b45152388e8d7c6659136af698fd",
+        "codex_entrypoint_path": "sources/evaluations/fixtures/container/codex-entrypoint.sh",
+        "codex_entrypoint_sha256": "8715fe37cb1fa3823f5f05493bc9681ce7ffc72126dfec4d64d448762c550c3c",
+        "timeout_seconds_per_task": 3600,
+        "network_isolation": {
+          "provider_access": true,
+          "model_shell_network_access": false,
+          "model_shell_enforcement": "seccomp denies AF_INET and AF_INET6 socket creation for the shell process and descendants",
+          "codex_web_search": "disabled",
+          "external_retrieval_audit": "fail-closed"
+        },
+        "isolation_policy": "fresh lane-specific Codex home/tool data; provider-only network with model shell and Codex web search disabled; sequential one-task prompt delivery; controller seed/verifier scripts excluded while declared model-visible acceptance tests are retained"
+      },
+      "dependencies": {
+        "command": "go mod download",
+        "command_sha256": "42a8263a643ccbe692d70752ffdd8cea328fc2d3190677df1485ee06f55b350a",
+        "lockfiles": [
+          {
+            "path": "go.sum",
+            "snapshot_sha256": "be9ec949db0a0b135197f2c78b6d9821d764cc9b8c362b4860e3d5a1e9c74b9e",
+            "current_fixture_sha256": null
+          }
+        ]
+      },
+      "agent_condition": {
+        "runtime_id": "codex-cli",
+        "provider": "openai",
+        "model": "gpt-5.6-sol",
+        "model_condition_id": "codex-openai-gpt-5-6-sol-high",
+        "reasoning_effort": "high",
+        "codex_version_condition": "captured-at-run-and-bound-to-record"
+      },
+      "isolation": {
+        "prompt_delivery": "sequential-one-task-at-a-time",
+        "seed_delivery_mode": "preseeded-composite",
+        "future_tasks_visible": false,
+        "future_seed_regressions_visible": true,
+        "controller_verification": "final-only",
+        "controller_verifier_scripts_and_canonical_copies_model_visible": false,
+        "model_visible_acceptance_asset_paths": [
+          "internal/addrs/baseline_v3_checkable_test.go",
+          "internal/configs/baseline_v3_requirement_type_test.go",
+          "internal/configs/parser_config_dir_test.go",
+          "internal/policy/callback/baseline_v3_deferred_test.go"
+        ],
+        "model_concealed_paths": []
+      },
+      "baseline_pool_reference": {
+        "protocol_version": "baseline-pool-v1",
+        "protocol_fingerprint": "5811b463c1e9",
+        "comparison_policy": "paired baseline and treatment must share this baseline pool fingerprint and replicate"
+      },
+      "model_condition_override": {
+        "model_condition_id": "codex-openai-gpt-5-6-sol-high",
+        "model": "gpt-5.6-sol",
+        "reasoning_effort": "high",
+        "registry_status": "active-model-comparison",
+        "launcher": {
+          "path": "scripts/run_codex_workflow_model_condition.py",
+          "sha256": "b219d8f88e5df0fd567dff4d47e9193a602b223b2b72cf0ed3ea5c67cad5aecf"
+        }
+      }
+    }
+  },
+  "agent_condition": {
+    "runtime_id": "codex-cli",
+    "provider": "openai",
+    "model": "gpt-5.6-sol",
+    "model_condition_id": "codex-openai-gpt-5-6-sol-high",
+    "reasoning_effort": "high",
+    "codex_version_condition": "captured-at-run-and-bound-to-record"
+  },
+  "docker_image_identity": {
+    "image_ref": "token-eval-codex:latest",
+    "image_id": "sha256:6f86d01f2c63f5029c6bb874d8f3694c24d5cd567e3d09413eccc956ba3feafe",
+    "repo_digests": [
+      "token-eval-codex@sha256:6f86d01f2c63f5029c6bb874d8f3694c24d5cd567e3d09413eccc956ba3feafe"
+    ],
+    "repo_tags": [
+      "token-eval-codex:latest"
+    ]
+  },
+  "tool_adapter_identity": {
+    "tool_id": "snip-codex-hook-v1",
+    "tool_manifest": "scripts/run_codex_fixture_evaluation.py:TOOL_CONFIGS",
+    "tool_manifest_sha256": "6fa8271b89a577706ea0bbffcc8e4521831f41b646ed9519369efee3642fe41c",
+    "tool_config": {
+      "display_name": "Snip Codex PreToolUse hook v1",
+      "lane_name": "terminal-snip-codex-hook-v1",
+      "surface": "codex-pre-tool-use-hook/terminal-output-compaction",
+      "allowed_terms": [
+        "snip"
+      ],
+      "data_dir_name": "snip-codex-hook-v1",
+      "executable": "/opt/data/tool-candidates/snip/snip",
+      "path_entries": [
+        "/opt/data/tool-candidates/snip"
+      ],
+      "mounts": [
+        "/opt/data/tool-candidates/snip"
+      ],
+      "env": {
+        "SNIP_TELEMETRY": "0"
+      },
+      "codex_features": {
+        "hooks": true
+      },
+      "host_integration": {
+        "home_dot_codex_alias": true,
+        "install_commands": [
+          [
+            "snip",
+            "init",
+            "--agent",
+            "codex"
+          ]
+        ],
+        "verify_commands": [
+          [
+            "snip",
+            "hook-audit"
+          ]
+        ],
+        "required_files": [
+          "{codex_home}/hooks.json",
+          "{codex_home}/config.toml"
+        ]
+      },
+      "preflight_command": [
+        "snip",
+        "--version"
+      ],
+      "default_tool_state": "cold-cli"
+    },
+    "tool_config_sha256": "f504749423c4e3b3e5efef85b66ad196952704c37653b14f9f86905b2bdaccdf",
+    "tool_state": "cold-cli",
+    "tool_use_policy": "natural",
+    "command_identity": {
+      "kind": "preflight_command",
+      "command": [
+        "snip",
+        "--version"
+      ]
+    },
+    "binary_identity": {
+      "executable_token": "snip",
+      "resolved_path": "/opt/data/tool-candidates/snip/snip",
+      "realpath": "/opt/data/tool-candidates/snip/snip",
+      "sha256": "546b4e735818637f42aabcc79b357d529223385b84b28a19f28002d15d99ea5b",
+      "metadata": {
+        "size": 15056672,
+        "mode": "-rwxr-xr-x",
+        "uid": 10000,
+        "gid": 10000,
+        "mtime_ns": 1783588549482244913
+      },
+      "version": {
+        "command": [
+          "/opt/data/tool-candidates/snip/snip",
+          "--version"
+        ],
+        "environment_path": "/opt/data/.local/bin:/opt/data/tool-candidates/snip:/opt/data/opt/go/bin:/opt/data/opt/uv:/opt/data/opt/node-v24.18.0-linux-x64/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+        "captured": true,
+        "exit_code": 0,
+        "output": "snip vdev",
+        "truncated": false
+      }
+    },
+    "source_identity": [
+      {
+        "path": "/opt/data/tool-candidates/snip",
+        "exists": true,
+        "kind": "directory",
+        "git_head": "82b741b3ba504a22b609f3ac8122ade94306f6ec"
+      }
+    ]
+  },
+  "profile_id": "terminal-snip-codex-hook-v1",
+  "workflow_sequence_id": "terraform-lifecycle-sequence-v0",
+  "fixture_id": "large-hashicorp-terraform",
+  "repository_path": "sources/evaluations/workflow-sessions/snip-terraform-20260729-p-5811b463c1e9-r0/project/repo",
+  "codex_exit_codes": [
+    0,
+    0,
+    0
+  ],
+  "final_verifier_exit_code": 0,
+  "tool_isolation_audit_exit_code": 0,
+  "verifier_integrity_passed": true,
+  "thread_continuity_errors": [],
+  "seed_delivery": {
+    "mode": "preseeded-composite",
+    "future_seed_regressions_visible": true,
+    "preseeded_task_orders": [
+      1,
+      2,
+      3
+    ],
+    "pending_seed_orders": []
+  },
+  "accepted": true,
+  "timeout_seconds": 10800,
+  "codex_version": "codex-cli 0.145.0",
+  "token_usage": {
+    "measurement_source": "codex-jsonl-usage-events",
+    "fresh_input_tokens": 32955,
+    "cached_input_tokens": 54272,
+    "cache_write_tokens": 0,
+    "output_tokens": 926,
+    "reasoning_tokens": 0,
+    "total_provider_tokens": 88153
+  },
+  "usage_warnings": [],
+  "per_task_results": [
+    {
+      "task_id": "terraform-lifecycle-feature-v0",
+      "task_class": "feature-implementation",
+      "task_alias": "task-01",
+      "order": 1,
+      "agent_attempted": true,
+      "codex_exit_code": 0,
+      "thread_continuity_passed": true,
+      "thread_id": "019fac11-b23d-7811-8082-c0d3a201f270",
+      "controller_verification": "passed",
+      "accepted": true,
+      "task_delta": "sources/evaluations/workflow-sessions/snip-terraform-20260729-p-5811b463c1e9-r0/task-01-agent.diff",
+      "usage_events": "sources/evaluations/workflow-sessions/snip-terraform-20260729-p-5811b463c1e9-r0/task-01-codex-events.jsonl",
+      "operational_retry_count": 0,
+      "verifier_exit_code": 0,
+      "verifier_passed": true
+    },
+    {
+      "task_id": "terraform-lifecycle-refactor-v0",
+      "task_class": "behavior-preserving-refactor",
+      "task_alias": "task-02",
+      "order": 2,
+      "agent_attempted": true,
+      "codex_exit_code": 0,
+      "thread_continuity_passed": true,
+      "thread_id": "019fac11-b23d-7811-8082-c0d3a201f270",
+      "controller_verification": "passed",
+      "accepted": true,
+      "task_delta": "sources/evaluations/workflow-sessions/snip-terraform-20260729-p-5811b463c1e9-r0/task-02-agent.diff",
+      "usage_events": "sources/evaluations/workflow-sessions/snip-terraform-20260729-p-5811b463c1e9-r0/task-02-codex-events.jsonl",
+      "operational_retry_count": 0,
+      "verifier_exit_code": 0,
+      "verifier_passed": true
+    },
+    {
+      "task_id": "terraform-lifecycle-review-v0",
+      "task_class": "code-review-correction",
+      "task_alias": "task-03",
+      "order": 3,
+      "agent_attempted": true,
+      "codex_exit_code": 0,
+      "thread_continuity_passed": true,
+      "thread_id": "019fac11-b23d-7811-8082-c0d3a201f270",
+      "controller_verification": "passed",
+      "accepted": true,
+      "task_delta": "sources/evaluations/workflow-sessions/snip-terraform-20260729-p-5811b463c1e9-r0/task-03-agent.diff",
+      "usage_events": "sources/evaluations/workflow-sessions/snip-terraform-20260729-p-5811b463c1e9-r0/task-03-codex-events.jsonl",
+      "operational_retry_count": 0,
+      "verifier_exit_code": 0,
+      "verifier_passed": true
+    }
+  ],
+  "prompt_delivery": {
+    "mode": "sequential-one-task-at-a-time",
+    "future_tasks_visible": false,
+    "future_prompts_materialized_lazily": true,
+    "seed_delivery_mode": "preseeded-composite",
+    "future_seed_regressions_visible": true,
+    "controller_verification": "final-only",
+    "codex_thread_id": "019fac11-b23d-7811-8082-c0d3a201f270",
+    "task_prompt_evidence": "sources/evaluations/workflow-sessions/snip-terraform-20260729-p-5811b463c1e9-r0/evidence.jsonl.gz"
+  },
+  "leakage_controls": {
+    "seed_origin_concealed": true,
+    "seed_patches_model_visible": false,
+    "git_baseline_true_root_at_lane_start": true,
+    "fixed_snapshot_objects_model_visible": false,
+    "pre_seed_reflog_entries_visible": false,
+    "concealment_verification_passed": true,
+    "task_directories_model_visible": false,
+    "controller_verifier_scripts_and_canonical_copies_model_visible": false,
+    "model_visible_acceptance_asset_paths": [
+      "internal/addrs/baseline_v3_checkable_test.go",
+      "internal/configs/baseline_v3_requirement_type_test.go",
+      "internal/configs/parser_config_dir_test.go",
+      "internal/policy/callback/baseline_v3_deferred_test.go"
+    ],
+    "model_writable_surface": "target repository plus isolated model-output directory",
+    "verifier_integrity_passed": true,
+    "verifier_integrity_evidence": "sources/evaluations/workflow-sessions/snip-terraform-20260729-p-5811b463c1e9-r0/evidence.jsonl.gz#verifier-integrity.json",
+    "model_prompts_sanitized": true,
+    "upstream_remote_removed_from_model_facing_repo": true,
+    "broken_start_committed_as_local_baseline": true,
+    "remaining_limitations": [
+      "Future regression code and declared focused acceptance tests are present from lane start; future prompts, seed patches, and controller verifier scripts remain controller-only.",
+      "Task semantics and verifier names may still be searchable if the model intentionally uses external network access."
+    ]
+  },
+  "artifacts": {
+    "artifact_contract": "compact-v1-four-files",
+    "root": "sources/evaluations/workflow-sessions/snip-terraform-20260729-p-5811b463c1e9-r0",
+    "run_record": "sources/evaluations/workflow-sessions/snip-terraform-20260729-p-5811b463c1e9-r0/run.json",
+    "final_diff": "sources/evaluations/workflow-sessions/snip-terraform-20260729-p-5811b463c1e9-r0/changes.diff",
+    "final_diff_basis": "ordered cumulative checkpoints plus final cumulative source diff from one composite root",
+    "evidence_bundle": "sources/evaluations/workflow-sessions/snip-terraform-20260729-p-5811b463c1e9-r0/evidence.jsonl.gz",
+    "manifest": "sources/evaluations/workflow-sessions/snip-terraform-20260729-p-5811b463c1e9-r0/manifest.sha256"
+  },
+  "run_dir": "sources/evaluations/workflow-sessions/snip-terraform-20260729-p-5811b463c1e9-r0"
+}

@@ -7,11 +7,14 @@ Codex 0.139 emits lines such as:
       "cached_input_tokens":4480,"output_tokens":5,
       "reasoning_output_tokens":0}}
 
-The extractor preserves raw usage blocks and writes the repository's normalized
-fields. `input_tokens` is treated as total provider input; fresh input is
-`input_tokens - cached_input_tokens` when both are available. Total provider
-tokens are computed as `input_tokens + output_tokens`; reasoning tokens are
-reported separately because Codex exposes them as a detail of output usage.
+The extractor preserves every raw usage block and normalizes Codex exec's
+cumulative thread accounting. Codex 0.144.0 serializes `ThreadTokenUsage.total`
+into each `turn.completed.usage` event, so resumed turns from the same thread
+must use the final cumulative snapshot rather than summing snapshots. Final
+snapshots from distinct threads are summed. `input_tokens` is total provider
+input; fresh input is `input_tokens - cached_input_tokens`. Total provider
+tokens are `input_tokens + output_tokens`; reasoning tokens remain a detail of
+output usage.
 """
 from __future__ import annotations
 
@@ -49,12 +52,101 @@ def load_events(path: Path) -> tuple[list[dict[str, Any]], list[str]]:
 
 
 def usage_blocks(events: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    """Return raw usage blocks annotated with the active Codex thread."""
     blocks: list[dict[str, Any]] = []
+    current_thread_id: str | None = None
     for event in events:
+        if event.get("type") == "thread.started":
+            candidate = event.get("thread_id")
+            current_thread_id = candidate if isinstance(candidate, str) and candidate else None
         usage = event.get("usage")
         if isinstance(usage, dict):
-            blocks.append({"event_type": event.get("type"), "usage": usage})
+            blocks.append(
+                {
+                    "event_type": event.get("type"),
+                    "thread_id": current_thread_id,
+                    "usage": usage,
+                }
+            )
     return blocks
+
+
+def effective_usage_blocks(
+    blocks: list[dict[str, Any]],
+) -> tuple[list[dict[str, Any]], str, list[str]]:
+    """Select final cumulative usage per thread, failing on counter regressions."""
+    if not blocks:
+        return [], "no-usage-blocks", []
+    if any(not isinstance(block.get("thread_id"), str) for block in blocks):
+        warning = (
+            "Usage blocks lack thread identity; retained legacy sum semantics because "
+            "cumulative snapshots cannot be grouped safely."
+        )
+        return blocks, "legacy-sum-without-thread-identity", [warning]
+
+    by_thread: dict[str, list[dict[str, Any]]] = {}
+    thread_order: list[str] = []
+    for block in blocks:
+        thread_id = str(block["thread_id"])
+        if thread_id not in by_thread:
+            by_thread[thread_id] = []
+            thread_order.append(thread_id)
+        by_thread[thread_id].append(block)
+
+    monotonic_keys = sorted(TOKEN_KEYS)
+    for thread_id, thread_blocks in by_thread.items():
+        previous: dict[str, Any] | None = None
+        for block in thread_blocks:
+            usage = block.get("usage", {})
+            if not isinstance(usage, dict):
+                continue
+            if previous is not None:
+                for key in monotonic_keys:
+                    old = numeric(previous.get(key))
+                    new = numeric(usage.get(key))
+                    if old is not None and new is not None and new < old:
+                        raise ValueError(
+                            f"Codex cumulative usage decreased for thread {thread_id}: "
+                            f"{key} {old} -> {new}"
+                        )
+            previous = usage
+
+    return (
+        [by_thread[thread_id][-1] for thread_id in thread_order],
+        "final-cumulative-total-per-thread",
+        [],
+    )
+
+
+def incremental_usage_blocks(blocks: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    """Convert cumulative per-thread snapshots into per-turn increments."""
+    effective_usage_blocks(blocks)  # validates monotonic cumulative counters
+    previous_by_thread: dict[str, dict[str, Any]] = {}
+    increments: list[dict[str, Any]] = []
+    for block in blocks:
+        thread_id_value = block.get("thread_id")
+        thread_id = thread_id_value if isinstance(thread_id_value, str) else None
+        current = block.get("usage", {})
+        if not isinstance(current, dict):
+            continue
+        previous = previous_by_thread.get(thread_id, {}) if thread_id is not None else {}
+        delta: dict[str, int] = {}
+        for key in sorted(TOKEN_KEYS):
+            value = numeric(current.get(key))
+            if value is None:
+                continue
+            prior_value = numeric(previous.get(key))
+            delta[key] = value - prior_value if prior_value is not None else value
+        increments.append(
+            {
+                "event_type": block.get("event_type"),
+                "thread_id": thread_id,
+                "usage": delta,
+            }
+        )
+        if thread_id is not None:
+            previous_by_thread[thread_id] = current
+    return increments
 
 
 def numeric(value: Any) -> int | None:
@@ -78,6 +170,19 @@ def sum_key(blocks: list[dict[str, Any]], key: str) -> int | None:
     return sum(values) if values else None
 
 
+def token_field_totals(blocks: list[dict[str, Any]]) -> dict[str, int]:
+    totals: dict[str, int] = {}
+    for block in blocks:
+        usage = block.get("usage", {})
+        if not isinstance(usage, dict):
+            continue
+        for key, value in usage.items():
+            number = numeric(value)
+            if number is not None and "token" in str(key).lower():
+                totals[str(key)] = totals.get(str(key), 0) + number
+    return dict(sorted(totals.items()))
+
+
 def count_tool_calls(events: list[dict[str, Any]]) -> int:
     count = 0
     for event in events:
@@ -93,12 +198,14 @@ def count_tool_calls(events: list[dict[str, Any]]) -> int:
 def build_summary(events_path: Path) -> dict[str, Any]:
     events, non_json_lines = load_events(events_path)
     blocks = usage_blocks(events)
-    input_tokens = sum_key(blocks, "input_tokens")
-    cached_input_tokens = sum_key(blocks, "cached_input_tokens")
-    output_tokens = sum_key(blocks, "output_tokens")
-    reasoning_tokens = sum_key(blocks, "reasoning_output_tokens")
+    effective_blocks, accounting_mode, accounting_warnings = effective_usage_blocks(blocks)
+    incremental_blocks = incremental_usage_blocks(blocks)
+    input_tokens = sum_key(effective_blocks, "input_tokens")
+    cached_input_tokens = sum_key(effective_blocks, "cached_input_tokens")
+    output_tokens = sum_key(effective_blocks, "output_tokens")
+    reasoning_tokens = sum_key(effective_blocks, "reasoning_output_tokens")
     if reasoning_tokens is None:
-        reasoning_tokens = sum_key(blocks, "reasoning_tokens")
+        reasoning_tokens = sum_key(effective_blocks, "reasoning_tokens")
 
     fresh_input_tokens = None
     if input_tokens is not None and cached_input_tokens is not None:
@@ -107,7 +214,7 @@ def build_summary(events_path: Path) -> dict[str, Any]:
         fresh_input_tokens = input_tokens
 
     total_provider_tokens = None
-    total_from_codex = sum_key(blocks, "total_tokens")
+    total_from_codex = sum_key(effective_blocks, "total_tokens")
     if total_from_codex is not None:
         total_provider_tokens = total_from_codex
     elif input_tokens is not None or output_tokens is not None:
@@ -118,15 +225,22 @@ def build_summary(events_path: Path) -> dict[str, Any]:
         event_type = str(event.get("type") or "unknown")
         event_types[event_type] = event_types.get(event_type, 0) + 1
 
+    warnings = list(accounting_warnings)
+    if not blocks:
+        warnings.append("No usage blocks found in Codex JSONL; token fields are null.")
+
     return {
-        "schema_version": 1,
+        "schema_version": 2,
         "source": "codex-jsonl",
         "source_artifact": str(events_path),
         "extracted_at_utc": dt.datetime.now(dt.UTC).isoformat(),
         "measurement_source": "codex-jsonl-usage-events",
         "fresh_input_tokens": fresh_input_tokens,
         "cached_input_tokens": cached_input_tokens,
-        "cache_write_tokens": None,
+        # OpenAI Codex usage exposes cached reads but no cache-write category;
+        # normalize the unsupported provider component to the exact integer zero
+        # required by the current compact-session contract.
+        "cache_write_tokens": 0,
         "output_tokens": output_tokens,
         "reasoning_tokens": reasoning_tokens,
         "total_provider_tokens": total_provider_tokens,
@@ -138,7 +252,19 @@ def build_summary(events_path: Path) -> dict[str, Any]:
             "output_tokens": output_tokens,
             "reasoning_output_tokens": reasoning_tokens,
             "total_tokens_formula": "input_tokens + output_tokens unless Codex emits total_tokens",
+            "accounting_mode": accounting_mode,
+            "source_semantics": "Codex exec turn.completed.usage serializes ThreadTokenUsage.total; fresh input subtracts cached reads.",
             "usage_blocks": blocks,
+            "effective_usage_blocks": effective_blocks,
+            "incremental_usage_blocks": incremental_blocks,
+        },
+        "provider_usage_details": {
+            "runtime": "codex-cli",
+            "accounting_mode": accounting_mode,
+            "raw_token_field_totals": token_field_totals(effective_blocks),
+            "incremental_raw_token_field_totals": token_field_totals(incremental_blocks),
+            "fresh_input_formula": "input_tokens - cached_input_tokens",
+            "reasoning_tokens_available": reasoning_tokens is not None,
         },
         "agent_behavior": {
             "turns": event_types.get("turn.completed"),
@@ -147,11 +273,7 @@ def build_summary(events_path: Path) -> dict[str, Any]:
             "event_types": event_types,
             "non_json_line_count": len(non_json_lines),
         },
-        "warnings": [
-            "No usage blocks found in Codex JSONL; token fields are null."
-        ]
-        if not blocks
-        else [],
+        "warnings": warnings,
         "non_json_line_samples": non_json_lines[:10],
     }
 

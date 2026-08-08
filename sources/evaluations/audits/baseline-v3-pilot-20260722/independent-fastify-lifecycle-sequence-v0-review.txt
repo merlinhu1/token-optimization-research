@@ -1,0 +1,55 @@
+## Independent audit verdict
+
+```json
+{
+  "sequence_id": "fastify-lifecycle-sequence-v0",
+  "baseline_session_id": "baseline-fastify-20260722-p-bb0e89ed9794-r0",
+  "reviewer_role": "independent",
+  "trajectory_review_complete": true,
+  "independent_source_review_passed": true,
+  "passed": true,
+  "observed_unique_model_caused_incidents": 0,
+  "observed_corrected_implementation_mistakes": 0,
+  "observed_unresolved_defects": 0,
+  "observed_prohibited_operations": 0,
+  "observed_unnecessary_exploration_incidents": 0,
+  "observed_model_caused_failed_commands": 0,
+  "observed_code_rework_events": 0,
+  "observed_verifier_or_environment_failures": 0
+}
+```
+
+### Evidence
+
+- **Trajectory:** Each task issued exactly one prescribed command, which exited `0`; there were no searches, extra checks, retries, failed commands, or revised implementations:
+  - Feature: `evidence.jsonl.gz` `35:4–7`
+  - Refactor: `38:4–7`
+  - Review correction: `41:4–7`
+- **Source:** The cumulative final diff modifies only the four permitted production files:
+  - `lib/request.js`: exact `request.mediaType` restoration (`changes.diff:4–22`)
+  - `lib/content-type.js`: shared bounded `Lru(100)` cache (`25–65`)
+  - `fastify.js` and `lib/errors.js`: synchronized HTTP `413 → 414` correction (`87–155`)
+  - Later checkpoint repetition is cumulative snapshotting, not rework.
+- **Verification:** All focused and final checks passed with zero skipped tests:
+  - Feature 1/1, refactor 2/2, review 1/1 (`evidence` record `12:1–34`)
+  - Structured per-task verifier exits are all `0` (`13:2–20`)
+  - Verifier assets were unchanged after every task and before final verification (`49:2–63`).
+- **Protocol/model:** The current canonical protocol resolved to `fastify-lifecycle-sequence-v0-baseline-bare-codex-5bd0be12f9f5`; protocol SHA-256, qualification hash, selected-execution hash, model `gpt-5.6-sol`, reasoning `high`, Docker identity, and baseline profile all matched the run and registry.
+- **Prompts:** All three retained rendered-prompt hashes recomputed exactly to the protocol values. Their stop conditions require one command and prohibit exploration (`43:20–55`, `44:9–43`, `45:9–43`).
+- **Thread:** All three tasks used one thread, `019f8bca-7400-70c0-b5a9-43e1ecebb426`, with no continuity errors.
+- **Usage:** Final cumulative per-thread accounting reconciles exactly:
+  - fresh input `10,315`
+  - cached input `65,024`
+  - output `1,284`
+  - cache write/reasoning `0`
+  - total `76,623`
+
+  The three cumulative snapshots are monotonic and the extractor correctly uses only the final snapshot (`21:15–98`).
+- **Isolation/artifacts:** Manifest verification and gzip integrity passed; the compact root contains exactly the four canonical nonsymlink files. Fifty evidence records have unique canonical paths. Isolation found no forbidden-tool, pass-through-tool, or external-retrieval hits (`47:1–17`).
+- **Nonfailure diagnostics:** `codex doctor` exited `1` only for an install/update-prefix diagnostic that the preflight explicitly classifies as a preserved warning rather than an execution gate (`6:3–16`). The npm and `FSTDEP022` messages were warnings; no verifier or task failed.
+
+### Workspace impact
+
+- Files created or modified: **none**
+- Providers invoked or runs repeated: **none**
+- Issues encountered: **none blocking**. The protocol’s `fixture_runner_sha256` is intentionally the repository’s documented legacy semantic-manifest identity rather than the live runner-file digest; canonical protocol resolution and session-reuse validation both passed.

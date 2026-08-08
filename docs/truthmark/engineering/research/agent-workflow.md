@@ -1,6 +1,10 @@
 ---
 status: active
 truth_kind: engineering-workflow
+doc_type: workflow
+source_of_truth:
+  - ../../../../AGENTS.md
+  - ../../../../.truthmark/config.yml
 last_reviewed: 2026-07-16
 ---
 
@@ -38,7 +42,7 @@ Apply the synchronization workflow after an evaluation run, qualification/protoc
 
 1. Read the active contract in `AGENTS.md` and the relevant repo-local skill.
 2. Update machine authorities first, especially `data/workflow-sessions.json` and `data/repository-fixtures.json`.
-3. Regenerate `docs/evaluations/workflow-evaluation-runbook.md` from the registries.
+3. Regenerate `docs/evaluations/operations/runbook.md` from the registries.
 4. Reconcile active README, roadmap, current-findings, prompt, schema, skill, and Truthmark surfaces that report the changed state or policy.
 5. Search for the retired status, path, identifier, and policy wording. Delete a redundant document or template when it has no distinct maintained authority or current consumer.
 6. Preserve immutable protocol and evidence bytes; record current state in registries and generated views.
@@ -79,3 +83,15 @@ Apply the synchronization workflow after an evaluation run, qualification/protoc
 - ../../../../scripts/validate_repository.py
 - ../../../../scripts/update_workflow_runbook.py
 - ../../routes/areas.md
+
+## Engineering Decisions
+
+Repository changes follow the machine registries and generated runbook as the authoritative execution record; Truthmark routing remains documentation metadata and does not override evaluation controls.
+
+## Current Behavior
+
+Research-truth changes are synchronized after code and registry changes, with validation and artifact-preservation checks required before publication.
+
+## Rationale
+
+Centralizing execution state in registries and generated views prevents stale prose from being mistaken for provider-backed evidence.

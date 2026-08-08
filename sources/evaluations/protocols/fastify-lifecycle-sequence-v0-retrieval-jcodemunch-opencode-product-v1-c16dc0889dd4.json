@@ -1,0 +1,648 @@
+{
+  "protocol_schema_version": 3,
+  "protocol_id": "fastify-lifecycle-sequence-v0-retrieval-jcodemunch-opencode-product-v1-c16dc0889dd4",
+  "status": "frozen-ready-not-run",
+  "outcome": "Frozen retrieval-jcodemunch-opencode-product-v1 protocol for fastify-lifecycle-sequence-v0; no provider/model run has occurred.",
+  "frozen_at": "2026-07-22",
+  "hypothesis": "retrieval-jcodemunch-opencode-product-v1 produces reproducible provider-reported token and software-quality evidence for fastify-lifecycle-sequence-v0",
+  "evidence_stage_target": "reproduction",
+  "task_fixture": {
+    "fixture_id": "medium-fastify-fastify",
+    "sequence_id": "fastify-lifecycle-sequence-v0",
+    "task_family_generation": "baseline-v3",
+    "repository": "https://github.com/fastify/fastify.git",
+    "snapshot": "94bcbcc6e2ef3b8e8f8e8797fe551ccbe7b942fd",
+    "qualification_path": "sources/evaluations/fixtures/medium/fastify-fastify/qualification-lifecycle-v0-baseline-v3.json",
+    "qualification_sha256": "82bcabb399b9e7af4234b8ba4a8c12352dc4584cb838ae01bd0854b83c9d0ba1",
+    "timeout_seconds_per_task": 3600
+  },
+  "baseline": {
+    "profile_id": "baseline-bare-codex",
+    "runtime_id": "codex-cli",
+    "provider": "openai",
+    "model": "gpt-5.6-sol",
+    "model_condition_id": "codex-openai-gpt-5-6-sol-high",
+    "reasoning_effort": "high",
+    "command": ""
+  },
+  "comparison_baseline": {
+    "profile_id": "runtime-opencode-codex-product-v1",
+    "runtime_id": "opencode-cli",
+    "provider": "openai",
+    "model": "gpt-5.6-sol",
+    "model_condition_id": "opencode-openai-gpt-5-6-sol-high",
+    "reasoning_effort": "high",
+    "selection_policy": "sequence-pool-replicate-matched-first-valid"
+  },
+  "treatment": {
+    "profile_id": "retrieval-jcodemunch-opencode-product-v1",
+    "runtime_id": "opencode-cli",
+    "provider": "openai",
+    "model": "gpt-5.6-sol",
+    "model_condition_id": "opencode-openai-gpt-5-6-sol-high",
+    "reasoning_effort": "high",
+    "command": "python3 scripts/run_opencode_workflow_model_condition.py --workflow-model-condition-id opencode-openai-gpt-5-6-sol-high --workflow-model gpt-5.6-sol --workflow-reasoning-effort high --sequence-id fastify-lifecycle-sequence-v0 --profile-id retrieval-jcodemunch-opencode-product-v1 --timeout-per-task 3600 --protocol sources/evaluations/protocols/fastify-lifecycle-sequence-v0-retrieval-jcodemunch-opencode-product-v1-c16dc0889dd4.json --docker-image token-eval-codex:latest"
+  },
+  "token_accounting_boundary": {
+    "fields": [
+      "fresh_input_tokens",
+      "cached_input_tokens",
+      "cache_write_tokens",
+      "output_tokens",
+      "reasoning_tokens",
+      "total_provider_tokens"
+    ]
+  },
+  "baseline_pool": {
+    "protocol_version": "baseline-pool-v1",
+    "protocol_fingerprint": "bb0e89ed9794",
+    "descriptor": {
+      "version": "baseline-pool-v1",
+      "runner_contract_version": "workflow-runner-v9",
+      "runner_sha256": "7e5941f3c5689105b1f3e8693a0fde2fea2e6fd5ad1880f9da9629fd1549af1c",
+      "qualification_generator_sha256": "15463354f4b44f00c857dbbf6f06727ced966ef669aa7d2e69a7ea16324068b0",
+      "validator_sha256": "61f79485fea154580b5976251643daf231293a464d80d16164dd77a15d05d541",
+      "sequence_id": "fastify-lifecycle-sequence-v0",
+      "sequence_contract": "feature-refactor-review",
+      "fixture_id": "medium-fastify-fastify",
+      "fixture_scale": "medium-project",
+      "initial_snapshot": {
+        "commit": "94bcbcc6e2ef3b8e8f8e8797fe551ccbe7b942fd",
+        "upstream": "https://github.com/fastify/fastify.git",
+        "dependency_lockfiles": [
+          {
+            "path": "package.json",
+            "sha256": "b273320af1bb4cfc0f9334457c8e3b1d035fde0da14f9db65e8ef97d361d0be3"
+          }
+        ]
+      },
+      "objective": "individual_tool_effectiveness",
+      "primary_metric": "cumulative provider-reported workflow tokens",
+      "tasks": [
+        {
+          "id": "fastify-lifecycle-feature-v0",
+          "order": 1,
+          "task_class": "feature-implementation",
+          "prompt_path": "sources/evaluations/fixtures/medium/fastify-fastify/task-generations/baseline-v3/fastify-lifecycle-feature-v0/agent-prompt.txt",
+          "prompt_sha256": "dcd5fddb44230d293297438d44ca8b97588ec2bdaaf3a68bd3af2804295da4ea",
+          "seed_patch_sha256": "18059088167f2e10de672106c367c3318c7865b29704bd2c83c9d3227fc50510",
+          "verifier_command": "sources/evaluations/fixtures/medium/fastify-fastify/task-generations/baseline-v3/fastify-lifecycle-feature-v0/verify.sh",
+          "verifier_sha256": "4d8b6c227dd364dfe0a8aee21cef3027c57ca5a312a51e2846df9b09627c8f67",
+          "controller_visible_acceptance_assets": [
+            {
+              "path": "sources/evaluations/fixtures/medium/fastify-fastify/task-generations/baseline-v3/fastify-lifecycle-feature-v0/controller-visible/test/baseline-v3-request-media-type.test.js",
+              "sha256": "a4a070f8047b5082db80da2b64de3beb80e8e07c166ff326c089cc38a69039fd"
+            }
+          ],
+          "upstream_test_paths": [],
+          "compatibility_rebased_test_paths": [],
+          "expected_model_concealed_paths": [],
+          "model_concealed_paths": []
+        },
+        {
+          "id": "fastify-lifecycle-refactor-v0",
+          "order": 2,
+          "task_class": "behavior-preserving-refactor",
+          "prompt_path": "sources/evaluations/fixtures/medium/fastify-fastify/task-generations/baseline-v3/fastify-lifecycle-refactor-v0/agent-prompt.txt",
+          "prompt_sha256": "0a0867ab15d0b86404251f68c03d2aedf92f5119c614091b57faaa4758649c2d",
+          "seed_patch_sha256": "0ba999702be62ca6cd9d4ecb4c150ea926453e2a37624aaa995b1853aae0c537",
+          "verifier_command": "sources/evaluations/fixtures/medium/fastify-fastify/task-generations/baseline-v3/fastify-lifecycle-refactor-v0/verify.sh",
+          "verifier_sha256": "4a4184b351b5212bbd612400cc7997acbb42d142bce10bd2084ef66892b3c87c",
+          "controller_visible_acceptance_assets": [
+            {
+              "path": "sources/evaluations/fixtures/medium/fastify-fastify/task-generations/baseline-v3/fastify-lifecycle-refactor-v0/controller-visible/test/baseline-v3-content-type-cache.test.js",
+              "sha256": "07ee0e31054e34cc9ee3bc2dfa87d3d4d471b2afb3d3df40a776a5205937ccaf"
+            }
+          ],
+          "upstream_test_paths": [],
+          "compatibility_rebased_test_paths": [],
+          "expected_model_concealed_paths": [],
+          "model_concealed_paths": []
+        },
+        {
+          "id": "fastify-lifecycle-review-v0",
+          "order": 3,
+          "task_class": "code-review-correction",
+          "prompt_path": "sources/evaluations/fixtures/medium/fastify-fastify/task-generations/baseline-v3/fastify-lifecycle-review-v0/agent-prompt.txt",
+          "prompt_sha256": "a042d361586bf1efb6d43867a83086d302aaa2d2dcfb666e33bf0aaa6eb3a579",
+          "seed_patch_sha256": "32f78bffa59fa01edde1594d64615fe54564c9a204c45c251c6ac2f8c7e3e0c2",
+          "verifier_command": "sources/evaluations/fixtures/medium/fastify-fastify/task-generations/baseline-v3/fastify-lifecycle-review-v0/verify.sh",
+          "verifier_sha256": "481393dffa4f0c826dbcd86a5fb50a512b6c483abd1012cb8ab5ec934ae89fd2",
+          "controller_visible_acceptance_assets": [
+            {
+              "path": "sources/evaluations/fixtures/medium/fastify-fastify/task-generations/baseline-v3/fastify-lifecycle-review-v0/controller-visible/test/baseline-v3-max-param.test.js",
+              "sha256": "b09d4161acf01875e9842f9454e39e8ab66e631c5fa091a09c088ef7c3d31c7f"
+            }
+          ],
+          "upstream_test_paths": [],
+          "compatibility_rebased_test_paths": [],
+          "expected_model_concealed_paths": [],
+          "model_concealed_paths": [],
+          "review_patch_path": "review-change.patch",
+          "review_patch_sha256": "0402a5fc7785775c034fddc539539bbbd0083d11a6f555e22f95dd992476aa3c"
+        }
+      ],
+      "model_facing_prompts": {
+        "rendering_contract": "sequential-model-facing-prompts-v2",
+        "profile_guidance_sha256": "f1d7a2cf7b0a7c1affd8bbb04705f073332ee6efc5f8f89f019b9e0cbacec4bb",
+        "tasks": [
+          {
+            "task_id": "fastify-lifecycle-feature-v0",
+            "order": 1,
+            "rendered_prompt_sha256": "a19559eae75789b46cac91e6f5e28544b289726bf29eca94a2c0ae764b83df7d"
+          },
+          {
+            "task_id": "fastify-lifecycle-refactor-v0",
+            "order": 2,
+            "rendered_prompt_sha256": "a4cdc43f80fd89b851e765b409fa99199ab30f88b4b3b1028ee97ed540cd0706"
+          },
+          {
+            "task_id": "fastify-lifecycle-review-v0",
+            "order": 3,
+            "rendered_prompt_sha256": "d7874fd6436994b7a7f09ce348087f39d6105a7cfcb4e2ca1ac3003d7ff8c091"
+          }
+        ]
+      },
+      "qualification": {
+        "path": "sources/evaluations/fixtures/medium/fastify-fastify/qualification-lifecycle-v0-baseline-v3.json",
+        "sha256": "82bcabb399b9e7af4234b8ba4a8c12352dc4584cb838ae01bd0854b83c9d0ba1"
+      },
+      "baseline_profile": {
+        "profile_id": "baseline-bare-codex",
+        "profile_type": "control",
+        "enabled_surfaces": [
+          "codex-native-shell-edit"
+        ],
+        "disabled_overlaps": [
+          "all MCP servers",
+          "all token-saving surfaces",
+          "global Codex instructions",
+          "hooks",
+          "skills/plugins",
+          "warm indexes"
+        ]
+      },
+      "agent": {
+        "runtime_id": "codex-cli",
+        "provider": "openai",
+        "model": "gpt-5.6-sol",
+        "model_condition_id": "codex-openai-gpt-5-6-sol-high",
+        "reasoning_effort": "high"
+      },
+      "runtime_inputs": {
+        "timeout_seconds_per_task": 3600,
+        "docker_image": "token-eval-codex:latest",
+        "docker_image_identity": {
+          "image_ref": "token-eval-codex:latest",
+          "image_id": "sha256:6f86d01f2c63f5029c6bb874d8f3694c24d5cd567e3d09413eccc956ba3feafe",
+          "repo_digests": [
+            "token-eval-codex@sha256:6f86d01f2c63f5029c6bb874d8f3694c24d5cd567e3d09413eccc956ba3feafe"
+          ],
+          "repo_tags": [
+            "token-eval-codex:latest"
+          ]
+        },
+        "dockerfile_path": "sources/evaluations/fixtures/container/Dockerfile",
+        "dockerfile_sha256": "47c91967ce25014ce54879514f51d2ff0326651be1087209115eff4d358226b3",
+        "dependency_command": "npm install --ignore-scripts --no-audit --no-fund",
+        "dependency_lockfiles": [
+          {
+            "path": "package.json",
+            "sha256": "b273320af1bb4cfc0f9334457c8e3b1d035fde0da14f9db65e8ef97d361d0be3"
+          }
+        ],
+        "codex_runtime_condition": "codex-openai-gpt-5-6-sol-high"
+      },
+      "isolation": {
+        "prompt_delivery": "sequential-one-task-at-a-time",
+        "seed_delivery_mode": "preseeded-composite",
+        "future_tasks_visible": false,
+        "future_seed_regressions_visible": true,
+        "controller_verifier_scripts_and_canonical_copies_model_visible": false,
+        "model_visible_acceptance_asset_paths": [
+          "test/baseline-v3-content-type-cache.test.js",
+          "test/baseline-v3-max-param.test.js",
+          "test/baseline-v3-request-media-type.test.js"
+        ],
+        "git_baseline_true_root_at_lane_start": true,
+        "controller_verification": "final-only",
+        "prompt_sanitizer": "sanitize_task_prompt-v1",
+        "concealment": "declared-model-concealed-paths-removed-before-root-commit",
+        "model_concealed_paths": []
+      },
+      "model_condition_override": {
+        "model_condition_id": "codex-openai-gpt-5-6-sol-high",
+        "model": "gpt-5.6-sol",
+        "reasoning_effort": "high",
+        "registry_status": "active-model-comparison",
+        "launcher": {
+          "path": "scripts/run_codex_workflow_model_condition.py",
+          "sha256": "b219d8f88e5df0fd567dff4d47e9193a602b223b2b72cf0ed3ea5c67cad5aecf"
+        }
+      }
+    }
+  },
+  "selected_execution": {
+    "descriptor_sha256": "c6f4f069123e77becc026f23d25dc0a9d4c7acd6bd9407c8f335c13e0db78460",
+    "descriptor": {
+      "version": "execution-condition-v1",
+      "sequence_id": "fastify-lifecycle-sequence-v0",
+      "execution_role": "individual_tool_treatment",
+      "selected_profile": {
+        "profile_id": "retrieval-jcodemunch-opencode-product-v1",
+        "profile_type": "individual_tool",
+        "component_ids": [
+          "retrieval-jcodemunch-opencode-product-v1"
+        ],
+        "enabled_surfaces": [
+          "retrieval-context",
+          "opencode-mcp",
+          "product-authored-guidance",
+          "warm-index"
+        ],
+        "disabled_overlaps": [
+          "all unlisted surfaces"
+        ],
+        "registry_entry_sha256": "628385c602ac995b9696b17613c6cb0e34df97a347de64d2cd3d33b46ccf6d69",
+        "registry_entry": {
+          "profile_type": "individual_tool",
+          "objective_scope": "individual_tool_effectiveness",
+          "status": "screening-ablation",
+          "substrate": "opencode-cli",
+          "disabled_overlaps": [
+            "all unlisted surfaces"
+          ],
+          "native_agent_tools_allowed": [
+            "opencode-native-shell-edit",
+            "opencode-native-file-read-search",
+            "git",
+            "verifier-commands"
+          ],
+          "forbidden_surfaces": [
+            "all external retrieval, compression, memory, MCP, skills, plugins, subagents, and web tools except the assigned product surfaces"
+          ],
+          "reset": {
+            "policy": "Delete lane-private OpenCode XDG directories, product state, generated repository treatment files, auth translation, and background processes after evidence capture."
+          },
+          "id": "retrieval-jcodemunch-opencode-product-v1",
+          "name": "jCodemunch OpenCode MCP product V1",
+          "enabled_surfaces": [
+            "retrieval-context",
+            "opencode-mcp",
+            "product-authored-guidance",
+            "warm-index"
+          ],
+          "components": [
+            {
+              "component_id": "retrieval-jcodemunch-opencode-product-v1",
+              "surface": "retrieval-context+opencode-mcp+product-authored-guidance+warm-index",
+              "role": "individual_tool"
+            }
+          ],
+          "install": {
+            "policy": "Install the pinned jCodemunch wheel into a lane-private uv environment, install verbatim product-authored guidance, build a lane-private index, register only its local MCP server in OpenCode, and require initialize plus tools/list."
+          },
+          "evaluation_protocol": {
+            "tool_use_policy": "natural",
+            "tool_state": "warm-index+product-guidance",
+            "integration_state": "host-agnostic-mcp+product-guidance",
+            "assignment_proof": "provider-free exact artifact identities, effective OpenCode configuration, native activation, warm state, and task/final verifiers required"
+          },
+          "source_snapshot": {
+            "repository": "jgravelle/jcodemunch-mcp",
+            "version": "1.108.114",
+            "source_commit": "fbc14e40c7057ebc6d718fb48083d30522afe15f",
+            "wheel_sha256": "9ae3a44c2be5709d33fa2b56c9e569906ed63906a907f89b4762a370d397ed54",
+            "guidance_sha256": "2026d09f4af85e972a5c4a9874d91bd8a8675ab7fbb44a283911fd06afd0abb2",
+            "runtime_adapter": "/opt/data/tool-candidates/opencode-adapter-v6/opencode_workflow_adapter.py",
+            "runtime_adapter_sha256": "1b98aaec34711b3a7bb09ce269c12bb06421ab08913d06593fb6d2c6641a34a3"
+          },
+          "notes": "Second successive screen: jCodemunch has a universal host-install guide and an MCP server, so this is a host-agnostic OpenCode treatment rather than a prompt-only simulation."
+        }
+      },
+      "model_facing_prompts": {
+        "rendering_contract": "sequential-model-facing-prompts-v2",
+        "profile_guidance_sha256": "cb08dba8b361975eb89669cc77d206861b05fc26b161a9215337dbb2d30a6366",
+        "tasks": [
+          {
+            "task_id": "fastify-lifecycle-feature-v0",
+            "order": 1,
+            "rendered_prompt_sha256": "5ccdd6daf5427c3f1927b08795d1bd290a8c96bdff4fa3beca5b053f149b1725"
+          },
+          {
+            "task_id": "fastify-lifecycle-refactor-v0",
+            "order": 2,
+            "rendered_prompt_sha256": "a4cdc43f80fd89b851e765b409fa99199ab30f88b4b3b1028ee97ed540cd0706"
+          },
+          {
+            "task_id": "fastify-lifecycle-review-v0",
+            "order": 3,
+            "rendered_prompt_sha256": "d7874fd6436994b7a7f09ce348087f39d6105a7cfcb4e2ca1ac3003d7ff8c091"
+          }
+        ]
+      },
+      "tool_adapter": {
+        "tool_id": "jcodemunch-opencode-product-v1",
+        "tool_manifest": "scripts/run_codex_fixture_evaluation.py:TOOL_CONFIGS",
+        "tool_manifest_sha256": "302581d5a9dd4cc28868aa9fa0376ad423bfcf47f141f7bd4ba7cbc0c9fb80c3",
+        "tool_config": {
+          "display_name": "jCodemunch guide-faithful OpenCode MCP v1",
+          "lane_name": "retrieval-jcodemunch-opencode-product-v1",
+          "surface": "opencode-mcp+product-authored-guidance+warm-index",
+          "allowed_terms": [
+            "opencode",
+            "jcodemunch",
+            "jcodemunch-mcp"
+          ],
+          "data_dir_name": "retrieval-jcodemunch-opencode-product-v1",
+          "mounts": [
+            "/opt/data/tool-candidates/opencode-adapter-v6/opencode_workflow_adapter.py",
+            "/opt/data/tool-candidates/jcodemunch-mcp",
+            "/opt/data/tool-candidates/jcodemunch-mcp/dist/jcodemunch_mcp-1.108.114-py3-none-any.whl",
+            "{repository_root}/scripts/install_jcodemunch_opencode_guidance.py"
+          ],
+          "executable": "/opt/data/tool-candidates/opencode-runtime/node_modules/opencode-ai/bin/opencode.exe",
+          "expected_executable_sha256": "7c4d91c84d2bfdeabb59257e3490c5e5acb08f2aacb3e42f3ddc296a1c3f1aca",
+          "binary_mount_target": "/opt/data/tool-candidates/opencode-runtime/node_modules/opencode-ai/bin/opencode.exe",
+          "codex_wrapper": {
+            "command": "/usr/bin/python3",
+            "args": [
+              "/opt/data/tool-candidates/opencode-adapter-v6/opencode_workflow_adapter.py",
+              "--opencode-binary",
+              "/opt/data/tool-candidates/opencode-runtime/node_modules/opencode-ai/bin/opencode.exe",
+              "--expected-opencode-sha256",
+              "7c4d91c84d2bfdeabb59257e3490c5e5acb08f2aacb3e42f3ddc296a1c3f1aca",
+              "--treatment",
+              "jcodemunch"
+            ]
+          },
+          "preflight_command": [
+            "/usr/bin/python3",
+            "/opt/data/tool-candidates/opencode-adapter-v6/opencode_workflow_adapter.py",
+            "--opencode-binary",
+            "/opt/data/tool-candidates/opencode-runtime/node_modules/opencode-ai/bin/opencode.exe",
+            "--expected-opencode-sha256",
+            "7c4d91c84d2bfdeabb59257e3490c5e5acb08f2aacb3e42f3ddc296a1c3f1aca",
+            "--treatment",
+            "jcodemunch",
+            "--probe"
+          ],
+          "tool_manifest_identity": "current-file-v1",
+          "env": {
+            "OPENCODE_TOOL_DATA_DIR": "{tool_data_dir}",
+            "JCODEMUNCH_LOG_LEVEL": "ERROR"
+          },
+          "path_entries": [
+            "{tool_data_dir}/venv/bin"
+          ],
+          "host_integration": {
+            "install_commands": [
+              [
+                "/opt/data/opt/uv/uv",
+                "venv",
+                "{tool_data_dir}/venv",
+                "--python",
+                "python3"
+              ],
+              [
+                "/opt/data/opt/uv/uv",
+                "pip",
+                "install",
+                "--python",
+                "{tool_data_dir}/venv/bin/python",
+                "/opt/data/tool-candidates/jcodemunch-mcp/dist/jcodemunch_mcp-1.108.114-py3-none-any.whl"
+              ],
+              [
+                "python3",
+                "{repository_root}/scripts/install_jcodemunch_opencode_guidance.py",
+                "--source-root",
+                "/opt/data/tool-candidates/jcodemunch-mcp",
+                "--expected-commit",
+                "fbc14e40c7057ebc6d718fb48083d30522afe15f",
+                "--repo",
+                "{repo}",
+                "--receipt",
+                "{tool_data_dir}/guidance-install.json"
+              ]
+            ],
+            "verify_commands": [
+              [
+                "{tool_data_dir}/venv/bin/jcodemunch-mcp",
+                "--version"
+              ]
+            ],
+            "required_files": [
+              "{tool_data_dir}/venv/bin/jcodemunch-mcp",
+              "{tool_data_dir}/guidance-install.json",
+              "{repo}/AGENTS.md"
+            ],
+            "timeout_seconds": 900
+          },
+          "mcp_server": "jcodemunch",
+          "mcp_command": "{tool_data_dir}/venv/bin/jcodemunch-mcp",
+          "mcp_args": [],
+          "mcp_handshake": {
+            "required": true,
+            "method": "initialize-and-tools-list",
+            "timeout_seconds": 120
+          },
+          "warmup": {
+            "kind": "product-native-code-index-build",
+            "command": [
+              "{tool_data_dir}/venv/bin/jcodemunch-mcp",
+              "index",
+              "{repo}"
+            ],
+            "output_name": "jcodemunch-warmup-output.txt",
+            "metadata_name": "jcodemunch-warmup-metadata.json",
+            "timeout_seconds": 1200
+          },
+          "artifact_identities": [
+            {
+              "path": "/opt/data/tool-candidates/jcodemunch-mcp/dist/jcodemunch_mcp-1.108.114-py3-none-any.whl",
+              "sha256": "9ae3a44c2be5709d33fa2b56c9e569906ed63906a907f89b4762a370d397ed54",
+              "kind": "python-wheel"
+            },
+            {
+              "path": "/opt/data/tool-candidates/jcodemunch-mcp/AGENT_INSTALL_UNIVERSAL.md",
+              "sha256": "2026d09f4af85e972a5c4a9874d91bd8a8675ab7fbb44a283911fd06afd0abb2",
+              "kind": "product-guidance"
+            },
+            {
+              "path": "/opt/data/tool-candidates/opencode-adapter-v6/opencode_workflow_adapter.py",
+              "sha256": "1b98aaec34711b3a7bb09ce269c12bb06421ab08913d06593fb6d2c6641a34a3",
+              "kind": "runtime-adapter"
+            }
+          ],
+          "effective_host_config": {
+            "required": true,
+            "source": "adapter-probe"
+          },
+          "diff_exclude_paths": [
+            "AGENTS.md"
+          ],
+          "default_tool_state": "warm-index+product-guidance"
+        },
+        "tool_config_sha256": "fa606d1fd85e5baaf5532777588732088dea917a3ec05560ea891c540387fb9d",
+        "tool_state": "warm-index+product-guidance",
+        "tool_use_policy": "natural",
+        "command_identity": {
+          "kind": "mcp_command",
+          "command": [
+            "{tool_data_dir}/venv/bin/jcodemunch-mcp"
+          ]
+        },
+        "binary_identity": {
+          "kind": "generated-by-host-integration",
+          "command_template": "{tool_data_dir}/venv/bin/jcodemunch-mcp",
+          "install_commands": [
+            [
+              "/opt/data/opt/uv/uv",
+              "venv",
+              "{tool_data_dir}/venv",
+              "--python",
+              "python3"
+            ],
+            [
+              "/opt/data/opt/uv/uv",
+              "pip",
+              "install",
+              "--python",
+              "{tool_data_dir}/venv/bin/python",
+              "/opt/data/tool-candidates/jcodemunch-mcp/dist/jcodemunch_mcp-1.108.114-py3-none-any.whl"
+            ],
+            [
+              "python3",
+              "{repository_root}/scripts/install_jcodemunch_opencode_guidance.py",
+              "--source-root",
+              "/opt/data/tool-candidates/jcodemunch-mcp",
+              "--expected-commit",
+              "fbc14e40c7057ebc6d718fb48083d30522afe15f",
+              "--repo",
+              "{repo}",
+              "--receipt",
+              "{tool_data_dir}/guidance-install.json"
+            ]
+          ],
+          "install_contract_sha256": "b9b1d2d88f039b908b38ddea75e641b931a36f024014f3927e8c48ebd74b43c4"
+        },
+        "source_identity": [
+          {
+            "path": "/opt/data/tool-candidates/jcodemunch-mcp",
+            "exists": true,
+            "kind": "directory",
+            "git_head": "fbc14e40c7057ebc6d718fb48083d30522afe15f"
+          },
+          {
+            "path": "/opt/data/tool-candidates/jcodemunch-mcp/dist/jcodemunch_mcp-1.108.114-py3-none-any.whl",
+            "exists": true,
+            "kind": "file",
+            "sha256": "9ae3a44c2be5709d33fa2b56c9e569906ed63906a907f89b4762a370d397ed54"
+          },
+          {
+            "path": "/opt/data/tool-candidates/opencode-adapter-v6/opencode_workflow_adapter.py",
+            "exists": true,
+            "kind": "file",
+            "sha256": "1b98aaec34711b3a7bb09ce269c12bb06421ab08913d06593fb6d2c6641a34a3"
+          },
+          {
+            "path": "{repository_root}/scripts/install_jcodemunch_opencode_guidance.py",
+            "exists": true,
+            "kind": "file",
+            "sha256": "f5f7ef11f3e1194210232bbcd1be4aa96a8d2eee6ac8b605867653800ec1c1c4"
+          }
+        ]
+      },
+      "runtime": {
+        "docker_image": "token-eval-codex:latest",
+        "docker_image_identity": {
+          "image_ref": "token-eval-codex:latest",
+          "image_id": "sha256:6f86d01f2c63f5029c6bb874d8f3694c24d5cd567e3d09413eccc956ba3feafe",
+          "repo_digests": [
+            "token-eval-codex@sha256:6f86d01f2c63f5029c6bb874d8f3694c24d5cd567e3d09413eccc956ba3feafe"
+          ],
+          "repo_tags": [
+            "token-eval-codex:latest"
+          ]
+        },
+        "dockerfile_path": "sources/evaluations/fixtures/container/Dockerfile",
+        "dockerfile_sha256": "47c91967ce25014ce54879514f51d2ff0326651be1087209115eff4d358226b3",
+        "fixture_runner_path": "scripts/run_codex_fixture_evaluation.py",
+        "fixture_runner_sha256": "302581d5a9dd4cc28868aa9fa0376ad423bfcf47f141f7bd4ba7cbc0c9fb80c3",
+        "mcp_probe_path": "scripts/probe_mcp_stdio.py",
+        "mcp_probe_sha256": "7c06ea36ee5cac933a97140b84a41405fc99b45152388e8d7c6659136af698fd",
+        "codex_entrypoint_path": "sources/evaluations/fixtures/container/codex-entrypoint.sh",
+        "codex_entrypoint_sha256": "8715fe37cb1fa3823f5f05493bc9681ce7ffc72126dfec4d64d448762c550c3c",
+        "timeout_seconds_per_task": 3600,
+        "network_isolation": {
+          "provider_access": true,
+          "model_shell_network_access": false,
+          "model_shell_enforcement": "seccomp denies AF_INET and AF_INET6 socket creation for the shell process and descendants",
+          "agent_web_tools": "disabled-by-permission",
+          "external_retrieval_audit": "fail-closed"
+        },
+        "isolation_policy": "fresh lane-specific agent home/XDG state; provider-only network with model shell and agent web tools disabled; sequential one-task prompt delivery; controller seed/verifier scripts excluded while declared model-visible acceptance tests are retained",
+        "agent_runtime_id": "opencode-cli",
+        "model_condition": {
+          "id": "opencode-openai-gpt-5-6-sol-high",
+          "provider": "openai",
+          "model": "gpt-5.6-sol",
+          "reasoning_effort": "high",
+          "launcher": "scripts/run_opencode_workflow_model_condition.py"
+        }
+      },
+      "dependencies": {
+        "command": "npm install --ignore-scripts --no-audit --no-fund",
+        "command_sha256": "7493d616f26e72b22eb5a21beafa12a6717ebf5b93a7a75e709de65e7323cc41",
+        "lockfiles": [
+          {
+            "path": "package.json",
+            "snapshot_sha256": "b273320af1bb4cfc0f9334457c8e3b1d035fde0da14f9db65e8ef97d361d0be3",
+            "current_fixture_sha256": null
+          }
+        ]
+      },
+      "agent_condition": {
+        "runtime_id": "opencode-cli",
+        "provider": "openai",
+        "model": "gpt-5.6-sol",
+        "model_condition_id": "opencode-openai-gpt-5-6-sol-high",
+        "reasoning_effort": "high",
+        "runtime_version_condition": "captured-at-run-and-bound-to-record"
+      },
+      "isolation": {
+        "prompt_delivery": "sequential-one-task-at-a-time",
+        "seed_delivery_mode": "preseeded-composite",
+        "future_tasks_visible": false,
+        "future_seed_regressions_visible": true,
+        "controller_verification": "final-only",
+        "controller_verifier_scripts_and_canonical_copies_model_visible": false,
+        "model_visible_acceptance_asset_paths": [
+          "test/baseline-v3-content-type-cache.test.js",
+          "test/baseline-v3-max-param.test.js",
+          "test/baseline-v3-request-media-type.test.js"
+        ],
+        "model_concealed_paths": []
+      },
+      "baseline_pool_reference": {
+        "protocol_version": "baseline-pool-v1",
+        "protocol_fingerprint": "bb0e89ed9794",
+        "comparison_policy": "paired baseline and treatment must share this baseline pool fingerprint and replicate"
+      },
+      "model_condition_override": {
+        "model_condition_id": "opencode-openai-gpt-5-6-sol-high",
+        "runtime_id": "opencode-cli",
+        "provider": "openai",
+        "model": "gpt-5.6-sol",
+        "reasoning_effort": "high",
+        "registry_status": "active-model-comparison",
+        "launcher": {
+          "path": "scripts/run_opencode_workflow_model_condition.py",
+          "sha256": "c38d87266347dfd46c8f671ad0e22fef52841a34643b93fc769d4ebfb71ac9ce",
+          "condition_runtime_path": "scripts/workflow_model_condition_runtime.py",
+          "condition_runtime_sha256": "8bfc9e9d1bcc7c49f28564bd638d2da3cdc1044ee3debf4218a19b820e05cfc6"
+        }
+      }
+    }
+  }
+}

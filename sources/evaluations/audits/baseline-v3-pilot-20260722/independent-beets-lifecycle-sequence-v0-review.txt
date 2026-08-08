@@ -1,0 +1,66 @@
+## Beets Baseline V3 independent audit
+
+**Verdict:** The model completed all three mechanical tasks correctly with zero model-caused incidents. The paid pilot nevertheless **does not pass the Baseline V3 zero-mistake gate** because the final controller verifier had one unique environment/wrapper failure: `WORKFLOW_REPO` was not exported. This caused all three verifier scripts to exit before running acceptance.
+
+```json
+{
+  "sequence_id": "beets-lifecycle-sequence-v0",
+  "baseline_session_id": "baseline-beets-20260722-p-82943cffbb9a-r0",
+  "trajectory_review_complete": true,
+  "independent_source_review_passed": true,
+  "passed": false,
+  "reviewer_role": "independent",
+  "observed_unique_model_caused_incidents": 0,
+  "observed_corrected_implementation_mistakes": 0,
+  "observed_unresolved_defects": 0,
+  "observed_prohibited_operations": 0,
+  "observed_unnecessary_exploration_incidents": 0,
+  "observed_model_caused_failed_commands": 0,
+  "observed_code_rework_events": 0,
+  "observed_verifier_or_environment_failures": 1
+}
+```
+
+### Task trajectories
+
+- **Task 1 — feature**
+  - The executed shell payload exactly matched the frozen prompt block.
+  - One prescribed edit only: `beets/util/functemplate.py`.
+  - Model command exited `0`: `2 passed, 45 deselected`; Ruff passed.
+  - Final line exactly reverses the seed and matches pinned fixed snapshot `9acb1ec…`.
+  - Controller verifier exited before acceptance because `WORKFLOW_REPO` was unset.
+
+- **Task 2 — refactor**
+  - Exact prompt command, no inspection or extra execution.
+  - One new prescribed edit only: `beets/dbcore/db.py`; prior task edit preserved.
+  - Behavior/type assertion and Ruff exited `0`.
+  - Final `return iter(self._all_keys)` matches the pinned fixed snapshot.
+  - Controller verifier failed at the same missing-`WORKFLOW_REPO` precondition.
+
+- **Task 3 — review correction**
+  - Exact prompt command, no exploration.
+  - One new prescribed edit only: `beetsplug/ftintitle.py`; prior edits preserved.
+  - Model command exited `0`: `16 passed, 109 deselected`; Ruff passed.
+  - Final `feat_tokens(for_artist=False, …)` exactly reverses the disclosed flawed patch and matches the pinned fixed snapshot.
+  - Controller verifier failed at the same missing environment variable.
+
+The three verifier exits are counted as **one unique incident**, consistent with the qualification’s `unique-auditable-not-command-count` rule. The generated wrapper invoked every task verifier, but `run_final_verifier()` supplied `fixture.codex_env(...)` without adding `WORKFLOW_REPO`; every verifier requires that variable before doing any work.
+
+### Integrity reconciliation
+
+- Compact manifest verified: `changes.diff`, `evidence.jsonl.gz`, and `run.json` all passed SHA-256 checks.
+- Evidence bundle is valid gzip JSONL with **50 unique, safe relative paths**.
+- Protocol hash `45336422…`, qualification hash `2fe2688b…`, and recomputed selected-execution hash `11e17d05…` all match.
+- Rendered prompt hashes match the frozen protocol for all three tasks.
+- Runtime identity matches: OpenAI `gpt-5.6-sol`, reasoning `high`, Codex CLI `0.144.0`, frozen Docker image `sha256:6f86d01f…`.
+- One continuous thread was preserved: `019f8bcc-693a-7d81-8f85-182295fcc7bb`.
+- Provider accounting reconciles under final-cumulative-per-thread semantics:
+  - Fresh input: `18,560`
+  - Cached input: `54,016`
+  - Output: `1,008`
+  - Total: `73,584`
+- Aggregate events are the exact concatenation of the three task streams; cumulative usage is monotonic and counted once.
+- Tool isolation and verifier-asset integrity passed; no forbidden-tool or external-retrieval hits.
+- `run.json`’s `accepted: true` remains coherent as **token-accounting eligibility**, but it does not make the stricter zero-mistake pilot gate pass.
+
+**Files created or modified:** none. Read-only audit only.

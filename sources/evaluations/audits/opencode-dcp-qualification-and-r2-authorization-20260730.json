@@ -1,0 +1,90 @@
+{
+  "schema_version": 1,
+  "audit_id": "opencode-dcp-qualification-and-r2-authorization-20260730",
+  "date": "2026-07-30",
+  "status": "qualified-ready-for-provider-execution",
+  "owner_authorization": {
+    "source": "discord",
+    "message_id": "1532521147327971438",
+    "request": "Evaluate DCP. Investigate why Serena and jcodemunch used so much more token at OpenCode. Run OpenCode bare baseline one more time",
+    "authorized_new_bare_replicate_index": 2
+  },
+  "candidate": {
+    "profile_id": "context-dcp-opencode-plugin-v1",
+    "repository": "https://github.com/Opencode-DCP/opencode-dynamic-context-pruning",
+    "version": "3.1.14",
+    "tag": "v3.1.14",
+    "source_commit": "85b6f5ceba144fee9e65eb28dc36cab1b960e418",
+    "package_sha256": "9b7f126d0f5bbe06f1b17b583e0cbc7b2e66d556a58d646574319dc65d3d410e",
+    "package_lock_sha256": "cae2ac00ee6abc966e7132732fb975fe0c1d5e5494c2ac48c7cf566718aa5a98",
+    "installed_plugin_sha256": "1e70b38527d6c604d9437bb447a67c857cd6f0cfe02f4fa69b69729e2ef57432",
+    "runtime_adapter_sha256": "d5fcd88e033767659da3acf17486273059cd566c29475c274349d2214428545c"
+  },
+  "native_surface_qualification": {
+    "installer": "opencode plugin @tarquinen/opencode-dcp@3.1.14 --global",
+    "runtime": "OpenCode 1.18.9",
+    "live_debug_config_plugin_loaded": true,
+    "server_and_tui_registration_present": true,
+    "installed_entrypoint_matches_source_build": true,
+    "default_configuration_preserved": true,
+    "evaluator_authored_compression_steering_forbidden": true,
+    "manual_slash_command_activation_forbidden": true,
+    "natural_zero_uptake_is_valid": true
+  },
+  "provider_free_gates": {
+    "runtime_unit_tests": {
+      "command": "python3 -m unittest scripts.test_opencode_workflow_runtime -q",
+      "passed": true,
+      "tests": 28
+    },
+    "repository_validation": {
+      "command": "python3 scripts/validate_repository.py",
+      "passed": true
+    },
+    "sequential_prepare_only": {
+      "max_parallel": 1,
+      "replicate_index": 2,
+      "provider_calls": 0,
+      "lanes": [
+        {
+          "sequence_id": "fastify-lifecycle-sequence-v0",
+          "passed": true
+        },
+        {
+          "sequence_id": "beets-lifecycle-sequence-v0",
+          "passed": true
+        },
+        {
+          "sequence_id": "terraform-lifecycle-sequence-v0",
+          "passed": true
+        }
+      ],
+      "exact_artifact_identity_passed": true,
+      "native_plugin_activation_passed": true,
+      "fixture_preparation_passed": true
+    }
+  },
+  "provider_free_incidents": [
+    {
+      "type": "controller-worktree-test-cleanup",
+      "provider_calls": 0,
+      "description": "An initial combined preparation run removed the uncommitted OpenCode unit-test file before the third lane checkout was copied. The file was restored from a verified backup and each sequence was rerun separately; all three final preparation runs passed. This is controller behavior, not a DCP or provider incident."
+    },
+    {
+      "type": "obsolete-protocol-validation",
+      "provider_calls": 0,
+      "description": "Repository validation identified an obsolete duplicate unrun Fastify jCodemunch protocol. The duplicate was removed after confirming the accepted jCodemunch session binds the other frozen protocol."
+    }
+  ],
+  "execution_contract": {
+    "model_condition_id": "opencode-openai-gpt-5-6-sol-high",
+    "runtime": "opencode-cli",
+    "model": "gpt-5.6-sol",
+    "reasoning_effort": "high",
+    "replicate_index": 2,
+    "sequential_max_parallel": 1,
+    "baseline_profile_id": "runtime-opencode-codex-product-v1",
+    "treatment_profile_id": "context-dcp-opencode-plugin-v1",
+    "acceptance": "Retain only sessions that pass exact-tree, paid-only, provider accounting, native activation, task/final verifier, manifest, and comparison gates. Reject or delete incomplete and failed sessions."
+  }
+}

@@ -1,0 +1,220 @@
+{
+  "schema_version": 1,
+  "audit_id": "codex-openai-gpt-5-6-sol-high-r0-panel-results-20260805",
+  "date": "2026-08-05",
+  "source_registry": {
+    "path": "data/workflow-sessions.json",
+    "sha256": "03b9feeeba02349c1ffc14fb6736cbe3eaf35de25dd57a8f3c5a7c4fe68c68a4"
+  },
+  "condition": {
+    "runtime_id": "codex-cli",
+    "model_condition_id": "codex-openai-gpt-5-6-sol-high",
+    "provider": "openai",
+    "model": "gpt-5.6-sol",
+    "reasoning_effort": "high",
+    "replicate_index": 0,
+    "workflows": [
+      "fastify-lifecycle-sequence-v1",
+      "beets-lifecycle-sequence-v1"
+    ],
+    "primary_metric": "raw_provider_tokens",
+    "secondary_metric": "weighted_tokens = fresh input (input_tokens + cache_creation_input_tokens) + 0.1 * cached input + 6 * output"
+  },
+  "profile_count": 8,
+  "workflow_session_count": 16,
+  "accepted_task_count": 48,
+  "baseline": {
+    "profile_id": "baseline-bare-codex",
+    "session_ids": [
+      "baseline-fastify-20260802-p-72ac148f730b-r0",
+      "baseline-beets-20260802-p-d8cfc5066f76-r0"
+    ],
+    "usage": {
+      "fresh_input_tokens": 172419,
+      "cached_input_tokens": 2274048,
+      "output_tokens": 19369,
+      "reasoning_tokens": 6965,
+      "raw_provider_tokens": 2465836,
+      "weighted_tokens": 516037.8
+    }
+  },
+  "results_ranked_by_primary_metric": [
+    {
+      "profile_id": "retrieval-serena-codex-mcp-v1",
+      "artifact_slug": "serena",
+      "session_ids": [
+        "serena-fastify-20260803-p-72ac148f730b-r0",
+        "serena-beets-20260803-p-d8cfc5066f76-r0"
+      ],
+      "workflow_count": 2,
+      "accepted_task_count": 6,
+      "usage": {
+        "fresh_input_tokens": 191005,
+        "cached_input_tokens": 2087424,
+        "output_tokens": 20096,
+        "reasoning_tokens": 7292,
+        "raw_provider_tokens": 2298525,
+        "weighted_tokens": 520323.4
+      },
+      "raw_delta_vs_baseline_percent": -6.79,
+      "weighted_delta_vs_baseline_percent": 0.83,
+      "raw_rank": 1
+    },
+    {
+      "profile_id": "terminal-tokenjuice-codex-hook-v1",
+      "artifact_slug": "tokenjuice",
+      "session_ids": [
+        "tokenjuice-fastify-20260803-p-72ac148f730b-r0",
+        "tokenjuice-beets-20260803-p-d8cfc5066f76-r0"
+      ],
+      "workflow_count": 2,
+      "accepted_task_count": 6,
+      "usage": {
+        "fresh_input_tokens": 170711,
+        "cached_input_tokens": 2706432,
+        "output_tokens": 19647,
+        "reasoning_tokens": 6631,
+        "raw_provider_tokens": 2896790,
+        "weighted_tokens": 559236.2
+      },
+      "raw_delta_vs_baseline_percent": 17.48,
+      "weighted_delta_vs_baseline_percent": 8.37,
+      "raw_rank": 2
+    },
+    {
+      "profile_id": "retrieval-sigmap-codex-live-v1",
+      "artifact_slug": "sigmap",
+      "session_ids": [
+        "sigmap-fastify-20260805-p-72ac148f730b-r0",
+        "sigmap-beets-20260805-p-d8cfc5066f76-r0"
+      ],
+      "workflow_count": 2,
+      "accepted_task_count": 6,
+      "usage": {
+        "fresh_input_tokens": 223744,
+        "cached_input_tokens": 3050752,
+        "output_tokens": 21730,
+        "reasoning_tokens": 9519,
+        "raw_provider_tokens": 3296226,
+        "weighted_tokens": 659199.2
+      },
+      "raw_delta_vs_baseline_percent": 33.68,
+      "weighted_delta_vs_baseline_percent": 27.74,
+      "raw_rank": 3
+    },
+    {
+      "profile_id": "artifact-ponytail-codex-plugin-v1",
+      "artifact_slug": "ponytail",
+      "session_ids": [
+        "ponytail-fastify-20260803-p-72ac148f730b-r0",
+        "ponytail-beets-20260803-p-d8cfc5066f76-r0"
+      ],
+      "workflow_count": 2,
+      "accepted_task_count": 6,
+      "usage": {
+        "fresh_input_tokens": 217718,
+        "cached_input_tokens": 3219712,
+        "output_tokens": 22275,
+        "reasoning_tokens": 8227,
+        "raw_provider_tokens": 3459705,
+        "weighted_tokens": 673339.2
+      },
+      "raw_delta_vs_baseline_percent": 40.31,
+      "weighted_delta_vs_baseline_percent": 30.48,
+      "raw_rank": 4
+    },
+    {
+      "profile_id": "behavior-caveman-codex-skill-v1",
+      "artifact_slug": "caveman",
+      "session_ids": [
+        "caveman-fastify-20260803-p-72ac148f730b-r0",
+        "caveman-beets-20260803-p-d8cfc5066f76-r0"
+      ],
+      "workflow_count": 2,
+      "accepted_task_count": 6,
+      "usage": {
+        "fresh_input_tokens": 201245,
+        "cached_input_tokens": 3436800,
+        "output_tokens": 22911,
+        "reasoning_tokens": 8237,
+        "raw_provider_tokens": 3660956,
+        "weighted_tokens": 682391.0
+      },
+      "raw_delta_vs_baseline_percent": 48.47,
+      "weighted_delta_vs_baseline_percent": 32.24,
+      "raw_rank": 5
+    },
+    {
+      "profile_id": "retrieval-jcodemunch-codex-mcp-v2",
+      "artifact_slug": "jcodemunch",
+      "session_ids": [
+        "jcodemunch-fastify-20260805-p-72ac148f730b-r0",
+        "jcodemunch-beets-20260805-p-d8cfc5066f76-r0"
+      ],
+      "workflow_count": 2,
+      "accepted_task_count": 6,
+      "usage": {
+        "fresh_input_tokens": 184651,
+        "cached_input_tokens": 3528448,
+        "output_tokens": 20896,
+        "reasoning_tokens": 10521,
+        "raw_provider_tokens": 3733995,
+        "weighted_tokens": 662871.8
+      },
+      "raw_delta_vs_baseline_percent": 51.43,
+      "weighted_delta_vs_baseline_percent": 28.45,
+      "raw_rank": 6
+    },
+    {
+      "profile_id": "terminal-rtk-codex-instructions-v1",
+      "artifact_slug": "rtk",
+      "session_ids": [
+        "rtk-fastify-20260803-p-72ac148f730b-r0",
+        "rtk-beets-20260803-p-d8cfc5066f76-r0"
+      ],
+      "workflow_count": 2,
+      "accepted_task_count": 6,
+      "usage": {
+        "fresh_input_tokens": 206967,
+        "cached_input_tokens": 3606016,
+        "output_tokens": 27800,
+        "reasoning_tokens": 11899,
+        "raw_provider_tokens": 3840783,
+        "weighted_tokens": 734368.6
+      },
+      "raw_delta_vs_baseline_percent": 55.76,
+      "weighted_delta_vs_baseline_percent": 42.31,
+      "raw_rank": 7
+    },
+    {
+      "profile_id": "retrieval-codegraph-codex-mcp-v1",
+      "artifact_slug": "codegraph",
+      "session_ids": [
+        "codegraph-fastify-20260805-p-72ac148f730b-r0",
+        "codegraph-beets-20260805-p-d8cfc5066f76-r0"
+      ],
+      "workflow_count": 2,
+      "accepted_task_count": 6,
+      "usage": {
+        "fresh_input_tokens": 221102,
+        "cached_input_tokens": 3949312,
+        "output_tokens": 25236,
+        "reasoning_tokens": 11696,
+        "raw_provider_tokens": 4195650,
+        "weighted_tokens": 767449.2
+      },
+      "raw_delta_vs_baseline_percent": 70.15,
+      "weighted_delta_vs_baseline_percent": 48.72,
+      "raw_rank": 8
+    }
+  ],
+  "descriptive_panel_aggregate": {
+    "treatment_raw_provider_tokens": 27382630,
+    "repeated_baseline_raw_provider_tokens": 19726688,
+    "raw_delta_percent": 38.81,
+    "treatment_weighted_tokens": 5259178.6,
+    "repeated_baseline_weighted_tokens": 4128302.4,
+    "weighted_delta_percent": 27.39,
+    "independence_note": "The same 2 baseline sessions are repeated for every profile; this aggregate is descriptive, not a panel of independent controls."
+  }
+}

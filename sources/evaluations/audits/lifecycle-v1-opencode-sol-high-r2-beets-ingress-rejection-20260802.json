@@ -1,0 +1,36 @@
+{
+  "schema_version": 1,
+  "audit_id": "lifecycle-v1-opencode-sol-high-r2-beets-ingress-rejection-20260802",
+  "date": "2026-08-02",
+  "scope": "bare OpenCode GPT-5.6 Sol/high Lifecycle V1 r2, Beets lane",
+  "status": "rejected-before-registry-publication",
+  "attempt_identity": {
+    "sequence_id": "beets-lifecycle-sequence-v1",
+    "replicate_index": 2,
+    "profile_id": "runtime-opencode-codex-product-v1",
+    "model_condition_id": "opencode-openai-gpt-5-6-sol-high",
+    "attempt_receipt_path": "sources/evaluations/audits/lifecycle-v1-opencode-sol-high-r2-attempts/beets-r2.json",
+    "attempt_receipt_sha256": "6f84fe72a9d6262b7acebd1f4dbf4b6544f073c563095a1690a17c58dbf7ef46"
+  },
+  "execution": {
+    "provider_task_started": true,
+    "provider_subprocess_exit_code": 0,
+    "adapter_exit_code": 86,
+    "failure_stage": "post-subprocess last-message artifact write",
+    "error": "FileNotFoundError writing model-output/task-01-codex-last-message.txt after the adapter received the OpenCode result",
+    "provider_usage_status": "unavailable: adapter terminated before normalized event/token accounting publication",
+    "provider_tokens": null,
+    "rerun_policy": "Do not retry this r2 Beets identity; its immutable attempt receipt is occupied."
+  },
+  "disposition": {
+    "excluded_from_registry_and_aggregate": true,
+    "fastify_r2_session_recovered": "opencode-fastify-20260802-p-72ac148f730b-r2",
+    "full_lifecycle_r2_aggregate_published": false
+  },
+  "retained_evidence": {
+    "lane_root": "/opt/data/eval-workflow-lanes/opencode-v1-r2-execution-20260802T152319Z/workflow-matrix-20260802T152322765286Z-p3996282-r2/beets-lifecycle-sequence-v1--runtime-opencode-codex-product-v1/checkout",
+    "run_json_sha256": "75ed731e5057f016c7973a31547392b1c18df48ecfa803d04e07e5c634e1df28",
+    "evidence_jsonl_gz_sha256": "3efc71f78c283bb08763b44156b9a84e739407be42e45dd470981561708549de",
+    "strict_ingress_rejection_sha256": "7ad67c6901bbd7ce1ea4f9ffec9222af60c08d5221ef7ebddbcbb12c750216b5"
+  }
+}

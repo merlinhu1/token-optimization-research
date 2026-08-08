@@ -1,0 +1,162 @@
+{
+  "audit_id": "unproven-treatment-result-deletions-20260718",
+  "action": "delete-unproven-treatment-results-from-active-corpus",
+  "policy": {
+    "baseline_relabeling": "forbidden",
+    "reason": "No retained MCP handshake or completed model MCP call proves treatment assignment; outcomes cannot be interpreted as tool effects.",
+    "historical_recovery_commit": "0e60543f3c9adbabcc0a8410c1ebdbaa3495156f",
+    "provider_rerun_required": true
+  },
+  "profiles": [
+    {
+      "profile_id": "retrieval-cartog",
+      "root_cause": "unproven-treatment-assignment",
+      "deleted_session_ids": [
+        "cartog-beets-20260717-p-b440da225a3a-r1",
+        "cartog-fastify-20260717-p-769d40697529-r1",
+        "cartog-terraform-20260717-p-ded8609b4172-r1"
+      ],
+      "deleted_protocol_paths": [
+        "sources/evaluations/protocols/beets-lifecycle-sequence-v0-retrieval-cartog-e6142abd022a.json",
+        "sources/evaluations/protocols/fastify-lifecycle-sequence-v0-retrieval-cartog-6fbae65733c8.json",
+        "sources/evaluations/protocols/terraform-lifecycle-sequence-v0-retrieval-cartog-bef2aab8c378.json"
+      ],
+      "deleted_comparison_paths": [
+        "sources/evaluations/workflow-sessions/baseline-beets-20260717-vs-cartog-p-b440da225a3a-r1.json",
+        "sources/evaluations/workflow-sessions/baseline-fastify-20260717-vs-cartog-p-769d40697529-r1.json",
+        "sources/evaluations/workflow-sessions/baseline-terraform-20260717-vs-cartog-p-ded8609b4172-r1.json"
+      ],
+      "deleted_bundle_roots": [
+        "sources/evaluations/workflow-sessions/cartog-beets-20260717-p-b440da225a3a-r1",
+        "sources/evaluations/workflow-sessions/cartog-fastify-20260717-p-769d40697529-r1",
+        "sources/evaluations/workflow-sessions/cartog-terraform-20260717-p-ded8609b4172-r1"
+      ],
+      "replacement_profile_id": "retrieval-cartog-mcp-v1"
+    },
+    {
+      "profile_id": "codescope-owner",
+      "root_cause": "unproven-treatment-assignment",
+      "deleted_session_ids": [
+        "owner-beets-20260717-p-b440da225a3a-r1",
+        "owner-fastify-20260717-p-769d40697529-r1",
+        "owner-terraform-20260717-p-ded8609b4172-r1"
+      ],
+      "deleted_protocol_paths": [
+        "sources/evaluations/protocols/beets-lifecycle-sequence-v0-codescope-owner-0be6b0bef05f.json",
+        "sources/evaluations/protocols/fastify-lifecycle-sequence-v0-codescope-owner-97dc8652ef71.json",
+        "sources/evaluations/protocols/terraform-lifecycle-sequence-v0-codescope-owner-e73b1d927bff.json"
+      ],
+      "deleted_comparison_paths": [
+        "sources/evaluations/workflow-sessions/baseline-beets-20260717-vs-owner-p-b440da225a3a-r1.json",
+        "sources/evaluations/workflow-sessions/baseline-fastify-20260717-vs-owner-p-769d40697529-r1.json",
+        "sources/evaluations/workflow-sessions/baseline-terraform-20260717-vs-owner-p-ded8609b4172-r1.json"
+      ],
+      "deleted_bundle_roots": [
+        "sources/evaluations/workflow-sessions/owner-beets-20260717-p-b440da225a3a-r1",
+        "sources/evaluations/workflow-sessions/owner-fastify-20260717-p-769d40697529-r1",
+        "sources/evaluations/workflow-sessions/owner-terraform-20260717-p-ded8609b4172-r1"
+      ],
+      "replacement_profile_id": "codescope-codex-product-v1"
+    },
+    {
+      "profile_id": "swarmvault-owner",
+      "root_cause": "unproven-treatment-assignment",
+      "deleted_session_ids": [
+        "swarmvault-beets-20260717-p-b440da225a3a-r1",
+        "swarmvault-fastify-20260717-p-769d40697529-r1",
+        "swarmvault-terraform-20260717-p-ded8609b4172-r1"
+      ],
+      "deleted_protocol_paths": [
+        "sources/evaluations/protocols/beets-lifecycle-sequence-v0-swarmvault-owner-6d026a05c83a.json",
+        "sources/evaluations/protocols/fastify-lifecycle-sequence-v0-swarmvault-owner-cd26b6a89681.json",
+        "sources/evaluations/protocols/terraform-lifecycle-sequence-v0-swarmvault-owner-cb6f28ae26c0.json"
+      ],
+      "deleted_comparison_paths": [
+        "sources/evaluations/workflow-sessions/baseline-beets-20260717-vs-swarmvault-p-b440da225a3a-r1.json",
+        "sources/evaluations/workflow-sessions/baseline-fastify-20260717-vs-swarmvault-p-769d40697529-r1.json",
+        "sources/evaluations/workflow-sessions/baseline-terraform-20260717-vs-swarmvault-p-ded8609b4172-r1.json"
+      ],
+      "deleted_bundle_roots": [
+        "sources/evaluations/workflow-sessions/swarmvault-beets-20260717-p-b440da225a3a-r1",
+        "sources/evaluations/workflow-sessions/swarmvault-fastify-20260717-p-769d40697529-r1",
+        "sources/evaluations/workflow-sessions/swarmvault-terraform-20260717-p-ded8609b4172-r1"
+      ],
+      "replacement_profile_id": "swarmvault-codex-product-v1"
+    },
+    {
+      "profile_id": "retrieval-serena",
+      "root_cause": "unproven-treatment-assignment",
+      "deleted_session_ids": [
+        "serena-beets-20260716-p-b440da225a3a-r1",
+        "serena-fastify-20260716-p-769d40697529-r1",
+        "serena-terraform-20260716-p-ded8609b4172-r1"
+      ],
+      "deleted_protocol_paths": [
+        "sources/evaluations/protocols/beets-lifecycle-sequence-v0-retrieval-serena-c381a6140ff0.json",
+        "sources/evaluations/protocols/fastify-lifecycle-sequence-v0-retrieval-serena-14cd31e1b562.json",
+        "sources/evaluations/protocols/terraform-lifecycle-sequence-v0-retrieval-serena-b94edc6cc9d7.json"
+      ],
+      "deleted_comparison_paths": [
+        "sources/evaluations/workflow-sessions/baseline-beets-20260716-vs-serena-p-b440da225a3a-r1.json",
+        "sources/evaluations/workflow-sessions/baseline-fastify-20260716-vs-serena-p-769d40697529-r1.json",
+        "sources/evaluations/workflow-sessions/baseline-terraform-20260716-vs-serena-p-ded8609b4172-r1.json"
+      ],
+      "deleted_bundle_roots": [
+        "sources/evaluations/workflow-sessions/serena-beets-20260716-p-b440da225a3a-r1",
+        "sources/evaluations/workflow-sessions/serena-fastify-20260716-p-769d40697529-r1",
+        "sources/evaluations/workflow-sessions/serena-terraform-20260716-p-ded8609b4172-r1"
+      ],
+      "replacement_profile_id": "retrieval-serena-codex-mcp-v1"
+    },
+    {
+      "profile_id": "retrieval-sigmap",
+      "root_cause": "unproven-treatment-assignment",
+      "deleted_session_ids": [
+        "sigmap-beets-20260717-p-b440da225a3a-r1",
+        "sigmap-fastify-20260717-p-769d40697529-r1",
+        "sigmap-terraform-20260717-p-ded8609b4172-r1"
+      ],
+      "deleted_protocol_paths": [
+        "sources/evaluations/protocols/beets-lifecycle-sequence-v0-retrieval-sigmap-8a91469205a2.json",
+        "sources/evaluations/protocols/fastify-lifecycle-sequence-v0-retrieval-sigmap-d5ca74c20083.json",
+        "sources/evaluations/protocols/terraform-lifecycle-sequence-v0-retrieval-sigmap-f07a87a40951.json"
+      ],
+      "deleted_comparison_paths": [
+        "sources/evaluations/workflow-sessions/baseline-beets-20260717-vs-sigmap-p-b440da225a3a-r1.json",
+        "sources/evaluations/workflow-sessions/baseline-fastify-20260717-vs-sigmap-p-769d40697529-r1.json",
+        "sources/evaluations/workflow-sessions/baseline-terraform-20260717-vs-sigmap-p-ded8609b4172-r1.json"
+      ],
+      "deleted_bundle_roots": [
+        "sources/evaluations/workflow-sessions/sigmap-beets-20260717-p-b440da225a3a-r1",
+        "sources/evaluations/workflow-sessions/sigmap-fastify-20260717-p-769d40697529-r1",
+        "sources/evaluations/workflow-sessions/sigmap-terraform-20260717-p-ded8609b4172-r1"
+      ],
+      "replacement_profile_id": "retrieval-sigmap-codex-live-v1"
+    },
+    {
+      "profile_id": "integrated-token-savior",
+      "root_cause": "unproven-treatment-assignment",
+      "deleted_session_ids": [
+        "savior-beets-20260716-p-b440da225a3a-r1",
+        "savior-fastify-20260716-p-769d40697529-r1",
+        "savior-terraform-20260716-p-ded8609b4172-r1"
+      ],
+      "deleted_protocol_paths": [
+        "sources/evaluations/protocols/beets-lifecycle-sequence-v0-integrated-token-savior-a5c29f454e3c.json",
+        "sources/evaluations/protocols/fastify-lifecycle-sequence-v0-integrated-token-savior-33764303e1ad.json",
+        "sources/evaluations/protocols/terraform-lifecycle-sequence-v0-integrated-token-savior-8f94e450782e.json"
+      ],
+      "deleted_comparison_paths": [
+        "sources/evaluations/workflow-sessions/baseline-beets-20260716-vs-savior-p-b440da225a3a-r1.json",
+        "sources/evaluations/workflow-sessions/baseline-fastify-20260716-vs-savior-p-769d40697529-r1.json",
+        "sources/evaluations/workflow-sessions/baseline-terraform-20260716-vs-savior-p-ded8609b4172-r1.json"
+      ],
+      "deleted_bundle_roots": [
+        "sources/evaluations/workflow-sessions/savior-beets-20260716-p-b440da225a3a-r1",
+        "sources/evaluations/workflow-sessions/savior-fastify-20260716-p-769d40697529-r1",
+        "sources/evaluations/workflow-sessions/savior-terraform-20260716-p-ded8609b4172-r1"
+      ],
+      "replacement_profile_id": "integrated-token-savior-mcp-v1"
+    }
+  ]
+}

@@ -1,0 +1,41 @@
+{
+  "runtime": "opencode-cli",
+  "version": "1.18.9",
+  "binary": "/opt/data/.local/bin/opencode",
+  "binary_sha256": "7c4d91c84d2bfdeabb59257e3490c5e5acb08f2aacb3e42f3ddc296a1c3f1aca",
+  "treatment": "lowfat",
+  "provider": "openai",
+  "provider_model": "openai/gpt-5.6-sol",
+  "model_available": true,
+  "project_config_disabled": true,
+  "external_plugins_disabled_by_pure_flag": false,
+  "external_skills_disabled": true,
+  "web_tools_permission": "deny",
+  "subagents_permission": "deny",
+  "plugin_assignment": {
+    "expected": "lowfat.ts",
+    "loaded": true
+  },
+  "effective_config": {
+    "share": "disabled",
+    "autoupdate": false,
+    "shell": "/usr/local/bin/eval-network-denied-shell",
+    "permission": {
+      "webfetch": "deny",
+      "websearch": "deny",
+      "task": "deny",
+      "skill": "deny",
+      "lsp": "deny",
+      "question": "deny",
+      "external_directory": "deny"
+    },
+    "plugin": [
+      "file:///tmp/tmp.FybhSkQeGf/lowfat-opencode-plugin-v1/xdg-config/opencode/plugins/lowfat.ts"
+    ]
+  },
+  "effective_config_sha256": "54838344e02211e8acc9afb393361548740e9750ddc4385493b3405b72d15aaf",
+  "auth": {
+    "provider": "openai",
+    "auth_type": "oauth"
+  }
+}

@@ -1,0 +1,81 @@
+## Certification verdict
+
+- **GO — provider-free partial recovery** of:
+  - `baseline-fastify-20260728-p-bb0e89ed9794-r2`
+  - `baseline-terraform-20260728-p-5811b463c1e9-r2`
+- **NO-GO — any provider respend or same-identity rerun**, including Beets r2.
+- **Beets r2 is an occupied controller-failed attempt**, not a provider/model result. Publish its immutable attempt receipt and failure disposition only—no Beets session, token row, compact bundle, comparison, or synthetic result.
+- The certification is bound to published commit `b39136af31f432e760fa8eda5bd76c93e1eed762`, tree `b6eccf0b6f22e1b16464d09d9058321b2a791f55`, and the retained r2 root.
+
+## Root cause
+
+- `run_flow_lane()` created `logs/` and `tmp/` **before** the trusted clone, then opened `logs/lane.log` after cloning without recreating its parent:
+  - scratch creation: `run_sequential_workflow_matrix.py:344-355`
+  - failing open before subprocess: `:397-419`
+- Beets’ clone completed, but `logs/` and `tmp/` disappeared before `log_path.open("w")`. The retained sentinel records the exact `FileNotFoundError`.
+- There is **no Beets lane log, child receipt, new registry record, or compact artifact**, proving failure occurred before `subprocess.run()` and therefore before the provider boundary.
+- The deletion’s external actor is not proven. The certifiable controller root cause is the scratch-directory TOCTOU/lifecycle defect: it assumed pre-clone empty directories would survive a long clone.
+
+## Why Terraform still ran
+
+With `max_parallel: 1`, the controller nevertheless submitted all three jobs to `ThreadPoolExecutor` up front. When `fut.result()` raised for Beets, exiting the executor context invoked `shutdown(wait=True, cancel_futures=False)`. The already-queued Terraform job therefore ran to completion before the Beets exception propagated. The parent then exited before merge, validation, or `matrix-summary.json` creation.
+
+## Valid evidence
+
+Both retained sessions:
+
+- are from the exact published commit/tree;
+- pass strict `pilot_session_artifacts_valid`;
+- contain exactly four compact files;
+- pass all manifest checks and parse as 50-record gzip JSONL bundles;
+- have three model exit codes of zero, final verifier zero, isolation audit zero, no usage warnings, and verifier integrity true.
+
+| Session | Provider tokens |
+|---|---:|
+| Fastify r2 | 90,420 |
+| Terraform r2 | 87,784 |
+| **Recoverable total** | **178,204** |
+
+## Receipt and occupancy disposition
+
+Canonical parent receipt hashes:
+
+- Beets: `feb5920345a692af2449e0f304324781be2287efa227380b21679c5a90a9bab6`
+- Fastify: `b557dbe0169e23a5d5c4950996f704e7ed871d52a262c95102727081245d59c1`
+- Terraform: `69f39b88c123567e29d3e99ace3b1835dd4ef314acba0ef6944eb22e78d5aa30`
+
+All bind the correct protocol hashes and declare `immutable_identity_receipt: true`. Their `provider_result: null` must not be rewritten; completion is represented by session evidence, not receipt mutation.
+
+- Fastify and Terraform have child receipts differing from their parent receipts only in `orchestrator` and `reserved_at`; record their hashes diagnostically but do not copy child receipt directories.
+- Beets has no child receipt, consistent with no child/provider launch.
+- The run gate rejects all three r2 slots as occupied.
+- Existing authority covers only r1/r2 and explicitly sets `rerun_after_attempt_receipt: false`. **Any new Beets replicate or generation requires fresh, explicit experiment-owner authorization.**
+
+## Safe provider-free transactional recovery
+
+1. Preserve the matrix root and all lane checkouts until publication is durable.
+2. Acquire one control-plane writer and the production publication lock.
+3. Snapshot the registry, generated runbook, cumulative accounting audit, and affected truth/documentation surfaces.
+4. Revalidate only the Fastify and Terraform records with `lane_session_records` and strict compact ingress; require absent destination IDs and unoccupied canonical provider slots.
+5. Atomically copy only their exact four-file compact directories, verify destination hashes against source, and append the two exact session records in one registry transaction.
+6. Preserve all three parent receipts byte-for-byte. Publish a recovery/failure audit that classifies Beets as `occupied-pre-provider-controller-failure`, records no Beets session/tokens, and states recovery itself used zero provider calls/tokens.
+7. Publish no comparison and do not mark the original three-lane matrix successful; classify it as a partial controller failure with two independently valid lanes.
+8. Regenerate runbook and cumulative accounting, reconcile current-state documents, then run repository, contract, Truthmark, generated-runbook, manifest, and diff checks inside the rollback guard.
+9. On failure, roll back canonical session/artifact publication and derived surfaces, but retain receipts and lane evidence. Release cleanup sentinels only after a verified, committed exact tree.
+
+## Required controller repair
+
+- Recreate and validate `logs/` and `tmp/` at the last possible point after clone/certification and immediately before opening the log/launching the child.
+- For `max_parallel == 1`, execute jobs in a direct fail-stop loop; do not prequeue them in an executor.
+- Reserve each parent attempt receipt lane-locally at the final pre-subprocess boundary, rather than reserving the whole matrix before cloning.
+- Add regressions for scratch deletion during clone and serial Beets failure proving Terraform is never invoked.
+
+## Workspace impact / issue encountered
+
+- **I modified no files and made no provider calls.**
+- The live worktree changed concurrently during this audit. Final status showed:
+  - modified `docs/evaluations/operations/runbook.md`
+  - modified `scripts/run_sequential_workflow_matrix.py`
+  - deleted `scripts/test_workflow_evaluation_contract.py`
+  - three untracked r2 parent receipts
+- Those changes were not made or restored by me. The moving worktree and its uncommitted controller repair are **not certified** by this report.

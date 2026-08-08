@@ -1,0 +1,17 @@
+Baseline V2 routine recipe — perform one behavior-preserving iterator simplification.
+
+## Implementation recipe
+
+Do not run discovery, search, or broad-suite commands.
+Only modify: `beets/dbcore/db.py`.
+Do not modify tests.
+
+In `LazyDict.__iter__`, replace `return (key for key in self._all_keys)` with exactly `return iter(self._all_keys)`. Make no other change. Both forms iterate the same keys; the requested form removes the unnecessary generator layer.
+
+## Validation recipe
+
+Run exactly: `uv run --offline --frozen --no-project python -c "from beets.dbcore.db import LazyDict; value=LazyDict({'a': 1}, lambda k,v:v); assert list(value)==['a']; assert type(iter(value)).__name__ == 'set_iterator'" && uv run --offline --frozen --no-project ruff format --check beets/dbcore/db.py`
+
+## Stop condition
+
+Stop immediately when that command exits 0 and `git diff --name-only` lists only `beets/dbcore/db.py`.

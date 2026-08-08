@@ -4,24 +4,51 @@ Research infrastructure for measuring provider-reported token usage and software
 
 ## Current evaluation portfolio
 
-The repository retains operationally valid Fastify, Beets, and Terraform provider-token baseline samples; their verifier and review outcomes are diagnostics, not selection gates. Invalid fixture runs and stale protocols were removed at the experiment owner's direction. Terraform's current verifier exercises pagination through rendered output instead of requiring one canonical private helper name. The only runnable task contracts remain:
+The repository retains operationally valid Fastify and Beets Lifecycle V1 provider-token evidence. The owner-declared-invalid Terraform Lifecycle V1 r0 was removed under an invalidation receipt. The active portfolio is **Lifecycle V1** for the two medium-project lanes. Each task pre-seeds an authentic semantic regression from completed upstream behavior and gives the agent a normal software-engineering objective: implement the requested outcome correctly, search and inspect related code, preserve prior work, and validate appropriately. Agent prompts do not disclose evaluator scoring or controller compile commands. After task 3, the controller runs the affected-component compile commands and one frozen project-wide compile command. Internally, component and final project compilation are the only pass/fail gates; tests, behavioral fidelity, style, maintainability, and source review are diagnostics. The active lifecycle portfolio is:
 
 | Sequence | Fixture | Ordered stages |
 |---|---|---|
-| `fastify-lifecycle-sequence-v0` | Fastify | feature → behavior-preserving refactor → code review |
-| `beets-lifecycle-sequence-v0` | Beets | feature → behavior-preserving refactor → code review |
-| `terraform-lifecycle-sequence-v0` | Terraform | feature → behavior-preserving refactor → code review |
+| `fastify-lifecycle-sequence-v1` | Fastify | feature → behavior-preserving refactor → code review |
+| `beets-lifecycle-sequence-v1` | Beets | feature → behavior-preserving refactor → code review |
 
-Every lane uses one pinned repository snapshot and one persistent model session. The controller applies all three independently qualified start conditions before prompt 1, discloses prompts in order, preserves model/tool state, and runs all concealed verifiers after prompt 3.
+Lifecycle V1 provider-free qualification passes every standalone, composite, cumulative, aggregate, and project-wide compile boundary. Fastify and Beets each retain one bare-Codex GPT-5.6 Sol/`high` r0 pilot, while treatment remains machine-blocked until the required pilot audit exists. Terraform is not an active Lifecycle V1 lane: its owner-declared-invalid r0 frozen protocol, raw evidence, and retirement receipt were deleted under `sources/evaluations/audits/lifecycle-v1-terraform-invalidated-20260802.json`; retained task and qualification sources cannot authorize a rerun or treatment.
+
+The 2026-08-08 OpenCode Lifecycle V1 screen completed eight accepted lanes for Graphify, LeanCTX, Snip, and CodeScope across Fastify and Beets. The two-sequence descriptive weighted deltas versus matched bare OpenCode were Graphify -12.49%, LeanCTX +16.33%, Snip -26.61%, and CodeScope -0.52%. These are single-replicate observations marked `eligible_for_ranking: false`; Cartog was explicitly excluded before provider execution because its pinned native binary did not reproduce the frozen artifact identity. See [`docs/papers/opencode-four-tool-lifecycle-v1-screen-20260808.md`](docs/papers/opencode-four-tool-lifecycle-v1-screen-20260808.md).
+The historical Baseline V3 lanes use one pinned repository snapshot and one persistent model session. The controller applies all three independently qualified start conditions and their focused model-visible acceptance tests before prompt 1, discloses prompts in order, and preserves model/tool state. The explicitly authorized Baseline V3 pilot on 2026-07-22 retained three first-valid provider-backed controls totaling 236,151 provider tokens: Fastify 76,623, Beets 73,584, and Terraform 85,944. All nine literal model commands exited zero and produced the prescribed narrow diffs. Fastify's repeated final verifier passed 3/3; Beets and Terraform each reported 0/3 only because the final-verifier wrapper failed to export `WORKFLOW_REPO`, despite the same focused commands passing inside all six model turns. The matrix's first publication transaction also rolled back when two post-publication contract assertions incorrectly treated a historical accounting audit as open-ended and baseline presence as sufficient to expose treatment commands. Those assertions were corrected and the immutable compact bundles were recovered without provider reruns. The three V3 pilot identities remain occupied. Treatment eligibility is determined per sequence by the independent zero-incident audit; no failed lane may be rerun for a favorable result.
+
+Historical Baseline V4 corrects only the Beets and Terraform verifier-environment contract under new task, qualification, pool, protocol, audit, and attempt identities. It keeps task difficulty and prescribed edits unchanged. The authorized 2026-07-28 pilots retained Beets at 88,200 provider tokens and Terraform at 87,811; GPT-5.6 Sol/`high` executed all six prescribed commands once, all task and final verifiers passed, and independent trajectory audits recorded strict integer zero in all eight incident categories for both sequences. Separate stale post-publication state tests initially rolled each registry transaction back; both exact compact bundles were recovered transactionally without another provider call. Both r0 identities are occupied and non-rerunnable, and both sequences are eligible for provider-free treatment-protocol freeze.
+
+A 2026-07-18 official-integration audit and follow-up runtime review found that 48 of 54 historical treatment sessions could not support product-effect claims. At the experiment owner's direction, invalid sessions, comparisons, compact bundles, and occupied protocols were deleted from the active corpus rather than relabelled as baseline. The same policy later removed six incomplete Cartog direct-MCP sessions. Deletion receipts preserve each adjudication; the six retained original historical records are the Headroom default-wrapper and proxy-only conditions, and the prior TokenJuice+jcodemunch stack decision remains withdrawn.
+
+Sixteen eligible historical treatment conditions contribute 66 accepted provider-backed sessions alongside 35 controls. After three repaired OpenCode screening generations, the active registry contains 212 accepted sessions: 38 baselines, 9 replacement-runtime controls, and 165 individual-tool treatments. The previous treatment-compatible low-complexity controls—Fastify V3, Beets V4, and Terraform V4—now contain three valid runs per lane: 783,883 provider tokens and 322,096.0 weighted token-cost units under `fresh + 0.1×cached + 6×output`; the machine-readable report is `sources/evaluations/audits/current-low-complexity-control-token-cost-20260728.json`. Fastify r2 retained 90,420 tokens and Terraform r2 retained 87,784; all six prescribed commands and final task verifiers passed, and independent trajectory review recorded zero incidents in every required category. Beets r2 failed before the provider boundary when lane scratch disappeared during checkout materialization. Its immutable receipt remains an occupied zero-spend controller failure—not a session or token result. The distinct owner-authorized Beets r3 replacement retained 87,370 provider tokens (43,130.2 weighted units), with 3/3 commands and verifiers passing, one persistent thread, and zero retries; its compact session was recovered provider-free after stale receipt-state tests rolled back publication. The Phase 2 synthesis reports 551,060,181 treatment tokens against 509,861,580 repeated matched-baseline tokens (+8.08%) with 141/144 task verifiers. A prospective r3 screen used 216,039,299 tokens against 202,598,376 repeated fresh-baseline tokens (+6.63%) with 53/54 task verifiers; four of six aggregate directions changed. The assisted-v1 Sol/`high` baseline retained 7,718,469 tokens and 9/9 verifier passes, but trajectory review found substantive corrections and one surviving hidden-contract regression. It remains immutable historical evidence and is not a Baseline V3 or V4 comparison control.
+
+Bare OpenCode 1.18.9 with GPT-5.6 Sol/`high` retained 122,368 provider tokens across the three lifecycle-v0 workflows. The repaired five-profile assignment screen again found no aggregate reduction: TokenJuice v2 was nearest at +1.31% raw and +5.89% weighted, followed by Cartog v2 (+38.25%, +30.49%), Headroom v3 (+87.91%, +46.33%), Snip v2 (+17.94%, +51.03%), and retained Serena (+115.44%, +65.63%) when ordered by weighted delta. All 45 task verifiers passed, and the twelve replacement task patches and structured final-verifier records were byte-identical to bare OpenCode; independent software quality was not reviewed. Snip corrupted one Fastify and one Beets command before model recovery. Headroom proxied 22 OpenAI requests and transformed 19, but its official MCP failed in every lane. Cartog and Headroom remain bounded `screening-ablation` assignments: expected product state was outside the task diffs, and Headroom's downloaded RTK companion was not hash-retained. See `sources/evaluations/audits/opencode-tool-treatments-sol-high-r0-repaired-screen-results-20260730.json`.
+
+A fresh bare OpenCode r1 retained 122,994 raw provider tokens and 66,744.2 weighted units. The next-five native screen retained RTK at 123,462 raw / 59,920.2 weighted (+0.38% / -10.22% versus fresh bare), Graphify at 134,262 / 78,501.6 (+9.16% / +17.62%), CodeGraph at 149,833 / 78,236.8 (+21.82% / +17.22%), SwarmVault at 183,117 / 75,156.8 (+48.88% / +12.60%), and CodeScope at 187,917 / 73,948.8 (+52.79% / +10.79%). All 45 treatment task verifiers passed and task-target patches matched bare 45/45. Full task-delta parity was 36/45 because SwarmVault retained tracked wiki state; final Git status matched bare in 6/15 treatment sessions because SwarmVault, Graphify, and CodeGraph retained product state. Native activation passed in every lane, but no model-issued product-tool calls were observed; Graphify's always-on plugin injected guidance into all nine bash calls. These remain single-replicate `screening-ablation` observations, not ranking-eligible estimates. See `sources/evaluations/audits/opencode-next-five-sol-high-r1-results-20260730.json`.
+
+The successive corrected r1 screen evaluated jCodemunch, LeanCTX, SigMap, Caveman, and LowFat against the same fresh bare control. None reduced weighted usage: Caveman was +1.10%, SigMap +13.26%, LowFat +18.99%, LeanCTX +62.83%, and jCodemunch +111.91%. The 15 treatments retained 1,098,566 raw provider tokens and 472,615.4 weighted units. Task verifiers passed 43/45 and final verifiers 14/15; both degradations were in LeanCTX Fastify. LeanCTX was the only treatment with model-issued product uptake, at seven calls. All compact manifests and cumulative usage streams reconciled exactly. See [`docs/papers/opencode-successive-next-five-r1-screen.md`](docs/papers/opencode-successive-next-five-r1-screen.md) and `sources/evaluations/audits/opencode-next-five-batch2-results-20260730.json`.
+
+## Documentation
+
+Start with [`docs/README.md`](docs/README.md). The main destinations are:
+
+- [`docs/papers/`](docs/papers/README.md) — completed research papers and phase reports;
+- [`docs/evaluations/`](docs/evaluations/README.md) — evaluation design and operator guidance;
+- [`docs/research/`](docs/research/README.md) — current roadmap and research direction;
+- [`docs/tool-dossiers/`](docs/tool-dossiers/README.md) — tool index and source-inspection dossiers;
+- [`templates/`](templates/README.md) — blank outlines and reusable templates.
 
 ## Source of truth
 
-- `data/workflow-task-sequences.json` — lifecycle v0 contracts.
+- `data/workflow-task-sequences.json` — Lifecycle V1 contracts.
 - `data/repository-fixtures.json` — pinned fixture readiness.
-- `sources/evaluations/fixtures/` — task prompts, start patches, controller acceptance, and generated v0 qualification evidence.
-- `data/workflow-sessions.json` — retained provider-backed token samples, diagnostic model outcomes, and experiment-invalid exclusions.
-- `docs/evaluations/workflow-evaluation-runbook.md` — generated operator runbook.
-- `docs/reports/phase-2-lifecycle-v0-natural-use-screening.md` — production screening report for the retained baseline and treatment evidence.
+- `sources/evaluations/fixtures/` — task prompts, start patches, controller acceptance, and generated V1 qualification evidence.
+- `data/workflow-sessions.json` — active retained provider-backed controls and objective-eligible treatment samples; corrupted treatments are represented only by deletion receipts.
+- `docs/evaluations/operations/runbook.md` — generated operator runbook.
+- `docs/papers/opencode-four-tool-lifecycle-v1-screen-20260808.md` — current four-tool OpenCode Lifecycle V1 screen.
+- `docs/papers/official-integration-parity-audit.md` — current treatment-validity and disposition authority.
+- `docs/papers/phase-2-lifecycle-v1-natural-use-screening.md` — current standalone Lifecycle V1 natural-use screening report.
+- `docs/papers/luna-xhigh-r3-natural-use-replication-screen.md` — prospective six-profile eligible natural-use replication screen.
 
 ## Validation
 
@@ -30,12 +57,14 @@ python3 scripts/validate_repository.py
 python3 scripts/test_workflow_evaluation_contract.py
 ```
 
-Qualification evidence is executable and generated only by:
+Fixture qualification evidence is executable and generated by:
 
 ```bash
 python3 scripts/generate_workflow_qualification.py fastify-lifecycle-sequence-v0 sources/evaluations/fixtures/medium/fastify-fastify/repo
 python3 scripts/generate_workflow_qualification.py beets-lifecycle-sequence-v0 sources/evaluations/fixtures/medium/beetbox-beets/repo
 python3 scripts/generate_workflow_qualification.py terraform-lifecycle-sequence-v0 sources/evaluations/fixtures/large/hashicorp-terraform/repo
 ```
+
+Executed provider-free integration matrices are published with `scripts/publish_integration_qualification.py`; the publisher rejects nonzero lanes, provider-backed session creation, failed preparation, failed host integration, failed warmup, or failed MCP handshakes.
 
 See `AGENTS.md` before changing evaluation contracts.

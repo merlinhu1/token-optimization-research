@@ -1,0 +1,615 @@
+{
+  "protocol_schema_version": 3,
+  "protocol_id": "fastify-lifecycle-sequence-v1-codescope-opencode-product-v1-635fa0901238",
+  "status": "frozen-ready-not-run",
+  "outcome": "Frozen codescope-opencode-product-v1 protocol for fastify-lifecycle-sequence-v1; no provider/model run has occurred.",
+  "frozen_at": "2026-08-01",
+  "hypothesis": "codescope-opencode-product-v1 produces reproducible provider-reported token and software-quality evidence for fastify-lifecycle-sequence-v1",
+  "evidence_stage_target": "reproduction",
+  "task_fixture": {
+    "fixture_id": "medium-fastify-fastify",
+    "sequence_id": "fastify-lifecycle-sequence-v1",
+    "task_family_generation": "lifecycle-v1",
+    "repository": "https://github.com/fastify/fastify.git",
+    "snapshot": "94bcbcc6e2ef3b8e8f8e8797fe551ccbe7b942fd",
+    "qualification_path": "sources/evaluations/fixtures/medium/fastify-fastify/qualification-lifecycle-v1.json",
+    "qualification_sha256": "340ffbd669ed98b5fec72c195d8c65eb8e72b6f52015a8ef9abd296a0bcb1d0e",
+    "timeout_seconds_per_task": 3600
+  },
+  "baseline": {
+    "profile_id": "baseline-bare-codex",
+    "runtime_id": "codex-cli",
+    "provider": "openai",
+    "model": "gpt-5.6-sol",
+    "model_condition_id": "codex-openai-gpt-5-6-sol-high",
+    "reasoning_effort": "high",
+    "command": ""
+  },
+  "comparison_baseline": {
+    "profile_id": "runtime-opencode-codex-product-v1",
+    "runtime_id": "opencode-cli",
+    "provider": "openai",
+    "model": "gpt-5.6-sol",
+    "model_condition_id": "opencode-openai-gpt-5-6-sol-high",
+    "reasoning_effort": "high",
+    "selection_policy": "sequence-pool-replicate-matched-first-valid"
+  },
+  "treatment": {
+    "profile_id": "codescope-opencode-product-v1",
+    "runtime_id": "opencode-cli",
+    "provider": "openai",
+    "model": "gpt-5.6-sol",
+    "model_condition_id": "opencode-openai-gpt-5-6-sol-high",
+    "reasoning_effort": "high",
+    "command": "python3 scripts/run_opencode_workflow_model_condition.py --workflow-model-condition-id opencode-openai-gpt-5-6-sol-high --workflow-model gpt-5.6-sol --workflow-reasoning-effort high --sequence-id fastify-lifecycle-sequence-v1 --profile-id codescope-opencode-product-v1 --timeout-per-task 3600 --protocol sources/evaluations/protocols/fastify-lifecycle-sequence-v1-codescope-opencode-product-v1-635fa0901238.json --docker-image token-eval-codex:latest"
+  },
+  "token_accounting_boundary": {
+    "fields": [
+      "fresh_input_tokens",
+      "cached_input_tokens",
+      "cache_write_tokens",
+      "output_tokens",
+      "reasoning_tokens",
+      "total_provider_tokens"
+    ]
+  },
+  "baseline_pool": {
+    "protocol_version": "baseline-pool-v1",
+    "protocol_fingerprint": "72ac148f730b",
+    "descriptor": {
+      "version": "baseline-pool-v1",
+      "task_family_generation": "lifecycle-v1",
+      "runner_contract_version": "workflow-runner-v10",
+      "runner_sha256": "cf8c2edc92df6029e051aec96dc089fc226672260c8ce286f5d3403552518797",
+      "qualification_generator_sha256": "a0c871d2a500a3fe6a11b78ef4ec20ef29cf12f5db44fdae53344e4327ec559b",
+      "validator_sha256": "32d677ae10bf2364845a6eac88ec3ab95d0a76fea9a52b608e91e590f1ef69d2",
+      "sequence_id": "fastify-lifecycle-sequence-v1",
+      "sequence_contract": "feature-refactor-review",
+      "fixture_id": "medium-fastify-fastify",
+      "fixture_scale": "medium-project",
+      "initial_snapshot": {
+        "commit": "94bcbcc6e2ef3b8e8f8e8797fe551ccbe7b942fd",
+        "upstream": "https://github.com/fastify/fastify.git",
+        "dependency_lockfiles": [
+          {
+            "path": "package.json",
+            "sha256": "b273320af1bb4cfc0f9334457c8e3b1d035fde0da14f9db65e8ef97d361d0be3"
+          }
+        ]
+      },
+      "objective": "individual_tool_effectiveness",
+      "primary_metric": "cumulative provider-reported workflow tokens",
+      "acceptance_design": "compile-only",
+      "acceptance_policy": {
+        "gate": "affected-component-compilation",
+        "visibility": "controller-only",
+        "quality_diagnostics_gate": false,
+        "tests_required": false,
+        "source_review_required": false
+      },
+      "project_compile_command": "find lib -type f -name '*.js' -print0 | sort -z | xargs -0 -n1 node --check && node --check fastify.js",
+      "tasks": [
+        {
+          "id": "fastify-lifecycle-feature-v1",
+          "order": 1,
+          "task_class": "feature-implementation",
+          "prompt_path": "sources/evaluations/fixtures/medium/fastify-fastify/task-generations/lifecycle-v1/fastify-lifecycle-feature-v1/agent-prompt.txt",
+          "prompt_sha256": "9258119ac5720ab9309a2960ffe7ad94fd11a922e2139899bf9cc582f9df947e",
+          "seed_patch_sha256": "590bc68fde7b7ece291517f21fa63ef56cdd40b42a11015bc4184b88835db8b3",
+          "verifier_command": "sources/evaluations/fixtures/medium/fastify-fastify/task-generations/lifecycle-v1/fastify-lifecycle-feature-v1/verify.sh",
+          "verifier_sha256": "70a1969e7f1fa86695c831b23a7a8b2dff6f73e73f3403767307d46fa914ab01",
+          "compile_command": "node --check lib/request.js",
+          "acceptance_visibility": "controller-only-compile-policy",
+          "expected_changed_paths": [
+            "lib/request.js"
+          ],
+          "controller_visible_acceptance_assets": [],
+          "upstream_test_paths": [],
+          "compatibility_rebased_test_paths": [],
+          "expected_model_concealed_paths": [],
+          "model_concealed_paths": []
+        },
+        {
+          "id": "fastify-lifecycle-refactor-v1",
+          "order": 2,
+          "task_class": "behavior-preserving-refactor",
+          "prompt_path": "sources/evaluations/fixtures/medium/fastify-fastify/task-generations/lifecycle-v1/fastify-lifecycle-refactor-v1/agent-prompt.txt",
+          "prompt_sha256": "59ba625ac7bd4bef4e30f605dff3ff967b3b4d2b3bfa24486f9c3fcca181b67d",
+          "seed_patch_sha256": "fd1982e087c713640c8ab55b7875545b59a60296135e0dc847a13cea038d89d5",
+          "verifier_command": "sources/evaluations/fixtures/medium/fastify-fastify/task-generations/lifecycle-v1/fastify-lifecycle-refactor-v1/verify.sh",
+          "verifier_sha256": "56f0a8ad81e525ac7afc8e31806f18d6575758ccbc5d468217dee45dd248cdb9",
+          "compile_command": "node --check lib/content-type.js",
+          "acceptance_visibility": "controller-only-compile-policy",
+          "expected_changed_paths": [
+            "lib/content-type.js"
+          ],
+          "controller_visible_acceptance_assets": [],
+          "upstream_test_paths": [],
+          "compatibility_rebased_test_paths": [],
+          "expected_model_concealed_paths": [],
+          "model_concealed_paths": []
+        },
+        {
+          "id": "fastify-lifecycle-review-v1",
+          "order": 3,
+          "task_class": "code-review-correction",
+          "prompt_path": "sources/evaluations/fixtures/medium/fastify-fastify/task-generations/lifecycle-v1/fastify-lifecycle-review-v1/agent-prompt.txt",
+          "prompt_sha256": "948a4cd3519e2fce58b530f888861cd3da797faa6ff25ab413df2dfd4ef1a4b5",
+          "seed_patch_sha256": "0402a5fc7785775c034fddc539539bbbd0083d11a6f555e22f95dd992476aa3c",
+          "verifier_command": "sources/evaluations/fixtures/medium/fastify-fastify/task-generations/lifecycle-v1/fastify-lifecycle-review-v1/verify.sh",
+          "verifier_sha256": "43583a187ed1382065ead27172cf85daccddcae21a454b9118a77bb7523555b5",
+          "compile_command": "node --check fastify.js && node --check lib/errors.js",
+          "acceptance_visibility": "controller-only-compile-policy",
+          "expected_changed_paths": [
+            "fastify.js",
+            "lib/errors.js"
+          ],
+          "controller_visible_acceptance_assets": [],
+          "upstream_test_paths": [],
+          "compatibility_rebased_test_paths": [],
+          "expected_model_concealed_paths": [],
+          "model_concealed_paths": [],
+          "review_patch_path": "review-change.patch",
+          "review_patch_sha256": "0402a5fc7785775c034fddc539539bbbd0083d11a6f555e22f95dd992476aa3c"
+        }
+      ],
+      "model_facing_prompts": {
+        "rendering_contract": "sequential-model-facing-prompts-v2",
+        "profile_guidance_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "tasks": [
+          {
+            "task_id": "fastify-lifecycle-feature-v1",
+            "order": 1,
+            "rendered_prompt_sha256": "88a45b5d40552bf5c74cc2fb349509cd1b7b40c25d878912233c5ff7d7effa79"
+          },
+          {
+            "task_id": "fastify-lifecycle-refactor-v1",
+            "order": 2,
+            "rendered_prompt_sha256": "c736a654037ea087c972057a81b596310fa8bf573a12a72e0e62c63f9bb5397d"
+          },
+          {
+            "task_id": "fastify-lifecycle-review-v1",
+            "order": 3,
+            "rendered_prompt_sha256": "386c6435b3538f3a87624a9810276d1b1620eb6cedf140e65dc8b01f624a972d"
+          }
+        ]
+      },
+      "qualification": {
+        "path": "sources/evaluations/fixtures/medium/fastify-fastify/qualification-lifecycle-v1.json",
+        "sha256": "340ffbd669ed98b5fec72c195d8c65eb8e72b6f52015a8ef9abd296a0bcb1d0e"
+      },
+      "baseline_profile": {
+        "profile_id": "baseline-bare-codex",
+        "profile_type": "control",
+        "enabled_surfaces": [
+          "codex-native-shell-edit"
+        ],
+        "disabled_overlaps": [
+          "all MCP servers",
+          "all token-saving surfaces",
+          "global Codex instructions",
+          "hooks",
+          "skills/plugins",
+          "warm indexes"
+        ]
+      },
+      "agent": {
+        "runtime_id": "codex-cli",
+        "provider": "openai",
+        "model": "gpt-5.6-sol",
+        "model_condition_id": "codex-openai-gpt-5-6-sol-high",
+        "reasoning_effort": "high",
+        "codex_version_condition": "captured-at-run-and-bound-to-record"
+      },
+      "runtime_inputs": {
+        "timeout_seconds_per_task": 3600,
+        "docker_image": "token-eval-codex:latest",
+        "docker_image_identity": {
+          "image_ref": "token-eval-codex:latest",
+          "image_id": "sha256:6f86d01f2c63f5029c6bb874d8f3694c24d5cd567e3d09413eccc956ba3feafe",
+          "repo_digests": [
+            "token-eval-codex@sha256:6f86d01f2c63f5029c6bb874d8f3694c24d5cd567e3d09413eccc956ba3feafe"
+          ],
+          "repo_tags": [
+            "token-eval-codex:latest"
+          ]
+        },
+        "dockerfile_path": "sources/evaluations/fixtures/container/Dockerfile",
+        "dockerfile_sha256": "47c91967ce25014ce54879514f51d2ff0326651be1087209115eff4d358226b3",
+        "dependency_command": "npm install --ignore-scripts --no-audit --no-fund",
+        "dependency_lockfiles": [
+          {
+            "path": "package.json",
+            "sha256": "b273320af1bb4cfc0f9334457c8e3b1d035fde0da14f9db65e8ef97d361d0be3"
+          }
+        ],
+        "codex_runtime_condition": "codex-openai-gpt-5-6-sol-high",
+        "model_condition_id": "codex-openai-gpt-5-6-sol-high",
+        "model_condition_launcher": "scripts/run_codex_workflow_model_condition.py"
+      },
+      "isolation": {
+        "prompt_delivery": "sequential-one-task-at-a-time",
+        "seed_delivery_mode": "preseeded-composite",
+        "future_tasks_visible": false,
+        "future_seed_regressions_visible": true,
+        "controller_verifier_scripts_and_canonical_copies_model_visible": false,
+        "model_visible_acceptance_asset_paths": [],
+        "acceptance_design": "compile-only",
+        "acceptance_policy": {
+          "gate": "affected-component-compilation",
+          "visibility": "controller-only",
+          "quality_diagnostics_gate": false,
+          "tests_required": false,
+          "source_review_required": false
+        },
+        "git_baseline_true_root_at_lane_start": true,
+        "controller_verification": "final-only",
+        "prompt_sanitizer": "sanitize_task_prompt-v1",
+        "concealment": "declared-model-concealed-paths-removed-before-root-commit",
+        "model_concealed_paths": []
+      },
+      "model_condition_override": {
+        "model_condition_id": "codex-openai-gpt-5-6-sol-high",
+        "runtime_id": "codex-cli",
+        "provider": "openai",
+        "model": "gpt-5.6-sol",
+        "reasoning_effort": "high",
+        "registry_status": "active-model-comparison",
+        "launcher": {
+          "path": "scripts/run_codex_workflow_model_condition.py",
+          "sha256": "1432d8583491c5505c4cbf95695e8288584492d2c14026dfd3322d4050852edc"
+        }
+      }
+    }
+  },
+  "selected_execution": {
+    "descriptor_sha256": "d9239450ac466941e6d5afa82f6ec9834a53a5cd2497cc26365a3df936484f33",
+    "descriptor": {
+      "version": "execution-condition-v1",
+      "sequence_id": "fastify-lifecycle-sequence-v1",
+      "execution_role": "individual_tool_treatment",
+      "selected_profile": {
+        "profile_id": "codescope-opencode-product-v1",
+        "profile_type": "individual_tool",
+        "component_ids": [
+          "codescope-opencode-product-v1"
+        ],
+        "enabled_surfaces": [
+          "broad-context-owner",
+          "opencode-mcp",
+          "official-initialize-instructions",
+          "warm-index"
+        ],
+        "disabled_overlaps": [
+          "all unlisted surfaces"
+        ],
+        "registry_entry_sha256": "bef86c2e27815840852c4957f2f87eed36238809916e5916c038d98e562acd54",
+        "registry_entry": {
+          "profile_type": "individual_tool",
+          "objective_scope": "individual_tool_effectiveness",
+          "status": "screening-ablation",
+          "substrate": "opencode-cli",
+          "disabled_overlaps": [
+            "all unlisted surfaces"
+          ],
+          "native_agent_tools_allowed": [
+            "opencode-native-shell-edit",
+            "opencode-native-file-read-search",
+            "git",
+            "verifier-commands"
+          ],
+          "forbidden_surfaces": [
+            "all external retrieval, compression, memory, MCP, skills, plugins, subagents, and web tools except the assigned product surfaces"
+          ],
+          "reset": {
+            "policy": "Delete lane-private OpenCode XDG directories, product state, generated repository treatment files, auth translation, and background processes after evidence capture."
+          },
+          "id": "codescope-opencode-product-v1",
+          "name": "CodeScope OpenCode MCP V1",
+          "enabled_surfaces": [
+            "broad-context-owner",
+            "opencode-mcp",
+            "official-initialize-instructions",
+            "warm-index"
+          ],
+          "components": [
+            {
+              "component_id": "codescope-opencode-product-v1",
+              "surface": "broad-context-owner+opencode-mcp+official-initialize-instructions+warm-index",
+              "role": "individual_tool"
+            }
+          ],
+          "install": {
+            "policy": "Run the pinned CodeScope 0.8.12 release with its bundled SurrealDB, build a lane-private warm index, register only its host-agnostic MCP server in the isolated OpenCode config, and require initialize plus tools/list before provider execution."
+          },
+          "evaluation_protocol": {
+            "tool_use_policy": "natural",
+            "tool_state": "warm-index+official-mcp-instructions",
+            "integration_state": "host-agnostic-mcp-on-opencode",
+            "assignment_proof": "provider-free exact binary identities, warm index, effective-config receipt, initialize, and tools/list required"
+          },
+          "source_snapshot": {
+            "repository": "onur-gokyildiz-bhi/codescope",
+            "version": "0.8.12",
+            "release_asset_sha256": "d6f64f7bc7bf1ab65115fdede85d794f58151c6f1414421825959eb2101165c1",
+            "runtime_adapter": "/opt/data/tool-candidates/opencode-adapter-v4/opencode_workflow_adapter.py",
+            "runtime_adapter_sha256": "e3c6e77fc22ae12a6548ee3ad92836d58c2db411ceae7c3743c370c469e6bbf7"
+          },
+          "notes": "Successive OpenCode screen selected from the live compatible shortlist. CodeScope does not name OpenCode in its installer but explicitly supports any MCP-compatible host; this profile uses the unchanged product MCP server and initialize instructions."
+        }
+      },
+      "model_facing_prompts": {
+        "rendering_contract": "sequential-model-facing-prompts-v2",
+        "profile_guidance_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "tasks": [
+          {
+            "task_id": "fastify-lifecycle-feature-v1",
+            "order": 1,
+            "rendered_prompt_sha256": "88a45b5d40552bf5c74cc2fb349509cd1b7b40c25d878912233c5ff7d7effa79"
+          },
+          {
+            "task_id": "fastify-lifecycle-refactor-v1",
+            "order": 2,
+            "rendered_prompt_sha256": "c736a654037ea087c972057a81b596310fa8bf573a12a72e0e62c63f9bb5397d"
+          },
+          {
+            "task_id": "fastify-lifecycle-review-v1",
+            "order": 3,
+            "rendered_prompt_sha256": "386c6435b3538f3a87624a9810276d1b1620eb6cedf140e65dc8b01f624a972d"
+          }
+        ]
+      },
+      "tool_adapter": {
+        "tool_id": "codescope-opencode-product-v1",
+        "tool_manifest": "scripts/run_codex_fixture_evaluation.py:TOOL_CONFIGS",
+        "tool_manifest_sha256": "144a3596591bf6b619113b11cdaef0b95f2a5a4d6be96704d3266ed81f9d2d02",
+        "tool_config": {
+          "display_name": "CodeScope host-agnostic MCP on OpenCode v1",
+          "lane_name": "codescope-opencode-product-v1",
+          "surface": "opencode-mcp/official-initialize-instructions+warm-index",
+          "allowed_terms": [
+            "opencode",
+            "codescope"
+          ],
+          "data_dir_name": "codescope-opencode-product-v1",
+          "mounts": [
+            "/opt/data/tool-candidates/opencode-adapter-v4/opencode_workflow_adapter.py",
+            "/opt/data/tool-candidates/codescope-release-v0.8.12/codescope",
+            "/opt/data/tool-candidates/codescope-release-v0.8.12/surreal"
+          ],
+          "executable": "/opt/data/.local/bin/opencode",
+          "expected_executable_sha256": "7c4d91c84d2bfdeabb59257e3490c5e5acb08f2aacb3e42f3ddc296a1c3f1aca",
+          "binary_mount_target": "/opt/data/.local/bin/opencode",
+          "codex_wrapper": {
+            "command": "/usr/bin/python3",
+            "args": [
+              "/opt/data/tool-candidates/opencode-adapter-v4/opencode_workflow_adapter.py",
+              "--opencode-binary",
+              "/opt/data/.local/bin/opencode",
+              "--expected-opencode-sha256",
+              "7c4d91c84d2bfdeabb59257e3490c5e5acb08f2aacb3e42f3ddc296a1c3f1aca",
+              "--treatment",
+              "codescope"
+            ]
+          },
+          "preflight_command": [
+            "/usr/bin/python3",
+            "/opt/data/tool-candidates/opencode-adapter-v4/opencode_workflow_adapter.py",
+            "--opencode-binary",
+            "/opt/data/.local/bin/opencode",
+            "--expected-opencode-sha256",
+            "7c4d91c84d2bfdeabb59257e3490c5e5acb08f2aacb3e42f3ddc296a1c3f1aca",
+            "--treatment",
+            "codescope",
+            "--probe"
+          ],
+          "tool_manifest_identity": "current-file-v1",
+          "path_entries": [
+            "/opt/data/tool-candidates/codescope-release-v0.8.12"
+          ],
+          "env": {
+            "CODESCOPE_DB_PATH": "{tool_data_dir}/db",
+            "OPENCODE_EVALUATION_DIRECTORY": "{repo}"
+          },
+          "host_integration": {
+            "verify_commands": [
+              [
+                "/opt/data/tool-candidates/codescope-release-v0.8.12/codescope",
+                "--version"
+              ]
+            ]
+          },
+          "mcp_server": "codescope",
+          "mcp_command": "/bin/bash",
+          "mcp_args": [
+            "-lc",
+            "set -euo pipefail; /opt/data/tool-candidates/codescope-release-v0.8.12/codescope start >/dev/null; trap '/opt/data/tool-candidates/codescope-release-v0.8.12/codescope stop >/dev/null 2>&1 || true' EXIT; i=0; until /opt/data/tool-candidates/codescope-release-v0.8.12/codescope status | grep -q '^running'; do i=$((i+1)); [ \"$i\" -lt 50 ]; sleep 0.2; done; exec /opt/data/tool-candidates/codescope-release-v0.8.12/codescope mcp {repo}"
+          ],
+          "mcp_handshake": {
+            "required": true,
+            "method": "initialize-and-tools-list",
+            "timeout_seconds": 180
+          },
+          "warmup": {
+            "kind": "official-surreal-start-and-index",
+            "command": [
+              "/bin/bash",
+              "-lc",
+              "set -euo pipefail; /opt/data/tool-candidates/codescope-release-v0.8.12/codescope start >/dev/null; trap '/opt/data/tool-candidates/codescope-release-v0.8.12/codescope stop >/dev/null 2>&1 || true' EXIT; i=0; until /opt/data/tool-candidates/codescope-release-v0.8.12/codescope status | grep -q '^running'; do i=$((i+1)); [ \"$i\" -lt 50 ]; sleep 0.2; done; /opt/data/tool-candidates/codescope-release-v0.8.12/codescope index {repo}"
+            ],
+            "output_name": "codescope-warmup-output.txt",
+            "metadata_name": "codescope-warmup-metadata.json",
+            "timeout_seconds": 3600
+          },
+          "artifact_identities": [
+            {
+              "path": "/opt/data/tool-candidates/codescope-release-v0.8.12/codescope",
+              "sha256": "d6f64f7bc7bf1ab65115fdede85d794f58151c6f1414421825959eb2101165c1",
+              "kind": "compiled-cli-mcp"
+            },
+            {
+              "path": "/opt/data/tool-candidates/codescope-release-v0.8.12/surreal",
+              "sha256": "a9a5e9e36e4f6fe922e1991a4fb0ea1ee4fe90819c5e3a8dce238a56666e8cec",
+              "kind": "bundled-database"
+            },
+            {
+              "path": "/opt/data/tool-candidates/opencode-adapter-v4/opencode_workflow_adapter.py",
+              "sha256": "e3c6e77fc22ae12a6548ee3ad92836d58c2db411ceae7c3743c370c469e6bbf7",
+              "kind": "runtime-adapter"
+            }
+          ],
+          "effective_host_config": {
+            "required": true,
+            "source": "adapter-probe"
+          },
+          "default_tool_state": "warm-index+official-mcp-instructions"
+        },
+        "tool_config_sha256": "cf2cf75e6ac9caffe95da64ea77f9ec620c741e84b156746f596731d9258bbeb",
+        "tool_state": "warm-index+official-mcp-instructions",
+        "tool_use_policy": "natural",
+        "command_identity": {
+          "kind": "mcp_command",
+          "command": [
+            "/bin/bash",
+            "-lc",
+            "set -euo pipefail; /opt/data/tool-candidates/codescope-release-v0.8.12/codescope start >/dev/null; trap '/opt/data/tool-candidates/codescope-release-v0.8.12/codescope stop >/dev/null 2>&1 || true' EXIT; i=0; until /opt/data/tool-candidates/codescope-release-v0.8.12/codescope status | grep -q '^running'; do i=$((i+1)); [ \"$i\" -lt 50 ]; sleep 0.2; done; exec /opt/data/tool-candidates/codescope-release-v0.8.12/codescope mcp {repo}"
+          ]
+        },
+        "binary_identity": {
+          "executable_token": "/bin/bash",
+          "resolved_path": "/bin/bash",
+          "realpath": "/usr/bin/bash",
+          "sha256": "223fe8564b60636bc738b6178d3ba9a50ef7d791266b0efae6363bb716e4c47f",
+          "metadata": {
+            "size": 1298416,
+            "mode": "-rwxr-xr-x",
+            "uid": 0,
+            "gid": 0,
+            "mtime_ns": 1772983313000000000
+          },
+          "version": {
+            "command": [
+              "/usr/bin/bash",
+              "--version"
+            ],
+            "environment_path": "/opt/data/bin:/opt/data/tool-candidates/codescope-release-v0.8.12:/opt/data/.local/bin:/opt/data/opt/go/bin:/opt/data/opt/uv:/opt/data/opt/node-v24.18.0-linux-x64/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+            "captured": true,
+            "exit_code": 0,
+            "output": "GNU bash, version 5.2.37(1)-release (x86_64-pc-linux-gnu)\nCopyright (C) 2022 Free Software Foundation, Inc.\nLicense GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>\n\nThis is free software; you are free to change and redistribute it.\nThere is NO WARRANTY, to the extent permitted by law.",
+            "truncated": false
+          }
+        },
+        "source_identity": [
+          {
+            "path": "/opt/data/tool-candidates/codescope-release-v0.8.12/codescope",
+            "exists": true,
+            "kind": "file",
+            "sha256": "d6f64f7bc7bf1ab65115fdede85d794f58151c6f1414421825959eb2101165c1"
+          },
+          {
+            "path": "/opt/data/tool-candidates/codescope-release-v0.8.12/surreal",
+            "exists": true,
+            "kind": "file",
+            "sha256": "a9a5e9e36e4f6fe922e1991a4fb0ea1ee4fe90819c5e3a8dce238a56666e8cec"
+          },
+          {
+            "path": "/opt/data/tool-candidates/opencode-adapter-v4/opencode_workflow_adapter.py",
+            "exists": true,
+            "kind": "file",
+            "sha256": "e3c6e77fc22ae12a6548ee3ad92836d58c2db411ceae7c3743c370c469e6bbf7"
+          }
+        ]
+      },
+      "runtime": {
+        "docker_image": "token-eval-codex:latest",
+        "docker_image_identity": {
+          "image_ref": "token-eval-codex:latest",
+          "image_id": "sha256:6f86d01f2c63f5029c6bb874d8f3694c24d5cd567e3d09413eccc956ba3feafe",
+          "repo_digests": [
+            "token-eval-codex@sha256:6f86d01f2c63f5029c6bb874d8f3694c24d5cd567e3d09413eccc956ba3feafe"
+          ],
+          "repo_tags": [
+            "token-eval-codex:latest"
+          ]
+        },
+        "dockerfile_path": "sources/evaluations/fixtures/container/Dockerfile",
+        "dockerfile_sha256": "47c91967ce25014ce54879514f51d2ff0326651be1087209115eff4d358226b3",
+        "fixture_runner_path": "scripts/run_codex_fixture_evaluation.py",
+        "fixture_runner_sha256": "144a3596591bf6b619113b11cdaef0b95f2a5a4d6be96704d3266ed81f9d2d02",
+        "mcp_probe_path": "scripts/probe_mcp_stdio.py",
+        "mcp_probe_sha256": "7c06ea36ee5cac933a97140b84a41405fc99b45152388e8d7c6659136af698fd",
+        "codex_entrypoint_path": "sources/evaluations/fixtures/container/codex-entrypoint.sh",
+        "codex_entrypoint_sha256": "8715fe37cb1fa3823f5f05493bc9681ce7ffc72126dfec4d64d448762c550c3c",
+        "timeout_seconds_per_task": 3600,
+        "network_isolation": {
+          "provider_access": true,
+          "model_shell_network_access": false,
+          "model_shell_enforcement": "seccomp denies AF_INET and AF_INET6 socket creation for the shell process and descendants",
+          "agent_web_tools": "disabled-by-permission",
+          "external_retrieval_audit": "fail-closed"
+        },
+        "isolation_policy": "fresh lane-specific agent home/XDG state; provider-only network with model shell and agent web tools disabled; sequential one-task prompt delivery; controller seed/verifier scripts excluded while controller-only affected-component compile commands retained; no acceptance-test assets injected; agent prompts carry normal software objectives",
+        "workflow_controller_path": "scripts/run_codex_workflow_evaluation.py",
+        "workflow_controller_sha256": "a3a9c5803f3e05000fc2fd91ff5ba958bc7f64edd2c1525d9d89e85d7606e3c0",
+        "matrix_controller_path": "scripts/run_sequential_workflow_matrix.py",
+        "matrix_controller_sha256": "a93cc3e7cb3f85635a74bcd0802912e7736dd2ee16ebcc1e409fd5d7c4d10c94",
+        "agent_runtime_id": "opencode-cli",
+        "model_condition": {
+          "id": "opencode-openai-gpt-5-6-sol-high",
+          "provider": "openai",
+          "model": "gpt-5.6-sol",
+          "reasoning_effort": "high",
+          "launcher": "scripts/run_opencode_workflow_model_condition.py"
+        }
+      },
+      "dependencies": {
+        "command": "npm install --ignore-scripts --no-audit --no-fund",
+        "command_sha256": "7493d616f26e72b22eb5a21beafa12a6717ebf5b93a7a75e709de65e7323cc41",
+        "lockfiles": [
+          {
+            "path": "package.json",
+            "snapshot_sha256": "b273320af1bb4cfc0f9334457c8e3b1d035fde0da14f9db65e8ef97d361d0be3",
+            "current_fixture_sha256": null
+          }
+        ]
+      },
+      "agent_condition": {
+        "runtime_id": "opencode-cli",
+        "provider": "openai",
+        "model": "gpt-5.6-sol",
+        "model_condition_id": "opencode-openai-gpt-5-6-sol-high",
+        "reasoning_effort": "high",
+        "runtime_version_condition": "captured-at-run-and-bound-to-record"
+      },
+      "isolation": {
+        "prompt_delivery": "sequential-one-task-at-a-time",
+        "seed_delivery_mode": "preseeded-composite",
+        "future_tasks_visible": false,
+        "future_seed_regressions_visible": true,
+        "controller_verification": "final-only",
+        "controller_verifier_scripts_and_canonical_copies_model_visible": false,
+        "model_visible_acceptance_asset_paths": [],
+        "model_concealed_paths": []
+      },
+      "baseline_pool_reference": {
+        "protocol_version": "baseline-pool-v1",
+        "protocol_fingerprint": "72ac148f730b",
+        "comparison_policy": "paired baseline and treatment must share this baseline pool fingerprint and replicate"
+      },
+      "model_condition_override": {
+        "model_condition_id": "opencode-openai-gpt-5-6-sol-high",
+        "runtime_id": "opencode-cli",
+        "provider": "openai",
+        "model": "gpt-5.6-sol",
+        "reasoning_effort": "high",
+        "registry_status": "active-model-comparison",
+        "launcher": {
+          "path": "scripts/run_opencode_workflow_model_condition.py",
+          "sha256": "c38d87266347dfd46c8f671ad0e22fef52841a34643b93fc769d4ebfb71ac9ce",
+          "condition_runtime_path": "scripts/workflow_model_condition_runtime.py",
+          "condition_runtime_sha256": "01479bd991417d9f5bb5fcef513e1beee3f1f05512ab818429cac24e0ebde866"
+        }
+      }
+    }
+  }
+}

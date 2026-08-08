@@ -1,0 +1,325 @@
+{
+  "schema_version": 1,
+  "audit_id": "baseline-v2-task-family-qualification-20260721",
+  "recorded_on": "2026-07-21",
+  "task_family_generation": "baseline-v2",
+  "scope": "historical provider-free Baseline V2 qualification retained after its paid pilot failed operationally",
+  "decision": "Retire Baseline V2 permanently: its paid pilot failed operationally, its identities are occupied, and it is not eligible for rerun, treatment launch, or future execution.",
+  "reason": "The paid Baseline V2 pilot is recorded by baseline-v2-pilot-zero-mistake.json as failed-operationally-invalid and rolled back without published sessions or comparisons; Baseline V3 is the distinct active replacement generation.",
+  "design_contract": {
+    "persistent_tasks_per_sequence": 3,
+    "ordered_classes": [
+      "feature-implementation",
+      "behavior-preserving-refactor",
+      "code-review-correction"
+    ],
+    "production_files_per_task_maximum": 3,
+    "exact_recipe_required": true,
+    "model_visible_focused_validation_required": true,
+    "discovery_and_broad_suites_forbidden": true
+  },
+  "mistake_gate": {
+    "designated_model_condition": "codex-openai-gpt-5-6-sol-high",
+    "allowed_unique_model_incidents": 0,
+    "allowed_corrected_implementation_mistakes": 0,
+    "allowed_unresolved_defects": 0,
+    "status": "failed-pilot-identity-occupied",
+    "treatment_launch_policy": "permanently blocked for Baseline V2; only a distinct generation may prepare a new baseline",
+    "model": "gpt-5.6-sol",
+    "reasoning_effort": "high",
+    "allowed_prohibited_operations": 0,
+    "allowed_unnecessary_exploration_incidents": 0,
+    "allowed_model_caused_failed_commands": 0,
+    "allowed_code_rework_events": 0,
+    "allowed_verifier_or_environment_failures": 0,
+    "incident_counting": "unique-auditable-not-command-count",
+    "pilot_audit_path": "sources/evaluations/audits/baseline-v2-pilot-zero-mistake.json",
+    "current_status": "failed-operationally-invalid",
+    "treatment_launch": "blocked",
+    "pilot_audit_present": true
+  },
+  "provider_accounting": {
+    "provider_calls": 0,
+    "provider_tokens": 0,
+    "provider_result_available": false,
+    "scope": "provider-free qualification only; paid-pilot accounting is authoritative in baseline-v2-pilot-zero-mistake.json"
+  },
+  "totals": {
+    "sequences": 3,
+    "tasks": 9,
+    "provider_free_qualified_sequences": 3,
+    "frozen_pilot_protocols": 0
+  },
+  "sequences": [
+    {
+      "sequence_id": "fastify-lifecycle-sequence-v0",
+      "qualification_path": "sources/evaluations/fixtures/medium/fastify-fastify/qualification-lifecycle-v0-baseline-v2.json",
+      "qualification_sha256": "bb22d1bc8c647dc5338da76df5a7e96b27d593fcbdac0b3be2397495863847e3",
+      "task_count": 3,
+      "production_file_counts": [
+        1,
+        1,
+        2
+      ],
+      "qualification_gates": {
+        "composite_seed_merge_zero": true,
+        "composite_seeded_verifiers_nonzero": true,
+        "seeded_verifier_nonzero": true,
+        "fixed_verifier_zero": true,
+        "full_fixed_cumulative_verifier_zero": true,
+        "no_unmerged_paths": true
+      },
+      "frozen_baseline_protocols": [],
+      "acceptance_visibility": "model-visible-complete",
+      "all_acceptance_behavior_model_visible": true,
+      "no_model_concealed_acceptance_assets": true,
+      "no_model_visible_acceptance_assets": false,
+      "model_visible_acceptance_assets_match_verifier_copies": true,
+      "controller_visible_acceptance_assets": {
+        "fastify-lifecycle-feature-v0": [
+          {
+            "path": "controller-visible/test/baseline-v2-request-media-type.test.js",
+            "model_visible_path": "test/baseline-v2-request-media-type.test.js",
+            "sha256": "2bf55739b1bc98d824cf7855a3c2f8bf14e13fc307d4ac15e7837ea97b4ac8c0"
+          }
+        ],
+        "fastify-lifecycle-refactor-v0": [
+          {
+            "path": "controller-visible/test/baseline-v2-content-type-cache.test.js",
+            "model_visible_path": "test/baseline-v2-content-type-cache.test.js",
+            "sha256": "732c731ac0f9a243cf33b2bbeed26ab5ebeece6783398ad0c39cb0b9a6df64d4"
+          }
+        ],
+        "fastify-lifecycle-review-v0": [
+          {
+            "path": "controller-visible/test/baseline-v2-max-param.test.js",
+            "model_visible_path": "test/baseline-v2-max-param.test.js",
+            "sha256": "52fac190ee677c475523e317f69881c65486f5c8c6ee6f69681012f6db876715"
+          }
+        ]
+      },
+      "expected_model_visible_acceptance_asset_count": 3
+    },
+    {
+      "sequence_id": "beets-lifecycle-sequence-v0",
+      "qualification_path": "sources/evaluations/fixtures/medium/beetbox-beets/qualification-lifecycle-v0-baseline-v2.json",
+      "qualification_sha256": "58b8953f6d923ea19feb4aa12dd064eedfeac5332ae9c99295ccd9ddc391b28d",
+      "task_count": 3,
+      "production_file_counts": [
+        1,
+        1,
+        1
+      ],
+      "qualification_gates": {
+        "composite_seed_merge_zero": true,
+        "composite_seeded_verifiers_nonzero": true,
+        "seeded_verifier_nonzero": true,
+        "fixed_verifier_zero": true,
+        "full_fixed_cumulative_verifier_zero": true,
+        "no_unmerged_paths": true
+      },
+      "frozen_baseline_protocols": [],
+      "acceptance_visibility": "model-visible-complete",
+      "all_acceptance_behavior_model_visible": true,
+      "no_model_concealed_acceptance_assets": true,
+      "no_model_visible_acceptance_assets": false,
+      "model_visible_acceptance_assets_match_verifier_copies": true,
+      "controller_visible_acceptance_assets": {
+        "beets-lifecycle-feature-v0": [
+          {
+            "path": "controller-visible/test/util/test_functemplate.py",
+            "model_visible_path": "test/util/test_functemplate.py",
+            "sha256": "6806ec35748e63877d993bee3474e13dedba433ff43ca126d8efbcfa10240888"
+          }
+        ],
+        "beets-lifecycle-refactor-v0": [],
+        "beets-lifecycle-review-v0": [
+          {
+            "path": "controller-visible/test/plugins/test_ftintitle.py",
+            "model_visible_path": "test/plugins/test_ftintitle.py",
+            "sha256": "1d8ed5ab383d3c0496dc2158ae9853c0b36bca1f50276181f7d675e352abab35"
+          }
+        ]
+      },
+      "expected_model_visible_acceptance_asset_count": 2
+    },
+    {
+      "sequence_id": "terraform-lifecycle-sequence-v0",
+      "qualification_path": "sources/evaluations/fixtures/large/hashicorp-terraform/qualification-lifecycle-v0-baseline-v2.json",
+      "qualification_sha256": "a27283fbc428f53ceaa4134e16e009db111fc4220e460eb798106a1d1d27666e",
+      "task_count": 3,
+      "production_file_counts": [
+        1,
+        1,
+        1
+      ],
+      "qualification_gates": {
+        "composite_seed_merge_zero": true,
+        "composite_seeded_verifiers_nonzero": true,
+        "seeded_verifier_nonzero": true,
+        "fixed_verifier_zero": true,
+        "full_fixed_cumulative_verifier_zero": true,
+        "no_unmerged_paths": true
+      },
+      "frozen_baseline_protocols": [],
+      "acceptance_visibility": "model-visible-complete",
+      "all_acceptance_behavior_model_visible": true,
+      "no_model_concealed_acceptance_assets": true,
+      "no_model_visible_acceptance_assets": false,
+      "model_visible_acceptance_assets_match_verifier_copies": true,
+      "controller_visible_acceptance_assets": {
+        "terraform-lifecycle-feature-v0": [
+          {
+            "path": "controller-visible/internal/policy/callback/baseline_v2_deferred_test.go",
+            "model_visible_path": "internal/policy/callback/baseline_v2_deferred_test.go",
+            "sha256": "987f39f2b7d00179d8d9677b83c42742e8bab189db9f5e8d722358a4717d14d7"
+          }
+        ],
+        "terraform-lifecycle-refactor-v0": [
+          {
+            "path": "controller-visible/internal/configs/parser_config_dir_test.go",
+            "model_visible_path": "internal/configs/parser_config_dir_test.go",
+            "sha256": "400097f0e6f777d9fbccd97a22121e2e77ddfda8afbe4385984e5f6eb9a47235"
+          },
+          {
+            "path": "controller-visible/internal/configs/baseline_v2_requirement_type_test.go",
+            "model_visible_path": "internal/configs/baseline_v2_requirement_type_test.go",
+            "sha256": "90eef783193077f2a6c7d142267dea5bf630920a7da6a6fde33cfce1852c1f4f"
+          }
+        ],
+        "terraform-lifecycle-review-v0": [
+          {
+            "path": "controller-visible/internal/addrs/baseline_v2_checkable_test.go",
+            "model_visible_path": "internal/addrs/baseline_v2_checkable_test.go",
+            "sha256": "c7b2c1bd88e24e70051f1caf0ec567becc2f8841c07ca1611f66ae7b6011524c"
+          }
+        ]
+      },
+      "expected_model_visible_acceptance_asset_count": 4
+    }
+  ],
+  "historical_evidence": {
+    "assisted_v1_baseline_audit": "sources/evaluations/audits/assisted-v1-sol-high-baseline-r0-20260720.json",
+    "status": "retained immutable; not a Baseline V2 comparison control"
+  },
+  "provider_free_matrix": {
+    "matrix_id": "workflow-matrix-20260722T013645893466Z-p2547474-r0",
+    "model_condition_id": "codex-openai-gpt-5-6-sol-high",
+    "model": "gpt-5.6-sol",
+    "reasoning_effort": "high",
+    "prepare_only": true,
+    "no_provider": true,
+    "provider_calls": 0,
+    "execution_passed": true,
+    "lanes": [
+      {
+        "sequence_id": "beets-lifecycle-sequence-v0",
+        "prepared": true,
+        "prepare_verification_passed": true,
+        "composite_seed_diff_sha256": "2586b9a96d627ce22e226621db78f1c7636e265318dc0e45e1424778209217ae",
+        "qualification_hash_match": true,
+        "concealment_passed": true,
+        "controller_seed_or_verifier_files_exposed_to_model": [],
+        "model_visible_acceptance_declared": true
+      },
+      {
+        "sequence_id": "fastify-lifecycle-sequence-v0",
+        "prepared": true,
+        "prepare_verification_passed": true,
+        "composite_seed_diff_sha256": "ac4eab923081641fc398b042626ce32dbfb1f021424624279fcdfa8713af84c2",
+        "qualification_hash_match": true,
+        "concealment_passed": true,
+        "controller_seed_or_verifier_files_exposed_to_model": [],
+        "model_visible_acceptance_declared": true
+      },
+      {
+        "sequence_id": "terraform-lifecycle-sequence-v0",
+        "prepared": true,
+        "prepare_verification_passed": true,
+        "composite_seed_diff_sha256": "48f2006b0d10fc1d365437b282e77ae856479e7b744dbce4f78d9b62b16e9842",
+        "qualification_hash_match": true,
+        "concealment_passed": true,
+        "controller_seed_or_verifier_files_exposed_to_model": [],
+        "model_visible_acceptance_declared": true
+      }
+    ]
+  },
+  "zero_mistake_gate": {
+    "designated_model_condition": "codex-openai-gpt-5-6-sol-high",
+    "allowed_unique_model_incidents": 0,
+    "allowed_corrected_implementation_mistakes": 0,
+    "allowed_unresolved_defects": 0,
+    "status": "failed-pilot-identity-occupied",
+    "treatment_launch_policy": "permanently blocked for Baseline V2; only a distinct generation may prepare a new baseline",
+    "model": "gpt-5.6-sol",
+    "reasoning_effort": "high",
+    "allowed_prohibited_operations": 0,
+    "allowed_unnecessary_exploration_incidents": 0,
+    "allowed_model_caused_failed_commands": 0,
+    "allowed_code_rework_events": 0,
+    "allowed_verifier_or_environment_failures": 0,
+    "incident_counting": "unique-auditable-not-command-count",
+    "pilot_audit_path": "sources/evaluations/audits/baseline-v2-pilot-zero-mistake.json",
+    "current_status": "failed-operationally-invalid",
+    "treatment_launch": "blocked",
+    "pilot_audit_present": true
+  },
+  "treatment_gate": {
+    "status": "blocked-failed-pilot-identity-occupied",
+    "pilot_audit_path": "sources/evaluations/audits/baseline-v2-pilot-zero-mistake.json",
+    "pilot_audit_present": true,
+    "enforced_at": [
+      "treatment-protocol-freeze",
+      "matrix-treatment-plan",
+      "direct-treatment-runner"
+    ],
+    "fail_closed": true,
+    "required_zero_count_fields": [
+      "observed_unique_model_caused_incidents",
+      "observed_corrected_implementation_mistakes",
+      "observed_unresolved_defects",
+      "observed_prohibited_operations",
+      "observed_unnecessary_exploration_incidents",
+      "observed_model_caused_failed_commands",
+      "observed_code_rework_events",
+      "observed_verifier_or_environment_failures"
+    ],
+    "exact_binding_requirements": [
+      "Baseline V2 paid-pilot identities remain permanently occupied",
+      "Baseline V2 cannot be rerun or used to launch treatments",
+      "Any future baseline must use a distinct generation and independently audited protocol identities"
+    ]
+  },
+  "acceptance_visibility": {
+    "status": "model-visible-complete",
+    "model_concealed_paths": [],
+    "undisclosed_inline_verifier_assertions": 0
+  },
+  "protocols": [],
+  "latest_prepare_matrix": {
+    "evidence_classification": "non-authoritative-scratch",
+    "repository_artifact": null,
+    "provider_free_lanes": 3,
+    "prepared_lanes": 3,
+    "provider_calls": 0,
+    "provider_tokens": 0
+  },
+  "validation": {
+    "contract_tests": 198,
+    "contract_tests_passed": 198,
+    "repository_validation": "passed",
+    "truthmark_diagnostics": 0,
+    "prepare_matrix_lanes": 3,
+    "prepare_matrix_passed": 3,
+    "provider_calls": 0,
+    "provider_tokens": 0
+  },
+  "supersession": {
+    "status": "retired-failed-pilot-identity-occupied",
+    "superseded_by_generation": "baseline-v3",
+    "paid_pilot_audit": "sources/evaluations/audits/baseline-v2-pilot-zero-mistake.json",
+    "paid_pilot_passed": false,
+    "rerun_allowed": false,
+    "treatment_launch_allowed": false
+  }
+}

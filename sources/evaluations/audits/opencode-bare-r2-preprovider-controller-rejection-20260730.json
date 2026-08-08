@@ -1,0 +1,37 @@
+{
+  "schema_version": 1,
+  "audit_id": "opencode-bare-r2-preprovider-controller-rejection-20260730",
+  "date": "2026-07-30",
+  "status": "rejected-before-provider-and-corrected",
+  "owner_authorization_message_id": "1532521147327971438",
+  "affected_identity": {
+    "sequence_id": "beets-lifecycle-sequence-v0",
+    "replicate_index": 2,
+    "profile_id": "runtime-opencode-codex-product-v1",
+    "model_condition_id": "opencode-openai-gpt-5-6-sol-high"
+  },
+  "failed_controller_attempt": {
+    "run_root": "/opt/data/eval-workflow-lanes/opencode-bare-r2/workflow-matrix-20260730T233925777049Z-p2092632-r2",
+    "attempt_receipt_reserved_at": "2026-07-30T23:43:04.681013+00:00",
+    "provider_task_started": false,
+    "provider_calls": 0,
+    "provider_tokens": 0,
+    "session_created": false,
+    "compact_artifact_created": false,
+    "error": "treatment execution requires reusable baseline runtime-opencode-codex-product-v1 for beets-lifecycle-sequence-v0 r2",
+    "failure_stage": "pre-provider reusable-comparator check"
+  },
+  "root_cause": "The generic workflow runner treated the OpenCode replacement-runtime profile as a Codex-comparison treatment. Fastify happened to have a reusable Codex r2 comparator, while Beets did not. The requested bare OpenCode control should be independently eligible as the matched control for OpenCode plugin treatments.",
+  "correction": {
+    "runner_behavior": "Owner-authorized runtime-opencode-codex-product-v1 r2 sessions may be retained as standalone OpenCode controls without a Codex comparison binding; all provider, protocol, verifier, compact-evidence, and isolation gates remain unchanged.",
+    "validator_behavior": "Only the exact runtime-opencode-codex-product-v1 standalone-control contract may omit a comparison binding.",
+    "retry_policy": "The rejected reservation was removed because no provider task started and no session identity was created. Re-executing Beets r2 is the first provider-backed attempt for that identity, not pass selection or a duplicate sample.",
+    "fastify_disposition": "The accepted Fastify r2 session is retained; it completed before the controller defect surfaced.",
+    "terraform_disposition": "Terraform was never launched or reserved in the rejected matrix."
+  },
+  "evidence": {
+    "controller_log": "/opt/data/cache/opencode-bare-r2-controller.log",
+    "beets_lane_log": "/opt/data/eval-workflow-lanes/opencode-bare-r2/workflow-matrix-20260730T233925777049Z-p2092632-r2/beets-lifecycle-sequence-v0--runtime-opencode-codex-product-v1/logs/lane.log",
+    "accepted_fastify_session_id": "opencode-fastify-20260730-p-bb0e89ed9794-r2"
+  }
+}

@@ -1,0 +1,58 @@
+## Outcome: PASS
+
+- **Fastify r2 and Terraform r2 compacts are integrity-valid and accounting-consistent.**
+- **Beets r2 is a zero-provider-execution / zero-spend disposition.**
+- No files were created or modified by this audit; no provider calls were made.
+
+### Compact integrity
+
+For both retained sessions:
+
+- Exactly four regular, non-symlink files:
+  - `run.json`
+  - `changes.diff`
+  - `evidence.jsonl.gz`
+  - `manifest.sha256`
+- Manifests had exact, unique three-file coverage and all SHA-256 checks passed.
+- `gzip -t` passed.
+- Each bundle contained **50 unique outer JSONL records**, all objects with safe relative member paths; no absolute, traversal, backslash, duplicate, or malformed paths.
+- Nested validation passed:
+  - 16 JSON members
+  - 4 JSONL members / 42 JSON object lines
+  - 1 TOML member
+  - zero malformed or non-object JSONL lines
+- Run references resolved to physical compact files or logical bundle members.
+- `lane.log` was byte-identical to the corresponding `run.json`.
+- Secret scan covered 113 compact/control-plane surfaces and found **zero recognized credential, token, private-key, bearer-token, or JWT patterns**.
+
+### Recomputed accounting
+
+Weighted token cost = `fresh input + 0.1 × cached input + 6 × output`.
+
+| Session | Fresh | Cached | Output | Raw provider total | Weighted token cost |
+|---|---:|---:|---:|---:|---:|
+| Fastify r2 | 24,983 | 64,256 | 1,181 | 90,420 | 38,494.6 |
+| Terraform r2 | 17,503 | 69,376 | 905 | 87,784 | 29,870.6 |
+| **Combined** | **42,486** | **133,632** | **2,086** | **178,204** | **68,365.2** |
+
+Cumulative raw snapshots were monotonic and used one persistent thread per lane:
+
+- **Fastify:** 27,569 → 57,657 → 90,420
+- **Terraform:** 27,460 → 56,600 → 87,784
+
+Differenced task increments summed exactly to the final cumulative snapshots. `run.json`, embedded `provider-usage.json`, and lane registries all reconciled. Cache-write and provider-reported reasoning-output subset were zero for both.
+
+### Beets zero-spend proof
+
+- Parent receipt
+  `sources/evaluations/audits/current-low-complexity-baseline-r1-r2-attempts/beets-r2.json`
+  is bound to this matrix, has `attempt_status: reserved-before-provider-task`, and `provider_result: null`; its frozen protocol digest verifies.
+- No child r2 receipt exists in the Beets checkout; that directory contains only the three r1 receipts.
+- No Beets r2 session record or artifact directory exists for `baseline-beets-20260728-p-fcc8438d2077-r2`.
+- Beets lane has no `logs/`, `lane.log`, `tmp/`, rejected evidence, provider-usage file, Codex event stream, run record, or compact bundle; its checkout is Git-clean.
+- The retained failure names `FileNotFoundError` on `logs/lane.log`. In the runner, the only operation producing that path error is `log_path.open()` immediately **before** `subprocess.run()`, proving the provider-capable child invocation was not reached.
+- No matching Docker container events were found during the Beets failure interval, and no unrelated live process references the matrix, lane, or expected Beets session.
+
+### Operational note
+
+The parent repository had pre-existing/concurrent uncommitted changes, including untracked r2 receipts; its status changed during this read-only audit. The audited lane artifacts were not altered.

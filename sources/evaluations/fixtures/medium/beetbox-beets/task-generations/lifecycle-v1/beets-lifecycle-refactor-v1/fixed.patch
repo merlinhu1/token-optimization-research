@@ -1,0 +1,13 @@
+diff --git b/beets/dbcore/db.py a/beets/dbcore/db.py
+index ff57aaf92b89b389840fe4255445d098e50c3e90..78c443239ba20cec5f8cd2bfb462c906c7dda625 100755
+--- b/beets/dbcore/db.py
++++ a/beets/dbcore/db.py
+@@ -189,7 +189,7 @@ class LazyDict(UserDict[str, Any]):
+ 
+     def __iter__(self) -> Iterator[str]:
+         """Iterate over the available field names (excluding computed fields)."""
+-        return (key for key in self._all_keys)
++        return iter(self._all_keys)
+ 
+     def __len__(self) -> int:
+         return len(self._all_keys)

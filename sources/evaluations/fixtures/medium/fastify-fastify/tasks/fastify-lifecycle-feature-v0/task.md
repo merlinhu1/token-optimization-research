@@ -1,5 +1,3 @@
 # Implement request media-type metadata
 
-Add request.mediaType and preserve media-type parsing semantics.
-
-Use `agent-prompt.txt` for the complete model-facing contract. Acceptance is controller-only.
+Apply the Baseline V3 mechanical feature in the bounded Fastify request files. The complete active prompt and focused acceptance command are in `task-generations/baseline-v3/fastify-lifecycle-feature-v0/`.

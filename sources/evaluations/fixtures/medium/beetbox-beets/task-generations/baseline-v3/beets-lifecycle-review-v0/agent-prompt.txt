@@ -1,0 +1,27 @@
+Baseline V3 mechanical review correction — restore the restricted explicit featuring-token set. Do not discover or redesign anything.
+
+## Implementation recipe
+
+Only `beetsplug/ftintitle.py` may change. Copy and run this command exactly:
+
+```bash
+python3 - <<'PY'
+from pathlib import Path
+p = Path("beetsplug/ftintitle.py")
+s = p.read_text()
+old = "        plugins.feat_tokens(for_artist=for_artist, custom_words=custom_words),\n"
+new = "        plugins.feat_tokens(for_artist=False, custom_words=custom_words),\n"
+assert s.count(old) == 1
+p.write_text(s.replace(old, new))
+PY
+uv run --offline --frozen pytest -q test/plugins/test_ftintitle.py -k 'split_on_feat'
+uv run --offline --frozen ruff format --check beetsplug/ftintitle.py
+```
+
+## Validation recipe
+
+The command block above runs the complete focused validation.
+
+## Stop condition
+
+Do not inspect, search, modify tests, run anything else, or evaluate aggregate Git state. Run the command block exactly once and stop immediately when it exits 0. Earlier task edits intentionally remain in the persistent checkout.

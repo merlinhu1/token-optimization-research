@@ -1,0 +1,118 @@
+{
+  "schema_version": 1,
+  "generated_on": "2026-07-28",
+  "status": "provider-free-partial-recovery-complete",
+  "provider_calls": 0,
+  "provider_tokens": 0,
+  "source_commit": "b39136af31f432e760fa8eda5bd76c93e1eed762",
+  "source_tree": "b6eccf0b6f22e1b16464d09d9058321b2a791f55",
+  "matrix_plan": "/opt/data/eval-workflow-lanes/workflow-matrix-20260728T182029636781Z-p3619072-r2/plan.json",
+  "matrix_plan_sha256": "c918e4739c8bfccb1343c27f20ed4e270f764683aeaa8128d57bfa2d5137e191",
+  "matrix_summary": null,
+  "original_matrix_status": "partial-controller-failure-before-merge",
+  "recovered_session_ids": [
+    "baseline-fastify-20260728-p-bb0e89ed9794-r2",
+    "baseline-terraform-20260728-p-5811b463c1e9-r2"
+  ],
+  "excluded_attempt": {
+    "sequence_id": "beets-lifecycle-sequence-v0",
+    "replicate_index": 2,
+    "session_id": null,
+    "classification": "occupied-pre-provider-controller-failure",
+    "provider_calls": 0,
+    "provider_tokens": 0,
+    "parent_receipt_sha256": "feb5920345a692af2449e0f304324781be2287efa227380b21679c5a90a9bab6",
+    "child_receipt": null,
+    "lane_log": null,
+    "compact_artifact": null,
+    "failure_sentinel": "/opt/data/eval-workflow-lanes/workflow-matrix-20260728T182029636781Z-p3619072-r2/beets-lifecycle-sequence-v0--baseline-bare-codex/.checkout-cleanup-prohibited.json",
+    "failure_sentinel_sha256": "d4ca85d9cb342d52f49b802e358f93fa7131e458fb70f6ce6b40ddb3595642b9",
+    "replacement_requires_new_owner_authorization": true
+  },
+  "parent_attempt_receipt_sha256": {
+    "beets": "feb5920345a692af2449e0f304324781be2287efa227380b21679c5a90a9bab6",
+    "fastify": "b557dbe0169e23a5d5c4950996f704e7ed871d52a262c95102727081245d59c1",
+    "terraform": "69f39b88c123567e29d3e99ace3b1835dd4ef314acba0ef6944eb22e78d5aa30"
+  },
+  "child_attempt_receipt_sha256": {
+    "fastify": "520fa0015a22a49c8c98d50d238418a99bbd197760edb502023dd8cfae2ee2ee",
+    "terraform": "5e56a9435abbe3d7ec4d2db12125c9cd3974e6cfd5ed728e437ec211420078a4"
+  },
+  "compact_destination_sha256": {
+    "baseline-fastify-20260728-p-bb0e89ed9794-r2": {
+      "changes.diff": "acb36f8f1296ad42b67866cc22b17d78ef44d79d37473db5152a50c8b9b58e7d",
+      "evidence.jsonl.gz": "48f987e0de3434bc066f743058d9b081cc852590d47a4c8d63f2ce9b07198794",
+      "manifest.sha256": "cd6e0b9c24c8ae31393a09e4748c74c2e477217bc6bb75be2f79870664a581ab",
+      "run.json": "a49df9b4891676964929b0ebfdf78092fa7cfab358a9db6615e425f7ff7b88bd"
+    },
+    "baseline-terraform-20260728-p-5811b463c1e9-r2": {
+      "changes.diff": "615536d0a008a69b9a6dc56ac86c4c17f9cbdea8e05e0b0bed232bfdbe2815ce",
+      "evidence.jsonl.gz": "b1d4c3d8c969233462e1f2b26268dd37ac66dcc7b08b7a970b94b8fec46655c8",
+      "manifest.sha256": "5c63b1fe20e7d5e0d2d132bd776dd9ff064c69906749001fe4d41dd3d7a24715",
+      "run.json": "da0418adbf30d76c58d603d3569ac0646fe9f5fe0f37fc731773083b019da2ae"
+    }
+  },
+  "independent_audits": {
+    "trajectory": "trajectory-audit.txt",
+    "artifact_accounting": "artifact-accounting-audit.txt",
+    "controller_recovery": "controller-recovery-audit.txt"
+  },
+  "recovered_provider_usage": {
+    "fresh_input_tokens": 42486,
+    "cached_input_tokens": 133632,
+    "output_tokens": 2086,
+    "reasoning_output_subset_tokens": 0,
+    "total_provider_tokens": 178204,
+    "weighted_token_cost": 68365.2,
+    "weighted_formula": "fresh + 0.1 * cached + 6 * output"
+  },
+  "validation": {
+    "passed": true,
+    "results": [
+      {
+        "command": [
+          "/opt/hermes/.venv/bin/python3",
+          "scripts/validate_repository.py"
+        ],
+        "exit_code": 0,
+        "output": "/opt/data/eval-workflow-lanes/workflow-matrix-20260728T182029636781Z-p3619072-r2/provider-free-partial-recovery-validation/validation-1-opt-hermes-.venv-bin-python3.txt"
+      },
+      {
+        "command": [
+          "/opt/hermes/.venv/bin/python3",
+          "scripts/test_workflow_evaluation_contract.py"
+        ],
+        "exit_code": 0,
+        "output": "/opt/data/eval-workflow-lanes/workflow-matrix-20260728T182029636781Z-p3619072-r2/provider-free-partial-recovery-validation/validation-2-opt-hermes-.venv-bin-python3.txt"
+      },
+      {
+        "command": [
+          "git",
+          "diff",
+          "--check"
+        ],
+        "exit_code": 0,
+        "output": "/opt/data/eval-workflow-lanes/workflow-matrix-20260728T182029636781Z-p3619072-r2/provider-free-partial-recovery-validation/validation-3-git.txt"
+      },
+      {
+        "command": [
+          "/opt/data/.local/bin/truthmark",
+          "check",
+          "--json"
+        ],
+        "exit_code": 0,
+        "output": "/opt/data/eval-workflow-lanes/workflow-matrix-20260728T182029636781Z-p3619072-r2/provider-free-partial-recovery-validation/validation-4-opt-data-.local-bin-truthmark.txt"
+      },
+      {
+        "command": [
+          "/opt/data/.local/bin/truthmark",
+          "index",
+          "--json"
+        ],
+        "exit_code": 0,
+        "output": "/opt/data/eval-workflow-lanes/workflow-matrix-20260728T182029636781Z-p3619072-r2/provider-free-partial-recovery-validation/validation-5-opt-data-.local-bin-truthmark.txt"
+      }
+    ]
+  },
+  "no_respend_disposition": "all r2 identities occupied permanently; Beets has no result and any replacement requires a new owner-authorized identity"
+}

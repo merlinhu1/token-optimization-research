@@ -1,0 +1,286 @@
+# Ordered cumulative source checkpoints. Every section is relative to the one composite broken-start root.
+
+# --- task-01-agent ---
+diff --git a/beets/util/functemplate.py b/beets/util/functemplate.py
+index 67b2bfb..a3541ab 100644
+--- a/beets/util/functemplate.py
++++ b/beets/util/functemplate.py
+@@ -319,7 +319,7 @@ class Parser:
+ 
+             next_char = self.string[self.pos + 1]
+             if char == ESCAPE_CHAR and next_char in (
+-                self.escapable_chars
++                self.escapable_chars + extra_special_chars
+             ):
+                 # An escaped special character ($$, $}, etc.). Note that
+                 # ${ is not an escape sequence: this is ambiguous with
+diff --git a/wiki/index.md b/wiki/index.md
+new file mode 100644
+index 0000000..1a107a8
+--- /dev/null
++++ b/wiki/index.md
+@@ -0,0 +1,28 @@
++---
++page_id: 'wiki:index'
++kind: index
++title: Wiki Index
++tags:
++  - index
++source_ids: []
++project_ids: []
++node_ids: []
++freshness: fresh
++status: active
++confidence: 1
++created_at: '2026-07-30T08:19:32.542Z'
++updated_at: '2026-07-30T08:19:32.542Z'
++compiled_from: []
++managed_by: agent
++backlinks: []
++schema_hash: ''
++source_hashes: {}
++source_semantic_hashes: {}
++---
++# Wiki Index
++
++This lite vault is agent-maintained. Drop sources into `raw/`, edit `swarmvault.schema.md` to teach the agent how the wiki should be organized, then ask your agent to read sources and update pages here.
++
++- Summaries, entity pages, and concept pages live under `wiki/`.
++- Append every ingest/query/lint operation to `wiki/log.md`.
++- Run `swarmvault init` (without `--lite`) when you want the full toolchain with graph, search, and approvals.
+diff --git a/wiki/log.md b/wiki/log.md
+new file mode 100644
+index 0000000..8c69900
+--- /dev/null
++++ b/wiki/log.md
+@@ -0,0 +1,27 @@
++---
++page_id: 'wiki:log'
++kind: index
++title: Activity Log
++tags:
++  - log
++  - append-only
++source_ids: []
++project_ids: []
++node_ids: []
++freshness: fresh
++status: active
++confidence: 1
++created_at: '2026-07-30T08:19:32.542Z'
++updated_at: '2026-07-30T08:19:32.542Z'
++compiled_from: []
++managed_by: agent
++backlinks: []
++schema_hash: ''
++source_hashes: {}
++source_semantic_hashes: {}
++---
++# Activity Log
++
++Append-only chronological record. One line per ingest/query/lint operation, newest at the bottom.
++
++Format: `## [YYYY-MM-DD] <verb> | <subject>`
+
+# --- task-02-agent ---
+diff --git a/beets/dbcore/db.py b/beets/dbcore/db.py
+index ff57aaf..78c4432 100755
+--- a/beets/dbcore/db.py
++++ b/beets/dbcore/db.py
+@@ -189,7 +189,7 @@ class LazyDict(UserDict[str, Any]):
+ 
+     def __iter__(self) -> Iterator[str]:
+         """Iterate over the available field names (excluding computed fields)."""
+-        return (key for key in self._all_keys)
++        return iter(self._all_keys)
+ 
+     def __len__(self) -> int:
+         return len(self._all_keys)
+diff --git a/beets/util/functemplate.py b/beets/util/functemplate.py
+index 67b2bfb..a3541ab 100644
+--- a/beets/util/functemplate.py
++++ b/beets/util/functemplate.py
+@@ -319,7 +319,7 @@ class Parser:
+ 
+             next_char = self.string[self.pos + 1]
+             if char == ESCAPE_CHAR and next_char in (
+-                self.escapable_chars
++                self.escapable_chars + extra_special_chars
+             ):
+                 # An escaped special character ($$, $}, etc.). Note that
+                 # ${ is not an escape sequence: this is ambiguous with
+diff --git a/wiki/index.md b/wiki/index.md
+new file mode 100644
+index 0000000..1a107a8
+--- /dev/null
++++ b/wiki/index.md
+@@ -0,0 +1,28 @@
++---
++page_id: 'wiki:index'
++kind: index
++title: Wiki Index
++tags:
++  - index
++source_ids: []
++project_ids: []
++node_ids: []
++freshness: fresh
++status: active
++confidence: 1
++created_at: '2026-07-30T08:19:32.542Z'
++updated_at: '2026-07-30T08:19:32.542Z'
++compiled_from: []
++managed_by: agent
++backlinks: []
++schema_hash: ''
++source_hashes: {}
++source_semantic_hashes: {}
++---
++# Wiki Index
++
++This lite vault is agent-maintained. Drop sources into `raw/`, edit `swarmvault.schema.md` to teach the agent how the wiki should be organized, then ask your agent to read sources and update pages here.
++
++- Summaries, entity pages, and concept pages live under `wiki/`.
++- Append every ingest/query/lint operation to `wiki/log.md`.
++- Run `swarmvault init` (without `--lite`) when you want the full toolchain with graph, search, and approvals.
+diff --git a/wiki/log.md b/wiki/log.md
+new file mode 100644
+index 0000000..8c69900
+--- /dev/null
++++ b/wiki/log.md
+@@ -0,0 +1,27 @@
++---
++page_id: 'wiki:log'
++kind: index
++title: Activity Log
++tags:
++  - log
++  - append-only
++source_ids: []
++project_ids: []
++node_ids: []
++freshness: fresh
++status: active
++confidence: 1
++created_at: '2026-07-30T08:19:32.542Z'
++updated_at: '2026-07-30T08:19:32.542Z'
++compiled_from: []
++managed_by: agent
++backlinks: []
++schema_hash: ''
++source_hashes: {}
++source_semantic_hashes: {}
++---
++# Activity Log
++
++Append-only chronological record. One line per ingest/query/lint operation, newest at the bottom.
++
++Format: `## [YYYY-MM-DD] <verb> | <subject>`
+
+# --- task-03-agent ---
+diff --git a/beets/dbcore/db.py b/beets/dbcore/db.py
+index ff57aaf..78c4432 100755
+--- a/beets/dbcore/db.py
++++ b/beets/dbcore/db.py
+@@ -189,7 +189,7 @@ class LazyDict(UserDict[str, Any]):
+ 
+     def __iter__(self) -> Iterator[str]:
+         """Iterate over the available field names (excluding computed fields)."""
+-        return (key for key in self._all_keys)
++        return iter(self._all_keys)
+ 
+     def __len__(self) -> int:
+         return len(self._all_keys)
+diff --git a/beets/util/functemplate.py b/beets/util/functemplate.py
+index 67b2bfb..a3541ab 100644
+--- a/beets/util/functemplate.py
++++ b/beets/util/functemplate.py
+@@ -319,7 +319,7 @@ class Parser:
+ 
+             next_char = self.string[self.pos + 1]
+             if char == ESCAPE_CHAR and next_char in (
+-                self.escapable_chars
++                self.escapable_chars + extra_special_chars
+             ):
+                 # An escaped special character ($$, $}, etc.). Note that
+                 # ${ is not an escape sequence: this is ambiguous with
+diff --git a/beetsplug/ftintitle.py b/beetsplug/ftintitle.py
+index 1c45962..74d9d7e 100644
+--- a/beetsplug/ftintitle.py
++++ b/beetsplug/ftintitle.py
+@@ -75,7 +75,7 @@ def split_on_feat(
+     # Try explicit featuring tokens first (ft, feat, featuring, etc.)
+     # to avoid splitting on generic separators like "&" when both are present
+     regex_explicit = re.compile(
+-        plugins.feat_tokens(for_artist=for_artist, custom_words=custom_words),
++        plugins.feat_tokens(for_artist=False, custom_words=custom_words),
+         re.IGNORECASE,
+     )
+     parts = _split_on_feat_token(regex_explicit, artist)
+diff --git a/wiki/index.md b/wiki/index.md
+new file mode 100644
+index 0000000..1a107a8
+--- /dev/null
++++ b/wiki/index.md
+@@ -0,0 +1,28 @@
++---
++page_id: 'wiki:index'
++kind: index
++title: Wiki Index
++tags:
++  - index
++source_ids: []
++project_ids: []
++node_ids: []
++freshness: fresh
++status: active
++confidence: 1
++created_at: '2026-07-30T08:19:32.542Z'
++updated_at: '2026-07-30T08:19:32.542Z'
++compiled_from: []
++managed_by: agent
++backlinks: []
++schema_hash: ''
++source_hashes: {}
++source_semantic_hashes: {}
++---
++# Wiki Index
++
++This lite vault is agent-maintained. Drop sources into `raw/`, edit `swarmvault.schema.md` to teach the agent how the wiki should be organized, then ask your agent to read sources and update pages here.
++
++- Summaries, entity pages, and concept pages live under `wiki/`.
++- Append every ingest/query/lint operation to `wiki/log.md`.
++- Run `swarmvault init` (without `--lite`) when you want the full toolchain with graph, search, and approvals.
+diff --git a/wiki/log.md b/wiki/log.md
+new file mode 100644
+index 0000000..8c69900
+--- /dev/null
++++ b/wiki/log.md
+@@ -0,0 +1,27 @@
++---
++page_id: 'wiki:log'
++kind: index
++title: Activity Log
++tags:
++  - log
++  - append-only
++source_ids: []
++project_ids: []
++node_ids: []
++freshness: fresh
++status: active
++confidence: 1
++created_at: '2026-07-30T08:19:32.542Z'
++updated_at: '2026-07-30T08:19:32.542Z'
++compiled_from: []
++managed_by: agent
++backlinks: []
++schema_hash: ''
++source_hashes: {}
++source_semantic_hashes: {}
++---
++# Activity Log
++
++Append-only chronological record. One line per ingest/query/lint operation, newest at the bottom.
++
++Format: `## [YYYY-MM-DD] <verb> | <subject>`

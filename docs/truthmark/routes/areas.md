@@ -1,7 +1,10 @@
 ---
 status: active
 doc_type: route-index
-last_reviewed: 2026-07-14
+source_of_truth:
+  - ../../.truthmark/config.yml
+  - ../../AGENTS.md
+last_reviewed: 2026-08-05
 ---
 
 # Truthmark Areas
@@ -21,7 +24,7 @@ Code surface:
 - data/repositories.json
 - data/evaluations.json
 - docs/tool-dossiers/**
-- docs/reports/**
+- docs/papers/**
 - docs/research/tool-research-strategy.md
 - scripts/validate_repository.py
 - scripts/audit_dossier_snapshots.py
@@ -45,8 +48,9 @@ truth_documents:
 Code surface:
 - docs/methodology/README.md
 - docs/research/**
-- docs/reports/**
-- docs/standards/**
+- docs/papers/**
+- docs/reference/research-standards.md
+- scripts/generate_phase2_v1_report.py
 - prompts/researcher.md
 - prompts/paper-writer.md
 - templates/report.md
@@ -75,18 +79,40 @@ Code surface:
 - data/workflow-task-sequences.json
 - data/workflow-sessions.json
 - docs/evaluations/**
-- docs/evaluations/sequential-workflow-runner.md
+- docs/evaluations/operations/runner-reference.md
+- scripts/analyze_model_condition_baselines.py
+- scripts/audit_codex_cumulative_usage.py
 - scripts/audit_tool_isolation.py
 - scripts/extract_codex_usage.py
+- scripts/extract_opencode_usage.py
+- scripts/extract_claude_code_usage.py
+- scripts/generate_current_evaluation_panel.py
 - scripts/generate_workflow_qualification.py
+- scripts/install_cartog_codex_product.py
+- scripts/install_jcodemunch_codex_guidance.py
+- scripts/install_jcodemunch_opencode_guidance.py
+- scripts/install_ponytail_opencode.py
+- scripts/install_token_savior_codex_product.py
+- scripts/opencode_workflow_adapter.py
+- scripts/claude_code_workflow_adapter.py
+- scripts/prepare_pinned_codex_marketplace.py
+- scripts/probe_mcp_stdio.py
+- scripts/probe_token_savior_codex_hooks.py
+- scripts/publish_integration_qualification.py
 - scripts/refresh_workflow_contracts.py
 - scripts/run_codescope_neutral_mcp.py
 - scripts/run_codex_fixture_evaluation.py
 - scripts/run_codex_workflow_evaluation.py
 - scripts/run_codex_workflow_model_condition.py
+- scripts/run_claude_code_workflow_model_condition.py
+- scripts/run_opencode_workflow_model_condition.py
+- scripts/run_opencode_openrouter_workflow_model_condition.py
 - scripts/run_sequential_workflow_matrix.py
 - scripts/test_workflow_evaluation_contract.py
+- scripts/test_claude_code_usage_contract.py
+- scripts/trust_codex_plugin_hooks.py
 - scripts/update_workflow_runbook.py
+- scripts/workflow_model_condition_runtime.py
 - sources/evaluations/fixtures/container/Dockerfile
 - sources/evaluations/fixtures/container/codex-entrypoint.sh
 
@@ -114,9 +140,9 @@ truth_documents:
 ```
 
 Code surface:
-- docs/evaluations/token-usage-and-quality-standards.md
-- docs/evaluations/evaluation-framework.md
-- docs/evaluations/immediately-usable-flows.md
+- docs/evaluations/design/token-and-quality-policy.md
+- docs/evaluations/design/framework.md
+- docs/evaluations/operations/workflow-guide.md
 - prompts/evaluator.md
 - templates/evaluation-record.md
 - templates/evaluation-run-record.json
@@ -139,9 +165,9 @@ truth_documents:
 Code surface:
 - data/compatibility-edges.json
 - data/techniques.json
-- docs/taxonomy/compatibility-taxonomy.md
+- docs/reference/compatibility-taxonomy.md
 - docs/architecture/compatibility-graph.md
-- docs/reports/phase-1-compatibility-safe-token-saving-stacks.md
+- docs/papers/phase-1-compatibility-safe-token-saving-stacks.md
 - docs/tool-dossiers/**
 - .agents/skills/stack-ablation-planner.md
 
@@ -164,7 +190,7 @@ Code surface:
 - docs/research/roadmap.md
 - data/repositories.json
 - data/tool-analysis-backlog.json
-- docs/reports/**
+- docs/papers/**
 - docs/tool-dossiers/**
 
 Update truth when:
@@ -207,9 +233,3 @@ Code surface:
 
 Update truth when:
 - Truthmark requires a child route file for generated hierarchy metadata
-
-## Source References
-
-- ../../../.truthmark/config.yml
-- ../../../AGENTS.md
-- ../../../docs/research/report-writing-and-methodology-skill-patterns.md

@@ -1,0 +1,125 @@
+{
+  "schema_version": 1,
+  "audit_id": "codex-openai-gpt-5-6-sol-high-r0-panel-results-20260805",
+  "date": "2026-08-05",
+  "source_registry": {
+    "path": "data/workflow-sessions.json",
+    "sha256": "2a24d8f70d0e4a50927ce68f5498008bfce3c28f92bb0e70aefbec2533604a00"
+  },
+  "condition": {
+    "runtime_id": "codex-cli",
+    "model_condition_id": "codex-openai-gpt-5-6-sol-high",
+    "provider": "openai",
+    "model": "gpt-5.6-sol",
+    "reasoning_effort": "high",
+    "replicate_index": 0,
+    "workflows": [
+      "fastify-lifecycle-sequence-v1",
+      "beets-lifecycle-sequence-v1"
+    ],
+    "primary_metric": "raw_provider_tokens",
+    "secondary_metric": "weighted_tokens = fresh input (input_tokens + cache_creation_input_tokens) + 0.1 * cached input + 6 * output"
+  },
+  "profile_count": 3,
+  "workflow_session_count": 6,
+  "accepted_task_count": 18,
+  "baseline": {
+    "profile_id": "baseline-bare-codex",
+    "session_ids": [
+      "baseline-fastify-20260802-p-72ac148f730b-r0",
+      "baseline-beets-20260802-p-d8cfc5066f76-r0"
+    ],
+    "usage": {
+      "fresh_input_tokens": 172419,
+      "cached_input_tokens": 2274048,
+      "output_tokens": 19369,
+      "reasoning_tokens": 6965,
+      "raw_provider_tokens": 2465836,
+      "weighted_tokens": 516037.8
+    }
+  },
+  "results_ranked_by_primary_metric": [
+    {
+      "profile_id": "retrieval-sigmap-codex-live-v1",
+      "artifact_slug": "sigmap",
+      "session_ids": [
+        "sigmap-fastify-20260805-p-72ac148f730b-r0",
+        "sigmap-beets-20260805-p-d8cfc5066f76-r0"
+      ],
+      "workflow_count": 2,
+      "accepted_task_count": 6,
+      "usage": {
+        "fresh_input_tokens": 223744,
+        "cached_input_tokens": 3050752,
+        "output_tokens": 21730,
+        "reasoning_tokens": 9519,
+        "raw_provider_tokens": 3296226,
+        "weighted_tokens": 659199.2
+      },
+      "raw_delta_vs_baseline_percent": 33.68,
+      "weighted_delta_vs_baseline_percent": 27.74,
+      "raw_rank": 1
+    },
+    {
+      "profile_id": "retrieval-jcodemunch-codex-mcp-v2",
+      "artifact_slug": "jcodemunch",
+      "session_ids": [
+        "jcodemunch-fastify-20260805-p-72ac148f730b-r0",
+        "jcodemunch-beets-20260805-p-d8cfc5066f76-r0"
+      ],
+      "workflow_count": 2,
+      "accepted_task_count": 6,
+      "usage": {
+        "fresh_input_tokens": 184651,
+        "cached_input_tokens": 3528448,
+        "output_tokens": 20896,
+        "reasoning_tokens": 10521,
+        "raw_provider_tokens": 3733995,
+        "weighted_tokens": 662871.8
+      },
+      "raw_delta_vs_baseline_percent": 51.43,
+      "weighted_delta_vs_baseline_percent": 28.45,
+      "raw_rank": 2
+    },
+    {
+      "profile_id": "retrieval-codegraph-codex-mcp-v1",
+      "artifact_slug": "codegraph",
+      "session_ids": [
+        "codegraph-fastify-20260805-p-72ac148f730b-r0",
+        "codegraph-beets-20260805-p-d8cfc5066f76-r0"
+      ],
+      "workflow_count": 2,
+      "accepted_task_count": 6,
+      "usage": {
+        "fresh_input_tokens": 221102,
+        "cached_input_tokens": 3949312,
+        "output_tokens": 25236,
+        "reasoning_tokens": 11696,
+        "raw_provider_tokens": 4195650,
+        "weighted_tokens": 767449.2
+      },
+      "raw_delta_vs_baseline_percent": 70.15,
+      "weighted_delta_vs_baseline_percent": 48.72,
+      "raw_rank": 3
+    }
+  ],
+  "descriptive_panel_aggregate": {
+    "treatment_raw_provider_tokens": 11225871,
+    "repeated_baseline_raw_provider_tokens": 7397508,
+    "raw_delta_percent": 51.75,
+    "treatment_weighted_tokens": 2089520.2,
+    "repeated_baseline_weighted_tokens": 1548113.4,
+    "weighted_delta_percent": 34.97,
+    "independence_note": "The same 2 baseline sessions are repeated for every profile; this aggregate is descriptive, not a panel of independent controls."
+  },
+  "scope": {
+    "requested_tools": [
+      "jCodeMunch",
+      "CodeGraph",
+      "SigMap",
+      "LowFat",
+      "Token Savior"
+    ],
+    "panel_scope": "one requested profile or requested completed retrieval profiles only; replacement-runtime baselines resolved per runtime"
+  }
+}

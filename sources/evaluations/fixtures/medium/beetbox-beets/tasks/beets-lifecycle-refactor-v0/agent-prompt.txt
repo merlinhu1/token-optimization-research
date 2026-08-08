@@ -1,7 +1,26 @@
-Refactor the lazy model-value storage in `beets/dbcore/db.py` without changing behavior.
+Refactor the lazy model-value storage in `beets/dbcore/db.py` using the prescribed solution below. This is a controlled token-usage workload: follow the recipe directly rather than exploring alternate mapping designs.
 
-Replace the bespoke `LazyConvertDict` implementation with a small `collections.UserDict`-backed `LazyDict`. Raw database values must remain lazy and convert only on access. Preserve missing-key behavior, mutation and deletion of raw/converted values, iteration safety, copy isolation, fixed/flexible value loading, dirty-state behavior, and normal model construction/query results.
+Replace `LazyConvertDict` with one `collections.UserDict`-backed `LazyDict` while preserving lazy conversion and model behavior.
 
-The structural endpoint should make `LazyDict` the single lazy mapping abstraction and let model construction receive raw fixed and flexible values directly; remove the old `LazyConvertDict`/`_awaken` path rather than keeping parallel implementations. The constructor may receive those mappings positionally or by name; acceptance does not prescribe parameter names.
+## Implementation recipe
 
-Run focused database/model tests and relevant repository checks. Do not change command behavior or unrelated modules.
+1. Import `UserDict` and define `class LazyDict(UserDict[str, Any])` in `beets/dbcore/db.py`.
+2. Its constructor accepts the model class plus optional raw values. Store the values in `self.data` and track the still-raw keys in a separate set.
+3. On `__getitem__`, return `None` for a missing key. For a raw key, convert once through `model_cls._type(key).from_sql(...)`, replace the stored value, and remove the key from the raw set.
+4. On `__setitem__`, store the already-converted value and discard its raw marker. On deletion, remove both storage and marker without failing for an absent key.
+5. Make `copy()` duplicate both storage and raw-key state. Make iteration operate on a snapshot (`iter(list(self.data))`) so deletion during iteration is safe. Preserve `get(..., default)` behavior.
+6. Change `Model.__init__` to accept optional raw `fixed_values` and `flex_values`, initialize both mappings as `LazyDict`, then apply ordinary keyword values and clear dirty state.
+7. Remove `LazyConvertDict` and `_awaken`. In `Results._make_model`, construct the model directly with the raw fixed and flexible mappings.
+8. Do not modify `beets/ui/commands/modify.py` or unrelated modules during this task.
+
+## Validation recipe
+
+- Run `uv run ruff check beets/dbcore/db.py`.
+- Run `uv run ruff format --check beets/dbcore/db.py`.
+- Run `uv run pytest -q test/dbcore/test_db.py`.
+- If a focused model query check is needed, run only the relevant test in `test/test_library.py`; do not run all of `test/test_library.py`.
+- Do not run repository-wide mypy: the frozen snapshot contains unrelated baseline typing errors.
+
+## Stop condition
+
+Stop when `LazyDict(UserDict)` is the sole lazy mapping, `_awaken` is gone, direct raw construction works, and the focused database tests plus Ruff checks pass. Preserve task 1 and ignore unrelated failures.

@@ -1,0 +1,34 @@
+Baseline V3 mechanical edit — restore the missing `request.mediaType` getter. Do not discover or redesign anything.
+
+## Implementation recipe
+
+Only `lib/request.js` may change. Copy and run this command exactly:
+
+```bash
+python3 - <<'PY'
+from pathlib import Path
+p = Path("lib/request.js")
+s = p.read_text()
+anchor = "  getValidationFunction: {"
+insert = """  mediaType: {
+    get () {
+      if (!this[kRequestContentType] && this.headers['content-type'] !== undefined) {
+        this[kRequestContentType] = ContentType.from(this.headers['content-type'])
+      }
+      return this[kRequestContentType]?.mediaType
+    }
+  },
+"""
+assert s.count(anchor) == 1
+p.write_text(s.replace(anchor, insert + anchor))
+PY
+node --test test/baseline-v3-request-media-type.test.js
+```
+
+## Validation recipe
+
+The command block above runs the complete focused validation for the `application/json` media type.
+
+## Stop condition
+
+Do not inspect, search, modify tests, run anything else, or evaluate aggregate Git state. Run the command block exactly once and stop immediately when it exits 0. Earlier task edits intentionally remain in the persistent checkout.

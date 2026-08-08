@@ -1,0 +1,610 @@
+{
+  "protocol_schema_version": 3,
+  "protocol_id": "beets-lifecycle-sequence-v0-retrieval-cartog-opencode-product-v2-35453a3fc53a",
+  "status": "frozen-ready-not-run",
+  "outcome": "Frozen retrieval-cartog-opencode-product-v2 protocol for beets-lifecycle-sequence-v0; no provider/model run has occurred.",
+  "frozen_at": "2026-07-22",
+  "hypothesis": "retrieval-cartog-opencode-product-v2 produces reproducible provider-reported token and software-quality evidence for beets-lifecycle-sequence-v0",
+  "evidence_stage_target": "reproduction",
+  "task_fixture": {
+    "fixture_id": "medium-beetbox-beets",
+    "sequence_id": "beets-lifecycle-sequence-v0",
+    "task_family_generation": "baseline-v4",
+    "repository": "https://github.com/beetbox/beets.git",
+    "snapshot": "9acb1ecff6c7ee0a1e83e3b983c94792345712c5",
+    "qualification_path": "sources/evaluations/fixtures/medium/beetbox-beets/qualification-lifecycle-v0-baseline-v4.json",
+    "qualification_sha256": "62d841b17636e669440ca040152d5792b08851bea6cc139a47777f89b34a3c80",
+    "timeout_seconds_per_task": 3600
+  },
+  "baseline": {
+    "profile_id": "baseline-bare-codex",
+    "runtime_id": "codex-cli",
+    "provider": "openai",
+    "model": "gpt-5.6-sol",
+    "model_condition_id": "codex-openai-gpt-5-6-sol-high",
+    "reasoning_effort": "high",
+    "command": ""
+  },
+  "comparison_baseline": {
+    "profile_id": "runtime-opencode-codex-product-v1",
+    "runtime_id": "opencode-cli",
+    "provider": "openai",
+    "model": "gpt-5.6-sol",
+    "model_condition_id": "opencode-openai-gpt-5-6-sol-high",
+    "reasoning_effort": "high",
+    "selection_policy": "sequence-pool-replicate-matched-first-valid"
+  },
+  "treatment": {
+    "profile_id": "retrieval-cartog-opencode-product-v2",
+    "runtime_id": "opencode-cli",
+    "provider": "openai",
+    "model": "gpt-5.6-sol",
+    "model_condition_id": "opencode-openai-gpt-5-6-sol-high",
+    "reasoning_effort": "high",
+    "command": "python3 scripts/run_opencode_workflow_model_condition.py --workflow-model-condition-id opencode-openai-gpt-5-6-sol-high --workflow-model gpt-5.6-sol --workflow-reasoning-effort high --sequence-id beets-lifecycle-sequence-v0 --profile-id retrieval-cartog-opencode-product-v2 --timeout-per-task 3600 --protocol sources/evaluations/protocols/beets-lifecycle-sequence-v0-retrieval-cartog-opencode-product-v2-35453a3fc53a.json --docker-image token-eval-codex:latest"
+  },
+  "token_accounting_boundary": {
+    "fields": [
+      "fresh_input_tokens",
+      "cached_input_tokens",
+      "cache_write_tokens",
+      "output_tokens",
+      "reasoning_tokens",
+      "total_provider_tokens"
+    ]
+  },
+  "baseline_pool": {
+    "protocol_version": "baseline-pool-v1",
+    "protocol_fingerprint": "fcc8438d2077",
+    "descriptor": {
+      "version": "baseline-pool-v1",
+      "task_family_generation": "baseline-v4",
+      "runner_contract_version": "workflow-runner-v9",
+      "runner_sha256": "a5658191022664fcba500822c66a429743a42f23bd330932a4e9499023374f42",
+      "qualification_generator_sha256": "92c9d68b3146b37dd0f4f6c0c71a20d7ef83898fec7206b8d022f06351969eb7",
+      "validator_sha256": "8e6de8f20d0403cfa206c327c044fba7c3ac6f969d1af36445dc0afad8a2ce8b",
+      "sequence_id": "beets-lifecycle-sequence-v0",
+      "sequence_contract": "feature-refactor-review",
+      "fixture_id": "medium-beetbox-beets",
+      "fixture_scale": "medium-project",
+      "initial_snapshot": {
+        "commit": "9acb1ecff6c7ee0a1e83e3b983c94792345712c5",
+        "upstream": "https://github.com/beetbox/beets.git",
+        "dependency_lockfiles": [
+          {
+            "path": "uv.lock",
+            "sha256": "fbf1d7a9c84b658a2433035221ba18c57508c254d711a06f305e2f610839a45f"
+          }
+        ]
+      },
+      "objective": "individual_tool_effectiveness",
+      "primary_metric": "cumulative provider-reported workflow tokens",
+      "tasks": [
+        {
+          "id": "beets-lifecycle-feature-v0",
+          "order": 1,
+          "task_class": "feature-implementation",
+          "prompt_path": "sources/evaluations/fixtures/medium/beetbox-beets/task-generations/baseline-v4/beets-lifecycle-feature-v0/agent-prompt.txt",
+          "prompt_sha256": "9033237087b94204b279a545c0c8967229a4dfebde37ddfae401bac0b0149b53",
+          "seed_patch_sha256": "9dc1cf36d0d0120fb57f75c4579af7f1f65b80e9d80de2d2c5cbdeb69b4ac17e",
+          "verifier_command": "sources/evaluations/fixtures/medium/beetbox-beets/task-generations/baseline-v4/beets-lifecycle-feature-v0/verify.sh",
+          "verifier_sha256": "6c66323a59314d4b8390eb288a41f823b3ac1723af94f8fe771cacb2b5e88588",
+          "controller_visible_acceptance_assets": [
+            {
+              "path": "sources/evaluations/fixtures/medium/beetbox-beets/task-generations/baseline-v4/beets-lifecycle-feature-v0/controller-visible/test/util/test_functemplate.py",
+              "sha256": "6806ec35748e63877d993bee3474e13dedba433ff43ca126d8efbcfa10240888"
+            }
+          ],
+          "upstream_test_paths": [],
+          "compatibility_rebased_test_paths": [],
+          "expected_model_concealed_paths": [],
+          "model_concealed_paths": []
+        },
+        {
+          "id": "beets-lifecycle-refactor-v0",
+          "order": 2,
+          "task_class": "behavior-preserving-refactor",
+          "prompt_path": "sources/evaluations/fixtures/medium/beetbox-beets/task-generations/baseline-v4/beets-lifecycle-refactor-v0/agent-prompt.txt",
+          "prompt_sha256": "dba16cdc81587f6265daa6e9c93151616d3c74762851701a75067ba4afdfc9be",
+          "seed_patch_sha256": "9bcf590139fc91987524e643bc1e6281efbe5a09cd9b2218ca31f670c391c722",
+          "verifier_command": "sources/evaluations/fixtures/medium/beetbox-beets/task-generations/baseline-v4/beets-lifecycle-refactor-v0/verify.sh",
+          "verifier_sha256": "91ec98650ca43abe69b3cfee3948523aa072cf16ff9cf5254bdf243b7b9f882e",
+          "controller_visible_acceptance_assets": [],
+          "upstream_test_paths": [],
+          "compatibility_rebased_test_paths": [],
+          "expected_model_concealed_paths": [],
+          "model_concealed_paths": []
+        },
+        {
+          "id": "beets-lifecycle-review-v0",
+          "order": 3,
+          "task_class": "code-review-correction",
+          "prompt_path": "sources/evaluations/fixtures/medium/beetbox-beets/task-generations/baseline-v4/beets-lifecycle-review-v0/agent-prompt.txt",
+          "prompt_sha256": "41d6efa9889579eecec88c4aaa3bf10f0b5a2e71c4da00f265fc724bd68f3280",
+          "seed_patch_sha256": "14d8dd83706706805b8159f85871036cfb39148dd7912e66e2c8044d505cabad",
+          "verifier_command": "sources/evaluations/fixtures/medium/beetbox-beets/task-generations/baseline-v4/beets-lifecycle-review-v0/verify.sh",
+          "verifier_sha256": "b2d5e2e83bb2b32e1baf9e7cbcd7efbf638f0dd3dbd58fe9f1d7317764def88d",
+          "controller_visible_acceptance_assets": [
+            {
+              "path": "sources/evaluations/fixtures/medium/beetbox-beets/task-generations/baseline-v4/beets-lifecycle-review-v0/controller-visible/test/plugins/test_ftintitle.py",
+              "sha256": "1d8ed5ab383d3c0496dc2158ae9853c0b36bca1f50276181f7d675e352abab35"
+            }
+          ],
+          "upstream_test_paths": [],
+          "compatibility_rebased_test_paths": [],
+          "expected_model_concealed_paths": [],
+          "model_concealed_paths": [],
+          "review_patch_path": "review-change.patch",
+          "review_patch_sha256": "14d8dd83706706805b8159f85871036cfb39148dd7912e66e2c8044d505cabad"
+        }
+      ],
+      "model_facing_prompts": {
+        "rendering_contract": "sequential-model-facing-prompts-v2",
+        "profile_guidance_sha256": "f1d7a2cf7b0a7c1affd8bbb04705f073332ee6efc5f8f89f019b9e0cbacec4bb",
+        "tasks": [
+          {
+            "task_id": "beets-lifecycle-feature-v0",
+            "order": 1,
+            "rendered_prompt_sha256": "762417a29c6df8ec7df501afd125c119d72cba9a5cdc93d0950fe1d835680f6e"
+          },
+          {
+            "task_id": "beets-lifecycle-refactor-v0",
+            "order": 2,
+            "rendered_prompt_sha256": "727cc41394c3a1215befbe097862bf1a3f78958882b21521c90f6721099413e0"
+          },
+          {
+            "task_id": "beets-lifecycle-review-v0",
+            "order": 3,
+            "rendered_prompt_sha256": "2ba3299daa5adc71491ee713bd4c6b6208d6b36443ac327c919fe1b9db5943a2"
+          }
+        ]
+      },
+      "qualification": {
+        "path": "sources/evaluations/fixtures/medium/beetbox-beets/qualification-lifecycle-v0-baseline-v4.json",
+        "sha256": "62d841b17636e669440ca040152d5792b08851bea6cc139a47777f89b34a3c80"
+      },
+      "baseline_profile": {
+        "profile_id": "baseline-bare-codex",
+        "profile_type": "control",
+        "enabled_surfaces": [
+          "codex-native-shell-edit"
+        ],
+        "disabled_overlaps": [
+          "all MCP servers",
+          "all token-saving surfaces",
+          "global Codex instructions",
+          "hooks",
+          "skills/plugins",
+          "warm indexes"
+        ]
+      },
+      "agent": {
+        "runtime_id": "codex-cli",
+        "provider": "openai",
+        "model": "gpt-5.6-sol",
+        "model_condition_id": "codex-openai-gpt-5-6-sol-high",
+        "reasoning_effort": "high"
+      },
+      "runtime_inputs": {
+        "timeout_seconds_per_task": 3600,
+        "docker_image": "token-eval-codex:latest",
+        "docker_image_identity": {
+          "image_ref": "token-eval-codex:latest",
+          "image_id": "sha256:6f86d01f2c63f5029c6bb874d8f3694c24d5cd567e3d09413eccc956ba3feafe",
+          "repo_digests": [
+            "token-eval-codex@sha256:6f86d01f2c63f5029c6bb874d8f3694c24d5cd567e3d09413eccc956ba3feafe"
+          ],
+          "repo_tags": [
+            "token-eval-codex:latest"
+          ]
+        },
+        "dockerfile_path": "sources/evaluations/fixtures/container/Dockerfile",
+        "dockerfile_sha256": "47c91967ce25014ce54879514f51d2ff0326651be1087209115eff4d358226b3",
+        "dependency_command": "uv sync --group test --frozen",
+        "dependency_lockfiles": [
+          {
+            "path": "uv.lock",
+            "sha256": "fbf1d7a9c84b658a2433035221ba18c57508c254d711a06f305e2f610839a45f"
+          }
+        ],
+        "codex_runtime_condition": "codex-openai-gpt-5-6-sol-high"
+      },
+      "isolation": {
+        "prompt_delivery": "sequential-one-task-at-a-time",
+        "seed_delivery_mode": "preseeded-composite",
+        "future_tasks_visible": false,
+        "future_seed_regressions_visible": true,
+        "controller_verifier_scripts_and_canonical_copies_model_visible": false,
+        "model_visible_acceptance_asset_paths": [
+          "test/plugins/test_ftintitle.py",
+          "test/util/test_functemplate.py"
+        ],
+        "git_baseline_true_root_at_lane_start": true,
+        "controller_verification": "final-only",
+        "prompt_sanitizer": "sanitize_task_prompt-v1",
+        "concealment": "declared-model-concealed-paths-removed-before-root-commit",
+        "model_concealed_paths": []
+      },
+      "model_condition_override": {
+        "model_condition_id": "codex-openai-gpt-5-6-sol-high",
+        "model": "gpt-5.6-sol",
+        "reasoning_effort": "high",
+        "registry_status": "active-model-comparison",
+        "launcher": {
+          "path": "scripts/run_codex_workflow_model_condition.py",
+          "sha256": "b219d8f88e5df0fd567dff4d47e9193a602b223b2b72cf0ed3ea5c67cad5aecf"
+        }
+      }
+    }
+  },
+  "selected_execution": {
+    "descriptor_sha256": "2185e68f56b056f721f1d5466090e11d14132cd0764416f710eab0e18b98bf41",
+    "descriptor": {
+      "version": "execution-condition-v1",
+      "sequence_id": "beets-lifecycle-sequence-v0",
+      "execution_role": "individual_tool_treatment",
+      "selected_profile": {
+        "profile_id": "retrieval-cartog-opencode-product-v2",
+        "profile_type": "individual_tool",
+        "component_ids": [
+          "retrieval-cartog-opencode-product-v2"
+        ],
+        "enabled_surfaces": [
+          "structural-retrieval",
+          "opencode-mcp",
+          "live-watch",
+          "product-authored-agent-guidance"
+        ],
+        "disabled_overlaps": [
+          "all unlisted surfaces"
+        ],
+        "registry_entry_sha256": "41c34d635ff3b62e9210e9a42de3d314706192312b1eb20cbe5e6e656637144c",
+        "registry_entry": {
+          "id": "retrieval-cartog-opencode-product-v2",
+          "profile_type": "individual_tool",
+          "objective_scope": "individual_tool_effectiveness",
+          "status": "screening-ablation",
+          "substrate": "opencode-cli",
+          "enabled_surfaces": [
+            "structural-retrieval",
+            "opencode-mcp",
+            "live-watch",
+            "product-authored-agent-guidance"
+          ],
+          "disabled_overlaps": [
+            "all unlisted surfaces"
+          ],
+          "components": [
+            {
+              "component_id": "retrieval-cartog-opencode-product-v2",
+              "surface": "structural-retrieval+opencode-mcp+live-watch",
+              "role": "individual_tool"
+            }
+          ],
+          "native_agent_tools_allowed": [
+            "opencode-native-shell-edit",
+            "opencode-native-file-read-search",
+            "git",
+            "verifier-commands"
+          ],
+          "forbidden_surfaces": [
+            "all external plugins, non-Cartog MCP, subagents, and web tools"
+          ],
+          "install": {
+            "policy": "Run source-pinned Cartog 0.30.1 `cartog ide --client opencode --yes`, install the product-authored agent snippet, then require `cartog init; cartog index .`, database/config state, effective config, and initialize plus tools/list proof before provider execution."
+          },
+          "reset": {
+            "policy": "Delete lane-private OpenCode XDG state, Cartog index/config/watch state, auth translation, and generated artifacts after evidence capture."
+          },
+          "evaluation_protocol": {
+            "tool_use_policy": "natural",
+            "tool_state": "warm-structural-index+live-watch",
+            "integration_state": "official-opencode-product-mcp",
+            "assignment_proof": "provider-free exact binary/guidance identity, installer/config/guidance receipt, retained warm-index state, effective-config, and initialize plus tools/list handshake required"
+          },
+          "source_snapshot": {
+            "repository": "jrollin/cartog",
+            "commit": "890d15b66b523841290a63e431a31b6f6438fc4b",
+            "version": "0.30.1",
+            "runtime_adapter": "/opt/data/tool-candidates/opencode-adapter-v3/opencode_workflow_adapter.py",
+            "runtime_adapter_sha256": "dc787ae0a9038b002687ccce03ae91863c286119f79675059ffc78e88b31edd9"
+          },
+          "notes": "Fresh full-product successor with required warm structural index, live watcher, and product-authored routing guidance; optional vector reranker remains disabled.",
+          "name": "Cartog OpenCode product V2 repaired",
+          "supersedes": "retrieval-cartog-opencode-product-v1"
+        }
+      },
+      "model_facing_prompts": {
+        "rendering_contract": "sequential-model-facing-prompts-v2",
+        "profile_guidance_sha256": "cb08dba8b361975eb89669cc77d206861b05fc26b161a9215337dbb2d30a6366",
+        "tasks": [
+          {
+            "task_id": "beets-lifecycle-feature-v0",
+            "order": 1,
+            "rendered_prompt_sha256": "db0981ff4c4428e5213221c6024697ff64afa64d0c3020c462d39fb9b89c0257"
+          },
+          {
+            "task_id": "beets-lifecycle-refactor-v0",
+            "order": 2,
+            "rendered_prompt_sha256": "727cc41394c3a1215befbe097862bf1a3f78958882b21521c90f6721099413e0"
+          },
+          {
+            "task_id": "beets-lifecycle-review-v0",
+            "order": 3,
+            "rendered_prompt_sha256": "2ba3299daa5adc71491ee713bd4c6b6208d6b36443ac327c919fe1b9db5943a2"
+          }
+        ]
+      },
+      "tool_adapter": {
+        "tool_id": "cartog-opencode-product-v2",
+        "tool_manifest": "scripts/run_codex_fixture_evaluation.py:TOOL_CONFIGS",
+        "tool_manifest_sha256": "ff4dee997e36af666a53ca01c1125d9c7f5d8e6651f87f6b3b2f1c13c8aa67b4",
+        "tool_config": {
+          "display_name": "Cartog official OpenCode MCP product v2 repaired",
+          "lane_name": "retrieval-cartog-opencode-product-v2",
+          "surface": "opencode-mcp/structural-retrieval+live-watch+product-guidance",
+          "allowed_terms": [
+            "opencode",
+            "cartog"
+          ],
+          "data_dir_name": "retrieval-cartog-opencode-product-v2",
+          "mounts": [
+            "/opt/data/tool-candidates/opencode-adapter-v3/opencode_workflow_adapter.py",
+            "/opt/data/tool-candidates/cartog"
+          ],
+          "executable": "/opt/data/tool-candidates/opencode-runtime/node_modules/opencode-ai/bin/opencode.exe",
+          "expected_executable_sha256": "7c4d91c84d2bfdeabb59257e3490c5e5acb08f2aacb3e42f3ddc296a1c3f1aca",
+          "binary_mount_target": "/opt/data/tool-candidates/opencode-runtime/node_modules/opencode-ai/bin/opencode.exe",
+          "codex_wrapper": {
+            "command": "/usr/bin/python3",
+            "args": [
+              "/opt/data/tool-candidates/opencode-adapter-v3/opencode_workflow_adapter.py",
+              "--opencode-binary",
+              "/opt/data/tool-candidates/opencode-runtime/node_modules/opencode-ai/bin/opencode.exe",
+              "--expected-opencode-sha256",
+              "7c4d91c84d2bfdeabb59257e3490c5e5acb08f2aacb3e42f3ddc296a1c3f1aca",
+              "--treatment",
+              "cartog"
+            ]
+          },
+          "preflight_command": [
+            "/usr/bin/python3",
+            "/opt/data/tool-candidates/opencode-adapter-v3/opencode_workflow_adapter.py",
+            "--opencode-binary",
+            "/opt/data/tool-candidates/opencode-runtime/node_modules/opencode-ai/bin/opencode.exe",
+            "--expected-opencode-sha256",
+            "7c4d91c84d2bfdeabb59257e3490c5e5acb08f2aacb3e42f3ddc296a1c3f1aca",
+            "--treatment",
+            "cartog",
+            "--probe"
+          ],
+          "tool_manifest_identity": "current-file-v1",
+          "path_entries": [
+            "/opt/data/tool-candidates/cartog/target/release"
+          ],
+          "env": {
+            "CARTOG_MCP_COMPACT": "1",
+            "CARTOG_NO_UPDATE_CHECK": "1"
+          },
+          "mcp_server": "cartog",
+          "mcp_command": "/opt/data/tool-candidates/cartog/target/release/cartog",
+          "mcp_args": [
+            "serve",
+            "--watch"
+          ],
+          "host_integration": {
+            "install_commands": [
+              [
+                "/opt/data/tool-candidates/cartog/target/release/cartog",
+                "ide",
+                "--client",
+                "opencode",
+                "--yes"
+              ],
+              [
+                "python3",
+                "-c",
+                "from pathlib import Path; src=Path('/opt/data/tool-candidates/cartog/docs/agent-snippet.md'); dst=Path('{repo}/AGENTS.md'); text=src.read_text(); snippet=text.split('```markdown',1)[1].split('```',1)[0].strip(); old=dst.read_text() if dst.exists() else ''; dst.write_text(old.rstrip()+'\\n\\n'+snippet+'\\n')"
+              ]
+            ],
+            "verify_commands": [
+              [
+                "python3",
+                "-c",
+                "from pathlib import Path; c=Path('{codex_home}/xdg-config/opencode/opencode.json'); a=Path('{repo}/AGENTS.md'); assert c.is_file() and '\"cartog\"' in c.read_text().lower(); assert a.is_file() and 'prefer cartog over grep' in a.read_text().lower() and 'mcp__cartog__cartog_search' in a.read_text()"
+              ]
+            ],
+            "required_files": [
+              "{codex_home}/xdg-config/opencode/opencode.json",
+              "{repo}/AGENTS.md"
+            ]
+          },
+          "mcp_handshake": {
+            "required": true,
+            "method": "initialize-and-tools-list",
+            "timeout_seconds": 120
+          },
+          "warmup": {
+            "kind": "official-init-and-structural-index",
+            "command": [
+              "/bin/bash",
+              "-lc",
+              "set -euo pipefail; cartog init; cartog index ."
+            ],
+            "cleanup_paths": [
+              ".cartog",
+              ".cartog.toml"
+            ],
+            "required_state_paths": [
+              ".cartog.toml",
+              ".cartog/db.sqlite"
+            ],
+            "output_name": "cartog-warmup-output.txt",
+            "metadata_name": "cartog-warmup-metadata.json",
+            "timeout_seconds": 1200
+          },
+          "artifact_identities": [
+            {
+              "path": "/opt/data/tool-candidates/cartog/target/release/cartog",
+              "sha256": "f2f0f44841827fe05645f908d30e732bfd555013c57f5fc7768658aa1f9db8a7",
+              "kind": "compiled-cli-mcp"
+            },
+            {
+              "path": "/opt/data/tool-candidates/cartog/docs/agent-snippet.md",
+              "sha256": "09e694f5953ae45a431e31a9c4121700c487a366c031a547258486e5abf49501",
+              "kind": "product-guidance"
+            }
+          ],
+          "effective_host_config": {
+            "required": true,
+            "source": "adapter-probe"
+          },
+          "diff_exclude_paths": [
+            ".cartog",
+            ".cartog.toml",
+            "AGENTS.md"
+          ],
+          "default_tool_state": "warm-structural-index+live-watch"
+        },
+        "tool_config_sha256": "5572c9bae1c8ac8bf8c2c4288f2ebefe673c81045742f5913e7d04365131f289",
+        "tool_state": "warm-structural-index+live-watch",
+        "tool_use_policy": "natural",
+        "command_identity": {
+          "kind": "mcp_command",
+          "command": [
+            "/opt/data/tool-candidates/cartog/target/release/cartog",
+            "serve",
+            "--watch"
+          ]
+        },
+        "binary_identity": {
+          "executable_token": "/opt/data/tool-candidates/cartog/target/release/cartog",
+          "resolved_path": "/opt/data/tool-candidates/cartog/target/release/cartog",
+          "realpath": "/opt/data/tool-candidates/cartog/target/release/cartog",
+          "sha256": "f2f0f44841827fe05645f908d30e732bfd555013c57f5fc7768658aa1f9db8a7",
+          "metadata": {
+            "size": 73562816,
+            "mode": "-rwxr-xr-x",
+            "uid": 10000,
+            "gid": 10000,
+            "mtime_ns": 1784283823691178221
+          },
+          "version": {
+            "command": [
+              "/opt/data/tool-candidates/cartog/target/release/cartog",
+              "--version"
+            ],
+            "environment_path": "/opt/data/.local/bin:/opt/data/tool-candidates/cartog/target/release:/opt/data/opt/go/bin:/opt/data/opt/uv:/opt/data/opt/node-v24.18.0-linux-x64/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+            "captured": true,
+            "exit_code": 0,
+            "output": "cartog 0.30.1\ndescribe: v0.30.1-3-g890d15b\nbuild:    890d15b66b\nfeatures: default, lsp, ollama-embedding, openai-embedding, remote-s3\nrustc:    1.80 (MSRV)",
+            "truncated": false
+          }
+        },
+        "source_identity": [
+          {
+            "path": "/opt/data/tool-candidates/cartog",
+            "exists": true,
+            "kind": "directory",
+            "git_head": "890d15b66b523841290a63e431a31b6f6438fc4b"
+          },
+          {
+            "path": "/opt/data/tool-candidates/opencode-adapter-v3/opencode_workflow_adapter.py",
+            "exists": true,
+            "kind": "file",
+            "sha256": "dc787ae0a9038b002687ccce03ae91863c286119f79675059ffc78e88b31edd9"
+          }
+        ]
+      },
+      "runtime": {
+        "docker_image": "token-eval-codex:latest",
+        "docker_image_identity": {
+          "image_ref": "token-eval-codex:latest",
+          "image_id": "sha256:6f86d01f2c63f5029c6bb874d8f3694c24d5cd567e3d09413eccc956ba3feafe",
+          "repo_digests": [
+            "token-eval-codex@sha256:6f86d01f2c63f5029c6bb874d8f3694c24d5cd567e3d09413eccc956ba3feafe"
+          ],
+          "repo_tags": [
+            "token-eval-codex:latest"
+          ]
+        },
+        "dockerfile_path": "sources/evaluations/fixtures/container/Dockerfile",
+        "dockerfile_sha256": "47c91967ce25014ce54879514f51d2ff0326651be1087209115eff4d358226b3",
+        "fixture_runner_path": "scripts/run_codex_fixture_evaluation.py",
+        "fixture_runner_sha256": "ff4dee997e36af666a53ca01c1125d9c7f5d8e6651f87f6b3b2f1c13c8aa67b4",
+        "mcp_probe_path": "scripts/probe_mcp_stdio.py",
+        "mcp_probe_sha256": "7c06ea36ee5cac933a97140b84a41405fc99b45152388e8d7c6659136af698fd",
+        "codex_entrypoint_path": "sources/evaluations/fixtures/container/codex-entrypoint.sh",
+        "codex_entrypoint_sha256": "8715fe37cb1fa3823f5f05493bc9681ce7ffc72126dfec4d64d448762c550c3c",
+        "timeout_seconds_per_task": 3600,
+        "network_isolation": {
+          "provider_access": true,
+          "model_shell_network_access": false,
+          "model_shell_enforcement": "seccomp denies AF_INET and AF_INET6 socket creation for the shell process and descendants",
+          "agent_web_tools": "disabled-by-permission",
+          "external_retrieval_audit": "fail-closed"
+        },
+        "isolation_policy": "fresh lane-specific agent home/XDG state; provider-only network with model shell and agent web tools disabled; sequential one-task prompt delivery; controller seed/verifier scripts excluded while declared model-visible acceptance tests are retained",
+        "agent_runtime_id": "opencode-cli",
+        "model_condition": {
+          "id": "opencode-openai-gpt-5-6-sol-high",
+          "provider": "openai",
+          "model": "gpt-5.6-sol",
+          "reasoning_effort": "high",
+          "launcher": "scripts/run_opencode_workflow_model_condition.py"
+        }
+      },
+      "dependencies": {
+        "command": "uv sync --group test --frozen",
+        "command_sha256": "cef23fd45902c23f8b3e89b7c6360a401eb49c17cf36d742e5b625d5593c911b",
+        "lockfiles": [
+          {
+            "path": "uv.lock",
+            "snapshot_sha256": "fbf1d7a9c84b658a2433035221ba18c57508c254d711a06f305e2f610839a45f",
+            "current_fixture_sha256": null
+          }
+        ]
+      },
+      "agent_condition": {
+        "runtime_id": "opencode-cli",
+        "provider": "openai",
+        "model": "gpt-5.6-sol",
+        "model_condition_id": "opencode-openai-gpt-5-6-sol-high",
+        "reasoning_effort": "high",
+        "runtime_version_condition": "captured-at-run-and-bound-to-record"
+      },
+      "isolation": {
+        "prompt_delivery": "sequential-one-task-at-a-time",
+        "seed_delivery_mode": "preseeded-composite",
+        "future_tasks_visible": false,
+        "future_seed_regressions_visible": true,
+        "controller_verification": "final-only",
+        "controller_verifier_scripts_and_canonical_copies_model_visible": false,
+        "model_visible_acceptance_asset_paths": [
+          "test/plugins/test_ftintitle.py",
+          "test/util/test_functemplate.py"
+        ],
+        "model_concealed_paths": []
+      },
+      "baseline_pool_reference": {
+        "protocol_version": "baseline-pool-v1",
+        "protocol_fingerprint": "fcc8438d2077",
+        "comparison_policy": "paired baseline and treatment must share this baseline pool fingerprint and replicate"
+      },
+      "model_condition_override": {
+        "model_condition_id": "opencode-openai-gpt-5-6-sol-high",
+        "runtime_id": "opencode-cli",
+        "provider": "openai",
+        "model": "gpt-5.6-sol",
+        "reasoning_effort": "high",
+        "registry_status": "active-model-comparison",
+        "launcher": {
+          "path": "scripts/run_opencode_workflow_model_condition.py",
+          "sha256": "c38d87266347dfd46c8f671ad0e22fef52841a34643b93fc769d4ebfb71ac9ce",
+          "condition_runtime_path": "scripts/workflow_model_condition_runtime.py",
+          "condition_runtime_sha256": "8bfc9e9d1bcc7c49f28564bd638d2da3cdc1044ee3debf4218a19b820e05cfc6"
+        }
+      }
+    }
+  }
+}

@@ -55,8 +55,8 @@
         "command": "sources/evaluations/fixtures/medium/fastify-fastify/verify-smoke.sh"
       },
       "prompt": {
-        "path": "sources/evaluations/fixtures/medium/fastify-fastify/tasks/README.md",
-        "prompt_policy": "Prompts are disclosed one at a time; proposed review evidence appears only with task 3; acceptance assets remain controller-only."
+        "path": "sources/evaluations/fixtures/medium/fastify-fastify/task-generations/baseline-v3/README.md",
+        "prompt_policy": "Baseline V3 discloses one exact routine recipe at a time, prohibits discovery and broad suites, and exposes focused validation; task 3 alone receives the proposed review patch."
       },
       "artifact_paths": {
         "root": "sources/evaluations/workflow-sessions/",
@@ -67,195 +67,201 @@
       },
       "candidate_profiles": [
         "baseline-bare-codex",
-        "retrieval-codegraph"
+        "terminal-tokenjuice-codex-hook-v1",
+        "terminal-rtk-codex-instructions-v1",
+        "terminal-rtk-claude-code-hook-v1",
+        "terminal-snip-codex-hook-v1",
+        "retrieval-graphify-codex-skill-v1",
+        "retrieval-codegraph-codex-mcp-v1",
+        "retrieval-jcodemunch-codex-mcp-v2",
+        "integrated-leanctx-codex-hybrid-v1",
+        "retrieval-cartog-codex-product-v2",
+        "codescope-codex-product-v1",
+        "swarmvault-codex-product-v1",
+        "retrieval-serena-codex-mcp-v1",
+        "retrieval-sigmap-codex-live-v1",
+        "integrated-token-savior-codex-product-v2",
+        "artifact-ponytail-codex-plugin-v1",
+        "behavior-caveman-codex-skill-v1"
       ],
       "blockers": [],
       "caveats": [
-        "The retained baseline is eligible from operational integrity and complete provider usage; verifier and optional source-review outcomes are diagnostic."
+        "The retained baseline is eligible from operational integrity and complete provider usage; verifier and optional source-review outcomes are diagnostic.",
+        "Executed assisted-v1 sessions and protocols remain immutable historical evidence and are not comparison controls for Baseline V3."
       ],
       "tasks": [
-        "fastify-lifecycle-feature-v0",
-        "fastify-lifecycle-refactor-v0",
-        "fastify-lifecycle-review-v0"
+        "fastify-lifecycle-feature-v1",
+        "fastify-lifecycle-refactor-v1",
+        "fastify-lifecycle-review-v1"
       ],
       "qualification_status": "active-reproduction-flow",
-      "workflow_sequence_id": "fastify-lifecycle-sequence-v0",
-      "qualification_evidence": "sources/evaluations/fixtures/medium/fastify-fastify/qualification-lifecycle-v0.json",
+      "workflow_sequence_id": "fastify-lifecycle-sequence-v1",
+      "qualification_evidence": "sources/evaluations/fixtures/medium/fastify-fastify/qualification-lifecycle-v1.json",
       "active_profiles": [
         "baseline-bare-codex"
       ],
       "future_evaluation_lanes": [
         {
           "id": "baseline-bare-codex",
-          "status": "completed",
-          "purpose": "retained lifecycle-v0 control",
+          "status": "completed-passed-compilation",
+          "purpose": "first-valid Codex CLI GPT-5.6 Sol/high Lifecycle V1 compile-only pilot; all affected-component and project-wide compilation passed",
           "replicate_indexes": [
-            0,
+            0
+          ]
+        },
+        {
+          "id": "behavior-caveman-codex-skill-v1",
+          "role": "individual-tool-treatment",
+          "status": "eligible-for-treatment-protocol-freeze",
+          "purpose": "guide-faithful native Codex skill install and documented per-session activation",
+          "replicate_indexes": [
             1
           ]
         },
         {
-          "id": "retrieval-codegraph",
-          "status": "treatment-run",
-          "purpose": "compatible individual-tool treatment",
-          "role": "retrieval-treatment",
+          "id": "artifact-ponytail-codex-plugin-v1",
+          "role": "individual-tool-treatment",
+          "status": "eligible-for-treatment-protocol-freeze",
+          "purpose": "guide-faithful official Codex plugin install with reviewed trusted lifecycle hooks",
           "replicate_indexes": [
             1
-          ],
-          "session_id": "codegraph-fastify-20260717-p-769d40697529-r1"
-        },
-        {
-          "id": "behavior-caveman",
-          "role": "behavior-policy-treatment",
-          "status": "treatment-run",
-          "replicate_indexes": [
-            1
-          ],
-          "session_id": "caveman-fastify-20260716-p-769d40697529-r1"
-        },
-        {
-          "id": "terminal-rtk",
-          "role": "terminal-output-treatment",
-          "status": "treatment-run",
-          "replicate_indexes": [
-            1
-          ],
-          "session_id": "rtk-fastify-20260716-p-769d40697529-r1"
-        },
-        {
-          "id": "retrieval-serena",
-          "role": "retrieval-treatment",
-          "status": "treatment-run",
-          "replicate_indexes": [
-            1
-          ],
-          "session_id": "serena-fastify-20260716-p-769d40697529-r1"
-        },
-        {
-          "id": "artifact-ponytail",
-          "role": "artifact-policy-treatment",
-          "status": "treatment-run",
-          "replicate_indexes": [
-            1
-          ],
-          "session_id": "ponytail-fastify-20260716-p-769d40697529-r1"
-        },
-        {
-          "id": "integrated-token-savior",
-          "role": "integrated-mcp-treatment",
-          "status": "treatment-run",
-          "replicate_indexes": [
-            1
-          ],
-          "session_id": "savior-fastify-20260716-p-769d40697529-r1"
-        },
-        {
-          "id": "retrieval-graphify",
-          "role": "retrieval-treatment",
-          "status": "treatment-run",
-          "replicate_indexes": [
-            1
-          ],
-          "session_id": "graphify-fastify-20260716-p-769d40697529-r1"
-        },
-        {
-          "id": "retrieval-jcodemunch-mcp",
-          "role": "retrieval-treatment",
-          "status": "treatment-run",
-          "replicate_indexes": [
-            1
-          ],
-          "session_id": "mcp-fastify-20260717-p-769d40697529-r1"
-        },
-        {
-          "id": "retrieval-sigmap",
-          "role": "retrieval-treatment",
-          "status": "treatment-run",
-          "replicate_indexes": [
-            1
-          ],
-          "session_id": "sigmap-fastify-20260717-p-769d40697529-r1"
-        },
-        {
-          "id": "retrieval-leanctx",
-          "role": "retrieval-treatment",
-          "status": "treatment-run",
-          "replicate_indexes": [
-            1
-          ],
-          "session_id": "leanctx-fastify-20260717-p-769d40697529-r1"
-        },
-        {
-          "id": "terminal-snip",
-          "role": "terminal-output-treatment",
-          "status": "treatment-run",
-          "purpose": "compatible natural-use terminal compaction treatment",
-          "replicate_indexes": [
-            1
-          ],
-          "session_id": "snip-fastify-20260717-p-769d40697529-r1"
-        },
-        {
-          "id": "terminal-tokenjuice",
-          "role": "terminal-output-treatment",
-          "status": "treatment-run",
-          "purpose": "compatible natural-use terminal compaction treatment",
-          "replicate_indexes": [
-            1
-          ],
-          "session_id": "tokenjuice-fastify-20260717-p-769d40697529-r1"
+          ]
         },
         {
           "id": "headroom-default-codex",
           "role": "broad-compression-treatment",
-          "status": "treatment-run",
+          "status": "eligible-for-treatment-protocol-freeze",
           "purpose": "compatible natural-use default Headroom wrapper treatment",
           "replicate_indexes": [
             1
-          ],
-          "session_id": "codex-fastify-20260717-p-769d40697529-r1"
+          ]
         },
         {
           "id": "terminal-headroom",
           "role": "component-ablation",
-          "status": "treatment-run",
+          "status": "eligible-for-treatment-protocol-freeze",
           "purpose": "Headroom proxy-only companion ablation; not a standalone full-tool screen",
           "replicate_indexes": [
             1
-          ],
-          "session_id": "headroom-fastify-20260717-p-769d40697529-r1"
+          ]
         },
         {
-          "id": "retrieval-cartog",
-          "role": "retrieval-treatment",
-          "status": "treatment-run",
-          "purpose": "compatible natural-use retrieval treatment",
+          "id": "terminal-tokenjuice-codex-hook-v1",
+          "role": "individual-tool-treatment",
+          "status": "eligible-for-treatment-protocol-freeze",
+          "purpose": "guide-faithful product integration with assignment proof",
           "replicate_indexes": [
             1
-          ],
-          "session_id": "cartog-fastify-20260717-p-769d40697529-r1"
+          ]
         },
         {
-          "id": "codescope-owner",
-          "role": "broad-context-owner-treatment",
-          "status": "treatment-run",
-          "purpose": "compatible natural-use CodeScope MCP treatment",
+          "id": "terminal-rtk-codex-instructions-v1",
+          "role": "individual-tool-treatment",
+          "status": "eligible-for-treatment-protocol-freeze",
+          "purpose": "guide-faithful product integration with assignment proof",
           "replicate_indexes": [
             1
-          ],
-          "session_id": "owner-fastify-20260717-p-769d40697529-r1"
+          ]
         },
         {
-          "id": "swarmvault-owner",
-          "role": "broad-context-owner-treatment",
-          "status": "treatment-run",
-          "purpose": "compatible natural-use SwarmVault warm-index MCP treatment with the product-native 500-file scale cap",
+          "id": "terminal-snip-codex-hook-v1",
+          "role": "individual-tool-treatment",
+          "status": "eligible-for-treatment-protocol-freeze",
+          "purpose": "guide-faithful product integration with assignment proof",
           "replicate_indexes": [
             1
-          ],
-          "session_id": "swarmvault-fastify-20260717-p-769d40697529-r1"
+          ]
+        },
+        {
+          "id": "retrieval-graphify-codex-skill-v1",
+          "role": "individual-tool-treatment",
+          "status": "eligible-for-treatment-protocol-freeze",
+          "purpose": "guide-faithful product integration with assignment proof",
+          "replicate_indexes": [
+            1
+          ]
+        },
+        {
+          "id": "retrieval-codegraph-codex-mcp-v1",
+          "role": "individual-tool-treatment",
+          "status": "eligible-for-treatment-protocol-freeze",
+          "purpose": "canonical model-runtime PATH, official Codex integration, and assignment-proof-gated rerun",
+          "replicate_indexes": [
+            1
+          ]
+        },
+        {
+          "id": "integrated-leanctx-codex-hybrid-v1",
+          "role": "individual-tool-treatment",
+          "status": "eligible-for-treatment-protocol-freeze",
+          "purpose": "guide-faithful product integration with assignment proof",
+          "replicate_indexes": [
+            1
+          ]
+        },
+        {
+          "id": "retrieval-cartog-codex-product-v2",
+          "role": "individual-tool-treatment",
+          "status": "eligible-for-treatment-protocol-freeze",
+          "purpose": "guide-faithful product integration with assignment proof",
+          "replicate_indexes": [
+            1
+          ]
+        },
+        {
+          "id": "codescope-codex-product-v1",
+          "role": "individual-tool-treatment",
+          "status": "eligible-for-treatment-protocol-freeze",
+          "purpose": "guide-faithful product integration with assignment proof",
+          "replicate_indexes": [
+            1
+          ]
+        },
+        {
+          "id": "swarmvault-codex-product-v1",
+          "role": "individual-tool-treatment",
+          "status": "eligible-for-treatment-protocol-freeze",
+          "purpose": "guide-faithful product integration with assignment proof",
+          "replicate_indexes": [
+            1
+          ]
+        },
+        {
+          "id": "retrieval-serena-codex-mcp-v1",
+          "role": "individual-tool-treatment",
+          "status": "eligible-for-treatment-protocol-freeze",
+          "purpose": "guide-faithful product integration with assignment proof",
+          "replicate_indexes": [
+            1
+          ]
+        },
+        {
+          "id": "retrieval-sigmap-codex-live-v1",
+          "role": "individual-tool-treatment",
+          "status": "eligible-for-treatment-protocol-freeze",
+          "purpose": "guide-faithful product integration with assignment proof",
+          "replicate_indexes": [
+            1
+          ]
+        },
+        {
+          "id": "integrated-token-savior-codex-product-v2",
+          "role": "individual-tool-treatment",
+          "status": "eligible-for-treatment-protocol-freeze",
+          "purpose": "product-guided Codex MCP, verbatim author guidance, and active Bash rewrite/output hooks",
+          "replicate_indexes": [
+            1
+          ]
         }
-      ]
+      ],
+      "current_task_family": {
+        "generation": "lifecycle-v1",
+        "provider_free_qualified": true,
+        "provider_pilot_status": "completed-passed-compilation",
+        "designated_model_condition": "codex-openai-gpt-5-6-sol-high",
+        "acceptance_gate": "affected-component-compilation",
+        "quality_diagnostics_gate": false
+      }
     },
     {
       "id": "medium-beetbox-beets",
@@ -289,213 +295,220 @@
         "command": "sources/evaluations/fixtures/medium/beetbox-beets/verify-smoke.sh"
       },
       "prompt": {
-        "path": "sources/evaluations/fixtures/medium/beetbox-beets/tasks/README.md",
-        "prompt_policy": "Prompts are disclosed one at a time; proposed review evidence appears only with task 3; acceptance assets remain controller-only."
+        "path": "sources/evaluations/fixtures/medium/beetbox-beets/task-generations/baseline-v4/README.md",
+        "prompt_policy": "Baseline V4 preserves the Baseline V3 exact routine recipes and focused model-visible validation while each generation-local verifier safely derives the copied project root; task 3 alone receives the proposed review patch."
       },
       "artifact_paths": {
         "root": "sources/evaluations/workflow-sessions/",
         "baseline_session_ids": [
           "baseline-beets-20260716-p-b440da225a3a-r0",
-          "baseline-beets-20260716-p-b440da225a3a-r1"
+          "baseline-beets-20260716-p-b440da225a3a-r1",
+          "baseline-beets-20260728-p-fcc8438d2077-r0"
         ]
       },
       "candidate_profiles": [
         "baseline-bare-codex",
-        "retrieval-codegraph"
+        "terminal-tokenjuice-codex-hook-v1",
+        "terminal-rtk-codex-instructions-v1",
+        "terminal-rtk-claude-code-hook-v1",
+        "terminal-snip-codex-hook-v1",
+        "retrieval-graphify-codex-skill-v1",
+        "retrieval-codegraph-codex-mcp-v1",
+        "retrieval-jcodemunch-codex-mcp-v2",
+        "integrated-leanctx-codex-hybrid-v1",
+        "retrieval-cartog-codex-product-v2",
+        "codescope-codex-product-v1",
+        "swarmvault-codex-product-v1",
+        "retrieval-serena-codex-mcp-v1",
+        "retrieval-sigmap-codex-live-v1",
+        "integrated-token-savior-codex-product-v2",
+        "artifact-ponytail-codex-plugin-v1",
+        "behavior-caveman-codex-skill-v1"
       ],
       "blockers": [],
       "caveats": [
-        "The retained baseline is eligible from operational integrity and complete provider usage; verifier and optional source-review outcomes are diagnostic."
+        "The retained baseline is eligible from operational integrity and complete provider usage; verifier and optional source-review outcomes are diagnostic.",
+        "Executed assisted-v1 sessions and protocols remain immutable historical evidence and are not comparison controls for Baseline V4."
       ],
       "tasks": [
-        "beets-lifecycle-feature-v0",
-        "beets-lifecycle-refactor-v0",
-        "beets-lifecycle-review-v0"
+        "beets-lifecycle-feature-v1",
+        "beets-lifecycle-refactor-v1",
+        "beets-lifecycle-review-v1"
       ],
       "qualification_status": "active-reproduction-flow",
-      "workflow_sequence_id": "beets-lifecycle-sequence-v0",
-      "qualification_evidence": "sources/evaluations/fixtures/medium/beetbox-beets/qualification-lifecycle-v0.json",
+      "workflow_sequence_id": "beets-lifecycle-sequence-v1",
+      "qualification_evidence": "sources/evaluations/fixtures/medium/beetbox-beets/qualification-lifecycle-v1.json",
       "active_profiles": [
         "baseline-bare-codex"
       ],
       "future_evaluation_lanes": [
         {
           "id": "baseline-bare-codex",
-          "status": "completed",
-          "purpose": "retained lifecycle-v0 control",
+          "status": "completed-passed-compilation",
+          "purpose": "first-valid Codex CLI GPT-5.6 Sol/high Lifecycle V1 compile-only pilot; all affected-component and project-wide compilation passed",
           "replicate_indexes": [
-            0,
+            0
+          ]
+        },
+        {
+          "id": "behavior-caveman-codex-skill-v1",
+          "role": "individual-tool-treatment",
+          "status": "eligible-for-treatment-protocol-freeze",
+          "purpose": "guide-faithful native Codex skill install and documented per-session activation",
+          "replicate_indexes": [
             1
           ]
         },
         {
-          "id": "retrieval-codegraph",
-          "status": "treatment-run",
-          "purpose": "compatible individual-tool treatment",
-          "role": "retrieval-treatment",
+          "id": "artifact-ponytail-codex-plugin-v1",
+          "role": "individual-tool-treatment",
+          "status": "eligible-for-treatment-protocol-freeze",
+          "purpose": "guide-faithful official Codex plugin install with reviewed trusted lifecycle hooks",
           "replicate_indexes": [
             1
-          ],
-          "session_id": "codegraph-beets-20260717-p-b440da225a3a-r1"
-        },
-        {
-          "id": "behavior-caveman",
-          "role": "behavior-policy-treatment",
-          "status": "treatment-run",
-          "replicate_indexes": [
-            1
-          ],
-          "session_id": "caveman-beets-20260716-p-b440da225a3a-r1"
-        },
-        {
-          "id": "terminal-rtk",
-          "role": "terminal-output-treatment",
-          "status": "treatment-run",
-          "replicate_indexes": [
-            1
-          ],
-          "session_id": "rtk-beets-20260716-p-b440da225a3a-r1"
-        },
-        {
-          "id": "retrieval-serena",
-          "role": "retrieval-treatment",
-          "status": "treatment-run",
-          "replicate_indexes": [
-            1
-          ],
-          "session_id": "serena-beets-20260716-p-b440da225a3a-r1"
-        },
-        {
-          "id": "artifact-ponytail",
-          "role": "artifact-policy-treatment",
-          "status": "treatment-run",
-          "replicate_indexes": [
-            1
-          ],
-          "session_id": "ponytail-beets-20260716-p-b440da225a3a-r1"
-        },
-        {
-          "id": "integrated-token-savior",
-          "role": "integrated-mcp-treatment",
-          "status": "treatment-run",
-          "replicate_indexes": [
-            1
-          ],
-          "session_id": "savior-beets-20260716-p-b440da225a3a-r1"
-        },
-        {
-          "id": "retrieval-graphify",
-          "role": "retrieval-treatment",
-          "status": "treatment-run",
-          "replicate_indexes": [
-            1
-          ],
-          "session_id": "graphify-beets-20260716-p-b440da225a3a-r1"
-        },
-        {
-          "id": "retrieval-jcodemunch-mcp",
-          "role": "retrieval-treatment",
-          "status": "treatment-run",
-          "replicate_indexes": [
-            1
-          ],
-          "session_id": "mcp-beets-20260717-p-b440da225a3a-r1"
-        },
-        {
-          "id": "retrieval-sigmap",
-          "role": "retrieval-treatment",
-          "status": "treatment-run",
-          "replicate_indexes": [
-            1
-          ],
-          "session_id": "sigmap-beets-20260717-p-b440da225a3a-r1"
-        },
-        {
-          "id": "retrieval-leanctx",
-          "role": "retrieval-treatment",
-          "status": "treatment-run",
-          "replicate_indexes": [
-            1
-          ],
-          "session_id": "leanctx-beets-20260717-p-b440da225a3a-r1"
-        },
-        {
-          "id": "terminal-snip",
-          "role": "terminal-output-treatment",
-          "status": "treatment-run",
-          "purpose": "compatible natural-use terminal compaction treatment",
-          "replicate_indexes": [
-            1
-          ],
-          "session_id": "snip-beets-20260717-p-b440da225a3a-r1"
-        },
-        {
-          "id": "terminal-tokenjuice",
-          "role": "terminal-output-treatment",
-          "status": "treatment-run",
-          "purpose": "compatible natural-use terminal compaction treatment",
-          "replicate_indexes": [
-            1
-          ],
-          "session_id": "tokenjuice-beets-20260717-p-b440da225a3a-r1"
+          ]
         },
         {
           "id": "headroom-default-codex",
           "role": "broad-compression-treatment",
-          "status": "treatment-run",
+          "status": "eligible-for-treatment-protocol-freeze",
           "purpose": "compatible natural-use default Headroom wrapper treatment",
           "replicate_indexes": [
             1
-          ],
-          "session_id": "codex-beets-20260717-p-b440da225a3a-r1"
+          ]
         },
         {
           "id": "terminal-headroom",
           "role": "component-ablation",
-          "status": "treatment-run",
+          "status": "eligible-for-treatment-protocol-freeze",
           "purpose": "Headroom proxy-only companion ablation; not a standalone full-tool screen",
           "replicate_indexes": [
             1
-          ],
-          "session_id": "headroom-beets-20260717-p-b440da225a3a-r1"
+          ]
         },
         {
-          "id": "retrieval-cartog",
-          "role": "retrieval-treatment",
-          "status": "treatment-run",
-          "purpose": "compatible natural-use retrieval treatment",
+          "id": "terminal-tokenjuice-codex-hook-v1",
+          "role": "individual-tool-treatment",
+          "status": "eligible-for-treatment-protocol-freeze",
+          "purpose": "guide-faithful product integration with assignment proof",
           "replicate_indexes": [
             1
-          ],
-          "session_id": "cartog-beets-20260717-p-b440da225a3a-r1"
+          ]
         },
         {
-          "id": "codescope-owner",
-          "role": "broad-context-owner-treatment",
-          "status": "treatment-run",
-          "purpose": "compatible natural-use CodeScope MCP treatment",
+          "id": "terminal-rtk-codex-instructions-v1",
+          "role": "individual-tool-treatment",
+          "status": "eligible-for-treatment-protocol-freeze",
+          "purpose": "guide-faithful product integration with assignment proof",
           "replicate_indexes": [
             1
-          ],
-          "session_id": "owner-beets-20260717-p-b440da225a3a-r1"
+          ]
         },
         {
-          "id": "swarmvault-owner",
-          "role": "broad-context-owner-treatment",
-          "status": "treatment-run",
-          "purpose": "compatible natural-use SwarmVault warm-index MCP treatment with the product-native 500-file scale cap",
+          "id": "terminal-snip-codex-hook-v1",
+          "role": "individual-tool-treatment",
+          "status": "eligible-for-treatment-protocol-freeze",
+          "purpose": "guide-faithful product integration with assignment proof",
           "replicate_indexes": [
             1
-          ],
-          "session_id": "swarmvault-beets-20260717-p-b440da225a3a-r1"
+          ]
+        },
+        {
+          "id": "retrieval-graphify-codex-skill-v1",
+          "role": "individual-tool-treatment",
+          "status": "eligible-for-treatment-protocol-freeze",
+          "purpose": "guide-faithful product integration with assignment proof",
+          "replicate_indexes": [
+            1
+          ]
+        },
+        {
+          "id": "retrieval-codegraph-codex-mcp-v1",
+          "role": "individual-tool-treatment",
+          "status": "eligible-for-treatment-protocol-freeze",
+          "purpose": "canonical model-runtime PATH, official Codex integration, and assignment-proof-gated rerun",
+          "replicate_indexes": [
+            1
+          ]
+        },
+        {
+          "id": "integrated-leanctx-codex-hybrid-v1",
+          "role": "individual-tool-treatment",
+          "status": "eligible-for-treatment-protocol-freeze",
+          "purpose": "guide-faithful product integration with assignment proof",
+          "replicate_indexes": [
+            1
+          ]
+        },
+        {
+          "id": "retrieval-cartog-codex-product-v2",
+          "role": "individual-tool-treatment",
+          "status": "eligible-for-treatment-protocol-freeze",
+          "purpose": "guide-faithful product integration with assignment proof",
+          "replicate_indexes": [
+            1
+          ]
+        },
+        {
+          "id": "codescope-codex-product-v1",
+          "role": "individual-tool-treatment",
+          "status": "eligible-for-treatment-protocol-freeze",
+          "purpose": "guide-faithful product integration with assignment proof",
+          "replicate_indexes": [
+            1
+          ]
+        },
+        {
+          "id": "swarmvault-codex-product-v1",
+          "role": "individual-tool-treatment",
+          "status": "eligible-for-treatment-protocol-freeze",
+          "purpose": "guide-faithful product integration with assignment proof",
+          "replicate_indexes": [
+            1
+          ]
+        },
+        {
+          "id": "retrieval-serena-codex-mcp-v1",
+          "role": "individual-tool-treatment",
+          "status": "eligible-for-treatment-protocol-freeze",
+          "purpose": "guide-faithful product integration with assignment proof",
+          "replicate_indexes": [
+            1
+          ]
+        },
+        {
+          "id": "retrieval-sigmap-codex-live-v1",
+          "role": "individual-tool-treatment",
+          "status": "eligible-for-treatment-protocol-freeze",
+          "purpose": "guide-faithful product integration with assignment proof",
+          "replicate_indexes": [
+            1
+          ]
+        },
+        {
+          "id": "integrated-token-savior-codex-product-v2",
+          "role": "individual-tool-treatment",
+          "status": "eligible-for-treatment-protocol-freeze",
+          "purpose": "product-guided Codex MCP, verbatim author guidance, and active Bash rewrite/output hooks",
+          "replicate_indexes": [
+            1
+          ]
         }
-      ]
+      ],
+      "current_task_family": {
+        "generation": "lifecycle-v1",
+        "provider_free_qualified": true,
+        "provider_pilot_status": "completed-passed-compilation",
+        "designated_model_condition": "codex-openai-gpt-5-6-sol-high",
+        "acceptance_gate": "affected-component-compilation",
+        "quality_diagnostics_gate": false
+      }
     },
     {
       "id": "large-hashicorp-terraform",
-      "status": "treatment-ready",
+      "status": "retired-fixture",
       "fixture_scale": "large-project",
-      "evaluation_use": "primary-objective",
+      "evaluation_use": "historical-evidence",
       "repository": {
         "url": "https://github.com/hashicorp/terraform",
         "id": "large__hashicorp-terraform",
@@ -523,207 +536,41 @@
         "command": "sources/evaluations/fixtures/large/hashicorp-terraform/verify-smoke.sh"
       },
       "prompt": {
-        "path": "sources/evaluations/fixtures/large/hashicorp-terraform/tasks/README.md",
-        "prompt_policy": "Prompts are disclosed one at a time; proposed review evidence appears only with task 3; acceptance assets remain controller-only."
+        "path": "sources/evaluations/fixtures/large/hashicorp-terraform/task-generations/baseline-v4/README.md",
+        "prompt_policy": "Baseline V4 preserves the Baseline V3 exact routine recipes and focused model-visible validation while each generation-local verifier safely derives the copied project root; task 3 alone receives the proposed review patch."
       },
       "artifact_paths": {
         "root": "sources/evaluations/workflow-sessions/",
         "baseline_session_ids": [
           "baseline-terraform-20260716-p-ded8609b4172-r0",
-          "baseline-terraform-20260716-p-ded8609b4172-r1"
+          "baseline-terraform-20260716-p-ded8609b4172-r1",
+          "baseline-terraform-20260728-p-5811b463c1e9-r0"
         ]
       },
-      "candidate_profiles": [
-        "baseline-bare-codex",
-        "retrieval-codegraph"
+      "candidate_profiles": [],
+      "blockers": [
+        "Retired from the active Lifecycle V1 portfolio; the owner-declared-invalid r0 result was removed under its invalidation receipt."
       ],
-      "blockers": [],
       "caveats": [
-        "The retained baseline is eligible from operational integrity and complete provider usage; verifier and optional source-review outcomes are diagnostic."
+        "Terraform's invalid V1 r0 protocol and raw evidence were removed; retained task and qualification sources cannot authorize a rerun or treatment."
       ],
       "tasks": [
-        "terraform-lifecycle-feature-v0",
-        "terraform-lifecycle-refactor-v0",
-        "terraform-lifecycle-review-v0"
+        "terraform-lifecycle-feature-v1",
+        "terraform-lifecycle-refactor-v1",
+        "terraform-lifecycle-review-v1"
       ],
-      "qualification_status": "active-reproduction-flow",
-      "workflow_sequence_id": "terraform-lifecycle-sequence-v0",
-      "qualification_evidence": "sources/evaluations/fixtures/large/hashicorp-terraform/qualification-lifecycle-v0.json",
-      "active_profiles": [
-        "baseline-bare-codex"
-      ],
-      "future_evaluation_lanes": [
-        {
-          "id": "baseline-bare-codex",
-          "status": "completed",
-          "purpose": "retained lifecycle-v0 control",
-          "replicate_indexes": [
-            0,
-            1
-          ]
-        },
-        {
-          "id": "retrieval-codegraph",
-          "status": "treatment-run",
-          "purpose": "compatible individual-tool treatment",
-          "role": "retrieval-treatment",
-          "replicate_indexes": [
-            1
-          ],
-          "session_id": "codegraph-terraform-20260717-p-ded8609b4172-r1"
-        },
-        {
-          "id": "behavior-caveman",
-          "role": "behavior-policy-treatment",
-          "status": "treatment-run",
-          "replicate_indexes": [
-            1
-          ],
-          "session_id": "caveman-terraform-20260716-p-ded8609b4172-r1"
-        },
-        {
-          "id": "terminal-rtk",
-          "role": "terminal-output-treatment",
-          "status": "treatment-run",
-          "replicate_indexes": [
-            1
-          ],
-          "session_id": "rtk-terraform-20260716-p-ded8609b4172-r1"
-        },
-        {
-          "id": "retrieval-serena",
-          "role": "retrieval-treatment",
-          "status": "treatment-run",
-          "replicate_indexes": [
-            1
-          ],
-          "session_id": "serena-terraform-20260716-p-ded8609b4172-r1"
-        },
-        {
-          "id": "artifact-ponytail",
-          "role": "artifact-policy-treatment",
-          "status": "treatment-run",
-          "replicate_indexes": [
-            1
-          ],
-          "session_id": "ponytail-terraform-20260716-p-ded8609b4172-r1"
-        },
-        {
-          "id": "integrated-token-savior",
-          "role": "integrated-mcp-treatment",
-          "status": "treatment-run",
-          "replicate_indexes": [
-            1
-          ],
-          "session_id": "savior-terraform-20260716-p-ded8609b4172-r1"
-        },
-        {
-          "id": "retrieval-graphify",
-          "role": "retrieval-treatment",
-          "status": "treatment-run",
-          "replicate_indexes": [
-            1
-          ],
-          "session_id": "graphify-terraform-20260716-p-ded8609b4172-r1"
-        },
-        {
-          "id": "retrieval-jcodemunch-mcp",
-          "role": "retrieval-treatment",
-          "status": "treatment-run",
-          "replicate_indexes": [
-            1
-          ],
-          "session_id": "mcp-terraform-20260717-p-ded8609b4172-r1"
-        },
-        {
-          "id": "retrieval-sigmap",
-          "role": "retrieval-treatment",
-          "status": "treatment-run",
-          "replicate_indexes": [
-            1
-          ],
-          "session_id": "sigmap-terraform-20260717-p-ded8609b4172-r1"
-        },
-        {
-          "id": "retrieval-leanctx",
-          "role": "retrieval-treatment",
-          "status": "treatment-run",
-          "replicate_indexes": [
-            1
-          ],
-          "session_id": "leanctx-terraform-20260717-p-ded8609b4172-r1"
-        },
-        {
-          "id": "terminal-snip",
-          "role": "terminal-output-treatment",
-          "status": "treatment-run",
-          "purpose": "compatible natural-use terminal compaction treatment",
-          "replicate_indexes": [
-            1
-          ],
-          "session_id": "snip-terraform-20260717-p-ded8609b4172-r1"
-        },
-        {
-          "id": "terminal-tokenjuice",
-          "role": "terminal-output-treatment",
-          "status": "treatment-run",
-          "purpose": "compatible natural-use terminal compaction treatment",
-          "replicate_indexes": [
-            1
-          ],
-          "session_id": "tokenjuice-terraform-20260717-p-ded8609b4172-r1"
-        },
-        {
-          "id": "headroom-default-codex",
-          "role": "broad-compression-treatment",
-          "status": "treatment-run",
-          "purpose": "compatible natural-use default Headroom wrapper treatment",
-          "replicate_indexes": [
-            1
-          ],
-          "session_id": "codex-terraform-20260717-p-ded8609b4172-r1"
-        },
-        {
-          "id": "terminal-headroom",
-          "role": "component-ablation",
-          "status": "treatment-run",
-          "purpose": "Headroom proxy-only companion ablation; not a standalone full-tool screen",
-          "replicate_indexes": [
-            1
-          ],
-          "session_id": "headroom-terraform-20260717-p-ded8609b4172-r1"
-        },
-        {
-          "id": "retrieval-cartog",
-          "role": "retrieval-treatment",
-          "status": "treatment-run",
-          "purpose": "compatible natural-use retrieval treatment",
-          "replicate_indexes": [
-            1
-          ],
-          "session_id": "cartog-terraform-20260717-p-ded8609b4172-r1"
-        },
-        {
-          "id": "codescope-owner",
-          "role": "broad-context-owner-treatment",
-          "status": "treatment-run",
-          "purpose": "compatible natural-use CodeScope MCP treatment",
-          "replicate_indexes": [
-            1
-          ],
-          "session_id": "owner-terraform-20260717-p-ded8609b4172-r1"
-        },
-        {
-          "id": "swarmvault-owner",
-          "role": "broad-context-owner-treatment",
-          "status": "treatment-run",
-          "purpose": "compatible natural-use SwarmVault warm-index MCP treatment with the product-native 500-file scale cap",
-          "replicate_indexes": [
-            1
-          ],
-          "session_id": "swarmvault-terraform-20260717-p-ded8609b4172-r1"
-        }
-      ]
+      "qualification_status": "historical-evidence",
+      "qualification_evidence": "sources/evaluations/fixtures/large/hashicorp-terraform/qualification-lifecycle-v1.json",
+      "active_profiles": [],
+      "future_evaluation_lanes": [],
+      "retained_task_family": {
+        "generation": "lifecycle-v1",
+        "provider_free_qualified": true,
+        "provider_pilot_status": "invalidated-and-removed",
+        "designated_model_condition": "codex-openai-gpt-5-6-sol-high",
+        "acceptance_gate": "affected-component-compilation",
+        "quality_diagnostics_gate": false
+      }
     }
   ],
   "fixture_scales": [

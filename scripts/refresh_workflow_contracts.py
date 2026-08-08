@@ -18,6 +18,8 @@ from typing import Any
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 from scripts import run_codex_workflow_evaluation as runner
+from scripts import run_opencode_openrouter_workflow_model_condition as opencode_openrouter_condition
+from scripts import workflow_model_condition_runtime as condition_runtime
 
 
 def digest(path: Path) -> str:
@@ -34,24 +36,79 @@ def write_json(path: Path, value: object) -> None:
     path.write_text(rendered)
 
 
-def protocol_id(seq: dict[str, Any], profile_id: str) -> str:
-    execution = runner.execution_condition_descriptor(
-        seq,
-        profile_id,
-        timeout_seconds_per_task=3600,
-        docker_image=runner.DEFAULT_DOCKER_IMAGE,
-    )
-    identity = {
-        "baseline_protocol": runner.baseline_protocol_descriptor(seq),
-        "selected_execution": execution,
+MODEL_CONDITION_LAUNCHER = "scripts/run_codex_workflow_model_condition.py"
+OPENCODE_MODEL_CONDITION_LAUNCHER = "scripts/run_opencode_workflow_model_condition.py"
+CLAUDE_MODEL_CONDITION_LAUNCHER = "scripts/run_claude_code_workflow_model_condition.py"
+BASELINE_MODEL_CONDITION: dict[str, Any] | None = None
+
+
+def registered_model_condition(condition_id: str, model: str, reasoning_effort: str) -> dict[str, Any]:
+    selected, _ = condition_runtime.resolve_condition_pair(ROOT, condition_id)
+    if selected.get("model") != model or selected.get("reasoning_effort") != reasoning_effort:
+        raise ValueError(f"registered model condition does not match {condition_id}/{model}/{reasoning_effort}")
+    return selected
+
+
+def configure_model_condition(condition_id: str, model: str, reasoning_effort: str) -> None:
+    global BASELINE_MODEL_CONDITION, MODEL_CONDITION_LAUNCHER
+    if condition_id == opencode_openrouter_condition.CONDITION_ID:
+        selected = opencode_openrouter_condition.registered_condition(ROOT)
+        if selected.get("model") != model or selected.get("reasoning_effort") != reasoning_effort:
+            raise ValueError(f"registered model condition does not match {condition_id}/{model}/{reasoning_effort}")
+        MODEL_CONDITION_LAUNCHER = opencode_openrouter_condition.LAUNCHER_PATH
+        opencode_openrouter_condition.configure_runner(runner)
+        BASELINE_MODEL_CONDITION = selected
+        return
+    selected, _ = condition_runtime.resolve_condition_pair(ROOT, condition_id)
+    MODEL_CONDITION_LAUNCHER = {
+        "opencode-cli": OPENCODE_MODEL_CONDITION_LAUNCHER,
+        "claude-code": CLAUDE_MODEL_CONDITION_LAUNCHER,
+    }.get(selected.get("runtime_id"), "scripts/run_codex_workflow_model_condition.py")
+    launcher_path = ROOT / MODEL_CONDITION_LAUNCHER
+    launcher_identity = {
+        "path": MODEL_CONDITION_LAUNCHER,
+        "sha256": digest(launcher_path),
     }
-    return "-".join(
-        (
-            runner.safe_profile_key(seq["id"]),
-            runner.safe_profile_key(profile_id),
-            runner._json_hash(identity)[:12],
-        )
+    if selected.get("runtime_id") in {"opencode-cli", "claude-code"}:
+        runtime_path = ROOT / "scripts/workflow_model_condition_runtime.py"
+        launcher_identity.update({
+            "condition_runtime_path": "scripts/workflow_model_condition_runtime.py",
+            "condition_runtime_sha256": digest(runtime_path),
+        })
+    _, BASELINE_MODEL_CONDITION = condition_runtime.configure_runner(
+        runner,
+        selected_condition_id=condition_id,
+        expected_model=model,
+        expected_reasoning_effort=reasoning_effort,
+        launcher_identity=launcher_identity,
     )
+
+
+def runner_command(
+    seq: dict[str, Any],
+    profile_id: str,
+    protocol_path: Path,
+    execution: dict[str, Any],
+) -> str:
+    override = execution.get("model_condition_override")
+    if isinstance(override, dict):
+        prefix = (
+            f"python3 {MODEL_CONDITION_LAUNCHER} "
+            f"--workflow-model-condition-id {override['model_condition_id']} "
+            f"--workflow-model {override['model']} "
+            f"--workflow-reasoning-effort {override['reasoning_effort']}"
+        )
+    else:
+        prefix = "python3 scripts/run_codex_workflow_evaluation.py"
+    return (
+        f"{prefix} --sequence-id {seq['id']} --profile-id {profile_id} "
+        f"--timeout-per-task 3600 --protocol {protocol_path.relative_to(ROOT)} "
+        f"--docker-image {runner.DEFAULT_DOCKER_IMAGE}"
+    )
+
+
+def protocol_id(seq: dict[str, Any], profile_id: str) -> str:
+    return runner.canonical_protocol_id(seq, profile_id)
 
 
 def frozen_protocol(
@@ -68,29 +125,54 @@ def frozen_protocol(
         timeout_seconds_per_task=3600,
         docker_image=runner.DEFAULT_DOCKER_IMAGE,
     )
-    command = (
-        "python3 scripts/run_codex_workflow_evaluation.py "
-        f"--sequence-id {seq['id']} --profile-id {profile_id} "
-        f"--timeout-per-task 3600 --protocol {protocol_path.relative_to(ROOT)} "
-        f"--docker-image {runner.DEFAULT_DOCKER_IMAGE}"
-    )
+    command = runner_command(seq, profile_id, protocol_path, execution)
+    selected_agent = execution["agent_condition"]
     agent = {
         "profile_id": profile_id,
-        "provider": "openai",
-        "model": runner.DEFAULT_WORKFLOW_MODEL,
-        "model_condition_id": runner.DEFAULT_WORKFLOW_MODEL_CONDITION_ID,
-        "reasoning_effort": runner.DEFAULT_WORKFLOW_REASONING_EFFORT,
+        "runtime_id": selected_agent["runtime_id"],
+        "provider": selected_agent.get("provider"),
+        "model": selected_agent.get("model"),
+        "model_condition_id": selected_agent.get("model_condition_id"),
+        "reasoning_effort": selected_agent.get("reasoning_effort"),
         "command": command,
     }
+    baseline_profile_id = (
+        "baseline-claude-code-no-mcp"
+        if selected_agent.get("runtime_id") == "claude-code"
+        else "baseline-opencode-openrouter-no-mcp"
+        if selected_agent.get("runtime_id") == "opencode-cli"
+        and selected_agent.get("provider") == "openrouter"
+        else "baseline-bare-codex"
+    )
     baseline = {
-        "profile_id": "baseline-bare-codex",
-        "provider": "openai",
-        "model": runner.DEFAULT_WORKFLOW_MODEL,
-        "model_condition_id": runner.DEFAULT_WORKFLOW_MODEL_CONDITION_ID,
-        "reasoning_effort": runner.DEFAULT_WORKFLOW_REASONING_EFFORT,
-        "command": command if profile_id == "baseline-bare-codex" else "",
+        "profile_id": baseline_profile_id,
+        "runtime_id": descriptor.get("agent_condition", descriptor.get("agent", {}))["runtime_id"],
+        "provider": descriptor.get("agent_condition", descriptor.get("agent", {})).get("provider"),
+        "model": selected_agent.get("model"),
+        "model_condition_id": (
+            BASELINE_MODEL_CONDITION["id"]
+            if BASELINE_MODEL_CONDITION is not None
+            else runner.DEFAULT_WORKFLOW_MODEL_CONDITION_ID
+        ),
+        "reasoning_effort": selected_agent.get("reasoning_effort"),
+        "command": command if profile_id == baseline_profile_id else "",
     }
-    treatment = {} if profile_id == "baseline-bare-codex" else agent
+    treatment = {} if profile_id == baseline_profile_id else agent
+    comparison_baseline = dict(baseline)
+    if (
+        selected_agent.get("runtime_id") == "opencode-cli"
+        and selected_agent.get("provider") != "openrouter"
+        and profile_id != "runtime-opencode-codex-product-v1"
+    ):
+        comparison_baseline = {
+            "profile_id": "runtime-opencode-codex-product-v1",
+            "runtime_id": "opencode-cli",
+            "provider": "openai",
+            "model": runner.DEFAULT_WORKFLOW_MODEL,
+            "model_condition_id": runner.DEFAULT_WORKFLOW_MODEL_CONDITION_ID,
+            "reasoning_effort": runner.DEFAULT_WORKFLOW_REASONING_EFFORT,
+            "selection_policy": "sequence-pool-replicate-matched-first-valid",
+        }
     return {
         "protocol_schema_version": 3,
         "protocol_id": pid,
@@ -102,6 +184,7 @@ def frozen_protocol(
         "task_fixture": {
             "fixture_id": seq["fixture_id"],
             "sequence_id": seq["id"],
+            "task_family_generation": seq.get("task_family_generation"),
             "repository": seq["initial_snapshot"]["upstream"],
             "snapshot": seq["initial_snapshot"]["commit"],
             "qualification_path": str(qualification_path.relative_to(ROOT)),
@@ -109,6 +192,7 @@ def frozen_protocol(
             "timeout_seconds_per_task": 3600,
         },
         "baseline": baseline,
+        "comparison_baseline": comparison_baseline,
         "treatment": treatment,
         "token_accounting_boundary": {
             "fields": [
@@ -136,23 +220,64 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--sequence-id", action="append", dest="sequence_ids", help="active sequence; repeat to select several (default: all active)")
     parser.add_argument("--profile-id", default="baseline-bare-codex", choices=sorted(runner.PROFILE_META))
+    parser.add_argument("--workflow-model-condition-id")
+    parser.add_argument("--workflow-model")
+    parser.add_argument("--workflow-reasoning-effort")
+    parser.add_argument("--replicate-index", type=int, default=1)
     return parser.parse_args(argv)
 
 
 def main(argv: list[str] | None = None) -> int:
     args = parse_args(argv)
-    runner.validate_default_model_condition()
+    model_values = (
+        args.workflow_model_condition_id,
+        args.workflow_model,
+        args.workflow_reasoning_effort,
+    )
+    if any(model_values) and not all(model_values):
+        raise SystemExit(
+            "--workflow-model-condition-id, --workflow-model, and --workflow-reasoning-effort must be supplied together"
+        )
+    if args.profile_id == "baseline-opencode-openrouter-no-mcp" and model_values != (
+        "opencode-openrouter-gpt-5-6-sol-high", "gpt-5.6-sol", "high"
+    ):
+        raise SystemExit(
+            "baseline-opencode-openrouter-no-mcp requires the exact OpenRouter GPT-5.6 Sol/high model condition"
+        )
     runner.assert_profile_runnable(args.profile_id)
     sequence_ids = args.sequence_ids or runner.active_sequence_ids()
+    sequences: list[dict[str, Any]] = []
     for sequence_id in sequence_ids:
         seq = runner.load_sequence(sequence_id)
         if seq.get("status") != "active":
             raise ValueError(f"cannot freeze a non-active sequence: {sequence_id}")
+        if args.profile_id != "baseline-bare-codex":
+            selected_runtime = runner.profile_runtime_id(args.profile_id)
+            standalone_opencode_control = runner.standalone_opencode_control_authorized(
+                args.profile_id,
+                args.replicate_index,
+                ROOT,
+                sequence_id=sequence_id,
+                model_condition_id=args.workflow_model_condition_id,
+            )
+            if (
+                selected_runtime not in {"claude-code"}
+                and args.profile_id != "baseline-opencode-openrouter-no-mcp"
+                and not standalone_opencode_control
+            ):
+                # Validate the published Codex baseline before replacement-runtime
+                # conditions patch the selected execution descriptor.
+                runner.require_baseline_v2_treatment_gate(seq, ROOT)
         current, _ = runner.qualification_is_current(seq)
         if not current:
             raise ValueError(
                 f"qualification evidence is stale for {sequence_id}; run and review generate_workflow_qualification.py explicitly"
             )
+        sequences.append(seq)
+    if all(model_values):
+        configure_model_condition(*model_values)
+    runner.validate_default_model_condition()
+    for seq in sequences:
         qualification_path = ROOT / seq["qualification_path"]
         protocol = frozen_protocol(seq, args.profile_id, qualification_path)
         path = ROOT / "sources/evaluations/protocols" / f"{protocol['protocol_id']}.json"

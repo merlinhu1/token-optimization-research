@@ -1,0 +1,117 @@
+{
+  "schema_version": "codegraph-provider-actual-use-audit/v1",
+  "generated_at": "2026-07-20T01:11:30.623318+00:00",
+  "profile_id": "retrieval-codegraph-codex-mcp-v1",
+  "model_condition_id": "codex-openai-gpt-5-6-luna-xhigh",
+  "replicate_index": 2,
+  "purpose": "Prove the corrected canonical CodeGraph provider sample initialized the real MCP surface and produced successful model-issued codegraph explore commands in every persistent workflow task.",
+  "derived_audit_provider_calls": 0,
+  "sessions": [
+    {
+      "session_id": "codegraph-beets-20260720-p-b440da225a3a-r2",
+      "sequence_id": "beets-lifecycle-sequence-v0",
+      "frozen_protocol": {
+        "protocol_id": "beets-lifecycle-sequence-v0-retrieval-codegraph-codex-mcp-v1-123970c857f8",
+        "path": "sources/evaluations/protocols/beets-lifecycle-sequence-v0-retrieval-codegraph-codex-mcp-v1-123970c857f8.json",
+        "sha256": "71603247980dc013d03d52089af6b71ab7f22eb408b056427732097db0753a7c"
+      },
+      "manifest_sha256": "cc879acf6bf09f7f1106d1ae2dc49879bc828d5be948ad882bab4c9425f4df95",
+      "mcp_handshake": {
+        "passed": true,
+        "initialize_passed": true,
+        "tool_names": [
+          "codegraph_explore"
+        ]
+      },
+      "per_task": {
+        "task-01": {
+          "successful_codegraph_explore_calls": 2
+        },
+        "task-02": {
+          "successful_codegraph_explore_calls": 1
+        },
+        "task-03": {
+          "successful_codegraph_explore_calls": 1
+        }
+      },
+      "successful_codegraph_explore_calls": 4,
+      "provider_tokens": 8763423,
+      "tasks_passed": 3,
+      "verifier_integrity_passed": true,
+      "tool_isolation_audit_passed": true
+    },
+    {
+      "session_id": "codegraph-fastify-20260719-p-769d40697529-r2",
+      "sequence_id": "fastify-lifecycle-sequence-v0",
+      "frozen_protocol": {
+        "protocol_id": "fastify-lifecycle-sequence-v0-retrieval-codegraph-codex-mcp-v1-e42abaae4e75",
+        "path": "sources/evaluations/protocols/fastify-lifecycle-sequence-v0-retrieval-codegraph-codex-mcp-v1-e42abaae4e75.json",
+        "sha256": "726eb1e00f3f55c7c35c8f9b2b9733a683e5dbef5fb8dfa297a440fe6f657215"
+      },
+      "manifest_sha256": "a42ea1b3484efa08ac52525a93ad5685bfaf8da498e60fc4c6b0501d6c8bd218",
+      "mcp_handshake": {
+        "passed": true,
+        "initialize_passed": true,
+        "tool_names": [
+          "codegraph_explore"
+        ]
+      },
+      "per_task": {
+        "task-01": {
+          "successful_codegraph_explore_calls": 2
+        },
+        "task-02": {
+          "successful_codegraph_explore_calls": 1
+        },
+        "task-03": {
+          "successful_codegraph_explore_calls": 5
+        }
+      },
+      "successful_codegraph_explore_calls": 8,
+      "provider_tokens": 5561571,
+      "tasks_passed": 3,
+      "verifier_integrity_passed": true,
+      "tool_isolation_audit_passed": true
+    },
+    {
+      "session_id": "codegraph-terraform-20260720-p-ded8609b4172-r2",
+      "sequence_id": "terraform-lifecycle-sequence-v0",
+      "frozen_protocol": {
+        "protocol_id": "terraform-lifecycle-sequence-v0-retrieval-codegraph-codex-mcp-v1-97c66c0402ac",
+        "path": "sources/evaluations/protocols/terraform-lifecycle-sequence-v0-retrieval-codegraph-codex-mcp-v1-97c66c0402ac.json",
+        "sha256": "2307ce6f209395b812c58d253d3d19b749063f0bdd14a55f78e29d4a3c2f64b8"
+      },
+      "manifest_sha256": "b9b6fd74a169df3cf3269a295afd66baeb8024e6c13b5fb84ff01fb23bed8b31",
+      "mcp_handshake": {
+        "passed": true,
+        "initialize_passed": true,
+        "tool_names": [
+          "codegraph_explore"
+        ]
+      },
+      "per_task": {
+        "task-01": {
+          "successful_codegraph_explore_calls": 5
+        },
+        "task-02": {
+          "successful_codegraph_explore_calls": 3
+        },
+        "task-03": {
+          "successful_codegraph_explore_calls": 3
+        }
+      },
+      "successful_codegraph_explore_calls": 11,
+      "provider_tokens": 17355866,
+      "tasks_passed": 3,
+      "verifier_integrity_passed": true,
+      "tool_isolation_audit_passed": true
+    }
+  ],
+  "aggregate": {
+    "sessions": 3,
+    "tasks_with_successful_codegraph_explore": 9,
+    "successful_codegraph_explore_calls": 23,
+    "provider_tokens": 31680860,
+    "tasks_passed": 9
+  }
+}

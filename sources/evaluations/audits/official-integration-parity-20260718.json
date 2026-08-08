@@ -1,0 +1,975 @@
+{
+  "schema_version": 1,
+  "audit_id": "official-integration-parity-20260718",
+  "date": "2026-07-18",
+  "scope": "All retained individual-tool profiles plus the Phase 3 TokenJuice+jcodemunch stack; baseline sessions excluded from profile parity review.",
+  "decision_rule": "Product-effect eligibility requires parity with the exact pinned product integration and positive evidence that the assigned host surface was operational. Configuration/listing alone does not prove an MCP stdio handshake. Valid protocol-defined instruction policies and ablations remain eligible only for their declared narrower estimands.",
+  "summary": {
+    "profiles_audited": 18,
+    "historical_sessions_audited": 54,
+    "disposition_counts": {
+      "valid-narrower-instruction-policy": 0,
+      "valid-product-treatment": 1,
+      "valid-protocol-defined-ablation": 1,
+      "invalid-treatment-configuration": 8,
+      "unverified-treatment-assignment": 6,
+      "invalid-incomplete-canonical-installation-results-deleted": 2
+    },
+    "objective_eligible_sessions_retained": 6,
+    "corrupted_sessions_deleted_from_active_corpus": 48,
+    "active_excluded_sessions": 0,
+    "active_treatment_sessions": 6,
+    "deletion_receipts": [
+      "sources/evaluations/audits/invalid-treatment-result-deletions-20260718.json",
+      "sources/evaluations/audits/unproven-treatment-result-deletions-20260718.json",
+      "sources/evaluations/audits/invalid-ponytail-caveman-result-deletion-20260719.json",
+      "sources/evaluations/audits/invalid-cartog-result-deletions-20260720.json"
+    ],
+    "corrected_individual_profiles": 15,
+    "corrected_frozen_protocols": 45
+  },
+  "profiles": [
+    {
+      "profile_id": "artifact-ponytail",
+      "disposition": "invalid-incomplete-canonical-installation-results-deleted",
+      "objective_eligible": false,
+      "session_ids": [],
+      "session_statuses": [
+        "deleted-invalid-installation"
+      ],
+      "selected_execution_descriptor_sha256": [
+        "264489923b13d425e3fbd431136afb01f7b7c29f56dff2da8cd6e563a29e7fdb",
+        "519bc9a9abd314f11796c8c3c0312e309e3b6d13ee5699e32cef0191bfe44634",
+        "9f306af05e0cf5379bbc460d8a395146bf0e0f1505acae3a6ca688cd48ca39ea"
+      ],
+      "tool_config_sha256": [
+        "5618a7c0fb1d38f9cfdc6b85305cd11c835c8f8bdc19d7ab91f339a65a4af7a6"
+      ],
+      "pinned_source_identity": [
+        {
+          "path": "/opt/data/ponytail",
+          "exists": true,
+          "kind": "directory",
+          "git_head": "40e50d9e03242aa5dd53ac771950f9127362b25f",
+          "package_json_sha256": "6a180c19d35bcc9d08ea1b92b29c7da1ae1a1b2e3b31c73d94ac56e7fec7af01"
+        }
+      ],
+      "official_source_refs": [
+        "/opt/data/ponytail/README.md#Codex",
+        "/opt/data/ponytail/hooks/ponytail-instructions.js"
+      ],
+      "official_integration_requirement": "Official Codex plugin installs trusted lifecycle hooks that inject the full-mode rules every turn.",
+      "evaluated_materialization": "Runner injected the pinned product fallback full-mode instructions into every task prompt; plugin UI and mode-switch lifecycle were not installed.",
+      "retained_operational_proof": {
+        "standalone_mcp_handshake_receipts": 0,
+        "completed_model_mcp_call_events": 0
+      },
+      "correction": "Delete all provider-backed results; rerun only under the fresh versioned guide-faithful profile.",
+      "superseded_by": "artifact-ponytail-codex-plugin-v1",
+      "deletion_receipt": "sources/evaluations/audits/invalid-ponytail-caveman-result-deletion-20260719.json",
+      "active_corpus_action": "deleted-under-owner-authorized-receipt",
+      "deleted_session_ids": [
+        "ponytail-fastify-20260716-p-769d40697529-r1",
+        "ponytail-beets-20260716-p-b440da225a3a-r1",
+        "ponytail-terraform-20260716-p-ded8609b4172-r1"
+      ]
+    },
+    {
+      "profile_id": "behavior-caveman",
+      "disposition": "invalid-incomplete-canonical-installation-results-deleted",
+      "objective_eligible": false,
+      "session_ids": [],
+      "session_statuses": [
+        "deleted-invalid-installation"
+      ],
+      "selected_execution_descriptor_sha256": [
+        "494219c7a15c3609f289bc5b754365d8751ccd1e5785250d1b60b5b2b5ba5859",
+        "c20a2cbd7a3944aa51fcaedd71f894e7aa5884b3f6780c9bdc8c936c73216114",
+        "e890254bc3bd60de91e1a58549e4c1bb3135db71148bdd2b66e84048825d92fc"
+      ],
+      "tool_config_sha256": [
+        "66331c0268ae7eaf23c654abdb902bb500e3c99e4339f262667390264563d1a2"
+      ],
+      "pinned_source_identity": [
+        {
+          "path": "/opt/data/tool-candidates/caveman",
+          "exists": true,
+          "kind": "directory",
+          "git_head": "0d95a81d35a9f2d123a5e9430d1cfc43d55f1bb0",
+          "package_json_sha256": "3f9a34e4224efcad6e53a7cdef3c93869b77d932e2757c29fdaf0f63cfb2ad5f"
+        }
+      ],
+      "official_source_refs": [
+        "/opt/data/tool-candidates/caveman/README.md#install",
+        "/opt/data/tool-candidates/caveman/skills/caveman/SKILL.md"
+      ],
+      "official_integration_requirement": "Official Codex install places the Caveman skill/rules and activates brevity from message one.",
+      "evaluated_materialization": "Runner injected the exact pinned Caveman SKILL.md instructions into every task prompt.",
+      "retained_operational_proof": {
+        "standalone_mcp_handshake_receipts": 0,
+        "completed_model_mcp_call_events": 0
+      },
+      "correction": "Delete all provider-backed results; rerun only under the fresh versioned guide-faithful profile.",
+      "superseded_by": "behavior-caveman-codex-skill-v1",
+      "deletion_receipt": "sources/evaluations/audits/invalid-ponytail-caveman-result-deletion-20260719.json",
+      "active_corpus_action": "deleted-under-owner-authorized-receipt",
+      "deleted_session_ids": [
+        "caveman-fastify-20260716-p-769d40697529-r1",
+        "caveman-beets-20260716-p-b440da225a3a-r1",
+        "caveman-terraform-20260716-p-ded8609b4172-r1"
+      ]
+    },
+    {
+      "profile_id": "headroom-default-codex",
+      "disposition": "valid-product-treatment",
+      "objective_eligible": true,
+      "session_ids": [
+        "codex-fastify-20260717-p-769d40697529-r1",
+        "codex-beets-20260717-p-b440da225a3a-r1",
+        "codex-terraform-20260717-p-ded8609b4172-r1"
+      ],
+      "session_statuses": [
+        "completed"
+      ],
+      "selected_execution_descriptor_sha256": [
+        "4ed203357f8a659c2926b392d140f15dd24ad4aa73acd423ee37bf82b6970ccd",
+        "8e504d1847dabccdb4cefdfa92063c485f2f2b02389172b76a23010e1ed64660",
+        "9e1e6cd0e7334b7acb8bde7e5e1dad23217ced6283f9356f57035373608ce403"
+      ],
+      "tool_config_sha256": [
+        "e701c779e8726afa9026ca5de770e880bcec0d09dfaa609976be36d063dddc9b"
+      ],
+      "pinned_source_identity": [
+        {
+          "path": "/opt/data/tool-candidates/headroom",
+          "exists": true,
+          "kind": "directory",
+          "git_head": "715ed7d200cb62c43e6ee3976ce8d3aa639ccf9f"
+        },
+        {
+          "path": "/opt/data/tool-candidates/headroom/dist/headroom_ai-0.28.0-cp310-abi3-linux_x86_64.whl",
+          "exists": true,
+          "kind": "file",
+          "sha256": "82ed60b45ac86258728de1c2480ec4fc35aef4dd4475c54bafa432d65c8fb838"
+        }
+      ],
+      "official_source_refs": [
+        "/opt/data/tool-candidates/headroom/README.md#agent-wrap"
+      ],
+      "official_integration_requirement": "Official integration is `headroom wrap codex`, routing Codex through the Headroom proxy/wrapper.",
+      "evaluated_materialization": "Runner launched Codex through the pinned Headroom wheel wrapper with the intended default surfaces enabled.",
+      "retained_operational_proof": {
+        "standalone_mcp_handshake_receipts": 0,
+        "completed_model_mcp_call_events": 0
+      },
+      "correction": "Keep product-effect eligibility.",
+      "superseded_by": null
+    },
+    {
+      "profile_id": "terminal-headroom",
+      "disposition": "valid-protocol-defined-ablation",
+      "objective_eligible": true,
+      "session_ids": [
+        "headroom-fastify-20260717-p-769d40697529-r1",
+        "headroom-beets-20260717-p-b440da225a3a-r1",
+        "headroom-terraform-20260717-p-ded8609b4172-r1"
+      ],
+      "session_statuses": [
+        "completed"
+      ],
+      "selected_execution_descriptor_sha256": [
+        "054a42a7e2a9e198f453fd20631b79e9f0404cbde7122cd4029e9febb93a473b",
+        "42129cfaa5cb05ea6952327ebc86c720891a648157673c3c4fc0b5c532f93ded",
+        "56a35a3205065543a9b0f2a74976eb80fd085234398910dbbe530f78d5228424"
+      ],
+      "tool_config_sha256": [
+        "8bd7e36ba69fc8795be70d13e75dcf06a7bab24429496437cff984d7e8b4640e"
+      ],
+      "pinned_source_identity": [
+        {
+          "path": "/opt/data/tool-candidates/headroom",
+          "exists": true,
+          "kind": "directory",
+          "git_head": "715ed7d200cb62c43e6ee3976ce8d3aa639ccf9f"
+        },
+        {
+          "path": "/opt/data/tool-candidates/headroom/dist/headroom_ai-0.28.0-cp310-abi3-linux_x86_64.whl",
+          "exists": true,
+          "kind": "file",
+          "sha256": "82ed60b45ac86258728de1c2480ec4fc35aef4dd4475c54bafa432d65c8fb838"
+        }
+      ],
+      "official_source_refs": [
+        "/opt/data/tool-candidates/headroom/README.md#agent-wrap"
+      ],
+      "official_integration_requirement": "Product wrapper supports Codex; this profile intentionally disables context/MCP/token-save/Serena surfaces to isolate proxy behavior.",
+      "evaluated_materialization": "Runner used the pinned wrapper with explicit ablation flags.",
+      "retained_operational_proof": {
+        "standalone_mcp_handshake_receipts": 0,
+        "completed_model_mcp_call_events": 0
+      },
+      "correction": "Keep only as a proxy-only ablation, not full Headroom product effect.",
+      "superseded_by": null
+    },
+    {
+      "profile_id": "terminal-rtk",
+      "disposition": "invalid-treatment-configuration",
+      "objective_eligible": false,
+      "session_ids": [],
+      "session_statuses": [
+        "deleted-from-active-corpus"
+      ],
+      "selected_execution_descriptor_sha256": [
+        "3e9a9826568e8b146bd647c88e32517f5bedcc74c7549dec4e7a7ffeb49bcf6b",
+        "664b370fade0cbeff541d3d7519c0298c60f333ff33f698edd0bf1c1785578e6",
+        "f88aae5d31a76056db8ac64bdd9786b8d89f6ba50733df4a0a17e5cfce1b4060"
+      ],
+      "tool_config_sha256": [
+        "0195be55e8b8e96447f7b0f2e53609418f311874e927db39b03784c9f328e35a"
+      ],
+      "pinned_source_identity": [
+        {
+          "path": "/opt/data/tool-candidates/rtk/target/release",
+          "exists": true,
+          "kind": "directory",
+          "git_head": "23aae98c5b29cd52d77061c6efd2e65e5e3cc6dd"
+        }
+      ],
+      "official_source_refs": [
+        "/opt/data/tool-candidates/rtk/hooks/codex/README.md",
+        "/opt/data/tool-candidates/rtk/docs/guide/getting-started/supported-agents.md",
+        "/opt/data/tool-candidates/rtk/src/hooks/init.rs"
+      ],
+      "official_integration_requirement": "`rtk init --codex` or `rtk init --global --codex` writes AGENTS.md and RTK.md; AGENTS references the product routing rules in RTK.md.",
+      "evaluated_materialization": "Historical runner mounted the binary on PATH and ran `rtk --version`; it installed neither AGENTS.md nor RTK.md. Retained task events contain zero explicit RTK commands.",
+      "retained_operational_proof": {
+        "standalone_mcp_handshake_receipts": 0,
+        "completed_model_mcp_call_events": 0
+      },
+      "correction": "Historical result, comparison, compact bundle, and frozen protocol deleted from the active corpus by owner direction. A proper rerun requires a versioned corrected profile and fresh frozen protocol.",
+      "superseded_by": "terminal-rtk-codex-instructions-v1",
+      "deleted_session_ids": [
+        "rtk-fastify-20260716-p-769d40697529-r1",
+        "rtk-beets-20260716-p-b440da225a3a-r1",
+        "rtk-terraform-20260716-p-ded8609b4172-r1"
+      ],
+      "deletion_receipt": "sources/evaluations/audits/invalid-treatment-result-deletions-20260718.json",
+      "active_corpus_action": "deleted-under-owner-authorized-receipt",
+      "historical_session_ids_deleted_from_active_registry": true
+    },
+    {
+      "profile_id": "terminal-snip",
+      "disposition": "invalid-treatment-configuration",
+      "objective_eligible": false,
+      "session_ids": [],
+      "session_statuses": [
+        "deleted-from-active-corpus"
+      ],
+      "selected_execution_descriptor_sha256": [
+        "48b30398448f4c7b4ca651002a834d801483ca7a32963c7da647408540755547",
+        "8f9ff22c915ad8eb5fbfdab668fba75468fc7bce6c69b98e187dbf1ab13ed668",
+        "980abdd70b975d9645c70d2bcd7de42fd2d15796c37900ca2d9218ad8756f3e5"
+      ],
+      "tool_config_sha256": [
+        "2a763212c493307fe0a9e3ddabe415ee816cefd6ee3e6b42b8d509991205e745"
+      ],
+      "pinned_source_identity": [
+        {
+          "path": "/opt/data/tool-candidates/snip",
+          "exists": true,
+          "kind": "directory",
+          "git_head": "82b741b3ba504a22b609f3ac8122ade94306f6ec"
+        }
+      ],
+      "official_source_refs": [
+        "/opt/data/tool-candidates/snip/internal/initcmd/codex.go",
+        "/opt/data/tool-candidates/snip/internal/initcmd/init.go",
+        "/opt/data/tool-candidates/snip/README.md"
+      ],
+      "official_integration_requirement": "Pinned source default `snip init --agent codex` installs experimental Codex hook/config files; the safer prompt fallback `--mode prompt` creates project AGENTS.md. The pinned README documents only the prompt route and is stale relative to source defaults.",
+      "evaluated_materialization": "Historical runner mounted the binary on PATH and ran its version preflight while explicitly disabling Codex hooks; neither hook files nor AGENTS.md existed and task events contain zero explicit snip commands.",
+      "retained_operational_proof": {
+        "standalone_mcp_handshake_receipts": 0,
+        "completed_model_mcp_call_events": 0
+      },
+      "correction": "Historical result, comparison, compact bundle, and frozen protocol deleted from the active corpus by owner direction. A proper rerun requires a versioned corrected profile and fresh frozen protocol.",
+      "superseded_by": "terminal-snip-codex-hook-v1",
+      "deleted_session_ids": [
+        "snip-fastify-20260717-p-769d40697529-r1",
+        "snip-beets-20260717-p-b440da225a3a-r1",
+        "snip-terraform-20260717-p-ded8609b4172-r1"
+      ],
+      "deletion_receipt": "sources/evaluations/audits/invalid-treatment-result-deletions-20260718.json",
+      "active_corpus_action": "deleted-under-owner-authorized-receipt",
+      "historical_session_ids_deleted_from_active_registry": true
+    },
+    {
+      "profile_id": "terminal-tokenjuice",
+      "disposition": "invalid-treatment-configuration",
+      "objective_eligible": false,
+      "session_ids": [],
+      "session_statuses": [
+        "deleted-from-active-corpus"
+      ],
+      "selected_execution_descriptor_sha256": [
+        "0270f07f9e30024815c79a81be4eeab37328bf08e3ae23a7e84502259a0cfa6d",
+        "b4a34c8f13f25a4ffdf5ce59e8ce8b56d1c8f3a2f46d6b6a4f8051e423667c55",
+        "bd5335300d2a78b7abbc57751b61254baacbd525592499823aca6530cce1f149"
+      ],
+      "tool_config_sha256": [
+        "56b3f9695afb94c738d71697a80380c6bb6d9af9331a900be0dc460bacad5a82"
+      ],
+      "pinned_source_identity": [
+        {
+          "path": "/opt/data/tool-candidates/tokenjuice",
+          "exists": true,
+          "kind": "directory",
+          "git_head": "49bdcf1755833ff1e02e44e6e7fe91c0fb44c16e",
+          "package_json_sha256": "420cce726d4d710bfc59e5059a4e4d4f1d52fcaafe71663e2a7077bb41e9eafe"
+        }
+      ],
+      "official_source_refs": [
+        "/opt/data/tool-candidates/tokenjuice/README.md#host-integrations",
+        "/opt/data/tool-candidates/tokenjuice/src/hosts/codex/index.ts"
+      ],
+      "official_integration_requirement": "Official Codex integration is `tokenjuice install codex`, generating CODEX_HOME/hooks.json and enabling PostToolUse compaction.",
+      "evaluated_materialization": "Historical runner exposed the CLI but wrote hooks=false and passed `--disable hooks`; no hooks.json existed.",
+      "retained_operational_proof": {
+        "standalone_mcp_handshake_receipts": 0,
+        "completed_model_mcp_call_events": 0
+      },
+      "correction": "Historical result, comparison, compact bundle, and frozen protocol deleted from the active corpus by owner direction. A proper rerun requires a versioned corrected profile and fresh frozen protocol.",
+      "superseded_by": "terminal-tokenjuice-codex-hook-v1",
+      "deleted_session_ids": [
+        "tokenjuice-fastify-20260717-p-769d40697529-r1",
+        "tokenjuice-beets-20260717-p-b440da225a3a-r1",
+        "tokenjuice-terraform-20260717-p-ded8609b4172-r1"
+      ],
+      "deletion_receipt": "sources/evaluations/audits/invalid-treatment-result-deletions-20260718.json",
+      "active_corpus_action": "deleted-under-owner-authorized-receipt",
+      "historical_session_ids_deleted_from_active_registry": true
+    },
+    {
+      "profile_id": "retrieval-jcodemunch-mcp",
+      "disposition": "invalid-treatment-configuration",
+      "objective_eligible": false,
+      "session_ids": [],
+      "session_statuses": [
+        "deleted-from-active-corpus"
+      ],
+      "selected_execution_descriptor_sha256": [
+        "dacfe573579b2a3df3d532808ed13aa660490833ab45d3fd6f60a23d7f7fe085",
+        "e1a19434243df048b8517023a66a3e90a5ac923849514672d0cee738ad8adbb4",
+        "f1d91b4797af3fcb953bef1ea2838b0ac37a6f0d57852f8710518e5b217762f3"
+      ],
+      "tool_config_sha256": [
+        "9dad73cef6dd4ff6d901cf08e39a8eaa573dfb3b03e2a9b266848eb6cb0b5b97"
+      ],
+      "pinned_source_identity": [
+        {
+          "path": "/opt/data/tool-candidates/jcodemunch-mcp",
+          "exists": true,
+          "kind": "directory",
+          "git_head": "fbc14e40c7057ebc6d718fb48083d30522afe15f"
+        },
+        {
+          "path": "/opt/data/tool-candidates/jcodemunch-mcp/dist/jcodemunch_mcp-1.108.114-py3-none-any.whl",
+          "exists": true,
+          "kind": "file",
+          "sha256": "9ae3a44c2be5709d33fa2b56c9e569906ed63906a907f89b4762a370d397ed54"
+        }
+      ],
+      "official_source_refs": [
+        "/opt/data/tool-candidates/jcodemunch-mcp/README.md#works-with",
+        "/opt/data/tool-candidates/jcodemunch-mcp/AGENT_INSTALL_UNIVERSAL.md#the-prompt"
+      ],
+      "official_integration_requirement": "Canonical Codex product evaluation requires the pinned direct MCP binary, successful connection, warm index, and the tool-author-provided persistent usage guidance installed through Codex project rules or AGENTS.md. MCP-only availability is incomplete except as an explicitly named ablation.",
+      "evaluated_materialization": "Historical runner used `uv tool run` as the MCP launcher, retained no initialize/tools-list receipt, and did not distinguish neutral MCP availability from a product-guided condition.",
+      "retained_operational_proof": {
+        "standalone_mcp_handshake_receipts": 0,
+        "completed_model_mcp_call_events": 0
+      },
+      "correction": "Historical result, comparison, compact bundle, and frozen protocol deleted from the active corpus by owner direction. A proper rerun requires a versioned corrected profile and fresh frozen protocol.",
+      "superseded_by": "retrieval-jcodemunch-mcp-direct-v1",
+      "deleted_session_ids": [
+        "mcp-fastify-20260717-p-769d40697529-r1",
+        "mcp-beets-20260717-p-b440da225a3a-r1",
+        "mcp-terraform-20260717-p-ded8609b4172-r1"
+      ],
+      "deletion_receipt": "sources/evaluations/audits/invalid-treatment-result-deletions-20260718.json",
+      "active_corpus_action": "deleted-under-owner-authorized-receipt",
+      "historical_session_ids_deleted_from_active_registry": true
+    },
+    {
+      "profile_id": "retrieval-leanctx",
+      "disposition": "invalid-treatment-configuration",
+      "objective_eligible": false,
+      "session_ids": [],
+      "session_statuses": [
+        "deleted-from-active-corpus"
+      ],
+      "selected_execution_descriptor_sha256": [
+        "01335fd4bdc11ddd74be18732f6229a79c9e691279c02bba6e721c984fa18d7e",
+        "4dac6d16c6956e703cc7631d7971a94c0e26d1edc4fa8b29b138c77bbbcbf766",
+        "ea336c55f92b566abc269a3a3b00efd16d4b87c3d48aefe42cc8e421f75826f8"
+      ],
+      "tool_config_sha256": [
+        "f07d049615c1db8836f6362899a269bc0430b1e85423a099c60ba9bc5d823b1f"
+      ],
+      "pinned_source_identity": [
+        {
+          "path": "/opt/data/bin",
+          "exists": true,
+          "kind": "directory"
+        }
+      ],
+      "official_source_refs": [
+        "/opt/data/tool-candidates/lean-ctx/docs/guides/codex-cli.md",
+        "/opt/data/tool-candidates/lean-ctx/rust/src/core/editor_registry/writers/install.rs",
+        "/opt/data/tool-candidates/lean-ctx/rust/tests/shell_and_agent_tests.rs"
+      ],
+      "official_integration_requirement": "Official `lean-ctx init --agent codex` is hybrid: MCP plus AGENTS/LEAN-CTX rules and shell hooks, verified by `lean-ctx doctor`.",
+      "evaluated_materialization": "Historical profile exposed only a cold raw MCP entry with an extra data-dir env; it omitted rules, skill/guidance, hooks, and complete pinned source provenance. No handshake/call proved operation.",
+      "retained_operational_proof": {
+        "standalone_mcp_handshake_receipts": 0,
+        "completed_model_mcp_call_events": 0
+      },
+      "correction": "Historical result, comparison, compact bundle, and frozen protocol deleted from the active corpus by owner direction. A proper rerun requires a versioned corrected profile and fresh frozen protocol.",
+      "superseded_by": "integrated-leanctx-codex-hybrid-v1",
+      "deleted_session_ids": [
+        "leanctx-fastify-20260717-p-769d40697529-r1",
+        "leanctx-beets-20260717-p-b440da225a3a-r1",
+        "leanctx-terraform-20260717-p-ded8609b4172-r1"
+      ],
+      "deletion_receipt": "sources/evaluations/audits/invalid-treatment-result-deletions-20260718.json",
+      "active_corpus_action": "deleted-under-owner-authorized-receipt",
+      "historical_session_ids_deleted_from_active_registry": true
+    },
+    {
+      "profile_id": "retrieval-codegraph",
+      "disposition": "invalid-treatment-configuration",
+      "objective_eligible": false,
+      "session_ids": [],
+      "session_statuses": [
+        "deleted-from-active-corpus"
+      ],
+      "selected_execution_descriptor_sha256": [
+        "1c9fe07d90e67e407830cae50d6fef0642ffe9800f0f3b6028956f99e2f36d51",
+        "c031431625a81611be46b5f7dc08a7365dacf9742ff14430927252f5e429346f",
+        "c863382376be590e40c700a0b74af7e482446d0269d79e9ec4c5a681866c34d7"
+      ],
+      "tool_config_sha256": [
+        "31ccfbb209611309a8f44fb2210701b883170f6a142a1a4fa0378e3695ef9675"
+      ],
+      "pinned_source_identity": [
+        {
+          "path": "/opt/data/tool-candidates/codegraph",
+          "exists": true,
+          "kind": "directory",
+          "git_head": "4077ed19b7d8a88eba93601c0c308e59c8640f8c",
+          "package_json_sha256": "36be5a0aa54234b486b61cb2d95d2cb9acc98a13523f0f5841b796c5d8db6255"
+        }
+      ],
+      "official_source_refs": [
+        "/opt/data/tool-candidates/codegraph/src/installer/targets/codex.ts",
+        "/opt/data/tool-candidates/codegraph/src/installer/instructions-template.ts",
+        "/opt/data/tool-candidates/codegraph/src/mcp/server-instructions.ts",
+        "/opt/data/tool-candidates/codegraph/README.md"
+      ],
+      "official_integration_requirement": "Official Codex install writes MCP configuration and AGENTS guidance; `codegraph init` builds `.codegraph`, and MCP initialize returns graph-first guidance.",
+      "evaluated_materialization": "Historical profile used the base server executable but was cold/unindexed, disabled watch, and installed no AGENTS block. No handshake proved initialize guidance reached Codex.",
+      "retained_operational_proof": {
+        "standalone_mcp_handshake_receipts": 0,
+        "completed_model_mcp_call_events": 0
+      },
+      "correction": "Historical result, comparison, compact bundle, and frozen protocol deleted from the active corpus by owner direction. A proper rerun requires a versioned corrected profile and fresh frozen protocol.",
+      "superseded_by": "retrieval-codegraph-codex-mcp-v1",
+      "deleted_session_ids": [
+        "codegraph-fastify-20260717-p-769d40697529-r1",
+        "codegraph-beets-20260717-p-b440da225a3a-r1",
+        "codegraph-terraform-20260717-p-ded8609b4172-r1"
+      ],
+      "deletion_receipt": "sources/evaluations/audits/invalid-treatment-result-deletions-20260718.json",
+      "active_corpus_action": "deleted-under-owner-authorized-receipt",
+      "historical_session_ids_deleted_from_active_registry": true
+    },
+    {
+      "profile_id": "retrieval-cartog",
+      "disposition": "unverified-treatment-assignment",
+      "objective_eligible": false,
+      "session_ids": [],
+      "session_statuses": [
+        "deleted-from-active-corpus"
+      ],
+      "selected_execution_descriptor_sha256": [
+        "374926c7078a52cc876ad40d09429bb66468b8033e8b95f27d6cf8086145d7af",
+        "41eb96ad5711ff61379869fe89ceac750293d7cb9209e39695f8183fac471c73",
+        "4c2e0a5a89fa0e23f60486787866916937dac08b5db0c066905973ea84303e3e"
+      ],
+      "tool_config_sha256": [
+        "1128ce275a6eab6559d77953c040e96c3c8f8bd21b1bf0b90ae2fbc8b3d88eeb"
+      ],
+      "pinned_source_identity": [
+        {
+          "path": "/opt/data/tool-candidates/cartog",
+          "exists": true,
+          "kind": "directory",
+          "git_head": "890d15b66b523841290a63e431a31b6f6438fc4b"
+        }
+      ],
+      "official_source_refs": [
+        "/opt/data/tool-candidates/cartog/README.md",
+        "/opt/data/tool-candidates/cartog/docs/usage.md"
+      ],
+      "official_integration_requirement": "Official integration installs/configures `cartog serve` and builds the index.",
+      "evaluated_materialization": "Historical profile indexed and configured direct serve, but retained no initialize/tools-list receipt or MCP call.",
+      "retained_operational_proof": {
+        "standalone_mcp_handshake_receipts": 0,
+        "completed_model_mcp_call_events": 0
+      },
+      "correction": "Deleted corrupted treatment results and occupied protocols from the active corpus; rerun requires a versioned source-parity and assignment-proof-gated profile. The intermediate retrieval-cartog-mcp-v1 replacement was later deleted for an incomplete product-authored Codex integration.",
+      "superseded_by": "retrieval-cartog-codex-product-v2",
+      "deleted_session_ids": [
+        "cartog-fastify-20260717-p-769d40697529-r1",
+        "cartog-beets-20260717-p-b440da225a3a-r1",
+        "cartog-terraform-20260717-p-ded8609b4172-r1"
+      ],
+      "deletion_receipt_path": "sources/evaluations/audits/unproven-treatment-result-deletions-20260718.json",
+      "active_corpus_action": "deleted-under-owner-authorized-receipt",
+      "historical_session_ids_deleted_from_active_registry": true
+    },
+    {
+      "profile_id": "codescope-owner",
+      "disposition": "unverified-treatment-assignment",
+      "objective_eligible": false,
+      "session_ids": [],
+      "session_statuses": [
+        "deleted-from-active-corpus"
+      ],
+      "selected_execution_descriptor_sha256": [
+        "6b42476ac4bb88f0d696b81b5c1a00c042cf4b6d0c3b63ee145beed15bb62d0f",
+        "bdaefc9d5a4d4eadd138dfe2217cc3bfbe3a654fc0881251d414643711cc1951",
+        "ed87d9b1d7741aaf51ac86703c3e7a95f9a94782f03723ba14ef7d32035f42af"
+      ],
+      "tool_config_sha256": [
+        "2c41718b59ce3870f702d02322438e477c6b09b3dc1b10b7eacce5c332d70d02"
+      ],
+      "pinned_source_identity": [
+        {
+          "path": "/opt/data/tool-candidates/codescope-adapter/run_codescope_neutral_mcp.py",
+          "exists": true,
+          "kind": "file",
+          "sha256": "e7f9a196b6eb9a78ed0fa72cd58340e28cb2154a67eb165ced343df888260235"
+        },
+        {
+          "path": "/opt/data/tool-candidates/codescope-release-v0.8.12/codescope",
+          "exists": true,
+          "kind": "file",
+          "sha256": "d6f64f7bc7bf1ab65115fdede85d794f58151c6f1414421825959eb2101165c1"
+        },
+        {
+          "path": "/opt/data/tool-candidates/codescope-release-v0.8.12/surreal",
+          "exists": true,
+          "kind": "file",
+          "sha256": "a9a5e9e36e4f6fe922e1991a4fb0ea1ee4fe90819c5e3a8dce238a56666e8cec"
+        }
+      ],
+      "official_source_refs": [
+        "/opt/data/tool-candidates/codescope-release-v0.8.12/README.md#quick-start"
+      ],
+      "official_integration_requirement": "Official Codex path runs `codescope start` and `codescope init --agent codex`, indexing and returning product instructions.",
+      "evaluated_materialization": "Historical custom neutral adapter intentionally stripped mandatory uptake text; no retained handshake or call proves server operation.",
+      "retained_operational_proof": {
+        "standalone_mcp_handshake_receipts": 0,
+        "completed_model_mcp_call_events": 0
+      },
+      "correction": "Deleted corrupted treatment results and occupied protocols from the active corpus; rerun requires a versioned source-parity and assignment-proof-gated profile.",
+      "superseded_by": "codescope-codex-product-v1",
+      "deleted_session_ids": [
+        "owner-fastify-20260717-p-769d40697529-r1",
+        "owner-beets-20260717-p-b440da225a3a-r1",
+        "owner-terraform-20260717-p-ded8609b4172-r1"
+      ],
+      "deletion_receipt_path": "sources/evaluations/audits/unproven-treatment-result-deletions-20260718.json",
+      "active_corpus_action": "deleted-under-owner-authorized-receipt",
+      "historical_session_ids_deleted_from_active_registry": true
+    },
+    {
+      "profile_id": "swarmvault-owner",
+      "disposition": "unverified-treatment-assignment",
+      "objective_eligible": false,
+      "session_ids": [],
+      "session_statuses": [
+        "deleted-from-active-corpus"
+      ],
+      "selected_execution_descriptor_sha256": [
+        "303d1767a420f68c6e7b682ff51b70131811296ad7a49156238f4efee7cb4336",
+        "54bcdd92e5ee7a9a91c7dcde003d66499f3beeaa0b1e02c3f3438631a1fd9f2b",
+        "bad69313a63919fc799e9ab827eb1923ab0674f39baa8ebac2a0c4c8791093f7"
+      ],
+      "tool_config_sha256": [
+        "674e9d2a1c9510aa3f99a3855e125ee56ad894e66f894a66ae4cb138a29d00ba"
+      ],
+      "pinned_source_identity": [
+        {
+          "path": "/opt/data/tool-candidates/swarmvault",
+          "exists": true,
+          "kind": "directory",
+          "git_head": "4ce0c7cb545c669f3cd35fc6d0300c6b088a52ea",
+          "package_json_sha256": "15c4a4b4e47a7418fb5b844195d6b80ef04f386a07ba136f7a148c9beee25a9c"
+        }
+      ],
+      "official_source_refs": [
+        "/opt/data/tool-candidates/swarmvault/README.md"
+      ],
+      "official_integration_requirement": "Official agent integration includes initialized/compiled vault, MCP server, and agent rules/skill delivery.",
+      "evaluated_materialization": "Historical profile initialized, ingested, compiled, and configured MCP but deliberately omitted install-agent-rules; no handshake/call was retained.",
+      "retained_operational_proof": {
+        "standalone_mcp_handshake_receipts": 0,
+        "completed_model_mcp_call_events": 0
+      },
+      "correction": "Deleted corrupted treatment results and occupied protocols from the active corpus; rerun requires a versioned source-parity and assignment-proof-gated profile.",
+      "superseded_by": "swarmvault-codex-product-v1",
+      "deleted_session_ids": [
+        "swarmvault-fastify-20260717-p-769d40697529-r1",
+        "swarmvault-beets-20260717-p-b440da225a3a-r1",
+        "swarmvault-terraform-20260717-p-ded8609b4172-r1"
+      ],
+      "deletion_receipt_path": "sources/evaluations/audits/unproven-treatment-result-deletions-20260718.json",
+      "active_corpus_action": "deleted-under-owner-authorized-receipt",
+      "historical_session_ids_deleted_from_active_registry": true
+    },
+    {
+      "profile_id": "retrieval-serena",
+      "disposition": "unverified-treatment-assignment",
+      "objective_eligible": false,
+      "session_ids": [],
+      "session_statuses": [
+        "deleted-from-active-corpus"
+      ],
+      "selected_execution_descriptor_sha256": [
+        "188039bcc702dc77bc1c7f498450348f6a30ecbc466f3a7f9dcc9c44157a0730",
+        "27316c840e0a2984633cffc66dde1ee9f176afb0def9d157f4bf15c692edb241",
+        "c438da3260f4926caf2755a9451c3a1742f830bab9a69552ddc6093ba1d1d7ba"
+      ],
+      "tool_config_sha256": [
+        "fbeab8ef900353cf97dbd08eb764407992dcaf7efe54d4bdc84dc46a6275bcf0"
+      ],
+      "pinned_source_identity": [
+        {
+          "path": "/opt/data/tool-candidates/serena",
+          "exists": true,
+          "kind": "directory",
+          "git_head": "103a17072e9b915c9c9980f946902be856695978"
+        }
+      ],
+      "official_source_refs": [
+        "/opt/data/tool-candidates/serena/src/serena/config/client_setup.py",
+        "/opt/data/tool-candidates/serena/docs/02-usage/030_clients.md",
+        "/opt/data/tool-candidates/serena/src/serena/resources/config/contexts/codex.yml"
+      ],
+      "official_integration_requirement": "Official `serena setup codex` launches `start-mcp-server --context=codex --project-from-cwd`; no prebuilt index is required. Hooks are separately recommended, not part of setup codex.",
+      "evaluated_materialization": "Historical source/stdio/context/project setup was equivalent at the core MCP layer but disabled onboarding and memories, making it a bounded retrieval ablation. No handshake/call proved operation.",
+      "retained_operational_proof": {
+        "standalone_mcp_handshake_receipts": 0,
+        "completed_model_mcp_call_events": 0
+      },
+      "correction": "Deleted corrupted treatment results and occupied protocols from the active corpus; rerun requires a versioned source-parity and assignment-proof-gated profile.",
+      "superseded_by": "retrieval-serena-codex-mcp-v1",
+      "deleted_session_ids": [
+        "serena-fastify-20260716-p-769d40697529-r1",
+        "serena-beets-20260716-p-b440da225a3a-r1",
+        "serena-terraform-20260716-p-ded8609b4172-r1"
+      ],
+      "deletion_receipt_path": "sources/evaluations/audits/unproven-treatment-result-deletions-20260718.json",
+      "active_corpus_action": "deleted-under-owner-authorized-receipt",
+      "historical_session_ids_deleted_from_active_registry": true
+    },
+    {
+      "profile_id": "retrieval-graphify",
+      "disposition": "invalid-treatment-configuration",
+      "objective_eligible": false,
+      "session_ids": [],
+      "session_statuses": [
+        "deleted-from-active-corpus"
+      ],
+      "selected_execution_descriptor_sha256": [
+        "217334da68e018685aa03b3aa137076ce9ed66b5fa370d608e2b30c9c9915633",
+        "34974e2de4807121fb9fb85c12b92cc21fa459d4d728d8a82e654368e8abbeb7",
+        "8360966fec0ac81fc6dddae6cf97c6dea6679b1001cfdfc4a59db620d3fb1c1f"
+      ],
+      "tool_config_sha256": [
+        "9847aed2a49679e6f45fba55fd8f92540dbc722f8c23352abe101339cd421960"
+      ],
+      "pinned_source_identity": [
+        {
+          "path": "/opt/data/tool-candidates/graphify",
+          "exists": true,
+          "kind": "directory",
+          "git_head": "199061207f6648f116fd6dbb0b2214502c55d90a"
+        }
+      ],
+      "official_source_refs": [
+        "/opt/data/tool-candidates/graphify/README.md",
+        "/opt/data/tool-candidates/graphify/graphify/__main__.py",
+        "/opt/data/tool-candidates/graphify/graphify/always_on/agents-md.md"
+      ],
+      "official_integration_requirement": "Official `graphify install --platform codex` installs a Codex skill, project AGENTS rules, hooks, and multi_agent support; its normal graph pipeline differs from an optional standalone MCP-only ablation.",
+      "evaluated_materialization": "Historical profile launched the optional MCP server with a reduced AST-only unclustered graph and installed no Codex skill, AGENTS rules, hook, or multi_agent feature. No handshake/call proved the optional server operational.",
+      "retained_operational_proof": {
+        "standalone_mcp_handshake_receipts": 0,
+        "completed_model_mcp_call_events": 0
+      },
+      "correction": "Historical result, comparison, compact bundle, and frozen protocol deleted from the active corpus by owner direction. A proper rerun requires a versioned corrected profile and fresh frozen protocol.",
+      "superseded_by": "retrieval-graphify-codex-skill-v1",
+      "deleted_session_ids": [
+        "graphify-fastify-20260716-p-769d40697529-r1",
+        "graphify-beets-20260716-p-b440da225a3a-r1",
+        "graphify-terraform-20260716-p-ded8609b4172-r1"
+      ],
+      "deletion_receipt": "sources/evaluations/audits/invalid-treatment-result-deletions-20260718.json",
+      "active_corpus_action": "deleted-under-owner-authorized-receipt",
+      "historical_session_ids_deleted_from_active_registry": true
+    },
+    {
+      "profile_id": "retrieval-sigmap",
+      "disposition": "unverified-treatment-assignment",
+      "objective_eligible": false,
+      "session_ids": [],
+      "session_statuses": [
+        "deleted-from-active-corpus"
+      ],
+      "selected_execution_descriptor_sha256": [
+        "3ea344c33a0887bd35ab610f2be5cf18aa56365583868b397ba1a63e897c9125",
+        "a6a87f1306d491f5f1f9946e9f2fe763acf9a8c60336aed351805fd7ad750afe",
+        "f014a442d255d244b5190c52a52e5710013aa41ef58a54ccd3149b0b3b5555ae"
+      ],
+      "tool_config_sha256": [
+        "fe01cb53778d378ffcbb7360243b4ed1e98b251df6b3072d458d9b13636fd6fc"
+      ],
+      "pinned_source_identity": [
+        {
+          "path": "/opt/data/tool-candidates/sigmap",
+          "exists": true,
+          "kind": "directory",
+          "git_head": "b1e086cf06bc7a7622473ffe9637c122567404e0",
+          "package_json_sha256": "f8478ca025747dada0b86288f696e1ae39ea8701a5081c60f54c70eafa034963"
+        }
+      ],
+      "official_source_refs": [
+        "/opt/data/tool-candidates/sigmap/docs-vp/guide/mcp.md",
+        "/opt/data/tool-candidates/sigmap/packages/adapters/codex.js",
+        "/opt/data/tool-candidates/sigmap/src/mcp/install.js"
+      ],
+      "official_integration_requirement": "Official setup generates the Codex AGENTS adapter and MCP server state, normally with watcher/post-commit freshness. The pinned targeted installer has an upstream defect: it writes obsolete Codex YAML rather than TOML.",
+      "evaluated_materialization": "Historical manual TOML setup correctly bypassed the upstream installer defect and generated warm Codex AGENTS state, but omitted watcher/git-hook freshness. No handshake/call proved server operation.",
+      "retained_operational_proof": {
+        "standalone_mcp_handshake_receipts": 0,
+        "completed_model_mcp_call_events": 0
+      },
+      "correction": "Deleted corrupted treatment results and occupied protocols from the active corpus; rerun requires a versioned source-parity and assignment-proof-gated profile.",
+      "superseded_by": "retrieval-sigmap-codex-live-v1",
+      "deleted_session_ids": [
+        "sigmap-fastify-20260717-p-769d40697529-r1",
+        "sigmap-beets-20260717-p-b440da225a3a-r1",
+        "sigmap-terraform-20260717-p-ded8609b4172-r1"
+      ],
+      "deletion_receipt_path": "sources/evaluations/audits/unproven-treatment-result-deletions-20260718.json",
+      "active_corpus_action": "deleted-under-owner-authorized-receipt",
+      "historical_session_ids_deleted_from_active_registry": true
+    },
+    {
+      "profile_id": "integrated-token-savior",
+      "disposition": "unverified-treatment-assignment",
+      "objective_eligible": false,
+      "session_ids": [],
+      "session_statuses": [
+        "deleted-from-active-corpus"
+      ],
+      "selected_execution_descriptor_sha256": [
+        "2ecb5ef1487dec44f88b50f20f0216d4d1b4b91334c4a7ea5215adf7061fff4a",
+        "6f645bf9a94794f153168b225bd269f8d8c8d45139c1280936683af4c51bff4c",
+        "d270c95a3edd7b22d26c7a1257e03dcf469f5fe1af48686bce78512f070fb9cd"
+      ],
+      "tool_config_sha256": [
+        "c12f163db901a804076412dcc5ad7ffb75b1683ec17f749076983fece68cba26"
+      ],
+      "pinned_source_identity": [
+        {
+          "path": "/opt/data/tool-candidates/token-savior",
+          "exists": true,
+          "kind": "directory",
+          "git_head": "ff42ef14cc972dad5470e0ca8101e4501e00600f"
+        }
+      ],
+      "official_source_refs": [
+        "/opt/data/tool-candidates/token-savior/llms-install.md",
+        "/opt/data/tool-candidates/token-savior/README.md",
+        "/opt/data/tool-candidates/token-savior/src/token_savior/server_runtime.py"
+      ],
+      "official_integration_requirement": "Canonical Codex treatment installs the optimized MCP plus product-authored guidance and Bash rewrite/output hooks. The bounded MCP-only setup is retained only as an explicit ablation.",
+      "evaluated_materialization": "Historical optimized/thin MCP configuration materially matched the bounded official MCP-only arm; CODEX_HOME supplied client detection. Configuration visibility was retained, but no handshake or MCP call proved operation.",
+      "retained_operational_proof": {
+        "standalone_mcp_handshake_receipts": 0,
+        "completed_model_mcp_call_events": 0
+      },
+      "correction": "Historical unproven sessions remain deleted. The bounded assignment-proof-gated MCP rerun is retained as an ablation; canonical follow-up uses the product-guided Codex v2 successor.",
+      "superseded_by": "integrated-token-savior-codex-product-v2",
+      "deleted_session_ids": [
+        "savior-fastify-20260716-p-769d40697529-r1",
+        "savior-beets-20260716-p-b440da225a3a-r1",
+        "savior-terraform-20260716-p-ded8609b4172-r1"
+      ],
+      "deletion_receipt_path": "sources/evaluations/audits/unproven-treatment-result-deletions-20260718.json",
+      "active_corpus_action": "deleted-under-owner-authorized-receipt",
+      "historical_session_ids_deleted_from_active_registry": true
+    },
+    {
+      "profile_id": "stack-tokenjuice-jcodemunch-mcp",
+      "disposition": "invalid-treatment-configuration",
+      "objective_eligible": false,
+      "session_ids": [],
+      "session_statuses": [
+        "deleted-from-active-corpus"
+      ],
+      "selected_execution_descriptor_sha256": [
+        "1828c8bae806098ba5476647414d00b4b05bc29ac626183538768ca9047e01e9",
+        "7925e57dbe4e8bc7a9b59f3fa762bb615868f12de4011fb29b9381ef13077a54",
+        "9d7e44f421eddd8d2ef30a55064ac0da30a3c01ed7b8b7ac6a0bb5e856cb5957"
+      ],
+      "tool_config_sha256": [
+        "65dc195db7cbd89f57bbd4183c4d23fd79228c8660da0a206418bcbfc9889aef"
+      ],
+      "pinned_source_identity": [
+        {
+          "path": "/opt/data/tool-candidates/jcodemunch-mcp",
+          "exists": true,
+          "kind": "directory",
+          "git_head": "fbc14e40c7057ebc6d718fb48083d30522afe15f"
+        },
+        {
+          "path": "/opt/data/tool-candidates/jcodemunch-mcp/dist/jcodemunch_mcp-1.108.114-py3-none-any.whl",
+          "exists": true,
+          "kind": "file",
+          "sha256": "9ae3a44c2be5709d33fa2b56c9e569906ed63906a907f89b4762a370d397ed54"
+        },
+        {
+          "path": "/opt/data/tool-candidates/tokenjuice",
+          "exists": true,
+          "kind": "directory",
+          "git_head": "49bdcf1755833ff1e02e44e6e7fe91c0fb44c16e",
+          "package_json_sha256": "420cce726d4d710bfc59e5059a4e4d4f1d52fcaafe71663e2a7077bb41e9eafe"
+        }
+      ],
+      "official_source_refs": [
+        "/opt/data/tool-candidates/tokenjuice/README.md",
+        "/opt/data/tool-candidates/jcodemunch-mcp/README.md"
+      ],
+      "official_integration_requirement": "Stack effect requires both valid component integrations.",
+      "evaluated_materialization": "Historical stack disabled TokenJuice hooks and used the unverified jcodemunch launcher without product guidance.",
+      "retained_operational_proof": {
+        "standalone_mcp_handshake_receipts": 0,
+        "completed_model_mcp_call_events": 0
+      },
+      "correction": "Historical result, comparison, compact bundle, and frozen protocol deleted from the active corpus by owner direction. A proper rerun requires a versioned corrected profile and fresh frozen protocol.",
+      "superseded_by": null,
+      "deleted_session_ids": [
+        "tokenjuice-jcodemunch-fastify-20260718-p-769d40697529-r1",
+        "tokenjuice-jcodemunch-beets-20260718-p-b440da225a3a-r1",
+        "tokenjuice-jcodemunch-terraform-20260718-p-ded8609b4172-r1"
+      ],
+      "deletion_receipt": "sources/evaluations/audits/invalid-treatment-result-deletions-20260718.json",
+      "active_corpus_action": "deleted-under-owner-authorized-receipt",
+      "historical_session_ids_deleted_from_active_registry": true
+    }
+  ],
+  "corrected_contracts": {
+    "profiles": 12,
+    "fixture_specific_protocols": 36,
+    "provider_free_qualification": {
+      "receipt": "sources/evaluations/audits/corrected-integration-qualification-20260718.json",
+      "passed": 39,
+      "failed": 0,
+      "provider_calls": 0,
+      "status": "historical-exact-hashes-only"
+    },
+    "current_future_candidate_qualification": {
+      "receipts": [
+        "sources/evaluations/audits/corrected-integration-qualification-ponytail-caveman-v1-20260719.json",
+        "sources/evaluations/audits/corrected-integration-qualification-current-candidates-v3-20260719.json",
+        "sources/evaluations/audits/corrected-integration-qualification-jcodemunch-codex-mcp-v2-20260719.json",
+        "sources/evaluations/audits/corrected-integration-qualification-codegraph-20260719.json",
+        "sources/evaluations/audits/corrected-integration-qualification-cartog-codex-product-v2-20260720.json",
+        "sources/evaluations/audits/corrected-integration-qualification-rtk-claude-code-hook-20260801.json"
+      ],
+      "profiles": 16,
+      "fixture_specific_protocols": 48,
+      "passed": 48,
+      "failed": 0,
+      "provider_calls": 0
+    },
+    "provider_backed_sessions": 12,
+    "approved_profile_ids": [
+      "artifact-ponytail-codex-plugin-v1",
+      "behavior-caveman-codex-skill-v1",
+      "codescope-codex-product-v1",
+      "integrated-leanctx-codex-hybrid-v1",
+      "integrated-token-savior-codex-product-v2",
+      "retrieval-cartog-codex-product-v2",
+      "retrieval-codegraph-codex-mcp-v1",
+      "retrieval-graphify-codex-skill-v1",
+      "retrieval-jcodemunch-codex-mcp-v2",
+      "retrieval-serena-codex-mcp-v1",
+      "retrieval-sigmap-codex-live-v1",
+      "swarmvault-codex-product-v1",
+      "terminal-rtk-codex-instructions-v1",
+      "terminal-rtk-claude-code-hook-v1",
+      "terminal-snip-codex-hook-v1",
+      "terminal-tokenjuice-codex-hook-v1"
+    ]
+  },
+  "post_audit_corrections": [
+    {
+      "date": "2026-07-19",
+      "invalid_profile_id": "retrieval-codegraph-codex-mcp-v1",
+      "reason": "The installer-generated bare codegraph command was absent from the actual model-runtime PATH; all three attempted CLI calls exited 127.",
+      "deletion_receipt": "sources/evaluations/audits/invalid-codegraph-v1-result-deletion-20260719.json",
+      "replacement_profile_id": "retrieval-codegraph-codex-mcp-v1",
+      "replacement_qualification_receipt": "sources/evaluations/audits/corrected-integration-qualification-codegraph-20260719.json",
+      "identity_policy": "The deleted generation is bound to the deleted protocol paths in its receipt; the corrected canonical v1 generation is bound to fresh protocol hashes and provider-free qualification."
+    },
+    {
+      "date": "2026-07-19",
+      "invalid_profile_id": "retrieval-jcodemunch-mcp-direct-v1",
+      "reason": "The direct MCP binary, warm index, and handshake were present, but the runner deliberately omitted the tool-author-recommended Codex guidance layer. The experiment owner classified this as a broken, incomplete installation and directed deletion of all results.",
+      "deletion_receipt": "sources/evaluations/audits/invalid-jcodemunch-direct-v1-result-deletion-20260719.json",
+      "replacement_profile_id": "retrieval-jcodemunch-codex-mcp-v2",
+      "replacement_qualification_receipt": "sources/evaluations/audits/corrected-integration-qualification-jcodemunch-codex-mcp-v2-20260719.json",
+      "replacement_contract": "Pinned 1.108.114 direct binary with no MCP args, product-native warm index, verbatim product-authored Codex guidance excerpts, and initialize plus tools/list assignment proof."
+    },
+    {
+      "date": "2026-07-19",
+      "invalid_profile_id": "artifact-ponytail",
+      "reason": "Prompt-only fallback instructions omitted the official Codex plugin and trusted lifecycle hooks.",
+      "deletion_receipt": "sources/evaluations/audits/invalid-ponytail-caveman-result-deletion-20260719.json",
+      "replacement_profile_id": "artifact-ponytail-codex-plugin-v1"
+    },
+    {
+      "date": "2026-07-19",
+      "invalid_profile_id": "behavior-caveman",
+      "reason": "Evaluator-rendered skill prose omitted the native Codex skill install and documented /caveman session activation.",
+      "deletion_receipt": "sources/evaluations/audits/invalid-ponytail-caveman-result-deletion-20260719.json",
+      "replacement_profile_id": "behavior-caveman-codex-skill-v1"
+    },
+    {
+      "date": "2026-07-20",
+      "profile_id": "retrieval-cartog-mcp-v1",
+      "disposition": "invalid-treatment-configuration",
+      "active_corpus_action": "deleted-under-owner-authorized-receipt",
+      "deleted_sessions": 6,
+      "receipt": "sources/evaluations/audits/invalid-cartog-result-deletions-20260720.json",
+      "superseded_by": "retrieval-cartog-codex-product-v2",
+      "reason": "The direct-MCP arm omitted Cartog product-authored Codex AGENTS routing, the official Codex installer, model-runtime CLI exposure, and live watch."
+    }
+  ]
+}

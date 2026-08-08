@@ -1,0 +1,192 @@
+{
+  "schema_version": 4,
+  "controller_hidden_sha256": null,
+  "qualified_on": "2026-07-21",
+  "snapshot": "94bcbcc6e2ef3b8e8f8e8797fe551ccbe7b942fd",
+  "observed_source": {
+    "head": "94bcbcc6e2ef3b8e8f8e8797fe551ccbe7b942fd",
+    "tree": "6baf2f697d35c3c574c58859129f70ecb54c78d0",
+    "remotes": [
+      "origin\tgit@github.com:fastify/fastify.git (fetch) [blob:none]",
+      "origin\tgit@github.com:fastify/fastify.git (push)"
+    ],
+    "expected_upstream": "https://github.com/fastify/fastify.git",
+    "clean": true
+  },
+  "tool_versions": {
+    "git": "git version 2.47.3",
+    "qualification_dependency_command": "npm install --ignore-scripts --no-audit --no-fund"
+  },
+  "ordered_task_ids": [
+    "fastify-lifecycle-feature-v0",
+    "fastify-lifecycle-refactor-v0",
+    "fastify-lifecycle-review-v0"
+  ],
+  "model_concealed_paths": [],
+  "fixed_snapshot_concealed_path_collisions": [],
+  "fixed_snapshot_model_concealed_paths_absent": true,
+  "fixed_snapshot_model_concealed_paths_safe": true,
+  "fixed_snapshot_concealed_path_collision_audit": [],
+  "tasks": [
+    {
+      "task_id": "fastify-lifecycle-feature-v0",
+      "seed_patch_sha256": "a07c7e7760ef9da94fc4e1785eb7ebfbabb7f1aef1b9dbe8072f07d4f87938e9",
+      "verifier_sha256": "b468e2d068bd267f52289b350e7ac842a764bb937c4e9bac2636f0431d1af180",
+      "controller_visible_acceptance_assets": [
+        {
+          "path": "controller-visible/test/baseline-v2-request-media-type.test.js",
+          "model_visible_path": "test/baseline-v2-request-media-type.test.js",
+          "sha256": "2bf55739b1bc98d824cf7855a3c2f8bf14e13fc307d4ac15e7837ea97b4ac8c0"
+        }
+      ],
+      "model_visible_acceptance_asset_paths": [
+        "test/baseline-v2-request-media-type.test.js"
+      ],
+      "production_files": [
+        "lib/request.js"
+      ],
+      "production_file_count": 1,
+      "expected_model_concealed_paths": [],
+      "model_concealed_paths": [],
+      "omitted_expected_model_concealed_paths": [],
+      "declared_concealment_matches_expected": true,
+      "model_concealed_absent": true,
+      "fixed_snapshot_model_concealed_absent": true,
+      "fixed_snapshot_model_concealed_safe": true,
+      "fixed_snapshot_concealed_path_collision_audit": [],
+      "agent_prompt_sha256": "64dbcf497dd9862a66b79d95a92a04e8672519a41a919ec9b7d3ee18123445f6",
+      "task_directory_sha256": "16fe9a82845ec621d14673672fddbf9c363931047f2517362780397b6cc9fe1c"
+    },
+    {
+      "task_id": "fastify-lifecycle-refactor-v0",
+      "seed_patch_sha256": "463373646cef2d022fb56b2790c8fb47e81791d55a6cb2cafe0472e53e8033e3",
+      "verifier_sha256": "09e52db82a8b78bf30d3a8a4180e0aa444fa13aa2ee719f3345bd3606c97a1c1",
+      "controller_visible_acceptance_assets": [
+        {
+          "path": "controller-visible/test/baseline-v2-content-type-cache.test.js",
+          "model_visible_path": "test/baseline-v2-content-type-cache.test.js",
+          "sha256": "732c731ac0f9a243cf33b2bbeed26ab5ebeece6783398ad0c39cb0b9a6df64d4"
+        }
+      ],
+      "model_visible_acceptance_asset_paths": [
+        "test/baseline-v2-content-type-cache.test.js"
+      ],
+      "production_files": [
+        "lib/content-type.js"
+      ],
+      "production_file_count": 1,
+      "expected_model_concealed_paths": [],
+      "model_concealed_paths": [],
+      "omitted_expected_model_concealed_paths": [],
+      "declared_concealment_matches_expected": true,
+      "model_concealed_absent": true,
+      "fixed_snapshot_model_concealed_absent": true,
+      "fixed_snapshot_model_concealed_safe": true,
+      "fixed_snapshot_concealed_path_collision_audit": [],
+      "agent_prompt_sha256": "8aafc13def62b21afa1946a5f2c20d9e6b8a37266c17704c7fee72d45dd07b7e",
+      "task_directory_sha256": "cd6a5f2a63df4cafac279ddd112ea0cf659e890677242523970552040ee7241c"
+    },
+    {
+      "task_id": "fastify-lifecycle-review-v0",
+      "seed_patch_sha256": "77fa21fa41b69d1275b556870340e7c110fff7430ed2bbeccd52ca185eccef7e",
+      "verifier_sha256": "3c8e67aac05926e18551741fe219a7a151e6b002261a972e12fd9eeebe017fd7",
+      "controller_visible_acceptance_assets": [
+        {
+          "path": "controller-visible/test/baseline-v2-max-param.test.js",
+          "model_visible_path": "test/baseline-v2-max-param.test.js",
+          "sha256": "52fac190ee677c475523e317f69881c65486f5c8c6ee6f69681012f6db876715"
+        }
+      ],
+      "model_visible_acceptance_asset_paths": [
+        "test/baseline-v2-max-param.test.js"
+      ],
+      "production_files": [
+        "fastify.js",
+        "lib/errors.js"
+      ],
+      "production_file_count": 2,
+      "expected_model_concealed_paths": [],
+      "model_concealed_paths": [],
+      "omitted_expected_model_concealed_paths": [],
+      "declared_concealment_matches_expected": true,
+      "model_concealed_absent": true,
+      "fixed_snapshot_model_concealed_absent": true,
+      "fixed_snapshot_model_concealed_safe": true,
+      "fixed_snapshot_concealed_path_collision_audit": [],
+      "agent_prompt_sha256": "74197af9f129e1e963a81867084da46bfa28b672d2d01cc0f6c56e2e5b894899",
+      "task_directory_sha256": "4de964e622da957bafccafc3d637ece715e3b3e2193502c47fd102845f93ccca"
+    }
+  ],
+  "cumulative_boundaries": [
+    {
+      "task_id": "fastify-lifecycle-feature-v0",
+      "seed_apply_check_exit": 0,
+      "seed_apply_exit": 0,
+      "seeded_verifier_exit": 1,
+      "repair_apply_check_exit": 0,
+      "repair_apply_exit": 0,
+      "retained_verifier_exits": {
+        "fastify-lifecycle-feature-v0": 0
+      }
+    },
+    {
+      "task_id": "fastify-lifecycle-refactor-v0",
+      "seed_apply_check_exit": 0,
+      "seed_apply_exit": 0,
+      "seeded_verifier_exit": 1,
+      "repair_apply_check_exit": 0,
+      "repair_apply_exit": 0,
+      "retained_verifier_exits": {
+        "fastify-lifecycle-feature-v0": 0,
+        "fastify-lifecycle-refactor-v0": 0
+      },
+      "seeded_behavior_exit": 0,
+      "seeded_structure_exit": 1,
+      "fixed_behavior_exit": 0,
+      "fixed_structure_exit": 0
+    },
+    {
+      "task_id": "fastify-lifecycle-review-v0",
+      "seed_apply_check_exit": 0,
+      "seed_apply_exit": 0,
+      "seeded_verifier_exit": 1,
+      "repair_apply_check_exit": 0,
+      "repair_apply_exit": 0,
+      "retained_verifier_exits": {
+        "fastify-lifecycle-feature-v0": 0,
+        "fastify-lifecycle-refactor-v0": 0,
+        "fastify-lifecycle-review-v0": 0
+      }
+    }
+  ],
+  "composite_seed_merge_zero": true,
+  "composite_seeded_verifiers_nonzero": true,
+  "composite_seed_verifier_exits": {
+    "fastify-lifecycle-feature-v0": 1,
+    "fastify-lifecycle-refactor-v0": 1,
+    "fastify-lifecycle-review-v0": 1
+  },
+  "composite_seed_diff_sha256": "ac4eab923081641fc398b042626ce32dbfb1f021424624279fcdfa8713af84c2",
+  "composite_seed_error": "",
+  "seeded_verifier_nonzero": true,
+  "fixed_verifier_zero": true,
+  "full_fixed_cumulative_verifier_zero": true,
+  "no_unmerged_paths": true,
+  "no_model_visible_acceptance_assets": false,
+  "no_model_concealed_acceptance_assets": true,
+  "acceptance_visibility": "model-visible-complete",
+  "all_acceptance_behavior_model_visible": true,
+  "model_visible_acceptance_assets_match_verifier_copies": true,
+  "expected_model_visible_acceptance_asset_count": 3,
+  "all_expected_model_concealment_declared": true,
+  "fixture_id": "medium-fastify-fastify",
+  "sequence_id": "fastify-lifecycle-sequence-v0",
+  "task_binding": {
+    "algorithm": "sha256(path\\0bytes\\0; lexical recursive task directory order)",
+    "task_directories": {
+      "fastify-lifecycle-feature-v0": "16fe9a82845ec621d14673672fddbf9c363931047f2517362780397b6cc9fe1c",
+      "fastify-lifecycle-refactor-v0": "cd6a5f2a63df4cafac279ddd112ea0cf659e890677242523970552040ee7241c",
+      "fastify-lifecycle-review-v0": "4de964e622da957bafccafc3d637ece715e3b3e2193502c47fd102845f93ccca"
+    }
+  }
+}
