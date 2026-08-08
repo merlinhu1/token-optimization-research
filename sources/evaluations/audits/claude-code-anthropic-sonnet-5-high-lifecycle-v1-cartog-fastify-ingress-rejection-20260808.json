@@ -1,0 +1,36 @@
+{
+  "schema_version": 1,
+  "audit_id": "claude-code-anthropic-sonnet-5-high-lifecycle-v1-cartog-fastify-ingress-rejection-20260808",
+  "date": "2026-08-08",
+  "scope": "direct-Anthropic Claude Code Sonnet 5/high Lifecycle V1 treatment, Fastify Cartog lane",
+  "status": "rejected-before-registry-publication",
+  "attempt_identity": {
+    "sequence_id": "fastify-lifecycle-sequence-v1",
+    "replicate_index": 0,
+    "profile_id": "retrieval-cartog-claude-code-product-v1",
+    "model_condition_id": "claude-code-anthropic-sonnet-5-high",
+    "session_id": "retrieval-cartog-claude-code-product-fastify-20260808-p-70516277e342-r0",
+    "attempt_receipt_path": "sources/evaluations/audits/claude-code-anthropic-sonnet-5-high-lifecycle-v1-treatment-attempts/fastify-retrieval-cartog-claude-code-product-v1-r0.json",
+    "attempt_receipt_sha256": "36e5ffc51ec9b55b232bbb01b0e44b7366a90bc250b8a65629b8093070ba23ea"
+  },
+  "execution": {
+    "provider_task_started": true,
+    "provider_subprocess_exit_code": 1,
+    "failure_stage": "Claude Code provider authentication",
+    "error": "Failed to authenticate: OAuth session expired and could not be refreshed",
+    "provider_usage_status": "zero provider tokens reported",
+    "provider_tokens": 0,
+    "rerun_policy": "Do not retry this Fastify Cartog identity; its immutable attempt receipt is occupied. Refresh credentials before continuing with the other authorized lanes."
+  },
+  "disposition": {
+    "excluded_from_registry_and_aggregate": true,
+    "accepted_sibling_session_id": "rtk-claude-code-fastify-20260808-p-70516277e342-r0",
+    "matrix_status": "fail-stopped after the first invalid treatment lane; remaining 28 treatment lanes were not launched"
+  },
+  "retained_evidence": {
+    "lane_root": "/opt/data/eval-workflow-lanes/workflow-matrix-20260808T154654158474Z-p1678309-r0/fastify-lifecycle-sequence-v1--retrieval-cartog-claude-code-product-v1",
+    "run_json_sha256": "1720f74ce51eea357935e76c0b4e7fe86e57414896d2be8e3ef3ef71aaf4b2ac",
+    "evidence_jsonl_gz_sha256": "452e960cef655f5d573494e6df8e8fc1f705fda09f16cf1f5a361cbee5f386e8",
+    "strict_ingress_rejection_sha256": "cde1543bca16be5576b541823659b00de0c573d946e48642adcf241f411bd8e0"
+  }
+}

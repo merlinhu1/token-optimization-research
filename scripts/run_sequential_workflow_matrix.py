@@ -86,6 +86,9 @@ CLAUDE_ANTHROPIC_AUTHORIZATION_REL = Path(
 CLAUDE_ANTHROPIC_ATTEMPT_DIR = Path(
     "sources/evaluations/audits/claude-code-anthropic-sonnet-5-high-lifecycle-v1-attempts"
 )
+CLAUDE_ANTHROPIC_SONNET_TREATMENT_ATTEMPT_DIR = Path(
+    "sources/evaluations/audits/claude-code-anthropic-sonnet-5-high-lifecycle-v1-treatment-attempts"
+)
 CLAUDE_ANTHROPIC_OPUS_5_HIGH_CONDITION_ID = "claude-code-anthropic-opus-5-high"
 CLAUDE_ANTHROPIC_OPUS_PREPARATION_REL = Path(
     "sources/evaluations/audits/claude-code-anthropic-opus-5-high-lifecycle-v1-protocol-preparation-20260808.json"
@@ -1187,6 +1190,64 @@ def expected_session_binding_for_protocol(
     }
 
 
+def claude_anthropic_sonnet_treatment_attempt_path(
+    sequence_id: str,
+    profile_id: str,
+    replicate_index: int,
+    root: Path = ROOT,
+) -> Path:
+    if (
+        sequence_id not in CLAUDE_LIFECYCLE_V1_SEQUENCE_ORDER
+        or not profile_id
+        or profile_id == "baseline-claude-code-no-mcp"
+        or replicate_index != 0
+    ):
+        raise ValueError("direct-Anthropic Sonnet treatment identity is not authorized")
+    lane = sequence_id.removesuffix("-lifecycle-sequence-v1")
+    return root / CLAUDE_ANTHROPIC_SONNET_TREATMENT_ATTEMPT_DIR / (
+        f"{safe_name(lane)}-{safe_name(profile_id)}-r{replicate_index}.json"
+    )
+
+
+def reserve_claude_anthropic_sonnet_treatment_attempt(
+    *,
+    sequence_id: str,
+    profile_id: str,
+    replicate_index: int,
+    expected_session_binding: dict[str, Any],
+    run_root: Path,
+    root: Path = ROOT,
+) -> Path:
+    """Occupy a paid Sonnet treatment slot before any provider task starts."""
+    path = claude_anthropic_sonnet_treatment_attempt_path(
+        sequence_id, profile_id, replicate_index, root
+    )
+    if expected_session_binding.get("sequence_id") != sequence_id or expected_session_binding.get("profile_id") != profile_id:
+        raise ValueError("Sonnet treatment receipt binding does not match the requested identity")
+    if path.exists():
+        raise FileExistsError(f"immutable Sonnet treatment attempt receipt already exists: {path}")
+    atomic_write_json(
+        path,
+        {
+            "schema_version": 1,
+            "attempt_status": "reserved-before-provider-task",
+            "task_family_generation": "lifecycle-v1",
+            "sequence_id": sequence_id,
+            "replicate_index": replicate_index,
+            "profile_id": profile_id,
+            "model_condition_id": CLAUDE_ANTHROPIC_SONNET_5_HIGH_CONDITION_ID,
+            "model": "claude-sonnet-5",
+            "reasoning_effort": "high",
+            "orchestrator": f"workflow-matrix:{run_root.name}",
+            "reserved_at": dt.datetime.now(dt.UTC).isoformat(),
+            "expected_session_binding": expected_session_binding,
+            "provider_result": None,
+            "immutable_identity_receipt": True,
+        },
+    )
+    return path
+
+
 def run_flow_lane(
     *,
     sequence_id: str,
@@ -1217,6 +1278,7 @@ def run_flow_lane(
     if provider_capable and not published_launch_commit:
         raise ValueError("provider-capable lane requires a certified published launch commit")
     parent_claude_receipt_binding: dict[str, Any] | None = None
+    parent_claude_treatment_receipt: Path | None = None
     parent_opencode_receipt_binding: dict[str, Any] | None = None
     if (
         provider_capable
@@ -1293,10 +1355,42 @@ def run_flow_lane(
                 else "1533397324384964609"
             ),
         )
+    if (
+        provider_capable
+        and isinstance(model_condition, dict)
+        and model_condition.get("id") == CLAUDE_ANTHROPIC_SONNET_5_HIGH_CONDITION_ID
+        and treatment_profile != "baseline-claude-code-no-mcp"
+        and sequence_id in CLAUDE_LIFECYCLE_V1_SEQUENCE_ORDER
+    ):
+        parent_protocol = find_protocol(
+            ROOT,
+            sequence_id,
+            treatment_profile,
+            model_condition_override=model_condition,
+        )
+        parent_binding = expected_session_binding_for_protocol(
+            sequence_id=sequence_id,
+            profile_id=treatment_profile,
+            replicate_index=replicate_index,
+            protocol_path=parent_protocol,
+            root=ROOT,
+        )
+        parent_claude_treatment_receipt = reserve_claude_anthropic_sonnet_treatment_attempt(
+            sequence_id=sequence_id,
+            profile_id=treatment_profile,
+            replicate_index=replicate_index,
+            expected_session_binding=parent_binding,
+            run_root=lane_root,
+            root=ROOT,
+        )
     if provider_capable:
         clone_published_checkout(checkout, published_launch_commit)
     else:
         rsync_checkout(ROOT, checkout)
+    if parent_claude_treatment_receipt is not None:
+        child_receipt = checkout / parent_claude_treatment_receipt.relative_to(ROOT)
+        child_receipt.parent.mkdir(parents=True, exist_ok=True)
+        shutil.copy2(parent_claude_treatment_receipt, child_receipt)
     before_session_ids = {
         str(session.get("session_id"))
         for session in load_json(checkout / "data/workflow-sessions.json").get("sessions", [])
@@ -2931,7 +3025,20 @@ def main(argv: list[str] | None = None) -> int:
     def profile_state(sequence_id: str, profile_id: str) -> str:
         sequence = workflow.load_sequence(sequence_id)
         session = workflow.find_pool_profile_record(registry, sequence, profile_id, args.replicate_index)
-        return workflow.reviewed_session_reuse_state(session, ROOT)
+        state = workflow.reviewed_session_reuse_state(session, ROOT)
+        if state == "reusable":
+            return state
+        if (
+            isinstance(model_condition, dict)
+            and model_condition.get("id") == CLAUDE_ANTHROPIC_SONNET_5_HIGH_CONDITION_ID
+            and sequence_id in CLAUDE_LIFECYCLE_V1_SEQUENCE_ORDER
+        ):
+            attempt = claude_anthropic_sonnet_treatment_attempt_path(
+                sequence_id, profile_id, args.replicate_index, ROOT
+            )
+            if attempt.exists():
+                return "occupied"
+        return state
 
     def treatment_gate(sequence_id: str) -> tuple[bool, str]:
         return workflow.baseline_v2_treatment_gate(workflow.load_sequence(sequence_id), ROOT)

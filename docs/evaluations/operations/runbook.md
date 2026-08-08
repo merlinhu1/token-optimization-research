@@ -22,7 +22,7 @@ Internally, every active task uses compilation-only acceptance. Unit tests, beha
 Authority: `sources/evaluations/audits/claude-code-anthropic-sonnet-5-high-lifecycle-v1-protocol-preparation-20260808.json` (`frozen-provider-free-protocols-account-pending`).
 Condition: `claude-code-anthropic-sonnet-5-high` — `anthropic/claude-sonnet-5` with `high` effort.
 Prepared treatment profiles: 16 (32 treatment plus 2 baseline frozen provider-free protocol files across the active Fastify and Beets sequences).
-Baseline-only execution completed for `fastify-lifecycle-sequence-v1, beets-lifecycle-sequence-v1` with 6,207,153 provider tokens; native qualification passed 30/30 lanes and the serialized Sonnet treatment authorization is active (the treatment matrix is ready to launch; SDL-MCP excluded).
+Baseline-only execution completed for `fastify-lifecycle-sequence-v1, beets-lifecycle-sequence-v1` with 6,207,153 provider tokens; native qualification passed 30/30 lanes and the serialized Sonnet treatment authorization is active (1/30 treatment lanes are retained; SDL-MCP excluded).
 
 Authority: `sources/evaluations/audits/claude-code-anthropic-opus-5-high-lifecycle-v1-protocol-preparation-20260808.json` (`frozen-provider-free-protocols-account-pending`).
 Condition: `claude-code-anthropic-opus-5-high` — `anthropic/claude-opus-5` with `high` effort.
