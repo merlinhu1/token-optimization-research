@@ -1925,7 +1925,11 @@ def executable_identity(command: list[str], cfg: dict[str, Any], root: Path = RO
 
 def tool_adapter_identity(profile_id: str, root: Path = ROOT) -> dict[str, Any]:
     meta = PROFILE_META[profile_id]
-    profile_entry = profile_registry_entry(profile_id, root)
+    try:
+        profile_entry = profile_registry_entry(profile_id, root)
+    except KeyError:
+        # Unit-only profile overlays may intentionally omit a catalog row.
+        profile_entry = {}
     tool_id = meta.get("tool_id")
     if not tool_id:
         return {"tool_id": None, "tool_manifest": "baseline-native-codex-tools", "tool_config": None, "binary_identity": None, "source_identity": []}
@@ -4229,7 +4233,6 @@ def summary_tool_adapter_identity(profile_id: str, selected_descriptor: dict[str
     if profile_id in {
         "baseline-bare-codex",
         "baseline-claude-code-no-mcp",
-        "baseline-opencode-openrouter-no-mcp",
     }:
         return None
     adapter = selected_descriptor.get("tool_adapter")
@@ -4717,7 +4720,10 @@ def recover_direct_claude_lifecycle_v1_strict_ingress(session_id: str, root: Pat
         or not isinstance(summary.get("frozen_protocol"), dict)
         or not isinstance(summary.get("baseline_pool"), dict)
         or not isinstance(summary.get("selected_execution"), dict)
-        or not isinstance(summary.get("tool_adapter_identity"), dict)
+        or not (
+            summary.get("tool_adapter_identity") is None
+            or isinstance(summary.get("tool_adapter_identity"), dict)
+        )
     ):
         raise ValueError("direct Claude strict-ingress recovery does not match the retained baseline identity")
     authority = json.loads(
