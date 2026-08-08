@@ -1,0 +1,35 @@
+## Outcome
+
+All three r1 compact session artifacts **pass integrity and provider-accounting audit**.
+
+| Session | Fresh | Cached | Output | Raw provider tokens | Weighted token cost |
+|---|---:|---:|---:|---:|---:|
+| Fastify — `baseline-fastify-20260728-p-bb0e89ed9794-r1` | 34,988 | 54,272 | 1,203 | 90,463 | 47,633.2 |
+| Beets — `baseline-beets-20260728-p-fcc8438d2077-r1` | 32,193 | 54,272 | 931 | 87,396 | 43,206.2 |
+| Terraform — `baseline-terraform-20260728-p-5811b463c1e9-r1` | 7,539 | 79,360 | 917 | 87,816 | 20,977.0 |
+| **Total** | **74,720** | **187,904** | **3,051** | **265,675** | **111,816.4** |
+
+Weighted formula: `fresh + 0.1 × cached + 6 × output`.
+
+## Verified
+
+- Each compact directory contains exactly the four expected files.
+- All **3/3 manifest hashes per session** match.
+- All gzip bundles decode successfully with valid CRC.
+- Each bundle has 50 unique, safe logical paths; no traversal, absolute logical paths, duplicates, or symlinks.
+- All embedded JSON and JSONL parsed:
+  - 16 JSON records per session.
+  - 4 JSONL streams and 42 JSONL lines per session.
+- Aggregate Codex streams exactly concatenate the three task streams.
+- Each session has three monotonic cumulative usage snapshots on one persistent thread; final-snapshot accounting reconciles across raw events, `provider-usage.json`, `run.json`, and the lane registry.
+- Reasoning usage is an **explicit provider-reported zero output subset** in all nine turn snapshots; it was not added separately.
+- Session, sequence, profile, replicate, baseline pool, protocol hash/ID, canonical selected-execution hash, model condition, reasoning effort, Codex version, registry record, and immutable attempt receipt all agree.
+- Model binding: OpenAI `gpt-5.6-sol`, high effort, Codex CLI `0.145.0`.
+- No high-confidence credential, token, private-key, or non-redacted sensitive-value patterns found.
+
+## Separate publication issue
+
+The compact artifacts themselves are valid, but the matrix’s post-merge repository validation failed and rolled publication back. The contract suite reported 20 failures, principally because immutable r1 attempt receipts now occupy identities that several tests expected to be unoccupied or attempted to probe before occupied/reusable-state checks. All three lane processes exited 0; this is a controller/publication-test issue, not an artifact or accounting defect.
+
+- **Files created or modified:** none.
+- **Provider calls:** none; audit was read-only/provider-free.

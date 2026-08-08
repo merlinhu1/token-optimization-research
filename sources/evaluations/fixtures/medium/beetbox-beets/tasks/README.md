@@ -1,7 +1,7 @@
-# Beets lifecycle v0
+# Beets lifecycle v1 — active Lifecycle V1 tasks
 
-1. `beets-lifecycle-feature-v0` — implement list-valued modify operators.
-2. `beets-lifecycle-refactor-v0` — preserve lazy-model behavior while moving storage to `UserDict`.
-3. `beets-lifecycle-review-v0` — review and correct the supplied `ftintitle` metadata-hook change.
+1. `beets-lifecycle-feature-v1` — restore escaped separators in function-template arguments.
+2. `beets-lifecycle-refactor-v1` — remove the unnecessary LazyDict iterator layer without behavioral drift.
+3. `beets-lifecycle-review-v1` — review and correct featuring-token selection in ftintitle.
 
-The controller applies all three start patches before prompt 1 and runs all concealed verifiers after prompt 3.
+The active model-facing contracts are under `task-generations/lifecycle-v1/`. Each prompt states a complete software objective, permits normal search and related-code inspection, and expects a correct implementation and relevant validation. The controller applies all three semantic start patches before prompt 1 and runs controller-only compile verifiers after prompt 3.

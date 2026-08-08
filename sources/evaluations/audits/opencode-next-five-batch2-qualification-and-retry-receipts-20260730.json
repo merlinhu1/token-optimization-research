@@ -1,0 +1,74 @@
+{
+  "schema_version": 1,
+  "audit_id": "opencode-next-five-batch2-qualification-and-retry-receipts-20260730",
+  "status": "accepted-complete-15-of-15-sessions-independently-audited",
+  "accepted_attempts": [
+    {
+      "profile_id": "retrieval-jcodemunch-opencode-product-v1",
+      "sequence_id": "fastify-lifecycle-sequence-v0",
+      "session_id": "jcodemunch-opencode-v1-fastify-20260730-p-bb0e89ed9794-r1",
+      "disposition": "first valid assignment retained and merged"
+    }
+  ],
+  "excluded_or_invalid_attempts": [
+    {
+      "profile_id": "artifact-ponytail-opencode-plugin-v1",
+      "provider_usage_accepted": false,
+      "disposition": "excluded before provider execution",
+      "reason": "OpenCode 1.18.9 live debug-config probes failed to load the native plugin for both pinned 4.8.3 and release 4.8.4 with `path must be a string or a file descriptor`."
+    },
+    {
+      "profile_id": "integrated-leanctx-opencode-hybrid-v1",
+      "sequence_id": "fastify-lifecycle-sequence-v0",
+      "provider_usage_accepted": false,
+      "disposition": "invalid infrastructure attempt; replaced by integrated-leanctx-opencode-hybrid-v2",
+      "reason": "The product initializer wrote guidance under HOME/.config while the lane-active XDG_CONFIG_HOME was distinct. OpenCode exited 86 before emitting any step_finish usage block; token fields were null and strict ingress rejected the session."
+    }
+  ],
+  "corrected_batch": [
+    "retrieval-jcodemunch-opencode-product-v1",
+    "integrated-leanctx-opencode-hybrid-v2",
+    "retrieval-sigmap-opencode-product-v1",
+    "behavior-caveman-opencode-plugin-v1",
+    "terminal-lowfat-opencode-plugin-v1"
+  ],
+  "provider_free_parity": {
+    "passed": 15,
+    "total": 15,
+    "sequences": [
+      "fastify-lifecycle-sequence-v0",
+      "beets-lifecycle-sequence-v0",
+      "terraform-lifecycle-sequence-v0"
+    ],
+    "summary_path": "/opt/data/cache/opencode-next5-corrected-prepare2.json"
+  },
+  "notes": [
+    "jCodemunch is an explicitly declared host-agnostic MCP arm, not a first-class native OpenCode installer.",
+    "LowFat 0.8.0 replaces Ponytail and uses its official native OpenCode plugin installer.",
+    "No rejected or invalid attempt contributes accepted accounting."
+  ],
+  "accepted_session_count": 15,
+  "execution_incidents": [
+    {
+      "sequence_id": "terraform-lifecycle-sequence-v0",
+      "profile_id": "retrieval-jcodemunch-opencode-product-v1",
+      "session_id": "jcodemunch-opencode-v1-terraform-20260730-p-5811b463c1e9-r1",
+      "provider_usage_accepted": false,
+      "stage": "setup-deps",
+      "reason": "Go module extraction failed with no space left on device before provider execution; rejected compact evidence retained under the matrix lane root."
+    },
+    {
+      "cleanup": "reclaimed regenerable scratch/cache only",
+      "before_available_bytes": 4386918400,
+      "after_available_bytes": 7043002368,
+      "removed": [
+        "/opt/data/eval-workflow-lanes/opencode-five-preflight-r0",
+        "/opt/data/eval-workflow-lanes/opencode-five-preflight-r0-v2",
+        "/opt/data/home/.cache/puccinialin"
+      ]
+    }
+  ],
+  "results_audit": "sources/evaluations/audits/opencode-next-five-batch2-results-20260730.json",
+  "operational_incidents": [],
+  "independent_audit": "sources/evaluations/audits/opencode-next-five-batch2-independent-audit-20260730.json"
+}

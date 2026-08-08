@@ -1,7 +1,11 @@
 ---
 status: active
 truth_kind: engineering-architecture
-last_reviewed: 2026-06-29
+doc_type: architecture
+source_of_truth:
+  - ../../../../data/compatibility-edges.json
+  - ../../../../docs/reference/compatibility-taxonomy.md
+last_reviewed: 2026-07-18
 ---
 
 # Stack Compatibility
@@ -23,6 +27,7 @@ It does not store raw tool-source inspection notes.
 - The repository stores techniques in `data/techniques.json`.
 - The repository stores compatibility edges in `data/compatibility-edges.json`.
 - The Phase 1 report frames current stack hypotheses as compatibility-safe research candidates, not measured selections.
+- The historical `stack-tokenjuice-jcodemunch-mcp` executions are excluded from stack-effect claims. TokenJuice's Codex hook was absent and disabled; jcodemunch lacked the pinned direct-binary path, positive handshake proof, and an explicit neutral-versus-guided estimand. The retained 67,155,585-token total is forensic accounting, and the prior “does not advance” conclusion is withdrawn.
 
 ## Product Truth Links
 
@@ -66,6 +71,8 @@ This model is the repository's architecture layer for combining token-saving too
 - Decision (2026-06-26): Compatibility-safe stacks should avoid duplicate ownership of the same surface.
 - Decision (2026-06-26): Installer or orchestrator tools are evaluated separately from reducers.
 - Decision (2026-06-26): Multi-component stack claims require ablation planning before benchmark conclusions.
+- Decision (2026-07-18): The historical TokenJuice+jcodemunch stack decision is withdrawn because the intended component assignments were not validly installed/proven. Preserve its provider-accounting records as excluded evidence.
+- Decision (2026-07-18): A future stack requires separately qualified versioned individual integrations and a new preregistered stack identity.
 
 ## Rationale
 
@@ -89,7 +96,11 @@ Surface ownership makes stack design testable and reviewable.
 
 - ../../../../data/compatibility-edges.json
 - ../../../../data/techniques.json
-- ../../../../docs/taxonomy/compatibility-taxonomy.md
+- ../../../../docs/reference/compatibility-taxonomy.md
 - ../../../../docs/architecture/compatibility-graph.md
-- ../../../../docs/reports/phase-1-compatibility-safe-token-saving-stacks.md
+- ../../../../docs/papers/phase-1-compatibility-safe-token-saving-stacks.md
 - ../../../../.agents/skills/stack-ablation-planner.md
+
+## Engineering Decisions
+
+A compatibility-safe stack assigns one clear owner to each token-relevant surface; overlapping retrieval, compaction, memory, hook, or proxy tools require explicit ablation identities.

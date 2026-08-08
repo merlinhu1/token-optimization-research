@@ -1,0 +1,225 @@
+{
+  "schema_version": 1,
+  "date": "2026-07-20",
+  "study_id": "assisted-v1-sol-high-baseline-r0",
+  "purpose": "First provider-backed bare-Codex baseline panel for the solution-directed assisted-v1 lifecycle contracts under GPT-5.6 Sol with high reasoning effort.",
+  "frozen_contract_commit": "d349a9e8e4ee9e15e0aa4bf4fc02df8b5b59e4a2",
+  "model_condition": {
+    "id": "codex-openai-gpt-5-6-sol-high",
+    "model": "gpt-5.6-sol",
+    "reasoning_effort": "high"
+  },
+  "contract_generation": "lifecycle-v0-assisted-v1",
+  "replicate_index": 0,
+  "profile_id": "baseline-bare-codex",
+  "scope": {
+    "sequences": [
+      "fastify-lifecycle-sequence-v0",
+      "beets-lifecycle-sequence-v0",
+      "terraform-lifecycle-sequence-v0"
+    ],
+    "provider_backed_sessions": 3,
+    "treatment_sessions": 0,
+    "tasks": 9,
+    "reruns": 0
+  },
+  "source_registry": {
+    "path": "data/workflow-sessions.json",
+    "sha256": "916d851aceb258aeb5b96fec82edeb57f93be64b2a7b9c090ee069b2bb777b17"
+  },
+  "matrix_receipt": {
+    "path": "/opt/data/eval-workflow-lanes/workflow-matrix-20260720T232529991241Z-p2317281-r0/matrix-summary.json",
+    "sha256": "72ae6f63c750cd2cfaa24c119efa8b0d0093b250684ac897bfaaccb9f0c0ee5a",
+    "execution_passed": true,
+    "accepted": true,
+    "merged_session_ids": [
+      "baseline-fastify-20260720-p-e3f3816c31d8-r0",
+      "baseline-beets-20260720-p-8a88427b8c16-r0",
+      "baseline-terraform-20260720-p-6dbcb1227f80-r0"
+    ]
+  },
+  "sessions": [
+    {
+      "session_id": "baseline-fastify-20260720-p-e3f3816c31d8-r0",
+      "sequence_id": "fastify-lifecycle-sequence-v0",
+      "replicate_index": 0,
+      "baseline_pool_fingerprint": "e3f3816c31d8",
+      "frozen_protocol": {
+        "protocol_id": "fastify-lifecycle-sequence-v0-baseline-bare-codex-31776ac98dcd",
+        "path": "sources/evaluations/protocols/fastify-lifecycle-sequence-v0-baseline-bare-codex-31776ac98dcd.json",
+        "sha256": "87e61c6d09609ff0fa1b55db3dab186b2a5f0b1f70faa6742448767b5e8d8149"
+      },
+      "selected_execution_sha256": "abdc080d680ade5c4cb96d27f947b64732ca1589af943068a530dcd83e4a75b2",
+      "provider_usage": {
+        "fresh_input_tokens": 65453,
+        "cached_input_tokens": 865792,
+        "cache_write_tokens": null,
+        "output_tokens": 10640,
+        "reasoning_tokens": 2741,
+        "total_provider_tokens": 941885
+      },
+      "task_process_exit_codes": [
+        0,
+        0,
+        0
+      ],
+      "operational_retry_counts": [
+        0,
+        0,
+        0
+      ],
+      "verifier_exit_codes": [
+        0,
+        0,
+        0
+      ],
+      "tasks_passed": 3,
+      "tasks_total": 3,
+      "accepted_for_execution": true,
+      "accepted_for_objective": true,
+      "integrity": {
+        "verifier_integrity_passed": true,
+        "tool_isolation_audit_passed": true,
+        "external_retrieval_hits": [],
+        "pass_through_tool_command_hits": []
+      },
+      "artifacts": {
+        "root": "sources/evaluations/workflow-sessions/baseline-fastify-20260720-p-e3f3816c31d8-r0",
+        "manifest_sha256": "88868bcf115e669b2d818512625825a556c3702c7f3e4b7bfb38fd79156a8a9c",
+        "manifest_entries": {
+          "changes.diff": "f12c354d4f91c36415c9befbf76ced1684652bd3918f73a225fe33d9cb1fd7dd",
+          "evidence.jsonl.gz": "8fd719e4926c42209e276b99384b31952340517e1ed5661e41bc84fb5d6471d4",
+          "run.json": "c4319f77648b49178a8b142e8cd220cc06ff66a0a4d06729bb549807fc9ef528"
+        }
+      }
+    },
+    {
+      "session_id": "baseline-beets-20260720-p-8a88427b8c16-r0",
+      "sequence_id": "beets-lifecycle-sequence-v0",
+      "replicate_index": 0,
+      "baseline_pool_fingerprint": "8a88427b8c16",
+      "frozen_protocol": {
+        "protocol_id": "beets-lifecycle-sequence-v0-baseline-bare-codex-949e24807dc1",
+        "path": "sources/evaluations/protocols/beets-lifecycle-sequence-v0-baseline-bare-codex-949e24807dc1.json",
+        "sha256": "b967601cc94ef8a029cc411fb1b190021c29f394d603f38a90fdbdcddf19f6cb"
+      },
+      "selected_execution_sha256": "feb7a8c13d36ba95f57d826311e7c58dd208842cf5ba50abe81e457abd274fd0",
+      "provider_usage": {
+        "fresh_input_tokens": 72233,
+        "cached_input_tokens": 1158144,
+        "cache_write_tokens": null,
+        "output_tokens": 13948,
+        "reasoning_tokens": 4821,
+        "total_provider_tokens": 1244325
+      },
+      "task_process_exit_codes": [
+        0,
+        0,
+        0
+      ],
+      "operational_retry_counts": [
+        0,
+        0,
+        0
+      ],
+      "verifier_exit_codes": [
+        0,
+        0,
+        0
+      ],
+      "tasks_passed": 3,
+      "tasks_total": 3,
+      "accepted_for_execution": true,
+      "accepted_for_objective": true,
+      "integrity": {
+        "verifier_integrity_passed": true,
+        "tool_isolation_audit_passed": true,
+        "external_retrieval_hits": [],
+        "pass_through_tool_command_hits": []
+      },
+      "artifacts": {
+        "root": "sources/evaluations/workflow-sessions/baseline-beets-20260720-p-8a88427b8c16-r0",
+        "manifest_sha256": "e0ffe9698349e3e61a4c1ab61ba8da15abd41f884c555948cf51074a1921a928",
+        "manifest_entries": {
+          "changes.diff": "267f024974b2657469fa99be985b2208ddb09941fab4187f1fe90e43a7caaeb6",
+          "evidence.jsonl.gz": "6a3b449ee84332622c9640ebb826f97035846d35e89249293652d1ed9a575be8",
+          "run.json": "8f75984991125612ad3c3b8fb1fca022e9d68472b18d54fe2287023bab638bb6"
+        }
+      }
+    },
+    {
+      "session_id": "baseline-terraform-20260720-p-6dbcb1227f80-r0",
+      "sequence_id": "terraform-lifecycle-sequence-v0",
+      "replicate_index": 0,
+      "baseline_pool_fingerprint": "6dbcb1227f80",
+      "frozen_protocol": {
+        "protocol_id": "terraform-lifecycle-sequence-v0-baseline-bare-codex-6920fa0a2d11",
+        "path": "sources/evaluations/protocols/terraform-lifecycle-sequence-v0-baseline-bare-codex-6920fa0a2d11.json",
+        "sha256": "d6a5f606ea6fda4ea0f3657ccd1521445cddbac7a7876a0b24a227047287a215"
+      },
+      "selected_execution_sha256": "e356b103f2cfff0c01f6caa31500f92b6b4e63a1a70ab8cc5d17821874830391",
+      "provider_usage": {
+        "fresh_input_tokens": 150705,
+        "cached_input_tokens": 5359616,
+        "cache_write_tokens": null,
+        "output_tokens": 21938,
+        "reasoning_tokens": 6736,
+        "total_provider_tokens": 5532259
+      },
+      "task_process_exit_codes": [
+        0,
+        0,
+        0
+      ],
+      "operational_retry_counts": [
+        0,
+        0,
+        0
+      ],
+      "verifier_exit_codes": [
+        0,
+        0,
+        0
+      ],
+      "tasks_passed": 3,
+      "tasks_total": 3,
+      "accepted_for_execution": true,
+      "accepted_for_objective": true,
+      "integrity": {
+        "verifier_integrity_passed": true,
+        "tool_isolation_audit_passed": true,
+        "external_retrieval_hits": [],
+        "pass_through_tool_command_hits": []
+      },
+      "artifacts": {
+        "root": "sources/evaluations/workflow-sessions/baseline-terraform-20260720-p-6dbcb1227f80-r0",
+        "manifest_sha256": "6c7a0fd3afa88f396749b2e3d846bae0d0233ea048580e619e094fcf6ebe60f4",
+        "manifest_entries": {
+          "changes.diff": "f620c1c97ade63ade19831fe290f6b03ca4046e60d9e277c7d1def18fd334001",
+          "evidence.jsonl.gz": "2116ce92b480174d29b532273a203d52da87cc38b2276471754c8d16542ee1f4",
+          "run.json": "0da5fa6c3aa6d3ceb8c5409b7bcdf40f4c0668785484ec505737ced4a21df126"
+        }
+      }
+    }
+  ],
+  "aggregate_provider_usage": {
+    "fresh_input_tokens": 288391,
+    "cached_input_tokens": 7383552,
+    "output_tokens": 46526,
+    "reasoning_tokens": 14298,
+    "total_provider_tokens": 7718469
+  },
+  "verification": {
+    "all_manifests_verified": true,
+    "all_task_processes_exit_zero": true,
+    "all_operational_retry_counts_zero": true,
+    "all_verifiers_passed": true,
+    "all_sessions_accepted_for_execution": true,
+    "all_sessions_accepted_for_objective": true
+  },
+  "interpretation": {
+    "estimand": "Provider-reported token usage for one persistent three-task workflow per repository while following the frozen assisted-v1 implementation and validation recipe.",
+    "comparison_status": "baseline-only; no treatment effect is estimated",
+    "historical_natural_use_comparability": "The earlier Sol/high baselines use a different task-contract generation and are not exchangeable replicates of this assisted-v1 pool."
+  }
+}

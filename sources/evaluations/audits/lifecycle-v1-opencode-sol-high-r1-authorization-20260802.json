@@ -1,0 +1,47 @@
+{
+  "schema_version": 1,
+  "audit_id": "lifecycle-v1-opencode-sol-high-r1-authorization-20260802",
+  "date": "2026-08-02",
+  "status": "qualified-ready-for-provider-execution",
+  "owner_authorization": {
+    "source": "discord",
+    "message_id": "1533309463484694750",
+    "request": "Run V1 lifecycle evaluation with OpenCode and GPT sol high (though codex subscription)",
+    "authorized_new_runtime_replicate_index": 1
+  },
+  "execution_contract": {
+    "task_family_generation": "lifecycle-v1",
+    "sequence_order": [
+      "fastify-lifecycle-sequence-v1",
+      "beets-lifecycle-sequence-v1"
+    ],
+    "replicate_index": 1,
+    "runtime": "opencode-cli",
+    "model_condition_id": "opencode-openai-gpt-5-6-sol-high",
+    "model": "gpt-5.6-sol",
+    "reasoning_effort": "high",
+    "baseline_profile_id": "runtime-opencode-codex-product-v1",
+    "sequential_max_parallel": 1,
+    "allowed_paid_baseline_runs": 2,
+    "allowed_model_turns": 6,
+    "first_valid_sample_policy": true,
+    "rerun_after_attempt_receipt": false,
+    "provider_calls": 0,
+    "provider_tokens": 0
+  },
+  "frozen_protocols": [
+    {
+      "sequence_id": "fastify-lifecycle-sequence-v1",
+      "protocol_path": "sources/evaluations/protocols/fastify-lifecycle-sequence-v1-runtime-opencode-codex-product-v1-e84e2aa085d9.json",
+      "protocol_sha256": "2520f69673ca9d011c4fd2fb5dd5f53489a0151f1229cf62e7994dea009940e3",
+      "baseline_pool_fingerprint": "72ac148f730b"
+    },
+    {
+      "sequence_id": "beets-lifecycle-sequence-v1",
+      "protocol_path": "sources/evaluations/protocols/beets-lifecycle-sequence-v1-runtime-opencode-codex-product-v1-e31939ebb595.json",
+      "protocol_sha256": "896189cf6ab154e0eab591d01ec940235d4da7b83de94177dbf47d2279238a81",
+      "baseline_pool_fingerprint": "d8cfc5066f76"
+    }
+  ],
+  "notes": "Owner authorized one new r1 OpenCode-runtime GPT-5.6 Sol/high baseline for each active Lifecycle V1 lane. The OpenCode runtime is a distinct sample identity from Codex CLI and must use the configured OpenCode credential shape; runs are serialized, each identity may execute at most once, and no treatment authority is created."
+}

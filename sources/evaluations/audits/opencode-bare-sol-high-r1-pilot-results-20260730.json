@@ -1,0 +1,86 @@
+{
+  "schema_version": 1,
+  "audit_id": "opencode-bare-sol-high-r1-pilot-results-20260730",
+  "date": "2026-07-30",
+  "profile_id": "runtime-opencode-codex-product-v1",
+  "model_condition_id": "opencode-openai-gpt-5-6-sol-high",
+  "model": "gpt-5.6-sol",
+  "reasoning_effort": "high",
+  "replicate_index": 1,
+  "max_parallel": 1,
+  "status": "passed-treatment-launch-gate",
+  "sessions": [
+    {
+      "session_id": "opencode-fastify-20260730-p-bb0e89ed9794-r1",
+      "sequence_id": "fastify-lifecycle-sequence-v0",
+      "accepted_for_objective": true,
+      "task_verifiers_passed": 3,
+      "task_verifiers_total": 3,
+      "manifest_verified": true,
+      "manifest_file_sha256": "b16c433e83426e6176278f8679004eabc18955999e9a18b3cc946129dd7a4824",
+      "usage": {
+        "fresh_input_tokens": 18259,
+        "cached_input_tokens": 23552,
+        "output_tokens": 1262,
+        "reasoning_tokens": 78,
+        "total_provider_tokens": 43073,
+        "weighted_tokens": 28186.2
+      }
+    },
+    {
+      "session_id": "opencode-beets-20260730-p-fcc8438d2077-r1",
+      "sequence_id": "beets-lifecycle-sequence-v0",
+      "accepted_for_objective": true,
+      "task_verifiers_passed": 3,
+      "task_verifiers_total": 3,
+      "manifest_verified": true,
+      "manifest_file_sha256": "2eb86e52a19b018308bcd3c5e16a186bcf9ad122b2ba5c6a35315420f225c09c",
+      "usage": {
+        "fresh_input_tokens": 10572,
+        "cached_input_tokens": 28160,
+        "output_tokens": 908,
+        "reasoning_tokens": 29,
+        "total_provider_tokens": 39640,
+        "weighted_tokens": 18836.0
+      }
+    },
+    {
+      "session_id": "opencode-terraform-20260730-p-5811b463c1e9-r1",
+      "sequence_id": "terraform-lifecycle-sequence-v0",
+      "accepted_for_objective": true,
+      "task_verifiers_passed": 3,
+      "task_verifiers_total": 3,
+      "manifest_verified": true,
+      "manifest_file_sha256": "2e828841611287d51e75466a8787ac29374f9a799a2387d9b3a31aa2589362d4",
+      "usage": {
+        "fresh_input_tokens": 11164,
+        "cached_input_tokens": 28160,
+        "output_tokens": 957,
+        "reasoning_tokens": 62,
+        "total_provider_tokens": 40281,
+        "weighted_tokens": 19722.0
+      }
+    }
+  ],
+  "aggregate": {
+    "accepted_sessions": 3,
+    "task_verifiers_passed": 9,
+    "task_verifiers_total": 9,
+    "fresh_input_tokens": 39995,
+    "cached_input_tokens": 79872,
+    "output_tokens": 3127,
+    "reasoning_tokens": 169,
+    "total_provider_tokens": 122994,
+    "weighted_tokens": 66744.2
+  },
+  "prior_bare_opencode_r0_reference": {
+    "source": "sources/evaluations/audits/opencode-tool-treatments-sol-high-r0-repaired-screen-results-20260730.json",
+    "total_provider_tokens": 122368,
+    "weighted_tokens": 59437.8,
+    "r1_raw_delta_tokens": 626,
+    "r1_raw_delta_percent": 0.5115716527196653,
+    "r1_weighted_delta_tokens": 7306.4,
+    "r1_weighted_delta_percent": 12.292514191305859
+  },
+  "interpretation": "The fresh bare OpenCode replicate is valid and passes the treatment-launch gate. Raw provider usage is within 0.52% of the prior bare replicate, while weighted usage is 12.29% higher because the fresh replicate produced more output. Reasoning tokens remain a subset of output and are not added twice."
+}

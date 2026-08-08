@@ -1,0 +1,218 @@
+{
+  "schema_version": 2,
+  "generated_on": "2026-07-28",
+  "status": "complete-valid-current-low-complexity-controls-three-per-lane",
+  "panel_definition": "Fastify Baseline V3 plus generation-corrected Beets and Terraform Baseline V4 controls; three valid controls per lane, with Beets r3 prospectively replacing the occupied zero-spend r2 controller failure",
+  "weighted_token_cost_formula": "fresh_input_tokens + 0.1 * cached_input_tokens + 6 * output_tokens",
+  "reasoning_accounting": "provider-reported reasoning-output tokens are a subset of output_tokens and are not added separately",
+  "cache_write_accounting": "cache-write tokens are reported but excluded because no weight was specified",
+  "controls": [
+    {
+      "sequence_id": "beets-lifecycle-sequence-v0",
+      "task_family_generation": "baseline-v4",
+      "replicate_index": 0,
+      "session_id": "baseline-beets-20260728-p-fcc8438d2077-r0",
+      "fresh_input_tokens": 17833,
+      "cached_input_tokens": 69376,
+      "cache_write_tokens": 0,
+      "output_tokens": 991,
+      "provider_reported_reasoning_output_subset_tokens": 0,
+      "total_provider_tokens": 88200,
+      "weighted_token_cost": 30716.6
+    },
+    {
+      "sequence_id": "beets-lifecycle-sequence-v0",
+      "task_family_generation": "baseline-v4",
+      "replicate_index": 1,
+      "session_id": "baseline-beets-20260728-p-fcc8438d2077-r1",
+      "fresh_input_tokens": 32193,
+      "cached_input_tokens": 54272,
+      "cache_write_tokens": 0,
+      "output_tokens": 931,
+      "provider_reported_reasoning_output_subset_tokens": 0,
+      "total_provider_tokens": 87396,
+      "weighted_token_cost": 43206.2
+    },
+    {
+      "sequence_id": "beets-lifecycle-sequence-v0",
+      "task_family_generation": "baseline-v4",
+      "replicate_index": 3,
+      "session_id": "baseline-beets-20260728-p-fcc8438d2077-r3",
+      "fresh_input_tokens": 32177,
+      "cached_input_tokens": 54272,
+      "cache_write_tokens": 0,
+      "output_tokens": 921,
+      "provider_reported_reasoning_output_subset_tokens": 0,
+      "total_provider_tokens": 87370,
+      "weighted_token_cost": 43130.2
+    },
+    {
+      "sequence_id": "fastify-lifecycle-sequence-v0",
+      "task_family_generation": "baseline-v3",
+      "replicate_index": 0,
+      "session_id": "baseline-fastify-20260722-p-bb0e89ed9794-r0",
+      "fresh_input_tokens": 10315,
+      "cached_input_tokens": 65024,
+      "cache_write_tokens": 0,
+      "output_tokens": 1284,
+      "provider_reported_reasoning_output_subset_tokens": 0,
+      "total_provider_tokens": 76623,
+      "weighted_token_cost": 24521.4
+    },
+    {
+      "sequence_id": "fastify-lifecycle-sequence-v0",
+      "task_family_generation": "baseline-v3",
+      "replicate_index": 1,
+      "session_id": "baseline-fastify-20260728-p-bb0e89ed9794-r1",
+      "fresh_input_tokens": 34988,
+      "cached_input_tokens": 54272,
+      "cache_write_tokens": 0,
+      "output_tokens": 1203,
+      "provider_reported_reasoning_output_subset_tokens": 0,
+      "total_provider_tokens": 90463,
+      "weighted_token_cost": 47633.2
+    },
+    {
+      "sequence_id": "fastify-lifecycle-sequence-v0",
+      "task_family_generation": "baseline-v3",
+      "replicate_index": 2,
+      "session_id": "baseline-fastify-20260728-p-bb0e89ed9794-r2",
+      "fresh_input_tokens": 24983,
+      "cached_input_tokens": 64256,
+      "cache_write_tokens": 0,
+      "output_tokens": 1181,
+      "provider_reported_reasoning_output_subset_tokens": 0,
+      "total_provider_tokens": 90420,
+      "weighted_token_cost": 38494.6
+    },
+    {
+      "sequence_id": "terraform-lifecycle-sequence-v0",
+      "task_family_generation": "baseline-v4",
+      "replicate_index": 0,
+      "session_id": "baseline-terraform-20260728-p-5811b463c1e9-r0",
+      "fresh_input_tokens": 32623,
+      "cached_input_tokens": 54272,
+      "cache_write_tokens": 0,
+      "output_tokens": 916,
+      "provider_reported_reasoning_output_subset_tokens": 0,
+      "total_provider_tokens": 87811,
+      "weighted_token_cost": 43546.2
+    },
+    {
+      "sequence_id": "terraform-lifecycle-sequence-v0",
+      "task_family_generation": "baseline-v4",
+      "replicate_index": 1,
+      "session_id": "baseline-terraform-20260728-p-5811b463c1e9-r1",
+      "fresh_input_tokens": 7539,
+      "cached_input_tokens": 79360,
+      "cache_write_tokens": 0,
+      "output_tokens": 917,
+      "provider_reported_reasoning_output_subset_tokens": 0,
+      "total_provider_tokens": 87816,
+      "weighted_token_cost": 20977.0
+    },
+    {
+      "sequence_id": "terraform-lifecycle-sequence-v0",
+      "task_family_generation": "baseline-v4",
+      "replicate_index": 2,
+      "session_id": "baseline-terraform-20260728-p-5811b463c1e9-r2",
+      "fresh_input_tokens": 17503,
+      "cached_input_tokens": 69376,
+      "cache_write_tokens": 0,
+      "output_tokens": 905,
+      "provider_reported_reasoning_output_subset_tokens": 0,
+      "total_provider_tokens": 87784,
+      "weighted_token_cost": 29870.6
+    }
+  ],
+  "totals": {
+    "fresh_input_tokens": 210154,
+    "cached_input_tokens": 564480,
+    "cache_write_tokens": 0,
+    "output_tokens": 9249,
+    "provider_reported_reasoning_output_subset_tokens": 0,
+    "total_provider_tokens": 783883,
+    "weighted_token_cost": 322096.0
+  },
+  "evidence": {
+    "fastify_r0_audit": "sources/evaluations/audits/baseline-v3-pilot-zero-mistake.json",
+    "beets_and_terraform_r0_audit": "sources/evaluations/audits/baseline-v4-pilot-zero-mistake.json",
+    "r1_recovery_audit": "sources/evaluations/audits/current-low-complexity-baseline-r1-recovery-20260728/recovery.json",
+    "provider_accounting": "sources/evaluations/audits/codex-cumulative-usage-accounting-20260718.json",
+    "r2_partial_recovery_audit": "sources/evaluations/audits/current-low-complexity-baseline-r2-partial-recovery-20260728/recovery.json",
+    "beets_r3_recovery_audit": "sources/evaluations/audits/current-low-complexity-beets-r3-recovery-20260728.json"
+  },
+  "excluded_attempts": [
+    {
+      "sequence_id": "beets-lifecycle-sequence-v0",
+      "replicate_index": 2,
+      "classification": "occupied-pre-provider-controller-failure",
+      "provider_tokens": 0,
+      "weighted_token_cost": 0,
+      "session_id": null,
+      "replacement_requires_new_owner_authorization": false,
+      "replacement_session_id": "baseline-beets-20260728-p-fcc8438d2077-r3",
+      "replacement_authorized_by_owner_message_id": "1531806010350633101",
+      "replacement_completed": true
+    }
+  ],
+  "lane_totals": {
+    "beets-lifecycle-sequence-v0": {
+      "valid_controls": 3,
+      "fresh_input_tokens": 82203,
+      "cached_input_tokens": 177920,
+      "cache_write_tokens": 0,
+      "output_tokens": 2843,
+      "provider_reported_reasoning_output_subset_tokens": 0,
+      "total_provider_tokens": 262966,
+      "weighted_token_cost": 117053.0
+    },
+    "fastify-lifecycle-sequence-v0": {
+      "valid_controls": 3,
+      "fresh_input_tokens": 70286,
+      "cached_input_tokens": 183552,
+      "cache_write_tokens": 0,
+      "output_tokens": 3668,
+      "provider_reported_reasoning_output_subset_tokens": 0,
+      "total_provider_tokens": 257506,
+      "weighted_token_cost": 110649.2
+    },
+    "terraform-lifecycle-sequence-v0": {
+      "valid_controls": 3,
+      "fresh_input_tokens": 57665,
+      "cached_input_tokens": 203008,
+      "cache_write_tokens": 0,
+      "output_tokens": 2738,
+      "provider_reported_reasoning_output_subset_tokens": 0,
+      "total_provider_tokens": 263411,
+      "weighted_token_cost": 94393.8
+    }
+  },
+  "descriptive_weighted_cost": {
+    "beets-lifecycle-sequence-v0": {
+      "n": 3,
+      "mean": 39017.7,
+      "sample_standard_deviation": 7189.0,
+      "coefficient_of_variation_percent": 18.43,
+      "minimum": 30716.6,
+      "maximum": 43206.2
+    },
+    "fastify-lifecycle-sequence-v0": {
+      "n": 3,
+      "mean": 36883.1,
+      "sample_standard_deviation": 11639.9,
+      "coefficient_of_variation_percent": 31.56,
+      "minimum": 24521.4,
+      "maximum": 47633.2
+    },
+    "terraform-lifecycle-sequence-v0": {
+      "n": 3,
+      "mean": 31464.6,
+      "sample_standard_deviation": 11368.7,
+      "coefficient_of_variation_percent": 36.13,
+      "minimum": 20977.0,
+      "maximum": 43546.2
+    },
+    "interpretation": "Within-lane descriptive diagnostics only; n=3 does not support stable rankings or population claims."
+  }
+}

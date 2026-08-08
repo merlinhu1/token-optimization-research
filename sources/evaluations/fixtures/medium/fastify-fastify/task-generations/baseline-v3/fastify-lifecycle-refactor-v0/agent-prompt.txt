@@ -1,0 +1,31 @@
+Baseline V3 mechanical edit — restore the shared bounded Content-Type cache. Do not discover or redesign anything.
+
+## Implementation recipe
+
+Only `lib/content-type.js` may change. Copy and run this command exactly:
+
+```bash
+python3 - <<'PY'
+from pathlib import Path
+p = Path("lib/content-type.js")
+s = p.read_text()
+replacements = [
+    ("'use strict'\n\n/**", "'use strict'\n\nconst { LruMap: Lru } = require('toad-cache')\n\n/**"),
+    ("const subtypeNameReg = /^[\\w!#$%&'*+.^`|~-]+\\s*$/\n\n/**\n * ContentType parses", "const subtypeNameReg = /^[\\w!#$%&'*+.^`|~-]+\\s*$/\n\n/**\n * Content-Type internal shared cache\n * @type {Lru<ContentType>}\n */\nconst cache = new Lru(100)\n\n/**\n * ContentType parses"),
+    ("  static from (headerValue) {\n    return new ContentType(headerValue)\n  }\n", "  static get cache () { return cache }\n\n  static from (headerValue) {\n    let contentType = cache.get(headerValue)\n    if (contentType !== undefined) return contentType\n    contentType = new ContentType(headerValue)\n    cache.set(headerValue, contentType)\n    return contentType\n  }\n"),
+]
+for old, new in replacements:
+    assert s.count(old) == 1, old
+    s = s.replace(old, new)
+p.write_text(s)
+PY
+node --test test/baseline-v3-content-type-cache.test.js
+```
+
+## Validation recipe
+
+The command block above runs the complete focused validation for `ContentType.cache` and preserved behavior.
+
+## Stop condition
+
+Do not inspect, search, modify tests, run anything else, or evaluate aggregate Git state. Run the command block exactly once and stop immediately when it exits 0. Earlier task edits intentionally remain in the persistent checkout.

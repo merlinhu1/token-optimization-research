@@ -1,0 +1,37 @@
+{
+  "schema_version": 1,
+  "audit_type": "provider-free-execution-launch-certification",
+  "status": "qualified-provider-free",
+  "certified_on": "2026-08-03",
+  "authorization_path": "sources/evaluations/audits/lifecycle-v1-opencode-openrouter-sol-high-r0-authorization-20260803.json",
+  "supersedes_unexecuted_protocols": [
+    "sources/evaluations/protocols/fastify-lifecycle-sequence-v1-baseline-opencode-openrouter-no-mcp-754127243a6d.json",
+    "sources/evaluations/protocols/beets-lifecycle-sequence-v1-baseline-opencode-openrouter-no-mcp-aee03b956fac.json",
+    "sources/evaluations/protocols/fastify-lifecycle-sequence-v1-baseline-opencode-openrouter-no-mcp-563e731393a1.json",
+    "sources/evaluations/protocols/beets-lifecycle-sequence-v1-baseline-opencode-openrouter-no-mcp-d819a649532a.json"
+  ],
+  "provider_calls": 0,
+  "provider_tokens": 0,
+  "model_condition": {
+    "id": "opencode-openrouter-gpt-5-6-sol-high",
+    "provider": "openrouter",
+    "model": "gpt-5.6-sol",
+    "reasoning_effort": "high",
+    "opencode_model_namespace": "openrouter/openai/gpt-5.6-sol"
+  },
+  "frozen_protocols": [
+    {
+      "sequence_id": "fastify-lifecycle-sequence-v1",
+      "protocol_path": "sources/evaluations/protocols/fastify-lifecycle-sequence-v1-baseline-opencode-openrouter-no-mcp-4563f0395248.json",
+      "protocol_sha256": "a4e440f59aa3b3ccc535bccfe169548dcd4fb91636083c67ca4b7c5e941ab188",
+      "baseline_pool_fingerprint": "f85684d4777d"
+    },
+    {
+      "sequence_id": "beets-lifecycle-sequence-v1",
+      "protocol_path": "sources/evaluations/protocols/beets-lifecycle-sequence-v1-baseline-opencode-openrouter-no-mcp-2d6e892cf9dd.json",
+      "protocol_sha256": "33df5606086177f60a25f718d53e6c466824b69b738679828916c6ec4849b664",
+      "baseline_pool_fingerprint": "b56ac15f5520"
+    }
+  ],
+  "note": "The superseded protocols were provider-free setup artifacts only: no OpenRouter turn, task result, session record, or attempt receipt was created under them. This certification freezes the final controller that validates the bounded authorization before spending can begin."
+}

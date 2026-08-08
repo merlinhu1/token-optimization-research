@@ -1,6 +1,10 @@
 ---
 status: active
 truth_kind: engineering-workflow
+doc_type: workflow
+source_of_truth:
+  - ../../../../docs/methodology/README.md
+  - ../../../../docs/research/tool-research-strategy.md
 last_reviewed: 2026-06-30
 ---
 
@@ -94,7 +98,7 @@ Its main quality risk is over-scoped claims, not lack of prose polish.
 ## Source References
 
 - ../../../../docs/methodology/README.md
-- ../../../../docs/research/report-writing-and-methodology-skill-patterns.md
+- ../../../../docs/methodology/report-writing-patterns.md
 - ../../../../templates/report.md
 - ../../../../templates/claim-entry.md
 - ../../../../prompts/researcher.md
@@ -103,3 +107,7 @@ Its main quality risk is over-scoped claims, not lack of prose polish.
 - ../../../../.agents/skills/scientific-report-reviewer.md
 - ../../../../.agents/skills/citation-light-prior-art-mapper.md
 - ../../../../.agents/skills/figure-table-planner.md
+
+## Engineering Decisions
+
+Research reports must distinguish mechanism, compatibility, benchmark, reproduction, and recommendation claims and must preserve claim-evidence traceability.

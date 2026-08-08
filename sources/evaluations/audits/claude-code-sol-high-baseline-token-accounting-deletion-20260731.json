@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "audit_id": "claude-code-sol-high-baseline-token-accounting-deletion-20260731",
+  "date": "2026-07-31",
+  "status": "deleted-invalid-accounting",
+  "reason": "Owner explicitly ordered deletion of the three invalid Claude Code accounting runs and their artifacts before rerunning the baseline with corrected accounting.",
+  "affected_session_ids": [
+    "baseline-claude-code-fastify-20260731-p-2e0426814326-r0",
+    "baseline-claude-code-beets-20260731-p-2fd6c85014dc-r0",
+    "baseline-claude-code-terraform-20260731-p-938e4812b1d4-r0"
+  ],
+  "artifact_roots_deleted": [
+    "sources/evaluations/workflow-sessions/baseline-claude-code-fastify-20260731-p-2e0426814326-r0",
+    "sources/evaluations/workflow-sessions/baseline-claude-code-beets-20260731-p-2fd6c85014dc-r0",
+    "sources/evaluations/workflow-sessions/baseline-claude-code-terraform-20260731-p-938e4812b1d4-r0"
+  ],
+  "invalidity_basis": {
+    "measurement_source": "claude-code-stream-json-result-usage",
+    "problem": "fresh_input_tokens omitted cache_creation_input_tokens and compact evidence lacked raw Claude usage events"
+  },
+  "deletion_policy": "execution evidence deleted; no replacement totals inferred; corrected accounting must come from a fresh authorized run"
+}

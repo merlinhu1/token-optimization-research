@@ -1,0 +1,56 @@
+{
+  "schema_version": 1,
+  "audit_id": "opencode-next-five-skill-enabled-provider-free-preflight-20260730",
+  "date": "2026-07-30",
+  "status": "passed-with-post-run-source-contract-cleanup",
+  "matrix_summary_external_path": "/opt/data/eval-workflow-lanes/workflow-matrix-20260730T064453287029Z-p1352457-r1/matrix-summary.json",
+  "matrix_summary_sha256": "853e6fa39c8db80caa833d3c82f2d952ce9cd4269e8cb6dba0669889b42d31c3",
+  "profiles": [
+    "swarmvault-opencode-product-v1",
+    "retrieval-graphify-opencode-product-v1"
+  ],
+  "replicate_index": 1,
+  "provider_execution": false,
+  "lane_count": 6,
+  "lanes": [
+    {
+      "sequence_id": "beets-lifecycle-sequence-v0",
+      "profile_id": "swarmvault-opencode-product-v1",
+      "exit_code": 0
+    },
+    {
+      "sequence_id": "beets-lifecycle-sequence-v0",
+      "profile_id": "retrieval-graphify-opencode-product-v1",
+      "exit_code": 0
+    },
+    {
+      "sequence_id": "fastify-lifecycle-sequence-v0",
+      "profile_id": "swarmvault-opencode-product-v1",
+      "exit_code": 0
+    },
+    {
+      "sequence_id": "fastify-lifecycle-sequence-v0",
+      "profile_id": "retrieval-graphify-opencode-product-v1",
+      "exit_code": 0
+    },
+    {
+      "sequence_id": "terraform-lifecycle-sequence-v0",
+      "profile_id": "swarmvault-opencode-product-v1",
+      "exit_code": 0
+    },
+    {
+      "sequence_id": "terraform-lifecycle-sequence-v0",
+      "profile_id": "retrieval-graphify-opencode-product-v1",
+      "exit_code": 0
+    }
+  ],
+  "lane_execution_all_passed": true,
+  "matrix_validation_note": "The matrix jobs all passed. Matrix final source validation failed only because six superseded, unaccepted V4 protocol files remained after profile rebinding and because current protocols for the three already accepted V4 profiles had not yet been refreshed. The superseded unaccepted protocols were deleted, accepted-session protocols were retained as historical bindings, and current protocols were refreshed.",
+  "post_cleanup_validation": {
+    "repository_validator_passed": true,
+    "workflow_contract_tests_passed": 299,
+    "opencode_runtime_tests_passed": 28,
+    "truthmark_from_matrix_passed": true
+  },
+  "skill_activation_gate": "OpenCode adapter V5 sets permission.skill=allow only for SwarmVault and Graphify while the isolated project contains only the assigned product skill; project config remains disabled, web/subagents remain denied, and effective-config/runtime tests require the assigned skill permission."
+}

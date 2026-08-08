@@ -2,7 +2,7 @@
 set -euo pipefail
 PROJECT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 REPO="$PROJECT_DIR/repo"
-COMMIT="8ddae794d30e9984be904f80459614155c6592d9"
+COMMIT="9acb1ecff6c7ee0a1e83e3b983c94792345712c5"
 if [ ! -d "$REPO/.git" ]; then
   echo "Missing repo checkout; run $PROJECT_DIR/setup.sh first." >&2
   exit 2

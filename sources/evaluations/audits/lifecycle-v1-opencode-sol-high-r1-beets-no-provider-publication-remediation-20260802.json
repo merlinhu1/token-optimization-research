@@ -1,0 +1,53 @@
+{
+  "schema_version": 1,
+  "audit_id": "lifecycle-v1-opencode-sol-high-r1-beets-no-provider-publication-remediation-20260802",
+  "status": "accepted-by-no-provider-remediation",
+  "scope": {
+    "provider_execution": "none after the retained Beets provider session",
+    "allowed_action": "publish exactly one retained compact session after correcting the post-reservation test expectation and completing source validation",
+    "additional_provider_calls": 0
+  },
+  "retained_execution": {
+    "session_id": "opencode-beets-20260802-p-d8cfc5066f76-r1",
+    "sequence_id": "beets-lifecycle-sequence-v1",
+    "replicate_index": 1,
+    "profile_id": "runtime-opencode-codex-product-v1",
+    "model_condition_id": "opencode-openai-gpt-5-6-sol-high",
+    "run_record_path": "sources/evaluations/workflow-sessions/opencode-beets-20260802-p-d8cfc5066f76-r1/run.json",
+    "run_record_sha256": "ca742758dc6bf023cd0ef2490ef8ad0fe2cbd0e2326271d6b512eedf4c4028cb",
+    "manifest_path": "sources/evaluations/workflow-sessions/opencode-beets-20260802-p-d8cfc5066f76-r1/manifest.sha256",
+    "manifest_sha256": "9d678dfcc6ebbcb1ee2fe4b0a5c00d47ff27b0844aa7349eeb11f6501f1b4b6d",
+    "manifest_verification": "passed",
+    "provider_execution_result": "3/3 task verifiers passed; final verifier, verifier-integrity, and isolation audits passed"
+  },
+  "rollback_provenance": {
+    "audit_path": "sources/evaluations/audits/lifecycle-v1-opencode-sol-high-r1-beets-validation-rollback-20260802.json",
+    "audit_sha256": "c122d2c12aeecd88d6847e6485c5b7a5c618c390f2af74c56910c7bc5ac9021b",
+    "cause": "A test incorrectly required the Beets launch gate to remain open after its immutable attempt receipt had correctly been written."
+  },
+  "no_provider_remediation": {
+    "test_contract_fix": {
+      "path": "scripts/test_workflow_evaluation_contract.py",
+      "sha256": "f3d5a5e357bd508cb2b5d62110d31d185d7d0f4c4883fdd980228e9d3463138b",
+      "behavior": "The authority-scope test now expects a non-recovery lane with an immutable attempt receipt to be unavailable, while preserving Fastify's exact owner-authorized recovery exception."
+    },
+    "registry_merge": {
+      "path": "data/workflow-sessions.json",
+      "sha256": "83f69fee855232ad657d9561c08c576753c454a2651d923a4faee75b1df2c36f",
+      "change": "Exactly one session was added: opencode-beets-20260802-p-d8cfc5066f76-r1."
+    },
+    "comparison_publication": "attempted; no compatible ready baseline comparison was available, so no comparison artifact was created",
+    "panel_refresh": {
+      "path": "sources/evaluations/audits/codex-openai-gpt-5-6-sol-high-r0-panel-results-20260729.json",
+      "sha256": "b3ddc07766bf76634531c6dc985dcea657d9ac9aa39eba43499e5a0b956a7e73"
+    }
+  },
+  "post_remediation_validation": {
+    "workflow_contract_tests": "297 passed",
+    "repository_validation": "passed with 218 workflow sessions",
+    "runbook_check": "passed",
+    "truthmark_check": "passed",
+    "truthmark_index": "passed",
+    "git_diff_check": "passed"
+  }
+}

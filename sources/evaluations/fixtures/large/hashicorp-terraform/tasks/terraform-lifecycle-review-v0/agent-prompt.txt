@@ -1,14 +1,22 @@
-Review the supplied Terraform Cloud policy-summary change, identify acceptance-critical defects, and correct the checked-out implementation.
+Correct the supplied Terraform Cloud policy-summary candidate using the prescribed review result below. This is a controlled token-usage workload; do not perform an open-ended Cloud backend redesign.
 
-The intended behavior is a per-stage Terraform policy summary for plan and apply that:
+## Implementation recipe
 
-- fetches every outcome page;
-- skips unreachable evaluations and respects stage filtering;
-- reports totals derived from the outcomes actually rendered;
-- distinguishes passed, failed, advisory, unknown, and errored outcomes;
-- remains silent when no outcomes exist or an older server rejects the include parameter; and
-- preserves existing plan/apply failure handling and rendering conventions.
+1. Work in `internal/cloud/backend_tfPolicyEvaluation.go`, plus the existing plan/apply call sites.
+2. Keep `renderTFPolicyEvaluations` stage-based; remove the candidate's `localPoliciesConfigured` boolean and fallback success message. Return silently for a nil run, no evaluations, no rendered outcomes, or an older server's `Invalid include parameter` response.
+3. Skip nil and unreachable evaluations and honor the requested stage filter.
+4. Add a helper named `listTFPolicyOutcomes` (or equivalently focused private helper) that fetches every page from `TFPolicyEvaluationOutcomes.List`. Advance with `TFPolicyEvaluationListOptions{ListOptions: tfe.ListOptions{PageNumber: pagination.NextPage}}` until no next page remains.
+5. Append only stages with actual non-nil outcomes. Derive the displayed total from the outcomes being rendered, not `ResultCount`.
+6. Count and render passed, mandatory failed, advisory failed, unknown, and errored outcomes. Skip nil sets/outcomes defensively.
+7. In `backend_plan.go` and `backend_apply.go`, call the renderer with only the run and relevant stages. Preserve existing error propagation and rendering conventions.
+8. Do not restore the old local-policy success fallback and do not fetch only the first outcome page.
 
-The supplied patch is authentic proposed-change evidence, not a trusted solution. The complete `internal/cloud` package must compile, pagination must be exercised through rendered policy-summary behavior, and focused policy-summary tests must pass. The implementation may choose its own private helper structure; acceptance does not require a canonical unexported symbol name. Do not modify tests merely to make acceptance pass.
+## Validation recipe
 
-Run the focused `internal/cloud` policy-summary tests at minimum, and preserve all prior lifecycle work. The controller runs cumulative concealed acceptance only after all three lifecycle prompts complete.
+- Run `gofmt -w internal/cloud/backend_tfPolicyEvaluation.go internal/cloud/backend_plan.go internal/cloud/backend_apply.go`.
+- Run `go test ./internal/cloud -run 'TestCloud_(renderTFPolicyEvaluations|writeTFPolicyEvaluations)|TFPolicy|tfPolicy' -count=1`.
+- If the regex selects no tests, list test names once and rerun only the policy-summary tests. Do not run `go test ./...`.
+
+## Stop condition
+
+Stop when all outcome pages are rendered, totals come from rendered outcomes, silent cases remain silent, plan/apply call sites compile, and the focused `internal/cloud` policy-summary tests pass. Preserve tasks 1 and 2 and ignore unrelated packages.

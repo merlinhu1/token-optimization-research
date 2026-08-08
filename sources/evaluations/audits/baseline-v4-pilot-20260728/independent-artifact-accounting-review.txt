@@ -1,0 +1,58 @@
+## Verdict
+
+- **Preserved paid-lane evidence: PASS.** Artifact integrity, identity bindings, provider accounting, thread continuity, isolation, and all task verifiers reconcile.
+- **Original matrix publication: FAIL / rolled back.** The lane itself exited `0`, but repository post-merge contract validation failed; the matrix therefore reported `accepted: false`.
+- **Publication disposition:** The preserved bytes are valid for transactional republication **without another provider run**. At final inspection, recovery residue had been copied into the root repository byte-for-byte, but the root worktree was still dirty/uncommitted and had not yet received final validation/attestation.
+
+## Exact provider accounting
+
+Codex emitted cumulative snapshots for one persistent thread. Differencing them gives:
+
+| Task | Fresh input | Cached input | Output | Reasoning subset | Provider total |
+|---|---:|---:|---:|---:|---:|
+| Feature | 14,247 | 13,056 | 315 | 0 | 27,618 |
+| Refactor | 1,818 | 27,136 | 344 | 0 | 29,298 |
+| Review | 1,768 | 29,184 | 332 | 0 | 31,284 |
+| **Session** | **17,833** | **69,376** | **991** | **0** | **88,200** |
+
+Reconciliation: `17,833 + 69,376 = 87,209 input`; `87,209 + 991 = 88,200`. Reasoning is an output subset, not additive. There were three raw usage blocks, one effective final same-thread block, zero malformed event lines, and zero accounting warnings. No overcount was found.
+
+## Integrity and identity findings
+
+- Session: `baseline-beets-20260728-p-fcc8438d2077-r0`.
+- Frozen protocol: `beets-lifecycle-sequence-v0-baseline-bare-codex-de39716463bf`, SHA-256 `cf6d53501d23e3f5f62d1c6eb53f7cad8f6c00559946c5e5d315fb5266007ba0`.
+- Selected execution recomputed correctly: `e08870ba5988ec0d727c27e2456fe9cd59f8b26759e3a314b33d81e41a54262b`.
+- Pool/replicate/model all agree across matrix plan, receipts, protocol, run, and registry:
+  - pool `fcc8438d2077`
+  - `r0`
+  - `baseline-bare-codex`
+  - `codex-openai-gpt-5-6-sol-high`
+  - `gpt-5.6-sol`, reasoning `high`
+  - Codex CLI `0.145.0`
+- Qualification hash and all three rendered prompt hashes match their frozen bindings.
+- Root matrix receipt and lane direct-runner receipt have identical immutable attempt identity and protocol fields. They differ only in expected orchestration metadata and reservation time; the matrix checkout deliberately excludes the root receipt so the lane reserves its local copy.
+- Compact contract is exactly four regular, nonsymlink files. Manifest verification passed:
+  - `changes.diff`: `dfe08b58…42c17a`
+  - `evidence.jsonl.gz`: `95fdd5ae…ed3752`
+  - `run.json`: `3109658d…61199`
+  - `manifest.sha256`: `4b5cd85c…90da`
+- Gzip test passed. All 50 logical paths are unique; 16 nested JSON, four JSONL streams, and the TOML config parsed without error.
+- Root recovery copy and source-lane compact bundle were byte-identical for all four files.
+
+## Execution and verifier outcomes
+
+- One persistent thread: `019fa844-d783-7ae3-95b6-54dfd6fbb088`.
+- Three turns, three exact prompt command blocks, each executed once with exit `0`; no retries or error events.
+- Final controller verifier: all three task exit codes `0`; feature checks reported 2 passes, review checks 16 passes, and all Ruff checks passed.
+- Verifier integrity passed after every task and before final verification.
+- Tool-isolation audit passed with no forbidden-tool or external-retrieval hits.
+
+## Rollback issue
+
+The original post-merge validation failed only in `scripts/test_workflow_evaluation_contract.py` with three stale state-transition assertions involving runbook rendering, receipt occupancy, and validation ordering. Repository validation, `git diff --check`, and both Truthmark checks passed. This was a publication/control-plane failure, not a provider, trajectory, compact-artifact, or task-verifier defect.
+
+## Changes and constraints
+
+- **Files created or modified by this audit:** none.
+- **Provider/model invocations:** none.
+- A concurrent recovery populated the root registry/artifact residue during the audit; final observed state remained uncommitted and therefore not yet fully published.

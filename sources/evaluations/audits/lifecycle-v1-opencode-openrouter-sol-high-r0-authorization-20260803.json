@@ -1,0 +1,48 @@
+{
+  "schema_version": 1,
+  "campaign_id": "lifecycle-v1-opencode-openrouter-sol-high-r0-20260803",
+  "authorized_by_owner_message_id": "1533765740459462807",
+  "authorized_on": "2026-08-03",
+  "authorized_source_commit": "7252f66bd9d7f1b3fa015e42a1f354eedbcf38f3",
+  "paid_baseline_execution_authorized": true,
+  "authorized_replicate_index": 0,
+  "sequence_order": [
+    "fastify-lifecycle-sequence-v1",
+    "beets-lifecycle-sequence-v1"
+  ],
+  "max_parallel": 1,
+  "allowed_paid_baseline_runs": 2,
+  "allowed_model_turns": 6,
+  "serialization_required": true,
+  "model_condition": {
+    "id": "opencode-openrouter-gpt-5-6-sol-high",
+    "runtime_id": "opencode-cli",
+    "provider": "openrouter",
+    "model": "gpt-5.6-sol",
+    "reasoning_effort": "high",
+    "opencode_model_namespace": "openrouter/openai/gpt-5.6-sol"
+  },
+  "first_valid_sample_policy": true,
+  "rerun_after_attempt_receipt": false,
+  "provider_calls": 0,
+  "provider_tokens": 0,
+  "sequences": [
+    {
+      "sequence_id": "fastify-lifecycle-sequence-v1",
+      "protocol_path": "sources/evaluations/protocols/fastify-lifecycle-sequence-v1-baseline-opencode-openrouter-no-mcp-4563f0395248.json",
+      "protocol_sha256": "a4e440f59aa3b3ccc535bccfe169548dcd4fb91636083c67ca4b7c5e941ab188",
+      "baseline_pool_fingerprint": "f85684d4777d",
+      "session_id": "baseline-opencode-openrouter-fastify-20260803-p-f85684d4777d-r0",
+      "attempt_receipt_path": "sources/evaluations/audits/lifecycle-v1-opencode-openrouter-sol-high-r0-attempts/fastify-r0.json"
+    },
+    {
+      "sequence_id": "beets-lifecycle-sequence-v1",
+      "protocol_path": "sources/evaluations/protocols/beets-lifecycle-sequence-v1-baseline-opencode-openrouter-no-mcp-a060e0512e30.json",
+      "protocol_sha256": "c6ca385871fbc9e2cf415a3c602d539da3a5fc1130a305c13836812879df33a1",
+      "baseline_pool_fingerprint": "b56ac15f5520",
+      "session_id": "baseline-opencode-openrouter-beets-20260803-p-b56ac15f5520-r0",
+      "attempt_receipt_path": "sources/evaluations/audits/lifecycle-v1-opencode-openrouter-sol-high-r0-attempts/beets-r0.json"
+    }
+  ],
+  "notes": "Merlin's Discord message 1533765740459462807 authorizes exactly one serial Fastify-then-Beets Lifecycle V1 OpenCode/OpenRouter GPT-5.6 Sol/high r0 workflow per bound identity. The budget permits two workflow runs and six disclosed task turns only. Each immutable attempt receipt is created immediately before its first provider task; retries are forbidden after receipt creation. This independent OpenRouter baseline is not a Codex control and does not authorize cross-provider comparison or any treatment run."
+}

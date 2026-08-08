@@ -1,0 +1,64 @@
+# Beets r3 independent trajectory audit
+
+Audit snapshot timing: this independent audit ran after the original paid publication rollback and before the later successful provider-free recovery at controller commit `d5dfab55e42f913c1b2a20b12daa282b0e65bf15`. Statements below that the root registry had 100 sessions and the canonical compact was absent describe that pre-recovery snapshot. The successful recovery is bound separately by `../current-low-complexity-beets-r3-recovery-20260728.json`, which records 101 sessions, byte-identical source/destination compact hashes, passing validation, and zero provider calls during recovery.
+
+## Verdict
+
+**GO — the Beets r3 paid trajectory is operationally valid, zero-incident, token-eligible, and suitable for provider-free republication.**
+**NO-GO for any paid rerun:** this immutable r3 identity is occupied and the first valid sample must be preserved.
+
+```text
+trajectory_review_complete: true
+independent_source_review_passed: true
+operationally_valid: true
+token_eligible: true
+strict_pilot_passed: true
+same_identity_rerun_permitted: false
+
+observed_unique_model_caused_incidents: 0
+observed_corrected_implementation_mistakes: 0
+observed_unresolved_defects: 0
+observed_prohibited_operations: 0
+observed_unnecessary_exploration_incidents: 0
+observed_model_caused_failed_commands: 0
+observed_code_rework_events: 0
+observed_verifier_or_environment_failures: 0
+```
+
+## Evidence
+
+- **Frozen identity:** launch commit `52b8c1a78e2a19ebaea07bc898d538915446be19`; protocol `beets-lifecycle-sequence-v0-baseline-bare-codex-de39716463bf`, SHA-256 `cf6d5350…07ba0`; model `gpt-5.6-sol`, effort `high`; image `sha256:6f86d01f…feafe`.
+- **One persistent thread:** all three turns used `019fab29-272b-7123-b43f-ce62373cbb07`. Repeated `thread.started` events were same-thread resumes.
+- **Exact three-command trajectory:** one command start and one zero-exit completion per prompt, with no other commands or exploration:
+  - Task 1 command payload SHA `20980d78…6bfd`, exact prompt match, exit `0`; 2 tests and Ruff passed.
+  - Task 2 SHA `3d2c2511…6d57`, exact match, exit `0`; prescribed Python assertion and Ruff passed.
+  - Task 3 SHA `f8a45004…f904`, exact match, exit `0`; 16 tests and Ruff passed.
+  - Operational retries: `[0, 0, 0]`; no failed/error events or re-edits.
+- **Final verification:** final verifier exit `0`; task verifier exits `[0, 0, 0]`; verifier assets were unchanged after every task and before final verification.
+- **Final source:** the three final target blob prefixes exactly match the fixed sides of the frozen Baseline V4 seed patches:
+  - `functemplate.py` → `a3541ab`
+  - `db.py` → `78c4432`
+  - `ftintitle.py` → `74d9d7e`
+- **Isolation:** empty MCP configuration, hooks/global instructions/skills absent, network-isolated model shell, zero forbidden-tool or external-retrieval hits. `codex doctor` exited `1`, but this was an explicitly retained non-gating warning; the isolated config/MCP probes and actual execution passed.
+- **Accounting:** final cumulative same-thread usage was correctly selected rather than summing snapshots:
+  - fresh input `32,177`
+  - cached input `54,272`
+  - output `921`
+  - total `87,370` (`32,177 + 54,272 + 921`)
+  - incremental turn totals: `27,386`, `29,022`, `30,962`.
+- **Artifact integrity:** compact four-file contract verified; all manifest hashes passed; the gzip bundle contains 50 unique logical paths with no duplicates or malformed event lines.
+
+## Receipt, rollback, and rerun disposition
+
+- Parent receipt was reserved at `23:56:54Z` before child launch; the lane-local direct-runner receipt was reserved at `23:57:07Z` before the provider-task loop. Immutable identity fields match; only orchestrator and reservation timestamp differ. These are two control-plane receipts for one execution, not two paid runs.
+- The original matrix lane exited `0` and produced exactly this session. Publication rolled back solely because two postflight contract tests still asserted pre-launch state:
+  - receipt must not exist;
+  - Beets r3 must remain runnable.
+- Those are stale post-occupancy assertions, not model, verifier, isolation, or lane failures.
+- I found only one exact r3 provider trajectory/run record. A provider-free recovery operation performs merge/validation only and does not launch Codex/provider work.
+- **State at this audit snapshot:** session absent from the root registry and compact root, while the byte-valid source-lane bundle remained preserved. The later successful recovery disposition is recorded in the timing note above.
+
+## Audit hygiene
+
+- **Files created or modified by auditor:** none.
+- The live root was concurrently dirty during the audit; the auditor did not touch either worktree.

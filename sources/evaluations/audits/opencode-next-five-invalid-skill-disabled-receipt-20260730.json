@@ -1,0 +1,61 @@
+{
+  "schema_version": 1,
+  "audit_id": "opencode-next-five-invalid-skill-disabled-receipt-20260730",
+  "date": "2026-07-30",
+  "status": "deleted-invalid-generations",
+  "invalid_sessions": [
+    {
+      "session_id": "swarmvault-opencode-v1-fastify-20260730-p-bb0e89ed9794-r1",
+      "profile_id": "swarmvault-opencode-product-v1",
+      "artifact_root": "sources/evaluations/workflow-sessions/swarmvault-opencode-v1-fastify-20260730-p-bb0e89ed9794-r1",
+      "total_provider_tokens": 61111,
+      "weighted_tokens": 26004.8,
+      "reason": "The profile declared the official OpenCode skill active, but retained tool-preflight evidence shows permission.skill=deny and external_skills_disabled=true. Plugin/rules/MCP surfaces were present, but the exact declared full-product assignment was not delivered."
+    },
+    {
+      "session_id": "graphify-opencode-v1-fastify-20260730-p-bb0e89ed9794-r1",
+      "profile_id": "retrieval-graphify-opencode-product-v1",
+      "artifact_root": "sources/evaluations/workflow-sessions/graphify-opencode-v1-fastify-20260730-p-bb0e89ed9794-r1",
+      "total_provider_tokens": 45108,
+      "weighted_tokens": 23457.6,
+      "reason": "The profile declared the official OpenCode skill active, but retained tool-preflight evidence shows permission.skill=deny and external_skills_disabled=true. Plugin/rules/MCP surfaces were present, but the exact declared full-product assignment was not delivered."
+    },
+    {
+      "session_id": "swarmvault-opencode-v1-beets-20260730-p-fcc8438d2077-r1",
+      "profile_id": "swarmvault-opencode-product-v1",
+      "artifact_root": "sources/evaluations/workflow-sessions/swarmvault-opencode-v1-beets-20260730-p-fcc8438d2077-r1",
+      "total_provider_tokens": 57837,
+      "weighted_tokens": 30847.6,
+      "reason": "The profile declared the official OpenCode skill active, but retained tool-preflight evidence shows permission.skill=deny and external_skills_disabled=true. Plugin/rules/MCP surfaces were present, but the exact declared full-product assignment was not delivered."
+    },
+    {
+      "session_id": "graphify-opencode-v1-beets-20260730-p-fcc8438d2077-r1",
+      "profile_id": "retrieval-graphify-opencode-product-v1",
+      "artifact_root": "sources/evaluations/workflow-sessions/graphify-opencode-v1-beets-20260730-p-fcc8438d2077-r1",
+      "total_provider_tokens": 41354,
+      "weighted_tokens": 20413.4,
+      "reason": "The profile declared the official OpenCode skill active, but retained tool-preflight evidence shows permission.skill=deny and external_skills_disabled=true. Plugin/rules/MCP surfaces were present, but the exact declared full-product assignment was not delivered."
+    },
+    {
+      "session_id": "swarmvault-opencode-v1-terraform-20260730-p-5811b463c1e9-r1",
+      "profile_id": "swarmvault-opencode-product-v1",
+      "artifact_root": "sources/evaluations/workflow-sessions/swarmvault-opencode-v1-terraform-20260730-p-5811b463c1e9-r1",
+      "total_provider_tokens": 58588,
+      "weighted_tokens": 24015.0,
+      "reason": "The profile declared the official OpenCode skill active, but retained tool-preflight evidence shows permission.skill=deny and external_skills_disabled=true. Plugin/rules/MCP surfaces were present, but the exact declared full-product assignment was not delivered."
+    },
+    {
+      "session_id": "graphify-opencode-v1-terraform-20260730-p-5811b463c1e9-r1",
+      "profile_id": "retrieval-graphify-opencode-product-v1",
+      "artifact_root": "sources/evaluations/workflow-sessions/graphify-opencode-v1-terraform-20260730-p-5811b463c1e9-r1",
+      "total_provider_tokens": 42489,
+      "weighted_tokens": 28053.8,
+      "reason": "The profile declared the official OpenCode skill active, but retained tool-preflight evidence shows permission.skill=deny and external_skills_disabled=true. Plugin/rules/MCP surfaces were present, but the exact declared full-product assignment was not delivered."
+    }
+  ],
+  "invalid_session_count": 6,
+  "invalid_total_provider_tokens": 306487,
+  "invalid_weighted_tokens": 152792.2,
+  "accounting_policy": "Deleted invalid generations are excluded from the authoritative registry, aggregate accounting, panel results, and final treatment comparisons. Provider spend is disclosed here but not treated as evaluation evidence.",
+  "correction": "Create an immutable OpenCode adapter V5 that enables only the assigned project skill for SwarmVault and Graphify, refresh profile bindings and protocols, rerun provider-free preparation, then rerun both profiles sequentially against the same fresh bare OpenCode r1 baseline."
+}

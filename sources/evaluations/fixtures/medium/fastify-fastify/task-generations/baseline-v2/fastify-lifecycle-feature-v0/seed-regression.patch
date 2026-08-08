@@ -1,0 +1,72 @@
+diff --git a/lib/request.js b/lib/request.js
+index ebf686ca5620847ff4de2ee22a5a80fb4c67ea60..13b308559b46c6fb3a5543e4583cbefdb636c784 100644
+--- a/lib/request.js
++++ b/lib/request.js
+@@ -284,14 +284,6 @@ Object.defineProperties(Request.prototype, {
+       this.additionalHeaders = headers
+     }
+   },
+-  mediaType: {
+-    get () {
+-      if (!this[kRequestContentType] && this.headers['content-type'] !== undefined) {
+-        this[kRequestContentType] = ContentType.from(this.headers['content-type'])
+-      }
+-      return this[kRequestContentType]?.mediaType
+-    }
+-  },
+   getValidationFunction: {
+     value: function (httpPartOrSchema) {
+       if (typeof httpPartOrSchema === 'string') {
+diff --git a/test/baseline-v2-request-media-type.test.js b/test/baseline-v2-request-media-type.test.js
+new file mode 100644
+index 0000000000000000000000000000000000000000..0e5754b73fa2817cc98d797a25102e0f09283be8
+--- /dev/null
++++ b/test/baseline-v2-request-media-type.test.js
+@@ -0,0 +1,47 @@
++'use strict'
++
++const { test } = require('node:test')
++const assert = require('node:assert/strict')
++const Fastify = require('../fastify')
++
++test('Baseline V2 request media type is normalized and visible during validation and handling', async () => {
++  const app = Fastify({ logger: false })
++  const observed = []
++  app.addHook('preValidation', async request => {
++    observed.push(request.mediaType)
++  })
++  app.post('/typed', {
++    schema: {
++      body: {
++        content: {
++          'application/json': {
++            schema: {
++              type: 'object',
++              required: ['ok'],
++              properties: { ok: { type: 'boolean' } }
++            }
++          }
++        }
++      }
++    }
++  }, async request => ({ mediaType: request.mediaType, body: request.body }))
++
++  const accepted = await app.inject({
++    method: 'POST',
++    url: '/typed',
++    headers: { 'content-type': 'Application/JSON; Charset=UTF-8' },
++    payload: JSON.stringify({ ok: true })
++  })
++  assert.equal(accepted.statusCode, 200)
++  assert.equal(JSON.parse(accepted.payload).mediaType, 'application/json')
++  assert.deepEqual(observed, ['application/json'])
++
++  const rejected = await app.inject({
++    method: 'POST',
++    url: '/typed',
++    headers: { 'content-type': 'Application/JSON; Charset=UTF-8' },
++    payload: JSON.stringify({ ok: 'nope' })
++  })
++  assert.equal(rejected.statusCode, 400)
++  assert.match(JSON.parse(rejected.payload).message, /boolean/)
++})

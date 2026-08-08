@@ -1,0 +1,1044 @@
+{
+  "accounting_method": {
+    "raw_provider_tokens": "fresh_input_tokens + cached_input_tokens + output_tokens",
+    "reasoning_policy": "reasoning_tokens are a subset of output_tokens and are not added again",
+    "weighted_tokens": "fresh_input_tokens + 0.1 * cached_input_tokens + 6 * output_tokens"
+  },
+  "aggregate": {
+    "cached_input_tokens": 628224,
+    "fresh_input_tokens": 254096,
+    "output_tokens": 19265,
+    "reasoning_tokens": 1740,
+    "total_provider_tokens": 901585,
+    "weighted_tokens": 432508.4
+  },
+  "aggregate_treatment_comparisons_against_fresh_bare": [
+    {
+      "baseline_profile_id": "runtime-opencode-codex-product-v1",
+      "matched_sequence_pairs": 3,
+      "profile_id": "codescope-opencode-product-v1",
+      "raw_delta_percent": 52.7855017317918,
+      "raw_delta_tokens": 64923,
+      "weighted_delta_percent": 10.794346175398022,
+      "weighted_delta_tokens": 7204.600000000006
+    },
+    {
+      "baseline_profile_id": "runtime-opencode-codex-product-v1",
+      "matched_sequence_pairs": 3,
+      "profile_id": "swarmvault-opencode-product-v1",
+      "raw_delta_percent": 48.88287233523587,
+      "raw_delta_tokens": 60123,
+      "weighted_delta_percent": 12.604241267406016,
+      "weighted_delta_tokens": 8412.600000000006
+    },
+    {
+      "baseline_profile_id": "runtime-opencode-codex-product-v1",
+      "matched_sequence_pairs": 3,
+      "profile_id": "retrieval-graphify-opencode-product-v1",
+      "raw_delta_percent": 9.161422508415045,
+      "raw_delta_tokens": 11268,
+      "weighted_delta_percent": 17.61561304203213,
+      "weighted_delta_tokens": 11757.400000000009
+    },
+    {
+      "baseline_profile_id": "runtime-opencode-codex-product-v1",
+      "matched_sequence_pairs": 3,
+      "profile_id": "terminal-rtk-opencode-plugin-v1",
+      "raw_delta_percent": 0.38050636616420314,
+      "raw_delta_tokens": 468,
+      "weighted_delta_percent": -10.224109360813374,
+      "weighted_delta_tokens": -6824.0
+    },
+    {
+      "baseline_profile_id": "runtime-opencode-codex-product-v1",
+      "matched_sequence_pairs": 3,
+      "profile_id": "retrieval-codegraph-opencode-mcp-v1",
+      "raw_delta_percent": 21.82138966128429,
+      "raw_delta_tokens": 26839,
+      "weighted_delta_percent": 17.218874449015804,
+      "weighted_delta_tokens": 11492.600000000006
+    }
+  ],
+  "audit_id": "opencode-next-five-sol-high-r1-results-20260730",
+  "campaign": {
+    "baseline_profile_id": "runtime-opencode-codex-product-v1",
+    "execution_policy": "first valid assignment, sequential max_parallel=1, exact frozen protocol, provider-free exact-tree preparation and paid-only parity; invalid and rejected attempts excluded",
+    "model": "gpt-5.6-sol",
+    "model_condition_id": "opencode-openai-gpt-5-6-sol-high",
+    "reasoning_effort": "high",
+    "replicate_index": 1,
+    "runtime": "opencode-cli",
+    "runtime_binary_sha256": "7c4d91c84d2bfdeabb59257e3490c5e5acb08f2aacb3e42f3ddc296a1c3f1aca",
+    "runtime_version": "1.18.9",
+    "selection_basis": "successive live local OpenCode-eligible shortlist after excluding previously completed tools and Token Savior, whose pinned product had no qualifying OpenCode integration surface",
+    "treatment_profile_ids": [
+      "codescope-opencode-product-v1",
+      "swarmvault-opencode-product-v1",
+      "retrieval-graphify-opencode-product-v1",
+      "terminal-rtk-opencode-plugin-v1",
+      "retrieval-codegraph-opencode-mcp-v1"
+    ],
+    "workflows": [
+      "fastify-lifecycle-sequence-v0",
+      "beets-lifecycle-sequence-v0",
+      "terraform-lifecycle-sequence-v0"
+    ]
+  },
+  "claim_boundaries": [
+    "All five profiles are registry-classified screening-ablation assignments under isolated OpenCode evaluation constraints, not population estimates or ranking-eligible production claims.",
+    "Single replicate per workflow/profile; uncertainty is not estimated.",
+    "CodeScope uses its unchanged host-agnostic MCP surface because the product has no candidate-authored OpenCode installer.",
+    "Natural-use uptake was zero explicit assigned-product calls for CodeScope, SwarmVault, RTK, and CodeGraph; Graphify showed automatic plugin guidance injection but no query command.",
+    "Loaded-plugin proof does not establish hook invocation: SwarmVault and RTK hook invocation counts are unobserved, while RTK produced no visible command rewrite or compaction receipt.",
+    "CodeScope's binary release is pinned but has no retained source-commit/build linkage; CodeGraph's generated PATH wrapper and AGENTS/instruction bytes were existence-checked but not retained and hash-bound.",
+    "Absolute totals across this campaign are compatible because all six conditions use the same OpenCode runtime/model/reasoning/replicate/workflow generation and fresh shared r1 baseline.",
+    "Provider token totals are volume measurements, not monetary cost estimates."
+  ],
+  "comparison_publication": {
+    "matched_pairs_in_this_registry_derived_audit": 15,
+    "note": "This audit publishes all 15 same-workflow fresh-bare matched pairs. Ten also have standalone generated pair files; five successful lanes completed through split retry matrices and are represented here directly from immutable accepted registry records.",
+    "standalone_pair_files": [
+      "sources/evaluations/workflow-sessions/baseline-beets-20260730-vs-codegraph-opencode-v1-p-fcc8438d2077-r1.json",
+      "sources/evaluations/workflow-sessions/baseline-beets-20260730-vs-codescope-opencode-v1-p-fcc8438d2077-r1.json",
+      "sources/evaluations/workflow-sessions/baseline-beets-20260730-vs-rtk-opencode-v1-p-fcc8438d2077-r1.json",
+      "sources/evaluations/workflow-sessions/baseline-fastify-20260730-vs-codegraph-opencode-v1-p-bb0e89ed9794-r1.json",
+      "sources/evaluations/workflow-sessions/baseline-fastify-20260730-vs-codescope-opencode-v1-p-bb0e89ed9794-r1.json",
+      "sources/evaluations/workflow-sessions/baseline-fastify-20260730-vs-rtk-opencode-v1-p-bb0e89ed9794-r1.json",
+      "sources/evaluations/workflow-sessions/baseline-terraform-20260730-vs-codegraph-opencode-v1-p-5811b463c1e9-r1.json",
+      "sources/evaluations/workflow-sessions/baseline-terraform-20260730-vs-codescope-opencode-v1-p-5811b463c1e9-r1.json",
+      "sources/evaluations/workflow-sessions/baseline-terraform-20260730-vs-graphify-opencode-v1-p-5811b463c1e9-r1.json",
+      "sources/evaluations/workflow-sessions/baseline-terraform-20260730-vs-rtk-opencode-v1-p-5811b463c1e9-r1.json"
+    ],
+    "standalone_pair_files_present": 10
+  },
+  "date": "2026-07-30",
+  "evidence_integrity": {
+    "accepted_sessions": 18,
+    "accepted_tasks": 54,
+    "all_frozen_protocol_hashes_valid": true,
+    "all_session_manifests_valid": true,
+    "all_usage_events_reconciled_to_final_cumulative_snapshot_registry_and_accounting_overlay": true,
+    "explicit_assigned_product_tool_calls": 0,
+    "final_changes_diff_byte_identical_to_matched_fresh_bare": 12,
+    "final_changes_diff_comparisons": 15,
+    "final_task_target_change_comparisons": 15,
+    "final_task_target_changes_byte_identical_after_excluding_product_state": 15,
+    "git_status_byte_identical_to_matched_fresh_bare": 6,
+    "git_status_comparisons": 15,
+    "graphify_automatic_guidance_commands": 9,
+    "graphify_visible_guidance_prefixes": 12,
+    "manifest_files_verified": 54,
+    "model_bash_nonzero": 0,
+    "model_tool_errors": 0,
+    "native_step_finish_usage_events": 108,
+    "synthetic_cumulative_turn_snapshots": 54,
+    "parsed_jsonl_events": 466,
+    "safe_unique_evidence_members": 1011,
+    "staged_verifier_integrity_checks_passed": 72,
+    "normalized_final_verifier_comparisons": 15,
+    "normalized_final_verifier_records_equal_to_matched_fresh_bare": 15,
+    "protocol_hashes_verified": 18,
+    "reasoning_not_double_counted": true,
+    "registry_accounting_overlay_matches": 18,
+    "task_patch_comparisons": 45,
+    "task_patches_byte_identical_to_matched_fresh_bare": 36,
+    "task_target_patch_comparisons": 45,
+    "task_target_patches_byte_identical_after_excluding_product_state": 45
+  },
+  "execution": {
+    "accepted_sessions": 18,
+    "accepted_tasks": 54,
+    "final_verifiers_passed": 18,
+    "invalid_or_rejected_provider_usage_counted": false,
+    "planned_sessions": 18,
+    "planned_tasks": 54,
+    "task_verifiers_passed": 54,
+    "tool_isolation_audits_passed": 18
+  },
+  "matched_sequence_comparisons": [
+    {
+      "baseline_session_id": "opencode-beets-20260730-p-fcc8438d2077-r1",
+      "baseline_total_provider_tokens": 39640,
+      "baseline_weighted_tokens": 18836.0,
+      "raw_delta_percent": 55.088294651866796,
+      "raw_delta_tokens": 21837,
+      "sequence_id": "beets-lifecycle-sequence-v0",
+      "treatment_profile_id": "codescope-opencode-product-v1",
+      "treatment_session_id": "codescope-opencode-v1-beets-20260730-p-fcc8438d2077-r1",
+      "treatment_total_provider_tokens": 61477,
+      "treatment_weighted_tokens": 24059.2,
+      "weighted_delta_percent": 27.729878955192188,
+      "weighted_delta_tokens": 5223.200000000001
+    },
+    {
+      "baseline_session_id": "opencode-fastify-20260730-p-bb0e89ed9794-r1",
+      "baseline_total_provider_tokens": 43073,
+      "baseline_weighted_tokens": 28186.2,
+      "raw_delta_percent": 50.30529566085483,
+      "raw_delta_tokens": 21668,
+      "sequence_id": "fastify-lifecycle-sequence-v0",
+      "treatment_profile_id": "codescope-opencode-product-v1",
+      "treatment_session_id": "codescope-opencode-v1-fastify-20260730-p-bb0e89ed9794-r1",
+      "treatment_total_provider_tokens": 64741,
+      "treatment_weighted_tokens": 26940.0,
+      "weighted_delta_percent": -4.421312557208849,
+      "weighted_delta_tokens": -1246.2000000000007
+    },
+    {
+      "baseline_session_id": "opencode-terraform-20260730-p-5811b463c1e9-r1",
+      "baseline_total_provider_tokens": 40281,
+      "baseline_weighted_tokens": 19722.0,
+      "raw_delta_percent": 53.1714704202974,
+      "raw_delta_tokens": 21418,
+      "sequence_id": "terraform-lifecycle-sequence-v0",
+      "treatment_profile_id": "codescope-opencode-product-v1",
+      "treatment_session_id": "codescope-opencode-v1-terraform-20260730-p-5811b463c1e9-r1",
+      "treatment_total_provider_tokens": 61699,
+      "treatment_weighted_tokens": 22949.6,
+      "weighted_delta_percent": 16.365480174424494,
+      "weighted_delta_tokens": 3227.5999999999985
+    },
+    {
+      "baseline_session_id": "opencode-beets-20260730-p-fcc8438d2077-r1",
+      "baseline_total_provider_tokens": 39640,
+      "baseline_weighted_tokens": 18836.0,
+      "raw_delta_percent": 23.72098890010091,
+      "raw_delta_tokens": 9403,
+      "sequence_id": "beets-lifecycle-sequence-v0",
+      "treatment_profile_id": "retrieval-codegraph-opencode-mcp-v1",
+      "treatment_session_id": "codegraph-opencode-v1-beets-20260730-p-fcc8438d2077-r1",
+      "treatment_total_provider_tokens": 49043,
+      "treatment_weighted_tokens": 21316.2,
+      "weighted_delta_percent": 13.167339137821196,
+      "weighted_delta_tokens": 2480.2000000000007
+    },
+    {
+      "baseline_session_id": "opencode-fastify-20260730-p-bb0e89ed9794-r1",
+      "baseline_total_provider_tokens": 43073,
+      "baseline_weighted_tokens": 28186.2,
+      "raw_delta_percent": 19.822162375502057,
+      "raw_delta_tokens": 8538,
+      "sequence_id": "fastify-lifecycle-sequence-v0",
+      "treatment_profile_id": "retrieval-codegraph-opencode-mcp-v1",
+      "treatment_session_id": "codegraph-opencode-v1-fastify-20260730-p-bb0e89ed9794-r1",
+      "treatment_total_provider_tokens": 51611,
+      "treatment_weighted_tokens": 30724.6,
+      "weighted_delta_percent": 9.005825545834478,
+      "weighted_delta_tokens": 2538.399999999998
+    },
+    {
+      "baseline_session_id": "opencode-terraform-20260730-p-5811b463c1e9-r1",
+      "baseline_total_provider_tokens": 40281,
+      "baseline_weighted_tokens": 19722.0,
+      "raw_delta_percent": 22.089819021374844,
+      "raw_delta_tokens": 8898,
+      "sequence_id": "terraform-lifecycle-sequence-v0",
+      "treatment_profile_id": "retrieval-codegraph-opencode-mcp-v1",
+      "treatment_session_id": "codegraph-opencode-v1-terraform-20260730-p-5811b463c1e9-r1",
+      "treatment_total_provider_tokens": 49179,
+      "treatment_weighted_tokens": 26196.0,
+      "weighted_delta_percent": 32.826285366595684,
+      "weighted_delta_tokens": 6474.0
+    },
+    {
+      "baseline_session_id": "opencode-beets-20260730-p-fcc8438d2077-r1",
+      "baseline_total_provider_tokens": 39640,
+      "baseline_weighted_tokens": 18836.0,
+      "raw_delta_percent": 9.263370332996972,
+      "raw_delta_tokens": 3672,
+      "sequence_id": "beets-lifecycle-sequence-v0",
+      "treatment_profile_id": "retrieval-graphify-opencode-product-v1",
+      "treatment_session_id": "graphify-opencode-v1-beets-20260730-p-fcc8438d2077-r1",
+      "treatment_total_provider_tokens": 43312,
+      "treatment_weighted_tokens": 20146.6,
+      "weighted_delta_percent": 6.957952856232738,
+      "weighted_delta_tokens": 1310.5999999999985
+    },
+    {
+      "baseline_session_id": "opencode-fastify-20260730-p-bb0e89ed9794-r1",
+      "baseline_total_provider_tokens": 43073,
+      "baseline_weighted_tokens": 28186.2,
+      "raw_delta_percent": 7.4129965407563905,
+      "raw_delta_tokens": 3193,
+      "sequence_id": "fastify-lifecycle-sequence-v0",
+      "treatment_profile_id": "retrieval-graphify-opencode-product-v1",
+      "treatment_session_id": "graphify-opencode-v1-fastify-20260730-p-bb0e89ed9794-r1",
+      "treatment_total_provider_tokens": 46266,
+      "treatment_weighted_tokens": 24335.6,
+      "weighted_delta_percent": -13.661295243771782,
+      "weighted_delta_tokens": -3850.600000000002
+    },
+    {
+      "baseline_session_id": "opencode-terraform-20260730-p-5811b463c1e9-r1",
+      "baseline_total_provider_tokens": 40281,
+      "baseline_weighted_tokens": 19722.0,
+      "raw_delta_percent": 10.930711749956554,
+      "raw_delta_tokens": 4403,
+      "sequence_id": "terraform-lifecycle-sequence-v0",
+      "treatment_profile_id": "retrieval-graphify-opencode-product-v1",
+      "treatment_session_id": "graphify-opencode-v1-terraform-20260730-p-5811b463c1e9-r1",
+      "treatment_total_provider_tokens": 44684,
+      "treatment_weighted_tokens": 34019.4,
+      "weighted_delta_percent": 72.49467599634927,
+      "weighted_delta_tokens": 14297.400000000001
+    },
+    {
+      "baseline_session_id": "opencode-beets-20260730-p-fcc8438d2077-r1",
+      "baseline_total_provider_tokens": 39640,
+      "baseline_weighted_tokens": 18836.0,
+      "raw_delta_percent": 50.97124117053481,
+      "raw_delta_tokens": 20205,
+      "sequence_id": "beets-lifecycle-sequence-v0",
+      "treatment_profile_id": "swarmvault-opencode-product-v1",
+      "treatment_session_id": "swarmvault-opencode-v1-beets-20260730-p-fcc8438d2077-r1",
+      "treatment_total_provider_tokens": 59845,
+      "treatment_weighted_tokens": 24675.4,
+      "weighted_delta_percent": 31.001274155871744,
+      "weighted_delta_tokens": 5839.4000000000015
+    },
+    {
+      "baseline_session_id": "opencode-fastify-20260730-p-bb0e89ed9794-r1",
+      "baseline_total_provider_tokens": 43073,
+      "baseline_weighted_tokens": 28186.2,
+      "raw_delta_percent": 46.142595129199265,
+      "raw_delta_tokens": 19875,
+      "sequence_id": "fastify-lifecycle-sequence-v0",
+      "treatment_profile_id": "swarmvault-opencode-product-v1",
+      "treatment_session_id": "swarmvault-opencode-v1-fastify-20260730-p-bb0e89ed9794-r1",
+      "treatment_total_provider_tokens": 62948,
+      "treatment_weighted_tokens": 26228.6,
+      "weighted_delta_percent": -6.9452427074242085,
+      "weighted_delta_tokens": -1957.6000000000022
+    },
+    {
+      "baseline_session_id": "opencode-terraform-20260730-p-5811b463c1e9-r1",
+      "baseline_total_provider_tokens": 40281,
+      "baseline_weighted_tokens": 19722.0,
+      "raw_delta_percent": 49.75795039845089,
+      "raw_delta_tokens": 20043,
+      "sequence_id": "terraform-lifecycle-sequence-v0",
+      "treatment_profile_id": "swarmvault-opencode-product-v1",
+      "treatment_session_id": "swarmvault-opencode-v1-terraform-20260730-p-5811b463c1e9-r1",
+      "treatment_total_provider_tokens": 60324,
+      "treatment_weighted_tokens": 24252.8,
+      "weighted_delta_percent": 22.973329276949595,
+      "weighted_delta_tokens": 4530.799999999999
+    },
+    {
+      "baseline_session_id": "opencode-beets-20260730-p-fcc8438d2077-r1",
+      "baseline_total_provider_tokens": 39640,
+      "baseline_weighted_tokens": 18836.0,
+      "raw_delta_percent": 1.0595358224016145,
+      "raw_delta_tokens": 420,
+      "sequence_id": "beets-lifecycle-sequence-v0",
+      "treatment_profile_id": "terminal-rtk-opencode-plugin-v1",
+      "treatment_session_id": "rtk-opencode-v1-beets-20260730-p-fcc8438d2077-r1",
+      "treatment_total_provider_tokens": 40060,
+      "treatment_weighted_tokens": 19396.0,
+      "weighted_delta_percent": 2.9730303673816096,
+      "weighted_delta_tokens": 560.0
+    },
+    {
+      "baseline_session_id": "opencode-fastify-20260730-p-bb0e89ed9794-r1",
+      "baseline_total_provider_tokens": 43073,
+      "baseline_weighted_tokens": 28186.2,
+      "raw_delta_percent": -0.5502286815406403,
+      "raw_delta_tokens": -237,
+      "sequence_id": "fastify-lifecycle-sequence-v0",
+      "treatment_profile_id": "terminal-rtk-opencode-plugin-v1",
+      "treatment_session_id": "rtk-opencode-v1-fastify-20260730-p-bb0e89ed9794-r1",
+      "treatment_total_provider_tokens": 42836,
+      "treatment_weighted_tokens": 20512.2,
+      "weighted_delta_percent": -27.22608936287971,
+      "weighted_delta_tokens": -7674.0
+    },
+    {
+      "baseline_session_id": "opencode-terraform-20260730-p-5811b463c1e9-r1",
+      "baseline_total_provider_tokens": 40281,
+      "baseline_weighted_tokens": 19722.0,
+      "raw_delta_percent": 0.7075296045281895,
+      "raw_delta_tokens": 285,
+      "sequence_id": "terraform-lifecycle-sequence-v0",
+      "treatment_profile_id": "terminal-rtk-opencode-plugin-v1",
+      "treatment_session_id": "rtk-opencode-v1-terraform-20260730-p-5811b463c1e9-r1",
+      "treatment_total_provider_tokens": 40566,
+      "treatment_weighted_tokens": 20012.0,
+      "weighted_delta_percent": 1.4704391035391948,
+      "weighted_delta_tokens": 290.0
+    }
+  ],
+  "independent_cross_checks": {
+    "auditor_count": 3,
+    "audited_commit": "727b7da41592b61371286a6423e5e69e50c0d8a9",
+    "scope": [
+      "accounting, manifests, frozen protocols, and first-valid disposition",
+      "native activation, pinned identity, runtime uptake, and provenance",
+      "verifiers, command parity, product state, and matched comparisons"
+    ],
+    "verdict": "All three read-only audits accepted the 18-session evidence corpus and numerical results. The missing aggregate audit and stale Markdown findings were resolved in af33eb7. Only 10/15 standalone pair files exist; all 15 pairs are instead published directly in this registry-derived aggregate, and that standalone-file gap remains explicitly disclosed. Additional audit caveats are incorporated here."
+  },
+  "model_execution_diagnostics": {
+    "completed_model_tools": 54,
+    "completed_model_tools_all_native_bash": true,
+    "explicit_assigned_product_tool_calls": 0,
+    "graphify_automatic_guidance_commands": 9,
+    "graphify_visible_guidance_prefixes": 12,
+    "graphify_duplicate_prefix_pattern": "The third command in each of the three lanes carried the reminder twice; stripping all reminder prefixes yields the exact matched bare commands 9/9.",
+    "model_bash_nonzero_exit_calls": 0,
+    "model_tool_errors": 0,
+    "treatment_induced_command_corruption_observed": false
+  },
+  "native_activation": {
+    "instrumentation_caveat": "Adapter-v5 tool-preflight records hard-code external_skills_disabled=true even for corrected SwarmVault and Graphify lanes. Their retained effective_config permission.skill=allow, loaded plugin/skill bytes, and successful activation evidence are authoritative; the stale boolean must not be used to claim disabled skills.",
+    "provenance_and_scope_caveats": [
+      "Generic codex-effective-config.toml, codex-mcp-list.txt, and codex-doctor.txt controller artifacts are not native OpenCode activation proof; tool-preflight.txt effective_config and standalone MCP handshake receipts are authoritative.",
+      "Project configuration was disabled for isolation and the adapter re-injected the exact assigned MCP/plugin entries, so evidence supports official installer execution plus semantically equivalent frozen runtime wiring rather than direct runtime consumption of every generated official config file.",
+      "CodeScope and SwarmVault warmup metadata declare no required state paths, and warm index/vault bytes were not retained or hash-bound; successful commands and required-path checks support screening activation, not exact index-state reproduction.",
+      "The current CodeGraph source checkout has a tracked deleted __pycache__ file. The historical compiled artifact hash remains exact, but the current checkout is not a clean source-to-build reconstruction witness."
+    ],
+    "interpretation": {
+      "codescope-opencode-product-v1": "Pinned unchanged CodeScope MCP server installed, initialized, listed tools, and built warm state in all three lanes. No model-issued CodeScope MCP call was observed.",
+      "retrieval-codegraph-opencode-mcp-v1": "Official OpenCode MCP installation, initialize/tools-list, and warm live index passed in all three lanes. No model-issued CodeGraph MCP call was observed.",
+      "retrieval-graphify-opencode-product-v1": "Official OpenCode plugin, project skill, AGENTS guidance, and full warm graph were active in all three lanes. The always-on plugin prepended product guidance to all nine model bash calls; no graphify query command was issued.",
+      "swarmvault-opencode-product-v1": "Official OpenCode plugin, assigned project skill, MCP server, and warm vault were active in all three lanes. No model-issued SwarmVault MCP call was observed.",
+      "terminal-rtk-opencode-plugin-v1": "Official global OpenCode command-rewriting plugin was installed and loaded in all three lanes. The selected model commands remained ordinary bash commands, so no RTK rewrite or explicit RTK command was observed."
+    },
+    "natural_use_policy": "Installation and activation are causal treatment assignment evidence; zero explicit product-tool calls remain valid observed uptake under natural-use execution and must not be relabeled as product invocation.",
+    "summary": {
+      "codescope-opencode-product-v1": {
+        "host_install_passed": 3,
+        "mcp_initialized": 3,
+        "plugin_loaded": 0,
+        "preflight_present": 3,
+        "sessions": 3,
+        "skill_allowed": 0,
+        "warmup_passed": 3
+      },
+      "retrieval-codegraph-opencode-mcp-v1": {
+        "host_install_passed": 3,
+        "mcp_initialized": 3,
+        "plugin_loaded": 0,
+        "preflight_present": 3,
+        "sessions": 3,
+        "skill_allowed": 0,
+        "warmup_passed": 3
+      },
+      "retrieval-graphify-opencode-product-v1": {
+        "host_install_passed": 3,
+        "mcp_initialized": 0,
+        "plugin_loaded": 3,
+        "preflight_present": 3,
+        "sessions": 3,
+        "skill_allowed": 3,
+        "warmup_passed": 3
+      },
+      "swarmvault-opencode-product-v1": {
+        "host_install_passed": 3,
+        "mcp_initialized": 3,
+        "plugin_loaded": 3,
+        "preflight_present": 3,
+        "sessions": 3,
+        "skill_allowed": 3,
+        "warmup_passed": 3
+      },
+      "terminal-rtk-opencode-plugin-v1": {
+        "host_install_passed": 3,
+        "mcp_initialized": 0,
+        "plugin_loaded": 3,
+        "preflight_present": 3,
+        "sessions": 3,
+        "skill_allowed": 0,
+        "warmup_passed": 0
+      }
+    }
+  },
+  "patch_and_tree_parity": {
+    "final_git_status_byte_parity": "6/15. CodeScope and RTK match bare in all three workflows. SwarmVault, Graphify, and CodeGraph retain expected product state/configuration.",
+    "full_final_changes_diff_byte_parity": "12/15; the three SwarmVault final diffs additionally contain tracked wiki/index.md and wiki/log.md.",
+    "full_task_delta_byte_parity": "36/45; all nine SwarmVault task deltas additionally contain product-created wiki state.",
+    "normalized_final_verifier_record_parity": "15/15",
+    "product_state_examples": {
+      "codegraph": [
+        ".codegraph/",
+        "opencode.jsonc",
+        "AGENTS.md in Beets and Terraform"
+      ],
+      "graphify": [
+        ".opencode/",
+        "graphify-out/",
+        "AGENTS.md in Beets and Terraform"
+      ],
+      "swarmvault": [
+        "wiki/index.md",
+        "wiki/log.md",
+        ".opencode/",
+        "swarmvault.config.json",
+        "swarmvault.schema.md",
+        "AGENTS.md in Beets and Terraform"
+      ]
+    },
+    "quality_boundary": "All task and final verifiers passed, but no independent maintainability, design, or general software-quality review was performed.",
+    "task_target_final_patch_byte_parity": "15/15 after excluding product-only state.",
+    "task_target_patch_byte_parity": "45/45 after projecting each treatment diff onto the task-target paths present in its matched fresh bare diff."
+  },
+  "profile_totals_raw_rank": [
+    {
+      "cached_input_tokens": 79872,
+      "fresh_input_tokens": 39995,
+      "label": "Bare OpenCode",
+      "output_tokens": 3127,
+      "profile_id": "runtime-opencode-codex-product-v1",
+      "reasoning_tokens": 169,
+      "total_provider_tokens": 122994,
+      "weighted_tokens": 66744.2
+    },
+    {
+      "cached_input_tokens": 87552,
+      "fresh_input_tokens": 32859,
+      "label": "RTK",
+      "output_tokens": 3051,
+      "profile_id": "terminal-rtk-opencode-plugin-v1",
+      "reasoning_tokens": 89,
+      "total_provider_tokens": 123462,
+      "weighted_tokens": 59920.2
+    },
+    {
+      "cached_input_tokens": 83456,
+      "fresh_input_tokens": 46936,
+      "label": "Graphify",
+      "output_tokens": 3870,
+      "profile_id": "retrieval-graphify-opencode-product-v1",
+      "reasoning_tokens": 897,
+      "total_provider_tokens": 134262,
+      "weighted_tokens": 78501.6
+    },
+    {
+      "cached_input_tokens": 96768,
+      "fresh_input_tokens": 49966,
+      "label": "CodeGraph",
+      "output_tokens": 3099,
+      "profile_id": "retrieval-codegraph-opencode-mcp-v1",
+      "reasoning_tokens": 213,
+      "total_provider_tokens": 149833,
+      "weighted_tokens": 78236.8
+    },
+    {
+      "cached_input_tokens": 137728,
+      "fresh_input_tokens": 42190,
+      "label": "SwarmVault",
+      "output_tokens": 3199,
+      "profile_id": "swarmvault-opencode-product-v1",
+      "reasoning_tokens": 265,
+      "total_provider_tokens": 183117,
+      "weighted_tokens": 75156.8
+    },
+    {
+      "cached_input_tokens": 142848,
+      "fresh_input_tokens": 42150,
+      "label": "CodeScope",
+      "output_tokens": 2919,
+      "profile_id": "codescope-opencode-product-v1",
+      "reasoning_tokens": 107,
+      "total_provider_tokens": 187917,
+      "weighted_tokens": 73948.8
+    }
+  ],
+  "profile_totals_weighted_rank": [
+    {
+      "cached_input_tokens": 87552,
+      "fresh_input_tokens": 32859,
+      "label": "RTK",
+      "output_tokens": 3051,
+      "profile_id": "terminal-rtk-opencode-plugin-v1",
+      "reasoning_tokens": 89,
+      "total_provider_tokens": 123462,
+      "weighted_tokens": 59920.2
+    },
+    {
+      "cached_input_tokens": 79872,
+      "fresh_input_tokens": 39995,
+      "label": "Bare OpenCode",
+      "output_tokens": 3127,
+      "profile_id": "runtime-opencode-codex-product-v1",
+      "reasoning_tokens": 169,
+      "total_provider_tokens": 122994,
+      "weighted_tokens": 66744.2
+    },
+    {
+      "cached_input_tokens": 142848,
+      "fresh_input_tokens": 42150,
+      "label": "CodeScope",
+      "output_tokens": 2919,
+      "profile_id": "codescope-opencode-product-v1",
+      "reasoning_tokens": 107,
+      "total_provider_tokens": 187917,
+      "weighted_tokens": 73948.8
+    },
+    {
+      "cached_input_tokens": 137728,
+      "fresh_input_tokens": 42190,
+      "label": "SwarmVault",
+      "output_tokens": 3199,
+      "profile_id": "swarmvault-opencode-product-v1",
+      "reasoning_tokens": 265,
+      "total_provider_tokens": 183117,
+      "weighted_tokens": 75156.8
+    },
+    {
+      "cached_input_tokens": 96768,
+      "fresh_input_tokens": 49966,
+      "label": "CodeGraph",
+      "output_tokens": 3099,
+      "profile_id": "retrieval-codegraph-opencode-mcp-v1",
+      "reasoning_tokens": 213,
+      "total_provider_tokens": 149833,
+      "weighted_tokens": 78236.8
+    },
+    {
+      "cached_input_tokens": 83456,
+      "fresh_input_tokens": 46936,
+      "label": "Graphify",
+      "output_tokens": 3870,
+      "profile_id": "retrieval-graphify-opencode-product-v1",
+      "reasoning_tokens": 897,
+      "total_provider_tokens": 134262,
+      "weighted_tokens": 78501.6
+    }
+  ],
+  "retry_and_exclusion_policy": {
+    "accepted_assignment_reruns": 0,
+    "controller_dependency_failures": "model execution never started and not counted",
+    "deleted_external_failure_evidence_caveat": "Raw external matrix evidence for zero-spend overload/dependency/disk incidents was deleted after committed receipts; those zero-spend claims now depend on the receipts rather than independently re-readable raw bundles.",
+    "graphify_disk_exhaustion": "provider-free warmup failed before model execution and not counted",
+    "invalid_skill_disabled_generation": "Six paid V4 SwarmVault/Graphify sessions totaling 306,487 raw and 152,792.2 weighted tokens were deleted before accepted execution and are not counted.",
+    "invalid_generation_identity_collision": "Those six invalid generations reused the same session IDs later assigned to corrected V5 runs. Session ID alone is provenance-ambiguous; the retained V5 adapter and frozen protocol hashes identify the accepted bytes. The invalid receipt does not retain the deleted protocol hashes or manifests.",
+    "provider_overload_attempts": "no provider usage event and not counted",
+    "receipt": "sources/evaluations/audits/opencode-next-five-transient-retry-receipts-20260730.json"
+  },
+  "schema_version": 1,
+  "sessions": [
+    {
+      "explicit_non_native_tool_calls": 0,
+      "final_verifier_passed": true,
+      "graphify_automatic_guidance_commands": 0,
+      "manifest_files_verified": 3,
+      "model_bash_nonzero": 0,
+      "model_tool_errors": 0,
+      "native_step_finish_usage_events": 6,
+      "profile_id": "runtime-opencode-codex-product-v1",
+      "sequence_id": "beets-lifecycle-sequence-v0",
+      "session_id": "opencode-beets-20260730-p-fcc8438d2077-r1",
+      "task_verifiers_passed": 3,
+      "tool_isolation_passed": true,
+      "usage": {
+        "cached_input_tokens": 28160,
+        "fresh_input_tokens": 10572,
+        "output_tokens": 908,
+        "reasoning_tokens": 29,
+        "total_provider_tokens": 39640
+      },
+      "weighted_tokens": 18836.0
+    },
+    {
+      "explicit_non_native_tool_calls": 0,
+      "final_verifier_passed": true,
+      "graphify_automatic_guidance_commands": 0,
+      "manifest_files_verified": 3,
+      "model_bash_nonzero": 0,
+      "model_tool_errors": 0,
+      "native_step_finish_usage_events": 6,
+      "profile_id": "runtime-opencode-codex-product-v1",
+      "sequence_id": "fastify-lifecycle-sequence-v0",
+      "session_id": "opencode-fastify-20260730-p-bb0e89ed9794-r1",
+      "task_verifiers_passed": 3,
+      "tool_isolation_passed": true,
+      "usage": {
+        "cached_input_tokens": 23552,
+        "fresh_input_tokens": 18259,
+        "output_tokens": 1262,
+        "reasoning_tokens": 78,
+        "total_provider_tokens": 43073
+      },
+      "weighted_tokens": 28186.2
+    },
+    {
+      "explicit_non_native_tool_calls": 0,
+      "final_verifier_passed": true,
+      "graphify_automatic_guidance_commands": 0,
+      "manifest_files_verified": 3,
+      "model_bash_nonzero": 0,
+      "model_tool_errors": 0,
+      "native_step_finish_usage_events": 6,
+      "profile_id": "runtime-opencode-codex-product-v1",
+      "sequence_id": "terraform-lifecycle-sequence-v0",
+      "session_id": "opencode-terraform-20260730-p-5811b463c1e9-r1",
+      "task_verifiers_passed": 3,
+      "tool_isolation_passed": true,
+      "usage": {
+        "cached_input_tokens": 28160,
+        "fresh_input_tokens": 11164,
+        "output_tokens": 957,
+        "reasoning_tokens": 62,
+        "total_provider_tokens": 40281
+      },
+      "weighted_tokens": 19722.0
+    },
+    {
+      "explicit_non_native_tool_calls": 0,
+      "final_verifier_passed": true,
+      "graphify_automatic_guidance_commands": 0,
+      "manifest_files_verified": 3,
+      "model_bash_nonzero": 0,
+      "model_tool_errors": 0,
+      "native_step_finish_usage_events": 6,
+      "profile_id": "codescope-opencode-product-v1",
+      "sequence_id": "beets-lifecycle-sequence-v0",
+      "session_id": "codescope-opencode-v1-beets-20260730-p-fcc8438d2077-r1",
+      "task_verifiers_passed": 3,
+      "tool_isolation_passed": true,
+      "usage": {
+        "cached_input_tokens": 46592,
+        "fresh_input_tokens": 13982,
+        "output_tokens": 903,
+        "reasoning_tokens": 0,
+        "total_provider_tokens": 61477
+      },
+      "weighted_tokens": 24059.2
+    },
+    {
+      "explicit_non_native_tool_calls": 0,
+      "final_verifier_passed": true,
+      "graphify_automatic_guidance_commands": 0,
+      "manifest_files_verified": 3,
+      "model_bash_nonzero": 0,
+      "model_tool_errors": 0,
+      "native_step_finish_usage_events": 6,
+      "profile_id": "codescope-opencode-product-v1",
+      "sequence_id": "fastify-lifecycle-sequence-v0",
+      "session_id": "codescope-opencode-v1-fastify-20260730-p-bb0e89ed9794-r1",
+      "task_verifiers_passed": 3,
+      "tool_isolation_passed": true,
+      "usage": {
+        "cached_input_tokens": 48640,
+        "fresh_input_tokens": 14906,
+        "output_tokens": 1195,
+        "reasoning_tokens": 79,
+        "total_provider_tokens": 64741
+      },
+      "weighted_tokens": 26940.0
+    },
+    {
+      "explicit_non_native_tool_calls": 0,
+      "final_verifier_passed": true,
+      "graphify_automatic_guidance_commands": 0,
+      "manifest_files_verified": 3,
+      "model_bash_nonzero": 0,
+      "model_tool_errors": 0,
+      "native_step_finish_usage_events": 6,
+      "profile_id": "codescope-opencode-product-v1",
+      "sequence_id": "terraform-lifecycle-sequence-v0",
+      "session_id": "codescope-opencode-v1-terraform-20260730-p-5811b463c1e9-r1",
+      "task_verifiers_passed": 3,
+      "tool_isolation_passed": true,
+      "usage": {
+        "cached_input_tokens": 47616,
+        "fresh_input_tokens": 13262,
+        "output_tokens": 821,
+        "reasoning_tokens": 28,
+        "total_provider_tokens": 61699
+      },
+      "weighted_tokens": 22949.6
+    },
+    {
+      "explicit_non_native_tool_calls": 0,
+      "final_verifier_passed": true,
+      "graphify_automatic_guidance_commands": 0,
+      "manifest_files_verified": 3,
+      "model_bash_nonzero": 0,
+      "model_tool_errors": 0,
+      "native_step_finish_usage_events": 6,
+      "profile_id": "swarmvault-opencode-product-v1",
+      "sequence_id": "beets-lifecycle-sequence-v0",
+      "session_id": "swarmvault-opencode-v1-beets-20260730-p-fcc8438d2077-r1",
+      "task_verifiers_passed": 3,
+      "tool_isolation_passed": true,
+      "usage": {
+        "cached_input_tokens": 44544,
+        "fresh_input_tokens": 14317,
+        "output_tokens": 984,
+        "reasoning_tokens": 66,
+        "total_provider_tokens": 59845
+      },
+      "weighted_tokens": 24675.4
+    },
+    {
+      "explicit_non_native_tool_calls": 0,
+      "final_verifier_passed": true,
+      "graphify_automatic_guidance_commands": 0,
+      "manifest_files_verified": 3,
+      "model_bash_nonzero": 0,
+      "model_tool_errors": 0,
+      "native_step_finish_usage_events": 6,
+      "profile_id": "swarmvault-opencode-product-v1",
+      "sequence_id": "fastify-lifecycle-sequence-v0",
+      "session_id": "swarmvault-opencode-v1-fastify-20260730-p-bb0e89ed9794-r1",
+      "task_verifiers_passed": 3,
+      "tool_isolation_passed": true,
+      "usage": {
+        "cached_input_tokens": 47616,
+        "fresh_input_tokens": 14105,
+        "output_tokens": 1227,
+        "reasoning_tokens": 119,
+        "total_provider_tokens": 62948
+      },
+      "weighted_tokens": 26228.6
+    },
+    {
+      "explicit_non_native_tool_calls": 0,
+      "final_verifier_passed": true,
+      "graphify_automatic_guidance_commands": 0,
+      "manifest_files_verified": 3,
+      "model_bash_nonzero": 0,
+      "model_tool_errors": 0,
+      "native_step_finish_usage_events": 6,
+      "profile_id": "swarmvault-opencode-product-v1",
+      "sequence_id": "terraform-lifecycle-sequence-v0",
+      "session_id": "swarmvault-opencode-v1-terraform-20260730-p-5811b463c1e9-r1",
+      "task_verifiers_passed": 3,
+      "tool_isolation_passed": true,
+      "usage": {
+        "cached_input_tokens": 45568,
+        "fresh_input_tokens": 13768,
+        "output_tokens": 988,
+        "reasoning_tokens": 80,
+        "total_provider_tokens": 60324
+      },
+      "weighted_tokens": 24252.8
+    },
+    {
+      "explicit_non_native_tool_calls": 0,
+      "final_verifier_passed": true,
+      "graphify_automatic_guidance_commands": 3,
+      "manifest_files_verified": 3,
+      "model_bash_nonzero": 0,
+      "model_tool_errors": 0,
+      "native_step_finish_usage_events": 6,
+      "profile_id": "retrieval-graphify-opencode-product-v1",
+      "sequence_id": "beets-lifecycle-sequence-v0",
+      "session_id": "graphify-opencode-v1-beets-20260730-p-fcc8438d2077-r1",
+      "task_verifiers_passed": 3,
+      "tool_isolation_passed": true,
+      "usage": {
+        "cached_input_tokens": 32256,
+        "fresh_input_tokens": 9883,
+        "output_tokens": 1173,
+        "reasoning_tokens": 260,
+        "total_provider_tokens": 43312
+      },
+      "weighted_tokens": 20146.6
+    },
+    {
+      "explicit_non_native_tool_calls": 0,
+      "final_verifier_passed": true,
+      "graphify_automatic_guidance_commands": 3,
+      "manifest_files_verified": 3,
+      "model_bash_nonzero": 0,
+      "model_tool_errors": 0,
+      "native_step_finish_usage_events": 6,
+      "profile_id": "retrieval-graphify-opencode-product-v1",
+      "sequence_id": "fastify-lifecycle-sequence-v0",
+      "session_id": "graphify-opencode-v1-fastify-20260730-p-bb0e89ed9794-r1",
+      "task_verifiers_passed": 3,
+      "tool_isolation_passed": true,
+      "usage": {
+        "cached_input_tokens": 32256,
+        "fresh_input_tokens": 12590,
+        "output_tokens": 1420,
+        "reasoning_tokens": 260,
+        "total_provider_tokens": 46266
+      },
+      "weighted_tokens": 24335.6
+    },
+    {
+      "explicit_non_native_tool_calls": 0,
+      "final_verifier_passed": true,
+      "graphify_automatic_guidance_commands": 3,
+      "manifest_files_verified": 3,
+      "model_bash_nonzero": 0,
+      "model_tool_errors": 0,
+      "native_step_finish_usage_events": 6,
+      "profile_id": "retrieval-graphify-opencode-product-v1",
+      "sequence_id": "terraform-lifecycle-sequence-v0",
+      "session_id": "graphify-opencode-v1-terraform-20260730-p-5811b463c1e9-r1",
+      "task_verifiers_passed": 3,
+      "tool_isolation_passed": true,
+      "usage": {
+        "cached_input_tokens": 18944,
+        "fresh_input_tokens": 24463,
+        "output_tokens": 1277,
+        "reasoning_tokens": 377,
+        "total_provider_tokens": 44684
+      },
+      "weighted_tokens": 34019.4
+    },
+    {
+      "explicit_non_native_tool_calls": 0,
+      "final_verifier_passed": true,
+      "graphify_automatic_guidance_commands": 0,
+      "manifest_files_verified": 3,
+      "model_bash_nonzero": 0,
+      "model_tool_errors": 0,
+      "native_step_finish_usage_events": 6,
+      "profile_id": "terminal-rtk-opencode-plugin-v1",
+      "sequence_id": "beets-lifecycle-sequence-v0",
+      "session_id": "rtk-opencode-v1-beets-20260730-p-fcc8438d2077-r1",
+      "task_verifiers_passed": 3,
+      "tool_isolation_passed": true,
+      "usage": {
+        "cached_input_tokens": 28160,
+        "fresh_input_tokens": 10964,
+        "output_tokens": 936,
+        "reasoning_tokens": 45,
+        "total_provider_tokens": 40060
+      },
+      "weighted_tokens": 19396.0
+    },
+    {
+      "explicit_non_native_tool_calls": 0,
+      "final_verifier_passed": true,
+      "graphify_automatic_guidance_commands": 0,
+      "manifest_files_verified": 3,
+      "model_bash_nonzero": 0,
+      "model_tool_errors": 0,
+      "native_step_finish_usage_events": 6,
+      "profile_id": "terminal-rtk-opencode-plugin-v1",
+      "sequence_id": "fastify-lifecycle-sequence-v0",
+      "session_id": "rtk-opencode-v1-fastify-20260730-p-bb0e89ed9794-r1",
+      "task_verifiers_passed": 3,
+      "tool_isolation_passed": true,
+      "usage": {
+        "cached_input_tokens": 31232,
+        "fresh_input_tokens": 10447,
+        "output_tokens": 1157,
+        "reasoning_tokens": 0,
+        "total_provider_tokens": 42836
+      },
+      "weighted_tokens": 20512.2
+    },
+    {
+      "explicit_non_native_tool_calls": 0,
+      "final_verifier_passed": true,
+      "graphify_automatic_guidance_commands": 0,
+      "manifest_files_verified": 3,
+      "model_bash_nonzero": 0,
+      "model_tool_errors": 0,
+      "native_step_finish_usage_events": 6,
+      "profile_id": "terminal-rtk-opencode-plugin-v1",
+      "sequence_id": "terraform-lifecycle-sequence-v0",
+      "session_id": "rtk-opencode-v1-terraform-20260730-p-5811b463c1e9-r1",
+      "task_verifiers_passed": 3,
+      "tool_isolation_passed": true,
+      "usage": {
+        "cached_input_tokens": 28160,
+        "fresh_input_tokens": 11448,
+        "output_tokens": 958,
+        "reasoning_tokens": 44,
+        "total_provider_tokens": 40566
+      },
+      "weighted_tokens": 20012.0
+    },
+    {
+      "explicit_non_native_tool_calls": 0,
+      "final_verifier_passed": true,
+      "graphify_automatic_guidance_commands": 0,
+      "manifest_files_verified": 3,
+      "model_bash_nonzero": 0,
+      "model_tool_errors": 0,
+      "native_step_finish_usage_events": 6,
+      "profile_id": "retrieval-codegraph-opencode-mcp-v1",
+      "sequence_id": "beets-lifecycle-sequence-v0",
+      "session_id": "codegraph-opencode-v1-beets-20260730-p-fcc8438d2077-r1",
+      "task_verifiers_passed": 3,
+      "tool_isolation_passed": true,
+      "usage": {
+        "cached_input_tokens": 36352,
+        "fresh_input_tokens": 11693,
+        "output_tokens": 998,
+        "reasoning_tokens": 101,
+        "total_provider_tokens": 49043
+      },
+      "weighted_tokens": 21316.2
+    },
+    {
+      "explicit_non_native_tool_calls": 0,
+      "final_verifier_passed": true,
+      "graphify_automatic_guidance_commands": 0,
+      "manifest_files_verified": 3,
+      "model_bash_nonzero": 0,
+      "model_tool_errors": 0,
+      "native_step_finish_usage_events": 6,
+      "profile_id": "retrieval-codegraph-opencode-mcp-v1",
+      "sequence_id": "fastify-lifecycle-sequence-v0",
+      "session_id": "codegraph-opencode-v1-fastify-20260730-p-bb0e89ed9794-r1",
+      "task_verifiers_passed": 3,
+      "tool_isolation_passed": true,
+      "usage": {
+        "cached_input_tokens": 29696,
+        "fresh_input_tokens": 20747,
+        "output_tokens": 1168,
+        "reasoning_tokens": 42,
+        "total_provider_tokens": 51611
+      },
+      "weighted_tokens": 30724.6
+    },
+    {
+      "explicit_non_native_tool_calls": 0,
+      "final_verifier_passed": true,
+      "graphify_automatic_guidance_commands": 0,
+      "manifest_files_verified": 3,
+      "model_bash_nonzero": 0,
+      "model_tool_errors": 0,
+      "native_step_finish_usage_events": 6,
+      "profile_id": "retrieval-codegraph-opencode-mcp-v1",
+      "sequence_id": "terraform-lifecycle-sequence-v0",
+      "session_id": "codegraph-opencode-v1-terraform-20260730-p-5811b463c1e9-r1",
+      "task_verifiers_passed": 3,
+      "tool_isolation_passed": true,
+      "usage": {
+        "cached_input_tokens": 30720,
+        "fresh_input_tokens": 17526,
+        "output_tokens": 933,
+        "reasoning_tokens": 70,
+        "total_provider_tokens": 49179
+      },
+      "weighted_tokens": 26196.0
+    }
+  ],
+  "sources": {
+    "accounting_overlay": {
+      "path": "sources/evaluations/audits/codex-cumulative-usage-accounting-20260718.json",
+      "sha256": "eb8b317e708baac088209c961d1f7ee884c8340c6aeccb2fcf5f5fcfb695e11b"
+    },
+    "fresh_bare_audit": {
+      "path": "sources/evaluations/audits/opencode-bare-sol-high-r1-pilot-results-20260730.json",
+      "sha256": "56a736370abf6cbd8403e17b7bf82390605cc2850d8825498533b971a1c6a45d"
+    },
+    "profile_registry": {
+      "path": "data/evaluation-profiles.json",
+      "sha256": "cfeb52404e409b5023c4da95a7387b9fd29d210cab4cb50dffca37bbbf3d0ae1"
+    },
+    "retry_receipt": {
+      "path": "sources/evaluations/audits/opencode-next-five-transient-retry-receipts-20260730.json",
+      "sha256": "90f5b0912a83b77cc686e23c8ce7d5cdc6e7c4892d593333f752aca9ec57d034"
+    },
+    "selection_audit": {
+      "path": "sources/evaluations/audits/opencode-successive-native-tool-selection-20260730.json",
+      "sha256": "9609e3c8e52b380f9260033f78c6f1a252e30b76a291cf28949a3a1a9d54da2c"
+    },
+    "workflow_registry": {
+      "path": "data/workflow-sessions.json",
+      "sha256": "5230c84f04ccd52a0b49659c12151a0de3b1a9e054dde259677dc83431e8fe23"
+    }
+  },
+  "status": "completed-screening"
+}

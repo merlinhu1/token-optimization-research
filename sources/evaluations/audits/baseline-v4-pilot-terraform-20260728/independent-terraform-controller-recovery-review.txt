@@ -1,0 +1,33 @@
+## Verdict: **PASS / GO**
+
+- **Classification:** All three postflight failures are stale state-assumption failures, not causal Terraform fixture, compact-evidence, or provider defects:
+  - Runbook test assumed an **unoccupied** pilot; the immutable receipt correctly changed it to occupied.
+  - Gate test incorrectly equated **receipt exists** with **independently audited**. The session is valid, but Terraform correctly remains treatment-blocked pending its audit entry.
+  - Stale-readiness mutation test unintentionally used the live occupied state, bypassing the unoccupied validator branch it intended to test.
+
+- **Provider result is valid:** Preserved lane exited `0`; all three task exits and final verifier were `0`; retries were `[0, 0, 0]`; provider total was `87,811` tokens. Strict artifact validation passed. All manifest hashes matched, and compressed evidence contained 50 valid, unique paths.
+
+- **No rerun permitted:** Confirmed current run gate returns:
+  - `False — paid pilot identity is occupied by immutable attempt receipt`
+  - Terraform’s treatment gate remains false until independent audit completion.
+  A provider rerun would violate the first-valid-sample/no-pass-selection contract.
+
+- **Exact-byte recovery is valid:** Destination session and artifact root are absent, while the preserved lane is strict-merge eligible. Controller and lane receipts match on every immutable identity field; only `orchestrator` and `reserved_at` differ, which is expected from checkout isolation. Recovery should:
+  1. Hold the production lock throughout all rechecks, merge, refresh, validation, and possible rollback.
+  2. Revalidate preserved registry/run/manifest/compact bytes and destination absence.
+  3. Snapshot every rewritten authority.
+  4. Merge through normal publication helpers without changing provider evidence.
+  5. Regenerate runbook/accounting and run the full canonical suite inside the transaction.
+  6. Treat successful validation as commit; write a zero-provider recovery receipt afterward.
+
+- **Required generalized state behavior:**
+  - **Unoccupied:** paid pilot command only when authorized; treatment blocked.
+  - **Occupied, awaiting audit:** no provider command/rerun; treatment blocked; occupied wording must not claim completed audit.
+  - **Partial portfolio pass:** audited sequences unlock independently; another unoccupied/awaiting sequence remains blocked.
+  - **Fully audited:** no unoccupied/occupied-blocked wording; treatment gate passes, while pilot reruns remain prohibited.
+
+- **Verification:** Current contract suite passed all **237 tests** after the staged state-aware fixes. The original merged-state postflight had already passed repository validation, Truthmark checks/indexing, and `git diff --check`.
+
+- **Non-blocking future hardening:** Before Terraform is promoted to fully audited, remove remaining hard-coded Terraform readiness expectations and derive them from treatment/audit state. If “partial pass” includes a present but non-passing per-sequence audit entry, generalize the test beyond the specific `"exactly one entry"` reason.
+
+- **Files changed by me:** None. I observed four concurrently/pre-existing staged files, but did not modify them.

@@ -1,0 +1,54 @@
+{
+  "schema_version": 1,
+  "audit_type": "provider-backed-lifecycle-v1-completion",
+  "status": "completed",
+  "owner_authorization_message_id": "1533765740459462807",
+  "campaign_id": "lifecycle-v1-opencode-openrouter-sol-high-r0-20260803",
+  "sequence_id": "fastify-lifecycle-sequence-v1",
+  "profile_id": "baseline-opencode-openrouter-no-mcp",
+  "session_id": "baseline-opencode-openrouter-fastify-20260803-p-f85684d4777d-r0",
+  "replicate_index": 0,
+  "condition": {
+    "runtime_id": "opencode-cli",
+    "provider": "openrouter",
+    "model": "gpt-5.6-sol",
+    "model_condition_id": "opencode-openrouter-gpt-5-6-sol-high",
+    "reasoning_effort": "high",
+    "provider_model_namespace": "openrouter/openai/gpt-5.6-sol"
+  },
+  "frozen_protocol": {
+    "path": "sources/evaluations/protocols/fastify-lifecycle-sequence-v1-baseline-opencode-openrouter-no-mcp-4563f0395248.json",
+    "sha256": "a4e440f59aa3b3ccc535bccfe169548dcd4fb91636083c67ca4b7c5e941ab188",
+    "baseline_pool_fingerprint": "f85684d4777d"
+  },
+  "attempt_receipt": "sources/evaluations/audits/lifecycle-v1-opencode-openrouter-sol-high-r0-attempts/fastify-r0.json",
+  "publication_recovery": "sources/evaluations/workflow-sessions/baseline-opencode-openrouter-fastify-20260803-p-f85684d4777d-r0.strict-ingress-recovery.json",
+  "execution": {
+    "model_turns": 3,
+    "task_exit_codes": [0, 0, 0],
+    "tasks_passed": 3,
+    "final_verifier_exit_code": 0,
+    "tool_isolation_audit_exit_code": 0,
+    "verifier_integrity_passed": true,
+    "thread_continuity_errors": []
+  },
+  "provider_usage": {
+    "measurement_source": "opencode-jsonl-step-finish-usage",
+    "fresh_input_tokens": 130982,
+    "cached_input_tokens": 1571496,
+    "cache_write_tokens": 75481,
+    "output_tokens": 12827,
+    "reasoning_tokens": 3743,
+    "raw_provider_tokens": 1715305,
+    "weighted_tokens": 365093.6,
+    "weighted_formula": "fresh input (input + cache write) + 0.1 * cached input + 6 * output"
+  },
+  "artifact_contract": {
+    "path": "sources/evaluations/workflow-sessions/baseline-opencode-openrouter-fastify-20260803-p-f85684d4777d-r0",
+    "strict_compact_ingress_valid": true,
+    "files": ["run.json", "changes.diff", "evidence.jsonl.gz", "manifest.sha256"]
+  },
+  "comparison_scope": "Independent OpenRouter runtime/provider condition. This result does not modify or constitute an accepted OpenCode/Codex cross-provider comparison pair.",
+  "provider_calls_added_by_ingress_recovery": 0,
+  "provider_tokens_added_by_ingress_recovery": 0
+}

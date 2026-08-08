@@ -1,0 +1,35 @@
+diff --git a/internal/addrs/baseline_v3_checkable_test.go b/internal/addrs/baseline_v3_checkable_test.go
+new file mode 100644
+index 0000000000000000000000000000000000000000..0225760824424adf5a4fd6b1c4295d3fb942df3e
+--- /dev/null
++++ b/internal/addrs/baseline_v3_checkable_test.go
+@@ -0,0 +1,16 @@
++// Copyright IBM Corp. 2014, 2026
++// SPDX-License-Identifier: BUSL-1.1
++
++package addrs
++
++import "testing"
++
++func TestBaselineV3ParseInputVariableCheckable(t *testing.T) {
++	got, diags := ParseCheckableStr(CheckableInputVariable, "var.example")
++	if diags.HasErrors() {
++		t.Fatalf("unexpected diagnostics: %s", diags.Err())
++	}
++	if got.String() != "var.example" {
++		t.Fatalf("wrong address: %s", got.String())
++	}
++}
+diff --git a/internal/addrs/checkable.go b/internal/addrs/checkable.go
+index 772325c51008a2ff5e60407a75b11f513fefcb0d..d776c40f7f76190719dfbf9e8cbd086920668c94 100644
+--- a/internal/addrs/checkable.go
++++ b/internal/addrs/checkable.go
+@@ -182,7 +182,7 @@ func ParseCheckableStr(kind CheckableKind, src string) (Checkable, tfdiags.Diagn
+ 		return Check{Name: name}.Absolute(path), diags
+ 
+ 	case CheckableInputVariable:
+-		name, nameDiags := getCheckableName("var", "variable value")
++		name, nameDiags := getCheckableName("input", "variable value")
+ 		diags = diags.Append(nameDiags)
+ 		if diags.HasErrors() {
+ 			return nil, diags

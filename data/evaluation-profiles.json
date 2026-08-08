@@ -16,6 +16,7 @@
   "profiles": [
     {
       "id": "baseline-bare-codex",
+      "artifact_slug": "baseline",
       "profile_type": "control",
       "objective_scope": "control",
       "status": "active-control",
@@ -62,12 +63,14 @@
     },
     {
       "id": "baseline-claude-code-no-mcp",
+      "artifact_slug": "baseline-claude-code",
       "profile_type": "control",
       "objective_scope": "control",
-      "status": "future-candidate-control",
+      "status": "configured-provider-free",
       "substrate": "claude-code",
       "enabled_surfaces": [
-        "claude-code-native-shell-edit"
+        "claude-code-native-shell-edit",
+        "project-claude-md-instruction-discovery"
       ],
       "disabled_overlaps": [
         "all MCP servers",
@@ -99,12 +102,129 @@
         "all unlisted retrieval/compression/memory/token-saving tools"
       ],
       "install": {
-        "policy": "Future Claude/Anthropic control lane. Run Claude Code from a fresh lane-specific runtime home/config with auth only, no MCP servers, no global instructions, no hooks, no skills/plugins, isolated HOME/PYTHONUSERBASE/XDG/TMPDIR, and preflight artifacts proving only allowed surfaces are visible."
+        "policy": "Run normal Claude Code from a fresh lane-specific runtime home/config with auth only; materialize the fixture project's AGENTS.md byte-for-byte as project CLAUDE.md so Claude's normal project-instruction discovery loads the same guidance available to the Codex/OpenCode workflows. Install no evaluator-authored MCP servers, plugins, skills, hooks, memory, retrieval, compression, or other tool-treatment surfaces. Keep HOME/PYTHONUSERBASE/XDG/TMPDIR isolated and record hashes plus preflight artifacts proving the instruction pair and normal native runtime surface."
       },
       "reset": {
-        "policy": "Delete the lane-specific Claude runtime home and run-local HOME/PYTHONUSERBASE/XDG/TMPDIR before each run; verify no stale indexes, generated profile files, hooks, skills, or memory survive."
+        "policy": "Delete the lane-specific Claude runtime home, generated project CLAUDE.md, lane-local Git exclude entry, and run-local HOME/PYTHONUSERBASE/XDG/TMPDIR before each run; verify no stale indexes, generated profile files, hooks, skills, or memory survive."
       },
-      "notes": "Future Claude Code no-MCP substrate baseline for Claude Opus/Anthropic model-condition studies. Requires a dedicated runner and usage extractor before reproduction records can be accepted."
+      "evaluation_protocol": {
+        "tool_use_policy": "none",
+        "tool_state": "native-runtime",
+        "integration_state": "official-claude-code-normal-mode",
+        "instruction_policy": "Normal Claude Code invocation with project AGENTS.md materialized byte-for-byte as CLAUDE.md for native project-instruction discovery; no evaluator-installed tool treatment, MCP, plugins, skills, hooks, memory, retrieval, or compression surfaces",
+        "assignment_proof": "provider-free pinned-binary/version/model/tools/settings/isolation probe required"
+      },
+      "notes": "Normal Claude Code control routed through the existing OpenRouter GPT-5.6 Sol/high condition used by the Codex and OpenCode comparison lanes. The workflow project's AGENTS.md is copied exactly to CLAUDE.md for native discovery; no evaluator-authored tool treatment is installed. Provider-free qualification is required before any provider-backed reproduction."
+    },
+    {
+      "id": "baseline-opencode-openrouter-no-mcp",
+      "artifact_slug": "baseline-opencode-openrouter",
+      "profile_type": "control",
+      "objective_scope": "control",
+      "status": "configured-provider-free",
+      "substrate": "opencode-cli",
+      "enabled_surfaces": [
+        "opencode-native-shell-edit"
+      ],
+      "disabled_overlaps": [
+        "all MCP servers",
+        "all token-saving surfaces",
+        "global OpenCode instructions",
+        "plugins",
+        "skills",
+        "warm indexes"
+      ],
+      "components": [],
+      "native_agent_tools_allowed": [
+        "shell_command_execution",
+        "file_editing",
+        "plain_file_read_search",
+        "git",
+        "verifier_commands"
+      ],
+      "forbidden_surfaces": [
+        "lean-ctx",
+        "codegraph",
+        "serena",
+        "rtk",
+        "lowfat",
+        "tokenjuice",
+        "repomix",
+        "mex",
+        "cavemem",
+        "cartog",
+        "all unlisted retrieval/compression/memory/token-saving tools"
+      ],
+      "install": {
+        "policy": "Run normal OpenCode from a fresh lane-specific CODEX_HOME and isolated HOME/XDG state, route only through OpenRouter's openrouter/openai/gpt-5.6-sol model namespace, and inherit only the controller-provided OPENROUTER_API_KEY. Install no evaluator-authored MCP servers, plugins, skills, global instructions, memory, retrieval, compression, or other tool-treatment surfaces. Record a provider-free preflight artifact proving the pinned binary, exact provider/model route, no-MCP effective config, and denied web/subagent permissions."
+      },
+      "reset": {
+        "policy": "Delete the lane-specific OpenCode/Codex compatibility home and all run-local HOME/XDG/TMPDIR state before each run; verify no stale indexes, generated configuration, plugins, skills, or memory survive."
+      },
+      "evaluation_protocol": {
+        "tool_use_policy": "none",
+        "tool_state": "native-runtime",
+        "integration_state": "opencode-openrouter-native-mode",
+        "instruction_policy": "Normal OpenCode invocation through OpenRouter with no evaluator-installed tool treatment, MCP, plugins, skills, global instructions, memory, retrieval, or compression surfaces",
+        "assignment_proof": "provider-free pinned-binary/provider-route/model/tools/settings/isolation probe required"
+      },
+      "notes": "Normal OpenCode no-MCP control using OpenRouter's GPT-5.6 Sol/high route. This is an independent provider/runtime condition, not a Codex control or a cross-provider token-treatment comparison. Provider-backed reproduction remains blocked until a separate owner authorization explicitly permits a bounded run."
+    },
+    {
+      "id": "runtime-oh-my-pi-codex-subscription-v1",
+      "artifact_slug": "oh-my-pi-codex-subscription",
+      "profile_type": "replacement_runtime",
+      "objective_scope": "individual_tool_effectiveness",
+      "status": "configured-provider-free",
+      "substrate": "oh-my-pi",
+      "enabled_surfaces": [
+        "oh-my-pi-native-shell-edit"
+      ],
+      "disabled_overlaps": [
+        "all MCP servers",
+        "all evaluator-installed token-saving surfaces",
+        "global OMP instructions",
+        "extensions",
+        "skills",
+        "rules",
+        "LSP",
+        "PTY",
+        "warm indexes"
+      ],
+      "components": [],
+      "native_agent_tools_allowed": [
+        "shell_command_execution",
+        "file_editing",
+        "plain_file_read_search",
+        "git",
+        "verifier_commands"
+      ],
+      "forbidden_surfaces": [
+        "MCP",
+        "browser",
+        "web search",
+        "subagents",
+        "skills",
+        "extensions",
+        "rules",
+        "LSP",
+        "PTY",
+        "all unlisted retrieval/compression/memory/token-saving tools"
+      ],
+      "install": {
+        "policy": "Use the checksum-verified Oh My Pi v17.2.7 Linux release. Run bare omp with isolated HOME/XDG/TMPDIR, native openai-codex OAuth only, no extensions/skills/rules/LSP/PTY, and only native coding tools. OAuth is copied into the ephemeral lane from TOKEN_EVAL_OMP_HOME; preparation may prove the binary and auth boundary without provider calls."
+      },
+      "reset": {
+        "policy": "Delete the lane-specific OMP home, .omp session directory, XDG state, caches, generated config, and temporary files before each run; preserve no global OMP instructions, extensions, skills, rules, or indexes."
+      },
+      "evaluation_protocol": {
+        "tool_use_policy": "none",
+        "tool_state": "native-runtime",
+        "integration_state": "oh-my-pi-bare-openai-codex-oauth",
+        "instruction_policy": "Bare Oh My Pi native mode with no evaluator-installed extensions, skills, rules, MCP, web, browser, subagents, LSP, PTY, memory, retrieval, compression, or token-saving surfaces",
+        "assignment_proof": "provider-free pinned-binary/SHA-256/OAuth-boundary/tools/isolation probe required"
+      },
+      "notes": "Distinct bare Oh My Pi runtime condition. It is not treated as Codex CLI or OpenCode; provider-token accounting is accepted only from OMP assistant-message usage and one persistent OMP session per lifecycle sequence."
     },
     {
       "id": "broad-compression-owner",
@@ -195,9 +315,10 @@
     },
     {
       "id": "codescope-owner",
+      "artifact_slug": "codescope",
       "profile_type": "individual_tool",
       "objective_scope": "individual_tool_effectiveness",
-      "status": "screening-shortlist",
+      "status": "historical-profile",
       "enabled_surfaces": [
         "broad-context-owner"
       ],
@@ -217,7 +338,7 @@
       "reset": {
         "policy": "Use a fresh lane-specific Codex home for every run; CodeScope database, logs, and supervisor state remain under that home and are destroyed with the lane. Stop the bundled SurrealDB when the MCP adapter exits."
       },
-      "notes": "CodeScope broad context-owner treatment. The official 37-tool MCP surface and cold auto-indexer remain active; only the upstream `ALWAYS prefer` / `follow strictly` initialize instructions are removed so model uptake stays natural.",
+      "notes": "Historical CodeScope MCP sessions retained configuration/listing evidence but no required initialize/tools-list receipt and no completed MCP tool call; operational treatment assignment is unverified. Historical occupied sessions and protocols were deleted because treatment assignment was unproven.",
       "evaluation_protocol": {
         "arm_label": "codescope-neutral-mcp-cold-auto-index",
         "tool_state": "cold-auto-index",
@@ -230,7 +351,12 @@
         ],
         "installation_failure_disposition": "invalid-if-official-MCP-tools-or-auto-index-are-unavailable"
       },
-      "selection_rationale": "Explicit experiment-owner direction on 2026-07-17 to evaluate CodeScope before SwarmVault across all three active lifecycle-v0 lanes."
+      "selection_rationale": "Explicit experiment-owner direction on 2026-07-17 to evaluate CodeScope before SwarmVault across all three active lifecycle-v0 lanes.",
+      "blocked_reason": "Historical CodeScope MCP sessions retained configuration/listing evidence but no required initialize/tools-list receipt and no completed MCP tool call; operational treatment assignment is unverified.",
+      "historical_results_deleted": true,
+      "historical_result_disposition": "deleted-unproven-treatment",
+      "active_corpus_result": "deleted-under-owner-authorized-receipt",
+      "superseded_by": "codescope-codex-product-v1"
     },
     {
       "id": "grace-artifact-project",
@@ -294,9 +420,10 @@
     },
     {
       "id": "integrated-token-savior",
+      "artifact_slug": "token-savior",
       "profile_type": "individual_tool",
       "objective_scope": "individual_tool_effectiveness",
-      "status": "screening-shortlist",
+      "status": "historical-profile",
       "enabled_surfaces": [
         "integrated-mcp/retrieval-memory-compact-ops"
       ],
@@ -318,8 +445,13 @@
       "reset": {
         "policy": "Delete the lane-specific Codex home and run-local tool data after each run; verify no stale index, hook, memory, cache, or generated profile survives into the next run."
       },
-      "notes": "Token Savior integrated MCP treatment with hooks disabled; source-logic dossier: docs/tool-dossiers/mibayy-token-savior.md.",
-      "selection_reason": "Selected by the experiment owner for the next lifecycle-v0 natural-use treatment screen."
+      "notes": "The historical optimized/thin configuration materially matched the bounded Token Savior MCP-only setup, but no retained initialize/tools-list receipt or completed MCP call positively proves server operation. Historical occupied sessions and protocols were deleted because treatment assignment was unproven.",
+      "selection_reason": "Selected by the experiment owner for the next lifecycle-v0 natural-use treatment screen.",
+      "blocked_reason": "The historical optimized/thin configuration materially matched the bounded Token Savior MCP-only setup, but no retained initialize/tools-list receipt or completed MCP call positively proves server operation.",
+      "historical_results_deleted": true,
+      "historical_result_disposition": "deleted-unproven-treatment",
+      "active_corpus_result": "deleted-under-owner-authorized-receipt",
+      "superseded_by": "integrated-token-savior-mcp-v1"
     },
     {
       "id": "lower-intervention-cartog",
@@ -350,6 +482,7 @@
     },
     {
       "id": "lower-intervention-codegraph",
+      "artifact_slug": "codegraph-lower",
       "profile_type": "comparator",
       "objective_scope": "individual_tool_effectiveness",
       "status": "deferred-profile",
@@ -541,7 +674,7 @@
       "id": "behavior-caveman",
       "profile_type": "individual_tool",
       "objective_scope": "individual_tool_effectiveness",
-      "status": "screening-shortlist",
+      "status": "invalid-profile",
       "enabled_surfaces": [
         "behavioral-output-compression"
       ],
@@ -575,14 +708,19 @@
         ],
         "installation_failure_disposition": "invalid-if-rendered-policy-is-absent-from-model-facing-prompt"
       },
-      "notes": "Caveman full-mode behavioral output-compression policy arm. Claims are bounded to prompt-injected behavior policy; this is not the MCP-shrink or host-hook integration.",
-      "selection_rationale": "Explicit experiment-owner direction on 2026-07-16 to run the Caveman behavior-policy treatment across all three active lifecycle-v0 lanes."
+      "notes": "Caveman full-mode behavioral output-compression policy arm. Claims are bounded to prompt-injected behavior policy; this is not the MCP-shrink or host-hook integration. Historical provider-backed results were deleted by owner direction because this was not a guide-faithful canonical installation.",
+      "selection_rationale": "Explicit experiment-owner direction on 2026-07-16 to run the Caveman behavior-policy treatment across all three active lifecycle-v0 lanes.",
+      "invalidity": "The lane rendered the Caveman skill body into the evaluator prompt but did not run the author-recommended Codex native skill installer or the documented per-session /caveman activation. It therefore measured a prompt emulation rather than the installed Caveman Codex product.",
+      "historical_results_deleted": true,
+      "superseded_by": "behavior-caveman-codex-skill-v1",
+      "deletion_receipt": "sources/evaluations/audits/invalid-ponytail-caveman-result-deletion-20260719.json"
     },
     {
       "id": "retrieval-cartog",
+      "artifact_slug": "cartog",
       "profile_type": "individual_tool",
       "objective_scope": "individual_tool_effectiveness",
-      "status": "screening-shortlist",
+      "status": "historical-profile",
       "enabled_surfaces": [
         "retrieval-context"
       ],
@@ -602,14 +740,20 @@
       "reset": {
         "policy": "Record disable/uninstall commands and verify no stale index, hook, memory, cache, or generated profile survives into the next run."
       },
-      "notes": "Cartog retrieval/navigation treatment.",
-      "deferred_reason": "Selected for the next lifecycle-v0 natural-use treatment round after the first ten screens, subject to production adapter qualification."
+      "notes": "Historical cartog MCP sessions retained configuration/listing evidence but no required initialize/tools-list receipt and no completed MCP tool call; operational treatment assignment is unverified. Historical occupied sessions and protocols were deleted because treatment assignment was unproven. Its first versioned successor was also deleted after a later parity audit found that it omitted Cartog product-authored Codex guidance and live-watch installation.",
+      "deferred_reason": "Selected for the next lifecycle-v0 natural-use treatment round after the first ten screens, subject to production adapter qualification.",
+      "blocked_reason": "Historical cartog MCP sessions retained configuration/listing evidence but no required initialize/tools-list receipt and no completed MCP tool call; operational treatment assignment is unverified.",
+      "historical_results_deleted": true,
+      "historical_result_disposition": "deleted-unproven-treatment",
+      "active_corpus_result": "deleted-under-owner-authorized-receipt",
+      "superseded_by": "retrieval-cartog-codex-product-v2"
     },
     {
       "id": "retrieval-codegraph",
+      "artifact_slug": "codegraph",
       "profile_type": "individual_tool",
       "objective_scope": "individual_tool_effectiveness",
-      "status": "screening-shortlist",
+      "status": "historical-profile",
       "enabled_surfaces": [
         "retrieval-context"
       ],
@@ -629,7 +773,7 @@
       "reset": {
         "policy": "Record disable/uninstall commands and verify no stale index, hook, memory, cache, or generated profile survives into the next run."
       },
-      "notes": "CodeGraph retrieval/navigation treatment. Primary cold/optional treatment lane; any indexing the agent performs during the task is counted in task execution.",
+      "notes": "Pinned CodeGraph Codex integration installs MCP plus AGENTS guidance and requires `codegraph init`; the historical profile was cold/unindexed, disabled watch, and installed no AGENTS block. No retained initialize plus tools/list receipt or completed MCP call proves the historical server delivered its initialize guidance.",
       "evaluation_protocol": {
         "schema_version": 1,
         "tool_state": "cold",
@@ -639,13 +783,20 @@
         "warmup_provider_tokens_counted": false,
         "notes": "Primary treatment condition: no prebuilt tool state; the tool is available but optional."
       },
-      "selection_reason": "First atomic lifecycle treatment: pinned local CodeGraph build is executable, installs without a native build step in the lane, supports Python retrieval, and is naturally relevant across feature, refactor, and review tasks."
+      "selection_reason": "First atomic lifecycle treatment: pinned local CodeGraph build is executable, installs without a native build step in the lane, supports Python retrieval, and is naturally relevant across feature, refactor, and review tasks.",
+      "blocked_reason": "Pinned CodeGraph Codex integration installs MCP plus AGENTS guidance and requires `codegraph init`; the historical profile was cold/unindexed, disabled watch, and installed no AGENTS block. No retained initialize plus tools/list receipt or completed MCP call proves the historical server delivered its initialize guidance.",
+      "historical_results_deleted": true,
+      "deletion_receipt": "sources/evaluations/audits/invalid-treatment-result-deletions-20260718.json",
+      "historical_result_disposition": "deleted-invalid-treatment",
+      "active_corpus_result": "deleted-under-owner-authorized-receipt",
+      "superseded_by": "retrieval-codegraph-codex-mcp-v1"
     },
     {
       "id": "retrieval-graphify",
+      "artifact_slug": "graphify",
       "profile_type": "individual_tool",
       "objective_scope": "individual_tool_effectiveness",
-      "status": "screening-shortlist",
+      "status": "historical-profile",
       "enabled_surfaces": [
         "retrieval-context"
       ],
@@ -665,14 +816,21 @@
       "reset": {
         "policy": "Record disable/uninstall commands and verify no stale index, hook, memory, cache, or generated profile survives into the next run."
       },
-      "notes": "Graphify graph retrieval treatment.",
-      "selection_reason": "Selected by the experiment owner for the next lifecycle-v0 natural-use treatment screen."
+      "notes": "Pinned Graphify Codex integration requires `graphify install --platform codex`, installing the Codex skill, project AGENTS.md, hooks, and multi_agent support; the historical profile exposed only an optional MCP server with a reduced AST-only graph. No retained initialize plus tools/list receipt or completed MCP call proves the historical optional MCP server was operational.",
+      "selection_reason": "Selected by the experiment owner for the next lifecycle-v0 natural-use treatment screen.",
+      "blocked_reason": "Pinned Graphify Codex integration requires `graphify install --platform codex`, installing the Codex skill, project AGENTS.md, hooks, and multi_agent support; the historical profile exposed only an optional MCP server with a reduced AST-only graph. No retained initialize plus tools/list receipt or completed MCP call proves the historical optional MCP server was operational.",
+      "historical_results_deleted": true,
+      "deletion_receipt": "sources/evaluations/audits/invalid-treatment-result-deletions-20260718.json",
+      "historical_result_disposition": "deleted-invalid-treatment",
+      "active_corpus_result": "deleted-under-owner-authorized-receipt",
+      "superseded_by": "retrieval-graphify-codex-skill-v1"
     },
     {
       "id": "retrieval-leanctx",
+      "artifact_slug": "leanctx",
       "profile_type": "individual_tool",
       "objective_scope": "individual_tool_effectiveness",
-      "status": "screening-shortlist",
+      "status": "historical-profile",
       "enabled_surfaces": [
         "retrieval-context"
       ],
@@ -692,7 +850,7 @@
       "reset": {
         "policy": "Record disable/uninstall commands and verify no stale index, hook, memory, cache, or generated profile survives into the next run."
       },
-      "notes": "LeanCTX retrieval/navigation treatment. Primary cold/optional treatment lane; any indexing the agent performs during the task is counted in task execution.",
+      "notes": "Pinned Lean Context Codex integration is hybrid: `lean-ctx init --agent codex` installs MCP, rules, AGENTS/LEAN-CTX guidance, and shell hooks; the historical profile exposed only a cold raw MCP entry. No retained initialize plus tools/list receipt or completed MCP call proves the historical MCP entry was operational.",
       "evaluation_protocol": {
         "schema_version": 1,
         "tool_state": "cold",
@@ -702,7 +860,13 @@
         "warmup_provider_tokens_counted": false,
         "notes": "Primary treatment condition: no prebuilt tool state; the tool is available but optional."
       },
-      "selection_reason": "Selected by the experiment owner for the next lifecycle-v0 natural-use screen."
+      "selection_reason": "Selected by the experiment owner for the next lifecycle-v0 natural-use screen.",
+      "blocked_reason": "Pinned Lean Context Codex integration is hybrid: `lean-ctx init --agent codex` installs MCP, rules, AGENTS/LEAN-CTX guidance, and shell hooks; the historical profile exposed only a cold raw MCP entry. No retained initialize plus tools/list receipt or completed MCP call proves the historical MCP entry was operational.",
+      "historical_results_deleted": true,
+      "deletion_receipt": "sources/evaluations/audits/invalid-treatment-result-deletions-20260718.json",
+      "historical_result_disposition": "deleted-invalid-treatment",
+      "active_corpus_result": "deleted-under-owner-authorized-receipt",
+      "superseded_by": "integrated-leanctx-codex-hybrid-v1"
     },
     {
       "id": "retrieval-leanctx-warm-optional",
@@ -743,9 +907,10 @@
     },
     {
       "id": "retrieval-serena",
+      "artifact_slug": "serena",
       "profile_type": "individual_tool",
       "objective_scope": "individual_tool_effectiveness",
-      "status": "screening-shortlist",
+      "status": "historical-profile",
       "enabled_surfaces": [
         "retrieval-context"
       ],
@@ -765,14 +930,20 @@
       "reset": {
         "policy": "Record disable/uninstall commands and verify no stale index, hook, memory, cache, or generated profile survives into the next run."
       },
-      "notes": "Serena retrieval/navigation treatment.",
-      "selection_rationale": "Explicit experiment-owner direction on 2026-07-16 to evaluate Serena across all three lifecycle-v0 lanes after RTK."
+      "notes": "The historical Serena context/project setup matched the core MCP layer but disabled onboarding and memories, making it a bounded retrieval ablation; no retained initialize/tools-list receipt or completed MCP call proves operation. Historical occupied sessions and protocols were deleted because treatment assignment was unproven.",
+      "selection_rationale": "Explicit experiment-owner direction on 2026-07-16 to evaluate Serena across all three lifecycle-v0 lanes after RTK.",
+      "blocked_reason": "The historical Serena context/project setup matched the core MCP layer but disabled onboarding and memories, making it a bounded retrieval ablation; no retained initialize/tools-list receipt or completed MCP call proves operation.",
+      "historical_results_deleted": true,
+      "historical_result_disposition": "deleted-unproven-treatment",
+      "active_corpus_result": "deleted-under-owner-authorized-receipt",
+      "superseded_by": "retrieval-serena-codex-mcp-v1"
     },
     {
       "id": "retrieval-jcodemunch-mcp",
+      "artifact_slug": "jcodemunch",
       "profile_type": "individual_tool",
       "objective_scope": "individual_tool_effectiveness",
-      "status": "screening-shortlist",
+      "status": "historical-profile",
       "enabled_surfaces": [
         "retrieval-context"
       ],
@@ -792,14 +963,21 @@
       "reset": {
         "policy": "Record disable/uninstall commands and verify no stale index, hook, memory, cache, or generated profile survives into the next run."
       },
-      "notes": "jcodemunch MCP retrieval/indexing treatment.",
-      "selection_reason": "Selected by the experiment owner for the next lifecycle-v0 natural-use screen."
+      "notes": "Historical neutral MCP condition used an on-demand uv launcher contrary to the pinned Codex guide and retained no initialize/tools-list handshake. Historical invalid sessions were deleted from the active corpus and are not eligible from jcodemunch product-effect claims.",
+      "selection_reason": "Selected by the experiment owner for the next lifecycle-v0 natural-use screen.",
+      "blocked_reason": "Historical neutral MCP condition used an on-demand uv launcher contrary to the pinned Codex guide and retained no initialize/tools-list handshake. Historical invalid sessions were deleted from the active corpus and are not eligible for jcodemunch product-effect claims. The later direct-v1 attempt was also deleted because it omitted the author-provided Codex guidance layer.",
+      "superseded_by": "retrieval-jcodemunch-codex-mcp-v2",
+      "historical_results_deleted": true,
+      "deletion_receipt": "sources/evaluations/audits/invalid-treatment-result-deletions-20260718.json",
+      "historical_result_disposition": "deleted-invalid-treatment",
+      "active_corpus_result": "deleted-under-owner-authorized-receipt"
     },
     {
       "id": "retrieval-sigmap",
+      "artifact_slug": "sigmap",
       "profile_type": "individual_tool",
       "objective_scope": "individual_tool_effectiveness",
-      "status": "screening-shortlist",
+      "status": "historical-profile",
       "enabled_surfaces": [
         "retrieval-context"
       ],
@@ -819,8 +997,13 @@
       "reset": {
         "policy": "Record disable/uninstall commands and verify no stale index, hook, memory, cache, or generated profile survives into the next run."
       },
-      "notes": "SigMap retrieval/governance treatment.",
-      "selection_reason": "Selected by the experiment owner for the next lifecycle-v0 natural-use screen."
+      "notes": "The historical manual TOML setup bypassed a pinned upstream Codex-installer defect and generated warm AGENTS state, but omitted watcher/git-hook freshness; no retained initialize/tools-list receipt or completed MCP call proves operation. Historical occupied sessions and protocols were deleted because treatment assignment was unproven.",
+      "selection_reason": "Selected by the experiment owner for the next lifecycle-v0 natural-use screen.",
+      "blocked_reason": "The historical manual TOML setup bypassed a pinned upstream Codex-installer defect and generated warm AGENTS state, but omitted watcher/git-hook freshness; no retained initialize/tools-list receipt or completed MCP call proves operation.",
+      "historical_results_deleted": true,
+      "historical_result_disposition": "deleted-unproven-treatment",
+      "active_corpus_result": "deleted-under-owner-authorized-receipt",
+      "superseded_by": "retrieval-sigmap-codex-live-v1"
     },
     {
       "id": "serena-cavemem-lightweight",
@@ -890,9 +1073,10 @@
     },
     {
       "id": "swarmvault-owner",
+      "artifact_slug": "swarmvault",
       "profile_type": "individual_tool",
       "objective_scope": "individual_tool_effectiveness",
-      "status": "screening-shortlist",
+      "status": "historical-profile",
       "enabled_surfaces": [
         "broad-context-owner"
       ],
@@ -912,7 +1096,7 @@
       "reset": {
         "policy": "Use a fresh lane-specific Codex home for every run. Keep SwarmVault config, raw copies, wiki, graph, SQLite retrieval state, agent helpers, and inbox under the lane-private tool workspace; destroy that home after the lane."
       },
-      "notes": "SwarmVault broad context-owner treatment using its source-built 3.20.0 CLI, offline heuristic compiler, deterministic product-native 500-file scale cap, warm lane-private vault, and unmodified 51-tool stdio MCP surface. No task-specific paths, agent rules, or uptake instructions are installed.",
+      "notes": "Historical SwarmVault MCP sessions retained configuration/listing evidence but no required initialize/tools-list receipt and no completed MCP tool call; operational treatment assignment is unverified. Historical occupied sessions and protocols were deleted because treatment assignment was unproven.",
       "evaluation_protocol": {
         "arm_label": "swarmvault-offline-heuristic-warm-index-mcp",
         "tool_state": "warm-index",
@@ -929,10 +1113,16 @@
         "max_files": 500,
         "scale_policy": "Use SwarmVault's native deterministic --max-files cap to bound initialization on large repositories; no task-specific paths or patterns are selected."
       },
-      "selection_rationale": "Explicit experiment-owner direction on 2026-07-17 to evaluate SwarmVault after CodeScope across all three active lifecycle-v0 lanes."
+      "selection_rationale": "Explicit experiment-owner direction on 2026-07-17 to evaluate SwarmVault after CodeScope across all three active lifecycle-v0 lanes.",
+      "blocked_reason": "Historical SwarmVault MCP sessions retained configuration/listing evidence but no required initialize/tools-list receipt and no completed MCP tool call; operational treatment assignment is unverified.",
+      "historical_results_deleted": true,
+      "historical_result_disposition": "deleted-unproven-treatment",
+      "active_corpus_result": "deleted-under-owner-authorized-receipt",
+      "superseded_by": "swarmvault-codex-product-v1"
     },
     {
       "id": "terminal-headroom",
+      "artifact_slug": "headroom-proxy",
       "profile_type": "comparator",
       "objective_scope": "individual_tool_effectiveness",
       "status": "ablation-profile",
@@ -975,6 +1165,7 @@
     },
     {
       "id": "headroom-default-codex",
+      "artifact_slug": "headroom",
       "profile_type": "individual_tool",
       "objective_scope": "individual_tool_effectiveness",
       "status": "screening-shortlist",
@@ -1017,6 +1208,7 @@
     },
     {
       "id": "terminal-lowfat",
+      "artifact_slug": "lowfat",
       "profile_type": "individual_tool",
       "objective_scope": "individual_tool_effectiveness",
       "status": "historical-profile",
@@ -1104,9 +1296,10 @@
     },
     {
       "id": "terminal-rtk",
+      "artifact_slug": "rtk",
       "profile_type": "individual_tool",
       "objective_scope": "individual_tool_effectiveness",
-      "status": "screening-shortlist",
+      "status": "historical-profile",
       "enabled_surfaces": [
         "terminal-output"
       ],
@@ -1126,14 +1319,21 @@
       "reset": {
         "policy": "Record disable/uninstall commands and verify no stale index, hook, memory, cache, or generated profile survives into the next run."
       },
-      "notes": "RTK terminal/tool-output compaction.",
-      "selection_rationale": "Explicit experiment-owner direction on 2026-07-16 to evaluate RTK across all three lifecycle-v0 lanes."
+      "notes": "Pinned RTK Codex setup requires `rtk init --codex` or `rtk init --global --codex`, producing AGENTS.md plus RTK.md; the historical profile only exposed the binary on PATH. Retained task events contain zero explicit RTK commands, so path availability produced no active compaction mechanism.",
+      "selection_rationale": "Explicit experiment-owner direction on 2026-07-16 to evaluate RTK across all three lifecycle-v0 lanes.",
+      "blocked_reason": "Pinned RTK Codex setup requires `rtk init --codex` or `rtk init --global --codex`, producing AGENTS.md plus RTK.md; the historical profile only exposed the binary on PATH. Retained task events contain zero explicit RTK commands, so path availability produced no active compaction mechanism.",
+      "historical_results_deleted": true,
+      "deletion_receipt": "sources/evaluations/audits/invalid-treatment-result-deletions-20260718.json",
+      "historical_result_disposition": "deleted-invalid-treatment",
+      "active_corpus_result": "deleted-under-owner-authorized-receipt",
+      "superseded_by": "terminal-rtk-codex-instructions-v1"
     },
     {
       "id": "terminal-snip",
+      "artifact_slug": "snip",
       "profile_type": "individual_tool",
       "objective_scope": "individual_tool_effectiveness",
-      "status": "screening-shortlist",
+      "status": "historical-profile",
       "enabled_surfaces": [
         "terminal-output"
       ],
@@ -1153,14 +1353,21 @@
       "reset": {
         "policy": "Record disable/uninstall commands and verify no stale index, hook, memory, cache, or generated profile survives into the next run."
       },
-      "notes": "Snip terminal/tool-output compaction.",
-      "deferred_reason": "Selected for the next lifecycle-v0 natural-use treatment round after the first ten screens."
+      "notes": "Pinned Snip source defaults to an experimental Codex hook via `snip init --agent codex`, while its safer `--mode prompt` fallback writes project AGENTS.md; the historical profile installed neither and explicitly disabled Codex hooks. Retained task events contain zero explicit Snip commands, so path availability produced no active compaction mechanism.",
+      "deferred_reason": "Selected for the next lifecycle-v0 natural-use treatment round after the first ten screens.",
+      "blocked_reason": "Pinned Snip source defaults to an experimental Codex hook via `snip init --agent codex`, while its safer `--mode prompt` fallback writes project AGENTS.md; the historical profile installed neither and explicitly disabled Codex hooks. Retained task events contain zero explicit Snip commands, so path availability produced no active compaction mechanism.",
+      "historical_results_deleted": true,
+      "deletion_receipt": "sources/evaluations/audits/invalid-treatment-result-deletions-20260718.json",
+      "historical_result_disposition": "deleted-invalid-treatment",
+      "active_corpus_result": "deleted-under-owner-authorized-receipt",
+      "superseded_by": "terminal-snip-codex-hook-v1"
     },
     {
       "id": "terminal-tokenjuice",
+      "artifact_slug": "tokenjuice",
       "profile_type": "individual_tool",
       "objective_scope": "individual_tool_effectiveness",
-      "status": "screening-shortlist",
+      "status": "historical-profile",
       "enabled_surfaces": [
         "terminal-output"
       ],
@@ -1180,8 +1387,63 @@
       "reset": {
         "policy": "Record disable/uninstall commands and verify no stale index, hook, memory, cache, or generated profile survives into the next run."
       },
-      "notes": "TokenJuice terminal/tool-output compaction.",
-      "deferred_reason": "Selected for the next lifecycle-v0 natural-use treatment round after the first ten screens."
+      "notes": "Historical CLI-only condition omitted the official `tokenjuice install codex` hook and the runner disabled Codex hooks. Historical invalid sessions were deleted from the active corpus and are not eligible from TokenJuice product-effect claims.",
+      "deferred_reason": "Selected for the next lifecycle-v0 natural-use treatment round after the first ten screens.",
+      "blocked_reason": "Historical CLI-only condition omitted the official `tokenjuice install codex` hook and the runner disabled Codex hooks. Historical invalid sessions were deleted from the active corpus and are not eligible from TokenJuice product-effect claims.",
+      "superseded_by": "terminal-tokenjuice-codex-hook-v1",
+      "historical_results_deleted": true,
+      "deletion_receipt": "sources/evaluations/audits/invalid-treatment-result-deletions-20260718.json",
+      "historical_result_disposition": "deleted-invalid-treatment",
+      "active_corpus_result": "deleted-under-owner-authorized-receipt"
+    },
+    {
+      "id": "stack-tokenjuice-jcodemunch-mcp",
+      "artifact_slug": "tokenjuice-jcodemunch",
+      "profile_type": "tool_stack",
+      "objective_scope": "stack_effectiveness",
+      "status": "historical-profile",
+      "enabled_surfaces": [
+        "terminal-output",
+        "retrieval-context"
+      ],
+      "disabled_overlaps": [
+        "all unlisted surfaces"
+      ],
+      "components": [
+        {
+          "component_id": "terminal-tokenjuice",
+          "surface": "terminal-output",
+          "role": "terminal_output_owner"
+        },
+        {
+          "component_id": "retrieval-jcodemunch-mcp",
+          "surface": "retrieval-context",
+          "role": "retrieval_context_owner"
+        }
+      ],
+      "install": {
+        "policy": "Compose the retained TokenJuice PATH integration with the retained jcodemunch MCP server and warm index. Record exact commands, versions, generated files, and environment variables in every run record."
+      },
+      "reset": {
+        "policy": "Remove the lane-private jcodemunch index, TokenJuice state, isolated Codex home, hooks, caches, and generated profile state; verify no component survives into the next run."
+      },
+      "evaluation_protocol": {
+        "tool_use_policy": "natural",
+        "tool_state": "warm-index",
+        "component_states": {
+          "terminal-tokenjuice": "cold-cli",
+          "retrieval-jcodemunch-mcp": "warm-index"
+        }
+      },
+      "notes": "Historical stack combined the invalid TokenJuice CLI-only condition with the unverified jcodemunch launcher. Historical invalid sessions were deleted from the active corpus and are not eligible from stack-effect claims.",
+      "selection_reason": "Explicit experiment-owner direction on 2026-07-18 to run the first Phase 3 lifecycle-v0 stack evaluation without rerunning retained individual-tool profiles.",
+      "blocked_reason": "Historical stack combined the invalid TokenJuice CLI-only condition with the unverified jcodemunch launcher. Historical invalid sessions were deleted from the active corpus and are not eligible from stack-effect claims.",
+      "historical_results_deleted": true,
+      "deletion_receipt": "sources/evaluations/audits/invalid-treatment-result-deletions-20260718.json",
+      "historical_result_disposition": "deleted-invalid-treatment",
+      "active_corpus_result": "deleted-under-owner-authorized-receipt",
+      "superseded_by": null,
+      "replacement_policy": "no corrected stack until both versioned individual components have valid evidence"
     },
     {
       "id": "tokless-profile",
@@ -1214,7 +1476,7 @@
       "id": "artifact-ponytail",
       "profile_type": "individual_tool",
       "objective_scope": "individual_tool_effectiveness",
-      "status": "screening-shortlist",
+      "status": "invalid-profile",
       "enabled_surfaces": [
         "artifact-policy"
       ],
@@ -1234,8 +1496,2152 @@
       "reset": {
         "policy": "Remove generated lane artifacts/eval home before rerun; verify no Ponytail state, hook, MCP, or global instruction survives into baseline or other treatment lanes."
       },
-      "notes": "Ponytail artifact/code-minimization policy treatment. Codex integration is instruction-layer delivery, not a terminal proxy or retrieval tool.",
-      "selection_reason": "Selected by the experiment owner for the next lifecycle-v0 natural-use treatment screen."
+      "notes": "Ponytail artifact/code-minimization policy treatment. Codex integration is instruction-layer delivery, not a terminal proxy or retrieval tool. Historical provider-backed results were deleted by owner direction because this was not a guide-faithful canonical installation.",
+      "selection_reason": "Selected by the experiment owner for the next lifecycle-v0 natural-use treatment screen.",
+      "invalidity": "The lane injected Ponytail fallback instructions into the evaluator prompt but explicitly omitted the author-recommended Codex plugin installation and trusted lifecycle hooks. It therefore measured a prompt-only policy rather than the installed Ponytail Codex product.",
+      "historical_results_deleted": true,
+      "superseded_by": "artifact-ponytail-codex-plugin-v1",
+      "deletion_receipt": "sources/evaluations/audits/invalid-ponytail-caveman-result-deletion-20260719.json"
+    },
+    {
+      "id": "terminal-tokenjuice-codex-hook-v1",
+      "artifact_slug": "tokenjuice",
+      "profile_type": "individual_tool",
+      "objective_scope": "individual_tool_effectiveness",
+      "status": "screening-shortlist",
+      "enabled_surfaces": [
+        "codex-post-tool-use-hook",
+        "terminal-output"
+      ],
+      "disabled_overlaps": [
+        "all unlisted surfaces"
+      ],
+      "components": [
+        {
+          "component_id": "terminal-tokenjuice-codex-hook-v1",
+          "surface": "codex-post-tool-use-hook/terminal-output-compaction",
+          "role": "individual_tool"
+        }
+      ],
+      "install": {
+        "policy": "Use the pinned TokenJuice binary to run `tokenjuice install codex` against the lane-private CODEX_HOME, retain hooks.json, enable Codex hooks, and require `tokenjuice doctor codex` to pass before provider execution."
+      },
+      "reset": {
+        "policy": "Delete the lane-private CODEX_HOME and TokenJuice state after evidence capture; verify hooks.json and hook history cannot survive into another lane."
+      },
+      "evaluation_protocol": {
+        "tool_use_policy": "natural",
+        "tool_state": "cold-cli",
+        "integration_state": "official-codex-hook"
+      },
+      "notes": "Corrected versioned TokenJuice profile. Supersedes the CLI-only historical profile for product-effect claims; does not rewrite its evidence."
+    },
+    {
+      "id": "retrieval-jcodemunch-mcp-direct-v1",
+      "profile_type": "individual_tool",
+      "objective_scope": "individual_tool_effectiveness",
+      "status": "invalid-profile",
+      "enabled_surfaces": [
+        "retrieval-context",
+        "mcp"
+      ],
+      "disabled_overlaps": [
+        "all unlisted surfaces"
+      ],
+      "components": [
+        {
+          "component_id": "retrieval-jcodemunch-mcp-direct-v1",
+          "surface": "retrieval-context+mcp",
+          "role": "individual_tool"
+        }
+      ],
+      "install": {
+        "policy": "Historical incomplete setup: direct MCP binary and warm index were present, but the tool-author-provided Codex guidance layer was deliberately omitted."
+      },
+      "reset": {
+        "policy": "Delete the lane-private venv, index, CODEX_HOME, MCP config, and cache after evidence capture; verify no generated state survives into another lane."
+      },
+      "evaluation_protocol": {
+        "tool_use_policy": "natural",
+        "tool_state": "deleted-invalid-treatment",
+        "integration_state": "incomplete-codex-install",
+        "instruction_policy": "missing-tool-author-recommended-guidance"
+      },
+      "notes": "Invalid canonical product treatment. The runner omitted the tool-author-recommended Codex guidance layer, so the installation was incomplete and all provider-backed results were deleted by experiment-owner direction.",
+      "blocked_reason": "Incomplete installation: MCP wiring alone did not follow the tool-author-provided Codex installation guide, which requires a guidance layer teaching the agent when to use jcodemunch.",
+      "superseded_by": "retrieval-jcodemunch-codex-mcp-v2",
+      "historical_results_deleted": true,
+      "deletion_receipt": "sources/evaluations/audits/invalid-jcodemunch-direct-v1-result-deletion-20260719.json",
+      "historical_result_disposition": "deleted-invalid-treatment"
+    },
+    {
+      "id": "terminal-rtk-codex-instructions-v1",
+      "artifact_slug": "rtk",
+      "profile_type": "individual_tool",
+      "objective_scope": "individual_tool_effectiveness",
+      "status": "screening-shortlist",
+      "enabled_surfaces": [
+        "codex-global-instructions",
+        "terminal-output"
+      ],
+      "disabled_overlaps": [
+        "all unlisted surfaces"
+      ],
+      "components": [
+        {
+          "component_id": "terminal-rtk-codex-instructions-v1",
+          "surface": "codex-global-instructions/terminal-output-compaction",
+          "role": "individual_tool"
+        }
+      ],
+      "install": {
+        "policy": "Run the pinned RTK binary with `rtk init --global --codex` against lane-private CODEX_HOME; require generated AGENTS.md and RTK.md before execution."
+      },
+      "reset": {
+        "policy": "Delete lane-private CODEX_HOME and RTK state after evidence capture; verify global instruction files cannot survive into another lane."
+      },
+      "evaluation_protocol": {
+        "tool_use_policy": "natural",
+        "tool_state": "active-instruction-layer",
+        "integration_state": "official-codex-global-instructions"
+      },
+      "notes": "Versioned correction of the historical PATH-only RTK profile. Measures the product-authored Codex instruction policy, not transparent command rewriting."
+    },
+    {
+      "id": "terminal-rtk-claude-code-hook-v1",
+      "artifact_slug": "rtk-claude-code",
+      "profile_type": "individual_tool",
+      "objective_scope": "individual_tool_effectiveness",
+      "substrate": "claude-code",
+      "status": "screening-shortlist",
+      "enabled_surfaces": [
+        "claude-code-pre-tool-use-hook",
+        "terminal-output",
+        "claude-code-global-instructions"
+      ],
+      "disabled_overlaps": [
+        "all unlisted surfaces",
+        "Codex RTK instructions",
+        "MCP servers",
+        "other token-saving tools"
+      ],
+      "components": [
+        {
+          "component_id": "terminal-rtk-claude-code-hook-v1",
+          "surface": "claude-code-pre-tool-use-hook/terminal-output-compaction",
+          "role": "individual_tool"
+        }
+      ],
+      "install": {
+        "policy": "Run pinned RTK 0.42.4 `rtk init --global --auto-patch` with lane-private CLAUDE_CONFIG_DIR; require the generated Claude settings hook, RTK.md, and global CLAUDE.md before execution."
+      },
+      "reset": {
+        "policy": "Delete lane-private Claude config, RTK hook/settings, RTK.md, global CLAUDE.md, cache, and generated state after evidence capture; verify no RTK state survives into another lane."
+      },
+      "evaluation_protocol": {
+        "tool_use_policy": "natural",
+        "tool_state": "active-hook-and-instruction-layer",
+        "integration_state": "official-claude-code-global-hook"
+      },
+      "notes": "Claude Code-specific RTK treatment. Measures the official native Claude PreToolUse hook and product-authored global instruction layer, separate from terminal-rtk-codex-instructions-v1."
+    },
+    {
+      "id": "terminal-snip-codex-hook-v1",
+      "artifact_slug": "snip",
+      "profile_type": "individual_tool",
+      "objective_scope": "individual_tool_effectiveness",
+      "status": "screening-shortlist",
+      "enabled_surfaces": [
+        "codex-pre-tool-use-hook",
+        "terminal-output"
+      ],
+      "disabled_overlaps": [
+        "all unlisted surfaces"
+      ],
+      "components": [
+        {
+          "component_id": "terminal-snip-codex-hook-v1",
+          "surface": "codex-pre-tool-use-hook/terminal-output-compaction",
+          "role": "individual_tool"
+        }
+      ],
+      "install": {
+        "policy": "Run the pinned Snip binary with `snip init --agent codex` in a lane-private home alias, retain hooks.json, enable Codex hooks, and require hook audit before execution."
+      },
+      "reset": {
+        "policy": "Delete lane-private CODEX_HOME, Snip filters/state, and hook files after evidence capture; verify no hook survives into another lane."
+      },
+      "evaluation_protocol": {
+        "tool_use_policy": "natural",
+        "tool_state": "cold-cli",
+        "integration_state": "official-codex-pretooluse-hook"
+      },
+      "notes": "Versioned correction of the historical PATH-only Snip profile. Uses the pinned source default Codex hook rather than the stale README prompt-only description."
+    },
+    {
+      "id": "retrieval-graphify-codex-skill-v1",
+      "artifact_slug": "graphify",
+      "profile_type": "individual_tool",
+      "objective_scope": "individual_tool_effectiveness",
+      "status": "screening-shortlist",
+      "enabled_surfaces": [
+        "retrieval-context",
+        "codex-skill",
+        "codex-project-instructions",
+        "codex-pre-tool-use-hook"
+      ],
+      "disabled_overlaps": [
+        "MCP server",
+        "all unlisted surfaces"
+      ],
+      "components": [
+        {
+          "component_id": "retrieval-graphify-codex-skill-v1",
+          "surface": "retrieval-context+codex-skill+instructions+hook",
+          "role": "individual_tool"
+        }
+      ],
+      "install": {
+        "policy": "Install the pinned Graphify wheel in a lane-private venv, run the official Codex skill installer, build the full graph, then run `graphify codex install` in the fixture checkout."
+      },
+      "reset": {
+        "policy": "Delete lane-private venv/CODEX_HOME plus graphify-out, AGENTS.md, and .codex treatment state after evidence capture."
+      },
+      "evaluation_protocol": {
+        "tool_use_policy": "natural",
+        "tool_state": "warm-index",
+        "integration_state": "official-codex-skill-and-always-on-policy",
+        "instruction_policy": "product-authored-guidance"
+      },
+      "notes": "Versioned correction of the historical optional-MCP Graphify ablation. Measures the official Codex skill, project instructions, hook, and full graph without adding an evaluator-authored MCP arm."
+    },
+    {
+      "id": "integrated-leanctx-codex-hybrid-v1",
+      "artifact_slug": "leanctx",
+      "profile_type": "individual_tool",
+      "objective_scope": "individual_tool_effectiveness",
+      "status": "screening-shortlist",
+      "enabled_surfaces": [
+        "retrieval-context",
+        "mcp",
+        "codex-instructions",
+        "shell-output-compression"
+      ],
+      "disabled_overlaps": [
+        "all unlisted surfaces"
+      ],
+      "components": [
+        {
+          "component_id": "integrated-leanctx-codex-hybrid-v1",
+          "surface": "retrieval-context+mcp+instructions+shell-output-compression",
+          "role": "individual_tool"
+        }
+      ],
+      "install": {
+        "policy": "Run the pinned LeanCTX official Codex initializer against lane-private CODEX_HOME, verify with doctor, warm the repository index, and require an initialize plus tools/list handshake."
+      },
+      "reset": {
+        "policy": "Delete lane-private CODEX_HOME, LeanCTX data/index, instructions, and shell integration state after evidence capture."
+      },
+      "evaluation_protocol": {
+        "tool_use_policy": "natural",
+        "tool_state": "warm-index",
+        "integration_state": "official-codex-hybrid",
+        "instruction_policy": "product-authored-guidance"
+      },
+      "notes": "Versioned correction of the historical MCP-only LeanCTX profile. Measures the official hybrid product surface rather than a hand-wired partial ablation."
+    },
+    {
+      "id": "retrieval-cartog-mcp-v1",
+      "profile_type": "individual_tool",
+      "objective_scope": "individual_tool_effectiveness",
+      "status": "historical-profile",
+      "enabled_surfaces": [
+        "retrieval-context",
+        "mcp"
+      ],
+      "disabled_overlaps": [
+        "all unlisted surfaces"
+      ],
+      "components": [
+        {
+          "component_id": "retrieval-cartog-mcp-v1",
+          "surface": "retrieval-context+mcp",
+          "role": "individual_tool"
+        }
+      ],
+      "install": {
+        "policy": "Cartog official serve/index contract with retained MCP handshake proof."
+      },
+      "reset": {
+        "policy": "Delete lane-private CODEX_HOME, product state, generated repository treatment files, and background processes after evidence capture."
+      },
+      "evaluation_protocol": {
+        "tool_use_policy": "natural",
+        "tool_state": "warm-index",
+        "integration_state": "official-direct-serve-mcp",
+        "assignment_proof": "provider-free initialize plus tools/list handshake required"
+      },
+      "notes": "Invalid historical Cartog configuration: direct MCP registration omitted the product-authored Codex AGENTS routing snippet, official `cartog ide --client codex --yes` install path, model-runtime CLI, and `serve --watch`. All six active result sessions were deleted under owner-authorized receipt.",
+      "blocked_reason": "Omitted required product-authored Codex guidance and official live-watch installer surfaces; not eligible for Cartog product-effect claims.",
+      "historical_results_deleted": true,
+      "deletion_receipt": "sources/evaluations/audits/invalid-cartog-result-deletions-20260720.json",
+      "historical_result_disposition": "deleted-invalid-treatment",
+      "active_corpus_result": "deleted-under-owner-authorized-receipt",
+      "superseded_by": "retrieval-cartog-codex-product-v2"
+    },
+    {
+      "id": "retrieval-cartog-codex-product-v2",
+      "artifact_slug": "cartog",
+      "profile_type": "individual_tool",
+      "objective_scope": "individual_tool_effectiveness",
+      "status": "screening-shortlist",
+      "enabled_surfaces": [
+        "retrieval-context",
+        "mcp",
+        "codex-project-instructions",
+        "model-runtime-cli",
+        "live-index-watch"
+      ],
+      "disabled_overlaps": [
+        "all unlisted surfaces"
+      ],
+      "components": [
+        {
+          "component_id": "retrieval-cartog-codex-product-v2",
+          "surface": "retrieval-context+mcp+codex-agents+model-runtime-cli+live-watch",
+          "role": "individual_tool"
+        }
+      ],
+      "install": {
+        "policy": "Run the pinned Cartog official Codex installer (`cartog ide --client codex --yes`), preserve the product-authored AGENTS routing snippet verbatim, expose the pinned binary on the model-runtime PATH, initialize the project, build the structural index, and serve with live watch."
+      },
+      "reset": {
+        "policy": "Delete lane-private CODEX_HOME, PATH shim, project AGENTS managed block, .cartog.toml, .cartog index state, and watcher processes after evidence capture."
+      },
+      "evaluation_protocol": {
+        "tool_use_policy": "natural-after-product-authored-guidance",
+        "tool_state": "warm-structural-index",
+        "integration_state": "official-codex-ide+product-authored-agents-guidance+model-runtime-cli+live-watch",
+        "assignment_proof": "official installer receipt, guidance hash, model-runtime executable probe, initialize plus tools/list handshake, and index/watcher preparation required",
+        "rag_scope": "structural graph plus FTS5; optional local vector/reranker tier is not prepared"
+      },
+      "notes": "Versioned guide-faithful successor to deleted retrieval-cartog-mcp-v1. Product-authored routing is treatment configuration, not evaluator-authored steering."
+    },
+    {
+      "id": "codescope-codex-product-v1",
+      "artifact_slug": "codescope",
+      "profile_type": "individual_tool",
+      "objective_scope": "individual_tool_effectiveness",
+      "status": "screening-shortlist",
+      "enabled_surfaces": [
+        "broad-context-owner",
+        "mcp",
+        "official-initialize-instructions"
+      ],
+      "disabled_overlaps": [
+        "all unlisted surfaces"
+      ],
+      "components": [
+        {
+          "component_id": "codescope-codex-product-v1",
+          "surface": "broad-context-owner+mcp+official-initialize-instructions",
+          "role": "individual_tool"
+        }
+      ],
+      "install": {
+        "policy": "CodeScope official start and Codex init contract with product instructions and retained MCP handshake proof."
+      },
+      "reset": {
+        "policy": "Delete lane-private CODEX_HOME, product state, generated repository treatment files, and background processes after evidence capture."
+      },
+      "evaluation_protocol": {
+        "tool_use_policy": "natural",
+        "tool_state": "warm-index",
+        "integration_state": "official-codex-init",
+        "assignment_proof": "provider-free initialize plus tools/list handshake required"
+      },
+      "notes": "Versioned replacement for deleted historical results whose treatment assignment was not operationally proven."
+    },
+    {
+      "id": "swarmvault-codex-product-v1",
+      "artifact_slug": "swarmvault",
+      "profile_type": "individual_tool",
+      "objective_scope": "individual_tool_effectiveness",
+      "status": "screening-shortlist",
+      "enabled_surfaces": [
+        "broad-context-owner",
+        "mcp",
+        "codex-rules",
+        "codex-hook"
+      ],
+      "disabled_overlaps": [
+        "all unlisted surfaces"
+      ],
+      "components": [
+        {
+          "component_id": "swarmvault-codex-product-v1",
+          "surface": "broad-context-owner+mcp+codex-rules+codex-hook",
+          "role": "individual_tool"
+        }
+      ],
+      "install": {
+        "policy": "SwarmVault compiled vault plus official Codex rules/hook and retained MCP handshake proof."
+      },
+      "reset": {
+        "policy": "Delete lane-private CODEX_HOME, product state, generated repository treatment files, and background processes after evidence capture."
+      },
+      "evaluation_protocol": {
+        "tool_use_policy": "natural",
+        "tool_state": "warm-index",
+        "integration_state": "official-codex-rules-hook-mcp",
+        "assignment_proof": "provider-free initialize plus tools/list handshake required"
+      },
+      "notes": "Versioned replacement for deleted historical results whose treatment assignment was not operationally proven."
+    },
+    {
+      "id": "retrieval-serena-codex-mcp-v1",
+      "artifact_slug": "serena",
+      "profile_type": "individual_tool",
+      "objective_scope": "individual_tool_effectiveness",
+      "status": "screening-shortlist",
+      "enabled_surfaces": [
+        "retrieval-context",
+        "mcp"
+      ],
+      "disabled_overlaps": [
+        "all unlisted surfaces"
+      ],
+      "components": [
+        {
+          "component_id": "retrieval-serena-codex-mcp-v1",
+          "surface": "retrieval-context+mcp",
+          "role": "individual_tool"
+        }
+      ],
+      "install": {
+        "policy": "Serena official `setup codex` and Codex context contract with retained MCP handshake proof."
+      },
+      "reset": {
+        "policy": "Delete lane-private CODEX_HOME, product state, generated repository treatment files, and background processes after evidence capture."
+      },
+      "evaluation_protocol": {
+        "tool_use_policy": "natural",
+        "tool_state": "cold-auto-index",
+        "integration_state": "official-codex-mcp",
+        "assignment_proof": "provider-free initialize plus tools/list handshake required"
+      },
+      "notes": "Versioned replacement for deleted historical results whose treatment assignment was not operationally proven."
+    },
+    {
+      "id": "retrieval-sigmap-codex-live-v1",
+      "artifact_slug": "sigmap",
+      "profile_type": "individual_tool",
+      "objective_scope": "individual_tool_effectiveness",
+      "status": "screening-shortlist",
+      "enabled_surfaces": [
+        "retrieval-context",
+        "mcp",
+        "codex-agents",
+        "live-watch"
+      ],
+      "disabled_overlaps": [
+        "all unlisted surfaces"
+      ],
+      "components": [
+        {
+          "component_id": "retrieval-sigmap-codex-live-v1",
+          "surface": "retrieval-context+mcp+codex-agents+live-watch",
+          "role": "individual_tool"
+        }
+      ],
+      "install": {
+        "policy": "SigMap compatibility-safe Codex TOML registration, AGENTS guidance, live watcher, and retained MCP handshake proof."
+      },
+      "reset": {
+        "policy": "Delete lane-private CODEX_HOME, product state, generated repository treatment files, and background processes after evidence capture."
+      },
+      "evaluation_protocol": {
+        "tool_use_policy": "natural",
+        "tool_state": "warm-index",
+        "integration_state": "compatibility-safe-codex-live-mcp",
+        "assignment_proof": "provider-free initialize plus tools/list handshake required"
+      },
+      "notes": "Versioned replacement for deleted historical results whose treatment assignment was not operationally proven."
+    },
+    {
+      "id": "integrated-token-savior-mcp-v1",
+      "artifact_slug": "token-savior-mcp",
+      "profile_type": "individual_tool",
+      "objective_scope": "individual_tool_effectiveness",
+      "status": "screening-ablation",
+      "enabled_surfaces": [
+        "retrieval-context",
+        "memory",
+        "compact-ops",
+        "mcp"
+      ],
+      "disabled_overlaps": [
+        "all unlisted surfaces"
+      ],
+      "components": [
+        {
+          "component_id": "integrated-token-savior-mcp-v1",
+          "surface": "retrieval-context+memory+compact-ops+mcp",
+          "role": "individual_tool"
+        }
+      ],
+      "install": {
+        "policy": "Token Savior bounded official Codex MCP arm with client identity and retained MCP handshake proof."
+      },
+      "reset": {
+        "policy": "Delete lane-private CODEX_HOME, product state, generated repository treatment files, and background processes after evidence capture."
+      },
+      "evaluation_protocol": {
+        "tool_use_policy": "natural",
+        "tool_state": "cold-auto-index",
+        "integration_state": "official-bounded-codex-mcp",
+        "assignment_proof": "provider-free initialize plus tools/list handshake required"
+      },
+      "notes": "Retained as an explicit bounded MCP-only natural-use ablation. The successful handshake exposed 15 optimized tools, but Codex issued zero Token Savior MCP calls across the retained workflow screen; product guidance and hooks were absent by design.",
+      "superseded_by": "integrated-token-savior-codex-product-v2"
+    },
+    {
+      "id": "integrated-token-savior-codex-product-v2",
+      "artifact_slug": "token-savior",
+      "profile_type": "individual_tool",
+      "objective_scope": "individual_tool_effectiveness",
+      "status": "screening-shortlist",
+      "enabled_surfaces": [
+        "retrieval-context",
+        "memory",
+        "compact-ops",
+        "mcp",
+        "product-authored-codex-guidance",
+        "codex-pre-tool-use-hook",
+        "codex-post-tool-use-hook"
+      ],
+      "disabled_overlaps": [
+        "all unlisted surfaces"
+      ],
+      "components": [
+        {
+          "component_id": "token-savior-codex-product-v2",
+          "surface": "retrieval-context+memory+compact-ops+mcp+product-guidance+pre-post-tool-hooks",
+          "role": "individual_tool"
+        }
+      ],
+      "install": {
+        "policy": "Install the pinned optimized Token Savior MCP surface, materialize its product-authored CLAUDE.md guidance verbatim into repository AGENTS.md for Codex discovery, and map the unchanged product Bash rewriter/capture scripts onto the current Codex PreToolUse/PostToolUse hooks.json schema."
+      },
+      "reset": {
+        "policy": "Delete lane-private CODEX_HOME, Token Savior state, generated AGENTS.md treatment block, hook configuration, audit logs, and background processes after evidence capture."
+      },
+      "evaluation_protocol": {
+        "tool_use_policy": "product-guided-natural",
+        "tool_state": "cold-auto-index+active-guidance-and-hooks",
+        "integration_state": "product-guided-host-adapted-codex-mcp-hooks",
+        "assignment_proof": "provider-free MCP initialize/tools-list, guidance receipt, current hooks.json, and direct product-hook smoke checks required"
+      },
+      "selection_rationale": "Experiment-owner direction on 2026-07-19 after the bounded MCP-only arm received zero natural Codex uptake and the product was found to be optimized primarily for Claude Code.",
+      "compatibility_deviation": "The pinned product writes obsolete Codex .codex/settings.json tool_complete configuration and declares an unbounded mcp>=1.25 optional dependency even though MCP SDK 2.x removed the Server.list_tools decorator it calls. The v2 adapter maps the unchanged product hook scripts to Codex 0.144 hooks.json PreToolUse/PostToolUse, constrains the runtime to mcp>=1.25,<2, and records both host adaptations explicitly; guidance content remains verbatim product-authored text.",
+      "notes": "Canonical product-guided Codex successor to the bounded MCP-only ablation. Evaluator prompts remain neutral; any routing preference comes from the pinned product-authored guidance."
+    },
+    {
+      "id": "artifact-ponytail-codex-plugin-v1",
+      "artifact_slug": "ponytail",
+      "profile_type": "individual_tool",
+      "objective_scope": "individual_tool_effectiveness",
+      "status": "screening-shortlist",
+      "enabled_surfaces": [
+        "codex-plugin",
+        "product-authored-skills-and-commands",
+        "session-start-hook",
+        "user-prompt-submit-hook",
+        "subagent-start-hook"
+      ],
+      "disabled_overlaps": [
+        "all unlisted surfaces"
+      ],
+      "components": [
+        {
+          "component_id": "artifact-ponytail-codex-plugin-v1",
+          "surface": "codex-plugin+skills+commands+trusted-lifecycle-hooks",
+          "role": "individual_tool"
+        }
+      ],
+      "install": {
+        "policy": "Create a local Codex marketplace from the exact pinned Ponytail commit, install ponytail@ponytail through the official `codex plugin` commands in a lane-private CODEX_HOME, discover every plugin hook through Codex app-server, persist trust for the reviewed current hashes, and verify the enabled plugin plus trusted hooks."
+      },
+      "reset": {
+        "policy": "Delete the lane-private CODEX_HOME, local marketplace mirror, hook-trust receipt, plugin cache, and all generated evaluation artifacts after evidence capture."
+      },
+      "evaluation_protocol": {
+        "tool_use_policy": "natural",
+        "tool_state": "active-plugin-hooks-and-skills",
+        "integration_state": "official-codex-plugin+pinned-local-marketplace+trusted-product-hooks",
+        "instruction_policy": "product-authored-plugin-skills-and-hooks",
+        "source_commit": "40e50d9e03242aa5dd53ac771950f9127362b25f",
+        "assignment_proof": "provider-free plugin list plus source-pin receipt plus trusted hooks/list receipt required"
+      },
+      "notes": "Guide-faithful replacement for the deleted prompt-only artifact-ponytail profile."
+    },
+    {
+      "id": "behavior-caveman-codex-skill-v1",
+      "artifact_slug": "caveman",
+      "profile_type": "individual_tool",
+      "objective_scope": "individual_tool_effectiveness",
+      "status": "screening-shortlist",
+      "enabled_surfaces": [
+        "codex-project-skills",
+        "product-authored-caveman-skill-suite",
+        "documented-per-session-activation"
+      ],
+      "disabled_overlaps": [
+        "all unlisted surfaces"
+      ],
+      "components": [
+        {
+          "component_id": "behavior-caveman-codex-skill-v1",
+          "surface": "codex-native-skills+documented-session-activation",
+          "role": "individual_tool"
+        }
+      ],
+      "install": {
+        "policy": "Run the author-recommended `npx skills add` path against the exact pinned Caveman checkout with the Codex agent target, verify all seven product skills in the target repository, and place the documented `/caveman` activation in the first prompt of each persistent workflow session."
+      },
+      "reset": {
+        "policy": "Delete the isolated checkout, project-local .agents skill installation, lane-private CODEX_HOME, npm cache, and generated evaluation artifacts after evidence capture."
+      },
+      "evaluation_protocol": {
+        "tool_use_policy": "natural-after-product-required-session-activation",
+        "tool_state": "active-native-skill",
+        "integration_state": "official-npx-codex-skill-install+documented-session-activation",
+        "instruction_policy": "product-authored-native-skill",
+        "source_commit": "0d95a81d35a9f2d123a5e9430d1cfc43d55f1bb0",
+        "session_activation": "/caveman",
+        "assignment_proof": "provider-free seven-skill materialization plus deterministic first-prompt activation required"
+      },
+      "notes": "Guide-faithful replacement for the deleted prompt-emulated behavior-caveman profile."
+    },
+    {
+      "id": "retrieval-codegraph-codex-mcp-v1",
+      "artifact_slug": "codegraph",
+      "profile_type": "individual_tool",
+      "objective_scope": "individual_tool_effectiveness",
+      "status": "screening-shortlist",
+      "enabled_surfaces": [
+        "retrieval-context",
+        "mcp",
+        "codex-global-instructions",
+        "live-index-watch"
+      ],
+      "disabled_overlaps": [
+        "all unlisted surfaces"
+      ],
+      "components": [
+        {
+          "component_id": "retrieval-codegraph-codex-mcp-v1",
+          "surface": "retrieval-context+mcp+instructions+live-index+model-runtime-cli",
+          "role": "individual_tool"
+        }
+      ],
+      "install": {
+        "policy": "Run the pinned official CodeGraph Codex installer in the lane-private home, expose the pinned `codegraph` binary on the actual model-runtime PATH, initialize the full project graph, retain live watch, require a container `command -v` plus version probe, and require initialize plus tools/list."
+      },
+      "reset": {
+        "policy": "Delete lane-private CODEX_HOME, PATH shim, and .codegraph state after evidence capture; verify no MCP config, instructions, daemon, alias, or index survives."
+      },
+      "evaluation_protocol": {
+        "tool_use_policy": "natural",
+        "tool_state": "warm-index",
+        "integration_state": "official-codex-mcp-live-watch-model-runtime-path",
+        "instruction_policy": "product-authored-guidance"
+      },
+      "notes": "Canonical corrected CodeGraph integration after owner-authorized deletion of the invalid prior result: materializes the bare command generated by the official Codex installer on the actual model container PATH and gates provider use on that runtime probe."
+    },
+    {
+      "id": "retrieval-jcodemunch-codex-mcp-v2",
+      "artifact_slug": "jcodemunch",
+      "profile_type": "individual_tool",
+      "objective_scope": "individual_tool_effectiveness",
+      "status": "screening-shortlist",
+      "enabled_surfaces": [
+        "retrieval-context",
+        "mcp",
+        "codex-global-instructions",
+        "warm-index"
+      ],
+      "disabled_overlaps": [
+        "all unlisted surfaces"
+      ],
+      "components": [
+        {
+          "component_id": "retrieval-jcodemunch-codex-mcp-v2",
+          "surface": "retrieval-context+mcp+product-authored-codex-guidance+warm-index",
+          "role": "individual_tool"
+        }
+      ],
+      "install": {
+        "policy": "Install the pinned 1.108.114 wheel into a lane-private venv, point Codex directly at the resolved jcodemunch-mcp binary with no launcher or arguments, install verbatim product-authored guidance excerpts into the lane-private Codex AGENTS.md, build a product-native warm index, and require initialize plus tools/list before provider use."
+      },
+      "reset": {
+        "policy": "Delete the lane-private venv, CODE_INDEX_PATH, CODEX_HOME, MCP config, install receipt, and index after evidence capture; verify no guidance or generated state survives into another lane."
+      },
+      "evaluation_protocol": {
+        "tool_use_policy": "natural",
+        "tool_state": "warm-index",
+        "integration_state": "pinned-direct-binary-mcp-with-product-authored-codex-guidance",
+        "instruction_policy": "verbatim-product-authored-guidance",
+        "assignment_proof": "provider-free direct-binary probe, guidance provenance receipt, warm-index receipt, and initialize-plus-tools-list required"
+      },
+      "source_snapshot": {
+        "repository": "jgravelle/jcodemunch-mcp",
+        "commit": "fbc14e40c7057ebc6d718fb48083d30522afe15f",
+        "version": "1.108.114",
+        "wheel": "/opt/data/tool-candidates/jcodemunch-mcp/dist/jcodemunch_mcp-1.108.114-py3-none-any.whl",
+        "wheel_sha256": "9ae3a44c2be5709d33fa2b56c9e569906ed63906a907f89b4762a370d397ed54",
+        "readme_sha256": "09ba2669b45355464761b130a9696f7851af2e42df7fb9bec1283357788f3ad2",
+        "universal_guide_sha256": "2026d09f4af85e972a5c4a9874d91bd8a8675ab7fbb44a283911fd06afd0abb2"
+      },
+      "notes": "Guide-faithful replacement for the deleted direct-v1 treatment. The evaluator adds no prompt steering: the lane installs verbatim jcodemunch policy and universal-guide excerpts into Codex AGENTS.md and records their source hashes."
+    },
+    {
+      "id": "runtime-opencode-codex-product-v1",
+      "artifact_slug": "opencode",
+      "profile_type": "replacement_runtime",
+      "objective_scope": "individual_tool_effectiveness",
+      "status": "screening-ablation",
+      "substrate": "opencode-cli",
+      "enabled_surfaces": [
+        "opencode-native-shell-edit",
+        "opencode-native-file-read-search"
+      ],
+      "disabled_overlaps": [
+        "all MCP servers",
+        "all token-saving surfaces",
+        "project and global OpenCode instructions",
+        "external plugins",
+        "external skills",
+        "subagents",
+        "web fetch and web search",
+        "warm indexes"
+      ],
+      "components": [
+        {
+          "component_id": "runtime-opencode-codex-product-v1",
+          "surface": "replacement-agent-runtime",
+          "role": "replacement_runtime"
+        }
+      ],
+      "native_agent_tools_allowed": [
+        "shell_command_execution",
+        "file_editing",
+        "plain_file_read_search",
+        "git",
+        "verifier_commands"
+      ],
+      "forbidden_surfaces": [
+        "external retrieval",
+        "MCP",
+        "external skills/plugins",
+        "subagents",
+        "all unlisted retrieval/compression/memory/token-saving tools"
+      ],
+      "install": {
+        "policy": "Run official opencode-ai 1.18.9 from the pinned npm binary behind the workflow controller's runtime adapter; translate only lane-private OpenAI OAuth, disable project config/external plugins/external skills/subagents/web tools, and preserve provider-only model-shell network isolation."
+      },
+      "reset": {
+        "policy": "Delete the lane-private OpenCode XDG data/config/cache/state, translated auth, session database, adapter accounting state, and generated evaluation artifacts after evidence capture."
+      },
+      "evaluation_protocol": {
+        "tool_use_policy": "none",
+        "tool_state": "native-runtime",
+        "integration_state": "official-opencode-cli-via-controller-runtime-adapter",
+        "instruction_policy": "no-project-or-global-instructions",
+        "assignment_proof": "provider-free pinned-binary/version/model/auth-shape/config/isolation probe required"
+      },
+      "source_snapshot": {
+        "repository": "anomalyco/opencode",
+        "tag": "v1.18.9",
+        "commit": "4da7bb44c84e013fa53e9c5d02ac753d1435c81a",
+        "npm_package": "opencode-ai",
+        "version": "1.18.9",
+        "binary": "/opt/data/tool-candidates/opencode-runtime/node_modules/opencode-ai/bin/opencode.exe",
+        "binary_sha256": "7c4d91c84d2bfdeabb59257e3490c5e5acb08f2aacb3e42f3ddc296a1c3f1aca",
+        "runtime_adapter": "/opt/data/tool-candidates/opencode-adapter/opencode_workflow_adapter.py",
+        "runtime_adapter_sha256": "a2f6116cae013d39e8110c8588acde2a8ae9cd4f572fd9ce961d1542942617a4"
+      },
+      "notes": "Replacement-runtime treatment comparing official OpenCode with the canonical bare Codex baseline on the same provider, model, reasoning effort, fixtures, prompts, and controller verification."
+    },
+    {
+      "id": "terminal-tokenjuice-opencode-plugin-v1",
+      "artifact_slug": "tokenjuice-opencode",
+      "profile_type": "individual_tool",
+      "objective_scope": "individual_tool_effectiveness",
+      "status": "excluded",
+      "substrate": "opencode-cli",
+      "enabled_surfaces": [
+        "opencode-tool-execute-after",
+        "terminal-output-compaction"
+      ],
+      "disabled_overlaps": [
+        "all unlisted surfaces"
+      ],
+      "components": [
+        {
+          "component_id": "terminal-tokenjuice-opencode-plugin-v1",
+          "surface": "opencode-tool-execute-after/terminal-output-compaction",
+          "role": "individual_tool"
+        }
+      ],
+      "native_agent_tools_allowed": [
+        "opencode-native-shell-edit",
+        "opencode-native-file-read-search",
+        "git",
+        "verifier-commands"
+      ],
+      "forbidden_surfaces": [
+        "all external MCP, retrieval, skills, subagents, and web tools"
+      ],
+      "install": {
+        "policy": "Run the pinned TokenJuice binary `tokenjuice install opencode` against the lane-private XDG_CONFIG_HOME and require `tokenjuice doctor opencode` plus OpenCode plugin debug proof before provider execution."
+      },
+      "reset": {
+        "policy": "Delete lane-private OpenCode XDG directories, TokenJuice plugin state, auth translation, and generated artifacts after evidence capture."
+      },
+      "evaluation_protocol": {
+        "tool_use_policy": "natural",
+        "tool_state": "active-native-plugin",
+        "integration_state": "official-opencode-plugin",
+        "assignment_proof": "provider-free installer, doctor, required-file, and OpenCode debug-info proof required"
+      },
+      "source_snapshot": {
+        "repository": "benjitaylor/tokenjuice",
+        "commit": "49bdcf1755833ff1e02e44e6e7fe91c0fb44c16e",
+        "version": "0.8.1",
+        "runtime_adapter": "/opt/data/tool-candidates/opencode-adapter/opencode_workflow_adapter.py",
+        "runtime_adapter_sha256": "a2f6116cae013d39e8110c8588acde2a8ae9cd4f572fd9ce961d1542942617a4"
+      },
+      "notes": "Atomic OpenCode-native TokenJuice treatment compared with the accepted bare OpenCode runtime on identical lifecycle workflows.",
+      "blocked_reason": "unproven-artifact-identity-and-runtime-effect",
+      "historical_results_deleted": true,
+      "deletion_receipt": "sources/evaluations/audits/invalid-opencode-treatment-result-deletions-20260729.json",
+      "historical_result_disposition": "deleted-invalid-or-unproven-treatment",
+      "active_corpus_result": "deleted-under-owner-authorized-receipt",
+      "superseded_by": "terminal-tokenjuice-opencode-plugin-v2"
+    },
+    {
+      "id": "retrieval-serena-opencode-mcp-v1",
+      "artifact_slug": "serena-opencode",
+      "profile_type": "individual_tool",
+      "objective_scope": "individual_tool_effectiveness",
+      "status": "screening-ablation",
+      "substrate": "opencode-cli",
+      "enabled_surfaces": [
+        "retrieval-context",
+        "opencode-mcp"
+      ],
+      "disabled_overlaps": [
+        "all unlisted surfaces"
+      ],
+      "components": [
+        {
+          "component_id": "retrieval-serena-opencode-mcp-v1",
+          "surface": "symbolic-retrieval+opencode-mcp",
+          "role": "individual_tool"
+        }
+      ],
+      "native_agent_tools_allowed": [
+        "opencode-native-shell-edit",
+        "opencode-native-file-read-search",
+        "git",
+        "verifier-commands"
+      ],
+      "forbidden_surfaces": [
+        "all external plugins, non-Serena MCP, subagents, and web tools"
+      ],
+      "install": {
+        "policy": "Bind the pinned Serena source as one OpenCode local MCP server with project-from-cwd and generic IDE context; require initialize plus tools/list handshake before provider execution."
+      },
+      "reset": {
+        "policy": "Delete lane-private OpenCode XDG and Serena state, indexes, auth translation, and generated artifacts after evidence capture."
+      },
+      "evaluation_protocol": {
+        "tool_use_policy": "natural",
+        "tool_state": "cold-auto-index",
+        "integration_state": "official-local-opencode-mcp",
+        "assignment_proof": "provider-free OpenCode config proof plus initialize and tools/list handshake required"
+      },
+      "source_snapshot": {
+        "repository": "oraios/serena",
+        "commit": "103a17072e9b915c9c9980f946902be856695978",
+        "runtime_adapter": "/opt/data/tool-candidates/opencode-adapter/opencode_workflow_adapter.py",
+        "runtime_adapter_sha256": "a2f6116cae013d39e8110c8588acde2a8ae9cd4f572fd9ce961d1542942617a4"
+      },
+      "notes": "Atomic symbolic-retrieval treatment compared with bare OpenCode; zero natural uptake remains valid."
+    },
+    {
+      "id": "terminal-snip-opencode-plugin-v1",
+      "artifact_slug": "snip-opencode",
+      "profile_type": "individual_tool",
+      "objective_scope": "individual_tool_effectiveness",
+      "status": "excluded",
+      "substrate": "opencode-cli",
+      "enabled_surfaces": [
+        "opencode-tool-execute-before",
+        "shell-command-rewriting"
+      ],
+      "disabled_overlaps": [
+        "all unlisted surfaces"
+      ],
+      "components": [
+        {
+          "component_id": "terminal-snip-opencode-plugin-v1",
+          "surface": "opencode-tool-execute-before/shell-command-rewriting",
+          "role": "individual_tool"
+        }
+      ],
+      "native_agent_tools_allowed": [
+        "opencode-native-shell-edit",
+        "opencode-native-file-read-search",
+        "git",
+        "verifier-commands"
+      ],
+      "forbidden_surfaces": [
+        "all external MCP, retrieval, skills, subagents, and web tools"
+      ],
+      "install": {
+        "policy": "Load the official community opencode-snip v1.6.1 plugin directly from its pinned source checkout while exposing the pinned Snip CLI; require OpenCode plugin debug proof before provider execution."
+      },
+      "reset": {
+        "policy": "Delete lane-private OpenCode XDG plugin/session state, auth translation, Snip state, and generated artifacts after evidence capture."
+      },
+      "evaluation_protocol": {
+        "tool_use_policy": "natural",
+        "tool_state": "active-native-plugin",
+        "integration_state": "official-community-opencode-plugin",
+        "assignment_proof": "provider-free pinned-source, Snip binary, and OpenCode debug-info proof required"
+      },
+      "source_snapshot": {
+        "repository": "VincentHardouin/opencode-snip",
+        "tag": "v1.6.1",
+        "commit": "da1e531959a831f5a0ef6c30e1500d27493f8bc6",
+        "runtime_adapter": "/opt/data/tool-candidates/opencode-adapter/opencode_workflow_adapter.py",
+        "runtime_adapter_sha256": "a2f6116cae013d39e8110c8588acde2a8ae9cd4f572fd9ce961d1542942617a4"
+      },
+      "notes": "Atomic OpenCode-native pre-tool command-rewriting treatment compared with bare OpenCode.",
+      "blocked_reason": "unproven-cli-artifact-identity",
+      "historical_results_deleted": true,
+      "deletion_receipt": "sources/evaluations/audits/invalid-opencode-treatment-result-deletions-20260729.json",
+      "historical_result_disposition": "deleted-invalid-or-unproven-treatment",
+      "active_corpus_result": "deleted-under-owner-authorized-receipt",
+      "superseded_by": "terminal-snip-opencode-plugin-v2"
+    },
+    {
+      "id": "retrieval-cartog-opencode-product-v1",
+      "artifact_slug": "cartog-opencode",
+      "profile_type": "individual_tool",
+      "objective_scope": "individual_tool_effectiveness",
+      "status": "excluded",
+      "substrate": "opencode-cli",
+      "enabled_surfaces": [
+        "structural-retrieval",
+        "opencode-mcp",
+        "live-watch"
+      ],
+      "disabled_overlaps": [
+        "all unlisted surfaces"
+      ],
+      "components": [
+        {
+          "component_id": "retrieval-cartog-opencode-product-v1",
+          "surface": "structural-retrieval+opencode-mcp+live-watch",
+          "role": "individual_tool"
+        }
+      ],
+      "native_agent_tools_allowed": [
+        "opencode-native-shell-edit",
+        "opencode-native-file-read-search",
+        "git",
+        "verifier-commands"
+      ],
+      "forbidden_surfaces": [
+        "all external plugins, non-Cartog MCP, subagents, and web tools"
+      ],
+      "install": {
+        "policy": "Run the pinned Cartog product installer `cartog ide --client opencode --yes`, warm its structural index with official init/index commands, and require initialize plus tools/list handshake before provider execution."
+      },
+      "reset": {
+        "policy": "Delete lane-private OpenCode XDG state, Cartog index/config/watch state, auth translation, and generated artifacts after evidence capture."
+      },
+      "evaluation_protocol": {
+        "tool_use_policy": "natural",
+        "tool_state": "warm-structural-index+live-watch",
+        "integration_state": "official-opencode-product-mcp",
+        "assignment_proof": "provider-free installer receipt/config proof, warmup, and initialize plus tools/list handshake required"
+      },
+      "source_snapshot": {
+        "repository": "adamdodek/cartog",
+        "commit": "890d15b66b523841290a63e431a31b6f6438fc4b",
+        "version": "0.30.1",
+        "runtime_adapter": "/opt/data/tool-candidates/opencode-adapter/opencode_workflow_adapter.py",
+        "runtime_adapter_sha256": "a2f6116cae013d39e8110c8588acde2a8ae9cd4f572fd9ce961d1542942617a4"
+      },
+      "notes": "Atomic Cartog OpenCode product treatment compared with bare OpenCode; optional vector reranker remains disabled.",
+      "blocked_reason": "invalid-missing-warm-index-and-product-guidance",
+      "historical_results_deleted": true,
+      "deletion_receipt": "sources/evaluations/audits/invalid-opencode-treatment-result-deletions-20260729.json",
+      "historical_result_disposition": "deleted-invalid-or-unproven-treatment",
+      "active_corpus_result": "deleted-under-owner-authorized-receipt",
+      "superseded_by": "retrieval-cartog-opencode-product-v2"
+    },
+    {
+      "id": "integrated-headroom-opencode-product-v1",
+      "artifact_slug": "headroom-opencode",
+      "profile_type": "individual_tool",
+      "objective_scope": "individual_tool_effectiveness",
+      "status": "screening-ablation",
+      "substrate": "opencode-cli",
+      "enabled_surfaces": [
+        "headroom-proxy-context-compression",
+        "headroom-retrieve-mcp",
+        "rtk-context-tool",
+        "serena-mcp"
+      ],
+      "disabled_overlaps": [
+        "all unlisted surfaces"
+      ],
+      "components": [
+        {
+          "component_id": "integrated-headroom-opencode-product-v1",
+          "surface": "official-integrated-opencode-product",
+          "role": "individual_tool"
+        }
+      ],
+      "native_agent_tools_allowed": [
+        "opencode-native-shell-edit",
+        "opencode-native-file-read-search",
+        "git",
+        "verifier-commands"
+      ],
+      "forbidden_surfaces": [
+        "all non-Headroom-managed external plugins, MCP, skills, subagents, and web tools"
+      ],
+      "install": {
+        "policy": "Launch every OpenCode provider invocation through pinned Headroom 0.28.0 `headroom wrap opencode` with its documented default RTK, retrieve MCP, and Serena surfaces in lane-private state."
+      },
+      "reset": {
+        "policy": "Delete lane-private OpenCode XDG, Headroom proxy/cache, managed RTK/Serena/MCP configuration, auth translation, and generated artifacts after evidence capture."
+      },
+      "evaluation_protocol": {
+        "tool_use_policy": "natural",
+        "tool_state": "active-official-integrated-wrapper",
+        "integration_state": "official-headroom-opencode-product",
+        "assignment_proof": "provider-free pinned-wheel version and wrapper command proof required; provider traffic must retain OpenCode step-finish usage"
+      },
+      "source_snapshot": {
+        "repository": "headroom-ai/headroom",
+        "commit": "715ed7d200cb62c43e6ee3976ce8d3aa639ccf9f",
+        "version": "0.28.0",
+        "runtime_adapter": "/opt/data/tool-candidates/opencode-adapter/opencode_workflow_adapter.py",
+        "runtime_adapter_sha256": "a2f6116cae013d39e8110c8588acde2a8ae9cd4f572fd9ce961d1542942617a4"
+      },
+      "notes": "Integrated product treatment, not a single-mechanism proxy ablation. Attribution is to the documented Headroom OpenCode bundle as a whole."
+    },
+    {
+      "id": "integrated-headroom-opencode-product-v2",
+      "artifact_slug": "headroom-opencode-v2",
+      "profile_type": "individual_tool",
+      "objective_scope": "individual_tool_effectiveness",
+      "status": "excluded",
+      "substrate": "opencode-cli",
+      "enabled_surfaces": [
+        "headroom-proxy-context-compression",
+        "headroom-retrieve-mcp",
+        "rtk-context-tool",
+        "serena-mcp"
+      ],
+      "disabled_overlaps": [
+        "all unlisted surfaces"
+      ],
+      "components": [
+        {
+          "component_id": "integrated-headroom-opencode-product-v1",
+          "surface": "official-integrated-opencode-product",
+          "role": "individual_tool",
+          "version": "0.28.0-adapter-v2"
+        }
+      ],
+      "native_agent_tools_allowed": [
+        "opencode-native-shell-edit",
+        "opencode-native-file-read-search",
+        "git",
+        "verifier-commands"
+      ],
+      "forbidden_surfaces": [
+        "all non-Headroom-managed external plugins, MCP, skills, subagents, and web tools"
+      ],
+      "install": {
+        "policy": "Launch every OpenCode provider invocation through pinned Headroom 0.28.0 `headroom wrap opencode` with its documented default RTK, retrieve MCP, and Serena surfaces in lane-private state."
+      },
+      "reset": {
+        "policy": "Delete lane-private OpenCode XDG, Headroom proxy/cache, managed RTK/Serena/MCP configuration, auth translation, and generated artifacts after evidence capture."
+      },
+      "evaluation_protocol": {
+        "tool_use_policy": "natural",
+        "tool_state": "active-official-integrated-wrapper",
+        "integration_state": "official-headroom-opencode-product",
+        "assignment_proof": "provider-free pinned-wheel version and wrapper command proof required; provider traffic must retain OpenCode step-finish usage"
+      },
+      "source_snapshot": {
+        "repository": "headroom-ai/headroom",
+        "commit": "715ed7d200cb62c43e6ee3976ce8d3aa639ccf9f",
+        "version": "0.28.0",
+        "runtime_adapter": "/opt/data/tool-candidates/opencode-adapter-v2/opencode_workflow_adapter.py",
+        "runtime_adapter_sha256": "b115dac20547f506cd7f50a6b9147ec34bb8c6ea05cd3444d13898de9a2b50b2"
+      },
+      "notes": "Integrated product treatment, not a single-mechanism proxy ablation. Attribution is to the documented Headroom OpenCode bundle as a whole.",
+      "readiness_blockers": [],
+      "name": "Headroom OpenCode integrated product V2",
+      "blocked_reason": "invalid-incomplete-wrapper-proxy-and-companion-activation",
+      "historical_results_deleted": true,
+      "deletion_receipt": "sources/evaluations/audits/invalid-opencode-treatment-result-deletions-20260729.json",
+      "historical_result_disposition": "deleted-invalid-or-unproven-treatment",
+      "active_corpus_result": "deleted-under-owner-authorized-receipt",
+      "superseded_by": "integrated-headroom-opencode-product-v3"
+    },
+    {
+      "id": "terminal-tokenjuice-opencode-plugin-v2",
+      "artifact_slug": "tokenjuice-opencode-v2",
+      "profile_type": "individual_tool",
+      "objective_scope": "individual_tool_effectiveness",
+      "status": "screening-ablation",
+      "substrate": "opencode-cli",
+      "enabled_surfaces": [
+        "opencode-tool-execute-after",
+        "terminal-output-compaction"
+      ],
+      "disabled_overlaps": [
+        "all unlisted surfaces"
+      ],
+      "components": [
+        {
+          "component_id": "terminal-tokenjuice-opencode-plugin-v2",
+          "surface": "opencode-tool-execute-after/terminal-output-compaction",
+          "role": "individual_tool"
+        }
+      ],
+      "native_agent_tools_allowed": [
+        "opencode-native-shell-edit",
+        "opencode-native-file-read-search",
+        "git",
+        "verifier-commands"
+      ],
+      "forbidden_surfaces": [
+        "all external MCP, retrieval, skills, subagents, and web tools"
+      ],
+      "install": {
+        "policy": "Run source-pinned TokenJuice 0.8.1 `tokenjuice install opencode` in the lane-private XDG home; verify launcher, compiled CLI, and generated plugin SHA-256 identities; require doctor plus OpenCode plugin debug proof before provider execution."
+      },
+      "reset": {
+        "policy": "Delete lane-private OpenCode XDG directories, TokenJuice plugin state, auth translation, and generated artifacts after evidence capture."
+      },
+      "evaluation_protocol": {
+        "tool_use_policy": "natural",
+        "tool_state": "active-native-plugin-exact-artifact",
+        "integration_state": "official-opencode-plugin",
+        "assignment_proof": "provider-free exact launcher/compiled/generated-plugin identity, installer, doctor, required-file, effective-config, and OpenCode debug-info proof required"
+      },
+      "source_snapshot": {
+        "repository": "vincentkoc/tokenjuice",
+        "commit": "49bdcf1755833ff1e02e44e6e7fe91c0fb44c16e",
+        "version": "0.8.1",
+        "runtime_adapter": "/opt/data/tool-candidates/opencode-adapter-v3/opencode_workflow_adapter.py",
+        "runtime_adapter_sha256": "dc787ae0a9038b002687ccce03ae91863c286119f79675059ffc78e88b31edd9"
+      },
+      "notes": "Fresh successor condition with exact launcher, compiled CLI, generated plugin, and adapter identities; compared with accepted bare OpenCode.",
+      "name": "TokenJuice OpenCode plugin V2 repaired",
+      "supersedes": "terminal-tokenjuice-opencode-plugin-v1"
+    },
+    {
+      "id": "terminal-snip-opencode-plugin-v2",
+      "artifact_slug": "snip-opencode-v2",
+      "profile_type": "individual_tool",
+      "objective_scope": "individual_tool_effectiveness",
+      "status": "screening-ablation",
+      "substrate": "opencode-cli",
+      "enabled_surfaces": [
+        "opencode-tool-execute-before",
+        "shell-command-rewriting"
+      ],
+      "disabled_overlaps": [
+        "all unlisted surfaces"
+      ],
+      "components": [
+        {
+          "component_id": "terminal-snip-opencode-plugin-v2",
+          "surface": "opencode-tool-execute-before/shell-command-rewriting",
+          "role": "individual_tool"
+        }
+      ],
+      "native_agent_tools_allowed": [
+        "opencode-native-shell-edit",
+        "opencode-native-file-read-search",
+        "git",
+        "verifier-commands"
+      ],
+      "forbidden_surfaces": [
+        "all external MCP, retrieval, skills, subagents, and web tools"
+      ],
+      "install": {
+        "policy": "Load opencode-snip v1.6.1 from its pinned source checkout and expose the exact SHA-256-pinned Snip CLI; retain command rewriting, including product failures, as treatment behavior."
+      },
+      "reset": {
+        "policy": "Delete lane-private OpenCode XDG plugin/session state, auth translation, Snip state, and generated artifacts after evidence capture."
+      },
+      "evaluation_protocol": {
+        "tool_use_policy": "natural",
+        "tool_state": "active-native-plugin-exact-artifact",
+        "integration_state": "official-community-opencode-plugin",
+        "assignment_proof": "provider-free exact CLI/plugin identity, effective-config, version, and OpenCode debug-info proof required"
+      },
+      "source_snapshot": {
+        "repository": "VincentHardouin/opencode-snip",
+        "tag": "v1.6.1",
+        "commit": "da1e531959a831f5a0ef6c30e1500d27493f8bc6",
+        "runtime_adapter": "/opt/data/tool-candidates/opencode-adapter-v3/opencode_workflow_adapter.py",
+        "runtime_adapter_sha256": "dc787ae0a9038b002687ccce03ae91863c286119f79675059ffc78e88b31edd9",
+        "cli_repository": "edouard-claude/snip",
+        "cli_commit": "82b741b3ba504a22b609f3ac8122ade94306f6ec"
+      },
+      "notes": "Fresh successor condition. Product command-rewriting failures count as degradation; evaluator identity/setup failures do not.",
+      "name": "Snip OpenCode plugin V2 repaired",
+      "supersedes": "terminal-snip-opencode-plugin-v1"
+    },
+    {
+      "id": "retrieval-cartog-opencode-product-v2",
+      "artifact_slug": "cartog-opencode-v2",
+      "profile_type": "individual_tool",
+      "objective_scope": "individual_tool_effectiveness",
+      "status": "screening-ablation",
+      "substrate": "opencode-cli",
+      "enabled_surfaces": [
+        "structural-retrieval",
+        "opencode-mcp",
+        "live-watch",
+        "product-authored-agent-guidance"
+      ],
+      "disabled_overlaps": [
+        "all unlisted surfaces"
+      ],
+      "components": [
+        {
+          "component_id": "retrieval-cartog-opencode-product-v2",
+          "surface": "structural-retrieval+opencode-mcp+live-watch",
+          "role": "individual_tool"
+        }
+      ],
+      "native_agent_tools_allowed": [
+        "opencode-native-shell-edit",
+        "opencode-native-file-read-search",
+        "git",
+        "verifier-commands"
+      ],
+      "forbidden_surfaces": [
+        "all external plugins, non-Cartog MCP, subagents, and web tools"
+      ],
+      "install": {
+        "policy": "Run source-pinned Cartog 0.30.1 `cartog ide --client opencode --yes`, install the product-authored agent snippet, then require `cartog init; cartog index .`, database/config state, effective config, and initialize plus tools/list proof before provider execution."
+      },
+      "reset": {
+        "policy": "Delete lane-private OpenCode XDG state, Cartog index/config/watch state, auth translation, and generated artifacts after evidence capture."
+      },
+      "evaluation_protocol": {
+        "tool_use_policy": "natural",
+        "tool_state": "warm-structural-index+live-watch",
+        "integration_state": "official-opencode-product-mcp",
+        "assignment_proof": "provider-free exact binary/guidance identity, installer/config/guidance receipt, retained warm-index state, effective-config, and initialize plus tools/list handshake required"
+      },
+      "source_snapshot": {
+        "repository": "jrollin/cartog",
+        "commit": "890d15b66b523841290a63e431a31b6f6438fc4b",
+        "version": "0.30.1",
+        "runtime_adapter": "/opt/data/tool-candidates/opencode-adapter-v3/opencode_workflow_adapter.py",
+        "runtime_adapter_sha256": "dc787ae0a9038b002687ccce03ae91863c286119f79675059ffc78e88b31edd9"
+      },
+      "notes": "Fresh full-product successor with required warm structural index, live watcher, and product-authored routing guidance; optional vector reranker remains disabled.",
+      "name": "Cartog OpenCode product V2 repaired",
+      "supersedes": "retrieval-cartog-opencode-product-v1"
+    },
+    {
+      "id": "integrated-headroom-opencode-product-v3",
+      "artifact_slug": "headroom-opencode-v3",
+      "profile_type": "individual_tool",
+      "objective_scope": "individual_tool_effectiveness",
+      "status": "screening-ablation",
+      "substrate": "opencode-cli",
+      "enabled_surfaces": [
+        "headroom-proxy-context-compression",
+        "headroom-native-opencode-plugin",
+        "headroom-retrieve-mcp",
+        "rtk-context-tool",
+        "serena-mcp"
+      ],
+      "disabled_overlaps": [
+        "all unlisted surfaces"
+      ],
+      "components": [
+        {
+          "component_id": "integrated-headroom-opencode-product-v3",
+          "surface": "official-integrated-opencode-product",
+          "role": "individual_tool",
+          "version": "0.28.0-adapter-v3"
+        }
+      ],
+      "native_agent_tools_allowed": [
+        "opencode-native-shell-edit",
+        "opencode-native-file-read-search",
+        "git",
+        "verifier-commands"
+      ],
+      "forbidden_surfaces": [
+        "all non-Headroom-managed external plugins, MCP, skills, subagents, and web tools"
+      ],
+      "install": {
+        "policy": "Launch every OpenCode provider invocation through source-pinned Headroom 0.28.0 with exact wheel/plugin/uvx/adapter identities, native plugin enabled, Headroom and Serena MCP handshakes, evaluator policy merged into product config, and request-correlated proxy receipts."
+      },
+      "reset": {
+        "policy": "Delete lane-private OpenCode XDG, Headroom proxy/cache, managed RTK/Serena/MCP configuration, auth translation, and generated artifacts after evidence capture."
+      },
+      "evaluation_protocol": {
+        "tool_use_policy": "natural",
+        "tool_state": "active-official-integrated-wrapper-exact-artifacts",
+        "integration_state": "official-headroom-opencode-product",
+        "assignment_proof": "provider-free exact-artifact, wrapper, native-plugin, Serena MCP, RTK, and effective-config proof; official Headroom MCP activation is attempted and any upstream failure counts as treatment degradation; every paid invocation requires request-correlated OpenAI gpt-5.6-sol proxy traffic"
+      },
+      "source_snapshot": {
+        "repository": "chopratejas/headroom",
+        "commit": "715ed7d200cb62c43e6ee3976ce8d3aa639ccf9f",
+        "version": "0.28.0",
+        "runtime_adapter": "/opt/data/tool-candidates/opencode-adapter-v3/opencode_workflow_adapter.py",
+        "runtime_adapter_sha256": "dc787ae0a9038b002687ccce03ae91863c286119f79675059ffc78e88b31edd9"
+      },
+      "notes": "Fresh full-product successor. The official Headroom MCP is attempted without evaluator dependency pinning; its declared dependency incompatibility counts as degradation. Provider execution still fails closed when proxy traffic, effective config, native plugin, or Serena MCP activation is unproven.",
+      "name": "Headroom OpenCode integrated product V3 repaired",
+      "supersedes": "integrated-headroom-opencode-product-v2"
+    },
+    {
+      "profile_type": "individual_tool",
+      "objective_scope": "individual_tool_effectiveness",
+      "status": "screening-ablation",
+      "substrate": "opencode-cli",
+      "disabled_overlaps": [
+        "all unlisted surfaces"
+      ],
+      "native_agent_tools_allowed": [
+        "opencode-native-shell-edit",
+        "opencode-native-file-read-search",
+        "git",
+        "verifier-commands"
+      ],
+      "forbidden_surfaces": [
+        "all external retrieval, compression, memory, MCP, skills, plugins, subagents, and web tools except the assigned product surfaces"
+      ],
+      "reset": {
+        "policy": "Delete lane-private OpenCode XDG directories, product state, generated repository treatment files, auth translation, and background processes after evidence capture."
+      },
+      "id": "codescope-opencode-product-v1",
+      "artifact_slug": "codescope-opencode-v1",
+      "name": "CodeScope OpenCode MCP V1",
+      "enabled_surfaces": [
+        "broad-context-owner",
+        "opencode-mcp",
+        "official-initialize-instructions",
+        "warm-index"
+      ],
+      "components": [
+        {
+          "component_id": "codescope-opencode-product-v1",
+          "surface": "broad-context-owner+opencode-mcp+official-initialize-instructions+warm-index",
+          "role": "individual_tool"
+        }
+      ],
+      "install": {
+        "policy": "Run the pinned CodeScope 0.8.12 release with its bundled SurrealDB, build a lane-private warm index, register only its host-agnostic MCP server in the isolated OpenCode config, and require initialize plus tools/list before provider execution."
+      },
+      "evaluation_protocol": {
+        "tool_use_policy": "natural",
+        "tool_state": "warm-index+official-mcp-instructions",
+        "integration_state": "host-agnostic-mcp-on-opencode",
+        "assignment_proof": "provider-free exact binary identities, warm index, effective-config receipt, initialize, and tools/list required"
+      },
+      "source_snapshot": {
+        "repository": "onur-gokyildiz-bhi/codescope",
+        "version": "0.8.12",
+        "release_asset_sha256": "d6f64f7bc7bf1ab65115fdede85d794f58151c6f1414421825959eb2101165c1",
+        "runtime_adapter": "/opt/data/tool-candidates/opencode-adapter-v4/opencode_workflow_adapter.py",
+        "runtime_adapter_sha256": "e3c6e77fc22ae12a6548ee3ad92836d58c2db411ceae7c3743c370c469e6bbf7"
+      },
+      "notes": "Successive OpenCode screen selected from the live compatible shortlist. CodeScope does not name OpenCode in its installer but explicitly supports any MCP-compatible host; this profile uses the unchanged product MCP server and initialize instructions."
+    },
+    {
+      "profile_type": "individual_tool",
+      "objective_scope": "individual_tool_effectiveness",
+      "status": "screening-ablation",
+      "substrate": "opencode-cli",
+      "disabled_overlaps": [
+        "all unlisted surfaces"
+      ],
+      "native_agent_tools_allowed": [
+        "opencode-native-shell-edit",
+        "opencode-native-file-read-search",
+        "git",
+        "verifier-commands"
+      ],
+      "forbidden_surfaces": [
+        "all external retrieval, compression, memory, MCP, skills, plugins, subagents, and web tools except the assigned product surfaces"
+      ],
+      "reset": {
+        "policy": "Delete lane-private OpenCode XDG directories, product state, generated repository treatment files, auth translation, and background processes after evidence capture."
+      },
+      "id": "swarmvault-opencode-product-v1",
+      "artifact_slug": "swarmvault-opencode-v1",
+      "name": "SwarmVault OpenCode product V1",
+      "enabled_surfaces": [
+        "broad-context-owner",
+        "opencode-mcp",
+        "opencode-project-rules",
+        "opencode-native-plugin",
+        "opencode-skill",
+        "warm-index"
+      ],
+      "components": [
+        {
+          "component_id": "swarmvault-opencode-product-v1",
+          "surface": "broad-context-owner+opencode-mcp+project-rules+native-plugin+skill+warm-index",
+          "role": "individual_tool"
+        }
+      ],
+      "install": {
+        "policy": "Use pinned SwarmVault 3.20.0 compiled CLI to initialize and compile a lane-private vault and run the official `install --agent opencode --hook`; verify exact generated plugin and skill bytes and require MCP initialize plus tools/list."
+      },
+      "evaluation_protocol": {
+        "tool_use_policy": "natural",
+        "tool_state": "warm-index+active-native-plugin-and-skill",
+        "integration_state": "official-opencode-rules-skill-hook-mcp",
+        "assignment_proof": "provider-free exact compiled CLI, generated plugin and skill, effective config, warm vault, initialize, and tools/list required"
+      },
+      "source_snapshot": {
+        "repository": "SwarmVaultAI/swarmvault",
+        "commit": "4ce0c7cb545c669f3cd35fc6d0300c6b088a52ea",
+        "version": "3.20.0",
+        "runtime_adapter": "/opt/data/tool-candidates/opencode-adapter-v5/opencode_workflow_adapter.py",
+        "runtime_adapter_sha256": "4fe90a1a85dfe47db5f5637c4cfdb07c89384b598d2c274ed0af080f3ae42352"
+      },
+      "notes": "Successive OpenCode screen selected from the live compatible shortlist; all official OpenCode surfaces are active. Corrected before accepted execution to enable only the assigned project skill in the isolated OpenCode permission map; the prior skill-disabled generation was deleted as invalid."
+    },
+    {
+      "profile_type": "individual_tool",
+      "objective_scope": "individual_tool_effectiveness",
+      "status": "screening-ablation",
+      "substrate": "opencode-cli",
+      "disabled_overlaps": [
+        "all unlisted surfaces"
+      ],
+      "native_agent_tools_allowed": [
+        "opencode-native-shell-edit",
+        "opencode-native-file-read-search",
+        "git",
+        "verifier-commands"
+      ],
+      "forbidden_surfaces": [
+        "all external retrieval, compression, memory, MCP, skills, plugins, subagents, and web tools except the assigned product surfaces"
+      ],
+      "reset": {
+        "policy": "Delete lane-private OpenCode XDG directories, product state, generated repository treatment files, auth translation, and background processes after evidence capture."
+      },
+      "id": "retrieval-graphify-opencode-product-v1",
+      "artifact_slug": "graphify-opencode-v1",
+      "name": "Graphify OpenCode product V1",
+      "enabled_surfaces": [
+        "retrieval-context",
+        "opencode-project-skill",
+        "opencode-project-instructions",
+        "opencode-pre-tool-use-plugin",
+        "warm-graph"
+      ],
+      "components": [
+        {
+          "component_id": "retrieval-graphify-opencode-product-v1",
+          "surface": "retrieval-context+opencode-skill+instructions+native-plugin+warm-graph",
+          "role": "individual_tool"
+        }
+      ],
+      "install": {
+        "policy": "Install pinned Graphify 0.9.1 wheel into a lane-private venv, run the official OpenCode project installer, verify exact generated plugin and skill bytes, and build the full graph before provider execution."
+      },
+      "evaluation_protocol": {
+        "tool_use_policy": "natural",
+        "tool_state": "warm-graph+active-native-plugin-and-skill",
+        "integration_state": "official-opencode-skill-and-always-on-policy",
+        "instruction_policy": "product-authored-guidance",
+        "assignment_proof": "provider-free exact wheel, generated plugin and skill, effective config, and full graph required"
+      },
+      "source_snapshot": {
+        "repository": "safishamsi/graphify",
+        "commit": "199061207f6648f116fd6dbb0b2214502c55d90a",
+        "version": "0.9.1",
+        "runtime_adapter": "/opt/data/tool-candidates/opencode-adapter-v5/opencode_workflow_adapter.py",
+        "runtime_adapter_sha256": "4fe90a1a85dfe47db5f5637c4cfdb07c89384b598d2c274ed0af080f3ae42352"
+      },
+      "notes": "Successive OpenCode screen selected from the live compatible shortlist. Uses the official OpenCode skill, AGENTS guidance, plugin, and full graph without adding an MCP arm. Corrected before accepted execution to enable only the assigned project skill in the isolated OpenCode permission map; the prior skill-disabled generation was deleted as invalid."
+    },
+    {
+      "profile_type": "individual_tool",
+      "objective_scope": "individual_tool_effectiveness",
+      "status": "screening-ablation",
+      "substrate": "opencode-cli",
+      "disabled_overlaps": [
+        "all unlisted surfaces"
+      ],
+      "native_agent_tools_allowed": [
+        "opencode-native-shell-edit",
+        "opencode-native-file-read-search",
+        "git",
+        "verifier-commands"
+      ],
+      "forbidden_surfaces": [
+        "all external retrieval, compression, memory, MCP, skills, plugins, subagents, and web tools except the assigned product surfaces"
+      ],
+      "reset": {
+        "policy": "Delete lane-private OpenCode XDG directories, product state, generated repository treatment files, auth translation, and background processes after evidence capture."
+      },
+      "id": "terminal-rtk-opencode-plugin-v1",
+      "artifact_slug": "rtk-opencode-v1",
+      "name": "RTK OpenCode plugin V1",
+      "enabled_surfaces": [
+        "opencode-native-plugin",
+        "terminal-command-rewriting",
+        "terminal-output-compaction"
+      ],
+      "components": [
+        {
+          "component_id": "terminal-rtk-opencode-plugin-v1",
+          "surface": "opencode-native-plugin/terminal-command-rewriting+output-compaction",
+          "role": "individual_tool"
+        }
+      ],
+      "install": {
+        "policy": "Run pinned RTK 0.42.4 `rtk init --global --opencode` against the lane-private HOME; verify exact binary, source plugin, and generated plugin identities before provider execution."
+      },
+      "evaluation_protocol": {
+        "tool_use_policy": "natural",
+        "tool_state": "active-native-plugin-exact-artifact",
+        "integration_state": "official-opencode-global-plugin",
+        "assignment_proof": "provider-free exact binary, source/generated plugin, effective-config, and OpenCode debug-info proof required"
+      },
+      "source_snapshot": {
+        "repository": "rtk-ai/rtk",
+        "commit": "23aae98c5b29cd52d77061c6efd2e65e5e3cc6dd",
+        "version": "0.42.4",
+        "runtime_adapter": "/opt/data/tool-candidates/opencode-adapter-v4/opencode_workflow_adapter.py",
+        "runtime_adapter_sha256": "e3c6e77fc22ae12a6548ee3ad92836d58c2db411ceae7c3743c370c469e6bbf7"
+      },
+      "notes": "Successive OpenCode screen selected from the live compatible shortlist; measures the official command-rewriting plugin rather than the Codex instruction profile."
+    },
+    {
+      "profile_type": "individual_tool",
+      "objective_scope": "individual_tool_effectiveness",
+      "status": "screening-ablation",
+      "substrate": "opencode-cli",
+      "disabled_overlaps": [
+        "all unlisted surfaces"
+      ],
+      "native_agent_tools_allowed": [
+        "opencode-native-shell-edit",
+        "opencode-native-file-read-search",
+        "git",
+        "verifier-commands"
+      ],
+      "forbidden_surfaces": [
+        "all external retrieval, compression, memory, MCP, skills, plugins, subagents, and web tools except the assigned product surfaces"
+      ],
+      "reset": {
+        "policy": "Delete lane-private OpenCode XDG directories, product state, generated repository treatment files, auth translation, and background processes after evidence capture."
+      },
+      "id": "retrieval-codegraph-opencode-mcp-v1",
+      "artifact_slug": "codegraph-opencode-v1",
+      "name": "CodeGraph OpenCode MCP V1",
+      "enabled_surfaces": [
+        "retrieval-context",
+        "opencode-mcp",
+        "official-opencode-installer",
+        "model-runtime-cli",
+        "warm-live-index"
+      ],
+      "components": [
+        {
+          "component_id": "retrieval-codegraph-opencode-mcp-v1",
+          "surface": "retrieval-context+opencode-mcp+official-installer+model-runtime-cli+warm-live-index",
+          "role": "individual_tool"
+        }
+      ],
+      "install": {
+        "policy": "Run pinned CodeGraph 1.1.1 official local OpenCode installer, materialize the exact CLI on model PATH, initialize the project graph, and require initialize plus tools/list before provider execution."
+      },
+      "evaluation_protocol": {
+        "tool_use_policy": "natural",
+        "tool_state": "warm-live-index+official-mcp-instructions",
+        "integration_state": "official-opencode-mcp-installer-live-index",
+        "instruction_policy": "product-authored-MCP-initialize-guidance",
+        "assignment_proof": "provider-free exact compiled CLI, generated OpenCode config, model PATH, warm index, initialize, and tools/list required"
+      },
+      "source_snapshot": {
+        "repository": "colbymchenry/codegraph",
+        "commit": "4077ed19b7d8a88eba93601c0c308e59c8640f8c",
+        "version": "1.1.1",
+        "runtime_adapter": "/opt/data/tool-candidates/opencode-adapter-v4/opencode_workflow_adapter.py",
+        "runtime_adapter_sha256": "e3c6e77fc22ae12a6548ee3ad92836d58c2db411ceae7c3743c370c469e6bbf7"
+      },
+      "notes": "Next native OpenCode-eligible product after Token Savior, which is skipped because its pinned product has no OpenCode integration. Uses CodeGraph official OpenCode installer and MCP server."
+    },
+    {
+      "profile_type": "individual_tool",
+      "objective_scope": "individual_tool_effectiveness",
+      "status": "screening-ablation",
+      "substrate": "opencode-cli",
+      "disabled_overlaps": [
+        "all unlisted surfaces"
+      ],
+      "native_agent_tools_allowed": [
+        "opencode-native-shell-edit",
+        "opencode-native-file-read-search",
+        "git",
+        "verifier-commands"
+      ],
+      "forbidden_surfaces": [
+        "all external retrieval, compression, memory, MCP, skills, plugins, subagents, and web tools except the assigned product surfaces"
+      ],
+      "reset": {
+        "policy": "Delete lane-private OpenCode XDG directories, product state, generated repository treatment files, auth translation, and background processes after evidence capture."
+      },
+      "id": "retrieval-jcodemunch-opencode-product-v1",
+      "artifact_slug": "jcodemunch-opencode-v1",
+      "name": "jCodemunch OpenCode MCP product V1",
+      "enabled_surfaces": [
+        "retrieval-context",
+        "opencode-mcp",
+        "product-authored-guidance",
+        "warm-index"
+      ],
+      "components": [
+        {
+          "component_id": "retrieval-jcodemunch-opencode-product-v1",
+          "surface": "retrieval-context+opencode-mcp+product-authored-guidance+warm-index",
+          "role": "individual_tool"
+        }
+      ],
+      "install": {
+        "policy": "Install the pinned jCodemunch wheel into a lane-private uv environment, install verbatim product-authored guidance, build a lane-private index, register only its local MCP server in OpenCode, and require initialize plus tools/list."
+      },
+      "evaluation_protocol": {
+        "tool_use_policy": "natural",
+        "tool_state": "warm-index+product-guidance",
+        "integration_state": "host-agnostic-mcp+product-guidance",
+        "assignment_proof": "provider-free exact artifact identities, effective OpenCode configuration, native activation, warm state, and task/final verifiers required"
+      },
+      "source_snapshot": {
+        "repository": "jgravelle/jcodemunch-mcp",
+        "version": "1.108.114",
+        "source_commit": "fbc14e40c7057ebc6d718fb48083d30522afe15f",
+        "wheel_sha256": "9ae3a44c2be5709d33fa2b56c9e569906ed63906a907f89b4762a370d397ed54",
+        "guidance_sha256": "2026d09f4af85e972a5c4a9874d91bd8a8675ab7fbb44a283911fd06afd0abb2",
+        "runtime_adapter": "/opt/data/tool-candidates/opencode-adapter-v6/opencode_workflow_adapter.py",
+        "runtime_adapter_sha256": "1b98aaec34711b3a7bb09ce269c12bb06421ab08913d06593fb6d2c6641a34a3"
+      },
+      "notes": "Second successive screen: jCodemunch has a universal host-install guide and an MCP server, so this is a host-agnostic OpenCode treatment rather than a prompt-only simulation."
+    },
+    {
+      "profile_type": "individual_tool",
+      "objective_scope": "individual_tool_effectiveness",
+      "status": "invalid-profile",
+      "substrate": "opencode-cli",
+      "disabled_overlaps": [
+        "all unlisted surfaces"
+      ],
+      "native_agent_tools_allowed": [
+        "opencode-native-shell-edit",
+        "opencode-native-file-read-search",
+        "git",
+        "verifier-commands"
+      ],
+      "forbidden_surfaces": [
+        "all external retrieval, compression, memory, MCP, skills, plugins, subagents, and web tools except the assigned product surfaces"
+      ],
+      "reset": {
+        "policy": "Delete lane-private OpenCode XDG directories, product state, generated repository treatment files, auth translation, and background processes after evidence capture."
+      },
+      "id": "integrated-leanctx-opencode-hybrid-v1",
+      "artifact_slug": "leanctx-opencode-v1",
+      "name": "LeanCTX OpenCode hybrid integration V1",
+      "enabled_surfaces": [
+        "retrieval-context",
+        "opencode-mcp",
+        "product-authored-instructions",
+        "shell-output-compression",
+        "warm-index"
+      ],
+      "components": [
+        {
+          "component_id": "integrated-leanctx-opencode-hybrid-v1",
+          "surface": "retrieval-context+opencode-mcp+instructions+shell-output-compression+warm-index",
+          "role": "individual_tool"
+        }
+      ],
+      "install": {
+        "policy": "Run the pinned official LeanCTX initializer with the OpenCode agent target, build its lane-private index, and require the local MCP initialize plus tools/list handshake."
+      },
+      "evaluation_protocol": {
+        "tool_use_policy": "natural",
+        "tool_state": "warm-index+active-guidance",
+        "integration_state": "official-opencode-hybrid",
+        "assignment_proof": "provider-free exact artifact identities, effective OpenCode configuration, native activation, warm state, and task/final verifiers required"
+      },
+      "source_snapshot": {
+        "repository": "yvgude/lean-ctx",
+        "version": "3.8.18",
+        "source_commit": "adc4e8b2e401d160906a392994c9afd7af3dfffa",
+        "binary_sha256": "475e89e495c31824ef324f92e695706ddbd890dff2c3b55b807cd1f8526c6db9",
+        "runtime_adapter": "/opt/data/tool-candidates/opencode-adapter-v6/opencode_workflow_adapter.py",
+        "runtime_adapter_sha256": "1b98aaec34711b3a7bb09ce269c12bb06421ab08913d06593fb6d2c6641a34a3"
+      },
+      "notes": "Invalid first OpenCode setup: lean-ctx init wrote guidance under HOME/.config while the active lane used a distinct XDG_CONFIG_HOME. The inactive guidance path and zero-usage OpenCode exit-86 attempt are not a product result."
+    },
+    {
+      "profile_type": "individual_tool",
+      "objective_scope": "individual_tool_effectiveness",
+      "status": "screening-ablation",
+      "substrate": "opencode-cli",
+      "disabled_overlaps": [
+        "all unlisted surfaces"
+      ],
+      "native_agent_tools_allowed": [
+        "opencode-native-shell-edit",
+        "opencode-native-file-read-search",
+        "git",
+        "verifier-commands"
+      ],
+      "forbidden_surfaces": [
+        "all external retrieval, compression, memory, MCP, skills, plugins, subagents, and web tools except the assigned product surfaces"
+      ],
+      "reset": {
+        "policy": "Delete lane-private OpenCode XDG directories, product state, generated repository treatment files, auth translation, and background processes after evidence capture."
+      },
+      "id": "retrieval-sigmap-opencode-product-v1",
+      "artifact_slug": "sigmap-opencode-v1",
+      "name": "SigMap OpenCode MCP and context setup V1",
+      "enabled_surfaces": [
+        "retrieval-context",
+        "opencode-mcp",
+        "product-setup",
+        "warm-context-map"
+      ],
+      "components": [
+        {
+          "component_id": "retrieval-sigmap-opencode-product-v1",
+          "surface": "retrieval-context+opencode-mcp+product-setup+warm-context-map",
+          "role": "individual_tool"
+        }
+      ],
+      "install": {
+        "policy": "Run the pinned standalone SigMap bundle\u2019s official OpenCode MCP installer, build its product context map with the copilot-compatible adapter, and require initialize plus tools/list."
+      },
+      "evaluation_protocol": {
+        "tool_use_policy": "natural",
+        "tool_state": "warm-context-map+active-mcp",
+        "integration_state": "official-opencode-mcp+product-setup",
+        "assignment_proof": "provider-free exact artifact identities, effective OpenCode configuration, native activation, warm state, and task/final verifiers required"
+      },
+      "source_snapshot": {
+        "repository": "",
+        "version": "8.9.1",
+        "source_commit": "b1e086cf06bc7a7622473ffe9637c122567404e0",
+        "bundle_sha256": "1a920ef5dfb50f9f1a23baa7d26ab2f9329616242713a7d8734928970ad4fb59",
+        "package_sha256": "f8478ca025747dada0b86288f696e1ae39ea8701a5081c60f54c70eafa034963",
+        "runtime_adapter": "/opt/data/tool-candidates/opencode-adapter-v6/opencode_workflow_adapter.py",
+        "runtime_adapter_sha256": "1b98aaec34711b3a7bb09ce269c12bb06421ab08913d06593fb6d2c6641a34a3"
+      },
+      "notes": "Second successive screen: SigMap is a zero-dependency standalone MCP/context bundle and explicitly supports the OpenCode MCP client."
+    },
+    {
+      "profile_type": "individual_tool",
+      "objective_scope": "individual_tool_effectiveness",
+      "status": "screening-ablation",
+      "substrate": "opencode-cli",
+      "disabled_overlaps": [
+        "all unlisted surfaces"
+      ],
+      "native_agent_tools_allowed": [
+        "opencode-native-shell-edit",
+        "opencode-native-file-read-search",
+        "git",
+        "verifier-commands"
+      ],
+      "forbidden_surfaces": [
+        "all external retrieval, compression, memory, MCP, skills, plugins, subagents, and web tools except the assigned product surfaces"
+      ],
+      "reset": {
+        "policy": "Delete lane-private OpenCode XDG directories, product state, generated repository treatment files, auth translation, and background processes after evidence capture."
+      },
+      "id": "artifact-ponytail-opencode-plugin-v1",
+      "artifact_slug": "ponytail-opencode-v1",
+      "name": "Ponytail OpenCode plugin V1",
+      "enabled_surfaces": [
+        "opencode-plugin",
+        "product-authored-skills-and-commands",
+        "per-turn-guidance"
+      ],
+      "components": [
+        {
+          "component_id": "artifact-ponytail-opencode-plugin-v1",
+          "surface": "opencode-plugin+product-authored-skills+commands+per-turn-guidance",
+          "role": "individual_tool"
+        }
+      ],
+      "install": {
+        "policy": "Copy the pinned Ponytail OpenCode plugin and product-authored rules into the isolated project, then require the plugin to load through OpenCode\u2019s native plugin surface."
+      },
+      "evaluation_protocol": {
+        "tool_use_policy": "natural",
+        "tool_state": "active-native-plugin+per-turn-guidance",
+        "integration_state": "official-opencode-plugin+product-authored-guidance",
+        "assignment_proof": "provider-free exact artifact identities, effective OpenCode configuration, native activation, warm state, and task/final verifiers required"
+      },
+      "source_snapshot": {
+        "repository": "",
+        "version": "4.8.4",
+        "source_commit": "40e50d9e03242aa5dd53ac771950f9127362b25f",
+        "plugin_sha256": "e2443648e1864724f56e2a073fdf2f29199772606d9ea1c175fe06eaa3b75853",
+        "guidance_sha256": "1cd148db944eff33bf8bb878c41a290fe85b86de3e65ac311d5d501e71a0cdbf",
+        "runtime_adapter": "/opt/data/tool-candidates/opencode-adapter-v6/opencode_workflow_adapter.py",
+        "runtime_adapter_sha256": "1b98aaec34711b3a7bb09ce269c12bb06421ab08913d06593fb6d2c6641a34a3"
+      },
+      "notes": "Requalified on 2026-08-03: the pinned Ponytail 4.8.4 native OpenCode plugin loaded successfully under OpenCode 1.18.9 through adapter-v6, with the exact plugin/guidance hashes recorded above and no instruction-only substitute."
+    },
+    {
+      "profile_type": "individual_tool",
+      "objective_scope": "individual_tool_effectiveness",
+      "status": "screening-ablation",
+      "substrate": "opencode-cli",
+      "disabled_overlaps": [
+        "all unlisted surfaces"
+      ],
+      "native_agent_tools_allowed": [
+        "opencode-native-shell-edit",
+        "opencode-native-file-read-search",
+        "git",
+        "verifier-commands"
+      ],
+      "forbidden_surfaces": [
+        "all external retrieval, compression, memory, MCP, skills, plugins, subagents, and web tools except the assigned product surfaces"
+      ],
+      "reset": {
+        "policy": "Delete lane-private OpenCode XDG directories, product state, generated repository treatment files, auth translation, and background processes after evidence capture."
+      },
+      "id": "behavior-caveman-opencode-plugin-v1",
+      "artifact_slug": "caveman-opencode-v1",
+      "name": "Caveman OpenCode plugin and guidance V1",
+      "enabled_surfaces": [
+        "opencode-plugin",
+        "prompt-reinforcement",
+        "product-authored-init"
+      ],
+      "components": [
+        {
+          "component_id": "behavior-caveman-opencode-plugin-v1",
+          "surface": "opencode-plugin+prompt-reinforcement+product-authored-init",
+          "role": "individual_tool"
+        }
+      ],
+      "install": {
+        "policy": "Run Caveman\u2019s pinned installer with the OpenCode target and product initialization enabled, then require the installed native plugin and repo guidance in the isolated lane."
+      },
+      "evaluation_protocol": {
+        "tool_use_policy": "natural",
+        "tool_state": "active-native-plugin+per-session-guidance",
+        "integration_state": "official-opencode-plugin+product-init",
+        "assignment_proof": "provider-free exact artifact identities, effective OpenCode configuration, native activation, warm state, and task/final verifiers required"
+      },
+      "source_snapshot": {
+        "repository": "JuliusBrussee/caveman",
+        "version": "0.1.0",
+        "source_commit": "0d95a81d35a9f2d123a5e9430d1cfc43d55f1bb0",
+        "plugin_sha256": "6d68e8dfe205354718729a5f5c9ca9d555a045af6b2cbbc3b6a84caad1076df7",
+        "package_sha256": "b603811ba72eb71581db5b02045fb5f8903e3c46dcf7b40f36eeb81fbba23274",
+        "runtime_adapter": "/opt/data/tool-candidates/opencode-adapter-v6/opencode_workflow_adapter.py",
+        "runtime_adapter_sha256": "1b98aaec34711b3a7bb09ce269c12bb06421ab08913d06593fb6d2c6641a34a3"
+      },
+      "notes": "Second successive screen: Caveman\u2019s local installer exposes an explicit OpenCode target and writes the native plugin under the OpenCode XDG configuration surface."
+    },
+    {
+      "profile_type": "individual_tool",
+      "objective_scope": "individual_tool_effectiveness",
+      "status": "screening-ablation",
+      "substrate": "opencode-cli",
+      "disabled_overlaps": [
+        "all unlisted surfaces"
+      ],
+      "native_agent_tools_allowed": [
+        "opencode-native-shell-edit",
+        "opencode-native-file-read-search",
+        "git",
+        "verifier-commands"
+      ],
+      "forbidden_surfaces": [
+        "all external retrieval, compression, memory, MCP, skills, plugins, subagents, and web tools except the assigned product surfaces"
+      ],
+      "reset": {
+        "policy": "Delete lane-private OpenCode XDG directories, product state, generated repository treatment files, auth translation, and background processes after evidence capture."
+      },
+      "id": "terminal-lowfat-opencode-plugin-v1",
+      "artifact_slug": "lowfat-opencode-v1",
+      "name": "LowFat OpenCode plugin V1",
+      "enabled_surfaces": [
+        "opencode-plugin",
+        "terminal-command-rewriting"
+      ],
+      "components": [
+        {
+          "component_id": "terminal-lowfat-opencode-plugin-v1",
+          "surface": "opencode-native-tool-execute-before/terminal-command-rewriting",
+          "role": "individual_tool"
+        }
+      ],
+      "install": {
+        "policy": "Run the pinned LowFat 0.8.0 binary\u2019s official `lowfat opencode install` command in the isolated XDG configuration and require the exact installed native plugin."
+      },
+      "evaluation_protocol": {
+        "tool_use_policy": "natural",
+        "tool_state": "active-native-plugin-exact-artifact",
+        "integration_state": "official-opencode-plugin",
+        "assignment_proof": "provider-free exact artifact identities, live plugin activation, effective OpenCode configuration, task/final verifiers, and installation receipt required"
+      },
+      "source_snapshot": {
+        "repository": "zdk/lowfat",
+        "version": "0.8.0",
+        "source_commit": "b9f6f99d02e5774296305a591bfb13ef24548c38",
+        "release_archive_sha256": "dccc2cfabe341873a7d8ca11cc6a250bb304792ff31773c86e4a58cbc01be36e",
+        "binary_sha256": "609e9e42d9f01b9b1c4203dc00197498c65a629453d07927cbd68cea83980558",
+        "plugin_sha256": "49a6d53d34f40a00a1d8ebdccffee5d73572db22319ee5a99959429b634bf6ed",
+        "runtime_adapter": "/opt/data/tool-candidates/opencode-adapter-v7/opencode_workflow_adapter.py",
+        "runtime_adapter_sha256": "e7dbe311ae1ac75ebcc0838512e84efe80282f15b7a69c2db13d7f8e92fc3a3c"
+      },
+      "notes": "Replacement for runtime-incompatible Ponytail in the second successive screen. The official 0.8.0 release binary installs the exact source-pinned OpenCode plugin and a live OpenCode 1.18.9 debug-config probe loads it without plugin errors when the binary is present on PATH."
+    },
+    {
+      "profile_type": "individual_tool",
+      "objective_scope": "individual_tool_effectiveness",
+      "status": "screening-ablation",
+      "substrate": "opencode-cli",
+      "disabled_overlaps": [
+        "all unlisted surfaces"
+      ],
+      "native_agent_tools_allowed": [
+        "opencode-native-shell-edit",
+        "opencode-native-file-read-search",
+        "git",
+        "verifier-commands"
+      ],
+      "forbidden_surfaces": [
+        "all external retrieval, compression, memory, MCP, skills, plugins, subagents, and web tools except the assigned product surfaces"
+      ],
+      "reset": {
+        "policy": "Delete lane-private OpenCode XDG directories, product state, generated repository treatment files, auth translation, and background processes after evidence capture."
+      },
+      "id": "integrated-leanctx-opencode-hybrid-v2",
+      "artifact_slug": "leanctx-opencode-v2",
+      "name": "LeanCTX OpenCode hybrid integration V2",
+      "enabled_surfaces": [
+        "retrieval-context",
+        "opencode-mcp",
+        "product-authored-instructions",
+        "shell-output-compression",
+        "warm-index"
+      ],
+      "components": [
+        {
+          "component_id": "integrated-leanctx-opencode-hybrid-v2",
+          "surface": "opencode-mcp+product-generated-instructions+shell-output-compression+warm-index",
+          "role": "individual_tool"
+        }
+      ],
+      "install": {
+        "policy": "Run the pinned official LeanCTX initializer with the OpenCode agent target, build its lane-private index, and require the local MCP initialize plus tools/list handshake."
+      },
+      "evaluation_protocol": {
+        "tool_use_policy": "natural",
+        "tool_state": "warm-index+active-guidance",
+        "integration_state": "official-opencode-hybrid",
+        "assignment_proof": "provider-free exact artifact identities, effective OpenCode configuration, native activation, warm state, and task/final verifiers required"
+      },
+      "source_snapshot": {
+        "repository": "yvgude/lean-ctx",
+        "version": "3.8.18",
+        "source_commit": "adc4e8b2e401d160906a392994c9afd7af3dfffa",
+        "binary_sha256": "475e89e495c31824ef324f92e695706ddbd890dff2c3b55b807cd1f8526c6db9",
+        "runtime_adapter": "/opt/data/tool-candidates/opencode-adapter-v7/opencode_workflow_adapter.py",
+        "runtime_adapter_sha256": "e559c52ef4ef8a7e6b02cd03bfc2b86c2da039da493969d21f1ebbeb116c1f15"
+      },
+      "notes": "Corrected official OpenCode integration: the product-generated ~/.config/opencode configuration and AGENTS guidance are copied byte-for-byte into the lane-active isolated XDG root, with MCP handshake and warm index retained."
+    },
+    {
+      "profile_type": "individual_tool",
+      "objective_scope": "individual_tool_effectiveness",
+      "status": "screening-ablation",
+      "substrate": "opencode-cli",
+      "disabled_overlaps": [
+        "all unlisted surfaces"
+      ],
+      "native_agent_tools_allowed": [
+        "opencode-native-shell-edit",
+        "opencode-native-file-read-search",
+        "git",
+        "verifier-commands",
+        "dcp-compress-tool"
+      ],
+      "forbidden_surfaces": [
+        "all external retrieval, compression, memory, MCP, skills, plugins, subagents, and web tools except the assigned DCP plugin surfaces"
+      ],
+      "reset": {
+        "policy": "Delete lane-private OpenCode XDG configuration, package cache, DCP state, auth translation, and generated evaluation artifacts after evidence capture."
+      },
+      "id": "context-dcp-opencode-plugin-v1",
+      "artifact_slug": "dcp-opencode-v1",
+      "name": "Dynamic Context Pruning OpenCode plugin V3.1.14",
+      "enabled_surfaces": [
+        "opencode-plugin",
+        "model-visible-compress-tool",
+        "automatic-deduplication",
+        "automatic-error-input-purging",
+        "context-nudges"
+      ],
+      "components": [
+        {
+          "component_id": "context-dcp-opencode-plugin-v1",
+          "surface": "opencode-native-context-pruning+compress-tool+automatic-cleanup",
+          "role": "individual_tool"
+        }
+      ],
+      "install": {
+        "policy": "Run OpenCode's official plugin installer with the exact pinned package spec `@tarquinen/opencode-dcp@3.1.14` in the lane-private XDG root; require server and TUI registration, exact installed server-entrypoint hash, and live OpenCode debug-config plugin proof."
+      },
+      "evaluation_protocol": {
+        "tool_use_policy": "natural",
+        "tool_state": "active-native-plugin+automatic-cleanup+model-visible-compress",
+        "integration_state": "official-opencode-plugin-default-configuration",
+        "assignment_proof": "provider-free exact source, lock, installer outputs, installed entrypoint, effective configuration, and live native activation proof required"
+      },
+      "source_snapshot": {
+        "repository": "Opencode-DCP/opencode-dynamic-context-pruning",
+        "version": "3.1.14",
+        "tag": "v3.1.14",
+        "source_commit": "85b6f5ceba144fee9e65eb28dc36cab1b960e418",
+        "package_sha256": "9b7f126d0f5bbe06f1b17b583e0cbc7b2e66d556a58d646574319dc65d3d410e",
+        "package_lock_sha256": "cae2ac00ee6abc966e7132732fb975fe0c1d5e5494c2ac48c7cf566718aa5a98",
+        "installed_plugin_sha256": "1e70b38527d6c604d9437bb447a67c857cd6f0cfe02f4fa69b69729e2ef57432",
+        "runtime_adapter": "/opt/data/tool-candidates/opencode-adapter-v8/opencode_workflow_adapter.py",
+        "runtime_adapter_sha256": "d5fcd88e033767659da3acf17486273059cd566c29475c274349d2214428545c"
+      },
+      "notes": "Owner-authorized fresh OpenCode screen. Default DCP configuration is preserved; evaluator-authored compression steering and manual slash-command activation are forbidden."
+    },
+    {
+      "id": "retrieval-sdl-mcp-codex-product-v1",
+      "artifact_slug": "sdl-mcp-codex-v1",
+      "profile_type": "individual_tool",
+      "objective_scope": "individual_tool_effectiveness",
+      "substrate": "codex-cli",
+      "status": "screening-ablation",
+      "enabled_surfaces": [
+        "retrieval-context",
+        "mcp",
+        "codex-project-guidance",
+        "codex-hooks",
+        "warm-local-index",
+        "local-embedding-models"
+      ],
+      "disabled_overlaps": [
+        "all unlisted surfaces",
+        "other retrieval authorities",
+        "terminal-output compactors",
+        "memory tools"
+      ],
+      "components": [
+        {
+          "component_id": "retrieval-sdl-mcp-codex-product-v1",
+          "surface": "retrieval-context+mcp+codex-guidance+codex-hooks",
+          "role": "individual_tool"
+        }
+      ],
+      "install": {
+        "policy": "Use the pinned SDL-MCP 0.13.2 source archive with normal npm lifecycle installation, native addon/tree-sitter verification, pinned embedding models, and build hashes. For each lane run the product command `sdl-mcp init -y --repo-path <repo> --client codex --enforce-agent-tools --auto-index`, while binding the generated MCP server to the pinned source checkout rather than npx/latest."
+      },
+      "reset": {
+        "policy": "Delete lane-private CODEX_HOME, SDL-MCP config/database/cache copies, generated AGENTS.md/CODEX.md/SDL.md/.codex assets, and background processes after evidence capture; preserve run artifacts and source hashes."
+      },
+      "evaluation_protocol": {
+        "tool_use_policy": "natural",
+        "tool_state": "warm-index",
+        "integration_state": "official-codex-init-enforce-agent-tools+source-pinned-mcp",
+        "instruction_policy": "product-authored SDL-MCP guidance and hooks; evaluator adds no invocation requirement or preference",
+        "assignment_proof": "provider-free artifact identity, init/doctor, generated guidance/hooks, and initialize plus tools/list receipt required"
+      },
+      "selection_rationale": "Owner-authorized source-logic candidate after repository and installation audit; evaluated alone as the retrieval authority.",
+      "notes": "The source's generated codex-mcp-config.json normally uses npx sdl-mcp. The evaluation adapter replaces only that launch binding with the exact pinned compiled server and records the deviation; product-authored guidance and hooks remain unchanged. SDL-MCP's own savings meter is not provider-token evidence."
+    },
+    {
+      "id": "retrieval-sdl-mcp-opencode-product-v1",
+      "artifact_slug": "sdl-mcp-opencode-v1",
+      "profile_type": "individual_tool",
+      "objective_scope": "individual_tool_effectiveness",
+      "substrate": "opencode-cli",
+      "status": "screening-ablation",
+      "enabled_surfaces": [
+        "retrieval-context",
+        "mcp",
+        "opencode-project-guidance",
+        "opencode-plugin",
+        "warm-local-index",
+        "local-embedding-models"
+      ],
+      "disabled_overlaps": [
+        "all unlisted surfaces",
+        "other retrieval authorities",
+        "terminal-output compactors",
+        "memory tools"
+      ],
+      "components": [
+        {
+          "component_id": "retrieval-sdl-mcp-opencode-product-v1",
+          "surface": "retrieval-context+mcp+opencode-guidance+opencode-plugin",
+          "role": "individual_tool"
+        }
+      ],
+      "install": {
+        "policy": "Use the same pinned SDL-MCP source installation and run the product command `sdl-mcp init -y --repo-path <repo> --client opencode --enforce-agent-tools --auto-index`. The OpenCode adapter supplies the exact pinned compiled server while retaining generated OPENCODE.md, SDL.md, and enforce-sdl.ts."
+      },
+      "reset": {
+        "policy": "Delete lane-private OpenCode/Codex compatibility home, SDL-MCP config/database/cache copies, generated OPENCODE.md/AGENTS.md/SDL.md/opencode.json/.opencode assets, and background processes after evidence capture; preserve run artifacts and source hashes."
+      },
+      "evaluation_protocol": {
+        "tool_use_policy": "natural",
+        "tool_state": "warm-index",
+        "integration_state": "official-opencode-init-enforce-agent-tools+source-pinned-mcp",
+        "instruction_policy": "product-authored SDL-MCP guidance and plugin; evaluator adds no invocation requirement or preference",
+        "assignment_proof": "provider-free artifact identity, init/doctor, generated guidance/plugin, and initialize plus tools/list receipt required"
+      },
+      "selection_rationale": "Prepared as the second runtime lane after Codex, preserving runtime/provider separation.",
+      "notes": "The adapter keeps OpenCode project-config loading disabled to prevent the generated npx/latest binding from bypassing the pinned source; it injects an equivalent source-pinned MCP block and loads the product-generated enforce-sdl plugin explicitly. This is a recorded compatibility deviation, not a claim of byte-identical installer behavior."
     }
   ]
 }

@@ -1,0 +1,511 @@
+{
+  "protocol_schema_version": 3,
+  "protocol_id": "terraform-lifecycle-sequence-v0-integrated-token-savior-codex-product-v2-8f9d10fadefb",
+  "status": "frozen-ready-not-run",
+  "outcome": "Frozen integrated-token-savior-codex-product-v2 protocol for terraform-lifecycle-sequence-v0; no provider/model run has occurred.",
+  "frozen_at": "2026-07-16",
+  "hypothesis": "integrated-token-savior-codex-product-v2 produces reproducible provider-reported token and software-quality evidence for terraform-lifecycle-sequence-v0",
+  "evidence_stage_target": "reproduction",
+  "task_fixture": {
+    "fixture_id": "large-hashicorp-terraform",
+    "sequence_id": "terraform-lifecycle-sequence-v0",
+    "repository": "https://github.com/hashicorp/terraform.git",
+    "snapshot": "e02391ad384c9c38f1d7f40b853c0d2297348094",
+    "qualification_path": "sources/evaluations/fixtures/large/hashicorp-terraform/qualification-lifecycle-v0.json",
+    "qualification_sha256": "e27ca0efb487c3200232fad0facfc8b3e718d7e0e8ac87a29bc8f9d7cfd29baf",
+    "timeout_seconds_per_task": 3600
+  },
+  "baseline": {
+    "profile_id": "baseline-bare-codex",
+    "provider": "openai",
+    "model": "gpt-5.6-luna",
+    "model_condition_id": "codex-openai-gpt-5-6-luna-xhigh",
+    "reasoning_effort": "xhigh",
+    "command": ""
+  },
+  "treatment": {
+    "profile_id": "integrated-token-savior-codex-product-v2",
+    "provider": "openai",
+    "model": "gpt-5.6-luna",
+    "model_condition_id": "codex-openai-gpt-5-6-luna-xhigh",
+    "reasoning_effort": "xhigh",
+    "command": "python3 scripts/run_codex_workflow_evaluation.py --sequence-id terraform-lifecycle-sequence-v0 --profile-id integrated-token-savior-codex-product-v2 --timeout-per-task 3600 --protocol sources/evaluations/protocols/terraform-lifecycle-sequence-v0-integrated-token-savior-codex-product-v2-8f9d10fadefb.json --docker-image token-eval-codex:latest"
+  },
+  "token_accounting_boundary": {
+    "fields": [
+      "fresh_input_tokens",
+      "cached_input_tokens",
+      "cache_write_tokens",
+      "output_tokens",
+      "reasoning_tokens",
+      "total_provider_tokens"
+    ]
+  },
+  "baseline_pool": {
+    "protocol_version": "baseline-pool-v1",
+    "protocol_fingerprint": "ded8609b4172",
+    "descriptor": {
+      "version": "baseline-pool-v1",
+      "runner_contract_version": "workflow-runner-v9",
+      "runner_sha256": "b7216855199fabe3889d72f843e14a0d9b00acfa8f09ef074931a2df8da3c47c",
+      "qualification_generator_sha256": "cb549c9aacc1e1401dedff37b08e0d578aa91d491556dfd5e3814d52a567efe8",
+      "validator_sha256": "48fd29d25354ec4e0dae9c8f0e0f974105b67dfc737a64d50c4b06175362292e",
+      "sequence_id": "terraform-lifecycle-sequence-v0",
+      "sequence_contract": "feature-refactor-review",
+      "fixture_id": "large-hashicorp-terraform",
+      "fixture_scale": "large-project",
+      "initial_snapshot": {
+        "commit": "e02391ad384c9c38f1d7f40b853c0d2297348094",
+        "upstream": "https://github.com/hashicorp/terraform.git",
+        "dependency_lockfiles": []
+      },
+      "objective": "individual_tool_effectiveness",
+      "primary_metric": "cumulative provider-reported workflow tokens",
+      "tasks": [
+        {
+          "id": "terraform-lifecycle-feature-v0",
+          "order": 1,
+          "task_class": "feature-implementation",
+          "prompt_path": "sources/evaluations/fixtures/large/hashicorp-terraform/tasks/terraform-lifecycle-feature-v0/agent-prompt.txt",
+          "prompt_sha256": "16218607081ad81aa37126cae6524bd2e0d1a4678b3bfa14338789fa22efd346",
+          "seed_patch_sha256": "4743dd5ca0b107349c7e8520f57f2331a1b20d0c407fa322b451ea1f72f88f98",
+          "verifier_command": "sources/evaluations/fixtures/large/hashicorp-terraform/tasks/terraform-lifecycle-feature-v0/verify.sh",
+          "verifier_sha256": "a40e9a67054ea272eb6d9998f92e5e1987d2f74fad8a91ed791923427a44a95b",
+          "upstream_test_paths": [],
+          "compatibility_rebased_test_paths": [
+            "internal/policy/callback/lifecycle_v0_deferred_callbacks_test.go"
+          ],
+          "expected_model_concealed_paths": [
+            "internal/policy/callback/lifecycle_v0_deferred_callbacks_test.go"
+          ],
+          "model_concealed_paths": [
+            "internal/policy/callback/lifecycle_v0_deferred_callbacks_test.go"
+          ]
+        },
+        {
+          "id": "terraform-lifecycle-refactor-v0",
+          "order": 2,
+          "task_class": "behavior-preserving-refactor",
+          "prompt_path": "sources/evaluations/fixtures/large/hashicorp-terraform/tasks/terraform-lifecycle-refactor-v0/agent-prompt.txt",
+          "prompt_sha256": "e8cc801f917b737105f51e5b2e4a9ca87961ca29275e5d0bb5427c667613a441",
+          "seed_patch_sha256": "5124289095935ba7ad376c557b2d349b6b5e97864813a0f82f6672be357203fa",
+          "verifier_command": "sources/evaluations/fixtures/large/hashicorp-terraform/tasks/terraform-lifecycle-refactor-v0/verify.sh",
+          "verifier_sha256": "4c388b6781d48d71afa168fc71c1f8fdf80f464632dde49d4c70fda84e551ac7",
+          "upstream_test_paths": [],
+          "compatibility_rebased_test_paths": [],
+          "expected_model_concealed_paths": [],
+          "model_concealed_paths": []
+        },
+        {
+          "id": "terraform-lifecycle-review-v0",
+          "order": 3,
+          "task_class": "code-review-correction",
+          "prompt_path": "sources/evaluations/fixtures/large/hashicorp-terraform/tasks/terraform-lifecycle-review-v0/agent-prompt.txt",
+          "prompt_sha256": "1e85870d818d95ea07fefdd71443b67df2fc5c5e4e43fbc1beef14039fe9f339",
+          "seed_patch_sha256": "d63ea99bcb6025d6def80e6dc252ed6dc11f3a4a51af291423bfdc4ddddde776",
+          "verifier_command": "sources/evaluations/fixtures/large/hashicorp-terraform/tasks/terraform-lifecycle-review-v0/verify.sh",
+          "verifier_sha256": "2f4d1117aba75b24a9faf6769a317f62da9698f1a5dd43bd8414399969242b51",
+          "upstream_test_paths": [
+            "internal/cloud/backend_tfPolicyEvaluation_test.go"
+          ],
+          "compatibility_rebased_test_paths": [
+            "internal/cloud/lifecycle_v0_policy_summary_test.go"
+          ],
+          "expected_model_concealed_paths": [
+            "internal/cloud/backend_tfPolicyEvaluation_test.go",
+            "internal/cloud/lifecycle_v0_policy_summary_test.go"
+          ],
+          "model_concealed_paths": [
+            "internal/cloud/backend_tfPolicyEvaluation_test.go",
+            "internal/cloud/lifecycle_v0_policy_summary_test.go"
+          ],
+          "review_patch_path": "review-change.patch",
+          "review_patch_sha256": "55ca7b3135c61bd44affa72c1d74e701a8ee9fb717c3f9003805cf67a9692f0b"
+        }
+      ],
+      "model_facing_prompts": {
+        "rendering_contract": "sequential-model-facing-prompts-v2",
+        "profile_guidance_sha256": "f1d7a2cf7b0a7c1affd8bbb04705f073332ee6efc5f8f89f019b9e0cbacec4bb",
+        "tasks": [
+          {
+            "task_id": "terraform-lifecycle-feature-v0",
+            "order": 1,
+            "rendered_prompt_sha256": "f62f320d52a2dd5772c3335f76cb8526d110c294fe08a64e01289d9f6d364bfa"
+          },
+          {
+            "task_id": "terraform-lifecycle-refactor-v0",
+            "order": 2,
+            "rendered_prompt_sha256": "03c5f1278ec60898809f305121a8f121a3d203b1e07aeae982bef888faaddbda"
+          },
+          {
+            "task_id": "terraform-lifecycle-review-v0",
+            "order": 3,
+            "rendered_prompt_sha256": "d6f5dea173dfd749ca1646b9fa87f0f2dbaa5bcb2409937395ca1ff50fcfad91"
+          }
+        ]
+      },
+      "qualification": {
+        "path": "sources/evaluations/fixtures/large/hashicorp-terraform/qualification-lifecycle-v0.json",
+        "sha256": "e27ca0efb487c3200232fad0facfc8b3e718d7e0e8ac87a29bc8f9d7cfd29baf"
+      },
+      "baseline_profile": {
+        "profile_id": "baseline-bare-codex",
+        "profile_type": "control",
+        "enabled_surfaces": [
+          "codex-native-shell-edit"
+        ],
+        "disabled_overlaps": [
+          "all MCP servers",
+          "all token-saving surfaces",
+          "global Codex instructions",
+          "hooks",
+          "skills/plugins",
+          "warm indexes"
+        ]
+      },
+      "agent": {
+        "runtime_id": "codex-cli",
+        "provider": "openai",
+        "model": "gpt-5.6-luna",
+        "model_condition_id": "codex-openai-gpt-5-6-luna-xhigh",
+        "reasoning_effort": "xhigh"
+      },
+      "runtime_inputs": {
+        "timeout_seconds_per_task": 3600,
+        "docker_image": "token-eval-codex:latest",
+        "docker_image_identity": {
+          "image_ref": "token-eval-codex:latest",
+          "image_id": "sha256:6f86d01f2c63f5029c6bb874d8f3694c24d5cd567e3d09413eccc956ba3feafe",
+          "repo_digests": [
+            "token-eval-codex@sha256:6f86d01f2c63f5029c6bb874d8f3694c24d5cd567e3d09413eccc956ba3feafe"
+          ],
+          "repo_tags": [
+            "token-eval-codex:latest"
+          ]
+        },
+        "dockerfile_path": "sources/evaluations/fixtures/container/Dockerfile",
+        "dockerfile_sha256": "47c91967ce25014ce54879514f51d2ff0326651be1087209115eff4d358226b3",
+        "dependency_command": "go mod download",
+        "dependency_lockfiles": [],
+        "codex_runtime_condition": "codex-openai-gpt-5-6-luna-xhigh"
+      },
+      "isolation": {
+        "prompt_delivery": "sequential-one-task-at-a-time",
+        "seed_delivery_mode": "preseeded-composite",
+        "future_tasks_visible": false,
+        "future_seed_regressions_visible": true,
+        "verifier_assets_model_visible": false,
+        "git_baseline_true_root_at_lane_start": true,
+        "controller_verification": "final-only",
+        "prompt_sanitizer": "sanitize_task_prompt-v1",
+        "concealment": "declared-model-concealed-paths-removed-before-root-commit",
+        "model_concealed_paths": [
+          "internal/cloud/backend_tfPolicyEvaluation_test.go",
+          "internal/cloud/lifecycle_v0_policy_summary_test.go",
+          "internal/policy/callback/lifecycle_v0_deferred_callbacks_test.go"
+        ]
+      }
+    }
+  },
+  "selected_execution": {
+    "descriptor_sha256": "12ab23af60e7f95222088b4009343fb97c4e84c189c7cdd8782cb193eef4d0e9",
+    "descriptor": {
+      "version": "execution-condition-v1",
+      "sequence_id": "terraform-lifecycle-sequence-v0",
+      "execution_role": "individual_tool_treatment",
+      "selected_profile": {
+        "profile_id": "integrated-token-savior-codex-product-v2",
+        "profile_type": "individual_tool",
+        "component_ids": [
+          "token-savior-codex-product-v2"
+        ],
+        "enabled_surfaces": [
+          "retrieval-context",
+          "memory",
+          "compact-ops",
+          "mcp",
+          "product-authored-codex-guidance",
+          "codex-pre-tool-use-hook",
+          "codex-post-tool-use-hook"
+        ],
+        "disabled_overlaps": [
+          "all unlisted surfaces"
+        ],
+        "registry_entry_sha256": "ace8978a77773f1ebbe122ed26508d76e7c547f33f470e9958503df44986f21d",
+        "registry_entry": {
+          "id": "integrated-token-savior-codex-product-v2",
+          "profile_type": "individual_tool",
+          "objective_scope": "individual_tool_effectiveness",
+          "status": "screening-shortlist",
+          "enabled_surfaces": [
+            "retrieval-context",
+            "memory",
+            "compact-ops",
+            "mcp",
+            "product-authored-codex-guidance",
+            "codex-pre-tool-use-hook",
+            "codex-post-tool-use-hook"
+          ],
+          "disabled_overlaps": [
+            "all unlisted surfaces"
+          ],
+          "components": [
+            {
+              "component_id": "token-savior-codex-product-v2",
+              "surface": "retrieval-context+memory+compact-ops+mcp+product-guidance+pre-post-tool-hooks",
+              "role": "individual_tool"
+            }
+          ],
+          "install": {
+            "policy": "Install the pinned optimized Token Savior MCP surface, materialize its product-authored CLAUDE.md guidance verbatim into repository AGENTS.md for Codex discovery, and map the unchanged product Bash rewriter/capture scripts onto the current Codex PreToolUse/PostToolUse hooks.json schema."
+          },
+          "reset": {
+            "policy": "Delete lane-private CODEX_HOME, Token Savior state, generated AGENTS.md treatment block, hook configuration, audit logs, and background processes after evidence capture."
+          },
+          "evaluation_protocol": {
+            "tool_use_policy": "product-guided-natural",
+            "tool_state": "cold-auto-index+active-guidance-and-hooks",
+            "integration_state": "product-guided-host-adapted-codex-mcp-hooks",
+            "assignment_proof": "provider-free MCP initialize/tools-list, guidance receipt, current hooks.json, and direct product-hook smoke checks required"
+          },
+          "selection_rationale": "Experiment-owner direction on 2026-07-19 after the bounded MCP-only arm received zero natural Codex uptake and the product was found to be optimized primarily for Claude Code.",
+          "compatibility_deviation": "The pinned product writes obsolete Codex .codex/settings.json tool_complete configuration. The v2 adapter maps the unchanged product hook scripts to Codex 0.144 hooks.json PreToolUse/PostToolUse and records that host adaptation explicitly; guidance content remains verbatim product-authored text.",
+          "notes": "Canonical product-guided Codex successor to the bounded MCP-only ablation. Evaluator prompts remain neutral; any routing preference comes from the pinned product-authored guidance."
+        }
+      },
+      "model_facing_prompts": {
+        "rendering_contract": "sequential-model-facing-prompts-v2",
+        "profile_guidance_sha256": "cb08dba8b361975eb89669cc77d206861b05fc26b161a9215337dbb2d30a6366",
+        "tasks": [
+          {
+            "task_id": "terraform-lifecycle-feature-v0",
+            "order": 1,
+            "rendered_prompt_sha256": "e61f4623dd5e311cf6d1bff9080e853aa39b84489e2ce754f97ddc92fe7aa8be"
+          },
+          {
+            "task_id": "terraform-lifecycle-refactor-v0",
+            "order": 2,
+            "rendered_prompt_sha256": "03c5f1278ec60898809f305121a8f121a3d203b1e07aeae982bef888faaddbda"
+          },
+          {
+            "task_id": "terraform-lifecycle-review-v0",
+            "order": 3,
+            "rendered_prompt_sha256": "d6f5dea173dfd749ca1646b9fa87f0f2dbaa5bcb2409937395ca1ff50fcfad91"
+          }
+        ]
+      },
+      "tool_adapter": {
+        "tool_id": "token-savior-codex-product-v2",
+        "tool_manifest": "scripts/run_codex_fixture_evaluation.py:TOOL_CONFIGS",
+        "tool_manifest_sha256": "1a68098ff17f6e2cc35f598ad26d4e3c4959f927f3baebc855bb49126fc5644b",
+        "tool_config": {
+          "display_name": "Token Savior product-guided Codex integration v2",
+          "lane_name": "integrated-token-savior-codex-product-v2",
+          "surface": "integrated-mcp+product-authored-guidance+codex-pre-post-tool-hooks",
+          "mcp_server": "token-savior",
+          "allowed_terms": [
+            "token-savior",
+            "token_savior",
+            "ts"
+          ],
+          "data_dir_name": "token-savior-codex-product-v2",
+          "mcp_command": "/opt/data/opt/uv/uv",
+          "mcp_args": [
+            "tool",
+            "run",
+            "--from",
+            "/opt/data/tool-candidates/token-savior/dist/token_savior_recall-4.4.1-py3-none-any.whl",
+            "--with",
+            "mcp",
+            "token-savior"
+          ],
+          "env": {
+            "PROJECT_ROOT": "{repo}",
+            "WORKSPACE_ROOTS": "{repo}",
+            "CLAUDE_PROJECT_ROOT": "{repo}",
+            "TOKEN_SAVIOR_PROFILE": "optimized",
+            "TS_THIN_SCHEMAS": "1",
+            "TS_CAPTURE_DISABLED": "0",
+            "TS_HOME": "{tool_data_dir}",
+            "TOKEN_SAVIOR_CLIENT": "codex",
+            "TS_BASH_COMPACT": "1",
+            "TS_BASH_REWRITE": "1",
+            "TS_BASH_REWRITE_LOG": "{tool_data_dir}/bash-rewrites.jsonl"
+          },
+          "mounts": [
+            "/opt/data/tool-candidates/token-savior"
+          ],
+          "tool_manifest_identity": "current-file-v1",
+          "diff_exclude_paths": [
+            "AGENTS.md"
+          ],
+          "codex_features": {
+            "hooks": true
+          },
+          "codex_hook_bypass_trust": true,
+          "host_integration": {
+            "controller_install_commands": [
+              [
+                "python3",
+                "{repository_root}/scripts/install_token_savior_codex_product.py",
+                "--source-root",
+                "/opt/data/tool-candidates/token-savior",
+                "--expected-commit",
+                "ff42ef14cc972dad5470e0ca8101e4501e00600f",
+                "--codex-home",
+                "{codex_home}",
+                "--repo",
+                "{repo}",
+                "--receipt",
+                "{tool_data_dir}/codex-product-installation.json"
+              ],
+              [
+                "python3",
+                "{repository_root}/scripts/probe_token_savior_codex_hooks.py",
+                "--source-root",
+                "/opt/data/tool-candidates/token-savior",
+                "--repo",
+                "{repo}",
+                "--state-dir",
+                "{tool_data_dir}/hook-probe-state",
+                "--receipt",
+                "{tool_data_dir}/codex-hook-probe.json"
+              ]
+            ],
+            "install_commands": [],
+            "verify_commands": [
+              [
+                "python3",
+                "-c",
+                "import json; from pathlib import Path; r=Path('AGENTS.md').read_text(); h=json.loads(Path('{codex_home}/hooks.json').read_text()); assert 'TOKEN_SAVIOR_PRODUCT_GUIDANCE_BEGIN' in r; assert set(('PreToolUse','PostToolUse')).issubset(h['hooks'])"
+              ]
+            ],
+            "required_files": [
+              "{repo}/AGENTS.md",
+              "{codex_home}/hooks.json",
+              "{tool_data_dir}/codex-product-installation.json",
+              "{tool_data_dir}/codex-hook-probe.json"
+            ],
+            "timeout_seconds": 120
+          },
+          "mcp_handshake": {
+            "required": true,
+            "method": "initialize-and-tools-list",
+            "timeout_seconds": 60
+          },
+          "default_tool_state": "cold-auto-index+active-guidance-and-hooks",
+          "compatibility_deviation": "The pinned product's Codex descriptor targets obsolete .codex/settings.json tool_complete hooks. This versioned host adapter maps the unchanged product hook scripts to Codex 0.144 hooks.json PreToolUse/PostToolUse while preserving product-authored guidance verbatim in AGENTS.md."
+        },
+        "tool_config_sha256": "60f534bcd28419f50e1edd47de0b647cc46db0e54ae126e98222d7096f4e8ef5",
+        "tool_state": "cold-auto-index+active-guidance-and-hooks",
+        "tool_use_policy": "product-guided-natural",
+        "command_identity": {
+          "kind": "mcp_command",
+          "command": [
+            "/opt/data/opt/uv/uv",
+            "tool",
+            "run",
+            "--from",
+            "/opt/data/tool-candidates/token-savior/dist/token_savior_recall-4.4.1-py3-none-any.whl",
+            "--with",
+            "mcp",
+            "token-savior"
+          ]
+        },
+        "binary_identity": {
+          "executable_token": "/opt/data/opt/uv/uv",
+          "resolved_path": "/opt/data/opt/uv/uv",
+          "realpath": "/opt/data/opt/uv/uv",
+          "sha256": "dc407e8ebb7903e94580217e564e544b231f16ce2a697c247b71632bffe35b35",
+          "metadata": {
+            "size": 58002784,
+            "mode": "-rwxr-xr-x",
+            "uid": 10000,
+            "gid": 10000,
+            "mtime_ns": 1783498937309771510
+          },
+          "version": {
+            "command": [
+              "/opt/data/opt/uv/uv",
+              "--version"
+            ],
+            "environment_path": "/opt/data/.local/bin:/opt/data/opt/go/bin:/opt/data/opt/uv:/opt/data/opt/node-v24.18.0-linux-x64/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+            "captured": true,
+            "exit_code": 0,
+            "output": "uv 0.11.6 (x86_64-unknown-linux-musl)",
+            "truncated": false
+          }
+        },
+        "source_identity": [
+          {
+            "path": "/opt/data/tool-candidates/token-savior",
+            "exists": true,
+            "kind": "directory",
+            "git_head": "ff42ef14cc972dad5470e0ca8101e4501e00600f"
+          }
+        ]
+      },
+      "runtime": {
+        "docker_image": "token-eval-codex:latest",
+        "docker_image_identity": {
+          "image_ref": "token-eval-codex:latest",
+          "image_id": "sha256:6f86d01f2c63f5029c6bb874d8f3694c24d5cd567e3d09413eccc956ba3feafe",
+          "repo_digests": [
+            "token-eval-codex@sha256:6f86d01f2c63f5029c6bb874d8f3694c24d5cd567e3d09413eccc956ba3feafe"
+          ],
+          "repo_tags": [
+            "token-eval-codex:latest"
+          ]
+        },
+        "dockerfile_path": "sources/evaluations/fixtures/container/Dockerfile",
+        "dockerfile_sha256": "47c91967ce25014ce54879514f51d2ff0326651be1087209115eff4d358226b3",
+        "fixture_runner_path": "scripts/run_codex_fixture_evaluation.py",
+        "fixture_runner_sha256": "1a68098ff17f6e2cc35f598ad26d4e3c4959f927f3baebc855bb49126fc5644b",
+        "mcp_probe_path": "scripts/probe_mcp_stdio.py",
+        "mcp_probe_sha256": "7c06ea36ee5cac933a97140b84a41405fc99b45152388e8d7c6659136af698fd",
+        "codex_entrypoint_path": "sources/evaluations/fixtures/container/codex-entrypoint.sh",
+        "codex_entrypoint_sha256": "8715fe37cb1fa3823f5f05493bc9681ce7ffc72126dfec4d64d448762c550c3c",
+        "timeout_seconds_per_task": 3600,
+        "network_isolation": {
+          "provider_access": true,
+          "model_shell_network_access": false,
+          "model_shell_enforcement": "seccomp denies AF_INET and AF_INET6 socket creation for the shell process and descendants",
+          "codex_web_search": "disabled",
+          "external_retrieval_audit": "fail-closed"
+        },
+        "isolation_policy": "fresh lane-specific Codex home/tool data; provider-only network with model shell and Codex web search disabled; sequential one-task prompt delivery; concealed tests removed before model-visible root commit"
+      },
+      "dependencies": {
+        "command": "go mod download",
+        "command_sha256": "42a8263a643ccbe692d70752ffdd8cea328fc2d3190677df1485ee06f55b350a",
+        "lockfiles": []
+      },
+      "agent_condition": {
+        "runtime_id": "codex-cli",
+        "provider": "openai",
+        "model": "gpt-5.6-luna",
+        "model_condition_id": "codex-openai-gpt-5-6-luna-xhigh",
+        "reasoning_effort": "xhigh",
+        "codex_version_condition": "captured-at-run-and-bound-to-record"
+      },
+      "isolation": {
+        "prompt_delivery": "sequential-one-task-at-a-time",
+        "seed_delivery_mode": "preseeded-composite",
+        "future_tasks_visible": false,
+        "future_seed_regressions_visible": true,
+        "controller_verification": "final-only",
+        "verifier_assets_model_visible": false,
+        "model_concealed_paths": [
+          "internal/cloud/backend_tfPolicyEvaluation_test.go",
+          "internal/cloud/lifecycle_v0_policy_summary_test.go",
+          "internal/policy/callback/lifecycle_v0_deferred_callbacks_test.go"
+        ]
+      },
+      "baseline_pool_reference": {
+        "protocol_version": "baseline-pool-v1",
+        "protocol_fingerprint": "ded8609b4172",
+        "comparison_policy": "paired baseline and treatment must share this baseline pool fingerprint and replicate"
+      }
+    }
+  }
+}

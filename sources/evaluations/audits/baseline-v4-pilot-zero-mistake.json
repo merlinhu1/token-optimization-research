@@ -1,0 +1,204 @@
+{
+  "schema_version": 1,
+  "task_family_generation": "baseline-v4",
+  "status": "passed-all-sequences-zero-incident",
+  "passed": true,
+  "matrix_id": "workflow-matrix-20260728T102818972913Z-p3197199-r0",
+  "source_commit": "8833821d15f5a28d88fd52717b818bdf84202937",
+  "source_tree": "2fe28dc46354533c940bd457c0395918f0f005a4",
+  "started_by_explicit_authorization": true,
+  "provider_backed": true,
+  "publication_status": "two-first-valid-compact-sessions-recovered-after-separate-post-publication-contract-fixes",
+  "rerun_allowed": false,
+  "rerun_policy": "Both paid Baseline V4 r0 identities are occupied. Never rerun either sequence for a favorable verifier, audit, or publication outcome.",
+  "treatment_gate": {
+    "beets-lifecycle-sequence-v0": "passed-zero-incident",
+    "terraform-lifecycle-sequence-v0": "passed-zero-incident"
+  },
+  "sequences": [
+    {
+      "sequence_id": "beets-lifecycle-sequence-v0",
+      "baseline_session_id": "baseline-beets-20260728-p-fcc8438d2077-r0",
+      "passed": true,
+      "trajectory_review_complete": true,
+      "independent_source_review_passed": true,
+      "reviewer_role": "independent",
+      "model_condition": {
+        "id": "codex-openai-gpt-5-6-sol-high",
+        "model": "gpt-5.6-sol",
+        "reasoning_effort": "high"
+      },
+      "codex_exit_codes": [
+        0,
+        0,
+        0
+      ],
+      "thread_continuity_errors": [],
+      "verifier_integrity_passed": true,
+      "tool_isolation_audit_exit_code": 0,
+      "final_verifier_exit_code": 0,
+      "per_task_verifier_exit_codes": [
+        0,
+        0,
+        0
+      ],
+      "provider_usage": {
+        "measurement_source": "codex-jsonl-usage-events",
+        "fresh_input_tokens": 17833,
+        "cached_input_tokens": 69376,
+        "cache_write_tokens": 0,
+        "output_tokens": 991,
+        "reasoning_tokens": 0,
+        "total_provider_tokens": 88200,
+        "tokens_per_accepted_task": 29400.0,
+        "accounting_basis": "Codex-reported token volume; monetary cost estimation is out of scope",
+        "weighted_token_cost": 30716.6,
+        "weighted_token_cost_formula": "fresh_input + 0.1*cached_input + 6*output"
+      },
+      "observed_unique_model_caused_incidents": 0,
+      "observed_corrected_implementation_mistakes": 0,
+      "observed_unresolved_defects": 0,
+      "observed_prohibited_operations": 0,
+      "observed_unnecessary_exploration_incidents": 0,
+      "observed_model_caused_failed_commands": 0,
+      "observed_code_rework_events": 0,
+      "observed_verifier_or_environment_failures": 0,
+      "frozen_protocol": {
+        "protocol_id": "beets-lifecycle-sequence-v0-baseline-bare-codex-de39716463bf",
+        "path": "sources/evaluations/protocols/beets-lifecycle-sequence-v0-baseline-bare-codex-de39716463bf.json",
+        "sha256": "cf6d53501d23e3f5f62d1c6eb53f7cad8f6c00559946c5e5d315fb5266007ba0"
+      },
+      "qualification_sha256": "62d841b17636e669440ca040152d5792b08851bea6cc139a47777f89b34a3c80",
+      "baseline_pool_fingerprint": "fcc8438d2077",
+      "operational_classification": "accepted-first-valid-provider-sample",
+      "independent_review_path": "sources/evaluations/audits/baseline-v4-pilot-20260728/independent-beets-lifecycle-sequence-v0-review.txt",
+      "findings": [
+        "all three prescribed model commands executed exactly once with exit zero and no retry, exploration, correction, or rework",
+        "all three final task verifiers, verifier integrity, tool isolation, thread continuity, compact manifest, and provider accounting passed",
+        "the post-merge rollback was one separate controller-publication incident involving three stale occupied-state test expectations"
+      ],
+      "source_commit": "8833821d15f5a28d88fd52717b818bdf84202937",
+      "source_tree": "2fe28dc46354533c940bd457c0395918f0f005a4"
+    },
+    {
+      "sequence_id": "terraform-lifecycle-sequence-v0",
+      "baseline_session_id": "baseline-terraform-20260728-p-5811b463c1e9-r0",
+      "source_commit": "9b9e4d27a6bbc8eedde76f467e95d42274c492d0",
+      "source_tree": "65836934e56355d548d930016501963427304ae4",
+      "passed": true,
+      "trajectory_review_complete": true,
+      "independent_source_review_passed": true,
+      "reviewer_role": "independent",
+      "model_condition": {
+        "id": "codex-openai-gpt-5-6-sol-high",
+        "model": "gpt-5.6-sol",
+        "reasoning_effort": "high"
+      },
+      "codex_exit_codes": [
+        0,
+        0,
+        0
+      ],
+      "thread_continuity_errors": [],
+      "verifier_integrity_passed": true,
+      "tool_isolation_audit_exit_code": 0,
+      "final_verifier_exit_code": 0,
+      "per_task_verifier_exit_codes": [
+        0,
+        0,
+        0
+      ],
+      "provider_usage": {
+        "measurement_source": "codex-jsonl-usage-events",
+        "fresh_input_tokens": 32623,
+        "cached_input_tokens": 54272,
+        "cache_write_tokens": 0,
+        "output_tokens": 916,
+        "reasoning_tokens": 0,
+        "total_provider_tokens": 87811,
+        "tokens_per_accepted_task": 29270.333333333332,
+        "weighted_token_cost": 43546.2,
+        "weighted_token_cost_formula": "fresh_input + 0.1*cached_input + 6*output",
+        "accounting_basis": "Codex-reported token volume plus owner-defined weighted token-cost units; reasoning is an output subset and is not additive"
+      },
+      "observed_unique_model_caused_incidents": 0,
+      "observed_corrected_implementation_mistakes": 0,
+      "observed_unresolved_defects": 0,
+      "observed_prohibited_operations": 0,
+      "observed_unnecessary_exploration_incidents": 0,
+      "observed_model_caused_failed_commands": 0,
+      "observed_code_rework_events": 0,
+      "observed_verifier_or_environment_failures": 0,
+      "frozen_protocol": {
+        "protocol_id": "terraform-lifecycle-sequence-v0-baseline-bare-codex-93ad6e0a1c6f",
+        "path": "sources/evaluations/protocols/terraform-lifecycle-sequence-v0-baseline-bare-codex-93ad6e0a1c6f.json",
+        "sha256": "c421c23dfedeec72d9de33fbc1088ab41330a75999b19026c18d43613a1a6e73"
+      },
+      "qualification_sha256": "08a37382172643a0d4d4dc4c1f43751b4774c63c576419dde715849c30b1d96b",
+      "baseline_pool_fingerprint": "5811b463c1e9",
+      "operational_classification": "accepted-first-valid-provider-sample",
+      "independent_review_path": "sources/evaluations/audits/baseline-v4-pilot-terraform-20260728/independent-terraform-trajectory-review.txt",
+      "findings": [
+        "all three prescribed model commands executed exactly once with exit zero and no retry, exploration, correction, or rework",
+        "all three final task verifiers, verifier integrity, tool isolation, thread continuity, compact manifest, and provider accounting passed",
+        "the post-merge rollback was one separate controller-publication incident involving three stale occupied-awaiting-audit test expectations"
+      ]
+    }
+  ],
+  "totals": {
+    "provider_tokens": 176011,
+    "weighted_token_cost": 74262.8,
+    "weighted_token_cost_formula": "fresh_input + 0.1*cached_input + 6*output",
+    "model_commands_attempted": 6,
+    "model_commands_exit_zero": 6,
+    "model_side_focused_checks_passed": 6,
+    "repeated_final_task_verifiers_passed": 6,
+    "repeated_final_task_verifiers_total": 6,
+    "retained_sessions": 2
+  },
+  "known_controller_failures": [
+    "The initial post-publication contract suite contained three stale occupied-state expectations: current V4 pool classification, mandatory absence of every V4 attempt receipt, and nonzero-replicate error precedence after occupancy.",
+    "The original matrix summary retained a contradictory skipped field after a successful merge; the immutable summary is preserved and future summaries clear that field after a merge.",
+    "The Terraform post-publication contract suite contained three stale occupied-awaiting-audit expectations; the exact compact session was recovered after state-generalized test repairs without a provider rerun."
+  ],
+  "recovery_validation": {
+    "provider_rerun": false,
+    "sessions_recovered_from_original_compact_bundles": true,
+    "contract_tests": 237,
+    "contract_tests_passed": 237,
+    "repository_validation_passed": true,
+    "runbook_freshness_passed": true,
+    "truthmark_check_passed": true,
+    "truthmark_index_passed": true,
+    "source_bundle_byte_identical": true
+  },
+  "notes": "Verifier outcomes remain diagnostic for provider-token eligibility. Both sequence-specific Baseline V4 pilots passed the stricter independent zero-incident gate. Both r0 identities are immutable and non-rerunnable. The Baseline V4 qualification authority may set treatment_unlocked=true for provider-free treatment-protocol work; paid treatment still requires a separately frozen, validated, dry-run-certified protocol and explicit authorization.",
+  "matrix_ids": [
+    "workflow-matrix-20260728T102818972913Z-p3197199-r0",
+    "workflow-matrix-20260728T140706909793Z-p3249263-r0"
+  ],
+  "initial_matrix_validations": {
+    "beets": {
+      "passed": false,
+      "repository_validation_exit_code": 0,
+      "contract_suite_exit_code": 1,
+      "diff_check_exit_code": 0,
+      "truthmark_check_exit_code": 0,
+      "truthmark_index_exit_code": 0,
+      "registry_rolled_back": true
+    },
+    "terraform": {
+      "passed": false,
+      "repository_validation_exit_code": 0,
+      "contract_suite_exit_code": 1,
+      "diff_check_exit_code": 0,
+      "truthmark_check_exit_code": 0,
+      "truthmark_index_exit_code": 0,
+      "registry_rolled_back": true
+    }
+  },
+  "preserved_matrix_evidence_manifests": [
+    "sources/evaluations/audits/baseline-v4-pilot-20260728/manifest.json",
+    "sources/evaluations/audits/baseline-v4-pilot-terraform-20260728/manifest.json"
+  ]
+}

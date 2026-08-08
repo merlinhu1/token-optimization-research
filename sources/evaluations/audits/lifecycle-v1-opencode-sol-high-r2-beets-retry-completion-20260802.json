@@ -1,0 +1,62 @@
+{
+  "schema_version": 1,
+  "audit_id": "lifecycle-v1-opencode-sol-high-r2-beets-retry-completion-20260802",
+  "date": "2026-08-02",
+  "status": "accepted-unpaired-runtime-replicate",
+  "scope": "Owner-directed completion of bare OpenCode GPT-5.6 Sol/high Lifecycle V1 r2 Beets after the retained original Beets r2 ingress rejection.",
+  "retry_identity": {
+    "replicate_index": 2,
+    "retry_attempt_receipt": "sources/evaluations/audits/lifecycle-v1-opencode-sol-high-r2-attempts/beets-r2-retry-1.json",
+    "retry_authorization": "sources/evaluations/audits/lifecycle-v1-opencode-sol-high-r2-beets-retry-authorization-20260802.json",
+    "original_failed_beets_receipt": "sources/evaluations/audits/lifecycle-v1-opencode-sol-high-r2-attempts/beets-r2.json",
+    "original_rejection_audit": "sources/evaluations/audits/lifecycle-v1-opencode-sol-high-r2-beets-ingress-rejection-20260802.json",
+    "new_r3_replicate_created": false
+  },
+  "accepted_sessions": [
+    {
+      "sequence_id": "fastify-lifecycle-sequence-v1",
+      "session_id": "opencode-fastify-20260802-p-72ac148f730b-r2",
+      "artifact_manifest_sha256": "c7379ef269cfd9ef5e0c59bf75e95887dc7f39ee2ad7af860ccad255f3540517",
+      "tasks_passed": 3,
+      "usage": {
+        "fresh_input_tokens": 109919,
+        "cached_input_tokens": 1974272,
+        "output_tokens": 14928,
+        "reasoning_tokens": 4085,
+        "raw_provider_tokens": 2099119,
+        "weighted_tokens": 396914.2
+      }
+    },
+    {
+      "sequence_id": "beets-lifecycle-sequence-v1",
+      "session_id": "opencode-beets-20260802-p-d8cfc5066f76-r2",
+      "artifact_manifest_sha256": "3a441da156d895904d1b566a23bd93a176061041b920736b1965d160fc497d9f",
+      "tasks_passed": 3,
+      "usage": {
+        "fresh_input_tokens": 117333,
+        "cached_input_tokens": 2020352,
+        "output_tokens": 16185,
+        "reasoning_tokens": 6416,
+        "raw_provider_tokens": 2153870,
+        "weighted_tokens": 416478.2
+      }
+    }
+  ],
+  "aggregate": {
+    "workflow_count": 2,
+    "accepted_task_count": 6,
+    "fresh_input_tokens": 227252,
+    "cached_input_tokens": 3994624,
+    "output_tokens": 31113,
+    "reasoning_tokens": 10501,
+    "raw_provider_tokens": 4252989,
+    "weighted_tokens": 813392.4
+  },
+  "interpretation": {
+    "complete_serial_runtime_sample": true,
+    "comparison_panel_published": false,
+    "reason": "No matched canonical bare-Codex r2 control pair is retained; comparative deltas and a matched panel would therefore be unsupported.",
+    "original_rejected_beets_evidence_replaced": false,
+    "original_rejected_beets_evidence_retained": true
+  }
+}

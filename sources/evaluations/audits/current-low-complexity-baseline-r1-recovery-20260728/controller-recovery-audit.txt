@@ -1,0 +1,91 @@
+## Verdict
+
+- **GO — provider-free recovery of the three preserved r1 sessions.**
+- **NO-GO — any r1 rerun or provider respend.** All three r1 identities are permanently occupied by immutable parent and child attempt receipts.
+- **Current canonical publication is temporarily NO-GO** until the stale contract tests and publication surfaces are corrected and the full post-merge suite passes. The evidence itself is admissible and does not require rerunning.
+
+## Evidence certified
+
+Candidate source:
+
+- Repository HEAD: `26d548aa98033cd752a948c09afa533644784be9`
+- Tree: `57f3da370de02e9af117800a77d1e48b3a393ff1`
+- Matrix: `/opt/data/eval-workflow-lanes/workflow-matrix-20260728T172825050163Z-p3511064-r1/matrix-summary.json`
+- Matrix SHA-256: `37e0578b2094e67e85d4363e4043391fa733dff8daf44b66d560471e0370559f`
+
+All three lanes exited `0`, produced one unique session, passed strict compact ingress, had 3/3 model commands and 3/3 final verifiers pass, zero usage warnings, no isolation/retrieval violations, and no operational retries:
+
+| Session | Provider tokens | Protocol SHA-256 | `changes.diff` | `evidence.jsonl.gz` | `run.json` |
+|---|---:|---|---|---|---|
+| `baseline-fastify-20260728-p-bb0e89ed9794-r1` | 90,463 | `c11710aeda868a697a75fa75c45209641ec4ac2c30fc3fd5abea8a2add22b0b0` | `acb36f8f1296ad42b67866cc22b17d78ef44d79d37473db5152a50c8b9b58e7d` | `84835d0f0e25fe7d0915f4ada939b8ae65718ad36b2324012200a965f8deeb13` | `037c75b890032c049295d6e15d0e4d95552f5a95d9e7feabeab8e3a5f64a36d6` |
+| `baseline-beets-20260728-p-fcc8438d2077-r1` | 87,396 | `cf6d53501d23e3f5f62d1c6eb53f7cad8f6c00559946c5e5d315fb5266007ba0` | `dfe08b58b7703423bac6abf1ea702bd344113c53902e167e0e6c11fab042c17a` | `9827bef0140b3ec745abb3da17c15fd0083fdaf1b8459f9823479a7468ad9003` | `9512f2cf6a779b8749904505b10d6f2ee7082df163e2d14bb5905d415f2c072c` |
+| `baseline-terraform-20260728-p-5811b463c1e9-r1` | 87,816 | `c421c23dfedeec72d9de33fbc1088ab41330a75999b19026c18d43613a1a6e73` | `615536d0a008a69b9a6dc56ac86c4c17f9cbdea8e05e0b0bed232bfdbe2815ce` | `d28412f0d2f6aa820c01df438f602ec329bf63c276bc5d80ec50d2e538b41dc5` | `4c2933ec2d10a64b17c747bec1ff0f9524b94897e7650d86bdbb91d434d9e18a` |
+
+Aggregate r1 usage:
+
+- Fresh input: `74,720`
+- Cached input: `187,904`
+- Output: `3,051`
+- Total provider tokens: **`265,675`**
+- Weighted token cost: **`111,816.4`**
+- After recovery: **98 sessions = 32 controls + 66 treatments**
+- Current r0+r1 low-complexity controls: **518,309 provider tokens**, **210,600.6 weighted units**
+
+## Receipt and isolation disposition
+
+Canonical parent receipt hashes:
+
+- Fastify: `0395ee4ee5b80d52b3e133cbb0a703d0bde42c1182d8b8348a008984d7388893`
+- Beets: `329c49dcad550464e2dce1ed3d02690e35727f6e88291c67702c5bd613aa4d31`
+- Terraform: `4ab97500851762fdae8ed35f288f39f421b88c0fe849bcbe987f6ee43dfaecaf`
+
+Each child direct-runner receipt has the same immutable core identity as its parent receipt; only `orchestrator` and `reserved_at` differ. **Do not copy or rewrite child receipts into the canonical repository.**
+
+No cross-lane contamination found:
+
+- Each lane registry contains the original 95 unchanged records plus only its own new session.
+- Each compact session exists in exactly one corresponding lane.
+- Canonical destination roots are absent after rollback.
+- No r1 target exists in the canonical 95-session registry.
+- Each bundle has exactly four files and a valid three-entry manifest.
+- Embedded evidence has 50 unique safe logical paths per lane, with no duplicates or path escapes.
+- No comparisons were generated.
+
+## Exact safe recovery procedure
+
+1. Preserve the matrix root and all three lane checkouts unchanged.
+2. Complete the state-aware test repair in a disposable rehearsal tree. The current uncommitted helper is not durable: it merely materializes `HEAD`, so once receipts/sessions are committed it will no longer represent an unoccupied slot. The helper must explicitly remove only current-campaign r1/r2 receipts, matching registry records, and corresponding compact roots in the disposable probe—or use a fully synthetic unoccupied authority.
+3. Acquire the shared production lock.
+4. Snapshot `data/workflow-sessions.json`, generated runbook, cumulative accounting audit, and every documentation/analysis authority changed by recovery.
+5. Reuse the original `lane_results` and call the canonical per-lane `lane_session_records` plus `pilot_session_artifacts_valid`.
+6. Copy only each session’s four-file compact directory with `copy_artifacts_for_sessions`. **Never copy a whole lane registry and never copy the child receipt directory.**
+7. Append all three extracted session records in one `merge_registry` transaction; require `matrix_outputs_complete(... planned_job_count=3)` and zero rejected IDs/errors.
+8. Verify every destination file against the source hashes above.
+9. Publish no comparisons.
+10. Regenerate:
+    - `docs/evaluations/operations/runbook.md`
+    - `sources/evaluations/audits/codex-cumulative-usage-accounting-20260718.json`
+11. Record a provider-free recovery audit with `provider_calls: 0`, `provider_tokens: 0`, the matrix hash, all parent/child receipt hashes, source/destination hashes, original rollback, and validation results.
+12. Run the complete repository, contract, Truthmark, generated-runbook, and diff checks inside the rollback guard. On failure, roll back only canonical publication; preserve receipts and lane evidence.
+
+## Required stale updates
+
+- `scripts/test_workflow_evaluation_contract.py` — 20 failures were stale state assumptions:
+  - 17 authority-mutation subtests;
+  - one “all six unoccupied” test;
+  - one unapproved-model test;
+  - one serialization test.
+- `data/workflow-sessions.json` — append the three exact lane records.
+- `docs/evaluations/operations/runbook.md` — regenerate; remove r1 paid commands, retain only genuinely unoccupied r2 commands.
+- Reconcile:
+  - `README.md`
+  - `docs/evaluations/README.md`
+  - `sources/evaluations/README.md`
+  - `docs/research/roadmap.md`
+  - `docs/truthmark/engineering/research/current-findings.md`
+  - `sources/evaluations/audits/current-low-complexity-control-token-cost-20260728.json` or a versioned successor.
+
+## Workspace impact
+
+- I made **no writes and no provider calls**.
+- The repository currently has a concurrent uncommitted test patch plus three untracked parent receipts; these were not created or modified by this audit.

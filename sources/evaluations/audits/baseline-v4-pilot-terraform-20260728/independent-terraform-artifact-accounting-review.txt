@@ -1,0 +1,40 @@
+- **Verdict:** The Terraform pilot compact session is internally valid, token-accounting eligible, and **safe to republish from preserved bytes without a provider rerun**. The paid identity is occupied; rerunning it would be incorrect.
+
+- **Artifact integrity**
+  - Exact four-file compact root; all entries are regular, non-symlink files.
+  - Manifest covers exactly `changes.diff`, `evidence.jsonl.gz`, and `run.json`; all SHA-256 checks pass.
+  - Gzip is valid: 8,966 compressed bytes, 61,596 decompressed bytes, 50 newline-terminated JSONL records.
+  - All evidence rows have exact `{path, content}` shape, unique canonical safe POSIX-relative paths, and no duplicate JSON keys.
+  - No credential/key patterns found; the source auth home is redacted.
+  - Concurrent recovery copied all four files into the repository byte-for-byte identically to the preserved lane bundle.
+
+- **Identity reconciliation**
+  - Source: commit `9b9e4d27a6bbc8eedde76f467e95d42274c492d0`, tree `65836934e56355d548d930016501963427304ae4`.
+  - Session: `baseline-terraform-20260728-p-5811b463c1e9-r0`; baseline profile, replicate 0, pool `5811b463c1e9`.
+  - Protocol SHA-256: `c421c23dfedeec72d9de33fbc1088ab41330a75999b19026c18d43613a1a6e73`.
+  - Qualification SHA-256: `08a37382172643a0d4d4dc4c1f43751b4774c63c576419dde715849c30b1d96b`.
+  - Selected-execution SHA-256: `23c31e3a1db65628752ae98eebaa1aa5413e61333db3dc00b9916bbf0d7a54e3`.
+  - Run, registry row, protocol, matrix expected binding, and recomputed selected-execution descriptor all agree. All three rendered prompt hashes also match.
+  - Matrix and child direct-runner attempt receipts have identical immutable identity fields. Their bytes differ only as expected in `orchestrator` and reservation timestamp.
+
+- **Continuity and isolation**
+  - All three tasks used thread `019fa90d-a705-7430-a061-2e7873d1be37`; no retries or continuity errors.
+  - Three Codex exits, all task verifiers, final verifier, verifier integrity, and tool-isolation audit exited/passed cleanly.
+  - No forbidden-tool, external-retrieval, or pass-through command hits; no MCP servers, hooks, global instructions, skills/plugins, or warm indexes were active.
+
+- **Exact provider accounting**
+
+  | Task | Fresh input | Cached input | Output | Reasoning subset | Cache write | Provider total | Weighted cost |
+  |---|---:|---:|---:|---:|---:|---:|---:|
+  | Feature | 27,169 | 0 | 291 | 0 | 0 | 27,460 | 28,915.0 |
+  | Refactor | 2,716 | 26,112 | 322 | 0 | 0 | 29,150 | 7,259.2 |
+  | Review | 2,738 | 28,160 | 303 | 0 | 0 | 31,201 | 7,372.0 |
+  | **Total** | **32,623** | **54,272** | **916** | **0** | **0** | **87,811** | **43,546.2** |
+
+  Weighted token cost is `fresh + 0.1×cached + 6×output`; reasoning is not added separately and cache write is excluded.
+
+- **Publication incident:** The lane itself exited 0 and was strictly merged before rollback. The matrix failed only because the post-publication contract suite had three stale occupied-state expectations; repository validation, diff check, and both Truthmark checks passed. This is a controller/publication incident, not an artifact or accounting defect.
+
+- **Minor provenance caveat:** The retained semantic source citation names Codex 0.144.0 while this run used 0.145.0. The raw 0.145.0 events nevertheless exhibit the same monotonic, single-thread cumulative-snapshot behavior and reconcile exactly under final-snapshot accounting.
+
+- **Files created or modified by me:** None. Concurrent recovery changes observed in the repository were not mine.

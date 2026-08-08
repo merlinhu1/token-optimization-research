@@ -1,0 +1,138 @@
+{
+  "schema_version": 1,
+  "audit_id": "opencode-successive-native-tool-selection-20260730",
+  "date": "2026-07-30",
+  "request": "Evaluate bare OpenCode again, then evaluate the next five installed tools with OpenCode.",
+  "selection_rule": {
+    "primary_order": "ascending raw provider tokens in the latest accepted compatible GPT-5.6 Sol/high panel",
+    "secondary_metric": "weighted tokens = fresh input + 0.1 * cached input + 6 * output",
+    "exclusions": [
+      "products already evaluated with OpenCode: TokenJuice, Serena, Snip, Cartog, Headroom",
+      "products without a pinned native or host-agnostic OpenCode integration surface"
+    ],
+    "canonical_profile_policy": "Use the latest valid full-product profile rather than historical partial or neutral ablations, then map only product-authored native or host-agnostic surfaces to OpenCode."
+  },
+  "ranking_source": {
+    "path": "sources/evaluations/audits/codex-openai-gpt-5-6-sol-high-r0-panel-results-20260729.json",
+    "sha256": "5bd780c3d0ecd534cefe1dcd8927ad1add9fa14019e602e362578175ba1e6bd3",
+    "model_condition_id": "codex-openai-gpt-5-6-sol-high",
+    "replicate_index": 0
+  },
+  "fresh_baseline": {
+    "profile_id": "runtime-opencode-codex-product-v1",
+    "model_condition_id": "opencode-openai-gpt-5-6-sol-high",
+    "replicate_index": 1,
+    "workflows": [
+      "fastify-lifecycle-sequence-v0",
+      "beets-lifecycle-sequence-v0",
+      "terraform-lifecycle-sequence-v0"
+    ],
+    "execution_order": "baseline first; treatments may start only after all three accepted baseline sessions are retained"
+  },
+  "selected": [
+    {
+      "selection_order": 1,
+      "source_profile_id": "codescope-codex-product-v1",
+      "opencode_profile_id": "codescope-opencode-product-v1",
+      "source_panel_raw_rank": 1,
+      "source_panel_raw_provider_tokens": 266603,
+      "source_panel_weighted_tokens": 97708.0,
+      "opencode_surface": "host-agnostic MCP server, official initialize instructions, and warm index",
+      "pinned_identity": "CodeScope 0.8.12 release binaries",
+      "compatibility_evidence": "/opt/data/tool-candidates/codescope-release-v0.8.12/README.md states any MCP-compatible agent may use the product"
+    },
+    {
+      "selection_order": 2,
+      "source_profile_id": "swarmvault-codex-product-v1",
+      "opencode_profile_id": "swarmvault-opencode-product-v1",
+      "source_panel_raw_rank": 6,
+      "source_panel_raw_provider_tokens": 276280,
+      "source_panel_weighted_tokens": 125074.2,
+      "opencode_surface": "official OpenCode rules, project skill, native plugin, MCP, and warm vault",
+      "pinned_identity": "SwarmVault 3.20.0 at 4ce0c7cb545c669f3cd35fc6d0300c6b088a52ea",
+      "compatibility_evidence": "official `install --agent opencode --hook` surface in the pinned source"
+    },
+    {
+      "selection_order": 3,
+      "source_profile_id": "retrieval-graphify-codex-skill-v1",
+      "opencode_profile_id": "retrieval-graphify-opencode-product-v1",
+      "source_panel_raw_rank": 7,
+      "source_panel_raw_provider_tokens": 279680,
+      "source_panel_weighted_tokens": 153930.0,
+      "opencode_surface": "official OpenCode project skill, AGENTS guidance, native pre-tool plugin, and warm graph",
+      "pinned_identity": "Graphify 0.9.1 at 199061207f6648f116fd6dbb0b2214502c55d90a",
+      "compatibility_evidence": "official `graphify install --platform opencode --project` surface in the pinned wheel"
+    },
+    {
+      "selection_order": 4,
+      "source_profile_id": "terminal-rtk-codex-instructions-v1",
+      "opencode_profile_id": "terminal-rtk-opencode-plugin-v1",
+      "source_panel_raw_rank": 10,
+      "source_panel_raw_provider_tokens": 289100,
+      "source_panel_weighted_tokens": 114452.4,
+      "opencode_surface": "official global OpenCode tool.execute.before plugin",
+      "pinned_identity": "RTK 0.42.4 at 23aae98c5b29cd52d77061c6efd2e65e5e3cc6dd",
+      "compatibility_evidence": "official `rtk init --global --opencode` surface in the pinned binary/source"
+    },
+    {
+      "selection_order": 5,
+      "source_profile_id": "retrieval-codegraph-codex-mcp-v1",
+      "opencode_profile_id": "retrieval-codegraph-opencode-mcp-v1",
+      "source_panel_raw_rank": 11,
+      "source_panel_raw_provider_tokens": 289964,
+      "source_panel_weighted_tokens": 131512.0,
+      "opencode_surface": "official local OpenCode installer, MCP server, model-runtime CLI, and warm live index",
+      "pinned_identity": "CodeGraph 1.1.1 at 4077ed19b7d8a88eba93601c0c308e59c8640f8c",
+      "compatibility_evidence": "official `codegraph install --target opencode` integration in the pinned source"
+    }
+  ],
+  "explicit_exclusion": {
+    "source_profile_id": "integrated-token-savior-codex-product-v2",
+    "source_panel_raw_rank": 9,
+    "source_panel_raw_provider_tokens": 286948,
+    "reason": "The pinned Token Savior product has Codex-specific hooks and generic MCP/guidance but no OpenCode integration surface. Mapping or inventing its hooks would be an evaluator-authored ablation rather than installing the product with OpenCode.",
+    "next_eligible_replacement": "retrieval-codegraph-codex-mcp-v1"
+  },
+  "campaign_size": {
+    "conditions": 6,
+    "workflows_per_condition": 3,
+    "planned_sessions": 18,
+    "planned_tasks": 54,
+    "provider_parallelism": 1
+  },
+  "adapter": {
+    "path": "/opt/data/tool-candidates/opencode-adapter-v4/opencode_workflow_adapter.py",
+    "sha256": "e3c6e77fc22ae12a6548ee3ad92836d58c2db411ceae7c3743c370c469e6bbf7"
+  },
+  "status": "selection-protocols-and-provider-free-preflight-passed-ready-to-publish",
+  "preflight_corrections": [
+    {
+      "profile_id": "swarmvault-opencode-product-v1",
+      "stage": "provider-free container preflight",
+      "initial_failure": "OpenCode debug-info probe could not enter the generated project path because project-scoped plugins were prepared but the project was not mounted into the preflight container.",
+      "fix": "The preflight controller now mounts and uses the fixture repository only for profiles declaring preflight_requires_project; SwarmVault and Graphify declare it.",
+      "verification": "A fresh direct container prepare-only run passed exact compiled/generated artifact checks, OpenCode plugin debug proof, MCP initialize plus tools/list, and warmup.",
+      "invalid_prepare_bundle_deleted": true,
+      "provider_tokens_counted": false
+    },
+    {
+      "profile_id": "retrieval-graphify-opencode-product-v1",
+      "stage": "provider-free isolation preflight",
+      "initial_failure": "The pinned Graphify wheel exposes a graphify-mcp executable on its private PATH although this OpenCode profile does not activate the MCP server; the command-visibility gate initially treated that same-product executable as an undeclared treatment.",
+      "fix": "Allowlisted the exact graphify-mcp command term while leaving the MCP server unconfigured and absent from the profile component/surface declaration.",
+      "verification": "Runtime contract requires graphify-mcp to be an allowlisted same-product command and requires no mcp_server in the active profile. Full provider-free retry required.",
+      "invalid_prepare_bundle_deleted": true,
+      "provider_tokens_counted": false
+    },
+    {
+      "profile_id": "terminal-rtk-opencode-plugin-v1",
+      "stage": "provider-free OpenCode plugin preflight",
+      "initial_failure": "The RTK plugin was installed and byte-verified in the isolated OpenCode home, but the adapter was told to use the unmounted fixture path as its debug-info working directory.",
+      "fix": "Removed the unnecessary project-directory override for the global RTK plugin profile; the debug probe now runs from the mounted isolated OpenCode home.",
+      "verification": "Runtime contract requires the RTK profile to omit OPENCODE_EVALUATION_DIRECTORY while retaining the exact installed plugin hash. Provider-free retry required.",
+      "invalid_prepare_bundle_deleted": true,
+      "provider_tokens_counted": false
+    }
+  ],
+  "provider_free_preflight_receipt": "sources/evaluations/audits/opencode-next-five-provider-free-preflight-20260730.json"
+}

@@ -1,0 +1,223 @@
+# Ordered cumulative source checkpoints. Every section is relative to the one composite broken-start root.
+
+# --- task-01-agent ---
+diff --git a/beets/util/functemplate.py b/beets/util/functemplate.py
+index 67b2bfb..a3541ab 100644
+--- a/beets/util/functemplate.py
++++ b/beets/util/functemplate.py
+@@ -319,7 +319,7 @@ class Parser:
+ 
+             next_char = self.string[self.pos + 1]
+             if char == ESCAPE_CHAR and next_char in (
+-                self.escapable_chars
++                self.escapable_chars + extra_special_chars
+             ):
+                 # An escaped special character ($$, $}, etc.). Note that
+                 # ${ is not an escape sequence: this is ambiguous with
+diff --git a/skills-lock.json b/skills-lock.json
+new file mode 100644
+index 0000000..243513d
+--- /dev/null
++++ b/skills-lock.json
+@@ -0,0 +1,40 @@
++{
++  "version": 1,
++  "skills": {
++    "cavecrew": {
++      "source": "/opt/data/tool-candidates/caveman",
++      "sourceType": "local",
++      "computedHash": "c5527c994fbd4c22b36714e3b124a0f167a533d114ab164fb1d35e2123533917"
++    },
++    "caveman": {
++      "source": "/opt/data/tool-candidates/caveman",
++      "sourceType": "local",
++      "computedHash": "d18cdf73a5f5c496d681a43a6846336b110223bdffa6817b8992529c57f1a815"
++    },
++    "caveman-commit": {
++      "source": "/opt/data/tool-candidates/caveman",
++      "sourceType": "local",
++      "computedHash": "790a4eeace0be35c6691faf923518ba5bd50f1f1305d1101d09dd4971be94e00"
++    },
++    "caveman-compress": {
++      "source": "/opt/data/tool-candidates/caveman",
++      "sourceType": "local",
++      "computedHash": "84517cd4cf7a49d8d2bc1baf00f61bc359306c6ad9389756b6937eff958bd374"
++    },
++    "caveman-help": {
++      "source": "/opt/data/tool-candidates/caveman",
++      "sourceType": "local",
++      "computedHash": "dd85267e76baad76995157e7b9f762dfa557cd58951ee92af0c283f48aa26537"
++    },
++    "caveman-review": {
++      "source": "/opt/data/tool-candidates/caveman",
++      "sourceType": "local",
++      "computedHash": "fb7214a1c5793bae6ba8b1be4329e2e6f40dbec6dd911dfb335ad29f09c316a1"
++    },
++    "caveman-stats": {
++      "source": "/opt/data/tool-candidates/caveman",
++      "sourceType": "local",
++      "computedHash": "47ce2de3d6cb39a75047b5c962e4eb3da15594e7397c94103e9a104d42626553"
++    }
++  }
++}
+
+# --- task-02-agent ---
+diff --git a/beets/dbcore/db.py b/beets/dbcore/db.py
+index ff57aaf..78c4432 100755
+--- a/beets/dbcore/db.py
++++ b/beets/dbcore/db.py
+@@ -189,7 +189,7 @@ class LazyDict(UserDict[str, Any]):
+ 
+     def __iter__(self) -> Iterator[str]:
+         """Iterate over the available field names (excluding computed fields)."""
+-        return (key for key in self._all_keys)
++        return iter(self._all_keys)
+ 
+     def __len__(self) -> int:
+         return len(self._all_keys)
+diff --git a/beets/util/functemplate.py b/beets/util/functemplate.py
+index 67b2bfb..a3541ab 100644
+--- a/beets/util/functemplate.py
++++ b/beets/util/functemplate.py
+@@ -319,7 +319,7 @@ class Parser:
+ 
+             next_char = self.string[self.pos + 1]
+             if char == ESCAPE_CHAR and next_char in (
+-                self.escapable_chars
++                self.escapable_chars + extra_special_chars
+             ):
+                 # An escaped special character ($$, $}, etc.). Note that
+                 # ${ is not an escape sequence: this is ambiguous with
+diff --git a/skills-lock.json b/skills-lock.json
+new file mode 100644
+index 0000000..243513d
+--- /dev/null
++++ b/skills-lock.json
+@@ -0,0 +1,40 @@
++{
++  "version": 1,
++  "skills": {
++    "cavecrew": {
++      "source": "/opt/data/tool-candidates/caveman",
++      "sourceType": "local",
++      "computedHash": "c5527c994fbd4c22b36714e3b124a0f167a533d114ab164fb1d35e2123533917"
++    },
++    "caveman": {
++      "source": "/opt/data/tool-candidates/caveman",
++      "sourceType": "local",
++      "computedHash": "d18cdf73a5f5c496d681a43a6846336b110223bdffa6817b8992529c57f1a815"
++    },
++    "caveman-commit": {
++      "source": "/opt/data/tool-candidates/caveman",
++      "sourceType": "local",
++      "computedHash": "790a4eeace0be35c6691faf923518ba5bd50f1f1305d1101d09dd4971be94e00"
++    },
++    "caveman-compress": {
++      "source": "/opt/data/tool-candidates/caveman",
++      "sourceType": "local",
++      "computedHash": "84517cd4cf7a49d8d2bc1baf00f61bc359306c6ad9389756b6937eff958bd374"
++    },
++    "caveman-help": {
++      "source": "/opt/data/tool-candidates/caveman",
++      "sourceType": "local",
++      "computedHash": "dd85267e76baad76995157e7b9f762dfa557cd58951ee92af0c283f48aa26537"
++    },
++    "caveman-review": {
++      "source": "/opt/data/tool-candidates/caveman",
++      "sourceType": "local",
++      "computedHash": "fb7214a1c5793bae6ba8b1be4329e2e6f40dbec6dd911dfb335ad29f09c316a1"
++    },
++    "caveman-stats": {
++      "source": "/opt/data/tool-candidates/caveman",
++      "sourceType": "local",
++      "computedHash": "47ce2de3d6cb39a75047b5c962e4eb3da15594e7397c94103e9a104d42626553"
++    }
++  }
++}
+
+# --- task-03-agent ---
+diff --git a/beets/dbcore/db.py b/beets/dbcore/db.py
+index ff57aaf..78c4432 100755
+--- a/beets/dbcore/db.py
++++ b/beets/dbcore/db.py
+@@ -189,7 +189,7 @@ class LazyDict(UserDict[str, Any]):
+ 
+     def __iter__(self) -> Iterator[str]:
+         """Iterate over the available field names (excluding computed fields)."""
+-        return (key for key in self._all_keys)
++        return iter(self._all_keys)
+ 
+     def __len__(self) -> int:
+         return len(self._all_keys)
+diff --git a/beets/util/functemplate.py b/beets/util/functemplate.py
+index 67b2bfb..a3541ab 100644
+--- a/beets/util/functemplate.py
++++ b/beets/util/functemplate.py
+@@ -319,7 +319,7 @@ class Parser:
+ 
+             next_char = self.string[self.pos + 1]
+             if char == ESCAPE_CHAR and next_char in (
+-                self.escapable_chars
++                self.escapable_chars + extra_special_chars
+             ):
+                 # An escaped special character ($$, $}, etc.). Note that
+                 # ${ is not an escape sequence: this is ambiguous with
+diff --git a/beetsplug/ftintitle.py b/beetsplug/ftintitle.py
+index 1c45962..74d9d7e 100644
+--- a/beetsplug/ftintitle.py
++++ b/beetsplug/ftintitle.py
+@@ -75,7 +75,7 @@ def split_on_feat(
+     # Try explicit featuring tokens first (ft, feat, featuring, etc.)
+     # to avoid splitting on generic separators like "&" when both are present
+     regex_explicit = re.compile(
+-        plugins.feat_tokens(for_artist=for_artist, custom_words=custom_words),
++        plugins.feat_tokens(for_artist=False, custom_words=custom_words),
+         re.IGNORECASE,
+     )
+     parts = _split_on_feat_token(regex_explicit, artist)
+diff --git a/skills-lock.json b/skills-lock.json
+new file mode 100644
+index 0000000..243513d
+--- /dev/null
++++ b/skills-lock.json
+@@ -0,0 +1,40 @@
++{
++  "version": 1,
++  "skills": {
++    "cavecrew": {
++      "source": "/opt/data/tool-candidates/caveman",
++      "sourceType": "local",
++      "computedHash": "c5527c994fbd4c22b36714e3b124a0f167a533d114ab164fb1d35e2123533917"
++    },
++    "caveman": {
++      "source": "/opt/data/tool-candidates/caveman",
++      "sourceType": "local",
++      "computedHash": "d18cdf73a5f5c496d681a43a6846336b110223bdffa6817b8992529c57f1a815"
++    },
++    "caveman-commit": {
++      "source": "/opt/data/tool-candidates/caveman",
++      "sourceType": "local",
++      "computedHash": "790a4eeace0be35c6691faf923518ba5bd50f1f1305d1101d09dd4971be94e00"
++    },
++    "caveman-compress": {
++      "source": "/opt/data/tool-candidates/caveman",
++      "sourceType": "local",
++      "computedHash": "84517cd4cf7a49d8d2bc1baf00f61bc359306c6ad9389756b6937eff958bd374"
++    },
++    "caveman-help": {
++      "source": "/opt/data/tool-candidates/caveman",
++      "sourceType": "local",
++      "computedHash": "dd85267e76baad76995157e7b9f762dfa557cd58951ee92af0c283f48aa26537"
++    },
++    "caveman-review": {
++      "source": "/opt/data/tool-candidates/caveman",
++      "sourceType": "local",
++      "computedHash": "fb7214a1c5793bae6ba8b1be4329e2e6f40dbec6dd911dfb335ad29f09c316a1"
++    },
++    "caveman-stats": {
++      "source": "/opt/data/tool-candidates/caveman",
++      "sourceType": "local",
++      "computedHash": "47ce2de3d6cb39a75047b5c962e4eb3da15594e7397c94103e9a104d42626553"
++    }
++  }
++}

@@ -1,0 +1,64 @@
+{
+  "schema_version": 1,
+  "audit_id": "lifecycle-v1-opencode-sol-high-r1-fastify-no-provider-recovery-result-20260802",
+  "status": "accepted-and-published",
+  "recovery_authority": {
+    "path": "sources/evaluations/audits/lifecycle-v1-opencode-sol-high-r1-fastify-no-provider-recovery-authorization-20260802.json",
+    "sha256": "d02289a51fe7c792699c330def7eea03586ff1e47205a60d99b5d56d95be02e3"
+  },
+  "original_preprovider_attempt_receipt": {
+    "path": "sources/evaluations/audits/lifecycle-v1-opencode-sol-high-r1-attempts/fastify-r1.json",
+    "sha256": "6c7753dfb9e4c2fe23da9d766178e4ac3e4542ac3c7f02be56c2316d11353e6a",
+    "status": "reserved-before-provider-task",
+    "disposition": "preserved unchanged; it records the initial pre-provider boundary failure rather than the recovery outcome"
+  },
+  "recovered_execution": {
+    "sequence_id": "fastify-lifecycle-sequence-v1",
+    "profile_id": "runtime-opencode-codex-product-v1",
+    "model_condition_id": "opencode-openai-gpt-5-6-sol-high",
+    "workflow_model": "gpt-5.6-sol",
+    "reasoning_effort": "high",
+    "replicate_index": 1,
+    "session_id": "opencode-fastify-20260802-p-72ac148f730b-r1",
+    "frozen_protocol": {
+      "path": "sources/evaluations/protocols/fastify-lifecycle-sequence-v1-runtime-opencode-codex-product-v1-e84e2aa085d9.json",
+      "sha256": "2520f69673ca9d011c4fd2fb5dd5f53489a0151f1229cf62e7994dea009940e3"
+    },
+    "accepted": true,
+    "task_count": 3,
+    "tasks_accepted": 3,
+    "verifier_integrity_passed": true,
+    "tool_isolation_audit_passed": true,
+    "provider_usage": {
+      "measurement_source": "opencode-jsonl-step-finish-usage",
+      "fresh_input_tokens": 102965,
+      "cached_input_tokens": 1688576,
+      "cache_write_tokens": 0,
+      "output_tokens": 14039,
+      "reasoning_tokens": 3530,
+      "total_provider_tokens": 1805580
+    }
+  },
+  "published_artifacts": {
+    "session_run_record": {
+      "path": "sources/evaluations/workflow-sessions/opencode-fastify-20260802-p-72ac148f730b-r1/run.json",
+      "sha256": "ed4a9b520c4943182a3a324bca943ddb69e968911b378861a23f2912bd4f9afa"
+    },
+    "session_manifest": {
+      "path": "sources/evaluations/workflow-sessions/opencode-fastify-20260802-p-72ac148f730b-r1/manifest.sha256",
+      "sha256": "e0e88f8b389055c246460525c1bec57c87e6c64fe86a26c9922e0134d92419f6",
+      "verification": "changes.diff, evidence.jsonl.gz, and run.json each passed sha256sum -c"
+    },
+    "comparison": {
+      "path": "sources/evaluations/workflow-sessions/baseline-fastify-20260802-vs-opencode-p-72ac148f730b-r1.json",
+      "sha256": "d96ed02a345ca426d2d18eadbc1c67cd365cf81558f3d6164453a393d8e3e42c",
+      "baseline_total_provider_tokens": 1462656,
+      "treatment_total_provider_tokens": 1805580,
+      "delta_total_provider_tokens": 342924,
+      "delta_percent": 23.445294040430557,
+      "claim_status": "single-run-screening"
+    }
+  },
+  "retained_lane_root": "/opt/data/eval-workflow-lanes/lifecycle-v1-opencode-sol-high-r1-fastify-recovery-paid-20260802T062500Z/workflow-matrix-20260802T062233798442Z-p3849431-r1",
+  "next_lane_gate": "The original r1 authorization remains applicable to Beets; launch only after this Fastify result is committed, pushed, and provider-free preparation remains clean."
+}

@@ -1,0 +1,13 @@
+diff --git a/internal/configs/state_migrate_file.go b/internal/configs/state_migrate_file.go
+index bf0b349db84ec2e8a4618297d5729229cff40db3..e15c5637bb49f03c4e3b49aef51bdbac89c3efa4 100644
+--- a/internal/configs/state_migrate_file.go
++++ b/internal/configs/state_migrate_file.go
+@@ -41,7 +41,7 @@ type StateStoreProviderRequirement struct {
+ 
+ 	// Requirement represents the single provider used for state storage.
+ 	// By parsing data into this field it can easily be passed to functions for provider download, which expect a providerreqs.Requirements argument.
+-	Requirement providerreqs.Requirements
++	Requirement map[addrs.Provider]providerreqs.VersionConstraints
+ }
+ 
+ // StateMigrationFile represents a single state migration file within a configuration directory.

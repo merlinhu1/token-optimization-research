@@ -1,0 +1,43 @@
+{
+  "schema_version": 1,
+  "date": "2026-07-19",
+  "action": "owner-authorized-deletion-from-active-corpus",
+  "recovery_commit": "78c0526",
+  "policy": {
+    "baseline_relabeling": "forbidden; invalid treatment assignments are not controls",
+    "provider_rerun": "required under a new frozen corrected protocol using the canonical v1 profile identity",
+    "result_retention": "no provider totals, task outcomes, diffs, event streams, or comparison deltas retained in this deletion receipt"
+  },
+  "profiles": [
+    {
+      "profile_id": "retrieval-codegraph-codex-mcp-v1",
+      "invalidity": "The official installer targeted Codex and project-local init passed, but the installer-generated bare `codegraph` command was absent from the actual model-runtime PATH. Codex attempted `codegraph explore` in Fastify, Beets, and Terraform; every attempt failed with exit 127. The controller absolute-path handshake did not prove the installer-generated command was usable in the model runtime.",
+      "deleted_session_ids": [
+        "codegraph-beets-20260719-p-b440da225a3a-r2",
+        "codegraph-fastify-20260719-p-769d40697529-r2",
+        "codegraph-terraform-20260719-p-ded8609b4172-r2"
+      ],
+      "deleted_protocol_paths": [
+        "sources/evaluations/protocols/beets-lifecycle-sequence-v0-retrieval-codegraph-codex-mcp-v1-1ae943b9d19b.json",
+        "sources/evaluations/protocols/fastify-lifecycle-sequence-v0-retrieval-codegraph-codex-mcp-v1-a3755c684411.json",
+        "sources/evaluations/protocols/terraform-lifecycle-sequence-v0-retrieval-codegraph-codex-mcp-v1-094473dc5fe5.json"
+      ],
+      "deleted_comparison_paths": [
+        "sources/evaluations/workflow-sessions/baseline-beets-20260719-vs-codegraph-p-b440da225a3a-r2.json",
+        "sources/evaluations/workflow-sessions/baseline-fastify-20260719-vs-codegraph-p-769d40697529-r2.json",
+        "sources/evaluations/workflow-sessions/baseline-terraform-20260719-vs-codegraph-p-ded8609b4172-r2.json"
+      ],
+      "deleted_bundle_roots": [
+        "sources/evaluations/workflow-sessions/codegraph-beets-20260719-p-b440da225a3a-r2",
+        "sources/evaluations/workflow-sessions/codegraph-fastify-20260719-p-769d40697529-r2",
+        "sources/evaluations/workflow-sessions/codegraph-terraform-20260719-p-ded8609b4172-r2"
+      ],
+      "replacement_profile_id": "retrieval-codegraph-codex-mcp-v1",
+      "identity_reuse_policy": "The owner removed the unnecessary v2 naming after deleting the invalid result. The deleted generation remains unambiguously bound to the three deleted protocol paths above; the corrected candidate reuses the canonical profile ID only with new frozen protocol hashes and fresh provider-free qualification.",
+      "deleted_external_paths": [
+        "/opt/data/campaigns/corrected-luna-xhigh-r2/provider/retrieval-codegraph-codex-mcp-v1",
+        "/opt/data/eval-workflow-lanes/workflow-matrix-20260719T033746673481Z-p1709950-r2"
+      ]
+    }
+  ]
+}

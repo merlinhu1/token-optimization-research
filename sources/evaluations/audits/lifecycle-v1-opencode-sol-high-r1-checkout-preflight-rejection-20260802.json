@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "audit_id": "lifecycle-v1-opencode-sol-high-r1-checkout-preflight-rejection-20260802",
+  "date": "2026-08-02",
+  "scope": "Lifecycle V1 OpenCode GPT-5.6 Sol/high r1 baseline",
+  "matrix_root": "/opt/data/eval-workflow-lanes/lifecycle-v1-opencode-sol-high-r1-prepare-20260802T044325Z-3783646/workflow-matrix-20260802T044326233013Z-p3783675-r1",
+  "sequence_id": "fastify-lifecycle-sequence-v1",
+  "profile_id": "runtime-opencode-codex-product-v1",
+  "replicate_index": 1,
+  "disposition": "failed-before-provider-and-before-attempt-receipt-reservation",
+  "failure_stage": "child protocol validation before adapter launch",
+  "provider_calls": 0,
+  "provider_tokens": 0,
+  "identity_occupied": false,
+  "same_identity_retry_permitted": true,
+  "failure": "The corrected pinned OpenCode binary reached child-lane protocol validation, but the frozen execution descriptor embedded an absolute controller-checkout adapter path. In the isolated checkout, the runtime descriptor used the lane checkout path, so canonical protocol identity, selected execution, and selected-execution hash did not match. The adapter did not launch.",
+  "deferred_controller_fix": "Represent the repository-owned adapter with the checkout-portable {repository_root}/scripts/opencode_workflow_adapter.py template, then refreeze both OpenCode V1 protocols and update their authority bindings.",
+  "required_prerequisite": "sources/evaluations/audits/lifecycle-v1-pilot-compile-only.json",
+  "prerequisite_blocker": "The mandatory Lifecycle V1 treatment gate rejects protocol freezing because the designated Codex CLI GPT-5.6 Sol/high pilot audit is absent. No OpenCode treatment protocol may be refreshed or executed until that pilot is valid and published.",
+  "lane_log": "/opt/data/eval-workflow-lanes/lifecycle-v1-opencode-sol-high-r1-prepare-20260802T044325Z-3783646/workflow-matrix-20260802T044326233013Z-p3783675-r1/fastify-lifecycle-sequence-v1--runtime-opencode-codex-product-v1/logs/lane.log",
+  "operational_retries": 0
+}

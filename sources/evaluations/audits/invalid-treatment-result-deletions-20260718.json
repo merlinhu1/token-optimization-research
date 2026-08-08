@@ -1,0 +1,213 @@
+{
+  "schema_version": 1,
+  "date": "2026-07-18",
+  "action": "owner-authorized-deletion-from-active-corpus",
+  "recovery_commit": "0e60543f3c9adbabcc0a8410c1ebdbaa3495156f",
+  "policy": {
+    "baseline_relabeling": "forbidden; invalid treatment assignments are not controls",
+    "provider_rerun": "required under a versioned corrected protocol",
+    "result_retention": "no provider totals, task outcomes, diffs, event streams, or comparison deltas retained in this deletion receipt"
+  },
+  "profiles": [
+    {
+      "profile_id": "retrieval-codegraph",
+      "invalidity": "Historical profile used the base server executable but was cold/unindexed, disabled watch, and installed no AGENTS block. No handshake proved initialize guidance reached Codex.",
+      "deleted_session_ids": [
+        "codegraph-beets-20260717-p-b440da225a3a-r1",
+        "codegraph-fastify-20260717-p-769d40697529-r1",
+        "codegraph-terraform-20260717-p-ded8609b4172-r1"
+      ],
+      "deleted_protocol_paths": [
+        "sources/evaluations/protocols/beets-lifecycle-sequence-v0-retrieval-codegraph-ff53c3ab9f1c.json",
+        "sources/evaluations/protocols/fastify-lifecycle-sequence-v0-retrieval-codegraph-0df5fa797bc7.json",
+        "sources/evaluations/protocols/terraform-lifecycle-sequence-v0-retrieval-codegraph-dca62696b55f.json"
+      ],
+      "deleted_comparison_paths": [
+        "sources/evaluations/workflow-sessions/baseline-beets-20260717-vs-codegraph-p-b440da225a3a-r1.json",
+        "sources/evaluations/workflow-sessions/baseline-fastify-20260717-vs-codegraph-p-769d40697529-r1.json",
+        "sources/evaluations/workflow-sessions/baseline-terraform-20260717-vs-codegraph-p-ded8609b4172-r1.json"
+      ],
+      "deleted_bundle_roots": [
+        "sources/evaluations/workflow-sessions/codegraph-beets-20260717-p-b440da225a3a-r1",
+        "sources/evaluations/workflow-sessions/codegraph-fastify-20260717-p-769d40697529-r1",
+        "sources/evaluations/workflow-sessions/codegraph-terraform-20260717-p-ded8609b4172-r1"
+      ],
+      "replacement_profile_id": "retrieval-codegraph-codex-mcp-v1"
+    },
+    {
+      "profile_id": "retrieval-graphify",
+      "invalidity": "Historical profile launched the optional MCP server with a reduced AST-only unclustered graph and installed no Codex skill, AGENTS rules, hook, or multi_agent feature. No handshake/call proved the optional server operational.",
+      "deleted_session_ids": [
+        "graphify-beets-20260716-p-b440da225a3a-r1",
+        "graphify-fastify-20260716-p-769d40697529-r1",
+        "graphify-terraform-20260716-p-ded8609b4172-r1"
+      ],
+      "deleted_protocol_paths": [
+        "sources/evaluations/protocols/beets-lifecycle-sequence-v0-retrieval-graphify-a753bb83a156.json",
+        "sources/evaluations/protocols/fastify-lifecycle-sequence-v0-retrieval-graphify-21c8c7de0ec7.json",
+        "sources/evaluations/protocols/terraform-lifecycle-sequence-v0-retrieval-graphify-8f860fb32a26.json"
+      ],
+      "deleted_comparison_paths": [
+        "sources/evaluations/workflow-sessions/baseline-beets-20260716-vs-graphify-p-b440da225a3a-r1.json",
+        "sources/evaluations/workflow-sessions/baseline-fastify-20260716-vs-graphify-p-769d40697529-r1.json",
+        "sources/evaluations/workflow-sessions/baseline-terraform-20260716-vs-graphify-p-ded8609b4172-r1.json"
+      ],
+      "deleted_bundle_roots": [
+        "sources/evaluations/workflow-sessions/graphify-beets-20260716-p-b440da225a3a-r1",
+        "sources/evaluations/workflow-sessions/graphify-fastify-20260716-p-769d40697529-r1",
+        "sources/evaluations/workflow-sessions/graphify-terraform-20260716-p-ded8609b4172-r1"
+      ],
+      "replacement_profile_id": "retrieval-graphify-codex-skill-v1"
+    },
+    {
+      "profile_id": "retrieval-jcodemunch-mcp",
+      "invalidity": "Historical runner used `uv tool run` as the MCP launcher, retained no initialize/tools-list receipt, and did not distinguish neutral MCP availability from a product-guided condition.",
+      "deleted_session_ids": [
+        "mcp-beets-20260717-p-b440da225a3a-r1",
+        "mcp-fastify-20260717-p-769d40697529-r1",
+        "mcp-terraform-20260717-p-ded8609b4172-r1"
+      ],
+      "deleted_protocol_paths": [
+        "sources/evaluations/protocols/beets-lifecycle-sequence-v0-retrieval-jcodemunch-mcp-36c29832ae61.json",
+        "sources/evaluations/protocols/fastify-lifecycle-sequence-v0-retrieval-jcodemunch-mcp-cf40b0d53e51.json",
+        "sources/evaluations/protocols/terraform-lifecycle-sequence-v0-retrieval-jcodemunch-mcp-583d001913d4.json"
+      ],
+      "deleted_comparison_paths": [
+        "sources/evaluations/workflow-sessions/baseline-beets-20260717-vs-mcp-p-b440da225a3a-r1.json",
+        "sources/evaluations/workflow-sessions/baseline-fastify-20260717-vs-mcp-p-769d40697529-r1.json",
+        "sources/evaluations/workflow-sessions/baseline-terraform-20260717-vs-mcp-p-ded8609b4172-r1.json"
+      ],
+      "deleted_bundle_roots": [
+        "sources/evaluations/workflow-sessions/mcp-beets-20260717-p-b440da225a3a-r1",
+        "sources/evaluations/workflow-sessions/mcp-fastify-20260717-p-769d40697529-r1",
+        "sources/evaluations/workflow-sessions/mcp-terraform-20260717-p-ded8609b4172-r1"
+      ],
+      "replacement_profile_id": "retrieval-jcodemunch-mcp-direct-v1"
+    },
+    {
+      "profile_id": "retrieval-leanctx",
+      "invalidity": "Historical profile exposed only a cold raw MCP entry with an extra data-dir env; it omitted rules, skill/guidance, hooks, and complete pinned source provenance. No handshake/call proved operation.",
+      "deleted_session_ids": [
+        "leanctx-beets-20260717-p-b440da225a3a-r1",
+        "leanctx-fastify-20260717-p-769d40697529-r1",
+        "leanctx-terraform-20260717-p-ded8609b4172-r1"
+      ],
+      "deleted_protocol_paths": [
+        "sources/evaluations/protocols/beets-lifecycle-sequence-v0-retrieval-leanctx-f0c2b1d0752d.json",
+        "sources/evaluations/protocols/fastify-lifecycle-sequence-v0-retrieval-leanctx-7fdaf6b5e4cf.json",
+        "sources/evaluations/protocols/terraform-lifecycle-sequence-v0-retrieval-leanctx-6c0026681058.json"
+      ],
+      "deleted_comparison_paths": [
+        "sources/evaluations/workflow-sessions/baseline-beets-20260717-vs-leanctx-p-b440da225a3a-r1.json",
+        "sources/evaluations/workflow-sessions/baseline-fastify-20260717-vs-leanctx-p-769d40697529-r1.json",
+        "sources/evaluations/workflow-sessions/baseline-terraform-20260717-vs-leanctx-p-ded8609b4172-r1.json"
+      ],
+      "deleted_bundle_roots": [
+        "sources/evaluations/workflow-sessions/leanctx-beets-20260717-p-b440da225a3a-r1",
+        "sources/evaluations/workflow-sessions/leanctx-fastify-20260717-p-769d40697529-r1",
+        "sources/evaluations/workflow-sessions/leanctx-terraform-20260717-p-ded8609b4172-r1"
+      ],
+      "replacement_profile_id": "integrated-leanctx-codex-hybrid-v1"
+    },
+    {
+      "profile_id": "stack-tokenjuice-jcodemunch-mcp",
+      "invalidity": "Historical stack disabled TokenJuice hooks and used the unverified jcodemunch launcher without product guidance.",
+      "deleted_session_ids": [
+        "tokenjuice-jcodemunch-beets-20260718-p-b440da225a3a-r1",
+        "tokenjuice-jcodemunch-fastify-20260718-p-769d40697529-r1",
+        "tokenjuice-jcodemunch-terraform-20260718-p-ded8609b4172-r1"
+      ],
+      "deleted_protocol_paths": [
+        "sources/evaluations/protocols/beets-lifecycle-sequence-v0-stack-tokenjuice-jcodemunch-mcp-f5c3d3a0155a.json",
+        "sources/evaluations/protocols/fastify-lifecycle-sequence-v0-stack-tokenjuice-jcodemunch-mcp-172edc0cdd21.json",
+        "sources/evaluations/protocols/terraform-lifecycle-sequence-v0-stack-tokenjuice-jcodemunch-mcp-546fa27bdd1f.json"
+      ],
+      "deleted_comparison_paths": [
+        "sources/evaluations/workflow-sessions/baseline-beets-20260718-vs-tokenjuice-jcodemunch-p-b440da225a3a-r1.json",
+        "sources/evaluations/workflow-sessions/baseline-fastify-20260718-vs-tokenjuice-jcodemunch-p-769d40697529-r1.json",
+        "sources/evaluations/workflow-sessions/baseline-terraform-20260718-vs-tokenjuice-jcodemunch-p-ded8609b4172-r1.json"
+      ],
+      "deleted_bundle_roots": [
+        "sources/evaluations/workflow-sessions/tokenjuice-jcodemunch-beets-20260718-p-b440da225a3a-r1",
+        "sources/evaluations/workflow-sessions/tokenjuice-jcodemunch-fastify-20260718-p-769d40697529-r1",
+        "sources/evaluations/workflow-sessions/tokenjuice-jcodemunch-terraform-20260718-p-ded8609b4172-r1"
+      ],
+      "replacement_profile_id": "not-created-pending-valid-individual-evidence"
+    },
+    {
+      "profile_id": "terminal-rtk",
+      "invalidity": "Historical runner mounted the binary on PATH and ran `rtk --version`; it installed neither AGENTS.md nor RTK.md. Retained task events contain zero explicit RTK commands.",
+      "deleted_session_ids": [
+        "rtk-beets-20260716-p-b440da225a3a-r1",
+        "rtk-fastify-20260716-p-769d40697529-r1",
+        "rtk-terraform-20260716-p-ded8609b4172-r1"
+      ],
+      "deleted_protocol_paths": [
+        "sources/evaluations/protocols/beets-lifecycle-sequence-v0-terminal-rtk-7d181344742a.json",
+        "sources/evaluations/protocols/fastify-lifecycle-sequence-v0-terminal-rtk-6174c5e2c02a.json",
+        "sources/evaluations/protocols/terraform-lifecycle-sequence-v0-terminal-rtk-78f9a086ab28.json"
+      ],
+      "deleted_comparison_paths": [
+        "sources/evaluations/workflow-sessions/baseline-beets-20260716-vs-rtk-p-b440da225a3a-r1.json",
+        "sources/evaluations/workflow-sessions/baseline-fastify-20260716-vs-rtk-p-769d40697529-r1.json",
+        "sources/evaluations/workflow-sessions/baseline-terraform-20260716-vs-rtk-p-ded8609b4172-r1.json"
+      ],
+      "deleted_bundle_roots": [
+        "sources/evaluations/workflow-sessions/rtk-beets-20260716-p-b440da225a3a-r1",
+        "sources/evaluations/workflow-sessions/rtk-fastify-20260716-p-769d40697529-r1",
+        "sources/evaluations/workflow-sessions/rtk-terraform-20260716-p-ded8609b4172-r1"
+      ],
+      "replacement_profile_id": "terminal-rtk-codex-instructions-v1"
+    },
+    {
+      "profile_id": "terminal-snip",
+      "invalidity": "Historical runner mounted the binary on PATH and ran its version preflight while explicitly disabling Codex hooks; neither hook files nor AGENTS.md existed and task events contain zero explicit snip commands.",
+      "deleted_session_ids": [
+        "snip-beets-20260717-p-b440da225a3a-r1",
+        "snip-fastify-20260717-p-769d40697529-r1",
+        "snip-terraform-20260717-p-ded8609b4172-r1"
+      ],
+      "deleted_protocol_paths": [
+        "sources/evaluations/protocols/beets-lifecycle-sequence-v0-terminal-snip-eac5bb49ba9c.json",
+        "sources/evaluations/protocols/fastify-lifecycle-sequence-v0-terminal-snip-a19b64da21ed.json",
+        "sources/evaluations/protocols/terraform-lifecycle-sequence-v0-terminal-snip-118bcfa21785.json"
+      ],
+      "deleted_comparison_paths": [
+        "sources/evaluations/workflow-sessions/baseline-beets-20260717-vs-snip-p-b440da225a3a-r1.json",
+        "sources/evaluations/workflow-sessions/baseline-fastify-20260717-vs-snip-p-769d40697529-r1.json",
+        "sources/evaluations/workflow-sessions/baseline-terraform-20260717-vs-snip-p-ded8609b4172-r1.json"
+      ],
+      "deleted_bundle_roots": [
+        "sources/evaluations/workflow-sessions/snip-beets-20260717-p-b440da225a3a-r1",
+        "sources/evaluations/workflow-sessions/snip-fastify-20260717-p-769d40697529-r1",
+        "sources/evaluations/workflow-sessions/snip-terraform-20260717-p-ded8609b4172-r1"
+      ],
+      "replacement_profile_id": "terminal-snip-codex-hook-v1"
+    },
+    {
+      "profile_id": "terminal-tokenjuice",
+      "invalidity": "Historical runner exposed the CLI but wrote hooks=false and passed `--disable hooks`; no hooks.json existed.",
+      "deleted_session_ids": [
+        "tokenjuice-beets-20260717-p-b440da225a3a-r1",
+        "tokenjuice-fastify-20260717-p-769d40697529-r1",
+        "tokenjuice-terraform-20260717-p-ded8609b4172-r1"
+      ],
+      "deleted_protocol_paths": [
+        "sources/evaluations/protocols/beets-lifecycle-sequence-v0-terminal-tokenjuice-f9cd13bb55ce.json",
+        "sources/evaluations/protocols/fastify-lifecycle-sequence-v0-terminal-tokenjuice-2263d8fbe885.json",
+        "sources/evaluations/protocols/terraform-lifecycle-sequence-v0-terminal-tokenjuice-11b58370e9f8.json"
+      ],
+      "deleted_comparison_paths": [
+        "sources/evaluations/workflow-sessions/baseline-beets-20260717-vs-tokenjuice-p-b440da225a3a-r1.json",
+        "sources/evaluations/workflow-sessions/baseline-fastify-20260717-vs-tokenjuice-p-769d40697529-r1.json",
+        "sources/evaluations/workflow-sessions/baseline-terraform-20260717-vs-tokenjuice-p-ded8609b4172-r1.json"
+      ],
+      "deleted_bundle_roots": [
+        "sources/evaluations/workflow-sessions/tokenjuice-beets-20260717-p-b440da225a3a-r1",
+        "sources/evaluations/workflow-sessions/tokenjuice-fastify-20260717-p-769d40697529-r1",
+        "sources/evaluations/workflow-sessions/tokenjuice-terraform-20260717-p-ded8609b4172-r1"
+      ],
+      "replacement_profile_id": "terminal-tokenjuice-codex-hook-v1"
+    }
+  ]
+}

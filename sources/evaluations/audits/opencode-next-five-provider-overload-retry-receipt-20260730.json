@@ -1,0 +1,23 @@
+{
+  "schema_version": 1,
+  "audit_id": "opencode-next-five-provider-overload-retry-receipt-20260730",
+  "date": "2026-07-30",
+  "status": "retry-required",
+  "matrix_summary_external_path": "/opt/data/eval-workflow-lanes/workflow-matrix-20260730T071621679318Z-p1383935-r1/matrix-summary.json",
+  "failure_lane": "beets-lifecycle-sequence-v0--swarmvault-opencode-product-v1",
+  "failure": "OpenAI returned repeated `Our servers are currently overloaded. Please try again later.` errors for the first Beets task. OpenCode exhausted increasingly long retries; the evaluator stopped the container after the next backoff exceeded the remaining useful run window.",
+  "provider_usage_recorded": false,
+  "failed_session_accepted": false,
+  "failed_artifact_published": false,
+  "successful_first_valid_sessions_retained": [
+    "swarmvault-opencode-v1-fastify-20260730-p-bb0e89ed9794-r1",
+    "graphify-opencode-v1-fastify-20260730-p-bb0e89ed9794-r1"
+  ],
+  "retry_scope": [
+    "beets-lifecycle-sequence-v0--swarmvault-opencode-product-v1",
+    "beets-lifecycle-sequence-v0--retrieval-graphify-opencode-product-v1",
+    "terraform-lifecycle-sequence-v0--swarmvault-opencode-product-v1",
+    "terraform-lifecycle-sequence-v0--retrieval-graphify-opencode-product-v1"
+  ],
+  "policy": "Do not rerun the two successful Fastify sessions. Retry only missing profile/sequence assignments against the same published protocols and fresh bare OpenCode r1 baseline."
+}

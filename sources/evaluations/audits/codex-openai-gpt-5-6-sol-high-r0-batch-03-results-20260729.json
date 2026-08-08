@@ -1,0 +1,248 @@
+{
+  "schema_version": 1,
+  "audit_id": "codex-openai-gpt-5-6-sol-high-r0-batch-03-results-20260729",
+  "date": "2026-07-29",
+  "source_commit": "21accf8db264fab0aa4a9de0b2a83a6531e0dd60",
+  "source_registry": {
+    "path": "data/workflow-sessions.json",
+    "sha256": "31a4370a2b956003314a31ba3b1c3382aeaa6622b20aef1a0d345b7c7c2b089b"
+  },
+  "campaign": {
+    "model_condition_id": "codex-openai-gpt-5-6-sol-high",
+    "model": "gpt-5.6-sol",
+    "reasoning_effort": "high",
+    "replicate_index": 0,
+    "workflows": [
+      "fastify-lifecycle-sequence-v0",
+      "beets-lifecycle-sequence-v0",
+      "terraform-lifecycle-sequence-v0"
+    ],
+    "profile_count": 6,
+    "workflow_session_count": 18,
+    "accepted_task_count": 54,
+    "primary_metric": "raw_provider_tokens",
+    "secondary_metric": "weighted_tokens = fresh input + 0.1 * cached input + 6 * output"
+  },
+  "baseline": {
+    "profile_id": "baseline-bare-codex",
+    "session_ids": [
+      "baseline-beets-20260728-p-fcc8438d2077-r0",
+      "baseline-fastify-20260722-p-bb0e89ed9794-r0",
+      "baseline-terraform-20260728-p-5811b463c1e9-r0"
+    ],
+    "workflow_count": 3,
+    "accepted_task_count": 9,
+    "usage": {
+      "fresh_input_tokens": 60771,
+      "cached_input_tokens": 188672,
+      "output_tokens": 3191,
+      "reasoning_tokens": 0,
+      "raw_provider_tokens": 252634,
+      "weighted_tokens": 98784.2
+    }
+  },
+  "results_ranked_by_primary_metric": [
+    {
+      "profile_id": "headroom-default-codex",
+      "display_name": "Headroom",
+      "session_ids": [
+        "codex-beets-20260729-p-fcc8438d2077-r0",
+        "codex-fastify-20260729-p-bb0e89ed9794-r0",
+        "codex-terraform-20260729-p-5811b463c1e9-r0"
+      ],
+      "workflow_count": 3,
+      "accepted_task_count": 9,
+      "usage": {
+        "fresh_input_tokens": 91025,
+        "cached_input_tokens": 182016,
+        "output_tokens": 3113,
+        "reasoning_tokens": 47,
+        "raw_provider_tokens": 276154,
+        "weighted_tokens": 127904.6
+      },
+      "raw_delta_vs_baseline_percent": 9.31,
+      "weighted_delta_vs_baseline_percent": 29.48,
+      "raw_rank": 1
+    },
+    {
+      "profile_id": "swarmvault-codex-product-v1",
+      "display_name": "SwarmVault",
+      "session_ids": [
+        "swarmvault-beets-20260729-p-fcc8438d2077-r0",
+        "swarmvault-fastify-20260729-p-bb0e89ed9794-r0",
+        "swarmvault-terraform-20260729-p-5811b463c1e9-r0"
+      ],
+      "workflow_count": 3,
+      "accepted_task_count": 9,
+      "usage": {
+        "fresh_input_tokens": 86909,
+        "cached_input_tokens": 186112,
+        "output_tokens": 3259,
+        "reasoning_tokens": 148,
+        "raw_provider_tokens": 276280,
+        "weighted_tokens": 125074.2
+      },
+      "raw_delta_vs_baseline_percent": 9.36,
+      "weighted_delta_vs_baseline_percent": 26.61,
+      "raw_rank": 2
+    },
+    {
+      "profile_id": "retrieval-graphify-codex-skill-v1",
+      "display_name": "Graphify",
+      "session_ids": [
+        "graphify-beets-20260729-p-fcc8438d2077-r0",
+        "graphify-fastify-20260729-p-bb0e89ed9794-r0",
+        "graphify-terraform-20260729-p-5811b463c1e9-r0"
+      ],
+      "workflow_count": 3,
+      "accepted_task_count": 9,
+      "usage": {
+        "fresh_input_tokens": 116030,
+        "cached_input_tokens": 160000,
+        "output_tokens": 3650,
+        "reasoning_tokens": 431,
+        "raw_provider_tokens": 279680,
+        "weighted_tokens": 153930.0
+      },
+      "raw_delta_vs_baseline_percent": 10.71,
+      "weighted_delta_vs_baseline_percent": 55.82,
+      "raw_rank": 3
+    },
+    {
+      "profile_id": "retrieval-cartog-codex-product-v2",
+      "display_name": "Cartog",
+      "session_ids": [
+        "cartog-product-beets-20260729-p-fcc8438d2077-r0",
+        "cartog-product-fastify-20260729-p-bb0e89ed9794-r0",
+        "cartog-product-terraform-20260729-p-5811b463c1e9-r0"
+      ],
+      "workflow_count": 3,
+      "accepted_task_count": 9,
+      "usage": {
+        "fresh_input_tokens": 74399,
+        "cached_input_tokens": 202240,
+        "output_tokens": 3088,
+        "reasoning_tokens": 0,
+        "raw_provider_tokens": 279727,
+        "weighted_tokens": 113151.0
+      },
+      "raw_delta_vs_baseline_percent": 10.72,
+      "weighted_delta_vs_baseline_percent": 14.54,
+      "raw_rank": 4
+    },
+    {
+      "profile_id": "integrated-token-savior-codex-product-v2",
+      "display_name": "Token Savior",
+      "session_ids": [
+        "token-savior-beets-20260729-p-fcc8438d2077-r0",
+        "token-savior-fastify-20260729-p-bb0e89ed9794-r0",
+        "token-savior-terraform-20260729-p-5811b463c1e9-r0"
+      ],
+      "workflow_count": 3,
+      "accepted_task_count": 9,
+      "usage": {
+        "fresh_input_tokens": 75458,
+        "cached_input_tokens": 208384,
+        "output_tokens": 3106,
+        "reasoning_tokens": 0,
+        "raw_provider_tokens": 286948,
+        "weighted_tokens": 114932.4
+      },
+      "raw_delta_vs_baseline_percent": 13.58,
+      "weighted_delta_vs_baseline_percent": 16.35,
+      "raw_rank": 5
+    },
+    {
+      "profile_id": "behavior-caveman-codex-skill-v1",
+      "display_name": "Caveman",
+      "session_ids": [
+        "caveman-beets-20260729-p-fcc8438d2077-r0",
+        "caveman-fastify-20260729-p-bb0e89ed9794-r0",
+        "caveman-terraform-20260729-p-5811b463c1e9-r0"
+      ],
+      "workflow_count": 3,
+      "accepted_task_count": 9,
+      "usage": {
+        "fresh_input_tokens": 95541,
+        "cached_input_tokens": 344576,
+        "output_tokens": 4200,
+        "reasoning_tokens": 669,
+        "raw_provider_tokens": 444317,
+        "weighted_tokens": 155198.6
+      },
+      "raw_delta_vs_baseline_percent": 75.87,
+      "weighted_delta_vs_baseline_percent": 57.11,
+      "raw_rank": 6
+    }
+  ],
+  "secondary_weighted_ranking": [
+    {
+      "weighted_rank": 1,
+      "profile_id": "retrieval-cartog-codex-product-v2",
+      "display_name": "Cartog",
+      "weighted_tokens": 113151.0,
+      "weighted_delta_vs_baseline_percent": 14.54
+    },
+    {
+      "weighted_rank": 2,
+      "profile_id": "integrated-token-savior-codex-product-v2",
+      "display_name": "Token Savior",
+      "weighted_tokens": 114932.4,
+      "weighted_delta_vs_baseline_percent": 16.35
+    },
+    {
+      "weighted_rank": 3,
+      "profile_id": "swarmvault-codex-product-v1",
+      "display_name": "SwarmVault",
+      "weighted_tokens": 125074.2,
+      "weighted_delta_vs_baseline_percent": 26.61
+    },
+    {
+      "weighted_rank": 4,
+      "profile_id": "headroom-default-codex",
+      "display_name": "Headroom",
+      "weighted_tokens": 127904.6,
+      "weighted_delta_vs_baseline_percent": 29.48
+    },
+    {
+      "weighted_rank": 5,
+      "profile_id": "retrieval-graphify-codex-skill-v1",
+      "display_name": "Graphify",
+      "weighted_tokens": 153930.0,
+      "weighted_delta_vs_baseline_percent": 55.82
+    },
+    {
+      "weighted_rank": 6,
+      "profile_id": "behavior-caveman-codex-skill-v1",
+      "display_name": "Caveman",
+      "weighted_tokens": 155198.6,
+      "weighted_delta_vs_baseline_percent": 57.11
+    }
+  ],
+  "comparison_paths": [
+    "sources/evaluations/workflow-sessions/baseline-beets-20260729-vs-cartog-product-p-fcc8438d2077-r0.json",
+    "sources/evaluations/workflow-sessions/baseline-beets-20260729-vs-caveman-p-fcc8438d2077-r0.json",
+    "sources/evaluations/workflow-sessions/baseline-beets-20260729-vs-codex-p-fcc8438d2077-r0.json",
+    "sources/evaluations/workflow-sessions/baseline-beets-20260729-vs-graphify-p-fcc8438d2077-r0.json",
+    "sources/evaluations/workflow-sessions/baseline-beets-20260729-vs-swarmvault-p-fcc8438d2077-r0.json",
+    "sources/evaluations/workflow-sessions/baseline-beets-20260729-vs-token-savior-p-fcc8438d2077-r0.json",
+    "sources/evaluations/workflow-sessions/baseline-fastify-20260729-vs-cartog-product-p-bb0e89ed9794-r0.json",
+    "sources/evaluations/workflow-sessions/baseline-fastify-20260729-vs-caveman-p-bb0e89ed9794-r0.json",
+    "sources/evaluations/workflow-sessions/baseline-fastify-20260729-vs-codex-p-bb0e89ed9794-r0.json",
+    "sources/evaluations/workflow-sessions/baseline-fastify-20260729-vs-graphify-p-bb0e89ed9794-r0.json",
+    "sources/evaluations/workflow-sessions/baseline-fastify-20260729-vs-swarmvault-p-bb0e89ed9794-r0.json",
+    "sources/evaluations/workflow-sessions/baseline-fastify-20260729-vs-token-savior-p-bb0e89ed9794-r0.json",
+    "sources/evaluations/workflow-sessions/baseline-terraform-20260729-vs-cartog-product-p-5811b463c1e9-r0.json",
+    "sources/evaluations/workflow-sessions/baseline-terraform-20260729-vs-caveman-p-5811b463c1e9-r0.json",
+    "sources/evaluations/workflow-sessions/baseline-terraform-20260729-vs-codex-p-5811b463c1e9-r0.json",
+    "sources/evaluations/workflow-sessions/baseline-terraform-20260729-vs-graphify-p-5811b463c1e9-r0.json",
+    "sources/evaluations/workflow-sessions/baseline-terraform-20260729-vs-swarmvault-p-5811b463c1e9-r0.json",
+    "sources/evaluations/workflow-sessions/baseline-terraform-20260729-vs-token-savior-p-5811b463c1e9-r0.json"
+  ],
+  "conclusion": {
+    "profiles_with_lower_raw_tokens_than_baseline": 0,
+    "best_raw_profile": "headroom-default-codex",
+    "best_raw_delta_vs_baseline_percent": 9.31,
+    "finding": "All six treatments increased raw provider tokens relative to the shared accepted baseline; none demonstrated token savings on the primary metric."
+  }
+}

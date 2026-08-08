@@ -1,0 +1,52 @@
+{
+  "schema_version": 1,
+  "evidence_classification": "provider-free-production-container-rehearsal",
+  "date": "2026-07-22",
+  "sequence_id": "beets-lifecycle-sequence-v0",
+  "task_id": "beets-lifecycle-refactor-v0",
+  "task_order": 2,
+  "fixture_commit": "9acb1ecff6c7ee0a1e83e3b983c94792345712c5",
+  "dependency_lockfiles": [
+    {
+      "path": "uv.lock",
+      "sha256": "fbf1d7a9c84b658a2433035221ba18c57508c254d711a06f305e2f610839a45f"
+    }
+  ],
+  "container": {
+    "image_ref": "token-eval-codex:latest",
+    "image_id": "sha256:6f86d01f2c63f5029c6bb874d8f3694c24d5cd567e3d09413eccc956ba3feafe",
+    "repo_digest": "token-eval-codex@sha256:6f86d01f2c63f5029c6bb874d8f3694c24d5cd567e3d09413eccc956ba3feafe"
+  },
+  "production_bootstrap": {
+    "shell": [
+      "bash",
+      "-c"
+    ],
+    "command": "uv sync --group test --frozen",
+    "path_prefix": "/opt/data/bin:/opt/data/opt/go/bin",
+    "exit_code": 0,
+    "log_path": "sources/evaluations/audits/baseline-v3-literal-command-receipts-20260722/beets-lifecycle-sequence-v0/setup-deps-output.txt",
+    "log_sha256": "1f61b2a27a04ba6ba81ed3a8daacf3b92a3ec58b3c737f761f0d70e084aa67e5"
+  },
+  "literal_command": {
+    "prompt_path": "sources/evaluations/fixtures/medium/beetbox-beets/task-generations/baseline-v3/beets-lifecycle-refactor-v0/agent-prompt.txt",
+    "prompt_sha256": "f848ff57718529c6f49b3915a00e0f8f18c854d32ab73f82ce2f9749b18a7031",
+    "command_block": "python3 - <<'PY'\nfrom pathlib import Path\np = Path(\"beets/dbcore/db.py\")\ns = p.read_text()\nold = \"        return (key for key in self._all_keys)\\n\"\nnew = \"        return iter(self._all_keys)\\n\"\nassert s.count(old) == 1\np.write_text(s.replace(old, new))\nPY\nuv run --offline --frozen python -c \"from beets.dbcore.db import LazyDict; value=LazyDict({'a': 1}, lambda k,v:v); assert list(value)==['a']; assert type(iter(value)).__name__ == 'set_iterator'\"\nuv run --offline --frozen ruff format --check beets/dbcore/db.py",
+    "command_sha256": "ab24bfe99f5fc7aa59365e3b0698afd1eac6529cbb4a5ab62dc61030c89f6223",
+    "exit_code": 0,
+    "log_path": "sources/evaluations/audits/baseline-v3-literal-command-receipts-20260722/beets-lifecycle-sequence-v0/beets-lifecycle-refactor-v0.command.log",
+    "log_sha256": "fd2299c9f1c6dc869070883e281051bfe93aacf66c1a3b0069f45b4aa410ca50",
+    "selected_test_names": []
+  },
+  "controller_verifier": {
+    "path": "sources/evaluations/fixtures/medium/beetbox-beets/task-generations/baseline-v3/beets-lifecycle-refactor-v0/verify.sh",
+    "sha256": "efd04514db31bf0a7df4119218f79bf87b0c4ec603106e408a42f0d24b5b8d9b",
+    "exit_code": 0,
+    "log_path": "sources/evaluations/audits/baseline-v3-literal-command-receipts-20260722/beets-lifecycle-sequence-v0/beets-lifecycle-refactor-v0.verifier.log",
+    "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "persistent_cumulative_workflow": true,
+  "provider_calls": 0,
+  "provider_tokens": 0,
+  "passed": true
+}

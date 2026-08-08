@@ -1,0 +1,131 @@
+## Audit outcome
+
+- **The paid Beets sample is valid.** This was a post-publication test/controller contract failure, not fixture or provider invalidity.
+- Preserved lane:
+  - Lane exit: `0`
+  - Three Codex task exits: `0, 0, 0`
+  - Final verifier: `0`
+  - Verifier integrity: passed
+  - Strict compact-artifact validation: passed
+  - Session: `baseline-beets-20260728-p-fcc8438d2077-r0`
+  - Usage: `17,833 + 69,376 + 991 = 88,200` provider tokens
+  - Current reuse classification: `reusable`
+- The copied compact artifact files are byte-identical to the preserved checkout, and the merged registry record is structurally identical.
+
+## Failure classification
+
+All three original failures are stale or state-coupled test defects:
+
+1. **Former line 414** — derived “current pools” from the retired V3 pilot audit. It therefore misclassified the current V4 pool `fcc8438d2077` as a historical model-comparison pool.
+2. **Former line 4336** — hard-coded that every V4 attempt receipt must be absent. An attempted paid run must instead leave the identity occupied.
+3. **Former line 5277** — intended to isolate the nonzero-replicate guard but did not neutralize the independent occupancy gate. The controller still failed before lock acquisition, reservation, lane-root creation, or provider execution; only the asserted error precedence was wrong.
+
+The staged test changes correctly address these cases. There is no need to move the runtime replicate check merely to satisfy the third test.
+
+### Additional controller-reporting defect
+
+`run_sequential_workflow_matrix.py:1589-1595` initializes:
+
+```python
+"skipped": "one or more lanes failed"
+```
+
+and `merge_lanes()` never clears it. Consequently, the immutable matrix summary simultaneously reports:
+
+- lane exit `0`;
+- one merged session;
+- no rejected lanes; and
+- `"skipped": "one or more lanes failed"`.
+
+That field is false but does not invalidate the sample. Preserve the original summary and explain the contradiction in the recovery receipt; for future runs, remove or recompute `skipped` after a merge.
+
+## Smallest no-respend recovery sequence
+
+From the rolled-back state, under the production lock:
+
+1. Rehearse the same sequence in an isolated clone containing the corrected contract tests and immutable attempt receipt.
+2. Verify the root and lane receipts agree on immutable identity fields. Their differing `orchestrator` and `reserved_at` values are expected.
+3. Snapshot:
+   - `data/workflow-sessions.json`
+   - generated runbook
+   - cumulative-accounting audit
+4. Reconstruct the sole lane result from `matrix-summary.json`.
+5. Enter `publication_transaction_guard`.
+6. Call `merge_lanes([lane_result], 0, merge_summary)`.
+7. Call `refresh_generated_runbook()`.
+8. Call `refresh_cumulative_usage_audit()`.
+9. Call `run_validation(...)`.
+10. Raise on any failed validation so the guard invokes `rollback_matrix_publication(...)`.
+11. Treat leaving the guard successfully as the commit point. Then write a run-local recovery receipt documenting the original rollback and provider-free recovery.
+
+Concrete core:
+
+```python
+fd = matrix.acquire_production_lock()
+try:
+    registry_path = matrix.ROOT / "data/workflow-sessions.json"
+    registry_before = registry_path.read_bytes()
+    authority_paths = (
+        matrix.ROOT / "docs/evaluations/operations/runbook.md",
+        matrix.ROOT / "sources/evaluations/audits/"
+        "codex-cumulative-usage-accounting-20260718.json",
+    )
+    authority_before = {p: p.read_bytes() for p in authority_paths}
+    merge_summary = {}
+    published = []
+
+    def rollback():
+        matrix.rollback_matrix_publication(
+            registry_path,
+            registry_before,
+            merge_summary,
+            published,
+            authority_before,
+        )
+
+    with matrix.publication_transaction_guard(rollback):
+        matrix.merge_lanes([lane_result], 0, merge_summary)
+        matrix.refresh_generated_runbook()
+        matrix.refresh_cumulative_usage_audit()
+        validation = matrix.run_validation(
+            recovery_output_dir,
+            "/opt/hermes/.venv/bin/python",
+        )
+        if not validation["passed"]:
+            raise RuntimeError("provider-free recovery validation failed")
+finally:
+    os.close(fd)
+```
+
+This invokes no lane runner, model-condition launcher, Codex process, or provider call.
+
+## Current state and verification
+
+A concurrent actor has already materialized this recovery in the working tree, so **do not execute the merge again**; it would correctly fail as a duplicate session/artifact.
+
+Provider-free checks now pass:
+
+- `scripts/update_workflow_runbook.py --check`
+- `scripts/validate_repository.py`
+- `scripts/test_workflow_evaluation_contract.py` — **237 tests passed**
+- `git diff --check`
+- `truthmark check --json`
+- `truthmark index --json`
+
+Gates are coherent:
+
+- Paid-pilot rerun gate: closed because the immutable receipt occupies the identity.
+- Treatment gate: closed because the independent V4 pilot audit is still absent.
+
+## Blocker / files
+
+- **Remaining blocker:** recovery is present only as staged/unstaged/untracked working-tree state. It is not durable publication until all recovery outputs are staged together, exact-tree certified, committed, and pushed.
+- Current recovery surfaces include:
+  - `data/workflow-sessions.json`
+  - `docs/evaluations/operations/runbook.md`
+  - `scripts/test_workflow_evaluation_contract.py`
+  - `sources/evaluations/audits/baseline-v4-pilot-attempt-beets.json`
+  - cumulative-usage accounting audit
+  - four compact session files under the recovered session directory
+- **I created or modified no files.**
+- No provider or model was invoked during this audit.

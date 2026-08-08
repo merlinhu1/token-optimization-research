@@ -78,7 +78,7 @@ Evidence artifact: `sources/discovery/2026-06-26-source-logic-uplift-code-inspec
 - Primary intervention surface: Code retrieval and graph-indexing authority exposed through CLI/MCP-oriented workflows
 - Integration status: source and integration paths identified; source logic inspected for representative runtime files.
 - Disable/uninstall path: partially inspected where representative files expose it; full host-by-host review remains open.
-- Failure behavior if dependency is missing: partially inspected in representative code/tests; complete deployment failure-mode review remains open.
+- Failure behavior if dependency is missing: the official Codex installer writes a bare `codegraph` command into Codex configuration; evaluations built from a pinned source checkout must expose that command on the actual model-runtime PATH, not merely call an absolute binary from controller probes. The deleted generation violated this requirement; the corrected canonical v1 generation gates on a container command-resolution probe and fresh protocol hashes.
 
 ## Runtime behavior
 

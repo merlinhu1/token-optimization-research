@@ -87,7 +87,8 @@
     },
     "replicate_index": {
       "type": "integer",
-      "minimum": 0
+      "minimum": 0,
+      "description": "Runtime-local immutable attempt label. Do not use it to pair different runtimes unless interpretation.comparison_pair explicitly binds accepted-replicate ordinals."
     },
     "baseline_pool": {
       "type": "object",
@@ -430,7 +431,6 @@
             "pre_seed_reflog_entries_visible",
             "concealment_verification_passed",
             "task_directories_model_visible",
-            "verifier_assets_model_visible",
             "verifier_integrity_passed"
           ],
           "properties": {
@@ -458,13 +458,36 @@
             "verifier_assets_model_visible": {
               "type": "boolean"
             },
+            "controller_verifier_scripts_and_canonical_copies_model_visible": {
+              "type": "boolean"
+            },
+            "model_visible_acceptance_asset_paths": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "uniqueItems": true
+            },
             "verifier_integrity_passed": {
               "type": [
                 "boolean",
                 "null"
               ]
             }
-          }
+          },
+          "anyOf": [
+            {
+              "required": [
+                "verifier_assets_model_visible"
+              ]
+            },
+            {
+              "required": [
+                "controller_verifier_scripts_and_canonical_copies_model_visible",
+                "model_visible_acceptance_asset_paths"
+              ]
+            }
+          ]
         }
       },
       "allOf": [
@@ -645,6 +668,7 @@
           "minimum": 0
         },
         "cache_write_tokens": {
+          "description": "Null is retained only for immutable legacy records; current accepted/reusable contracts require an exact non-negative integer in repository and runtime validation.",
           "type": [
             "integer",
             "null"
@@ -671,6 +695,13 @@
             "null"
           ],
           "minimum": 0
+        },
+        "provider_usage_details": {
+          "description": "Lossless normalized provider token-bearing fields and accounting provenance. Cache-write tokens are retained here and as cache_write_tokens, but are already included in fresh_input_tokens.",
+          "type": [
+            "object",
+            "null"
+          ]
         },
         "tokens_per_accepted_task": {
           "type": [
@@ -835,6 +866,26 @@
         },
         "exclusion_reason": {
           "type": "string"
+        },
+        "comparison_baseline_session_id": {
+          "type": "string"
+        },
+        "comparison_pair": {
+          "type": "object",
+          "required": [
+            "id",
+            "basis",
+            "accepted_replicate_ordinal",
+            "treatment_runtime_replicate_index",
+            "baseline_runtime_replicate_index"
+          ],
+          "properties": {
+            "id": {"type": "string"},
+            "basis": {"const": "accepted-replicate-ordinal"},
+            "accepted_replicate_ordinal": {"type": "integer", "minimum": 1},
+            "treatment_runtime_replicate_index": {"type": "integer", "minimum": 0},
+            "baseline_runtime_replicate_index": {"type": "integer", "minimum": 0}
+          }
         }
       }
     }
@@ -905,6 +956,54 @@
               "external_retrieval_hits",
               "pass_through_tool_command_hits"
             ]
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "schema_version": {"const": 2},
+          "session_role": {"not": {"const": "baseline"}},
+          "interpretation": {
+            "properties": {
+              "accepted_for_objective": {"const": true}
+            },
+            "required": ["accepted_for_objective"]
+          }
+        },
+        "required": ["schema_version", "session_role", "interpretation"]
+      },
+      "then": {
+        "properties": {
+          "interpretation": {
+            "properties": {
+              "comparison_baseline_session_id": {
+                "type": "string",
+                "minLength": 1
+              }
+            },
+            "required": ["comparison_baseline_session_id"]
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "schema_version": {"const": 2},
+          "session_role": {"const": "baseline"}
+        },
+        "required": ["schema_version", "session_role"]
+      },
+      "then": {
+        "properties": {
+          "interpretation": {
+            "properties": {
+              "comparison_baseline_session_id": {
+                "enum": [""]
+              }
+            }
           }
         }
       }

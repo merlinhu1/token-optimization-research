@@ -1,0 +1,987 @@
+{
+  "schema_version": 1,
+  "date": "2026-07-19",
+  "created_at": "2026-07-19T13:45:17.333004+00:00",
+  "purpose": "Provider-free requalification of guide-faithful Ponytail and Caveman Codex profiles after making repository-local integration helpers checkout-portable.",
+  "profiles": [
+    "artifact-ponytail-codex-plugin-v1",
+    "behavior-caveman-codex-skill-v1"
+  ],
+  "sequences": [
+    "fastify-lifecycle-sequence-v0",
+    "beets-lifecycle-sequence-v0",
+    "terraform-lifecycle-sequence-v0"
+  ],
+  "no_provider": true,
+  "execution_mode": "prepare-only-no-provider",
+  "provider_calls": 0,
+  "summary": {
+    "expected": 6,
+    "passed": 6,
+    "failed": 0,
+    "provider_backed_sessions_created": 0
+  },
+  "failures": [],
+  "controller_provenance": {
+    "fixture_runner_sha256": "6fa8271b89a577706ea0bbffcc8e4521831f41b646ed9519369efee3642fe41c",
+    "workflow_runner_sha256": "446292bdc9bda15babcf723621c70538df243b74e950028b0804c3f30aa17c53",
+    "evaluator_prompt_sha256": "dfd582e145d6b8baf7052b7c70148c3ecbce7e801c46b5f39c366aaa70118eb0",
+    "agent_guidance_sha256": "254f82547db404f8c85e76090325b396dc0838044ee6bf1b8a8c8e9830216826",
+    "pinned_marketplace_preparer_sha256": "fc1b064e9e09049ec8520fd1244043e6559a8752d08aed6ff168c5eebe38838a",
+    "codex_hook_truster_sha256": "1de483868a674f660daa414e6533951ccd877b294735953a9f3f5d8dc1abb353"
+  },
+  "integration_contract_proof": {
+    "artifact-ponytail-codex-plugin-v1": {
+      "source_root": "/opt/data/ponytail",
+      "source_commit": "40e50d9e03242aa5dd53ac771950f9127362b25f",
+      "source_pin_matches": true,
+      "official_install_surface": "codex plugin marketplace add + codex plugin add ponytail@ponytail",
+      "lane_required_file_proof": true,
+      "evaluator_authored_product_instructions_injected": false
+    },
+    "behavior-caveman-codex-skill-v1": {
+      "source_root": "/opt/data/tool-candidates/caveman",
+      "source_commit": "0d95a81d35a9f2d123a5e9430d1cfc43d55f1bb0",
+      "source_pin_matches": true,
+      "official_install_surface": "npx skills add <pinned-local-source> -a codex -y",
+      "documented_session_activation": "/caveman",
+      "lane_required_file_proof": true,
+      "evaluator_authored_product_instructions_injected": false
+    }
+  },
+  "lanes": [
+    {
+      "session_id": "prepare-canonical-v1-fastify-artifact-ponytail-codex-plugin-v1",
+      "profile_id": "artifact-ponytail-codex-plugin-v1",
+      "sequence_id": "fastify-lifecycle-sequence-v0",
+      "prepared": true,
+      "prepare_verification": {
+        "passed": true,
+        "mode": "preseeded-composite",
+        "future_seed_regressions_visible": true,
+        "seed_patches_model_visible": false,
+        "preseeded_task_orders": [
+          1,
+          2,
+          3
+        ],
+        "pending_seed_orders": [],
+        "controller_verification": "final-only",
+        "diff_basis": "ordered-task-checkpoints-plus-final-cumulative-diff",
+        "fixed_snapshot_oid": "94bcbcc6e2ef3b8e8f8e8797fe551ccbe7b942fd",
+        "concealment": {
+          "order": 1,
+          "head": "a022aea1d88fa85040a00a3eda31013db836043c",
+          "head_is_root": true,
+          "reachable_commit_count": 1,
+          "reflog_oids": [
+            "a022aea1d88fa85040a00a3eda31013db836043c"
+          ],
+          "remotes": [],
+          "working_tree_clean": true,
+          "fixed_snapshot_object_present": false,
+          "unreachable_objects": [],
+          "leaked_git_admin_paths": [],
+          "model_concealed_paths": [],
+          "model_concealed_paths_present": [],
+          "passed": true
+        },
+        "composite_seed_delivery": {
+          "mode": "preseeded-composite",
+          "preseeded_task_orders": [
+            1,
+            2,
+            3
+          ],
+          "merged_task_orders": [
+            1,
+            2,
+            3
+          ],
+          "composite_diff_sha256": "46613844cbf7bcd17c2f04c2fe53990f233bc1fb79134bf3aefc7b4962002e93",
+          "model_repo_seed_or_verifier_assets": [],
+          "model_concealed_paths": [],
+          "model_concealed_paths_present": [],
+          "passed": true
+        },
+        "stage_seed_delivery": {
+          "mode": "preseeded-composite",
+          "preseeded_task_orders": [
+            1,
+            2,
+            3
+          ],
+          "merged_task_orders": [
+            1,
+            2,
+            3
+          ],
+          "composite_diff_sha256": "46613844cbf7bcd17c2f04c2fe53990f233bc1fb79134bf3aefc7b4962002e93",
+          "model_repo_seed_or_verifier_assets": [],
+          "model_concealed_paths": [],
+          "model_concealed_paths_present": [],
+          "passed": true
+        },
+        "fixed_composite_qualification": {
+          "path": "sources/evaluations/fixtures/medium/fastify-fastify/qualification-lifecycle-v0.json",
+          "passed": true,
+          "full_fixed_cumulative_verifier_zero": true,
+          "composite_seed_merge_zero": true,
+          "composite_seeded_verifiers_nonzero": true,
+          "composite_seed_diff_sha256": "46613844cbf7bcd17c2f04c2fe53990f233bc1fb79134bf3aefc7b4962002e93",
+          "runtime_composite_seed_diff_sha256": "46613844cbf7bcd17c2f04c2fe53990f233bc1fb79134bf3aefc7b4962002e93",
+          "composite_seed_diff_hash_matches": true
+        },
+        "concealment_passed": true,
+        "composite_seed_delivery_passed": true
+      },
+      "host_integration": {
+        "profile_id": "artifact-ponytail-codex-plugin-v1",
+        "passed": true,
+        "skipped": false,
+        "install_exit_codes": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "verify_exit_codes": [
+          0
+        ],
+        "missing_required_files": [],
+        "required_files": [
+          "/opt/data/repos/token-optimization-research/sources/evaluations/workflow-sessions/prepare-canonical-v1-fastify-artifact-ponytail-codex-plugin-v1/codex-homes/artifact-ponytail-codex-plugin-v1/config.toml",
+          "/opt/data/repos/token-optimization-research/sources/evaluations/workflow-sessions/prepare-canonical-v1-fastify-artifact-ponytail-codex-plugin-v1/codex-homes/artifact-ponytail-codex-plugin-v1/plugins/cache/ponytail/ponytail/4.8.4/.codex-plugin/plugin.json",
+          "/opt/data/repos/token-optimization-research/sources/evaluations/workflow-sessions/prepare-canonical-v1-fastify-artifact-ponytail-codex-plugin-v1/codex-homes/artifact-ponytail-codex-plugin-v1/.config/ponytail-codex-plugin-v1/marketplace/source-pin-receipt.json",
+          "/opt/data/repos/token-optimization-research/sources/evaluations/workflow-sessions/prepare-canonical-v1-fastify-artifact-ponytail-codex-plugin-v1/codex-homes/artifact-ponytail-codex-plugin-v1/.config/ponytail-codex-plugin-v1/ponytail-hook-trust.json"
+        ],
+        "artifacts": [
+          "sources/evaluations/workflow-sessions/prepare-canonical-v1-fastify-artifact-ponytail-codex-plugin-v1/tool-host-install-1.txt",
+          "sources/evaluations/workflow-sessions/prepare-canonical-v1-fastify-artifact-ponytail-codex-plugin-v1/tool-host-install-2.txt",
+          "sources/evaluations/workflow-sessions/prepare-canonical-v1-fastify-artifact-ponytail-codex-plugin-v1/tool-host-install-3.txt",
+          "sources/evaluations/workflow-sessions/prepare-canonical-v1-fastify-artifact-ponytail-codex-plugin-v1/tool-host-install-4.txt",
+          "sources/evaluations/workflow-sessions/prepare-canonical-v1-fastify-artifact-ponytail-codex-plugin-v1/tool-host-verify-1.txt"
+        ]
+      },
+      "mcp_handshake": {
+        "profile_id": "artifact-ponytail-codex-plugin-v1",
+        "passed": true,
+        "required": false,
+        "skipped": true,
+        "tool_count": 0
+      },
+      "codex_preflight": {
+        "profile_id": "artifact-ponytail-codex-plugin-v1",
+        "passed": true,
+        "doctor_exit_code": 1,
+        "mcp_list_exit_code": 0,
+        "tool_preflight_exit_code": 0,
+        "coverage_preflight_exit_code": null,
+        "missing_declared_filter_commands": [],
+        "forbidden_command_probe_exit_code": 0,
+        "forbidden_mcp_hits": [],
+        "forbidden_config_hits": [],
+        "visible_forbidden_commands": [],
+        "failure_reasons": [],
+        "warnings": [
+          "codex doctor exited 1; preserve the diagnostic, but use the isolated MCP/config probes and task execution as gates"
+        ],
+        "artifacts": {
+          "doctor": "sources/evaluations/workflow-sessions/prepare-canonical-v1-fastify-artifact-ponytail-codex-plugin-v1/codex-doctor.txt",
+          "mcp_list": "sources/evaluations/workflow-sessions/prepare-canonical-v1-fastify-artifact-ponytail-codex-plugin-v1/codex-mcp-list.txt",
+          "effective_config": "sources/evaluations/workflow-sessions/prepare-canonical-v1-fastify-artifact-ponytail-codex-plugin-v1/codex-effective-config.toml",
+          "forbidden_command_visibility": "sources/evaluations/workflow-sessions/prepare-canonical-v1-fastify-artifact-ponytail-codex-plugin-v1/forbidden-command-visibility.txt",
+          "tool_preflight": "sources/evaluations/workflow-sessions/prepare-canonical-v1-fastify-artifact-ponytail-codex-plugin-v1/tool-preflight.txt",
+          "tool_coverage_preflight": null
+        }
+      },
+      "tool_warmup_exit_code": 0,
+      "protocol_path": "sources/evaluations/protocols/fastify-lifecycle-sequence-v0-artifact-ponytail-codex-plugin-v1-6329b38d5ca2.json",
+      "protocol_sha256": "f9970b79b85059df16a5e52bd0fe3fb9c17767379556bba558994cf9ae03fadc"
+    },
+    {
+      "session_id": "prepare-canonical-v1-beets-artifact-ponytail-codex-plugin-v1",
+      "profile_id": "artifact-ponytail-codex-plugin-v1",
+      "sequence_id": "beets-lifecycle-sequence-v0",
+      "prepared": true,
+      "prepare_verification": {
+        "passed": true,
+        "mode": "preseeded-composite",
+        "future_seed_regressions_visible": true,
+        "seed_patches_model_visible": false,
+        "preseeded_task_orders": [
+          1,
+          2,
+          3
+        ],
+        "pending_seed_orders": [],
+        "controller_verification": "final-only",
+        "diff_basis": "ordered-task-checkpoints-plus-final-cumulative-diff",
+        "fixed_snapshot_oid": "9acb1ecff6c7ee0a1e83e3b983c94792345712c5",
+        "concealment": {
+          "order": 1,
+          "head": "ca323d3520ac951fd3ee7a9ed6ae6a8fab86f5b3",
+          "head_is_root": true,
+          "reachable_commit_count": 1,
+          "reflog_oids": [
+            "ca323d3520ac951fd3ee7a9ed6ae6a8fab86f5b3"
+          ],
+          "remotes": [],
+          "working_tree_clean": true,
+          "fixed_snapshot_object_present": false,
+          "unreachable_objects": [],
+          "leaked_git_admin_paths": [],
+          "model_concealed_paths": [
+            "test/controller_hidden/lifecycle/test_ftintitle_review.py",
+            "test/controller_hidden/lifecycle/test_lazy_model_storage_refactor.py",
+            "test/controller_hidden/lifecycle/test_multivalue_modify_feature.py"
+          ],
+          "model_concealed_paths_present": [],
+          "passed": true
+        },
+        "composite_seed_delivery": {
+          "mode": "preseeded-composite",
+          "preseeded_task_orders": [
+            1,
+            2,
+            3
+          ],
+          "merged_task_orders": [
+            1,
+            2,
+            3
+          ],
+          "composite_diff_sha256": "7d44dab7226fb451f7b8051ec633f4fb204ef090e2e7d72e2370ab4f3999afdc",
+          "model_repo_seed_or_verifier_assets": [],
+          "model_concealed_paths": [
+            "test/controller_hidden/lifecycle/test_ftintitle_review.py",
+            "test/controller_hidden/lifecycle/test_lazy_model_storage_refactor.py",
+            "test/controller_hidden/lifecycle/test_multivalue_modify_feature.py"
+          ],
+          "model_concealed_paths_present": [],
+          "passed": true
+        },
+        "stage_seed_delivery": {
+          "mode": "preseeded-composite",
+          "preseeded_task_orders": [
+            1,
+            2,
+            3
+          ],
+          "merged_task_orders": [
+            1,
+            2,
+            3
+          ],
+          "composite_diff_sha256": "7d44dab7226fb451f7b8051ec633f4fb204ef090e2e7d72e2370ab4f3999afdc",
+          "model_repo_seed_or_verifier_assets": [],
+          "model_concealed_paths": [
+            "test/controller_hidden/lifecycle/test_ftintitle_review.py",
+            "test/controller_hidden/lifecycle/test_lazy_model_storage_refactor.py",
+            "test/controller_hidden/lifecycle/test_multivalue_modify_feature.py"
+          ],
+          "model_concealed_paths_present": [],
+          "passed": true
+        },
+        "fixed_composite_qualification": {
+          "path": "sources/evaluations/fixtures/medium/beetbox-beets/qualification-lifecycle-v0.json",
+          "passed": true,
+          "full_fixed_cumulative_verifier_zero": true,
+          "composite_seed_merge_zero": true,
+          "composite_seeded_verifiers_nonzero": true,
+          "composite_seed_diff_sha256": "7d44dab7226fb451f7b8051ec633f4fb204ef090e2e7d72e2370ab4f3999afdc",
+          "runtime_composite_seed_diff_sha256": "7d44dab7226fb451f7b8051ec633f4fb204ef090e2e7d72e2370ab4f3999afdc",
+          "composite_seed_diff_hash_matches": true
+        },
+        "concealment_passed": true,
+        "composite_seed_delivery_passed": true
+      },
+      "host_integration": {
+        "profile_id": "artifact-ponytail-codex-plugin-v1",
+        "passed": true,
+        "skipped": false,
+        "install_exit_codes": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "verify_exit_codes": [
+          0
+        ],
+        "missing_required_files": [],
+        "required_files": [
+          "/opt/data/repos/token-optimization-research/sources/evaluations/workflow-sessions/prepare-canonical-v1-beets-artifact-ponytail-codex-plugin-v1/codex-homes/artifact-ponytail-codex-plugin-v1/config.toml",
+          "/opt/data/repos/token-optimization-research/sources/evaluations/workflow-sessions/prepare-canonical-v1-beets-artifact-ponytail-codex-plugin-v1/codex-homes/artifact-ponytail-codex-plugin-v1/plugins/cache/ponytail/ponytail/4.8.4/.codex-plugin/plugin.json",
+          "/opt/data/repos/token-optimization-research/sources/evaluations/workflow-sessions/prepare-canonical-v1-beets-artifact-ponytail-codex-plugin-v1/codex-homes/artifact-ponytail-codex-plugin-v1/.config/ponytail-codex-plugin-v1/marketplace/source-pin-receipt.json",
+          "/opt/data/repos/token-optimization-research/sources/evaluations/workflow-sessions/prepare-canonical-v1-beets-artifact-ponytail-codex-plugin-v1/codex-homes/artifact-ponytail-codex-plugin-v1/.config/ponytail-codex-plugin-v1/ponytail-hook-trust.json"
+        ],
+        "artifacts": [
+          "sources/evaluations/workflow-sessions/prepare-canonical-v1-beets-artifact-ponytail-codex-plugin-v1/tool-host-install-1.txt",
+          "sources/evaluations/workflow-sessions/prepare-canonical-v1-beets-artifact-ponytail-codex-plugin-v1/tool-host-install-2.txt",
+          "sources/evaluations/workflow-sessions/prepare-canonical-v1-beets-artifact-ponytail-codex-plugin-v1/tool-host-install-3.txt",
+          "sources/evaluations/workflow-sessions/prepare-canonical-v1-beets-artifact-ponytail-codex-plugin-v1/tool-host-install-4.txt",
+          "sources/evaluations/workflow-sessions/prepare-canonical-v1-beets-artifact-ponytail-codex-plugin-v1/tool-host-verify-1.txt"
+        ]
+      },
+      "mcp_handshake": {
+        "profile_id": "artifact-ponytail-codex-plugin-v1",
+        "passed": true,
+        "required": false,
+        "skipped": true,
+        "tool_count": 0
+      },
+      "codex_preflight": {
+        "profile_id": "artifact-ponytail-codex-plugin-v1",
+        "passed": true,
+        "doctor_exit_code": 1,
+        "mcp_list_exit_code": 0,
+        "tool_preflight_exit_code": 0,
+        "coverage_preflight_exit_code": null,
+        "missing_declared_filter_commands": [],
+        "forbidden_command_probe_exit_code": 0,
+        "forbidden_mcp_hits": [],
+        "forbidden_config_hits": [],
+        "visible_forbidden_commands": [],
+        "failure_reasons": [],
+        "warnings": [
+          "codex doctor exited 1; preserve the diagnostic, but use the isolated MCP/config probes and task execution as gates"
+        ],
+        "artifacts": {
+          "doctor": "sources/evaluations/workflow-sessions/prepare-canonical-v1-beets-artifact-ponytail-codex-plugin-v1/codex-doctor.txt",
+          "mcp_list": "sources/evaluations/workflow-sessions/prepare-canonical-v1-beets-artifact-ponytail-codex-plugin-v1/codex-mcp-list.txt",
+          "effective_config": "sources/evaluations/workflow-sessions/prepare-canonical-v1-beets-artifact-ponytail-codex-plugin-v1/codex-effective-config.toml",
+          "forbidden_command_visibility": "sources/evaluations/workflow-sessions/prepare-canonical-v1-beets-artifact-ponytail-codex-plugin-v1/forbidden-command-visibility.txt",
+          "tool_preflight": "sources/evaluations/workflow-sessions/prepare-canonical-v1-beets-artifact-ponytail-codex-plugin-v1/tool-preflight.txt",
+          "tool_coverage_preflight": null
+        }
+      },
+      "tool_warmup_exit_code": 0,
+      "protocol_path": "sources/evaluations/protocols/beets-lifecycle-sequence-v0-artifact-ponytail-codex-plugin-v1-34328b843911.json",
+      "protocol_sha256": "fb51f3b923f1fbdb33fdd0bb58b8310586b900e70ca9edeeff439040c4c56dbf"
+    },
+    {
+      "session_id": "prepare-canonical-v1-terraform-artifact-ponytail-codex-plugin-v1",
+      "profile_id": "artifact-ponytail-codex-plugin-v1",
+      "sequence_id": "terraform-lifecycle-sequence-v0",
+      "prepared": true,
+      "prepare_verification": {
+        "passed": true,
+        "mode": "preseeded-composite",
+        "future_seed_regressions_visible": true,
+        "seed_patches_model_visible": false,
+        "preseeded_task_orders": [
+          1,
+          2,
+          3
+        ],
+        "pending_seed_orders": [],
+        "controller_verification": "final-only",
+        "diff_basis": "ordered-task-checkpoints-plus-final-cumulative-diff",
+        "fixed_snapshot_oid": "e02391ad384c9c38f1d7f40b853c0d2297348094",
+        "concealment": {
+          "order": 1,
+          "head": "37e449ed00081a7e6c140716380a89641fef7da9",
+          "head_is_root": true,
+          "reachable_commit_count": 1,
+          "reflog_oids": [
+            "37e449ed00081a7e6c140716380a89641fef7da9"
+          ],
+          "remotes": [],
+          "working_tree_clean": true,
+          "fixed_snapshot_object_present": false,
+          "unreachable_objects": [],
+          "leaked_git_admin_paths": [],
+          "model_concealed_paths": [
+            "internal/cloud/backend_tfPolicyEvaluation_test.go",
+            "internal/cloud/lifecycle_v0_policy_summary_test.go",
+            "internal/policy/callback/lifecycle_v0_deferred_callbacks_test.go"
+          ],
+          "model_concealed_paths_present": [],
+          "passed": true
+        },
+        "composite_seed_delivery": {
+          "mode": "preseeded-composite",
+          "preseeded_task_orders": [
+            1,
+            2,
+            3
+          ],
+          "merged_task_orders": [
+            1,
+            2,
+            3
+          ],
+          "composite_diff_sha256": "8473d1db8353c106a8deb02abc9914bcce633277b98d1556c5f261040e3d8c0e",
+          "model_repo_seed_or_verifier_assets": [],
+          "model_concealed_paths": [
+            "internal/cloud/backend_tfPolicyEvaluation_test.go",
+            "internal/cloud/lifecycle_v0_policy_summary_test.go",
+            "internal/policy/callback/lifecycle_v0_deferred_callbacks_test.go"
+          ],
+          "model_concealed_paths_present": [],
+          "passed": true
+        },
+        "stage_seed_delivery": {
+          "mode": "preseeded-composite",
+          "preseeded_task_orders": [
+            1,
+            2,
+            3
+          ],
+          "merged_task_orders": [
+            1,
+            2,
+            3
+          ],
+          "composite_diff_sha256": "8473d1db8353c106a8deb02abc9914bcce633277b98d1556c5f261040e3d8c0e",
+          "model_repo_seed_or_verifier_assets": [],
+          "model_concealed_paths": [
+            "internal/cloud/backend_tfPolicyEvaluation_test.go",
+            "internal/cloud/lifecycle_v0_policy_summary_test.go",
+            "internal/policy/callback/lifecycle_v0_deferred_callbacks_test.go"
+          ],
+          "model_concealed_paths_present": [],
+          "passed": true
+        },
+        "fixed_composite_qualification": {
+          "path": "sources/evaluations/fixtures/large/hashicorp-terraform/qualification-lifecycle-v0.json",
+          "passed": true,
+          "full_fixed_cumulative_verifier_zero": true,
+          "composite_seed_merge_zero": true,
+          "composite_seeded_verifiers_nonzero": true,
+          "composite_seed_diff_sha256": "8473d1db8353c106a8deb02abc9914bcce633277b98d1556c5f261040e3d8c0e",
+          "runtime_composite_seed_diff_sha256": "8473d1db8353c106a8deb02abc9914bcce633277b98d1556c5f261040e3d8c0e",
+          "composite_seed_diff_hash_matches": true
+        },
+        "concealment_passed": true,
+        "composite_seed_delivery_passed": true
+      },
+      "host_integration": {
+        "profile_id": "artifact-ponytail-codex-plugin-v1",
+        "passed": true,
+        "skipped": false,
+        "install_exit_codes": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "verify_exit_codes": [
+          0
+        ],
+        "missing_required_files": [],
+        "required_files": [
+          "/opt/data/repos/token-optimization-research/sources/evaluations/workflow-sessions/prepare-canonical-v1-terraform-artifact-ponytail-codex-plugin-v1/codex-homes/artifact-ponytail-codex-plugin-v1/config.toml",
+          "/opt/data/repos/token-optimization-research/sources/evaluations/workflow-sessions/prepare-canonical-v1-terraform-artifact-ponytail-codex-plugin-v1/codex-homes/artifact-ponytail-codex-plugin-v1/plugins/cache/ponytail/ponytail/4.8.4/.codex-plugin/plugin.json",
+          "/opt/data/repos/token-optimization-research/sources/evaluations/workflow-sessions/prepare-canonical-v1-terraform-artifact-ponytail-codex-plugin-v1/codex-homes/artifact-ponytail-codex-plugin-v1/.config/ponytail-codex-plugin-v1/marketplace/source-pin-receipt.json",
+          "/opt/data/repos/token-optimization-research/sources/evaluations/workflow-sessions/prepare-canonical-v1-terraform-artifact-ponytail-codex-plugin-v1/codex-homes/artifact-ponytail-codex-plugin-v1/.config/ponytail-codex-plugin-v1/ponytail-hook-trust.json"
+        ],
+        "artifacts": [
+          "sources/evaluations/workflow-sessions/prepare-canonical-v1-terraform-artifact-ponytail-codex-plugin-v1/tool-host-install-1.txt",
+          "sources/evaluations/workflow-sessions/prepare-canonical-v1-terraform-artifact-ponytail-codex-plugin-v1/tool-host-install-2.txt",
+          "sources/evaluations/workflow-sessions/prepare-canonical-v1-terraform-artifact-ponytail-codex-plugin-v1/tool-host-install-3.txt",
+          "sources/evaluations/workflow-sessions/prepare-canonical-v1-terraform-artifact-ponytail-codex-plugin-v1/tool-host-install-4.txt",
+          "sources/evaluations/workflow-sessions/prepare-canonical-v1-terraform-artifact-ponytail-codex-plugin-v1/tool-host-verify-1.txt"
+        ]
+      },
+      "mcp_handshake": {
+        "profile_id": "artifact-ponytail-codex-plugin-v1",
+        "passed": true,
+        "required": false,
+        "skipped": true,
+        "tool_count": 0
+      },
+      "codex_preflight": {
+        "profile_id": "artifact-ponytail-codex-plugin-v1",
+        "passed": true,
+        "doctor_exit_code": 1,
+        "mcp_list_exit_code": 0,
+        "tool_preflight_exit_code": 0,
+        "coverage_preflight_exit_code": null,
+        "missing_declared_filter_commands": [],
+        "forbidden_command_probe_exit_code": 0,
+        "forbidden_mcp_hits": [],
+        "forbidden_config_hits": [],
+        "visible_forbidden_commands": [],
+        "failure_reasons": [],
+        "warnings": [
+          "codex doctor exited 1; preserve the diagnostic, but use the isolated MCP/config probes and task execution as gates"
+        ],
+        "artifacts": {
+          "doctor": "sources/evaluations/workflow-sessions/prepare-canonical-v1-terraform-artifact-ponytail-codex-plugin-v1/codex-doctor.txt",
+          "mcp_list": "sources/evaluations/workflow-sessions/prepare-canonical-v1-terraform-artifact-ponytail-codex-plugin-v1/codex-mcp-list.txt",
+          "effective_config": "sources/evaluations/workflow-sessions/prepare-canonical-v1-terraform-artifact-ponytail-codex-plugin-v1/codex-effective-config.toml",
+          "forbidden_command_visibility": "sources/evaluations/workflow-sessions/prepare-canonical-v1-terraform-artifact-ponytail-codex-plugin-v1/forbidden-command-visibility.txt",
+          "tool_preflight": "sources/evaluations/workflow-sessions/prepare-canonical-v1-terraform-artifact-ponytail-codex-plugin-v1/tool-preflight.txt",
+          "tool_coverage_preflight": null
+        }
+      },
+      "tool_warmup_exit_code": 0,
+      "protocol_path": "sources/evaluations/protocols/terraform-lifecycle-sequence-v0-artifact-ponytail-codex-plugin-v1-68e5cf1ac04d.json",
+      "protocol_sha256": "9bb806d342a9772e5711340a1281206a49b2df525a0a55ced1dd78d21538e006"
+    },
+    {
+      "session_id": "prepare-canonical-v1-fastify-behavior-caveman-codex-skill-v1",
+      "profile_id": "behavior-caveman-codex-skill-v1",
+      "sequence_id": "fastify-lifecycle-sequence-v0",
+      "prepared": true,
+      "prepare_verification": {
+        "passed": true,
+        "mode": "preseeded-composite",
+        "future_seed_regressions_visible": true,
+        "seed_patches_model_visible": false,
+        "preseeded_task_orders": [
+          1,
+          2,
+          3
+        ],
+        "pending_seed_orders": [],
+        "controller_verification": "final-only",
+        "diff_basis": "ordered-task-checkpoints-plus-final-cumulative-diff",
+        "fixed_snapshot_oid": "94bcbcc6e2ef3b8e8f8e8797fe551ccbe7b942fd",
+        "concealment": {
+          "order": 1,
+          "head": "e3ac12480fceef0d34effb3031faefb40b0aab83",
+          "head_is_root": true,
+          "reachable_commit_count": 1,
+          "reflog_oids": [
+            "e3ac12480fceef0d34effb3031faefb40b0aab83"
+          ],
+          "remotes": [],
+          "working_tree_clean": true,
+          "fixed_snapshot_object_present": false,
+          "unreachable_objects": [],
+          "leaked_git_admin_paths": [],
+          "model_concealed_paths": [],
+          "model_concealed_paths_present": [],
+          "passed": true
+        },
+        "composite_seed_delivery": {
+          "mode": "preseeded-composite",
+          "preseeded_task_orders": [
+            1,
+            2,
+            3
+          ],
+          "merged_task_orders": [
+            1,
+            2,
+            3
+          ],
+          "composite_diff_sha256": "46613844cbf7bcd17c2f04c2fe53990f233bc1fb79134bf3aefc7b4962002e93",
+          "model_repo_seed_or_verifier_assets": [],
+          "model_concealed_paths": [],
+          "model_concealed_paths_present": [],
+          "passed": true
+        },
+        "stage_seed_delivery": {
+          "mode": "preseeded-composite",
+          "preseeded_task_orders": [
+            1,
+            2,
+            3
+          ],
+          "merged_task_orders": [
+            1,
+            2,
+            3
+          ],
+          "composite_diff_sha256": "46613844cbf7bcd17c2f04c2fe53990f233bc1fb79134bf3aefc7b4962002e93",
+          "model_repo_seed_or_verifier_assets": [],
+          "model_concealed_paths": [],
+          "model_concealed_paths_present": [],
+          "passed": true
+        },
+        "fixed_composite_qualification": {
+          "path": "sources/evaluations/fixtures/medium/fastify-fastify/qualification-lifecycle-v0.json",
+          "passed": true,
+          "full_fixed_cumulative_verifier_zero": true,
+          "composite_seed_merge_zero": true,
+          "composite_seeded_verifiers_nonzero": true,
+          "composite_seed_diff_sha256": "46613844cbf7bcd17c2f04c2fe53990f233bc1fb79134bf3aefc7b4962002e93",
+          "runtime_composite_seed_diff_sha256": "46613844cbf7bcd17c2f04c2fe53990f233bc1fb79134bf3aefc7b4962002e93",
+          "composite_seed_diff_hash_matches": true
+        },
+        "concealment_passed": true,
+        "composite_seed_delivery_passed": true
+      },
+      "host_integration": {
+        "profile_id": "behavior-caveman-codex-skill-v1",
+        "passed": true,
+        "skipped": false,
+        "install_exit_codes": [
+          0
+        ],
+        "verify_exit_codes": [
+          0
+        ],
+        "missing_required_files": [],
+        "required_files": [
+          "/opt/data/repos/token-optimization-research/sources/evaluations/workflow-sessions/prepare-canonical-v1-fastify-behavior-caveman-codex-skill-v1/project/repo/.agents/skills/cavecrew/SKILL.md",
+          "/opt/data/repos/token-optimization-research/sources/evaluations/workflow-sessions/prepare-canonical-v1-fastify-behavior-caveman-codex-skill-v1/project/repo/.agents/skills/caveman/SKILL.md",
+          "/opt/data/repos/token-optimization-research/sources/evaluations/workflow-sessions/prepare-canonical-v1-fastify-behavior-caveman-codex-skill-v1/project/repo/.agents/skills/caveman-commit/SKILL.md",
+          "/opt/data/repos/token-optimization-research/sources/evaluations/workflow-sessions/prepare-canonical-v1-fastify-behavior-caveman-codex-skill-v1/project/repo/.agents/skills/caveman-compress/SKILL.md",
+          "/opt/data/repos/token-optimization-research/sources/evaluations/workflow-sessions/prepare-canonical-v1-fastify-behavior-caveman-codex-skill-v1/project/repo/.agents/skills/caveman-help/SKILL.md",
+          "/opt/data/repos/token-optimization-research/sources/evaluations/workflow-sessions/prepare-canonical-v1-fastify-behavior-caveman-codex-skill-v1/project/repo/.agents/skills/caveman-review/SKILL.md",
+          "/opt/data/repos/token-optimization-research/sources/evaluations/workflow-sessions/prepare-canonical-v1-fastify-behavior-caveman-codex-skill-v1/project/repo/.agents/skills/caveman-stats/SKILL.md"
+        ],
+        "artifacts": [
+          "sources/evaluations/workflow-sessions/prepare-canonical-v1-fastify-behavior-caveman-codex-skill-v1/tool-host-install-1.txt",
+          "sources/evaluations/workflow-sessions/prepare-canonical-v1-fastify-behavior-caveman-codex-skill-v1/tool-host-verify-1.txt"
+        ]
+      },
+      "mcp_handshake": {
+        "profile_id": "behavior-caveman-codex-skill-v1",
+        "passed": true,
+        "required": false,
+        "skipped": true,
+        "tool_count": 0
+      },
+      "codex_preflight": {
+        "profile_id": "behavior-caveman-codex-skill-v1",
+        "passed": true,
+        "doctor_exit_code": 1,
+        "mcp_list_exit_code": 0,
+        "tool_preflight_exit_code": 0,
+        "coverage_preflight_exit_code": null,
+        "missing_declared_filter_commands": [],
+        "forbidden_command_probe_exit_code": 0,
+        "forbidden_mcp_hits": [],
+        "forbidden_config_hits": [],
+        "visible_forbidden_commands": [],
+        "failure_reasons": [],
+        "warnings": [
+          "codex doctor exited 1; preserve the diagnostic, but use the isolated MCP/config probes and task execution as gates"
+        ],
+        "artifacts": {
+          "doctor": "sources/evaluations/workflow-sessions/prepare-canonical-v1-fastify-behavior-caveman-codex-skill-v1/codex-doctor.txt",
+          "mcp_list": "sources/evaluations/workflow-sessions/prepare-canonical-v1-fastify-behavior-caveman-codex-skill-v1/codex-mcp-list.txt",
+          "effective_config": "sources/evaluations/workflow-sessions/prepare-canonical-v1-fastify-behavior-caveman-codex-skill-v1/codex-effective-config.toml",
+          "forbidden_command_visibility": "sources/evaluations/workflow-sessions/prepare-canonical-v1-fastify-behavior-caveman-codex-skill-v1/forbidden-command-visibility.txt",
+          "tool_preflight": "sources/evaluations/workflow-sessions/prepare-canonical-v1-fastify-behavior-caveman-codex-skill-v1/tool-preflight.txt",
+          "tool_coverage_preflight": null
+        }
+      },
+      "tool_warmup_exit_code": 0,
+      "protocol_path": "sources/evaluations/protocols/fastify-lifecycle-sequence-v0-behavior-caveman-codex-skill-v1-71c73b7757ea.json",
+      "protocol_sha256": "4552666b37e5417028f0963a2c48145105bd497648858b72c0c9aea3d15d6ad8"
+    },
+    {
+      "session_id": "prepare-canonical-v1-beets-behavior-caveman-codex-skill-v1",
+      "profile_id": "behavior-caveman-codex-skill-v1",
+      "sequence_id": "beets-lifecycle-sequence-v0",
+      "prepared": true,
+      "prepare_verification": {
+        "passed": true,
+        "mode": "preseeded-composite",
+        "future_seed_regressions_visible": true,
+        "seed_patches_model_visible": false,
+        "preseeded_task_orders": [
+          1,
+          2,
+          3
+        ],
+        "pending_seed_orders": [],
+        "controller_verification": "final-only",
+        "diff_basis": "ordered-task-checkpoints-plus-final-cumulative-diff",
+        "fixed_snapshot_oid": "9acb1ecff6c7ee0a1e83e3b983c94792345712c5",
+        "concealment": {
+          "order": 1,
+          "head": "63ce0a6658020ef9a3736ad3d308215599441afa",
+          "head_is_root": true,
+          "reachable_commit_count": 1,
+          "reflog_oids": [
+            "63ce0a6658020ef9a3736ad3d308215599441afa"
+          ],
+          "remotes": [],
+          "working_tree_clean": true,
+          "fixed_snapshot_object_present": false,
+          "unreachable_objects": [],
+          "leaked_git_admin_paths": [],
+          "model_concealed_paths": [
+            "test/controller_hidden/lifecycle/test_ftintitle_review.py",
+            "test/controller_hidden/lifecycle/test_lazy_model_storage_refactor.py",
+            "test/controller_hidden/lifecycle/test_multivalue_modify_feature.py"
+          ],
+          "model_concealed_paths_present": [],
+          "passed": true
+        },
+        "composite_seed_delivery": {
+          "mode": "preseeded-composite",
+          "preseeded_task_orders": [
+            1,
+            2,
+            3
+          ],
+          "merged_task_orders": [
+            1,
+            2,
+            3
+          ],
+          "composite_diff_sha256": "7d44dab7226fb451f7b8051ec633f4fb204ef090e2e7d72e2370ab4f3999afdc",
+          "model_repo_seed_or_verifier_assets": [],
+          "model_concealed_paths": [
+            "test/controller_hidden/lifecycle/test_ftintitle_review.py",
+            "test/controller_hidden/lifecycle/test_lazy_model_storage_refactor.py",
+            "test/controller_hidden/lifecycle/test_multivalue_modify_feature.py"
+          ],
+          "model_concealed_paths_present": [],
+          "passed": true
+        },
+        "stage_seed_delivery": {
+          "mode": "preseeded-composite",
+          "preseeded_task_orders": [
+            1,
+            2,
+            3
+          ],
+          "merged_task_orders": [
+            1,
+            2,
+            3
+          ],
+          "composite_diff_sha256": "7d44dab7226fb451f7b8051ec633f4fb204ef090e2e7d72e2370ab4f3999afdc",
+          "model_repo_seed_or_verifier_assets": [],
+          "model_concealed_paths": [
+            "test/controller_hidden/lifecycle/test_ftintitle_review.py",
+            "test/controller_hidden/lifecycle/test_lazy_model_storage_refactor.py",
+            "test/controller_hidden/lifecycle/test_multivalue_modify_feature.py"
+          ],
+          "model_concealed_paths_present": [],
+          "passed": true
+        },
+        "fixed_composite_qualification": {
+          "path": "sources/evaluations/fixtures/medium/beetbox-beets/qualification-lifecycle-v0.json",
+          "passed": true,
+          "full_fixed_cumulative_verifier_zero": true,
+          "composite_seed_merge_zero": true,
+          "composite_seeded_verifiers_nonzero": true,
+          "composite_seed_diff_sha256": "7d44dab7226fb451f7b8051ec633f4fb204ef090e2e7d72e2370ab4f3999afdc",
+          "runtime_composite_seed_diff_sha256": "7d44dab7226fb451f7b8051ec633f4fb204ef090e2e7d72e2370ab4f3999afdc",
+          "composite_seed_diff_hash_matches": true
+        },
+        "concealment_passed": true,
+        "composite_seed_delivery_passed": true
+      },
+      "host_integration": {
+        "profile_id": "behavior-caveman-codex-skill-v1",
+        "passed": true,
+        "skipped": false,
+        "install_exit_codes": [
+          0
+        ],
+        "verify_exit_codes": [
+          0
+        ],
+        "missing_required_files": [],
+        "required_files": [
+          "/opt/data/repos/token-optimization-research/sources/evaluations/workflow-sessions/prepare-canonical-v1-beets-behavior-caveman-codex-skill-v1/project/repo/.agents/skills/cavecrew/SKILL.md",
+          "/opt/data/repos/token-optimization-research/sources/evaluations/workflow-sessions/prepare-canonical-v1-beets-behavior-caveman-codex-skill-v1/project/repo/.agents/skills/caveman/SKILL.md",
+          "/opt/data/repos/token-optimization-research/sources/evaluations/workflow-sessions/prepare-canonical-v1-beets-behavior-caveman-codex-skill-v1/project/repo/.agents/skills/caveman-commit/SKILL.md",
+          "/opt/data/repos/token-optimization-research/sources/evaluations/workflow-sessions/prepare-canonical-v1-beets-behavior-caveman-codex-skill-v1/project/repo/.agents/skills/caveman-compress/SKILL.md",
+          "/opt/data/repos/token-optimization-research/sources/evaluations/workflow-sessions/prepare-canonical-v1-beets-behavior-caveman-codex-skill-v1/project/repo/.agents/skills/caveman-help/SKILL.md",
+          "/opt/data/repos/token-optimization-research/sources/evaluations/workflow-sessions/prepare-canonical-v1-beets-behavior-caveman-codex-skill-v1/project/repo/.agents/skills/caveman-review/SKILL.md",
+          "/opt/data/repos/token-optimization-research/sources/evaluations/workflow-sessions/prepare-canonical-v1-beets-behavior-caveman-codex-skill-v1/project/repo/.agents/skills/caveman-stats/SKILL.md"
+        ],
+        "artifacts": [
+          "sources/evaluations/workflow-sessions/prepare-canonical-v1-beets-behavior-caveman-codex-skill-v1/tool-host-install-1.txt",
+          "sources/evaluations/workflow-sessions/prepare-canonical-v1-beets-behavior-caveman-codex-skill-v1/tool-host-verify-1.txt"
+        ]
+      },
+      "mcp_handshake": {
+        "profile_id": "behavior-caveman-codex-skill-v1",
+        "passed": true,
+        "required": false,
+        "skipped": true,
+        "tool_count": 0
+      },
+      "codex_preflight": {
+        "profile_id": "behavior-caveman-codex-skill-v1",
+        "passed": true,
+        "doctor_exit_code": 1,
+        "mcp_list_exit_code": 0,
+        "tool_preflight_exit_code": 0,
+        "coverage_preflight_exit_code": null,
+        "missing_declared_filter_commands": [],
+        "forbidden_command_probe_exit_code": 0,
+        "forbidden_mcp_hits": [],
+        "forbidden_config_hits": [],
+        "visible_forbidden_commands": [],
+        "failure_reasons": [],
+        "warnings": [
+          "codex doctor exited 1; preserve the diagnostic, but use the isolated MCP/config probes and task execution as gates"
+        ],
+        "artifacts": {
+          "doctor": "sources/evaluations/workflow-sessions/prepare-canonical-v1-beets-behavior-caveman-codex-skill-v1/codex-doctor.txt",
+          "mcp_list": "sources/evaluations/workflow-sessions/prepare-canonical-v1-beets-behavior-caveman-codex-skill-v1/codex-mcp-list.txt",
+          "effective_config": "sources/evaluations/workflow-sessions/prepare-canonical-v1-beets-behavior-caveman-codex-skill-v1/codex-effective-config.toml",
+          "forbidden_command_visibility": "sources/evaluations/workflow-sessions/prepare-canonical-v1-beets-behavior-caveman-codex-skill-v1/forbidden-command-visibility.txt",
+          "tool_preflight": "sources/evaluations/workflow-sessions/prepare-canonical-v1-beets-behavior-caveman-codex-skill-v1/tool-preflight.txt",
+          "tool_coverage_preflight": null
+        }
+      },
+      "tool_warmup_exit_code": 0,
+      "protocol_path": "sources/evaluations/protocols/beets-lifecycle-sequence-v0-behavior-caveman-codex-skill-v1-5b86abe133df.json",
+      "protocol_sha256": "a7fe518f645e61086e89a4301bd2027a721741cd3eacf6351df993e1d3bf64f3"
+    },
+    {
+      "session_id": "prepare-canonical-v1-terraform-behavior-caveman-codex-skill-v1",
+      "profile_id": "behavior-caveman-codex-skill-v1",
+      "sequence_id": "terraform-lifecycle-sequence-v0",
+      "prepared": true,
+      "prepare_verification": {
+        "passed": true,
+        "mode": "preseeded-composite",
+        "future_seed_regressions_visible": true,
+        "seed_patches_model_visible": false,
+        "preseeded_task_orders": [
+          1,
+          2,
+          3
+        ],
+        "pending_seed_orders": [],
+        "controller_verification": "final-only",
+        "diff_basis": "ordered-task-checkpoints-plus-final-cumulative-diff",
+        "fixed_snapshot_oid": "e02391ad384c9c38f1d7f40b853c0d2297348094",
+        "concealment": {
+          "order": 1,
+          "head": "fb15080581be78d71ce7e437e42b955705e0bd62",
+          "head_is_root": true,
+          "reachable_commit_count": 1,
+          "reflog_oids": [
+            "fb15080581be78d71ce7e437e42b955705e0bd62"
+          ],
+          "remotes": [],
+          "working_tree_clean": true,
+          "fixed_snapshot_object_present": false,
+          "unreachable_objects": [],
+          "leaked_git_admin_paths": [],
+          "model_concealed_paths": [
+            "internal/cloud/backend_tfPolicyEvaluation_test.go",
+            "internal/cloud/lifecycle_v0_policy_summary_test.go",
+            "internal/policy/callback/lifecycle_v0_deferred_callbacks_test.go"
+          ],
+          "model_concealed_paths_present": [],
+          "passed": true
+        },
+        "composite_seed_delivery": {
+          "mode": "preseeded-composite",
+          "preseeded_task_orders": [
+            1,
+            2,
+            3
+          ],
+          "merged_task_orders": [
+            1,
+            2,
+            3
+          ],
+          "composite_diff_sha256": "8473d1db8353c106a8deb02abc9914bcce633277b98d1556c5f261040e3d8c0e",
+          "model_repo_seed_or_verifier_assets": [],
+          "model_concealed_paths": [
+            "internal/cloud/backend_tfPolicyEvaluation_test.go",
+            "internal/cloud/lifecycle_v0_policy_summary_test.go",
+            "internal/policy/callback/lifecycle_v0_deferred_callbacks_test.go"
+          ],
+          "model_concealed_paths_present": [],
+          "passed": true
+        },
+        "stage_seed_delivery": {
+          "mode": "preseeded-composite",
+          "preseeded_task_orders": [
+            1,
+            2,
+            3
+          ],
+          "merged_task_orders": [
+            1,
+            2,
+            3
+          ],
+          "composite_diff_sha256": "8473d1db8353c106a8deb02abc9914bcce633277b98d1556c5f261040e3d8c0e",
+          "model_repo_seed_or_verifier_assets": [],
+          "model_concealed_paths": [
+            "internal/cloud/backend_tfPolicyEvaluation_test.go",
+            "internal/cloud/lifecycle_v0_policy_summary_test.go",
+            "internal/policy/callback/lifecycle_v0_deferred_callbacks_test.go"
+          ],
+          "model_concealed_paths_present": [],
+          "passed": true
+        },
+        "fixed_composite_qualification": {
+          "path": "sources/evaluations/fixtures/large/hashicorp-terraform/qualification-lifecycle-v0.json",
+          "passed": true,
+          "full_fixed_cumulative_verifier_zero": true,
+          "composite_seed_merge_zero": true,
+          "composite_seeded_verifiers_nonzero": true,
+          "composite_seed_diff_sha256": "8473d1db8353c106a8deb02abc9914bcce633277b98d1556c5f261040e3d8c0e",
+          "runtime_composite_seed_diff_sha256": "8473d1db8353c106a8deb02abc9914bcce633277b98d1556c5f261040e3d8c0e",
+          "composite_seed_diff_hash_matches": true
+        },
+        "concealment_passed": true,
+        "composite_seed_delivery_passed": true
+      },
+      "host_integration": {
+        "profile_id": "behavior-caveman-codex-skill-v1",
+        "passed": true,
+        "skipped": false,
+        "install_exit_codes": [
+          0
+        ],
+        "verify_exit_codes": [
+          0
+        ],
+        "missing_required_files": [],
+        "required_files": [
+          "/opt/data/repos/token-optimization-research/sources/evaluations/workflow-sessions/prepare-canonical-v1-terraform-behavior-caveman-codex-skill-v1/project/repo/.agents/skills/cavecrew/SKILL.md",
+          "/opt/data/repos/token-optimization-research/sources/evaluations/workflow-sessions/prepare-canonical-v1-terraform-behavior-caveman-codex-skill-v1/project/repo/.agents/skills/caveman/SKILL.md",
+          "/opt/data/repos/token-optimization-research/sources/evaluations/workflow-sessions/prepare-canonical-v1-terraform-behavior-caveman-codex-skill-v1/project/repo/.agents/skills/caveman-commit/SKILL.md",
+          "/opt/data/repos/token-optimization-research/sources/evaluations/workflow-sessions/prepare-canonical-v1-terraform-behavior-caveman-codex-skill-v1/project/repo/.agents/skills/caveman-compress/SKILL.md",
+          "/opt/data/repos/token-optimization-research/sources/evaluations/workflow-sessions/prepare-canonical-v1-terraform-behavior-caveman-codex-skill-v1/project/repo/.agents/skills/caveman-help/SKILL.md",
+          "/opt/data/repos/token-optimization-research/sources/evaluations/workflow-sessions/prepare-canonical-v1-terraform-behavior-caveman-codex-skill-v1/project/repo/.agents/skills/caveman-review/SKILL.md",
+          "/opt/data/repos/token-optimization-research/sources/evaluations/workflow-sessions/prepare-canonical-v1-terraform-behavior-caveman-codex-skill-v1/project/repo/.agents/skills/caveman-stats/SKILL.md"
+        ],
+        "artifacts": [
+          "sources/evaluations/workflow-sessions/prepare-canonical-v1-terraform-behavior-caveman-codex-skill-v1/tool-host-install-1.txt",
+          "sources/evaluations/workflow-sessions/prepare-canonical-v1-terraform-behavior-caveman-codex-skill-v1/tool-host-verify-1.txt"
+        ]
+      },
+      "mcp_handshake": {
+        "profile_id": "behavior-caveman-codex-skill-v1",
+        "passed": true,
+        "required": false,
+        "skipped": true,
+        "tool_count": 0
+      },
+      "codex_preflight": {
+        "profile_id": "behavior-caveman-codex-skill-v1",
+        "passed": true,
+        "doctor_exit_code": 1,
+        "mcp_list_exit_code": 0,
+        "tool_preflight_exit_code": 0,
+        "coverage_preflight_exit_code": null,
+        "missing_declared_filter_commands": [],
+        "forbidden_command_probe_exit_code": 0,
+        "forbidden_mcp_hits": [],
+        "forbidden_config_hits": [],
+        "visible_forbidden_commands": [],
+        "failure_reasons": [],
+        "warnings": [
+          "codex doctor exited 1; preserve the diagnostic, but use the isolated MCP/config probes and task execution as gates"
+        ],
+        "artifacts": {
+          "doctor": "sources/evaluations/workflow-sessions/prepare-canonical-v1-terraform-behavior-caveman-codex-skill-v1/codex-doctor.txt",
+          "mcp_list": "sources/evaluations/workflow-sessions/prepare-canonical-v1-terraform-behavior-caveman-codex-skill-v1/codex-mcp-list.txt",
+          "effective_config": "sources/evaluations/workflow-sessions/prepare-canonical-v1-terraform-behavior-caveman-codex-skill-v1/codex-effective-config.toml",
+          "forbidden_command_visibility": "sources/evaluations/workflow-sessions/prepare-canonical-v1-terraform-behavior-caveman-codex-skill-v1/forbidden-command-visibility.txt",
+          "tool_preflight": "sources/evaluations/workflow-sessions/prepare-canonical-v1-terraform-behavior-caveman-codex-skill-v1/tool-preflight.txt",
+          "tool_coverage_preflight": null
+        }
+      },
+      "tool_warmup_exit_code": 0,
+      "protocol_path": "sources/evaluations/protocols/terraform-lifecycle-sequence-v0-behavior-caveman-codex-skill-v1-ba9ddfa66895.json",
+      "protocol_sha256": "980cade8c521ca3e4062c7711f0689c348f86333500c334e907c1dc72a869327"
+    }
+  ]
+}
