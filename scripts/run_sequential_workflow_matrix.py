@@ -2911,6 +2911,14 @@ def main(argv: list[str] | None = None) -> int:
         if args.prepare_only:
             return "missing"
         sequence = workflow.load_sequence(sequence_id)
+        if (
+            isinstance(model_condition, dict)
+            and model_condition.get("runtime_id") == "claude-code"
+        ):
+            session = workflow.find_comparison_baseline_record(
+                registry, sequence, baseline_profile_id, args.replicate_index
+            )
+            return workflow.reviewed_session_reuse_state(session, ROOT)
         if replacement_runtime:
             session = workflow.find_pool_profile_record(
                 registry, sequence, baseline_profile_id, args.replicate_index
