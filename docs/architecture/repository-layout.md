@@ -15,7 +15,6 @@ The repository is a research production system. Top-level folders are organized 
 | `prompts/` | Agent prompts | Researcher, evaluator, and writer prompts | Source evidence or generated run output |
 | `.agents/` | Repo-local agent skills | Skills required by this repository's research workflow | Host-level agent configuration |
 | `.truthmark/` | Truthmark configuration | Truthmark config only | Truth docs or generated run artifacts |
-| `openspec/` | Optional planning metadata | OpenSpec config and currently active change directories only | Completed/stale change directories |
 
 ## Documentation layout
 
