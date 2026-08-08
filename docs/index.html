@@ -505,6 +505,7 @@
         <a href="#finding">Finding</a>
         <a href="#results">Results</a>
         <a href="#tools">Tools</a>
+        <a href="#model-selection">Claude baseline</a>
         <a href="#limits">Limitations</a>
         <a href="#data">Data</a>
       </nav>
@@ -827,6 +828,20 @@
           </div>
 
           <p class="chart-foot">Codex increased across all three weighted components. OpenCode decreased across all three, with cached-input reduction contributing most.</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="model-selection">
+      <div class="shell">
+        <div class="section-head">
+          <p class="eyebrow">Claude Code baseline selection</p>
+          <h2>Sonnet 5 is the treatment model.</h2>
+          <p>We ran direct first-party Anthropic baselines with both Sonnet 5/high and Opus 5/high on the same Fastify and Beets workflows. Opus used 1,167,276.7 weighted units versus Sonnet's 897,108.2—30.12% more. Sonnet was already 73.85% above matched Codex and 22.71% above matched OpenCode weighted baselines, so subsequent Claude Code treatment experiments continue with Sonnet 5/high; Opus remains baseline-only.</p>
+        </div>
+        <div class="grid2">
+          <div class="mini"><h3>Sonnet 5/high</h3><p><strong>897,108.2</strong> weighted units across Fastify and Beets.</p></div>
+          <div class="mini"><h3>Opus 5/high</h3><p><strong>1,167,276.7</strong> weighted units—<strong>30.12%</strong> above Sonnet.</p></div>
         </div>
       </div>
     </section>

@@ -25,7 +25,7 @@ This workflow covers repository-local agent instructions, evaluation state chang
 - `.truthmark/config.yml` declares `docs/truthmark` as the Truthmark workspace.
 - Truthmark routes connect code, data, prompts, and documentation to bounded durable truth docs.
 - `scripts/validate_repository.py` and `scripts/update_workflow_runbook.py --check` enforce repository and generated-runbook consistency.
-- Direct-Anthropic Claude Code Lifecycle V1 preparation and the completed Fastify/Beets baseline pairs for Sonnet 5 and Opus 5 are recorded in frozen audit authority, registry, and compact evidence files; the owner account is accepted only through `TOKEN_EVAL_CLAUDE_ACCOUNT_HOME`, copied ephemerally into the lane, and never retained in evidence. Treatment execution remains blocked pending native-surface qualification and separate authorization.
+- Direct-Anthropic Claude Code Lifecycle V1 preparation and the completed Fastify/Beets baseline pairs for Sonnet 5 and Opus 5 are recorded in frozen audit authority, registry, and compact evidence files; Opus used 30.12% more weighted token cost than Sonnet, so Sonnet is the selected model for treatment experiments. The owner account is accepted only through `TOKEN_EVAL_CLAUDE_ACCOUNT_HOME`, copied ephemerally into the lane, and never retained in evidence. Treatment execution remains blocked pending native-surface qualification and separate authorization.
 
 ## Product Truth Links
 
