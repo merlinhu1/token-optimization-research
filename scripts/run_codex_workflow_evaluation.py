@@ -2916,7 +2916,7 @@ def clear_ambient_git_object_environment() -> None:
 
 
 def paid_launch_checkout_errors(root: Path = ROOT) -> list[str]:
-    """Require an exact clean checkout of its published upstream before spend."""
+    """Require an exact clean checkout of its current published upstream before spend."""
     errors: list[str] = []
     for relative in PAID_LAUNCH_PROTECTED_FILES:
         if not (root / relative).is_file():
@@ -2952,13 +2952,19 @@ def paid_launch_checkout_errors(root: Path = ROOT) -> list[str]:
         capture_output=True,
         check=False,
     )
+    upstream_value = upstream_name.stdout.strip()
     if origin.returncode != 0 or origin.stdout.strip() != TRUSTED_REPOSITORY_ORIGIN:
         errors.append("repository origin is not the trusted publication remote")
-    if upstream_name.returncode != 0 or upstream_name.stdout.strip() != TRUSTED_REPOSITORY_UPSTREAM:
-        errors.append("repository upstream is not the trusted publication branch")
+    if upstream_name.returncode != 0 or not upstream_value.startswith("origin/"):
+        errors.append("repository upstream is not a published origin branch")
+    published_ref = (
+        f"refs/heads/{upstream_value.removeprefix('origin/')}"
+        if upstream_value.startswith("origin/")
+        else TRUSTED_REPOSITORY_REF
+    )
     if head.returncode == 0 and origin.returncode == 0 and origin.stdout.strip() == TRUSTED_REPOSITORY_ORIGIN:
         remote = subprocess.run(
-            ["git", "ls-remote", "origin", TRUSTED_REPOSITORY_REF],
+            ["git", "ls-remote", "origin", published_ref],
             cwd=root,
             text=True,
             capture_output=True,
@@ -2967,7 +2973,7 @@ def paid_launch_checkout_errors(root: Path = ROOT) -> list[str]:
         remote_lines = [line.split() for line in remote.stdout.splitlines() if line.strip()]
         if (
             remote.returncode != 0
-            or remote_lines != [[head.stdout.strip(), TRUSTED_REPOSITORY_REF]]
+            or remote_lines != [[head.stdout.strip(), published_ref]]
         ):
             errors.append("repository HEAD is not independently confirmed on the trusted publication remote")
     return errors

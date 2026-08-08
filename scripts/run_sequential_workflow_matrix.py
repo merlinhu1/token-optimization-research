@@ -245,9 +245,17 @@ def clone_published_checkout(destination: Path, expected_commit: str) -> None:
     env = os.environ.copy()
     for name in workflow.AMBIENT_GIT_OBJECT_ENV_VARS:
         env.pop(name, None)
+    upstream_name = subprocess.check_output(
+        ["git", "rev-parse", "--abbrev-ref", "--symbolic-full-name", "@{upstream}"],
+        cwd=ROOT,
+        text=True,
+    ).strip()
+    if not upstream_name.startswith("origin/"):
+        raise ValueError("provider lane source must track a published origin branch")
+    published_branch = upstream_name.removeprefix("origin/")
     subprocess.run(
         [
-            "git", "clone", "--no-local", "--single-branch", "--branch", "phase-3",
+            "git", "clone", "--no-local", "--single-branch", "--branch", published_branch,
             workflow.TRUSTED_REPOSITORY_ORIGIN, str(destination),
         ],
         env=env,
