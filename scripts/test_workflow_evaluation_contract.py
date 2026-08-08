@@ -304,6 +304,34 @@ class CodexUsageAccountingTest(unittest.TestCase):
 
 
 class ClaudeInstructionMaterializationTest(unittest.TestCase):
+    def test_successful_lane_auth_refresh_is_synced_for_the_next_lane(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            source_home = root / "account"
+            claude_home = root / "lane"
+            run_dir = root / "run"
+            source_home.mkdir()
+            (claude_home / "claude-config").mkdir(parents=True)
+            run_dir.mkdir()
+            source_auth = source_home / ".credentials.json"
+            copied_auth = claude_home / "claude-config" / ".credentials.json"
+            source_auth.write_text('{"token":"old"}\n')
+            copied_auth.write_text('{"token":"refreshed"}\n')
+
+            with mock.patch.dict(
+                os.environ,
+                {runner.fixture.CLAUDE_ACCOUNT_HOME_ENV: str(source_home)},
+            ):
+                runner.sync_copied_claude_auth_back(claude_home, run_dir, "after-task-01")
+            runner.redact_auth_sync(run_dir)
+
+            self.assertEqual(source_auth.read_bytes(), copied_auth.read_bytes())
+            self.assertEqual(source_auth.stat().st_mode & 0o777, 0o600)
+            event = json.loads((run_dir / "claude-auth-sync.jsonl").read_text())
+            self.assertTrue(event["synced"])
+            self.assertTrue(event["changed"])
+            self.assertEqual(event["source_home"], "[REDACTED]")
+
     def test_project_agents_is_materialized_as_exact_claude_guidance(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)

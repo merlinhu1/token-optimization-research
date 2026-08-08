@@ -4241,8 +4241,10 @@ def redact_json_file(path: Path, keys: set[str]) -> None:
 
 
 def redact_auth_sync(run_dir: Path) -> None:
-    path = run_dir / "codex-auth-sync.jsonl"
-    if path.exists():
+    for name in ("codex-auth-sync.jsonl", "claude-auth-sync.jsonl"):
+        path = run_dir / name
+        if not path.exists():
+            continue
         lines = []
         for line in path.read_text().splitlines():
             try:
@@ -4282,6 +4284,42 @@ def sync_copied_codex_auth_back(codex_home: Path, source_home: Path, run_dir: Pa
         event["synced"] = True
     with (run_dir / "codex-auth-sync.jsonl").open("a") as out:
         out.write(json.dumps(event) + "\n")
+
+
+def sync_copied_claude_auth_back(claude_home: Path, run_dir: Path, stage: str) -> None:
+    """Persist OAuth refreshed by a successful isolated Claude provider task."""
+    if os.environ.get("WORKFLOW_LANE_DISABLE_AUTH_SYNC") == "1":
+        return
+    source_value = os.environ.get(fixture.CLAUDE_ACCOUNT_HOME_ENV)
+    source_auth = (
+        fixture._claude_account_credential(Path(source_value).expanduser())
+        if source_value
+        else None
+    )
+    copied_auth = claude_home / "claude-config" / ".credentials.json"
+    if source_auth is None or not copied_auth.is_file():
+        return
+    copied_bytes = copied_auth.read_bytes()
+    changed = copied_bytes != source_auth.read_bytes()
+    if changed:
+        temporary: Path | None = None
+        try:
+            with tempfile.NamedTemporaryFile(dir=source_auth.parent, delete=False) as out:
+                out.write(copied_bytes)
+                temporary = Path(out.name)
+            os.chmod(temporary, 0o600)
+            os.replace(temporary, source_auth)
+        finally:
+            if temporary is not None:
+                temporary.unlink(missing_ok=True)
+    with (run_dir / "claude-auth-sync.jsonl").open("a") as out:
+        out.write(json.dumps({
+            "stage": stage,
+            "source_home": str(source_auth.parent),
+            "auth_link_name": source_auth.name,
+            "synced": True,
+            "changed": changed,
+        }) + "\n")
 
 
 def remove_ephemeral_homes(run_dir: Path) -> None:
@@ -5415,6 +5453,12 @@ def _run_one_locked(args: argparse.Namespace) -> dict[str, Any]:
             operational_retries=operational_retries,
         )
         codex_exit_codes.append(code)
+        if runtime_id == "claude-code" and code == 0:
+            sync_copied_claude_auth_back(
+                codex_home,
+                run_dir,
+                f"after-task-{order:02d}",
+            )
         redact_auth_sync(run_dir)
         cfg = fixture.active_tool_config(record, profile_id)
         excluded_paths = treatment_diff_exclude_paths(cfg, profile_id)
