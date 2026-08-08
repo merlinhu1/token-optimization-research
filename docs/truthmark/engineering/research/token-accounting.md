@@ -31,6 +31,7 @@ This contract governs active Lifecycle V1 provider-token samples, retained lifec
 - Claude Code invocations bind `--model`, `--effort`, and a strict lane-private MCP configuration when the treatment declares an MCP server. Direct-account preflight records non-secret authentication status and rejects OpenRouter endpoints/status, and Claude stream-json usage remains subject to the existing provider-reported extraction contract.
 - The matrix reuses the first operationally valid baseline for a causal comparison fingerprint and replicate.
 - Direct-Anthropic Claude Code treatment matrices reuse the accepted same-condition Claude baseline pool; they do not fall back to the canonical Codex pool.
+- Direct-Anthropic Sonnet treatment lanes reserve an immutable per-sequence/profile attempt receipt before provider work. The first matrix retained Fastify/RTK at 2,110,452 provider tokens (331,508.9 weighted units); Fastify/Cartog reached the provider but failed authentication with zero tokens, remains occupied, and is excluded from registry and aggregate claims. Remaining lanes require refreshed credentials and cannot reuse the occupied Cartog identity.
 - Repository validation requires complete provider usage, structural isolation, clean execution integrity, and recoverable compact evidence—not verifier success or source review.
 - Before any non-baseline provider launch, both repository validation and the direct runner require exact parity approval plus a current provider-free qualification receipt for every active fixture/profile protocol binding; MCP profiles additionally require non-empty `tools/list` proof.
 - Canonical treatment profiles install every author-recommended Codex surface, including product-authored guidance, native skills/plugins, and reviewed hooks; reduced or prompt-emulated setups are ablations or invalid assignments, not product treatments.
@@ -77,6 +78,7 @@ The repository measures cumulative provider-reported workflow tokens under fair,
 - Each active sequence is ordered as feature implementation, behavior-preserving refactor, and code review/correction.
 - A production lane resets repository/profile/tool/agent state before execution, preserves warm state between prompts, and records the complete provider-reported token total.
 - The first operationally complete, integrity-valid provider run for a causal protocol fingerprint and replicate is the retained token sample.
+- An attempted paid lane remains occupied even when provider execution fails or strict compact ingress rejects the result; its immutable attempt receipt prevents a silent rerun under the same identity.
 - Lifecycle V1 compile outcomes gate task/workflow acceptance and treatment unlock, but not token-sample retention. Broader test, behavior, style, exact-source, and source-review diagnostics do not trigger reruns.
 - Never rerun because the model failed a verifier, produced imperfect code, or received a low review score.
 - Rerun only for experiment invalidity or incompleteness: fixture/verifier defect, wrong controller assets, corrupt/missing usage, failed isolation/integrity, or incomplete prompt execution.
@@ -132,6 +134,7 @@ Update this document whenever token eligibility, comparison identity, provider a
 - ../../../../docs/evaluations/operations/runbook.md
 - ../../../../docs/evaluations/design/token-and-quality-policy.md
 - ../../../../scripts/run_codex_workflow_evaluation.py
+- ../../../../scripts/run_sequential_workflow_matrix.py
 - ../../../../scripts/run_opencode_openrouter_workflow_model_condition.py
 - ../../../../scripts/extract_claude_code_usage.py
 - ../../../../scripts/opencode_workflow_adapter.py
@@ -144,6 +147,7 @@ Update this document whenever token eligibility, comparison identity, provider a
 - ../../../../sources/evaluations/audits/claude-code-anthropic-opus-5-high-lifecycle-v1-baseline-authorization-20260808.json
 - ../../../../sources/evaluations/audits/corrected-integration-qualification-claude-code-anthropic-sonnet-5-high-lifecycle-v1-20260808.json
 - ../../../../sources/evaluations/audits/claude-code-anthropic-sonnet-5-high-lifecycle-v1-treatment-authorization-20260808.json
+- ../../../../sources/evaluations/audits/claude-code-anthropic-sonnet-5-high-lifecycle-v1-cartog-fastify-ingress-rejection-20260808.json
 - ../../../../scripts/prepare_pinned_codex_marketplace.py
 - ../../../../scripts/trust_codex_plugin_hooks.py
 - ../../../../scripts/install_jcodemunch_codex_guidance.py
