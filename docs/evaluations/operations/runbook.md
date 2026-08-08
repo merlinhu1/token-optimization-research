@@ -17,6 +17,14 @@ A valid active Lifecycle V1 workflow pre-seeds three authentic semantic regressi
 
 Internally, every active task uses compilation-only acceptance. Unit tests, behavioral fidelity, style, maintainability, and source review remain diagnostic and do not determine evaluator pass/fail. This internal policy must never be presented as an agent instruction.
 
+## Claude Code direct-Anthropic preparation
+
+Authority: `sources/evaluations/audits/claude-code-anthropic-sonnet-5-high-lifecycle-v1-protocol-preparation-20260808.json` (`frozen-provider-free-protocols-account-pending`).
+Condition: `claude-code-anthropic-sonnet-5-high` — `anthropic/claude-sonnet-5` with `high` effort.
+Prepared treatment profiles: 16 (32 treatment plus 2 baseline frozen provider-free protocol files across the active Fastify and Beets sequences).
+Baseline-only execution is owner-authorized under `sources/evaluations/audits/claude-code-anthropic-sonnet-5-high-lifecycle-v1-baseline-authorization-20260808.json`; run Fastify then Beets at r0 with one lane at a time. Treatment execution remains blocked.
+Account setup uses `TOKEN_EVAL_CLAUDE_ACCOUNT_HOME`; credentials are copied only into an ephemeral lane and never retained in evidence.
+
 ## Active sequences
 
 | Sequence | Fixture | Scale | Snapshot | Tasks |
@@ -41,7 +49,7 @@ Before changing a sequence to `active`, require:
 - controller-only affected-component compile commands plus one frozen project-wide compile command;
 - controller-only seed patch files and fixed references;
 - cumulative provider usage capture, verifier integrity, isolation, structured compile outcomes, and optional quality diagnostics;
-- a machine-validated compile-passing provider pilot before any treatment protocol can be frozen, prepared, or run.
+- a machine-validated compile-passing provider pilot before any treatment provider execution or treatment unlock; provider-free protocol preparation may be frozen while native integration qualification and owner authorization remain pending.
 
 A no-model prepare for a frozen candidate is allowed:
 

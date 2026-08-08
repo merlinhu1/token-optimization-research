@@ -77,6 +77,8 @@ truth_documents:
 
 Code surface:
 - data/evaluations.json
+- data/evaluation-agent-runtimes.json
+- data/evaluation-profiles.json
 - data/workflow-task-sequences.json
 - data/workflow-sessions.json
 - docs/evaluations/**

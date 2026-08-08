@@ -33,18 +33,28 @@ def stream_continuity(events_path: Path, requested_session_id: str | None) -> tu
     return unique[0], None
 
 
-def command(*, model: str, prompt: str, session_id: str | None = None) -> list[str]:
+def command(
+    *,
+    model: str,
+    effort: str,
+    prompt: str,
+    mcp_config: Path | None = None,
+    session_id: str | None = None,
+) -> list[str]:
     args = [
         "claude",
         "--print",
         "--verbose",
         "--output-format", "stream-json",
         "--model", model,
+        "--effort", effort,
         "--tools", "Bash,Edit,Read,Grep,Glob",
         "--permission-mode", "bypassPermissions",
         "--allow-dangerously-skip-permissions",
         "--no-chrome",
     ]
+    if mcp_config is not None:
+        args.extend(["--mcp-config", str(mcp_config), "--strict-mcp-config"])
     if session_id:
         args.extend(["--resume", session_id])
     args.append(prompt)
@@ -66,10 +76,25 @@ def run_task(
     repo = fixture.rel_or_abs(record["target"]["repository_path"])
     profile_id = str((record.get("profile") or {}).get("profile_id") or "")
     cfg = fixture.active_tool_config(record, profile_id)
-    env = fixture.claude_env(claude_home, containerized=True, cfg=cfg)
+    env = fixture.claude_env(
+        claude_home,
+        containerized=True,
+        cfg=cfg,
+        provider=str((record.get("agent") or {}).get("provider") or "openrouter"),
+    )
     fixture.apply_model_network_isolation(env, prepend_denied_shell_to_path=False)
     mounts = fixture.container_mounts_for_record(record, claude_home, include_repo=True, cfg=cfg)
-    cmd = command(model=str(record.get("agent", {}).get("model", "claude-sonnet-5")), prompt=prompt_path.read_text(), session_id=session_id)
+    agent = record.get("agent") or {}
+    mcp_config = claude_home / "claude-config" / "mcp.json"
+    if not mcp_config.is_file():
+        mcp_config = None
+    cmd = command(
+        model=str(agent.get("model", "claude-sonnet-5")),
+        effort=str(agent.get("reasoning_effort", "high")),
+        prompt=prompt_path.read_text(),
+        mcp_config=mcp_config,
+        session_id=session_id,
+    )
     proc = fixture.run_backend(
         cmd,
         backend="docker",

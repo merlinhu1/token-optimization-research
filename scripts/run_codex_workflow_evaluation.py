@@ -119,6 +119,21 @@ SUPPORTED_WORKFLOW_TOOL_PROFILES = {
     "terminal-rtk": "rtk",
     "terminal-rtk-codex-instructions-v1": "rtk-codex-instructions-v1",
     "terminal-rtk-claude-code-hook-v1": "rtk-claude-code-hook-v1",
+    "retrieval-cartog-claude-code-product-v1": "cartog",
+    "behavior-caveman-claude-code-skill-v1": "caveman",
+    "retrieval-codegraph-claude-code-mcp-v1": "codegraph",
+    "codescope-claude-code-mcp-v1": "codescope",
+    "retrieval-graphify-claude-code-skill-v1": "graphify",
+    "integrated-leanctx-claude-code-hybrid-v1": "lean-ctx",
+    "terminal-lowfat-claude-code-hook-v1": "lowfat",
+    "artifact-ponytail-claude-code-plugin-v1": "ponytail",
+    "retrieval-serena-claude-code-mcp-v1": "serena",
+    "retrieval-sigmap-claude-code-mcp-v1": "sigmap",
+    "terminal-snip-claude-code-hook-v1": "snip",
+    "integrated-token-savior-claude-code-product-v1": "token-savior",
+    "terminal-tokenjuice-claude-code-hook-v1": "tokenjuice",
+    "retrieval-jcodemunch-claude-code-mcp-v1": "jcodemunch-mcp",
+    "retrieval-sdl-mcp-claude-code-product-v1": "sdl-mcp-codex-product-v1",
     "terminal-snip": "snip",
     "terminal-snip-codex-hook-v1": "snip-codex-hook-v1",
     "terminal-lowfat": "lowfat",
@@ -1896,6 +1911,7 @@ def executable_identity(command: list[str], cfg: dict[str, Any], root: Path = RO
 
 def tool_adapter_identity(profile_id: str, root: Path = ROOT) -> dict[str, Any]:
     meta = PROFILE_META[profile_id]
+    profile_entry = profile_registry_entry(profile_id, root)
     tool_id = meta.get("tool_id")
     if not tool_id:
         return {"tool_id": None, "tool_manifest": "baseline-native-codex-tools", "tool_config": None, "binary_identity": None, "source_identity": []}
@@ -1915,6 +1931,11 @@ def tool_adapter_identity(profile_id: str, root: Path = ROOT) -> dict[str, Any]:
     if profile_id in FIXED_CURRENT_TOOL_MANIFEST_SHA256:
         manifest_sha256 = FIXED_CURRENT_TOOL_MANIFEST_SHA256[profile_id]
     elif manifest_identity == "current-file-v1":
+        manifest_sha256 = _protocol_file_hash(root / "scripts/run_codex_fixture_evaluation.py")
+    elif meta.get("substrate") == "claude-code" and profile_entry.get("status") == "protocol-prepared":
+        # Provider-free Claude preparations bind the runner that will perform
+        # native qualification; historical Claude profiles retain their frozen
+        # legacy manifest identity.
         manifest_sha256 = _protocol_file_hash(root / "scripts/run_codex_fixture_evaluation.py")
     elif manifest_identity.startswith("fixed-sha256:"):
         manifest_sha256 = manifest_identity.removeprefix("fixed-sha256:")
@@ -2320,6 +2341,12 @@ def load_protocol(path_or_id: str) -> tuple[Path, dict[str, Any]]:
 
 def validate_protocol_for_run(seq: dict[str, Any], profile_id: str, args: argparse.Namespace) -> dict[str, Any] | None:
     assert_profile_runnable(profile_id)
+    if not args.prepare_only and profile_runtime_id(profile_id) == "claude-code":
+        profile = profile_registry_entry(profile_id)
+        if profile.get("status") == "protocol-prepared":
+            raise ValueError(
+                f"Claude Code profile {profile_id} is protocol-prepared only; complete native-surface qualification and refresh its protocol before provider execution"
+            )
     if not args.prepare_only:
         readiness_errors = repository_validation.current_candidate_profile_launch_readiness_errors()
         if readiness_errors:
@@ -4965,15 +4992,32 @@ def _run_one_locked(args: argparse.Namespace) -> dict[str, Any]:
 
     codex_home_root = run_dir / "codex-homes"
     runtime_id = profile_runtime_id(profile_id)
+    agent_provider = str((record.get("agent") or {}).get("provider") or "openrouter")
     codex_home = (
-        fixture.prepare_claude_home(profile_id, run_dir, codex_home_root)
+        fixture.prepare_claude_home(
+            profile_id,
+            run_dir,
+            codex_home_root,
+            provider=agent_provider,
+        )
         if runtime_id == "claude-code"
         else fixture.prepare_codex_home(record, profile_id, run_dir, args.source_codex_home, codex_home_root, copy_auth=True)
     )
     cfg = fixture.active_tool_config(record, profile_id)
 
     if not args.skip_container_preflight:
-        container_preflight = fixture.check_container_runtime("docker", runtime_docker_image, run_dir, False, build_image=False, dockerfile=fixture.DEFAULT_DOCKERFILE, codex_home=codex_home, cfg=cfg, agent_runtime=runtime_id)
+        container_preflight = fixture.check_container_runtime(
+            "docker",
+            runtime_docker_image,
+            run_dir,
+            False,
+            build_image=False,
+            dockerfile=fixture.DEFAULT_DOCKERFILE,
+            codex_home=codex_home,
+            cfg=cfg,
+            agent_runtime=runtime_id,
+            provider=agent_provider,
+        )
         if not container_preflight.get("passed"):
             return finalize_failed_attempt({"session_id": session_id, "profile_id": profile_id, "accepted": False, "stage": "container-preflight", "run_dir": rel(run_dir), "container_preflight": container_preflight}, record, run_dir)
     integration = fixture.prepare_profile_integration(

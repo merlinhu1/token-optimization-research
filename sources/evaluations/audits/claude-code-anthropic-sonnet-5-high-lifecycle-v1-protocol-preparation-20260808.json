@@ -1,0 +1,242 @@
+{
+  "schema_version": 1,
+  "status": "frozen-provider-free-protocols-account-pending",
+  "prepared_on": "2026-08-08",
+  "campaign_id": "claude-code-anthropic-sonnet-5-high-lifecycle-v1",
+  "evidence_stage": "reproduction",
+  "source_scope": {
+    "phase2_report_data": "sources/evaluations/audits/phase-2-lifecycle-v1-report-data-20260808.json",
+    "active_sequences": [
+      "fastify-lifecycle-sequence-v1",
+      "beets-lifecycle-sequence-v1"
+    ],
+    "included_tools": "all 15 tools in the Phase 2 V1 report plus SDL-MCP, which has only partial one-sequence V1 evidence and must remain separately labeled"
+  },
+  "model_condition": {
+    "id": "claude-code-anthropic-sonnet-5-high",
+    "runtime_id": "claude-code",
+    "provider": "anthropic",
+    "model": "claude-sonnet-5",
+    "reasoning_effort": "high",
+    "runtime_version": "2.1.220"
+  },
+  "authentication": {
+    "mode": "owner-provided Claude.ai/Anthropic account",
+    "source_env": "TOKEN_EVAL_CLAUDE_ACCOUNT_HOME",
+    "accepted_material": "source home containing .claude/.credentials.json or .credentials.json; alternatively ANTHROPIC_API_KEY/ANTHROPIC_AUTH_TOKEN",
+    "transport": "first-party Anthropic only; OpenRouter is forbidden for this campaign",
+    "artifact_policy": "copy only the OAuth file into the ephemeral lane; do not retain credentials, email, tokens, or raw auth-status output"
+  },
+  "shared_protocol": {
+    "baseline_profile_id": "baseline-claude-code-no-mcp",
+    "baseline_protocols": [
+      "sources/evaluations/protocols/fastify-lifecycle-sequence-v1-baseline-claude-code-no-mcp-7872acc47f57.json",
+      "sources/evaluations/protocols/beets-lifecycle-sequence-v1-baseline-claude-code-no-mcp-3f6b18ff20ea.json"
+    ],
+    "treatment_prompt_policy": "identical Lifecycle V1 prompts; no tool invocation steering",
+    "cli_binding": "claude --model claude-sonnet-5 --effort high --output-format stream-json",
+    "token_boundary": "provider-reported Claude stream-json assistant/result usage",
+    "provider_execution": "blocked until account authentication, native-surface qualification, owner authorization, and serialized matrix lock are present"
+  },
+  "tools": [
+    {
+      "tool": "Cartog",
+      "profile_id": "retrieval-cartog-claude-code-product-v1",
+      "source_profiles": [
+        "retrieval-cartog-codex-product-v2"
+      ],
+      "protocols": [
+        "sources/evaluations/protocols/beets-lifecycle-sequence-v1-retrieval-cartog-claude-code-product-v1-d083c9a4a6b7.json",
+        "sources/evaluations/protocols/fastify-lifecycle-sequence-v1-retrieval-cartog-claude-code-product-v1-57bb4adacd00.json"
+      ],
+      "status": "frozen-provider-free-qualification-pending"
+    },
+    {
+      "tool": "Caveman",
+      "profile_id": "behavior-caveman-claude-code-skill-v1",
+      "source_profiles": [
+        "behavior-caveman-codex-skill-v1"
+      ],
+      "protocols": [
+        "sources/evaluations/protocols/beets-lifecycle-sequence-v1-behavior-caveman-claude-code-skill-v1-67540dbd851a.json",
+        "sources/evaluations/protocols/fastify-lifecycle-sequence-v1-behavior-caveman-claude-code-skill-v1-a20060f3a8bc.json"
+      ],
+      "status": "frozen-provider-free-qualification-pending"
+    },
+    {
+      "tool": "CodeGraph",
+      "profile_id": "retrieval-codegraph-claude-code-mcp-v1",
+      "source_profiles": [
+        "retrieval-codegraph-codex-mcp-v1"
+      ],
+      "protocols": [
+        "sources/evaluations/protocols/beets-lifecycle-sequence-v1-retrieval-codegraph-claude-code-mcp-v1-4a678ea7f869.json",
+        "sources/evaluations/protocols/fastify-lifecycle-sequence-v1-retrieval-codegraph-claude-code-mcp-v1-be625e187208.json"
+      ],
+      "status": "frozen-provider-free-qualification-pending"
+    },
+    {
+      "tool": "CodeScope",
+      "profile_id": "codescope-claude-code-mcp-v1",
+      "source_profiles": [
+        "codescope-codex-product-v1"
+      ],
+      "protocols": [
+        "sources/evaluations/protocols/beets-lifecycle-sequence-v1-codescope-claude-code-mcp-v1-4ef469a6e7a9.json",
+        "sources/evaluations/protocols/fastify-lifecycle-sequence-v1-codescope-claude-code-mcp-v1-50fab034b765.json"
+      ],
+      "status": "frozen-provider-free-qualification-pending"
+    },
+    {
+      "tool": "Graphify",
+      "profile_id": "retrieval-graphify-claude-code-skill-v1",
+      "source_profiles": [
+        "retrieval-graphify-codex-skill-v1"
+      ],
+      "protocols": [
+        "sources/evaluations/protocols/beets-lifecycle-sequence-v1-retrieval-graphify-claude-code-skill-v1-d4efa1af9fdc.json",
+        "sources/evaluations/protocols/fastify-lifecycle-sequence-v1-retrieval-graphify-claude-code-skill-v1-817710dd5bb4.json"
+      ],
+      "status": "frozen-provider-free-qualification-pending"
+    },
+    {
+      "tool": "LeanCTX",
+      "profile_id": "integrated-leanctx-claude-code-hybrid-v1",
+      "source_profiles": [
+        "integrated-leanctx-codex-hybrid-v1"
+      ],
+      "protocols": [
+        "sources/evaluations/protocols/beets-lifecycle-sequence-v1-integrated-leanctx-claude-code-hybrid-v1-74797e4a4e81.json",
+        "sources/evaluations/protocols/fastify-lifecycle-sequence-v1-integrated-leanctx-claude-code-hybrid-v1-1317b4590db4.json"
+      ],
+      "status": "frozen-provider-free-qualification-pending"
+    },
+    {
+      "tool": "LowFat",
+      "profile_id": "terminal-lowfat-claude-code-hook-v1",
+      "source_profiles": [
+        "terminal-lowfat-opencode-plugin-v1"
+      ],
+      "protocols": [
+        "sources/evaluations/protocols/beets-lifecycle-sequence-v1-terminal-lowfat-claude-code-hook-v1-334e6d786cee.json",
+        "sources/evaluations/protocols/fastify-lifecycle-sequence-v1-terminal-lowfat-claude-code-hook-v1-67ad9f33c056.json"
+      ],
+      "status": "frozen-provider-free-qualification-pending"
+    },
+    {
+      "tool": "Ponytail",
+      "profile_id": "artifact-ponytail-claude-code-plugin-v1",
+      "source_profiles": [
+        "artifact-ponytail-codex-plugin-v1"
+      ],
+      "protocols": [
+        "sources/evaluations/protocols/beets-lifecycle-sequence-v1-artifact-ponytail-claude-code-plugin-v1-aab24fde2edf.json",
+        "sources/evaluations/protocols/fastify-lifecycle-sequence-v1-artifact-ponytail-claude-code-plugin-v1-85081823dc13.json"
+      ],
+      "status": "frozen-provider-free-qualification-pending"
+    },
+    {
+      "tool": "RTK",
+      "profile_id": "terminal-rtk-claude-code-hook-v1",
+      "source_profiles": [
+        "terminal-rtk-claude-code-hook-v1"
+      ],
+      "protocols": [
+        "sources/evaluations/protocols/beets-lifecycle-sequence-v1-terminal-rtk-claude-code-hook-v1-f85b17a40e1c.json",
+        "sources/evaluations/protocols/fastify-lifecycle-sequence-v1-terminal-rtk-claude-code-hook-v1-73a2fab3e11e.json"
+      ],
+      "status": "frozen-provider-free-qualification-pending"
+    },
+    {
+      "tool": "Serena",
+      "profile_id": "retrieval-serena-claude-code-mcp-v1",
+      "source_profiles": [
+        "retrieval-serena-codex-mcp-v1"
+      ],
+      "protocols": [
+        "sources/evaluations/protocols/beets-lifecycle-sequence-v1-retrieval-serena-claude-code-mcp-v1-953902621ff6.json",
+        "sources/evaluations/protocols/fastify-lifecycle-sequence-v1-retrieval-serena-claude-code-mcp-v1-1fd3f77cd405.json"
+      ],
+      "status": "frozen-provider-free-qualification-pending"
+    },
+    {
+      "tool": "SigMap",
+      "profile_id": "retrieval-sigmap-claude-code-mcp-v1",
+      "source_profiles": [
+        "retrieval-sigmap-codex-live-v1"
+      ],
+      "protocols": [
+        "sources/evaluations/protocols/beets-lifecycle-sequence-v1-retrieval-sigmap-claude-code-mcp-v1-d30903095d9b.json",
+        "sources/evaluations/protocols/fastify-lifecycle-sequence-v1-retrieval-sigmap-claude-code-mcp-v1-b549d785afce.json"
+      ],
+      "status": "frozen-provider-free-qualification-pending"
+    },
+    {
+      "tool": "Snip",
+      "profile_id": "terminal-snip-claude-code-hook-v1",
+      "source_profiles": [
+        "terminal-snip-codex-hook-v1"
+      ],
+      "protocols": [
+        "sources/evaluations/protocols/beets-lifecycle-sequence-v1-terminal-snip-claude-code-hook-v1-dac978ebf158.json",
+        "sources/evaluations/protocols/fastify-lifecycle-sequence-v1-terminal-snip-claude-code-hook-v1-70d236aa5c26.json"
+      ],
+      "status": "frozen-provider-free-qualification-pending"
+    },
+    {
+      "tool": "Token Savior",
+      "profile_id": "integrated-token-savior-claude-code-product-v1",
+      "source_profiles": [
+        "integrated-token-savior-codex-product-v2"
+      ],
+      "protocols": [
+        "sources/evaluations/protocols/beets-lifecycle-sequence-v1-integrated-token-savior-claude-code-product-v1-044ccf453a54.json",
+        "sources/evaluations/protocols/fastify-lifecycle-sequence-v1-integrated-token-savior-claude-code-product-v1-3e83af7c60a9.json"
+      ],
+      "status": "frozen-provider-free-qualification-pending"
+    },
+    {
+      "tool": "TokenJuice",
+      "profile_id": "terminal-tokenjuice-claude-code-hook-v1",
+      "source_profiles": [
+        "terminal-tokenjuice-codex-hook-v1"
+      ],
+      "protocols": [
+        "sources/evaluations/protocols/beets-lifecycle-sequence-v1-terminal-tokenjuice-claude-code-hook-v1-a876ded28ff3.json",
+        "sources/evaluations/protocols/fastify-lifecycle-sequence-v1-terminal-tokenjuice-claude-code-hook-v1-ea8de4fd0460.json"
+      ],
+      "status": "frozen-provider-free-qualification-pending"
+    },
+    {
+      "tool": "jCodeMunch",
+      "profile_id": "retrieval-jcodemunch-claude-code-mcp-v1",
+      "source_profiles": [
+        "retrieval-jcodemunch-codex-mcp-v2"
+      ],
+      "protocols": [
+        "sources/evaluations/protocols/beets-lifecycle-sequence-v1-retrieval-jcodemunch-claude-code-mcp-v1-693ed45c6645.json",
+        "sources/evaluations/protocols/fastify-lifecycle-sequence-v1-retrieval-jcodemunch-claude-code-mcp-v1-ddbf66b81f7c.json"
+      ],
+      "status": "frozen-provider-free-qualification-pending"
+    },
+    {
+      "tool": "SDL-MCP",
+      "profile_id": "retrieval-sdl-mcp-claude-code-product-v1",
+      "source_profiles": [
+        "retrieval-sdl-mcp-codex-product-v1"
+      ],
+      "protocols": [
+        "sources/evaluations/protocols/beets-lifecycle-sequence-v1-retrieval-sdl-mcp-claude-code-product-v1-40e48d8c3506.json",
+        "sources/evaluations/protocols/fastify-lifecycle-sequence-v1-retrieval-sdl-mcp-claude-code-product-v1-18d3e3fad516.json"
+      ],
+      "status": "frozen-provider-free-qualification-pending"
+    }
+  ],
+  "readiness_gates": [
+    "Run provider-free native Claude installation/handshake qualification for each treatment profile; preserve every product-authored MCP, hook, skill, plugin, and guidance surface.",
+    "Verify each generated protocol, treatment adapter identity, fixture concealment, composite seed delivery, and warm-state reset before provider use.",
+    "Provide the Claude account through TOKEN_EVAL_CLAUDE_ACCOUNT_HOME; never commit or paste credentials into the repository.",
+    "Authorize a bounded serial matrix run separately; this preparation artifact authorizes no provider calls."
+  ],
+  "notes": "The frozen OpenRouter Claude protocols and their authorization audits are historical evidence and remain untouched. These direct-Anthropic protocols use a new model-condition identity and must not be mixed with OpenRouter, Codex, or OpenCode baseline pools."
+}
