@@ -253,6 +253,20 @@ def clone_published_checkout(destination: Path, expected_commit: str) -> None:
     if not upstream_name.startswith("origin/"):
         raise ValueError("provider lane source must track a published origin branch")
     published_branch = upstream_name.removeprefix("origin/")
+    published_ref = f"refs/heads/{published_branch}"
+    branch_probe = subprocess.run(
+        ["git", "ls-remote", workflow.TRUSTED_REPOSITORY_ORIGIN, published_ref],
+        env=env,
+        text=True,
+        capture_output=True,
+        check=False,
+    )
+    if branch_probe.returncode != 0 or not any(
+        line.split() == [line.split()[0], published_ref]
+        for line in branch_probe.stdout.splitlines()
+        if line.split()
+    ):
+        published_branch = workflow.TRUSTED_REPOSITORY_REF.removeprefix("refs/heads/")
     subprocess.run(
         [
             "git", "clone", "--no-local", "--single-branch", "--branch", published_branch,
@@ -556,8 +570,10 @@ def claude_baseline_run_gate(
             }
             and authorization.get("first_valid_sample_policy") is True
             and authorization.get("rerun_after_attempt_receipt") is False
-            and authorization.get("provider_calls") == 0
-            and authorization.get("provider_tokens") == 0
+            and type(authorization.get("provider_calls")) is int
+            and 0 <= authorization.get("provider_calls") <= authorization.get("allowed_model_turns")
+            and type(authorization.get("provider_tokens")) is int
+            and authorization.get("provider_tokens") >= 0
             and isinstance(authorization.get("notes"), str)
             and bool(authorization.get("notes"))
             and [item.get("sequence_id") for item in authorization.get("protocols", []) if isinstance(item, dict)] == expected_order

@@ -901,6 +901,20 @@ LIFECYCLE_V1_REPLICATION_AUTHORITY_REL = "sources/evaluations/audits/lifecycle-v
 LIFECYCLE_V1_REPLICATION_ATTEMPT_DIR = "sources/evaluations/audits/lifecycle-v1-codex-sol-high-r1-attempts"
 OPENROUTER_LIFECYCLE_V1_AUTHORITY_REL = "sources/evaluations/audits/lifecycle-v1-opencode-openrouter-sol-high-r0-authorization-20260803.json"
 OPENROUTER_LIFECYCLE_V1_ATTEMPT_DIR = "sources/evaluations/audits/lifecycle-v1-opencode-openrouter-sol-high-r0-attempts"
+DIRECT_CLAUDE_LIFECYCLE_V1_AUTHORITY_REL = "sources/evaluations/audits/claude-code-anthropic-sonnet-5-high-lifecycle-v1-baseline-authorization-20260808.json"
+DIRECT_CLAUDE_LIFECYCLE_V1_ATTEMPT_DIR = "sources/evaluations/audits/claude-code-anthropic-sonnet-5-high-lifecycle-v1-attempts"
+DIRECT_CLAUDE_LIFECYCLE_V1_PROFILE_ID = "baseline-claude-code-no-mcp"
+DIRECT_CLAUDE_LIFECYCLE_V1_MODEL = {
+    "id": "claude-code-anthropic-sonnet-5-high",
+    "runtime_id": "claude-code",
+    "provider": "anthropic",
+    "model": "claude-sonnet-5",
+    "reasoning_effort": "high",
+}
+DIRECT_CLAUDE_LIFECYCLE_V1_SEQUENCE_ORDER = (
+    "fastify-lifecycle-sequence-v1",
+    "beets-lifecycle-sequence-v1",
+)
 BEETS_R3_REPLACEMENT_AUTHORITY_REL = "sources/evaluations/audits/current-low-complexity-beets-r3-replacement-authorization-20260728.json"
 BEETS_R3_REPLACEMENT_ATTEMPT_REL = "sources/evaluations/audits/current-low-complexity-beets-r3-replacement-attempt-20260728.json"
 BASELINE_REPLICATION_MODEL_CONDITION = {
@@ -4211,7 +4225,13 @@ def execution_integrity_record(
 
 
 def summary_tool_adapter_identity(profile_id: str, selected_descriptor: dict[str, Any]) -> dict[str, Any] | None:
-    """Retain the frozen adapter identity for every declared tool treatment."""
+    """Retain adapter identity only for tool treatments; controls are native."""
+    if profile_id in {
+        "baseline-bare-codex",
+        "baseline-claude-code-no-mcp",
+        "baseline-opencode-openrouter-no-mcp",
+    }:
+        return None
     adapter = selected_descriptor.get("tool_adapter")
     return adapter if isinstance(adapter, dict) else None
 
@@ -4665,6 +4685,159 @@ def recover_openrouter_lifecycle_v1_strict_ingress(session_id: str, root: Path =
     )
     publish_session_after_strict_ingress(session_record, run_dir)
     return session_record
+
+
+def recover_direct_claude_lifecycle_v1_strict_ingress(session_id: str, root: Path = ROOT) -> dict[str, Any]:
+    """Publish one retained direct-Anthropic Claude V1 lane without provider work."""
+    if not isinstance(session_id, str) or not session_id:
+        raise ValueError("direct Claude strict-ingress recovery requires a session ID")
+    registry = json.loads((root / "data/workflow-sessions.json").read_text())
+    if any(item.get("session_id") == session_id for item in registry.get("sessions", [])):
+        raise ValueError("direct Claude strict-ingress recovery refuses an already-published session")
+    run_dir = root / "sources/evaluations/workflow-sessions" / session_id
+    run_path = run_dir / "run.json"
+    if run_dir.is_symlink() or not run_dir.is_dir() or run_path.is_symlink() or not run_path.is_file():
+        raise ValueError("direct Claude strict-ingress recovery run root is absent or unsafe")
+    summary = json.loads(run_path.read_text(), object_pairs_hook=_json_without_duplicate_keys)
+    sequence_id = summary.get("workflow_sequence_id")
+    if sequence_id not in DIRECT_CLAUDE_LIFECYCLE_V1_SEQUENCE_ORDER:
+        raise ValueError("direct Claude strict-ingress recovery sequence is outside the authorized campaign")
+    if (
+        summary.get("profile_id") != DIRECT_CLAUDE_LIFECYCLE_V1_PROFILE_ID
+        or summary.get("replicate_index") != 0
+        or summary.get("accepted") is not True
+        or summary.get("agent_condition") != {
+            "runtime_id": DIRECT_CLAUDE_LIFECYCLE_V1_MODEL["runtime_id"],
+            "provider": DIRECT_CLAUDE_LIFECYCLE_V1_MODEL["provider"],
+            "model": DIRECT_CLAUDE_LIFECYCLE_V1_MODEL["model"],
+            "model_condition_id": DIRECT_CLAUDE_LIFECYCLE_V1_MODEL["id"],
+            "reasoning_effort": DIRECT_CLAUDE_LIFECYCLE_V1_MODEL["reasoning_effort"],
+            "runtime_version_condition": "captured-at-run-and-bound-to-record",
+        }
+        or not isinstance(summary.get("frozen_protocol"), dict)
+        or not isinstance(summary.get("baseline_pool"), dict)
+        or not isinstance(summary.get("selected_execution"), dict)
+        or not isinstance(summary.get("tool_adapter_identity"), dict)
+    ):
+        raise ValueError("direct Claude strict-ingress recovery does not match the retained baseline identity")
+    authority = json.loads(
+        (root / DIRECT_CLAUDE_LIFECYCLE_V1_AUTHORITY_REL).read_text(),
+        object_pairs_hook=_json_without_duplicate_keys,
+    )
+    binding = next(
+        (item for item in authority.get("protocols", []) if item.get("sequence_id") == sequence_id),
+        None,
+    )
+    if not isinstance(binding, dict):
+        raise ValueError("direct Claude strict-ingress recovery has no authorized protocol binding")
+    protocol_path = repository_authority_path(root, binding["protocol_path"], "direct Claude frozen protocol")
+    protocol_raw = protocol_path.read_bytes()
+    expected_frozen = {
+        "protocol_id": protocol_path.stem,
+        "path": binding["protocol_path"],
+        "sha256": binding["protocol_sha256"],
+    }
+    if (
+        hashlib.sha256(protocol_raw).hexdigest() != binding["protocol_sha256"]
+        or summary["frozen_protocol"] != expected_frozen
+        or summary["baseline_pool"].get("protocol_fingerprint") != binding["baseline_pool_fingerprint"]
+    ):
+        raise ValueError("direct Claude strict-ingress recovery does not match the frozen authorized protocol")
+    receipt_path = root / DIRECT_CLAUDE_LIFECYCLE_V1_ATTEMPT_DIR / (
+        f"{sequence_id.removesuffix('-lifecycle-sequence-v1')}-r0.json"
+    )
+    receipt = json.loads(receipt_path.read_text(), object_pairs_hook=_json_without_duplicate_keys)
+    expected_binding = {
+        "sequence_id": sequence_id,
+        "profile_id": DIRECT_CLAUDE_LIFECYCLE_V1_PROFILE_ID,
+        "replicate_index": 0,
+        "frozen_protocol": summary["frozen_protocol"],
+        "baseline_pool_fingerprint": summary["baseline_pool"]["protocol_fingerprint"],
+        "selected_execution": summary["selected_execution"],
+    }
+    if (
+        receipt.get("attempt_status") != "reserved-before-provider-task"
+        or receipt.get("expected_session_binding") != expected_binding
+        or receipt.get("provider_result") is not None
+        or receipt.get("immutable_identity_receipt") is not True
+        or receipt.get("model_condition_id") != DIRECT_CLAUDE_LIFECYCLE_V1_MODEL["id"]
+        or receipt.get("model") != DIRECT_CLAUDE_LIFECYCLE_V1_MODEL["model"]
+        or receipt.get("reasoning_effort") != DIRECT_CLAUDE_LIFECYCLE_V1_MODEL["reasoning_effort"]
+    ):
+        raise ValueError("direct Claude strict-ingress recovery requires the original immutable attempt receipt")
+    repaired = json.loads(json.dumps(summary))
+    repaired["tool_adapter_identity"] = None
+    original_run_sha256 = hashlib.sha256(run_path.read_bytes()).hexdigest()
+    restore_compact_evidence_sources(run_dir)
+    try:
+        usage = dict(repaired["token_usage"])
+        usage["warnings"] = repaired.get("usage_warnings", [])
+        seq = load_sequence(sequence_id)
+        session_record = workflow_session_record(
+            seq,
+            repaired,
+            run_dir,
+            DIRECT_CLAUDE_LIFECYCLE_V1_PROFILE_ID,
+            repaired["codex_exit_codes"],
+            repaired["final_verifier_exit_code"],
+            repaired["tool_isolation_audit_exit_code"],
+            usage,
+            repaired["per_task_results"],
+            prompt_delivery=repaired["prompt_delivery"],
+            leakage_controls=repaired["leakage_controls"],
+        )
+    finally:
+        remove_noncompact_artifacts(run_dir)
+    run_path.write_text(json.dumps(repaired, indent=2) + "\n")
+    write_manifest(run_dir)
+    if not pilot_session_artifacts_valid(session_record, root):
+        raise RuntimeError("direct Claude strict-ingress metadata repair did not satisfy compact ingress")
+    recovery_receipt = root / DIRECT_CLAUDE_LIFECYCLE_V1_ATTEMPT_DIR / (
+        f"{sequence_id.removesuffix('-lifecycle-sequence-v1')}-r0.strict-ingress-recovery.json"
+    )
+    atomic_create_json(
+        recovery_receipt,
+        {
+            "schema_version": 1,
+            "status": "repaired-and-ready-for-registry-publication",
+            "session_id": session_id,
+            "attempt_receipt_path": str(receipt_path.relative_to(root)),
+            "repair_scope": "cleared the native control adapter summary field; provider task output and usage were not changed",
+            "original_run_sha256": original_run_sha256,
+            "repaired_run_sha256": hashlib.sha256(run_path.read_bytes()).hexdigest(),
+            "provider_calls_added_by_recovery": 0,
+            "provider_tokens_added_by_recovery": 0,
+        },
+    )
+    publish_session_after_strict_ingress(session_record, run_dir)
+    return session_record
+
+
+def recover_direct_claude_lifecycle_v1_retained_run(
+    source_run_dir: Path, session_id: str, root: Path = ROOT
+) -> dict[str, Any]:
+    """Stage an externally retained compact lane, then apply direct-Claude recovery."""
+    source = source_run_dir.resolve()
+    if source.is_symlink() or not source.is_dir():
+        raise ValueError("retained direct Claude run root is absent or unsafe")
+    if not (source / "run.json").is_file():
+        raise ValueError("retained direct Claude run is missing its compact run record")
+    source_summary = json.loads(source.joinpath("run.json").read_text())
+    if source_summary.get("session_id") != session_id:
+        raise ValueError("retained direct Claude run session ID does not match the requested recovery")
+    if not evidence_bundle_valid(source / "evidence.jsonl.gz"):
+        raise ValueError("retained direct Claude evidence bundle is invalid")
+    expected_names = COMPACT_ARTIFACT_NAMES
+    if {item.name for item in source.iterdir()} != expected_names:
+        raise ValueError("retained direct Claude run must contain exactly the compact artifact contract")
+    destination = root / "sources/evaluations/workflow-sessions" / session_id
+    if destination.exists() or destination.is_symlink():
+        raise FileExistsError(f"direct Claude recovery destination already exists: {destination}")
+    destination.parent.mkdir(parents=True, exist_ok=True)
+    destination.mkdir()
+    for name in sorted(expected_names):
+        shutil.copy2(source / name, destination / name)
+    return recover_direct_claude_lifecycle_v1_strict_ingress(session_id, root)
 
 
 def publish_session_after_strict_ingress(record: dict[str, Any], run_dir: Path) -> None:

@@ -18,7 +18,7 @@ Record the repository's current decision-bearing evaluation state without overst
 
 This document covers the active two-lane Lifecycle V1 portfolio, retained production baseline evidence, accepted corrected treatment sessions, and explicit treatment deletions. Token claims require retained provider-backed sessions; setup qualification alone is not effectiveness evidence.
 
-Direct-Anthropic Claude Code is a prepared population with a bounded baseline authorization: the `claude-code-anthropic-sonnet-5-high` condition freezes `claude-sonnet-5` with `high` effort and 32 treatment protocols across Fastify and Beets for the Phase 2 tools plus SDL-MCP. Fastify and Beets r0 baseline execution is authorized serially; treatment protocols remain provider-free pending native-surface qualification and separate treatment authorization.
+Direct-Anthropic Claude Code is an executing population under a bounded baseline authorization: the `claude-code-anthropic-sonnet-5-high` condition freezes `claude-sonnet-5` with `high` effort and 32 treatment protocols across Fastify and Beets for the Phase 2 tools plus SDL-MCP. Fastify r0 completed its three-task first-valid sample at 3,146,526 provider tokens; Beets r0 is the next serialized lane. Treatment protocols remain provider-free pending native-surface qualification and separate treatment authorization.
 
 ## Current Implementation Behavior
 
