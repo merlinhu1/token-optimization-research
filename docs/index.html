@@ -14,370 +14,483 @@
   <style>
     :root {
       color-scheme: light;
-      --ink: #14211f;
-      --muted: #53625f;
-      --paper: #f5f2e9;
-      --card: #fffdf7;
-      --line: #d8d4c8;
-      --green: #087f5b;
-      --green-soft: #dff3e9;
-      --red: #c24132;
-      --red-soft: #fae6e1;
-      --gold: #c7861b;
-      --navy: #173b57;
-      --shadow: 0 18px 50px rgb(20 33 31 / 9%);
-      --radius: 18px;
+      --bg: #f4f6fa;
+      --card: #ffffff;
+      --ink: #0f172a;
+      --muted: #5b6b7f;
+      --faint: #8a97a8;
+      --line: #e3e8f0;
+      --accent: #4f46e5;
+      --accent-soft: #eceafe;
+      --good: #059669;
+      --good-soft: #d3f2e5;
+      --bad: #e11d48;
+      --bad-soft: #fde3e9;
+      --na: #94a3b8;
+      --na-soft: #eceff3;
+      --track: #eef1f6;
+      --shadow: 0 10px 30px rgb(15 23 42 / 7%);
+      --radius: 16px;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        color-scheme: dark;
+        --bg: #0c1220;
+        --card: #131c2e;
+        --ink: #e6ecf5;
+        --muted: #9aa8bd;
+        --faint: #71809a;
+        --line: #223050;
+        --accent: #8b85ff;
+        --accent-soft: #262457;
+        --good: #34d399;
+        --good-soft: #0e3a2d;
+        --bad: #fb7185;
+        --bad-soft: #4a1b26;
+        --na: #7d8ba1;
+        --na-soft: #1d2840;
+        --track: #1b2740;
+        --shadow: 0 10px 30px rgb(0 0 0 / 35%);
+      }
     }
 
     * { box-sizing: border-box; }
 
-    html { scroll-behavior: smooth; }
+    html { scroll-behavior: smooth; scroll-padding-top: 4.5rem; }
 
     body {
       margin: 0;
       color: var(--ink);
-      background:
-        radial-gradient(circle at 8% 4%, rgb(8 127 91 / 10%), transparent 26rem),
-        linear-gradient(180deg, #faf8f1 0, var(--paper) 36rem);
-      font: 17px/1.65 ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: var(--bg);
+      font: 16px/1.6 ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      -webkit-font-smoothing: antialiased;
     }
 
-    a { color: var(--navy); text-underline-offset: .18em; }
-    a:hover { color: var(--green); }
-    img { display: block; max-width: 100%; height: auto; }
+    a { color: var(--accent); text-decoration: none; }
+    a:hover { text-decoration: underline; }
 
     .skip-link {
       position: absolute;
       top: -4rem;
       left: 1rem;
-      z-index: 10;
+      z-index: 30;
       padding: .7rem 1rem;
-      color: white;
+      color: #fff;
       background: var(--ink);
-      border-radius: .5rem;
+      border-radius: .6rem;
     }
-
     .skip-link:focus { top: 1rem; }
 
-    .shell {
-      width: min(1160px, calc(100% - 2rem));
-      margin-inline: auto;
-    }
+    .shell { width: min(1080px, 100% - 2.5rem); margin-inline: auto; }
 
+    /* ---------- top bar ---------- */
     .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      border-bottom: 1px solid var(--line);
+      background: color-mix(in srgb, var(--bg) 82%, transparent);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+    }
+    .topbar .shell {
       display: flex;
       align-items: center;
       justify-content: space-between;
       gap: 1rem;
-      padding-block: 1.15rem;
-      font-size: .9rem;
+      min-height: 3.6rem;
     }
-
     .brand {
       color: var(--ink);
       font-weight: 800;
-      letter-spacing: -.02em;
-      text-decoration: none;
+      font-size: .95rem;
+      letter-spacing: -.01em;
+      white-space: nowrap;
     }
-
-    .topbar nav { display: flex; flex-wrap: wrap; gap: .9rem; }
-    .topbar nav a { color: var(--muted); text-decoration: none; }
-    .topbar nav a:hover { color: var(--ink); }
-
-    .hero {
-      display: grid;
-      grid-template-columns: minmax(0, 1.55fr) minmax(260px, .65fr);
-      gap: clamp(2rem, 6vw, 5rem);
-      align-items: end;
-      padding-block: clamp(4rem, 9vw, 8rem) clamp(3rem, 7vw, 6rem);
+    .brand:hover { text-decoration: none; }
+    .topbar nav {
+      display: flex;
+      gap: 1.1rem;
+      overflow-x: auto;
+      font-size: .85rem;
+      scrollbar-width: none;
     }
+    .topbar nav::-webkit-scrollbar { display: none; }
+    .topbar nav a { color: var(--muted); white-space: nowrap; }
+    .topbar nav a:hover { color: var(--ink); text-decoration: none; }
+
+    /* ---------- hero ---------- */
+    .hero { padding-block: clamp(2.75rem, 7vw, 5.5rem) clamp(2rem, 5vw, 3.5rem); }
 
     .eyebrow {
-      margin: 0 0 1rem;
-      color: var(--green);
-      font-size: .78rem;
-      font-weight: 850;
-      letter-spacing: .14em;
+      margin: 0 0 .9rem;
+      color: var(--accent);
+      font-size: .74rem;
+      font-weight: 800;
+      letter-spacing: .12em;
       text-transform: uppercase;
     }
 
-    h1, h2, h3 { line-height: 1.08; letter-spacing: -.035em; }
+    h1, h2, h3 { line-height: 1.12; letter-spacing: -.03em; }
 
     h1 {
-      max-width: 850px;
+      max-width: 16ch;
       margin: 0;
-      font-family: ui-serif, Georgia, Cambria, "Times New Roman", serif;
-      font-size: clamp(3.3rem, 8.2vw, 7.2rem);
-      font-weight: 650;
+      font-size: clamp(2.3rem, 7.2vw, 4.3rem);
+      font-weight: 820;
     }
-
-    h2 {
-      margin: 0 0 1.25rem;
-      font-family: ui-serif, Georgia, Cambria, "Times New Roman", serif;
-      font-size: clamp(2.1rem, 4vw, 3.4rem);
-      font-weight: 650;
-    }
-
-    h3 { margin-top: 0; font-size: 1.2rem; }
 
     .dek {
-      max-width: 780px;
-      margin: 1.5rem 0 0;
+      max-width: 46rem;
+      margin: 1.2rem 0 0;
       color: var(--muted);
-      font-size: clamp(1.12rem, 2vw, 1.35rem);
+      font-size: clamp(1.05rem, 2.4vw, 1.28rem);
     }
 
-    .hero-note {
-      padding: 1.4rem;
-      background: rgb(255 253 247 / 76%);
-      border: 1px solid var(--line);
-      border-radius: var(--radius);
-      box-shadow: var(--shadow);
-    }
-
-    .hero-note strong { display: block; margin-bottom: .4rem; font-size: 1.1rem; }
-    .hero-note p { margin: 0; color: var(--muted); font-size: .93rem; }
-
-    .hero-actions { display: flex; flex-wrap: wrap; gap: .7rem; margin-top: 1.8rem; }
+    .hero-actions { display: flex; flex-wrap: wrap; gap: .7rem; margin-top: 1.7rem; }
 
     .button {
       display: inline-flex;
       align-items: center;
-      min-height: 44px;
-      padding: .65rem 1rem;
-      border: 1px solid var(--ink);
+      justify-content: center;
+      min-height: 46px;
+      padding: .7rem 1.25rem;
       border-radius: 999px;
-      color: white;
-      background: var(--ink);
-      font-size: .9rem;
-      font-weight: 750;
-      text-decoration: none;
+      color: #fff;
+      background: var(--accent);
+      font-size: .92rem;
+      font-weight: 700;
+    }
+    .button:hover { text-decoration: none; filter: brightness(1.08); }
+    .button.secondary {
+      color: var(--ink);
+      background: var(--card);
+      border: 1px solid var(--line);
     }
 
-    .button.secondary { color: var(--ink); background: transparent; }
+    .hero-note {
+      margin-top: 1.6rem;
+      max-width: 46rem;
+      padding: 1rem 1.15rem;
+      background: var(--accent-soft);
+      border-radius: 12px;
+      color: var(--muted);
+      font-size: .9rem;
+    }
+    .hero-note strong { color: var(--ink); }
 
-    .numbers {
+    /* ---------- stat cards ---------- */
+    .stats {
       display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      overflow: hidden;
-      margin-bottom: clamp(4rem, 8vw, 7rem);
-      background: var(--ink);
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: .9rem;
+      padding-bottom: clamp(2.5rem, 6vw, 4rem);
+    }
+    .stat {
+      min-width: 0;
+      padding: 1.2rem 1.25rem;
+      background: var(--card);
+      border: 1px solid var(--line);
       border-radius: var(--radius);
       box-shadow: var(--shadow);
     }
+    .stat b {
+      display: block;
+      font-size: clamp(1.5rem, 3.6vw, 2.4rem);
+      line-height: 1.05;
+      letter-spacing: -.04em;
+      font-variant-numeric: tabular-nums;
+    }
+    .stat span { display: block; margin-top: .5rem; color: var(--muted); font-size: .83rem; line-height: 1.4; }
+    .stat.bad b { color: var(--bad); }
+    .stat.good b { color: var(--good); }
 
-    .number { min-height: 165px; padding: 1.5rem; color: white; }
-    .number + .number { border-left: 1px solid rgb(255 255 255 / 18%); }
-    .number b { display: block; font-size: clamp(2rem, 4vw, 3.6rem); line-height: 1; letter-spacing: -.05em; }
-    .number span { display: block; margin-top: .65rem; color: rgb(255 255 255 / 70%); font-size: .85rem; }
-    .number.good b { color: #72e0b8; }
-    .number.bad b { color: #ff9d8e; }
-
-    section { padding-block: clamp(3.5rem, 7vw, 6.5rem); }
+    /* ---------- sections ---------- */
+    section { padding-block: clamp(2.5rem, 6vw, 4.5rem); }
     section + section { border-top: 1px solid var(--line); }
 
-    .section-head {
-      display: grid;
-      grid-template-columns: minmax(0, .75fr) minmax(280px, 1fr);
-      gap: clamp(2rem, 6vw, 6rem);
-      align-items: start;
-      margin-bottom: 2rem;
-    }
+    .section-head { max-width: 46rem; margin-bottom: 1.75rem; }
+    .section-head h2 { margin: 0 0 .6rem; font-size: clamp(1.6rem, 4vw, 2.3rem); font-weight: 780; }
+    .section-head p { margin: 0; color: var(--muted); }
 
-    .section-head p { max-width: 690px; margin: .15rem 0 0; color: var(--muted); }
-
-    .callout {
-      margin-block: 2rem;
-      padding: 1.15rem 1.3rem;
-      background: var(--green-soft);
-      border-left: 5px solid var(--green);
-      border-radius: 0 var(--radius) var(--radius) 0;
-    }
-
-    .callout p { margin: 0; }
-
-    .figure {
-      margin: 2rem 0 0;
-      padding: clamp(1rem, 3vw, 2rem);
+    .card {
       background: var(--card);
       border: 1px solid var(--line);
       border-radius: var(--radius);
       box-shadow: var(--shadow);
     }
 
-    .figure img { width: 100%; }
-    .chart-hint {
-      display: none;
-      margin: 0 0 .55rem;
+    /* ---------- contrast chart ---------- */
+    .chart { padding: clamp(1.1rem, 3vw, 1.75rem); }
+    .chart-title { margin: 0 0 .25rem; font-size: 1.02rem; font-weight: 750; }
+    .chart-sub { margin: 0 0 1.4rem; color: var(--muted); font-size: .85rem; }
+
+    .chart-legend {
+      display: flex;
+      flex-wrap: wrap;
+      gap: .5rem 1.1rem;
+      margin: 0 0 1.3rem;
       color: var(--muted);
-      font-size: .76rem;
-      font-weight: 750;
-      letter-spacing: .04em;
-      text-transform: uppercase;
+      font-size: .8rem;
     }
-
-    .chart-scroll {
-      overflow-x: auto;
-      padding: .35rem;
-      border: 1px solid var(--line);
-      border-radius: 12px;
-      background: white;
-      overscroll-behavior-inline: contain;
-      scroll-padding-inline: .35rem;
-      scrollbar-color: var(--green) #eceae4;
-      scrollbar-width: thin;
+    .chart-legend i {
+      display: inline-block;
+      width: .8rem;
+      height: .8rem;
+      margin-right: .35rem;
+      border-radius: 3px;
+      vertical-align: -.08em;
     }
+    .lg-good { background: var(--good); }
+    .lg-bad { background: var(--bad); }
+    .lg-na { background: transparent; border: 1.5px dashed var(--na); }
 
-    .chart-scroll:focus-visible {
-      outline: 3px solid rgb(8 127 91 / 35%);
-      outline-offset: 3px;
-    }
+    .trow { padding-block: .65rem; border-top: 1px solid var(--line); }
+    .trow:first-of-type { border-top: 0; }
+    .tname { margin: 0 0 .45rem; font-size: .95rem; font-weight: 750; }
 
-    .chart-scroll img {
-      width: 100%;
-      min-width: 920px;
-      max-width: none;
-    }
-
-    figcaption { margin-top: 1rem; color: var(--muted); font-size: .86rem; }
-
-    .method-grid, .mechanism-grid {
+    .crow {
       display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 1rem;
+      grid-template-columns: 4.6rem minmax(0, 1fr) 4.4rem;
+      align-items: center;
+      gap: .6rem;
+      padding-block: .18rem;
+    }
+    .clab { color: var(--faint); font-size: .78rem; font-weight: 650; line-height: 1.15; }
+
+    .axis {
+      position: relative;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      height: 1.3rem;
+      background: var(--track);
+      border-radius: 7px;
+    }
+    .axis::after {
+      content: "";
+      position: absolute;
+      left: 50%;
+      top: 0;
+      bottom: 0;
+      width: 2px;
+      margin-left: -1px;
+      background: var(--card);
+    }
+    .half { position: relative; }
+    .bar {
+      position: absolute;
+      top: 3px;
+      bottom: 3px;
+      min-width: 3px;
+      border-radius: 4px;
+    }
+    .bar.neg { right: 0; background: var(--good); width: var(--w); }
+    .bar.pos { left: 0; background: var(--bad); width: var(--w); }
+    .bar.na {
+      left: 0;
+      width: 100%;
+      background: transparent;
+      border: 1.5px dashed var(--na);
+      min-width: 0;
     }
 
-    .method-card, .mechanism-card {
-      padding: 1.25rem;
+    .val { font-size: .85rem; font-weight: 750; font-variant-numeric: tabular-nums; text-align: right; }
+    .val.up { color: var(--bad); }
+    .val.down { color: var(--good); }
+    .val.na { color: var(--na); font-weight: 600; font-size: .78rem; }
+
+    .chart-foot { margin: 1.2rem 0 0; color: var(--muted); font-size: .83rem; }
+
+    /* ---------- heatmap ---------- */
+    .heat { padding: clamp(1.1rem, 3vw, 1.75rem); }
+    .heat-grid { display: grid; gap: .45rem; }
+    .heat-head, .hrow {
+      display: grid;
+      grid-template-columns: minmax(6.5rem, 9rem) repeat(4, minmax(0, 1fr));
+      gap: .45rem;
+      align-items: stretch;
+    }
+    .heat-head { color: var(--faint); font-size: .72rem; font-weight: 700; letter-spacing: .05em; text-transform: uppercase; }
+    .heat-head span { padding: 0 .55rem; align-self: center; }
+    .hname { display: flex; align-items: center; font-size: .88rem; font-weight: 700; }
+
+    .cell {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: .1rem;
+      min-height: 2.6rem;
+      padding: .35rem .55rem;
+      border-radius: 9px;
+      font-size: .82rem;
+      font-weight: 720;
+      font-variant-numeric: tabular-nums;
+      line-height: 1.25;
+    }
+    .cell .cl { display: none; font-size: .66rem; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; opacity: .75; }
+
+    .cell.up1 { background: #ffe4e6; color: #9f1239; }
+    .cell.up2 { background: #fecdd3; color: #881337; }
+    .cell.up3 { background: #e11d48; color: #ffffff; }
+    .cell.up4 { background: #9f1239; color: #ffffff; }
+    .cell.dn1 { background: #d1fae5; color: #065f46; }
+    .cell.dn2 { background: #a7f3d0; color: #064e3b; }
+    .cell.dn3 { background: #047857; color: #ffffff; }
+    .cell.dn4 { background: #064e3b; color: #ffffff; }
+    .cell.na { background: var(--na-soft); color: var(--na); font-weight: 600; }
+
+    @media (prefers-color-scheme: dark) {
+      .cell.up1 { background: #3b1620; color: #fda4af; }
+      .cell.up2 { background: #571e2c; color: #fda4af; }
+      .cell.up3 { background: #8b2b3d; color: #ffe4e6; }
+      .cell.up4 { background: #fb7185; color: #3d0f18; }
+      .cell.dn1 { background: #0e3a2d; color: #6ee7b7; }
+      .cell.dn2 { background: #11543f; color: #6ee7b7; }
+      .cell.dn3 { background: #0d7a57; color: #ecfdf5; }
+      .cell.dn4 { background: #34d399; color: #043c2c; }
+    }
+
+    /* ---------- component bars ---------- */
+    .components { padding: clamp(1.1rem, 3vw, 1.75rem); }
+    .comp-group + .comp-group { margin-top: 1.4rem; }
+    .comp-name { margin: 0 0 .5rem; font-size: .95rem; font-weight: 750; }
+    .comp-row {
+      display: grid;
+      grid-template-columns: 6.4rem minmax(0, 1fr) 4.2rem;
+      align-items: center;
+      gap: .6rem;
+      padding-block: .2rem;
+    }
+
+    /* ---------- card grids ---------- */
+    .grid3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: .9rem; }
+    .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: .9rem; }
+
+    .mini {
+      padding: 1.1rem 1.2rem;
       background: var(--card);
       border: 1px solid var(--line);
       border-radius: 14px;
     }
-
-    .method-card b {
+    .mini b {
       display: block;
-      margin-bottom: .35rem;
-      color: var(--green);
-      font-size: .78rem;
+      margin-bottom: .3rem;
+      color: var(--accent);
+      font-size: .72rem;
+      font-weight: 800;
       letter-spacing: .08em;
       text-transform: uppercase;
     }
+    .mini p { margin: 0; color: var(--muted); font-size: .9rem; }
+    .mini h3 { margin: 0 0 .35rem; font-size: 1rem; }
 
-    .method-card p, .mechanism-card p { margin: 0; color: var(--muted); font-size: .93rem; }
-
-    .table-wrap {
-      overflow-x: auto;
+    /* ---------- tool accordions ---------- */
+    .tools { display: grid; grid-template-columns: 1fr 1fr; gap: .8rem; }
+    details.tool {
       background: var(--card);
       border: 1px solid var(--line);
-      border-radius: var(--radius);
-      box-shadow: var(--shadow);
+      border-radius: 14px;
+      overflow: hidden;
     }
-
-    table { width: 100%; border-collapse: collapse; font-variant-numeric: tabular-nums; }
-    caption { padding: 1rem 1.2rem; color: var(--muted); font-size: .86rem; text-align: left; }
-    th, td { padding: .8rem 1rem; border-bottom: 1px solid var(--line); text-align: right; white-space: nowrap; }
-    th:first-child, td:first-child { text-align: left; }
-    th { color: var(--muted); background: #f0eee6; font-size: .76rem; letter-spacing: .05em; text-transform: uppercase; }
-    tbody tr:last-child td { border-bottom: 0; }
-    tbody tr:hover { background: #f9f7f0; }
-
-    .delta {
-      display: inline-block;
-      min-width: 5.4rem;
-      padding: .18rem .52rem;
-      border-radius: 999px;
-      font-weight: 780;
-      text-align: center;
-    }
-
-    .delta.down { color: #075e45; background: var(--green-soft); }
-    .delta.up { color: #9c3024; background: var(--red-soft); }
-    .delta.na { color: var(--muted); background: #eceae4; }
-
-    .legend { margin: 1rem 0 0; color: var(--muted); font-size: .86rem; }
-
-    .mechanism-card { border-top: 4px solid var(--gold); }
-    .mechanism-card:nth-child(2) { border-top-color: var(--green); }
-    .mechanism-card:nth-child(3) { border-top-color: var(--red); }
-
-    .tool-notes { display: grid; grid-template-columns: 1fr 1fr; gap: .8rem; }
-
-    details {
-      background: var(--card);
-      border: 1px solid var(--line);
-      border-radius: 12px;
-    }
-
-    summary {
+    details.tool summary {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 1rem;
-      padding: 1rem 1.1rem;
+      gap: .8rem;
+      min-height: 3.4rem;
+      padding: .85rem 1.05rem;
       cursor: pointer;
-      font-weight: 780;
+      font-weight: 750;
+      font-size: .95rem;
+      list-style: none;
     }
-
-    summary::marker { color: var(--green); }
-    details p { margin: 0; padding: 0 1.1rem 1.1rem; color: var(--muted); font-size: .94rem; }
-    .outcome { color: var(--muted); font-size: .78rem; font-weight: 650; text-align: right; }
-
-    .limits { columns: 2; column-gap: 3rem; padding-left: 1.2rem; }
-    .limits li { break-inside: avoid; margin: 0 0 .8rem; padding-left: .3rem; }
-
-    .data-panel {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 1rem;
+    details.tool summary::-webkit-details-marker { display: none; }
+    details.tool summary::after {
+      content: "+";
+      flex: none;
+      width: 1.5rem;
+      height: 1.5rem;
+      border-radius: 50%;
+      background: var(--accent-soft);
+      color: var(--accent);
+      font-size: 1rem;
+      font-weight: 700;
+      line-height: 1.5rem;
+      text-align: center;
     }
+    details.tool[open] summary::after { content: "−"; }
+    details.tool p { margin: 0; padding: 0 1.05rem 1.05rem; color: var(--muted); font-size: .9rem; }
 
+    .chips { display: flex; flex-wrap: wrap; gap: .3rem; justify-content: flex-end; }
+    .chip {
+      padding: .16rem .55rem;
+      border-radius: 999px;
+      font-size: .74rem;
+      font-weight: 750;
+      font-variant-numeric: tabular-nums;
+      white-space: nowrap;
+    }
+    .chip.up { color: var(--bad); background: var(--bad-soft); }
+    .chip.down { color: var(--good); background: var(--good-soft); }
+    .chip.na { color: var(--na); background: var(--na-soft); }
+
+    /* ---------- limits ---------- */
+    .limits { margin: 0; padding-left: 1.2rem; color: var(--muted); }
+    .limits li { margin: 0 0 .7rem; padding-left: .25rem; }
+    .limits li::marker { color: var(--accent); }
+
+    /* ---------- data links ---------- */
     .data-link {
       display: block;
-      padding: 1.2rem;
+      padding: 1.1rem 1.2rem;
       color: var(--ink);
       background: var(--card);
       border: 1px solid var(--line);
       border-radius: 14px;
-      text-decoration: none;
+      transition: border-color .15s ease;
+    }
+    .data-link:hover { border-color: var(--accent); text-decoration: none; }
+    .data-link strong { display: block; margin-bottom: .15rem; font-size: .95rem; }
+    .data-link span { color: var(--muted); font-size: .84rem; }
+
+    footer { padding-block: 2.5rem; border-top: 1px solid var(--line); color: var(--muted); font-size: .84rem; }
+    footer .shell { display: flex; flex-wrap: wrap; justify-content: space-between; gap: .5rem 1rem; }
+
+    /* ---------- responsive ---------- */
+    @media (max-width: 760px) {
+      .topbar .shell { flex-wrap: wrap; gap: .35rem; padding-block: .65rem; }
+      .topbar nav { order: 3; width: 100%; gap: 1.35rem; }
+      .stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .stat b { font-size: clamp(1.3rem, 8.2vw, 1.9rem); }
+      .grid3, .grid2, .tools { grid-template-columns: 1fr; }
+      .heat-head { display: none; }
+      .hrow {
+        grid-template-columns: 1fr 1fr;
+        padding: .7rem;
+        background: var(--bg);
+        border-radius: 12px;
+      }
+      .hname { grid-column: 1 / -1; margin-bottom: .1rem; }
+      .cell .cl { display: block; }
+      .crow { grid-template-columns: 3.6rem minmax(0, 1fr) 4.2rem; gap: .4rem; }
+      .clab { font-size: .72rem; }
+      .comp-row { grid-template-columns: 5.6rem minmax(0, 1fr) 4.2rem; gap: .4rem; }
     }
 
-    .data-link:hover { border-color: var(--green); }
-    .data-link strong { display: block; }
-    .data-link span { color: var(--muted); font-size: .86rem; }
-
-    footer { padding-block: 3rem; color: var(--muted); font-size: .85rem; }
-    footer .shell { display: flex; justify-content: space-between; gap: 1rem; }
-
-    @media (max-width: 820px) {
-      .hero, .section-head { grid-template-columns: 1fr; }
-      .hero { align-items: start; }
-      .numbers { grid-template-columns: 1fr 1fr; }
-      .number:nth-child(3) { border-left: 0; border-top: 1px solid rgb(255 255 255 / 18%); }
-      .number:nth-child(4) { border-top: 1px solid rgb(255 255 255 / 18%); }
-      .method-grid, .mechanism-grid { grid-template-columns: 1fr; }
-      .tool-notes, .data-panel { grid-template-columns: 1fr; }
-      .chart-hint { display: flex; align-items: center; gap: .4rem; }
-    }
-
-    @media (max-width: 560px) {
-      body { font-size: 16px; }
-      .topbar { align-items: flex-start; }
-      .topbar nav a:not(:last-child) { display: none; }
-      .numbers { grid-template-columns: 1fr; }
-      .number { min-height: auto; }
-      .number + .number { border-left: 0; border-top: 1px solid rgb(255 255 255 / 18%); }
-      h1 { font-size: clamp(3rem, 16vw, 4.5rem); }
-      .limits { columns: 1; }
-      summary { align-items: flex-start; }
-      .outcome { max-width: 8.5rem; }
+    @media (max-width: 400px) {
+      .crow { grid-template-columns: 3.2rem minmax(0, 1fr) 4rem; }
+      .clab { font-size: .68rem; }
+      .val { font-size: .8rem; }
+      .comp-row { grid-template-columns: 5.2rem minmax(0, 1fr) 4rem; }
     }
 
     @media print {
-      body { background: white; font-size: 11pt; }
+      body { background: #fff; }
       .topbar, .hero-actions { display: none; }
-      .hero, section { padding-block: 1.5rem; }
-      .figure, .table-wrap, .hero-note, .numbers { box-shadow: none; }
-      details > * { display: block; }
+      .card, .stat, .mini, details.tool, .data-link { box-shadow: none; }
+      details.tool > * { display: block; }
+      details.tool summary::after { display: none; }
       a { color: inherit; }
     }
   </style>
@@ -385,70 +498,153 @@
 <body>
   <a class="skip-link" href="#report">Skip to report</a>
 
-  <header class="shell topbar">
-    <a class="brand" href="https://github.com/merlinhu1/token-optimization-research">Token Optimization Research</a>
-    <nav aria-label="Report navigation">
-      <a href="#results">Results</a>
-      <a href="#tools">Tools</a>
-      <a href="#limits">Limitations</a>
-      <a href="#data">Data</a>
-    </nav>
+  <header class="topbar">
+    <div class="shell">
+      <a class="brand" href="https://github.com/merlinhu1/token-optimization-research">Token Optimization Research</a>
+      <nav aria-label="Report navigation">
+        <a href="#finding">Finding</a>
+        <a href="#results">Results</a>
+        <a href="#tools">Tools</a>
+        <a href="#limits">Limitations</a>
+        <a href="#data">Data</a>
+      </nav>
+    </div>
   </header>
 
   <main id="report">
     <div class="shell hero">
-      <div>
-        <p class="eyebrow">Phase 2 · Lifecycle V1 screening</p>
-        <h1>Token-saving tools do not save tokens everywhere.</h1>
-        <p class="dek">A matched screening study across two coding-agent runtimes found lower weighted token cost in 11 of 13 OpenCode conditions—and none of 14 Codex conditions.</p>
-        <div class="hero-actions">
-          <a class="button" href="#results">Explore the results</a>
-          <a class="button secondary" href="https://github.com/merlinhu1/token-optimization-research/blob/main/docs/papers/phase-2-lifecycle-v1-natural-use-screening.md">Read the technical report</a>
-        </div>
+      <p class="eyebrow">Phase 2 · Lifecycle V1 screening</p>
+      <h1>Token-saving tools do not save tokens everywhere.</h1>
+      <p class="dek">A matched screening study across two coding-agent runtimes found lower weighted token cost in 11 of 13 OpenCode conditions—and none of 14 Codex conditions.</p>
+      <div class="hero-actions">
+        <a class="button" href="#finding">Explore the results</a>
+        <a class="button secondary" href="https://github.com/merlinhu1/token-optimization-research/blob/main/docs/papers/phase-2-lifecycle-v1-natural-use-screening.md">Read the technical report</a>
       </div>
-      <aside class="hero-note" aria-label="Evidence scope">
-        <strong>Screening evidence, not a ranking</strong>
-        <p>Each product/runtime condition has one treatment assignment per workflow. The results show a strong interaction with runtime, not universal product effects or deployment recommendations.</p>
-      </aside>
+      <div class="hero-note">
+        <strong>Screening evidence, not a ranking.</strong>
+        Each product/runtime condition has one treatment assignment per workflow. The results show a strong interaction with runtime, not universal product effects or deployment recommendations.
+      </div>
     </div>
 
-    <div class="shell numbers" aria-label="Study highlights">
-      <div class="number bad"><b>+35.10%</b><span>Codex aggregate weighted token cost</span></div>
-      <div class="number good"><b>−14.02%</b><span>OpenCode aggregate weighted token cost</span></div>
-      <div class="number"><b>162</b><span>Accepted tasks across 54 persistent sessions</span></div>
-      <div class="number"><b>15</b><span>Token-saving products evaluated</span></div>
+    <div class="shell stats" aria-label="Study highlights">
+      <div class="stat bad"><b>+35.10%</b><span>Codex aggregate weighted token cost</span></div>
+      <div class="stat good"><b>−14.02%</b><span>OpenCode aggregate weighted token cost</span></div>
+      <div class="stat"><b>162</b><span>Accepted tasks across 54 persistent sessions</span></div>
+      <div class="stat"><b>15</b><span>Token-saving products, 27 matched conditions</span></div>
     </div>
 
     <section id="finding">
       <div class="shell">
         <div class="section-head">
-          <div><p class="eyebrow">The central finding</p><h2>Runtime mattered as much as the tool.</h2></div>
+          <p class="eyebrow">The central finding</p>
+          <h2>Runtime mattered as much as the tool.</h2>
           <p>The same class of integration could reduce context in OpenCode while increasing weighted cost in Codex. Automatic interception, retrieval depth, persistent instructions, tool schemas, and trajectory changes are plausible contributors—but this screen does not isolate them causally.</p>
         </div>
-        <div class="callout"><p><strong>What the data supports:</strong> token-saving integrations should be evaluated in the exact runtime and integration surface where they will be deployed.</p></div>
-        <figure class="figure">
-          <p class="chart-hint"><span aria-hidden="true">↔</span> Swipe horizontally to inspect the full chart</p>
-          <div class="chart-scroll" role="group" aria-label="Wide chart; scroll horizontally to inspect all labels" tabindex="0">
-            <img src="papers/figures/phase-2-lifecycle-v1-runtime-contrast.svg" alt="Bar chart showing weighted token-cost changes for each product in Codex and OpenCode. Codex conditions are all at or above baseline while most OpenCode conditions are below baseline.">
+
+        <div class="card chart">
+          <p class="chart-title">Weighted token-cost change versus matched runtime baseline</p>
+          <p class="chart-sub">Negative values are lower than the matched baseline. Blocked means no qualified provider-backed condition was run.</p>
+          <p class="chart-legend">
+            <span><i class="lg-good"></i>Lower cost than baseline</span>
+            <span><i class="lg-bad"></i>Higher cost than baseline</span>
+            <span><i class="lg-na"></i>Blocked</span>
+          </p>
+
+          <div class="trow">
+            <h3 class="tname">RTK</h3>
+            <div class="crow"><span class="clab">Codex</span><div class="axis" aria-hidden="true"><div class="half"></div><div class="half"><span class="bar pos" style="--w:48.7%"></span></div></div><span class="val up">+42.31%</span></div>
+            <div class="crow"><span class="clab">OpenCode</span><div class="axis" aria-hidden="true"><div class="half"><span class="bar neg" style="--w:30%"></span></div><div class="half"></div></div><span class="val down">−26.12%</span></div>
           </div>
-          <figcaption>Weighted token-cost change by runtime and product. Negative values are lower than the matched baseline. Missing values are blocked combinations, not zero effects.</figcaption>
-        </figure>
+          <div class="trow">
+            <h3 class="tname">Serena</h3>
+            <div class="crow"><span class="clab">Codex</span><div class="axis" aria-hidden="true"><div class="half"></div><div class="half"><span class="bar pos" style="--w:1%"></span></div></div><span class="val up">+0.83%</span></div>
+            <div class="crow"><span class="clab">OpenCode</span><div class="axis" aria-hidden="true"><div class="half"><span class="bar neg" style="--w:29.9%"></span></div><div class="half"></div></div><span class="val down">−26.03%</span></div>
+          </div>
+          <div class="trow">
+            <h3 class="tname">TokenJuice</h3>
+            <div class="crow"><span class="clab">Codex</span><div class="axis" aria-hidden="true"><div class="half"></div><div class="half"><span class="bar pos" style="--w:9.6%"></span></div></div><span class="val up">+8.37%</span></div>
+            <div class="crow"><span class="clab">OpenCode</span><div class="axis" aria-hidden="true"><div class="half"><span class="bar neg" style="--w:32.8%"></span></div><div class="half"></div></div><span class="val down">−28.49%</span></div>
+          </div>
+          <div class="trow">
+            <h3 class="tname">Ponytail</h3>
+            <div class="crow"><span class="clab">Codex</span><div class="axis" aria-hidden="true"><div class="half"></div><div class="half"><span class="bar pos" style="--w:35.1%"></span></div></div><span class="val up">+30.48%</span></div>
+            <div class="crow"><span class="clab">OpenCode</span><div class="axis" aria-hidden="true"><div class="half"><span class="bar neg" style="--w:13.9%"></span></div><div class="half"></div></div><span class="val down">−12.13%</span></div>
+          </div>
+          <div class="trow">
+            <h3 class="tname">Caveman</h3>
+            <div class="crow"><span class="clab">Codex</span><div class="axis" aria-hidden="true"><div class="half"></div><div class="half"><span class="bar pos" style="--w:37.1%"></span></div></div><span class="val up">+32.24%</span></div>
+            <div class="crow"><span class="clab">OpenCode</span><div class="axis" aria-hidden="true"><div class="half"><span class="bar neg" style="--w:31.5%"></span></div><div class="half"></div></div><span class="val down">−27.43%</span></div>
+          </div>
+          <div class="trow">
+            <h3 class="tname">jCodeMunch</h3>
+            <div class="crow"><span class="clab">Codex</span><div class="axis" aria-hidden="true"><div class="half"></div><div class="half"><span class="bar pos" style="--w:32.7%"></span></div></div><span class="val up">+28.45%</span></div>
+            <div class="crow"><span class="clab">OpenCode</span><div class="axis" aria-hidden="true"><div class="half"><span class="bar neg" style="--w:3.8%"></span></div><div class="half"></div></div><span class="val down">−3.34%</span></div>
+          </div>
+          <div class="trow">
+            <h3 class="tname">CodeGraph</h3>
+            <div class="crow"><span class="clab">Codex</span><div class="axis" aria-hidden="true"><div class="half"></div><div class="half"><span class="bar pos" style="--w:56%"></span></div></div><span class="val up">+48.72%</span></div>
+            <div class="crow"><span class="clab">OpenCode</span><div class="axis" aria-hidden="true"><div class="half"><span class="bar neg" style="--w:18.1%"></span></div><div class="half"></div></div><span class="val down">−15.74%</span></div>
+          </div>
+          <div class="trow">
+            <h3 class="tname">SigMap</h3>
+            <div class="crow"><span class="clab">Codex</span><div class="axis" aria-hidden="true"><div class="half"></div><div class="half"><span class="bar pos" style="--w:31.9%"></span></div></div><span class="val up">+27.74%</span></div>
+            <div class="crow"><span class="clab">OpenCode</span><div class="axis" aria-hidden="true"><div class="half"></div><div class="half"><span class="bar pos" style="--w:2.9%"></span></div></div><span class="val up">+2.54%</span></div>
+          </div>
+          <div class="trow">
+            <h3 class="tname">LowFat</h3>
+            <div class="crow"><span class="clab">Codex</span><div class="axis" aria-hidden="true"><div class="half"></div><div class="half"><span class="bar na"></span></div></div><span class="val na">Blocked</span></div>
+            <div class="crow"><span class="clab">OpenCode</span><div class="axis" aria-hidden="true"><div class="half"><span class="bar neg" style="--w:25.6%"></span></div><div class="half"></div></div><span class="val down">−22.24%</span></div>
+          </div>
+          <div class="trow">
+            <h3 class="tname">Token Savior</h3>
+            <div class="crow"><span class="clab">Codex</span><div class="axis" aria-hidden="true"><div class="half"></div><div class="half"><span class="bar pos" style="--w:100%"></span></div></div><span class="val up">+86.96%</span></div>
+            <div class="crow"><span class="clab">OpenCode</span><div class="axis" aria-hidden="true"><div class="half"><span class="bar na"></span></div><div class="half"></div></div><span class="val na">Blocked</span></div>
+          </div>
+          <div class="trow">
+            <h3 class="tname">Graphify</h3>
+            <div class="crow"><span class="clab">Codex</span><div class="axis" aria-hidden="true"><div class="half"></div><div class="half"><span class="bar pos" style="--w:81%"></span></div></div><span class="val up">+70.45%</span></div>
+            <div class="crow"><span class="clab">OpenCode</span><div class="axis" aria-hidden="true"><div class="half"><span class="bar neg" style="--w:14.4%"></span></div><div class="half"></div></div><span class="val down">−12.49%</span></div>
+          </div>
+          <div class="trow">
+            <h3 class="tname">LeanCTX</h3>
+            <div class="crow"><span class="clab">Codex</span><div class="axis" aria-hidden="true"><div class="half"></div><div class="half"><span class="bar pos" style="--w:35.9%"></span></div></div><span class="val up">+31.24%</span></div>
+            <div class="crow"><span class="clab">OpenCode</span><div class="axis" aria-hidden="true"><div class="half"></div><div class="half"><span class="bar pos" style="--w:18.8%"></span></div></div><span class="val up">+16.33%</span></div>
+          </div>
+          <div class="trow">
+            <h3 class="tname">Snip</h3>
+            <div class="crow"><span class="clab">Codex</span><div class="axis" aria-hidden="true"><div class="half"></div><div class="half"><span class="bar pos" style="--w:23.3%"></span></div></div><span class="val up">+20.29%</span></div>
+            <div class="crow"><span class="clab">OpenCode</span><div class="axis" aria-hidden="true"><div class="half"><span class="bar neg" style="--w:30.6%"></span></div><div class="half"></div></div><span class="val down">−26.61%</span></div>
+          </div>
+          <div class="trow">
+            <h3 class="tname">Cartog</h3>
+            <div class="crow"><span class="clab">Codex</span><div class="axis" aria-hidden="true"><div class="half"></div><div class="half"><span class="bar pos" style="--w:59.8%"></span></div></div><span class="val up">+52.02%</span></div>
+            <div class="crow"><span class="clab">OpenCode</span><div class="axis" aria-hidden="true"><div class="half"><span class="bar na"></span></div><div class="half"></div></div><span class="val na">Blocked</span></div>
+          </div>
+          <div class="trow">
+            <h3 class="tname">CodeScope</h3>
+            <div class="crow"><span class="clab">Codex</span><div class="axis" aria-hidden="true"><div class="half"></div><div class="half"><span class="bar pos" style="--w:13%"></span></div></div><span class="val up">+11.34%</span></div>
+            <div class="crow"><span class="clab">OpenCode</span><div class="axis" aria-hidden="true"><div class="half"><span class="bar neg" style="--w:0.6%"></span></div><div class="half"></div></div><span class="val down">−0.52%</span></div>
+          </div>
+
+          <p class="chart-foot">Bars share one scale: the largest change (Token Savior on Codex, +86.96%) spans the full half-track. Each condition ran 6 accepted tasks across Fastify and Beets.</p>
+        </div>
       </div>
     </section>
 
     <section id="method">
       <div class="shell">
         <div class="section-head">
-          <div><p class="eyebrow">Experimental design</p><h2>Normal use, persistent sessions, matched controls.</h2></div>
+          <p class="eyebrow">Experimental design</p>
+          <h2>Normal use, persistent sessions, matched controls.</h2>
           <p>Every condition used the product’s documented native integration without evaluator-forced tool calls. Each session carried state through feature implementation, behavior-preserving refactoring, and code review/correction.</p>
         </div>
-        <div class="method-grid">
-          <article class="method-card"><b>Workloads</b><p>Fastify and Beets: one TypeScript project and one Python project.</p></article>
-          <article class="method-card"><b>Session model</b><p>Three sequential tasks in one persistent agent session.</p></article>
-          <article class="method-card"><b>Conditions</b><p>14 Codex profiles and 13 OpenCode profiles with runtime-matched controls.</p></article>
-          <article class="method-card"><b>Primary measure</b><p>Fresh input + 0.1 × cached input + 6 × output.</p></article>
-          <article class="method-card"><b>Correctness</b><p>All 162 reported tasks passed the active compile-based acceptance checks.</p></article>
-          <article class="method-card"><b>Evidence snapshot</b><p>Frozen 2026-08-08 registry and recoverable workflow artifacts.</p></article>
+        <div class="grid3">
+          <article class="mini"><b>Workloads</b><p>Fastify and Beets: one TypeScript project and one Python project.</p></article>
+          <article class="mini"><b>Session model</b><p>Three sequential tasks in one persistent agent session.</p></article>
+          <article class="mini"><b>Conditions</b><p>14 Codex profiles and 13 OpenCode profiles with runtime-matched controls.</p></article>
+          <article class="mini"><b>Primary measure</b><p>Fresh input + 0.1 × cached input + 6 × output.</p></article>
+          <article class="mini"><b>Correctness</b><p>All 162 reported tasks passed the active compile-based acceptance checks.</p></article>
+          <article class="mini"><b>Evidence snapshot</b><p>Frozen 2026-08-08 registry and recoverable workflow artifacts.</p></article>
         </div>
       </div>
     </section>
@@ -456,53 +652,123 @@
     <section id="results">
       <div class="shell">
         <div class="section-head">
-          <div><p class="eyebrow">Product results</p><h2>The direction often flipped across runtimes.</h2></div>
-          <p>These are descriptive treatment-to-baseline deltas. They are not a stable leaderboard: the repeated controls do not create 27 independent baseline replicates, and product uptake was not experimentally isolated.</p>
+          <p class="eyebrow">Sequence detail</p>
+          <h2>The direction often flipped across runtimes.</h2>
+          <p>Sequence-level weighted token-cost change for every product and runtime condition. Color shows direction and magnitude, not statistical significance. These are descriptive treatment-to-baseline deltas, not a stable leaderboard.</p>
         </div>
-        <div class="table-wrap">
-          <table>
-            <caption>Weighted token-cost change; lower is better. Task counts are accepted tasks.</caption>
-            <thead><tr><th scope="col">Product</th><th scope="col">Codex Δ</th><th scope="col">OpenCode Δ</th><th scope="col">Codex tasks</th><th scope="col">OpenCode tasks</th></tr></thead>
-            <tbody>
-              <tr><td>RTK</td><td><span class="delta up">↑ 42.31%</span></td><td><span class="delta down">↓ 26.12%</span></td><td>6/6</td><td>6/6</td></tr>
-              <tr><td>Serena</td><td><span class="delta up">↑ 0.83%</span></td><td><span class="delta down">↓ 26.03%</span></td><td>6/6</td><td>6/6</td></tr>
-              <tr><td>TokenJuice</td><td><span class="delta up">↑ 8.37%</span></td><td><span class="delta down">↓ 28.49%</span></td><td>6/6</td><td>6/6</td></tr>
-              <tr><td>Ponytail</td><td><span class="delta up">↑ 30.48%</span></td><td><span class="delta down">↓ 12.13%</span></td><td>6/6</td><td>6/6</td></tr>
-              <tr><td>Caveman</td><td><span class="delta up">↑ 32.24%</span></td><td><span class="delta down">↓ 27.43%</span></td><td>6/6</td><td>6/6</td></tr>
-              <tr><td>jCodeMunch</td><td><span class="delta up">↑ 28.45%</span></td><td><span class="delta down">↓ 3.34%</span></td><td>6/6</td><td>6/6</td></tr>
-              <tr><td>CodeGraph</td><td><span class="delta up">↑ 48.72%</span></td><td><span class="delta down">↓ 15.74%</span></td><td>6/6</td><td>6/6</td></tr>
-              <tr><td>SigMap</td><td><span class="delta up">↑ 27.74%</span></td><td><span class="delta up">↑ 2.54%</span></td><td>6/6</td><td>6/6</td></tr>
-              <tr><td>LowFat</td><td><span class="delta na">Blocked</span></td><td><span class="delta down">↓ 22.24%</span></td><td>—</td><td>6/6</td></tr>
-              <tr><td>Token Savior</td><td><span class="delta up">↑ 86.96%</span></td><td><span class="delta na">Blocked</span></td><td>6/6</td><td>—</td></tr>
-              <tr><td>Graphify</td><td><span class="delta up">↑ 70.45%</span></td><td><span class="delta down">↓ 12.49%</span></td><td>6/6</td><td>6/6</td></tr>
-              <tr><td>LeanCTX</td><td><span class="delta up">↑ 31.24%</span></td><td><span class="delta up">↑ 16.33%</span></td><td>6/6</td><td>6/6</td></tr>
-              <tr><td>Snip</td><td><span class="delta up">↑ 20.29%</span></td><td><span class="delta down">↓ 26.61%</span></td><td>6/6</td><td>6/6</td></tr>
-              <tr><td>Cartog</td><td><span class="delta up">↑ 52.02%</span></td><td><span class="delta na">Blocked</span></td><td>6/6</td><td>—</td></tr>
-              <tr><td>CodeScope</td><td><span class="delta up">↑ 11.34%</span></td><td><span class="delta down">↓ 0.52%</span></td><td>6/6</td><td>6/6</td></tr>
-            </tbody>
-          </table>
-        </div>
-        <p class="legend">Arrows show direction relative to the matched runtime baseline, not product quality. “Blocked” means no qualified provider-backed condition was run.</p>
-        <figure class="figure">
-          <p class="chart-hint"><span aria-hidden="true">↔</span> Swipe horizontally to inspect the full chart</p>
-          <div class="chart-scroll" role="group" aria-label="Wide chart; scroll horizontally to inspect all labels" tabindex="0">
-            <img src="papers/figures/phase-2-lifecycle-v1-sequence-heatmap.svg" alt="Heatmap of sequence-level weighted token-cost change for every product and runtime condition.">
-          </div>
-          <figcaption>Sequence-level outcomes show that the aggregate runtime split is not driven by a single product.</figcaption>
-        </figure>
-      </div>
-    </section>
 
-    <section id="mechanisms">
-      <div class="shell">
-        <div class="section-head">
-          <div><p class="eyebrow">Mechanism hypotheses</p><h2>Why might the tools behave differently?</h2></div>
-          <p>The token components identify where cost changed, not why. These explanations are consistent with inspected source and retained traces; targeted ablations and replication are still required for causal claims.</p>
-        </div>
-        <div class="mechanism-grid">
-          <article class="mechanism-card"><h3>Automatic interception can pay</h3><p>OpenCode-native hooks and plugins can filter terminal output without waiting for the model to choose a special command. RTK, TokenJuice, Snip, and LowFat are consistent with this pattern.</p></article>
-          <article class="mechanism-card"><h3>Focused retrieval must displace reading</h3><p>Symbol or graph retrieval helps only when bounded results replace enough broad file context to repay schemas, instructions, indexes, and extra tool turns.</p></article>
-          <article class="mechanism-card"><h3>Broad integrations carry fixed cost</h3><p>Multi-surface products can add persistent guidance, schemas, memory, and tool traffic. On short tasks, that overhead may exceed local compression gains.</p></article>
+        <div class="card heat">
+          <div class="heat-grid">
+            <div class="heat-head" aria-hidden="true">
+              <span></span><span>Codex · Fastify</span><span>Codex · Beets</span><span>OpenCode · Fastify</span><span>OpenCode · Beets</span>
+            </div>
+            <div class="hrow">
+              <span class="hname">RTK</span>
+              <span class="cell up3"><span class="cl">Codex · Fastify</span>+38.58%</span>
+              <span class="cell up3"><span class="cl">Codex · Beets</span>+46.33%</span>
+              <span class="cell dn2"><span class="cl">OpenCode · Fastify</span>−16.07%</span>
+              <span class="cell dn3"><span class="cl">OpenCode · Beets</span>−35.66%</span>
+            </div>
+            <div class="hrow">
+              <span class="hname">Serena</span>
+              <span class="cell up1"><span class="cl">Codex · Fastify</span>+2.43%</span>
+              <span class="cell dn1"><span class="cl">Codex · Beets</span>−0.89%</span>
+              <span class="cell up2"><span class="cl">OpenCode · Fastify</span>+16.42%</span>
+              <span class="cell dn4"><span class="cl">OpenCode · Beets</span>−66.34%</span>
+            </div>
+            <div class="hrow">
+              <span class="hname">TokenJuice</span>
+              <span class="cell up2"><span class="cl">Codex · Fastify</span>+18.72%</span>
+              <span class="cell dn1"><span class="cl">Codex · Beets</span>−2.79%</span>
+              <span class="cell dn2"><span class="cl">OpenCode · Fastify</span>−20.30%</span>
+              <span class="cell dn3"><span class="cl">OpenCode · Beets</span>−36.26%</span>
+            </div>
+            <div class="hrow">
+              <span class="hname">Ponytail</span>
+              <span class="cell up3"><span class="cl">Codex · Fastify</span>+39.73%</span>
+              <span class="cell up2"><span class="cl">Codex · Beets</span>+20.51%</span>
+              <span class="cell dn2"><span class="cl">OpenCode · Fastify</span>−14.25%</span>
+              <span class="cell dn2"><span class="cl">OpenCode · Beets</span>−10.11%</span>
+            </div>
+            <div class="hrow">
+              <span class="hname">Caveman</span>
+              <span class="cell up4"><span class="cl">Codex · Fastify</span>+54.39%</span>
+              <span class="cell up1"><span class="cl">Codex · Beets</span>+8.34%</span>
+              <span class="cell dn3"><span class="cl">OpenCode · Fastify</span>−29.27%</span>
+              <span class="cell dn3"><span class="cl">OpenCode · Beets</span>−25.69%</span>
+            </div>
+            <div class="hrow">
+              <span class="hname">jCodeMunch</span>
+              <span class="cell up3"><span class="cl">Codex · Fastify</span>+33.60%</span>
+              <span class="cell up2"><span class="cl">Codex · Beets</span>+22.90%</span>
+              <span class="cell dn1"><span class="cl">OpenCode · Fastify</span>−8.25%</span>
+              <span class="cell up1"><span class="cl">OpenCode · Beets</span>+1.33%</span>
+            </div>
+            <div class="hrow">
+              <span class="hname">CodeGraph</span>
+              <span class="cell up4"><span class="cl">Codex · Fastify</span>+53.96%</span>
+              <span class="cell up3"><span class="cl">Codex · Beets</span>+43.06%</span>
+              <span class="cell dn1"><span class="cl">OpenCode · Fastify</span>−4.05%</span>
+              <span class="cell dn3"><span class="cl">OpenCode · Beets</span>−26.85%</span>
+            </div>
+            <div class="hrow">
+              <span class="hname">SigMap</span>
+              <span class="cell up3"><span class="cl">Codex · Fastify</span>+35.05%</span>
+              <span class="cell up2"><span class="cl">Codex · Beets</span>+19.86%</span>
+              <span class="cell up2"><span class="cl">OpenCode · Fastify</span>+20.25%</span>
+              <span class="cell dn2"><span class="cl">OpenCode · Beets</span>−14.28%</span>
+            </div>
+            <div class="hrow">
+              <span class="hname">LowFat</span>
+              <span class="cell na"><span class="cl">Codex · Fastify</span>Blocked</span>
+              <span class="cell na"><span class="cl">Codex · Beets</span>Blocked</span>
+              <span class="cell dn2"><span class="cl">OpenCode · Fastify</span>−19.21%</span>
+              <span class="cell dn3"><span class="cl">OpenCode · Beets</span>−25.12%</span>
+            </div>
+            <div class="hrow">
+              <span class="hname">Token Savior</span>
+              <span class="cell up4"><span class="cl">Codex · Fastify</span>+134.51%</span>
+              <span class="cell up3"><span class="cl">Codex · Beets</span>+35.68%</span>
+              <span class="cell na"><span class="cl">OpenCode · Fastify</span>Blocked</span>
+              <span class="cell na"><span class="cl">OpenCode · Beets</span>Blocked</span>
+            </div>
+            <div class="hrow">
+              <span class="hname">Graphify</span>
+              <span class="cell up4"><span class="cl">Codex · Fastify</span>+93.86%</span>
+              <span class="cell up3"><span class="cl">Codex · Beets</span>+45.20%</span>
+              <span class="cell dn2"><span class="cl">OpenCode · Fastify</span>−21.60%</span>
+              <span class="cell dn1"><span class="cl">OpenCode · Beets</span>−3.84%</span>
+            </div>
+            <div class="hrow">
+              <span class="hname">LeanCTX</span>
+              <span class="cell up3"><span class="cl">Codex · Fastify</span>+29.26%</span>
+              <span class="cell up3"><span class="cl">Codex · Beets</span>+33.39%</span>
+              <span class="cell up2"><span class="cl">OpenCode · Fastify</span>+13.21%</span>
+              <span class="cell up2"><span class="cl">OpenCode · Beets</span>+19.30%</span>
+            </div>
+            <div class="hrow">
+              <span class="hname">Snip</span>
+              <span class="cell up3"><span class="cl">Codex · Fastify</span>+32.57%</span>
+              <span class="cell up1"><span class="cl">Codex · Beets</span>+7.03%</span>
+              <span class="cell dn3"><span class="cl">OpenCode · Fastify</span>−46.54%</span>
+              <span class="cell dn1"><span class="cl">OpenCode · Beets</span>−7.69%</span>
+            </div>
+            <div class="hrow">
+              <span class="hname">Cartog</span>
+              <span class="cell up4"><span class="cl">Codex · Fastify</span>+75.68%</span>
+              <span class="cell up3"><span class="cl">Codex · Beets</span>+26.49%</span>
+              <span class="cell na"><span class="cl">OpenCode · Fastify</span>Blocked</span>
+              <span class="cell na"><span class="cl">OpenCode · Beets</span>Blocked</span>
+            </div>
+            <div class="hrow">
+              <span class="hname">CodeScope</span>
+              <span class="cell up3"><span class="cl">Codex · Fastify</span>+25.11%</span>
+              <span class="cell dn1"><span class="cl">Codex · Beets</span>−3.52%</span>
+              <span class="cell up1"><span class="cl">OpenCode · Fastify</span>+5.84%</span>
+              <span class="cell dn1"><span class="cl">OpenCode · Beets</span>−6.57%</span>
+            </div>
+          </div>
+          <p class="chart-foot">Sequence-level outcomes show that the aggregate runtime split is not driven by a single product. “Blocked” means no qualified provider-backed condition was run.</p>
         </div>
       </div>
     </section>
@@ -510,25 +776,26 @@
     <section id="tools">
       <div class="shell">
         <div class="section-head">
-          <div><p class="eyebrow">Per-tool discussion</p><h2>What each result might mean.</h2></div>
+          <p class="eyebrow">Per-tool discussion</p>
+          <h2>What each result might mean.</h2>
           <p>Open each tool for the concise evidence-bounded interpretation. The linked technical report contains component deltas and source dossiers.</p>
         </div>
-        <div class="tool-notes">
-          <details><summary>RTK <span class="outcome">Codex +42.31% · OpenCode −26.12%</span></summary><p>RTK filters eligible shell output. The split is consistent with OpenCode’s automatic native plugin outperforming instruction-dependent Codex routing, which included unsupported pass-through forms.</p></details>
-          <details><summary>Serena <span class="outcome">Codex +0.83% · OpenCode −26.03%</span></summary><p>Language-server retrieval was nearly neutral in Codex and lower-cost in OpenCode, consistent with targeted symbols displacing more broad reading in the latter runtime.</p></details>
-          <details><summary>TokenJuice <span class="outcome">Codex +8.37% · OpenCode −28.49%</span></summary><p>Automatic command-output reducers align with the OpenCode reduction. In Codex, filtering was outweighed by hook, cache, or trajectory effects.</p></details>
-          <details><summary>Ponytail <span class="outcome">Codex +30.48% · OpenCode −12.13%</span></summary><p>Ponytail changes implementation policy rather than compressing an input stream. Persistent guidance can alter planning and tool trajectories, making activation runtime-specific.</p></details>
-          <details><summary>Caveman <span class="outcome">Codex +32.24% · OpenCode −27.43%</span></summary><p>Caveman compresses assistant prose rather than shell output or retrieved code. Codex showed no clear behavioral activation; the OpenCode reduction could reflect terser responses or a shorter trajectory.</p></details>
-          <details><summary>jCodeMunch <span class="outcome">Codex +28.45% · OpenCode −3.34%</span></summary><p>Token-budgeted symbol retrieval must repay a sizeable MCP schema and guidance surface. It nearly broke even in OpenCode but did not in Codex.</p></details>
-          <details><summary>CodeGraph <span class="outcome">Codex +48.72% · OpenCode −15.74%</span></summary><p>Bounded graph queries plausibly displaced file reads in OpenCode. In Codex, graph instructions, returned context, or additional turns exceeded avoided reading.</p></details>
-          <details><summary>SigMap <span class="outcome">Codex +27.74% · OpenCode +2.54%</span></summary><p>Neither runtime showed a meaningful reduction. The evaluated tasks may have been navigable with native search, leaving index and returned-map overhead unrepaid.</p></details>
-          <details><summary>LowFat <span class="outcome">OpenCode −22.24%</span></summary><p>A narrow automatic command filter reduced OpenCode context without requiring a retrieval decision. No qualified native Codex condition exists for comparison.</p></details>
-          <details><summary>Token Savior <span class="outcome">Codex +86.96%</span></summary><p>The broad retrieval, indexing, memory, summary, and shell surface added more weighted cost than it removed. This integrated treatment cannot identify the responsible component.</p></details>
-          <details><summary>Graphify <span class="outcome">Codex +70.45% · OpenCode −12.49%</span></summary><p>OpenCode’s always-on graph guidance may have displaced some exploration. In Codex, graph and guidance overhead was not repaid by avoided source reading.</p></details>
-          <details><summary>LeanCTX <span class="outcome">Codex +31.24% · OpenCode +16.33%</span></summary><p>Its broad hybrid surface spans retrieval, compressed reads, shell output, memory, and indexing. Both runtimes incurred more weighted cost; component ablation is needed.</p></details>
-          <details><summary>Snip <span class="outcome">Codex +20.29% · OpenCode −26.61%</span></summary><p>Command-specific output rewriting aligns with the OpenCode reduction. The Codex increase could reflect lower rewrite coverage, pass-throughs, or a longer recovery trajectory.</p></details>
-          <details><summary>Cartog <span class="outcome">Codex +52.02% · OpenCode blocked</span></summary><p>Indexed navigation and task-context bundles cost more than they displaced in Codex. OpenCode was excluded before execution after artifact-identity verification failed.</p></details>
-          <details><summary>CodeScope <span class="outcome">Codex +11.34% · OpenCode −0.52%</span></summary><p>Graph/search and output archiving were effectively neutral in OpenCode and modestly higher in Codex. A near-zero single-run delta is not a stable win.</p></details>
+        <div class="tools">
+          <details class="tool"><summary>RTK <span class="chips"><span class="chip up">Codex +42.31%</span><span class="chip down">OpenCode −26.12%</span></span></summary><p>RTK filters eligible shell output. The split is consistent with OpenCode’s automatic native plugin outperforming instruction-dependent Codex routing, which included unsupported pass-through forms.</p></details>
+          <details class="tool"><summary>Serena <span class="chips"><span class="chip up">Codex +0.83%</span><span class="chip down">OpenCode −26.03%</span></span></summary><p>Language-server retrieval was nearly neutral in Codex and lower-cost in OpenCode, consistent with targeted symbols displacing more broad reading in the latter runtime.</p></details>
+          <details class="tool"><summary>TokenJuice <span class="chips"><span class="chip up">Codex +8.37%</span><span class="chip down">OpenCode −28.49%</span></span></summary><p>Automatic command-output reducers align with the OpenCode reduction. In Codex, filtering was outweighed by hook, cache, or trajectory effects.</p></details>
+          <details class="tool"><summary>Ponytail <span class="chips"><span class="chip up">Codex +30.48%</span><span class="chip down">OpenCode −12.13%</span></span></summary><p>Ponytail changes implementation policy rather than compressing an input stream. Persistent guidance can alter planning and tool trajectories, making activation runtime-specific.</p></details>
+          <details class="tool"><summary>Caveman <span class="chips"><span class="chip up">Codex +32.24%</span><span class="chip down">OpenCode −27.43%</span></span></summary><p>Caveman compresses assistant prose rather than shell output or retrieved code. Codex showed no clear behavioral activation; the OpenCode reduction could reflect terser responses or a shorter trajectory.</p></details>
+          <details class="tool"><summary>jCodeMunch <span class="chips"><span class="chip up">Codex +28.45%</span><span class="chip down">OpenCode −3.34%</span></span></summary><p>Token-budgeted symbol retrieval must repay a sizeable MCP schema and guidance surface. It nearly broke even in OpenCode but did not in Codex.</p></details>
+          <details class="tool"><summary>CodeGraph <span class="chips"><span class="chip up">Codex +48.72%</span><span class="chip down">OpenCode −15.74%</span></span></summary><p>Bounded graph queries plausibly displaced file reads in OpenCode. In Codex, graph instructions, returned context, or additional turns exceeded avoided reading.</p></details>
+          <details class="tool"><summary>SigMap <span class="chips"><span class="chip up">Codex +27.74%</span><span class="chip up">OpenCode +2.54%</span></span></summary><p>Neither runtime showed a meaningful reduction. The evaluated tasks may have been navigable with native search, leaving index and returned-map overhead unrepaid.</p></details>
+          <details class="tool"><summary>LowFat <span class="chips"><span class="chip na">Codex blocked</span><span class="chip down">OpenCode −22.24%</span></span></summary><p>A narrow automatic command filter reduced OpenCode context without requiring a retrieval decision. No qualified native Codex condition exists for comparison.</p></details>
+          <details class="tool"><summary>Token Savior <span class="chips"><span class="chip up">Codex +86.96%</span><span class="chip na">OpenCode blocked</span></span></summary><p>The broad retrieval, indexing, memory, summary, and shell surface added more weighted cost than it removed. This integrated treatment cannot identify the responsible component.</p></details>
+          <details class="tool"><summary>Graphify <span class="chips"><span class="chip up">Codex +70.45%</span><span class="chip down">OpenCode −12.49%</span></span></summary><p>OpenCode’s always-on graph guidance may have displaced some exploration. In Codex, graph and guidance overhead was not repaid by avoided source reading.</p></details>
+          <details class="tool"><summary>LeanCTX <span class="chips"><span class="chip up">Codex +31.24%</span><span class="chip up">OpenCode +16.33%</span></span></summary><p>Its broad hybrid surface spans retrieval, compressed reads, shell output, memory, and indexing. Both runtimes incurred more weighted cost; component ablation is needed.</p></details>
+          <details class="tool"><summary>Snip <span class="chips"><span class="chip up">Codex +20.29%</span><span class="chip down">OpenCode −26.61%</span></span></summary><p>Command-specific output rewriting aligns with the OpenCode reduction. The Codex increase could reflect lower rewrite coverage, pass-throughs, or a longer recovery trajectory.</p></details>
+          <details class="tool"><summary>Cartog <span class="chips"><span class="chip up">Codex +52.02%</span><span class="chip na">OpenCode blocked</span></span></summary><p>Indexed navigation and task-context bundles cost more than they displaced in Codex. OpenCode was excluded before execution after artifact-identity verification failed.</p></details>
+          <details class="tool"><summary>CodeScope <span class="chips"><span class="chip up">Codex +11.34%</span><span class="chip down">OpenCode −0.52%</span></span></summary><p>Graph/search and output archiving were effectively neutral in OpenCode and modestly higher in Codex. A near-zero single-run delta is not a stable win.</p></details>
         </div>
       </div>
     </section>
@@ -536,23 +803,54 @@
     <section id="accounting">
       <div class="shell">
         <div class="section-head">
-          <div><p class="eyebrow">Token accounting</p><h2>Cached input drove most of the weighted difference.</h2></div>
+          <p class="eyebrow">Token accounting</p>
+          <h2>Cached input drove most of the weighted difference.</h2>
           <p>Weighted token cost is a declared accounting convention—not dollars: fresh input + 0.1 × cached input + 6 × output. Reasoning is already included within output and is not added twice.</p>
         </div>
-        <figure class="figure">
-          <p class="chart-hint"><span aria-hidden="true">↔</span> Swipe horizontally to inspect the full chart</p>
-          <div class="chart-scroll" role="group" aria-label="Wide chart; scroll horizontally to inspect all labels" tabindex="0">
-            <img src="papers/figures/phase-2-lifecycle-v1-component-deltas.svg" alt="Chart decomposing the aggregate Codex increase and OpenCode decrease into fresh input, weighted cached input, and weighted output components.">
+
+        <div class="card components">
+          <p class="chart-title">Weighted-cost component differences</p>
+          <p class="chart-sub">Each bar is treatment minus the repeated matched baseline.</p>
+
+          <div class="comp-group">
+            <h3 class="comp-name">Codex</h3>
+            <div class="comp-row"><span class="clab">Fresh input</span><div class="axis" aria-hidden="true"><div class="half"></div><div class="half"><span class="bar pos" style="--w:28.9%"></span></div></div><span class="val up">+0.48M</span></div>
+            <div class="comp-row"><span class="clab">Cached input</span><div class="axis" aria-hidden="true"><div class="half"></div><div class="half"><span class="bar pos" style="--w:100%"></span></div></div><span class="val up">+1.67M</span></div>
+            <div class="comp-row"><span class="clab">Output</span><div class="axis" aria-hidden="true"><div class="half"></div><div class="half"><span class="bar pos" style="--w:22.7%"></span></div></div><span class="val up">+0.38M</span></div>
           </div>
-          <figcaption>Codex increased across all three weighted components. OpenCode decreased across all three, with cached-input reduction contributing most.</figcaption>
-        </figure>
+
+          <div class="comp-group">
+            <h3 class="comp-name">OpenCode</h3>
+            <div class="comp-row"><span class="clab">Fresh input</span><div class="axis" aria-hidden="true"><div class="half"><span class="bar neg" style="--w:12.2%"></span></div><div class="half"></div></div><span class="val down">−0.20M</span></div>
+            <div class="comp-row"><span class="clab">Cached input</span><div class="axis" aria-hidden="true"><div class="half"><span class="bar neg" style="--w:49.3%"></span></div><div class="half"></div></div><span class="val down">−0.82M</span></div>
+            <div class="comp-row"><span class="clab">Output</span><div class="axis" aria-hidden="true"><div class="half"><span class="bar neg" style="--w:18.2%"></span></div><div class="half"></div></div><span class="val down">−0.30M</span></div>
+          </div>
+
+          <p class="chart-foot">Codex increased across all three weighted components. OpenCode decreased across all three, with cached-input reduction contributing most.</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="mechanisms">
+      <div class="shell">
+        <div class="section-head">
+          <p class="eyebrow">Mechanism hypotheses</p>
+          <h2>Why might the tools behave differently?</h2>
+          <p>The token components identify where cost changed, not why. These explanations are consistent with inspected source and retained traces; targeted ablations and replication are still required for causal claims.</p>
+        </div>
+        <div class="grid3">
+          <article class="mini"><h3>Automatic interception can pay</h3><p>OpenCode-native hooks and plugins can filter terminal output without waiting for the model to choose a special command. RTK, TokenJuice, Snip, and LowFat are consistent with this pattern.</p></article>
+          <article class="mini"><h3>Focused retrieval must displace reading</h3><p>Symbol or graph retrieval helps only when bounded results replace enough broad file context to repay schemas, instructions, indexes, and extra tool turns.</p></article>
+          <article class="mini"><h3>Broad integrations carry fixed cost</h3><p>Multi-surface products can add persistent guidance, schemas, memory, and tool traffic. On short tasks, that overhead may exceed local compression gains.</p></article>
+        </div>
       </div>
     </section>
 
     <section id="limits">
       <div class="shell">
         <div class="section-head">
-          <div><p class="eyebrow">Limitations</p><h2>Read the boundary before the headline.</h2></div>
+          <p class="eyebrow">Limitations</p>
+          <h2>Read the boundary before the headline.</h2>
           <p>This study is designed as a screening experiment. Its strongest contribution is showing that runtime-specific evaluation is necessary—not selecting a universal winner.</p>
         </div>
         <ul class="limits">
@@ -570,10 +868,11 @@
     <section id="data">
       <div class="shell">
         <div class="section-head">
-          <div><p class="eyebrow">Open evidence</p><h2>Inspect the report, data, and workflow artifacts.</h2></div>
+          <p class="eyebrow">Open evidence</p>
+          <h2>Inspect the report, data, and workflow artifacts.</h2>
           <p>The result is backed by a machine-readable registry, a frozen derived dataset, compact workflow evidence, and product source dossiers.</p>
         </div>
-        <div class="data-panel">
+        <div class="grid2">
           <a class="data-link" href="https://github.com/merlinhu1/token-optimization-research/blob/main/docs/papers/phase-2-lifecycle-v1-natural-use-screening.md"><strong>Technical report</strong><span>Methods, exact tables, per-tool interpretation, and limitations</span></a>
           <a class="data-link" href="https://github.com/merlinhu1/token-optimization-research/blob/main/sources/evaluations/audits/phase-2-lifecycle-v1-report-data-20260808.json"><strong>Derived report dataset</strong><span>Frozen JSON used to generate the publication report</span></a>
           <a class="data-link" href="https://github.com/merlinhu1/token-optimization-research/blob/main/data/workflow-sessions.json"><strong>Authoritative registry</strong><span>Workflow sessions, conditions, and evidence references</span></a>
