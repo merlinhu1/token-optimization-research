@@ -43,7 +43,16 @@ def claude_direct_preparation_text() -> str:
     protocol_count = sum(len(item.get("protocols", [])) for item in tools if isinstance(item, dict))
     baseline_count = len((preparation.get("shared_protocol") or {}).get("baseline_protocols", []))
     authorization = load_json(CLAUDE_DIRECT_AUTHORIZATION) if CLAUDE_DIRECT_AUTHORIZATION.is_file() else {}
-    if authorization.get("status") == "owner-authorized-provider-run":
+    if (
+        authorization.get("status") == "owner-authorized-provider-run"
+        and authorization.get("execution_status") == "completed"
+    ):
+        completed = ", ".join(str(item) for item in authorization.get("completed_sequences", []))
+        execution_line = (
+            f"Baseline-only execution completed for `{completed}` with "
+            f"{authorization.get('provider_tokens', 0):,} provider tokens; treatment execution remains blocked."
+        )
+    elif authorization.get("status") == "owner-authorized-provider-run":
         execution_line = (
             f"Baseline-only execution is owner-authorized under `{CLAUDE_DIRECT_AUTHORIZATION.relative_to(ROOT)}`; "
             "run Fastify then Beets at r0 with one lane at a time. Treatment execution remains blocked."
