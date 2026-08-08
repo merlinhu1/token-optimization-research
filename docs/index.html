@@ -1,0 +1,550 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="A Lifecycle V1 screening study of 15 token-saving coding-agent integrations across Codex and OpenCode.">
+  <meta property="og:title" content="Token-saving tools do not save tokens everywhere">
+  <meta property="og:description" content="27 matched product/runtime conditions, 54 persistent sessions, and 162 accepted coding tasks show a strong runtime × integration interaction.">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://merlinhu1.github.io/token-optimization-research/">
+  <meta property="og:image" content="https://merlinhu1.github.io/token-optimization-research/papers/figures/phase-2-lifecycle-v1-runtime-contrast.svg">
+  <meta name="twitter:card" content="summary_large_image">
+  <title>Token-saving tools do not save tokens everywhere</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --ink: #14211f;
+      --muted: #53625f;
+      --paper: #f5f2e9;
+      --card: #fffdf7;
+      --line: #d8d4c8;
+      --green: #087f5b;
+      --green-soft: #dff3e9;
+      --red: #c24132;
+      --red-soft: #fae6e1;
+      --gold: #c7861b;
+      --navy: #173b57;
+      --shadow: 0 18px 50px rgb(20 33 31 / 9%);
+      --radius: 18px;
+    }
+
+    * { box-sizing: border-box; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      margin: 0;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at 8% 4%, rgb(8 127 91 / 10%), transparent 26rem),
+        linear-gradient(180deg, #faf8f1 0, var(--paper) 36rem);
+      font: 17px/1.65 ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    a { color: var(--navy); text-underline-offset: .18em; }
+    a:hover { color: var(--green); }
+    img { display: block; max-width: 100%; height: auto; }
+
+    .skip-link {
+      position: absolute;
+      top: -4rem;
+      left: 1rem;
+      z-index: 10;
+      padding: .7rem 1rem;
+      color: white;
+      background: var(--ink);
+      border-radius: .5rem;
+    }
+
+    .skip-link:focus { top: 1rem; }
+
+    .shell {
+      width: min(1160px, calc(100% - 2rem));
+      margin-inline: auto;
+    }
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      padding-block: 1.15rem;
+      font-size: .9rem;
+    }
+
+    .brand {
+      color: var(--ink);
+      font-weight: 800;
+      letter-spacing: -.02em;
+      text-decoration: none;
+    }
+
+    .topbar nav { display: flex; flex-wrap: wrap; gap: .9rem; }
+    .topbar nav a { color: var(--muted); text-decoration: none; }
+    .topbar nav a:hover { color: var(--ink); }
+
+    .hero {
+      display: grid;
+      grid-template-columns: minmax(0, 1.55fr) minmax(260px, .65fr);
+      gap: clamp(2rem, 6vw, 5rem);
+      align-items: end;
+      padding-block: clamp(4rem, 9vw, 8rem) clamp(3rem, 7vw, 6rem);
+    }
+
+    .eyebrow {
+      margin: 0 0 1rem;
+      color: var(--green);
+      font-size: .78rem;
+      font-weight: 850;
+      letter-spacing: .14em;
+      text-transform: uppercase;
+    }
+
+    h1, h2, h3 { line-height: 1.08; letter-spacing: -.035em; }
+
+    h1 {
+      max-width: 850px;
+      margin: 0;
+      font-family: ui-serif, Georgia, Cambria, "Times New Roman", serif;
+      font-size: clamp(3.3rem, 8.2vw, 7.2rem);
+      font-weight: 650;
+    }
+
+    h2 {
+      margin: 0 0 1.25rem;
+      font-family: ui-serif, Georgia, Cambria, "Times New Roman", serif;
+      font-size: clamp(2.1rem, 4vw, 3.4rem);
+      font-weight: 650;
+    }
+
+    h3 { margin-top: 0; font-size: 1.2rem; }
+
+    .dek {
+      max-width: 780px;
+      margin: 1.5rem 0 0;
+      color: var(--muted);
+      font-size: clamp(1.12rem, 2vw, 1.35rem);
+    }
+
+    .hero-note {
+      padding: 1.4rem;
+      background: rgb(255 253 247 / 76%);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+    }
+
+    .hero-note strong { display: block; margin-bottom: .4rem; font-size: 1.1rem; }
+    .hero-note p { margin: 0; color: var(--muted); font-size: .93rem; }
+
+    .hero-actions { display: flex; flex-wrap: wrap; gap: .7rem; margin-top: 1.8rem; }
+
+    .button {
+      display: inline-flex;
+      align-items: center;
+      min-height: 44px;
+      padding: .65rem 1rem;
+      border: 1px solid var(--ink);
+      border-radius: 999px;
+      color: white;
+      background: var(--ink);
+      font-size: .9rem;
+      font-weight: 750;
+      text-decoration: none;
+    }
+
+    .button.secondary { color: var(--ink); background: transparent; }
+
+    .numbers {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      overflow: hidden;
+      margin-bottom: clamp(4rem, 8vw, 7rem);
+      background: var(--ink);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+    }
+
+    .number { min-height: 165px; padding: 1.5rem; color: white; }
+    .number + .number { border-left: 1px solid rgb(255 255 255 / 18%); }
+    .number b { display: block; font-size: clamp(2rem, 4vw, 3.6rem); line-height: 1; letter-spacing: -.05em; }
+    .number span { display: block; margin-top: .65rem; color: rgb(255 255 255 / 70%); font-size: .85rem; }
+    .number.good b { color: #72e0b8; }
+    .number.bad b { color: #ff9d8e; }
+
+    section { padding-block: clamp(3.5rem, 7vw, 6.5rem); }
+    section + section { border-top: 1px solid var(--line); }
+
+    .section-head {
+      display: grid;
+      grid-template-columns: minmax(0, .75fr) minmax(280px, 1fr);
+      gap: clamp(2rem, 6vw, 6rem);
+      align-items: start;
+      margin-bottom: 2rem;
+    }
+
+    .section-head p { max-width: 690px; margin: .15rem 0 0; color: var(--muted); }
+
+    .callout {
+      margin-block: 2rem;
+      padding: 1.15rem 1.3rem;
+      background: var(--green-soft);
+      border-left: 5px solid var(--green);
+      border-radius: 0 var(--radius) var(--radius) 0;
+    }
+
+    .callout p { margin: 0; }
+
+    .figure {
+      margin: 2rem 0 0;
+      padding: clamp(1rem, 3vw, 2rem);
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+    }
+
+    .figure img { width: 100%; }
+    figcaption { margin-top: 1rem; color: var(--muted); font-size: .86rem; }
+
+    .method-grid, .mechanism-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1rem;
+    }
+
+    .method-card, .mechanism-card {
+      padding: 1.25rem;
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 14px;
+    }
+
+    .method-card b {
+      display: block;
+      margin-bottom: .35rem;
+      color: var(--green);
+      font-size: .78rem;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+    }
+
+    .method-card p, .mechanism-card p { margin: 0; color: var(--muted); font-size: .93rem; }
+
+    .table-wrap {
+      overflow-x: auto;
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+    }
+
+    table { width: 100%; border-collapse: collapse; font-variant-numeric: tabular-nums; }
+    caption { padding: 1rem 1.2rem; color: var(--muted); font-size: .86rem; text-align: left; }
+    th, td { padding: .8rem 1rem; border-bottom: 1px solid var(--line); text-align: right; white-space: nowrap; }
+    th:first-child, td:first-child { text-align: left; }
+    th { color: var(--muted); background: #f0eee6; font-size: .76rem; letter-spacing: .05em; text-transform: uppercase; }
+    tbody tr:last-child td { border-bottom: 0; }
+    tbody tr:hover { background: #f9f7f0; }
+
+    .delta {
+      display: inline-block;
+      min-width: 5.4rem;
+      padding: .18rem .52rem;
+      border-radius: 999px;
+      font-weight: 780;
+      text-align: center;
+    }
+
+    .delta.down { color: #075e45; background: var(--green-soft); }
+    .delta.up { color: #9c3024; background: var(--red-soft); }
+    .delta.na { color: var(--muted); background: #eceae4; }
+
+    .legend { margin: 1rem 0 0; color: var(--muted); font-size: .86rem; }
+
+    .mechanism-card { border-top: 4px solid var(--gold); }
+    .mechanism-card:nth-child(2) { border-top-color: var(--green); }
+    .mechanism-card:nth-child(3) { border-top-color: var(--red); }
+
+    .tool-notes { display: grid; grid-template-columns: 1fr 1fr; gap: .8rem; }
+
+    details {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 12px;
+    }
+
+    summary {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      padding: 1rem 1.1rem;
+      cursor: pointer;
+      font-weight: 780;
+    }
+
+    summary::marker { color: var(--green); }
+    details p { margin: 0; padding: 0 1.1rem 1.1rem; color: var(--muted); font-size: .94rem; }
+    .outcome { color: var(--muted); font-size: .78rem; font-weight: 650; text-align: right; }
+
+    .limits { columns: 2; column-gap: 3rem; padding-left: 1.2rem; }
+    .limits li { break-inside: avoid; margin: 0 0 .8rem; padding-left: .3rem; }
+
+    .data-panel {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+    }
+
+    .data-link {
+      display: block;
+      padding: 1.2rem;
+      color: var(--ink);
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      text-decoration: none;
+    }
+
+    .data-link:hover { border-color: var(--green); }
+    .data-link strong { display: block; }
+    .data-link span { color: var(--muted); font-size: .86rem; }
+
+    footer { padding-block: 3rem; color: var(--muted); font-size: .85rem; }
+    footer .shell { display: flex; justify-content: space-between; gap: 1rem; }
+
+    @media (max-width: 820px) {
+      .hero, .section-head { grid-template-columns: 1fr; }
+      .hero { align-items: start; }
+      .numbers { grid-template-columns: 1fr 1fr; }
+      .number:nth-child(3) { border-left: 0; border-top: 1px solid rgb(255 255 255 / 18%); }
+      .number:nth-child(4) { border-top: 1px solid rgb(255 255 255 / 18%); }
+      .method-grid, .mechanism-grid { grid-template-columns: 1fr; }
+      .tool-notes, .data-panel { grid-template-columns: 1fr; }
+    }
+
+    @media (max-width: 560px) {
+      body { font-size: 16px; }
+      .topbar { align-items: flex-start; }
+      .topbar nav a:not(:last-child) { display: none; }
+      .numbers { grid-template-columns: 1fr; }
+      .number { min-height: auto; }
+      .number + .number { border-left: 0; border-top: 1px solid rgb(255 255 255 / 18%); }
+      h1 { font-size: clamp(3rem, 16vw, 4.5rem); }
+      .limits { columns: 1; }
+      summary { align-items: flex-start; }
+      .outcome { max-width: 8.5rem; }
+    }
+
+    @media print {
+      body { background: white; font-size: 11pt; }
+      .topbar, .hero-actions { display: none; }
+      .hero, section { padding-block: 1.5rem; }
+      .figure, .table-wrap, .hero-note, .numbers { box-shadow: none; }
+      details > * { display: block; }
+      a { color: inherit; }
+    }
+  </style>
+</head>
+<body>
+  <a class="skip-link" href="#report">Skip to report</a>
+
+  <header class="shell topbar">
+    <a class="brand" href="https://github.com/merlinhu1/token-optimization-research">Token Optimization Research</a>
+    <nav aria-label="Report navigation">
+      <a href="#results">Results</a>
+      <a href="#tools">Tools</a>
+      <a href="#limits">Limitations</a>
+      <a href="#data">Data</a>
+    </nav>
+  </header>
+
+  <main id="report">
+    <div class="shell hero">
+      <div>
+        <p class="eyebrow">Phase 2 · Lifecycle V1 screening</p>
+        <h1>Token-saving tools do not save tokens everywhere.</h1>
+        <p class="dek">A matched screening study across two coding-agent runtimes found lower weighted token cost in 11 of 13 OpenCode conditions—and none of 14 Codex conditions.</p>
+        <div class="hero-actions">
+          <a class="button" href="#results">Explore the results</a>
+          <a class="button secondary" href="https://github.com/merlinhu1/token-optimization-research/blob/main/docs/papers/phase-2-lifecycle-v1-natural-use-screening.md">Read the technical report</a>
+        </div>
+      </div>
+      <aside class="hero-note" aria-label="Evidence scope">
+        <strong>Screening evidence, not a ranking</strong>
+        <p>Each product/runtime condition has one treatment assignment per workflow. The results show a strong interaction with runtime, not universal product effects or deployment recommendations.</p>
+      </aside>
+    </div>
+
+    <div class="shell numbers" aria-label="Study highlights">
+      <div class="number bad"><b>+35.10%</b><span>Codex aggregate weighted token cost</span></div>
+      <div class="number good"><b>−14.02%</b><span>OpenCode aggregate weighted token cost</span></div>
+      <div class="number"><b>162</b><span>Accepted tasks across 54 persistent sessions</span></div>
+      <div class="number"><b>15</b><span>Token-saving products evaluated</span></div>
+    </div>
+
+    <section id="finding">
+      <div class="shell">
+        <div class="section-head">
+          <div><p class="eyebrow">The central finding</p><h2>Runtime mattered as much as the tool.</h2></div>
+          <p>The same class of integration could reduce context in OpenCode while increasing weighted cost in Codex. Automatic interception, retrieval depth, persistent instructions, tool schemas, and trajectory changes are plausible contributors—but this screen does not isolate them causally.</p>
+        </div>
+        <div class="callout"><p><strong>What the data supports:</strong> token-saving integrations should be evaluated in the exact runtime and integration surface where they will be deployed.</p></div>
+        <figure class="figure">
+          <img src="papers/figures/phase-2-lifecycle-v1-runtime-contrast.svg" alt="Bar chart showing weighted token-cost changes for each product in Codex and OpenCode. Codex conditions are all at or above baseline while most OpenCode conditions are below baseline.">
+          <figcaption>Weighted token-cost change by runtime and product. Negative values are lower than the matched baseline. Missing values are blocked combinations, not zero effects.</figcaption>
+        </figure>
+      </div>
+    </section>
+
+    <section id="method">
+      <div class="shell">
+        <div class="section-head">
+          <div><p class="eyebrow">Experimental design</p><h2>Normal use, persistent sessions, matched controls.</h2></div>
+          <p>Every condition used the product’s documented native integration without evaluator-forced tool calls. Each session carried state through feature implementation, behavior-preserving refactoring, and code review/correction.</p>
+        </div>
+        <div class="method-grid">
+          <article class="method-card"><b>Workloads</b><p>Fastify and Beets: one TypeScript project and one Python project.</p></article>
+          <article class="method-card"><b>Session model</b><p>Three sequential tasks in one persistent agent session.</p></article>
+          <article class="method-card"><b>Conditions</b><p>14 Codex profiles and 13 OpenCode profiles with runtime-matched controls.</p></article>
+          <article class="method-card"><b>Primary measure</b><p>Fresh input + 0.1 × cached input + 6 × output.</p></article>
+          <article class="method-card"><b>Correctness</b><p>All 162 reported tasks passed the active compile-based acceptance checks.</p></article>
+          <article class="method-card"><b>Evidence snapshot</b><p>Frozen 2026-08-08 registry and recoverable workflow artifacts.</p></article>
+        </div>
+      </div>
+    </section>
+
+    <section id="results">
+      <div class="shell">
+        <div class="section-head">
+          <div><p class="eyebrow">Product results</p><h2>The direction often flipped across runtimes.</h2></div>
+          <p>These are descriptive treatment-to-baseline deltas. They are not a stable leaderboard: the repeated controls do not create 27 independent baseline replicates, and product uptake was not experimentally isolated.</p>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <caption>Weighted token-cost change; lower is better. Task counts are accepted tasks.</caption>
+            <thead><tr><th scope="col">Product</th><th scope="col">Codex Δ</th><th scope="col">OpenCode Δ</th><th scope="col">Codex tasks</th><th scope="col">OpenCode tasks</th></tr></thead>
+            <tbody>
+              <tr><td>RTK</td><td><span class="delta up">↑ 42.31%</span></td><td><span class="delta down">↓ 26.12%</span></td><td>6/6</td><td>6/6</td></tr>
+              <tr><td>Serena</td><td><span class="delta up">↑ 0.83%</span></td><td><span class="delta down">↓ 26.03%</span></td><td>6/6</td><td>6/6</td></tr>
+              <tr><td>TokenJuice</td><td><span class="delta up">↑ 8.37%</span></td><td><span class="delta down">↓ 28.49%</span></td><td>6/6</td><td>6/6</td></tr>
+              <tr><td>Ponytail</td><td><span class="delta up">↑ 30.48%</span></td><td><span class="delta down">↓ 12.13%</span></td><td>6/6</td><td>6/6</td></tr>
+              <tr><td>Caveman</td><td><span class="delta up">↑ 32.24%</span></td><td><span class="delta down">↓ 27.43%</span></td><td>6/6</td><td>6/6</td></tr>
+              <tr><td>jCodeMunch</td><td><span class="delta up">↑ 28.45%</span></td><td><span class="delta down">↓ 3.34%</span></td><td>6/6</td><td>6/6</td></tr>
+              <tr><td>CodeGraph</td><td><span class="delta up">↑ 48.72%</span></td><td><span class="delta down">↓ 15.74%</span></td><td>6/6</td><td>6/6</td></tr>
+              <tr><td>SigMap</td><td><span class="delta up">↑ 27.74%</span></td><td><span class="delta up">↑ 2.54%</span></td><td>6/6</td><td>6/6</td></tr>
+              <tr><td>LowFat</td><td><span class="delta na">Blocked</span></td><td><span class="delta down">↓ 22.24%</span></td><td>—</td><td>6/6</td></tr>
+              <tr><td>Token Savior</td><td><span class="delta up">↑ 86.96%</span></td><td><span class="delta na">Blocked</span></td><td>6/6</td><td>—</td></tr>
+              <tr><td>Graphify</td><td><span class="delta up">↑ 70.45%</span></td><td><span class="delta down">↓ 12.49%</span></td><td>6/6</td><td>6/6</td></tr>
+              <tr><td>LeanCTX</td><td><span class="delta up">↑ 31.24%</span></td><td><span class="delta up">↑ 16.33%</span></td><td>6/6</td><td>6/6</td></tr>
+              <tr><td>Snip</td><td><span class="delta up">↑ 20.29%</span></td><td><span class="delta down">↓ 26.61%</span></td><td>6/6</td><td>6/6</td></tr>
+              <tr><td>Cartog</td><td><span class="delta up">↑ 52.02%</span></td><td><span class="delta na">Blocked</span></td><td>6/6</td><td>—</td></tr>
+              <tr><td>CodeScope</td><td><span class="delta up">↑ 11.34%</span></td><td><span class="delta down">↓ 0.52%</span></td><td>6/6</td><td>6/6</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="legend">Arrows show direction relative to the matched runtime baseline, not product quality. “Blocked” means no qualified provider-backed condition was run.</p>
+        <figure class="figure">
+          <img src="papers/figures/phase-2-lifecycle-v1-sequence-heatmap.svg" alt="Heatmap of sequence-level weighted token-cost change for every product and runtime condition.">
+          <figcaption>Sequence-level outcomes show that the aggregate runtime split is not driven by a single product.</figcaption>
+        </figure>
+      </div>
+    </section>
+
+    <section id="mechanisms">
+      <div class="shell">
+        <div class="section-head">
+          <div><p class="eyebrow">Mechanism hypotheses</p><h2>Why might the tools behave differently?</h2></div>
+          <p>The token components identify where cost changed, not why. These explanations are consistent with inspected source and retained traces; targeted ablations and replication are still required for causal claims.</p>
+        </div>
+        <div class="mechanism-grid">
+          <article class="mechanism-card"><h3>Automatic interception can pay</h3><p>OpenCode-native hooks and plugins can filter terminal output without waiting for the model to choose a special command. RTK, TokenJuice, Snip, and LowFat are consistent with this pattern.</p></article>
+          <article class="mechanism-card"><h3>Focused retrieval must displace reading</h3><p>Symbol or graph retrieval helps only when bounded results replace enough broad file context to repay schemas, instructions, indexes, and extra tool turns.</p></article>
+          <article class="mechanism-card"><h3>Broad integrations carry fixed cost</h3><p>Multi-surface products can add persistent guidance, schemas, memory, and tool traffic. On short tasks, that overhead may exceed local compression gains.</p></article>
+        </div>
+      </div>
+    </section>
+
+    <section id="tools">
+      <div class="shell">
+        <div class="section-head">
+          <div><p class="eyebrow">Per-tool discussion</p><h2>What each result might mean.</h2></div>
+          <p>Open each tool for the concise evidence-bounded interpretation. The linked technical report contains component deltas and source dossiers.</p>
+        </div>
+        <div class="tool-notes">
+          <details><summary>RTK <span class="outcome">Codex +42.31% · OpenCode −26.12%</span></summary><p>RTK filters eligible shell output. The split is consistent with OpenCode’s automatic native plugin outperforming instruction-dependent Codex routing, which included unsupported pass-through forms.</p></details>
+          <details><summary>Serena <span class="outcome">Codex +0.83% · OpenCode −26.03%</span></summary><p>Language-server retrieval was nearly neutral in Codex and lower-cost in OpenCode, consistent with targeted symbols displacing more broad reading in the latter runtime.</p></details>
+          <details><summary>TokenJuice <span class="outcome">Codex +8.37% · OpenCode −28.49%</span></summary><p>Automatic command-output reducers align with the OpenCode reduction. In Codex, filtering was outweighed by hook, cache, or trajectory effects.</p></details>
+          <details><summary>Ponytail <span class="outcome">Codex +30.48% · OpenCode −12.13%</span></summary><p>Ponytail changes implementation policy rather than compressing an input stream. Persistent guidance can alter planning and tool trajectories, making activation runtime-specific.</p></details>
+          <details><summary>Caveman <span class="outcome">Codex +32.24% · OpenCode −27.43%</span></summary><p>Caveman compresses assistant prose rather than shell output or retrieved code. Codex showed no clear behavioral activation; the OpenCode reduction could reflect terser responses or a shorter trajectory.</p></details>
+          <details><summary>jCodeMunch <span class="outcome">Codex +28.45% · OpenCode −3.34%</span></summary><p>Token-budgeted symbol retrieval must repay a sizeable MCP schema and guidance surface. It nearly broke even in OpenCode but did not in Codex.</p></details>
+          <details><summary>CodeGraph <span class="outcome">Codex +48.72% · OpenCode −15.74%</span></summary><p>Bounded graph queries plausibly displaced file reads in OpenCode. In Codex, graph instructions, returned context, or additional turns exceeded avoided reading.</p></details>
+          <details><summary>SigMap <span class="outcome">Codex +27.74% · OpenCode +2.54%</span></summary><p>Neither runtime showed a meaningful reduction. The evaluated tasks may have been navigable with native search, leaving index and returned-map overhead unrepaid.</p></details>
+          <details><summary>LowFat <span class="outcome">OpenCode −22.24%</span></summary><p>A narrow automatic command filter reduced OpenCode context without requiring a retrieval decision. No qualified native Codex condition exists for comparison.</p></details>
+          <details><summary>Token Savior <span class="outcome">Codex +86.96%</span></summary><p>The broad retrieval, indexing, memory, summary, and shell surface added more weighted cost than it removed. This integrated treatment cannot identify the responsible component.</p></details>
+          <details><summary>Graphify <span class="outcome">Codex +70.45% · OpenCode −12.49%</span></summary><p>OpenCode’s always-on graph guidance may have displaced some exploration. In Codex, graph and guidance overhead was not repaid by avoided source reading.</p></details>
+          <details><summary>LeanCTX <span class="outcome">Codex +31.24% · OpenCode +16.33%</span></summary><p>Its broad hybrid surface spans retrieval, compressed reads, shell output, memory, and indexing. Both runtimes incurred more weighted cost; component ablation is needed.</p></details>
+          <details><summary>Snip <span class="outcome">Codex +20.29% · OpenCode −26.61%</span></summary><p>Command-specific output rewriting aligns with the OpenCode reduction. The Codex increase could reflect lower rewrite coverage, pass-throughs, or a longer recovery trajectory.</p></details>
+          <details><summary>Cartog <span class="outcome">Codex +52.02% · OpenCode blocked</span></summary><p>Indexed navigation and task-context bundles cost more than they displaced in Codex. OpenCode was excluded before execution after artifact-identity verification failed.</p></details>
+          <details><summary>CodeScope <span class="outcome">Codex +11.34% · OpenCode −0.52%</span></summary><p>Graph/search and output archiving were effectively neutral in OpenCode and modestly higher in Codex. A near-zero single-run delta is not a stable win.</p></details>
+        </div>
+      </div>
+    </section>
+
+    <section id="accounting">
+      <div class="shell">
+        <div class="section-head">
+          <div><p class="eyebrow">Token accounting</p><h2>Cached input drove most of the weighted difference.</h2></div>
+          <p>Weighted token cost is a declared accounting convention—not dollars: fresh input + 0.1 × cached input + 6 × output. Reasoning is already included within output and is not added twice.</p>
+        </div>
+        <figure class="figure">
+          <img src="papers/figures/phase-2-lifecycle-v1-component-deltas.svg" alt="Chart decomposing the aggregate Codex increase and OpenCode decrease into fresh input, weighted cached input, and weighted output components.">
+          <figcaption>Codex increased across all three weighted components. OpenCode decreased across all three, with cached-input reduction contributing most.</figcaption>
+        </figure>
+      </div>
+    </section>
+
+    <section id="limits">
+      <div class="shell">
+        <div class="section-head">
+          <div><p class="eyebrow">Limitations</p><h2>Read the boundary before the headline.</h2></div>
+          <p>This study is designed as a screening experiment. Its strongest contribution is showing that runtime-specific evaluation is necessary—not selecting a universal winner.</p>
+        </div>
+        <ul class="limits">
+          <li>Each product/runtime condition has one treatment assignment per workflow; there is no within-condition replicate.</li>
+          <li>Repeated baselines are descriptive and do not provide 27 independent control pairs.</li>
+          <li>The workloads cover two projects and two languages; results may not generalize to other repositories or task families.</li>
+          <li>Weighted token cost is an accounting convention, not monetary cost.</li>
+          <li>The accounting does not identify the exact trajectory step that caused a difference.</li>
+          <li>Compile success does not establish equal maintainability, latency, memory use, or correctness outside the frozen contracts.</li>
+          <li>Cross-runtime contrasts are not a causal comparison of Codex versus OpenCode.</li>
+        </ul>
+      </div>
+    </section>
+
+    <section id="data">
+      <div class="shell">
+        <div class="section-head">
+          <div><p class="eyebrow">Open evidence</p><h2>Inspect the report, data, and workflow artifacts.</h2></div>
+          <p>The result is backed by a machine-readable registry, a frozen derived dataset, compact workflow evidence, and product source dossiers.</p>
+        </div>
+        <div class="data-panel">
+          <a class="data-link" href="https://github.com/merlinhu1/token-optimization-research/blob/main/docs/papers/phase-2-lifecycle-v1-natural-use-screening.md"><strong>Technical report</strong><span>Methods, exact tables, per-tool interpretation, and limitations</span></a>
+          <a class="data-link" href="https://github.com/merlinhu1/token-optimization-research/blob/main/sources/evaluations/audits/phase-2-lifecycle-v1-report-data-20260808.json"><strong>Derived report dataset</strong><span>Frozen JSON used to generate the publication report</span></a>
+          <a class="data-link" href="https://github.com/merlinhu1/token-optimization-research/blob/main/data/workflow-sessions.json"><strong>Authoritative registry</strong><span>Workflow sessions, conditions, and evidence references</span></a>
+          <a class="data-link" href="https://github.com/merlinhu1/token-optimization-research/tree/main/sources/evaluations/workflow-sessions"><strong>Workflow evidence</strong><span>Recoverable run artifacts, manifests, and final changes</span></a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="shell">
+      <span>Token Optimization Research · Phase 2 · Evidence snapshot 2026-08-08</span>
+      <a href="https://github.com/merlinhu1/token-optimization-research">View on GitHub</a>
+    </div>
+  </footer>
+</body>
+</html>
