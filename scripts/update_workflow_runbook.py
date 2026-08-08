@@ -28,6 +28,8 @@ CLAUDE_DIRECT_CAMPAIGNS = (
         ROOT / "sources" / "evaluations" / "audits" / "claude-code-anthropic-opus-5-high-lifecycle-v1-baseline-authorization-20260808.json",
     ),
 )
+CLAUDE_SONNET_TREATMENT_AUTHORITY = ROOT / "sources" / "evaluations" / "audits" / "claude-code-anthropic-sonnet-5-high-lifecycle-v1-treatment-authorization-20260808.json"
+CLAUDE_SONNET_TREATMENT_QUALIFICATION = ROOT / "sources" / "evaluations" / "audits" / "corrected-integration-qualification-claude-code-anthropic-sonnet-5-high-lifecycle-v1-20260808.json"
 OPENCODE_TREATMENT_SCREEN_AUDIT = (
     "sources/evaluations/audits/"
     "opencode-tool-treatments-sol-high-r0-repaired-screen-results-20260730.json"
@@ -56,15 +58,52 @@ def claude_direct_preparation_text() -> str:
         if not baseline_count:
             baseline_count = len((preparation.get("source_scope") or {}).get("protocols", []))
         authorization = load_json(authorization_path) if authorization_path.is_file() else {}
+        treatment_authorization = (
+            load_json(CLAUDE_SONNET_TREATMENT_AUTHORITY)
+            if CLAUDE_SONNET_TREATMENT_AUTHORITY.is_file()
+            else {}
+        )
+        treatment_qualification = (
+            load_json(CLAUDE_SONNET_TREATMENT_QUALIFICATION)
+            if CLAUDE_SONNET_TREATMENT_QUALIFICATION.is_file()
+            else {}
+        )
         if (
             authorization.get("status") == "owner-authorized-provider-run"
             and authorization.get("execution_status") == "completed"
         ):
             completed = ", ".join(str(item) for item in authorization.get("completed_sequences", []))
-            execution_line = (
-                f"Baseline-only execution completed for `{completed}` with "
-                f"{authorization.get('provider_tokens', 0):,} provider tokens; treatment execution remains blocked."
-            )
+            if condition.get("id") == "claude-code-anthropic-sonnet-5-high" and treatment_authorization.get("status") == "owner-authorized-provider-capable":
+                qualification_summary = treatment_qualification.get("summary", {})
+                treatment_profiles = treatment_authorization.get("profiles", [])
+                treatment_sequences = set(treatment_authorization.get("sequence_order", []))
+                session_records = load_json(SESSIONS).get("sessions", [])
+                completed_lanes = sum(
+                    session.get("status") == "completed"
+                    and session.get("session_role") == "individual_tool_treatment"
+                    and session.get("replicate_index") == treatment_authorization.get("replicate_index")
+                    and session.get("profile", {}).get("profile_id") in treatment_profiles
+                    and session.get("task_sequence", {}).get("sequence_id") in treatment_sequences
+                    and session.get("agent", {}).get("model_condition_id") == condition.get("id")
+                    for session in session_records
+                )
+                expected_lanes = len(treatment_profiles) * len(treatment_sequences)
+                treatment_state = (
+                    f"{completed_lanes}/{expected_lanes} treatment lanes are retained"
+                    if completed_lanes
+                    else "the treatment matrix is ready to launch"
+                )
+                execution_line = (
+                    f"Baseline-only execution completed for `{completed}` with "
+                    f"{authorization.get('provider_tokens', 0):,} provider tokens; native qualification passed "
+                    f"{qualification_summary.get('passed', 0)}/{qualification_summary.get('expected', 0)} lanes and "
+                    f"the serialized Sonnet treatment authorization is active ({treatment_state}; SDL-MCP excluded)."
+                )
+            else:
+                execution_line = (
+                    f"Baseline-only execution completed for `{completed}` with "
+                    f"{authorization.get('provider_tokens', 0):,} provider tokens; treatment execution remains blocked."
+                )
         elif authorization.get("status") == "owner-authorized-provider-run":
             execution_line = (
                 f"Baseline-only execution is owner-authorized under `{authorization_path.relative_to(ROOT)}`; "
