@@ -46,6 +46,7 @@ truth_documents:
 ```
 
 Code surface:
+- docs/index.html
 - docs/methodology/README.md
 - docs/research/**
 - docs/papers/**
