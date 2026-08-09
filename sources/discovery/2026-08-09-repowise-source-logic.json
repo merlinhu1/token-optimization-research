@@ -1,0 +1,45 @@
+{
+  "artifact_id": "2026-08-09-repowise-source-logic",
+  "repository": "repowise-dev/repowise",
+  "repository_url": "https://github.com/repowise-dev/repowise",
+  "commit": "a3b6714c5523dc7c45d6bce0522035339bcf3afd",
+  "commit_url": "https://github.com/repowise-dev/repowise/commit/a3b6714c5523dc7c45d6bce0522035339bcf3afd",
+  "version": "0.39.0",
+  "license": "AGPL-3.0-or-later",
+  "inspected_at": "2026-08-09",
+  "evidence_stage": "source-logic",
+  "local_snapshot": "/opt/data/tool-candidates/repowise",
+  "tracked_file_count": 3606,
+  "wheel": {
+    "path": "/opt/data/tool-candidates/repowise-wheel/repowise-0.39.0-py3-none-any.whl",
+    "sha256": "e7d3068856a45a3d0501b84e6f52db24521512803a07881cdf145da546d932b4"
+  },
+  "inspected_files": [
+    {"path": "pyproject.toml", "sha256": "5fb0d60c17dd58c8f2567c5125c58ceb3529424e6ce940b17b2ff9bf93819c68"},
+    {"path": "packages/cli/src/repowise/cli/commands/init_cmd/command.py", "sha256": "4d42669ffd33e0b362e42118eda089ba48f1ad258387d615522cfbbfdf243da8"},
+    {"path": "packages/cli/src/repowise/cli/commands/mcp_cmd.py", "sha256": "bfdaa468317aabc6d555ef1a60743759e1d8ef44530657a710effba744da2ef3"},
+    {"path": "packages/cli/src/repowise/cli/mcp_config.py", "sha256": "6025310afa7bdc6c063b8d8573a840932a10eef1fa22b9ce6ea6a5a17ea4c4a5"},
+    {"path": "packages/cli/src/repowise/cli/editor_integrations/codex.py", "sha256": "4052db944192b12e2dfecc1bd3431251ae23c09857f578531b61061a0b6e05df"},
+    {"path": "packages/core/src/repowise/core/pipeline/full_index.py", "sha256": "88add8187315b4fe0488df592fb56a06f120cd8acc1297b1d165635f42163271"},
+    {"path": "packages/core/src/repowise/core/ingestion/parser.py", "sha256": "a752bcee7e8cca870fe5ce1f5cac96341a9c9b622e04b3b79c0b6eac753ce6a9"},
+    {"path": "packages/core/src/repowise/core/distill/engine.py", "sha256": "8fab2823ba6707140d1ae34d1faf07f314266161c401fc936e7c8a138dea73b7"},
+    {"path": "packages/server/src/repowise/server/mcp_server/_server.py", "sha256": "3a3c0287fde74aef6c7617ed1eaf737f74f4d5a2f75103272a3460c028118391"},
+    {"path": "packages/server/src/repowise/server/mcp_server/_budget/budgeter.py", "sha256": "f503d2c3d3752457e005feac0cf14dae83156b8075d42791363b85d29a6edebf"},
+    {"path": "packages/server/src/repowise/server/mcp_server/tool_context/context.py", "sha256": "77fdaa9627acc02a22e51cdfba8d7f20742a7d2fcc721c6da4cb8f574b342676"},
+    {"path": "packages/server/src/repowise/server/mcp_server/tool_search.py", "sha256": "9bb77e7ed1fa437509b2adc07dc45861ff7a813341b7e7db45b2ea00ea49fb1d"},
+    {"path": "packages/server/src/repowise/server/mcp_server/tool_change_risk.py", "sha256": "4413bcd3382ba0c9cff92c0935edb6ec87abbef82e48a98f7b8c343f4fd5da85"},
+    {"path": "packages/server/src/repowise/server/mcp_server/tool_health.py", "sha256": "264cebe88adf6b30604e39be9eb88c2b43bb3dcd399e08e753bc2274e4575c74"},
+    {"path": "tests/unit/server/mcp/test_context.py", "sha256": "f0dffccb10bdceb49e023d214e211f8546047684f5e8398f9644e27804ea27ca"},
+    {"path": "tests/unit/server/mcp/test_search.py", "sha256": "ef7ef2404c64275b6058e24d4176f91096381269b2d7fef745ff8e125098da57"},
+    {"path": "tests/unit/server/mcp/test_budget.py", "sha256": "e8a1cdaa74585def41d28be4c0f1408e038bcf7e9ea924a46778d8e65aae71d8"},
+    {"path": "tests/unit/cli/test_mcp_config.py", "sha256": "f230a96a0dc0645e0c92c52342195d34a3a3cb9a61a1761c47c27dd73d039bf7"},
+    {"path": "tests/unit/cli/test_codex_plugin.py", "sha256": "790282dd79b1ec6f7eda8b32050f49f7b5cfb8d27e62494c238b8442b63e0a87"}
+  ],
+  "findings": [
+    "RepoWise builds a local structural, dependency, git-history, decision, documentation, and code-health index without requiring an LLM in --no-prose mode.",
+    "Its stdio MCP server exposes task-shaped overview, context, symbol, search, risk, change-risk, health, why, dead-code, and repository tools with response budgeting.",
+    "Its official Codex setup writes project-local MCP configuration, lifecycle hooks, and managed AGENTS.md guidance.",
+    "Its distill subsystem can compact supported command output with reversible omission markers, but command rewriting is opt-in and is not part of the prepared default non-interactive profiles.",
+    "Maintainer benchmark claims were identified but not independently audited or reproduced by this source-logic inspection."
+  ]
+}

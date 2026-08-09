@@ -2599,6 +2599,39 @@
         "commit_url": "https://github.com/agentforce314/clawcodex/commit/31a1670fe33f4d8cbe23d22300a4e971b6420023",
         "source_structure_artifact": "sources/discovery/2026-07-01-pinned-dossier-refresh-source-structures.json"
       }
+    },
+    {
+      "id": "repowise-dev__repowise",
+      "name": "repowise",
+      "url": "https://github.com/repowise-dev/repowise",
+      "kind": "technique-implementation",
+      "source_scope": "`direct`",
+      "catalog_section": "Code retrieval and context selection",
+      "summary": "Precomputes local codebase intelligence and exposes bounded, task-shaped retrieval plus optional command-output distillation to AI coding agents.",
+      "mechanism": "Provider-free structural indexing combines dependency and call relationships, git history, generated documentation, decisions, risk, dead code, and health signals behind CLI/MCP tools; official Codex setup adds project hooks and managed guidance.",
+      "technique_ids": [
+        "T02-targeted-code-retrieval",
+        "T03-mcp-api-response-shaping",
+        "T01-terminal-tool-output-compression"
+      ],
+      "technique_coverage": [],
+      "evidence_label": "`source-logic`",
+      "reported_result": "Upstream documentation reports token and tool-call reductions, but those maintainer benchmarks have not been independently audited or reproduced here.",
+      "main_caveat": "Initial indexing, MCP-call overhead, index freshness, language-resolution coverage, and natural model uptake determine whether precomputed context reduces provider-billed tokens on implementation workflows.",
+      "sources": [
+        "https://github.com/repowise-dev/repowise",
+        "docs/tool-dossiers/repowise-dev-repowise.md",
+        "sources/discovery/2026-08-09-repowise-source-logic.json"
+      ],
+      "reviewed_at": "2026-08-09",
+      "review_depth": "source-logic",
+      "status": "source-logic-reviewed",
+      "source_snapshot": {
+        "status": "pinned-commit",
+        "commit": "a3b6714c5523dc7c45d6bce0522035339bcf3afd",
+        "commit_url": "https://github.com/repowise-dev/repowise/commit/a3b6714c5523dc7c45d6bce0522035339bcf3afd",
+        "source_structure_artifact": "sources/discovery/2026-08-09-repowise-source-logic.json"
+      }
     }
   ]
 }

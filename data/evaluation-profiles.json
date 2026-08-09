@@ -4242,6 +4242,107 @@
         "retrieval-sdl-mcp-codex-product-v1"
       ],
       "notes": "Claude Code preparation profile for SDL-MCP; source profile retrieval-sdl-mcp-codex-product-v1. Provider execution remains blocked until the native Claude surface is qualified in isolation."
+    },
+    {
+      "id": "retrieval-repowise-codex-product-v1",
+      "artifact_slug": "repowise-codex-v1",
+      "name": "RepoWise Codex product V1",
+      "profile_type": "individual_tool",
+      "objective_scope": "individual_tool_effectiveness",
+      "status": "screening-shortlist",
+      "enabled_surfaces": [
+        "retrieval-context",
+        "mcp",
+        "codex-project-hooks",
+        "product-authored-guidance",
+        "warm-index"
+      ],
+      "disabled_overlaps": [
+        "all unlisted surfaces"
+      ],
+      "components": [
+        {
+          "component_id": "retrieval-repowise-codex-product-v1",
+          "surface": "retrieval-context+mcp+codex-hooks+product-guidance+warm-index",
+          "role": "individual_tool"
+        }
+      ],
+      "install": {
+        "policy": "Install the pinned RepoWise 0.39.0 wheel in a lane-private venv, run its official provider-free `init --codex` path with deterministic structural indexing, retain its project-local MCP configuration, lifecycle hooks, and generated AGENTS.md guidance, and require initialize plus tools/list before provider execution."
+      },
+      "reset": {
+        "policy": "Delete the lane-private venv, RepoWise index, project MCP/Codex files, generated guidance, and isolated agent home after evidence capture."
+      },
+      "evaluation_protocol": {
+        "tool_use_policy": "natural",
+        "tool_state": "warm-index+official-codex-hooks+product-guidance",
+        "integration_state": "official-codex-project-setup+host-agnostic-mcp",
+        "instruction_policy": "product-authored generated guidance",
+        "assignment_proof": "provider-free pinned wheel, exact source identity, deterministic index, generated project integration, model-runtime PATH, initialize, and tools/list required"
+      },
+      "source_snapshot": {
+        "repository": "repowise-dev/repowise",
+        "commit": "a3b6714c5523dc7c45d6bce0522035339bcf3afd",
+        "version": "0.39.0",
+        "wheel_sha256": "e7d3068856a45a3d0501b84e6f52db24521512803a07881cdf145da546d932b4"
+      },
+      "notes": "Canonical Codex treatment uses RepoWise's own Codex setup rather than an evaluator-authored MCP-only reduction. Prose generation remains disabled during provider-free preparation."
+    },
+    {
+      "id": "retrieval-repowise-opencode-product-v1",
+      "artifact_slug": "repowise-opencode-v1",
+      "name": "RepoWise OpenCode product V1",
+      "profile_type": "individual_tool",
+      "objective_scope": "individual_tool_effectiveness",
+      "status": "screening-ablation",
+      "substrate": "opencode-cli",
+      "enabled_surfaces": [
+        "retrieval-context",
+        "opencode-mcp",
+        "product-authored-guidance",
+        "warm-index"
+      ],
+      "disabled_overlaps": [
+        "all unlisted surfaces"
+      ],
+      "native_agent_tools_allowed": [
+        "opencode-native-shell-edit",
+        "opencode-native-file-read-search",
+        "git",
+        "verifier-commands"
+      ],
+      "forbidden_surfaces": [
+        "all external retrieval, compression, memory, MCP, skills, plugins, subagents, and web tools except the assigned product surfaces"
+      ],
+      "components": [
+        {
+          "component_id": "retrieval-repowise-opencode-product-v1",
+          "surface": "retrieval-context+opencode-mcp+product-guidance+warm-index",
+          "role": "individual_tool"
+        }
+      ],
+      "install": {
+        "policy": "Install the pinned RepoWise 0.39.0 wheel in a lane-private venv, run its provider-free structural init with generated AGENTS.md guidance, register its local stdio MCP server in the isolated OpenCode runtime, and require initialize plus tools/list before provider execution."
+      },
+      "reset": {
+        "policy": "Delete the lane-private OpenCode XDG directories, venv, RepoWise index, generated project integration and guidance, auth translation, and background processes after evidence capture."
+      },
+      "evaluation_protocol": {
+        "tool_use_policy": "natural",
+        "tool_state": "warm-index+product-guidance",
+        "integration_state": "host-agnostic-opencode-mcp+generated-guidance",
+        "instruction_policy": "product-authored generated guidance",
+        "assignment_proof": "provider-free pinned wheel, source and adapter identities, effective OpenCode configuration, deterministic index, model-runtime PATH, initialize, and tools/list required"
+      },
+      "source_snapshot": {
+        "repository": "repowise-dev/repowise",
+        "commit": "a3b6714c5523dc7c45d6bce0522035339bcf3afd",
+        "version": "0.39.0",
+        "wheel_sha256": "e7d3068856a45a3d0501b84e6f52db24521512803a07881cdf145da546d932b4",
+        "runtime_adapter": "/opt/data/tool-candidates/opencode-adapter-v9/opencode_workflow_adapter.py",
+        "runtime_adapter_sha256": "6cabc28420901ec9fea5997bd63559311d73d2c7fb9c86e54d64ba42c67b822e"
+      },
+      "notes": "RepoWise does not publish an OpenCode-specific installer; this uses its documented host-agnostic stdio MCP surface plus its own generated AGENTS.md guidance. Prose generation remains disabled during provider-free preparation."
     }
   ]
 }

@@ -1,0 +1,440 @@
+{
+  "schema_version": 1,
+  "date": "2026-08-09",
+  "created_at": "2026-08-09T05:26:25.832018+00:00",
+  "purpose": "Provider-free qualification of the pinned RepoWise Codex product integration on both active Lifecycle V1 fixtures before any owner-authorized model run.",
+  "profiles": [
+    "retrieval-repowise-codex-product-v1"
+  ],
+  "sequences": [
+    "beets-lifecycle-sequence-v1",
+    "fastify-lifecycle-sequence-v1"
+  ],
+  "no_provider": true,
+  "execution_mode": "prepare-only-no-provider",
+  "provider_calls": 0,
+  "summary": {
+    "expected": 2,
+    "passed": 2,
+    "failed": 0,
+    "provider_backed_sessions_created": 0
+  },
+  "failures": [],
+  "source_matrix_sha256": "f9ba00e09a7e107f0d2be04aee480377c188957265895c85ea149099035718d2",
+  "controller_provenance": {
+    "fixture_runner_sha256": "59e3a8271387caf13a8069aa138371f26577d33f864323514b49eca5405301c8",
+    "workflow_runner_sha256": "6c458fc68be3864013f8c4836526d9d6deda530aa12d1ba5a89041ba74e78adb",
+    "matrix_runner_sha256": "a562b4f8bc4590bce6aeaa04348019a3e59ab92c8bdc89f9c35432d3c60215c4",
+    "qualification_publisher_sha256": "2fbefe234d37facb5846c64d6a7769019e82e46c2a845d210a52669f5eab59ea"
+  },
+  "lanes": [
+    {
+      "session_id": "prepare-beets-lifecycle-sequence-v1--retrieval-repowise-codex-product-v1",
+      "profile_id": "retrieval-repowise-codex-product-v1",
+      "sequence_id": "beets-lifecycle-sequence-v1",
+      "prepared": true,
+      "prepare_verification": {
+        "passed": true,
+        "mode": "preseeded-composite",
+        "future_seed_regressions_visible": true,
+        "seed_patches_model_visible": false,
+        "preseeded_task_orders": [
+          1,
+          2,
+          3
+        ],
+        "pending_seed_orders": [],
+        "controller_verification": "final-only",
+        "diff_basis": "ordered-task-checkpoints-plus-final-cumulative-diff",
+        "fixed_snapshot_oid": "9acb1ecff6c7ee0a1e83e3b983c94792345712c5",
+        "concealment": {
+          "order": 1,
+          "head": "117d9ec7003f246d41f220320bed1badf3318046",
+          "head_is_root": true,
+          "reachable_commit_count": 1,
+          "reflog_oids": [
+            "117d9ec7003f246d41f220320bed1badf3318046"
+          ],
+          "remotes": [],
+          "working_tree_clean": true,
+          "fixed_snapshot_object_present": false,
+          "unreachable_objects": [],
+          "leaked_git_admin_paths": [],
+          "model_concealed_paths": [],
+          "model_concealed_paths_present": [],
+          "passed": true
+        },
+        "composite_seed_delivery": {
+          "mode": "preseeded-composite",
+          "preseeded_task_orders": [
+            1,
+            2,
+            3
+          ],
+          "merged_task_orders": [
+            1,
+            2,
+            3
+          ],
+          "composite_diff_sha256": "2586b9a96d627ce22e226621db78f1c7636e265318dc0e45e1424778209217ae",
+          "model_repo_seed_or_verifier_assets": [],
+          "model_concealed_paths": [],
+          "model_concealed_paths_present": [],
+          "passed": true
+        },
+        "stage_seed_delivery": {
+          "mode": "preseeded-composite",
+          "preseeded_task_orders": [
+            1,
+            2,
+            3
+          ],
+          "merged_task_orders": [
+            1,
+            2,
+            3
+          ],
+          "composite_diff_sha256": "2586b9a96d627ce22e226621db78f1c7636e265318dc0e45e1424778209217ae",
+          "model_repo_seed_or_verifier_assets": [],
+          "model_concealed_paths": [],
+          "model_concealed_paths_present": [],
+          "passed": true
+        },
+        "fixed_composite_qualification": {
+          "path": "sources/evaluations/fixtures/medium/beetbox-beets/qualification-lifecycle-v1.json",
+          "passed": true,
+          "full_fixed_cumulative_verifier_zero": true,
+          "composite_seed_merge_zero": true,
+          "composite_seeded_verifiers_nonzero": false,
+          "composite_seed_diff_sha256": "2586b9a96d627ce22e226621db78f1c7636e265318dc0e45e1424778209217ae",
+          "runtime_composite_seed_diff_sha256": "2586b9a96d627ce22e226621db78f1c7636e265318dc0e45e1424778209217ae",
+          "composite_seed_diff_hash_matches": true
+        },
+        "concealment_passed": true,
+        "composite_seed_delivery_passed": true
+      },
+      "host_integration": {
+        "profile_id": "retrieval-repowise-codex-product-v1",
+        "passed": true,
+        "skipped": false,
+        "controller_install_exit_codes": [],
+        "install_exit_codes": [
+          0,
+          0,
+          0
+        ],
+        "verify_exit_codes": [
+          0
+        ],
+        "missing_required_files": [],
+        "required_files": [
+          "/opt/data/eval-workflow-lanes/workflow-matrix-20260809T051646723395Z-p1945044-r0/beets-lifecycle-sequence-v1--retrieval-repowise-codex-product-v1/checkout/sources/evaluations/workflow-sessions/prepare-beets-lifecycle-sequence-v1--retrieval-repowise-codex-product-v1/codex-homes/retrieval-repowise-codex-product-v1/.config/repowise-codex-product-v1/venv/bin/repowise",
+          "/opt/data/eval-workflow-lanes/workflow-matrix-20260809T051646723395Z-p1945044-r0/beets-lifecycle-sequence-v1--retrieval-repowise-codex-product-v1/checkout/sources/evaluations/workflow-sessions/prepare-beets-lifecycle-sequence-v1--retrieval-repowise-codex-product-v1/project/repo/.repowise/wiki.db",
+          "/opt/data/eval-workflow-lanes/workflow-matrix-20260809T051646723395Z-p1945044-r0/beets-lifecycle-sequence-v1--retrieval-repowise-codex-product-v1/checkout/sources/evaluations/workflow-sessions/prepare-beets-lifecycle-sequence-v1--retrieval-repowise-codex-product-v1/project/repo/.repowise/config.yaml",
+          "/opt/data/eval-workflow-lanes/workflow-matrix-20260809T051646723395Z-p1945044-r0/beets-lifecycle-sequence-v1--retrieval-repowise-codex-product-v1/checkout/sources/evaluations/workflow-sessions/prepare-beets-lifecycle-sequence-v1--retrieval-repowise-codex-product-v1/project/repo/.mcp.json",
+          "/opt/data/eval-workflow-lanes/workflow-matrix-20260809T051646723395Z-p1945044-r0/beets-lifecycle-sequence-v1--retrieval-repowise-codex-product-v1/checkout/sources/evaluations/workflow-sessions/prepare-beets-lifecycle-sequence-v1--retrieval-repowise-codex-product-v1/project/repo/.codex/config.toml",
+          "/opt/data/eval-workflow-lanes/workflow-matrix-20260809T051646723395Z-p1945044-r0/beets-lifecycle-sequence-v1--retrieval-repowise-codex-product-v1/checkout/sources/evaluations/workflow-sessions/prepare-beets-lifecycle-sequence-v1--retrieval-repowise-codex-product-v1/project/repo/.codex/hooks.json",
+          "/opt/data/eval-workflow-lanes/workflow-matrix-20260809T051646723395Z-p1945044-r0/beets-lifecycle-sequence-v1--retrieval-repowise-codex-product-v1/checkout/sources/evaluations/workflow-sessions/prepare-beets-lifecycle-sequence-v1--retrieval-repowise-codex-product-v1/project/repo/AGENTS.md"
+        ],
+        "artifact_identities": [
+          {
+            "path": "/opt/data/tool-candidates/repowise-wheel/repowise-0.39.0-py3-none-any.whl",
+            "kind": "python-wheel",
+            "expected_sha256": "e7d3068856a45a3d0501b84e6f52db24521512803a07881cdf145da546d932b4",
+            "actual_sha256": "e7d3068856a45a3d0501b84e6f52db24521512803a07881cdf145da546d932b4",
+            "passed": true
+          },
+          {
+            "path": "/opt/data/tool-candidates/repowise/README.md",
+            "kind": "product-guidance-source",
+            "expected_sha256": "44ed3725616544a8d4eb4695c99e33c8bd28ce2bfde4c12134d1fde0e1d65a3a",
+            "actual_sha256": "44ed3725616544a8d4eb4695c99e33c8bd28ce2bfde4c12134d1fde0e1d65a3a",
+            "passed": true
+          }
+        ],
+        "post_install_artifacts": [],
+        "artifacts": [
+          "sources/evaluations/workflow-sessions/prepare-beets-lifecycle-sequence-v1--retrieval-repowise-codex-product-v1/tool-host-install-1.txt",
+          "sources/evaluations/workflow-sessions/prepare-beets-lifecycle-sequence-v1--retrieval-repowise-codex-product-v1/tool-host-install-2.txt",
+          "sources/evaluations/workflow-sessions/prepare-beets-lifecycle-sequence-v1--retrieval-repowise-codex-product-v1/tool-host-install-3.txt",
+          "sources/evaluations/workflow-sessions/prepare-beets-lifecycle-sequence-v1--retrieval-repowise-codex-product-v1/tool-host-verify-1.txt"
+        ],
+        "claude_mcp_config": null
+      },
+      "mcp_handshake": {
+        "errors": [],
+        "initialize_passed": true,
+        "non_json_stdout_lines": [],
+        "passed": true,
+        "protocol_version": "2025-06-18",
+        "server_name": "repowise",
+        "stderr_present": true,
+        "tool_names": [
+          "get_answer",
+          "get_change_risk",
+          "get_context",
+          "get_dead_code",
+          "get_health",
+          "get_overview",
+          "get_risk",
+          "get_symbol",
+          "get_why",
+          "list_repos",
+          "search_codebase"
+        ],
+        "tools_list_passed": true,
+        "profile_id": "retrieval-repowise-codex-product-v1",
+        "required": true,
+        "attempted": true,
+        "attempt_required": true,
+        "probe_exit_code": 0,
+        "activation_passed": true,
+        "treatment_degradation": false,
+        "known_failure": null,
+        "secondary_handshakes": [],
+        "tool_count": 11
+      },
+      "codex_preflight": {
+        "profile_id": "retrieval-repowise-codex-product-v1",
+        "passed": true,
+        "doctor_exit_code": 1,
+        "mcp_list_exit_code": 0,
+        "tool_preflight_exit_code": 0,
+        "coverage_preflight_exit_code": null,
+        "missing_declared_filter_commands": [],
+        "forbidden_command_probe_exit_code": 0,
+        "forbidden_mcp_hits": [],
+        "forbidden_config_hits": [],
+        "visible_forbidden_commands": [],
+        "failure_reasons": [],
+        "warnings": [
+          "codex doctor exited 1; preserve the diagnostic, but use the isolated MCP/config probes and task execution as gates"
+        ],
+        "artifacts": {
+          "doctor": "sources/evaluations/workflow-sessions/prepare-beets-lifecycle-sequence-v1--retrieval-repowise-codex-product-v1/codex-doctor.txt",
+          "mcp_list": "sources/evaluations/workflow-sessions/prepare-beets-lifecycle-sequence-v1--retrieval-repowise-codex-product-v1/codex-mcp-list.txt",
+          "effective_config": "sources/evaluations/workflow-sessions/prepare-beets-lifecycle-sequence-v1--retrieval-repowise-codex-product-v1/codex-effective-config.toml",
+          "forbidden_command_visibility": "sources/evaluations/workflow-sessions/prepare-beets-lifecycle-sequence-v1--retrieval-repowise-codex-product-v1/forbidden-command-visibility.txt",
+          "tool_preflight": "sources/evaluations/workflow-sessions/prepare-beets-lifecycle-sequence-v1--retrieval-repowise-codex-product-v1/tool-preflight.txt",
+          "tool_coverage_preflight": null
+        }
+      },
+      "tool_warmup_exit_code": 0,
+      "protocol_path": "sources/evaluations/protocols/beets-lifecycle-sequence-v1-retrieval-repowise-codex-product-v1-1ac8846b509b.json",
+      "protocol_sha256": "48600b46e90b0dfe8efb8f4644d1918f7340a076ea58c0cd878161d70d944429",
+      "qualification_checks": {
+        "lane_exit_zero": true,
+        "prepared": true,
+        "prepare_verification": true,
+        "host_integration": true,
+        "codex_preflight": true,
+        "warmup": true,
+        "mcp_handshake": true
+      }
+    },
+    {
+      "session_id": "prepare-fastify-lifecycle-sequence-v1--retrieval-repowise-codex-product-v1",
+      "profile_id": "retrieval-repowise-codex-product-v1",
+      "sequence_id": "fastify-lifecycle-sequence-v1",
+      "prepared": true,
+      "prepare_verification": {
+        "passed": true,
+        "mode": "preseeded-composite",
+        "future_seed_regressions_visible": true,
+        "seed_patches_model_visible": false,
+        "preseeded_task_orders": [
+          1,
+          2,
+          3
+        ],
+        "pending_seed_orders": [],
+        "controller_verification": "final-only",
+        "diff_basis": "ordered-task-checkpoints-plus-final-cumulative-diff",
+        "fixed_snapshot_oid": "94bcbcc6e2ef3b8e8f8e8797fe551ccbe7b942fd",
+        "concealment": {
+          "order": 1,
+          "head": "27e29e8c6168d9bd43354b4a458c077493b651b9",
+          "head_is_root": true,
+          "reachable_commit_count": 1,
+          "reflog_oids": [
+            "27e29e8c6168d9bd43354b4a458c077493b651b9"
+          ],
+          "remotes": [],
+          "working_tree_clean": true,
+          "fixed_snapshot_object_present": false,
+          "unreachable_objects": [],
+          "leaked_git_admin_paths": [],
+          "model_concealed_paths": [],
+          "model_concealed_paths_present": [],
+          "passed": true
+        },
+        "composite_seed_delivery": {
+          "mode": "preseeded-composite",
+          "preseeded_task_orders": [
+            1,
+            2,
+            3
+          ],
+          "merged_task_orders": [
+            1,
+            2,
+            3
+          ],
+          "composite_diff_sha256": "ac4eab923081641fc398b042626ce32dbfb1f021424624279fcdfa8713af84c2",
+          "model_repo_seed_or_verifier_assets": [],
+          "model_concealed_paths": [],
+          "model_concealed_paths_present": [],
+          "passed": true
+        },
+        "stage_seed_delivery": {
+          "mode": "preseeded-composite",
+          "preseeded_task_orders": [
+            1,
+            2,
+            3
+          ],
+          "merged_task_orders": [
+            1,
+            2,
+            3
+          ],
+          "composite_diff_sha256": "ac4eab923081641fc398b042626ce32dbfb1f021424624279fcdfa8713af84c2",
+          "model_repo_seed_or_verifier_assets": [],
+          "model_concealed_paths": [],
+          "model_concealed_paths_present": [],
+          "passed": true
+        },
+        "fixed_composite_qualification": {
+          "path": "sources/evaluations/fixtures/medium/fastify-fastify/qualification-lifecycle-v1.json",
+          "passed": true,
+          "full_fixed_cumulative_verifier_zero": true,
+          "composite_seed_merge_zero": true,
+          "composite_seeded_verifiers_nonzero": false,
+          "composite_seed_diff_sha256": "ac4eab923081641fc398b042626ce32dbfb1f021424624279fcdfa8713af84c2",
+          "runtime_composite_seed_diff_sha256": "ac4eab923081641fc398b042626ce32dbfb1f021424624279fcdfa8713af84c2",
+          "composite_seed_diff_hash_matches": true
+        },
+        "concealment_passed": true,
+        "composite_seed_delivery_passed": true
+      },
+      "host_integration": {
+        "profile_id": "retrieval-repowise-codex-product-v1",
+        "passed": true,
+        "skipped": false,
+        "controller_install_exit_codes": [],
+        "install_exit_codes": [
+          0,
+          0,
+          0
+        ],
+        "verify_exit_codes": [
+          0
+        ],
+        "missing_required_files": [],
+        "required_files": [
+          "/opt/data/eval-workflow-lanes/workflow-matrix-20260809T051646723395Z-p1945044-r0/fastify-lifecycle-sequence-v1--retrieval-repowise-codex-product-v1/checkout/sources/evaluations/workflow-sessions/prepare-fastify-lifecycle-sequence-v1--retrieval-repowise-codex-product-v1/codex-homes/retrieval-repowise-codex-product-v1/.config/repowise-codex-product-v1/venv/bin/repowise",
+          "/opt/data/eval-workflow-lanes/workflow-matrix-20260809T051646723395Z-p1945044-r0/fastify-lifecycle-sequence-v1--retrieval-repowise-codex-product-v1/checkout/sources/evaluations/workflow-sessions/prepare-fastify-lifecycle-sequence-v1--retrieval-repowise-codex-product-v1/project/repo/.repowise/wiki.db",
+          "/opt/data/eval-workflow-lanes/workflow-matrix-20260809T051646723395Z-p1945044-r0/fastify-lifecycle-sequence-v1--retrieval-repowise-codex-product-v1/checkout/sources/evaluations/workflow-sessions/prepare-fastify-lifecycle-sequence-v1--retrieval-repowise-codex-product-v1/project/repo/.repowise/config.yaml",
+          "/opt/data/eval-workflow-lanes/workflow-matrix-20260809T051646723395Z-p1945044-r0/fastify-lifecycle-sequence-v1--retrieval-repowise-codex-product-v1/checkout/sources/evaluations/workflow-sessions/prepare-fastify-lifecycle-sequence-v1--retrieval-repowise-codex-product-v1/project/repo/.mcp.json",
+          "/opt/data/eval-workflow-lanes/workflow-matrix-20260809T051646723395Z-p1945044-r0/fastify-lifecycle-sequence-v1--retrieval-repowise-codex-product-v1/checkout/sources/evaluations/workflow-sessions/prepare-fastify-lifecycle-sequence-v1--retrieval-repowise-codex-product-v1/project/repo/.codex/config.toml",
+          "/opt/data/eval-workflow-lanes/workflow-matrix-20260809T051646723395Z-p1945044-r0/fastify-lifecycle-sequence-v1--retrieval-repowise-codex-product-v1/checkout/sources/evaluations/workflow-sessions/prepare-fastify-lifecycle-sequence-v1--retrieval-repowise-codex-product-v1/project/repo/.codex/hooks.json",
+          "/opt/data/eval-workflow-lanes/workflow-matrix-20260809T051646723395Z-p1945044-r0/fastify-lifecycle-sequence-v1--retrieval-repowise-codex-product-v1/checkout/sources/evaluations/workflow-sessions/prepare-fastify-lifecycle-sequence-v1--retrieval-repowise-codex-product-v1/project/repo/AGENTS.md"
+        ],
+        "artifact_identities": [
+          {
+            "path": "/opt/data/tool-candidates/repowise-wheel/repowise-0.39.0-py3-none-any.whl",
+            "kind": "python-wheel",
+            "expected_sha256": "e7d3068856a45a3d0501b84e6f52db24521512803a07881cdf145da546d932b4",
+            "actual_sha256": "e7d3068856a45a3d0501b84e6f52db24521512803a07881cdf145da546d932b4",
+            "passed": true
+          },
+          {
+            "path": "/opt/data/tool-candidates/repowise/README.md",
+            "kind": "product-guidance-source",
+            "expected_sha256": "44ed3725616544a8d4eb4695c99e33c8bd28ce2bfde4c12134d1fde0e1d65a3a",
+            "actual_sha256": "44ed3725616544a8d4eb4695c99e33c8bd28ce2bfde4c12134d1fde0e1d65a3a",
+            "passed": true
+          }
+        ],
+        "post_install_artifacts": [],
+        "artifacts": [
+          "sources/evaluations/workflow-sessions/prepare-fastify-lifecycle-sequence-v1--retrieval-repowise-codex-product-v1/tool-host-install-1.txt",
+          "sources/evaluations/workflow-sessions/prepare-fastify-lifecycle-sequence-v1--retrieval-repowise-codex-product-v1/tool-host-install-2.txt",
+          "sources/evaluations/workflow-sessions/prepare-fastify-lifecycle-sequence-v1--retrieval-repowise-codex-product-v1/tool-host-install-3.txt",
+          "sources/evaluations/workflow-sessions/prepare-fastify-lifecycle-sequence-v1--retrieval-repowise-codex-product-v1/tool-host-verify-1.txt"
+        ],
+        "claude_mcp_config": null
+      },
+      "mcp_handshake": {
+        "errors": [],
+        "initialize_passed": true,
+        "non_json_stdout_lines": [],
+        "passed": true,
+        "protocol_version": "2025-06-18",
+        "server_name": "repowise",
+        "stderr_present": true,
+        "tool_names": [
+          "get_answer",
+          "get_change_risk",
+          "get_context",
+          "get_dead_code",
+          "get_health",
+          "get_overview",
+          "get_risk",
+          "get_symbol",
+          "get_why",
+          "list_repos",
+          "search_codebase"
+        ],
+        "tools_list_passed": true,
+        "profile_id": "retrieval-repowise-codex-product-v1",
+        "required": true,
+        "attempted": true,
+        "attempt_required": true,
+        "probe_exit_code": 0,
+        "activation_passed": true,
+        "treatment_degradation": false,
+        "known_failure": null,
+        "secondary_handshakes": [],
+        "tool_count": 11
+      },
+      "codex_preflight": {
+        "profile_id": "retrieval-repowise-codex-product-v1",
+        "passed": true,
+        "doctor_exit_code": 1,
+        "mcp_list_exit_code": 0,
+        "tool_preflight_exit_code": 0,
+        "coverage_preflight_exit_code": null,
+        "missing_declared_filter_commands": [],
+        "forbidden_command_probe_exit_code": 0,
+        "forbidden_mcp_hits": [],
+        "forbidden_config_hits": [],
+        "visible_forbidden_commands": [],
+        "failure_reasons": [],
+        "warnings": [
+          "codex doctor exited 1; preserve the diagnostic, but use the isolated MCP/config probes and task execution as gates"
+        ],
+        "artifacts": {
+          "doctor": "sources/evaluations/workflow-sessions/prepare-fastify-lifecycle-sequence-v1--retrieval-repowise-codex-product-v1/codex-doctor.txt",
+          "mcp_list": "sources/evaluations/workflow-sessions/prepare-fastify-lifecycle-sequence-v1--retrieval-repowise-codex-product-v1/codex-mcp-list.txt",
+          "effective_config": "sources/evaluations/workflow-sessions/prepare-fastify-lifecycle-sequence-v1--retrieval-repowise-codex-product-v1/codex-effective-config.toml",
+          "forbidden_command_visibility": "sources/evaluations/workflow-sessions/prepare-fastify-lifecycle-sequence-v1--retrieval-repowise-codex-product-v1/forbidden-command-visibility.txt",
+          "tool_preflight": "sources/evaluations/workflow-sessions/prepare-fastify-lifecycle-sequence-v1--retrieval-repowise-codex-product-v1/tool-preflight.txt",
+          "tool_coverage_preflight": null
+        }
+      },
+      "tool_warmup_exit_code": 0,
+      "protocol_path": "sources/evaluations/protocols/fastify-lifecycle-sequence-v1-retrieval-repowise-codex-product-v1-7ff667bd9fe9.json",
+      "protocol_sha256": "3f93758bb26b800af78715828357f734211df2b17e97e89f0c3ed5cbea8bc4f5",
+      "qualification_checks": {
+        "lane_exit_zero": true,
+        "prepared": true,
+        "prepare_verification": true,
+        "host_integration": true,
+        "codex_preflight": true,
+        "warmup": true,
+        "mcp_handshake": true
+      }
+    }
+  ]
+}

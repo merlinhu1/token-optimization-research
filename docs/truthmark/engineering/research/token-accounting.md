@@ -5,7 +5,7 @@ doc_type: contract
 source_of_truth:
   - ../../../../data/workflow-sessions.json
   - ../../../../scripts/run_codex_workflow_evaluation.py
-last_reviewed: 2026-08-08
+last_reviewed: 2026-08-09
 ---
 
 # Token Accounting And Evaluation Contracts
@@ -32,9 +32,10 @@ This contract governs active Lifecycle V1 provider-token samples, retained lifec
 - After each successful direct-account Claude task, the runner atomically carries a changed lane-private `.credentials.json` back to the explicitly supplied account home and records a path-redacted sync receipt. Failed Claude tasks never overwrite the source credential snapshot; direct-Anthropic production matrices remain serialized so separate lanes cannot race the account refresh state.
 - The matrix reuses the first operationally valid baseline for a causal comparison fingerprint and replicate.
 - Direct-Anthropic Claude Code treatment matrices reuse the accepted same-condition Claude baseline pool; they do not fall back to the canonical Codex pool.
-- Direct-Anthropic Sonnet treatment lanes reserve an immutable per-sequence/profile attempt receipt before provider work. Thirteen Fastify and two Beets treatments are accepted at 52,068,150 provider tokens and 8,641,473.2 weighted units. Fastify/Cartog, Fastify/TokenJuice, and Beets/Caveman are occupied failures excluded from registry and aggregate claims. Caveman retained 88,550 partial provider tokens from its first attempted task, but the three-task workflow did not complete and has no comparable weighted result. Twelve Beets lanes remain unlaunched; none of the occupied failure identities may be reused.
+- Direct-Anthropic Sonnet treatment lanes reserve an immutable per-sequence/profile attempt receipt before provider work. Thirteen Fastify and two Beets treatments are accepted at 52,068,150 provider tokens and 8,641,473.2 weighted units. Fastify/Cartog and Fastify/TokenJuice are occupied failures excluded from registry and aggregate claims. Thirteen Beets lanes remain unlaunched; occupied failure identities may not be reused.
 - Repository validation requires complete provider usage, structural isolation, clean execution integrity, and recoverable compact evidence—not verifier success or source review.
 - Before any non-baseline provider launch, both repository validation and the direct runner require exact parity approval plus a current provider-free qualification receipt for every active fixture/profile protocol binding; MCP profiles additionally require non-empty `tools/list` proof.
+- RepoWise 0.39.0 is pinned and provider-free qualified on Fastify and Beets for both its official Codex integration and a documented generic-MCP OpenCode ablation. Four frozen protocols exist, but no provider-backed RepoWise session or effectiveness result exists.
 - Canonical treatment profiles install every author-recommended Codex surface, including product-authored guidance, native skills/plugins, and reviewed hooks; reduced or prompt-emulated setups are ablations or invalid assignments, not product treatments.
 - The historical shared-runner qualification covered 45 fixture/profile bindings across 15 profiles with zero provider calls; those receipts do not authorize Lifecycle V1 treatments.
 - Thirty-eight provider-backed baseline records are retained under earlier frozen contracts; Fastify and Beets additionally retain one accepted Lifecycle V1 r0 pilot each, while the owner-declared-invalid Terraform V1 r0 was removed under its invalidation receipt.
@@ -153,6 +154,8 @@ Update this document whenever token eligibility, comparison identity, provider a
 - ../../../../scripts/trust_codex_plugin_hooks.py
 - ../../../../scripts/install_jcodemunch_codex_guidance.py
 - ../../../../sources/evaluations/audits/corrected-integration-qualification-jcodemunch-codex-mcp-v2-20260719.json
+- ../../../../sources/evaluations/audits/corrected-integration-qualification-repowise-codex-product-v1-20260809.json
+- ../../../../sources/evaluations/audits/corrected-integration-qualification-repowise-opencode-product-v1-20260809.json
 - ../../../../sources/evaluations/audits/opencode-next-five-batch2-results-20260730.json
 - ../../../../scripts/validate_repository.py
 

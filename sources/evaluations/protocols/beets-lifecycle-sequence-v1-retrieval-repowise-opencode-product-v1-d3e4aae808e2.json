@@ -1,10 +1,10 @@
 {
   "protocol_schema_version": 3,
-  "protocol_id": "beets-lifecycle-sequence-v1-retrieval-sdl-mcp-claude-code-product-v1-40e48d8c3506",
+  "protocol_id": "beets-lifecycle-sequence-v1-retrieval-repowise-opencode-product-v1-d3e4aae808e2",
   "status": "frozen-ready-not-run",
-  "outcome": "Frozen retrieval-sdl-mcp-claude-code-product-v1 protocol for beets-lifecycle-sequence-v1; no provider/model run has occurred.",
+  "outcome": "Frozen retrieval-repowise-opencode-product-v1 protocol for beets-lifecycle-sequence-v1; no provider/model run has occurred.",
   "frozen_at": "2026-08-01",
-  "hypothesis": "retrieval-sdl-mcp-claude-code-product-v1 produces reproducible provider-reported token and software-quality evidence for beets-lifecycle-sequence-v1",
+  "hypothesis": "retrieval-repowise-opencode-product-v1 produces reproducible provider-reported token and software-quality evidence for beets-lifecycle-sequence-v1",
   "evidence_stage_target": "reproduction",
   "task_fixture": {
     "fixture_id": "medium-beetbox-beets",
@@ -17,31 +17,31 @@
     "timeout_seconds_per_task": 3600
   },
   "baseline": {
-    "profile_id": "baseline-claude-code-no-mcp",
-    "runtime_id": "claude-code",
-    "provider": "anthropic",
-    "model": "claude-sonnet-5",
-    "model_condition_id": "claude-code-anthropic-sonnet-5-high",
+    "profile_id": "baseline-bare-codex",
+    "runtime_id": "codex-cli",
+    "provider": "openai",
+    "model": "gpt-5.6-sol",
+    "model_condition_id": "codex-openai-gpt-5-6-sol-high",
     "reasoning_effort": "high",
     "command": ""
   },
   "comparison_baseline": {
-    "profile_id": "baseline-claude-code-no-mcp",
-    "runtime_id": "claude-code",
-    "provider": "anthropic",
-    "model": "claude-sonnet-5",
-    "model_condition_id": "claude-code-anthropic-sonnet-5-high",
+    "profile_id": "runtime-opencode-codex-product-v1",
+    "runtime_id": "opencode-cli",
+    "provider": "openai",
+    "model": "gpt-5.6-sol",
+    "model_condition_id": "opencode-openai-gpt-5-6-sol-high",
     "reasoning_effort": "high",
-    "command": ""
+    "selection_policy": "sequence-pool-replicate-matched-first-valid"
   },
   "treatment": {
-    "profile_id": "retrieval-sdl-mcp-claude-code-product-v1",
-    "runtime_id": "claude-code",
-    "provider": "anthropic",
-    "model": "claude-sonnet-5",
-    "model_condition_id": "claude-code-anthropic-sonnet-5-high",
+    "profile_id": "retrieval-repowise-opencode-product-v1",
+    "runtime_id": "opencode-cli",
+    "provider": "openai",
+    "model": "gpt-5.6-sol",
+    "model_condition_id": "opencode-openai-gpt-5-6-sol-high",
     "reasoning_effort": "high",
-    "command": "python3 scripts/run_claude_code_workflow_model_condition.py --workflow-model-condition-id claude-code-anthropic-sonnet-5-high --workflow-model claude-sonnet-5 --workflow-reasoning-effort high --sequence-id beets-lifecycle-sequence-v1 --profile-id retrieval-sdl-mcp-claude-code-product-v1 --timeout-per-task 3600 --protocol sources/evaluations/protocols/beets-lifecycle-sequence-v1-retrieval-sdl-mcp-claude-code-product-v1-40e48d8c3506.json --docker-image token-eval-codex:latest"
+    "command": "python3 scripts/run_opencode_workflow_model_condition.py --workflow-model-condition-id opencode-openai-gpt-5-6-sol-high --workflow-model gpt-5.6-sol --workflow-reasoning-effort high --sequence-id beets-lifecycle-sequence-v1 --profile-id retrieval-repowise-opencode-product-v1 --timeout-per-task 3600 --protocol sources/evaluations/protocols/beets-lifecycle-sequence-v1-retrieval-repowise-opencode-product-v1-d3e4aae808e2.json --docker-image token-eval-codex:latest"
   },
   "token_accounting_boundary": {
     "fields": [
@@ -55,14 +55,14 @@
   },
   "baseline_pool": {
     "protocol_version": "baseline-pool-v1",
-    "protocol_fingerprint": "ab14b9edcf57",
+    "protocol_fingerprint": "d8cfc5066f76",
     "descriptor": {
       "version": "baseline-pool-v1",
       "task_family_generation": "lifecycle-v1",
       "runner_contract_version": "workflow-runner-v10",
-      "runner_sha256": "d81e3c111054bfeb43e515efadb65e291e0c8647832f3ee2edf170d50f29e600",
+      "runner_sha256": "cf8c2edc92df6029e051aec96dc089fc226672260c8ce286f5d3403552518797",
       "qualification_generator_sha256": "a0c871d2a500a3fe6a11b78ef4ec20ef29cf12f5db44fdae53344e4327ec559b",
-      "validator_sha256": "a992aa7d5e304dd87dabd8973f92e40bf182ce59398f41ab705a3a27251248f2",
+      "validator_sha256": "32d677ae10bf2364845a6eac88ec3ab95d0a76fea9a52b608e91e590f1ef69d2",
       "sequence_id": "beets-lifecycle-sequence-v1",
       "sequence_contract": "feature-refactor-review",
       "fixture_id": "medium-beetbox-beets",
@@ -178,28 +178,27 @@
         "sha256": "03b30282786a471edadc80ed7cc4842c7c9bfdc912de61b9ce0bdeb66d3b494d"
       },
       "baseline_profile": {
-        "profile_id": "baseline-claude-code-no-mcp",
+        "profile_id": "baseline-bare-codex",
         "profile_type": "control",
         "enabled_surfaces": [
-          "claude-code-native-shell-edit",
-          "project-claude-md-instruction-discovery"
+          "codex-native-shell-edit"
         ],
         "disabled_overlaps": [
           "all MCP servers",
           "all token-saving surfaces",
-          "global Claude instructions",
+          "global Codex instructions",
           "hooks",
           "skills/plugins",
           "warm indexes"
         ]
       },
       "agent": {
-        "runtime_id": "claude-code",
-        "provider": "anthropic",
-        "model": "claude-sonnet-5",
-        "model_condition_id": "claude-code-anthropic-sonnet-5-high",
+        "runtime_id": "codex-cli",
+        "provider": "openai",
+        "model": "gpt-5.6-sol",
+        "model_condition_id": "codex-openai-gpt-5-6-sol-high",
         "reasoning_effort": "high",
-        "runtime_version_condition": "captured-at-run-and-bound-to-record"
+        "codex_version_condition": "captured-at-run-and-bound-to-record"
       },
       "runtime_inputs": {
         "timeout_seconds_per_task": 3600,
@@ -223,9 +222,9 @@
             "sha256": "fbf1d7a9c84b658a2433035221ba18c57508c254d711a06f305e2f610839a45f"
           }
         ],
-        "claude_runtime_condition": "claude-code-anthropic-sonnet-5-high",
-        "model_condition_id": "claude-code-anthropic-sonnet-5-high",
-        "model_condition_launcher": "scripts/run_claude_code_workflow_model_condition.py"
+        "codex_runtime_condition": "codex-openai-gpt-5-6-sol-high",
+        "model_condition_id": "codex-openai-gpt-5-6-sol-high",
+        "model_condition_launcher": "scripts/run_codex_workflow_model_condition.py"
       },
       "isolation": {
         "prompt_delivery": "sequential-one-task-at-a-time",
@@ -249,80 +248,95 @@
         "model_concealed_paths": []
       },
       "model_condition_override": {
-        "model_condition_id": "claude-code-anthropic-sonnet-5-high",
-        "runtime_id": "claude-code",
-        "provider": "anthropic",
-        "model": "claude-sonnet-5",
+        "model_condition_id": "codex-openai-gpt-5-6-sol-high",
+        "runtime_id": "codex-cli",
+        "provider": "openai",
+        "model": "gpt-5.6-sol",
         "reasoning_effort": "high",
-        "registry_status": "configured-provider-free",
+        "registry_status": "active-model-comparison",
         "launcher": {
-          "path": "scripts/run_claude_code_workflow_model_condition.py",
-          "sha256": "6a3f81ff751cd8219cd93ee33753d6efb25fff779f6228dc3c822f98e2fa436f",
-          "condition_runtime_path": "scripts/workflow_model_condition_runtime.py",
-          "condition_runtime_sha256": "01479bd991417d9f5bb5fcef513e1beee3f1f05512ab818429cac24e0ebde866"
+          "path": "scripts/run_codex_workflow_model_condition.py",
+          "sha256": "1432d8583491c5505c4cbf95695e8288584492d2c14026dfd3322d4050852edc"
         }
       }
     }
   },
   "selected_execution": {
-    "descriptor_sha256": "d6899ac3d4970da81b756e5c2187937b455e34c4c540bb52012bac0629a83e7a",
+    "descriptor_sha256": "3f4a1c4e285c8f2f61095e9c97eb6797ec9a52a6f3ec61e3d4807c2da138f05e",
     "descriptor": {
       "version": "execution-condition-v1",
       "sequence_id": "beets-lifecycle-sequence-v1",
       "execution_role": "individual_tool_treatment",
       "selected_profile": {
-        "profile_id": "retrieval-sdl-mcp-claude-code-product-v1",
+        "profile_id": "retrieval-repowise-opencode-product-v1",
         "profile_type": "individual_tool",
         "component_ids": [
-          "retrieval-sdl-mcp-claude-code-product-v1"
+          "retrieval-repowise-opencode-product-v1"
         ],
         "enabled_surfaces": [
-          "claude-code-retrieval/context+mcp+guidance+hooks"
+          "retrieval-context",
+          "opencode-mcp",
+          "product-authored-guidance",
+          "warm-index"
         ],
         "disabled_overlaps": [
-          "all unlisted surfaces",
-          "other token-saving tools",
-          "OpenRouter transport"
+          "all unlisted surfaces"
         ],
-        "registry_entry_sha256": "8cbbea845b161f5d11d70e7440d7d00878af67936ac261ab6c737586f34033e9",
+        "registry_entry_sha256": "9282b820f4574b9781847da67601a2fa315e9f50eadf9d388bed9b8856f31c25",
         "registry_entry": {
-          "id": "retrieval-sdl-mcp-claude-code-product-v1",
+          "id": "retrieval-repowise-opencode-product-v1",
+          "name": "RepoWise OpenCode product V1",
           "profile_type": "individual_tool",
           "objective_scope": "individual_tool_effectiveness",
-          "substrate": "claude-code",
-          "status": "protocol-prepared",
+          "status": "screening-ablation",
+          "substrate": "opencode-cli",
           "enabled_surfaces": [
-            "claude-code-retrieval/context+mcp+guidance+hooks"
+            "retrieval-context",
+            "opencode-mcp",
+            "product-authored-guidance",
+            "warm-index"
           ],
           "disabled_overlaps": [
-            "all unlisted surfaces",
-            "other token-saving tools",
-            "OpenRouter transport"
+            "all unlisted surfaces"
+          ],
+          "native_agent_tools_allowed": [
+            "opencode-native-shell-edit",
+            "opencode-native-file-read-search",
+            "git",
+            "verifier-commands"
+          ],
+          "forbidden_surfaces": [
+            "all external retrieval, compression, memory, MCP, skills, plugins, subagents, and web tools except the assigned product surfaces"
           ],
           "components": [
             {
-              "component_id": "retrieval-sdl-mcp-claude-code-product-v1",
-              "surface": "retrieval/context+mcp+guidance+hooks",
+              "component_id": "retrieval-repowise-opencode-product-v1",
+              "surface": "retrieval-context+opencode-mcp+product-guidance+warm-index",
               "role": "individual_tool"
             }
           ],
           "install": {
-            "policy": "Use the pinned SDL-MCP source snapshot from retrieval-sdl-mcp-codex-product-v1 and install every product-authored Claude Code surface it documents (MCP, hooks, skills, plugins, rules, and guidance) into the lane-private CLAUDE_CONFIG_DIR. Require provider-free artifact, configuration, and handshake proofs before any Anthropic request."
+            "policy": "Install the pinned RepoWise 0.39.0 wheel in a lane-private venv, run its provider-free structural init with generated AGENTS.md guidance, register its local stdio MCP server in the isolated OpenCode runtime, and require initialize plus tools/list before provider execution."
           },
           "reset": {
-            "policy": "Delete the lane-private Claude config, tool state, indexes, generated guidance, hooks, plugins, and background processes after evidence capture; retain only immutable run artifacts and source hashes."
+            "policy": "Delete the lane-private OpenCode XDG directories, venv, RepoWise index, generated project integration and guidance, auth translation, and background processes after evidence capture."
           },
           "evaluation_protocol": {
             "tool_use_policy": "natural",
-            "tool_state": "qualification-pending",
-            "integration_state": "official-claude-code-native-surface-qualified-before-provider",
-            "instruction_policy": "product-authored guidance only; no evaluator-authored invocation steering",
-            "assignment_proof": "provider-free pinned source, exact Claude configuration, native activation, and required MCP/hooks/skills/plugin smoke checks"
+            "tool_state": "warm-index+product-guidance",
+            "integration_state": "host-agnostic-opencode-mcp+generated-guidance",
+            "instruction_policy": "product-authored generated guidance",
+            "assignment_proof": "provider-free pinned wheel, source and adapter identities, effective OpenCode configuration, deterministic index, model-runtime PATH, initialize, and tools/list required"
           },
-          "source_profiles": [
-            "retrieval-sdl-mcp-codex-product-v1"
-          ],
-          "notes": "Claude Code preparation profile for SDL-MCP; source profile retrieval-sdl-mcp-codex-product-v1. Provider execution remains blocked until the native Claude surface is qualified in isolation."
+          "source_snapshot": {
+            "repository": "repowise-dev/repowise",
+            "commit": "a3b6714c5523dc7c45d6bce0522035339bcf3afd",
+            "version": "0.39.0",
+            "wheel_sha256": "e7d3068856a45a3d0501b84e6f52db24521512803a07881cdf145da546d932b4",
+            "runtime_adapter": "/opt/data/tool-candidates/opencode-adapter-v9/opencode_workflow_adapter.py",
+            "runtime_adapter_sha256": "6cabc28420901ec9fea5997bd63559311d73d2c7fb9c86e54d64ba42c67b822e"
+          },
+          "notes": "RepoWise does not publish an OpenCode-specific installer; this uses its documented host-agnostic stdio MCP surface plus its own generated AGENTS.md guidance. Prose generation remains disabled during provider-free preparation."
         }
       },
       "model_facing_prompts": {
@@ -347,192 +361,203 @@
         ]
       },
       "tool_adapter": {
-        "tool_id": "sdl-mcp-codex-product-v1",
+        "tool_id": "repowise-opencode-product-v1",
         "tool_manifest": "scripts/run_codex_fixture_evaluation.py:TOOL_CONFIGS",
-        "tool_manifest_sha256": "628c7082e57d39a6eb2ffcea7b854633dd201145c55107083864580bb659df14",
+        "tool_manifest_sha256": "59e3a8271387caf13a8069aa138371f26577d33f864323514b49eca5405301c8",
         "tool_config": {
-          "display_name": "SDL-MCP 0.13.2 official Codex setup",
-          "lane_name": "retrieval-sdl-mcp-codex-product-v1",
-          "surface": "retrieval/context+mcp+codex-guidance+codex-hooks",
-          "mcp_server": "sdl-mcp",
+          "display_name": "RepoWise 0.39.0 OpenCode MCP with product guidance",
+          "lane_name": "retrieval-repowise-opencode-product-v1",
+          "surface": "opencode-mcp+product-guidance+warm-index",
           "allowed_terms": [
-            "sdl-mcp",
-            "sdl",
-            "runtimeExecute",
-            "sdl.context",
-            "sdl.retrieve",
-            "sdl.workflow"
+            "opencode",
+            "repowise"
           ],
-          "data_dir_name": "sdl-mcp-codex-product-v1",
-          "mcp_command": "/opt/data/opt/node-v24.18.0-linux-x64/bin/node",
-          "mcp_args": [
-            "/opt/data/tool-candidates/sdl-mcp/dist/main.js",
-            "serve",
-            "--stdio"
+          "data_dir_name": "retrieval-repowise-opencode-product-v1",
+          "mounts": [
+            "/opt/data/tool-candidates/opencode-adapter-v9/opencode_workflow_adapter.py",
+            "/opt/data/tool-candidates/repowise",
+            "/opt/data/tool-candidates/repowise-wheel/repowise-0.39.0-py3-none-any.whl"
+          ],
+          "executable": "/opt/data/.local/bin/opencode",
+          "expected_executable_sha256": "7c4d91c84d2bfdeabb59257e3490c5e5acb08f2aacb3e42f3ddc296a1c3f1aca",
+          "binary_mount_target": "/opt/data/.local/bin/opencode",
+          "codex_wrapper": {
+            "command": "/usr/bin/python3",
+            "args": [
+              "/opt/data/tool-candidates/opencode-adapter-v9/opencode_workflow_adapter.py",
+              "--opencode-binary",
+              "/opt/data/.local/bin/opencode",
+              "--expected-opencode-sha256",
+              "7c4d91c84d2bfdeabb59257e3490c5e5acb08f2aacb3e42f3ddc296a1c3f1aca",
+              "--treatment",
+              "repowise"
+            ]
+          },
+          "preflight_command": [
+            "/usr/bin/python3",
+            "/opt/data/tool-candidates/opencode-adapter-v9/opencode_workflow_adapter.py",
+            "--opencode-binary",
+            "/opt/data/.local/bin/opencode",
+            "--expected-opencode-sha256",
+            "7c4d91c84d2bfdeabb59257e3490c5e5acb08f2aacb3e42f3ddc296a1c3f1aca",
+            "--treatment",
+            "repowise",
+            "--probe"
+          ],
+          "tool_manifest_identity": "current-file-v1",
+          "path_entries": [
+            "{tool_data_dir}/venv/bin"
           ],
           "env": {
-            "SDL_CONFIG": "{tool_data_dir}/sdlmcp.config.json",
-            "SDL_CONFIG_HOME": "{tool_data_dir}",
-            "SDL_GRAPH_DB_PATH": "{tool_data_dir}/sdl-mcp-graph.lbug",
-            "SDL_MCP_SKIP_SETUP_WIZARD": "1"
-          },
-          "mounts": [
-            "/opt/data/tool-candidates/sdl-mcp",
-            "/opt/data/tool-candidates/sdl-mcp-install-home"
-          ],
-          "diff_exclude_paths": [
-            "AGENTS.md",
-            "CODEX.md",
-            "SDL.md",
-            "codex-mcp-config.json",
-            ".codex"
-          ],
-          "codex_features": {
-            "hooks": true
+            "OPENCODE_TOOL_DATA_DIR": "{tool_data_dir}",
+            "REPOWISE_SKIP_EDITOR_SETUP": "1"
           },
           "host_integration": {
             "install_commands": [
               [
-                "/bin/bash",
-                "-lc",
-                "set -euo pipefail; mkdir -p {codex_home}/home/.cache/sdl-mcp; cp -a /opt/data/tool-candidates/sdl-mcp-install-home/.cache/sdl-mcp/models {codex_home}/home/.cache/sdl-mcp/"
+                "/opt/data/opt/uv/uv",
+                "venv",
+                "{tool_data_dir}/venv",
+                "--python",
+                "python3"
               ],
               [
-                "/opt/data/opt/node-v24.18.0-linux-x64/bin/node",
-                "/opt/data/tool-candidates/sdl-mcp/dist/cli/index.js",
+                "/opt/data/opt/uv/uv",
+                "pip",
+                "install",
+                "--python",
+                "{tool_data_dir}/venv/bin/python",
+                "/opt/data/tool-candidates/repowise-wheel/repowise-0.39.0-py3-none-any.whl"
+              ],
+              [
+                "{tool_data_dir}/venv/bin/repowise",
                 "init",
-                "-y",
-                "--repo-path",
-                "{repo}",
-                "--client",
-                "codex",
-                "--enforce-agent-tools",
-                "--auto-index",
-                "--config",
-                "{tool_data_dir}/sdlmcp.config.json"
+                "--yes",
+                "--no-prose",
+                "--no-claude-md",
+                "--no-editor-setup",
+                "--no-codex",
+                "--agents",
+                "--no-workspace",
+                "{repo}"
               ]
             ],
             "verify_commands": [
               [
-                "/opt/data/opt/node-v24.18.0-linux-x64/bin/node",
-                "/opt/data/tool-candidates/sdl-mcp/dist/cli/index.js",
-                "version",
-                "--config",
-                "{tool_data_dir}/sdlmcp.config.json"
-              ],
-              [
-                "/opt/data/opt/node-v24.18.0-linux-x64/bin/node",
-                "/opt/data/tool-candidates/sdl-mcp/dist/cli/index.js",
-                "doctor",
-                "--config",
-                "{tool_data_dir}/sdlmcp.config.json"
+                "{tool_data_dir}/venv/bin/repowise",
+                "--version"
               ]
             ],
             "required_files": [
-              "/opt/data/tool-candidates/sdl-mcp/package.json",
-              "/opt/data/tool-candidates/sdl-mcp/package-lock.json",
-              "/opt/data/tool-candidates/sdl-mcp/dist/cli/index.js",
-              "/opt/data/tool-candidates/sdl-mcp/dist/main.js",
-              "/opt/data/tool-candidates/sdl-mcp/node_modules/sdl-mcp-native-linux-x64-gnu/sdl-mcp-native.linux-x64-gnu.node",
-              "/opt/data/tool-candidates/sdl-mcp/node_modules/@ladybugdb/core-linux-x64/lbugjs.node",
-              "{tool_data_dir}/sdlmcp.config.json",
-              "{codex_home}/config.toml",
-              "{repo}/AGENTS.md",
-              "{repo}/CODEX.md",
-              "{repo}/SDL.md",
-              "{repo}/.codex/config.toml",
-              "{repo}/.codex/hooks.json",
-              "{repo}/.codex/hooks/load-sdl-skill.mjs",
-              "{repo}/.codex/hooks/force-sdl-mcp.mjs"
+              "{tool_data_dir}/venv/bin/repowise",
+              "{repo}/.repowise/wiki.db",
+              "{repo}/.repowise/config.yaml",
+              "{repo}/.mcp.json",
+              "{repo}/AGENTS.md"
             ],
-            "timeout_seconds": 1800
+            "timeout_seconds": 3600
           },
-          "artifact_identities": [
-            {
-              "path": "/opt/data/tool-candidates/sdl-mcp/package.json",
-              "sha256": "610be2ef31f79c66c330b3605aa2ceb8bce94fe9cb1e1fada1ee70f6dfd78cd1",
-              "kind": "source-manifest"
-            },
-            {
-              "path": "/opt/data/tool-candidates/sdl-mcp/package-lock.json",
-              "sha256": "c74182a87adc5b7d14a9981a392410cee6eb4b782fa802e77c2e7a055dd55465",
-              "kind": "lockfile"
-            },
-            {
-              "path": "/opt/data/tool-candidates/sdl-mcp/dist/main.js",
-              "sha256": "ce884fc3e1f3191c9a5c8adfaa03d9dab9ea73013b893db6f8ede8355408a4c7",
-              "kind": "compiled-server"
-            },
-            {
-              "path": "/opt/data/tool-candidates/sdl-mcp/dist/cli/index.js",
-              "sha256": "b9e33355f5673c730c0e530de2ff7edd8d5dafbe41ea628e072a6446f35fe681",
-              "kind": "compiled-cli"
-            },
-            {
-              "path": "/opt/data/tool-candidates/sdl-mcp/node_modules/sdl-mcp-native-linux-x64-gnu/sdl-mcp-native.linux-x64-gnu.node",
-              "sha256": "b1929acef9c7e2755e5f991265dc64e034b6c200034f422e309a8590bc55869e",
-              "kind": "native-addon"
-            },
-            {
-              "path": "/opt/data/tool-candidates/sdl-mcp/node_modules/@ladybugdb/core-linux-x64/lbugjs.node",
-              "sha256": "28a59bb37cd9c55d78bf106f8765c6122c27a3308493fc49bc7897cae8eef826",
-              "kind": "ladybug-addon"
-            }
+          "mcp_server": "repowise",
+          "mcp_command": "{tool_data_dir}/venv/bin/repowise",
+          "mcp_args": [
+            "mcp"
           ],
           "mcp_handshake": {
             "required": true,
             "method": "initialize-and-tools-list",
-            "timeout_seconds": 90
+            "timeout_seconds": 180
           },
-          "default_tool_state": "warm-index"
+          "artifact_identities": [
+            {
+              "path": "/opt/data/tool-candidates/repowise-wheel/repowise-0.39.0-py3-none-any.whl",
+              "sha256": "e7d3068856a45a3d0501b84e6f52db24521512803a07881cdf145da546d932b4",
+              "kind": "python-wheel"
+            },
+            {
+              "path": "/opt/data/tool-candidates/repowise/README.md",
+              "sha256": "44ed3725616544a8d4eb4695c99e33c8bd28ce2bfde4c12134d1fde0e1d65a3a",
+              "kind": "product-guidance-source"
+            },
+            {
+              "path": "/opt/data/tool-candidates/opencode-adapter-v9/opencode_workflow_adapter.py",
+              "sha256": "6cabc28420901ec9fea5997bd63559311d73d2c7fb9c86e54d64ba42c67b822e",
+              "kind": "runtime-adapter"
+            }
+          ],
+          "effective_host_config": {
+            "required": true,
+            "source": "adapter-probe"
+          },
+          "diff_exclude_paths": [
+            ".repowise",
+            ".mcp.json",
+            "AGENTS.md"
+          ],
+          "default_tool_state": "warm-index+product-guidance"
         },
-        "tool_config_sha256": "e1272075bab140a3cffa2b3564b85f5db1d0f6c061a695e94284152148ce333a",
-        "tool_state": "qualification-pending",
+        "tool_config_sha256": "3aea0cb022b404bd23e8df87a58b4224c5eaabef7ad1582d5470e3696d5036a8",
+        "tool_state": "warm-index+product-guidance",
         "tool_use_policy": "natural",
         "command_identity": {
           "kind": "mcp_command",
           "command": [
-            "/opt/data/opt/node-v24.18.0-linux-x64/bin/node",
-            "/opt/data/tool-candidates/sdl-mcp/dist/main.js",
-            "serve",
-            "--stdio"
+            "{tool_data_dir}/venv/bin/repowise",
+            "mcp"
           ]
         },
         "binary_identity": {
-          "executable_token": "/opt/data/opt/node-v24.18.0-linux-x64/bin/node",
-          "resolved_path": "/opt/data/opt/node-v24.18.0-linux-x64/bin/node",
-          "realpath": "/opt/data/opt/node-v24.18.0-linux-x64/bin/node",
-          "sha256": "41a74efb34cbde5c7632cdac0cf8bd1a14d0b8d73dc1e82755014d9a9ce70f5c",
-          "metadata": {
-            "size": 123655872,
-            "mode": "-rwxr-xr-x",
-            "uid": 10000,
-            "gid": 10000,
-            "mtime_ns": 1782236933000000000
-          },
-          "version": {
-            "command": [
-              "/opt/data/opt/node-v24.18.0-linux-x64/bin/node",
-              "--version"
+          "kind": "generated-by-host-integration",
+          "command_template": "{tool_data_dir}/venv/bin/repowise",
+          "install_commands": [
+            [
+              "/opt/data/opt/uv/uv",
+              "venv",
+              "{tool_data_dir}/venv",
+              "--python",
+              "python3"
             ],
-            "environment_path": "/opt/data/bin:/opt/data/.local/bin:/opt/data/opt/go/bin:/opt/data/opt/uv:/opt/data/opt/node-v24.18.0-linux-x64/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
-            "captured": true,
-            "exit_code": 0,
-            "output": "v24.18.0",
-            "truncated": false
-          }
+            [
+              "/opt/data/opt/uv/uv",
+              "pip",
+              "install",
+              "--python",
+              "{tool_data_dir}/venv/bin/python",
+              "/opt/data/tool-candidates/repowise-wheel/repowise-0.39.0-py3-none-any.whl"
+            ],
+            [
+              "{tool_data_dir}/venv/bin/repowise",
+              "init",
+              "--yes",
+              "--no-prose",
+              "--no-claude-md",
+              "--no-editor-setup",
+              "--no-codex",
+              "--agents",
+              "--no-workspace",
+              "{repo}"
+            ]
+          ],
+          "install_contract_sha256": "75be78187985c9f65a620cd9215239e2a4098e659435843c1299543c0ab214d2"
         },
         "source_identity": [
           {
-            "path": "/opt/data/tool-candidates/sdl-mcp",
+            "path": "/opt/data/tool-candidates/opencode-adapter-v9/opencode_workflow_adapter.py",
             "exists": true,
-            "kind": "directory",
-            "package_json_sha256": "610be2ef31f79c66c330b3605aa2ceb8bce94fe9cb1e1fada1ee70f6dfd78cd1"
+            "kind": "file",
+            "sha256": "6cabc28420901ec9fea5997bd63559311d73d2c7fb9c86e54d64ba42c67b822e"
           },
           {
-            "path": "/opt/data/tool-candidates/sdl-mcp-install-home",
+            "path": "/opt/data/tool-candidates/repowise",
             "exists": true,
-            "kind": "directory"
+            "kind": "directory",
+            "git_head": "a3b6714c5523dc7c45d6bce0522035339bcf3afd",
+            "package_json_sha256": "58e654f39c00fcdc775bf31f8bcfa5d0fac17b1773dba8228cda47249d9c40ac"
+          },
+          {
+            "path": "/opt/data/tool-candidates/repowise-wheel/repowise-0.39.0-py3-none-any.whl",
+            "exists": true,
+            "kind": "file",
+            "sha256": "e7d3068856a45a3d0501b84e6f52db24521512803a07881cdf145da546d932b4"
           }
         ]
       },
@@ -551,7 +576,7 @@
         "dockerfile_path": "sources/evaluations/fixtures/container/Dockerfile",
         "dockerfile_sha256": "47c91967ce25014ce54879514f51d2ff0326651be1087209115eff4d358226b3",
         "fixture_runner_path": "scripts/run_codex_fixture_evaluation.py",
-        "fixture_runner_sha256": "628c7082e57d39a6eb2ffcea7b854633dd201145c55107083864580bb659df14",
+        "fixture_runner_sha256": "59e3a8271387caf13a8069aa138371f26577d33f864323514b49eca5405301c8",
         "mcp_probe_path": "scripts/probe_mcp_stdio.py",
         "mcp_probe_sha256": "7c06ea36ee5cac933a97140b84a41405fc99b45152388e8d7c6659136af698fd",
         "codex_entrypoint_path": "sources/evaluations/fixtures/container/codex-entrypoint.sh",
@@ -565,13 +590,17 @@
           "external_retrieval_audit": "fail-closed"
         },
         "isolation_policy": "fresh lane-specific agent home/XDG state; provider-only network with model shell and agent web tools disabled; sequential one-task prompt delivery; controller seed/verifier scripts excluded while controller-only affected-component compile commands retained; no acceptance-test assets injected; agent prompts carry normal software objectives",
-        "agent_runtime_id": "claude-code",
+        "workflow_controller_path": "scripts/run_codex_workflow_evaluation.py",
+        "workflow_controller_sha256": "6c458fc68be3864013f8c4836526d9d6deda530aa12d1ba5a89041ba74e78adb",
+        "matrix_controller_path": "scripts/run_sequential_workflow_matrix.py",
+        "matrix_controller_sha256": "a562b4f8bc4590bce6aeaa04348019a3e59ab92c8bdc89f9c35432d3c60215c4",
+        "agent_runtime_id": "opencode-cli",
         "model_condition": {
-          "id": "claude-code-anthropic-sonnet-5-high",
-          "provider": "anthropic",
-          "model": "claude-sonnet-5",
+          "id": "opencode-openai-gpt-5-6-sol-high",
+          "provider": "openai",
+          "model": "gpt-5.6-sol",
           "reasoning_effort": "high",
-          "launcher": "scripts/run_claude_code_workflow_model_condition.py"
+          "launcher": "scripts/run_opencode_workflow_model_condition.py"
         }
       },
       "dependencies": {
@@ -586,10 +615,10 @@
         ]
       },
       "agent_condition": {
-        "runtime_id": "claude-code",
-        "provider": "anthropic",
-        "model": "claude-sonnet-5",
-        "model_condition_id": "claude-code-anthropic-sonnet-5-high",
+        "runtime_id": "opencode-cli",
+        "provider": "openai",
+        "model": "gpt-5.6-sol",
+        "model_condition_id": "opencode-openai-gpt-5-6-sol-high",
         "reasoning_effort": "high",
         "runtime_version_condition": "captured-at-run-and-bound-to-record"
       },
@@ -605,19 +634,19 @@
       },
       "baseline_pool_reference": {
         "protocol_version": "baseline-pool-v1",
-        "protocol_fingerprint": "ab14b9edcf57",
+        "protocol_fingerprint": "d8cfc5066f76",
         "comparison_policy": "paired baseline and treatment must share this baseline pool fingerprint and replicate"
       },
       "model_condition_override": {
-        "model_condition_id": "claude-code-anthropic-sonnet-5-high",
-        "runtime_id": "claude-code",
-        "provider": "anthropic",
-        "model": "claude-sonnet-5",
+        "model_condition_id": "opencode-openai-gpt-5-6-sol-high",
+        "runtime_id": "opencode-cli",
+        "provider": "openai",
+        "model": "gpt-5.6-sol",
         "reasoning_effort": "high",
-        "registry_status": "configured-provider-free",
+        "registry_status": "active-model-comparison",
         "launcher": {
-          "path": "scripts/run_claude_code_workflow_model_condition.py",
-          "sha256": "6a3f81ff751cd8219cd93ee33753d6efb25fff779f6228dc3c822f98e2fa436f",
+          "path": "scripts/run_opencode_workflow_model_condition.py",
+          "sha256": "c38d87266347dfd46c8f671ad0e22fef52841a34643b93fc769d4ebfb71ac9ce",
           "condition_runtime_path": "scripts/workflow_model_condition_runtime.py",
           "condition_runtime_sha256": "01479bd991417d9f5bb5fcef513e1beee3f1f05512ab818429cac24e0ebde866"
         }

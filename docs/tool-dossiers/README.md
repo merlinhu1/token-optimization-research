@@ -18,6 +18,7 @@ Current dossier files are listed below. Their dossier stage remains `source-logi
 | Tool | Dossier | Current evidence stage | Primary surface |
 |---|---|---:|---|
 | rtk-ai/rtk | [dossier](rtk-ai-rtk.md) | source-logic | Terminal and tool-output compaction through command rewriting, filters, guarded output, and raw-output recovery |
+| repowise-dev/repowise | [dossier](repowise-dev-repowise.md) | source-logic | Precomputed codebase intelligence, bounded task-shaped MCP retrieval, Codex lifecycle hooks/guidance, and optional command-output distillation |
 | safishamsi/graphify | [dossier](safishamsi-graphify.md) | source-logic | Source-logic dossier surface recorded in file |
 | colbymchenry/codegraph | [dossier](colbymchenry-codegraph.md) | source-logic | Code retrieval and graph-indexing authority exposed through CLI/MCP-oriented workflows |
 | DietrichGebert/ponytail | [dossier](dietrichgebert-ponytail.md) | source-logic | Artifact and code-minimization policy layer with hook/plugin/MCP delivery paths |
