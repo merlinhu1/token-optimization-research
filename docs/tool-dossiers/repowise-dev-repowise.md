@@ -59,6 +59,10 @@ Why it may not: small or obvious tasks may not repay indexing and MCP-call overh
 
 The prepared profiles build a warm structural index before the model session, bind RepoWise's provider explicitly, probe the pinned executable, and prove the stdio MCP initialize and tools-list exchange. During a run, RepoWise serves bounded structural and full-text retrieval from lane-local SQLite state and can use its provider-backed answer path. Codex also receives the product-generated lifecycle hooks; OpenCode receives the generic MCP server and generated `AGENTS.md` guidance.
 
+## Local Lifecycle V1 observation
+
+The provider-backed Codex V2 screen completed both active fixtures with all three tasks and final verifiers passing. Fastify used 5,690,107 provider tokens (+342.03% versus its matched bare-Codex control) and Beets used 2,326,247 (+97.38%); the fresh-input-plus-output deltas were +151.57% and +119.89%. These are single-replicate screening observations, not ranking estimates. The prepared OpenCode protocol has not yet been executed.
+
 ## Compatibility notes
 
 RepoWise is a broad retrieval/context authority and overlaps with CodeGraph, jCodeMunch, Serena, SigMap, Graphify, Code Review Graph, CodeScope, and LeanCTX. Run it alone in the individual-tool screen. Its optional command rewriting also overlaps with RTK, Snip, LowFat, and TokenJuice and should not be combined without a separately declared stack protocol.
@@ -69,4 +73,4 @@ The pinned source is alpha-stage software with a large dependency set and local 
 
 ## Evidence boundary
 
-The maintainer reports token, tool-call, latency, and risk-prediction benchmark results in upstream documentation. Those claims remain maintainer evidence: this dossier does not promote them to benchmark-audit or reproduction. Lifecycle V1 protocols prepared here establish launch readiness only; they do not imply a token result.
+The maintainer reports token, tool-call, latency, and risk-prediction benchmark results in upstream documentation. Those claims remain maintainer evidence: this dossier does not promote them to benchmark-audit or reproduction. Local Codex V2 evidence is retained in the two compact sessions and matched comparisons cited by the evaluation registry; it is a single-replicate screen. OpenCode remains launch-ready but unexecuted. Invalid provider-free runs and protocols are deleted under receipt, and no-provider fallbacks are discarded before registry publication.
