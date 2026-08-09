@@ -224,13 +224,16 @@ def safe_name(value: str) -> str:
     return re.sub(r"[^A-Za-z0-9_.-]+", "-", value).strip("-")
 
 
-def workflow_lane_environment(tmp: Path) -> dict[str, str]:
+def workflow_lane_environment(tmp: Path, *, allow_auth_sync: bool = False) -> dict[str, str]:
     env = os.environ.copy()
     for name in workflow.AMBIENT_GIT_OBJECT_ENV_VARS:
         env.pop(name, None)
     env["TMPDIR"] = str(tmp)
     env["SKIP_PAIR_VALIDATION"] = "1"
-    env["WORKFLOW_LANE_DISABLE_AUTH_SYNC"] = "1"
+    if allow_auth_sync:
+        env.pop("WORKFLOW_LANE_DISABLE_AUTH_SYNC", None)
+    else:
+        env["WORKFLOW_LANE_DISABLE_AUTH_SYNC"] = "1"
     return env
 
 
@@ -1426,7 +1429,13 @@ def run_flow_lane(
         cmd.extend(["--session-id", f"prepare-{lane_id}"])
     if source_codex_home is not None:
         cmd.extend(["--source-codex-home", str(source_codex_home)])
-    env = workflow_lane_environment(tmp)
+    env = workflow_lane_environment(
+        tmp,
+        allow_auth_sync=(
+            isinstance(model_condition, dict)
+            and direct_anthropic_campaign(model_condition.get("id")) is not None
+        ),
+    )
     pass_fds: tuple[int, ...] = ()
     if production_lock_fd is not None:
         env[workflow.PRODUCTION_LOCK_FD_ENV] = str(production_lock_fd)

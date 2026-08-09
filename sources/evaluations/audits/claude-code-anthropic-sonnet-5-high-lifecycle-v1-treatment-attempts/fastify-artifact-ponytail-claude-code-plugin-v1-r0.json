@@ -1,0 +1,267 @@
+{
+  "schema_version": 1,
+  "attempt_status": "reserved-before-provider-task",
+  "task_family_generation": "lifecycle-v1",
+  "sequence_id": "fastify-lifecycle-sequence-v1",
+  "replicate_index": 0,
+  "profile_id": "artifact-ponytail-claude-code-plugin-v1",
+  "model_condition_id": "claude-code-anthropic-sonnet-5-high",
+  "model": "claude-sonnet-5",
+  "reasoning_effort": "high",
+  "orchestrator": "workflow-matrix:workflow-matrix-20260808T173231875105Z-p1755505-r0",
+  "reserved_at": "2026-08-08T18:27:20.672871+00:00",
+  "expected_session_binding": {
+    "sequence_id": "fastify-lifecycle-sequence-v1",
+    "profile_id": "artifact-ponytail-claude-code-plugin-v1",
+    "replicate_index": 0,
+    "frozen_protocol": {
+      "protocol_id": "fastify-lifecycle-sequence-v1-artifact-ponytail-claude-code-plugin-v1-85081823dc13",
+      "path": "sources/evaluations/protocols/fastify-lifecycle-sequence-v1-artifact-ponytail-claude-code-plugin-v1-85081823dc13.json",
+      "sha256": "920956a12cf2d935d54dc66a663f8b0bb6749c33217fd75d71d3b77d18b0b526"
+    },
+    "baseline_pool_fingerprint": "70516277e342",
+    "selected_execution": {
+      "descriptor_sha256": "c5c8b435c7fa7c768e37fba8140cf99fd2d806db2a23fc49e6e6706d4047a937",
+      "descriptor": {
+        "version": "execution-condition-v1",
+        "sequence_id": "fastify-lifecycle-sequence-v1",
+        "execution_role": "individual_tool_treatment",
+        "selected_profile": {
+          "profile_id": "artifact-ponytail-claude-code-plugin-v1",
+          "profile_type": "individual_tool",
+          "component_ids": [
+            "artifact-ponytail-claude-code-plugin-v1"
+          ],
+          "enabled_surfaces": [
+            "claude-code-native-plugin+skills+hooks"
+          ],
+          "disabled_overlaps": [
+            "all unlisted surfaces",
+            "other token-saving tools",
+            "OpenRouter transport"
+          ],
+          "registry_entry_sha256": "4e5793bfeec8689bb0546d4a16bab53bc27000edc9faa16ff62ff2f015e80331",
+          "registry_entry": {
+            "id": "artifact-ponytail-claude-code-plugin-v1",
+            "profile_type": "individual_tool",
+            "objective_scope": "individual_tool_effectiveness",
+            "substrate": "claude-code",
+            "status": "protocol-prepared",
+            "enabled_surfaces": [
+              "claude-code-native-plugin+skills+hooks"
+            ],
+            "disabled_overlaps": [
+              "all unlisted surfaces",
+              "other token-saving tools",
+              "OpenRouter transport"
+            ],
+            "components": [
+              {
+                "component_id": "artifact-ponytail-claude-code-plugin-v1",
+                "surface": "native-plugin+skills+hooks",
+                "role": "individual_tool"
+              }
+            ],
+            "install": {
+              "policy": "Use the pinned Ponytail source snapshot from artifact-ponytail-codex-plugin-v1 and install every product-authored Claude Code surface it documents (MCP, hooks, skills, plugins, rules, and guidance) into the lane-private CLAUDE_CONFIG_DIR. Require provider-free artifact, configuration, and handshake proofs before any Anthropic request."
+            },
+            "reset": {
+              "policy": "Delete the lane-private Claude config, tool state, indexes, generated guidance, hooks, plugins, and background processes after evidence capture; retain only immutable run artifacts and source hashes."
+            },
+            "evaluation_protocol": {
+              "tool_use_policy": "natural",
+              "tool_state": "qualification-pending",
+              "integration_state": "official-claude-code-native-surface-qualified-before-provider",
+              "instruction_policy": "product-authored guidance only; no evaluator-authored invocation steering",
+              "assignment_proof": "provider-free pinned source, exact Claude configuration, native activation, and required MCP/hooks/skills/plugin smoke checks"
+            },
+            "source_profiles": [
+              "artifact-ponytail-codex-plugin-v1"
+            ],
+            "notes": "Claude Code preparation profile for Ponytail; source profile artifact-ponytail-codex-plugin-v1. Provider execution remains blocked until the native Claude surface is qualified in isolation."
+          }
+        },
+        "model_facing_prompts": {
+          "rendering_contract": "sequential-model-facing-prompts-v2",
+          "profile_guidance_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "tasks": [
+            {
+              "task_id": "fastify-lifecycle-feature-v1",
+              "order": 1,
+              "rendered_prompt_sha256": "88a45b5d40552bf5c74cc2fb349509cd1b7b40c25d878912233c5ff7d7effa79"
+            },
+            {
+              "task_id": "fastify-lifecycle-refactor-v1",
+              "order": 2,
+              "rendered_prompt_sha256": "c736a654037ea087c972057a81b596310fa8bf573a12a72e0e62c63f9bb5397d"
+            },
+            {
+              "task_id": "fastify-lifecycle-review-v1",
+              "order": 3,
+              "rendered_prompt_sha256": "386c6435b3538f3a87624a9810276d1b1620eb6cedf140e65dc8b01f624a972d"
+            }
+          ]
+        },
+        "tool_adapter": {
+          "tool_id": "ponytail",
+          "tool_manifest": "scripts/run_codex_fixture_evaluation.py:TOOL_CONFIGS",
+          "tool_manifest_sha256": "628c7082e57d39a6eb2ffcea7b854633dd201145c55107083864580bb659df14",
+          "tool_config": {
+            "display_name": "Ponytail",
+            "lane_name": "artifact-ponytail",
+            "surface": "artifact/code-minimization-policy",
+            "allowed_terms": [
+              "ponytail"
+            ],
+            "data_dir_name": "ponytail",
+            "mounts": [
+              "/opt/data/tool-candidates/ponytail"
+            ],
+            "preflight_command": [
+              "node",
+              "-e",
+              "const {getPonytailInstructions}=require('/opt/data/ponytail/hooks/ponytail-instructions.js'); console.log(getPonytailInstructions('full').split('\\n')[0]);"
+            ],
+            "prompt_instructions_command": [
+              "node",
+              "-e",
+              "const {getFallbackInstructions}=require('/opt/data/ponytail/hooks/ponytail-instructions.js'); console.log(getFallbackInstructions('full'));"
+            ]
+          },
+          "tool_config_sha256": "4b79e1568cd9d4383bd553a938da335b8e632b651a8281e181e6ffce307dea2d",
+          "tool_state": "qualification-pending",
+          "tool_use_policy": "natural",
+          "command_identity": {
+            "kind": "preflight_command",
+            "command": [
+              "node",
+              "-e",
+              "const {getPonytailInstructions}=require('/opt/data/ponytail/hooks/ponytail-instructions.js'); console.log(getPonytailInstructions('full').split('\\n')[0]);"
+            ]
+          },
+          "binary_identity": {
+            "executable_token": "node",
+            "resolved_path": "/opt/data/bin/node",
+            "realpath": "/opt/data/opt/node-v24.18.0-linux-x64/bin/node",
+            "sha256": "41a74efb34cbde5c7632cdac0cf8bd1a14d0b8d73dc1e82755014d9a9ce70f5c",
+            "metadata": {
+              "size": 123655872,
+              "mode": "-rwxr-xr-x",
+              "uid": 10000,
+              "gid": 10000,
+              "mtime_ns": 1782236933000000000
+            },
+            "version": {
+              "command": [
+                "/opt/data/opt/node-v24.18.0-linux-x64/bin/node",
+                "--version"
+              ],
+              "environment_path": "/opt/data/bin:/opt/data/.local/bin:/opt/data/opt/go/bin:/opt/data/opt/uv:/opt/data/opt/node-v24.18.0-linux-x64/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+              "captured": true,
+              "exit_code": 0,
+              "output": "v24.18.0",
+              "truncated": false
+            }
+          },
+          "source_identity": [
+            {
+              "path": "/opt/data/tool-candidates/ponytail",
+              "exists": true,
+              "kind": "directory",
+              "git_head": "40e50d9e03242aa5dd53ac771950f9127362b25f",
+              "package_json_sha256": "6a180c19d35bcc9d08ea1b92b29c7da1ae1a1b2e3b31c73d94ac56e7fec7af01"
+            }
+          ]
+        },
+        "runtime": {
+          "docker_image": "token-eval-codex:latest",
+          "docker_image_identity": {
+            "image_ref": "token-eval-codex:latest",
+            "image_id": "sha256:6f86d01f2c63f5029c6bb874d8f3694c24d5cd567e3d09413eccc956ba3feafe",
+            "repo_digests": [
+              "token-eval-codex@sha256:6f86d01f2c63f5029c6bb874d8f3694c24d5cd567e3d09413eccc956ba3feafe"
+            ],
+            "repo_tags": [
+              "token-eval-codex:latest"
+            ]
+          },
+          "dockerfile_path": "sources/evaluations/fixtures/container/Dockerfile",
+          "dockerfile_sha256": "47c91967ce25014ce54879514f51d2ff0326651be1087209115eff4d358226b3",
+          "fixture_runner_path": "scripts/run_codex_fixture_evaluation.py",
+          "fixture_runner_sha256": "628c7082e57d39a6eb2ffcea7b854633dd201145c55107083864580bb659df14",
+          "mcp_probe_path": "scripts/probe_mcp_stdio.py",
+          "mcp_probe_sha256": "7c06ea36ee5cac933a97140b84a41405fc99b45152388e8d7c6659136af698fd",
+          "codex_entrypoint_path": "sources/evaluations/fixtures/container/codex-entrypoint.sh",
+          "codex_entrypoint_sha256": "8715fe37cb1fa3823f5f05493bc9681ce7ffc72126dfec4d64d448762c550c3c",
+          "timeout_seconds_per_task": 3600,
+          "network_isolation": {
+            "provider_access": true,
+            "model_shell_network_access": false,
+            "model_shell_enforcement": "seccomp denies AF_INET and AF_INET6 socket creation for the shell process and descendants",
+            "agent_web_tools": "disabled-by-permission",
+            "external_retrieval_audit": "fail-closed"
+          },
+          "isolation_policy": "fresh lane-specific agent home/XDG state; provider-only network with model shell and agent web tools disabled; sequential one-task prompt delivery; controller seed/verifier scripts excluded while controller-only affected-component compile commands retained; no acceptance-test assets injected; agent prompts carry normal software objectives",
+          "agent_runtime_id": "claude-code",
+          "model_condition": {
+            "id": "claude-code-anthropic-sonnet-5-high",
+            "provider": "anthropic",
+            "model": "claude-sonnet-5",
+            "reasoning_effort": "high",
+            "launcher": "scripts/run_claude_code_workflow_model_condition.py"
+          }
+        },
+        "dependencies": {
+          "command": "npm install --ignore-scripts --no-audit --no-fund",
+          "command_sha256": "7493d616f26e72b22eb5a21beafa12a6717ebf5b93a7a75e709de65e7323cc41",
+          "lockfiles": [
+            {
+              "path": "package.json",
+              "snapshot_sha256": "b273320af1bb4cfc0f9334457c8e3b1d035fde0da14f9db65e8ef97d361d0be3",
+              "current_fixture_sha256": null
+            }
+          ]
+        },
+        "agent_condition": {
+          "runtime_id": "claude-code",
+          "provider": "anthropic",
+          "model": "claude-sonnet-5",
+          "model_condition_id": "claude-code-anthropic-sonnet-5-high",
+          "reasoning_effort": "high",
+          "runtime_version_condition": "captured-at-run-and-bound-to-record"
+        },
+        "isolation": {
+          "prompt_delivery": "sequential-one-task-at-a-time",
+          "seed_delivery_mode": "preseeded-composite",
+          "future_tasks_visible": false,
+          "future_seed_regressions_visible": true,
+          "controller_verification": "final-only",
+          "controller_verifier_scripts_and_canonical_copies_model_visible": false,
+          "model_visible_acceptance_asset_paths": [],
+          "model_concealed_paths": []
+        },
+        "baseline_pool_reference": {
+          "protocol_version": "baseline-pool-v1",
+          "protocol_fingerprint": "70516277e342",
+          "comparison_policy": "paired baseline and treatment must share this baseline pool fingerprint and replicate"
+        },
+        "model_condition_override": {
+          "model_condition_id": "claude-code-anthropic-sonnet-5-high",
+          "runtime_id": "claude-code",
+          "provider": "anthropic",
+          "model": "claude-sonnet-5",
+          "reasoning_effort": "high",
+          "registry_status": "configured-provider-free",
+          "launcher": {
+            "path": "scripts/run_claude_code_workflow_model_condition.py",
+            "sha256": "6a3f81ff751cd8219cd93ee33753d6efb25fff779f6228dc3c822f98e2fa436f",
+            "condition_runtime_path": "scripts/workflow_model_condition_runtime.py",
+            "condition_runtime_sha256": "01479bd991417d9f5bb5fcef513e1beee3f1f05512ab818429cac24e0ebde866"
+          }
+        }
+      }
+    }
+  },
+  "provider_result": null,
+  "immutable_identity_receipt": true
+}
