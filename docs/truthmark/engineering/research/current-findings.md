@@ -18,7 +18,7 @@ Record the repository's current decision-bearing evaluation state without overst
 
 This document covers the active two-lane Lifecycle V1 portfolio, retained production baseline evidence, accepted corrected treatment sessions, and explicit treatment deletions. Token claims require retained provider-backed sessions; setup qualification alone is not effectiveness evidence.
 
-RepoWise 0.39.0 is pinned and provider-free qualified on Fastify and Beets for Codex and OpenCode, with four frozen Lifecycle V1 protocols. This is preparation evidence only: no RepoWise provider session or token result exists.
+RepoWise 0.39.0 is pinned and provider-configured qualified on Fastify and Beets for Codex and OpenCode, with four frozen Lifecycle V1 protocols. This is preparation evidence only: no RepoWise provider session or token result exists. The earlier provider-free setup was invalid and its result/protocol artifacts were deleted under the owner-authorized receipt.
 
 Direct-Anthropic Claude Code completed bounded baseline populations for `claude-code-anthropic-sonnet-5-high` (`claude-sonnet-5`, 897,108.2 weighted units) and `claude-code-anthropic-opus-5-high` (`claude-opus-5`, 1,167,276.7 weighted units), each across Fastify and Beets for six task turns. Opus used 30.12% more weighted token cost than Sonnet, and Sonnet was already 73.85% above matched Codex and 22.71% above matched OpenCode weighted baselines; Sonnet therefore remains the selected model for treatment experiments. Thirteen Fastify treatments are accepted. Versus the 460,555.0-weighted Fastify Claude baseline, RTK, Graphify, Snip, LowFat, Caveman, Token Savior, LeanCTX, jCodeMunch, CodeScope, Serena, Ponytail, SigmaP, and CodeGraph changed weighted usage by -28.02%, -20.08%, -9.82%, -6.14%, -4.23%, +7.50%, +16.14%, +17.10%, +18.92%, +22.22%, +30.86%, +54.35%, and +107.62%. Beets RTK and Cartog are accepted at +55.02% and +135.20% versus its 436,553.2-weighted baseline. Fastify/Cartog and Fastify/TokenJuice are occupied failures. Thirteen Beets lanes remain unlaunched, so these incomplete observations are not ranking evidence. See the two failure audits under `sources/evaluations/audits/claude-code-anthropic-sonnet-5-high-lifecycle-v1-*-2026080*.json`.
 
@@ -95,8 +95,8 @@ A prior artifact-packaging audit found that the now-deleted historical Graphify 
 - ../../../../sources/evaluations/audits/corrected-integration-qualification-20260718.json
 - ../../../../sources/evaluations/audits/invalid-codegraph-v1-result-deletion-20260719.json
 - ../../../../sources/evaluations/audits/corrected-integration-qualification-codegraph-20260719.json
-- ../../../../sources/evaluations/audits/corrected-integration-qualification-repowise-codex-product-v1-20260809.json
-- ../../../../sources/evaluations/audits/corrected-integration-qualification-repowise-opencode-product-v1-20260809.json
+- ../../../../sources/evaluations/audits/corrected-integration-qualification-repowise-codex-product-v2-20260809.json
+- ../../../../sources/evaluations/audits/corrected-integration-qualification-repowise-opencode-product-v2-20260809.json
 - ../../../../sources/evaluations/audits/codegraph-provider-actual-use-20260720.json
 - ../../../../sources/evaluations/audits/corrected-luna-xhigh-r2-campaign-20260720.json
 - ../../../../sources/evaluations/audits/phase-2-corrected-analysis-20260720.json

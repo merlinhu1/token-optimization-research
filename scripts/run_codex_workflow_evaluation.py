@@ -96,7 +96,7 @@ SUPPORTED_WORKFLOW_TOOL_PROFILES = {
     "integrated-leanctx-codex-hybrid-v1": "leanctx-codex-hybrid-v1",
     "retrieval-codegraph": "codegraph",
     "retrieval-codegraph-codex-mcp-v1": "codegraph-codex-mcp-v1",
-    "retrieval-repowise-codex-product-v1": "repowise-codex-product-v1",
+    "retrieval-repowise-codex-product-v2": "repowise-codex-product-v2",
     "lower-intervention-codegraph": "codegraph",
     "retrieval-cartog": "cartog",
     "retrieval-cartog-codex-product-v2": "cartog-codex-product-v2",
@@ -161,7 +161,7 @@ SUPPORTED_WORKFLOW_TOOL_PROFILES = {
     "retrieval-graphify-opencode-product-v1": "graphify-opencode-product-v1",
     "terminal-rtk-opencode-plugin-v1": "rtk-opencode-plugin-v1",
     "retrieval-codegraph-opencode-mcp-v1": "codegraph-opencode-mcp-v1",
-    "retrieval-repowise-opencode-product-v1": "repowise-opencode-product-v1",
+    "retrieval-repowise-opencode-product-v2": "repowise-opencode-product-v2",
     "retrieval-jcodemunch-opencode-product-v1": "jcodemunch-opencode-product-v1",
     "integrated-leanctx-opencode-hybrid-v1": "leanctx-opencode-hybrid-v1",
     "integrated-leanctx-opencode-hybrid-v2": "leanctx-opencode-hybrid-v1",
@@ -180,6 +180,25 @@ SUPPORTED_WORKFLOW_TOOL_PROFILES = {
 LEGACY_TOOL_MANIFEST_SHA256 = "6fa8271b89a577706ea0bbffcc8e4521831f41b646ed9519369efee3642fe41c"
 FIXED_CURRENT_TOOL_MANIFEST_SHA256 = {
     "integrated-headroom-opencode-product-v1": "5077500216db998b089ec9bdf8f38c82023db56314cfded233105ab625c585fe",
+    # Existing Claude Code V1 protocols were frozen against the prior shared
+    # fixture runner. Keep their immutable manifest identities stable while
+    # the new RepoWise V2 adapter uses the current file hash.
+    "artifact-ponytail-claude-code-plugin-v1": "628c7082e57d39a6eb2ffcea7b854633dd201145c55107083864580bb659df14",
+    "behavior-caveman-claude-code-skill-v1": "628c7082e57d39a6eb2ffcea7b854633dd201145c55107083864580bb659df14",
+    "codescope-claude-code-mcp-v1": "59e3a8271387caf13a8069aa138371f26577d33f864323514b49eca5405301c8",
+    "integrated-leanctx-claude-code-hybrid-v1": "59e3a8271387caf13a8069aa138371f26577d33f864323514b49eca5405301c8",
+    "integrated-token-savior-claude-code-product-v1": "59e3a8271387caf13a8069aa138371f26577d33f864323514b49eca5405301c8",
+    "retrieval-cartog-claude-code-product-v1": "628c7082e57d39a6eb2ffcea7b854633dd201145c55107083864580bb659df14",
+    "retrieval-codegraph-claude-code-mcp-v1": "59e3a8271387caf13a8069aa138371f26577d33f864323514b49eca5405301c8",
+    "retrieval-graphify-claude-code-skill-v1": "59e3a8271387caf13a8069aa138371f26577d33f864323514b49eca5405301c8",
+    "retrieval-jcodemunch-claude-code-mcp-v1": "59e3a8271387caf13a8069aa138371f26577d33f864323514b49eca5405301c8",
+    "retrieval-sdl-mcp-claude-code-product-v1": "59e3a8271387caf13a8069aa138371f26577d33f864323514b49eca5405301c8",
+    "retrieval-serena-claude-code-mcp-v1": "59e3a8271387caf13a8069aa138371f26577d33f864323514b49eca5405301c8",
+    "retrieval-sigmap-claude-code-mcp-v1": "59e3a8271387caf13a8069aa138371f26577d33f864323514b49eca5405301c8",
+    "terminal-lowfat-claude-code-hook-v1": "59e3a8271387caf13a8069aa138371f26577d33f864323514b49eca5405301c8",
+    "terminal-rtk-claude-code-hook-v1": "6fa8271b89a577706ea0bbffcc8e4521831f41b646ed9519369efee3642fe41c",
+    "terminal-snip-claude-code-hook-v1": "59e3a8271387caf13a8069aa138371f26577d33f864323514b49eca5405301c8",
+    "terminal-tokenjuice-claude-code-hook-v1": "59e3a8271387caf13a8069aa138371f26577d33f864323514b49eca5405301c8",
 }
 
 
@@ -2363,6 +2382,7 @@ def load_protocol(path_or_id: str) -> tuple[Path, dict[str, Any]]:
 
 def validate_protocol_for_run(seq: dict[str, Any], profile_id: str, args: argparse.Namespace) -> dict[str, Any] | None:
     assert_profile_runnable(profile_id)
+    fixture.require_repowise_provider_contract(profile_id)
     if not args.prepare_only and profile_runtime_id(profile_id) == "claude-code":
         profile = profile_registry_entry(profile_id)
         if (
@@ -4153,6 +4173,43 @@ def audit(record_path: Path, run_dir: Path) -> int:
     ], stdout_path=run_dir / "tool-isolation-audit.txt", timeout=120).returncode
 
 
+def audit_repowise_provider_path(profile_id: str, run_dir: Path) -> dict[str, Any]:
+    """Reject RepoWise runs whose answer path fell back to no provider."""
+    expected = {
+        "retrieval-repowise-codex-product-v2": "codex_cli",
+        "retrieval-repowise-opencode-product-v2": "opencode",
+    }.get(profile_id)
+    if expected is None:
+        return {"required": False, "passed": True, "provider": None, "hits": []}
+    hits: list[dict[str, str]] = []
+    for path in sorted(run_dir.glob("*events.jsonl")):
+        lower = path.read_text(errors="replace").lower()
+        for marker in ("no-llm-provider", "no provider configured"):
+            if marker in lower:
+                hits.append({"path": str(path.relative_to(run_dir)), "marker": marker})
+    result = {
+        "required": True,
+        "provider": expected,
+        "passed": not hits,
+        "hits": hits,
+        "policy": "a provider-backed RepoWise lane must never publish a no-llm-provider fallback",
+    }
+    (run_dir / "repowise-provider-audit.json").write_text(json.dumps(result, indent=2) + "\n")
+    return result
+
+
+def discard_unpublishable_run(run_dir: Path, reason: str) -> None:
+    """Delete a rejected run root before it can become repository evidence."""
+    root = (ROOT / "sources/evaluations/workflow-sessions").resolve()
+    target = run_dir.resolve()
+    target.relative_to(root)
+    if target == root or run_dir.is_symlink():
+        raise ValueError(f"refusing unsafe invalid-run cleanup target: {run_dir}")
+    chmod_tree(run_dir)
+    shutil.rmtree(run_dir)
+    raise RuntimeError(reason)
+
+
 def compact_artifacts(run_dir: Path) -> dict[str, str]:
     return {
         "artifact_contract": "compact-v1-four-files",
@@ -5509,6 +5566,12 @@ def _run_one_locked(args: argparse.Namespace) -> dict[str, Any]:
     (run_dir / "verifier-integrity.json").write_text(json.dumps({"checks": verifier_integrity_checks}, indent=2) + "\n")
     verifier_integrity_passed = all(check["passed"] for check in verifier_integrity_checks)
     events_artifact = concatenate_events(run_dir, len(ordered_tasks), runtime_id=runtime_id)
+    repowise_provider_audit = audit_repowise_provider_path(profile_id, run_dir)
+    if not repowise_provider_audit.get("passed"):
+        discard_unpublishable_run(
+            run_dir,
+            f"{profile_id} produced a no-llm-provider fallback; refusing to publish an invalid run",
+        )
     usage = build_provider_usage(profile_id, events_artifact)
     (run_dir / "provider-usage.json").write_text(json.dumps(usage, indent=2) + "\n")
     task_checkpoints = complete_task_checkpoints(ordered_tasks, task_checkpoints)
@@ -5542,6 +5605,7 @@ def _run_one_locked(args: argparse.Namespace) -> dict[str, Any]:
         and len(task_checkpoints) == len(ordered_tasks)
         and audit_code == 0
         and verifier_integrity_passed
+        and repowise_provider_audit.get("passed") is True
         and not usage.get("warnings")
     )
     agent_runtime_version = runtime_version_from_preflight(profile_id, run_dir)
@@ -5628,6 +5692,7 @@ def _run_one_locked(args: argparse.Namespace) -> dict[str, Any]:
             "provider_usage_details": usage.get("provider_usage_details"),
         },
         "usage_warnings": usage.get("warnings"),
+        "repowise_provider_audit": repowise_provider_audit,
         "per_task_results": task_checkpoints,
         "prompt_delivery": prompt_delivery,
         "leakage_controls": leakage_controls,

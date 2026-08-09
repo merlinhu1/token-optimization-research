@@ -758,7 +758,7 @@ class ActiveCampaignArchitectureTest(unittest.TestCase):
             "terminal-snip-codex-hook-v1",
             "retrieval-graphify-codex-skill-v1",
             "retrieval-codegraph-codex-mcp-v1",
-            "retrieval-repowise-codex-product-v1",
+            "retrieval-repowise-codex-product-v2",
             "retrieval-jcodemunch-codex-mcp-v2",
             "integrated-leanctx-codex-hybrid-v1",
             "retrieval-cartog-codex-product-v2",
@@ -1309,15 +1309,19 @@ print('ok')
         self.assertIn("hooks = true", config)
         self.assertIn("multi_agent = true", config)
 
-    def test_repowise_profiles_bind_provider_free_native_surfaces(self) -> None:
-        codex = runner.fixture.active_tool_config({}, "retrieval-repowise-codex-product-v1")
-        opencode = runner.fixture.active_tool_config({}, "retrieval-repowise-opencode-product-v1")
+    def test_repowise_profiles_bind_provider_backed_native_surfaces(self) -> None:
+        codex = runner.fixture.active_tool_config({}, "retrieval-repowise-codex-product-v2")
+        opencode = runner.fixture.active_tool_config({}, "retrieval-repowise-opencode-product-v2")
         assert codex is not None and opencode is not None
         self.assertTrue(codex["codex_features"]["hooks"])
         self.assertIn("--codex", codex["host_integration"]["install_commands"][-1])
         self.assertIn("--no-prose", codex["host_integration"]["install_commands"][-1])
+        self.assertIn("--provider", codex["host_integration"]["install_commands"][-1])
+        self.assertEqual(codex["env"]["REPOWISE_PROVIDER"], "codex_cli")
         self.assertEqual(codex["mcp_args"], ["mcp"])
         self.assertIn("--no-codex", opencode["host_integration"]["install_commands"][-1])
+        self.assertIn("--provider", opencode["host_integration"]["install_commands"][-1])
+        self.assertEqual(opencode["env"]["REPOWISE_PROVIDER"], "opencode")
         self.assertIn("--agents", opencode["host_integration"]["install_commands"][-1])
         self.assertEqual(opencode["mcp_server"], "repowise")
         self.assertTrue(opencode["mcp_handshake"]["required"])
@@ -1325,6 +1329,39 @@ print('ok')
             opencode["artifact_identities"][-1]["sha256"],
             "6cabc28420901ec9fea5997bd63559311d73d2c7fb9c86e54d64ba42c67b822e",
         )
+
+    def test_repowise_provider_free_generation_is_deleted_and_not_runnable(self) -> None:
+        receipt = json.loads(
+            (ROOT / "sources/evaluations/audits/invalid-repowise-provider-free-result-deletions-20260809.json").read_text()
+        )
+        profiles = {
+            item["id"]: item
+            for item in json.loads((ROOT / "data/evaluation-profiles.json").read_text())["profiles"]
+        }
+        for deleted in receipt["profiles"]:
+            profile_id = deleted["profile_id"]
+            self.assertEqual(profiles[profile_id]["status"], "historical-profile")
+            self.assertEqual(profiles[profile_id]["active_corpus_action"], "deleted-under-owner-authorized-receipt")
+            self.assertNotIn(profile_id, runner.SUPPORTED_WORKFLOW_TOOL_PROFILES)
+            self.assertTrue(profiles[profile_id]["historical_results_deleted"])
+            for path in (
+                deleted["deleted_protocol_paths"]
+                + deleted["deleted_comparison_paths"]
+                + deleted["deleted_bundle_roots"]
+                + deleted["deleted_qualification_paths"]
+            ):
+                self.assertFalse((ROOT / path).exists(), path)
+
+    def test_repowise_provider_fallback_fails_closed(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            run_dir = Path(tmp)
+            (run_dir / "task-01-events.jsonl").write_text('{"degraded":"no-llm-provider"}\n')
+            audit = runner.audit_repowise_provider_path(
+                "retrieval-repowise-codex-product-v2", run_dir
+            )
+            self.assertFalse(audit["passed"])
+            self.assertEqual(audit["provider"], "codex_cli")
+            self.assertEqual(audit["hits"][0]["marker"], "no-llm-provider")
 
     def test_cartog_profile_defers_mcp_config_to_official_installer(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:

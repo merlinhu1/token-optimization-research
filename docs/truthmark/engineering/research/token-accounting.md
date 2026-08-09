@@ -35,7 +35,7 @@ This contract governs active Lifecycle V1 provider-token samples, retained lifec
 - Direct-Anthropic Sonnet treatment lanes reserve an immutable per-sequence/profile attempt receipt before provider work. Thirteen Fastify and two Beets treatments are accepted at 52,068,150 provider tokens and 8,641,473.2 weighted units. Fastify/Cartog and Fastify/TokenJuice are occupied failures excluded from registry and aggregate claims. Thirteen Beets lanes remain unlaunched; occupied failure identities may not be reused.
 - Repository validation requires complete provider usage, structural isolation, clean execution integrity, and recoverable compact evidence—not verifier success or source review.
 - Before any non-baseline provider launch, both repository validation and the direct runner require exact parity approval plus a current provider-free qualification receipt for every active fixture/profile protocol binding; MCP profiles additionally require non-empty `tools/list` proof.
-- RepoWise 0.39.0 is pinned and provider-free qualified on Fastify and Beets for both its official Codex integration and a documented generic-MCP OpenCode ablation. Four frozen protocols exist, but no provider-backed RepoWise session or effectiveness result exists.
+- RepoWise 0.39.0 is pinned and provider-configured qualified on Fastify and Beets for both its official Codex integration and a documented generic-MCP OpenCode ablation. Four frozen protocols exist, but no provider-backed RepoWise session or effectiveness result exists; the earlier provider-free generation was deleted as invalid.
 - Canonical treatment profiles install every author-recommended Codex surface, including product-authored guidance, native skills/plugins, and reviewed hooks; reduced or prompt-emulated setups are ablations or invalid assignments, not product treatments.
 - The historical shared-runner qualification covered 45 fixture/profile bindings across 15 profiles with zero provider calls; those receipts do not authorize Lifecycle V1 treatments.
 - Thirty-eight provider-backed baseline records are retained under earlier frozen contracts; Fastify and Beets additionally retain one accepted Lifecycle V1 r0 pilot each, while the owner-declared-invalid Terraform V1 r0 was removed under its invalidation receipt.
@@ -154,8 +154,8 @@ Update this document whenever token eligibility, comparison identity, provider a
 - ../../../../scripts/trust_codex_plugin_hooks.py
 - ../../../../scripts/install_jcodemunch_codex_guidance.py
 - ../../../../sources/evaluations/audits/corrected-integration-qualification-jcodemunch-codex-mcp-v2-20260719.json
-- ../../../../sources/evaluations/audits/corrected-integration-qualification-repowise-codex-product-v1-20260809.json
-- ../../../../sources/evaluations/audits/corrected-integration-qualification-repowise-opencode-product-v1-20260809.json
+- ../../../../sources/evaluations/audits/corrected-integration-qualification-repowise-codex-product-v2-20260809.json
+- ../../../../sources/evaluations/audits/corrected-integration-qualification-repowise-opencode-product-v2-20260809.json
 - ../../../../sources/evaluations/audits/opencode-next-five-batch2-results-20260730.json
 - ../../../../scripts/validate_repository.py
 
