@@ -1,0 +1,2059 @@
+{
+  "session_id": "artifact-ponytail-claude-code-plugin-beets-20260809-p-ab14b9edcf57-r0",
+  "study_id": "phase-2-sequential-workflow-v1",
+  "experiment_group_id": "beetbox-beets-artifact-ponytail-claude-code-plugin-v1-ab14b9edcf57-sequential-workflow-r0",
+  "replicate_index": 0,
+  "frozen_protocol": {
+    "protocol_id": "beets-lifecycle-sequence-v1-artifact-ponytail-claude-code-plugin-v1-ea5ff9cc0a1e",
+    "path": "sources/evaluations/protocols/beets-lifecycle-sequence-v1-artifact-ponytail-claude-code-plugin-v1-ea5ff9cc0a1e.json",
+    "sha256": "2697cde42bb55dc5480fedc3b29559e738e525f2c1147a355c3738f81930e9ca"
+  },
+  "baseline_pool": {
+    "protocol_version": "baseline-pool-v1",
+    "protocol_fingerprint": "ab14b9edcf57",
+    "identity_policy": "frozen-protocol-and-replicate; execution date is metadata only"
+  },
+  "selected_execution": {
+    "descriptor_sha256": "fd888fdec4aad2553a2ad76105ea500206fb32ce5ef344f1ed1414febd57d067",
+    "descriptor": {
+      "version": "execution-condition-v1",
+      "sequence_id": "beets-lifecycle-sequence-v1",
+      "execution_role": "individual_tool_treatment",
+      "selected_profile": {
+        "profile_id": "artifact-ponytail-claude-code-plugin-v1",
+        "profile_type": "individual_tool",
+        "component_ids": [
+          "artifact-ponytail-claude-code-plugin-v1"
+        ],
+        "enabled_surfaces": [
+          "claude-code-native-plugin+skills+hooks"
+        ],
+        "disabled_overlaps": [
+          "all unlisted surfaces",
+          "other token-saving tools",
+          "OpenRouter transport"
+        ],
+        "registry_entry_sha256": "4e5793bfeec8689bb0546d4a16bab53bc27000edc9faa16ff62ff2f015e80331",
+        "registry_entry": {
+          "id": "artifact-ponytail-claude-code-plugin-v1",
+          "profile_type": "individual_tool",
+          "objective_scope": "individual_tool_effectiveness",
+          "substrate": "claude-code",
+          "status": "protocol-prepared",
+          "enabled_surfaces": [
+            "claude-code-native-plugin+skills+hooks"
+          ],
+          "disabled_overlaps": [
+            "all unlisted surfaces",
+            "other token-saving tools",
+            "OpenRouter transport"
+          ],
+          "components": [
+            {
+              "component_id": "artifact-ponytail-claude-code-plugin-v1",
+              "surface": "native-plugin+skills+hooks",
+              "role": "individual_tool"
+            }
+          ],
+          "install": {
+            "policy": "Use the pinned Ponytail source snapshot from artifact-ponytail-codex-plugin-v1 and install every product-authored Claude Code surface it documents (MCP, hooks, skills, plugins, rules, and guidance) into the lane-private CLAUDE_CONFIG_DIR. Require provider-free artifact, configuration, and handshake proofs before any Anthropic request."
+          },
+          "reset": {
+            "policy": "Delete the lane-private Claude config, tool state, indexes, generated guidance, hooks, plugins, and background processes after evidence capture; retain only immutable run artifacts and source hashes."
+          },
+          "evaluation_protocol": {
+            "tool_use_policy": "natural",
+            "tool_state": "qualification-pending",
+            "integration_state": "official-claude-code-native-surface-qualified-before-provider",
+            "instruction_policy": "product-authored guidance only; no evaluator-authored invocation steering",
+            "assignment_proof": "provider-free pinned source, exact Claude configuration, native activation, and required MCP/hooks/skills/plugin smoke checks"
+          },
+          "source_profiles": [
+            "artifact-ponytail-codex-plugin-v1"
+          ],
+          "notes": "Claude Code preparation profile for Ponytail; source profile artifact-ponytail-codex-plugin-v1. Provider execution remains blocked until the native Claude surface is qualified in isolation."
+        }
+      },
+      "model_facing_prompts": {
+        "rendering_contract": "sequential-model-facing-prompts-v2",
+        "profile_guidance_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "tasks": [
+          {
+            "task_id": "beets-lifecycle-feature-v1",
+            "order": 1,
+            "rendered_prompt_sha256": "fd11c28e91be7826ff049748f7a84a5f0bd3137f9add35b498d50b39aea8548c"
+          },
+          {
+            "task_id": "beets-lifecycle-refactor-v1",
+            "order": 2,
+            "rendered_prompt_sha256": "69cd7d8bf2eeba073fafc156982916dcbb68df92ca06a869039c9bbb728255f9"
+          },
+          {
+            "task_id": "beets-lifecycle-review-v1",
+            "order": 3,
+            "rendered_prompt_sha256": "1586356a85a2cbdd70fa6d545d16063df49a1f2d455cf07646cb943a691770d0"
+          }
+        ]
+      },
+      "tool_adapter": {
+        "tool_id": "ponytail",
+        "tool_manifest": "scripts/run_codex_fixture_evaluation.py:TOOL_CONFIGS",
+        "tool_manifest_sha256": "59e3a8271387caf13a8069aa138371f26577d33f864323514b49eca5405301c8",
+        "tool_config": {
+          "display_name": "Ponytail",
+          "lane_name": "artifact-ponytail",
+          "surface": "artifact/code-minimization-policy",
+          "allowed_terms": [
+            "ponytail"
+          ],
+          "data_dir_name": "ponytail",
+          "mounts": [
+            "/opt/data/tool-candidates/ponytail"
+          ],
+          "preflight_command": [
+            "node",
+            "-e",
+            "const {getPonytailInstructions}=require('/opt/data/ponytail/hooks/ponytail-instructions.js'); console.log(getPonytailInstructions('full').split('\\n')[0]);"
+          ],
+          "prompt_instructions_command": [
+            "node",
+            "-e",
+            "const {getFallbackInstructions}=require('/opt/data/ponytail/hooks/ponytail-instructions.js'); console.log(getFallbackInstructions('full'));"
+          ]
+        },
+        "tool_config_sha256": "4b79e1568cd9d4383bd553a938da335b8e632b651a8281e181e6ffce307dea2d",
+        "tool_state": "qualification-pending",
+        "tool_use_policy": "natural",
+        "command_identity": {
+          "kind": "preflight_command",
+          "command": [
+            "node",
+            "-e",
+            "const {getPonytailInstructions}=require('/opt/data/ponytail/hooks/ponytail-instructions.js'); console.log(getPonytailInstructions('full').split('\\n')[0]);"
+          ]
+        },
+        "binary_identity": {
+          "executable_token": "node",
+          "resolved_path": "/opt/data/bin/node",
+          "realpath": "/opt/data/opt/node-v24.18.0-linux-x64/bin/node",
+          "sha256": "41a74efb34cbde5c7632cdac0cf8bd1a14d0b8d73dc1e82755014d9a9ce70f5c",
+          "metadata": {
+            "size": 123655872,
+            "mode": "-rwxr-xr-x",
+            "uid": 10000,
+            "gid": 10000,
+            "mtime_ns": 1782236933000000000
+          },
+          "version": {
+            "command": [
+              "/opt/data/opt/node-v24.18.0-linux-x64/bin/node",
+              "--version"
+            ],
+            "environment_path": "/opt/data/bin:/opt/data/.local/bin:/opt/data/opt/go/bin:/opt/data/opt/uv:/opt/data/opt/node-v24.18.0-linux-x64/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+            "captured": true,
+            "exit_code": 0,
+            "output": "v24.18.0",
+            "truncated": false
+          }
+        },
+        "source_identity": [
+          {
+            "path": "/opt/data/tool-candidates/ponytail",
+            "exists": true,
+            "kind": "directory",
+            "git_head": "40e50d9e03242aa5dd53ac771950f9127362b25f",
+            "package_json_sha256": "6a180c19d35bcc9d08ea1b92b29c7da1ae1a1b2e3b31c73d94ac56e7fec7af01"
+          }
+        ]
+      },
+      "runtime": {
+        "docker_image": "token-eval-codex:latest",
+        "docker_image_identity": {
+          "image_ref": "token-eval-codex:latest",
+          "image_id": "sha256:6f86d01f2c63f5029c6bb874d8f3694c24d5cd567e3d09413eccc956ba3feafe",
+          "repo_digests": [
+            "token-eval-codex@sha256:6f86d01f2c63f5029c6bb874d8f3694c24d5cd567e3d09413eccc956ba3feafe"
+          ],
+          "repo_tags": [
+            "token-eval-codex:latest"
+          ]
+        },
+        "dockerfile_path": "sources/evaluations/fixtures/container/Dockerfile",
+        "dockerfile_sha256": "47c91967ce25014ce54879514f51d2ff0326651be1087209115eff4d358226b3",
+        "fixture_runner_path": "scripts/run_codex_fixture_evaluation.py",
+        "fixture_runner_sha256": "59e3a8271387caf13a8069aa138371f26577d33f864323514b49eca5405301c8",
+        "mcp_probe_path": "scripts/probe_mcp_stdio.py",
+        "mcp_probe_sha256": "7c06ea36ee5cac933a97140b84a41405fc99b45152388e8d7c6659136af698fd",
+        "codex_entrypoint_path": "sources/evaluations/fixtures/container/codex-entrypoint.sh",
+        "codex_entrypoint_sha256": "8715fe37cb1fa3823f5f05493bc9681ce7ffc72126dfec4d64d448762c550c3c",
+        "timeout_seconds_per_task": 3600,
+        "network_isolation": {
+          "provider_access": true,
+          "model_shell_network_access": false,
+          "model_shell_enforcement": "seccomp denies AF_INET and AF_INET6 socket creation for the shell process and descendants",
+          "agent_web_tools": "disabled-by-permission",
+          "external_retrieval_audit": "fail-closed"
+        },
+        "isolation_policy": "fresh lane-specific agent home/XDG state; provider-only network with model shell and agent web tools disabled; sequential one-task prompt delivery; controller seed/verifier scripts excluded while controller-only affected-component compile commands retained; no acceptance-test assets injected; agent prompts carry normal software objectives",
+        "agent_runtime_id": "claude-code",
+        "model_condition": {
+          "id": "claude-code-anthropic-sonnet-5-high",
+          "provider": "anthropic",
+          "model": "claude-sonnet-5",
+          "reasoning_effort": "high",
+          "launcher": "scripts/run_claude_code_workflow_model_condition.py"
+        }
+      },
+      "dependencies": {
+        "command": "uv sync --group test --frozen",
+        "command_sha256": "cef23fd45902c23f8b3e89b7c6360a401eb49c17cf36d742e5b625d5593c911b",
+        "lockfiles": [
+          {
+            "path": "uv.lock",
+            "snapshot_sha256": "fbf1d7a9c84b658a2433035221ba18c57508c254d711a06f305e2f610839a45f",
+            "current_fixture_sha256": null
+          }
+        ]
+      },
+      "agent_condition": {
+        "runtime_id": "claude-code",
+        "provider": "anthropic",
+        "model": "claude-sonnet-5",
+        "model_condition_id": "claude-code-anthropic-sonnet-5-high",
+        "reasoning_effort": "high",
+        "runtime_version_condition": "captured-at-run-and-bound-to-record"
+      },
+      "isolation": {
+        "prompt_delivery": "sequential-one-task-at-a-time",
+        "seed_delivery_mode": "preseeded-composite",
+        "future_tasks_visible": false,
+        "future_seed_regressions_visible": true,
+        "controller_verification": "final-only",
+        "controller_verifier_scripts_and_canonical_copies_model_visible": false,
+        "model_visible_acceptance_asset_paths": [],
+        "model_concealed_paths": []
+      },
+      "baseline_pool_reference": {
+        "protocol_version": "baseline-pool-v1",
+        "protocol_fingerprint": "ab14b9edcf57",
+        "comparison_policy": "paired baseline and treatment must share this baseline pool fingerprint and replicate"
+      },
+      "model_condition_override": {
+        "model_condition_id": "claude-code-anthropic-sonnet-5-high",
+        "runtime_id": "claude-code",
+        "provider": "anthropic",
+        "model": "claude-sonnet-5",
+        "reasoning_effort": "high",
+        "registry_status": "configured-provider-free",
+        "launcher": {
+          "path": "scripts/run_claude_code_workflow_model_condition.py",
+          "sha256": "6a3f81ff751cd8219cd93ee33753d6efb25fff779f6228dc3c822f98e2fa436f",
+          "condition_runtime_path": "scripts/workflow_model_condition_runtime.py",
+          "condition_runtime_sha256": "01479bd991417d9f5bb5fcef513e1beee3f1f05512ab818429cac24e0ebde866"
+        }
+      }
+    }
+  },
+  "agent_condition": {
+    "runtime_id": "claude-code",
+    "provider": "anthropic",
+    "model": "claude-sonnet-5",
+    "model_condition_id": "claude-code-anthropic-sonnet-5-high",
+    "reasoning_effort": "high",
+    "runtime_version_condition": "captured-at-run-and-bound-to-record"
+  },
+  "docker_image_identity": {
+    "image_ref": "token-eval-codex:latest",
+    "image_id": "sha256:6f86d01f2c63f5029c6bb874d8f3694c24d5cd567e3d09413eccc956ba3feafe",
+    "repo_digests": [
+      "token-eval-codex@sha256:6f86d01f2c63f5029c6bb874d8f3694c24d5cd567e3d09413eccc956ba3feafe"
+    ],
+    "repo_tags": [
+      "token-eval-codex:latest"
+    ]
+  },
+  "tool_adapter_identity": {
+    "tool_id": "ponytail",
+    "tool_manifest": "scripts/run_codex_fixture_evaluation.py:TOOL_CONFIGS",
+    "tool_manifest_sha256": "59e3a8271387caf13a8069aa138371f26577d33f864323514b49eca5405301c8",
+    "tool_config": {
+      "display_name": "Ponytail",
+      "lane_name": "artifact-ponytail",
+      "surface": "artifact/code-minimization-policy",
+      "allowed_terms": [
+        "ponytail"
+      ],
+      "data_dir_name": "ponytail",
+      "mounts": [
+        "/opt/data/tool-candidates/ponytail"
+      ],
+      "preflight_command": [
+        "node",
+        "-e",
+        "const {getPonytailInstructions}=require('/opt/data/ponytail/hooks/ponytail-instructions.js'); console.log(getPonytailInstructions('full').split('\\n')[0]);"
+      ],
+      "prompt_instructions_command": [
+        "node",
+        "-e",
+        "const {getFallbackInstructions}=require('/opt/data/ponytail/hooks/ponytail-instructions.js'); console.log(getFallbackInstructions('full'));"
+      ]
+    },
+    "tool_config_sha256": "4b79e1568cd9d4383bd553a938da335b8e632b651a8281e181e6ffce307dea2d",
+    "tool_state": "qualification-pending",
+    "tool_use_policy": "natural",
+    "command_identity": {
+      "kind": "preflight_command",
+      "command": [
+        "node",
+        "-e",
+        "const {getPonytailInstructions}=require('/opt/data/ponytail/hooks/ponytail-instructions.js'); console.log(getPonytailInstructions('full').split('\\n')[0]);"
+      ]
+    },
+    "binary_identity": {
+      "executable_token": "node",
+      "resolved_path": "/opt/data/bin/node",
+      "realpath": "/opt/data/opt/node-v24.18.0-linux-x64/bin/node",
+      "sha256": "41a74efb34cbde5c7632cdac0cf8bd1a14d0b8d73dc1e82755014d9a9ce70f5c",
+      "metadata": {
+        "size": 123655872,
+        "mode": "-rwxr-xr-x",
+        "uid": 10000,
+        "gid": 10000,
+        "mtime_ns": 1782236933000000000
+      },
+      "version": {
+        "command": [
+          "/opt/data/opt/node-v24.18.0-linux-x64/bin/node",
+          "--version"
+        ],
+        "environment_path": "/opt/data/bin:/opt/data/.local/bin:/opt/data/opt/go/bin:/opt/data/opt/uv:/opt/data/opt/node-v24.18.0-linux-x64/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+        "captured": true,
+        "exit_code": 0,
+        "output": "v24.18.0",
+        "truncated": false
+      }
+    },
+    "source_identity": [
+      {
+        "path": "/opt/data/tool-candidates/ponytail",
+        "exists": true,
+        "kind": "directory",
+        "git_head": "40e50d9e03242aa5dd53ac771950f9127362b25f",
+        "package_json_sha256": "6a180c19d35bcc9d08ea1b92b29c7da1ae1a1b2e3b31c73d94ac56e7fec7af01"
+      }
+    ]
+  },
+  "profile_id": "artifact-ponytail-claude-code-plugin-v1",
+  "workflow_sequence_id": "beets-lifecycle-sequence-v1",
+  "fixture_id": "medium-beetbox-beets",
+  "repository_path": "sources/evaluations/workflow-sessions/artifact-ponytail-claude-code-plugin-beets-20260809-p-ab14b9edcf57-r0/project/repo",
+  "codex_exit_codes": [
+    0,
+    0,
+    0
+  ],
+  "final_verifier_exit_code": 0,
+  "tool_isolation_audit_exit_code": 0,
+  "verifier_integrity_passed": true,
+  "thread_continuity_errors": [],
+  "seed_delivery": {
+    "mode": "preseeded-composite",
+    "future_seed_regressions_visible": true,
+    "preseeded_task_orders": [
+      1,
+      2,
+      3
+    ],
+    "pending_seed_orders": []
+  },
+  "accepted": true,
+  "timeout_seconds": 10800,
+  "codex_version": "",
+  "agent_runtime_version": "2.1.220 (Claude Code)",
+  "token_usage": {
+    "measurement_source": "claude-code-stream-json-assistant-usage",
+    "fresh_input_tokens": 761417,
+    "cached_input_tokens": 7764007,
+    "cache_write_tokens": 761252,
+    "output_tokens": 418,
+    "reasoning_tokens": 0,
+    "total_provider_tokens": 8525842,
+    "provider_usage_details": {
+      "runtime": "claude-code",
+      "accounting_mode": "sum-unique-assistant-message-usage",
+      "accounting_note": "",
+      "assistant_usage_block_count": 84,
+      "result_usage_block_count": 3,
+      "result_usage_counted": false,
+      "reasoning_tokens_available": false,
+      "canonical_components": {
+        "input_tokens": 165,
+        "cache_creation_input_tokens": 761252,
+        "cache_read_input_tokens": 7764007,
+        "output_tokens": 418,
+        "reasoning_tokens": 0
+      },
+      "raw_token_field_totals": {
+        "cache_creation.ephemeral_1h_input_tokens": 761252,
+        "cache_creation.ephemeral_5m_input_tokens": 0,
+        "cache_creation_input_tokens": 761252,
+        "cache_read_input_tokens": 7764007,
+        "input_tokens": 165,
+        "output_tokens": 418
+      },
+      "result_raw_token_field_totals": {
+        "cache_creation.ephemeral_1h_input_tokens": 761252,
+        "cache_creation.ephemeral_5m_input_tokens": 0,
+        "cache_creation_input_tokens": 761252,
+        "cache_read_input_tokens": 7764007,
+        "input_tokens": 165,
+        "output_tokens": 100419
+      },
+      "raw_model_usage_token_field_totals": {},
+      "result_raw_model_usage_token_field_totals": {
+        "claude-sonnet-5.cacheCreationInputTokens": 761252,
+        "claude-sonnet-5.cacheReadInputTokens": 7764007,
+        "claude-sonnet-5.inputTokens": 165,
+        "claude-sonnet-5.outputTokens": 100419
+      },
+      "raw_usage_blocks": [
+        {
+          "event_type": "assistant",
+          "message_id": "msg_011Cds3ccDttGuA3u6HnRbe4",
+          "usage": {
+            "input_tokens": 1,
+            "cache_creation_input_tokens": 20031,
+            "cache_read_input_tokens": 0,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 20031
+            },
+            "output_tokens": 3,
+            "service_tier": "standard",
+            "inference_geo": "not_available"
+          },
+          "model_usage": {}
+        },
+        {
+          "event_type": "assistant",
+          "message_id": "msg_011Cds3cxhCY2wv3cnrFrTcJ",
+          "usage": {
+            "input_tokens": 2,
+            "cache_creation_input_tokens": 24493,
+            "cache_read_input_tokens": 0,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 24493
+            },
+            "output_tokens": 20,
+            "service_tier": "standard",
+            "inference_geo": "not_available"
+          },
+          "model_usage": {}
+        },
+        {
+          "event_type": "assistant",
+          "message_id": "msg_011Cds3dCKVeRvgvHTshhmh5",
+          "usage": {
+            "input_tokens": 2,
+            "cache_creation_input_tokens": 7838,
+            "cache_read_input_tokens": 24493,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 7838
+            },
+            "output_tokens": 2,
+            "service_tier": "standard",
+            "inference_geo": "not_available"
+          },
+          "model_usage": {}
+        },
+        {
+          "event_type": "assistant",
+          "message_id": "msg_011Cds3dmR4u2uWR6nTBZ1yt",
+          "usage": {
+            "input_tokens": 2,
+            "cache_creation_input_tokens": 465,
+            "cache_read_input_tokens": 32331,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 465
+            },
+            "output_tokens": 7,
+            "service_tier": "standard",
+            "inference_geo": "not_available"
+          },
+          "model_usage": {}
+        },
+        {
+          "event_type": "assistant",
+          "message_id": "msg_011Cds3e4bRpDpVtZDxBSjmd",
+          "usage": {
+            "input_tokens": 2,
+            "cache_creation_input_tokens": 1848,
+            "cache_read_input_tokens": 32796,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 1848
+            },
+            "output_tokens": 3,
+            "service_tier": "standard",
+            "inference_geo": "not_available"
+          },
+          "model_usage": {}
+        },
+        {
+          "event_type": "assistant",
+          "message_id": "msg_011Cds3eGfxmjc4UMy6uFc7M",
+          "usage": {
+            "input_tokens": 2,
+            "cache_creation_input_tokens": 4497,
+            "cache_read_input_tokens": 34644,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 4497
+            },
+            "output_tokens": 4,
+            "service_tier": "standard",
+            "inference_geo": "not_available"
+          },
+          "model_usage": {}
+        },
+        {
+          "event_type": "assistant",
+          "message_id": "msg_011Cds3ehBMVJ6mVKZN6TZzN",
+          "usage": {
+            "input_tokens": 2,
+            "cache_creation_input_tokens": 280,
+            "cache_read_input_tokens": 39141,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 280
+            },
+            "output_tokens": 20,
+            "service_tier": "standard",
+            "inference_geo": "not_available"
+          },
+          "model_usage": {}
+        },
+        {
+          "event_type": "assistant",
+          "message_id": "msg_011Cds3eymVYrXSADcYzjL1m",
+          "usage": {
+            "input_tokens": 2,
+            "cache_creation_input_tokens": 358,
+            "cache_read_input_tokens": 39421,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 358
+            },
+            "output_tokens": 20,
+            "service_tier": "standard",
+            "inference_geo": "not_available"
+          },
+          "model_usage": {}
+        },
+        {
+          "event_type": "assistant",
+          "message_id": "msg_011Cds3fBPVMqKwpLmFLucJ2",
+          "usage": {
+            "input_tokens": 2,
+            "cache_creation_input_tokens": 840,
+            "cache_read_input_tokens": 39779,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 840
+            },
+            "output_tokens": 5,
+            "service_tier": "standard",
+            "inference_geo": "not_available"
+          },
+          "model_usage": {}
+        },
+        {
+          "event_type": "assistant",
+          "message_id": "msg_011Cds3fZjQoPt25sHFJM7Y4",
+          "usage": {
+            "input_tokens": 2,
+            "cache_creation_input_tokens": 1161,
+            "cache_read_input_tokens": 40619,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 1161
+            },
+            "output_tokens": 1,
+            "service_tier": "standard",
+            "inference_geo": "not_available"
+          },
+          "model_usage": {}
+        },
+        {
+          "event_type": "assistant",
+          "message_id": "msg_011Cds3g7w9vWxA837HuTgZk",
+          "usage": {
+            "input_tokens": 2,
+            "cache_creation_input_tokens": 2786,
+            "cache_read_input_tokens": 41780,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 2786
+            },
+            "output_tokens": 3,
+            "service_tier": "standard",
+            "inference_geo": "not_available"
+          },
+          "model_usage": {}
+        },
+        {
+          "event_type": "assistant",
+          "message_id": "msg_011Cds3gdxggLbksjq1tGeY9",
+          "usage": {
+            "input_tokens": 2,
+            "cache_creation_input_tokens": 788,
+            "cache_read_input_tokens": 44566,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 788
+            },
+            "output_tokens": 2,
+            "service_tier": "standard",
+            "inference_geo": "not_available"
+          },
+          "model_usage": {}
+        },
+        {
+          "event_type": "assistant",
+          "message_id": "msg_011Cds3gpSE38MRyi7YM7hXw",
+          "usage": {
+            "input_tokens": 2,
+            "cache_creation_input_tokens": 226,
+            "cache_read_input_tokens": 45354,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 226
+            },
+            "output_tokens": 9,
+            "service_tier": "standard",
+            "inference_geo": "not_available"
+          },
+          "model_usage": {}
+        },
+        {
+          "event_type": "assistant",
+          "message_id": "msg_011Cds3h5dXFE6DWCPjkydbw",
+          "usage": {
+            "input_tokens": 2,
+            "cache_creation_input_tokens": 290,
+            "cache_read_input_tokens": 45580,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 290
+            },
+            "output_tokens": 10,
+            "service_tier": "standard",
+            "inference_geo": "not_available"
+          },
+          "model_usage": {}
+        },
+        {
+          "event_type": "assistant",
+          "message_id": "msg_011Cds3iPSNCE87KeB7thUVh",
+          "usage": {
+            "input_tokens": 2,
+            "cache_creation_input_tokens": 1954,
+            "cache_read_input_tokens": 45870,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 1954
+            },
+            "output_tokens": 2,
+            "service_tier": "standard",
+            "inference_geo": "not_available"
+          },
+          "model_usage": {}
+        },
+        {
+          "event_type": "assistant",
+          "message_id": "msg_011Cds3jKupUCG8ZzQSnwqpq",
+          "usage": {
+            "input_tokens": 2,
+            "cache_creation_input_tokens": 1455,
+            "cache_read_input_tokens": 47824,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 1455
+            },
+            "output_tokens": 3,
+            "service_tier": "standard",
+            "inference_geo": "not_available"
+          },
+          "model_usage": {}
+        },
+        {
+          "event_type": "assistant",
+          "message_id": "msg_011Cds3jjxg7g9iwj7s8rVA8",
+          "usage": {
+            "input_tokens": 2,
+            "cache_creation_input_tokens": 3624,
+            "cache_read_input_tokens": 49279,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 3624
+            },
+            "output_tokens": 1,
+            "service_tier": "standard",
+            "inference_geo": "not_available"
+          },
+          "model_usage": {}
+        },
+        {
+          "event_type": "assistant",
+          "message_id": "msg_011Cds3k6uWCMFk5e7hgmLFQ",
+          "usage": {
+            "input_tokens": 2,
+            "cache_creation_input_tokens": 1290,
+            "cache_read_input_tokens": 52903,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 1290
+            },
+            "output_tokens": 3,
+            "service_tier": "standard",
+            "inference_geo": "not_available"
+          },
+          "model_usage": {}
+        },
+        {
+          "event_type": "assistant",
+          "message_id": "msg_011Cds3kX7YDfakhZUeRt7Xj",
+          "usage": {
+            "input_tokens": 2,
+            "cache_creation_input_tokens": 377,
+            "cache_read_input_tokens": 54193,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 377
+            },
+            "output_tokens": 2,
+            "service_tier": "standard",
+            "inference_geo": "not_available"
+          },
+          "model_usage": {}
+        },
+        {
+          "event_type": "assistant",
+          "message_id": "msg_011Cds3mnpNstJNv4gg7c19r",
+          "usage": {
+            "input_tokens": 2,
+            "cache_creation_input_tokens": 2013,
+            "cache_read_input_tokens": 54570,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 2013
+            },
+            "output_tokens": 3,
+            "service_tier": "standard",
+            "inference_geo": "not_available"
+          },
+          "model_usage": {}
+        },
+        {
+          "event_type": "assistant",
+          "message_id": "msg_011Cds3oxXag1jeDAJxkoi5p",
+          "usage": {
+            "input_tokens": 2,
+            "cache_creation_input_tokens": 2650,
+            "cache_read_input_tokens": 56583,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 2650
+            },
+            "output_tokens": 3,
+            "service_tier": "standard",
+            "inference_geo": "not_available"
+          },
+          "model_usage": {}
+        },
+        {
+          "event_type": "assistant",
+          "message_id": "msg_011Cds3qiYGZ89pvk6mknfEP",
+          "usage": {
+            "input_tokens": 2,
+            "cache_creation_input_tokens": 2264,
+            "cache_read_input_tokens": 59233,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 2264
+            },
+            "output_tokens": 2,
+            "service_tier": "standard",
+            "inference_geo": "not_available"
+          },
+          "model_usage": {}
+        },
+        {
+          "event_type": "assistant",
+          "message_id": "msg_011Cds3scb93zU6T33ReNC4M",
+          "usage": {
+            "input_tokens": 2,
+            "cache_creation_input_tokens": 2391,
+            "cache_read_input_tokens": 61497,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 2391
+            },
+            "output_tokens": 3,
+            "service_tier": "standard",
+            "inference_geo": "not_available"
+          },
+          "model_usage": {}
+        },
+        {
+          "event_type": "assistant",
+          "message_id": "msg_011Cds3tA2VzTuHUEc9UPx9c",
+          "usage": {
+            "input_tokens": 2,
+            "cache_creation_input_tokens": 570,
+            "cache_read_input_tokens": 63888,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 570
+            },
+            "output_tokens": 5,
+            "service_tier": "standard",
+            "inference_geo": "not_available"
+          },
+          "model_usage": {}
+        },
+        {
+          "event_type": "assistant",
+          "message_id": "msg_011Cds3tQokWQphxrHHQhxZ5",
+          "usage": {
+            "input_tokens": 2,
+            "cache_creation_input_tokens": 389,
+            "cache_read_input_tokens": 64458,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 389
+            },
+            "output_tokens": 3,
+            "service_tier": "standard",
+            "inference_geo": "not_available"
+          },
+          "model_usage": {}
+        },
+        {
+          "event_type": "assistant",
+          "message_id": "msg_011Cds3vaF5mgQ1qGJf2hDVG",
+          "usage": {
+            "input_tokens": 2,
+            "cache_creation_input_tokens": 4240,
+            "cache_read_input_tokens": 64847,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 4240
+            },
+            "output_tokens": 2,
+            "service_tier": "standard",
+            "inference_geo": "not_available"
+          },
+          "model_usage": {}
+        },
+        {
+          "event_type": "assistant",
+          "message_id": "msg_011Cds3wxSMAka8eD7zaPsuf",
+          "usage": {
+            "input_tokens": 2,
+            "cache_creation_input_tokens": 2056,
+            "cache_read_input_tokens": 69087,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 2056
+            },
+            "output_tokens": 2,
+            "service_tier": "standard",
+            "inference_geo": "not_available"
+          },
+          "model_usage": {}
+        },
+        {
+          "event_type": "assistant",
+          "message_id": "msg_011Cds3xVbLsAGtwnDrsoczF",
+          "usage": {
+            "input_tokens": 2,
+            "cache_creation_input_tokens": 1184,
+            "cache_read_input_tokens": 71143,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 1184
+            },
+            "output_tokens": 2,
+            "service_tier": "standard",
+            "inference_geo": "not_available"
+          },
+          "model_usage": {}
+        },
+        {
+          "event_type": "assistant",
+          "message_id": "msg_011Cds3zCyX86beQRGcW7YXo",
+          "usage": {
+            "input_tokens": 2,
+            "cache_creation_input_tokens": 2351,
+            "cache_read_input_tokens": 72327,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 2351
+            },
+            "output_tokens": 7,
+            "service_tier": "standard",
+            "inference_geo": "not_available"
+          },
+          "model_usage": {}
+        },
+        {
+          "event_type": "assistant",
+          "message_id": "msg_011Cds43bK2Ye5qznZoawALx",
+          "usage": {
+            "input_tokens": 2,
+            "cache_creation_input_tokens": 4537,
+            "cache_read_input_tokens": 74678,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 4537
+            },
+            "output_tokens": 3,
+            "service_tier": "standard",
+            "inference_geo": "not_available"
+          },
+          "model_usage": {}
+        },
+        {
+          "event_type": "assistant",
+          "message_id": "msg_011Cds43waRmrd99Zy7tcgHT",
+          "usage": {
+            "input_tokens": 2,
+            "cache_creation_input_tokens": 568,
+            "cache_read_input_tokens": 79215,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 568
+            },
+            "output_tokens": 3,
+            "service_tier": "standard",
+            "inference_geo": "not_available"
+          },
+          "model_usage": {}
+        },
+        {
+          "event_type": "assistant",
+          "message_id": "msg_011Cds44wQHjXaZbGMoEmrBy",
+          "usage": {
+            "input_tokens": 2,
+            "cache_creation_input_tokens": 1229,
+            "cache_read_input_tokens": 79783,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 1229
+            },
+            "output_tokens": 2,
+            "service_tier": "standard",
+            "inference_geo": "not_available"
+          },
+          "model_usage": {}
+        },
+        {
+          "event_type": "assistant",
+          "message_id": "msg_011Cds46K6Y6VssaGFqU8NTe",
+          "usage": {
+            "input_tokens": 2,
+            "cache_creation_input_tokens": 1588,
+            "cache_read_input_tokens": 81012,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 1588
+            },
+            "output_tokens": 3,
+            "service_tier": "standard",
+            "inference_geo": "not_available"
+          },
+          "model_usage": {}
+        },
+        {
+          "event_type": "assistant",
+          "message_id": "msg_011Cds48FurPcMDYAgYqbNyi",
+          "usage": {
+            "input_tokens": 2,
+            "cache_creation_input_tokens": 2597,
+            "cache_read_input_tokens": 82600,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 2597
+            },
+            "output_tokens": 2,
+            "service_tier": "standard",
+            "inference_geo": "not_available"
+          },
+          "model_usage": {}
+        },
+        {
+          "event_type": "assistant",
+          "message_id": "msg_011Cds4ABJLr1Mh3TQTA5qw8",
+          "usage": {
+            "input_tokens": 2,
+            "cache_creation_input_tokens": 2755,
+            "cache_read_input_tokens": 85197,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 2755
+            },
+            "output_tokens": 2,
+            "service_tier": "standard",
+            "inference_geo": "not_available"
+          },
+          "model_usage": {}
+        },
+        {
+          "event_type": "assistant",
+          "message_id": "msg_011Cds4CdA9XjUQaVhT7gMkF",
+          "usage": {
+            "input_tokens": 2,
+            "cache_creation_input_tokens": 2448,
+            "cache_read_input_tokens": 87952,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 2448
+            },
+            "output_tokens": 2,
+            "service_tier": "standard",
+            "inference_geo": "not_available"
+          },
+          "model_usage": {}
+        },
+        {
+          "event_type": "assistant",
+          "message_id": "msg_011Cds4F218tkX3Rb6cPWWoV",
+          "usage": {
+            "input_tokens": 2,
+            "cache_creation_input_tokens": 3281,
+            "cache_read_input_tokens": 90400,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 3281
+            },
+            "output_tokens": 7,
+            "service_tier": "standard",
+            "inference_geo": "not_available"
+          },
+          "model_usage": {}
+        },
+        {
+          "event_type": "assistant",
+          "message_id": "msg_011Cds4GRQKtPEZSX1YsyYkv",
+          "usage": {
+            "input_tokens": 2,
+            "cache_creation_input_tokens": 1700,
+            "cache_read_input_tokens": 93681,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 1700
+            },
+            "output_tokens": 20,
+            "service_tier": "standard",
+            "inference_geo": "not_available"
+          },
+          "model_usage": {}
+        },
+        {
+          "event_type": "assistant",
+          "message_id": "msg_011Cds4GhSVBkYQQSzM8tvxL",
+          "usage": {
+            "input_tokens": 2,
+            "cache_creation_input_tokens": 249,
+            "cache_read_input_tokens": 95381,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 249
+            },
+            "output_tokens": 20,
+            "service_tier": "standard",
+            "inference_geo": "not_available"
+          },
+          "model_usage": {}
+        },
+        {
+          "event_type": "assistant",
+          "message_id": "msg_011Cds4H88YQGWQabhid1opJ",
+          "usage": {
+            "input_tokens": 2,
+            "cache_creation_input_tokens": 660,
+            "cache_read_input_tokens": 95630,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 660
+            },
+            "output_tokens": 3,
+            "service_tier": "standard",
+            "inference_geo": "not_available"
+          },
+          "model_usage": {}
+        },
+        {
+          "event_type": "assistant",
+          "message_id": "msg_011Cds4HjFuAyL1HAiW4qVBy",
+          "usage": {
+            "input_tokens": 2,
+            "cache_creation_input_tokens": 984,
+            "cache_read_input_tokens": 96290,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 984
+            },
+            "output_tokens": 2,
+            "service_tier": "standard",
+            "inference_geo": "not_available"
+          },
+          "model_usage": {}
+        },
+        {
+          "event_type": "assistant",
+          "message_id": "msg_011Cds4JLQzoDe1Np7oBabMD",
+          "usage": {
+            "input_tokens": 2,
+            "cache_creation_input_tokens": 657,
+            "cache_read_input_tokens": 97274,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 657
+            },
+            "output_tokens": 3,
+            "service_tier": "standard",
+            "inference_geo": "not_available"
+          },
+          "model_usage": {}
+        },
+        {
+          "event_type": "assistant",
+          "message_id": "msg_011Cds4Mdh9euHkjqNX5Z4nC",
+          "usage": {
+            "input_tokens": 2,
+            "cache_creation_input_tokens": 4178,
+            "cache_read_input_tokens": 97931,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 4178
+            },
+            "output_tokens": 2,
+            "service_tier": "standard",
+            "inference_geo": "not_available"
+          },
+          "model_usage": {}
+        },
+        {
+          "event_type": "assistant",
+          "message_id": "msg_011Cds4Ncqpmwch5PVfVxhYQ",
+          "usage": {
+            "input_tokens": 2,
+            "cache_creation_input_tokens": 1139,
+            "cache_read_input_tokens": 102109,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 1139
+            },
+            "output_tokens": 3,
+            "service_tier": "standard",
+            "inference_geo": "not_available"
+          },
+          "model_usage": {}
+        },
+        {
+          "event_type": "assistant",
+          "message_id": "msg_011Cds4QVFUpM33cqYNT5YRo",
+          "usage": {
+            "input_tokens": 2,
+            "cache_creation_input_tokens": 3067,
+            "cache_read_input_tokens": 103248,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 3067
+            },
+            "output_tokens": 3,
+            "service_tier": "standard",
+            "inference_geo": "not_available"
+          },
+          "model_usage": {}
+        },
+        {
+          "event_type": "assistant",
+          "message_id": "msg_011Cds4RpG1Gp7sg8gyJk8v9",
+          "usage": {
+            "input_tokens": 2,
+            "cache_creation_input_tokens": 1203,
+            "cache_read_input_tokens": 106315,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 1203
+            },
+            "output_tokens": 2,
+            "service_tier": "standard",
+            "inference_geo": "not_available"
+          },
+          "model_usage": {}
+        },
+        {
+          "event_type": "assistant",
+          "message_id": "msg_011Cds4Sj3zphny8uqJWQCLn",
+          "usage": {
+            "input_tokens": 2,
+            "cache_creation_input_tokens": 991,
+            "cache_read_input_tokens": 107518,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 991
+            },
+            "output_tokens": 3,
+            "service_tier": "standard",
+            "inference_geo": "not_available"
+          },
+          "model_usage": {}
+        },
+        {
+          "event_type": "assistant",
+          "message_id": "msg_011Cds4UwZdJ1WzaKRKLdRN9",
+          "usage": {
+            "input_tokens": 2,
+            "cache_creation_input_tokens": 2598,
+            "cache_read_input_tokens": 108509,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 2598
+            },
+            "output_tokens": 5,
+            "service_tier": "standard",
+            "inference_geo": "not_available"
+          },
+          "model_usage": {}
+        },
+        {
+          "event_type": "assistant",
+          "message_id": "msg_011Cds4VaTACx1mt14cqnZRE",
+          "usage": {
+            "input_tokens": 2,
+            "cache_creation_input_tokens": 806,
+            "cache_read_input_tokens": 111107,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 806
+            },
+            "output_tokens": 3,
+            "service_tier": "standard",
+            "inference_geo": "not_available"
+          },
+          "model_usage": {}
+        },
+        {
+          "event_type": "assistant",
+          "message_id": "msg_011Cds4XMWM2sKRmGKLEzaRv",
+          "usage": {
+            "input_tokens": 2,
+            "cache_creation_input_tokens": 1927,
+            "cache_read_input_tokens": 111913,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 1927
+            },
+            "output_tokens": 3,
+            "service_tier": "standard",
+            "inference_geo": "not_available"
+          },
+          "model_usage": {}
+        },
+        {
+          "event_type": "assistant",
+          "message_id": "msg_011Cds4Z126jg2PR3m5LHGoL",
+          "usage": {
+            "input_tokens": 2,
+            "cache_creation_input_tokens": 1859,
+            "cache_read_input_tokens": 113840,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 1859
+            },
+            "output_tokens": 3,
+            "service_tier": "standard",
+            "inference_geo": "not_available"
+          },
+          "model_usage": {}
+        },
+        {
+          "event_type": "assistant",
+          "message_id": "msg_011Cds4aFvKZQhiDbVeETixD",
+          "usage": {
+            "input_tokens": 2,
+            "cache_creation_input_tokens": 2263,
+            "cache_read_input_tokens": 115699,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 2263
+            },
+            "output_tokens": 5,
+            "service_tier": "standard",
+            "inference_geo": "not_available"
+          },
+          "model_usage": {}
+        },
+        {
+          "event_type": "assistant",
+          "message_id": "msg_011Cds4aik7rDiWdLgCzxqZB",
+          "usage": {
+            "input_tokens": 2,
+            "cache_creation_input_tokens": 590,
+            "cache_read_input_tokens": 117962,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 590
+            },
+            "output_tokens": 4,
+            "service_tier": "standard",
+            "inference_geo": "not_available"
+          },
+          "model_usage": {}
+        },
+        {
+          "event_type": "assistant",
+          "message_id": "msg_011Cds4dWz235BmpZWr2vSwE",
+          "usage": {
+            "input_tokens": 2,
+            "cache_creation_input_tokens": 3100,
+            "cache_read_input_tokens": 118552,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 3100
+            },
+            "output_tokens": 2,
+            "service_tier": "standard",
+            "inference_geo": "not_available"
+          },
+          "model_usage": {}
+        },
+        {
+          "event_type": "assistant",
+          "message_id": "msg_011Cds4fACRGNceoPsmurpAZ",
+          "usage": {
+            "input_tokens": 2,
+            "cache_creation_input_tokens": 2000,
+            "cache_read_input_tokens": 121652,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 2000
+            },
+            "output_tokens": 3,
+            "service_tier": "standard",
+            "inference_geo": "not_available"
+          },
+          "model_usage": {}
+        },
+        {
+          "event_type": "assistant",
+          "message_id": "msg_011Cds4gt48GQyjcmixL1SzP",
+          "usage": {
+            "input_tokens": 2,
+            "cache_creation_input_tokens": 2153,
+            "cache_read_input_tokens": 123652,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 2153
+            },
+            "output_tokens": 5,
+            "service_tier": "standard",
+            "inference_geo": "not_available"
+          },
+          "model_usage": {}
+        },
+        {
+          "event_type": "assistant",
+          "message_id": "msg_011Cds4j3HoiFLuoQ3j32Lnj",
+          "usage": {
+            "input_tokens": 2,
+            "cache_creation_input_tokens": 2160,
+            "cache_read_input_tokens": 125805,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 2160
+            },
+            "output_tokens": 3,
+            "service_tier": "standard",
+            "inference_geo": "not_available"
+          },
+          "model_usage": {}
+        },
+        {
+          "event_type": "assistant",
+          "message_id": "msg_011Cds4kqkpZhopQcUbMrKdu",
+          "usage": {
+            "input_tokens": 2,
+            "cache_creation_input_tokens": 1922,
+            "cache_read_input_tokens": 127965,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 1922
+            },
+            "output_tokens": 2,
+            "service_tier": "standard",
+            "inference_geo": "not_available"
+          },
+          "model_usage": {}
+        },
+        {
+          "event_type": "assistant",
+          "message_id": "msg_011Cds4o8GZMGik4AMwaHSGY",
+          "usage": {
+            "input_tokens": 2,
+            "cache_creation_input_tokens": 5423,
+            "cache_read_input_tokens": 129887,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 5423
+            },
+            "output_tokens": 3,
+            "service_tier": "standard",
+            "inference_geo": "not_available"
+          },
+          "model_usage": {}
+        },
+        {
+          "event_type": "assistant",
+          "message_id": "msg_011Cds4pf4kEcGPVYNTb9Nxx",
+          "usage": {
+            "input_tokens": 2,
+            "cache_creation_input_tokens": 1663,
+            "cache_read_input_tokens": 135310,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 1663
+            },
+            "output_tokens": 3,
+            "service_tier": "standard",
+            "inference_geo": "not_available"
+          },
+          "model_usage": {}
+        },
+        {
+          "event_type": "assistant",
+          "message_id": "msg_011Cds4r54QtF4ygdeb67vVL",
+          "usage": {
+            "input_tokens": 2,
+            "cache_creation_input_tokens": 1975,
+            "cache_read_input_tokens": 136973,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 1975
+            },
+            "output_tokens": 2,
+            "service_tier": "standard",
+            "inference_geo": "not_available"
+          },
+          "model_usage": {}
+        },
+        {
+          "event_type": "assistant",
+          "message_id": "msg_011Cds4rvJ6BJqKkcAc4b8PH",
+          "usage": {
+            "input_tokens": 2,
+            "cache_creation_input_tokens": 1038,
+            "cache_read_input_tokens": 138948,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 1038
+            },
+            "output_tokens": 3,
+            "service_tier": "standard",
+            "inference_geo": "not_available"
+          },
+          "model_usage": {}
+        },
+        {
+          "event_type": "assistant",
+          "message_id": "msg_011Cds4wKsHqRAFjTDnBSuKz",
+          "usage": {
+            "input_tokens": 2,
+            "cache_creation_input_tokens": 5214,
+            "cache_read_input_tokens": 139986,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 5214
+            },
+            "output_tokens": 3,
+            "service_tier": "standard",
+            "inference_geo": "not_available"
+          },
+          "model_usage": {}
+        },
+        {
+          "event_type": "assistant",
+          "message_id": "msg_011Cds4xcCpzFKmNDbA3KEXh",
+          "usage": {
+            "input_tokens": 2,
+            "cache_creation_input_tokens": 1709,
+            "cache_read_input_tokens": 145200,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 1709
+            },
+            "output_tokens": 3,
+            "service_tier": "standard",
+            "inference_geo": "not_available"
+          },
+          "model_usage": {}
+        },
+        {
+          "event_type": "assistant",
+          "message_id": "msg_011Cds4yM1oEMBQF9yupAMHh",
+          "usage": {
+            "input_tokens": 2,
+            "cache_creation_input_tokens": 529,
+            "cache_read_input_tokens": 146909,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 529
+            },
+            "output_tokens": 2,
+            "service_tier": "standard",
+            "inference_geo": "not_available"
+          },
+          "model_usage": {}
+        },
+        {
+          "event_type": "assistant",
+          "message_id": "msg_011Cds518vayaboet2SBtW5E",
+          "usage": {
+            "input_tokens": 2,
+            "cache_creation_input_tokens": 2194,
+            "cache_read_input_tokens": 147438,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 2194
+            },
+            "output_tokens": 2,
+            "service_tier": "standard",
+            "inference_geo": "not_available"
+          },
+          "model_usage": {}
+        },
+        {
+          "event_type": "assistant",
+          "message_id": "msg_011Cds53XMWf4h9W85nwkgYx",
+          "usage": {
+            "input_tokens": 2,
+            "cache_creation_input_tokens": 2235,
+            "cache_read_input_tokens": 149632,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 2235
+            },
+            "output_tokens": 3,
+            "service_tier": "standard",
+            "inference_geo": "not_available"
+          },
+          "model_usage": {}
+        },
+        {
+          "event_type": "assistant",
+          "message_id": "msg_011Cds56s9EA2KK5MfAYTCd1",
+          "usage": {
+            "input_tokens": 2,
+            "cache_creation_input_tokens": 3814,
+            "cache_read_input_tokens": 151867,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 3814
+            },
+            "output_tokens": 9,
+            "service_tier": "standard",
+            "inference_geo": "not_available"
+          },
+          "model_usage": {}
+        },
+        {
+          "event_type": "assistant",
+          "message_id": "msg_011Cds57uTALmQxDhFQVAQKc",
+          "usage": {
+            "input_tokens": 1,
+            "cache_creation_input_tokens": 136693,
+            "cache_read_input_tokens": 16393,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 136693
+            },
+            "output_tokens": 2,
+            "service_tier": "standard",
+            "inference_geo": "not_available"
+          },
+          "model_usage": {}
+        },
+        {
+          "event_type": "assistant",
+          "message_id": "msg_011Cds58TJpQ8uzwbBo2ZsHU",
+          "usage": {
+            "input_tokens": 2,
+            "cache_creation_input_tokens": 137088,
+            "cache_read_input_tokens": 20450,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 137088
+            },
+            "output_tokens": 20,
+            "service_tier": "standard",
+            "inference_geo": "not_available"
+          },
+          "model_usage": {}
+        },
+        {
+          "event_type": "assistant",
+          "message_id": "msg_011Cds58uKVmiawsETM7EPEu",
+          "usage": {
+            "input_tokens": 2,
+            "cache_creation_input_tokens": 3401,
+            "cache_read_input_tokens": 157538,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 3401
+            },
+            "output_tokens": 5,
+            "service_tier": "standard",
+            "inference_geo": "not_available"
+          },
+          "model_usage": {}
+        },
+        {
+          "event_type": "assistant",
+          "message_id": "msg_011Cds59SPn9rvUk1cUoX7JT",
+          "usage": {
+            "input_tokens": 2,
+            "cache_creation_input_tokens": 882,
+            "cache_read_input_tokens": 160939,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 882
+            },
+            "output_tokens": 5,
+            "service_tier": "standard",
+            "inference_geo": "not_available"
+          },
+          "model_usage": {}
+        },
+        {
+          "event_type": "assistant",
+          "message_id": "msg_011Cds59jmoJi8MY5qwDQ9D7",
+          "usage": {
+            "input_tokens": 2,
+            "cache_creation_input_tokens": 247,
+            "cache_read_input_tokens": 161821,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 247
+            },
+            "output_tokens": 2,
+            "service_tier": "standard",
+            "inference_geo": "not_available"
+          },
+          "model_usage": {}
+        },
+        {
+          "event_type": "assistant",
+          "message_id": "msg_011Cds5ACPCGzyv6PXAxBoMe",
+          "usage": {
+            "input_tokens": 2,
+            "cache_creation_input_tokens": 363,
+            "cache_read_input_tokens": 162068,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 363
+            },
+            "output_tokens": 1,
+            "service_tier": "standard",
+            "inference_geo": "not_available"
+          },
+          "model_usage": {}
+        },
+        {
+          "event_type": "assistant",
+          "message_id": "msg_011Cds5AdH9pX9BbG5hS4Myu",
+          "usage": {
+            "input_tokens": 2,
+            "cache_creation_input_tokens": 469,
+            "cache_read_input_tokens": 162431,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 469
+            },
+            "output_tokens": 2,
+            "service_tier": "standard",
+            "inference_geo": "not_available"
+          },
+          "model_usage": {}
+        },
+        {
+          "event_type": "assistant",
+          "message_id": "msg_011Cds5CQEe8Df6WxYmUsf9F",
+          "usage": {
+            "input_tokens": 2,
+            "cache_creation_input_tokens": 622,
+            "cache_read_input_tokens": 162900,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 622
+            },
+            "output_tokens": 2,
+            "service_tier": "standard",
+            "inference_geo": "not_available"
+          },
+          "model_usage": {}
+        },
+        {
+          "event_type": "assistant",
+          "message_id": "msg_011Cds5CqDoYZ7LFtVooYiWa",
+          "usage": {
+            "input_tokens": 1,
+            "cache_creation_input_tokens": 149622,
+            "cache_read_input_tokens": 10817,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 149622
+            },
+            "output_tokens": 5,
+            "service_tier": "standard",
+            "inference_geo": "not_available"
+          },
+          "model_usage": {}
+        },
+        {
+          "event_type": "assistant",
+          "message_id": "msg_011Cds5DHnDp92rCZpUKc5i2",
+          "usage": {
+            "input_tokens": 2,
+            "cache_creation_input_tokens": 151278,
+            "cache_read_input_tokens": 14874,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 151278
+            },
+            "output_tokens": 9,
+            "service_tier": "standard",
+            "inference_geo": "not_available"
+          },
+          "model_usage": {}
+        },
+        {
+          "event_type": "assistant",
+          "message_id": "msg_011Cds5DkGBBkNeS2GzffqtV",
+          "usage": {
+            "input_tokens": 2,
+            "cache_creation_input_tokens": 826,
+            "cache_read_input_tokens": 166152,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 826
+            },
+            "output_tokens": 9,
+            "service_tier": "standard",
+            "inference_geo": "not_available"
+          },
+          "model_usage": {}
+        },
+        {
+          "event_type": "assistant",
+          "message_id": "msg_011Cds5EV3R7zhTHioB24xNY",
+          "usage": {
+            "input_tokens": 2,
+            "cache_creation_input_tokens": 987,
+            "cache_read_input_tokens": 166978,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 987
+            },
+            "output_tokens": 21,
+            "service_tier": "standard",
+            "inference_geo": "not_available"
+          },
+          "model_usage": {}
+        },
+        {
+          "event_type": "assistant",
+          "message_id": "msg_011Cds5F9PzwNWrbgMK7rqFe",
+          "usage": {
+            "input_tokens": 2,
+            "cache_creation_input_tokens": 1347,
+            "cache_read_input_tokens": 167965,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 1347
+            },
+            "output_tokens": 4,
+            "service_tier": "standard",
+            "inference_geo": "not_available"
+          },
+          "model_usage": {}
+        },
+        {
+          "event_type": "assistant",
+          "message_id": "msg_011Cds5FnRTwgSgzdJHtcUng",
+          "usage": {
+            "input_tokens": 2,
+            "cache_creation_input_tokens": 621,
+            "cache_read_input_tokens": 169312,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 621
+            },
+            "output_tokens": 20,
+            "service_tier": "standard",
+            "inference_geo": "not_available"
+          },
+          "model_usage": {}
+        },
+        {
+          "event_type": "assistant",
+          "message_id": "msg_011Cds5G97AbMK4mSgtdCYSG",
+          "usage": {
+            "input_tokens": 2,
+            "cache_creation_input_tokens": 277,
+            "cache_read_input_tokens": 169933,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 277
+            },
+            "output_tokens": 1,
+            "service_tier": "standard",
+            "inference_geo": "not_available"
+          },
+          "model_usage": {}
+        },
+        {
+          "event_type": "assistant",
+          "message_id": "msg_011Cds5LSTorRmdN6jKjps1a",
+          "usage": {
+            "input_tokens": 2,
+            "cache_creation_input_tokens": 817,
+            "cache_read_input_tokens": 170210,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 817
+            },
+            "output_tokens": 2,
+            "service_tier": "standard",
+            "inference_geo": "not_available"
+          },
+          "model_usage": {}
+        }
+      ],
+      "result_raw_usage_blocks": [
+        {
+          "event_type": "result",
+          "message_id": null,
+          "usage": {
+            "input_tokens": 135,
+            "cache_creation_input_tokens": 175712,
+            "cache_read_input_tokens": 5723226,
+            "output_tokens": 95029,
+            "server_tool_use": {
+              "web_search_requests": 0,
+              "web_fetch_requests": 0
+            },
+            "service_tier": "standard",
+            "cache_creation": {
+              "ephemeral_1h_input_tokens": 175712,
+              "ephemeral_5m_input_tokens": 0
+            },
+            "inference_geo": "not_available",
+            "iterations": [],
+            "speed": "standard"
+          },
+          "model_usage": {
+            "claude-sonnet-5": {
+              "inputTokens": 135,
+              "outputTokens": 95029,
+              "cacheReadInputTokens": 5723226,
+              "cacheCreationInputTokens": 175712,
+              "webSearchRequests": 0,
+              "costUSD": 4.1970798,
+              "contextWindow": 1000000,
+              "maxOutputTokens": 64000,
+              "canonicalModel": "claude-sonnet-5",
+              "provider": "firstParty"
+            }
+          }
+        },
+        {
+          "event_type": "result",
+          "message_id": null,
+          "usage": {
+            "input_tokens": 15,
+            "cache_creation_input_tokens": 279765,
+            "cache_read_input_tokens": 1004540,
+            "output_tokens": 2542,
+            "server_tool_use": {
+              "web_search_requests": 0,
+              "web_fetch_requests": 0
+            },
+            "service_tier": "standard",
+            "cache_creation": {
+              "ephemeral_1h_input_tokens": 279765,
+              "ephemeral_5m_input_tokens": 0
+            },
+            "inference_geo": "not_available",
+            "iterations": [],
+            "speed": "standard"
+          },
+          "model_usage": {
+            "claude-sonnet-5": {
+              "inputTokens": 15,
+              "outputTokens": 2542,
+              "cacheReadInputTokens": 1004540,
+              "cacheCreationInputTokens": 279765,
+              "webSearchRequests": 0,
+              "costUSD": 2.018127,
+              "contextWindow": 1000000,
+              "maxOutputTokens": 64000,
+              "canonicalModel": "claude-sonnet-5",
+              "provider": "firstParty"
+            }
+          }
+        },
+        {
+          "event_type": "result",
+          "message_id": null,
+          "usage": {
+            "input_tokens": 15,
+            "cache_creation_input_tokens": 305775,
+            "cache_read_input_tokens": 1036241,
+            "output_tokens": 2848,
+            "server_tool_use": {
+              "web_search_requests": 0,
+              "web_fetch_requests": 0
+            },
+            "service_tier": "standard",
+            "cache_creation": {
+              "ephemeral_1h_input_tokens": 305775,
+              "ephemeral_5m_input_tokens": 0
+            },
+            "inference_geo": "not_available",
+            "iterations": [],
+            "speed": "standard"
+          },
+          "model_usage": {
+            "claude-sonnet-5": {
+              "inputTokens": 15,
+              "outputTokens": 2848,
+              "cacheReadInputTokens": 1036241,
+              "cacheCreationInputTokens": 305775,
+              "webSearchRequests": 0,
+              "costUSD": 2.1882872999999994,
+              "contextWindow": 1000000,
+              "maxOutputTokens": 64000,
+              "canonicalModel": "claude-sonnet-5",
+              "provider": "firstParty"
+            }
+          }
+        }
+      ],
+      "provider_reported_total_tokens": null,
+      "normalized_formula": "fresh_input_tokens + cached_input_tokens + output_tokens",
+      "fresh_input_formula": "input_tokens + cache_creation_input_tokens"
+    }
+  },
+  "usage_warnings": [],
+  "per_task_results": [
+    {
+      "task_id": "beets-lifecycle-feature-v1",
+      "task_class": "feature-implementation",
+      "task_alias": "task-01",
+      "order": 1,
+      "agent_attempted": true,
+      "codex_exit_code": 0,
+      "thread_continuity_passed": true,
+      "thread_id": "7cb7d6d8-0990-43c3-bbdf-3505a955c030",
+      "controller_verification": "passed",
+      "accepted": true,
+      "task_delta": "sources/evaluations/workflow-sessions/artifact-ponytail-claude-code-plugin-beets-20260809-p-ab14b9edcf57-r0/task-01-agent.diff",
+      "usage_events": "sources/evaluations/workflow-sessions/artifact-ponytail-claude-code-plugin-beets-20260809-p-ab14b9edcf57-r0/task-01-claude-events.jsonl",
+      "operational_retry_count": 0,
+      "verifier_exit_code": 0,
+      "verifier_passed": true
+    },
+    {
+      "task_id": "beets-lifecycle-refactor-v1",
+      "task_class": "behavior-preserving-refactor",
+      "task_alias": "task-02",
+      "order": 2,
+      "agent_attempted": true,
+      "codex_exit_code": 0,
+      "thread_continuity_passed": true,
+      "thread_id": "7cb7d6d8-0990-43c3-bbdf-3505a955c030",
+      "controller_verification": "passed",
+      "accepted": true,
+      "task_delta": "sources/evaluations/workflow-sessions/artifact-ponytail-claude-code-plugin-beets-20260809-p-ab14b9edcf57-r0/task-02-agent.diff",
+      "usage_events": "sources/evaluations/workflow-sessions/artifact-ponytail-claude-code-plugin-beets-20260809-p-ab14b9edcf57-r0/task-02-claude-events.jsonl",
+      "operational_retry_count": 0,
+      "verifier_exit_code": 0,
+      "verifier_passed": true
+    },
+    {
+      "task_id": "beets-lifecycle-review-v1",
+      "task_class": "code-review-correction",
+      "task_alias": "task-03",
+      "order": 3,
+      "agent_attempted": true,
+      "codex_exit_code": 0,
+      "thread_continuity_passed": true,
+      "thread_id": "7cb7d6d8-0990-43c3-bbdf-3505a955c030",
+      "controller_verification": "passed",
+      "accepted": true,
+      "task_delta": "sources/evaluations/workflow-sessions/artifact-ponytail-claude-code-plugin-beets-20260809-p-ab14b9edcf57-r0/task-03-agent.diff",
+      "usage_events": "sources/evaluations/workflow-sessions/artifact-ponytail-claude-code-plugin-beets-20260809-p-ab14b9edcf57-r0/task-03-claude-events.jsonl",
+      "operational_retry_count": 0,
+      "verifier_exit_code": 0,
+      "verifier_passed": true
+    }
+  ],
+  "prompt_delivery": {
+    "mode": "sequential-one-task-at-a-time",
+    "future_tasks_visible": false,
+    "future_prompts_materialized_lazily": true,
+    "seed_delivery_mode": "preseeded-composite",
+    "future_seed_regressions_visible": true,
+    "controller_verification": "final-only",
+    "codex_thread_id": "7cb7d6d8-0990-43c3-bbdf-3505a955c030",
+    "task_prompt_evidence": "sources/evaluations/workflow-sessions/artifact-ponytail-claude-code-plugin-beets-20260809-p-ab14b9edcf57-r0/evidence.jsonl.gz"
+  },
+  "leakage_controls": {
+    "seed_origin_concealed": true,
+    "seed_patches_model_visible": false,
+    "git_baseline_true_root_at_lane_start": true,
+    "fixed_snapshot_objects_model_visible": false,
+    "pre_seed_reflog_entries_visible": false,
+    "concealment_verification_passed": true,
+    "task_directories_model_visible": false,
+    "controller_verifier_scripts_and_canonical_copies_model_visible": false,
+    "model_visible_acceptance_asset_paths": [],
+    "model_writable_surface": "target repository plus isolated model-output directory",
+    "verifier_integrity_passed": true,
+    "verifier_integrity_evidence": "sources/evaluations/workflow-sessions/artifact-ponytail-claude-code-plugin-beets-20260809-p-ab14b9edcf57-r0/evidence.jsonl.gz#verifier-integrity.json",
+    "model_prompts_sanitized": true,
+    "upstream_remote_removed_from_model_facing_repo": true,
+    "broken_start_committed_as_local_baseline": true,
+    "remaining_limitations": [
+      "Future semantic regression code is present from lane start. Agent prompts state normal software objectives and do not disclose controller scoring. Affected-component compile commands and controller verifier scripts remain controller-only; no acceptance-test assets are injected.",
+      "Task semantics and verifier names may still be searchable if the model intentionally uses external network access."
+    ]
+  },
+  "artifacts": {
+    "artifact_contract": "compact-v1-four-files",
+    "root": "sources/evaluations/workflow-sessions/artifact-ponytail-claude-code-plugin-beets-20260809-p-ab14b9edcf57-r0",
+    "run_record": "sources/evaluations/workflow-sessions/artifact-ponytail-claude-code-plugin-beets-20260809-p-ab14b9edcf57-r0/run.json",
+    "final_diff": "sources/evaluations/workflow-sessions/artifact-ponytail-claude-code-plugin-beets-20260809-p-ab14b9edcf57-r0/changes.diff",
+    "final_diff_basis": "ordered cumulative checkpoints plus final cumulative source diff from one composite root",
+    "evidence_bundle": "sources/evaluations/workflow-sessions/artifact-ponytail-claude-code-plugin-beets-20260809-p-ab14b9edcf57-r0/evidence.jsonl.gz",
+    "manifest": "sources/evaluations/workflow-sessions/artifact-ponytail-claude-code-plugin-beets-20260809-p-ab14b9edcf57-r0/manifest.sha256"
+  },
+  "run_dir": "sources/evaluations/workflow-sessions/artifact-ponytail-claude-code-plugin-beets-20260809-p-ab14b9edcf57-r0"
+}
