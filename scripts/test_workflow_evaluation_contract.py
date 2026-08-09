@@ -27,6 +27,7 @@ if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
 from scripts import audit_tool_isolation
+from scripts import claude_code_workflow_adapter as claude_adapter
 from scripts import extract_codex_usage
 from scripts import generate_current_evaluation_panel as current_panel
 from scripts import generate_workflow_qualification as qualification
@@ -1255,6 +1256,133 @@ print('ok')
                 "{codex_home}/claude-config/RTK.md",
             },
         )
+
+    def test_claude_native_plugin_profiles_bind_pinned_marketplace_install(self) -> None:
+        for profile, plugin, commit in [
+            ("artifact-ponytail-claude-code-plugin-v1", "ponytail", "40e50d9e03242aa5dd53ac771950f9127362b25f"),
+            ("behavior-caveman-claude-code-skill-v1", "caveman", "0d95a81d35a9f2d123a5e9430d1cfc43d55f1bb0"),
+        ]:
+            cfg = runner.fixture.active_tool_config({}, profile)
+            assert cfg is not None
+            self.assertEqual(cfg["claude_features"], {"hooks": True, "plugin": plugin})
+            self.assertEqual(cfg["host_integration_backend"], "docker")
+            commands = cfg["host_integration"]["install_commands"]
+            self.assertEqual(commands[0][:4], ["claude", "plugin", "marketplace", "add"])
+            self.assertEqual(commands[1][:4], ["claude", "plugin", "install", f"{plugin}@{plugin}"])
+            controller = cfg["host_integration"]["controller_install_commands"][0]
+            self.assertIn("prepare_pinned_claude_marketplace.py", " ".join(controller))
+            self.assertIn(commit, controller)
+            self.assertIn(
+                f"{{tool_data_dir}}/marketplace/plugins/{plugin}/.claude-plugin/plugin.json",
+                cfg["host_integration"]["required_files"],
+            )
+            self.assertNotIn("prompt_instructions_command", cfg)
+
+    def test_missing_claude_treatment_integration_fails_closed(self) -> None:
+        with tempfile.TemporaryDirectory(prefix="claude-integration-gate-") as tmp:
+            root = Path(tmp)
+            run_dir = root / "run"
+            home = root / "home"
+            run_dir.mkdir()
+            home.mkdir()
+            record = {
+                "agent": {"runtime_id": "claude-code", "provider": "openrouter"},
+                "target": {"repository_path": str(ROOT)},
+            }
+            with mock.patch.object(runner.fixture, "active_tool_config", return_value={"display_name": "broken"}):
+                result = runner.fixture.prepare_profile_integration(
+                    record,
+                    "artifact-broken-claude-treatment-v1",
+                    home,
+                    run_dir,
+                    backend="host",
+                    docker_image="unused",
+                )
+            self.assertFalse(result["passed"])
+            self.assertTrue(result["skipped"])
+            self.assertIn("no host_integration contract", result["failure_reasons"][0])
+
+    def test_claude_beets_authorization_is_limited_to_requalified_native_profiles(self) -> None:
+        sequences = json.loads((ROOT / "data/workflow-task-sequences.json").read_text())["sequences"]
+        beets = next(item for item in sequences if item["id"] == "beets-lifecycle-sequence-v1")
+        with mock.patch.object(
+            runner,
+            "DEFAULT_WORKFLOW_MODEL_CONDITION_ID",
+            "claude-code-anthropic-sonnet-5-high",
+        ):
+            self.assertTrue(
+                runner.claude_anthropic_sonnet_treatment_authorized(
+                    beets, "artifact-ponytail-claude-code-plugin-v1", ROOT
+                )
+            )
+            self.assertFalse(
+                runner.claude_anthropic_sonnet_treatment_authorized(
+                    beets, "retrieval-codegraph-claude-code-mcp-v1", ROOT
+                )
+            )
+
+    def test_claude_adapter_uses_neutral_container_paths(self) -> None:
+        with tempfile.TemporaryDirectory(prefix="claude-neutral-paths-") as tmp:
+            root = Path(tmp)
+            repo = root / "treatment-profile-repo"
+            repo.mkdir()
+            claude_home = root / "session-with-treatment-name"
+            claude_home.mkdir()
+            run_dir = root / "run"
+            run_dir.mkdir()
+            prompt_path = root / "prompt.txt"
+            events_path = root / "events.jsonl"
+            prompt_path.write_text("perform the task")
+            seen: dict[str, Any] = {}
+
+            class FakeFixture:
+                def active_tool_config(self, record: dict, profile_id: str) -> dict:
+                    return {}
+
+                def claude_env(self, *args: Any, **kwargs: Any) -> dict[str, str]:
+                    return {"PATH": "/usr/bin"}
+
+                def apply_model_network_isolation(self, env: dict[str, str], **kwargs: Any) -> None:
+                    return None
+
+                def container_mounts_for_record(self, *args: Any, **kwargs: Any) -> list:
+                    return []
+
+                def add_mount(self, mounts: list, source: Path, target: Path, mode: str = "rw") -> None:
+                    mounts.append((source, target, mode))
+
+                def run_backend(self, cmd: list[str], **kwargs: Any) -> subprocess.CompletedProcess:
+                    seen.update(kwargs)
+                    kwargs["stdout_path"].write_text('{"session_id":"s1"}\n')
+                    return subprocess.CompletedProcess(cmd, 0)
+
+                def rel_or_abs(self, value: str) -> Path:
+                    return Path(value)
+
+            record = {
+                "profile": {"profile_id": "artifact-ponytail-claude-code-plugin-v1"},
+                "agent": {"model": "claude-sonnet-5", "reasoning_effort": "high", "provider": "anthropic"},
+                "target": {"repository_path": str(repo)},
+            }
+            result = claude_adapter.run_task(
+                record=record,
+                claude_home=claude_home,
+                run_dir=run_dir,
+                docker_image="unused",
+                prompt_path=prompt_path,
+                events_path=events_path,
+                session_id=None,
+                timeout=30,
+                fixture=FakeFixture(),
+            )
+            self.assertEqual(result[0], 0)
+            self.assertEqual(seen["cwd"], Path("/workspace"))
+            self.assertEqual(seen["env"]["HOME"], "/agent-home/home")
+            self.assertEqual(seen["env"]["CLAUDE_CONFIG_DIR"], "/agent-home/claude-config")
+            targets = {target for _, target, _ in seen["mounts"]}
+            self.assertIn(Path("/workspace"), targets)
+            self.assertIn(Path("/agent-home"), targets)
+            self.assertNotIn(str(repo), seen["env"].values())
 
     def test_home_dot_codex_alias_targets_lane_private_codex_home(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
