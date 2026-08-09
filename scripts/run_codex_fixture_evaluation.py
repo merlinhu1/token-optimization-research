@@ -3879,6 +3879,7 @@ def prepare_profile_integration(
     install_exit_codes: list[int] = []
     controller_install_exit_codes: list[int] = []
     verify_exit_codes: list[int] = []
+    host_integration_retry_exit_codes: list[int] = []
 
     for index, raw_command in enumerate(integration.get("controller_install_commands", []), start=1):
         command = [render_tool_value(part, record, codex_home, cfg) for part in raw_command]
@@ -3918,7 +3919,26 @@ def prepare_profile_integration(
             )
             exits.append(proc.returncode)
             artifacts.append(str(artifact.relative_to(ROOT)) if artifact.is_relative_to(ROOT) else str(artifact))
-            if proc.returncode != 0:
+            if proc.returncode == 126 and integration_backend == "host":
+                retry_artifact = run_dir / f"tool-host-{phase}-{index}-retry.txt"
+                retry_proc = run_backend(
+                    command,
+                    backend=integration_backend,
+                    docker_image=docker_image,
+                    cwd=rel_or_abs(record["target"]["repository_path"]) if record.get("target") else codex_home / "home",
+                    env=env,
+                    stdout_path=retry_artifact,
+                    timeout=int(integration.get("timeout_seconds", 300)),
+                    mounts=mounts,
+                )
+                host_integration_retry_exit_codes.append(retry_proc.returncode)
+                exits[-1] = retry_proc.returncode
+                artifacts.append(
+                    str(retry_artifact.relative_to(ROOT))
+                    if retry_artifact.is_relative_to(ROOT)
+                    else str(retry_artifact)
+                )
+            if exits[-1] != 0:
                 break
         if exits and exits[-1] != 0:
             break
@@ -3939,6 +3959,7 @@ def prepare_profile_integration(
         "controller_install_exit_codes": controller_install_exit_codes,
         "install_exit_codes": install_exit_codes,
         "verify_exit_codes": verify_exit_codes,
+        "host_integration_retry_exit_codes": host_integration_retry_exit_codes,
         "missing_required_files": missing_required_files,
         "required_files": [str(path) for path in required_files],
         "artifact_identities": artifact_identities,
