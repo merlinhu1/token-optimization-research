@@ -938,6 +938,11 @@ DIRECT_CLAUDE_LIFECYCLE_V1_SEQUENCE_ORDER = (
     "fastify-lifecycle-sequence-v1",
     "beets-lifecycle-sequence-v1",
 )
+DIRECT_CLAUDE_LIFECYCLE_V1_BEETS_SUPPORTED_PROFILES = frozenset({
+    "terminal-rtk-claude-code-hook-v1",
+    "artifact-ponytail-claude-code-plugin-v1",
+    "behavior-caveman-claude-code-skill-v1",
+})
 BEETS_R3_REPLACEMENT_AUTHORITY_REL = "sources/evaluations/audits/current-low-complexity-beets-r3-replacement-authorization-20260728.json"
 BEETS_R3_REPLACEMENT_ATTEMPT_REL = "sources/evaluations/audits/current-low-complexity-beets-r3-replacement-attempt-20260728.json"
 BASELINE_REPLICATION_MODEL_CONDITION = {
@@ -2540,6 +2545,11 @@ def claude_anthropic_sonnet_treatment_authorized(
         or seq.get("id") not in DIRECT_CLAUDE_LIFECYCLE_V1_SEQUENCE_ORDER
         or profile_id == DIRECT_CLAUDE_LIFECYCLE_V1_PROFILE_ID
         or DEFAULT_WORKFLOW_MODEL_CONDITION_ID != DIRECT_CLAUDE_LIFECYCLE_V1_MODEL["id"]
+    ):
+        return False
+    if (
+        seq.get("id") == "beets-lifecycle-sequence-v1"
+        and profile_id not in DIRECT_CLAUDE_LIFECYCLE_V1_BEETS_SUPPORTED_PROFILES
     ):
         return False
     try:

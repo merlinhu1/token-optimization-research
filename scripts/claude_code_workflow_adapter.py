@@ -83,10 +83,30 @@ def run_task(
         provider=str((record.get("agent") or {}).get("provider") or "openrouter"),
     )
     fixture.apply_model_network_isolation(env, prepend_denied_shell_to_path=False)
-    mounts = fixture.container_mounts_for_record(record, claude_home, include_repo=True, cfg=cfg)
+    # Keep treatment/session identifiers out of model-visible HOME, config, and cwd.
+    # Controller evidence continues to use the real lane paths on the host.
+    neutral_home = Path("/agent-home")
+    neutral_repo = Path("/workspace")
+    for key, suffix in {
+        "CODEX_HOME": "",
+        "HOME": "/home",
+        "PYTHONUSERBASE": "/python-userbase",
+        "XDG_CACHE_HOME": "/xdg-cache",
+        "XDG_CONFIG_HOME": "/xdg-config",
+        "XDG_DATA_HOME": "/xdg-data",
+        "TMPDIR": "/tmp",
+        "GOPATH": "/go",
+        "GOCACHE": "/go-build-cache",
+        "GOMODCACHE": "/go/pkg/mod",
+        "CLAUDE_CONFIG_DIR": "/claude-config",
+    }.items():
+        env[key] = str(neutral_home) + suffix
+    mounts = fixture.container_mounts_for_record(record, claude_home, include_repo=False, cfg=cfg)
+    fixture.add_mount(mounts, claude_home, target=neutral_home, mode="rw")
+    fixture.add_mount(mounts, repo, target=neutral_repo, mode="rw")
     agent = record.get("agent") or {}
-    mcp_config = claude_home / "claude-config" / "mcp.json"
-    if not mcp_config.is_file():
+    mcp_config = neutral_home / "claude-config" / "mcp.json"
+    if not (claude_home / "claude-config" / "mcp.json").is_file():
         mcp_config = None
     cmd = command(
         model=str(agent.get("model", "claude-sonnet-5")),
@@ -99,7 +119,7 @@ def run_task(
         cmd,
         backend="docker",
         docker_image=docker_image,
-        cwd=repo,
+        cwd=neutral_repo,
         env=env,
         stdout_path=events_path,
         timeout=timeout,

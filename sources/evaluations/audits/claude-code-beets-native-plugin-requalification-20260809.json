@@ -1,0 +1,80 @@
+{
+  "schema_version": 1,
+  "created_at_utc": "2026-08-09T12:58:00Z",
+  "provider_calls": 0,
+  "passed": true,
+  "qualification": {
+    "sequence_id": "beets-lifecycle-sequence-v1",
+    "qualification_path": "sources/evaluations/fixtures/medium/beetbox-beets/qualification-lifecycle-v1.json",
+    "composite_seed_diff_sha256": "2586b9a96d627ce22e226621db78f1c7636e265318dc0e45e1424778209217ae",
+    "composite_seed_merge_zero": true,
+    "composite_seeded_verifiers_nonzero": false,
+    "future_seed_regressions_visible": true
+  },
+  "model_condition": {
+    "id": "claude-code-anthropic-sonnet-5-high",
+    "runtime_id": "claude-code",
+    "provider": "anthropic",
+    "model": "gpt-5.6-luna",
+    "reasoning_effort": "high",
+    "claude_code_version": "2.1.220"
+  },
+  "lanes": [
+    {
+      "profile_id": "artifact-ponytail-claude-code-plugin-v1",
+      "plugin": "ponytail",
+      "source_commit": "40e50d9e03242aa5dd53ac771950f9127362b25f",
+      "protocol_path": "sources/evaluations/protocols/beets-lifecycle-sequence-v1-artifact-ponytail-claude-code-plugin-v1-0cf5e89a34a2.json",
+      "protocol_sha256": "549eadfdc29747ccf4a8c0d4361d5d7b5c68fdef1c23e06fee07c8689e6f86cf",
+      "preparation_session_id": "prepare-beets-artifact-ponytail-claude-code-plugin-v1-20260809T125703153430Z-p2229945",
+      "host_integration": {
+        "passed": true,
+        "skipped": false,
+        "controller_install_exit_codes": [0],
+        "install_exit_codes": [0, 0, 0],
+        "verify_exit_codes": [0],
+        "missing_required_files": []
+      },
+      "claude_preflight": {
+        "passed": true,
+        "native_plugin": "ponytail",
+        "native_plugin_probe_passed": true,
+        "hooks_enabled": true,
+        "authentication_checked": true,
+        "authentication_passed": true,
+        "provider_request_made": false
+      }
+    },
+    {
+      "profile_id": "behavior-caveman-claude-code-skill-v1",
+      "plugin": "caveman",
+      "source_commit": "0d95a81d35a9f2d123a5e9430d1cfc43d55f1bb0",
+      "protocol_path": "sources/evaluations/protocols/beets-lifecycle-sequence-v1-behavior-caveman-claude-code-skill-v1-0b0d9b2ad2df.json",
+      "protocol_sha256": "dfb4419b45048487925d143ac699f40c11232b5b1a3985370fe836c2af1041cb",
+      "preparation_session_id": "prepare-beets-behavior-caveman-claude-code-skill-v1-20260809T125742439438Z-p2230236",
+      "host_integration": {
+        "passed": true,
+        "skipped": false,
+        "controller_install_exit_codes": [0],
+        "install_exit_codes": [0, 0, 0],
+        "verify_exit_codes": [0],
+        "missing_required_files": []
+      },
+      "claude_preflight": {
+        "passed": true,
+        "native_plugin": "caveman",
+        "native_plugin_probe_passed": true,
+        "hooks_enabled": true,
+        "authentication_checked": true,
+        "authentication_passed": true,
+        "provider_request_made": false
+      }
+    }
+  ],
+  "model_visible_isolation": {
+    "workspace_mount": "/workspace",
+    "home_mount": "/agent-home",
+    "contract_implemented": true,
+    "provider_run_executed": false
+  }
+}

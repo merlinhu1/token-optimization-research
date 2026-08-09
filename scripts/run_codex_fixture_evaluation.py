@@ -202,7 +202,9 @@ SDL_MCP_CLI = SDL_MCP_ROOT / "dist" / "cli" / "index.js"
 SDL_MCP_NATIVE = SDL_MCP_ROOT / "node_modules/sdl-mcp-native-linux-x64-gnu/sdl-mcp-native.linux-x64-gnu.node"
 SDL_MCP_LADYBUG = SDL_MCP_ROOT / "node_modules/@ladybugdb/core-linux-x64/lbugjs.node"
 PONYTAIL_COMMIT = "40e50d9e03242aa5dd53ac771950f9127362b25f"
+CAVEMAN_COMMIT = "0d95a81d35a9f2d123a5e9430d1cfc43d55f1bb0"
 PONYTAIL_MARKETPLACE_PREPARER = "{repository_root}/scripts/prepare_pinned_codex_marketplace.py"
+CLAUDE_MARKETPLACE_PREPARER = "{repository_root}/scripts/prepare_pinned_claude_marketplace.py"
 CODEX_PLUGIN_HOOK_TRUSTER = "{repository_root}/scripts/trust_codex_plugin_hooks.py"
 
 TOOL_CONFIGS: dict[str, dict[str, Any]] = {
@@ -1101,25 +1103,76 @@ TOOL_CONFIGS: dict[str, dict[str, Any]] = {
         "default_tool_state": "active-hook-and-instruction-layer",
     },
     "caveman": {
-        "display_name": "Caveman",
+        "display_name": "Caveman Claude Code native plugin",
         "lane_name": "behavior-caveman",
-        "surface": "behavioral-output-compression/mcp-description-compression",
+        "surface": "claude-code-native-plugin/sessionstart+userpromptsubmit-hooks+skills",
         "allowed_terms": ["caveman"],
         "data_dir_name": "caveman",
-        "mounts": [str(CAVEMAN_ROOT)],
-        "preflight_command": ["node", str(CAVEMAN_ROOT / "src" / "tools" / "caveman-init.js"), "--help"],
-        "prompt_instructions_command": ["python3", "-c", f"from pathlib import Path; print(Path({str(CAVEMAN_ROOT / 'skills' / 'caveman' / 'SKILL.md')!r}).read_text())"],
-        "default_tool_state": "active-instruction-layer",
+        "mounts": [str(CAVEMAN_ROOT), CLAUDE_MARKETPLACE_PREPARER],
+        "claude_features": {"hooks": True, "plugin": "caveman"},
+        "host_integration_backend": "docker",
+        "host_integration": {
+            "controller_install_commands": [[
+                "python3", CLAUDE_MARKETPLACE_PREPARER,
+                "--source", str(CAVEMAN_ROOT),
+                "--expected-commit", CAVEMAN_COMMIT,
+                "--marketplace-root", "{tool_data_dir}/marketplace",
+                "--marketplace-name", "caveman",
+                "--plugin-name", "caveman",
+            ]],
+            "install_commands": [
+                ["claude", "plugin", "marketplace", "add", "{tool_data_dir}/marketplace"],
+                ["claude", "plugin", "install", "caveman@caveman"],
+            ],
+            "verify_commands": [[
+                "bash", "-lc",
+                "set -o pipefail; claude plugin list --json | python3 -c 'import sys; assert \"caveman\" in sys.stdin.read()'",
+            ]],
+            "required_files": [
+                "{tool_data_dir}/marketplace/source-pin-receipt.json",
+                "{tool_data_dir}/marketplace/.claude-plugin/marketplace.json",
+                "{tool_data_dir}/marketplace/plugins/caveman/.claude-plugin/plugin.json",
+            ],
+            "timeout_seconds": 300,
+        },
+        "preflight_command": ["claude", "plugin", "list", "--json"],
+        "default_tool_state": "active-native-plugin-hooks-and-skills",
     },
     "ponytail": {
-        "display_name": "Ponytail",
+        "display_name": "Ponytail Claude Code native plugin",
         "lane_name": "artifact-ponytail",
-        "surface": "artifact/code-minimization-policy",
+        "surface": "claude-code-native-plugin/sessionstart+userpromptsubmit+subagentstart-hooks+skills+commands",
         "allowed_terms": ["ponytail"],
         "data_dir_name": "ponytail",
-        "mounts": [str(PONYTAIL_ROOT)],
-        "preflight_command": ["node", "-e", "const {getPonytailInstructions}=require('/opt/data/ponytail/hooks/ponytail-instructions.js'); console.log(getPonytailInstructions('full').split('\\n')[0]);"],
-        "prompt_instructions_command": ["node", "-e", "const {getFallbackInstructions}=require('/opt/data/ponytail/hooks/ponytail-instructions.js'); console.log(getFallbackInstructions('full'));"],
+        "mounts": [str(PONYTAIL_ROOT), CLAUDE_MARKETPLACE_PREPARER],
+        "claude_features": {"hooks": True, "plugin": "ponytail"},
+        "host_integration_backend": "docker",
+        "host_integration": {
+            "controller_install_commands": [[
+                "python3", CLAUDE_MARKETPLACE_PREPARER,
+                "--source", str(PONYTAIL_ROOT),
+                "--expected-commit", PONYTAIL_COMMIT,
+                "--marketplace-root", "{tool_data_dir}/marketplace",
+                "--marketplace-name", "ponytail",
+                "--plugin-name", "ponytail",
+            ]],
+            "install_commands": [
+                ["claude", "plugin", "marketplace", "add", "{tool_data_dir}/marketplace"],
+                ["claude", "plugin", "install", "ponytail@ponytail"],
+            ],
+            "verify_commands": [[
+                "bash", "-lc",
+                "set -o pipefail; claude plugin list --json | python3 -c 'import sys; assert \"ponytail\" in sys.stdin.read()'",
+            ]],
+            "required_files": [
+                "{tool_data_dir}/marketplace/source-pin-receipt.json",
+                "{tool_data_dir}/marketplace/.claude-plugin/marketplace.json",
+                "{tool_data_dir}/marketplace/plugins/ponytail/.claude-plugin/plugin.json",
+            ],
+            "timeout_seconds": 300,
+        },
+        "preflight_command": ["claude", "plugin", "list", "--json"],
+        "default_tool_state": "active-native-plugin-hooks-and-skills",
     },
 }
 
@@ -3523,10 +3576,11 @@ def prepare_profile_integration(
     integration = (cfg or {}).get("host_integration") or {}
     artifact_identities = verify_artifact_identities(cfg, record, codex_home) if cfg else []
     identities_passed = all(item["passed"] for item in artifact_identities)
+    native_claude_treatment = runtime_id == "claude-code" and not pid.startswith("baseline-")
     if not integration:
         result = {
             "profile_id": pid,
-            "passed": identities_passed,
+            "passed": identities_passed and not native_claude_treatment,
             "skipped": True,
             "install_exit_codes": [],
             "verify_exit_codes": [],
@@ -3535,6 +3589,10 @@ def prepare_profile_integration(
             "post_install_artifacts": [],
             "artifacts": [],
             "claude_mcp_config": str(claude_mcp_config) if claude_mcp_config else None,
+            "failure_reasons": (
+                ["Claude native treatment has no host_integration contract"]
+                if native_claude_treatment else []
+            ),
         }
         (run_dir / "tool-host-integration.json").write_text(json.dumps(result, indent=2) + "\n")
         return result
@@ -3632,10 +3690,18 @@ def prepare_profile_integration(
         manifest_path = run_dir / manifest_name
         if manifest_path.is_file():
             manifest = json.loads(manifest_path.read_text())
+            claude_features = cfg.get("claude_features", {})
+            native_plugin = claude_features.get("plugin")
+            native_skills = claude_features.get("skills", [])
+            manifest["copied_skills_or_plugins"] = bool(
+                passed and (native_plugin or native_skills)
+            )
+            manifest["native_plugins"] = [native_plugin] if passed and native_plugin else []
+            manifest["native_skills"] = list(native_skills) if passed else []
             manifest["hooks_enabled"] = bool(
                 cfg.get("codex_features", {}).get("hooks", False)
-                or cfg.get("claude_features", {}).get("hooks", False)
-            )
+                or claude_features.get("hooks", False)
+            ) and passed
             manifest["host_integration_prepared"] = passed
             manifest["host_integration_receipt"] = str((run_dir / "tool-host-integration.json").relative_to(ROOT))
             manifest_path.write_text(json.dumps(manifest, indent=2) + "\n")
@@ -3806,7 +3872,27 @@ def preflight_claude_code(
     version_text = version_path.read_text(errors="replace") if version_path.exists() else ""
     help_text = help_path.read_text(errors="replace") if help_path.exists() else ""
     required = ["--output-format", "stream-json", "--model", "--effort", "--tools", "--resume"]
-    hooks_enabled = bool((cfg or {}).get("claude_features", {}).get("hooks", False))
+    claude_features = (cfg or {}).get("claude_features", {})
+    hooks_enabled = bool(claude_features.get("hooks", False))
+    plugin_name = str(claude_features.get("plugin") or "")
+    plugin_probe_path = run_dir / "claude-code-plugin-list.json"
+    plugin_probe_exit_code: int | None = None
+    plugin_probe_passed = True
+    plugin_probe_text = ""
+    if plugin_name:
+        plugin_probe = run_backend(
+            ["claude", "plugin", "list", "--json"],
+            backend=backend,
+            docker_image=docker_image,
+            cwd=rel_or_abs(record["target"]["repository_path"]),
+            env=env,
+            stdout_path=plugin_probe_path,
+            timeout=120,
+            mounts=mounts,
+        )
+        plugin_probe_exit_code = plugin_probe.returncode
+        plugin_probe_text = plugin_probe_path.read_text(errors="replace") if plugin_probe_path.exists() else ""
+        plugin_probe_passed = plugin_probe.returncode == 0 and plugin_name in plugin_probe_text
     auth_status: dict[str, Any] = {"checked": False, "passed": True}
     if provider == "anthropic":
         auth_raw = claude_home / "tmp" / "claude-auth-status.json"
@@ -3845,6 +3931,7 @@ def preflight_claude_code(
         and version.returncode == 0
         and help_result.returncode == 0
         and all(item in help_text for item in required)
+        and plugin_probe_passed
         and bool(auth_status.get("passed"))
     )
     result = {
@@ -3861,6 +3948,12 @@ def preflight_claude_code(
         "authentication": auth_status,
         "normal_mode": True,
         "hooks_enabled": hooks_enabled,
+        "native_plugin": {
+            "name": plugin_name or None,
+            "probe_path": str(plugin_probe_path.relative_to(ROOT)) if plugin_name else None,
+            "probe_exit_code": plugin_probe_exit_code,
+            "passed": plugin_probe_passed,
+        },
         "project_instruction_files": {
             "passed": instruction_passed,
             "source": "AGENTS.md",
@@ -3884,8 +3977,8 @@ def preflight_claude_code(
         "mcp_config": [
             str(claude_home / "claude-config" / "mcp.json")
         ] if (claude_home / "claude-config" / "mcp.json").is_file() else [],
-        "plugins": [],
-        "skills": [],
+        "plugins": [plugin_name] if plugin_name and plugin_probe_passed else [],
+        "skills": list(claude_features.get("skills", [])) if plugin_probe_passed else [],
     }, indent=2) + "\n")
     return result
 
