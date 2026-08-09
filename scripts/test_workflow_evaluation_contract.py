@@ -6734,6 +6734,12 @@ class BaselineV3LowComplexityContractTest(unittest.TestCase):
         for name in runner.AMBIENT_GIT_OBJECT_ENV_VARS:
             self.assertNotIn(name, env)
         self.assertEqual(env["TMPDIR"], "/tmp/unit-lane")
+        self.assertEqual(env["WORKFLOW_LANE_DISABLE_AUTH_SYNC"], "1")
+
+    def test_serial_direct_anthropic_lane_allows_auth_sync(self) -> None:
+        with mock.patch.dict(os.environ, {"WORKFLOW_LANE_DISABLE_AUTH_SYNC": "1"}, clear=False):
+            env = matrix.workflow_lane_environment(Path("/tmp/unit-lane"), allow_auth_sync=True)
+        self.assertNotIn("WORKFLOW_LANE_DISABLE_AUTH_SYNC", env)
 
     def test_direct_current_replication_rejects_unapproved_identity_before_lock(self) -> None:
         sequence = runner.load_sequence("beets-lifecycle-sequence-v1")
