@@ -9,6 +9,7 @@ for forbidden tool surfaces before a run can be accepted.
 from __future__ import annotations
 
 import argparse
+import copy
 import datetime as dt
 import hashlib
 import json
@@ -96,20 +97,20 @@ PROFILE_TOOL_CONFIG_OVERRIDES = {
     "terminal-tokenjuice-codex-hook-v1": "tokenjuice-codex-hook-v1",
     "terminal-rtk-codex-instructions-v1": "rtk-codex-instructions-v1",
     "terminal-rtk-claude-code-hook-v1": "rtk-claude-code-hook-v1",
-    "retrieval-cartog-claude-code-product-v1": "cartog",
+    "retrieval-cartog-claude-code-product-v1": "cartog-claude-code-product-v1",
     "behavior-caveman-claude-code-skill-v1": "caveman",
-    "retrieval-codegraph-claude-code-mcp-v1": "codegraph",
-    "codescope-claude-code-mcp-v1": "codescope",
-    "retrieval-graphify-claude-code-skill-v1": "graphify",
-    "integrated-leanctx-claude-code-hybrid-v1": "lean-ctx",
-    "terminal-lowfat-claude-code-hook-v1": "lowfat",
+    "retrieval-codegraph-claude-code-mcp-v1": "codegraph-claude-code-mcp-v1",
+    "codescope-claude-code-mcp-v1": "codescope-claude-code-mcp-v1",
+    "retrieval-graphify-claude-code-skill-v1": "graphify-claude-code-skill-v1",
+    "integrated-leanctx-claude-code-hybrid-v1": "leanctx-claude-code-hybrid-v1",
+    "terminal-lowfat-claude-code-hook-v1": "lowfat-claude-code-hook-v1",
     "artifact-ponytail-claude-code-plugin-v1": "ponytail",
-    "retrieval-serena-claude-code-mcp-v1": "serena",
-    "retrieval-sigmap-claude-code-mcp-v1": "sigmap",
-    "terminal-snip-claude-code-hook-v1": "snip",
-    "integrated-token-savior-claude-code-product-v1": "token-savior",
-    "terminal-tokenjuice-claude-code-hook-v1": "tokenjuice",
-    "retrieval-jcodemunch-claude-code-mcp-v1": "jcodemunch-mcp",
+    "retrieval-serena-claude-code-mcp-v1": "serena-claude-code-mcp-v1",
+    "retrieval-sigmap-claude-code-mcp-v1": "sigmap-claude-code-mcp-v1",
+    "terminal-snip-claude-code-hook-v1": "snip-claude-code-hook-v1",
+    "integrated-token-savior-claude-code-product-v1": "token-savior-claude-code-product-v1",
+    "terminal-tokenjuice-claude-code-hook-v1": "tokenjuice-claude-code-hook-v1",
+    "retrieval-jcodemunch-claude-code-mcp-v1": "jcodemunch-claude-code-mcp-v1",
     "retrieval-sdl-mcp-claude-code-product-v1": "sdl-mcp-codex-product-v1",
     "terminal-snip-codex-hook-v1": "snip-codex-hook-v1",
     "retrieval-graphify-codex-skill-v1": "graphify-codex-skill-v1",
@@ -206,6 +207,7 @@ CAVEMAN_COMMIT = "0d95a81d35a9f2d123a5e9430d1cfc43d55f1bb0"
 PONYTAIL_MARKETPLACE_PREPARER = "{repository_root}/scripts/prepare_pinned_codex_marketplace.py"
 CLAUDE_MARKETPLACE_PREPARER = "{repository_root}/scripts/prepare_pinned_claude_marketplace.py"
 CODEX_PLUGIN_HOOK_TRUSTER = "{repository_root}/scripts/trust_codex_plugin_hooks.py"
+CLAUDE_README_HOOK_INSTALLER = "{repository_root}/scripts/install_claude_readme_hooks.py"
 
 TOOL_CONFIGS: dict[str, dict[str, Any]] = {
     "sdl-mcp-codex-product-v1": {
@@ -2453,6 +2455,260 @@ TOOL_CONFIGS["opencode-openrouter-product-v1"] = {
 }
 
 
+def _claude_readme_config(
+    base_name: str,
+    *,
+    lane_name: str,
+    surface: str,
+    install_commands: list[list[str]],
+    verify_commands: list[list[str]],
+    required_files: list[str],
+    diff_exclude_paths: list[str],
+    timeout_seconds: int = 900,
+    mcp_args: list[str] | None = None,
+    env: dict[str, str] | None = None,
+    warmup: dict[str, Any] | None = None,
+    claude_features: dict[str, Any] | None = None,
+    mounts: list[str | Path] | None = None,
+    backend: str = "docker",
+) -> dict[str, Any]:
+    """Clone a historical adapter and bind the pinned README's Claude surface."""
+    config = copy.deepcopy(TOOL_CONFIGS[base_name])
+    config.update(
+        {
+            "lane_name": lane_name,
+            "surface": surface,
+            "diff_exclude_paths": diff_exclude_paths,
+            "host_integration_backend": backend,
+            "mounts": list(mounts) if mounts is not None else config.get("mounts", []),
+            "host_integration": {
+                "install_commands": install_commands,
+                "verify_commands": verify_commands,
+                "required_files": required_files,
+                "timeout_seconds": timeout_seconds,
+            },
+        }
+    )
+    if mcp_args is not None:
+        config["mcp_args"] = mcp_args
+    if env is not None:
+        config["env"] = env
+    if warmup is not None:
+        config["warmup"] = warmup
+    if claude_features is not None:
+        config["claude_features"] = claude_features
+    return config
+
+
+TOOL_CONFIGS.update(
+    {
+        "cartog-claude-code-product-v1": _claude_readme_config(
+            "cartog",
+            lane_name="retrieval-cartog-claude-code-product-v1",
+            surface="claude-code-readme-product-init+index+ide+mcp",
+            install_commands=[
+                [str(CARTOG_BIN), "init"],
+                [str(CARTOG_BIN), "ide", "--client", "claude-code", "--scope", "all", "--no-watch"],
+                [str(CARTOG_BIN), "index"],
+            ],
+            verify_commands=[[str(CARTOG_BIN), "--version"]],
+            required_files=[
+                "{repo}/.cartog.toml",
+                "{repo}/.mcp.json",
+                "{repo}/.cartog/db.sqlite",
+                "{codex_home}/claude-config/settings.json",
+            ],
+            diff_exclude_paths=[".cartog", ".cartog.toml", ".mcp.json", ".claude", "CLAUDE.md"],
+            timeout_seconds=1200,
+            mcp_args=["serve"],
+            claude_features={"mcp": True},
+        ),
+        "codegraph-claude-code-mcp-v1": _claude_readme_config(
+            "codegraph",
+            lane_name="retrieval-codegraph-claude-code-mcp-v1",
+            surface="claude-code-readme-install+init+mcp",
+            install_commands=[
+                [str(CODEGRAPH_BIN), "install", "--target", "claude", "--yes"],
+                [str(CODEGRAPH_BIN), "init", "{repo}"],
+            ],
+            verify_commands=[[str(CODEGRAPH_BIN), "--version"]],
+            required_files=[
+                "{codex_home}/home/.claude.json",
+                "{codex_home}/claude-config/settings.json",
+                "{codex_home}/claude-config/CLAUDE.md",
+            ],
+            diff_exclude_paths=[".codegraph", ".claude", ".mcp.json", "CLAUDE.md"],
+            mcp_args=["serve", "--mcp"],
+            claude_features={"mcp": True},
+        ),
+        "codescope-claude-code-mcp-v1": _claude_readme_config(
+            "codescope",
+            lane_name="codescope-claude-code-mcp-v1",
+            surface="claude-code-readme-init+bundled-surreal+mcp",
+            install_commands=[
+                [
+                    "/bin/bash",
+                    "-lc",
+                    "set -euo pipefail; mkdir -p {codex_home}/home/.codescope/bin; cp "
+                    + str(CODESCOPE_SURREAL_BIN)
+                    + " {codex_home}/home/.codescope/bin/surreal; chmod 755 {codex_home}/home/.codescope/bin/surreal",
+                ],
+                [str(CODESCOPE_BIN), "init", "--agent", "claude-code", "{repo}"],
+            ],
+            verify_commands=[[str(CODESCOPE_BIN), "--version"]],
+            required_files=[
+                "{codex_home}/home/.codescope/bin/surreal",
+                "{repo}/.mcp.json",
+            ],
+            diff_exclude_paths=[".codescope", ".mcp.json", ".claude", "CLAUDE.md"],
+            timeout_seconds=1200,
+            claude_features={"mcp": True},
+        ),
+        "graphify-claude-code-skill-v1": _claude_readme_config(
+            "graphify",
+            lane_name="retrieval-graphify-claude-code-skill-v1",
+            surface="claude-code-readme-claude-install+pretooluse-hook+mcp",
+            install_commands=[[str(UV_BIN), "tool", "run", "--from", str(GRAPHIFY_WHEEL), "graphify", "claude", "install"]],
+            verify_commands=[[str(UV_BIN), "tool", "run", "--from", str(GRAPHIFY_WHEEL), "graphify", "--help"]],
+            required_files=[
+                "{repo}/CLAUDE.md",
+                "{repo}/.claude/settings.json",
+            ],
+            diff_exclude_paths=["graphify-out", ".claude", "CLAUDE.md", ".mcp.json"],
+            claude_features={"mcp": True, "hooks": True, "guidance_append": "graphify"},
+        ),
+        "leanctx-claude-code-hybrid-v1": _claude_readme_config(
+            "leanctx-codex-hybrid-v1",
+            lane_name="integrated-leanctx-claude-code-hybrid-v1",
+            surface="claude-code-readme-init+hybrid-hooks+skill+mcp",
+            install_commands=[[str(LEANCTX_BINARY), "init", "--agent", "claude"]],
+            verify_commands=[[str(LEANCTX_BINARY), "--version"]],
+            required_files=[
+                "{codex_home}/claude-config/.claude.json",
+                "{codex_home}/claude-config/settings.json",
+                "{codex_home}/claude-config/CLAUDE.md",
+                "{codex_home}/claude-config/hooks/lean-ctx-redirect-native",
+                "{codex_home}/claude-config/skills/lean-ctx/SKILL.md",
+                "{repo}/AGENTS.md",
+                "{repo}/LEAN-CTX.md",
+                "{repo}/.claude/settings.local.json",
+            ],
+            diff_exclude_paths=[".lean-ctx", ".claude", "AGENTS.md", "LEAN-CTX.md", ".mcp.json"],
+            claude_features={"hooks": True, "mcp": True, "skill": "lean-ctx"},
+        ),
+        "lowfat-claude-code-hook-v1": _claude_readme_config(
+            "lowfat",
+            lane_name="terminal-lowfat-claude-code-hook-v1",
+            surface="claude-code-readme-pretooluse+posttooluse-hooks",
+            install_commands=[
+                [
+                    "python3",
+                    CLAUDE_README_HOOK_INSTALLER,
+                    "--tool",
+                    "lowfat",
+                    "--settings",
+                    "{codex_home}/claude-config/settings.json",
+                ],
+            ],
+            verify_commands=[[str(LOWFAT_BIN), "--version"]],
+            required_files=["{codex_home}/claude-config/settings.json"],
+            diff_exclude_paths=[".claude", "CLAUDE.md", ".mcp.json"],
+            claude_features={"hooks": True},
+            backend="host",
+        ),
+        "serena-claude-code-mcp-v1": _claude_readme_config(
+            "serena",
+            lane_name="retrieval-serena-claude-code-mcp-v1",
+            surface="claude-code-readme-setup+mcp",
+            install_commands=[[
+                "/bin/bash", "-lc",
+                str(CLAUDE_HOST_EXECUTABLE) + " mcp add --scope user serena -- "
+                + str(UV_BIN) + " tool run --from " + str(SERENA_ROOT)
+                + " serena start-mcp-server --context claude-code --project-from-cwd",
+            ]],
+            verify_commands=[[str(UV_BIN), "tool", "run", "--from", str(SERENA_ROOT), "serena", "--help"]],
+            required_files=["{codex_home}/claude-config/.claude.json"],
+            diff_exclude_paths=[".serena", ".mcp.json", ".claude", "CLAUDE.md"],
+            mcp_args=[
+                "tool", "run", "--from", str(SERENA_ROOT), "serena", "start-mcp-server",
+                "--transport", "stdio", "--context", "claude-code", "--mode", "no-onboarding",
+                "--mode", "no-memories", "--project-from-cwd",
+            ],
+            claude_features={"mcp": True},
+            backend="host",
+        ),
+        "sigmap-claude-code-mcp-v1": _claude_readme_config(
+            "sigmap",
+            lane_name="retrieval-sigmap-claude-code-mcp-v1",
+            surface="claude-code-readme-mcp-install+context-map",
+            install_commands=[[str(NODE_BIN), str(SIGMAP_ROOT / "gen-context.js"), "mcp", "install", "claude", "--global"]],
+            verify_commands=[[str(NODE_BIN), str(SIGMAP_ROOT / "gen-context.js"), "mcp", "list", "--json"]],
+            required_files=["{repo}/.claude/settings.json"],
+            diff_exclude_paths=[".context", ".mcp.json", ".claude", "CLAUDE.md"],
+            warmup={
+                "cleanup_paths": [".context"],
+                "command": [str(NODE_BIN), str(SIGMAP_ROOT / "gen-context.js"), "--adapter", "claude", "--no-track"],
+                "kind": "signature-map-build",
+                "metadata_name": "sigmap-warmup-metadata.json",
+                "output_name": "sigmap-warmup-output.txt",
+                "timeout_seconds": 900,
+            },
+            claude_features={"mcp": True},
+        ),
+        "snip-claude-code-hook-v1": _claude_readme_config(
+            "snip",
+            lane_name="terminal-snip-claude-code-hook-v1",
+            surface="claude-code-readme-init+pretooluse-hook",
+            install_commands=[[str(SNIP_BIN), "init", "--agent", "claude-code"]],
+            verify_commands=[[str(SNIP_BIN), "hook-audit"]],
+            required_files=["{codex_home}/claude-config/settings.json"],
+            diff_exclude_paths=[".snip", ".claude", "CLAUDE.md", ".mcp.json"],
+            claude_features={"hooks": True},
+        ),
+        "token-savior-claude-code-product-v1": _claude_readme_config(
+            "token-savior",
+            lane_name="integrated-token-savior-claude-code-product-v1",
+            surface="claude-code-readme-init+hooks+mcp",
+            install_commands=[[str(UV_BIN), "tool", "run", "--from", str(TOKEN_SAVIOR_WHEEL), "ts", "init", "--agent", "claude", "--yes"]],
+            verify_commands=[[str(UV_BIN), "tool", "run", "--from", str(TOKEN_SAVIOR_WHEEL), "ts", "init", "--agent", "claude", "--dry-run", "--yes"]],
+            required_files=["{codex_home}/claude-config/settings.json"],
+            diff_exclude_paths=[".token-savior", ".claude", "CLAUDE.md", ".mcp.json"],
+            claude_features={"hooks": True, "mcp": True},
+        ),
+        "tokenjuice-claude-code-hook-v1": _claude_readme_config(
+            "tokenjuice",
+            lane_name="terminal-tokenjuice-claude-code-hook-v1",
+            surface="claude-code-readme-install+pretooluse-hook",
+            install_commands=[[str(TOKENJUICE_BIN), "install", "claude-code"]],
+            verify_commands=[[str(TOKENJUICE_BIN), "doctor", "claude-code"]],
+            required_files=["{codex_home}/claude-config/settings.json"],
+            diff_exclude_paths=[".tokenjuice", ".claude", "CLAUDE.md", ".mcp.json"],
+            claude_features={"hooks": True},
+        ),
+        "jcodemunch-claude-code-mcp-v1": _claude_readme_config(
+            "jcodemunch-mcp",
+            lane_name="retrieval-jcodemunch-claude-code-mcp-v1",
+            surface="claude-code-readme-init+mcp+policy+hooks+index",
+            install_commands=[[
+                str(UV_BIN), "tool", "run", "--from", str(JCODEMUNCH_WHEEL), "jcodemunch-mcp", "init",
+                "--client", "claude-code", "--claude-md", "project", "--hooks", "--index", "--audit",
+                "--yes", "--no-share-savings",
+            ]],
+            verify_commands=[[str(UV_BIN), "tool", "run", "--from", str(JCODEMUNCH_WHEEL), "jcodemunch-mcp", "--help"]],
+            required_files=[
+                "{codex_home}/claude-config/.claude.json",
+                "{codex_home}/claude-config/settings.json",
+                "{repo}/CLAUDE.md",
+                "{repo}/AGENTS.md",
+                "{codex_home}/home/.code-index/config.jsonc",
+            ],
+            diff_exclude_paths=[".code-index", ".jcodemunch", ".mcp.json", "CLAUDE.md", "AGENTS.md", ".claude"],
+            claude_features={"hooks": True, "mcp": True, "guidance_append": "Code Exploration Policy"},
+        ),
+    }
+)
+
+
 def rel_or_abs(path_text: str) -> Path:
     path = Path(path_text)
     return path if path.is_absolute() else ROOT / path
@@ -3850,13 +4106,27 @@ def preflight_claude_code(
         instruction_source = Path()
     source_bytes = instruction_source.read_bytes() if instruction_source.is_file() else b""
     destination_bytes = instruction_destination.read_bytes() if instruction_destination.is_file() else b""
+    source_hash = hashlib.sha256(source_bytes).hexdigest() if source_bytes else ""
+    destination_hash = hashlib.sha256(destination_bytes).hexdigest() if destination_bytes else ""
     instruction_passed = (
         instruction_source.is_file()
         and instruction_destination.is_file()
-        and source_bytes == destination_bytes
+        and source_hash == destination_hash
+        and instruction_manifest.get("source_sha256") == source_hash
+        and instruction_manifest.get("destination_sha256") == destination_hash
         and instruction_manifest.get("byte_identical") is True
         and instruction_manifest.get("claude_auto_discovery_expected") is True
     )
+    native_guidance_append = str((cfg or {}).get("claude_features", {}).get("guidance_append") or "")
+    if not instruction_passed and native_guidance_append:
+        instruction_passed = (
+            instruction_source.is_file()
+            and instruction_destination.is_file()
+            and destination_bytes.startswith(source_bytes.rstrip())
+            and f"## {native_guidance_append}".encode() in destination_bytes
+            and instruction_manifest.get("byte_identical") is True
+            and instruction_manifest.get("claude_auto_discovery_expected") is True
+        )
     version_path = run_dir / "claude-code-version.txt"
     help_path = run_dir / "claude-code-help.txt"
     version = run_backend(
