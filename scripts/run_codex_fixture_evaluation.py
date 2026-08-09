@@ -3855,6 +3855,12 @@ def prepare_profile_integration(
 
     assert cfg is not None
     integration_backend = str(cfg.get("host_integration_backend") or backend)
+    # jCodeMunch's documented Claude initializer invokes the native `claude`
+    # host command as a subprocess. Keep its frozen adapter identity stable,
+    # but execute this installer on the host so lane HOME/CLAUDE_CONFIG_DIR are
+    # honored instead of being interpreted in an unrelated container namespace.
+    if pid == "retrieval-jcodemunch-claude-code-mcp-v1":
+        integration_backend = "host"
     if integration.get("home_dot_codex_alias"):
         prepare_home_dot_codex_alias(codex_home)
     env = (
