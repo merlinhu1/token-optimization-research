@@ -1302,7 +1302,7 @@ print('ok')
             self.assertTrue(result["skipped"])
             self.assertIn("no host_integration contract", result["failure_reasons"][0])
 
-    def test_claude_beets_authorization_is_limited_to_requalified_native_profiles(self) -> None:
+    def test_claude_beets_authorization_covers_all_readme_qualified_profiles(self) -> None:
         sequences = json.loads((ROOT / "data/workflow-task-sequences.json").read_text())["sequences"]
         beets = next(item for item in sequences if item["id"] == "beets-lifecycle-sequence-v1")
         with mock.patch.object(
@@ -1315,9 +1315,14 @@ print('ok')
                     beets, "artifact-ponytail-claude-code-plugin-v1", ROOT
                 )
             )
-            self.assertFalse(
+            self.assertTrue(
                 runner.claude_anthropic_sonnet_treatment_authorized(
                     beets, "retrieval-codegraph-claude-code-mcp-v1", ROOT
+                )
+            )
+            self.assertFalse(
+                runner.claude_anthropic_sonnet_treatment_authorized(
+                    beets, "retrieval-sdl-mcp-claude-code-product-v1", ROOT
                 )
             )
 
