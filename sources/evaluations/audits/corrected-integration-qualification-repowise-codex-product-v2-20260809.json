@@ -1,10 +1,10 @@
 {
   "schema_version": 1,
   "date": "2026-08-09",
-  "created_at": "2026-08-09T05:31:51.445426+00:00",
-  "purpose": "Provider-free qualification of the pinned RepoWise host-agnostic OpenCode MCP integration on both active Lifecycle V1 fixtures before any owner-authorized model run.",
+  "created_at": "2026-08-09T12:39:23.432420+00:00",
+  "purpose": "Provider-configured qualification of the pinned RepoWise Codex product integration on both active Lifecycle V1 fixtures before owner-authorized model execution.",
   "profiles": [
-    "retrieval-repowise-opencode-product-v1"
+    "retrieval-repowise-codex-product-v2"
   ],
   "sequences": [
     "beets-lifecycle-sequence-v1",
@@ -20,17 +20,17 @@
     "provider_backed_sessions_created": 0
   },
   "failures": [],
-  "source_matrix_sha256": "b8b34bdf9943c23d6913aac70d1a44f1f448b48e45634913bff29df8ea8d576d",
+  "source_matrix_sha256": "7b8e663449981741e7e52b65bf2c49d3305a9cefd3f4e55627a8dfdf7a07d3df",
   "controller_provenance": {
-    "fixture_runner_sha256": "59e3a8271387caf13a8069aa138371f26577d33f864323514b49eca5405301c8",
-    "workflow_runner_sha256": "6c458fc68be3864013f8c4836526d9d6deda530aa12d1ba5a89041ba74e78adb",
+    "fixture_runner_sha256": "60e3b362044588c0fa1350b5e3a1b4d8d062a694d8868853771430406ae46934",
+    "workflow_runner_sha256": "ead0be90e898da348288d313bfd04b231879b51100c5d99e96ca30c013a5346b",
     "matrix_runner_sha256": "a562b4f8bc4590bce6aeaa04348019a3e59ab92c8bdc89f9c35432d3c60215c4",
     "qualification_publisher_sha256": "2fbefe234d37facb5846c64d6a7769019e82e46c2a845d210a52669f5eab59ea"
   },
   "lanes": [
     {
-      "session_id": "prepare-beets-lifecycle-sequence-v1--retrieval-repowise-opencode-product-v1",
-      "profile_id": "retrieval-repowise-opencode-product-v1",
+      "session_id": "prepare-beets-lifecycle-sequence-v1--retrieval-repowise-codex-product-v2",
+      "profile_id": "retrieval-repowise-codex-product-v2",
       "sequence_id": "beets-lifecycle-sequence-v1",
       "prepared": true,
       "prepare_verification": {
@@ -49,11 +49,11 @@
         "fixed_snapshot_oid": "9acb1ecff6c7ee0a1e83e3b983c94792345712c5",
         "concealment": {
           "order": 1,
-          "head": "9d4354299d3ae71d04f5062dc234acc874dfbb85",
+          "head": "4390779256a042466a43be19b762dfb9586da0db",
           "head_is_root": true,
           "reachable_commit_count": 1,
           "reflog_oids": [
-            "9d4354299d3ae71d04f5062dc234acc874dfbb85"
+            "4390779256a042466a43be19b762dfb9586da0db"
           ],
           "remotes": [],
           "working_tree_clean": true,
@@ -114,7 +114,7 @@
         "composite_seed_delivery_passed": true
       },
       "host_integration": {
-        "profile_id": "retrieval-repowise-opencode-product-v1",
+        "profile_id": "retrieval-repowise-codex-product-v2",
         "passed": true,
         "skipped": false,
         "controller_install_exit_codes": [],
@@ -128,11 +128,13 @@
         ],
         "missing_required_files": [],
         "required_files": [
-          "/opt/data/eval-workflow-lanes/workflow-matrix-20260809T052728274452Z-p1977360-r0/beets-lifecycle-sequence-v1--retrieval-repowise-opencode-product-v1/checkout/sources/evaluations/workflow-sessions/prepare-beets-lifecycle-sequence-v1--retrieval-repowise-opencode-product-v1/codex-homes/retrieval-repowise-opencode-product-v1/.config/retrieval-repowise-opencode-product-v1/venv/bin/repowise",
-          "/opt/data/eval-workflow-lanes/workflow-matrix-20260809T052728274452Z-p1977360-r0/beets-lifecycle-sequence-v1--retrieval-repowise-opencode-product-v1/checkout/sources/evaluations/workflow-sessions/prepare-beets-lifecycle-sequence-v1--retrieval-repowise-opencode-product-v1/project/repo/.repowise/wiki.db",
-          "/opt/data/eval-workflow-lanes/workflow-matrix-20260809T052728274452Z-p1977360-r0/beets-lifecycle-sequence-v1--retrieval-repowise-opencode-product-v1/checkout/sources/evaluations/workflow-sessions/prepare-beets-lifecycle-sequence-v1--retrieval-repowise-opencode-product-v1/project/repo/.repowise/config.yaml",
-          "/opt/data/eval-workflow-lanes/workflow-matrix-20260809T052728274452Z-p1977360-r0/beets-lifecycle-sequence-v1--retrieval-repowise-opencode-product-v1/checkout/sources/evaluations/workflow-sessions/prepare-beets-lifecycle-sequence-v1--retrieval-repowise-opencode-product-v1/project/repo/.mcp.json",
-          "/opt/data/eval-workflow-lanes/workflow-matrix-20260809T052728274452Z-p1977360-r0/beets-lifecycle-sequence-v1--retrieval-repowise-opencode-product-v1/checkout/sources/evaluations/workflow-sessions/prepare-beets-lifecycle-sequence-v1--retrieval-repowise-opencode-product-v1/project/repo/AGENTS.md"
+          "/opt/data/eval-workflow-lanes/workflow-matrix-20260809T122935339354Z-p2173281-r0/beets-lifecycle-sequence-v1--retrieval-repowise-codex-product-v2/checkout/sources/evaluations/workflow-sessions/prepare-beets-lifecycle-sequence-v1--retrieval-repowise-codex-product-v2/codex-homes/retrieval-repowise-codex-product-v2/.config/repowise-codex-product-v2/venv/bin/repowise",
+          "/opt/data/eval-workflow-lanes/workflow-matrix-20260809T122935339354Z-p2173281-r0/beets-lifecycle-sequence-v1--retrieval-repowise-codex-product-v2/checkout/sources/evaluations/workflow-sessions/prepare-beets-lifecycle-sequence-v1--retrieval-repowise-codex-product-v2/project/repo/.repowise/wiki.db",
+          "/opt/data/eval-workflow-lanes/workflow-matrix-20260809T122935339354Z-p2173281-r0/beets-lifecycle-sequence-v1--retrieval-repowise-codex-product-v2/checkout/sources/evaluations/workflow-sessions/prepare-beets-lifecycle-sequence-v1--retrieval-repowise-codex-product-v2/project/repo/.repowise/config.yaml",
+          "/opt/data/eval-workflow-lanes/workflow-matrix-20260809T122935339354Z-p2173281-r0/beets-lifecycle-sequence-v1--retrieval-repowise-codex-product-v2/checkout/sources/evaluations/workflow-sessions/prepare-beets-lifecycle-sequence-v1--retrieval-repowise-codex-product-v2/project/repo/.mcp.json",
+          "/opt/data/eval-workflow-lanes/workflow-matrix-20260809T122935339354Z-p2173281-r0/beets-lifecycle-sequence-v1--retrieval-repowise-codex-product-v2/checkout/sources/evaluations/workflow-sessions/prepare-beets-lifecycle-sequence-v1--retrieval-repowise-codex-product-v2/project/repo/.codex/config.toml",
+          "/opt/data/eval-workflow-lanes/workflow-matrix-20260809T122935339354Z-p2173281-r0/beets-lifecycle-sequence-v1--retrieval-repowise-codex-product-v2/checkout/sources/evaluations/workflow-sessions/prepare-beets-lifecycle-sequence-v1--retrieval-repowise-codex-product-v2/project/repo/.codex/hooks.json",
+          "/opt/data/eval-workflow-lanes/workflow-matrix-20260809T122935339354Z-p2173281-r0/beets-lifecycle-sequence-v1--retrieval-repowise-codex-product-v2/checkout/sources/evaluations/workflow-sessions/prepare-beets-lifecycle-sequence-v1--retrieval-repowise-codex-product-v2/project/repo/AGENTS.md"
         ],
         "artifact_identities": [
           {
@@ -148,21 +150,14 @@
             "expected_sha256": "44ed3725616544a8d4eb4695c99e33c8bd28ce2bfde4c12134d1fde0e1d65a3a",
             "actual_sha256": "44ed3725616544a8d4eb4695c99e33c8bd28ce2bfde4c12134d1fde0e1d65a3a",
             "passed": true
-          },
-          {
-            "path": "/opt/data/tool-candidates/opencode-adapter-v9/opencode_workflow_adapter.py",
-            "kind": "runtime-adapter",
-            "expected_sha256": "6cabc28420901ec9fea5997bd63559311d73d2c7fb9c86e54d64ba42c67b822e",
-            "actual_sha256": "6cabc28420901ec9fea5997bd63559311d73d2c7fb9c86e54d64ba42c67b822e",
-            "passed": true
           }
         ],
         "post_install_artifacts": [],
         "artifacts": [
-          "sources/evaluations/workflow-sessions/prepare-beets-lifecycle-sequence-v1--retrieval-repowise-opencode-product-v1/tool-host-install-1.txt",
-          "sources/evaluations/workflow-sessions/prepare-beets-lifecycle-sequence-v1--retrieval-repowise-opencode-product-v1/tool-host-install-2.txt",
-          "sources/evaluations/workflow-sessions/prepare-beets-lifecycle-sequence-v1--retrieval-repowise-opencode-product-v1/tool-host-install-3.txt",
-          "sources/evaluations/workflow-sessions/prepare-beets-lifecycle-sequence-v1--retrieval-repowise-opencode-product-v1/tool-host-verify-1.txt"
+          "sources/evaluations/workflow-sessions/prepare-beets-lifecycle-sequence-v1--retrieval-repowise-codex-product-v2/tool-host-install-1.txt",
+          "sources/evaluations/workflow-sessions/prepare-beets-lifecycle-sequence-v1--retrieval-repowise-codex-product-v2/tool-host-install-2.txt",
+          "sources/evaluations/workflow-sessions/prepare-beets-lifecycle-sequence-v1--retrieval-repowise-codex-product-v2/tool-host-install-3.txt",
+          "sources/evaluations/workflow-sessions/prepare-beets-lifecycle-sequence-v1--retrieval-repowise-codex-product-v2/tool-host-verify-1.txt"
         ],
         "claude_mcp_config": null
       },
@@ -188,7 +183,7 @@
           "search_codebase"
         ],
         "tools_list_passed": true,
-        "profile_id": "retrieval-repowise-opencode-product-v1",
+        "profile_id": "retrieval-repowise-codex-product-v2",
         "required": true,
         "attempted": true,
         "attempt_required": true,
@@ -200,7 +195,7 @@
         "tool_count": 11
       },
       "codex_preflight": {
-        "profile_id": "retrieval-repowise-opencode-product-v1",
+        "profile_id": "retrieval-repowise-codex-product-v2",
         "passed": true,
         "doctor_exit_code": 1,
         "mcp_list_exit_code": 0,
@@ -216,17 +211,17 @@
           "codex doctor exited 1; preserve the diagnostic, but use the isolated MCP/config probes and task execution as gates"
         ],
         "artifacts": {
-          "doctor": "sources/evaluations/workflow-sessions/prepare-beets-lifecycle-sequence-v1--retrieval-repowise-opencode-product-v1/codex-doctor.txt",
-          "mcp_list": "sources/evaluations/workflow-sessions/prepare-beets-lifecycle-sequence-v1--retrieval-repowise-opencode-product-v1/codex-mcp-list.txt",
-          "effective_config": "sources/evaluations/workflow-sessions/prepare-beets-lifecycle-sequence-v1--retrieval-repowise-opencode-product-v1/codex-effective-config.toml",
-          "forbidden_command_visibility": "sources/evaluations/workflow-sessions/prepare-beets-lifecycle-sequence-v1--retrieval-repowise-opencode-product-v1/forbidden-command-visibility.txt",
-          "tool_preflight": "sources/evaluations/workflow-sessions/prepare-beets-lifecycle-sequence-v1--retrieval-repowise-opencode-product-v1/tool-preflight.txt",
+          "doctor": "sources/evaluations/workflow-sessions/prepare-beets-lifecycle-sequence-v1--retrieval-repowise-codex-product-v2/codex-doctor.txt",
+          "mcp_list": "sources/evaluations/workflow-sessions/prepare-beets-lifecycle-sequence-v1--retrieval-repowise-codex-product-v2/codex-mcp-list.txt",
+          "effective_config": "sources/evaluations/workflow-sessions/prepare-beets-lifecycle-sequence-v1--retrieval-repowise-codex-product-v2/codex-effective-config.toml",
+          "forbidden_command_visibility": "sources/evaluations/workflow-sessions/prepare-beets-lifecycle-sequence-v1--retrieval-repowise-codex-product-v2/forbidden-command-visibility.txt",
+          "tool_preflight": "sources/evaluations/workflow-sessions/prepare-beets-lifecycle-sequence-v1--retrieval-repowise-codex-product-v2/tool-preflight.txt",
           "tool_coverage_preflight": null
         }
       },
       "tool_warmup_exit_code": 0,
-      "protocol_path": "sources/evaluations/protocols/beets-lifecycle-sequence-v1-retrieval-repowise-opencode-product-v1-d3e4aae808e2.json",
-      "protocol_sha256": "ef444d6658dc1969861856f363361173e47549fa7f4c12d41c757c610c741384",
+      "protocol_path": "sources/evaluations/protocols/beets-lifecycle-sequence-v1-retrieval-repowise-codex-product-v2-d5efe4e707d8.json",
+      "protocol_sha256": "7187edced3b402c03127a0c9e44496aec25a2f1b8893a9bce5e1b1085d19026c",
       "qualification_checks": {
         "lane_exit_zero": true,
         "prepared": true,
@@ -238,8 +233,8 @@
       }
     },
     {
-      "session_id": "prepare-fastify-lifecycle-sequence-v1--retrieval-repowise-opencode-product-v1",
-      "profile_id": "retrieval-repowise-opencode-product-v1",
+      "session_id": "prepare-fastify-lifecycle-sequence-v1--retrieval-repowise-codex-product-v2",
+      "profile_id": "retrieval-repowise-codex-product-v2",
       "sequence_id": "fastify-lifecycle-sequence-v1",
       "prepared": true,
       "prepare_verification": {
@@ -258,11 +253,11 @@
         "fixed_snapshot_oid": "94bcbcc6e2ef3b8e8f8e8797fe551ccbe7b942fd",
         "concealment": {
           "order": 1,
-          "head": "59892d3e233f489517ee3912aaf648a0600c3ee5",
+          "head": "2c0dafe620e8d3fc929947d7ee439b6d18e6d5c3",
           "head_is_root": true,
           "reachable_commit_count": 1,
           "reflog_oids": [
-            "59892d3e233f489517ee3912aaf648a0600c3ee5"
+            "2c0dafe620e8d3fc929947d7ee439b6d18e6d5c3"
           ],
           "remotes": [],
           "working_tree_clean": true,
@@ -323,7 +318,7 @@
         "composite_seed_delivery_passed": true
       },
       "host_integration": {
-        "profile_id": "retrieval-repowise-opencode-product-v1",
+        "profile_id": "retrieval-repowise-codex-product-v2",
         "passed": true,
         "skipped": false,
         "controller_install_exit_codes": [],
@@ -337,11 +332,13 @@
         ],
         "missing_required_files": [],
         "required_files": [
-          "/opt/data/eval-workflow-lanes/workflow-matrix-20260809T052728274452Z-p1977360-r0/fastify-lifecycle-sequence-v1--retrieval-repowise-opencode-product-v1/checkout/sources/evaluations/workflow-sessions/prepare-fastify-lifecycle-sequence-v1--retrieval-repowise-opencode-product-v1/codex-homes/retrieval-repowise-opencode-product-v1/.config/retrieval-repowise-opencode-product-v1/venv/bin/repowise",
-          "/opt/data/eval-workflow-lanes/workflow-matrix-20260809T052728274452Z-p1977360-r0/fastify-lifecycle-sequence-v1--retrieval-repowise-opencode-product-v1/checkout/sources/evaluations/workflow-sessions/prepare-fastify-lifecycle-sequence-v1--retrieval-repowise-opencode-product-v1/project/repo/.repowise/wiki.db",
-          "/opt/data/eval-workflow-lanes/workflow-matrix-20260809T052728274452Z-p1977360-r0/fastify-lifecycle-sequence-v1--retrieval-repowise-opencode-product-v1/checkout/sources/evaluations/workflow-sessions/prepare-fastify-lifecycle-sequence-v1--retrieval-repowise-opencode-product-v1/project/repo/.repowise/config.yaml",
-          "/opt/data/eval-workflow-lanes/workflow-matrix-20260809T052728274452Z-p1977360-r0/fastify-lifecycle-sequence-v1--retrieval-repowise-opencode-product-v1/checkout/sources/evaluations/workflow-sessions/prepare-fastify-lifecycle-sequence-v1--retrieval-repowise-opencode-product-v1/project/repo/.mcp.json",
-          "/opt/data/eval-workflow-lanes/workflow-matrix-20260809T052728274452Z-p1977360-r0/fastify-lifecycle-sequence-v1--retrieval-repowise-opencode-product-v1/checkout/sources/evaluations/workflow-sessions/prepare-fastify-lifecycle-sequence-v1--retrieval-repowise-opencode-product-v1/project/repo/AGENTS.md"
+          "/opt/data/eval-workflow-lanes/workflow-matrix-20260809T122935339354Z-p2173281-r0/fastify-lifecycle-sequence-v1--retrieval-repowise-codex-product-v2/checkout/sources/evaluations/workflow-sessions/prepare-fastify-lifecycle-sequence-v1--retrieval-repowise-codex-product-v2/codex-homes/retrieval-repowise-codex-product-v2/.config/repowise-codex-product-v2/venv/bin/repowise",
+          "/opt/data/eval-workflow-lanes/workflow-matrix-20260809T122935339354Z-p2173281-r0/fastify-lifecycle-sequence-v1--retrieval-repowise-codex-product-v2/checkout/sources/evaluations/workflow-sessions/prepare-fastify-lifecycle-sequence-v1--retrieval-repowise-codex-product-v2/project/repo/.repowise/wiki.db",
+          "/opt/data/eval-workflow-lanes/workflow-matrix-20260809T122935339354Z-p2173281-r0/fastify-lifecycle-sequence-v1--retrieval-repowise-codex-product-v2/checkout/sources/evaluations/workflow-sessions/prepare-fastify-lifecycle-sequence-v1--retrieval-repowise-codex-product-v2/project/repo/.repowise/config.yaml",
+          "/opt/data/eval-workflow-lanes/workflow-matrix-20260809T122935339354Z-p2173281-r0/fastify-lifecycle-sequence-v1--retrieval-repowise-codex-product-v2/checkout/sources/evaluations/workflow-sessions/prepare-fastify-lifecycle-sequence-v1--retrieval-repowise-codex-product-v2/project/repo/.mcp.json",
+          "/opt/data/eval-workflow-lanes/workflow-matrix-20260809T122935339354Z-p2173281-r0/fastify-lifecycle-sequence-v1--retrieval-repowise-codex-product-v2/checkout/sources/evaluations/workflow-sessions/prepare-fastify-lifecycle-sequence-v1--retrieval-repowise-codex-product-v2/project/repo/.codex/config.toml",
+          "/opt/data/eval-workflow-lanes/workflow-matrix-20260809T122935339354Z-p2173281-r0/fastify-lifecycle-sequence-v1--retrieval-repowise-codex-product-v2/checkout/sources/evaluations/workflow-sessions/prepare-fastify-lifecycle-sequence-v1--retrieval-repowise-codex-product-v2/project/repo/.codex/hooks.json",
+          "/opt/data/eval-workflow-lanes/workflow-matrix-20260809T122935339354Z-p2173281-r0/fastify-lifecycle-sequence-v1--retrieval-repowise-codex-product-v2/checkout/sources/evaluations/workflow-sessions/prepare-fastify-lifecycle-sequence-v1--retrieval-repowise-codex-product-v2/project/repo/AGENTS.md"
         ],
         "artifact_identities": [
           {
@@ -357,21 +354,14 @@
             "expected_sha256": "44ed3725616544a8d4eb4695c99e33c8bd28ce2bfde4c12134d1fde0e1d65a3a",
             "actual_sha256": "44ed3725616544a8d4eb4695c99e33c8bd28ce2bfde4c12134d1fde0e1d65a3a",
             "passed": true
-          },
-          {
-            "path": "/opt/data/tool-candidates/opencode-adapter-v9/opencode_workflow_adapter.py",
-            "kind": "runtime-adapter",
-            "expected_sha256": "6cabc28420901ec9fea5997bd63559311d73d2c7fb9c86e54d64ba42c67b822e",
-            "actual_sha256": "6cabc28420901ec9fea5997bd63559311d73d2c7fb9c86e54d64ba42c67b822e",
-            "passed": true
           }
         ],
         "post_install_artifacts": [],
         "artifacts": [
-          "sources/evaluations/workflow-sessions/prepare-fastify-lifecycle-sequence-v1--retrieval-repowise-opencode-product-v1/tool-host-install-1.txt",
-          "sources/evaluations/workflow-sessions/prepare-fastify-lifecycle-sequence-v1--retrieval-repowise-opencode-product-v1/tool-host-install-2.txt",
-          "sources/evaluations/workflow-sessions/prepare-fastify-lifecycle-sequence-v1--retrieval-repowise-opencode-product-v1/tool-host-install-3.txt",
-          "sources/evaluations/workflow-sessions/prepare-fastify-lifecycle-sequence-v1--retrieval-repowise-opencode-product-v1/tool-host-verify-1.txt"
+          "sources/evaluations/workflow-sessions/prepare-fastify-lifecycle-sequence-v1--retrieval-repowise-codex-product-v2/tool-host-install-1.txt",
+          "sources/evaluations/workflow-sessions/prepare-fastify-lifecycle-sequence-v1--retrieval-repowise-codex-product-v2/tool-host-install-2.txt",
+          "sources/evaluations/workflow-sessions/prepare-fastify-lifecycle-sequence-v1--retrieval-repowise-codex-product-v2/tool-host-install-3.txt",
+          "sources/evaluations/workflow-sessions/prepare-fastify-lifecycle-sequence-v1--retrieval-repowise-codex-product-v2/tool-host-verify-1.txt"
         ],
         "claude_mcp_config": null
       },
@@ -397,7 +387,7 @@
           "search_codebase"
         ],
         "tools_list_passed": true,
-        "profile_id": "retrieval-repowise-opencode-product-v1",
+        "profile_id": "retrieval-repowise-codex-product-v2",
         "required": true,
         "attempted": true,
         "attempt_required": true,
@@ -409,7 +399,7 @@
         "tool_count": 11
       },
       "codex_preflight": {
-        "profile_id": "retrieval-repowise-opencode-product-v1",
+        "profile_id": "retrieval-repowise-codex-product-v2",
         "passed": true,
         "doctor_exit_code": 1,
         "mcp_list_exit_code": 0,
@@ -425,17 +415,17 @@
           "codex doctor exited 1; preserve the diagnostic, but use the isolated MCP/config probes and task execution as gates"
         ],
         "artifacts": {
-          "doctor": "sources/evaluations/workflow-sessions/prepare-fastify-lifecycle-sequence-v1--retrieval-repowise-opencode-product-v1/codex-doctor.txt",
-          "mcp_list": "sources/evaluations/workflow-sessions/prepare-fastify-lifecycle-sequence-v1--retrieval-repowise-opencode-product-v1/codex-mcp-list.txt",
-          "effective_config": "sources/evaluations/workflow-sessions/prepare-fastify-lifecycle-sequence-v1--retrieval-repowise-opencode-product-v1/codex-effective-config.toml",
-          "forbidden_command_visibility": "sources/evaluations/workflow-sessions/prepare-fastify-lifecycle-sequence-v1--retrieval-repowise-opencode-product-v1/forbidden-command-visibility.txt",
-          "tool_preflight": "sources/evaluations/workflow-sessions/prepare-fastify-lifecycle-sequence-v1--retrieval-repowise-opencode-product-v1/tool-preflight.txt",
+          "doctor": "sources/evaluations/workflow-sessions/prepare-fastify-lifecycle-sequence-v1--retrieval-repowise-codex-product-v2/codex-doctor.txt",
+          "mcp_list": "sources/evaluations/workflow-sessions/prepare-fastify-lifecycle-sequence-v1--retrieval-repowise-codex-product-v2/codex-mcp-list.txt",
+          "effective_config": "sources/evaluations/workflow-sessions/prepare-fastify-lifecycle-sequence-v1--retrieval-repowise-codex-product-v2/codex-effective-config.toml",
+          "forbidden_command_visibility": "sources/evaluations/workflow-sessions/prepare-fastify-lifecycle-sequence-v1--retrieval-repowise-codex-product-v2/forbidden-command-visibility.txt",
+          "tool_preflight": "sources/evaluations/workflow-sessions/prepare-fastify-lifecycle-sequence-v1--retrieval-repowise-codex-product-v2/tool-preflight.txt",
           "tool_coverage_preflight": null
         }
       },
       "tool_warmup_exit_code": 0,
-      "protocol_path": "sources/evaluations/protocols/fastify-lifecycle-sequence-v1-retrieval-repowise-opencode-product-v1-089238fdb245.json",
-      "protocol_sha256": "061678bd6b9b0012978e9cddc6bd3750e1449a39c6baf7ff8279b537f4a80386",
+      "protocol_path": "sources/evaluations/protocols/fastify-lifecycle-sequence-v1-retrieval-repowise-codex-product-v2-a415ad5b5d37.json",
+      "protocol_sha256": "7be23bfd36a72c80d891b6a1f842d92e067abcaa5712fc70123745c8f78a54e3",
       "qualification_checks": {
         "lane_exit_zero": true,
         "prepared": true,

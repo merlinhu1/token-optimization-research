@@ -245,6 +245,7 @@ def main(argv: list[str] | None = None) -> int:
             "baseline-opencode-openrouter-no-mcp requires the exact OpenRouter GPT-5.6 Sol/high model condition"
         )
     runner.assert_profile_runnable(args.profile_id)
+    runner.fixture.require_repowise_provider_contract(args.profile_id)
     sequence_ids = args.sequence_ids or runner.active_sequence_ids()
     sequences: list[dict[str, Any]] = []
     for sequence_id in sequence_ids:

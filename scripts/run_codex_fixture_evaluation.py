@@ -146,8 +146,8 @@ PROFILE_TOOL_CONFIG_OVERRIDES = {
     "retrieval-graphify-opencode-product-v1": "graphify-opencode-product-v1",
     "terminal-rtk-opencode-plugin-v1": "rtk-opencode-plugin-v1",
     "retrieval-codegraph-opencode-mcp-v1": "codegraph-opencode-mcp-v1",
-    "retrieval-repowise-codex-product-v1": "repowise-codex-product-v1",
-    "retrieval-repowise-opencode-product-v1": "repowise-opencode-product-v1",
+    "retrieval-repowise-codex-product-v2": "repowise-codex-product-v2",
+    "retrieval-repowise-opencode-product-v2": "repowise-opencode-product-v2",
 }
 CODEGRAPH_BIN = Path("/opt/data/tool-candidates/codegraph/dist/bin/codegraph.js")
 CARTOG_ROOT = Path("/opt/data/tool-candidates/cartog")
@@ -453,17 +453,17 @@ TOOL_CONFIGS: dict[str, dict[str, Any]] = {
             "timeout_seconds": 1200,
         },
     },
-    "repowise-codex-product-v1": {
-        "display_name": "RepoWise 0.39.0 official Codex MCP, hooks, and guidance",
-        "lane_name": "retrieval-repowise-codex-product-v1",
-        "surface": "retrieval-context+mcp+codex-hooks+product-guidance+warm-index",
+    "repowise-codex-product-v2": {
+        "display_name": "RepoWise 0.39.0 provider-backed Codex MCP, hooks, and guidance",
+        "lane_name": "retrieval-repowise-codex-product-v2",
+        "surface": "retrieval-context+mcp+codex-hooks+product-guidance+provider-backed-index",
         "mcp_server": "repowise",
         "allowed_terms": ["repowise"],
-        "data_dir_name": "repowise-codex-product-v1",
+        "data_dir_name": "repowise-codex-product-v2",
         "mcp_command": "{tool_data_dir}/venv/bin/repowise",
         "mcp_args": ["mcp"],
         "path_entries": ["{tool_data_dir}/venv/bin"],
-        "env": {"REPOWISE_SKIP_EDITOR_SETUP": "1"},
+        "env": {"REPOWISE_PROVIDER": "codex_cli", "REPOWISE_SKIP_EDITOR_SETUP": "1"},
         "mounts": [str(REPOWISE_ROOT), str(REPOWISE_WHEEL)],
         "diff_exclude_paths": [".repowise", ".mcp.json", ".codex", "AGENTS.md"],
         "codex_features": {"hooks": True},
@@ -471,7 +471,7 @@ TOOL_CONFIGS: dict[str, dict[str, Any]] = {
             "install_commands": [
                 [str(UV_BIN), "venv", "{tool_data_dir}/venv", "--python", "python3"],
                 [str(UV_BIN), "pip", "install", "--python", "{tool_data_dir}/venv/bin/python", str(REPOWISE_WHEEL)],
-                ["{tool_data_dir}/venv/bin/repowise", "init", "--yes", "--no-prose", "--no-claude-md", "--no-editor-setup", "--codex", "--agents", "--no-workspace", "{repo}"],
+                ["{tool_data_dir}/venv/bin/repowise", "init", "--yes", "--provider", "codex_cli", "--no-prose", "--no-claude-md", "--no-editor-setup", "--codex", "--agents", "--no-workspace", "{repo}"],
             ],
             "verify_commands": [["{tool_data_dir}/venv/bin/repowise", "--version"]],
             "required_files": [
@@ -2153,21 +2153,21 @@ TOOL_CONFIGS.update(
             diff_exclude_paths=["AGENTS.md"],
             default_tool_state="warm-index+product-guidance",
         ),
-        "repowise-opencode-product-v1": _opencode_treatment_config(
+        "repowise-opencode-product-v2": _opencode_treatment_config(
             "repowise",
-            display_name="RepoWise 0.39.0 OpenCode MCP with product guidance",
-            lane_name="retrieval-repowise-opencode-product-v1",
-            surface="opencode-mcp+product-guidance+warm-index",
+            display_name="RepoWise 0.39.0 provider-backed OpenCode MCP with product guidance",
+            lane_name="retrieval-repowise-opencode-product-v2",
+            surface="opencode-mcp+product-guidance+provider-backed-index",
             allowed_terms=["repowise"],
             mounts=[str(REPOWISE_ROOT), str(REPOWISE_WHEEL)],
             adapter_path=OPENCODE_ADAPTER_V9,
             path_entries=["{tool_data_dir}/venv/bin"],
-            env={"OPENCODE_TOOL_DATA_DIR": "{tool_data_dir}", "REPOWISE_SKIP_EDITOR_SETUP": "1"},
+            env={"OPENCODE_TOOL_DATA_DIR": "{tool_data_dir}", "REPOWISE_PROVIDER": "opencode", "REPOWISE_SKIP_EDITOR_SETUP": "1"},
             host_integration={
                 "install_commands": [
                     [str(UV_BIN), "venv", "{tool_data_dir}/venv", "--python", "python3"],
                     [str(UV_BIN), "pip", "install", "--python", "{tool_data_dir}/venv/bin/python", str(REPOWISE_WHEEL)],
-                    ["{tool_data_dir}/venv/bin/repowise", "init", "--yes", "--no-prose", "--no-claude-md", "--no-editor-setup", "--no-codex", "--agents", "--no-workspace", "{repo}"],
+                    ["{tool_data_dir}/venv/bin/repowise", "init", "--yes", "--provider", "opencode", "--no-prose", "--no-claude-md", "--no-editor-setup", "--no-codex", "--agents", "--no-workspace", "{repo}"],
                 ],
                 "verify_commands": [["{tool_data_dir}/venv/bin/repowise", "--version"]],
                 "required_files": [
@@ -2505,6 +2505,23 @@ def active_tool_config(record: dict[str, Any], pid: str) -> dict[str, Any] | Non
     if len(ids) > 1:
         raise ValueError(f"runner currently supports one token-saving tool per lane; got {ids}")
     return TOOL_CONFIGS[ids[0]]
+
+
+def require_repowise_provider_contract(profile_id: str) -> None:
+    """Fail closed if a RepoWise profile could silently fall back to retrieval-only."""
+    expected = {
+        "repowise-codex-product-v2": "codex_cli",
+        "repowise-opencode-product-v2": "opencode",
+    }.get(str(PROFILE_TOOL_CONFIG_OVERRIDES.get(profile_id, "")))
+    if expected is None:
+        return
+    cfg = TOOL_CONFIGS[str(PROFILE_TOOL_CONFIG_OVERRIDES[profile_id])]
+    if (cfg.get("env") or {}).get("REPOWISE_PROVIDER") != expected:
+        raise ValueError(f"{profile_id} must set REPOWISE_PROVIDER={expected}")
+    commands = (cfg.get("host_integration") or {}).get("install_commands") or []
+    init = commands[-1] if commands else []
+    if "--provider" not in init or expected not in init:
+        raise ValueError(f"{profile_id} init must explicitly select provider {expected}")
 
 
 def codex_model_args(record: dict[str, Any]) -> list[str]:

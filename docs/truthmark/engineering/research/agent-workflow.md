@@ -26,7 +26,7 @@ This workflow covers repository-local agent instructions, evaluation state chang
 - Truthmark routes connect code, data, prompts, and documentation to bounded durable truth docs.
 - `scripts/validate_repository.py` and `scripts/update_workflow_runbook.py --check` enforce repository and generated-runbook consistency.
 - Direct-Anthropic Claude Code Lifecycle V1 preparation and the completed Fastify/Beets baseline pairs for Sonnet 5 and Opus 5 are recorded in frozen audit authority, registry, and compact evidence files; Opus used 30.12% more weighted token cost than Sonnet, so Sonnet is the selected model for treatment experiments. The owner account is accepted only through `TOKEN_EVAL_CLAUDE_ACCOUNT_HOME`, copied ephemerally into the lane, and never retained in evidence. Sonnet treatment execution is owner-authorized; thirteen Fastify and two Beets lanes are accepted, while thirteen Beets lanes remain unlaunched.
-- RepoWise 0.39.0 has frozen, provider-free-qualified Codex and OpenCode Lifecycle V1 protocols for both active fixtures. Preparation creates no provider session and is not a token result.
+- RepoWise 0.39.0 has frozen, provider-configured Codex and OpenCode Lifecycle V1 protocols for both active fixtures. Preparation creates no provider session and is not a token result; the deleted provider-free generation is retained only in its deletion receipt.
 
 ## Product Truth Links
 
@@ -90,8 +90,8 @@ Apply the synchronization workflow after an evaluation run, qualification/protoc
 - ../../../../sources/evaluations/audits/claude-code-anthropic-sonnet-5-high-lifecycle-v1-baseline-authorization-20260808.json
 - ../../../../sources/evaluations/audits/claude-code-anthropic-opus-5-high-lifecycle-v1-protocol-preparation-20260808.json
 - ../../../../sources/evaluations/audits/claude-code-anthropic-opus-5-high-lifecycle-v1-baseline-authorization-20260808.json
-- ../../../../sources/evaluations/audits/corrected-integration-qualification-repowise-codex-product-v1-20260809.json
-- ../../../../sources/evaluations/audits/corrected-integration-qualification-repowise-opencode-product-v1-20260809.json
+  - ../../../../sources/evaluations/audits/corrected-integration-qualification-repowise-codex-product-v2-20260809.json
+  - ../../../../sources/evaluations/audits/corrected-integration-qualification-repowise-opencode-product-v2-20260809.json
 - ../../routes/areas.md
 
 ## Engineering Decisions

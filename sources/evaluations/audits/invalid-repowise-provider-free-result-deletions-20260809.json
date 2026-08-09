@@ -1,0 +1,63 @@
+{
+  "schema_version": 1,
+  "date": "2026-08-09",
+  "action": "owner-authorized-active-corpus-deletion",
+  "disposition": "invalid-treatment-configuration",
+  "profiles": [
+    {
+      "profile_id": "retrieval-repowise-codex-product-v1",
+      "replacement_profile_id": "retrieval-repowise-codex-product-v2",
+      "deleted_session_ids": [
+        "repowise-codex-v1-beets-20260809-p-d8cfc5066f76-r0",
+        "repowise-codex-v1-fastify-20260809-p-72ac148f730b-r0"
+      ],
+      "deleted_protocol_paths": [
+        "sources/evaluations/protocols/beets-lifecycle-sequence-v1-retrieval-repowise-codex-product-v1-1ac8846b509b.json",
+        "sources/evaluations/protocols/fastify-lifecycle-sequence-v1-retrieval-repowise-codex-product-v1-7ff667bd9fe9.json"
+      ],
+      "deleted_comparison_paths": [
+        "sources/evaluations/workflow-sessions/baseline-beets-20260809-vs-repowise-codex-v1-p-d8cfc5066f76-r0.json",
+        "sources/evaluations/workflow-sessions/baseline-fastify-20260809-vs-repowise-codex-v1-p-72ac148f730b-r0.json"
+      ],
+      "deleted_bundle_roots": [
+        "sources/evaluations/workflow-sessions/repowise-codex-v1-beets-20260809-p-d8cfc5066f76-r0",
+        "sources/evaluations/workflow-sessions/repowise-codex-v1-fastify-20260809-p-72ac148f730b-r0"
+      ],
+      "deleted_qualification_paths": [
+        "sources/evaluations/audits/corrected-integration-qualification-repowise-codex-product-v1-20260809.json"
+      ]
+    },
+    {
+      "profile_id": "retrieval-repowise-opencode-product-v1",
+      "replacement_profile_id": "retrieval-repowise-opencode-product-v2",
+      "deleted_session_ids": [
+        "repowise-opencode-v1-beets-20260809-p-d8cfc5066f76-r2",
+        "repowise-opencode-v1-fastify-20260809-p-72ac148f730b-r2"
+      ],
+      "deleted_protocol_paths": [
+        "sources/evaluations/protocols/beets-lifecycle-sequence-v1-retrieval-repowise-opencode-product-v1-d3e4aae808e2.json",
+        "sources/evaluations/protocols/fastify-lifecycle-sequence-v1-retrieval-repowise-opencode-product-v1-089238fdb245.json"
+      ],
+      "deleted_comparison_paths": [],
+      "deleted_bundle_roots": [
+        "sources/evaluations/workflow-sessions/repowise-opencode-v1-beets-20260809-p-d8cfc5066f76-r2",
+        "sources/evaluations/workflow-sessions/repowise-opencode-v1-fastify-20260809-p-72ac148f730b-r2"
+      ],
+      "deleted_qualification_paths": [
+        "sources/evaluations/audits/corrected-integration-qualification-repowise-opencode-product-v1-20260809.json"
+      ]
+    }
+  ],
+  "root_causes": [
+    "The Codex and OpenCode primary agents had provider access, but RepoWise itself was initialized without --provider codex_cli/opencode and without REPOWISE_PROVIDER in the MCP-server environment.",
+    "Both treatments passed --no-prose, so the setup remained deterministic and the MCP answer path reported no-llm-provider instead of using the available host CLI provider."
+  ],
+  "operational_evidence_boundary": "The sessions completed their software workflow, but provider-free RepoWise setup is a materially different treatment from the requested provider-backed product and cannot be retained as an evaluation result.",
+  "deleted_provider_session_count": 4,
+  "baseline_relabeling": "forbidden",
+  "baseline_sessions_modified": false,
+  "identity_policy": "Deleted protocol and replicate identities are never reused; provider-backed V2 protocols receive fresh identities.",
+  "recovery_ref": "refs/heads/claude-code-v1-baseline-prep",
+  "recovery_commit": "f05478a8",
+  "rerun_requirement": "Only the provider-configured V2 profiles may be qualified and executed. Any RepoWise lane whose provider preflight or answer-path evidence reports no-llm-provider is invalid and must not be published."
+}

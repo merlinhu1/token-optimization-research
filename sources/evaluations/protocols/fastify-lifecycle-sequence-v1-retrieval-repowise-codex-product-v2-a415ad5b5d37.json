@@ -1,19 +1,19 @@
 {
   "protocol_schema_version": 3,
-  "protocol_id": "beets-lifecycle-sequence-v1-retrieval-repowise-opencode-product-v1-d3e4aae808e2",
+  "protocol_id": "fastify-lifecycle-sequence-v1-retrieval-repowise-codex-product-v2-a415ad5b5d37",
   "status": "frozen-ready-not-run",
-  "outcome": "Frozen retrieval-repowise-opencode-product-v1 protocol for beets-lifecycle-sequence-v1; no provider/model run has occurred.",
+  "outcome": "Frozen retrieval-repowise-codex-product-v2 protocol for fastify-lifecycle-sequence-v1; no provider/model run has occurred.",
   "frozen_at": "2026-08-01",
-  "hypothesis": "retrieval-repowise-opencode-product-v1 produces reproducible provider-reported token and software-quality evidence for beets-lifecycle-sequence-v1",
+  "hypothesis": "retrieval-repowise-codex-product-v2 produces reproducible provider-reported token and software-quality evidence for fastify-lifecycle-sequence-v1",
   "evidence_stage_target": "reproduction",
   "task_fixture": {
-    "fixture_id": "medium-beetbox-beets",
-    "sequence_id": "beets-lifecycle-sequence-v1",
+    "fixture_id": "medium-fastify-fastify",
+    "sequence_id": "fastify-lifecycle-sequence-v1",
     "task_family_generation": "lifecycle-v1",
-    "repository": "https://github.com/beetbox/beets.git",
-    "snapshot": "9acb1ecff6c7ee0a1e83e3b983c94792345712c5",
-    "qualification_path": "sources/evaluations/fixtures/medium/beetbox-beets/qualification-lifecycle-v1.json",
-    "qualification_sha256": "03b30282786a471edadc80ed7cc4842c7c9bfdc912de61b9ce0bdeb66d3b494d",
+    "repository": "https://github.com/fastify/fastify.git",
+    "snapshot": "94bcbcc6e2ef3b8e8f8e8797fe551ccbe7b942fd",
+    "qualification_path": "sources/evaluations/fixtures/medium/fastify-fastify/qualification-lifecycle-v1.json",
+    "qualification_sha256": "340ffbd669ed98b5fec72c195d8c65eb8e72b6f52015a8ef9abd296a0bcb1d0e",
     "timeout_seconds_per_task": 3600
   },
   "baseline": {
@@ -26,22 +26,22 @@
     "command": ""
   },
   "comparison_baseline": {
-    "profile_id": "runtime-opencode-codex-product-v1",
-    "runtime_id": "opencode-cli",
+    "profile_id": "baseline-bare-codex",
+    "runtime_id": "codex-cli",
     "provider": "openai",
     "model": "gpt-5.6-sol",
-    "model_condition_id": "opencode-openai-gpt-5-6-sol-high",
+    "model_condition_id": "codex-openai-gpt-5-6-sol-high",
     "reasoning_effort": "high",
-    "selection_policy": "sequence-pool-replicate-matched-first-valid"
+    "command": ""
   },
   "treatment": {
-    "profile_id": "retrieval-repowise-opencode-product-v1",
-    "runtime_id": "opencode-cli",
+    "profile_id": "retrieval-repowise-codex-product-v2",
+    "runtime_id": "codex-cli",
     "provider": "openai",
     "model": "gpt-5.6-sol",
-    "model_condition_id": "opencode-openai-gpt-5-6-sol-high",
+    "model_condition_id": "codex-openai-gpt-5-6-sol-high",
     "reasoning_effort": "high",
-    "command": "python3 scripts/run_opencode_workflow_model_condition.py --workflow-model-condition-id opencode-openai-gpt-5-6-sol-high --workflow-model gpt-5.6-sol --workflow-reasoning-effort high --sequence-id beets-lifecycle-sequence-v1 --profile-id retrieval-repowise-opencode-product-v1 --timeout-per-task 3600 --protocol sources/evaluations/protocols/beets-lifecycle-sequence-v1-retrieval-repowise-opencode-product-v1-d3e4aae808e2.json --docker-image token-eval-codex:latest"
+    "command": "python3 scripts/run_codex_workflow_model_condition.py --workflow-model-condition-id codex-openai-gpt-5-6-sol-high --workflow-model gpt-5.6-sol --workflow-reasoning-effort high --sequence-id fastify-lifecycle-sequence-v1 --profile-id retrieval-repowise-codex-product-v2 --timeout-per-task 3600 --protocol sources/evaluations/protocols/fastify-lifecycle-sequence-v1-retrieval-repowise-codex-product-v2-a415ad5b5d37.json --docker-image token-eval-codex:latest"
   },
   "token_accounting_boundary": {
     "fields": [
@@ -55,25 +55,25 @@
   },
   "baseline_pool": {
     "protocol_version": "baseline-pool-v1",
-    "protocol_fingerprint": "d8cfc5066f76",
+    "protocol_fingerprint": "72ac148f730b",
     "descriptor": {
       "version": "baseline-pool-v1",
       "task_family_generation": "lifecycle-v1",
       "runner_contract_version": "workflow-runner-v10",
-      "runner_sha256": "cf8c2edc92df6029e051aec96dc089fc226672260c8ce286f5d3403552518797",
+      "runner_sha256": "ccb31c6a0140f3e415daeee59c1af8da6be40a1d0db2975b3560b426643e7667",
       "qualification_generator_sha256": "a0c871d2a500a3fe6a11b78ef4ec20ef29cf12f5db44fdae53344e4327ec559b",
-      "validator_sha256": "32d677ae10bf2364845a6eac88ec3ab95d0a76fea9a52b608e91e590f1ef69d2",
-      "sequence_id": "beets-lifecycle-sequence-v1",
+      "validator_sha256": "053fb739d65fb8f864e507e53ccc9b3eb8f217b6543ecbe1f9fec815fd85d845",
+      "sequence_id": "fastify-lifecycle-sequence-v1",
       "sequence_contract": "feature-refactor-review",
-      "fixture_id": "medium-beetbox-beets",
+      "fixture_id": "medium-fastify-fastify",
       "fixture_scale": "medium-project",
       "initial_snapshot": {
-        "commit": "9acb1ecff6c7ee0a1e83e3b983c94792345712c5",
-        "upstream": "https://github.com/beetbox/beets.git",
+        "commit": "94bcbcc6e2ef3b8e8f8e8797fe551ccbe7b942fd",
+        "upstream": "https://github.com/fastify/fastify.git",
         "dependency_lockfiles": [
           {
-            "path": "uv.lock",
-            "sha256": "fbf1d7a9c84b658a2433035221ba18c57508c254d711a06f305e2f610839a45f"
+            "path": "package.json",
+            "sha256": "b273320af1bb4cfc0f9334457c8e3b1d035fde0da14f9db65e8ef97d361d0be3"
           }
         ]
       },
@@ -87,21 +87,21 @@
         "tests_required": false,
         "source_review_required": false
       },
-      "project_compile_command": "uv run --offline --frozen python -c \"import ast, pathlib; [ast.parse(p.read_text(), filename=str(p)) for root in ('beets', 'beetsplug') for p in pathlib.Path(root).rglob('*.py')]\"",
+      "project_compile_command": "find lib -type f -name '*.js' -print0 | sort -z | xargs -0 -n1 node --check && node --check fastify.js",
       "tasks": [
         {
-          "id": "beets-lifecycle-feature-v1",
+          "id": "fastify-lifecycle-feature-v1",
           "order": 1,
           "task_class": "feature-implementation",
-          "prompt_path": "sources/evaluations/fixtures/medium/beetbox-beets/task-generations/lifecycle-v1/beets-lifecycle-feature-v1/agent-prompt.txt",
-          "prompt_sha256": "de2a6d38d4bff0027866e665816d47d39f3e98e0b73e1e74645bae14c918821b",
-          "seed_patch_sha256": "9dc1cf36d0d0120fb57f75c4579af7f1f65b80e9d80de2d2c5cbdeb69b4ac17e",
-          "verifier_command": "sources/evaluations/fixtures/medium/beetbox-beets/task-generations/lifecycle-v1/beets-lifecycle-feature-v1/verify.sh",
-          "verifier_sha256": "5a5028a8debfc2260145947a81a53dd6644e08abcd7d45ee4c41fadcdcb351b0",
-          "compile_command": "uv run --offline --frozen python -m py_compile beets/util/functemplate.py",
+          "prompt_path": "sources/evaluations/fixtures/medium/fastify-fastify/task-generations/lifecycle-v1/fastify-lifecycle-feature-v1/agent-prompt.txt",
+          "prompt_sha256": "9258119ac5720ab9309a2960ffe7ad94fd11a922e2139899bf9cc582f9df947e",
+          "seed_patch_sha256": "590bc68fde7b7ece291517f21fa63ef56cdd40b42a11015bc4184b88835db8b3",
+          "verifier_command": "sources/evaluations/fixtures/medium/fastify-fastify/task-generations/lifecycle-v1/fastify-lifecycle-feature-v1/verify.sh",
+          "verifier_sha256": "70a1969e7f1fa86695c831b23a7a8b2dff6f73e73f3403767307d46fa914ab01",
+          "compile_command": "node --check lib/request.js",
           "acceptance_visibility": "controller-only-compile-policy",
           "expected_changed_paths": [
-            "beets/util/functemplate.py"
+            "lib/request.js"
           ],
           "controller_visible_acceptance_assets": [],
           "upstream_test_paths": [],
@@ -110,18 +110,18 @@
           "model_concealed_paths": []
         },
         {
-          "id": "beets-lifecycle-refactor-v1",
+          "id": "fastify-lifecycle-refactor-v1",
           "order": 2,
           "task_class": "behavior-preserving-refactor",
-          "prompt_path": "sources/evaluations/fixtures/medium/beetbox-beets/task-generations/lifecycle-v1/beets-lifecycle-refactor-v1/agent-prompt.txt",
-          "prompt_sha256": "b6555b12ec7ef275bfd7c595ead918b3203051aa7bbad2e82dd99b76b0472be8",
-          "seed_patch_sha256": "9bcf590139fc91987524e643bc1e6281efbe5a09cd9b2218ca31f670c391c722",
-          "verifier_command": "sources/evaluations/fixtures/medium/beetbox-beets/task-generations/lifecycle-v1/beets-lifecycle-refactor-v1/verify.sh",
-          "verifier_sha256": "ca092d6431225d9b8f6aedef8bb8d0c8c50a403ca6441291a54425d9c5c9faf5",
-          "compile_command": "uv run --offline --frozen python -m py_compile beets/dbcore/db.py",
+          "prompt_path": "sources/evaluations/fixtures/medium/fastify-fastify/task-generations/lifecycle-v1/fastify-lifecycle-refactor-v1/agent-prompt.txt",
+          "prompt_sha256": "59ba625ac7bd4bef4e30f605dff3ff967b3b4d2b3bfa24486f9c3fcca181b67d",
+          "seed_patch_sha256": "fd1982e087c713640c8ab55b7875545b59a60296135e0dc847a13cea038d89d5",
+          "verifier_command": "sources/evaluations/fixtures/medium/fastify-fastify/task-generations/lifecycle-v1/fastify-lifecycle-refactor-v1/verify.sh",
+          "verifier_sha256": "56f0a8ad81e525ac7afc8e31806f18d6575758ccbc5d468217dee45dd248cdb9",
+          "compile_command": "node --check lib/content-type.js",
           "acceptance_visibility": "controller-only-compile-policy",
           "expected_changed_paths": [
-            "beets/dbcore/db.py"
+            "lib/content-type.js"
           ],
           "controller_visible_acceptance_assets": [],
           "upstream_test_paths": [],
@@ -130,18 +130,19 @@
           "model_concealed_paths": []
         },
         {
-          "id": "beets-lifecycle-review-v1",
+          "id": "fastify-lifecycle-review-v1",
           "order": 3,
           "task_class": "code-review-correction",
-          "prompt_path": "sources/evaluations/fixtures/medium/beetbox-beets/task-generations/lifecycle-v1/beets-lifecycle-review-v1/agent-prompt.txt",
-          "prompt_sha256": "88d48e9fba771d9f5e02a3341975f746768412e64e9dffa615cc5dd35cad11f4",
-          "seed_patch_sha256": "14d8dd83706706805b8159f85871036cfb39148dd7912e66e2c8044d505cabad",
-          "verifier_command": "sources/evaluations/fixtures/medium/beetbox-beets/task-generations/lifecycle-v1/beets-lifecycle-review-v1/verify.sh",
-          "verifier_sha256": "7ad4e01e8a7b2ecd2852e8985cef05840fa0a9d1ce9f775a87ccf35be7ff98dd",
-          "compile_command": "uv run --offline --frozen python -m py_compile beetsplug/ftintitle.py",
+          "prompt_path": "sources/evaluations/fixtures/medium/fastify-fastify/task-generations/lifecycle-v1/fastify-lifecycle-review-v1/agent-prompt.txt",
+          "prompt_sha256": "948a4cd3519e2fce58b530f888861cd3da797faa6ff25ab413df2dfd4ef1a4b5",
+          "seed_patch_sha256": "0402a5fc7785775c034fddc539539bbbd0083d11a6f555e22f95dd992476aa3c",
+          "verifier_command": "sources/evaluations/fixtures/medium/fastify-fastify/task-generations/lifecycle-v1/fastify-lifecycle-review-v1/verify.sh",
+          "verifier_sha256": "43583a187ed1382065ead27172cf85daccddcae21a454b9118a77bb7523555b5",
+          "compile_command": "node --check fastify.js && node --check lib/errors.js",
           "acceptance_visibility": "controller-only-compile-policy",
           "expected_changed_paths": [
-            "beetsplug/ftintitle.py"
+            "fastify.js",
+            "lib/errors.js"
           ],
           "controller_visible_acceptance_assets": [],
           "upstream_test_paths": [],
@@ -149,7 +150,7 @@
           "expected_model_concealed_paths": [],
           "model_concealed_paths": [],
           "review_patch_path": "review-change.patch",
-          "review_patch_sha256": "14d8dd83706706805b8159f85871036cfb39148dd7912e66e2c8044d505cabad"
+          "review_patch_sha256": "0402a5fc7785775c034fddc539539bbbd0083d11a6f555e22f95dd992476aa3c"
         }
       ],
       "model_facing_prompts": {
@@ -157,25 +158,25 @@
         "profile_guidance_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
         "tasks": [
           {
-            "task_id": "beets-lifecycle-feature-v1",
+            "task_id": "fastify-lifecycle-feature-v1",
             "order": 1,
-            "rendered_prompt_sha256": "fd11c28e91be7826ff049748f7a84a5f0bd3137f9add35b498d50b39aea8548c"
+            "rendered_prompt_sha256": "88a45b5d40552bf5c74cc2fb349509cd1b7b40c25d878912233c5ff7d7effa79"
           },
           {
-            "task_id": "beets-lifecycle-refactor-v1",
+            "task_id": "fastify-lifecycle-refactor-v1",
             "order": 2,
-            "rendered_prompt_sha256": "69cd7d8bf2eeba073fafc156982916dcbb68df92ca06a869039c9bbb728255f9"
+            "rendered_prompt_sha256": "c736a654037ea087c972057a81b596310fa8bf573a12a72e0e62c63f9bb5397d"
           },
           {
-            "task_id": "beets-lifecycle-review-v1",
+            "task_id": "fastify-lifecycle-review-v1",
             "order": 3,
-            "rendered_prompt_sha256": "1586356a85a2cbdd70fa6d545d16063df49a1f2d455cf07646cb943a691770d0"
+            "rendered_prompt_sha256": "386c6435b3538f3a87624a9810276d1b1620eb6cedf140e65dc8b01f624a972d"
           }
         ]
       },
       "qualification": {
-        "path": "sources/evaluations/fixtures/medium/beetbox-beets/qualification-lifecycle-v1.json",
-        "sha256": "03b30282786a471edadc80ed7cc4842c7c9bfdc912de61b9ce0bdeb66d3b494d"
+        "path": "sources/evaluations/fixtures/medium/fastify-fastify/qualification-lifecycle-v1.json",
+        "sha256": "340ffbd669ed98b5fec72c195d8c65eb8e72b6f52015a8ef9abd296a0bcb1d0e"
       },
       "baseline_profile": {
         "profile_id": "baseline-bare-codex",
@@ -215,11 +216,11 @@
         },
         "dockerfile_path": "sources/evaluations/fixtures/container/Dockerfile",
         "dockerfile_sha256": "47c91967ce25014ce54879514f51d2ff0326651be1087209115eff4d358226b3",
-        "dependency_command": "uv sync --group test --frozen",
+        "dependency_command": "npm install --ignore-scripts --no-audit --no-fund",
         "dependency_lockfiles": [
           {
-            "path": "uv.lock",
-            "sha256": "fbf1d7a9c84b658a2433035221ba18c57508c254d711a06f305e2f610839a45f"
+            "path": "package.json",
+            "sha256": "b273320af1bb4cfc0f9334457c8e3b1d035fde0da14f9db65e8ef97d361d0be3"
           }
         ],
         "codex_runtime_condition": "codex-openai-gpt-5-6-sol-high",
@@ -262,81 +263,71 @@
     }
   },
   "selected_execution": {
-    "descriptor_sha256": "3f4a1c4e285c8f2f61095e9c97eb6797ec9a52a6f3ec61e3d4807c2da138f05e",
+    "descriptor_sha256": "02bc61f4f36725e8f747f0158f304aa0fdf36e69c2b670c9e507892dc8da5b4f",
     "descriptor": {
       "version": "execution-condition-v1",
-      "sequence_id": "beets-lifecycle-sequence-v1",
+      "sequence_id": "fastify-lifecycle-sequence-v1",
       "execution_role": "individual_tool_treatment",
       "selected_profile": {
-        "profile_id": "retrieval-repowise-opencode-product-v1",
+        "profile_id": "retrieval-repowise-codex-product-v2",
         "profile_type": "individual_tool",
         "component_ids": [
-          "retrieval-repowise-opencode-product-v1"
+          "retrieval-repowise-codex-product-v2"
         ],
         "enabled_surfaces": [
           "retrieval-context",
-          "opencode-mcp",
+          "mcp",
+          "codex-project-hooks",
           "product-authored-guidance",
-          "warm-index"
+          "provider-backed-retrieval"
         ],
         "disabled_overlaps": [
           "all unlisted surfaces"
         ],
-        "registry_entry_sha256": "9282b820f4574b9781847da67601a2fa315e9f50eadf9d388bed9b8856f31c25",
+        "registry_entry_sha256": "4649a304a9b659d53f18d467b3d80c329c4ba7ace6de618b38aff50c909c586a",
         "registry_entry": {
-          "id": "retrieval-repowise-opencode-product-v1",
-          "name": "RepoWise OpenCode product V1",
+          "id": "retrieval-repowise-codex-product-v2",
+          "name": "RepoWise Codex provider-backed product V2",
           "profile_type": "individual_tool",
           "objective_scope": "individual_tool_effectiveness",
-          "status": "screening-ablation",
-          "substrate": "opencode-cli",
+          "status": "screening-shortlist",
           "enabled_surfaces": [
             "retrieval-context",
-            "opencode-mcp",
+            "mcp",
+            "codex-project-hooks",
             "product-authored-guidance",
-            "warm-index"
+            "provider-backed-retrieval"
           ],
           "disabled_overlaps": [
             "all unlisted surfaces"
           ],
-          "native_agent_tools_allowed": [
-            "opencode-native-shell-edit",
-            "opencode-native-file-read-search",
-            "git",
-            "verifier-commands"
-          ],
-          "forbidden_surfaces": [
-            "all external retrieval, compression, memory, MCP, skills, plugins, subagents, and web tools except the assigned product surfaces"
-          ],
           "components": [
             {
-              "component_id": "retrieval-repowise-opencode-product-v1",
-              "surface": "retrieval-context+opencode-mcp+product-guidance+warm-index",
+              "component_id": "retrieval-repowise-codex-product-v2",
+              "surface": "retrieval-context+mcp+codex-hooks+product-guidance+provider-backed-retrieval",
               "role": "individual_tool"
             }
           ],
           "install": {
-            "policy": "Install the pinned RepoWise 0.39.0 wheel in a lane-private venv, run its provider-free structural init with generated AGENTS.md guidance, register its local stdio MCP server in the isolated OpenCode runtime, and require initialize plus tools/list before provider execution."
+            "policy": "Install the pinned RepoWise 0.39.0 wheel in a lane-private venv and run `init --provider codex_cli --codex --no-prose` with REPOWISE_PROVIDER=codex_cli, retaining the project-local MCP configuration, lifecycle hooks, generated AGENTS.md guidance, and provider-backed MCP answer path."
           },
           "reset": {
-            "policy": "Delete the lane-private OpenCode XDG directories, venv, RepoWise index, generated project integration and guidance, auth translation, and background processes after evidence capture."
+            "policy": "Delete the lane-private venv, RepoWise index, project MCP/Codex files, generated guidance, provider state, and isolated agent home after evidence capture."
           },
           "evaluation_protocol": {
             "tool_use_policy": "natural",
-            "tool_state": "warm-index+product-guidance",
-            "integration_state": "host-agnostic-opencode-mcp+generated-guidance",
+            "tool_state": "warm-index+official-codex-hooks+product-guidance+provider-configured",
+            "integration_state": "official-codex-project-setup+provider-backed-mcp",
             "instruction_policy": "product-authored generated guidance",
-            "assignment_proof": "provider-free pinned wheel, source and adapter identities, effective OpenCode configuration, deterministic index, model-runtime PATH, initialize, and tools/list required"
+            "assignment_proof": "provider-configured pinned wheel, exact source identity, generated project integration, model-runtime PATH, provider environment, initialize plus tools/list, and provider-backed answer-path evidence required"
           },
           "source_snapshot": {
             "repository": "repowise-dev/repowise",
             "commit": "a3b6714c5523dc7c45d6bce0522035339bcf3afd",
             "version": "0.39.0",
-            "wheel_sha256": "e7d3068856a45a3d0501b84e6f52db24521512803a07881cdf145da546d932b4",
-            "runtime_adapter": "/opt/data/tool-candidates/opencode-adapter-v9/opencode_workflow_adapter.py",
-            "runtime_adapter_sha256": "6cabc28420901ec9fea5997bd63559311d73d2c7fb9c86e54d64ba42c67b822e"
+            "wheel_sha256": "e7d3068856a45a3d0501b84e6f52db24521512803a07881cdf145da546d932b4"
           },
-          "notes": "RepoWise does not publish an OpenCode-specific installer; this uses its documented host-agnostic stdio MCP surface plus its own generated AGENTS.md guidance. Prose generation remains disabled during provider-free preparation."
+          "notes": "Successor to the deleted provider-free setup. `--no-prose` keeps setup deterministic; REPOWISE_PROVIDER=codex_cli enables RepoWise's LLM-backed MCP path during natural use."
         }
       },
       "model_facing_prompts": {
@@ -344,73 +335,58 @@
         "profile_guidance_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
         "tasks": [
           {
-            "task_id": "beets-lifecycle-feature-v1",
+            "task_id": "fastify-lifecycle-feature-v1",
             "order": 1,
-            "rendered_prompt_sha256": "fd11c28e91be7826ff049748f7a84a5f0bd3137f9add35b498d50b39aea8548c"
+            "rendered_prompt_sha256": "88a45b5d40552bf5c74cc2fb349509cd1b7b40c25d878912233c5ff7d7effa79"
           },
           {
-            "task_id": "beets-lifecycle-refactor-v1",
+            "task_id": "fastify-lifecycle-refactor-v1",
             "order": 2,
-            "rendered_prompt_sha256": "69cd7d8bf2eeba073fafc156982916dcbb68df92ca06a869039c9bbb728255f9"
+            "rendered_prompt_sha256": "c736a654037ea087c972057a81b596310fa8bf573a12a72e0e62c63f9bb5397d"
           },
           {
-            "task_id": "beets-lifecycle-review-v1",
+            "task_id": "fastify-lifecycle-review-v1",
             "order": 3,
-            "rendered_prompt_sha256": "1586356a85a2cbdd70fa6d545d16063df49a1f2d455cf07646cb943a691770d0"
+            "rendered_prompt_sha256": "386c6435b3538f3a87624a9810276d1b1620eb6cedf140e65dc8b01f624a972d"
           }
         ]
       },
       "tool_adapter": {
-        "tool_id": "repowise-opencode-product-v1",
+        "tool_id": "repowise-codex-product-v2",
         "tool_manifest": "scripts/run_codex_fixture_evaluation.py:TOOL_CONFIGS",
-        "tool_manifest_sha256": "59e3a8271387caf13a8069aa138371f26577d33f864323514b49eca5405301c8",
+        "tool_manifest_sha256": "60e3b362044588c0fa1350b5e3a1b4d8d062a694d8868853771430406ae46934",
         "tool_config": {
-          "display_name": "RepoWise 0.39.0 OpenCode MCP with product guidance",
-          "lane_name": "retrieval-repowise-opencode-product-v1",
-          "surface": "opencode-mcp+product-guidance+warm-index",
+          "display_name": "RepoWise 0.39.0 provider-backed Codex MCP, hooks, and guidance",
+          "lane_name": "retrieval-repowise-codex-product-v2",
+          "surface": "retrieval-context+mcp+codex-hooks+product-guidance+provider-backed-index",
+          "mcp_server": "repowise",
           "allowed_terms": [
-            "opencode",
             "repowise"
           ],
-          "data_dir_name": "retrieval-repowise-opencode-product-v1",
-          "mounts": [
-            "/opt/data/tool-candidates/opencode-adapter-v9/opencode_workflow_adapter.py",
-            "/opt/data/tool-candidates/repowise",
-            "/opt/data/tool-candidates/repowise-wheel/repowise-0.39.0-py3-none-any.whl"
+          "data_dir_name": "repowise-codex-product-v2",
+          "mcp_command": "{tool_data_dir}/venv/bin/repowise",
+          "mcp_args": [
+            "mcp"
           ],
-          "executable": "/opt/data/.local/bin/opencode",
-          "expected_executable_sha256": "7c4d91c84d2bfdeabb59257e3490c5e5acb08f2aacb3e42f3ddc296a1c3f1aca",
-          "binary_mount_target": "/opt/data/.local/bin/opencode",
-          "codex_wrapper": {
-            "command": "/usr/bin/python3",
-            "args": [
-              "/opt/data/tool-candidates/opencode-adapter-v9/opencode_workflow_adapter.py",
-              "--opencode-binary",
-              "/opt/data/.local/bin/opencode",
-              "--expected-opencode-sha256",
-              "7c4d91c84d2bfdeabb59257e3490c5e5acb08f2aacb3e42f3ddc296a1c3f1aca",
-              "--treatment",
-              "repowise"
-            ]
-          },
-          "preflight_command": [
-            "/usr/bin/python3",
-            "/opt/data/tool-candidates/opencode-adapter-v9/opencode_workflow_adapter.py",
-            "--opencode-binary",
-            "/opt/data/.local/bin/opencode",
-            "--expected-opencode-sha256",
-            "7c4d91c84d2bfdeabb59257e3490c5e5acb08f2aacb3e42f3ddc296a1c3f1aca",
-            "--treatment",
-            "repowise",
-            "--probe"
-          ],
-          "tool_manifest_identity": "current-file-v1",
           "path_entries": [
             "{tool_data_dir}/venv/bin"
           ],
           "env": {
-            "OPENCODE_TOOL_DATA_DIR": "{tool_data_dir}",
+            "REPOWISE_PROVIDER": "codex_cli",
             "REPOWISE_SKIP_EDITOR_SETUP": "1"
+          },
+          "mounts": [
+            "/opt/data/tool-candidates/repowise",
+            "/opt/data/tool-candidates/repowise-wheel/repowise-0.39.0-py3-none-any.whl"
+          ],
+          "diff_exclude_paths": [
+            ".repowise",
+            ".mcp.json",
+            ".codex",
+            "AGENTS.md"
+          ],
+          "codex_features": {
+            "hooks": true
           },
           "host_integration": {
             "install_commands": [
@@ -433,10 +409,12 @@
                 "{tool_data_dir}/venv/bin/repowise",
                 "init",
                 "--yes",
+                "--provider",
+                "codex_cli",
                 "--no-prose",
                 "--no-claude-md",
                 "--no-editor-setup",
-                "--no-codex",
+                "--codex",
                 "--agents",
                 "--no-workspace",
                 "{repo}"
@@ -453,14 +431,15 @@
               "{repo}/.repowise/wiki.db",
               "{repo}/.repowise/config.yaml",
               "{repo}/.mcp.json",
+              "{repo}/.codex/config.toml",
+              "{repo}/.codex/hooks.json",
               "{repo}/AGENTS.md"
             ],
             "timeout_seconds": 3600
           },
-          "mcp_server": "repowise",
-          "mcp_command": "{tool_data_dir}/venv/bin/repowise",
-          "mcp_args": [
-            "mcp"
+          "preflight_command": [
+            "{tool_data_dir}/venv/bin/repowise",
+            "--version"
           ],
           "mcp_handshake": {
             "required": true,
@@ -477,26 +456,13 @@
               "path": "/opt/data/tool-candidates/repowise/README.md",
               "sha256": "44ed3725616544a8d4eb4695c99e33c8bd28ce2bfde4c12134d1fde0e1d65a3a",
               "kind": "product-guidance-source"
-            },
-            {
-              "path": "/opt/data/tool-candidates/opencode-adapter-v9/opencode_workflow_adapter.py",
-              "sha256": "6cabc28420901ec9fea5997bd63559311d73d2c7fb9c86e54d64ba42c67b822e",
-              "kind": "runtime-adapter"
             }
           ],
-          "effective_host_config": {
-            "required": true,
-            "source": "adapter-probe"
-          },
-          "diff_exclude_paths": [
-            ".repowise",
-            ".mcp.json",
-            "AGENTS.md"
-          ],
-          "default_tool_state": "warm-index+product-guidance"
+          "tool_manifest_identity": "current-file-v1",
+          "default_tool_state": "warm-index+official-codex-hooks+product-guidance"
         },
-        "tool_config_sha256": "3aea0cb022b404bd23e8df87a58b4224c5eaabef7ad1582d5470e3696d5036a8",
-        "tool_state": "warm-index+product-guidance",
+        "tool_config_sha256": "bffd697105250e56a3d98d5f290aefb17d9bc0986f8e63fee3b7efe233d1836d",
+        "tool_state": "warm-index+official-codex-hooks+product-guidance+provider-configured",
         "tool_use_policy": "natural",
         "command_identity": {
           "kind": "mcp_command",
@@ -528,24 +494,20 @@
               "{tool_data_dir}/venv/bin/repowise",
               "init",
               "--yes",
+              "--provider",
+              "codex_cli",
               "--no-prose",
               "--no-claude-md",
               "--no-editor-setup",
-              "--no-codex",
+              "--codex",
               "--agents",
               "--no-workspace",
               "{repo}"
             ]
           ],
-          "install_contract_sha256": "75be78187985c9f65a620cd9215239e2a4098e659435843c1299543c0ab214d2"
+          "install_contract_sha256": "fbcf3b848ee1d4788983dc9f93655b8d59ec7752d9f9ce59ca6a440310c23fd2"
         },
         "source_identity": [
-          {
-            "path": "/opt/data/tool-candidates/opencode-adapter-v9/opencode_workflow_adapter.py",
-            "exists": true,
-            "kind": "file",
-            "sha256": "6cabc28420901ec9fea5997bd63559311d73d2c7fb9c86e54d64ba42c67b822e"
-          },
           {
             "path": "/opt/data/tool-candidates/repowise",
             "exists": true,
@@ -576,7 +538,7 @@
         "dockerfile_path": "sources/evaluations/fixtures/container/Dockerfile",
         "dockerfile_sha256": "47c91967ce25014ce54879514f51d2ff0326651be1087209115eff4d358226b3",
         "fixture_runner_path": "scripts/run_codex_fixture_evaluation.py",
-        "fixture_runner_sha256": "59e3a8271387caf13a8069aa138371f26577d33f864323514b49eca5405301c8",
+        "fixture_runner_sha256": "60e3b362044588c0fa1350b5e3a1b4d8d062a694d8868853771430406ae46934",
         "mcp_probe_path": "scripts/probe_mcp_stdio.py",
         "mcp_probe_sha256": "7c06ea36ee5cac933a97140b84a41405fc99b45152388e8d7c6659136af698fd",
         "codex_entrypoint_path": "sources/evaluations/fixtures/container/codex-entrypoint.sh",
@@ -586,41 +548,37 @@
           "provider_access": true,
           "model_shell_network_access": false,
           "model_shell_enforcement": "seccomp denies AF_INET and AF_INET6 socket creation for the shell process and descendants",
-          "agent_web_tools": "disabled-by-permission",
+          "codex_web_search": "disabled",
           "external_retrieval_audit": "fail-closed"
         },
-        "isolation_policy": "fresh lane-specific agent home/XDG state; provider-only network with model shell and agent web tools disabled; sequential one-task prompt delivery; controller seed/verifier scripts excluded while controller-only affected-component compile commands retained; no acceptance-test assets injected; agent prompts carry normal software objectives",
-        "workflow_controller_path": "scripts/run_codex_workflow_evaluation.py",
-        "workflow_controller_sha256": "6c458fc68be3864013f8c4836526d9d6deda530aa12d1ba5a89041ba74e78adb",
-        "matrix_controller_path": "scripts/run_sequential_workflow_matrix.py",
-        "matrix_controller_sha256": "a562b4f8bc4590bce6aeaa04348019a3e59ab92c8bdc89f9c35432d3c60215c4",
-        "agent_runtime_id": "opencode-cli",
+        "isolation_policy": "fresh lane-specific Codex home/tool data; provider-only network with model shell and Codex web search disabled; sequential one-task prompt delivery; controller seed/verifier scripts excluded while declared model-visible acceptance tests are retained",
+        "agent_runtime_id": "codex-cli",
         "model_condition": {
-          "id": "opencode-openai-gpt-5-6-sol-high",
+          "id": "codex-openai-gpt-5-6-sol-high",
           "provider": "openai",
           "model": "gpt-5.6-sol",
           "reasoning_effort": "high",
-          "launcher": "scripts/run_opencode_workflow_model_condition.py"
+          "launcher": "scripts/run_codex_workflow_model_condition.py"
         }
       },
       "dependencies": {
-        "command": "uv sync --group test --frozen",
-        "command_sha256": "cef23fd45902c23f8b3e89b7c6360a401eb49c17cf36d742e5b625d5593c911b",
+        "command": "npm install --ignore-scripts --no-audit --no-fund",
+        "command_sha256": "7493d616f26e72b22eb5a21beafa12a6717ebf5b93a7a75e709de65e7323cc41",
         "lockfiles": [
           {
-            "path": "uv.lock",
-            "snapshot_sha256": "fbf1d7a9c84b658a2433035221ba18c57508c254d711a06f305e2f610839a45f",
+            "path": "package.json",
+            "snapshot_sha256": "b273320af1bb4cfc0f9334457c8e3b1d035fde0da14f9db65e8ef97d361d0be3",
             "current_fixture_sha256": null
           }
         ]
       },
       "agent_condition": {
-        "runtime_id": "opencode-cli",
+        "runtime_id": "codex-cli",
         "provider": "openai",
         "model": "gpt-5.6-sol",
-        "model_condition_id": "opencode-openai-gpt-5-6-sol-high",
+        "model_condition_id": "codex-openai-gpt-5-6-sol-high",
         "reasoning_effort": "high",
-        "runtime_version_condition": "captured-at-run-and-bound-to-record"
+        "codex_version_condition": "captured-at-run-and-bound-to-record"
       },
       "isolation": {
         "prompt_delivery": "sequential-one-task-at-a-time",
@@ -634,21 +592,19 @@
       },
       "baseline_pool_reference": {
         "protocol_version": "baseline-pool-v1",
-        "protocol_fingerprint": "d8cfc5066f76",
+        "protocol_fingerprint": "72ac148f730b",
         "comparison_policy": "paired baseline and treatment must share this baseline pool fingerprint and replicate"
       },
       "model_condition_override": {
-        "model_condition_id": "opencode-openai-gpt-5-6-sol-high",
-        "runtime_id": "opencode-cli",
+        "model_condition_id": "codex-openai-gpt-5-6-sol-high",
+        "runtime_id": "codex-cli",
         "provider": "openai",
         "model": "gpt-5.6-sol",
         "reasoning_effort": "high",
         "registry_status": "active-model-comparison",
         "launcher": {
-          "path": "scripts/run_opencode_workflow_model_condition.py",
-          "sha256": "c38d87266347dfd46c8f671ad0e22fef52841a34643b93fc769d4ebfb71ac9ce",
-          "condition_runtime_path": "scripts/workflow_model_condition_runtime.py",
-          "condition_runtime_sha256": "01479bd991417d9f5bb5fcef513e1beee3f1f05512ab818429cac24e0ebde866"
+          "path": "scripts/run_codex_workflow_model_condition.py",
+          "sha256": "1432d8583491c5505c4cbf95695e8288584492d2c14026dfd3322d4050852edc"
         }
       }
     }

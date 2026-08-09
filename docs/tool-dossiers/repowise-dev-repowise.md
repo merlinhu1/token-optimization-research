@@ -30,10 +30,10 @@ RepoWise precomputes a local codebase-intelligence index and exposes task-shaped
 
 ## Source-logic findings
 
-- `repowise init --yes --no-prose` builds the graph, git, health, decision, and structural-wiki state without model calls.
+- `repowise init --yes --provider <codex_cli|opencode> --no-prose` builds the graph, git, health, decision, and structural-wiki state deterministically while binding the provider used by the answer path.
 - `repowise mcp` serves the local index over stdio. The default single-repository surface includes repository listing plus overview, context, symbol, search, risk, change-risk, health, why, dead-code, and answer-oriented tools.
 - Context retrieval accepts task-oriented targets and selectable enrichment rather than requiring repeated raw-file reads.
-- Search combines indexed documentation and code structures; semantic search requires a configured embedder, while the prepared provider-free profiles retain full-text and structural retrieval.
+- Search combines indexed documentation and code structures; semantic search requires a configured embedder, while the prepared provider-configured profiles retain full-text, structural, and provider-backed answer retrieval.
 - MCP response budgeting and truncation bound returned material, while index freshness metadata warns when live `HEAD` diverges from indexed state.
 - `repowise init --codex` creates project-local `.codex/config.toml`, `.codex/hooks.json`, and a managed `AGENTS.md`. The hooks supply lifecycle guidance and stale-index reminders.
 - RepoWise documents generic stdio MCP compatibility. The OpenCode profile therefore uses the same pinned local server plus RepoWise-generated `AGENTS.md`; it does not claim an upstream OpenCode-specific installer.
@@ -50,14 +50,14 @@ Why it may not: small or obvious tasks may not repay indexing and MCP-call overh
 ## Installation and integration behavior
 
 - Canonical package: pinned wheel built from source commit `a3b6714c5523dc7c45d6bce0522035339bcf3afd`, SHA-256 `e7d3068856a45a3d0501b84e6f52db24521512803a07881cdf145da546d932b4`.
-- Codex: official provider-free structural init with `--codex`, project-local MCP config, lifecycle hooks, generated `AGENTS.md`, warm index, runtime binary probe, and MCP initialize/tools-list proof.
-- OpenCode: provider-free structural init, generated `AGENTS.md`, isolated host-agnostic stdio MCP registration, warm index, runtime binary probe, and MCP initialize/tools-list proof.
+- Codex: official structural init with `--provider codex_cli --codex --no-prose`, `REPOWISE_PROVIDER=codex_cli`, project-local MCP config, lifecycle hooks, generated `AGENTS.md`, warm index, runtime binary probe, and MCP initialize/tools-list proof.
+- OpenCode: structural init with `--provider opencode --no-prose`, `REPOWISE_PROVIDER=opencode`, generated `AGENTS.md`, isolated host-agnostic stdio MCP registration, warm index, runtime binary probe, and MCP initialize/tools-list proof.
 - Model-facing task assistance remains byte-compatible with the matched Lifecycle V1 control; tool use is natural and unforced.
 - Generated `.repowise`, `.mcp.json`, `.codex`, and managed guidance are treatment state and excluded from task-source diffs.
 
 ## Runtime behavior
 
-The prepared profiles build a warm provider-free index before the model session, probe the pinned executable, and prove the stdio MCP initialize and tools-list exchange. During a run, RepoWise serves bounded structural and full-text retrieval from lane-local SQLite state. Codex also receives the product-generated lifecycle hooks; OpenCode receives the generic MCP server and generated `AGENTS.md` guidance.
+The prepared profiles build a warm structural index before the model session, bind RepoWise's provider explicitly, probe the pinned executable, and prove the stdio MCP initialize and tools-list exchange. During a run, RepoWise serves bounded structural and full-text retrieval from lane-local SQLite state and can use its provider-backed answer path. Codex also receives the product-generated lifecycle hooks; OpenCode receives the generic MCP server and generated `AGENTS.md` guidance.
 
 ## Compatibility notes
 
