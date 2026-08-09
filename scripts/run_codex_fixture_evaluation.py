@@ -2621,7 +2621,7 @@ TOOL_CONFIGS.update(
             lane_name="retrieval-serena-claude-code-mcp-v1",
             surface="claude-code-readme-setup+mcp",
             install_commands=[[
-                str(CLAUDE_HOST_EXECUTABLE), "mcp", "add", "--scope", "user", "serena", "--",
+                "claude", "mcp", "add", "--scope", "user", "serena", "--",
                 str(UV_BIN), "tool", "run", "--from", str(SERENA_ROOT), "serena",
                 "start-mcp-server", "--context", "claude-code", "--project-from-cwd",
             ]],
@@ -2634,7 +2634,6 @@ TOOL_CONFIGS.update(
                 "--mode", "no-memories", "--project-from-cwd",
             ],
             claude_features={"mcp": True},
-            backend="host",
         ),
         "sigmap-claude-code-mcp-v1": _claude_readme_config(
             "sigmap",
