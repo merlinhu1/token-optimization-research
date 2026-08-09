@@ -758,6 +758,7 @@ class ActiveCampaignArchitectureTest(unittest.TestCase):
             "terminal-snip-codex-hook-v1",
             "retrieval-graphify-codex-skill-v1",
             "retrieval-codegraph-codex-mcp-v1",
+            "retrieval-repowise-codex-product-v1",
             "retrieval-jcodemunch-codex-mcp-v2",
             "integrated-leanctx-codex-hybrid-v1",
             "retrieval-cartog-codex-product-v2",
@@ -1307,6 +1308,23 @@ print('ok')
             config = (codex_home / "config.toml").read_text()
         self.assertIn("hooks = true", config)
         self.assertIn("multi_agent = true", config)
+
+    def test_repowise_profiles_bind_provider_free_native_surfaces(self) -> None:
+        codex = runner.fixture.active_tool_config({}, "retrieval-repowise-codex-product-v1")
+        opencode = runner.fixture.active_tool_config({}, "retrieval-repowise-opencode-product-v1")
+        assert codex is not None and opencode is not None
+        self.assertTrue(codex["codex_features"]["hooks"])
+        self.assertIn("--codex", codex["host_integration"]["install_commands"][-1])
+        self.assertIn("--no-prose", codex["host_integration"]["install_commands"][-1])
+        self.assertEqual(codex["mcp_args"], ["mcp"])
+        self.assertIn("--no-codex", opencode["host_integration"]["install_commands"][-1])
+        self.assertIn("--agents", opencode["host_integration"]["install_commands"][-1])
+        self.assertEqual(opencode["mcp_server"], "repowise")
+        self.assertTrue(opencode["mcp_handshake"]["required"])
+        self.assertEqual(
+            opencode["artifact_identities"][-1]["sha256"],
+            "6cabc28420901ec9fea5997bd63559311d73d2c7fb9c86e54d64ba42c67b822e",
+        )
 
     def test_cartog_profile_defers_mcp_config_to_official_installer(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:

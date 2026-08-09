@@ -900,11 +900,13 @@
         "sources/evaluations/audits/corrected-integration-qualification-jcodemunch-codex-mcp-v2-20260719.json",
         "sources/evaluations/audits/corrected-integration-qualification-codegraph-20260719.json",
         "sources/evaluations/audits/corrected-integration-qualification-cartog-codex-product-v2-20260720.json",
-        "sources/evaluations/audits/corrected-integration-qualification-rtk-claude-code-hook-20260801.json"
+        "sources/evaluations/audits/corrected-integration-qualification-rtk-claude-code-hook-20260801.json",
+        "sources/evaluations/audits/corrected-integration-qualification-repowise-codex-product-v1-20260809.json",
+        "sources/evaluations/audits/corrected-integration-qualification-repowise-opencode-product-v1-20260809.json"
       ],
-      "profiles": 16,
-      "fixture_specific_protocols": 48,
-      "passed": 48,
+      "profiles": 18,
+      "fixture_specific_protocols": 52,
+      "passed": 52,
       "failed": 0,
       "provider_calls": 0
     },
@@ -919,6 +921,7 @@
       "retrieval-codegraph-codex-mcp-v1",
       "retrieval-graphify-codex-skill-v1",
       "retrieval-jcodemunch-codex-mcp-v2",
+      "retrieval-repowise-codex-product-v1",
       "retrieval-serena-codex-mcp-v1",
       "retrieval-sigmap-codex-live-v1",
       "swarmvault-codex-product-v1",
@@ -970,6 +973,22 @@
       "receipt": "sources/evaluations/audits/invalid-cartog-result-deletions-20260720.json",
       "superseded_by": "retrieval-cartog-codex-product-v2",
       "reason": "The direct-MCP arm omitted Cartog product-authored Codex AGENTS routing, the official Codex installer, model-runtime CLI exposure, and live watch."
+    },
+    {
+      "date": "2026-08-09",
+      "profile_id": "retrieval-repowise-codex-product-v1",
+      "disposition": "provider-free-qualified-new-candidate",
+      "qualification_receipt": "sources/evaluations/audits/corrected-integration-qualification-repowise-codex-product-v1-20260809.json",
+      "pinned_commit": "a3b6714c5523dc7c45d6bce0522035339bcf3afd",
+      "contract": "Pinned source-built wheel, provider-free warm structural index, official project-local Codex MCP configuration, hooks, and managed AGENTS.md guidance, plus initialize and tools/list proof on both active Lifecycle V1 fixtures."
+    },
+    {
+      "date": "2026-08-09",
+      "profile_id": "retrieval-repowise-opencode-product-v1",
+      "disposition": "provider-free-qualified-host-agnostic-ablation",
+      "qualification_receipt": "sources/evaluations/audits/corrected-integration-qualification-repowise-opencode-product-v1-20260809.json",
+      "pinned_commit": "a3b6714c5523dc7c45d6bce0522035339bcf3afd",
+      "contract": "Pinned source-built wheel, provider-free warm structural index, product-generated AGENTS.md guidance, isolated generic stdio MCP registration, and initialize plus tools/list proof on both active Lifecycle V1 fixtures; no upstream OpenCode-specific installer is claimed."
     }
   ]
 }

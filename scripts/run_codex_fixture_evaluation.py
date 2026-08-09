@@ -50,6 +50,7 @@ OPENCODE_ADAPTER_V5 = Path("/opt/data/tool-candidates/opencode-adapter-v5/openco
 OPENCODE_ADAPTER_V6 = Path("/opt/data/tool-candidates/opencode-adapter-v6/opencode_workflow_adapter.py")
 OPENCODE_ADAPTER_V7 = Path("/opt/data/tool-candidates/opencode-adapter-v7/opencode_workflow_adapter.py")
 OPENCODE_ADAPTER_V8 = Path("/opt/data/tool-candidates/opencode-adapter-v8/opencode_workflow_adapter.py")
+OPENCODE_ADAPTER_V9 = Path("/opt/data/tool-candidates/opencode-adapter-v9/opencode_workflow_adapter.py")
 FORBIDDEN_BASELINE_TERMS = [
     "lean-ctx",
     "mcp_lean_ctx",
@@ -84,6 +85,7 @@ FORBIDDEN_BASELINE_TERMS = [
     "caveman",
     "dcp",
     "sdl-mcp",
+    "repowise",
 ]
 BASELINE_CODEX_NO_MCP_PROFILES = {"baseline-codex-no-mcp"}
 PROFILE_TOOL_CONFIG_OVERRIDES = {
@@ -144,6 +146,8 @@ PROFILE_TOOL_CONFIG_OVERRIDES = {
     "retrieval-graphify-opencode-product-v1": "graphify-opencode-product-v1",
     "terminal-rtk-opencode-plugin-v1": "rtk-opencode-plugin-v1",
     "retrieval-codegraph-opencode-mcp-v1": "codegraph-opencode-mcp-v1",
+    "retrieval-repowise-codex-product-v1": "repowise-codex-product-v1",
+    "retrieval-repowise-opencode-product-v1": "repowise-opencode-product-v1",
 }
 CODEGRAPH_BIN = Path("/opt/data/tool-candidates/codegraph/dist/bin/codegraph.js")
 CARTOG_ROOT = Path("/opt/data/tool-candidates/cartog")
@@ -182,6 +186,8 @@ GRAPHIFY_WHEEL = GRAPHIFY_ROOT / "dist" / "graphifyy-0.9.1-py3-none-any.whl"
 JCODEMUNCH_WHEEL = JCODEMUNCH_ROOT / "dist" / "jcodemunch_mcp-1.108.114-py3-none-any.whl"
 JCODEMUNCH_COMMIT = "fbc14e40c7057ebc6d718fb48083d30522afe15f"
 JCODEMUNCH_GUIDANCE_INSTALLER = "{repository_root}/scripts/install_jcodemunch_codex_guidance.py"
+REPOWISE_ROOT = Path("/opt/data/tool-candidates/repowise")
+REPOWISE_WHEEL = Path("/opt/data/tool-candidates/repowise-wheel/repowise-0.39.0-py3-none-any.whl")
 SNIP_BIN = SNIP_ROOT / "snip"
 UV_BIN = Path("/opt/data/opt/uv/uv")
 RTK_BIN = Path("/opt/data/tool-candidates/rtk/target/release/rtk")
@@ -446,6 +452,47 @@ TOOL_CONFIGS: dict[str, dict[str, Any]] = {
             "metadata_name": "codegraph-warmup-metadata.json",
             "timeout_seconds": 1200,
         },
+    },
+    "repowise-codex-product-v1": {
+        "display_name": "RepoWise 0.39.0 official Codex MCP, hooks, and guidance",
+        "lane_name": "retrieval-repowise-codex-product-v1",
+        "surface": "retrieval-context+mcp+codex-hooks+product-guidance+warm-index",
+        "mcp_server": "repowise",
+        "allowed_terms": ["repowise"],
+        "data_dir_name": "repowise-codex-product-v1",
+        "mcp_command": "{tool_data_dir}/venv/bin/repowise",
+        "mcp_args": ["mcp"],
+        "path_entries": ["{tool_data_dir}/venv/bin"],
+        "env": {"REPOWISE_SKIP_EDITOR_SETUP": "1"},
+        "mounts": [str(REPOWISE_ROOT), str(REPOWISE_WHEEL)],
+        "diff_exclude_paths": [".repowise", ".mcp.json", ".codex", "AGENTS.md"],
+        "codex_features": {"hooks": True},
+        "host_integration": {
+            "install_commands": [
+                [str(UV_BIN), "venv", "{tool_data_dir}/venv", "--python", "python3"],
+                [str(UV_BIN), "pip", "install", "--python", "{tool_data_dir}/venv/bin/python", str(REPOWISE_WHEEL)],
+                ["{tool_data_dir}/venv/bin/repowise", "init", "--yes", "--no-prose", "--no-claude-md", "--no-editor-setup", "--codex", "--agents", "--no-workspace", "{repo}"],
+            ],
+            "verify_commands": [["{tool_data_dir}/venv/bin/repowise", "--version"]],
+            "required_files": [
+                "{tool_data_dir}/venv/bin/repowise",
+                "{repo}/.repowise/wiki.db",
+                "{repo}/.repowise/config.yaml",
+                "{repo}/.mcp.json",
+                "{repo}/.codex/config.toml",
+                "{repo}/.codex/hooks.json",
+                "{repo}/AGENTS.md",
+            ],
+            "timeout_seconds": 3600,
+        },
+        "preflight_command": ["{tool_data_dir}/venv/bin/repowise", "--version"],
+        "mcp_handshake": {"required": True, "method": "initialize-and-tools-list", "timeout_seconds": 180},
+        "artifact_identities": [
+            {"path": str(REPOWISE_WHEEL), "sha256": "e7d3068856a45a3d0501b84e6f52db24521512803a07881cdf145da546d932b4", "kind": "python-wheel"},
+            {"path": str(REPOWISE_ROOT / "README.md"), "sha256": "44ed3725616544a8d4eb4695c99e33c8bd28ce2bfde4c12134d1fde0e1d65a3a", "kind": "product-guidance-source"},
+        ],
+        "tool_manifest_identity": "current-file-v1",
+        "default_tool_state": "warm-index+official-codex-hooks+product-guidance",
     },
     "cartog": {
         "display_name": "Cartog",
@@ -2104,6 +2151,45 @@ TOOL_CONFIGS.update(
             ],
             effective_host_config={"required": True, "source": "adapter-probe"},
             diff_exclude_paths=["AGENTS.md"],
+            default_tool_state="warm-index+product-guidance",
+        ),
+        "repowise-opencode-product-v1": _opencode_treatment_config(
+            "repowise",
+            display_name="RepoWise 0.39.0 OpenCode MCP with product guidance",
+            lane_name="retrieval-repowise-opencode-product-v1",
+            surface="opencode-mcp+product-guidance+warm-index",
+            allowed_terms=["repowise"],
+            mounts=[str(REPOWISE_ROOT), str(REPOWISE_WHEEL)],
+            adapter_path=OPENCODE_ADAPTER_V9,
+            path_entries=["{tool_data_dir}/venv/bin"],
+            env={"OPENCODE_TOOL_DATA_DIR": "{tool_data_dir}", "REPOWISE_SKIP_EDITOR_SETUP": "1"},
+            host_integration={
+                "install_commands": [
+                    [str(UV_BIN), "venv", "{tool_data_dir}/venv", "--python", "python3"],
+                    [str(UV_BIN), "pip", "install", "--python", "{tool_data_dir}/venv/bin/python", str(REPOWISE_WHEEL)],
+                    ["{tool_data_dir}/venv/bin/repowise", "init", "--yes", "--no-prose", "--no-claude-md", "--no-editor-setup", "--no-codex", "--agents", "--no-workspace", "{repo}"],
+                ],
+                "verify_commands": [["{tool_data_dir}/venv/bin/repowise", "--version"]],
+                "required_files": [
+                    "{tool_data_dir}/venv/bin/repowise",
+                    "{repo}/.repowise/wiki.db",
+                    "{repo}/.repowise/config.yaml",
+                    "{repo}/.mcp.json",
+                    "{repo}/AGENTS.md",
+                ],
+                "timeout_seconds": 3600,
+            },
+            mcp_server="repowise",
+            mcp_command="{tool_data_dir}/venv/bin/repowise",
+            mcp_args=["mcp"],
+            mcp_handshake={"required": True, "method": "initialize-and-tools-list", "timeout_seconds": 180},
+            artifact_identities=[
+                {"path": str(REPOWISE_WHEEL), "sha256": "e7d3068856a45a3d0501b84e6f52db24521512803a07881cdf145da546d932b4", "kind": "python-wheel"},
+                {"path": str(REPOWISE_ROOT / "README.md"), "sha256": "44ed3725616544a8d4eb4695c99e33c8bd28ce2bfde4c12134d1fde0e1d65a3a", "kind": "product-guidance-source"},
+                {"path": str(OPENCODE_ADAPTER_V9), "sha256": "6cabc28420901ec9fea5997bd63559311d73d2c7fb9c86e54d64ba42c67b822e", "kind": "runtime-adapter"},
+            ],
+            effective_host_config={"required": True, "source": "adapter-probe"},
+            diff_exclude_paths=[".repowise", ".mcp.json", "AGENTS.md"],
             default_tool_state="warm-index+product-guidance",
         ),
         "leanctx-opencode-hybrid-v1": _opencode_treatment_config(
