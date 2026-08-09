@@ -1,0 +1,43 @@
+{
+  "schema_version": 1,
+  "audit_id": "claude-code-anthropic-sonnet-5-high-lifecycle-v1-caveman-beets-session-limit-20260809",
+  "date": "2026-08-09",
+  "scope": "direct-Anthropic Claude Code Sonnet 5/high Lifecycle V1 treatment, Beets Caveman lane",
+  "status": "rejected-before-registry-publication",
+  "attempt_identity": {
+    "sequence_id": "beets-lifecycle-sequence-v1",
+    "replicate_index": 0,
+    "profile_id": "behavior-caveman-claude-code-skill-v1",
+    "model_condition_id": "claude-code-anthropic-sonnet-5-high",
+    "session_id": "behavior-caveman-claude-code-skill-beets-20260809-p-ab14b9edcf57-r0",
+    "attempt_receipt_path": "sources/evaluations/audits/claude-code-anthropic-sonnet-5-high-lifecycle-v1-treatment-attempts/beets-behavior-caveman-claude-code-skill-v1-r0.json",
+    "attempt_receipt_sha256": "3ba616ef65784b160234942aa3cc5c1526bb4f8c9f60b140c05719a4afe648c1"
+  },
+  "execution": {
+    "provider_task_started": true,
+    "attempted_provider_tasks": 1,
+    "completed_provider_tasks": 0,
+    "failure_stage": "Claude Code task 1 provider session",
+    "provider_status": 429,
+    "error": "You've hit your session limit; resets 8:10am UTC",
+    "partial_provider_tokens_retained": 88550,
+    "weighted_token_result": null,
+    "weighted_token_status": "not comparable: the three-task workflow did not complete",
+    "rerun_policy": "Do not retry this Beets Caveman identity; its immutable attempt receipt is occupied. Resume only the twelve still-unlaunched Beets identities after the provider reset."
+  },
+  "disposition": {
+    "excluded_from_registry_and_aggregate": true,
+    "accepted_sibling_session_ids": [
+      "rtk-claude-code-beets-20260809-p-ab14b9edcf57-r0",
+      "retrieval-cartog-claude-code-product-beets-20260809-p-ab14b9edcf57-r0"
+    ],
+    "matrix_status": "fail-stopped after Caveman; twelve Beets treatment identities were not launched"
+  },
+  "retained_evidence": {
+    "lane_root": "/opt/data/eval-workflow-lanes/workflow-matrix-20260809T042711699072Z-p1914019-r0/beets-lifecycle-sequence-v1--behavior-caveman-claude-code-skill-v1",
+    "retention_policy": "whole checkout retained because parent discovery classified the rejected artifact output as ambiguous or unsafe",
+    "run_json_sha256": "1d0d4d15d4557bec9bb7b1b21ff87c9f07c8d4de5eccf59e7bbd82be1d569fe8",
+    "evidence_jsonl_gz_sha256": "af413fdef3366e0be369bff5e554f96af3e8674a1558b34a554594ec8c6c675d",
+    "cleanup_prohibition_sha256": "997f7c9a0a003664af0fd1ce13211d0c20b3853156dd79152230869c9c73ced2"
+  }
+}

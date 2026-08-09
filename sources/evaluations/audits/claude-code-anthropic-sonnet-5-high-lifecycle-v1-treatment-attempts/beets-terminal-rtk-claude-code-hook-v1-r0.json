@@ -1,0 +1,295 @@
+{
+  "schema_version": 1,
+  "attempt_status": "reserved-before-provider-task",
+  "task_family_generation": "lifecycle-v1",
+  "sequence_id": "beets-lifecycle-sequence-v1",
+  "replicate_index": 0,
+  "profile_id": "terminal-rtk-claude-code-hook-v1",
+  "model_condition_id": "claude-code-anthropic-sonnet-5-high",
+  "model": "claude-sonnet-5",
+  "reasoning_effort": "high",
+  "orchestrator": "workflow-matrix:workflow-matrix-20260809T042711699072Z-p1914019-r0",
+  "reserved_at": "2026-08-09T04:27:16.329596+00:00",
+  "expected_session_binding": {
+    "sequence_id": "beets-lifecycle-sequence-v1",
+    "profile_id": "terminal-rtk-claude-code-hook-v1",
+    "replicate_index": 0,
+    "frozen_protocol": {
+      "protocol_id": "beets-lifecycle-sequence-v1-terminal-rtk-claude-code-hook-v1-f85b17a40e1c",
+      "path": "sources/evaluations/protocols/beets-lifecycle-sequence-v1-terminal-rtk-claude-code-hook-v1-f85b17a40e1c.json",
+      "sha256": "cff41d45d9271c1d375ffa11b06dbd8a79d78c85c7c6317175b9587869c1bd94"
+    },
+    "baseline_pool_fingerprint": "ab14b9edcf57",
+    "selected_execution": {
+      "descriptor_sha256": "3d2b3080a56f1eab1a2c82c1ef81c545c65168f098675cb99631054734f8a289",
+      "descriptor": {
+        "version": "execution-condition-v1",
+        "sequence_id": "beets-lifecycle-sequence-v1",
+        "execution_role": "individual_tool_treatment",
+        "selected_profile": {
+          "profile_id": "terminal-rtk-claude-code-hook-v1",
+          "profile_type": "individual_tool",
+          "component_ids": [
+            "terminal-rtk-claude-code-hook-v1"
+          ],
+          "enabled_surfaces": [
+            "claude-code-pre-tool-use-hook",
+            "terminal-output",
+            "claude-code-global-instructions"
+          ],
+          "disabled_overlaps": [
+            "all unlisted surfaces",
+            "Codex RTK instructions",
+            "MCP servers",
+            "other token-saving tools"
+          ],
+          "registry_entry_sha256": "d69ef30aff2acb7dd942f6f6344f4e57fbf971d8856e59b36216b2b9c60218e6",
+          "registry_entry": {
+            "id": "terminal-rtk-claude-code-hook-v1",
+            "profile_type": "individual_tool",
+            "objective_scope": "individual_tool_effectiveness",
+            "substrate": "claude-code",
+            "status": "screening-shortlist",
+            "enabled_surfaces": [
+              "claude-code-pre-tool-use-hook",
+              "terminal-output",
+              "claude-code-global-instructions"
+            ],
+            "disabled_overlaps": [
+              "all unlisted surfaces",
+              "Codex RTK instructions",
+              "MCP servers",
+              "other token-saving tools"
+            ],
+            "components": [
+              {
+                "component_id": "terminal-rtk-claude-code-hook-v1",
+                "surface": "claude-code-pre-tool-use-hook/terminal-output-compaction",
+                "role": "individual_tool"
+              }
+            ],
+            "install": {
+              "policy": "Run pinned RTK 0.42.4 `rtk init --global --auto-patch` with lane-private CLAUDE_CONFIG_DIR; require the generated Claude settings hook, RTK.md, and global CLAUDE.md before execution."
+            },
+            "reset": {
+              "policy": "Delete lane-private Claude config, RTK hook/settings, RTK.md, global CLAUDE.md, cache, and generated state after evidence capture; verify no RTK state survives into another lane."
+            },
+            "evaluation_protocol": {
+              "tool_use_policy": "natural",
+              "tool_state": "active-hook-and-instruction-layer",
+              "integration_state": "official-claude-code-global-hook"
+            },
+            "notes": "Claude Code-specific RTK treatment. Measures the official native Claude PreToolUse hook and product-authored global instruction layer, separate from terminal-rtk-codex-instructions-v1."
+          }
+        },
+        "model_facing_prompts": {
+          "rendering_contract": "sequential-model-facing-prompts-v2",
+          "profile_guidance_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "tasks": [
+            {
+              "task_id": "beets-lifecycle-feature-v1",
+              "order": 1,
+              "rendered_prompt_sha256": "fd11c28e91be7826ff049748f7a84a5f0bd3137f9add35b498d50b39aea8548c"
+            },
+            {
+              "task_id": "beets-lifecycle-refactor-v1",
+              "order": 2,
+              "rendered_prompt_sha256": "69cd7d8bf2eeba073fafc156982916dcbb68df92ca06a869039c9bbb728255f9"
+            },
+            {
+              "task_id": "beets-lifecycle-review-v1",
+              "order": 3,
+              "rendered_prompt_sha256": "1586356a85a2cbdd70fa6d545d16063df49a1f2d455cf07646cb943a691770d0"
+            }
+          ]
+        },
+        "tool_adapter": {
+          "tool_id": "rtk-claude-code-hook-v1",
+          "tool_manifest": "scripts/run_codex_fixture_evaluation.py:TOOL_CONFIGS",
+          "tool_manifest_sha256": "6fa8271b89a577706ea0bbffcc8e4521831f41b646ed9519369efee3642fe41c",
+          "tool_config": {
+            "display_name": "RTK Claude Code native hook and instruction policy v1",
+            "lane_name": "terminal-rtk-claude-code-hook-v1",
+            "surface": "claude-code-pre-tool-use-hook/terminal-output-compaction",
+            "allowed_terms": [
+              "rtk"
+            ],
+            "data_dir_name": "rtk-claude-code-hook-v1",
+            "executable": "/opt/data/tool-candidates/rtk/target/release/rtk",
+            "path_entries": [
+              "{codex_home}/runtime-bin",
+              "/opt/data/tool-candidates/rtk/target/release"
+            ],
+            "mounts": [
+              "/opt/data/tool-candidates/rtk/target/release"
+            ],
+            "env": {
+              "RTK_TELEMETRY": "0"
+            },
+            "claude_features": {
+              "hooks": true
+            },
+            "host_integration_backend": "host",
+            "host_integration": {
+              "install_commands": [
+                [
+                  "/bin/sh",
+                  "-lc",
+                  "mkdir -p {codex_home}/runtime-bin && cp /opt/data/tool-candidates/rtk/target/release/rtk {codex_home}/runtime-bin/rtk && chmod 755 {codex_home}/runtime-bin/rtk && {codex_home}/runtime-bin/rtk init --global --auto-patch"
+                ]
+              ],
+              "verify_commands": [
+                [
+                  "{codex_home}/runtime-bin/rtk",
+                  "init",
+                  "--show"
+                ]
+              ],
+              "required_files": [
+                "{codex_home}/claude-config/settings.json",
+                "{codex_home}/claude-config/CLAUDE.md",
+                "{codex_home}/claude-config/RTK.md"
+              ],
+              "timeout_seconds": 120
+            },
+            "preflight_command": [
+              "rtk",
+              "--version"
+            ],
+            "default_tool_state": "active-hook-and-instruction-layer"
+          },
+          "tool_config_sha256": "fe63520c8fb174534840480351c10e4fcf0f021aedbcc30140588a8bcc71cb76",
+          "tool_state": "active-hook-and-instruction-layer",
+          "tool_use_policy": "natural",
+          "command_identity": {
+            "kind": "preflight_command",
+            "command": [
+              "rtk",
+              "--version"
+            ]
+          },
+          "binary_identity": {
+            "executable_token": "rtk",
+            "resolved_path": "/opt/data/tool-candidates/rtk/target/release/rtk",
+            "realpath": "/opt/data/tool-candidates/rtk/target/release/rtk",
+            "sha256": "6a5f761863fc184217e6c1ae5336dd969868ad79f24e701a3efbd090a435f2ae",
+            "metadata": {
+              "size": 8534448,
+              "mode": "-rwxr-xr-x",
+              "uid": 10000,
+              "gid": 10000,
+              "mtime_ns": 1783030976951158921
+            },
+            "version": {
+              "command": [
+                "/opt/data/tool-candidates/rtk/target/release/rtk",
+                "--version"
+              ],
+              "environment_path": "/opt/data/bin:/opt/data/tool-candidates/rtk/target/release:{repository_root}/.identity-codex-home/runtime-bin:/opt/data/.local/bin:/opt/data/opt/go/bin:/opt/data/opt/uv:/opt/data/opt/node-v24.18.0-linux-x64/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+              "captured": true,
+              "exit_code": 0,
+              "output": "rtk 0.42.4",
+              "truncated": false
+            }
+          },
+          "source_identity": [
+            {
+              "path": "/opt/data/tool-candidates/rtk/target/release",
+              "exists": true,
+              "kind": "directory",
+              "git_head": "23aae98c5b29cd52d77061c6efd2e65e5e3cc6dd"
+            }
+          ]
+        },
+        "runtime": {
+          "docker_image": "token-eval-codex:latest",
+          "docker_image_identity": {
+            "image_ref": "token-eval-codex:latest",
+            "image_id": "sha256:6f86d01f2c63f5029c6bb874d8f3694c24d5cd567e3d09413eccc956ba3feafe",
+            "repo_digests": [
+              "token-eval-codex@sha256:6f86d01f2c63f5029c6bb874d8f3694c24d5cd567e3d09413eccc956ba3feafe"
+            ],
+            "repo_tags": [
+              "token-eval-codex:latest"
+            ]
+          },
+          "dockerfile_path": "sources/evaluations/fixtures/container/Dockerfile",
+          "dockerfile_sha256": "47c91967ce25014ce54879514f51d2ff0326651be1087209115eff4d358226b3",
+          "fixture_runner_path": "scripts/run_codex_fixture_evaluation.py",
+          "fixture_runner_sha256": "6fa8271b89a577706ea0bbffcc8e4521831f41b646ed9519369efee3642fe41c",
+          "mcp_probe_path": "scripts/probe_mcp_stdio.py",
+          "mcp_probe_sha256": "7c06ea36ee5cac933a97140b84a41405fc99b45152388e8d7c6659136af698fd",
+          "codex_entrypoint_path": "sources/evaluations/fixtures/container/codex-entrypoint.sh",
+          "codex_entrypoint_sha256": "8715fe37cb1fa3823f5f05493bc9681ce7ffc72126dfec4d64d448762c550c3c",
+          "timeout_seconds_per_task": 3600,
+          "network_isolation": {
+            "provider_access": true,
+            "model_shell_network_access": false,
+            "model_shell_enforcement": "seccomp denies AF_INET and AF_INET6 socket creation for the shell process and descendants",
+            "agent_web_tools": "disabled-by-permission",
+            "external_retrieval_audit": "fail-closed"
+          },
+          "isolation_policy": "fresh lane-specific agent home/XDG state; provider-only network with model shell and agent web tools disabled; sequential one-task prompt delivery; controller seed/verifier scripts excluded while controller-only affected-component compile commands retained; no acceptance-test assets injected; agent prompts carry normal software objectives",
+          "agent_runtime_id": "claude-code",
+          "model_condition": {
+            "id": "claude-code-anthropic-sonnet-5-high",
+            "provider": "anthropic",
+            "model": "claude-sonnet-5",
+            "reasoning_effort": "high",
+            "launcher": "scripts/run_claude_code_workflow_model_condition.py"
+          }
+        },
+        "dependencies": {
+          "command": "uv sync --group test --frozen",
+          "command_sha256": "cef23fd45902c23f8b3e89b7c6360a401eb49c17cf36d742e5b625d5593c911b",
+          "lockfiles": [
+            {
+              "path": "uv.lock",
+              "snapshot_sha256": "fbf1d7a9c84b658a2433035221ba18c57508c254d711a06f305e2f610839a45f",
+              "current_fixture_sha256": null
+            }
+          ]
+        },
+        "agent_condition": {
+          "runtime_id": "claude-code",
+          "provider": "anthropic",
+          "model": "claude-sonnet-5",
+          "model_condition_id": "claude-code-anthropic-sonnet-5-high",
+          "reasoning_effort": "high",
+          "runtime_version_condition": "captured-at-run-and-bound-to-record"
+        },
+        "isolation": {
+          "prompt_delivery": "sequential-one-task-at-a-time",
+          "seed_delivery_mode": "preseeded-composite",
+          "future_tasks_visible": false,
+          "future_seed_regressions_visible": true,
+          "controller_verification": "final-only",
+          "controller_verifier_scripts_and_canonical_copies_model_visible": false,
+          "model_visible_acceptance_asset_paths": [],
+          "model_concealed_paths": []
+        },
+        "baseline_pool_reference": {
+          "protocol_version": "baseline-pool-v1",
+          "protocol_fingerprint": "ab14b9edcf57",
+          "comparison_policy": "paired baseline and treatment must share this baseline pool fingerprint and replicate"
+        },
+        "model_condition_override": {
+          "model_condition_id": "claude-code-anthropic-sonnet-5-high",
+          "runtime_id": "claude-code",
+          "provider": "anthropic",
+          "model": "claude-sonnet-5",
+          "reasoning_effort": "high",
+          "registry_status": "configured-provider-free",
+          "launcher": {
+            "path": "scripts/run_claude_code_workflow_model_condition.py",
+            "sha256": "6a3f81ff751cd8219cd93ee33753d6efb25fff779f6228dc3c822f98e2fa436f",
+            "condition_runtime_path": "scripts/workflow_model_condition_runtime.py",
+            "condition_runtime_sha256": "01479bd991417d9f5bb5fcef513e1beee3f1f05512ab818429cac24e0ebde866"
+          }
+        }
+      }
+    }
+  },
+  "provider_result": null,
+  "immutable_identity_receipt": true
+}
