@@ -4178,6 +4178,12 @@ def validate_frozen_protocol_bindings(errors: list[str]) -> None:
                     except KeyError:
                         profile_status = None
                 historical_executed = bool(frozen_hashes)
+                if profile_status == "blocked-profile" and not historical_executed:
+                    # Retain immutable never-run contracts for profiles that the
+                    # current registry explicitly excludes (for example, a tool
+                    # whose README has no Claude Code installation path). They
+                    # remain historical evidence, never runnable work.
+                    continue
                 if not historical_executed:
                     try:
                         runner.assert_profile_runnable(str(selected_profile or "baseline-bare-codex"))
