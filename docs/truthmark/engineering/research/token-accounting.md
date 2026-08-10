@@ -147,8 +147,8 @@ Update this document whenever token eligibility, comparison identity, provider a
 - ../../../../sources/evaluations/audits/claude-code-anthropic-sonnet-5-high-lifecycle-v1-protocol-preparation-20260808.json
 - ../../../../sources/evaluations/audits/claude-code-anthropic-opus-5-high-lifecycle-v1-protocol-preparation-20260808.json
 - ../../../../sources/evaluations/audits/claude-code-anthropic-opus-5-high-lifecycle-v1-baseline-authorization-20260808.json
-- ../../../../sources/evaluations/audits/corrected-integration-qualification-claude-code-anthropic-sonnet-5-high-lifecycle-v1-20260808.json
-- ../../../../sources/evaluations/audits/claude-code-anthropic-sonnet-5-high-lifecycle-v1-treatment-authorization-20260808.json
+- ../../../../sources/evaluations/audits/corrected-integration-qualification-claude-code-anthropic-sonnet-5-high-lifecycle-v1-20260810.json
+- ../../../../sources/evaluations/audits/claude-code-anthropic-sonnet-5-high-lifecycle-v1-treatment-authorization-20260810.json
 - ../../../../sources/evaluations/audits/claude-code-anthropic-sonnet-5-high-lifecycle-v1-cartog-fastify-ingress-rejection-20260808.json
 - ../../../../scripts/prepare_pinned_codex_marketplace.py
 - ../../../../scripts/trust_codex_plugin_hooks.py

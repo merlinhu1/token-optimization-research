@@ -924,8 +924,8 @@ OPENROUTER_LIFECYCLE_V1_AUTHORITY_REL = "sources/evaluations/audits/lifecycle-v1
 OPENROUTER_LIFECYCLE_V1_ATTEMPT_DIR = "sources/evaluations/audits/lifecycle-v1-opencode-openrouter-sol-high-r0-attempts"
 DIRECT_CLAUDE_LIFECYCLE_V1_AUTHORITY_REL = "sources/evaluations/audits/claude-code-anthropic-sonnet-5-high-lifecycle-v1-baseline-authorization-20260808.json"
 DIRECT_CLAUDE_LIFECYCLE_V1_ATTEMPT_DIR = "sources/evaluations/audits/claude-code-anthropic-sonnet-5-high-lifecycle-v1-attempts"
-DIRECT_CLAUDE_LIFECYCLE_V1_TREATMENT_AUTHORITY_REL = "sources/evaluations/audits/claude-code-anthropic-sonnet-5-high-lifecycle-v1-treatment-authorization-20260809.json"
-DIRECT_CLAUDE_LIFECYCLE_V1_TREATMENT_QUALIFICATION_REL = "sources/evaluations/audits/corrected-integration-qualification-claude-code-anthropic-sonnet-5-high-lifecycle-v1-20260809.json"
+DIRECT_CLAUDE_LIFECYCLE_V1_TREATMENT_AUTHORITY_REL = "sources/evaluations/audits/claude-code-anthropic-sonnet-5-high-lifecycle-v1-treatment-authorization-20260810.json"
+DIRECT_CLAUDE_LIFECYCLE_V1_TREATMENT_QUALIFICATION_REL = "sources/evaluations/audits/corrected-integration-qualification-claude-code-anthropic-sonnet-5-high-lifecycle-v1-20260810.json"
 DIRECT_CLAUDE_LIFECYCLE_V1_PROFILE_ID = "baseline-claude-code-no-mcp"
 DIRECT_CLAUDE_LIFECYCLE_V1_MODEL = {
     "id": "claude-code-anthropic-sonnet-5-high",
@@ -938,23 +938,6 @@ DIRECT_CLAUDE_LIFECYCLE_V1_SEQUENCE_ORDER = (
     "fastify-lifecycle-sequence-v1",
     "beets-lifecycle-sequence-v1",
 )
-DIRECT_CLAUDE_LIFECYCLE_V1_BEETS_SUPPORTED_PROFILES = frozenset({
-    "retrieval-cartog-claude-code-product-v1",
-    "behavior-caveman-claude-code-skill-v1",
-    "retrieval-codegraph-claude-code-mcp-v1",
-    "codescope-claude-code-mcp-v1",
-    "retrieval-graphify-claude-code-skill-v1",
-    "integrated-leanctx-claude-code-hybrid-v1",
-    "terminal-lowfat-claude-code-hook-v1",
-    "artifact-ponytail-claude-code-plugin-v1",
-    "terminal-rtk-claude-code-hook-v1",
-    "retrieval-serena-claude-code-mcp-v1",
-    "retrieval-sigmap-claude-code-mcp-v1",
-    "terminal-snip-claude-code-hook-v1",
-    "integrated-token-savior-claude-code-product-v1",
-    "terminal-tokenjuice-claude-code-hook-v1",
-    "retrieval-jcodemunch-claude-code-mcp-v1",
-})
 BEETS_R3_REPLACEMENT_AUTHORITY_REL = "sources/evaluations/audits/current-low-complexity-beets-r3-replacement-authorization-20260728.json"
 BEETS_R3_REPLACEMENT_ATTEMPT_REL = "sources/evaluations/audits/current-low-complexity-beets-r3-replacement-attempt-20260728.json"
 BASELINE_REPLICATION_MODEL_CONDITION = {
@@ -2557,11 +2540,6 @@ def claude_anthropic_sonnet_treatment_authorized(
         or seq.get("id") not in DIRECT_CLAUDE_LIFECYCLE_V1_SEQUENCE_ORDER
         or profile_id == DIRECT_CLAUDE_LIFECYCLE_V1_PROFILE_ID
         or DEFAULT_WORKFLOW_MODEL_CONDITION_ID != DIRECT_CLAUDE_LIFECYCLE_V1_MODEL["id"]
-    ):
-        return False
-    if (
-        seq.get("id") == "beets-lifecycle-sequence-v1"
-        and profile_id not in DIRECT_CLAUDE_LIFECYCLE_V1_BEETS_SUPPORTED_PROFILES
     ):
         return False
     try:

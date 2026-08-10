@@ -28,8 +28,8 @@ CLAUDE_DIRECT_CAMPAIGNS = (
         ROOT / "sources" / "evaluations" / "audits" / "claude-code-anthropic-opus-5-high-lifecycle-v1-baseline-authorization-20260808.json",
     ),
 )
-CLAUDE_SONNET_TREATMENT_AUTHORITY = ROOT / "sources" / "evaluations" / "audits" / "claude-code-anthropic-sonnet-5-high-lifecycle-v1-treatment-authorization-20260808.json"
-CLAUDE_SONNET_TREATMENT_QUALIFICATION = ROOT / "sources" / "evaluations" / "audits" / "corrected-integration-qualification-claude-code-anthropic-sonnet-5-high-lifecycle-v1-20260808.json"
+CLAUDE_SONNET_TREATMENT_AUTHORITY = ROOT / "sources" / "evaluations" / "audits" / "claude-code-anthropic-sonnet-5-high-lifecycle-v1-treatment-authorization-20260810.json"
+CLAUDE_SONNET_TREATMENT_QUALIFICATION = ROOT / "sources" / "evaluations" / "audits" / "corrected-integration-qualification-claude-code-anthropic-sonnet-5-high-lifecycle-v1-20260810.json"
 OPENCODE_TREATMENT_SCREEN_AUDIT = (
     "sources/evaluations/audits/"
     "opencode-tool-treatments-sol-high-r0-repaired-screen-results-20260730.json"

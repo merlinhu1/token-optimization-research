@@ -1,0 +1,53 @@
+{
+  "schema_version": 1,
+  "status": "owner-authorized-provider-capable",
+  "campaign_id": "claude-code-anthropic-sonnet-5-high-lifecycle-v1",
+  "task_family_generation": "lifecycle-v1",
+  "authorized_on": "2026-08-08",
+  "reconciled_on": "2026-08-10",
+  "authorization_source": "Existing owner authorization in claude-code-anthropic-sonnet-5-high-lifecycle-v1-treatment-authorization-20260808.json; reconciled after the provider-free native integration qualification completed.",
+  "replicate_index": 0,
+  "sequence_order": [
+    "fastify-lifecycle-sequence-v1",
+    "beets-lifecycle-sequence-v1"
+  ],
+  "max_parallel": 1,
+  "serialization_required": true,
+  "allowed_paid_treatment_runs": 30,
+  "allowed_model_turns": 90,
+  "model_condition": {
+    "id": "claude-code-anthropic-sonnet-5-high",
+    "runtime_id": "claude-code",
+    "provider": "anthropic",
+    "model": "claude-sonnet-5",
+    "reasoning_effort": "high"
+  },
+  "account_source_env": "TOKEN_EVAL_CLAUDE_ACCOUNT_HOME",
+  "first_valid_sample_policy": true,
+  "rerun_after_attempt_receipt": false,
+  "provider_calls": 0,
+  "provider_tokens": 0,
+  "profiles": [
+    "retrieval-cartog-claude-code-product-v1",
+    "behavior-caveman-claude-code-skill-v1",
+    "retrieval-codegraph-claude-code-mcp-v1",
+    "codescope-claude-code-mcp-v1",
+    "retrieval-graphify-claude-code-skill-v1",
+    "integrated-leanctx-claude-code-hybrid-v1",
+    "terminal-lowfat-claude-code-hook-v1",
+    "artifact-ponytail-claude-code-plugin-v1",
+    "terminal-rtk-claude-code-hook-v1",
+    "retrieval-serena-claude-code-mcp-v1",
+    "retrieval-sigmap-claude-code-mcp-v1",
+    "terminal-snip-claude-code-hook-v1",
+    "integrated-token-savior-claude-code-product-v1",
+    "terminal-tokenjuice-claude-code-hook-v1",
+    "retrieval-jcodemunch-claude-code-mcp-v1"
+  ],
+  "qualification_receipt_path": "sources/evaluations/audits/corrected-integration-qualification-claude-code-anthropic-sonnet-5-high-lifecycle-v1-20260810.json",
+  "qualification_receipt_sha256": "0b2119166034826a861a2d8bd524b9938b072c9a340ca0d07ad4956fb89a5a8c",
+  "excluded_profiles": {
+    "retrieval-sdl-mcp-claude-code-product-v1": "Excluded from paid treatment because its pinned installer exposes Codex-only surfaces and was not included in the Claude-native qualification scope."
+  },
+  "notes": "This reconciliation preserves the original owner-authorized 15-profile, 30-paid-slot scope. The provider-free qualification now passes all 30 native Claude lanes across Fastify and Beets; no provider-backed treatment lane was executed by the qualification run. SDL-MCP remains excluded."
+}
