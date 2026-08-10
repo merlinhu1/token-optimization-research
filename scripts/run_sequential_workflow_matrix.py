@@ -615,7 +615,7 @@ def claude_baseline_run_gate(
             and authorization.get("status") == "owner-authorized-provider-run"
             and authorization.get("campaign_id") == campaign["campaign_id"]
             and authorization.get("task_family_generation") == "lifecycle-v1"
-            and authorization.get("authorized_replicate_index") == 0
+            and authorization.get("authorized_replicate_index") == replicate_index
             and authorization.get("sequence_order") == expected_order
             and authorization.get("max_parallel") == 1
             and authorization.get("allowed_paid_baseline_runs") == 2
