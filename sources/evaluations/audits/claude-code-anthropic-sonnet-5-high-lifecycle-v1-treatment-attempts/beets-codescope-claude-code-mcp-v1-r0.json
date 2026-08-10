@@ -1,0 +1,293 @@
+{
+  "schema_version": 1,
+  "attempt_status": "reserved-before-provider-task",
+  "task_family_generation": "lifecycle-v1",
+  "sequence_id": "beets-lifecycle-sequence-v1",
+  "replicate_index": 0,
+  "profile_id": "codescope-claude-code-mcp-v1",
+  "model_condition_id": "claude-code-anthropic-sonnet-5-high",
+  "model": "claude-sonnet-5",
+  "reasoning_effort": "high",
+  "orchestrator": "workflow-matrix:workflow-matrix-20260810T031937813556Z-p3396441-r0",
+  "reserved_at": "2026-08-10T03:19:38.989281+00:00",
+  "expected_session_binding": {
+    "sequence_id": "beets-lifecycle-sequence-v1",
+    "profile_id": "codescope-claude-code-mcp-v1",
+    "replicate_index": 0,
+    "frozen_protocol": {
+      "protocol_id": "beets-lifecycle-sequence-v1-codescope-claude-code-mcp-v1-750df7693cf2",
+      "path": "sources/evaluations/protocols/beets-lifecycle-sequence-v1-codescope-claude-code-mcp-v1-750df7693cf2.json",
+      "sha256": "1ab95a307e0ce4adcf825601048befcfb14bcd0e19e6505c782d9e32b327c57c"
+    },
+    "baseline_pool_fingerprint": "ab14b9edcf57",
+    "selected_execution": {
+      "descriptor_sha256": "de4c9392dbffab299654514399972dcc060b205de3d88349587f56dcaa6adb91",
+      "descriptor": {
+        "version": "execution-condition-v1",
+        "sequence_id": "beets-lifecycle-sequence-v1",
+        "execution_role": "individual_tool_treatment",
+        "selected_profile": {
+          "profile_id": "codescope-claude-code-mcp-v1",
+          "profile_type": "individual_tool",
+          "component_ids": [
+            "codescope-claude-code-mcp-v1"
+          ],
+          "enabled_surfaces": [
+            "claude-code-broad-context-owner+mcp+warm-index"
+          ],
+          "disabled_overlaps": [
+            "all unlisted surfaces",
+            "other token-saving tools",
+            "OpenRouter transport"
+          ],
+          "registry_entry_sha256": "6b3cddcadca5033d3cbc0947f572695dda5b0c905efd8afb5e5ab16c5dd2049a",
+          "registry_entry": {
+            "id": "codescope-claude-code-mcp-v1",
+            "profile_type": "individual_tool",
+            "objective_scope": "individual_tool_effectiveness",
+            "substrate": "claude-code",
+            "status": "integration-qualified-provider-free",
+            "enabled_surfaces": [
+              "claude-code-broad-context-owner+mcp+warm-index"
+            ],
+            "disabled_overlaps": [
+              "all unlisted surfaces",
+              "other token-saving tools",
+              "OpenRouter transport"
+            ],
+            "components": [
+              {
+                "component_id": "codescope-claude-code-mcp-v1",
+                "surface": "broad-context-owner+mcp+warm-index",
+                "role": "individual_tool"
+              }
+            ],
+            "install": {
+              "policy": "Use the pinned CodeScope source snapshot from codescope-codex-product-v1 and install every product-authored Claude Code surface it documents (MCP, hooks, skills, plugins, rules, and guidance) into the lane-private CLAUDE_CONFIG_DIR. Require provider-free artifact, configuration, and handshake proofs before any Anthropic request."
+            },
+            "reset": {
+              "policy": "Delete the lane-private Claude config, tool state, indexes, generated guidance, hooks, plugins, and background processes after evidence capture; retain only immutable run artifacts and source hashes."
+            },
+            "evaluation_protocol": {
+              "tool_use_policy": "natural",
+              "tool_state": "qualified-provider-free",
+              "integration_state": "official-claude-code-native-surface-qualified-before-provider",
+              "instruction_policy": "product-authored guidance only; no evaluator-authored invocation steering",
+              "assignment_proof": "provider-free pinned source, exact Claude configuration, native activation, and required MCP/hooks/skills/plugin smoke checks"
+            },
+            "source_profiles": [
+              "codescope-codex-product-v1"
+            ],
+            "notes": "Claude Code preparation profile for CodeScope; source profile codescope-codex-product-v1. Provider-free native qualification passed for both active Lifecycle V1 sequences; provider execution is governed by the owner authorization and first-valid-sample policy."
+          }
+        },
+        "model_facing_prompts": {
+          "rendering_contract": "sequential-model-facing-prompts-v2",
+          "profile_guidance_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "tasks": [
+            {
+              "task_id": "beets-lifecycle-feature-v1",
+              "order": 1,
+              "rendered_prompt_sha256": "fd11c28e91be7826ff049748f7a84a5f0bd3137f9add35b498d50b39aea8548c"
+            },
+            {
+              "task_id": "beets-lifecycle-refactor-v1",
+              "order": 2,
+              "rendered_prompt_sha256": "69cd7d8bf2eeba073fafc156982916dcbb68df92ca06a869039c9bbb728255f9"
+            },
+            {
+              "task_id": "beets-lifecycle-review-v1",
+              "order": 3,
+              "rendered_prompt_sha256": "1586356a85a2cbdd70fa6d545d16063df49a1f2d455cf07646cb943a691770d0"
+            }
+          ]
+        },
+        "tool_adapter": {
+          "tool_id": "codescope",
+          "tool_manifest": "scripts/run_codex_fixture_evaluation.py:TOOL_CONFIGS",
+          "tool_manifest_sha256": "59e3a8271387caf13a8069aa138371f26577d33f864323514b49eca5405301c8",
+          "tool_config": {
+            "display_name": "CodeScope",
+            "lane_name": "codescope-owner",
+            "surface": "broad-context-owner/mcp",
+            "mcp_server": "codescope",
+            "allowed_terms": [
+              "codescope"
+            ],
+            "data_dir_name": "codescope",
+            "mcp_command": "python3",
+            "mcp_args": [
+              "/opt/data/tool-candidates/codescope-adapter/run_codescope_neutral_mcp.py",
+              "{repo}",
+              "--codescope-bin",
+              "/opt/data/tool-candidates/codescope-release-v0.8.12/codescope"
+            ],
+            "path_entries": [
+              "/opt/data/tool-candidates/codescope-release-v0.8.12"
+            ],
+            "mounts": [
+              "/opt/data/tool-candidates/codescope-adapter/run_codescope_neutral_mcp.py",
+              "/opt/data/tool-candidates/codescope-release-v0.8.12/codescope",
+              "/opt/data/tool-candidates/codescope-release-v0.8.12/surreal"
+            ],
+            "diff_exclude_paths": [
+              ".fastembed_cache",
+              ".codescope"
+            ],
+            "preflight_command": [
+              "/opt/data/tool-candidates/codescope-release-v0.8.12/codescope",
+              "--version"
+            ],
+            "default_tool_state": "cold-auto-index",
+            "initialize_instructions_policy": "strip-mandatory-uptake-text"
+          },
+          "tool_config_sha256": "3c1eab4a9d21da01ba8151a0d74e1cad6eb3e87fc98e7962eceaacbf87ef0caf",
+          "tool_state": "qualified-provider-free",
+          "tool_use_policy": "natural",
+          "command_identity": {
+            "kind": "mcp_command",
+            "command": [
+              "python3",
+              "/opt/data/tool-candidates/codescope-adapter/run_codescope_neutral_mcp.py",
+              "{repo}",
+              "--codescope-bin",
+              "/opt/data/tool-candidates/codescope-release-v0.8.12/codescope"
+            ]
+          },
+          "binary_identity": {
+            "executable_token": "python3",
+            "resolved_path": "/opt/data/bin/python3",
+            "realpath": "/usr/bin/python3.13",
+            "sha256": "4703a3d15898c0b5d81c3f939e93bdd8ca6116342093fb160ab1e01860dd7d8b",
+            "metadata": {
+              "size": 6812336,
+              "mode": "-rwxr-xr-x",
+              "uid": 0,
+              "gid": 0,
+              "mtime_ns": 1778015152000000000
+            },
+            "version": {
+              "command": [
+                "/usr/bin/python3.13",
+                "--version"
+              ],
+              "environment_path": "/opt/data/bin:/opt/data/tool-candidates/codescope-release-v0.8.12:/opt/data/.local/bin:/opt/data/opt/go/bin:/opt/data/opt/uv:/opt/data/opt/node-v24.18.0-linux-x64/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+              "captured": true,
+              "exit_code": 0,
+              "output": "Python 3.13.5",
+              "truncated": false
+            }
+          },
+          "source_identity": [
+            {
+              "path": "/opt/data/tool-candidates/codescope-adapter/run_codescope_neutral_mcp.py",
+              "exists": true,
+              "kind": "file",
+              "sha256": "e7f9a196b6eb9a78ed0fa72cd58340e28cb2154a67eb165ced343df888260235"
+            },
+            {
+              "path": "/opt/data/tool-candidates/codescope-release-v0.8.12/codescope",
+              "exists": true,
+              "kind": "file",
+              "sha256": "d6f64f7bc7bf1ab65115fdede85d794f58151c6f1414421825959eb2101165c1"
+            },
+            {
+              "path": "/opt/data/tool-candidates/codescope-release-v0.8.12/surreal",
+              "exists": true,
+              "kind": "file",
+              "sha256": "a9a5e9e36e4f6fe922e1991a4fb0ea1ee4fe90819c5e3a8dce238a56666e8cec"
+            }
+          ]
+        },
+        "runtime": {
+          "docker_image": "token-eval-codex:latest",
+          "docker_image_identity": {
+            "image_ref": "token-eval-codex:latest",
+            "image_id": "sha256:6f86d01f2c63f5029c6bb874d8f3694c24d5cd567e3d09413eccc956ba3feafe",
+            "repo_digests": [
+              "token-eval-codex@sha256:6f86d01f2c63f5029c6bb874d8f3694c24d5cd567e3d09413eccc956ba3feafe"
+            ],
+            "repo_tags": [
+              "token-eval-codex:latest"
+            ]
+          },
+          "dockerfile_path": "sources/evaluations/fixtures/container/Dockerfile",
+          "dockerfile_sha256": "47c91967ce25014ce54879514f51d2ff0326651be1087209115eff4d358226b3",
+          "fixture_runner_path": "scripts/run_codex_fixture_evaluation.py",
+          "fixture_runner_sha256": "59e3a8271387caf13a8069aa138371f26577d33f864323514b49eca5405301c8",
+          "mcp_probe_path": "scripts/probe_mcp_stdio.py",
+          "mcp_probe_sha256": "7c06ea36ee5cac933a97140b84a41405fc99b45152388e8d7c6659136af698fd",
+          "codex_entrypoint_path": "sources/evaluations/fixtures/container/codex-entrypoint.sh",
+          "codex_entrypoint_sha256": "8715fe37cb1fa3823f5f05493bc9681ce7ffc72126dfec4d64d448762c550c3c",
+          "timeout_seconds_per_task": 3600,
+          "network_isolation": {
+            "provider_access": true,
+            "model_shell_network_access": false,
+            "model_shell_enforcement": "seccomp denies AF_INET and AF_INET6 socket creation for the shell process and descendants",
+            "agent_web_tools": "disabled-by-permission",
+            "external_retrieval_audit": "fail-closed"
+          },
+          "isolation_policy": "fresh lane-specific agent home/XDG state; provider-only network with model shell and agent web tools disabled; sequential one-task prompt delivery; controller seed/verifier scripts excluded while controller-only affected-component compile commands retained; no acceptance-test assets injected; agent prompts carry normal software objectives",
+          "agent_runtime_id": "claude-code",
+          "model_condition": {
+            "id": "claude-code-anthropic-sonnet-5-high",
+            "provider": "anthropic",
+            "model": "claude-sonnet-5",
+            "reasoning_effort": "high",
+            "launcher": "scripts/run_claude_code_workflow_model_condition.py"
+          }
+        },
+        "dependencies": {
+          "command": "uv sync --group test --frozen",
+          "command_sha256": "cef23fd45902c23f8b3e89b7c6360a401eb49c17cf36d742e5b625d5593c911b",
+          "lockfiles": [
+            {
+              "path": "uv.lock",
+              "snapshot_sha256": "fbf1d7a9c84b658a2433035221ba18c57508c254d711a06f305e2f610839a45f",
+              "current_fixture_sha256": null
+            }
+          ]
+        },
+        "agent_condition": {
+          "runtime_id": "claude-code",
+          "provider": "anthropic",
+          "model": "claude-sonnet-5",
+          "model_condition_id": "claude-code-anthropic-sonnet-5-high",
+          "reasoning_effort": "high",
+          "runtime_version_condition": "captured-at-run-and-bound-to-record"
+        },
+        "isolation": {
+          "prompt_delivery": "sequential-one-task-at-a-time",
+          "seed_delivery_mode": "preseeded-composite",
+          "future_tasks_visible": false,
+          "future_seed_regressions_visible": true,
+          "controller_verification": "final-only",
+          "controller_verifier_scripts_and_canonical_copies_model_visible": false,
+          "model_visible_acceptance_asset_paths": [],
+          "model_concealed_paths": []
+        },
+        "baseline_pool_reference": {
+          "protocol_version": "baseline-pool-v1",
+          "protocol_fingerprint": "ab14b9edcf57",
+          "comparison_policy": "paired baseline and treatment must share this baseline pool fingerprint and replicate"
+        },
+        "model_condition_override": {
+          "model_condition_id": "claude-code-anthropic-sonnet-5-high",
+          "runtime_id": "claude-code",
+          "provider": "anthropic",
+          "model": "claude-sonnet-5",
+          "reasoning_effort": "high",
+          "registry_status": "configured-provider-free",
+          "launcher": {
+            "path": "scripts/run_claude_code_workflow_model_condition.py",
+            "sha256": "6a3f81ff751cd8219cd93ee33753d6efb25fff779f6228dc3c822f98e2fa436f",
+            "condition_runtime_path": "scripts/workflow_model_condition_runtime.py",
+            "condition_runtime_sha256": "01479bd991417d9f5bb5fcef513e1beee3f1f05512ab818429cac24e0ebde866"
+          }
+        }
+      }
+    }
+  },
+  "provider_result": null,
+  "immutable_identity_receipt": true
+}
