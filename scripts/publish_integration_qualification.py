@@ -6,11 +6,16 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
+import sys
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
 ROOT = Path(__file__).resolve().parents[1]
+if str(ROOT) not in sys.path:
+    sys.path.insert(0, str(ROOT))
+
+from scripts import run_codex_fixture_evaluation as fixture
 
 
 def sha256(path: Path) -> str:
@@ -20,6 +25,31 @@ def sha256(path: Path) -> str:
 def require(condition: bool, message: str) -> None:
     if not condition:
         raise ValueError(message)
+
+
+def _tool_config_for_profile(profile_id: str) -> dict[str, Any] | None:
+    tool_id = fixture.PROFILE_TOOL_CONFIG_OVERRIDES.get(profile_id)
+    return fixture.TOOL_CONFIGS.get(str(tool_id)) if tool_id else None
+
+
+def mcp_handshake_passes(profile_id: str, handshake: dict[str, Any] | None) -> bool:
+    """Require a complete live MCP receipt whenever the effective profile exposes MCP."""
+    cfg = _tool_config_for_profile(profile_id)
+    requires_mcp = bool((cfg or {}).get("mcp_server"))
+    if not requires_mcp:
+        return True
+    if not isinstance(handshake, dict):
+        return False
+    return (
+        handshake.get("required") is True
+        and handshake.get("attempted") is True
+        and handshake.get("skipped") is not True
+        and handshake.get("passed") is True
+        and handshake.get("initialize_passed") is True
+        and handshake.get("tools_list_passed") is True
+        and isinstance(handshake.get("tool_names"), list)
+        and len(handshake["tool_names"]) > 0
+    )
 
 
 def main() -> int:
@@ -54,8 +84,7 @@ def main() -> int:
             "warmup": lane.get("tool_warmup_exit_code") in (None, 0),
         }
         handshake = lane.get("mcp_handshake")
-        if handshake is not None:
-            checks["mcp_handshake"] = handshake.get("passed") is True
+        checks["mcp_handshake"] = mcp_handshake_passes(key[1], handshake)
         if not all(checks.values()):
             failures.append({"sequence_id": key[0], "profile_id": key[1], "checks": checks})
         lane["protocol_path"] = job["protocol"]

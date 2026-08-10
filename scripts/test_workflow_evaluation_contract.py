@@ -4717,7 +4717,7 @@ class MatrixLifecycleContractTest(unittest.TestCase):
              mock.patch.object(matrix, "restore_protected_control_plane_files") as restore:
             result = matrix.run_validation(Path(tmp), sys.executable)
         self.assertTrue(result["passed"])
-        self.assertEqual(run.call_count, 5)
+        self.assertGreaterEqual(run.call_count, 8)
         restore.assert_called_once_with(ROOT)
 
     def test_protected_test_restore_recovers_staged_deletion_from_head(self) -> None:

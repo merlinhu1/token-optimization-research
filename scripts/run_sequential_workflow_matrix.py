@@ -2515,31 +2515,94 @@ def publish_ready_comparisons(
     return published
 
 
-PROTECTED_CONTROL_PLANE_FILES = workflow.PAID_LAUNCH_PROTECTED_FILES + (
-    Path("scripts/test_opencode_workflow_runtime.py"),
-)
+PROTECTED_CONTROL_PLANE_FILES = workflow.PAID_LAUNCH_PROTECTED_FILES
+
+
+@contextmanager
+def isolated_validation_test_checkout(root: Path = ROOT):
+    """Run contract tests from a disposable snapshot, never from the mutable controller worktree."""
+    verify_protected_control_plane_files(root)
+    temp_root = Path(tempfile.mkdtemp(prefix="workflow-validation-test-"))
+    checkout = temp_root / "checkout"
+    try:
+        subprocess.run(
+            ["git", "clone", "--quiet", "--no-local", str(root), str(checkout)],
+            cwd=root,
+            check=True,
+        )
+        diff = subprocess.run(
+            ["git", "diff", "--binary", "HEAD"],
+            cwd=root,
+            check=True,
+            stdout=subprocess.PIPE,
+        ).stdout
+        if diff:
+            subprocess.run(
+                ["git", "apply", "--binary", "-"],
+                cwd=checkout,
+                input=diff,
+                check=True,
+            )
+        untracked_output = subprocess.run(
+            ["git", "ls-files", "--others", "--exclude-standard"],
+            cwd=root,
+            check=True,
+            text=True,
+            stdout=subprocess.PIPE,
+        ).stdout or ""
+        untracked = untracked_output.splitlines()
+        for relative_text in untracked:
+            relative = Path(relative_text)
+            source = root / relative
+            destination = checkout / relative
+            if source.is_symlink():
+                destination.parent.mkdir(parents=True, exist_ok=True)
+                destination.unlink(missing_ok=True)
+                destination.symlink_to(source.readlink())
+            elif source.is_dir():
+                shutil.copytree(source, destination, symlinks=True, dirs_exist_ok=True)
+            elif source.is_file():
+                destination.parent.mkdir(parents=True, exist_ok=True)
+                shutil.copy2(source, destination)
+        yield checkout
+    finally:
+        chmod_tree(temp_root)
+        shutil.rmtree(temp_root, ignore_errors=True)
 
 
 def restore_protected_control_plane_files(root: Path = ROOT) -> None:
+    """Recover only missing protected files from HEAD for legacy callers/tests."""
     for relative in PROTECTED_CONTROL_PLANE_FILES:
-        if not (root / relative).is_file():
-            tracked = subprocess.run(
-                ["git", "cat-file", "-e", f"HEAD:{relative.as_posix()}"],
-                cwd=root,
-                text=True,
-                capture_output=True,
-                check=False,
-            )
-            if tracked.returncode != 0:
-                continue
-            subprocess.run(
-                [
-                    "git", "restore", "--source=HEAD", "--staged", "--worktree",
-                    "--", str(relative),
-                ],
-                cwd=root,
-                check=True,
-            )
+        path = root / relative
+        if path.is_file() and not path.is_symlink():
+            continue
+        tracked = subprocess.run(
+            ["git", "cat-file", "-e", f"HEAD:{relative.as_posix()}"],
+            cwd=root,
+            text=True,
+            capture_output=True,
+            check=False,
+        )
+        if tracked.returncode != 0:
+            continue
+        subprocess.run(
+            ["git", "restore", "--source=HEAD", "--staged", "--worktree", "--", relative.as_posix()],
+            cwd=root,
+            check=True,
+        )
+
+
+def verify_protected_control_plane_files(root: Path = ROOT) -> None:
+    missing = [
+        relative.as_posix()
+        for relative in PROTECTED_CONTROL_PLANE_FILES
+        if not (root / relative).is_file() or (root / relative).is_symlink()
+    ]
+    if missing:
+        raise RuntimeError(
+            "protected control-plane file is missing; refusing to mutate the worktree: "
+            + ", ".join(missing)
+        )
 
 
 def refresh_generated_runbook(root: Path = ROOT) -> None:
@@ -2739,6 +2802,7 @@ def controller_validation_python() -> str:
 
 
 def run_validation(summary_dir: Path, validation_python: str | None = None) -> dict[str, Any]:
+    restore_protected_control_plane_files(ROOT)
     truthmark_candidates = [
         shutil.which("truthmark"),
         "/opt/data/.local/bin/truthmark",
@@ -2761,18 +2825,35 @@ def run_validation(summary_dir: Path, validation_python: str | None = None) -> d
     results: list[dict[str, Any]] = []
     for idx, cmd in enumerate(commands, start=1):
         out = summary_dir / f"validation-{idx}-{safe_name(cmd[0])}.txt"
+        is_contract_test = len(cmd) > 1 and cmd[1] == "scripts/test_workflow_evaluation_contract.py"
+        command_cwd = ROOT
         with out.open("w") as log:
             try:
-                proc = subprocess.run(
-                    cmd, cwd=ROOT, text=True, stdout=log, stderr=subprocess.STDOUT, env=validation_env
-                )
+                if is_contract_test:
+                    with isolated_validation_test_checkout(ROOT) as test_checkout:
+                        command_cwd = test_checkout
+                        proc = subprocess.run(
+                            cmd,
+                            cwd=test_checkout,
+                            text=True,
+                            stdout=log,
+                            stderr=subprocess.STDOUT,
+                            env=validation_env,
+                        )
+                else:
+                    proc = subprocess.run(
+                        cmd,
+                        cwd=ROOT,
+                        text=True,
+                        stdout=log,
+                        stderr=subprocess.STDOUT,
+                        env=validation_env,
+                    )
                 return_code = proc.returncode
             except OSError as exc:
                 log.write(f"unable to execute {cmd[0]}: {exc}\n")
                 return_code = 127
-        results.append({"command": cmd, "exit_code": return_code, "output": str(out)})
-        if len(cmd) > 1 and cmd[1] == "scripts/test_workflow_evaluation_contract.py":
-            restore_protected_control_plane_files(ROOT)
+        results.append({"command": cmd, "cwd": str(command_cwd), "exit_code": return_code, "output": str(out)})
     return {"passed": all(item["exit_code"] == 0 for item in results), "results": results}
 
 
@@ -3258,7 +3339,7 @@ def main(argv: list[str] | None = None) -> int:
                 args.replicate_index,
                 published_comparisons,
             )
-        restore_protected_control_plane_files()
+        verify_protected_control_plane_files()
         refresh_generated_runbook()
         if not args.prepare_only and merge_summary.get("merged_session_count", 0):
             refresh_cumulative_usage_audit()
