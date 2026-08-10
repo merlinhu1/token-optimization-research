@@ -81,7 +81,7 @@ CLAUDE_ANTHROPIC_PREPARATION_REL = Path(
     "sources/evaluations/audits/claude-code-anthropic-sonnet-5-high-lifecycle-v1-protocol-preparation-20260808.json"
 )
 CLAUDE_ANTHROPIC_AUTHORIZATION_REL = Path(
-    "sources/evaluations/audits/claude-code-anthropic-sonnet-5-high-lifecycle-v1-baseline-authorization-20260808.json"
+    "sources/evaluations/audits/claude-code-anthropic-sonnet-5-high-lifecycle-v1-baseline-authorization-20260810.json"
 )
 CLAUDE_ANTHROPIC_ATTEMPT_DIR = Path(
     "sources/evaluations/audits/claude-code-anthropic-sonnet-5-high-lifecycle-v1-attempts"
