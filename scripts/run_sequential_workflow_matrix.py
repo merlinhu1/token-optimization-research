@@ -579,7 +579,10 @@ def claude_baseline_run_gate(
             return False, f"unreadable direct-Anthropic Claude Code preparation authority: {exc}"
         condition = preparation.get("model_condition", {})
         if (
-            preparation.get("status") != "frozen-provider-free-protocols-account-pending"
+            preparation.get("status") not in {
+                "frozen-provider-free-protocols-account-pending",
+                "repaired-provider-free-protocols-account-pending",
+            }
             or condition != {**expected_model, "runtime_version": "2.1.220"}
         ):
             return False, "direct-Anthropic Claude Code preparation authority does not match the frozen model identity"
