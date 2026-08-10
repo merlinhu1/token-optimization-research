@@ -8,7 +8,7 @@
   "model_condition_id": "claude-code-anthropic-sonnet-5-high",
   "provider": "anthropic",
   "runtime": "claude-code",
-  "failure_class": "agent_process_terminated_exit_143_cause_unconfirmed",
+  "failure_class": "provider_session_limit_interruption",
   "codex_exit_codes": [
     143
   ],
@@ -17,7 +17,7 @@
   ],
   "provider_usage_attribution": "none-attributable",
   "reported_total_provider_tokens": 0,
-  "usage_interpretation": "The Claude task process exited 143 before producing assistant usage events; the evaluator record contains only a zero-usage final result. The termination cause is not established from retained evidence. This is not evidence of zero provider spend.",
+  "usage_interpretation": "The Claude task process was interrupted before producing assistant usage events. A later Graphify lane in the same campaign emitted the explicit Anthropic session-limit message; CodeScope’s retained three-event trace is consistent with that interruption, but reports no attributable tokens itself. This is not evidence of zero provider spend.",
   "strict_ingress": "failed",
   "artifacts_retained": "same compact four-file bundle in this directory",
   "attempt_receipt": "sources/evaluations/audits/claude-code-anthropic-sonnet-5-high-lifecycle-v1-treatment-attempts/beets-codescope-claude-code-mcp-v1-r0.json",
