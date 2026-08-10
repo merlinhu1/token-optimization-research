@@ -1,0 +1,54 @@
+{
+  "schema_version": 1,
+  "status": "rejected-after-partial-provider-execution-before-registry-publication",
+  "session_id": "retrieval-graphify-claude-code-skill-beets-20260810-p-ab14b9edcf57-r0",
+  "sequence_id": "beets-lifecycle-sequence-v1",
+  "profile_id": "retrieval-graphify-claude-code-skill-v1",
+  "replicate_index": 0,
+  "model_condition_id": "claude-code-anthropic-sonnet-5-high",
+  "provider": "anthropic",
+  "runtime": "claude-code",
+  "failure_class": "agent_process_failed_exit_1_after_partial_execution",
+  "codex_exit_codes": [
+    0,
+    1
+  ],
+  "task_outcomes": [
+    {
+      "task_alias": "task-01",
+      "agent_attempted": true,
+      "codex_exit_code": 0,
+      "accepted": true,
+      "verifier_passed": true
+    },
+    {
+      "task_alias": "task-02",
+      "agent_attempted": true,
+      "codex_exit_code": 1,
+      "accepted": true,
+      "verifier_passed": true
+    },
+    {
+      "task_alias": "task-03",
+      "agent_attempted": false,
+      "codex_exit_code": null,
+      "accepted": true,
+      "verifier_passed": true
+    }
+  ],
+  "provider_usage_attribution": "attributable-to-partial-run",
+  "reported_total_provider_tokens": 3820300,
+  "usage_breakdown": {
+    "fresh_input_tokens": 216885,
+    "cached_input_tokens": 3603096,
+    "cache_write_tokens": 216769,
+    "output_tokens": 319,
+    "reasoning_tokens": 0
+  },
+  "usage_interpretation": "Provider usage is attributable to the partial Claude trajectory. Task 1 and task 2 verifier checks passed, but task 2 exited 1 and task 3 was not attempted; strict ingress therefore rejected the incomplete session. This is not a completed evaluation result.",
+  "strict_ingress": "failed",
+  "artifacts_retained": "compact four-file bundle in this directory",
+  "attempt_receipt": "sources/evaluations/audits/claude-code-anthropic-sonnet-5-high-lifecycle-v1-treatment-attempts/beets-retrieval-graphify-claude-code-skill-v1-r0.json",
+  "manifest_sha256": "7699f73089ac0ac9dbbe66e67adbc0f0faacf7e0d54409eb729c0c2f3565598e",
+  "source_orchestrator": "workflow-matrix-20260810T033403359504Z-p3423937-r0"
+}
