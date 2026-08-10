@@ -2489,6 +2489,12 @@ def _claude_readme_config(
             },
         }
     )
+    if (claude_features or {}).get("mcp"):
+        config["mcp_handshake"] = {
+            "required": True,
+            "method": "initialize-and-tools-list",
+            "timeout_seconds": 120,
+        }
     if mcp_args is not None:
         config["mcp_args"] = mcp_args
     if env is not None:
@@ -2620,12 +2626,19 @@ TOOL_CONFIGS.update(
             "serena",
             lane_name="retrieval-serena-claude-code-mcp-v1",
             surface="claude-code-readme-setup+mcp",
-            install_commands=[[
-                "claude", "mcp", "add", "--scope", "user", "serena", "--",
-                str(UV_BIN), "tool", "run", "--from", str(SERENA_ROOT), "serena",
-                "start-mcp-server", "--context", "claude-code", "--project-from-cwd",
-            ]],
-            verify_commands=[[str(UV_BIN), "tool", "run", "--from", str(SERENA_ROOT), "serena", "--help"]],
+            install_commands=[
+                [str(UV_BIN), "tool", "run", "--from", str(SERENA_ROOT), "serena", "init"],
+                [
+                    "claude", "mcp", "add", "--scope", "user", "serena", "--",
+                    str(UV_BIN), "tool", "run", "--from", str(SERENA_ROOT), "serena",
+                    "start-mcp-server", "--transport", "stdio", "--context", "claude-code",
+                    "--mode", "no-onboarding", "--mode", "no-memories", "--project-from-cwd",
+                ],
+            ],
+            verify_commands=[
+                [str(UV_BIN), "tool", "run", "--from", str(SERENA_ROOT), "serena", "--help"],
+                ["claude", "mcp", "get", "serena"],
+            ],
             required_files=["{codex_home}/claude-config/.claude.json"],
             diff_exclude_paths=[".serena", ".mcp.json", ".claude", "CLAUDE.md"],
             mcp_args=[
@@ -2687,12 +2700,26 @@ TOOL_CONFIGS.update(
             "jcodemunch-mcp",
             lane_name="retrieval-jcodemunch-claude-code-mcp-v1",
             surface="claude-code-readme-init+mcp+policy+hooks+index",
-            install_commands=[[
-                str(UV_BIN), "tool", "run", "--from", str(JCODEMUNCH_WHEEL), "jcodemunch-mcp", "init",
-                "--client", "claude-code", "--claude-md", "project", "--hooks", "--index", "--audit",
-                "--yes", "--no-share-savings",
-            ]],
-            verify_commands=[[str(UV_BIN), "tool", "run", "--from", str(JCODEMUNCH_WHEEL), "jcodemunch-mcp", "--help"]],
+            install_commands=[
+                [
+                    str(UV_BIN), "tool", "run", "--from", str(JCODEMUNCH_WHEEL), "jcodemunch-mcp", "init",
+                    "--client", "claude-code", "--claude-md", "project", "--hooks", "--index", "--audit",
+                    "--yes", "--no-share-savings",
+                ],
+                [
+                    "/bin/bash", "-lc",
+                    "set -euo pipefail; "
+                    "claude mcp remove --scope local jcodemunch >/dev/null 2>&1 || true; "
+                    "claude mcp remove --scope user jcodemunch >/dev/null 2>&1 || true; "
+                    "claude mcp remove --scope project jcodemunch >/dev/null 2>&1 || true; "
+                    f"exec claude mcp add --scope user jcodemunch -- {UV_BIN} tool run --from {JCODEMUNCH_WHEEL} "
+                    "jcodemunch-mcp serve --transport stdio --log-level ERROR",
+                ],
+            ],
+            verify_commands=[
+                [str(UV_BIN), "tool", "run", "--from", str(JCODEMUNCH_WHEEL), "jcodemunch-mcp", "--help"],
+                ["claude", "mcp", "get", "jcodemunch"],
+            ],
             required_files=[
                 "{codex_home}/claude-config/.claude.json",
                 "{codex_home}/claude-config/settings.json",
@@ -3998,6 +4025,17 @@ def probe_mcp_handshake(
     cfg = active_tool_config(record, pid)
     handshake = (cfg or {}).get("mcp_handshake") or {}
     receipt_path = run_dir / "mcp-handshake.json"
+    if cfg and cfg.get("mcp_server") and not handshake:
+        result = {
+            "profile_id": pid,
+            "passed": False,
+            "required": True,
+            "attempted": False,
+            "skipped": False,
+            "errors": ["MCP profile is missing a required handshake contract"],
+        }
+        receipt_path.write_text(json.dumps(result, indent=2) + "\n")
+        return result
     required = bool(handshake.get("required"))
     attempt_required = bool(handshake.get("attempt_required", required))
     if not attempt_required:
@@ -4006,7 +4044,17 @@ def probe_mcp_handshake(
         return result
 
     assert cfg is not None
-    env = codex_env(codex_home, containerized=backend == "docker", cfg=cfg)
+    runtime_id = str((record.get("agent") or {}).get("runtime_id") or "codex-cli")
+    env = (
+        claude_env(
+            codex_home,
+            containerized=backend == "docker",
+            cfg=cfg,
+            provider=str((record.get("agent") or {}).get("provider") or "openrouter"),
+        )
+        if runtime_id == "claude-code"
+        else codex_env(codex_home, containerized=backend == "docker", cfg=cfg)
+    )
     env.update(tool_env_for_record(record, pid, codex_home))
     mounts = container_mounts_for_record(record, codex_home, include_repo=True, cfg=cfg)
     probe_script = ROOT / "scripts" / "probe_mcp_stdio.py"
