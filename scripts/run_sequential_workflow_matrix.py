@@ -1221,7 +1221,8 @@ def claude_anthropic_sonnet_treatment_attempt_path(
         sequence_id not in CLAUDE_LIFECYCLE_V1_SEQUENCE_ORDER
         or not profile_id
         or profile_id == "baseline-claude-code-no-mcp"
-        or replicate_index != 0
+        or type(replicate_index) is not int
+        or replicate_index < 0
     ):
         raise ValueError("direct-Anthropic Sonnet treatment identity is not authorized")
     lane = sequence_id.removesuffix("-lifecycle-sequence-v1")
