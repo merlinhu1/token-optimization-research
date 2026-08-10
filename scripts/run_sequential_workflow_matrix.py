@@ -86,6 +86,15 @@ CLAUDE_ANTHROPIC_AUTHORIZATION_REL = Path(
 CLAUDE_ANTHROPIC_ATTEMPT_DIR = Path(
     "sources/evaluations/audits/claude-code-anthropic-sonnet-5-high-lifecycle-v1-attempts"
 )
+CLAUDE_ANTHROPIC_AUTHORIZATION_BY_REPLICATE = {
+    0: Path(
+        "sources/evaluations/audits/claude-code-anthropic-sonnet-5-high-lifecycle-v1-baseline-authorization-20260808.json"
+    ),
+    1: CLAUDE_ANTHROPIC_AUTHORIZATION_REL,
+    2: Path(
+        "sources/evaluations/audits/claude-code-anthropic-sonnet-5-high-lifecycle-v1-baseline-authorization-20260810-r2.json"
+    ),
+}
 CLAUDE_ANTHROPIC_SONNET_TREATMENT_ATTEMPT_DIR = Path(
     "sources/evaluations/audits/claude-code-anthropic-sonnet-5-high-lifecycle-v1-treatment-attempts"
 )
@@ -111,11 +120,17 @@ def load_json(path: Path) -> dict[str, Any]:
     return json.loads(path.read_text())
 
 
-def direct_anthropic_campaign(model_condition_id: str | None) -> dict[str, Any] | None:
+def direct_anthropic_campaign(
+    model_condition_id: str | None,
+    replicate_index: int = 0,
+) -> dict[str, Any] | None:
     campaigns = {
         CLAUDE_ANTHROPIC_SONNET_5_HIGH_CONDITION_ID: {
             "preparation": CLAUDE_ANTHROPIC_PREPARATION_REL,
-            "authorization": CLAUDE_ANTHROPIC_AUTHORIZATION_REL,
+            "authorization": CLAUDE_ANTHROPIC_AUTHORIZATION_BY_REPLICATE.get(
+                replicate_index,
+                Path(f"sources/evaluations/audits/unsupported-anthropic-replicate-{replicate_index}.json"),
+            ),
             "attempt_dir": CLAUDE_ANTHROPIC_ATTEMPT_DIR,
             "campaign_id": "claude-code-anthropic-sonnet-5-high-lifecycle-v1",
             "model_condition": {
@@ -564,7 +579,7 @@ def claude_baseline_run_gate(
     root: Path = ROOT,
     model_condition_id: str | None = None,
 ) -> tuple[bool, str]:
-    campaign = direct_anthropic_campaign(model_condition_id)
+    campaign = direct_anthropic_campaign(model_condition_id, replicate_index)
     if campaign is not None:
         expected_model = campaign["model_condition"]
         preparation_rel = campaign["preparation"]
@@ -1330,7 +1345,7 @@ def run_flow_lane(
             root=ROOT,
         )
         direct_campaign = (
-            direct_anthropic_campaign(model_condition.get("id"))
+            direct_anthropic_campaign(model_condition.get("id"), replicate_index)
             if isinstance(model_condition, dict)
             else None
         )
@@ -1436,7 +1451,7 @@ def run_flow_lane(
         tmp,
         allow_auth_sync=(
             isinstance(model_condition, dict)
-            and direct_anthropic_campaign(model_condition.get("id")) is not None
+            and direct_anthropic_campaign(model_condition.get("id"), replicate_index) is not None
         ),
     )
     pass_fds: tuple[int, ...] = ()
