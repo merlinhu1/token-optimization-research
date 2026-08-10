@@ -392,10 +392,10 @@ def claude_lifecycle_v1_attempt_path(
     root: Path = ROOT,
     attempt_dir: Path = CLAUDE_LIFECYCLE_V1_ATTEMPT_DIR,
 ) -> Path:
-    if sequence_id not in CLAUDE_LIFECYCLE_V1_SEQUENCE_ORDER or replicate_index != 0:
+    if sequence_id not in CLAUDE_LIFECYCLE_V1_SEQUENCE_ORDER or type(replicate_index) is not int or replicate_index < 0:
         raise ValueError("Claude Code Lifecycle V1 attempt identity is not authorized")
     lane = sequence_id.removesuffix("-lifecycle-sequence-v1")
-    return root / attempt_dir / f"{lane}-r0.json"
+    return root / attempt_dir / f"{lane}-r{replicate_index}.json"
 
 
 def claude_lifecycle_v1_run_gate(
