@@ -8,7 +8,7 @@
   "model_condition_id": "claude-code-anthropic-sonnet-5-high",
   "provider": "anthropic",
   "runtime": "claude-code",
-  "failure_class": "agent_process_failed_exit_1_after_partial_execution",
+  "failure_class": "provider_session_limit_after_partial_execution",
   "codex_exit_codes": [
     0,
     1
@@ -45,7 +45,7 @@
     "output_tokens": 319,
     "reasoning_tokens": 0
   },
-  "usage_interpretation": "Provider usage is attributable to the partial Claude trajectory. Task 1 and task 2 verifier checks passed, but task 2 exited 1 and task 3 was not attempted; strict ingress therefore rejected the incomplete session. This is not a completed evaluation result.",
+  "usage_interpretation": "Provider usage is attributable to the partial Claude trajectory. Task 1 completed and task 2 was interrupted by the explicit Anthropic session-limit result; task 3 was not attempted. Strict ingress therefore rejected the incomplete session. This is not a completed evaluation result.",
   "strict_ingress": "failed",
   "artifacts_retained": "compact four-file bundle in this directory",
   "attempt_receipt": "sources/evaluations/audits/claude-code-anthropic-sonnet-5-high-lifecycle-v1-treatment-attempts/beets-retrieval-graphify-claude-code-skill-v1-r0.json",
