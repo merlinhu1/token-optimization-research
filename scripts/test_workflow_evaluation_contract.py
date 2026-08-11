@@ -6939,7 +6939,7 @@ class BaselineV3LowComplexityContractTest(unittest.TestCase):
             prepare_only=False,
             profile_id="baseline-bare-codex",
             sequence_id=sequence["id"],
-            replicate_index=2,
+            replicate_index=3,
         )
         with mock.patch.object(runner, "load_sequence", return_value=sequence), \
              mock.patch.object(runner, "acquire_provider_production_lock") as acquire_lock, \
@@ -7527,7 +7527,7 @@ class BaselineV3LowComplexityContractTest(unittest.TestCase):
         self.assertTrue((ROOT / runner.BASELINE_REPLICATION_AUTHORITY_REL).is_file())
         for sequence_id in runner.active_sequence_ids():
             sequence = runner.load_sequence(sequence_id)
-            for replicate_index in (2, 3, 4):
+            for replicate_index in (3, 4):
                 with self.assertRaisesRegex(ValueError, "requires explicit authority"):
                     runner.baseline_replication_binding(sequence, replicate_index, ROOT)
 

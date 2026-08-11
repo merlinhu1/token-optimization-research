@@ -918,8 +918,20 @@ def baseline_pilot_attempt_receipt_path(seq: dict[str, Any], root: Path = ROOT) 
 
 
 BASELINE_REPLICATION_AUTHORITY_REL = "sources/evaluations/audits/current-low-complexity-baseline-r1-r2-authorization-20260728.json"
-LIFECYCLE_V1_REPLICATION_AUTHORITY_REL = "sources/evaluations/audits/lifecycle-v1-codex-sol-high-r1-authorization-20260802.json"
-LIFECYCLE_V1_REPLICATION_ATTEMPT_DIR = "sources/evaluations/audits/lifecycle-v1-codex-sol-high-r1-attempts"
+LIFECYCLE_V1_R1_REPLICATION_AUTHORITY_REL = "sources/evaluations/audits/lifecycle-v1-codex-sol-high-r1-authorization-20260802.json"
+LIFECYCLE_V1_R2_REPLICATION_AUTHORITY_REL = "sources/evaluations/audits/lifecycle-v1-codex-sol-high-r2-authorization-20260811.json"
+LIFECYCLE_V1_REPLICATION_AUTHORITY_RELS = {
+    1: LIFECYCLE_V1_R1_REPLICATION_AUTHORITY_REL,
+    2: LIFECYCLE_V1_R2_REPLICATION_AUTHORITY_REL,
+}
+LIFECYCLE_V1_REPLICATION_AUTHORITY_REL = LIFECYCLE_V1_R1_REPLICATION_AUTHORITY_REL
+LIFECYCLE_V1_R1_REPLICATION_ATTEMPT_DIR = "sources/evaluations/audits/lifecycle-v1-codex-sol-high-r1-attempts"
+LIFECYCLE_V1_R2_REPLICATION_ATTEMPT_DIR = "sources/evaluations/audits/lifecycle-v1-codex-sol-high-r2-attempts"
+LIFECYCLE_V1_REPLICATION_ATTEMPT_DIRS = {
+    1: LIFECYCLE_V1_R1_REPLICATION_ATTEMPT_DIR,
+    2: LIFECYCLE_V1_R2_REPLICATION_ATTEMPT_DIR,
+}
+LIFECYCLE_V1_REPLICATION_ATTEMPT_DIR = LIFECYCLE_V1_R1_REPLICATION_ATTEMPT_DIR
 OPENROUTER_LIFECYCLE_V1_AUTHORITY_REL = "sources/evaluations/audits/lifecycle-v1-opencode-openrouter-sol-high-r0-authorization-20260803.json"
 OPENROUTER_LIFECYCLE_V1_ATTEMPT_DIR = "sources/evaluations/audits/lifecycle-v1-opencode-openrouter-sol-high-r0-attempts"
 DIRECT_CLAUDE_LIFECYCLE_V1_AUTHORITY_REL = "sources/evaluations/audits/claude-code-anthropic-sonnet-5-high-lifecycle-v1-baseline-authorization-20260808.json"
@@ -1052,12 +1064,18 @@ def load_current_baseline_replication_authority(root: Path = ROOT) -> dict[str, 
     return authority
 
 
-def load_lifecycle_v1_replication_authority(root: Path = ROOT) -> dict[str, Any]:
-    """Strictly validate the owner-authorized two-lane Lifecycle V1 r1 baseline."""
+def load_lifecycle_v1_replication_authority(
+    root: Path = ROOT,
+    replicate_index: int = 1,
+) -> dict[str, Any]:
+    """Strictly validate one owner-authorized two-lane Lifecycle V1 Codex baseline replication."""
+    authority_rel = LIFECYCLE_V1_REPLICATION_AUTHORITY_RELS.get(replicate_index)
+    if authority_rel is None:
+        raise ValueError(f"Lifecycle V1 replicate {replicate_index} requires explicit authority")
     path = repository_authority_path(
         root,
-        LIFECYCLE_V1_REPLICATION_AUTHORITY_REL,
-        "Lifecycle V1 r1 baseline replication authorization",
+        authority_rel,
+        f"Lifecycle V1 r{replicate_index} baseline replication authorization",
     )
     try:
         authority = json.loads(path.read_text(), object_pairs_hook=_json_without_duplicate_keys)
@@ -1066,7 +1084,7 @@ def load_lifecycle_v1_replication_authority(root: Path = ROOT) -> dict[str, Any]
             object_pairs_hook=_json_without_duplicate_keys,
         )
     except (OSError, ValueError, json.JSONDecodeError) as exc:
-        raise ValueError(f"Lifecycle V1 r1 replication authority is unreadable: {exc}") from exc
+        raise ValueError(f"Lifecycle V1 r{replicate_index} replication authority is unreadable: {exc}") from exc
     active_sequences = [
         item
         for item in sequence_doc.get("sequences", [])
@@ -1074,15 +1092,27 @@ def load_lifecycle_v1_replication_authority(root: Path = ROOT) -> dict[str, Any]
     ]
     expected_order = ["fastify-lifecycle-sequence-v1", "beets-lifecycle-sequence-v1"]
     records = authority.get("sequences")
+    expected_authorization = {
+        1: {
+            "campaign_id": "lifecycle-v1-codex-sol-high-r1-20260802",
+            "authorized_by_owner_message_id": "1533297158743265280",
+            "authorized_on": "2026-08-02",
+        },
+        2: {
+            "campaign_id": "lifecycle-v1-codex-sol-high-r2-20260811",
+            "authorized_by_owner_message_id": "1536770036717330594",
+            "authorized_on": "2026-08-11",
+        },
+    }[replicate_index]
     strict_header = (
         set(authority) == BASELINE_REPLICATION_TOP_LEVEL_KEYS
         and type(authority.get("schema_version")) is int
         and authority.get("schema_version") == 1
-        and authority.get("campaign_id") == "lifecycle-v1-codex-sol-high-r1-20260802"
-        and authority.get("authorized_by_owner_message_id") == "1533297158743265280"
-        and authority.get("authorized_on") == "2026-08-02"
+        and authority.get("campaign_id") == expected_authorization["campaign_id"]
+        and authority.get("authorized_by_owner_message_id") == expected_authorization["authorized_by_owner_message_id"]
+        and authority.get("authorized_on") == expected_authorization["authorized_on"]
         and authority.get("paid_baseline_replication_authorized") is True
-        and authority.get("authorized_replicate_indexes") == [1]
+        and authority.get("authorized_replicate_indexes") == [replicate_index]
         and all(type(item) is int for item in authority.get("authorized_replicate_indexes", []))
         and authority.get("sequence_order") == expected_order
         and [item.get("id") for item in active_sequences] == expected_order
@@ -1108,7 +1138,7 @@ def load_lifecycle_v1_replication_authority(root: Path = ROOT) -> dict[str, Any]
         and [item.get("sequence_id") for item in records] == expected_order
     )
     if not strict_header or not strict_records:
-        raise ValueError("Lifecycle V1 r1 replication authority has invalid authorization, scope, budget, model, or policy")
+        raise ValueError(f"Lifecycle V1 r{replicate_index} replication authority has invalid authorization, scope, budget, model, or policy")
     assert isinstance(records, list)
     for sequence, binding in zip(active_sequences, records, strict=True):
         identity, protocol = current_baseline_v2_protocol(sequence, sequence["mistake_gate"], root)
@@ -1125,7 +1155,7 @@ def load_lifecycle_v1_replication_authority(root: Path = ROOT) -> dict[str, Any]
             "reasoning_effort": sequence.get("mistake_gate", {}).get("reasoning_effort"),
         }
         if binding != expected_binding or gate_model != authority["model_condition"]:
-            raise ValueError(f"Lifecycle V1 r1 replication authority has stale nested binding for {sequence.get('id')}")
+            raise ValueError(f"Lifecycle V1 r{replicate_index} replication authority has stale nested binding for {sequence.get('id')}")
     return authority
 
 
@@ -1349,9 +1379,7 @@ def baseline_replication_authority(
     root: Path = ROOT,
 ) -> dict[str, Any]:
     if seq.get("task_family_generation") == "lifecycle-v1":
-        if replicate_index != 1:
-            raise ValueError(f"Lifecycle V1 replicate {replicate_index} requires explicit authority")
-        return load_lifecycle_v1_replication_authority(root)
+        return load_lifecycle_v1_replication_authority(root, replicate_index)
     if replicate_index == 3:
         if seq.get("id") != "beets-lifecycle-sequence-v0":
             raise ValueError("r3 replacement authority covers only beets-lifecycle-sequence-v0")
@@ -1393,7 +1421,10 @@ def baseline_replication_binding(
         raise ValueError(f"baseline replication model binding is stale for {seq.get('id')}")
     if seq.get("task_family_generation") == "lifecycle-v1":
         slug = str(seq.get("id", "")).removesuffix("-lifecycle-sequence-v1")
-        receipt_rel = f"{LIFECYCLE_V1_REPLICATION_ATTEMPT_DIR}/{slug}-r{replicate_index}.json"
+        attempt_dir = LIFECYCLE_V1_REPLICATION_ATTEMPT_DIRS.get(replicate_index)
+        if attempt_dir is None:
+            raise ValueError(f"no Lifecycle V1 Codex attempt directory for r{replicate_index}")
+        receipt_rel = f"{attempt_dir}/{slug}-r{replicate_index}.json"
     elif replicate_index == 3:
         receipt_rel = BEETS_R3_REPLACEMENT_ATTEMPT_REL
     else:
