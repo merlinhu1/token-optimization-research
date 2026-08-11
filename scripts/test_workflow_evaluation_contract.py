@@ -161,19 +161,23 @@ def retained_protocol_path(
 
 class ToolIsolationAuditTest(unittest.TestCase):
     def test_ponytail_product_authored_caveman_reference_is_not_cross_tool_use(self) -> None:
-        record = {
-            "setup": {
-                "tool_permissions": {
-                    "profile_id": "artifact-ponytail-codex-plugin-v1",
-                    "allowed_token_saving_tools": ["ponytail", "ponytail-codex-plugin-v1"],
+        for profile_id in (
+            "artifact-ponytail-codex-plugin-v1",
+            "artifact-ponytail-claude-code-plugin-v1",
+        ):
+            record = {
+                "setup": {
+                    "tool_permissions": {
+                        "profile_id": profile_id,
+                        "allowed_token_saving_tools": ["ponytail", profile_id],
+                    }
                 }
             }
-        }
-        forbidden, allowed = audit_tool_isolation.forbidden_for(record)
-        with tempfile.TemporaryDirectory() as tmp:
-            artifact = Path(tmp) / "events.jsonl"
-            artifact.write_text("Ponytail may be paired with Caveman for terse prose.\n")
-            self.assertEqual(audit_tool_isolation.scan_file(artifact, forbidden, allowed), [])
+            forbidden, allowed = audit_tool_isolation.forbidden_for(record)
+            with tempfile.TemporaryDirectory() as tmp:
+                artifact = Path(tmp) / "events.jsonl"
+                artifact.write_text("Ponytail may be paired with Caveman for terse prose.\n")
+                self.assertEqual(audit_tool_isolation.scan_file(artifact, forbidden, allowed), [])
 
         control = copy.deepcopy(record)
         control["setup"]["tool_permissions"]["profile_id"] = "baseline-bare-codex"

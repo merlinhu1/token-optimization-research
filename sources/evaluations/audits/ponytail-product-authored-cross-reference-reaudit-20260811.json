@@ -1,0 +1,118 @@
+{
+  "schema_version": 1,
+  "receipt_type": "provider-session-isolation-false-positive-reclassification",
+  "generated_at": "2026-08-11T02:44:10.407511Z",
+  "provider_calls": 0,
+  "profile_id": "artifact-ponytail-claude-code-plugin-v1",
+  "reason": "Ponytail official installed instructions contain the product-authored sentence recommending Caveman for terse prose; this transcript text is not Caveman installation or invocation. The Claude-specific profile is covered by the same explicit cross-reference exemption.",
+  "audit_policy": {
+    "script": "scripts/audit_tool_isolation.py",
+    "sha256": "ce1c104ec084b0f4c143746f8d3e698a141edbd68d0d3d43255ac038e00385d6",
+    "profile_authored_cross_reference_terms": [
+      "caveman"
+    ],
+    "provider_event_reaudit": "no external retrieval, no pass-through tool commands, no actual Caveman invocation"
+  },
+  "compact_bundles_rewritten": false,
+  "provider_usage_reused_without_change": true,
+  "original_rejection_receipt": "sources/evaluations/audits/claude-code-anthropic-sonnet-5-high-lifecycle-v1-rejected-paid-attempts/artifact-ponytail-claude-code-plugin-beets-20260810-p-ab14b9edcf57-r0/rejection-disposition.json",
+  "accepted_registry_session": "sources/evaluations/workflow-sessions/artifact-ponytail-claude-code-plugin-beets-20260810-p-ab14b9edcf57-r0",
+  "sessions": [
+    {
+      "session_id": "artifact-ponytail-claude-code-plugin-beets-20260810-p-ab14b9edcf57-r0",
+      "sequence_id": "beets-lifecycle-sequence-v1",
+      "replicate_index": 0,
+      "original_status": "rejected-after-completed-provider-execution-before-registry-publication",
+      "original_isolation_audit": {
+        "passed": false,
+        "forbidden_tool_hits": [
+          {
+            "term": "caveman",
+            "artifact": "/opt/data/eval-workflow-lanes/workflow-matrix-20260810T081957004162Z-p3512238-r0/beets-lifecycle-sequence-v1--artifact-ponytail-claude-code-plugin-v1/checkout/sources/evaluations/workflow-sessions/artifact-ponytail-claude-code-plugin-beets-20260810-p-ab14b9edcf57-r0/claude-events.jsonl",
+            "snippet": "\\n## Boundaries\\n\\nPonytail governs what you build, not how you talk (pair with Caveman for\\nterse prose). \\\"stop ponytail\\\" / \\\"normal mode\\\": revert. Level persists "
+          },
+          {
+            "term": "caveman",
+            "artifact": "/opt/data/eval-workflow-lanes/workflow-matrix-20260810T081957004162Z-p3512238-r0/beets-lifecycle-sequence-v1--artifact-ponytail-claude-code-plugin-v1/checkout/sources/evaluations/workflow-sessions/artifact-ponytail-claude-code-plugin-beets-20260810-p-ab14b9edcf57-r0/task-01-claude-events.jsonl",
+            "snippet": "\\n## Boundaries\\n\\nPonytail governs what you build, not how you talk (pair with Caveman for\\nterse prose). \\\"stop ponytail\\\" / \\\"normal mode\\\": revert. Level persists "
+          },
+          {
+            "term": "caveman",
+            "artifact": "/opt/data/eval-workflow-lanes/workflow-matrix-20260810T081957004162Z-p3512238-r0/beets-lifecycle-sequence-v1--artifact-ponytail-claude-code-plugin-v1/checkout/sources/evaluations/workflow-sessions/artifact-ponytail-claude-code-plugin-beets-20260810-p-ab14b9edcf57-r0/task-02-claude-events.jsonl",
+            "snippet": "\\n## Boundaries\\n\\nPonytail governs what you build, not how you talk (pair with Caveman for\\nterse prose). \\\"stop ponytail\\\" / \\\"normal mode\\\": revert. Level persists "
+          },
+          {
+            "term": "caveman",
+            "artifact": "/opt/data/eval-workflow-lanes/workflow-matrix-20260810T081957004162Z-p3512238-r0/beets-lifecycle-sequence-v1--artifact-ponytail-claude-code-plugin-v1/checkout/sources/evaluations/workflow-sessions/artifact-ponytail-claude-code-plugin-beets-20260810-p-ab14b9edcf57-r0/task-03-claude-events.jsonl",
+            "snippet": "\\n## Boundaries\\n\\nPonytail governs what you build, not how you talk (pair with Caveman for\\nterse prose). \\\"stop ponytail\\\" / \\\"normal mode\\\": revert. Level persists "
+          }
+        ],
+        "external_retrieval_hits": [],
+        "missing_artifacts": []
+      },
+      "re_audit": {
+        "passed": true,
+        "forbidden_tool_hits": [],
+        "external_retrieval_hits": [],
+        "pass_through_tool_command_hits": [],
+        "missing_artifacts": [],
+        "allowed_token_saving_tools": [
+          "caveman",
+          "ponytail"
+        ],
+        "stdout": "tool isolation audit passed"
+      },
+      "provider_usage": {
+        "measurement_source": "claude-code-stream-json-assistant-usage",
+        "fresh_input_tokens": 370614,
+        "cached_input_tokens": 3551814,
+        "cache_write_tokens": 370492,
+        "output_tokens": 404,
+        "reasoning_tokens": 0,
+        "total_provider_tokens": 3922832,
+        "weighted_token_cost": 728219.4,
+        "accounting_basis": "Claude Code provider usage; weighted cost = fresh input + 0.1 cached input + 6 output"
+      },
+      "task_outcomes": [
+        {
+          "task_alias": "task-01",
+          "agent_attempted": true,
+          "codex_exit_code": 0,
+          "accepted": true,
+          "verifier_passed": true
+        },
+        {
+          "task_alias": "task-02",
+          "agent_attempted": true,
+          "codex_exit_code": 0,
+          "accepted": true,
+          "verifier_passed": true
+        },
+        {
+          "task_alias": "task-03",
+          "agent_attempted": true,
+          "codex_exit_code": 0,
+          "accepted": true,
+          "verifier_passed": true
+        }
+      ],
+      "manifest_sha256": "0980bddfc81fdf8b46dddb3f32d1f9f9d815179bff9baa4368f102320036dff5",
+      "evidence_bundle_sha256": "94672584c9943205d89fcdbec65ddcddb2905e30420be9783284431d06a4d748",
+      "run_record_sha256": "c466ccfe18622ad9ba7a22ad452c9ccd366417bbdddc86b99706fcf95ae28f96",
+      "run_record_input_sha256": "ffe0081209fefb26e98b050fd0d3f27154609eff47c67ff774c6a18cb93b0d11",
+      "source_manifest_file_sha256": "0980bddfc81fdf8b46dddb3f32d1f9f9d815179bff9baa4368f102320036dff5",
+      "published_manifest_file_sha256": "8ff8860b002c89fc790f6e144cc7cc27c69e9d86392fcaa2cb03115de1a951dd",
+      "source_run_record_sha256": "c466ccfe18622ad9ba7a22ad452c9ccd366417bbdddc86b99706fcf95ae28f96",
+      "published_run_record_sha256": "6485b452d2fafc6708fc359301e2883fb95b6896d3ced8c857da19c7a1d4e88d"
+    }
+  ],
+  "summary": {
+    "sessions_reclassified": 1,
+    "all_reaudits_passed": true,
+    "total_provider_tokens": 3922832,
+    "rerun_required": false
+  },
+  "source_bundle_immutable": true,
+  "published_copy_run_record_corrected": true,
+  "published_copy_manifest_recomputed": true
+}
