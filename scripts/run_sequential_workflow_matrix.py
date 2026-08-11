@@ -95,6 +95,9 @@ CLAUDE_ANTHROPIC_AUTHORIZATION_BY_REPLICATE = {
         "sources/evaluations/audits/claude-code-anthropic-sonnet-5-high-lifecycle-v1-baseline-authorization-20260810-r2.json"
     ),
 }
+CLAUDE_ANTHROPIC_SONNET_R1_RECOVERY_AUTHORITY_REL = Path(
+    "sources/evaluations/audits/claude-code-anthropic-sonnet-5-high-lifecycle-v1-r1-fastify-no-provider-recovery-authorization-20260811.json"
+)
 CLAUDE_ANTHROPIC_SONNET_TREATMENT_ATTEMPT_DIR = Path(
     "sources/evaluations/audits/claude-code-anthropic-sonnet-5-high-lifecycle-v1-treatment-attempts"
 )
@@ -536,6 +539,7 @@ def reserve_claude_lifecycle_v1_attempt(
     authority_rel: Path = CLAUDE_LIFECYCLE_V1_AUTHORITY_REL,
     attempt_dir: Path = CLAUDE_LIFECYCLE_V1_ATTEMPT_DIR,
     owner_authorization_message_id: str = "1533397324384964609",
+    allow_existing_recovery: bool = False,
 ) -> Path:
     """Reserve one immutable Claude Code Lifecycle V1 identity before a lane clone."""
     if (
@@ -549,7 +553,16 @@ def reserve_claude_lifecycle_v1_attempt(
     condition = model_condition or CLAUDE_LIFECYCLE_V1_MODEL_CONDITION
     path = claude_lifecycle_v1_attempt_path(sequence_id, replicate_index, root, attempt_dir)
     if path.exists():
-        raise FileExistsError(f"immutable Claude Code Lifecycle V1 attempt receipt already exists: {path}")
+        if not (
+            allow_existing_recovery
+            and claude_anthropic_sonnet_r1_recovery_authorized(
+                sequence_id,
+                replicate_index,
+                root,
+            )
+        ):
+            raise FileExistsError(f"immutable Claude Code Lifecycle V1 attempt receipt already exists: {path}")
+        return path
     payload = {
         "schema_version": 1,
         "attempt_status": "reserved-before-provider-task",
@@ -570,6 +583,88 @@ def reserve_claude_lifecycle_v1_attempt(
     }
     workflow.atomic_create_json(path, payload)
     return path
+
+
+def claude_anthropic_sonnet_r1_recovery_authorized(
+    sequence_id: str,
+    replicate_index: int,
+    root: Path = ROOT,
+) -> bool:
+    """Authorize only the owner-directed recovery of the invalid Fastify r1 reservation."""
+    if sequence_id != "fastify-lifecycle-sequence-v1" or replicate_index != 1:
+        return False
+    receipt_rel = (
+        CLAUDE_ANTHROPIC_ATTEMPT_DIR
+        / "fastify-r1.json"
+    ).as_posix()
+    receipt_path = root / receipt_rel
+    recovery_path = root / CLAUDE_ANTHROPIC_SONNET_R1_RECOVERY_AUTHORITY_REL
+    original_authority_path = root / CLAUDE_ANTHROPIC_AUTHORIZATION_BY_REPLICATE[1]
+    try:
+        receipt_raw = receipt_path.read_bytes()
+        receipt = json.loads(receipt_raw)
+        recovery = load_json(recovery_path)
+        original_authority = load_json(original_authority_path)
+        registry = load_json(root / "data/workflow-sessions.json")
+    except (OSError, UnicodeDecodeError, ValueError, json.JSONDecodeError):
+        return False
+    matching_sessions = [
+        session
+        for session in registry.get("sessions", [])
+        if (
+            session.get("task_sequence", {}).get("sequence_id") == sequence_id
+            and session.get("replicate_index") == replicate_index
+            and session.get("profile", {}).get("profile_id") == "baseline-claude-code-no-mcp"
+            and session.get("agent", {}).get("model_condition_id")
+            == CLAUDE_ANTHROPIC_SONNET_5_HIGH_CONDITION_ID
+        )
+    ]
+    expected_owner = {
+        "source": "discord",
+        "message_id": "1536722705674666125",
+        "request": "We will rerun r1. clear the invalid occupant, prepare for claude code r1 run. once done, run it",
+        "authorized_action": "one serialized Claude Code Sonnet/high Lifecycle V1 r1 Fastify+Beets recovery run",
+    }
+    expected_contract = {
+        "sequence_id": sequence_id,
+        "replicate_index": 1,
+        "profile_id": "baseline-claude-code-no-mcp",
+        "model_condition_id": CLAUDE_ANTHROPIC_SONNET_5_HIGH_CONDITION_ID,
+        "model": "claude-sonnet-5",
+        "reasoning_effort": "high",
+        "original_attempt_receipt_path": receipt_rel,
+        "original_attempt_receipt_sha256": hashlib.sha256(receipt_raw).hexdigest(),
+        "provider_execution_disposition": "reservation-only-no-canonical-session-or-usage-evidence",
+        "authorized_provider_run_count": 1,
+        "same_replicate_recovery": True,
+    }
+    expected_receipt = {
+        "attempt_status": "reserved-before-provider-task",
+        "task_family_generation": "lifecycle-v1",
+        "sequence_id": sequence_id,
+        "replicate_index": 1,
+        "profile_id": "baseline-claude-code-no-mcp",
+        "model_condition_id": CLAUDE_ANTHROPIC_SONNET_5_HIGH_CONDITION_ID,
+        "model": "claude-sonnet-5",
+        "reasoning_effort": "high",
+        "provider_result": None,
+        "immutable_identity_receipt": True,
+    }
+    return bool(
+        isinstance(receipt, dict)
+        and all(receipt.get(key) == value for key, value in expected_receipt.items())
+        and receipt.get("authority_path") == str(CLAUDE_ANTHROPIC_AUTHORIZATION_BY_REPLICATE[1])
+        and recovery.get("schema_version") == 1
+        and recovery.get("status") == "owner-authorized-no-provider-recovery"
+        and recovery.get("owner_recovery_authorization") == expected_owner
+        and recovery.get("recovery_contract") == expected_contract
+        and original_authority.get("status") == "owner-authorized-provider-run"
+        and original_authority.get("authorized_replicate_index") == 1
+        and original_authority.get("provider_calls") == 0
+        and original_authority.get("provider_tokens") == 0
+        and original_authority.get("completed_sequences") == []
+        and not matching_sessions
+    )
 
 
 def claude_baseline_run_gate(
@@ -678,7 +773,15 @@ def claude_baseline_run_gate(
         except ValueError as exc:
             return False, str(exc)
         if receipt.exists():
-            return False, f"direct-Anthropic Claude Code identity is occupied by immutable attempt receipt: {receipt.relative_to(root)}"
+            if not claude_anthropic_sonnet_r1_recovery_authorized(
+                sequence_id,
+                replicate_index,
+                root,
+            ):
+                return False, f"direct-Anthropic Claude Code identity is occupied by immutable attempt receipt: {receipt.relative_to(root)}"
+            recovery_reason = "; owner-authorized same-replicate recovery cleared reservation-only Fastify r1 occupant"
+        else:
+            recovery_reason = ""
         occupied = next(
             (
                 session
@@ -692,7 +795,7 @@ def claude_baseline_run_gate(
         )
         if occupied is not None:
             return False, f"direct-Anthropic Claude Code identity is already occupied by session {occupied.get('session_id')}"
-        return True, f"owner-authorized direct-Anthropic Claude Code {expected_model['model']}/high baseline is unoccupied"
+        return True, f"owner-authorized direct-Anthropic Claude Code {expected_model['model']}/high baseline is unoccupied{recovery_reason}"
     if sequence_id in CLAUDE_LIFECYCLE_V1_SEQUENCE_ORDER:
         return claude_lifecycle_v1_run_gate(registry, sequence_id, replicate_index, root)
     path = root / CLAUDE_BASELINE_AUTHORITY_REL
@@ -1375,6 +1478,14 @@ def run_flow_lane(
                 "user-request-current-session"
                 if direct_campaign is not None
                 else "1533397324384964609"
+            ),
+            allow_existing_recovery=(
+                direct_campaign is not None
+                and claude_anthropic_sonnet_r1_recovery_authorized(
+                    sequence_id,
+                    replicate_index,
+                    ROOT,
+                )
             ),
         )
     if (
