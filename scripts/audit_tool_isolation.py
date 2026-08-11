@@ -41,6 +41,7 @@ PROFILE_AUTHORED_CROSS_REFERENCE_TERMS = {
     # for terse prose. That product-authored text is not evidence that the
     # Caveman treatment was installed or invoked in a Ponytail lane.
     "artifact-ponytail-codex-plugin-v1": {"caveman"},
+    "artifact-ponytail-claude-code-plugin-v1": {"caveman"},
 }
 NETWORK_CLIENT_PATTERN = re.compile(
     r"(?:^|[;&|]\s*|\b(?:lowfat|sudo|env)\s+)(?P<client>curl|wget)\b",
