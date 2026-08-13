@@ -46,15 +46,29 @@ Do not finish an evaluation run with stale `ready-not-run`, `no production resul
 
 ## Required checks
 
+Run `make check`. It is the executable definition of this gate and is what the `validate`
+GitHub Actions workflow runs, so the checklist cannot drift from what CI enforces:
+
+```bash
+make check
+```
+
+That target runs, in order:
+
 ```bash
 python3 scripts/update_workflow_runbook.py --check
-python3 scripts/validate_repository.py
 python3 scripts/test_workflow_evaluation_contract.py
+python3 scripts/validate_repository.py
 truthmark check --json
 truthmark index --json
 git diff --check
-git status --short
+git status --short   # compared before and after; the run fails if the checks changed the tree
 ```
+
+Repository validation gates every registry record on `schemas/workflow-session-record.schema.json`
+and fails closed when `jsonschema` is absent, so install `requirements-dev.txt` first. When a
+record shape legitimately changes, update the schema in the same change: it is enforced against
+all retained sessions, not just new ones.
 
 When task contracts change, regenerate the affected `qualification-lifecycle-v0.json`, update the generated runbook, and refresh only current v0 execution contracts.
 

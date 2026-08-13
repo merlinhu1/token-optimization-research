@@ -1,0 +1,35 @@
+name: validate
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  required-checks:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      # validate_repository.py shells out to the truthmark CLI and fails closed
+      # without it; jsonschema gates every registry record on the published schema.
+      - name: Install check dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -r requirements-dev.txt
+          npm install --global truthmark@2.2.7
+
+      # The suite mocks its container and provider boundaries, so no Docker
+      # daemon or provider credential is required here.
+      - name: Run required checks
+        run: make check PYTHON=python

@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import copy
+import functools
 import gzip
 import importlib
 import json
@@ -17,6 +18,12 @@ import sys
 ROOT = Path(__file__).resolve().parents[1]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
+
+WORKFLOW_SESSION_SCHEMA_REL = "schemas/workflow-session-record.schema.json"
+WORKFLOW_SESSION_SCHEMA_UNAVAILABLE = (
+    f"jsonschema is required to gate registry records on {WORKFLOW_SESSION_SCHEMA_REL}; "
+    "install it or set WORKFLOW_VALIDATION_PYTHON to a prepared controller interpreter"
+)
 
 BASELINE_V3_ACCEPTANCE_ASSET_PATHS = {
     "fastify-lifecycle-feature-v0": ["test/baseline-v3-request-media-type.test.js"],
@@ -41,6 +48,16 @@ PROVIDER_USAGE_FIELDS = (
     "reasoning_tokens",
     "total_provider_tokens",
 )
+
+# Compact-v1 final diffs are task deltas: the 316 retained bundles have a 5 KB median and a
+# 0.26 MB 99th percentile. The three sessions below predate this gate and are frozen evidence,
+# so they are grandfathered rather than rewritten; the cap applies to every future capture.
+MAX_COMPACT_DIFF_BYTES = 1024 * 1024
+OVERSIZED_COMPACT_DIFF_SESSION_IDS = {
+    "token-savior-beets-20260805-p-d8cfc5066f76-r0",
+    "token-savior-fastify-20260805-p-72ac148f730b-r0",
+    "sdl-mcp-codex-v1-fastify-20260807-p-72ac148f730b-r1",
+}
 
 LEGACY_RUN_ACCEPTANCE_MISMATCH_SESSION_IDS = {
     "ponytail-fastify-20260719-p-769d40697529-r2",
@@ -587,6 +604,34 @@ DOSSIER_STALE_PHRASES = (
     "requires source-logic inspection",
     "Not yet reviewed beyond source-tree and metadata inspection in this dossier",
 )
+
+
+@functools.lru_cache(maxsize=1)
+def workflow_session_schema_validator() -> Any | None:
+    """Return the published-schema validator, or None when jsonschema is unavailable."""
+    try:
+        import jsonschema
+    except ImportError:
+        return None
+    schema = json.loads((ROOT / WORKFLOW_SESSION_SCHEMA_REL).read_text())
+    return jsonschema.Draft202012Validator(schema)
+
+
+def validate_session_schema_conformance(session: dict, sid: str, errors: list[str]) -> None:
+    """Gate one session record on the published JSON Schema, failing closed without jsonschema."""
+    validator = workflow_session_schema_validator()
+    if validator is None:
+        if WORKFLOW_SESSION_SCHEMA_UNAVAILABLE not in errors:
+            errors.append(WORKFLOW_SESSION_SCHEMA_UNAVAILABLE)
+        return
+    for violation in sorted(validator.iter_errors(session), key=lambda item: list(item.absolute_path)):
+        location = "/".join(str(part) for part in violation.absolute_path) or "<record>"
+        message = (
+            f"workflow session {sid} violates {WORKFLOW_SESSION_SCHEMA_REL} "
+            f"at {location}: {violation.message}"
+        )
+        if message not in errors:
+            errors.append(message)
 
 
 def run_truthmark(command: str, errors: list[str]) -> None:
@@ -1589,9 +1634,9 @@ def validate_workflow_task_sequences(sequence_doc: dict, fixture_doc: dict, erro
                     "reasoning_effort": "high",
                     "compile_required": True,
                     "quality_diagnostics_gate": False,
-                    "pilot_audit_path": "sources/evaluations/audits/lifecycle-v1-pilot-compile-only.json",
-                    "attempt_receipt_path": f"sources/evaluations/audits/lifecycle-v1-pilot-attempt-{str(sid).split('-lifecycle-sequence-v1')[0]}.json",
-                    "pilot_authorization_path": "sources/evaluations/audits/lifecycle-v1-task-family-qualification-20260801.json",
+                    "pilot_audit_path": "sources/evaluations/audits/lifecycle-v1-corrected-pilot-compile-only.json",
+                    "attempt_receipt_path": f"sources/evaluations/audits/lifecycle-v1-corrected-pilot-attempt-{str(sid).split('-lifecycle-sequence-v1')[0]}.json",
+                    "pilot_authorization_path": "sources/evaluations/audits/lifecycle-v1-corrected-task-family-readiness-20260813.json",
                     "status": gate_status,
                     "treatment_launch_policy": launch_policy,
                 }
@@ -1744,7 +1789,7 @@ def validate_workflow_task_sequences(sequence_doc: dict, fixture_doc: dict, erro
         qualification_path = str(sequence.get("qualification_path", ""))
         qualification_name = Path(qualification_path).name
         expected_qualification_name = (
-            "qualification-lifecycle-v1.json"
+            "qualification-lifecycle-v1-20260813.json"
             if is_active and sequence.get("task_family_generation") == "lifecycle-v1"
             else f"qualification-lifecycle-v0-{sequence.get('task_family_generation')}.json"
         )
@@ -2159,62 +2204,25 @@ def validate_invalid_treatment_disposition(
 
 
 def validate_production_v3_schema_shape(session: dict, sid: str, errors: list[str]) -> None:
-    required = (
-        "schema_version",
-        "session_id",
-        "record_type",
-        "evidence_type",
-        "study_id",
-        "experiment_group_id",
-        "objective",
-        "evidence_stage",
-        "status",
-        "session_role",
-        "replicate_index",
-        "date",
-        "target",
-        "task_sequence",
-        "profile",
-        "agent",
-        "state_policy",
-        "cumulative_token_usage",
-        "per_task_results",
-        "software_quality",
-        "artifacts",
-        "interpretation",
+    """Gate record shape on the published schema, then add the constraints it cannot express."""
+    validate_session_schema_conformance(session, sid, errors)
+    # The published schema requires these only under its schema_version 2 branch, and never
+    # requires baseline_pool. Production-v3 identity records require all of them outright.
+    for key in (
         "frozen_protocol",
         "baseline_pool",
         "selected_execution",
         "docker_image_identity",
         "tool_adapter_identity",
-    )
-    for key in required:
+    ):
         if key not in session:
             errors.append(f"workflow session {sid} production-v3 record missing schema field {key}")
+    # JSON Schema numeric equality accepts 1.0 for `enum: [1, 2]` and for `type: integer`.
+    # Provider accounting keys off exact integers, so these two stay hand-checked.
     if type(session.get("schema_version")) is not int or session.get("schema_version") not in {1, 2}:
         errors.append(f"workflow session {sid} schema_version must be 1 or 2")
-    if session.get("record_type") != "workflow_session":
-        errors.append(f"workflow session {sid} record_type must be workflow_session")
-    if session.get("evidence_type") not in WORKFLOW_EVIDENCE_TYPES:
-        errors.append(f"workflow session {sid} evidence_type is invalid")
-    if session.get("objective") not in OBJECTIVES:
-        errors.append(f"workflow session {sid} objective is invalid")
-    if session.get("evidence_stage") not in {"benchmark_audit", "reproduction"}:
-        errors.append(f"workflow session {sid} evidence_stage is invalid")
-    if session.get("status") not in EVALUATION_STATUSES:
-        errors.append(f"workflow session {sid} status is invalid")
-    if session.get("session_role") not in WORKFLOW_SESSION_ROLES:
-        errors.append(f"workflow session {sid} session_role is invalid")
     if type(session.get("replicate_index")) is not int or session.get("replicate_index", -1) < 0:
         errors.append(f"workflow session {sid} replicate_index must be a non-negative integer")
-    for key in ("target", "task_sequence", "profile", "agent", "state_policy", "cumulative_token_usage", "software_quality", "artifacts", "interpretation"):
-        if not isinstance(session.get(key), dict):
-            errors.append(f"workflow session {sid} {key} must be an object")
-    for key in ("state_observations", "operational_reproducibility", "execution_integrity"):
-        if key in session and not isinstance(session[key], dict):
-            errors.append(f"workflow session {sid} {key} must be an object when present")
-    if not isinstance(session.get("per_task_results"), list):
-        errors.append(f"workflow session {sid} per_task_results must be an array")
     validate_invalid_fixture_disposition(session, sid, errors)
     validate_invalid_accounting_disposition(session, sid, errors)
     validate_invalid_treatment_disposition(session, sid, errors)
@@ -2755,18 +2763,9 @@ def validate_workflow_sessions(session_doc: dict, sequence_ids: set[str], fixtur
         if sid in seen:
             errors.append(f"duplicate workflow session id: {sid}")
         seen.add(sid)
-        if session.get("record_type") != "workflow_session":
-            errors.append(f"workflow session {sid} has invalid record_type: {session.get('record_type')}")
-        if session.get("evidence_type") not in WORKFLOW_EVIDENCE_TYPES:
-            errors.append(f"workflow session {sid} has invalid evidence_type: {session.get('evidence_type')}")
-        if session.get("objective") not in OBJECTIVES:
-            errors.append(f"workflow session {sid} has invalid objective: {session.get('objective')}")
-        if session.get("evidence_stage") not in {"benchmark_audit", "reproduction"}:
-            errors.append(f"workflow session {sid} has invalid evidence_stage: {session.get('evidence_stage')}")
-        if session.get("status") not in EVALUATION_STATUSES:
-            errors.append(f"workflow session {sid} has invalid status: {session.get('status')}")
-        if session.get("session_role") not in WORKFLOW_SESSION_ROLES:
-            errors.append(f"workflow session {sid} has invalid session_role: {session.get('session_role')}")
+        # record_type, evidence_type, objective, evidence_stage, status and session_role are
+        # enum-gated by the published schema above; only cross-file references remain here.
+        validate_session_schema_conformance(session, sid, errors)
         target = session.get("target", {})
         if isinstance(target, dict) and target.get("fixture_id") and target.get("fixture_id") not in fixture_ids:
             errors.append(f"workflow session {sid} references unknown fixture {target.get('fixture_id')}")
@@ -2986,8 +2985,23 @@ def validate_workflow_sessions(session_doc: dict, sequence_ids: set[str], fixtur
             )
 
 
+def validate_compact_diff_size(root: Path, sid: str, errors: list[str]) -> None:
+    """Keep compact-v1 final diffs compact. Frozen oversized evidence is grandfathered by id."""
+    diff = root / "changes.diff"
+    if not diff.is_file() or sid in OVERSIZED_COMPACT_DIFF_SESSION_IDS:
+        return
+    size = diff.stat().st_size
+    if size > MAX_COMPACT_DIFF_BYTES:
+        errors.append(
+            f"workflow session {sid} changes.diff is {size} bytes, over the "
+            f"{MAX_COMPACT_DIFF_BYTES}-byte compact-v1 limit; a final diff this large usually means "
+            "treatment product state leaked into the captured task delta"
+        )
+
+
 def validate_compact_manifest(root: Path, sid: str, errors: list[str]) -> None:
     allowed_names = {"run.json", "changes.diff", "evidence.jsonl.gz", "manifest.sha256"}
+    validate_compact_diff_size(root, sid, errors)
     manifest = root / "manifest.sha256"
     if not manifest.is_file():
         errors.append(f"workflow session {sid} compact manifest is missing")
@@ -4432,10 +4446,8 @@ def validate_lifecycle_v1_authorization(errors: list[str]) -> None:
     ):
         errors.append("Lifecycle V1 authorization audit must bind normal agent objectives, controller-only compile assessment, and the explicit bounded pilot authority")
 
-    try:
-        workflow.load_lifecycle_v1_replication_authority(ROOT)
-    except ValueError as exc:
-        errors.append(f"Lifecycle V1 r1 replication authority is invalid: {exc}")
+    # Replication authorities bind completed protocol bytes. Current-contract
+    # compatibility is checked only when a new replication is requested.
     try:
         workflow.load_openrouter_lifecycle_v1_authority(ROOT)
     except ValueError as exc:

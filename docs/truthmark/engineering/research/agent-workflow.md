@@ -25,6 +25,9 @@ This workflow covers repository-local agent instructions, evaluation state chang
 - `.truthmark/config.yml` declares `docs/truthmark` as the Truthmark workspace.
 - Truthmark routes connect code, data, prompts, and documentation to bounded durable truth docs.
 - `scripts/validate_repository.py` and `scripts/update_workflow_runbook.py --check` enforce repository and generated-runbook consistency.
+- `scripts/generate_workflow_qualification.py` reports dependency installation, task boundaries, cumulative verification, and project-wide verification to stderr while preserving machine-readable qualification output. Long dependency and aggregate stages retain explicit time limits, so provider-free preparation remains observable instead of appearing hung.
+- `make check` is the executable definition of the `AGENTS.md` required-checks gate, and the `validate` GitHub Actions workflow runs the same target on push and pull request, so the checklist cannot drift from what CI enforces. The target runs the runbook drift check, both contract test suites (`scripts/test_workflow_evaluation_contract.py` and `scripts/test_claude_code_usage_contract.py`), repository validation, `truthmark check`/`index`, `git diff --check`, and a working-tree comparison that fails when the checks themselves change tracked or untracked state. The comparison runs whether or not the earlier checks passed, because a failing run is when a destructive fixture is most likely to have written into the checkout.
+- `scripts/validate_repository.py` gates every registry record on `schemas/workflow-session-record.schema.json` and fails closed with a single dependency error when `jsonschema` is absent. The schema is the shape authority; the validator retains only the constraints JSON Schema cannot express, such as rejecting `1.0` where an exact integer is required.
 - Direct-Anthropic Claude Code Lifecycle V1 preparation and the completed Fastify/Beets baseline pairs for Sonnet 5 and Opus 5 are recorded in frozen audit authority, registry, and compact evidence files; Opus used 30.12% more weighted token cost than Sonnet, so Sonnet is the selected model for treatment experiments. The owner account is accepted only through `TOKEN_EVAL_CLAUDE_ACCOUNT_HOME`, copied ephemerally into the lane, and never retained in evidence. Sonnet treatment execution is owner-authorized; thirteen Fastify and two Beets lanes are accepted, while thirteen Beets lanes remain unlaunched.
 - RepoWise 0.39.0 has frozen, provider-configured Codex and OpenCode Lifecycle V1 protocols for both active fixtures. The Codex V2 screen now retains two valid provider-backed sessions and matched comparisons; OpenCode remains unexecuted. Preparation creates no provider session and is not a token result. A `no-llm-provider` fallback is discarded before publication, and the deleted provider-free generation is retained only in its deletion receipt.
 
@@ -48,8 +51,8 @@ Apply the synchronization workflow after an evaluation run, qualification/protoc
 4. Reconcile active README, roadmap, current-findings, prompt, schema, skill, and Truthmark surfaces that report the changed state or policy.
 5. Search for the retired status, path, identifier, and policy wording. Delete a redundant document or template when it has no distinct maintained authority or current consumer.
 6. Preserve immutable protocol and evidence bytes; record current state in registries and generated views.
-7. Run `truthmark check --json`, `truthmark index --json`, `python3 scripts/validate_repository.py`, the workflow contract tests, and `git diff --check` as applicable.
-8. Inspect Git status after tests. Restore any required test deleted by a destructive fixture and ensure new evidence is tracked before handoff.
+7. Run `make check`. It runs `truthmark check --json`, `truthmark index --json`, `python3 scripts/validate_repository.py`, the workflow contract tests, and `git diff --check` in one gate.
+8. `make check` compares Git status before and after the run and fails when the checks changed the tree, so a required test deleted by a destructive fixture or untracked new evidence blocks the run instead of passing silently. Inspect the reported difference and restore or track the affected files before handoff.
 
 ## Outputs
 
@@ -64,6 +67,8 @@ Apply the synchronization workflow after an evaluation run, qualification/protoc
 - Decision (2026-06-26): Truthmark does not own raw `sources/**` evidence artifacts.
 - Decision (2026-07-16): `AGENTS.md` is maintained directly by the repository; ignored `instruction_targets` and nonexistent managed-block claims are removed.
 - Decision (2026-07-16): An evidence-changing action is incomplete until active state surfaces are synchronized or deleted.
+- Decision (2026-08-12): The required-checks gate has one executable definition, `make check`, which CI runs; the `AGENTS.md` list documents that target rather than standing as a separate hand-run checklist.
+- Decision (2026-08-12): `schemas/workflow-session-record.schema.json` is the shape authority for session records and is enforced against every retained session. Record shape and the schema change together; the validator keeps only constraints the schema cannot express.
 
 ## Non-goals
 

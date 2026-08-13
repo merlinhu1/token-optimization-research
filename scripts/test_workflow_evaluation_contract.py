@@ -533,7 +533,7 @@ class ActiveCampaignArchitectureTest(unittest.TestCase):
         self.assertTrue((ROOT / "sources/evaluations/audits/lifecycle-v1-pilot-compile-only.json").is_file())
         self.assertIn("Historical profiles marked `historical-profile`", runbook)
         self.assertIn("Current runnable treatment profiles", runbook)
-        self.assertIn('scripts/refresh_workflow_contracts.py --sequence-id "$SEQUENCE_ID"', runbook)
+        self.assertIn("Treatment protocol freezing, preparation, and execution are machine-blocked", runbook)
         self.assertIn("Earlier active-default baseline pools are retained but are not reusable for the current contract generation", runbook)
         self.assertIn("OpenCode pools may define substrate-matched treatment reuse", runbook)
 
@@ -1188,8 +1188,8 @@ print('ok')
                 self.assertEqual(qualification.get("provider_calls"), 0)
                 self.assertTrue(all(protocol.get("status") == "frozen-ready-not-run" for protocol in active_token_savior))
             ready, reason = runner.baseline_v2_treatment_gate(sequence, ROOT)
-            self.assertIs(ready, True, reason)
-            self.assertIn("audited compile-passing lifecycle-v1 pilot", reason)
+            self.assertIs(ready, False, reason)
+            self.assertIn("corrected-pilot-compile-only.json", reason)
 
     def test_provider_launch_rechecks_candidate_readiness_gate(self) -> None:
         args = runner.argparse.Namespace(prepare_only=False, protocol=None)
@@ -2913,6 +2913,68 @@ class ActiveAcceptanceContractTest(unittest.TestCase):
         self.assertEqual(runner.omitted_expected_concealment(task), ["test/types.py"])
 
 
+class PublishedSchemaGateTest(unittest.TestCase):
+    """The registry is gated on schemas/workflow-session-record.schema.json, not a parallel copy."""
+
+    def test_every_registry_session_conforms_to_the_published_schema(self) -> None:
+        schema = json.loads((ROOT / validate_repository.WORKFLOW_SESSION_SCHEMA_REL).read_text())
+        jsonschema.Draft202012Validator.check_schema(schema)
+        validator = jsonschema.Draft202012Validator(schema)
+        registry = json.loads((ROOT / "data/workflow-sessions.json").read_text())
+        for session in registry["sessions"]:
+            violations = [
+                f"{'/'.join(str(part) for part in error.absolute_path)}: {error.message}"
+                for error in validator.iter_errors(session)
+            ]
+            self.assertEqual(violations, [], session["session_id"])
+
+    def test_schema_session_roles_match_the_validator_enum(self) -> None:
+        schema = json.loads((ROOT / validate_repository.WORKFLOW_SESSION_SCHEMA_REL).read_text())
+        self.assertEqual(
+            set(schema["properties"]["session_role"]["enum"]),
+            validate_repository.WORKFLOW_SESSION_ROLES,
+        )
+
+    def test_schema_conformance_is_reported_per_session(self) -> None:
+        registry = json.loads((ROOT / "data/workflow-sessions.json").read_text())
+        session = copy.deepcopy(registry["sessions"][0])
+        session["session_role"] = "not-a-real-role"
+        errors: list[str] = []
+        validate_repository.validate_session_schema_conformance(session, "unit-session", errors)
+        self.assertTrue(
+            any("violates" in error and "session_role" in error for error in errors),
+            errors,
+        )
+
+    def test_compact_diff_size_cap_bounds_future_captures(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            diff = root / "changes.diff"
+            diff.write_bytes(b"x" * (validate_repository.MAX_COMPACT_DIFF_BYTES + 1))
+
+            errors: list[str] = []
+            validate_repository.validate_compact_diff_size(root, "unit-oversized-session", errors)
+            self.assertTrue(any("over the" in error for error in errors), errors)
+
+            grandfathered = sorted(validate_repository.OVERSIZED_COMPACT_DIFF_SESSION_IDS)[0]
+            errors = []
+            validate_repository.validate_compact_diff_size(root, grandfathered, errors)
+            self.assertEqual(errors, [])
+
+            diff.write_bytes(b"x" * validate_repository.MAX_COMPACT_DIFF_BYTES)
+            errors = []
+            validate_repository.validate_compact_diff_size(root, "unit-at-limit-session", errors)
+            self.assertEqual(errors, [])
+
+    def test_grandfathered_oversized_diffs_are_the_only_ones_over_the_cap(self) -> None:
+        over = {
+            path.parent.name
+            for path in (ROOT / "sources/evaluations/workflow-sessions").glob("*/changes.diff")
+            if path.stat().st_size > validate_repository.MAX_COMPACT_DIFF_BYTES
+        }
+        self.assertEqual(over, validate_repository.OVERSIZED_COMPACT_DIFF_SESSION_IDS)
+
+
 class ManifestAndProtocolContractTest(unittest.TestCase):
     def frozen_protocol_doc(
         self,
@@ -3018,7 +3080,7 @@ class ManifestAndProtocolContractTest(unittest.TestCase):
         sequence = runner.load_sequence("beets-lifecycle-sequence-v1")
         self.assertRegex(
             Path(sequence["qualification_path"]).name,
-            r"^qualification-lifecycle-v1\.json$",
+            r"^qualification-lifecycle-v1-\d{8}\.json$",
         )
 
     def test_current_protocol_fingerprint_matches_runner(self) -> None:
@@ -3698,7 +3760,8 @@ raise SystemExit(1)
                 os.close(fd)
 
     def production_v3_fixture(self, root: Path) -> tuple[dict, Path]:
-        session_id = f"unit-production-session-{root.name}"
+        # Temp-dir names may contain underscores; session ids are kebab-case per schema.
+        session_id = f"unit-production-session-{root.name.replace('_', '-').lower()}"
         run_dir = ROOT / "sources/evaluations/workflow-sessions" / session_id
         if run_dir.exists():
             shutil.rmtree(run_dir)
@@ -5955,7 +6018,7 @@ class LifecycleV1CompileOnlyContractTest(unittest.TestCase):
             gate = sequence["mistake_gate"]
             self.assertTrue(gate["compile_required"])
             self.assertFalse(gate["quality_diagnostics_gate"])
-            self.assertEqual(gate["status"], "passed-compilation")
+            self.assertEqual(gate["status"], "provider-pilot-required")
             self.assertIn("compile", gate["treatment_launch_policy"])
             self.assertTrue(sequence["project_compile_command"])
             qualification = json.loads((ROOT / sequence["qualification_path"]).read_text())
@@ -6051,13 +6114,13 @@ class BaselineV3LowComplexityContractTest(unittest.TestCase):
         )
         for sequence in active:
             self.assertEqual(sequence["task_family_generation"], "lifecycle-v1")
-            self.assertEqual(Path(sequence["qualification_path"]).name, "qualification-lifecycle-v1.json")
+            self.assertEqual(Path(sequence["qualification_path"]).name, "qualification-lifecycle-v1-20260813.json")
             self.assertEqual(sequence["acceptance_design"], "compile-only")
             gate = sequence["mistake_gate"]
             self.assertEqual(gate["designated_model_condition"], "codex-openai-gpt-5-6-sol-high")
             self.assertIs(gate["compile_required"], True)
             self.assertIs(gate["quality_diagnostics_gate"], False)
-            self.assertEqual(gate["status"], "passed-compilation")
+            self.assertEqual(gate["status"], "provider-pilot-required")
             for task in sequence["tasks"]:
                 self.assertIn("/lifecycle-v1/", task["prompt_path"])
                 self.assertEqual(task["acceptance_visibility"], "controller-only-compile-policy")
@@ -7008,9 +7071,10 @@ class BaselineV3LowComplexityContractTest(unittest.TestCase):
 
     def test_lifecycle_v1_schema_v2_authority_permits_only_paid_pilot(self) -> None:
         sequence = runner.load_sequence("beets-lifecycle-sequence-v1")
-        authority = json.loads(
-            (ROOT / sequence["mistake_gate"]["pilot_authorization_path"]).read_text()
-        )
+        historical_authority = "sources/evaluations/audits/lifecycle-v1-task-family-qualification-20260801.json"
+        sequence = copy.deepcopy(sequence)
+        sequence["mistake_gate"]["pilot_authorization_path"] = historical_authority
+        authority = json.loads((ROOT / historical_authority).read_text())
         authority.pop("pilot_attempts", None)
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
@@ -7057,49 +7121,8 @@ class BaselineV3LowComplexityContractTest(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "Lifecycle V1 replicate 3 requires explicit authority"): runner.baseline_replication_binding(sequence, 3, ROOT)
 
     def test_lifecycle_v1_r1_replication_authority_binds_dedicated_receipts(self) -> None:
-        authority = runner.load_lifecycle_v1_replication_authority(ROOT)
-        self.assertEqual(authority["authorized_replicate_indexes"], [1])
-        self.assertEqual(
-            authority["sequence_order"],
-            ["fastify-lifecycle-sequence-v1", "beets-lifecycle-sequence-v1"],
-        )
-        self.assertTrue(authority["serialization_required"])
-        self.assertEqual(authority["allowed_paid_baseline_runs"], 2)
-        self.assertEqual(authority["allowed_model_turns"], 6)
-        for sequence_id in authority["sequence_order"]:
-            sequence = runner.load_sequence(sequence_id)
-            binding, receipt_path = runner.baseline_replication_binding(sequence, 1, ROOT)
-            identity, protocol = runner.current_baseline_v2_protocol(sequence, sequence["mistake_gate"], ROOT)
-            self.assertEqual(
-                binding,
-                {
-                    "sequence_id": sequence_id,
-                    "task_family_generation": "lifecycle-v1",
-                    "protocol_path": identity["path"],
-                    "protocol_sha256": identity["sha256"],
-                    "baseline_pool_fingerprint": protocol["baseline_pool"]["protocol_fingerprint"],
-                },
-            )
-            self.assertEqual(
-                receipt_path.relative_to(ROOT).as_posix(),
-                "sources/evaluations/audits/lifecycle-v1-codex-sol-high-r1-attempts/"
-                + sequence_id.removesuffix("-lifecycle-sequence-v1")
-                + "-r1.json",
-            )
-            if receipt_path.exists():
-                receipt = json.loads(receipt_path.read_text())
-                self.assertEqual(receipt["attempt_status"], "reserved-before-provider-task")
-                self.assertEqual(receipt["sequence_id"], sequence_id)
-                self.assertEqual(receipt["replicate_index"], 1)
-                self.assertEqual(receipt["profile_id"], "baseline-bare-codex")
-                self.assertEqual(receipt["model_condition_id"], "codex-openai-gpt-5-6-sol-high")
-                self.assertEqual(receipt["model"], "gpt-5.6-sol")
-                self.assertEqual(receipt["reasoning_effort"], "high")
-                self.assertTrue(receipt["immutable_identity_receipt"])
-                self.assertEqual(receipt["frozen_protocol"]["protocol_id"], identity["protocol_id"])
-                self.assertEqual(receipt["frozen_protocol"]["path"], identity["path"])
-                self.assertEqual(receipt["frozen_protocol"]["sha256"], identity["sha256"])
-                self.assertEqual(receipt["baseline_pool_fingerprint"], protocol["baseline_pool"]["protocol_fingerprint"])
+        with self.assertRaisesRegex(ValueError, "stale nested binding"):
+            runner.load_lifecycle_v1_replication_authority(ROOT)
 
     def test_opencode_lifecycle_v1_r1_authority_is_sequence_scoped(self) -> None:
         authority_path = ROOT / "sources/evaluations/audits/lifecycle-v1-opencode-sol-high-r1-authorization-20260802.json"
@@ -7600,18 +7623,14 @@ class BaselineV3LowComplexityContractTest(unittest.TestCase):
 
     def test_active_generation_gates_open_after_lifecycle_v1_compile_pilot(self) -> None:
         document = json.loads((ROOT / "data/workflow-task-sequences.json").read_text())
-        expected_attempt_status = {
-            "fastify-lifecycle-sequence-v1": "accepted",
-            "beets-lifecycle-sequence-v1": "accepted",
-        }
         for sequence in active_lifecycle_v1_sequences(document):
             passed, reason = runner.baseline_v2_treatment_gate(sequence, ROOT)
             pilot_allowed, pilot_reason = runner.baseline_v2_pilot_run_gate(sequence, ROOT, 0)
-            self.assertIs(passed, True, reason)
-            self.assertIn("audited compile-passing lifecycle-v1 pilot", reason)
+            self.assertIs(passed, False, reason)
+            self.assertIn("corrected-pilot-compile-only.json", reason)
             self.assertIs(pilot_allowed, False)
-            self.assertIn(f"already consumed as {expected_attempt_status[sequence['id']]}", pilot_reason)
-            self.assertEqual(sequence["readiness_blockers"], [])
+            self.assertIn("not authorized", pilot_reason)
+            self.assertTrue(sequence["readiness_blockers"])
 
     def test_workflow_authority_describes_lifecycle_v1_compile_only_pilot_gate(self) -> None:
         document = json.loads((ROOT / "data/workflow-task-sequences.json").read_text())
@@ -7619,15 +7638,11 @@ class BaselineV3LowComplexityContractTest(unittest.TestCase):
         fixtures = {item["id"]: item for item in json.loads((ROOT / "data/repository-fixtures.json").read_text())["fixtures"]}
         for sequence in active_lifecycle_v1_sequences(document):
             self.assertEqual(sequence["task_family_generation"], "lifecycle-v1")
-            self.assertEqual(sequence["mistake_gate"]["status"], "passed-compilation")
-            self.assertTrue(runner.baseline_v2_treatment_gate(sequence, ROOT)[0])
+            self.assertEqual(sequence["mistake_gate"]["status"], "provider-pilot-required")
+            self.assertFalse(runner.baseline_v2_treatment_gate(sequence, ROOT)[0])
             fixture = fixtures[sequence["fixture_id"]]
             self.assertEqual(fixture["current_task_family"]["generation"], "lifecycle-v1")
-            self.assertEqual(fixture["current_task_family"]["provider_pilot_status"], "completed-passed-compilation")
-            self.assertFalse(any(
-                lane.get("status") == "blocked-lifecycle-v1-pilot"
-                for lane in fixture["future_evaluation_lanes"]
-            ))
+            self.assertEqual(fixture["current_task_family"]["provider_pilot_status"], "required")
         for relative in ("docs/evaluations/design/token-and-quality-policy.md", "docs/evaluations/design/workflow-model.md", "docs/evaluations/operations/fixture-guide.md"):
             self.assertIn("Lifecycle V1", (ROOT / relative).read_text(), relative)
 

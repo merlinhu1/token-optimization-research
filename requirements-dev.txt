@@ -1,0 +1,9 @@
+# Validation and contract-test dependencies.
+#
+# scripts/validate_repository.py gates every workflow session record on
+# schemas/workflow-session-record.schema.json and fails closed without this;
+# scripts/run_sequential_workflow_matrix.py refuses to start lanes unless the
+# controller interpreter can import it.
+#
+# The truthmark CLI is a separate npm dependency: npm install -g truthmark@2.2.7
+jsonschema>=4.20
