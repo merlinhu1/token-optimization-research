@@ -20,7 +20,7 @@ This contract governs active Lifecycle V1 provider-token samples, retained lifec
 
 ## Current Implementation Behavior
 
-- The active portfolio contains the Fastify and Beets Lifecycle V1 sequences. Terraform's owner-declared-invalid V1 r0 was removed under an invalidation receipt and has no active rerun or treatment path.
+- The active portfolio contains the Fastify and Beets Lifecycle V1 sequences. Their 2026-08-13 task bytes use a corrected Beets argument-splitting regression and bounded, focused-check prompts; the prior accepted runs remain immutable evidence for the superseded bytes and do not unlock treatments for the corrected contracts. Terraform's owner-declared-invalid V1 r0 was removed under an invalidation receipt and has no active rerun or treatment path.
 - Lifecycle V1 tasks seed authentic semantic regressions, require agents to complete normal software-engineering objectives correctly, and permit repository discovery without exposing controller scoring.
 - Controller-only component compilation gates per-task acceptance; a controller-only frozen project-wide compile command gates final workflow acceptance and treatment unlock. Tests, behavior, style, maintainability, exact source shape, and source review remain diagnostic. This internal boundary is never included in agent instructions.
 - The runner captures cumulative provider usage across one persistent sequential agent session.
@@ -38,7 +38,7 @@ This contract governs active Lifecycle V1 provider-token samples, retained lifec
 - RepoWise 0.39.0 is pinned and provider-configured qualified on Fastify and Beets for both its official Codex integration and a documented generic-MCP OpenCode ablation. Codex V2 retains two valid provider-backed sessions totaling 8,016,354 provider tokens: Fastify 5,690,107 (+342.03% versus matched bare Codex) and Beets 2,326,247 (+97.38%). These are single-replicate screening observations; OpenCode remains unexecuted. The earlier provider-free generation was deleted as invalid, and the runner discards any no-provider fallback before registry publication.
 - Canonical treatment profiles install every author-recommended Codex surface, including product-authored guidance, native skills/plugins, and reviewed hooks; reduced or prompt-emulated setups are ablations or invalid assignments, not product treatments.
 - The historical shared-runner qualification covered 45 fixture/profile bindings across 15 profiles with zero provider calls; those receipts do not authorize Lifecycle V1 treatments.
-- Thirty-eight provider-backed baseline records are retained under earlier frozen contracts; Fastify and Beets additionally retain one accepted Lifecycle V1 r0 pilot each, while the owner-declared-invalid Terraform V1 r0 was removed under its invalidation receipt.
+- Thirty-eight provider-backed baseline records are retained under earlier frozen contracts; Fastify and Beets additionally retain one accepted Lifecycle V1 r0 pilot each for the prior task bytes, while the owner-declared-invalid Terraform V1 r0 was removed under its invalidation receipt. The corrected active task contracts require a newly authorized pilot.
 
 ## Product Truth Links
 
@@ -125,6 +125,8 @@ Full runner and validator hashes remain frozen provenance. Reporting, registry, 
 
 Compact sessions retain `run.json`, `changes.diff`, `evidence.jsonl.gz`, and `manifest.sha256`. Structured verifier outcomes and optional quality reviews are preserved without selecting which token samples count.
 
+Every retained session record is gated on `schemas/workflow-session-record.schema.json`, which is enforced against all retained sessions rather than new records only; validation fails closed when `jsonschema` is unavailable. `changes.diff` is a task delta bounded to 1 MiB. Three frozen sessions predate that bound and are grandfathered by identity in `scripts/validate_repository.py`: `token-savior-beets-20260805-p-d8cfc5066f76-r0`, `token-savior-fastify-20260805-p-72ac148f730b-r0`, and `sdl-mcp-codex-v1-fastify-20260807-p-72ac148f730b-r1`. Their bytes are preserved rather than rewritten, because a diff that far above the 0.26 MB retained 99th percentile records treatment product state that leaked into the captured delta, and that observation is itself evidence.
+
 ## Maintenance Notes
 
 Update this document whenever token eligibility, comparison identity, provider accounting, or invalidity boundaries change. Do not reintroduce model-performance gates into token-sample eligibility.
@@ -162,6 +164,8 @@ Update this document whenever token eligibility, comparison identity, provider a
 ## Engineering Decisions
 
 Token comparisons use one final monotonic cumulative provider snapshot per distinct thread and compare only compatible baseline pools; weighted units are fresh input plus 0.1 times cached input plus 6 times output. Direct-account Claude matrices propagate refreshed OAuth bytes only after successful tasks and execute serially.
+
+- Decision (2026-08-13): A behaviorally inert seed or a model-facing prompt change mints new qualification and protocol identities. Completed sessions and their protocol bytes remain historical, and treatment gates close until the revised contract receives its own pilot.
 
 ## Current Behavior
 

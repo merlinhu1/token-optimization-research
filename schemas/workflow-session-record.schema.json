@@ -81,6 +81,7 @@
         "baseline",
         "individual_tool_treatment",
         "stack_treatment",
+        "replacement_runtime",
         "ablation",
         "sanity_check"
       ]
@@ -235,15 +236,61 @@
             "object",
             "null"
           ],
-          "required": [
-            "executable_token",
-            "resolved_path",
-            "realpath",
-            "sha256",
-            "metadata",
-            "version"
+          "description": "Either a pinned executable identity or, when the host integration generates the adapter, the install contract that produced it.",
+          "allOf": [
+            {
+              "if": {
+                "properties": {
+                  "kind": {
+                    "const": "generated-by-host-integration"
+                  }
+                },
+                "required": [
+                  "kind"
+                ]
+              },
+              "then": {
+                "required": [
+                  "kind",
+                  "command_template",
+                  "install_commands",
+                  "install_contract_sha256"
+                ]
+              },
+              "else": {
+                "required": [
+                  "executable_token",
+                  "resolved_path",
+                  "realpath",
+                  "sha256",
+                  "metadata",
+                  "version"
+                ]
+              }
+            }
           ],
           "properties": {
+            "kind": {
+              "type": "string"
+            },
+            "command_template": {
+              "type": "string",
+              "minLength": 1
+            },
+            "install_commands": {
+              "type": "array",
+              "minItems": 1,
+              "items": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            },
+            "install_contract_sha256": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            },
             "executable_token": {
               "type": "string"
             },
@@ -964,7 +1011,7 @@
       "if": {
         "properties": {
           "schema_version": {"const": 2},
-          "session_role": {"not": {"const": "baseline"}},
+          "session_role": {"not": {"enum": ["baseline", "replacement_runtime"]}},
           "interpretation": {
             "properties": {
               "accepted_for_objective": {"const": true}
