@@ -9,6 +9,7 @@ import importlib.util
 import inspect
 import json
 import os
+import re
 import shutil
 import subprocess
 import sys
@@ -640,7 +641,6 @@ class ActiveCampaignArchitectureTest(unittest.TestCase):
             "README.md",
             "docs/evaluations/README.md",
             "docs/research/roadmap.md",
-            "docs/truthmark/engineering/research/current-findings.md",
         ):
             text = (ROOT / relative).read_text()
             self.assertIn("122,368", text, relative)
@@ -3804,8 +3804,10 @@ raise SystemExit(1)
                 os.close(fd)
 
     def production_v3_fixture(self, root: Path) -> tuple[dict, Path]:
-        # Temp-dir names may contain underscores; session ids are kebab-case per schema.
-        session_id = f"unit-production-session-{root.name.replace('_', '-').lower()}"
+        # Temp-dir names may contain underscores anywhere, including the last character;
+        # session ids are strictly kebab-case per schema, so normalize and strip separators.
+        suffix = re.sub(r"[^a-z0-9]+", "-", root.name.lower()).strip("-")
+        session_id = f"unit-production-session-{suffix}"
         run_dir = ROOT / "sources/evaluations/workflow-sessions" / session_id
         if run_dir.exists():
             shutil.rmtree(run_dir)
@@ -4818,7 +4820,7 @@ class MatrixLifecycleContractTest(unittest.TestCase):
         self.assertEqual([item["exit_code"] for item in results], [0, 1])
         self.assertEqual(matrix.execute_lane_jobs([], 3, return_nonzero), [])
 
-    def test_validation_restores_protected_files_before_truthmark(self) -> None:
+    def test_validation_restores_protected_files_before_checks(self) -> None:
         with tempfile.TemporaryDirectory() as tmp, \
              mock.patch.object(
                  matrix.subprocess,
@@ -4828,8 +4830,19 @@ class MatrixLifecycleContractTest(unittest.TestCase):
              mock.patch.object(matrix, "restore_protected_control_plane_files") as restore:
             result = matrix.run_validation(Path(tmp), sys.executable)
         self.assertTrue(result["passed"])
-        self.assertGreaterEqual(run.call_count, 8)
         restore.assert_called_once_with(ROOT)
+        # Assert the validation set itself rather than a subprocess call count, so adding or
+        # removing a check fails with the command that changed instead of an opaque tally.
+        ran = [item["command"] for item in result["results"]]
+        self.assertEqual(
+            [command[1:] for command in ran],
+            [
+                ["scripts/validate_repository.py"],
+                ["scripts/test_workflow_evaluation_contract.py"],
+                ["scripts/test_claude_code_usage_contract.py"],
+                ["diff", "--check"],
+            ],
+        )
 
     def test_protected_test_restore_recovers_staged_deletion_from_head(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
@@ -7793,7 +7806,6 @@ class BaselineV3LowComplexityContractTest(unittest.TestCase):
             "README.md",
             "docs/evaluations/README.md",
             "docs/research/roadmap.md",
-            "docs/truthmark/engineering/research/current-findings.md",
         ):
             text = (ROOT / relative).read_text().lower()
             self.assertNotIn("dry-run pass", text, relative)

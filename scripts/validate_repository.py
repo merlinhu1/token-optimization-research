@@ -10,7 +10,6 @@ import json
 import re
 import subprocess
 import hashlib
-import shutil
 from pathlib import Path, PurePosixPath
 from typing import Any
 import sys
@@ -357,17 +356,13 @@ LOCAL_SKILL_ARTIFACTS = [
     ".agents/skills/figure-table-planner.md",
 ]
 
-TRUTHMARK_ARTIFACTS = [
-    ".truthmark/config.yml",
-    "docs/truthmark/routes/areas.md",
-    "docs/truthmark/routes/areas/research.md",
-    "docs/truthmark/engineering/research/evidence-stages.md",
-    "docs/truthmark/engineering/research/methodology.md",
-    "docs/truthmark/engineering/research/token-accounting.md",
-    "docs/truthmark/engineering/research/software-quality-diagnostics.md",
-    "docs/truthmark/engineering/research/stack-compatibility.md",
-    "docs/truthmark/engineering/research/current-findings.md",
-    "docs/truthmark/engineering/research/agent-workflow.md",
+DECISION_RECORDS = [
+    "docs/architecture/decision-records/0001-research-kernel.md",
+    "docs/architecture/decision-records/0002-evidence-stages.md",
+    "docs/architecture/decision-records/0003-methodology-and-reporting.md",
+    "docs/architecture/decision-records/0004-stack-compatibility.md",
+    "docs/architecture/decision-records/0005-token-accounting-and-protocol-identity.md",
+    "docs/architecture/decision-records/0006-repository-workflow-and-validation.md",
 ]
 
 REQUIRED_PATHS = [
@@ -632,43 +627,6 @@ def validate_session_schema_conformance(session: dict, sid: str, errors: list[st
         )
         if message not in errors:
             errors.append(message)
-
-
-def run_truthmark(command: str, errors: list[str]) -> None:
-    try:
-        truthmark = shutil.which("truthmark")
-        npx = shutil.which("npx")
-        if truthmark:
-            command_argv = [truthmark, command, "--json"]
-        elif npx:
-            command_argv = [npx, "--no-install", "truthmark", command, "--json"]
-        else:
-            raise FileNotFoundError("truthmark/npx")
-        result = subprocess.run(
-            command_argv,
-            cwd=ROOT,
-            text=True,
-            capture_output=True,
-            check=False,
-        )
-    except FileNotFoundError:
-        errors.append("truthmark CLI is required for repository validation")
-        return
-    if result.returncode not in (0, 1):
-        errors.append(f"truthmark {command} failed to run: {result.stderr.strip() or result.stdout.strip()}")
-        return
-    try:
-        payload = json.loads(result.stdout)
-    except json.JSONDecodeError as exc:
-        errors.append(f"truthmark {command} returned invalid JSON: {exc}")
-        return
-    error_diagnostics = [
-        d for d in payload.get("diagnostics", []) if d.get("severity") == "error"
-    ]
-    for diagnostic in error_diagnostics:
-        errors.append(
-            f"truthmark {command}: {diagnostic.get('file', '<unknown>')}: {diagnostic.get('message', '<no message>')}"
-        )
 
 
 def load_json(rel: str) -> dict:
@@ -4514,7 +4472,7 @@ def validate_lifecycle_v1_authorization(errors: list[str]) -> None:
 
 def main() -> int:
     errors: list[str] = []
-    for rel in REQUIRED_PATHS + LOCAL_SKILL_ARTIFACTS + TRUTHMARK_ARTIFACTS:
+    for rel in REQUIRED_PATHS + LOCAL_SKILL_ARTIFACTS + DECISION_RECORDS:
         if not (ROOT / rel).exists():
             errors.append(f"missing required path: {rel}")
 
@@ -4702,8 +4660,6 @@ def main() -> int:
     if runbook_check.returncode != 0:
         errors.append((runbook_check.stderr or runbook_check.stdout or "workflow runbook is stale").strip())
 
-    run_truthmark("check", errors)
-    run_truthmark("index", errors)
 
     if errors:
         print("Validation failed:")

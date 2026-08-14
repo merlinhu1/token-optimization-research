@@ -21,7 +21,6 @@ Use this page as the entry point for human-facing documentation.
 | [`research/`](research/README.md) | Active roadmap and tool-research direction |
 | [`../templates/`](../templates/README.md) | Repository-wide blank outlines and reusable record templates |
 | [`tool-dossiers/`](tool-dossiers/README.md) | Tool index and source-inspection dossiers |
-| [`truthmark/`](truthmark/engineering/README.md) | Maintainer-facing truth, routes, and documentation-governance internals |
 
 ## Placement rules
 

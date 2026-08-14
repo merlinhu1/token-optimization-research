@@ -1,18 +1,20 @@
 PYTHON ?= python3
 SHELL := /bin/bash
 
-.PHONY: check validate test runbook truthmark
+.PHONY: check validate test runbook
 
-# The full AGENTS.md required-checks gate. CI runs this target so the checklist
-# has one executable definition instead of a prose copy that can drift.
+# The full AGENTS.md required-checks gate, and its one executable definition, so
+# the instruction list documents this target instead of drifting from it. Nothing
+# invokes it automatically; run it before finishing an evidence-changing change.
 #
 # The final step enforces "a green run is invalid if it deleted a required test
 # or left new evidence untracked" by comparing the tree before and after the
-# checks, so it holds on a clean CI checkout and on a dirty local tree alike.
+# checks. It runs whether or not the earlier checks passed, because a failing run
+# is when a destructive fixture is most likely to have written into the checkout.
 check:
 	@before="$$(git status --porcelain)"; \
 	status=0; \
-	$(MAKE) --no-print-directory runbook validate truthmark || status=$$?; \
+	$(MAKE) --no-print-directory runbook validate || status=$$?; \
 	git diff --check || status=$$?; \
 	after="$$(git status --porcelain)"; \
 	if [ "$$before" != "$$after" ]; then \
@@ -31,7 +33,3 @@ validate: test
 
 runbook:
 	$(PYTHON) scripts/update_workflow_runbook.py --check
-
-truthmark:
-	truthmark check --json
-	truthmark index --json
