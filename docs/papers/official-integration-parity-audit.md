@@ -1,5 +1,11 @@
 # Official integration parity audit
 
+> **Retired evidence.** This report describes Lifecycle V0 results. V0 was retired on
+> 2026-08-14 under [`lifecycle-v0-framework-retired-20260814.json`](../../sources/evaluations/audits/lifecycle-v0-framework-retired-20260814.json);
+> its sessions, artifacts, and protocols were deleted from the active corpus, so the
+> numbers below are no longer reproducible from this repository. The report is retained
+> because negative findings and exclusions are part of the research record.
+
 **Date:** 2026-07-18
 
 **Scope:** every historical lifecycle-v0 individual-tool profile, plus the Phase 3 TokenJuice+jcodemunch stack

@@ -1,5 +1,11 @@
 # Prospective natural-use replication of six token-saving integration profiles in persistent Codex workflows
 
+> **Retired evidence.** This report describes Lifecycle V0 results. V0 was retired on
+> 2026-08-14 under [`lifecycle-v0-framework-retired-20260814.json`](../../sources/evaluations/audits/lifecycle-v0-framework-retired-20260814.json);
+> its sessions, artifacts, and protocols were deleted from the active corpus, so the
+> numbers below are no longer reproducible from this repository. The report is retained
+> because negative findings and exclusions are part of the research record.
+
 ## Abstract
 
 Token-saving integrations can alter coding-agent trajectories as well as the local source or command output they expose. This study prospectively repeated six eligible frozen integration profiles with OpenAI Codex, GPT-5.6 Luna, and `xhigh` reasoning across persistent Fastify, Beets, and Terraform workflows. Each workflow comprised feature implementation, behavior-preserving refactoring, and code review in one resumed agent session. The primary outcome was provider-reported tokens relative to three newly executed bare-Codex baseline sessions. Treatment availability was natural: documented product guidance was installed when it belonged to the frozen profile, but the evaluator did not require tool invocation. A seventh attempted profile, Cartog direct MCP v1, was deleted after a parity audit established that it omitted the product-authored Codex routing and official live-watch installer surfaces.

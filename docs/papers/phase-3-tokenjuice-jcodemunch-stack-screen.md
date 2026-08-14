@@ -1,5 +1,11 @@
 # Phase 3 report: TokenJuice + jcodemunch MCP lifecycle-v0 stack screen
 
+> **Retired evidence.** This report describes Lifecycle V0 results. V0 was retired on
+> 2026-08-14 under [`lifecycle-v0-framework-retired-20260814.json`](../../sources/evaluations/audits/lifecycle-v0-framework-retired-20260814.json);
+> its sessions, artifacts, and protocols were deleted from the active corpus, so the
+> numbers below are no longer reproducible from this repository. The report is retained
+> because negative findings and exclusions are part of the research record.
+
 > **Report status:** withdrawn historical product-effect screen. The narrative preserves the arithmetic reported at the time, but the three corrupted stack sessions, comparisons, compact bundles, and protocols were deleted from the active corpus under receipt. The decision is superseded by the [official-integration parity audit](official-integration-parity-audit.md).
 >
 > **Accounting supersession (2026-07-18):** persistent-session totals in this report also sum cumulative Codex `ThreadTokenUsage.total` snapshots and are inflated. Use the [cumulative usage correction audit](../../sources/evaluations/audits/codex-cumulative-usage-accounting-20260718.json) for retained-session accounting. The deleted stack rows remain historical arithmetic only.
