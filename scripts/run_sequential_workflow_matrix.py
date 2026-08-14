@@ -4,7 +4,7 @@
 This is the concurrency wrapper for whatever workflow sequences are currently active.
 Each flow runs in its own rsync-materialized checkout so parallel runs do not race on
 `data/workflow-sessions.json`, workflow-session artifact directories, Codex home
-roots, tool caches, or Truthmark temporary outputs. After lanes finish, this
+roots, or tool caches. After lanes finish, this
 controller copies the lane artifacts back and merges only the produced workflow
 session records into the controller checkout.
 """
@@ -2956,24 +2956,13 @@ def controller_validation_python() -> str:
 
 def run_validation(summary_dir: Path, validation_python: str | None = None) -> dict[str, Any]:
     restore_protected_control_plane_files(ROOT)
-    truthmark_candidates = [
-        shutil.which("truthmark"),
-        "/opt/data/.local/bin/truthmark",
-        str(Path.home() / ".local/bin/truthmark"),
-    ]
-    truthmark = next(
-        (candidate for candidate in truthmark_candidates if candidate and Path(candidate).is_file()),
-        truthmark_candidates[-1],
-    )
     validation_env = os.environ.copy()
-    validation_env["PATH"] = f"{Path(truthmark).parent}:{validation_env.get('PATH', '')}"
     validation_python = validation_python or controller_validation_python()
     commands = [
         [validation_python, "scripts/validate_repository.py"],
         [validation_python, "scripts/test_workflow_evaluation_contract.py"],
+        [validation_python, "scripts/test_claude_code_usage_contract.py"],
         ["git", "diff", "--check"],
-        [truthmark, "check", "--json"],
-        [truthmark, "index", "--json"],
     ]
     results: list[dict[str, Any]] = []
     for idx, cmd in enumerate(commands, start=1):

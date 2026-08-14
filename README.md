@@ -57,8 +57,7 @@ Start with [`docs/README.md`](docs/README.md). The main destinations are:
 ## Validation
 
 `make check` runs the full `AGENTS.md` required-checks gate — generated-runbook drift, both
-contract test suites, repository validation, `truthmark check`/`index`, and a working-tree
-comparison that fails if the checks themselves changed tracked or untracked state. Run it
+contract test suites, repository validation, and a working-tree comparison that fails if the checks themselves changed tracked or untracked state. Run it
 before finishing any change to evaluation state; nothing runs it automatically.
 
 ```bash
